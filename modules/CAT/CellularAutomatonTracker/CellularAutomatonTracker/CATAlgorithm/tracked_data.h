@@ -19,7 +19,7 @@
 #include <CATAlgorithm/node.h>
 #include <CATAlgorithm/calorimeter_hit.h>
 #include <CATAlgorithm/scenario.h>
-#include <CATAlgorithm/lt_utils.h>
+// #include <CATAlgorithm/lt_ utils.h>
 
 
 namespace CAT{
@@ -67,12 +67,12 @@ namespace CAT{
       tracked_data()
       {
         appname_= "tracked_data: ";
-        cells_.clear();
-        calos_.clear();
-        clusters_.clear();
-        scenarios_.clear();
-        true_sequences_.clear();
-        nemo_sequences_.clear();
+        //cells_.clear();
+        //calos_.clear();
+        //clusters_.clear();
+        //scenarios_.clear();
+        //true_sequences_.clear();
+        //nemo_sequences_.clear();
         selected_ = true;
         skipped_ = false;
       }
@@ -81,7 +81,14 @@ namespace CAT{
       virtual ~tracked_data(){};
 
       //! constructor
-      tracked_data(std::vector<cell> cells, std::vector<calorimeter_hit> calos, std::vector<cluster> clusters, std::vector<scenario> scenarios, std::vector<sequence> true_sequences, std::vector<sequence> nemo_sequences, prlevel level=mybhep::NORMAL, double nsigma=10.){
+      tracked_data(const std::vector<cell> &cells, 
+                   const std::vector<calorimeter_hit> &calos, 
+                   const std::vector<cluster> &clusters, 
+                   const std::vector<scenario> &scenarios, 
+                   const std::vector<sequence> &true_sequences, 
+                   const std::vector<sequence> &nemo_sequences, 
+                   prlevel level=mybhep::NORMAL, 
+                   double nsigma=10.){
         set_print_level(level);
         set_nsigma(nsigma);
         appname_= "tracked_data: ";
@@ -126,37 +133,37 @@ namespace CAT{
       }
     
       //! set cells
-      void set_cells(std::vector<cell> cells)
+      void set_cells(const std::vector<cell> & cells)
       {
         cells_ = cells;
       }
 
       //! set calos
-      void set_calos(std::vector<calorimeter_hit> calos)
+      void set_calos(const std::vector<calorimeter_hit> & calos)
       {
         calos_ = calos;
       }
 
       //! set clusters
-      void set_clusters(std::vector<cluster> clusters)
+      void set_clusters(const std::vector<cluster> & clusters)
       {
         clusters_ = clusters;
       }
 
       //! set scenarios
-      void set_scenarios(std::vector<scenario> scenarios)
+      void set_scenarios(const std::vector<scenario> & scenarios)
       {
         scenarios_ = scenarios;
       }
 
       //! set true sequences
-      void set_true_sequences(std::vector<sequence> sequences)
+      void set_true_sequences(const std::vector<sequence> & sequences)
       {
         true_sequences_ = sequences;
       }
 
       //! set nemo sequences
-      void set_nemo_sequences(std::vector<sequence> sequences)
+      void set_nemo_sequences(const std::vector<sequence> & sequences)
       {
         nemo_sequences_ = sequences;
       }

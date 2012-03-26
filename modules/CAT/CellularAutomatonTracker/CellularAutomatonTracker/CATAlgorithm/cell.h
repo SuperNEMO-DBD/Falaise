@@ -71,9 +71,9 @@ namespace CAT {
       {
         set_print_level(mybhep::NORMAL);
         set_nsigma(10.);
-        ep_ = experimental_point();
-        r0_= experimental_double();
-        r_= experimental_double();
+        //ep_ = experimental_point();
+        //r0_= experimental_double();
+        //r_= experimental_double();
         id_ = default_integer;
         layer_ = default_integer;
         block_ = default_integer;
@@ -152,7 +152,7 @@ namespace CAT {
         set_print_level(level);
         set_nsigma(nsigma);
         appname_= "cell: ";
-        ep_ = experimental_point(hit);
+        //ep_ = experimental_point(hit);
         r0_.set_value(small_neg);
         r0_.set_error(0.5*mybhep::mm); // radial error 
 
@@ -227,7 +227,8 @@ namespace CAT {
       //! constructor from bhep hit
       cell(mybhep::hit hit){
         appname_= "cell: ";
-        ep_ = experimental_point(hit);
+        experimental_point ep_tmp(hit);
+        ep_ = ep_tmp;
         r0_.set_value( small_neg);
         r0_.set_error( 0.5*mybhep::mm); // radial error 
 
@@ -469,6 +470,7 @@ namespace CAT {
 
 
     public:
+
       experimental_double distance(cell c) const;
       experimental_point angular_average(experimental_point epa, experimental_point epb, experimental_double* angle);
       experimental_point build_from_cell(experimental_vector forward, experimental_vector transverse, experimental_double cos, int sign);

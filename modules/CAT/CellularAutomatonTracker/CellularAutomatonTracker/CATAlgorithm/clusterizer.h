@@ -41,7 +41,7 @@
 #include <CATAlgorithm/cluster.h>
 #include <CATAlgorithm/experimental_double.h>
 #include <CATAlgorithm/Clock.h>
-#include <CATAlgorithm/lt_utils.h>
+//#include <CATAlgorithm/lt _utils.h>
 #include <CATAlgorithm/calorimeter_hit.h>
 #include <CATAlgorithm/tracked_data.h>
 
@@ -112,9 +112,9 @@ namespace CAT{
     }
 
     //! set cells
-    void set_cells(std::vector<topology::cell> cells)
+    void set_cells(const std::vector<topology::cell> & cells)
     {
-      cells_.clear();
+      //cells_.clear();
       cells_ = cells;
     }
 
@@ -125,9 +125,9 @@ namespace CAT{
     }
 
     //! set clusters
-    void set_clusters(std::vector<topology::cluster> clusters)
+    void set_clusters(const std::vector<topology::cluster> & clusters)
     {
-      clusters_.clear();
+      //clusters_.clear();
       clusters_ = clusters;
     }
 
@@ -138,7 +138,7 @@ namespace CAT{
     }
 
     //! set calorimeter_hits                                                                                                      
-    void set_calorimeter_hits(std::vector<topology::calorimeter_hit> calorimeter_hits)
+    void set_calorimeter_hits(const std::vector<topology::calorimeter_hit> & calorimeter_hits)
     {
       calorimeter_hits_.clear();
       calorimeter_hits_ = calorimeter_hits;
@@ -150,13 +150,13 @@ namespace CAT{
     void fill_fast_information( mybhep::event& evt );
     void fill_fast_information( mybhep::particle* p );
     void fill_fast_information( mybhep::hit* h );
-    int cell_side( topology::cell c);
-    size_t near_level( topology::cell c1, topology::cell c2 );
-    std::vector<topology::cell> get_near_cells(topology::cell c);
+    int cell_side( const topology::cell & c);
+    size_t near_level( const topology::cell & c1, const topology::cell & c2 );
+    std::vector<topology::cell> get_near_cells(const topology::cell & c);
     void setup_cells();
     void setup_clusters();
-    topology::calorimeter_hit make_calo_hit(mybhep::hit ahit, size_t id);
-    int get_effective_layer(mybhep::hit hit);
+    topology::calorimeter_hit make_calo_hit(const mybhep::hit & ahit, size_t id);
+    int get_effective_layer(const mybhep::hit & hit);
     bool select_true_tracks(topology::tracked_data & __tracked_data);
     void make_plots(topology::tracked_data & __tracked_data);
 

@@ -53,7 +53,7 @@ namespace CAT {
         appname_= "scenario: ";
         set_print_level(mybhep::NORMAL);
         set_nsigma(10.);
-        sequences_.clear();
+        //sequences_.clear();
         chi2_ = small_neg;
         ndof_ = default_integer;
         n_free_families_ = default_integer;
@@ -64,7 +64,7 @@ namespace CAT {
       virtual ~scenario(){};
 
       //! constructor
-      scenario(std::vector<sequence> seqs, prlevel level=mybhep::NORMAL, double nsigma=10.){
+      scenario(const std::vector<sequence> & seqs, prlevel level=mybhep::NORMAL, double nsigma=10.){
         appname_= "scenario: ";
         set_print_level(mybhep::NORMAL);
         set_nsigma(nsigma);
@@ -103,7 +103,7 @@ namespace CAT {
 
 
       //! set experimental_point, radius, error and id;
-      void set(std::vector<sequence> seqs){
+      void set(const std::vector<sequence> & seqs){
         appname_= "scenario: ";
         sequences_ = seqs;
         chi2_ = small_neg;
@@ -112,7 +112,7 @@ namespace CAT {
       }
 
       //! set sequences
-      void set_sequences(std::vector<sequence> seqs){
+      void set_sequences(const std::vector<sequence> & seqs){
         sequences_ = seqs;
       }
 
@@ -143,25 +143,26 @@ namespace CAT {
       }      
 
       //!get chi2
-      const double& chi2() const 
+      double chi2() const 
       {
         return chi2_;
       } 
 
       //!get ndof
-      const int32_t& ndof() const 
+      int32_t ndof() const 
       {
         return ndof_;
       } 
 
       //!get n free families
-      const size_t& n_free_families() const {return n_free_families_;} 
+      size_t n_free_families() const {return n_free_families_;} 
 
       //!get n overlaps
-      const size_t& n_overlaps() const {return n_overlaps_;} 
+      size_t n_overlaps() const {return n_overlaps_;} 
 
 
-      void calculate_n_overlaps(std::vector<topology::cell> cells, std::vector<topology::calorimeter_hit> calos){
+      void calculate_n_overlaps(const std::vector<topology::cell> & cells, 
+                                const std::vector<topology::calorimeter_hit> & calos){
 
         std::vector<int> freecells(cells.size());
         fill(freecells.begin(), freecells.end(), 1);
@@ -211,7 +212,8 @@ namespace CAT {
       }
 
 
-      void calculate_n_free_families(std::vector<topology::cell> cells, std::vector<topology::calorimeter_hit> calos){
+      void calculate_n_free_families(const std::vector<topology::cell> &cells, 
+                                     const std::vector<topology::calorimeter_hit> & calos){
 
         std::vector<int> freecells(cells.size());
         fill(freecells.begin(), freecells.end(), 1);
@@ -279,7 +281,7 @@ namespace CAT {
         return probof(chi2(), ndof());
       }
 
-      bool better_scenario_than( scenario s)const{
+      bool better_scenario_than( const scenario & s)const{
 
         // - n of recovered cells 
         int deltanfree = n_free_families() - s.n_free_families();

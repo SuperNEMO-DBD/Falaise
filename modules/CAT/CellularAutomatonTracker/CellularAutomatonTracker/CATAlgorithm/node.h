@@ -58,12 +58,7 @@ namespace CAT {
       node()
       {
         appname_= "node: ";
-        c_ = cell();
-        cc_.clear();
-        ccc_.clear();
-        links_.clear();
         free_ = false;
-        ep_ = experimental_point();
         chi2_ = 0.;
       }
 
@@ -76,9 +71,7 @@ namespace CAT {
         c_ = c;
         cc_ = cc;
         ccc_ = ccc;
-        //links_.clear();
         free_ = false;
-        //ep_ = experimental_point();
         chi2_ = 0.;
       }
 
@@ -88,11 +81,7 @@ namespace CAT {
         set_nsigma(nsigma);
         appname_= "node: ";
         c_ = c;
-        //cc_.clear();
-        //ccc_.clear();
-        //links_.clear();
         free_ = false;
-        //ep_ = experimental_point();
         chi2_ = 0.;
       }
 
@@ -114,9 +103,10 @@ namespace CAT {
           fast = false;
         else
           fast = true;
-
-        c_ = cell(center, radius, id, fast, nsigma, level);
-
+        {
+          cell tmp_cell (center, radius, id, fast, nsigma, level);
+          c_ = tmp_cell;
+        }
         int block, plane, iid, n3id;
         if( SuperNemo )
           {
@@ -168,15 +158,12 @@ namespace CAT {
         c_.set_block(block);
         c_.set_iid(iid);
 
-
-        cc_.clear();
-        ccc_.clear();
-        links_.clear();
         free_ = false;
-
-        ep_ = experimental_point(truehit.x().x(), truehit.x().y(), truehit.x().z(),
-                                 0., 0., 0.);
-
+        {
+          experimental_point tmp_ep(truehit.x().x(), truehit.x().y(), truehit.x().z(),
+                                    0., 0., 0.); 
+          ep_ = tmp_ep;
+        }
         return;
 
 
@@ -274,12 +261,12 @@ namespace CAT {
       }
 
       //! get free level
-      const bool free()const{
+      bool free()const{
         return free_;
       }
 
       //! get chi2
-      const double chi2()const{
+      double chi2()const{
         return chi2_;
       }
 
@@ -294,9 +281,9 @@ namespace CAT {
 
       void calculate_triplets(double Ratio, double separation_limit=90., double phi_limit=25., double theta_limit=180.){
         if( cc_.size() < 2 ) return;
-        for(vector<cell_couplet>::iterator icc=cc_.begin(); icc!=cc_.end(); ++icc){
+        for(vector<cell_couplet>::const_iterator icc=cc_.begin(); icc!=cc_.end(); ++icc){
           cell c1 = icc->cb();
-          for(vector<cell_couplet>::iterator jcc=cc_.begin() + (size_t)(icc - cc_.begin()); jcc!=cc_.end(); ++jcc){
+          for(vector<cell_couplet>::const_iterator jcc=cc_.begin() + (size_t)(icc - cc_.begin()); jcc!=cc_.end(); ++jcc){
             cell c2 = jcc->cb();
             if( c1.id() == c2.id() ) continue;
             cell_triplet ccc(c1,c_,c2, print_level(), nsigma());

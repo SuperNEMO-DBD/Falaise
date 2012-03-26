@@ -6,22 +6,28 @@
         - fix CMake skeleton files
         - fix dependencies management :
 	        - compatible with standard packages finding (Boost)
-	        - and Cadfael (CLHEP)
-        - make CATutils an optional build with explicit ROOT dependencies
+	        - and Cadfael (CLHEP, ROOT)
+	- fix const reference in mybhep messenger
+        - make CATutils an optional build with ROOT dependencies
         - add a 'CAT_config.h.in' template file
         - add/fix CAT and CAT::topology namespaces
         - fix const decorator(s)
         - add interface files: 'CAT_clusterizer_interface[.h|.cpp]'
-                - class CAT::clusterizer_setup_data : minimal set of
-                  configuration parameters to run CAT from SuperNEMO data pipelines
+                - class CAT::clusterizer_setup_data :
+	          - minimal set of configuration parameters to run CAT from SuperNEMO data pipelines
+		  - check method.
                 - class CAT::clusterizer_input_data : list of input GG hits
+		  - check method.
                 - class CAT::clusterizer_output_data : list of output GG hits clusters
-                - function CAT::clusterizer_configure (...)
+                - global function CAT::clusterizer_configure (...)
         - add devel/ subdir
                 - add LocalBuild/ subdir
                 - add ProbChi2/ subdir with test program
                   for boost::math::gamma_q function
         - add example/ subdir with CATClient project
-                - add program client.cxx
+                - add toy program client.cxx and useful scripts
+	- clusterizer: clusterize method
+	        - remove usage of malloc/free -> use std::vector::assign in place
+		- some optimizations ('const XXX &' argument passing and returned values)
         * Port to Channel
         * Pre-version 0.2.0

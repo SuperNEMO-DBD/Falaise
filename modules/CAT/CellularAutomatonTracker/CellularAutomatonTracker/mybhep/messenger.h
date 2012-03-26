@@ -55,7 +55,7 @@ namespace mybhep{
  * only messages flagged as MUTE will print
   *\ingroup base
  */
-        inline void message (const string message, prlevel clevel) const
+        inline void message (const string & message, prlevel clevel) const
             {
                 if (clevel <= level_)
                     std::clog << message << endl;
@@ -66,7 +66,7 @@ namespace mybhep{
   *\ingroup base
  */
         template <class T> inline
-        void message(const string message, const T& d, prlevel clevel) const
+        void message(const string & message, const T& d, prlevel clevel) const
             {
                 if (clevel <= level_)
                     std::clog << message << " " << d << endl;
@@ -78,7 +78,7 @@ namespace mybhep{
   *\ingroup base
  */
         template <class A, class B> inline
-        void message(const string message, const A& d1, 
+        void message(const string & message, const A& d1, 
                      const B& d2, prlevel clevel) const
             {
                 if (clevel <= level_)
@@ -90,7 +90,7 @@ namespace mybhep{
   *\ingroup base
  */
         template <class A, class B, class C> inline
-        void message(const string message, const A& d1, 
+        void message(const string & message, const A& d1, 
                      const B& d2, 
                      const C& d3, 
                      prlevel clevel) const
@@ -105,7 +105,7 @@ namespace mybhep{
   *\ingroup base
  */
         template <class A, class B, class C, class D> inline
-        void message(const string message, 
+        void message(const string & message, 
                      const A& d1, 
                      const B& d2, 
                      const C& d3, 
@@ -123,7 +123,7 @@ namespace mybhep{
  *\ingroup base
  */
         template <class A, class B, class C, class D, class E> inline
-        void message(const string message, 
+        void message(const string & message, 
                      const A& d1, 
                      const B& d2, 
                      const C& d3, 
@@ -144,7 +144,7 @@ namespace mybhep{
   *\ingroup base
  */
         template <class A, class B, class C, class D, class E, class F> inline
-        void message(const string message, 
+        void message(const string & message, 
                      const A& d1, 
                      const B& d2, 
                      const C& d3, 
@@ -167,7 +167,7 @@ namespace mybhep{
  */
         template <class A, class B, class C, class D, class E, class F,
                   class G> inline
-        void message(const string message, 
+        void message(const string & message, 
                      const A& d1, 
                      const B& d2, 
                      const C& d3, 
@@ -192,7 +192,7 @@ namespace mybhep{
  */
         template <class A, class B, class C, class D, class E, class F,
                   class G, class H> inline
-        void message(const string message, 
+        void message(const string & message, 
                      const A& d1, 
                      const B& d2, 
                      const C& d3, 
@@ -219,7 +219,7 @@ namespace mybhep{
  */
         template <class A, class B, class C, class D, class E, class F,
                   class G, class H, class I> inline
-        void message(const string message, 
+        void message(const string & message, 
                      const A& d1, 
                      const B& d2, 
                      const C& d3, 
@@ -248,7 +248,7 @@ namespace mybhep{
  */
         template <class A, class B, class C, class D, class E, class F,
                   class G, class H, class I, class J> inline
-        void message(const string message, 
+        void message(const string & message, 
                      const A& d1, 
                      const B& d2, 
                      const C& d3, 

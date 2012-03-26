@@ -44,7 +44,11 @@ if [ -x ${exe} ]; then
 	echo "ERROR: CAT example client program '${exe}' failed ! Abort !" 1>&2
 	exit 1
     fi
-
+    which gnuplot > /dev/null 2>&1 
+    if [ $? -ne 0 ]; then
+	echo "ERROR: Cannot find Gnuplot ! Abort !" 1>&2
+	exit 1
+    fi
     gnuplot plot.gp
 fi
 

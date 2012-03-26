@@ -937,7 +937,10 @@ namespace CAT {
           // the first node is a vertex (there are no triplets)
           // so it shall propagate through a couplet 
         
-          bool* shall_one_have_triplet = (bool*)malloc(sizeof(bool)*nodes()[0].cc().size());
+          vector<bool> shall_one_have_triplet;
+          shall_one_have_triplet.assign (nodes()[0].cc().size(), false);
+          // 2012-03-26 FM: remove C style
+          //bool* shall_one_have_triplet = (bool*)malloc(sizeof(bool)*nodes()[0].cc().size());
       
           bool shall_have_triplet = false;
           for(std::vector<cell_couplet>::iterator icc=nodes_[0].cc_.begin(); icc != nodes_[0].cc_.end(); ++icc){
@@ -959,7 +962,8 @@ namespace CAT {
               nodes_[0].links_.push_back(icc->cb());
           }
 
-          free(shall_one_have_triplet);
+          // 2012-03-26 FM: remove C style
+          //free(shall_one_have_triplet);
           return;
         }
 

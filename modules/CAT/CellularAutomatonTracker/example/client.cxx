@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <cmath>
 #include <CLHEP/Units/SystemOfUnits.h>
 #include <CATAlgorithm/CAT_clusterizer_interface.h>
 
@@ -43,11 +44,11 @@ void plot_cluster (std::ostream & out_,
                    double cell_size_)
 {
   /*
-  std::clog << "plot_cluster: Number of nodes: " 
-            << c_.nodes ().size () << std::endl;
+    std::clog << "plot_cluster: Number of nodes: " 
+    << c_.nodes ().size () << std::endl;
   */
   int count = 0;
-  for(vector<CAT::topology::node>::const_iterator inode 
+  for(std::vector<CAT::topology::node>::const_iterator inode 
         = c_.nodes ().begin(); 
       inode != c_.nodes_.end(); 
       ++inode)
@@ -70,6 +71,7 @@ void plot_cluster (std::ostream & out_,
       out_ << x0 + s  << ' ' << y0 + s << ' ' << z0 << std::endl;
       out_ << std::endl;
     }
+  return;
 }
 
 int main (void)
@@ -78,7 +80,12 @@ int main (void)
   
   clog << "CAT client example program." << endl;
 
+  /*** setup ***/
   long seed = 314159;
+  bool spurious_hits = false;
+
+
+  /*** start ***/
   srand48(seed);
 
   CAT::clusterizer_setup_data CAT_setup;
@@ -127,13 +134,14 @@ int main (void)
   // Declare an input data model : 
   CAT::clusterizer_input_data CAT_input;
   int ihit = 0;
+
+  // A fake track :
   for (int i = 0; i < 10; i++)
     {
-      ihit++;
       // X-Y position of the anode wire of the hit cell :
       ct::experimental_double x; // == Y in sngeometry
       ct::experimental_double z; // == X in sngeometry
-      int block_id = 0;
+      int block_id = 1;
       int layer_id = i/2;
       int cell_id  = i;
       z.set_value (src_gap + (layer_id + 0.5)* CAT_setup.cell_size);
@@ -160,7 +168,9 @@ int main (void)
       ct::cell & c = CAT_input.add_cell ();
       c.set_print_level(mybhep::NORMAL);
       c.set_type ("SN");
-      c.set_id (ihit);
+      c.set_id (ihit++); /** Each GG hit must have an unique ID starting from 0 up to N-1
+                          *  where N is the total number of hits.
+                          */
       c.set_nsigma (10.);
       c.set_p (gg_hit_position);
       c.set_r (rdrift);
@@ -170,13 +180,14 @@ int main (void)
       c.set_iid (cell_id);
       c.set_fast (fast);
     }
+
+  // Another fake track :
   for (int i = 0; i < 5; i++)
     {
-      ihit++;
       // X-Y position of the anode wire of the hit cell :
       ct::experimental_double x;
       ct::experimental_double z;
-      int block_id = 0;
+      int block_id = 1;
       int layer_id = i;
       int cell_id  = i/2;
       z.set_value (src_gap + (layer_id + 0.5) * CAT_setup.cell_size);
@@ -204,7 +215,7 @@ int main (void)
       ct::cell & c = CAT_input.add_cell ();
       c.set_print_level(mybhep::NORMAL);
       c.set_type ("SN");
-      c.set_id (ihit);
+      c.set_id (ihit++);
       c.set_nsigma (10.);
       c.set_p (gg_hit_position);
       c.set_r (rdrift);
@@ -215,16 +226,16 @@ int main (void)
       c.set_fast (fast);
     }
 
+  // Yet another fake track :
   for (int i = 0; i < 7; i++)
     {
-      ihit++;
       // X-Y position of the anode wire of the hit cell :
       ct::experimental_double x;
       ct::experimental_double z;
-      int block_id = 0;
+      int block_id = -1;
       int layer_id = i;
       int cell_id  = -i;
-      z.set_value (- src_gap - (layer_id  + 0.5) * CAT_setup.cell_size);
+      z.set_value (-(src_gap + (layer_id  + 0.5) * CAT_setup.cell_size));
       z.set_error (0.0);
       x.set_value (0.*CLHEP::cm + (cell_id) * CAT_setup.cell_size);
       x.set_error (0.0);
@@ -248,7 +259,7 @@ int main (void)
       ct::cell & c = CAT_input.add_cell ();
       c.set_print_level(mybhep::NORMAL);
       c.set_type ("SN");
-      c.set_id (ihit);
+      c.set_id (ihit++);
       c.set_nsigma (10.);
       c.set_p (gg_hit_position);
       c.set_r (rdrift);
@@ -259,7 +270,122 @@ int main (void)
       c.set_fast (fast);
     }
 
-  std::clog << "Number of hits : " << CAT_input.cells.size () << std::endl;
+  // A delayed track :
+  for (int i = 0; i < 3; i++)
+    {
+      // X-Y position of the anode wire of the hit cell :
+      ct::experimental_double x;
+      ct::experimental_double z;
+      int block_id = -1;
+      int layer_id = 3+i;
+      int cell_id  = i+10;
+      z.set_value (- (src_gap + (layer_id  + 0.5) * CAT_setup.cell_size));
+      z.set_error (0.0);
+      x.set_value (0.*CLHEP::cm + (cell_id) * CAT_setup.cell_size);
+      x.set_error (0.0);
+
+      // Delayed hit :
+      bool fast = false;
+
+      // Transverse Geiger drift distance :
+      ct::experimental_double y;
+      double rdrift = 0.5 * CAT_setup.cell_size * drand48();
+      double rdrift_err = 0.2 * CLHEP::mm;
+
+      // Plasma longitudinal origin along the anode wire :
+      y.set_value (10.*CLHEP::cm + i*4.*CLHEP::cm);
+      y.set_error (1.*CLHEP::cm);
+     
+      // Build the Geiger hit position :
+      ct::experimental_point gg_hit_position (x,y,z);
+
+      // Add a new cell in the CAT input data model :
+      ct::cell & c = CAT_input.add_cell ();
+      c.set_print_level(mybhep::NORMAL);
+      c.set_type ("SN");
+      c.set_id (ihit++);
+      c.set_nsigma (10.);
+      c.set_p (gg_hit_position);
+      c.set_r (rdrift);
+      c.set_er (rdrift_err);
+      c.set_layer (layer_id);
+      c.set_block (block_id);
+      c.set_iid (cell_id);
+      c.set_fast (fast);
+    }
+
+  // Some spurious hits :
+  spurious_hits = true;
+  if (spurious_hits)
+    {
+      for (int i = 0; i < 3; i++)
+        {
+          // X-Y position of the anode wire of the hit cell :
+          ct::experimental_double x;
+          ct::experimental_double z;
+          int block_id = 1;
+          int layer_id = 3;
+          int cell_id  = -10; 
+          int sign = +1;
+          if (i == 1) 
+            {
+              cell_id = 4;
+              layer_id = 6;
+              sign = -1;
+              block_id = -1;
+            }
+          if (i == 2) 
+            {
+              cell_id = 12;
+              layer_id = 1;
+              sign = -1;
+              block_id = -1;
+            }     
+          z.set_value (sign * (src_gap + (layer_id  + 0.5) * CAT_setup.cell_size));
+          z.set_error (0.0);
+          x.set_value (0.*CLHEP::cm + (cell_id) * CAT_setup.cell_size);
+          x.set_error (0.0);
+
+          // Prompt hit :
+          bool fast = true;
+
+          // Transverse Geiger drift distance :
+          ct::experimental_double y;
+          double rdrift = 0.5 * CAT_setup.cell_size * drand48();
+          double rdrift_err = 0.2 * CLHEP::mm;
+
+          // Plasma longitudinal origin along the anode wire :
+          y.set_value (10.*CLHEP::cm + i*4.*CLHEP::cm);
+          y.set_error (1.*CLHEP::cm);
+     
+          // Build the Geiger hit position :
+          ct::experimental_point gg_hit_position (x,y,z);
+
+          // Add a new cell in the CAT input data model :
+          ct::cell & c = CAT_input.add_cell ();
+          c.set_print_level(mybhep::NORMAL);
+          c.set_type ("SN");
+          c.set_id (ihit++);
+          c.set_nsigma (10.);
+          c.set_p (gg_hit_position);
+          c.set_r (rdrift);
+          c.set_er (rdrift_err);
+          c.set_layer (layer_id);
+          c.set_block (block_id);
+          c.set_iid (cell_id);
+          c.set_fast (fast);
+        }
+    }
+
+  // Validate the intput data :
+  if (! CAT_input.check ())
+    {
+      std::clog << "ERROR: Invalid CAT input data !" << std::endl;
+      return 1;
+    }
+  std::clog << "NOTICE: Number of hits : " << CAT_input.cells.size () << std::endl;
+
+  // Gnuplot :
   for (int i = 0; i < CAT_input.cells.size (); i++)
     {
       const ct::cell & c = CAT_input.cells[i];
@@ -273,15 +399,17 @@ int main (void)
 
   // Declare an output data model : 
   CAT::clusterizer_output_data CAT_output;
+  std::clog << "NOTICE: Clusterization..." << std::endl;
   clustering_machine.prepare_event(CAT_output.tracked_data);
   clustering_machine.clusterize(CAT_output.tracked_data);
-  //clustering_machine.print_clusters ();
+  std::clog << "NOTICE: Clusterization is done." << std::endl;
 
-  // Then use CAT_output and its clusters :
+  // clustering_machine.print_clusters ();
+
+  // Then use CAT_output and its embedded clusters :
   const std::vector<ct::cluster> & tcs = CAT_output.tracked_data.get_clusters();
   size_t number_of_clusters = tcs.size();
-  clog << "Number of clusters : " << number_of_clusters << endl;
-  //return 0; 
+  clog << "NOTICE: Number of clusters : " << number_of_clusters << endl;
 
   int icluster = 0;
   for (std::vector<ct::cluster>::const_iterator ic = tcs.begin(); 
@@ -291,43 +419,57 @@ int main (void)
       clog << "Cluster #" << icluster++ << " : " << endl;
       const ct::cluster & cl = *ic;
       size_t clsz = cl.nodes ().size ();    
-      clog << " - number of nodes in the cluster : " << clsz << endl;
+      clog << " - number of node(s) in the cluster : " << clsz << " ";
+      if (clsz == 1)
+        {
+          clog << "ID=" << cl.nodes ()[0].c().id () << " (unclustered hit) ";
+        }
+      else
+        {
+          clog << "IDs=";
+          for (int i = 0; i < clsz; i++)
+            {
+              clog << cl.nodes ()[i].c().id() << " ";
+            }
+        }
+      clog  << endl;
+      // Gnuplot :
       plot_cluster (cout, cl, CAT_setup.cell_size);
       cout << endl;
       cout << endl;
-      /*
-      for(vector<ct::node>::const_iterator inode 
-            = cl.nodes ().begin(); 
-          inode != cl.nodes_.end(); 
-          ++inode)
+      
+      // Navigate through the clustering solution :
+      for (std::vector<ct::node>::const_iterator inode 
+             = cl.nodes ().begin(); 
+           inode != cl.nodes_.end(); 
+           ++inode)
         {
           const ct::node & n = *inode;
-          for(vector<ct::cell_couplet>::const_iterator icc 
-                = n.cc_.begin(); 
-              icc != n.cc_.end(); ++icc)
+          for (std::vector<ct::cell_couplet>::const_iterator icc 
+                 = n.cc().begin(); 
+               icc != n.cc().end(); ++icc)
             {
               const ct::cell_couplet & cc = *icc;
             }
-          for(vector<ct::cell_triplet>::const_iterator iccc 
-                = n.ccc_.begin(); 
-              iccc != n.ccc_.end(); ++iccc)
+          for (std::vector<ct::cell_triplet>::const_iterator iccc 
+                 = n.ccc().begin(); 
+               iccc != n.ccc().end(); ++iccc)
             { 
               const ct::cell_triplet & ccc = *iccc;
-              for(vector<double>::const_iterator ichi = ccc.chi2s().begin(); 
-                  ichi != ccc.chi2s().end(); 
-                  ++ichi)
+              for (std::vector<double>::const_iterator ichi = ccc.chi2s().begin(); 
+                   ichi != ccc.chi2s().end(); 
+                   ++ichi)
                 {
                   const double & chi2 = *ichi;
                 }
-              for(vector<double>::const_iterator iprob = ccc.probs().begin(); 
-                  iprob != ccc.probs().end(); 
-                  ++iprob)
+              for (std::vector<double>::const_iterator iprob = ccc.probs().begin(); 
+                   iprob != ccc.probs().end(); 
+                   ++iprob)
                 {
                   const double & prob = *iprob;
                 }
             }
         }
-      */
     }
   clog << "The end."<< endl;
   return 0;

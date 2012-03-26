@@ -1915,9 +1915,12 @@ namespace CAT {
     true_sequence_of_reco_.clear();
     n_common_hits_for_reco_track_.clear();
 
-
-    size_t* max_common_hits_for_reco_track = (size_t*)malloc(sizeof(size_t)*sequences_.size());
-    size_t* best_matching_for_reco_track = (size_t*)malloc(sizeof(size_t)*sequences_.size());
+    std::vector<size_t> max_common_hits_for_reco_track;
+    max_common_hits_for_reco_track.assign (sequences_.size(), 0);
+    std::vector<size_t> best_matching_for_reco_track;
+    best_matching_for_reco_track.assign (sequences_.size(), 0);
+    //size_t* max_common_hits_for_reco_track = (size_t*)mal loc(sizeof(size_t)*sequences_.size());
+    //size_t* best_matching_for_reco_track = (size_t*)mal loc(sizeof(size_t)*sequences_.size());
 
     for(vector<topology::sequence>::iterator tp=trueseqs.begin(); tp != trueseqs.end(); ++tp){ // loop over true particles
 
@@ -1984,8 +1987,8 @@ namespace CAT {
         clog << " best matching for true track " << i << " is reco track " << reco_sequence_of_true_[i] << endl;
     }
 
-    free(max_common_hits_for_reco_track);
-    free(best_matching_for_reco_track);
+    //free(max_common_hits_for_reco_track);
+    //free(best_matching_for_reco_track);
 
     return;
   }
@@ -2405,7 +2408,9 @@ namespace CAT {
       print_sequences();
     }
 
-    bool* matched= (bool*)malloc(sizeof(size_t)*sequences_.size());
+    std::vector<bool> matched;
+    matched.assign (sequences_.size(), false);
+    //   bool* matched= (bool*)mal loc(sizeof(size_t)*sequences_.size());
     for(size_t i=0; i<sequences_.size(); i++)
       matched[i] = false;
 
@@ -2466,7 +2471,7 @@ namespace CAT {
     set_sequences(newseqs);
     make_families();
 
-    free(matched);
+    //free(matched);
 
     if( level >= mybhep::VERBOSE){
       print_sequences();

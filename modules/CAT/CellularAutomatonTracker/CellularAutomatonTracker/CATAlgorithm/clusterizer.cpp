@@ -3,6 +3,7 @@
 #include <sys/time.h>
 #include <limits>
 #include <cmath>
+#include <map>
 
 namespace CAT {
   using namespace mybhep;
@@ -117,7 +118,7 @@ namespace CAT {
   //*************************************************************
   clusterizer::~clusterizer() {
     //*************************************************************
-    
+    clog << "DEVEL: CAT::clusterizer::~clusterizer: Done." << endl;
   }
 
   //*************************************************************
@@ -1317,6 +1318,8 @@ namespace CAT {
   void clusterizer::clusterize(topology::tracked_data & tracked_data_){
     //*******************************************************************
 
+    bool devel = false;
+    //devel = true;
     clock.start(" clusterizer: clusterize ","cumulative");
 
     m.message(" local_tracking: fill clusters ", mybhep::VERBOSE); 
@@ -1330,44 +1333,84 @@ namespace CAT {
     }
   
     float side[2]; // loop on two sides of the foil
-    side[0] = 1.;
+    side[0] =  1.;
     side[1] = -1.;
 
     bool fast[2]; // loop on fast and slow hits
     fast[0] = true;
     fast[1] = false;
   
-    size_t* flag = (size_t*)malloc(sizeof(size_t)*cells_.size());
+    vector<unsigned int> flag;
+    {
+      unsigned int tmp = 0;
+      flag.assign(cells_.size(), tmp);
+    }
+
+    /** 2012-03-26 FM : using a 'flags' map keyed with cell IDs would be saner than indexing 
+     * the 'flag' vector with cell IDs because the last method forces cells' IDs to
+     * range *EXACTLY* from 0 to N-1.
+     */
+    bool use_flag_map = false; // not used for now (was used for tracking memory leak during Channel port)
+    std::map<int,unsigned int > flags;
+
+    if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: Flag size =" << flag.size () << std::endl;
+    // 2012-03-26 FM: remove C style
+    //size_t* flag = (size_t*)m alloc(sizeof(size_t)*cells_.size());
     for(size_t ip=0; ip<2; ip++)  // loop on two sides of the foil
       {
         for(size_t iq=0; iq<2; iq++) // loop on fast and slow hits
           {
-
-
+            if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: ip=" << ip << " iq=" << iq << std::endl;
             for(size_t i=0; i<cells_.size(); i++)
-              flag[i] = 0;
-
-            for(vector<topology::cell>::iterator icell=cells_.begin(); icell!=cells_.end(); ++icell){
+              {
+                if (use_flag_map) 
+                  {
+                    flags[cells_[i].id()] = 0;
+                  }
+                else
+                  {
+                    flag.at(i) = 0;
+                  }
+              }
+            
+            for(vector<topology::cell>::const_iterator icell=cells_.begin(); icell!=cells_.end(); ++icell){
+              if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: cell loop..." << std::endl;
               // pick a cell c that was never added
-              topology::cell c = *icell;
-              if( cell_side(c) != side[ip] ) continue;
+              const topology::cell & c = *icell;
+              if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: pick a cell done..." << std::endl;
+              if( (cell_side(c) * side[ip]) < 0) continue;
               if( c.fast() != fast[iq] ) continue;
-              if( flag[c.id()] == 1 ) continue;
-              flag[c.id()] = 1;
-
+              if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: ====> cell ID = "<<  c.id() << std::endl;
+              if (use_flag_map) 
+                {
+                  if( flags[c.id()] == 1 ) continue;
+                  flags[c.id()] = 1;
+                }
+              else
+                {
+                  if( flag.at (c.id()) == 1 ) continue;
+                  flag[c.id()] = 1;
+                }
+              if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: flag done..." << std::endl;
+              
               // cell c will form a new cluster, i.e. a new list of nodes
               topology::cluster cluster_connected_to_c;
+              if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: cluster_connected create..." << std::endl;
               std::vector<topology::node> nodes_connected_to_c;
+              if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: nodes_connected create..." << std::endl;
               m.message(" begin new cluster with cell ", c.id(), mybhep::VERBOSE);
 
               // let's get the list of all the cells that can be reached from c
               // without jumps
               std::vector<topology::cell> cells_connected_to_c;
+              if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: cells_connected create... : " << cells_connected_to_c.size () << std::endl;
               cells_connected_to_c.push_back(c);
+              if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: cell loop: cells_connected_to_c.size=" << cells_connected_to_c.size () << std::endl;
 
-              for( size_t i=0; i<cells_connected_to_c.size(); i++){ // loop on connected cells
+             for( size_t i=0; i<cells_connected_to_c.size(); i++){ // loop on connected cells
+                if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: connected cell loop..." << std::endl;
                 // take a connected cell (the first one is just c)
-                topology::cell cconn = cells_connected_to_c[i];
+                const topology::cell & cconn = cells_connected_to_c[i];
 
                 // the connected cell composes a new node
                 topology::node newnode(cconn, level, nsigma);
@@ -1377,10 +1420,10 @@ namespace CAT {
                 std::vector<topology::cell> cells_near_iconn = get_near_cells(cconn);
             
                 m.message(" cluster ", clusters_.size(), " starts with ", c.id(), " try to add cell ", cconn.id(), " with n of neighbours = ", cells_near_iconn.size(), mybhep::VERBOSE); 
-
-                for(vector<topology::cell>::iterator icnc=cells_near_iconn.begin(); icnc!=cells_near_iconn.end(); ++icnc){
-
-                  topology::cell cnc = *icnc;
+                for(vector<topology::cell>::const_iterator icnc=cells_near_iconn.begin(); icnc!=cells_near_iconn.end(); ++icnc){
+                  if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: couplet loop..." << std::endl;
+ 
+                  const topology::cell & cnc = *icnc;
 
                   if( !is_good_couplet(cconn, cnc, cells_near_iconn) ) continue;
 
@@ -1388,34 +1431,47 @@ namespace CAT {
                   cc.push_back(ccnc);
                   
                   m.message(" ... creating couplet ", cconn.id(), " -> ", cnc.id(), mybhep::VERBOSE); 
-
-                  if( flag[cnc.id()] != 1 ){
-                    flag[cnc.id()] = 1 ;
-                    cells_connected_to_c.push_back(cnc);
-                  }
-
+                  
+                  if (use_flag_map) 
+                    {
+                      if( flags[cnc.id()] != 1 ) 
+                        {
+                          flags[cnc.id()] = 1 ;
+                          cells_connected_to_c.push_back(cnc);
+                        }
+                    }
+                  else
+                    {                
+                      if( flag[cnc.id()] != 1 ){
+                        flag[cnc.id()] = 1 ;
+                        cells_connected_to_c.push_back(cnc);
+                      }
+                    }
+                  if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: end of couplet" << std::endl;
                 }
-
                 newnode.set_cc(cc);
                 newnode.calculate_triplets(Ratio, QuadrantAngle, TangentPhi, TangentTheta);
                 nodes_connected_to_c.push_back(newnode);
 
                 m.message(" cluster started with ", c.id(), " has been given cell ", cconn.id(), " with ", cc.size(), " couplets ", mybhep::VERBOSE); 
+                if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: end of connected cell loop..." << std::endl;
 
               }
-
+              
               cluster_connected_to_c.set_nodes(nodes_connected_to_c);
 
               clusters_.push_back(cluster_connected_to_c);
+              if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: end of cell loop." << std::endl;
             }
 
           }
       }
 
-    free(flag);
+    // 2012-03-26 FM: remove C style
+    //free(flag);
   
     setup_clusters();
-
+ 
     m.message(" there are ", clusters_.size(), " clusters of cells ", mybhep::VVERBOSE); 
   
     if( PrintMode )
@@ -1429,6 +1485,8 @@ namespace CAT {
     tracked_data_.set_clusters(clusters_);
 
     clock.stop(" clusterizer: clusterize ");
+
+    if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: Done." << std::endl;
 
     return;
   
@@ -1567,7 +1625,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  int clusterizer::cell_side( topology::cell c){
+  int clusterizer::cell_side( const topology::cell & c){
     //*************************************************************
   
     if( SuperNemo )
@@ -1587,7 +1645,7 @@ namespace CAT {
   }
 
 
-  size_t clusterizer::near_level( topology::cell c1, topology::cell c2 ){
+  size_t clusterizer::near_level( const topology::cell & c1, const topology::cell & c2 ){
 
     // returns 0 for far-away cell 
     // 1 for diagonal cells
@@ -1611,7 +1669,7 @@ namespace CAT {
       }
     else
       {
-        static double factor = cos(M_PI/8.); // 0.923879532511287 // octogonal factor = 0.92 
+        double factor = cos(M_PI/8.); // 0.923879532511287 // octogonal factor = 0.92 
         limit_side = factor*CellDistance;
         limit_diagonal = sqrt(2.)*factor*CellDistance; // new factor = 1.31 
       }
@@ -1632,7 +1690,7 @@ namespace CAT {
   }
 
 
-  std::vector<topology::cell> clusterizer::get_near_cells(topology::cell c){
+  std::vector<topology::cell> clusterizer::get_near_cells(const topology::cell & c){
 
     clock.start(" clusterizer: get near cells ","cumulative");
 
@@ -1720,7 +1778,7 @@ namespace CAT {
 
 
   //*************************************************************
-  int clusterizer::get_effective_layer(mybhep::hit hit){
+  int clusterizer::get_effective_layer(const mybhep::hit &hit){
     //************************************************************* 
 
     // calculates effective layer of a hit in calorimeter block on +-X wall
@@ -1773,7 +1831,7 @@ namespace CAT {
   }
 
   //*******************************************************************
-  topology::calorimeter_hit clusterizer::make_calo_hit(mybhep::hit ahit, size_t _id){
+  topology::calorimeter_hit clusterizer::make_calo_hit(const mybhep::hit &ahit, size_t _id){
     //*******************************************************************
 
     vector<double> block_pos;

@@ -82,6 +82,7 @@ namespace CAT {
   public:
     topology::cell & add_cell ();
     clusterizer_input_data ();
+    bool check () const;
 
   public:
     std::vector<topology::cell> cells;  
