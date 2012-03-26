@@ -906,7 +906,7 @@ namespace CAT {
           
             for(size_t j=0; j<NOfWires[i]; j++)
               {
-                double layerphi = 2.*acos(-1.)/NOfWires[i];
+                double layerphi = 2.*M_PI/NOfWires[i];
                 double ph = FirstWirePhi[i] + j*layerphi;
               
                 POINT point;
@@ -1517,7 +1517,7 @@ namespace CAT {
       topology::node n;
       double phi;
       if( iseq->largest_kink_node(n, phi)){
-      phi *= 180./acos(-1.);
+      phi *= 180./M_PI;
       clog << " largest kink on true sequence " << iseq - true_sequences.begin() << " is " << phi << " on cell " << n.c().id() << endl;
       hman.fill("largest_true_kink", phi);
       if( phi > 20.){
@@ -2100,7 +2100,7 @@ namespace CAT {
       size_t kinks_counter = 0;
       int layer = -100;
       if( iseq->largest_kink_node(n, phi)){
-        phi *= 180./acos(-1.);
+        phi *= 180./M_PI;
         if( phi > 20.){
           kinks_counter ++;
           all_kinks_counter ++;

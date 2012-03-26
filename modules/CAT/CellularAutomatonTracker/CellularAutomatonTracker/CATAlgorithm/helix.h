@@ -99,7 +99,7 @@ namespace CAT {
           a_out << indent << " one round: " << endl;
           for(size_t i=0; i<100; i++){
             experimental_double theta(i*3.1417/100., 0.);
-            a_out << indent << " .. theta " << theta.value()*180./acos(-1.) << " x " << position(theta).x().value() << " , z " << position(theta).z().value() << endl;
+            a_out << indent << " .. theta " << theta.value()*180./M_PI << " x " << position(theta).x().value() << " , z " << position(theta).z().value() << endl;
           }
           a_out << indent << " -------------- " << endl;
 
@@ -173,7 +173,7 @@ namespace CAT {
         experimental_double phi = experimental_vector(center_, ep).phi();
 
         if( phi.value() < 0. )
-          phi.set_value(phi.value() + 2.*acos(-1.));
+          phi.set_value(phi.value() + 2.*M_PI);
 
         return phi;
 

@@ -364,7 +364,7 @@ using namespace mybhep;
             clog << " p1: "; ca_.dump_point(i1->epb());
             clog << " p2 average point: "; cb_.dump_point(p);
             clog << " p3: "; cc_.dump_point(i2->epb());
-            clog << "    separation: "; (local_separation*180/acos(-1.)).dump();
+            clog << "    separation: "; (local_separation*180/M_PI).dump();
           }
 
           double chi2 = 0.;
@@ -377,12 +377,12 @@ using namespace mybhep;
               experimental_double theta_kink = newt1.kink_theta(newt2);
               
               if( print_level() > mybhep::VERBOSE ){
-                clog << " phi 1st tangent: "; (newt1.phi()*180./acos(-1.)).dump();
-                clog << " phi 2nd tangent: "; (newt2.phi()*180./acos(-1.)).dump();
-                clog << "    phi_kink " << phi_kink.value()*180/acos(-1.) << " +- " << phi_kink.error()*180/acos(-1.) << endl;
-                clog << " theta 1st tangent: "; (newt1.theta()*180./acos(-1.)).dump();
-                clog << " theta 2nd tangent: "; (newt2.theta()*180./acos(-1.)).dump();
-                clog << "    theta_kink " << theta_kink.value()*180/acos(-1.) << " +- " << theta_kink.error()*180/acos(-1.) << endl;
+                clog << " phi 1st tangent: "; (newt1.phi()*180./M_PI).dump();
+                clog << " phi 2nd tangent: "; (newt2.phi()*180./M_PI).dump();
+                clog << "    phi_kink " << phi_kink.value()*180/M_PI << " +- " << phi_kink.error()*180/M_PI << endl;
+                clog << " theta 1st tangent: "; (newt1.theta()*180./M_PI).dump();
+                clog << " theta 2nd tangent: "; (newt2.theta()*180./M_PI).dump();
+                clog << "    theta_kink " << theta_kink.value()*180/M_PI << " +- " << theta_kink.error()*180/M_PI << endl;
               }
               
               if(  (fabs(phi_kink.value()) <= phi_limit ) && (fabs((newt1.kink_theta(newt2)).value()) <= theta_limit ) )

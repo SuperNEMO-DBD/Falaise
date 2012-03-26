@@ -295,9 +295,9 @@ namespace CAT {
               if( print_level() >= mybhep::VVERBOSE ){
                 clog << appname_ << " adding joints " << endl;
                 for(std::vector<joint>::iterator ijoint = ccc.joints_.begin(); ijoint != ccc.joints_.end(); ++ ijoint )
-                  clog << " joint " << ijoint - ccc.joints_.begin() << " phia: " << experimental_vector(ccc.ca().ep(), ijoint->epa()).phi().value()*180./acos(-1.)
-                       << " phib: " << experimental_vector(ccc.cb().ep(), ijoint->epb()).phi().value()*180./acos(-1.)
-                       << " phic: " << experimental_vector(ccc.cc().ep(), ijoint->epc()).phi().value()*180./acos(-1.) << " chi2 " << ijoint->chi2() << endl;
+                  clog << " joint " << ijoint - ccc.joints_.begin() << " phia: " << experimental_vector(ccc.ca().ep(), ijoint->epa()).phi().value()*180./M_PI
+                       << " phib: " << experimental_vector(ccc.cb().ep(), ijoint->epb()).phi().value()*180./M_PI
+                       << " phic: " << experimental_vector(ccc.cc().ep(), ijoint->epc()).phi().value()*180./M_PI << " chi2 " << ijoint->chi2() << endl;
               }
               ccc_.push_back(ccc);
             }

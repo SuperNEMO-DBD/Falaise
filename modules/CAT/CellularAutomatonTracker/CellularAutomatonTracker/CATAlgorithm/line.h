@@ -172,9 +172,9 @@ namespace CAT {
         }
 
         if( print_level() > mybhep::VERBOSE ){
-          clog << appname_ << " calculate chi2: phi kink : "; (phi_kink*180./acos(-1.)).dump();
+          clog << appname_ << " calculate chi2: phi kink : "; (phi_kink*180./M_PI).dump();
           if( use_theta_kink ){
-            clog << " theta kink : "; (theta_kink*180./acos(-1.)).dump();
+            clog << " theta kink : "; (theta_kink*180./M_PI).dump();
           }
           clog << " chi2 " << result << endl;
         }

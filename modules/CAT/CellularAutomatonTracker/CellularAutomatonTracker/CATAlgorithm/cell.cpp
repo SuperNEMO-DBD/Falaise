@@ -1,4 +1,5 @@
 #include <CATAlgorithm/cell.h>
+#include <cmath>
 
 namespace CAT{
 namespace topology{
@@ -94,9 +95,9 @@ namespace topology{
     *angle = phi1 - phi2;
 
     if( print_level() >= mybhep::VVERBOSE ){
-      clog << " avereging phi1: "; (phi1*180./acos(-1.)).dump();
-      clog << " phi2: "; (phi2*180./acos(-1.)).dump();
-      clog << " phi_ave: "; (ave_phi*180./acos(-1.)).dump();
+      clog << " avereging phi1: "; (phi1*180./M_PI).dump();
+      clog << " phi2: "; (phi2*180./M_PI).dump();
+      clog << " phi_ave: "; (ave_phi*180./M_PI).dump();
       clog << " " << endl;
     }
 
@@ -120,7 +121,7 @@ namespace topology{
     clog << " x: "; (v.x()).dump();
     clog << " y: "; (v.y()).dump();
     clog << " z: "; (v.z()).dump();
-    clog << " phi: "; (v.phi()*180./acos(-1.)).dump();
+    clog << " phi: "; (v.phi()*180./M_PI).dump();
 
 
   }

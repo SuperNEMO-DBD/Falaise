@@ -96,10 +96,10 @@ int main (void)
 
   // Algorithm parameters :
   CAT_setup.SmallRadius   = 1.e-3 * CLHEP::mm;
-  CAT_setup.TangentPhi    = 20. *  CLHEP::degree;
-  CAT_setup.TangentTheta  = 160. *  CLHEP::degree;
+  CAT_setup.TangentPhi    = 20. * CLHEP::degree;
+  CAT_setup.TangentTheta  = 160. * CLHEP::degree;
   CAT_setup.SmallNumber   = 0.1 * CLHEP::mm;
-  CAT_setup.QuadrantAngle = 90. *  CLHEP::degree;
+  CAT_setup.QuadrantAngle = 90. * CLHEP::degree;
   CAT_setup.Ratio         = 10.;
   CAT_setup.CompatibilityDistance = 4.0 * CLHEP::mm;
   CAT_setup.MaxChi2       = 3.;

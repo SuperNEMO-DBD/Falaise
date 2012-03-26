@@ -29,5 +29,6 @@
 	- clusterizer: clusterize method
 	        - remove usage of malloc/free -> use std::vector::assign in place
 		- some optimizations ('const XXX &' argument passing and returned values)
+	- cmath : use M_PI in place of acos(-1) (faster)
         * Port to Channel
         * Pre-version 0.2.0
