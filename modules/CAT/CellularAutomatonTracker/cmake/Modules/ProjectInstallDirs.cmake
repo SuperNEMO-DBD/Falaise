@@ -18,6 +18,7 @@
 #  DATADIR          - read-only architecture-independent data (DATAROOTDIR)
 #  MANDIR           - man documentation (DATAROOTDIR/man)
 #  DOCDIR           - documentation root (DATAROOTDIR/doc/PROJECT_NAME)
+#  ETCDIR           - documentation root (etc)
 #
 # Each CMAKE_INSTALL_<dir> value may be passed to the DESTINATION options of
 # install() commands for the corresponding file type.  If the includer does
@@ -104,7 +105,7 @@ endif()
 
 if(NOT DEFINED CMAKE_INSTALL_LIBDIR)
   set(_LIBDIR_DEFAULT "lib")
-  # Override this default 'lib' with 'lib64' iff:
+  # Override this default 'lib' with 'lib64' if:
   #  - we are on Linux system but NOT cross-compiling
   #  - we are NOT on debian
   #  - we are on a 64 bits system
@@ -131,6 +132,9 @@ if(NOT DEFINED CMAKE_INSTALL_INCLUDEDIR)
   set(CMAKE_INSTALL_INCLUDEDIR "include" CACHE PATH "C header files (include)")
 endif()
 
+if(NOT DEFINED CMAKE_INSTALL_ETCDIR)
+  set(CMAKE_INSTALL_ETCDIR "etc" CACHE PATH "C header files (etc)")
+endif()
 
 if(NOT DEFINED CMAKE_INSTALL_DATAROOTDIR)
   set(CMAKE_INSTALL_DATAROOTDIR "share" CACHE PATH "read-only architecture-independent data root (share)")
@@ -166,6 +170,7 @@ mark_as_advanced(
   CMAKE_INSTALL_DATADIR
   CMAKE_INSTALL_MANDIR
   CMAKE_INSTALL_DOCDIR
+  CMAKE_INSTALL_ETCDIR
   )
 
 # Result directories
@@ -178,6 +183,7 @@ foreach(dir
     DATADIR
     MANDIR
     DOCDIR
+    ETCDIR
     )
   if(NOT IS_ABSOLUTE ${CMAKE_INSTALL_${dir}})
     set(CMAKE_INSTALL_FULL_${dir} "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_${dir}}")

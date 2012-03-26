@@ -51,6 +51,11 @@ set_project_version(${PROJECT_NAME} 0 2 0)
 # - Standard install locations
 include(ProjectInstallDirs)
 
+set ( _ld_library_path_env "LD_LIBRARY_PATH" )
+if ( CMAKE_SYSTEM_NAME MATCHES Darwin )
+  set ( _ld_library_path_env "DYLD_LIBRARY_PATH" )
+endif ( CMAKE_SYSTEM_NAME MATCHES Darwin )
+
 # - Packaging with CPack
 include(CellularAutomatonTrackerPackaging)
 
@@ -201,7 +206,6 @@ configure_file(${PROJECT_SOURCE_DIR}/cmake/Templates/CellularAutomatonTrackerCon
   @ONLY
   )
 
-
 #----------------------------------------------------------------------------
 # Usage from Install Tree
 #
@@ -258,6 +262,29 @@ install(FILES
   DESTINATION ${CellularAutomatonTracker_CMAKE_DIR}
   COMPONENT Development
   )
+
+# ---------------------------------------------------------------------------------------
+
+# - Bash setup script :
+configure_file ( "${PROJECT_SOURCE_DIR}/cmake/Templates/cellularautomatontracker_setup.sh.in"
+  "${PROJECT_BINARY_DIR}/cmake/cellularautomatontracker_setup.sh" @ONLY )
+
+install ( FILES ${PROJECT_BINARY_DIR}/cmake/cellularautomatontracker_setup.sh
+  DESTINATION ${CMAKE_INSTALL_ETCDIR}
+  PERMISSIONS OWNER_READ GROUP_READ WORLD_READ
+  )
+
+
+configure_file ( "${PROJECT_SOURCE_DIR}/cmake/Templates/cellularautomatontracker-config.in"
+  "${PROJECT_BINARY_DIR}/cmake/Templates/cellularautomatontracker-config" @ONLY )
+
+install ( FILES ${PROJECT_BINARY_DIR}/cmake/Templates/cellularautomatontracker-config
+  DESTINATION ${CMAKE_INSTALL_BINDIR}
+  PERMISSIONS OWNER_READ OWNER_EXECUTE 
+  GROUP_READ GROUP_EXECUTE 
+  WORLD_READ WORLD_EXECUTE
+  )
+
 
 # And we're done...
 
