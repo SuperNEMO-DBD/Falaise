@@ -24,10 +24,20 @@ project(CellularAutomatonTracker)
 #----------------------------------------------------------------------------
 # Prepend this project's custom module path(s) to CMAKE_MODULE_PATH
 #
+file(TO_CMAKE_PATH "$ENV{CMAKE_MODULE_PATH}" __env_cmake_module_path)
+
 set(CMAKE_MODULE_PATH 
   ${PROJECT_SOURCE_DIR}/cmake/Modules 
   ${CMAKE_MODULE_PATH}
   )
+
+if (DEFINED ADDITIONAL_CMAKE_MODULE_PATH AND NOT "x${ADDITIONAL_CMAKE_MODULE_PATH}" STREQUAL "x" )
+  message ( STATUS "${PROJECT_NAME}: Using additional CMAKE_MODULE_PATH : '${ADDITIONAL_CMAKE_MODULE_PATH}'" )
+  set(CMAKE_MODULE_PATH
+    ${ADDITIONAL_CMAKE_MODULE_PATH}
+    ${CMAKE_MODULE_PATH}
+    )
+endif ()
 
 #----------------------------------------------------------------------------
 # Set versioning for this project
