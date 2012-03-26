@@ -1,0 +1,11 @@
+/* -*- mode: c++ -*- */
+
+#ifndef _CAT_config_h_
+#define _CAT_config_h_ 1
+
+#define CAT_VERSION @CellularAutomatonTracker_VERSION@
+
+#cmakedefine01 CAT_WITH_DEV_UTILS
+#cmakedefine01 CAT_WITH_DEV_DISPLAY
+
+#endif // _CAT_config_h_ 

@@ -1,0 +1,17 @@
+README
+------
+
+Invoke Prob(Chi2/ndof) within ROOT and Boost.
+
+First setup ROOT and Boost on your system.
+
+>>>
+bash$ ./chi2.bash 
+bash$ ./chi2
+ROOT Prob = 0.301194
+Boost Prob = 0.301194
+<<<
+
+--
+F.Mauger
+2012-03-23
