@@ -63,6 +63,8 @@ endif()
 # Find needed and optional external packages
 #
 
+# Minimal build means we do not build the CATutils DLL nor special debug/development/display material
+# It ius the recommended way to buidl CAT for production (pipelines).
 option ( CAT_MINIMAL_BUILD  "Minimal build " ON)
 
 if (NOT CAT_MINIMAL_BUILD)
@@ -71,6 +73,7 @@ if (NOT CAT_MINIMAL_BUILD)
   set ( CAT_WITH_DEVEL_HISTOGRAMS ON )
 endif ()
 
+# Optional ROOT dependency:
 set (_cat_needs_root 0)
 if (CAT_WITH_DEVEL_DISPLAY OR CAT_WITH_DEVEL_HISTOGRAMS OR CAT_WITH_DEVEL_UTILS)
   set (CAT_WITH_DEVEL_ROOT 1)
@@ -94,8 +97,10 @@ if (_cat_needs_root EQUAL 1)
   find_package(ROOT 5.18.00 REQUIRED)
 endif ()
 
+# Always need CLHEP :
 find_package(CLHEP 2.1.0.1 REQUIRED)
 
+# Always need Boost :
 if ( NOT "$ENV{BOOST_ROOT}" STREQUAL "" )  
   message ( STATUS "Environment BOOST_ROOT exists : '$ENV{BOOST_ROOT}' ")
   set ( BOOST_ROOT $ENV{BOOST_ROOT} )
@@ -114,6 +119,7 @@ find_package(Boost 1.47.0 REQUIRED COMPONENTS ${_boost_requested_components} )
 if (NOT Boost_MATH_C99_FOUND)
   message ( FATAL_ERROR "Cannot find the Boost/Math library !" )
 endif ()
+
 #----------------------------------------------------------------------------
 # Use of ROOT means we should look up undefined symbols dynamically on Apple
 if(APPLE AND UNIX)
@@ -126,21 +132,12 @@ endif()
 # Add include directories needed by all
 #
 include_directories(CellularAutomatonTracker)
-# if (_cat_needs_root)
-# include_directories(${ROOT_INCLUDES})
-# endif ()
-# include_directories(${CLHEP_INCLUDE_DIRS})
-# include_directories(${Boost_INCLUDE_DIRS})
 
 #----------------------------------------------------------------------------
 # Add the subdirectories
 #
 # - Build the libraries first
 add_subdirectory(CellularAutomatonTracker)
-
-# - Examples?
-#add_subdirectory(Examples)
-
 
 #----------------------------------------------------------------------------
 # Configure files needed to use CellularAutomatonTracker
