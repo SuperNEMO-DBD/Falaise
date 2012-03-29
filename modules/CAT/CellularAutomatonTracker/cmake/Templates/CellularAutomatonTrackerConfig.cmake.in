@@ -79,12 +79,14 @@ if ( NOT DEFINED CellularAutomatonTracker_CONFIG_GUARD_COUNTER )
   #----------------------------------------------------------------------------
   # Now perform final configuration
   set(CellularAutomatonTracker_shared_FOUND TRUE)
+ 
+  set (CellularAutomatonTracker_LIBRARY_DIR @CMAKE_INSTALL_FULL_LIBDIR@ )
 
-  set (CellularAutomatonTracker_LIBRARIES @CMAKE_INSTALL_FULL_LIBDIR@;CATAlgorithm)
+  set (CellularAutomatonTracker_LIBRARIES CATAlgorithm)
   if (CAT_WITH_DEV_UTILS)
-    list(APPEND CellularAutomatonTracker_LIBRARIES @CMAKE_INSTALL_FULL_LIBDIR@;CATUtils)
+    list(APPEND CellularAutomatonTracker_LIBRARIES CATUtils)
   endif ()
-  list (APPEND CellularAutomatonTracker_LIBRARIES @CMAKE_INSTALL_FULL_LIBDIR@;mybhep)
+  list (APPEND CellularAutomatonTracker_LIBRARIES mybhep)
   list (APPEND CellularAutomatonTracker_LIBRARIES ${CellularAutomatonTracker_THIRD_PARTY_LIBRARIES} )
 
 
