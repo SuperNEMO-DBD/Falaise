@@ -43,7 +43,7 @@ endif ()
 # Set versioning for this project
 #
 include(ProjectVersion)
-set_project_version(${PROJECT_NAME} 0 2 0)
+set_project_version(${PROJECT_NAME} 0 3 0)
 
 #----------------------------------------------------------------------------
 # Include any modules providing top level functionality
