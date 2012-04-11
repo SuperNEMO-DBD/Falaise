@@ -81,13 +81,15 @@ if ( NOT DEFINED CellularAutomatonTracker_CONFIG_GUARD_COUNTER )
   set(CellularAutomatonTracker_shared_FOUND TRUE)
  
   set (CellularAutomatonTracker_LIBRARY_DIR @CMAKE_INSTALL_FULL_LIBDIR@ )
+ 
+  set (CellularAutomatonTracker_LIBRARY CATAlgorithm)
 
-  set (CellularAutomatonTracker_LIBRARIES CATAlgorithm)
-  if (CAT_WITH_DEV_UTILS)
-    list(APPEND CellularAutomatonTracker_LIBRARIES CATUtils)
-  endif ()
-  list (APPEND CellularAutomatonTracker_LIBRARIES mybhep)
-  list (APPEND CellularAutomatonTracker_LIBRARIES ${CellularAutomatonTracker_THIRD_PARTY_LIBRARIES} )
+  set (CellularAutomatonTracker_LIBRARIES ${CellularAutomatonTracker_LIBRARY} )
+  # if (CAT_WITH_DEV_UTILS)
+  #   list(APPEND CellularAutomatonTracker_LIBRARIES CATUtils)
+  # endif ()
+  # list (APPEND CellularAutomatonTracker_LIBRARIES mybhep)
+  # list (APPEND CellularAutomatonTracker_LIBRARIES ${CellularAutomatonTracker_THIRD_PARTY_LIBRARIES} )
 
 
 else ( NOT DEFINED CellularAutomatonTracker_CONFIG_GUARD_COUNTER )
