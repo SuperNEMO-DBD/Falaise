@@ -51,7 +51,6 @@ using namespace mybhep;
     //!Default constructor 
     logic_scenario()
     {
-      sequences_.clear();
       chi2_ = small_neg;
       ndof_ = default_integer;
       n_free_families_ = default_integer;

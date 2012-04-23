@@ -127,7 +127,6 @@ namespace CAT{
     //! set clusters
     void set_clusters(const std::vector<topology::cluster> & clusters)
     {
-      //clusters_.clear();
       clusters_ = clusters;
     }
 
@@ -140,7 +139,6 @@ namespace CAT{
     //! set calorimeter_hits                                                                                                      
     void set_calorimeter_hits(const std::vector<topology::calorimeter_hit> & calorimeter_hits)
     {
-      calorimeter_hits_.clear();
       calorimeter_hits_ = calorimeter_hits;
     }
 

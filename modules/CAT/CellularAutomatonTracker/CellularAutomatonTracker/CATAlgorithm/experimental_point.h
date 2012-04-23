@@ -43,10 +43,6 @@ namespace CAT{
       experimental_point()
       {
         appname_ = "experimental_point: ";
-        x_ = experimental_double();
-        y_ = experimental_double();
-        z_ = experimental_double();
-        radius_ = experimental_double();
       }
 
       //!Default destructor

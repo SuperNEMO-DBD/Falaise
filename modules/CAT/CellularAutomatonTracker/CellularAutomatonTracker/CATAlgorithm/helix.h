@@ -48,7 +48,6 @@ namespace CAT {
       helix(prlevel level=mybhep::NORMAL, double nsigma=10.)
       {
         appname_= "helix: ";
-        center_ = experimental_point();
         radius_ = experimental_double(small_neg, small_neg);
         pitch_ = experimental_double(small_neg, small_neg);
         set_print_level(level);

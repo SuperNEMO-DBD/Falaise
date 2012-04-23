@@ -52,11 +52,6 @@ namespace CAT {
       joint()
       {
         appname_= "joint: ";
-        epa_ = experimental_point();
-        epb_ = experimental_point();
-        epc_ = experimental_point();
-        kink_phi_ = experimental_double();
-        kink_theta_ = experimental_double();
         used_ = false;
         chi2_ = 0.;
       }

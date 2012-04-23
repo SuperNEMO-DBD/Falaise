@@ -67,12 +67,6 @@ namespace CAT{
       tracked_data()
       {
         appname_= "tracked_data: ";
-        //cells_.clear();
-        //calos_.clear();
-        //clusters_.clear();
-        //scenarios_.clear();
-        //true_sequences_.clear();
-        //nemo_sequences_.clear();
         selected_ = true;
         skipped_ = false;
       }

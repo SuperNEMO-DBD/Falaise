@@ -14,8 +14,6 @@ namespace CAT {
     level = mybhep::NORMAL;
     m = mybhep::messenger(level);
     num_blocks = -1;
-    planes_per_block.clear ();
-    gaps_Z.clear ();
     GG_CELL_pitch = std::numeric_limits<double>::quiet_NaN ();
     GG_GRND_diam = std::numeric_limits<double>::quiet_NaN ();
     GG_CELL_diam = std::numeric_limits<double>::quiet_NaN ();
@@ -50,16 +48,12 @@ namespace CAT {
     N3_MC = false;
     MaxTime = std::numeric_limits<double>::quiet_NaN ();
     doDriftWires = true;
-    DriftWires.clear ();
     eman = 0;
-    _moduleNR.clear ();
     _MaxBlockSize = -1;
-    hfile.clear ();
 
     nevent = 0;
     InitialEvents = 0;
     SkippedEvents = 0;
-    run_list.clear ();
     run_time = std::numeric_limits<double>::quiet_NaN ();
     first_event=true;
     return;

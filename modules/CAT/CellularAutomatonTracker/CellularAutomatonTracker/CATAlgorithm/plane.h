@@ -39,7 +39,6 @@ using namespace mybhep;
     plane(prlevel level=mybhep::NORMAL, double nsigma=10.)
     {
       appname_= "plane: ";
-      center_ = experimental_point();
       sizes_ = experimental_vector(small_neg,small_neg,small_neg,
                                    small_neg, small_neg, small_neg);
       norm_ = experimental_vector(small_neg,small_neg,small_neg,

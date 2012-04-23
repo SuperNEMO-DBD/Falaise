@@ -41,8 +41,6 @@ namespace CAT {
       line(prlevel level=mybhep::NORMAL, double nsigma=10.)
       {
         appname_= "line: ";
-        epa_ = experimental_point();
-        epb_ = experimental_point();
         forward_axis_ = experimental_vector(small_neg,small_neg,small_neg,
                                             small_neg, small_neg, small_neg);
         used_ = false;

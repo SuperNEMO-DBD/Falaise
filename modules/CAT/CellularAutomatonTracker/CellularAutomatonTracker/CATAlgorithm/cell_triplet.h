@@ -61,14 +61,8 @@ using namespace mybhep;
     cell_triplet()
     {
       appname_= "cell_triplet: ";
-      ca_ = cell();
-      cb_ = cell();
-      cc_ = cell();
-      joints_.clear();
       free_ = false;
       begun_ = false;
-      chi2s_.clear();
-      probs_.clear();
     }
 
     //!Default destructor
@@ -77,13 +71,8 @@ using namespace mybhep;
     //! constructor
     cell_triplet(cell_couplet cca, cell_couplet ccb){
       appname_= "cell_triplet: ";
-      ca_ = cca.cb();
-      cb_ = cca.ca();
-      cc_ = ccb.cb();
       free_ = false;
       begun_ = false;
-      chi2s_.clear();
-      probs_.clear();
     }
 
     //! constructor
