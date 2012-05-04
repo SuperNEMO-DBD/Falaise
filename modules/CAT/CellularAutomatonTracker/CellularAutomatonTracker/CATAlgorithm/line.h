@@ -1,28 +1,30 @@
 /* -*- mode: c++ -*- */
-#ifndef __CATAlgorithm__ILINE
-#define __CATAlgorithm__ILINE
+
+#ifndef __CATAlgorithm__line_h
+#define __CATAlgorithm__line_h 1
+
 #include <iostream>
 #include <cmath>
 #include <mybhep/error.h>
 #include <mybhep/utilities.h>
 #include <mybhep/point.h>
-#include <CATAlgorithm/experimental_point.h>
+#include <CATAlgorithm/tracking_object.h>
+#include <CATAlgorithm/experimental_vector.h>
 #include <CATAlgorithm/experimental_vector.h>
 
 namespace CAT {
 
   namespace topology{
 
-    using namespace std;
     using namespace mybhep;
 
     class line : public tracking_object {
 
       // a line is composed of two experimental points
 
-
     private:
-      string appname_;
+
+      std::string appname_;
 
       // first experimental point
       experimental_point epa_; 
@@ -38,181 +40,68 @@ namespace CAT {
 
     public:   
       //!Default constructor 
-      line(prlevel level=mybhep::NORMAL, double nsigma=10.)
-      {
-        appname_= "line: ";
-        forward_axis_ = experimental_vector(small_neg,small_neg,small_neg,
-                                            small_neg, small_neg, small_neg);
-        used_ = false;
-        set_print_level(level);
-        set_nsigma(nsigma);
-      }
+      line(prlevel level=mybhep::NORMAL, double nsigma=10.);
 
       //!Default destructor
-      virtual ~line(){};
+      virtual ~line();
 
       //! constructor
-      line(experimental_point epa, experimental_point epb, prlevel level=mybhep::NORMAL, double nsigma=10.){
-        set_print_level(level);
-        set_nsigma(nsigma);
-        appname_= "line: ";
-        epa_ = epa;
-        epb_ = epb;
-        set_forward_axis();
-        used_ = false;
-      }
+      line(const experimental_point & epa, const experimental_point & epb, prlevel level=mybhep::NORMAL, double nsigma=10.);
 
       /*** dump ***/
-      virtual void dump (ostream & a_out         = clog,
-                         const string & a_title  = "",
-                         const string & a_indent = "",
-                         bool a_inherit          = false) const{
-        {
-          string indent;
-          if (! a_indent.empty ()) indent = a_indent;
-          if (! a_title.empty ())
-            {
-              a_out << indent << a_title << endl;
-            }
-
-          a_out << indent << appname_ << " -------------- " << endl;
-          a_out << indent << " used: " << used() << endl;
-          a_out << indent << " first point " << endl;
-          this->epa().dump(a_out, "", indent + "    ");
-          a_out << indent << " second point " << endl;
-          this->epb().dump(a_out, "", indent + "    ");
-          a_out << indent << " forward axis " << endl;
-          this->forward_axis().dump(a_out, "", indent + "    ");
-          a_out << indent << " -------------- " << endl;
-
-          return;
-        }
-      }
-
-
+      virtual void dump (std::ostream & a_out         = std::clog,
+                         const std::string & a_title  = "",
+                         const std::string & a_indent = "",
+                         bool a_inherit          = false) const;
 
       //! set experimental_points
-      void set(experimental_point epa, experimental_point epb)
-      {
-        epa_ = epa;
-        epb_ = epb;
-        set_forward_axis();
-      }
+      void set(const experimental_point & epa, const experimental_point & epb);
 
 
       //! set first experimental_point
-      void set_epa(experimental_point epa)
-      {
-        epa_ = epa;
-      }
+      void set_epa(const experimental_point & epa);
 
       //! set second experimental_point
-      void set_epb(experimental_point epb)
-      {
-        epb_ = epb;
-      }
+      void set_epb(const experimental_point & epb);
 
       //! set used
-      void set_used(bool used)
-      {
-        used_ = used;
-      }
+      void set_used(bool used);
 
       //! get experimental_point a
-      const experimental_point& epa()const
-      {
-        return epa_;
-      }      
+      const experimental_point& epa()const;
 
       //! get experimental_point b
-      const experimental_point& epb()const
-      {
-        return epb_;
-      }      
+      const experimental_point& epb()const;
 
       //! get forward axis
-      const experimental_vector& forward_axis()const
-      {
-        return forward_axis_;
-      }
+      const experimental_vector& forward_axis()const;
 
       //! get used
-      const bool& used() const
-      {
-        return used_;
-      }
+      bool used() const;
 
-      experimental_double phi(){
-        return forward_axis_.phi();
-      }
+      experimental_double phi();
     
-      experimental_double theta(){
-        return forward_axis_.theta();
-      }
+      experimental_double theta();
 
-      experimental_double kink_phi(line l){
-        return forward_axis_.kink_phi(l.forward_axis());
-      }
+      experimental_double kink_phi(const line & l);
 
-      experimental_double kink_theta(line l){
-        return forward_axis_.kink_theta(l.forward_axis());
-      }
-
-      double chi2(line l, bool use_theta_kink){
-
-        experimental_double phi_kink = kink_phi(l);
-        experimental_double theta_kink = kink_theta(l);
-
-        double result = square(phi_kink.value()/phi_kink.error()) ;
-
-        if( use_theta_kink ){
-          result += square(theta_kink.value()/theta_kink.error());
-        }
-
-        if( print_level() > mybhep::VERBOSE ){
-          clog << appname_ << " calculate chi2: phi kink : "; (phi_kink*180./M_PI).dump();
-          if( use_theta_kink ){
-            clog << " theta kink : "; (theta_kink*180./M_PI).dump();
-          }
-          clog << " chi2 " << result << endl;
-        }
-
-        return result;
-      }
-
-
-      void set_a_forward_axis(experimental_vector v){
+      experimental_double kink_theta(const line & l);
       
-        forward_axis_ = v;
 
-        return;
-      }
-
-      line invert(){
-        line inverted(print_level(), nsigma());
-        inverted.set_epa(epb());
-        inverted.set_epb(epa());
-        inverted.set_used(used());
-        experimental_vector O(0.,0.,0.,0.,0.,0.);
-        inverted.set_a_forward_axis(O-forward_axis());
-        return inverted;
-
-      }
+      double chi2(const line & l, bool use_theta_kink);
 
 
+      void set_a_forward_axis(const experimental_vector &  v);
+
+      line invert();
+      
+      
     private:
-
-      void set_forward_axis(){
       
-        forward_axis_.set(epa(), epb());
-
-        return;
-      }
-
-
-
+      void set_forward_axis();
+      
     };
   }
 }
 
-#endif
+#endif // __CATAlgorithm__line_h

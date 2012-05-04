@@ -1,6 +1,7 @@
 /* -*- mode: c++ -*- */
-#ifndef __CATAlgorithm__ICALOHIT
-#define __CATAlgorithm__ICALOHIT
+#ifndef __CATAlgorithm__calorimeter_hit_h
+#define __CATAlgorithm__calorimeter_hit_h 1
+
 #include <iostream>
 #include <cmath>
 #include <mybhep/error.h>
@@ -16,8 +17,7 @@
 namespace CAT {
   namespace topology {
 
-    using namespace std;
-    using namespace mybhep;
+    // using namespace mybhep;
 
     class calorimeter_hit : public tracking_object {
 
@@ -25,7 +25,8 @@ namespace CAT {
       // energy and time
 
     private:
-      string appname_;
+
+      std::string appname_;
 
       // energy
       experimental_double e_;
@@ -43,132 +44,60 @@ namespace CAT {
       double layer_;
 
       //!Default constructor 
-      calorimeter_hit(prlevel level=mybhep::NORMAL, double nsigma=10.)
-      {
-        appname_= "calorimeter_hit: ";
-        e_ = experimental_double(small_neg, small_neg);
-        t_ = experimental_double(small_neg, small_neg);
-        set_print_level(level);
-        set_nsigma(nsigma);
-        id_ = default_integer;
-        layer_ = small_neg;
-      }
+      calorimeter_hit(prlevel level=mybhep::NORMAL, double nsigma=10.);
 
       //!Default destructor
-      virtual ~calorimeter_hit(){};
+      virtual ~calorimeter_hit();
 
       //! constructor
-      calorimeter_hit(plane pl, experimental_double e, experimental_double t, size_t id, double layer, prlevel level=mybhep::NORMAL, double nsigma=10.){
-        set_print_level(level);
-        set_nsigma(nsigma);
-        appname_= "calorimeter_hit: ";
-        pl_ = pl;
-        e_ = e;
-        t_ = t;
-        id_ = id;
-        layer_ = layer;
-      }
+      calorimeter_hit(const plane & pl, 
+                      const experimental_double & e, 
+                      const experimental_double & t, 
+                      size_t id, 
+                      double layer, 
+                      prlevel level=mybhep::NORMAL, 
+                      double nsigma=10.);
 
       /*** dump ***/
-      void dump (ostream & a_out         = clog,
-                 const string & a_title  = "",
-                 const string & a_indent = "",
-                 bool a_inherit          = false)const{
-        {
-          string indent;
-          if (! a_indent.empty ()) indent = a_indent;
-          if (! a_title.empty ())
-            {
-              a_out << indent << a_title << endl;
-            }
-
-          a_out << indent << appname_ << " -------------- " << endl;
-          a_out << indent << " id " << id() << " plane " << endl;
-          pl_.dump(a_out, "", indent + "    ");
-          a_out << indent << " energy "; this->e().dump(a_out, "", indent + "    ");
-          a_out << indent << " time "; this->t().dump(a_out, "", indent + "    ");
-          a_out << indent << " -------------- " << endl;
-
-          return;
-        }
-      }
-
-
-
+      void dump (std::ostream & a_out         = std::clog,
+                 const std::string & a_title  = "",
+                 const std::string & a_indent = "",
+                 bool a_inherit               = false) const;
       //! set 
-      void set(plane pl, experimental_double e, experimental_double t, size_t id)
-      {
-        pl_ = pl;
-        e_ = e;
-        t_ = t;
-        id_ = id;
-      }
-
+      void set(const plane & pl, const experimental_double & e, const experimental_double & t, size_t id);
 
       //! set plane
-      void set_pl(plane pl)
-      {
-        pl_ = pl;
-      }
+      void set_pl(const plane & pl);
 
       //! set energy
-      void set_e(experimental_double e)
-      {
-        e_ = e;
-      }
+      void set_e(const experimental_double & e);
 
       //! set time
-      void set_t(experimental_double t)
-      {
-        t_ = t;
-      }
+      void set_t(const experimental_double & t);
 
       //! set layer
-      void set_layer(double layer)
-      {
-        layer_ = layer;
-      }
+      void set_layer(double layer);
 
       //! get plane
-      const plane & pl() const
-      {
-        return pl_;
-      }      
+      const plane & pl() const;
 
       //! get energy
-      const experimental_double& e()const
-      {
-        return e_;
-      }      
+      const experimental_double& e()const;
 
       //! get time
-      const experimental_double& t()const
-      {
-        return t_;
-      }      
+      const experimental_double& t()const;
 
       //! get id
-      const size_t& id()const
-      {
-        return id_;
-      }      
+      size_t id()const;
 
       //!get layer
-      const double& layer() const {return layer_;}
+      double layer() const;
 
-      bool same_calo(calorimeter_hit c)const{
-
-        double dist = (experimental_vector(pl().center(), c.pl().center())).length().value();
-
-        if( dist < 0.1 ) 
-          return true;
-
-        return false;
-      }
-
+      bool same_calo(const calorimeter_hit & c) const;
 
     };
+
   }
 }
 
-#endif
+#endif // __CATAlgorithm__calorimeter_hit_h

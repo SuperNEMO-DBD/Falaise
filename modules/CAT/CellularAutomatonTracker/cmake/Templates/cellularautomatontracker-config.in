@@ -35,6 +35,8 @@ cellularautomatontracker_cmake_config_dir="@CMAKE_INSTALL_PREFIX@/@CellularAutom
 
 cellularautomatontracker_version=@CellularAutomatonTracker_VERSION@
 
+cellularautomatontracker_devel_utils=@CAT_WITH_DEVEL_UTILS@
+
 option="$1"
 shift 1
 option2="$1"
@@ -144,14 +146,18 @@ if [ "x${option}" = "x--libdir" ]; then
     my_exit 0
 fi
 
+link_cat_utils=""
+if [ ${cellularautomatontracker_devel_utils} -eq 1 ]; then
+    link_cat_utils=-lCATUtils
+fi
 if [ "x${option}" = "x--libs" ]; then
-    echo -n "-L${cellularautomatontracker_lib_dir} -lCATAlgorithm -lmybhep "
+    echo -n "-L${cellularautomatontracker_lib_dir} ${link_cat_utils} -lCATAlgorithm -lmybhep "
     echo
     my_exit 0
 fi
 
 if [ "x${option}" = "x--ldflags" ]; then
-    echo -n "-L${cellularautomatontracker_lib_dir} -lCATAlgorithm -lmybhep "
+    echo -n "-L${cellularautomatontracker_lib_dir} ${link_cat_utils} -lCATAlgorithm -lmybhep "
     echo -n "$(boost-config --ldflags math) "
     echo -n "$(clhep-config --libs) "
     my_exit 0

@@ -184,7 +184,7 @@ export(TARGETS
   FILE ${PROJECT_BINARY_DIR}/CellularAutomatonTrackerLibraryDepends.cmake
   )
 
-if(CAT_WITH_DEV_UTILS)
+if(CAT_WITH_DEVEL_UTILS)
   export(TARGETS 
     CATUtils APPEND
     FILE ${PROJECT_BINARY_DIR}/CellularAutomatonTrackerLibraryDepends.cmake

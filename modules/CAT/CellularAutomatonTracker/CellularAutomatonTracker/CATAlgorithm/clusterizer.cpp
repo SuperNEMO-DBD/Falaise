@@ -4,6 +4,7 @@
 #include <limits>
 #include <cmath>
 #include <map>
+#include <mybhep/utilities.h>
 
 namespace CAT {
   using namespace mybhep;

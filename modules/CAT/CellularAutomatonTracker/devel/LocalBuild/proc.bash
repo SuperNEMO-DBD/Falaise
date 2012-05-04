@@ -20,6 +20,7 @@ done
 if [ ${rebuild} -eq 1 ]; then
     if [ -d __build ]; then
 	rm -fr __build
+	rm -fr __install
     fi
 fi
 

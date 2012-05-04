@@ -3,6 +3,86 @@
 namespace CAT{
   namespace topology{
 
+    cell_couplet::cell_couplet()
+    {
+      appname_= "cell_couplet: ";
+      forward_axis_ = experimental_vector(small_neg,small_neg,small_neg,
+                                          small_neg, small_neg, small_neg);
+      transverse_axis_ = experimental_vector(small_neg,small_neg,small_neg,
+                                             small_neg, small_neg, small_neg);
+      forward_axis_calculated_ = false;
+      transverse_axis_calculated_ = false;
+      free_ = false;
+      begun_ = false;
+      return;
+    }
+
+    //!Default destructor
+    cell_couplet::~cell_couplet()
+    {
+      return;
+    }
+
+    //! constructor
+    cell_couplet::cell_couplet(const cell &ca,const cell &cb,const std::vector<line> &tangents){
+      appname_= "cell_couplet: ";
+      ca_ = ca;
+      cb_ = cb;
+      for(vector<line>::const_iterator itang=tangents.begin(); itang!=tangents.end(); ++itang)
+        {
+          tangents_.push_back(*itang);
+        }
+      forward_axis_calculated_ = false;
+      transverse_axis_calculated_ = false;
+      set_forward_axis();
+      set_transverse_axis();
+      free_ = false;
+      begun_ = false;
+      return;
+    }
+
+    cell_couplet::cell_couplet(const cell &ca, const cell &cb, prlevel level, double nsigma){
+      set_print_level(level);
+      set_nsigma(nsigma);
+      appname_= "cell_couplet: ";
+      ca_ = ca;
+      cb_ = cb;
+      forward_axis_calculated_ = false;
+      transverse_axis_calculated_ = false;
+      set_forward_axis();
+      set_transverse_axis();
+      obtain_tangents();
+      free_ = false;
+      begun_ = false;
+    }
+
+    //! constructor
+    cell_couplet::cell_couplet(const cell &ca, const cell &cb, const string &just, prlevel level, double nsigma){
+      set_print_level(level);
+      set_nsigma(nsigma);
+      appname_= "cell_couplet: ";
+      ca_ = ca;
+      cb_ = cb;
+      forward_axis_calculated_ = false;
+      transverse_axis_calculated_ = false;
+      free_ = false;
+      begun_ = false;
+    }
+
+    //! constructor from bhep hit
+    cell_couplet::cell_couplet(const mybhep::hit &hita, const mybhep::hit &hitb){
+      appname_= "cell_couplet: ";
+      ca_ = cell(hita);
+      cb_ = cell(hitb);
+      forward_axis_calculated_ = false;
+      transverse_axis_calculated_ = false;
+      set_forward_axis();
+      set_transverse_axis();
+      obtain_tangents();
+      free_ = false;
+      begun_ = false;
+    }
+
     void cell_couplet::set_forward_axis(){
 
       if( forward_axis_calculated_ )
@@ -190,7 +270,7 @@ namespace CAT{
     }
 
 
-    void cell_couplet::obtain_tangents_between_circle_and_point(cell c, experimental_point ep){
+    void cell_couplet::obtain_tangents_between_circle_and_point(const cell & c, const experimental_point & ep){
 
       experimental_double cos;
 
@@ -218,7 +298,7 @@ namespace CAT{
     }
 
 
-    void cell_couplet::obtain_tangents_between_point_and_circle(experimental_point ep, cell c){
+    void cell_couplet::obtain_tangents_between_point_and_circle(const experimental_point & ep, const cell & c){
 
       experimental_double cos = - c.r()/distance_hor();
 
@@ -243,8 +323,161 @@ namespace CAT{
 
     }
 
+    /*** dump ***/
+    void cell_couplet::dump (ostream & a_out,
+                             const string & a_title,
+                             const string & a_indent,
+                             bool a_inherit ) const{
+      string indent;
+      if (! a_indent.empty ()) indent = a_indent;
+      if (! a_title.empty ())
+        {
+          a_out << indent << a_title << endl;
+        }
 
-    void cell_couplet::obtain_tangents_between_point_and_point(experimental_point epa, experimental_point epb){
+      a_out << indent << appname_ << " ------------------- " << endl;
+      a_out << indent  << " free: " << free() << " begun: " << begun() << endl;
+      a_out << indent  << " first cell " << endl;
+      this->ca().dump(a_out,"",indent + "   ");
+      a_out << indent << " second cell " << endl;
+      this->cb().dump(a_out, "",indent + "   ");
+      a_out << indent << " tangents: " << tangents().size() << endl;
+      for(vector<line>::const_iterator itang=tangents_.begin(); itang!=tangents_.end(); ++itang)
+        itang->dump(a_out,"",indent + "   ");
+      a_out << indent << " forward axis " << endl;
+      this->forward_axis().dump(a_out,"",indent + "   ");
+      a_out << indent << " transverse axis " << endl;
+      this->transverse_axis().dump(a_out,"",indent + "   ");
+      a_out << indent  << " ------------------- " << endl;
+ 
+      return;
+    }
+
+    //! set cells and tangents
+    void cell_couplet::set(const cell &ca, const cell &cb, const std::vector<line> &tangents){
+      ca_ = ca;
+      cb_ = cb;
+      for(vector<line>::const_iterator itang=tangents.begin(); itang!=tangents.end(); ++itang)
+        tangents_.push_back(*itang);
+      set_forward_axis();
+      set_transverse_axis();
+    }
+
+    //! set cells
+    void cell_couplet::set(const cell &ca, const cell &cb){
+      ca_ = ca;
+      cb_ = cb;
+      obtain_tangents();
+    }
+
+    //! set free level
+    void cell_couplet::set_free(bool free){
+      free_ = free;
+    }
+
+    //! set begun level
+    void cell_couplet::set_begun(bool begun){
+      begun_ = begun;
+    }
+
+    //! set tangents
+    void cell_couplet::set_tangents( const std::vector<line> &tangents)
+    {
+      tangents_ = tangents;
+    }      
+
+    //! set fwd axis
+    void cell_couplet::set_a_forward_axis(const experimental_vector &v)
+    {
+      forward_axis_ = v;
+    }      
+
+    //! set trv axis
+    void cell_couplet::set_a_transverse_axis(const experimental_vector &v)
+    {
+      transverse_axis_ = v;
+    }      
+
+    //! set distance
+    void cell_couplet::set_a_distance(const experimental_double &d)
+    {
+      distance_ = d;
+    }      
+
+    //! set hor distance
+    void cell_couplet::set_a_hor_distance(const experimental_double &d)
+    {
+      distance_hor_ = d;
+    }      
+
+
+
+
+
+
+
+    //! get first cell
+    const cell& cell_couplet::ca()const
+    {
+      return ca_;
+    }      
+
+    //! get second cell
+    const cell& cell_couplet::cb()const
+    {
+      return cb_;
+    }      
+
+    //! get tangents
+    const std::vector<line>& cell_couplet::tangents()const
+    {
+      return tangents_;
+    }      
+
+    const experimental_vector& cell_couplet::forward_axis()const
+    {
+      return forward_axis_;
+    }      
+
+    //! get transverse axis
+    const experimental_vector& cell_couplet::transverse_axis()const
+    {
+      return transverse_axis_;
+    }      
+
+    //! get distance
+    const experimental_double& cell_couplet::distance()const
+    {
+      return distance_;
+    }      
+
+    //! get horizontal distance
+    const experimental_double& cell_couplet::distance_hor()const
+    {
+      return distance_hor_;
+    }      
+
+    //! get free level
+    const bool cell_couplet::free()const{
+      return free_;
+    }
+
+    //! get begun level
+    const bool cell_couplet::begun()const{
+      return begun_;
+    }
+
+    size_t cell_couplet::iteration()const
+    {
+      for(vector<line>::const_iterator itang=tangents_.begin(); itang!=tangents_.end(); ++itang)
+        if( ! itang->used() )
+          return itang - tangents_.begin();
+
+      return tangents().size();
+    }
+
+    void cell_couplet::obtain_tangents_between_point_and_point(const experimental_point & epa, 
+                                                               const experimental_point & epb){
 
       line l(epa, epb, prlevel(), nsigma());
     
@@ -254,7 +487,54 @@ namespace CAT{
 
     }
 
+    cell_couplet cell_couplet::invert(){
 
+      //      clock.start(" cell couplet: invert ","cumulative");
+
+
+      cell_couplet inverted;
+      inverted.set(cb(),ca());
+      inverted.set_free(free());
+      inverted.set_begun(begun());
+
+      std::vector<line> inverted_lines;
+      for(vector<line>::iterator itang=tangents_.begin(); itang!=tangents_.end(); ++itang){
+        inverted_lines.push_back(itang->invert());
+      }
+      inverted.set_tangents( inverted_lines );
+
+      experimental_vector O(0.,0.,0.,0.,0.,0.);
+      inverted.set_a_forward_axis(O-forward_axis());      
+      inverted.set_a_transverse_axis(O-transverse_axis());      
+      inverted.set_a_distance(-distance());
+      inverted.set_a_hor_distance(-distance_hor());
+
+      //      clock.stop(" cell couplet: invert ");
+
+      return inverted;
+    }
+
+    void cell_couplet::set_all_used(){
+      //      clock.start(" cell couplet: set all used ","cumulative");
+      for(std::vector<line>::iterator itang=tangents_.begin(); itang != tangents_.end(); ++itang)
+        itang->set_used(true);
+
+      set_begun(true);
+      //      clock.stop(" cell couplet: set all used ");
+      return;
+    }
+
+    bool cell_couplet::intersecting()const{
+
+      return ca_.intersect(cb_);
+    }
+
+
+    bool operator==(const cell_couplet& left,
+                    const cell_couplet& right)
+    {
+      return left.cb().id() == right.cb().id();
+    }
 
   }
 }

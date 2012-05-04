@@ -1,97 +1,58 @@
 /* -*- mode: c++ -*- */
-#ifndef __CATAlgorithm__ICLOCKABLE
-#define __CATAlgorithm__ICLOCKABLE
+
+#ifndef __CATAlgorithm__clockable_h
+#define __CATAlgorithm__clockable_h 1
+
 #include <iostream>
-#include <cmath>
+#include <string>
 #include <sys/time.h> 
-#include <vector>
-#include <algorithm>
-#include <functional>
 
 namespace CAT {
-  using namespace std;
-  using namespace mybhep;
 
   class clockable {
 
     // a clockable is a time counter
-
-
-  public:
-
-    static bool compare(const clockable& c1, const clockable& c2) {
-      return c1.time_ > c2.time_; //notice that you have private access rights, which can be useful.
-    };
-
 
     struct timeval tv_begin_, tv_end_;
     struct timezone tz_begin_, tz_end_;
     
   public:
 
-    string name_;
+    std::string name_;
 
     // time in milliseconds
     double time_;
     
     //!Default constructor
-    clockable(string name="default")
-    {
-      name_ = name;
-      time_ = 0.;
-    }
+    clockable(std::string name="default");
 
     //!Default destructor
-    virtual ~clockable(){};
+    virtual ~clockable();
 
     virtual void dump (double max = 1.,
-                       ostream & a_out         = clog,
-                       const string & a_title  = "",
-                       const string & a_indent = "",
-                       bool a_inherit          = false) const{
-
-      a_out << " time of " << name_ << " : " << time_ << " ms (" << time_/max*100. << " \%)" << endl;
-
-    }
-
+                       std::ostream & a_out         = std::clog,
+                       const std::string & a_title  = "",
+                       const std::string & a_indent = "",
+                       bool a_inherit          = false) const;
 
     //! set name
-    void set_name(string name)
-    {
-      name_ = name;
-    }
+    void set_name(std::string name);
 
     //! get name
-    string name(){
-      return name_;
-    }
+    const std::string & name() const;
 
     //! read time
-    double read(){
-      stop();
-      tv_begin_ = tv_end_;
-      tz_begin_ = tz_end_;
-      return time_;
-    }
+    double read();
 
-    void start(){
-      gettimeofday(&tv_begin_, &tz_begin_);
-    }
+    void start();
 
-    void restart(){
-      time_ = 0.;
-      gettimeofday(&tv_begin_, &tz_begin_);
-    }
+    void restart();
 
+    void stop();
 
-    void stop(){
-      gettimeofday(&tv_end_, &tz_end_);
-      time_ += ((double)tv_end_.tv_sec-(double)tv_begin_.tv_sec)*1.e+3+((double)tv_end_.tv_usec-(double)tv_begin_.tv_usec)*1.e-3;
-    }
-
-
+    static bool compare(const clockable& c1, const clockable& c2);
 
   };
 }
 
-#endif
+#endif // __CATAlgorithm__clockable_h

@@ -1,6 +1,6 @@
 /* -*- mode: c++ -*- */
-#ifndef __CATAlgorithm__IJOINT
-#define __CATAlgorithm__IJOINT
+#ifndef __CATAlgorithm__joint_h
+#define __CATAlgorithm__joint_h 1
 #include <iostream>
 #include <cmath>
 #include <mybhep/error.h>
@@ -8,22 +8,21 @@
 #include <mybhep/point.h>
 #include <CATAlgorithm/experimental_point.h>
 #include <CATAlgorithm/experimental_vector.h>
+#include <CATAlgorithm/tracking_object.h>
 
 
 namespace CAT {
 
   namespace topology{
 
-    using namespace std;
     using namespace mybhep;
 
     class joint : public tracking_object{
 
       // a joint is composed of three experimental points
 
-
     private:
-      string appname_;
+      std::string appname_;
 
       // first experimental point
       experimental_point epa_; 
@@ -49,187 +48,78 @@ namespace CAT {
       double chi2_;
 
       //!Default constructor 
-      joint()
-      {
-        appname_= "joint: ";
-        used_ = false;
-        chi2_ = 0.;
-      }
+      joint();
 
       //!Default destructor
-      virtual ~joint(){};
+      virtual ~joint();
 
       //! constructor
-      joint(experimental_point epa, experimental_point epb, experimental_point epc, prlevel level=mybhep::NORMAL, double nsigma=10.){
-        set_print_level(level);
-        set_nsigma(nsigma);
-        appname_= "joint: ";
-        epa_ = epa;
-        epb_ = epb;
-        epc_ = epc;
-        calculate_kinks();
-        used_ = false;
-        chi2_ = 0.;
-      }
+      joint(experimental_point epa, experimental_point epb, experimental_point epc, prlevel level=mybhep::NORMAL, double nsigma=10.);
 
       /*** dump ***/
-      virtual void dump (ostream & a_out         = clog,
-                         const string & a_title  = "",
-                         const string & a_indent = "",
-                         bool a_inherit          = false) const{
-        {
-          string indent;
-          if (! a_indent.empty ()) indent = a_indent;
-          if (! a_title.empty ())
-            {
-              a_out << indent << a_title << endl;
-            }
-
-          a_out << indent << appname_ << " -------------- " << endl;
-          a_out << indent << " used: " << used() << " chi2 " << chi2() << endl;
-          a_out << indent << " first point " << endl;
-          this->epa().dump(a_out, "", indent + "    ");
-          a_out << indent << " second point " << endl;
-          this->epb().dump(a_out, "", indent + "    ");
-          a_out << indent << " third point " << endl;
-          this->epc().dump(a_out, "", indent + "    ");
-          a_out << indent << "phi : "; kink_phi().dump(); a_out << " " << endl;
-          a_out << indent << "theta : "; kink_theta().dump(); a_out << " " << endl;
-          a_out << indent << " -------------- " << endl;
-
-          return;
-        }
-      }
-
+      virtual void dump (std::ostream & a_out         = std::clog,
+                         const std::string & a_title  = "",
+                         const std::string & a_indent = "",
+                         bool a_inherit          = false) const;
+ 
 
 
       //! set experimental_points
-      void set(experimental_point epa, experimental_point epb, experimental_point epc)
-      {
-        epa_ = epa;
-        epb_ = epb;
-        epc_ = epc;
-        calculate_kinks();
-      }
+      void set(experimental_point epa, experimental_point epb, experimental_point epc);
 
 
       //! set first experimental_points
-      void set_epa(experimental_point epa)
-      {
-        epa_ = epa;
-      }
-
+      void set_epa(experimental_point epa);
+ 
       //! set second experimental_points
-      void set_epb(experimental_point epb)
-      {
-        epb_ = epb;
-      }
+      void set_epb(experimental_point epb);
 
       //! set third experimental_points
-      void set_epc(experimental_point epc)
-      {
-        epc_ = epc;
-      }
-
+      void set_epc(experimental_point epc);
+ 
       //! set kink phi
-      void set_kink_phi(experimental_double phi)
-      {
-        kink_phi_ = phi;
-      }
+      void set_kink_phi(experimental_double phi);
 
       //! set kink theta
-      void set_kink_theta(experimental_double theta)
-      {
-        kink_theta_ = theta;
-      }
+      void set_kink_theta(experimental_double theta);
 
       //! set used
-      void set_used(bool used)
-      {
-        used_ = used;
-      }
+      void set_used(bool used);
 
       //! set chi2
-      void set_chi2(double chi2)
-      {
-        chi2_ = chi2;
-      }
-
+      void set_chi2(double chi2);
+ 
       //! get experimental_point a
-      const experimental_point& epa()const
-      {
-        return epa_;
-      }      
+      const experimental_point& epa()const;
 
       //! get experimental_point b
-      const experimental_point& epb()const
-      {
-        return epb_;
-      }      
+      const experimental_point& epb()const;
 
       //! get experimental_point c
-      const experimental_point& epc()const
-      {
-        return epc_;
-      }      
-
+      const experimental_point& epc()const;
+ 
       //! get kink phi
-      const experimental_double& kink_phi()const
-      {
-        return kink_phi_;
-      }
+      const experimental_double& kink_phi()const;
 
       //! get kink theta
-      const experimental_double& kink_theta()const
-      {
-        return kink_theta_;
-      }
+      const experimental_double& kink_theta()const;
 
       //! get used
-      const bool& used() const
-      {
-        return used_;
-      }
+      bool used() const;
 
       //! get chi2
-      const double& chi2() const
-      {
-        return chi2_;
-      }
+      double chi2() const;
+ 
+      joint invert();
 
-      joint invert(){
-        joint inverted;
-        inverted.set_print_level(print_level());
-        inverted.set_nsigma(nsigma());
-        inverted.set_epa(epc());
-        inverted.set_epb(epb());
-        inverted.set_epc(epa());
-        inverted.set_used(used());
-        inverted.set_chi2(chi2());
-        inverted.set_kink_phi(-kink_phi());
-        inverted.set_kink_theta(-kink_theta());
-        return inverted;
-
-      }
-
-      bool operator<(const joint &j) const
-      {
-        return (chi2() < j.chi2());
-      }
+      bool operator<(const joint &j) const;
 
     private:
 
-      void calculate_kinks(){
-        experimental_vector v1(epa_, epb_);
-        experimental_vector v2(epb_, epc_);
-        kink_phi_ = v1.kink_phi(v2);
-        kink_theta_ = v1.kink_theta(v2);
-
-      }
-
-
+      void calculate_kinks();
 
     };
+
   }
 }
-#endif
+#endif // __CATAlgorithm__joint_h

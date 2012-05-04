@@ -1,10 +1,13 @@
 #include "sequentiator.h"
 #include <vector>
 #include <mybhep/system_of_units.h>
+#include <mybhep/utilities.h>
 #include <sys/time.h>
 #include <math.h>
 
 namespace CAT {
+
+  using namespace mybhep;
 
   //************************************************************
   sequentiator::sequentiator(mybhep::gstore st){
@@ -1406,7 +1409,7 @@ namespace CAT {
 
           m.message(" extrapolate decay vertex with ", calos.size(), " calo hits " , mybhep::VVERBOSE);
         
-          double min = default_min;
+          double min = mybhep::default_min;
           size_t imin = default_integer;
           topology::experimental_point extrapolation, extrapolation_local;
           bool found = false;
@@ -2228,8 +2231,8 @@ namespace CAT {
         continue;
       }
 
-      double probmax = default_max;
-      double chi2min = default_min;
+      double probmax = mybhep::default_max;
+      double chi2min = mybhep::default_min;
       int ndofbest = 1;
       size_t index = 0;
       topology::sequence bestmatch;
@@ -2493,8 +2496,8 @@ namespace CAT {
 
     bool ok = false;
   
-    double probmax = default_max;
-    double chi2min = default_min;
+    double probmax = mybhep::default_max;
+    double chi2min = mybhep::default_min;
     int ndofbest = 1;
 
     m.message(" try to match sequence", s.name(), " of chi2 = ", chi2min, " ndof ", ndofbest, " prob ", probmax, mybhep::VVERBOSE);
