@@ -12,9 +12,9 @@
 #include <CATAlgorithm/cluster.h>
 
 
-using namespace std;
-
 int main(int argc_, char* argv_[]){
+  using namespace std;
+  using namespace CAT;
 
   topology::experimental_double a(0.9,0.1);
   topology::experimental_double b(2.,0.2);

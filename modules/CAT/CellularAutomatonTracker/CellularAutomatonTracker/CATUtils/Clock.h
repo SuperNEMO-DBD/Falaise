@@ -1,140 +1,138 @@
 /* -*- mode: c++ -*- */
-#ifndef ICLOCK
-#define ICLOCK
+#ifndef __cat_utils__Clock_h_
+#define __cat_utils__Clock_h_ 1
+
 #include <iostream>
 #include <cmath>
-#include <util/clockable.h>
+#include <CATUtils/clockable.h>
 #include <vector>
 #include <algorithm>
 #include <functional>
 
 
-using namespace std;
-
-  class Clock {
+namespace CAT{
+  namespace utils{
 
     // a Clock is a time counter
-
-  private:
-
-  public:
-
-    // list of clockable objects
-    std::vector<clockable> clockables_;
+    class Clock {
 
 
-    //!Default constructor
-    Clock()
-    {
-      clockables_.clear();
-    }
+    public:
 
-    //!Default destructor
-    virtual ~Clock(){};
-
-    virtual void dump (ostream & a_out         = cout,
-                            const string & a_title  = "",
-                            const string & a_indent = "",
-                            bool a_inherit          = false){
+      // list of clockable objects
+      std::vector<clockable> clockables_;
 
 
-      std::sort( clockables_.begin(), clockables_.end(), clockable::compare );
-
-      double max = clockables_.begin()->time_;
-
-      for(size_t i=0; i<clockables_.size(); i++){
-	this->clockables_[i].dump(max);
-      }
-    }
-
-
-    std::vector<clockable>& clockables(){
-      return clockables_;
-    }
-
-    bool has(string name, size_t *index){
-
-      for(std::vector<clockable>::iterator iclock = clockables_.begin(); iclock != clockables_.end(); ++iclock){
-	if( iclock->name() == name ){
-	  *index = iclock - clockables_.begin();
-	  return true;
-	}
+      //!Default constructor
+      Clock()
+      {
+        clockables_.clear();
       }
 
-      return false;
-    }
+      //!Default destructor
+      virtual ~Clock(){};
 
-    void start(string name, string mode="once"){
-      if( mode == "once" ){
-	size_t index=0;
-	if( has(name, &index ) ){
-	  cout << " problem: starting a clockable " << name << " which is already there " << index << endl;
-	  clockables()[index].start();
-	}
-	else{
-	  clockable newc(name);
-	  clockables_.push_back(newc);
-	  size_t s = clockables().size();
-	  clockables()[s-1].start();
-	}
+      virtual void dump (std::ostream & a_out         = std::clog,
+                         const std::string & a_title  = "",
+                         const std::string & a_indent = "",
+                         bool a_inherit               = false){
+
+
+        std::sort( clockables_.begin(), clockables_.end(), clockable::compare );
+
+        double max = clockables_.begin()->time_;
+
+        for(size_t i=0; i<clockables_.size(); i++){
+          this->clockables_[i].dump(max, a_out);
+        }
       }
-      else if( mode == "cumulative" ){
-	size_t index=0;
-	if( has(name, &index ) )
-	  clockables()[index].start();
-	else{
-	  clockable newc(name);
-	  clockables_.push_back(newc);
-	  size_t s = clockables().size();
-	  clockables()[s-1].start();
-	}
+
+
+      std::vector<clockable>& clockables(){
+        return clockables_;
       }
-      else if( mode == "restart" ){
-	size_t index=0;
-	if( has(name, &index ) ){
-	  clockables()[index].restart();
-	}
-	else{
-	  clockable newc(name);
-	  clockables_.push_back(newc);
-	  size_t s = clockables().size();
-	  clockables()[s-1].start();
-	}
 
+      bool has(const std::string & name, size_t *index){
 
+        for(std::vector<clockable>::iterator iclock = clockables_.begin(); iclock != clockables_.end(); ++iclock){
+          if( iclock->name() == name ){
+            *index = iclock - clockables_.begin();
+            return true;
+          }
+        }
+
+        return false;
       }
-      return;
-    }
+
+      void start(const std::string & name, string mode="once"){
+        if( mode == "once" ){
+          size_t index=0;
+          if( has(name, &index ) ){
+            cout << " problem: starting a clockable " << name << " which is already there " << index << endl;
+            clockables()[index].start();
+          }
+          else{
+            clockable newc(name);
+            clockables_.push_back(newc);
+            size_t s = clockables().size();
+            clockables()[s-1].start();
+          }
+        }
+        else if( mode == "cumulative" ){
+          size_t index=0;
+          if( has(name, &index ) )
+            clockables()[index].start();
+          else{
+            clockable newc(name);
+            clockables_.push_back(newc);
+            size_t s = clockables().size();
+            clockables()[s-1].start();
+          }
+        }
+        else if( mode == "restart" ){
+          size_t index=0;
+          if( has(name, &index ) ){
+            clockables()[index].restart();
+          }
+          else{
+            clockable newc(name);
+            clockables_.push_back(newc);
+            size_t s = clockables().size();
+            clockables()[s-1].start();
+          }
 
 
-    void stop(string name){
-      size_t index;
-      if( has(name , &index) )
-	clockables()[index].stop();  
-      else
-	cout << " problem: can't stop clockable " << name << " which is not there " << endl;
-    }
-
-    double read(string name){
-      size_t index;
-      if( has(name , &index) )
-	return clockables()[index].read();  
-
-      cout << " problem: request time of clockable " << name << " which is not there " << endl;
-      return 0;
-    }
-
-    void stop_all(){
-      for(std::vector<clockable>::iterator iclock = clockables_.begin(); iclock != clockables_.end(); ++iclock)
-	iclock->stop();
-    }
+        }
+        return;
+      }
 
 
+      void stop(const std::string & name){
+        size_t index;
+        if( has(name , &index) )
+          clockables()[index].stop();  
+        else
+          cout << " problem: can't stop clockable " << name << " which is not there " << endl;
+      }
+
+      double read(const std::string & name){
+        size_t index;
+        if( has(name , &index) )
+          return clockables()[index].read();  
+
+        cout << " problem: request time of clockable " << name << " which is not there " << endl;
+        return 0;
+      }
+
+      void stop_all(){
+        for(std::vector<clockable>::iterator iclock = clockables_.begin(); iclock != clockables_.end(); ++iclock)
+          iclock->stop();
+      }
+
+    };
 
 
+  } // end of namespace utils
+} // end of namespace CAT
 
-
-  };
-
-
-#endif
+#endif // __cat_utils__Clock_h_

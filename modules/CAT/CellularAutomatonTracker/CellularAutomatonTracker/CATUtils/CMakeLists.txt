@@ -8,6 +8,14 @@
 file(GLOB CATUTILS_HEADERS *.h)
 file(GLOB CATUTILS_SOURCES *.cpp)
 
+include_directories(${Boost_INCLUDE_DIR})
+include_directories(${CLHEP_INCLUDE_DIRS})
+if (_cat_needs_root)
+  include_directories(${ROOT_INCLUDES})
+endif ()
+
+include_directories ( ${PROJECT_BINARY_DIR}/CellularAutomatonTracker )
+
 #----------------------------------------------------------------------------
 # Add the library targets, force them to be shared
 #

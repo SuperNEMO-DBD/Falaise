@@ -7,11 +7,16 @@ if [ -d __install ]; then
 fi
 
 rebuild=0
+cat_minimal=1
+while [ -n "$1" ]; do
+  if [ "x$1" = "x-r" ]; then
+      rebuild=1
+  elif [ "x$1" = "x-D" ]; then
+      cat_minimal=0
+  fi
+  shift 1
+done
 
-
-if [ "$1" = "-r" ]; then
-    rebuild=1
-fi
 if [ ${rebuild} -eq 1 ]; then
     if [ -d __build ]; then
 	rm -fr __build
@@ -23,7 +28,7 @@ if [ ! -d __build ]; then
 fi
 cd __build
 
-cmake -DCMAKE_INSTALL_PREFIX:PATH=${opwd}/__install ../../..
+cmake -DCMAKE_INSTALL_PREFIX:PATH=${opwd}/__install -DCAT_MINIMAL_BUILD=${cat_minimal} ../../..
 make 
 make install
 

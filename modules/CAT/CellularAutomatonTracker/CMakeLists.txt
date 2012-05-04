@@ -83,9 +83,9 @@ endif()
 option ( CAT_MINIMAL_BUILD  "Minimal build " ON)
 
 if (NOT CAT_MINIMAL_BUILD)
-  set ( CAT_WITH_DEVEL_UTILS      ON  )
-  set ( CAT_WITH_DEVEL_DISPLAY    ON  )
-  set ( CAT_WITH_DEVEL_HISTOGRAMS ON )
+  set ( CAT_WITH_DEVEL_UTILS      1  )
+  set ( CAT_WITH_DEVEL_DISPLAY    1  )
+  set ( CAT_WITH_DEVEL_HISTOGRAMS 1 )
 endif ()
 
 # Optional ROOT dependency:

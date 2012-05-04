@@ -1,3 +1,4 @@
+// -*- mode: c++; -*-
 /* ntupler.h
  * Author (s) :  Federico Nova <nova@physics.utexas.edu>
  * Creation date: 2011-03-31
@@ -12,8 +13,8 @@
  */
 
 
-#ifndef __snlocal_tracking__ntupler_h
-#define __snlocal_tracking__ntupler_h
+#ifndef __cat_utils__ntupler_h
+#define __cat_utils__ntupler_h 1
 
 #include <sstream>
 #include <ostream>
@@ -41,105 +42,109 @@
 #include "TCanvas.h"
 
 
-using namespace std;
+namespace CAT{
+  namespace utils{
+    //using namespace ::CAT::topology;
 
-class ntupler
-{
+    class ntupler
+    {
   
- public: 
+    public: 
   
-  // ctor:
-  ntupler ();
+      // ctor:
+      ntupler ();
   
-  // dtor:
-  virtual ~ntupler ();
+      // dtor:
+      virtual ~ntupler ();
   
- private: 
+    private: 
   
-  static const Int_t MAXNHITS = 1000;
-  static const Int_t MAXNTRACKS = 50;
-  static const Int_t MAXNVERTEX = 5;
+      static const Int_t MAXNHITS = 1000;
+      static const Int_t MAXNTRACKS = 50;
+      static const Int_t MAXNVERTEX = 5;
   
-  bool __has_mc_hits;
+      bool __has_mc_hits;
   
-  //      PARAMETER (MAXMEC=30) 
-  //      COMMON/GCTRAK/VECT(7),GETOT,GEKIN,VOUT(7),NMEC,LMEC(MAXMEC) 
-  //     + ,NAMEC(MAXMEC),NSTEP ,PID,DESTEP,DESTEL,SAFETY,SLENG 
-  //     + ,STEP  ,SNEXT ,SFIELD,TOFG  ,GEKRAT,UPWGHT
-  typedef struct { 
-    Int_t Ngg;
-    Float_t Gg[MAXNHITS][9];
+      //      PARAMETER (MAXMEC=30) 
+      //      COMMON/GCTRAK/VECT(7),GETOT,GEKIN,VOUT(7),NMEC,LMEC(MAXMEC) 
+      //     + ,NAMEC(MAXMEC),NSTEP ,PID,DESTEP,DESTEL,SAFETY,SLENG 
+      //     + ,STEP  ,SNEXT ,SFIELD,TOFG  ,GEKRAT,UPWGHT
+      typedef struct { 
+        Int_t Ngg;
+        Float_t Gg[MAXNHITS][9];
     
-    Int_t Nggt;
-    Float_t Ggtx[MAXNHITS];
-    Float_t Ggty[MAXNHITS];
-    Float_t Ggtz[MAXNHITS];
-    Float_t Itt1[MAXNHITS];
-    Float_t Itt2[MAXNHITS];
+        Int_t Nggt;
+        Float_t Ggtx[MAXNHITS];
+        Float_t Ggty[MAXNHITS];
+        Float_t Ggtz[MAXNHITS];
+        Float_t Itt1[MAXNHITS];
+        Float_t Itt2[MAXNHITS];
     
-    Int_t Nbr_tks;
-    Int_t True_Nbr_tks;
-    Int_t          Nbr_pts[MAXNTRACKS];
-    Float_t Ptx[MAXNTRACKS][MAXNHITS];
-    Float_t Pty[MAXNTRACKS][MAXNHITS];
-    Float_t Ptz[MAXNTRACKS][MAXNHITS];
-    Int_t Ptid[MAXNTRACKS][MAXNHITS];
-    
-    
-    Int_t     Ind_points[MAXNTRACKS][MAXNHITS];
-    Float_t    Tk_le[MAXNTRACKS];
-    Int_t          Nbr_vtx[MAXNTRACKS];
-    Float_t         Vtx_cos_dir[MAXNTRACKS][MAXNVERTEX][3];
-    Float_t         Vtx_x[MAXNTRACKS][MAXNVERTEX];
-    Float_t         Vtx_y[MAXNTRACKS][MAXNVERTEX];
-    Float_t         Vtx_z[MAXNTRACKS][MAXNVERTEX];
-    
-    Float_t    True_Tk_le[MAXNTRACKS];
-    Int_t          True_Nbr_vtx[MAXNTRACKS];
-    Float_t         True_Vtx_cos_dir[MAXNTRACKS][MAXNVERTEX][3];
-    Float_t         True_Vtx_x[MAXNTRACKS][MAXNVERTEX];
-    Float_t         True_Vtx_y[MAXNTRACKS][MAXNVERTEX];
-    Float_t         True_Vtx_z[MAXNTRACKS][MAXNVERTEX];
+        Int_t Nbr_tks;
+        Int_t True_Nbr_tks;
+        Int_t          Nbr_pts[MAXNTRACKS];
+        Float_t Ptx[MAXNTRACKS][MAXNHITS];
+        Float_t Pty[MAXNTRACKS][MAXNHITS];
+        Float_t Ptz[MAXNTRACKS][MAXNHITS];
+        Int_t Ptid[MAXNTRACKS][MAXNHITS];
     
     
+        Int_t     Ind_points[MAXNTRACKS][MAXNHITS];
+        Float_t    Tk_le[MAXNTRACKS];
+        Int_t          Nbr_vtx[MAXNTRACKS];
+        Float_t         Vtx_cos_dir[MAXNTRACKS][MAXNVERTEX][3];
+        Float_t         Vtx_x[MAXNTRACKS][MAXNVERTEX];
+        Float_t         Vtx_y[MAXNTRACKS][MAXNVERTEX];
+        Float_t         Vtx_z[MAXNTRACKS][MAXNVERTEX];
     
-  } event; 
+        Float_t    True_Tk_le[MAXNTRACKS];
+        Int_t          True_Nbr_vtx[MAXNTRACKS];
+        Float_t         True_Vtx_cos_dir[MAXNTRACKS][MAXNVERTEX][3];
+        Float_t         True_Vtx_x[MAXNTRACKS][MAXNVERTEX];
+        Float_t         True_Vtx_y[MAXNTRACKS][MAXNVERTEX];
+        Float_t         True_Vtx_z[MAXNTRACKS][MAXNVERTEX];
+    
+    
+    
+      } event; 
   
   
-  string __title;
-  TFile *__f;
-  TTree *__tree;
-  event __event;
-  TH1F *h1;
-  TNtuple *__event_ntuple, *__hits_ntuple, *__vertexes_ntuple,  *__tracks_ntuple;
+      std::string __title;
+      TFile *__f;
+      TTree *__tree;
+      event __event;
+      TH1F *h1;
+      TNtuple *__event_ntuple, *__hits_ntuple, *__vertexes_ntuple,  *__tracks_ntuple;
 
-  topology::tracked_data tracked_data_;
+      topology::tracked_data tracked_data_;
 
 
- public: 
+    public: 
   
-  void set_title (string title_);
-  string  get_title();
+      void set_title (const std::string & title_);
+      const std::string & get_title();
   
-  void initialize (void);
-  void finalize (void) ;
+      void initialize (void);
+      void finalize (void) ;
   
-  bool is_valid () const ;
-  void __fill();
-  bool get_true_hit_of_reco_cell(topology::cell c, topology::node& n, size_t& index);
-  size_t get_cell_index(topology::cell c);
+      bool is_valid () const ;
+      void __fill();
+      bool get_true_hit_of_reco_cell(topology::cell c, topology::node& n, size_t& index);
+      size_t get_cell_index(topology::cell c);
 
   
-  void set_tracked_data (const topology::tracked_data& tracked_data);
-  const  topology::tracked_data & get_tracked_data () const ;
+      void set_tracked_data (const topology::tracked_data& tracked_data);
+      const  topology::tracked_data & get_tracked_data () const ;
   
-  void clear ();
-  //   get_next_point(snemo::core::model::lt_track t_, size_t id_);
+      void clear ();
+      //   get_next_point(snemo::core::model::lt_track t_, size_t id_);
   
-};   // end of class ntupler
+    };   // end of class ntupler
  
+  } // end of namespace utils
+} // end of namespace CAT
 
-#endif // __snlocal_tracking__ntupler_h
+#endif // __cat_utils__ntupler_h
 
 // end of ntupler.h
 
