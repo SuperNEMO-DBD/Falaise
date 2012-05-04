@@ -25,18 +25,21 @@ Fast build and test :
 1 - Setup CLHEP and Boost
 2 - Cd in the 'devel/LocalBuild/' directory
 3 - Run :
-  bash$ ./proc.sh
+  bash$ ./proc.bash
 4 - Cd in the 'examples/' directory
 5 - Setup Gnuplot
 6 - Run :
-  bash$ ./proc.sh
+  bash$ ./proc.bash
 
 CMake installation :
 --------------------
 
 bash$ mkdir __build
 bash$ cd  __build
-bash$ cmake -DCMAKE_INSTALL_PREFIX:PATH=<CAT install root dir> ..
+bash$ cmake \
+  -DCMAKE_INSTALL_PREFIX:PATH=<CAT install root dir> \
+  -DCAT_MINIMAL_BUILD=1 \
+  ..
 bash$ make
 bash$ make install
 
@@ -52,7 +55,21 @@ And also the include files :
 The CMake "Config" file is : 
   - <CAT install root dir>/lib[64]/cmake/CellularAutomatonTracker/CellularAutomatonTrackerConfig.cmake
 
-Author: Federico Nova <nova@physics.utexas.edu>
+CMake devel build :
+-------------------
 
+Use :
+
+bash$ cmake \
+  -DCMAKE_INSTALL_PREFIX:PATH=<CAT install root dir> \
+  -DCAT_MINIMAL_BUILD=0 \
+  ..
+
+this will also build the libCATUtils.so DLL and some sample
+programs from the 'CellularAutomatonTracker/CATUtils/test/'
+directory.
+
+
+Author: Federico Nova <nova@physics.utexas.edu>
 --
 
