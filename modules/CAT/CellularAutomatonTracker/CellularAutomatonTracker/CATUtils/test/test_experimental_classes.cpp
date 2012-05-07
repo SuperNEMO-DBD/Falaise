@@ -4,9 +4,10 @@
 #include <CATAlgorithm/experimental_point.h>
 #include <CATAlgorithm/experimental_vector.h>
 
+using namespace std;
+using namespace CAT;
+
 int main(int argc_, char* argv_[]){
-  using namespace std;
-  using namespace CAT;
 
   topology::experimental_double a(0.9,0.1);
   topology::experimental_double b(2.,0.2);

@@ -39,6 +39,7 @@ namespace CAT{
       cylinder(prlevel level=mybhep::NORMAL, double nsigma=10.)
       {
         appname_= "cylinder: ";
+        center_ = experimental_point();
         axis_ = experimental_vector(small_neg,small_neg,small_neg,
                                     small_neg, small_neg, small_neg);
         radius = experimental_double(small_neg, small_neg);

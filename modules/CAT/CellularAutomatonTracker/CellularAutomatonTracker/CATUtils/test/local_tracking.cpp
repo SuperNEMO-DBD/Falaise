@@ -14,18 +14,17 @@
 #include <CATAlgorithm/sequentiator.h>
 #include <CATUtils/EventDisplay.h>
 #include <CATUtils/ntupler.h>
-#include <CATUtils/Clock.h>
+#include <CATAlgorithm/Clock.h>
 
 #define APPNAME_PREFIX "local_tracking: "
 
+using namespace std;
+using namespace CAT;
 
-int main(int argc_, char* argv_[])
-{
-  using namespace std;
-  using namespace CAT;
-  using namespace CAT::utils;
-  
+int main(int argc_, char* argv_[]){
+    
   cout << APPNAME_PREFIX << endl;
+
 
   int nevents = -1;
   int first_event = -1;
@@ -41,7 +40,7 @@ int main(int argc_, char* argv_[])
   int iarg_old = 1;
 
 
-  CAT::utils::Clock cl;
+  Clock cl;
   cl.start("local_tracking");
   cl.start("read parameters");
 
@@ -51,117 +50,117 @@ int main(int argc_, char* argv_[])
       string token = argv_[iarg];
 
       if (token[0] == '-')
-        {
-          string option = token;
-          if ((option == "-h") || (option == "--help"))
-            {
-              cout << endl
-                   << " usage: test_local_tracking [OPTIONS] <INPUT_FILE> <OUTPUT_FILE>" << endl
-                   << endl << ""
-                   << endl << "   -h --help    :   print this help"
-                   << endl << "   --param <string>  :   parameter file for tracking (default: " << param_file << ") "
-                   << endl << "   -l --limits  <string> :   limits file for tracking (default: " << limits_file << ") "
-                   << endl << "   -m --modulo <integer>   :  modulo for record print  "
-                   << endl << "   -n <integer> :      number of events to track , by default all from the DST (recommended) "
-                   << endl << "   -f --first <integer>:      number of first event to track"
-                   << endl << "   -fen --first_event_number <integer>:      number of first event number to track"
-                   << endl << "   -v <integer>:      set verbosity level "
-                   << endl << "             0 = mute, "
-                   << endl << "             4 = , "
-                   << endl << "             5 (default) = print warnings, "
-                   << endl << "             6 = event display & reconstruction, "
-                   << endl << "             7 = tracks creation, "
-                   << endl << "             8 = details, "
-                   << endl << "             9 = , "
-                   << endl << "            10 = all, "
-                   << endl << "   -p or --plot :      plot event display and save picture"
-                   << endl << "   --with-root-ntuple :      create root ntuple"
-                   << endl << ""
-                   << endl << ""
-                   << endl << endl;
+	{
+	  string option = token;
+	  if ((option == "-h") || (option == "--help"))
+	    {
+	      cout << endl
+		   << " usage: test_local_tracking [OPTIONS] <INPUT_FILE> <OUTPUT_FILE>" << endl
+		   << endl << ""
+		   << endl << "   -h --help    :   print this help"
+		   << endl << "   --param <string>  :   parameter file for tracking (default: " << param_file << ") "
+		   << endl << "   -l --limits  <string> :   limits file for tracking (default: " << limits_file << ") "
+		   << endl << "   -m --modulo <integer>   :  modulo for record print  "
+		   << endl << "   -n <integer> :      number of events to track , by default all from the DST (recommended) "
+		   << endl << "   -f --first <integer>:      number of first event to track"
+		   << endl << "   -fen --first_event_number <integer>:      number of first event number to track"
+		   << endl << "   -v <integer>:      set verbosity level "
+		   << endl << "             0 = mute, "
+		   << endl << "             4 = , "
+		   << endl << "             5 (default) = print warnings, "
+		   << endl << "             6 = event display & reconstruction, "
+		   << endl << "             7 = tracks creation, "
+		   << endl << "             8 = details, "
+		   << endl << "             9 = , "
+		   << endl << "            10 = all, "
+		   << endl << "   -p or --plot :      plot event display and save picture"
+		   << endl << "   --with-root-ntuple :      create root ntuple"
+		   << endl << ""
+		   << endl << ""
+		   << endl << endl;
 
-              return (0);
-            }
-          else if (option == "-n")
-            {
-              iarg++;
-              nevents = atoi(argv_[iarg]);
-              cout << APPNAME_PREFIX << " number of events to track is: " << nevents << endl;
-            }
-          else if ((option == "-f") || (option == "--first"))
-            {
-              iarg++;
-              first_event = atoi(argv_[iarg]);
-              cout << APPNAME_PREFIX << " first event to track is " << first_event << endl;
-            }
-          else if ((option == "-fen") || (option == "--first_event_number"))
-            {
-              iarg++;
-              first_event_number = atoi(argv_[iarg]);
-              cout << APPNAME_PREFIX << " first event number to track is " << first_event_number << endl;
-            }
-          else if (option == "-v")
-            {
-              iarg++;
-              verbosity_level = atoi(argv_[iarg]);
-              cout << APPNAME_PREFIX << " verbosity level: " << verbosity_level << endl;
-            }
-          else if ((option == "-p") || (option == "--plot"))
-            {
-              plot_mode = true;
-              cout << APPNAME_PREFIX << " will plot event display " << endl;
-            }
-          else if (option == "--with-root-ntuple")
-            {
-              root_ntuple_mode = true;
-              cout << APPNAME_PREFIX << " will create root ntuple " << endl;
-            }
-          else if (option == "--param")
-            {
-              ++iarg;
-              param_file = argv_[iarg];
-            }
-          else if ((option == "-l") || (option == "--limits"))
-            {
-              ++iarg;
-              limits_file = argv_[iarg];
-            }
-          else if ((option == "-m") || (option == "--modulo"))
-            {
-              int mod;
-              istringstream iss (argv_[++iarg]);
-              iss >> mod;
-              if (! iss)
-                {
-                  cout << APPNAME_PREFIX << " warning: invalid format for 'modulo' (" << argv_[iarg] << ") !";
-                }
+	      return (0);
+	    }
+	  else if (option == "-n")
+	    {
+	      iarg++;
+	      nevents = atoi(argv_[iarg]);
+	      cout << APPNAME_PREFIX << " number of events to track is: " << nevents << endl;
+	    }
+	  else if ((option == "-f") || (option == "--first"))
+	    {
+	      iarg++;
+	      first_event = atoi(argv_[iarg]);
+	      cout << APPNAME_PREFIX << " first event to track is " << first_event << endl;
+	    }
+	  else if ((option == "-fen") || (option == "--first_event_number"))
+	    {
+	      iarg++;
+	      first_event_number = atoi(argv_[iarg]);
+	      cout << APPNAME_PREFIX << " first event number to track is " << first_event_number << endl;
+	    }
+	  else if (option == "-v")
+	    {
+	      iarg++;
+	      verbosity_level = atoi(argv_[iarg]);
+	      cout << APPNAME_PREFIX << " verbosity level: " << verbosity_level << endl;
+	    }
+	  else if ((option == "-p") || (option == "--plot"))
+	    {
+	      plot_mode = true;
+	      cout << APPNAME_PREFIX << " will plot event display " << endl;
+	    }
+	  else if (option == "--with-root-ntuple")
+	    {
+	      root_ntuple_mode = true;
+	      cout << APPNAME_PREFIX << " will create root ntuple " << endl;
+	    }
+	  else if (option == "--param")
+	    {
+	      ++iarg;
+	      param_file = argv_[iarg];
+	    }
+	  else if ((option == "-l") || (option == "--limits"))
+	    {
+	      ++iarg;
+	      limits_file = argv_[iarg];
+	    }
+	  else if ((option == "-m") || (option == "--modulo"))
+	    {
+	      int mod;
+	      istringstream iss (argv_[++iarg]);
+	      iss >> mod;
+	      if (! iss)
+		{
+		  cout << APPNAME_PREFIX << " warning: invalid format for 'modulo' (" << argv_[iarg] << ") !";
+		}
 
-              if (mod > 1)
-                {
-                  modulo = mod;
-                }
-            }
-          else
-            {
-              cout << APPNAME_PREFIX << " warning: ignoring option '" << option << "'!" << endl;
-            }
-        }
+	      if (mod > 1)
+		{
+		  modulo = mod;
+		}
+	    }
+	  else
+	    {
+	      cout << APPNAME_PREFIX << " warning: ignoring option '" << option << "'!" << endl;
+	    }
+	}
       else
-        {
-          string argument = token;
-          
-          if( iarg_old == 1 )
-            nevents = atoi(argv_[iarg]);
-          else if( iarg_old == 2 )
-            param_file= argv_[iarg];
-          else if( iarg_old == 3 )
-            limits_file= argv_[iarg];
-          else
-            {
-              cout << APPNAME_PREFIX << " warning: ignoring argument '" << argument << "'!" << endl;
-            }
-          iarg_old++;
-        }
+	{
+	  string argument = token;
+	  
+	  if( iarg_old == 1 )
+	    nevents = atoi(argv_[iarg]);
+	  else if( iarg_old == 2 )
+	    param_file= argv_[iarg];
+	  else if( iarg_old == 3 )
+	    limits_file= argv_[iarg];
+	  else
+	    {
+	      cout << APPNAME_PREFIX << " warning: ignoring argument '" << argument << "'!" << endl;
+	    }
+	  iarg_old++;
+	}
       iarg++;
     }
   
@@ -251,65 +250,65 @@ int main(int argc_, char* argv_[])
       evn = mybhep::int_from_string(event_ref.fetch_property("G4_evt_num"));
       if( evn < first_event_number ) continue;
       if( evn%modulo == 0 )
-        cout << " event " << i << " event number " << evn << endl;
+	cout << " event " << i << " event number " << evn << endl;
     }
     if( event_ref.find_property("NEMOEVNUMBER") ){
       evn = mybhep::int_from_string(event_ref.fetch_property("NEMOEVNUMBER"));
       if( evn < first_event_number ) continue;
       if( evn%modulo == 0 )
-        cout << " event " << i << " event number " << evn << endl;
+	cout << " event " << i << " event number " << evn << endl;
     }
     else{
       evn = i;
       if( evn%modulo == 0 )
-        cout << " event " << i << endl;
+	cout << " event " << i << endl;
     }
 
     if( first_event_number >= 0 && nevents >= 0 && (Int_t)count_events >= nevents ) break;
 
     for (int im=0; im< clustering_machine->get_module_nr(); im++) //loop over all Modules
       {
-        count_events ++;
+	count_events ++;
 
-        clustering_machine->set_module_nr(mybhep::to_string(im));
+	clustering_machine->set_module_nr(mybhep::to_string(im));
 
-        topology::tracked_data tracked_data_;
+	topology::tracked_data tracked_data_;
 
-        if( !clustering_machine->read_event(event_ref, tracked_data_) ){
-          continue;
-        }
+	if( !clustering_machine->read_event(event_ref, tracked_data_) ){
+	  continue;
+	}
 
-        clustering_machine->clusterize(tracked_data_);
-          
-        bool skip_processing = false;
+	clustering_machine->clusterize(tracked_data_);
+	  
+	bool skip_processing = false;
 
-        if( tracked_data_.selected() )
-          count_selected ++;
-        else
-          skip_processing = true;
-        
-        if( !skip_processing ){
-          sequentiating_machine->sequentiate(tracked_data_);
-        }
+	if( tracked_data_.selected() )
+	  count_selected ++;
+	else
+	  skip_processing = true;
+	
+	if( !skip_processing ){
+	  sequentiating_machine->sequentiate(tracked_data_);
+	}
 
-        if( tracked_data_.skipped() ){
-          count_skipped ++;
-          skip_processing = true;
-        }
+	if( tracked_data_.skipped() ){
+	  count_skipped ++;
+	  skip_processing = true;
+	}
 
-        if( !skip_processing ){
-          if( plot_mode ){
-            display->DeleteDisplay();
-            display->execute(event_ref, evn, tracked_data_ );
-          }
-          
-          if( root_ntuple_mode ){
-            nt->set_tracked_data(tracked_data_);
-            nt->__fill();
-          }
-        }
+	if( !skip_processing ){
+	  if( plot_mode ){
+	    display->DeleteDisplay();
+	    display->execute(event_ref, evn, tracked_data_ );
+	  }
+	  
+	  if( root_ntuple_mode ){
+	    nt->set_tracked_data(tracked_data_);
+	    nt->__fill();
+	  }
+	}
   
-        eman->write(event_ref);
+	eman->write(event_ref);
       }
 
 

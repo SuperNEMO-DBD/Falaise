@@ -1,13 +1,70 @@
 #include "sequentiator.h"
 #include <vector>
 #include <mybhep/system_of_units.h>
-#include <mybhep/utilities.h>
 #include <sys/time.h>
 #include <math.h>
 
 namespace CAT {
 
-  using namespace mybhep;
+  void sequentiator::_set_defaults ()
+  {
+    level = mybhep::NORMAL;
+    m = mybhep::messenger(level);
+    num_blocks = -1;
+    planes_per_block.clear ();
+    gaps_Z.clear ();
+    GG_CELL_pitch = std::numeric_limits<double>::quiet_NaN ();
+    GG_GRND_diam = std::numeric_limits<double>::quiet_NaN ();
+    GG_CELL_diam = std::numeric_limits<double>::quiet_NaN ();
+    CHAMBER_X = std::numeric_limits<double>::quiet_NaN ();
+    GG_BLOCK_X = std::numeric_limits<double>::quiet_NaN ();
+    num_cells_per_plane = -1;
+    SOURCE_thick = std::numeric_limits<double>::quiet_NaN ();
+    //    lastlayer = 0;
+    vel  = std::numeric_limits<double>::quiet_NaN ();
+    rad  = std::numeric_limits<double>::quiet_NaN ();
+    len  = std::numeric_limits<double>::quiet_NaN ();
+    CellDistance  = std::numeric_limits<double>::quiet_NaN ();
+    xsize = ysize = zsize = std::numeric_limits<double>::quiet_NaN ();
+    //    calo_X = calo_Y = calo_Z = std::numeric_limits<double>::quiet_NaN ();
+    InnerRadius = OuterRadius= FoilRadius = std::numeric_limits<double>::quiet_NaN ();
+    pmax = std::numeric_limits<double>::quiet_NaN ();
+
+    SmallRadius = std::numeric_limits<double>::quiet_NaN ();
+    TangentPhi = std::numeric_limits<double>::quiet_NaN ();
+    TangentTheta = std::numeric_limits<double>::quiet_NaN ();
+    SmallNumber = std::numeric_limits<double>::quiet_NaN ();
+    QuadrantAngle = std::numeric_limits<double>::quiet_NaN ();
+    Ratio = std::numeric_limits<double>::quiet_NaN ();
+    CompatibilityDistance = std::numeric_limits<double>::quiet_NaN ();
+    MaxChi2 = std::numeric_limits<double>::quiet_NaN ();
+    nsigma = std::numeric_limits<double>::quiet_NaN ();
+    NOffLayers = 0;
+    PrintMode = false;
+    SuperNemo = true;
+    SuperNemoChannel = false;
+    NemoraOutput = false;
+    N3_MC = false;
+    MaxTime = std::numeric_limits<double>::quiet_NaN ();
+    //    doDriftWires = true;
+    //    DriftWires.clear ();
+    eman = 0;
+    _moduleNR.clear ();
+    _MaxBlockSize = -1;
+    hfile.clear ();
+
+    nevent = 0;
+    InitialEvents = 0;
+    SkippedEvents = 0;
+    run_list.clear ();
+    run_time = std::numeric_limits<double>::quiet_NaN ();
+    first_event=true;
+    return;
+  }
+
+
+
+
 
   //************************************************************
   sequentiator::sequentiator(mybhep::gstore st){
@@ -54,6 +111,14 @@ namespace CAT {
 
   }
 
+  //************************************************************                                                                          // Default constructor : 
+  sequentiator::sequentiator(void){
+    //*************************************************************                                                                      
+    _set_defaults ();
+    return;
+  }
+
+
   //*************************************************************
   sequentiator::~sequentiator() {
     //*************************************************************
@@ -71,6 +136,44 @@ namespace CAT {
     //----------- read dst param -------------//
   
     readDstProper(store, eman);
+  
+    //------- end of read pram -----------//
+
+    if( PrintMode )
+      initializeHistos();
+
+    nevent = 0;
+    InitialEvents = 0;
+    SkippedEvents = 0;
+
+    first_event=true;
+
+    /*
+      if( !SuperNemo )
+      {
+
+      run_time = 0.;
+      run_list.clear();
+
+      }
+    */
+
+    clock.stop(" sequentiator: initialize ");
+
+    return true;
+  }
+
+  //*************************************************************
+  bool sequentiator::initialize( void ){
+    //*************************************************************
+  
+    m.message("\n Beginning algorithm sequentiator \n",mybhep::VERBOSE); fflush(stdout);
+
+    clock.start(" sequentiator: initialize ");
+  
+    //----------- read dst param -------------//
+  
+    readDstProper();
   
     //------- end of read pram -----------//
 
@@ -159,6 +262,8 @@ namespace CAT {
     return;
 
   }
+
+
 
 
   //*************************************************************
@@ -446,6 +551,48 @@ namespace CAT {
 
 
   //*************************************************************
+  void sequentiator::readDstProper(void) {
+    //*************************************************************
+  
+    clock.start(" sequentiator: read dst properties ");
+
+    if (_MaxBlockSize <= 0)
+      {
+        _MaxBlockSize = 1;
+        m.message("CAT::sequentiator::readDstProper: no bar design, MODULES Nr set to = ",_MaxBlockSize,"\n",mybhep::NORMAL);
+      }
+
+    if(SuperNemo)
+      {
+        m.message("CAT::sequentiator::readDstProper: SuperNemo kind of data",mybhep::NORMAL);
+        if (num_blocks <= 0)
+          {
+            // Default :                                                                                                                             
+            set_num_blocks (1);
+            planes_per_block.at (0) = 9;
+          }
+      }
+    else
+      {
+        m.message("CAT::sequentiator::readDstProper: Nemo-3 kind of data",mybhep::NORMAL);
+        if (num_blocks <= 0)
+          {
+            // Default :                                                                                                                             
+            set_num_blocks (3);
+            planes_per_block.at (0) = 4;
+            planes_per_block.at (1) = 2;
+            planes_per_block.at (2) = 3;
+          }
+      }
+
+
+    clock.stop(" sequentiator: read dst properties ");
+
+    return;
+  }
+
+
+  //*************************************************************
   bool sequentiator::sequentiate(topology::tracked_data & __tracked_data){
     //*************************************************************
   
@@ -463,6 +610,8 @@ namespace CAT {
 
     sequences_.clear();
     scenarios_.clear();
+
+    __tracked_data.scenarios_.clear();
 
     for(vector<topology::cluster>::iterator icluster=clusters_.begin(); icluster != clusters_.end(); ++icluster){
       local_cluster_ = *icluster;
@@ -618,9 +767,6 @@ namespace CAT {
       topology::node first_node;
 
       if(! good_first_node(*inode, first_node) ){
-        if( level >= mybhep::VVERBOSE ){
-          clog << " not a good first node " << endl;
-        }
         continue;
       }
     
@@ -1042,6 +1188,7 @@ namespace CAT {
     if( type != "VERTEX" &&
         type != "MULTI_VERTEX" ){
       clock.stop(" sequentiator: good first node ");
+      m.message(" not a good first node: type ", type, mybhep::VVERBOSE); fflush(stdout);
       return false;
     }
 
@@ -1052,6 +1199,8 @@ namespace CAT {
       if( iseq->has_cell(node.c()) ){
         if( type == "VERTEX" ){
         
+	  m.message(" not a good first node: already used as vertex in seuqence ", iseq - sequences_.begin(), mybhep::VVERBOSE); fflush(stdout);
+
           clock.stop(" sequentiator: good first node ");
           return false;
         }
@@ -1067,6 +1216,8 @@ namespace CAT {
               m.message(" problem: multi-vertex ", node.c().id(), " belongs to sequence ", iseq->name(), " but not as first or last cell", mybhep::NORMAL);
               continue;
             }
+	    // add to done_connections cell ids of those cells
+	    // that have already been connected to NODE in other sequences
             vector<size_t>::iterator fid = std::find(done_connections.begin(),
                                                      done_connections.end(),
                                                      iseq->nodes_[connection_node].c().id());
@@ -1410,7 +1561,7 @@ namespace CAT {
           m.message(" extrapolate decay vertex with ", calos.size(), " calo hits " , mybhep::VVERBOSE);
         
           double min = mybhep::default_min;
-          size_t imin = default_integer;
+          size_t imin = mybhep::default_integer;
           topology::experimental_point extrapolation, extrapolation_local;
           bool found = false;
           for(std::vector<topology::calorimeter_hit>::iterator ic=calos.begin(); ic != calos.end(); ++ic){
@@ -1449,7 +1600,7 @@ namespace CAT {
         
         }
       
-        // mathc to calo
+        // match to foil
         if( SuperNemo ){
           if( !iseq->nodes_.empty() ){
           
@@ -1497,7 +1648,7 @@ namespace CAT {
     m.message(" sequence matrix is", mybhep::NORMAL); fflush(stdout);
     for(vector<topology::sequence>::iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq)
       {
-        printf(" [%d]", (int)(iseq - sequences_.begin())); fflush(stdout);
+        clog << " [" << iseq - sequences_.begin() << "]";
         print_a_sequence( &(*iseq));
       }
 
@@ -1525,8 +1676,7 @@ namespace CAT {
 
         topology::experimental_vector v(inode->c().ep(),inode->ep());
 
-        printf("[%.3g,%.3g]", v.x().value(),
-               v.z().value());
+        clog << "[" << v.x().value() << ", " << v.z().value() << "]";
 
         clog << "(";
       
@@ -2511,7 +2661,7 @@ namespace CAT {
           print_a_sequence( &(*jseq) );
         }
 
-        // check that jseq's family has not already been matched
+        // check that jseq's family is not the same as s
         if( s.same_families(*jseq) ){
           m.message(" ... forbidden, same family", jseq->family(), mybhep::VVERBOSE);
           continue;

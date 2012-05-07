@@ -1,12 +1,13 @@
 /* -*- mode: c++ -*- */
-#ifndef __CATAlgorithm___pattern_rec___
-#define __CATAlgorithm___pattern_rec___
+#ifndef __CATAlgorithm___sequentiator___
+#define __CATAlgorithm___sequentiator___
 
 #include <CATAlgorithm/CAT_config.h>
 
 #include <mybhep/gstore.h>
 #include <mybhep/messenger.h>
 #include <mybhep/event.h>
+#include <mybhep/utilities.h>
 #include <CLHEP/Units/SystemOfUnits.h>
 #include <mybhep/system_of_units.h>
 #include <boost/cstdint.hpp>
@@ -55,17 +56,20 @@ namespace CAT {
 
   public:
   
+    sequentiator(void);
     sequentiator(mybhep::gstore);
   
     virtual ~sequentiator();
 
     bool initialize( mybhep::sstore store, mybhep::gstore gs, mybhep::EventManager2 *eman=0);
+    bool initialize( );
     void initializeHistos( void );
     bool execute(mybhep::event& evt, int ievent);
     void PrintInitialObjects(void);
     bool finalize();
     void finalizeHistos( void );
     void readDstProper(mybhep::sstore, mybhep::EventManager2 *eman=0);
+    void readDstProper( void );
 
     bool sequentiate(topology::tracked_data & __tracked_data);
     void sequentiate_cluster();
@@ -109,7 +113,263 @@ namespace CAT {
     bool late();
 
   protected:
+    void _set_defaults ();
+
+  public:
+
+    void set_GG_GRND_diam (double ggd){
+      GG_GRND_diam = ggd;
+      return;
+    }
+
+    void set_GG_CELL_diam (double ggcd){
+      GG_CELL_diam = ggcd;
+      return;
+    }
+
+    void set_num_blocks(int nb){
+      if (nb > 0)
+        {
+          num_blocks = nb;
+          planes_per_block.assign (num_blocks, 1);
+        }
+      else
+        {
+	  std::cerr << "WARNING: CAT::clusterizer::set_num_blocks: "
+                    << "Invalid number of GG layer blocks !" << std::endl;
+          planes_per_block.clear ();
+          num_blocks = -1; // invalid value                                                                                              
+        }
+      return;
+    }
+
+    void set_planes_per_block(int block, int nplanes){
+      if (block< 0 || block>=planes_per_block.size())
+        {
+          throw std::range_error ("CAT::clusterizer::set_planes_per_block: Invalid GG layer block index !");
+        }
+      if (nplanes > 0)
+        {
+          planes_per_block.at (block) = nplanes;
+	}
+      else
+        {
+          throw std::range_error ("CAT::clusterizer::set_planes_per_block: Invalid number of GG layers in block !");
+        }
+      return;
+    }
+
+    void set_num_cells_per_plane(int ncpp){
+      if (ncpp <= 0)
+        {
+          num_cells_per_plane = -1; // invalid value                                                                                     
+        }
+      else
+        {
+          num_cells_per_plane = ncpp;
+        }
+      return;
+    }
+    void set_SOURCE_thick(double st){
+      if (st <= 0.0)
+        {
+          SOURCE_thick = std::numeric_limits<double>::quiet_NaN ();
+        }
+      else
+        {
+          SOURCE_thick = st;
+        }
+      return;
+    }
+
+    // What is it ?                                                                                                                      
+    void set_module_nr(string mID){
+      _moduleNR=mID;
+      return;
+    }
+
+    // What is it ?                                                                                                                      
+    int get_module_nr(void){
+      return _MaxBlockSize;
+    }
+
+    void set_MaxBlockSize(int mbs){
+      _MaxBlockSize=mbs;
+      return;
+    }
+
+    void set_pmax(double v){
+      if ( v <= 0.0)
+	{
+	  pmax = std::numeric_limits<double>::quiet_NaN ();
+        }
+      else
+	{
+	  pmax = v;
+	}
+      return;
+    }
+
+    void set_MaxTime(double v){
+      MaxTime = v;
+      return;
+    }
+
+    void set_PrintMode(bool v){
+      PrintMode = v;
+      return;
+    }
+
+    void set_SmallRadius(double v){
+      SmallRadius = v;
+      return;
+    }
+
+    void set_TangentPhi(double v){
+      TangentPhi = v;
+      return;
+    }
+
+    void set_TangentTheta(double v){
+      TangentTheta = v;
+      return;
+    }
+
+    void set_SmallNumber(double v){
+      SmallNumber = v;
+      return;
+    }
+
+    void set_QuadrantAngle(double v){
+      QuadrantAngle = v;
+      return;
+    }
+
+    void set_Ratio(double v){
+      Ratio = v;
+      return;
+    }
+
+    void set_CompatibilityDistance(double v){
+      CompatibilityDistance = v;
+      return;
+    }
+
+    void set_MaxChi2(double v){
+      MaxChi2 = v;
+      return;
+    }
+
+    void set_hfile(string v){
+      hfile = v;
+      return;
+    }
+
+    void set_nsigma(double v){
+      nsigma = v;
+      return;
+    }
+
+    void set_nofflayers(size_t v){
+      NOffLayers = v;
+      return;
+    }
+
+    void set_level(string v){
+      level = mybhep::get_info_level(v);
+      m = mybhep::messenger(level);
+      return;
+    }
+
+    void set_len(double v){
+      len = v;
+      return;
+    }
+
+    void set_vel(double v){
+      vel = v;
+      return;
+    }
+
+    void set_rad(double v){
+      rad = v;
+      return;
+    }
+
+    void set_GG_CELL_pitch (double p){
+      GG_CELL_pitch = p;
+      set_rad (GG_CELL_pitch / cos(M_PI/8.));
+      set_GG_CELL_diam (rad);
+      set_CellDistance (rad);
+      return;
+    }
+
+    void set_CellDistance(double v){
+      CellDistance = v;
+      return;
+    }
+
+    void set_SuperNemo(bool v){
+      SuperNemo = v;
+      return;
+    }
+    void set_SuperNemoChannel(bool v){
+      if (v)
+        {
+          set_SuperNemo (true);
+          SuperNemoChannel = true;
+          set_NemoraOutput (false);
+          set_N3_MC (false);
+          set_MaxBlockSize (1);
+        }
+      else
+        {
+          SuperNemoChannel = false;
+        }
+      return;
+    }
+
+    void set_NemoraOutput(bool no){
+      NemoraOutput = no;
+      return;
+    }
+
+    void set_N3_MC(bool v){
+      N3_MC = v;
+      return;
+    }
+
+    void set_FoilRadius(double v){
+      FoilRadius = v;
+      return;
+    }
+
+    void set_xsize(double v){
+      xsize = v;
+      return;
+    }
+
+    void set_ysize(double v){
+      ysize = v;
+      return;
+    }
+
+    void set_zsize(double v){
+      zsize = v;
+      return;
+    }
+
+    void set_gaps_Z(std::vector<double> v){
+      gaps_Z.clear();
+      for(size_t i=0; i<v.size(); i++)
+	gaps_Z.push_back(v[i]);
+    }
+
+
+  protected:
     
+    bool _initialize( void );
+
     //  NHistoManager2 hman;
 
     Clock clock;
@@ -166,6 +426,12 @@ namespace CAT {
     bool NemoraOutput;
     bool N3_MC;
     double MaxTime;
+    bool SuperNemoChannel; /** New initialization modeof the algorithm
+                            *  for SuperNEMO and usage from Channel by
+                            *  Falaise and Hereward.
+                            *  Use the GG_CELL_pitch as the main geoemtry parameter
+                            *  of a GG cell, do not use 'rad' or 'CellDistance'
+                            */
 
     mybhep::EventManager2* eman;
 

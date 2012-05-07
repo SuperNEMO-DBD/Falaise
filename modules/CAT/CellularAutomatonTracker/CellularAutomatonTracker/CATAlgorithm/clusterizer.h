@@ -11,20 +11,20 @@
 #include <CLHEP/Units/SystemOfUnits.h>
 #include <mybhep/system_of_units.h>
 
-// #ifdef CAT_WITH_DEVEL_ROOT 
-// #include "TApplication.h"
-// #include <TROOT.h>
-// #include <TChain.h>
-// #include "TH2.h"
-// #include "TH1.h"
-// #include "TGraph.h"
-// #include "TStyle.h"
-// #include "TCanvas.h"
-// #include "TFile.h" 
-// #include "TMath.h" 
-// #include "TBox.h"
-// #include "TMarker.h"
-// #endif
+ #ifdef CAT_WITH_DEVEL_ROOT 
+ #include "TApplication.h"
+ #include <TROOT.h>
+ #include <TChain.h>
+ #include "TH2.h"
+ #include "TH1.h"
+ #include "TGraph.h"
+ #include "TStyle.h"
+ #include "TCanvas.h"
+ #include "TFile.h" 
+ #include "TMath.h" 
+ #include "TBox.h"
+ #include "TMarker.h"
+ #endif
 
 #include <iostream>
 #include <vector>
@@ -127,6 +127,7 @@ namespace CAT{
     //! set clusters
     void set_clusters(const std::vector<topology::cluster> & clusters)
     {
+      //clusters_.clear();
       clusters_ = clusters;
     }
 
@@ -139,6 +140,7 @@ namespace CAT{
     //! set calorimeter_hits                                                                                                      
     void set_calorimeter_hits(const std::vector<topology::calorimeter_hit> & calorimeter_hits)
     {
+      calorimeter_hits_.clear();
       calorimeter_hits_ = calorimeter_hits;
     }
 
@@ -250,7 +252,7 @@ namespace CAT{
 
     //histogram file
     string hfile;
-    bool is_good_couplet(topology::cell mainc, topology::cell candidatec, std::vector<topology::cell> nearmain);
+    bool is_good_couplet(topology::cell* mainc, topology::cell candidatec, std::vector<topology::cell> nearmain);
     size_t get_true_hit_index(mybhep::hit& hit, bool print);
     size_t get_nemo_hit_index(mybhep::hit& hit, bool print);
     size_t get_calo_hit_index(topology::calorimeter_hit c);

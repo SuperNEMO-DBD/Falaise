@@ -4,7 +4,6 @@
 #include <limits>
 #include <cmath>
 #include <map>
-#include <mybhep/utilities.h>
 
 namespace CAT {
   using namespace mybhep;
@@ -15,6 +14,8 @@ namespace CAT {
     level = mybhep::NORMAL;
     m = mybhep::messenger(level);
     num_blocks = -1;
+    planes_per_block.clear ();
+    gaps_Z.clear ();
     GG_CELL_pitch = std::numeric_limits<double>::quiet_NaN ();
     GG_GRND_diam = std::numeric_limits<double>::quiet_NaN ();
     GG_CELL_diam = std::numeric_limits<double>::quiet_NaN ();
@@ -49,12 +50,16 @@ namespace CAT {
     N3_MC = false;
     MaxTime = std::numeric_limits<double>::quiet_NaN ();
     doDriftWires = true;
+    DriftWires.clear ();
     eman = 0;
+    _moduleNR.clear ();
     _MaxBlockSize = -1;
+    hfile.clear ();
 
     nevent = 0;
     InitialEvents = 0;
     SkippedEvents = 0;
+    run_list.clear ();
     run_time = std::numeric_limits<double>::quiet_NaN ();
     first_event=true;
     return;
@@ -523,6 +528,7 @@ namespace CAT {
     m.message("ratio",Ratio,mybhep::NORMAL); 
     m.message("compatibility distance", CompatibilityDistance,mybhep::NORMAL); 
     m.message("maximum chi2", MaxChi2, mybhep::NORMAL); 
+    m.message("nsigma", nsigma, mybhep::NORMAL); 
     if (SuperNemo && SuperNemoChannel)
       {
         m.message("cell pitch: ",GG_CELL_pitch,"mm",mybhep::NORMAL); 
@@ -1405,7 +1411,7 @@ namespace CAT {
              for( size_t i=0; i<cells_connected_to_c.size(); i++){ // loop on connected cells
                 if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: connected cell loop..." << std::endl;
                 // take a connected cell (the first one is just c)
-                const topology::cell & cconn = cells_connected_to_c[i];
+                topology::cell cconn = cells_connected_to_c[i];
 
                 // the connected cell composes a new node
                 topology::node newnode(cconn, level, nsigma);
@@ -1418,9 +1424,9 @@ namespace CAT {
                 for(vector<topology::cell>::const_iterator icnc=cells_near_iconn.begin(); icnc!=cells_near_iconn.end(); ++icnc){
                   if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: couplet loop..." << std::endl;
  
-                  const topology::cell & cnc = *icnc;
+                  topology::cell cnc = *icnc;
 
-                  if( !is_good_couplet(cconn, cnc, cells_near_iconn) ) continue;
+                  if( !is_good_couplet(& cconn, cnc, cells_near_iconn) ) continue;
 
                   topology::cell_couplet ccnc(cconn,cnc,level,nsigma);
                   cc.push_back(ccnc);
@@ -1535,7 +1541,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  bool clusterizer::is_good_couplet(topology::cell mainc, topology::cell candidatec, std::vector<topology::cell> nearmain){
+  bool clusterizer::is_good_couplet(topology::cell * mainc, topology::cell candidatec, std::vector<topology::cell> nearmain){
     //*************************************************************
 
     // the couplet mainc -> candidatec is good only if
@@ -1543,20 +1549,25 @@ namespace CAT {
 
     clock.start(" clusterizer: is good couplet ","cumulative");
 
-    for(std::vector<topology::cell>::iterator icell=nearmain.begin(); icell != nearmain.end(); ++icell){
-      if( icell->id() == candidatec.id()) continue;
+    topology::cell a=*mainc;
+    
 
-      if(near_level(*icell, candidatec) == 0 ) continue;
+    for(std::vector<topology::cell>::const_iterator icell=nearmain.begin(); icell != nearmain.end(); ++icell){
+
+      topology::cell b=*icell;
+      if( b.id() == candidatec.id()) continue;
+
+      if(near_level(b, candidatec) == 0 ) continue;
 
       //    if( icell->intersect(candidatec) || icell->intersect(mainc) ) continue;  
       // don't reject candidate based on a cell that intersects it
        
-      m.message(" ... ... check if near node ", icell->id(), " has triplet ", mainc.id(), " <-> ", candidatec.id(), mybhep::VERBOSE); 
+      m.message(" ... ... check if near node ", b.id(), " has triplet ", a.id(), " <-> ", candidatec.id(), mybhep::VERBOSE); 
 
-      topology::cell_triplet ccc(mainc,*icell,candidatec, level, nsigma);
+      topology::cell_triplet ccc(a,b,candidatec, level, nsigma);
       ccc.calculate_joints(Ratio, QuadrantAngle, TangentPhi, TangentTheta);
       if(ccc.joints().size() > 0 ){
-        m.message(" ... ... yes it does: so couplet ", mainc.id(), " and ", candidatec.id(), " is not good",  mybhep::VERBOSE); 
+        m.message(" ... ... yes it does: so couplet ", a.id(), " and ", candidatec.id(), " is not good",  mybhep::VERBOSE); 
         clock.stop(" clusterizer: is good couplet ");
         return false;
       }
@@ -1704,8 +1715,10 @@ namespace CAT {
      
       if( nl > 0 )
         {
-          if( level >= mybhep::VVERBOSE )
+          if( level >= mybhep::VVERBOSE ){
             clog << "*";
+	  }
+
           topology::cell ck = *kcell;
           cells.push_back(ck);
         }

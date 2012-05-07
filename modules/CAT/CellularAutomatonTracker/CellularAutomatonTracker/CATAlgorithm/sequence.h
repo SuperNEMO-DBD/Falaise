@@ -90,8 +90,9 @@ namespace CAT {
       sequence()
       {
         appname_= "sequence: ";
+        nodes_.clear();
         free_ = false;
-        names_.push_back("default");
+        names_.clear();names_.push_back("default");
         has_vertex_ = false;
         vertex_ = experimental_point(small_neg,small_neg,small_neg,
                                      small_neg, small_neg, small_neg);
@@ -102,6 +103,10 @@ namespace CAT {
                                            small_neg, small_neg, small_neg);
         decay_vertex_type_="default";
         calo_id_ = default_integer;
+        chi2s_.clear();
+        helix_chi2s_.clear();
+        probs_.clear();
+        helix_ = helix();
         charge_ = experimental_double(small_neg, small_neg);
         momentum_ = experimental_double(small_neg, small_neg);
         length_ = experimental_double(small_neg, small_neg);
@@ -118,7 +123,7 @@ namespace CAT {
         appname_= "sequence: ";
         nodes_ = nodes;
         free_ = false;
-        names_.push_back("default");
+        names_.clear();names_.push_back("default");
         has_vertex_ = false;
         vertex_ = experimental_point(small_neg,small_neg,small_neg,
                                      small_neg, small_neg, small_neg);
@@ -129,6 +134,10 @@ namespace CAT {
                                            small_neg, small_neg, small_neg);
         decay_vertex_type_="default";
         calo_id_ = default_integer;
+        chi2s_.clear();
+        helix_chi2s_.clear();
+        probs_.clear();
+        helix_ = helix();
         charge_ = experimental_double(small_neg, small_neg);
         momentum_ = experimental_double(small_neg, small_neg);
         length_ = experimental_double(small_neg, small_neg);
@@ -141,9 +150,10 @@ namespace CAT {
         set_nsigma(nsigma);
         appname_= "sequence: ";
         node.set_free(false);
+        nodes_.clear();
         nodes_.push_back(node);
         free_ = true;
-        names_.push_back("default");
+        names_.clear();names_.push_back("default");
         has_vertex_ = false;
         vertex_ = experimental_point(small_neg,small_neg,small_neg,
                                      small_neg, small_neg, small_neg);
@@ -154,6 +164,10 @@ namespace CAT {
                                            small_neg, small_neg, small_neg);
         decay_vertex_type_="default";
         calo_id_ = default_integer;
+        chi2s_.clear();
+        helix_chi2s_.clear();
+        probs_.clear();
+        helix_ = helix();
         charge_ = experimental_double(small_neg, small_neg);
         momentum_ = experimental_double(small_neg, small_neg);
         length_ = experimental_double(small_neg, small_neg);

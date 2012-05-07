@@ -32,7 +32,7 @@ using namespace mybhep;
     logic_cell()
     {
       id_ = default_integer;
-    }
+   }
 
     //!Default destructor
     virtual ~logic_cell(){};

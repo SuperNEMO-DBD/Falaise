@@ -44,6 +44,7 @@ namespace CAT{
       cluster()
       {
         appname_= "cluster: ";
+        nodes_.clear();
         free_ = false;
       }
 
@@ -65,6 +66,7 @@ namespace CAT{
         set_nsigma(nsigma);
         appname_= "cluster: ";
         a_node.set_free(false);
+        nodes_.clear();
         nodes_.push_back(a_node);
         free_ = true;
       }
