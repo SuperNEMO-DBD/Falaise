@@ -82,9 +82,12 @@ endif()
 # It ius the recommended way to buidl CAT for production (pipelines).
 option ( CAT_MINIMAL_BUILD  "Minimal build " ON)
 
+set ( CAT_WITH_DEVEL_UTILS      0 )
+set ( CAT_WITH_DEVEL_DISPLAY    0 )
+set ( CAT_WITH_DEVEL_HISTOGRAMS 0 )
 if (NOT CAT_MINIMAL_BUILD)
-  set ( CAT_WITH_DEVEL_UTILS      1  )
-  set ( CAT_WITH_DEVEL_DISPLAY    1  )
+  set ( CAT_WITH_DEVEL_UTILS      1 )
+  set ( CAT_WITH_DEVEL_DISPLAY    1 )
   set ( CAT_WITH_DEVEL_HISTOGRAMS 1 )
 endif ()
 

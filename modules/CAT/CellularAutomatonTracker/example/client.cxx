@@ -182,6 +182,7 @@ int main (void)
     }
 
   // Another fake track :
+  ct::cell cmore; 
   for (int i = 0; i < 5; i++)
     {
       // X-Y position of the anode wire of the hit cell :
@@ -224,6 +225,28 @@ int main (void)
       c.set_block (block_id);
       c.set_iid (cell_id);
       c.set_fast (fast);
+      bool add = true;
+      if (add && (i == 1))
+        {
+          clog << "NOTICE: Add a special cell." << endl;
+          
+          ct::cell & c_more = CAT_input.add_cell ();
+          c_more = c;
+          c_more.set_id (ihit++);
+          int layer_id_more = layer_id + 1;
+          c_more.set_layer (layer_id_more);
+          ct::experimental_double z_more;
+          z_more.set_value (src_gap + (layer_id_more + 0.5) * CAT_setup.cell_size);
+          z_more.set_error (0.0);
+          ct::experimental_point gg_hit_position_more (x,
+                                                       y,
+                                                       z_more);
+          c_more.set_p (gg_hit_position_more);
+          double rdrift_more = rdrift;
+          double rdrift_err_more = 0.15 * CLHEP::mm;
+          c_more.set_r (rdrift_more);
+          c_more.set_er (rdrift_err_more);
+       }
     }
 
   // Yet another fake track :
