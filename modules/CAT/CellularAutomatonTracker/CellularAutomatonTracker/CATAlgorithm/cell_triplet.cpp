@@ -183,6 +183,23 @@ namespace CAT{
       joints_.clear();
       std::vector<line> t1 = cca().tangents(); // note: this tangent goes from cell B to cell A
       std::vector<line> t2 = ccb().tangents();
+      if( print_level() > mybhep::VERBOSE ){
+        clog << appname_ << " angles of tangents " << ca_.id() << " -> " << cb_.id() << " :" << endl;
+	for(vector<line>::iterator i1=t1.begin(); i1!=t1.end(); ++i1){
+	  clog << i1 - t1.begin() << ":  phi "; ca_.dump_point_phi(i1->epb()); clog << " -> "; cb_.dump_point_phi(i1->epa()); clog << " " << endl;
+	}
+        clog << appname_ << " angles of tangents " << cb_.id() << " -> " << cc_.id() << " :" << endl;
+	for(vector<line>::iterator i2=t2.begin(); i2!=t2.end(); ++i2){
+	  clog << i2 - t2.begin() << ":  phi ";  cb_.dump_point_phi(i2->epa()); clog << " -> " ; cc_.dump_point_phi(i2->epb()); clog << " " << endl;
+	}
+	if( ca_.small() ) clog << " cell " << ca_.id() << " is small " << endl;
+	if( cb_.small() ) clog << " cell " << cb_.id() << " is small " << endl;
+	if( cc_.small() ) clog << " cell " << cc_.id() << " is small " << endl;
+	if( ca_.intersect(cb_) ) clog << " cells " << ca_.id() << " and " << cb_.id() << " intersect " << endl;
+	if( cb_.intersect(cc_) ) clog << " cells " << cb_.id() << " and " << cc_.id() << " intersect " << endl;
+	if( cc_.intersect(ca_) ) clog << " cells " << cc_.id() << " and " << ca_.id() << " intersect " << endl;
+      }
+
 
       bool use_ownerror = true;
 
@@ -297,10 +314,10 @@ namespace CAT{
           line newt2(p, i2->epb(), print_level(), get_nsigma());
 
           if( print_level() > mybhep::VERBOSE ){
-            clog << " p1: "; ca_.dump_point(i1->epb());
-            clog << " p2 average point: "; cb_.dump_point(p);
-            clog << " p3: "; cc_.dump_point(i2->epb());
-            clog << "    separation: "; (local_separation*180/M_PI).dump();
+            clog << " p1: phi = "; ca_.dump_point(i1->epb()); clog << " " << endl;
+            clog << " p2 average point: "; cb_.dump_point(p); clog << " " << endl;
+            clog << " p3: "; cc_.dump_point(i2->epb()); clog << " " << endl;
+            clog << "    separation: "; (local_separation*180/M_PI).dump(); clog << " " << endl;
           }
 
           double chi2 = 0.;

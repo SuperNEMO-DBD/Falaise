@@ -1559,6 +1559,10 @@ namespace CAT {
 
       if(near_level(b, candidatec) == 0 ) continue;
 
+      if(near_level(b, candidatec) < near_level(a, candidatec) || 
+	 near_level(b, a) < near_level(a, candidatec) )
+	continue;  // cannot match a->b or b->c if a->c is nearer
+
       //    if( icell->intersect(candidatec) || icell->intersect(mainc) ) continue;  
       // don't reject candidate based on a cell that intersects it
        

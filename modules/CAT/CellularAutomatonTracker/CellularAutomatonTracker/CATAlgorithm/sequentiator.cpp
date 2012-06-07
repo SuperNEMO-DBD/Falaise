@@ -1669,49 +1669,51 @@ namespace CAT {
 
     for(vector<topology::node>::iterator inode=sequence->nodes_.begin(); inode!=sequence->nodes_.end(); ++inode)
       {
-        clog << (int)inode->c().id();
+        clog << " " << (int)inode->c().id();
 
         if( inode->free() )
           clog << "* ";
 
         topology::experimental_vector v(inode->c().ep(),inode->ep());
 
-        clog << "[" << v.x().value() << ", " << v.z().value() << "]";
-
-        clog << "(";
-      
-        for(vector<topology::cell>::iterator ilink=(*inode).links_.begin(); ilink != (*inode).links_.end(); ++ilink){
-          int iccc = sequence->get_link_index_of_cell(inode - sequence->nodes_.begin(), *ilink);
-
-          if( iccc < 0 ) continue;  // connection through a gap
-
-          if( inode - sequence->nodes_.begin() < 1 ){
-            clog << "->" << inode->cc()[iccc].cb().id();
-            if( ilink->free() ){
-              clog << "[*]";
-            }
-            clog << "[" << inode->cc_[iccc].iteration() << " "
-                 << inode->cc()[iccc].tangents().size() << "]";
-            if( ! ilink->begun() )
-              clog << "[n]";
-          }else{
-            clog << inode->ccc()[iccc].ca().id() << "<->" << inode->ccc()[iccc].cc().id();
-            if( ilink->free() ){
-              clog << "[*]";
-            }
-            clog << "[" << inode->ccc_[iccc].iteration() << " "
-                 << inode->ccc()[iccc].joints().size() << "]";
-            if( ! ilink->begun() )
-              clog << "[n]";
-          }
-        }
-      
-        clog << " chi2 = " << inode->chi2();
-
-        clog << " ) ";
-      
+        if( level >= mybhep::VVERBOSE ){
+	  clog << "[" << v.x().value() << ", " << v.z().value() << "]";
+	  
+	  clog << "(";
+	  
+	  for(vector<topology::cell>::iterator ilink=(*inode).links_.begin(); ilink != (*inode).links_.end(); ++ilink){
+	    int iccc = sequence->get_link_index_of_cell(inode - sequence->nodes_.begin(), *ilink);
+	    
+	    if( iccc < 0 ) continue;  // connection through a gap
+	    
+	    if( inode - sequence->nodes_.begin() < 1 ){
+	      clog << "->" << inode->cc()[iccc].cb().id();
+	      if( ilink->free() ){
+		clog << "[*]";
+	      }
+	      clog << "[" << inode->cc_[iccc].iteration() << " "
+		   << inode->cc()[iccc].tangents().size() << "]";
+	      if( ! ilink->begun() )
+		clog << "[n]";
+	    }else{
+	      clog << inode->ccc()[iccc].ca().id() << "<->" << inode->ccc()[iccc].cc().id();
+	      if( ilink->free() ){
+		clog << "[*]";
+	      }
+	      clog << "[" << inode->ccc_[iccc].iteration() << " "
+		   << inode->ccc()[iccc].joints().size() << "]";
+	      if( ! ilink->begun() )
+		clog << "[n]";
+	    }
+	  }
+	  
+	  clog << " chi2 = " << inode->chi2();
+	  
+	  clog << " )";
+	  
+	}
       }
-  
+    
     clog << " " << endl;
   
     return;
@@ -2388,7 +2390,7 @@ namespace CAT {
       topology::sequence bestmatch;
       bool matched = false;
 
-      m.message(" try to match sequence ", iseq->name(), mybhep::VVERBOSE);
+      m.message(" try to match sequence ", iseq->name(), mybhep::VERBOSE);
 
       if( level >= mybhep::VVERBOSE)
         print_a_sequence( &(*iseq) );
@@ -2406,7 +2408,7 @@ namespace CAT {
           continue;
         }
       
-        m.message(" ... try to match sequence ", iseq->name(), " to ", jseq->name(), mybhep::VVERBOSE);
+        m.message(" ... try to match sequence ", iseq->name(), " to ", jseq->name(), mybhep::VERBOSE);
         if( level >= mybhep::VVERBOSE)
           print_a_sequence( &(*jseq) );
       
@@ -2414,6 +2416,7 @@ namespace CAT {
         bool invertA, invertB;
         if( !iseq->good_match(*jseq, invertA, invertB, NOffLayers) ){
           ++jseq;
+	  m.message(" ... obviously no good match ", mybhep::VERBOSE);
           continue;
         }
 
@@ -2450,7 +2453,7 @@ namespace CAT {
         double gapsize = gaps_Z[gn];
 
         if( penetration > gapsize ){
-          m.message("SQ user: not linking because penetrating across the gap, penetration",  penetration, " gap ", gapsize, " deltaphi ", deltaphi*180./acos(-1.),  mybhep::VERBOSE);
+          m.message("SQ user: no good match because penetrating across the gap, penetration",  penetration, " gap ", gapsize, " deltaphi ", deltaphi*180./acos(-1.),  mybhep::VERBOSE);
           ++jseq;
           continue;
         }
@@ -2492,14 +2495,14 @@ namespace CAT {
       m.message(" best match to sequence ", iseq->name(),  " is ", sequences_[index].name(), " with prob ", probmax, " chi2 ", chi2min, " ndof ", ndofbest, mybhep::VVERBOSE);
     
       if( probmax > 0 ){
-        m.message(" replace sequence ", iseq->name(), " with matched sequence ", mybhep::VVERBOSE); fflush(stdout);
+        m.message(" replace sequence ", iseq->name(), " with matched sequence ", mybhep::VERBOSE); fflush(stdout);
         size_t restart_index = iseq - sequences_.begin();
         std::swap(*iseq, bestmatch);
         iseq = sequences_.begin();
         advance(iseq, restart_index);
       
         string delenda_family = sequences_[index].family();
-        m.message(" erase all sequences of family ", delenda_family, mybhep::VVERBOSE); fflush(stdout);
+        m.message(" erase all sequences of family ", delenda_family, mybhep::VERBOSE); fflush(stdout);
       
         std::vector<topology::sequence>::iterator jseq = sequences_.begin();
         while( jseq != sequences_.end() ){
@@ -2581,8 +2584,8 @@ namespace CAT {
         continue;
       }
 
-      m.message(" begin matching with sequence ", iseq->name(), mybhep::VVERBOSE);
-      if( level >= mybhep::VVERBOSE)
+      m.message(" begin matching with sequence ", iseq->name(), mybhep::VERBOSE);
+      if( level >= mybhep::VERBOSE)
         print_a_sequence( &(*iseq) );
     
       size_t jmin;
@@ -2590,12 +2593,12 @@ namespace CAT {
       topology::sequence newseq = *iseq;
       while( can_match(newseq, &jmin, invertA, invertB) )
         {
-          m.message(" best matching is ", jmin, " invertA ", invertA, " invertB ", invertB, mybhep::VVERBOSE);
+          m.message(" best matching is ", sequences_[jmin].name(), " invertA ", invertA, " invertB ", invertB, mybhep::VERBOSE);
           if( level >= mybhep::VVERBOSE)
             print_a_sequence( &(sequences_[jmin]) );
 
           newseq = newseq.match(sequences_[jmin], invertA, invertB);
-          if( level >= mybhep::VVERBOSE)
+          if( level >= mybhep::VERBOSE)
             print_a_sequence( &newseq );
 
           if( first ){

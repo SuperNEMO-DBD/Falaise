@@ -96,8 +96,8 @@ namespace topology{
 
     if( print_level() >= mybhep::VVERBOSE ){
       clog << " avereging phi1: "; (phi1*180./M_PI).dump();
-      clog << " phi2: "; (phi2*180./M_PI).dump();
-      clog << " phi_ave: "; (ave_phi*180./M_PI).dump();
+      clog << " and phi2: "; (phi2*180./M_PI).dump();
+      clog << " to phi_ave: "; (ave_phi*180./M_PI).dump();
       clog << " " << endl;
     }
 
@@ -121,6 +121,15 @@ namespace topology{
     clog << " x: "; (v.x()).dump();
     clog << " y: "; (v.y()).dump();
     clog << " z: "; (v.z()).dump();
+    clog << " phi: "; (v.phi()*180./M_PI).dump();
+
+
+  }
+
+
+  void cell::dump_point_phi(experimental_point epp)const{
+
+    experimental_vector v(ep(), epp);
     clog << " phi: "; (v.phi()*180./M_PI).dump();
 
 

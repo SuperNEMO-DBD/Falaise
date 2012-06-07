@@ -217,6 +217,12 @@ namespace CAT {
         names_.push_back(name);
       }
 
+      //! set names
+      void set_names(std::vector<string> names){
+        names_.clear();
+        names_=names;
+      }
+
       //! add name
       void add_name(string name){
         names_.push_back(name);
@@ -590,7 +596,7 @@ namespace CAT {
           inverted_nodes.push_back(in);
         }
         inverted.set_nodes( inverted_nodes );
-        inverted.set_name( name() );
+	inverted.set_names( names() );
         if( has_decay_vertex() ){
           if( decay_vertex_type() == "foil" )
             inverted.set_vertex( decay_vertex(), decay_vertex_type() );
