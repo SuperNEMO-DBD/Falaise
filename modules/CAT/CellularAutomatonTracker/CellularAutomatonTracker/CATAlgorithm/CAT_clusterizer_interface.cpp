@@ -163,8 +163,8 @@ namespace CAT {
     czer_.set_MaxTime (setup_.MaxTime / CLHEP::ms);
     string leveltmp = setup_.level;
     boost::to_upper(leveltmp);
-    //    czer_.set_level (leveltmp); //mybhep::get_info_level (leveltmp));
-    czer_.set_level ("VVERBOSE"); //mybhep::get_info_level (leveltmp));
+
+    czer_.set_level (leveltmp); //mybhep::get_info_level (leveltmp));
 
     // Algorithm parameters :
     czer_.set_SmallRadius (setup_.SmallRadius / CLHEP::mm);
