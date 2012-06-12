@@ -325,7 +325,10 @@ namespace CAT {
 
     m.message("pmax",pmax,"MeV",mybhep::NORMAL); 
     m.message("small radius",SmallRadius,"mm",mybhep::NORMAL); 
-    m.message("tangent phi",TangentPhi,mybhep::NORMAL); 
+    m.message("tangent phi: ",TangentPhi,mybhep::NORMAL); 
+    cout << " aaa cout " << endl;
+    clog << " aaa  clog " << endl;
+    m.message(" aaa message ", mybhep::NORMAL);
     m.message("tangent theta",TangentTheta,mybhep::NORMAL); 
     m.message("small number",SmallNumber,"mm",mybhep::NORMAL); 
     m.message("quadrant angle",QuadrantAngle,mybhep::NORMAL); 
