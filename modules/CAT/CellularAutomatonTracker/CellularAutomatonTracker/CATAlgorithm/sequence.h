@@ -1449,6 +1449,29 @@ namespace CAT {
       }
 
 
+      bool intersect_circle_from_end(circle c, experimental_point * ep)const{
+
+        experimental_double _phi = helix_.phi_of_point(last_node().ep());
+
+        bool result = helix_.intersect_circle(c, ep, _phi);
+
+        return result;
+
+      }
+
+      bool intersect_circle_from_begin(circle c, experimental_point * ep)const{
+
+        if( nodes().size() < 1 ) return false;
+
+        experimental_double _phi = helix_.phi_of_point(nodes_[0].ep());
+
+        bool result = helix_.intersect_circle(c, ep, _phi);
+
+        return result;
+
+      }
+
+
       string family()const{
         size_t i1 = name().find("_");
         size_t i2 = name().find("_",i1+1);

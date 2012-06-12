@@ -295,6 +295,62 @@ namespace CAT{
     }
 
 
+    bool circle::intersect_circle(circle c, experimental_point * ep, experimental_double _phi){
+      
+      // check that circles are intersecting
+      experimental_double dist = experimental_vector(center(), c.center()).hor().length();
+      experimental_double rsum = radius() + c.radius();
+
+      if( rsum.value() < dist.value() ){
+	if( print_level() >= mybhep::VVERBOSE ){
+	  clog << " can't extrapolate circle to circle: the circles don't intesect " << endl;
+	}
+	return false;
+      }
+
+
+      // find middle point between circles
+      // a^2 + h^2 = R0^2,   b^2 + h^2 = R1^2
+      // so   
+      // a^2 - R0^2 = b^2 - R1^2 =
+      //            = a^2 + d^2 - 2ad - R1^2
+      // hence
+      // 2ad = R0^2 - R1^2 + d^2
+      experimental_double a=(experimental_square(radius()) - experimental_square(c.radius()) + experimental_square(dist))/(dist*2.);
+      experimental_point middle = (center() + (c.center() - center())*a/dist).point_from_vector();
+      experimental_double h=experimental_sqrt(experimental_square(radius()) - square(a));
+
+
+
+      // find transverse axis
+      experimental_vector forward_axis(center(), c.center());
+      experimental_double fdistance = forward_axis.length();
+      experimental_double fdistance_hor_ = forward_axis.hor().length();
+      forward_axis /= fdistance.value();
+      experimental_vector waxis(0.,1.,0.,0.,0.,0.);
+      experimental_vector transverse_axis = (forward_axis ^ waxis).unit();
+
+
+      // find two intersection point
+      experimental_point p1=(middle + transverse_axis*h).point_from_vector();
+      double phi1 = phi_of_point(p1).value();
+      double dphi1 = fabs(phi1 - _phi.value());
+      experimental_point p2=(middle - transverse_axis*h).point_from_vector();
+      double phi2 = phi_of_point(p2).value();
+      double dphi2 = fabs(phi2 - _phi.value());
+
+      // pick closest to initial point of extrapolation
+      if( dphi1 < dphi2 )
+	*ep = p1;
+      else
+	*ep = p2;
+
+
+      return true;
+      
+    }
+
+
     // average
     circle average (const std::vector<circle> vs)
     {

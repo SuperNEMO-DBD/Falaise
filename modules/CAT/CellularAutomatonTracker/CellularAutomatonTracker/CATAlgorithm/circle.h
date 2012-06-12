@@ -92,6 +92,8 @@ namespace CAT{
 
       bool intersect_plane(plane pl, experimental_point * ep, experimental_double _phi);
 
+      bool intersect_circle(circle c, experimental_point * ep, experimental_double _phi);
+
     
     };
 

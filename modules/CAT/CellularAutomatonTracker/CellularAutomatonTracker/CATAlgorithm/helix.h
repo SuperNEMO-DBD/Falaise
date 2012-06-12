@@ -267,6 +267,15 @@ namespace CAT {
       
       }
 
+      bool intersect_circle(circle c, experimental_point * ep, experimental_double _phi)const{
+      
+	bool result = get_circle().intersect_circle(c, ep, _phi);
+	ep->set_y(position(*ep).y());
+        
+	return result;
+        
+      }
+
 
 
     };

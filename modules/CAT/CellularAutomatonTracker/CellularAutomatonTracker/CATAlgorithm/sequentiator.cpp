@@ -1541,6 +1541,27 @@ namespace CAT {
   }
 
   //*************************************************************
+  topology::circle sequentiator::get_foil_circle(){
+    //*************************************************************
+
+    if( SuperNemo ){
+      m.message(" problem: asking for foil circle in SuperNemo ", mybhep::NORMAL);
+      topology::circle null;
+      return null;
+    }
+
+    topology::experimental_point center(0., 0., 0., 0., 0., 0.);
+
+    topology::experimental_double radius(FoilRadius, 0.);
+
+    topology::circle c(center, radius, level, nsigma);
+
+    return c;
+
+
+  }
+
+  //*************************************************************
   void sequentiator::interpret_physics(std::vector<topology::calorimeter_hit> calos){
     //*************************************************************
 
@@ -1601,23 +1622,29 @@ namespace CAT {
         }
       
         // match to foil
-        if( SuperNemo ){
-          if( !iseq->nodes_.empty() ){
+	if( !iseq->nodes_.empty() ){
           
-            m.message( " extrapolate vertex on foil " , mybhep::VVERBOSE);
-
-            topology::experimental_point extrapolation;
+	  m.message( " extrapolate vertex on foil " , mybhep::VVERBOSE);
+	  
+	  topology::experimental_point extrapolation;
           
-            if( gap_number(iseq->nodes_[0].c() ) != 0 ){
-              m.message( " not near ", mybhep::VVERBOSE);
-            }
-            else{
-              if( !iseq->intersect_plane_from_begin(get_foil_plane(), &extrapolation) )
+	  if( gap_number(iseq->nodes_[0].c() ) != 0 ){
+	    m.message( " not near ", mybhep::VVERBOSE);
+	  }
+	  else{
+	    if( SuperNemo ){
+	      if( !iseq->intersect_plane_from_begin(get_foil_plane(), &extrapolation) )
                 m.message(" no intersection ", mybhep::VVERBOSE);
               else
                 iseq->set_vertex(extrapolation, "foil");
-            }
-          }
+	    }else{
+	      m.message(" warning: matching to Nemo3 foil ", mybhep::VVERBOSE);
+	      if( !iseq->intersect_circle_from_begin(get_foil_circle(), &extrapolation) )
+		m.message(" no intersection ", mybhep::VVERBOSE);
+	      else
+		iseq->set_vertex(extrapolation, "foil");
+	    }
+	  }
         }
 
         if( level >= mybhep::VVERBOSE ){
