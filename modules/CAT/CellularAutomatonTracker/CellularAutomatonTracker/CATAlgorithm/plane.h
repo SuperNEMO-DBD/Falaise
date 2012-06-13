@@ -34,6 +34,9 @@ namespace CAT {
       // normal looking towards the origin
       experimental_vector norm_;
 
+      // Nemo3 or SuperNEMO
+      std::string type_;
+
     public:   
       //!Default constructor 
       plane(prlevel level=mybhep::NORMAL, double nsigma=10.);
@@ -65,6 +68,9 @@ namespace CAT {
       //! set norm
       void set_norm(experimental_vector norm);
 
+      //! set type
+      void set_type(string type);
+
       //! get center
       const experimental_point& center()const;
 
@@ -73,6 +79,9 @@ namespace CAT {
 
       // returns the normal looking towards the origin
       const experimental_vector& norm() const;
+
+      // get type
+      const string& type() const;
 
       std::string view()const;
     

@@ -1638,7 +1638,6 @@ namespace CAT {
               else
                 iseq->set_vertex(extrapolation, "foil");
 	    }else{
-	      m.message(" warning: matching to Nemo3 foil ", mybhep::VVERBOSE);
 	      if( !iseq->intersect_circle_from_begin(get_foil_circle(), &extrapolation) )
 		m.message(" no intersection ", mybhep::VVERBOSE);
 	      else

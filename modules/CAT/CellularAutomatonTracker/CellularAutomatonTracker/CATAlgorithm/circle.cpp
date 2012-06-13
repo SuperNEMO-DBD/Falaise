@@ -318,7 +318,7 @@ namespace CAT{
       // 2ad = R0^2 - R1^2 + d^2
       experimental_double a=(experimental_square(radius()) - experimental_square(c.radius()) + experimental_square(dist))/(dist*2.);
       experimental_point middle = (center() + (c.center() - center())*a/dist).point_from_vector();
-      experimental_double h=experimental_sqrt(experimental_square(radius()) - square(a));
+      experimental_double h=experimental_sqrt(experimental_fabs(experimental_square(radius()) - square(a)));
 
 
 
@@ -345,6 +345,13 @@ namespace CAT{
       else
 	*ep = p2;
 
+      if( print_level() >= mybhep::VVERBOSE ){
+	clog << " track: "; dump(); 
+	clog << " foil : "; c.dump();
+	clog << " intersection 1: "; p1.dump();		      
+	clog << " intersection 2: "; p2.dump();		      
+	clog << " dist "; dist.dump(); clog << " rsum "; rsum.dump(); clog << " a "; a.dump(); clog << " h "; h.dump(); clog << " middle "; middle.dump();
+      }
 
       return true;
       

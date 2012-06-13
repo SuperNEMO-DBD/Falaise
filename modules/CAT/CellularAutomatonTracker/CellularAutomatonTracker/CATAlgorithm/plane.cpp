@@ -25,6 +25,7 @@ namespace CAT {
                                   small_neg, small_neg, small_neg);
       set_print_level(level);
       set_nsigma(nsigma);
+      type_="undefined";
     }
 
     //!Default destructor
@@ -45,6 +46,7 @@ namespace CAT {
       center_ = center;
       sizes_ = sizes;
       norm_ = norm;
+      type_="undefined";
     }
 
     /*** dump ***/
@@ -61,7 +63,7 @@ namespace CAT {
           }
 
         a_out << indent << appname_ << " -------------- " << endl;
-        a_out << indent << " view: " << this->view() << endl;
+        a_out << indent << " type: " << this->type() << " view: " << this->view() << endl;
         a_out << indent << " center " << endl;
         this->center().dump(a_out, "", indent + "    ");
         a_out << indent << " sizes " << endl;
@@ -103,6 +105,13 @@ namespace CAT {
     }
 
 
+    //! set tyoe
+    void plane::set_type(string type)
+    {
+      type_ = type;
+    }
+
+
     //! get center
     const experimental_point& plane::center()const
     {
@@ -120,14 +129,31 @@ namespace CAT {
       return norm_;
     }
 
+    // get type
+    const string& plane::type() const{
+      return type_;
+    }
+
     string plane::view()const{
-      if( norm().x().value() != 0 )
-        return "x";
+      if( type() == "SuperNEMO" ){
+	if( norm().x().value() != 0 )
+	  return "x";
+	
+	if( norm().y().value() != 0 )
+	  return "y";
+	
+	return "z";
+      }
+      else if( type() == "Nemo3" ){
+	clog << " warning: undefined view for calorimeter of type " << type() << endl;
+	return "null";
+      }
 
-      if( norm().y().value() != 0 )
-        return "y";
+      
+      clog << " warning: undefined calo type: " << type() << " cannot determine view " << endl;
+      exit(0);
 
-      return "z";
+      return "null";
 
     }
     

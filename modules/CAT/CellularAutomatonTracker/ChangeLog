@@ -1,6 +1,6 @@
-2012-01-01 Federico Nova
-        * Creation of the CellularAutomatonTracker (CAT) package
-        * Pre-version 0.1.0
+2012-06-13 Federico Nova <nova@physics.utexas.edu>
+        * calo hits have type "Nemo3 or SuperNEMO"
+	* intersection of vertex with circular foil
 2012-03-26 François Mauger
         * Preparation of the port to Channel:
         - fix CMake skeleton files
@@ -32,3 +32,6 @@
 	- cmath : use M_PI in place of acos(-1) (faster)
         * Port to Channel
         * Pre-version 0.2.0
+2012-01-01 Federico Nova
+        * Creation of the CellularAutomatonTracker (CAT) package
+        * Pre-version 0.1.0
