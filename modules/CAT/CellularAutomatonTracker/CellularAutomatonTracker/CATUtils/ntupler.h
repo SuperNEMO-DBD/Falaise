@@ -91,6 +91,7 @@ class ntupler
     Float_t    Tk_le[MAXNTRACKS];
     Int_t          Nbr_vtx[MAXNTRACKS];
     Float_t         Vtx_cos_dir[MAXNTRACKS][MAXNVERTEX][3];
+    Float_t         Decay_Vtx_cos_dir[MAXNTRACKS][MAXNVERTEX][3];
     Float_t         Vtx_x[MAXNTRACKS][MAXNVERTEX];
     Float_t         Vtx_y[MAXNTRACKS][MAXNVERTEX];
     Float_t         Vtx_z[MAXNTRACKS][MAXNVERTEX];
@@ -98,6 +99,7 @@ class ntupler
     Float_t    True_Tk_le[MAXNTRACKS];
     Int_t          True_Nbr_vtx[MAXNTRACKS];
     Float_t         True_Vtx_cos_dir[MAXNTRACKS][MAXNVERTEX][3];
+    Float_t         True_Decay_Vtx_cos_dir[MAXNTRACKS][MAXNVERTEX][3];
     Float_t         True_Vtx_x[MAXNTRACKS][MAXNVERTEX];
     Float_t         True_Vtx_y[MAXNTRACKS][MAXNVERTEX];
     Float_t         True_Vtx_z[MAXNTRACKS][MAXNVERTEX];

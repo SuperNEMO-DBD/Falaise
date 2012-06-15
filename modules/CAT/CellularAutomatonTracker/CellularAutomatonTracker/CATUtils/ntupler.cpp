@@ -80,6 +80,9 @@ void ntupler::initialize (void)
       __event.Vtx_cos_dir[i][k][0] = 0;
       __event.Vtx_cos_dir[i][k][1] = 0;
       __event.Vtx_cos_dir[i][k][2] = 0;
+      __event.Decay_Vtx_cos_dir[i][k][0] = 0;
+      __event.Decay_Vtx_cos_dir[i][k][1] = 0;
+      __event.Decay_Vtx_cos_dir[i][k][2] = 0;
       __event.Vtx_x[i][k] = 0;
       __event.Vtx_y[i][k] = 0;
       __event.Vtx_z[i][k] = 0;
@@ -87,6 +90,9 @@ void ntupler::initialize (void)
       __event.True_Vtx_cos_dir[i][k][0] = 0;
       __event.True_Vtx_cos_dir[i][k][1] = 0;
       __event.True_Vtx_cos_dir[i][k][2] = 0;
+      __event.True_Decay_Vtx_cos_dir[i][k][0] = 0;
+      __event.True_Decay_Vtx_cos_dir[i][k][1] = 0;
+      __event.True_Decay_Vtx_cos_dir[i][k][2] = 0;
       __event.True_Vtx_x[i][k] = 0;
       __event.True_Vtx_y[i][k] = 0;
       __event.True_Vtx_z[i][k] = 0;
@@ -110,13 +116,20 @@ void ntupler::initialize (void)
   __tree->Branch("Tk_le",__event.Tk_le,"Tk_le[Nbr_tks]/F");
   __tree->Branch("Nbr_vtx",__event.Nbr_vtx,"Nbr_vtx[Nbr_tks]/I");
   __tree->Branch("Vtx_cos_dir",__event.Vtx_cos_dir,"Vtx_cos_dir[Nbr_tks][5][3]/F");
+  __tree->Branch("Decay_Vtx_cos_dir",__event.Decay_Vtx_cos_dir,"Decay_Vtx_cos_dir[Nbr_tks][5][3]/F");
   __tree->Branch("Vtx_x",__event.Vtx_x,"Vtx_x[Nbr_tks][5]/F");
   __tree->Branch("Vtx_y",__event.Vtx_y,"Vtx_y[Nbr_tks][5]/F");
   __tree->Branch("Vtx_z",__event.Vtx_z,"Vtx_z[Nbr_tks][5]/F");
+  __tree->Branch("True_Vtx_cos_dir",__event.True_Vtx_cos_dir,"True_Vtx_cos_dir[Nbr_tks][5][3]/F");
+  __tree->Branch("True_Decay_Vtx_cos_dir",__event.True_Decay_Vtx_cos_dir,"True_Decay_Vtx_cos_dir[Nbr_tks][5][3]/F");
+  __tree->Branch("True_Vtx_x",__event.True_Vtx_x,"True_Vtx_x[Nbr_tks][5]/F");
+  __tree->Branch("True_Vtx_y",__event.True_Vtx_y,"True_Vtx_y[Nbr_tks][5]/F");
+  __tree->Branch("True_Vtx_z",__event.True_Vtx_z,"True_Vtx_z[Nbr_tks][5]/F");
   __tree->Branch("Ptx",__event.Ptx,"Ptx[Nbr_tks][500]/F");
   __tree->Branch("Pty",__event.Pty,"Pty[Nbr_tks][500]/F");
   __tree->Branch("Ptz",__event.Ptz,"Ptz[Nbr_tks][500]/F");
   __tree->Branch("Ptid",__event.Ptid,"Ptid[Nbr_tks][500]/I");
+  __tree->Branch("True_Nbr_tks",&__event.True_Nbr_tks,"True_Nbr_tks/I");
   
   return;
 }
@@ -239,20 +252,21 @@ void ntupler::__fill ()
 	cout << " warning: iseq " << iseq - tracked_data_.scenarios_[0].sequences_.begin() << " maxntracks " << MAXNTRACKS << endl;
 	continue;
       }
-
+      
       __event.Nbr_pts[trk_counter] = iseq->nodes_.size();
       
       size_t pt_counter = 0;
       for(std::vector<topology::node>::iterator inode = iseq->nodes_.begin(); 
 	  inode != iseq->nodes_.end(); ++inode){
-
+	
 	if( inode - iseq->nodes_.begin() >= MAXNHITS ){
 	  cout << " warning: inode " << inode - iseq->nodes_.begin() << " maxnhits " << MAXNHITS << endl;
 	  continue;
 	}
-
-
+	
+      
 	size_t cindex = get_cell_index(inode->c());
+
 	__event.Ind_points[trk_counter][pt_counter] = cindex;
 	__event.Ptx[trk_counter][pt_counter] = inode->ep().x().value();
 	__event.Pty[trk_counter][pt_counter] = inode->ep().y().value();
@@ -270,16 +284,17 @@ void ntupler::__fill ()
 	__event.Vtx_cos_dir[trk_counter][0][1]=dir.y().value();
 	__event.Vtx_cos_dir[trk_counter][0][2]=dir.z().value();
       }
-      
+
+      __event.Vtx_x[trk_counter][0]=iseq->vertex().x().value();
+      __event.Vtx_y[trk_counter][0]=iseq->vertex().y().value();
+      __event.Vtx_z[trk_counter][0]=iseq->vertex().z().value();
+
       if( iseq->has_decay_vertex() && iseq->nodes_.size() >= 2){
 	size_t s = iseq->nodes_.size();
 	topology::experimental_vector dir(iseq->nodes_[s-2].ep(), iseq->nodes_[s-1].ep());
-	__event.Vtx_cos_dir[trk_counter][1][0]=dir.x().value();
-	__event.Vtx_cos_dir[trk_counter][1][1]=dir.y().value();
-	__event.Vtx_cos_dir[trk_counter][1][2]=dir.z().value();
-	__event.Vtx_x[trk_counter][0]=iseq->vertex().x().value();
-	__event.Vtx_y[trk_counter][0]=iseq->vertex().y().value();
-	__event.Vtx_z[trk_counter][0]=iseq->vertex().z().value();
+	__event.Decay_Vtx_cos_dir[trk_counter][1][0]=dir.x().value();
+	__event.Decay_Vtx_cos_dir[trk_counter][1][1]=dir.y().value();
+	__event.Decay_Vtx_cos_dir[trk_counter][1][2]=dir.z().value();
       }
       
       trk_counter ++;
@@ -310,12 +325,14 @@ void ntupler::__fill ()
     if( iseq->has_decay_vertex() && iseq->nodes_.size() >= 2){
       size_t s = iseq->nodes_.size();
       topology::experimental_vector dir(iseq->nodes_[s-2].ep(), iseq->nodes_[s-1].ep());
-      __event.Vtx_cos_dir[true_trk_counter][1][0]=dir.x().value();
-      __event.Vtx_cos_dir[true_trk_counter][1][1]=dir.y().value();
-      __event.Vtx_cos_dir[true_trk_counter][1][2]=dir.z().value();
-      __event.Vtx_x[true_trk_counter][0]=iseq->vertex().x().value();
-      __event.Vtx_y[true_trk_counter][0]=iseq->vertex().y().value();
-      __event.Vtx_z[true_trk_counter][0]=iseq->vertex().z().value();
+      __event.True_Decay_Vtx_cos_dir[true_trk_counter][1][0]=dir.x().value();
+      __event.True_Decay_Vtx_cos_dir[true_trk_counter][1][1]=dir.y().value();
+      __event.True_Decay_Vtx_cos_dir[true_trk_counter][1][2]=dir.z().value();
+    }
+    if( iseq->has_vertex() ){
+      __event.True_Vtx_x[true_trk_counter][0]=iseq->vertex().x().value();
+      __event.True_Vtx_y[true_trk_counter][0]=iseq->vertex().y().value();
+      __event.True_Vtx_z[true_trk_counter][0]=iseq->vertex().z().value();
     }
     
     
