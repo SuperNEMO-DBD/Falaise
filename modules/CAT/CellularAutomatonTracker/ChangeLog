@@ -1,3 +1,7 @@
+2012-06-19 Federico Nova <nova@physics.utexas.edu>
+        * ntupler: added charge, momentum
+        * display: possibility to plot chi2
+        * sequentiator: direct scenarios tracks out of foil
 2012-06-15 Federico Nova <nova@physics.utexas.edu>
         * added features to ntupler
 2012-06-13 Federico Nova <nova@physics.utexas.edu>
