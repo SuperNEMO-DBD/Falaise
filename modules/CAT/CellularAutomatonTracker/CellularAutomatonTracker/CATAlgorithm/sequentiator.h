@@ -495,6 +495,7 @@ namespace CAT {
     bool near(topology::cell c, topology::plane pl);
     double distance_from_foil(topology::experimental_point ep);
     bool direct_out_of_foil(void);
+    bool direct_scenarios_out_of_foil(void);
     void print_families( void );
     void make_families();
     bool can_add_family(topology::scenario sc, size_t* jmin, size_t* nfree, double* Chi2, size_t* noverlaps, int32_t* ndof, topology::tracked_data td);

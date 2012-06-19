@@ -89,6 +89,8 @@ class ntupler
     
     Int_t     Ind_points[MAXNTRACKS][MAXNHITS];
     Float_t    Tk_le[MAXNTRACKS];
+    Float_t    Q[MAXNTRACKS];
+    Float_t    mom[MAXNTRACKS];
     Int_t          Nbr_vtx[MAXNTRACKS];
     Float_t         Vtx_cos_dir[MAXNTRACKS][MAXNVERTEX][3];
     Float_t         Decay_Vtx_cos_dir[MAXNTRACKS][MAXNVERTEX][3];
@@ -105,7 +107,6 @@ class ntupler
     Float_t         True_Vtx_z[MAXNTRACKS][MAXNVERTEX];
     
     
-    
   } event; 
   
   
@@ -114,6 +115,7 @@ class ntupler
   TTree *__tree;
   event __event;
   TH1F *h1;
+  TH1F *helix_chi2;
   TNtuple *__event_ntuple, *__hits_ntuple, *__vertexes_ntuple,  *__tracks_ntuple;
 
   topology::tracked_data tracked_data_;

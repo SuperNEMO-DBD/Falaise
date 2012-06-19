@@ -27,6 +27,7 @@ void ntupler::initialize (void)
   
   __f = new TFile("figure/local_tracking.root","RECREATE");
   h1 = new TH1F("h1","x distribution",100,-4,4);
+  helix_chi2 = new TH1F("helix_chi2","helix chi2 distribubtion",1000,0.,1000.);
   __event_ntuple = new TNtuple("__event_ntuple","event",
 			       "number_of_hits:number_of_tracks");
   __hits_ntuple = new TNtuple("__hits_ntuple","calibrated hits",
@@ -71,6 +72,8 @@ void ntupler::initialize (void)
     }
     
     __event.Tk_le[i]=0;
+    __event.Q[i]=0;
+    __event.mom[i]=0;
     __event.Nbr_vtx[i]=0;
 
     __event.True_Tk_le[i]=0;
@@ -114,6 +117,8 @@ void ntupler::initialize (void)
   __tree->Branch("Nbr_pts",__event.Nbr_pts,"Nbr_pts[Nbr_tks]/I");
   __tree->Branch("Ind_points",__event.Ind_points,"Ind_points[Nbr_tks][Ngg]/F");
   __tree->Branch("Tk_le",__event.Tk_le,"Tk_le[Nbr_tks]/F");
+  __tree->Branch("Q",__event.Q,"Q[Nbr_tks]/F");
+  __tree->Branch("mom",__event.mom,"mom[Nbr_tks]/F");
   __tree->Branch("Nbr_vtx",__event.Nbr_vtx,"Nbr_vtx[Nbr_tks]/I");
   __tree->Branch("Vtx_cos_dir",__event.Vtx_cos_dir,"Vtx_cos_dir[Nbr_tks][5][3]/F");
   __tree->Branch("Decay_Vtx_cos_dir",__event.Decay_Vtx_cos_dir,"Decay_Vtx_cos_dir[Nbr_tks][5][3]/F");
@@ -189,6 +194,7 @@ void ntupler::clear ( )
   delete __event_ntuple; delete __hits_ntuple; delete __vertexes_ntuple; delete __tracks_ntuple;
   cout << "clearing histo " << endl; fflush(stdout);
   delete h1;
+  delete helix_chi2;
 
 }
     
@@ -254,11 +260,15 @@ void ntupler::__fill ()
       }
       
       __event.Nbr_pts[trk_counter] = iseq->nodes_.size();
-      
+
+      std::vector<double> hchi2s = iseq->helix_chi2s();
+
       size_t pt_counter = 0;
       for(std::vector<topology::node>::iterator inode = iseq->nodes_.begin(); 
 	  inode != iseq->nodes_.end(); ++inode){
 	
+	size_t local_index=inode-iseq->nodes_.begin();
+
 	if( inode - iseq->nodes_.begin() >= MAXNHITS ){
 	  cout << " warning: inode " << inode - iseq->nodes_.begin() << " maxnhits " << MAXNHITS << endl;
 	  continue;
@@ -272,10 +282,13 @@ void ntupler::__fill ()
 	__event.Pty[trk_counter][pt_counter] = inode->ep().y().value();
 	__event.Ptz[trk_counter][pt_counter] = inode->ep().z().value();
 	__event.Ptid[trk_counter][pt_counter] = cindex;
+	helix_chi2->Fill( hchi2s[local_index]);
 	pt_counter ++;
       }
       
       __event.Tk_le[trk_counter]=iseq->length().value();
+      __event.Q[trk_counter]=iseq->charge().value();
+      __event.mom[trk_counter]=iseq->momentum().value();
 
 
       if( iseq->nodes_.size() >= 2 ){

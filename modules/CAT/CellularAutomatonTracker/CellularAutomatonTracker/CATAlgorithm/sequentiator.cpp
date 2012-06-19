@@ -1377,6 +1377,8 @@ namespace CAT {
       return false;
     }
 
+    direct_scenarios_out_of_foil();
+
     if( level >= mybhep::VERBOSE)
       print_scenarios();
 
@@ -1990,6 +1992,32 @@ namespace CAT {
 
     return true;
 
+  }
+
+
+  //*************************************************************
+  bool sequentiator::direct_scenarios_out_of_foil(void){
+    //*************************************************************
+
+    clock.start(" sequentiator: direct scenarios out of foil ", "cumulative");
+
+    for(std::vector<topology::scenario>::iterator isc = scenarios_.begin(); isc != scenarios_.end(); ++isc){
+
+      for(std::vector<topology::sequence>::iterator iseq = isc->sequences_.begin(); iseq != isc->sequences_.end(); ++iseq){
+	
+	if( distance_from_foil(iseq->nodes().front().ep()) > 
+	    distance_from_foil(iseq->nodes().back().ep()) ){
+	  m.message(" sequence ", iseq - sequences_.begin(), " will be directed out of foil ", mybhep::VVERBOSE);
+	  topology::sequence is = iseq->invert();
+	  std::swap(*iseq, is);
+	}
+      }
+    }
+    clock.stop(" sequentiator: direct scenarios out of foil ");
+    
+
+    return true;
+    
   }
 
 

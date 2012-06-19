@@ -212,6 +212,7 @@ class EventDisplay{
   void set_PlotNemoraTracks(bool aValue) { PlotNemoraTracks = aValue; }
   void set_PlotNemoTracks(bool aValue) { PlotNemoTracks = aValue; }
   void set_PlotCellIds(bool aValue) { PlotCellIds = aValue; }
+  void set_PlotCellChi2s(bool aValue) { PlotCellChi2s = aValue; }
   void set_PlotCalos(bool aValue) { PlotCalos = aValue; }
   void set_PlotCaloEnergy(bool aValue) { PlotCaloEnergy = aValue; }
   void set_PlotHelices(bool aValue) { PlotHelices = aValue; }
@@ -242,6 +243,7 @@ class EventDisplay{
   int PlotNemoraTracks;
   int PlotNemoTracks;
   int PlotCellIds;
+  int PlotCellChi2s;
   int PlotCalos;
   int PlotCaloEnergy;
   int PlotHelices;

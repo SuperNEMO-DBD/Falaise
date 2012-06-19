@@ -70,6 +70,11 @@ EventDisplay::EventDisplay(mybhep::gstore st){
     else
       PlotCellIds = 1;
     
+    if( st.find_istore("PlotCellChi2s") )
+      PlotCellChi2s = st.fetch_istore("PlotCellChi2s");
+    else
+      PlotCellChi2s = 1;
+    
     if( st.find_istore("PlotCaloEnergy") )
       PlotCaloEnergy = st.fetch_istore("PlotCaloEnergy");
     else
@@ -532,6 +537,7 @@ bool EventDisplay::InitializeDisplayEvent( mybhep::sstore store, mybhep::gstore 
   canvas = new TCanvas("canvas","CANVAS",600,0,800,600);
   
   FirstStarXY_used = false;
+
 
   if( PlotLegend ){
     leg_xz = new TLegend(0.8, 0.8, 1., 1.);
@@ -1497,6 +1503,7 @@ void EventDisplay::Finalize( void ){
       delete leg_yz_true;
     }
   }
+
   delete mapzx;
   delete mapzy;
   delete canvas;
@@ -1595,6 +1602,38 @@ void EventDisplay::execute(mybhep::event& evt, size_t ievent, topology::tracked_
       canvas->Print(name);
     }
 
+  if( PlotCellChi2s && PlutsMode ){
+    TPaveText pave_chi2(0.8,0.6,1.,1.);
+    pave_chi2.SetFillColor(4000); 
+    pave_chi2.SetTextSize(0.025);
+
+    for(size_t i=0; i<sequences_.size(); i++){
+      topology::sequence s = sequences_[i];
+      size_t nnodes = s.nodes().size();
+      std::vector<double> helix_chi2s = s.helix_chi2s();
+
+      for(size_t j=0; j<nnodes; j++)
+	{
+	  size_t cid = s.nodes()[j].c().id();
+	  string title="cell "+mybhep::to_string(cid)+" chi2 "+mybhep::to_string_precision(helix_chi2s[j],"2");
+	  pave_chi2.AddText(title.c_str());
+
+	}
+    }
+
+
+
+    pave_chi2.Draw();
+
+    canvas->Update();
+    
+    string sname = "figure/chi2_event"+mybhep::to_string(ievent)+"."+PlotFormat;
+    const char *name = sname.c_str();
+    canvas->Print(name);
+
+  }
+
+
   return;
 }
 
@@ -1684,6 +1723,35 @@ void EventDisplay::execute(size_t ievent, topology::tracked_data & __tracked_dat
       canvas->Print(name);
     }
 
+  if( PlotCellChi2s && PlutsMode ){
+    canvas->Clear();
+
+    TPaveText pave_chi2(0.,0.,1.,1.);
+    pave_chi2.SetFillColor(4000); 
+    pave_chi2.SetTextSize(0.03);
+
+    for(size_t i=0; i<sequences_.size(); i++){
+      topology::sequence s = sequences_[i];
+      size_t nnodes = s.nodes().size();
+      std::vector<double> helix_chi2s = s.helix_chi2s();
+
+      for(size_t j=0; j<nnodes; j++)
+	{
+	  size_t cid = s.nodes()[j].c().id();
+	  string title="cell "+mybhep::to_string(cid)+" chi2 "+mybhep::to_string_precision(helix_chi2s[j],"2");
+	  pave_chi2.AddText(title.c_str());
+	}
+    }
+
+    pave_chi2.Draw();
+
+    canvas->Update();
+    
+    string sname = "figure/chi2_event"+mybhep::to_string(ievent)+"."+PlotFormat;
+    const char *name = sname.c_str();
+    canvas->Print(name);
+
+  }
 
   return;
 }
@@ -1875,6 +1943,7 @@ void EventDisplay::event_display_xz(string mode, topology::tracked_data td){
     if( PlotTrueTracks && mode == "true ")
       leg_xz_true->Draw("same");
   }
+
 
   canvas->Update();
   
@@ -2593,14 +2662,16 @@ void EventDisplay::draw_cats_xz(string mode, std::vector<topology::sequence> tru
 	    zt[npoints-1] = s.decay_vertex().z().value();
 	  }
 
+	std::vector<double> helix_chi2s = s.helix_chi2s();
+
 	for(size_t j=0; j<nnodes; j++)
 	  {
 	    
 	    topology::experimental_point p = s.nodes()[j].ep();
 	    
 	    xt[j+offset] = p.x().value();
-	    zt[j+offset] = p.z().value();
-	    
+	    zt[j+offset] = p.z().value();     
+
 	  }
 	
 	TGraph *graph = new TGraph(npoints,zt,xt);
@@ -2946,6 +3017,7 @@ void EventDisplay::draw_cats_yz(string mode, std::vector<topology::sequence> tru
 	    yt[npoints-1] = s.decay_vertex().y().value();
 	    zt[npoints-1] = s.decay_vertex().z().value();
 	  }
+
 
 	for(size_t j=0; j<nnodes; j++)
 	  {
