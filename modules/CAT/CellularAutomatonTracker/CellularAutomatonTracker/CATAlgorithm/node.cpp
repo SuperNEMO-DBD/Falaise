@@ -48,7 +48,7 @@ namespace CAT {
         set_nsigma(nsigma);
         appname_= "node: ";
         chi2_ = 0.;
-        vector<double> cellpos;
+        std::vector<double> cellpos;
         mybhep::vector_from_string(truehit.fetch_property("CELL_POS"), cellpos);
         double rpos = mybhep::float_from_string(truehit.fetch_property("DIST"));
         experimental_point center(cellpos[0], cellpos[1], cellpos[2],
@@ -68,7 +68,7 @@ namespace CAT {
         if( SuperNemo )
           {
             c_.set_type("SN");
-            string value = truehit.fetch_property("CELL"); // GG_CELL_block_plane_id
+            std::string value = truehit.fetch_property("CELL"); // GG_CELL_block_plane_id
           
             sscanf(value.c_str(),"GG_CELL_%d_%d_%d",&block,&plane,&iid);
             plane --;
@@ -79,7 +79,7 @@ namespace CAT {
         else
           {
             c_.set_type("N3");
-            string value = truehit.fetch_property("BLK");  // BLK = sector_io_layer
+            std::string value = truehit.fetch_property("BLK");  // BLK = sector_io_layer
             // sector = petal of the detector
             // io = 1 if hit is between foil and external calorimeter
             //     0 if hit is between foil and internal calorimeter
@@ -105,7 +105,7 @@ namespace CAT {
             // block = 1, 2, 3 or -1, -2, -3
             // layer = 0, 1, ..., 8 or 0, -1, ..., -8
 
-            string val = truehit.fetch_property("CELL");  // cell number
+            std::string val = truehit.fetch_property("CELL");  // cell number
             sscanf(val.c_str(),"%d",&n3id);
 
           }
@@ -128,27 +128,27 @@ namespace CAT {
 
       /*** dump ***/
       void node::dump (ostream & a_out,
-                       const string & a_title,
-                       const string & a_indent,
+                       const std::string & a_title,
+                       const std::string & a_indent,
                        bool a_inherit) const{
-        string indent;
+        std::string indent;
         if (! a_indent.empty ()) indent = a_indent;
         if (! a_title.empty ())
           {
-            a_out << indent << a_title << endl;
+            a_out << indent << a_title << std::endl;
           }
 
-        a_out << indent << appname_ << " --------------------- " << endl;
-        a_out << indent  << " main cell " << " free " << free() << " chi2 " << chi2() << endl;
+        a_out << indent << appname_ << " --------------------- " << std::endl;
+        a_out << indent  << " main cell " << " free " << free() << " chi2 " << chi2() << std::endl;
         this->c().dump(a_out,"",indent + "   ");
         a_out << indent << " fitted point: "; ep().dump();
-        a_out << indent << " cell couplets: " << cc().size() << endl;
-        for(vector<cell_couplet>::const_iterator icc=cc_.begin(); icc!=cc_.end(); ++icc)
+        a_out << indent << " cell couplets: " << cc().size() << std::endl;
+        for(std::vector<cell_couplet>::const_iterator icc=cc_.begin(); icc!=cc_.end(); ++icc)
           icc->dump(a_out, "",indent + "     ");
-        a_out << indent << " cell triplets: " << ccc().size() << endl;
-        for(vector<cell_triplet>::const_iterator iccc=ccc_.begin(); iccc!=ccc_.end(); ++iccc)
+        a_out << indent << " cell triplets: " << ccc().size() << std::endl;
+        for(std::vector<cell_triplet>::const_iterator iccc=ccc_.begin(); iccc!=ccc_.end(); ++iccc)
           iccc->dump(a_out, "",indent + "     ");
-        a_out << indent  << " --------------------- " << endl;
+        a_out << indent  << " --------------------- " << std::endl;
  
         return;
       }
@@ -236,23 +236,23 @@ namespace CAT {
       void node::calculate_triplets(double Ratio, 
                               double separation_limit, double phi_limit, double theta_limit){
         if( cc_.size() < 2 ) return;
-        for(vector<cell_couplet>::const_iterator icc=cc_.begin(); icc!=cc_.end(); ++icc){
+        for(std::vector<cell_couplet>::const_iterator icc=cc_.begin(); icc!=cc_.end(); ++icc){
           cell c1 = icc->cb();
-          for(vector<cell_couplet>::const_iterator jcc=cc_.begin() + (size_t)(icc - cc_.begin()); jcc!=cc_.end(); ++jcc){
+          for(std::vector<cell_couplet>::const_iterator jcc=cc_.begin() + (size_t)(icc - cc_.begin()); jcc!=cc_.end(); ++jcc){
             cell c2 = jcc->cb();
             if( c1.id() == c2.id() ) continue;
             cell_triplet ccc(c1,c_,c2, print_level(), nsigma());
             if( print_level() >= mybhep::VVERBOSE ){
-              clog << appname_ << " calculate triplets for three cells: " << ccc.ca().id() << "  " << ccc.cb().id() << "  " << ccc.cc().id() << endl;
+              std::clog << appname_ << " calculate triplets for three cells: " << ccc.ca().id() << "  " << ccc.cb().id() << "  " << ccc.cc().id() << std::endl;
             }
             ccc.calculate_joints(Ratio, separation_limit, phi_limit, theta_limit);
             if( ccc.joints().size() > 0 ){
               if( print_level() >= mybhep::VVERBOSE ){
-                clog << appname_ << " adding joints " << endl;
+                std::clog << appname_ << " adding joints " << std::endl;
                 for(std::vector<joint>::iterator ijoint = ccc.joints_.begin(); ijoint != ccc.joints_.end(); ++ ijoint )
-                  clog << " joint " << ijoint - ccc.joints_.begin() << " phia: " << experimental_vector(ccc.ca().ep(), ijoint->epa()).phi().value()*180./M_PI
+                  std::clog << " joint " << ijoint - ccc.joints_.begin() << " phia: " << experimental_vector(ccc.ca().ep(), ijoint->epa()).phi().value()*180./M_PI
                        << " phib: " << experimental_vector(ccc.cb().ep(), ijoint->epb()).phi().value()*180./M_PI
-                       << " phic: " << experimental_vector(ccc.cc().ep(), ijoint->epc()).phi().value()*180./M_PI << " chi2 " << ijoint->chi2() << endl;
+                       << " phic: " << experimental_vector(ccc.cc().ep(), ijoint->epc()).phi().value()*180./M_PI << " chi2 " << ijoint->chi2() << std::endl;
               }
               ccc_.push_back(ccc);
             }
@@ -275,7 +275,7 @@ namespace CAT {
 
       }
 
-      string node::topological_type() const{
+      std::string node::topological_type() const{
 
         if( cc().empty() ) // no cell couplets
           return "ISOLATED";
@@ -296,7 +296,7 @@ namespace CAT {
       bool node::has_couplet(const cell & a, cell_couplet* ct)const {
 
         cell null;
-        vector<cell_couplet>::const_iterator fcouplet = std::find(cc_.begin(), cc_.end(), cell_couplet(null, a));
+        std::vector<cell_couplet>::const_iterator fcouplet = std::find(cc_.begin(), cc_.end(), cell_couplet(null, a));
 
         if( fcouplet != cc().end() ){
           *ct = *fcouplet;
@@ -309,7 +309,7 @@ namespace CAT {
       bool node::has_couplet(const cell& a, size_t* index)const{
 
         cell null;
-        vector<cell_couplet>::const_iterator fcouplet = std::find(cc_.begin(),
+        std::vector<cell_couplet>::const_iterator fcouplet = std::find(cc_.begin(),
                                                             cc_.end(),
                                                             cell_couplet(null, a, "just"));
 
@@ -342,7 +342,7 @@ namespace CAT {
 
       bool node::has_triplet(const cell &a)const{
 
-        for(vector<cell_triplet>::const_iterator iccc=ccc_.begin(); iccc!=ccc_.end(); ++iccc){
+        for(std::vector<cell_triplet>::const_iterator iccc=ccc_.begin(); iccc!=ccc_.end(); ++iccc){
           size_t ida = iccc->ca().id();
           size_t idc = iccc->cc().id();
           if( ( ida == a.id() || idc == a.id() ) ){

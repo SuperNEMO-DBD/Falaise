@@ -47,7 +47,7 @@ namespace mybhep{
   }
 
   //! open reader
-  void sequential_reader::open(string fileName)
+  void sequential_reader::open(std::string fileName)
   {
     base_reader::open(fileName);
     maxEvents_ =0;    
@@ -65,7 +65,7 @@ namespace mybhep{
 
 
   //! set file
-  void sequential_reader::reopen(string fileName)
+  void sequential_reader::reopen(std::string fileName)
   {
     close();
     open(fileName);
@@ -86,7 +86,7 @@ namespace mybhep{
     clear_event();
     curEvent_+=1;
 
-    string record = get_record();
+    std::string record = get_record();
     event_cvt cvt(record);
     event_ = cvt.create();
     imem_++;     

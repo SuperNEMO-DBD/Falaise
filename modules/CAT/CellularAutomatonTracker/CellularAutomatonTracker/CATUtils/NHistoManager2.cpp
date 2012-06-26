@@ -9,7 +9,7 @@ NHistoManager2::NHistoManager2(mybhep::gstore st){
 
 }
 
-NHistoManager2::NHistoManager2(string histo_file){
+NHistoManager2::NHistoManager2(std::string histo_file){
   
   hfile=histo_file;
   
@@ -24,14 +24,14 @@ void NHistoManager2::readHistoParam(mybhep::gstore st){
 }
 
 
-TH1* NHistoManager2::operator[](string name){ 
+TH1* NHistoManager2::operator[](std::string name){ 
 
   return fetch(name); 
 
 }
 
 
-void NHistoManager2::h1(string name,string title,size_t nbin,double fb,double lb)
+void NHistoManager2::h1(std::string name,std::string title,size_t nbin,double fb,double lb)
 {
 
   TH1F* h = new TH1F(name.c_str(),title.c_str(),nbin,fb,lb);
@@ -42,7 +42,7 @@ void NHistoManager2::h1(string name,string title,size_t nbin,double fb,double lb
 
 }
 
-void NHistoManager2::h2(string name,string title,size_t nxbin,
+void NHistoManager2::h2(std::string name,std::string title,size_t nxbin,
 		      double fbx,double lbx,size_t nybin,double fby,double lby)
 {
 
@@ -54,7 +54,7 @@ void NHistoManager2::h2(string name,string title,size_t nxbin,
   hlist.Add(h);
 }
 
-void NHistoManager2::fill(string name, double value1){
+void NHistoManager2::fill(std::string name, double value1){
   
 
   TH1F* h = dynamic_cast<TH1F*>(fetch(name));
@@ -63,7 +63,7 @@ void NHistoManager2::fill(string name, double value1){
     
 }
 
-void NHistoManager2::fill(string name, double value1, double value2){
+void NHistoManager2::fill(std::string name, double value1, double value2){
 
   TH2F* h = dynamic_cast<TH2F*>(fetch(name));
  
@@ -71,7 +71,7 @@ void NHistoManager2::fill(string name, double value1, double value2){
     
 }
 
-void NHistoManager2::fillw(string name, double value1, double weight){
+void NHistoManager2::fillw(std::string name, double value1, double weight){
   
 
   TH1F* h = dynamic_cast<TH1F*>(fetch(name));
@@ -80,7 +80,7 @@ void NHistoManager2::fillw(string name, double value1, double weight){
     
 }
 
-void NHistoManager2::divide1D(string name1,string name2,string name3){
+void NHistoManager2::divide1D(std::string name1,std::string name2,std::string name3){
 
   TH1F* h1 = dynamic_cast<TH1F*>(fetch(name1));
   TH1F* h2 = dynamic_cast<TH1F*>(fetch(name2));
@@ -94,7 +94,7 @@ void NHistoManager2::divide1D(string name1,string name2,string name3){
 
 }
 
-void NHistoManager2::divide2D(string name1,string name2,string name3){
+void NHistoManager2::divide2D(std::string name1,std::string name2,std::string name3){
 
   TH2F* h1 = dynamic_cast<TH2F*>(fetch(name1));
   TH2F* h2 = dynamic_cast<TH2F*>(fetch(name2));

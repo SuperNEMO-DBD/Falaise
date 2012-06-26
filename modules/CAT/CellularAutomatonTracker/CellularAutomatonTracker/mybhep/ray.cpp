@@ -23,7 +23,7 @@ namespace mybhep{
 
   using namespace std;
 
-  ray::ray(string view)
+  ray::ray(std::string view)
   {
     view_ = to_upper(view);
     x_ = new point(view);
@@ -78,7 +78,7 @@ namespace mybhep{
 
   }
 
-  void ray::set_point(double xt, double z, string view)
+  void ray::set_point(double xt, double z, std::string view)
   {
     delete x_;
     view_ = view;

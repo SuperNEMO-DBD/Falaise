@@ -183,7 +183,7 @@ namespace CAT {
     }
 
     // What is it ?                                                                                                                      
-    void set_module_nr(string mID){
+    void set_module_nr(std::string mID){
       _moduleNR=mID;
       return;
     }
@@ -260,7 +260,7 @@ namespace CAT {
       return;
     }
 
-    void set_hfile(string v){
+    void set_hfile(std::string v){
       hfile = v;
       return;
     }
@@ -275,7 +275,7 @@ namespace CAT {
       return;
     }
 
-    void set_level(string v){
+    void set_level(std::string v){
       level = mybhep::get_info_level(v);
       m = mybhep::messenger(level);
       return;
@@ -453,13 +453,13 @@ namespace CAT {
 
     //----Modification for bar-module---
   private: 
-    string  _moduleNR;
+    std::string  _moduleNR;
     int     _MaxBlockSize;
     std::vector<mybhep::particle*> parts;
     int NFAMILY, NCOPY;
 
     //histogram file
-    string hfile;
+    std::string hfile;
 
     topology::cluster local_cluster_;
 
@@ -487,8 +487,8 @@ namespace CAT {
     void print_clocks();
     int gap_number(topology::cell c);
     int gap_number(topology::calorimeter_hit c);
-    void make_table_of_true_and_reco_sequences(vector<topology::sequence> trueseqs);
-    void rec_efficiency(vector<topology::sequence> trueseqs);
+    void make_table_of_true_and_reco_sequences(std::vector<topology::sequence> trueseqs);
+    void rec_efficiency(std::vector<topology::sequence> trueseqs);
     size_t getCommonHits(topology::sequence tp, topology::sequence dp);
     void FillGGResiduals(topology::sequence tp, topology::sequence dp);
     void make_name(topology::sequence* seq);
@@ -508,7 +508,7 @@ namespace CAT {
 
 
   public:
-    void SetModuleNR(string mID){
+    void SetModuleNR(std::string mID){
       _moduleNR=mID;
     };
     //----------------------------------------

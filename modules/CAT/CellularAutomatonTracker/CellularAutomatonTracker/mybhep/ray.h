@@ -32,7 +32,7 @@ namespace mybhep{
     //! Describes a "track ray"
     /*! A track ray is defined by a point and a momentum. As a particle
       transverses a medium it leaves a track on it, that is a discrete
-      collection of "rays", defined by a point and a momentum vector.
+      collection of "rays", defined by a point and a momentum std::vector.
       We add also the energy loss in the medium
      */
 
@@ -42,7 +42,7 @@ public:
 
     //! default constructor
     ray(std::string view ="XYZ");
-    //! constructor from a point and a vector
+    //! constructor from a point and a std::vector
     ray(const point& x, const mybhep::Vector3D& p3, double edep=0);
 
     //!  copy constructor

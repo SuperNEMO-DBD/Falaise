@@ -45,7 +45,7 @@ namespace mybhep{
     //! pointer to its mother particle
     const particle* mother_;
 
-    //! vector of rays along the trajectory
+    //! std::vector of rays along the trajectory
     std::vector <ray*> r_;
 
     //! view
@@ -71,15 +71,15 @@ namespace mybhep{
 
     void add_ray(ray* r);
 
-    // vector of rays (const)
+    // std::vector of rays (const)
     const std::vector<ray*>& rays() const {return r_;}
 
-    // vector of rays (non const)
+    // std::vector of rays (non const)
     std::vector<ray*>& rays()  {return r_;}
 
-    //!return vector of points along trajectory
+    //!return std::vector of points along trajectory
     std::vector<const mybhep::Point3D*> x() const ;
-    //!return vector of momentum along trajectory
+    //!return std::vector of momentum along trajectory
     std::vector<const mybhep::Vector3D*> p3() const ;
 
     //! return material

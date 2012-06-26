@@ -40,7 +40,7 @@ namespace mybhep{
 	   internal_logic("writer is not open, should open it first"));
     
     event_cvt cvt(evt,ievent);
-    string record = cvt.store();
+    std::string record = cvt.store();
     write_record(record);
   }
   

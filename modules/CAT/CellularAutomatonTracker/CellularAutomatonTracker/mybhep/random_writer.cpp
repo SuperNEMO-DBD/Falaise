@@ -36,22 +36,22 @@ namespace mybhep{
   }
 
   //! set path
-  void random_writer::set_path(string path)
+  void random_writer::set_path(std::string path)
   {
     path_ = path;
   }
   
   //! return path
-  string random_writer::path()
+  std::string random_writer::path()
   {
     return path_;
   }
 
   //! write event
-  void random_writer::write(event& evt, size_t ievent, string key)
+  void random_writer::write(event& evt, size_t ievent, std::string key)
   {
     event_cvt cvt(evt,ievent);
-    string record = cvt.store();
+    std::string record = cvt.store();
     if (key =="")
       key = to_string(ievent);
     write_record(record,key);

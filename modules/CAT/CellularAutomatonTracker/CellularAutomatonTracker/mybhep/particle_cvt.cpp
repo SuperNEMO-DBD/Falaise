@@ -73,7 +73,7 @@ namespace mybhep{
   std::string particle_cvt::store()
   {
 
-    string tmp;
+    std::string tmp;
 
     tmp =name();
     to_string(tmp,index());
@@ -90,7 +90,7 @@ namespace mybhep{
     // vertex position
     const mybhep::Point3D& x = r.x();
 
-    string tmp2 = to_string(x[0])+ " " +
+    std::string tmp2 = to_string(x[0])+ " " +
       to_string(x[1])+ " " + to_string(x[2]);
     to_string(tmp,tmp2);
 
@@ -140,7 +140,7 @@ namespace mybhep{
 
 
 
-    const vector<const particle*>&  dau = particle_->daughters();
+    const std::vector<const particle*>&  dau = particle_->daughters();
     to_string(tmp,dau.size());
 
 
@@ -150,7 +150,7 @@ namespace mybhep{
         to_string(tmp,(long int) &pd);
       }
 
-    const vector<mparticle*>&  mp = particle_->mparticles();
+    const std::vector<mparticle*>&  mp = particle_->mparticles();
     to_string(tmp,mp.size());
 
 
@@ -161,7 +161,7 @@ namespace mybhep{
       }
 
 
-    const vector<track*>&  trk = particle_->tracks();
+    const std::vector<track*>&  trk = particle_->tracks();
     to_string(tmp,trk.size());
 
 
@@ -172,15 +172,15 @@ namespace mybhep{
       }
 
 
-    const vector<string>  dets = particle_->detectors();
+    const std::vector<string>  dets = particle_->detectors();
     to_string(tmp,dets.size());
 
 
     for(size_t idet = 0; idet < dets.size(); idet++)
       {
-        string det = dets[idet];
+        std::string det = dets[idet];
 
-        const vector<hit*> hts = particle_->hits(det);
+        const std::vector<hit*> hts = particle_->hits(det);
         to_string(tmp,det);
         to_string(tmp,hts.size());
 
@@ -205,7 +205,7 @@ namespace mybhep{
 
         mparticle_cvt mpcv(mpt,it);
 
-        string st = mpcv.store();
+        std::string st = mpcv.store();
         to_string(tmp,st);
       }
 
@@ -219,7 +219,7 @@ namespace mybhep{
 
         track_cvt trcv(tr,it);
 
-        string st = trcv.store();
+        std::string st = trcv.store();
         to_string(tmp,st);
       }
 
@@ -228,8 +228,8 @@ namespace mybhep{
 
     for(size_t idet = 0; idet < dets.size(); idet++)
       {
-        string det = dets[idet];
-        const vector<hit*> hts = particle_->hits(det);
+        std::string det = dets[idet];
+        const std::vector<hit*> hts = particle_->hits(det);
         to_string(tmp,hit_size_label_);
         to_string(tmp,hts.size());
 
@@ -239,18 +239,18 @@ namespace mybhep{
             const hit& ht = *hts[i];
             int it =(long int) &ht;
             hit_cvt htcv(ht,it);
-            string sh = htcv.store();
+            std::string sh = htcv.store();
             to_string(tmp,sh);
           }
       }
 
-//     clog << "this is the string stored in particle "
-//       << tmp << endl ;
+//     clog << "this is the std::string stored in particle "
+//       << tmp << std::endl ;
     return tmp;
   }
 
 
-void  particle_cvt::restore( string def )
+void  particle_cvt::restore( std::string def )
 {
 
 #ifndef HAVE_SSTREAM
@@ -263,7 +263,7 @@ void  particle_cvt::restore( string def )
     converter_svc& csvc = mybhep_svc::instance().
       converter_service();
 
-    string name;
+    std::string name;
     istr >> name ;
 
     int indx;
@@ -272,7 +272,7 @@ void  particle_cvt::restore( string def )
     set_index( indx );
     set_name( name );
 
-    string particle_name;
+    std::string particle_name;
 
     //name
     istr >> particle_name ;
@@ -351,8 +351,8 @@ void  particle_cvt::restore( string def )
     for(size_t i=0; i < ndata; ++i)
       {
 
-        string name;
-        string value;
+        std::string name;
+        std::string value;
         istr >> name >> value;
         nparticle_->add_property(name,value);
       }
@@ -401,7 +401,7 @@ void  particle_cvt::restore( string def )
     for(size_t idet = 0; idet < ndets; idet++)
       {
 
-        string det_name;
+        std::string det_name;
         size_t nhits;
         istr >> det_name;
         istr >> nhits;
@@ -460,7 +460,7 @@ void  particle_cvt::restore( string def )
 
     for(size_t idet = 0; idet < ndets; idet++)
       {
-        string det ;
+        std::string det ;
         size_t nhits;
 
         strip(def,def.find(hit_size_label_));
@@ -567,9 +567,9 @@ void  particle_cvt::restore( string def )
 
     for(size_t idet = 0; idet < idets_.size(); idet++)
       {
-        string detector = idets_[idet];
+        std::string detector = idets_[idet];
 
-        vector<int> hits;
+        std::vector<int> hits;
         typedef multimap<string, int>::const_iterator I;
         pair<I,I> b = hits_.equal_range(detector);
 
@@ -623,7 +623,7 @@ void  particle_cvt::restore( string def )
 #endif
 
     size_t nhits;
-    string label;
+    std::string label;
 
 
     istr >> label;

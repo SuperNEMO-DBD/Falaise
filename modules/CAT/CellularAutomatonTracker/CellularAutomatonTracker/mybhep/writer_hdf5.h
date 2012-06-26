@@ -61,7 +61,7 @@ namespace mybhep{
   {
 
   protected:
-    const char* wdata_[1];  // string to write
+    const char* wdata_[1];  // std::string to write
 
     hid_t       file_,gfile_;  // file and gzipped file handler
     hid_t       dataset_;      // dataset handler

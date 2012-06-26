@@ -51,20 +51,20 @@ namespace CAT {
       if (! a_indent.empty ()) indent = a_indent;
       if (! a_title.empty ())
         {
-          a_out << indent << a_title << endl;
+          a_out << indent << a_title << std::endl;
         }
 
-      a_out << indent << appname_ << " -------------- " << endl;
-      a_out << indent << " used: " << used() << " chi2 " << chi2() << endl;
-      a_out << indent << " first point " << endl;
+      a_out << indent << appname_ << " -------------- " << std::endl;
+      a_out << indent << " used: " << used() << " chi2 " << chi2() << std::endl;
+      a_out << indent << " first point " << std::endl;
       this->epa().dump(a_out, "", indent + "    ");
-      a_out << indent << " second point " << endl;
+      a_out << indent << " second point " << std::endl;
       this->epb().dump(a_out, "", indent + "    ");
-      a_out << indent << " third point " << endl;
+      a_out << indent << " third point " << std::endl;
       this->epc().dump(a_out, "", indent + "    ");
-      a_out << indent << "phi : "; kink_phi().dump(); a_out << " " << endl;
-      a_out << indent << "theta : "; kink_theta().dump(); a_out << " " << endl;
-      a_out << indent << " -------------- " << endl;
+      a_out << indent << "phi : "; kink_phi().dump(); a_out << " " << std::endl;
+      a_out << indent << "theta : "; kink_theta().dump(); a_out << " " << std::endl;
+      a_out << indent << " -------------- " << std::endl;
 
       return;
     }

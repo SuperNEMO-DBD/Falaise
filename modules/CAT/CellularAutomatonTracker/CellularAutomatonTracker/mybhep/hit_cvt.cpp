@@ -57,14 +57,14 @@ namespace mybhep{
   std::string hit_cvt::store()
   {
 
-    string tmp;
+    std::string tmp;
 
 
     tmp =name();
     to_string(tmp,index());
     to_string(tmp,hit_->detector());
 
-    string tmp2 = to_string(hit_->x()[0])+ " " +
+    std::string tmp2 = to_string(hit_->x()[0])+ " " +
       to_string(hit_->x()[1])+ " " + to_string(hit_->x()[2]);
     to_string(tmp,tmp2);
 
@@ -84,12 +84,12 @@ namespace mybhep{
 
 
     to_string(tmp,(long int) &hit_->mother_particle());
-    //    clog << "this is the string stored in hit= " << tmp << endl;
+    //    clog << "this is the std::string stored in hit= " << tmp << endl;
     return tmp;
   }
 
 
-void  hit_cvt::restore( string def )
+void  hit_cvt::restore( std::string def )
 {
 #ifndef HAVE_SSTREAM
     istrstream istr (def.c_str());
@@ -97,7 +97,7 @@ void  hit_cvt::restore( string def )
     istringstream istr(def.c_str());
 #endif
 
-    string name;
+    std::string name;
     istr >> name ;
 
     int indx;
@@ -108,7 +108,7 @@ void  hit_cvt::restore( string def )
 
     //name
 
-    string det_name;
+    std::string det_name;
     istr >> det_name ;
 
     //create new hit
@@ -125,8 +125,8 @@ void  hit_cvt::restore( string def )
     for(size_t i=0; i < ndata; ++i)
       {
 
-        string name;
-        string value;
+        std::string name;
+        std::string value;
 
         istr >> name >> value;
         nhit_->add_data(name,value);
@@ -152,9 +152,9 @@ void  hit_cvt::restore( string def )
     }
     catch(bad_index&)
       {
-        cerr << "could not resolver pointer to hit mother particle"
+        std::cerr << "could not resolver pointer to hit mother particle"
              << endl;
-        cerr << "event is likely corrupted"
+        std::cerr << "event is likely corrupted"
              << endl;
 
       }

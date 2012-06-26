@@ -38,7 +38,7 @@ namespace mybhep{
   }
 
   //! set file
-  void writer_hdf5::open_file(string fileName)
+  void writer_hdf5::open_file(std::string fileName)
   {
 
     hsize_t       dims1[] = {1};
@@ -50,12 +50,12 @@ namespace mybhep{
     file_ = H5Fcreate (fname, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
     dst_  = H5Gcreate(file_, path_.c_str(), 0);
 
-    /* Create dataspace for datasets (a vector of unlimited dimensions)*/
+    /* Create dataspace for datasets (a std::vector of unlimited dimensions)*/
     space_ = H5Screate_simple (1, dims1, maxdims1);
 
   /* Create a datatype to refer to (a string) */
     type_ = H5Tcopy (H5T_C_S1);
-    H5Tset_size (type_,H5T_VARIABLE); // string is variable length
+    H5Tset_size (type_,H5T_VARIABLE); // std::string is variable length
 
     // write data gzipped. This requires chunking
     cparms_ = H5Pcreate (H5P_DATASET_CREATE);  
@@ -75,12 +75,12 @@ namespace mybhep{
   }
  
   //! write event
-  void writer_hdf5::write_record(string record, string key)
+  void writer_hdf5::write_record(std::string record, std::string key)
   {
     wdata_[0] = record.c_str();
 
     /* Create a dataset */
-    string skey = path_ + join_ + key;
+    std::string skey = path_ + join_ + key;
 
     // write data gzipped. This requires chunking
 

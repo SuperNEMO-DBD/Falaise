@@ -79,7 +79,7 @@ namespace mybhep{
    */
   struct internal_logic: public std::logic_error {
     //! Constructor
-    /** Takes an string that will be passed to cerr is the exception
+    /** Takes an std::string that will be passed to std::cerr is the exception
      * is raised
      */
     internal_logic(const std::string &s = "exception: internal logic"):
@@ -96,7 +96,7 @@ namespace mybhep{
 */
     struct bad_argument: public std::invalid_argument {
 //! Constructor
-/** Takes an string that will be passed to cerr is the exception
+/** Takes an std::string that will be passed to std::cerr is the exception
  * is raised
  */
 	bad_argument (const std::string &s = "exception: bad argument"):
@@ -113,7 +113,7 @@ namespace mybhep{
  * dimensions */
     struct bad_size: public std::domain_error {
 //! Constructor
-/** Takes an string that will be passed to cerr is the exception
+/** Takes an std::string that will be passed to std::cerr is the exception
  * is raised
  */
 	bad_size (const std::string &s = "exception: bad size"):
@@ -126,12 +126,12 @@ namespace mybhep{
     };
 
 //! This exception is raised to signal a bad index
-/** For example one tries to access a vector outside allowed range
+/** For example one tries to access a std::vector outside allowed range
  *\ingroup error
 */
     struct bad_index: public std::out_of_range {
 //! Constructor
-/** Takes an string that will be passed to cerr is the exception
+/** Takes an std::string that will be passed to std::cerr is the exception
  * is raised
  */
 	bad_index (const std::string &s = "exception: bad index"):
@@ -145,7 +145,7 @@ namespace mybhep{
 
     struct bad_key: public std::out_of_range {
 //! Constructor
-/** Takes an string that will be passed to cerr is the exception
+/** Takes an std::string that will be passed to std::cerr is the exception
  * is raised
  */
 	bad_key (const std::string &s = "exception: bad key"):
@@ -163,7 +163,7 @@ namespace mybhep{
    */
   struct divide_by_zero: public std::runtime_error {
     /// Constructor
-    /** Takes an string that will be passed to cerr is the exception
+    /** Takes an std::string that will be passed to std::cerr is the exception
      * is raised
      */
     divide_by_zero(const std::string &s = "exception: divide by zero"):

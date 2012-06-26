@@ -52,24 +52,24 @@ namespace CAT {
 
     /*** dump ***/
     void plane::dump (ostream & a_out ,
-                      const string & a_title,
-                      const string & a_indent,
+                      const std::string & a_title,
+                      const std::string & a_indent,
                       bool a_inherit)const{
       {
-        string indent;
+        std::string indent;
         if (! a_indent.empty ()) indent = a_indent;
         if (! a_title.empty ())
           {
-            a_out << indent << a_title << endl;
+            a_out << indent << a_title << std::endl;
           }
 
-        a_out << indent << appname_ << " -------------- " << endl;
-        a_out << indent << " type: " << this->type() << " view: " << this->view() << endl;
-        a_out << indent << " center " << endl;
+        a_out << indent << appname_ << " -------------- " << std::endl;
+        a_out << indent << " type: " << this->type() << " view: " << this->view() << std::endl;
+        a_out << indent << " center " << std::endl;
         this->center().dump(a_out, "", indent + "    ");
-        a_out << indent << " sizes " << endl;
+        a_out << indent << " sizes " << std::endl;
         this->sizes().dump(a_out, "", indent + "    ");
-        a_out << indent << " -------------- " << endl;
+        a_out << indent << " -------------- " << std::endl;
 
         return;
       }
@@ -107,7 +107,7 @@ namespace CAT {
 
 
     //! set tyoe
-    void plane::set_type(string type)
+    void plane::set_type(std::string type)
     {
       type_ = type;
     }
@@ -135,7 +135,7 @@ namespace CAT {
       return type_;
     }
 
-    string plane::view()const{
+    std::string plane::view()const{
       if( type() == "SuperNEMO" ){
 	if( norm().x().value() != 0 )
 	  return "x";
@@ -146,12 +146,12 @@ namespace CAT {
 	return "z";
       }
       else if( type() == "Nemo3" ){
-	clog << " warning: undefined view for calorimeter of type " << type() << endl;
+	clog << " warning: undefined view for calorimeter of type " << type() << std::endl;
 	return "null";
       }
 
 
-      clog << " warning: undefined calo type: " << type() << " cannot determine view " << endl;
+      std::clog << " warning: undefined calo type: " << type() << " cannot determine view " << std::endl;
       exit(0);
 
       return "null";
@@ -254,7 +254,7 @@ namespace CAT {
     }
 
 
-    // vector from the face of the plane to the point
+    // std::vector from the face of the plane to the point
     experimental_vector plane::norm_to_point(experimental_point ep)const{
 
       experimental_vector result = norm();

@@ -114,8 +114,8 @@ bool EventManager2::checkNewProperties(mybhep::sstore newstore){
 
   for (size_t ikey=0;ikey< dst_properties.size(); ikey++ ){
 
-    string okey = dst_properties.names()[ikey];
-    string ovalue = dst_properties.fetch(okey);
+    std::string okey = dst_properties.names()[ikey];
+    std::string ovalue = dst_properties.fetch(okey);
 
     if (!newstore.find(okey)){ //property not in new dst
 
@@ -126,7 +126,7 @@ bool EventManager2::checkNewProperties(mybhep::sstore newstore){
 
     }else{
 
-      string nvalue = newstore[okey];
+      std::string nvalue = newstore[okey];
 
       if (nvalue==ovalue) continue;
 
@@ -152,7 +152,7 @@ void EventManager2::getDstProperties(mybhep::sstore store){
 
   for (size_t ikey=0;ikey< store.size(); ikey++ ){
 
-    string key = store.names()[ikey];
+    std::string key = store.names()[ikey];
 
     add_dst_property(key,store.fetch(key));
 
@@ -160,7 +160,7 @@ void EventManager2::getDstProperties(mybhep::sstore store){
 }
 
 //*******************************************************************
-bool EventManager2::add_dst_property(string name, string value){
+bool EventManager2::add_dst_property(std::string name, std::string value){
 //*******************************************************************
 
   bool ok;
@@ -194,7 +194,7 @@ bool EventManager2::add_dst_property(string name, string value){
 }
 
 //*******************************************************************
-bool EventManager2::add_run_property(string name, string value){
+bool EventManager2::add_run_property(std::string name, std::string value){
 //*******************************************************************
 
   bool ok;
@@ -229,15 +229,15 @@ bool EventManager2::add_run_property(string name, string value){
 }
 
 //*******************************************************************
-bool EventManager2::add_run_properties(mybhep::sstore store,string str){
+bool EventManager2::add_run_properties(mybhep::sstore store,std::string str){
 //*******************************************************************
 
   bool ok=true,ok2;
 
   for (size_t ikey=0;ikey< store.size(); ikey++ ){
 
-    string key = store.names()[ikey];
-    string value = store.fetch(key);
+    std::string key = store.names()[ikey];
+    std::string value = store.fetch(key);
 
     ok2 = add_run_property(str+key,value);
 
@@ -249,16 +249,16 @@ bool EventManager2::add_run_properties(mybhep::sstore store,string str){
 }
 
 //*******************************************************************
-bool EventManager2::add_run_properties(mybhep::gstore store,string str){
+bool EventManager2::add_run_properties(mybhep::gstore store,std::string str){
 //*******************************************************************
 
    bool ok=true,ok2;
 
   for (size_t i=0; i< store.names_istore().size();i++){
 
-    string key = store.names_istore()[i];
+    std::string key = store.names_istore()[i];
 
-    string value = mybhep::to_string(store.fetch_istore(key));
+    std::string value = mybhep::to_string(store.fetch_istore(key));
 
     ok2 = add_run_property(str+key,value);
 
@@ -267,9 +267,9 @@ bool EventManager2::add_run_properties(mybhep::gstore store,string str){
 
   for (size_t i=0; i< store.names_dstore().size();i++){
 
-    string key = store.names_dstore()[i];
+    std::string key = store.names_dstore()[i];
 
-    string value = mybhep::to_string(store.fetch_dstore(key));
+    std::string value = mybhep::to_string(store.fetch_dstore(key));
 
     ok2 = add_run_property(str+key,value);
 
@@ -278,9 +278,9 @@ bool EventManager2::add_run_properties(mybhep::gstore store,string str){
 
   for (size_t i=0; i< store.names_sstore().size();i++){
 
-    string key = store.names_sstore()[i];
+    std::string key = store.names_sstore()[i];
 
-    string value = store.fetch_sstore(key);
+    std::string value = store.fetch_sstore(key);
 
     ok2 = add_run_property(str+key,value);
 
@@ -289,9 +289,9 @@ bool EventManager2::add_run_properties(mybhep::gstore store,string str){
 
   for (size_t i=0; i< store.names_ivstore().size();i++){
 
-    string key = store.names_ivstore()[i];
+    std::string key = store.names_ivstore()[i];
 
-    string value = mybhep::vector_to_string(store.fetch_ivstore(key));
+    std::string value = mybhep::vector_to_string(store.fetch_ivstore(key));
 
     ok2 = add_run_property(str+key,value);
 
@@ -300,9 +300,9 @@ bool EventManager2::add_run_properties(mybhep::gstore store,string str){
 
   for (size_t i=0; i< store.names_vstore().size();i++){
 
-    string key = store.names_vstore()[i];
+    std::string key = store.names_vstore()[i];
 
-    string value = mybhep::vector_to_string(store.fetch_vstore(key));
+    std::string value = mybhep::vector_to_string(store.fetch_vstore(key));
 
     ok2 = add_run_property(str+key,value);
 
@@ -311,9 +311,9 @@ bool EventManager2::add_run_properties(mybhep::gstore store,string str){
 
   for (size_t i=0; i< store.names_svstore().size();i++){
 
-    string key = store.names_svstore()[i];
+    std::string key = store.names_svstore()[i];
 
-    string value = mybhep::vector_to_string(store.fetch_svstore(key));
+    std::string value = mybhep::vector_to_string(store.fetch_svstore(key));
 
     ok2 = add_run_property(str+key,value);
 
@@ -326,7 +326,7 @@ bool EventManager2::add_run_properties(mybhep::gstore store,string str){
 
 
 //*******************************************************************
-void EventManager2::usedProperty(string name){
+void EventManager2::usedProperty(std::string name){
 //*******************************************************************
 
   /*
@@ -343,7 +343,7 @@ void EventManager2::usedProperty(string name){
 }
 
 //*******************************************************************
-bool EventManager2::change_dst_property(string name, string prop){
+bool EventManager2::change_dst_property(std::string name, std::string prop){
 //*******************************************************************
 
   bool ok;
@@ -374,7 +374,7 @@ bool EventManager2::change_dst_property(string name, string prop){
 
 
 //*******************************************************************
-string EventManager2::fetch_global_property(string name){
+std::string EventManager2::fetch_global_property(std::string name){
 //*******************************************************************
 
   if (find_dst_property(name)) return fetch_dst_property(name);
@@ -385,7 +385,7 @@ string EventManager2::fetch_global_property(string name){
 
 
 //*******************************************************************
-bool EventManager2::find_global_property(string name){
+bool EventManager2::find_global_property(std::string name){
 //*******************************************************************
 
   bool inrun = find_run_property(name);
@@ -399,27 +399,27 @@ bool EventManager2::find_global_property(string name){
 }
 
 //*******************************************************************
-bool EventManager2::find_dst_property(string name){
+bool EventManager2::find_dst_property(std::string name){
 //*******************************************************************
   return dst_properties.find(name);
 }
 
 
 //*******************************************************************
-string EventManager2::fetch_dst_property(string name){
+std::string EventManager2::fetch_dst_property(std::string name){
 //*******************************************************************
   return dst_properties.fetch(name);
 }
 
 //*******************************************************************
-bool EventManager2::find_run_property(string name){
+bool EventManager2::find_run_property(std::string name){
 //*******************************************************************
   return run_properties.find(name);
 }
 
 
 //*******************************************************************
-string EventManager2::fetch_run_property(string name){
+std::string EventManager2::fetch_run_property(std::string name){
 //*******************************************************************
   return run_properties.fetch(name);
 }

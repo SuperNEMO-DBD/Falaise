@@ -47,18 +47,18 @@ namespace CAT {
       if (! a_indent.empty ()) indent = a_indent;
       if (! a_title.empty ())
         {
-          a_out << indent << a_title << endl;
+          a_out << indent << a_title << std::endl;
         }
 
-      a_out << indent << appname_ << " -------------- " << endl;
-      a_out << indent << " used: " << used() << endl;
-      a_out << indent << " first point " << endl;
+      a_out << indent << appname_ << " -------------- " << std::endl;
+      a_out << indent << " used: " << used() << std::endl;
+      a_out << indent << " first point " << std::endl;
       this->epa().dump(a_out, "", indent + "    ");
-      a_out << indent << " second point " << endl;
+      a_out << indent << " second point " << std::endl;
       this->epb().dump(a_out, "", indent + "    ");
-      a_out << indent << " forward axis " << endl;
+      a_out << indent << " forward axis " << std::endl;
       this->forward_axis().dump(a_out, "", indent + "    ");
-      a_out << indent << " -------------- " << endl;
+      a_out << indent << " -------------- " << std::endl;
 
       return;
     }
@@ -146,11 +146,11 @@ namespace CAT {
     }
 
     if( print_level() > mybhep::VERBOSE ){
-      clog << appname_ << " calculate chi2: phi kink : "; (phi_kink*180./M_PI).dump();
+      std::clog << appname_ << " calculate chi2: phi kink : "; (phi_kink*180./M_PI).dump();
       if( use_theta_kink ){
-        clog << " theta kink : "; (theta_kink*180./M_PI).dump();
+        std::clog << " theta kink : "; (theta_kink*180./M_PI).dump();
       }
-      clog << " chi2 " << result << endl;
+      std::clog << " chi2 " << result << std::endl;
     }
 
     return result;

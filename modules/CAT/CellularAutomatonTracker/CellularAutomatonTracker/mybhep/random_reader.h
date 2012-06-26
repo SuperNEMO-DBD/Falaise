@@ -49,7 +49,7 @@ namespace mybhep{
   reopen(fileName) : closes previous file and opens again
 
   read_event(size_t ievent) : reads ievent in file
-  read(string key): reads key in file
+  read(std::string key): reads key in file
 
 */
 

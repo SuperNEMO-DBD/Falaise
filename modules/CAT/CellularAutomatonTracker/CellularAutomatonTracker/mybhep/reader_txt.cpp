@@ -40,7 +40,7 @@ namespace mybhep{
 
   //! protected interface
 
-  void reader_txt::open_file(string fileName)
+  void reader_txt::open_file(std::string fileName)
   {
     is_.open(fileName.c_str(), ios::in);
     Assert(is_.is_open(), __FILE__,__LINE__,
@@ -60,7 +60,7 @@ namespace mybhep{
     rewind();
     while (!end_of_file())
       {
-	string record = get_record();
+	std::string record = get_record();
 	len = is_.tellg();
 	off_.push_back(len);
 	emax++;
@@ -94,9 +94,9 @@ namespace mybhep{
 
   }
 
-  string reader_txt::get_record()
+  std::string reader_txt::get_record()
   {
-    string record;
+    std::string record;
     bool test;
     test = getline(is_, record);
     Assert(test>0, __FILE__,__LINE__,

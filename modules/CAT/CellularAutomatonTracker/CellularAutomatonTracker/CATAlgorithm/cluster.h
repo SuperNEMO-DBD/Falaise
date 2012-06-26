@@ -49,7 +49,7 @@ namespace CAT{
       //!Default destructor
       virtual ~cluster(){};
 
-      //! constructor from vector of nodes
+      //! constructor from std::vector of nodes
       cluster(const std::vector<node> &nodes, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.){
         set_print_level(level);
         set_nsigma(nsigma);

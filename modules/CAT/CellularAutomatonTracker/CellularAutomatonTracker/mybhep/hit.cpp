@@ -25,7 +25,7 @@ namespace mybhep{
   using namespace std;
 
   // constructor
-  hit::hit(const particle& mother, string detector):
+  hit::hit(const particle& mother, std::string detector):
     detector_(detector)
   {
     mother_ = &mother;
@@ -33,7 +33,7 @@ namespace mybhep{
   }
 
   // constructor
-  hit::hit(string detector):
+  hit::hit(std::string detector):
     detector_(detector)
   {
     mother_ = NULL;

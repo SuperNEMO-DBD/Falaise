@@ -6,10 +6,10 @@
 using namespace CAT;
 
 //************************************************************
-EventDisplay::EventDisplay(mybhep::gstore st){
+   EventDisplay::EventDisplay(mybhep::gstore st){
 //*************************************************************
 
-    level = mybhep::get_info_level(st.fetch_sstore("VERBOSITY"));
+     level = mybhep::get_info_level(st.fetch_sstore("VERBOSITY"));
 
     m = mybhep::messenger(level);
 
@@ -108,7 +108,7 @@ EventDisplay::~EventDisplay() {
 }
 
 //*************************************************************
-void EventDisplay::readDstProper(mybhep::sstore global, EventManager2 *eman) {
+void EventDisplay::readDstProper(mybhep::sstore global, mybhep::EventManager2 *eman) {
 //*************************************************************
   
   if (! global.find("GEOM_MODULES"))
@@ -186,7 +186,7 @@ void EventDisplay::readDstProper(mybhep::sstore global, EventManager2 *eman) {
 
   if( SuperNemo )
     {
-      string pname;
+      std::string pname;
 
       pname="N3GG_LONGITUDINAL_SIGMA";
       if(global.find(pname))
@@ -500,7 +500,7 @@ void EventDisplay::initialize( ) {
 }
 
 //*************************************************************
-bool EventDisplay::InitializeDisplayEvent( mybhep::sstore store, mybhep::gstore gs , EventManager2 *eman) {
+bool EventDisplay::InitializeDisplayEvent( mybhep::sstore store, mybhep::gstore gs , mybhep::EventManager2 *eman) {
 //*************************************************************
 
   PlutsMode = false;
@@ -623,12 +623,12 @@ void EventDisplay::SetPlutsMode( bool plutsmode ) {
 void EventDisplay::GetPlotLimit( std::vector<topology::calorimeter_hit> calos ) {
 //*************************************************************
 
-  float XMin = default_min;
-  float XMax = default_max;
-  float YMin = default_min;
-  float YMax = default_max;
-  float ZMin = default_min;
-  float ZMax = default_max;
+  float XMin = mybhep::default_min;
+  float XMax = mybhep::default_max;
+  float YMin = mybhep::default_min;
+  float YMax = mybhep::default_max;
+  float ZMin = mybhep::default_min;
+  float ZMax = mybhep::default_max;
 
 
   for(size_t i=0; i<cells_.size(); i++){
@@ -676,14 +676,14 @@ void EventDisplay::GetPlotLimit( std::vector<topology::calorimeter_hit> calos ) 
       }
   }
 
-  Xmin = max(XMin - CellDistance, -xsize/2. - calo_X);
-  Xmax = min(XMax + CellDistance, xsize/2. + calo_X);
+  Xmin = std::max(XMin - CellDistance, -xsize/2. - calo_X);
+  Xmax = std::min(XMax + CellDistance, xsize/2. + calo_X);
 
-  Ymin = max(YMin - CellDistance, -ysize/2. - calo_Y);
-  Ymax = min(YMax + CellDistance, ysize/2. + calo_Y);
+  Ymin = std::max(YMin - CellDistance, -ysize/2. - calo_Y);
+  Ymax = std::min(YMax + CellDistance, ysize/2. + calo_Y);
 
-  Zmin = max(ZMin - CellDistance, -zsize/2. - calo_Z);
-  Zmax = min(ZMax + CellDistance, zsize/2. + calo_Z);
+  Zmin = std::max(ZMin - CellDistance, -zsize/2. - calo_Z);
+  Zmax = std::min(ZMax + CellDistance, zsize/2. + calo_Z);
 
 
   return;
@@ -1265,8 +1265,8 @@ void EventDisplay::DrawNemo3HitXZ( void ){
     {
       
       mybhep::particle& p = *nemo3_parts[itrk];
-      const vector<mybhep::hit*>& phits = p.hits("trk"); 
-      const vector<mybhep::hit*>& chits = p.hits("cal"); 
+      const std::vector<mybhep::hit*>& phits = p.hits("trk"); 
+      const std::vector<mybhep::hit*>& chits = p.hits("cal"); 
 
       size_t cnodes = chits.size();
       size_t nnodes = phits.size();
@@ -1310,7 +1310,7 @@ void EventDisplay::DrawNemo3HitXZ( void ){
 	      float x=0., y=0., z=0.;
 	      if( ahit->find_property("BLK_POS"))
 		{
-		  string hit_position = ahit->fetch_property("BLK_POS");
+		  std::string hit_position = ahit->fetch_property("BLK_POS");
 		  sscanf(hit_position.c_str(),"%f_%f_%f",&x, &y, &z);
 		}
 	      else
@@ -1363,8 +1363,8 @@ void EventDisplay::DrawNemo3HitYZ( void ){
       
       mybhep::particle& p = *nemo3_parts[itrk];
 
-      const vector<mybhep::hit*>& phits = p.hits("trk"); 
-      const vector<mybhep::hit*>& chits = p.hits("cal"); 
+      const std::vector<mybhep::hit*>& phits = p.hits("trk"); 
+      const std::vector<mybhep::hit*>& chits = p.hits("cal"); 
       
       size_t cnodes = chits.size();
       size_t nnodes = phits.size();
@@ -1406,7 +1406,7 @@ void EventDisplay::DrawNemo3HitYZ( void ){
 	      float xx=0., yy=0., zz=0.;
 	      if( ahit->find_property("BLK_POS"))
 		{
-		  string hit_position = ahit->fetch_property("BLK_POS");
+		  std::string hit_position = ahit->fetch_property("BLK_POS");
 		  sscanf(hit_position.c_str(),"%f_%f_%f",&xx, &yy, &zz);
 		}
 	      else
@@ -1444,7 +1444,7 @@ void EventDisplay::DrawNemo3HitYZ( void ){
 void EventDisplay::fill_nemo3_event(mybhep::event& evt){
 //*************************************************************
 
-  vector<float> n3vtx;
+  std::vector<float> n3vtx;
   mybhep::vector_from_string(evt.fetch_property("N3VERTEX"), n3vtx);
 
   n3event.vertex[0] = n3vtx[0];
@@ -1473,7 +1473,7 @@ void EventDisplay::fill_nemo3_parts_display(  mybhep::event& evt ){
   
   nemo3_parts.clear();
   
-  const vector<mybhep::particle*>& allparts = evt.digi_particles(); 
+  const std::vector<mybhep::particle*>& allparts = evt.digi_particles(); 
   for(size_t ipart=0; ipart<allparts.size(); ipart++) 
     {
 
@@ -1597,7 +1597,7 @@ void EventDisplay::execute(mybhep::event& evt, size_t ievent, topology::tracked_
 
   if( PlutsMode )
     {
-      string sname = "figure/event"+mybhep::to_string(ievent)+"."+PlotFormat;
+      std::string sname = "figure/event"+mybhep::to_string(ievent)+"."+PlotFormat;
       const char *name = sname.c_str();
       canvas->Print(name);
     }
@@ -1615,7 +1615,7 @@ void EventDisplay::execute(mybhep::event& evt, size_t ievent, topology::tracked_
       for(size_t j=0; j<nnodes; j++)
 	{
 	  size_t cid = s.nodes()[j].c().id();
-	  string title="cell "+mybhep::to_string(cid)+" chi2 "+mybhep::to_string_precision(helix_chi2s[j],"2");
+	  std::string title="cell "+mybhep::to_string(cid)+" chi2 "+mybhep::to_string_precision(helix_chi2s[j],"2");
 	  pave_chi2.AddText(title.c_str());
 
 	}
@@ -1627,7 +1627,7 @@ void EventDisplay::execute(mybhep::event& evt, size_t ievent, topology::tracked_
 
     canvas->Update();
     
-    string sname = "figure/chi2_event"+mybhep::to_string(ievent)+"."+PlotFormat;
+    std::string sname = "figure/chi2_event"+mybhep::to_string(ievent)+"."+PlotFormat;
     const char *name = sname.c_str();
     canvas->Print(name);
 
@@ -1718,7 +1718,7 @@ void EventDisplay::execute(size_t ievent, topology::tracked_data & __tracked_dat
   
   if( PlutsMode )
     {
-      string sname = "figure/event"+mybhep::to_string(ievent)+"."+PlotFormat;
+      std::string sname = "figure/event"+mybhep::to_string(ievent)+"."+PlotFormat;
       const char *name = sname.c_str();
       canvas->Print(name);
     }
@@ -1738,7 +1738,7 @@ void EventDisplay::execute(size_t ievent, topology::tracked_data & __tracked_dat
       for(size_t j=0; j<nnodes; j++)
 	{
 	  size_t cid = s.nodes()[j].c().id();
-	  string title="cell "+mybhep::to_string(cid)+" chi2 "+mybhep::to_string_precision(helix_chi2s[j],"2");
+	  std::string title="cell "+mybhep::to_string(cid)+" chi2 "+mybhep::to_string_precision(helix_chi2s[j],"2");
 	  pave_chi2.AddText(title.c_str());
 	}
     }
@@ -1747,7 +1747,7 @@ void EventDisplay::execute(size_t ievent, topology::tracked_data & __tracked_dat
 
     canvas->Update();
     
-    string sname = "figure/chi2_event"+mybhep::to_string(ievent)+"."+PlotFormat;
+    std::string sname = "figure/chi2_event"+mybhep::to_string(ievent)+"."+PlotFormat;
     const char *name = sname.c_str();
     canvas->Print(name);
 
@@ -1882,7 +1882,7 @@ void EventDisplay::locate_legend_yz(){
 
 
 //*************************************************************
-void EventDisplay::event_display_xz(string mode, topology::tracked_data td){
+void EventDisplay::event_display_xz(std::string mode, topology::tracked_data td){
 //*************************************************************
 
   icanvas ++;
@@ -1897,7 +1897,7 @@ void EventDisplay::event_display_xz(string mode, topology::tracked_data td){
   }
 
 
-  string title;
+  std::string title;
   if(mode=="InitialHits")
     title="TOP VIEW (z, x) plane: initial hits";
   else if(mode=="cats")
@@ -2000,7 +2000,7 @@ void EventDisplay::draw_sine_yz( double y0, double z0, double radius, double pit
     y0 -= 2.*acos(-1.)*pitch;
   }
 
-  fix_angles(&phi1, &phi2);
+  mybhep::fix_angles(&phi1, &phi2);
 
   for(size_t j=0; j<100; j++)
     {
@@ -2088,7 +2088,7 @@ void EventDisplay::draw_initial_hits_xz( void ){
 	pt->SetTextSize(0.02);
 	//       pt->SetTextAlign(12);
 	
-	string title=mybhep::to_string(c.id());
+	std::string title=mybhep::to_string(c.id());
 	pt->SetTextColor(color_cells);
 	pt->AddText(title.c_str());
 	pt->Draw("same");
@@ -2201,9 +2201,9 @@ void EventDisplay::draw_calos_xz( std::vector<topology::calorimeter_hit> calos )
 	//	pt->SetMargin(0.3);
 	//       pt->SetTextAlign(12);
 	
-	string en="E = "+mybhep::to_string(round_to(h.e().value(),2))+" MeV";
+	std::string en="E = "+mybhep::to_string(mybhep::round_to(h.e().value(),2))+" MeV";
 	pt->AddText(en.c_str());
-	string ti="t = "+mybhep::to_string(round_to(h.t().value(),2))+" ns";
+	std::string ti="t = "+mybhep::to_string(mybhep::round_to(h.t().value(),2))+" ns";
 	pt->AddText(ti.c_str());
 	pt->Draw("same");
 	
@@ -2305,9 +2305,9 @@ void EventDisplay::draw_calos_yz( std::vector<topology::calorimeter_hit> calos )
 	//	pt->SetMargin(0.3);
 	//       pt->SetTextAlign(12);
 	
-	string en="E = "+mybhep::to_string(round_to(h.e().value(),2))+" MeV";
+	std::string en="E = "+mybhep::to_string(mybhep::round_to(h.e().value(),2))+" MeV";
 	pt->AddText(en.c_str());
-	string ti="t = "+mybhep::to_string(round_to(h.t().value(),2))+" ns";
+	std::string ti="t = "+mybhep::to_string(mybhep::round_to(h.t().value(),2))+" ns";
 	pt->AddText(ti.c_str());
 	pt->Draw("same");
 	
@@ -2385,7 +2385,7 @@ void EventDisplay::draw_helices_xz( void ){
       pf = iclu->decay_vertex();
     double phi1 = topology::experimental_vector(iclu->center(), pi).phi().value();
     double phi2 = topology::experimental_vector(iclu->center(), pf).phi().value();
-    fix_angles(&phi1, &phi2);
+    mybhep::fix_angles(&phi1, &phi2);
     draw_circle_xz(x, z, r, color_helix + (iclu - sequences_.begin()), 2, phi1, phi2);
   }
 
@@ -2549,7 +2549,7 @@ void EventDisplay::draw_triplets_yz( void ){
 
 
 //*************************************************************
-void EventDisplay::draw_cats_xz(string mode, std::vector<topology::sequence> true_seqs ){
+void EventDisplay::draw_cats_xz(std::string mode, std::vector<topology::sequence> true_seqs ){
 //*************************************************************
 
   if( mode == "true" ){
@@ -2781,7 +2781,7 @@ void EventDisplay::draw_cats_xz(string mode, std::vector<topology::sequence> tru
 }
 
 //*************************************************************
-void EventDisplay::event_display_yz(string mode, topology::tracked_data td){
+void EventDisplay::event_display_yz(std::string mode, topology::tracked_data td){
 //*************************************************************
 
   icanvas ++;
@@ -2795,7 +2795,7 @@ void EventDisplay::event_display_yz(string mode, topology::tracked_data td){
       leg_yz_true->Clear();
   }
 
-  string title;
+  std::string title;
   if(mode=="InitialHits")
     title="SIDE VIEW (z, y) plane: initial hits";
   else if(mode=="cats")
@@ -2890,7 +2890,7 @@ void EventDisplay::draw_initial_hits_yz( void ){
 	pt->SetTextSize(0.02);
 	//       pt->SetTextAlign(12);
 	
-	string title=mybhep::to_string(c.id());
+	std::string title=mybhep::to_string(c.id());
 	pt->SetTextColor(color_cells);
 	pt->AddText(title.c_str());
 	pt->Draw("same");
@@ -2910,7 +2910,7 @@ void EventDisplay::draw_initial_hits_yz( void ){
 }
 
 //*************************************************************
-void EventDisplay::draw_cats_yz(string mode, std::vector<topology::sequence> true_seqs ){
+void EventDisplay::draw_cats_yz(std::string mode, std::vector<topology::sequence> true_seqs ){
 //*************************************************************
 
   if( mode == "true" ){

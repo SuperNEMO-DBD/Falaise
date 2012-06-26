@@ -118,7 +118,7 @@ namespace CAT {
   //*************************************************************
   clusterizer::~clusterizer() {
     //*************************************************************
-    clog << "DEVEL: CAT::clusterizer::~clusterizer: Done." << endl;
+    std::clog << "DEVEL: CAT::clusterizer::~clusterizer: Done." << std::endl;
   }
 
   //*************************************************************
@@ -326,8 +326,8 @@ namespace CAT {
     m.message("pmax",pmax,"MeV",mybhep::NORMAL); 
     m.message("small radius",SmallRadius,"mm",mybhep::NORMAL); 
     m.message("tangent phi: ",TangentPhi,mybhep::NORMAL); 
-    cout << " aaa cout " << endl;
-    clog << " aaa  clog " << endl;
+    cout << " aaa cout " << std::endl;
+    std::clog << " aaa  std::clog " << std::endl;
     m.message(" aaa message ", mybhep::NORMAL);
     m.message("tangent theta",TangentTheta,mybhep::NORMAL); 
     m.message("small number",SmallNumber,"mm",mybhep::NORMAL); 
@@ -349,7 +349,7 @@ namespace CAT {
 
     if( SuperNemo )
       {
-        string pname;
+        std::string pname;
 
         pname="N3GG_LONGITUDINAL_SIGMA";
         if(global.find(pname))
@@ -644,9 +644,9 @@ namespace CAT {
     if( SuperNemo ){
       float tup, tdown, tdelay;
     
-      string ttime = h->fetch_property("TTIME");
-      string btime = h->fetch_property("BTIME");
-      string atime = h->fetch_property("ATIME");
+      std::string ttime = h->fetch_property("TTIME");
+      std::string btime = h->fetch_property("BTIME");
+      std::string atime = h->fetch_property("ATIME");
     
       tup = mybhep::float_from_string(ttime);
       tdown = mybhep::float_from_string(btime);
@@ -660,7 +660,7 @@ namespace CAT {
         tdelay = -1.;
     
     
-      vector<float> cellpos;
+      std::vector<float> cellpos;
       mybhep::vector_from_string(h->fetch_property("CELL_POS"), cellpos);
     
       if( cellpos.size() != 3 ){
@@ -1003,7 +1003,7 @@ namespace CAT {
     if( bhep_input ){
 
       // read digi particles
-      vector<mybhep::particle*> digi_parts;
+      std::vector<mybhep::particle*> digi_parts;
 
       if( !SuperNemo && first_event)
         {
@@ -1054,7 +1054,7 @@ namespace CAT {
       if( parts.size() != 1 )
         return false;
 
-      const vector<mybhep::hit*>& hits = parts[0]->hits("trk");
+      const std::vector<mybhep::hit*>& hits = parts[0]->hits("trk");
 
       for (size_t ihit=0; ihit<hits.size();ihit++){
         topology::cell c(*hits[ihit],ihit, SuperNemo, level, nsigma);
@@ -1062,7 +1062,7 @@ namespace CAT {
       }
 
       clock.start(" clusterizer: make calo hit ","cumulative");
-      const vector<mybhep::hit*>& chits = parts[0]->hits("cal");
+      const std::vector<mybhep::hit*>& chits = parts[0]->hits("cal");
       for (size_t ihit=0; ihit<chits.size();ihit++){
         topology::calorimeter_hit ch = make_calo_hit(*chits[ihit], ihit);
         calorimeter_hits_.push_back(ch);
@@ -1131,7 +1131,7 @@ namespace CAT {
   //*******************************************************************
   void clusterizer::read_true_sequences(mybhep::event& event_ref){
     //*******************************************************************
-    const vector<mybhep::particle*>& truep = event_ref.true_particles();
+    const std::vector<mybhep::particle*>& truep = event_ref.true_particles();
     m.message(" number of true particles is", truep.size(), mybhep::VVERBOSE);
     if (truep.size()!=0){
     
@@ -1139,9 +1139,9 @@ namespace CAT {
         {
         
           mybhep::particle& tp = *truep[ipart];
-          const vector<mybhep::hit*>& thits = tp.hits("trk"); 
+          const std::vector<mybhep::hit*>& thits = tp.hits("trk"); 
           topology::sequence trueseq;
-          vector<topology::node> truenodes;
+          std::vector<topology::node> truenodes;
           for(size_t i=0; i<thits.size(); i++)
             {
               size_t index = get_true_hit_index(*thits[i], tp.primary());
@@ -1164,7 +1164,7 @@ namespace CAT {
           trueseq.set_vertex( topology::experimental_point( tp.vertex().x(), tp.vertex().y(), tp.vertex().z(), 0., 0., 0.),"true");
         
           size_t cindex = 0;
-          const vector<mybhep::hit*>& chits = tp.hits("cal");
+          const std::vector<mybhep::hit*>& chits = tp.hits("cal");
           if( !chits.empty() ){
             topology::calorimeter_hit ch = make_calo_hit(*chits[0], 0);
             cindex = get_calo_hit_index(ch);
@@ -1197,7 +1197,7 @@ namespace CAT {
   void clusterizer::read_nemo_sequences(mybhep::event& event_ref){
     //*******************************************************************
 
-    vector<mybhep::particle*> nemo_parts;
+    std::vector<mybhep::particle*> nemo_parts;
 
     event_ref.filter(mybhep::DIGI,"NEMO","1",nemo_parts);
 
@@ -1208,9 +1208,9 @@ namespace CAT {
         {
         
           mybhep::particle& tp = *nemo_parts[ipart];
-          const vector<mybhep::hit*>& thits = tp.hits("trk"); 
+          const std::vector<mybhep::hit*>& thits = tp.hits("trk"); 
           topology::sequence nemoseq;
-          vector<topology::node> nemonodes;
+          std::vector<topology::node> nemonodes;
           for(size_t i=0; i<thits.size(); i++)
             {
               size_t index = get_nemo_hit_index(*thits[i], tp.primary());
@@ -1228,7 +1228,7 @@ namespace CAT {
         
 
           size_t cindex = 0;
-          const vector<mybhep::hit*>& chits = tp.hits("cal");
+          const std::vector<mybhep::hit*>& chits = tp.hits("cal");
           if( !chits.empty() ){
             topology::calorimeter_hit ch = make_calo_hit(*chits[0], 0);
             cindex = get_calo_hit_index(ch);
@@ -1344,27 +1344,27 @@ namespace CAT {
     fast[0] = true;
     fast[1] = false;
   
-    vector<unsigned int> flag;
+    std::vector<unsigned int> flag;
     {
       unsigned int tmp = 0;
       flag.assign(cells_.size(), tmp);
     }
 
     /** 2012-03-26 FM : using a 'flags' map keyed with cell IDs would be saner than indexing 
-     * the 'flag' vector with cell IDs because the last method forces cells' IDs to
+     * the 'flag' std::vector with cell IDs because the last method forces cells' IDs to
      * range *EXACTLY* from 0 to N-1.
      */
     bool use_flag_map = false; // not used for now (was used for tracking memory leak during Channel port)
     std::map<int,unsigned int > flags;
 
-    if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: Flag size =" << flag.size () << std::endl;
+    if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: Flag size =" << flag.size () << std::endl;
     // 2012-03-26 FM: remove C style
     //size_t* flag = (size_t*)m alloc(sizeof(size_t)*cells_.size());
     for(size_t ip=0; ip<2; ip++)  // loop on two sides of the foil
       {
         for(size_t iq=0; iq<2; iq++) // loop on fast and slow hits
           {
-            if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: ip=" << ip << " iq=" << iq << std::endl;
+            if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: ip=" << ip << " iq=" << iq << std::endl;
             for(size_t i=0; i<cells_.size(); i++)
               {
                 if (use_flag_map) 
@@ -1377,14 +1377,14 @@ namespace CAT {
                   }
               }
             
-            for(vector<topology::cell>::const_iterator icell=cells_.begin(); icell!=cells_.end(); ++icell){
-              if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: cell loop..." << std::endl;
+            for(std::vector<topology::cell>::const_iterator icell=cells_.begin(); icell!=cells_.end(); ++icell){
+              if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: cell loop..." << std::endl;
               // pick a cell c that was never added
               const topology::cell & c = *icell;
-              if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: pick a cell done..." << std::endl;
+              if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: pick a cell done..." << std::endl;
               if( (cell_side(c) * side[ip]) < 0) continue;
               if( c.fast() != fast[iq] ) continue;
-              if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: ====> cell ID = "<<  c.id() << std::endl;
+              if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: ====> cell ID = "<<  c.id() << std::endl;
               if (use_flag_map) 
                 {
                   if( flags[c.id()] == 1 ) continue;
@@ -1395,24 +1395,24 @@ namespace CAT {
                   if( flag.at (c.id()) == 1 ) continue;
                   flag[c.id()] = 1;
                 }
-              if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: flag done..." << std::endl;
+              if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: flag done..." << std::endl;
               
               // cell c will form a new cluster, i.e. a new list of nodes
               topology::cluster cluster_connected_to_c;
-              if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: cluster_connected create..." << std::endl;
+              if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: cluster_connected create..." << std::endl;
               std::vector<topology::node> nodes_connected_to_c;
-              if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: nodes_connected create..." << std::endl;
+              if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: nodes_connected create..." << std::endl;
               m.message(" begin new cluster with cell ", c.id(), mybhep::VERBOSE);
 
               // let's get the list of all the cells that can be reached from c
               // without jumps
               std::vector<topology::cell> cells_connected_to_c;
-              if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: cells_connected create... : " << cells_connected_to_c.size () << std::endl;
+              if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: cells_connected create... : " << cells_connected_to_c.size () << std::endl;
               cells_connected_to_c.push_back(c);
-              if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: cell loop: cells_connected_to_c.size=" << cells_connected_to_c.size () << std::endl;
+              if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: cell loop: cells_connected_to_c.size=" << cells_connected_to_c.size () << std::endl;
 
              for( size_t i=0; i<cells_connected_to_c.size(); i++){ // loop on connected cells
-                if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: connected cell loop..." << std::endl;
+                if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: connected cell loop..." << std::endl;
                 // take a connected cell (the first one is just c)
                 topology::cell cconn = cells_connected_to_c[i];
 
@@ -1424,8 +1424,8 @@ namespace CAT {
                 std::vector<topology::cell> cells_near_iconn = get_near_cells(cconn);
             
                 m.message(" cluster ", clusters_.size(), " starts with ", c.id(), " try to add cell ", cconn.id(), " with n of neighbours = ", cells_near_iconn.size(), mybhep::VERBOSE); 
-                for(vector<topology::cell>::const_iterator icnc=cells_near_iconn.begin(); icnc!=cells_near_iconn.end(); ++icnc){
-                  if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: couplet loop..." << std::endl;
+                for(std::vector<topology::cell>::const_iterator icnc=cells_near_iconn.begin(); icnc!=cells_near_iconn.end(); ++icnc){
+                  if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: couplet loop..." << std::endl;
  
                   topology::cell cnc = *icnc;
 
@@ -1451,21 +1451,21 @@ namespace CAT {
                         cells_connected_to_c.push_back(cnc);
                       }
                     }
-                  if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: end of couplet" << std::endl;
+                  if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: end of couplet" << std::endl;
                 }
                 newnode.set_cc(cc);
                 newnode.calculate_triplets(Ratio, QuadrantAngle, TangentPhi, TangentTheta);
                 nodes_connected_to_c.push_back(newnode);
 
                 m.message(" cluster started with ", c.id(), " has been given cell ", cconn.id(), " with ", cc.size(), " couplets ", mybhep::VERBOSE); 
-                if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: end of connected cell loop..." << std::endl;
+                if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: end of connected cell loop..." << std::endl;
 
               }
               
               cluster_connected_to_c.set_nodes(nodes_connected_to_c);
 
               clusters_.push_back(cluster_connected_to_c);
-              if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: end of cell loop." << std::endl;
+              if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: end of cell loop." << std::endl;
             }
 
           }
@@ -1490,7 +1490,7 @@ namespace CAT {
 
     clock.stop(" clusterizer: clusterize ");
 
-    if (devel) clog << "DEVEL: CAT::clusterizer::clusterize: Done." << std::endl;
+    if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: Done." << std::endl;
 
     return;
   
@@ -1501,14 +1501,14 @@ namespace CAT {
     //*************************************************************
     /*
       if( PrintMode ){
-      for(vector<topology::cluster>::iterator icluster = clusters_.begin(); icluster!=clusters_.end(); ++icluster){
-      for(vector<topology::node>::iterator inode = (*icluster).nodes_.begin(); inode != (*icluster).nodes_.end(); ++inode){
-      for(vector<topology::cell_triplet>::iterator iccc = (*inode).ccc_.begin(); iccc != (*inode).ccc_.end(); ++iccc){
+      for(std::vector<topology::cluster>::iterator icluster = clusters_.begin(); icluster!=clusters_.end(); ++icluster){
+      for(std::vector<topology::node>::iterator inode = (*icluster).nodes_.begin(); inode != (*icluster).nodes_.end(); ++inode){
+      for(std::vector<topology::cell_triplet>::iterator iccc = (*inode).ccc_.begin(); iccc != (*inode).ccc_.end(); ++iccc){
       topology::cell_triplet ccc = *iccc;
-      for(vector<double>::const_iterator ichi = ccc.chi2s().begin(); ichi != ccc.chi2s().end(); ++ichi){
+      for(std::vector<double>::const_iterator ichi = ccc.chi2s().begin(); ichi != ccc.chi2s().end(); ++ichi){
       hman.fill("chi2_triplet", *ichi);
       }
-      for(vector<double>::const_iterator iprob = ccc.probs().begin(); iprob != ccc.probs().end(); ++iprob){
+      for(std::vector<double>::const_iterator iprob = ccc.probs().begin(); iprob != ccc.probs().end(); ++iprob){
       hman.fill("prob_triplet", *iprob);
       }
       }
@@ -1522,7 +1522,7 @@ namespace CAT {
       double phi;
       if( iseq->largest_kink_node(n, phi)){
       phi *= 180./M_PI;
-      clog << " largest kink on true sequence " << iseq - true_sequences.begin() << " is " << phi << " on cell " << n.c().id() << endl;
+      std::clog << " largest kink on true sequence " << iseq - true_sequences.begin() << " is " << phi << " on cell " << n.c().id() << std::endl;
       hman.fill("largest_true_kink", phi);
       if( phi > 20.){
       topology::experimental_vector dist(n.c().ep(), n.ep());
@@ -1689,7 +1689,7 @@ namespace CAT {
     double precision = 0.15*limit_side;
 
     if( level >= mybhep::VVERBOSE )
-      clog << " (c " << c2.id() << " d " << distance.value() << " )";
+      std::clog << " (c " << c2.id() << " d " << distance.value() << " )";
 
     if( fabs(distance.value() - limit_side) < precision )
       return 2;
@@ -1723,7 +1723,7 @@ namespace CAT {
       if( nl > 0 )
         {
           if( level >= mybhep::VVERBOSE ){
-            clog << "*";
+            std::clog << "*";
 	  }
 
           topology::cell ck = *kcell;
@@ -1732,7 +1732,7 @@ namespace CAT {
     }
 
     if( level >= mybhep::VVERBOSE )
-      clog << " " << endl;
+      std::clog << " " << std::endl;
 
     clock.stop(" clusterizer: get near cells ");
 
@@ -1745,7 +1745,7 @@ namespace CAT {
   void clusterizer::setup_cells(){
     //*************************************************************
   
-    for(vector<topology::cell>::iterator icell=cells_.begin(); icell!=cells_.end(); ++icell){
+    for(std::vector<topology::cell>::iterator icell=cells_.begin(); icell!=cells_.end(); ++icell){
       icell->set_print_level(level);
       icell->set_nsigma(nsigma);
     }
@@ -1801,7 +1801,7 @@ namespace CAT {
     // returns N if the center of calo block is within layers N-1 and N
     // for instance, if block center is between layers 3 and 4, returns 4
 
-    vector<double> block_pos;
+    std::vector<double> block_pos;
 
     //this deals with true hits
     if (hit.find_property("Ini_Ekin")){
@@ -1811,7 +1811,7 @@ namespace CAT {
     }
     //this deals with digi hits
     else if (hit.find_property("E")){
-      string bp = hit.fetch_property("BLK_POS");
+      std::string bp = hit.fetch_property("BLK_POS");
       mybhep::vector_from_string(bp, block_pos);
     }
 
@@ -1849,7 +1849,7 @@ namespace CAT {
   topology::calorimeter_hit clusterizer::make_calo_hit(const mybhep::hit &ahit, size_t _id){
     //*******************************************************************
 
-    vector<double> block_pos;
+    std::vector<double> block_pos;
     double en, time;
     //this deals with true hits
     if (ahit.find_property("Ini_Ekin")){
@@ -1861,7 +1861,7 @@ namespace CAT {
     }
     //this deals with digi hits
     else if (ahit.find_property("E")){
-      string bp = ahit.fetch_property("BLK_POS");
+      std::string bp = ahit.fetch_property("BLK_POS");
       mybhep::vector_from_string(bp, block_pos);
       en = mybhep::double_from_string(ahit.fetch_property("E"));
       time = mybhep::double_from_string(ahit.fetch_property("TIME"));
@@ -1869,8 +1869,8 @@ namespace CAT {
 
     topology::experimental_point center(block_pos[0], block_pos[1], block_pos[2], 0., 0., 0.);
 
-    string block_type = ahit.fetch_property("BLK");
-    string plane;
+    std::string block_type = ahit.fetch_property("BLK");
+    std::string plane;
 
     topology::experimental_vector norm(0.,0.,0.,0.,0.,0.);
 
@@ -1976,9 +1976,9 @@ namespace CAT {
     clock.start(" clusterizer: order cells ","cumulative");
    
     if( level >= mybhep::VVERBOSE ){
-      clog << " printing cells " << cells_.size() << endl;
+      std::clog << " printing cells " << cells_.size() << std::endl;
       print_cells();
-      clog << " sorting cells " << endl;
+      std::clog << " sorting cells " << std::endl;
     }
 
     //  std::sort( cells_.begin(), cells_.end(), topology::cell::compare );

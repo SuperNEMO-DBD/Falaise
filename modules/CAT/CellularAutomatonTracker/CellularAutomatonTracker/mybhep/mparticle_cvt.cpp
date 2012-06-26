@@ -62,7 +62,7 @@ namespace mybhep{
   std::string mparticle_cvt::store()
   {
 
-    string tmp;
+    std::string tmp;
 
     tmp =name();
     to_string(tmp,index());
@@ -79,7 +79,7 @@ namespace mybhep{
     for(I i=dmap.begin(); i !=dmap.end(); ++i)
       {
 
-	string tmp2 = to_string(i->first)+ " " +
+	std::string tmp2 = to_string(i->first)+ " " +
 	  to_string(i->second);
 	to_string(tmp,tmp2);
       }
@@ -96,7 +96,7 @@ namespace mybhep{
   }
 
 
-  void  mparticle_cvt::restore( string def )
+  void  mparticle_cvt::restore( std::string def )
   {
 
 #ifndef HAVE_SSTREAM
@@ -106,7 +106,7 @@ namespace mybhep{
 #endif
 
 
-    string name;
+    std::string name;
     istr >> name ;
 
     int indx;
@@ -120,7 +120,7 @@ namespace mybhep{
     set_owner(true);
 
     // read view
-    string view;
+    std::string view;
 
     istr >> view;
     nparticle_->set_view(view);
@@ -140,8 +140,8 @@ namespace mybhep{
 
     for(size_t i=0; i < ndata; ++i)
       {
-	string name;
-	string value;
+	std::string name;
+	std::string value;
 	istr >> name >> value;
 	nparticle_->add_property(name,value);
       }
@@ -170,8 +170,8 @@ namespace mybhep{
       }
     catch (bad_index&)
       {
-	cerr << " could not resolve pointer to mirror particle " << endl;
-	cerr << "event is likely corrupted" << endl;
+	std::cerr << " could not resolve pointer to mirror particle " << endl;
+	std::cerr << "event is likely corrupted" << endl;
 	throw;
       }
   }

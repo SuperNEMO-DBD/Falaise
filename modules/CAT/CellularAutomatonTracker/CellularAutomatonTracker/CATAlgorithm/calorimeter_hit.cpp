@@ -51,23 +51,23 @@ namespace CAT {
 
       /*** dump ***/
       void calorimeter_hit::dump (ostream & a_out,
-                                  const string & a_title,
-                                  const string & a_indent,
+                                  const std::string & a_title,
+                                  const std::string & a_indent,
                                   bool a_inherit)const
       {
-        string indent;
+        std::string indent;
         if (! a_indent.empty ()) indent = a_indent;
         if (! a_title.empty ())
           {
-            a_out << indent << a_title << endl;
+            a_out << indent << a_title << std::endl;
           }
         
-        a_out << indent << appname_ << " -------------- " << endl;
-          a_out << indent << " id " << id() << " plane " << endl;
+        a_out << indent << appname_ << " -------------- " << std::endl;
+          a_out << indent << " id " << id() << " plane " << std::endl;
           pl_.dump(a_out, "", indent + "    ");
           a_out << indent << " energy "; this->e().dump(a_out, "", indent + "    ");
           a_out << indent << " time "; this->t().dump(a_out, "", indent + "    ");
-          a_out << indent << " -------------- " << endl;
+          a_out << indent << " -------------- " << std::endl;
 
           return;
       }

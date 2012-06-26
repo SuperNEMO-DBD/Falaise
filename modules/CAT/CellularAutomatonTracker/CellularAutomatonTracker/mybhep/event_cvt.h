@@ -44,13 +44,13 @@ namespace mybhep{
     event*   nevent_;
     //! const pointer to the event
     const event*   event_;
-    //! vector of particle converters for true particles
+    //! std::vector of particle converters for true particles
     std::vector<int> particles_true_;
 
-    //! vector of particle converters for digi particles
+    //! std::vector of particle converters for digi particles
     std::vector<int> particles_digi_;
 
-    //! vector of particle converters for sparticles
+    //! std::vector of particle converters for sparticles
     std::vector<int> particles_spar_;
 
     //! label for particles

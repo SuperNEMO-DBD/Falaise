@@ -33,7 +33,7 @@ namespace mybhep{
     used to express matching properties. For example, two particles can
     be formed from two segments in different detectors, which are then
     matched to form a new particle. This new particle contains
-    a vector of pointers to the sub-particles that compose it plus a vector
+    a std::vector of pointers to the sub-particles that compose it plus a std::vector
     of doubles to express the quality of the match (typically a chi2).
     Thus it is a super particle.
   */
@@ -43,10 +43,10 @@ namespace mybhep{
     //! The seed (inside) particle
     particle* sp_;
 
-    //! vector of subparticles
+    //! std::vector of subparticles
     std::vector <const particle*> subp_;
 
-    //! vector of matching quantities
+    //! std::vector of matching quantities
     std::vector <double> q_;
 
   private:
@@ -74,13 +74,13 @@ namespace mybhep{
     //! add quality
     void add_quality(double q);
 
-    // vector of particles (const)
+    // std::vector of particles (const)
     const std::vector<const particle*>& subparticles() const {return subp_;}
 
-    // vector of particles (non const)
+    // std::vector of particles (non const)
     std::vector<const particle*>& subparticles()  {return subp_;}
 
-    // vector of matching quantities (match quality)
+    // std::vector of matching quantities (match quality)
     const std::vector<double>& quality() const {return q_;}
 
     //! return particle inside

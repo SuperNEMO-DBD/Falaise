@@ -43,7 +43,7 @@ namespace mybhep{
   }
  
   //! open reader
-  void brw::open(string fileName)
+  void brw::open(std::string fileName)
   {
     init_flags(fileName);
     open_file(fileName);
@@ -60,7 +60,7 @@ namespace mybhep{
   }
 
   //! set file
-  void brw::reopen(string fileName)
+  void brw::reopen(std::string fileName)
   {
     close();
     open(fileName);
@@ -71,7 +71,7 @@ namespace mybhep{
     setFile_ = false;
   }
 
-  void brw::init_flags(string fileName)
+  void brw::init_flags(std::string fileName)
   {
     setFile_ = true;
     fileName_ = fileName;

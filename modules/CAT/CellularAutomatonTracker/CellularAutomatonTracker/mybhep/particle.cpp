@@ -26,7 +26,7 @@ namespace mybhep{
 
   using namespace std;
 
-  particle::particle(ptype type, string nam, const ray& r) :
+  particle::particle(ptype type, std::string nam, const ray& r) :
     particle_definition(nam)
   {
 
@@ -45,7 +45,7 @@ namespace mybhep{
 
   }
 
-  particle::particle(ptype type, string name)
+  particle::particle(ptype type, std::string name)
     : particle_definition(name)
   {
     r_ = new ray;
@@ -76,7 +76,7 @@ namespace mybhep{
     else pstate_ = PROJ;
   }
 
-  particle::particle(ptype type, string name, int pdg, double m, double q,
+  particle::particle(ptype type, std::string name, int pdg, double m, double q,
 		     double l)
     : particle_definition(name,pdg,m,q,l)
   {
@@ -174,10 +174,10 @@ namespace mybhep{
     }
 
 
-  //! return vector of hits associated to a detector
-  vector<hit*> particle::hits(string detector) const
+  //! return std::vector of hits associated to a detector
+  std::vector<hit*> particle::hits(std::string detector) const
   {
-    vector<hit*> hits;
+    std::vector<hit*> hits;
     typedef multimap<string, hit*>::const_iterator I;
     pair<I,I> b = hits_.equal_range(detector);
     for(I i=b.first; i !=b.second; ++i)
@@ -187,16 +187,16 @@ namespace mybhep{
     return hits;
   }
 
-  //! return vector of strings associated to detector name
-  vector<string>  particle::detectors() const
+  //! return std::vector of strings associated to detector name
+  std::vector<string>  particle::detectors() const
   {
-    vector<string> dets;
+    std::vector<string> dets;
     typedef multimap<string, hit*>::const_iterator I;
 
-    string old_det =" ";
+    std::string old_det =" ";
     for(I i=hits_.begin(); i !=hits_.end(); ++i)
       {
-	string det = i->first;
+	std::string det = i->first;
 	if (det != old_det)
 	  {
 	    dets.push_back(det);

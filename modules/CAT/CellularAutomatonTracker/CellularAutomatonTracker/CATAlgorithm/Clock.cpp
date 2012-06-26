@@ -20,8 +20,8 @@ namespace CAT {
   }
 
   void Clock::dump (ostream & a_out,
-                    const string & a_title,
-                    const string & a_indent,
+                    const std::string & a_title,
+                    const std::string & a_indent,
                     bool a_inherit) const
   {
     {
@@ -46,7 +46,7 @@ namespace CAT {
     return clockables_;
   }
 
-  bool Clock::has(const string & name, size_t *index) const
+  bool Clock::has(const std::string & name, size_t *index) const
   {
     for(std::vector<clockable>::const_iterator iclock = clockables_.begin(); iclock != clockables_.end(); ++iclock){
       if( iclock->name() == name ){
@@ -57,12 +57,12 @@ namespace CAT {
     return false;
   }
 
-  void Clock::start(const string & name, const string & mode)
+  void Clock::start(const std::string & name, const std::string & mode)
   {
     if( mode == "once" ){
       size_t index=0;
       if( has(name, &index ) ){
-        clog << " problem: starting a clockable " << name << " which is already there " << index << endl;
+        std::clog << " problem: starting a clockable " << name << " which is already there " << index << std::endl;
         clockables()[index].start();
       }
       else{
@@ -100,22 +100,22 @@ namespace CAT {
     return;
   }
 
-  void Clock::stop(const string & name)
+  void Clock::stop(const std::string & name)
   {
     size_t index;
     if( has(name , &index) )
       clockables()[index].stop();  
     else
-      clog << " problem: can't stop clockable " << name << " which is not there " << endl;
+      std::clog << " problem: can't stop clockable " << name << " which is not there " << std::endl;
   }
 
-  double Clock::read(const string & name)
+  double Clock::read(const std::string & name)
   {
     size_t index;
     if( has(name , &index) )
       return clockables()[index].read();  
 
-    clog << " problem: request time of clockable " << name << " which is not there " << endl;
+    std::clog << " problem: request time of clockable " << name << " which is not there " << std::endl;
     return 0;
   }
 

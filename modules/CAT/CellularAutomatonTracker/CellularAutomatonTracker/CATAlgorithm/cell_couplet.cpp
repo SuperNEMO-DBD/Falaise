@@ -100,9 +100,9 @@ namespace CAT{
 
       /////////////////////////////////////////////////////////////////
       //
-      //   R1, R2 are the vectors from center of cell to tangency point
-      //   k is the vector from center of cell to center of cell
-      //   t is the vector of the tangent line
+      //   R1, R2 are the std::vectors from center of cell to tangency point
+      //   k is the std::vector from center of cell to center of cell
+      //   t is the std::vector of the tangent line
       //
       //   because t is tangent:
       //   t R1 = 0
@@ -112,7 +112,7 @@ namespace CAT{
       //   R1 R2 = +- |R1| |R2|  (sign + for parallel tangents,
       //                          sign - for crossed tangents)
       //
-      //   in vectorial terms:
+      //   in std::vectorial terms:
       //   R1 + t - R2 = k
       //
       //   taking the product with R1 and R2:
@@ -122,7 +122,7 @@ namespace CAT{
       //   cos(a1) = (|R1| -+ |R2|)/|k|
       //   cos(a2) = - (|R2| -+ |R1|)/|k|
       //
-      //   the radial vectors are then:
+      //   the radial std::vectors are then:
       //   R1 = |R1| (f cos(a1) +- t sin(a1))  (sign + for top, sign - for bottom solutions)
       //   R2 = |R2| (f cos(a2) +- t sin(a2))
       //

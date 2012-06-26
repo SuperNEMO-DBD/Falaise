@@ -64,7 +64,7 @@ namespace CAT{
         return false;
       }
 
-      void start(const std::string & name, string mode="once"){
+      void start(const std::string & name, std::string mode="once"){
         if( mode == "once" ){
           size_t index=0;
           if( has(name, &index ) ){

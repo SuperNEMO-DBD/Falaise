@@ -63,19 +63,19 @@ namespace mybhep{
   std::string sparticle_cvt::store()
   {
 
-    string tmp;
+    std::string tmp;
 
     tmp =name();
     to_string(tmp,index());
 
-    const vector<double> qual = sparticle_->quality() ;
+    const std::vector<double> qual = sparticle_->quality() ;
 
     to_string(tmp,qual.size());
     for(size_t i =0; i < qual.size(); i++)
       {
         double  q= qual[i];
 
-        string tmp2 = to_string(q);
+        std::string tmp2 = to_string(q);
         to_string(tmp,tmp2);
 
       }
@@ -84,7 +84,7 @@ namespace mybhep{
 
     to_string(tmp,(long int) &sparticle_->seed_particle());
 
-    const vector<const particle*>&  subp = sparticle_->subparticles();
+    const std::vector<const particle*>&  subp = sparticle_->subparticles();
     to_string(tmp,subp.size());
 
     for(size_t idau = 0; idau < subp.size(); idau++)
@@ -97,18 +97,18 @@ namespace mybhep{
     const particle& ip =  sparticle_->seed_particle();
     int it = (long int) (&ip);
     particle_cvt pcv(ip,it);
-    string st = pcv.store();
+    std::string st = pcv.store();
     to_string(tmp,st);
 
 
-    //    clog << "this is the string stored in sparticle ",
-    // << tmp << endl ;
+    //    clog << "this is the std::string stored in sparticle ",
+    // << tmp << std::endl ;
 
     return tmp;
   }
 
 
-void  sparticle_cvt::restore( string def )
+void  sparticle_cvt::restore( std::string def )
 {
 #ifndef HAVE_SSTREAM
     istrstream istr (def.c_str());
@@ -122,7 +122,7 @@ void  sparticle_cvt::restore( string def )
     converter_svc& csvc = mybhep_svc::instance().
       converter_service();
 
-    string name;
+    std::string name;
     istr >> name ;
 
     int indx;
@@ -197,9 +197,9 @@ void  sparticle_cvt::restore( string def )
     }
     catch(bad_index&)
       {
-        cerr <<"could not resolver pointer to sparticle seed particle"
+        std::cerr <<"could not resolver pointer to sparticle seed particle"
              << endl;
-        cerr <<"event is likely corrupted" << endl;
+        std::cerr <<"event is likely corrupted" << endl;
         throw;
       }
 
@@ -217,7 +217,7 @@ void  sparticle_cvt::restore( string def )
         }
         catch (bad_index&)
           {
-            //      cerr << " could not resolve pointer to subparticle" << endl;
+            //      std::cerr << " could not resolve pointer to subparticle" << endl;
           }
       }
   }

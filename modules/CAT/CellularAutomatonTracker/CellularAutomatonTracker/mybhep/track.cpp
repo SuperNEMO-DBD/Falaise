@@ -28,7 +28,7 @@ namespace mybhep{
   using namespace std;
 
   // constructor
-  track::track(const particle& mother, material* mate,string view)
+  track::track(const particle& mother, material* mate,std::string view)
   {
     mother_ = &mother;
     material_ = new material(*mate);
@@ -36,7 +36,7 @@ namespace mybhep{
 
   }
   //! constructor
-  track::track(material* mate, string view)
+  track::track(material* mate, std::string view)
   {
     mother_ = NULL;
     material_ = new material(*mate);
@@ -59,9 +59,9 @@ namespace mybhep{
     r_.push_back(r);
   }
 
-  vector<const mybhep::Point3D*> track::x() const
+  std::vector<const mybhep::Point3D*> track::x() const
   {
-    vector<const mybhep::Point3D*> vx;
+    std::vector<const mybhep::Point3D*> vx;
     for(size_t i=0; i< r_.size(); i++){
 
       ray& r = *r_[i];
@@ -71,9 +71,9 @@ namespace mybhep{
     return vx;
   }
 
-  vector<const mybhep::Vector3D*> track::p3() const
+  std::vector<const mybhep::Vector3D*> track::p3() const
   {
-    vector<const mybhep::Vector3D*> vx;
+    std::vector<const mybhep::Vector3D*> vx;
     for(size_t i=0; i< r_.size(); i++){
 
       ray& r = *r_[i];

@@ -41,7 +41,7 @@ namespace mybhep{
 
   //! protected interface
 
-  void reader_gz::open_file(string fileName)
+  void reader_gz::open_file(std::string fileName)
   {
     gf_ = gzopen (fileName.c_str(),"rb");
     Assert(gf_!=0, __FILE__,__LINE__,
@@ -61,7 +61,7 @@ namespace mybhep{
     rewind();
     while (!end_of_file())
       {
-	string record = get_record();
+	std::string record = get_record();
 	len = gztell(gf_);
 	off_.push_back(len);
 	emax++;
@@ -90,7 +90,7 @@ namespace mybhep{
 
   }
 
-  string reader_gz::get_record()
+  std::string reader_gz::get_record()
   {
     char* buff = new char[ZLEN];
     buff = gzgets (gf_, buff, ZLEN);
@@ -104,7 +104,7 @@ namespace mybhep{
       }
 
 
-    string record = buff;
+    std::string record = buff;
     delete [] buff;
     return record;
   }

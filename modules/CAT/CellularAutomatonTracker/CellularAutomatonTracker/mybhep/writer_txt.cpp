@@ -37,7 +37,7 @@ namespace mybhep{
     close();
   }
 
-  void writer_txt::open_file(string fileName)
+  void writer_txt::open_file(std::string fileName)
   {
     os_.open(fileName.c_str(), ios::out);
   }
@@ -49,7 +49,7 @@ namespace mybhep{
   }
 
     //! write the event as a record
-  void writer_txt::write_record(string record)
+  void writer_txt::write_record(std::string record)
   {
     os_ << record << endl;
   }

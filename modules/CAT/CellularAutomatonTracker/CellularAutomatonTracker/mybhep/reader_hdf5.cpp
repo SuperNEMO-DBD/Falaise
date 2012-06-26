@@ -61,7 +61,7 @@ namespace mybhep{
   }
 
   //! open file
-  void reader_hdf5::open_file(string fileName)
+  void reader_hdf5::open_file(std::string fileName)
   {
     const char* fname = fileName.c_str();
 
@@ -71,15 +71,15 @@ namespace mybhep{
 
   /* Create a datatype to refer to (a string) */
     type_ = H5Tcopy (H5T_C_S1);
-    H5Tset_size (type_,H5T_VARIABLE); // string is variable length
+    H5Tset_size (type_,H5T_VARIABLE); // std::string is variable length
   }
 
   //! read event
-  string reader_hdf5::get_record(string key)
+  std::string reader_hdf5::get_record(std::string key)
   {
-    string skey = path_ + join_ + key;
+    std::string skey = path_ + join_ + key;
 
-    char* rdata[DIM1];  // string to write
+    char* rdata[DIM1];  // std::string to write
     dataset_ = H5Dopen(gfile_,skey.c_str());
 
     Assert(dataset_>=0, __FILE__,__LINE__,
@@ -94,8 +94,8 @@ namespace mybhep{
     H5Dclose (dataset_);
     H5Pclose (xfer_);
 
-    // get data into a string and convert to event
-    string def = rdata[0];
+    // get data into a std::string and convert to event
+    std::string def = rdata[0];
     return def;
   }
     

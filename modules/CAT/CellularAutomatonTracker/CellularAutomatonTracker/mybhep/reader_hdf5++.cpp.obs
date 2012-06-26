@@ -53,7 +53,7 @@ namespace mybhep{
     
   }
   //! set file
-  void reader_hdf5::set_file(string fileName)
+  void reader_hdf5::set_file(std::string fileName)
   {
     if (setFile_)
       {

@@ -21,7 +21,7 @@ namespace CAT{
       // and a radius
 
     private:
-      string appname_;
+      std::string appname_;
 
       // experimental point
       experimental_point center_; 
@@ -59,25 +59,25 @@ namespace CAT{
       }
 
       /*** dump ***/
-      virtual void dump (ostream & a_out         = clog,
-                         const string & a_title  = "",
-                         const string & a_indent = "",
+      virtual void dump (ostream & a_out         = std::clog,
+                         const std::string & a_title  = "",
+                         const std::string & a_indent = "",
                          bool a_inherit          = false){
         {
-          string indent;
+          std::string indent;
           if (! a_indent.empty ()) indent = a_indent;
           if (! a_title.empty ())
             {
-              a_out << indent << a_title << endl;
+              a_out << indent << a_title << std::endl;
             }
 
-          a_out << indent << appname_ << " -------------- " << endl;
-          a_out << indent << " center " << endl;
+          a_out << indent << appname_ << " -------------- " << std::endl;
+          a_out << indent << " center " << std::endl;
           this->center().dump(a_out, "", indent + "    ");
-          a_out << indent << " axis " << endl;
+          a_out << indent << " axis " << std::endl;
           this->axis().dump(a_out, "", indent + "    ");
-          a_out << indent << " radius: "; radius().dump(); a_out << " " << endl;
-          a_out << indent << " -------------- " << endl;
+          a_out << indent << " radius: "; radius().dump(); a_out << " " << std::endl;
+          a_out << indent << " -------------- " << std::endl;
 
           return;
         }

@@ -419,7 +419,7 @@ namespace CAT {
 
     if( SuperNemo )
       {
-        string pname;
+        std::string pname;
 
         pname="N3GG_LONGITUDINAL_SIGMA";
         if(global.find(pname))
@@ -613,7 +613,7 @@ namespace CAT {
 
     __tracked_data.scenarios_.clear();
 
-    for(vector<topology::cluster>::iterator icluster=clusters_.begin(); icluster != clusters_.end(); ++icluster){
+    for(std::vector<topology::cluster>::iterator icluster=clusters_.begin(); icluster != clusters_.end(); ++icluster){
       local_cluster_ = *icluster;
 
       sequentiate_cluster();
@@ -664,7 +664,7 @@ namespace CAT {
     /*
       if( PrintMode ){
       if( !__tracked_data.scenarios_.empty() ){
-      for(vector<topology::sequence>::iterator isequence = __tracked_data.scenarios_[0].sequences_.begin(); isequence != __tracked_data.scenarios_[0].sequences_.end(); ++isequence){
+      for(std::vector<topology::sequence>::iterator isequence = __tracked_data.scenarios_[0].sequences_.begin(); isequence != __tracked_data.scenarios_[0].sequences_.end(); ++isequence){
         
       for(std::vector<topology::node>::iterator in = isequence->nodes_.begin(); in != isequence->nodes_.end(); ++in){
       topology::experimental_vector dist(in->c().ep(), in->ep());
@@ -676,7 +676,7 @@ namespace CAT {
       if( gap_number(isequence->last_node().c()) < 0 ){
       m.message(" sequence ", isequence->name(), "has last cell ", isequence->last_node().c().id(), " disconnected", mybhep::NORMAL);
             
-      for(vector<topology::sequence>::iterator jsequence = __tracked_data.scenarios_[0].sequences_.begin(); jsequence != __tracked_data.scenarios_[0].sequences_.end(); ++jsequence){
+      for(std::vector<topology::sequence>::iterator jsequence = __tracked_data.scenarios_[0].sequences_.begin(); jsequence != __tracked_data.scenarios_[0].sequences_.end(); ++jsequence){
       if( isequence == jsequence ) continue;
       if( jsequence->nodes_[0].c().id() != isequence->last_node().c().id() &&
       jsequence->last_node().c().id() != isequence->last_node().c().id()) continue;
@@ -719,7 +719,7 @@ namespace CAT {
 
       plot_hard_scattering(__tracked_data);
 
-      for(vector<topology::sequence>::iterator isequence = sequences_.begin(); isequence != sequences_.end(); ++isequence){
+      for(std::vector<topology::sequence>::iterator isequence = sequences_.begin(); isequence != sequences_.end(); ++isequence){
 
       std::vector<double> chi2s = isequence->chi2s_all();
       for(size_t ichi=0; ichi<chi2s.size(); ichi ++){
@@ -758,10 +758,10 @@ namespace CAT {
     //*************************************************************
 
   
-    for(vector<topology::node>::iterator inode = local_cluster_.nodes_.begin(); inode != local_cluster_.nodes_.end(); ++inode){
+    for(std::vector<topology::node>::iterator inode = local_cluster_.nodes_.begin(); inode != local_cluster_.nodes_.end(); ++inode){
 
       if( level >= mybhep::VVERBOSE ){
-        clog << "\n first node: " << inode->c().id();
+        std::clog << "\n first node: " << inode->c().id();
       }
     
       topology::node first_node;
@@ -800,7 +800,7 @@ namespace CAT {
     topology::sequence newsequence(first_node, level, nsigma);
   
     if( level >= mybhep::VERBOSE ){
-      clog << " begin track [" << sequences_.size() << "] with node " << first_node.c().id() << endl;
+      std::clog << " begin track [" << sequences_.size() << "] with node " << first_node.c().id() << std::endl;
       print_a_sequence(&newsequence);
     }
   
@@ -841,8 +841,8 @@ namespace CAT {
   void sequentiator::make_name(topology::sequence* seq) {
     //*************************************************************
 
-    string number = mybhep::to_string(NFAMILY)+"_"+mybhep::to_string(NCOPY);
-    string name = "track_"+number;
+    std::string number = mybhep::to_string(NFAMILY)+"_"+mybhep::to_string(NCOPY);
+    std::string name = "track_"+number;
     seq->set_name(name);
   
     return;
@@ -871,7 +871,7 @@ namespace CAT {
       
         if( level >= mybhep::VVERBOSE)
           {
-            clog << " original sequence before copying: " << endl;
+            std::clog << " original sequence before copying: " << std::endl;
             print_a_sequence(&sequences_[isequence]);
           }
         
@@ -955,22 +955,22 @@ namespace CAT {
                 {
                   newcopy.nodes_[k].set_free( sequences_[isequence].nodes()[k].free());
 
-                  for(vector<topology::cell_couplet>::iterator icc=sequences_[isequence].nodes_[k].cc_.begin(); icc != sequences_[isequence].nodes_[k].cc_.end(); ++icc)
+                  for(std::vector<topology::cell_couplet>::iterator icc=sequences_[isequence].nodes_[k].cc_.begin(); icc != sequences_[isequence].nodes_[k].cc_.end(); ++icc)
                     {
                       newcopy.nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].set_free( icc->free());
                       newcopy.nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].set_begun( icc->begun());
 
-                      for(vector<topology::line>::iterator itang=sequences_[isequence].nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].tangents_.begin(); itang !=sequences_[isequence].nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].tangents_.end(); ++itang)
+                      for(std::vector<topology::line>::iterator itang=sequences_[isequence].nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].tangents_.begin(); itang !=sequences_[isequence].nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].tangents_.end(); ++itang)
                         newcopy.nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].tangents_[itang - sequences_[isequence].nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].tangents_.begin()].set_used(itang->used() );
 
                     }
 
-                  for(vector<topology::cell_triplet>::iterator iccc=sequences_[isequence].nodes_[k].ccc_.begin(); iccc != sequences_[isequence].nodes_[k].ccc_.end(); ++iccc)
+                  for(std::vector<topology::cell_triplet>::iterator iccc=sequences_[isequence].nodes_[k].ccc_.begin(); iccc != sequences_[isequence].nodes_[k].ccc_.end(); ++iccc)
                     {
                       newcopy.nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].set_free( iccc->free());
                       newcopy.nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].set_begun( iccc->begun());
 
-                      for(vector<topology::joint>::iterator ijoint=sequences_[isequence].nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].joints_.begin(); ijoint !=sequences_[isequence].nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].joints_.end(); ++ijoint)
+                      for(std::vector<topology::joint>::iterator ijoint=sequences_[isequence].nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].joints_.begin(); ijoint !=sequences_[isequence].nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].joints_.end(); ++ijoint)
                         newcopy.nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].joints_[ijoint - sequences_[isequence].nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].joints_.begin()].set_used(ijoint->used() );
 
                     }
@@ -982,25 +982,25 @@ namespace CAT {
 
               if( ilfn < 2 ){
 
-                for(vector<topology::cell_couplet>::iterator icc=sequences_[isequence].nodes_[ilfn].cc_.begin(); icc != sequences_[isequence].nodes_[ilfn].cc_.end(); ++icc)
+                for(std::vector<topology::cell_couplet>::iterator icc=sequences_[isequence].nodes_[ilfn].cc_.begin(); icc != sequences_[isequence].nodes_[ilfn].cc_.end(); ++icc)
                   if( (size_t)(icc - sequences_[isequence].nodes_[ilfn].cc_.begin()) != ilink )
                     {
                       newcopy.nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].set_free( icc->free());
                       newcopy.nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].set_begun( icc->begun());
 
-                      for(vector<topology::line>::iterator itang=sequences_[isequence].nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].tangents_.begin(); itang !=sequences_[isequence].nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].tangents_.end(); ++itang)
+                      for(std::vector<topology::line>::iterator itang=sequences_[isequence].nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].tangents_.begin(); itang !=sequences_[isequence].nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].tangents_.end(); ++itang)
                         newcopy.nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].tangents_[itang - sequences_[isequence].nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].tangents_.begin()].set_used(itang->used() );
                     }
               }
               else{
 
-                for(vector<topology::cell_triplet>::iterator iccc=sequences_[isequence].nodes_[ilfn].ccc_.begin(); iccc != sequences_[isequence].nodes_[ilfn].ccc_.end(); ++iccc)
+                for(std::vector<topology::cell_triplet>::iterator iccc=sequences_[isequence].nodes_[ilfn].ccc_.begin(); iccc != sequences_[isequence].nodes_[ilfn].ccc_.end(); ++iccc)
                   if( (size_t)(iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()) != ilink )
                     {
                       newcopy.nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].set_free( iccc->free());
                       newcopy.nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].set_begun( iccc->begun());
 
-                      for(vector<topology::joint>::iterator ijoint=sequences_[isequence].nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].joints_.begin(); ijoint !=sequences_[isequence].nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].joints_.end(); ++ijoint)
+                      for(std::vector<topology::joint>::iterator ijoint=sequences_[isequence].nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].joints_.begin(); ijoint !=sequences_[isequence].nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].joints_.end(); ++ijoint)
                         newcopy.nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].joints_[ijoint - sequences_[isequence].nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].joints_.begin()].set_used(ijoint->used() );
                     }
 
@@ -1182,7 +1182,7 @@ namespace CAT {
 
     clock.start(" sequentiator: good first node ", "cumulative");
 
-    string type = node.topological_type();
+    std::string type = node.topological_type();
 
     // check that node is not in the middle of a cell_triplet
     if( type != "VERTEX" &&
@@ -1195,7 +1195,7 @@ namespace CAT {
 
     std::vector<size_t> done_connections;
     // check that node has never been added to a sequence
-    for(vector<topology::sequence>::iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq)
+    for(std::vector<topology::sequence>::iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq)
       if( iseq->has_cell(node.c()) ){
         if( type == "VERTEX" ){
         
@@ -1218,7 +1218,7 @@ namespace CAT {
             }
 	    // add to done_connections cell ids of those cells
 	    // that have already been connected to NODE in other sequences
-            vector<size_t>::iterator fid = std::find(done_connections.begin(),
+            std::vector<size_t>::iterator fid = std::find(done_connections.begin(),
                                                      done_connections.end(),
                                                      iseq->nodes_[connection_node].c().id());
 
@@ -1307,17 +1307,17 @@ namespace CAT {
   void sequentiator::print_families( void ) {
     //*************************************************************
 
-    clog << " families " << endl;
+    std::clog << " families " << std::endl;
 
     for(size_t i=0; i<families_.size(); i++)
       {
-        clog << "[" << families_[i][0] << "] (";
+        std::clog << "[" << families_[i][0] << "] (";
         for(size_t j=0; j<families_[i].size(); j++)
           {
             if( j == 0 ) continue;
-            clog << " " << families_[i][j];
+            std::clog << " " << families_[i][j];
           }
-        clog << ")" << endl;
+        std::clog << ")" << std::endl;
       }
 
     return;
@@ -1416,7 +1416,7 @@ namespace CAT {
   
     size_t index = 0;
   
-    for(vector<topology::scenario>::iterator sc=scenarios_.begin(); sc!=scenarios_.end(); ++sc){
+    for(std::vector<topology::scenario>::iterator sc=scenarios_.begin(); sc!=scenarios_.end(); ++sc){
       m.message("...scenario ", sc - scenarios_.begin(), " nff ", sc->n_free_families(), " noverls ", sc->n_overlaps(), " chi2 ", sc->chi2(), " prob ", sc->Prob(), mybhep::VVERBOSE);
     
       if( sc->better_scenario_than( scenarios_[index] ) )
@@ -1458,11 +1458,11 @@ namespace CAT {
     clock.stop(" sequentiator: copy scenario ");
 #endif
 
-    for(vector<topology::sequence>::iterator jseq=sequences_.begin(); jseq!=sequences_.end(); ++jseq)
+    for(std::vector<topology::sequence>::iterator jseq=sequences_.begin(); jseq!=sequences_.end(); ++jseq)
       {
       
         bool found = false;
-        for(vector<topology::sequence>::iterator iseq=sc.sequences_.begin(); iseq!=sc.sequences_.end(); ++iseq)
+        for(std::vector<topology::sequence>::iterator iseq=sc.sequences_.begin(); iseq!=sc.sequences_.end(); ++iseq)
           if( iseq->name() == jseq->name() )
             {
               found = true;
@@ -1570,7 +1570,7 @@ namespace CAT {
     clock.start(" sequentiator: interpret physics ", "cumulative");
 
     m.message(" interpreting physics of ", sequences_.size(), " sequences ", mybhep::VVERBOSE); fflush(stdout);
-    for(vector<topology::sequence>::iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq)
+    for(std::vector<topology::sequence>::iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq)
       {
         if( iseq->nodes().size() <= 2 ) continue;
 
@@ -1649,14 +1649,14 @@ namespace CAT {
         }
 
         if( level >= mybhep::VVERBOSE ){
-          clog << " sequence " << iseq - sequences_.begin() << " has: " << endl;
-          clog << " center "; iseq->center().dump();
-          clog << " radius "; iseq->radius().dump(); clog << " " << endl;
-          clog << " pitch "; iseq->pitch().dump(); clog << " " << endl;
-          clog << " momentum "; iseq->momentum().dump(); clog << " " << endl;
-          clog << " charge "; iseq->charge().dump(); clog << " " << endl;
-          clog << " vertex "; iseq->vertex().dump(); clog << " " << endl;
-          clog << " decay vertex "; iseq->decay_vertex().dump(); clog << " " << endl;
+          std::clog << " sequence " << iseq - sequences_.begin() << " has: " << std::endl;
+          std::clog << " center "; iseq->center().dump();
+          std::clog << " radius "; iseq->radius().dump(); std::clog << " " << std::endl;
+          std::clog << " pitch "; iseq->pitch().dump(); std::clog << " " << std::endl;
+          std::clog << " momentum "; iseq->momentum().dump(); std::clog << " " << std::endl;
+          std::clog << " charge "; iseq->charge().dump(); std::clog << " " << std::endl;
+          std::clog << " vertex "; iseq->vertex().dump(); std::clog << " " << std::endl;
+          std::clog << " decay vertex "; iseq->decay_vertex().dump(); std::clog << " " << std::endl;
         }
 
       }
@@ -1674,9 +1674,9 @@ namespace CAT {
     //*************************************************************
 
     m.message(" sequence matrix is", mybhep::NORMAL); fflush(stdout);
-    for(vector<topology::sequence>::iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq)
+    for(std::vector<topology::sequence>::iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq)
       {
-        clog << " [" << iseq - sequences_.begin() << "]";
+        std::clog << " [" << iseq - sequences_.begin() << "]";
         print_a_sequence( &(*iseq));
       }
 
@@ -1691,58 +1691,58 @@ namespace CAT {
 
     if( sequence->Free() )
       {
-        clog << "*";
+        std::clog << "*";
         fflush(stdout);
       }
 
-    for(vector<topology::node>::iterator inode=sequence->nodes_.begin(); inode!=sequence->nodes_.end(); ++inode)
+    for(std::vector<topology::node>::iterator inode=sequence->nodes_.begin(); inode!=sequence->nodes_.end(); ++inode)
       {
-        clog << " " << (int)inode->c().id();
+        std::clog << " " << (int)inode->c().id();
 
         if( inode->free() )
-          clog << "* ";
+          std::clog << "* ";
 
         topology::experimental_vector v(inode->c().ep(),inode->ep());
 
         if( level >= mybhep::VVERBOSE ){
-	  clog << "[" << v.x().value() << ", " << v.z().value() << "]";
+	  std::clog << "[" << v.x().value() << ", " << v.z().value() << "]";
 	  
-	  clog << "(";
+	  std::clog << "(";
 	  
-	  for(vector<topology::cell>::iterator ilink=(*inode).links_.begin(); ilink != (*inode).links_.end(); ++ilink){
+	  for(std::vector<topology::cell>::iterator ilink=(*inode).links_.begin(); ilink != (*inode).links_.end(); ++ilink){
 	    int iccc = sequence->get_link_index_of_cell(inode - sequence->nodes_.begin(), *ilink);
 	    
 	    if( iccc < 0 ) continue;  // connection through a gap
 	    
 	    if( inode - sequence->nodes_.begin() < 1 ){
-	      clog << "->" << inode->cc()[iccc].cb().id();
+	      std::clog << "->" << inode->cc()[iccc].cb().id();
 	      if( ilink->free() ){
-		clog << "[*]";
+		std::clog << "[*]";
 	      }
-	      clog << "[" << inode->cc_[iccc].iteration() << " "
+	      std::clog << "[" << inode->cc_[iccc].iteration() << " "
 		   << inode->cc()[iccc].tangents().size() << "]";
 	      if( ! ilink->begun() )
-		clog << "[n]";
+		std::clog << "[n]";
 	    }else{
-	      clog << inode->ccc()[iccc].ca().id() << "<->" << inode->ccc()[iccc].cc().id();
+	      std::clog << inode->ccc()[iccc].ca().id() << "<->" << inode->ccc()[iccc].cc().id();
 	      if( ilink->free() ){
-		clog << "[*]";
+		std::clog << "[*]";
 	      }
-	      clog << "[" << inode->ccc_[iccc].iteration() << " "
+	      std::clog << "[" << inode->ccc_[iccc].iteration() << " "
 		   << inode->ccc()[iccc].joints().size() << "]";
 	      if( ! ilink->begun() )
-		clog << "[n]";
+		std::clog << "[n]";
 	    }
 	  }
 	  
-	  clog << " chi2 = " << inode->chi2();
+	  std::clog << " chi2 = " << inode->chi2();
 	  
-	  clog << " )";
+	  std::clog << " )";
 	  
 	}
       }
     
-    clog << " " << endl;
+    std::clog << " " << std::endl;
   
     return;
 
@@ -1752,11 +1752,11 @@ namespace CAT {
   void sequentiator::print_scenarios(){
     //*************************************************************
 
-    clog << " scenarios " << scenarios_.size() << endl; fflush(stdout);
+    std::clog << " scenarios " << scenarios_.size() << std::endl; fflush(stdout);
 
-    for(vector<topology::scenario>::iterator isc=scenarios_.begin(); isc!=scenarios_.end(); ++isc)
+    for(std::vector<topology::scenario>::iterator isc=scenarios_.begin(); isc!=scenarios_.end(); ++isc)
       {
-        clog << " scenario " << isc - scenarios_.begin() << endl;
+        std::clog << " scenario " << isc - scenarios_.begin() << std::endl;
         print_a_scenario( &(*isc));
       }
 
@@ -1769,11 +1769,11 @@ namespace CAT {
   void sequentiator::print_a_scenario(topology::scenario *sc){
     //*************************************************************
 
-    for(vector<topology::sequence>::iterator iseq=sc->sequences_.begin(); iseq!=sc->sequences_.end(); ++iseq){
+    for(std::vector<topology::sequence>::iterator iseq=sc->sequences_.begin(); iseq!=sc->sequences_.end(); ++iseq){
       print_a_sequence( &(*iseq) );
     }
 
-    clog << " nfree " << sc->n_free_families() << " noverls " << sc->n_overlaps() << " chi2 " << sc->chi2() << " prob " << sc->Prob() << endl;
+    std::clog << " nfree " << sc->n_free_families() << " noverls " << sc->n_overlaps() << " chi2 " << sc->chi2() << " prob " << sc->Prob() << std::endl;
 
     return;
   }
@@ -1809,7 +1809,7 @@ namespace CAT {
 
     bool erased = true;
 
-    for(vector<topology::line>::iterator itangent=cc.tangents_.begin(); itangent != cc.tangents_.end(); ++itangent){
+    for(std::vector<topology::line>::iterator itangent=cc.tangents_.begin(); itangent != cc.tangents_.end(); ++itangent){
       topology::sequence pair(nodes, level, nsigma);
 
       pair.nodes_[0].set_ep(itangent->epa());
@@ -1820,9 +1820,9 @@ namespace CAT {
 
       if( itangent - cc.tangents_.begin() > 0 ){
         NCOPY ++;
-        for(vector<topology::cell_couplet>::iterator icc=pair.nodes_[0].cc_.begin(); icc!=pair.nodes_[0].cc_.end(); ++icc)
+        for(std::vector<topology::cell_couplet>::iterator icc=pair.nodes_[0].cc_.begin(); icc!=pair.nodes_[0].cc_.end(); ++icc)
           icc->set_all_used();
-        for(vector<topology::cell_triplet>::iterator iccc=pair.nodes_[1].ccc_.begin(); iccc!=pair.nodes_[1].ccc_.end(); ++iccc)
+        for(std::vector<topology::cell_triplet>::iterator iccc=pair.nodes_[1].ccc_.begin(); iccc!=pair.nodes_[1].ccc_.end(); ++iccc)
           iccc->set_all_used();
       }
 
@@ -2027,7 +2027,7 @@ namespace CAT {
 
     clock.start(" sequentiator: there is free sequence beginning with ", "cumulative");
 
-    for(vector<topology::sequence>::iterator iseq=sequences_.begin(); iseq != sequences_.end(); ++iseq)
+    for(std::vector<topology::sequence>::iterator iseq=sequences_.begin(); iseq != sequences_.end(); ++iseq)
       if( iseq->nodes()[0].c().id() == c.id() )
         {
           if( iseq->Free() )
@@ -2113,7 +2113,7 @@ namespace CAT {
 
 
   //*******************************************************************
-  void sequentiator::make_table_of_true_and_reco_sequences(vector<topology::sequence> trueseqs){
+  void sequentiator::make_table_of_true_and_reco_sequences(std::vector<topology::sequence> trueseqs){
     //*******************************************************************
 
     if( sequences_.empty() ) return;
@@ -2131,7 +2131,7 @@ namespace CAT {
     //size_t* max_common_hits_for_reco_track = (size_t*)mal loc(sizeof(size_t)*sequences_.size());
     //size_t* best_matching_for_reco_track = (size_t*)mal loc(sizeof(size_t)*sequences_.size());
 
-    for(vector<topology::sequence>::iterator tp=trueseqs.begin(); tp != trueseqs.end(); ++tp){ // loop over true particles
+    for(std::vector<topology::sequence>::iterator tp=trueseqs.begin(); tp != trueseqs.end(); ++tp){ // loop over true particles
 
       size_t NCommonMax = 0;
       size_t imin = 0;
@@ -2141,7 +2141,7 @@ namespace CAT {
       if( tp - trueseqs.begin() == 0 ) // first true particle
         first = true;
 
-      for(vector<topology::sequence>::iterator ip = sequences_.begin(); ip != sequences_.end(); ++ip){      // loop over reco particles
+      for(std::vector<topology::sequence>::iterator ip = sequences_.begin(); ip != sequences_.end(); ++ip){      // loop over reco particles
       
         if( first ){
           max_common_hits_for_reco_track[ip - sequences_.begin()] = 0;
@@ -2179,21 +2179,21 @@ namespace CAT {
 
     if( level >= mybhep::VVERBOSE ){
       for(size_t i=0; i<sequences_.size(); i++){
-        clog << " best matching for reco track " << i << " is true track " << true_sequence_of_reco_[i] << " with " << n_common_hits_for_reco_track_[i] << " common hits " << endl;
-        clog << " hits of reco track: ";
+        std::clog << " best matching for reco track " << i << " is true track " << true_sequence_of_reco_[i] << " with " << n_common_hits_for_reco_track_[i] << " common hits " << std::endl;
+        std::clog << " hits of reco track: ";
         for(size_t j=0; j < sequences_[i].nodes().size(); j++){
-          clog << " " << sequences_[i].nodes()[j].c().id();
+          std::clog << " " << sequences_[i].nodes()[j].c().id();
         }
-        clog << " " << endl; clog << " hits of true track: ";
+        std::clog << " " << std::endl; std::clog << " hits of true track: ";
         size_t index = true_sequence_of_reco_[i];
         for(size_t j=0; j < trueseqs[index].nodes().size(); j++){
-          clog << " " << trueseqs[index].nodes()[j].c().id();
+          std::clog << " " << trueseqs[index].nodes()[j].c().id();
         }
-        clog << " " << endl;
+        std::clog << " " << std::endl;
 
       }
       for(size_t i=0; i<trueseqs.size(); i++)
-        clog << " best matching for true track " << i << " is reco track " << reco_sequence_of_true_[i] << endl;
+        std::clog << " best matching for true track " << i << " is reco track " << reco_sequence_of_true_[i] << std::endl;
     }
 
     //free(max_common_hits_for_reco_track);
@@ -2203,14 +2203,14 @@ namespace CAT {
   }
 
   //*******************************************************************
-  void sequentiator::rec_efficiency(vector<topology::sequence> trueseqs){
+  void sequentiator::rec_efficiency(std::vector<topology::sequence> trueseqs){
     //*******************************************************************
 
     if( sequences_.size() == 0 ) return;
 
     make_table_of_true_and_reco_sequences(trueseqs);
 
-    for(vector<topology::sequence>::iterator itrueseq=trueseqs.begin(); itrueseq != trueseqs.end(); ++itrueseq){
+    for(std::vector<topology::sequence>::iterator itrueseq=trueseqs.begin(); itrueseq != trueseqs.end(); ++itrueseq){
 
       if( !itrueseq->primary() ) continue;
 
@@ -2265,9 +2265,9 @@ namespace CAT {
 
     size_t counter = 0;
 
-    for(vector<topology::node>::iterator dnode = dp.nodes_.begin(); dnode != dp.nodes_.end(); ++dnode){
+    for(std::vector<topology::node>::iterator dnode = dp.nodes_.begin(); dnode != dp.nodes_.end(); ++dnode){
 
-      for(vector<topology::node>::iterator tnode = tp.nodes_.begin(); tnode != tp.nodes_.end(); ++tnode){
+      for(std::vector<topology::node>::iterator tnode = tp.nodes_.begin(); tnode != tp.nodes_.end(); ++tnode){
 
         if( tnode->c_.same_cell(dnode->c_) ){
           counter ++;
@@ -2289,11 +2289,11 @@ namespace CAT {
 
       topology::helix he = dp.get_helix();
 
-      for(vector<topology::node>::iterator dn = dp.nodes_.begin(); dn != dp.nodes_.end(); ++dn){
+      for(std::vector<topology::node>::iterator dn = dp.nodes_.begin(); dn != dp.nodes_.end(); ++dn){
       
       topology::node jnode = *dn;
       
-      for(vector<topology::node>::iterator tn = tp.nodes_.begin(); tn != tp.nodes_.end(); ++tn){
+      for(std::vector<topology::node>::iterator tn = tp.nodes_.begin(); tn != tp.nodes_.end(); ++tn){
         
       topology::node inode = *tn;
         
@@ -2326,22 +2326,22 @@ namespace CAT {
       }
     
       if( tp.nodes().size() > 1 && dp.nodes().size() > 1 ){
-      for(vector<topology::node>::iterator tn = tp.nodes_.begin(); tn != tp.nodes_.end(); ++tn){
+      for(std::vector<topology::node>::iterator tn = tp.nodes_.begin(); tn != tp.nodes_.end(); ++tn){
         
       if( tn - tp.nodes_.begin() == 0 ) advance(tn, 1);
         
       topology::node inode = *tn;
-      vector<topology::node>::iterator tnold = tp.nodes_.begin();
+      std::vector<topology::node>::iterator tnold = tp.nodes_.begin();
       advance(tnold, tn - tp.nodes_.begin() - 1);
       topology::node inodeold = *tnold;
         
       bool connected = false;
         
-      for(vector<topology::node>::iterator dn = dp.nodes_.begin(); dn != dp.nodes_.end(); ++dn){
+      for(std::vector<topology::node>::iterator dn = dp.nodes_.begin(); dn != dp.nodes_.end(); ++dn){
       if( dn - dp.nodes_.begin() == 0 ) advance(dn, 1);
           
       topology::node jnode = *dn;
-      vector<topology::node>::iterator dnold = dp.nodes_.begin();
+      std::vector<topology::node>::iterator dnold = dp.nodes_.begin();
       advance(tnold, dn - dp.nodes_.begin() - 1);
       topology::node jnodeold = *dnold;
           
@@ -2555,7 +2555,7 @@ namespace CAT {
         iseq = sequences_.begin();
         advance(iseq, restart_index);
       
-        string delenda_family = sequences_[index].family();
+        std::string delenda_family = sequences_[index].family();
         m.message(" erase all sequences of family ", delenda_family, mybhep::VERBOSE); fflush(stdout);
       
         std::vector<topology::sequence>::iterator jseq = sequences_.begin();
@@ -2709,7 +2709,7 @@ namespace CAT {
 
     m.message(" try to match sequence", s.name(), " of chi2 = ", chi2min, " ndof ", ndofbest, " prob ", probmax, mybhep::VVERBOSE);
 
-    for(vector<topology::sequence>::iterator jseq=sequences_.begin(); jseq!=sequences_.end(); ++jseq)
+    for(std::vector<topology::sequence>::iterator jseq=sequences_.begin(); jseq!=sequences_.end(); ++jseq)
       {
       
         m.message(" try to match sequence", s.name(), " to ", jseq->name(), mybhep::VVERBOSE);

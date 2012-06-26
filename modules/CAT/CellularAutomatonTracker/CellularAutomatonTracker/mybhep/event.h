@@ -44,13 +44,13 @@ namespace mybhep{
     //! id of event
     int event_number_;
 
-    //! vector of true particles in this event
+    //! std::vector of true particles in this event
     std::vector<particle*> true_particles_;
 
-    //! vector of digitised particles in this event
+    //! std::vector of digitised particles in this event
     std::vector<particle*> digi_particles_;
 
-    //! vector of super particles in this event
+    //! std::vector of super particles in this event
     std::vector<sparticle*> sparticles_;
 
     //! interaction vertex
@@ -134,37 +134,37 @@ namespace mybhep{
       return *vertex_;
     }
 
-    //! return vector of true particles (const)
+    //! return std::vector of true particles (const)
     const std::vector<particle*>& true_particles() const {
       return true_particles_;
     }
 
-   //! return vector of particles
+   //! return std::vector of particles
     std::vector<particle*>& true_particles() {
       return true_particles_;
     }
 
-    //! return vector of digi particles (const)
+    //! return std::vector of digi particles (const)
     const std::vector<particle*>& digi_particles() const {
       return digi_particles_;
     }
 
-   //! return vector of particles
+   //! return std::vector of particles
     std::vector<particle*>& digi_particles() {
       return digi_particles_;
     }
 
-    //! return vector of sparticles (const)
+    //! return std::vector of sparticles (const)
     const std::vector<sparticle*>& sparticles() const {
       return sparticles_;
     }
 
-   //! return vector of sparticles
+   //! return std::vector of sparticles
     std::vector<sparticle*>& sparticles() {
       return sparticles_;
     }
 
-    //! return vector of particles that pass a filter
+    //! return std::vector of particles that pass a filter
     /*!
       Loops over particles (TRUTH or DIGI) in the event
      */

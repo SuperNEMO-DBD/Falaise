@@ -74,9 +74,9 @@ namespace mybhep{
 
 
   // serialize object
-  string event_cvt::store()
+  std::string event_cvt::store()
   {
-    string tmp;
+    std::string tmp;
 
     // store class name and index
 
@@ -86,7 +86,7 @@ namespace mybhep{
     // vertex position
     const mybhep::Point3D& xd = event_->vertex();
 
-    string tmp2;
+    std::string tmp2;
     {
       ostringstream tmp2_oss;
       tmp2_oss.precision(8);
@@ -94,7 +94,7 @@ namespace mybhep{
       tmp2 = tmp2_oss.str ();
     }
     /*
-    string tmp2 = to_string_precision(xd[0],"8") + " " +
+    std::string tmp2 = to_string_precision(xd[0],"8") + " " +
       to_string_precision(xd[1],"8") + " " +
       to_string_precision(xd[2],"8");
     */
@@ -108,13 +108,13 @@ namespace mybhep{
     for(I i=dmap.begin(); i !=dmap.end(); ++i)
       {
 
-        string tmp2 = to_string(i->first)+ " " +
+        std::string tmp2 = to_string(i->first)+ " " +
           to_string(i->second);
         to_string(tmp,tmp2);
       }
 
-    // true particle vector
-    const vector<particle*>& pv = event_->true_particles();
+    // true particle std::vector
+    const std::vector<particle*>& pv = event_->true_particles();
 
     to_string(tmp,pv.size());
 
@@ -126,8 +126,8 @@ namespace mybhep{
         to_string(tmp,(long int)(&p));
       }
 
-    // digi particle vector
-    const vector<particle*>& pv2 = event_->digi_particles();
+    // digi particle std::vector
+    const std::vector<particle*>& pv2 = event_->digi_particles();
 
     to_string(tmp,pv2.size());
 
@@ -139,8 +139,8 @@ namespace mybhep{
         to_string(tmp,(long int)(&p));
       }
 
-    // sparticle vector
-    const vector<sparticle*>& pv3 = event_->sparticles();
+    // sparticle std::vector
+    const std::vector<sparticle*>& pv3 = event_->sparticles();
 
     to_string(tmp,pv3.size());
 
@@ -161,7 +161,7 @@ namespace mybhep{
         particle& p = *pv[ipar];
         long int ip = (long int)(&p);
         particle_cvt pcv(p,ip);
-        string sp = pcv.store();
+        std::string sp = pcv.store();
 
         to_string(tmp,sp);
 
@@ -175,7 +175,7 @@ namespace mybhep{
         particle& p = *pv2[ipar];
         long int ip = (long int)(&p);
         particle_cvt pcv(p,ip);
-        string sp = pcv.store();
+        std::string sp = pcv.store();
 
         to_string(tmp,sp);
 
@@ -189,7 +189,7 @@ namespace mybhep{
         sparticle& p = *pv3[ipar];
         long int ip = (long int)(&p);
         sparticle_cvt pcv(p,ip);
-        string sp = pcv.store();
+        std::string sp = pcv.store();
 
         to_string(tmp,sp);
 
@@ -201,7 +201,7 @@ namespace mybhep{
 
 
   // restore event
-  void event_cvt::restore(string s)
+  void event_cvt::restore(std::string s)
   {
 
 
@@ -215,7 +215,7 @@ namespace mybhep{
     converter_svc& csvc = mybhep_svc::instance().
       converter_service();
 
-    string name;
+    std::string name;
     istr >> name ;
 
     int indx;
@@ -241,8 +241,8 @@ namespace mybhep{
     for(size_t i=0; i < nprop; ++i)
       {
 
-        string name;
-        string value;
+        std::string name;
+        std::string value;
         istr >> name >> value;
         nevent_->add_property(name,value);
       }
@@ -371,8 +371,8 @@ namespace mybhep{
         }
         catch(bad_index&)
           {
-            cerr << "could not resolve a pointer to a true particle" << endl;
-            cerr << "event is likely corrupted" << endl;
+            std::cerr << "could not resolve a pointer to a true particle" << endl;
+            std::cerr << "event is likely corrupted" << endl;
             throw;
           }
       }
@@ -394,8 +394,8 @@ namespace mybhep{
         }
         catch(bad_index&)
           {
-            cerr << "could not resolve a pointer to a digi particle" << endl;
-            cerr << "event is likely corrupted" << endl;
+            std::cerr << "could not resolve a pointer to a digi particle" << endl;
+            std::cerr << "event is likely corrupted" << endl;
             throw;
           }
       }
@@ -416,8 +416,8 @@ namespace mybhep{
         }
         catch(bad_index&)
           {
-            cerr << "could not resolve a pointer to a super particle" << endl;
-            cerr << "event is likely corrupted" << endl;
+            std::cerr << "could not resolve a pointer to a super particle" << endl;
+            std::cerr << "event is likely corrupted" << endl;
             throw;
           }
       }

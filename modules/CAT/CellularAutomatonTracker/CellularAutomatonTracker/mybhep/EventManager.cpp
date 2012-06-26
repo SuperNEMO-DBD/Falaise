@@ -61,7 +61,7 @@ bool EventManager::initialize(){
 }
 
 //*************************************************************
-bool EventManager::initIO(string mode){
+bool EventManager::initIO(std::string mode){
 //*************************************************************
 
   if (mode=="r"){ //open input files
@@ -367,15 +367,15 @@ void EventManager::readParam(){
 	nofiles = odst_files.size();
         // check number of files: must be 1 or nifiles
         if (nifiles != nofiles && nofiles!=1){
-            string ms ="Wrong number of output files!";
+            std::string ms ="Wrong number of output files!";
             m.message(ms,mybhep::MUTE);
             exit(1);}
     }
     else{ //no output files defined. Generate default ones.
 
         for (size_t i=0; i<nifiles; i++){
-            string number = mybhep::to_string(i);
-            string name = "output_default_"+number+".gz";
+            std::string number = mybhep::to_string(i);
+            std::string name = "output_default_"+number+".gz";
             odst_files.push_back(name);}
     }
 
@@ -388,12 +388,12 @@ void EventManager::readParam(){
 
 
 //*************************************************************
-string EventManager::getFileType(string dst){
+std::string EventManager::getFileType(std::string dst){
 //*************************************************************
 
     size_t i2= dst.find_last_of(".")+1;
     size_t il= dst.size()-1;
-    string ext=dst.substr(i2,il);
+    std::string ext=dst.substr(i2,il);
 
     return ext;
 

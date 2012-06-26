@@ -15,8 +15,6 @@
 #include<iostream>
 #include<sstream>
 
-using namespace std;
-
 // ROOT headers
 #if !defined(__CINT__) || defined(__MAKECINT__)
 #include "TApplication.h"

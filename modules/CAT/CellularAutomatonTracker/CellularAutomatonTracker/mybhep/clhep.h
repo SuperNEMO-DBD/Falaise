@@ -22,12 +22,11 @@
 #include <CLHEP/Vector/LorentzVector.h>
 #include <CLHEP/Random/RandGauss.h>
 #include <CLHEP/Random/RanluxEngine.h>
-using namespace CLHEP;
 #include <mybhep/point.h>
 
 namespace mybhep {
-  typedef Hep3Vector Vector3D;
-  typedef HepLorentzVector Vector4D;
+  typedef CLHEP::Hep3Vector Vector3D;
+  typedef CLHEP::HepLorentzVector Vector4D;
   typedef mybhep::point Point3D;
 }
 

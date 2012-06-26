@@ -148,8 +148,8 @@ class EventDisplay{
   TH2F *mapzx;
   TH2F *mapzy;
   TCanvas *canvas;
-  vector<TGraph*> graphlist; 
-  vector<TPaveText*> pavelist; 
+  std::vector<TGraph*> graphlist; 
+  std::vector<TPaveText*> pavelist; 
   TLegend *leg_xz;
   TLegend *leg_yz;
   TLegend *leg_xz_true;
@@ -168,33 +168,33 @@ class EventDisplay{
   void fill_neighbours( std::vector<std::vector<POSITION> > sunami_position, std::vector< std::vector<size_t> > &neighbours );
   void DeleteDisplay(void);
   void EventDisplayExecute(mybhep::event& evt, int ievent );
-  bool InitializeDisplayEvent( mybhep::sstore store, mybhep::gstore gs , EventManager2 *eman);
+  bool InitializeDisplayEvent( mybhep::sstore store, mybhep::gstore gs , mybhep::EventManager2 *eman);
   void SetPlutsMode( bool plutsmode );
   bool CheckCells( void );
-  void readDstProper(mybhep::sstore, EventManager2 *eman=0);
+  void readDstProper(mybhep::sstore, mybhep::EventManager2 *eman=0);
   void get_pos(mybhep::hit ahit, float pos[7]);
   void fill_sunami_positions(mybhep::event& evt, std::vector<std::vector<POSITION> > &sunami_position);
   void fill_true_positions(mybhep::event& evt);
   void DrawCircleXZ( void );
-  string GetName(string name);
-  void DrawHitXZ(mybhep::event& evt, string mode);
+  std::string GetName(std::string name);
+  void DrawHitXZ(mybhep::event& evt, std::string mode);
   void DrawCircleYZ( void );
-  void DrawHitYZ(mybhep::event& evt, string mode);
+  void DrawHitYZ(mybhep::event& evt, std::string mode);
   void GetCellId(mybhep::hit hit,int &block,int &plane,int &id, int &n3id);
   void GetPlotLimit( std::vector<topology::calorimeter_hit> calos );
   void DrawDetectorXZ( void );
   void DrawDetectorCircleXZ( double radius, size_t color );
   void DrawDetectorYZ( void );
   void GenerateWires( void );
-  void EventDisplayXZ(mybhep::event& evt, string mode);
-  void EventDisplayYZ(mybhep::event& evt, string mode);
+  void EventDisplayXZ(mybhep::event& evt, std::string mode);
+  void EventDisplayYZ(mybhep::event& evt, std::string mode);
   void Nemo3EventDisplayXZ(void);
   void Nemo3EventDisplayYZ(void);
   void DrawNemo3HitXZ( void );
   void DrawNemo3HitYZ( void );
   void fill_nemo3_event(mybhep::event& evt);
   bool same_cell( POSITION a, POSITION b );
-  bool fill_parts(vector<mybhep::particle*> digi_parts);
+  bool fill_parts(std::vector<mybhep::particle*> digi_parts);
   void fill_parts_display(  mybhep::event& evt );
   void fill_nemo3_parts_display(  mybhep::event& evt );
   float FastHit(POSITION position);
@@ -217,7 +217,7 @@ class EventDisplay{
   void set_PlotCaloEnergy(bool aValue) { PlotCaloEnergy = aValue; }
   void set_PlotHelices(bool aValue) { PlotHelices = aValue; }
   void set_PlotLegend(bool aValue) { PlotLegend = aValue; }
-  void set_PlotFormat(string aValue) { PlotFormat = aValue; }
+  void set_PlotFormat(std::string aValue) { PlotFormat = aValue; }
   
   
  protected:
@@ -249,7 +249,7 @@ class EventDisplay{
   int PlotHelices;
   int PlotLegend;
   int icanvas;
-  string PlotFormat;
+  std::string PlotFormat;
 
   //error parametrization
   double sigma0;
@@ -270,7 +270,7 @@ class EventDisplay{
   double l0;
   double l1;
 
-  // vector of sunami positions
+  // std::vector of sunami positions
   N3EVENT n3event;
   std::vector<std::vector<POSITION> > sunami_position;
   std::vector<std::vector<POSITION> > true_position;
@@ -300,7 +300,7 @@ class EventDisplay{
   double AverageGW[2];
   double AverageAll[2];
 
-  EventManager2* eman;
+  mybhep::EventManager2* eman;
 
   std::vector<POINT> DriftWires;
 
@@ -393,7 +393,7 @@ public:
 
 public:
 
-  void set_level(string v){
+  void set_level(std::string v){
     level = mybhep::get_info_level(v);
     return;
   }
@@ -437,16 +437,16 @@ public:
 
 
 private:
-  void event_display_xz(string mode, topology::tracked_data td);
+  void event_display_xz(std::string mode, topology::tracked_data td);
   void draw_circle_xz( double x0, double z0, double radius, size_t color, size_t thickness, double phi1, double phi2);
   void draw_initial_hits_xz( void );
   void draw_calos_xz( std::vector<topology::calorimeter_hit> calos );
   void draw_sine_yz( double y0, double z0, double radius, double pitch, size_t color, size_t thickness, double phi1 , double phi2);
-  void draw_cats_xz(string mode, std::vector<topology::sequence> true_seqs);
-  void event_display_yz(string mode, topology::tracked_data td);
+  void draw_cats_xz(std::string mode, std::vector<topology::sequence> true_seqs);
+  void event_display_yz(std::string mode, topology::tracked_data td);
   void draw_calos_yz( std::vector<topology::calorimeter_hit> calos );
   void draw_initial_hits_yz( void );
-  void draw_cats_yz(string mode, std::vector<topology::sequence> true_seqs);
+  void draw_cats_yz(std::string mode, std::vector<topology::sequence> true_seqs);
   void print_cells(void);
   void draw_tangents_xz( void );
   void draw_tangents_yz( void );
@@ -457,7 +457,7 @@ private:
   double get_x_ndc(double x);
   double get_y_ndc(double y);
   double get_z_ndc(double z);
-  string get_name(string name){
+  std::string get_name(std::string name){
     size_t i1 = name.find("_");
     name = name.substr(0,i1);
     return name;
@@ -482,13 +482,13 @@ private:
 
 //----Modification for bar-module---
 private: 
-  string  _moduleNR;
+  std::string  _moduleNR;
   int     _MaxBlockSize;
   std::vector<mybhep::particle*> parts;
   std::vector<mybhep::particle*> nemo3_parts;
     
 public:
-  void SetModuleNR(string mID){
+  void SetModuleNR(std::string mID){
     _moduleNR=mID;
   };
 

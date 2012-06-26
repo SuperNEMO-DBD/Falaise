@@ -41,7 +41,7 @@ namespace mybhep{
   {
 
   protected:
-    char* rdata[DIM1];  // string to write
+    char* rdata[DIM1];  // std::string to write
     hid_t    native_type;       /* Datatype ID */
 
     // h5 file
@@ -60,13 +60,13 @@ namespace mybhep{
     //! destructor
     virtual ~reader_hdf5();
     //! set file
-    virtual void set_file(string fileName);
+    virtual void set_file(std::string fileName);
     //! max events
     virtual size_t max_events();
     //! read event
     virtual event& read(size_t ievent = 0);
     //! read with a key
-    event& read(string key);
+    event& read(std::string key);
 
   };   
 }

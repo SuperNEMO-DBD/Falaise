@@ -63,7 +63,7 @@ namespace CAT {
    *    using namespace CAT;
    *    handle<int> h0;  // a default int is allocated
    *    h0.get () = 999; // access the int and modify its value
-   *    cout << "h0 = " << h0.get () << endl; // print it
+   *    cout << "h0 = " << h0.get () << std::endl; // print it
    *    h0.reset (new int (0)); // discard the former int 
    *                            // and allocate a new one
    *    handle<int> h1 (new int (1)); // create a new handle for another int
@@ -72,7 +72,7 @@ namespace CAT {
    *                           // than the previous handle
    *      h2.get () = 666;     //change the int value through this handle
    *    }
-   *    cout << "h1 = " << h1.get () << endl; // print it through the
+   *    cout << "h1 = " << h1.get () << std::endl; // print it through the
    *                                          // first handle
    *  };
    *  @endcode
@@ -147,12 +147,12 @@ namespace CAT {
     virtual ~handle ()
     {
       /*
-        clog << "DEVEL: datatools::utils::handle::dtor: Entering..." << endl;
-        clog << "DEVEL: datatools::utils::handle::dtor:   Use count = " 
-        << sp_.use_count () << endl;
+        std::clog << "DEVEL: datatools::utils::handle::dtor: Entering..." << std::endl;
+        std::clog << "DEVEL: datatools::utils::handle::dtor:   Use count = " 
+        << sp_.use_count () << std::endl;
       */
       sp_.reset ();
-      //clog << "DEVEL: datatools::utils::handle::dtor: Exiting." << endl;
+      //clog << "DEVEL: datatools::utils::handle::dtor: Exiting." << std::endl;
       return;
     }
   

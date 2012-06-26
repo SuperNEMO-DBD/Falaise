@@ -36,8 +36,8 @@ namespace mybhep{
    * param-type param-value, where group-name and param-name are 
    * strings with the name of the group (for example the instance 
    * to which this parameter belongs)  and the name of the parameter, 
-   * type is a string with value
-   * S if the parameter is a string or D if the parameter is a double
+   * type is a std::string with value
+   * S if the parameter is a std::string or D if the parameter is a double
    * and I if the param is a parameter and param-value is a string, double
    * or integer
    *
@@ -56,7 +56,7 @@ namespace mybhep{
     }
   
     /// sets the name of the file
-    void file(string fileName)
+    void file(std::string fileName)
     {
       m_fileName = fileName;
 
@@ -66,7 +66,7 @@ namespace mybhep{
         m_dataFile.close();
       }
    
-      m_dataFile.open(fileName.c_str(), ios::in);
+      m_dataFile.open(fileName.c_str(), std::ios::in);
       
       Assert(!m_dataFile.fail(),__FILE__,__LINE__,
              internal_logic("Failed to open file "+m_fileName)); 
@@ -76,7 +76,7 @@ namespace mybhep{
     }
     
     /// returns the name of the file
-    string file(){
+    std::string file(){
       Assert(panel_.switch_closed("file"),__FILE__,__LINE__,
              internal_logic("--sreader file not set to reader"));       
       
@@ -84,7 +84,7 @@ namespace mybhep{
     }
   
     /// sets the name of the group 
-    void group(string groupName){
+    void group(std::string groupName){
       
       if (panel_.switch_closed("group")){    
         panel_.open_switch("group");
@@ -99,7 +99,7 @@ namespace mybhep{
     }
 
     /// returns the name of the group 
-    string group(){
+    std::string group(){
       Assert(panel_.switch_closed("group"),__FILE__,__LINE__,
              internal_logic("--sreader group not set to reader"));      
       
@@ -126,10 +126,10 @@ namespace mybhep{
         
         double value;
         int ivalue;
-        string svalue;
+        std::string svalue;
         
-        string label,test,dummy;
-        string group = nextEntry();
+        std::string label,test,dummy;
+        std::string group = nextEntry();
       
       m_.message("sreader in read(); ",group,VVERBOSE);
 
@@ -173,7 +173,7 @@ namespace mybhep{
                  compare_string_nocase(test,"DV")){
           size_t size;
           //double value;
-          string value;
+          std::string value;
           dvector<double> dv;
           m_dataFile >> size;      
           //        clog <<" " << size <<endl;
@@ -190,7 +190,7 @@ namespace mybhep{
         else if (compare_string_nocase(test,"IV")){
           size_t size;
           //int value;
-          string value;
+          std::string value;
           dvector<int> dv;
           m_dataFile >> size;      
           //        clog <<" " << size <<endl;
@@ -205,8 +205,8 @@ namespace mybhep{
         }
         else if (compare_string_nocase(test,"SV")){
           size_t size;
-          string value;
-          dvector<string> dv;
+          std::string value;
+          dvector<std::string> dv;
           m_dataFile >> size;      
           //        clog <<" " << size <<endl;
             
@@ -220,26 +220,26 @@ namespace mybhep{
         }
       }
       catch(internal_logic& err){
-        cerr << "test must be empty test = " << test << endl;
-        cerr << " this means end of file" << endl;
-        cerr << " otherwise value of parameter is ignored" << endl;
+        std::cerr << "test must be empty test = " << test << std::endl;
+        std::cerr << " this means end of file" << std::endl;
+        std::cerr << " otherwise value of parameter is ignored" << std::endl;
       }
       }
     }
 
   private:
     gstore* store_;
-    ifstream m_dataFile;
-    string m_fileName;
-    string m_groupName;
+    std::ifstream m_dataFile;
+    std::string m_fileName;
+    std::string m_groupName;
   
     /**
      * Advances in input file removing all comments, and returns the
      * next entry.
      */
-    string nextEntry() 
+    std::string nextEntry() 
     {
-      string word, dummy;
+      std::string word, dummy;
     
       // if the word begins by "#" (a comment)...
       // discard the rest of the line      

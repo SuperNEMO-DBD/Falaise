@@ -82,7 +82,7 @@ namespace mybhep{
       return pr;
     }
 
-    //!return data in a map of string string
+    //!return data in a map of std::string string
     const std::map<std::string,std::string>& data_map() const
     {
       return prop_.store_map();

@@ -38,7 +38,7 @@ namespace mybhep{
   {
 
   private:
-    //! vector of converters
+    //! std::vector of converters
     std::vector<ibconverter*> converters_;
   public:
 

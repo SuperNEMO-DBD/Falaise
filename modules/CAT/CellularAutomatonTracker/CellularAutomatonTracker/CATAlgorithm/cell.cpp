@@ -67,7 +67,7 @@ namespace topology{
   experimental_point cell::angular_average(experimental_point epa, experimental_point epb, experimental_double* angle){
 
     if( print_level() >= mybhep::VVERBOSE )
-      clog << " calculating angular average for cell " << id() << endl;
+      std::clog << " calculating angular average for cell " << id() << std::endl;
 
     if( small() ){
       angle->set_value(0.);
@@ -97,10 +97,10 @@ namespace topology{
     *angle = phi1 - phi2;
 
     if( print_level() >= mybhep::VVERBOSE ){
-      clog << " avereging phi1: "; (phi1*180./M_PI).dump();
-      clog << " and phi2: "; (phi2*180./M_PI).dump();
-      clog << " to phi_ave: "; (ave_phi*180./M_PI).dump();
-      clog << " " << endl;
+      std::clog << " avereging phi1: "; (phi1*180./M_PI).dump();
+      std::clog << " and phi2: "; (phi2*180./M_PI).dump();
+      std::clog << " to phi_ave: "; (ave_phi*180./M_PI).dump();
+      std::clog << " " << std::endl;
     }
 
     experimental_double cos_ave_phi = experimental_cos(ave_phi);
@@ -120,10 +120,10 @@ namespace topology{
 
     experimental_vector v(ep(), epp);
 
-    clog << " x: "; (v.x()).dump();
-    clog << " y: "; (v.y()).dump();
-    clog << " z: "; (v.z()).dump();
-    clog << " phi: "; (v.phi()*180./M_PI).dump();
+    std::clog << " x: "; (v.x()).dump();
+    std::clog << " y: "; (v.y()).dump();
+    std::clog << " z: "; (v.z()).dump();
+    std::clog << " phi: "; (v.phi()*180./M_PI).dump();
 
 
   }
@@ -132,7 +132,7 @@ namespace topology{
   void cell::dump_point_phi(experimental_point epp)const{
 
     experimental_vector v(ep(), epp);
-    clog << " phi: "; (v.phi()*180./M_PI).dump();
+    std::clog << " phi: "; (v.phi()*180./M_PI).dump();
 
 
   }
@@ -176,7 +176,7 @@ namespace topology{
 
     if( rsum.value() > dist*fraction_limit ){
       if( print_level() >= mybhep::VVERBOSE ){
-        clog << " cells " << id() << " and " << c.id() << " intersect: dist " << dist << " radii " << r().value() << " and " << c.r().value() << " rsum " << rsum.value() << endl;
+        std::clog << " cells " << id() << " and " << c.id() << " intersect: dist " << dist << " radii " << r().value() << " and " << c.r().value() << " rsum " << rsum.value() << std::endl;
       }
       return true;
     }
@@ -189,7 +189,7 @@ namespace topology{
     bool test = probof(chi2, 1) > prob();
     if( test )
       if( print_level() >= mybhep::VVERBOSE ){
-        clog <<" cells " << id() << " and " <<c.id() << " intersect: dist " << dist << " radii " << r().value() << " and " <<c.r().value()<< " rsum " << rsum.value() << " +- " << rsum.error() << " prob " << probof(chi2, 1) << " chi2 " << chi2 << " problimit " << prob() << endl;
+        std::clog <<" cells " << id() << " and " <<c.id() << " intersect: dist " << dist << " radii " << r().value() << " and " <<c.r().value()<< " rsum " << rsum.value() << " +- " << rsum.error() << " prob " << probof(chi2, 1) << " chi2 " << chi2 << " problimit " << prob() << std::endl;
       }
     */
 

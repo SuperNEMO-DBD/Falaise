@@ -39,26 +39,26 @@ namespace CAT{
                        const std::string & a_indent,
                        bool a_inherit) const{
       {
-        string indent;
+        std::string indent;
         if (! a_indent.empty ()) indent = a_indent;
         if (! a_title.empty ())
           {
-            a_out << indent << a_title << endl;
+            a_out << indent << a_title << std::endl;
           }
 
-        a_out << indent << appname_ << " -------------- " << endl;
-        a_out << indent << " center " << endl;
+        a_out << indent << appname_ << " -------------- " << std::endl;
+        a_out << indent << " center " << std::endl;
         this->center().dump(a_out, "", indent + "    ");
-        a_out << indent << " radius: "; radius().dump(); a_out << " " << endl;
+        a_out << indent << " radius: "; radius().dump(); a_out << " " << std::endl;
         /*
-          a_out << indent << " one round: " << endl;
+          a_out << indent << " one round: " << std::endl;
           for(size_t i=0; i<100; i++){
           experimental_double theta(i*3.1417/100., 0.);
-          a_out << indent << " .. theta " << theta.value()*180./M_PI << " x " << position(theta).x().value() << " , z " << position(theta).z().value() << endl;
+          a_out << indent << " .. theta " << theta.value()*180./M_PI << " x " << position(theta).x().value() << " , z " << position(theta).z().value() << std::endl;
           }
         */
 
-        a_out << indent << " -------------- " << endl;
+        a_out << indent << " -------------- " << std::endl;
 
         return;
       }
@@ -152,7 +152,7 @@ namespace CAT{
     void circle::best_fit_pitch(std::vector<experimental_point> ps, experimental_double *_pitch, experimental_double *_center){
 
       if( ps.size() == 0 ){
-        clog << " problem: asking for best fit pitch for p vector of size " << ps.size() << endl;
+        std::clog << " problem: asking for best fit pitch for p std::vector of size " << ps.size() << std::endl;
         return;
       }
       
@@ -165,10 +165,10 @@ namespace CAT{
       double Sphi = 0.;
       double Syphi = 0.;
       double Sw = 0.;
-      vector<experimental_double> phis;
-      vector<experimental_double> ys;
+      std::vector<experimental_double> phis;
+      std::vector<experimental_double> ys;
       
-      for(vector<experimental_point>::iterator ip=ps.begin(); ip!=ps.end(); ++ip){
+      for(std::vector<experimental_point>::iterator ip=ps.begin(); ip!=ps.end(); ++ip){
         ys.push_back(ip->y());
         experimental_double phi = phi_of_point(*ip);
         phis.push_back(phi);
@@ -196,23 +196,23 @@ namespace CAT{
       *_center = experimental_double(ce, errce);
 
       if( print_level() >= mybhep::VVERBOSE ){
-        clog << " average y " << average(ys).value() << " average phi " << average(phis).value() << " 1/p " << one_over_pi << " -y0/p " << min_ce_over_pi << " center y " << ce << " pitch " << pi << " " << endl;
+        std::clog << " average y " << average(ys).value() << " average phi " << average(phis).value() << " 1/p " << one_over_pi << " -y0/p " << min_ce_over_pi << " center y " << ce << " pitch " << pi << " " << std::endl;
       
-        for(vector<experimental_point>::iterator ip=ps.begin(); ip!=ps.end(); ++ip){
+        for(std::vector<experimental_point>::iterator ip=ps.begin(); ip!=ps.end(); ++ip){
           experimental_double phi = phi_of_point(*ip);
           experimental_double predicted = *_center + *_pitch*phi;
           experimental_double res = predicted - ip->y();
           
           if( print_level() >= mybhep::VVERBOSE ){
-            clog << " input y: ( "; 
+            std::clog << " input y: ( "; 
             ip->y().dump(); 
-            clog << " ) predicted: ("; 
+            std::clog << " ) predicted: ("; 
             predicted.dump(); 
-            clog << " ) local res: " ; 
+            std::clog << " ) local res: " ; 
             res.dump(); 
-            clog << " phi: " ; 
+            std::clog << " phi: " ; 
             phi.dump(); 
-            clog << " " << endl;
+            std::clog << " " << std::endl;
           }
           
           
@@ -225,7 +225,7 @@ namespace CAT{
 
     bool circle::intersect_plane(plane pl, experimental_point * ep, experimental_double _phi){
       
-      // normal vector from face of plane to center of circle
+      // normal std::vector from face of plane to center of circle
       experimental_vector ntp = pl.norm_to_point(center());
       
       double diff = (ntp.length() - radius()).value();
@@ -240,7 +240,7 @@ namespace CAT{
       }
       else{
         if( print_level() >= mybhep::VVERBOSE ){
-          clog << " intersecting circle with center " << center().x().value() << " " << center().z().value() <<
+          std::clog << " intersecting circle with center " << center().x().value() << " " << center().z().value() <<
             " with plain with face " << pl.face().x().value() << " " << pl.face().z().value();
         }
         
@@ -273,7 +273,7 @@ namespace CAT{
 
       experimental_vector dist = experimental_vector(pl.face(), *ep);
       if( print_level() >= mybhep::VVERBOSE ){
-        clog << " distance from extrapolation to calo face: " << dist.x().value() << " " << dist.y().value() << " " << dist.z().value() << " calo sizes: " << pl.sizes().x().value() << " " << pl.sizes().y().value() << " " << pl.sizes().z().value() << endl;
+        std::clog << " distance from extrapolation to calo face: " << dist.x().value() << " " << dist.y().value() << " " << dist.z().value() << " calo sizes: " << pl.sizes().x().value() << " " << pl.sizes().y().value() << " " << pl.sizes().z().value() << std::endl;
       }
       if( pl.view() == "x" ){
         if( fabs(dist.z().value()) > pl.sizes().z().value() )
@@ -288,7 +288,7 @@ namespace CAT{
 
       
       if( print_level() >= mybhep::NORMAL )
-        clog << " problem: intersecting circle with plane of view " << pl.view() << endl;
+        std::clog << " problem: intersecting circle with plane of view " << pl.view() << std::endl;
 
       return false;
       
@@ -303,7 +303,7 @@ namespace CAT{
 
       if( rsum.value() < dist.value() ){
 	if( print_level() >= mybhep::VVERBOSE ){
-	  clog << " can't extrapolate circle to circle: the circles don't intesect " << endl;
+	  std::clog << " can't extrapolate circle to circle: the circles don't intesect " << std::endl;
 	}
 	return false;
       }
@@ -350,7 +350,7 @@ namespace CAT{
 	clog << " foil : "; c.dump();
 	clog << " intersection 1: "; p1.dump();		      
 	clog << " intersection 2: "; p2.dump();		      
-	clog << " dist "; dist.dump(); clog << " rsum "; rsum.dump(); clog << " a "; a.dump(); clog << " h "; h.dump(); clog << " middle "; middle.dump();
+	clog << " dist "; dist.dump(); std::clog << " rsum "; rsum.dump(); std::clog << " a "; a.dump(); std::clog << " h "; h.dump(); std::clog << " middle "; middle.dump();
       }
 
       return true;
@@ -424,21 +424,21 @@ namespace CAT{
       circle h;
 
       if( xs.size() == 0 ){
-        clog << " problem: asking for best fit radius for x vector of size " << xs.size() << endl;
+        std::clog << " problem: asking for best fit radius for x std::vector of size " << xs.size() << std::endl;
         return h;
       }
 
       if( zs.size() != xs.size() ){
-        clog << " problem: asking for best fit radius for z vector of size " << zs.size() << " x vector of size " << xs.size() << endl;
+        std::clog << " problem: asking for best fit radius for z std::vector of size " << zs.size() << " x std::vector of size " << xs.size() << std::endl;
         return h;
       }
     
       experimental_double xave = average(xs);
       experimental_double zave = average(zs);
 
-      clog << " calculating best fit circle " << endl;
-      clog << " xave "; xave.dump();
-      clog << " zave "; zave.dump();
+      std::clog << " calculating best fit circle " << std::endl;
+      std::clog << " xave "; xave.dump();
+      std::clog << " zave "; zave.dump();
 
 
       std::vector<experimental_double> us;
@@ -452,10 +452,10 @@ namespace CAT{
       experimental_double Suvv(0.,0.);
       experimental_double Svvv(0.,0.);
     
-      for(vector<experimental_double>::iterator ix=xs.begin(); ix!=xs.end(); ++ix){
+      for(std::vector<experimental_double>::iterator ix=xs.begin(); ix!=xs.end(); ++ix){
         experimental_double u = *ix - xave;
         experimental_double v = zs[ix - xs.begin()] - zave;
-        clog << " .. x " ; ix->dump(); clog << " u "; u.dump(); clog << " z "; zs[ix - xs.begin()].dump(); clog << " v "; v.dump(); clog << " " << endl;
+        std::clog << " .. x " ; ix->dump(); std::clog << " u "; u.dump(); std::clog << " z "; zs[ix - xs.begin()].dump(); std::clog << " v "; v.dump(); std::clog << " " << std::endl;
         us.push_back(u);
         vs.push_back(v);
         Suu += experimental_square(u);

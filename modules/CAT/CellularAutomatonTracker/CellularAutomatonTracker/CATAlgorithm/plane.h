@@ -92,7 +92,7 @@ namespace CAT {
 
       bool intersect(experimental_point start, experimental_vector direction, experimental_point* ep)const;
 
-      // vector from the face of the plane to the point
+      // std::vector from the face of the plane to the point
       experimental_vector norm_to_point(experimental_point ep)const;
 
     };

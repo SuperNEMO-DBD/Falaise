@@ -27,7 +27,7 @@ namespace mybhep
   using namespace std;
 
   //! constructor
-  mparticle::mparticle (particle& p, string view,
+  mparticle::mparticle (particle& p, std::string view,
                         size_t xz, size_t yz)
   {
     mirror_ = &p;
@@ -49,29 +49,29 @@ namespace mybhep
   }
 
   ostream& operator << (ostream& s, const mparticle& ip) {
-    s << endl;
+    s << std::endl;
 
     if (&ip.mirror() != NULL)
       {
-        s << " mirror of particle is " << ip.mirror().name() << endl;
-        s << " with 3  momentum (MeV) =" << ip.mirror().p3()/MeV << endl;
-        s << " and energy (MeV)= " << ip.mirror().e()/MeV << endl;
+        s << " mirror of particle is " << ip.mirror().name() << std::endl;
+        s << " with 3  momentum (MeV) =" << ip.mirror().p3()/MeV << std::endl;
+        s << " and energy (MeV)= " << ip.mirror().e()/MeV << std::endl;
         s << " view = " << ip.view()
           << " matches xz = " << ip.xz()
           << " matches yz = " << ip.yz()
           << " quality = " << ip.quality()
-          << endl;
+          << std::endl;
       }
 
     s << " List of properties "
-      << "-----------------------------" << endl;
+      << "-----------------------------" << std::endl;
 
     typedef map<string, string>::const_iterator I;
     for(I i=ip.properties_map().begin(); i !=ip.properties_map().end(); ++i)
       {
-        clog << " property name = " << i->first << "   "
+        std::clog << " property name = " << i->first << "   "
              << " property value = " << i->second
-             << endl;
+             << std::endl;
       }
     return s;
   }

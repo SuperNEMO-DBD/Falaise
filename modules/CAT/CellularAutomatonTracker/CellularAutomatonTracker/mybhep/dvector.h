@@ -29,7 +29,7 @@
 
 namespace mybhep
 {
-  /// adds print interface to STL vector
+  /// adds print interface to STL std::vector
   /**
      \ingroup base
   */

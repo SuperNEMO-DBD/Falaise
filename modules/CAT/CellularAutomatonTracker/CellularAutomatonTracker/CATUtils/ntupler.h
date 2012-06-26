@@ -41,9 +41,6 @@
 #include "TCanvas.h"
 
 
-using namespace std;
-using namespace CAT;
-
 class ntupler
 {
   
@@ -114,7 +111,7 @@ class ntupler
   } event; 
   
   
-  string __title;
+  std::string __title;
   TFile *__f;
   TTree *__tree;
   event __event;
@@ -122,25 +119,25 @@ class ntupler
   TH1F *helix_chi2;
   TNtuple *__event_ntuple, *__hits_ntuple, *__vertexes_ntuple,  *__tracks_ntuple;
 
-  topology::tracked_data tracked_data_;
+  CAT::topology::tracked_data tracked_data_;
 
 
  public: 
   
-  void set_title (string title_);
-  string  get_title();
+  void set_title (std::string title_);
+  std::string  get_title();
   
   void initialize (void);
   void finalize (void) ;
   
   bool is_valid () const ;
   void __fill();
-  bool get_true_hit_of_reco_cell(topology::cell c, topology::node& n, size_t& index);
-  size_t get_cell_index(topology::cell c);
+  bool get_true_hit_of_reco_cell(CAT::topology::cell c, CAT::topology::node& n, size_t& index);
+  size_t get_cell_index(CAT::topology::cell c);
 
   
-  void set_tracked_data (const topology::tracked_data& tracked_data);
-  const  topology::tracked_data & get_tracked_data () const ;
+  void set_tracked_data (const CAT::topology::tracked_data& tracked_data);
+  const  CAT::topology::tracked_data & get_tracked_data () const ;
   
   void clear ();
   //   get_next_point(snemo::core::model::lt_track t_, size_t id_);

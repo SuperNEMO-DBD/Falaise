@@ -159,14 +159,14 @@ void ntupler::finalize (void)
 
 
 //________________________________________________________________________    
-void ntupler::set_title (string title_)
+void ntupler::set_title (std::string title_)
 { 
   
   __title = title_;
 }
 
 //________________________________________________________________________    
-string  ntupler::get_title()
+std::string  ntupler::get_title()
 { 
   return __title ;   
 }   
@@ -174,7 +174,7 @@ string  ntupler::get_title()
 
 
 //________________________________________________________________________    
-void ntupler::set_tracked_data (const topology::tracked_data& td){
+void ntupler::set_tracked_data (const CAT::topology::tracked_data& td){
 
   tracked_data_ = td;
 
@@ -184,7 +184,7 @@ void ntupler::set_tracked_data (const topology::tracked_data& td){
     
     
 //________________________________________________________________________    
-const  topology::tracked_data & ntupler::get_tracked_data () const {
+const  CAT::topology::tracked_data & ntupler::get_tracked_data () const {
 
   return tracked_data_ ;   
 }
@@ -241,7 +241,7 @@ void ntupler::__fill ()
     
     __has_mc_hits = (tracked_data_.true_sequences_.size() > 0);
     if( __has_mc_hits ) { // if there is mc true information
-      topology::node truenode; 
+      CAT::topology::node truenode; 
       size_t itrack;
       if( get_true_hit_of_reco_cell(tracked_data_.cells_[icell], truenode, itrack)){
 	__event.Ggtx[cell_counter] = truenode.ep().x().value();
@@ -258,7 +258,7 @@ void ntupler::__fill ()
   if( !tracked_data_.scenarios_.empty() ){
     __event.Nbr_tks = tracked_data_.scenarios_[0].sequences_.size();
     size_t trk_counter = 0;
-    for(std::vector<topology::sequence>::iterator iseq = tracked_data_.scenarios_[0].sequences_.begin(); 
+    for(std::vector<CAT::topology::sequence>::iterator iseq = tracked_data_.scenarios_[0].sequences_.begin(); 
 	iseq != tracked_data_.scenarios_[0].sequences_.end(); ++iseq){
       
       if( iseq - tracked_data_.scenarios_[0].sequences_.begin() >= MAXNTRACKS ){
@@ -270,10 +270,10 @@ void ntupler::__fill ()
 
       std::vector<double> hchi2s = iseq->helix_chi2s();
 
-      topology::helix hel = iseq->get_helix();
+      CAT::topology::helix hel = iseq->get_helix();
 
       size_t pt_counter = 0;
-      for(std::vector<topology::node>::iterator inode = iseq->nodes_.begin(); 
+      for(std::vector<CAT::topology::node>::iterator inode = iseq->nodes_.begin(); 
 	  inode != iseq->nodes_.end(); ++inode){
 	
 	size_t local_index=inode-iseq->nodes_.begin();
@@ -306,7 +306,7 @@ void ntupler::__fill ()
 
 
       if( iseq->nodes_.size() >= 2 ){
-	topology::experimental_vector dir(iseq->nodes_[0].ep(), iseq->nodes_[1].ep());
+	CAT::topology::experimental_vector dir(iseq->nodes_[0].ep(), iseq->nodes_[1].ep());
 	__event.Vtx_cos_dir[trk_counter][0][0]=dir.x().value();
 	__event.Vtx_cos_dir[trk_counter][0][1]=dir.y().value();
 	__event.Vtx_cos_dir[trk_counter][0][2]=dir.z().value();
@@ -318,7 +318,7 @@ void ntupler::__fill ()
 
       if( iseq->has_decay_vertex() && iseq->nodes_.size() >= 2){
 	size_t s = iseq->nodes_.size();
-	topology::experimental_vector dir(iseq->nodes_[s-2].ep(), iseq->nodes_[s-1].ep());
+	CAT::topology::experimental_vector dir(iseq->nodes_[s-2].ep(), iseq->nodes_[s-1].ep());
 	__event.Decay_Vtx_cos_dir[trk_counter][1][0]=dir.x().value();
 	__event.Decay_Vtx_cos_dir[trk_counter][1][1]=dir.y().value();
 	__event.Decay_Vtx_cos_dir[trk_counter][1][2]=dir.z().value();
@@ -331,7 +331,7 @@ void ntupler::__fill ()
 
   __event.True_Nbr_tks = tracked_data_.true_sequences_.size();
   size_t true_trk_counter = 0;
-  for(std::vector<topology::sequence>::iterator iseq = tracked_data_.true_sequences_.begin(); 
+  for(std::vector<CAT::topology::sequence>::iterator iseq = tracked_data_.true_sequences_.begin(); 
       iseq != tracked_data_.true_sequences_.end(); ++iseq){
     
       if( iseq - tracked_data_.true_sequences_.begin() >= MAXNTRACKS ){
@@ -343,7 +343,7 @@ void ntupler::__fill ()
 
 
     if( iseq->nodes_.size() >= 2 ){
-      topology::experimental_vector dir(iseq->nodes_[0].ep(), iseq->nodes_[1].ep());
+      CAT::topology::experimental_vector dir(iseq->nodes_[0].ep(), iseq->nodes_[1].ep());
       __event.True_Vtx_cos_dir[true_trk_counter][0][0]=dir.x().value();
       __event.True_Vtx_cos_dir[true_trk_counter][0][1]=dir.y().value();
       __event.True_Vtx_cos_dir[true_trk_counter][0][2]=dir.z().value();
@@ -351,7 +351,7 @@ void ntupler::__fill ()
     
     if( iseq->has_decay_vertex() && iseq->nodes_.size() >= 2){
       size_t s = iseq->nodes_.size();
-      topology::experimental_vector dir(iseq->nodes_[s-2].ep(), iseq->nodes_[s-1].ep());
+      CAT::topology::experimental_vector dir(iseq->nodes_[s-2].ep(), iseq->nodes_[s-1].ep());
       __event.True_Decay_Vtx_cos_dir[true_trk_counter][1][0]=dir.x().value();
       __event.True_Decay_Vtx_cos_dir[true_trk_counter][1][1]=dir.y().value();
       __event.True_Decay_Vtx_cos_dir[true_trk_counter][1][2]=dir.z().value();
@@ -374,13 +374,13 @@ void ntupler::__fill ()
 }
 
 //________________________________________________________________________
-  bool ntupler::get_true_hit_of_reco_cell(topology::cell c, topology::node& n, size_t& index){
+  bool ntupler::get_true_hit_of_reco_cell(CAT::topology::cell c, CAT::topology::node& n, size_t& index){
 
 
-  for(std::vector<topology::sequence>::iterator iseq = tracked_data_.true_sequences_.begin();
+  for(std::vector<CAT::topology::sequence>::iterator iseq = tracked_data_.true_sequences_.begin();
       iseq != tracked_data_.true_sequences_.end(); ++iseq){
 
-    for(std::vector<topology::node>::iterator inode = iseq->nodes_.begin(); inode != iseq->nodes_.end();
+    for(std::vector<CAT::topology::node>::iterator inode = iseq->nodes_.begin(); inode != iseq->nodes_.end();
 	++inode){
 
       if( inode->c_.same_cell(c)){
@@ -398,10 +398,10 @@ void ntupler::__fill ()
   }
 
 //________________________________________________________________________
-size_t ntupler::get_cell_index(topology::cell c){
+size_t ntupler::get_cell_index(CAT::topology::cell c){
 
 
-  for(std::vector<topology::cell>::iterator icell = tracked_data_.cells_.begin();
+  for(std::vector<CAT::topology::cell>::iterator icell = tracked_data_.cells_.begin();
       icell != tracked_data_.cells_.end(); ++icell){
     if( c.same_cell(*icell) ) return icell - tracked_data_.cells_.begin();
   }

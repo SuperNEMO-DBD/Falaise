@@ -163,7 +163,7 @@ namespace CAT {
     // General parameters :
     czer_.set_PrintMode (false);
     czer_.set_MaxTime (setup_.MaxTime / CLHEP::ms);
-    string leveltmp = setup_.level;
+    std::string leveltmp = setup_.level;
     boost::to_upper(leveltmp);
 
     czer_.set_level (leveltmp); //mybhep::get_info_level (leveltmp));
@@ -191,7 +191,7 @@ namespace CAT {
         czer_.set_num_blocks (setup_.num_blocks);
         for (int i = 0; i < setup_.num_blocks; i++)
           {
-            czer_.set_planes_per_block (i, setup_.planes_per_block.at (i));
+            czer_.set_planes_per_block (i, (int)(setup_.planes_per_block.at (i)+0.5));
           }
         czer_.set_num_cells_per_plane (setup_.num_cells_per_plane);
         czer_.set_GG_CELL_pitch (setup_.cell_size / CLHEP::mm);
@@ -247,7 +247,7 @@ namespace CAT {
       }
 
     // Duplicate test for now :
-    vector<bool> ids;
+    std::vector<bool> ids;
     ids.assign (cells.size (), false);
     for (int i = 0; i < cells.size (); i++)
       {

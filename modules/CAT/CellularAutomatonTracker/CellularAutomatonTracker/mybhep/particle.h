@@ -61,7 +61,7 @@ namespace mybhep {
     //! The state of particle (PROJ, MPROJ...)
     pstate pstate_;
 
-    //! Lorentz four vector characterizing the particle
+    //! Lorentz four std::vector characterizing the particle
     mybhep::Vector4D* p4_;
 
     //! Ray with the position and momentum at production vertex.
@@ -78,22 +78,22 @@ namespace mybhep {
     //! pointer to its mother particle if any
     const particle* mother_;
 
-    //! vector of daughter particles
+    //! std::vector of daughter particles
     std::vector<const particle*> daughters_;
 
     //! specifies if the particle has a mother
     bool has_mother_;
 
-    //! vector of tracks left by this particle
+    //! std::vector of tracks left by this particle
     /**! A track is the "shadow" left by a particle in a
      medium. It is useful to follow (MC) particles propagating
     inside a given material */
     std::vector<track*> tracks_;
 
-    //! vector of mparticles or mirror particles to this particle
+    //! std::vector of mparticles or mirror particles to this particle
     /**! Class mirror particle allows the representation of a
      mirror between DIGI and TRUTH and its matching properties
-    a vector allows to mirror more than one particle */
+    a std::vector allows to mirror more than one particle */
     std::vector<mparticle*> mp_;
 
 
@@ -138,7 +138,7 @@ namespace mybhep {
 
     //! set momentum (at production vertex)
     void set_p(const mybhep::Vector3D& v);
-    //! set momentum from 3 vector (at production vertex)
+    //! set momentum from 3 std::vector (at production vertex)
     void set_p(double px, double py, double pz);
     //! set production vertex
     void set_vertex(double x, double y, double z);
@@ -148,7 +148,7 @@ namespace mybhep {
 
     //! set momentum (at decay vertex)
     void set_decay_p(const mybhep::Vector3D& v);
-    //! set momentum from 3 vector (at decay vertex)
+    //! set momentum from 3 std::vector (at decay vertex)
     void set_decay_p(double px, double py, double pz);
     //! set decay vertex
     void set_decay_vertex(double x, double y, double z);
@@ -254,31 +254,31 @@ namespace mybhep {
     }
 
 
-    //! return vector of daughters (const)
+    //! return std::vector of daughters (const)
     const std::vector<const particle*>&  daughters() const {return daughters_;}
 
-    //! return vector of daughters (const)
+    //! return std::vector of daughters (const)
     std::vector<const particle*>&  daughters()  {return daughters_;}
 
-    //! return vector of tracks (const)
+    //! return std::vector of tracks (const)
     const std::vector<track*>&  tracks() const {return tracks_;}
 
-    //! return vector of tracks
+    //! return std::vector of tracks
     std::vector<track*>&  tracks()  {return tracks_;}
 
-    //! return vector of mparticles (const)
+    //! return std::vector of mparticles (const)
     const std::vector<mparticle*>&  mparticles() const {return mp_;}
 
-    //! return vector of mparticles
+    //! return std::vector of mparticles
     std::vector<mparticle*>&  mparticles()  {return mp_;}
 
-    //! return vector of hits associated to a detector
+    //! return std::vector of hits associated to a detector
     std::vector<hit*>  hits(std::string detector) const;
 
     //! return multimap of hits
     const std::multimap<std::string,hit*>& hit_map() const {return hits_;}
 
-    //! return vector of strings associated to detector name
+    //! return std::vector of strings associated to detector name
     std::vector<std::string>  detectors() const;
 
     //! description of particle

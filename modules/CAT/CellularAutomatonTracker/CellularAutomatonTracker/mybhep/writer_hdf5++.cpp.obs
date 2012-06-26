@@ -48,7 +48,7 @@ namespace mybhep{
   }
 
   //! set file
-  void writer_hdf5::set_file(string fileName)
+  void writer_hdf5::set_file(std::string fileName)
   {
     if (setFile_)
       {
@@ -69,7 +69,7 @@ namespace mybhep{
 
     Assert(H5T_STRING==H5Tget_class(strt_->getId()) &&
 	   H5Tis_variable_str(strt_->getId()) ,__FILE__,__LINE__,
-           internal_logic("This is not a variable lenght string type!"));
+           internal_logic("This is not a variable lenght std::string type!"));
     
     setFile_ = true;
     fileName_ = fileName;
@@ -82,14 +82,14 @@ namespace mybhep{
     //cout << "converting event = " << ievent << endl;
     event_cvt cvt(evt,ievent);
 
-    string def = cvt.store();
+    std::string def = cvt.store();
 
     //cout << "writting event = " << ievent << endl;
 
     wdata[0] = def.c_str();
 
     /* Create a dataset */
-    string key = to_string(ievent);
+    std::string key = to_string(ievent);
     DataSet dataset = file_.createDataSet(key, *strt_, *strd_);
 
     /* Write dataset to disk */

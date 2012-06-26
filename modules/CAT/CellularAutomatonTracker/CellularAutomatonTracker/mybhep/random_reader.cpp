@@ -50,13 +50,13 @@ namespace mybhep{
 
 
   //! set path
-  void random_reader::set_path(string path)
+  void random_reader::set_path(std::string path)
   {
     path_ = path;
   }
   
   //! return path
-  string random_reader::path()
+  std::string random_reader::path()
   {
     return path_;
   }
@@ -79,14 +79,14 @@ namespace mybhep{
 
 
   //! random reading
-   event& random_reader::read(string key)
+   event& random_reader::read(std::string key)
   {
     Assert(setFile_ ==true, __FILE__,__LINE__,
 	   bad_key("reader is not open, should open it first"));
 
     clear_event();
 
-    string record = get_record(key);
+    std::string record = get_record(key);
     event_cvt cvt(record);
     event_ = cvt.create();
     imem_++;     

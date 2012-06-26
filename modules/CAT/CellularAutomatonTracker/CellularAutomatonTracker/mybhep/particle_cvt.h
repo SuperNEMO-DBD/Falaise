@@ -54,10 +54,10 @@ namespace mybhep{
     //! integer for daguther particle
     std::vector<int> idaughters_;
 
-    //! vector of track integers
+    //! std::vector of track integers
     std::vector<int> tracks_;
 
-    //! vector of detectors
+    //! std::vector of detectors
     std::vector<std::string> idets_;
 
     //! map of hit integers

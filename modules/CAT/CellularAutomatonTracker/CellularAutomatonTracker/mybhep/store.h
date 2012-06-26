@@ -35,13 +35,13 @@ namespace mybhep{
   //! a store of histogram definitions
   typedef dvector<double> vdouble;
   typedef dvector<int> vint;
-  //! a store of vectors of string
+  //! a store of std::vectors of string
   typedef dvector<std::string> vstring;
-  //! a store of vectors of double
+  //! a store of std::vectors of double
   typedef tstore<vdouble> vstore;
-  //! a store of vectors of int
+  //! a store of std::vectors of int
   typedef tstore<vint> ivstore;
-  //! a store of vectors of string
+  //! a store of std::vectors of string
   typedef tstore<vstring> svstore;
 }
 #endif

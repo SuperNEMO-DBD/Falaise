@@ -12,7 +12,7 @@ namespace CAT{
   namespace topology{
 
 
-    // an experimental vector is composed of an ordinary vector (x, y, z)
+    // an experimental std::vector is composed of an ordinary std::vector (x, y, z)
     // with corresponding error (ex, ey, ez)
 
     class experimental_vector {
@@ -111,7 +111,7 @@ namespace CAT{
         coordinates(x,y,z);
       }
 
-      //! set vector and errors
+      //! set std::vector and errors
       void set(double x, double y, double z, double ex,double ey, double ez)
       {
         x_.set_value( x);
@@ -265,21 +265,21 @@ namespace CAT{
         return p1;
       }
 
-      //!get horizontal vector
+      //!get horizontal std::vector
       experimental_vector hor() {
         experimental_double newy(0.,0.);
         experimental_vector p1(x_, newy, z_);
         return p1;
       }
 
-      //!get unit vector
+      //!get unit std::vector
       experimental_vector unit() {
         experimental_vector p1(x_, y_, z_);
         p1 /= p1.length().value();
         return p1;
       }
 
-      //! get point from vector
+      //! get point from std::vector
       experimental_point point_from_vector()
       {
         experimental_vector& p1= *this;
@@ -476,7 +476,7 @@ namespace CAT{
         a.z()*b.z();
     }
 
-    // vectorial product
+    // std::vectorial product
     inline experimental_vector operator ^ (const experimental_vector& a, const experimental_vector& b)
     {
       experimental_vector v;

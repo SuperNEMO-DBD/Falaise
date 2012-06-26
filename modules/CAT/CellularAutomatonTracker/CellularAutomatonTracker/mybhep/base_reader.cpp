@@ -55,7 +55,7 @@ namespace mybhep{
   }
 
   //! set file
-  void base_reader::reopen(string fileName)
+  void base_reader::reopen(std::string fileName)
   {
     close();
     open(fileName);
@@ -68,7 +68,7 @@ namespace mybhep{
       {
         if (imem_>1)
           {
-            cerr << "!!Warning possible memory leak, imem = " 
+            std::cerr << "!!Warning possible memory leak, imem = " 
                  << imem_ << endl;
           }
         imem_--;

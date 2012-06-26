@@ -58,14 +58,14 @@ namespace mybhep{
   std::string track_cvt::store()
   {
 
-    string tmp;
+    std::string tmp;
 
     tmp =name();
     to_string(tmp,index());
     to_string(tmp,track_->view());
     to_string(tmp,track_->mate().name());
 
-    const vector<ray*> rays = track_->rays() ;
+    const std::vector<ray*> rays = track_->rays() ;
 
     to_string(tmp,rays.size());
     for(size_t iray =0; iray < rays.size(); iray++)
@@ -75,7 +75,7 @@ namespace mybhep{
         const mybhep::Vector3D& p3 = r.p3();
         double e = r.edep();
 
-        string tmp2 = r.view();
+        std::string tmp2 = r.view();
         to_string(tmp,tmp2);
 
         tmp2 = to_string(e);
@@ -94,12 +94,12 @@ namespace mybhep{
     // indexes of objects in class
     to_string(tmp,(long int) &track_->mother_particle());
 
-    //    clog << "this is the string stored in track= " << tmp << endl;
+    //    clog << "this is the std::string stored in track= " << tmp << endl;
     return tmp;
   }
 
 
-void  track_cvt::restore( string def )
+void  track_cvt::restore( std::string def )
 {
 #ifndef HAVE_SSTREAM
     istrstream istr (def.c_str());
@@ -107,12 +107,12 @@ void  track_cvt::restore( string def )
     istringstream istr(def.c_str());
 #endif
 
-    string name;
+    std::string name;
     istr >> name ;
 
     int indx;
     istr >> indx ;
-    string view;
+    std::string view;
     istr >> view ;
 
     set_name( name );
@@ -120,7 +120,7 @@ void  track_cvt::restore( string def )
 
     //name
 
-    string material_name;
+    std::string material_name;
     istr >> material_name ;
 
     material* mat = new material(material_name);
@@ -137,7 +137,7 @@ void  track_cvt::restore( string def )
 
         // read x,y,z of ray and set to particle
         double x,y,z,px,py,pz;
-        string view;
+        std::string view;
         double ed;
 
         istr >> view;
@@ -179,9 +179,9 @@ void  track_cvt::restore( string def )
     }
     catch(bad_index&)
       {
-//      cerr << "could not resolver pointer to track mother particle"
+//      std::cerr << "could not resolver pointer to track mother particle"
 //           << endl;
-//      cerr << "event is likely corrupted"
+//      std::cerr << "event is likely corrupted"
 //           << endl;
 
       }

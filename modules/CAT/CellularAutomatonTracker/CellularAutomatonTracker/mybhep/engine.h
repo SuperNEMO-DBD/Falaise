@@ -53,7 +53,7 @@ namespace mybhep{
 	const messenger& messenger_service() const {return m_;}  
 
       /// set the verbosity level 
-      void set_info_level(string info){
+      void set_info_level(std::string info){
 	  if(info == "MUTE")  info_level(MUTE);
 	  if(info == "CONCISE")  info_level(CONCISE);
 	  if(info == "NORMAL")  info_level(NORMAL);

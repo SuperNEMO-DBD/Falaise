@@ -22,7 +22,7 @@ namespace mybhep{
 
   using namespace std;
 
-  particle_definition::particle_definition(string name, int pdg,
+  particle_definition::particle_definition(std::string name, int pdg,
 					   double m, double q, double l)
   {
     name_ = name;
@@ -42,7 +42,7 @@ namespace mybhep{
 
   void particle_definition::geant3(int code)
   {
-    string name = "unknown";
+    std::string name = "unknown";
 
     if (code == 1)
       name = "gamma";
@@ -91,7 +91,7 @@ namespace mybhep{
 
   void particle_definition::pdg(int code)
   {
-    string name = "unknown";
+    std::string name = "unknown";
 
     if (code == 22)
       name = "gamma";
@@ -131,12 +131,12 @@ namespace mybhep{
     set_particle_name(name);
   }
 
-  particle_definition::particle_definition(string name)
+  particle_definition::particle_definition(std::string name)
   {
     set_particle_name(name);
   }
 
-  void particle_definition::set_particle_name(string name)
+  void particle_definition::set_particle_name(std::string name)
   {
       name_ = name;
 
@@ -279,7 +279,7 @@ namespace mybhep{
     charge_ = q;
   }
 
-  void particle_definition::set_name(string name)
+  void particle_definition::set_name(std::string name)
   {
     set_particle_name(name);
   }

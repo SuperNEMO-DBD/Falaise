@@ -51,8 +51,8 @@ namespace CAT {
 
     /*** dump ***/
     void experimental_double::dump (ostream & a_out,
-                                    const string & a_title,
-                                    const string & a_indent,
+                                    const std::string & a_title,
+                                    const std::string & a_indent,
                                     bool a_inherit) const
     {
       a_out << std::setprecision(15) << value() << " +- " << std::setprecision(15)  << error();
@@ -134,7 +134,7 @@ namespace CAT {
       experimental_double& p1= *this;
 
       if( a.value() == 0 ){
-        clog << " problem: division by experimental_double with value " << a.value() << endl;
+        std::clog << " problem: division by experimental_double with value " << a.value() << std::endl;
       }
 
       double val = p1.value()/a.value();
@@ -333,7 +333,7 @@ namespace CAT {
 
       if( vs.size() == 0 ){
         experimental_double bad;
-        clog << " problem: avereging vector of size " << vs.size() << endl;
+        std::clog << " problem: avereging std::vector of size " << vs.size() << std::endl;
         return bad;
       }
 
