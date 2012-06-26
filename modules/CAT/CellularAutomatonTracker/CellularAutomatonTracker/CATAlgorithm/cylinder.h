@@ -59,7 +59,7 @@ namespace CAT{
       }
 
       /*** dump ***/
-      virtual void dump (ostream & a_out         = std::clog,
+      virtual void dump (std::ostream & a_out         = std::clog,
                          const std::string & a_title  = "",
                          const std::string & a_indent = "",
                          bool a_inherit          = false){

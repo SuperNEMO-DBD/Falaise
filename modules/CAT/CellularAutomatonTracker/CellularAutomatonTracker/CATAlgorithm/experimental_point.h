@@ -215,10 +215,10 @@ namespace CAT{
       {
         experimental_double result;
 
-        result.set_value( sqrt(mybhep::square(x_.value()-p2.x().value())
+        result.set_value( std::sqrt(mybhep::square(x_.value()-p2.x().value())
                                + mybhep::square(y_.value()-p2.y().value()) +
                                mybhep::square(z_.value()-p2.z().value())));
-        result.set_error( sqrt( mybhep::square(x_.value()*x_.error()) + mybhep::square(p2.x().value()*p2.x().error()) +
+        result.set_error( std::sqrt( mybhep::square(x_.value()*x_.error()) + mybhep::square(p2.x().value()*p2.x().error()) +
                                 mybhep::square(y_.value()*y_.error()) + mybhep::square(p2.y().value()*p2.y().error()) +
                                 mybhep::square(z_.value()*z_.error()) + mybhep::square(p2.z().value()*p2.z().error()))/result.value());
 
@@ -234,9 +234,9 @@ namespace CAT{
         //  dr/dx = x/r,
         //  dr/dz = z/r
 
-        double rr = sqrt(mybhep::square(x_.value()) + mybhep::square(z_.value()));
+        double rr = std::sqrt(mybhep::square(x_.value()) + mybhep::square(z_.value()));
         if( isnan(rr) ) rr = mybhep::small_neg;
-        double err = sqrt(mybhep::square(x_.value()*x_.error())
+        double err = std::sqrt(mybhep::square(x_.value()*x_.error())
                           + mybhep::square(z_.value()*z_.error()))/rr;
         if( isnan(err) ) err = mybhep::small_neg;
 

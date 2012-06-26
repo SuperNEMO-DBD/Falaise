@@ -292,10 +292,10 @@ namespace CAT{
       {
         experimental_double result;
 
-        result.set_value( sqrt(mybhep::square(x_.value()-p2.x().value())
+        result.set_value( std::sqrt(mybhep::square(x_.value()-p2.x().value())
                                + mybhep::square(y_.value()-p2.y().value()) +
                                mybhep::square(z_.value()-p2.z().value())));
-        result.set_error( sqrt( mybhep::square(x_.value()*x_.error()) + mybhep::square(p2.x().value()*p2.x().error()) +
+        result.set_error( std::sqrt( mybhep::square(x_.value()*x_.error()) + mybhep::square(p2.x().value()*p2.x().error()) +
                                 mybhep::square(y_.value()*y_.error()) + mybhep::square(p2.y().value()*p2.y().error()) +
                                 mybhep::square(z_.value()*z_.error()) + mybhep::square(p2.z().value()*p2.z().error()))/result.value());
 
@@ -307,10 +307,10 @@ namespace CAT{
       {
         experimental_double result;
 
-        result.set_value( sqrt(mybhep::square(x_.value())
+        result.set_value( std::sqrt(mybhep::square(x_.value())
                                + mybhep::square(y_.value()) +
                                mybhep::square(z_.value())));
-        result.set_error( sqrt( mybhep::square(x_.value()*x_.error()) +
+        result.set_error( std::sqrt( mybhep::square(x_.value()*x_.error()) +
                                 mybhep::square(y_.value()*y_.error()) +
                                 mybhep::square(z_.value()*z_.error()) )/result.value());
         if( isnan(result.error()) || isinf(result.error())  ) result.set_error(mybhep::small_neg);
@@ -356,7 +356,7 @@ namespace CAT{
         double phi2 = p2.value();
         mybhep::fix_angles(&phi1, &phi2);
         result.set_value(phi2 - phi1);
-        result.set_error(sqrt(mybhep::square(p1.error()) +
+        result.set_error(std::sqrt(mybhep::square(p1.error()) +
                               mybhep::square(p2.error()) ));
 
         return result;
@@ -372,7 +372,7 @@ namespace CAT{
         double theta2 = t2.value();
         mybhep::fix_angles(&theta1, &theta2);
         result.set_value(theta2 - theta1);
-        result.set_error(sqrt(mybhep::square(t1.error()) +
+        result.set_error(std::sqrt(mybhep::square(t1.error()) +
                               mybhep::square(t2.error()) ));
 
         return result;

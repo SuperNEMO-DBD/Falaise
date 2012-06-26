@@ -183,7 +183,7 @@ namespace topology{
       double erra, errb;
 
       if( Swxx/delta > 0. ){
-        erra = sqrt(Swxx/delta);
+        erra = std::sqrt(Swxx/delta);
       }
       else{
         if( print_level() >= mybhep::NORMAL ){
@@ -193,7 +193,7 @@ namespace topology{
       }
 
       if( Sw/delta > 0. ){
-        errb = sqrt(Sw/delta);
+        errb = std::sqrt(Sw/delta);
       }
       else{
         if( print_level() >= mybhep::NORMAL ){

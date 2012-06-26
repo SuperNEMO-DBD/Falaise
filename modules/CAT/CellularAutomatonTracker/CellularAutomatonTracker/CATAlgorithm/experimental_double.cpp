@@ -97,7 +97,7 @@ namespace CAT {
     {
       experimental_double& p1= *this;
       double val = p1.value() + p2.value();
-      double err = sqrt(mybhep::square(p1.error()) + mybhep::square(p2.error()));
+      double err = std::sqrt(mybhep::square(p1.error()) + mybhep::square(p2.error()));
       p1.set_value(val);
       p1.set_error(err);
       return p1;
@@ -108,7 +108,7 @@ namespace CAT {
     {
       experimental_double& p1= *this;
       double val = p1.value() - p2.value();
-      double err = sqrt(mybhep::square(p1.error()) + mybhep::square(p2.error()));
+      double err = std::sqrt(mybhep::square(p1.error()) + mybhep::square(p2.error()));
       p1.set_value(val);
       p1.set_error(err);
 
@@ -120,7 +120,7 @@ namespace CAT {
     {
       experimental_double& p1= *this;
       double val = p1.value()*a.value();
-      double err = sqrt(mybhep::square(a.value()*p1.error()) + mybhep::square(p1.value()*a.error()));
+      double err = std::sqrt(mybhep::square(a.value()*p1.error()) + mybhep::square(p1.value()*a.error()));
 
       p1.set_value(val);
       p1.set_error(err);
@@ -138,7 +138,7 @@ namespace CAT {
       }
 
       double val = p1.value()/a.value();
-      double err = sqrt(mybhep::square(p1.error()/a.value()) + mybhep::square(p1.value()*a.error()/mybhep::square(a.value())));
+      double err = std::sqrt(mybhep::square(p1.error()/a.value()) + mybhep::square(p1.value()*a.error()/mybhep::square(a.value())));
       p1.set_value(val);
       p1.set_error(err);
       return p1;
@@ -178,7 +178,7 @@ namespace CAT {
     {
       experimental_double v;
       v.set_value(asin(v1.value()));
-      v.set_error(v1.error()/sqrt(1 - mybhep::square(v1.value())));
+      v.set_error(v1.error()/std::sqrt(1 - mybhep::square(v1.value())));
       return v;
     }
   
@@ -187,7 +187,7 @@ namespace CAT {
     {
       experimental_double v;
       v.set_value(acos(v1.value()));
-      v.set_error(v1.error()/sqrt(1 - mybhep::square(v1.value())));
+      v.set_error(v1.error()/std::sqrt(1 - mybhep::square(v1.value())));
       return v;
     }
   
@@ -201,7 +201,7 @@ namespace CAT {
         // obtain error from angle = 180 - (other angle)
         double den = 1 + mybhep::square(v2.value()/v1.value());
         double num = mybhep::square(v2.error()/v1.value()) + mybhep::square(v2.value()*v1.error()/mybhep::square(v1.value()));
-        v.set_error(sqrt(num)/den);
+        v.set_error(std::sqrt(num)/den);
       }
       else{
 
@@ -218,7 +218,7 @@ namespace CAT {
 
         double den = 1 + mybhep::square(v1.value()/v2.value());
         double num = mybhep::square(v1.error()/v2.value()) + mybhep::square(v1.value()*v2.error()/mybhep::square(v2.value()));
-        v.set_error(sqrt(num)/den);
+        v.set_error(std::sqrt(num)/den);
       
       }
       return v;
@@ -237,7 +237,7 @@ namespace CAT {
     experimental_double experimental_sqrt (const experimental_double& v1)
     {
       experimental_double v;
-      v.set_value(sqrt(v1.value()));
+      v.set_value(std::sqrt(v1.value()));
       v.set_error(v1.error()/(2*v.value()));
       return v;
     }
@@ -346,7 +346,7 @@ namespace CAT {
         err += mybhep::square(iv->error());
       }
 
-      return experimental_double(mean/vs.size(), sqrt(err)/vs.size());
+      return experimental_double(mean/vs.size(), std::sqrt(err)/vs.size());
 
     }
 
@@ -361,7 +361,7 @@ namespace CAT {
         inverr += 1/mybhep::square(iv->error());
       }
 
-      return experimental_double(mean/inverr, sqrt(1./inverr));
+      return experimental_double(mean/inverr, std::sqrt(1./inverr));
     }
 
 

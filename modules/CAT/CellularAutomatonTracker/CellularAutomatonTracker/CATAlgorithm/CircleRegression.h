@@ -227,7 +227,7 @@ namespace CAT{
 
           xc.set(uc + xave, erruc);
           yc.set(vc + yave, errvc);
-          r.set(sqrt(alpha), erralpha/(2.*sqrt(alpha)));
+          r.set(std::sqrt(alpha), erralpha/(2.*std::sqrt(alpha)));
         }
         else{
           double A = Sw*Swxx - mybhep::square(Swx);
@@ -289,7 +289,7 @@ namespace CAT{
               double u = it->value() - xc.value();
               double y = yi_[it - xi_.begin()].value();
               double v = y - yc.value();
-              rsum += sqrt(mybhep::square(u) + mybhep::square(v));
+              rsum += std::sqrt(mybhep::square(u) + mybhep::square(v));
             }
 
           r.set(rsum/xi_.size() , 0. );
