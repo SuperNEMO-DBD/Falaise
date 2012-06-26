@@ -1,19 +1,19 @@
 /* -*- mode: c++ -*- */
 /*
  *
- * Copyright 2004 
+ * Copyright 2004
  * J.J. Gomez-Cadenas, J.A. Hernando
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -41,8 +41,10 @@ using std::strstream;
 #include <mybhep/utilities.h>
 
 namespace mybhep{
-    
-  //! constructor 
+
+  using namespace std;
+
+  //! constructor
   event_cvt::event_cvt(const event& evt, int indx)
     : ibconverter()
   {
@@ -71,12 +73,12 @@ namespace mybhep{
   }
 
 
-  // serialize object    
+  // serialize object
   string event_cvt::store()
   {
     string tmp;
 
-    // store class name and index 
+    // store class name and index
 
     tmp =name();
     to_string(tmp,index());
@@ -85,7 +87,7 @@ namespace mybhep{
     const mybhep::Point3D& xd = event_->vertex();
 
     string tmp2;
-    {    
+    {
       ostringstream tmp2_oss;
       tmp2_oss.precision(8);
       tmp2_oss << xd[0] << ' ' << xd[1] << ' ' << xd[2];
@@ -93,7 +95,7 @@ namespace mybhep{
     }
     /*
     string tmp2 = to_string_precision(xd[0],"8") + " " +
-      to_string_precision(xd[1],"8") + " " + 
+      to_string_precision(xd[1],"8") + " " +
       to_string_precision(xd[2],"8");
     */
     to_string(tmp,tmp2);
@@ -119,7 +121,7 @@ namespace mybhep{
 
     // loop over all particle and write particle indexes
     for(size_t ipar =0; ipar < pv.size(); ipar++)
-      { 
+      {
         particle& p = *pv[ipar];
         to_string(tmp,(long int)(&p));
       }
@@ -132,7 +134,7 @@ namespace mybhep{
 
     // loop over all particle and write particle indexes
     for(size_t ipar =0; ipar < pv2.size(); ipar++)
-      { 
+      {
         particle& p = *pv2[ipar];
         to_string(tmp,(long int)(&p));
       }
@@ -145,7 +147,7 @@ namespace mybhep{
 
     // loop over all sparticle and write sparticle indexes
     for(size_t ipar =0; ipar < pv3.size(); ipar++)
-      { 
+      {
         sparticle& p = *pv3[ipar];
         to_string(tmp,(long int)(&p));
       }
@@ -155,11 +157,11 @@ namespace mybhep{
 
     for(size_t ipar =0; ipar < pv.size(); ipar++)
       {
-        
+
         particle& p = *pv[ipar];
         long int ip = (long int)(&p);
         particle_cvt pcv(p,ip);
-        string sp = pcv.store(); 
+        string sp = pcv.store();
 
         to_string(tmp,sp);
 
@@ -169,11 +171,11 @@ namespace mybhep{
 
     for(size_t ipar =0; ipar < pv2.size(); ipar++)
       {
-        
+
         particle& p = *pv2[ipar];
         long int ip = (long int)(&p);
         particle_cvt pcv(p,ip);
-        string sp = pcv.store(); 
+        string sp = pcv.store();
 
         to_string(tmp,sp);
 
@@ -183,11 +185,11 @@ namespace mybhep{
 
     for(size_t ipar =0; ipar < pv3.size(); ipar++)
       {
-        
+
         sparticle& p = *pv3[ipar];
         long int ip = (long int)(&p);
         sparticle_cvt pcv(p,ip);
-        string sp = pcv.store(); 
+        string sp = pcv.store();
 
         to_string(tmp,sp);
 
@@ -199,7 +201,7 @@ namespace mybhep{
 
 
   // restore event
-  void event_cvt::restore(string s) 
+  void event_cvt::restore(string s)
   {
 
 
@@ -208,20 +210,20 @@ namespace mybhep{
 #else
     istringstream istr(s.c_str());
 #endif
-        
+
     // get converter service
     converter_svc& csvc = mybhep_svc::instance().
       converter_service();
 
     string name;
     istr >> name ;
-  
+
     int indx;
-    istr >> indx ;  
+    istr >> indx ;
 
     set_index( indx );
     set_name( name );
-  
+
     //create new event
     nevent_ = new event(indx);
     set_owner(true);
@@ -246,7 +248,7 @@ namespace mybhep{
       }
 
     size_t true_size, digi_size, spar_size;
-    istr >> true_size ;  
+    istr >> true_size ;
 
     // restore particle index for true
     for(size_t ipar =0; ipar < true_size; ipar++)
@@ -254,12 +256,12 @@ namespace mybhep{
         int indx;
 
         //particle index
-        istr >> indx ;  
+        istr >> indx ;
         particles_true_.push_back(indx);
       }
 
 
-    istr >> digi_size ;  
+    istr >> digi_size ;
 
     // restore particle index for digi
     for(size_t ipar =0; ipar < digi_size; ipar++)
@@ -267,12 +269,12 @@ namespace mybhep{
         int indx;
 
         //particle index
-        istr >> indx ;  
+        istr >> indx ;
         particles_digi_.push_back(indx);
       }
 
 
-    istr >> spar_size ;  
+    istr >> spar_size ;
 
     // restore particle index for spar
     for(size_t ipar =0; ipar < spar_size; ipar++)
@@ -280,7 +282,7 @@ namespace mybhep{
         int indx;
 
         //particle index
-        istr >> indx ;  
+        istr >> indx ;
         particles_spar_.push_back(indx);
       }
 
@@ -290,7 +292,7 @@ namespace mybhep{
 
 
     strip(s,s.find(particle_label_));
-    
+
 
     for(size_t ipar =0; ipar < true_size; ipar++)
       {
@@ -341,7 +343,7 @@ namespace mybhep{
       }
   }
 
-  void event_cvt::complete_restore()  
+  void event_cvt::complete_restore()
   {
 
 
@@ -360,8 +362,8 @@ namespace mybhep{
         try{
           particle_cvt& pcvt = *(dynamic_cast<particle_cvt*>
                                  (&csvc.converter(index)));
-          
-          
+
+
           particle* pp = pcvt.create();
 
 
@@ -384,11 +386,11 @@ namespace mybhep{
           particle_cvt& pcvt = *(dynamic_cast<particle_cvt*>
                                  (&csvc.converter(index)));
 
-          
+
           particle* pp = pcvt.create();
 
 
-          nevent_->add_digi_particle(pp);                              
+          nevent_->add_digi_particle(pp);
         }
         catch(bad_index&)
           {
@@ -406,11 +408,11 @@ namespace mybhep{
           sparticle_cvt& pcvt = *(dynamic_cast<sparticle_cvt*>
                                  (&csvc.converter(index)));
 
-          
+
           sparticle* pp = pcvt.create();
 
 
-          nevent_->add_sparticle(pp);                          
+          nevent_->add_sparticle(pp);
         }
         catch(bad_index&)
           {
@@ -420,8 +422,8 @@ namespace mybhep{
           }
       }
   }
-  
-  const event& event_cvt::retrieve() const 
+
+  const event& event_cvt::retrieve() const
   {
     return *event_;
   }
@@ -430,7 +432,7 @@ namespace mybhep{
   event* event_cvt::create()
   {
     Assert(nevent_, __FILE__,__LINE__,
-           internal_logic("  null pointer!!!")); 
+           internal_logic("  null pointer!!!"));
 
     set_owner(false);
     converter_svc& csvc = mybhep_svc::instance().

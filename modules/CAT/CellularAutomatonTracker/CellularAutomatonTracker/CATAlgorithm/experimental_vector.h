@@ -11,34 +11,33 @@
 namespace CAT{
   namespace topology{
 
-    using namespace std;
 
-    // an experimental vector is composed of an ordinary vector (x, y, z)                                                                                       
-    // with corresponding error (ex, ey, ez)                                                                                                                    
+    // an experimental vector is composed of an ordinary vector (x, y, z)
+    // with corresponding error (ex, ey, ez)
 
     class experimental_vector {
     private:
-      string appname_;
+      std::string appname_;
 
       //! x coordinate
-      experimental_double x_; 
+      experimental_double x_;
       //! y coordinate
-      experimental_double y_; 
+      experimental_double y_;
       //! z coordinate
-      experimental_double z_; 
+      experimental_double z_;
 
-    public:   
-      //!Default constructor 
+    public:
+      //!Default constructor
       experimental_vector()
       {
         appname_ = "experimental_vector: ";
-        x_.set_value( small_neg );
-        y_.set_value( small_neg );
-        z_.set_value( small_neg );
+        x_.set_value( mybhep::small_neg );
+        y_.set_value( mybhep::small_neg );
+        z_.set_value( mybhep::small_neg );
 
-        x_.set_error( small_neg );
-        y_.set_error( small_neg );
-        z_.set_error( small_neg );
+        x_.set_error( mybhep::small_neg );
+        y_.set_error( mybhep::small_neg );
+        z_.set_error( mybhep::small_neg );
 
       }
       //!Default destructor
@@ -81,22 +80,22 @@ namespace CAT{
 
 
       /*** dump ***/
-      virtual void dump (ostream & a_out         = clog,
-                         const string & a_title  = "",
-                         const string & a_indent = "",
-                         bool a_inherit          = false) const{
+      virtual void dump (std::ostream & a_out         = std::clog,
+                         const std::string & a_title  = "",
+                         const std::string & a_indent = "",
+                         bool a_inherit              = false) const{
         {
-          string indent;
+          std::string indent;
           if (! a_indent.empty ()) indent = a_indent;
           if (! a_title.empty ())
             {
-              a_out << indent << a_title << endl;
+              a_out << indent << a_title << std::endl;
             }
 
-          a_out << indent << appname_ << endl;
-          a_out << indent << " x: "; (x()/mybhep::mm).dump(); a_out << " [mm ] " << endl;
-          a_out << indent << " y: "; (y()/mybhep::mm).dump(); a_out << " [mm ] " << endl;
-          a_out << indent << " z: "; (z()/mybhep::mm).dump(); a_out << " [mm ] " << endl;
+          a_out << indent << appname_ << std::endl;
+          a_out << indent << " x: "; (x()/mybhep::mm).dump(); a_out << " [mm ] " << std::endl;
+          a_out << indent << " y: "; (y()/mybhep::mm).dump(); a_out << " [mm ] " << std::endl;
+          a_out << indent << " z: "; (z()/mybhep::mm).dump(); a_out << " [mm ] " << std::endl;
 
           return;
         }
@@ -112,7 +111,7 @@ namespace CAT{
         coordinates(x,y,z);
       }
 
-      //! set vector and errors 
+      //! set vector and errors
       void set(double x, double y, double z, double ex,double ey, double ez)
       {
         x_.set_value( x);
@@ -147,27 +146,27 @@ namespace CAT{
       }
 
       //! get all coordinates
-      const experimental_vector& coordinates()const {return *this;}      
+      const experimental_vector& coordinates()const {return *this;}
       //!get x
-      const experimental_double& x() const 
+      const experimental_double& x() const
       {
         return x_;
-      } 
+      }
       //! read x
       experimental_double& x(){
         return x_;
-      } 
+      }
 
       //!get y
       const experimental_double& y() const {
         return y_;
-      } 
+      }
       //! read y
       experimental_double& y(){
         return y_;
-      } 
+      }
       //!get z
-      const experimental_double& z() const {return z_;} 
+      const experimental_double& z() const {return z_;}
       //! read z
       experimental_double& z(){return z_;}
 
@@ -178,41 +177,41 @@ namespace CAT{
       {
         if (i==0) return x();
         if (i==1) return y();
-        return z_;    
+        return z_;
       }
 
       //! write v(i), i = 0,1,2
       experimental_double& operator () (size_t i)
       {
-      
+
         if (i==0) return x();
         if (i==1) return y();
-        return z_;    
+        return z_;
       }
 
       // no protection in operator []
       const experimental_double& operator [] (size_t i) const
       {
-      
+
         if (i==0) return x_;
         if (i==1) return y_;
-        return z_;    
+        return z_;
       }
 
       //! write v(i), i = 0,1,2
       experimental_double& operator [] (size_t i)
       {
-      
+
         if (i==0) return x_;
         if (i==1) return y_;
-        return z_;    
+        return z_;
       }
 
       //! operador +=
       experimental_vector& operator += (const experimental_vector& p2)
       {
         experimental_vector& p1= *this;
-      
+
         for(size_t i = 0; i < 3; i++)
           p1(i) += p2(i);
         return p1;
@@ -222,17 +221,17 @@ namespace CAT{
       experimental_vector& operator -= (const experimental_vector& p2)
       {
         experimental_vector& p1= *this;
-      
+
         for(size_t i = 0; i < 3; i++)
           p1(i) -= p2(i);
         return p1;
       }
-    
+
       //! operador *=
       experimental_vector& operator *= (experimental_double a)
       {
         experimental_vector& p1= *this;
-      
+
         for(size_t i = 0; i < 3; i++)
           p1(i) *= a;
         return p1;
@@ -241,7 +240,7 @@ namespace CAT{
       experimental_vector& operator *= (double a)
       {
         experimental_vector& p1= *this;
-      
+
         for(size_t i = 0; i < 3; i++)
           p1(i) = p1(i)*a;
         return p1;
@@ -251,7 +250,7 @@ namespace CAT{
       experimental_vector& operator /= (experimental_double a)
       {
         experimental_vector& p1= *this;
-      
+
         for(size_t i = 0; i < 3; i++)
           p1(i) /= a;
         return p1;
@@ -260,7 +259,7 @@ namespace CAT{
       experimental_vector& operator /= (double a)
       {
         experimental_vector& p1= *this;
-      
+
         for(size_t i = 0; i < 3; i++)
           p1(i) = p1(i)/a;
         return p1;
@@ -271,14 +270,14 @@ namespace CAT{
         experimental_double newy(0.,0.);
         experimental_vector p1(x_, newy, z_);
         return p1;
-      } 
+      }
 
       //!get unit vector
       experimental_vector unit() {
         experimental_vector p1(x_, y_, z_);
         p1 /= p1.length().value();
         return p1;
-      } 
+      }
 
       //! get point from vector
       experimental_point point_from_vector()
@@ -293,12 +292,12 @@ namespace CAT{
       {
         experimental_double result;
 
-        result.set_value( sqrt(square(x_.value()-p2.x().value()) 
-                               + square(y_.value()-p2.y().value()) + 
-                               square(z_.value()-p2.z().value())));
-        result.set_error( sqrt( square(x_.value()*x_.error()) + square(p2.x().value()*p2.x().error()) +
-                                square(y_.value()*y_.error()) + square(p2.y().value()*p2.y().error()) +
-                                square(z_.value()*z_.error()) + square(p2.z().value()*p2.z().error()))/result.value());
+        result.set_value( sqrt(mybhep::square(x_.value()-p2.x().value())
+                               + mybhep::square(y_.value()-p2.y().value()) +
+                               mybhep::square(z_.value()-p2.z().value())));
+        result.set_error( sqrt( mybhep::square(x_.value()*x_.error()) + mybhep::square(p2.x().value()*p2.x().error()) +
+                                mybhep::square(y_.value()*y_.error()) + mybhep::square(p2.y().value()*p2.y().error()) +
+                                mybhep::square(z_.value()*z_.error()) + mybhep::square(p2.z().value()*p2.z().error()))/result.value());
 
         return result;
       }
@@ -308,13 +307,13 @@ namespace CAT{
       {
         experimental_double result;
 
-        result.set_value( sqrt(square(x_.value()) 
-                               + square(y_.value()) + 
-                               square(z_.value())));
-        result.set_error( sqrt( square(x_.value()*x_.error()) +
-                                square(y_.value()*y_.error()) +
-                                square(z_.value()*z_.error()) )/result.value());
-        if( isnan(result.error()) || isinf(result.error())  ) result.set_error(small_neg);
+        result.set_value( sqrt(mybhep::square(x_.value())
+                               + mybhep::square(y_.value()) +
+                               mybhep::square(z_.value())));
+        result.set_error( sqrt( mybhep::square(x_.value()*x_.error()) +
+                                mybhep::square(y_.value()*y_.error()) +
+                                mybhep::square(z_.value()*z_.error()) )/result.value());
+        if( isnan(result.error()) || isinf(result.error())  ) result.set_error(mybhep::small_neg);
         return result;
 
       }
@@ -338,7 +337,7 @@ namespace CAT{
       experimental_double tan_phi(){
 
         if( x_.value() == 0. )
-          return experimental_double(plus_infinity, 0.);
+          return experimental_double(mybhep::plus_infinity, 0.);
 
         return z_/x_;
 
@@ -355,10 +354,10 @@ namespace CAT{
         experimental_double p2 = v.phi();
         double phi1 = p1.value();
         double phi2 = p2.value();
-        fix_angles(&phi1, &phi2);
+        mybhep::fix_angles(&phi1, &phi2);
         result.set_value(phi2 - phi1);
-        result.set_error(sqrt(square(p1.error()) +
-                              square(p2.error()) ));
+        result.set_error(sqrt(mybhep::square(p1.error()) +
+                              mybhep::square(p2.error()) ));
 
         return result;
 
@@ -371,10 +370,10 @@ namespace CAT{
         experimental_double t2 = v.theta();
         double theta1 = t1.value();
         double theta2 = t2.value();
-        fix_angles(&theta1, &theta2);
+        mybhep::fix_angles(&theta1, &theta2);
         result.set_value(theta2 - theta1);
-        result.set_error(sqrt(square(t1.error()) +
-                              square(t2.error()) ));
+        result.set_error(sqrt(mybhep::square(t1.error()) +
+                              mybhep::square(t2.error()) ));
 
         return result;
 
@@ -384,14 +383,14 @@ namespace CAT{
 
     };
 
-    inline ostream& operator << (ostream& s, const experimental_vector& ip) {
-      s << endl;
+    inline std::ostream& operator << (std::ostream& s, const experimental_vector& ip) {
+      s << std::endl;
 
       s << "(" << ip.x().value() << "," <<ip.y().value() <<","<<ip.z().value() <<")";
       return s;
     }
 
- 
+
     // Operations with experimental_vectors
     // -v
     /*
@@ -418,54 +417,54 @@ namespace CAT{
     // v1+v2
     inline experimental_vector operator + (const experimental_vector& v1, const experimental_vector& v2)
     {
-      experimental_vector v = v1; 
-      v+=v2;   
+      experimental_vector v = v1;
+      v+=v2;
       return v;
     }
 
     //! v1-v2
     inline experimental_vector operator - (const experimental_vector& v1, const experimental_vector& v2)
     {
-      experimental_vector v = v1; 
-      v-=v2;   
+      experimental_vector v = v1;
+      v-=v2;
       return v;
     }
 
     // v*d
     inline experimental_vector operator * (const experimental_vector& v1, experimental_double d)
     {
-      experimental_vector v = v1; 
-      v*=d;   
+      experimental_vector v = v1;
+      v*=d;
       return v;
     }
 
     inline experimental_vector operator * (const experimental_vector& v1, double d)
     {
-      experimental_vector v = v1; 
-      v*=d;   
+      experimental_vector v = v1;
+      v*=d;
       return v;
     }
 
     // v/d
     inline experimental_vector operator / (const experimental_vector& v1, experimental_double d)
     {
-      experimental_vector v = v1; 
-      v/=d;   
+      experimental_vector v = v1;
+      v/=d;
       return v;
     }
 
     inline experimental_vector operator / (const experimental_vector& v1, double d)
     {
-      experimental_vector v = v1; 
-      v/=d;   
+      experimental_vector v = v1;
+      v/=d;
       return v;
     }
 
     // d*v
     inline experimental_vector operator * (experimental_double d, const experimental_vector& v1)
     {
-      experimental_vector v = v1; 
-      v*=d;   
+      experimental_vector v = v1;
+      v*=d;
       return v;
     }
 

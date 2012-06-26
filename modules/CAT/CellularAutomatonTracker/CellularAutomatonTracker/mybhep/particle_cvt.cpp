@@ -1,14 +1,14 @@
 /* -*- mode: c++ -*- */
-// 
-/*   
- * 
+//
+/*
+ *
  * Copyright (C) 2004 J.J. Gomez Cadenas
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -34,8 +34,11 @@
 #include <mybhep/utilities.h>
 
 namespace mybhep{
+
+  using namespace std;
+
   // FIXME label consistency!
-  particle_cvt::particle_cvt( const particle& par, int index ) 
+  particle_cvt::particle_cvt( const particle& par, int index )
     : ibconverter()
   {
     set_index( index );
@@ -62,7 +65,7 @@ namespace mybhep{
 
   particle_cvt::~particle_cvt()
   {
-    if (owner()) 
+    if (owner())
       delete nparticle_;
   }
 
@@ -79,20 +82,20 @@ namespace mybhep{
     to_string(tmp,particle_->primary());
     to_string(tmp,particle_->type());
     to_string(tmp,particle_->state());
-    
-    
+
+
     //vertex ray
     const ray& r = particle_->vertex_ray();
-    
+
     // vertex position
     const mybhep::Point3D& x = r.x();
-    
+
     string tmp2 = to_string(x[0])+ " " +
       to_string(x[1])+ " " + to_string(x[2]);
     to_string(tmp,tmp2);
 
     //vertex p
-    const mybhep::Vector3D& p3 = r.p3();        
+    const mybhep::Vector3D& p3 = r.p3();
 
     tmp2 = to_string(p3[0])+ " " +
       to_string(p3[1])+ " " + to_string(p3[2]);
@@ -100,16 +103,16 @@ namespace mybhep{
 
     //decay vertex ray
     const ray& rd = particle_->decay_vertex_ray();
-    
+
     // decay vertex position
     const mybhep::Point3D& xd = rd.x();
-    
+
     tmp2 = to_string(xd[0])+ " " +
       to_string(xd[1])+ " " + to_string(xd[2]);
     to_string(tmp,tmp2);
 
     //decay vertex p
-    const mybhep::Vector3D& p3d = rd.p3();      
+    const mybhep::Vector3D& p3d = rd.p3();
 
     tmp2 = to_string(p3d[0])+ " " +
       to_string(p3d[1])+ " " + to_string(p3d[2]);
@@ -130,9 +133,9 @@ namespace mybhep{
 
 
     // indexes of objects in class
-    if (particle_->primary() || !particle_->has_mother()) 
+    if (particle_->primary() || !particle_->has_mother())
       to_string(tmp,-1);
-    else 
+    else
       to_string(tmp,(long int) &particle_->mother());
 
 
@@ -196,7 +199,7 @@ namespace mybhep{
 
     for(size_t imr =0; imr < mp.size(); imr++)
       {
-        
+
         const mparticle& mpt = *mp[imr];
         int it = (long int)(&mpt);
 
@@ -210,7 +213,7 @@ namespace mybhep{
 
     for(size_t itrk =0; itrk < trk.size(); itrk++)
       {
-        
+
         const track& tr = *trk[itrk];
         int it = (long int)(&tr);
 
@@ -241,11 +244,11 @@ namespace mybhep{
           }
       }
 
-//     clog << "this is the string stored in particle " 
+//     clog << "this is the string stored in particle "
 //       << tmp << endl ;
     return tmp;
   }
-  
+
 
 void  particle_cvt::restore( string def )
 {
@@ -262,15 +265,15 @@ void  particle_cvt::restore( string def )
 
     string name;
     istr >> name ;
-  
+
     int indx;
-    istr >> indx ;  
+    istr >> indx ;
 
     set_index( indx );
     set_name( name );
 
     string particle_name;
-    
+
     //name
     istr >> particle_name ;
 
@@ -285,7 +288,7 @@ void  particle_cvt::restore( string def )
     // FIXME! Commented out to avoid crashes, must figure out
     // why type wrong
 //     Assert(type==0 || type==1, __FILE__,__LINE__,
-//         internal_logic("  unknown particle type!!!")); 
+//         internal_logic("  unknown particle type!!!"));
 
     // state
     int state;
@@ -294,9 +297,9 @@ void  particle_cvt::restore( string def )
     // FIXME! Commented out to avoid crashes, must figure out
     // why state wrong
 
-//     Assert(state==0 || state==1 || state==2 || state==3, 
+//     Assert(state==0 || state==1 || state==2 || state==3,
 //         __FILE__,__LINE__,
-//         internal_logic("  unknown particle state!!!")); 
+//         internal_logic("  unknown particle state!!!"));
 
     ptype pt;
 
@@ -424,7 +427,7 @@ void  particle_cvt::restore( string def )
         // create a mparticle converter
         // invoke restore method
         // register to converter service
-        
+
         mparticle_cvt*  tcv = new mparticle_cvt(def);
 
         csvc.add_converter(tcv);
@@ -444,7 +447,7 @@ void  particle_cvt::restore( string def )
         // create a track converter
         // invoke restore method
         // register to converter service
-        
+
         track_cvt*  tcv = new track_cvt(def);
 
         csvc.add_converter(tcv);
@@ -476,12 +479,12 @@ void  particle_cvt::restore( string def )
 
             strip(def,hit_label_.size());
             if (hit<nhits-1) strip(def,def.find(hit_label_));
-            
+
           }
       }
   }
 
-  void particle_cvt::complete_restore()  
+  void particle_cvt::complete_restore()
   {
     // get converter service
 
@@ -505,7 +508,7 @@ void  particle_cvt::restore( string def )
 
           nparticle_->set_mother(false);
         }
-        
+
       }
 
 
@@ -523,7 +526,7 @@ void  particle_cvt::restore( string def )
         catch (bad_index&)
           {
             ;
-          }     
+          }
       }
 
 
@@ -533,14 +536,14 @@ void  particle_cvt::restore( string def )
         try{
           mparticle_cvt& tcvt = *(dynamic_cast<mparticle_cvt*>
                               (&csvc.converter(index)));
-          
+
           mparticle* tr = tcvt.create();
           nparticle_->add_mirror(tr);
         }
         catch (bad_index&)
           {
             ;
-          }                            
+          }
       }
 
 
@@ -550,7 +553,7 @@ void  particle_cvt::restore( string def )
         try{
           track_cvt& tcvt = *(dynamic_cast<track_cvt*>
                               (&csvc.converter(index)));
-          
+
 
           track* tr = tcvt.create();
           nparticle_->add_track(tr);
@@ -558,7 +561,7 @@ void  particle_cvt::restore( string def )
         catch (bad_index&)
           {
             ;
-          }                            
+          }
       }
 
 
@@ -585,7 +588,7 @@ void  particle_cvt::restore( string def )
             catch (bad_index&)
               {
                 ;
-              }                        
+              }
           }
       }
   }
@@ -595,16 +598,16 @@ void  particle_cvt::restore( string def )
     return *particle_;
   }
 
-  particle&  particle_cvt::reference() 
+  particle&  particle_cvt::reference()
   {
     return *nparticle_;
   }
-  
+
 
   particle* particle_cvt::create()
   {
     Assert(nparticle_, __FILE__,__LINE__,
-           internal_logic("  null pointer!!!")); 
+           internal_logic("  null pointer!!!"));
 
     set_owner(false);
     return nparticle_;

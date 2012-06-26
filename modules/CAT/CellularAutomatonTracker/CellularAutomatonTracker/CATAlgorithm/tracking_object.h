@@ -18,28 +18,26 @@
 namespace CAT{
   namespace topology{
 
-    using namespace std;  
-    using namespace mybhep;
 
     // a generic tracking object
     class tracking_object : public printable
     {
-    
+
     protected:
-    
+
       //    Clock clock;
 
     public:
-    
-      /// print level 
-      prlevel level_;
-    
+
+      /// print level
+      mybhep::prlevel level_;
+
       // the number of sigmas
       double nsigma_;
-    
-    
+
+
       void set_nsigma( double nsigma );
-    
+
       double nsigma() const;
 
       double prob() const;
@@ -57,11 +55,11 @@ namespace CAT{
 
     };
 
-  }    
-}    
+  }
+}
 
 #endif // __CATAlgorithm__tracking_object_h
-        
+
 
 
 

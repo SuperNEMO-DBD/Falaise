@@ -2,39 +2,41 @@
 
 namespace mybhep{
 
+  using namespace std;
+
 //*************************************************************
 void EventManager2::writeGlobalProperties() {
 //*************************************************************
 
   m.message("+++ writeGlobalPorperties function +++",mybhep::VVERBOSE);
-  
+
   //reset previous header
 
   header.clear();
 
   //copy run and dst properties to global_store
-  
+
   header.add_properties_store(dst_properties);
 
   header.add_properties_store(run_properties);
-  
+
   // write dst header as event 0
 
   if (oext=="gz") wgz.write(header,oevent);
 #ifdef HDF5
   else if (oext=="h5") wh5.write(header,oevent);
-#endif 
+#endif
  else wtxt.write(header,oevent);
-  
+
   // header already saved
-  
+
   header_saved=true;
-  
-  // run properties also saved, 
+
+  // run properties also saved,
   // so do not allow to change them anymore
 
   run_properties_saved=true;
-  
+
   m.message("++ Header saved with properties:",
 	    header.properties_store(),mybhep::VERBOSE);
 
@@ -46,13 +48,13 @@ void EventManager2::writeGlobalProperties() {
 //*************************************************************
 mybhep::sstore EventManager2::get_global_properties(){
 //*************************************************************
-  
+
   mybhep::event global_store;
 
   global_store.add_properties_store(dst_properties);
 
   global_store.add_properties_store(run_properties);
-  
+
   return global_store.properties_store();
 
 }
@@ -61,17 +63,17 @@ mybhep::sstore EventManager2::get_global_properties(){
 //*************************************************************
 bool EventManager2::readGlobalProperties(){
 //*************************************************************
-  
+
   /*
-    
+
    */
-  
+
   m.message("+++ readGlobalPorperties function +++",mybhep::VVERBOSE);
 
-  // read event zero with global parameters 
-  
+  // read event zero with global parameters
+
   mybhep::sstore new_header = read(0).properties_store();
-  
+
   // new properties not saved
 
   header_saved = false;
@@ -81,20 +83,20 @@ bool EventManager2::readGlobalProperties(){
   // check if properties in dst have changed
 
   bool ok = checkNewProperties(new_header);
-  
+
   if (ok) userException();
- 
+
   // reset previous dst properties
-  
+
   dst_properties.clear();
-  
+
   // copy new dst properties
 
   getDstProperties(new_header);
 
   m.message("++ Dst global properties:",dst_properties,mybhep::VERBOSE);
-  
- 
+
+
 
   return true;
 }
@@ -103,42 +105,42 @@ bool EventManager2::readGlobalProperties(){
 //*******************************************************************
 bool EventManager2::checkNewProperties(mybhep::sstore newstore){
 //*******************************************************************
-  
+
   /*
     Check if new dst have same properties as previous one
    */
-  
+
   bool ok = false;
-  
+
   for (size_t ikey=0;ikey< dst_properties.size(); ikey++ ){
-    
-    string okey = dst_properties.names()[ikey]; 
-    string ovalue = dst_properties.fetch(okey); 
-    
+
+    string okey = dst_properties.names()[ikey];
+    string ovalue = dst_properties.fetch(okey);
+
     if (!newstore.find(okey)){ //property not in new dst
-      
+
       ok = true;
       m.message("\n+++ WARNING from EventManager!!! +++",mybhep::MUTE);
       m.message("++ Missing property in new file: ",okey,mybhep::MUTE);
       m.message("\n",mybhep::MUTE);
-    
-    }else{       
-      
+
+    }else{
+
       string nvalue = newstore[okey];
-      
-      if (nvalue==ovalue) continue; 
-      
+
+      if (nvalue==ovalue) continue;
+
       //property has different value
 
-      ok = true; 
+      ok = true;
       m.message("\n+++ WARNING from EventManager!!! +++",mybhep::MUTE);
       m.message("++ DST property changed its value ++",mybhep::MUTE);
       m.message(okey," = ",ovalue," --> ",okey," = ",nvalue,mybhep::MUTE);
       m.message("\n",mybhep::MUTE);
-      
+
     }
   }//end loop over old properties
-  
+
   return ok;
 
 }
@@ -146,12 +148,12 @@ bool EventManager2::checkNewProperties(mybhep::sstore newstore){
 //*******************************************************************
 void EventManager2::getDstProperties(mybhep::sstore store){
 //*******************************************************************
-  
+
 
   for (size_t ikey=0;ikey< store.size(); ikey++ ){
-    
-    string key = store.names()[ikey]; 
-   
+
+    string key = store.names()[ikey];
+
     add_dst_property(key,store.fetch(key));
 
   }
@@ -160,88 +162,88 @@ void EventManager2::getDstProperties(mybhep::sstore store){
 //*******************************************************************
 bool EventManager2::add_dst_property(string name, string value){
 //*******************************************************************
-  
+
   bool ok;
 
-  if(!header_saved){ 
+  if(!header_saved){
 
     if (find_run_property(name)) usedProperty(name);
 
     ok = true; dst_properties.store(name,value);
-    
+
     m.message("++ Property added to DST:",name,"=",value,mybhep::VERBOSE);
 
   }
-  
+
   else{
-    
+
     ok=false;
-    
+
     m.message("\n+++ WARNING from EventManager!!! +++",mybhep::MUTE);
 
     m.message("++ Could not add dst property: ",name,mybhep::MUTE);
-    
+
     m.message("+ header already written in file!\n",mybhep::MUTE);
-    
+
     userException();
 
   }
-  
+
   return ok;
-  
+
 }
 
 //*******************************************************************
 bool EventManager2::add_run_property(string name, string value){
 //*******************************************************************
-  
-  bool ok;
-  
 
-  if(!run_properties_saved){ 
-    
+  bool ok;
+
+
+  if(!run_properties_saved){
+
     if (find_dst_property(name)) usedProperty(name);
 
     ok = true; run_properties.store(name,value);
-    
+
     m.message("++ Run property added:",name,"=",value,mybhep::VERBOSE);
 
   }
-  
+
   else{
-    
+
     ok=false;
-    
+
     m.message("\n+++ WARNING from EventManager!!! +++",mybhep::MUTE);
 
     m.message("++ Could not add run property: ",name,mybhep::MUTE);
-    
+
     m.message("+ Run has already started \n",mybhep::MUTE);
-    
+
     userException();
 
   }
-  
+
   return ok;
-  
+
 }
 
 //*******************************************************************
 bool EventManager2::add_run_properties(mybhep::sstore store,string str){
 //*******************************************************************
-  
+
   bool ok=true,ok2;
 
   for (size_t ikey=0;ikey< store.size(); ikey++ ){
-    
-    string key = store.names()[ikey]; 
+
+    string key = store.names()[ikey];
     string value = store.fetch(key);
-     
+
     ok2 = add_run_property(str+key,value);
-    
+
     ok = (ok && ok2);
   }
-  
+
   return ok;
 
 }
@@ -249,72 +251,72 @@ bool EventManager2::add_run_properties(mybhep::sstore store,string str){
 //*******************************************************************
 bool EventManager2::add_run_properties(mybhep::gstore store,string str){
 //*******************************************************************
-  
+
    bool ok=true,ok2;
 
   for (size_t i=0; i< store.names_istore().size();i++){
-    
-    string key = store.names_istore()[i]; 
-    
+
+    string key = store.names_istore()[i];
+
     string value = mybhep::to_string(store.fetch_istore(key));
-   
+
     ok2 = add_run_property(str+key,value);
-    
+
     ok = (ok && ok2);
   }
-  
+
   for (size_t i=0; i< store.names_dstore().size();i++){
-    
-    string key = store.names_dstore()[i]; 
-    
+
+    string key = store.names_dstore()[i];
+
     string value = mybhep::to_string(store.fetch_dstore(key));
 
     ok2 = add_run_property(str+key,value);
-    
+
     ok = (ok && ok2);
   }
-  
+
   for (size_t i=0; i< store.names_sstore().size();i++){
-    
-    string key = store.names_sstore()[i]; 
-    
+
+    string key = store.names_sstore()[i];
+
     string value = store.fetch_sstore(key);
 
     ok2 = add_run_property(str+key,value);
-    
+
     ok = (ok && ok2);
   }
-  
+
   for (size_t i=0; i< store.names_ivstore().size();i++){
-    
-    string key = store.names_ivstore()[i]; 
-  
+
+    string key = store.names_ivstore()[i];
+
     string value = mybhep::vector_to_string(store.fetch_ivstore(key));
 
     ok2 = add_run_property(str+key,value);
-    
+
     ok = (ok && ok2);
   }
-  
+
   for (size_t i=0; i< store.names_vstore().size();i++){
-    
-    string key = store.names_vstore()[i]; 
-  
+
+    string key = store.names_vstore()[i];
+
     string value = mybhep::vector_to_string(store.fetch_vstore(key));
 
     ok2 = add_run_property(str+key,value);
-    
+
     ok = (ok && ok2);
   }
-  
+
   for (size_t i=0; i< store.names_svstore().size();i++){
-    
-    string key = store.names_svstore()[i]; 
-  
+
+    string key = store.names_svstore()[i];
+
     string value = mybhep::vector_to_string(store.fetch_svstore(key));
 
     ok2 = add_run_property(str+key,value);
-    
+
     ok = (ok && ok2);
   }
 
@@ -326,16 +328,16 @@ bool EventManager2::add_run_properties(mybhep::gstore store,string str){
 //*******************************************************************
 void EventManager2::usedProperty(string name){
 //*******************************************************************
-  
+
   /*
-    Abort program if a property is found (added)  
-    in (to) both run and dst store. 
+    Abort program if a property is found (added)
+    in (to) both run and dst store.
    */
 
   m.message("\n+++ ERROR from EventManager!!! +++",mybhep::MUTE);
   m.message("++ Property ",name," not added",mybhep::MUTE);
   m.message("+ Property ",name," already in store\n",mybhep::MUTE);
-  
+
   exit(1);
 
 }
@@ -343,25 +345,25 @@ void EventManager2::usedProperty(string name){
 //*******************************************************************
 bool EventManager2::change_dst_property(string name, string prop){
 //*******************************************************************
-  
+
   bool ok;
 
   if(!header_saved){ //first event not written yet
-    
+
     ok=true; dst_properties.sstore(name,prop);
 
     m.message("++ Property changed in DST:",name,"=",prop,mybhep::VERBOSE);
   }
   else{
-   
+
     ok=false;
-    
+
     m.message("\n+++ WARNING from EventManager!!! +++",mybhep::MUTE);
 
     m.message("++ Could not change dst property: ",name,mybhep::MUTE);
-    
+
     m.message("+ header already written in file!\n",mybhep::MUTE);
-    
+
     userException();
 
   }
@@ -376,7 +378,7 @@ string EventManager2::fetch_global_property(string name){
 //*******************************************************************
 
   if (find_dst_property(name)) return fetch_dst_property(name);
-   
+
   else return fetch_run_property(name);
 
 }
@@ -385,15 +387,15 @@ string EventManager2::fetch_global_property(string name){
 //*******************************************************************
 bool EventManager2::find_global_property(string name){
 //*******************************************************************
-  
+
   bool inrun = find_run_property(name);
-  
+
   bool indst = find_dst_property(name);
-  
+
   if (inrun && indst) usedProperty(name);
-  
+
   return (inrun || indst);
-  
+
 }
 
 //*******************************************************************
@@ -425,22 +427,22 @@ string EventManager2::fetch_run_property(string name){
 //*******************************************************************
 void EventManager2::userException(){
 //*******************************************************************
-  
-   if (!warnings) { 
-     
+
+   if (!warnings) {
+
      m.message("++ Warnings are not allowed",mybhep::MUTE);
      m.message("++ Abort as user requests ++\n",mybhep::MUTE);
      exit(1);
-     
+
     }
 
 }
 
 //*************************************************************
 bool EventManager2::isNewFile(){
-//*************************************************************  
-  return (ievent==1); 
-  
+//*************************************************************
+  return (ievent==1);
+
 }
 
 }

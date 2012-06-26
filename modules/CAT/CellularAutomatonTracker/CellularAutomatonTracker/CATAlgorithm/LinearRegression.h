@@ -9,7 +9,6 @@ namespace CAT {
 namespace topology{
 
 
-using namespace std;
 
 
   class LinearRegression : public tracking_object{
@@ -20,24 +19,24 @@ using namespace std;
 
   private:
 
-    string appname_;
+    std::string appname_;
 
     experimental_double y0_;
 
     experimental_double tangent_;
 
-    vector<experimental_double> yi_;
-    vector<experimental_double> xi_;
+    std::vector<experimental_double> yi_;
+    std::vector<experimental_double> xi_;
 
 
   public:
 
-    //!Default constructor 
-    LinearRegression(prlevel level=mybhep::NORMAL, double nsigma=10.)
+    //!Default constructor
+    LinearRegression(mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.)
     {
       appname_= "LinearRegression: ";
-      y0_ = experimental_double(small_neg, small_neg);
-      tangent_ = experimental_double(small_neg, small_neg);
+      y0_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
+      tangent_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       xi_.clear();
       yi_.clear();
       set_print_level(level);
@@ -48,7 +47,7 @@ using namespace std;
     virtual ~LinearRegression(){};
 
     //! constructor
-    LinearRegression(vector<experimental_double> xi, vector<experimental_double> yi, prlevel level=mybhep::NORMAL, double nsigma=10.){
+    LinearRegression(std::vector<experimental_double> xi, std::vector<experimental_double> yi, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.){
       set_print_level(level);
       set_nsigma(nsigma);
       appname_= "LinearRegression: ";
@@ -57,27 +56,27 @@ using namespace std;
     }
 
     /*** dump ***/
-    virtual void dump (ostream & a_out         = clog,
-                            const string & a_title  = "",
-                            const string & a_indent = "",
-                            bool a_inherit          = false){
+    virtual void dump (std::ostream & a_out         = std::clog,
+                       const std::string & a_title  = "",
+                       const std::string & a_indent = "",
+                       bool a_inherit          = false){
       {
-        string indent;
+        std::string indent;
         if (! a_indent.empty ()) indent = a_indent;
         if (! a_title.empty ())
           {
-            a_out << indent << a_title << endl;
+            a_out << indent << a_title << std::endl;
           }
-        
-        a_out << indent << appname_ << " -------------- " << endl;
-        a_out << indent << " points: " << endl;
-        for(vector<experimental_double>::iterator it=xi_.begin(); it != xi_.end(); ++it){
-          a_out << indent << " .. x "; it->dump(); a_out << " y "; yi_[it - xi_.begin()].dump(); a_out << " predicted "; position(*it).dump(); a_out << " " << endl;
-        }
-        a_out << indent << " y0: "; y0().dump(); a_out << " " << endl;
-        a_out << indent << " tangent: "; tangent().dump(); a_out << " " << endl;
 
-        a_out << indent << " -------------- " << endl;
+        a_out << indent << appname_ << " -------------- " << std::endl;
+        a_out << indent << " points: " << std::endl;
+        for(std::vector<experimental_double>::iterator it=xi_.begin(); it != xi_.end(); ++it){
+          a_out << indent << " .. x "; it->dump(); a_out << " y "; yi_[it - xi_.begin()].dump(); a_out << " predicted "; position(*it).dump(); a_out << " " << std::endl;
+        }
+        a_out << indent << " y0: "; y0().dump(); a_out << " " << std::endl;
+        a_out << indent << " tangent: "; tangent().dump(); a_out << " " << std::endl;
+
+        a_out << indent << " -------------- " << std::endl;
 
         return;
       }
@@ -85,8 +84,8 @@ using namespace std;
 
 
 
-    //! set 
-    void set(vector<experimental_double> xi, vector<experimental_double> yi)
+    //! set
+    void set(std::vector<experimental_double> xi, std::vector<experimental_double> yi)
       {
         xi_ = xi;
         yi_ = yi;
@@ -94,13 +93,13 @@ using namespace std;
 
 
     //! set xi
-    void set_xi(vector<experimental_double> xi)
+    void set_xi(std::vector<experimental_double> xi)
       {
         xi_ = xi;
       }
 
     //! set yi
-    void set_yi(vector<experimental_double> yi)
+    void set_yi(std::vector<experimental_double> yi)
       {
         yi_ = yi;
       }
@@ -118,28 +117,28 @@ using namespace std;
       }
 
     //! get xi
-    const vector<experimental_double>& xi()const
+    const std::vector<experimental_double>& xi()const
     {
       return xi_;
-    }      
+    }
 
     //! get yi
-    const vector<experimental_double>& yi()const
+    const std::vector<experimental_double>& yi()const
     {
       return yi_;
-    }      
+    }
 
     //! get y0
     const experimental_double& y0()const
     {
       return y0_;
-    }      
+    }
 
     //! get tangent
     const experimental_double& tangent()const
     {
       return tangent_;
-    }      
+    }
 
 
 
@@ -148,7 +147,7 @@ using namespace std;
 
       if( xi_.size() != yi_.size() ){
         if( print_level() >= mybhep::NORMAL ){
-          clog << " problem: in least square regression, sizes x " << xi_.size() << " y " << yi_.size() << endl;
+          std::clog << " problem: in least square regression, sizes x " << xi_.size() << " y " << yi_.size() << std::endl;
         }
         return false;
       }
@@ -158,56 +157,56 @@ using namespace std;
       double Swx = 0.;
       double Swxy = 0.;
       double Swy = 0.;
-      
+
       for(std::vector<experimental_double>::iterator it=xi_.begin(); it != xi_.end(); ++it)
         {
-          double w = 1./(square(it->error()));
+          double w = 1./(mybhep::square(it->error()));
           Sw += w;
-          Swxx += w*square(it->value());
+          Swxx += w*mybhep::square(it->value());
           Swx += w*it->value();
           double y = yi_[it - xi_.begin()].value();
           Swxy += w*it->value()*y;
           Swy += w*y;
         }
-      
-      double delta = Sw*Swxx - square(Swx);
-      
+
+      double delta = Sw*Swxx - mybhep::square(Swx);
+
       if( delta == 0.){
         if( print_level() >= mybhep::NORMAL ){
-          clog << " problem: in least square regression, delta " << delta << " Sw " << Sw << " Swx " << Swx << " Swxx " << Swxx << endl;
+          std::clog << " problem: in least square regression, delta " << delta << " Sw " << Sw << " Swx " << Swx << " Swxx " << Swxx << std::endl;
         }
         return false;
       }
-      
+
       double a = (Swxx*Swy - Swx*Swxy)/delta;
       double b = (Sw*Swxy - Swx*Swy)/delta;
       double erra, errb;
-      
+
       if( Swxx/delta > 0. ){
         erra = sqrt(Swxx/delta);
       }
       else{
         if( print_level() >= mybhep::NORMAL ){
-          clog << " problem: linear regression sy02 " << Swxx/delta << " Swxx " << Swxx << " delta " << delta << endl;
+          std::clog << " problem: linear regression sy02 " << Swxx/delta << " Swxx " << Swxx << " delta " << delta << std::endl;
         }
         return false;
       }
-      
+
       if( Sw/delta > 0. ){
         errb = sqrt(Sw/delta);
       }
       else{
         if( print_level() >= mybhep::NORMAL ){
-          clog << " problem: linear regression stangent2 " << Sw/delta << " Sw " << Sw << " delta " << delta << endl;
+          std::clog << " problem: linear regression stangent2 " << Sw/delta << " Sw " << Sw << " delta " << delta << std::endl;
         }
         return false;
       }
 
       set_y0(experimental_double(a, erra));
       set_tangent(experimental_double(b, errb));
-      
+
       return true;
-      
+
     }
 
     experimental_double position(experimental_double x){
@@ -234,7 +233,7 @@ using namespace std;
 
     }
 
-    
+
   };
 
 }

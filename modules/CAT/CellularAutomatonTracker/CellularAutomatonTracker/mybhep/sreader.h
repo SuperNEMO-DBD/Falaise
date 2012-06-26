@@ -29,7 +29,6 @@
 #include <mybhep/engine.h>
 #include <mybhep/utilities.h>
 
-using namespace std;
 namespace mybhep{
     /// Simple reader class
   /**

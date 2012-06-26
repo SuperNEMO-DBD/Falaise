@@ -44,7 +44,6 @@
 // 
 // Length [L]
 //
-using namespace std;  
 
 namespace mybhep{
 

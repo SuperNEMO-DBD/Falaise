@@ -1,14 +1,14 @@
 /* -*- mode: c++ -*- */
-// 
-/*   
- * 
+//
+/*
+ *
  * Copyright (C) 2004 J.J. Gomez-Cadenas
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -23,10 +23,12 @@
 #include <mybhep/hit.h>
 
 namespace mybhep{
-  
+
+  using namespace std;
+
   particle::particle(ptype type, string nam, const ray& r) :
     particle_definition(nam)
-  {    
+  {
 
     r_ = new ray(r);
     rd_ = new ray;
@@ -73,8 +75,8 @@ namespace mybhep{
     if (ptype_ ==TRUTH) pstate_ = PID;
     else pstate_ = PROJ;
   }
-  
-  particle::particle(ptype type, string name, int pdg, double m, double q, 
+
+  particle::particle(ptype type, string name, int pdg, double m, double q,
 		     double l)
     : particle_definition(name,pdg,m,q,l)
   {
@@ -90,8 +92,8 @@ namespace mybhep{
     else pstate_ = PROJ;
 
   }
-  
-  
+
+
   //! destructor
   particle::~particle()
   {
@@ -118,7 +120,7 @@ namespace mybhep{
   }
 
  //! set momentum
-    void particle::set_p(double px, double py, double pz)  
+    void particle::set_p(double px, double py, double pz)
     {
       r_->set_p( px, py, pz);
       p4_->setPx(px);
@@ -137,19 +139,19 @@ namespace mybhep{
 
     }
     //! set vertex
-    void particle::set_vertex(double x, double y, double z)  
+    void particle::set_vertex(double x, double y, double z)
     {
       r_->set_point( x, y, z);
     }
 
     //! set vertex
-    void particle::set_vertex(const mybhep::Point3D& p)  
+    void particle::set_vertex(const mybhep::Point3D& p)
     {
       r_->set_point(p);
     }
 
  //! set momentum
-    void particle::set_decay_p(double px, double py, double pz)  
+    void particle::set_decay_p(double px, double py, double pz)
     {
       rd_->set_p( px, py, pz);
     }
@@ -160,13 +162,13 @@ namespace mybhep{
 
     }
     //! set vertex
-    void particle::set_decay_vertex(double x, double y, double z)  
+    void particle::set_decay_vertex(double x, double y, double z)
     {
       rd_->set_point( x, y, z);
     }
 
     //! set vertex
-    void particle::set_decay_vertex(const mybhep::Point3D& p)  
+    void particle::set_decay_vertex(const mybhep::Point3D& p)
     {
       rd_->set_point(p);
     }
@@ -207,7 +209,7 @@ namespace mybhep{
   double particle::track_length() const
   {
     const mybhep::Point3D& first = r_->x();
-    const mybhep::Point3D& last = rd_->x();    
+    const mybhep::Point3D& last = rd_->x();
     double track_length = last.distance(first);
 
     return track_length;
@@ -216,7 +218,7 @@ namespace mybhep{
 
   ostream& operator << (ostream& s, const particle& ip) {
     s << endl;
-    
+
     s << "\n***********************************************\n"
       << " particle name= " << ip.name() << " "
       << " geant3= " << ip.geant3() << " "
@@ -226,21 +228,21 @@ namespace mybhep{
       << " type (0 TRUTH, 1 DIGI) = " << ip.type()
       << " state (0 PROJ, 1 MPROJ, 2 TRK, 3 PID) = " << ip.state()
       << endl;
-    
+
     s << " ++++at production vertex ++++" << endl;
     s << " particle 3 momentum (MeV) =" << ip.p3()/MeV << endl;
     s << " momentum (MeV) = " << ip.p()/MeV << endl;
     s << " energy (MeV)= " << ip.e()/MeV << endl;
     s << " vertex (cm)= " << ip.vertex()/cm << endl;
-    
+
     s << " ++++at decay vertex ++++" << endl;
     s << " particle 3 momentum (MeV) =" << ip.p3d()/MeV << endl;
     s << " momentum (MeV) = " << ip.pd()/MeV << endl;
     s << " decay vertex (cm)= " << ip.decay_vertex()/cm << endl;
-    
+
     s << " track length (cm)= " << ip.track_length()/cm << endl;
-    
-    if (ip.primary()) 
+
+    if (ip.primary())
       s << " particle is primary " << endl;
     else{
       s << " particle is secondary" << endl;
@@ -254,34 +256,34 @@ namespace mybhep{
 
     s << " List of secondary particles "
       << "-----------------------------" << endl;
-    
+
     for(size_t i=0; i< ip.daughters().size(); i++){
-      
+
       const particle& p = *ip.daughters()[i];
       s << " particle name= " << p.name() << " "
 	<< " particle mass (MeV)= " << p.mass()/MeV
 	<< " particle charge = " << p.charge()
 	<< endl;
-      
+
       s << " particle 3 momentum (MeV) =" << p.p3()/MeV << endl;
       s << " particle momentum (MeV) = " << p.p()/MeV << endl;
       s << " particle energy (MeV)= " << p.e()/MeV << endl;
-      
+
     }
-    
+
     s << " List of tracks "
       << "-----------------------------" << endl;
-    
-    
+
+
     for(size_t i=0; i< ip.tracks().size(); i++){
-      
+
       const track& p = *ip.tracks()[i];
       s << p << endl;
-    }    
-    
+    }
+
     s << " List of properties "
       << "-----------------------------" << endl;
-    
+
     {
       typedef map<string, string>::const_iterator I;
       for(I i=ip.properties_map().begin(); i !=ip.properties_map().end(); ++i)
@@ -291,28 +293,28 @@ namespace mybhep{
 	    << endl;
 	}
     }
-    
+
     s << " List of hits "
       << "-----------------------------" << endl;
-    
+
     typedef multimap<string, hit*>::const_iterator I;
     for(I i=ip.hit_map().begin(); i !=ip.hit_map().end(); ++i)
       {
-	s << "detector = " << i->first 
-	  << " hit = " << *(i->second) 
+	s << "detector = " << i->first
+	  << " hit = " << *(i->second)
 	  <<endl;
       }
-    
+
     s << " List of mirror particles "
       << "-----------------------------" << endl;
 
     for(size_t i=0; i< ip.mparticles().size(); i++){
-      
+
       const mparticle&  mp = *ip.mparticles()[i];
       s << mp << endl;
     }
 
-    return s;            
+    return s;
   }
 }
-  
+

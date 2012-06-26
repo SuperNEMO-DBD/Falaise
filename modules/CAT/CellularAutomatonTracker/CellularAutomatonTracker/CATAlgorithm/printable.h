@@ -10,47 +10,46 @@
 namespace CAT {
   namespace topology{
 
-    using namespace mybhep;
 
-    //! Base utility class for conditional print 
+    //! Base utility class for conditional print
     /*!
       - derived class implement the info method to print information
       \ingroup base
     */
 
-    class printable {  
-     
+    class printable {
+
     public:
 
       /// print level
-      prlevel level_;
+      mybhep::prlevel level_;
 
     public:
 
       printable();
 
       virtual ~printable();
-      
-      //! print interface 
+
+      //! print interface
       virtual void info(std::ostream& os = std::clog) const ;
 
       //! print the information using the << operator
-      friend ostream& operator<<(std::ostream& os, const printable& v) ;
-      
-      //! print the information using the << operator
-      friend ostream& operator<<(std::ostream& os, const printable* v) ;
-      
-      //! return print_level
-      const prlevel& print_level() const ;
-  
-      //! set print_level
-      //    void set_print_level(prlevel& level) {level_ = level;}   
-      void set_print_level(prlevel level) ;
+      friend std::ostream& operator<<(std::ostream& os, const printable& v) ;
 
-      /// set the verbosity level 
+      //! print the information using the << operator
+      friend std::ostream& operator<<(std::ostream& os, const printable* v) ;
+
+      //! return print_level
+      const mybhep::prlevel& print_level() const ;
+
+      //! set print_level
+      //    void set_print_level(prlevel& level) {level_ = level;}
+      void set_print_level(mybhep::prlevel level) ;
+
+      /// set the verbosity level
       void set_print_level(const std::string & info);
- 
-    
+
+
     };
   }
 }

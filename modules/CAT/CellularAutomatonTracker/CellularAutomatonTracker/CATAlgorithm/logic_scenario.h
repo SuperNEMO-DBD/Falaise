@@ -24,12 +24,10 @@
 namespace CAT {
 namespace topology{
 
-using namespace std;
-using namespace mybhep;
 
   class logic_scenario : public tracking_object{
 
-    // a reconstruction scenario is composed of 
+    // a reconstruction scenario is composed of
     // a collection of logic_sequences
 
   private:
@@ -43,19 +41,19 @@ using namespace mybhep;
     // n of overlapping cells
     size_t n_overlaps_;
 
-  public:   
+  public:
 
     // tracks
     std::vector<topology::logic_sequence> sequences_;
 
-    //!Default constructor 
+    //!Default constructor
     logic_scenario()
     {
       sequences_.clear();
-      chi2_ = small_neg;
-      ndof_ = default_integer;
-      n_free_families_ = default_integer;
-      n_overlaps_ = default_integer;
+      chi2_ = mybhep::small_neg;
+      ndof_ = mybhep::default_integer;
+      n_free_families_ = mybhep::default_integer;
+      n_overlaps_ = mybhep::default_integer;
    }
 
     //!Default destructor
@@ -75,25 +73,25 @@ using namespace mybhep;
     const std::vector<logic_sequence> & sequences()const
     {
       return sequences_;
-    }      
+    }
 
     //!get chi2
-    const double& chi2() const 
+    const double& chi2() const
     {
       return chi2_;
-    } 
+    }
 
     //!get ndof
-    const int32_t& ndof() const 
+    const int32_t& ndof() const
     {
       return ndof_;
-    } 
+    }
 
     //!get n free families
-    const size_t& n_free_families() const {return n_free_families_;} 
+    const size_t& n_free_families() const {return n_free_families_;}
 
     //!get n overlaps
-    const size_t& n_overlaps() const {return n_overlaps_;} 
+    const size_t& n_overlaps() const {return n_overlaps_;}
 
 
     void calculate_n_overlaps(std::vector<topology::cell> cells, std::vector<topology::calorimeter_hit> calos){
@@ -111,7 +109,7 @@ using namespace mybhep;
         for(std::vector<logic_cell>::iterator in = iseq->cells_.begin(); in != iseq->cells_.end(); ++in){
           if( in->id() >= cells.size() ){
             if( print_level() >= mybhep::VVERBOSE )
-              clog << " problem: cell " << in->id() << " has larger id than n of cells " << cells.size() << endl;
+              std::clog << " problem: cell " << in->id() << " has larger id than n of cells " << cells.size() << std::endl;
             continue;
           }
 
@@ -125,7 +123,7 @@ using namespace mybhep;
         if( iseq->has_decay_vertex() ){
           if( iseq->calo_id() >= calos.size() ){
             if( print_level() >= mybhep::VVERBOSE )
-              clog << " problem: calo " << iseq->calo_id() << " has larger id than n of calos " << calos.size() << endl;
+              std::clog << " problem: calo " << iseq->calo_id() << " has larger id than n of calos " << calos.size() << std::endl;
             continue;
           }
 
@@ -135,14 +133,14 @@ using namespace mybhep;
             counter ++;
 
         }
-        
+
       }
-    
+
 
       n_overlaps_ = counter;
 
       return;
-      
+
     }
 
 
@@ -160,7 +158,7 @@ using namespace mybhep;
         for(std::vector<logic_cell>::iterator in = iseq->cells_.begin(); in != iseq->cells_.end(); ++in){
           if( in->id() >= cells.size() ){
             if( print_level() >= mybhep::VVERBOSE )
-              clog << " problem: cell " << in->id() << " has larger id than n of cells " << cells.size() << endl;
+              std::clog << " problem: cell " << in->id() << " has larger id than n of cells " << cells.size() << std::endl;
             continue;
           }
           else{
@@ -172,7 +170,7 @@ using namespace mybhep;
 
         if( iseq->calo_id() >= calos.size() ){
           if( print_level() >= mybhep::VVERBOSE )
-            clog << " problem: calo " << iseq->calo_id() << " has larger id than n of calos " << calos.size() << endl;
+            std::clog << " problem: calo " << iseq->calo_id() << " has larger id than n of calos " << calos.size() << std::endl;
           continue;
         }
         freecalos[iseq->calo_id()] = 0;
@@ -216,19 +214,19 @@ using namespace mybhep;
 
     bool better_scenario_than( logic_scenario s){
 
-      // - n of recovered cells 
+      // - n of recovered cells
       int deltanfree = n_free_families() - s.n_free_families();
 
-      // n of new overlaps 
+      // n of new overlaps
       int deltanoverls = n_overlaps() - s.n_overlaps();
 
       double deltaprob = Prob() - s.Prob();
 
 
       if( print_level() >= mybhep::VVERBOSE ){
-        clog << " delta n_free_families = (" << n_free_families()  << " - " << s.n_free_families() << ")= " << deltanfree 
+        std::clog << " delta n_free_families = (" << n_free_families()  << " - " << s.n_free_families() << ")= " << deltanfree
              << " dela n_overlaps = (" << n_overlaps() << " - " << s.n_overlaps() << ")= " << deltanoverls
-             << " delta prob = (" << Prob()  << " - " << s.Prob() << ") = " << deltaprob << endl;
+             << " delta prob = (" << Prob()  << " - " << s.Prob() << ") = " << deltaprob << std::endl;
       }
 
       if( deltanoverls < - 2*deltanfree )

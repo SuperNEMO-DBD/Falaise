@@ -1,19 +1,19 @@
 /* -*- mode: c++ -*- */
 /*
  *
- * Copyright 2006 
+ * Copyright 2006
  * J.J. Gomez-Cadenas
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -25,7 +25,6 @@
 #include <mybhep/base_reader.h>
 
 
-using namespace std;
 
 namespace mybhep{
 //! Base class for a sequential reader
@@ -42,12 +41,12 @@ namespace mybhep{
   a sequential reader, the operations involving skipping and rewinding
   are not efficient
 
-  Derived class need to implement the protected interface, 
-  which specifies low level actions such as open_file, 
+  Derived class need to implement the protected interface,
+  which specifies low level actions such as open_file,
   close_file, skip, rewind, etc.
 
   The API consists of  functions obtained from the protected interface
-  
+
 
   open(fileName) : open files and init counters
   close():  close file, clears memory, reset counters
@@ -67,33 +66,33 @@ namespace mybhep{
     //! max number of events set to reader
     size_t maxEvents_;
     //! offset from the beginning of the event
-    vector<size_t> off_;
+    std::vector<size_t> off_;
 
     //! constructor (only to be instantiated by derived classes)
   protected:
     sequential_reader();
-    
+
     //!  public functions
   public:
     virtual ~sequential_reader() ;
     //! open reader
-    void open(string fileName);
-    
+    void open(std::string fileName);
+
     //! close reader
     void close();
-        
+
     //! set reader to a new file
-    void reopen(string fileName);
+    void reopen(std::string fileName);
 
     //! max events
     size_t max_events() ;
-    
+
     //! end of file
-    bool eof(){return end_of_file();}  
+    bool eof(){return end_of_file();}
 
     //! read next event
     event& read_next() ;
-    
+
     //! read event
     virtual event& read_event(size_t ievent);
 
@@ -102,10 +101,10 @@ namespace mybhep{
 
     //! get max events
     virtual size_t get_max_events() = 0;
-    
-    //! end of file  
-    virtual bool end_of_file() =0;     
-    
+
+    //! end of file
+    virtual bool end_of_file() =0;
+
     //! rewind to ievent
     virtual void rewind() =0;
 
@@ -113,9 +112,9 @@ namespace mybhep{
     virtual void skip(size_t ievent) =0;
 
     //! get the event as a record
-    virtual string get_record() = 0;
+    virtual std::string get_record() = 0;
 
-    
-  };   
+
+  };
 }
 #endif

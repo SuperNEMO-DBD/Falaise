@@ -16,8 +16,6 @@ namespace CAT {
 
   namespace topology {
 
-    using namespace std;
-    using namespace mybhep;
 
     class cell : public tracking_object {
 
@@ -25,10 +23,10 @@ namespace CAT {
       // and an experimental radius
 
     private:
-      string appname_;
+      std::string appname_;
 
       // experimental point
-      experimental_point ep_; 
+      experimental_point ep_;
 
       // radius (original value)
       experimental_double r0_;
@@ -55,9 +53,9 @@ namespace CAT {
       int n3id_;
 
       // N3 or SN
-      string type_;
+      std::string type_;
 
-    public:   
+    public:
 
 
       // status of cell couplet
@@ -66,7 +64,7 @@ namespace CAT {
       // begun cell couplet
       bool begun_;
 
-      //!Default constructor 
+      //!Default constructor
       cell()
       {
         set_print_level(mybhep::NORMAL);
@@ -74,14 +72,14 @@ namespace CAT {
         //ep_ = experimental_point();
         //r0_= experimental_double();
         //r_= experimental_double();
-        id_ = default_integer;
-        layer_ = default_integer;
-        block_ = default_integer;
-        iid_ = default_integer;
-        n3id_ = default_integer;
+        id_ = mybhep::default_integer;
+        layer_ = mybhep::default_integer;
+        block_ = mybhep::default_integer;
+        iid_ = mybhep::default_integer;
+        n3id_ = mybhep::default_integer;
         fast_ = true;
         free_ = false;
-        begun_ = false; 
+        begun_ = false;
         type_ ="SN";
       }
 
@@ -89,17 +87,17 @@ namespace CAT {
       virtual ~cell(){};
 
       //! constructor
-      cell(experimental_point p, experimental_double r, size_t id, bool fast=true, double nsigma=10., prlevel level=mybhep::NORMAL){
+      cell(experimental_point p, experimental_double r, size_t id, bool fast=true, double nsigma=10., mybhep::prlevel level=mybhep::NORMAL){
         appname_= "cell: ";
         set_print_level(level);
         set_nsigma(nsigma);
         ep_ = p;
         r0_ = r;
         id_ = id;
-        layer_ = default_integer;
-        block_ = default_integer;
-        iid_ = default_integer;
-        n3id_ = default_integer;
+        layer_ = mybhep::default_integer;
+        block_ = mybhep::default_integer;
+        iid_ = mybhep::default_integer;
+        n3id_ = mybhep::default_integer;
         fast_ = fast;
         set_radius();
         free_ = false;
@@ -108,7 +106,7 @@ namespace CAT {
       }
 
       //! constructor
-      cell(experimental_point p, double r, double er, size_t id, bool fast=true, prlevel level=mybhep::NORMAL, double nsigma=10.){
+      cell(experimental_point p, double r, double er, size_t id, bool fast=true, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.){
         appname_= "cell: ";
         set_print_level(level);
         set_nsigma(nsigma);
@@ -116,10 +114,10 @@ namespace CAT {
         r0_.set_value(r);
         r0_.set_error(er);
         id_ = id;
-        layer_ = default_integer;
-        block_ = default_integer;
-        iid_ = default_integer;
-        n3id_ = default_integer;
+        layer_ = mybhep::default_integer;
+        block_ = mybhep::default_integer;
+        iid_ = mybhep::default_integer;
+        n3id_ = mybhep::default_integer;
         fast_ = fast;
         set_radius();
         free_ = false;
@@ -134,12 +132,12 @@ namespace CAT {
         set_nsigma(10.);
         ep_ = p;
         r0_.set_value(r);
-        r0_.set_error(small_neg);
+        r0_.set_error(mybhep::small_neg);
         id_ = id;
-        layer_ = default_integer;
-        block_ = default_integer;
-        iid_ = default_integer;
-        n3id_ = default_integer;
+        layer_ = mybhep::default_integer;
+        block_ = mybhep::default_integer;
+        iid_ = mybhep::default_integer;
+        n3id_ = mybhep::default_integer;
         fast_ = fast;
         set_radius();
         free_ = false;
@@ -148,17 +146,17 @@ namespace CAT {
       }
 
       //! constructor from bhep hit
-      cell(mybhep::hit hit, size_t id, bool SuperNemo, prlevel level=mybhep::NORMAL, double nsigma=10.){
+      cell(mybhep::hit hit, size_t id, bool SuperNemo, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.){
         set_print_level(level);
         set_nsigma(nsigma);
         appname_= "cell: ";
         //ep_ = experimental_point(hit);
-        r0_.set_value(small_neg);
-        r0_.set_error(0.5*mybhep::mm); // radial error 
+        r0_.set_value(mybhep::small_neg);
+        r0_.set_error(0.5*mybhep::mm); // radial error
 
         if( hit.find_property("DIST")){
           double rr = mybhep::double_from_string(hit.fetch_property("DIST"));
-          if( isnan(rr) || isinf(rr) ) rr = small_neg;
+          if( isnan(rr) || isinf(rr) ) rr = mybhep::small_neg;
           r0_.set_value(rr);
         }
 
@@ -173,31 +171,31 @@ namespace CAT {
         if( SuperNemo )
           {
             type_ ="SN";
-            string value = hit.fetch_property("CELL"); // GG_CELL_block_plane_id
+            std::string value = hit.fetch_property("CELL"); // GG_CELL_block_plane_id
             // block = 1, 2, 3 or -1, -2, -3
             // layer = 0, 1, ..., 8 or 0, -1, ..., -8
-          
-          
+
+
             sscanf(value.c_str(),"GG_CELL_%d_%d_%d",&block_,&layer_,&iid_);
             layer_ --;
             if( block_ < 0 ){
               layer_ *= -1;
             }
             n3id_ = 0;
-          
+
           }
         else
           {
             type_ ="N3";
-            string value = hit.fetch_property("BLK");  // BLK = sector_io_layer
+            std::string value = hit.fetch_property("BLK");  // BLK = sector_io_layer
             // sector = petal of the detector
             // io = 1 if hit is between foil and external calorimeter
             //     0 if hit is between foil and internal calorimeter
             // layer = 0-8
-      
+
             size_t io;
             sscanf(value.c_str(),"%d_%d_%d",&block_,&io,&iid_);
- 
+
             layer_ = iid_;
 
             //translate layer into block number
@@ -215,7 +213,7 @@ namespace CAT {
             // block = 1, 2, 3 or -1, -2, -3
             // layer = 0, 1, ..., 8 or 0, -1, ..., -8
 
-            string val = hit.fetch_property("CELL");  // cell number
+            std::string val = hit.fetch_property("CELL");  // cell number
             sscanf(val.c_str(),"%d",&n3id_);
           }
 
@@ -229,12 +227,12 @@ namespace CAT {
         appname_= "cell: ";
         experimental_point ep_tmp(hit);
         ep_ = ep_tmp;
-        r0_.set_value( small_neg);
-        r0_.set_error( 0.5*mybhep::mm); // radial error 
+        r0_.set_value( mybhep::small_neg);
+        r0_.set_error( 0.5*mybhep::mm); // radial error
 
         if( hit.find_property("DIST")){
           double rr = mybhep::double_from_string(hit.fetch_property("DIST"));
-          if( isnan(rr) || isinf(rr) ) rr = small_neg;
+          if( isnan(rr) || isinf(rr) ) rr = mybhep::small_neg;
           r0_.set_value(rr);
         }
 
@@ -243,11 +241,11 @@ namespace CAT {
         else
           fast_ = true;
 
-        id_ = default_integer;
-        layer_ = default_integer;
-        block_ = default_integer;
-        iid_ = default_integer;
-        n3id_ = default_integer;
+        id_ = mybhep::default_integer;
+        layer_ = mybhep::default_integer;
+        block_ = mybhep::default_integer;
+        iid_ = mybhep::default_integer;
+        n3id_ = mybhep::default_integer;
         set_radius();
         free_ = false;
         begun_ = false;
@@ -256,27 +254,27 @@ namespace CAT {
 
 
       /*** dump ***/
-      virtual void dump (ostream & a_out         = clog,
-                         const string & a_title  = "",
-                         const string & a_indent = "",
+      virtual void dump (std::ostream & a_out         = std::clog,
+                         const std::string & a_title  = "",
+                         const std::string & a_indent = "",
                          bool a_inherit          = false) const{
         {
-          string indent;
+          std::string indent;
           if (! a_indent.empty ()) indent = a_indent;
           if (! a_title.empty ())
             {
-              a_out << indent << a_title << endl;
+              a_out << indent << a_title << std::endl;
             }
 
-          a_out << indent << appname_ << " -------------- " << endl;
-          a_out << indent << "id : " << this->id() << " layer " << this->layer() << " block " << this->block() << " iid " << this->iid() << " n3id " << this->n3id() << " fast " << this->fast() << " small " << this->small() << " unknown vertical " << this->unknown_vertical() << endl;
-          a_out << indent << " point " << endl;
+          a_out << indent << appname_ << " -------------- " << std::endl;
+          a_out << indent << "id : " << this->id() << " layer " << this->layer() << " block " << this->block() << " iid " << this->iid() << " n3id " << this->n3id() << " fast " << this->fast() << " small " << this->small() << " unknown vertical " << this->unknown_vertical() << std::endl;
+          a_out << indent << " point " << std::endl;
           this->ep().dump(a_out,"", indent + "   ");
-          a_out << indent << "radius : "; (r()/mybhep::mm).dump(); a_out << " [mm ] " << endl;
+          a_out << indent << "radius : "; (r()/mybhep::mm).dump(); a_out << " [mm ] " << std::endl;
           if( small() && fast() ){
-            a_out << indent << "original radius : "; (r0()/mybhep::mm).dump(); a_out << " [mm ] " << endl;
+            a_out << indent << "original radius : "; (r0()/mybhep::mm).dump(); a_out << " [mm ] " << std::endl;
           }
-          a_out << indent << " -------------- " << endl;
+          a_out << indent << " -------------- " << std::endl;
 
           return;
         }
@@ -288,7 +286,7 @@ namespace CAT {
       void set(experimental_point p, double r,double er, size_t id, bool fast)
       {
         ep_ = p;
-        r0_.set_value(r); 
+        r0_.set_value(r);
         r0_.set_error(er);
         id_ = id;
         fast_ = fast;
@@ -363,7 +361,7 @@ namespace CAT {
       }
 
       //! set type
-      void set_type(string type){
+      void set_type(std::string type){
         type_ = type;
       }
 
@@ -392,37 +390,37 @@ namespace CAT {
       const experimental_point& ep()const
       {
         return ep_;
-      }      
+      }
 
       //!get experimental r
-      const experimental_double& r() const 
+      const experimental_double& r() const
       {
         return r_;
-      } 
+      }
 
       //!get original experimental r
-      const experimental_double& r0() const 
+      const experimental_double& r0() const
       {
         return r0_;
-      } 
+      }
 
       //!get id
-      const size_t& id() const {return id_;} 
+      const size_t& id() const {return id_;}
 
       //!get layer
-      const int& layer() const {return layer_;} 
+      const int& layer() const {return layer_;}
 
       //!get block
-      const int& block() const {return block_;} 
+      const int& block() const {return block_;}
 
       //!get iid
-      const int& iid() const {return iid_;} 
+      const int& iid() const {return iid_;}
 
       //!get n3id
-      const int& n3id() const {return n3id_;} 
+      const int& n3id() const {return n3id_;}
 
       //!get fast flag
-      const bool& fast() const {return fast_;} 
+      const bool& fast() const {return fast_;}
 
       //! get free level
       const bool free()const{
@@ -435,7 +433,7 @@ namespace CAT {
       }
 
       //! get type
-      string type(){
+      std::string type(){
         return type_;
       }
 
@@ -457,14 +455,14 @@ namespace CAT {
             // block 2 ... N = 19
             // block 3 ... N = 22
 
-            // so to distinguish cells of different sectors I add 100*sector number 
+            // so to distinguish cells of different sectors I add 100*sector number
 
             return n3id() + 100*block();
 
           }
-      
+
         if( print_level() >= mybhep::NORMAL )
-          std::clog << " problem: unknown cell type " << type_ << endl;
+          std::clog << " problem: unknown cell type " << type_ << std::endl;
         return 0;
 
       }
@@ -487,9 +485,9 @@ namespace CAT {
 
       bool operator<(const topology::cell& c) const{
 
-        if( id_ > default_integer ){
+        if( id_ > mybhep::default_integer ){
           if( print_level() >= mybhep::NORMAL )
-            std::clog << " problem: trying to compare cells with ids " << id_ << " and " << c.id() << " just returning false " << endl;
+            std::clog << " problem: trying to compare cells with ids " << id_ << " and " << c.id() << " just returning false " << std::endl;
           return false;
         }
 
@@ -513,7 +511,7 @@ namespace CAT {
         }
         if(this->iid() > c.iid())
           return true;
-      
+
 
         if(this->n3id() <= c.n3id()){
           return false;
@@ -521,7 +519,7 @@ namespace CAT {
 
 
         return true;
-    
+
       }
 
       static bool compare(const topology::cell& c1, const topology::cell& c) {
@@ -544,7 +542,7 @@ namespace CAT {
         }
         if(c1.iid() > c.iid())
           return true;
-      
+
 
         if(c1.n3id() < c.n3id()){
           return false;
@@ -552,14 +550,14 @@ namespace CAT {
 
 
         return true;
-    
+
       };
 
     private:
       void set_radius(){
         r_ = r0_;
         if( small() && fast() )
-          r_.set_error(max(r0_.value(), r0_.error()));
+          r_.set_error(std::max(r0_.value(), r0_.error()));
       }
 
 

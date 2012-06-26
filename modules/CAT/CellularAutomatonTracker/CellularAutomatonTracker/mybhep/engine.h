@@ -22,7 +22,6 @@
 #include <mybhep/messenger.h>
 #include <mybhep/bprint.h>
 
-using namespace std;
 
 namespace mybhep{
 /// Base class for an engine

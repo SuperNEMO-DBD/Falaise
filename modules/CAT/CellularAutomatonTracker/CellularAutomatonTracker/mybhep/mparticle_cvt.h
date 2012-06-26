@@ -1,14 +1,14 @@
 /* -*- mode: c++ -*- */
-// 
-/*   
- * 
+//
+/*
+ *
  * Copyright (C) 2004 J.J. Gomez Cadenas
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -26,7 +26,6 @@
 #include <mybhep/ibconverter.h>
 
 
-using namespace std;  
 
 namespace mybhep{
 
@@ -34,7 +33,7 @@ namespace mybhep{
   /*!
     Converter to persistency
   */
-  
+
   typedef mparticle mparticle;
 
   class mparticle_cvt : public ibconverter
@@ -54,14 +53,14 @@ namespace mybhep{
     //! construct from a mparticle and an index
     mparticle_cvt( const mparticle& p, int inx);
     //! construct from a string
-    mparticle_cvt( string );
+    mparticle_cvt( std::string );
     //! destructor
     virtual ~mparticle_cvt();
 
     //! store class in a string
-    virtual string store();
+    virtual std::string store();
     //! restore from a string
-    virtual void restore( string );
+    virtual void restore( std::string );
     //! complete restore
     virtual void complete_restore();
 
@@ -73,8 +72,8 @@ namespace mybhep{
 
     //! instantiate a new mparticle
     mparticle* create();
-    
-  
+
+
   };
 }
 #endif

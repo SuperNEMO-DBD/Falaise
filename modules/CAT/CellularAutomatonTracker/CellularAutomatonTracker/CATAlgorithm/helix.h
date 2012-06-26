@@ -14,8 +14,6 @@
 namespace CAT {
   namespace topology{
 
-    using namespace std;
-    using namespace mybhep;
 
     class helix : public tracking_object {
 
@@ -24,10 +22,10 @@ namespace CAT {
       // and pitch
 
     private:
-      string appname_;
+      std::string appname_;
 
       // experimental point
-      experimental_point center_; 
+      experimental_point center_;
 
       // radius
       experimental_double radius_;
@@ -42,15 +40,15 @@ namespace CAT {
       // z(phi) = center_.z() + radius*sin(phi)
 
 
-    public:   
+    public:
 
-      //!Default constructor 
-      helix(prlevel level=mybhep::NORMAL, double nsigma=10.)
+      //!Default constructor
+      helix(mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.)
       {
         appname_= "helix: ";
         center_ = experimental_point();
-        radius_ = experimental_double(small_neg, small_neg);
-        pitch_ = experimental_double(small_neg, small_neg);
+        radius_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
+        pitch_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
         set_print_level(level);
         set_nsigma(nsigma);
       }
@@ -59,7 +57,7 @@ namespace CAT {
       virtual ~helix(){};
 
       //! constructor
-      helix(experimental_point center, experimental_double radius, experimental_double  pitch, prlevel level=mybhep::NORMAL, double nsigma=10.){
+      helix(experimental_point center, experimental_double radius, experimental_double  pitch, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.){
         set_print_level(level);
         set_nsigma(nsigma);
         appname_= "helix: ";
@@ -69,7 +67,7 @@ namespace CAT {
       }
 
       //! constructor from a circle and a pitch
-      helix(circle c, experimental_double  pitch, prlevel level=mybhep::NORMAL, double nsigma=10.){
+      helix(circle c, experimental_double  pitch, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.){
         set_print_level(level);
         set_nsigma(nsigma);
         appname_= "helix: ";
@@ -79,29 +77,29 @@ namespace CAT {
       }
 
       /*** dump ***/
-      virtual void dump (ostream & a_out         = clog,
-                         const string & a_title  = "",
-                         const string & a_indent = "",
+      virtual void dump (std::ostream & a_out         = std::clog,
+                         const std::string & a_title  = "",
+                         const std::string & a_indent = "",
                          bool a_inherit          = false)const{
         {
-          string indent;
+          std::string indent;
           if (! a_indent.empty ()) indent = a_indent;
           if (! a_title.empty ())
             {
-              a_out << indent << a_title << endl;
+              a_out << indent << a_title << std::endl;
             }
 
-          a_out << indent << appname_ << " -------------- " << endl;
-          a_out << indent << " center " << endl;
+          a_out << indent << appname_ << " -------------- " << std::endl;
+          a_out << indent << " center " << std::endl;
           this->center().dump(a_out, "", indent + "    ");
-          a_out << indent << " radius: "; radius().dump(); a_out << " " << endl;
-          a_out << indent << " pitch: "; pitch().dump(); a_out << " " << endl;
-          a_out << indent << " one round: " << endl;
+          a_out << indent << " radius: "; radius().dump(); a_out << " " << std::endl;
+          a_out << indent << " pitch: "; pitch().dump(); a_out << " " << std::endl;
+          a_out << indent << " one round: " << std::endl;
           for(size_t i=0; i<100; i++){
             experimental_double theta(i*3.1417/100., 0.);
-            a_out << indent << " .. theta " << theta.value()*180./M_PI << " x " << position(theta).x().value() << " , z " << position(theta).z().value() << endl;
+            a_out << indent << " .. theta " << theta.value()*180./M_PI << " x " << position(theta).x().value() << " , z " << position(theta).z().value() << std::endl;
           }
-          a_out << indent << " -------------- " << endl;
+          a_out << indent << " -------------- " << std::endl;
 
           return;
         }
@@ -109,7 +107,7 @@ namespace CAT {
 
 
 
-      //! set 
+      //! set
       void set(experimental_point center, experimental_double radius, experimental_double pitch)
       {
         center_ = center;
@@ -141,31 +139,31 @@ namespace CAT {
       const experimental_point& center()const
       {
         return center_;
-      }      
+      }
 
       //! get radius
       const experimental_double& radius()const
       {
         return radius_;
-      }      
+      }
 
       //! get pitch
       const experimental_double& pitch()const
       {
         return pitch_;
-      }      
+      }
 
       //! get curvature
       experimental_double curvature()const
       {
         return 1./radius_;
-      }      
+      }
 
       //! get circle
       circle get_circle()const
       {
         return circle(center(), radius(), print_level(), nsigma());
-      }      
+      }
 
       // get the phi of a point
       experimental_double phi_of_point(experimental_point ep)const{
@@ -185,7 +183,7 @@ namespace CAT {
         double phi1 = experimental_vector(center_, epa).phi().value();
         double phi2 = experimental_vector(center_, epb).phi().value();
 
-        fix_angles(&phi1, &phi2);
+        mybhep::fix_angles(&phi1, &phi2);
 
         return fabs(phi1 - phi2);
 
@@ -209,12 +207,12 @@ namespace CAT {
       double chi2(experimental_point ep)const{
         experimental_point predicted = position(phi_of_point(ep));
         experimental_vector residual(ep , predicted);
-        double res2 = square(residual.x().value()/residual.x().error()) +
-          square(residual.y().value()/residual.y().error()) +
-          square(residual.z().value()/residual.z().error());
+        double res2 = mybhep::square(residual.x().value()/residual.x().error()) +
+          mybhep::square(residual.y().value()/residual.y().error()) +
+          mybhep::square(residual.z().value()/residual.z().error());
 
         if( print_level() >= mybhep::VVERBOSE ){
-          clog << " input point: ( "; ep.x().dump(); clog << " , "; ep.y().dump(); clog << " , "; ep.z().dump(); clog << " ) helix: ("; predicted.x().dump(); clog << " , "; predicted.y().dump(); clog << " , ";predicted.z().dump(); clog << " ) local chi2: " << res2  << " " << endl; 
+          std::clog << " input point: ( "; ep.x().dump(); std::clog << " , "; ep.y().dump(); std::clog << " , "; ep.z().dump(); std::clog << " ) helix: ("; predicted.x().dump(); std::clog << " , "; predicted.y().dump(); std::clog << " , ";predicted.z().dump(); std::clog << " ) local chi2: " << res2  << " " << std::endl;
         }
 
         return res2;
@@ -248,32 +246,32 @@ namespace CAT {
 
 
       bool intersect_plane(plane pl, experimental_point * ep, experimental_double _phi)const{
-      
+
         if( pl.view() == "x" || pl.view() == "z" ){
           bool result = get_circle().intersect_plane(pl, ep, _phi);
           ep->set_y(position(*ep).y());
-        
+
           return result;
-        
+
         }
-      
+
         if( pitch().value() == 0.)
           return false;
-      
+
         *ep = position((pl.center().y() - center().y())/pitch());
         ep->set_y(pl.center().y());
         return true;
-      
-      
+
+
       }
 
       bool intersect_circle(circle c, experimental_point * ep, experimental_double _phi)const{
-      
+
 	bool result = get_circle().intersect_circle(c, ep, _phi);
 	ep->set_y(position(*ep).y());
-        
+
 	return result;
-        
+
       }
 
 
@@ -284,7 +282,7 @@ namespace CAT {
     inline helix average (const std::vector<helix> vs)
     {
       helix mean;
-    
+
       std::vector<experimental_double> radii;
       std::vector<experimental_double> pitches;
       std::vector<experimental_point> centers;
@@ -300,42 +298,42 @@ namespace CAT {
 
     // get helix through three points
     inline helix three_points_helix(experimental_point epa, experimental_point epb, experimental_point epc){
-    
+
       ////////////////////////////////////////////////////////////////////////
       //                                                                    //
       //  see http://local.wasp.uwa.edu.au/~pbourke/geometry/circlefrom3/   //
       //                                                                    //
       ////////////////////////////////////////////////////////////////////////
-    
+
       experimental_double ma = experimental_vector(epa, epb).tan_phi();
       experimental_double mb = experimental_vector(epb, epc).tan_phi();
-    
+
       experimental_double Xc = (ma*mb*(epa.z() - epc.z()) + mb*(epa.x() + epb.x()) - ma*(epb.x() + epc.x()))/((mb - ma)*2);
       experimental_double Zc;
       if( ma.value() != 0. )
         Zc = (epa.z() + epb.z())/2. - (Xc - (epa.x() + epb.x())/2.)/ma;
       else
         Zc = (epb.z() + epc.z())/2. - (Xc - (epb.x() + epc.x())/2.)/mb;
-    
-    
+
+
       experimental_double _radius = experimental_sqrt(experimental_square(Xc - epa.x()) + experimental_square(Zc - epa.z()));
-    
+
       if( isnan(_radius.value()) || isinf(_radius.value()) )
-        _radius.set_value(small_neg);
-    
+        _radius.set_value(mybhep::small_neg);
+
       experimental_double dist = epc.distance(epa);
-    
+
       experimental_double deviation;
       if( dist.value() < 2.*_radius.value() )
         deviation = experimental_asin(dist/(_radius*2.))*2.;
       else
         deviation = experimental_asin(experimental_double(1.,0.))*2.;
-    
+
       if( experimental_vector(epa, epb).phi().value() > experimental_vector(epb, epc).phi().value() )
         deviation.set_value(-deviation.value());
 
       experimental_double _pitch = (epc.y() - epa.y())/deviation;
-    
+
       experimental_point _center(Xc, experimental_double(0.,0.), Zc);
       experimental_double Yc = epb.y() - _pitch*experimental_vector(_center, epb).phi();
       _center.set_y(Yc);
@@ -343,7 +341,7 @@ namespace CAT {
       helix h(_center,_radius,_pitch);
 
       return h;
-    
+
     }
 
 

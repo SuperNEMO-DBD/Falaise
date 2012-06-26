@@ -1,14 +1,14 @@
 /* -*- mode: c++ -*- */
-// 
-/*   
- * 
+//
+/*
+ *
  * Copyright (C) 2004 J.J. Gomez Cadenas
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -28,8 +28,11 @@
 #include <mybhep/mybhep_svc.h>
 
 namespace mybhep{
+
+  using namespace std;
+
   // FIXME label consistency!
-  hit_cvt::hit_cvt( const hit& ht, int index ) 
+  hit_cvt::hit_cvt( const hit& ht, int index )
     : ibconverter()
   {
     set_index( index );
@@ -46,19 +49,19 @@ namespace mybhep{
 
   hit_cvt::~hit_cvt()
   {
-    if (owner()) 
+    if (owner())
       delete nhit_;
   }
 
   // serialize object
   std::string hit_cvt::store()
   {
-    
+
     string tmp;
 
 
     tmp =name();
-    to_string(tmp,index());     
+    to_string(tmp,index());
     to_string(tmp,hit_->detector());
 
     string tmp2 = to_string(hit_->x()[0])+ " " +
@@ -72,11 +75,11 @@ namespace mybhep{
 
     typedef map<string, string>::const_iterator I;
     for(I i=dmap.begin(); i !=dmap.end(); ++i)
-      { 
+      {
         tmp2 = to_string(i->first)+ " " +
           to_string(i->second);
         to_string(tmp,tmp2);
-        
+
       }
 
 
@@ -96,11 +99,11 @@ void  hit_cvt::restore( string def )
 
     string name;
     istr >> name ;
-    
-    int indx;
-    istr >> indx ;     
 
-    set_name( name ); 
+    int indx;
+    istr >> indx ;
+
+    set_name( name );
     set_index( indx );
 
     //name
@@ -111,7 +114,7 @@ void  hit_cvt::restore( string def )
     //create new hit
     nhit_ = new hit(det_name);
     set_owner(true);
-        
+
     double x,y,z;
     istr >> x >> y >> z;
     nhit_->set_point(mybhep::Point3D(x,y,z));
@@ -123,7 +126,7 @@ void  hit_cvt::restore( string def )
       {
 
         string name;
-        string value;   
+        string value;
 
         istr >> name >> value;
         nhit_->add_data(name,value);
@@ -132,13 +135,13 @@ void  hit_cvt::restore( string def )
     istr >> imother_;
 }
 
-  void hit_cvt::complete_restore()  
+  void hit_cvt::complete_restore()
   {
     // get converter service
 
     converter_svc& csvc = mybhep_svc::instance().
       converter_service();
-    
+
     // restore pointer to mother particle
     try{
       particle_cvt& pcvt = *(dynamic_cast<particle_cvt*>
@@ -153,9 +156,9 @@ void  hit_cvt::restore( string def )
              << endl;
         cerr << "event is likely corrupted"
              << endl;
-        
+
       }
-        
+
   }
 
   const hit&  hit_cvt::retrieve() const
@@ -164,16 +167,16 @@ void  hit_cvt::restore( string def )
     return *hit_;
   }
 
-  hit&  hit_cvt::reference() 
+  hit&  hit_cvt::reference()
   {
     return *nhit_;
   }
-  
+
 
   hit* hit_cvt::create()
   {
     Assert(nhit_, __FILE__,__LINE__,
-           internal_logic("  null pointer!!!")); 
+           internal_logic("  null pointer!!!"));
 
     set_owner(false);
     return nhit_;

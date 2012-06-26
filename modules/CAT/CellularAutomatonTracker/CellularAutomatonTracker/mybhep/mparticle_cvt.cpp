@@ -1,14 +1,14 @@
 /* -*- mode: c++ -*- */
-// 
-/*   
- * 
+//
+/*
+ *
  * Copyright (C) 2004 J.J. Gomez Cadenas
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -31,8 +31,11 @@
 #include <mybhep/utilities.h>
 
 namespace mybhep{
+
+  using namespace std;
+
   // FIXME label consistency!
-  mparticle_cvt::mparticle_cvt( const mparticle& par, int index ) 
+  mparticle_cvt::mparticle_cvt( const mparticle& par, int index )
     : ibconverter()
   {
     set_index( index );
@@ -51,7 +54,7 @@ namespace mybhep{
 
   mparticle_cvt::~mparticle_cvt()
   {
-    if (owner()) 
+    if (owner())
       delete nparticle_;
   }
 
@@ -83,16 +86,16 @@ namespace mybhep{
 
 
     // indexes of objects in class
-    if (&particle_->mirror() != NULL) 
+    if (&particle_->mirror() != NULL)
       to_string(tmp,(long int) &particle_->mirror());
-    else 
+    else
       to_string(tmp,-1);
-    
-    
+
+
     return tmp;
   }
-  
-  
+
+
   void  mparticle_cvt::restore( string def )
   {
 
@@ -102,12 +105,12 @@ namespace mybhep{
     istringstream istr(def.c_str());
 #endif
 
-    
+
     string name;
     istr >> name ;
-  
+
     int indx;
-    istr >> indx ;  
+    istr >> indx ;
 
     set_index( indx );
     set_name( name );
@@ -149,19 +152,19 @@ namespace mybhep{
 
   }
 
-  void mparticle_cvt::complete_restore()  
+  void mparticle_cvt::complete_restore()
   {
     // get converter service
 
     converter_svc& csvc = mybhep_svc::instance().
       converter_service();
-    
+
 
     try
       {
 	particle_cvt& pcvt = *(dynamic_cast<particle_cvt*>
 			       (&csvc.converter(imirror_)));
-	
+
 	particle& pp = pcvt.reference();
 	nparticle_->set_mirror(pp);
       }
@@ -170,25 +173,25 @@ namespace mybhep{
 	cerr << " could not resolve pointer to mirror particle " << endl;
 	cerr << "event is likely corrupted" << endl;
 	throw;
-      }	
+      }
   }
-   
+
   const mparticle&  mparticle_cvt::retrieve() const
   {
     return *particle_;
   }
-  
-  mparticle&  mparticle_cvt::reference() 
+
+  mparticle&  mparticle_cvt::reference()
   {
     return *nparticle_;
   }
-  
+
   mparticle* mparticle_cvt::create()
   {
     Assert(nparticle_, __FILE__,__LINE__,
-	   internal_logic("  null pointer!!!")); 
-    
+	   internal_logic("  null pointer!!!"));
+
     set_owner(false);
-    return nparticle_;    
+    return nparticle_;
   }
 }

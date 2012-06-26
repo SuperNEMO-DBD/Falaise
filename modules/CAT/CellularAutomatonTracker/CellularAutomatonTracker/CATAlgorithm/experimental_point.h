@@ -14,8 +14,6 @@ namespace CAT{
 
   namespace topology{
 
-    using namespace std;
-    using namespace mybhep;
 
     //  class experimental_point : public point{
     class experimental_point {
@@ -24,22 +22,22 @@ namespace CAT{
       // with corresponding error (ex, ey, ez)
 
     private:
-      string appname_;
+      std::string appname_;
 
-      // x coordinate 
+      // x coordinate
       experimental_double x_;
 
-      // y coordinate 
+      // y coordinate
       experimental_double y_;
 
-      // z coordinate 
+      // z coordinate
       experimental_double z_;
 
       // radius in horizontal view (= x^2 + z^2)
       experimental_double radius_;
 
-    public:   
-      //!Default constructor                                                                                                                                                                      
+    public:
+      //!Default constructor
       experimental_point()
       {
         appname_ = "experimental_point: ";
@@ -61,7 +59,7 @@ namespace CAT{
         set_radius();
       }
 
-      //! constructor from coordinates with error 
+      //! constructor from coordinates with error
       experimental_point(double x, double y, double z, double ex, double ey, double ez){
         appname_ = "experimental_point: ";
         x_.set_value(x);
@@ -74,7 +72,7 @@ namespace CAT{
       }
 
       //! constructor
-      experimental_point(point p, double ex, double ey, double ez){
+      experimental_point(mybhep::point p, double ex, double ey, double ez){
         appname_ = "experimental_point: ";
         x_.set_value(p.x());
         y_.set_value(p.y());
@@ -89,7 +87,7 @@ namespace CAT{
       //! constructor from bhep hit
       experimental_point(mybhep::hit hit){
         appname_ = "experimental_point: ";
-        vector<float> cellpos;
+        std::vector<float> cellpos;
         mybhep::vector_from_string(hit.fetch_property("CELL_POS"), cellpos);
         x_.set_value(cellpos[0]);
         y_.set_value(cellpos[1]);
@@ -109,37 +107,37 @@ namespace CAT{
       }
 
       /*** dump ***/
-      virtual void dump (ostream & a_out         = clog,
-                         const string & a_title  = "",
-                         const string & a_indent = "",
-                         bool a_inherit          = false) const{
+      virtual void dump (std::ostream & a_out         = std::clog,
+                         const std::string & a_title  = "",
+                         const std::string & a_indent = "",
+                         bool a_inherit               = false) const{
         {
-          string indent;
+          std::string indent;
           if (! a_indent.empty ()) indent = a_indent;
           if (! a_title.empty ())
             {
-              a_out << indent << a_title << endl;
+              a_out << indent << a_title << std::endl;
             }
-        
-          a_out << indent << appname_ << endl;
-          a_out << indent << " x : "; (x()/mybhep::mm).dump(); a_out << " [mm] " << endl;
-          a_out << indent << " y : "; (y()/mybhep::mm).dump(); a_out << " [mm] " << endl;
-          a_out << indent << " z : "; (z()/mybhep::mm).dump(); a_out << " [mm] " << endl;
-        
+
+          a_out << indent << appname_ << std::endl;
+          a_out << indent << " x : "; (x()/mybhep::mm).dump(); a_out << " [mm] " << std::endl;
+          a_out << indent << " y : "; (y()/mybhep::mm).dump(); a_out << " [mm] " << std::endl;
+          a_out << indent << " z : "; (z()/mybhep::mm).dump(); a_out << " [mm] " << std::endl;
+
           return;
         }
       }
 
 
       //! set point and errors
-      void set(point p, double ex,double ey, double ez)
+      void set(mybhep::point p, double ex,double ey, double ez)
       {
         x_.set_value(p.x());
         y_.set_value(p.y());
         z_.set_value(p.z());
         set_radius();
         x_.set_error(ex);
-        y_.set_error(ey); 
+        y_.set_error(ey);
         z_.set_error(ez);
       }
 
@@ -189,40 +187,40 @@ namespace CAT{
       }
 
       //!get experimental x
-      const experimental_double& x() const 
+      const experimental_double& x() const
       {
         return x_;
-      } 
+      }
 
       //!get experimental y
-      const experimental_double& y() const 
+      const experimental_double& y() const
       {
         return y_;
-      } 
+      }
 
       //!get experimental z
-      const experimental_double& z() const 
+      const experimental_double& z() const
       {
         return z_;
-      } 
+      }
 
       //!get experimental radius
-      const experimental_double& radius() const 
+      const experimental_double& radius() const
       {
         return radius_;
-      } 
+      }
 
       //! distance
       experimental_double distance(const experimental_point& p2) const
       {
         experimental_double result;
 
-        result.set_value( sqrt(square(x_.value()-p2.x().value())
-                               + square(y_.value()-p2.y().value()) +
-                               square(z_.value()-p2.z().value())));
-        result.set_error( sqrt( square(x_.value()*x_.error()) + square(p2.x().value()*p2.x().error()) +
-                                square(y_.value()*y_.error()) + square(p2.y().value()*p2.y().error()) +
-                                square(z_.value()*z_.error()) + square(p2.z().value()*p2.z().error()))/result.value());
+        result.set_value( sqrt(mybhep::square(x_.value()-p2.x().value())
+                               + mybhep::square(y_.value()-p2.y().value()) +
+                               mybhep::square(z_.value()-p2.z().value())));
+        result.set_error( sqrt( mybhep::square(x_.value()*x_.error()) + mybhep::square(p2.x().value()*p2.x().error()) +
+                                mybhep::square(y_.value()*y_.error()) + mybhep::square(p2.y().value()*p2.y().error()) +
+                                mybhep::square(z_.value()*z_.error()) + mybhep::square(p2.z().value()*p2.z().error()))/result.value());
 
         return result;
       }
@@ -236,11 +234,11 @@ namespace CAT{
         //  dr/dx = x/r,
         //  dr/dz = z/r
 
-        double rr = sqrt(square(x_.value()) + square(z_.value()));
-        if( isnan(rr) ) rr = small_neg;
-        double err = sqrt(square(x_.value()*x_.error()) 
-                          + square(z_.value()*z_.error()))/rr;
-        if( isnan(err) ) err = small_neg;
+        double rr = sqrt(mybhep::square(x_.value()) + mybhep::square(z_.value()));
+        if( isnan(rr) ) rr = mybhep::small_neg;
+        double err = sqrt(mybhep::square(x_.value()*x_.error())
+                          + mybhep::square(z_.value()*z_.error()))/rr;
+        if( isnan(err) ) err = mybhep::small_neg;
 
         radius_.set_value(rr);
         radius_.set_error(err);

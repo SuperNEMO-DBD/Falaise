@@ -19,8 +19,6 @@
 namespace CAT {
   namespace topology{
 
-    using namespace std;
-    using namespace mybhep;
 
     class node : public tracking_object {
 
@@ -31,10 +29,10 @@ namespace CAT {
     protected:
       std::string appname_;
 
-    public:   
+    public:
 
       // main cell
-      cell c_; 
+      cell c_;
 
       // list of cell couplets
       std::vector<cell_couplet> cc_;
@@ -54,9 +52,9 @@ namespace CAT {
       // chi2 of connection in a sequence
       double chi2_;
 
-    public:   
+    public:
 
-      //!Default constructor     
+      //!Default constructor
       node();
 
       //!Default destructor
@@ -66,13 +64,13 @@ namespace CAT {
       node(const cell & c, const std::vector<cell_couplet> & cc, const std::vector<cell_triplet> & ccc);
 
       //! constructor
-      node(const cell &c, prlevel level=mybhep::NORMAL, double nsigma=10.);
+      node(const cell &c, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
 
       //! constructor from bhep true hit
       node(const mybhep::hit &truehit,
-           size_t id, 
-           bool SuperNemo, 
-           prlevel level=mybhep::NORMAL,
+           size_t id,
+           bool SuperNemo,
+           mybhep::prlevel level=mybhep::NORMAL,
            double nsigma=10.);
 
       /*** dump ***/
@@ -80,10 +78,10 @@ namespace CAT {
                          const std::string & a_title  = "",
                          const std::string & a_indent = "",
                          bool a_inherit          = false) const;
-    
+
       //! set cells
-      void set(const cell &c, 
-               const std::vector<cell_couplet> &cc, 
+      void set(const cell &c,
+               const std::vector<cell_couplet> &cc,
                const std::vector<cell_triplet> & ccc);
 
       //! set main cell
@@ -145,7 +143,7 @@ namespace CAT {
       bool has_triplet(const cell &a, const cell &c)const;
 
       bool has_triplet(const cell &a)const;
- 
+
       friend bool operator==(const node& left,
                              const node& right);
 

@@ -1,14 +1,14 @@
 /* -*- mode: c++ -*- */
-// 
-/*   
- * 
+//
+/*
+ *
  * Copyright (C) 2004 J.J. Gomez Cadenas
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -30,8 +30,11 @@
 #include <mybhep/utilities.h>
 
 namespace mybhep{
+
+  using namespace std;
+
   // FIXME label consistency!
-  sparticle_cvt::sparticle_cvt( const sparticle& trk, int index ) 
+  sparticle_cvt::sparticle_cvt( const sparticle& trk, int index )
     : ibconverter()
   {
     set_index( index );
@@ -52,14 +55,14 @@ namespace mybhep{
 
   sparticle_cvt::~sparticle_cvt()
   {
-    if (owner()) 
+    if (owner())
       delete nsparticle_;
   }
 
   // serialize object
   std::string sparticle_cvt::store()
   {
-    
+
     string tmp;
 
     tmp =name();
@@ -70,12 +73,12 @@ namespace mybhep{
     to_string(tmp,qual.size());
     for(size_t i =0; i < qual.size(); i++)
       {
-        double  q= qual[i]; 
+        double  q= qual[i];
 
         string tmp2 = to_string(q);
         to_string(tmp,tmp2);
-        
-      } 
+
+      }
 
     // indexes of objects in class
 
@@ -121,11 +124,11 @@ void  sparticle_cvt::restore( string def )
 
     string name;
     istr >> name ;
-    
-    int indx;
-    istr >> indx ;     
 
-    set_name( name ); 
+    int indx;
+    istr >> indx ;
+
+    set_name( name );
     set_index( indx );
 
     //create new sparticle
@@ -133,11 +136,11 @@ void  sparticle_cvt::restore( string def )
     set_owner(true);
 
     size_t qual_size;
-    istr >> qual_size ;  
+    istr >> qual_size ;
 
     for(size_t iqual =0; iqual < qual_size; iqual++)
-      { 
-        
+      {
+
         // read quality and set to sparticle
         double q;
         istr >> q;
@@ -169,20 +172,20 @@ void  sparticle_cvt::restore( string def )
     // create a particle converter
     // invoke restore method
     // register to converter service
-        
+
     particle_cvt*  pcv = new particle_cvt(def);
     csvc.add_converter(pcv);
     strip(def,particle_label_.size());
 
 }
 
-  void sparticle_cvt::complete_restore()  
+  void sparticle_cvt::complete_restore()
   {
     // get converter service
 
     converter_svc& csvc = mybhep_svc::instance().
       converter_service();
-    
+
     // restore pointer to seed particle
 
     try{
@@ -215,7 +218,7 @@ void  sparticle_cvt::restore( string def )
         catch (bad_index&)
           {
             //      cerr << " could not resolve pointer to subparticle" << endl;
-          }     
+          }
       }
   }
 
@@ -225,17 +228,17 @@ void  sparticle_cvt::restore( string def )
     return *sparticle_;
   }
 
-  sparticle&  sparticle_cvt::reference() 
+  sparticle&  sparticle_cvt::reference()
   {
     return *nsparticle_;
   }
-  
+
 
   sparticle* sparticle_cvt::create()
   {
 
     Assert(nsparticle_, __FILE__,__LINE__,
-           internal_logic("  null pointer!!!")); 
+           internal_logic("  null pointer!!!"));
 
     set_owner(false);
     return nsparticle_;

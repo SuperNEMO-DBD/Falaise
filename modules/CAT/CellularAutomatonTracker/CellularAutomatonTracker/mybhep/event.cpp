@@ -1,14 +1,14 @@
 /* -*- mode: c++ -*- */
-// 
-/*   
- * 
+//
+/*
+ *
  * Copyright (C) 2004 J.J. Gomez-Cadenas
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -26,21 +26,23 @@
 
 
 namespace mybhep{
+  using namespace std;
+
   event::event() :
     event_number_(0)
   {
     vertex_ = new mybhep::Point3D(small_neg,small_neg,small_neg);
   }
- 
-   
-  // constructor     
+
+
+  // constructor
   event::event(int number, const mybhep::Point3D& vertex) :
     event_number_(number)
   {
     vertex_ = new mybhep::Point3D(vertex);
   }
 
-  // constructor     
+  // constructor
   event::event(int number) :
     event_number_(number)
   {
@@ -49,20 +51,20 @@ namespace mybhep{
 
   event::~event()
   {
-    container_algorithm::destroy(true_particles_);    
+    container_algorithm::destroy(true_particles_);
     container_algorithm::destroy(digi_particles_);
     container_algorithm::destroy(sparticles_);
     delete vertex_;
   }
 
   // set vertex
-  void event::set_vertex(double x, double y, double z)  
+  void event::set_vertex(double x, double y, double z)
   {
     vertex_->set( x, y, z);
   }
 
   // set vertex
-  void event::set_vertex(const mybhep::Point3D& p)  
+  void event::set_vertex(const mybhep::Point3D& p)
   {
     vertex_->set(p.x(),p.y(),p.z());
   }
@@ -71,25 +73,25 @@ namespace mybhep{
   void event::add_particle(ptype type, particle* p)
   {
     Assert(type == TRUTH || type == DIGI, __FILE__,__LINE__,
-           internal_logic("  unknown particle type!!!")); 
-    
+           internal_logic("  unknown particle type!!!"));
+
     if(type == TRUTH)
       true_particles_.push_back(p);
-    else 
+    else
       digi_particles_.push_back(p);
   }
-    
+
     bool event::filter(ptype type,
-                       string property_name, 
-                       string property_value,vector<particle*>& pft) 
+                       string property_name,
+                       string property_value,vector<particle*>& pft)
     {
       vector<particle*> prt;
-      
+
       if (type == TRUTH)
         prt = true_particles();
       else
         prt = digi_particles();
-      
+
       bool found = false;
 
       for(size_t ip=0; ip < prt.size(); ip++)
@@ -107,17 +109,17 @@ namespace mybhep{
 
   void event::clear()
   {
-    container_algorithm::destroy(true_particles_);    
+    container_algorithm::destroy(true_particles_);
     container_algorithm::destroy(digi_particles_);
-    container_algorithm::destroy(sparticles_);    
+    container_algorithm::destroy(sparticles_);
     prop_.clear();
     vertex_->set(small_neg,small_neg,small_neg);
   }
-    
+
   bool event::find_daugthers(particle* p,ptype type, vector<particle*>& dau)
   {
     vector<particle*> prt;
-      
+
     if (type == TRUTH)
       prt = true_particles();
     else
@@ -137,10 +139,10 @@ namespace mybhep{
               }
           }
       }
-    
+
     return true;
   }
-    
+
   int event::find_tree(particle* p,ptype type, vector<particle*>& daut)
   {
     int generation = 0;
@@ -181,12 +183,12 @@ namespace mybhep{
 
     return generation;
   }
-    
+
   bool event::particle_existence(particle* pr, ptype type)
   {
     bool found = false;
     vector<particle*> prt;
-      
+
     if (type == TRUTH)
     prt = true_particles();
     else
@@ -195,7 +197,7 @@ namespace mybhep{
     for(size_t ip=0; ip < prt.size(); ip++)
     {
       particle* p = prt[ip];
-      if (pr == p) 
+      if (pr == p)
         {
           found = true;
           break;
@@ -209,7 +211,7 @@ namespace mybhep{
     bool test = particle_existence(pr, type);
     vector<particle*> daut;
     if (!test) return false;
- 
+
     vector<particle*>::iterator ip;
 
     // find all daugthers tree
@@ -231,12 +233,12 @@ namespace mybhep{
         //clog << " eras mother memory now" << endl;
 
         const particle& cpm = pr->mother();
-        if (&cpm != NULL) 
+        if (&cpm != NULL)
           erase_mother_memory(cpm,pr,type);
-        
+
         //      clog << " erase event memory now" << endl;
         erase_event_memory(pr,type);
-              
+
         //      clog << "is my pointer still alive? " << endl;
         //clog << "p = " <<pr << endl;
 
@@ -249,14 +251,14 @@ namespace mybhep{
 
   void event::erase_event_memory(const particle* p, ptype type)
   {
-    
+
     vector<particle*>::iterator ip;
-    
-    if (type == TRUTH)      
+
+    if (type == TRUTH)
       {
         //      clog << "event before memory erase: particles now in event= "
-        //           <<true_particles_.size()<<endl;;       
-        
+        //           <<true_particles_.size()<<endl;;
+
         for(ip=true_particles_.begin(); ip !=true_particles_.end(); ip++)
           {
             if( p == *ip)
@@ -266,14 +268,14 @@ namespace mybhep{
               }
           }
         //      clog << "event after memory erase: particles now in event= "
-        //     <<true_particles_.size()<<endl;;     
-        
+        //     <<true_particles_.size()<<endl;;
+
       }
     else
-      { 
+      {
         //      clog << "event before memory erase: particles now in event= "
-        //     <<digi_particles_.size()<<endl;;     
-        
+        //     <<digi_particles_.size()<<endl;;
+
         for(ip=digi_particles_.begin(); ip !=digi_particles_.end(); ip++)
           {
             if( p == *ip)
@@ -283,16 +285,16 @@ namespace mybhep{
               }
           }
         //      clog << "event after memory erase: particles now in event= "
-        //     <<digi_particles_.size()<<endl;;     
-        
+        //     <<digi_particles_.size()<<endl;;
+
       }
   }
 
 
-  void event::erase_mother_memory(const particle& cpm,const particle* p, 
+  void event::erase_mother_memory(const particle& cpm,const particle* p,
                                   ptype type)
   {
-    vector<particle*> prt;      
+    vector<particle*> prt;
     if (type == TRUTH)
       prt = true_particles();
     else
@@ -320,16 +322,16 @@ namespace mybhep{
 
   ostream& operator << (ostream& s, const event& ip) {
     s << endl;
-    
+
     s << " event number= " << ip.event_number()
       << endl;
-    
+
     s << " event vertex (cm)= " << ip.vertex()/cm
       << endl;
-    
+
     s << " List of properties "
       << "-----------------------------" << endl;
-    
+
     typedef map<string, string>::const_iterator I;
     for(I i=ip.properties_map().begin(); i !=ip.properties_map().end(); ++i)
       {
@@ -337,47 +339,47 @@ namespace mybhep{
              << " property value = " << i->second
              << endl;
       }
-    
+
     s << " Event has " << ip.true_particles().size() << " true particles"
       << endl;
     s << " Event has " << ip.digi_particles().size() << " digi particles"
       << endl;
     s << " Event has " << ip.sparticles().size() << " super particles"
       << endl;
-    
-    
+
+
     s << " List of TRUTH particles in the event"
-      << "------------------------------------" 
+      << "------------------------------------"
       << endl;
-    
+
     for(size_t i=0; i< ip.true_particles().size(); i++){
-      
+
       particle& p = *ip.true_particles()[i];
       s << p << endl;
-    }    
-    
+    }
+
     s << " List of DIGI particles in the event"
-      << "------------------------------------" 
+      << "------------------------------------"
       << endl;
-    
+
     for(size_t i=0; i< ip.digi_particles().size(); i++){
-      
+
       particle& p = *ip.digi_particles()[i];
       s << p << endl;
-    }    
-    
+    }
+
     s << " List of super particles in the event"
-      << "------------------------------------" 
+      << "------------------------------------"
       << endl;
-    
+
     for(size_t i=0; i< ip.sparticles().size(); i++){
-      
+
       sparticle& p = *ip.sparticles()[i];
       s << p << endl;
-    }    
+    }
 
-    return s; 
+    return s;
   }
-  
+
 }
 

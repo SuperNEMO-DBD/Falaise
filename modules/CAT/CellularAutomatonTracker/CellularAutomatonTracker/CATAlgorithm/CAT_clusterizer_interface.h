@@ -14,10 +14,11 @@
 #include <CATAlgorithm/experimental_point.h>
 #include <CATAlgorithm/cell.h>
 #include <CATAlgorithm/clusterizer.h>
+#include <CATAlgorithm/sequentiator.h>
 
 namespace CAT {
 
-  /// Setup data of the CAT clusterizer 
+  /// Setup data of the CAT clusterizer
   /// This class contains the minimal set of parameters
   /// needed to run the CAT clusterizer algorithm
   struct clusterizer_setup_data
@@ -27,7 +28,7 @@ namespace CAT {
     clusterizer_setup_data ();
     bool check () const;
     void reset ();
-    const string & get_error_message () const;
+    const std::string & get_error_message () const;
 
   protected:
 
@@ -45,7 +46,7 @@ namespace CAT {
     std::string level; /// verbosity level: "mute", "normal", "verbose", "vverbose"
 
     bool   SuperNemo;
-    double MaxTime; /// Maximum computing time 
+    double MaxTime; /// Maximum computing time
 
     double SmallRadius; // [length] -> mm
     double TangentPhi;
@@ -63,20 +64,20 @@ namespace CAT {
     std::vector<double> planes_per_block;
     std::vector<double> gaps_Z;
     int    num_cells_per_plane;
-    double cell_size; 
- 
+    double cell_size;
+
     // SuperNEMO :
     double sigma0; // Longitudinal sigma z
-    double k0, k1, k2, k3; 
+    double k0, k1, k2, k3;
     double th0, th1, th2, th3;
-    double l0, l1; 
+    double l0, l1;
 
   };
 
   /// Configure the clusterizer from a setup data object
   void clusterizer_configure (clusterizer & czer_, const clusterizer_setup_data & setup_);
 
-  /// Input data model 
+  /// Input data model
   struct clusterizer_input_data
   {
   public:
@@ -85,7 +86,7 @@ namespace CAT {
     bool check () const;
 
   public:
-    std::vector<topology::cell> cells;  
+    std::vector<topology::cell> cells;
   };
 
   /// Output data model
@@ -94,11 +95,11 @@ namespace CAT {
   public:
     clusterizer_output_data ();
   public:
-    topology::tracked_data tracked_data;  
+    topology::tracked_data tracked_data;
   };
 
 }
 
-#endif // _CAT_clusterizer_interface_h_ 
+#endif // _CAT_clusterizer_interface_h_
 
 // end of CAT_clusterizer_interface.h

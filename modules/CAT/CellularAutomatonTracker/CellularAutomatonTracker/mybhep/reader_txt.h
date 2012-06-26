@@ -1,19 +1,19 @@
 /* -*- mode: c++ -*- */
 /*
  *
- * Copyright 2006 
+ * Copyright 2006
  * J.J. Gomez-Cadenas
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -25,13 +25,12 @@
 #include <mybhep/sequential_reader.h>
 #include <fstream>
 
-using namespace std;
 
 
 namespace mybhep{
 //! reader_txt Class
 /*!
-  This is a sequentialr reader, able to 
+  This is a sequentialr reader, able to
   read a mybhep DST in txt format
 */
 
@@ -40,17 +39,17 @@ namespace mybhep{
 
 
   protected:
-    ifstream is_;
+    std::ifstream is_;
 
-  public:    
-    //! constructor 
+  public:
+    //! constructor
     reader_txt();
     virtual ~reader_txt();
     //! protected interface
   protected:
 
     //! open file
-    virtual void open_file(string fileName);
+    virtual void open_file(std::string fileName);
 
     //! close file
     virtual void close_file() ;
@@ -58,8 +57,8 @@ namespace mybhep{
     //! max number of events
     virtual size_t get_max_events();
 
-    //! end of file  
-    virtual bool end_of_file();     
+    //! end of file
+    virtual bool end_of_file();
 
     //! rewind to beginning
     virtual void rewind();
@@ -68,8 +67,8 @@ namespace mybhep{
     virtual void skip(size_t ievent) ;
 
     //! get the event as a record
-    virtual string get_record();
+    virtual std::string get_record();
 
-  };   
+  };
 }
 #endif

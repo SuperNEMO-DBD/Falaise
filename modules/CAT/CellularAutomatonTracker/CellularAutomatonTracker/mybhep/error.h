@@ -3,15 +3,15 @@
 /** This header file contains a simplified version
  *  of error control
  */
-/*   
- * 
+/*
+ *
  * Copyright (C) 2004 J.J. Gomez-Cadenas
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -21,61 +21,59 @@
 #ifndef __BHERROR__
 #define __BHERROR__
 
-#include <iostream>  
+#include <iostream>
 #include <exception>
 #include <stdexcept>
-#include <string>  
-
-using namespace std;
+#include <string>
 
 /**
- *\defgroup error Exception handling 
+ *\defgroup error Exception handling
  */
 
 //!Global namespace for the library
 namespace mybhep{
 
 
-  //! Assert function    
-  /** 
+  //! Assert function
+  /**
    *If the condition "assert" is not true raises exception e
    *\ingroup error
    */
-  template<class E> 
+  template<class E>
   inline void Assert (bool assert, E  e)
   {
-    
+
     if(!assert) {
       std::cerr << "Assertion failed" ;
-      cerr << e.what() << endl;
+      std::cerr << e.what() << std::endl;
       e.raise();
-      
+
     }
   }
-  //! Overloaded Assert function    
-  /** 
+  //! Overloaded Assert function
+  /**
    *If the condition "assert" is not true raises exception e. Prints
    *file and line where error occurrs
    *\ingroup error
    */
-  template<class E> 
+  template<class E>
   inline void Assert (bool assert, const char* file, int line, E  e)
   {
-    
+
     if(!assert) {
-      std::cerr << "Assertion failed in file " 
-		<< file<< " at line " 
-		<< line << ":" << std::endl; 
-      cerr << e.what() << endl;
+      std::cerr << "Assertion failed in file "
+		<< file<< " at line "
+		<< line << ":" << std::endl;
+      std::cerr << e.what() << std::endl;
       e.raise();
-      
+
     }
   }
-  
+
   /** Exceptions **/
-	
+
   //! This exception is raised when an internal logic error occurs
-  /** For example, one tries to perform an "ilogical" operation 
+  /** For example, one tries to perform an "ilogical" operation
    *such as trying to retrieve a name that is not in a given container
    *\ingroup error
    */
@@ -93,7 +91,7 @@ namespace mybhep{
   };
 
 //! This exception is raised when a bad argument is supplied
-/** For example the user calls a given function with an invalid argument 
+/** For example the user calls a given function with an invalid argument
  *\ingroup error
 */
     struct bad_argument: public std::invalid_argument {
@@ -126,9 +124,9 @@ namespace mybhep{
 	    throw *this;
 	}
     };
-    
+
 //! This exception is raised to signal a bad index
-/** For example one tries to access a vector outside allowed range 
+/** For example one tries to access a vector outside allowed range
  *\ingroup error
 */
     struct bad_index: public std::out_of_range {
@@ -159,8 +157,8 @@ namespace mybhep{
 	}
     };
 
-  //! This exception is raised to signal a division by zero	    
-  /** 
+  //! This exception is raised to signal a division by zero
+  /**
    *\ingroup error
    */
   struct divide_by_zero: public std::runtime_error {
@@ -178,9 +176,9 @@ namespace mybhep{
 
 
 
-}   
-    
-#endif 
+}
+
+#endif
 
 
 

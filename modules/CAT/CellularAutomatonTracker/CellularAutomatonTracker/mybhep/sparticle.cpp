@@ -1,14 +1,14 @@
 /* -*- mode: c++ -*- */
-// 
-/*   
- * 
+//
+/*
+ *
  * Copyright (C) 2004 J.J. Gomez-Cadenas
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -24,14 +24,16 @@
 
 namespace mybhep{
 
-  // default constructor 
-  sparticle::sparticle ()  
+  using namespace std;
+
+  // default constructor
+  sparticle::sparticle ()
   {
-    sp_ = new particle(DIGI,"unknown");    
+    sp_ = new particle(DIGI,"unknown");
   }
 
-  // constructor 
-  sparticle::sparticle (const particle& p)  
+  // constructor
+  sparticle::sparticle (const particle& p)
   {
     subp_.push_back(&p);
     sp_ = new particle(p.type(),p.name());
@@ -40,7 +42,7 @@ namespace mybhep{
     sp_->p4() = p.p4();
     sp_->set_mother(p.mother());
     sp_->set_primary(p.primary());
-    
+
   }
 
     //! destructor
@@ -48,9 +50,9 @@ namespace mybhep{
     {
       delete sp_;
     }
-  
+
   // set seed (inside) particle
-  void sparticle::set_seed_particle(const particle& p)  
+  void sparticle::set_seed_particle(const particle& p)
   {
     subp_.push_back(&p);
     sp_-> set_type(p.type());
@@ -60,14 +62,14 @@ namespace mybhep{
     sp_->p4() = p.p4();
     sp_->set_mother(p.mother());
     sp_->set_primary(p.primary());
-    
+
   }
-  
+
   void sparticle::add_particle(const particle& p, double q)
   {
     Assert(subp_.size()>0,__FILE__,__LINE__,
            internal_logic("seed particle not set"));
-    
+
     subp_.push_back(&p);
     q_.push_back(q);
   }
@@ -76,7 +78,7 @@ namespace mybhep{
   {
     Assert(subp_.size()>0,__FILE__,__LINE__,
            internal_logic("seed particle not set"));
-    
+
     subp_.push_back(&p);
   }
 
@@ -84,25 +86,25 @@ namespace mybhep{
   {
     q_.push_back(q);
   }
-  
+
   ostream& operator << (ostream& s, const sparticle& ip) {
     s << endl;
-    
+
     s  << " sparticle info: particle = " << ip.seed_particle() << " "
        << endl;
-    
+
     s << " List of suparticles "
       << "-----------------------------" << endl;
-    
+
     for(size_t i=0; i< ip.subparticles().size(); i++){
-      
+
       const particle& p = *ip.subparticles()[i];
       s << p << endl;
-    }    
-    
+    }
+
     s << " List of matching quantities "
       << print_vector(ip.quality()) << endl;
-   
+
     return s;
   }
 }

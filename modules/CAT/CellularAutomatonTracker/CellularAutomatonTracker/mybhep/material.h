@@ -1,14 +1,14 @@
 /* -*- mode: c++ -*- */
-// 
-/*   
- * 
+//
+/*
+ *
  * Copyright (C) 2004 J.J. Gomez Cadenas
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -24,22 +24,21 @@
 #include <iostream>
 #include <mybhep/system_of_units.h>
 
-using namespace std;
 
 namespace mybhep{
   //! represents a physical material
-  class material 
+  class material
   {
-    
+
   public:
-    
+
     //! Constructor to create a material from scratch.
 
   public:
-  
-    material(const string& name, double density=-1, double rad_length =-1,
+
+    material(const std::string& name, double density=-1, double rad_length =-1,
 	     double inter_length=-1);
-                     
+
     virtual ~material(){};
 
     //! no default constructor
@@ -52,27 +51,27 @@ namespace mybhep{
   public:
 
     //! name
-    string name() const {return name_;};
+    std::string name() const {return name_;};
     //! density
     double density() const {return density_;};
-    
-    //! Radiation length:     
+
+    //! Radiation length:
     double  rad_length() const {return rad_len_;};
-    
-    // Nuclear interaction length:     
-    double inter_length()  const {return nuc_ilen_;};    
+
+    // Nuclear interaction length:
+    double inter_length()  const {return nuc_ilen_;};
 
   private:
 
     //
     // Basic data members ( To define a material)
     //
-    
-    string         name_;                 // Material name
+
+    std::string         name_;                 // Material name
     double         density_;              // Material density
     double  rad_len_;                      // Radiation length
-    double  nuc_ilen_;                // Nuclear interaction length  
+    double  nuc_ilen_;                // Nuclear interaction length
   };
-  ostream& operator << (ostream& s, const material& mat); 
+  std::ostream& operator << (std::ostream& s, const material& mat);
 }
 #endif

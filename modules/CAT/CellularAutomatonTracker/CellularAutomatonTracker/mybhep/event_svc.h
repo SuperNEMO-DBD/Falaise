@@ -27,7 +27,6 @@
 #include <mybhep/event_cvt.h>
 #include <mybhep/converter_svc.h>
 
-using namespace std;
 
 
 namespace mybhep{

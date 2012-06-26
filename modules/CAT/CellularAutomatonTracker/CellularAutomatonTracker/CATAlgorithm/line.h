@@ -16,7 +16,6 @@ namespace CAT {
 
   namespace topology{
 
-    using namespace mybhep;
 
     class line : public tracking_object {
 
@@ -27,10 +26,10 @@ namespace CAT {
       std::string appname_;
 
       // first experimental point
-      experimental_point epa_; 
+      experimental_point epa_;
 
       // second experimental point
-      experimental_point epb_; 
+      experimental_point epb_;
 
       // axis from first to second point (not normalized)
       experimental_vector forward_axis_;
@@ -38,15 +37,15 @@ namespace CAT {
       // line status
       bool used_;
 
-    public:   
-      //!Default constructor 
-      line(prlevel level=mybhep::NORMAL, double nsigma=10.);
+    public:
+      //!Default constructor
+      line(mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
 
       //!Default destructor
       virtual ~line();
 
       //! constructor
-      line(const experimental_point & epa, const experimental_point & epb, prlevel level=mybhep::NORMAL, double nsigma=10.);
+      line(const experimental_point & epa, const experimental_point & epb, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
 
       /*** dump ***/
       virtual void dump (std::ostream & a_out         = std::clog,
@@ -80,13 +79,13 @@ namespace CAT {
       bool used() const;
 
       experimental_double phi();
-    
+
       experimental_double theta();
 
       experimental_double kink_phi(const line & l);
 
       experimental_double kink_theta(const line & l);
-      
+
 
       double chi2(const line & l, bool use_theta_kink);
 
@@ -94,12 +93,12 @@ namespace CAT {
       void set_a_forward_axis(const experimental_vector &  v);
 
       line invert();
-      
-      
+
+
     private:
-      
+
       void set_forward_axis();
-      
+
     };
   }
 }

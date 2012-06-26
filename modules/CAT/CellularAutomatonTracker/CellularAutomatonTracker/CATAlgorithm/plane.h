@@ -14,7 +14,6 @@
 namespace CAT {
   namespace topology{
 
-    using namespace mybhep;
 
     class plane : public tracking_object {
 
@@ -26,7 +25,7 @@ namespace CAT {
       std::string appname_;
 
       // experimental point
-      experimental_point center_; 
+      experimental_point center_;
 
       // sizes
       experimental_vector sizes_;
@@ -37,15 +36,15 @@ namespace CAT {
       // Nemo3 or SuperNEMO
       std::string type_;
 
-    public:   
-      //!Default constructor 
-      plane(prlevel level=mybhep::NORMAL, double nsigma=10.);
+    public:
+      //!Default constructor
+      plane(mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
 
       //!Default destructor
       virtual ~plane();
 
       //! constructor
-      plane(experimental_point center, experimental_vector sizes, experimental_vector norm, prlevel level=mybhep::NORMAL, double nsigma=10.);
+      plane(experimental_point center, experimental_vector sizes, experimental_vector norm, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
 
       /*** dump ***/
       virtual void dump (std::ostream & a_out         = std::clog,
@@ -54,13 +53,13 @@ namespace CAT {
                          bool a_inherit          = false)const;
 
 
-      //! set 
+      //! set
       void set(experimental_point center, experimental_vector sizes, experimental_vector norm);
 
 
       //! set center
       void set_center(experimental_point center);
- 
+
       //! set sizes
       void set_sizes(experimental_vector sizes);
 
@@ -69,7 +68,7 @@ namespace CAT {
       void set_norm(experimental_vector norm);
 
       //! set type
-      void set_type(string type);
+      void set_type(std::string type);
 
       //! get center
       const experimental_point& center()const;
@@ -81,10 +80,10 @@ namespace CAT {
       const experimental_vector& norm() const;
 
       // get type
-      const string& type() const;
+      const std::string& type() const;
 
       std::string view()const;
-    
+
 
       //! get point of the face of the plane
       experimental_point face()const;

@@ -1,19 +1,19 @@
 /* -*- mode: c++ -*- */
 /*
  *
- * Copyright 2006 
+ * Copyright 2006
  * J.J. Gomez-Cadenas
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -25,7 +25,6 @@
 #include <mybhep/base_reader.h>
 
 
-using namespace std;
 
 namespace mybhep{
 //! Base class for a random reader
@@ -38,12 +37,12 @@ namespace mybhep{
   The API separates both functions (rather than using overload functions)
   for clarity
 
-  Derived class need to implement the protected interface, 
-  which specifies low level actions such as open_file, 
+  Derived class need to implement the protected interface,
+  which specifies low level actions such as open_file,
   close_file, etc.
 
   The API consists of virtual functions obtained from the protected interface
-  
+
 
   open(fileName) : open files and init counters
   close():  close file, clears memory, reset counters
@@ -59,9 +58,9 @@ namespace mybhep{
 
   protected:
     //! path to root directory
-    string path_;
+    std::string path_;
     //! joins pieces of path
-    string join_;
+    std::string join_;
     //! number of objects in file
     size_t maxEvents_;
 
@@ -74,32 +73,32 @@ namespace mybhep{
     virtual ~random_reader() ;
 
     //! set path
-    void set_path(string path);
+    void set_path(std::string path);
 
     //! return path
-    string path();
-      
+    std::string path();
+
     //! max events
     size_t max_events() ;
-    
+
     //! end of file
-    bool eof(size_t ievent);  
+    bool eof(size_t ievent);
 
     //! read event
     virtual event& read_event(size_t ievent);
 
     //! read event
-     event& read(string key);
+     event& read(std::string key);
 
     //! protected interface
   protected:
 
     //! get the event as a record
-    virtual string get_record(string key) = 0;
+    virtual std::string get_record(std::string key) = 0;
 
     //! get max events
     virtual size_t get_max_events() = 0;
-    
-  };   
+
+  };
 }
 #endif

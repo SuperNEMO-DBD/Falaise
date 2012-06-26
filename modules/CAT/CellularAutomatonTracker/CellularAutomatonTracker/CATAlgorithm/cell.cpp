@@ -4,13 +4,15 @@
 namespace CAT{
 namespace topology{
 
+  using namespace mybhep;
+  using namespace std;
 
   experimental_double cell::distance(cell c) const{
-    
+
     experimental_vector v(ep(),c.ep());
 
     return v.length();
-    
+
   }
 
 
@@ -25,7 +27,7 @@ namespace topology{
     p.set_ez(error_z_in_build_from_cell(forward, transverse, cos, sin.value()));
 
     return p;
-      
+
 
   }
 
@@ -105,7 +107,7 @@ namespace topology{
 
     experimental_vector x(1.,0.,0.,0.,0.,0.);
     experimental_vector z(0.,0.,1.,0.,0.,0.);
-    int sign = 1; if( ave_phi.value() < 0. ) sign = -1;                                                                                    
+    int sign = 1; if( ave_phi.value() < 0. ) sign = -1;
 
     experimental_point p = build_from_cell(x, z, cos_ave_phi, sign);
 
@@ -158,7 +160,7 @@ namespace topology{
     if( block() == c.block() &&
         layer() == c.layer() &&
         iid() == c.iid() &&
-        n3id() == c.n3id() ) 
+        n3id() == c.n3id() )
       return true;
 
     return false;
@@ -195,7 +197,7 @@ namespace topology{
 
   }
 
-  
+
 }
 }
 

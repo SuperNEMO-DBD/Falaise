@@ -3,6 +3,9 @@
 namespace CAT{
   namespace topology{
 
+    using namespace std;
+    using namespace mybhep;
+
     void cell_couplet::set_forward_axis(){
 
       if( forward_axis_calculated_ )
@@ -146,7 +149,7 @@ namespace CAT{
         epb = cb_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos[0], sign[i]);
 
         line l(epa, epb, prlevel(), nsigma());
-    
+
         tangents_.push_back( l );
       }
 
@@ -161,12 +164,12 @@ namespace CAT{
         // a small offset with a big error
         experimental_double small_offset(0.1, (ca().r().value() + cb().r().value())/4.);
         for(size_t i=0; i<2; i++){
-      
+
           epa = (experimental_vector(average) + transverse_axis()*sign[i]*small_offset).point_from_vector();
           epb = (experimental_vector(average) - transverse_axis()*sign[i]*small_offset).point_from_vector();
 
           line l(epa, epb, prlevel(), nsigma());
-      
+
           tangents_.push_back( l );
         }
 
@@ -174,16 +177,16 @@ namespace CAT{
       else{
         // crossed tangents
         for(size_t i=0; i<2; i++){
-      
+
           epa = ca_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos[1], sign[i]);
           epb = cb_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), -cos[1], -sign[i]);
-      
+
           line l(epa, epb, prlevel(), nsigma());
-      
+
           tangents_.push_back( l );
         }
       }
-      
+
 
       return;
 
@@ -208,7 +211,7 @@ namespace CAT{
         epa = c.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos, sign[i]);
 
         line l(epa, ep, prlevel(), nsigma());
-    
+
         tangents_.push_back( l );
       }
 
@@ -234,7 +237,7 @@ namespace CAT{
         epb = c.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos, sign[i]);
 
         line l(ep, epb, prlevel(), nsigma());
-    
+
         tangents_.push_back( l );
       }
 
@@ -247,7 +250,7 @@ namespace CAT{
     void cell_couplet::obtain_tangents_between_point_and_point(experimental_point epa, experimental_point epb){
 
       line l(epa, epb, prlevel(), nsigma());
-    
+
       tangents_.push_back( l );
 
       return;

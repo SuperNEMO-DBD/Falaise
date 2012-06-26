@@ -2,18 +2,18 @@
 // Header file defining a simple messenger class
 /*
  *
- * J.J. Gomez-Cadenas, J.A. Hernando, A. Cervera, A. Tornero   
- * 
+ * J.J. Gomez-Cadenas, J.A. Hernando, A. Cervera, A. Tornero
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * General Public License for more details.
- * 
+ *
  */
 
 
@@ -22,7 +22,6 @@
 
 #include <string>
 #include <mybhep/utilities.h>
-using namespace std;
 
 namespace mybhep{
 /// Simple messenger class
@@ -47,232 +46,232 @@ namespace mybhep{
         ///Sets the print level
         void set_level(prlevel clevel){level_ = clevel;}
         ///Returns the print level
-        prlevel level() const {return level_;} 
-        ///Sends a message 
+        prlevel level() const {return level_;}
+        ///Sends a message
 /** The specified print level must be equal or smaller than the print level
  * set to the messenger. For example, if the messenger is set to VVERBOSE
  * any message will be printed. Instead, if the messenger is set to MUTE
  * only messages flagged as MUTE will print
   *\ingroup base
  */
-        inline void message (const string & message, prlevel clevel) const
+        inline void message (const std::string & message, prlevel clevel) const
             {
                 if (clevel <= level_)
-                    std::clog << message << endl;
+                    std::clog << message << std::endl;
             }
         ///Sends a message followed by variable d
 /** The specified print level must be equal or smaller than the print level
- * set to the messenger. 
+ * set to the messenger.
   *\ingroup base
  */
         template <class T> inline
-        void message(const string & message, const T& d, prlevel clevel) const
+        void message(const std::string & message, const T& d, prlevel clevel) const
             {
                 if (clevel <= level_)
-                    std::clog << message << " " << d << endl;
+                    std::clog << message << " " << d << std::endl;
             }
 
 ///Sends a message followed by variable d1 and d2
 /** The specified print level must be equal or smaller than the print level
- * set to the messenger. 
+ * set to the messenger.
   *\ingroup base
  */
         template <class A, class B> inline
-        void message(const string & message, const A& d1, 
+        void message(const std::string & message, const A& d1,
                      const B& d2, prlevel clevel) const
             {
                 if (clevel <= level_)
-                    std::clog << message << " " << d1 << " " << d2 << endl;
+                    std::clog << message << " " << d1 << " " << d2 << std::endl;
             }
 ///Sends a message followed by variable d1 d2 and d3
 /** The specified print level must be equal or smaller than the print level
- * set to the messenger. 
+ * set to the messenger.
   *\ingroup base
  */
         template <class A, class B, class C> inline
-        void message(const string & message, const A& d1, 
-                     const B& d2, 
-                     const C& d3, 
+        void message(const std::string & message, const A& d1,
+                     const B& d2,
+                     const C& d3,
                      prlevel clevel) const
             {
                 if (clevel <= level_)
-                    std::clog << message << " " << d1 << " " << d2  
-                         << " " << d3 << endl;
+                    std::clog << message << " " << d1 << " " << d2
+                         << " " << d3 << std::endl;
             }
 ///Sends a message followed by variable d1 d2, d3 and d4
 /** The specified print level must be equal or smaller than the print level
- * set to the messenger. 
+ * set to the messenger.
   *\ingroup base
  */
         template <class A, class B, class C, class D> inline
-        void message(const string & message, 
-                     const A& d1, 
-                     const B& d2, 
-                     const C& d3, 
-                     const D& d4, 
+        void message(const std::string & message,
+                     const A& d1,
+                     const B& d2,
+                     const C& d3,
+                     const D& d4,
                      prlevel clevel) const
             {
                 if (clevel <= level_)
-                    std::clog << message << " " << d1 << " " << d2 
-                         << " " << d3 << " " << d4 
-                         << endl;
+                    std::clog << message << " " << d1 << " " << d2
+                         << " " << d3 << " " << d4
+                         << std::endl;
             }
-///Sends a message followed by variable d1 d2, d3 d4 and d5 
+///Sends a message followed by variable d1 d2, d3 d4 and d5
 /** The specified print level must be equal or smaller than the print level
- * set to the messenger. 
+ * set to the messenger.
  *\ingroup base
  */
         template <class A, class B, class C, class D, class E> inline
-        void message(const string & message, 
-                     const A& d1, 
-                     const B& d2, 
-                     const C& d3, 
-                     const D& d4, 
-                     const E& d5, 
+        void message(const std::string & message,
+                     const A& d1,
+                     const B& d2,
+                     const C& d3,
+                     const D& d4,
+                     const E& d5,
                      prlevel clevel) const
             {
                 if (clevel <= level_)
-                    std::clog << message << " " << d1 << " " << d2 
-                         << " " << d3 << " " << d4 
+                    std::clog << message << " " << d1 << " " << d2
+                         << " " << d3 << " " << d4
                          << " " << d5
-                         << endl;
+                         << std::endl;
             }
 
-///Sends a message followed by variable d1 d2, d3 d4, d5, and d6 
+///Sends a message followed by variable d1 d2, d3 d4, d5, and d6
 /** The specified print level must be equal or smaller than the print level
- * set to the messenger. 
+ * set to the messenger.
   *\ingroup base
  */
         template <class A, class B, class C, class D, class E, class F> inline
-        void message(const string & message, 
-                     const A& d1, 
-                     const B& d2, 
-                     const C& d3, 
-                     const D& d4, 
+        void message(const std::string & message,
+                     const A& d1,
+                     const B& d2,
+                     const C& d3,
+                     const D& d4,
                      const E& d5,
-                     const F& d6, 
+                     const F& d6,
                      prlevel clevel) const
             {
                 if (clevel <= level_)
-                    std::clog << message << " " << d1 << " " << d2 
-                         << " " << d3 << " " << d4 
+                    std::clog << message << " " << d1 << " " << d2
+                         << " " << d3 << " " << d4
                          << " " << d5
                          << " " << d6
-                         << endl;
+                         << std::endl;
             }
 ///Sends a message followed by variable d1 d2, d3 d4, d5, and d6 d7
 /** The specified print level must be equal or smaller than the print level
- * set to the messenger. 
+ * set to the messenger.
   *\ingroup base
  */
         template <class A, class B, class C, class D, class E, class F,
                   class G> inline
-        void message(const string & message, 
-                     const A& d1, 
-                     const B& d2, 
-                     const C& d3, 
-                     const D& d4, 
+        void message(const std::string & message,
+                     const A& d1,
+                     const B& d2,
+                     const C& d3,
+                     const D& d4,
                      const E& d5,
-                     const F& d6, 
-                     const G& d7,  
+                     const F& d6,
+                     const G& d7,
                      prlevel clevel) const
             {
                 if (clevel <= level_)
-                    std::clog << message << " " << d1 << " " << d2 
-                         << " " << d3 << " " << d4 
+                    std::clog << message << " " << d1 << " " << d2
+                         << " " << d3 << " " << d4
                          << " " << d5
                          << " " << d6
                          << " " << d7
-                         << endl;
+                         << std::endl;
             }
-///Sends a message followed by variable d1 d2, d3 d4, d5, d7 d8 
+///Sends a message followed by variable d1 d2, d3 d4, d5, d7 d8
 /** The specified print level must be equal or smaller than the print level
- * set to the messenger. 
+ * set to the messenger.
   *\ingroup base
  */
         template <class A, class B, class C, class D, class E, class F,
                   class G, class H> inline
-        void message(const string & message, 
-                     const A& d1, 
-                     const B& d2, 
-                     const C& d3, 
-                     const D& d4, 
+        void message(const std::string & message,
+                     const A& d1,
+                     const B& d2,
+                     const C& d3,
+                     const D& d4,
                      const E& d5,
-                     const F& d6, 
-                     const G& d7, 
-                     const H& d8, 
+                     const F& d6,
+                     const G& d7,
+                     const H& d8,
                      prlevel clevel) const
             {
                 if (clevel <= level_)
-                    std::clog << message << " " << d1 << " " << d2 
-                         << " " << d3 << " " << d4 
+                    std::clog << message << " " << d1 << " " << d2
+                         << " " << d3 << " " << d4
                          << " " << d5
                          << " " << d6
                          << " " << d7
                          << " " << d8
-                         << endl;
+                         << std::endl;
             }
 ///Sends a message followed by variable d1 d2, d3 d4, d5, d7 d8 d9
 /** The specified print level must be equal or smaller than the print level
- * set to the messenger. 
+ * set to the messenger.
   *\ingroup base
  */
         template <class A, class B, class C, class D, class E, class F,
                   class G, class H, class I> inline
-        void message(const string & message, 
-                     const A& d1, 
-                     const B& d2, 
-                     const C& d3, 
-                     const D& d4, 
+        void message(const std::string & message,
+                     const A& d1,
+                     const B& d2,
+                     const C& d3,
+                     const D& d4,
                      const E& d5,
-                     const F& d6, 
-                     const G& d7, 
-                     const H& d8, 
-                     const I& d9, 
+                     const F& d6,
+                     const G& d7,
+                     const H& d8,
+                     const I& d9,
                      prlevel clevel) const
             {
                 if (clevel <= level_)
-                    std::clog << message << " " << d1 << " " << d2 
-                         << " " << d3 << " " << d4 
+                    std::clog << message << " " << d1 << " " << d2
+                         << " " << d3 << " " << d4
                          << " " << d5
                          << " " << d6
                          << " " << d7
                          << " " << d8
                          << " " << d9
-                         << endl;
+                         << std::endl;
             }
 ///Sends a message followed by variable d1 d2, d3 d4, d5, d7 d8 d9 d10
 /** The specified print level must be equal or smaller than the print level
- * set to the messenger. 
+ * set to the messenger.
   *\ingroup base
  */
         template <class A, class B, class C, class D, class E, class F,
                   class G, class H, class I, class J> inline
-        void message(const string & message, 
-                     const A& d1, 
-                     const B& d2, 
-                     const C& d3, 
-                     const D& d4, 
+        void message(const std::string & message,
+                     const A& d1,
+                     const B& d2,
+                     const C& d3,
+                     const D& d4,
                      const E& d5,
-                     const F& d6, 
-                     const G& d7, 
-                     const H& d8, 
-                     const I& d9, 
-                     const J& d10, 
+                     const F& d6,
+                     const G& d7,
+                     const H& d8,
+                     const I& d9,
+                     const J& d10,
                      prlevel clevel) const
             {
                 if (clevel <= level_)
-                    std::clog << message << " " << d1 << " " << d2 
-                         << " " << d3 << " " << d4 
+                    std::clog << message << " " << d1 << " " << d2
+                         << " " << d3 << " " << d4
                          << " " << d5
                          << " " << d6
                          << " " << d7
                          << " " << d8
                          << " " << d9
                          << " " << d10
-                         << endl;
+                         << std::endl;
             }
     };
 }
-    
+
 #endif

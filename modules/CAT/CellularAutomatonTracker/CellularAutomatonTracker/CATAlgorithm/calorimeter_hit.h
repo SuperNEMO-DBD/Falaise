@@ -17,7 +17,6 @@
 namespace CAT {
   namespace topology {
 
-    // using namespace mybhep;
 
     class calorimeter_hit : public tracking_object {
 
@@ -36,26 +35,26 @@ namespace CAT {
 
       size_t id_;
 
-    public:   
+    public:
 
       // plane
       plane pl_;
 
       double layer_;
 
-      //!Default constructor 
-      calorimeter_hit(prlevel level=mybhep::NORMAL, double nsigma=10.);
+      //!Default constructor
+      calorimeter_hit(mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
 
       //!Default destructor
       virtual ~calorimeter_hit();
 
       //! constructor
-      calorimeter_hit(const plane & pl, 
-                      const experimental_double & e, 
-                      const experimental_double & t, 
-                      size_t id, 
-                      double layer, 
-                      prlevel level=mybhep::NORMAL, 
+      calorimeter_hit(const plane & pl,
+                      const experimental_double & e,
+                      const experimental_double & t,
+                      size_t id,
+                      double layer,
+                      mybhep::prlevel level=mybhep::NORMAL,
                       double nsigma=10.);
 
       /*** dump ***/
@@ -63,7 +62,7 @@ namespace CAT {
                  const std::string & a_title  = "",
                  const std::string & a_indent = "",
                  bool a_inherit               = false) const;
-      //! set 
+      //! set
       void set(const plane & pl, const experimental_double & e, const experimental_double & t, size_t id);
 
       //! set plane

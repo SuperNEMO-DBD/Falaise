@@ -1,14 +1,14 @@
 /* -*- mode: c++ -*- */
-// 
-/*   
- * 
+//
+/*
+ *
  * Copyright (C) 2004 J.J. Gomez-Cadenas
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -25,29 +25,28 @@
 #include <mybhep/bproperties.h>
 
 
-using namespace std;  
 
 namespace mybhep{
   class particle;
   //! class mparticle
   /*!
-    represents a "mirror particle", that is a particle and the 
+    represents a "mirror particle", that is a particle and the
     quantities that describe it mirror properties. This class is used to
-    describe matching between TRUTH and DIGI particles. 
+    describe matching between TRUTH and DIGI particles.
     Tipically, one matches TRUTH and DIGI particles counting the number
-    of common "hits" per view, thus those quantities are explicitely 
+    of common "hits" per view, thus those quantities are explicitely
     represented in the class. Also one describes explicitely a
     generalized matching quantity, which can be used to describe the
-    quality of the TRUTH-DIGI match. Eventually one may want to use other 
-    quantities, which are described via a store.  
+    quality of the TRUTH-DIGI match. Eventually one may want to use other
+    quantities, which are described via a store.
   */
-  
+
   class mparticle : public bproperties {
 
     //! The  mirror particle
     particle* mirror_;
     //! matching view (0 = XZ, 1=YZ, 2 = XYZ)
-    string view_ ;
+    std::string view_ ;
     //! number of matching hits in view XZ
     int xz_;
     //! number of matching hits in view YZ
@@ -61,18 +60,18 @@ namespace mybhep{
     mparticle(const mparticle& part);
     //! do not allow asigment
     mparticle& operator = (const mparticle &);
-    
+
   public:
     //! default constructor
     mparticle ();
     //! construct from a particle (seed particle)
-    mparticle (particle& p, string view="NULL", size_t xz=0, size_t yz=0);
+    mparticle (particle& p, std::string view="NULL", size_t xz=0, size_t yz=0);
     //! destructor
     ~mparticle() {};
-    
+
   public:
     //! set mirror
-    void set_mirror(particle& p) 
+    void set_mirror(particle& p)
     {
       mirror_ = &p;
     }
@@ -81,9 +80,9 @@ namespace mybhep{
     particle&  mirror()  {return *mirror_ ;}
 
     //! set view
-    void set_view(string view) {view_ = view;}
+    void set_view(std::string view) {view_ = view;}
     //! get view
-    string view() const {return view_ ;}
+    std::string view() const {return view_ ;}
     //! set number of matches in xz
     void set_xz(size_t xz) {xz_ = xz;}
     //! get number of matches in xz
@@ -99,7 +98,7 @@ namespace mybhep{
 
 
   };
-  ostream& operator << (ostream& s, const mparticle& ip); 
+  std::ostream& operator << (std::ostream& s, const mparticle& ip);
 }
 
 #endif

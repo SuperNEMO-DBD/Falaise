@@ -15,8 +15,6 @@
 namespace CAT {
 namespace topology{
 
-using namespace std;
-using namespace mybhep;
 
   class logic_cell : public tracking_object{
 
@@ -26,12 +24,12 @@ using namespace mybhep;
     // id
     size_t id_;
 
-  public:   
+  public:
 
-    //!Default constructor 
+    //!Default constructor
     logic_cell()
     {
-      id_ = default_integer;
+      id_ = mybhep::default_integer;
    }
 
     //!Default destructor
@@ -49,7 +47,7 @@ using namespace mybhep;
       }
 
     //!get id
-    const size_t& id() const {return id_;} 
+    const size_t& id() const {return id_;}
 
 
   };

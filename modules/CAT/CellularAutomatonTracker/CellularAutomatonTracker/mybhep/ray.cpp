@@ -1,14 +1,14 @@
 /* -*- mode: c++ -*- */
-// 
-/*   
- * 
+//
+/*
+ *
  * Copyright (C) 2004 J.J. Gomez Cadenas
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -20,6 +20,8 @@
 #include <iostream>
 
 namespace mybhep{
+
+  using namespace std;
 
   ray::ray(string view)
   {
@@ -59,15 +61,15 @@ namespace mybhep{
     delete x_;
     delete p3_;
   }
- 
-  // sets the space point 
+
+  // sets the space point
   void ray::set_point(const point& p)
   {
     delete x_;
     view_ = p.view();
     x_ = new point(p);
   }
-  // sets the space point 
+  // sets the space point
   void ray::set_point(double x, double y, double z)
   {
     delete x_;
@@ -101,11 +103,11 @@ namespace mybhep{
 
   ostream& operator << (ostream& s, const ray& r) {
     s << endl;
- 
+
     s << " ray: view = " << r.view() << " "
       << " ray: x = " << r.x() << " "
-      << " ray: p =  " << r.p3() 
-      << " ray: edep =  " << r.edep() 
+      << " ray: p =  " << r.p3()
+      << " ray: edep =  " << r.edep()
       << endl;
 
     return s;

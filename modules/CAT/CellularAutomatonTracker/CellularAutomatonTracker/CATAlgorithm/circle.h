@@ -15,7 +15,6 @@
 namespace CAT{
   namespace topology{
 
-    using namespace mybhep;
 
     class circle : public tracking_object {
 
@@ -26,7 +25,7 @@ namespace CAT{
       std::string appname_;
 
       // experimental point
-      experimental_point center_; 
+      experimental_point center_;
 
       // radius
       experimental_double radius_;
@@ -35,17 +34,17 @@ namespace CAT{
       // x(phi) = center_.x() + radius*cos(phi)
       // z(phi) = center_.z() + radius*sin(phi)
 
-    public:   
+    public:
 
-      //!Default constructor 
-      circle(prlevel level=mybhep::NORMAL, double nsigma=10.);
-  
+      //!Default constructor
+      circle(mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
+
 
       //!Default destructor
       virtual ~circle();
 
       //! constructor
-      circle(experimental_point center, experimental_double radius, prlevel level=mybhep::NORMAL, double nsigma=10.);
+      circle(experimental_point center, experimental_double radius, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
 
       /*** dump ***/
       virtual void dump (std::ostream & a_out         = std::clog,
@@ -54,7 +53,7 @@ namespace CAT{
                          bool a_inherit          = false) const;
 
 
-      //! set 
+      //! set
       void set(experimental_point center, experimental_double radius);
 
 
@@ -94,7 +93,7 @@ namespace CAT{
 
       bool intersect_circle(circle c, experimental_point * ep, experimental_double _phi);
 
-    
+
     };
 
     // average
@@ -105,7 +104,7 @@ namespace CAT{
 
     // get circle that best fits coordinates
     circle best_fit_circle(std::vector<experimental_double> xs, std::vector<experimental_double> zs);
-  
+
   }
 }
 

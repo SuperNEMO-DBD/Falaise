@@ -25,7 +25,6 @@
 #include <iostream>
 #include <mybhep/error.h>
 
-using namespace std;  
 
 namespace mybhep{
 /// Represents a control panel.

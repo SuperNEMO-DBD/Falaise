@@ -31,15 +31,13 @@
 namespace CAT {
 namespace topology{
 
-using namespace std;
-using namespace mybhep;
 
 
   class logic_sequence : public tracking_object{
 
     // a logic_sequence is composed of a list of logic cells
 
-  public:   
+  public:
 
     // list of logic cells
     std::vector<logic_cell> cells_;
@@ -55,16 +53,16 @@ using namespace mybhep;
     double chi2_;
     int32_t ndof_;
 
-    //!Default constructor     
+    //!Default constructor
     logic_sequence()
     {
       cells_.clear();
       has_vertex_ = false;
-      vertex_id_ = default_integer;
+      vertex_id_ = mybhep::default_integer;
       has_decay_vertex_ = false;
-      calo_id_ = default_integer;
-      chi2_ = small_neg;
-      ndof_ = default_integer;
+      calo_id_ = mybhep::default_integer;
+      chi2_ = mybhep::small_neg;
+      ndof_ = mybhep::default_integer;
     }
 
     //!Default destructor
@@ -86,7 +84,7 @@ using namespace mybhep;
       }
       chi2_ = s.chi2();
       ndof_ = s.ndof();
-        
+
     }
 
     //! get cells
@@ -131,7 +129,7 @@ using namespace mybhep;
     }
 
 
-  }; 
+  };
 }
 }
 

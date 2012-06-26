@@ -1,14 +1,14 @@
 /* -*- mode: c++ -*- */
-// 
-/*   
- * 
+//
+/*
+ *
  * Copyright (C) 2003 Irene team
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -24,7 +24,6 @@
 #include <mybhep/hit.h>
 #include <mybhep/ibconverter.h>
 
-using namespace std;  
 
 namespace mybhep{
 
@@ -47,14 +46,14 @@ namespace mybhep{
     //! construct from a hit and an index
     hit_cvt( const hit& t, int inx);
     //! construct from a string
-    hit_cvt( string );
+    hit_cvt( std::string );
     //! destructor
     virtual ~hit_cvt();
 
     //! store class in a string
-    virtual string store();
+    virtual std::string store();
     //! restore from a string
-    virtual void restore( string );
+    virtual void restore( std::string );
     //! complete restore
     virtual void complete_restore();
 
@@ -65,8 +64,8 @@ namespace mybhep{
     hit& reference();
 
     //! instantiate a new hit
-    hit* create();    
-  
+    hit* create();
+
   };
 }
 #endif

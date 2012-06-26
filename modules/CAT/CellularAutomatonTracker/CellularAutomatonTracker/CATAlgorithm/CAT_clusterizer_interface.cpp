@@ -12,6 +12,8 @@
 
 namespace CAT {
 
+  using namespace std;
+
   const std::string & clusterizer_setup_data::get_error_message () const
   {
     return _error_message;
@@ -35,7 +37,7 @@ namespace CAT {
   void clusterizer_setup_data::reset ()
   {
     _set_defaults ();
-    return;    
+    return;
   }
 
   void clusterizer_setup_data::_set_defaults ()
@@ -43,9 +45,9 @@ namespace CAT {
     _error_message.clear ();
     level         = "normal";
     SuperNemo     = true;
-    MaxTime       = 5000.  * CLHEP::ms;  
-    SmallRadius   =    0.1 * CLHEP::mm; 
-    TangentPhi    =   20.  *  CLHEP::degree; 
+    MaxTime       = 5000.  * CLHEP::ms;
+    SmallRadius   =    0.1 * CLHEP::mm;
+    TangentPhi    =   20.  *  CLHEP::degree;
     TangentTheta  =  160.  * CLHEP::degree;
     SmallNumber   =    0.1 * CLHEP::mm;
     QuadrantAngle =   90.  *  CLHEP::degree;
@@ -62,7 +64,7 @@ namespace CAT {
     planes_per_block.at(0) = 9;
     num_cells_per_plane    = 113;
     cell_size              = 44.0  * CLHEP::mm;
- 
+
     return;
   }
 
@@ -74,86 +76,86 @@ namespace CAT {
 
   bool clusterizer_setup_data::_check_snemo ()
   {
-    if (SmallRadius <= 0.0) 
+    if (SmallRadius <= 0.0)
       {
-        _set_error_message ("Invalid 'SmallRadius'"); 
+        _set_error_message ("Invalid 'SmallRadius'");
         return false;
       }
-    if (TangentPhi <= 0.0) 
+    if (TangentPhi <= 0.0)
       {
-        _set_error_message ("Invalid 'TangentPhi'"); 
+        _set_error_message ("Invalid 'TangentPhi'");
         return false;
       }
-    if (TangentTheta <= 0.0) 
+    if (TangentTheta <= 0.0)
       {
-        _set_error_message ("Invalid 'TangentTheta'"); 
+        _set_error_message ("Invalid 'TangentTheta'");
         return false;
       }
-    if (SmallNumber <= 0.0) 
+    if (SmallNumber <= 0.0)
       {
-        _set_error_message ("Invalid 'SmallNumber'"); 
+        _set_error_message ("Invalid 'SmallNumber'");
         return false;
       }
-    if (QuadrantAngle <= 0.0) 
+    if (QuadrantAngle <= 0.0)
       {
-        _set_error_message ("Invalid 'QuadrantAngle'"); 
+        _set_error_message ("Invalid 'QuadrantAngle'");
         return false;
       }
-    if (Ratio <= 0.0) 
+    if (Ratio <= 0.0)
       {
-        _set_error_message ("Invalid 'Ratio'"); 
+        _set_error_message ("Invalid 'Ratio'");
         return false;
       }
     if (CompatibilityDistance <= 0.0)
       {
-        _set_error_message ("Invalid 'CompatibilityDistance'"); 
+        _set_error_message ("Invalid 'CompatibilityDistance'");
         return false;
       }
-    if (MaxChi2 <= 0.0) 
+    if (MaxChi2 <= 0.0)
       {
-        _set_error_message ("Invalid 'MaxChi2'"); 
+        _set_error_message ("Invalid 'MaxChi2'");
         return false;
       }
-    if (nsigma <= 0.0) 
+    if (nsigma <= 0.0)
       {
-        _set_error_message ("Invalid 'nsigma'"); 
+        _set_error_message ("Invalid 'nsigma'");
         return false;
       }
-    if (nofflayers < 0.0) 
+    if (nofflayers < 0.0)
       {
-        _set_error_message ("Invalid 'nofflayers'"); 
+        _set_error_message ("Invalid 'nofflayers'");
         return false;
       }
-    if (num_blocks < 1) 
+    if (num_blocks < 1)
       {
-        _set_error_message ("Invalid 'num_blocks'"); 
+        _set_error_message ("Invalid 'num_blocks'");
         return false;
       }
     if (planes_per_block.size () != num_blocks)
       {
-        _set_error_message ("Invalid size of 'planes_per_block'"); 
+        _set_error_message ("Invalid size of 'planes_per_block'");
         return false;
       }
-    if (num_cells_per_plane < 1) 
+    if (num_cells_per_plane < 1)
       {
-        _set_error_message ("Invalid 'num_cells_per_plane'"); 
+        _set_error_message ("Invalid 'num_cells_per_plane'");
         return false;
       }
-    if (cell_size <= 0.0) 
+    if (cell_size <= 0.0)
       {
-        _set_error_message ("Invalid 'cell_size'"); 
+        _set_error_message ("Invalid 'cell_size'");
         return false;
       }
 
     return true;
   }
 
-  void clusterizer_configure (clusterizer & czer_, 
+  void clusterizer_configure (clusterizer & czer_,
                               const clusterizer_setup_data & setup_)
   {
     if (! setup_.check ())
       {
-        std::cerr << "ERROR: CAT::clusterizer_configure: " 
+        std::cerr << "ERROR: CAT::clusterizer_configure: "
                   << setup_.get_error_message () << std::endl;
         throw std::logic_error ("CAT::clusterizer_configure: Invalid setup data !");
       }
@@ -181,15 +183,15 @@ namespace CAT {
     // Geometry description :
     if (setup_.SuperNemo)
       {
-          
+
         /// Activate the special new mode :
         czer_.set_SuperNemoChannel(true);
 
-        // Layout of the tracking chamber : 
+        // Layout of the tracking chamber :
         czer_.set_num_blocks (setup_.num_blocks);
         for (int i = 0; i < setup_.num_blocks; i++)
           {
-            czer_.set_planes_per_block (i, setup_.planes_per_block.at (i)); 
+            czer_.set_planes_per_block (i, setup_.planes_per_block.at (i));
           }
         czer_.set_num_cells_per_plane (setup_.num_cells_per_plane);
         czer_.set_GG_CELL_pitch (setup_.cell_size / CLHEP::mm);
@@ -209,7 +211,7 @@ namespace CAT {
   {
     if (cells.size () == 0)
       {
-        // memory preallocation at the first cell  
+        // memory preallocation at the first cell
         cells.reserve (50);
       }
     {
@@ -218,7 +220,7 @@ namespace CAT {
     }
     return cells.back ();
   }
-  
+
   bool clusterizer_input_data::check () const
   {
     // A map would be better to check cell IDs :
@@ -230,21 +232,21 @@ namespace CAT {
         if (cell_id < 0 || cell_id > 10000)
           {
             std::cerr << "ERROR: CAT::clusterizer_input_data::check: "
-                      << "Out of range cell ID '" <<  cell_id << "' !" 
+                      << "Out of range cell ID '" <<  cell_id << "' !"
                       << std::endl;
             return false;
           }
         if (mids.find (cell_id) != mids.end ())
           {
             std::cerr << "ERROR: CAT::clusterizer_input_data::check: "
-                      << "Duplicate cell ID '" <<  cell_id << "' !" 
+                      << "Duplicate cell ID '" <<  cell_id << "' !"
                       << std::endl;
             return false;
           }
         mids[cell_id] = true;
       }
 
-    // Duplicate test for now :    
+    // Duplicate test for now :
     vector<bool> ids;
     ids.assign (cells.size (), false);
     for (int i = 0; i < cells.size (); i++)
@@ -254,14 +256,14 @@ namespace CAT {
         if ((cell_id < 0) || (cell_id >= cells.size ()))
           {
             std::cerr << "ERROR: CAT::clusterizer_input_data::check: "
-                      << "Invalid cell ID '" <<  cell_id << "' !" 
+                      << "Invalid cell ID '" <<  cell_id << "' !"
                       << std::endl;
             return false;
           }
         if (ids[cell_id])
           {
             std::cerr << "ERROR: CAT::clusterizer_input_data::check: "
-                      << "Duplicate cell ID '" <<  cell_id << "' !" 
+                      << "Duplicate cell ID '" <<  cell_id << "' !"
                       << std::endl;
             return false;
           }
@@ -272,7 +274,7 @@ namespace CAT {
         if (! ids[i])
           {
             std::cerr << "ERROR: CAT::clusterizer_input_data::check: "
-                      << "Cell ID '" << i << "' is not used ! There are some missing cells !" 
+                      << "Cell ID '" << i << "' is not used ! There are some missing cells !"
                       << std::endl;
             return false;
           }

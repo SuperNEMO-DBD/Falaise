@@ -8,7 +8,7 @@ namespace mybhep{
 class EventManager2: public EventManager{
 
 public:
-  
+
   EventManager2(const mybhep::gstore& gs,
 		mybhep::prlevel vl=mybhep::NORMAL):
     EventManager(gs,vl){
@@ -26,26 +26,26 @@ public:
   }
 
   ~EventManager2(){}
-  
+
   bool isNewFile();
-  
+
   //functions for run properties
-  bool add_run_properties (mybhep::sstore,string str="");
-  bool add_run_properties (mybhep::gstore,string str="");
-  bool add_run_property (string name, string value);
-  bool find_run_property (string name);
-  string fetch_run_property (string name);
-  
+  bool add_run_properties (mybhep::sstore,std::string str="");
+  bool add_run_properties (mybhep::gstore,std::string str="");
+  bool add_run_property (std::string name, std::string value);
+  bool find_run_property (std::string name);
+  std::string fetch_run_property (std::string name);
+
   //functions for dst properties
-  bool add_dst_property (string name, string value);
-  bool change_dst_property (string name, string prop);
-  bool find_dst_property (string name);
-  string fetch_dst_property (string name);
-  
+  bool add_dst_property (std::string name, std::string value);
+  bool change_dst_property (std::string name, std::string prop);
+  bool find_dst_property (std::string name);
+  std::string fetch_dst_property (std::string name);
+
   // functions for both run and dst properties
-  bool find_global_property (string name);
-  string fetch_global_property (string name);
-  
+  bool find_global_property (std::string name);
+  std::string fetch_global_property (std::string name);
+
   // return run properties as a store
   mybhep::sstore get_run_properties(){
     return run_properties;
@@ -55,33 +55,33 @@ public:
   mybhep::sstore get_dst_properties(){
     return dst_properties;
   };
-  
+
   // return global properties as a store
   mybhep::sstore get_global_properties();
-  
-  
+
+
 protected:
-  
+
   void userException();
   bool readGlobalProperties();
   void writeGlobalProperties();
   bool checkNewProperties(mybhep::sstore);
   void getDstProperties(mybhep::sstore);
-  void usedProperty(string);
+  void usedProperty(std::string);
 
 protected:
 
-  //store for the current idst properties 
+  //store for the current idst properties
   mybhep::sstore dst_properties;
-  
-  //store for the run properties. 
-  mybhep::sstore run_properties; 
-  
+
+  //store for the run properties.
+  mybhep::sstore run_properties;
+
   //event to save global properties (idst+run)
   mybhep::event header;
 
   //bools
-  
+
   bool header_saved;
   bool run_properties_saved;
 

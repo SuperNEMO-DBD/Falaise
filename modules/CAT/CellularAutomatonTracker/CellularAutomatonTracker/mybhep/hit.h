@@ -1,14 +1,14 @@
 /* -*- mode: c++ -*- */
-// 
-/*   
- * 
+//
+/*
+ *
  * Copyright (C) 2004 J.J. Gomez Cadenas
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -24,8 +24,6 @@
 #include <mybhep/bproperties.h>
 #include <mybhep/clhep.h>
 
-using namespace std;  
-
 namespace mybhep{
   class particle;
 
@@ -38,7 +36,7 @@ namespace mybhep{
 
   private:
     //! detector name
-    string  detector_;
+    std::string  detector_;
 
     //! pointer to its mother particle
     const particle* mother_;
@@ -46,77 +44,77 @@ namespace mybhep{
     //! space point associated to hit
     mybhep::Point3D x_;
 
-    
+
   public:
-    //! constructor 
-    hit(const particle& mother, string det_name); 
-    //! constructor 
-    hit(string det_name); 
+    //! constructor
+    hit(const particle& mother, std::string det_name);
+    //! constructor
+    hit(std::string det_name);
     //! copy constructor
     hit(const hit& tr);
     //! asigment
     hit& operator = (const hit &);
     //! destructor
     ~hit();
-    
+
   public:
-    
+
     //! set the hit space point
     void set_point(const mybhep::Point3D&  x)
     {
       x_ = x;
     }
      //! set the hit data
-    void add_data(string name,  string value)
+    void add_data(std::string name,  std::string value)
     {
       prop_.store(name,value);
     }
      //! find some data name
-    bool find_data_name(string name) const
+    bool find_data_name(std::string name) const
     {
       return prop_.find(name);
     }
 
      //! return the value of some data
-    string data(string name)
+    std::string data(std::string name)
     {
-      string pr = prop_.fetch(name);
-      return pr; 
+      std::string pr = prop_.fetch(name);
+      return pr;
     }
-   
+
     //!return data in a map of string string
-    const map<string,string>& data_map() const
+    const std::map<std::string,std::string>& data_map() const
     {
       return prop_.store_map();
     }
 
-    //! return data names 
-    const vector<string> data_names() const 
+    //! return data names
+    const std::vector<std::string> data_names() const
     {
       return prop_.names();
     }
 
-    //! return data values 
-    const vector<string> data_values() 
+    //! return data values
+    const std::vector<std::string> data_values()
     {
       return prop_.items();
     }
-    
+
     //!return space point
     const mybhep::Point3D& x() const {return x_;}
 
-    
-    //! return detector name 
-    string detector() const {return detector_;};
-    
+
+    //! return detector name
+    std::string detector() const {return detector_;};
+
     //! return mother particle
     const particle& mother_particle() const {return *mother_;}
 
     //! set mother particle
     void set_mother_particle(const particle& pmom) {mother_ = &pmom;}
-    
+
   };
-  ostream& operator << (ostream& s, const hit& ih); 
+  std::ostream& operator << (std::ostream& s, const hit& ih);
 }
 #endif
 

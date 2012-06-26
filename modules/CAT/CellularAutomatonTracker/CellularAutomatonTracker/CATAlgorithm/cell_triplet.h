@@ -29,7 +29,6 @@
 namespace CAT{
   namespace topology{
 
-    //using namespace mybhep;
 
     class cell_triplet : public tracking_object{
 
@@ -41,13 +40,13 @@ namespace CAT{
       std::string appname_;
 
       // first cell
-      cell ca_; 
+      cell ca_;
 
       // second cell
-      cell cb_; 
+      cell cb_;
 
       // third cell
-      cell cc_; 
+      cell cc_;
 
       // list of chi2 values
       std::vector<double> chi2s_;
@@ -55,7 +54,7 @@ namespace CAT{
       // list of prob values
       std::vector<double> probs_;
 
-    public:   
+    public:
 
       // list of joints
       std::vector<joint> joints_;
@@ -66,7 +65,7 @@ namespace CAT{
       // begun cell triplet
       bool begun_;
 
-      //!Default constructor     
+      //!Default constructor
       cell_triplet();
 
       //!Default destructor
@@ -76,7 +75,7 @@ namespace CAT{
       cell_triplet(cell_couplet cca, cell_couplet ccb);
 
       //! constructor
-      cell_triplet(cell ca, cell cb, cell cc, prlevel level=mybhep::NORMAL, double nsigma=10.);
+      cell_triplet(cell ca, cell cb, cell cc, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
 
       /*** dump ***/
       virtual void dump (std::ostream & a_out         = std::clog,
@@ -84,7 +83,7 @@ namespace CAT{
                          const std::string & a_indent = "",
                          bool a_inherit          = false) const;
 
-    
+
       //! set cells
       void set(cell_couplet cca, cell_couplet ccb);
 
@@ -154,7 +153,7 @@ namespace CAT{
       bool same_last_cell(cell c)const;
 
     };
-     
+
   }
 
 }

@@ -15,7 +15,6 @@ namespace CAT {
 
   namespace topology{
 
-    using namespace mybhep;
 
     class joint : public tracking_object{
 
@@ -25,13 +24,13 @@ namespace CAT {
       std::string appname_;
 
       // first experimental point
-      experimental_point epa_; 
+      experimental_point epa_;
 
       // second experimental point
-      experimental_point epb_; 
+      experimental_point epb_;
 
       // third experimental point
-      experimental_point epc_; 
+      experimental_point epc_;
 
       // phi kink
       experimental_double kink_phi_;
@@ -39,7 +38,7 @@ namespace CAT {
       // theta kink
       experimental_double kink_theta_;
 
-    public:   
+    public:
 
       // joint status
       bool used_;
@@ -47,21 +46,21 @@ namespace CAT {
       // chi2 of connection along a sequence
       double chi2_;
 
-      //!Default constructor 
+      //!Default constructor
       joint();
 
       //!Default destructor
       virtual ~joint();
 
       //! constructor
-      joint(experimental_point epa, experimental_point epb, experimental_point epc, prlevel level=mybhep::NORMAL, double nsigma=10.);
+      joint(experimental_point epa, experimental_point epb, experimental_point epc, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
 
       /*** dump ***/
       virtual void dump (std::ostream & a_out         = std::clog,
                          const std::string & a_title  = "",
                          const std::string & a_indent = "",
                          bool a_inherit          = false) const;
- 
+
 
 
       //! set experimental_points
@@ -70,13 +69,13 @@ namespace CAT {
 
       //! set first experimental_points
       void set_epa(experimental_point epa);
- 
+
       //! set second experimental_points
       void set_epb(experimental_point epb);
 
       //! set third experimental_points
       void set_epc(experimental_point epc);
- 
+
       //! set kink phi
       void set_kink_phi(experimental_double phi);
 
@@ -88,7 +87,7 @@ namespace CAT {
 
       //! set chi2
       void set_chi2(double chi2);
- 
+
       //! get experimental_point a
       const experimental_point& epa()const;
 
@@ -97,7 +96,7 @@ namespace CAT {
 
       //! get experimental_point c
       const experimental_point& epc()const;
- 
+
       //! get kink phi
       const experimental_double& kink_phi()const;
 
@@ -109,7 +108,7 @@ namespace CAT {
 
       //! get chi2
       double chi2() const;
- 
+
       joint invert();
 
       bool operator<(const joint &j) const;

@@ -7,9 +7,10 @@ namespace CAT {
 
   namespace topology{
 
+    using namespace std;
     using namespace mybhep;
 
-    //!Default constructor 
+    //!Default constructor
     joint::joint()
     {
       appname_= "joint: ";
@@ -26,7 +27,7 @@ namespace CAT {
 
     //! constructor
     joint::joint(experimental_point epa,
-                 experimental_point epb, 
+                 experimental_point epb,
                  experimental_point epc, prlevel level, double nsigma)
     {
       set_print_level(level);
@@ -126,19 +127,19 @@ namespace CAT {
     const experimental_point& joint::epa()const
     {
       return epa_;
-    }      
+    }
 
     //! get experimental_point b
     const experimental_point& joint::epb()const
     {
       return epb_;
-    }      
+    }
 
     //! get experimental_point c
     const experimental_point& joint::epc()const
     {
       return epc_;
-    }      
+    }
 
     //! get kink phi
     const experimental_double& joint::kink_phi()const

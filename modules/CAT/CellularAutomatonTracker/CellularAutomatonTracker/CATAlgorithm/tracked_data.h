@@ -25,8 +25,6 @@
 namespace CAT{
   namespace topology{
 
-    using namespace std;
-    using namespace mybhep;
 
     class tracked_data : public tracking_object{
 
@@ -35,9 +33,9 @@ namespace CAT{
       // and a list of scenarios
 
     protected:
-      string appname_;
+      std::string appname_;
 
-    public:   
+    public:
 
       // list of cells
       std::vector<cell> cells_;
@@ -63,7 +61,7 @@ namespace CAT{
       // is event skipped?
       bool skipped_;
 
-      //!Default constructor     
+      //!Default constructor
       tracked_data()
       {
         appname_= "tracked_data: ";
@@ -81,13 +79,13 @@ namespace CAT{
       virtual ~tracked_data(){};
 
       //! constructor
-      tracked_data(const std::vector<cell> &cells, 
-                   const std::vector<calorimeter_hit> &calos, 
-                   const std::vector<cluster> &clusters, 
-                   const std::vector<scenario> &scenarios, 
-                   const std::vector<sequence> &true_sequences, 
-                   const std::vector<sequence> &nemo_sequences, 
-                   prlevel level=mybhep::NORMAL, 
+      tracked_data(const std::vector<cell> &cells,
+                   const std::vector<calorimeter_hit> &calos,
+                   const std::vector<cluster> &clusters,
+                   const std::vector<scenario> &scenarios,
+                   const std::vector<sequence> &true_sequences,
+                   const std::vector<sequence> &nemo_sequences,
+                   mybhep::prlevel level=mybhep::NORMAL,
                    double nsigma=10.){
         set_print_level(level);
         set_nsigma(nsigma);
@@ -103,35 +101,35 @@ namespace CAT{
       }
 
       /*** dump ***/
-      virtual void dump (ostream & a_out         = clog,
-                         const string & a_title  = "",
-                         const string & a_indent = "",
+      virtual void dump (std::ostream & a_out         = std::clog,
+                         const std::string & a_title  = "",
+                         const std::string & a_indent = "",
                          bool a_inherit          = false) const {
-        string indent;
+        std::string indent;
         if (! a_indent.empty ()) indent = a_indent;
         if (! a_title.empty ())
           {
-            a_out << indent << a_title << endl;
+            a_out << indent << a_title << std::endl;
           }
 
-        a_out << indent << appname_ << " ------------------- " << endl;
-        a_out << indent << " number of cells : " << cells_.size() << endl;
+        a_out << indent << appname_ << " ------------------- " << std::endl;
+        a_out << indent << " number of cells : " << cells_.size() << std::endl;
         for(std::vector<cell>::const_iterator icell=cells_.begin(); icell!=cells_.end();++icell)
           icell->dump(a_out, "",indent + "     ");
-        a_out << indent << " number of calos : " << calos_.size() << endl;
+        a_out << indent << " number of calos : " << calos_.size() << std::endl;
         for(std::vector<calorimeter_hit>::const_iterator icalo=calos_.begin(); icalo!=calos_.end();++icalo)
           icalo->dump(a_out, "",indent + "     ");
-        a_out << indent << " number of clusters : " << clusters_.size() << endl;
+        a_out << indent << " number of clusters : " << clusters_.size() << std::endl;
         for(std::vector<cluster>::const_iterator icluster=clusters_.begin(); icluster!=clusters_.end();++icluster)
           icluster->dump(a_out, "",indent + "     ");
-        a_out << indent << " number of scenarios : " << scenarios_.size() << endl;
+        a_out << indent << " number of scenarios : " << scenarios_.size() << std::endl;
         for(std::vector<scenario>::const_iterator iscenario=scenarios_.begin(); iscenario!=scenarios_.end();++iscenario)
           iscenario->dump(a_out, "",indent + "     ");
-        a_out << indent << " ------------------- " << endl;
- 
+        a_out << indent << " ------------------- " << std::endl;
+
         return;
       }
-    
+
       //! set cells
       void set_cells(const std::vector<cell> & cells)
       {
@@ -180,7 +178,7 @@ namespace CAT{
         skipped_ = skipped;
       }
 
-      //! get cells 
+      //! get cells
       std::vector<cell>& get_cells()
       {
         return cells_;
@@ -191,7 +189,7 @@ namespace CAT{
         return cells_;
       }
 
-      //! get calos 
+      //! get calos
       std::vector<calorimeter_hit>& get_calos()
       {
         return calos_;
@@ -202,7 +200,7 @@ namespace CAT{
         return calos_;
       }
 
-      //! get clusters 
+      //! get clusters
       std::vector<cluster>& get_clusters()
       {
         return clusters_;
@@ -213,7 +211,7 @@ namespace CAT{
         return clusters_;
       }
 
-      //! get scenarios 
+      //! get scenarios
       std::vector<scenario>& get_scenarios()
       {
         return scenarios_;
@@ -224,18 +222,18 @@ namespace CAT{
         return scenarios_;
       }
 
-      //! get true sequences 
+      //! get true sequences
       std::vector<sequence>& get_true_sequences()
       {
         return true_sequences_;
       }
-      
+
       const std::vector<sequence>& get_true_sequences()const
       {
         return true_sequences_;
       }
 
-      //! get nemo sequences 
+      //! get nemo sequences
       std::vector<sequence>& get_nemo_sequences()
       {
         return nemo_sequences_;
@@ -258,7 +256,7 @@ namespace CAT{
         return skipped_;
       }
 
-  
+
     };
   }
 }

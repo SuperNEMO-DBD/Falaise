@@ -1,14 +1,14 @@
 /* -*- mode: c++ -*- */
-// 
-/*   
- * 
+//
+/*
+ *
  * Copyright (C) 2004 J.J. Gomez Cadenas
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -31,7 +31,9 @@
 
 namespace mybhep{
 
-  track_cvt::track_cvt( const track& trk, int index ) 
+  using namespace std;
+
+  track_cvt::track_cvt( const track& trk, int index )
     : ibconverter()
   {
     set_index( index );
@@ -48,14 +50,14 @@ namespace mybhep{
 
   track_cvt::~track_cvt()
   {
-    if (owner()) 
+    if (owner())
       delete ntrack_;
   }
 
   // serialize object
   std::string track_cvt::store()
   {
-    
+
     string tmp;
 
     tmp =name();
@@ -68,7 +70,7 @@ namespace mybhep{
     to_string(tmp,rays.size());
     for(size_t iray =0; iray < rays.size(); iray++)
       {
-        const ray& r = *rays[iray]; 
+        const ray& r = *rays[iray];
         const mybhep::Point3D& x = r.x();
         const mybhep::Vector3D& p3 = r.p3();
         double e = r.edep();
@@ -82,12 +84,12 @@ namespace mybhep{
         tmp2 = to_string(x[0])+ " " +
           to_string(x[1])+ " " + to_string(x[2]);
         to_string(tmp,tmp2);
-        
+
         tmp2 = to_string(p3[0])+ " " +
           to_string(p3[1])+ " " + to_string(p3[2]);
         to_string(tmp,tmp2);
-        
-      } 
+
+      }
 
     // indexes of objects in class
     to_string(tmp,(long int) &track_->mother_particle());
@@ -107,13 +109,13 @@ void  track_cvt::restore( string def )
 
     string name;
     istr >> name ;
-    
-    int indx;
-    istr >> indx ;     
-    string view;
-    istr >> view ;     
 
-    set_name( name ); 
+    int indx;
+    istr >> indx ;
+    string view;
+    istr >> view ;
+
+    set_name( name );
     set_index( indx );
 
     //name
@@ -128,11 +130,11 @@ void  track_cvt::restore( string def )
     set_owner(true);
 
     size_t ray_size;
-    istr >> ray_size ;  
+    istr >> ray_size ;
 
     for(size_t iray =0; iray < ray_size; iray++)
-      { 
-        
+      {
+
         // read x,y,z of ray and set to particle
         double x,y,z,px,py,pz;
         string view;
@@ -142,7 +144,7 @@ void  track_cvt::restore( string def )
         istr >> ed;
         istr >> x >> y >> z;
         istr >> px >> py >> pz;
-        
+
         ray* r = new ray(view);
         r->set_edep(ed);
         r->set_p(px,py,pz);
@@ -160,13 +162,13 @@ void  track_cvt::restore( string def )
     istr >> imother_;
 }
 
-  void track_cvt::complete_restore()  
+  void track_cvt::complete_restore()
   {
     // get converter service
 
     converter_svc& csvc = mybhep_svc::instance().
       converter_service();
-    
+
     // restore pointer to mother particle
     try{
       particle_cvt& pcvt = *(dynamic_cast<particle_cvt*>
@@ -191,16 +193,16 @@ void  track_cvt::restore( string def )
     return *track_;
   }
 
-  track&  track_cvt::reference() 
+  track&  track_cvt::reference()
   {
     return *ntrack_;
   }
-  
+
 
   track* track_cvt::create()
   {
     Assert(ntrack_, __FILE__,__LINE__,
-           internal_logic("  null pointer!!!")); 
+           internal_logic("  null pointer!!!"));
 
     set_owner(false);
     return ntrack_;

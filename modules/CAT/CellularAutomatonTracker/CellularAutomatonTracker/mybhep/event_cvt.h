@@ -1,19 +1,19 @@
 /* -*- mode: c++ -*- */
 /*
  *
- * Copyright 2004 
+ * Copyright 2004
  * J.J. Gomez-Cadenas, J.A. Hernando
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -26,7 +26,6 @@
 #include <mybhep/event.h>
 #include <mybhep/ibconverter.h>
 
-using namespace std;
 
 
 namespace mybhep{
@@ -46,32 +45,32 @@ namespace mybhep{
     //! const pointer to the event
     const event*   event_;
     //! vector of particle converters for true particles
-    vector<int> particles_true_;
+    std::vector<int> particles_true_;
 
     //! vector of particle converters for digi particles
-    vector<int> particles_digi_;
+    std::vector<int> particles_digi_;
 
     //! vector of particle converters for sparticles
-    vector<int> particles_spar_;
+    std::vector<int> particles_spar_;
 
     //! label for particles
-    string particle_label_ ;
-    string sparticle_label_ ;
+    std::string particle_label_ ;
+    std::string sparticle_label_ ;
 
     //    char* buf_;
   public:
-    
-    //! constructor 
+
+    //! constructor
     event_cvt(const event& evt, int ind);
     //! constructor from a string
-    event_cvt(string def);
-    //! destructor 
+    event_cvt(std::string def);
+    //! destructor
     virtual ~event_cvt();
-    
+
     //! store event
-    virtual string store();
+    virtual std::string store();
     //! restore event
-    virtual void restore(string def) ;
+    virtual void restore(std::string def) ;
 
     //! restore event
     virtual void complete_restore() ;
@@ -80,6 +79,6 @@ namespace mybhep{
     const event& retrieve() const;
     //! A new instance of event
     event* create();
-  };   
+  };
 }
 #endif

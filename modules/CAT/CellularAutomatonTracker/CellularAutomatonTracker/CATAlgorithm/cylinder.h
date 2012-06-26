@@ -13,8 +13,6 @@
 namespace CAT{
   namespace topology{
 
-    using namespace std;
-    using namespace mybhep;
 
     class cylinder : public tracking_object {
 

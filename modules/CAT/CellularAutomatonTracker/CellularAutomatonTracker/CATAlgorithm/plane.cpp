@@ -13,9 +13,10 @@
 namespace CAT {
   namespace topology{
 
+    using namespace std;
     using namespace mybhep;
 
-    //!Default constructor 
+    //!Default constructor
     plane::plane(prlevel level, double nsigma)
     {
       appname_= "plane: ";
@@ -35,9 +36,9 @@ namespace CAT {
     }
 
     //! constructor
-    plane::plane(experimental_point center, 
+    plane::plane(experimental_point center,
                  experimental_vector sizes,
-                 experimental_vector norm, 
+                 experimental_vector norm,
                  prlevel level, double nsigma)
     {
       set_print_level(level);
@@ -76,7 +77,7 @@ namespace CAT {
 
 
 
-    //! set 
+    //! set
     void plane::set(experimental_point center, experimental_vector sizes, experimental_vector norm)
     {
       center_ = center;
@@ -116,13 +117,13 @@ namespace CAT {
     const experimental_point& plane::center()const
     {
       return center_;
-    }      
+    }
 
     //! get sizes
     const experimental_vector& plane::sizes()const
     {
       return sizes_;
-    }      
+    }
 
     // returns the normal looking towards the origin
     const experimental_vector& plane::norm() const{
@@ -138,10 +139,10 @@ namespace CAT {
       if( type() == "SuperNEMO" ){
 	if( norm().x().value() != 0 )
 	  return "x";
-	
+
 	if( norm().y().value() != 0 )
 	  return "y";
-	
+
 	return "z";
       }
       else if( type() == "Nemo3" ){
@@ -149,14 +150,14 @@ namespace CAT {
 	return "null";
       }
 
-      
+
       clog << " warning: undefined calo type: " << type() << " cannot determine view " << endl;
       exit(0);
 
       return "null";
 
     }
-    
+
 
     //! get point of the face of the plane
     experimental_point plane::face()const
@@ -169,7 +170,7 @@ namespace CAT {
 
       return (center_ + norm()*sizes().z()/2.).point_from_vector();
 
-    }      
+    }
 
     bool plane::intersect(experimental_point ep)const{
       experimental_vector dist = ep - center();
@@ -203,13 +204,13 @@ namespace CAT {
 
       if( fabs(dist.z().value()) > dist.z().error() )
         return false;
-      
+
       if( fabs(dist.x().value()) > sizes().x().value() + dist.x().error() )
         return false;
-      
+
       if( fabs(dist.y().value()) > sizes().y().value() + dist.y().error() )
         return false;
-      
+
       return true;
 
     }
@@ -242,11 +243,11 @@ namespace CAT {
       if( direction.z().value() == 0 ){
         return false;
       }
-      
+
       experimental_double time = (center().z() - start.z())/direction.z();
-      
+
       *ep = (experimental_vector(start) + time*direction).point_from_vector();
-      
+
       return intersect(*ep);
 
 

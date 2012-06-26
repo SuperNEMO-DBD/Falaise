@@ -11,7 +11,7 @@
 #include <CLHEP/Units/SystemOfUnits.h>
 #include <mybhep/system_of_units.h>
 
- #ifdef CAT_WITH_DEVEL_ROOT 
+ #ifdef CAT_WITH_DEVEL_ROOT
  #include "TApplication.h"
  #include <TROOT.h>
  #include <TChain.h>
@@ -20,8 +20,8 @@
  #include "TGraph.h"
  #include "TStyle.h"
  #include "TCanvas.h"
- #include "TFile.h" 
- #include "TMath.h" 
+ #include "TFile.h"
+ #include "TMath.h"
  #include "TBox.h"
  #include "TMarker.h"
  #endif
@@ -48,27 +48,25 @@
 
 namespace CAT{
 
-  using namespace mybhep;
-  using namespace std;
-  
+
   typedef struct{
     float x;
     float z;
   } POINT;
-  
+
 
   class clusterizer{
 
   public:
-  
+
     clusterizer(void);
 
     clusterizer(mybhep::gstore);
-  
+
     virtual ~clusterizer();
 
   protected:
-    
+
     // 2012-03-24 FM : add core initialization method
     bool _initialize( void );
 
@@ -131,13 +129,13 @@ namespace CAT{
       clusters_ = clusters;
     }
 
-    //! get calorimeter_hits                                                                                                      
+    //! get calorimeter_hits
     const std::vector<topology::calorimeter_hit>& get_calorimeter_hits()const
     {
       return calorimeter_hits_;
     }
 
-    //! set calorimeter_hits                                                                                                      
+    //! set calorimeter_hits
     void set_calorimeter_hits(const std::vector<topology::calorimeter_hit> & calorimeter_hits)
     {
       calorimeter_hits_.clear();
@@ -161,23 +159,23 @@ namespace CAT{
     void make_plots(topology::tracked_data & __tracked_data);
 
   protected:
-    
+
     //  NHistoManager2 hman;
 
     Clock clock;
 
     mybhep::prlevel level;
-    
+
     mybhep::messenger m;
     int nevent;
     int InitialEvents;
     int SkippedEvents;
-  
+
     //geom param
     double vel, rad, len, CellDistance;
-    double xsize,ysize,zsize; //only for plotting 
+    double xsize,ysize,zsize; //only for plotting
     double calo_X, calo_Y, calo_Z;
-    double InnerRadius, OuterRadius, FoilRadius; //only for plotting 
+    double InnerRadius, OuterRadius, FoilRadius; //only for plotting
     double pmax;
 
     //limits
@@ -191,7 +189,7 @@ namespace CAT{
     double MaxChi2;
     double nsigma;
     size_t nofflayers;
- 
+
     //error parametrization
     double sigma0;
     double k0;
@@ -203,11 +201,11 @@ namespace CAT{
     double th1;
     double th2;
     double th3;
-    
+
     double pnob;
     double pnot;
     double pnobt;
-  
+
     double l0;
     double l1;
 
@@ -218,14 +216,14 @@ namespace CAT{
     bool SuperNemoChannel; /** New initialization modeof the algorithm
                             *  for SuperNEMO and usage from Channel by
                             *  Falaise and Hereward.
-                            *  Use the GG_CELL_pitch as the main geoemtry parameter 
+                            *  Use the GG_CELL_pitch as the main geoemtry parameter
                             *  of a GG cell, do not use 'rad' or 'CellDistance'
                             */
     bool NemoraOutput;
     bool N3_MC;
     double MaxTime;
 
-    bool doDriftWires; 
+    bool doDriftWires;
     std::vector<POINT> DriftWires;
 
     mybhep::EventManager2* eman;
@@ -237,7 +235,7 @@ namespace CAT{
     double GG_GRND_diam;
     double GG_CELL_diam;
     double CHAMBER_X;
-    double GG_BLOCK_X; 
+    double GG_BLOCK_X;
     int num_cells_per_plane;
     double SOURCE_thick;
     size_t lastlayer;
@@ -245,13 +243,13 @@ namespace CAT{
     //  size_t dp_mode;
 
     //----Modification for bar-module---
-  private: 
-    string  _moduleNR;
+  private:
+    std::string  _moduleNR;
     int     _MaxBlockSize;
     std::vector<mybhep::particle*> parts;
 
     //histogram file
-    string hfile;
+    std::string hfile;
     bool is_good_couplet(topology::cell* mainc, topology::cell candidatec, std::vector<topology::cell> nearmain);
     size_t get_true_hit_index(mybhep::hit& hit, bool print);
     size_t get_nemo_hit_index(mybhep::hit& hit, bool print);
@@ -259,14 +257,14 @@ namespace CAT{
 
   protected:
     void _set_defaults ();
-    
+
   public:
 
     void setDoDriftWires(bool ddw){
       doDriftWires=ddw;
       return;
     }
-    
+
     void compute_lastlayer(){
       lastlayer = 0;
       for(size_t i=0; i<planes_per_block.size(); i++){
@@ -292,13 +290,13 @@ namespace CAT{
 
     void set_num_blocks(int nb){
       if (nb > 0)
-        {       
+        {
           num_blocks = nb;
           planes_per_block.assign (num_blocks, 1);
         }
       else
         {
-          std::cerr << "WARNING: CAT::clusterizer::set_num_blocks: " 
+          std::cerr << "WARNING: CAT::clusterizer::set_num_blocks: "
                     << "Invalid number of GG layer blocks !" << std::endl;
           planes_per_block.clear ();
           num_blocks = -1; // invalid value
@@ -312,7 +310,7 @@ namespace CAT{
           throw std::range_error ("CAT::clusterizer::set_planes_per_block: Invalid GG layer block index !");
         }
       if (nplanes > 0)
-        {       
+        {
           planes_per_block.at (block) = nplanes;
         }
       else
@@ -324,9 +322,9 @@ namespace CAT{
 
     void set_num_cells_per_plane(int ncpp){
       if (ncpp <= 0)
-        {   
+        {
           num_cells_per_plane = -1; // invalid value
-        }    
+        }
       else
         {
           num_cells_per_plane = ncpp;
@@ -338,16 +336,16 @@ namespace CAT{
       if (st <= 0.0)
         {
           SOURCE_thick = std::numeric_limits<double>::quiet_NaN ();
-        }    
+        }
       else
         {
           SOURCE_thick = st;
         }
       return;
     }
-    
+
     // What is it ?
-    void set_module_nr(string mID){
+    void set_module_nr(std::string mID){
       _moduleNR=mID;
       return;
     }
@@ -366,7 +364,7 @@ namespace CAT{
      if ( v <= 0.0)
        {
          pmax = std::numeric_limits<double>::quiet_NaN ();
-        }    
+        }
      else
        {
          pmax = v;
@@ -424,7 +422,7 @@ namespace CAT{
       return;
     }
 
-    void set_hfile(string v){
+    void set_hfile(std::string v){
       hfile = v;
       return;
     }
@@ -439,7 +437,7 @@ namespace CAT{
       return;
     }
 
-    void set_level(string v){
+    void set_level(std::string v){
       level = mybhep::get_info_level(v);
       m = mybhep::messenger(level);
       return;
@@ -499,7 +497,7 @@ namespace CAT{
        NemoraOutput = no;
       return;
     }
-    
+
     void set_N3_MC(bool v){
        N3_MC = v;
       return;

@@ -43,7 +43,6 @@
 
 #include <mybhep/random_writer.h>
 
-using namespace std;
 
 
 namespace mybhep{
