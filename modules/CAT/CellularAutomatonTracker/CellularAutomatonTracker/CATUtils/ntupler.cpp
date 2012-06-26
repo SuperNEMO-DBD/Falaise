@@ -68,6 +68,9 @@ void ntupler::initialize (void)
       __event.Pty[i][k] = 0;
       __event.Ptz[i][k] = 0;
       __event.Ptid[i][k] = 0;
+      __event.HelixPtx[i][k] = 0;
+      __event.HelixPty[i][k] = 0;
+      __event.HelixPtz[i][k] = 0;
 
     }
     
@@ -134,6 +137,9 @@ void ntupler::initialize (void)
   __tree->Branch("Pty",__event.Pty,"Pty[Nbr_tks][500]/F");
   __tree->Branch("Ptz",__event.Ptz,"Ptz[Nbr_tks][500]/F");
   __tree->Branch("Ptid",__event.Ptid,"Ptid[Nbr_tks][500]/I");
+  __tree->Branch("HelixPtx",__event.HelixPtx,"HelixPtx[Nbr_tks][500]/F");
+  __tree->Branch("HelixPty",__event.HelixPty,"HelixPty[Nbr_tks][500]/F");
+  __tree->Branch("HelixPtz",__event.HelixPtz,"HelixPtz[Nbr_tks][500]/F");
   __tree->Branch("True_Nbr_tks",&__event.True_Nbr_tks,"True_Nbr_tks/I");
   
   return;
@@ -233,7 +239,8 @@ void ntupler::__fill ()
     __event.Gg[cell_counter][7] = tracked_data_.cells_[icell].ep().y().error();
     __event.Gg[cell_counter][8] = icell;
     
-    if(__has_mc_hits) {
+    __has_mc_hits = (tracked_data_.true_sequences_.size() > 0);
+    if( __has_mc_hits ) { // if there is mc true information
       topology::node truenode; 
       size_t itrack;
       if( get_true_hit_of_reco_cell(tracked_data_.cells_[icell], truenode, itrack)){
@@ -263,6 +270,8 @@ void ntupler::__fill ()
 
       std::vector<double> hchi2s = iseq->helix_chi2s();
 
+      topology::helix hel = iseq->get_helix();
+
       size_t pt_counter = 0;
       for(std::vector<topology::node>::iterator inode = iseq->nodes_.begin(); 
 	  inode != iseq->nodes_.end(); ++inode){
@@ -282,6 +291,11 @@ void ntupler::__fill ()
 	__event.Pty[trk_counter][pt_counter] = inode->ep().y().value();
 	__event.Ptz[trk_counter][pt_counter] = inode->ep().z().value();
 	__event.Ptid[trk_counter][pt_counter] = cindex;
+
+	__event.HelixPtx[trk_counter][pt_counter] = hel.position(inode->ep()).x().value();
+	__event.HelixPty[trk_counter][pt_counter] = hel.position(inode->ep()).y().value();
+	__event.HelixPtz[trk_counter][pt_counter] = hel.position(inode->ep()).z().value();
+
 	helix_chi2->Fill( hchi2s[local_index]);
 	pt_counter ++;
       }

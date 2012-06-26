@@ -81,13 +81,17 @@ class ntupler
     Int_t Nbr_tks;
     Int_t True_Nbr_tks;
     Int_t          Nbr_pts[MAXNTRACKS];
-    Float_t Ptx[MAXNTRACKS][MAXNHITS];
+    Float_t Ptx[MAXNTRACKS][MAXNHITS];  // tangency points
     Float_t Pty[MAXNTRACKS][MAXNHITS];
     Float_t Ptz[MAXNTRACKS][MAXNHITS];
+    Float_t HelixPtx[MAXNTRACKS][MAXNHITS];  // helix points
+    Float_t HelixPty[MAXNTRACKS][MAXNHITS];
+    Float_t HelixPtz[MAXNTRACKS][MAXNHITS];
     Int_t Ptid[MAXNTRACKS][MAXNHITS];
     
     
     Int_t     Ind_points[MAXNTRACKS][MAXNHITS];
+
     Float_t    Tk_le[MAXNTRACKS];
     Float_t    Q[MAXNTRACKS];
     Float_t    mom[MAXNTRACKS];
