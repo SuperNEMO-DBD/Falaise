@@ -6,6 +6,9 @@
 
 namespace CAT {
 
+  using namespace std;
+  using namespace mybhep;
+
   void sequentiator::_set_defaults ()
   {
     level = mybhep::NORMAL;
@@ -79,7 +82,7 @@ namespace CAT {
     pmax = st.fetch_dstore("pmax")*mybhep::MeV;
     MaxTime = st.fetch_dstore("MaxTime");
     PrintMode = st.fetch_istore("PrintMode");
-    
+
     SmallRadius=st.fetch_dstore("SmallRadius")*mybhep::mm;
     TangentPhi=st.fetch_dstore("TangentPhi");
     TangentTheta=st.fetch_dstore("TangentTheta");
@@ -96,7 +99,7 @@ namespace CAT {
 
     if (st.find_sstore("histo_file"))
       hfile=st.fetch_sstore("histo_file");
-    else 
+    else
       hfile="CatsHistogram.root";
 
     if (st.find_dstore("nsigma"))
@@ -107,13 +110,14 @@ namespace CAT {
     /*
       if( PrintMode )
       hman =  NHistoManager2(st);
-    */    
+    */
 
   }
 
-  //************************************************************                                                                          // Default constructor : 
+  //************************************************************
+  // Default constructor :
   sequentiator::sequentiator(void){
-    //*************************************************************                                                                      
+    //*************************************************************
     _set_defaults ();
     return;
   }
@@ -122,21 +126,21 @@ namespace CAT {
   //*************************************************************
   sequentiator::~sequentiator() {
     //*************************************************************
-    
+
   }
 
   //*************************************************************
   bool sequentiator::initialize( mybhep::sstore store, mybhep::gstore gs , mybhep::EventManager2 *eman) {
     //*************************************************************
-  
+
     m.message("\n Beginning algorithm sequentiator \n",mybhep::VERBOSE); fflush(stdout);
 
     clock.start(" sequentiator: initialize ");
-  
+
     //----------- read dst param -------------//
-  
+
     readDstProper(store, eman);
-  
+
     //------- end of read pram -----------//
 
     if( PrintMode )
@@ -166,15 +170,15 @@ namespace CAT {
   //*************************************************************
   bool sequentiator::initialize( void ){
     //*************************************************************
-  
+
     m.message("\n Beginning algorithm sequentiator \n",mybhep::VERBOSE); fflush(stdout);
 
     clock.start(" sequentiator: initialize ");
-  
+
     //----------- read dst param -------------//
-  
+
     readDstProper();
-  
+
     //------- end of read pram -----------//
 
     if( PrintMode )
@@ -214,7 +218,7 @@ namespace CAT {
       hman.h1("helix_chi2_points", "chi2 for each sequence point to be on a helix", 100, -0.05, 20.05);
       hman.h1("helix_chi2", "chi2 for each sequence to be a helix", 100, -0.05, 20.05);
       hman.h1("helix_prob", "probability that chi2 is larger than observed for a sequence to be a helix", 100, -0.05, 1.05);
-    
+
       hman.h1("HTTPurity", "track purity ", 21, -0.05, 1.05);
       hman.h1("HTTEfficiency", "track efficiency ", 21, -0.05, 1.05);
       hman.h2("PurityVsTheta", "track purity vs true cos theta", 21, -1., 1., 21, -0.05, 1.05);
@@ -269,9 +273,9 @@ namespace CAT {
   //*************************************************************
   bool sequentiator::finalize() {
     //*************************************************************
-    
+
     m.message("\n Ending algorithm sequentiator \n ",mybhep::NORMAL); fflush(stdout);
-  
+
     clock.start(" sequentiator: finalize ");
 
     if( PrintMode )
@@ -297,7 +301,7 @@ namespace CAT {
   void sequentiator::finalizeHistos( void ) {
     //*************************************************************
 
-    /*    
+    /*
           if( PrintMode )
           hman.save();
     */
@@ -310,7 +314,7 @@ namespace CAT {
   //*************************************************************
   void sequentiator::readDstProper(mybhep::sstore global, mybhep::EventManager2 *eman) {
     //*************************************************************
-  
+
     clock.start(" sequentiator: read dst properties ");
 
     if (! global.find("GEOM_MODULES"))
@@ -352,9 +356,9 @@ namespace CAT {
     CellDistance = rad;
 
     num_blocks = mybhep::int_from_string(global.fetch("GEOM_num_blocks"));
-      
+
     mybhep::vector_from_string(global.fetch("GEOM_planes_per_block"),planes_per_block);
-      
+
     ysize = mybhep::double_from_string(global.fetch("GEOM_CHAMBER_height"));
 
     mybhep::vector_from_string(global.fetch("GEOM_gaps_Z"),gaps_Z);
@@ -365,10 +369,10 @@ namespace CAT {
         xsize = mybhep::double_from_string(global.fetch("GEOM_CHAMBER_width"));
         zsize = mybhep::double_from_string(global.fetch("GEOM_CHAMBER_length"));
 
-      
-      
+
+
         GG_GRND_diam = mybhep::double_from_string(global.fetch("GEOM_GG_GRND_diam"));
-      
+
         GG_CELL_diam = rad;
 
         CHAMBER_X = xsize;
@@ -414,7 +418,7 @@ namespace CAT {
     m.message("cell diameter is read as: ",rad,"mm",mybhep::VERBOSE); fflush(stdout);
     m.message("distance from wire to wire is read as: ",CellDistance,"mm",mybhep::VERBOSE); fflush(stdout);
     m.message("",mybhep::VERBOSE); fflush(stdout);
-  
+
     //parameters for error parametrization
 
     if( SuperNemo )
@@ -431,7 +435,7 @@ namespace CAT {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
             exit(1);
           }
-      
+
         pname="N3GG_K0";
         if(global.find(pname))
           {
@@ -442,7 +446,7 @@ namespace CAT {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
             exit(1);
           }
-      
+
         pname="N3GG_K1";
         if(global.find(pname))
           {
@@ -453,7 +457,7 @@ namespace CAT {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
             exit(1);
           }
-      
+
         pname="N3GG_K2";
         if(global.find(pname))
           {
@@ -464,7 +468,7 @@ namespace CAT {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
             exit(1);
           }
-      
+
         pname="N3GG_K3";
         if(global.find(pname))
           {
@@ -475,7 +479,7 @@ namespace CAT {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
             exit(1);
           }
-      
+
         pname="N3GG_TH0";
         if(global.find(pname))
           {
@@ -486,7 +490,7 @@ namespace CAT {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
             exit(1);
           }
-      
+
         pname="N3GG_TH1";
         if(global.find(pname))
           {
@@ -497,7 +501,7 @@ namespace CAT {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
             exit(1);
           }
-      
+
         pname="N3GG_TH2";
         if(global.find(pname))
           {
@@ -508,7 +512,7 @@ namespace CAT {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
             exit(1);
           }
-      
+
         pname="N3GG_TH3";
         if(global.find(pname))
           {
@@ -519,7 +523,7 @@ namespace CAT {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
             exit(1);
           }
-      
+
         pname="N3GG_L0";
         if(global.find(pname))
           {
@@ -530,7 +534,7 @@ namespace CAT {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
             exit(1);
           }
-      
+
         pname="N3GG_L1";
         if(global.find(pname))
           {
@@ -542,7 +546,7 @@ namespace CAT {
             exit(1);
           }
       }
-  
+
 
     clock.stop(" sequentiator: read dst properties ");
 
@@ -553,7 +557,7 @@ namespace CAT {
   //*************************************************************
   void sequentiator::readDstProper(void) {
     //*************************************************************
-  
+
     clock.start(" sequentiator: read dst properties ");
 
     if (_MaxBlockSize <= 0)
@@ -567,7 +571,7 @@ namespace CAT {
         m.message("CAT::sequentiator::readDstProper: SuperNemo kind of data",mybhep::NORMAL);
         if (num_blocks <= 0)
           {
-            // Default :                                                                                                                             
+            // Default :
             set_num_blocks (1);
             planes_per_block.at (0) = 9;
           }
@@ -577,7 +581,7 @@ namespace CAT {
         m.message("CAT::sequentiator::readDstProper: Nemo-3 kind of data",mybhep::NORMAL);
         if (num_blocks <= 0)
           {
-            // Default :                                                                                                                             
+            // Default :
             set_num_blocks (3);
             planes_per_block.at (0) = 4;
             planes_per_block.at (1) = 2;
@@ -593,65 +597,72 @@ namespace CAT {
 
 
   //*************************************************************
-  bool sequentiator::sequentiate(topology::tracked_data & __tracked_data){
+  bool sequentiator::sequentiate(topology::tracked_data & tracked_data_) {
     //*************************************************************
-  
+
     clock.start(" sequentiator: sequentiate ","cumulative");
     clock.start(" sequentiator: sequentiation ","restart");
 
     m.message(" sequentiate ", mybhep::VVERBOSE); fflush(stdout);
 
-    set_clusters(__tracked_data.get_clusters());
+    // set_clusters(tracked_data_.get_clusters());
+    vector<topology::cluster> & the_clusters = tracked_data_.get_clusters ();
 
     NFAMILY = -1;
     NCOPY = 0;
 
-    if( clusters_.size() ==0) return true;
+    // if (clusters_.empty ()) return true;
+    if (the_clusters.empty ()) return true;
 
     sequences_.clear();
     scenarios_.clear();
 
-    __tracked_data.scenarios_.clear();
+    tracked_data_.scenarios_.clear();
 
-    for(std::vector<topology::cluster>::iterator icluster=clusters_.begin(); icluster != clusters_.end(); ++icluster){
-      local_cluster_ = *icluster;
+    for (vector<topology::cluster>::iterator
+          icluster = the_clusters.begin();
+        icluster != the_clusters.end(); ++icluster)
+      {
+        topology::cluster & a_cluster = *icluster;
 
-      sequentiate_cluster();
+        // 2012/06/26 XG : Make a copy of pointer better than a copy
+        // by value
+        local_cluster_ = &(*icluster);
 
-    }
-  
-    if( late() ){
-      __tracked_data.set_skipped(true);
-      return false;
-    }
+        sequentiate_cluster(a_cluster);
+      }
+
+    if (late())
+      {
+        tracked_data_.set_skipped(true);
+        return false;
+      }
 
     clean_up_sequences();
     direct_out_of_foil();
 
     make_families();
 
-    interpret_physics(__tracked_data.get_calos());
+    interpret_physics(tracked_data_.get_calos());
 
-    //  match_through_gaps();
+    // //  match_through_gaps();
     match_gaps();
-    if( late() ){
-      __tracked_data.set_skipped(true);
-      return false;
-    }
+    if (late())
+      {
+        tracked_data_.set_skipped(true);
+        return false;
+      }
 
+    make_scenarios(tracked_data_);
+    if (late())
+      {
+        tracked_data_.set_skipped(true);
+        return false;
+      }
 
-    make_scenarios(__tracked_data);
-    if( late() ){
-      __tracked_data.set_skipped(true);
-      return false;
-    }
-
-
-    make_plots(__tracked_data);
-
+    // make_plots(tracked_data_);
 
     clock.stop(" sequentiator: sequentiate ");
-
 
     return true;
   }
@@ -665,36 +676,36 @@ namespace CAT {
       if( PrintMode ){
       if( !__tracked_data.scenarios_.empty() ){
       for(std::vector<topology::sequence>::iterator isequence = __tracked_data.scenarios_[0].sequences_.begin(); isequence != __tracked_data.scenarios_[0].sequences_.end(); ++isequence){
-        
+
       for(std::vector<topology::node>::iterator in = isequence->nodes_.begin(); in != isequence->nodes_.end(); ++in){
       topology::experimental_vector dist(in->c().ep(), in->ep());
       hman.fill("all_point_map", dist.z().value(), dist.x().value());
       }
-        
+
       if( !isequence->has_decay_vertex() ){
       // if the last cell is not on a gap
       if( gap_number(isequence->last_node().c()) < 0 ){
       m.message(" sequence ", isequence->name(), "has last cell ", isequence->last_node().c().id(), " disconnected", mybhep::NORMAL);
-            
+
       for(std::vector<topology::sequence>::iterator jsequence = __tracked_data.scenarios_[0].sequences_.begin(); jsequence != __tracked_data.scenarios_[0].sequences_.end(); ++jsequence){
       if( isequence == jsequence ) continue;
       if( jsequence->nodes_[0].c().id() != isequence->last_node().c().id() &&
       jsequence->last_node().c().id() != isequence->last_node().c().id()) continue;
-              
+
       m.message(" .. and in common with sequence ", jsequence->name(), mybhep::NORMAL);
-              
+
       if( isequence->family() == jsequence->family() ) continue;
-              
+
       m.message(" .... will plot ", mybhep::NORMAL);
-              
+
       topology::experimental_vector dist(isequence->last_node().c().ep(), isequence->last_node().ep());
       hman.fill("end_point_map", dist.z().value(), dist.x().value());
       }
-            
+
       }
       }
-        
-      }    
+
+      }
       }
       }
 
@@ -754,283 +765,288 @@ namespace CAT {
   }
 
   //*************************************************************
-  void sequentiator::sequentiate_cluster(){
+  void sequentiator::sequentiate_cluster(topology::cluster & cluster_) {
     //*************************************************************
 
-  
-    for(std::vector<topology::node>::iterator inode = local_cluster_.nodes_.begin(); inode != local_cluster_.nodes_.end(); ++inode){
+    for (vector<topology::node>::iterator
+          inode = cluster_.nodes_.begin();
+        inode != cluster_.nodes_.end(); ++inode)
+      {
+        topology::node & a_node = *inode;
 
-      if( level >= mybhep::VVERBOSE ){
-        std::clog << "\n first node: " << inode->c().id();
+        if (level >= mybhep::VVERBOSE)
+          {
+            clog << "\n first node: " << inode->c().id();
+          }
+
+        // 2012/06/27 XG: Not used anymore
+        // topology::node first_node;
+
+        if (!good_first_node(a_node)) continue;
+
+        make_new_sequence(a_node);
+
+        if (late()) return;
+
+        make_copy_sequence(a_node);
       }
-    
-      topology::node first_node;
 
-      if(! good_first_node(*inode, first_node) ){
-        continue;
-      }
-    
-    
-      make_new_sequence(first_node);
-
-      if( late() ){
-        return ;
-      }
-
-
-      make_copy_sequence(first_node);
-    
-    }
-  
     return;
   }
 
 
   //*************************************************************
-  void sequentiator::make_new_sequence(topology::node first_node){
+  void sequentiator::make_new_sequence(topology::node & first_node){
     //*************************************************************
-  
-    if( late() )
-      return;
+
+    if (late()) return;
 
     clock.start(" sequentiator: make new sequence ","cumulative");
 
     //  A node is added to the newsequence. It has the given cell but no other
     //  requirement. The free level is set to true.
     topology::sequence newsequence(first_node, level, nsigma);
-  
-    if( level >= mybhep::VERBOSE ){
-      std::clog << " begin track [" << sequences_.size() << "] with node " << first_node.c().id() << std::endl;
-      print_a_sequence(&newsequence);
-    }
-  
-    bool updated = true;
-  
-    while( updated ){
-      updated = evolve(&newsequence);
-    }
 
-
-    if( late() )
-      return;
-
-    if( level >= mybhep::VVERBOSE)
-      print_a_sequence( &newsequence );
-  
-    NFAMILY ++;
-    NCOPY = 0;
-    if( newsequence.nodes().size() != 2 )
+    if (level >= mybhep::VERBOSE)
       {
+        clog << " begin track [" << sequences_.size() << "] with node " << first_node.c().id() << endl;
+        print_a_sequence(newsequence);
+      }
 
-        make_name(&newsequence);
+    bool updated = true;
 
-        sequences_.push_back( newsequence );
+    while (updated)
+      {
+        updated = evolve(newsequence);
+      }
+
+    if (late()) return;
+
+    if (level >= mybhep::VERBOSE)
+      print_a_sequence(newsequence);
+
+    NFAMILY++;
+    NCOPY = 0;
+    if (newsequence.nodes().size() != 2)
+      {
+        make_name(newsequence);
+
+        sequences_.push_back(newsequence);
         m.message(" finished track [", sequences_.size()-1, "] ", mybhep::VERBOSE); fflush(stdout);
         clean_up_sequences();
       }
     else
-      add_pair(&newsequence);
-  
+      {
+        add_pair(newsequence);
+      }
+
     clock.stop(" sequentiator: make new sequence ");
-    
+
     return;
   }
 
 
   //*************************************************************
-  void sequentiator::make_name(topology::sequence* seq) {
+  void sequentiator::make_name(topology::sequence & sequence_) {
     //*************************************************************
 
     std::string number = mybhep::to_string(NFAMILY)+"_"+mybhep::to_string(NCOPY);
     std::string name = "track_"+number;
-    seq->set_name(name);
-  
+    sequence_.set_name(name);
+
     return;
 
   }
 
   //*************************************************************
-  void sequentiator::make_copy_sequence(topology::node first_node){
+  void sequentiator::make_copy_sequence(topology::node & first_node){
     //*************************************************************
-  
+
+    const bool local_devel = false;
+    if (local_devel)
+      {
+        level = mybhep::VVERBOSE;
+        clog << "DEVEL: " << "CAT::sequentiator::make_copy_sequence: "
+             << "Entering..." << endl;
+      }
+
     clock.start(" sequentiator: make copy sequence ","cumulative");
 
     size_t isequence;
-    while( there_is_free_sequence_beginning_with(first_node.c(), &isequence ) )
+    while (there_is_free_sequence_beginning_with(first_node.c(), &isequence))
       {
-      
-        if( late() )
-          return;
+        if (late()) return;
 
         clock.start(" sequentiator: make copy sequence: part A ","cumulative");
         clock.start(" sequentiator: make copy sequence: part A: alpha ","cumulative");
 
         m.message("\n begin, with cell", first_node.c().id(), ", parallel track ", sequences_.size(), " to track ", isequence, mybhep::VERBOSE); fflush(stdout);
-        
-        size_t ilink, ilfn;
-      
-        if( level >= mybhep::VVERBOSE)
+
+        if (level >= mybhep::VVERBOSE)
           {
             std::clog << " original sequence before copying: " << std::endl;
-            print_a_sequence(&sequences_[isequence]);
+            print_a_sequence(sequences_[isequence]);
           }
-        
+
         clock.stop(" sequentiator: make copy sequence: part A: alpha ");
         clock.start(" sequentiator: copy to lfn ","cumulative");
+        size_t ilink, ilfn;
         topology::sequence newcopy = sequences_[isequence].copy_to_last_free_node(&ilfn, &ilink);
         clock.stop(" sequentiator: copy to lfn ");
-      
+
         clock.start(" sequentiator: make copy sequence: part A: beta ","cumulative");
         m.message(" copied from sequence  ", isequence, mybhep::VVERBOSE); fflush(stdout);
-      
-        if( level >= mybhep::VVERBOSE)
+
+        if (level >= mybhep::VVERBOSE)
           {
-            print_a_sequence(&sequences_[isequence]);
-            print_a_sequence(&newcopy);
+            print_a_sequence(sequences_[isequence]);
+            print_a_sequence(newcopy);
           }
-      
 
         clock.stop(" sequentiator: make copy sequence: part A: beta ");
         clock.start(" sequentiator: make copy sequence: evolve ","cumulative");
+
         bool updated = true;
-        while( updated )
-          updated = evolve(&newcopy);
+        while (updated)
+          updated = evolve(newcopy);
         clock.stop(" sequentiator: make copy sequence: evolve ");
-      
-        if( late() )
-          return;
 
-        if( level >= mybhep::VVERBOSE)
-          print_a_sequence( &newcopy );
+        if (late()) return;
 
+        if(level >= mybhep::VVERBOSE)
+          print_a_sequence(newcopy);
 
-      
         clock.stop(" sequentiator: make copy sequence: part A ");
         clock.start(" sequentiator: manage copy sequence ","cumulative");
 
+        if (local_devel)
+          {
+            clog << "DEVEL: " << "CAT::sequentiator::make_copy_sequence: "
+                 << "Checking study case for sequence #" << isequence << " "
+                 << "and node #" << first_node.c ().id () << endl;
+          }
 
         // not adding: case 1: new sequence did not evolve
-        if( newcopy.nodes().size() == ilfn + 1)
+        if (newcopy.nodes().size() == ilfn + 1)
           {
             m.message(" not adding new sequence, since it couldn't evolve past lfn ", mybhep::VERBOSE); fflush(stdout);
             clean_up_sequences();
           }
-        else{
-
-          // if copy has evolved past level 1, the nodes 0 and 1 it used
-          // are set to used in the original
-          if( newcopy.nodes().size() > 1 ){
-            if( !sequences_[isequence].nodes().empty() ){
-              clock.start(" sequentiator: get link index ","cumulative");
-              size_t it1 = newcopy.get_link_index_of_cell(0, newcopy.nodes()[1].c());
-              clock.stop(" sequentiator: get link index ");
-              m.message(" setting as used original node 0  cc ", it1, mybhep::VVERBOSE);
-              sequences_[isequence].nodes_[0].cc_[it1].set_all_used();
-            }
-            /*
-              if( sequences_[isequence].nodes().size() > 1 && ilfn > 0){
-              clock.start(" sequentiator: get link index ","cumulative");
-              size_t it2 = newcopy.get_link_index_of_cell(1, newcopy.nodes()[2].c());
-              clock.stop(" sequentiator: get link index ");
-              m.message(" setting as used original node 1  ccc ", it2, mybhep::VVERBOSE);
-              sequences_[isequence].nodes_[1].ccc_[it2].set_all_used();
+        else
+          {
+            // if copy has evolved past level 1, the nodes 0 and 1 it used
+            // are set to used in the original
+            if( newcopy.nodes().size() > 1 ){
+              if( !sequences_[isequence].nodes().empty() ){
+                clock.start(" sequentiator: get link index ","cumulative");
+                size_t it1 = newcopy.get_link_index_of_cell(0, newcopy.nodes()[1].c());
+                clock.stop(" sequentiator: get link index ");
+                m.message(" setting as used original node 0  cc ", it1, mybhep::VVERBOSE);
+                sequences_[isequence].nodes_[0].cc_[it1].set_all_used();
               }
-            */
-            clock.start(" sequentiator: set free level ","cumulative");
-            sequences_[isequence].set_free_level();
-            clock.stop(" sequentiator: set free level ");
-          }
+              /*
+                if( sequences_[isequence].nodes().size() > 1 && ilfn > 0){
+                clock.start(" sequentiator: get link index ","cumulative");
+                size_t it2 = newcopy.get_link_index_of_cell(1, newcopy.nodes()[2].c());
+                clock.stop(" sequentiator: get link index ");
+                m.message(" setting as used original node 1  ccc ", it2, mybhep::VVERBOSE);
+                sequences_[isequence].nodes_[1].ccc_[it2].set_all_used();
+                }
+              */
+              clock.start(" sequentiator: set free level ","cumulative");
+              sequences_[isequence].set_free_level();
+              clock.stop(" sequentiator: set free level ");
+            }
 
           // not adding: case 2: new sequence contained
-          if( newcopy.contained(sequences_[isequence] )  &&  !newcopy.Free())  // new copy is contained in original
+          if (newcopy.contained(sequences_[isequence]) && !newcopy.Free())  // new copy is contained in original
             {
               m.message(" not adding new sequence, contained in ", isequence, "from which it was copied", mybhep::VERBOSE); fflush(stdout);
               clean_up_sequences();
             }
-          else{ // adding: case 3
-
-            if( sequences_[isequence].contained( newcopy )  ) { // original is contained in new copy
-            
-              for(size_t k=0; k<ilfn; k++)
-                {
-                  newcopy.nodes_[k].set_free( sequences_[isequence].nodes()[k].free());
-
-                  for(std::vector<topology::cell_couplet>::iterator icc=sequences_[isequence].nodes_[k].cc_.begin(); icc != sequences_[isequence].nodes_[k].cc_.end(); ++icc)
+          else
+            { // adding: case 3
+              if (sequences_[isequence].contained(newcopy))
+                { // original is contained in new copy
+                  for (size_t k=0; k<ilfn; k++)
                     {
-                      newcopy.nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].set_free( icc->free());
-                      newcopy.nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].set_begun( icc->begun());
+                      newcopy.nodes_[k].set_free( sequences_[isequence].nodes()[k].free());
 
-                      for(std::vector<topology::line>::iterator itang=sequences_[isequence].nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].tangents_.begin(); itang !=sequences_[isequence].nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].tangents_.end(); ++itang)
-                        newcopy.nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].tangents_[itang - sequences_[isequence].nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].tangents_.begin()].set_used(itang->used() );
+                      for (vector<topology::cell_couplet>::iterator icc = sequences_[isequence].nodes_[k].cc_.begin();
+                          icc != sequences_[isequence].nodes_[k].cc_.end(); ++icc)
+                        {
+                          newcopy.nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].set_free( icc->free());
+                          newcopy.nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].set_begun( icc->begun());
 
+                          for(vector<topology::line>::iterator itang = sequences_[isequence].nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].tangents_.begin(); itang != sequences_[isequence].nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].tangents_.end(); ++itang)
+                            newcopy.nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].tangents_[itang - sequences_[isequence].nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].tangents_.begin()].set_used(itang->used() );
+
+                        }
+
+                      for (vector<topology::cell_triplet>::iterator iccc = sequences_[isequence].nodes_[k].ccc_.begin();
+                           iccc != sequences_[isequence].nodes_[k].ccc_.end(); ++iccc)
+                        {
+                          newcopy.nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].set_free( iccc->free());
+                          newcopy.nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].set_begun( iccc->begun());
+
+                          for (vector<topology::joint>::iterator ijoint = sequences_[isequence].nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].joints_.begin(); ijoint != sequences_[isequence].nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].joints_.end(); ++ijoint)
+                            newcopy.nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].joints_[ijoint - sequences_[isequence].nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].joints_.begin()].set_used(ijoint->used() );
+
+                        }
                     }
 
-                  for(std::vector<topology::cell_triplet>::iterator iccc=sequences_[isequence].nodes_[k].ccc_.begin(); iccc != sequences_[isequence].nodes_[k].ccc_.end(); ++iccc)
+                  if (ilfn < 2)
                     {
-                      newcopy.nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].set_free( iccc->free());
-                      newcopy.nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].set_begun( iccc->begun());
+                      for (vector<topology::cell_couplet>::iterator icc = sequences_[isequence].nodes_[ilfn].cc_.begin();
+                           icc != sequences_[isequence].nodes_[ilfn].cc_.end(); ++icc)
+                        if ((size_t)(icc - sequences_[isequence].nodes_[ilfn].cc_.begin()) != ilink)
+                          {
+                            newcopy.nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].set_free( icc->free());
+                            newcopy.nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].set_begun( icc->begun());
 
-                      for(std::vector<topology::joint>::iterator ijoint=sequences_[isequence].nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].joints_.begin(); ijoint !=sequences_[isequence].nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].joints_.end(); ++ijoint)
-                        newcopy.nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].joints_[ijoint - sequences_[isequence].nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].joints_.begin()].set_used(ijoint->used() );
+                            for (vector<topology::line>::iterator itang = sequences_[isequence].nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].tangents_.begin(); itang !=sequences_[isequence].nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].tangents_.end(); ++itang)
+                              newcopy.nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].tangents_[itang - sequences_[isequence].nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].tangents_.begin()].set_used(itang->used() );
+                          }
+                    }
+                  else
+                    {
+                      for (vector<topology::cell_triplet>::iterator iccc = sequences_[isequence].nodes_[ilfn].ccc_.begin();
+                          iccc != sequences_[isequence].nodes_[ilfn].ccc_.end(); ++iccc)
+                        if ((size_t)(iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()) != ilink )
+                          {
+                            newcopy.nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].set_free( iccc->free());
+                            newcopy.nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].set_begun( iccc->begun());
 
+                            for (vector<topology::joint>::iterator ijoint = sequences_[isequence].nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].joints_.begin(); ijoint !=sequences_[isequence].nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].joints_.end(); ++ijoint)
+                              newcopy.nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].joints_[ijoint - sequences_[isequence].nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].joints_.begin()].set_used(ijoint->used() );
+                          }
                     }
 
+                  clock.start(" sequentiator: set free level ","cumulative");
+                  newcopy.set_free_level();
+                  clock.stop(" sequentiator: set free level ");
 
+                  sequences_.erase(sequences_.begin()+isequence);
+                  m.message(" erased original sequence ", isequence, "contained in sequence", sequences_.size()+1, "which was copied from it", mybhep::VERBOSE); fflush(stdout);
+                  clean_up_sequences();
 
                 }
-            
 
-              if( ilfn < 2 ){
-
-                for(std::vector<topology::cell_couplet>::iterator icc=sequences_[isequence].nodes_[ilfn].cc_.begin(); icc != sequences_[isequence].nodes_[ilfn].cc_.end(); ++icc)
-                  if( (size_t)(icc - sequences_[isequence].nodes_[ilfn].cc_.begin()) != ilink )
-                    {
-                      newcopy.nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].set_free( icc->free());
-                      newcopy.nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].set_begun( icc->begun());
-
-                      for(std::vector<topology::line>::iterator itang=sequences_[isequence].nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].tangents_.begin(); itang !=sequences_[isequence].nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].tangents_.end(); ++itang)
-                        newcopy.nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].tangents_[itang - sequences_[isequence].nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].tangents_.begin()].set_used(itang->used() );
-                    }
-              }
-              else{
-
-                for(std::vector<topology::cell_triplet>::iterator iccc=sequences_[isequence].nodes_[ilfn].ccc_.begin(); iccc != sequences_[isequence].nodes_[ilfn].ccc_.end(); ++iccc)
-                  if( (size_t)(iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()) != ilink )
-                    {
-                      newcopy.nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].set_free( iccc->free());
-                      newcopy.nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].set_begun( iccc->begun());
-
-                      for(std::vector<topology::joint>::iterator ijoint=sequences_[isequence].nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].joints_.begin(); ijoint !=sequences_[isequence].nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].joints_.end(); ++ijoint)
-                        newcopy.nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].joints_[ijoint - sequences_[isequence].nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].joints_.begin()].set_used(ijoint->used() );
-                    }
-
-              }
-            
-              clock.start(" sequentiator: set free level ","cumulative");
-              newcopy.set_free_level();
-              clock.stop(" sequentiator: set free level ");
-
-              sequences_.erase(sequences_.begin()+isequence);
-              m.message(" erased original sequence ", isequence, "contained in sequence", sequences_.size()+1, "which was copied from it", mybhep::VERBOSE); fflush(stdout);
-              clean_up_sequences();
-            
-            }
-          
-            NCOPY ++;
-            if( newcopy.nodes().size() != 2 )
-              {
-                make_name(&newcopy);
-                sequences_.push_back( newcopy );
-                m.message(" finished track [", sequences_.size()-1, "] ", mybhep::VERBOSE); fflush(stdout);
-                clean_up_sequences();
-              }
-            else{
-              add_pair(&newcopy);
-            }
+              NCOPY++;
+              if (newcopy.nodes().size() != 2)
+                {
+                  make_name(newcopy);
+                  sequences_.push_back( newcopy );
+                  m.message(" finished track [", sequences_.size()-1, "] ", mybhep::VERBOSE); fflush(stdout);
+                  clean_up_sequences();
+                }
+              else
+                {
+                  add_pair(newcopy);
+                }
+            }// end of case 3
           }
 
-        }
-      
         clock.stop(" sequentiator: manage copy sequence ");
       }
 
@@ -1046,7 +1062,7 @@ namespace CAT {
     //*************************************************************
 
     if( clock.read(" sequentiator: sequentiation ") >= MaxTime ){
-    
+
       m.message(" execution time " , clock.read(" sequentiator: sequentiation ") , " ms  greater than MaxTime" , MaxTime , " quitting! ", mybhep::NORMAL);
 
       clock.stop_all();
@@ -1066,25 +1082,37 @@ namespace CAT {
   }
 
   //*************************************************************
-  bool sequentiator::evolve(topology::sequence *sequence){
+  bool sequentiator::evolve(topology::sequence & sequence){
     //*************************************************************
 
+    const bool local_devel = false;
 
-    if( late() )
-      return false;
+    if (local_devel)
+      {
+        clog << "DEVEL: " << "CAT::sequentiator::evolve: "
+             << "Entering..." << endl;
+      }
+
+    if (late()) return false;
 
     clock.start(" sequentiator: evolve ","cumulative");
 
     clock.start(" sequentiator: evolve: part A ","cumulative");
 
-    size_t s = sequence->nodes().size();
+    const size_t sequence_size = sequence.nodes().size();
 
-    m.message(" evolving sequence of size", s, mybhep::VVERBOSE); fflush(stdout);
+    if (local_devel)
+      {
+        clog << "DEVEL: " << "CAT::sequentiator::evolve: "
+             << "Sequence size = " << sequence_size << endl;
+      }
+
+    m.message(" evolving sequence of size", sequence_size, mybhep::VVERBOSE); fflush(stdout);
 
     // protection
-    if( s < 1 )
+    if( sequence_size < 1 )
       {
-        m.message(" problem: sequence has lenght ", s, "... stop evolving ", mybhep::NORMAL); fflush(stdout);
+        m.message(" problem: sequence has lenght ", sequence_size, "... stop evolving ", mybhep::NORMAL); fflush(stdout);
         clock.stop(" sequentiator: evolve: part A ");
         clock.stop(" sequentiator: evolve ");
         return false;
@@ -1094,16 +1122,16 @@ namespace CAT {
     if( level >= mybhep::VVERBOSE )
       print_a_sequence(sequence);
 
-    if( s == 3 ){
+    if( sequence_size == 3 ){
       clock.start(" sequentiator: get link index ","cumulative");
-      size_t it1 = sequence->get_link_index_of_cell(0, sequence->nodes()[1].c());
-      if( it1 >= sequence->nodes_[0].cc_.size() ){
-        m.message(" problem: it1 ", it1, " nodes size ", sequence->nodes_.size(), " cc size ", sequence->nodes_[0].cc_.size(), mybhep::NORMAL); fflush(stdout);
+      size_t it1 = sequence.get_link_index_of_cell(0, sequence.nodes()[1].c());
+      if( it1 >= sequence.nodes_[0].cc_.size() ){
+        m.message(" problem: it1 ", it1, " nodes size ", sequence.nodes_.size(), " cc size ", sequence.nodes_[0].cc_.size(), mybhep::NORMAL); fflush(stdout);
         clock.stop(" sequentiator: evolve: part A ");
         clock.stop(" sequentiator: evolve ");
         return false;
       }
-      sequence->nodes_[0].cc_[it1].set_all_used();
+      sequence.nodes_[0].cc_[it1].set_all_used();
 
       clock.stop(" sequentiator: get link index ");
     }
@@ -1115,14 +1143,20 @@ namespace CAT {
     size_t ilink;
     topology::experimental_point newp;
     clock.start(" sequentiator: pick new cell ","cumulative");
-    bool there_is_link = sequence->pick_new_cell(&ilink, &newp, local_cluster_);
+    bool there_is_link = sequence.pick_new_cell(&ilink, &newp, *local_cluster_);
     clock.stop(" sequentiator: pick new cell ");
+
+    if (local_devel)
+      {
+        clog << "DEVEL: " << "CAT::sequentiator::evolve: "
+             << "Is there a link = " << there_is_link << endl;
+      }
 
     if( !there_is_link ){
       m.message(" no links could be added... stop evolving ", mybhep::VERBOSE); fflush(stdout);
       clock.start(" sequentiator: evolve: part B: set free level ","cumulative");
       clock.start(" sequentiator: set free level ","cumulative");
-      sequence->set_free_level();
+      sequence.set_free_level();
       clock.stop(" sequentiator: set free level ");
       clock.stop(" sequentiator: evolve: part B: set free level ");
       clock.stop(" sequentiator: evolve: part B ");
@@ -1130,25 +1164,25 @@ namespace CAT {
       return false;
     }
 
-    topology::cell newcell = sequence->last_node().links()[ilink];
+    topology::cell newcell = sequence.last_node().links()[ilink];
     clock.start(" sequentiator: evolve: part B: noc ","cumulative");
-    topology::node newnode = local_cluster_.node_of_cell(newcell);
-    //  topology::node newnode = local_cluster_.nodes()[local_cluster_.node_index_of_cell(newcell)];
+    topology::node newnode = local_cluster_->node_of_cell(newcell);
+    //  topology::node newnode = local_cluster_->nodes()[local_cluster_->node_index_of_cell(newcell)];
     clock.stop(" sequentiator: evolve: part B: noc ");
     newnode.set_free(false); // standard initialization
 
     clock.stop(" sequentiator: evolve: part B ");
     clock.start(" sequentiator: evolve: part C ","cumulative");
 
-    if( s == 1 )
+    if( sequence_size == 1 )
       {
         // since it's the 2nd cell, only the four
         // standard alternatives are available (which will be treated out of "Evolve"), so
         // this link has no freedom left
 
-        sequence->nodes_.push_back( newnode );
+        sequence.nodes_.push_back( newnode );
         clock.start(" sequentiator: set free level ","cumulative");
-        sequence->set_free_level();
+        sequence.set_free_level();
         clock.stop(" sequentiator: set free level ");
 
         clock.stop(" sequentiator: evolve: part C ");
@@ -1159,88 +1193,89 @@ namespace CAT {
 
     newnode.set_ep(newp);
 
-    sequence->nodes_.push_back( newnode );
+    sequence.nodes_.push_back( newnode );
     m.message(" points have been added ", mybhep::VERBOSE); fflush(stdout);
 
     clock.start(" sequentiator: set free level ","cumulative");
-    sequence->set_free_level();
+    sequence.set_free_level();
     clock.stop(" sequentiator: set free level ");
 
     clock.stop(" sequentiator: evolve: part C ");
     clock.stop(" sequentiator: evolve ");
     return true;
-
-
-
   }
 
 
 
   //*************************************************************
-  bool sequentiator::good_first_node(topology::node node, topology::node& first_node){
+  bool sequentiator::good_first_node(topology::node & node_) {
     //*************************************************************
 
     clock.start(" sequentiator: good first node ", "cumulative");
 
-    std::string type = node.topological_type();
+    const string type = node_.topological_type();
 
     // check that node is not in the middle of a cell_triplet
     if( type != "VERTEX" &&
         type != "MULTI_VERTEX" ){
-      clock.stop(" sequentiator: good first node ");
+      // clock.stop(" sequentiator: good first node ");
       m.message(" not a good first node: type ", type, mybhep::VVERBOSE); fflush(stdout);
       return false;
     }
 
 
-    std::vector<size_t> done_connections;
+    vector<size_t> done_connections;
     // check that node has never been added to a sequence
-    for(std::vector<topology::sequence>::iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq)
-      if( iseq->has_cell(node.c()) ){
-        if( type == "VERTEX" ){
-        
-	  m.message(" not a good first node: already used as vertex in seuqence ", iseq - sequences_.begin(), mybhep::VVERBOSE); fflush(stdout);
+    for(vector<topology::sequence>::const_iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq)
+      {
+        if( iseq->has_cell(node_.c()) ){
+          if( type == "VERTEX" ){
 
-          clock.stop(" sequentiator: good first node ");
-          return false;
-        }
-        else{ // multi-vertex
-          if( iseq->nodes_.size() > 1 ){
-            size_t connection_node;
-            if( iseq->nodes_[0].c().id() == node.c().id() )
-              connection_node = 1;
-            else if( iseq->last_node().c().id() == node.c().id() ){
-              connection_node = iseq->nodes_.size() - 2;
-            }
-            else{
-              m.message(" problem: multi-vertex ", node.c().id(), " belongs to sequence ", iseq->name(), " but not as first or last cell", mybhep::NORMAL);
-              continue;
-            }
-	    // add to done_connections cell ids of those cells
-	    // that have already been connected to NODE in other sequences
-            std::vector<size_t>::iterator fid = std::find(done_connections.begin(),
-                                                     done_connections.end(),
-                                                     iseq->nodes_[connection_node].c().id());
+            m.message(" not a good first node: already used as vertex in seuqence ", iseq - sequences_.begin(), mybhep::VVERBOSE); fflush(stdout);
 
-            if( fid == done_connections.end())
-              done_connections.push_back(iseq->nodes_[connection_node].c().id());
+            // clock.stop(" sequentiator: good first node ");
+            return false;
+          }
+          else{ // multi-vertex
+            if( iseq->nodes_.size() > 1 ){
+              size_t connection_node;
+              if( iseq->nodes_[0].c().id() == node_.c().id() )
+                connection_node = 1;
+              else if( iseq->last_node().c().id() == node_.c().id() ){
+                connection_node = iseq->nodes_.size() - 2;
+              }
+              else{
+                m.message(" problem: multi-vertex ", node_.c().id(), " belongs to sequence ", iseq->name(), " but not as first or last cell", mybhep::NORMAL);
+                continue;
+              }
+              // add to done_connections cell ids of those cells
+              // that have already been connected to NODE in other sequences
+              vector<size_t>::iterator fid = std::find(done_connections.begin(),
+                                                       done_connections.end(),
+                                                       iseq->nodes_[connection_node].c().id());
+
+              if( fid == done_connections.end())
+                done_connections.push_back(iseq->nodes_[connection_node].c().id());
+            }
           }
         }
       }
-  
+
     if( type == "MULTI_VERTEX" ){
       for(size_t i=0; i<done_connections.size(); i++){
         size_t cc_index = 0;
-        if( !node.has_couplet(done_connections[i],  &cc_index) )
-          m.message(" problem: multi-vertex ", node.c().id(), " should link to cell ", done_connections[i], " but has not such couplet", mybhep::NORMAL);
+        if( !node_.has_couplet(done_connections[i],  &cc_index) )
+          m.message(" problem: multi-vertex ", node_.c().id(), " should link to cell ", done_connections[i], " but has not such couplet", mybhep::NORMAL);
         else{
-          m.message(" multi-vertex ", node.c().id(), " has already been added to a sequence connecting to cell ", done_connections[i], " so couplet ", cc_index, " will be erased", mybhep::VERBOSE);
-          node.cc_.erase(node.cc_.begin() + cc_index);
+          m.message(" multi-vertex ", node_.c().id(), " has already been added to a sequence connecting to cell ", done_connections[i], " so couplet ", cc_index, " will be erased", mybhep::VERBOSE);
+          node_.cc_.erase(node_.cc_.begin() + cc_index);
         }
       }
     }
-  
-    first_node = node;
+
+    // 2012/06/27 XG: Not used anymore since the current node is
+    //    directly modified
+    // first_node = node;
 
     clock.stop(" sequentiator: good first node ");
     return true;
@@ -1257,10 +1292,11 @@ namespace CAT {
 
     families_.clear();
 
-    for(std::vector<topology::sequence>::iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq){
+    for (std::vector<topology::sequence>::const_iterator iseq = sequences_.begin();
+         iseq != sequences_.end(); ++iseq){
 
-      size_t ipart = iseq - sequences_.begin();
-      size_t this_family = mybhep::int_from_string(iseq->family());
+      const size_t ipart = iseq - sequences_.begin();
+      const size_t this_family = mybhep::int_from_string(iseq->family());
 
       bool found = false;
       size_t ifam;
@@ -1271,7 +1307,7 @@ namespace CAT {
             ifam = i;
             break;
           }
-    
+
       if( found )
         {
           bool added = false;
@@ -1291,7 +1327,7 @@ namespace CAT {
         {
           std::vector<size_t> Fam;
           Fam.push_back(this_family);
-        
+
           Fam.push_back(ipart);
           families_.push_back( Fam );
         }
@@ -1343,14 +1379,14 @@ namespace CAT {
 
       m.message(" begin scenario with sequence ", iseq->name(), mybhep::VVERBOSE);
       if( level >= mybhep::VVERBOSE)
-        print_a_sequence( &(*iseq) );
-    
+        print_a_sequence(*iseq);
+
       topology::scenario sc;
       sc.sequences_.push_back(*iseq);
       sc.calculate_n_free_families(td.get_cells(), td.get_calos());
       sc.calculate_n_overlaps(td.get_cells(), td.get_calos());
       sc.calculate_chi2();
-    
+
       size_t jmin, nfree, noverlaps;
       double Chi2;
       int ndof;
@@ -1358,7 +1394,7 @@ namespace CAT {
         {
           m.message(" best sequence to add is ", jmin, mybhep::VVERBOSE);
           if( level >= mybhep::VVERBOSE)
-            print_a_sequence( &(sequences_[jmin]) );
+            print_a_sequence(sequences_[jmin]);
           m.message(" nfree ", nfree, " noverls ", noverlaps, " Chi2 ", Chi2, mybhep::VVERBOSE);
           sc.sequences_.push_back(sequences_[jmin]);
           sc.set_n_free_families(nfree);
@@ -1366,12 +1402,12 @@ namespace CAT {
           sc.set_ndof(ndof);
           sc.set_n_overlaps(noverlaps);
         }
-    
+
       scenarios_.push_back(sc);
-    
+
 
     }
-    
+
     if( late() ){
       td.set_skipped(true);
       return false;
@@ -1387,21 +1423,21 @@ namespace CAT {
       size_t index_tmp = pick_best_scenario();
 
       if( level > mybhep::NORMAL)
-        print_a_scenario(&(scenarios_[index_tmp]));
+        print_a_scenario(scenarios_[index_tmp]);
 
 
       m.message(" made scenario ", mybhep::VERBOSE);
-    
+
       td.scenarios_.push_back(scenarios_[index_tmp]);
 
       clock.stop(" sequentiator: make scenarios ");
       return true;
-    
+
     }
-  
+
     m.message(" not made scenario ", mybhep::VERBOSE);
     clock.stop(" sequentiator: make scenarios ");
-  
+
     return false;
 
 
@@ -1411,14 +1447,14 @@ namespace CAT {
   //*************************************************************
   size_t sequentiator::pick_best_scenario(){
     //*************************************************************
-  
+
     m.message(" pick best scenario ", mybhep::VVERBOSE);
-  
+
     size_t index = 0;
-  
+
     for(std::vector<topology::scenario>::iterator sc=scenarios_.begin(); sc!=scenarios_.end(); ++sc){
       m.message("...scenario ", sc - scenarios_.begin(), " nff ", sc->n_free_families(), " noverls ", sc->n_overlaps(), " chi2 ", sc->chi2(), " prob ", sc->Prob(), mybhep::VVERBOSE);
-    
+
       if( sc->better_scenario_than( scenarios_[index] ) )
         {
           index = sc - scenarios_.begin();
@@ -1426,22 +1462,22 @@ namespace CAT {
     }
 
     m.message(" best scenario is ", index, mybhep::VERBOSE);
-  
+
     return index;
-  
+
   }
 
   //*************************************************************
   bool sequentiator::can_add_family(topology::scenario sc, size_t* jmin, size_t* nfree, double* Chi2, size_t* noverlaps, int* ndof, topology::tracked_data td) {
     //*************************************************************
-  
+
     if( late() )
       return false;
 
     clock.start(" sequentiator: can add family ", "cumulative");
 
     bool ok = false;
-  
+
     if( sc.n_free_families() == 0 ){
       clock.stop(" sequentiator: can add family ");
       return false;
@@ -1460,7 +1496,7 @@ namespace CAT {
 
     for(std::vector<topology::sequence>::iterator jseq=sequences_.begin(); jseq!=sequences_.end(); ++jseq)
       {
-      
+
         bool found = false;
         for(std::vector<topology::sequence>::iterator iseq=sc.sequences_.begin(); iseq!=sc.sequences_.end(); ++iseq)
           if( iseq->name() == jseq->name() )
@@ -1492,12 +1528,12 @@ namespace CAT {
         tmp.calculate_n_overlaps(td.get_cells(), td.get_calos());
         tmp.calculate_chi2();
         clock.stop(" sequentiator: calculate scenario ");
-      
+
         m.message(" ...try to add sequence ", jseq->name(), mybhep::VVERBOSE);
         if( level >= mybhep::VVERBOSE)
-          print_a_sequence( &(*jseq) );
+          print_a_sequence(*jseq);
         m.message(" ...nfree ", tmp.n_free_families(), " noverls ", tmp.n_overlaps(), " chi2 ", tmp.chi2(), " prob ", tmp.Prob(), mybhep::VVERBOSE);
-      
+
         clock.start(" sequentiator: better scenario ", "cumulative");
         if( tmp.better_scenario_than(tmpmin) )
           {
@@ -1564,10 +1600,16 @@ namespace CAT {
   }
 
   //*************************************************************
-  void sequentiator::interpret_physics(std::vector<topology::calorimeter_hit> calos){
+  void sequentiator::interpret_physics(std::vector<topology::calorimeter_hit> & calos){
     //*************************************************************
 
     clock.start(" sequentiator: interpret physics ", "cumulative");
+
+    if (calos.empty ())
+      {
+        clock.stop(" sequentiator: interpret physics ");
+        return;
+      }
 
     m.message(" interpreting physics of ", sequences_.size(), " sequences ", mybhep::VVERBOSE); fflush(stdout);
     for(std::vector<topology::sequence>::iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq)
@@ -1582,26 +1624,26 @@ namespace CAT {
         {
 
           m.message(" extrapolate decay vertex with ", calos.size(), " calo hits " , mybhep::VVERBOSE);
-        
+
           double min = mybhep::default_min;
           size_t imin = mybhep::default_integer;
           topology::experimental_point extrapolation, extrapolation_local;
           bool found = false;
           for(std::vector<topology::calorimeter_hit>::iterator ic=calos.begin(); ic != calos.end(); ++ic){
-          
+
             m.message( " trying to extrapolate to calo hit ", ic - calos.begin(), " id ", ic->id(), " on view ", ic->pl_.view(), mybhep::VVERBOSE);
-          
+
             if( !near(iseq->last_node().c(), ic->pl()) ){
               m.message( " not near " , mybhep::VVERBOSE);
               continue;
             }
-          
-          
+
+
             if( !iseq->intersect_plane_from_end(ic->pl(), &extrapolation_local) ){
               m.message( " no intersection " , mybhep::VVERBOSE);
               continue;
             }
-          
+
             double dist = extrapolation_local.distance(ic->pl_.face()).value();
             if( dist < min ){
               min = dist;
@@ -1610,9 +1652,9 @@ namespace CAT {
               found = true;
               m.message( " new intersection with minimum distance " , dist , " position: " , extrapolation.x().value() ,   extrapolation.y().value(),  extrapolation.z().value() , mybhep::VVERBOSE);
             }
-          
+
           }
-        
+
           if( found ){
             if( imin >= calos.size() ){
               m.message( " problem: calo hit of id " , imin , " but n of calo hits is " , calos.size() , mybhep::VVERBOSE);
@@ -1620,16 +1662,16 @@ namespace CAT {
             else
               iseq->set_decay_vertex(extrapolation, "calo", imin);
           }
-        
+
         }
-      
+
         // match to foil
 	if( !iseq->nodes_.empty() ){
-          
+
 	  m.message( " extrapolate vertex on foil " , mybhep::VVERBOSE);
-	  
+
 	  topology::experimental_point extrapolation;
-          
+
 	  if( gap_number(iseq->nodes_[0].c() ) != 0 ){
 	    m.message( " not near ", mybhep::VVERBOSE);
 	  }
@@ -1670,14 +1712,14 @@ namespace CAT {
 
 
   //*************************************************************
-  void sequentiator::print_sequences(){
+  void sequentiator::print_sequences() const {
     //*************************************************************
 
     m.message(" sequence matrix is", mybhep::NORMAL); fflush(stdout);
-    for(std::vector<topology::sequence>::iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq)
+    for(vector<topology::sequence>::const_iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq)
       {
         std::clog << " [" << iseq - sequences_.begin() << "]";
-        print_a_sequence( &(*iseq));
+        print_a_sequence(*iseq);
       }
 
     return;
@@ -1686,16 +1728,19 @@ namespace CAT {
 
 
   //*************************************************************
-  void sequentiator::print_a_sequence(topology::sequence *sequence){
+  void sequentiator::print_a_sequence(const topology::sequence & sequence) const {
     //*************************************************************
 
-    if( sequence->Free() )
+    clog << "NOTICE: " << "CAT::sequentiator::print_a_sequence: "
+         << "Printing sequence: " << endl;
+    if( sequence.Free() )
       {
         std::clog << "*";
         fflush(stdout);
       }
 
-    for(std::vector<topology::node>::iterator inode=sequence->nodes_.begin(); inode!=sequence->nodes_.end(); ++inode)
+    for(vector<topology::node>::const_iterator inode = sequence.nodes_.begin();
+        inode != sequence.nodes_.end(); ++inode)
       {
         std::clog << " " << (int)inode->c().id();
 
@@ -1706,15 +1751,15 @@ namespace CAT {
 
         if( level >= mybhep::VVERBOSE ){
 	  std::clog << "[" << v.x().value() << ", " << v.z().value() << "]";
-	  
+
 	  std::clog << "(";
-	  
-	  for(std::vector<topology::cell>::iterator ilink=(*inode).links_.begin(); ilink != (*inode).links_.end(); ++ilink){
-	    int iccc = sequence->get_link_index_of_cell(inode - sequence->nodes_.begin(), *ilink);
-	    
+
+	  for(vector<topology::cell>::const_iterator ilink=(*inode).links_.begin(); ilink != (*inode).links_.end(); ++ilink){
+	    int iccc = sequence.get_link_index_of_cell(inode - sequence.nodes_.begin(), *ilink);
+
 	    if( iccc < 0 ) continue;  // connection through a gap
-	    
-	    if( inode - sequence->nodes_.begin() < 1 ){
+
+	    if( inode - sequence.nodes_.begin() < 1 ){
 	      std::clog << "->" << inode->cc()[iccc].cb().id();
 	      if( ilink->free() ){
 		std::clog << "[*]";
@@ -1734,30 +1779,31 @@ namespace CAT {
 		std::clog << "[n]";
 	    }
 	  }
-	  
+
 	  std::clog << " chi2 = " << inode->chi2();
-	  
+
 	  std::clog << " )";
-	  
+
 	}
       }
-    
+
     std::clog << " " << std::endl;
-  
+
     return;
 
   }
 
   //*************************************************************
-  void sequentiator::print_scenarios(){
+  void sequentiator::print_scenarios() const {
     //*************************************************************
 
-    std::clog << " scenarios " << scenarios_.size() << std::endl; fflush(stdout);
+    clog << "NOTICE: " << "CAT::sequentiator::print_scenarios: "
+         << "Printing scenarios " << scenarios_.size() << endl; fflush(stdout);
 
-    for(std::vector<topology::scenario>::iterator isc=scenarios_.begin(); isc!=scenarios_.end(); ++isc)
+    for(vector<topology::scenario>::const_iterator isc=scenarios_.begin(); isc!=scenarios_.end(); ++isc)
       {
         std::clog << " scenario " << isc - scenarios_.begin() << std::endl;
-        print_a_scenario( &(*isc));
+        print_a_scenario(*isc);
       }
 
     return;
@@ -1766,42 +1812,51 @@ namespace CAT {
 
 
   //*************************************************************
-  void sequentiator::print_a_scenario(topology::scenario *sc){
+  void sequentiator::print_a_scenario(const topology::scenario & scenario) const {
     //*************************************************************
 
-    for(std::vector<topology::sequence>::iterator iseq=sc->sequences_.begin(); iseq!=sc->sequences_.end(); ++iseq){
-      print_a_sequence( &(*iseq) );
-    }
+    clog << "NOTICE: " << "CAT::sequentiator::print_a_scenario: "
+         << "Print associated sequences: " << endl;
+    for (vector<topology::sequence>::const_iterator iseq = scenario.sequences_.begin();
+         iseq != scenario.sequences_.end(); ++iseq)
+      {
+        print_a_sequence(*iseq);
+      }
 
-    std::clog << " nfree " << sc->n_free_families() << " noverls " << sc->n_overlaps() << " chi2 " << sc->chi2() << " prob " << sc->Prob() << std::endl;
+    clog << "NOTICE: " << "CAT::sequentiator::print_a_scenario: "
+         << "Print scenario parameters" << endl;
+    clog << " |-- nfree " << scenario.n_free_families() << endl;
+    clog << " |-- noverls " << scenario.n_overlaps() << endl;
+    clog << " |-- chi2 " << scenario.chi2() << endl;
+    clog << " `-- prob " << scenario.Prob() << endl;
 
     return;
   }
 
 
   //*************************************************************
-  void sequentiator::add_pair(topology::sequence *newsequence){
+  void sequentiator::add_pair(const topology::sequence & newsequence){
     //*************************************************************
 
     clock.start(" sequentiator: add pair ", "cumulative");
 
     m.message(" adding pair ", mybhep::VVERBOSE); fflush(stdout);
 
-    if( newsequence->nodes().size() != 2 ){
-      m.message(" problem: pair has size ", newsequence->nodes().size(), mybhep::NORMAL);
+    if (newsequence.nodes().size() != 2){
+      m.message(" problem: pair has size ", newsequence.nodes().size(), mybhep::NORMAL);
       clock.stop(" sequentiator: add pair ");
       return;
     }
 
     topology::cell_couplet cc;
-    if( !newsequence->nodes_[0].has_couplet(newsequence->nodes()[1].c(), &cc) ){
-      m.message(" problem: node ", newsequence->nodes_[0].c().id(), " has no pair ", newsequence->nodes()[0].c().id(), "-", newsequence->nodes()[1].c().id(), mybhep::NORMAL);
+    if( !newsequence.nodes_[0].has_couplet(newsequence.nodes()[1].c(), &cc) ){
+      m.message(" problem: node ", newsequence.nodes_[0].c().id(), " has no pair ", newsequence.nodes()[0].c().id(), "-", newsequence.nodes()[1].c().id(), mybhep::NORMAL);
       clock.stop(" sequentiator: add pair ");
       return;
     }
 
-    topology::node na = newsequence->nodes()[0];
-    topology::node nb = newsequence->nodes()[1];
+    topology::node na = newsequence.nodes()[0];
+    topology::node nb = newsequence.nodes()[1];
 
     std::vector<topology::node> nodes;
     nodes.push_back(na);
@@ -1830,14 +1885,14 @@ namespace CAT {
       pair.set_free_level();
       clock.stop(" sequentiator: set free level ");
 
-      make_name(&pair);
+      make_name(pair);
       sequences_.push_back(pair);
 
       m.message(" made track [", sequences_.size()-1, "] with cells ", na.c().id(), "and", nb.c().id(), mybhep::VVERBOSE); fflush(stdout);
 
       if( erased )
         erased = clean_up_sequences();
-    
+
 
     }
 
@@ -1877,7 +1932,7 @@ namespace CAT {
           changed =  true;
           continue;
         }
-    
+
       //    m.message(" should we erase sequence ", iseq - sequences_.begin(), " in favour of the last ", sequences_.size() - 1, " ? " ,mybhep::VVERBOSE); fflush(stdout);
 
       if( iseq->contained( sequences_.back() )  && ! iseq->Free())
@@ -1894,20 +1949,20 @@ namespace CAT {
       }
 
       std::vector<topology::sequence>::iterator kseq = sequences_.begin();
-    
+
       while( kseq != sequences_.end() ){
-      
+
         if( iseq==kseq ){
           ++ kseq;
           continue;
         }
-      
+
         if( kseq->is_bridge(*iseq, sequences_.back() ) &&
             (*kseq).nodes().size() < (*iseq).nodes().size() &&
             (*kseq).nodes().size() < sequences_.back().nodes().size()  &&
             !kseq->Free())
           {
-          
+
             m.message(" erased sequence ", kseq - sequences_.begin(), "bridge between", iseq - sequences_.begin(), "and last ", sequences_.size() - 1, mybhep::VERBOSE); fflush(stdout);
             sequences_.erase(kseq);
             changed = true;
@@ -1921,7 +1976,7 @@ namespace CAT {
           ++kseq;
           continue;
         }
-      
+
         if( sequences_.back().is_bridge(*iseq, *kseq ) &&
             sequences_.back().nodes().size() < (*iseq).nodes().size() &&
             sequences_.back().nodes().size() < (*kseq).nodes().size()  &&
@@ -1940,7 +1995,7 @@ namespace CAT {
       }
     }
 
-  
+
     clock.stop(" sequentiator: clean up sequences ");
     return changed;
 
@@ -1954,7 +2009,7 @@ namespace CAT {
       return fabs(ep.z().value());
 
     return fabs(ep.radius().value() - FoilRadius);
-    
+
   }
 
   //*************************************************************
@@ -1964,8 +2019,8 @@ namespace CAT {
     clock.start(" sequentiator: direct out of foil ", "cumulative");
 
     for(std::vector<topology::sequence>::iterator iseq = sequences_.begin(); iseq != sequences_.end(); ++iseq){
-    
-      if( distance_from_foil(iseq->nodes().front().ep()) > 
+
+      if( distance_from_foil(iseq->nodes().front().ep()) >
           distance_from_foil(iseq->nodes().back().ep()) ){
         m.message(" sequence ", iseq - sequences_.begin(), " will be directed out of foil ", mybhep::VVERBOSE);
         topology::sequence is = iseq->invert();
@@ -1975,18 +2030,18 @@ namespace CAT {
 
     /*
       for(size_t iseq=0; iseq < sequences_.size(); iseq++){
-    
-      if( distance_from_foil(sequences_[iseq].nodes().front().ep()) < 
+
+      if( distance_from_foil(sequences_[iseq].nodes().front().ep()) <
       distance_from_foil(sequences_[iseq].nodes().back().ep()) ){
       m.message(" sequence ", iseq, " will be directed out of foil ", mybhep::VVERBOSE);
       print_a_sequence(&sequences_[iseq]);
       sequences_[iseq] = sequences_[iseq].invert();
       print_a_sequence(&sequences_[iseq]);
-      
+
       }
       }
 
-    */    
+    */
     clock.stop(" sequentiator: direct out of foil ");
 
 
@@ -2004,8 +2059,8 @@ namespace CAT {
     for(std::vector<topology::scenario>::iterator isc = scenarios_.begin(); isc != scenarios_.end(); ++isc){
 
       for(std::vector<topology::sequence>::iterator iseq = isc->sequences_.begin(); iseq != isc->sequences_.end(); ++iseq){
-	
-	if( distance_from_foil(iseq->nodes().front().ep()) > 
+
+	if( distance_from_foil(iseq->nodes().front().ep()) >
 	    distance_from_foil(iseq->nodes().back().ep()) ){
 	  m.message(" sequence ", iseq - sequences_.begin(), " will be directed out of foil ", mybhep::VVERBOSE);
 	  topology::sequence is = iseq->invert();
@@ -2014,10 +2069,10 @@ namespace CAT {
       }
     }
     clock.stop(" sequentiator: direct scenarios out of foil ");
-    
+
 
     return true;
-    
+
   }
 
 
@@ -2053,7 +2108,7 @@ namespace CAT {
 
       if( pl.norm().x().value() > 0. )
         return (fabs(cell_max_number + c.cell_number()) < 1);
-    
+
       return (fabs(cell_max_number - c.cell_number()) < 1);
     }
     else if( pl.view() == "y" ){
@@ -2075,7 +2130,7 @@ namespace CAT {
     }
 
     m.message(" problem: can't match to calo on view ", pl.view(), mybhep::NORMAL);
-  
+
     return false;
 
   }
@@ -2088,26 +2143,26 @@ namespace CAT {
     // returns the index of the gap on which the hit is facing: 1, 2, 3
     // ... returns -1 if not on a gap
     // ... returns 0 if the hit is on layer 0, facing the foil
-  
+
     size_t ln = abs(c.layer());
 
     m.message(" cell ", c.id(), " layer ", c.layer(), mybhep::VVERBOSE);
-  
+
     if( ln == 0 ) return 0;
-  
+
     size_t counter = 0;
     for(size_t i=0; i<planes_per_block.size(); i++){
       counter += (int)planes_per_block[i];  // 4, 6, 9
-    
+
       if( ln == counter - 1 )  // layer = 3, 5, 8
         return (i + 1);  // gap = 1, 2, 3
       if( ln == counter )  // layer = 4, 6, 9
         return (i + 1);  // gap = 1, 2, 3
-    
+
     }
-  
+
     return -1;
-  
+
   }
 
 
@@ -2135,14 +2190,14 @@ namespace CAT {
 
       size_t NCommonMax = 0;
       size_t imin = 0;
-    
+
       bool first = false;
 
       if( tp - trueseqs.begin() == 0 ) // first true particle
         first = true;
 
       for(std::vector<topology::sequence>::iterator ip = sequences_.begin(); ip != sequences_.end(); ++ip){      // loop over reco particles
-      
+
         if( first ){
           max_common_hits_for_reco_track[ip - sequences_.begin()] = 0;
           best_matching_for_reco_track[ip - sequences_.begin()] = 0;
@@ -2161,13 +2216,13 @@ namespace CAT {
         }
 
       }
-    
-    
+
+
       if( imin >= sequences_.size() ){
         m.message("problem: imin", imin, "allparts size", sequences_.size(), mybhep::NORMAL);
         imin=0;
       }
-    
+
       reco_sequence_of_true_.push_back(imin);
 
     }
@@ -2217,7 +2272,7 @@ namespace CAT {
       m.message(" reconstructing efficiencies for true particle ", itrueseq - trueseqs.begin(), " of ", itrueseq->nodes().size(), " points, with name ", itrueseq->name(), mybhep::VVERBOSE);
 
       if( itrueseq->nodes().size() == 0 )
-        continue; 
+        continue;
 
       size_t ireco = reco_sequence_of_true_[itrueseq - trueseqs.begin()];
 
@@ -2233,14 +2288,14 @@ namespace CAT {
       if( nhits > 0 ){
 
         int ncommon = n_common_hits_for_reco_track_[ireco];
-        
+
         double purity = (double)ncommon/(double)nhits;
-      
+
         double efficiency = (double)ncommon/(double)(itrueseq->nodes().size());
-        
+
         m.message(" ... n reco hits ", nhits, " n true hits ", itrueseq->nodes().size(), " n common hits ", ncommon, " TTPurity ", purity, " TTEfficiency ", efficiency, mybhep::VVERBOSE);
 
-        /*      
+        /*
                 if( PrintMode ){
                 double ctheta  = itrueseq->initial_dir().z().value();
 
@@ -2275,7 +2330,7 @@ namespace CAT {
         }
       }
     }
-  
+
     return counter;
 
   }
@@ -2290,20 +2345,20 @@ namespace CAT {
       topology::helix he = dp.get_helix();
 
       for(std::vector<topology::node>::iterator dn = dp.nodes_.begin(); dn != dp.nodes_.end(); ++dn){
-      
+
       topology::node jnode = *dn;
-      
+
       for(std::vector<topology::node>::iterator tn = tp.nodes_.begin(); tn != tp.nodes_.end(); ++tn){
-        
+
       topology::node inode = *tn;
-        
-        
+
+
       if( tn->c_.same_cell(dn->c_) ){
-          
+
       topology::experimental_double residualx = jnode.ep().x() - inode.ep().x();
       topology::experimental_double residualy = jnode.ep().y() - inode.ep().y();
       topology::experimental_double residualz = jnode.ep().z() - inode.ep().z();
-          
+
       hman.fill("GGresx",residualx.value());
       hman.fill("GGresy",residualy.value());
       hman.fill("GGresz",residualz.value());
@@ -2312,7 +2367,7 @@ namespace CAT {
       topology::experimental_double Hresidualx = hp.x() - inode.ep().x();
       topology::experimental_double Hresidualy = hp.y() - inode.ep().y();
       topology::experimental_double Hresidualz = hp.z() - inode.ep().z();
-          
+
       hman.fill("GGHelixresx",Hresidualx.value());
       hman.fill("GGHelixresy",Hresidualy.value());
       hman.fill("GGHelixresz",Hresidualz.value());
@@ -2324,29 +2379,29 @@ namespace CAT {
       }
       }
       }
-    
+
       if( tp.nodes().size() > 1 && dp.nodes().size() > 1 ){
       for(std::vector<topology::node>::iterator tn = tp.nodes_.begin(); tn != tp.nodes_.end(); ++tn){
-        
+
       if( tn - tp.nodes_.begin() == 0 ) advance(tn, 1);
-        
+
       topology::node inode = *tn;
       std::vector<topology::node>::iterator tnold = tp.nodes_.begin();
       advance(tnold, tn - tp.nodes_.begin() - 1);
       topology::node inodeold = *tnold;
-        
+
       bool connected = false;
-        
+
       for(std::vector<topology::node>::iterator dn = dp.nodes_.begin(); dn != dp.nodes_.end(); ++dn){
       if( dn - dp.nodes_.begin() == 0 ) advance(dn, 1);
-          
+
       topology::node jnode = *dn;
       std::vector<topology::node>::iterator dnold = dp.nodes_.begin();
       advance(tnold, dn - dp.nodes_.begin() - 1);
       topology::node jnodeold = *dnold;
-          
-          
-          
+
+
+
       if( ( inode.c_.same_cell(jnode.c_) &&
       inodeold.c_.same_cell(jnodeold.c_) ) ||
       ( inode.c_.same_cell(jnodeold.c_) &&
@@ -2355,11 +2410,11 @@ namespace CAT {
       break;
       }
       }
-        
+
       hman.fill("TrueConnections",0.5);
       if( connected )
       hman.fill("RecoConnections",0.5);
-      
+
       }
       }
 
@@ -2377,7 +2432,7 @@ namespace CAT {
       hman.fill("VertexPullx",vtx.value()/vtx.error());
       hman.fill("VertexPully",vty.value()/vty.error());
       hman.fill("VertexPullz",vtz.value()/vtz.error());
-  
+
       topology::experimental_double dvtx = dp.decay_vertex().x() - tp.decay_vertex().x();
       topology::experimental_double dvty = dp.decay_vertex().y() - tp.decay_vertex().y();
       topology::experimental_double dvtz = dp.decay_vertex().z() - tp.decay_vertex().z();
@@ -2397,7 +2452,7 @@ namespace CAT {
       double Pz = dp.momentum().z().value() - tp.momentum().z().value();
 
       double Pp = dp.momentum().value() - tp.momentum().value();
-    
+
       hman.fill("PResx",Px);
       hman.fill("PResy",Py);
       hman.fill("PResz",Pz);
@@ -2447,8 +2502,8 @@ namespace CAT {
       m.message(" try to match sequence ", iseq->name(), mybhep::VERBOSE);
 
       if( level >= mybhep::VVERBOSE)
-        print_a_sequence( &(*iseq) );
-    
+        print_a_sequence(*iseq);
+
       std::vector<topology::sequence>::iterator jseq = sequences_.begin();
 
       while( jseq != sequences_.end() ){
@@ -2456,17 +2511,17 @@ namespace CAT {
         if( (size_t)(jseq - sequences_.begin()) > sequences_.size() - 1 ){
           break;
         }
-      
+
         if( iseq == jseq ){
           ++jseq;
           continue;
         }
-      
+
         m.message(" ... try to match sequence ", iseq->name(), " to ", jseq->name(), mybhep::VERBOSE);
         if( level >= mybhep::VVERBOSE)
-          print_a_sequence( &(*jseq) );
-      
-      
+          print_a_sequence(*jseq);
+
+
         bool invertA, invertB;
         if( !iseq->good_match(*jseq, invertA, invertB, NOffLayers) ){
           ++jseq;
@@ -2516,10 +2571,10 @@ namespace CAT {
         double p = news.helix_Prob();
         double c = news.helix_chi2();
         int nd = news.ndof();
-      
+
         m.message(" ... matched with chi2 ", c, " ndof ", nd, " prob ", p, mybhep::VVERBOSE);
         matched = true;
-      
+
         if( p > probmax ){
           probmax = p;
           index = jseq - sequences_.begin();
@@ -2536,35 +2591,35 @@ namespace CAT {
             bestmatch = news;
           }
         }
-      
+
         ++ jseq;
-      
+
       }
-    
+
       if( !matched ){
         ++iseq;
         continue;
       }
 
       m.message(" best match to sequence ", iseq->name(),  " is ", sequences_[index].name(), " with prob ", probmax, " chi2 ", chi2min, " ndof ", ndofbest, mybhep::VVERBOSE);
-    
+
       if( probmax > 0 ){
         m.message(" replace sequence ", iseq->name(), " with matched sequence ", mybhep::VERBOSE); fflush(stdout);
         size_t restart_index = iseq - sequences_.begin();
         std::swap(*iseq, bestmatch);
         iseq = sequences_.begin();
         advance(iseq, restart_index);
-      
+
         std::string delenda_family = sequences_[index].family();
         m.message(" erase all sequences of family ", delenda_family, mybhep::VERBOSE); fflush(stdout);
-      
+
         std::vector<topology::sequence>::iterator jseq = sequences_.begin();
         while( jseq != sequences_.end() ){
-        
+
           if( (size_t)(jseq - sequences_.begin()) > sequences_.size() - 1 ){
             break;
           }
-        
+
           if( jseq->family() == delenda_family ){
             m.message(" erase sequence ", jseq->name(), mybhep::VVERBOSE); fflush(stdout);
             sequences_.erase(jseq);
@@ -2572,7 +2627,7 @@ namespace CAT {
           else
             ++jseq;
         }
-      
+
         continue;
       }
 
@@ -2585,7 +2640,7 @@ namespace CAT {
     clock.stop(" sequentiator: match through gaps ");
 
     return true;
-    
+
   }
 
   //*************************************************************
@@ -2640,8 +2695,8 @@ namespace CAT {
 
       m.message(" begin matching with sequence ", iseq->name(), mybhep::VERBOSE);
       if( level >= mybhep::VERBOSE)
-        print_a_sequence( &(*iseq) );
-    
+        print_a_sequence(*iseq);
+
       size_t jmin;
       bool invertA, invertB, first = true;
       topology::sequence newseq = *iseq;
@@ -2649,11 +2704,11 @@ namespace CAT {
         {
           m.message(" best matching is ", sequences_[jmin].name(), " invertA ", invertA, " invertB ", invertB, mybhep::VERBOSE);
           if( level >= mybhep::VVERBOSE)
-            print_a_sequence( &(sequences_[jmin]) );
+            print_a_sequence(sequences_[jmin]);
 
           newseq = newseq.match(sequences_[jmin], invertA, invertB);
           if( level >= mybhep::VERBOSE)
-            print_a_sequence( &newseq );
+            print_a_sequence(newseq);
 
           if( first ){
             //      matched[ifa] = true;
@@ -2666,13 +2721,13 @@ namespace CAT {
 
       if( !first )
         newseqs.push_back(newseq);
-    
+
     }
     if( late() )
       return false;
-    
+
     m.message(" made matching through gaps ", mybhep::VERBOSE);
-    
+
     for(std::vector<topology::sequence>::iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq){
       if( !matched[mybhep::int_from_string(iseq->family())] )
         newseqs.push_back(*iseq);
@@ -2689,20 +2744,20 @@ namespace CAT {
 
 
     return true;
-  
+
   }
-  
+
   //*************************************************************
   bool sequentiator::can_match(topology::sequence s, size_t* jmin, bool& bestinvertA, bool& bestinvertB) {
     //*************************************************************
-  
+
     if( late() )
       return false;
 
     clock.start(" sequentiator: can match ", "cumulative");
 
     bool ok = false;
-  
+
     double probmax = mybhep::default_max;
     double chi2min = mybhep::default_min;
     int ndofbest = 1;
@@ -2711,11 +2766,11 @@ namespace CAT {
 
     for(std::vector<topology::sequence>::iterator jseq=sequences_.begin(); jseq!=sequences_.end(); ++jseq)
       {
-      
+
         m.message(" try to match sequence", s.name(), " to ", jseq->name(), mybhep::VVERBOSE);
         if( level >= mybhep::VVERBOSE){
-          print_a_sequence( &s );
-          print_a_sequence( &(*jseq) );
+          print_a_sequence(s);
+          print_a_sequence(*jseq);
         }
 
         // check that jseq's family is not the same as s
@@ -2734,7 +2789,7 @@ namespace CAT {
         double p = news.helix_Prob();
         double c = news.helix_chi2();
         int n = news.ndof();
-      
+
         m.message(" ... matched to ", jseq->name(), ", chi2 =", c, " ndof ", n, " prob ", p, mybhep::VVERBOSE);
 
         if( p > probmax )
@@ -2812,4 +2867,4 @@ namespace CAT {
 
   }
 
-} // end of namespace CAT 
+} // end of namespace CAT

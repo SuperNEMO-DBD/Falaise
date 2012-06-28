@@ -287,7 +287,7 @@ namespace CAT {
 
 
       //! get nodes
-      const std::vector<node> nodes()const{
+      const std::vector<node> & nodes()const{
         return nodes_;
       }
 
@@ -297,12 +297,12 @@ namespace CAT {
       }
 
       //! get name
-      const std::string name()const{
+      const std::string & name()const{
         return names_[0];
       }
 
       //! get names
-      const std::vector<std::string> names()const{
+      const std::vector<std::string> & names()const{
         return names_;
       }
 
@@ -1199,7 +1199,7 @@ namespace CAT {
       }
 
 
-      int get_link_index_of_cell(size_t inode, cell link){
+      int get_link_index_of_cell(size_t inode, cell link) const {
         // inode = 0 if it is the first node, 1 if it is the second node...
         // link = a cell to which the node inode links with a couplet or triplet
         // returns an index, such that cc[index] or ccc[index] is the needed couplet or triplet

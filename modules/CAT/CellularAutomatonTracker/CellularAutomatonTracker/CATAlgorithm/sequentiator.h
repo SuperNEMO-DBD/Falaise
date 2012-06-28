@@ -21,7 +21,7 @@
 #include "TGraph.h"
 #include "TStyle.h"
 #include "TCanvas.h"
-#include "TFile.h" 
+#include "TFile.h"
 #include "TBox.h"
 #include "TMarker.h"
 #endif
@@ -55,10 +55,10 @@ namespace CAT {
   class sequentiator{
 
   public:
-  
+
     sequentiator(void);
     sequentiator(mybhep::gstore);
-  
+
     virtual ~sequentiator();
 
     bool initialize( mybhep::sstore store, mybhep::gstore gs, mybhep::EventManager2 *eman=0);
@@ -71,13 +71,13 @@ namespace CAT {
     void readDstProper(mybhep::sstore, mybhep::EventManager2 *eman=0);
     void readDstProper( void );
 
-    bool sequentiate(topology::tracked_data & __tracked_data);
-    void sequentiate_cluster();
-    void make_new_sequence(topology::node first_node);
-    void make_copy_sequence(topology::node first_node);
-    bool evolve(topology::sequence *sequence);
+    bool sequentiate(topology::tracked_data & tracked_data);
+    void sequentiate_cluster(topology::cluster & cluster);
+    void make_new_sequence(topology::node & first_node);
+    void make_copy_sequence(topology::node & first_node);
+    bool evolve(topology::sequence & sequence);
     void fill_links(topology::sequence *sequence);
-    bool good_first_node(topology::node node, topology::node &first_node);
+    bool good_first_node(topology::node & node_);
     void make_plots(topology::tracked_data __tracked_data);
     void plot_hard_scattering(topology::tracked_data __tracked_data);
     bool good_first_to_be_matched(topology::sequence& seq);
@@ -138,7 +138,7 @@ namespace CAT {
 	  std::cerr << "WARNING: CAT::clusterizer::set_num_blocks: "
                     << "Invalid number of GG layer blocks !" << std::endl;
           planes_per_block.clear ();
-          num_blocks = -1; // invalid value                                                                                              
+          num_blocks = -1; // invalid value
         }
       return;
     }
@@ -162,7 +162,7 @@ namespace CAT {
     void set_num_cells_per_plane(int ncpp){
       if (ncpp <= 0)
         {
-          num_cells_per_plane = -1; // invalid value                                                                                     
+          num_cells_per_plane = -1; // invalid value
         }
       else
         {
@@ -182,13 +182,13 @@ namespace CAT {
       return;
     }
 
-    // What is it ?                                                                                                                      
+    // What is it ?
     void set_module_nr(std::string mID){
       _moduleNR=mID;
       return;
     }
 
-    // What is it ?                                                                                                                      
+    // What is it ?
     int get_module_nr(void){
       return _MaxBlockSize;
     }
@@ -367,7 +367,7 @@ namespace CAT {
 
 
   protected:
-    
+
     bool _initialize( void );
 
     //  NHistoManager2 hman;
@@ -375,16 +375,16 @@ namespace CAT {
     Clock clock;
 
     mybhep::prlevel level;
-    
+
     mybhep::messenger m;
     int nevent;
     int InitialEvents;
     int SkippedEvents;
-  
+
     //geom param
     double vel, rad, len, CellDistance;
-    double xsize,ysize,zsize; //only for plotting 
-    double InnerRadius, OuterRadius, FoilRadius; //only for plotting 
+    double xsize,ysize,zsize; //only for plotting
+    double InnerRadius, OuterRadius, FoilRadius; //only for plotting
     double pmax;
 
     //limits
@@ -410,11 +410,11 @@ namespace CAT {
     double th1;
     double th2;
     double th3;
-    
+
     double pnob;
     double pnot;
     double pnobt;
-  
+
     double l0;
     double l1;
 
@@ -442,7 +442,7 @@ namespace CAT {
     double GG_GRND_diam;
     double GG_CELL_diam;
     double CHAMBER_X;
-    double GG_BLOCK_X; 
+    double GG_BLOCK_X;
     int num_cells_per_plane;
     double SOURCE_thick;
     double bfield;
@@ -452,7 +452,7 @@ namespace CAT {
     //  size_t dp_mode;
 
     //----Modification for bar-module---
-  private: 
+  private:
     std::string  _moduleNR;
     int     _MaxBlockSize;
     std::vector<mybhep::particle*> parts;
@@ -461,7 +461,7 @@ namespace CAT {
     //histogram file
     std::string hfile;
 
-    topology::cluster local_cluster_;
+    topology::cluster * local_cluster_;
 
     std::vector<topology::cluster> clusters_;
     std::vector<topology::sequence> sequences_;
@@ -474,14 +474,14 @@ namespace CAT {
     std::vector<topology::scenario> scenarios_;
 
 
-    void print_sequences();
     bool match_through_gaps();
     bool make_scenarios(topology::tracked_data &td);
-    void interpret_physics(std::vector<topology::calorimeter_hit> calos);
+    void interpret_physics(std::vector<topology::calorimeter_hit> & calos);
     topology::plane get_foil_plane();
     topology::circle get_foil_circle();
-    void print_a_sequence(topology::sequence *sequence);
-    void add_pair(topology::sequence *newsequence);
+    void print_sequences() const;
+    void print_a_sequence(const topology::sequence & sequence) const;
+    void add_pair(const topology::sequence & sequence);
     bool clean_up_sequences();
     bool there_is_free_sequence_beginning_with(topology::cell c, size_t *index);
     void print_clocks();
@@ -491,7 +491,7 @@ namespace CAT {
     void rec_efficiency(std::vector<topology::sequence> trueseqs);
     size_t getCommonHits(topology::sequence tp, topology::sequence dp);
     void FillGGResiduals(topology::sequence tp, topology::sequence dp);
-    void make_name(topology::sequence* seq);
+    void make_name(topology::sequence & seq);
     bool near(topology::cell c, topology::plane pl);
     double distance_from_foil(topology::experimental_point ep);
     bool direct_out_of_foil(void);
@@ -499,8 +499,8 @@ namespace CAT {
     void print_families( void );
     void make_families();
     bool can_add_family(topology::scenario sc, size_t* jmin, size_t* nfree, double* Chi2, size_t* noverlaps, int32_t* ndof, topology::tracked_data td);
-    void print_scenarios();
-    void print_a_scenario(topology::scenario *sc);
+    void print_scenarios() const;
+    void print_a_scenario(const topology::scenario & scenario) const;
     size_t pick_best_scenario();
     bool can_be_linked(topology::sequence& p, bool inverted);
     bool can_match(topology::sequence s, size_t* jmin, bool& bestinvertA, bool& bestinvertB);
@@ -522,6 +522,6 @@ namespace CAT {
 
   };
 
-} // end of namespace CAT 
+} // end of namespace CAT
 
 #endif
