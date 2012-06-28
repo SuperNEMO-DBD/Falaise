@@ -182,13 +182,12 @@ namespace CAT {
       return;
     }
 
-    // What is it ?
+    // module number (SuperNemo will be modular)
     void set_module_nr(std::string mID){
       _moduleNR=mID;
       return;
     }
 
-    // What is it ?
     int get_module_nr(void){
       return _MaxBlockSize;
     }

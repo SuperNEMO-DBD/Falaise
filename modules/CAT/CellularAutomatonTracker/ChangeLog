@@ -1,4 +1,6 @@
 2012-06-26 Federico Nova <nova@physics.utexas.edu>
+        * Xavier Garrido fixed some conversions of value to reference
+2012-06-26 Federico Nova <nova@physics.utexas.edu>
         * removed all "using namespace" from headers
 2012-06-26 Federico Nova <nova@physics.utexas.edu>
         * ntupler: vertexes
