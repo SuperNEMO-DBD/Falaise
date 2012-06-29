@@ -298,6 +298,8 @@ namespace CAT {
         CHAMBER_X = xsize;
 
         SOURCE_thick= mybhep::double_from_string(global.fetch("GEOM_SOURCE_thick"));
+
+	FoilRadius = 0.;
       }
     else
       {

@@ -1,8 +1,8 @@
 /* -*- mode: c++ -*- */
-// CAT_clusterizer_interface.h
+// CAT_sequentiator_interface.h
 
-#ifndef _CAT_clusterizer_interface_h_
-#define _CAT_clusterizer_interface_h_ 1
+#ifndef _CAT_sequentiator_interface_h_
+#define _CAT_sequentiator_interface_h_ 1
 
 #include <vector>
 #include <iostream>
@@ -13,19 +13,19 @@
 #include <CATAlgorithm/tracked_data.h>
 #include <CATAlgorithm/experimental_point.h>
 #include <CATAlgorithm/cell.h>
-#include <CATAlgorithm/clusterizer.h>
+#include <CATAlgorithm/sequentiator.h>
 #include <CATAlgorithm/sequentiator.h>
 
 namespace CAT {
 
-  /// Setup data of the CAT clusterizer
+  /// Setup data of the CAT sequentiator
   /// This class contains the minimal set of parameters
-  /// needed to run the CAT clusterizer algorithm
-  struct clusterizer_setup_data
+  /// needed to run the CAT sequentiator algorithm
+  struct sequentiator_setup_data
   {
   public:
 
-    clusterizer_setup_data ();
+    sequentiator_setup_data ();
     bool check () const;
     void reset ();
     const std::string & get_error_message () const;
@@ -80,15 +80,15 @@ namespace CAT {
 
   };
 
-  /// Configure the clusterizer from a setup data object
-  void clusterizer_configure (clusterizer & czer_, const clusterizer_setup_data & setup_);
+  /// Configure the sequentiator from a setup data object
+  void sequentiator_configure (sequentiator & czer_, const sequentiator_setup_data & setup_);
 
   /// Input data model
-  struct clusterizer_input_data
+  struct sequentiator_input_data
   {
   public:
     topology::cell & add_cell ();
-    clusterizer_input_data ();
+    sequentiator_input_data ();
     bool check () const;
 
   public:
@@ -96,16 +96,16 @@ namespace CAT {
   };
 
   /// Output data model
-  struct clusterizer_output_data
+  struct sequentiator_output_data
   {
   public:
-    clusterizer_output_data ();
+    sequentiator_output_data ();
   public:
     topology::tracked_data tracked_data;
   };
 
 }
 
-#endif // _CAT_clusterizer_interface_h_
+#endif // _CAT_sequentiator_interface_h_
 
-// end of CAT_clusterizer_interface.h
+// end of CAT_sequentiator_interface.h
