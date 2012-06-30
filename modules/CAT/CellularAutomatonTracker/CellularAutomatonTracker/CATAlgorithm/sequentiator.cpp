@@ -276,6 +276,9 @@ namespace CAT {
 
     m.message("\n Ending algorithm sequentiator \n ",mybhep::NORMAL); fflush(stdout);
 
+    m.message("Initial events: ", InitialEvents, mybhep::NORMAL);
+    m.message("Skipped events: ", SkippedEvents, "(", 100.*SkippedEvents/InitialEvents, "\%)", mybhep::NORMAL);
+
     clock.start(" sequentiator: finalize ");
 
     if( PrintMode )
@@ -635,6 +638,7 @@ namespace CAT {
     if (late())
       {
         tracked_data_.set_skipped(true);
+	SkippedEvents ++;
         return false;
       }
 
@@ -650,6 +654,7 @@ namespace CAT {
     if (late())
       {
         tracked_data_.set_skipped(true);
+	SkippedEvents ++;
         return false;
       }
 
@@ -657,6 +662,7 @@ namespace CAT {
     if (late())
       {
         tracked_data_.set_skipped(true);
+	SkippedEvents ++;
         return false;
       }
 
