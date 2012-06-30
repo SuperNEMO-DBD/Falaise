@@ -1,8 +1,8 @@
 /* -*- mode: c++ -*- */
-// CAT_clusterizer_interface.h
+// CAT_interface.h
 
-#ifndef _CAT_clusterizer_interface_h_
-#define _CAT_clusterizer_interface_h_ 1
+#ifndef _CAT_interface_h_
+#define _CAT_interface_h_ 1
 
 #include <vector>
 #include <iostream>
@@ -18,14 +18,14 @@
 
 namespace CAT {
 
-  /// Setup data of the CAT clusterizer
+  /// Setup data of the CAT algorithms
   /// This class contains the minimal set of parameters
-  /// needed to run the CAT clusterizer algorithm
-  struct clusterizer_setup_data
+  /// needed to run the CAT algorithm
+  struct setup_data
   {
   public:
 
-    clusterizer_setup_data ();
+    setup_data ();
     bool check () const;
     void reset ();
     const std::string & get_error_message () const;
@@ -43,26 +43,42 @@ namespace CAT {
   public:
 
     /// Let all attributes be public :
-    std::string level; /// verbosity level: "mute", "normal", "verbose", "vverbose"
 
+    /// Verbosity level: "mute", "normal", "verbose", "vverbose"
+    std::string level;
+
+    /// Used to flag SuperNEMO of NEMO3 experiment
     bool   SuperNemo;
-    double MaxTime; /// Maximum computing time
 
+    /// Maximum computing time in ms
+    double MaxTime;
+
+    /// Ratio of 2nd best to best chi2 which is acceptable as 2nd solution
+    double Ratio;
+
+    /// Number of sigma away from the straight line
+    double nsigma;
+
+    /// Number of cells which can be skipped (because the cell did not
+    /// work) and still the cluster is continuous
+    int    nofflayers;
+
+    /// 0. for SuperNEMO, 1.5 m for NEMO3
+    double FoilRadius;
+
+    // Obsolete parameters, just there for backwards compatibility,
     double SmallRadius; // [length] -> mm
     double TangentPhi;
     double TangentTheta;
     double SmallNumber; // [length] - mm
     double QuadrantAngle;
-    double Ratio;
     double CompatibilityDistance;
     double MaxChi2;
-    double nsigma;
-    int    nofflayers;
-    double len;
-    double rad;
-    double vel;
-    double CellDistance;
-    double FoilRadius;
+    double vel;  // plasma velocity in cell, not needed anymore because vertical position
+                 // is reconstructed outside of CAT
+    double len;  // length of each drift wire, should be read from geometry instead of free parameter
+    double rad;  // radius of each cell, should be read from geometry instead of free parameter
+    double CellDistance;  // same as above
 
 
     // SuperNEMO geometry :
@@ -81,14 +97,17 @@ namespace CAT {
   };
 
   /// Configure the clusterizer from a setup data object
-  void clusterizer_configure (clusterizer & czer_, const clusterizer_setup_data & setup_);
+  void clusterizer_configure (clusterizer & czer_, const setup_data & setup_);
+
+  /// Configure the sequentiator from a setup data object
+  void sequentiator_configure (sequentiator & stor_, const setup_data & setup_);
 
   /// Input data model
-  struct clusterizer_input_data
+  struct input_data
   {
   public:
     topology::cell & add_cell ();
-    clusterizer_input_data ();
+    input_data ();
     bool check () const;
 
   public:
@@ -96,16 +115,16 @@ namespace CAT {
   };
 
   /// Output data model
-  struct clusterizer_output_data
+  struct output_data
   {
   public:
-    clusterizer_output_data ();
+    output_data ();
   public:
     topology::tracked_data tracked_data;
   };
 
 }
 
-#endif // _CAT_clusterizer_interface_h_
+#endif // _CAT_interface_h_
 
-// end of CAT_clusterizer_interface.h
+// end of CAT_interface.h

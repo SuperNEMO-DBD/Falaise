@@ -1,66 +1,64 @@
 /* -*- mode: c++ -*- */
-// CAT_sequentiator_interface.cpp
+// CAT_interface.cpp
 
-#include <CATAlgorithm/tracked_data.h>
 #include <stdexcept>
 #include <limits>
 #include <map>
 #include <vector>
 #include <sstream>
-#include <CATAlgorithm/CAT_sequentiator_interface.h>
+#include <CATAlgorithm/CAT_interface.h>
+#include <CATAlgorithm/tracked_data.h>
 #include <boost/algorithm/string.hpp>
 
 namespace CAT {
 
-  using namespace std;
-
-  const std::string & sequentiator_setup_data::get_error_message () const
+  const std::string & setup_data::get_error_message () const
   {
     return _error_message;
   }
 
-  void sequentiator_setup_data::_set_error_message (const std::string & message_)
+  void setup_data::_set_error_message (const std::string & message_)
   {
     std::ostringstream oss;
-    oss << "CAT::sequentiator_setup_data: ";
+    oss << "CAT::setup_data: ";
     oss << message_;
     _error_message = oss.str ();
     return;
   }
 
-  sequentiator_setup_data::sequentiator_setup_data ()
+  setup_data::setup_data ()
   {
     _set_defaults ();
     return;
   }
 
-  void sequentiator_setup_data::reset ()
+  void setup_data::reset ()
   {
     _set_defaults ();
     return;
   }
 
-  void sequentiator_setup_data::_set_defaults ()
+  void setup_data::_set_defaults ()
   {
     _error_message.clear ();
-    level         = "normal";
-    SuperNemo     = true;
-    MaxTime       = 5000.  * CLHEP::ms;
-    SmallRadius   =    0.1 * CLHEP::mm;
-    TangentPhi    =   20.  *  CLHEP::degree;
-    TangentTheta  =  160.  * CLHEP::degree;
-    SmallNumber   =    0.1 * CLHEP::mm;
-    QuadrantAngle =   90.  *  CLHEP::degree;
-    Ratio         =   10.;
+    level                 = "normal";
+    SuperNemo             = true;
+    MaxTime               = 5000.0 * CLHEP::ms;
+    SmallRadius           =    0.1 * CLHEP::mm;
+    TangentPhi            =   20.0 * CLHEP::degree;
+    TangentTheta          =  160.0 * CLHEP::degree;
+    SmallNumber           =    0.1 * CLHEP::mm;
+    QuadrantAngle         =   90.0 * CLHEP::degree;
+    Ratio                 =   10.0;
     CompatibilityDistance = 4.0 * CLHEP::mm;
-    MaxChi2       = 3.;
-    nsigma        = 4.;
-    nofflayers    = 1;
-    len           = 2503. * CLHEP::mm;
-    rad           = 30. * CLHEP::mm;
-    vel           = 0.06 * CLHEP::mm;
-    CellDistance           = 30. * CLHEP::mm;
-    FoilRadius           = 0.;
+    MaxChi2               = 3.;
+    nsigma                = 4.;
+    nofflayers            = 1;
+    len                   = 2503. * CLHEP::mm;
+    rad                   = 30.   * CLHEP::mm;
+    vel                   = 0.06  * CLHEP::mm;
+    CellDistance          = 30.   * CLHEP::mm;
+    FoilRadius            = 0.;
 
     // SuperNEMO geometry default parameters :
     num_blocks = 1;
@@ -73,13 +71,13 @@ namespace CAT {
     return;
   }
 
-  bool sequentiator_setup_data::check () const
+  bool setup_data::check () const
   {
-    sequentiator_setup_data * mutable_this = const_cast<sequentiator_setup_data *> (this);
+    setup_data * mutable_this = const_cast<setup_data *> (this);
     return mutable_this->_check_snemo ();
   }
 
-  bool sequentiator_setup_data::_check_snemo ()
+  bool setup_data::_check_snemo ()
   {
     if (SmallRadius <= 0.0)
       {
@@ -180,8 +178,66 @@ namespace CAT {
     return true;
   }
 
+  void clusterizer_configure (clusterizer & czer_,
+                              const setup_data & setup_)
+  {
+    if (! setup_.check ())
+      {
+        std::cerr << "ERROR: CAT::clusterizer_configure: "
+                  << setup_.get_error_message () << std::endl;
+        throw std::logic_error ("CAT::clusterizer_configure: Invalid setup data !");
+      }
+
+    // General parameters :
+    czer_.set_PrintMode (false);
+    czer_.set_MaxTime (setup_.MaxTime / CLHEP::ms);
+    std::string leveltmp = setup_.level;
+    boost::to_upper(leveltmp);
+
+    czer_.set_level (leveltmp); //mybhep::get_info_level (leveltmp));
+
+    // Algorithm parameters :
+    czer_.set_SmallRadius (setup_.SmallRadius / CLHEP::mm);
+    czer_.set_TangentPhi (setup_.TangentPhi / CLHEP::degree);
+    czer_.set_TangentTheta (setup_.TangentTheta / CLHEP::degree);
+    czer_.set_SmallNumber (setup_.SmallNumber / CLHEP::mm);
+    czer_.set_QuadrantAngle (setup_.QuadrantAngle / CLHEP::degree);
+    czer_.set_Ratio (setup_.Ratio);
+    czer_.set_CompatibilityDistance (setup_.CompatibilityDistance);
+    czer_.set_MaxChi2 (setup_.MaxChi2);
+    czer_.set_nsigma (setup_.nsigma);
+    czer_.set_nofflayers (setup_.nofflayers);
+    czer_.set_len (setup_.len);
+    czer_.set_rad (setup_.rad);
+    czer_.set_vel (setup_.vel);
+    czer_.set_CellDistance (setup_.CellDistance);
+    czer_.set_FoilRadius (setup_.FoilRadius);
+
+    // Geometry description :
+    if (setup_.SuperNemo)
+      {
+        /// Activate the special new mode :
+        czer_.set_SuperNemoChannel(true);
+
+        // Layout of the tracking chamber :
+        czer_.set_num_blocks (setup_.num_blocks);
+        for (int i = 0; i < setup_.num_blocks; i++)
+          {
+            czer_.set_planes_per_block (i, (int)(setup_.planes_per_block.at (i)+0.5));
+          }
+        czer_.set_num_cells_per_plane (setup_.num_cells_per_plane);
+        czer_.set_GG_CELL_pitch (setup_.cell_size / CLHEP::mm);
+      }
+    else
+      {
+        throw std::logic_error ("CAT::clusterizer_configure: Only SuperNEMO setup is supported !");
+      }
+
+    return;
+  }
+
   void sequentiator_configure (sequentiator & stor_,
-                              const sequentiator_setup_data & setup_)
+                               const setup_data & setup_)
   {
     if (! setup_.check ())
       {
@@ -242,7 +298,7 @@ namespace CAT {
 
   /***********************************************************/
 
-  topology::cell & sequentiator_input_data::add_cell ()
+  topology::cell & input_data::add_cell ()
   {
     if (cells.size () == 0)
       {
@@ -256,7 +312,7 @@ namespace CAT {
     return cells.back ();
   }
 
-  bool sequentiator_input_data::check () const
+  bool input_data::check () const
   {
     // A map would be better to check cell IDs :
     std::map<int,bool> mids;
@@ -266,14 +322,14 @@ namespace CAT {
         int cell_id = c.id();
         if (cell_id < 0 || cell_id > 10000)
           {
-            std::cerr << "ERROR: CAT::sequentiator_input_data::check: "
+            std::cerr << "ERROR: CAT::input_data::check: "
                       << "Out of range cell ID '" <<  cell_id << "' !"
                       << std::endl;
             return false;
           }
         if (mids.find (cell_id) != mids.end ())
           {
-            std::cerr << "ERROR: CAT::sequentiator_input_data::check: "
+            std::cerr << "ERROR: CAT::input_data::check: "
                       << "Duplicate cell ID '" <<  cell_id << "' !"
                       << std::endl;
             return false;
@@ -290,14 +346,14 @@ namespace CAT {
         int cell_id = c.id();
         if ((cell_id < 0) || (cell_id >= cells.size ()))
           {
-            std::cerr << "ERROR: CAT::sequentiator_input_data::check: "
+            std::cerr << "ERROR: CAT::input_data::check: "
                       << "Invalid cell ID '" <<  cell_id << "' !"
                       << std::endl;
             return false;
           }
         if (ids[cell_id])
           {
-            std::cerr << "ERROR: CAT::sequentiator_input_data::check: "
+            std::cerr << "ERROR: CAT::input_data::check: "
                       << "Duplicate cell ID '" <<  cell_id << "' !"
                       << std::endl;
             return false;
@@ -308,7 +364,7 @@ namespace CAT {
       {
         if (! ids[i])
           {
-            std::cerr << "ERROR: CAT::sequentiator_input_data::check: "
+            std::cerr << "ERROR: CAT::input_data::check: "
                       << "Cell ID '" << i << "' is not used ! There are some missing cells !"
                       << std::endl;
             return false;
@@ -317,18 +373,18 @@ namespace CAT {
     return true;
   }
 
-  sequentiator_input_data::sequentiator_input_data ()
+  input_data::input_data ()
   {
     return;
   }
 
   /***********************************************************/
 
-  sequentiator_output_data::sequentiator_output_data ()
+  output_data::output_data ()
   {
     return;
   }
 
 }
 
-// end of CAT_sequentiator_interface.cpp
+// end of CAT_interface.cpp
