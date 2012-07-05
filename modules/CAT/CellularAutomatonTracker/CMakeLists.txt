@@ -43,7 +43,7 @@ endif ()
 # Set versioning for this project
 #
 include(ProjectVersion)
-set_project_version(${PROJECT_NAME} 0 3 0)
+set_project_version(${PROJECT_NAME} 0 3 1)
 
 #----------------------------------------------------------------------------
 # Include any modules providing top level functionality
@@ -79,9 +79,9 @@ endif()
 #
 
 # Minimal build means we do not build the CATutils DLL nor special debug/development/display material
-# It ius the recommended way to buidl CAT for production (pipelines).
 option ( CAT_MINIMAL_BUILD  "Minimal build " ON)
-
+message( STATUS "${PROJECT_NAME}: CAT_MINIMAL_BUILD=${CAT_MINIMAL_BUILD}." )
+ 
 set ( CAT_WITH_DEVEL_UTILS      0 )
 set ( CAT_WITH_DEVEL_DISPLAY    0 )
 set ( CAT_WITH_DEVEL_HISTOGRAMS 0 )

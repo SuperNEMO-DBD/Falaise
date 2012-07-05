@@ -5,7 +5,7 @@ add_subdirectory(mybhep)
 add_subdirectory(CATAlgorithm)
  
 if (CAT_WITH_DEVEL_UTILS)
-  message ( STATUS "WARNING: Building CATutils" )
+  message ( STATUS "${PROJECT_NAME}: Building CATutils" )
   add_subdirectory(CATUtils) 
 endif (CAT_WITH_DEVEL_UTILS)
 
