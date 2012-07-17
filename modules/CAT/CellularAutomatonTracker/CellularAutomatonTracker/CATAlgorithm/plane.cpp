@@ -146,12 +146,12 @@ namespace CAT {
 	return "z";
       }
       else if( type() == "Nemo3" ){
-	clog << " warning: undefined view for calorimeter of type " << type() << std::endl;
+	clog << " warning: undefined view for plane of type " << type() << std::endl;
 	return "null";
       }
 
 
-      std::clog << " warning: undefined calo type: " << type() << " cannot determine view " << std::endl;
+      std::clog << " warning: undefined plane type: " << type() << " cannot determine view " << std::endl;
       exit(0);
 
       return "null";

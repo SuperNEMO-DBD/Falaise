@@ -1,3 +1,6 @@
+2012-07-17 Federico Nova <nova@physics.utexas.edu>
+        * fixed set calo type
+	* no need to have calos to make helix
 2012-06-29 Federico Nova <nova@physics.utexas.edu>
         * fixed counter of skipped events
 2012-06-29 Federico Nova <nova@physics.utexas.edu>

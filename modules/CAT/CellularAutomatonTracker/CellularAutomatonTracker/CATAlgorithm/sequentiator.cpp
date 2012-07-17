@@ -1579,6 +1579,12 @@ namespace CAT {
 
     topology::plane pl(center, sizes, norm, level, nsigma);
 
+    std::string the_type="Nemo3";
+    if( SuperNemo )
+      the_type="SuperNEMO";
+    
+    pl.set_type(the_type);
+
     return pl;
 
 
@@ -1611,12 +1617,6 @@ namespace CAT {
 
     clock.start(" sequentiator: interpret physics ", "cumulative");
 
-    if (calos.empty ())
-      {
-        clock.stop(" sequentiator: interpret physics ");
-        return;
-      }
-
     m.message(" interpreting physics of ", sequences_.size(), " sequences ", mybhep::VVERBOSE); fflush(stdout);
     for(std::vector<topology::sequence>::iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq)
       {
@@ -1627,69 +1627,73 @@ namespace CAT {
         iseq->calculate_momentum(bfield);
 
         // match to calorimeter
-        {
+	if (!calos.empty ())
+	  {
+	    
+	    m.message(" extrapolate decay vertex with ", calos.size(), " calo hits " , mybhep::VVERBOSE);
+	    
+	    double min = mybhep::default_min;
+	    size_t imin = mybhep::default_integer;
+	    topology::experimental_point extrapolation, extrapolation_local;
+	    bool found = false;
+	    for(std::vector<topology::calorimeter_hit>::iterator ic=calos.begin(); ic != calos.end(); ++ic){
+	      
+	      m.message( " trying to extrapolate to calo hit ", ic - calos.begin(), " id ", ic->id(), " on view ", ic->pl_.view(), mybhep::VVERBOSE);
 
-          m.message(" extrapolate decay vertex with ", calos.size(), " calo hits " , mybhep::VVERBOSE);
+	      if( !near(iseq->last_node().c(), ic->pl()) ){
+		m.message( " not near " , mybhep::VVERBOSE);
+		continue;
+	      }
+	      
+	      
+	      if( !iseq->intersect_plane_from_end(ic->pl(), &extrapolation_local) ){
+		m.message( " no intersection " , mybhep::VVERBOSE);
+		continue;
+	      }
 
-          double min = mybhep::default_min;
-          size_t imin = mybhep::default_integer;
-          topology::experimental_point extrapolation, extrapolation_local;
-          bool found = false;
-          for(std::vector<topology::calorimeter_hit>::iterator ic=calos.begin(); ic != calos.end(); ++ic){
-
-            m.message( " trying to extrapolate to calo hit ", ic - calos.begin(), " id ", ic->id(), " on view ", ic->pl_.view(), mybhep::VVERBOSE);
-
-            if( !near(iseq->last_node().c(), ic->pl()) ){
-              m.message( " not near " , mybhep::VVERBOSE);
-              continue;
-            }
-
-
-            if( !iseq->intersect_plane_from_end(ic->pl(), &extrapolation_local) ){
-              m.message( " no intersection " , mybhep::VVERBOSE);
-              continue;
-            }
-
-            double dist = extrapolation_local.distance(ic->pl_.face()).value();
-            if( dist < min ){
-              min = dist;
-              imin = ic->id();
-              extrapolation = extrapolation_local;
-              found = true;
-              m.message( " new intersection with minimum distance " , dist , " position: " , extrapolation.x().value() ,   extrapolation.y().value(),  extrapolation.z().value() , mybhep::VVERBOSE);
-            }
-
-          }
-
-          if( found ){
-            if( imin >= calos.size() ){
-              m.message( " problem: calo hit of id " , imin , " but n of calo hits is " , calos.size() , mybhep::VVERBOSE);
-            }
-            else
-              iseq->set_decay_vertex(extrapolation, "calo", imin);
-          }
-
-        }
+	      double dist = extrapolation_local.distance(ic->pl_.face()).value();
+	      if( dist < min ){
+		min = dist;
+		imin = ic->id();
+		extrapolation = extrapolation_local;
+		found = true;
+		m.message( " new intersection with minimum distance " , dist , " position: " , extrapolation.x().value() ,   extrapolation.y().value(),  extrapolation.z().value() , mybhep::VVERBOSE);
+	      }
+	      
+	    }
+	    
+	    if( found ){
+	      if( imin >= calos.size() ){
+		m.message( " problem: calo hit of id " , imin , " but n of calo hits is " , calos.size() , mybhep::VVERBOSE);
+	      }
+	      else
+		iseq->set_decay_vertex(extrapolation, "calo", imin);
+	    }
+	    
+	  }
 
         // match to foil
 	if( !iseq->nodes_.empty() ){
 
-	  m.message( " extrapolate vertex on foil " , mybhep::VVERBOSE);
+	  m.message( " extrapolate vertex on foil: supernemo " , SuperNemo, mybhep::VVERBOSE);
 
 	  topology::experimental_point extrapolation;
 
 	  if( gap_number(iseq->nodes_[0].c() ) != 0 ){
-	    m.message( " not near ", mybhep::VVERBOSE);
+	    m.message( " not near ", mybhep::VVERBOSE); fflush(stdout);
 	  }
 	  else{
 	    if( SuperNemo ){
-	      if( !iseq->intersect_plane_from_begin(get_foil_plane(), &extrapolation) )
-                m.message(" no intersection ", mybhep::VVERBOSE);
+	      get_foil_plane().dump();
+	      if( !iseq->intersect_plane_from_begin(get_foil_plane(), &extrapolation) ){
+                m.message(" no intersection ", mybhep::VVERBOSE); fflush(stdout);
+	      }
               else
                 iseq->set_vertex(extrapolation, "foil");
 	    }else{
-	      if( !iseq->intersect_circle_from_begin(get_foil_circle(), &extrapolation) )
-		m.message(" no intersection ", mybhep::VVERBOSE);
+	      if( !iseq->intersect_circle_from_begin(get_foil_circle(), &extrapolation) ){
+		m.message(" no intersection ", mybhep::VVERBOSE); fflush(stdout);
+	      }
 	      else
 		iseq->set_vertex(extrapolation, "foil");
 	    }
@@ -1697,14 +1701,14 @@ namespace CAT {
         }
 
         if( level >= mybhep::VVERBOSE ){
-          std::clog << " sequence " << iseq - sequences_.begin() << " has: " << std::endl;
-          std::clog << " center "; iseq->center().dump();
-          std::clog << " radius "; iseq->radius().dump(); std::clog << " " << std::endl;
-          std::clog << " pitch "; iseq->pitch().dump(); std::clog << " " << std::endl;
-          std::clog << " momentum "; iseq->momentum().dump(); std::clog << " " << std::endl;
-          std::clog << " charge "; iseq->charge().dump(); std::clog << " " << std::endl;
-          std::clog << " vertex "; iseq->vertex().dump(); std::clog << " " << std::endl;
-          std::clog << " decay vertex "; iseq->decay_vertex().dump(); std::clog << " " << std::endl;
+          std::clog << " sequence " << iseq - sequences_.begin() << " has: " << std::endl; fflush(stdout);
+          std::clog << " center "; iseq->center().dump(); fflush(stdout);
+          std::clog << " radius "; iseq->radius().dump(); std::clog << " " << std::endl; fflush(stdout);
+          std::clog << " pitch "; iseq->pitch().dump(); std::clog << " " << std::endl; fflush(stdout);
+          std::clog << " momentum "; iseq->momentum().dump(); std::clog << " " << std::endl; fflush(stdout);
+          std::clog << " charge "; iseq->charge().dump(); std::clog << " " << std::endl; fflush(stdout);
+          std::clog << " vertex "; iseq->vertex().dump(); std::clog << " " << std::endl; fflush(stdout);
+          std::clog << " decay vertex "; iseq->decay_vertex().dump(); std::clog << " " << std::endl; fflush(stdout);
         }
 
       }
