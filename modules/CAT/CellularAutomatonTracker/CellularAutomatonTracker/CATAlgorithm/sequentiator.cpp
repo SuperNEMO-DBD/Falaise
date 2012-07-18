@@ -1684,7 +1684,6 @@ namespace CAT {
 	  }
 	  else{
 	    if( SuperNemo ){
-	      get_foil_plane().dump();
 	      if( !iseq->intersect_plane_from_begin(get_foil_plane(), &extrapolation) ){
                 m.message(" no intersection ", mybhep::VVERBOSE); fflush(stdout);
 	      }
