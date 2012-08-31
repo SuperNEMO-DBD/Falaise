@@ -271,6 +271,11 @@ namespace CAT{
 
       }
 
+      if( ep->x().value() == small_neg ||
+	  ep->y().value() == small_neg ||
+	  ep->z().value() == small_neg )
+	return false;
+
       experimental_vector dist = experimental_vector(pl.face(), *ep);
       if( print_level() >= mybhep::VVERBOSE ){
         std::clog << " distance from extrapolation to calo face: " << dist.x().value() << " " << dist.y().value() << " " << dist.z().value() << " calo sizes: " << pl.sizes().x().value() << " " << pl.sizes().y().value() << " " << pl.sizes().z().value() << std::endl;
@@ -344,6 +349,11 @@ namespace CAT{
 	*ep = p1;
       else
 	*ep = p2;
+
+      if( ep->x().value() == small_neg ||
+	  ep->y().value() == small_neg ||
+	  ep->z().value() == small_neg )
+	return false;
 
       if( print_level() >= mybhep::VVERBOSE ){
 	clog << " track: "; dump(); 
