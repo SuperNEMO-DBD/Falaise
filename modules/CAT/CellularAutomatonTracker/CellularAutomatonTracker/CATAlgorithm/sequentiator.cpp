@@ -1706,8 +1706,12 @@ namespace CAT {
           std::clog << " pitch "; iseq->pitch().dump(); std::clog << " " << std::endl; fflush(stdout);
           std::clog << " momentum "; iseq->momentum().dump(); std::clog << " " << std::endl; fflush(stdout);
           std::clog << " charge "; iseq->charge().dump(); std::clog << " " << std::endl; fflush(stdout);
-          std::clog << " vertex "; iseq->vertex().dump(); std::clog << " " << std::endl; fflush(stdout);
-          std::clog << " decay vertex "; iseq->decay_vertex().dump(); std::clog << " " << std::endl; fflush(stdout);
+	  if( iseq->has_vertex() ){
+	    std::clog << " vertex "; iseq->vertex().dump(); std::clog << " " << std::endl; fflush(stdout);
+	  }
+	  if( iseq->has_decay_vertex() ){
+	    std::clog << " decay vertex "; iseq->decay_vertex().dump(); std::clog << " " << std::endl; fflush(stdout);
+	  }
         }
 
       }
