@@ -312,11 +312,11 @@ void ntupler::__fill ()
 	__event.Vtx_cos_dir[trk_counter][0][2]=dir.z().value();
       }
 
-      __event.Vtx_x[trk_counter][0]=iseq->vertex().x().value();
-      __event.Vtx_y[trk_counter][0]=iseq->vertex().y().value();
-      __event.Vtx_z[trk_counter][0]=iseq->vertex().z().value();
+      __event.Vtx_x[trk_counter][0]=iseq->helix_vertex().x().value();
+      __event.Vtx_y[trk_counter][0]=iseq->helix_vertex().y().value();
+      __event.Vtx_z[trk_counter][0]=iseq->helix_vertex().z().value();
 
-      if( iseq->has_decay_vertex() && iseq->nodes_.size() >= 2){
+      if( iseq->has_decay_helix_vertex() && iseq->nodes_.size() >= 2){
 	size_t s = iseq->nodes_.size();
 	CAT::topology::experimental_vector dir(iseq->nodes_[s-2].ep(), iseq->nodes_[s-1].ep());
 	__event.Decay_Vtx_cos_dir[trk_counter][1][0]=dir.x().value();
@@ -349,17 +349,17 @@ void ntupler::__fill ()
       __event.True_Vtx_cos_dir[true_trk_counter][0][2]=dir.z().value();
     }
     
-    if( iseq->has_decay_vertex() && iseq->nodes_.size() >= 2){
+    if( iseq->has_decay_helix_vertex() && iseq->nodes_.size() >= 2){
       size_t s = iseq->nodes_.size();
       CAT::topology::experimental_vector dir(iseq->nodes_[s-2].ep(), iseq->nodes_[s-1].ep());
       __event.True_Decay_Vtx_cos_dir[true_trk_counter][1][0]=dir.x().value();
       __event.True_Decay_Vtx_cos_dir[true_trk_counter][1][1]=dir.y().value();
       __event.True_Decay_Vtx_cos_dir[true_trk_counter][1][2]=dir.z().value();
     }
-    if( iseq->has_vertex() ){
-      __event.True_Vtx_x[true_trk_counter][0]=iseq->vertex().x().value();
-      __event.True_Vtx_y[true_trk_counter][0]=iseq->vertex().y().value();
-      __event.True_Vtx_z[true_trk_counter][0]=iseq->vertex().z().value();
+    if( iseq->has_helix_vertex() ){
+      __event.True_Vtx_x[true_trk_counter][0]=iseq->helix_vertex().x().value();
+      __event.True_Vtx_y[true_trk_counter][0]=iseq->helix_vertex().y().value();
+      __event.True_Vtx_z[true_trk_counter][0]=iseq->helix_vertex().z().value();
     }
     
     

@@ -1632,10 +1632,17 @@ namespace CAT {
 	    
 	    m.message(" extrapolate decay vertex with ", calos.size(), " calo hits " , mybhep::VVERBOSE);
 	    
-	    double min = mybhep::default_min;
-	    size_t imin = mybhep::default_integer;
-	    topology::experimental_point extrapolation, extrapolation_local;
-	    bool found = false;
+	    double helix_min = mybhep::default_min;
+	    size_t ihelix_min = mybhep::default_integer;
+	    double tangent_min = mybhep::default_min;
+	    size_t itangent_min = mybhep::default_integer;
+
+	    topology::experimental_point helix_extrapolation, helix_extrapolation_local;
+	    bool helix_found = false;
+
+	    topology::experimental_point tangent_extrapolation, tangent_extrapolation_local;
+	    bool tangent_found = false;
+
 	    for(std::vector<topology::calorimeter_hit>::iterator ic=calos.begin(); ic != calos.end(); ++ic){
 	      
 	      m.message( " trying to extrapolate to calo hit ", ic - calos.begin(), " id ", ic->id(), " on view ", ic->pl_.view(), mybhep::VVERBOSE);
@@ -1646,28 +1653,54 @@ namespace CAT {
 	      }
 	      
 	      
-	      if( !iseq->intersect_plane_from_end(ic->pl(), &extrapolation_local) ){
-		m.message( " no intersection " , mybhep::VVERBOSE);
-		continue;
+	      if( !iseq->intersect_plane_from_end(ic->pl(), &helix_extrapolation_local) ){
+		m.message( " no helix intersection " , mybhep::VVERBOSE);
+	      }
+	      else{
+
+		double dist = helix_extrapolation_local.distance(ic->pl_.face()).value();
+		if( dist < helix_min ){
+		  helix_min = dist;
+		  ihelix_min = ic->id();
+		  helix_extrapolation = helix_extrapolation_local;
+		  helix_found = true;
+		  m.message( " new helix intersection with minimum distance " , dist , " position: " , helix_extrapolation.x().value() ,   helix_extrapolation.y().value(),  helix_extrapolation.z().value() , mybhep::VVERBOSE);
+		}
 	      }
 
-	      double dist = extrapolation_local.distance(ic->pl_.face()).value();
-	      if( dist < min ){
-		min = dist;
-		imin = ic->id();
-		extrapolation = extrapolation_local;
-		found = true;
-		m.message( " new intersection with minimum distance " , dist , " position: " , extrapolation.x().value() ,   extrapolation.y().value(),  extrapolation.z().value() , mybhep::VVERBOSE);
+
+	      if( !iseq->intersect_plane_with_tangent_from_end(ic->pl(), &tangent_extrapolation_local) ){
+		m.message( " no tangent intersection " , mybhep::VVERBOSE);
 	      }
-	      
-	    }
-	    
-	    if( found ){
-	      if( imin >= calos.size() ){
-		m.message( " problem: calo hit of id " , imin , " but n of calo hits is " , calos.size() , mybhep::VVERBOSE);
+	      else{
+
+		double dist = tangent_extrapolation_local.distance(ic->pl_.face()).value();
+		if( dist < tangent_min ){
+		  tangent_min = dist;
+		  itangent_min = ic->id();
+		  tangent_extrapolation = tangent_extrapolation_local;
+		  tangent_found = true;
+		  m.message( " new tangent intersection with minimum distance " , dist , " position: " , tangent_extrapolation.x().value() ,   tangent_extrapolation.y().value(),  tangent_extrapolation.z().value() , mybhep::VVERBOSE);
+		}
+	      }
+
+
+	    } // finish loop on calos
+
+	    if( helix_found ){
+	      if( ihelix_min >= calos.size() ){
+		m.message( " problem: calo hit of id " , ihelix_min , " but n of calo hits is " , calos.size() , mybhep::VVERBOSE);
 	      }
 	      else
-		iseq->set_decay_vertex(extrapolation, "calo", imin);
+		iseq->set_decay_helix_vertex(helix_extrapolation, "calo", ihelix_min);
+	    }
+	    
+	    if( tangent_found ){
+	      if( itangent_min >= calos.size() ){
+		m.message( " problem: tangent calo hit of id " , itangent_min , " but n of calo hits is " , calos.size() , mybhep::VVERBOSE);
+	      }
+	      else
+		iseq->set_decay_tangent_vertex(tangent_extrapolation, "calo", itangent_min);
 	    }
 	    
 	  }
@@ -1677,25 +1710,48 @@ namespace CAT {
 
 	  m.message( " extrapolate vertex on foil: supernemo " , SuperNemo, mybhep::VVERBOSE);
 
-	  topology::experimental_point extrapolation;
+	  topology::experimental_point helix_extrapolation;
+	  topology::experimental_point tangent_extrapolation;
 
 	  if( gap_number(iseq->nodes_[0].c() ) != 0 ){
 	    m.message( " not near ", mybhep::VVERBOSE); fflush(stdout);
 	  }
 	  else{
 	    if( SuperNemo ){
-	      if( !iseq->intersect_plane_from_begin(get_foil_plane(), &extrapolation) ){
-                m.message(" no intersection ", mybhep::VVERBOSE); fflush(stdout);
+
+	      if( !iseq->intersect_plane_from_begin(get_foil_plane(), &helix_extrapolation) ){
+                m.message(" no helix intersection ", mybhep::VVERBOSE); fflush(stdout);
 	      }
               else
-                iseq->set_vertex(extrapolation, "foil");
-	    }else{
-	      if( !iseq->intersect_circle_from_begin(get_foil_circle(), &extrapolation) ){
-		m.message(" no intersection ", mybhep::VVERBOSE); fflush(stdout);
+                iseq->set_helix_vertex(helix_extrapolation, "foil");
+
+
+	      if( !iseq->intersect_plane_with_tangent_from_begin(get_foil_plane(), &tangent_extrapolation) ){
+                m.message(" no tangent intersection ", mybhep::VVERBOSE); fflush(stdout);
+	      }
+              else
+                iseq->set_tangent_vertex(tangent_extrapolation, "foil");
+
+	    }else{  // nemo3
+
+
+	      if( !iseq->intersect_circle_from_begin(get_foil_circle(), &helix_extrapolation) ){
+		m.message(" no helix intersection ", mybhep::VVERBOSE); fflush(stdout);
 	      }
 	      else
-		iseq->set_vertex(extrapolation, "foil");
+		iseq->set_helix_vertex(helix_extrapolation, "foil");
+
+	      if( !iseq->intersect_circle_with_tangent_from_begin(get_foil_circle(), &tangent_extrapolation) ){
+		m.message(" no tangent intersection ", mybhep::VVERBOSE); fflush(stdout);
+	      }
+	      else
+		iseq->set_tangent_vertex(tangent_extrapolation, "foil");
+
+
 	    }
+
+
+
 	  }
         }
 
@@ -1706,11 +1762,17 @@ namespace CAT {
           std::clog << " pitch "; iseq->pitch().dump(); std::clog << " " << std::endl; fflush(stdout);
           std::clog << " momentum "; iseq->momentum().dump(); std::clog << " " << std::endl; fflush(stdout);
           std::clog << " charge "; iseq->charge().dump(); std::clog << " " << std::endl; fflush(stdout);
-	  if( iseq->has_vertex() ){
-	    std::clog << " vertex "; iseq->vertex().dump(); std::clog << " " << std::endl; fflush(stdout);
+	  if( iseq->has_helix_vertex() ){
+	    std::clog << " helix_vertex "; iseq->helix_vertex().dump(); std::clog << " " << std::endl; fflush(stdout);
 	  }
-	  if( iseq->has_decay_vertex() ){
-	    std::clog << " decay vertex "; iseq->decay_vertex().dump(); std::clog << " " << std::endl; fflush(stdout);
+	  if( iseq->has_decay_helix_vertex() ){
+	    std::clog << " decay helix_vertex "; iseq->decay_helix_vertex().dump(); std::clog << " " << std::endl; fflush(stdout);
+	  }
+	  if( iseq->has_tangent_vertex() ){
+	    std::clog << " tangent_vertex "; iseq->tangent_vertex().dump(); std::clog << " " << std::endl; fflush(stdout);
+	  }
+	  if( iseq->has_decay_tangent_vertex() ){
+	    std::clog << " decay tangent_vertex "; iseq->decay_tangent_vertex().dump(); std::clog << " " << std::endl; fflush(stdout);
 	  }
         }
 
@@ -2843,26 +2905,26 @@ namespace CAT {
     }
     m.message(" ntracks = ", nemo_sequences.size(), mybhep::VVERBOSE);
 
-    if( !nemo_sequences[0].has_decay_vertex() ){
+    if( !nemo_sequences[0].has_decay_helix_vertex() ){
       m.message(" reject: 1st track has no calo ", mybhep::VVERBOSE);
       return false;
     }
 
 
-    if( !nemo_sequences[1].has_decay_vertex() ){
+    if( !nemo_sequences[1].has_decay_helix_vertex() ){
       m.message(" reject: 2nd track has no calo ", mybhep::VVERBOSE);
       return false;
     }
 
     std::vector<topology::calorimeter_hit> calos = __tracked_data.get_calos();
 
-    if( nemo_sequences[0].calo_id() == nemo_sequences[1].calo_id() ){
-      m.message(" reject: same calo ", nemo_sequences[0].calo_id(), mybhep::VVERBOSE);
+    if( nemo_sequences[0].calo_helix_id() == nemo_sequences[1].calo_helix_id() ){
+      m.message(" reject: same calo ", nemo_sequences[0].calo_helix_id(), mybhep::VVERBOSE);
       return false;
     }
 
-    topology::calorimeter_hit caloA = calos[nemo_sequences[0].calo_id()];
-    topology::calorimeter_hit caloB = calos[nemo_sequences[1].calo_id()];
+    topology::calorimeter_hit caloA = calos[nemo_sequences[0].calo_helix_id()];
+    topology::calorimeter_hit caloB = calos[nemo_sequences[1].calo_helix_id()];
 
     if( caloA.e().value() < 0.2 ){
       m.message(" reject: 1st calo has energy ", caloA.e().value(), mybhep::VVERBOSE);

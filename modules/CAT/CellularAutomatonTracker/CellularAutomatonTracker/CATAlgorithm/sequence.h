@@ -72,17 +72,26 @@ namespace CAT {
       // sequence's name(s)
       std::vector<std::string> names_;
 
-      // sequence's vertex
-      bool has_vertex_;
-      experimental_point vertex_;
-      std::string vertex_type_;
-      size_t vertex_id_;
+      // sequence's vertex: from helix and from tangents
+      bool has_helix_vertex_;
+      experimental_point helix_vertex_;
+      std::string helix_vertex_type_;
+      size_t helix_vertex_id_;
+      bool has_tangent_vertex_;
+      experimental_point tangent_vertex_;
+      std::string tangent_vertex_type_;
+      size_t tangent_vertex_id_;
+
 
       // sequence's decay_vertex
-      bool has_decay_vertex_;
-      experimental_point decay_vertex_;
-      std::string decay_vertex_type_;
-      size_t calo_id_;
+      bool has_decay_helix_vertex_;
+      experimental_point decay_helix_vertex_;
+      std::string decay_helix_vertex_type_;
+      size_t calo_helix_id_;
+      bool has_decay_tangent_vertex_;
+      experimental_point decay_tangent_vertex_;
+      std::string decay_tangent_vertex_type_;
+      size_t calo_tangent_id_;
 
       //!Default constructor
       sequence()
@@ -91,16 +100,28 @@ namespace CAT {
         nodes_.clear();
         free_ = false;
         names_.clear();names_.push_back("default");
-        has_vertex_ = false;
-        vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
+        has_helix_vertex_ = false;
+        helix_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                      mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
-        vertex_type_="default";
-        vertex_id_ = mybhep::default_integer;
-        has_decay_vertex_ = false;
-        decay_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
+        helix_vertex_type_="default";
+        helix_vertex_id_ = mybhep::default_integer;
+        has_decay_helix_vertex_ = false;
+        decay_helix_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                            mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
-        decay_vertex_type_="default";
-        calo_id_ = mybhep::default_integer;
+        decay_helix_vertex_type_="default";
+        calo_helix_id_ = mybhep::default_integer;
+
+        has_tangent_vertex_ = false;
+        tangent_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
+                                     mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
+        tangent_vertex_type_="default";
+        tangent_vertex_id_ = mybhep::default_integer;
+        has_decay_tangent_vertex_ = false;
+        decay_tangent_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
+                                           mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
+        decay_tangent_vertex_type_="default";
+        calo_tangent_id_ = mybhep::default_integer;
+
         chi2s_.clear();
         helix_chi2s_.clear();
         probs_.clear();
@@ -122,16 +143,26 @@ namespace CAT {
         nodes_ = nodes;
         free_ = false;
         names_.clear();names_.push_back("default");
-        has_vertex_ = false;
-        vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
+        has_helix_vertex_ = false;
+        helix_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                      mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
-        vertex_type_="default";
-        vertex_id_ = mybhep::default_integer;
-        has_decay_vertex_ = false;
-        decay_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
+        helix_vertex_type_="default";
+        helix_vertex_id_ = mybhep::default_integer;
+        has_decay_helix_vertex_ = false;
+        decay_helix_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                            mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
-        decay_vertex_type_="default";
-        calo_id_ = mybhep::default_integer;
+        decay_helix_vertex_type_="default";
+        calo_helix_id_ = mybhep::default_integer;
+        has_tangent_vertex_ = false;
+        tangent_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
+                                     mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
+        tangent_vertex_type_="default";
+        tangent_vertex_id_ = mybhep::default_integer;
+        has_decay_tangent_vertex_ = false;
+        decay_tangent_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
+                                           mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
+        decay_tangent_vertex_type_="default";
+        calo_tangent_id_ = mybhep::default_integer;
         chi2s_.clear();
         helix_chi2s_.clear();
         probs_.clear();
@@ -152,16 +183,24 @@ namespace CAT {
         nodes_.push_back(node);
         free_ = true;
         names_.clear();names_.push_back("default");
-        has_vertex_ = false;
-        vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
+        helix_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                      mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
-        vertex_type_="default";
-        vertex_id_ = mybhep::default_integer;
-        has_decay_vertex_ = false;
-        decay_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
+        helix_vertex_type_="default";
+        helix_vertex_id_ = mybhep::default_integer;
+        has_decay_helix_vertex_ = false;
+        decay_helix_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                            mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
-        decay_vertex_type_="default";
-        calo_id_ = mybhep::default_integer;
+        decay_helix_vertex_type_="default";
+        calo_helix_id_ = mybhep::default_integer;
+        tangent_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
+                                     mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
+        tangent_vertex_type_="default";
+        tangent_vertex_id_ = mybhep::default_integer;
+        has_decay_tangent_vertex_ = false;
+        decay_tangent_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
+                                           mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
+        decay_tangent_vertex_type_="default";
+        calo_tangent_id_ = mybhep::default_integer;
         chi2s_.clear();
         helix_chi2s_.clear();
         probs_.clear();
@@ -188,11 +227,17 @@ namespace CAT {
         a_out << indent << names_[0] << ". Number of nodes: " << nodes().size() << " free: " << Free() << " chi2 " << chi2() << " helix chi2 " << helix_chi2() << " prob " << Prob() << " helix prob " << helix_Prob() << " momentum " << momentum().value() << " primary " << primary() << std::endl;
         for(std::vector<node>::const_iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode)
           inode->dump(a_out, "",indent + "     ");
-        if( has_vertex() ){
-          a_out << indent << " vertex type: " << vertex_type() << " vertex: "; vertex_.dump();
+        if( has_helix_vertex() ){
+          a_out << indent << " helix_vertex type: " << helix_vertex_type() << " helix_vertex: "; helix_vertex_.dump();
         }
-        if( has_decay_vertex() ){
-          a_out << indent << " decay vertex type " << decay_vertex_type() << " calo id: " << calo_id() << " decay_vertex : "; decay_vertex_.dump();
+        if( has_decay_helix_vertex() ){
+          a_out << indent << " decay helix_vertex type " << decay_helix_vertex_type() << " calo id: " << calo_helix_id() << " decay_helix_vertex : "; decay_helix_vertex_.dump();
+        }
+        if( has_tangent_vertex() ){
+          a_out << indent << " tangent_vertex type: " << tangent_vertex_type() << " tangent_vertex: "; tangent_vertex_.dump();
+        }
+        if( has_decay_tangent_vertex() ){
+          a_out << indent << " decay tangent_vertex type " << decay_tangent_vertex_type() << " calo id: " << calo_tangent_id() << " decay_tangent_vertex : "; decay_tangent_vertex_.dump();
         }
         a_out << indent << " ------------------- " << std::endl;
 
@@ -226,22 +271,40 @@ namespace CAT {
         names_.push_back(name);
       }
 
-      //! set vertex
-      void set_vertex(experimental_point v, std::string type, size_t calo_id = 0){
-        has_vertex_ = true;
-        vertex_ = v;
-        vertex_type_ = type;
+      //! set helix_vertex
+      void set_helix_vertex(experimental_point v, std::string type, size_t calo_helix_id = 0){
+        has_helix_vertex_ = true;
+        helix_vertex_ = v;
+        helix_vertex_type_ = type;
         if( type=="calo" )
-          calo_id_ = calo_id;
+          calo_helix_id_ = calo_helix_id;
       }
 
-      //! set decay_vertex
-      void set_decay_vertex(experimental_point v, std::string type, size_t calo_id = 0){
-        has_decay_vertex_ = true;
-        decay_vertex_ = v;
-        decay_vertex_type_ = type;
+      //! set decay_helix_vertex
+      void set_decay_helix_vertex(experimental_point v, std::string type, size_t calo_helix_id = 0){
+        has_decay_helix_vertex_ = true;
+        decay_helix_vertex_ = v;
+        decay_helix_vertex_type_ = type;
         if( type=="calo" )
-          calo_id_ = calo_id;
+          calo_helix_id_ = calo_helix_id;
+      }
+
+      //! set tangent_vertex
+      void set_tangent_vertex(experimental_point v, std::string type, size_t calo_tangent_id = 0){
+        has_tangent_vertex_ = true;
+        tangent_vertex_ = v;
+        tangent_vertex_type_ = type;
+        if( type=="calo" )
+          calo_tangent_id_ = calo_tangent_id;
+      }
+
+      //! set decay_tangent_vertex
+      void set_decay_tangent_vertex(experimental_point v, std::string type, size_t calo_tangent_id = 0){
+        has_decay_tangent_vertex_ = true;
+        decay_tangent_vertex_ = v;
+        decay_tangent_vertex_type_ = type;
+        if( type=="calo" )
+          calo_tangent_id_ = calo_tangent_id;
       }
 
       //! set chi2 list
@@ -418,44 +481,84 @@ namespace CAT {
 
       }
 
-      //! has vertex
-      const bool has_vertex()const{
-        return has_vertex_;
+      //! has helix_vertex
+      const bool has_helix_vertex()const{
+        return has_helix_vertex_;
       }
 
-      //! get vertex
-      const experimental_point vertex()const{
-        return vertex_;
+      //! get helix_vertex
+      const experimental_point helix_vertex()const{
+        return helix_vertex_;
       }
 
-      //! get vertex type
-      const std::string vertex_type()const{
-        return vertex_type_;
+      //! get helix_vertex type
+      const std::string helix_vertex_type()const{
+        return helix_vertex_type_;
       }
 
-      //! get vertex id
-      const size_t vertex_id()const{
-        return vertex_id_;
+      //! get helix_vertex id
+      const size_t helix_vertex_id()const{
+        return helix_vertex_id_;
       }
 
-      //! has decay_vertex
-      const bool has_decay_vertex()const{
-        return has_decay_vertex_;
+      //! has decay_helix_vertex
+      const bool has_decay_helix_vertex()const{
+        return has_decay_helix_vertex_;
       }
 
-      //! get decay_vertex
-      const experimental_point decay_vertex()const{
-        return decay_vertex_;
+      //! get decay_helix_vertex
+      const experimental_point decay_helix_vertex()const{
+        return decay_helix_vertex_;
       }
 
       //! get calo id
-      const size_t calo_id()const{
-        return calo_id_;
+      const size_t calo_helix_id()const{
+        return calo_helix_id_;
       }
 
-      //! get decay vertex type
-      const std::string decay_vertex_type()const{
-        return decay_vertex_type_;
+      //! get decay helix_vertex type
+      const std::string decay_helix_vertex_type()const{
+        return decay_helix_vertex_type_;
+      }
+
+      //! has tangent_vertex
+      const bool has_tangent_vertex()const{
+        return has_tangent_vertex_;
+      }
+
+      //! get tangent_vertex
+      const experimental_point tangent_vertex()const{
+        return tangent_vertex_;
+      }
+
+      //! get tangent_vertex type
+      const std::string tangent_vertex_type()const{
+        return tangent_vertex_type_;
+      }
+
+      //! get tangent_vertex id
+      const size_t tangent_vertex_id()const{
+        return tangent_vertex_id_;
+      }
+
+      //! has decay_tangent_vertex
+      const bool has_decay_tangent_vertex()const{
+        return has_decay_tangent_vertex_;
+      }
+
+      //! get decay_tangent_vertex
+      const experimental_point decay_tangent_vertex()const{
+        return decay_tangent_vertex_;
+      }
+
+      //! get calo id
+      const size_t calo_tangent_id()const{
+        return calo_tangent_id_;
+      }
+
+      //! get decay tangent_vertex type
+      const std::string decay_tangent_vertex_type()const{
+        return decay_tangent_vertex_type_;
       }
 
       //! get charge
@@ -595,17 +698,31 @@ namespace CAT {
         }
         inverted.set_nodes( inverted_nodes );
 	inverted.set_names( names() );
-        if( has_decay_vertex() ){
-          if( decay_vertex_type() == "foil" )
-            inverted.set_vertex( decay_vertex(), decay_vertex_type() );
-          else if( decay_vertex_type() == "calo" )
-            inverted.set_vertex( decay_vertex(), decay_vertex_type(), calo_id() );
+
+        if( has_decay_helix_vertex() ){
+          if( decay_helix_vertex_type() == "foil" )
+            inverted.set_helix_vertex( decay_helix_vertex(), decay_helix_vertex_type() );
+          else if( decay_helix_vertex_type() == "calo" )
+            inverted.set_helix_vertex( decay_helix_vertex(), decay_helix_vertex_type(), calo_helix_id() );
         }
-        if( has_vertex() ){
-          if( vertex_type() == "foil" )
-            inverted.set_decay_vertex( vertex(), vertex_type() );
-          else if( vertex_type() == "calo" )
-            inverted.set_decay_vertex( vertex(), vertex_type(), vertex_id() );
+        if( has_helix_vertex() ){
+          if( helix_vertex_type() == "foil" )
+            inverted.set_decay_helix_vertex( helix_vertex(), helix_vertex_type() );
+          else if( helix_vertex_type() == "calo" )
+            inverted.set_decay_helix_vertex( helix_vertex(), helix_vertex_type(), helix_vertex_id() );
+        }
+
+        if( has_decay_tangent_vertex() ){
+          if( decay_tangent_vertex_type() == "foil" )
+            inverted.set_tangent_vertex( decay_tangent_vertex(), decay_tangent_vertex_type() );
+          else if( decay_tangent_vertex_type() == "calo" )
+            inverted.set_tangent_vertex( decay_tangent_vertex(), decay_tangent_vertex_type(), calo_tangent_id() );
+        }
+        if( has_tangent_vertex() ){
+          if( tangent_vertex_type() == "foil" )
+            inverted.set_decay_tangent_vertex( tangent_vertex(), tangent_vertex_type() );
+          else if( tangent_vertex_type() == "calo" )
+            inverted.set_decay_tangent_vertex( tangent_vertex(), tangent_vertex_type(), tangent_vertex_id() );
         }
         inverted.set_chi2s(chi2s());
         inverted.set_helix_chi2s(helix_chi2s());
@@ -938,7 +1055,7 @@ namespace CAT {
         }
 
         if( inode == 0 ){
-          // the first node is a vertex (there are no triplets)
+          // the first node is a helix_vertex (there are no triplets)
           // so it shall propagate through a couplet
 
           std::vector<bool> shall_one_have_triplet;
@@ -1424,6 +1541,18 @@ namespace CAT {
         charge_ = deltaphi/fabs(deltaphi.value());
       }
 
+      bool intersect_plane_with_tangent_from_end(plane pl, experimental_point * ep)const{
+	// need 2 nodes to build the tangent line
+        if( nodes().size() < 2 ) return false;
+
+        experimental_vector direction(second_last_node().ep(), last_node().ep());
+	bool result = pl.intersect(last_node().ep(), direction, ep);
+
+        return result;
+      }
+
+
+
       bool intersect_plane_from_end(plane pl, experimental_point * ep)const{
 
         experimental_double _phi = helix_.phi_of_point(last_node().ep());
@@ -1432,6 +1561,17 @@ namespace CAT {
 
         return result;
 
+      }
+
+
+      bool intersect_plane_with_tangent_from_begin(plane pl, experimental_point * ep)const{
+	// need 2 nodes to build the tangent line
+        if( nodes().size() < 2 ) return false;
+
+        experimental_vector direction(nodes_[1].ep(), nodes_[0].ep());
+	bool result = pl.intersect(nodes_[0].ep(), direction, ep);
+
+        return result;
       }
 
       bool intersect_plane_from_begin(plane pl, experimental_point * ep)const{
@@ -1447,6 +1587,17 @@ namespace CAT {
       }
 
 
+      bool intersect_circle_with_tangent_from_end(circle c, experimental_point * ep)const{
+
+	// need 2 nodes to build the tangent line
+        if( nodes().size() < 2 ) return false;
+	
+        experimental_vector direction(second_last_node().ep(), last_node().ep());
+	bool result = helix_.intersect_circle_with_tangent(c, last_node().ep(), direction, ep);
+
+        return result;
+      }
+
       bool intersect_circle_from_end(circle c, experimental_point * ep)const{
 
         experimental_double _phi = helix_.phi_of_point(last_node().ep());
@@ -1455,6 +1606,17 @@ namespace CAT {
 
         return result;
 
+      }
+
+      bool intersect_circle_with_tangent_from_begin(circle c, experimental_point * ep)const{
+
+	// need 2 nodes to build the tangent line
+        if( nodes().size() < 2 ) return false;
+	
+        experimental_vector direction(nodes_[1].ep(), nodes_[0].ep());
+	bool result = helix_.intersect_circle_with_tangent(c, nodes_[0].ep(), direction, ep);
+
+        return result;
       }
 
       bool intersect_circle_from_begin(circle c, experimental_point * ep)const{
@@ -1535,14 +1697,14 @@ namespace CAT {
             return false;
           }
 
-          if( has_decay_vertex() && decay_vertex_type() == "calo" ){
+          if( has_decay_helix_vertex() && decay_helix_vertex_type() == "calo" ){
             if( print_level() >= mybhep::VVERBOSE )
-              std::clog << " ... forbidden, because 1st track already has decay vertex on calo " << std::endl;
+              std::clog << " ... forbidden, because 1st track already has decay helix_vertex on calo " << std::endl;
             return false;
           }
-          if( seq.has_vertex() && seq.vertex_type() == "calo" ){
+          if( seq.has_helix_vertex() && seq.helix_vertex_type() == "calo" ){
             if( print_level() >= mybhep::VVERBOSE )
-              std::clog << " ... forbidden, because 2nd track already has vertex on calo " << std::endl;
+              std::clog << " ... forbidden, because 2nd track already has helix_vertex on calo " << std::endl;
             return false;
           }
           layer_distance = last_node().c().layer() - seq.nodes_[0].c().layer();
@@ -1558,14 +1720,14 @@ namespace CAT {
             return false;
           }
 
-          if( has_decay_vertex() && decay_vertex_type() == "calo" ){
+          if( has_decay_helix_vertex() && decay_helix_vertex_type() == "calo" ){
             if( print_level() >= mybhep::VVERBOSE )
-              std::clog << " ... forbidden, because 1st track already has decay vertex on calo " << std::endl;
+              std::clog << " ... forbidden, because 1st track already has decay helix_vertex on calo " << std::endl;
             return false;
           }
-          if( seq.has_decay_vertex() && seq.decay_vertex_type() == "calo" ){
+          if( seq.has_decay_helix_vertex() && seq.decay_helix_vertex_type() == "calo" ){
             if( print_level() >= mybhep::VVERBOSE )
-              std::clog << " ... forbidden, because 2nd track already has decay vertex on calo " << std::endl;
+              std::clog << " ... forbidden, because 2nd track already has decay helix_vertex on calo " << std::endl;
             return false;
           }
           layer_distance = last_node().c().layer() - seq.last_node().c().layer();
@@ -1581,14 +1743,14 @@ namespace CAT {
             return false;
           }
 
-          if( has_vertex() && vertex_type() == "calo" ){
+          if( has_helix_vertex() && helix_vertex_type() == "calo" ){
             if( print_level() >= mybhep::VVERBOSE )
-              std::clog << " ... forbidden, because 1st track already has vertex on calo " << std::endl;
+              std::clog << " ... forbidden, because 1st track already has helix_vertex on calo " << std::endl;
             return false;
           }
-          if( seq.has_decay_vertex() && seq.decay_vertex_type() == "calo" ){
+          if( seq.has_decay_helix_vertex() && seq.decay_helix_vertex_type() == "calo" ){
             if( print_level() >= mybhep::VVERBOSE )
-              std::clog << " ... forbidden, because 2nd track already has decay vertex on calo " << std::endl;
+              std::clog << " ... forbidden, because 2nd track already has decay helix_vertex on calo " << std::endl;
             return false;
           }
           layer_distance = nodes_[0].c().layer() - seq.last_node().c().layer();
@@ -1604,14 +1766,14 @@ namespace CAT {
             return false;
           }
 
-          if( has_vertex() && vertex_type() == "calo" ){
+          if( has_helix_vertex() && helix_vertex_type() == "calo" ){
             if( print_level() >= mybhep::VVERBOSE )
-              std::clog << " ... forbidden, because 1st track already has vertex on calo " << std::endl;
+              std::clog << " ... forbidden, because 1st track already has helix_vertex on calo " << std::endl;
             return false;
           }
-          if( seq.has_vertex() && seq.vertex_type() == "calo" ){
+          if( seq.has_helix_vertex() && seq.helix_vertex_type() == "calo" ){
             if( print_level() >= mybhep::VVERBOSE )
-              std::clog << " ... forbidden, because 2nd track already has vertex on calo " << std::endl;
+              std::clog << " ... forbidden, because 2nd track already has helix_vertex on calo " << std::endl;
             return false;
           }
           layer_distance = nodes_[0].c().layer() - seq.nodes_[0].c().layer();
@@ -1688,19 +1850,32 @@ namespace CAT {
         }
 
         if( !invertB ){
-          if( seq.has_decay_vertex() ){
-            if( seq.decay_vertex_type() == "foil" )
-              news.set_decay_vertex( seq.decay_vertex(), seq.decay_vertex_type() );
-            else if( seq.decay_vertex_type() == "calo" )
-              news.set_decay_vertex( seq.decay_vertex(), seq.decay_vertex_type(), seq.calo_id() );
+          if( seq.has_decay_helix_vertex() ){
+            if( seq.decay_helix_vertex_type() == "foil" )
+              news.set_decay_helix_vertex( seq.decay_helix_vertex(), seq.decay_helix_vertex_type() );
+            else if( seq.decay_helix_vertex_type() == "calo" )
+              news.set_decay_helix_vertex( seq.decay_helix_vertex(), seq.decay_helix_vertex_type(), seq.calo_helix_id() );
+
+            if( seq.decay_tangent_vertex_type() == "foil" )
+              news.set_decay_tangent_vertex( seq.decay_tangent_vertex(), seq.decay_tangent_vertex_type() );
+            else if( seq.decay_tangent_vertex_type() == "calo" )
+              news.set_decay_tangent_vertex( seq.decay_tangent_vertex(), seq.decay_tangent_vertex_type(), seq.calo_tangent_id() );
+
           }
         }
         else{
-          if( seq.has_vertex() ){
-            if( seq.vertex_type() == "foil" )
-              news.set_decay_vertex( seq.vertex(), seq.vertex_type() );
-            else if( seq.vertex_type() == "calo" )
-              news.set_decay_vertex( seq.vertex(), seq.vertex_type(), seq.vertex_id() );
+          if( seq.has_helix_vertex() ){
+            if( seq.helix_vertex_type() == "foil" )
+              news.set_decay_helix_vertex( seq.helix_vertex(), seq.helix_vertex_type() );
+            else if( seq.helix_vertex_type() == "calo" )
+              news.set_decay_helix_vertex( seq.helix_vertex(), seq.helix_vertex_type(), seq.helix_vertex_id() );
+
+            if( seq.tangent_vertex_type() == "foil" )
+              news.set_decay_tangent_vertex( seq.tangent_vertex(), seq.tangent_vertex_type() );
+            else if( seq.tangent_vertex_type() == "calo" )
+              news.set_decay_tangent_vertex( seq.tangent_vertex(), seq.tangent_vertex_type(), seq.tangent_vertex_id() );
+
+
           }
         }
 
@@ -1753,14 +1928,14 @@ namespace CAT {
 
 
       experimental_vector initial_dir()const{
-        if( has_vertex() ){
+        if( has_helix_vertex() ){
           if( nodes_.size() < 1 ){
             if( print_level() >= mybhep::NORMAL ){
               std::clog << " problem: asking for initial dir of sequence with " << nodes_.size() << " nodes " << std::endl;
               return experimental_vector();
             }
           }
-          return experimental_vector(vertex_, nodes_[0].ep()).unit();
+          return experimental_vector(helix_vertex_, nodes_[0].ep()).unit();
         }
         if( nodes_.size() < 2 ){
           if( print_level() >= mybhep::NORMAL ){
@@ -1774,14 +1949,14 @@ namespace CAT {
       }
 
       experimental_vector final_dir()const{
-        if( has_decay_vertex() ){
+        if( has_decay_helix_vertex() ){
           if( nodes_.size() < 1 ){
             if( print_level() >= mybhep::NORMAL ){
               std::clog << " problem: asking for final dir of sequence with " << nodes_.size() << " nodes " << std::endl;
               return experimental_vector();
             }
           }
-          return experimental_vector(nodes_.back().ep(), decay_vertex_).unit();
+          return experimental_vector(nodes_.back().ep(), decay_helix_vertex_).unit();
         }
         if( nodes_.size() < 2 ){
           if( print_level() >= mybhep::NORMAL ){

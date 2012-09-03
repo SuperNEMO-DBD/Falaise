@@ -2376,13 +2376,13 @@ void EventDisplay::draw_helices_xz( void ){
     double z = iclu->center().z().value();
     double r = iclu->radius().value();
     topology::experimental_point pi = iclu->nodes().front().ep();
-    if( iclu->has_vertex() ){
-      const topology::experimental_point v = iclu->vertex();
+    if( iclu->has_helix_vertex() ){
+      const topology::experimental_point v = iclu->helix_vertex();
       pi = v;
     }
     topology::experimental_point pf = iclu->nodes().back().ep();
-    if( iclu->has_decay_vertex() )
-      pf = iclu->decay_vertex();
+    if( iclu->has_decay_helix_vertex() )
+      pf = iclu->decay_helix_vertex();
     double phi1 = topology::experimental_vector(iclu->center(), pi).phi().value();
     double phi2 = topology::experimental_vector(iclu->center(), pf).phi().value();
     mybhep::fix_angles(&phi1, &phi2);
@@ -2405,11 +2405,11 @@ void EventDisplay::draw_helices_yz( void ){
     double r = iclu->radius().value();
     double p = iclu->pitch().value();
     topology::experimental_point pi = iclu->nodes().front().ep();
-    if( iclu->has_vertex() )
-      pi = iclu->vertex();
+    if( iclu->has_helix_vertex() )
+      pi = iclu->helix_vertex();
     topology::experimental_point pf = iclu->nodes().back().ep();
-    if( iclu->has_decay_vertex() )
-      pf = iclu->decay_vertex();
+    if( iclu->has_decay_helix_vertex() )
+      pf = iclu->decay_helix_vertex();
     topology::helix h = iclu->get_helix();
     double phi1 = h.phi_of_point(pi).value();
     double phi2 = h.phi_of_point(pf).value();
@@ -2570,12 +2570,12 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<topology::sequence
 	size_t offset = 0;
 
 
-	if( s.has_vertex() )
+	if( s.has_helix_vertex() )
 	  {
 	    npoints += 1;  // vertex
 	    offset = 1;
 	  }
-	if( s.has_decay_vertex() )
+	if( s.has_decay_helix_vertex() )
 	  {
 	    npoints += 1;  // decay vertex
 	  }
@@ -2584,16 +2584,16 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<topology::sequence
 	double* zt = (double*)malloc(sizeof(double)*npoints);
 	double* xt = (double*)malloc(sizeof(double)*npoints);
 	
-	if( s.has_vertex() )
+	if( s.has_helix_vertex() )
 	  {
-	    xt[0] = s.vertex().x().value();
-	    zt[0] = s.vertex().z().value();
+	    xt[0] = s.helix_vertex().x().value();
+	    zt[0] = s.helix_vertex().z().value();
 	  }
 	
-	if( s.has_decay_vertex() )
+	if( s.has_decay_helix_vertex() )
 	  {
-	    xt[npoints-1] = s.decay_vertex().x().value();
-	    zt[npoints-1] = s.decay_vertex().z().value();
+	    xt[npoints-1] = s.decay_helix_vertex().x().value();
+	    zt[npoints-1] = s.decay_helix_vertex().z().value();
 	  }
 
 	for(size_t j=0; j<nnodes; j++)
@@ -2636,12 +2636,12 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<topology::sequence
 	size_t offset = 0;
 
 
-	if( s.has_vertex() )
+	if( s.has_helix_vertex() )
 	  {
 	    npoints += 1;  // vertex
 	    offset = 1;
 	  }
-	if( s.has_decay_vertex() )
+	if( s.has_decay_helix_vertex() )
 	  {
 	    npoints += 1;  // decay vertex
 	  }
@@ -2650,16 +2650,16 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<topology::sequence
 	double* zt = (double*)malloc(sizeof(double)*npoints);
 	double* xt = (double*)malloc(sizeof(double)*npoints);
 	
-	if( s.has_vertex() )
+	if( s.has_helix_vertex() )
 	  {
-	    xt[0] = s.vertex().x().value();
-	    zt[0] = s.vertex().z().value();
+	    xt[0] = s.helix_vertex().x().value();
+	    zt[0] = s.helix_vertex().z().value();
 	  }
 	
-	if( s.has_decay_vertex() )
+	if( s.has_decay_helix_vertex() )
 	  {
-	    xt[npoints-1] = s.decay_vertex().x().value();
-	    zt[npoints-1] = s.decay_vertex().z().value();
+	    xt[npoints-1] = s.decay_helix_vertex().x().value();
+	    zt[npoints-1] = s.decay_helix_vertex().z().value();
 	  }
 
 	std::vector<double> helix_chi2s = s.helix_chi2s();
@@ -2704,8 +2704,8 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<topology::sequence
 
 	bool do_vertex = false;
 
-	if( s.has_vertex() &&
-	    ! (fabs(s.vertex().x().value()) < 0.1 && fabs(s.vertex().z().value() < 0.1 )) )
+	if( s.has_helix_vertex() &&
+	    ! (fabs(s.helix_vertex().x().value()) < 0.1 && fabs(s.helix_vertex().z().value() < 0.1 )) )
 	  
 	  do_vertex = true;
 	
@@ -2713,7 +2713,7 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<topology::sequence
 	  npoints += 1;  // vertex
 	  offset = 1;
 	  }
-	if( s.has_decay_vertex() )
+	if( s.has_decay_helix_vertex() )
 	  {
 	    npoints += 1;  // decay vertex
 	  }
@@ -2724,14 +2724,14 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<topology::sequence
 	
 	if( do_vertex )
 	  {
-	    xt[0] = s.vertex().x().value();
-	    zt[0] = s.vertex().z().value();
+	    xt[0] = s.helix_vertex().x().value();
+	    zt[0] = s.helix_vertex().z().value();
 	  }
 	
-	if( s.has_decay_vertex() )
+	if( s.has_decay_helix_vertex() )
 	  {
-	    xt[npoints-1] = s.decay_vertex().x().value();
-	    zt[npoints-1] = s.decay_vertex().z().value();
+	    xt[npoints-1] = s.decay_helix_vertex().x().value();
+	    zt[npoints-1] = s.decay_helix_vertex().z().value();
 	  }
 
 	for(size_t j=0; j<nnodes; j++)
@@ -2929,12 +2929,12 @@ void EventDisplay::draw_cats_yz(std::string mode, std::vector<topology::sequence
 	size_t npoints = nnodes;
 	size_t offset = 0;
 
-	if( s.has_vertex() )
+	if( s.has_helix_vertex() )
 	  {
 	    npoints += 1;  // vertex
 	    offset = 1;
 	  }
-	if( s.has_decay_vertex() )
+	if( s.has_decay_helix_vertex() )
 	  {
 	    npoints += 1;  // decay vertex
 	  }
@@ -2942,16 +2942,16 @@ void EventDisplay::draw_cats_yz(std::string mode, std::vector<topology::sequence
 	double* zt = (double*)malloc(sizeof(double)*npoints);
 	double* yt = (double*)malloc(sizeof(double)*npoints);
 
-	if( s.has_vertex() )
+	if( s.has_helix_vertex() )
 	  {
-	    yt[0] = s.vertex().y().value();
-	    zt[0] = s.vertex().z().value();
+	    yt[0] = s.helix_vertex().y().value();
+	    zt[0] = s.helix_vertex().z().value();
 	  }
 	
-	if( s.has_decay_vertex() )
+	if( s.has_decay_helix_vertex() )
 	  {
-	    yt[npoints-1] = s.decay_vertex().y().value();
-	    zt[npoints-1] = s.decay_vertex().z().value();
+	    yt[npoints-1] = s.decay_helix_vertex().y().value();
+	    zt[npoints-1] = s.decay_helix_vertex().z().value();
 	  }
 
 	for(size_t j=0; j<nnodes; j++)
@@ -2993,12 +2993,12 @@ void EventDisplay::draw_cats_yz(std::string mode, std::vector<topology::sequence
 	size_t npoints = nnodes;
 	size_t offset = 0;
 
-	if( s.has_vertex() )
+	if( s.has_helix_vertex() )
 	  {
 	    npoints += 1;  // vertex
 	    offset = 1;
 	  }
-	if( s.has_decay_vertex() )
+	if( s.has_decay_helix_vertex() )
 	  {
 	    npoints += 1;  // decay vertex
 	  }
@@ -3006,16 +3006,16 @@ void EventDisplay::draw_cats_yz(std::string mode, std::vector<topology::sequence
 	double* zt = (double*)malloc(sizeof(double)*npoints);
 	double* yt = (double*)malloc(sizeof(double)*npoints);
 
-	if( s.has_vertex() )
+	if( s.has_helix_vertex() )
 	  {
-	    yt[0] = s.vertex().y().value();
-	    zt[0] = s.vertex().z().value();
+	    yt[0] = s.helix_vertex().y().value();
+	    zt[0] = s.helix_vertex().z().value();
 	  }
 	
-	if( s.has_decay_vertex() )
+	if( s.has_decay_helix_vertex() )
 	  {
-	    yt[npoints-1] = s.decay_vertex().y().value();
-	    zt[npoints-1] = s.decay_vertex().z().value();
+	    yt[npoints-1] = s.decay_helix_vertex().y().value();
+	    zt[npoints-1] = s.decay_helix_vertex().z().value();
 	  }
 
 
@@ -3061,8 +3061,8 @@ void EventDisplay::draw_cats_yz(std::string mode, std::vector<topology::sequence
 
 	bool do_vertex = false;
 
-	if( s.has_vertex() &&
-	    ! (fabs(s.vertex().x().value()) < 0.1 && fabs(s.vertex().z().value() < 0.1 )) )
+	if( s.has_helix_vertex() &&
+	    ! (fabs(s.helix_vertex().x().value()) < 0.1 && fabs(s.helix_vertex().z().value() < 0.1 )) )
 	  
 	  do_vertex = true;
 
@@ -3071,7 +3071,7 @@ void EventDisplay::draw_cats_yz(std::string mode, std::vector<topology::sequence
 	    npoints += 1;  // vertex
 	    offset = 1;
 	  }
-	if( s.has_decay_vertex() )
+	if( s.has_decay_helix_vertex() )
 	  {
 	    npoints += 1;  // decay vertex
 	  }
@@ -3081,14 +3081,14 @@ void EventDisplay::draw_cats_yz(std::string mode, std::vector<topology::sequence
 
 	if( do_vertex )
 	  {
-	    yt[0] = s.vertex().y().value();
-	    zt[0] = s.vertex().z().value();
+	    yt[0] = s.helix_vertex().y().value();
+	    zt[0] = s.helix_vertex().z().value();
 	  }
 	
-	if( s.has_decay_vertex() )
+	if( s.has_decay_helix_vertex() )
 	  {
-	    yt[npoints-1] = s.decay_vertex().y().value();
-	    zt[npoints-1] = s.decay_vertex().z().value();
+	    yt[npoints-1] = s.decay_helix_vertex().y().value();
+	    zt[npoints-1] = s.decay_helix_vertex().z().value();
 	  }
 
 	for(size_t j=0; j<nnodes; j++)

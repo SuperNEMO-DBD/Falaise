@@ -17,9 +17,12 @@ namespace CAT {
 
     class plane : public tracking_object {
 
-      // a plane is identified by one point (center)
-      // the plane sizes
-      // and a normal to the plane
+      // a plane is identified by 
+      // one point (center) in middle of block
+      // the plane sizes (sizex, sizey, sizez)
+      // and a normal to the plane (nx, ny, nz)
+      // view = ("x" or "y" or "z")
+      // face returns the center of the face towards origin
 
     private:
       std::string appname_;

@@ -1160,14 +1160,14 @@ namespace CAT {
           if( tp.find_property("length"))
             trueseq.set_length(topology::experimental_double(mybhep::double_from_string(tp.fetch_property("length")), 0.));
         
-          trueseq.set_vertex( topology::experimental_point( tp.vertex().x(), tp.vertex().y(), tp.vertex().z(), 0., 0., 0.),"true");
+          trueseq.set_helix_vertex( topology::experimental_point( tp.vertex().x(), tp.vertex().y(), tp.vertex().z(), 0., 0., 0.),"true");
         
           size_t cindex = 0;
           const std::vector<mybhep::hit*>& chits = tp.hits("cal");
           if( !chits.empty() ){
             topology::calorimeter_hit ch = make_calo_hit(*chits[0], 0);
             cindex = get_calo_hit_index(ch);
-            trueseq.set_decay_vertex( topology::experimental_point( tp.decay_vertex().x(), tp.decay_vertex().y(), tp.decay_vertex().z(), 0., 0., 0.),"calo", cindex);
+            trueseq.set_decay_helix_vertex( topology::experimental_point( tp.decay_vertex().x(), tp.decay_vertex().y(), tp.decay_vertex().z(), 0., 0., 0.),"calo", cindex);
           }
         
           trueseq.set_name( tp.name() );
@@ -1223,7 +1223,7 @@ namespace CAT {
           if( tp.find_property("length"))
             nemoseq.set_length(topology::experimental_double(mybhep::double_from_string(tp.fetch_property("length")), 0.));
 
-          nemoseq.set_vertex( topology::experimental_point( tp.vertex().x(), tp.vertex().y(), tp.vertex().z(), 0., 0., 0.),"nemo");
+          nemoseq.set_helix_vertex( topology::experimental_point( tp.vertex().x(), tp.vertex().y(), tp.vertex().z(), 0., 0., 0.),"nemo");
         
 
           size_t cindex = 0;
@@ -1231,7 +1231,7 @@ namespace CAT {
           if( !chits.empty() ){
             topology::calorimeter_hit ch = make_calo_hit(*chits[0], 0);
             cindex = get_calo_hit_index(ch);
-            nemoseq.set_decay_vertex( topology::experimental_point( tp.decay_vertex().x(), tp.decay_vertex().y(), tp.decay_vertex().z(), 0., 0., 0.),"calo", cindex);
+            nemoseq.set_decay_helix_vertex( topology::experimental_point( tp.decay_vertex().x(), tp.decay_vertex().y(), tp.decay_vertex().z(), 0., 0., 0.),"calo", cindex);
           }
 
           nemoseq.set_name( tp.name() );
@@ -2034,29 +2034,29 @@ namespace CAT {
       }
     }
 
-    if( !sa.has_decay_vertex() ){
+    if( !sa.has_decay_helix_vertex() ){
       m.message(" reject: 1st track has no calo ", mybhep::NORMAL);
       return false;
     }
 
 
     if( n_tracks_ == 2 ){
-      if( !sb.has_decay_vertex() ){
+      if( !sb.has_decay_helix_vertex() ){
         m.message(" reject: 2nd track has no calo ", mybhep::NORMAL);
         return false;
       }
     }
 
     if( n_tracks_ == 2 ){
-      if( sa.calo_id() == sb.calo_id() ){
-        m.message(" reject: same calo ", sa.calo_id(), mybhep::NORMAL);
+      if( sa.calo_helix_id() == sb.calo_helix_id() ){
+        m.message(" reject: same calo ", sa.calo_helix_id(), mybhep::NORMAL);
         return false;
       }
     }
 
     std::vector<topology::calorimeter_hit> calos = tracked_data_.get_calos();
 
-    topology::calorimeter_hit caloA = calos[sa.calo_id()];
+    topology::calorimeter_hit caloA = calos[sa.calo_helix_id()];
 
 
     if( caloA.e().value() < emin ){
@@ -2066,7 +2066,7 @@ namespace CAT {
     }
 
     if( n_tracks_ == 2 ){
-      topology::calorimeter_hit caloB = calos[sb.calo_id()];
+      topology::calorimeter_hit caloB = calos[sb.calo_helix_id()];
       if( caloB.e().value() < emin ){
         m.message(" reject: 2nd calo has energy ", caloA.e().value(), mybhep::NORMAL);
         return false;

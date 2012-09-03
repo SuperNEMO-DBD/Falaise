@@ -186,15 +186,15 @@ namespace CAT {
 
           }
 
-          if( iseq->has_decay_vertex() ){
-            if( iseq->calo_id() >= calos.size() ){
+          if( iseq->has_decay_helix_vertex() ){
+            if( iseq->calo_helix_id() >= calos.size() ){
               if( print_level() >= mybhep::VVERBOSE )
-                std::clog << " problem: calo " << iseq->calo_id() << " has larger id than n of calos " << calos.size() << std::endl;
+                std::clog << " problem: calo " << iseq->calo_helix_id() << " has larger id than n of calos " << calos.size() << std::endl;
               continue;
             }
 
-            if( freecalos[iseq->calo_id()] )
-              freecalos[iseq->calo_id()] = 0;
+            if( freecalos[iseq->calo_helix_id()] )
+              freecalos[iseq->calo_helix_id()] = 0;
             else
               counter ++;
 
@@ -233,14 +233,14 @@ namespace CAT {
             }
           }
 
-          if( !iseq->has_decay_vertex() ) continue;
+          if( !iseq->has_decay_helix_vertex() ) continue;
 
-          if( iseq->calo_id() >= calos.size() ){
+          if( iseq->calo_helix_id() >= calos.size() ){
             if( print_level() >= mybhep::VVERBOSE )
-              std::clog << " problem: calo " << iseq->calo_id() << " has larger id than n of calos " << calos.size() << std::endl;
+              std::clog << " problem: calo " << iseq->calo_helix_id() << " has larger id than n of calos " << calos.size() << std::endl;
             continue;
           }
-          freecalos[iseq->calo_id()] = 0;
+          freecalos[iseq->calo_helix_id()] = 0;
 
         }
 

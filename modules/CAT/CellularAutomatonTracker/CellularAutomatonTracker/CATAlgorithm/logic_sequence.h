@@ -73,14 +73,14 @@ namespace topology{
       for(std::vector<node>::iterator in=s.nodes_.begin(); in!=s.nodes_.end(); ++in)
         cells_.push_back(logic_cell(in->c().id()));
       has_vertex_ = false;
-      if( s.has_vertex() ){
+      if( s.has_helix_vertex() ){
         has_vertex_ = true;
-        vertex_id_ = s.vertex_id();
+        vertex_id_ = s.helix_vertex_id();
       }
       has_decay_vertex_ = false;
-      if( s.has_decay_vertex() ){
+      if( s.has_decay_helix_vertex() ){
         has_decay_vertex_ = true;
-        calo_id_ = s.calo_id();
+        calo_id_ = s.calo_helix_id();
       }
       chi2_ = s.chi2();
       ndof_ = s.ndof();

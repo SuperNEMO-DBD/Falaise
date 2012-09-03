@@ -274,6 +274,18 @@ namespace CAT {
 
       }
 
+      bool intersect_circle_with_tangent(circle c, experimental_point start, experimental_vector direction, experimental_point* ep)const{
+	
+	
+	experimental_vector center_to_start(c.center(),start);
+	center_to_start = center_to_start.hor();
+	experimental_double angle_at_center=center_to_start.kink_phi(direction)/2.;
+	experimental_double phi0=phi_of_point(start);
+	*ep = c.position(phi0 + angle_at_center);
+	ep->set_y(position(*ep).y());
+	
+	return true;
+      }
 
 
     };
