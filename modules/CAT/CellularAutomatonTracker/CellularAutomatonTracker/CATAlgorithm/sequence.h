@@ -183,6 +183,7 @@ namespace CAT {
         nodes_.push_back(node);
         free_ = true;
         names_.clear();names_.push_back("default");
+        has_helix_vertex_ = false;
         helix_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                      mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
         helix_vertex_type_="default";
@@ -192,6 +193,7 @@ namespace CAT {
                                            mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
         decay_helix_vertex_type_="default";
         calo_helix_id_ = mybhep::default_integer;
+        has_tangent_vertex_ = false;
         tangent_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                      mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
         tangent_vertex_type_="default";
@@ -1855,7 +1857,9 @@ namespace CAT {
               news.set_decay_helix_vertex( seq.decay_helix_vertex(), seq.decay_helix_vertex_type() );
             else if( seq.decay_helix_vertex_type() == "calo" )
               news.set_decay_helix_vertex( seq.decay_helix_vertex(), seq.decay_helix_vertex_type(), seq.calo_helix_id() );
+	  }
 
+          if( seq.has_decay_tangent_vertex() ){
             if( seq.decay_tangent_vertex_type() == "foil" )
               news.set_decay_tangent_vertex( seq.decay_tangent_vertex(), seq.decay_tangent_vertex_type() );
             else if( seq.decay_tangent_vertex_type() == "calo" )
@@ -1869,7 +1873,9 @@ namespace CAT {
               news.set_decay_helix_vertex( seq.helix_vertex(), seq.helix_vertex_type() );
             else if( seq.helix_vertex_type() == "calo" )
               news.set_decay_helix_vertex( seq.helix_vertex(), seq.helix_vertex_type(), seq.helix_vertex_id() );
+	  }
 
+          if( seq.has_tangent_vertex() ){
             if( seq.tangent_vertex_type() == "foil" )
               news.set_decay_tangent_vertex( seq.tangent_vertex(), seq.tangent_vertex_type() );
             else if( seq.tangent_vertex_type() == "calo" )

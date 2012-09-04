@@ -1722,9 +1722,10 @@ namespace CAT {
 	      if( !iseq->intersect_plane_from_begin(get_foil_plane(), &helix_extrapolation) ){
                 m.message(" no helix intersection ", mybhep::VVERBOSE); fflush(stdout);
 	      }
-              else
+              else{
                 iseq->set_helix_vertex(helix_extrapolation, "foil");
 
+	      }
 
 	      if( !iseq->intersect_plane_with_tangent_from_begin(get_foil_plane(), &tangent_extrapolation) ){
                 m.message(" no tangent intersection ", mybhep::VVERBOSE); fflush(stdout);
