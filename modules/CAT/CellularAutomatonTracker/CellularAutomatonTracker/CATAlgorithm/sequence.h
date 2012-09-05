@@ -1496,7 +1496,7 @@ namespace CAT {
           ci.set_center(experimental_point(ci.center().x(), l.y0(), ci.center().z()));
           helix_ = helix(ci, l.tangent(), print_level(), nsigma());
 
-	  }
+	
 
           helix_chi2s_ = helix_.chi2s(ps);
 
@@ -1504,13 +1504,13 @@ namespace CAT {
           break;
         }
         default:
-
+	  
           if( print_level() >= mybhep::NORMAL ){
             std::clog << " problem: unknonw method "<< method << " to fit a helix " << std::endl;
           }
         }
-
-
+	
+	
         return;
       }
 
