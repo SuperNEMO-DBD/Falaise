@@ -1496,6 +1496,8 @@ namespace CAT {
           ci.set_center(experimental_point(ci.center().x(), l.y0(), ci.center().z()));
           helix_ = helix(ci, l.tangent(), print_level(), nsigma());
 
+	  }
+
           helix_chi2s_ = helix_.chi2s(ps);
 
 
@@ -2041,12 +2043,16 @@ namespace CAT {
 	experimental_point p;
         for(std::vector<node>::const_iterator in = nodes_.begin(); in != nodes_.end(); ++in){
 	  phi_ref = phi.value();
-	  p=helix_.position(in->ep(),phi_ref);
+	  phi=helix_.phi_of_point(in->ep(),phi_ref);
+	  p=helix_.position(phi);
 
 	  if( p.y().value() < - lim ||
 	      p.y().value() > lim ){
 	    std::clog << " problem: helix out of range " << std::endl;
-	    in->dump(); p.dump();
+	    std::clog << " phi_ref " << phi_ref << " helix_position: ";
+	    p.dump();
+	    std::clog << " from point ";
+	    in->ep().dump();
 	    return true;
 	  }
 	}

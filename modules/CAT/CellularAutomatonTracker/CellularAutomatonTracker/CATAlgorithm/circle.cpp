@@ -110,16 +110,16 @@ namespace CAT{
 
     // get the phi of a point
     experimental_double circle::phi_of_point(experimental_point ep, double phi_ref ){
-      // if no ref is given, phi is in [0, 2pi]
-      // if ref is given is in [ref - 2\pi, ref + 2\pi]
+      // if no ref is given, phi is in [-pi, pi]
+      // if ref is given is in [ref - \pi, ref + \pi]
 
       experimental_double phi = experimental_vector(center_, ep).phi();
 
-      while( phi.value() - phi_ref > 2.*M_PI ){
+      while( phi.value() - phi_ref > M_PI ){
         phi.set_value(phi.value() - 2.*M_PI);
       }
 
-      while( phi.value() - phi_ref < - 2.*M_PI ){
+      while( phi.value() - phi_ref < - M_PI ){
         phi.set_value(phi.value() + 2.*M_PI);
       }
 
