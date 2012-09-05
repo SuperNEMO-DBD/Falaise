@@ -67,9 +67,12 @@ namespace CAT{
 
           a_out << indent << appname_ << " -------------- " << std::endl;
           a_out << indent << " points: " << std::endl;
+	  experimental_double phi(0.,0.);
+	  double phi_ref = 0.;
           for(std::vector<experimental_double>::iterator it=xi_.begin(); it != xi_.end(); ++it){
             experimental_double y = yi_[it - xi_.begin()];
-            experimental_double phi = c_.phi_of_point(experimental_point(*it, experimental_double(0.,0.), y));
+	    phi_ref = phi.value();
+            phi = c_.phi_of_point(experimental_point(*it, experimental_double(0.,0.), y),phi_ref);
             a_out << indent << " .. x "; it->dump(); a_out << " y "; yi_[it - xi_.begin()].dump(); a_out << " predicted x "; position(phi).x().dump(); a_out << " y "; position(phi).z().dump(); a_out << " "  << std::endl;
           }
           a_out << indent << " circle: " << std::endl;

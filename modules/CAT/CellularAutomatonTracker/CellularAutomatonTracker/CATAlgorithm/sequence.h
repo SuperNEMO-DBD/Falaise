@@ -1460,8 +1460,11 @@ namespace CAT {
           bool first = true;
           experimental_double offset(0.,0.);;
 
+	  experimental_double p(0.,0.);
+	  double phi_ref = 0.;
           for(std::vector<node>::iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode){
-            experimental_double p = ci.phi_of_point(inode->ep());
+	    phi_ref = p.value();
+            p = ci.phi_of_point(inode->ep(), phi_ref);
             if( !phis.empty() && first){
               if( fabs(p.value() - phis.back().value()) > M_PI ){
 
@@ -1483,6 +1486,7 @@ namespace CAT {
           l.invert(); // fit with y as more erroneous variable (phi = phi(y)),
           // then invert the result to have y = y(phi)
 
+
           if( print_level() >= mybhep::VVERBOSE ){
             l.dump();
           }
@@ -1491,7 +1495,6 @@ namespace CAT {
           // build helix
           ci.set_center(experimental_point(ci.center().x(), l.y0(), ci.center().z()));
           helix_ = helix(ci, l.tangent(), print_level(), nsigma());
-
 
           helix_chi2s_ = helix_.chi2s(ps);
 
@@ -2029,6 +2032,27 @@ namespace CAT {
         }
 
         return false;
+      }
+
+      bool helix_out_of_range(double lim){
+
+	experimental_double phi(0.,0.);
+	double phi_ref =0.;
+	experimental_point p;
+        for(std::vector<node>::const_iterator in = nodes_.begin(); in != nodes_.end(); ++in){
+	  phi_ref = phi.value();
+	  p=helix_.position(in->ep(),phi_ref);
+
+	  if( p.y().value() < - lim ||
+	      p.y().value() > lim ){
+	    std::clog << " problem: helix out of range " << std::endl;
+	    in->dump(); p.dump();
+	    return true;
+	  }
+	}
+
+	return true;
+
       }
 
     };

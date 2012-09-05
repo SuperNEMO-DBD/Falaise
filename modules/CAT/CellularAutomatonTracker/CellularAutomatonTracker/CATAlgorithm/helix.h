@@ -95,8 +95,9 @@ namespace CAT {
           a_out << indent << " radius: "; radius().dump(); a_out << " " << std::endl;
           a_out << indent << " pitch: "; pitch().dump(); a_out << " " << std::endl;
           a_out << indent << " one round: " << std::endl;
+	  experimental_double theta(0.,0.);
           for(size_t i=0; i<100; i++){
-            experimental_double theta(i*3.1417/100., 0.);
+            theta.set_value(i*3.1417/100.);
             a_out << indent << " .. theta " << theta.value()*180./M_PI << " x " << position(theta).x().value() << " , z " << position(theta).z().value() << std::endl;
           }
           a_out << indent << " -------------- " << std::endl;
@@ -168,13 +169,25 @@ namespace CAT {
       // get the phi of a point
       experimental_double phi_of_point(experimental_point ep)const{
 
-        experimental_double phi = experimental_vector(center_, ep).phi();
+	return phi_of_point(ep,0.);
+      }
 
-        if( phi.value() < 0. )
-          phi.set_value(phi.value() + 2.*M_PI);
-
-        return phi;
-
+      experimental_double phi_of_point(experimental_point ep, double phi_ref )const{
+	// if no ref is given, phi is in [0, 2pi]
+	// if ref is given is in [ref - 2\pi, ref + 2\pi]
+	
+	experimental_double phi = experimental_vector(center_, ep).phi();
+	
+	while( phi.value() - phi_ref > 2.*M_PI ){
+	  phi.set_value(phi.value() - 2.*M_PI);
+	}
+	
+	while( phi.value() - phi_ref < - 2.*M_PI ){
+	  phi.set_value(phi.value() + 2.*M_PI);
+	}
+	
+	return phi;
+	
       }
 
       // get delta-phi of two points
@@ -191,6 +204,7 @@ namespace CAT {
 
       // get the position at parameter phi
       experimental_point position(experimental_double phi)const{
+
         experimental_double deltax = experimental_cos(phi)*radius();
         experimental_double deltay = phi*pitch();
         experimental_double deltaz = experimental_sin(phi)*radius();
@@ -200,12 +214,21 @@ namespace CAT {
 
       // get the position at the theta of point p
       experimental_point position(experimental_point ep)const{
-        return position(phi_of_point(ep));
+	return position(ep,0.);
+
+      }
+
+      experimental_point position(experimental_point ep, double phi_ref )const{
+        return position(phi_of_point(ep, phi_ref));
       }
 
       // get the chi2 with point p
       double chi2(experimental_point ep)const{
-        experimental_point predicted = position(phi_of_point(ep));
+	return chi2(ep,0.);
+      }
+
+      double chi2(experimental_point ep, double phi_ref )const{
+        experimental_point predicted = position(phi_of_point(ep, phi_ref));
         experimental_vector residual(ep , predicted);
         double res2 = mybhep::square(residual.x().value()/residual.x().error()) +
           mybhep::square(residual.y().value()/residual.y().error()) +
@@ -249,7 +272,7 @@ namespace CAT {
 
         if( pl.view() == "x" || pl.view() == "z" ){
           bool result = get_circle().intersect_plane(pl, ep, _phi);
-          ep->set_y(position(*ep).y());
+          ep->set_y(position(*ep,_phi.value()).y());
 
           return result;
 
@@ -268,7 +291,7 @@ namespace CAT {
       bool intersect_circle(circle c, experimental_point * ep, experimental_double _phi)const{
 
 	bool result = get_circle().intersect_circle(c, ep, _phi);
-	ep->set_y(position(*ep).y());
+	ep->set_y(position(*ep, _phi.value()).y());
 
 	return result;
 
@@ -282,7 +305,7 @@ namespace CAT {
 	experimental_double angle_at_center=center_to_start.kink_phi(direction)/2.;
 	experimental_double phi0=phi_of_point(start);
 	*ep = c.position(phi0 + angle_at_center);
-	ep->set_y(position(*ep).y());
+	ep->set_y(position(*ep, phi0.value()).y());
 	
 	return true;
       }

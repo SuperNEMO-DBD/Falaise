@@ -1617,7 +1617,7 @@ namespace CAT {
 
     clock.start(" sequentiator: interpret physics ", "cumulative");
 
-    m.message(" interpreting physics of ", sequences_.size(), " sequences ", mybhep::VVERBOSE); fflush(stdout);
+    m.message(" interpreting physics of ", sequences_.size(), " sequences with ", calos.size(), " calorimeter hits ", mybhep::VVERBOSE); fflush(stdout);
     for(std::vector<topology::sequence>::iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq)
       {
         if( iseq->nodes().size() <= 2 ) continue;

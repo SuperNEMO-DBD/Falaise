@@ -51,7 +51,9 @@ namespace CAT{
     double tracking_object::probof(double chi2, int ndof) const
     {
       //double p  =  TMath::Prob(chi2, ndof);
-      double p = boost::math::gamma_q<double, double> (0.5 * ndof, 0.5 * chi2);
+      double p=0.;
+      if( ndof && chi2 )
+	p = boost::math::gamma_q<double, double> (0.5 * ndof, 0.5 * chi2);
       return p;
     }
 

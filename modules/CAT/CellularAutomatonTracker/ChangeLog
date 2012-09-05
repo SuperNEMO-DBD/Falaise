@@ -1,3 +1,6 @@
+2012-09-04 Federico Nova <nova@physics.utexas.edu>
+        * introduced phi_of_point with reference phi
+	to overcome problem with discontinuity of angle at 2pi->0
 2012-07-17 Federico Nova <nova@physics.utexas.edu>
         * fixed set calo type
 	* no need to have calos to make helix

@@ -74,15 +74,18 @@ namespace CAT{
 
       // get the phi of a point
       experimental_double phi_of_point(experimental_point ep);
+      experimental_double phi_of_point(experimental_point ep, double phi_ref);
 
       // get the position at parameter phi
         experimental_point position(experimental_double phi);
 
       // get the position at the theta of point p
       experimental_point position(experimental_point ep);
+      experimental_point position(experimental_point ep, double phi_ref );
 
       // get the chi2 with point p
       double chi2(experimental_point ep);
+      double chi2(experimental_point ep, double phi_ref );
 
       // get the chi2 with set of points
       double chi2(std::vector<experimental_point> ps);

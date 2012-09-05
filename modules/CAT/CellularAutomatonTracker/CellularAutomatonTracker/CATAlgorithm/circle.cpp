@@ -104,13 +104,24 @@ namespace CAT{
       return 1./radius_;
     }      
 
-    // get the phi of a point
     experimental_double circle::phi_of_point(experimental_point ep){
+      return phi_of_point(ep,0.);
+    }
+
+    // get the phi of a point
+    experimental_double circle::phi_of_point(experimental_point ep, double phi_ref ){
+      // if no ref is given, phi is in [0, 2pi]
+      // if ref is given is in [ref - 2\pi, ref + 2\pi]
 
       experimental_double phi = experimental_vector(center_, ep).phi();
 
-      if( phi.value() < 0. )
+      while( phi.value() - phi_ref > 2.*M_PI ){
+        phi.set_value(phi.value() - 2.*M_PI);
+      }
+
+      while( phi.value() - phi_ref < - 2.*M_PI ){
         phi.set_value(phi.value() + 2.*M_PI);
+      }
 
       return phi;
 
@@ -126,12 +137,21 @@ namespace CAT{
 
     // get the position at the theta of point p
     experimental_point circle::position(experimental_point ep){
-      return position(phi_of_point(ep));
+      return position(ep, 0.);
+    }
+
+    // get the position at the theta of point p
+    experimental_point circle::position(experimental_point ep, double phi_ref){
+      return position(phi_of_point(ep, phi_ref));
     }
 
     // get the chi2 with point p
     double circle::chi2(experimental_point ep){
-      experimental_vector residual(ep , position(phi_of_point(ep)));
+      return chi2(ep,0.);
+    }
+    // get the chi2 with point p
+    double circle::chi2(experimental_point ep, double phi_ref){
+      experimental_vector residual(ep , position(phi_of_point(ep, phi_ref)));
       experimental_double r2 = residual.length2();
 
       return r2.value()/r2.error();
@@ -141,8 +161,12 @@ namespace CAT{
     double circle::chi2(std::vector<experimental_point> ps){
 
       double chi2 = 0.;
+      experimental_double phi(0.,0.);
+      double phi_ref=0.;
       for(std::vector<experimental_point>::iterator ip = ps.begin(); ip != ps.end(); ++ip){
-        chi2 += experimental_vector(*ip , position(phi_of_point(*ip))).hor().length2().value();
+	phi_ref = phi.value();
+	phi = phi_of_point(*ip,phi_ref);
+        chi2 += experimental_vector(*ip , position(phi)).hor().length2().value();
       }
 
       return chi2;
@@ -167,10 +191,14 @@ namespace CAT{
       double Sw = 0.;
       std::vector<experimental_double> phis;
       std::vector<experimental_double> ys;
+
+      double phi_ref = 0.;
+      experimental_double phi(0.,0.);
       
       for(std::vector<experimental_point>::iterator ip=ps.begin(); ip!=ps.end(); ++ip){
         ys.push_back(ip->y());
-        experimental_double phi = phi_of_point(*ip);
+	phi_ref = phi.value();
+        phi = phi_of_point(*ip, phi_ref);
         phis.push_back(phi);
         double weight = 1/square(ip->y().error());
         weight = 1.;
@@ -198,8 +226,12 @@ namespace CAT{
       if( print_level() >= mybhep::VVERBOSE ){
         std::clog << " average y " << average(ys).value() << " average phi " << average(phis).value() << " 1/p " << one_over_pi << " -y0/p " << min_ce_over_pi << " center y " << ce << " pitch " << pi << " " << std::endl;
       
+	double phi_ref = 0.;
+	experimental_double phi(0.,0.);
+
         for(std::vector<experimental_point>::iterator ip=ps.begin(); ip!=ps.end(); ++ip){
-          experimental_double phi = phi_of_point(*ip);
+	  phi_ref = phi.value();
+          phi = phi_of_point(*ip, phi_ref);
           experimental_double predicted = *_center + *_pitch*phi;
           experimental_double res = predicted - ip->y();
           
@@ -341,7 +373,7 @@ namespace CAT{
       double phi1 = phi_of_point(p1).value();
       double dphi1 = fabs(phi1 - _phi.value());
       experimental_point p2=(middle - transverse_axis*h).point_from_vector();
-      double phi2 = phi_of_point(p2).value();
+      double phi2 = phi_of_point(p2, phi1).value();
       double dphi2 = fabs(phi2 - _phi.value());
 
       // pick closest to initial point of extrapolation
