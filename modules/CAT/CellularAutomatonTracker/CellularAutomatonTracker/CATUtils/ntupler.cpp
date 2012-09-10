@@ -249,7 +249,7 @@ void ntupler::__fill ()
   __event.Ngg = ncells;
   __event.Nggt = ncells;
 
-  __event.Nsc=tracked_data_.calos_;
+  __event.Nsc=tracked_data_.calos_.size();
 
 
   size_t cell_counter = 0;
