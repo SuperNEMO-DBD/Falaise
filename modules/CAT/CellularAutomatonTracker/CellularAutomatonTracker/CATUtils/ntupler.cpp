@@ -57,6 +57,8 @@ void ntupler::initialize (void)
     
   }
   
+
+  __event.Nsc = 0;
   __event.Nbr_tks = 0;
   __event.True_Nbr_tks = 0;
   for(size_t i=0;  i < (size_t)MAXNTRACKS; i++){
@@ -77,21 +79,37 @@ void ntupler::initialize (void)
     __event.Tk_le[i]=0;
     __event.Q[i]=0;
     __event.mom[i]=0;
-    __event.Nbr_vtx[i]=0;
+    __event.has_CAT_helix_vertex[i]=0;
+    __event.has_CAT_tangency_vertex[i]=0;
 
     __event.True_Tk_le[i]=0;
     __event.True_Nbr_vtx[i]=0;
     
+    __event.NEMOR_helix_vtx_x[i] = 0;
+    __event.NEMOR_helix_vtx_y[i] = 0;
+    __event.NEMOR_helix_vtx_z[i] = 0;
+
+
     for(size_t k=0;  k < (size_t)MAXNVERTEX; k++){
-      __event.Vtx_cos_dir[i][k][0] = 0;
-      __event.Vtx_cos_dir[i][k][1] = 0;
-      __event.Vtx_cos_dir[i][k][2] = 0;
-      __event.Decay_Vtx_cos_dir[i][k][0] = 0;
-      __event.Decay_Vtx_cos_dir[i][k][1] = 0;
-      __event.Decay_Vtx_cos_dir[i][k][2] = 0;
-      __event.Vtx_x[i][k] = 0;
-      __event.Vtx_y[i][k] = 0;
-      __event.Vtx_z[i][k] = 0;
+      __event.CAT_helix_vtx_cos_dir[i][k][0] = 0;
+      __event.CAT_helix_vtx_cos_dir[i][k][1] = 0;
+      __event.CAT_helix_vtx_cos_dir[i][k][2] = 0;
+      __event.CAT_helix_decay_vtx_cos_dir[i][k][0] = 0;
+      __event.CAT_helix_decay_vtx_cos_dir[i][k][1] = 0;
+      __event.CAT_helix_decay_vtx_cos_dir[i][k][2] = 0;
+      __event.CAT_helix_vtx_x[i][k] = 0;
+      __event.CAT_helix_vtx_y[i][k] = 0;
+      __event.CAT_helix_vtx_z[i][k] = 0;
+
+      __event.CAT_tangency_vtx_cos_dir[i][k][0] = 0;
+      __event.CAT_tangency_vtx_cos_dir[i][k][1] = 0;
+      __event.CAT_tangency_vtx_cos_dir[i][k][2] = 0;
+      __event.CAT_tangency_decay_vtx_cos_dir[i][k][0] = 0;
+      __event.CAT_tangency_decay_vtx_cos_dir[i][k][1] = 0;
+      __event.CAT_tangency_decay_vtx_cos_dir[i][k][2] = 0;
+      __event.CAT_tangency_vtx_x[i][k] = 0;
+      __event.CAT_tangency_vtx_y[i][k] = 0;
+      __event.CAT_tangency_vtx_z[i][k] = 0;
 
       __event.True_Vtx_cos_dir[i][k][0] = 0;
       __event.True_Vtx_cos_dir[i][k][1] = 0;
@@ -116,18 +134,32 @@ void ntupler::initialize (void)
   __tree->Branch("Ggtz",__event.Ggtz,"Ggtz[Nggt]/F");
   __tree->Branch("Itt1",__event.Itt1,"Itt1[Nggt]/F");
   __tree->Branch("Itt2",__event.Itt2,"Itt2[Nggt]/F");
+  __tree->Branch("Nsc",&__event.Nsc,"Nsc/I");
   __tree->Branch("Nbr_tks",&__event.Nbr_tks,"Nbr_tks/I");
   __tree->Branch("Nbr_pts",__event.Nbr_pts,"Nbr_pts[Nbr_tks]/I");
   __tree->Branch("Ind_points",__event.Ind_points,"Ind_points[Nbr_tks][Ngg]/F");
   __tree->Branch("Tk_le",__event.Tk_le,"Tk_le[Nbr_tks]/F");
   __tree->Branch("Q",__event.Q,"Q[Nbr_tks]/F");
   __tree->Branch("mom",__event.mom,"mom[Nbr_tks]/F");
-  __tree->Branch("Nbr_vtx",__event.Nbr_vtx,"Nbr_vtx[Nbr_tks]/I");
-  __tree->Branch("Vtx_cos_dir",__event.Vtx_cos_dir,"Vtx_cos_dir[Nbr_tks][5][3]/F");
-  __tree->Branch("Decay_Vtx_cos_dir",__event.Decay_Vtx_cos_dir,"Decay_Vtx_cos_dir[Nbr_tks][5][3]/F");
-  __tree->Branch("Vtx_x",__event.Vtx_x,"Vtx_x[Nbr_tks][5]/F");
-  __tree->Branch("Vtx_y",__event.Vtx_y,"Vtx_y[Nbr_tks][5]/F");
-  __tree->Branch("Vtx_z",__event.Vtx_z,"Vtx_z[Nbr_tks][5]/F");
+
+  __tree->Branch("has_CAT_helix_vertex",__event.has_CAT_helix_vertex,"has_CAT_helix_vertex[Nbr_tks]/I");
+  __tree->Branch("CAT_helix_vtx_cos_dir",__event.CAT_helix_vtx_cos_dir,"CAT_helix_vtx_cos_dir[Nbr_tks][5][3]/F");
+  __tree->Branch("CAT_helix_decay_vtx_cos_dir",__event.CAT_helix_decay_vtx_cos_dir,"CAT_helix_decay_vtx_cos_dir[Nbr_tks][5][3]/F");
+  __tree->Branch("CAT_helix_vtx_x",__event.CAT_helix_vtx_x,"CAT_helix_vtx_x[Nbr_tks][5]/F");
+  __tree->Branch("CAT_helix_vtx_y",__event.CAT_helix_vtx_y,"CAT_helix_vtx_y[Nbr_tks][5]/F");
+  __tree->Branch("CAT_helix_vtx_z",__event.CAT_helix_vtx_z,"CAT_helix_vtx_z[Nbr_tks][5]/F");
+
+  __tree->Branch("has_CAT_tangency_vertex",__event.has_CAT_tangency_vertex,"has_CAT_tangency_vertex[Nbr_tks]/I");
+  __tree->Branch("CAT_tangency_vtx_cos_dir",__event.CAT_tangency_vtx_cos_dir,"CAT_tangency_vtx_cos_dir[Nbr_tks][5][3]/F");
+  __tree->Branch("CAT_tangency_decay_vtx_cos_dir",__event.CAT_tangency_decay_vtx_cos_dir,"CAT_tangency_decay_vtx_cos_dir[Nbr_tks][5][3]/F");
+  __tree->Branch("CAT_tangency_vtx_x",__event.CAT_tangency_vtx_x,"CAT_tangency_vtx_x[Nbr_tks][5]/F");
+  __tree->Branch("CAT_tangency_vtx_y",__event.CAT_tangency_vtx_y,"CAT_tangency_vtx_y[Nbr_tks][5]/F");
+  __tree->Branch("CAT_tangency_vtx_z",__event.CAT_tangency_vtx_z,"CAT_tangency_vtx_z[Nbr_tks][5]/F");
+
+  __tree->Branch("NEMOR_helix_vtx_x",__event.NEMOR_helix_vtx_x,"NEMOR_helix_vtx_x[Nbr_tks]/F");
+  __tree->Branch("NEMOR_helix_vtx_y",__event.NEMOR_helix_vtx_y,"NEMOR_helix_vtx_y[Nbr_tks]/F");
+  __tree->Branch("NEMOR_helix_vtx_z",__event.NEMOR_helix_vtx_z,"NEMOR_helix_vtx_z[Nbr_tks]/F");
+
   __tree->Branch("True_Vtx_cos_dir",__event.True_Vtx_cos_dir,"True_Vtx_cos_dir[Nbr_tks][5][3]/F");
   __tree->Branch("True_Decay_Vtx_cos_dir",__event.True_Decay_Vtx_cos_dir,"True_Decay_Vtx_cos_dir[Nbr_tks][5][3]/F");
   __tree->Branch("True_Vtx_x",__event.True_Vtx_x,"True_Vtx_x[Nbr_tks][5]/F");
@@ -216,6 +248,9 @@ void ntupler::__fill ()
 
   __event.Ngg = ncells;
   __event.Nggt = ncells;
+
+  __event.Nsc=tracked_data_.calos_;
+
 
   size_t cell_counter = 0;
   for(size_t icell=0; icell< ncells; icell++){
@@ -307,28 +342,82 @@ void ntupler::__fill ()
 
       if( iseq->nodes_.size() >= 2 ){
 	CAT::topology::experimental_vector dir(iseq->nodes_[0].ep(), iseq->nodes_[1].ep());
-	__event.Vtx_cos_dir[trk_counter][0][0]=dir.x().value();
-	__event.Vtx_cos_dir[trk_counter][0][1]=dir.y().value();
-	__event.Vtx_cos_dir[trk_counter][0][2]=dir.z().value();
+	__event.CAT_helix_vtx_cos_dir[trk_counter][0][0]=dir.x().value();
+	__event.CAT_helix_vtx_cos_dir[trk_counter][0][1]=dir.y().value();
+	__event.CAT_helix_vtx_cos_dir[trk_counter][0][2]=dir.z().value();
       }
 
-      __event.Vtx_x[trk_counter][0]=iseq->helix_vertex().x().value();
-      __event.Vtx_y[trk_counter][0]=iseq->helix_vertex().y().value();
-      __event.Vtx_z[trk_counter][0]=iseq->helix_vertex().z().value();
+
+      if( iseq->has_helix_vertex() ){
+	__event.has_CAT_helix_vertex[trk_counter]=1;
+	__event.CAT_helix_vtx_x[trk_counter][0]=iseq->helix_vertex().x().value();
+	__event.CAT_helix_vtx_y[trk_counter][0]=iseq->helix_vertex().y().value();
+	__event.CAT_helix_vtx_z[trk_counter][0]=iseq->helix_vertex().z().value();
+      }
 
       if( iseq->has_decay_helix_vertex() && iseq->nodes_.size() >= 2){
 	size_t s = iseq->nodes_.size();
 	CAT::topology::experimental_vector dir(iseq->nodes_[s-2].ep(), iseq->nodes_[s-1].ep());
-	__event.Decay_Vtx_cos_dir[trk_counter][1][0]=dir.x().value();
-	__event.Decay_Vtx_cos_dir[trk_counter][1][1]=dir.y().value();
-	__event.Decay_Vtx_cos_dir[trk_counter][1][2]=dir.z().value();
+	__event.CAT_helix_decay_vtx_cos_dir[trk_counter][1][0]=dir.x().value();
+	__event.CAT_helix_decay_vtx_cos_dir[trk_counter][1][1]=dir.y().value();
+	__event.CAT_helix_decay_vtx_cos_dir[trk_counter][1][2]=dir.z().value();
       }
       
+
+
+      if( iseq->nodes_.size() >= 2 ){
+	CAT::topology::experimental_vector dir(iseq->nodes_[0].ep(), iseq->nodes_[1].ep());
+	__event.CAT_tangency_vtx_cos_dir[trk_counter][0][0]=dir.x().value();
+	__event.CAT_tangency_vtx_cos_dir[trk_counter][0][1]=dir.y().value();
+	__event.CAT_tangency_vtx_cos_dir[trk_counter][0][2]=dir.z().value();
+      }
+
+
+      if( iseq->has_tangent_vertex() ){
+	__event.has_CAT_tangency_vertex[trk_counter]=1;
+	__event.CAT_tangency_vtx_x[trk_counter][0]=iseq->tangent_vertex().x().value();
+	__event.CAT_tangency_vtx_y[trk_counter][0]=iseq->tangent_vertex().y().value();
+	__event.CAT_tangency_vtx_z[trk_counter][0]=iseq->tangent_vertex().z().value();
+      }
+
+      if( iseq->has_decay_tangent_vertex() && iseq->nodes_.size() >= 2){
+	__event.CAT_tangency_decay_vtx_cos_dir[trk_counter][1][0]=iseq->decay_tangent_vertex().x().value();
+	__event.CAT_tangency_decay_vtx_cos_dir[trk_counter][1][1]=iseq->decay_tangent_vertex().y().value();
+	__event.CAT_tangency_decay_vtx_cos_dir[trk_counter][1][2]=iseq->decay_tangent_vertex().z().value();
+      }
+      
+
+
       trk_counter ++;
       
     }
   }
 
+  if( !tracked_data_.nemo_sequences_.empty() ){
+    
+    
+    for(std::vector<CAT::topology::sequence>::iterator iseq = tracked_data_.nemo_sequences_.begin(); 
+	iseq != tracked_data_.nemo_sequences_.end(); ++iseq){
+      
+      size_t trk_counter =  iseq - tracked_data_.nemo_sequences_.begin();
+
+      if( trk_counter >= MAXNTRACKS ){
+	cout << " warning: nemo iseq " << trk_counter << " maxntracks " << MAXNTRACKS << endl;
+	continue;
+      }
+      
+      if( iseq->has_helix_vertex() ){
+	__event.NEMOR_helix_vtx_x[trk_counter]=iseq->helix_vertex().x().value();
+	__event.NEMOR_helix_vtx_y[trk_counter]=iseq->helix_vertex().y().value();
+	__event.NEMOR_helix_vtx_z[trk_counter]=iseq->helix_vertex().z().value();
+
+      }
+
+
+    }
+  }
+  
+  
   __event.True_Nbr_tks = tracked_data_.true_sequences_.size();
   size_t true_trk_counter = 0;
   for(std::vector<CAT::topology::sequence>::iterator iseq = tracked_data_.true_sequences_.begin(); 
@@ -356,6 +445,7 @@ void ntupler::__fill ()
       __event.True_Decay_Vtx_cos_dir[true_trk_counter][1][1]=dir.y().value();
       __event.True_Decay_Vtx_cos_dir[true_trk_counter][1][2]=dir.z().value();
     }
+
     if( iseq->has_helix_vertex() ){
       __event.True_Vtx_x[true_trk_counter][0]=iseq->helix_vertex().x().value();
       __event.True_Vtx_y[true_trk_counter][0]=iseq->helix_vertex().y().value();

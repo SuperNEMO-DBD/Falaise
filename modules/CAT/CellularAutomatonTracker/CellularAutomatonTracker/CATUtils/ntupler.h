@@ -75,6 +75,8 @@ class ntupler
     Float_t Itt1[MAXNHITS];
     Float_t Itt2[MAXNHITS];
     
+    Int_t Nsc;
+
     Int_t Nbr_tks;
     Int_t True_Nbr_tks;
     Int_t          Nbr_pts[MAXNTRACKS];
@@ -92,12 +94,22 @@ class ntupler
     Float_t    Tk_le[MAXNTRACKS];
     Float_t    Q[MAXNTRACKS];
     Float_t    mom[MAXNTRACKS];
-    Int_t          Nbr_vtx[MAXNTRACKS];
-    Float_t         Vtx_cos_dir[MAXNTRACKS][MAXNVERTEX][3];
-    Float_t         Decay_Vtx_cos_dir[MAXNTRACKS][MAXNVERTEX][3];
-    Float_t         Vtx_x[MAXNTRACKS][MAXNVERTEX];
-    Float_t         Vtx_y[MAXNTRACKS][MAXNVERTEX];
-    Float_t         Vtx_z[MAXNTRACKS][MAXNVERTEX];
+
+    Int_t          has_CAT_helix_vertex[MAXNTRACKS];
+    Float_t         CAT_helix_vtx_cos_dir[MAXNTRACKS][MAXNVERTEX][3];
+    Float_t         CAT_helix_decay_vtx_cos_dir[MAXNTRACKS][MAXNVERTEX][3];
+    Float_t         CAT_helix_vtx_x[MAXNTRACKS][MAXNVERTEX];
+    Float_t         CAT_helix_vtx_y[MAXNTRACKS][MAXNVERTEX];
+    Float_t         CAT_helix_vtx_z[MAXNTRACKS][MAXNVERTEX];
+    Int_t          has_CAT_tangency_vertex[MAXNTRACKS];
+    Float_t         CAT_tangency_vtx_cos_dir[MAXNTRACKS][MAXNVERTEX][3];
+    Float_t         CAT_tangency_decay_vtx_cos_dir[MAXNTRACKS][MAXNVERTEX][3];
+    Float_t         CAT_tangency_vtx_x[MAXNTRACKS][MAXNVERTEX];
+    Float_t         CAT_tangency_vtx_y[MAXNTRACKS][MAXNVERTEX];
+    Float_t         CAT_tangency_vtx_z[MAXNTRACKS][MAXNVERTEX];
+    Float_t         NEMOR_helix_vtx_x[MAXNTRACKS];
+    Float_t         NEMOR_helix_vtx_y[MAXNTRACKS];
+    Float_t         NEMOR_helix_vtx_z[MAXNTRACKS];
     
     Float_t    True_Tk_le[MAXNTRACKS];
     Int_t          True_Nbr_vtx[MAXNTRACKS];
