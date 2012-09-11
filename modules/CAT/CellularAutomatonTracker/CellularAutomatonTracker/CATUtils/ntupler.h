@@ -54,99 +54,123 @@ class ntupler
   
  private: 
   
-  static const Int_t MAXNHITS = 1000;
-  static const Int_t MAXNTRACKS = 50;
-  static const Int_t MAXNVERTEX = 5;
+  typedef struct SimulatedVsTrackedHitStorage{
+    std::vector<int>* id_;
+    std::vector<double>* simulated_x_;
+    std::vector<double>* simulated_y_;
+    std::vector<double>* simulated_z_;
+    std::vector<double>* tracked_tangency_x_;
+    std::vector<double>* tracked_tangency_y_;
+    std::vector<double>* tracked_tangency_z_;
+    std::vector<double>* tracked_tangency_x_error_;
+    std::vector<double>* tracked_tangency_y_error_;
+    std::vector<double>* tracked_tangency_z_error_;
+    std::vector<double>* residual_tangency_x_;
+    std::vector<double>* residual_tangency_y_;
+    std::vector<double>* residual_tangency_z_;
+    std::vector<double>* pull_tangency_x_;
+    std::vector<double>* pull_tangency_y_;
+    std::vector<double>* pull_tangency_z_;
+    std::vector<double>* tracked_helix_x_;
+    std::vector<double>* tracked_helix_y_;
+    std::vector<double>* tracked_helix_z_;
+    std::vector<double>* tracked_helix_x_error_;
+    std::vector<double>* tracked_helix_y_error_;
+    std::vector<double>* tracked_helix_z_error_;
+    std::vector<double>* residual_helix_x_;
+    std::vector<double>* residual_helix_y_;
+    std::vector<double>* residual_helix_z_;
+    std::vector<double>* pull_helix_x_;
+    std::vector<double>* pull_helix_y_;
+    std::vector<double>* pull_helix_z_;
+    std::vector<double>* simulated_length_;
+    std::vector<double>* simulated_phi_;
+    std::vector<double>* simulated_theta_;
+    std::vector<double>* simulated_kink_hor_;
+    std::vector<double>* simulated_kink_vert_;
+    std::vector<double>* tracked_length_;
+    std::vector<double>* tracked_phi_;
+    std::vector<double>* tracked_theta_;
+    std::vector<double>* tracked_kink_hor_;
+    std::vector<double>* tracked_kink_vert_;
+  } SimulatedVsTrackedHitStorage;
   
-  bool __has_mc_hits;
-  
-  //      PARAMETER (MAXMEC=30) 
-  //      COMMON/GCTRAK/VECT(7),GETOT,GEKIN,VOUT(7),NMEC,LMEC(MAXMEC) 
-  //     + ,NAMEC(MAXMEC),NSTEP ,PID,DESTEP,DESTEL,SAFETY,SLENG 
-  //     + ,STEP  ,SNEXT ,SFIELD,TOFG  ,GEKRAT,UPWGHT
-  typedef struct { 
-    Int_t Ngg;
-    Float_t Gg[MAXNHITS][9];
-    
-    Int_t Nggt;
-    Float_t Ggtx[MAXNHITS];
-    Float_t Ggty[MAXNHITS];
-    Float_t Ggtz[MAXNHITS];
-    Float_t Itt1[MAXNHITS];
-    Float_t Itt2[MAXNHITS];
-    
-    Int_t Nsc;
+  typedef struct SimulatedVsTrackedTrackStorage{
+    std::vector<int>* id_;
+    std::vector<double>* simulated_vertex_x_;
+    std::vector<double>* simulated_vertex_y_;
+    std::vector<double>* simulated_vertex_z_;
+    std::vector<double>* tracked_helix_vertex_x_;
+    std::vector<double>* tracked_helix_vertex_y_;
+    std::vector<double>* tracked_helix_vertex_z_;
+    std::vector<double>* tracked_helix_vertex_x_error_;
+    std::vector<double>* tracked_helix_vertex_y_error_;
+    std::vector<double>* tracked_helix_vertex_z_error_;
+    std::vector<double>* residual_helix_vertex_x_;
+    std::vector<double>* residual_helix_vertex_y_;
+    std::vector<double>* residual_helix_vertex_z_;
+    std::vector<double>* pull_helix_vertex_x_;
+    std::vector<double>* pull_helix_vertex_y_;
+    std::vector<double>* pull_helix_vertex_z_;
+    std::vector<double>* simulated_decay_vertex_x_;
+    std::vector<double>* simulated_decay_vertex_y_;
+    std::vector<double>* simulated_decay_vertex_z_;
+    std::vector<double>* tracked_helix_decay_vertex_x_;
+    std::vector<double>* tracked_helix_decay_vertex_y_;
+    std::vector<double>* tracked_helix_decay_vertex_z_;
+    std::vector<double>* tracked_helix_decay_vertex_x_error_;
+    std::vector<double>* tracked_helix_decay_vertex_y_error_;
+    std::vector<double>* tracked_helix_decay_vertex_z_error_;
+    std::vector<double>* residual_helix_decay_vertex_x_;
+    std::vector<double>* residual_helix_decay_vertex_y_;
+    std::vector<double>* residual_helix_decay_vertex_z_;
+    std::vector<double>* pull_helix_decay_vertex_x_;
+    std::vector<double>* pull_helix_decay_vertex_y_;
+    std::vector<double>* pull_helix_decay_vertex_z_;
+    std::vector<double>* tracked_tangent_vertex_x_;
+    std::vector<double>* tracked_tangent_vertex_y_;
+    std::vector<double>* tracked_tangent_vertex_z_;
+    std::vector<double>* tracked_tangent_vertex_x_error_;
+    std::vector<double>* tracked_tangent_vertex_y_error_;
+    std::vector<double>* tracked_tangent_vertex_z_error_;
+    std::vector<double>* residual_tangent_vertex_x_;
+    std::vector<double>* residual_tangent_vertex_y_;
+    std::vector<double>* residual_tangent_vertex_z_;
+    std::vector<double>* pull_tangent_vertex_x_;
+    std::vector<double>* pull_tangent_vertex_y_;
+    std::vector<double>* pull_tangent_vertex_z_;
+    std::vector<double>* tracked_tangent_decay_vertex_x_;
+    std::vector<double>* tracked_tangent_decay_vertex_y_;
+    std::vector<double>* tracked_tangent_decay_vertex_z_;
+    std::vector<double>* tracked_tangent_decay_vertex_x_error_;
+    std::vector<double>* tracked_tangent_decay_vertex_y_error_;
+    std::vector<double>* tracked_tangent_decay_vertex_z_error_;
+    std::vector<double>* residual_tangent_decay_vertex_x_;
+    std::vector<double>* residual_tangent_decay_vertex_y_;
+    std::vector<double>* residual_tangent_decay_vertex_z_;
+    std::vector<double>* pull_tangent_decay_vertex_x_;
+    std::vector<double>* pull_tangent_decay_vertex_y_;
+    std::vector<double>* pull_tangent_decay_vertex_z_;
+  } SimulatedVsTrackedTrackStorage;
+			
 
-    Int_t Nbr_tks;
-    Int_t True_Nbr_tks;
-    Int_t          Nbr_pts[MAXNTRACKS];
-    Float_t Ptx[MAXNTRACKS][MAXNHITS];  // tangency points
-    Float_t Pty[MAXNTRACKS][MAXNHITS];
-    Float_t Ptz[MAXNTRACKS][MAXNHITS];
-    Float_t HelixPtx[MAXNTRACKS][MAXNHITS];  // helix points
-    Float_t HelixPty[MAXNTRACKS][MAXNHITS];
-    Float_t HelixPtz[MAXNTRACKS][MAXNHITS];
-    Int_t Ptid[MAXNTRACKS][MAXNHITS];
-    
-    
-    Int_t     Ind_points[MAXNTRACKS][MAXNHITS];
-
-    Float_t    Tk_le[MAXNTRACKS];
-    Float_t    Q[MAXNTRACKS];
-    Float_t    mom[MAXNTRACKS];
-
-    Int_t          has_CAT_helix_vertex[MAXNTRACKS];
-    Float_t         CAT_helix_vtx_cos_dir[MAXNTRACKS][MAXNVERTEX][3];
-    Float_t         CAT_helix_decay_vtx_cos_dir[MAXNTRACKS][MAXNVERTEX][3];
-    Float_t         CAT_helix_vtx_x[MAXNTRACKS][MAXNVERTEX];
-    Float_t         CAT_helix_vtx_y[MAXNTRACKS][MAXNVERTEX];
-    Float_t         CAT_helix_vtx_z[MAXNTRACKS][MAXNVERTEX];
-    Int_t          has_CAT_tangency_vertex[MAXNTRACKS];
-    Float_t         CAT_tangency_vtx_cos_dir[MAXNTRACKS][MAXNVERTEX][3];
-    Float_t         CAT_tangency_decay_vtx_cos_dir[MAXNTRACKS][MAXNVERTEX][3];
-    Float_t         CAT_tangency_vtx_x[MAXNTRACKS][MAXNVERTEX];
-    Float_t         CAT_tangency_vtx_y[MAXNTRACKS][MAXNVERTEX];
-    Float_t         CAT_tangency_vtx_z[MAXNTRACKS][MAXNVERTEX];
-    Float_t         NEMOR_helix_vtx_x[MAXNTRACKS];
-    Float_t         NEMOR_helix_vtx_y[MAXNTRACKS];
-    Float_t         NEMOR_helix_vtx_z[MAXNTRACKS];
-    
-    Float_t    True_Tk_le[MAXNTRACKS];
-    Int_t          True_Nbr_vtx[MAXNTRACKS];
-    Float_t         True_Vtx_cos_dir[MAXNTRACKS][MAXNVERTEX][3];
-    Float_t         True_Decay_Vtx_cos_dir[MAXNTRACKS][MAXNVERTEX][3];
-    Float_t         True_Vtx_x[MAXNTRACKS][MAXNVERTEX];
-    Float_t         True_Vtx_y[MAXNTRACKS][MAXNVERTEX];
-    Float_t         True_Vtx_z[MAXNTRACKS][MAXNVERTEX];
-    
-    
-  } event; 
-  
-  
-  std::string __title;
-  TFile *__f;
-  TTree *__tree;
-  event __event;
-  TH1F *h1;
-  TH1F *helix_chi2;
-  TNtuple *__event_ntuple, *__hits_ntuple, *__vertexes_ntuple,  *__tracks_ntuple;
+  TFile* __f;
+  TTree* __tree;
   string __outfilename;
-
   CAT::topology::tracked_data tracked_data_;
-
 
  public: 
   
-  void set_title (std::string title_);
-  std::string  get_title();
   
+  SimulatedVsTrackedHitStorage simulated_vs_tracked_hit_;
+  SimulatedVsTrackedTrackStorage simulated_vs_tracked_track_;
+  SimulatedVsTrackedTrackStorage simulated_vs_tracked_n3track_;
+
   void initialize (void);
   void finalize (void) ;
+  void set_outfilename (std::string title_);
+  std::string  get_outfilename();
 
-  void SetFileName(string n){
-    __outfilename=n;
-  }
-  
   bool is_valid () const ;
   void __fill();
   bool get_true_hit_of_reco_cell(CAT::topology::cell c, CAT::topology::node& n, size_t& index);
