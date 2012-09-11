@@ -17,6 +17,8 @@ ntupler::ntupler ()
 // dtor:
 ntupler::~ntupler ()
 {
+  __outfilename="figure/local_tracking.root";
+
   return;
 }
 
@@ -25,7 +27,7 @@ void ntupler::initialize (void)
 {
   cout << " initializing ntupler " << endl; fflush(stdout);
   
-  __f = new TFile("figure/local_tracking.root","RECREATE");
+  __f = new TFile(__outfilename.c_str(),"RECREATE");
   h1 = new TH1F("h1","x distribution",100,-4,4);
   helix_chi2 = new TH1F("helix_chi2","helix chi2 distribubtion",1000,0.,1000.);
   __event_ntuple = new TNtuple("__event_ntuple","event",

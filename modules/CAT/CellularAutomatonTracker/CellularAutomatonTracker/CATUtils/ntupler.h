@@ -130,6 +130,7 @@ class ntupler
   TH1F *h1;
   TH1F *helix_chi2;
   TNtuple *__event_ntuple, *__hits_ntuple, *__vertexes_ntuple,  *__tracks_ntuple;
+  string __outfilename;
 
   CAT::topology::tracked_data tracked_data_;
 
@@ -141,13 +142,16 @@ class ntupler
   
   void initialize (void);
   void finalize (void) ;
+
+  void SetFileName(string n){
+    __outfilename=n;
+  }
   
   bool is_valid () const ;
   void __fill();
   bool get_true_hit_of_reco_cell(CAT::topology::cell c, CAT::topology::node& n, size_t& index);
   size_t get_cell_index(CAT::topology::cell c);
 
-  
   void set_tracked_data (const CAT::topology::tracked_data& tracked_data);
   const  CAT::topology::tracked_data & get_tracked_data () const ;
   
