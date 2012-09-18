@@ -1974,14 +1974,16 @@ namespace CAT {
   
     clock.start(" clusterizer: order cells ","cumulative");
    
-    if( level >= mybhep::VVERBOSE ){
-      std::clog << " printing cells " << cells_.size() << std::endl;
-      print_cells();
-      std::clog << " sorting cells " << std::endl;
+    if( cells_.size() ){
+      if( level >= mybhep::VVERBOSE ){
+	std::clog << " printing cells " << cells_.size() << std::endl;
+	print_cells();
+	std::clog << " sorting cells " << std::endl;
+      }
+      
+      //  std::sort( cells_.begin(), cells_.end(), topology::cell::compare );
+      std::sort( cells_.begin(), cells_.end());
     }
-
-    //  std::sort( cells_.begin(), cells_.end(), topology::cell::compare );
-    std::sort( cells_.begin(), cells_.end());
 
     clock.stop(" clusterizer: order cells ");
 

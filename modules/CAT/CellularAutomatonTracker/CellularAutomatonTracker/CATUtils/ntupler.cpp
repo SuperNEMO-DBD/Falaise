@@ -217,7 +217,6 @@ void ntupler::initialize (void)
 
 void ntupler::finalize (void)
 {
-  cout << " finalizing ntupler " << endl;
   __tree->SetDirectory(__f);
   __tree->Write();
   
@@ -228,7 +227,6 @@ void ntupler::finalize (void)
   __f = (TFile*)NULL;
   __tree = (TTree*)NULL;
   __outfilename = "";
-
 
 
   return;
@@ -513,22 +511,27 @@ void ntupler::__fill ()
 
       CAT::topology::experimental_point hvertex=iseq->helix_vertex();
       CAT::topology::experimental_point tvertex=iseq->tangent_vertex();
-		
+      CAT::topology::experimental_vector vhvertex(hvertex);
+      CAT::topology::experimental_vector vtvertex(tvertex);
 
       simulated_vs_tracked_track_tracked_helix_vertex_x_.push_back(hvertex.x().value());
       simulated_vs_tracked_track_tracked_helix_vertex_y_.push_back(hvertex.y().value());
       simulated_vs_tracked_track_tracked_helix_vertex_z_.push_back(hvertex.z().value());
+      simulated_vs_tracked_track_tracked_helix_vertex_phi_.push_back(fabs(vhvertex.phi().value()));
 
       simulated_vs_tracked_track_tracked_helix_vertex_x_error_.push_back(hvertex.x().error());
       simulated_vs_tracked_track_tracked_helix_vertex_y_error_.push_back(hvertex.y().error());
       simulated_vs_tracked_track_tracked_helix_vertex_z_error_.push_back(hvertex.z().error());
+      simulated_vs_tracked_track_tracked_helix_vertex_phi_error_.push_back(vhvertex.phi().error());
 
       simulated_vs_tracked_track_tracked_tangent_vertex_x_.push_back(tvertex.x().value());
       simulated_vs_tracked_track_tracked_tangent_vertex_y_.push_back(tvertex.y().value());
       simulated_vs_tracked_track_tracked_tangent_vertex_z_.push_back(tvertex.z().value());
-      simulated_vs_tracked_track_tracked_tangent_vertex_x_.push_back(tvertex.x().error());
-      simulated_vs_tracked_track_tracked_tangent_vertex_y_.push_back(tvertex.y().error());
-      simulated_vs_tracked_track_tracked_tangent_vertex_z_.push_back(tvertex.z().error());
+      simulated_vs_tracked_track_tracked_tangent_vertex_phi_.push_back(fabs(vtvertex.phi().value()));
+      simulated_vs_tracked_track_tracked_tangent_vertex_x_error_.push_back(tvertex.x().error());
+      simulated_vs_tracked_track_tracked_tangent_vertex_y_error_.push_back(tvertex.y().error());
+      simulated_vs_tracked_track_tracked_tangent_vertex_z_error_.push_back(tvertex.z().error());
+      simulated_vs_tracked_track_tracked_tangent_vertex_phi_error_.push_back(vtvertex.phi().error());
 
 
     }
@@ -541,15 +544,18 @@ void ntupler::__fill ()
     for(std::vector<CAT::topology::sequence>::iterator iseq=tracked_data_.nemo_sequences_.begin(); iseq!=tracked_data_.nemo_sequences_.end(); iseq++){
 
       CAT::topology::experimental_point hvertex=iseq->helix_vertex();
+      CAT::topology::experimental_vector vhvertex(hvertex);
 		
 
       simulated_vs_tracked_n3track_tracked_helix_vertex_x_.push_back(hvertex.x().value());
       simulated_vs_tracked_n3track_tracked_helix_vertex_y_.push_back(hvertex.y().value());
       simulated_vs_tracked_n3track_tracked_helix_vertex_z_.push_back(hvertex.z().value());
+      simulated_vs_tracked_n3track_tracked_helix_vertex_phi_.push_back(fabs(vhvertex.phi().value()));
 
       simulated_vs_tracked_n3track_tracked_helix_vertex_x_error_.push_back(hvertex.x().error());
       simulated_vs_tracked_n3track_tracked_helix_vertex_y_error_.push_back(hvertex.y().error());
       simulated_vs_tracked_n3track_tracked_helix_vertex_z_error_.push_back(hvertex.z().error());
+      simulated_vs_tracked_n3track_tracked_helix_vertex_phi_error_.push_back(vhvertex.phi().error());
     }
   }
 
@@ -731,11 +737,6 @@ void ntupler::__fill ()
     __tree->Fill();
   }
 
-
-
-
-
-  
   __tree->Fill();
   
 }
