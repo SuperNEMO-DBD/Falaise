@@ -659,6 +659,9 @@ namespace CAT {
       }
 
     make_scenarios(tracked_data_);
+
+    match_kinks(tracked_data_);
+
     if (late())
       {
         tracked_data_.set_skipped(true);
@@ -1365,6 +1368,76 @@ namespace CAT {
     return;
   }
 
+
+
+
+  //*************************************************************
+  bool sequentiator::match_kinks(topology::tracked_data &td){
+    //*************************************************************
+
+    clock.start(" sequentiator: match kinks ", "cumulative");
+
+    if( td.scenarios_.empty() ) return false;
+
+    double limit_diagonal = sqrt(2.)*cos(M_PI/8.)*CellDistance; 
+
+    std::vector<topology::sequence>::iterator iseq = td.scenarios_[0].sequences_.begin();
+    std::vector<topology::sequence>::iterator jseq = td.scenarios_[0].sequences_.begin();
+    while( iseq != td.scenarios_[0].sequences_.end() ){
+
+      if( (size_t)(iseq - td.scenarios_[0].sequences_.begin()) == td.scenarios_[0].sequences_.size() ){
+        ++iseq;
+        continue;
+      }
+      
+      while( jseq != td.scenarios_[0].sequences_.end() ){
+	
+	if( (size_t)(jseq - td.scenarios_[0].sequences_.begin()) == td.scenarios_[0].sequences_.size() ){
+	  ++jseq;
+	  continue;
+	}
+	
+        if( iseq == jseq ){
+          ++jseq;
+          continue;
+        }
+
+        if( (size_t)(jseq - td.scenarios_[0].sequences_.begin()) > td.scenarios_[0].sequences_.size() - 1 ){
+          break;
+        }
+
+
+        m.message(" ... try to match sequence ", iseq->name(), " to ", jseq->name(), " with a kink ", mybhep::VERBOSE);
+        if( level >= mybhep::VVERBOSE)
+          print_a_sequence(*jseq);
+
+        bool invertA, invertB;
+        if( !iseq->good_match_with_kink(*jseq, invertA, invertB, limit_diagonal) ){
+          ++jseq;
+	  m.message(" ... obviously no good match with kink ", mybhep::VERBOSE);
+          continue;
+        }
+
+	m.message(" good match with kink, try to extrapolate ", mybhep::VERBOSE);
+	topology::experimental_point kink_point;
+	if( iseq->intersect_sequence(*jseq, invertA, invertB, &kink_point, limit_diagonal)){
+	  m.message(" good kink vertex has been assigned to sequence ", iseq->name(), mybhep::VERBOSE);
+	  if( invertA )
+	    iseq->set_helix_vertex(kink_point, "kink");
+	  else
+	    iseq->set_decay_helix_vertex(kink_point, "kink");
+	}
+	++jseq;
+      }
+      ++iseq;
+    }
+
+    clock.stop(" sequentiator: match kinks ");
+
+    return false;
+
+
+  }
 
 
 

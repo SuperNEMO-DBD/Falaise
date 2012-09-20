@@ -702,26 +702,26 @@ namespace CAT {
 	inverted.set_names( names() );
 
         if( has_decay_helix_vertex() ){
-          if( decay_helix_vertex_type() == "foil" )
+          if( decay_helix_vertex_type() == "foil" || decay_helix_vertex_type() == "kink")
             inverted.set_helix_vertex( decay_helix_vertex(), decay_helix_vertex_type() );
           else if( decay_helix_vertex_type() == "calo" )
             inverted.set_helix_vertex( decay_helix_vertex(), decay_helix_vertex_type(), calo_helix_id() );
         }
         if( has_helix_vertex() ){
-          if( helix_vertex_type() == "foil" )
+          if( helix_vertex_type() == "foil" || helix_vertex_type() == "kink")
             inverted.set_decay_helix_vertex( helix_vertex(), helix_vertex_type() );
           else if( helix_vertex_type() == "calo" )
             inverted.set_decay_helix_vertex( helix_vertex(), helix_vertex_type(), helix_vertex_id() );
         }
 
         if( has_decay_tangent_vertex() ){
-          if( decay_tangent_vertex_type() == "foil" )
+          if( decay_tangent_vertex_type() == "foil" || decay_tangent_vertex_type() == "kink")
             inverted.set_tangent_vertex( decay_tangent_vertex(), decay_tangent_vertex_type() );
           else if( decay_tangent_vertex_type() == "calo" )
             inverted.set_tangent_vertex( decay_tangent_vertex(), decay_tangent_vertex_type(), calo_tangent_id() );
         }
         if( has_tangent_vertex() ){
-          if( tangent_vertex_type() == "foil" )
+          if( tangent_vertex_type() == "foil" || tangent_vertex_type() == "kink")
             inverted.set_decay_tangent_vertex( tangent_vertex(), tangent_vertex_type() );
           else if( tangent_vertex_type() == "calo" )
             inverted.set_decay_tangent_vertex( tangent_vertex(), tangent_vertex_type(), tangent_vertex_id() );
@@ -1639,6 +1639,32 @@ namespace CAT {
       }
 
 
+      bool intersect_sequence(sequence seq, bool invertA, bool invertB, experimental_point * ep, double limit_distance){
+	circle c = seq.get_helix().get_circle();
+	bool result;
+        double distanceA, distanceB;
+	if( invertA ){
+	  result=intersect_circle_from_end(c,ep);
+	  distanceA = nodes_[0].ep().distance(*ep).value();
+	}
+	else{
+	  result=intersect_circle_from_begin(c,ep);
+	  distanceA = nodes_.back().ep().distance(*ep).value();
+	}
+
+	if(!result) return false;
+
+	if( invertB )
+	  distanceB = seq.nodes().back().ep().distance(*ep).value();
+	else
+	  distanceB = seq.nodes_[0].ep().distance(*ep).value();
+
+
+	return (result && distanceA <= limit_distance && distanceB <= limit_distance );
+
+      }
+
+
       std::string family()const{
         size_t i1 = name().find("_");
         size_t i2 = name().find("_",i1+1);
@@ -1858,14 +1884,14 @@ namespace CAT {
 
         if( !invertB ){
           if( seq.has_decay_helix_vertex() ){
-            if( seq.decay_helix_vertex_type() == "foil" )
+            if( seq.decay_helix_vertex_type() == "foil" || seq.decay_helix_vertex_type() == "kink")
               news.set_decay_helix_vertex( seq.decay_helix_vertex(), seq.decay_helix_vertex_type() );
             else if( seq.decay_helix_vertex_type() == "calo" )
               news.set_decay_helix_vertex( seq.decay_helix_vertex(), seq.decay_helix_vertex_type(), seq.calo_helix_id() );
 	  }
 
           if( seq.has_decay_tangent_vertex() ){
-            if( seq.decay_tangent_vertex_type() == "foil" )
+            if( seq.decay_tangent_vertex_type() == "foil" || seq.decay_tangent_vertex_type() == "kink")
               news.set_decay_tangent_vertex( seq.decay_tangent_vertex(), seq.decay_tangent_vertex_type() );
             else if( seq.decay_tangent_vertex_type() == "calo" )
               news.set_decay_tangent_vertex( seq.decay_tangent_vertex(), seq.decay_tangent_vertex_type(), seq.calo_tangent_id() );
@@ -1874,14 +1900,14 @@ namespace CAT {
         }
         else{
           if( seq.has_helix_vertex() ){
-            if( seq.helix_vertex_type() == "foil" )
+            if( seq.helix_vertex_type() == "foil" || seq.helix_vertex_type() == "kink" )
               news.set_decay_helix_vertex( seq.helix_vertex(), seq.helix_vertex_type() );
             else if( seq.helix_vertex_type() == "calo" )
               news.set_decay_helix_vertex( seq.helix_vertex(), seq.helix_vertex_type(), seq.helix_vertex_id() );
 	  }
 
           if( seq.has_tangent_vertex() ){
-            if( seq.tangent_vertex_type() == "foil" )
+            if( seq.tangent_vertex_type() == "foil" || seq.tangent_vertex_type() == "kink" )
               news.set_decay_tangent_vertex( seq.tangent_vertex(), seq.tangent_vertex_type() );
             else if( seq.tangent_vertex_type() == "calo" )
               news.set_decay_tangent_vertex( seq.tangent_vertex(), seq.tangent_vertex_type(), seq.tangent_vertex_id() );
@@ -1894,6 +1920,167 @@ namespace CAT {
         news.calculate_helix();
 
         return news;
+
+      }
+
+
+      bool good_match_with_kink(sequence seq, bool &invertA, bool &invertB, double limit_distance)const{
+
+        if( !seq.fast() ){
+          if( print_level() >= mybhep::VVERBOSE )
+            std::clog << " ... forbidden, delayed track " << std::endl;
+          return false;
+        }
+
+
+        if( nodes_.size() < 2 || seq.nodes().size() < 2 ){
+          if( print_level() >= mybhep::VVERBOSE )
+            std::clog << " ... forbidden, hits sizes are " << nodes_.size() << " and " << seq.nodes().size() << std::endl;
+          return false;
+        }
+
+
+        //no connection if on opposite sides of the foil
+        if( nodes_[0].c().block() * seq.nodes_[0].c().block() < 0 ){
+          if( print_level() >= mybhep::VVERBOSE )
+            std::clog << " ... forbidden, opposite side of foil " << std::endl;
+          return false;
+        }
+
+
+
+
+
+        double distFF = nodes_[0].ep().distance(seq.nodes_[0].ep()).value();
+        double distFL = nodes_[0].ep().distance(seq.nodes().back().ep()).value();
+        double distLF = nodes().back().ep().distance(seq.nodes_[0].ep()).value();
+        double distLL = nodes().back().ep().distance(seq.nodes().back().ep()).value();
+
+        if( distLF <= distFF && distLF <= distFL && distLF <= distLL ){  // last to first  FL --> FL
+          invertA = false;
+          invertB = false;
+
+	  if( distLF > limit_distance){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " ... forbidden, because distance " << distLF << " is larger than limit " << limit_distance << std::endl;
+            return false;
+	  }
+
+          // connection must be within same block
+          if( fabs( last_node().c().block() - seq.nodes_[0].c().block()) > 0 ){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " ... forbidden, because blocks are far away " << std::endl;
+            return false;
+          }
+
+          if( has_decay_helix_vertex() && (decay_helix_vertex_type() == "calo" || decay_helix_vertex_type() == "foil") ){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " ... forbidden, because 1st track already has decay helix_vertex on calo or foil " << std::endl;
+            return false;
+          }
+          if( seq.has_helix_vertex() && (seq.helix_vertex_type() == "calo" || seq.helix_vertex_type() == "foil") ){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " ... forbidden, because 2nd track already has helix_vertex on calo or foil " << std::endl;
+            return false;
+          }
+
+
+        }
+        else if( distLL <= distFF && distLL <= distFL && distLL <= distLF ){ // last to last  FL -> LF
+          invertA = false;
+          invertB = true;
+
+	  if( distLL > limit_distance){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " ... forbidden, because distance " << distLL << " is larger than limit " << limit_distance << std::endl;
+            return false;
+	  }
+
+          // connection must be within same block
+          if( fabs( last_node().c().block() - seq.last_node().c().block()) > 0 ){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " ... forbidden, because blocks are far away " << std::endl;
+            return false;
+          }
+
+          if( has_decay_helix_vertex() && (decay_helix_vertex_type() == "calo" || decay_helix_vertex_type() == "foil") ){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " ... forbidden, because 1st track already has decay helix_vertex on calo or foil " << std::endl;
+            return false;
+          }
+          if( seq.has_decay_helix_vertex() && (seq.decay_helix_vertex_type() == "calo" || seq.decay_helix_vertex_type() == "foil") ){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " ... forbidden, because 2nd track already has decay helix_vertex on calo or foil " << std::endl;
+            return false;
+          }
+
+        }
+        else if( distFL <= distFF && distFL <= distLL && distFL <= distLF ){ // first to last  LF -> LF
+	  if( distFL > limit_distance){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " ... forbidden, because distance " << distFL << " is larger than limit " << limit_distance << std::endl;
+            return false;
+	  }
+
+          invertA = true;
+          invertB = true;
+          // connection must be within same block
+          if( fabs( nodes_[0].c().block() - seq.last_node().c().block()) > 0 ){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " ... forbidden, because blocks are far away " << std::endl;
+            return false;
+          }
+
+          if( has_helix_vertex() && (helix_vertex_type() == "calo" || helix_vertex_type() == "foil") ){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " ... forbidden, because 1st track already has helix_vertex on calo or foil " << std::endl;
+            return false;
+          }
+          if( seq.has_decay_helix_vertex() && (seq.decay_helix_vertex_type() == "calo" || seq.decay_helix_vertex_type() == "foil") ){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " ... forbidden, because 2nd track already has decay helix_vertex on calo or foil " << std::endl;
+            return false;
+          }
+
+        }
+        else{ // first to first  LF -> FL
+	  if( distFF > limit_distance){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " ... forbidden, because distance " << distFF << " is larger than limit " << limit_distance << std::endl;
+            return false;
+	  }
+
+          invertA = true;
+          invertB = false;
+          // connection must be within same block
+          if( fabs( nodes_[0].c().block() - seq.nodes_[0].c().block()) > 0 ){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " ... forbidden, because blocks are far away " << std::endl;
+            return false;
+          }
+
+          if( has_helix_vertex() && (helix_vertex_type() == "calo" || helix_vertex_type() == "foil") ){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " ... forbidden, because 1st track already has helix_vertex on calo or foil " << std::endl;
+            return false;
+          }
+          if( seq.has_helix_vertex() && (seq.helix_vertex_type() == "calo" || seq.helix_vertex_type() == "foil") ){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " ... forbidden, because 2nd track already has helix_vertex on calo or foil " << std::endl;
+            return false;
+          }
+
+        }
+
+
+
+
+        if( print_level() >= mybhep::VVERBOSE ){
+          std::clog << " ... good kink match, distances: FF " << distFF << " FL " << distFL << " LF " << distLF << " LL " << distLL << " so invertA " << invertA << " invertB " << invertB << std::endl;
+        }
+
+
+        return true;
 
       }
 

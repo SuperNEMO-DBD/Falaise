@@ -474,6 +474,7 @@ namespace CAT {
 
 
     bool match_through_gaps();
+    bool match_kinks(topology::tracked_data &td);
     bool make_scenarios(topology::tracked_data &td);
     void interpret_physics(std::vector<topology::calorimeter_hit> & calos);
     topology::plane get_foil_plane();
