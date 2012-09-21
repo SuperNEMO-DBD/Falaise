@@ -123,9 +123,11 @@ class ntupler
     std::vector<double>* tracked_helix_decay_vertex_x_;
     std::vector<double>* tracked_helix_decay_vertex_y_;
     std::vector<double>* tracked_helix_decay_vertex_z_;
+    std::vector<double>* tracked_helix_decay_vertex_phi_;
     std::vector<double>* tracked_helix_decay_vertex_x_error_;
     std::vector<double>* tracked_helix_decay_vertex_y_error_;
     std::vector<double>* tracked_helix_decay_vertex_z_error_;
+    std::vector<double>* tracked_helix_decay_vertex_phi_error_;
     std::vector<double>* residual_helix_decay_vertex_x_;
     std::vector<double>* residual_helix_decay_vertex_y_;
     std::vector<double>* residual_helix_decay_vertex_z_;
@@ -151,15 +153,29 @@ class ntupler
     std::vector<double>* tracked_tangent_decay_vertex_x_;
     std::vector<double>* tracked_tangent_decay_vertex_y_;
     std::vector<double>* tracked_tangent_decay_vertex_z_;
+    std::vector<double>* tracked_tangent_decay_vertex_phi_;
     std::vector<double>* tracked_tangent_decay_vertex_x_error_;
     std::vector<double>* tracked_tangent_decay_vertex_y_error_;
     std::vector<double>* tracked_tangent_decay_vertex_z_error_;
+    std::vector<double>* tracked_tangent_decay_vertex_phi_error_;
     std::vector<double>* residual_tangent_decay_vertex_x_;
     std::vector<double>* residual_tangent_decay_vertex_y_;
     std::vector<double>* residual_tangent_decay_vertex_z_;
     std::vector<double>* pull_tangent_decay_vertex_x_;
     std::vector<double>* pull_tangent_decay_vertex_y_;
     std::vector<double>* pull_tangent_decay_vertex_z_;
+    std::vector<double>* tracked_kink_x_;
+    std::vector<double>* tracked_kink_y_;
+    std::vector<double>* tracked_kink_z_;
+    std::vector<double>* tracked_kink_x_error_;
+    std::vector<double>* tracked_kink_y_error_;
+    std::vector<double>* tracked_kink_z_error_;
+    std::vector<double>* residual_kink_x_;
+    std::vector<double>* residual_kink_y_;
+    std::vector<double>* residual_kink_z_;
+    std::vector<double>* pull_kink_x_;
+    std::vector<double>* pull_kink_y_;
+    std::vector<double>* pull_kink_z_;
   } SimulatedVsTrackedTrackStorage;
 			
 
