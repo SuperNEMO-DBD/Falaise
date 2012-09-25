@@ -311,6 +311,17 @@ namespace CAT {
       }
 
 
+      helix invert(){
+	helix inverted;
+	inverted.set_print_level(print_level());
+	inverted.set_nsigma(nsigma());
+	inverted.set_center(center());
+	inverted.set_radius(radius());
+	inverted.set_pitch(-pitch());
+	return inverted;
+      }
+
+
     };
 
     // average

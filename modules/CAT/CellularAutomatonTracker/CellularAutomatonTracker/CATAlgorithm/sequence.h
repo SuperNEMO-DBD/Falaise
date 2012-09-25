@@ -667,6 +667,8 @@ namespace CAT {
         inverted.set_print_level(print_level());
         inverted.set_nsigma(nsigma());
         inverted.set_free(Free());
+        inverted.set_helix(helix_.invert());
+
         std::vector<node> inverted_nodes;
         for(size_t i = 0; i < nodes_.size(); i++){
           topology::node in = nodes_[nodes_.size() - 1 - i];

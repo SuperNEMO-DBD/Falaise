@@ -1492,6 +1492,7 @@ namespace CAT {
       return false;
     }
 
+
     direct_scenarios_out_of_foil();
 
     if( level >= mybhep::VERBOSE)
@@ -1849,6 +1850,7 @@ namespace CAT {
 	    std::clog << " decay tangent_vertex "; iseq->decay_tangent_vertex().dump(); std::clog << " " << std::endl; fflush(stdout);
 	  }
         }
+
 
       }
 
@@ -2216,6 +2218,7 @@ namespace CAT {
 	  std::swap(*iseq, is);
 	}
       }
+
     }
     clock.stop(" sequentiator: direct scenarios out of foil ");
 

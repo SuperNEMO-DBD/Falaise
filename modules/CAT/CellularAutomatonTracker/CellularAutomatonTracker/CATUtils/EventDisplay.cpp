@@ -2372,6 +2372,11 @@ void EventDisplay::draw_helices_xz( void ){
 //*************************************************************
 
   for(std::vector<topology::sequence>::iterator iclu=sequences_.begin(); iclu != sequences_.end(); ++iclu){
+    
+    if( iclu->nodes_.size() <= 2 ){
+      continue;
+    }
+
     double x = iclu->center().x().value();
     double z = iclu->center().z().value();
     double r = iclu->radius().value();
