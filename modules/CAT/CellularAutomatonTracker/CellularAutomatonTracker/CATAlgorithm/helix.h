@@ -317,7 +317,7 @@ namespace CAT {
 	inverted.set_nsigma(nsigma());
 	inverted.set_center(center());
 	inverted.set_radius(radius());
-	inverted.set_pitch(-pitch());
+	inverted.set_pitch(pitch());
 	return inverted;
       }
 
