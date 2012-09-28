@@ -194,7 +194,7 @@ namespace CAT {
             // layer = 0-8
 
             size_t io;
-            sscanf(value.c_str(),"%d_%d_%d",&block_,&io,&iid_);
+            sscanf(value.c_str(),"%d_%u_%d",&block_,&io,&iid_);
 
             layer_ = iid_;
 
@@ -370,7 +370,7 @@ namespace CAT {
       {
         bool sm = false;
 
-	//        if (r0_.value() <= nsigma()*r0_.error() ) sm = true;
+        //        if (r0_.value() <= nsigma()*r0_.error() ) sm = true;
         if (r0_.value() <= 2. ) sm = true;
 
         return sm;
