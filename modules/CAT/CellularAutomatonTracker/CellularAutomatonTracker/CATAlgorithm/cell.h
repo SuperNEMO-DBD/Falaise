@@ -193,7 +193,7 @@ namespace CAT {
             //     0 if hit is between foil and internal calorimeter
             // layer = 0-8
 
-            size_t io;
+            unsigned int io;
             sscanf(value.c_str(),"%d_%u_%d",&block_,&io,&iid_);
 
             layer_ = iid_;
