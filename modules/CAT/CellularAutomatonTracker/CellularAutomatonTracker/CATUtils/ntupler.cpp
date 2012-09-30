@@ -43,6 +43,8 @@ void ntupler::initialize (void)
   __tree->Branch("simulated_vs_tracked_hit.simulated_x",&simulated_vs_tracked_hit_.simulated_x_);
   __tree->Branch("simulated_vs_tracked_hit.simulated_y",&simulated_vs_tracked_hit_.simulated_y_);
   __tree->Branch("simulated_vs_tracked_hit.simulated_z",&simulated_vs_tracked_hit_.simulated_z_);
+  __tree->Branch("simulated_vs_tracked_hit.simulated_dx",&simulated_vs_tracked_hit_.simulated_dx_);
+  __tree->Branch("simulated_vs_tracked_hit.simulated_dz",&simulated_vs_tracked_hit_.simulated_dz_);
 #endif
 
     __tree->Branch("simulated_vs_tracked_hit.tracked_tangency_x",&simulated_vs_tracked_hit_.tracked_tangency_x_);
@@ -51,6 +53,8 @@ void ntupler::initialize (void)
     __tree->Branch("simulated_vs_tracked_hit.tracked_tangency_x_error",&simulated_vs_tracked_hit_.tracked_tangency_x_error_);
     __tree->Branch("simulated_vs_tracked_hit.tracked_tangency_y_error",&simulated_vs_tracked_hit_.tracked_tangency_y_error_);
     __tree->Branch("simulated_vs_tracked_hit.tracked_tangency_z_error",&simulated_vs_tracked_hit_.tracked_tangency_z_error_);
+    __tree->Branch("simulated_vs_tracked_hit.tracked_tangency_dx",&simulated_vs_tracked_hit_.tracked_tangency_dx_);
+    __tree->Branch("simulated_vs_tracked_hit.tracked_tangency_dz",&simulated_vs_tracked_hit_.tracked_tangency_dz_);
 
 #if 0
   __tree->Branch("simulated_vs_tracked_hit.residual_tangency_x",&simulated_vs_tracked_hit_.residual_tangency_x_);
@@ -67,6 +71,8 @@ void ntupler::initialize (void)
     __tree->Branch("simulated_vs_tracked_hit.tracked_helix_x_error",&simulated_vs_tracked_hit_.tracked_helix_x_error_);
     __tree->Branch("simulated_vs_tracked_hit.tracked_helix_y_error",&simulated_vs_tracked_hit_.tracked_helix_y_error_);
     __tree->Branch("simulated_vs_tracked_hit.tracked_helix_z_error",&simulated_vs_tracked_hit_.tracked_helix_z_error_);
+    __tree->Branch("simulated_vs_tracked_hit.tracked_helix_dx",&simulated_vs_tracked_hit_.tracked_helix_dx_);
+    __tree->Branch("simulated_vs_tracked_hit.tracked_helix_dz",&simulated_vs_tracked_hit_.tracked_helix_dz_);
 
 #if 0
   __tree->Branch("simulated_vs_tracked_hit.residual_helix_x",&simulated_vs_tracked_hit_.residual_helix_x_);
@@ -337,12 +343,16 @@ void ntupler::__fill ()
   std::vector<double> simulated_vs_tracked_simulated_x_;
   std::vector<double> simulated_vs_tracked_simulated_y_;
   std::vector<double> simulated_vs_tracked_simulated_z_;
+  std::vector<double> simulated_vs_tracked_simulated_dx_;
+  std::vector<double> simulated_vs_tracked_simulated_dz_;
   std::vector<double> simulated_vs_tracked_tracked_tangency_x_;
   std::vector<double> simulated_vs_tracked_tracked_tangency_y_;
   std::vector<double> simulated_vs_tracked_tracked_tangency_z_;
   std::vector<double> simulated_vs_tracked_tracked_tangency_x_error_;
   std::vector<double> simulated_vs_tracked_tracked_tangency_y_error_;
   std::vector<double> simulated_vs_tracked_tracked_tangency_z_error_;
+  std::vector<double> simulated_vs_tracked_tracked_tangency_dx_;
+  std::vector<double> simulated_vs_tracked_tracked_tangency_dz_;
   std::vector<double> simulated_vs_tracked_residual_tangency_x_;
   std::vector<double> simulated_vs_tracked_residual_tangency_y_;
   std::vector<double> simulated_vs_tracked_residual_tangency_z_;
@@ -355,6 +365,8 @@ void ntupler::__fill ()
   std::vector<double> simulated_vs_tracked_tracked_helix_x_error_;
   std::vector<double> simulated_vs_tracked_tracked_helix_y_error_;
   std::vector<double> simulated_vs_tracked_tracked_helix_z_error_;
+  std::vector<double> simulated_vs_tracked_tracked_helix_dx_;
+  std::vector<double> simulated_vs_tracked_tracked_helix_dz_;
   std::vector<double> simulated_vs_tracked_residual_helix_x_;
   std::vector<double> simulated_vs_tracked_residual_helix_y_;
   std::vector<double> simulated_vs_tracked_residual_helix_z_;
@@ -548,6 +560,8 @@ void ntupler::__fill ()
 	simulated_vs_tracked_tracked_tangency_x_error_.push_back(tangent.x().error());
 	simulated_vs_tracked_tracked_tangency_y_error_.push_back(tangent.y().error());
 	simulated_vs_tracked_tracked_tangency_z_error_.push_back(tangent.z().error());
+	simulated_vs_tracked_tracked_tangency_dx_.push_back(tangent.x().value() - inode->c().ep().x().value());
+	simulated_vs_tracked_tracked_tangency_dz_.push_back(tangent.z().value() - inode->c().ep().z().value());
 
 	phi_ref=phi.value();
 	phi = hel.phi_of_point(inode->c().ep(),phi_ref);
@@ -560,6 +574,8 @@ void ntupler::__fill ()
 	simulated_vs_tracked_tracked_helix_x_error_.push_back(helixp.x().error());
 	simulated_vs_tracked_tracked_helix_y_error_.push_back(helixp.y().error());
 	simulated_vs_tracked_tracked_helix_z_error_.push_back(helixp.z().error());
+	simulated_vs_tracked_tracked_helix_dx_.push_back(helixp.x().value() - inode->c().ep().x().value());
+	simulated_vs_tracked_tracked_helix_dz_.push_back(helixp.z().value() - inode->c().ep().z().value());
 
 	size_t indnode=inode-iseq->nodes_.begin();
 	if( indnode != 0 ){
@@ -733,6 +749,8 @@ void ntupler::__fill ()
   simulated_vs_tracked_hit_.simulated_x_ =&simulated_vs_tracked_simulated_x_;
   simulated_vs_tracked_hit_.simulated_y_ =&simulated_vs_tracked_simulated_y_;
   simulated_vs_tracked_hit_.simulated_z_ =&simulated_vs_tracked_simulated_z_;
+  simulated_vs_tracked_hit_.simulated_dx_ =&simulated_vs_tracked_simulated_dx_;
+  simulated_vs_tracked_hit_.simulated_dz_ =&simulated_vs_tracked_simulated_dz_;
 #endif
 
   simulated_vs_tracked_hit_.tracked_tangency_x_ =&simulated_vs_tracked_tracked_tangency_x_;
@@ -741,6 +759,9 @@ void ntupler::__fill ()
   simulated_vs_tracked_hit_.tracked_tangency_x_error_ =&simulated_vs_tracked_tracked_tangency_x_error_;
   simulated_vs_tracked_hit_.tracked_tangency_y_error_ =&simulated_vs_tracked_tracked_tangency_y_error_;
   simulated_vs_tracked_hit_.tracked_tangency_z_error_ =&simulated_vs_tracked_tracked_tangency_z_error_;
+
+  simulated_vs_tracked_hit_.tracked_tangency_dx_ =&simulated_vs_tracked_tracked_tangency_dx_;
+  simulated_vs_tracked_hit_.tracked_tangency_dz_ =&simulated_vs_tracked_tracked_tangency_dz_;
 #if 0
   simulated_vs_tracked_hit_.residual_tangency_x_ =&simulated_vs_tracked_residual_tangency_x_;
   simulated_vs_tracked_hit_.residual_tangency_y_ =&simulated_vs_tracked_residual_tangency_y_;
@@ -756,6 +777,8 @@ void ntupler::__fill ()
   simulated_vs_tracked_hit_.tracked_helix_x_error_ =&simulated_vs_tracked_tracked_helix_x_error_;
   simulated_vs_tracked_hit_.tracked_helix_y_error_ =&simulated_vs_tracked_tracked_helix_y_error_;
   simulated_vs_tracked_hit_.tracked_helix_z_error_ =&simulated_vs_tracked_tracked_helix_z_error_;
+  simulated_vs_tracked_hit_.tracked_helix_dx_ =&simulated_vs_tracked_tracked_helix_dx_;
+  simulated_vs_tracked_hit_.tracked_helix_dz_ =&simulated_vs_tracked_tracked_helix_dz_;
 
 #if 0
   simulated_vs_tracked_hit_.residual_helix_x_ =&simulated_vs_tracked_residual_helix_x_;

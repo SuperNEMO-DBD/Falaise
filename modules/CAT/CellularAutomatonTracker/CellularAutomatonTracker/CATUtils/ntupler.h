@@ -59,12 +59,16 @@ class ntupler
     std::vector<double>* simulated_x_;
     std::vector<double>* simulated_y_;
     std::vector<double>* simulated_z_;
+    std::vector<double>* simulated_dx_;
+    std::vector<double>* simulated_dz_;
     std::vector<double>* tracked_tangency_x_;
     std::vector<double>* tracked_tangency_y_;
     std::vector<double>* tracked_tangency_z_;
     std::vector<double>* tracked_tangency_x_error_;
     std::vector<double>* tracked_tangency_y_error_;
     std::vector<double>* tracked_tangency_z_error_;
+    std::vector<double>* tracked_tangency_dx_;
+    std::vector<double>* tracked_tangency_dz_;
     std::vector<double>* residual_tangency_x_;
     std::vector<double>* residual_tangency_y_;
     std::vector<double>* residual_tangency_z_;
@@ -77,6 +81,8 @@ class ntupler
     std::vector<double>* tracked_helix_x_error_;
     std::vector<double>* tracked_helix_y_error_;
     std::vector<double>* tracked_helix_z_error_;
+    std::vector<double>* tracked_helix_dx_;
+    std::vector<double>* tracked_helix_dz_;
     std::vector<double>* residual_helix_x_;
     std::vector<double>* residual_helix_y_;
     std::vector<double>* residual_helix_z_;
