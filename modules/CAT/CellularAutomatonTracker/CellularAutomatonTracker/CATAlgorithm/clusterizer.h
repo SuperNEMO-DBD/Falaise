@@ -11,57 +11,39 @@
 #include <CLHEP/Units/SystemOfUnits.h>
 #include <mybhep/system_of_units.h>
 
- #ifdef CAT_WITH_DEVEL_ROOT
- #include "TApplication.h"
- #include <TROOT.h>
- #include <TChain.h>
- #include "TH2.h"
- #include "TH1.h"
- #include "TGraph.h"
- #include "TStyle.h"
- #include "TCanvas.h"
- #include "TFile.h"
- #include "TMath.h"
- #include "TBox.h"
- #include "TMarker.h"
- #endif
-
 #include <iostream>
 #include <vector>
-#include <cstdio>
-#include <cstdlib>
-#include <cmath>
 
 #include <mybhep/EventManager2.h>
 //#include <CATUtils/NHistoManager2.h>
-#include <CATAlgorithm/cell.h>
 #include <CATAlgorithm/line.h>
 #include <CATAlgorithm/cell_couplet.h>
 #include <CATAlgorithm/cell_triplet.h>
-#include <CATAlgorithm/cluster.h>
 #include <CATAlgorithm/experimental_double.h>
+
 #include <CATAlgorithm/Clock.h>
-//#include <CATAlgorithm/lt _utils.h>
+#include <CATAlgorithm/cell.h>
+#include <CATAlgorithm/cluster.h>
 #include <CATAlgorithm/calorimeter_hit.h>
+#include <CATAlgorithm/sequence.h>
 #include <CATAlgorithm/tracked_data.h>
 
 
 namespace CAT{
-
 
   typedef struct{
     float x;
     float z;
   } POINT;
 
-
+  /// The clusterizer algorithm
   class clusterizer{
 
   public:
 
     clusterizer(void);
 
-    clusterizer(mybhep::gstore);
+    clusterizer(const mybhep::gstore&);
 
     virtual ~clusterizer();
 
@@ -72,7 +54,7 @@ namespace CAT{
 
   public:
     bool initialize( void );
-    bool initialize( mybhep::sstore store, mybhep::gstore gs, mybhep::EventManager2 *eman=0);
+    bool initialize( const mybhep::sstore &store, mybhep::gstore gs, mybhep::EventManager2 *eman=0);
     void initializeHistos( void );
     bool execute(mybhep::event& evt, int ievent);
     bool finalize();
@@ -95,7 +77,7 @@ namespace CAT{
     void print_clusters(void) const;
     void print_true_sequences(void)const;
     void print_nemo_sequences(void)const;
-    void readDstProper(mybhep::sstore global, mybhep::EventManager2 *eman);
+    void readDstProper(const mybhep::sstore &global, mybhep::EventManager2 *eman);
     void readDstProper();
     void GenerateWires( void );
     double long_resolution(double Z, double d[3])const;
@@ -104,43 +86,22 @@ namespace CAT{
     void order_cells();
 
     //! get cells
-    const std::vector<topology::cell>& get_cells()const
-    {
-      return cells_;
-    }
+    const std::vector<topology::cell>& get_cells()const;
 
     //! set cells
-    void set_cells(const std::vector<topology::cell> & cells)
-    {
-      //cells_.clear();
-      cells_ = cells;
-    }
+    void set_cells(const std::vector<topology::cell> & cells);
 
     //! get clusters
-    const std::vector<topology::cluster>& get_clusters()const
-    {
-      return clusters_;
-    }
+    const std::vector<topology::cluster>& get_clusters()const;
 
     //! set clusters
-    void set_clusters(const std::vector<topology::cluster> & clusters)
-    {
-      //clusters_.clear();
-      clusters_ = clusters;
-    }
+    void set_clusters(const std::vector<topology::cluster> & clusters);
 
     //! get calorimeter_hits
-    const std::vector<topology::calorimeter_hit>& get_calorimeter_hits()const
-    {
-      return calorimeter_hits_;
-    }
+    const std::vector<topology::calorimeter_hit>& get_calorimeter_hits()const;
 
     //! set calorimeter_hits
-    void set_calorimeter_hits(const std::vector<topology::calorimeter_hit> & calorimeter_hits)
-    {
-      calorimeter_hits_.clear();
-      calorimeter_hits_ = calorimeter_hits;
-    }
+    void set_calorimeter_hits(const std::vector<topology::calorimeter_hit> & calorimeter_hits);
 
   protected:
 
@@ -250,278 +211,99 @@ namespace CAT{
 
     //histogram file
     std::string hfile;
-    bool is_good_couplet(topology::cell* mainc, topology::cell candidatec, std::vector<topology::cell> nearmain);
+    bool is_good_couplet(topology::cell* mainc, 
+                         const topology::cell &candidatec, 
+                         const std::vector<topology::cell> &nearmain);
     size_t get_true_hit_index(mybhep::hit& hit, bool print);
     size_t get_nemo_hit_index(mybhep::hit& hit, bool print);
-    size_t get_calo_hit_index(topology::calorimeter_hit c);
+    size_t get_calo_hit_index(const topology::calorimeter_hit &c);
 
   protected:
     void _set_defaults ();
 
   public:
 
-    void setDoDriftWires(bool ddw){
-      doDriftWires=ddw;
-      return;
-    }
+    void setDoDriftWires(bool ddw);
 
-    void compute_lastlayer(){
-      lastlayer = 0;
-      for(size_t i=0; i<planes_per_block.size(); i++){
-        lastlayer += (int)planes_per_block[i];
-      }
-      return;
-    }
+    void compute_lastlayer();
 
-    void set_GG_GRND_diam (double ggd){
-      GG_GRND_diam = ggd;
-      return;
-    }
+    void set_GG_GRND_diam (double ggd);
 
-    void set_GG_CELL_diam (double ggcd){
-      GG_CELL_diam = ggcd;
-      return;
-    }
+    void set_GG_CELL_diam (double ggcd);
 
-    void set_lastlayer(int ll_){
-      lastlayer = ll_;
-      return;
-    }
+    void set_lastlayer(int ll_);
 
-    void set_num_blocks(int nb){
-      if (nb > 0)
-        {
-          num_blocks = nb;
-          planes_per_block.assign (num_blocks, 1);
-        }
-      else
-        {
-          std::cerr << "WARNING: CAT::clusterizer::set_num_blocks: "
-                    << "Invalid number of GG layer blocks !" << std::endl;
-          planes_per_block.clear ();
-          num_blocks = -1; // invalid value
-        }
-      return;
-    }
+    void set_num_blocks(int nb);
 
-    void set_planes_per_block(int block, int nplanes){
-      if (block< 0 || block>=planes_per_block.size())
-        {
-          throw std::range_error ("CAT::clusterizer::set_planes_per_block: Invalid GG layer block index !");
-        }
-      if (nplanes > 0)
-        {
-          planes_per_block.at (block) = nplanes;
-        }
-      else
-        {
-          throw std::range_error ("CAT::clusterizer::set_planes_per_block: Invalid number of GG layers in block !");
-        }
-      return;
-    }
+    void set_planes_per_block(int block, int nplanes);
 
-    void set_num_cells_per_plane(int ncpp){
-      if (ncpp <= 0)
-        {
-          num_cells_per_plane = -1; // invalid value
-        }
-      else
-        {
-          num_cells_per_plane = ncpp;
-        }
-      return;
-    }
+    void set_num_cells_per_plane(int ncpp);
 
-    void set_SOURCE_thick(double st){
-      if (st <= 0.0)
-        {
-          SOURCE_thick = std::numeric_limits<double>::quiet_NaN ();
-        }
-      else
-        {
-          SOURCE_thick = st;
-        }
-      return;
-    }
+    void set_SOURCE_thick(double st);
 
     // What is it ?
-    void set_module_nr(std::string mID){
-      _moduleNR=mID;
-      return;
-    }
+    void set_module_nr(const std::string &mID);
 
     // What is it ?
-    int get_module_nr(void){
-      return _MaxBlockSize;
-    }
+    int get_module_nr(void);
 
-    void set_MaxBlockSize(int mbs){
-      _MaxBlockSize=mbs;
-      return;
-    }
+    void set_MaxBlockSize(int mbs);
 
-    void set_pmax(double v){
-     if ( v <= 0.0)
-       {
-         pmax = std::numeric_limits<double>::quiet_NaN ();
-        }
-     else
-       {
-         pmax = v;
-       }
-      return;
-    }
+    void set_pmax(double v);
 
-    void set_MaxTime(double v){
-      MaxTime = v;
-      return;
-    }
+    void set_MaxTime(double v);
 
-    void set_PrintMode(bool v){
-      PrintMode = v;
-      return;
-    }
+    void set_PrintMode(bool v);
 
-    void set_SmallRadius(double v){
-      SmallRadius = v;
-      return;
-    }
+    void set_SmallRadius(double v);
 
-    void set_TangentPhi(double v){
-      TangentPhi = v;
-      return;
-    }
+    void set_TangentPhi(double v);
 
-    void set_TangentTheta(double v){
-      TangentTheta = v;
-      return;
-    }
+    void set_TangentTheta(double v);
 
-    void set_SmallNumber(double v){
-      SmallNumber = v;
-      return;
-    }
+    void set_SmallNumber(double v);
 
-    void set_QuadrantAngle(double v){
-      QuadrantAngle = v;
-      return;
-    }
+    void set_QuadrantAngle(double v);
 
-    void set_Ratio(double v){
-      Ratio = v;
-      return;
-    }
+    void set_Ratio(double v);
 
-    void set_CompatibilityDistance(double v){
-      CompatibilityDistance = v;
-      return;
-    }
+    void set_CompatibilityDistance(double v);
 
-    void set_MaxChi2(double v){
-      MaxChi2 = v;
-      return;
-    }
+    void set_MaxChi2(double v);
 
-    void set_hfile(std::string v){
-      hfile = v;
-      return;
-    }
+    void set_hfile(std::string v);
 
-    void set_nsigma(double v){
-      nsigma = v;
-      return;
-    }
+    void set_nsigma(double v);
 
-    void set_nofflayers(size_t v){
-      nofflayers = v;
-      return;
-    }
+    void set_nofflayers(size_t v);
 
-    void set_level(std::string v){
-      level = mybhep::get_info_level(v);
-      m = mybhep::messenger(level);
-      return;
-    }
+    void set_level(std::string v);
 
-    void set_len(double v){
-      len = v;
-      return;
-    }
+    void set_len(double v);
 
-    void set_vel(double v){
-      vel = v;
-      return;
-    }
+    void set_vel(double v);
 
-    void set_rad(double v){
-      rad = v;
-      return;
-    }
+    void set_rad(double v);
 
-    void set_GG_CELL_pitch (double p){
-      GG_CELL_pitch = p;
-      set_rad (GG_CELL_pitch / cos(M_PI/8.));
-      set_GG_CELL_diam (rad);
-      set_CellDistance (rad);
-      return;
-    }
+    void set_GG_CELL_pitch (double p);
 
-    void set_CellDistance(double v){
-      CellDistance = v;
-      return;
-    }
+    void set_CellDistance(double v);
 
-    void set_SuperNemo(bool v){
-      SuperNemo = v;
-      return;
-    }
+    void set_SuperNemo(bool v);
 
-    void set_SuperNemoChannel(bool v){
-      if (v)
-        {
-          set_SuperNemo (true);
-          SuperNemoChannel = true;
-          set_NemoraOutput (false);
-          set_N3_MC (false);
-          setDoDriftWires (false);
-          set_MaxBlockSize (1);
-        }
-      else
-        {
-          SuperNemoChannel = false;
-        }
-      return;
-    }
+    void set_SuperNemoChannel(bool v);
 
-    void set_NemoraOutput(bool no){
-       NemoraOutput = no;
-      return;
-    }
+    void set_NemoraOutput(bool no);
 
-    void set_N3_MC(bool v){
-       N3_MC = v;
-      return;
-    }
+    void set_N3_MC(bool v);
 
-    void set_FoilRadius(double v){
-      FoilRadius = v;
-      return;
-    }
+    void set_FoilRadius(double v);
 
-    void set_xsize(double v){
-      xsize = v;
-      return;
-    }
+    void set_xsize(double v);
 
-    void set_ysize(double v){
-      ysize = v;
-      return;
-    }
+    void set_ysize(double v);
 
-    void set_zsize(double v){
-      zsize = v;
-      return;
-    }
+    void set_zsize(double v);
 
     //----------------------------------------
 

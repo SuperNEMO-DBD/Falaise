@@ -85,7 +85,7 @@ namespace CAT {
             //     0 if hit is between foil and internal calorimeter
             // layer = 0-8
       
-            size_t io;
+            int io;
             sscanf(value.c_str(),"%d_%d_%d",&block,&io,&iid);
 
             plane = iid;

@@ -1,13 +1,67 @@
-#include "clusterizer.h"
+#include <CATAlgorithm/clusterizer.h>
 #include <mybhep/system_of_units.h>
 #include <sys/time.h>
 #include <limits>
 #include <cmath>
 #include <map>
 
+#ifdef CAT_WITH_DEVEL_ROOT
+#include "TApplication.h"
+#include <TROOT.h>
+#include <TChain.h>
+#include "TH2.h"
+#include "TH1.h"
+#include "TGraph.h"
+#include "TStyle.h"
+#include "TCanvas.h"
+#include "TFile.h"
+#include "TMath.h"
+#include "TBox.h"
+#include "TMarker.h"
+#endif
+
 namespace CAT {
   using namespace mybhep;
   using namespace std;
+
+  //! get cells
+  const std::vector<topology::cell>& clusterizer::get_cells()const
+  {
+    return cells_;
+  }
+
+  //! set cells
+  void clusterizer::set_cells(const std::vector<topology::cell> & cells)
+  {
+    //cells_.clear();
+    cells_ = cells;
+  }
+
+  //! get clusters
+  const std::vector<topology::cluster>& clusterizer::get_clusters()const
+  {
+    return clusters_;
+  }
+
+  //! set clusters
+  void clusterizer::set_clusters(const std::vector<topology::cluster> & clusters)
+  {
+    //clusters_.clear();
+    clusters_ = clusters;
+  }
+
+  //! get calorimeter_hits
+  const std::vector<topology::calorimeter_hit>& clusterizer::get_calorimeter_hits()const
+  {
+    return calorimeter_hits_;
+  }
+
+  //! set calorimeter_hits
+  void clusterizer::set_calorimeter_hits(const std::vector<topology::calorimeter_hit> & calorimeter_hits)
+  {
+    calorimeter_hits_.clear();
+    calorimeter_hits_ = calorimeter_hits;
+  }
 
   void clusterizer::_set_defaults ()
   {
@@ -67,7 +121,7 @@ namespace CAT {
 
 
   //************************************************************
-  clusterizer::clusterizer(mybhep::gstore st){
+  clusterizer::clusterizer(const mybhep::gstore &st){
     //*************************************************************
 
     _set_defaults ();
@@ -128,7 +182,7 @@ namespace CAT {
       {
         initializeHistos();
       }
-     /*
+    /*
       if( !SuperNemo )
       {
 
@@ -146,7 +200,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  bool clusterizer::initialize( mybhep::sstore store, mybhep::gstore gs , mybhep::EventManager2 *eman) {
+  bool clusterizer::initialize(const mybhep::sstore &store, mybhep::gstore gs , mybhep::EventManager2 *eman) {
     //*************************************************************
   
     m.message("\n Beginning algorithm clusterizer \n",mybhep::VERBOSE); 
@@ -235,7 +289,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  void clusterizer::readDstProper(mybhep::sstore global, mybhep::EventManager2 *eman) {
+  void clusterizer::readDstProper(const mybhep::sstore & global, mybhep::EventManager2 *eman) {
     //*************************************************************
   
     clock.start(" clusterizer: read dst properties ");
@@ -299,7 +353,7 @@ namespace CAT {
 
         SOURCE_thick= mybhep::double_from_string(global.fetch("GEOM_SOURCE_thick"));
 
-	FoilRadius = 0.;
+        FoilRadius = 0.;
       }
     else
       {
@@ -318,8 +372,8 @@ namespace CAT {
 
     compute_lastlayer();
     /*
-    lastlayer = 0;
-    for(size_t i=0; i<planes_per_block.size(); i++)
+      lastlayer = 0;
+      for(size_t i=0; i<planes_per_block.size(); i++)
       lastlayer += (int)planes_per_block[i];
     */
 
@@ -500,7 +554,7 @@ namespace CAT {
             set_num_blocks (1);
             planes_per_block.at (0) = 9;
           }
-     }
+      }
     else
       {
         m.message("CAT::clusterizer::readDstProper: Nemo-3 kind of data",mybhep::NORMAL); 
@@ -516,8 +570,8 @@ namespace CAT {
 
     compute_lastlayer();
     /*
-    lastlayer = 0;
-    for(size_t i=0; i<planes_per_block.size(); i++)
+      lastlayer = 0;
+      for(size_t i=0; i<planes_per_block.size(); i++)
       lastlayer += (int)planes_per_block[i];
     */
 
@@ -967,7 +1021,7 @@ namespace CAT {
   }
 
   //*******************************************************************
-  size_t clusterizer::get_calo_hit_index(topology::calorimeter_hit c){
+  size_t clusterizer::get_calo_hit_index(const topology::calorimeter_hit & c){
     //*******************************************************************
 
     for(std::vector<topology::calorimeter_hit>::iterator ic=calorimeter_hits_.begin(); ic!=calorimeter_hits_.end(); ++ic){
@@ -1410,7 +1464,7 @@ namespace CAT {
               cells_connected_to_c.push_back(c);
               if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: cell loop: cells_connected_to_c.size=" << cells_connected_to_c.size () << std::endl;
 
-             for( size_t i=0; i<cells_connected_to_c.size(); i++){ // loop on connected cells
+              for( size_t i=0; i<cells_connected_to_c.size(); i++){ // loop on connected cells
                 if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: connected cell loop..." << std::endl;
                 // take a connected cell (the first one is just c)
                 topology::cell cconn = cells_connected_to_c[i];
@@ -1543,7 +1597,9 @@ namespace CAT {
   }
 
   //*************************************************************
-  bool clusterizer::is_good_couplet(topology::cell * mainc, topology::cell candidatec, std::vector<topology::cell> nearmain){
+  bool clusterizer::is_good_couplet(topology::cell * mainc, 
+                                    const topology::cell &candidatec,
+                                    const std::vector<topology::cell> & nearmain){
     //*************************************************************
 
     // the couplet mainc -> candidatec is good only if
@@ -1562,8 +1618,8 @@ namespace CAT {
       if(near_level(b, candidatec) == 0 ) continue;
 
       if(near_level(b, candidatec) < near_level(a, candidatec) || 
-	 near_level(b, a) < near_level(a, candidatec) )
-	continue;  // cannot match a->b or b->c if a->c is nearer
+         near_level(b, a) < near_level(a, candidatec) )
+        continue;  // cannot match a->b or b->c if a->c is nearer
 
       //    if( icell->intersect(candidatec) || icell->intersect(mainc) ) continue;  
       // don't reject candidate based on a cell that intersects it
@@ -1723,7 +1779,7 @@ namespace CAT {
         {
           if( level >= mybhep::VVERBOSE ){
             std::clog << "*";
-	  }
+          }
 
           topology::cell ck = *kcell;
           cells.push_back(ck);
@@ -1976,9 +2032,9 @@ namespace CAT {
    
     if( cells_.size() ){
       if( level >= mybhep::VVERBOSE ){
-	std::clog << " printing cells " << cells_.size() << std::endl;
-	print_cells();
-	std::clog << " sorting cells " << std::endl;
+        std::clog << " printing cells " << cells_.size() << std::endl;
+        print_cells();
+        std::clog << " sorting cells " << std::endl;
       }
       
       //  std::sort( cells_.begin(), cells_.end(), topology::cell::compare );
@@ -2147,5 +2203,270 @@ namespace CAT {
     return true;
 
   }
+
+  void clusterizer::setDoDriftWires(bool ddw){
+    doDriftWires=ddw;
+    return;
+  }
+
+  void clusterizer::compute_lastlayer(){
+    lastlayer = 0;
+    for(size_t i=0; i<planes_per_block.size(); i++){
+      lastlayer += (int)planes_per_block[i];
+    }
+    return;
+  }
+
+  void clusterizer::set_GG_GRND_diam (double ggd){
+    GG_GRND_diam = ggd;
+    return;
+  }
+
+  void clusterizer::set_GG_CELL_diam (double ggcd){
+    GG_CELL_diam = ggcd;
+    return;
+  }
+
+  void clusterizer::set_lastlayer(int ll_){
+    lastlayer = ll_;
+    return;
+  }
+
+  void clusterizer::set_num_blocks(int nb){
+    if (nb > 0)
+      {
+        num_blocks = nb;
+        planes_per_block.assign (num_blocks, 1);
+      }
+    else
+      {
+        std::cerr << "WARNING: CAT::clusterizer::set_num_blocks: "
+                  << "Invalid number of GG layer blocks !" << std::endl;
+        planes_per_block.clear ();
+        num_blocks = -1; // invalid value
+      }
+    return;
+  }
+
+  void clusterizer::set_planes_per_block(int block, int nplanes){
+    if (block< 0 || block>=planes_per_block.size())
+      {
+        throw std::range_error ("CAT::clusterizer::set_planes_per_block: Invalid GG layer block index !");
+      }
+    if (nplanes > 0)
+      {
+        planes_per_block.at (block) = nplanes;
+      }
+    else
+      {
+        throw std::range_error ("CAT::clusterizer::set_planes_per_block: Invalid number of GG layers in block !");
+      }
+    return;
+  }
+
+  void clusterizer::set_num_cells_per_plane(int ncpp){
+    if (ncpp <= 0)
+      {
+        num_cells_per_plane = -1; // invalid value
+      }
+    else
+      {
+        num_cells_per_plane = ncpp;
+      }
+    return;
+  }
+
+  void clusterizer::set_SOURCE_thick(double st){
+    if (st <= 0.0)
+      {
+        SOURCE_thick = std::numeric_limits<double>::quiet_NaN ();
+      }
+    else
+      {
+        SOURCE_thick = st;
+      }
+    return;
+  }
+
+  // What is it ?
+  void clusterizer::set_module_nr(const std::string & mID){
+    _moduleNR=mID;
+    return;
+  }
+
+  // What is it ?
+  int clusterizer::get_module_nr(void){
+    return _MaxBlockSize;
+  }
+
+  void clusterizer::set_MaxBlockSize(int mbs){
+    _MaxBlockSize=mbs;
+    return;
+  }
+
+  void clusterizer::set_pmax(double v){
+    if ( v <= 0.0)
+      {
+        pmax = std::numeric_limits<double>::quiet_NaN ();
+      }
+    else
+      {
+        pmax = v;
+      }
+    return;
+  }
+
+  void clusterizer::set_MaxTime(double v){
+    MaxTime = v;
+    return;
+  }
+
+  void clusterizer::set_PrintMode(bool v){
+    PrintMode = v;
+    return;
+  }
+
+  void clusterizer::set_SmallRadius(double v){
+    SmallRadius = v;
+    return;
+  }
+
+  void clusterizer::set_TangentPhi(double v){
+    TangentPhi = v;
+    return;
+  }
+
+  void clusterizer::set_TangentTheta(double v){
+    TangentTheta = v;
+    return;
+  }
+
+  void clusterizer::set_SmallNumber(double v){
+    SmallNumber = v;
+    return;
+  }
+
+  void clusterizer::set_QuadrantAngle(double v){
+    QuadrantAngle = v;
+    return;
+  }
+
+  void clusterizer::set_Ratio(double v){
+    Ratio = v;
+    return;
+  }
+
+  void clusterizer::set_CompatibilityDistance(double v){
+    CompatibilityDistance = v;
+    return;
+  }
+
+  void clusterizer::set_MaxChi2(double v){
+    MaxChi2 = v;
+    return;
+  }
+
+  void clusterizer::set_hfile(std::string v){
+    hfile = v;
+    return;
+  }
+
+  void clusterizer::set_nsigma(double v){
+    nsigma = v;
+    return;
+  }
+
+  void clusterizer::set_nofflayers(size_t v){
+    nofflayers = v;
+    return;
+  }
+
+  void clusterizer::set_level(std::string v){
+    level = mybhep::get_info_level(v);
+    m = mybhep::messenger(level);
+    return;
+  }
+
+  void clusterizer::set_len(double v){
+    len = v;
+    return;
+  }
+
+  void clusterizer::set_vel(double v){
+    vel = v;
+    return;
+  }
+
+  void clusterizer::set_rad(double v){
+    rad = v;
+    return;
+  }
+
+  void clusterizer::set_GG_CELL_pitch (double p){
+    GG_CELL_pitch = p;
+    set_rad (GG_CELL_pitch / cos(M_PI/8.));
+    set_GG_CELL_diam (rad);
+    set_CellDistance (rad);
+    return;
+  }
+
+  void clusterizer::set_CellDistance(double v){
+    CellDistance = v;
+    return;
+  }
+
+  void clusterizer::set_SuperNemo(bool v){
+    SuperNemo = v;
+    return;
+  }
+
+  void clusterizer::set_SuperNemoChannel(bool v){
+    if (v)
+      {
+        set_SuperNemo (true);
+        SuperNemoChannel = true;
+        set_NemoraOutput (false);
+        set_N3_MC (false);
+        setDoDriftWires (false);
+        set_MaxBlockSize (1);
+      }
+    else
+      {
+        SuperNemoChannel = false;
+      }
+    return;
+  }
+
+  void clusterizer::set_NemoraOutput(bool no){
+    NemoraOutput = no;
+    return;
+  }
+
+  void clusterizer::set_N3_MC(bool v){
+    N3_MC = v;
+    return;
+  }
+
+  void clusterizer::set_FoilRadius(double v){
+    FoilRadius = v;
+    return;
+  }
+
+  void clusterizer::set_xsize(double v){
+    xsize = v;
+    return;
+  }
+
+  void clusterizer::set_ysize(double v){
+    ysize = v;
+    return;
+  }
+
+  void clusterizer::set_zsize(double v){
+    zsize = v;
+    return;
+  }
+
+ 
 }
 

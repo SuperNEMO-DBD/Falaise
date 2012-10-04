@@ -57,21 +57,23 @@ namespace CAT {
 
 
       //! set
-      void set(experimental_point center, experimental_vector sizes, experimental_vector norm);
+      void set(const experimental_point &center, 
+               const experimental_vector &sizes, 
+               const experimental_vector &norm);
 
 
       //! set center
-      void set_center(experimental_point center);
+      void set_center(const experimental_point &center);
 
       //! set sizes
-      void set_sizes(experimental_vector sizes);
+      void set_sizes(const experimental_vector &sizes);
 
 
       //! set norm
-      void set_norm(experimental_vector norm);
+      void set_norm(const experimental_vector &norm);
 
       //! set type
-      void set_type(std::string type);
+      void set_type(const std::string & type);
 
       //! get center
       const experimental_point& center()const;
@@ -91,12 +93,14 @@ namespace CAT {
       //! get point of the face of the plane
       experimental_point face()const;
 
-      bool intersect(experimental_point ep)const;
+      bool intersect(const experimental_point &ep)const;
 
-      bool intersect(experimental_point start, experimental_vector direction, experimental_point* ep)const;
+      bool intersect (const experimental_point &start, 
+                      const experimental_vector &direction, 
+                      experimental_point* ep)const;
 
       // std::vector from the face of the plane to the point
-      experimental_vector norm_to_point(experimental_point ep)const;
+      experimental_vector norm_to_point(const experimental_point &ep)const;
 
     };
   }

@@ -78,7 +78,9 @@ namespace CAT {
 
 
     //! set
-    void plane::set(experimental_point center, experimental_vector sizes, experimental_vector norm)
+    void plane::set(const experimental_point &center, 
+                    const experimental_vector &sizes, 
+                    const experimental_vector &norm)
     {
       center_ = center;
       sizes_ = sizes;
@@ -87,27 +89,27 @@ namespace CAT {
 
 
     //! set center
-    void plane::set_center(experimental_point center)
+    void plane::set_center(const experimental_point &center)
     {
       center_ = center;
     }
 
     //! set sizes
-    void plane::set_sizes(experimental_vector sizes)
+    void plane::set_sizes(const experimental_vector &sizes)
     {
       sizes_ = sizes;
     }
 
 
     //! set norm
-    void plane::set_norm(experimental_vector norm)
+    void plane::set_norm(const experimental_vector &norm)
     {
       norm_ = norm;
     }
 
 
     //! set tyoe
-    void plane::set_type(std::string type)
+    void plane::set_type(const std::string &type)
     {
       type_ = type;
     }
@@ -137,17 +139,17 @@ namespace CAT {
 
     std::string plane::view()const{
       if( type() == "SuperNEMO" ){
-	if( norm().x().value() != 0 )
-	  return "x";
+        if( norm().x().value() != 0 )
+          return "x";
 
-	if( norm().y().value() != 0 )
-	  return "y";
+        if( norm().y().value() != 0 )
+          return "y";
 
-	return "z";
+        return "z";
       }
       else if( type() == "Nemo3" ){
-	clog << " warning: undefined view for plane of type " << type() << std::endl;
-	return "null";
+        clog << " warning: undefined view for plane of type " << type() << std::endl;
+        return "null";
       }
 
 
@@ -172,7 +174,7 @@ namespace CAT {
 
     }
 
-    bool plane::intersect(experimental_point ep)const{
+    bool plane::intersect(const experimental_point &ep)const{
       experimental_vector dist = ep - center();
 
       if( view() == "x" ){
@@ -215,7 +217,7 @@ namespace CAT {
 
     }
 
-    bool plane::intersect(experimental_point start, experimental_vector direction, experimental_point* ep)const{
+    bool plane::intersect(const experimental_point &start, const experimental_vector &direction, experimental_point* ep)const{
 
       if( view() == "x" ){
         if( direction.x().value() == 0 ){
@@ -255,7 +257,7 @@ namespace CAT {
 
 
     // std::vector from the face of the plane to the point
-    experimental_vector plane::norm_to_point(experimental_point ep)const{
+    experimental_vector plane::norm_to_point(const experimental_point &ep)const{
 
       experimental_vector result = norm();
       return ((ep - face())*result)*result;
