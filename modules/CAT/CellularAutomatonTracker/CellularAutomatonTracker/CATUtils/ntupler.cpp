@@ -45,6 +45,8 @@ void ntupler::initialize (void)
   __tree->Branch("simulated_vs_tracked_hit.simulated_z",&simulated_vs_tracked_hit_.simulated_z_);
   __tree->Branch("simulated_vs_tracked_hit.simulated_dx",&simulated_vs_tracked_hit_.simulated_dx_);
   __tree->Branch("simulated_vs_tracked_hit.simulated_dz",&simulated_vs_tracked_hit_.simulated_dz_);
+  __tree->Branch("simulated_vs_tracked_hit.simulated_dr",&simulated_vs_tracked_hit_.simulated_dr_);
+  __tree->Branch("simulated_vs_tracked_hit.simulated_dphi",&simulated_vs_tracked_hit_.simulated_dphi_);
 #endif
 
     __tree->Branch("simulated_vs_tracked_hit.tracked_tangency_x",&simulated_vs_tracked_hit_.tracked_tangency_x_);
@@ -55,6 +57,8 @@ void ntupler::initialize (void)
     __tree->Branch("simulated_vs_tracked_hit.tracked_tangency_z_error",&simulated_vs_tracked_hit_.tracked_tangency_z_error_);
     __tree->Branch("simulated_vs_tracked_hit.tracked_tangency_dx",&simulated_vs_tracked_hit_.tracked_tangency_dx_);
     __tree->Branch("simulated_vs_tracked_hit.tracked_tangency_dz",&simulated_vs_tracked_hit_.tracked_tangency_dz_);
+    __tree->Branch("simulated_vs_tracked_hit.tracked_tangency_dr",&simulated_vs_tracked_hit_.tracked_tangency_dr_);
+    __tree->Branch("simulated_vs_tracked_hit.tracked_tangency_dphi",&simulated_vs_tracked_hit_.tracked_tangency_dphi_);
 
 #if 0
   __tree->Branch("simulated_vs_tracked_hit.residual_tangency_x",&simulated_vs_tracked_hit_.residual_tangency_x_);
@@ -73,6 +77,8 @@ void ntupler::initialize (void)
     __tree->Branch("simulated_vs_tracked_hit.tracked_helix_z_error",&simulated_vs_tracked_hit_.tracked_helix_z_error_);
     __tree->Branch("simulated_vs_tracked_hit.tracked_helix_dx",&simulated_vs_tracked_hit_.tracked_helix_dx_);
     __tree->Branch("simulated_vs_tracked_hit.tracked_helix_dz",&simulated_vs_tracked_hit_.tracked_helix_dz_);
+    __tree->Branch("simulated_vs_tracked_hit.tracked_helix_dr",&simulated_vs_tracked_hit_.tracked_helix_dr_);
+    __tree->Branch("simulated_vs_tracked_hit.tracked_helix_dphi",&simulated_vs_tracked_hit_.tracked_helix_dphi_);
 
 #if 0
   __tree->Branch("simulated_vs_tracked_hit.residual_helix_x",&simulated_vs_tracked_hit_.residual_helix_x_);
@@ -100,17 +106,21 @@ void ntupler::initialize (void)
   __tree->Branch("simulated_vs_tracked_track.simulated_vertex_x",&simulated_vs_tracked_track_.simulated_vertex_x_);
   __tree->Branch("simulated_vs_tracked_track.simulated_vertex_y",&simulated_vs_tracked_track_.simulated_vertex_y_);
   __tree->Branch("simulated_vs_tracked_track.simulated_vertex_z",&simulated_vs_tracked_track_.simulated_vertex_z_);
+  __tree->Branch("simulated_vs_tracked_track.simulated_vertex_cos",&simulated_vs_tracked_track_.simulated_vertex_cos_);
   __tree->Branch("simulated_vs_tracked_track.simulated_vertex_phi",&simulated_vs_tracked_track_.simulated_vertex_phi_);
+  __tree->Branch("simulated_vs_tracked_track.simulated_charge",&simulated_vs_tracked_track_.simulated_charge_);
 #endif
 
     __tree->Branch("simulated_vs_tracked_track.tracked_helix_vertex_x",&simulated_vs_tracked_track_.tracked_helix_vertex_x_);
     __tree->Branch("simulated_vs_tracked_track.tracked_helix_vertex_y",&simulated_vs_tracked_track_.tracked_helix_vertex_y_);
     __tree->Branch("simulated_vs_tracked_track.tracked_helix_vertex_z",&simulated_vs_tracked_track_.tracked_helix_vertex_z_);
+    __tree->Branch("simulated_vs_tracked_track.tracked_helix_vertex_cos",&simulated_vs_tracked_track_.tracked_helix_vertex_cos_);
     __tree->Branch("simulated_vs_tracked_track.tracked_helix_vertex_phi",&simulated_vs_tracked_track_.tracked_helix_vertex_phi_);
     __tree->Branch("simulated_vs_tracked_track.tracked_helix_vertex_x_error",&simulated_vs_tracked_track_.tracked_helix_vertex_x_error_);
     __tree->Branch("simulated_vs_tracked_track.tracked_helix_vertex_y_error",&simulated_vs_tracked_track_.tracked_helix_vertex_y_error_);
     __tree->Branch("simulated_vs_tracked_track.tracked_helix_vertex_z_error",&simulated_vs_tracked_track_.tracked_helix_vertex_z_error_);
     __tree->Branch("simulated_vs_tracked_track.tracked_helix_vertex_phi_error",&simulated_vs_tracked_track_.tracked_helix_vertex_phi_error_);
+    __tree->Branch("simulated_vs_tracked_track.tracked_helix_charge",&simulated_vs_tracked_track_.tracked_helix_charge_);
 
 #if 0
   __tree->Branch("simulated_vs_tracked_track.residual_helix_vertex_x",&simulated_vs_tracked_track_.residual_helix_vertex_x_);
@@ -147,11 +157,13 @@ void ntupler::initialize (void)
     __tree->Branch("simulated_vs_tracked_track.tracked_tangent_vertex_x",&simulated_vs_tracked_track_.tracked_tangent_vertex_x_);
     __tree->Branch("simulated_vs_tracked_track.tracked_tangent_vertex_y",&simulated_vs_tracked_track_.tracked_tangent_vertex_y_);
     __tree->Branch("simulated_vs_tracked_track.tracked_tangent_vertex_z",&simulated_vs_tracked_track_.tracked_tangent_vertex_z_);
+    __tree->Branch("simulated_vs_tracked_track.tracked_tangent_vertex_cos",&simulated_vs_tracked_track_.tracked_tangent_vertex_cos_);
     __tree->Branch("simulated_vs_tracked_track.tracked_tangent_vertex_phi",&simulated_vs_tracked_track_.tracked_tangent_vertex_phi_);
     __tree->Branch("simulated_vs_tracked_track.tracked_tangent_vertex_x_error",&simulated_vs_tracked_track_.tracked_tangent_vertex_x_error_);
     __tree->Branch("simulated_vs_tracked_track.tracked_tangent_vertex_y_error",&simulated_vs_tracked_track_.tracked_tangent_vertex_y_error_);
     __tree->Branch("simulated_vs_tracked_track.tracked_tangent_vertex_z_error",&simulated_vs_tracked_track_.tracked_tangent_vertex_z_error_);
     __tree->Branch("simulated_vs_tracked_track.tracked_tangent_vertex_phi_error",&simulated_vs_tracked_track_.tracked_tangent_vertex_phi_error_);
+    __tree->Branch("simulated_vs_tracked_track.tracked_charge",&simulated_vs_tracked_track_.tracked_charge_);
 
 #if 0
   __tree->Branch("simulated_vs_tracked_track.residual_tangent_vertex_x",&simulated_vs_tracked_track_.residual_tangent_vertex_x_);
@@ -204,17 +216,21 @@ void ntupler::initialize (void)
   __tree->Branch("simulated_vs_tracked_n3track.simulated_vertex_y",&simulated_vs_tracked_n3track_.simulated_vertex_y_);
   __tree->Branch("simulated_vs_tracked_n3track.simulated_vertex_z",&simulated_vs_tracked_n3track_.simulated_vertex_z_);
   __tree->Branch("simulated_vs_tracked_n3track.simulated_vertex_phi",&simulated_vs_tracked_n3track_.simulated_vertex_phi_);
+  __tree->Branch("simulated_vs_tracked_n3track.simulated_vertex_cos",&simulated_vs_tracked_n3track_.simulated_vertex_cos_);
+  __tree->Branch("simulated_vs_tracked_n3track.simulated_charge",&simulated_vs_tracked_n3track_.simulated_charge_);
 #endif
 
     __tree->Branch("simulated_vs_tracked_n3track.tracked_helix_vertex_x",&simulated_vs_tracked_n3track_.tracked_helix_vertex_x_);
     __tree->Branch("simulated_vs_tracked_n3track.tracked_helix_vertex_y",&simulated_vs_tracked_n3track_.tracked_helix_vertex_y_);
     __tree->Branch("simulated_vs_tracked_n3track.tracked_helix_vertex_z",&simulated_vs_tracked_n3track_.tracked_helix_vertex_z_);
+    __tree->Branch("simulated_vs_tracked_n3track.tracked_helix_vertex_cos",&simulated_vs_tracked_n3track_.tracked_helix_vertex_cos_);
     __tree->Branch("simulated_vs_tracked_n3track.tracked_helix_vertex_phi",&simulated_vs_tracked_n3track_.tracked_helix_vertex_phi_);
     __tree->Branch("simulated_vs_tracked_n3track.tracked_helix_vertex_x_error",&simulated_vs_tracked_n3track_.tracked_helix_vertex_x_error_);
     __tree->Branch("simulated_vs_tracked_n3track.tracked_helix_vertex_y_error",&simulated_vs_tracked_n3track_.tracked_helix_vertex_y_error_);
     __tree->Branch("simulated_vs_tracked_n3track.tracked_helix_vertex_z_error",&simulated_vs_tracked_n3track_.tracked_helix_vertex_z_error_);
     __tree->Branch("simulated_vs_tracked_n3track.tracked_helix_vertex_phi_error",&simulated_vs_tracked_n3track_.tracked_helix_vertex_phi_error_);
 #if 0
+    __tree->Branch("simulated_vs_tracked_n3track.tracked_helix_charge",&simulated_vs_tracked_n3track_.tracked_helix_charge_);
   __tree->Branch("simulated_vs_tracked_n3track.residual_helix_vertex_x",&simulated_vs_tracked_n3track_.residual_helix_vertex_x_);
   __tree->Branch("simulated_vs_tracked_n3track.residual_helix_vertex_y",&simulated_vs_tracked_n3track_.residual_helix_vertex_y_);
   __tree->Branch("simulated_vs_tracked_n3track.residual_helix_vertex_z",&simulated_vs_tracked_n3track_.residual_helix_vertex_z_);
@@ -242,6 +258,7 @@ void ntupler::initialize (void)
   __tree->Branch("simulated_vs_tracked_n3track.tracked_tangent_vertex_x",&simulated_vs_tracked_n3track_.tracked_tangent_vertex_x_);
   __tree->Branch("simulated_vs_tracked_n3track.tracked_tangent_vertex_y",&simulated_vs_tracked_n3track_.tracked_tangent_vertex_y_);
   __tree->Branch("simulated_vs_tracked_n3track.tracked_tangent_vertex_z",&simulated_vs_tracked_n3track_.tracked_tangent_vertex_z_);
+  __tree->Branch("simulated_vs_tracked_n3track.tracked_tangent_vertex_cos",&simulated_vs_tracked_n3track_.tracked_tangent_vertex_cos_);
   __tree->Branch("simulated_vs_tracked_n3track.tracked_tangent_vertex_phi",&simulated_vs_tracked_n3track_.tracked_tangent_vertex_phi_);
   __tree->Branch("simulated_vs_tracked_n3track.tracked_tangent_vertex_x_error",&simulated_vs_tracked_n3track_.tracked_tangent_vertex_x_error_);
   __tree->Branch("simulated_vs_tracked_n3track.tracked_tangent_vertex_y_error",&simulated_vs_tracked_n3track_.tracked_tangent_vertex_y_error_);
@@ -267,6 +284,7 @@ void ntupler::initialize (void)
   __tree->Branch("simulated_vs_tracked_n3track.pull_tangent_decay_vertex_x",&simulated_vs_tracked_n3track_.pull_tangent_decay_vertex_x_);
   __tree->Branch("simulated_vs_tracked_n3track.pull_tangent_decay_vertex_y",&simulated_vs_tracked_n3track_.pull_tangent_decay_vertex_y_);
   __tree->Branch("simulated_vs_tracked_n3track.pull_tangent_decay_vertex_z",&simulated_vs_tracked_n3track_.pull_tangent_decay_vertex_z_);
+
 #endif
 
   return;
@@ -345,6 +363,8 @@ void ntupler::__fill ()
   std::vector<double> simulated_vs_tracked_simulated_z_;
   std::vector<double> simulated_vs_tracked_simulated_dx_;
   std::vector<double> simulated_vs_tracked_simulated_dz_;
+  std::vector<double> simulated_vs_tracked_simulated_dr_;
+  std::vector<double> simulated_vs_tracked_simulated_dphi_;
   std::vector<double> simulated_vs_tracked_tracked_tangency_x_;
   std::vector<double> simulated_vs_tracked_tracked_tangency_y_;
   std::vector<double> simulated_vs_tracked_tracked_tangency_z_;
@@ -353,6 +373,8 @@ void ntupler::__fill ()
   std::vector<double> simulated_vs_tracked_tracked_tangency_z_error_;
   std::vector<double> simulated_vs_tracked_tracked_tangency_dx_;
   std::vector<double> simulated_vs_tracked_tracked_tangency_dz_;
+  std::vector<double> simulated_vs_tracked_tracked_tangency_dr_;
+  std::vector<double> simulated_vs_tracked_tracked_tangency_dphi_;
   std::vector<double> simulated_vs_tracked_residual_tangency_x_;
   std::vector<double> simulated_vs_tracked_residual_tangency_y_;
   std::vector<double> simulated_vs_tracked_residual_tangency_z_;
@@ -367,6 +389,8 @@ void ntupler::__fill ()
   std::vector<double> simulated_vs_tracked_tracked_helix_z_error_;
   std::vector<double> simulated_vs_tracked_tracked_helix_dx_;
   std::vector<double> simulated_vs_tracked_tracked_helix_dz_;
+  std::vector<double> simulated_vs_tracked_tracked_helix_dr_;
+  std::vector<double> simulated_vs_tracked_tracked_helix_dphi_;
   std::vector<double> simulated_vs_tracked_residual_helix_x_;
   std::vector<double> simulated_vs_tracked_residual_helix_y_;
   std::vector<double> simulated_vs_tracked_residual_helix_z_;
@@ -388,12 +412,16 @@ void ntupler::__fill ()
   std::vector<double> simulated_vs_tracked_track_simulated_vertex_x_;
   std::vector<double> simulated_vs_tracked_track_simulated_vertex_y_;
   std::vector<double> simulated_vs_tracked_track_simulated_vertex_z_;
+  std::vector<double> simulated_vs_tracked_track_simulated_vertex_cos_;
   std::vector<double> simulated_vs_tracked_track_simulated_vertex_phi_;
-  std::vector<double> simulated_vs_tracked_track_tracked_helix_vertex_x_;
+  std::vector<double> simulated_vs_tracked_track_simulated_charge_;
+  std::vector<double> simulated_vs_tracked_track_tracked_helix_vertex_x_; 
   std::vector<double> simulated_vs_tracked_track_tracked_helix_vertex_y_;
   std::vector<double> simulated_vs_tracked_track_tracked_helix_vertex_z_;
+  std::vector<double> simulated_vs_tracked_track_tracked_helix_vertex_cos_;
   std::vector<double> simulated_vs_tracked_track_tracked_helix_vertex_phi_;
   std::vector<double> simulated_vs_tracked_track_tracked_helix_vertex_x_error_;
+  std::vector<double> simulated_vs_tracked_track_tracked_helix_charge_;
   std::vector<double> simulated_vs_tracked_track_tracked_helix_vertex_y_error_;
   std::vector<double> simulated_vs_tracked_track_tracked_helix_vertex_z_error_;
   std::vector<double> simulated_vs_tracked_track_tracked_helix_vertex_phi_error_;
@@ -422,9 +450,11 @@ void ntupler::__fill ()
   std::vector<double> simulated_vs_tracked_track_pull_helix_decay_vertex_x_;
   std::vector<double> simulated_vs_tracked_track_pull_helix_decay_vertex_y_;
   std::vector<double> simulated_vs_tracked_track_pull_helix_decay_vertex_z_;
+  std::vector<double> simulated_vs_tracked_track_tracked_charge_;
   std::vector<double> simulated_vs_tracked_track_tracked_tangent_vertex_x_;
   std::vector<double> simulated_vs_tracked_track_tracked_tangent_vertex_y_;
   std::vector<double> simulated_vs_tracked_track_tracked_tangent_vertex_z_;
+  std::vector<double> simulated_vs_tracked_track_tracked_tangent_vertex_cos_;
   std::vector<double> simulated_vs_tracked_track_tracked_tangent_vertex_phi_;
   std::vector<double> simulated_vs_tracked_track_tracked_tangent_vertex_x_error_;
   std::vector<double> simulated_vs_tracked_track_tracked_tangent_vertex_y_error_;
@@ -474,11 +504,15 @@ void ntupler::__fill ()
   std::vector<double> simulated_vs_tracked_n3track_simulated_vertex_x_;
   std::vector<double> simulated_vs_tracked_n3track_simulated_vertex_y_;
   std::vector<double> simulated_vs_tracked_n3track_simulated_vertex_z_;
+  std::vector<double> simulated_vs_tracked_n3track_simulated_vertex_cos_;
   std::vector<double> simulated_vs_tracked_n3track_simulated_vertex_phi_;
+  std::vector<double> simulated_vs_tracked_n3track_simulated_charge_;
   std::vector<double> simulated_vs_tracked_n3track_tracked_helix_vertex_x_;
   std::vector<double> simulated_vs_tracked_n3track_tracked_helix_vertex_y_;
   std::vector<double> simulated_vs_tracked_n3track_tracked_helix_vertex_z_;
+  std::vector<double> simulated_vs_tracked_n3track_tracked_helix_vertex_cos_;
   std::vector<double> simulated_vs_tracked_n3track_tracked_helix_vertex_phi_;
+  std::vector<double> simulated_vs_tracked_n3track_tracked_helix_charge_;
   std::vector<double> simulated_vs_tracked_n3track_tracked_helix_vertex_x_error_;
   std::vector<double> simulated_vs_tracked_n3track_tracked_helix_vertex_y_error_;
   std::vector<double> simulated_vs_tracked_n3track_tracked_helix_vertex_z_error_;
@@ -509,6 +543,7 @@ void ntupler::__fill ()
   std::vector<double> simulated_vs_tracked_n3track_tracked_tangent_vertex_x_;
   std::vector<double> simulated_vs_tracked_n3track_tracked_tangent_vertex_y_;
   std::vector<double> simulated_vs_tracked_n3track_tracked_tangent_vertex_z_;
+  std::vector<double> simulated_vs_tracked_n3track_tracked_tangent_vertex_cos_;
   std::vector<double> simulated_vs_tracked_n3track_tracked_tangent_vertex_phi_;
   std::vector<double> simulated_vs_tracked_n3track_tracked_tangent_vertex_x_error_;
   std::vector<double> simulated_vs_tracked_n3track_tracked_tangent_vertex_y_error_;
@@ -563,6 +598,11 @@ void ntupler::__fill ()
 	simulated_vs_tracked_tracked_tangency_dx_.push_back(tangent.x().value() - inode->c().ep().x().value());
 	simulated_vs_tracked_tracked_tangency_dz_.push_back(tangent.z().value() - inode->c().ep().z().value());
 
+	simulated_vs_tracked_tracked_tangency_dr_.push_back(sqrt(pow(tangent.x().value() - inode->c().ep().x().value(),2) +
+								 pow(tangent.z().value() - inode->c().ep().z().value(),2) ));
+	simulated_vs_tracked_tracked_tangency_dphi_.push_back(atan2(tangent.z().value() - inode->c().ep().z().value(),
+								    tangent.x().value() - inode->c().ep().x().value()));
+
 	phi_ref=phi.value();
 	phi = hel.phi_of_point(inode->c().ep(),phi_ref);
 
@@ -576,6 +616,11 @@ void ntupler::__fill ()
 	simulated_vs_tracked_tracked_helix_z_error_.push_back(helixp.z().error());
 	simulated_vs_tracked_tracked_helix_dx_.push_back(helixp.x().value() - inode->c().ep().x().value());
 	simulated_vs_tracked_tracked_helix_dz_.push_back(helixp.z().value() - inode->c().ep().z().value());
+
+	simulated_vs_tracked_tracked_helix_dr_.push_back(sqrt(pow(helixp.x().value() - inode->c().ep().x().value(),2) +
+								 pow(helixp.z().value() - inode->c().ep().z().value(),2) ));
+	simulated_vs_tracked_tracked_helix_dphi_.push_back(atan2(helixp.z().value() - inode->c().ep().z().value(),
+								    helixp.x().value() - inode->c().ep().x().value()));
 
 	size_t indnode=inode-iseq->nodes_.begin();
 	if( indnode != 0 ){
@@ -602,11 +647,23 @@ void ntupler::__fill ()
       CAT::topology::experimental_vector vhvertex(hvertex);
       CAT::topology::experimental_vector vtvertex(tvertex);
 
+      if( iseq->has_charge() )
+	simulated_vs_tracked_track_tracked_charge_.push_back(iseq->charge().value());
+
+      if( iseq->has_helix_charge() )
+	simulated_vs_tracked_track_tracked_helix_charge_.push_back(iseq->helix_charge().value());
+
       if( iseq->helix_vertex_type() == "foil" ){
 	simulated_vs_tracked_track_tracked_helix_vertex_x_.push_back(hvertex.x().value());
 	simulated_vs_tracked_track_tracked_helix_vertex_y_.push_back(hvertex.y().value());
 	simulated_vs_tracked_track_tracked_helix_vertex_z_.push_back(hvertex.z().value());
-	simulated_vs_tracked_track_tracked_helix_vertex_phi_.push_back(fabs(vhvertex.phi().value()));
+	simulated_vs_tracked_track_tracked_helix_vertex_phi_.push_back(vhvertex.phi().value());
+
+	if( iseq->nodes_.size() > 0 ){
+	  CAT::topology::experimental_vector the_step(hvertex,iseq->nodes_[0].ep());
+	  CAT::topology::experimental_vector rad(iseq->nodes_[0].c().ep());
+	  simulated_vs_tracked_track_tracked_helix_vertex_cos_.push_back(((the_step.unit())*(rad.unit())).value());
+	}
       
 	simulated_vs_tracked_track_tracked_helix_vertex_x_error_.push_back(hvertex.x().error());
 	simulated_vs_tracked_track_tracked_helix_vertex_y_error_.push_back(hvertex.y().error());
@@ -617,7 +674,7 @@ void ntupler::__fill ()
 	simulated_vs_tracked_track_tracked_helix_decay_vertex_x_.push_back(hvertex.x().value());
 	simulated_vs_tracked_track_tracked_helix_decay_vertex_y_.push_back(hvertex.y().value());
 	simulated_vs_tracked_track_tracked_helix_decay_vertex_z_.push_back(hvertex.z().value());
-	simulated_vs_tracked_track_tracked_helix_decay_vertex_phi_.push_back(fabs(vhvertex.phi().value()));
+	simulated_vs_tracked_track_tracked_helix_decay_vertex_phi_.push_back(vhvertex.phi().value());
       
 	simulated_vs_tracked_track_tracked_helix_decay_vertex_x_error_.push_back(hvertex.x().error());
 	simulated_vs_tracked_track_tracked_helix_decay_vertex_y_error_.push_back(hvertex.y().error());
@@ -638,7 +695,14 @@ void ntupler::__fill ()
 	simulated_vs_tracked_track_tracked_tangent_vertex_x_.push_back(tvertex.x().value());
 	simulated_vs_tracked_track_tracked_tangent_vertex_y_.push_back(tvertex.y().value());
 	simulated_vs_tracked_track_tracked_tangent_vertex_z_.push_back(tvertex.z().value());
-	simulated_vs_tracked_track_tracked_tangent_vertex_phi_.push_back(fabs(vtvertex.phi().value()));
+
+	if( iseq->nodes_.size() > 0 ){
+	  CAT::topology::experimental_vector the_step(tvertex,iseq->nodes_[0].ep());
+	  CAT::topology::experimental_vector rad(iseq->nodes_[0].c().ep());
+	  simulated_vs_tracked_track_tracked_helix_vertex_cos_.push_back(((the_step.unit())*(rad.unit())).value());
+	}
+
+	simulated_vs_tracked_track_tracked_tangent_vertex_phi_.push_back(vtvertex.phi().value());
 	simulated_vs_tracked_track_tracked_tangent_vertex_x_error_.push_back(tvertex.x().error());
 	simulated_vs_tracked_track_tracked_tangent_vertex_y_error_.push_back(tvertex.y().error());
 	simulated_vs_tracked_track_tracked_tangent_vertex_z_error_.push_back(tvertex.z().error());
@@ -648,7 +712,7 @@ void ntupler::__fill ()
 	simulated_vs_tracked_track_tracked_tangent_decay_vertex_x_.push_back(tvertex.x().value());
 	simulated_vs_tracked_track_tracked_tangent_decay_vertex_y_.push_back(tvertex.y().value());
 	simulated_vs_tracked_track_tracked_tangent_decay_vertex_z_.push_back(tvertex.z().value());
-	simulated_vs_tracked_track_tracked_tangent_decay_vertex_phi_.push_back(fabs(vtvertex.phi().value()));
+	simulated_vs_tracked_track_tracked_tangent_decay_vertex_phi_.push_back(vtvertex.phi().value());
       
 	simulated_vs_tracked_track_tracked_tangent_decay_vertex_x_error_.push_back(tvertex.x().error());
 	simulated_vs_tracked_track_tracked_tangent_decay_vertex_y_error_.push_back(tvertex.y().error());
@@ -666,7 +730,14 @@ void ntupler::__fill ()
 	simulated_vs_tracked_track_tracked_helix_vertex_x_.push_back(hdvertex.x().value());
 	simulated_vs_tracked_track_tracked_helix_vertex_y_.push_back(hdvertex.y().value());
 	simulated_vs_tracked_track_tracked_helix_vertex_z_.push_back(hdvertex.z().value());
-	simulated_vs_tracked_track_tracked_helix_vertex_phi_.push_back(fabs(vhdvertex.phi().value()));
+
+	if( iseq->nodes_.size() > 0 ){
+	  CAT::topology::experimental_vector the_step(hvertex,iseq->last_node().ep());
+	  CAT::topology::experimental_vector rad(iseq->last_node().c().ep());
+	  simulated_vs_tracked_track_tracked_helix_vertex_cos_.push_back(((the_step.unit())*(rad.unit())).value());
+	}
+
+	simulated_vs_tracked_track_tracked_helix_vertex_phi_.push_back(vhdvertex.phi().value());
       
 	simulated_vs_tracked_track_tracked_helix_vertex_x_error_.push_back(hdvertex.x().error());
 	simulated_vs_tracked_track_tracked_helix_vertex_y_error_.push_back(hdvertex.y().error());
@@ -677,7 +748,7 @@ void ntupler::__fill ()
 	simulated_vs_tracked_track_tracked_helix_decay_vertex_x_.push_back(hdvertex.x().value());
 	simulated_vs_tracked_track_tracked_helix_decay_vertex_y_.push_back(hdvertex.y().value());
 	simulated_vs_tracked_track_tracked_helix_decay_vertex_z_.push_back(hdvertex.z().value());
-	simulated_vs_tracked_track_tracked_helix_decay_vertex_phi_.push_back(fabs(vhdvertex.phi().value()));
+	simulated_vs_tracked_track_tracked_helix_decay_vertex_phi_.push_back(vhdvertex.phi().value());
       
 	simulated_vs_tracked_track_tracked_helix_decay_vertex_x_error_.push_back(hdvertex.x().error());
 	simulated_vs_tracked_track_tracked_helix_decay_vertex_y_error_.push_back(hdvertex.y().error());
@@ -698,7 +769,14 @@ void ntupler::__fill ()
 	simulated_vs_tracked_track_tracked_tangent_vertex_x_.push_back(tdvertex.x().value());
 	simulated_vs_tracked_track_tracked_tangent_vertex_y_.push_back(tdvertex.y().value());
 	simulated_vs_tracked_track_tracked_tangent_vertex_z_.push_back(tdvertex.z().value());
-	simulated_vs_tracked_track_tracked_tangent_vertex_phi_.push_back(fabs(vtdvertex.phi().value()));
+	simulated_vs_tracked_track_tracked_tangent_vertex_phi_.push_back(vtdvertex.phi().value());
+
+	if( iseq->nodes_.size() > 0 ){
+	  CAT::topology::experimental_vector the_step(hvertex,iseq->last_node().ep());
+	  CAT::topology::experimental_vector rad(iseq->last_node().c().ep());
+	  simulated_vs_tracked_track_tracked_tangent_vertex_cos_.push_back(((the_step.unit())*(rad.unit())).value());
+	}
+
 	simulated_vs_tracked_track_tracked_tangent_vertex_x_error_.push_back(tdvertex.x().error());
 	simulated_vs_tracked_track_tracked_tangent_vertex_y_error_.push_back(tdvertex.y().error());
 	simulated_vs_tracked_track_tracked_tangent_vertex_z_error_.push_back(tdvertex.z().error());
@@ -708,7 +786,7 @@ void ntupler::__fill ()
 	simulated_vs_tracked_track_tracked_tangent_decay_vertex_x_.push_back(tdvertex.x().value());
 	simulated_vs_tracked_track_tracked_tangent_decay_vertex_y_.push_back(tdvertex.y().value());
 	simulated_vs_tracked_track_tracked_tangent_decay_vertex_z_.push_back(tdvertex.z().value());
-	simulated_vs_tracked_track_tracked_tangent_decay_vertex_phi_.push_back(fabs(vtdvertex.phi().value()));
+	simulated_vs_tracked_track_tracked_tangent_decay_vertex_phi_.push_back(vtdvertex.phi().value());
       
 	simulated_vs_tracked_track_tracked_tangent_decay_vertex_x_error_.push_back(tdvertex.x().error());
 	simulated_vs_tracked_track_tracked_tangent_decay_vertex_y_error_.push_back(tdvertex.y().error());
@@ -733,7 +811,13 @@ void ntupler::__fill ()
       simulated_vs_tracked_n3track_tracked_helix_vertex_x_.push_back(hvertex.x().value());
       simulated_vs_tracked_n3track_tracked_helix_vertex_y_.push_back(hvertex.y().value());
       simulated_vs_tracked_n3track_tracked_helix_vertex_z_.push_back(hvertex.z().value());
-      simulated_vs_tracked_n3track_tracked_helix_vertex_phi_.push_back(fabs(vhvertex.phi().value()));
+      simulated_vs_tracked_n3track_tracked_helix_vertex_phi_.push_back(vhvertex.phi().value());
+
+      if( iseq->nodes_.size() > 0 ){
+	CAT::topology::experimental_vector the_step(hvertex,iseq->nodes_[0].ep());
+	CAT::topology::experimental_vector rad(iseq->nodes_[0].c().ep());
+	simulated_vs_tracked_track_tracked_helix_vertex_cos_.push_back(((the_step.unit())*(rad.unit())).value());
+      }
 
       simulated_vs_tracked_n3track_tracked_helix_vertex_x_error_.push_back(hvertex.x().error());
       simulated_vs_tracked_n3track_tracked_helix_vertex_y_error_.push_back(hvertex.y().error());
@@ -751,6 +835,8 @@ void ntupler::__fill ()
   simulated_vs_tracked_hit_.simulated_z_ =&simulated_vs_tracked_simulated_z_;
   simulated_vs_tracked_hit_.simulated_dx_ =&simulated_vs_tracked_simulated_dx_;
   simulated_vs_tracked_hit_.simulated_dz_ =&simulated_vs_tracked_simulated_dz_;
+  simulated_vs_tracked_hit_.simulated_dr_ =&simulated_vs_tracked_simulated_dr_;
+  simulated_vs_tracked_hit_.simulated_dphi_ =&simulated_vs_tracked_simulated_dphi_;
 #endif
 
   simulated_vs_tracked_hit_.tracked_tangency_x_ =&simulated_vs_tracked_tracked_tangency_x_;
@@ -762,6 +848,9 @@ void ntupler::__fill ()
 
   simulated_vs_tracked_hit_.tracked_tangency_dx_ =&simulated_vs_tracked_tracked_tangency_dx_;
   simulated_vs_tracked_hit_.tracked_tangency_dz_ =&simulated_vs_tracked_tracked_tangency_dz_;
+  simulated_vs_tracked_hit_.tracked_tangency_dr_ =&simulated_vs_tracked_tracked_tangency_dr_;
+  simulated_vs_tracked_hit_.tracked_tangency_dphi_ =&simulated_vs_tracked_tracked_tangency_dphi_;
+
 #if 0
   simulated_vs_tracked_hit_.residual_tangency_x_ =&simulated_vs_tracked_residual_tangency_x_;
   simulated_vs_tracked_hit_.residual_tangency_y_ =&simulated_vs_tracked_residual_tangency_y_;
@@ -779,6 +868,8 @@ void ntupler::__fill ()
   simulated_vs_tracked_hit_.tracked_helix_z_error_ =&simulated_vs_tracked_tracked_helix_z_error_;
   simulated_vs_tracked_hit_.tracked_helix_dx_ =&simulated_vs_tracked_tracked_helix_dx_;
   simulated_vs_tracked_hit_.tracked_helix_dz_ =&simulated_vs_tracked_tracked_helix_dz_;
+  simulated_vs_tracked_hit_.tracked_helix_dr_ =&simulated_vs_tracked_tracked_helix_dr_;
+  simulated_vs_tracked_hit_.tracked_helix_dphi_ =&simulated_vs_tracked_tracked_helix_dphi_;
 
 #if 0
   simulated_vs_tracked_hit_.residual_helix_x_ =&simulated_vs_tracked_residual_helix_x_;
@@ -808,22 +899,27 @@ void ntupler::__fill ()
   simulated_vs_tracked_track_.simulated_vertex_x_ = &simulated_vs_tracked_track_simulated_vertex_x_;
   simulated_vs_tracked_track_.simulated_vertex_y_ = &simulated_vs_tracked_track_simulated_vertex_y_;
   simulated_vs_tracked_track_.simulated_vertex_z_ = &simulated_vs_tracked_track_simulated_vertex_z_;
+  simulated_vs_tracked_track_.simulated_vertex_cos_ = &simulated_vs_tracked_track_simulated_vertex_cos_;
   simulated_vs_tracked_track_.simulated_vertex_phi_ = &simulated_vs_tracked_track_simulated_vertex_phi_;
+  simulated_vs_tracked_track_.simulated_charge_ = &simulated_vs_tracked_track_simulated_charge_;
 #endif
 
   simulated_vs_tracked_track_.tracked_helix_vertex_x_ = &simulated_vs_tracked_track_tracked_helix_vertex_x_;
   simulated_vs_tracked_track_.tracked_helix_vertex_y_ = &simulated_vs_tracked_track_tracked_helix_vertex_y_;
   simulated_vs_tracked_track_.tracked_helix_vertex_z_ = &simulated_vs_tracked_track_tracked_helix_vertex_z_;
+  simulated_vs_tracked_track_.tracked_helix_vertex_cos_ = &simulated_vs_tracked_track_tracked_helix_vertex_cos_;
   simulated_vs_tracked_track_.tracked_helix_vertex_phi_ = &simulated_vs_tracked_track_tracked_helix_vertex_phi_;
   simulated_vs_tracked_track_.tracked_helix_vertex_x_error_ = &simulated_vs_tracked_track_tracked_helix_vertex_x_error_;
   simulated_vs_tracked_track_.tracked_helix_vertex_y_error_ = &simulated_vs_tracked_track_tracked_helix_vertex_y_error_;
   simulated_vs_tracked_track_.tracked_helix_vertex_z_error_ = &simulated_vs_tracked_track_tracked_helix_vertex_z_error_;
   simulated_vs_tracked_track_.tracked_helix_vertex_phi_error_ = &simulated_vs_tracked_track_tracked_helix_vertex_phi_error_;
+  simulated_vs_tracked_track_.tracked_helix_charge_ = &simulated_vs_tracked_track_tracked_helix_charge_;
 
 #if 0
   simulated_vs_tracked_track_.residual_helix_vertex_x_ = &simulated_vs_tracked_track_residual_helix_vertex_x_;
   simulated_vs_tracked_track_.residual_helix_vertex_y_ = &simulated_vs_tracked_track_residual_helix_vertex_y_;
   simulated_vs_tracked_track_.residual_helix_vertex_z_ = &simulated_vs_tracked_track_residual_helix_vertex_z_;
+  simulated_vs_tracked_track_.residual_helix_vertex_cos_ = &simulated_vs_tracked_track_residual_helix_vertex_cos_;
   simulated_vs_tracked_track_.residual_helix_vertex_phi_ = &simulated_vs_tracked_track_residual_helix_vertex_phi_;
   simulated_vs_tracked_track_.pull_helix_vertex_x_ = &simulated_vs_tracked_track_pull_helix_vertex_x_;
   simulated_vs_tracked_track_.pull_helix_vertex_y_ = &simulated_vs_tracked_track_pull_helix_vertex_y_;
@@ -855,16 +951,20 @@ void ntupler::__fill ()
   simulated_vs_tracked_track_.tracked_tangent_vertex_x_ = &simulated_vs_tracked_track_tracked_tangent_vertex_x_;
   simulated_vs_tracked_track_.tracked_tangent_vertex_y_ = &simulated_vs_tracked_track_tracked_tangent_vertex_y_;
   simulated_vs_tracked_track_.tracked_tangent_vertex_z_ = &simulated_vs_tracked_track_tracked_tangent_vertex_z_;
+  simulated_vs_tracked_track_.tracked_tangent_vertex_cos_ = &simulated_vs_tracked_track_tracked_tangent_vertex_cos_;
   simulated_vs_tracked_track_.tracked_tangent_vertex_phi_ = &simulated_vs_tracked_track_tracked_tangent_vertex_phi_;
   simulated_vs_tracked_track_.tracked_tangent_vertex_x_error_ = &simulated_vs_tracked_track_tracked_tangent_vertex_x_error_;
   simulated_vs_tracked_track_.tracked_tangent_vertex_y_error_ = &simulated_vs_tracked_track_tracked_tangent_vertex_y_error_;
   simulated_vs_tracked_track_.tracked_tangent_vertex_z_error_ = &simulated_vs_tracked_track_tracked_tangent_vertex_z_error_;
   simulated_vs_tracked_track_.tracked_tangent_vertex_phi_error_ = &simulated_vs_tracked_track_tracked_tangent_vertex_phi_error_;
+  simulated_vs_tracked_track_.tracked_charge_ = &simulated_vs_tracked_track_tracked_charge_;
+
 
 #if 0
   simulated_vs_tracked_track_.residual_tangent_vertex_x_ = &simulated_vs_tracked_track_residual_tangent_vertex_x_;
   simulated_vs_tracked_track_.residual_tangent_vertex_y_ = &simulated_vs_tracked_track_residual_tangent_vertex_y_;
   simulated_vs_tracked_track_.residual_tangent_vertex_z_ = &simulated_vs_tracked_track_residual_tangent_vertex_z_;
+  simulated_vs_tracked_track_.residual_tangent_vertex_cos_ = &simulated_vs_tracked_track_residual_tangent_vertex_cos_;
   simulated_vs_tracked_track_.residual_tangent_vertex_phi_ = &simulated_vs_tracked_track_residual_tangent_vertex_phi_;
   simulated_vs_tracked_track_.pull_tangent_vertex_x_ = &simulated_vs_tracked_track_pull_tangent_vertex_x_;
   simulated_vs_tracked_track_.pull_tangent_vertex_y_ = &simulated_vs_tracked_track_pull_tangent_vertex_y_;
@@ -911,12 +1011,15 @@ void ntupler::__fill ()
   simulated_vs_tracked_n3track_.simulated_vertex_x_ = &simulated_vs_tracked_n3track_simulated_vertex_x_;
   simulated_vs_tracked_n3track_.simulated_vertex_y_ = &simulated_vs_tracked_n3track_simulated_vertex_y_;
   simulated_vs_tracked_n3track_.simulated_vertex_z_ = &simulated_vs_tracked_n3track_simulated_vertex_z_;
+  simulated_vs_tracked_n3track_.simulated_vertex_cos_ = &simulated_vs_tracked_n3track_simulated_vertex_cos_;
   simulated_vs_tracked_n3track_.simulated_vertex_phi_ = &simulated_vs_tracked_n3track_simulated_vertex_phi_;
+  simulated_vs_tracked_n3track_.simulated_charge_ = &simulated_vs_tracked_n3track_simulated_charge_;
 #endif
 
   simulated_vs_tracked_n3track_.tracked_helix_vertex_x_ = &simulated_vs_tracked_n3track_tracked_helix_vertex_x_;
   simulated_vs_tracked_n3track_.tracked_helix_vertex_y_ = &simulated_vs_tracked_n3track_tracked_helix_vertex_y_;
   simulated_vs_tracked_n3track_.tracked_helix_vertex_z_ = &simulated_vs_tracked_n3track_tracked_helix_vertex_z_;
+  simulated_vs_tracked_n3track_.tracked_helix_vertex_cos_ = &simulated_vs_tracked_n3track_tracked_helix_vertex_cos_;
   simulated_vs_tracked_n3track_.tracked_helix_vertex_phi_ = &simulated_vs_tracked_n3track_tracked_helix_vertex_phi_;
   simulated_vs_tracked_n3track_.tracked_helix_vertex_x_error_ = &simulated_vs_tracked_n3track_tracked_helix_vertex_x_error_;
   simulated_vs_tracked_n3track_.tracked_helix_vertex_y_error_ = &simulated_vs_tracked_n3track_tracked_helix_vertex_y_error_;

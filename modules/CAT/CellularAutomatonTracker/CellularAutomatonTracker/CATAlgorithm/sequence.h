@@ -23,8 +23,6 @@
 #include <CATAlgorithm/plane.h>
 #include <CATAlgorithm/cluster.h>
 #include <CATAlgorithm/calorimeter_hit.h>
-#include <CATAlgorithm/LinearRegression.h>
-#include <CATAlgorithm/CircleRegression.h>
 
 
 
@@ -55,7 +53,9 @@ namespace CAT {
 
       experimental_double charge_;
 
-      experimental_double momentum_;
+      experimental_double helix_charge_;
+
+      experimental_vector momentum_;
 
       experimental_double length_;
 
@@ -71,6 +71,11 @@ namespace CAT {
 
       // sequence's name(s)
       std::vector<std::string> names_;
+
+      bool has_momentum_;
+
+      bool has_charge_;
+      bool has_helix_charge_;
 
       // sequence's vertex: from helix and from tangents
       bool has_helix_vertex_;
@@ -150,8 +155,11 @@ namespace CAT {
       //! set charge
       void set_charge(const experimental_double &charge);
 
+      //! set helix_charge
+      void set_helix_charge(const experimental_double &helix_charge);
+
       //! set momentum
-      void set_momentum(const experimental_double &mom);
+      void set_momentum(const experimental_vector &mom);
 
       //! set length
       void set_length(const experimental_double &mom);
@@ -210,6 +218,15 @@ namespace CAT {
       // get prob of sequence
       double helix_Prob()const;
 
+      //! has momentum
+      bool has_momentum()const;
+
+      //! has charge
+      bool has_charge()const;
+
+      //! has helix_charge
+      bool has_helix_charge()const;
+
       //! has helix_vertex
       bool has_helix_vertex()const;
 
@@ -261,8 +278,11 @@ namespace CAT {
       //! get charge
       const experimental_double & charge() const;
 
+      //! get helix_charge
+      const experimental_double & helix_charge() const;
+
       //! get momentum
-      const experimental_double & momentum() const;
+      const experimental_vector & momentum() const;
 
       //! get length
       const experimental_double & length() const;
@@ -329,7 +349,7 @@ namespace CAT {
 
       void calculate_charge(void);
 
-      bool intersect_plane_with_tangent_from_end(const plane & pl, 
+      bool intersect_plane_with_tangent_from_end(const plane & pl,
                                                  experimental_point * ep)const;
 
       bool intersect_plane_from_end(const plane & pl, experimental_point * ep)const;
@@ -353,19 +373,19 @@ namespace CAT {
 
       std::vector<size_t> families()const;
 
-      bool good_match(const sequence & seq, 
+      bool good_match(const sequence & seq,
                       bool &invertA, bool &invertB, size_t NOffLayers)const;
 
 
       sequence match(const sequence & seq, bool invertA, bool invertB);
 
-      bool good_match_with_kink(const sequence & seq, 
-                                bool &invertA, bool &invertB, 
+      bool good_match_with_kink(const sequence & seq,
+                                bool &invertA, bool &invertB,
                                 double limit_distance)const;
 
       bool same_families(const topology::sequence & s)const;
 
-      double delta_phi(const experimental_point & epa, 
+      double delta_phi(const experimental_point & epa,
                        const experimental_point & epb)const;
 
       // is the (true) track all on one side of the foil?

@@ -67,6 +67,10 @@ namespace CAT {
     planes_per_block.at(0) = 9;
     num_cells_per_plane    = 113;
     cell_size              = 44.0  * CLHEP::mm;
+    bfield                 = 0.0025;
+    xsize                  = 2500. * CLHEP::mm; // this is y in SnWare coordinates
+    ysize                  = 1350. * CLHEP::mm; // this is z in SnWare coordinates
+    zsize                  = 450. * CLHEP::mm; // this is x in SnWare coordinates
 
     return;
   }
@@ -213,6 +217,11 @@ namespace CAT {
     czer_.set_CellDistance (setup_.CellDistance);
     czer_.set_FoilRadius (setup_.FoilRadius);
 
+    czer_.set_bfield (setup_.bfield);
+    czer_.set_xsize (setup_.xsize);
+    czer_.set_ysize (setup_.ysize);
+    czer_.set_zsize (setup_.zsize);
+
     // Geometry description :
     if (setup_.SuperNemo)
       {
@@ -270,6 +279,11 @@ namespace CAT {
     stor_.set_vel (setup_.vel);
     stor_.set_CellDistance (setup_.CellDistance);
     stor_.set_FoilRadius (setup_.FoilRadius);
+
+    stor_.set_bfield (setup_.bfield);
+    stor_.set_xsize (setup_.xsize);
+    stor_.set_ysize (setup_.ysize);
+    stor_.set_zsize (setup_.zsize);
 
     // Geometry description :
     if (setup_.SuperNemo)

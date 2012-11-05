@@ -43,7 +43,7 @@ endif ()
 # Set versioning for this project
 #
 include(ProjectVersion)
-set_project_version(${PROJECT_NAME} 0 3 1)
+set_project_version(${PROJECT_NAME} 0 3 2)
 
 #----------------------------------------------------------------------------
 # Include any modules providing top level functionality
@@ -90,7 +90,7 @@ if (NOT CAT_MINIMAL_BUILD)
   set ( CAT_WITH_DEVEL_DISPLAY    1 )
   set ( CAT_WITH_DEVEL_HISTOGRAMS 1 )
 endif ()
-
+ 
 # Optional ROOT dependency:
 set (_cat_needs_root 0)
 if (CAT_WITH_DEVEL_DISPLAY OR CAT_WITH_DEVEL_HISTOGRAMS OR CAT_WITH_DEVEL_UTILS)

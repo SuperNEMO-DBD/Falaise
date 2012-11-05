@@ -310,7 +310,7 @@ namespace CAT{
 
       experimental_vector dist = experimental_vector(pl.face(), *ep);
       if( print_level() >= mybhep::VVERBOSE ){
-        std::clog << " distance from extrapolation to calo face: " << dist.x().value() << " " << dist.y().value() << " " << dist.z().value() << " calo sizes: " << pl.sizes().x().value() << " " << pl.sizes().y().value() << " " << pl.sizes().z().value() << std::endl;
+        std::clog << " distance from extrapolation to plane face: " << dist.x().value() << " " << dist.y().value() << " " << dist.z().value() << " plane sizes: " << pl.sizes().x().value() << " " << pl.sizes().y().value() << " " << pl.sizes().z().value() << std::endl;
       }
       if( pl.view() == "x" ){
         if( fabs(dist.z().value()) > pl.sizes().z().value() )

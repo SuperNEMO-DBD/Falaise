@@ -129,6 +129,7 @@ namespace CAT{
 
     mybhep::messenger m;
     int nevent;
+    int event_number;
     int InitialEvents;
     int SkippedEvents;
 
@@ -138,6 +139,7 @@ namespace CAT{
     double calo_X, calo_Y, calo_Z;
     double InnerRadius, OuterRadius, FoilRadius; //only for plotting
     double pmax;
+    double bfield;
 
     //limits
     double SmallRadius;
@@ -304,6 +306,8 @@ namespace CAT{
     void set_ysize(double v);
 
     void set_zsize(double v);
+
+    void set_bfield(double v);
 
     //----------------------------------------
 

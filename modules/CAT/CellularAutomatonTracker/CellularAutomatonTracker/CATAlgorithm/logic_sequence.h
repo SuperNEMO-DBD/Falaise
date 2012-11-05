@@ -22,8 +22,6 @@
 #include <CATAlgorithm/plane.h>
 #include <CATAlgorithm/cluster.h>
 #include <CATAlgorithm/calorimeter_hit.h>
-#include <CATAlgorithm/LinearRegression.h>
-#include <CATAlgorithm/CircleRegression.h>
 #include <CATAlgorithm/logic_cell.h>
 
 

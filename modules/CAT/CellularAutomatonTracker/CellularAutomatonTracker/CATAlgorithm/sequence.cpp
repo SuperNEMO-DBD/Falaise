@@ -27,6 +27,9 @@ namespace CAT {
       nodes_.clear();
       free_ = false;
       names_.clear();names_.push_back("default");
+      has_charge_ = false;
+      has_helix_charge_ = false;
+      has_momentum_ = false;
       has_helix_vertex_ = false;
       helix_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                          mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
@@ -54,7 +57,9 @@ namespace CAT {
       probs_.clear();
       helix_ = helix();
       charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
-      momentum_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
+      helix_charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
+      momentum_ = experimental_vector(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
+                                      mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
       length_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       primary_ = true;
     }
@@ -73,6 +78,9 @@ namespace CAT {
       free_ = false;
       names_.clear();
       names_.push_back("default");
+      has_charge_ = false;
+      has_helix_charge_ = false;
+      has_momentum_ = false;
       has_helix_vertex_ = false;
       helix_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                          mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
@@ -98,7 +106,9 @@ namespace CAT {
       probs_.clear();
       helix_ = helix();
       charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
-      momentum_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
+      helix_charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
+      momentum_ = experimental_vector(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
+                                      mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
       length_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       primary_ = true;
     }
@@ -114,6 +124,9 @@ namespace CAT {
       nodes_.back ().set_free(false);
       free_ = true;
       names_.clear();names_.push_back("default");
+      has_charge_ = false;
+      has_helix_charge_ = false;
+      has_momentum_ = false;
       has_helix_vertex_ = false;
       helix_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                          mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
@@ -139,7 +152,9 @@ namespace CAT {
       probs_.clear();
       helix_ = helix();
       charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
-      momentum_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
+      helix_charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
+      momentum_ = experimental_vector(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
+                                      mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
       length_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       primary_ = true;
     }
@@ -157,7 +172,7 @@ namespace CAT {
         }
 
       a_out << indent << appname_ << " ------------------- " << std::endl;
-      a_out << indent << names_[0] << ". Number of nodes: " << nodes().size() << " free: " << Free() << " chi2 " << chi2() << " helix chi2 " << helix_chi2() << " prob " << Prob() << " helix prob " << helix_Prob() << " momentum " << momentum().value() << " primary " << primary() << std::endl;
+      a_out << indent << names_[0] << ". Number of nodes: " << nodes().size() << " free: " << Free() << " chi2 " << chi2() << " helix chi2 " << helix_chi2() << " prob " << Prob() << " helix prob " << helix_Prob() << " momentum " << momentum().length().value() << " primary " << primary() << std::endl;
       for(std::vector<node>::const_iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode)
         inode->dump(a_out, "",indent + "     ");
       if( has_helix_vertex() ){
@@ -258,11 +273,19 @@ namespace CAT {
 
     //! set charge
     void sequence::set_charge(const experimental_double &charge){
+      has_charge_ = true;
       charge_ = charge;
     }
 
+    //! set helix_charge
+    void sequence::set_helix_charge(const experimental_double &helix_charge){
+      has_helix_charge_ = true;
+      helix_charge_ = helix_charge;
+    }
+
     //! set momentum
-    void sequence::set_momentum(const experimental_double &mom){
+    void sequence::set_momentum(const experimental_vector &mom){
+      has_momentum_ = true;
       momentum_ = mom;
     }
 
@@ -414,6 +437,21 @@ namespace CAT {
 
     }
 
+    //! has momentum
+    bool sequence::has_momentum()const{
+      return has_momentum_;
+    }
+
+    //! has charge
+    bool sequence::has_charge()const{
+      return has_charge_;
+    }
+
+    //! has helix_charge
+    bool sequence::has_helix_charge()const{
+      return has_helix_charge_;
+    }
+
     //! has helix_vertex
     bool sequence::has_helix_vertex()const{
       return has_helix_vertex_;
@@ -500,8 +538,14 @@ namespace CAT {
       return charge_;
     }
 
+    //! get helix_charge
+    const experimental_double & sequence::helix_charge() const
+    {
+      return helix_charge_;
+    }
+
     //! get momentum
-    const experimental_double & sequence::momentum() const
+    const experimental_vector & sequence::momentum() const
     {
       return momentum_;
     }
@@ -632,6 +676,21 @@ namespace CAT {
       }
       inverted.set_nodes( inverted_nodes );
       inverted.set_names( names() );
+
+      if( has_momentum() ){
+        experimental_vector newmom(-momentum().x(), -momentum().y(), -momentum().z());
+        inverted.set_momentum(newmom);
+      }
+
+      if( has_charge() ){
+        experimental_double newcharge = - charge();
+        inverted.set_charge(newcharge);
+      }
+
+      if( has_helix_charge() ){
+        experimental_double newcharge = - helix_charge();
+        inverted.set_helix_charge(newcharge);
+      }
 
       if( has_decay_helix_vertex() ){
         if( decay_helix_vertex_type() == "foil" || decay_helix_vertex_type() == "kink")
@@ -1249,8 +1308,8 @@ namespace CAT {
 
       return false;
     }
-    
-    
+
+
     int sequence::get_link_index_of_cell(size_t inode, const cell & link) const {
       // inode = 0 if it is the first node, 1 if it is the second node...
       // link = a cell to which the node inode links with a couplet or triplet
@@ -1364,7 +1423,6 @@ namespace CAT {
         break;
       }
       case 3:{
-
         // fit best circle through all points (horizontal view)
 
         std::vector<experimental_point> ps;
@@ -1382,6 +1440,7 @@ namespace CAT {
 
         CircleRegression cl(xs, zs, print_level(), nsigma());
         cl.fit();
+        //      cl.minuit_fit();
 
         if( print_level() >= mybhep::VVERBOSE ){
           cl.dump();
@@ -1413,12 +1472,25 @@ namespace CAT {
           phis.push_back(p + offset);
         }
 
-        // fit best helix with through all points (vertical view)
-        LinearRegression l(ys, phis, print_level(), nsigma());
-        l.fit();
-        l.invert(); // fit with y as more erroneous variable (phi = phi(y)),
-        // then invert the result to have y = y(phi)
 
+
+        LinearRegression l(phis, ys, print_level(), nsigma());
+
+#if CAT_WITH_DEVEL_ROOT == 1
+        if ( !l.root_fit() ){  // fit with root
+#endif // CAT_WITH_DEVEL_ROOT == 1
+
+          // if root does not work or is not used
+          // fit best helix with through all points (vertical view)
+          l.set_xi(ys);
+          l.set_yi(phis);
+          l.fit();
+          l.invert(); // fit with y as more erroneous variable (phi = phi(y)),
+          // then invert the result to have y = y(phi)
+
+#if CAT_WITH_DEVEL_ROOT == 1
+         }
+#endif // CAT_WITH_DEVEL_ROOT == 1
 
         if( print_level() >= mybhep::VVERBOSE ){
           l.dump();
@@ -1429,21 +1501,20 @@ namespace CAT {
         ci.set_center(experimental_point(ci.center().x(), l.y0(), ci.center().z()));
         helix_ = helix(ci, l.tangent(), print_level(), nsigma());
 
-        
+
 
         helix_chi2s_ = helix_.chi2s(ps);
-
 
         break;
       }
       default:
-          
+
         if( print_level() >= mybhep::NORMAL ){
           std::clog << " problem: unknonw method "<< method << " to fit a helix " << std::endl;
         }
       }
-        
-        
+
+
       return;
     }
 
@@ -1461,7 +1532,18 @@ namespace CAT {
     }
 
     void sequence::calculate_momentum(double bfield){
-      momentum_ = experimental_sqrt(experimental_square(radius()) + experimental_square(pitch()))*0.3*bfield;
+
+      experimental_double mom = experimental_sqrt(experimental_square(radius()) + experimental_square(pitch()))*0.3*bfield;
+
+      momentum_=mom*initial_dir();
+
+      if( !isnan(momentum_.x().value()) &&
+          !isnan(momentum_.y().value()) &&
+          !isnan(momentum_.z().value()) ){
+        has_momentum_ = true;
+      }
+
+
     }
 
     void sequence::calculate_charge(void){
@@ -1478,10 +1560,30 @@ namespace CAT {
       experimental_double deltaphi = vf.phi() - vi.phi();
       deltaphi.set_value(phi2 - phi1);
 
-      charge_ = deltaphi/fabs(deltaphi.value());
+      if( deltaphi.value() ){
+        has_charge_ = true;
+        charge_ = deltaphi/fabs(deltaphi.value());
+      }
+
+      experimental_double first_helix_phi = helix_.phi_of_point(nodes().front().ep());
+      experimental_double last_helix_phi = helix_.phi_of_point(last_node().ep());
+
+      double helix_phi1 = first_helix_phi.value();
+      double helix_phi2 = last_helix_phi.value();
+      mybhep::fix_angles(&helix_phi1, &helix_phi2);
+
+      experimental_double deltahelix_phi = last_helix_phi - first_helix_phi;
+      deltahelix_phi.set_value(helix_phi2 - helix_phi1);
+
+      if( deltahelix_phi.value() ){
+        has_helix_charge_ = true;
+        helix_charge_ = deltahelix_phi/fabs(deltahelix_phi.value());
+      }
+
+
     }
 
-    bool sequence::intersect_plane_with_tangent_from_end(const plane & pl, 
+    bool sequence::intersect_plane_with_tangent_from_end(const plane & pl,
                                                          experimental_point * ep)const{
       // need 2 nodes to build the tangent line
       if( nodes().size() < 2 ) return false;
@@ -1532,9 +1634,9 @@ namespace CAT {
 
       // need 2 nodes to build the tangent line
       if( nodes().size() < 2 ) return false;
-        
+
       experimental_vector direction(second_last_node().ep(), last_node().ep());
-      bool result = helix_.intersect_circle_with_tangent(c, last_node().ep(), direction, ep);
+      bool result = helix_.intersect_circle_with_tangent(c, last_node().ep(), direction.hor(), ep);
 
       return result;
     }
@@ -1553,9 +1655,12 @@ namespace CAT {
 
       // need 2 nodes to build the tangent line
       if( nodes().size() < 2 ) return false;
-        
+
       experimental_vector direction(nodes_[1].ep(), nodes_[0].ep());
-      bool result = helix_.intersect_circle_with_tangent(c, nodes_[0].ep(), direction, ep);
+
+      bool result = helix_.intersect_circle_with_tangent(c, nodes_[0].ep(), direction.hor(), ep);
+
+
 
       return result;
     }
@@ -1573,9 +1678,9 @@ namespace CAT {
     }
 
 
-    bool sequence::intersect_sequence(const sequence & seq, 
-                                      bool invertA, bool invertB, 
-                                      experimental_point * ep, 
+    bool sequence::intersect_sequence(const sequence & seq,
+                                      bool invertA, bool invertB,
+                                      experimental_point * ep,
                                       double limit_distance){
       circle c = seq.get_helix().get_circle();
       bool result;
@@ -1618,8 +1723,8 @@ namespace CAT {
       return fs;
     }
 
-    bool sequence::good_match(const sequence & seq, 
-                              bool &invertA, bool &invertB, 
+    bool sequence::good_match(const sequence & seq,
+                              bool &invertA, bool &invertB,
                               size_t NOffLayers)const{
 
       if( !seq.fast() ){
@@ -1862,8 +1967,8 @@ namespace CAT {
     }
 
 
-    bool sequence::good_match_with_kink(const sequence & seq, 
-                                        bool &invertA, bool &invertB, 
+    bool sequence::good_match_with_kink(const sequence & seq,
+                                        bool &invertA, bool &invertB,
                                         double limit_distance)const{
 
       if( !seq.fast() ){
@@ -2038,7 +2143,7 @@ namespace CAT {
       return false;
     }
 
-    double sequence::delta_phi(const experimental_point & epa, 
+    double sequence::delta_phi(const experimental_point & epa,
                                const experimental_point & epb)const{
       return helix_.delta_phi(epa, epb);
     }

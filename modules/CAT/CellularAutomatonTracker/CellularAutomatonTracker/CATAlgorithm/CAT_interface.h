@@ -80,6 +80,8 @@ namespace CAT {
     double rad;  // radius of each cell, should be read from geometry instead of free parameter
     double CellDistance;  // same as above
 
+    double bfield; // value of magnetic field
+    double xsize, ysize, zsize; // chamber size
 
     // SuperNEMO geometry :
     int num_blocks;

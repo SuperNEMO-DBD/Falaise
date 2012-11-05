@@ -256,7 +256,7 @@ namespace CAT {
     }
 
 
-    // std::vector from the face of the plane to the point
+    // vector from the face of the plane to the point
     experimental_vector plane::norm_to_point(const experimental_point &ep)const{
 
       experimental_vector result = norm();

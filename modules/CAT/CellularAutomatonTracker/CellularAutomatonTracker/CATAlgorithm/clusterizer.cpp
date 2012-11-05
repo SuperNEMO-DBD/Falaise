@@ -5,20 +5,20 @@
 #include <cmath>
 #include <map>
 
-#ifdef CAT_WITH_DEVEL_ROOT
-#include "TApplication.h"
+#if CAT_WITH_DEVEL_ROOT == 1
+#include <TApplication.h>
 #include <TROOT.h>
 #include <TChain.h>
-#include "TH2.h"
-#include "TH1.h"
-#include "TGraph.h"
-#include "TStyle.h"
-#include "TCanvas.h"
-#include "TFile.h"
-#include "TMath.h"
-#include "TBox.h"
-#include "TMarker.h"
-#endif
+#include <TH2.h>
+#include <TH1.h>
+#include <TGraph.h>
+#include <TStyle.h>
+#include <TCanvas.h>
+#include <TFile.h>
+#include <TMath.h>
+#include <TBox.h>
+#include <TMarker.h>
+#endif // CAT_WITH_DEVEL_ROOT == 1
 
 namespace CAT {
   using namespace mybhep;
@@ -108,6 +108,7 @@ namespace CAT {
     eman = 0;
     _moduleNR.clear ();
     _MaxBlockSize = -1;
+    event_number=0;
     hfile.clear ();
 
     nevent = 0;
@@ -127,13 +128,13 @@ namespace CAT {
     _set_defaults ();
     set_level (st.fetch_sstore("VERBOSITY"));
 
- 
+
     //-- read param --//
 
     pmax = st.fetch_dstore("pmax")*mybhep::MeV;
     MaxTime = st.fetch_dstore("MaxTime");
     PrintMode = st.fetch_istore("PrintMode");
-    
+
     SmallRadius=st.fetch_dstore("SmallRadius")*mybhep::mm;
     TangentPhi=st.fetch_dstore("TangentPhi");
     TangentTheta=st.fetch_dstore("TangentTheta");
@@ -145,19 +146,19 @@ namespace CAT {
 
     if (st.find_sstore("histo_file"))
       hfile=st.fetch_sstore("histo_file");
-    else 
+    else
       hfile="CatsHistogram.root";
 
     if (st.find_dstore("nsigma"))
       nsigma=st.fetch_dstore("nsigma");
-    else 
+    else
       nsigma=10.;
 
     /*
       if( PrintMode )
       hman =  NHistoManager2(st);
     */
-    
+
 
   }
 
@@ -191,7 +192,7 @@ namespace CAT {
 
       }
     */
-   
+
     if (doDriftWires)
       {
         GenerateWires();
@@ -202,19 +203,19 @@ namespace CAT {
   //*************************************************************
   bool clusterizer::initialize(const mybhep::sstore &store, mybhep::gstore gs , mybhep::EventManager2 *eman) {
     //*************************************************************
-  
-    m.message("\n Beginning algorithm clusterizer \n",mybhep::VERBOSE); 
+
+    m.message("\n Beginning algorithm clusterizer \n",mybhep::VERBOSE);
 
     clock.start(" clusterizer: initialize ");
-  
+
     //----------- read dst param -------------//
-  
+
     readDstProper(store, eman);
-  
+
     //------- end of read pram -----------//
 
     _initialize();
- 
+
     clock.stop(" clusterizer: initialize ");
 
     return true;
@@ -223,26 +224,26 @@ namespace CAT {
   //*************************************************************
   bool clusterizer::initialize( ) {
     //*************************************************************
-    m.message("CAT::clusterizer::initialize: Entering...",mybhep::NORMAL); 
-  
+    m.message("CAT::clusterizer::initialize: Entering...",mybhep::NORMAL);
+
     m.message("\n Beginning algorithm clusterizer \n",mybhep::VERBOSE);
-  
+
     //----------- read dst param -------------//
-  
+
     readDstProper();
-  
+
     //------- end of read pram -----------//
 
     _initialize();
-     
-    m.message("CAT::clusterizer::initialize: Done.",mybhep::NORMAL); 
+
+    m.message("CAT::clusterizer::initialize: Done.",mybhep::NORMAL);
     return true;
   }
 
   //*************************************************************
   void clusterizer::initializeHistos( void ) {
     //*************************************************************
-  
+
     //  hman.h1("chi2_triplet", "chi2 for each cell triplet", 100, -0.05, 20.05);
     //  hman.h1("prob_triplet", "probability that chi2 is larger than observed for a good triplet", 100, -0.05, 1.05);
     //  hman.h1("largest_true_kink", "largest kink in a true particle", 100, 0., 180.);
@@ -256,13 +257,13 @@ namespace CAT {
   //*************************************************************
   bool clusterizer::finalize() {
     //*************************************************************
-    
+
     clock.start(" clusterizer: finalize ");
 
-    m.message("\n Ending algorithm clusterizer \n ",mybhep::NORMAL); 
-  
-    m.message("Initial events: ", InitialEvents, mybhep::NORMAL);  
-    m.message("Skipped events: ", SkippedEvents, "(", 100.*SkippedEvents/InitialEvents, "\%)", mybhep::NORMAL);  
+    m.message("\n Ending algorithm clusterizer \n ",mybhep::NORMAL);
+
+    m.message("Initial events: ", InitialEvents, mybhep::NORMAL);
+    m.message("Skipped events: ", SkippedEvents, "(", 100.*SkippedEvents/InitialEvents, "\%)", mybhep::NORMAL);
 
     if( PrintMode )
       {
@@ -279,7 +280,7 @@ namespace CAT {
   //*************************************************************
   void clusterizer::finalizeHistos( void ) {
     //*************************************************************
-    
+
     //  if( PrintMode )
     //    hman.save();
 
@@ -291,37 +292,37 @@ namespace CAT {
   //*************************************************************
   void clusterizer::readDstProper(const mybhep::sstore & global, mybhep::EventManager2 *eman) {
     //*************************************************************
-  
+
     clock.start(" clusterizer: read dst properties ");
 
     if (! global.find("GEOM_MODULES"))
       {
         _MaxBlockSize = 1;
         m.message(" no bar design, MODULES Nr set to = ",_MaxBlockSize,"\n",mybhep::NORMAL);
-        
+
       }
     else
       {
         _MaxBlockSize = mybhep::int_from_string(global.fetch("GEOM_MODULES"));
         m.message(" bar design with MODULES = ",_MaxBlockSize,"\n",mybhep::NORMAL);
-        
+
       }
 
     if(!global.find("NEMO3"))
       {
         SuperNemo = true;
-        m.message("SuperNemo kind of data",mybhep::NORMAL); 
+        m.message("SuperNemo kind of data",mybhep::NORMAL);
       }
     else
       {
         SuperNemo = false;
-        m.message("Nemo-3 kind of data",mybhep::NORMAL); 
+        m.message("Nemo-3 kind of data",mybhep::NORMAL);
       }
 
     if(global.find("NEMORA_model"))
       {
         NemoraOutput = true;
-        m.message("data already processed by Nemora",mybhep::NORMAL); 
+        m.message("data already processed by Nemora",mybhep::NORMAL);
       }
     else
       NemoraOutput = false;
@@ -333,9 +334,9 @@ namespace CAT {
     CellDistance = rad;
 
     num_blocks = mybhep::int_from_string(global.fetch("GEOM_num_blocks"));
-      
+
     mybhep::vector_from_string(global.fetch("GEOM_planes_per_block"),planes_per_block);
-      
+
     ysize = mybhep::double_from_string(global.fetch("GEOM_CHAMBER_height"));
 
     if( SuperNemo )
@@ -344,9 +345,9 @@ namespace CAT {
         zsize = mybhep::double_from_string(global.fetch("GEOM_CHAMBER_length"));
 
         mybhep::vector_from_string(global.fetch("GEOM_gaps_Z"),gaps_Z);
-         
+
         GG_GRND_diam = mybhep::double_from_string(global.fetch("GEOM_GG_GRND_diam"));
-      
+
         GG_CELL_diam = rad;
 
         CHAMBER_X = xsize;
@@ -377,27 +378,27 @@ namespace CAT {
       lastlayer += (int)planes_per_block[i];
     */
 
-    m.message("",mybhep::NORMAL); 
+    m.message("",mybhep::NORMAL);
 
-    m.message("pmax",pmax,"MeV",mybhep::NORMAL); 
-    m.message("small radius",SmallRadius,"mm",mybhep::NORMAL); 
-    m.message("tangent phi: ",TangentPhi,mybhep::NORMAL); 
-    m.message("tangent theta",TangentTheta,mybhep::NORMAL); 
-    m.message("small number",SmallNumber,"mm",mybhep::NORMAL); 
-    m.message("quadrant angle",QuadrantAngle,mybhep::NORMAL); 
-    m.message("ratio",Ratio,mybhep::NORMAL); 
-    m.message("compatibility distance", CompatibilityDistance,mybhep::NORMAL); 
-    m.message("maximum chi2", MaxChi2, mybhep::NORMAL); 
-    m.message("xsize is read as",xsize,"mm",mybhep::NORMAL); 
-    m.message("ysize is read as",ysize,"mm",mybhep::NORMAL); 
-    m.message("zsize is read as",zsize,"mm",mybhep::NORMAL); 
-    m.message("plasma speed is read as: ",vel,"mm/ns",mybhep::NORMAL); 
-    m.message("wire length is read as: ",len,"mm",mybhep::NORMAL); 
-    m.message("cell diameter is read as: ",rad,"mm",mybhep::NORMAL); 
-    m.message("distance from wire to wire is read as: ",CellDistance,"mm",mybhep::NORMAL); 
-    m.message("verbosity level: ", level ,mybhep::NORMAL); 
-    m.message("",mybhep::NORMAL); 
-  
+    m.message("pmax",pmax,"MeV",mybhep::NORMAL);
+    m.message("small radius",SmallRadius,"mm",mybhep::NORMAL);
+    m.message("tangent phi: ",TangentPhi,mybhep::NORMAL);
+    m.message("tangent theta",TangentTheta,mybhep::NORMAL);
+    m.message("small number",SmallNumber,"mm",mybhep::NORMAL);
+    m.message("quadrant angle",QuadrantAngle,mybhep::NORMAL);
+    m.message("ratio",Ratio,mybhep::NORMAL);
+    m.message("compatibility distance", CompatibilityDistance,mybhep::NORMAL);
+    m.message("maximum chi2", MaxChi2, mybhep::NORMAL);
+    m.message("xsize is read as",xsize,"mm",mybhep::NORMAL);
+    m.message("ysize is read as",ysize,"mm",mybhep::NORMAL);
+    m.message("zsize is read as",zsize,"mm",mybhep::NORMAL);
+    m.message("plasma speed is read as: ",vel,"mm/ns",mybhep::NORMAL);
+    m.message("wire length is read as: ",len,"mm",mybhep::NORMAL);
+    m.message("cell diameter is read as: ",rad,"mm",mybhep::NORMAL);
+    m.message("distance from wire to wire is read as: ",CellDistance,"mm",mybhep::NORMAL);
+    m.message("verbosity level: ", level ,mybhep::NORMAL);
+    m.message("",mybhep::NORMAL);
+
     //parameters for error parametrization
 
     if( SuperNemo )
@@ -411,10 +412,10 @@ namespace CAT {
           }
         else
           {
-            m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); 
+            m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL);
             exit(1);
           }
-      
+
         pname="N3GG_K0";
         if(global.find(pname))
           {
@@ -422,10 +423,10 @@ namespace CAT {
           }
         else
           {
-            m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); 
+            m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL);
             exit(1);
           }
-      
+
         pname="N3GG_K1";
         if(global.find(pname))
           {
@@ -433,10 +434,10 @@ namespace CAT {
           }
         else
           {
-            m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); 
+            m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL);
             exit(1);
           }
-      
+
         pname="N3GG_K2";
         if(global.find(pname))
           {
@@ -444,10 +445,10 @@ namespace CAT {
           }
         else
           {
-            m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); 
+            m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL);
             exit(1);
           }
-      
+
         pname="N3GG_K3";
         if(global.find(pname))
           {
@@ -455,10 +456,10 @@ namespace CAT {
           }
         else
           {
-            m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); 
+            m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL);
             exit(1);
           }
-      
+
         pname="N3GG_TH0";
         if(global.find(pname))
           {
@@ -466,10 +467,10 @@ namespace CAT {
           }
         else
           {
-            m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); 
+            m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL);
             exit(1);
           }
-      
+
         pname="N3GG_TH1";
         if(global.find(pname))
           {
@@ -477,10 +478,10 @@ namespace CAT {
           }
         else
           {
-            m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); 
+            m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL);
             exit(1);
           }
-      
+
         pname="N3GG_TH2";
         if(global.find(pname))
           {
@@ -488,10 +489,10 @@ namespace CAT {
           }
         else
           {
-            m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); 
+            m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL);
             exit(1);
           }
-      
+
         pname="N3GG_TH3";
         if(global.find(pname))
           {
@@ -499,10 +500,10 @@ namespace CAT {
           }
         else
           {
-            m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); 
+            m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL);
             exit(1);
           }
-      
+
         pname="N3GG_L0";
         if(global.find(pname))
           {
@@ -510,10 +511,10 @@ namespace CAT {
           }
         else
           {
-            m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); 
+            m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL);
             exit(1);
           }
-      
+
         pname="N3GG_L1";
         if(global.find(pname))
           {
@@ -521,11 +522,11 @@ namespace CAT {
           }
         else
           {
-            m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); 
+            m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL);
             exit(1);
           }
       }
-  
+
     clock.stop(" clusterizer: read dst properties ");
 
     return;
@@ -535,8 +536,8 @@ namespace CAT {
   //*************************************************************
   void clusterizer::readDstProper() {
     //*************************************************************
-    m.message("CAT::clusterizer::readDstProper: Entering...",mybhep::NORMAL); 
-    
+    m.message("CAT::clusterizer::readDstProper: Entering...",mybhep::NORMAL);
+
     //clock.start(" clusterizer: read dst properties ");
 
     if (_MaxBlockSize <= 0)
@@ -547,7 +548,7 @@ namespace CAT {
 
     if(SuperNemo)
       {
-        m.message("CAT::clusterizer::readDstProper: SuperNemo kind of data",mybhep::NORMAL); 
+        m.message("CAT::clusterizer::readDstProper: SuperNemo kind of data",mybhep::NORMAL);
         if (num_blocks <= 0)
           {
             // Default :
@@ -557,7 +558,7 @@ namespace CAT {
       }
     else
       {
-        m.message("CAT::clusterizer::readDstProper: Nemo-3 kind of data",mybhep::NORMAL); 
+        m.message("CAT::clusterizer::readDstProper: Nemo-3 kind of data",mybhep::NORMAL);
         if (num_blocks <= 0)
           {
             // Default :
@@ -575,41 +576,41 @@ namespace CAT {
       lastlayer += (int)planes_per_block[i];
     */
 
-    m.message("",mybhep::NORMAL); 
-    m.message("small radius",SmallRadius,"mm",mybhep::NORMAL); 
-    m.message("tangent phi",TangentPhi,mybhep::NORMAL); 
-    m.message("tangent theta",TangentTheta,mybhep::NORMAL); 
-    m.message("small number",SmallNumber,"mm",mybhep::NORMAL); 
-    m.message("quadrant angle",QuadrantAngle,mybhep::NORMAL); 
-    m.message("ratio",Ratio,mybhep::NORMAL); 
-    m.message("compatibility distance", CompatibilityDistance,mybhep::NORMAL); 
-    m.message("maximum chi2", MaxChi2, mybhep::NORMAL); 
-    m.message("nsigma", nsigma, mybhep::NORMAL); 
+    m.message("",mybhep::NORMAL);
+    m.message("small radius",SmallRadius,"mm",mybhep::NORMAL);
+    m.message("tangent phi",TangentPhi,mybhep::NORMAL);
+    m.message("tangent theta",TangentTheta,mybhep::NORMAL);
+    m.message("small number",SmallNumber,"mm",mybhep::NORMAL);
+    m.message("quadrant angle",QuadrantAngle,mybhep::NORMAL);
+    m.message("ratio",Ratio,mybhep::NORMAL);
+    m.message("compatibility distance", CompatibilityDistance,mybhep::NORMAL);
+    m.message("maximum chi2", MaxChi2, mybhep::NORMAL);
+    m.message("nsigma", nsigma, mybhep::NORMAL);
     if (SuperNemo && SuperNemoChannel)
       {
-        m.message("cell pitch: ",GG_CELL_pitch,"mm",mybhep::NORMAL); 
+        m.message("cell pitch: ",GG_CELL_pitch,"mm",mybhep::NORMAL);
       }
     else
       {
-        m.message("pmax",pmax,"MeV",mybhep::NORMAL); 
-        m.message("xsize is",xsize,"mm",mybhep::NORMAL); 
-        m.message("ysize is",ysize,"mm",mybhep::NORMAL); 
-        m.message("zsize is",zsize,"mm",mybhep::NORMAL); 
-        m.message("plasma speed is: ",vel,"mm/ns",mybhep::NORMAL); 
-        m.message("wire length is: ",len,"mm",mybhep::NORMAL); 
-        m.message("cell diameter is: ",rad,"mm",mybhep::NORMAL); 
-        m.message("distance from wire to wire is: ",CellDistance,"mm",mybhep::NORMAL); 
+        m.message("pmax",pmax,"MeV",mybhep::NORMAL);
+        m.message("xsize is",xsize,"mm",mybhep::NORMAL);
+        m.message("ysize is",ysize,"mm",mybhep::NORMAL);
+        m.message("zsize is",zsize,"mm",mybhep::NORMAL);
+        m.message("plasma speed is: ",vel,"mm/ns",mybhep::NORMAL);
+        m.message("wire length is: ",len,"mm",mybhep::NORMAL);
+        m.message("cell diameter is: ",rad,"mm",mybhep::NORMAL);
+        m.message("distance from wire to wire is: ",CellDistance,"mm",mybhep::NORMAL);
       }
     if( !SuperNemo )
       {
-        m.message("foil radius: ",FoilRadius,"mm",mybhep::NORMAL); 
+        m.message("foil radius: ",FoilRadius,"mm",mybhep::NORMAL);
       }
-    m.message("verbosity print level:", level, mybhep::NORMAL); 
-  
+    m.message("verbosity print level:", level, mybhep::NORMAL);
+
     //parameters for error parametrization
 
     //clock.stop(" clusterizer: read dst properties ");
-    m.message("CAT::clusterizer::readDstProper: Done.",mybhep::NORMAL); 
+    m.message("CAT::clusterizer::readDstProper: Done.",mybhep::NORMAL);
 
     return;
   }
@@ -618,7 +619,7 @@ namespace CAT {
   //*************************************************************
   double clusterizer::long_resolution(double Z, double d[3])const{
     //*************************************************************
-      
+
     double xp = abs(Z*2./len);
     double kx = k0 + k1*xp + k2*xp*xp + k3*xp*xp*xp;
     double thx = th0 + th1*xp + th2*xp*xp + th3*xp*xp*xp;
@@ -639,9 +640,9 @@ namespace CAT {
   }
 
 
-  //*************************************************************  
+  //*************************************************************
   double clusterizer::GetYError( double y, float tup, float tdown, double direction[3]){
-    //*************************************************************  
+    //*************************************************************
 
     double erry;
 
@@ -696,26 +697,26 @@ namespace CAT {
 
     if( SuperNemo ){
       float tup, tdown, tdelay;
-    
+
       std::string ttime = h->fetch_property("TTIME");
       std::string btime = h->fetch_property("BTIME");
       std::string atime = h->fetch_property("ATIME");
-    
+
       tup = mybhep::float_from_string(ttime);
       tdown = mybhep::float_from_string(btime);
       tdelay = mybhep::float_from_string(atime);
-    
+
       if( isnan(tup) || isinf(tup) )
         tup = -1.;
       if( isnan(tdown) || isinf(tdown) )
         tdown = -1.;
       if( isnan(tdelay) || isinf(tdelay) )
         tdelay = -1.;
-    
-    
+
+
       std::vector<float> cellpos;
       mybhep::vector_from_string(h->fetch_property("CELL_POS"), cellpos);
-    
+
       if( cellpos.size() != 3 ){
         m.message("problem: cell_pos size is ", cellpos.size(), mybhep::MUTE);
         return;
@@ -732,8 +733,8 @@ namespace CAT {
       //  (tup - tdown)*v = -2y                                //
       //                                                       //
       ///////////////////////////////////////////////////////////
-    
-    
+
+
       if( tup != 0. && tdown != 0.)
         cellpos[1] = (-1.)*((tup - tdown)/(tup + tdown))*(len/2.);
       else if( tup != 0. && tdown == 0.)
@@ -742,14 +743,14 @@ namespace CAT {
         cellpos[1] = tdown*vel - (len/2.);
       else
         cellpos[1] = 0.;
-    
+
       h->change_property("CELL_POS", mybhep::vector_to_string(cellpos));
-  
+
       double dir[3];
       dir[0] = 0.;
       dir[1] = 0.;
       dir[2] = 1.;
-    
+
       erry = GetYError((double)cellpos[1], tup, tdown, dir);
 
       if( isnan( erry ) || isinf(erry) )
@@ -761,7 +762,7 @@ namespace CAT {
     else{
       erry =  mybhep::double_from_string(h->fetch_property("ERRY"));
     }
-  
+
     return;
 
   }
@@ -795,7 +796,7 @@ namespace CAT {
   //*************************************************************
   void clusterizer::GenerateWires( void ){
     //*************************************************************
-    m.message("CAT::clusterizer::GenerateWires: Entering...",mybhep::NORMAL); 
+    m.message("CAT::clusterizer::GenerateWires: Entering...",mybhep::NORMAL);
 
     //clock.start(" clusterizer: generate wires ");
 
@@ -803,37 +804,37 @@ namespace CAT {
 
     if( SuperNemo )
       {
-        m.message("CAT::clusterizer::GenerateWires: SuperNemo geometry...",mybhep::NORMAL); 
+        m.message("CAT::clusterizer::GenerateWires: SuperNemo geometry...",mybhep::NORMAL);
 
         // TRACKING GG BLOCKS
         double theta = M_PI/8.;
         m.message("CAT::clusterizer::GenerateWires: rad=",
                   rad,
-                  mybhep::NORMAL); 
+                  mybhep::NORMAL);
         if (isnan (GG_CELL_pitch))
           {
             GG_CELL_pitch = rad*cos(theta);
           }
         m.message("CAT::clusterizer::GenerateWires: GG_CELL_pitch=",
                   GG_CELL_pitch,
-                  mybhep::NORMAL); 
+                  mybhep::NORMAL);
         m.message("CAT::clusterizer::GenerateWires: GG_GRND_diam=",
                   GG_GRND_diam,
-                  mybhep::NORMAL); 
+                  mybhep::NORMAL);
         m.message("CAT::clusterizer::GenerateWires: CHAMBER_X=",
                   CHAMBER_X,
-                  mybhep::NORMAL); 
+                  mybhep::NORMAL);
         if (num_cells_per_plane <= 0)
           {
-            num_cells_per_plane=(int)((CHAMBER_X-GG_GRND_diam)/GG_CELL_pitch); 
+            num_cells_per_plane=(int)((CHAMBER_X-GG_GRND_diam)/GG_CELL_pitch);
           }
         m.message("CAT::clusterizer::GenerateWires: num_cells_per_plane=",
                   num_cells_per_plane,
-                  mybhep::NORMAL); 
+                  mybhep::NORMAL);
         GG_BLOCK_X = num_cells_per_plane*GG_CELL_pitch+GG_GRND_diam;
         m.message("CAT::clusterizer::GenerateWires: GG_BLOCK_X=",
                   GG_BLOCK_X,
-                  mybhep::NORMAL); 
+                  mybhep::NORMAL);
 
         // 2012-03-24 FM : Use dynamic 'vector<double>' in place of invalid static 'double []':
         std::vector<double> GG_BLOCK_thick;
@@ -843,31 +844,31 @@ namespace CAT {
         double distance = SOURCE_thick/2.;
         m.message("CAT::clusterizer::GenerateWires: SOURCE_thick=",
                   SOURCE_thick,
-                  mybhep::NORMAL); 
+                  mybhep::NORMAL);
         //Calculating thickness and positions of blocks
         for(int i=0; i<num_blocks; i++){
           GG_BLOCK_thick[i]=(planes_per_block[i]*GG_CELL_pitch+GG_GRND_diam);
           GG_BLOCK_posZ[i] = distance + gaps_Z[i] + GG_BLOCK_thick[i]/2.;
-          distance = GG_BLOCK_posZ[i] + GG_BLOCK_thick[i]/2.; 
-        }      
-        m.message("CAT::clusterizer::GenerateWires: DEVEL: **** STEP 1",mybhep::NORMAL); 
-      
+          distance = GG_BLOCK_posZ[i] + GG_BLOCK_thick[i]/2.;
+        }
+        m.message("CAT::clusterizer::GenerateWires: DEVEL: **** STEP 1",mybhep::NORMAL);
+
         int sign[2];
         sign[0] = 1;
         sign[1] = -1;
 
         for(size_t isign=0; isign<2; isign++)
           for (int iblock=0; iblock<num_blocks;iblock++){
-          
+
             double block_pos[3];
             block_pos[2] = GG_BLOCK_posZ[iblock];
-          
+
             // loop over planes in block
-          
-            double plane_pos_z0 = block_pos[2]-GG_BLOCK_thick[iblock]/2; 
-          
+
+            double plane_pos_z0 = block_pos[2]-GG_BLOCK_thick[iblock]/2;
+
             for(int iplane=0; iplane<planes_per_block[iblock];iplane++){
-            
+
               double plane_pos_Z;
               plane_pos_Z=GG_GRND_diam/2.+GG_CELL_pitch/2.+iplane*GG_CELL_pitch;
               plane_pos_Z = plane_pos_Z + plane_pos_z0;
@@ -877,27 +878,27 @@ namespace CAT {
                 {
                   double increment = GG_CELL_pitch*((double)iwire);
                   double xpos = -(CHAMBER_X-GG_GRND_diam)/2.+6.+increment+GG_CELL_pitch/2.;
-                
+
                   POINT point;
                   point.x = xpos;
                   point.z = plane_pos_Z;
                   DriftWires.push_back( point );
                 }
-            
-          
+
+
             }//end of loop over planes
-        
+
           }//end of loop over blocks
       }
     else
       {
-      
+
         size_t NOfWires[18];
         double FirstWireX[18];
         double FirstWireZ[18];
         double FirstWirePhi[18];
         double LayerRadius[18];
-      
+
         NOfWires[0] = 320;
         NOfWires[1] = 320;
         NOfWires[2] = 320;
@@ -916,7 +917,7 @@ namespace CAT {
         NOfWires[15] = 460;
         NOfWires[16] = 460;
         NOfWires[17] = 460;
-      
+
         FirstWireX[0] = 1521.;
         FirstWireX[1] = 1493.;
         FirstWireX[2] = 1465.;
@@ -935,7 +936,7 @@ namespace CAT {
         FirstWireX[15] = 2023.;
         FirstWireX[16] = 2051.;
         FirstWireX[17] = 2079.;
-      
+
         FirstWireZ[0] = 10.57;
         FirstWireZ[1] = 10.375;
         FirstWireZ[2] = 10.181;
@@ -954,22 +955,22 @@ namespace CAT {
         FirstWireZ[15] = 9.804;
         FirstWireZ[16] = 9.939;
         FirstWireZ[17] = 10.075;
-      
-      
+
+
         for(size_t i=0; i<18; i++)
           {
             LayerRadius[i] = sqrt(FirstWireX[i]*FirstWireX[i] + FirstWireZ[i]*FirstWireZ[i]);
             FirstWirePhi[i] = acos(FirstWireX[i]/LayerRadius[i]);
-          
+
             for(size_t j=0; j<NOfWires[i]; j++)
               {
                 double layerphi = 2.*M_PI/NOfWires[i];
                 double ph = FirstWirePhi[i] + j*layerphi;
-              
+
                 POINT point;
                 point.x = LayerRadius[i]*cos(ph);
                 point.z = LayerRadius[i]*sin(ph);
-              
+
                 DriftWires.push_back( point );
               }
           }
@@ -977,8 +978,8 @@ namespace CAT {
 
 
     //clock.stop(" clusterizer: generate wires ");
-    m.message("CAT::clusterizer::GenerateWires: Done.",mybhep::NORMAL); 
-   
+    m.message("CAT::clusterizer::GenerateWires: Done.",mybhep::NORMAL);
+
     return;
 
   }
@@ -989,7 +990,7 @@ namespace CAT {
     //*******************************************************************
 
     topology::node tn(hit, 0, SuperNemo, level, nsigma);
- 
+
     for(std::vector<topology::cell>::iterator ic=cells_.begin(); ic!=cells_.end(); ++ic){
       if( ic->same_cell(tn.c()) )
         return ic->id();
@@ -1007,7 +1008,7 @@ namespace CAT {
     //*******************************************************************
 
     topology::node tn(hit, 0, SuperNemo, level, nsigma);
- 
+
     for(std::vector<topology::cell>::iterator ic=cells_.begin(); ic!=cells_.end(); ++ic){
       if( ic->same_cell(tn.c()) )
         return ic->id();
@@ -1065,8 +1066,8 @@ namespace CAT {
           N3_MC = true;
           if( event_ref.find_property("DATA") )
             if( mybhep::int_from_string(event_ref.fetch_property("DATA")) == 1 )
-              N3_MC = false;  // data 
-                                                                                                         
+              N3_MC = false;  // data
+
           if( N3_MC )
             m.message("Nemo3 MC ", mybhep::NORMAL);
           else
@@ -1078,26 +1079,26 @@ namespace CAT {
       if( SuperNemo ){
         FillTrueVertexes(event_ref);
       }
-  
+
       fill_fast_information(event_ref);
 
       event_ref.filter(mybhep::DIGI,"SUNAMI","1",digi_parts); // scans all event.digi_particles(),
-      // and copies to "digi_parts" those ones having property "SUNAMI" = 1 
-                                                                   
+      // and copies to "digi_parts" those ones having property "SUNAMI" = 1
+
       if ( digi_parts.empty() )
         {
           m.message("Problem: there are no gg hits in this event.\n",mybhep::MUTE);
-          
+
           return false;
         }
 
-      if (digi_parts[0]->find_property("mID"))               // BAR design?? 
+      if (digi_parts[0]->find_property("mID"))               // BAR design??
         {
           for (size_t pnr=0; pnr < digi_parts.size(); pnr++)
             if (digi_parts[pnr]->fetch_property("mID") == _moduleNR )
               parts.push_back(digi_parts[pnr]);
         }
-      else                                               //NOT BAR DESIGN and OLD data 
+      else                                               //NOT BAR DESIGN and OLD data
         {
           //    for (size_t pnr=0; pnr < digi_parts.size(); pnr++)
           //      parts.push_back(digi_parts[pnr]);
@@ -1121,22 +1122,22 @@ namespace CAT {
         calorimeter_hits_.push_back(ch);
       }
       clock.stop(" clusterizer: make calo hit ");
-    
+
       if( level >= mybhep::VVERBOSE )
         print_calos();
-    
-    
+
+
 
       read_true_sequences(event_ref);
 
       if( !SuperNemo )
         read_nemo_sequences(event_ref);
-  
+
     }
 
 
     order_cells();
-  
+
     setup_cells();
 
     tracked_data_.set_cells(cells_);
@@ -1162,7 +1163,8 @@ namespace CAT {
 
     clock.start(" clusterizer: prepare event ","cumulative");
 
-    m.message(" local_tracking: preparing event", mybhep::VERBOSE);
+    m.message(" local_tracking: preparing event", event_number, mybhep::VERBOSE);
+    event_number ++;
 
     parts.clear();
     clusters_.clear();
@@ -1187,12 +1189,12 @@ namespace CAT {
     const std::vector<mybhep::particle*>& truep = event_ref.true_particles();
     m.message(" number of true particles is", truep.size(), mybhep::VVERBOSE);
     if (truep.size()!=0){
-    
+
       for( size_t ipart=0; ipart<truep.size(); ipart++)
         {
-        
+
           mybhep::particle& tp = *truep[ipart];
-          const std::vector<mybhep::hit*>& thits = tp.hits("trk"); 
+          const std::vector<mybhep::hit*>& thits = tp.hits("trk");
           topology::sequence trueseq;
           std::vector<topology::node> truenodes;
           for(size_t i=0; i<thits.size(); i++)
@@ -1213,9 +1215,9 @@ namespace CAT {
 
           if( tp.find_property("length"))
             trueseq.set_length(topology::experimental_double(mybhep::double_from_string(tp.fetch_property("length")), 0.));
-        
+
           trueseq.set_helix_vertex( topology::experimental_point( tp.vertex().x(), tp.vertex().y(), tp.vertex().z(), 0., 0., 0.),"true");
-        
+
           size_t cindex = 0;
           const std::vector<mybhep::hit*>& chits = tp.hits("cal");
           if( !chits.empty() ){
@@ -1223,27 +1225,27 @@ namespace CAT {
             cindex = get_calo_hit_index(ch);
             trueseq.set_decay_helix_vertex( topology::experimental_point( tp.decay_vertex().x(), tp.decay_vertex().y(), tp.decay_vertex().z(), 0., 0., 0.),"calo", cindex);
           }
-        
+
           trueseq.set_name( tp.name() );
-        
-          trueseq.set_momentum( topology::experimental_double(tp.p3().mag(), 0.));
-        
+
+          trueseq.set_momentum( topology::experimental_vector(tp.p3().x(), tp.p3().y(), tp.p3().z(), 0., 0., 0.));
+
           trueseq.set_primary( tp.primary());
-        
+
           true_sequences_.push_back(trueseq);
-        
-        
-        
+
+
+
         }
-    
+
       if( level >= mybhep::VVERBOSE ){
         print_true_sequences();
       }
-    
+
     }
-  
+
     return;
-  
+
   }
 
   //*******************************************************************
@@ -1256,12 +1258,12 @@ namespace CAT {
 
     if (! nemo_parts.empty()){
       m.message(" number of nemo particles is", nemo_parts.size(), mybhep::VVERBOSE);
-    
+
       for( size_t ipart=0; ipart<nemo_parts.size(); ipart++)
         {
-        
+
           mybhep::particle& tp = *nemo_parts[ipart];
-          const std::vector<mybhep::hit*>& thits = tp.hits("trk"); 
+          const std::vector<mybhep::hit*>& thits = tp.hits("trk");
           topology::sequence nemoseq;
           std::vector<topology::node> nemonodes;
           for(size_t i=0; i<thits.size(); i++)
@@ -1278,7 +1280,7 @@ namespace CAT {
             nemoseq.set_length(topology::experimental_double(mybhep::double_from_string(tp.fetch_property("length")), 0.));
 
           nemoseq.set_helix_vertex( topology::experimental_point( tp.vertex().x(), tp.vertex().y(), tp.vertex().z(), 0., 0., 0.),"nemo");
-        
+
 
           size_t cindex = 0;
           const std::vector<mybhep::hit*>& chits = tp.hits("cal");
@@ -1289,25 +1291,25 @@ namespace CAT {
           }
 
           nemoseq.set_name( tp.name() );
-        
-          nemoseq.set_momentum( topology::experimental_double(tp.p3().mag(), 0.));
+
+          nemoseq.set_momentum( topology::experimental_vector(tp.p3().x(), tp.p3().y(), tp.p3().z(), 0., 0., 0.));
 
           nemoseq.set_primary( tp.primary());
-        
+
           nemo_sequences_.push_back(nemoseq);
-        
-        
-        
+
+
+
         }
-    
+
       if( level >= mybhep::VVERBOSE ){
         print_nemo_sequences();
       }
-    
+
     }
-  
+
     return;
-  
+
   }
 
   //*******************************************************************
@@ -1340,7 +1342,7 @@ namespace CAT {
     for(std::vector<topology::sequence>::const_iterator iseq=true_sequences_.begin(); iseq != true_sequences_.end(); ++iseq){
       iseq->dump();
     }
-  
+
     return;
   }
 
@@ -1352,7 +1354,7 @@ namespace CAT {
     for(std::vector<topology::sequence>::const_iterator iseq=nemo_sequences_.begin(); iseq != nemo_sequences_.end(); ++iseq){
       iseq->dump();
     }
-  
+
     return;
   }
 
@@ -1365,7 +1367,7 @@ namespace CAT {
     for(std::vector<topology::cluster>::const_iterator icluster=clusters_.begin(); icluster != clusters_.end(); ++icluster){
       icluster->dump();
     }
-  
+
     return;
   }
 
@@ -1379,7 +1381,7 @@ namespace CAT {
     //devel = true;
     clock.start(" clusterizer: clusterize ","cumulative");
 
-    m.message(" local_tracking: fill clusters ", mybhep::VERBOSE); 
+    m.message(" local_tracking: fill clusters ", mybhep::VERBOSE);
 
     if( cells_.empty() ) return;
 
@@ -1388,7 +1390,7 @@ namespace CAT {
       tracked_data_.set_selected(false);
       return;
     }
-  
+
     float side[2]; // loop on two sides of the foil
     side[0] =  1.;
     side[1] = -1.;
@@ -1396,14 +1398,14 @@ namespace CAT {
     bool fast[2]; // loop on fast and slow hits
     fast[0] = true;
     fast[1] = false;
-  
+
     std::vector<unsigned int> flag;
     {
       unsigned int tmp = 0;
       flag.assign(cells_.size(), tmp);
     }
 
-    /** 2012-03-26 FM : using a 'flags' map keyed with cell IDs would be saner than indexing 
+    /** 2012-03-26 FM : using a 'flags' map keyed with cell IDs would be saner than indexing
      * the 'flag' std::vector with cell IDs because the last method forces cells' IDs to
      * range *EXACTLY* from 0 to N-1.
      */
@@ -1420,7 +1422,7 @@ namespace CAT {
             if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: ip=" << ip << " iq=" << iq << std::endl;
             for(size_t i=0; i<cells_.size(); i++)
               {
-                if (use_flag_map) 
+                if (use_flag_map)
                   {
                     flags[cells_[i].id()] = 0;
                   }
@@ -1429,7 +1431,7 @@ namespace CAT {
                     flag.at(i) = 0;
                   }
               }
-            
+
             for(std::vector<topology::cell>::const_iterator icell=cells_.begin(); icell!=cells_.end(); ++icell){
               if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: cell loop..." << std::endl;
               // pick a cell c that was never added
@@ -1438,7 +1440,7 @@ namespace CAT {
               if( (cell_side(c) * side[ip]) < 0) continue;
               if( c.fast() != fast[iq] ) continue;
               if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: ====> cell ID = "<<  c.id() << std::endl;
-              if (use_flag_map) 
+              if (use_flag_map)
                 {
                   if( flags[c.id()] == 1 ) continue;
                   flags[c.id()] = 1;
@@ -1449,7 +1451,7 @@ namespace CAT {
                   flag[c.id()] = 1;
                 }
               if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: flag done..." << std::endl;
-              
+
               // cell c will form a new cluster, i.e. a new list of nodes
               topology::cluster cluster_connected_to_c;
               if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: cluster_connected create..." << std::endl;
@@ -1475,30 +1477,30 @@ namespace CAT {
 
                 // get the list of cells near the connected cell
                 std::vector<topology::cell> cells_near_iconn = get_near_cells(cconn);
-            
-                m.message(" cluster ", clusters_.size(), " starts with ", c.id(), " try to add cell ", cconn.id(), " with n of neighbours = ", cells_near_iconn.size(), mybhep::VERBOSE); 
+
+                m.message(" cluster ", clusters_.size(), " starts with ", c.id(), " try to add cell ", cconn.id(), " with n of neighbours = ", cells_near_iconn.size(), mybhep::VERBOSE);
                 for(std::vector<topology::cell>::const_iterator icnc=cells_near_iconn.begin(); icnc!=cells_near_iconn.end(); ++icnc){
                   if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: couplet loop..." << std::endl;
- 
+
                   topology::cell cnc = *icnc;
 
                   if( !is_good_couplet(& cconn, cnc, cells_near_iconn) ) continue;
 
                   topology::cell_couplet ccnc(cconn,cnc,level,nsigma);
                   cc.push_back(ccnc);
-                  
-                  m.message(" ... creating couplet ", cconn.id(), " -> ", cnc.id(), mybhep::VERBOSE); 
-                  
-                  if (use_flag_map) 
+
+                  m.message(" ... creating couplet ", cconn.id(), " -> ", cnc.id(), mybhep::VERBOSE);
+
+                  if (use_flag_map)
                     {
-                      if( flags[cnc.id()] != 1 ) 
+                      if( flags[cnc.id()] != 1 )
                         {
                           flags[cnc.id()] = 1 ;
                           cells_connected_to_c.push_back(cnc);
                         }
                     }
                   else
-                    {                
+                    {
                       if( flag[cnc.id()] != 1 ){
                         flag[cnc.id()] = 1 ;
                         cells_connected_to_c.push_back(cnc);
@@ -1510,11 +1512,11 @@ namespace CAT {
                 newnode.calculate_triplets(Ratio, QuadrantAngle, TangentPhi, TangentTheta);
                 nodes_connected_to_c.push_back(newnode);
 
-                m.message(" cluster started with ", c.id(), " has been given cell ", cconn.id(), " with ", cc.size(), " couplets ", mybhep::VERBOSE); 
+                m.message(" cluster started with ", c.id(), " has been given cell ", cconn.id(), " with ", cc.size(), " couplets ", mybhep::VERBOSE);
                 if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: end of connected cell loop..." << std::endl;
 
               }
-              
+
               cluster_connected_to_c.set_nodes(nodes_connected_to_c);
 
               clusters_.push_back(cluster_connected_to_c);
@@ -1526,11 +1528,11 @@ namespace CAT {
 
     // 2012-03-26 FM: remove C style
     //free(flag);
-  
+
     setup_clusters();
- 
-    m.message(" there are ", clusters_.size(), " clusters of cells ", mybhep::VVERBOSE); 
-  
+
+    m.message(" there are ", clusters_.size(), " clusters of cells ", mybhep::VVERBOSE);
+
     if( PrintMode )
       make_plots(tracked_data_);
 
@@ -1546,7 +1548,7 @@ namespace CAT {
     if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: Done." << std::endl;
 
     return;
-  
+
   }
 
   //*************************************************************
@@ -1566,7 +1568,7 @@ namespace CAT {
       }
       }
       }
-    
+
       }
 
       std::vector<topology::sequence> true_sequences = tracked_data_.get_true_sequences();
@@ -1582,22 +1584,22 @@ namespace CAT {
       hman.fill("largest_true_kink_position", dist.z().value(), dist.x().value());
       }
       }
-      
-      }
-    
-    
-    
-    
+
       }
 
-    */  
+
+
+
+      }
+
+    */
     return;
 
 
   }
 
   //*************************************************************
-  bool clusterizer::is_good_couplet(topology::cell * mainc, 
+  bool clusterizer::is_good_couplet(topology::cell * mainc,
                                     const topology::cell &candidatec,
                                     const std::vector<topology::cell> & nearmain){
     //*************************************************************
@@ -1608,7 +1610,7 @@ namespace CAT {
     clock.start(" clusterizer: is good couplet ","cumulative");
 
     topology::cell a=*mainc;
-    
+
 
     for(std::vector<topology::cell>::const_iterator icell=nearmain.begin(); icell != nearmain.end(); ++icell){
 
@@ -1617,25 +1619,25 @@ namespace CAT {
 
       if(near_level(b, candidatec) == 0 ) continue;
 
-      if(near_level(b, candidatec) < near_level(a, candidatec) || 
+      if(near_level(b, candidatec) < near_level(a, candidatec) ||
          near_level(b, a) < near_level(a, candidatec) )
         continue;  // cannot match a->b or b->c if a->c is nearer
 
-      //    if( icell->intersect(candidatec) || icell->intersect(mainc) ) continue;  
+      //    if( icell->intersect(candidatec) || icell->intersect(mainc) ) continue;
       // don't reject candidate based on a cell that intersects it
-       
-      m.message(" ... ... check if near node ", b.id(), " has triplet ", a.id(), " <-> ", candidatec.id(), mybhep::VERBOSE); 
+
+      m.message(" ... ... check if near node ", b.id(), " has triplet ", a.id(), " <-> ", candidatec.id(), mybhep::VERBOSE);
 
       topology::cell_triplet ccc(a,b,candidatec, level, nsigma);
       ccc.calculate_joints(Ratio, QuadrantAngle, TangentPhi, TangentTheta);
       if(ccc.joints().size() > 0 ){
-        m.message(" ... ... yes it does: so couplet ", a.id(), " and ", candidatec.id(), " is not good",  mybhep::VERBOSE); 
+        m.message(" ... ... yes it does: so couplet ", a.id(), " and ", candidatec.id(), " is not good",  mybhep::VERBOSE);
         clock.stop(" clusterizer: is good couplet ");
         return false;
       }
 
     }
-  
+
 
     clock.stop(" clusterizer: is good couplet ");
     return true;
@@ -1677,7 +1679,7 @@ namespace CAT {
     double tdelay = mybhep::double_from_string(h->fetch_property("ATIME"));
     if( isnan(tdelay) || isinf(tdelay) )
       tdelay = -1.;
-  
+
     if( radius != 0. && tdelay == 0. ) // fast hit
       h->add_property("FAST",mybhep::to_string(1));
     else if( radius == 0. && tdelay != 0. ){ // delayed hit
@@ -1685,9 +1687,9 @@ namespace CAT {
     }
     else
       {
-        m.message("Problem: hit has radius", radius, "delay time", tdelay, mybhep::NORMAL); 
+        m.message("Problem: hit has radius", radius, "delay time", tdelay, mybhep::NORMAL);
       }
-  
+
     return;
 
   }
@@ -1695,19 +1697,19 @@ namespace CAT {
   //*************************************************************
   int clusterizer::cell_side( const topology::cell & c){
     //*************************************************************
-  
+
     if( SuperNemo )
       {
         if( c.ep().z().value() > 0. )
           return 1;
-      
+
         return -1;
       }
-  
-  
+
+
     if( c.ep().radius().value() > FoilRadius )
       return 1;
-  
+
     return -1;
 
   }
@@ -1715,7 +1717,7 @@ namespace CAT {
 
   size_t clusterizer::near_level( const topology::cell & c1, const topology::cell & c2 ){
 
-    // returns 0 for far-away cell 
+    // returns 0 for far-away cell
     // 1 for diagonal cells
     // 2 for side-by-side cells
 
@@ -1737,9 +1739,9 @@ namespace CAT {
       }
     else
       {
-        double factor = cos(M_PI/8.); // 0.923879532511287 // octogonal factor = 0.92 
+        double factor = cos(M_PI/8.); // 0.923879532511287 // octogonal factor = 0.92
         limit_side = factor*CellDistance;
-        limit_diagonal = sqrt(2.)*factor*CellDistance; // new factor = 1.31 
+        limit_diagonal = sqrt(2.)*factor*CellDistance; // new factor = 1.31
       }
     double precision = 0.15*limit_side;
 
@@ -1748,13 +1750,13 @@ namespace CAT {
 
     if( fabs(distance.value() - limit_side) < precision )
       return 2;
-  
+
     if( fabs(distance.value() - limit_diagonal) < precision )
       return 1;
-  
+
     return 0;
 
-  
+
   }
 
 
@@ -1768,13 +1770,13 @@ namespace CAT {
 
     for(std::vector<topology::cell>::iterator kcell=cells_.begin(); kcell != cells_.end(); ++kcell){
       if( kcell->id() == c.id() ) continue;
-     
+
       if( kcell->fast() != c.fast() ) continue;
-     
+
       if( cell_side(*kcell) != cell_side(c) ) continue;
-     
+
       size_t nl = near_level(c,*kcell);
-     
+
       if( nl > 0 )
         {
           if( level >= mybhep::VVERBOSE ){
@@ -1799,7 +1801,7 @@ namespace CAT {
   //*************************************************************
   void clusterizer::setup_cells(){
     //*************************************************************
-  
+
     for(std::vector<topology::cell>::iterator icell=cells_.begin(); icell!=cells_.end(); ++icell){
       icell->set_print_level(level);
       icell->set_nsigma(nsigma);
@@ -1838,7 +1840,7 @@ namespace CAT {
         }
 
       }
-    
+
     }
 
     clock.stop(" clusterizer: setup_clusters ");
@@ -1849,7 +1851,7 @@ namespace CAT {
 
   //*************************************************************
   int clusterizer::get_effective_layer(const mybhep::hit &hit){
-    //************************************************************* 
+    //*************************************************************
 
     // calculates effective layer of a hit in calorimeter block on +-X wall
     // returns -8, -7, ..., -1, 0, 0, 1, ..., 7, 8
@@ -1873,31 +1875,31 @@ namespace CAT {
     double pos = GG_CELL_pitch;
     bool found = false;
     int counter = 0;
-  
+
     for(size_t i=0; i<planes_per_block.size(); i++){
       if( found )
         break;
-    
+
       pos += gaps_Z[i];
-    
+
       for(size_t j=0; j<(size_t)planes_per_block[i]; j++){
-      
+
         if( pos > fabs(block_pos[2]) ){
           found = true;
           break;
         }
         pos += GG_CELL_pitch ;
         counter ++;
-      
+
       }
     }
-  
+
     int layer = (int)counter;
     if( block_pos[2] < 0. )
       layer *= -1;
-  
+
     return layer;
-  
+
   }
 
   //*******************************************************************
@@ -1937,7 +1939,7 @@ namespace CAT {
       {
         double x_offset = 110.;
         plane =  block_type.substr(0,11);
-      
+
         if (plane=="CALO_WRAP+X"){
           norm.set_x(topology::experimental_double(-1.,0.));
           layer = (double)get_effective_layer(ahit);
@@ -1955,7 +1957,7 @@ namespace CAT {
           norm.set_z(topology::experimental_double(-1.,0.));
         }
         else{
-          m.message("problem: calo block not recognized",plane,mybhep::MUTE); 
+          m.message("problem: calo block not recognized",plane,mybhep::MUTE);
           exit(1);
         }
       }
@@ -1964,13 +1966,13 @@ namespace CAT {
         int block,planeid,id,idd;
         sscanf(block_type.c_str(),"%d_%d_%d_%d",&block,&planeid,&id,&idd);
 
-      
+
 
         if (planeid==0 || planeid == 1){
 
           topology::experimental_point origin(0.,0.,0.,0.,0.,0.);
           norm = (topology::experimental_vector(origin, center)).hor().unit();
-      
+
           if (planeid==0){
             //  plane = "inner"; //inner
             layer = -(lastlayer - 1);
@@ -2001,12 +2003,12 @@ namespace CAT {
           else if(id==2) layer=3.5;
           else if(id==3) layer=5.5;
           else{
-            m.message("CAL wall not recognized",block_type,mybhep::NORMAL); 
+            m.message("CAL wall not recognized",block_type,mybhep::NORMAL);
             exit(1);
           }
         }
         else{
-          m.message("CAL wall not recognized",block_type,mybhep::NORMAL); 
+          m.message("CAL wall not recognized",block_type,mybhep::NORMAL);
           exit(1);
         }
       }
@@ -2027,16 +2029,16 @@ namespace CAT {
   //*************************************************************
   void clusterizer::order_cells(){
     //*************************************************************
-  
+
     clock.start(" clusterizer: order cells ","cumulative");
-   
+
     if( cells_.size() ){
       if( level >= mybhep::VVERBOSE ){
         std::clog << " printing cells " << cells_.size() << std::endl;
         print_cells();
         std::clog << " sorting cells " << std::endl;
       }
-      
+
       //  std::sort( cells_.begin(), cells_.end(), topology::cell::compare );
       std::sort( cells_.begin(), cells_.end());
     }
@@ -2184,19 +2186,19 @@ namespace CAT {
         m.message(" reject: sequence ", iseq - true_sequences_.begin(), " has ", kinks_counter, " kinks ", mybhep::NORMAL);
         return false;
       }
-    
+
       if( kinks_counter > 0 && (layer == 0 || layer == 8 || layer == -8) ){
         m.message(" reject: sequence ", iseq - true_sequences_.begin(), " has kink on plane ", layer, mybhep::NORMAL);
         return false;
       }
-    
+
     }
 
     if( all_kinks_counter == 0 ){
       m.message(" reject: no kinks in the event ", mybhep::NORMAL);
       return false;
     }
-    
+
 
 #endif
 
@@ -2467,6 +2469,12 @@ namespace CAT {
     return;
   }
 
- 
+  void clusterizer::set_bfield(double v){
+    bfield = v;
+    return;
+  }
+
+
+
 }
 

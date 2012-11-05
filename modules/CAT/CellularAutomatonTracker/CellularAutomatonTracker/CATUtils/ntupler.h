@@ -61,6 +61,8 @@ class ntupler
     std::vector<double>* simulated_z_;
     std::vector<double>* simulated_dx_;
     std::vector<double>* simulated_dz_;
+    std::vector<double>* simulated_dr_;
+    std::vector<double>* simulated_dphi_;
     std::vector<double>* tracked_tangency_x_;
     std::vector<double>* tracked_tangency_y_;
     std::vector<double>* tracked_tangency_z_;
@@ -69,6 +71,8 @@ class ntupler
     std::vector<double>* tracked_tangency_z_error_;
     std::vector<double>* tracked_tangency_dx_;
     std::vector<double>* tracked_tangency_dz_;
+    std::vector<double>* tracked_tangency_dr_;
+    std::vector<double>* tracked_tangency_dphi_;
     std::vector<double>* residual_tangency_x_;
     std::vector<double>* residual_tangency_y_;
     std::vector<double>* residual_tangency_z_;
@@ -83,6 +87,8 @@ class ntupler
     std::vector<double>* tracked_helix_z_error_;
     std::vector<double>* tracked_helix_dx_;
     std::vector<double>* tracked_helix_dz_;
+    std::vector<double>* tracked_helix_dr_;
+    std::vector<double>* tracked_helix_dphi_;
     std::vector<double>* residual_helix_x_;
     std::vector<double>* residual_helix_y_;
     std::vector<double>* residual_helix_z_;
@@ -106,11 +112,16 @@ class ntupler
     std::vector<double>* simulated_vertex_x_;
     std::vector<double>* simulated_vertex_y_;
     std::vector<double>* simulated_vertex_z_;
+    std::vector<double>* simulated_vertex_cos_;
     std::vector<double>* simulated_vertex_phi_;
+    std::vector<double>* simulated_charge_;
     std::vector<double>* tracked_helix_vertex_x_;
     std::vector<double>* tracked_helix_vertex_y_;
     std::vector<double>* tracked_helix_vertex_z_;
+    std::vector<double>* tracked_helix_vertex_cos_;
     std::vector<double>* tracked_helix_vertex_phi_;
+    std::vector<double>* tracked_charge_;
+    std::vector<double>* tracked_helix_charge_;
     std::vector<double>* tracked_helix_vertex_x_error_;
     std::vector<double>* tracked_helix_vertex_y_error_;
     std::vector<double>* tracked_helix_vertex_z_error_;
@@ -143,6 +154,7 @@ class ntupler
     std::vector<double>* tracked_tangent_vertex_x_;
     std::vector<double>* tracked_tangent_vertex_y_;
     std::vector<double>* tracked_tangent_vertex_z_;
+    std::vector<double>* tracked_tangent_vertex_cos_;
     std::vector<double>* tracked_tangent_vertex_phi_;
     std::vector<double>* tracked_tangent_vertex_x_error_;
     std::vector<double>* tracked_tangent_vertex_y_error_;

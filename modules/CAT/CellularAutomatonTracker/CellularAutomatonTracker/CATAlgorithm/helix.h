@@ -302,10 +302,23 @@ namespace CAT {
 	
 	experimental_vector center_to_start(c.center(),start);
 	center_to_start = center_to_start.hor();
-	experimental_double angle_at_center=center_to_start.kink_phi(direction)/2.;
-	experimental_double phi0=phi_of_point(start);
-	*ep = c.position(phi0 + angle_at_center);
+
+	experimental_vector rotation=(direction.unit())^(center_to_start.unit());
+
+	experimental_double beta=experimental_asin(rotation.y());
+
+	//	experimental_double angle_at_center=center_to_start.kink_phi(direction)/2.;
+	experimental_double phi0=c.phi_of_point(start);
+	experimental_double alpha=experimental_double(asin(1.),0.)-beta-experimental_acos(center_to_start.length()/c.radius()*rotation.y());
+
+	experimental_double sign(1.,0.);  // if the track is in the outer part of the foil
+	if( (center_to_start*direction).value() > 0 ) // the track in in the inner part of the foil
+	  sign.set_value(-1.);
+
+	//	*ep = c.position(phi0 + angle_at_center);
+	*ep = c.position(phi0 + sign*alpha);
 	ep->set_y(position(*ep, phi0.value()).y());
+
 	
 	return true;
       }

@@ -465,35 +465,16 @@ void EventDisplay::initialize( ) {
 
   canvas->Divide(sv, ncanvas);
 
-    //////////////////////////////////
-    //                              //
-    //      COLOR CODE              //
-    //                              //
-    //   0 ........ white           //
-    //   1 ........ black           //
-    //   2 ........ red             //
-    //   3 ........ green 1         //
-    //   4 ........ blue            //
-    //   5 ........ yellow          //
-    //   6 ........ pink            //
-    //   7 ........ clear blue      //
-    //   8 ........ green 2         //
-    //   9 ........ blue 2          //
-    //   10 ....... white 2         //
-    //   11 ....... grey            //
-    //                              //
-    //////////////////////////////////
-
-    color_detector = kBlack; // green
-    color_cells = kBlue; // clear blue
-    color_fast_cells = kBlue + 2; // blue
-    color_cats = kCyan; // black
-    color_nemora = kRed; // red
-    color_true_track = kPink; // pink
-    color_tangent = kBlack; // grey
-    color_triplet = kMagenta; // pink
-    color_helix = kOrange; // red
-    color_calos = kAzure; // clear_blue
+    color_detector = kBlack; 
+    color_cells = kBlue; 
+    color_fast_cells = kBlue + 2; 
+    color_cats = kCyan; 
+    color_nemora = kRed; 
+    color_true_track = kPink; 
+    color_tangent = kBlack; 
+    color_triplet = kMagenta; 
+    color_helix = kOrange; 
+    color_calos = kAzure; 
 
 
   return;
@@ -2575,12 +2556,12 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<topology::sequence
 	size_t offset = 0;
 
 
-	if( s.has_helix_vertex() )
+	if( s.has_tangent_vertex() )
 	  {
 	    npoints += 1;  // vertex
 	    offset = 1;
 	  }
-	if( s.has_decay_helix_vertex() )
+	if( s.has_decay_tangent_vertex() )
 	  {
 	    npoints += 1;  // decay vertex
 	  }
@@ -2589,16 +2570,16 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<topology::sequence
 	double* zt = (double*)malloc(sizeof(double)*npoints);
 	double* xt = (double*)malloc(sizeof(double)*npoints);
 	
-	if( s.has_helix_vertex() )
+	if( s.has_tangent_vertex() )
 	  {
-	    xt[0] = s.helix_vertex().x().value();
-	    zt[0] = s.helix_vertex().z().value();
+	    xt[0] = s.tangent_vertex().x().value();
+	    zt[0] = s.tangent_vertex().z().value();
 	  }
 	
-	if( s.has_decay_helix_vertex() )
+	if( s.has_decay_tangent_vertex() )
 	  {
-	    xt[npoints-1] = s.decay_helix_vertex().x().value();
-	    zt[npoints-1] = s.decay_helix_vertex().z().value();
+	    xt[npoints-1] = s.decay_tangent_vertex().x().value();
+	    zt[npoints-1] = s.decay_tangent_vertex().z().value();
 	  }
 
 	for(size_t j=0; j<nnodes; j++)
@@ -2641,12 +2622,12 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<topology::sequence
 	size_t offset = 0;
 
 
-	if( s.has_helix_vertex() )
+	if( s.has_tangent_vertex() )
 	  {
 	    npoints += 1;  // vertex
 	    offset = 1;
 	  }
-	if( s.has_decay_helix_vertex() )
+	if( s.has_decay_tangent_vertex() )
 	  {
 	    npoints += 1;  // decay vertex
 	  }
@@ -2655,16 +2636,16 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<topology::sequence
 	double* zt = (double*)malloc(sizeof(double)*npoints);
 	double* xt = (double*)malloc(sizeof(double)*npoints);
 	
-	if( s.has_helix_vertex() )
+	if( s.has_tangent_vertex() )
 	  {
-	    xt[0] = s.helix_vertex().x().value();
-	    zt[0] = s.helix_vertex().z().value();
+	    xt[0] = s.tangent_vertex().x().value();
+	    zt[0] = s.tangent_vertex().z().value();
 	  }
 	
-	if( s.has_decay_helix_vertex() )
+	if( s.has_decay_tangent_vertex() )
 	  {
-	    xt[npoints-1] = s.decay_helix_vertex().x().value();
-	    zt[npoints-1] = s.decay_helix_vertex().z().value();
+	    xt[npoints-1] = s.decay_tangent_vertex().x().value();
+	    zt[npoints-1] = s.decay_tangent_vertex().z().value();
 	  }
 
 	std::vector<double> helix_chi2s = s.helix_chi2s();
@@ -2934,12 +2915,12 @@ void EventDisplay::draw_cats_yz(std::string mode, std::vector<topology::sequence
 	size_t npoints = nnodes;
 	size_t offset = 0;
 
-	if( s.has_helix_vertex() )
+	if( s.has_tangent_vertex() )
 	  {
 	    npoints += 1;  // vertex
 	    offset = 1;
 	  }
-	if( s.has_decay_helix_vertex() )
+	if( s.has_decay_tangent_vertex() )
 	  {
 	    npoints += 1;  // decay vertex
 	  }
@@ -2947,16 +2928,16 @@ void EventDisplay::draw_cats_yz(std::string mode, std::vector<topology::sequence
 	double* zt = (double*)malloc(sizeof(double)*npoints);
 	double* yt = (double*)malloc(sizeof(double)*npoints);
 
-	if( s.has_helix_vertex() )
+	if( s.has_tangent_vertex() )
 	  {
-	    yt[0] = s.helix_vertex().y().value();
-	    zt[0] = s.helix_vertex().z().value();
+	    yt[0] = s.tangent_vertex().y().value();
+	    zt[0] = s.tangent_vertex().z().value();
 	  }
 	
-	if( s.has_decay_helix_vertex() )
+	if( s.has_decay_tangent_vertex() )
 	  {
-	    yt[npoints-1] = s.decay_helix_vertex().y().value();
-	    zt[npoints-1] = s.decay_helix_vertex().z().value();
+	    yt[npoints-1] = s.decay_tangent_vertex().y().value();
+	    zt[npoints-1] = s.decay_tangent_vertex().z().value();
 	  }
 
 	for(size_t j=0; j<nnodes; j++)
@@ -2998,12 +2979,12 @@ void EventDisplay::draw_cats_yz(std::string mode, std::vector<topology::sequence
 	size_t npoints = nnodes;
 	size_t offset = 0;
 
-	if( s.has_helix_vertex() )
+	if( s.has_tangent_vertex() )
 	  {
 	    npoints += 1;  // vertex
 	    offset = 1;
 	  }
-	if( s.has_decay_helix_vertex() )
+	if( s.has_decay_tangent_vertex() )
 	  {
 	    npoints += 1;  // decay vertex
 	  }
@@ -3011,16 +2992,16 @@ void EventDisplay::draw_cats_yz(std::string mode, std::vector<topology::sequence
 	double* zt = (double*)malloc(sizeof(double)*npoints);
 	double* yt = (double*)malloc(sizeof(double)*npoints);
 
-	if( s.has_helix_vertex() )
+	if( s.has_tangent_vertex() )
 	  {
-	    yt[0] = s.helix_vertex().y().value();
-	    zt[0] = s.helix_vertex().z().value();
+	    yt[0] = s.tangent_vertex().y().value();
+	    zt[0] = s.tangent_vertex().z().value();
 	  }
 	
-	if( s.has_decay_helix_vertex() )
+	if( s.has_decay_tangent_vertex() )
 	  {
-	    yt[npoints-1] = s.decay_helix_vertex().y().value();
-	    zt[npoints-1] = s.decay_helix_vertex().z().value();
+	    yt[npoints-1] = s.decay_tangent_vertex().y().value();
+	    zt[npoints-1] = s.decay_tangent_vertex().z().value();
 	  }
 
 

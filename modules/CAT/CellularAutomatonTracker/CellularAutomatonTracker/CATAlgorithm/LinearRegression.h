@@ -1,15 +1,15 @@
 /* -*- mode: c++ -*- */
 #ifndef __CATAlgorithm__ILINEARREGRESSION
 #define __CATAlgorithm__ILINEARREGRESSION
+
 #include <iostream>
 #include <cmath>
+#include <CATAlgorithm/CAT_config.h>
 #include <CATAlgorithm/experimental_double.h>
+#include <CATAlgorithm/circle.h>
 
 namespace CAT {
 namespace topology{
-
-
-
 
   class LinearRegression : public tracking_object{
 
@@ -31,6 +31,9 @@ namespace topology{
 
   public:
 
+    //!Default destructor
+    virtual ~LinearRegression(){};
+
     //!Default constructor
     LinearRegression(mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.)
     {
@@ -42,9 +45,6 @@ namespace topology{
       set_print_level(level);
       set_nsigma(nsigma);
     }
-
-    //!Default destructor
-    virtual ~LinearRegression(){};
 
     //! constructor
     LinearRegression(std::vector<experimental_double> xi, std::vector<experimental_double> yi, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.){
@@ -59,7 +59,7 @@ namespace topology{
     virtual void dump (std::ostream & a_out         = std::clog,
                        const std::string & a_title  = "",
                        const std::string & a_indent = "",
-                       bool a_inherit          = false){
+                       bool a_inherit          = false)
       {
         std::string indent;
         if (! a_indent.empty ()) indent = a_indent;
@@ -80,164 +80,52 @@ namespace topology{
 
         return;
       }
-    }
 
 
 
     //! set
-    void set(std::vector<experimental_double> xi, std::vector<experimental_double> yi)
-      {
-        xi_ = xi;
-        yi_ = yi;
-      }
+    void set(std::vector<experimental_double> xi, std::vector<experimental_double> yi);
 
 
     //! set xi
-    void set_xi(std::vector<experimental_double> xi)
-      {
-        xi_ = xi;
-      }
+    void set_xi(std::vector<experimental_double> xi);
 
     //! set yi
-    void set_yi(std::vector<experimental_double> yi)
-      {
-        yi_ = yi;
-      }
+    void set_yi(std::vector<experimental_double> yi);
 
     //! set y0
-    void set_y0(experimental_double y0)
-      {
-        y0_ = y0;
-      }
+    void set_y0(experimental_double y0);
 
     //! set tangent
-    void set_tangent(experimental_double tangent)
-      {
-        tangent_ = tangent;
-      }
+    void set_tangent(experimental_double tangent);
 
     //! get xi
-    const std::vector<experimental_double>& xi()const
-    {
-      return xi_;
-    }
+    const std::vector<experimental_double>& xi()const;
 
     //! get yi
-    const std::vector<experimental_double>& yi()const
-    {
-      return yi_;
-    }
+    const std::vector<experimental_double>& yi()const;
 
     //! get y0
-    const experimental_double& y0()const
-    {
-      return y0_;
-    }
+    const experimental_double& y0()const;
 
     //! get tangent
-    const experimental_double& tangent()const
-    {
-      return tangent_;
-    }
+    const experimental_double& tangent()const;
 
+    bool fit(void);
 
+#if CAT_WITH_DEVEL_ROOT == 1
+    bool root_fit(void);
+#endif // CAT_WITH_DEVEL_ROOT == 1
 
-    bool fit(void){
+    experimental_double position(experimental_double x);
 
+    void invert();
 
-      if( xi_.size() != yi_.size() ){
-        if( print_level() >= mybhep::NORMAL ){
-          std::clog << " problem: in least square regression, sizes x " << xi_.size() << " y " << yi_.size() << std::endl;
-        }
-        return false;
-      }
-
-      double Sw = 0.;
-      double Swxx = 0.;
-      double Swx = 0.;
-      double Swxy = 0.;
-      double Swy = 0.;
-
-      for(std::vector<experimental_double>::iterator it=xi_.begin(); it != xi_.end(); ++it)
-        {
-          double w = 1./(mybhep::square(it->error()));
-          Sw += w;
-          Swxx += w*mybhep::square(it->value());
-          Swx += w*it->value();
-          double y = yi_[it - xi_.begin()].value();
-          Swxy += w*it->value()*y;
-          Swy += w*y;
-        }
-
-      double delta = Sw*Swxx - mybhep::square(Swx);
-
-      if( delta == 0.){
-        if( print_level() >= mybhep::NORMAL ){
-          std::clog << " problem: in least square regression, delta " << delta << " Sw " << Sw << " Swx " << Swx << " Swxx " << Swxx << std::endl;
-        }
-        return false;
-      }
-
-      double a = (Swxx*Swy - Swx*Swxy)/delta;
-      double b = (Sw*Swxy - Swx*Swy)/delta;
-      double erra, errb;
-
-      if( Swxx/delta > 0. ){
-        erra = std::sqrt(Swxx/delta);
-      }
-      else{
-        if( print_level() >= mybhep::NORMAL ){
-          std::clog << " problem: linear regression sy02 " << Swxx/delta << " Swxx " << Swxx << " delta " << delta << std::endl;
-        }
-        return false;
-      }
-
-      if( Sw/delta > 0. ){
-        errb = std::sqrt(Sw/delta);
-      }
-      else{
-        if( print_level() >= mybhep::NORMAL ){
-          std::clog << " problem: linear regression stangent2 " << Sw/delta << " Sw " << Sw << " delta " << delta << std::endl;
-        }
-        return false;
-      }
-
-      set_y0(experimental_double(a, erra));
-      set_tangent(experimental_double(b, errb));
-
-      return true;
-
-    }
-
-    experimental_double position(experimental_double x){
-
-      return y0() + tangent()*x;
-    }
-
-
-    void invert(){
-      // go from:
-      // y = y0 + tangent x
-      // to
-      // x = y0' + tangent' y
-      // y0' = - y0/tangent = - y0 tangent'
-      // tangent' = 1 / tangent
-
-      std::vector<experimental_double> tmp = xi();
-      set_xi(yi());
-      set_yi(tmp);
-      set_y0(- y0()/tangent());
-      set_tangent(1./tangent());
-
-      return;
-
-    }
 
 
   };
 
 }
 }
-
 #endif
 

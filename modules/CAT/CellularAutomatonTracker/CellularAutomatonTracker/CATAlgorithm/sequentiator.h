@@ -358,6 +358,11 @@ namespace CAT {
       return;
     }
 
+    void set_bfield(double v){
+      bfield = v;
+      return;
+    }
+
     void set_gaps_Z(std::vector<double> v){
       gaps_Z.clear();
       for(size_t i=0; i<v.size(); i++)

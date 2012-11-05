@@ -1,0 +1,1109 @@
+#!/usr/bin/env bash
+# -*- mode: shell-script; -*-
+# pkgtool
+
+APPNAME="pkgtool"
+
+opwd=$(pwd)
+
+function my_exit ()
+{
+    cd ${opwd}
+    exit $1
+}
+
+bio_support=0
+python_wrapper_support=0
+validation_support=1
+testing_support=1
+doc_support=0
+
+appname=${APPNAME}
+appversion=0.1
+package_name="CellularAutomatonTracker"
+list_of_actions="check configure unconfigure build clean install uninstall reset quickstart list_of_actions"
+pkgtools_dir="pkgtools.d"
+
+if [ ${doc_support} -eq 1 ]; then
+    list_of_actions="${list_of_actions} doc "
+fi
+
+if [ ${testing_support} -eq 1 ]; then
+    list_of_actions="${list_of_actions} test untest "
+fi
+
+if [ ${validation_support} -eq 1 ]; then
+    list_of_actions="${list_of_actions} validate clean_validate "
+fi
+
+the_base_dir=$(pwd)
+
+if [ ! -d ./${pkgtools_dir} ]; then
+    echo " ERROR: ${appname}: Please run this script from the package base directory ! Abort !" >&2
+    my_exit 1
+fi
+
+libpkgtools_sourced=0
+
+if [ ${libpkgtools_sourced} -eq 0 ]; then
+    libpkgtools_sh=${the_base_dir}/${pkgtools_dir}/libpkgtools.sh
+    if [ -f ${libpkgtools_sh} ]; then
+	source ${libpkgtools_sh}
+	libpkgtools_sourced=1
+    fi
+fi
+
+pkgtools_root=${PKGTOOLS_ROOT}
+if [ ${libpkgtools_sourced} -eq 0 ]; then
+    if [ "x${pkgtools_root}" != "x" ]; then
+	if [ -f ${pkgtools_root}/lib/libpkgtools.sh ]; then
+	    source ${pkgtools_root}/lib/libpkgtools.sh
+	    libpkgtools_sourced=1
+	fi
+    fi
+fi
+
+if [ ${libpkgtools_sourced} -eq 0 ]; then
+    echo " ERROR: ${appname}: Cannot find any 'libpkgtools.sh' setup file ! Abort !" >&2
+    my_exit 1
+fi
+
+the_default_build_dir=${the_base_dir}/__build-$(pkgtools__get_sys)
+the_build_dir=
+the_default_install_prefix=${the_base_dir}/__install-$(pkgtools__get_sys)
+pkgtools_conf=${the_base_dir}/${pkgtools_dir}/__pkgtools.conf
+
+pkgtools__msg_not_using_quiet
+pkgtools__msg_not_using_verbose
+pkgtools__msg_not_using_debug
+pkgtools__msg_not_using_devel
+pkgtools__msg_not_using_date
+pkgtools__msg_using_color
+pkgtools__ui_interactive
+pkgtools__ui_not_using_gui
+
+function print_usage ()
+{
+    cat <<EOF
+
+  ${appname} -- Description
+
+  Usage:
+
+    ${appname} [Options...] ACTION [Options...]
+
+  Options:
+
+    -h
+    --help         : print this help then exit
+
+    --version      : print version then exit
+
+    -d
+    --debug        : print debug mode informations
+
+    -D
+    --devel        : print devel mode informations
+
+    -v
+    --verbose      : verbose print
+
+    -i
+    --interactive  : run in interactive mode (this is the default)
+
+    -b
+    --batch        : run in batch mode (no user interaction, disable GUI features)
+
+    --no-color     : use un-colored message output
+
+    --gui          : use GUI user interface (interactive mode only)
+
+  Actions:
+
+    check               : check dependencies
+    configure [OPTIONS] : configure the package
+      Options:
+      --install-prefix [INSTALLATION BASE DIRECTORY] :
+                                   set the installation base directory
+                                   (may need special privilege)
+      --with-minimal-build       : enable minimal build option (default)
+      --without-minimal-build    : disable minimal build option
+EOF
+    if [ ${bio_support} -eq 1 ]; then
+	cat <<EOF
+      --with-bio                 : generate the Boost I/O DLL (default)
+      --without-bio              : do not generate the Boost I/O DLL
+EOF
+    fi
+    if [ ${python_wrapper_support} -eq 1 ]; then
+	cat <<EOF
+      --with-python-wrapper      : generate the Boost/Python wrapper module
+      --without-python-wrapper   : do not generate the Boost/Python wrapper module (default)
+EOF
+    fi
+    if [ ${doc_support} -eq 1 ]; then
+	cat <<EOF
+      --with-documentation       : generate documentation material (default)
+      --without-documentation    : do not generate documentation material
+EOF
+    fi
+    if [ ${testing_support} -eq 1 ]; then
+	cat <<EOF
+      --with-test                : generate test material (default)
+      --without-test             : do not generate test material
+EOF
+    fi
+    cat <<EOF
+      --with-dependency-check    : perform a rudimentary dependency check before processing
+      --without-dependency-check : perform a rudimentary dependency check before processing (default)
+      --build-directory [BUILD DIRECTORY] :
+                                   set the CMake build directory
+      --reset-build-directory    : always use a brand new CMake build directory
+    unconfigure         : unconfigure the package
+    build [OPTIONS]     : build the package
+      Options:
+      --number-of-tasks [NUMBER OF TASKS|auto] :
+                                   use several parallel tasks
+                                   'auto' computes the number of available
+                                   processors if possible.
+
+EOF
+    if [ ${doc_support} -eq 1 ]; then
+	cat <<EOF
+    doc                 : build documentation
+EOF
+    fi
+    cat <<EOF
+    clean               : clean build material
+    install             : install the package
+    uninstall           : uninstall the package (not fully implemented yet !)
+EOF
+    if [ ${testing_support} -eq 1 ]; then
+ 	cat <<EOF
+    test                : run post build test material
+    untest              : remove/clean post build test material
+EOF
+    fi
+    if [ ${validation_support} -eq 1 ]; then
+ 	cat <<EOF
+    validate            : run the validation protocol
+    clean_validate      : clean the material from the validation protocol
+EOF
+    fi
+    cat <<EOF
+    reset               : reset the package's source tree
+    list_of_actions     : print the list of available actions
+
+  Examples:
+
+    shell> ${appname} check
+    shell> ${appname} configure --install-prefix \${HOME}/software
+    shell> ${appname} build --number-of-tasks auto
+    shell> ${appname} doc
+EOF
+    if [ ${testing_support} -eq 1 ]; then
+	cat <<EOF
+    shell> ${appname} test
+EOF
+    fi
+    cat <<EOF
+    shell> ${appname} install
+EOF
+    if [ ${validation_support} -eq 1 ]; then
+	cat <<EOF
+    shell> ${appname} validate
+EOF
+    fi
+    return 0
+}
+
+
+#######################################################
+
+the_action_mode=
+the_action_options=
+parse_switch=1
+while [ -n "$1" ]; do
+    token="$1"
+    if [ "${token:0:1}" = "-" ]; then
+	opt=${token}
+	if [ ${parse_switch} -eq 0 ]; then
+	    pkgtools__msg_devel "Remaining option '${opt}' !"
+	    break
+	fi
+	if [ "${opt}" = "-h" -o "${opt}" = "--help" ]; then
+	    print_usage
+	    my_exit 0
+	elif [ "${opt}" = "--version" ]; then
+	    echo ${appversion}
+	    my_exit 0
+	elif [ "${opt}" = "-d" -o "${opt}" = "--debug" ]; then
+	    pkgtools__msg_using_debug
+	elif [ "${opt}" = "-D" -o "${opt}" = "--devel" ]; then
+	    pkgtools__msg_using_devel
+	elif [ "${opt}" = "-v" -o "${opt}" = "--verbose" ]; then
+	    pkgtools__msg_using_verbose
+	elif [ "${opt}" = "-i" -o "${opt}" = "--interactive" ]; then
+	    pkgtools__ui_interactive
+	elif [ "${opt}" = "-b" -o "${opt}" = "--batch" ]; then
+	    pkgtools__ui_batch
+	elif [ "${opt}" = "--no-color" ]; then
+	    pkgtools__msg_not_using_color
+	elif [ "${opt}" = "-G" -o "${opt}" = "--gui" ]; then
+	    pkgtools__ui_using_gui
+	    pkgtools__msg_devel "Using GUI"
+	else
+	    pkgtools__msg_error "Invalid option '${opt}' !"
+	    my_exit 1
+	    # pkgtools__msg_warning "Ignoring option '${opt}' !"
+	fi
+    else
+	arg=${token}
+	parse_switch=0
+	if [ "x${the_action_mode}" = "x" ]; then
+	    the_action_candidate="${arg}"
+	    for action_tmp in ${list_of_actions}; do
+		if [ "x${action_tmp}" = "x${the_action_candidate}" ]; then
+		   the_action_mode="${the_action_candidate}"
+		   break
+		fi
+	    done
+	    if [ "x${the_action_mode}" = "x" ]; then
+		pkgtools__msg_error "Invalid action name '${the_action_candidate}' !"
+		my_exit 1
+	    fi
+	else
+	    # remaining arguments from command line are kept in "$@"
+	    pkgtools__msg_devel "BREAK !"
+	    break
+	fi
+    fi
+    shift 1
+done
+
+the_action_options=$@
+pkgtools__msg_devel "the_action_mode=${the_action_mode}"
+pkgtools__msg_devel "the_action_options=${the_action_options}"
+
+# Batch mode:
+pkgtools__ui_is_interactive
+if [ $? -ne 0 ]; then
+    pkgtools__ui_not_using_gui
+fi
+
+if [ "x${the_build_dir}" = "x" ]; then
+    if [ "x${PKGTOOLS_BUILD_DIR}" != "x" ]; then
+	the_build_dir=${PKGTOOLS_BUILD_DIR}
+	pkgtools__msg_devel "Using build directory : ${the_build_dir} (environment variable)"
+    elif [ -f ${pkgtools_conf} ]; then
+	the_build_dir=$(cat ${pkgtools_conf} | grep "build_dir=" | cut -d= -f2)
+	pkgtools__msg_devel "Using build directory : ${the_build_dir}"
+    fi
+fi
+
+if [ "x${the_build_dir}" = "x" ]; then
+    the_build_dir=${the_default_build_dir}
+    pkgtools__msg_devel "Using default build directory : ${the_build_dir}"
+fi
+
+
+##########################################################
+
+function do_check ()
+{
+    __pkgtools__at_function_enter do_check
+
+    missing_material=""
+    missing_material_alt=""
+
+    # which datatools-config > /dev/null 2>&1
+    # if [ $? -ne 0 ]; then
+    # 	missing_material="${missing_material}datatools "
+    # 	pkgtools__msg_warning "Cannot find datatools !"
+    # else
+    # 	pkgtools__msg_notice "Found datatools $(datatools-config --version) !"
+    # fi
+
+    # which yyy-config > /dev/null 2>&1
+    # if [ $? -ne 0 ]; then
+    # 	missing_material="${missing_material}Yyy "
+    # 	pkgtools__msg_warning "Cannot find Yyy !"
+    # else
+    # 	pkgtools__msg_notice "Found mygsl $(yyy-config --version) !"
+    # fi
+
+    which doxygen > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+	missing_material_alt="${missing_material_alt}doxygen "
+	pkgtools__msg_warning "Cannot find doxygen !"
+    else
+	pkgtools__msg_notice "Found doxygen $(doxygen --version 2>&1) !"
+    fi
+
+    if [ "x${missing_material}" != "x" ]; then
+	pkgtools__msg_error "There are missing dependencies : ${missing_material}"
+	__pkgtools__at_function_exit
+	return 1
+    fi
+
+    if [ "x${missing_material_alt}" != "x" ]; then
+	pkgtools__msg_warning "There are missing secondary dependencies : ${missing_material_alt}"
+    fi
+
+    __pkgtools__at_function_exit
+    return 0
+}
+
+function do_configure ()
+{
+    __pkgtools__at_function_enter do_configure
+
+    local install_prefix=""
+    local reset_build_dir=0
+    local with_doc=0
+    local with_test=0
+    local with_dependency_check=0
+    local with_minimal_build=1
+
+    local with_bio=0
+    if [ ${bio_support} -eq 1 ]; then
+	with_bio=1 # default
+    fi
+
+    local with_python_wrapper=0
+    if [ ${python_wrapper_support} -eq 1 ]; then
+	with_python_wrapper=0 # default
+    fi
+
+    while [ -n "$1" ]; do
+	local option="$1"
+	pkgtools__msg_devel "Configure option: '${option}'"
+
+	if [ "${option}" = "--build-directory" ]; then
+	    shift 1
+	    the_build_dir="$1"
+	elif [ "${option}" = "--reset-build-directory" ]; then
+	    reset_build_dir=1
+	elif [ "${option}" = "--install-prefix" ]; then
+	    shift 1
+	    install_prefix="$1"
+	elif [ "${option}" = "--with-minimal-build" ]; then
+	    with_minimal_build=1
+	elif [ "${option}" = "--without-minimal-build" ]; then
+	    with_minimal_build=0
+	elif [ "${option}" = "--with-documentation" ]; then
+	    with_doc=1
+	elif [ "${option}" = "--without-documentation" ]; then
+	    with_doc=0
+	elif [ "${option}" = "--with-test" ]; then
+	    with_test=1
+	elif [ "${option}" = "--without-test" ]; then
+	    with_test=0
+	elif [ "${option}" = "--with-dependency-check" ]; then
+	    with_dependency_check=1
+	elif [ "${option}" = "--without-dependency-check" ]; then
+	    with_dependency_check=0
+	elif [ ${bio_support} -eq 1 -a "${option}" = "--with-bio" ]; then
+	    with_bio=1
+	elif [ ${bio_support} -eq 1 -a "${option}" = "--without-bio" ]; then
+	    with_bio=0
+	elif [ ${python_wrapper_support} -eq 1 -a "${option}" = "--with-python-wrapper" ]; then
+	    with_python_wrapper=1
+	elif [ ${python_wrapper_support} -eq 1 -a "${option}" = "--without-python-wrapper" ]; then
+	    with_python_wrapper=0
+	fi
+	shift 1
+    done
+
+    if [ -d ${the_build_dir} ]; then
+	pkgtools__msg_warning "The '${the_build_dir}' build directory already exists !"
+	if [ ${reset_build_dir} -eq 1 ]; then
+	    pkgtools__msg_notice "Remove the former '${the_build_dir}' build directory !"
+	    rm -fr ${the_build_dir}
+	fi
+    fi
+
+    if [ ! -d ${the_build_dir} ]; then
+	mkdir -p ${the_build_dir}
+	if [ $? -ne 0 ]; then
+	    pkgtools__msg_error "Cannot create the build directory !"
+	    __pkgtools__at_function_exit
+	    return 1
+	fi
+    fi
+
+    if [ "x${install_prefix}" = "x" ]; then
+	install_prefix=${the_default_install_prefix}
+	pkgtools__msg_notice "Using default installation prefix: '${the_default_install_prefix}'"
+    fi
+
+    pkgtools__msg_notice "Build directory       : '${the_build_dir}'"
+    test -f ${pkgtools_conf} && rm -f ${pkgtools_conf}
+    echo "build_dir=${the_build_dir}" >> ${pkgtools_conf}
+
+    pkgtools__msg_notice "Installation prefix        : '${install_prefix}'"
+    pkgtools__msg_notice "With documentation         : '${with_doc}'"
+    pkgtools__msg_notice "With test material         : '${with_test}'"
+    pkgtools__msg_notice "With minimal build support : '${with_minimal_build}'"
+    if [ ${python_wrapper_support} -eq 1 ]; then
+	pkgtools__msg_notice "With Python wrapper   : '${with_python_wrapper}'"
+    fi
+    if [ ${bio_support} -eq 1 ]; then
+	pkgtools__msg_notice "With Boost I/O DLL    : '${with_bio}'"
+    fi
+    pkgtools__msg_notice "With dependency check      : '${with_dependency_check}'"
+
+    if [ ${with_dependency_check} -eq 1 ]; then
+	do_check
+	if [ $? -ne 0 ]; then
+	    pkgtools__msg_error "Dependecy check failed !"
+	    __pkgtools__at_function_exit
+	    return 1
+	fi
+    fi
+
+    local additional_options=""
+    if [ ${bio_support} -eq 1 ]; then
+	additional_options="${additional_options}-DCAT_WITH_BIO=${with_bio} "
+    fi
+    if [ ${python_wrapper_support} -eq 1 ]; then
+	additional_options="${additional_options}-DCAT_WITH_PYTHON_WRAPPER=${with_python_wrapper} "
+    fi
+    cd ${the_build_dir}
+    cmake                                             \
+	-DCMAKE_INSTALL_PREFIX:PATH=${install_prefix} \
+	-DCMAKE_BUILD_TYPE:STRING=Release             \
+	-DCAT_WITH_DOC=${with_doc}                    \
+	-DCAT_WITH_TEST=${with_test}                  \
+        -DCAT_MINIMAL_BUILD=${with_minimal_build}     \
+	${additional_options}                         \
+	..
+    if [ $? -ne 0 ]; then
+	pkgtools__msg_error "Cannot configure the '${package_name}' package !"
+	__pkgtools__at_function_exit
+	return 1
+    fi
+    cd ${the_base_dir}
+
+    __pkgtools__at_function_exit
+    return 0
+}
+
+function do_unconfigure ()
+{
+    __pkgtools__at_function_enter do_unconfigure
+
+    if [ ! -d ${the_build_dir} ]; then
+	pkgtools__msg_error "Cannot find the build directory ! Abort !"
+	__pkgtools__at_function_exit
+	return 1
+    fi
+
+    cd ${the_build_dir}
+    test -f CMakeCache.txt && rm -f CMakeCache.txt
+    test -d CMakeFiles && rm -fr CMakeFiles
+    cd ${the_base_dir}
+
+    if [ -d ${the_build_dir} ]; then
+	pkgtools__msg_notice "Remove the '${the_build_dir}' build directory !"
+	rm -fr ${the_build_dir}
+    fi
+
+    if [ -f ${pkgtools_conf} ]; then
+	pkgtools__msg_notice "Remove the ${pkgtools_conf} configuration file !"
+	rm -f ${pkgtools_conf}
+    fi
+
+    __pkgtools__at_function_exit
+    return 0
+}
+
+function do_build ()
+{
+    __pkgtools__at_function_enter do_build
+
+    pkgtools__msg_devel "Build options are : '$@'"
+
+    if [ ! -d ${the_build_dir} ]; then
+	pkgtools__msg_error "Cannot find the build directory ! Please configure first !"
+	__pkgtools__at_function_exit
+	return 1
+    fi
+
+    local number_of_tasks=0
+    local number_of_processors=1
+    pkgtools__knows_number_of_processors
+    if [ $? -eq 0 ]; then
+	number_of_processors=$(pkgtools__get_number_of_processors)
+    fi
+    while [ -n "$1" ]; do
+	local option="$1"
+	pkgtools__msg_devel "Build option: '${option}'"
+	if [ "${option}" = "--number-of-tasks" ]; then
+	    shift 1
+	    local number_of_tasks_str="$1"
+	    if [ "x${number_of_tasks_str}" = "xauto" ]; then
+		number_of_tasks=${number_of_processors}
+	    else
+		local number_of_tasks_test=$(echo ${number_of_tasks_str} | tr -d "[0-9]")
+		if [ "x${number_of_tasks_test}" != "x" ]; then
+		    pkgtools__msg_error "Invalid number of tasks : ${number_of_tasks_str} !"
+		    __pkgtools__at_function_exit
+		    return 1
+		fi
+		number_of_tasks=${number_of_tasks_str}
+	    fi
+	fi
+	shift 1
+    done
+
+    if [ ${number_of_tasks} -eq 0 ]; then
+	number_of_tasks=${number_of_processors}
+    fi
+
+    pkgtools__msg_notice "Number of tasks : '${number_of_tasks}'"
+
+    cd ${the_build_dir}
+    time make --jobs=${number_of_tasks}
+    if [ $? -ne 0 ]; then
+	pkgtools__msg_error "Cannot build the '${package_name}' package !"
+	__pkgtools__at_function_exit
+	return 1
+    fi
+    cd ${the_base_dir}
+
+    __pkgtools__at_function_exit
+    return 0
+}
+
+function do_doc ()
+{
+    __pkgtools__at_function_enter do_doc
+
+    if [ ! -d ${the_build_dir} ]; then
+	pkgtools__msg_error "Cannot find the build directory ! Please configure and build first !"
+	__pkgtools__at_function_exit
+	return 1
+    fi
+
+    cd ${the_build_dir}
+    make doc
+    if [ $? -ne 0 ]; then
+	pkgtools__msg_error "Cannot build the documentation in '${package_name}' package !"
+	__pkgtools__at_function_exit
+	return 1
+    fi
+    cd ${the_base_dir}
+
+    __pkgtools__at_function_exit
+    return 0
+}
+
+function do_test ()
+{
+    __pkgtools__at_function_enter do_test
+
+    if [ ! -d ${the_build_dir} ]; then
+	pkgtools__msg_error "Cannot find the build directory ! Please configure and build first !"
+	__pkgtools__at_function_exit
+	return 1
+    fi
+
+    cd ${the_build_dir}
+    make test
+    if [ $? -ne 0 ]; then
+	pkgtools__msg_error "Cannot run the test material in '${package_name}' package !"
+	__pkgtools__at_function_exit
+	return 1
+    fi
+    cd ${the_base_dir}
+
+    __pkgtools__at_function_exit
+    return 0
+}
+
+function do_untest ()
+{
+    __pkgtools__at_function_enter do_untest
+
+    if [ ! -d ${the_build_dir} ]; then
+	pkgtools__msg_error "Cannot find the build directory ! Abort !"
+	__pkgtools__at_function_exit
+	return 1
+    fi
+
+    cd ${the_build_dir}
+    make clean_test
+    if [ $? -ne 0 ]; then
+	pkgtools__msg_error "Cannot clean the test material in '${package_name}' package !"
+	__pkgtools__at_function_exit
+	return 1
+    fi
+    cd ${the_base_dir}
+
+    __pkgtools__at_function_exit
+    return 0
+}
+
+function get_install_prefix_from_cmake ()
+{
+    __pkgtools__at_function_enter get_install_prefix_from_cmake
+
+    local the_install_prefix=
+    if [ -f ${the_build_dir}/CMakeCache.txt ]; then
+	the_install_prefix=$(cat ${the_build_dir}/CMakeCache.txt | grep ^CMAKE_INSTALL_PREFIX:PATH= | cut -d= -f2)
+    fi
+    if [ "x${the_install_prefix}" = "x" ]; then
+	__pkgtools__at_function_exit
+	return 1
+    fi
+    echo ${the_install_prefix}
+
+    __pkgtools__at_function_exit
+    return 0
+}
+
+function do_install ()
+{
+    __pkgtools__at_function_enter do_install
+
+    if [ ! -d ${the_build_dir} ]; then
+	pkgtools__msg_error "Cannot find the build directory ! Please configure and build first !"
+	__pkgtools__at_function_exit
+	return 1
+    fi
+
+    cd ${the_build_dir}
+    make install
+    if [ $? -ne 0 ]; then
+	pkgtools__msg_error "Cannot install the '${package_name}' package !"
+	__pkgtools__at_function_exit
+	return 1
+    fi
+    cd ${the_base_dir}
+
+    __pkgtools__at_function_exit
+    return 0
+}
+
+function do_uninstall ()
+{
+    __pkgtools__at_function_enter do_uninstall
+
+    pkgtools__ui_ask_user_yesno "Do you really want to uninstall ${package_name}" "n"
+    if [ $? -ne 0 ]; then
+	pkgtools__msg_error "UI error!"
+	__pkgtools__at_function_exit
+	return 1
+    else
+	pkgtools__ui_user_yesno_is_yes
+	if [ $? -ne 0 ]; then
+	    __pkgtools__at_function_exit
+	    return 0
+	fi
+    fi
+
+    local try_uninstall=1
+    if [ ${try_uninstall} -eq 1 ]; then
+	local the_install_prefix=$(get_install_prefix_from_cmake)
+	if [ "x${the_install_prefix}" != "x" ]; then
+	    pkgtools__msg_notice "Installation prefix is : ${the_install_prefix}"
+	else
+	    pkgtools__msg_error "No installation prefix could be extracted from CMake build directory !"
+	    __pkgtools__at_function_exit
+	    return 1
+ 	fi
+
+	if [ -d ${the_install_prefix} ]; then
+	    test -w ${the_install_prefix}
+	    if [ $? -ne 0 ]; then
+		pkgtools__msg_error "You don't have proper permission for the installation base directory '${the_install_prefix}' !"
+		__pkgtools__at_function_exit
+		return 1
+	    else
+		pkgtools__msg_devel "You do have proper permission for the installation base directory '${the_install_prefix}' !"
+	    fi
+	else
+	    pkgtools__msg_error "There is no installation base directory to be uninstalled !"
+	    __pkgtools__at_function_exit
+	    return 1
+	fi
+
+	if [ -f ${the_build_dir}/install_manifest.txt ]; then
+	    pkgtools__msg_notice "Removing all installed files..."
+	    local list_of_entries=$(cat ${the_build_dir}/install_manifest.txt)
+	    for entry in ${list_of_entries}; do
+		if [ -f ${entry} ]; then
+		    pkgtools__msg_devel "Removing installed file '${entry}'..."
+		    rm -f ${entry}
+		fi
+	    done
+	    pkgtools__msg_notice "All installed files have been removed !"
+	else
+	    pkgtools__msg_warning "It seems there is no file to be uninstalled !"
+ 	fi
+
+	if [ "x${the_install_prefix}" != "x" ]; then
+	    if [ -d ${the_install_prefix} ]; then
+		local the_list_of_dirs=$(find ${the_install_prefix} -mindepth 1 -type d | sort -r)
+		pkgtools__msg_devel "The list of subdirectories : '${the_list_of_dirs}'"
+		for dir in ${the_list_of_dirs}; do
+		    local dir_count=$(ls -a -1 ${dir}/ | wc -l)
+		    let dir_count=dir_count-2
+		    pkgtools__msg_devel "Installation subdirectory '${dir}' has ${dir_count} entries"
+		    if [ ${dir_count} -eq 0 ]; then
+			pkgtools__msg_devel "Removing empty installation subdirectory '${dir}'..."
+			rmdir ${dir}
+		    fi
+		done
+		local base_dir_count=$(ls -a -1 ${the_install_prefix}/ | wc -l)
+		let base_dir_count=base_dir_count-2
+		if [ ${base_dir_count} -eq 0 ]; then
+		    pkgtools__msg_devel "Removing empty installation base directory '${the_install_prefix}'..."
+		    rmdir ${the_install_prefix}
+		    pkgtools__msg_notice "The empty installation base directory '${the_install_prefix}' has been removed !"
+		fi
+	    fi
+	fi
+    fi
+
+    __pkgtools__at_function_exit
+    return 0
+}
+
+function do_validate ()
+{
+    __pkgtools__at_function_enter do_validate
+
+    if [ ! -d ${the_build_dir} ]; then
+	pkgtools__msg_error "Cannot find the build directory ! Please configure and build first !"
+	__pkgtools__at_function_exit
+	return 1
+    fi
+
+    cd ${the_build_dir}
+    make validation_run
+    if [ $? -ne 0 ]; then
+	pkgtools__msg_error "Cannot validate the '${package_name}' package !"
+	__pkgtools__at_function_exit
+	return 1
+    fi
+
+    make validation_report
+    if [ $? -ne 0 ]; then
+	pkgtools__msg_error "Cannot report the validation of the '${package_name}' package !"
+	__pkgtools__at_function_exit
+	return 1
+    fi
+
+    cd ${the_base_dir}
+
+    __pkgtools__at_function_exit
+    return 0
+}
+
+function do_clean_validate ()
+{
+    __pkgtools__at_function_enter do_clean_validate
+
+    if [ ! -d ${the_build_dir} ]; then
+	pkgtools__msg_error "Cannot find the build directory ! Please configure and build first !"
+	__pkgtools__at_function_exit
+	return 1
+    fi
+
+    cd ${the_build_dir}
+    make validation_clean
+    if [ $? -ne 0 ]; then
+	pkgtools__msg_error "Cannot clean validation material of the '${package_name}' package !"
+	__pkgtools__at_function_exit
+	return 1
+    fi
+
+    cd ${the_base_dir}
+
+    __pkgtools__at_function_exit
+    return 0
+}
+
+function do_clean ()
+{
+    __pkgtools__at_function_enter do_clean
+
+    if [ ! -d ${the_build_dir} ]; then
+	pkgtools__msg_error "Cannot find the build directory ! Abort !"
+	__pkgtools__at_function_exit
+	return 1
+    fi
+
+    cd ${the_build_dir}
+    make clean
+    if [ $? -ne 0 ]; then
+	pkgtools__msg_error "Could not properly clean the '${package_name}' package !"
+	__pkgtools__at_function_exit
+	return 1
+    fi
+    cd ${the_base_dir}
+
+    __pkgtools__at_function_exit
+    return 0
+}
+
+function do_reset ()
+{
+    __pkgtools__at_function_enter do_reset
+
+    if [ ${validation_support} -eq 1 ]; then
+	do_clean_validate
+	if [ $? -ne 0 ]; then
+	    pkgtools__msg_warning "Could not clean the validation material from the '${package_name}' package !"
+	fi
+    fi
+
+    do_uninstall
+    if [ $? -ne 0 ]; then
+	pkgtools__msg_warning "Could not uninstall the '${package_name}' package !"
+	# __pkgtools__at_function_exit
+	# return 1
+    fi
+
+    if [ ${testing_support} -eq 1 ]; then
+	do_untest
+	if [ $? -ne 0 ]; then
+	    pkgtools__msg_warning "Could not clean test material in the '${package_name}' package !"
+	# __pkgtools__at_function_exit
+	# return 1
+	fi
+    fi
+
+    do_clean
+    if [ $? -ne 0 ]; then
+	pkgtools__msg_warning "Could not clean the '${package_name}' package !"
+	# __pkgtools__at_function_exit
+	# return 1
+    fi
+
+    do_unconfigure
+    if [ $? -ne 0 ]; then
+	pkgtools__msg_warning "Could not unconfigure the '${package_name}' package !"
+	# __pkgtools__at_function_exit
+	# return 1
+    fi
+
+    __pkgtools__at_function_exit
+    return 0
+}
+
+function main ()
+{
+    __pkgtools__at_function_enter main
+
+    local action_mode=${the_action_mode}
+    local action_options=${the_action_options}
+
+    # Some checks :
+    if [ -z "${action_mode}" ]; then
+	pkgtools__msg_error "Missing action !"
+	print_usage
+	__pkgtools__at_function_exit
+	return 1
+    fi
+
+    # Perform actions :
+    if [ "${action_mode}" = "check" ]; then
+	do_check $@
+	if [ $? -ne 0 ]; then
+	    pkgtools__msg_error "Check failed !"
+	    __pkgtools__at_function_exit
+	    return 1
+	fi
+    fi
+
+    if [ "${action_mode}" = "configure" ]; then
+	do_configure $@
+	if [ $? -ne 0 ]; then
+	    pkgtools__msg_error "Configuration failed !"
+	    __pkgtools__at_function_exit
+	    return 1
+	fi
+    fi
+
+    if [ "${action_mode}" = "unconfigure" ]; then
+	do_unconfigure $@
+	if [ $? -ne 0 ]; then
+	    pkgtools__msg_error "Deconfiguration failed !"
+	    __pkgtools__at_function_exit
+	    return 1
+	fi
+    fi
+
+    if [ "${action_mode}" = "build" ]; then
+	do_build $@
+	if [ $? -ne 0 ]; then
+	    pkgtools__msg_error "Build failed !"
+	    __pkgtools__at_function_exit
+	    return 1
+	fi
+    fi
+
+    if [ "${action_mode}" = "doc" ]; then
+	do_doc $@
+	if [ $? -ne 0 ]; then
+	    pkgtools__msg_error "Documentation failed !"
+	    __pkgtools__at_function_exit
+	    return 1
+	fi
+    fi
+
+    if [ "${action_mode}" = "test" ]; then
+	do_test $@
+	if [ $? -ne 0 ]; then
+	    pkgtools__msg_error "Testing failed !"
+	    __pkgtools__at_function_exit
+	    return 1
+	fi
+    fi
+
+    if [ "${action_mode}" = "untest" ]; then
+	do_untest $@
+	if [ $? -ne 0 ]; then
+	    pkgtools__msg_error "Test cleaning failed !"
+	    __pkgtools__at_function_exit
+	    return 1
+	fi
+    fi
+
+    if [ "${action_mode}" = "install" ]; then
+	do_install $@
+	if [ $? -ne 0 ]; then
+	    pkgtools__msg_error "Installation failed !"
+	    __pkgtools__at_function_exit
+	    return 1
+	fi
+    fi
+
+    if [ "${action_mode}" = "uninstall" ]; then
+	do_uninstall $@
+	if [ $? -ne 0 ]; then
+	    pkgtools__msg_error "De-installation failed !"
+	    __pkgtools__at_function_exit
+	    return 1
+	fi
+    fi
+
+    if [ ${validation_support} -eq 1 ]; then
+
+	if [ "${action_mode}" = "validate" ]; then
+	    do_validate $@
+	    if [ $? -ne 0 ]; then
+		pkgtools__msg_error "Validatation failed !"
+		__pkgtools__at_function_exit
+		return 1
+	    fi
+	fi
+
+	if [ "${action_mode}" = "clean_validate" ]; then
+	    do_clean_validate $@
+	    if [ $? -ne 0 ]; then
+		pkgtools__msg_error "Validatation cleaning failed !"
+		__pkgtools__at_function_exit
+		return 1
+	    fi
+	fi
+    fi
+
+    if [ "${action_mode}" = "clean" ]; then
+	do_clean $@
+	if [ $? -ne 0 ]; then
+	    pkgtools__msg_error "Cleaning failed !"
+	    __pkgtools__at_function_exit
+	    return 1
+	fi
+    fi
+
+    if [ "${action_mode}" = "quickstart" ]; then
+	do_configure $@
+	if [ $? -ne 0 ]; then
+	    pkgtools__msg_error "Quickstart/configure failed !"
+	    __pkgtools__at_function_exit
+	    return 1
+	fi
+
+	do_build
+	if [ $? -ne 0 ]; then
+	    pkgtools__msg_error "Quickstart/build failed !"
+	    __pkgtools__at_function_exit
+	    return 1
+	fi
+
+	if [ ${doc_support} -eq 1 ]; then
+	    do_doc
+	    if [ $? -ne 0 ]; then
+		pkgtools__msg_error "Quickstart/doc failed !"
+		__pkgtools__at_function_exit
+		return 1
+	    fi
+	fi
+
+	if [ ${testing_support} -eq 1 ]; then
+	    do_test
+	    if [ $? -ne 0 ]; then
+		pkgtools__msg_error "Quickstart/testing failed !"
+		__pkgtools__at_function_exit
+		return 1
+	    fi
+	fi
+
+	do_install $@
+	if [ $? -ne 0 ]; then
+	    pkgtools__msg_error "Quickstart/install failed !"
+	    __pkgtools__at_function_exit
+	    return 1
+	fi
+
+	local run_validation=0
+        while [ -n "$1" ]; do
+	  local option="$1"
+	  if [ "${option}" = "--run-validation" ]; then
+	      run_validation=1
+	  fi
+	  shift 1
+	done
+	if [ ${validation_support} -eq 1 -a ${run_validation} -eq 1 ]; then
+	    do_validate $@
+	    if [ $? -ne 0 ]; then
+		pkgtools__msg_error "Validation failed !"
+		__pkgtools__at_function_exit
+		return 1
+	    fi
+	fi
+
+    fi
+
+    if [ "${action_mode}" = "reset" ]; then
+	do_reset $@
+	if [ $? -ne 0 ]; then
+	    pkgtools__msg_error "Reset failed !"
+	    __pkgtools__at_function_exit
+	    return 1
+	fi
+    fi
+
+    if [ "${action_mode}" = "list_of_actions" ]; then
+	echo ${list_of_actions}
+    fi
+
+    __pkgtools__at_function_exit
+    return 0
+}
+
+##########################################################
+
+main $@
+if [ $? -ne 0 ]; then
+    pkgtools__msg_error "Failure !"
+    my_exit 1
+fi
+my_exit 0
+
+# end of pkgtool

@@ -11,6 +11,7 @@ namespace CAT {
 
   void sequentiator::_set_defaults ()
   {
+    bfield = std::numeric_limits<double>::quiet_NaN ();
     level = mybhep::NORMAL;
     m = mybhep::messenger(level);
     num_blocks = -1;
@@ -382,7 +383,7 @@ namespace CAT {
 
         SOURCE_thick= mybhep::double_from_string(global.fetch("GEOM_SOURCE_thick"));
 
-        bfield = mybhep::double_from_string(global.fetch("GEOM_B_int"))/mybhep::tesla;
+	bfield = mybhep::double_from_string(global.fetch("GEOM_B_int"))/mybhep::tesla;
 
         cell_max_number = (int) ( (xsize/2. - GG_GRND_diam) / (GG_CELL_diam*cos(M_PI/8.)) );
 
@@ -1830,12 +1831,13 @@ namespace CAT {
 	  }
         }
 
+
         if( level >= mybhep::VVERBOSE ){
           std::clog << " sequence " << iseq - sequences_.begin() << " has: " << std::endl; fflush(stdout);
           std::clog << " center "; iseq->center().dump(); fflush(stdout);
           std::clog << " radius "; iseq->radius().dump(); std::clog << " " << std::endl; fflush(stdout);
           std::clog << " pitch "; iseq->pitch().dump(); std::clog << " " << std::endl; fflush(stdout);
-          std::clog << " momentum "; iseq->momentum().dump(); std::clog << " " << std::endl; fflush(stdout);
+          std::clog << " momentum "; iseq->momentum().length().dump(); std::clog << " " << std::endl; fflush(stdout);
           std::clog << " charge "; iseq->charge().dump(); std::clog << " " << std::endl; fflush(stdout);
 	  if( iseq->has_helix_vertex() ){
 	    std::clog << " helix_vertex "; iseq->helix_vertex().dump(); std::clog << " " << std::endl; fflush(stdout);

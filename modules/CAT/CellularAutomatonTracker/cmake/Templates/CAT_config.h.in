@@ -8,7 +8,9 @@
 
 #cmakedefine01 CAT_WITH_DEVEL_UTILS
 #cmakedefine01 CAT_WITH_DEVEL_DISPLAY
+#cmakedefine01 CAT_WITH_DEVEL_HISTOGRAMS
+#cmakedefine01 CAT_WITH_DEVEL_ROOT
 
-#endif // _CAT_config_h_ 
+#endif // _CAT_config_h_
 
 // end of CAT_config.h
