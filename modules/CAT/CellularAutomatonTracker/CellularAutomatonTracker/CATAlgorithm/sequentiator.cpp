@@ -174,7 +174,7 @@ namespace CAT {
 
     m.message("\n Beginning algorithm sequentiator \n",mybhep::VERBOSE); fflush(stdout);
 
-    clock.start(" sequentiator: initialize ");
+    //    clock.start(" sequentiator: initialize ");
 
     //----------- read dst param -------------//
 
@@ -201,7 +201,7 @@ namespace CAT {
       }
     */
 
-    clock.stop(" sequentiator: initialize ");
+    //    clock.stop(" sequentiator: initialize ");
 
     return true;
   }
@@ -437,6 +437,7 @@ namespace CAT {
         else
           {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
+	    clock.stop(" sequentiator: read dst properties ");
             exit(1);
           }
 
@@ -448,6 +449,7 @@ namespace CAT {
         else
           {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
+	    clock.stop(" sequentiator: read dst properties ");
             exit(1);
           }
 
@@ -459,6 +461,7 @@ namespace CAT {
         else
           {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
+	    clock.stop(" sequentiator: read dst properties ");
             exit(1);
           }
 
@@ -470,6 +473,7 @@ namespace CAT {
         else
           {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
+	    clock.stop(" sequentiator: read dst properties ");
             exit(1);
           }
 
@@ -481,6 +485,7 @@ namespace CAT {
         else
           {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
+	    clock.stop(" sequentiator: read dst properties ");
             exit(1);
           }
 
@@ -492,6 +497,7 @@ namespace CAT {
         else
           {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
+	    clock.stop(" sequentiator: read dst properties ");
             exit(1);
           }
 
@@ -503,6 +509,7 @@ namespace CAT {
         else
           {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
+	    clock.stop(" sequentiator: read dst properties ");
             exit(1);
           }
 
@@ -514,6 +521,7 @@ namespace CAT {
         else
           {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
+	    clock.stop(" sequentiator: read dst properties ");
             exit(1);
           }
 
@@ -525,6 +533,7 @@ namespace CAT {
         else
           {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
+	    clock.stop(" sequentiator: read dst properties ");
             exit(1);
           }
 
@@ -536,6 +545,7 @@ namespace CAT {
         else
           {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
+	    clock.stop(" sequentiator: read dst properties ");
             exit(1);
           }
 
@@ -547,7 +557,8 @@ namespace CAT {
         else
           {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
-            exit(1);
+	    clock.stop(" sequentiator: read dst properties ");
+	    exit(1);
           }
       }
 
@@ -562,7 +573,7 @@ namespace CAT {
   void sequentiator::readDstProper(void) {
     //*************************************************************
 
-    clock.start(" sequentiator: read dst properties ");
+    //    clock.start(" sequentiator: read dst properties ");
 
     if (_MaxBlockSize <= 0)
       {
@@ -594,7 +605,7 @@ namespace CAT {
       }
 
 
-    clock.stop(" sequentiator: read dst properties ");
+    //    clock.stop(" sequentiator: read dst properties ");
 
     return;
   }
@@ -1278,7 +1289,8 @@ namespace CAT {
           m.message(" problem: multi-vertex ", node_.c().id(), " should link to cell ", done_connections[i], " but has not such couplet", mybhep::NORMAL);
         else{
           m.message(" multi-vertex ", node_.c().id(), " has already been added to a sequence connecting to cell ", done_connections[i], " so couplet ", cc_index, " will be erased", mybhep::VERBOSE);
-          node_.cc_.erase(node_.cc_.begin() + cc_index);
+          //node_.cc_.erase(node_.cc_.begin() + cc_index);
+          node_.remove_couplet(cc_index);
         }
       }
     }
@@ -1569,35 +1581,33 @@ namespace CAT {
     topology::logic_scenario tmpmin = topology::logic_scenario(sc);
     topology::logic_scenario tmpsave = tmpmin;
     clock.stop(" sequentiator: copy logic scenario ");
+    topology::logic_scenario tmp;
 #else
     clock.start(" sequentiator: copy scenario ", "cumulative");
     topology::scenario tmpmin = sc;
     clock.stop(" sequentiator: copy scenario ");
+    topology::scenario tmp = sc;
 #endif
+
+    std::map<string,int> scnames;
+    for(std::vector<topology::sequence>::iterator iseq=sc.sequences_.begin(); iseq!=sc.sequences_.end(); ++iseq)
+      scnames[iseq->name()]=iseq-sc.sequences_.begin();
 
     for(std::vector<topology::sequence>::iterator jseq=sequences_.begin(); jseq!=sequences_.end(); ++jseq)
       {
 
-        bool found = false;
-        for(std::vector<topology::sequence>::iterator iseq=sc.sequences_.begin(); iseq!=sc.sequences_.end(); ++iseq)
-          if( iseq->name() == jseq->name() )
-            {
-              found = true;
-              break;
-            }
-        if( found )
-          continue;
+	if( scnames.count(jseq->name()) ) continue;
 
 #if 1
         clock.start(" sequentiator: copy logic scenario ", "cumulative");
-        topology::logic_scenario tmp = tmpsave;
+        tmp = tmpsave;
         clock.stop(" sequentiator: copy logic scenario ");
         clock.start(" sequentiator: copy logic sequence ", "cumulative");
         tmp.sequences_.push_back(topology::logic_sequence(*jseq));
         clock.stop(" sequentiator: copy logic sequence ");
 #else
         clock.start(" sequentiator: copy scenario ", "cumulative");
-        topology::scenario tmp = sc;
+        tmp = sc;
         clock.stop(" sequentiator: copy scenario ");
         clock.start(" sequentiator: copy sequence ", "cumulative");
         tmp.sequences_.push_back(*jseq);

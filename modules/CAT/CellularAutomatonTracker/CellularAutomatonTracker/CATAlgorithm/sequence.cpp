@@ -15,6 +15,7 @@
 #include <CATAlgorithm/LinearRegression.h>
 #include <CATAlgorithm/CircleRegression.h>
 
+#include <sys/time.h> 
 
 
 namespace CAT {
@@ -1224,7 +1225,6 @@ namespace CAT {
 
 
 
-
       return ok;
     }
 
@@ -1334,6 +1334,7 @@ namespace CAT {
 
       if( inode < 1 ){
 
+#if 0
         std::vector<cell_couplet> ccv = nodes()[inode].cc();
         std::vector<cell_couplet>::iterator fcouplet = std::find(ccv.begin(),
                                                                  ccv.end(),
@@ -1347,10 +1348,22 @@ namespace CAT {
         }
 
         return fcouplet - ccv.begin();
+#else
+	
+	size_t index;
+	if( !nodes()[inode].has_couplet(link,&index) ){
+	  if( print_level() >= mybhep::NORMAL )
+	    std::clog << " problem: looking for couplet from cell index " << inode << " to " << link.id() << " but it's not there " << std::endl;
+	  return 0;
+	}
 
+	return index;
 
+#endif
       }
 
+
+#if 0
       std::vector<cell_triplet> cccv = nodes()[inode].ccc();
       std::vector<cell_triplet>::iterator ftriplet = std::find(cccv.begin(),
                                                                cccv.end(),
@@ -1362,9 +1375,19 @@ namespace CAT {
         }
         return 0;
       }
-
-
       return ftriplet - cccv.begin();
+#else
+
+      size_t index;
+      if( !nodes()[inode].has_triplet(link,nodes_[inode-1].c(),&index) ){
+	if( print_level() >= mybhep::NORMAL )
+	  std::clog << " problem: looking for triplet from cell index " << inode << " id " << nodes()[inode].c().id()  << " to cell id " << link.id() << " but it's not there " << std::endl; fflush(stdout);
+	return 0;
+      }
+
+      return index;
+	
+#endif
 
     }
 
@@ -1905,7 +1928,8 @@ namespace CAT {
         if( i == 0 ){ // 1st added cell must get a new triplet
           news.nodes_[s-1].links_.push_back(in.c());
           cell_triplet ctA(news.nodes_[s-2].c(), news.nodes_[s-1].c(), in.c());
-          news.nodes_[s-1].ccc_.push_back(ctA);
+	  //          news.nodes_[s-1].ccc_.push_back(ctA);
+          news.nodes_[s-1].add_triplet(ctA);
         }
 
         if( !last ){

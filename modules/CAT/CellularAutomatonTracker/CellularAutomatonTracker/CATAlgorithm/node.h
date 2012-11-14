@@ -14,7 +14,7 @@
 #include <CATAlgorithm/cell_couplet.h>
 #include <CATAlgorithm/cell_triplet.h>
 #include <algorithm>
-
+#include <map>
 
 namespace CAT {
   namespace topology{
@@ -36,9 +36,12 @@ namespace CAT {
 
       // list of cell couplets
       std::vector<cell_couplet> cc_;
+      std::map<size_t,size_t> cc_index_;
 
       // list of cell triplets
       std::vector<cell_triplet>  ccc_;
+      std::map<size_t,size_t> ccc_ca_index_;
+      std::map<size_t,size_t> ccc_cc_index_;
 
       // list of linkable cells
       std::vector<cell>  links_;
@@ -126,7 +129,22 @@ namespace CAT {
       //! get fitted experimental_point
       const experimental_point& ep()const;
 
+      //! grab cc index map
+      std::map<size_t,size_t> cc_index()const;
+
+      //! grab ccc index map
+      std::map<size_t,size_t> ccc_ca_index()const;
+      std::map<size_t,size_t> ccc_cc_index()const;
+
+    private:
+      void setup_cc_maps();
+      void setup_ccc_maps();
+
     public:
+
+      void add_triplet(cell_triplet ccc);
+
+      void remove_couplet(size_t index);
 
       void calculate_triplets(double Ratio, double separation_limit=90., double phi_limit=25., double theta_limit=180.);
 
@@ -139,6 +157,8 @@ namespace CAT {
       bool has_couplet(const cell& a, size_t* index)const;
 
       bool has_couplet(size_t idd, size_t* index)const;
+
+      bool has_triplet(const cell &a, const cell &c, size_t *index)const;
 
       bool has_triplet(const cell &a, const cell &c)const;
 

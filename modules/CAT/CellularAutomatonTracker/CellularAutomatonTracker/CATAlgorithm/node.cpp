@@ -30,6 +30,8 @@ namespace CAT {
         ccc_ = ccc;
         free_ = false;
         chi2_ = 0.;
+	setup_cc_maps();
+	setup_ccc_maps();
       }
 
       //! constructor
@@ -153,11 +155,30 @@ namespace CAT {
         return;
       }
     
+    void node::setup_cc_maps(){
+      cc_index_.clear();
+      for(std::vector<cell_couplet>::const_iterator icc=cc_.begin(); icc!=cc_.end(); ++icc){
+	cc_index_[icc->cb().id()] = icc-cc_.begin();
+      }
+    }
+
+    void node::setup_ccc_maps(){
+      ccc_ca_index_.clear();
+      ccc_cc_index_.clear();
+      for(std::vector<cell_triplet>::const_iterator iccc=ccc_.begin(); iccc!=ccc_.end(); ++iccc){
+	ccc_ca_index_[iccc->cb().id()] = iccc-ccc_.begin();
+	ccc_cc_index_[iccc->cc().id()] = iccc-ccc_.begin();
+      }
+    }
+
+
       //! set cells
       void node::set(const cell &c, const std::vector<cell_couplet> &cc, const std::vector<cell_triplet> & ccc){
         c_ = c;
         cc_ = cc;
         ccc_ = ccc;
+	setup_cc_maps();
+	setup_ccc_maps();
       }
 
       //! set main cell
@@ -168,6 +189,8 @@ namespace CAT {
       //! set cell couplets
       void node::set_cc(const std::vector<cell_couplet> &cc){
         cc_ = cc;
+	setup_cc_maps();
+	setup_ccc_maps();
       }
 
       //! set cell triplets
@@ -254,12 +277,24 @@ namespace CAT {
                        << " phib: " << experimental_vector(ccc.cb().ep(), ijoint->epb()).phi().value()*180./M_PI
                        << " phic: " << experimental_vector(ccc.cc().ep(), ijoint->epc()).phi().value()*180./M_PI << " chi2 " << ijoint->chi2() << std::endl;
               }
-              ccc_.push_back(ccc);
+              add_triplet(ccc);
             }
           }
         }
       }
 
+    void node::add_triplet(cell_triplet ccc){
+      ccc_.push_back(ccc);
+      ccc_ca_index_[ccc.ca().id()] = ccc_.size() - 1;
+      ccc_cc_index_[ccc.cc().id()] = ccc_.size() - 1;
+      return;
+    }
+
+    void node::remove_couplet(size_t index){
+      cc_.erase(cc_.begin() + index);
+      setup_cc_maps();
+      return;
+    }
 
       node node::invert(){
         node inverted;
@@ -292,9 +327,25 @@ namespace CAT {
         return "OTHER";
       }
 
+    //! grab cc index map
+    std::map<size_t,size_t> node::cc_index()const{
+      return cc_index_;
+    }
+
+    //! grab ccc cb index map
+    std::map<size_t,size_t> node::ccc_ca_index()const{
+      return ccc_ca_index_;
+    }
+
+    //! grab ccc cc index map
+    std::map<size_t,size_t> node::ccc_cc_index()const{
+      return ccc_cc_index_;
+    }
+
 
       bool node::has_couplet(const cell & a, cell_couplet* ct)const {
-
+	
+#if 0
         cell null;
         std::vector<cell_couplet>::const_iterator fcouplet = std::find(cc_.begin(), cc_.end(), cell_couplet(null, a));
 
@@ -304,10 +355,24 @@ namespace CAT {
         }
 
         return false;
+#else
+
+	if( !cc_index_.count(a.id()) ) return false;
+	size_t index=cc_index()[a.id()];
+	if( index >= cc_.size() ){
+	  std::clog << " problem: cc index " << index << " for cell a of id " << a.id() << " is larger than cc size " << cc_.size() << endl;
+	  dump();
+	  return false;
+	}
+	*ct = cc_.at(index);
+	return true;
+#endif
+
       }
 
       bool node::has_couplet(const cell& a, size_t* index)const{
 
+#if 0
         cell null;
         std::vector<cell_couplet>::const_iterator fcouplet = std::find(cc_.begin(),
                                                             cc_.end(),
@@ -317,31 +382,104 @@ namespace CAT {
           *index = fcouplet - cc_.begin();
           return true;
         }
-
         return false;
+#else
+
+	if( !cc_index_.count(a.id()) ) return false;
+	*index= cc_index()[a.id()];
+	if( *index >= cc_.size() ){
+	  std::clog << " problem: cc index " << *index << " for cell of id " << a.id() << " is larger than cc size " << cc_.size() << endl;
+	  dump();
+	  return false;
+	}
+	return true;
+#endif
 
       }
 
       bool node::has_couplet(size_t idd, size_t* index)const{
 
+#if 0
         cell null;
         null.set_id(idd);
-
         return has_couplet(null, index);
+#else
+
+	if( !cc_index_.count(idd) ) return false;
+	*index= cc_index()[idd];
+	if( *index >= cc_.size() ){
+	  std::clog << " problem: cc index " << *index << " for id " << idd << " is larger than cc size " << cc_.size() << endl;
+	  dump();
+	  return false;
+	}
+	return true;
+
+#endif
+
+      }
+
+    bool node::has_triplet(const cell &a, const cell &c, size_t *index)const{
+
+#if 1
+      cell null;
+      std::vector<cell_triplet>::const_iterator ftriplet = std::find(ccc().begin(), ccc().end(),cell_triplet(a,null,c) );
+
+      if( ftriplet != ccc().end() ){
+	*index = ftriplet - ccc().begin();
+	return true;
+      }
+      return false;
+#else
+
+	if( !ccc_ca_index_.count(a.id()) ) return false;
+	if( !ccc_cc_index_.count(c.id()) ) return false;
+	size_t indexa=ccc_ca_index()[a.id()];
+	if( indexa >= ccc_ca_index_.size() ){
+	  std::clog << " problem: ccc ca index " << indexa << " is larger than ccc size " << ccc_.size() << endl;
+	  return false;
+	}
+	size_t indexc=ccc_cc_index()[c.id()];
+	if( indexc >= ccc_cc_index_.size() ){
+	  std::clog << " problem: ccc cc index " << indexc << " is larger than ccc size " << ccc_.size() << endl;
+	  return false;
+	}
+	if( indexa != indexc ) return false;
+	*index = indexa;
+	return true;
+#endif
 
       }
 
       bool node::has_triplet(const cell &a, const cell &c)const{
 
+#if 1
         cell null;
         if( std::find(ccc().begin(), ccc().end(),cell_triplet(a,null,c) ) != ccc().end() )
           return true;
+	return false;
+#else
 
-        return false;
+	if( !ccc_ca_index_.count(a.id()) ) return false;
+	if( !ccc_cc_index_.count(c.id()) ) return false;
+	size_t indexa=ccc_ca_index()[a.id()];
+	if( indexa >= ccc_ca_index_.size() ){
+	  std::clog << " problem: ccc ca index " << indexa << " is larger than ccc size " << ccc_.size() << endl;
+	  return false;
+	}
+	size_t indexc=ccc_cc_index()[c.id()];
+	if( indexc >= ccc_cc_index_.size() ){
+	  std::clog << " problem: ccc cc index " << indexc << " is larger than ccc size " << ccc_.size() << endl;
+	  return false;
+	}
+	if( indexa != indexc ) return false;
+	return true;
+#endif
+
       }
 
       bool node::has_triplet(const cell &a)const{
 
+#if 1
         for(std::vector<cell_triplet>::const_iterator iccc=ccc_.begin(); iccc!=ccc_.end(); ++iccc){
           size_t ida = iccc->ca().id();
           size_t idc = iccc->cc().id();
@@ -351,6 +489,13 @@ namespace CAT {
         }
       
         return false;
+#else
+
+	return( ccc_ca_index_.count(a.id()) || ccc_cc_index_.count(a.id()) );
+
+#endif
+
+
       }
 
 
