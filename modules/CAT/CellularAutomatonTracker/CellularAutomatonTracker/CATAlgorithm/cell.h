@@ -172,7 +172,7 @@ namespace CAT {
           {
             type_ ="SN";
             std::string value = hit.fetch_property("CELL"); // GG_CELL_block_plane_id
-            // block = 1, 2, 3 or -1, -2, -3
+            // block = 1 or -1
             // layer = 0, 1, ..., 8 or 0, -1, ..., -8
 
 
@@ -326,7 +326,7 @@ namespace CAT {
       }
 
       //! set block
-      void set_block(size_t block)
+      void set_block(int block)
       {
         block_ = block;
       }
@@ -485,7 +485,7 @@ namespace CAT {
 
       bool operator<(const topology::cell& c) const{
 
-        if( id_ > mybhep::default_integer ){
+        if( id_ > mybhep::default_integer || c.id() > mybhep::default_integer ){
           if( print_level() >= mybhep::NORMAL )
             std::clog << " problem: trying to compare cells with ids " << id_ << " and " << c.id() << " just returning false " << std::endl;
           return false;
@@ -497,6 +497,9 @@ namespace CAT {
         if( this->block() < 0 && c.block() > 0 ){
           return false;
         }
+        if( this->block() > 0 && c.block() < 0 )
+          return true;
+        
 
         // layer
         if(fabs(this->layer()) < fabs(c.layer())){
@@ -509,9 +512,9 @@ namespace CAT {
         if(this->iid() < c.iid()){
           return false;
         }
-        if(this->iid() > c.iid())
+        if(this->iid() > c.iid()){
           return true;
-
+	}
 
         if(this->n3id() <= c.n3id()){
           return false;
