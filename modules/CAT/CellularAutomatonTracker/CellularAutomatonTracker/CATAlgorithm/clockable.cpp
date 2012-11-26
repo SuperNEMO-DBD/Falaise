@@ -53,10 +53,11 @@ namespace CAT {
   //! read time
   double clockable::read()
   {
-    stop();
-    tv_begin_ = tv_end_;
-    tz_begin_ = tz_end_;
-    return time_;
+    //stop();
+    //tv_begin_ = tv_end_;
+    //tz_begin_ = tz_end_;
+    gettimeofday(&tv_end_, &tz_end_);
+    return time_+((double)tv_end_.tv_sec-(double)tv_begin_.tv_sec)*1.e+3+((double)tv_end_.tv_usec-(double)tv_begin_.tv_usec)*1.e-3;
   }
 
   void clockable::start()

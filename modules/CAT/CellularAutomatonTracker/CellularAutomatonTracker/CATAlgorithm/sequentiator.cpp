@@ -1086,7 +1086,7 @@ namespace CAT {
 
       m.message(" execution time " , clock.read(" sequentiator: sequentiation ") , " ms  greater than MaxTime" , MaxTime , " quitting! ", mybhep::NORMAL);
 
-      clock.stop_all();
+      //      clock.stop_all();
 
       /*
         if( !evt.find_property("MaxTime") )
@@ -2027,8 +2027,8 @@ namespace CAT {
 
     bool erased = true;
 
+    topology::sequence pair(nodes, level, nsigma);
     for(std::vector<topology::line>::iterator itangent=cc.tangents_.begin(); itangent != cc.tangents_.end(); ++itangent){
-      topology::sequence pair(nodes, level, nsigma);
 
       pair.nodes_[0].set_ep(itangent->epa());
       pair.nodes_[0].set_free(false);
