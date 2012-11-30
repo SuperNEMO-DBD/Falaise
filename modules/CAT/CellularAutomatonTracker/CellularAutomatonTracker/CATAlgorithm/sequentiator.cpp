@@ -55,6 +55,7 @@ namespace CAT {
     eman = 0;
     _moduleNR.clear ();
     _MaxBlockSize = -1;
+    event_number=0;
     hfile.clear ();
 
     nevent = 0;
@@ -614,6 +615,10 @@ namespace CAT {
   //*************************************************************
   bool sequentiator::sequentiate(topology::tracked_data & tracked_data_) {
     //*************************************************************
+
+    m.message(" local_tracking: preparing event", event_number, mybhep::VERBOSE);
+    event_number ++;
+
 
     clock.start(" sequentiator: sequentiate ","cumulative");
     clock.start(" sequentiator: sequentiation ","restart");

@@ -382,6 +382,7 @@ namespace CAT {
 
     mybhep::messenger m;
     int nevent;
+    int event_number;
     int InitialEvents;
     int SkippedEvents;
 
