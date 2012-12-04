@@ -728,13 +728,14 @@ namespace CAT {
     void sequence::set_free_level(){
 
       set_free(false);
+      size_t iccc;
       for(std::vector<node>::iterator inode=nodes_.begin(); inode != nodes_.end(); ++inode)
         {
           inode->set_free(false);
 
           for(std::vector<cell>::iterator ilink=(*inode).links_.begin(); ilink != (*inode).links_.end(); ++ilink){
             ilink->set_free(false);
-            size_t iccc = get_link_index_of_cell(inode - nodes_.begin(), *ilink);
+            iccc = get_link_index_of_cell(inode - nodes_.begin(), *ilink);
             if( inode - nodes_.begin() < 1 ){
 
               if( has_cell(*ilink)){
@@ -1119,7 +1120,8 @@ namespace CAT {
         std::clog << " " << std::endl;
       }
 
-
+      size_t iccc, iteration;
+      std::vector<joint>::iterator ijoint;
       for(std::vector<cell>::iterator itlink = nodes_[s-1].links_.begin(); itlink != nodes_[s-1].links_.end(); ++itlink){
         if( itlink->free() || ! itlink->begun() )
           {
@@ -1135,9 +1137,9 @@ namespace CAT {
             }
             else{
 
-              size_t iccc = get_link_index_of_cell(s-1, *itlink);
-
-              size_t iteration = nodes_[s-1].ccc_[iccc].iteration();
+	      iccc = get_link_index_of_cell(s-1, *itlink);
+	      
+              iteration = nodes_[s-1].ccc_[iccc].iteration();
 
               if( iteration >= nodes_[s-1].ccc_[iccc].joints().size() ){
                 if( print_level() >= mybhep::NORMAL ){
@@ -1156,7 +1158,7 @@ namespace CAT {
                   std::clog << " initially there are " << nodes_[s-1].ccc_[iccc].joints_.size() << " possible joints to go from cell " << nodes_[s-1].c().id() << " to " << itlink->id()  << std::endl;
                 }
 
-                std::vector<joint>::iterator ijoint = nodes_[s-1].ccc_[iccc].joints_.begin();
+                ijoint = nodes_[s-1].ccc_[iccc].joints_.begin();
 
                 while( ijoint != nodes_[s-1].ccc_[iccc].joints_.end() ){
 
@@ -1414,12 +1416,12 @@ namespace CAT {
       case 1: {
 
         std::vector<helix> helices;
-
+	std::vector<node>::iterator anode, cnode;
         for(std::vector<node>::iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode){
           if( inode - nodes_.begin() == 0 || nodes_.end() - inode == 1 ) continue;
 
-          std::vector<node>::iterator anode = inode;
-          std::vector<node>::iterator cnode = inode;
+          anode = inode;
+          cnode = inode;
           --anode; ++cnode;
           if( print_level() >= mybhep::VVERBOSE ){
             std::clog << " calculate helix for three points " << anode->c().id() << " , " << inode->c().id() << " , " << cnode->c().id() << std::endl;
@@ -1738,9 +1740,10 @@ namespace CAT {
 
     std::vector<size_t> sequence::families()const{
       std::vector<size_t> fs;
+      size_t i1, i2;
       for(std::vector<std::string>::const_iterator iname=names_.begin(); iname!=names_.end(); ++iname){
-        size_t i1 = iname->find("_");
-        size_t i2 = iname->find("_",i1+1);
+        i1 = iname->find("_");
+        i2 = iname->find("_",i1+1);
         fs.push_back(mybhep::int_from_string(iname->substr(i1+1,i2-i1-1)));
       }
       return fs;
@@ -1910,11 +1913,13 @@ namespace CAT {
       news.add_name(seq.name());
 
       size_t s = news.nodes().size();
-
+      size_t index;
+      int next_index;
+      bool last;
       for(size_t i = 0; i < seq.nodes_.size(); i++){
-        size_t index = i;
-        int next_index = i+1;
-        bool last = false;
+        index = i;
+        next_index = i+1;
+        last = false;
 
         if( i == seq.nodes_.size() - 1 )
           last = true;
@@ -2271,12 +2276,14 @@ namespace CAT {
       int nindex = -1;
 
       double phimax = mybhep::default_max;
+      size_t index;
+      double local_phi;
       for(std::vector<node>::const_iterator in = nodes_.begin(); in != nodes_.end(); ++in){
-        size_t index = in - nodes_.begin();
+        index = in - nodes_.begin();
         if( index == 0 ) continue;
         if( index == nodes_.size() - 1 ) continue;
 
-        double local_phi = fabs((joint(nodes_[index - 1].ep(), nodes_[index].ep(), nodes_[index + 1].ep())).kink_phi().value());
+        local_phi = fabs((joint(nodes_[index - 1].ep(), nodes_[index].ep(), nodes_[index + 1].ep())).kink_phi().value());
 
         if( local_phi > phimax ){
           phimax = local_phi;

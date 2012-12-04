@@ -204,6 +204,16 @@ namespace CAT{
       bool use_ownerror = true;
 
       experimental_double local_separation;
+      bool shall_include_separation;
+      experimental_vector a0, a, b0, b, c0, c, d0, d;
+      double psc, psc2, psc3, psc4;
+      int32_t ndof;
+      experimental_point p;
+      experimental_double newxa, newza;
+      double chi2, local_prob;
+      bool ok, use_theta_kink;
+      experimental_double phi_kink, theta_kink;
+
       for(std::vector<line>::iterator i1=t1.begin(); i1!=t1.end(); ++i1){
 
         for(std::vector<line>::iterator i2=t2.begin(); i2!=t2.end(); ++i2){
@@ -212,7 +222,7 @@ namespace CAT{
             std::clog << " tangents " << i1 - t1.begin() << " and " << i2 - t2.begin() << std::endl;
           }
 
-          bool shall_include_separation = true;
+          shall_include_separation = true;
           if( cb_.small() ){
             if( print_level() > mybhep::VERBOSE ){
               std::clog << " no separation: middle cells is small ";
@@ -220,11 +230,11 @@ namespace CAT{
             shall_include_separation = false;
           }
           else if( cb_.intersect(ca_) ){
-            experimental_vector a0 = i1->forward_axis();
-            experimental_vector a = a0.hor();
-            experimental_vector b0 = cca().forward_axis();
-            experimental_vector b = b0.hor();
-            double psc = (a*b).value();
+            a0 = i1->forward_axis();
+            a = a0.hor();
+            b0 = cca().forward_axis();
+            b = b0.hor();
+            psc = (a*b).value();
 
             if( fabs(psc) < 0.5 ){ // connection along the intersection
               if( print_level() > mybhep::VERBOSE ){
@@ -233,9 +243,9 @@ namespace CAT{
               shall_include_separation = false;
 
               // keep only the connection with consistent ordering of cells
-              experimental_vector c0 = ccb().forward_axis();
-              experimental_vector c = c0.hor();
-              double psc2 = (b*c).value();
+              c0 = ccb().forward_axis();
+              c = c0.hor();
+              psc2 = (b*c).value();
               if( psc2 > 0.1 ){
                 if( print_level() > mybhep::VERBOSE ){
                   std::clog << " rejected because first 2 cells intersect and the ordering is wrong: psc = " << psc2 << std::endl;
@@ -244,9 +254,9 @@ namespace CAT{
               }
               
               // keep only the connection that doesn't invert foward sense
-              experimental_vector d0 = i2->forward_axis();
-              experimental_vector d = d0.hor();
-              double psc3 = (a*d).value();
+              d0 = i2->forward_axis();
+              d = d0.hor();
+              psc3 = (a*d).value();
               if( psc3 > 0. ){
                 if( print_level() > mybhep::VERBOSE ){
                   std::clog << " rejected because direction is reversed: psc = " << psc3 << std::endl;
@@ -256,20 +266,20 @@ namespace CAT{
             } 
           }
           else if( cb_.intersect(cc_) ){
-            experimental_vector a0 = i2->forward_axis();
-            experimental_vector a = a0.hor();
-            experimental_vector b0 = ccb().forward_axis();
-            experimental_vector b = b0.hor();
-            double psc = (a*b).value();
+            a0 = i2->forward_axis();
+            a = a0.hor();
+            b0 = ccb().forward_axis();
+            b = b0.hor();
+	    psc = (a*b).value();
             if( fabs(psc) < 0.5 ){ // connection along the intersection
               if( print_level() > mybhep::VERBOSE ){
                 std::clog << " no separation: connect along intersection BC ";
               }
               shall_include_separation = false;
               // keep only the connection with consistent ordering of cells
-              experimental_vector c0 = cca().forward_axis();
-              experimental_vector c = c0.hor();
-              double psc2 = (b*c).value();
+              c0 = cca().forward_axis();
+              c = c0.hor();
+	      psc2 = (b*c).value();
               if( psc2 > 0.1 ){
                 if( print_level() > mybhep::VERBOSE ){
                   std::clog << " rejected because last 2 cells intersect and the ordering is wrong: psc = " << psc2 << std::endl;
@@ -278,9 +288,9 @@ namespace CAT{
               }
 
               // keep only the connection that doesn't invert foward sense
-              experimental_vector d0 = i1->forward_axis();
-              experimental_vector d = d0.hor();
-              double psc3 = (a*d).value();
+              d0 = i1->forward_axis();
+              d = d0.hor();
+	      psc3 = (a*d).value();
               if( psc3 > 0. ){
                 if( print_level() > mybhep::VERBOSE ){
                   std::clog << " rejected because direction is reversed: psc = " << psc3 << std::endl;
@@ -291,17 +301,16 @@ namespace CAT{
             }
 
           }
-          
-          int32_t ndof = 2;  // 2 kink angles, 0 or 1 one separation angle
+	          
+          ndof = 2;  // 2 kink angles, 0 or 1 one separation angle
           if( shall_include_separation )
             ndof ++;
 
-          experimental_point p;
           if( cb_.small() ){
             p = cb_.ep();
-            experimental_double newxa = p.x();
+            newxa = p.x();
             newxa.set_error(cb_.r().error());
-            experimental_double newza = p.z();
+            newza = p.z();
             newza.set_error(cb_.r().error());
             p.set_x(newxa);
             p.set_z(newza);
@@ -320,15 +329,14 @@ namespace CAT{
             std::clog << "    separation: "; (local_separation*180/M_PI).dump(); std::clog << " " << std::endl;
           }
 
-          double chi2 = 0.;
-          bool ok = false;
+	  chi2 = 0.;
+	  ok = false;
 
           if( !use_ownerror ){
             if( fabs(local_separation.value()) <= separation_limit ){
 
-              experimental_double phi_kink = newt1.kink_phi(newt2);
-              experimental_double theta_kink = newt1.kink_theta(newt2);
-              
+              phi_kink = newt1.kink_phi(newt2);
+              theta_kink = newt1.kink_theta(newt2);
               if( print_level() > mybhep::VERBOSE ){
                 std::clog << " phi 1st tangent: "; (newt1.phi()*180./M_PI).dump();
                 std::clog << " phi 2nd tangent: "; (newt2.phi()*180./M_PI).dump();
@@ -343,7 +351,7 @@ namespace CAT{
             }
           }
           else{
-            bool use_theta_kink = !(ca_.unknown_vertical() || cb_.unknown_vertical() || cc_.unknown_vertical());
+            use_theta_kink = !(ca_.unknown_vertical() || cb_.unknown_vertical() || cc_.unknown_vertical());
             if( !use_theta_kink ) ndof --;
 
             chi2 = newt1.chi2(newt2, use_theta_kink);
@@ -352,7 +360,7 @@ namespace CAT{
               chi2 += square(local_separation.value()/local_separation.error());
 
             chi2s_.push_back(chi2);
-            double local_prob = probof(chi2, ndof);
+            local_prob = probof(chi2, ndof);
             probs_.push_back(local_prob);
             if( local_prob > prob() )
               ok = true;
@@ -386,16 +394,17 @@ namespace CAT{
       if( print_level() > mybhep::VERBOSE ){
         std::clog << " refining " << joints.size() << " joints " << std::endl;
       }
-
+      experimental_double delta_phi;
+      bool found;
       for(std::vector<joint>::const_iterator ijoint=joints.begin(); ijoint != joints.end(); ++ijoint){
-        bool found = false;
+        found = false;
         for(std::vector<joint>::const_iterator jjoint=joints.begin(); jjoint != joints.end(); ++jjoint){
           if( jjoint == ijoint ) continue;
           
           if( ca_.same_quadrant(ijoint->epa(), jjoint->epa() ) &&
               !cb_.same_quadrant(ijoint->epb(), jjoint->epb() ) &&
               cc_.same_quadrant(ijoint->epc(), jjoint->epc() ) ){
-            experimental_double delta_phi = experimental_fabs(ijoint->kink_phi()) - experimental_fabs(jjoint->kink_phi());
+            delta_phi = experimental_fabs(ijoint->kink_phi()) - experimental_fabs(jjoint->kink_phi());
             if( delta_phi.value() > delta_phi.error() ){  // if ijoint has larger kink than jjoint
               if( print_level() > mybhep::VERBOSE ){
                 std::clog << " ... removing joint " << ijoint - joints.begin()  << " because joint " << jjoint - joints.begin()  <<  " has the same initial and final quadrant, a different middle quadrant and better horizontal kink: delta phi = " << delta_phi.value() << std::endl;
