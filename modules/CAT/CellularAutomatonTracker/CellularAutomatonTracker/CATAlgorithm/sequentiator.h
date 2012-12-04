@@ -274,6 +274,11 @@ namespace CAT {
       return;
     }
 
+    void set_first_event(size_t v){
+      first_event_number = v;
+      return;
+    }
+
     void set_level(std::string v){
       level = mybhep::get_info_level(v);
       m = mybhep::messenger(level);
@@ -403,6 +408,7 @@ namespace CAT {
     double MaxChi2;
     double nsigma;
     int NOffLayers;
+    int first_event_number;
 
     //error parametrization
     double sigma0;

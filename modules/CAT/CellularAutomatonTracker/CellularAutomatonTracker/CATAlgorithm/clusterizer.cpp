@@ -65,6 +65,7 @@ namespace CAT {
 
   void clusterizer::_set_defaults ()
   {
+
     level = mybhep::NORMAL;
     m = mybhep::messenger(level);
     num_blocks = -1;
@@ -97,6 +98,7 @@ namespace CAT {
     MaxChi2 = std::numeric_limits<double>::quiet_NaN ();
     nsigma = std::numeric_limits<double>::quiet_NaN ();
     nofflayers = 0;
+    first_event_number = 0;
     PrintMode = false;
     SuperNemo = true;
     SuperNemoChannel = false;
@@ -117,6 +119,7 @@ namespace CAT {
     run_list.clear ();
     run_time = std::numeric_limits<double>::quiet_NaN ();
     first_event=true;
+
     return;
   }
 
@@ -159,7 +162,6 @@ namespace CAT {
       hman =  NHistoManager2(st);
     */
 
-
   }
 
   //************************************************************
@@ -167,6 +169,7 @@ namespace CAT {
   clusterizer::clusterizer(void){
     //*************************************************************
     _set_defaults ();
+    //    std::cout << " qqq ret " << std::endl; fflush(stdout);
     return;
   }
 
@@ -179,6 +182,7 @@ namespace CAT {
   //*************************************************************
   bool clusterizer::_initialize(){
     //*************************************************************
+
     if( PrintMode )
       {
         initializeHistos();
@@ -197,6 +201,7 @@ namespace CAT {
       {
         GenerateWires();
       }
+
     return true;
   }
 
@@ -224,6 +229,7 @@ namespace CAT {
   //*************************************************************
   bool clusterizer::initialize( ) {
     //*************************************************************
+
     m.message("CAT::clusterizer::initialize: Entering...",mybhep::NORMAL);
 
     m.message("\n Beginning algorithm clusterizer \n",mybhep::VERBOSE);
@@ -237,6 +243,7 @@ namespace CAT {
     _initialize();
 
     m.message("CAT::clusterizer::initialize: Done.",mybhep::NORMAL);
+
     return true;
   }
 
@@ -586,6 +593,8 @@ namespace CAT {
     m.message("compatibility distance", CompatibilityDistance,mybhep::NORMAL);
     m.message("maximum chi2", MaxChi2, mybhep::NORMAL);
     m.message("nsigma", nsigma, mybhep::NORMAL);
+    m.message("first event number", first_event_number, mybhep::NORMAL);
+
     if (SuperNemo && SuperNemoChannel)
       {
         m.message("cell pitch: ",GG_CELL_pitch,"mm",mybhep::NORMAL);
@@ -1165,6 +1174,8 @@ namespace CAT {
 
     m.message(" local_tracking: preparing event", event_number, mybhep::VERBOSE);
     event_number ++;
+
+    if( event_number < first_event_number ) return false;
 
     parts.clear();
     clusters_.clear();
@@ -2380,6 +2391,11 @@ namespace CAT {
 
   void clusterizer::set_nofflayers(size_t v){
     nofflayers = v;
+    return;
+  }
+
+  void clusterizer::set_first_event(int v){
+    first_event_number = v;
     return;
   }
 

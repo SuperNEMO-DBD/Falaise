@@ -152,6 +152,7 @@ namespace CAT{
     double MaxChi2;
     double nsigma;
     size_t nofflayers;
+    int first_event_number;
 
     //error parametrization
     double sigma0;
@@ -278,6 +279,8 @@ namespace CAT{
     void set_nsigma(double v);
 
     void set_nofflayers(size_t v);
+
+    void set_first_event(int v);
 
     void set_level(std::string v);
 

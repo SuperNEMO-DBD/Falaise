@@ -63,6 +63,10 @@ namespace CAT {
     /// work) and still the cluster is continuous
     int    nofflayers;
 
+    /// first event to be processed
+    /// (default = -1 to process all events)
+    int    first_event;
+
     /// 0. for SuperNEMO, 1.5 m for NEMO3
     double FoilRadius;
 

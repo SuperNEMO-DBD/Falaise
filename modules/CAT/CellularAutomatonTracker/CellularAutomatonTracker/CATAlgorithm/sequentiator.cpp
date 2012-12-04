@@ -44,6 +44,7 @@ namespace CAT {
     MaxChi2 = std::numeric_limits<double>::quiet_NaN ();
     nsigma = std::numeric_limits<double>::quiet_NaN ();
     NOffLayers = 0;
+    first_event_number = 0;
     PrintMode = false;
     SuperNemo = true;
     SuperNemoChannel = false;
@@ -98,6 +99,11 @@ namespace CAT {
       NOffLayers = st.fetch_istore("nofflayers");
     else
       NOffLayers = 1;
+
+    if (st.find_istore("first_event"))
+      first_event_number = st.fetch_istore("first_event");
+    else
+      first_event_number = -1;
 
     if (st.find_sstore("histo_file"))
       hfile=st.fetch_sstore("histo_file");
@@ -619,6 +625,7 @@ namespace CAT {
     m.message(" local_tracking: preparing event", event_number, mybhep::VERBOSE);
     event_number ++;
 
+    if( event_number < first_event_number ) return false;
 
     clock.start(" sequentiator: sequentiate ","cumulative");
     clock.start(" sequentiator: sequentiation ","restart");
@@ -1251,6 +1258,8 @@ namespace CAT {
 
 
     vector<size_t> done_connections;
+    size_t connection_node;
+    vector<size_t>::iterator fid;
     // check that node has never been added to a sequence
     for(vector<topology::sequence>::const_iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq)
       {
@@ -1264,7 +1273,6 @@ namespace CAT {
           }
           else{ // multi-vertex
             if( iseq->nodes_.size() > 1 ){
-              size_t connection_node;
               if( iseq->nodes_[0].c().id() == node_.c().id() )
                 connection_node = 1;
               else if( iseq->last_node().c().id() == node_.c().id() ){
@@ -1276,9 +1284,9 @@ namespace CAT {
               }
               // add to done_connections cell ids of those cells
               // that have already been connected to NODE in other sequences
-              vector<size_t>::iterator fid = std::find(done_connections.begin(),
-                                                       done_connections.end(),
-                                                       iseq->nodes_[connection_node].c().id());
+              fid = std::find(done_connections.begin(),
+			      done_connections.end(),
+			      iseq->nodes_[connection_node].c().id());
 
               if( fid == done_connections.end())
                 done_connections.push_back(iseq->nodes_[connection_node].c().id());
@@ -1287,9 +1295,10 @@ namespace CAT {
         }
       }
 
+    size_t cc_index;
     if( type == "MULTI_VERTEX" ){
       for(size_t i=0; i<done_connections.size(); i++){
-        size_t cc_index = 0;
+        cc_index = 0;
         if( !node_.has_couplet(done_connections[i],  &cc_index) )
           m.message(" problem: multi-vertex ", node_.c().id(), " should link to cell ", done_connections[i], " but has not such couplet", mybhep::NORMAL);
         else{
@@ -1319,14 +1328,16 @@ namespace CAT {
 
     families_.clear();
 
+    bool found, added;
+    size_t ifam;
+    std::vector<size_t> Fam;
     for (std::vector<topology::sequence>::const_iterator iseq = sequences_.begin();
          iseq != sequences_.end(); ++iseq){
 
       const size_t ipart = iseq - sequences_.begin();
       const size_t this_family = mybhep::int_from_string(iseq->family());
 
-      bool found = false;
-      size_t ifam;
+      found = false;
       for(size_t i=0; i<families_.size(); i++)
         if( families_[i][0] == this_family )
           {
@@ -1337,7 +1348,7 @@ namespace CAT {
 
       if( found )
         {
-          bool added = false;
+          added = false;
           for(size_t j=0; j<families_[ifam].size(); j++)
             {
               if(j == 0) continue;
@@ -1352,7 +1363,7 @@ namespace CAT {
         }
       else
         {
-          std::vector<size_t> Fam;
+          Fam.clear();
           Fam.push_back(this_family);
 
           Fam.push_back(ipart);
@@ -1468,6 +1479,9 @@ namespace CAT {
     if( level >= mybhep::VERBOSE)
       print_families();
 
+    size_t jmin, nfree, noverlaps;
+    double Chi2;
+    int ndof;
     for(std::vector<topology::sequence>::iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq){
       if( late() ){
         td.set_skipped(true);
@@ -1484,9 +1498,6 @@ namespace CAT {
       sc.calculate_n_overlaps(td.get_cells(), td.get_calos());
       sc.calculate_chi2();
 
-      size_t jmin, nfree, noverlaps;
-      double Chi2;
-      int ndof;
       while( can_add_family(sc, &jmin, &nfree, &Chi2, &noverlaps, &ndof, td) )
         {
           m.message(" best sequence to add is ", jmin, mybhep::VVERBOSE);
@@ -1708,6 +1719,18 @@ namespace CAT {
     clock.start(" sequentiator: interpret physics ", "cumulative");
 
     m.message(" interpreting physics of ", sequences_.size(), " sequences with ", calos.size(), " calorimeter hits ", mybhep::VVERBOSE); fflush(stdout);
+
+    double helix_min = mybhep::default_min;
+    size_t ihelix_min = mybhep::default_integer;
+    double tangent_min = mybhep::default_min;
+    size_t itangent_min = mybhep::default_integer;
+    
+    topology::experimental_point helix_extrapolation, helix_extrapolation_local;
+    bool helix_found = false;
+    
+    topology::experimental_point tangent_extrapolation, tangent_extrapolation_local;
+    bool tangent_found = false;
+    double dist;
     for(std::vector<topology::sequence>::iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq)
       {
         if( iseq->nodes().size() <= 2 ) continue;
@@ -1722,16 +1745,14 @@ namespace CAT {
 	    
 	    m.message(" extrapolate decay vertex with ", calos.size(), " calo hits " , mybhep::VVERBOSE);
 	    
-	    double helix_min = mybhep::default_min;
-	    size_t ihelix_min = mybhep::default_integer;
-	    double tangent_min = mybhep::default_min;
-	    size_t itangent_min = mybhep::default_integer;
+	    helix_min = mybhep::default_min;
+	    ihelix_min = mybhep::default_integer;
+	    tangent_min = mybhep::default_min;
+	    itangent_min = mybhep::default_integer;
 
-	    topology::experimental_point helix_extrapolation, helix_extrapolation_local;
-	    bool helix_found = false;
+	    helix_found = false;
 
-	    topology::experimental_point tangent_extrapolation, tangent_extrapolation_local;
-	    bool tangent_found = false;
+	    tangent_found = false;
 
 	    for(std::vector<topology::calorimeter_hit>::iterator ic=calos.begin(); ic != calos.end(); ++ic){
 	      
@@ -1748,7 +1769,7 @@ namespace CAT {
 	      }
 	      else{
 
-		double dist = helix_extrapolation_local.distance(ic->pl_.face()).value();
+		dist = helix_extrapolation_local.distance(ic->pl_.face()).value();
 		if( dist < helix_min ){
 		  helix_min = dist;
 		  ihelix_min = ic->id();
@@ -1764,7 +1785,7 @@ namespace CAT {
 	      }
 	      else{
 
-		double dist = tangent_extrapolation_local.distance(ic->pl_.face()).value();
+		dist = tangent_extrapolation_local.distance(ic->pl_.face()).value();
 		if( dist < tangent_min ){
 		  tangent_min = dist;
 		  itangent_min = ic->id();
@@ -1799,9 +1820,6 @@ namespace CAT {
 	if( !iseq->nodes_.empty() ){
 
 	  m.message( " extrapolate vertex on foil: supernemo " , SuperNemo, mybhep::VVERBOSE);
-
-	  topology::experimental_point helix_extrapolation;
-	  topology::experimental_point tangent_extrapolation;
 
 	  if( gap_number(iseq->nodes_[0].c() ) != 0 ){
 	    m.message( " not near ", mybhep::VVERBOSE); fflush(stdout);
@@ -1907,6 +1925,7 @@ namespace CAT {
         fflush(stdout);
       }
 
+    int iccc;
     for(vector<topology::node>::const_iterator inode = sequence.nodes_.begin();
         inode != sequence.nodes_.end(); ++inode)
       {
@@ -1923,7 +1942,7 @@ namespace CAT {
 	  std::clog << "(";
 
 	  for(vector<topology::cell>::const_iterator ilink=(*inode).links_.begin(); ilink != (*inode).links_.end(); ++ilink){
-	    int iccc = sequence.get_link_index_of_cell(inode - sequence.nodes_.begin(), *ilink);
+	    iccc = sequence.get_link_index_of_cell(inode - sequence.nodes_.begin(), *ilink);
 
 	    if( iccc < 0 ) continue;  // connection through a gap
 
@@ -2355,12 +2374,16 @@ namespace CAT {
     //size_t* max_common_hits_for_reco_track = (size_t*)mal loc(sizeof(size_t)*sequences_.size());
     //size_t* best_matching_for_reco_track = (size_t*)mal loc(sizeof(size_t)*sequences_.size());
 
+    size_t NCommonMax;
+    size_t imin;
+    bool first;
+    size_t ncommonhits;
     for(std::vector<topology::sequence>::iterator tp=trueseqs.begin(); tp != trueseqs.end(); ++tp){ // loop over true particles
 
-      size_t NCommonMax = 0;
-      size_t imin = 0;
+      NCommonMax = 0;
+      imin = 0;
 
-      bool first = false;
+      first = false;
 
       if( tp - trueseqs.begin() == 0 ) // first true particle
         first = true;
@@ -2372,7 +2395,7 @@ namespace CAT {
           best_matching_for_reco_track[ip - sequences_.begin()] = 0;
         }
 
-        size_t ncommonhits = getCommonHits(*tp, *ip);
+        ncommonhits = getCommonHits(*tp, *ip);
 
         if( ncommonhits > NCommonMax ){
           NCommonMax = ncommonhits;
@@ -2401,6 +2424,7 @@ namespace CAT {
       n_common_hits_for_reco_track_.push_back(max_common_hits_for_reco_track[i]);
     }
 
+    size_t index;
     if( level >= mybhep::VVERBOSE ){
       for(size_t i=0; i<sequences_.size(); i++){
         std::clog << " best matching for reco track " << i << " is true track " << true_sequence_of_reco_[i] << " with " << n_common_hits_for_reco_track_[i] << " common hits " << std::endl;
@@ -2409,7 +2433,7 @@ namespace CAT {
           std::clog << " " << sequences_[i].nodes()[j].c().id();
         }
         std::clog << " " << std::endl; std::clog << " hits of true track: ";
-        size_t index = true_sequence_of_reco_[i];
+        index = true_sequence_of_reco_[i];
         for(size_t j=0; j < trueseqs[index].nodes().size(); j++){
           std::clog << " " << trueseqs[index].nodes()[j].c().id();
         }
@@ -2433,7 +2457,7 @@ namespace CAT {
     if( sequences_.size() == 0 ) return;
 
     make_table_of_true_and_reco_sequences(trueseqs);
-
+    size_t ireco;
     for(std::vector<topology::sequence>::iterator itrueseq=trueseqs.begin(); itrueseq != trueseqs.end(); ++itrueseq){
 
       if( !itrueseq->primary() ) continue;
@@ -2443,7 +2467,7 @@ namespace CAT {
       if( itrueseq->nodes().size() == 0 )
         continue;
 
-      size_t ireco = reco_sequence_of_true_[itrueseq - trueseqs.begin()];
+      ireco = reco_sequence_of_true_[itrueseq - trueseqs.begin()];
 
       if( ireco >= sequences_.size() ){
         m.message(" problem: ireco", ireco, " size", sequences_.size(), mybhep::NORMAL);
@@ -2850,12 +2874,15 @@ namespace CAT {
 
     std::vector<topology::sequence> newseqs;
 
+    size_t ifam;
+    size_t jmin;
+    bool invertA, invertB, first;
     for(std::vector<topology::sequence>::iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq){
 
       if( late() )
         return false;
 
-      size_t ifam = mybhep::int_from_string(iseq->family());
+      ifam = mybhep::int_from_string(iseq->family());
       if( matched[ifam] ) continue;
 
       if( !good_first_to_be_matched(*iseq) ){
@@ -2866,8 +2893,7 @@ namespace CAT {
       if( level >= mybhep::VERBOSE)
         print_a_sequence(*iseq);
 
-      size_t jmin;
-      bool invertA, invertB, first = true;
+      first = true;
       topology::sequence newseq = *iseq;
       while( can_match(newseq, &jmin, invertA, invertB) )
         {
@@ -2932,6 +2958,10 @@ namespace CAT {
     int ndofbest = 1;
 
     m.message(" try to match sequence", s.name(), " of chi2 = ", chi2min, " ndof ", ndofbest, " prob ", probmax, mybhep::VVERBOSE);
+    bool invertA, invertB;
+    double p;
+    double c;
+    int n;
 
     for(std::vector<topology::sequence>::iterator jseq=sequences_.begin(); jseq!=sequences_.end(); ++jseq)
       {
@@ -2948,16 +2978,15 @@ namespace CAT {
           continue;
         }
 
-        bool invertA, invertB;
         if( !s.good_match(*jseq, invertA, invertB, NOffLayers) ){
           continue;
         }
 
 
         topology::sequence news = s.match(*jseq, invertA, invertB);
-        double p = news.helix_Prob();
-        double c = news.helix_chi2();
-        int n = news.ndof();
+        p = news.helix_Prob();
+        c = news.helix_chi2();
+        n = news.ndof();
 
         m.message(" ... matched to ", jseq->name(), ", chi2 =", c, " ndof ", n, " prob ", p, mybhep::VVERBOSE);
 
