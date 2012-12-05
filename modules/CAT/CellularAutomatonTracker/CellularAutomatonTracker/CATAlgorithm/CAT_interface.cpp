@@ -212,7 +212,6 @@ namespace CAT {
     czer_.set_MaxChi2 (setup_.MaxChi2);
     czer_.set_nsigma (setup_.nsigma);
     czer_.set_nofflayers (setup_.nofflayers);
-    //    std::cout << " qqq setting " << setup_.first_event<< std::endl;
     czer_.set_first_event (setup_.first_event);
     czer_.set_len (setup_.len);
     czer_.set_rad (setup_.rad);
@@ -277,7 +276,6 @@ namespace CAT {
     stor_.set_MaxChi2 (setup_.MaxChi2);
     stor_.set_nsigma (setup_.nsigma);
     stor_.set_nofflayers (setup_.nofflayers);
-    //    std::cout << " qqqb setting " << setup_.first_event<< std::endl;
     stor_.set_first_event (setup_.first_event);
     stor_.set_len (setup_.len);
     stor_.set_rad (setup_.rad);

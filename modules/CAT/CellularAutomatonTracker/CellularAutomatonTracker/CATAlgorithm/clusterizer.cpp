@@ -169,7 +169,6 @@ namespace CAT {
   clusterizer::clusterizer(void){
     //*************************************************************
     _set_defaults ();
-    //    std::cout << " qqq ret " << std::endl; fflush(stdout);
     return;
   }
 
@@ -1172,8 +1171,8 @@ namespace CAT {
 
     clock.start(" clusterizer: prepare event ","cumulative");
 
-    m.message(" local_tracking: preparing event", event_number, mybhep::VERBOSE);
     event_number ++;
+    m.message(" local_tracking: preparing event", event_number, mybhep::VERBOSE);
 
     if( event_number < first_event_number ) return false;
 
@@ -1387,6 +1386,8 @@ namespace CAT {
   //*******************************************************************
   void clusterizer::clusterize(topology::tracked_data & tracked_data_){
     //*******************************************************************
+
+    if( event_number < first_event_number ) return;
 
     bool devel = false;
     //devel = true;

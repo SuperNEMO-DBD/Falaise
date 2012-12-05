@@ -622,8 +622,8 @@ namespace CAT {
   bool sequentiator::sequentiate(topology::tracked_data & tracked_data_) {
     //*************************************************************
 
-    m.message(" local_tracking: preparing event", event_number, mybhep::VERBOSE);
     event_number ++;
+    m.message(" local_tracking: preparing event", event_number, mybhep::VERBOSE);
 
     if( event_number < first_event_number ) return false;
 
