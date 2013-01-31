@@ -17,12 +17,15 @@ namespace CAT {
 
     class plane : public tracking_object {
 
-      // a plane is identified by 
+      // a plane (calorimeter block) is identified by 
+      // a type (Nemo3 or SuperNemo)
       // one point (center) in middle of block
-      // the plane sizes (sizex, sizey, sizez)
-      // and a normal to the plane (nx, ny, nz)
-      // view = ("x" or "y" or "z")
-      // face returns the center of the face towards origin
+      // the plane sizes (sizex, sizey, sizez for SuperNemo
+      //                  for Nemo3 sizex is towards the foil, sizez is tangent to the calo circle)
+      // a normal to the plane (nx, ny, nz) looking towards the foil
+      // a view = ("x" or "y" or "z" for SuperNemo,
+      //           "inner", "outer", "bottom" or "top" for Nemo3)
+      // "face" returns the center of the face towards the foil
 
     private:
       std::string appname_;
@@ -33,7 +36,7 @@ namespace CAT {
       // sizes
       experimental_vector sizes_;
 
-      // normal looking towards the origin
+      // normal looking towards the foil
       experimental_vector norm_;
 
       // Nemo3 or SuperNEMO
@@ -81,7 +84,7 @@ namespace CAT {
       //! get sizes
       const experimental_vector& sizes()const;
 
-      // returns the normal looking towards the origin
+      // returns the normal looking towards the foil
       const experimental_vector& norm() const;
 
       // get type

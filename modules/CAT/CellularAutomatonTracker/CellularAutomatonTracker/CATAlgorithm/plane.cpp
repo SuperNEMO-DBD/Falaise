@@ -148,6 +148,21 @@ namespace CAT {
         return "z";
       }
       else if( type() == "Nemo3" ){
+	if( norm().y().value() == 0. ){ // inner and outer walls
+	  const experimental_point origin(0.,0.,0.,0.,0.,0.);
+	  experimental_vector v(origin, center_);  // vector from center of detector
+	        	        	                // to center of calo block
+	  if( (v.hor()*norm()).value() > 0. )
+	    return "inner";
+	  return "outer";
+	}
+
+	if( norm().y().value() == 1. )
+	  return "bottom";
+
+	if( norm().y().value() == -1. )
+	  return "top";
+
         clog << " warning: undefined view for plane of type " << type() << std::endl;
         return "null";
       }
@@ -161,7 +176,7 @@ namespace CAT {
     }
 
 
-    //! get point of the face of the plane
+    //! get point of the front face of the block
     experimental_point plane::face()const
     {
       if( view() == "x" )
@@ -170,22 +185,28 @@ namespace CAT {
       else if( view() == "y" )
         return (center_ + norm()*sizes().y()/2.).point_from_vector();
 
-      return (center_ + norm()*sizes().z()/2.).point_from_vector();
+      else if( view() == "z" )
+	return (center_ + norm()*sizes().z()/2.).point_from_vector();
+
+      else{ // Nemo3
+
+	return (center_ + norm()*sizes().x()/2.).point_from_vector();
+      }
 
     }
 
     bool plane::intersect(const experimental_point &ep)const{
-      experimental_vector dist = ep - center();
+      experimental_vector dist = ep - face();
 
       if( view() == "x" ){
 
         if( fabs(dist.x().value()) > dist.x().error() )
           return false;
 
-        if( fabs(dist.y().value()) > sizes().y().value() + dist.y().error() )
+        if( fabs(dist.y().value()) > sizes().y().value()/2. + dist.y().error() )
           return false;
 
-        if( fabs(dist.z().value()) > sizes().z().value() + dist.z().error() )
+        if( fabs(dist.z().value()) > sizes().z().value()/2. + dist.z().error() )
           return false;
 
         return true;
@@ -195,26 +216,46 @@ namespace CAT {
         if( fabs(dist.y().value()) > dist.y().error() )
           return false;
 
-        if( fabs(dist.x().value()) > sizes().x().value() + dist.x().error() )
+        if( fabs(dist.x().value()) > sizes().x().value()/2. + dist.x().error() )
           return false;
 
-        if( fabs(dist.z().value()) > sizes().z().value() + dist.z().error() )
+        if( fabs(dist.z().value()) > sizes().z().value()/2. + dist.z().error() )
           return false;
 
         return true;
       }
 
-      if( fabs(dist.z().value()) > dist.z().error() )
-        return false;
+      else if( view() == "z" ){
+	if( fabs(dist.z().value()) > dist.z().error() )
+	  return false;
+	
+	if( fabs(dist.x().value()) > sizes().x().value()/2. + dist.x().error() )
+	  return false;
+	
+	if( fabs(dist.y().value()) > sizes().y().value()/2. + dist.y().error() )
+	  return false;
 
-      if( fabs(dist.x().value()) > sizes().x().value() + dist.x().error() )
-        return false;
+	return true;
+	
+      }
+      else{
+	experimental_double dist_norm = dist*norm(); // distance along the normal
+	experimental_vector pv=dist^norm();
+	experimental_double dist_transv = pv.hor().length(); // transverse distance
+	experimental_double dist_vert = pv.y(); // vertical distance
 
-      if( fabs(dist.y().value()) > sizes().y().value() + dist.y().error() )
-        return false;
+        if( fabs(dist_norm.value()) > fabs( dist_norm.error()))
+          return false;
 
-      return true;
+	if( fabs(dist_transv.value()) > sizes().z().value()/2. + dist_transv.error())
+          return false;
 
+	if( fabs(dist_vert.value()) > sizes().y().value()/2. + dist_vert.error())
+          return false;
+
+	return true;
+      }
+      
     }
 
     bool plane::intersect(const experimental_point &start, const experimental_vector &direction, experimental_point* ep)const{
@@ -224,7 +265,7 @@ namespace CAT {
           return false;
         }
 
-        experimental_double time = (center().x() - start.x())/direction.x();
+        experimental_double time = (face().x() - start.x())/direction.x();
 
         *ep = (experimental_vector(start) + time*direction).point_from_vector();
 
@@ -235,28 +276,40 @@ namespace CAT {
           return false;
         }
 
-        experimental_double time = (center().y() - start.y())/direction.y();
+        experimental_double time = (face().y() - start.y())/direction.y();
 
         *ep = (experimental_vector(start) + time*direction).point_from_vector();
 
         return intersect(*ep);
       }
 
-      if( direction.z().value() == 0 ){
-        return false;
+      else if( view() == "z" ){
+	if( direction.z().value() == 0 ){
+	  return false;
+	}
+	
+	experimental_double time = (face().z() - start.z())/direction.z();
+	
+	*ep = (experimental_vector(start) + time*direction).point_from_vector();
+	
+	return intersect(*ep);
+      }
+      else{ // Nemo3
+	if( (direction*norm()).value() == 0 ) return false;
+
+	experimental_double time = (face() - start)*norm()/(direction*norm());
+	
+	*ep = (experimental_vector(start) + time*direction).point_from_vector();
+
+	return intersect(*ep);
       }
 
-      experimental_double time = (center().z() - start.z())/direction.z();
-
-      *ep = (experimental_vector(start) + time*direction).point_from_vector();
-
-      return intersect(*ep);
 
 
     }
 
 
-    // vector from the face of the plane to the point
+    // normal vector from the face of the plane to the plane of the point
     experimental_vector plane::norm_to_point(const experimental_point &ep)const{
 
       experimental_vector result = norm();

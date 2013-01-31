@@ -1756,7 +1756,7 @@ namespace CAT {
 
 	    for(std::vector<topology::calorimeter_hit>::iterator ic=calos.begin(); ic != calos.end(); ++ic){
 	      
-	      m.message( " trying to extrapolate to calo hit ", ic - calos.begin(), " id ", ic->id(), " on view ", ic->pl_.view(), mybhep::VVERBOSE);
+	      m.message( " trying to extrapolate to calo hit ", ic - calos.begin(), " id ", ic->id(), " on view ", ic->pl_.view(), " energy ", ic->e().value(), mybhep::VVERBOSE);
 
 	      if( !near(iseq->last_node().c(), ic->pl()) ){
 		m.message( " not near " , mybhep::VVERBOSE);
@@ -2303,18 +2303,48 @@ namespace CAT {
       m.message(" problem: matching cell to calo on view ", pl.view(), mybhep::NORMAL);
       return false;
     }
+    else if( pl.view() == "z" ){
 
-    int g = gap_number(c);
-
-    m.message(" checking if cell ", c.id(), " on gap ", g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), mybhep::VVERBOSE);
-
-    if( g <= 0 ) return false;
-
-    if ( SuperNemo ){
+      int g = gap_number(c);
+      
+      m.message(" checking if cell ", c.id(), " on gap ", g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), mybhep::VVERBOSE);
+      
+      if( g <= 0 ) return false; // cell is not on a gap or is facing the foil
+      
       if( g == 1 ) return true;
+      
+      m.message(" problem: can't match to calo on view ", pl.view(), mybhep::NORMAL);
+
+      return false;
     }
-    else{
-      if( g == 3 ) return true;
+    else if( pl.view() == "inner" ){
+
+      int ln = c.layer();
+      int g = gap_number(c);
+      m.message(" checking if cell ", c.id(), " layer and gap: ", ln, g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), " on view ", pl.view(), mybhep::VVERBOSE);
+      if( ln < 0 && g == 3 ) return true;
+      return false;
+    }
+    else if( pl.view() == "outer" ){
+      int ln = c.layer();
+      int g = gap_number(c);
+      m.message(" checking if cell ", c.id(), " on layer and gap: ", ln, g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), " on view ", pl.view(), mybhep::VVERBOSE);
+      if( ln > 0 && g == 3 ) return true;
+      return false;
+    }
+    else if( pl.view() == "top" ){
+      int ln = c.layer();
+      int g = gap_number(c);
+      m.message(" checking if cell ", c.id(), " on gap ", g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), " on view ", pl.view(), mybhep::VVERBOSE);
+      if( g > 0 ) return true;
+      return false;
+    }
+    else if( pl.view() == "bottom" ){
+      int ln = c.layer();
+      int g = gap_number(c);
+      m.message(" checking if cell ", c.id(), " on gap ", g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), " on view ", pl.view(), mybhep::VVERBOSE);
+      if( g > 0 ) return true;
+      return false;
     }
 
     m.message(" problem: can't match to calo on view ", pl.view(), mybhep::NORMAL);

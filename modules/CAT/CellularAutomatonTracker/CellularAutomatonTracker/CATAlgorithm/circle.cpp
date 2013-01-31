@@ -257,23 +257,24 @@ namespace CAT{
 
     bool circle::intersect_plane(plane pl, experimental_point * ep, experimental_double _phi){
       
-      // normal std::vector from face of plane to center of circle
+      // normal vector from face of plane to plane of center of circle
       experimental_vector ntp = pl.norm_to_point(center());
       
       double diff = (ntp.length() - radius()).value();
+      experimental_vector the_norm=pl.norm();
 
-      if( diff > 0. ){
-        *ep = (center() - pl.norm()*radius().value()).point_from_vector();
+      if( diff > 0. ){ // the circle does not reach the plane
+        *ep = (center() - the_norm*radius().value()).point_from_vector();
         return false;
       }
       
-      if( diff == 0. ){
-        *ep = (center() - pl.norm()*radius().value()).point_from_vector();
+      if( diff == 0. ){  // the circle is tangent to the plane face
+        *ep = (center() - the_norm*radius().value()).point_from_vector();
       }
-      else{
+      else{ // the circle intersects the plane
         if( print_level() >= mybhep::VVERBOSE ){
           std::clog << " intersecting circle with center " << center().x().value() << " " << center().z().value() <<
-            " with plain with face " << pl.face().x().value() << " " << pl.face().z().value();
+            " with plain with face " << pl.face().x().value() << " " << pl.face().z().value() << std::endl;
         }
         
         if( pl.view() == "x" ){
@@ -284,7 +285,7 @@ namespace CAT{
           
           ep->set_x(pl.face().x());
           ep->set_z(center().z() + experimental_sqrt(experimental_square(radius()) -
-                                                     experimental_square(ntp.length()))*sign);
+                                                     ntp.length2())*sign);
           ep->set_y(center().y());
         }
         
@@ -296,10 +297,35 @@ namespace CAT{
           
           ep->set_z(pl.face().z());
           ep->set_x(center().x() + experimental_sqrt(experimental_square(radius()) -
-                                                     experimental_square(ntp.length()))*sign);
+                                                     ntp.length2())*sign);
           ep->set_y(center().y());
         }
+        else if( pl.view() == "inner" || pl.view() == "outer" ){
 
+          double signx = 1.;
+          if( sin(_phi.value()) < 0. )
+            signx = -1.;
+          double signz = 1.;
+          if( cos(_phi.value()) < 0. )
+            signz = -1.;
+
+	  // point on the plane in front of circle's center
+	  experimental_point foot = (center() - ntp).point_from_vector();
+
+	  experimental_double transverse_dist = experimental_sqrt(experimental_square(radius()) -
+								  ntp.length2());
+	  experimental_double angle=the_norm.phi();
+
+	  ep->set_x(foot.x() - transverse_dist*experimental_sin(angle)*signx);
+	  ep->set_z(foot.z() - transverse_dist*experimental_cos(angle)*signz);
+
+          ep->set_y(center().y());
+
+	}
+	else{
+	  std::clog << " problem: cannot intersect circle with plane of view " << pl.view() << std::endl;
+	  return false;
+	}
 
       }
 
@@ -308,21 +334,28 @@ namespace CAT{
 	  ep->z().value() == small_neg )
 	return false;
 
-      experimental_vector dist = experimental_vector(pl.face(), *ep);
+
+      // vector from center of plane face to extrapolated point
+      experimental_vector dist = experimental_vector(pl.face(), *ep).hor();
       if( print_level() >= mybhep::VVERBOSE ){
-        std::clog << " distance from extrapolation to plane face: " << dist.x().value() << " " << dist.y().value() << " " << dist.z().value() << " plane sizes: " << pl.sizes().x().value() << " " << pl.sizes().y().value() << " " << pl.sizes().z().value() << std::endl;
+        std::clog << " distance from extrapolation to plane face: " << dist.x().value() << ", " << dist.y().value() << ", " << dist.z().value() << " plane sizes: " << pl.sizes().x().value() << " " << pl.sizes().y().value() << " " << pl.sizes().z().value() << std::endl;
       }
       if( pl.view() == "x" ){
-        if( fabs(dist.z().value()) > pl.sizes().z().value() )
+        if( fabs(dist.z().value()) > pl.sizes().z().value()/2. )
           return false;
         return true;
       }
       if( pl.view() == "z" ){
-        if( fabs(dist.x().value()) > pl.sizes().x().value() )
+        if( fabs(dist.x().value()) > pl.sizes().x().value()/2. )
           return false;
         return true;
       }
-
+      if( pl.view() == "inner" || pl.view() == "outer" ){
+	experimental_vector transverse_dist = (dist)^(the_norm.hor());
+	if( transverse_dist.length().value() > pl.sizes().z().value()/2. )
+          return false;
+        return true;
+      }
       
       if( print_level() >= mybhep::NORMAL )
         std::clog << " problem: intersecting circle with plane of view " << pl.view() << std::endl;

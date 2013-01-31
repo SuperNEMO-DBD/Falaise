@@ -270,7 +270,7 @@ namespace CAT {
 
       bool intersect_plane(plane pl, experimental_point * ep, experimental_double _phi)const{
 
-        if( pl.view() == "x" || pl.view() == "z" ){
+        if( pl.view() == "x" || pl.view() == "z" || pl.view() == "inner" || pl.view() == "outer" ){
           bool result = get_circle().intersect_plane(pl, ep, _phi);
           ep->set_y(position(*ep,_phi.value()).y());
 
@@ -278,13 +278,19 @@ namespace CAT {
 
         }
 
-        if( pitch().value() == 0.)
-          return false;
+        if( pl.view() == "y" || pl.view() == "top" || pl.view() == "bottom" ){
 
-        *ep = position((pl.center().y() - center().y())/pitch());
-        ep->set_y(pl.center().y());
-        return true;
+	  if( pitch().value() == 0.)
+	    return false;
+	  
+	  *ep = position((pl.face().y() - center().y())/pitch());
+	  ep->set_y(pl.face().y());
+	  return true;
+	}
 
+
+	std::clog << " problem: cannot intersect helix with plane of view " << pl.view() << std::endl;
+	return false;
 
       }
 
