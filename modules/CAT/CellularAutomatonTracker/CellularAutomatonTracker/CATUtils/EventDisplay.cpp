@@ -2144,9 +2144,9 @@ void EventDisplay::draw_calos_xz( std::vector<topology::calorimeter_hit> calos )
         double theta = atan2(h.pl().center().z().value(), h.pl().center().x().value());
 
         double offset = 0.;
-        int wall = getCalWalli(h);
-	if( wall == 6 ) offset = -local_calo_x/2.;  // inner                                                                       
-        else if( wall == 7 ) offset = local_calo_x/2.;  // outer                                                                   
+        //int wall = getCalWalli(h);
+	//if( wall == 6 ) offset = -local_calo_x/2.;  // inner                                                                       
+        //else if( wall == 7 ) offset = local_calo_x/2.;  // outer                                                                   
 
         zcal[0] = h.pl().center().z().value() + offset*sin(theta) - local_calo_x/2.*sin(theta) + local_calo_z/2.*cos(theta);
         zcal[1] = h.pl().center().z().value() + offset*sin(theta) + local_calo_x/2.*sin(theta) + local_calo_z/2.*cos(theta);
