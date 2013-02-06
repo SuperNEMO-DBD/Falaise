@@ -30,6 +30,7 @@ namespace CAT {
       names_.clear();names_.push_back("default");
       has_charge_ = false;
       has_helix_charge_ = false;
+      has_detailed_charge_ = false;
       has_momentum_ = false;
       has_helix_vertex_ = false;
       helix_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
@@ -59,6 +60,7 @@ namespace CAT {
       helix_ = helix();
       charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       helix_charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
+      detailed_charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       momentum_ = experimental_vector(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                       mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
       length_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
@@ -81,6 +83,7 @@ namespace CAT {
       names_.push_back("default");
       has_charge_ = false;
       has_helix_charge_ = false;
+      has_detailed_charge_ = false;
       has_momentum_ = false;
       has_helix_vertex_ = false;
       helix_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
@@ -108,6 +111,7 @@ namespace CAT {
       helix_ = helix();
       charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       helix_charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
+      detailed_charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       momentum_ = experimental_vector(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                       mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
       length_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
@@ -127,6 +131,7 @@ namespace CAT {
       names_.clear();names_.push_back("default");
       has_charge_ = false;
       has_helix_charge_ = false;
+      has_detailed_charge_ = false;
       has_momentum_ = false;
       has_helix_vertex_ = false;
       helix_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
@@ -154,6 +159,7 @@ namespace CAT {
       helix_ = helix();
       charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       helix_charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
+      detailed_charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       momentum_ = experimental_vector(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                       mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
       length_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
@@ -282,6 +288,12 @@ namespace CAT {
     void sequence::set_helix_charge(const experimental_double &helix_charge){
       has_helix_charge_ = true;
       helix_charge_ = helix_charge;
+    }
+
+    //! set detailed_charge
+    void sequence::set_detailed_charge(const experimental_double &detailed_charge){
+      has_detailed_charge_ = true;
+      detailed_charge_ = detailed_charge;
     }
 
     //! set momentum
@@ -453,6 +465,11 @@ namespace CAT {
       return has_helix_charge_;
     }
 
+    //! has detailed_charge
+    bool sequence::has_detailed_charge()const{
+      return has_detailed_charge_;
+    }
+
     //! has helix_vertex
     bool sequence::has_helix_vertex()const{
       return has_helix_vertex_;
@@ -543,6 +560,12 @@ namespace CAT {
     const experimental_double & sequence::helix_charge() const
     {
       return helix_charge_;
+    }
+
+    //! get detailed_charge
+    const experimental_double & sequence::detailed_charge() const
+    {
+      return detailed_charge_;
     }
 
     //! get momentum
@@ -691,6 +714,11 @@ namespace CAT {
       if( has_helix_charge() ){
         experimental_double newcharge = - helix_charge();
         inverted.set_helix_charge(newcharge);
+      }
+
+      if( has_detailed_charge() ){
+        experimental_double newcharge = - detailed_charge();
+        inverted.set_detailed_charge(newcharge);
       }
 
       if( has_decay_helix_vertex() ){
@@ -1573,6 +1601,9 @@ namespace CAT {
 
     void sequence::calculate_charge(void){
 
+      //std::clog << " qqq center x " << helix_.center().x().value() << std::endl;
+      //std::clog << " qqq calculate charge, nhits = " << nodes().size() << std::endl;
+
       if( nodes().size() < 3 ) return;
 
       experimental_vector vi(nodes().front().ep(), nodes_[1].ep());
@@ -1590,6 +1621,8 @@ namespace CAT {
         charge_ = deltaphi/fabs(deltaphi.value());
       }
 
+      //std::clog << " qqq initial phi " << phi1*180./acos(-1.) << " final phi " << phi2*180./acos(-1.) << " deltaphi " << deltaphi.value() << " charge " << charge_.value() << std::endl;
+
       experimental_double first_helix_phi = helix_.phi_of_point(nodes().front().ep());
       experimental_double last_helix_phi = helix_.phi_of_point(last_node().ep());
 
@@ -1605,6 +1638,34 @@ namespace CAT {
         helix_charge_ = deltahelix_phi/fabs(deltahelix_phi.value());
       }
 
+      //std::clog << " qqq initial helix phi " << helix_phi1*180./acos(-1.) << " final phi " << helix_phi2*180./acos(-1.) << " deltaphi " << deltahelix_phi.value() << " charge " << helix_charge_.value() << std::endl;
+
+
+
+      //std::clog << " qqq charges: " << std::endl;
+
+      std::vector<experimental_double> angles;
+      for(size_t i=0; i<nodes().size()-2; i++){
+	experimental_vector vi(nodes_[i].ep(), nodes_[i+1].ep());
+	experimental_vector vf(nodes_[i+1].ep(), nodes_[i+2].ep());
+
+	double phi1 = vi.phi().value();
+	double phi2 = vf.phi().value();
+	mybhep::fix_angles(&phi1, &phi2);
+
+	experimental_double deltaphi = vf.phi() - vi.phi();
+	deltaphi.set_value(phi2 - phi1);
+
+	if( deltaphi.value() ){
+	  has_detailed_charge_ = true;
+	  angles.push_back(deltaphi/fabs(deltaphi.value()));
+	  //std::clog << " qqq triplet: " << i << " q " << angles.back().value() << " +- " << angles.back().error() << std::endl;
+	}
+      }
+      detailed_charge_=weighted_average(angles);
+      detailed_charge_/=fabs(detailed_charge_.value());
+
+      //std::clog << " qqq detailed charge " << detailed_charge_.value() << " +- " << detailed_charge_.error() << std::endl;
 
     }
 

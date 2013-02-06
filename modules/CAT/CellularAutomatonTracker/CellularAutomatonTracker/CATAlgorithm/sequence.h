@@ -55,6 +55,8 @@ namespace CAT {
 
       experimental_double helix_charge_;
 
+      experimental_double detailed_charge_;
+
       experimental_vector momentum_;
 
       experimental_double length_;
@@ -76,6 +78,7 @@ namespace CAT {
 
       bool has_charge_;
       bool has_helix_charge_;
+      bool has_detailed_charge_;
 
       // sequence's vertex: from helix and from tangents
       bool has_helix_vertex_;
@@ -158,6 +161,9 @@ namespace CAT {
       //! set helix_charge
       void set_helix_charge(const experimental_double &helix_charge);
 
+      //! set detailed_charge
+      void set_detailed_charge(const experimental_double &detailed_charge);
+
       //! set momentum
       void set_momentum(const experimental_vector &mom);
 
@@ -227,6 +233,9 @@ namespace CAT {
       //! has helix_charge
       bool has_helix_charge()const;
 
+      //! has detailed_charge
+      bool has_detailed_charge()const;
+
       //! has helix_vertex
       bool has_helix_vertex()const;
 
@@ -280,6 +289,9 @@ namespace CAT {
 
       //! get helix_charge
       const experimental_double & helix_charge() const;
+
+      //! get detailed_charge
+      const experimental_double & detailed_charge() const;
 
       //! get momentum
       const experimental_vector & momentum() const;

@@ -68,8 +68,14 @@ namespace CAT {
       //! operador *= 
       experimental_double& operator *= (experimental_double a);
 
+      //! operador *= 
+      experimental_double& operator *= (double a);
+
       //! operador /= 
       experimental_double& operator /= (experimental_double a);
+
+      //! operador /= 
+      experimental_double& operator /= (double a);
 
     };
  

@@ -128,6 +128,19 @@ namespace CAT {
       return p1;
     }
 
+    //! operador *= 
+    experimental_double& experimental_double::operator *= (double a)
+    {
+      experimental_double& p1= *this;
+      double val = p1.value()*a;
+      double err = p1.error()*fabs(a);
+
+      p1.set_value(val);
+      p1.set_error(err);
+
+      return p1;
+    }
+
     //! operador /= 
     experimental_double& experimental_double::operator /= (experimental_double a)
     {
@@ -139,6 +152,22 @@ namespace CAT {
 
       double val = p1.value()/a.value();
       double err = std::sqrt(mybhep::square(p1.error()/a.value()) + mybhep::square(p1.value()*a.error()/mybhep::square(a.value())));
+      p1.set_value(val);
+      p1.set_error(err);
+      return p1;
+    }
+
+    //! operador /= 
+    experimental_double& experimental_double::operator /= (double a)
+    {
+      experimental_double& p1= *this;
+
+      if( a == 0 ){
+        std::clog << " problem: division by double with value " << a << std::endl;
+      }
+
+      double val = p1.value()/a;
+      double err = p1.error()/fabs(a);
       p1.set_value(val);
       p1.set_error(err);
       return p1;
