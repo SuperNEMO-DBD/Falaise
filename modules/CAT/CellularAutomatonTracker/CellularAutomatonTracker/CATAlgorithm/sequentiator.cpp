@@ -1974,7 +1974,7 @@ namespace CAT {
 	}
       }
 
-    std::clog << " center (" << sequence.center().x().value() << ", " << sequence.center().y().value() << ", " << sequence.center().z().value() << ")  radius " << sequence.radius().value() <<  " pitch " << sequence.pitch().value() << " momentum " << sequence.momentum().length().value() << "  charge " << sequence.charge().value() << " helix charge " << sequence.helix_charge().value() << std::endl;
+    std::clog << " center (" << sequence.center().x().value() << ", " << sequence.center().y().value() << ", " << sequence.center().z().value() << ")  radius " << sequence.radius().value() <<  " pitch " << sequence.pitch().value() << " momentum " << sequence.momentum().length().value() << "  tangent charge " << sequence.charge().value() << " +- " << sequence.charge().error() << " helix charge " << sequence.helix_charge().value()  << " +- " << sequence.helix_charge().error() << " detailed charge " << sequence.detailed_charge().value()  << " +- " << sequence.detailed_charge().error() << std::endl;
 
     std::clog << " " << std::endl;
 

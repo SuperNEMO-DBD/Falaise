@@ -1601,9 +1601,6 @@ namespace CAT {
 
     void sequence::calculate_charge(void){
 
-      //std::clog << " qqq center x " << helix_.center().x().value() << std::endl;
-      //std::clog << " qqq calculate charge, nhits = " << nodes().size() << std::endl;
-
       if( nodes().size() < 3 ) return;
 
       experimental_vector vi(nodes().front().ep(), nodes_[1].ep());
@@ -1620,8 +1617,10 @@ namespace CAT {
         has_charge_ = true;
         charge_ = deltaphi/fabs(deltaphi.value());
       }
-
-      //std::clog << " qqq initial phi " << phi1*180./acos(-1.) << " final phi " << phi2*180./acos(-1.) << " deltaphi " << deltaphi.value() << " charge " << charge_.value() << std::endl;
+      
+      if( print_level() >= mybhep::VVERBOSE ){
+	std::clog << " calculate tangent charge: initial phi " << phi1*180./acos(-1.) << " final phi " << phi2*180./acos(-1.) << " deltaphi " << deltaphi.value() << " charge " << charge_.value() << " +- " << charge_.error() << std::endl;
+      }
 
       experimental_double first_helix_phi = helix_.phi_of_point(nodes().front().ep());
       experimental_double last_helix_phi = helix_.phi_of_point(last_node().ep());
@@ -1638,11 +1637,12 @@ namespace CAT {
         helix_charge_ = deltahelix_phi/fabs(deltahelix_phi.value());
       }
 
-      //std::clog << " qqq initial helix phi " << helix_phi1*180./acos(-1.) << " final phi " << helix_phi2*180./acos(-1.) << " deltaphi " << deltahelix_phi.value() << " charge " << helix_charge_.value() << std::endl;
+      if( print_level() >= mybhep::VVERBOSE ){
+	std::clog << " calculate helix charge: initial helix phi " << helix_phi1*180./acos(-1.) << " final phi " << helix_phi2*180./acos(-1.) << " deltaphi " << deltahelix_phi.value() << " charge " << helix_charge_.value() << " +- " << helix_charge_.error() << std::endl;
+	std::clog << " calculate detailed charges: " << std::endl;
+      }
 
 
-
-      //std::clog << " qqq charges: " << std::endl;
 
       std::vector<experimental_double> angles;
       for(size_t i=0; i<nodes().size()-2; i++){
@@ -1659,13 +1659,27 @@ namespace CAT {
 	if( deltaphi.value() ){
 	  has_detailed_charge_ = true;
 	  angles.push_back(deltaphi/fabs(deltaphi.value()));
-	  //std::clog << " qqq triplet: " << i << " q " << angles.back().value() << " +- " << angles.back().error() << std::endl;
+	  if( print_level() >= mybhep::VVERBOSE ){
+	    std::clog << " triplet: " << i << " q " << angles.back().value() << " +- " << angles.back().error() << std::endl;
+	  }
 	}
       }
-      detailed_charge_=weighted_average(angles);
-      detailed_charge_/=fabs(detailed_charge_.value());
+      detailed_charge_=average(angles);
+      if( detailed_charge_.value() )
+	detailed_charge_/=fabs(detailed_charge_.value());
+      else{
+	detailed_charge_=weighted_average(angles);
+	if( detailed_charge_.value() )
+	  detailed_charge_/=fabs(detailed_charge_.value());
+	else
+	  detailed_charge_.set(0.,0.);
+      }
 
-      //std::clog << " qqq detailed charge " << detailed_charge_.value() << " +- " << detailed_charge_.error() << std::endl;
+      if( print_level() >= mybhep::VVERBOSE ){
+	std::clog << " detailed charge " << detailed_charge_.value() << " +- " << detailed_charge_.error() << std::endl;
+      }
+
+      return;
 
     }
 
