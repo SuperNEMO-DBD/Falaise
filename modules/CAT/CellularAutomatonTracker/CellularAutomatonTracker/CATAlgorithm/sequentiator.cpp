@@ -1733,6 +1733,8 @@ namespace CAT {
     double dist;
     for(std::vector<topology::sequence>::iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq)
       {
+	m.message(" ... interpreting physics of sequence ", iseq->name(), mybhep::VVERBOSE); fflush(stdout);
+
         if( iseq->nodes().size() <= 2 ) continue;
 
         iseq->calculate_helix();
@@ -1758,7 +1760,7 @@ namespace CAT {
 	      
 	      m.message( " trying to extrapolate to calo hit ", ic - calos.begin(), " id ", ic->id(), " on view ", ic->pl_.view(), " energy ", ic->e().value(), mybhep::VVERBOSE);
 
-	      if( !near(iseq->last_node().c(), ic->pl()) ){
+	      if( !near(iseq->last_node().c(), *ic) ){
 		m.message( " not near " , mybhep::VVERBOSE);
 		continue;
 	      }
@@ -1800,18 +1802,22 @@ namespace CAT {
 
 	    if( helix_found ){
 	      if( ihelix_min >= calos.size() ){
-		m.message( " problem: calo hit of id " , ihelix_min , " but n of calo hits is " , calos.size() , mybhep::VVERBOSE);
+		m.message( " problem: calo hit of id " , ihelix_min , " but n of calo hits is " , calos.size() , mybhep::NORMAL);
 	      }
-	      else
+	      else{
+		m.message( " track extrapolated by helix to calo " , ihelix_min, mybhep::VVERBOSE);
 		iseq->set_decay_helix_vertex(helix_extrapolation, "calo", ihelix_min);
+	      }
 	    }
 	    
 	    if( tangent_found ){
 	      if( itangent_min >= calos.size() ){
-		m.message( " problem: tangent calo hit of id " , itangent_min , " but n of calo hits is " , calos.size() , mybhep::VVERBOSE);
+		m.message( " problem: tangent calo hit of id " , itangent_min , " but n of calo hits is " , calos.size() , mybhep::NORMAL);
 	      }
-	      else
+	      else{
+		m.message( " track extrapolated by tangent to calo " , ihelix_min, mybhep::VVERBOSE);
 		iseq->set_decay_tangent_vertex(tangent_extrapolation, "calo", itangent_min);
+	      }
 	    }
 	    
 	  }
@@ -1847,15 +1853,18 @@ namespace CAT {
 	      if( !iseq->intersect_circle_from_begin(get_foil_circle(), &helix_extrapolation) ){
 		m.message(" no helix intersection ", mybhep::VVERBOSE); fflush(stdout);
 	      }
-	      else
+	      else{
+		m.message( " track extrapolated by helix to foil ", mybhep::VVERBOSE);
 		iseq->set_helix_vertex(helix_extrapolation, "foil");
+	      }
 
 	      if( !iseq->intersect_circle_with_tangent_from_begin(get_foil_circle(), &tangent_extrapolation) ){
 		m.message(" no tangent intersection ", mybhep::VVERBOSE); fflush(stdout);
 	      }
-	      else
+	      else{
+		m.message( " track extrapolated by tangent to foil ", mybhep::VVERBOSE);
 		iseq->set_tangent_vertex(tangent_extrapolation, "foil");
-
+	      }
 
 	    }
 
@@ -2289,8 +2298,11 @@ namespace CAT {
   }
 
   //*************************************************************
-  bool sequentiator::near(topology::cell c, topology::plane pl){
+  bool sequentiator::near(topology::cell c, topology::calorimeter_hit ch){
     //*************************************************************
+
+    topology::plane pl = ch.pl();
+    double chlayer = ch.layer();
 
     if( pl.view() == "x" ){
 
@@ -2338,14 +2350,20 @@ namespace CAT {
       int ln = c.layer();
       int g = gap_number(c);
       m.message(" checking if cell ", c.id(), " on gap ", g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), " on view ", pl.view(), mybhep::VVERBOSE);
-      if( g > 0 ) return true;
+      if( g == 1 && ln > 0 && chlayer == 3.5 ) return true;
+      if( g == 2 && ln > 0 && chlayer == 5.5 ) return true;
+      if( g == 1 && ln < 0 && chlayer == -3.5 ) return true;
+      if( g == 1 && ln < 0 && chlayer == -5.5 ) return true;
       return false;
     }
     else if( pl.view() == "bottom" ){
       int ln = c.layer();
       int g = gap_number(c);
       m.message(" checking if cell ", c.id(), " on gap ", g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), " on view ", pl.view(), mybhep::VVERBOSE);
-      if( g > 0 ) return true;
+      if( g == 1 && ln > 0 && chlayer == 3.5 ) return true;
+      if( g == 2 && ln > 0 && chlayer == 5.5 ) return true;
+      if( g == 1 && ln < 0 && chlayer == -3.5 ) return true;
+      if( g == 1 && ln < 0 && chlayer == -5.5 ) return true;
       return false;
     }
 
@@ -2985,7 +3003,8 @@ namespace CAT {
 
     bool ok = false;
 
-    double probmax = mybhep::default_max;
+    //double probmax = mybhep::default_max;
+    double probmax = 0.;
     double chi2min = mybhep::default_min;
     int ndofbest = 1;
 

@@ -504,7 +504,7 @@ namespace CAT {
     size_t getCommonHits(topology::sequence tp, topology::sequence dp);
     void FillGGResiduals(topology::sequence tp, topology::sequence dp);
     void make_name(topology::sequence & seq);
-    bool near(topology::cell c, topology::plane pl);
+    bool near(topology::cell c, topology::calorimeter_hit ch);
     double distance_from_foil(topology::experimental_point ep);
     bool direct_out_of_foil(void);
     bool direct_scenarios_out_of_foil(void);
