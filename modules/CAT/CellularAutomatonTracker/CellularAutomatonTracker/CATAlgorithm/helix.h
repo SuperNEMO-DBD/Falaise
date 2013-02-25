@@ -273,22 +273,35 @@ namespace CAT {
         if( pl.view() == "x" || pl.view() == "z" || pl.view() == "inner" || pl.view() == "outer" ){
           bool result = get_circle().intersect_plane(pl, ep, _phi);
           ep->set_y(position(*ep,_phi.value()).y());
-
+	  
           return result;
-
+	  
         }
-
+	
         if( pl.view() == "y" || pl.view() == "top" || pl.view() == "bottom" ){
-
+	  
 	  if( pitch().value() == 0.)
 	    return false;
 	  
 	  *ep = position((pl.face().y() - center().y())/pitch());
+	  
+	  
+	  // vector from center of plane face to extrapolated point
+	  experimental_vector dist = experimental_vector(pl.face(), *ep).hor();
+	  if( print_level() >= mybhep::VVERBOSE ){
+	    std::clog << " distance from extrapolation to plane face: " << dist.x().value() << ", " << dist.y().value() << ", " << dist.z().value() << " plane sizes: " << pl.sizes().x().value() << " " << pl.sizes().y().value() << " " << pl.sizes().z().value() << std::endl;
+	  }
+	  
+	  if( fabs(dist.x().value()) > pl.sizes().x().value()/2. )
+	    return false;
+	  if( fabs(dist.z().value()) > pl.sizes().z().value()/2. )
+	    return false;
+
 	  ep->set_y(pl.face().y());
 	  return true;
 	}
-
-
+	
+	
 	std::clog << " problem: cannot intersect helix with plane of view " << pl.view() << std::endl;
 	return false;
 

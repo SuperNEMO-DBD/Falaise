@@ -1882,16 +1882,24 @@ namespace CAT {
           std::clog << " momentum "; iseq->momentum().length().dump(); std::clog << " " << std::endl; fflush(stdout);
           std::clog << " charge "; iseq->charge().dump(); std::clog << " " << std::endl; fflush(stdout);
 	  if( iseq->has_helix_vertex() ){
-	    std::clog << " helix_vertex "; iseq->helix_vertex().dump(); std::clog << " " << std::endl; fflush(stdout);
+	    std::clog << " helix_vertex " << iseq->helix_vertex_type() << " "; iseq->helix_vertex().dump(); 
+	    if( iseq->helix_vertex_type() == "calo" ) std::clog << " icalo " << iseq->helix_vertex_id();
+	    std::clog << " " << std::endl; fflush(stdout);
 	  }
 	  if( iseq->has_decay_helix_vertex() ){
-	    std::clog << " decay helix_vertex "; iseq->decay_helix_vertex().dump(); std::clog << " " << std::endl; fflush(stdout);
+	    std::clog << " decay helix_vertex " << iseq->decay_helix_vertex_type() << " "; iseq->decay_helix_vertex().dump(); 
+	    if( iseq->decay_helix_vertex_type() == "calo" ) std::clog << " icalo " << iseq->calo_helix_id();
+	    std::clog << " " << std::endl; fflush(stdout);
 	  }
 	  if( iseq->has_tangent_vertex() ){
-	    std::clog << " tangent_vertex "; iseq->tangent_vertex().dump(); std::clog << " " << std::endl; fflush(stdout);
+	    std::clog << " tangent_vertex " << iseq->tangent_vertex_type() << " "; iseq->tangent_vertex().dump(); 
+	    if( iseq->tangent_vertex_type() == "calo" ) std::clog << " icalo " << iseq->tangent_vertex_id();
+	    std::clog << " " << std::endl; fflush(stdout);
 	  }
 	  if( iseq->has_decay_tangent_vertex() ){
-	    std::clog << " decay tangent_vertex "; iseq->decay_tangent_vertex().dump(); std::clog << " " << std::endl; fflush(stdout);
+	    std::clog << " decay tangent_vertex " << iseq->decay_tangent_vertex_type() << " "; iseq->decay_tangent_vertex().dump(); 
+	    if( iseq->decay_tangent_vertex_type() == "calo" ) std::clog << " icalo " << iseq->calo_tangent_id();
+	    std::clog << " " << std::endl; fflush(stdout);
 	  }
         }
 
@@ -1983,8 +1991,23 @@ namespace CAT {
 	}
       }
 
-    std::clog << " center (" << sequence.center().x().value() << ", " << sequence.center().y().value() << ", " << sequence.center().z().value() << ")  radius " << sequence.radius().value() <<  " pitch " << sequence.pitch().value() << " momentum " << sequence.momentum().length().value() << "  tangent charge " << sequence.charge().value() << " +- " << sequence.charge().error() << " helix charge " << sequence.helix_charge().value()  << " +- " << sequence.helix_charge().error() << " detailed charge " << sequence.detailed_charge().value()  << " +- " << sequence.detailed_charge().error() << std::endl;
-
+    std::clog << " center (" << sequence.center().x().value() << ", " << sequence.center().y().value() << ", " << sequence.center().z().value() << ")  radius " << sequence.radius().value() <<  " pitch " << sequence.pitch().value() << " momentum " << sequence.momentum().length().value() << "  tangent charge " << sequence.charge().value() << " +- " << sequence.charge().error() << " helix charge " << sequence.helix_charge().value()  << " +- " << sequence.helix_charge().error() << " detailed charge " << sequence.detailed_charge().value()  << " +- " << sequence.detailed_charge().error();
+    if( sequence.has_helix_vertex() ){
+      std::clog << " helix vertex on " << sequence.helix_vertex_type();
+      if( sequence.helix_vertex_type() == "calo" ) std::clog << " icalo " << sequence.helix_vertex_id();
+    }
+    if( sequence.has_decay_helix_vertex() ){
+      std::clog << " helix decay vertex on " << sequence.decay_helix_vertex_type(); 
+      if( sequence.decay_helix_vertex_type() == "calo" ) std::clog << " icalo " << sequence.calo_helix_id();
+    }
+    if( sequence.has_tangent_vertex() ){
+      std::clog << " tangent vertex on " << sequence.tangent_vertex_type() << " ";
+      if( sequence.tangent_vertex_type() == "calo" ) std::clog << " icalo " << sequence.tangent_vertex_id();
+    }
+    if( sequence.has_decay_tangent_vertex() ){
+      std::clog << " tangent decay vertex on " << sequence.decay_tangent_vertex_type(); 
+      if( sequence.decay_tangent_vertex_type() == "calo" ) std::clog << " icalo " << sequence.calo_tangent_id();
+    }
     std::clog << " " << std::endl;
 
     return;

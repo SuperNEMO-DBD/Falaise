@@ -232,7 +232,7 @@ namespace CAT {
       helix_vertex_ = v;
       helix_vertex_type_ = type;
       if( type=="calo" )
-        calo_helix_id_ = calo_helix_id;
+        helix_vertex_id_ = calo_helix_id;
     }
 
     //! set decay_helix_vertex
@@ -245,12 +245,12 @@ namespace CAT {
     }
 
     //! set tangent_vertex
-    void sequence::set_tangent_vertex(const experimental_point &v,  const std::string &type, size_t calo_tangent_id){
+    void sequence::set_tangent_vertex(const experimental_point &v,  const std::string &type, size_t tangent_vertex_id){
       has_tangent_vertex_ = true;
       tangent_vertex_ = v;
       tangent_vertex_type_ = type;
       if( type=="calo" )
-        calo_tangent_id_ = calo_tangent_id;
+        tangent_vertex_id_ = tangent_vertex_id;
     }
 
     //! set decay_tangent_vertex
@@ -746,6 +746,8 @@ namespace CAT {
         else if( tangent_vertex_type() == "calo" )
           inverted.set_decay_tangent_vertex( tangent_vertex(), tangent_vertex_type(), tangent_vertex_id() );
       }
+
+
       inverted.set_chi2s(chi2s());
       inverted.set_helix_chi2s(helix_chi2s());
       inverted.set_probs(probs());
