@@ -2148,8 +2148,8 @@ namespace CAT {
       //    m.message(" should we erase last sequence ", sequences_.size() - 1, " in favour of ", iseq - sequences_.begin(), " ? " ,mybhep::VVERBOSE); fflush(stdout);
       if( sequences_.back().contained( *iseq ) && ! sequences_.back().Free())
         {
-          sequences_.pop_back();
           m.message(" erased last sequence ", sequences_.size() - 1, "  contained in sequence", iseq - sequences_.begin(), mybhep::VERBOSE); fflush(stdout);
+          sequences_.pop_back();
           changed =  true;
           continue;
         }

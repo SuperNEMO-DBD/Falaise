@@ -183,6 +183,11 @@ namespace CAT{
       joints_.clear();
       std::vector<line> t1 = cca().tangents(); // note: this tangent goes from cell B to cell A
       std::vector<line> t2 = ccb().tangents();
+      bool intersect_ab = ca_.intersect(cb_);
+      bool intersect_bc = cb_.intersect(cc_);
+      bool intersect_ca = cc_.intersect(ca_);
+
+
       if( print_level() > mybhep::VERBOSE ){
         std::clog << appname_ << " angles of tangents " << ca_.id() << " -> " << cb_.id() << " :" << std::endl;
 	for(std::vector<line>::iterator i1=t1.begin(); i1!=t1.end(); ++i1){
@@ -195,9 +200,9 @@ namespace CAT{
 	if( ca_.small() ) std::clog << " cell " << ca_.id() << " is small " << std::endl;
 	if( cb_.small() ) std::clog << " cell " << cb_.id() << " is small " << std::endl;
 	if( cc_.small() ) std::clog << " cell " << cc_.id() << " is small " << std::endl;
-	if( ca_.intersect(cb_) ) std::clog << " cells " << ca_.id() << " and " << cb_.id() << " intersect " << std::endl;
-	if( cb_.intersect(cc_) ) std::clog << " cells " << cb_.id() << " and " << cc_.id() << " intersect " << std::endl;
-	if( cc_.intersect(ca_) ) std::clog << " cells " << cc_.id() << " and " << ca_.id() << " intersect " << std::endl;
+	if( intersect_ab ) std::clog << " cells " << ca_.id() << " and " << cb_.id() << " intersect " << std::endl;
+	if( intersect_bc ) std::clog << " cells " << cb_.id() << " and " << cc_.id() << " intersect " << std::endl;
+	if( intersect_ca ) std::clog << " cells " << cc_.id() << " and " << ca_.id() << " intersect " << std::endl;
       }
 
 
@@ -229,7 +234,7 @@ namespace CAT{
             }
             shall_include_separation = false;
           }
-          else if( cb_.intersect(ca_) ){
+          else if( intersect_ab ){
             a0 = i1->forward_axis();
             a = a0.hor();
             b0 = cca().forward_axis();
@@ -237,11 +242,12 @@ namespace CAT{
             psc = (a*b).value();
 
             if( fabs(psc) < 0.5 ){ // connection along the intersection
+	      /*
               if( print_level() > mybhep::VERBOSE ){
                 std::clog << " no separation: connect along intersection AB ";
               }
               shall_include_separation = false;
-
+	      */
               // keep only the connection with consistent ordering of cells
               c0 = ccb().forward_axis();
               c = c0.hor();
@@ -265,17 +271,19 @@ namespace CAT{
               }
             } 
           }
-          else if( cb_.intersect(cc_) ){
+          else if( intersect_bc ){
             a0 = i2->forward_axis();
             a = a0.hor();
             b0 = ccb().forward_axis();
             b = b0.hor();
 	    psc = (a*b).value();
             if( fabs(psc) < 0.5 ){ // connection along the intersection
+	      /*
               if( print_level() > mybhep::VERBOSE ){
                 std::clog << " no separation: connect along intersection BC ";
               }
               shall_include_separation = false;
+	      */
               // keep only the connection with consistent ordering of cells
               c0 = cca().forward_axis();
               c = c0.hor();
@@ -428,8 +436,13 @@ namespace CAT{
         _joints.erase(_joints.begin() + 2, _joints.end());
       }
 
+      bool intersect_ab = ca_.intersect(cb_);
+      bool intersect_bc = cb_.intersect(cc_);
 
-      if( _joints.size() == 2 )
+      // delete 2nd best joint if chi2 ratio is larger than set value
+      // unless AB and BC both intersect; in that case force keeping 2 best joints independently of ratio
+      if( _joints.size() == 2 &&
+	  !(intersect_ab && intersect_bc) )
         if( _joints[1].chi2() / _joints[0].chi2() > Ratio ){
           if( print_level() > mybhep::VERBOSE ){
             std::clog << " erase 2nd best joint ( chi2 = " << _joints[1].chi2() << ") in favour of 1st best joint ( chi2 = " << _joints[0].chi2() << ") limit ratio is: " << Ratio << std::endl;
@@ -439,6 +452,9 @@ namespace CAT{
       
       if( print_level() > mybhep::VERBOSE ){
         std::clog << " after refining there are " << _joints.size() << " joints " << std::endl;
+	for(std::vector<joint>::const_iterator ij=_joints.begin(); ij!=_joints.end(); ++ij){
+	  std::clog << " joint " << ij - _joints.begin() << " : "; ij->dump();
+	}
       }
 
       return _joints;

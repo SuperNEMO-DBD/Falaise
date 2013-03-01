@@ -347,6 +347,8 @@ namespace CAT {
 
       bool compatible(joint *j, cell cc);
 
+      void get_chi2_change_for_changing_end_of_sequence(topology::experimental_point epa, topology::experimental_point epb, double *delta_chi_A, double *delta_chi_alpha);
+
       int get_link_index_of_cell(size_t inode, const cell &link) const;
 
       void calculate_helix(void);

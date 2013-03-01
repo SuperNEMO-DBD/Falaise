@@ -1164,8 +1164,7 @@ namespace CAT {
               if( print_level() >= mybhep::VVERBOSE )
                 std::clog << " new cell is " << itlink->id() << std::endl;
               break;
-            }
-            else{
+            }else{
 
 	      iccc = get_link_index_of_cell(s-1, *itlink);
 	      
@@ -1196,7 +1195,7 @@ namespace CAT {
                     *ijoint = ijoint->invert();
                   }
 
-                  if( !compatible(& (*ijoint) , *itlink ) ){
+                  if( !compatible(& (*ijoint) , *itlink) ){
                     if( print_level() >= mybhep::VVERBOSE ){
                       std::clog << " erase joint " << ijoint - nodes_[s-1].ccc_[iccc].joints_.begin() << std::endl;
                     }
@@ -1242,6 +1241,22 @@ namespace CAT {
 
               topology::joint j = nodes_[s-1].ccc_[iccc].joints_[iteration];
 
+	      if( s >= 3 ){ // recalculate chi2 of node A
+		double chi2_change_A, chi2_change_alpha;
+		get_chi2_change_for_changing_end_of_sequence(j.epa(), j.epb(), &chi2_change_A, &chi2_change_alpha);
+		if( print_level() >= mybhep::VVERBOSE ){
+		  std::clog << " will change for cell A " << nodes_[s-2].c().id() << " chi2 from " << nodes_[s-2].chi2() << " to " << nodes_[s-2].chi2() + chi2_change_A << std::endl; fflush(stdout);
+		}
+
+		nodes_[s-2].set_chi2(nodes_[s-2].chi2() + chi2_change_A);
+		if( s >= 4 ){ // recalculate chi2 of node alpha
+		  if( print_level() >= mybhep::VVERBOSE ){
+		    std::clog << " will change for cell alpha " << nodes_[s-3].c().id() << " chi2 from " << nodes_[s-3].chi2() << " to " << nodes_[s-3].chi2() + chi2_change_alpha << std::endl; fflush(stdout);
+		  }
+		  nodes_[s-3].set_chi2(nodes_[s-3].chi2() + chi2_change_alpha);
+		}
+	      }
+
               nodes_[s-2].set_ep(j.epa());
               nodes_[s-1].set_ep(j.epb());
               nodes_[s-1].set_chi2(j.chi2());
@@ -1261,6 +1276,8 @@ namespace CAT {
     }
 
     bool sequence::compatible(joint *j, cell cc){
+      // sequence: [ ... alpha A B ]    C 
+      // C = cc is the proposed new cell
 
       size_t s = nodes().size();
       if( s < 2 ){
@@ -1270,10 +1287,14 @@ namespace CAT {
         return false;
       }
 
-      int32_t ndof = 2;  // 2 kink angles and 0, or 2 separation angles
+      int32_t ndof = 2;  // 1 or 2 kink angles and 0, 1 or 2 separation angles
 
       topology::experimental_double local_separation_a, local_separation_b;
       double chi2 = 0.;
+      double chi2_change_A = 0.;
+      double chi2_change_alpha = 0.;
+      double chi2_separation_a = 0.;
+      double chi2_separation_b = 0.;
 
       bool use_theta_kink = true;
 
@@ -1291,15 +1312,26 @@ namespace CAT {
         if( s > 2 ){
           if( !ca.small() && !ca.intersect(cb) ){
             pa = ca.angular_average(second_last_node().ep(), j->epa(), &local_separation_a);
-            chi2 += mybhep::square(local_separation_a.value()/local_separation_a.error());
+            chi2_separation_a = mybhep::square(local_separation_a.value()/local_separation_a.error());
             ndof ++;
-          }
+	  }
 
           if( !cb.small() && !cb.intersect(ca) && !cb.intersect(cc) ){
             pb = cb.angular_average(last_node().ep(), j->epb(), &local_separation_b);
-            chi2 += mybhep::square(local_separation_b.value()/local_separation_b.error());
+            chi2_separation_b = mybhep::square(local_separation_b.value()/local_separation_b.error());
             ndof ++;
           }
+
+	  if( s >= 3 ){ // we are changing points A and B, affecting the chi2 of connections alpha0-alpha-A and alpha-A-B
+	    get_chi2_change_for_changing_end_of_sequence(pa, pb, &chi2_change_A, &chi2_change_alpha);
+	    if( print_level() >= mybhep::VVERBOSE ){
+	      std::clog << " connecting cell " << cb.id() << " to " << cc.id() << " changes chi2 of cell A, i.e. : " << nodes_[s-2].c().id() << " by " << chi2_change_A << std::endl; fflush(stdout);
+	      if( s >= 4 )
+		std::clog << " connecting cell " << cb.id() << " to " << cc.id() << " changes chi2 of cell alpha, i.e." << nodes_[s-3].c().id() << " by " << chi2_change_alpha  << std::endl; fflush(stdout);
+	    }
+	  }
+
+
         }
 
       }
@@ -1308,18 +1340,29 @@ namespace CAT {
       topology::line l1(pa, pb);
       topology::line l2(pb, j->epc());
 
-      chi2 += l1.chi2(l2, use_theta_kink);
+      double chi2_kink = l1.chi2(l2, use_theta_kink);
+
+      chi2 = chi2_separation_a + chi2_separation_b + chi2_kink;
+
+      double local_prob = probof(chi2, ndof);
+      double net_local_prob;
+      double net_chi2 = chi2 + chi2_change_A + chi2_change_alpha;
+      if( net_chi2 <= 0 ){
+	net_local_prob = 1.;
+      } else {
+	net_local_prob = probof(net_chi2, ndof);
+      }
+
       j->set_chi2(chi2);
       chi2s_.push_back(chi2);
-      double local_prob = probof(chi2, ndof);
       probs_.push_back(local_prob);
 
-      if( local_prob > prob() ){
+
+      if( net_local_prob > prob() ){
 
         if( print_level() >= mybhep::VVERBOSE ){
-          std::clog << " connecting cell " << last_node().c().id() << " is compatible with chi2 " << chi2 << " prob " << local_prob << std::endl; fflush(stdout);
+          std::clog << " connecting cell " << last_node().c().id() << " is compatible with chi2 " << chi2 << " prob " << local_prob << " net prob " << net_local_prob << std::endl; fflush(stdout);
         }
-
 
         j->set_epa(pa);
         j->set_epb(pb);
@@ -1339,6 +1382,78 @@ namespace CAT {
       }
 
       return false;
+    }
+
+
+      void sequence::get_chi2_change_for_changing_end_of_sequence(topology::experimental_point new_pa, topology::experimental_point new_pb, double *delta_chi_A, double *delta_chi_alpha){
+      // sequence: [ ... alpha0 alpha A B ]
+      size_t s = nodes_.size();
+      if( s < 3 ){
+        if( print_level() >= mybhep::NORMAL )
+          std::clog << " problem: ask prob change for second last node but nnodes is " << s << std::endl;
+        return;
+      }
+
+      double tolerance = 0.000000001;
+
+      topology::experimental_point palpha = nodes_[s-3].ep();
+      topology::experimental_point pa = second_last_node().ep();
+      topology::experimental_point pb = last_node().ep();
+
+      topology::line l_alpha_A(palpha, pa);
+      topology::line l_A_B(pa, pb);
+      bool use_theta_kink_alpha_A_B = !(nodes_[s-3].c().unknown_vertical() || nodes_[s-2].c().unknown_vertical() || nodes_[s-1].c().unknown_vertical() );
+
+      double old_chi2 = l_alpha_A.chi2(l_A_B, use_theta_kink_alpha_A_B);
+      double old_chi2_check = second_last_node().chi2();
+      if( old_chi2 > old_chi2_check ){
+	if( fabs(old_chi2 - old_chi2_check) > tolerance ){
+	  if( print_level() >= mybhep::NORMAL ){
+	    std::clog << " problem: cell A " << second_last_node().c().id() << " has old chi2 " << old_chi2_check << " but just kink component is " << old_chi2 << " delta " <<  old_chi2 - old_chi2_check << std::endl;
+	  }
+	}
+	old_chi2 = old_chi2_check;
+      }
+
+      topology::line new_l_alpha_A(palpha, new_pa);
+      topology::line new_l_A_B(new_pa, new_pb);
+
+      double new_chi2 = new_l_alpha_A.chi2(new_l_A_B, use_theta_kink_alpha_A_B);
+      *delta_chi_A = new_chi2 - old_chi2;
+      if( *delta_chi_A + old_chi2 <= 0 ){
+        if( print_level() >= mybhep::NORMAL ){
+          std::clog << " problem: node A has old chi2 " << old_chi2 << " new " << new_chi2 << " delta " << *delta_chi_A << std::endl;
+	}
+	*delta_chi_A = 0.;
+      }
+
+      if( s >= 4 ){
+	bool use_theta_kink_alpha0_alpha_A = !(nodes_[s-4].c().unknown_vertical() || nodes_[s-3].c().unknown_vertical() || nodes_[s-2].c().unknown_vertical() );
+	topology::experimental_point palpha0 = nodes_[s-4].ep();
+	topology::line l_alpha0_alpha(palpha0, palpha);
+	old_chi2 = l_alpha0_alpha.chi2(l_alpha_A, use_theta_kink_alpha0_alpha_A);
+	old_chi2_check = nodes_[s-3].chi2();
+	if( old_chi2 > old_chi2_check ){
+	  if( fabs(old_chi2 - old_chi2_check) > tolerance ){
+	    if( print_level() >= mybhep::NORMAL ){
+	      std::clog << " problem: cell alpha " << nodes_[s-3].c().id() << " has old chi2 " << old_chi2_check << " but just kink component is " << old_chi2 << " delta " <<  old_chi2 - old_chi2_check <<  std::endl;
+	    }
+	  }
+	  old_chi2 = old_chi2_check;
+	}
+
+	new_chi2 = l_alpha0_alpha.chi2(new_l_alpha_A, use_theta_kink_alpha0_alpha_A);
+	*delta_chi_alpha = new_chi2 - old_chi2;
+	if( old_chi2 + *delta_chi_alpha <= 0. ){
+	  if( print_level() >= mybhep::NORMAL )
+	    std::clog << " problem: node alpha has old chi2 " << old_chi2 << " new " << new_chi2  << " delta " << *delta_chi_alpha << std::endl;
+	  *delta_chi_alpha = 0.;
+	}
+
+      }
+
+      return;
+
     }
 
 
