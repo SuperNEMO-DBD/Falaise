@@ -289,7 +289,7 @@ namespace CAT {
 	  // vector from center of plane face to extrapolated point
 	  experimental_vector dist = experimental_vector(pl.face(), *ep).hor();
 	  if( print_level() >= mybhep::VVERBOSE ){
-	    std::clog << " distance from extrapolation to plane face: " << dist.x().value() << ", " << dist.y().value() << ", " << dist.z().value() << " plane sizes: " << pl.sizes().x().value() << " " << pl.sizes().y().value() << " " << pl.sizes().z().value() << std::endl;
+	    std::clog << " helix distance from extrapolation to plane face: " << dist.x().value() << ", " << dist.y().value() << ", " << dist.z().value() << " plane sizes: " << pl.sizes().x().value() << " " << pl.sizes().y().value() << " " << pl.sizes().z().value() << std::endl;
 	  }
 	  
 	  if( fabs(dist.x().value()) > pl.sizes().x().value()/2. )

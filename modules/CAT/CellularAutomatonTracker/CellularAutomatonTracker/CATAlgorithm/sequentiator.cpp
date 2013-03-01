@@ -671,10 +671,11 @@ namespace CAT {
 
     make_families();
 
-    interpret_physics(tracked_data_.get_calos());
-
     // //  match_through_gaps();
     match_gaps();
+
+    interpret_physics(tracked_data_.get_calos());
+
     if (late())
       {
         tracked_data_.set_skipped(true);
@@ -1737,6 +1738,9 @@ namespace CAT {
 
         if( iseq->nodes().size() <= 2 ) continue;
 
+        if( level >= mybhep::VVERBOSE)
+	  print_a_sequence(*iseq);
+
         iseq->calculate_helix();
         iseq->calculate_charge();
         iseq->calculate_momentum(bfield);
@@ -1815,7 +1819,7 @@ namespace CAT {
 		m.message( " problem: tangent calo hit of id " , itangent_min , " but n of calo hits is " , calos.size() , mybhep::NORMAL);
 	      }
 	      else{
-		m.message( " track extrapolated by tangent to calo " , ihelix_min, mybhep::VVERBOSE);
+		m.message( " track extrapolated by tangent to calo " , itangent_min, mybhep::VVERBOSE);
 		iseq->set_decay_tangent_vertex(tangent_extrapolation, "calo", itangent_min);
 	      }
 	    }

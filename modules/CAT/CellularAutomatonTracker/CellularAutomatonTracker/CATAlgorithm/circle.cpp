@@ -257,7 +257,7 @@ namespace CAT{
 
     bool circle::intersect_plane(plane pl, experimental_point * ep, experimental_double _phi){
       
-      // normal vector from face of plane to plane of center of circle
+      // normal vector from face of plane to parallel plane through center of circle
       experimental_vector ntp = pl.norm_to_point(center());
       
       double diff = (ntp.length() - radius()).value();
@@ -309,7 +309,7 @@ namespace CAT{
           if( cos(_phi.value()) < 0. )
             signz = -1.;
 
-	  // point on the plane in front of circle's center
+	  // point on the face plane in front of circle's center
 	  experimental_point foot = (center() - ntp).point_from_vector();
 
 	  experimental_double transverse_dist = experimental_sqrt(experimental_square(radius()) -
@@ -338,7 +338,7 @@ namespace CAT{
       // vector from center of plane face to extrapolated point
       experimental_vector dist = experimental_vector(pl.face(), *ep).hor();
       if( print_level() >= mybhep::VVERBOSE ){
-        std::clog << " distance from extrapolation to plane face: " << dist.x().value() << ", " << dist.y().value() << ", " << dist.z().value() << " plane sizes: " << pl.sizes().x().value() << " " << pl.sizes().y().value() << " " << pl.sizes().z().value() << std::endl;
+        std::clog << " circle distance from extrapolation to plane face: " << dist.x().value() << ", " << dist.y().value() << ", " << dist.z().value() << " plane sizes: " << pl.sizes().x().value() << " " << pl.sizes().y().value() << " " << pl.sizes().z().value() << std::endl;
       }
       if( pl.view() == "x" ){
         if( fabs(dist.z().value()) > pl.sizes().z().value()/2. )
@@ -352,6 +352,7 @@ namespace CAT{
       }
       if( pl.view() == "inner" || pl.view() == "outer" ){
 	experimental_vector transverse_dist = (dist)^(the_norm.hor());
+
 	if( transverse_dist.length().value() > pl.sizes().z().value()/2. )
           return false;
         return true;

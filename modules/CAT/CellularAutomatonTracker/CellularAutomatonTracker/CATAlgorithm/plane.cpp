@@ -309,7 +309,7 @@ namespace CAT {
     }
 
 
-    // normal vector from the face of the plane to the plane of the point
+    // normal vector from the face of the plane to the parallel plane through the point
     experimental_vector plane::norm_to_point(const experimental_point &ep)const{
 
       experimental_vector result = norm();
