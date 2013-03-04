@@ -259,8 +259,8 @@ void cell_couplet::dump (std::ostream & a_out,
       // parallel tangents
       for(size_t i=0; i<2; i++){
 
-        epa = ca_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos[0], sign[i]);
-        epb = cb_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos[0], sign[i]);
+        epa = ca_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos[0], sign[i], false, 0.);
+        epb = cb_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos[0], sign[i], false, 0.);
 
         line l(epa, epb, prlevel(), nsigma());
 
@@ -276,14 +276,16 @@ void cell_couplet::dump (std::ostream & a_out,
         experimental_double avz = (ca().ep().z() + cb().ep().z())/2.;
         experimental_point average(avx, avy, avz);
         // a small offset with a big error
-        experimental_double small_offset(0.1, (ca().r().value() + cb().r().value())/4.);
+        //experimental_double small_offset(0.1, (ca().r().value() + cb().r().value())/4.);
+        experimental_double small_offset(0.1, 0.05);
+
         for(size_t i=0; i<2; i++){
 
           epa = (experimental_vector(average) + transverse_axis()*sign[i]*small_offset).point_from_vector();
           epb = (experimental_vector(average) - transverse_axis()*sign[i]*small_offset).point_from_vector();
 
           line l(epa, epb, prlevel(), nsigma());
-
+	  
           tangents_.push_back( l );
         }
 
@@ -292,8 +294,8 @@ void cell_couplet::dump (std::ostream & a_out,
         // crossed tangents
         for(size_t i=0; i<2; i++){
 
-          epa = ca_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos[1], sign[i]);
-          epb = cb_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), -cos[1], -sign[i]);
+          epa = ca_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos[1], sign[i], false, 0.);
+          epb = cb_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), -cos[1], -sign[i], false, 0.);
 
           line l(epa, epb, prlevel(), nsigma());
 
@@ -322,7 +324,7 @@ void cell_couplet::dump (std::ostream & a_out,
 
       for(size_t i=0; i<2; i++){
 
-        epa = c.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos, sign[i]);
+        epa = c.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos, sign[i], false, 0.);
 
         line l(epa, ep, prlevel(), nsigma());
 
@@ -348,7 +350,7 @@ void cell_couplet::dump (std::ostream & a_out,
 
       for(size_t i=0; i<2; i++){
 
-        epb = c.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos, sign[i]);
+        epb = c.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos, sign[i], false, 0.);
 
         line l(ep, epb, prlevel(), nsigma());
 

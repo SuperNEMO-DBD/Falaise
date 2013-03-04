@@ -17,11 +17,16 @@ namespace topology{
 
 
 
-  experimental_point cell::build_from_cell(experimental_vector forward, experimental_vector transverse, experimental_double cos, int sign){
+  experimental_point cell::build_from_cell(experimental_vector forward, experimental_vector transverse, experimental_double cos, int sign, bool replace_r, double maxr ){
 
     experimental_double sin = experimental_sin(experimental_acos(cos))*sign;
 
-    experimental_point p = (experimental_vector(ep()) + r()*(forward*cos + transverse*sin)).point_from_vector();
+    experimental_double radius = r();
+    if( replace_r ){
+      radius.set_value(maxr);
+    }
+
+    experimental_point p = (experimental_vector(ep()) + radius*(forward*cos + transverse*sin)).point_from_vector();
 
     p.set_ex(error_x_in_build_from_cell(forward, transverse, cos, sin.value()));
     p.set_ez(error_z_in_build_from_cell(forward, transverse, cos, sin.value()));
@@ -82,8 +87,11 @@ namespace topology{
       return ep();
     }
 
-    experimental_double phi1 = experimental_vector(ep(), epa).phi();
-    experimental_double phi2 = experimental_vector(ep(), epb).phi();
+    experimental_vector v1 = experimental_vector(ep(), epa);
+    experimental_vector v2 = experimental_vector(ep(), epb);
+
+    experimental_double phi1 = v1.phi();
+    experimental_double phi2 = v2.phi();
 
     double rephi1 = phi1.value();
     double rephi2 = phi2.value();
@@ -93,7 +101,12 @@ namespace topology{
     phi1.set_value(rephi1);
     phi2.set_value(rephi2);
 
-    experimental_double ave_phi = (phi1 + phi2)/2.;
+    std::vector<experimental_double> phis;
+    phis.push_back(phi1);
+    phis.push_back(phi2);
+
+    experimental_double ave_phi = weighted_average(phis);
+    //    experimental_double ave_phi = (phi1 + phi2)/2.;
     *angle = phi1 - phi2;
 
     if( print_level() >= mybhep::VVERBOSE ){
@@ -107,9 +120,24 @@ namespace topology{
 
     experimental_vector x(1.,0.,0.,0.,0.,0.);
     experimental_vector z(0.,0.,1.,0.,0.,0.);
-    int sign = 1; if( ave_phi.value() < 0. ) sign = -1;
+    int sign = 1; 
+    if( ave_phi.value() < 0. ) sign = -1;  // ave_phi in [180,360], i.e. p to the left of cell center
 
-    experimental_point p = build_from_cell(x, z, cos_ave_phi, sign);
+
+    // distance of each point from center of cell
+    // not necessarily the same if one of the 2 points results from intersecting cells
+    // in such case, keep largest of 2 values to locate averge
+    // otherwise it will not make sense with the other point from intersecting cells
+    double r1 = v1.hor().length().value(); 
+    double r2 = v2.hor().length().value();
+    bool replace_r = false;
+    double maxr = 0.;
+    if( r1 != r2 ){
+      replace_r = true;
+      maxr = max(r1,r2);
+    }
+
+    experimental_point p = build_from_cell(x, z, cos_ave_phi, sign, replace_r, maxr);
 
     return p;
 
@@ -149,7 +177,7 @@ namespace topology{
     double re_initial_phi2 = initial_phi2.value();
     fix_angles(&re_initial_phi1, &re_initial_phi2);
 
-    if( fabs(re_initial_phi1 - re_initial_phi2) > 1.57 ) return false;
+    if( fabs(re_initial_phi1 - re_initial_phi2) > M_PI/2. ) return false;
 
     return true;
 

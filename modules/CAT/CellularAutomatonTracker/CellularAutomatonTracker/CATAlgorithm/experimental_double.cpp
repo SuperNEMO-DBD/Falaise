@@ -384,13 +384,15 @@ namespace CAT {
     {
       double mean = 0.;
       double inverr = 0.;
+      double newerr = 0.;
 
       for(std::vector<experimental_double>::const_iterator iv=vs.begin(); iv!=vs.end(); ++iv){
         mean += iv->value()/mybhep::square(iv->error());
         inverr += 1/mybhep::square(iv->error());
+	newerr += mybhep::square(iv->error());
       }
 
-      return experimental_double(mean/inverr, std::sqrt(1./inverr));
+      return experimental_double(mean/inverr, sqrt(newerr));
     }
 
 

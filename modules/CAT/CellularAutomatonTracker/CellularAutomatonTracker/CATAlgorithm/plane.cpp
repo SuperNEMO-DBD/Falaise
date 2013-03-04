@@ -295,6 +295,7 @@ namespace CAT {
 	return intersect(*ep);
       }
       else{ // Nemo3
+
 	if( (direction*norm()).value() == 0 ) return false;
 
 	experimental_double time = (face() - start)*norm()/(direction*norm());

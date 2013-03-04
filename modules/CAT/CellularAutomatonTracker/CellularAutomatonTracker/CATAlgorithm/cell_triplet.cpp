@@ -182,7 +182,7 @@ namespace CAT{
 
       joints_.clear();
       std::vector<line> t1 = cca().tangents(); // note: this tangent goes from cell B to cell A
-      std::vector<line> t2 = ccb().tangents();
+      std::vector<line> t2 = ccb().tangents(); // this goes from B to C
       bool intersect_ab = ca_.intersect(cb_);
       bool intersect_bc = cb_.intersect(cc_);
       bool intersect_ca = cc_.intersect(ca_);
@@ -228,6 +228,22 @@ namespace CAT{
           }
 
           shall_include_separation = true;
+	  a0 = i1->forward_axis();
+	  a = a0.hor();
+	  d0 = i2->forward_axis();
+	  d = d0.hor();
+
+	  // keep only the connections that don't invert foward sense
+	  psc3 = a.kink_phi(d).value()*180./M_PI;
+	  
+	  if( fabs(psc3) < 60. ){
+	    if( print_level() > mybhep::VERBOSE ){
+	      std::clog << " rejected because direction is reversed: psc = " << psc3 << std::endl;
+	    }
+	    continue;
+	  }
+
+
           if( cb_.small() ){
             if( print_level() > mybhep::VERBOSE ){
               std::clog << " no separation: middle cells is small ";
@@ -235,13 +251,11 @@ namespace CAT{
             shall_include_separation = false;
           }
           else if( intersect_ab ){
-            a0 = i1->forward_axis();
-            a = a0.hor();
             b0 = cca().forward_axis();
             b = b0.hor();
-            psc = (a*b).value();
+	    psc = a.kink_phi(b).value()*180./M_PI;
 
-            if( fabs(psc) < 0.5 ){ // connection along the intersection
+            if( fabs(psc - 90.) < 30. ||  fabs(psc + 90.) < 30.  ||  fabs(psc - 270.) < 30.  ){ // connection along the intersection
 	      /*
               if( print_level() > mybhep::VERBOSE ){
                 std::clog << " no separation: connect along intersection AB ";
@@ -251,33 +265,21 @@ namespace CAT{
               // keep only the connection with consistent ordering of cells
               c0 = ccb().forward_axis();
               c = c0.hor();
-              psc2 = (b*c).value();
-              if( psc2 > 0.1 ){
+	      psc2 = b.kink_phi(c).value()*180./M_PI;
+              if( fabs(psc2) < 60. ){
                 if( print_level() > mybhep::VERBOSE ){
                   std::clog << " rejected because first 2 cells intersect and the ordering is wrong: psc = " << psc2 << std::endl;
                 }
                 continue;
               }
               
-              // keep only the connection that doesn't invert foward sense
-              d0 = i2->forward_axis();
-              d = d0.hor();
-              psc3 = (a*d).value();
-              if( psc3 > 0. ){
-                if( print_level() > mybhep::VERBOSE ){
-                  std::clog << " rejected because direction is reversed: psc = " << psc3 << std::endl;
-                }
-                continue;
-              }
             } 
           }
           else if( intersect_bc ){
-            a0 = i2->forward_axis();
-            a = a0.hor();
             b0 = ccb().forward_axis();
             b = b0.hor();
-	    psc = (a*b).value();
-            if( fabs(psc) < 0.5 ){ // connection along the intersection
+	    psc = d.kink_phi(b).value()*180./M_PI;
+            if( fabs(psc - 90.) < 30. ||  fabs(psc + 90.) < 30.  ||  fabs(psc - 270.) < 30.  ){ // connection along the intersection
 	      /*
               if( print_level() > mybhep::VERBOSE ){
                 std::clog << " no separation: connect along intersection BC ";
@@ -287,27 +289,16 @@ namespace CAT{
               // keep only the connection with consistent ordering of cells
               c0 = cca().forward_axis();
               c = c0.hor();
-	      psc2 = (b*c).value();
-              if( psc2 > 0.1 ){
+	      psc2 = b.kink_phi(c).value()*180./M_PI;
+              if( fabs(psc2) < 60. ){
                 if( print_level() > mybhep::VERBOSE ){
                   std::clog << " rejected because last 2 cells intersect and the ordering is wrong: psc = " << psc2 << std::endl;
                 }
                 continue;
               }
 
-              // keep only the connection that doesn't invert foward sense
-              d0 = i1->forward_axis();
-              d = d0.hor();
-	      psc3 = (a*d).value();
-              if( psc3 > 0. ){
-                if( print_level() > mybhep::VERBOSE ){
-                  std::clog << " rejected because direction is reversed: psc = " << psc3 << std::endl;
-                }
-                continue;
-              }
-
             }
-
+	    
           }
 	          
           ndof = 2;  // 2 kink angles, 0 or 1 one separation angle
@@ -440,8 +431,11 @@ namespace CAT{
       bool intersect_bc = cb_.intersect(cc_);
 
       // delete 2nd best joint if chi2 ratio is larger than set value
+      // unless joints go to different quadrants and
       // unless AB and BC both intersect; in that case force keeping 2 best joints independently of ratio
       if( _joints.size() == 2 &&
+	  ca_.same_quadrant(_joints[0].epa(), _joints[1].epa()) &&
+	  cc_.same_quadrant(_joints[0].epc(), _joints[1].epc()) &&
 	  !(intersect_ab && intersect_bc) )
         if( _joints[1].chi2() / _joints[0].chi2() > Ratio ){
           if( print_level() > mybhep::VERBOSE ){

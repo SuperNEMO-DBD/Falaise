@@ -472,7 +472,7 @@ namespace CAT {
 
       experimental_double distance(cell c) const;
       experimental_point angular_average(experimental_point epa, experimental_point epb, experimental_double* angle);
-      experimental_point build_from_cell(experimental_vector forward, experimental_vector transverse, experimental_double cos, int sign);
+      experimental_point build_from_cell(experimental_vector forward, experimental_vector transverse, experimental_double cos, int sign, bool replace_r, double maxr);
       void dump_point(experimental_point ep) const;
       void dump_point_phi(experimental_point ep) const;
       double error_x_in_build_from_cell(experimental_vector forward, experimental_vector transverse, experimental_double cos, double sin)const;

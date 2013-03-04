@@ -1806,6 +1806,7 @@ namespace CAT {
       if( nodes().size() < 2 ) return false;
 
       experimental_vector direction(second_last_node().ep(), last_node().ep());
+
       bool result = pl.intersect(last_node().ep(), direction, ep);
 
       return result;

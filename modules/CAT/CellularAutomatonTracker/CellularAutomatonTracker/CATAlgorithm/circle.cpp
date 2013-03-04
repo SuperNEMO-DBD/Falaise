@@ -303,11 +303,12 @@ namespace CAT{
         else if( pl.view() == "inner" || pl.view() == "outer" ){
 
           double signx = 1.;
-          if( sin(_phi.value()) < 0. )
+          if( sin(_phi.value()) < 0. ) // phi in (180,360), end-point to right of center
             signx = -1.;
           double signz = 1.;
-          if( cos(_phi.value()) < 0. )
+          if( cos(_phi.value()) < 0. ) // phi in (90, 270), end-point below center
             signz = -1.;
+
 
 	  // point on the face plane in front of circle's center
 	  experimental_point foot = (center() - ntp).point_from_vector();
@@ -316,7 +317,7 @@ namespace CAT{
 								  ntp.length2());
 	  experimental_double angle=the_norm.phi();
 
-	  ep->set_x(foot.x() - transverse_dist*experimental_sin(angle)*signx);
+	  ep->set_x(foot.x() + transverse_dist*experimental_sin(angle)*signx);
 	  ep->set_z(foot.z() - transverse_dist*experimental_cos(angle)*signz);
 
           ep->set_y(center().y());
