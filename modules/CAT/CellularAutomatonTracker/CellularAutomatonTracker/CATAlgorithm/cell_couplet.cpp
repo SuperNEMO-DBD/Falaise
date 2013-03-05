@@ -271,18 +271,19 @@ void cell_couplet::dump (std::ostream & a_out,
       if( intersecting() ){
         // tangent or intersecting circles
 
-        experimental_double avx = (ca().ep().x() + cb().ep().x())/2.;
-        experimental_double avy = (ca().ep().y() + cb().ep().y())/2.;
-        experimental_double avz = (ca().ep().z() + cb().ep().z())/2.;
-        experimental_point average(avx, avy, avz);
+
+	experimental_vector pA = ca().ep() + ca().r()*forward_axis();
+	experimental_vector pB = cb().ep() - cb().r()*forward_axis();
+
+        experimental_vector average = (pA + pB)/2.;
         // a small offset with a big error
         //experimental_double small_offset(0.1, (ca().r().value() + cb().r().value())/4.);
-        experimental_double small_offset(0.1, 0.05);
+        experimental_double small_offset(0.1, 0.);
 
         for(size_t i=0; i<2; i++){
 
-          epa = (experimental_vector(average) + transverse_axis()*sign[i]*small_offset).point_from_vector();
-          epb = (experimental_vector(average) - transverse_axis()*sign[i]*small_offset).point_from_vector();
+          epa = (average + transverse_axis()*sign[i]*small_offset).point_from_vector();
+          epb = (average - transverse_axis()*sign[i]*small_offset).point_from_vector();
 
           line l(epa, epb, prlevel(), nsigma());
 	  
