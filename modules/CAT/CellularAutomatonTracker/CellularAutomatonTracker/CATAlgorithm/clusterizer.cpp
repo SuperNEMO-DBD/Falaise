@@ -1224,7 +1224,7 @@ namespace CAT {
             trueseq.set_charge(topology::experimental_double(-1.,0.));
 
           if( tp.find_property("length"))
-            trueseq.set_length(topology::experimental_double(mybhep::double_from_string(tp.fetch_property("length")), 0.));
+            trueseq.set_helix_length(topology::experimental_double(mybhep::double_from_string(tp.fetch_property("length")), 0.));
 
           trueseq.set_helix_vertex( topology::experimental_point( tp.vertex().x(), tp.vertex().y(), tp.vertex().z(), 0., 0., 0.),"true");
 
@@ -1287,7 +1287,7 @@ namespace CAT {
             nemoseq.set_charge(topology::experimental_double(tp.charge(),0.));//particle charge
 
           if( tp.find_property("length"))
-            nemoseq.set_length(topology::experimental_double(mybhep::double_from_string(tp.fetch_property("length")), 0.));
+            nemoseq.set_helix_length(topology::experimental_double(mybhep::double_from_string(tp.fetch_property("length")), 0.));
 
           nemoseq.set_helix_vertex( topology::experimental_point( tp.vertex().x(), tp.vertex().y(), tp.vertex().z(), 0., 0., 0.),"nemo");
 

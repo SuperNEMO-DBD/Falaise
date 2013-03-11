@@ -191,14 +191,20 @@ namespace CAT {
       }
 
       // get delta-phi of two points
-      double delta_phi(experimental_point epa, experimental_point epb)const{
+      experimental_double delta_phi(experimental_point epa, experimental_point epb)const{
 
-        double phi1 = experimental_vector(center_, epa).phi().value();
-        double phi2 = experimental_vector(center_, epb).phi().value();
+        experimental_double phi1 = experimental_vector(center_, epa).phi();
+        experimental_double phi2 = experimental_vector(center_, epb).phi();
 
-        mybhep::fix_angles(&phi1, &phi2);
+	experimental_double dp = phi2 - phi1;
 
-        return fabs(phi1 - phi2);
+        double vphi1 = phi1.value();
+        double vphi2 = phi2.value();
+
+        mybhep::fix_angles(&vphi1, &vphi2);
+
+	dp.set_value(vphi2 - vphi1);
+        return dp;
 
       }
 

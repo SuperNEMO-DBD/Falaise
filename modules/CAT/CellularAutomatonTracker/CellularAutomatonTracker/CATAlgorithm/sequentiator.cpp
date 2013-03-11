@@ -1877,6 +1877,7 @@ namespace CAT {
 	  }
         }
 
+        iseq->calculate_length();
 
         if( level >= mybhep::VVERBOSE ){
           std::clog << " sequence " << iseq - sequences_.begin() << " has: " << std::endl; fflush(stdout);
@@ -1905,6 +1906,13 @@ namespace CAT {
 	    if( iseq->decay_tangent_vertex_type() == "calo" ) std::clog << " icalo " << iseq->calo_tangent_id();
 	    std::clog << " " << std::endl; fflush(stdout);
 	  }
+	  if( iseq->has_tangent_length() ){
+	    std::clog << " tangent length "; iseq->tangent_length().dump(); std::clog << " " << std::endl; fflush(stdout);
+	  }
+	  if( iseq->has_helix_length() ){
+	    std::clog << " helix length "; iseq->helix_length().dump(); std::clog << " " << std::endl; fflush(stdout);
+	  }
+
         }
 
 
@@ -2823,7 +2831,7 @@ namespace CAT {
             gn = gap_number(jseq->last_node().c());
         }
 
-        double deltaphi = cos(news.delta_phi(epa, epb)/2.);
+        double deltaphi = cos(news.delta_phi(epa, epb).value()/2.);
         double penetration = fabs(news.radius().value()*(1 - cos(deltaphi)));
 
         if( fabs(deltaphi)*180./acos(-1.) > 180. )

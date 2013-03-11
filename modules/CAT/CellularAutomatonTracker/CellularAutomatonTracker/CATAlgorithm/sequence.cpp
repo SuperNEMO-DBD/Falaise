@@ -31,6 +31,8 @@ namespace CAT {
       has_charge_ = false;
       has_helix_charge_ = false;
       has_detailed_charge_ = false;
+      has_tangent_length_ = false;
+      has_helix_length_ = false;
       has_momentum_ = false;
       has_helix_vertex_ = false;
       helix_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
@@ -61,9 +63,10 @@ namespace CAT {
       charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       helix_charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       detailed_charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
+      tangent_length_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
+      helix_length_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       momentum_ = experimental_vector(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                       mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
-      length_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       primary_ = true;
     }
 
@@ -84,6 +87,8 @@ namespace CAT {
       has_charge_ = false;
       has_helix_charge_ = false;
       has_detailed_charge_ = false;
+      has_tangent_length_ = false;
+      has_helix_length_ = false;
       has_momentum_ = false;
       has_helix_vertex_ = false;
       helix_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
@@ -112,9 +117,10 @@ namespace CAT {
       charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       helix_charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       detailed_charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
+      tangent_length_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
+      helix_length_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       momentum_ = experimental_vector(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                       mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
-      length_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       primary_ = true;
     }
 
@@ -132,6 +138,8 @@ namespace CAT {
       has_charge_ = false;
       has_helix_charge_ = false;
       has_detailed_charge_ = false;
+      has_tangent_length_ = false;
+      has_helix_length_ = false;
       has_momentum_ = false;
       has_helix_vertex_ = false;
       helix_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
@@ -160,9 +168,10 @@ namespace CAT {
       charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       helix_charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       detailed_charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
+      tangent_length_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
+      helix_length_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       momentum_ = experimental_vector(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                       mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
-      length_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       primary_ = true;
     }
 
@@ -302,9 +311,16 @@ namespace CAT {
       momentum_ = mom;
     }
 
-    //! set length
-    void sequence::set_length(const experimental_double &mom){
-      length_ = mom;
+    //! set tangent length
+    void sequence::set_tangent_length(const experimental_double &mom){
+      has_tangent_length_ = true;
+      tangent_length_ = mom;
+    }
+
+    //! set helix length
+    void sequence::set_helix_length(const experimental_double &mom){
+      has_helix_length_ = true;
+      helix_length_ = mom;
     }
 
     //! set primary
@@ -470,6 +486,16 @@ namespace CAT {
       return has_detailed_charge_;
     }
 
+    //! has tangent length
+    bool sequence::has_tangent_length()const{
+      return has_tangent_length_;
+    }
+
+    //! has helix length
+    bool sequence::has_helix_length()const{
+      return has_helix_length_;
+    }
+
     //! has helix_vertex
     bool sequence::has_helix_vertex()const{
       return has_helix_vertex_;
@@ -574,10 +600,16 @@ namespace CAT {
       return momentum_;
     }
 
-    //! get length
-    const experimental_double & sequence::length() const
+    //! get tangent_length
+    const experimental_double & sequence::tangent_length() const
     {
-      return length_;
+      return tangent_length_;
+    }
+
+    //! get helix_length
+    const experimental_double & sequence::helix_length() const
+    {
+      return helix_length_;
     }
 
     //! get helix
@@ -719,6 +751,14 @@ namespace CAT {
       if( has_detailed_charge() ){
         experimental_double newcharge = - detailed_charge();
         inverted.set_detailed_charge(newcharge);
+      }
+
+      if( has_tangent_length() ){
+        inverted.set_tangent_length(tangent_length());
+      }
+
+      if( has_helix_length() ){
+        inverted.set_helix_length(helix_length());
       }
 
       if( has_decay_helix_vertex() ){
@@ -2189,6 +2229,47 @@ namespace CAT {
     }
 
 
+    void sequence::calculate_length(void) {
+
+      if( nodes_.size() >= 3 ){
+	experimental_point fp = nodes_[0].ep();
+	experimental_point lp = nodes_.back().ep();
+	if( has_helix_vertex() )
+	  fp = helix_vertex();
+	if( has_decay_helix_vertex() )
+	  lp = decay_helix_vertex();
+	
+	experimental_double deltaphi = helix_.delta_phi(fp, lp);
+	helix_length_ = experimental_sqrt(experimental_square(helix_.radius()) + experimental_square(helix_.pitch()))*experimental_fabs(deltaphi);
+	has_helix_length_ = true;
+      }
+
+      if( nodes_.size() >= 2 ){
+	experimental_double tl(0.,0.);
+	int nindex=0;
+	for(std::vector<node>::const_iterator inode=nodes_.begin(); inode != nodes_.end(); ++inode){
+	  nindex = inode - nodes_.begin();
+	  if( nindex == 0 ){
+	    continue;
+	  }
+	  tl += inode->ep().distance(nodes_[nindex-1].ep());
+	}
+	
+	if( has_tangent_vertex() ){
+	  tl += tangent_vertex().distance(nodes_[0].ep());
+	}
+	if( has_decay_tangent_vertex() ){
+	  tl += nodes_.back().ep().distance(decay_tangent_vertex());
+	}
+
+	tangent_length_ = tl;
+	has_tangent_length_ = true;
+      }
+
+      return;
+
+    }
+
     bool sequence::good_match_with_kink(const sequence & seq,
                                         bool &invertA, bool &invertB,
                                         double limit_distance)const{
@@ -2365,7 +2446,7 @@ namespace CAT {
       return false;
     }
 
-    double sequence::delta_phi(const experimental_point & epa,
+    experimental_double sequence::delta_phi(const experimental_point & epa,
                                const experimental_point & epb)const{
       return helix_.delta_phi(epa, epb);
     }

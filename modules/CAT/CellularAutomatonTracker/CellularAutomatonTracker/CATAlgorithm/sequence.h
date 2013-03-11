@@ -51,6 +51,10 @@ namespace CAT {
       // fitted helix
       helix helix_;
 
+      experimental_double helix_length_;
+
+      experimental_double tangent_length_;
+
       experimental_double charge_;
 
       experimental_double helix_charge_;
@@ -58,8 +62,6 @@ namespace CAT {
       experimental_double detailed_charge_;
 
       experimental_vector momentum_;
-
-      experimental_double length_;
 
       bool primary_;
 
@@ -79,6 +81,9 @@ namespace CAT {
       bool has_charge_;
       bool has_helix_charge_;
       bool has_detailed_charge_;
+
+      bool has_helix_length_;
+      bool has_tangent_length_;
 
       // sequence's vertex: from helix and from tangents
       bool has_helix_vertex_;
@@ -164,11 +169,14 @@ namespace CAT {
       //! set detailed_charge
       void set_detailed_charge(const experimental_double &detailed_charge);
 
+      //! set tangent length
+      void set_tangent_length(const experimental_double &length);
+
+      //! set helix length
+      void set_helix_length(const experimental_double &helix_length);
+
       //! set momentum
       void set_momentum(const experimental_vector &mom);
-
-      //! set length
-      void set_length(const experimental_double &mom);
 
       //! set primary
       void set_primary(bool primary);
@@ -236,6 +244,12 @@ namespace CAT {
       //! has detailed_charge
       bool has_detailed_charge()const;
 
+      //! has tangent length
+      bool has_tangent_length()const;
+
+      //! has helix length
+      bool has_helix_length()const;
+
       //! has helix_vertex
       bool has_helix_vertex()const;
 
@@ -293,11 +307,14 @@ namespace CAT {
       //! get detailed_charge
       const experimental_double & detailed_charge() const;
 
+      //! get tangent length
+      const experimental_double & tangent_length() const;
+
+      //! get helix length
+      const experimental_double & helix_length() const;
+
       //! get momentum
       const experimental_vector & momentum() const;
-
-      //! get length
-      const experimental_double & length() const;
 
       //! get helix
       const helix & get_helix() const;
@@ -363,6 +380,8 @@ namespace CAT {
 
       void calculate_charge(void);
 
+      void calculate_length(void);
+
       bool intersect_plane_with_tangent_from_end(const plane & pl,
                                                  experimental_point * ep)const;
 
@@ -399,7 +418,7 @@ namespace CAT {
 
       bool same_families(const topology::sequence & s)const;
 
-      double delta_phi(const experimental_point & epa,
+      experimental_double delta_phi(const experimental_point & epa,
                        const experimental_point & epb)const;
 
       // is the (true) track all on one side of the foil?
