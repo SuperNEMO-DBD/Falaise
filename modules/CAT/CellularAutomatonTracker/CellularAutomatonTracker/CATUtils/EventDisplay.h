@@ -250,6 +250,8 @@ class EventDisplay{
   int PlotLegend;
   int icanvas;
   std::string PlotFormat;
+  int first_event_number;
+  int event_number;
 
   //error parametrization
   double sigma0;

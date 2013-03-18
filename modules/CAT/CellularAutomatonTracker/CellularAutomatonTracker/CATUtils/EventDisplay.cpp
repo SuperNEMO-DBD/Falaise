@@ -90,8 +90,14 @@ using namespace CAT;
     else
       PlotFormat = "eps";
 
+    if( st.find_sstore("first_event"))
+      first_event_number = st.fetch_istore("first_event");
+    else
+      first_event_number = -1;
+
     Nbins = 10;
     
+    event_number=0;
 
 }
 
@@ -180,6 +186,7 @@ void EventDisplay::readDstProper(mybhep::sstore global, mybhep::EventManager2 *e
   m.message("ysize is read as",ysize,"mm",mybhep::NORMAL); fflush(stdout);
   m.message("zsize is read as",zsize,"mm",mybhep::NORMAL); fflush(stdout);
   m.message("distance from wire to wire is read as: ",CellDistance,"mm",mybhep::NORMAL); fflush(stdout);
+  m.message("first event number", first_event_number, mybhep::NORMAL);
   m.message("",mybhep::NORMAL); fflush(stdout);
   
   //parameters for error parametrization
@@ -1498,6 +1505,9 @@ void EventDisplay::execute(mybhep::event& evt, size_t ievent, topology::tracked_
 //*************************************************************
 
   m.message(" Display Event \n",mybhep::VERBOSE); fflush(stdout);
+
+  //  event_number ++;
+  //  if( event_number < first_event_number ) return false;
 
   set_cells(__tracked_data.get_cells());
   set_clusters(__tracked_data.get_clusters());

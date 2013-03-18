@@ -1174,7 +1174,10 @@ namespace CAT {
     event_number ++;
     m.message(" local_tracking: preparing event", event_number, mybhep::VERBOSE);
 
-    if( event_number < first_event_number ) return false;
+    if( event_number < first_event_number ){
+      m.message(" local_tracking: skip event", event_number, " first event is ", first_event_number,  mybhep::VERBOSE);
+      return false;
+    }
 
     parts.clear();
     clusters_.clear();

@@ -251,9 +251,16 @@ namespace CAT {
       double chi2(std::vector<experimental_point> ps)const{
 
         double _chi2 = 0.;
+	double phi_ref = 0.;
+	double phi_ref2 = 0.;
+	size_t index=0;
         for(std::vector<experimental_point>::const_iterator ip = ps.begin(); ip != ps.end(); ++ip){
 
-          _chi2 += chi2(*ip);
+          _chi2 += chi2(*ip, phi_ref);
+
+	  phi_ref2 = phi_ref;
+	  phi_ref = phi_of_point(*ip, phi_ref2).value();
+
         }
 
         return _chi2;
@@ -264,9 +271,16 @@ namespace CAT {
       std::vector<double> chi2s(std::vector<experimental_point> ps)const{
 
         std::vector<double> _chi2s;
+	double phi_ref = 0.;
+	double phi_ref2 = 0.;
+	size_t index=0;
         for(std::vector<experimental_point>::const_iterator ip = ps.begin(); ip != ps.end(); ++ip){
 
-          _chi2s.push_back(chi2(*ip));
+          _chi2s.push_back(chi2(*ip, phi_ref));
+
+	  phi_ref2 = phi_ref;
+	  phi_ref = phi_of_point(*ip, phi_ref2).value();
+
         }
 
         return _chi2s;
