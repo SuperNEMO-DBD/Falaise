@@ -146,6 +146,10 @@ namespace CAT {
 
       void remove_couplet(size_t index);
 
+      void remove_triplet(size_t index);
+
+      void remove_link(size_t index);
+
       void calculate_triplets(double Ratio, double separation_limit=90., double phi_limit=25., double theta_limit=180.);
 
       node invert();

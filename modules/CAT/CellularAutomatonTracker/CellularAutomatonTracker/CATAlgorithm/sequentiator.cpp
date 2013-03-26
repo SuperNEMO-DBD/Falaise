@@ -937,7 +937,9 @@ namespace CAT {
 
         if (level >= mybhep::VVERBOSE)
           {
+	    m.message(" original sequence after copy ", mybhep::VVERBOSE); fflush(stdout);
             print_a_sequence(sequences_[isequence]);
+	    m.message(" new copy ", mybhep::VVERBOSE); fflush(stdout);
             print_a_sequence(newcopy);
           }
 
@@ -972,15 +974,18 @@ namespace CAT {
           }
         else
           {
-            // if copy has evolved past level 1, the nodes 0 and 1 it used
-            // are set to used in the original
-            if( newcopy.nodes().size() > 1 ){
+            // if copy has evolved past level ilfn, the link from node ilfn it used
+            // is set to used in the original
+            if( newcopy.nodes().size() > ilfn + 1 ){
               if( !sequences_[isequence].nodes().empty() ){
                 clock.start(" sequentiator: get link index ","cumulative");
-                size_t it1 = newcopy.get_link_index_of_cell(0, newcopy.nodes()[1].c());
+                size_t it1 = newcopy.get_link_index_of_cell(ilfn, newcopy.nodes()[ilfn + 1].c());
                 clock.stop(" sequentiator: get link index ");
-                m.message(" setting as used original node 0  cc ", it1, mybhep::VVERBOSE);
-                sequences_[isequence].nodes_[0].cc_[it1].set_all_used();
+                m.message(" setting as used original node ", ilfn, "  cc ", it1, mybhep::VVERBOSE);
+		if( ilfn == 0 )
+		  sequences_[isequence].nodes_[ilfn].cc_[it1].set_all_used();
+		else
+		  sequences_[isequence].nodes_[ilfn].ccc_[it1].set_all_used();
               }
               /*
                 if( sequences_[isequence].nodes().size() > 1 && ilfn > 0){
@@ -1962,17 +1967,17 @@ namespace CAT {
     for(vector<topology::node>::const_iterator inode = sequence.nodes_.begin();
         inode != sequence.nodes_.end(); ++inode)
       {
-        std::clog << " " << (int)inode->c().id();
+        std::clog << " " << (int)inode->c().id();fflush(stdout);
 
         if( inode->free() )
-          std::clog << "* ";
+          std::clog << "* ";fflush(stdout);
 
         topology::experimental_vector v(inode->c().ep(),inode->ep());
 
         if( level >= mybhep::VVERBOSE ){
-	  std::clog << "[" << v.x().value() << ", " << v.z().value() << "]";
+	  std::clog << "[" << v.x().value() << ", " << v.z().value() << "]";fflush(stdout);
 
-	  std::clog << "(";
+	  std::clog << "(";fflush(stdout);
 
 	  for(vector<topology::cell>::const_iterator ilink=(*inode).links_.begin(); ilink != (*inode).links_.end(); ++ilink){
 	    iccc = sequence.get_link_index_of_cell(inode - sequence.nodes_.begin(), *ilink);
@@ -1980,51 +1985,51 @@ namespace CAT {
 	    if( iccc < 0 ) continue;  // connection through a gap
 
 	    if( inode - sequence.nodes_.begin() < 1 ){
-	      std::clog << "->" << inode->cc()[iccc].cb().id();
+	      std::clog << "->" << inode->cc()[iccc].cb().id();fflush(stdout);
 	      if( ilink->free() ){
-		std::clog << "[*]";
+		std::clog << "[*]";fflush(stdout);
 	      }
 	      std::clog << "[" << inode->cc_[iccc].iteration() << " "
-		   << inode->cc()[iccc].tangents().size() << "]";
+		   << inode->cc()[iccc].tangents().size() << "]";fflush(stdout);
 	      if( ! ilink->begun() )
-		std::clog << "[n]";
+		std::clog << "[n]";fflush(stdout);
 	    }else{
-	      std::clog << inode->ccc()[iccc].ca().id() << "<->" << inode->ccc()[iccc].cc().id();
+	      std::clog << inode->ccc()[iccc].ca().id() << "<->" << inode->ccc()[iccc].cc().id();fflush(stdout);
 	      if( ilink->free() ){
-		std::clog << "[*]";
+		std::clog << "[*]";fflush(stdout);
 	      }
 	      std::clog << "[" << inode->ccc_[iccc].iteration() << " "
-		   << inode->ccc()[iccc].joints().size() << "]";
+		   << inode->ccc()[iccc].joints().size() << "]";fflush(stdout);
 	      if( ! ilink->begun() )
-		std::clog << "[n]";
+		std::clog << "[n]";fflush(stdout);
 	    }
 	  }
 
-	  std::clog << " chi2 = " << inode->chi2();
+	  std::clog << " chi2 = " << inode->chi2();fflush(stdout);
 
-	  std::clog << " )";
+	  std::clog << " )";fflush(stdout);
 
 	}
       }
 
-    std::clog << " center (" << sequence.center().x().value() << ", " << sequence.center().y().value() << ", " << sequence.center().z().value() << ")  radius " << sequence.radius().value() <<  " pitch " << sequence.pitch().value() << " momentum " << sequence.momentum().length().value() << "  tangent charge " << sequence.charge().value() << " +- " << sequence.charge().error() << " helix charge " << sequence.helix_charge().value()  << " +- " << sequence.helix_charge().error() << " detailed charge " << sequence.detailed_charge().value()  << " +- " << sequence.detailed_charge().error();
+    std::clog << " center (" << sequence.center().x().value() << ", " << sequence.center().y().value() << ", " << sequence.center().z().value() << ")  radius " << sequence.radius().value() <<  " pitch " << sequence.pitch().value() << " momentum " << sequence.momentum().length().value() << "  tangent charge " << sequence.charge().value() << " +- " << sequence.charge().error() << " helix charge " << sequence.helix_charge().value()  << " +- " << sequence.helix_charge().error() << " detailed charge " << sequence.detailed_charge().value()  << " +- " << sequence.detailed_charge().error();fflush(stdout);
     if( sequence.has_helix_vertex() ){
-      std::clog << " helix vertex on " << sequence.helix_vertex_type();
+      std::clog << " helix vertex on " << sequence.helix_vertex_type();fflush(stdout);
       if( sequence.helix_vertex_type() == "calo" ) std::clog << " icalo " << sequence.helix_vertex_id();
     }
     if( sequence.has_decay_helix_vertex() ){
-      std::clog << " helix decay vertex on " << sequence.decay_helix_vertex_type(); 
+      std::clog << " helix decay vertex on " << sequence.decay_helix_vertex_type(); fflush(stdout);
       if( sequence.decay_helix_vertex_type() == "calo" ) std::clog << " icalo " << sequence.calo_helix_id();
     }
     if( sequence.has_tangent_vertex() ){
-      std::clog << " tangent vertex on " << sequence.tangent_vertex_type() << " ";
+      std::clog << " tangent vertex on " << sequence.tangent_vertex_type() << " ";fflush(stdout);
       if( sequence.tangent_vertex_type() == "calo" ) std::clog << " icalo " << sequence.tangent_vertex_id();
     }
     if( sequence.has_decay_tangent_vertex() ){
-      std::clog << " tangent decay vertex on " << sequence.decay_tangent_vertex_type(); 
+      std::clog << " tangent decay vertex on " << sequence.decay_tangent_vertex_type(); fflush(stdout);
       if( sequence.decay_tangent_vertex_type() == "calo" ) std::clog << " icalo " << sequence.calo_tangent_id();
     }
-    std::clog << " " << std::endl;
+    std::clog << " " << std::endl;fflush(stdout);
 
     return;
 

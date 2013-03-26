@@ -296,6 +296,17 @@ namespace CAT {
       return;
     }
 
+    void node::remove_triplet(size_t index){
+      ccc_.erase(ccc_.begin() + index);
+      setup_ccc_maps();
+      return;
+    }
+
+    void node::remove_link(size_t index){
+      links_.erase(links_.begin() + index);
+      return;
+    }
+
       node node::invert(){
         node inverted;
         inverted.set_print_level(print_level());

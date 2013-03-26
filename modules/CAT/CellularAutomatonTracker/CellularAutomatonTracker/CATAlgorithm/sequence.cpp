@@ -1042,31 +1042,47 @@ namespace CAT {
         {
           newsequence.nodes_.push_back( nodes()[i] );
           newsequence.nodes_[i].set_free( false );
-          for(std::vector<cell_couplet>::iterator icc = newsequence.nodes_[i].cc_.begin(); icc != newsequence.nodes_[i].cc_.end(); ++icc)
-            {
-              if( i < lfn || (i == lfn && (size_t)(icc - newsequence.nodes_[i].cc_.begin()) < link ) ){
-                icc->set_free( false);
-                icc->set_begun( true);
-                icc->set_all_used();
-              }
-            }
-          for(std::vector<cell_triplet>::iterator iccc = newsequence.nodes_[i].ccc_.begin(); iccc != newsequence.nodes_[i].ccc_.end(); ++iccc)
-            {
-              if( i < lfn  || (i == lfn && (size_t)(iccc - newsequence.nodes_[i].ccc_.begin()) < link ) ){
-                iccc->set_free( false);
-                iccc->set_begun( true);
-                iccc->set_all_used();
-              }
-            }
-          for(std::vector<cell>::iterator ilink = newsequence.nodes_[i].links_.begin();  ilink != newsequence.nodes_[i].links_.end(); ++ilink)
-            {
-              if( i < lfn  || (i == lfn && (size_t)(ilink - newsequence.nodes_[i].links_.begin()) < link ) ){
+
+	  std::vector<cell_couplet>::iterator icc = newsequence.nodes_[i].cc_.begin();
+	  while( icc != newsequence.nodes_[i].cc_.end() ){
+	    if( i < lfn || (i == lfn && (size_t)(icc - newsequence.nodes_[i].cc_.begin()) < link ) ){
+	      icc->set_free( false);
+	      icc->set_begun( true);
+	      icc->set_all_used();
+	    }
+	    ++icc;
+	    continue;
+	  }
+	  std::vector<cell_triplet>::iterator iccc = newsequence.nodes_[i].ccc_.begin();
+	  while( iccc != newsequence.nodes_[i].ccc_.end() ){
+	    if( i < lfn  || (i == lfn && (size_t)(iccc - newsequence.nodes_[i].ccc_.begin()) < link ) ){
+	      iccc->set_free( false);
+	      iccc->set_begun( true);
+	      iccc->set_all_used();
+	    }
+	    ++iccc;
+	    continue;
+	  }
+
+	  std::vector<cell>::iterator ilink = newsequence.nodes_[i].links_.begin();
+	  while( ilink != newsequence.nodes_[i].links_.end() ){
+	    if( ilink - newsequence.nodes_[i].links_.begin() >= newsequence.nodes_[i].links_.size() ){
+	      break;
+	    }
+
+	    if( i < lfn  || (i == lfn && (size_t)(ilink - newsequence.nodes_[i].links_.begin()) < link ) ){
                 ilink->set_free( false);
                 ilink->set_begun( true);
               }
-            }
-        }
-
+	    if( i == lfn && (size_t)(ilink - newsequence.nodes_[i].links_.begin()) > link ){
+	      if( print_level() >= mybhep::VVERBOSE )
+		std::clog << " removing from node " << newsequence.nodes_[i].c().id()  << "  link " << ilink - newsequence.nodes_[i].links_.begin() << " id " << ilink->id() << " larger than link " << link << " from copied sequence " << std::endl;
+		newsequence.nodes_[i].remove_link(ilink - newsequence.nodes_[i].links_.begin());
+	    }
+	    ++ilink;
+	    continue;
+	  }
+	}
 
       //      if( nodes()[lfn].cc()[link].begun() )
       increase_iteration(lfn,link);
