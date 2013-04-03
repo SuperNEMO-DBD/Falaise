@@ -274,7 +274,7 @@ namespace CAT{
       else{ // the circle intersects the plane
         if( print_level() >= mybhep::VVERBOSE ){
           std::clog << " intersecting circle with center " << center().x().value() << " " << center().z().value() <<
-            " with plain with face " << pl.face().x().value() << " " << pl.face().z().value() << std::endl;
+            " with plain with face " << pl.face().x().value() << " " << pl.face().z().value() << " phi " << _phi.value()*180./acos(-1.) << std::endl;
         }
         
         if( pl.view() == "x" ){
@@ -303,10 +303,10 @@ namespace CAT{
         else if( pl.view() == "inner" || pl.view() == "outer" ){
 
           double signx = 1.;
-          if( sin(_phi.value()) < 0. ) // phi in (180,360), end-point to right of center
+          if( cos(_phi.value()) < 0. ) // phi in (90, 270), end-point below center
             signx = -1.;
           double signz = 1.;
-          if( cos(_phi.value()) < 0. ) // phi in (90, 270), end-point below center
+          if( sin(_phi.value()) < 0. ) // phi in (180,360), end-point to left of center
             signz = -1.;
 
 
@@ -317,8 +317,13 @@ namespace CAT{
 								  ntp.length2());
 	  experimental_double angle=the_norm.phi();
 
-	  ep->set_x(foot.x() + transverse_dist*experimental_sin(angle)*signx);
-	  ep->set_z(foot.z() - transverse_dist*experimental_cos(angle)*signz);
+	  if( print_level() >= mybhep::VVERBOSE ){
+	    std::clog << " normal to plane (" << the_norm.x().value() << ", " << the_norm.y().value() << ", " << the_norm.z().value() << ") normal vector from face of plane to parallel plane through center of circle ( " << ntp.x().value() << ", " << ntp.y().value() << ", " << ntp.z().value() << ") diff " << diff << " foot on face of plane in front of circle center: ( " << foot.x().value() << ", " << foot.y().value() << ", " << foot.z().value() <<
+	      ") transverse dist: " << transverse_dist.value() << " angle " << angle.value()*180./acos(-1.) << std::endl;
+	  }
+
+	  ep->set_x(foot.x() + transverse_dist*experimental_fabs(experimental_sin(angle))*signx);
+	  ep->set_z(foot.z() + transverse_dist*experimental_fabs(experimental_cos(angle))*signz);
 
           ep->set_y(center().y());
 
@@ -339,7 +344,7 @@ namespace CAT{
       // vector from center of plane face to extrapolated point
       experimental_vector dist = experimental_vector(pl.face(), *ep).hor();
       if( print_level() >= mybhep::VVERBOSE ){
-        std::clog << " circle distance from extrapolation to plane face: " << dist.x().value() << ", " << dist.y().value() << ", " << dist.z().value() << " plane sizes: " << pl.sizes().x().value() << " " << pl.sizes().y().value() << " " << pl.sizes().z().value() << std::endl;
+        std::clog << " extrapolated point: (" << ep->x().value() << ", " << ep->y().value() << ", " << ep->z().value() << "), circle distance from extrapolation to plane face: " << dist.x().value() << ", " << dist.y().value() << ", " << dist.z().value() << " plane sizes: " << pl.sizes().x().value() << " " << pl.sizes().y().value() << " " << pl.sizes().z().value() << std::endl;
       }
       if( pl.view() == "x" ){
         if( fabs(dist.z().value()) > pl.sizes().z().value()/2. )

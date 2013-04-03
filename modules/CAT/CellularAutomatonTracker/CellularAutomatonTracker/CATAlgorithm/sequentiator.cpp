@@ -677,6 +677,7 @@ namespace CAT {
 
     // //  match_through_gaps();
     match_gaps();
+    direct_out_of_foil();
 
     interpret_physics(tracked_data_.get_calos());
 
@@ -2304,7 +2305,7 @@ namespace CAT {
 
 	if( distance_from_foil(iseq->nodes().front().ep()) >
 	    distance_from_foil(iseq->nodes().back().ep()) ){
-	  m.message(" sequence ", iseq - sequences_.begin(), " will be directed out of foil ", mybhep::VVERBOSE);
+	  m.message(" sequence ", iseq - sequences_.begin(), " in scenario ", isc - scenarios_.begin(), " will be directed out of foil ", mybhep::VVERBOSE);
 	  topology::sequence is = iseq->invert();
 	  std::swap(*iseq, is);
 	}
