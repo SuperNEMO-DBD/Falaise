@@ -48,7 +48,7 @@ namespace CAT{
       virtual ~CircleRegression(){};
 
       //! constructor
-      CircleRegression(std::vector<experimental_double> xi, std::vector<experimental_double> yi, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.){
+      CircleRegression(std::vector<experimental_double> &xi, std::vector<experimental_double> &yi, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.){
         set_print_level(level);
         set_nsigma(nsigma);
         appname_= "CircleRegression: ";
@@ -91,17 +91,17 @@ namespace CAT{
 
 
       //! set
-      void set(std::vector<experimental_double> xi, std::vector<experimental_double> yi);
+      void set(std::vector<experimental_double> &xi, std::vector<experimental_double> &yi);
 
 
       //! set xi
-      void set_xi(std::vector<experimental_double> xi);
+      void set_xi(std::vector<experimental_double> &xi);
 
       //! set yi
-      void set_yi(std::vector<experimental_double> yi);
+      void set_yi(std::vector<experimental_double> &yi);
 
       //! set circle
-      void set_circle(circle c);
+      void set_circle(circle &c);
 
       //! get xi
       const std::vector<experimental_double>& xi()const;
@@ -119,7 +119,7 @@ namespace CAT{
       bool minuit_fit(void);
 #endif
 
-      experimental_point position(experimental_double phi);
+      experimental_point position(experimental_double &phi);
 
 
     };

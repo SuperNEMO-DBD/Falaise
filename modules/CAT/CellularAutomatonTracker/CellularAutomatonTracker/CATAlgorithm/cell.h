@@ -87,7 +87,7 @@ namespace CAT {
       virtual ~cell(){};
 
       //! constructor
-      cell(experimental_point p, experimental_double r, size_t id, bool fast=true, double nsigma=10., mybhep::prlevel level=mybhep::NORMAL){
+      cell(experimental_point &p, experimental_double r, size_t id, bool fast=true, double nsigma=10., mybhep::prlevel level=mybhep::NORMAL){
         appname_= "cell: ";
         set_print_level(level);
         set_nsigma(nsigma);
@@ -106,7 +106,7 @@ namespace CAT {
       }
 
       //! constructor
-      cell(experimental_point p, double r, double er, size_t id, bool fast=true, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.){
+      cell(experimental_point &p, double r, double er, size_t id, bool fast=true, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.){
         appname_= "cell: ";
         set_print_level(level);
         set_nsigma(nsigma);
@@ -126,7 +126,7 @@ namespace CAT {
       }
 
       //! constructor
-      cell(experimental_point p, double r, size_t id, bool fast=true){
+      cell(experimental_point &p, double r, size_t id, bool fast=true){
         appname_= "cell: ";
         set_print_level(mybhep::NORMAL);
         set_nsigma(10.);
@@ -438,13 +438,13 @@ namespace CAT {
       }
 
       //! get cell number
-      int cell_number(){
+      int cell_number() const{
 
-        if( type() == "SN" )
+        if( type_ == "SN" )
           {
             return iid();
           }
-        else if( type() == "N3" )
+        else if( type_ == "N3" )
           {
             // for Nemo3, cell number repeats within each sector
             // cell numbers vary from 0 to N in each layer of each block, where:
@@ -472,7 +472,7 @@ namespace CAT {
 
       experimental_double distance(cell c) const;
       experimental_point angular_average(experimental_point epa, experimental_point epb, experimental_double* angle);
-      experimental_point build_from_cell(experimental_vector forward, experimental_vector transverse, experimental_double cos, int sign, bool replace_r, double maxr);
+      experimental_point build_from_cell(experimental_vector forward, experimental_vector transverse, experimental_double cos, int sign, bool replace_r, double maxr) const;
       void dump_point(experimental_point ep) const;
       void dump_point_phi(experimental_point ep) const;
       double error_x_in_build_from_cell(experimental_vector forward, experimental_vector transverse, experimental_double cos, double sin)const;

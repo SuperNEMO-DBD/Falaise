@@ -60,8 +60,8 @@ namespace topology{
     virtual ~logic_scenario(){};
 
     //! constructor
-    logic_scenario(topology::scenario sc){
-      for(std::vector<topology::sequence>::iterator iseq=sc.sequences_.begin(); iseq!=sc.sequences_.end(); ++iseq)
+    logic_scenario(const topology::scenario &sc){
+      for(std::vector<topology::sequence>::const_iterator iseq=sc.sequences_.begin(); iseq!=sc.sequences_.end(); ++iseq)
         sequences_.push_back(logic_sequence(*iseq));
       chi2_ = sc.chi2();
       ndof_ = sc.ndof();
@@ -94,7 +94,7 @@ namespace topology{
     const size_t& n_overlaps() const {return n_overlaps_;}
 
 
-    void calculate_n_overlaps(std::vector<topology::cell> cells, std::vector<topology::calorimeter_hit> calos){
+    void calculate_n_overlaps(const std::vector<topology::cell> &cells, const std::vector<topology::calorimeter_hit> &calos){
 
       std::vector<int> freecells(cells.size());
       fill(freecells.begin(), freecells.end(), 1);
@@ -144,7 +144,7 @@ namespace topology{
     }
 
 
-    void calculate_n_free_families(std::vector<topology::cell> cells, std::vector<topology::calorimeter_hit> calos){
+    void calculate_n_free_families(const std::vector<topology::cell> &cells, const std::vector<topology::calorimeter_hit> &calos){
 
       std::vector<int> freecells(cells.size());
       fill(freecells.begin(), freecells.end(), 1);
@@ -208,11 +208,11 @@ namespace topology{
     }
 
 
-    double Prob(){
+    double Prob() const{
       return probof(chi2(), ndof());
     }
 
-    bool better_scenario_than( logic_scenario s){
+    bool better_scenario_than(const logic_scenario &s){
 
       // - n of recovered cells
       int deltanfree = n_free_families() - s.n_free_families();

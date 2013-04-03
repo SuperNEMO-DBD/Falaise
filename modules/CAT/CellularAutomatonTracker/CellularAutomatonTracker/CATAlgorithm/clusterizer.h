@@ -54,7 +54,7 @@ namespace CAT{
 
   public:
     bool initialize( void );
-    bool initialize( const mybhep::sstore &store, mybhep::gstore gs, mybhep::EventManager2 *eman=0);
+    bool initialize( const mybhep::sstore &store, const mybhep::gstore gs, mybhep::EventManager2 *eman=0);
     void initializeHistos( void );
     bool execute(mybhep::event& evt, int ievent);
     bool finalize();

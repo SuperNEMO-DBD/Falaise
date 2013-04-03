@@ -20,7 +20,7 @@ namespace CAT{
      }
 
       //! constructor
-      experimental_point::experimental_point(experimental_double x, experimental_double y, experimental_double z){
+      experimental_point::experimental_point(const experimental_double &x, const experimental_double &y, const experimental_double &z){
         appname_ = "experimental_point: ";
         x_ = x;
         y_ = y;
@@ -41,7 +41,7 @@ namespace CAT{
       }
 
       //! constructor
-      experimental_point::experimental_point(mybhep::point p, double ex, double ey, double ez){
+      experimental_point::experimental_point(const mybhep::point &p, double ex, double ey, double ez){
         appname_ = "experimental_point: ";
         x_.set_value(p.x());
         y_.set_value(p.y());
@@ -54,7 +54,7 @@ namespace CAT{
       }
 
       //! constructor from bhep hit
-      experimental_point::experimental_point(mybhep::hit hit){
+      experimental_point::experimental_point(const mybhep::hit &hit){
         appname_ = "experimental_point: ";
         std::vector<float> cellpos;
         mybhep::vector_from_string(hit.fetch_property("CELL_POS"), cellpos);
@@ -99,7 +99,7 @@ namespace CAT{
 
 
       //! set point and errors
-      void experimental_point::set(mybhep::point p, double ex,double ey, double ez)
+      void experimental_point::set(const mybhep::point &p, double ex,double ey, double ez)
       {
         x_.set_value(p.x());
         y_.set_value(p.y());
@@ -112,7 +112,7 @@ namespace CAT{
 
 
       //! set x
-      void experimental_point::set_x(experimental_double x)
+      void experimental_point::set_x(const experimental_double &x)
       {
         x_.set_value(x.value());
         x_.set_error(x.error());
@@ -127,7 +127,7 @@ namespace CAT{
       }
 
       //! set y
-      void experimental_point::set_y(experimental_double y)
+      void experimental_point::set_y(const experimental_double &y)
       {
         y_.set_value(y.value());
         y_.set_error(y.error());
@@ -141,7 +141,7 @@ namespace CAT{
       }
 
       //! set z
-      void experimental_point::set_z(experimental_double z)
+      void experimental_point::set_z(const experimental_double &z)
       {
         z_.set_value(z.value());
         z_.set_error(z.error());
@@ -213,7 +213,7 @@ namespace CAT{
         return;
       }
 
-    experimental_point average (const std::vector<experimental_point> vs)
+    experimental_point average (const std::vector<experimental_point> &vs)
     {
       std::vector<experimental_double> xs;
       std::vector<experimental_double> ys;

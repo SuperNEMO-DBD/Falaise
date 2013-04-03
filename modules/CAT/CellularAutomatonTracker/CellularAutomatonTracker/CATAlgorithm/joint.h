@@ -53,7 +53,7 @@ namespace CAT {
       virtual ~joint();
 
       //! constructor
-      joint(experimental_point epa, experimental_point epb, experimental_point epc, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
+      joint(const experimental_point &epa, const experimental_point &epb, const experimental_point &epc, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
 
       /*** dump ***/
       virtual void dump (std::ostream & a_out         = std::clog,
@@ -64,23 +64,23 @@ namespace CAT {
 
 
       //! set experimental_points
-      void set(experimental_point epa, experimental_point epb, experimental_point epc);
+      void set(const experimental_point &epa, const experimental_point &epb, const experimental_point &epc);
 
 
       //! set first experimental_points
-      void set_epa(experimental_point epa);
+      void set_epa(const experimental_point &epa);
 
       //! set second experimental_points
-      void set_epb(experimental_point epb);
+      void set_epb(const experimental_point &epb);
 
       //! set third experimental_points
-      void set_epc(experimental_point epc);
+      void set_epc(const experimental_point &epc);
 
       //! set kink phi
-      void set_kink_phi(experimental_double phi);
+      void set_kink_phi(const experimental_double &phi);
 
       //! set kink theta
-      void set_kink_theta(experimental_double theta);
+      void set_kink_theta(const experimental_double &theta);
 
       //! set used
       void set_used(bool used);

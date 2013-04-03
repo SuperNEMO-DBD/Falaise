@@ -67,8 +67,8 @@ namespace topology{
     virtual ~logic_sequence(){};
 
     //! constructor from sequence
-    logic_sequence(topology::sequence s){
-      for(std::vector<node>::iterator in=s.nodes_.begin(); in!=s.nodes_.end(); ++in)
+    logic_sequence(const topology::sequence &s){
+      for(std::vector<node>::const_iterator in=s.nodes_.begin(); in!=s.nodes_.end(); ++in)
         cells_.push_back(logic_cell(in->c().id()));
       has_vertex_ = false;
       if( s.has_helix_vertex() ){

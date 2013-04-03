@@ -38,7 +38,7 @@ namespace CAT{
 
 
       //! set
-      void CircleRegression::set(std::vector<experimental_double> xi, std::vector<experimental_double> yi)
+      void CircleRegression::set(std::vector<experimental_double> &xi, std::vector<experimental_double> &yi)
       {
         xi_ = xi;
         yi_ = yi;
@@ -46,19 +46,19 @@ namespace CAT{
 
 
       //! set xi
-      void CircleRegression::set_xi(std::vector<experimental_double> xi)
+      void CircleRegression::set_xi(std::vector<experimental_double> &xi)
       {
         xi_ = xi;
       }
 
       //! set yi
-      void CircleRegression::set_yi(std::vector<experimental_double> yi)
+      void CircleRegression::set_yi(std::vector<experimental_double> &yi)
       {
         yi_ = yi;
       }
 
       //! set circle
-      void CircleRegression::set_circle(circle c)
+      void CircleRegression::set_circle(circle &c)
       {
         c_ = c;
       }
@@ -331,7 +331,7 @@ namespace CAT{
       }
 #endif // CAT_WITH_DEVEL_ROOT == 1
 
-      experimental_point CircleRegression::position(experimental_double phi){
+      experimental_point CircleRegression::position(experimental_double &phi){
 
         return c_.position(phi);
       }

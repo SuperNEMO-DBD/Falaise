@@ -142,7 +142,7 @@ namespace CAT {
 
     public:
 
-      void add_triplet(cell_triplet ccc);
+      void add_triplet(const cell_triplet &ccc);
 
       void remove_couplet(size_t index);
 

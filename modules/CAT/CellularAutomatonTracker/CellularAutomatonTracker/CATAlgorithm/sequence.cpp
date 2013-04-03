@@ -1441,7 +1441,7 @@ namespace CAT {
     }
 
 
-      void sequence::get_chi2_change_for_changing_end_of_sequence(topology::experimental_point new_pa, topology::experimental_point new_pb, double *delta_chi_A, double *delta_chi_alpha){
+      void sequence::get_chi2_change_for_changing_end_of_sequence(const topology::experimental_point &new_pa, const topology::experimental_point &new_pb, double *delta_chi_A, double *delta_chi_alpha){
       // sequence: [ ... alpha0 alpha A B ]
       size_t s = nodes_.size();
       if( s < 3 ){

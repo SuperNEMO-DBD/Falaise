@@ -24,7 +24,7 @@ namespace CAT{
     }
 
     //! constructor from coordinates
-    experimental_vector::experimental_vector(experimental_double x, experimental_double y, experimental_double z){
+    experimental_vector::experimental_vector(const experimental_double &x, const experimental_double &y, const experimental_double &z){
       appname_ = "experimental_vector: ";
       x_=x; y_=y; z_=z;
     }
@@ -42,7 +42,7 @@ namespace CAT{
     }
 
     //! constructor from two experimental points
-    experimental_vector::experimental_vector(experimental_point epa, experimental_point epb){
+    experimental_vector::experimental_vector(const experimental_point &epa, const experimental_point &epb){
       appname_ = "experimental_vector: ";
       x_ = epb.x() - epa.x();
       y_ = epb.y() - epa.y();
@@ -50,7 +50,7 @@ namespace CAT{
     }
 
     //! constructor from one experimental point
-    experimental_vector::experimental_vector(experimental_point ep){
+    experimental_vector::experimental_vector(const experimental_point &ep){
       appname_ = "experimental_vector: ";
       experimental_point p0(0.,0.,0.,0.,0.,0.);
       x_ = ep.x() - p0.x();
@@ -83,11 +83,11 @@ namespace CAT{
 
 
     //! set all coordinates
-    void experimental_vector::coordinates(experimental_double x,experimental_double y, experimental_double z){
+    void experimental_vector::coordinates(const experimental_double &x,const experimental_double &y, const experimental_double &z){
       x_=x; y_=y; z_=z;
     }
     //! set all coordinates
-    void experimental_vector::set(experimental_double x,experimental_double y, experimental_double z){
+    void experimental_vector::set(const experimental_double &x, const experimental_double &y, const experimental_double &z){
       coordinates(x,y,z);
     }
 
@@ -103,23 +103,23 @@ namespace CAT{
     }
 
     //! set x
-    void experimental_vector::set_x(experimental_double x){
+    void experimental_vector::set_x(const experimental_double &x){
       x_ = x;
     }
 
     //! set y
-    void experimental_vector::set_y(experimental_double y){
+    void experimental_vector::set_y(const experimental_double &y){
       y_ = y;
     }
 
     //! set z
-    void experimental_vector::set_z(experimental_double z){
+    void experimental_vector::set_z(const experimental_double &z){
       z_ = z;
     }
 
 
     //! set from two points
-    void experimental_vector::set(experimental_point epa, experimental_point epb){
+    void experimental_vector::set(const experimental_point &epa, const experimental_point &epb){
       x_.set( epb.x() - epa.x());
       y_.set( epb.y() - epa.y());
       z_.set( epb.z() - epa.z());
@@ -246,14 +246,14 @@ namespace CAT{
     }
 
     //!get horizontal std::vector
-    experimental_vector experimental_vector::hor() {
+    experimental_vector experimental_vector::hor() const{
       experimental_double newy(0.,0.);
       experimental_vector p1(x_, newy, z_);
       return p1;
     }
 
     //!get unit std::vector
-    experimental_vector experimental_vector::unit() {
+    experimental_vector experimental_vector::unit() const{
       experimental_vector p1(x_, y_, z_);
       p1 /= p1.length().value();
       return p1;
@@ -308,7 +308,7 @@ namespace CAT{
     }
 
 
-    experimental_double experimental_vector::phi(){
+    experimental_double experimental_vector::phi() const{
 
       return experimental_atan2(z_, x_);
 
@@ -323,12 +323,12 @@ namespace CAT{
 
     }
 
-    experimental_double experimental_vector::theta(){
+    experimental_double experimental_vector::theta() const{
       return experimental_atan2(y_, hor().length());
 
     }
 
-    experimental_double experimental_vector::kink_phi(experimental_vector v){
+    experimental_double experimental_vector::kink_phi(const experimental_vector &v){
       experimental_double result;
       experimental_double p1 = phi();
       experimental_double p2 = v.phi();
@@ -344,7 +344,7 @@ namespace CAT{
     }
 
 
-    experimental_double experimental_vector::kink_theta(experimental_vector v){
+    experimental_double experimental_vector::kink_theta(const experimental_vector &v){
       experimental_double result;
       experimental_double t1 = theta();
       experimental_double t2 = v.theta();

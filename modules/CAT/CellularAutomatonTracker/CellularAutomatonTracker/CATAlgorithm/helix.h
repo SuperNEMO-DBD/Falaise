@@ -57,7 +57,7 @@ namespace CAT {
       virtual ~helix(){};
 
       //! constructor
-      helix(experimental_point center, experimental_double radius, experimental_double  pitch, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.){
+      helix(const experimental_point &center, const experimental_double &radius, const experimental_double &pitch, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.){
         set_print_level(level);
         set_nsigma(nsigma);
         appname_= "helix: ";
@@ -67,7 +67,7 @@ namespace CAT {
       }
 
       //! constructor from a circle and a pitch
-      helix(circle c, experimental_double  pitch, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.){
+      helix(const circle &c, const experimental_double  &pitch, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.){
         set_print_level(level);
         set_nsigma(nsigma);
         appname_= "helix: ";
@@ -109,7 +109,7 @@ namespace CAT {
 
 
       //! set
-      void set(experimental_point center, experimental_double radius, experimental_double pitch)
+      void set(const experimental_point &center, const experimental_double &radius, const experimental_double &pitch)
       {
         center_ = center;
         radius_ = radius;
@@ -118,19 +118,19 @@ namespace CAT {
 
 
       //! set center
-      void set_center(experimental_point center)
+      void set_center(const experimental_point &center)
       {
         center_ = center;
       }
 
       //! set radius
-      void set_radius(experimental_double radius)
+      void set_radius(const experimental_double &radius)
       {
         radius_ = radius;
       }
 
       //! set pitch
-      void set_pitch(experimental_double pitch)
+      void set_pitch(const experimental_double &pitch)
       {
         pitch_ = pitch;
       }
@@ -167,12 +167,12 @@ namespace CAT {
       }
 
       // get the phi of a point
-      experimental_double phi_of_point(experimental_point ep)const{
+      experimental_double phi_of_point(const experimental_point &ep)const{
 
 	return phi_of_point(ep,0.);
       }
 
-      experimental_double phi_of_point(experimental_point ep, double phi_ref )const{
+      experimental_double phi_of_point(const experimental_point &ep, double phi_ref )const{
 	// if no ref is given, phi is in [-pi, pi]
 	// if ref is given is in [ref - \pi, ref + \pi]
 	
@@ -191,7 +191,7 @@ namespace CAT {
       }
 
       // get delta-phi of two points
-      experimental_double delta_phi(experimental_point epa, experimental_point epb)const{
+      experimental_double delta_phi(const experimental_point &epa, const experimental_point &epb)const{
 
         experimental_double phi1 = experimental_vector(center_, epa).phi();
         experimental_double phi2 = experimental_vector(center_, epb).phi();
@@ -209,7 +209,7 @@ namespace CAT {
       }
 
       // get the position at parameter phi
-      experimental_point position(experimental_double phi)const{
+      experimental_point position(const experimental_double &phi)const{
 
         experimental_double deltax = experimental_cos(phi)*radius();
         experimental_double deltay = phi*pitch();
@@ -219,21 +219,21 @@ namespace CAT {
       }
 
       // get the position at the theta of point p
-      experimental_point position(experimental_point ep)const{
+      experimental_point position(const experimental_point &ep)const{
 	return position(ep,0.);
 
       }
 
-      experimental_point position(experimental_point ep, double phi_ref )const{
+      experimental_point position(const experimental_point &ep, double phi_ref )const{
         return position(phi_of_point(ep, phi_ref));
       }
 
       // get the chi2 with point p
-      double chi2(experimental_point ep)const{
+      double chi2(const experimental_point &ep)const{
 	return chi2(ep,0.);
       }
 
-      double chi2(experimental_point ep, double phi_ref )const{
+      double chi2(const experimental_point &ep, double phi_ref )const{
         experimental_point predicted = position(phi_of_point(ep, phi_ref));
         experimental_vector residual(ep , predicted);
         double res2 = mybhep::square(residual.x().value()/residual.x().error()) +
@@ -248,7 +248,7 @@ namespace CAT {
       }
 
       // compare with set of points and get total chi2
-      double chi2(std::vector<experimental_point> ps)const{
+      double chi2(std::vector<experimental_point> &ps)const{
 
         double _chi2 = 0.;
 	double phi_ref = 0.;
@@ -268,7 +268,7 @@ namespace CAT {
       }
 
       // compare with set of points and get set of chi2
-      std::vector<double> chi2s(std::vector<experimental_point> ps)const{
+      std::vector<double> chi2s(std::vector<experimental_point> & ps)const{
 
         std::vector<double> _chi2s;
 	double phi_ref = 0.;
@@ -288,7 +288,7 @@ namespace CAT {
       }
 
 
-      bool intersect_plane(plane pl, experimental_point * ep, experimental_double _phi)const{
+      bool intersect_plane(const plane &pl, experimental_point * ep, const experimental_double &_phi)const{
 
         if( pl.view() == "x" || pl.view() == "z" || pl.view() == "inner" || pl.view() == "outer" ){
           bool result = get_circle().intersect_plane(pl, ep, _phi);
@@ -327,7 +327,7 @@ namespace CAT {
 
       }
 
-      bool intersect_circle(circle c, experimental_point * ep, experimental_double _phi)const{
+      bool intersect_circle(const circle &c, experimental_point * ep, const experimental_double &_phi)const{
 
 	bool result = get_circle().intersect_circle(c, ep, _phi);
 	ep->set_y(position(*ep, _phi.value()).y());
@@ -336,7 +336,7 @@ namespace CAT {
 
       }
 
-      bool intersect_circle_with_tangent(circle c, experimental_point start, experimental_vector direction, experimental_point* ep)const{
+      bool intersect_circle_with_tangent(const circle &c, const experimental_point &start, const experimental_vector &direction, experimental_point* ep)const{
 	
 	
 	experimental_vector center_to_start(c.center(),start);
@@ -377,7 +377,7 @@ namespace CAT {
     };
 
     // average
-    inline helix average (const std::vector<helix> vs)
+    inline helix average (const std::vector<helix> &vs)
     {
       helix mean;
 
@@ -395,7 +395,7 @@ namespace CAT {
 
 
     // get helix through three points
-    inline helix three_points_helix(experimental_point epa, experimental_point epb, experimental_point epc){
+    inline helix three_points_helix(const experimental_point &epa, const experimental_point &epb, const experimental_point &epc){
 
       ////////////////////////////////////////////////////////////////////////
       //                                                                    //

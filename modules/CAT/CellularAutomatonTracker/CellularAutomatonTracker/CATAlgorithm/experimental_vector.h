@@ -34,16 +34,16 @@ namespace CAT{
       virtual ~experimental_vector();
 
       //! constructor from coordinates
-      experimental_vector(experimental_double x, experimental_double y, experimental_double z);
+      experimental_vector(const experimental_double &x, const experimental_double &y, const experimental_double &z);
 
       //! constructor from coordinates with error
       experimental_vector(double x, double y, double z, double ex, double ey, double ez);
 
       //! constructor from two experimental points
-      experimental_vector(experimental_point epa, experimental_point epb);
+      experimental_vector(const experimental_point &epa, const experimental_point &epb);
 
       //! constructor from one experimental point
-      experimental_vector(experimental_point ep);
+      experimental_vector(const experimental_point &ep);
 
 
       /*** dump ***/
@@ -53,25 +53,25 @@ namespace CAT{
                          bool a_inherit              = false) const;
 
       //! set all coordinates
-      void coordinates(experimental_double x,experimental_double y, experimental_double z);
+      void coordinates(const experimental_double &x,const experimental_double &y, const experimental_double &z);
 
       //! set all coordinates
-      void set(experimental_double x,experimental_double y, experimental_double z);
+      void set(const experimental_double &x, const experimental_double &y, const experimental_double &z);
 
       //! set std::vector and errors
       void set(double x, double y, double z, double ex,double ey, double ez);
 
       //! set x
-      void set_x(experimental_double x);
+      void set_x(const experimental_double &x);
 
       //! set y
-      void set_y(experimental_double y);
+      void set_y(const experimental_double &y);
 
       //! set z
-      void set_z(experimental_double z);
+      void set_z(const experimental_double &z);
 
       //! set from two points
-      void set(experimental_point epa, experimental_point epb);
+      void set(const experimental_point &epa, const experimental_point &epb);
 
       //! get all coordinates
       const experimental_vector& coordinates()const;
@@ -124,10 +124,10 @@ namespace CAT{
       experimental_vector& operator /= (double a);
 
       //!get horizontal std::vector
-      experimental_vector hor();
+      experimental_vector hor() const;
 
       //!get unit std::vector
-      experimental_vector unit();
+      experimental_vector unit() const;
 
       //! get point from std::vector
       experimental_point point_from_vector();
@@ -141,15 +141,15 @@ namespace CAT{
       //! length squared
       experimental_double length2() const;
 
-      experimental_double phi();
+      experimental_double phi() const;
 
       experimental_double tan_phi();
 
-      experimental_double theta();
+      experimental_double theta() const;
 
-      experimental_double kink_phi(experimental_vector v);
+      experimental_double kink_phi(const experimental_vector &v);
 
-      experimental_double kink_theta(experimental_vector v);
+      experimental_double kink_theta(const experimental_vector &v);
 
 
     };

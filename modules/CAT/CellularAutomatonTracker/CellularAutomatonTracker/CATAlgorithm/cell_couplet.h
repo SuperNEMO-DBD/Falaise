@@ -138,9 +138,9 @@ namespace CAT{
 
       void obtain_tangents();
       void obtain_tangents_between_circle_and_circle();
-      void obtain_tangents_between_point_and_point(experimental_point epa, experimental_point epb);
-      void obtain_tangents_between_circle_and_point(cell c, experimental_point ep);
-      void obtain_tangents_between_point_and_circle(experimental_point ep, cell c);
+      void obtain_tangents_between_point_and_point(experimental_point &epa, experimental_point &epb);
+      void obtain_tangents_between_circle_and_point(const cell &c, experimental_point &ep);
+      void obtain_tangents_between_point_and_circle(experimental_point &ep, const cell &c);
 
     public:
 

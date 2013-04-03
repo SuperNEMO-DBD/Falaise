@@ -32,7 +32,7 @@ namespace CAT {
       virtual ~experimental_double();
 
       //! constructor
-      experimental_double(double v, double e);
+      experimental_double(const double &v, const double &e);
 
       /*** dump ***/
       virtual void dump (std::ostream & a_out         = std::clog,
@@ -41,16 +41,16 @@ namespace CAT {
                          bool a_inherit          = false) const;
 
       //! set value and error
-      void set(experimental_double v);
+      void set(const experimental_double &v);
 
       //! set value and error
-      void set(double val, double err);
+      void set(const double &val, const double &err);
 
       //! set value
-      void set_value(double v);
+      void set_value(const double &v);
 
       //! set error
-      void set_error(double e);
+      void set_error(const double &e);
 
       //! get value
       const double& value() const;

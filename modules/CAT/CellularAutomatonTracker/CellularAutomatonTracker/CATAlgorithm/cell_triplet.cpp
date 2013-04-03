@@ -20,14 +20,14 @@ namespace CAT{
     cell_triplet::~cell_triplet(){};
 
     //! constructor
-    cell_triplet::cell_triplet(cell_couplet cca, cell_couplet ccb){
+    cell_triplet::cell_triplet(cell_couplet &cca, cell_couplet &ccb){
       appname_= "cell_triplet: ";
       free_ = false;
       begun_ = false;
     }
 
     //! constructor
-    cell_triplet::cell_triplet(cell ca, cell cb, cell cc, prlevel level, double nsigma){
+    cell_triplet::cell_triplet(const cell &ca, const cell &cb, const cell &cc, prlevel level, double nsigma){
       set_print_level(level);
       set_nsigma(nsigma);
       appname_= "cell_triplet: ";
@@ -68,7 +68,7 @@ namespace CAT{
     }
     
     //! set cells
-    void cell_triplet::set(cell_couplet cca, cell_couplet ccb){
+    void cell_triplet::set(const cell_couplet &cca, const cell_couplet &ccb){
       cb_ = cca.ca();
       ca_ = cca.cb();
       cc_ = ccb.cb();
@@ -81,7 +81,7 @@ namespace CAT{
     }
 
     //! set cells
-    void cell_triplet::set(cell ca, cell cb, cell cc){
+    void cell_triplet::set(const cell &ca, const cell &cb, const cell &cc){
       ca_ = ca;
       cb_ = cb;
       cc_ = cc;

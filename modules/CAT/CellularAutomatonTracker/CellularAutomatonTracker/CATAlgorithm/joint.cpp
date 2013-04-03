@@ -26,9 +26,9 @@ namespace CAT {
     }
 
     //! constructor
-    joint::joint(experimental_point epa,
-                 experimental_point epb,
-                 experimental_point epc, prlevel level, double nsigma)
+    joint::joint(const experimental_point &epa,
+                 const experimental_point &epb,
+                 const experimental_point &epc, prlevel level, double nsigma)
     {
       set_print_level(level);
       set_nsigma(nsigma);
@@ -72,7 +72,7 @@ namespace CAT {
 
 
     //! set experimental_points
-    void joint::set(experimental_point epa, experimental_point epb, experimental_point epc)
+    void joint::set(const experimental_point &epa, const experimental_point &epb, const experimental_point &epc)
     {
       epa_ = epa;
       epb_ = epb;
@@ -82,31 +82,31 @@ namespace CAT {
 
 
     //! set first experimental_points
-    void joint::set_epa(experimental_point epa)
+    void joint::set_epa(const experimental_point &epa)
     {
       epa_ = epa;
     }
 
     //! set second experimental_points
-    void joint::set_epb(experimental_point epb)
+    void joint::set_epb(const experimental_point &epb)
     {
       epb_ = epb;
     }
 
     //! set third experimental_points
-    void joint::set_epc(experimental_point epc)
+    void joint::set_epc(const experimental_point &epc)
     {
       epc_ = epc;
     }
 
     //! set kink phi
-    void joint::set_kink_phi(experimental_double phi)
+    void joint::set_kink_phi(const experimental_double &phi)
     {
       kink_phi_ = phi;
     }
 
     //! set kink theta
-    void joint::set_kink_theta(experimental_double theta)
+    void joint::set_kink_theta(const experimental_double &theta)
     {
       kink_theta_ = theta;
     }

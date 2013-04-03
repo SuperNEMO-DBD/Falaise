@@ -16,7 +16,7 @@ namespace topology{
 
 
     //! set
-    void LinearRegression::set(std::vector<experimental_double> xi, std::vector<experimental_double> yi)
+    void LinearRegression::set(const std::vector<experimental_double> &xi, const std::vector<experimental_double> &yi)
       {
         xi_ = xi;
         yi_ = yi;
@@ -24,25 +24,25 @@ namespace topology{
 
 
     //! set xi
-    void LinearRegression::set_xi(std::vector<experimental_double> xi)
+    void LinearRegression::set_xi(const std::vector<experimental_double> &xi)
       {
         xi_ = xi;
       }
 
     //! set yi
-    void LinearRegression::set_yi(std::vector<experimental_double> yi)
+    void LinearRegression::set_yi(const std::vector<experimental_double> &yi)
       {
         yi_ = yi;
       }
 
     //! set y0
-    void LinearRegression::set_y0(experimental_double y0)
+    void LinearRegression::set_y0(const experimental_double &y0)
       {
         y0_ = y0;
       }
 
     //! set tangent
-    void LinearRegression::set_tangent(experimental_double tangent)
+    void LinearRegression::set_tangent(const experimental_double &tangent)
       {
         tangent_ = tangent;
       }
@@ -202,7 +202,7 @@ namespace topology{
     }
 #endif // CAT_WITH_DEVEL_ROOT == 1
 
-    experimental_double LinearRegression::position(experimental_double x){
+    experimental_double LinearRegression::position(const experimental_double &x){
 
       return y0() + tangent()*x;
     }

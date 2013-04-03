@@ -310,7 +310,7 @@ void cell_couplet::dump (std::ostream & a_out,
     }
 
 
-    void cell_couplet::obtain_tangents_between_circle_and_point(cell c, experimental_point ep){
+    void cell_couplet::obtain_tangents_between_circle_and_point(const cell &c, experimental_point &ep){
 
       experimental_double cos;
 
@@ -338,7 +338,7 @@ void cell_couplet::dump (std::ostream & a_out,
     }
 
 
-    void cell_couplet::obtain_tangents_between_point_and_circle(experimental_point ep, cell c){
+    void cell_couplet::obtain_tangents_between_point_and_circle(experimental_point &ep, const cell &c){
 
       experimental_double cos = - c.r()/distance_hor();
 
@@ -364,7 +364,7 @@ void cell_couplet::dump (std::ostream & a_out,
     }
 
 
-    void cell_couplet::obtain_tangents_between_point_and_point(experimental_point epa, experimental_point epb){
+    void cell_couplet::obtain_tangents_between_point_and_point(experimental_point &epa, experimental_point &epb){
 
       line l(epa, epb, prlevel(), nsigma());
 

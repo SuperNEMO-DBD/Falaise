@@ -61,14 +61,13 @@ namespace CAT {
 
     virtual ~sequentiator();
 
-    bool initialize( mybhep::sstore store, mybhep::gstore gs, mybhep::EventManager2 *eman=0);
+    bool initialize( const mybhep::sstore & store, const mybhep::gstore &gs, mybhep::EventManager2 *eman=0);
     bool initialize( );
     void initializeHistos( void );
-    bool execute(mybhep::event& evt, int ievent);
     void PrintInitialObjects(void);
     bool finalize();
     void finalizeHistos( void );
-    void readDstProper(mybhep::sstore, mybhep::EventManager2 *eman=0);
+    void readDstProper(const mybhep::sstore &store, mybhep::EventManager2 *eman=0);
     void readDstProper( void );
 
     bool sequentiate(topology::tracked_data & tracked_data);
@@ -495,27 +494,26 @@ namespace CAT {
     void print_a_sequence(const topology::sequence & sequence) const;
     void add_pair(const topology::sequence & sequence);
     bool clean_up_sequences();
-    bool there_is_free_sequence_beginning_with(topology::cell c, size_t *index);
+    bool there_is_free_sequence_beginning_with(const topology::cell &c, size_t *index);
     void print_clocks();
-    int gap_number(topology::cell c);
-    int gap_number(topology::calorimeter_hit c);
-    void make_table_of_true_and_reco_sequences(std::vector<topology::sequence> trueseqs);
-    void rec_efficiency(std::vector<topology::sequence> trueseqs);
-    size_t getCommonHits(topology::sequence tp, topology::sequence dp);
-    void FillGGResiduals(topology::sequence tp, topology::sequence dp);
+    int gap_number(const topology::cell &c);
+    void make_table_of_true_and_reco_sequences(std::vector<topology::sequence> &trueseqs);
+    void rec_efficiency(std::vector<topology::sequence> &trueseqs);
+    size_t getCommonHits(topology::sequence &tp, topology::sequence &dp);
+    void FillGGResiduals(topology::sequence &tp, topology::sequence &dp);
     void make_name(topology::sequence & seq);
-    bool near(topology::cell c, topology::calorimeter_hit ch);
-    double distance_from_foil(topology::experimental_point ep);
+    bool near(const topology::cell &c, topology::calorimeter_hit &ch);
+    double distance_from_foil(const topology::experimental_point &ep);
     bool direct_out_of_foil(void);
     bool direct_scenarios_out_of_foil(void);
     void print_families( void );
     void make_families();
-    bool can_add_family(topology::scenario sc, size_t* jmin, size_t* nfree, double* Chi2, size_t* noverlaps, int32_t* ndof, topology::tracked_data td);
+    bool can_add_family(topology::scenario &sc, size_t* jmin, size_t* nfree, double* Chi2, size_t* noverlaps, int32_t* ndof, topology::tracked_data &td);
     void print_scenarios() const;
     void print_a_scenario(const topology::scenario & scenario) const;
     size_t pick_best_scenario();
     bool can_be_linked(topology::sequence& p, bool inverted);
-    bool can_match(topology::sequence s, size_t* jmin, bool& bestinvertA, bool& bestinvertB);
+    bool can_match(topology::sequence &s, size_t* jmin, bool& bestinvertA, bool& bestinvertB);
     bool select_nemo_tracks(topology::tracked_data & __tracked_data);
 
 

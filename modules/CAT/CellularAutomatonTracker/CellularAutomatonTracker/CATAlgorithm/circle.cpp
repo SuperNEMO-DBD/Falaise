@@ -25,7 +25,7 @@ namespace CAT{
     }
 
     //! constructor
-    circle::circle(experimental_point center, experimental_double radius, prlevel level, double nsigma){
+    circle::circle(const experimental_point &center, const experimental_double &radius, prlevel level, double nsigma){
       set_print_level(level);
       set_nsigma(nsigma);
       appname_= "circle: ";
@@ -67,7 +67,7 @@ namespace CAT{
 
 
     //! set 
-    void circle::set(experimental_point center, experimental_double radius)
+    void circle::set(const experimental_point &center, const experimental_double &radius)
     {
       center_ = center;
       radius_ = radius;
@@ -75,13 +75,13 @@ namespace CAT{
 
 
     //! set center
-    void circle::set_center(experimental_point center)
+    void circle::set_center(const experimental_point &center)
     {
       center_ = center;
     }
 
     //! set radius
-    void circle::set_radius(experimental_double radius)
+    void circle::set_radius(const experimental_double &radius)
     {
       radius_ = radius;
     }
@@ -104,12 +104,12 @@ namespace CAT{
       return 1./radius_;
     }      
 
-    experimental_double circle::phi_of_point(experimental_point ep){
+    experimental_double circle::phi_of_point(const experimental_point &ep) const{
       return phi_of_point(ep,0.);
     }
 
     // get the phi of a point
-    experimental_double circle::phi_of_point(experimental_point ep, double phi_ref ){
+    experimental_double circle::phi_of_point(const experimental_point &ep, double phi_ref ) const{
       // if no ref is given, phi is in [-pi, pi]
       // if ref is given is in [ref - \pi, ref + \pi]
 
@@ -128,7 +128,7 @@ namespace CAT{
     }
 
     // get the position at parameter phi
-    experimental_point circle::position(experimental_double phi){
+    experimental_point circle::position(const experimental_double &phi) const{
       experimental_double deltax = experimental_cos(phi)*radius();
       experimental_double deltaz = experimental_sin(phi)*radius();
 
@@ -136,21 +136,21 @@ namespace CAT{
     }
 
     // get the position at the theta of point p
-    experimental_point circle::position(experimental_point ep){
+    experimental_point circle::position(const experimental_point &ep) const{
       return position(ep, 0.);
     }
 
     // get the position at the theta of point p
-    experimental_point circle::position(experimental_point ep, double phi_ref){
+    experimental_point circle::position(const experimental_point &ep, double phi_ref) const{
       return position(phi_of_point(ep, phi_ref));
     }
 
     // get the chi2 with point p
-    double circle::chi2(experimental_point ep){
+    double circle::chi2(experimental_point &ep){
       return chi2(ep,0.);
     }
     // get the chi2 with point p
-    double circle::chi2(experimental_point ep, double phi_ref){
+    double circle::chi2(experimental_point &ep, double phi_ref){
       experimental_vector residual(ep , position(phi_of_point(ep, phi_ref)));
       experimental_double r2 = residual.length2();
 
@@ -158,7 +158,7 @@ namespace CAT{
     }
 
     // get the chi2 with set of points
-    double circle::chi2(std::vector<experimental_point> ps){
+    double circle::chi2(std::vector<experimental_point> &ps){
 
       double chi2 = 0.;
       experimental_double phi(0.,0.);
@@ -173,7 +173,7 @@ namespace CAT{
 
     }
 
-    void circle::best_fit_pitch(std::vector<experimental_point> ps, experimental_double *_pitch, experimental_double *_center){
+    void circle::best_fit_pitch(std::vector<experimental_point> &ps, experimental_double *_pitch, experimental_double *_center){
 
       if( ps.size() == 0 ){
         std::clog << " problem: asking for best fit pitch for p std::vector of size " << ps.size() << std::endl;
@@ -436,7 +436,7 @@ namespace CAT{
 
 
     // average
-    circle average (const std::vector<circle> vs)
+    circle average (const std::vector<circle> &vs)
     {
       circle mean;
     
@@ -452,7 +452,7 @@ namespace CAT{
 
 
     // get circle through three points
-    circle three_points_circle(experimental_point epa, experimental_point epb, experimental_point epc) {
+    circle three_points_circle(const experimental_point &epa, const experimental_point &epb, const experimental_point &epc) {
     
       ////////////////////////////////////////////////////////////////////////
       //                                                                    //
@@ -496,7 +496,7 @@ namespace CAT{
 
 
     // get circle that best fits coordinates
-    circle best_fit_circle(std::vector<experimental_double> xs, std::vector<experimental_double> zs){
+    circle best_fit_circle(std::vector<experimental_double> &xs, std::vector<experimental_double> &zs){
 
       circle h;
 

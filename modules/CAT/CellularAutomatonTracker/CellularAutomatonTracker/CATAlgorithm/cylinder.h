@@ -49,7 +49,7 @@ namespace CAT{
       virtual ~cylinder(){};
 
       //! constructor
-      cylinder(experimental_point center, experimental_vector axis, experimental_double radius, prlevel level=mybhep::NORMAL, double nsigma=10.){
+      cylinder(experimental_point &center, experimental_vector &axis, experimental_double &radius, prlevel level=mybhep::NORMAL, double nsigma=10.){
         set_print_level(level);
         set_nsigma(nsigma);
         appname_= "cylinder: ";
@@ -86,7 +86,7 @@ namespace CAT{
 
 
       //! set 
-      void set(experimental_point center, experimental_vector axis, experimental_double radius)
+      void set(experimental_point &center, experimental_vector &axis, experimental_double &radius)
       {
         center_ = center;
         axis_ = axis;
@@ -95,19 +95,19 @@ namespace CAT{
 
 
       //! set center
-      void set_center(experimental_point center)
+      void set_center(experimental_point &center)
       {
         center_ = center;
       }
 
       //! set axis
-      void set_axis(experimental_vector axis)
+      void set_axis(experimental_vector &axis)
       {
         axis_ = axis;
       }
 
       //! set radius
-      void set_radius(experimental_double radius)
+      void set_radius(experimental_double &radius)
       {
         radius_ = radius;
       }

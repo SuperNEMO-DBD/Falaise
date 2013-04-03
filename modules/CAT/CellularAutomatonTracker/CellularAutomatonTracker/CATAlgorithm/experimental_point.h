@@ -44,16 +44,16 @@ namespace CAT{
       virtual ~experimental_point();
 
       //! constructor
-      experimental_point(experimental_double x, experimental_double y, experimental_double z);
+      experimental_point(const experimental_double &x, const experimental_double &y, const experimental_double &z);
 
       //! constructor from coordinates with error
       experimental_point(double x, double y, double z, double ex, double ey, double ez);
 
       //! constructor
-      experimental_point(mybhep::point p, double ex, double ey, double ez);
+      experimental_point(const mybhep::point &p, double ex, double ey, double ez);
 
       //! constructor from bhep hit
-      experimental_point(mybhep::hit hit);
+      experimental_point(const mybhep::hit & hit);
 
       /*** dump ***/
       virtual void dump (std::ostream & a_out         = std::clog,
@@ -62,22 +62,22 @@ namespace CAT{
                          bool a_inherit               = false) const;
 
       //! set point and errors
-      void set(mybhep::point p, double ex,double ey, double ez);
+      void set(const mybhep::point &p, double ex,double ey, double ez);
 
       //! set x
-      void set_x(experimental_double x);
+      void set_x(const experimental_double &x);
 
       //! set ex
       void set_ex(double ex);
 
       //! set y
-      void set_y(experimental_double y);
+      void set_y(const experimental_double &y);
 
       //! set ey
       void set_ey(double ey);
 
       //! set z
-      void set_z(experimental_double z);
+      void set_z(const experimental_double &z);
 
       //! set ez
         void set_ez(double ez);
@@ -105,7 +105,7 @@ namespace CAT{
 
 
     // average
-    experimental_point average (const std::vector<experimental_point> vs);
+    experimental_point average (const std::vector<experimental_point> &vs);
 
   }
 }

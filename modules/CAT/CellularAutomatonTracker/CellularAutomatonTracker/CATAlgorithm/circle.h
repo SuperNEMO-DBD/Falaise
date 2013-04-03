@@ -44,7 +44,7 @@ namespace CAT{
       virtual ~circle();
 
       //! constructor
-      circle(experimental_point center, experimental_double radius, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
+      circle(const experimental_point &center, const experimental_double &radius, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
 
       /*** dump ***/
       virtual void dump (std::ostream & a_out         = std::clog,
@@ -54,14 +54,14 @@ namespace CAT{
 
 
       //! set
-      void set(experimental_point center, experimental_double radius);
+      void set(const experimental_point &center, const experimental_double &radius);
 
 
       //! set center
-      void set_center(experimental_point center);
+      void set_center(const experimental_point &center);
 
       //! set radius
-      void set_radius(experimental_double radius);
+      void set_radius(const experimental_double &radius);
 
       //! get center
       const experimental_point& center()const;
@@ -73,24 +73,24 @@ namespace CAT{
       experimental_double curvature()const;
 
       // get the phi of a point
-      experimental_double phi_of_point(experimental_point ep);
-      experimental_double phi_of_point(experimental_point ep, double phi_ref);
+      experimental_double phi_of_point(const experimental_point &ep) const;
+      experimental_double phi_of_point(const experimental_point &ep, double phi_ref) const;
 
       // get the position at parameter phi
-        experimental_point position(experimental_double phi);
+        experimental_point position(const experimental_double &phi) const;
 
       // get the position at the theta of point p
-      experimental_point position(experimental_point ep);
-      experimental_point position(experimental_point ep, double phi_ref );
+      experimental_point position(const experimental_point &ep) const;
+      experimental_point position(const experimental_point &ep, double phi_ref ) const;
 
       // get the chi2 with point p
-      double chi2(experimental_point ep);
-      double chi2(experimental_point ep, double phi_ref );
+      double chi2(experimental_point &ep);
+      double chi2(experimental_point &ep, double phi_ref );
 
       // get the chi2 with set of points
-      double chi2(std::vector<experimental_point> ps);
+      double chi2(std::vector<experimental_point> &ps);
 
-      void best_fit_pitch(std::vector<experimental_point> ps, experimental_double *_pitch, experimental_double *_center);
+      void best_fit_pitch(std::vector<experimental_point> &ps, experimental_double *_pitch, experimental_double *_center);
 
       bool intersect_plane(plane pl, experimental_point * ep, experimental_double _phi);
 
@@ -100,13 +100,13 @@ namespace CAT{
     };
 
     // average
-    circle average (const std::vector<circle> vs);
+    circle average (const std::vector<circle> &vs);
 
     // get circle through three points
-    circle three_points_circle(experimental_point epa, experimental_point epb, experimental_point epc);
+    circle three_points_circle(const experimental_point &epa, const experimental_point &epb, const experimental_point &epc);
 
     // get circle that best fits coordinates
-    circle best_fit_circle(std::vector<experimental_double> xs, std::vector<experimental_double> zs);
+    circle best_fit_circle(std::vector<experimental_double> &xs, std::vector<experimental_double> &zs);
 
   }
 }

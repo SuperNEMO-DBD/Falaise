@@ -138,7 +138,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  bool sequentiator::initialize( mybhep::sstore store, mybhep::gstore gs , mybhep::EventManager2 *eman) {
+  bool sequentiator::initialize( const mybhep::sstore & store, const mybhep::gstore &gs , mybhep::EventManager2 *eman) {
     //*************************************************************
 
     m.message("\n Beginning algorithm sequentiator \n",mybhep::VERBOSE); fflush(stdout);
@@ -323,7 +323,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  void sequentiator::readDstProper(mybhep::sstore global, mybhep::EventManager2 *eman) {
+  void sequentiator::readDstProper(const mybhep::sstore & global, mybhep::EventManager2 *eman) {
     //*************************************************************
 
     clock.start(" sequentiator: read dst properties ");
@@ -1587,7 +1587,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  bool sequentiator::can_add_family(topology::scenario sc, size_t* jmin, size_t* nfree, double* Chi2, size_t* noverlaps, int* ndof, topology::tracked_data td) {
+  bool sequentiator::can_add_family(topology::scenario &sc, size_t* jmin, size_t* nfree, double* Chi2, size_t* noverlaps, int* ndof, topology::tracked_data &td) {
     //*************************************************************
 
     if( late() )
@@ -2244,7 +2244,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  double sequentiator::distance_from_foil(topology::experimental_point ep){
+  double sequentiator::distance_from_foil(const topology::experimental_point &ep){
     //*************************************************************
 
     if( SuperNemo )
@@ -2320,7 +2320,7 @@ namespace CAT {
 
 
   //*************************************************************
-  bool sequentiator::there_is_free_sequence_beginning_with(topology::cell c, size_t *index) {
+  bool sequentiator::there_is_free_sequence_beginning_with(const topology::cell &c, size_t *index) {
     //*************************************************************
 
     clock.start(" sequentiator: there is free sequence beginning with ", "cumulative");
@@ -2342,13 +2342,15 @@ namespace CAT {
   }
 
   //*************************************************************
-  bool sequentiator::near(topology::cell c, topology::calorimeter_hit ch){
+  bool sequentiator::near(const topology::cell &c, topology::calorimeter_hit &ch){
     //*************************************************************
 
     topology::plane pl = ch.pl();
     double chlayer = ch.layer();
 
     if( pl.view() == "x" ){
+
+      
 
       m.message(" matching cell ", c.id(), " with cell number ", c.cell_number(), " to calo on view ", pl.view(), " max cell number ", cell_max_number, " plane norm x ", pl.norm().x().value(), mybhep::VVERBOSE);
 
@@ -2419,7 +2421,7 @@ namespace CAT {
 
 
   //*************************************************************
-  int sequentiator::gap_number(topology::cell c){
+  int sequentiator::gap_number(const topology::cell &c){
     //*************************************************************
 
     // returns the index of the gap on which the hit is facing: 1, 2, 3
@@ -2450,7 +2452,7 @@ namespace CAT {
 
 
   //*******************************************************************
-  void sequentiator::make_table_of_true_and_reco_sequences(std::vector<topology::sequence> trueseqs){
+  void sequentiator::make_table_of_true_and_reco_sequences(std::vector<topology::sequence> &trueseqs){
     //*******************************************************************
 
     if( sequences_.empty() ) return;
@@ -2545,7 +2547,7 @@ namespace CAT {
   }
 
   //*******************************************************************
-  void sequentiator::rec_efficiency(std::vector<topology::sequence> trueseqs){
+  void sequentiator::rec_efficiency(std::vector<topology::sequence> &trueseqs){
     //*******************************************************************
 
     if( sequences_.size() == 0 ) return;
@@ -2602,7 +2604,7 @@ namespace CAT {
 
 
   //*******************************************************************
-  size_t sequentiator::getCommonHits(topology::sequence tp, topology::sequence dp){
+  size_t sequentiator::getCommonHits(topology::sequence &tp, topology::sequence &dp){
     //*******************************************************************
 
     size_t counter = 0;
@@ -2623,7 +2625,7 @@ namespace CAT {
   }
 
   //*******************************************************************
-  void sequentiator::FillGGResiduals(topology::sequence tp, topology::sequence dp){
+  void sequentiator::FillGGResiduals(topology::sequence &tp, topology::sequence &dp){
     //*******************************************************************
 
     /*
@@ -3037,7 +3039,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  bool sequentiator::can_match(topology::sequence s, size_t* jmin, bool& bestinvertA, bool& bestinvertB) {
+  bool sequentiator::can_match(topology::sequence &s, size_t* jmin, bool& bestinvertA, bool& bestinvertB) {
     //*************************************************************
 
     if( late() )

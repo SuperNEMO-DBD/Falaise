@@ -205,7 +205,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  bool clusterizer::initialize(const mybhep::sstore &store, mybhep::gstore gs , mybhep::EventManager2 *eman) {
+  bool clusterizer::initialize(const mybhep::sstore &store, const mybhep::gstore gs , mybhep::EventManager2 *eman) {
     //*************************************************************
 
     m.message("\n Beginning algorithm clusterizer \n",mybhep::VERBOSE);

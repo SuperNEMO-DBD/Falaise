@@ -36,9 +36,9 @@ namespace CAT {
     }
 
     //! constructor
-    plane::plane(experimental_point center,
-                 experimental_vector sizes,
-                 experimental_vector norm,
+    plane::plane(const experimental_point &center,
+                 const experimental_vector &sizes,
+                 const experimental_vector &norm,
                  prlevel level, double nsigma)
     {
       set_print_level(level);

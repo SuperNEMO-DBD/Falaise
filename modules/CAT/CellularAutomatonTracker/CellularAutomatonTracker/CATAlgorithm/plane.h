@@ -50,7 +50,7 @@ namespace CAT {
       virtual ~plane();
 
       //! constructor
-      plane(experimental_point center, experimental_vector sizes, experimental_vector norm, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
+      plane(const experimental_point &center, const experimental_vector &sizes, const experimental_vector &norm, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
 
       /*** dump ***/
       virtual void dump (std::ostream & a_out         = std::clog,

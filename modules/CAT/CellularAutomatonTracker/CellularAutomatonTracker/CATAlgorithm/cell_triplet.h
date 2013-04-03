@@ -72,10 +72,10 @@ namespace CAT{
       virtual ~cell_triplet();
 
       //! constructor
-      cell_triplet(cell_couplet cca, cell_couplet ccb);
+      cell_triplet(cell_couplet &cca, cell_couplet &ccb);
 
       //! constructor
-      cell_triplet(cell ca, cell cb, cell cc, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
+      cell_triplet(const cell &ca, const cell &cb, const cell &cc, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
 
       /*** dump ***/
       virtual void dump (std::ostream & a_out         = std::clog,
@@ -85,10 +85,10 @@ namespace CAT{
 
 
       //! set cells
-      void set(cell_couplet cca, cell_couplet ccb);
+      void set(const cell_couplet &cca, const cell_couplet &ccb);
 
       //! set cells
-      void set(cell ca, cell cb, cell cc);
+      void set(const cell &ca, const cell &cb, const cell &cc);
 
       //! set free level
         void set_free(bool free);

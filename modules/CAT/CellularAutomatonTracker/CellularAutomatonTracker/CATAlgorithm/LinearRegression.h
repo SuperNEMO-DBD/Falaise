@@ -47,7 +47,7 @@ namespace topology{
     }
 
     //! constructor
-    LinearRegression(std::vector<experimental_double> xi, std::vector<experimental_double> yi, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.){
+    LinearRegression(std::vector<experimental_double> &xi, std::vector<experimental_double> &yi, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.){
       set_print_level(level);
       set_nsigma(nsigma);
       appname_= "LinearRegression: ";
@@ -84,20 +84,20 @@ namespace topology{
 
 
     //! set
-    void set(std::vector<experimental_double> xi, std::vector<experimental_double> yi);
+    void set(const std::vector<experimental_double> &xi, const std::vector<experimental_double> &yi);
 
 
     //! set xi
-    void set_xi(std::vector<experimental_double> xi);
+    void set_xi(const std::vector<experimental_double> &xi);
 
     //! set yi
-    void set_yi(std::vector<experimental_double> yi);
+    void set_yi(const std::vector<experimental_double> &yi);
 
     //! set y0
-    void set_y0(experimental_double y0);
+    void set_y0(const experimental_double &y0);
 
     //! set tangent
-    void set_tangent(experimental_double tangent);
+    void set_tangent(const experimental_double &tangent);
 
     //! get xi
     const std::vector<experimental_double>& xi()const;
@@ -117,7 +117,7 @@ namespace topology{
     bool root_fit(void);
 #endif // CAT_WITH_DEVEL_ROOT == 1
 
-    experimental_double position(experimental_double x);
+    experimental_double position(const experimental_double &x);
 
     void invert();
 

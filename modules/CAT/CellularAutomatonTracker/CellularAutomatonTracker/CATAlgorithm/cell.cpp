@@ -17,7 +17,7 @@ namespace topology{
 
 
 
-  experimental_point cell::build_from_cell(experimental_vector forward, experimental_vector transverse, experimental_double cos, int sign, bool replace_r, double maxr ){
+  experimental_point cell::build_from_cell(experimental_vector forward, experimental_vector transverse, experimental_double cos, int sign, bool replace_r, double maxr ) const{
 
     experimental_double sin = experimental_sin(experimental_acos(cos))*sign;
 

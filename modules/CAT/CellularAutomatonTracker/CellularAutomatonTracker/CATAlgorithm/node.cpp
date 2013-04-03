@@ -283,7 +283,7 @@ namespace CAT {
         }
       }
 
-    void node::add_triplet(cell_triplet ccc){
+    void node::add_triplet(const cell_triplet &ccc){
       ccc_.push_back(ccc);
       ccc_ca_index_[ccc.ca().id()] = ccc_.size() - 1;
       ccc_cc_index_[ccc.cc().id()] = ccc_.size() - 1;

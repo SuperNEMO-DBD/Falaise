@@ -42,7 +42,7 @@ namespace CAT {
     
 
     //! constructor
-    experimental_double::experimental_double(double v, double e)
+    experimental_double::experimental_double(const double &v, const double &e)
     {
       v_ = v;
       e_ = e;
@@ -60,24 +60,24 @@ namespace CAT {
     }
 
     //! set value and error
-    void experimental_double::set(experimental_double v){
+    void experimental_double::set(const experimental_double &v){
       v_ = v.value();
       e_ = v.error();
     }
 
     //! set value and error
-    void experimental_double::set(double val, double err){
+    void experimental_double::set(const double &val, const double &err){
       v_ = val;
       e_ = err;
     }
 
     //! set value
-    void experimental_double::set_value(double v){
+    void experimental_double::set_value(const double &v){
       v_ = v;
     }
 
     //! set error
-    void experimental_double::set_error(double e){
+    void experimental_double::set_error(const double &e){
       e_ = e;
     }
 
