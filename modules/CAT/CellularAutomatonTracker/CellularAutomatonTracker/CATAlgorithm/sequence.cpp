@@ -1761,6 +1761,7 @@ namespace CAT {
 
       experimental_double mom = experimental_sqrt(experimental_square(radius()) + experimental_square(pitch()))*0.3*bfield;
 
+
       momentum_=mom*initial_dir();
 
       if( !isnan(momentum_.x().value()) &&
@@ -1769,6 +1770,10 @@ namespace CAT {
         has_momentum_ = true;
       }
 
+      if( print_level() >= mybhep::VVERBOSE ){
+	std::clog << " sequence radius " << radius().value() << " pitch " << pitch().value() << " bfield " << bfield
+		  << " mom " << mom.value() << " dir (" << initial_dir().x().value() << ", " <<  initial_dir().y().value() << ", " << initial_dir().z().value() << ")" << std::endl;
+      }
 
     }
 

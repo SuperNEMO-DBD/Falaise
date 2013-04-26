@@ -2,7 +2,7 @@
 #ifndef __CATAlgorithm___pattern_rec2___
 #define __CATAlgorithm___pattern_rec2___
 
-#include <CATAlgorithm/CAT_config.h>
+//#include <CATAlgorithm/CAT_config.h>
 
 #include <stdexcept>
 #include <mybhep/gstore.h>

@@ -601,6 +601,7 @@ namespace CAT {
     else
       {
         m.message("CAT::sequentiator::readDstProper: Nemo-3 kind of data",mybhep::NORMAL);
+        bfield = 0.0025;
         if (num_blocks <= 0)
           {
             // Default :

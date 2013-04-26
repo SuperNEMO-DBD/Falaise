@@ -1606,7 +1606,7 @@ void EventDisplay::execute(mybhep::event& evt, size_t ievent, topology::tracked_
       for(size_t j=0; j<nnodes; j++)
 	{
 	  size_t cid = s.nodes()[j].c().id();
-	  std::string title="cell "+mybhep::to_string(cid)+" chi2 "+mybhep::to_string_precision(helix_chi2s[j],"2");
+	  std::string title=(std::string)("cell "+mybhep::to_string(cid)+" chi2 "+mybhep::to_string_precision(helix_chi2s[j],"2"));
 	  pave_chi2.AddText(title.c_str());
 
 	}
@@ -1729,7 +1729,7 @@ void EventDisplay::execute(size_t ievent, topology::tracked_data & __tracked_dat
       for(size_t j=0; j<nnodes; j++)
 	{
 	  size_t cid = s.nodes()[j].c().id();
-	  std::string title="cell "+mybhep::to_string(cid)+" chi2 "+mybhep::to_string_precision(helix_chi2s[j],"2");
+	  std::string title=(std::string)("cell "+mybhep::to_string(cid)+" chi2 "+mybhep::to_string_precision(helix_chi2s[j],"2"));
 	  pave_chi2.AddText(title.c_str());
 	}
     }

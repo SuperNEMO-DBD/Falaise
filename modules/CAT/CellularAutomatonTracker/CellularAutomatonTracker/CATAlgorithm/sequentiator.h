@@ -2,7 +2,7 @@
 #ifndef __CATAlgorithm___sequentiator___
 #define __CATAlgorithm___sequentiator___
 
-#include <CATAlgorithm/CAT_config.h>
+//#include <CATAlgorithm/CAT_config.h>
 
 #include <mybhep/gstore.h>
 #include <mybhep/messenger.h>

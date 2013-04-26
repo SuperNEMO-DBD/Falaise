@@ -228,6 +228,15 @@ namespace CAT {
         return position(phi_of_point(ep, phi_ref));
       }
 
+      experimental_point position(const experimental_point &ep, double phi_ref , double y_ref)const{
+        experimental_point pos = position(ep, phi_ref);
+
+	double one_turn=pitch().value()*2.*M_PI;
+	int n_extra_turns = (int)((pos.y().value() - y_ref)/one_turn);
+	pos.set_y(experimental_double(pos.y().value() - n_extra_turns*one_turn, pos.y().error()));
+	return pos;
+      }
+
       // get the chi2 with point p
       double chi2(const experimental_point &ep)const{
 	return chi2(ep,0.);
@@ -356,9 +365,12 @@ namespace CAT {
 
 	//	*ep = c.position(phi0 + angle_at_center);
 	*ep = c.position(phi0 + sign*alpha);
-	ep->set_y(position(*ep, phi0.value()).y());
+	ep->set_y(position(*ep, phi0.value(),start.y().value()).y());
 
-	
+	if( print_level() >= mybhep::VVERBOSE ){
+	  std::clog << " center (" << c.center().x().value() << ", " << c.center().y().value() << ", " << c.center().z().value() << ") start (" << start.x().value() << ", " << start.y().value() << ", " << start.z().value() << ") cts (" << center_to_start.x().value() << ", " << center_to_start.y().value() << ", " << center_to_start.z().value() << ") beta " << beta.value()*180./acos(-1.) << " phi0 " << phi0.value()*180./acos(-1.) << " alpha " << alpha.value()*180./acos(-1.) << " sign " << sign.value() << " newangle " << (phi0+sign*alpha).value()*180./acos(-1.) << " pos: (" << ep->x().value() << ", " << ep->y().value() << ", " << ep->z().value() << ") " << std::endl;
+	}
+
 	return true;
       }
 

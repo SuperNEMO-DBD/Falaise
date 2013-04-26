@@ -302,20 +302,22 @@ namespace CAT{
         }
         else if( pl.view() == "inner" || pl.view() == "outer" ){
 
-          double signx = 1.;
-          if( cos(_phi.value()) < 0. ) // phi in (90, 270), end-point below center
-            signx = -1.;
-          double signz = 1.;
-          if( sin(_phi.value()) < 0. ) // phi in (180,360), end-point to left of center
-            signz = -1.;
-
-
 	  // point on the face plane in front of circle's center
 	  experimental_point foot = (center() - ntp).point_from_vector();
 
 	  experimental_double transverse_dist = experimental_sqrt(experimental_square(radius()) -
 								  ntp.length2());
 	  experimental_double angle=the_norm.phi();
+
+	  experimental_point end_of_circle=position(_phi);
+
+          double signx = 1.;
+          if( foot.x().value() > end_of_circle.x().value() ) // foot is above end-point
+            signx = -1.;
+          double signz = 1.;
+          if( foot.z().value() > end_of_circle.z().value() ) // foot is to the right of end-point
+            signz = -1.;
+
 
 	  if( print_level() >= mybhep::VVERBOSE ){
 	    std::clog << " normal to plane (" << the_norm.x().value() << ", " << the_norm.y().value() << ", " << the_norm.z().value() << ") normal vector from face of plane to parallel plane through center of circle ( " << ntp.x().value() << ", " << ntp.y().value() << ", " << ntp.z().value() << ") diff " << diff << " foot on face of plane in front of circle center: ( " << foot.x().value() << ", " << foot.y().value() << ", " << foot.z().value() <<
