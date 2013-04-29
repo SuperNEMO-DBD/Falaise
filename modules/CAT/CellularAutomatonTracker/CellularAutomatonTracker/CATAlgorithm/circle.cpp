@@ -412,11 +412,15 @@ namespace CAT{
 
       // find two intersection point
       experimental_point p1=(middle + transverse_axis*h).point_from_vector();
+      double initial_phi1 = _phi.value();
+      double initial_phi2 = _phi.value();
       double phi1 = phi_of_point(p1).value();
-      double dphi1 = fabs(phi1 - _phi.value());
+      fix_angles(&phi1, &initial_phi1);
+      double dphi1 = fabs(phi1 - initial_phi1);
       experimental_point p2=(middle - transverse_axis*h).point_from_vector();
       double phi2 = phi_of_point(p2, phi1).value();
-      double dphi2 = fabs(phi2 - _phi.value());
+      fix_angles(&phi2, &initial_phi2);
+      double dphi2 = fabs(phi2 - initial_phi2);
 
       // pick closest to initial point of extrapolation
       if( dphi1 < dphi2 )
@@ -432,9 +436,9 @@ namespace CAT{
       if( print_level() >= mybhep::VVERBOSE ){
 	clog << " track: "; dump(); 
 	clog << " foil : "; c.dump();
-	clog << " intersection 1: "; p1.dump();		      
-	clog << " intersection 2: "; p2.dump();		      
-	clog << " dist "; dist.dump(); std::clog << " rsum "; rsum.dump(); std::clog << " a "; a.dump(); std::clog << " h "; h.dump(); std::clog << " middle "; middle.dump();
+	clog << " intersection 1: "; p1.dump();	clog << " phi1 " << phi1 << " initial phi " << initial_phi1 << " dphi1 " << dphi1 << endl;
+	clog << " intersection 2: "; p2.dump();	clog << " phi2 " << phi2 << " initial phi " << initial_phi2 << " dphi2 " << dphi2 << endl;
+	clog << " dist "; dist.dump(); std::clog << " rsum "; rsum.dump(); std::clog << " a "; a.dump(); std::clog << " h "; h.dump(); std::clog << " middle "; middle.dump(); clog << " chosing intersection: "; ep->dump();
       }
 
       return true;
