@@ -1393,8 +1393,8 @@ namespace CAT {
       }
 
 
-      topology::line l1(pa, pb);
-      topology::line l2(pb, j->epc());
+      topology::line l1(pa, pb, print_level(), nsigma());
+      topology::line l2(pb, j->epc(), print_level(), nsigma());
 
       double chi2_kink = l1.chi2(l2, use_theta_kink);
 
@@ -1456,8 +1456,8 @@ namespace CAT {
       topology::experimental_point pa = second_last_node().ep();
       topology::experimental_point pb = last_node().ep();
 
-      topology::line l_alpha_A(palpha, pa);
-      topology::line l_A_B(pa, pb);
+      topology::line l_alpha_A(palpha, pa, print_level(), nsigma());
+      topology::line l_A_B(pa, pb, print_level(), nsigma());
       bool use_theta_kink_alpha_A_B = !(nodes_[s-3].c().unknown_vertical() || nodes_[s-2].c().unknown_vertical() || nodes_[s-1].c().unknown_vertical() );
 
       double old_chi2 = l_alpha_A.chi2(l_A_B, use_theta_kink_alpha_A_B);
@@ -1471,8 +1471,8 @@ namespace CAT {
 	old_chi2 = old_chi2_check;
       }
 
-      topology::line new_l_alpha_A(palpha, new_pa);
-      topology::line new_l_A_B(new_pa, new_pb);
+      topology::line new_l_alpha_A(palpha, new_pa, print_level(), nsigma());
+      topology::line new_l_A_B(new_pa, new_pb, print_level(), nsigma());
 
       double new_chi2 = new_l_alpha_A.chi2(new_l_A_B, use_theta_kink_alpha_A_B);
       *delta_chi_A = new_chi2 - old_chi2;
@@ -1486,7 +1486,7 @@ namespace CAT {
       if( s >= 4 ){
 	bool use_theta_kink_alpha0_alpha_A = !(nodes_[s-4].c().unknown_vertical() || nodes_[s-3].c().unknown_vertical() || nodes_[s-2].c().unknown_vertical() );
 	topology::experimental_point palpha0 = nodes_[s-4].ep();
-	topology::line l_alpha0_alpha(palpha0, palpha);
+	topology::line l_alpha0_alpha(palpha0, palpha, print_level(), nsigma());
 	old_chi2 = l_alpha0_alpha.chi2(l_alpha_A, use_theta_kink_alpha0_alpha_A);
 	old_chi2_check = nodes_[s-3].chi2();
 	if( old_chi2 > old_chi2_check ){

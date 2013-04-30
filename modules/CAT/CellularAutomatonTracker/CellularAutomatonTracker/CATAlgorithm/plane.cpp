@@ -244,13 +244,22 @@ namespace CAT {
 	experimental_double dist_transv = pv.hor().length(); // transverse distance
 	experimental_double dist_vert = pv.y(); // vertical distance
 
+	if( print_level() >= mybhep::VVERBOSE ){
+	  std::clog << " check intersection plane/point: face (" << face().x().value() << ", " << face().y().value() << ", " << face().z().value() << ") point ( "
+		    << ep.x().value() << ", " << ep.y().value() << ", " << ep.z().value() << ") dist_norm " << dist_norm.value() << " +- " << dist_norm.error()
+		    << " dist_transv " << dist_transv.value() << " +- " << dist_transv.error() << " dist_vert " << dist_vert.value() << " +- " << dist_vert.error() 
+		    << std::endl;
+	}
+
         if( fabs(dist_norm.value()) > fabs( dist_norm.error()))
           return false;
 
-	if( fabs(dist_transv.value()) > sizes().z().value()/2. + dist_transv.error())
+	//if( fabs(dist_transv.value()) > sizes().z().value()/2. + dist_transv.error())
+	if( fabs(dist_transv.value()) > sizes().z().value()/2.)
           return false;
 
-	if( fabs(dist_vert.value()) > sizes().y().value()/2. + dist_vert.error())
+	//if( fabs(dist_vert.value()) > sizes().y().value()/2. + dist_vert.error())
+	if( fabs(dist_vert.value()) > sizes().y().value()/2.)
           return false;
 
 	return true;
