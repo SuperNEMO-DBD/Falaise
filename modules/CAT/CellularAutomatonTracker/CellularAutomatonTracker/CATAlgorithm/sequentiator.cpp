@@ -629,7 +629,7 @@ namespace CAT {
     if( event_number < first_event_number ){
       m.message(" local_tracking: skip event", event_number, " first event is "
 		, first_event_number,  mybhep::VERBOSE);
-      return false;
+      return true;
     }
 
     clock.start(" sequentiator: sequentiate ","cumulative");
@@ -643,7 +643,6 @@ namespace CAT {
     NFAMILY = -1;
     NCOPY = 0;
 
-    // if (clusters_.empty ()) return true;
     if (the_clusters.empty ()) return true;
 
     sequences_.clear();
