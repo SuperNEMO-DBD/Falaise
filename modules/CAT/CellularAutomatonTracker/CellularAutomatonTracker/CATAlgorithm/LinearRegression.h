@@ -35,7 +35,7 @@ namespace topology{
     virtual ~LinearRegression(){};
 
     //!Default constructor
-    LinearRegression(mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.)
+    LinearRegression(mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200)
     {
       appname_= "LinearRegression: ";
       y0_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
@@ -43,13 +43,13 @@ namespace topology{
       xi_.clear();
       yi_.clear();
       set_print_level(level);
-      set_nsigma(nsigma);
+      set_probmin(probmin);
     }
 
     //! constructor
-    LinearRegression(std::vector<experimental_double> &xi, std::vector<experimental_double> &yi, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.){
+    LinearRegression(std::vector<experimental_double> &xi, std::vector<experimental_double> &yi, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200){
       set_print_level(level);
-      set_nsigma(nsigma);
+      set_probmin(probmin);
       appname_= "LinearRegression: ";
       xi_ = xi;
       yi_ = yi;

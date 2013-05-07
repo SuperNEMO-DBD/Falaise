@@ -12,41 +12,16 @@ namespace CAT{
     using namespace std;  
     using namespace mybhep;
         
-    void tracking_object::set_nsigma( double nsigma )
+    void tracking_object::set_probmin( double probmin )
     {
-      nsigma_ = nsigma;
+      probmin_ = probmin;
     }
     
-    double tracking_object::nsigma() const
+    double tracking_object::probmin() const
     {
-      return nsigma_;
+      return probmin_;
     }
     
-    double tracking_object::prob() const
-    {
-      
-      return 0.;
-      
-      size_t n = (size_t)(nsigma_ + 0.5);
-
-      if( n == 1 )
-        return 0.682689;
-      if( n == 2 )
-        return 0.954450;
-      if( n == 3 )
-        return 0.997302;
-      if( n == 4 )
-        return 0.99993666;
-      if( n == 5 )
-        return 0.99999943;
-      if( n == 6 )
-        return 0.999999998;
-      if( n == 7 )
-        return 0.999999999997;
-
-      return 1.;
-
-    }
 
     double tracking_object::probof(double chi2, int ndof) const
     {
@@ -57,9 +32,9 @@ namespace CAT{
       return p;
     }
 
-    double tracking_object::get_nsigma()const
+    double tracking_object::get_probmin()const
     {
-      return nsigma_;
+      return probmin_;
     }
 
     /*

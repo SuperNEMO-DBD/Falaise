@@ -42,7 +42,7 @@ namespace CAT {
     Ratio = std::numeric_limits<double>::quiet_NaN ();
     CompatibilityDistance = std::numeric_limits<double>::quiet_NaN ();
     MaxChi2 = std::numeric_limits<double>::quiet_NaN ();
-    nsigma = std::numeric_limits<double>::quiet_NaN ();
+    probmin = std::numeric_limits<double>::quiet_NaN ();
     NOffLayers = 0;
     first_event_number = 0;
     PrintMode = false;
@@ -110,10 +110,10 @@ namespace CAT {
     else
       hfile="CatsHistogram.root";
 
-    if (st.find_dstore("nsigma"))
-      nsigma=st.fetch_dstore("nsigma");
+    if (st.find_dstore("probmin"))
+      probmin=st.fetch_dstore("probmin");
     else
-      nsigma=10.;
+      probmin=1.e-200;
 
     /*
       if( PrintMode )
@@ -844,7 +844,7 @@ namespace CAT {
 
     //  A node is added to the newsequence. It has the given cell but no other
     //  requirement. The free level is set to true.
-    topology::sequence newsequence(first_node, level, nsigma);
+    topology::sequence newsequence(first_node, level, probmin);
 
     if (level >= mybhep::VERBOSE)
       {
@@ -1689,7 +1689,7 @@ namespace CAT {
     topology::experimental_vector sizes(xsize, ysize, 0.,
                                         0., 0., 0.);
 
-    topology::plane pl(center, sizes, norm, level, nsigma);
+    topology::plane pl(center, sizes, norm, level, probmin);
 
     std::string the_type="Nemo3";
     if( SuperNemo )
@@ -1716,7 +1716,7 @@ namespace CAT {
 
     topology::experimental_double radius(FoilRadius, 0.);
 
-    topology::circle c(center, radius, level, nsigma);
+    topology::circle c(center, radius, level, probmin);
 
     return c;
 
@@ -1742,16 +1742,28 @@ namespace CAT {
     topology::experimental_point tangent_extrapolation, tangent_extrapolation_local;
     bool tangent_found = false;
     double dist;
-    for(std::vector<topology::sequence>::iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq)
+    std::vector<topology::sequence>::iterator iseq = sequences_.begin();
+    while( iseq != sequences_.end() )
       {
 	m.message(" ... interpreting physics of sequence ", iseq->name(), mybhep::VVERBOSE); fflush(stdout);
 
-        if( iseq->nodes().size() <= 2 ) continue;
+        if( iseq->nodes().size() <= 2 ){
+	  ++iseq;
+	  continue;
+	}
 
         if( level >= mybhep::VVERBOSE)
 	  print_a_sequence(*iseq);
 
-        iseq->calculate_helix();
+        if( !iseq->calculate_helix() ){
+	  size_t index = iseq - sequences_.begin();
+          m.message(" erased sequence ", index, "not a good helix", mybhep::VERBOSE); fflush(stdout);
+          sequences_.erase(iseq);
+          ++ iseq;
+	  if( index + 1 >= sequences_.size() )
+	    break;
+          continue;
+	}
         iseq->calculate_charge();
         iseq->calculate_momentum(bfield);
 
@@ -1924,7 +1936,8 @@ namespace CAT {
 	  }
 
         }
-
+	++iseq;
+	continue;
 
       }
 
@@ -2107,7 +2120,7 @@ namespace CAT {
 
     bool erased = true;
 
-    topology::sequence pair(nodes, level, nsigma);
+    topology::sequence pair(nodes, level, probmin);
     for(std::vector<topology::line>::iterator itangent=cc.tangents_.begin(); itangent != cc.tangents_.end(); ++itangent){
 
       pair.nodes_[0].set_ep(itangent->epa());
@@ -2819,7 +2832,13 @@ namespace CAT {
           continue;
         }
 
-        topology::sequence news = iseq->match(*jseq, invertA, invertB);
+	bool ok;
+        topology::sequence news = iseq->match(*jseq, invertA, invertB, &ok);
+        if( !ok ){
+          ++jseq;
+	  m.message(" ... no good helix match ", mybhep::VERBOSE);
+          continue;
+        }
 
         topology::experimental_point epa, epb;
         size_t gn;
@@ -2964,10 +2983,11 @@ namespace CAT {
     }
 
     std::vector<bool> matched;
-    matched.assign (sequences_.size(), false);
+    //matched.assign (sequences_.size(), false);
+    matched.assign (families_.size(), false);
     //   bool* matched= (bool*)mal loc(sizeof(size_t)*sequences_.size());
-    for(size_t i=0; i<sequences_.size(); i++)
-      matched[i] = false;
+    //for(size_t i=0; i<sequences_.size(); i++)
+    //  matched[i] = false;
 
     std::vector<topology::sequence> newseqs;
 
@@ -2980,6 +3000,7 @@ namespace CAT {
         return false;
 
       ifam = mybhep::int_from_string(iseq->family());
+
       if( matched[ifam] ) continue;
 
       if( !good_first_to_be_matched(*iseq) ){
@@ -2998,16 +3019,23 @@ namespace CAT {
           if( level >= mybhep::VVERBOSE)
             print_a_sequence(sequences_[jmin]);
 
-          newseq = newseq.match(sequences_[jmin], invertA, invertB);
+	  bool ok;
+          newseq = newseq.match(sequences_[jmin], invertA, invertB, &ok);
+	  if( !ok ){
+	    m.message(" ... no good helix match ", mybhep::VERBOSE);
+	    continue;
+	  }
+
           if( level >= mybhep::VERBOSE)
             print_a_sequence(newseq);
 
           if( first ){
-            //      matched[ifa] = true;
+	    //	    matched[ifam] = true;
             first = false;
           }
           size_t ifa = mybhep::int_from_string(sequences_[jmin].family());
           matched[ifa] = true;
+          m.message(" setting family ", ifa, " as used for matching", mybhep::VERBOSE);
 
         }
 
@@ -3080,15 +3108,19 @@ namespace CAT {
           continue;
         }
 
-
-        topology::sequence news = s.match(*jseq, invertA, invertB);
+	bool ok_match;
+        topology::sequence news = s.match(*jseq, invertA, invertB, &ok_match);
+	if( !ok_match ){
+	  m.message(" ... no good helix match ", mybhep::VERBOSE);
+          continue;
+	}
         p = news.helix_Prob();
         c = news.helix_chi2();
         n = news.ndof();
 
         m.message(" ... matched to ", jseq->name(), ", chi2 =", c, " ndof ", n, " prob ", p, mybhep::VVERBOSE);
 
-        if( p > probmax )
+        if( p > probmax && p > news.probmin())
           {
             *jmin = jseq - sequences_.begin();
             probmax = p;

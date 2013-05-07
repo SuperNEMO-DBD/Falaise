@@ -67,14 +67,14 @@ namespace CAT {
       node(const cell & c, const std::vector<cell_couplet> & cc, const std::vector<cell_triplet> & ccc);
 
       //! constructor
-      node(const cell &c, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
+      node(const cell &c, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
 
       //! constructor from bhep true hit
       node(const mybhep::hit &truehit,
            size_t id,
            bool SuperNemo,
            mybhep::prlevel level=mybhep::NORMAL,
-           double nsigma=10.);
+           double probmin=1.e-200);
 
       /*** dump ***/
       virtual void dump (std::ostream & a_out         = std::clog,

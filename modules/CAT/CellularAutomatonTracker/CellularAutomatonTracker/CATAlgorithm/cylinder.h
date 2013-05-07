@@ -34,7 +34,7 @@ namespace CAT{
 
     public:   
       //!Default constructor 
-      cylinder(prlevel level=mybhep::NORMAL, double nsigma=10.)
+      cylinder(prlevel level=mybhep::NORMAL, double probmin=1.e-200)
       {
         appname_= "cylinder: ";
         center_ = experimental_point();
@@ -42,16 +42,16 @@ namespace CAT{
                                     small_neg, small_neg, small_neg);
         radius = experimental_double(small_neg, small_neg);
         set_print_level(level);
-        set_nsigma(nsigma);
+        set_probmin(probmin);
       }
 
       //!Default destructor
       virtual ~cylinder(){};
 
       //! constructor
-      cylinder(experimental_point &center, experimental_vector &axis, experimental_double &radius, prlevel level=mybhep::NORMAL, double nsigma=10.){
+      cylinder(experimental_point &center, experimental_vector &axis, experimental_double &radius, prlevel level=mybhep::NORMAL, double probmin=1.e-200){
         set_print_level(level);
-        set_nsigma(nsigma);
+        set_probmin(probmin);
         appname_= "cylinder: ";
         center_ = center;
         axis_ = axis;

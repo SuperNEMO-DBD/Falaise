@@ -27,9 +27,9 @@ namespace CAT{
     }
 
     //! constructor
-    cell_triplet::cell_triplet(const cell &ca, const cell &cb, const cell &cc, prlevel level, double nsigma){
+    cell_triplet::cell_triplet(const cell &ca, const cell &cb, const cell &cc, prlevel level, double probmin){
       set_print_level(level);
-      set_nsigma(nsigma);
+      set_probmin(probmin);
       appname_= "cell_triplet: ";
       ca_ = ca;
       cb_ = cb;
@@ -116,14 +116,14 @@ namespace CAT{
     //! get first cell couplet
     cell_couplet cell_triplet::cca()
     {
-      cell_couplet cc1(cb_, ca_, print_level(), nsigma());
+      cell_couplet cc1(cb_, ca_, print_level(), probmin());
       return cc1;
     }      
 
     //! get second cell couplet
     cell_couplet cell_triplet::ccb()
     {
-      cell_couplet cc2(cb_, cc_, print_level(), nsigma());
+      cell_couplet cc2(cb_, cc_, print_level(), probmin());
       return cc2;
     }      
 
@@ -318,8 +318,8 @@ namespace CAT{
             p = cb_.angular_average(i1->epa(), i2->epa(), &local_separation);
           }
 
-          line newt1(i1->epb(), p, print_level(), get_nsigma());
-          line newt2(p, i2->epb(), print_level(), get_nsigma());
+          line newt1(i1->epb(), p, print_level(), get_probmin());
+          line newt2(p, i2->epb(), print_level(), get_probmin());
 
           if( print_level() > mybhep::VERBOSE ){
             std::clog << " p1: phi = "; ca_.dump_point(i1->epb()); std::clog << " " << std::endl;
@@ -361,7 +361,7 @@ namespace CAT{
             chi2s_.push_back(chi2);
             local_prob = probof(chi2, ndof);
             probs_.push_back(local_prob);
-            if( local_prob > prob() )
+            if( local_prob > probmin() )
               ok = true;
 
             if( print_level() > mybhep::VERBOSE ){
@@ -371,7 +371,7 @@ namespace CAT{
           }
 
           if( ok ){
-            joint j(newt1.epa(),p,newt2.epb(), print_level(), get_nsigma());
+            joint j(newt1.epa(),p,newt2.epb(), print_level(), get_probmin());
             j.set_chi2(chi2);
             joints_.push_back(j);
           }

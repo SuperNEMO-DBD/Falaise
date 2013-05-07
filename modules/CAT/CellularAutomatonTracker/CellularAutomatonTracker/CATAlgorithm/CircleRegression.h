@@ -33,14 +33,14 @@ namespace CAT{
     public:
 
       //!Default constructor
-      CircleRegression(mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.)
+      CircleRegression(mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200)
       {
         appname_= "CircleRegression: ";
         c_ = circle();
         xi_.clear();
         yi_.clear();
         set_print_level(level);
-        set_nsigma(nsigma);
+        set_probmin(probmin);
       }
 
 
@@ -48,9 +48,9 @@ namespace CAT{
       virtual ~CircleRegression(){};
 
       //! constructor
-      CircleRegression(std::vector<experimental_double> &xi, std::vector<experimental_double> &yi, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.){
+      CircleRegression(std::vector<experimental_double> &xi, std::vector<experimental_double> &yi, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200){
         set_print_level(level);
-        set_nsigma(nsigma);
+        set_probmin(probmin);
         appname_= "CircleRegression: ";
         xi_ = xi;
         yi_ = yi;
@@ -79,7 +79,7 @@ namespace CAT{
             experimental_double y = yi_[it - xi_.begin()];
             phi_ref = phi.value();
             phi = c_.phi_of_point(experimental_point(*it, experimental_double(0.,0.), y),phi_ref);
-            a_out << indent << " .. x "; it->dump(); a_out << " y "; yi_[it - xi_.begin()].dump(); a_out << " predicted x "; position(phi).x().dump(); a_out << " y "; position(phi).z().dump(); a_out << " "  << std::endl;
+            a_out << indent << " .. x "; it->dump(); a_out << " y "; yi_[it - xi_.begin()].dump(); a_out << " predicted x "; position(phi).x().dump(); a_out << " y "; position(phi).z().dump(); a_out << " phi "; phi.dump(); a_out << " "  << std::endl;
           }
           a_out << indent << " circle: " << std::endl;
           circle().dump();
@@ -120,6 +120,8 @@ namespace CAT{
 #endif
 
       experimental_point position(experimental_double &phi);
+
+      bool points_in_good_order();
 
 
     };

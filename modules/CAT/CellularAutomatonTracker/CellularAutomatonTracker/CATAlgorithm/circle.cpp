@@ -9,13 +9,13 @@ namespace CAT{
     using namespace mybhep;
 
     //!Default constructor 
-    circle::circle(prlevel level, double nsigma)
+    circle::circle(prlevel level, double probmin)
     {
       appname_= "circle: ";
       center_ = experimental_point();
       radius_ = experimental_double(small_neg, small_neg);
       set_print_level(level);
-      set_nsigma(nsigma);
+      set_probmin(probmin);
     }
 
     //!Default destructor
@@ -25,9 +25,9 @@ namespace CAT{
     }
 
     //! constructor
-    circle::circle(const experimental_point &center, const experimental_double &radius, prlevel level, double nsigma){
+    circle::circle(const experimental_point &center, const experimental_double &radius, prlevel level, double probmin){
       set_print_level(level);
-      set_nsigma(nsigma);
+      set_probmin(probmin);
       appname_= "circle: ";
       center_ = center;
       radius_ = radius;

@@ -45,10 +45,10 @@ namespace CAT{
       virtual ~cluster();
 
       //! constructor from std::vector of nodes
-      cluster(const std::vector<node> &nodes, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
+      cluster(const std::vector<node> &nodes, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
 
       //! constructor from single node
-      cluster(node &a_node, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
+      cluster(node &a_node, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
 
       /*** dump ***/
       virtual void dump (std::ostream & a_out         = std::clog,

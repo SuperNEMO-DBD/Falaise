@@ -43,7 +43,7 @@ namespace CAT {
       double layer_;
 
       //!Default constructor
-      calorimeter_hit(mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
+      calorimeter_hit(mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
 
       //!Default destructor
       virtual ~calorimeter_hit();
@@ -55,7 +55,7 @@ namespace CAT {
                       size_t id,
                       double layer,
                       mybhep::prlevel level=mybhep::NORMAL,
-                      double nsigma=10.);
+                      double probmin=1.e-200);
 
       /*** dump ***/
       void dump (std::ostream & a_out         = std::clog,

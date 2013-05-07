@@ -9,7 +9,7 @@ namespace CAT {
     {
       appname_= "scenario: ";
       set_print_level(mybhep::NORMAL);
-      set_nsigma(10.);
+      set_probmin(10.);
       //sequences_.clear();
       chi2_ = mybhep::small_neg;
       ndof_ = mybhep::default_integer;
@@ -24,10 +24,10 @@ namespace CAT {
 
     //! constructor
     scenario::scenario(const std::vector<sequence> & seqs, 
-                       mybhep::prlevel level, double nsigma){
+                       mybhep::prlevel level, double probmin){
       appname_= "scenario: ";
       set_print_level(mybhep::NORMAL);
-      set_nsigma(nsigma);
+      set_probmin(probmin);
       sequences_ = seqs;
       chi2_ = mybhep::small_neg;
       ndof_ = mybhep::default_integer;

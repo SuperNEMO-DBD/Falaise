@@ -16,18 +16,18 @@ namespace CAT{
      cluster::~cluster(){};
 
       //! constructor from std::vector of nodes
-      cluster::cluster(const std::vector<node> &nodes, mybhep::prlevel level, double nsigma){
+      cluster::cluster(const std::vector<node> &nodes, mybhep::prlevel level, double probmin){
         set_print_level(level);
-        set_nsigma(nsigma);
+        set_probmin(probmin);
         appname_= "cluster: ";
         nodes_ = nodes;
         free_ = false;
       }
 
       //! constructor from single node
-      cluster::cluster(node &a_node, mybhep::prlevel level, double nsigma){
+      cluster::cluster(node &a_node, mybhep::prlevel level, double probmin){
         set_print_level(level);
-        set_nsigma(nsigma);
+        set_probmin(probmin);
         appname_= "cluster: ";
         a_node.set_free(false);
         nodes_.clear();
@@ -88,7 +88,7 @@ namespace CAT{
       cluster cluster::invert(){
         cluster inverted;
         inverted.set_print_level(print_level());
-        inverted.set_nsigma(nsigma());
+        inverted.set_probmin(probmin());
         inverted.set_free(Free());
         std::vector<node> inverted_nodes;
         for(std::vector<node>::iterator inode = nodes_.end(); inode != nodes_.begin(); --inode){

@@ -52,7 +52,7 @@ namespace CAT {
     Ratio                 =   10.0;
     CompatibilityDistance = 4.0 * CLHEP::mm;
     MaxChi2               = 3.;
-    nsigma                = 4.;
+    probmin                = 4.;
     nofflayers            = 1;
     first_event            = -1;
     len                   = 2503. * CLHEP::mm;
@@ -124,9 +124,9 @@ namespace CAT {
         _set_error_message ("Invalid 'MaxChi2'");
         return false;
       }
-    if (nsigma <= 0.0)
+    if (probmin <= 0.0)
       {
-        _set_error_message ("Invalid 'nsigma'");
+        _set_error_message ("Invalid 'probmin'");
         return false;
       }
     if (nofflayers < 0.0)
@@ -210,7 +210,7 @@ namespace CAT {
     czer_.set_Ratio (setup_.Ratio);
     czer_.set_CompatibilityDistance (setup_.CompatibilityDistance);
     czer_.set_MaxChi2 (setup_.MaxChi2);
-    czer_.set_nsigma (setup_.nsigma);
+    czer_.set_probmin (setup_.probmin);
     czer_.set_nofflayers (setup_.nofflayers);
     czer_.set_first_event (setup_.first_event);
     czer_.set_len (setup_.len);
@@ -274,7 +274,7 @@ namespace CAT {
     stor_.set_Ratio (setup_.Ratio);
     stor_.set_CompatibilityDistance (setup_.CompatibilityDistance);
     stor_.set_MaxChi2 (setup_.MaxChi2);
-    stor_.set_nsigma (setup_.nsigma);
+    stor_.set_probmin (setup_.probmin);
     stor_.set_nofflayers (setup_.nofflayers);
     stor_.set_first_event (setup_.first_event);
     stor_.set_len (setup_.len);

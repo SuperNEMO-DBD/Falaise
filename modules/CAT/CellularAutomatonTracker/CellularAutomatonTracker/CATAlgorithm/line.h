@@ -39,13 +39,13 @@ namespace CAT {
 
     public:
       //!Default constructor
-      line(mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
+      line(mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
 
       //!Default destructor
       virtual ~line();
 
       //! constructor
-      line(const experimental_point & epa, const experimental_point & epb, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
+      line(const experimental_point & epa, const experimental_point & epb, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
 
       /*** dump ***/
       virtual void dump (std::ostream & a_out         = std::clog,

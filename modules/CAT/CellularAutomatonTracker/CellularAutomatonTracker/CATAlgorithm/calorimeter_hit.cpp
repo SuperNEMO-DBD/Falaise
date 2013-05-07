@@ -12,13 +12,13 @@ namespace CAT {
 
 
       //!Default constructor 
-    calorimeter_hit::calorimeter_hit(prlevel level, double nsigma)
+    calorimeter_hit::calorimeter_hit(prlevel level, double probmin)
       {
         appname_= "calorimeter_hit: ";
         e_ = experimental_double(small_neg, small_neg);
         t_ = experimental_double(small_neg, small_neg);
         set_print_level(level);
-        set_nsigma(nsigma);
+        set_probmin(probmin);
         id_ = default_integer;
         layer_ = small_neg;
         return;
@@ -37,10 +37,10 @@ namespace CAT {
                       size_t id, 
                       double layer, 
                       prlevel level, 
-                      double nsigma)
+                      double probmin)
       {
         set_print_level(level);
-        set_nsigma(nsigma);
+        set_probmin(probmin);
         appname_= "calorimeter_hit: ";
         pl_ = pl;
         e_ = e;

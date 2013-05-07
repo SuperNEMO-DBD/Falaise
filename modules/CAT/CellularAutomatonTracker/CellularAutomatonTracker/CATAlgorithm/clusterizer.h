@@ -150,7 +150,7 @@ namespace CAT{
     double Ratio;
     double CompatibilityDistance;
     double MaxChi2;
-    double nsigma;
+    double probmin;
     size_t nofflayers;
     int first_event_number;
 
@@ -276,7 +276,7 @@ namespace CAT{
 
     void set_hfile(std::string v);
 
-    void set_nsigma(double v);
+    void set_probmin(double v);
 
     void set_nofflayers(size_t v);
 

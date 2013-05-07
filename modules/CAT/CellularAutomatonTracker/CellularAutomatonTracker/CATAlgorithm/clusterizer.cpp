@@ -96,7 +96,7 @@ namespace CAT {
     Ratio = std::numeric_limits<double>::quiet_NaN ();
     CompatibilityDistance = std::numeric_limits<double>::quiet_NaN ();
     MaxChi2 = std::numeric_limits<double>::quiet_NaN ();
-    nsigma = std::numeric_limits<double>::quiet_NaN ();
+    probmin = std::numeric_limits<double>::quiet_NaN ();
     nofflayers = 0;
     first_event_number = 0;
     PrintMode = false;
@@ -152,10 +152,10 @@ namespace CAT {
     else
       hfile="CatsHistogram.root";
 
-    if (st.find_dstore("nsigma"))
-      nsigma=st.fetch_dstore("nsigma");
+    if (st.find_dstore("probmin"))
+      probmin=st.fetch_dstore("probmin");
     else
-      nsigma=10.;
+      probmin=1.e-200;
 
     /*
       if( PrintMode )
@@ -591,7 +591,7 @@ namespace CAT {
     m.message("ratio",Ratio,mybhep::NORMAL);
     m.message("compatibility distance", CompatibilityDistance,mybhep::NORMAL);
     m.message("maximum chi2", MaxChi2, mybhep::NORMAL);
-    m.message("nsigma", nsigma, mybhep::NORMAL);
+    m.message("probmin", probmin, mybhep::NORMAL);
     m.message("first event number", first_event_number, mybhep::NORMAL);
 
     if (SuperNemo && SuperNemoChannel)
@@ -997,7 +997,7 @@ namespace CAT {
   size_t clusterizer::get_true_hit_index(mybhep::hit& hit, bool print){
     //*******************************************************************
 
-    topology::node tn(hit, 0, SuperNemo, level, nsigma);
+    topology::node tn(hit, 0, SuperNemo, level, probmin);
 
     for(std::vector<topology::cell>::iterator ic=cells_.begin(); ic!=cells_.end(); ++ic){
       if( ic->same_cell(tn.c()) )
@@ -1015,7 +1015,7 @@ namespace CAT {
   size_t clusterizer::get_nemo_hit_index(mybhep::hit& hit, bool print){
     //*******************************************************************
 
-    topology::node tn(hit, 0, SuperNemo, level, nsigma);
+    topology::node tn(hit, 0, SuperNemo, level, probmin);
 
     for(std::vector<topology::cell>::iterator ic=cells_.begin(); ic!=cells_.end(); ++ic){
       if( ic->same_cell(tn.c()) )
@@ -1119,7 +1119,7 @@ namespace CAT {
       const std::vector<mybhep::hit*>& hits = parts[0]->hits("trk");
 
       for (size_t ihit=0; ihit<hits.size();ihit++){
-        topology::cell c(*hits[ihit],ihit, SuperNemo, level, nsigma);
+        topology::cell c(*hits[ihit],ihit, SuperNemo, level, probmin);
         cells_.push_back(c);
       }
 
@@ -1213,7 +1213,7 @@ namespace CAT {
           for(size_t i=0; i<thits.size(); i++)
             {
               size_t index = get_true_hit_index(*thits[i], tp.primary());
-              topology::node tn(*thits[i], index, SuperNemo, level, nsigma);
+              topology::node tn(*thits[i], index, SuperNemo, level, probmin);
               truenodes.push_back(tn);
             }
           trueseq.set_nodes(truenodes);
@@ -1282,7 +1282,7 @@ namespace CAT {
           for(size_t i=0; i<thits.size(); i++)
             {
               size_t index = get_nemo_hit_index(*thits[i], tp.primary());
-              topology::node tn(*thits[i], index, SuperNemo, level, nsigma);
+              topology::node tn(*thits[i], index, SuperNemo, level, probmin);
               nemonodes.push_back(tn);
             }
           nemoseq.set_nodes(nemonodes);
@@ -1487,7 +1487,7 @@ namespace CAT {
                 topology::cell cconn = cells_connected_to_c[i];
 
                 // the connected cell composes a new node
-                topology::node newnode(cconn, level, nsigma);
+                topology::node newnode(cconn, level, probmin);
                 std::vector<topology::cell_couplet> cc;
 
                 // get the list of cells near the connected cell
@@ -1501,7 +1501,7 @@ namespace CAT {
 
                   if( !is_good_couplet(& cconn, cnc, cells_near_iconn) ) continue;
 
-                  topology::cell_couplet ccnc(cconn,cnc,level,nsigma);
+                  topology::cell_couplet ccnc(cconn,cnc,level,probmin);
                   cc.push_back(ccnc);
 
                   m.message(" ... creating couplet ", cconn.id(), " -> ", cnc.id(), mybhep::VERBOSE);
@@ -1643,7 +1643,7 @@ namespace CAT {
 
       m.message(" ... ... check if near node ", b.id(), " has triplet ", a.id(), " <-> ", candidatec.id(), mybhep::VERBOSE);
 
-      topology::cell_triplet ccc(a,b,candidatec, level, nsigma);
+      topology::cell_triplet ccc(a,b,candidatec, level, probmin);
       ccc.calculate_joints(Ratio, QuadrantAngle, TangentPhi, TangentTheta);
       if(ccc.joints().size() > 0 ){
         m.message(" ... ... yes it does: so couplet ", a.id(), " and ", candidatec.id(), " is not good",  mybhep::VERBOSE);
@@ -1819,7 +1819,7 @@ namespace CAT {
 
     for(std::vector<topology::cell>::iterator icell=cells_.begin(); icell!=cells_.end(); ++icell){
       icell->set_print_level(level);
-      icell->set_nsigma(nsigma);
+      icell->set_probmin(probmin);
     }
 
     return;
@@ -1837,21 +1837,21 @@ namespace CAT {
     // loop on clusters
     for(std::vector<topology::cluster>::iterator icl=clusters_.begin(); icl != clusters_.end(); ++icl){
       icl->set_print_level(level);
-      icl->set_nsigma(nsigma);
+      icl->set_probmin(probmin);
 
       // loop on nodes
       for(std::vector<topology::node>::iterator inode=(*icl).nodes_.begin(); inode != (*icl).nodes_.end(); ++inode){
         inode->set_print_level(level);
-        inode->set_nsigma(nsigma);
+        inode->set_probmin(probmin);
 
         for(std::vector<topology::cell_couplet>::iterator icc=(*inode).cc_.begin(); icc != (*inode).cc_.end(); ++icc){
           icc->set_print_level(level);
-          icc->set_nsigma(nsigma);
+          icc->set_probmin(probmin);
         }
 
         for(std::vector<topology::cell_triplet>::iterator iccc=(*inode).ccc_.begin(); iccc != (*inode).ccc_.end(); ++iccc){
           iccc->set_print_level(level);
-          iccc->set_nsigma(nsigma);
+          iccc->set_probmin(probmin);
         }
 
       }
@@ -2035,8 +2035,8 @@ namespace CAT {
     double e_resol = 0.240; // MeV
     topology::experimental_double e(en, e_resol);
     topology::experimental_double t(time, time_resol);
-    topology::plane pl(center, sizes, norm, level, nsigma);
-    topology::calorimeter_hit ch(pl, e, t, _id, layer, level, nsigma);
+    topology::plane pl(center, sizes, norm, level, probmin);
+    topology::calorimeter_hit ch(pl, e, t, _id, layer, level, probmin);
 
     return ch;
   }
@@ -2388,8 +2388,8 @@ namespace CAT {
     return;
   }
 
-  void clusterizer::set_nsigma(double v){
-    nsigma = v;
+  void clusterizer::set_probmin(double v){
+    probmin = v;
     return;
   }
 

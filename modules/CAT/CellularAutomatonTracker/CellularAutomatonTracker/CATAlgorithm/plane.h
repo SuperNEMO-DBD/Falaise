@@ -44,13 +44,13 @@ namespace CAT {
 
     public:
       //!Default constructor
-      plane(mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
+      plane(mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
 
       //!Default destructor
       virtual ~plane();
 
       //! constructor
-      plane(const experimental_point &center, const experimental_vector &sizes, const experimental_vector &norm, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
+      plane(const experimental_point &center, const experimental_vector &sizes, const experimental_vector &norm, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
 
       /*** dump ***/
       virtual void dump (std::ostream & a_out         = std::clog,

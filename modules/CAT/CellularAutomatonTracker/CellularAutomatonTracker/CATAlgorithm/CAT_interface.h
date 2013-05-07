@@ -57,7 +57,7 @@ namespace CAT {
     double Ratio;
 
     /// Number of sigma away from the straight line
-    double nsigma;
+    double probmin;
 
     /// Number of cells which can be skipped (because the cell did not
     /// work) and still the cluster is continuous

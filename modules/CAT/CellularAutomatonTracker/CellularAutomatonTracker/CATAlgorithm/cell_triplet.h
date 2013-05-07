@@ -75,7 +75,7 @@ namespace CAT{
       cell_triplet(cell_couplet &cca, cell_couplet &ccb);
 
       //! constructor
-      cell_triplet(const cell &ca, const cell &cb, const cell &cc, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
+      cell_triplet(const cell &ca, const cell &cb, const cell &cc, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
 
       /*** dump ***/
       virtual void dump (std::ostream & a_out         = std::clog,

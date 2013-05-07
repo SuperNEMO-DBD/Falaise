@@ -17,7 +17,7 @@ namespace CAT {
     using namespace mybhep;
 
     //!Default constructor
-    plane::plane(prlevel level, double nsigma)
+    plane::plane(prlevel level, double probmin)
     {
       appname_= "plane: ";
       sizes_ = experimental_vector(small_neg,small_neg,small_neg,
@@ -25,7 +25,7 @@ namespace CAT {
       norm_ = experimental_vector(small_neg,small_neg,small_neg,
                                   small_neg, small_neg, small_neg);
       set_print_level(level);
-      set_nsigma(nsigma);
+      set_probmin(probmin);
       type_="undefined";
     }
 
@@ -39,10 +39,10 @@ namespace CAT {
     plane::plane(const experimental_point &center,
                  const experimental_vector &sizes,
                  const experimental_vector &norm,
-                 prlevel level, double nsigma)
+                 prlevel level, double probmin)
     {
       set_print_level(level);
-      set_nsigma(nsigma);
+      set_probmin(probmin);
       appname_= "plane: ";
       center_ = center;
       sizes_ = sizes;

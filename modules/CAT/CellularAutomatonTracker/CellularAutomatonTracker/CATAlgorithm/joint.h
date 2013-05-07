@@ -53,7 +53,7 @@ namespace CAT {
       virtual ~joint();
 
       //! constructor
-      joint(const experimental_point &epa, const experimental_point &epb, const experimental_point &epc, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
+      joint(const experimental_point &epa, const experimental_point &epb, const experimental_point &epc, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
 
       /*** dump ***/
       virtual void dump (std::ostream & a_out         = std::clog,

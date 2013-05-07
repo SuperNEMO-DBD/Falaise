@@ -35,9 +35,9 @@ namespace CAT {
       }
 
       //! constructor
-      node::node(const cell &c, prlevel level, double nsigma){
+      node::node(const cell &c, prlevel level, double probmin){
         set_print_level(level);
-        set_nsigma(nsigma);
+        set_probmin(probmin);
         appname_= "node: ";
         c_ = c;
         free_ = false;
@@ -45,9 +45,9 @@ namespace CAT {
       }
 
       //! constructor from bhep true hit
-      node::node(const mybhep::hit &truehit, size_t id, bool SuperNemo, prlevel level, double nsigma){
+      node::node(const mybhep::hit &truehit, size_t id, bool SuperNemo, prlevel level, double probmin){
         set_print_level(level);
-        set_nsigma(nsigma);
+        set_probmin(probmin);
         appname_= "node: ";
         chi2_ = 0.;
         std::vector<double> cellpos;
@@ -63,7 +63,7 @@ namespace CAT {
         else
           fast = true;
         {
-          cell tmp_cell (center, radius, id, fast, nsigma, level);
+          cell tmp_cell (center, radius, id, fast, probmin, level);
           c_ = tmp_cell;
         }
         int block, plane, iid, n3id;
@@ -264,7 +264,7 @@ namespace CAT {
           for(std::vector<cell_couplet>::const_iterator jcc=cc_.begin() + (size_t)(icc - cc_.begin()); jcc!=cc_.end(); ++jcc){
             cell c2 = jcc->cb();
             if( c1.id() == c2.id() ) continue;
-            cell_triplet ccc(c1,c_,c2, print_level(), nsigma());
+            cell_triplet ccc(c1,c_,c2, print_level(), probmin());
             if( print_level() >= mybhep::VVERBOSE ){
               std::clog << appname_ << " calculate triplets for three cells: " << ccc.ca().id() << "  " << ccc.cb().id() << "  " << ccc.cc().id() << std::endl;
             }
@@ -310,7 +310,7 @@ namespace CAT {
       node node::invert(){
         node inverted;
         inverted.set_print_level(print_level());
-        inverted.set_nsigma(nsigma());
+        inverted.set_probmin(probmin());
         inverted.set_c(c());
         inverted.set_cc(cc());
         inverted.set_ccc(ccc());

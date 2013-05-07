@@ -68,7 +68,7 @@ namespace CAT {
       cell()
       {
         set_print_level(mybhep::NORMAL);
-        set_nsigma(10.);
+        set_probmin(10.);
         //ep_ = experimental_point();
         //r0_= experimental_double();
         //r_= experimental_double();
@@ -87,10 +87,10 @@ namespace CAT {
       virtual ~cell(){};
 
       //! constructor
-      cell(experimental_point &p, experimental_double r, size_t id, bool fast=true, double nsigma=10., mybhep::prlevel level=mybhep::NORMAL){
+      cell(experimental_point &p, experimental_double r, size_t id, bool fast=true, double probmin=1.e-200, mybhep::prlevel level=mybhep::NORMAL){
         appname_= "cell: ";
         set_print_level(level);
-        set_nsigma(nsigma);
+        set_probmin(probmin);
         ep_ = p;
         r0_ = r;
         id_ = id;
@@ -106,10 +106,10 @@ namespace CAT {
       }
 
       //! constructor
-      cell(experimental_point &p, double r, double er, size_t id, bool fast=true, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.){
+      cell(experimental_point &p, double r, double er, size_t id, bool fast=true, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200){
         appname_= "cell: ";
         set_print_level(level);
-        set_nsigma(nsigma);
+        set_probmin(probmin);
         ep_ = p;
         r0_.set_value(r);
         r0_.set_error(er);
@@ -129,7 +129,7 @@ namespace CAT {
       cell(experimental_point &p, double r, size_t id, bool fast=true){
         appname_= "cell: ";
         set_print_level(mybhep::NORMAL);
-        set_nsigma(10.);
+        set_probmin(10.);
         ep_ = p;
         r0_.set_value(r);
         r0_.set_error(mybhep::small_neg);
@@ -146,9 +146,9 @@ namespace CAT {
       }
 
       //! constructor from bhep hit
-      cell(mybhep::hit hit, size_t id, bool SuperNemo, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.){
+      cell(mybhep::hit hit, size_t id, bool SuperNemo, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200){
         set_print_level(level);
-        set_nsigma(nsigma);
+        set_probmin(probmin);
         appname_= "cell: ";
         //ep_ = experimental_point(hit);
         r0_.set_value(mybhep::small_neg);
@@ -370,7 +370,7 @@ namespace CAT {
       {
         bool sm = false;
 
-        //        if (r0_.value() <= nsigma()*r0_.error() ) sm = true;
+        //        if (r0_.value() <= probmin()*r0_.error() ) sm = true;
         if (r0_.value() <= 2. ) sm = true;
 
         return sm;

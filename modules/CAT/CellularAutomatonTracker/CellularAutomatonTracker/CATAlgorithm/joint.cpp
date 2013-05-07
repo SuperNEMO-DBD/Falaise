@@ -28,10 +28,10 @@ namespace CAT {
     //! constructor
     joint::joint(const experimental_point &epa,
                  const experimental_point &epb,
-                 const experimental_point &epc, prlevel level, double nsigma)
+                 const experimental_point &epc, prlevel level, double probmin)
     {
       set_print_level(level);
-      set_nsigma(nsigma);
+      set_probmin(probmin);
       appname_= "joint: ";
       epa_ = epa;
       epb_ = epb;
@@ -169,7 +169,7 @@ namespace CAT {
     {
       joint inverted;
       inverted.set_print_level(print_level());
-      inverted.set_nsigma(nsigma());
+      inverted.set_probmin(probmin());
       inverted.set_epa(epc());
       inverted.set_epb(epb());
       inverted.set_epc(epa());

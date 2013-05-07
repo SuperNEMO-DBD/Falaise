@@ -32,19 +32,17 @@ namespace CAT{
       /// print level
       mybhep::prlevel level_;
 
-      // the number of sigmas
-      double nsigma_;
+      // the minimum probabilty
+      double probmin_;
 
 
-      void set_nsigma( double nsigma );
+      void set_probmin( double probmin );
 
-      double nsigma() const;
-
-      double prob() const;
+      double probmin() const;
 
       double probof(double chi2, int ndof)const;
 
-      double get_nsigma()const;
+      double get_probmin()const;
 
       /*
         inline void print_clock(){

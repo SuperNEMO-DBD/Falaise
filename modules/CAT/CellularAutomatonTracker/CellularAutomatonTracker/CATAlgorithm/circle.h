@@ -37,14 +37,14 @@ namespace CAT{
     public:
 
       //!Default constructor
-      circle(mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
+      circle(mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
 
 
       //!Default destructor
       virtual ~circle();
 
       //! constructor
-      circle(const experimental_point &center, const experimental_double &radius, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
+      circle(const experimental_point &center, const experimental_double &radius, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
 
       /*** dump ***/
       virtual void dump (std::ostream & a_out         = std::clog,

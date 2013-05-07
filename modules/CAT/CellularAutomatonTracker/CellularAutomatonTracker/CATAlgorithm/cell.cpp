@@ -214,10 +214,10 @@ namespace topology{
     /*
     double chi2 = square((rsum.value() - dist)/rsum.error());
 
-    bool test = probof(chi2, 1) > prob();
+    bool test = probof(chi2, 1) > probmin();
     if( test )
       if( print_level() >= mybhep::VVERBOSE ){
-        std::clog <<" cells " << id() << " and " <<c.id() << " intersect: dist " << dist << " radii " << r().value() << " and " <<c.r().value()<< " rsum " << rsum.value() << " +- " << rsum.error() << " prob " << probof(chi2, 1) << " chi2 " << chi2 << " problimit " << prob() << std::endl;
+        std::clog <<" cells " << id() << " and " <<c.id() << " intersect: dist " << dist << " radii " << r().value() << " and " <<c.r().value()<< " rsum " << rsum.value() << " +- " << rsum.error() << " prob " << probof(chi2, 1) << " chi2 " << chi2 << " problimit " << probmin() << std::endl;
       }
     */
 

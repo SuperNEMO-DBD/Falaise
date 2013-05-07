@@ -113,10 +113,10 @@ namespace CAT {
       virtual ~sequence();
 
       //! constructor from std::vector of nodes
-      sequence(const std::vector<node>&  nodes, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
+      sequence(const std::vector<node>&  nodes, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
 
       //! constructor from single node
-      sequence(const node &node, mybhep::prlevel level=mybhep::NORMAL, double nsigma=10.);
+      sequence(const node &node, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
 
       /*** dump ***/
       virtual void dump (std::ostream & a_out         = std::clog,
@@ -368,7 +368,7 @@ namespace CAT {
 
       int get_link_index_of_cell(size_t inode, const cell &link) const;
 
-      void calculate_helix(void);
+      bool calculate_helix(void);
 
       const experimental_double & radius() const;
 
@@ -410,7 +410,7 @@ namespace CAT {
                       bool &invertA, bool &invertB, size_t NOffLayers)const;
 
 
-      sequence match(const sequence & seq, bool invertA, bool invertB);
+      sequence match(const sequence & seq, bool invertA, bool invertB, bool *ok);
 
       bool good_match_with_kink(const sequence & seq,
                                 bool &invertA, bool &invertB,

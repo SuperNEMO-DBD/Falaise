@@ -263,8 +263,8 @@ namespace CAT {
       return;
     }
 
-    void set_nsigma(double v){
-      nsigma = v;
+    void set_probmin(double v){
+      probmin = v;
       return;
     }
 
@@ -405,7 +405,7 @@ namespace CAT {
     double Ratio;
     double CompatibilityDistance;
     double MaxChi2;
-    double nsigma;
+    double probmin;
     int NOffLayers;
     int first_event_number;
 

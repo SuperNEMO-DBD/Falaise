@@ -254,9 +254,9 @@ namespace CAT{
           }
         }
 
-        c_ = circle(experimental_point(xc, experimental_double(0.,0.), yc), r, print_level(), nsigma());
+        c_ = circle(experimental_point(xc, experimental_double(0.,0.), yc), r, print_level(), probmin());
 
-        return true;
+        return points_in_good_order();
 
       }
 
@@ -323,22 +323,51 @@ namespace CAT{
         yc.set(xs[1],0.);
         r.set(xs[2],0.);
 
-        c_ = circle(experimental_point(xc, experimental_double(0.,0.), yc), r, print_level(), nsigma());
+        c_ = circle(experimental_point(xc, experimental_double(0.,0.), yc), r, print_level(), probmin());
         
-        return true;
+        return points_in_good_order();
 
 
       }
 #endif // CAT_WITH_DEVEL_ROOT == 1
 
-      experimental_point CircleRegression::position(experimental_double &phi){
+    experimental_point CircleRegression::position(experimental_double &phi){
+      
+      return c_.position(phi);
+    }
 
-        return c_.position(phi);
-      }
+    bool CircleRegression::points_in_good_order(void){
+      // check the points are monotonically moving along the circle
 
+      if( xi_.size() < 3 ) return true;
 
+      experimental_double phiA, phiB, deltaphiAB, deltaphi_product;
+      size_t index;
 
-    };
+      experimental_double phi_initial =  c_.phi_of_point(experimental_point(xi_[0], experimental_double(0.,0.), yi_[0]));
+      experimental_double phi_final =  c_.phi_of_point(experimental_point(xi_.back(), experimental_double(0.,0.), yi_.back()), phi_initial.value());
+      experimental_double deltaphi_overall =  phi_final - phi_initial;
+
+      for(std::vector<experimental_double>::iterator it=xi_.begin(); it != xi_.end(); ++it)
+	{
+	  index = it - xi_.begin();
+	  if( index >= 1 ){
+	    phiA = c_.phi_of_point(experimental_point(xi_[index-1], experimental_double(0.,0.), yi_[index-1]), phiA.value());
+	    phiB = c_.phi_of_point(experimental_point(*it, experimental_double(0.,0.), yi_[index]), phiB.value());
+	    deltaphiAB = phiB-phiA;
+	    deltaphi_product = deltaphiAB*deltaphi_overall;
+	    if( deltaphi_product.value() < - deltaphi_product.error() ){
+	      if( print_level() >= mybhep::VVERBOSE ){
+		std::clog << " points are not in good order: phi[ " << index-2 << "] = " << phiA.value() << ", phi[" << index-1 << "] = " << phiB.value() << ", deltaphi_overall = " << deltaphi_overall.value() << std::endl;
+	      }
+	      return false;
+	    }
+	  }
+	}
+      return true;
+    }
+
+  };
 
 }
 

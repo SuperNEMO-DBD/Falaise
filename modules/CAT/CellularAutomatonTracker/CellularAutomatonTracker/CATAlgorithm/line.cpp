@@ -10,14 +10,14 @@ namespace CAT {
     using namespace mybhep;
 
     //!Default constructor 
-    line::line(prlevel level, double nsigma)
+    line::line(prlevel level, double probmin)
     {
       appname_= "line: ";
       forward_axis_ = experimental_vector(small_neg,small_neg,small_neg,
                                           small_neg, small_neg, small_neg);
       used_ = false;
       set_print_level(level);
-      set_nsigma(nsigma);
+      set_probmin(probmin);
     }
 
     //!Default destructor
@@ -27,9 +27,9 @@ namespace CAT {
     }
 
     //! constructor
-    line::line(const experimental_point & epa, const experimental_point & epb, prlevel level, double nsigma){
+    line::line(const experimental_point & epa, const experimental_point & epb, prlevel level, double probmin){
       set_print_level(level);
-      set_nsigma(nsigma);
+      set_probmin(probmin);
       appname_= "line: ";
       epa_ = epa;
       epb_ = epb;
@@ -167,7 +167,7 @@ namespace CAT {
 
   line line::invert()
   {
-    line inverted(print_level(), nsigma());
+    line inverted(print_level(), probmin());
     inverted.set_epa(epb());
     inverted.set_epb(epa());
     inverted.set_used(used());

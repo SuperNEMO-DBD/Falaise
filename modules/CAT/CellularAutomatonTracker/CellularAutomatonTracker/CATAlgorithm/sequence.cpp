@@ -76,9 +76,9 @@ namespace CAT {
     }
 
     //! constructor from std::vector of nodes
-    sequence::sequence(const std::vector<node> & nodes, mybhep::prlevel level, double nsigma){
+    sequence::sequence(const std::vector<node> & nodes, mybhep::prlevel level, double probmin){
       set_print_level(level);
-      set_nsigma(nsigma);
+      set_probmin(probmin);
       appname_= "sequence: ";
       nodes_ = nodes;
       free_ = false;
@@ -125,9 +125,9 @@ namespace CAT {
     }
 
     //! constructor from single node
-    sequence::sequence(const node &node, mybhep::prlevel level, double nsigma){
+    sequence::sequence(const node &node, mybhep::prlevel level, double probmin){
       set_print_level(level);
-      set_nsigma(nsigma);
+      set_probmin(probmin);
       appname_= "sequence: ";
       //node.set_free(false);
       nodes_.clear();
@@ -401,7 +401,7 @@ namespace CAT {
       std::vector<double> p;
 
       for(std::vector<double>::const_iterator iprob =probs_.begin();iprob !=probs_.end(); ++iprob){
-        if( probs_[iprob - probs_.begin()] > prob() )
+        if( probs_[iprob - probs_.begin()] > probmin() )
           p.push_back(*iprob);
       }
 
@@ -695,7 +695,7 @@ namespace CAT {
     sequence sequence::invert(){
       sequence inverted;
       inverted.set_print_level(print_level());
-      inverted.set_nsigma(nsigma());
+      inverted.set_probmin(probmin());
       inverted.set_free(Free());
       inverted.set_helix(helix_.invert());
 
@@ -1017,7 +1017,7 @@ namespace CAT {
 
       sequence newsequence;
       newsequence.set_print_level(print_level());
-      newsequence.set_nsigma(nsigma());
+      newsequence.set_probmin(probmin());
 
       size_t lfn , link;
       last_free_node(&lfn, &link);
@@ -1393,8 +1393,8 @@ namespace CAT {
       }
 
 
-      topology::line l1(pa, pb, print_level(), nsigma());
-      topology::line l2(pb, j->epc(), print_level(), nsigma());
+      topology::line l1(pa, pb, print_level(), probmin());
+      topology::line l2(pb, j->epc(), print_level(), probmin());
 
       double chi2_kink = l1.chi2(l2, use_theta_kink);
 
@@ -1414,7 +1414,7 @@ namespace CAT {
       probs_.push_back(local_prob);
 
 
-      if( net_local_prob > prob() ){
+      if( net_local_prob > probmin() ){
 
         if( print_level() >= mybhep::VVERBOSE ){
           std::clog << " connecting cell " << last_node().c().id() << " is compatible with chi2 " << chi2 << " prob " << local_prob << " net prob " << net_local_prob << std::endl; fflush(stdout);
@@ -1456,8 +1456,8 @@ namespace CAT {
       topology::experimental_point pa = second_last_node().ep();
       topology::experimental_point pb = last_node().ep();
 
-      topology::line l_alpha_A(palpha, pa, print_level(), nsigma());
-      topology::line l_A_B(pa, pb, print_level(), nsigma());
+      topology::line l_alpha_A(palpha, pa, print_level(), probmin());
+      topology::line l_A_B(pa, pb, print_level(), probmin());
       bool use_theta_kink_alpha_A_B = !(nodes_[s-3].c().unknown_vertical() || nodes_[s-2].c().unknown_vertical() || nodes_[s-1].c().unknown_vertical() );
 
       double old_chi2 = l_alpha_A.chi2(l_A_B, use_theta_kink_alpha_A_B);
@@ -1471,8 +1471,8 @@ namespace CAT {
 	old_chi2 = old_chi2_check;
       }
 
-      topology::line new_l_alpha_A(palpha, new_pa, print_level(), nsigma());
-      topology::line new_l_A_B(new_pa, new_pb, print_level(), nsigma());
+      topology::line new_l_alpha_A(palpha, new_pa, print_level(), probmin());
+      topology::line new_l_A_B(new_pa, new_pb, print_level(), probmin());
 
       double new_chi2 = new_l_alpha_A.chi2(new_l_A_B, use_theta_kink_alpha_A_B);
       *delta_chi_A = new_chi2 - old_chi2;
@@ -1486,7 +1486,7 @@ namespace CAT {
       if( s >= 4 ){
 	bool use_theta_kink_alpha0_alpha_A = !(nodes_[s-4].c().unknown_vertical() || nodes_[s-3].c().unknown_vertical() || nodes_[s-2].c().unknown_vertical() );
 	topology::experimental_point palpha0 = nodes_[s-4].ep();
-	topology::line l_alpha0_alpha(palpha0, palpha, print_level(), nsigma());
+	topology::line l_alpha0_alpha(palpha0, palpha, print_level(), probmin());
 	old_chi2 = l_alpha0_alpha.chi2(l_alpha_A, use_theta_kink_alpha0_alpha_A);
 	old_chi2_check = nodes_[s-3].chi2();
 	if( old_chi2 > old_chi2_check ){
@@ -1595,7 +1595,7 @@ namespace CAT {
     }
 
 
-    void sequence::calculate_helix(void) {
+    bool sequence::calculate_helix(void) {
 
       helix_chi2s_.clear();
 
@@ -1633,7 +1633,7 @@ namespace CAT {
 
         helix_ = average(helices);
         helix_.set_print_level(print_level());
-        helix_.set_nsigma(nsigma());
+        helix_.set_probmin(probmin());
 
         experimental_point _center = helix_.center();
         experimental_double Yc = middle_node().ep().y() - helix_.pitch()*experimental_vector(_center, middle_node().ep()).phi();
@@ -1664,8 +1664,8 @@ namespace CAT {
           zs.push_back(inode->ep().z());
         }
 
-        CircleRegression cl(xs, zs, print_level(), nsigma());
-        cl.fit();
+        CircleRegression cl(xs, zs, print_level(), probmin());
+        if( !cl.fit() ) return false;
         //      cl.minuit_fit();
 
         if( print_level() >= mybhep::VVERBOSE ){
@@ -1700,7 +1700,7 @@ namespace CAT {
 
 
 
-        LinearRegression l(phis, ys, print_level(), nsigma());
+        LinearRegression l(phis, ys, print_level(), probmin());
 
 #if CAT_WITH_DEVEL_ROOT == 1
         if ( !l.root_fit() ){  // fit with root
@@ -1725,7 +1725,7 @@ namespace CAT {
 
         // build helix
         ci.set_center(experimental_point(ci.center().x(), l.y0(), ci.center().z()));
-        helix_ = helix(ci, l.tangent(), print_level(), nsigma());
+        helix_ = helix(ci, l.tangent(), print_level(), probmin());
 
 
 
@@ -1741,7 +1741,7 @@ namespace CAT {
       }
 
 
-      return;
+      return true;
     }
 
 
@@ -2156,7 +2156,7 @@ namespace CAT {
 
 
 
-    sequence sequence::match(const sequence & seq, bool invertA, bool invertB){
+    sequence sequence::match(const sequence & seq, bool invertA, bool invertB, bool *ok){
 
       sequence news;
       if( invertA )
@@ -2243,7 +2243,9 @@ namespace CAT {
       }
 
 
-      news.calculate_helix();
+      *ok = true;
+      if( !news.calculate_helix() )
+	*ok = false;
 
       return news;
 

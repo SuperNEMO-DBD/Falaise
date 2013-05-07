@@ -36,14 +36,14 @@ int main(int argc_, char* argv_[]){
   topology:: experimental_vector va(a, b, c);
   topology:: experimental_vector vb(3., 4., 0., 0.3, 0.4, 0.);
   
-  topology::cell ca(pa, a+b, 0);  ca.set_nsigma(10.);
-  topology::cell cb(pb, d+e, 1);  cb.set_nsigma(10.);
-  topology::cell cc(pc, g+h, 2);  cc.set_nsigma(10.);
+  topology::cell ca(pa, a+b, 0);  ca.set_probmin(1.e-200);
+  topology::cell cb(pb, d+e, 1);  cb.set_probmin(1.e-200);
+  topology::cell cc(pc, g+h, 2);  cc.set_probmin(1.e-200);
 
-  topology::line l(pa, pb); l.set_nsigma(10.);
+  topology::line l(pa, pb); l.set_probmin(1.e-200);
   cout << " l: "; l.dump(); cout << " -l: "; l.invert().dump(); cout << " " << endl;
-  topology::line l2(pb, pc); l.set_nsigma(10.);
-  topology::line l3(pa, pc); l.set_nsigma(10.);
+  topology::line l2(pb, pc); l.set_probmin(1.e-200);
+  topology::line l3(pa, pc); l.set_probmin(1.e-200);
 
   topology::joint j(pa, pb, pc);
   cout << " j: "; j.dump(); cout << " -j: "; j.invert().dump(); cout << " " << endl;
@@ -67,23 +67,23 @@ int main(int argc_, char* argv_[]){
   std::vector<topology::cell_triplet> ctl2; ctl2.clear();
   std::vector<topology::cell_triplet> ctl3; ctl3.clear();
 
-  topology::cell_triplet cccc(ca, cb, cc); cccc.set_nsigma(10.);
+  topology::cell_triplet cccc(ca, cb, cc); cccc.set_probmin(1.e-200);
   double Ratio = 3.;
   cccc.calculate_joints(Ratio);
   cout << " cccc: "; cccc.dump(); cout << " -cccc: "; cccc.invert().dump(); cout << " " << endl;
 
-  topology::node na(ca, cl1, ctl1); na.set_nsigma(10.); na.calculate_triplets(Ratio);
+  topology::node na(ca, cl1, ctl1); na.set_probmin(1.e-200); na.calculate_triplets(Ratio);
 
   cout << " na: "; na.dump(); cout << " -na: "; na.invert().dump(); cout << " " << endl;
-  topology::node nb(cb, cl2, ctl2); nb.set_nsigma(10.); nb.calculate_triplets(Ratio);
-  topology::node nc(cc, cl3, ctl3); nc.set_nsigma(10.); nc.calculate_triplets(Ratio);
+  topology::node nb(cb, cl2, ctl2); nb.set_probmin(1.e-200); nb.calculate_triplets(Ratio);
+  topology::node nc(cc, cl3, ctl3); nc.set_probmin(1.e-200); nc.calculate_triplets(Ratio);
 
   std::vector<topology::node> nodes;
   nodes.push_back(na);
   nodes.push_back(nb);
   nodes.push_back(nc);
 
-  topology::cluster cu(nodes); cu.set_nsigma(10.);
+  topology::cluster cu(nodes); cu.set_probmin(1.e-200);
   cout << " cu: "; cu.dump(); cout << " -cu: "; cu.invert().dump(); cout << " " << endl;
 
     
