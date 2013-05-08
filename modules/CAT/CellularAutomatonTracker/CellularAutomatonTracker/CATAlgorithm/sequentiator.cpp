@@ -1969,8 +1969,8 @@ namespace CAT {
   void sequentiator::print_a_sequence(const topology::sequence & sequence) const {
     //*************************************************************
 
-    clog << "NOTICE: " << "CAT::sequentiator::print_a_sequence: "
-         << "Printing sequence: " << endl;
+    std::clog << sequence.name();
+
     if( sequence.Free() )
       {
         std::clog << "*";
@@ -2026,7 +2026,7 @@ namespace CAT {
 	}
       }
 
-    std::clog << " center (" << sequence.center().x().value() << ", " << sequence.center().y().value() << ", " << sequence.center().z().value() << ")  radius " << sequence.radius().value() <<  " pitch " << sequence.pitch().value() << " momentum " << sequence.momentum().length().value() << "  tangent charge " << sequence.charge().value() << " +- " << sequence.charge().error() << " helix charge " << sequence.helix_charge().value()  << " +- " << sequence.helix_charge().error() << " detailed charge " << sequence.detailed_charge().value()  << " +- " << sequence.detailed_charge().error();fflush(stdout);
+    std::clog << " center (" << sequence.center().x().value() << ", " << sequence.center().y().value() << ", " << sequence.center().z().value() << ")  radius " << sequence.radius().value() <<  " pitch " << sequence.pitch().value() << " momentum " << sequence.momentum().length().value() << "  tangent charge " << sequence.charge().value() << " +- " << sequence.charge().error() << " helix charge " << sequence.helix_charge().value()  << " +- " << sequence.helix_charge().error() << " detailed charge " << sequence.detailed_charge().value()  << " +- " << sequence.detailed_charge().error() << " chi2 " << sequence.chi2() << " prob " << sequence.Prob(); fflush(stdout);
     if( sequence.has_helix_vertex() ){
       std::clog << " helix vertex on " << sequence.helix_vertex_type();fflush(stdout);
       if( sequence.helix_vertex_type() == "calo" ) std::clog << " icalo " << sequence.helix_vertex_id();
@@ -2053,8 +2053,7 @@ namespace CAT {
   void sequentiator::print_scenarios() const {
     //*************************************************************
 
-    clog << "NOTICE: " << "CAT::sequentiator::print_scenarios: "
-         << "Printing scenarios " << scenarios_.size() << endl; fflush(stdout);
+    clog << "Printing scenarios " << scenarios_.size() << endl; fflush(stdout);
 
     for(vector<topology::scenario>::const_iterator isc=scenarios_.begin(); isc!=scenarios_.end(); ++isc)
       {
@@ -2071,16 +2070,14 @@ namespace CAT {
   void sequentiator::print_a_scenario(const topology::scenario & scenario) const {
     //*************************************************************
 
-    clog << "NOTICE: " << "CAT::sequentiator::print_a_scenario: "
-         << "Print associated sequences: " << endl;
+    clog << "Print associated sequences: " << endl;
     for (vector<topology::sequence>::const_iterator iseq = scenario.sequences_.begin();
          iseq != scenario.sequences_.end(); ++iseq)
       {
         print_a_sequence(*iseq);
       }
 
-    clog << "NOTICE: " << "CAT::sequentiator::print_a_scenario: "
-         << "Print scenario parameters" << endl;
+    clog << "Print scenario parameters" << endl;
     clog << " |-- nfree " << scenario.n_free_families() << endl;
     clog << " |-- noverls " << scenario.n_overlaps() << endl;
     clog << " |-- chi2 " << scenario.chi2() << endl;
@@ -2180,8 +2177,12 @@ namespace CAT {
         continue;
       }
 
-      //    m.message(" should we erase last sequence ", sequences_.size() - 1, " in favour of ", iseq - sequences_.begin(), " ? " ,mybhep::VVERBOSE); fflush(stdout);
-      if( sequences_.back().contained( *iseq ) && ! sequences_.back().Free())
+      m.message(" should we erase last sequence [", sequences_.size() - 1, "] " , sequences_.back().name() , " in favour of [", iseq - sequences_.begin(), "] " , iseq->name() , " ? " ,mybhep::VVERBOSE); fflush(stdout);
+      if( !sequences_.back().contained( *iseq )){
+	m.message("no, it's not contained " ,mybhep::VVERBOSE); fflush(stdout);
+      }else if( sequences_.back().Free() && !sequences_.back().contained_same_extreme_quadrants( *iseq ) ){
+	m.message("no, it's a free sequence with different extreme quadrants " ,mybhep::VVERBOSE); fflush(stdout);
+      }else
         {
           m.message(" erased last sequence ", sequences_.size() - 1, "  contained in sequence", iseq - sequences_.begin(), mybhep::VERBOSE); fflush(stdout);
           sequences_.pop_back();
@@ -2189,9 +2190,12 @@ namespace CAT {
           continue;
         }
 
-      //    m.message(" should we erase sequence ", iseq - sequences_.begin(), " in favour of the last ", sequences_.size() - 1, " ? " ,mybhep::VVERBOSE); fflush(stdout);
-
-      if( iseq->contained( sequences_.back() )  && ! iseq->Free())
+      m.message(" should we erase sequence [", iseq - sequences_.begin(), "] " , iseq->name() , " in favour of the last [", sequences_.size() - 1, "] " , sequences_.back().name() , " ? " ,mybhep::VVERBOSE); fflush(stdout);
+      if( !iseq->contained( sequences_.back() ) ){
+	m.message("no, it's not contained " ,mybhep::VVERBOSE); fflush(stdout);
+      }else if( iseq->Free() && !iseq->contained_same_extreme_quadrants( sequences_.back() ) ){
+	m.message("no, it's a free sequence with different extreme quadrants " ,mybhep::VVERBOSE); fflush(stdout);
+      }else
         {
           m.message(" erased sequence ", iseq - sequences_.begin(), "contained in last sequence", sequences_.size()-1, mybhep::VERBOSE); fflush(stdout);
           sequences_.erase(iseq);
@@ -2199,10 +2203,6 @@ namespace CAT {
           ++ iseq;
           continue;
         }
-      else{
-        ++ iseq;
-        continue;
-      }
 
       std::vector<topology::sequence>::iterator kseq = sequences_.begin();
 
@@ -2249,6 +2249,9 @@ namespace CAT {
         }
 
       }
+
+      iseq++;
+      continue;
     }
 
 

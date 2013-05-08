@@ -1392,8 +1392,6 @@ namespace CAT {
 
     if( event_number < first_event_number ) return;
 
-    bool devel = false;
-    //devel = true;
     clock.start(" clusterizer: clusterize ","cumulative");
 
     m.message(" local_tracking: fill clusters ", mybhep::VERBOSE);
@@ -1426,13 +1424,10 @@ namespace CAT {
               }
 
             for(std::vector<topology::cell>::const_iterator icell=cells_.begin(); icell!=cells_.end(); ++icell){
-              if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: cell loop..." << std::endl;
               // pick a cell c that was never added
               const topology::cell & c = *icell;
-              if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: pick a cell done..." << std::endl;
               if( (cell_side(c) * side[ip]) < 0) continue;
               if( c.fast() != fast[iq] ) continue;
-              if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: ====> cell ID = "<<  c.id() << std::endl;
 	      if( flags[c.id()] == 1 ) continue;
 	      flags[c.id()] = 1;
 
@@ -1508,7 +1503,6 @@ namespace CAT {
 
     clock.stop(" clusterizer: clusterize ");
 
-    if (devel) std::clog << "DEVEL: CAT::clusterizer::clusterize: Done." << std::endl;
 
     return;
 

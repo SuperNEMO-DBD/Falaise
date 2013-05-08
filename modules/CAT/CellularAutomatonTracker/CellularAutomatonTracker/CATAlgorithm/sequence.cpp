@@ -929,6 +929,17 @@ namespace CAT {
 
     bool sequence::contained_same_size_and_cells(const topology::sequence & big)const{
 
+      if( !contained_same_extreme_quadrants(big) ) return false;
+
+      double thisprob = Prob();
+      double bigprob = big.Prob();
+
+      return (thisprob < bigprob);
+
+    }
+
+    bool sequence::contained_same_extreme_quadrants(const topology::sequence & big)const{
+
       size_t s = nodes().size();
 
       if( nodes().front().c().id() == big.nodes().front().c().id() ){
@@ -949,10 +960,7 @@ namespace CAT {
         }
       }
 
-      double thisprob = Prob();
-      double bigprob = big.Prob();
-
-      return (thisprob < bigprob);
+      return true;
 
     }
 

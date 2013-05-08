@@ -352,6 +352,8 @@ namespace CAT {
 
       bool contained_same_size_and_cells(const topology::sequence & big)const;
 
+      bool contained_same_extreme_quadrants(const topology::sequence & big)const;
+
       bool is_bridge(const topology::sequence & first,const topology::sequence & second)const;
 
       void increase_iteration(size_t inode, size_t ilink);
