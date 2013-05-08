@@ -66,6 +66,31 @@ namespace CAT{
  
       return;
     }
+
+    /*** dump ***/
+    void cell_triplet::dump_joint (joint j,
+				   std::ostream & a_out,
+				   const std::string & a_title,
+				   const std::string & a_indent,
+				   bool a_inherit) const{
+      std::string indent;
+      if (! a_indent.empty ()) indent = a_indent;
+      if (! a_title.empty ())
+        {
+          a_out << indent << a_title << std::endl;
+        }
+
+      a_out << indent << appname_ << " -------------- " << std::endl;
+      a_out << indent << " first point " << std::endl;
+      this->ca().dump_point(j.epa());
+      a_out << indent << " second point " << std::endl;
+      this->cb().dump_point(j.epb());
+      a_out << indent << " third point " << std::endl;
+      this->cc().dump_point(j.epc());
+      a_out << indent << " -------------- " << std::endl;
+
+      return;
+    }
     
     //! set cells
     void cell_triplet::set(const cell_couplet &cca, const cell_couplet &ccb){
@@ -447,7 +472,7 @@ namespace CAT{
       if( print_level() > mybhep::VERBOSE ){
         std::clog << " after refining there are " << _joints.size() << " joints " << std::endl;
 	for(std::vector<joint>::const_iterator ij=_joints.begin(); ij!=_joints.end(); ++ij){
-	  std::clog << " joint " << ij - _joints.begin() << " : "; ij->dump();
+	  std::clog << " joint " << ij - _joints.begin() << " : "; dump_joint(*ij);
 	}
       }
 

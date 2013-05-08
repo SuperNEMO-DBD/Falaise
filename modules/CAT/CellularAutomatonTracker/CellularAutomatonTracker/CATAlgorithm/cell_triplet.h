@@ -83,6 +83,13 @@ namespace CAT{
                          const std::string & a_indent = "",
                          bool a_inherit          = false) const;
 
+      /*** dump ***/
+      virtual void dump_joint (joint j,
+			       std::ostream & a_out         = std::clog,
+			       const std::string & a_title  = "",
+			       const std::string & a_indent = "",
+			       bool a_inherit          = false) const;
+
 
       //! set cells
       void set(const cell_couplet &cca, const cell_couplet &ccb);
