@@ -2413,7 +2413,7 @@ namespace CAT {
       if( g == 1 && ln > 0 && chlayer == 3.5 ) return true;
       if( g == 2 && ln > 0 && chlayer == 5.5 ) return true;
       if( g == 1 && ln < 0 && chlayer == -3.5 ) return true;
-      if( g == 1 && ln < 0 && chlayer == -5.5 ) return true;
+      if( g == 2 && ln < 0 && chlayer == -5.5 ) return true;
       return false;
     }
     else if( pl.view() == "bottom" ){
@@ -2423,7 +2423,7 @@ namespace CAT {
       if( g == 1 && ln > 0 && chlayer == 3.5 ) return true;
       if( g == 2 && ln > 0 && chlayer == 5.5 ) return true;
       if( g == 1 && ln < 0 && chlayer == -3.5 ) return true;
-      if( g == 1 && ln < 0 && chlayer == -5.5 ) return true;
+      if( g == 2 && ln < 0 && chlayer == -5.5 ) return true;
       return false;
     }
 
