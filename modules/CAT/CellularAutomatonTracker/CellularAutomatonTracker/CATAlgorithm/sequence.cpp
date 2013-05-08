@@ -193,15 +193,19 @@ namespace CAT {
         inode->dump(a_out, "",indent + "     ");
       if( has_helix_vertex() ){
         a_out << indent << " helix_vertex type: " << helix_vertex_type() << " helix_vertex: "; helix_vertex_.dump();
+	if( helix_vertex_type() == "calo" ) a_out << " icalo " << helix_vertex_id();
       }
       if( has_decay_helix_vertex() ){
-        a_out << indent << " decay helix_vertex type " << decay_helix_vertex_type() << " calo id: " << calo_helix_id() << " decay_helix_vertex : "; decay_helix_vertex_.dump();
+        a_out << indent << " decay helix_vertex type " << decay_helix_vertex_type()  << " decay_helix_vertex : "; decay_helix_vertex_.dump();
+	if( decay_helix_vertex_type() == "calo" ) a_out << " icalo " << calo_helix_id();
       }
       if( has_tangent_vertex() ){
         a_out << indent << " tangent_vertex type: " << tangent_vertex_type() << " tangent_vertex: "; tangent_vertex_.dump();
+	if( tangent_vertex_type() == "calo" ) a_out << " icalo " << tangent_vertex_id();
       }
       if( has_decay_tangent_vertex() ){
-        a_out << indent << " decay tangent_vertex type " << decay_tangent_vertex_type() << " calo id: " << calo_tangent_id() << " decay_tangent_vertex : "; decay_tangent_vertex_.dump();
+        a_out << indent << " decay tangent_vertex type " << decay_tangent_vertex_type() << " decay_tangent_vertex : "; decay_tangent_vertex_.dump();
+	if( decay_tangent_vertex_type() == "calo" ) a_out << " icalo " << calo_tangent_id();
       }
       a_out << indent << " ------------------- " << std::endl;
 

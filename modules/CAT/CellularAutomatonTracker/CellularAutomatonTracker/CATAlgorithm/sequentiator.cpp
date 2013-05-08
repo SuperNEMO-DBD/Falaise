@@ -1822,7 +1822,7 @@ namespace CAT {
 		  m.message( " new tangent intersection with minimum distance " , dist , " position: " , tangent_extrapolation.x().value() ,   tangent_extrapolation.y().value(),  tangent_extrapolation.z().value() , mybhep::VVERBOSE);
 		}
 	      }
-
+	    
 
 	    } // finish loop on calos
 
