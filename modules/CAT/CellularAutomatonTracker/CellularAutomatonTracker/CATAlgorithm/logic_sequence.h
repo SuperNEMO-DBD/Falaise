@@ -41,12 +41,20 @@ namespace topology{
     std::vector<logic_cell> cells_;
 
     // sequence's vertex
-    bool has_vertex_;
-    size_t vertex_id_;
+    bool has_helix_vertex_;
+    size_t helix_vertex_id_;
+    std::string helix_vertex_type_;
+    bool has_tangent_vertex_;
+    size_t tangent_vertex_id_;
+    std::string tangent_vertex_type_;
 
     // sequence's decay_vertex
-    bool has_decay_vertex_;
-    size_t calo_id_;
+    bool has_decay_helix_vertex_;
+    size_t calo_helix_id_;
+    std::string decay_helix_vertex_type_;
+    bool has_decay_tangent_vertex_;
+    size_t calo_tangent_id_;
+    std::string decay_tangent_vertex_type_;
 
     double chi2_;
     int32_t ndof_;
@@ -55,10 +63,18 @@ namespace topology{
     logic_sequence()
     {
       cells_.clear();
-      has_vertex_ = false;
-      vertex_id_ = mybhep::default_integer;
-      has_decay_vertex_ = false;
-      calo_id_ = mybhep::default_integer;
+      has_helix_vertex_ = false;
+      helix_vertex_id_ = mybhep::default_integer;
+      helix_vertex_type_="default";
+      has_tangent_vertex_ = false;
+      tangent_vertex_id_ = mybhep::default_integer;
+      tangent_vertex_type_="default";
+      has_decay_helix_vertex_ = false;
+      calo_helix_id_ = mybhep::default_integer;
+      decay_helix_vertex_type_="default";
+      has_decay_tangent_vertex_ = false;
+      calo_tangent_id_ = mybhep::default_integer;
+      decay_tangent_vertex_type_="default";
       chi2_ = mybhep::small_neg;
       ndof_ = mybhep::default_integer;
     }
@@ -70,15 +86,37 @@ namespace topology{
     logic_sequence(const topology::sequence &s){
       for(std::vector<node>::const_iterator in=s.nodes_.begin(); in!=s.nodes_.end(); ++in)
         cells_.push_back(logic_cell(in->c().id()));
-      has_vertex_ = false;
+      has_helix_vertex_ = false;
+      helix_vertex_id_ = mybhep::default_integer;
+      helix_vertex_type_="default";
+      has_tangent_vertex_ = false;
+      tangent_vertex_id_ = mybhep::default_integer;
+      tangent_vertex_type_="default";
+      has_decay_helix_vertex_ = false;
+      calo_helix_id_ = mybhep::default_integer;
+      decay_helix_vertex_type_="default";
+      has_decay_tangent_vertex_ = false;
+      calo_tangent_id_ = mybhep::default_integer;
+      decay_tangent_vertex_type_="default";
       if( s.has_helix_vertex() ){
-        has_vertex_ = true;
-        vertex_id_ = s.helix_vertex_id();
+        has_helix_vertex_ = true;
+        helix_vertex_id_ = s.helix_vertex_id();
+	helix_vertex_type_=s.helix_vertex_type();
       }
-      has_decay_vertex_ = false;
       if( s.has_decay_helix_vertex() ){
-        has_decay_vertex_ = true;
-        calo_id_ = s.calo_helix_id();
+        has_decay_helix_vertex_ = true;
+        calo_helix_id_ = s.calo_helix_id();
+	decay_helix_vertex_type_=s.decay_helix_vertex_type();
+      }
+      if( s.has_tangent_vertex() ){
+        has_tangent_vertex_ = true;
+        tangent_vertex_id_ = s.tangent_vertex_id();
+	tangent_vertex_type_=s.tangent_vertex_type();
+      }
+      if( s.has_decay_tangent_vertex() ){
+        has_decay_tangent_vertex_ = true;
+        calo_tangent_id_ = s.calo_tangent_id();
+	decay_tangent_vertex_type_=s.decay_tangent_vertex_type();
       }
       chi2_ = s.chi2();
       ndof_ = s.ndof();
@@ -91,23 +129,48 @@ namespace topology{
     }
 
     //! has decay_vertex
-    const bool has_decay_vertex()const{
-      return has_decay_vertex_;
+    const bool has_decay_helix_vertex()const{
+      return has_decay_helix_vertex_;
+    }
+    const bool has_decay_tangent_vertex()const{
+      return has_decay_tangent_vertex_;
+    }
+    const std::string & decay_helix_vertex_type()const{
+      return decay_helix_vertex_type_;
+    }
+    const std::string & decay_tangent_vertex_type()const{
+      return decay_tangent_vertex_type_;
     }
 
+
     //! get calo id
-    const size_t calo_id()const{
-      return calo_id_;
+    const size_t calo_helix_id()const{
+      return calo_helix_id_;
+    }
+    const size_t calo_tangent_id()const{
+      return calo_tangent_id_;
     }
 
     //! has vertex
-    const bool has_vertex()const{
-      return has_vertex_;
+    const bool has_helix_vertex()const{
+      return has_helix_vertex_;
+    }
+    const bool has_tangent_vertex()const{
+      return has_tangent_vertex_;
+    }
+    const std::string & helix_vertex_type()const{
+      return helix_vertex_type_;
+    }
+    const std::string & tangent_vertex_type()const{
+      return tangent_vertex_type_;
     }
 
     //! get vertex id
-    const size_t vertex_id()const{
-      return vertex_id_;
+    const size_t helix_vertex_id()const{
+      return helix_vertex_id_;
+    }
+    const size_t tangent_vertex_id()const{
+      return tangent_vertex_id_;
     }
 
     // get chi2 of sequence

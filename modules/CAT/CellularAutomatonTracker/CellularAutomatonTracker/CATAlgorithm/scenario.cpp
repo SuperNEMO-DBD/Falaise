@@ -148,10 +148,10 @@ namespace CAT {
 
         }
 
-        if( iseq->has_decay_helix_vertex() ){
+        if( iseq->has_decay_helix_vertex() && iseq->decay_helix_vertex_type() == "calo" ){
           if( iseq->calo_helix_id() >= calos.size() ){
             if( print_level() >= mybhep::VVERBOSE )
-              std::clog << " problem: calo " << iseq->calo_helix_id() << " has larger id than n of calos " << calos.size() << std::endl;
+              std::clog << " problem: helix calo " << iseq->calo_helix_id() << " has larger id than n of calos " << calos.size() << std::endl;
             continue;
           }
 
@@ -159,8 +159,57 @@ namespace CAT {
             freecalos[iseq->calo_helix_id()] = 0;
           else
             counter ++;
-
         }
+
+        if( iseq->has_helix_vertex() && iseq->helix_vertex_type() == "calo" ){
+          if( iseq->helix_vertex_id() >= calos.size() ){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " problem: helix calo-vertex " << iseq->helix_vertex_id() << " has larger id than n of calos " << calos.size() << std::endl;
+            continue;
+          }
+
+	  if( iseq->helix_vertex_id() != iseq->calo_helix_id() ){ // avoid double counting if both extrapolations point to the same calo
+	    if( freecalos[iseq->helix_vertex_id()] )
+	      freecalos[iseq->helix_vertex_id()] = 0;
+	    else
+	      counter ++;
+	  }
+        }
+
+        if( iseq->has_decay_tangent_vertex() && iseq->decay_tangent_vertex_type() == "calo" ){
+          if( iseq->calo_tangent_id() >= calos.size() ){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " problem: tangent calo " << iseq->calo_tangent_id() << " has larger id than n of calos " << calos.size() << std::endl;
+            continue;
+          }
+
+	  if( iseq->calo_tangent_id() != iseq->calo_helix_id() &&
+	      iseq->calo_tangent_id() != iseq->helix_vertex_id() ){ // avoid double counting if both extrapolations point to the same calo
+	    if( freecalos[iseq->calo_tangent_id()] )
+	      freecalos[iseq->calo_tangent_id()] = 0;
+	    else
+	      counter ++;
+	  }
+        }
+
+        if( iseq->has_tangent_vertex() && iseq->tangent_vertex_type() == "calo" ){
+          if( iseq->tangent_vertex_id() >= calos.size() ){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " problem: tangent calo-vertex " << iseq->tangent_vertex_id() << " has larger id than n of calos " << calos.size() << std::endl;
+            continue;
+          }
+
+	  if( iseq->tangent_vertex_id() != iseq->calo_helix_id() &&
+	      iseq->tangent_vertex_id() != iseq->calo_tangent_id() &&
+	      iseq->tangent_vertex_id() != iseq->helix_vertex_id() ){ // avoid double counting if both extrapolations point to the same calo
+	    if( freecalos[iseq->tangent_vertex_id()] )
+	      freecalos[iseq->tangent_vertex_id()] = 0;
+	    else
+	      counter ++;
+	  }
+        }
+
+
 
       }
 
@@ -195,17 +244,50 @@ namespace CAT {
           }
         }
 
-        if( !iseq->has_decay_helix_vertex() ) continue;
+        if( iseq->has_decay_helix_vertex() && iseq->decay_helix_vertex_type() == "calo" ){
 
-        if( iseq->calo_helix_id() >= calos.size() ){
-          if( print_level() >= mybhep::VVERBOSE )
-            std::clog << " problem: calo " << iseq->calo_helix_id() << " has larger id than n of calos " << calos.size() << std::endl;
-          continue;
-        }
-        freecalos[iseq->calo_helix_id()] = 0;
+	  if( iseq->calo_helix_id() >= calos.size() ){
+	    if( print_level() >= mybhep::VVERBOSE )
+	      std::clog << " problem: helix calo " << iseq->calo_helix_id() << " has larger id than n of calos " << calos.size() << std::endl;
+	    continue;
+	  }
+	  freecalos[iseq->calo_helix_id()] = 0;
+	}
+
+        if( iseq->has_helix_vertex() && iseq->helix_vertex_type() == "calo" ){
+
+	  if( iseq->helix_vertex_id() >= calos.size() ){
+	    if( print_level() >= mybhep::VVERBOSE )
+	      std::clog << " problem: helix calo-vertex " << iseq->helix_vertex_id() << " has larger id than n of calos " << calos.size() << std::endl;
+	    continue;
+	  }
+	  freecalos[iseq->helix_vertex_id()] = 0;
+	}
+
+        if( iseq->has_decay_tangent_vertex() && iseq->decay_tangent_vertex_type() == "calo" ){
+
+	  if( iseq->calo_tangent_id() >= calos.size() ){
+	    if( print_level() >= mybhep::VVERBOSE )
+	      std::clog << " problem: tangent calo " << iseq->calo_tangent_id() << " has larger id than n of calos " << calos.size() << std::endl;
+	    continue;
+	  }
+	  freecalos[iseq->calo_tangent_id()] = 0;
+	}
+
+        if( iseq->has_tangent_vertex() && iseq->tangent_vertex_type() == "calo" ){
+
+	  if( iseq->tangent_vertex_id() >= calos.size() ){
+	    if( print_level() >= mybhep::VVERBOSE )
+	      std::clog << " problem: tangent calo-vertex " << iseq->tangent_vertex_id() << " has larger id than n of calos " << calos.size() << std::endl;
+	    continue;
+	  }
+	  freecalos[iseq->tangent_vertex_id()] = 0;
+	}
+
+
 
       }
-
+      
       size_t counter = 0;
       for(std::vector<int>::iterator i=freecells.begin(); i!= freecells.end(); ++i)
         if( *i )
