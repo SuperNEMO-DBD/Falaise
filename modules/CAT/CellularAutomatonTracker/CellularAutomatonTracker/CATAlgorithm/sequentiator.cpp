@@ -2172,9 +2172,11 @@ namespace CAT {
 
     while( iseq != sequences_.end() ){
 
-      if( (size_t)(iseq - sequences_.begin()) == sequences_.size() - 1 ){
-        ++iseq;
-        continue;
+      // compare iseq with last sequence
+      if( (size_t)(iseq - sequences_.begin() + 1) >= sequences_.size() ){
+	// iseq is last sequence
+	// no need to check it against last sequence
+	break;
       }
 
       m.message(" should we erase last sequence [", sequences_.size() - 1, "] " , sequences_.back().name() , " in favour of [", iseq - sequences_.begin(), "] " , iseq->name() , " ? " ,mybhep::VVERBOSE); fflush(stdout);
@@ -2187,6 +2189,7 @@ namespace CAT {
           m.message(" erased last sequence ", sequences_.size() - 1, "  contained in sequence", iseq - sequences_.begin(), mybhep::VERBOSE); fflush(stdout);
           sequences_.pop_back();
           changed =  true;
+	  // now check again the same iseq against the new last sequence
           continue;
         }
 
@@ -2200,9 +2203,13 @@ namespace CAT {
           m.message(" erased sequence ", iseq - sequences_.begin(), "contained in last sequence", sequences_.size()-1, mybhep::VERBOSE); fflush(stdout);
           sequences_.erase(iseq);
           changed = true;
-          ++ iseq;
+	  iseq = sequences_.begin() + (iseq - sequences_.begin());
+	  // now check the new iseq against the same last sequence
           continue;
         }
+
+      // arrive here if no sequences have been deleted
+      // now check (kseq, iseq, lastseq) for bridges
 
       std::vector<topology::sequence>::iterator kseq = sequences_.begin();
 
@@ -2213,41 +2220,60 @@ namespace CAT {
           continue;
         }
 
+	if( (size_t)(kseq - sequences_.begin() + 1) >= sequences_.size() ){
+	  // kseq is last sequence
+	  break;
+	}
+
+	if( (size_t)(iseq - sequences_.begin() + 1) >= sequences_.size() ){
+	  // iseq is last sequence
+	  break;
+	}
+
+        if( level >= mybhep::VVERBOSE ){
+	  std::clog << " should we erase sequence ["<< kseq - sequences_.begin()<< "] " << kseq->name() << " as bridge between ["<< iseq - sequences_.begin()<< "] " << iseq->name()<< " and last ["<< sequences_.size() - 1<< "] "<< sequences_.back().name() << " ? " << std::endl; fflush(stdout);
+	}
         if( kseq->is_bridge(*iseq, sequences_.back() ) &&
             (*kseq).nodes().size() < (*iseq).nodes().size() &&
             (*kseq).nodes().size() < sequences_.back().nodes().size()  &&
             !kseq->Free())
           {
 
-            m.message(" erased sequence ", kseq - sequences_.begin(), "bridge between", iseq - sequences_.begin(), "and last ", sequences_.size() - 1, mybhep::VERBOSE); fflush(stdout);
+	    if( level >= mybhep::VVERBOSE ){
+	      std::clog <<" erased sequence  ["<< kseq - sequences_.begin()<< "] " << kseq->name() << " as bridge between ["<< iseq - sequences_.begin()<< "] " << iseq->name()<< " and last ["<< sequences_.size() - 1<< "] "<< sequences_.back().name() << std::endl; fflush(stdout);
+	    }
             sequences_.erase(kseq);
             changed = true;
-          }
-        else{
-          ++ kseq;
-          continue;
-        }
+	    kseq = sequences_.begin() + (kseq - sequences_.begin());
+	    if( kseq - sequences_.begin() < iseq - sequences_.begin() )
+	      iseq = sequences_.begin() + (iseq - sequences_.begin() - 1);
+	    else
+	      iseq = sequences_.begin() + (iseq - sequences_.begin());
+	    // now check the new kseq
+	    continue;
+	  }
+	
 
-        if( iseq==kseq ){
-          ++kseq;
-          continue;
-        }
-
+        if( level >= mybhep::VVERBOSE ){
+	  std::clog <<" should we erase last ["<< sequences_.size() - 1<< "] "<< sequences_.back().name() << " as bridge between ["<< iseq - sequences_.begin()<< "] " << iseq->name()<< " and  ["<< kseq - sequences_.begin()<< "] " << kseq->name() << " ? "<< std::endl; fflush(stdout);
+	}
         if( sequences_.back().is_bridge(*iseq, *kseq ) &&
             sequences_.back().nodes().size() < (*iseq).nodes().size() &&
             sequences_.back().nodes().size() < (*kseq).nodes().size()  &&
             !sequences_.back().Free())
           {
-            m.message(" erased last sequence ", sequences_.size()-1, "bridge between", iseq - sequences_.begin(), "and", kseq - sequences_.begin(), mybhep::VERBOSE); fflush(stdout);
+	    if( level >= mybhep::VVERBOSE ){
+	      std::clog <<" erased  last ["<< sequences_.size() - 1<< "] "<< sequences_.back().name() << " as bridge between ["<< iseq - sequences_.begin()<< "] " << iseq->name()<< " and  ["<< kseq - sequences_.begin()<< "] " << kseq->name()<< std::endl; fflush(stdout);
+	    }
             sequences_.pop_back();
             changed =  true;
+	    iseq = sequences_.begin() + (iseq - sequences_.begin());
+	    // now check the same kseq with the new last sequence
             continue;
           }
-        else{
-          kseq ++;
-          continue;
-        }
 
+	kseq ++;
+	continue;
       }
 
       iseq++;
