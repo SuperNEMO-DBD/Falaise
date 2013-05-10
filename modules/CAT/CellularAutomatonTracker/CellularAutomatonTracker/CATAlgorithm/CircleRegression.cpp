@@ -358,7 +358,7 @@ namespace CAT{
 	    deltaphi_product = deltaphiAB*deltaphi_overall;
 	    if( deltaphi_product.value() < - deltaphi_product.error() ){
 	      if( print_level() >= mybhep::VVERBOSE ){
-		std::clog << " points are not in good order: phi[ " << index-2 << "] = " << phiA.value() << ", phi[" << index-1 << "] = " << phiB.value() << ", deltaphi_overall = " << deltaphi_overall.value() << std::endl;
+		std::clog << " points are not in good order: phi[ " << index-1 << "] = " << phiA.value() << ", phi[" << index << "] = " << phiB.value() << ", deltaphi_overall = " << deltaphi_overall.value() << std::endl;
 	      }
 	      return false;
 	    }

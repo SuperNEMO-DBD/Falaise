@@ -656,8 +656,6 @@ namespace CAT {
       {
         topology::cluster & a_cluster = *icluster;
 
-        // 2012/06/26 XG : Make a copy of pointer better than a copy
-        // by value
         local_cluster_ = &(*icluster);
 
         sequentiate_cluster(a_cluster);
@@ -817,9 +815,6 @@ namespace CAT {
           {
             clog << "\n first node: " << inode->c().id();
           }
-
-        // 2012/06/27 XG: Not used anymore
-        // topology::node first_node;
 
         if (!good_first_node(a_node)) continue;
 
@@ -1156,7 +1151,7 @@ namespace CAT {
     // protection
     if( sequence_size < 1 )
       {
-        m.message(" problem: sequence has lenght ", sequence_size, "... stop evolving ", mybhep::NORMAL); fflush(stdout);
+        m.message(" problem: sequence has length ", sequence_size, "... stop evolving ", mybhep::NORMAL); fflush(stdout);
         clock.stop(" sequentiator: evolve: part A ");
         clock.stop(" sequentiator: evolve ");
         return false;
@@ -1319,10 +1314,6 @@ namespace CAT {
         }
       }
     }
-
-    // 2012/06/27 XG: Not used anymore since the current node is
-    //    directly modified
-    // first_node = node;
 
     clock.stop(" sequentiator: good first node ");
     return true;
@@ -2182,8 +2173,10 @@ namespace CAT {
       m.message(" should we erase last sequence [", sequences_.size() - 1, "] " , sequences_.back().name() , " in favour of [", iseq - sequences_.begin(), "] " , iseq->name() , " ? " ,mybhep::VVERBOSE); fflush(stdout);
       if( !sequences_.back().contained( *iseq )){
 	m.message("no, it's not contained " ,mybhep::VVERBOSE); fflush(stdout);
-      }else if( sequences_.back().Free() && !sequences_.back().contained_same_extreme_quadrants( *iseq ) ){
-	m.message("no, it's a free sequence with different extreme quadrants " ,mybhep::VVERBOSE); fflush(stdout);
+	//}else if( sequences_.back().Free() && !sequences_.back().contained_same_extreme_quadrants( *iseq ) ){
+	//	m.message("no, it's a free sequence with different extreme quadrants " ,mybhep::VVERBOSE); fflush(stdout);
+      }else if( sequences_.back().Free() ){
+	m.message("no, it's a free sequence " ,mybhep::VVERBOSE); fflush(stdout);
       }else
         {
           m.message(" erased last sequence ", sequences_.size() - 1, "  contained in sequence", iseq - sequences_.begin(), mybhep::VERBOSE); fflush(stdout);
@@ -2196,8 +2189,10 @@ namespace CAT {
       m.message(" should we erase sequence [", iseq - sequences_.begin(), "] " , iseq->name() , " in favour of the last [", sequences_.size() - 1, "] " , sequences_.back().name() , " ? " ,mybhep::VVERBOSE); fflush(stdout);
       if( !iseq->contained( sequences_.back() ) ){
 	m.message("no, it's not contained " ,mybhep::VVERBOSE); fflush(stdout);
-      }else if( iseq->Free() && !iseq->contained_same_extreme_quadrants( sequences_.back() ) ){
-	m.message("no, it's a free sequence with different extreme quadrants " ,mybhep::VVERBOSE); fflush(stdout);
+	//}else if( iseq->Free() && !iseq->contained_same_extreme_quadrants( sequences_.back() ) ){
+	//m.message("no, it's a free sequence with different extreme quadrants " ,mybhep::VVERBOSE); fflush(stdout);
+      }else if( iseq->Free() ){
+	m.message("no, it's a free sequence" ,mybhep::VVERBOSE); fflush(stdout);
       }else
         {
           m.message(" erased sequence ", iseq - sequences_.begin(), "contained in last sequence", sequences_.size()-1, mybhep::VERBOSE); fflush(stdout);

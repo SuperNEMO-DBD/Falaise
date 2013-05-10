@@ -1104,8 +1104,7 @@ namespace CAT {
       else
         newsequence.nodes_[lfn].ccc_[link].set_free( true);
 
-      if( lfn == 0 ||
-          ( lfn < 1 && !nodes()[lfn].cc()[link].begun() ) ||
+      if( ( lfn < 1 && !nodes()[lfn].cc()[link].begun() ) ||
           ( lfn >= 1 && !nodes()[lfn].ccc()[link].begun() ) )
         {
           if( lfn == 0 || (lfn < 1 && !nodes()[lfn].cc()[link].begun() ) ){
@@ -1153,8 +1152,6 @@ namespace CAT {
 
         std::vector<bool> shall_one_have_triplet;
         shall_one_have_triplet.assign (nodes()[0].cc().size(), false);
-        // 2012-03-26 FM: remove C style
-        //bool* shall_one_have_triplet = (bool*)malloc(sizeof(bool)*nodes()[0].cc().size());
 
         bool shall_have_triplet = false;
         for(std::vector<cell_couplet>::iterator icc=nodes_[0].cc_.begin(); icc != nodes_[0].cc_.end(); ++icc){
@@ -1176,8 +1173,6 @@ namespace CAT {
             nodes_[0].links_.push_back(icc->cb());
         }
 
-        // 2012-03-26 FM: remove C style
-        //free(shall_one_have_triplet);
         return;
       }
 
@@ -1308,6 +1303,9 @@ namespace CAT {
               increase_iteration(s-1,iccc);
 
               topology::joint j = nodes_[s-1].ccc_[iccc].joints_[iteration];
+              if( print_level() >= mybhep::VVERBOSE ){
+		nodes_[s-1].ccc_[iccc].dump_joint(j);
+              }
 
 	      if( s >= 3 ){ // recalculate chi2 of node A
 		double chi2_change_A, chi2_change_alpha;
@@ -1368,42 +1366,59 @@ namespace CAT {
 
       topology::experimental_point pa = j->epa();
       topology::experimental_point pb = j->epb();
-      if( s >= 2 ){
-        topology::cell ca = second_last_node().c();
-        topology::cell cb = last_node().c();
-
-        if(ca.unknown_vertical() || cb.unknown_vertical() || cc.unknown_vertical()){
-          use_theta_kink = false;
-          ndof --;
-        }
-
-        if( s > 2 ){
-          if( !ca.small() && !ca.intersect(cb) ){
-            pa = ca.angular_average(second_last_node().ep(), j->epa(), &local_separation_a);
-            chi2_separation_a = mybhep::square(local_separation_a.value()/local_separation_a.error());
-            ndof ++;
-	  }
-
-          if( !cb.small() && !cb.intersect(ca) && !cb.intersect(cc) ){
-            pb = cb.angular_average(last_node().ep(), j->epb(), &local_separation_b);
-            chi2_separation_b = mybhep::square(local_separation_b.value()/local_separation_b.error());
-            ndof ++;
-          }
-
-	  if( s >= 3 ){ // we are changing points A and B, affecting the chi2 of connections alpha0-alpha-A and alpha-A-B
-	    get_chi2_change_for_changing_end_of_sequence(pa, pb, &chi2_change_A, &chi2_change_alpha);
-	    if( print_level() >= mybhep::VVERBOSE ){
-	      std::clog << " connecting cell " << cb.id() << " to " << cc.id() << " changes chi2 of cell A, i.e. : " << nodes_[s-2].c().id() << " by " << chi2_change_A << std::endl; fflush(stdout);
-	      if( s >= 4 )
-		std::clog << " connecting cell " << cb.id() << " to " << cc.id() << " changes chi2 of cell alpha, i.e." << nodes_[s-3].c().id() << " by " << chi2_change_alpha  << std::endl; fflush(stdout);
-	    }
-	  }
-
-
-        }
-
+      topology::cell ca = second_last_node().c();
+      topology::cell cb = last_node().c();
+      
+      if(ca.unknown_vertical() || cb.unknown_vertical() || cc.unknown_vertical()){
+	use_theta_kink = false;
+	ndof --;
+      }
+      
+      if( !ca.small() && !ca.same_quadrant(second_last_node().ep(), j->epa() ) ){
+	if( print_level() >= mybhep::VVERBOSE ){
+	  std::clog << " connecting cell " << last_node().c().id() << " with this joint is incompatible: points on cell " << ca.id() << " on different quadrants " << std::endl;
+	}
+	return false;
       }
 
+      if( !cb.small() && !cb.same_quadrant(last_node().ep(), j->epb() ) ){
+	if( print_level() >= mybhep::VVERBOSE ){
+	  std::clog << " connecting cell " << last_node().c().id() << " with this joint is incompatible: points on cell " << cb.id() << " on different quadrants " << std::endl;
+	}
+	return false;
+      }
+
+      if( s > 2 ){
+	if( !ca.small() && !ca.intersect(cb) ){
+	  pa = ca.angular_average(second_last_node().ep(), j->epa(), &local_separation_a);
+	  chi2_separation_a = mybhep::square(local_separation_a.value()/local_separation_a.error());
+	  if( print_level() >= mybhep::VVERBOSE ){
+	    std::clog << " separation chi2 for cell " << ca.id() << " is " << chi2_separation_a << std::endl; fflush(stdout);
+	  }
+	  ndof ++;
+	}
+	
+	if( !cb.small() && !cb.intersect(ca) && !cb.intersect(cc) ){
+	  pb = cb.angular_average(last_node().ep(), j->epb(), &local_separation_b);
+	  chi2_separation_b = mybhep::square(local_separation_b.value()/local_separation_b.error());
+	  if( print_level() >= mybhep::VVERBOSE ){
+	    std::clog << " separation chi2 for cell " << cb.id() << " is " << chi2_separation_b << std::endl; fflush(stdout);
+	  }
+	  ndof ++;
+	}
+	
+	if( s >= 3 ){ // we are changing points A and B, affecting the chi2 of connections alpha0-alpha-A and alpha-A-B
+	  get_chi2_change_for_changing_end_of_sequence(pa, pb, &chi2_change_A, &chi2_change_alpha);
+	  if( print_level() >= mybhep::VVERBOSE ){
+	    std::clog << " connecting cell " << cb.id() << " to " << cc.id() << " changes chi2 of cell A, i.e. : " << nodes_[s-2].c().id() << " by " << chi2_change_A << std::endl; fflush(stdout);
+	    if( s >= 4 )
+	      std::clog << " connecting cell " << cb.id() << " to " << cc.id() << " changes chi2 of cell alpha, i.e." << nodes_[s-3].c().id() << " by " << chi2_change_alpha  << std::endl; fflush(stdout);
+	  }
+	}
+	
+	
+      }
+      
 
       topology::line l1(pa, pb, print_level(), probmin());
       topology::line l2(pb, j->epc(), print_level(), probmin());
@@ -1422,6 +1437,7 @@ namespace CAT {
       }
 
       j->set_chi2(chi2);
+      j->set_p(local_prob);
       chi2s_.push_back(chi2);
       probs_.push_back(local_prob);
 
@@ -1440,7 +1456,7 @@ namespace CAT {
       }
 
       if( print_level() >= mybhep::VVERBOSE ){
-        std::clog << " connecting cell " << last_node().c().id() << " is incompatible: ";
+        std::clog << " connecting cell " << last_node().c().id() << " with this joint is incompatible: ";
         if( s > 2 )
           {
             std::clog << " separation a: " << local_separation_a.value() << " +- " << local_separation_a.error();

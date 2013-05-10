@@ -45,6 +45,7 @@ namespace CAT {
 
       // chi2 of connection along a sequence
       double chi2_;
+      double p_;
 
       //!Default constructor
       joint();
@@ -87,6 +88,7 @@ namespace CAT {
 
       //! set chi2
       void set_chi2(double chi2);
+      void set_p(double p);
 
       //! get experimental_point a
       const experimental_point& epa()const;
@@ -108,6 +110,7 @@ namespace CAT {
 
       //! get chi2
       double chi2() const;
+      double p() const;
 
       joint invert();
 

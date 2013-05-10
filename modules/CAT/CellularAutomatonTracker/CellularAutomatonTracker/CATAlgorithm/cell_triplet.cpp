@@ -398,6 +398,7 @@ namespace CAT{
           if( ok ){
             joint j(newt1.epa(),p,newt2.epb(), print_level(), get_probmin());
             j.set_chi2(chi2);
+            j.set_p(probof(chi2, ndof));
             joints_.push_back(j);
           }
         }  
@@ -426,17 +427,14 @@ namespace CAT{
           if( jjoint == ijoint ) continue;
           
           if( ca_.same_quadrant(ijoint->epa(), jjoint->epa() ) &&
-              !cb_.same_quadrant(ijoint->epb(), jjoint->epb() ) &&
-              cc_.same_quadrant(ijoint->epc(), jjoint->epc() ) ){
-            delta_phi = experimental_fabs(ijoint->kink_phi()) - experimental_fabs(jjoint->kink_phi());
-            if( delta_phi.value() > delta_phi.error() ){  // if ijoint has larger kink than jjoint
-              if( print_level() > mybhep::VERBOSE ){
-                std::clog << " ... removing joint " << ijoint - joints.begin()  << " because joint " << jjoint - joints.begin()  <<  " has the same initial and final quadrant, a different middle quadrant and better horizontal kink: delta phi = " << delta_phi.value() << std::endl;
-              }
-              found = true;
-              break;
-            }
-          }
+              cc_.same_quadrant(ijoint->epc(), jjoint->epc() ) &&
+	      ijoint->p() < jjoint->p() ){
+	    if( print_level() > mybhep::VERBOSE ){
+	      std::clog << " ... removing joint " << ijoint - joints.begin()  << " with prob " << ijoint->p() << " because joint " << jjoint - joints.begin()  <<  " with prob " << jjoint->p() << " has the same initial and final quadrant " << std::endl;
+	    }
+	    found = true;
+	    break;
+	  }
         }
         
         if( !found )
@@ -444,31 +442,21 @@ namespace CAT{
         
       }
       
-      // order joints in order of increasing chi2 (best joint comes first)
-      std::sort(_joints.begin(), _joints.end());
 
-      // only keep 2 best joints
-      if( _joints.size() > 2 ){
-        _joints.erase(_joints.begin() + 2, _joints.end());
+      if( _joints.size() > 1 ){
+	// order joints in order of increasing chi2 (best joint comes first)
+	std::sort(_joints.begin(), _joints.end());
       }
 
-      bool intersect_ab = ca_.intersect(cb_);
-      bool intersect_bc = cb_.intersect(cc_);
+      // only keep best joints
+      size_t max_njoints=4;
+      if( _joints.size() > max_njoints ){
+	_joints.erase(_joints.begin() + max_njoints, _joints.end());
+	//	if( _joints[0].p() / _joints[1].p() > Ratio )
+	//	  _joints.erase(_joints.begin()+1);
+      }
 
-      // delete 2nd best joint if chi2 ratio is larger than set value
-      // unless joints go to different quadrants and
-      // unless AB and BC both intersect; in that case force keeping 2 best joints independently of ratio
-      if( _joints.size() == 2 &&
-	  ca_.same_quadrant(_joints[0].epa(), _joints[1].epa()) &&
-	  cc_.same_quadrant(_joints[0].epc(), _joints[1].epc()) &&
-	  !(intersect_ab && intersect_bc) )
-        if( _joints[1].chi2() / _joints[0].chi2() > Ratio ){
-          if( print_level() > mybhep::VERBOSE ){
-            std::clog << " erase 2nd best joint ( chi2 = " << _joints[1].chi2() << ") in favour of 1st best joint ( chi2 = " << _joints[0].chi2() << ") limit ratio is: " << Ratio << std::endl;
-          }
-          _joints.erase(_joints.begin() + 1);
-        }
-      
+
       if( print_level() > mybhep::VERBOSE ){
         std::clog << " after refining there are " << _joints.size() << " joints " << std::endl;
 	for(std::vector<joint>::const_iterator ij=_joints.begin(); ij!=_joints.end(); ++ij){
