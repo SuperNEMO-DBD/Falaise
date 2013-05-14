@@ -243,24 +243,28 @@ void cell_couplet::dump (std::ostream & a_out,
       /////////////////////////////////////////////////////////////////
 
 
-      experimental_double cos[2];
+      int sign_parallel_crossed[2], sign_up_down[2];
+      sign_parallel_crossed[0] = 1;  // parallel tangents
+      sign_parallel_crossed[1] = -1; // crossed tangents
+      sign_up_down[0] = 1;  // upper tangent
+      sign_up_down[1] = -1;  // lower tangent
 
-      cos[0] = (ca().r() - cb().r())/distance_hor();
-      cos[1] = (ca().r() + cb().r())/distance_hor();
 
-      experimental_point epa;
-      experimental_point epb;
-
-      int sign[2];
-      sign[0] = 1;
-      sign[1] = -1;
-
+      experimental_double cosa, cosb, sina;
+      experimental_point epa, epb;
 
       // parallel tangents
       for(size_t i=0; i<2; i++){
 
-        epa = ca_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos[0], sign[i], false, 0.);
-        epb = cb_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos[0], sign[i], false, 0.);
+	cosa = (ca().r() - cb().r()*sign_parallel_crossed[0])/distance_hor();  // parallel tangents
+	cosb = cosa*sign_parallel_crossed[0];
+	sina = experimental_sin(experimental_acos(cosa))*sign_parallel_crossed[0]*sign_up_down[i];
+
+        epa = ca_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cosa, sign_parallel_crossed[0]*sign_up_down[i], false, 0.);
+        epb = cb_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cosb, sign_parallel_crossed[0]*sign_up_down[i], false, 0.);
+
+	set_first_error_in_build_from_cell(sina.value(), sign_parallel_crossed[0], sign_up_down[i], &epa);
+	set_second_error_in_build_from_cell(sina.value(), sign_parallel_crossed[0], sign_up_down[i], &epb);
 
         line l(epa, epb, prlevel(), probmin());
 
@@ -282,8 +286,8 @@ void cell_couplet::dump (std::ostream & a_out,
 
         for(size_t i=0; i<2; i++){
 
-          epa = (average + transverse_axis()*sign[i]*small_offset).point_from_vector();
-          epb = (average - transverse_axis()*sign[i]*small_offset).point_from_vector();
+          epa = (average + transverse_axis()*sign_up_down[i]*small_offset).point_from_vector();
+          epb = (average - transverse_axis()*sign_up_down[i]*small_offset).point_from_vector();
 
           line l(epa, epb, prlevel(), probmin());
 	  
@@ -295,8 +299,15 @@ void cell_couplet::dump (std::ostream & a_out,
         // crossed tangents
         for(size_t i=0; i<2; i++){
 
-          epa = ca_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos[1], sign[i], false, 0.);
-          epb = cb_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), -cos[1], -sign[i], false, 0.);
+	  cosa = (ca().r() - cb().r()*sign_parallel_crossed[1])/distance_hor();  // parallel tangents
+	  cosb = cosa*sign_parallel_crossed[1];
+	  sina = experimental_sin(experimental_acos(cosa))*sign_parallel_crossed[1]*sign_up_down[i];
+
+	  epa = ca_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cosa, sign_parallel_crossed[1]*sign_up_down[i], false, 0.);
+	  epb = cb_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cosb, sign_up_down[i], false, 0.);
+
+	  set_first_error_in_build_from_cell(sina.value(), sign_parallel_crossed[1], sign_up_down[i], &epa);
+	  set_second_error_in_build_from_cell(sina.value(), sign_parallel_crossed[1], sign_up_down[i], &epb);
 
           line l(epa, epb, prlevel(), probmin());
 
@@ -312,20 +323,21 @@ void cell_couplet::dump (std::ostream & a_out,
 
     void cell_couplet::obtain_tangents_between_circle_and_point(const cell &c, experimental_point &ep){
 
-      experimental_double cos;
+      int sign_parallel_crossed[2], sign_up_down[2];
+      sign_up_down[0] = 1;  // upper tangent
+      sign_up_down[1] = -1;  // lower tangent
+
+      experimental_double cos, sin;
 
       cos = c.r()/distance_hor();
 
       experimental_point epa;
 
-      int sign[2];
-      sign[0] = 1;
-      sign[1] = -1;
-
-
       for(size_t i=0; i<2; i++){
 
-        epa = c.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos, sign[i], false, 0.);
+        epa = c.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos, sign_up_down[i], false, 0.);
+	sin = experimental_sin(experimental_acos(cos))*sign_up_down[i];
+	set_first_error_in_build_from_cell(sin.value(), 1, sign_up_down[i], &epa);
 
         line l(epa, ep, prlevel(), probmin());
 
@@ -340,24 +352,26 @@ void cell_couplet::dump (std::ostream & a_out,
 
     void cell_couplet::obtain_tangents_between_point_and_circle(experimental_point &ep, const cell &c){
 
-      experimental_double cos = - c.r()/distance_hor();
+      int sign_parallel_crossed[2], sign_up_down[2];
+      sign_up_down[0] = 1;  // upper tangent
+      sign_up_down[1] = -1;  // lower tangent
+
+      experimental_double cos, sin;
+
+      cos = - c.r()/distance_hor();
 
       experimental_point epb;
 
-      int sign[2];
-      sign[0] = 1;
-      sign[1] = -1;
-
-
       for(size_t i=0; i<2; i++){
 
-        epb = c.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos, sign[i], false, 0.);
+        epb = c.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos, sign_up_down[i], false, 0.);
+	sin = experimental_sin(experimental_acos(cos))*sign_up_down[i];
+	set_second_error_in_build_from_cell(sin.value(), 1, sign_up_down[i], &epb);
 
         line l(ep, epb, prlevel(), probmin());
 
         tangents_.push_back( l );
       }
-
 
       return;
 
@@ -372,6 +386,42 @@ void cell_couplet::dump (std::ostream & a_out,
 
       return;
 
+    }
+
+    void cell_couplet::set_first_error_in_build_from_cell(double sin, int sign_parallel_crossed, int sign_up_down, experimental_point *epa)const{
+
+      // must set manually the error because factors are not independent
+
+      experimental_vector forward = forward_axis_.hor().unit();
+
+      experimental_vector faa = (*epa - ca_.ep())/ca_.r().value() + (forward/distance_hor().value() + transverse_axis()*sign_up_down*((sign_parallel_crossed*cb_.r().value()-ca_.r().value())/(sin*pow(distance_hor().value(),2))))*ca_.r().value();
+      experimental_vector fab = (forward*sign_parallel_crossed/(-distance_hor().value()) + transverse_axis()*sign_up_down*((sign_parallel_crossed*ca_.r().value()-cb_.r().value())/(sin*pow(distance_hor().value(),2))))*ca_.r().value();
+
+      double errax = sqrt(pow(ca_.r().error()*faa.x().value(),2) + pow(cb_.r().error()*fab.x().value(),2));
+      double erraz = sqrt(pow(ca_.r().error()*faa.z().value(),2) + pow(cb_.r().error()*fab.z().value(),2));
+      epa->set_ex(errax);
+      epa->set_ez(erraz);
+
+      return;
+      
+    }
+
+    void cell_couplet::set_second_error_in_build_from_cell(double sin, int sign_parallel_crossed, int sign_up_down, experimental_point *epb)const{
+
+      // must set manually the error because factors are not independent
+
+      experimental_vector forward = forward_axis_.hor().unit();
+
+      experimental_vector fba = (forward*sign_parallel_crossed/distance_hor().value() - transverse_axis()*sign_up_down*((sign_parallel_crossed*ca_.r().value()-cb_.r().value())/(sin*pow(distance_hor().value(),2))))*cb_.r().value();
+      experimental_vector fbb = (*epb - cb_.ep())/cb_.r().value() + (forward/(-distance_hor().value()) - transverse_axis()*sign_up_down*((sign_parallel_crossed*cb_.r().value()-ca_.r().value())/(sin*pow(distance_hor().value(),2))))*cb_.r().value();
+
+      double errbx = sqrt(pow(ca_.r().error()*fba.x().value(),2) + pow(cb_.r().error()*fbb.x().value(),2));
+      double errbz = sqrt(pow(ca_.r().error()*fba.z().value(),2) + pow(cb_.r().error()*fbb.z().value(),2));
+      epb->set_ex(errbx);
+      epb->set_ez(errbz);
+
+      return;
+      
     }
 
     //! set cells

@@ -475,8 +475,6 @@ namespace CAT {
       experimental_point build_from_cell(experimental_vector forward, experimental_vector transverse, experimental_double cos, int sign, bool replace_r, double maxr) const;
       void dump_point(experimental_point ep) const;
       void dump_point_phi(experimental_point ep) const;
-      double error_x_in_build_from_cell(experimental_vector forward, experimental_vector transverse, experimental_double cos, double sin)const;
-      double error_z_in_build_from_cell(experimental_vector forward, experimental_vector transverse, experimental_double cos, double sin)const;
       bool same_quadrant(experimental_point epa, experimental_point epb) const;
       bool same_cell(topology::cell c) const;
       bool intersect(topology::cell c) const;

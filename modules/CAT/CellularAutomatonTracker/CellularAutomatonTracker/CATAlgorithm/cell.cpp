@@ -28,45 +28,10 @@ namespace topology{
 
     experimental_point p = (experimental_vector(ep()) + radius*(forward*cos + transverse*sin)).point_from_vector();
 
-    p.set_ex(error_x_in_build_from_cell(forward, transverse, cos, sin.value()));
-    p.set_ez(error_z_in_build_from_cell(forward, transverse, cos, sin.value()));
-
     return p;
 
 
   }
-
-
-  double cell::error_x_in_build_from_cell(experimental_vector forward, experimental_vector transverse, experimental_double cos, double sin)const{
-
-    //
-    // must set manually the error because factors are not independent
-    //
-    // p = p0 + R (F c + T s)
-    //
-    // so:
-    // sigma_p2 = (Fc + Ts)2 sigma_R2 + R2 (F - T/t)2 sigma_c2
-    //
-
-    double fax = forward.x().value() * cos.value() + transverse.x().value() * sin ;
-    double fbx = r().value()*(forward.x().value() - transverse.x().value() * cos.value() / sin );
-
-    return sqrt(square(fax*r().error()) + square(fbx*cos.error()));
-
-
-  }
-
-  double cell::error_z_in_build_from_cell(experimental_vector forward, experimental_vector transverse, experimental_double cos, double sin)const{
-
-    double faz = forward.z().value() * cos.value() + transverse.z().value() * sin ;
-    double fbz = r().value()*(forward.z().value() - transverse.z().value() * cos.value() / sin );
-
-
-    return sqrt(square(faz*r().error()) + square(fbz*cos.error()));
-
-
-  }
-
 
 
   experimental_point cell::angular_average(experimental_point epa, experimental_point epb, experimental_double* angle){
@@ -137,7 +102,12 @@ namespace topology{
       maxr = max(r1,r2);
     }
 
+    double errx = fabs(r().value()*cos(angle->value()));
+    double errz = fabs(r().value()*sin(angle->value()));
+
     experimental_point p = build_from_cell(x, z, cos_ave_phi, sign, replace_r, maxr);
+    p.set_ex(errx);
+    p.set_ez(errz);
 
     return p;
 
