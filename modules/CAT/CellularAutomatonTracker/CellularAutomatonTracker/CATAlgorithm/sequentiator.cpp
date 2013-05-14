@@ -1433,7 +1433,7 @@ namespace CAT {
           continue;
         }
 
-        if( (size_t)(jseq - td.scenarios_[0].sequences_.begin()) > td.scenarios_[0].sequences_.size() - 1 ){
+        if( (size_t)(jseq - td.scenarios_[0].sequences_.begin() + 1) > td.scenarios_[0].sequences_.size() ){
           break;
         }
 
@@ -3007,11 +3007,7 @@ namespace CAT {
     }
 
     std::vector<bool> matched;
-    //matched.assign (sequences_.size(), false);
     matched.assign (families_.size(), false);
-    //   bool* matched= (bool*)mal loc(sizeof(size_t)*sequences_.size());
-    //for(size_t i=0; i<sequences_.size(); i++)
-    //  matched[i] = false;
 
     std::vector<topology::sequence> newseqs;
 

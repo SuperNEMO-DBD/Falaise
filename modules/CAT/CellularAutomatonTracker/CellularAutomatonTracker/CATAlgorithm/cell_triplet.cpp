@@ -452,10 +452,21 @@ namespace CAT{
       size_t max_njoints=4;
       if( _joints.size() > max_njoints ){
 	_joints.erase(_joints.begin() + max_njoints, _joints.end());
-	//	if( _joints[0].p() / _joints[1].p() > Ratio )
-	//	  _joints.erase(_joints.begin()+1);
       }
 
+      if( _joints.size() >= 2 && !(ca_.intersect(cb_) || ca_.intersect(cc_) || cb_.intersect(cc_) ) ){
+	std::vector<joint>::iterator ijoint = _joints.begin();
+	ijoint ++;
+	while( ijoint != _joints.end() ){
+	  if( (size_t)(ijoint - _joints.begin() + 1) > _joints.size() ) break;
+	  if( _joints[0].p() / ijoint->p() > Ratio ){
+	    _joints.erase(ijoint);
+	    ijoint = _joints.begin() + (ijoint - _joints.begin());
+	  }else{
+	    ijoint++;
+	  }
+	}
+      }
 
       if( print_level() > mybhep::VERBOSE ){
         std::clog << " after refining there are " << _joints.size() << " joints " << std::endl;

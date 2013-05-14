@@ -844,7 +844,6 @@ namespace CAT {
                   GG_BLOCK_X,
                   mybhep::NORMAL);
 
-        // 2012-03-24 FM : Use dynamic 'vector<double>' in place of invalid static 'double []':
         std::vector<double> GG_BLOCK_thick;
         std::vector<double> GG_BLOCK_posZ;
         GG_BLOCK_thick.assign (num_blocks, std::numeric_limits<double>::quiet_NaN ());
@@ -1690,7 +1689,6 @@ namespace CAT {
     double limit_diagonal;
     if (SuperNemo && SuperNemoChannel)
       {
-        // 2012-03-12 FM: add to conform the SuperNEMO geometry from 'sngeometry'
         limit_side = GG_CELL_pitch;
         limit_diagonal = sqrt(2.)*GG_CELL_pitch;
       }

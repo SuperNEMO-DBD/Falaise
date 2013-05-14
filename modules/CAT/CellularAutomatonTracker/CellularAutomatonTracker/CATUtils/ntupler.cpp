@@ -35,7 +35,7 @@ void ntupler::initialize (void)
 
   __f->cd ();
   __tree = new TTree("SimData","SimData");
-  // 2012-07-06 FM : Force affectation of the tree's current directory :
+  // Force affectation of the tree's current directory :
   __tree->SetDirectory (__f);
 
     __tree->Branch("simulated_vs_tracked_hit.id",&simulated_vs_tracked_hit_.id_);

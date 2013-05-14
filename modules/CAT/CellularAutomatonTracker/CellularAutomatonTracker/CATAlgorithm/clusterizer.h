@@ -49,7 +49,6 @@ namespace CAT{
 
   protected:
 
-    // 2012-03-24 FM : add core initialization method
     bool _initialize( void );
 
   public:
