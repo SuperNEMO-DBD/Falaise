@@ -52,7 +52,7 @@ namespace CAT {
     Ratio                 =   10.0;
     CompatibilityDistance = 4.0 * CLHEP::mm;
     MaxChi2               = 3.;
-    probmin                = 4.;
+    probmin                = 0.;
     nofflayers            = 1;
     first_event            = -1;
     len                   = 2503. * CLHEP::mm;
@@ -124,7 +124,7 @@ namespace CAT {
         _set_error_message ("Invalid 'MaxChi2'");
         return false;
       }
-    if (probmin <= 0.0)
+    if (probmin < 0.0)
       {
         _set_error_message ("Invalid 'probmin'");
         return false;

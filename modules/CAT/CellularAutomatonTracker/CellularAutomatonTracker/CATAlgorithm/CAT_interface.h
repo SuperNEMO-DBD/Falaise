@@ -56,7 +56,7 @@ namespace CAT {
     /// Ratio of 2nd best to best chi2 which is acceptable as 2nd solution
     double Ratio;
 
-    /// Number of sigma away from the straight line
+    /// minimum p-value to be a straight line
     double probmin;
 
     /// Number of cells which can be skipped (because the cell did not

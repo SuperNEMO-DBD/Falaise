@@ -80,9 +80,9 @@ namespace topology{
       std::clog << " to phi_ave: "; (ave_phi*180./M_PI).dump();
       std::clog << " " << std::endl;
     }
-
+    
     experimental_double cos_ave_phi = experimental_cos(ave_phi);
-
+    
     experimental_vector x(1.,0.,0.,0.,0.,0.);
     experimental_vector z(0.,0.,1.,0.,0.,0.);
     int sign = 1; 
@@ -91,7 +91,7 @@ namespace topology{
 
     // distance of each point from center of cell
     // not necessarily the same if one of the 2 points results from intersecting cells
-    // in such case, keep largest of 2 values to locate averge
+    // in such case, keep largest of 2 values to locate average
     // otherwise it will not make sense with the other point from intersecting cells
     double r1 = v1.hor().length().value(); 
     double r2 = v2.hor().length().value();
@@ -102,13 +102,13 @@ namespace topology{
       maxr = max(r1,r2);
     }
 
-    double errx = fabs(r().value()*cos(angle->value()));
-    double errz = fabs(r().value()*sin(angle->value()));
+    double errx = fabs( epb.x().value() - epa.x().value() );
+    double errz = fabs( epb.z().value() - epa.z().value() );
 
     experimental_point p = build_from_cell(x, z, cos_ave_phi, sign, replace_r, maxr);
     p.set_ex(errx);
     p.set_ez(errz);
-
+  
     return p;
 
   }
