@@ -2017,7 +2017,7 @@ namespace CAT {
 	}
       }
 
-    std::clog << " center (" << sequence.center().x().value() << ", " << sequence.center().y().value() << ", " << sequence.center().z().value() << ")  radius " << sequence.radius().value() <<  " pitch " << sequence.pitch().value() << " momentum " << sequence.momentum().length().value() << "  tangent charge " << sequence.charge().value() << " +- " << sequence.charge().error() << " helix charge " << sequence.helix_charge().value()  << " +- " << sequence.helix_charge().error() << " detailed charge " << sequence.detailed_charge().value()  << " +- " << sequence.detailed_charge().error() << " chi2 " << sequence.chi2() << " prob " << sequence.Prob(); fflush(stdout);
+    std::clog << " center (" << sequence.center().x().value() << ", " << sequence.center().y().value() << ", " << sequence.center().z().value() << ")  radius " << sequence.radius().value() <<  " pitch " << sequence.pitch().value() << " momentum " << sequence.momentum().length().value() << "  tangent charge " << sequence.charge().value() << " +- " << sequence.charge().error() << " helix charge " << sequence.helix_charge().value()  << " +- " << sequence.helix_charge().error() << " detailed charge " << sequence.detailed_charge().value()  << " +- " << sequence.detailed_charge().error() << " chi2 " << sequence.chi2() << " prob " << sequence.Prob() << " helix chi2 " << sequence.helix_chi2() << " helix prob " << sequence.helix_Prob(); fflush(stdout);
     if( sequence.has_helix_vertex() ){
       std::clog << " helix vertex on " << sequence.helix_vertex_type();fflush(stdout);
       if( sequence.helix_vertex_type() == "calo" ) std::clog << " icalo " << sequence.helix_vertex_id();

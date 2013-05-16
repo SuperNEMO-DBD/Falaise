@@ -308,7 +308,7 @@ namespace CAT {
       double chi2 = 0.;
       int32_t ndof = 0;
       for(std::vector<sequence>::iterator iseq = sequences_.begin(); iseq != sequences_.end(); ++iseq){
-        chi2 += iseq->chi2();
+        chi2 += iseq->helix_chi2();
         ndof += iseq->ndof();
       }
 

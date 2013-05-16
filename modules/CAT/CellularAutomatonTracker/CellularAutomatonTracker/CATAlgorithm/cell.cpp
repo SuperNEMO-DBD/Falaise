@@ -102,8 +102,8 @@ namespace topology{
       maxr = max(r1,r2);
     }
 
-    double errx = fabs( epb.x().value() - epa.x().value() );
-    double errz = fabs( epb.z().value() - epa.z().value() );
+    double errx = max(fabs( epb.x().value() - epa.x().value() ), ((epb+epa)/2.).x().error());
+    double errz = max(fabs( epb.z().value() - epa.z().value() ), ((epb+epa)/2.).z().error());
 
     experimental_point p = build_from_cell(x, z, cos_ave_phi, sign, replace_r, maxr);
     p.set_ex(errx);

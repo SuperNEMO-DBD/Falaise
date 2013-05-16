@@ -246,8 +246,19 @@ namespace CAT{
               double v = y - yc.value();
               rsum += std::sqrt(mybhep::square(u) + mybhep::square(v));
             }
+	  double rvalue=rsum/xi_.size();
+	  double rerror=0.;
+          for(std::vector<experimental_double>::iterator it=xi_.begin(); it != xi_.end(); ++it)
+            {
+              double u = it->value() - xc.value();
+              double y = yi_[it - xi_.begin()].value();
+              double v = y - yc.value();
+              rerror += fabs(mybhep::square(u) + mybhep::square(v) - mybhep::square(rvalue));
+            }
+	  rerror = std::sqrt(rerror)/xi_.size();
 
-          r.set(rsum/xi_.size() , 0. );
+
+          r.set(rvalue , rerror );
 
           if( print_level() >= mybhep::VVERBOSE ){
             std::clog << " fitted circle through " << xi_.size() << " points: xc: "; xc.dump(); std::clog << " yc: "; yc.dump(); std::clog << " r: "; r.dump(); std::clog << " " << std::endl;
