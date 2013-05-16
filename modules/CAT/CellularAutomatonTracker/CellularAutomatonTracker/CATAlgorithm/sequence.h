@@ -77,6 +77,7 @@ namespace CAT {
       std::vector<std::string> names_;
 
       bool has_momentum_;
+      bool has_helix_;
 
       bool has_charge_;
       bool has_helix_charge_;
@@ -234,6 +235,9 @@ namespace CAT {
 
       //! has momentum
       bool has_momentum()const;
+
+      //! has helix
+      bool has_helix()const;
 
       //! has charge
       bool has_charge()const;
@@ -402,7 +406,7 @@ namespace CAT {
       bool intersect_circle_from_begin(const circle & c, experimental_point * ep)const;
 
 
-      bool intersect_sequence(const sequence & seq, bool invertA, bool invertB, experimental_point * ep, double limit_distance);
+      bool intersect_sequence(sequence & seq, bool invertA, bool invertB, bool acrossGAP, experimental_point * ep, double limit_distance, int* with_kink);
 
       std::string family()const;
 
@@ -412,11 +416,11 @@ namespace CAT {
                       bool &invertA, bool &invertB, size_t NOffLayers)const;
 
 
-      sequence match(const sequence & seq, bool invertA, bool invertB, bool *ok);
+      sequence match(const sequence & seq, bool invertA, bool invertB, bool *ok, int with_kink);
 
       bool good_match_with_kink(const sequence & seq,
-                                bool &invertA, bool &invertB,
-                                double limit_distance)const;
+                                bool &invertA, bool &invertB, bool &acrossGAP,
+                                double limit_distance, size_t NOffLayers)const;
 
       bool same_families(const topology::sequence & s)const;
 

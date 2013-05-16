@@ -430,8 +430,11 @@ namespace CAT{
 
       if( ep->x().value() == small_neg ||
 	  ep->y().value() == small_neg ||
-	  ep->z().value() == small_neg )
+	  ep->z().value() == small_neg ){
+	if( print_level() >= mybhep::VVERBOSE )
+	  std::clog << " can't extrapolate circle to circle: ep is small_neg " << std::endl;
 	return false;
+      }
 
       if( print_level() >= mybhep::VVERBOSE ){
 	clog << " track: "; dump(); 

@@ -688,7 +688,6 @@ namespace CAT {
 
     make_scenarios(tracked_data_);
 
-    match_kinks(tracked_data_);
 
     if (late())
       {
@@ -1398,78 +1397,6 @@ namespace CAT {
 
     return;
   }
-
-
-
-
-  //*************************************************************
-  bool sequentiator::match_kinks(topology::tracked_data &td){
-    //*************************************************************
-
-    clock.start(" sequentiator: match kinks ", "cumulative");
-
-    if( td.scenarios_.empty() ) return false;
-
-    double limit_diagonal = sqrt(2.)*cos(M_PI/8.)*CellDistance; 
-
-    std::vector<topology::sequence>::iterator iseq = td.scenarios_[0].sequences_.begin();
-    std::vector<topology::sequence>::iterator jseq = td.scenarios_[0].sequences_.begin();
-    while( iseq != td.scenarios_[0].sequences_.end() ){
-
-      if( (size_t)(iseq - td.scenarios_[0].sequences_.begin()) == td.scenarios_[0].sequences_.size() ){
-        ++iseq;
-        continue;
-      }
-      
-      while( jseq != td.scenarios_[0].sequences_.end() ){
-	
-	if( (size_t)(jseq - td.scenarios_[0].sequences_.begin()) == td.scenarios_[0].sequences_.size() ){
-	  ++jseq;
-	  continue;
-	}
-	
-        if( iseq == jseq ){
-          ++jseq;
-          continue;
-        }
-
-        if( (size_t)(jseq - td.scenarios_[0].sequences_.begin() + 1) > td.scenarios_[0].sequences_.size() ){
-          break;
-        }
-
-
-        m.message(" ... try to match sequence ", iseq->name(), " to ", jseq->name(), " with a kink ", mybhep::VERBOSE);
-        if( level >= mybhep::VVERBOSE)
-          print_a_sequence(*jseq);
-
-        bool invertA, invertB;
-        if( !iseq->good_match_with_kink(*jseq, invertA, invertB, limit_diagonal) ){
-          ++jseq;
-	  m.message(" ... obviously no good match with kink ", mybhep::VERBOSE);
-          continue;
-        }
-
-	m.message(" good match with kink, try to extrapolate ", mybhep::VERBOSE);
-	topology::experimental_point kink_point;
-	if( iseq->intersect_sequence(*jseq, invertA, invertB, &kink_point, limit_diagonal)){
-	  m.message(" good kink vertex has been assigned to sequence ", iseq->name(), mybhep::VERBOSE);
-	  if( invertA )
-	    iseq->set_helix_vertex(kink_point, "kink");
-	  else
-	    iseq->set_decay_helix_vertex(kink_point, "kink");
-	}
-	++jseq;
-      }
-      ++iseq;
-    }
-
-    clock.stop(" sequentiator: match kinks ");
-
-    return false;
-
-
-  }
-
 
 
   //*************************************************************
@@ -2857,7 +2784,7 @@ namespace CAT {
         }
 
 	bool ok;
-        topology::sequence news = iseq->match(*jseq, invertA, invertB, &ok);
+        topology::sequence news = iseq->match(*jseq, invertA, invertB, &ok,0);
         if( !ok ){
           ++jseq;
 	  m.message(" ... no good helix match ", mybhep::VERBOSE);
@@ -3033,15 +2960,16 @@ namespace CAT {
 
       first = true;
       topology::sequence newseq = *iseq;
-      while( can_match(newseq, &jmin, invertA, invertB) )
+      int with_kink = 0;
+      while( can_match(newseq, &jmin, invertA, invertB, with_kink) )
         {
           m.message(" best matching is ", sequences_[jmin].name(), " invertA ", invertA, " invertB ", invertB, mybhep::VERBOSE);
           if( level >= mybhep::VVERBOSE)
             print_a_sequence(sequences_[jmin]);
 
 	  bool ok;
-          newseq = newseq.match(sequences_[jmin], invertA, invertB, &ok);
-	  if( !ok ){
+          newseq = newseq.match(sequences_[jmin], invertA, invertB, &ok, with_kink);
+	  if( !ok && !with_kink ){
 	    m.message(" ... no good helix match ", mybhep::VERBOSE);
 	    continue;
 	  }
@@ -3088,7 +3016,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  bool sequentiator::can_match(topology::sequence &s, size_t* jmin, bool& bestinvertA, bool& bestinvertB) {
+  bool sequentiator::can_match(topology::sequence &s, size_t* jmin, bool& bestinvertA, bool& bestinvertB, int &with_kink) {
     //*************************************************************
 
     if( late() )
@@ -3097,17 +3025,18 @@ namespace CAT {
     clock.start(" sequentiator: can match ", "cumulative");
 
     bool ok = false;
+    double limit_diagonal = sqrt(2.)*cos(M_PI/8.)*CellDistance; 
 
-    //double probmax = mybhep::default_max;
-    double probmax = 0.;
+    double probmax = -1.;
     double chi2min = mybhep::default_min;
     int ndofbest = 1;
 
     m.message(" try to match sequence", s.name(), " of chi2 = ", chi2min, " ndof ", ndofbest, " prob ", probmax, mybhep::VVERBOSE);
-    bool invertA, invertB;
+    bool invertA, invertB, acrossGAP;
     double p;
     double c;
     int n;
+    with_kink=0;
 
     for(std::vector<topology::sequence>::iterator jseq=sequences_.begin(); jseq!=sequences_.end(); ++jseq)
       {
@@ -3124,23 +3053,53 @@ namespace CAT {
           continue;
         }
 
-        if( !s.good_match(*jseq, invertA, invertB, NOffLayers) ){
-          continue;
-        }
+	// match along helix
+	bool ok_match = s.good_match(*jseq, invertA, invertB, NOffLayers);
+	bool ok_kink_match=false;
+	bool ok_kink_match_chi2 = false;
+	topology::sequence news;
+	if( ok_match )
+	  news = s.match(*jseq, invertA, invertB, &ok_match,with_kink);
 
-	bool ok_match;
-        topology::sequence news = s.match(*jseq, invertA, invertB, &ok_match);
-	if( !ok_match ){
-	  m.message(" ... no good helix match ", mybhep::VERBOSE);
-          continue;
+	if( ok_match ){
+	  p = news.helix_Prob();
+	  c = news.helix_chi2();
+	  n = news.ndof();
+	  
+	  m.message(" ... matched to ", jseq->name(), ", chi2 =", c, " ndof ", n, " prob ", p, mybhep::VVERBOSE);
 	}
+
+	if( ok_match && (p > news.probmin()))
+	  m.message(" good helix match", mybhep::VVERBOSE);
+	else{
+	  m.message(" ... no good helix match, try to match with kink ", mybhep::VVERBOSE);
+	  
+	  ok_kink_match= s.good_match_with_kink(*jseq, invertA, invertB, acrossGAP, limit_diagonal, NOffLayers) ;
+	  if( !ok_kink_match )
+	    m.message(" ... obviously no good match with kink ", mybhep::VVERBOSE);
+	  else{
+	    m.message(" possible match with kink, across GAP", acrossGAP, " try to extrapolate ", mybhep::VVERBOSE);
+	    topology::experimental_point kink_point;
+	    ok_kink_match = s.intersect_sequence(*jseq, invertA, invertB, acrossGAP, &kink_point, limit_diagonal, &with_kink);
+	    if( ok_kink_match ){
+	      m.message(" good kink match ( ", kink_point.x().value(), ", ", kink_point.y().value(), ", ", kink_point.z().value(), ") to sequence ", jseq->name(), mybhep::VVERBOSE);
+	      news = s.match(*jseq, invertA, invertB, &ok_kink_match_chi2, with_kink);
+	    }else{
+	      m.message(" no good kink match to sequence ", jseq->name(), mybhep::VVERBOSE);
+	    }
+	  }
+	}
+      
+	if( !ok_match && !ok_kink_match ) continue;
+
         p = news.helix_Prob();
         c = news.helix_chi2();
         n = news.ndof();
 
-        m.message(" ... matched to ", jseq->name(), ", chi2 =", c, " ndof ", n, " prob ", p, mybhep::VVERBOSE);
+        m.message(" ... matched to ", jseq->name(), ", chi2 =", c, " ndof ", n, " prob ", p, " with kink ", with_kink, mybhep::VVERBOSE);
 
-        if( p > probmax && p > news.probmin())
+        if( p > probmax && 
+	    ((ok_match && p > news.probmin()) || ok_kink_match ) )
           {
             *jmin = jseq - sequences_.begin();
             probmax = p;
@@ -3151,11 +3110,11 @@ namespace CAT {
             ok = true;
           }
       }
-
+    
     if( ok ){
       m.message(" sequence ", s.name(), " can be matched to ", sequences_[*jmin].name(), ", chi2 =", chi2min, " ndof ", ndofbest, " prob ", probmax, mybhep::VVERBOSE);
     }
-
+    
     clock.stop(" sequentiator: can match ");
     return ok;
 

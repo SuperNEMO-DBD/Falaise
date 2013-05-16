@@ -485,7 +485,6 @@ namespace CAT {
 
 
     bool match_through_gaps();
-    bool match_kinks(topology::tracked_data &td);
     bool make_scenarios(topology::tracked_data &td);
     void interpret_physics(std::vector<topology::calorimeter_hit> & calos);
     topology::plane get_foil_plane();
@@ -513,7 +512,7 @@ namespace CAT {
     void print_a_scenario(const topology::scenario & scenario) const;
     size_t pick_best_scenario();
     bool can_be_linked(topology::sequence& p, bool inverted);
-    bool can_match(topology::sequence &s, size_t* jmin, bool& bestinvertA, bool& bestinvertB);
+    bool can_match(topology::sequence &s, size_t* jmin, bool& bestinvertA, bool& bestinvertB, int& with_kink);
     bool select_nemo_tracks(topology::tracked_data & __tracked_data);
 
 

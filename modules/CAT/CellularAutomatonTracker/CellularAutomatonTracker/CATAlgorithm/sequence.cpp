@@ -34,6 +34,7 @@ namespace CAT {
       has_tangent_length_ = false;
       has_helix_length_ = false;
       has_momentum_ = false;
+      has_helix_ = false;
       has_helix_vertex_ = false;
       helix_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                          mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
@@ -90,6 +91,7 @@ namespace CAT {
       has_tangent_length_ = false;
       has_helix_length_ = false;
       has_momentum_ = false;
+      has_helix_ = false;
       has_helix_vertex_ = false;
       helix_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                          mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
@@ -141,6 +143,7 @@ namespace CAT {
       has_tangent_length_ = false;
       has_helix_length_ = false;
       has_momentum_ = false;
+      has_helix_ = false;
       has_helix_vertex_ = false;
       helix_vertex_ = experimental_point(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                          mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
@@ -473,6 +476,11 @@ namespace CAT {
     //! has momentum
     bool sequence::has_momentum()const{
       return has_momentum_;
+    }
+
+    //! has helix
+    bool sequence::has_helix()const{
+      return has_helix_;
     }
 
     //! has charge
@@ -1625,6 +1633,8 @@ namespace CAT {
 
     bool sequence::calculate_helix(void) {
 
+      has_helix_ = true;
+
       helix_chi2s_.clear();
 
       int method = 3;
@@ -1983,36 +1993,128 @@ namespace CAT {
       return result;
 
     }
+  
 
-
-    bool sequence::intersect_sequence(const sequence & seq,
-                                      bool invertA, bool invertB,
+    bool sequence::intersect_sequence(sequence & seq,
+                                      bool invertA, bool invertB, bool acrossGAP,
                                       experimental_point * ep,
-                                      double limit_distance){
-      circle c = seq.get_helix().get_circle();
+                                      double limit_distance, int* with_kink){
       bool result;
       double distanceA, distanceB;
+      *with_kink = 0;
+
+      if( print_level() >= mybhep::VVERBOSE )
+	std::clog << " ... intersecting sequences, acrossGap " << acrossGAP << std::endl;
+
+      if( !has_helix() ) calculate_helix();
+      if( !seq.has_helix() ) seq.calculate_helix();
+
+      if( !acrossGAP ){
+	// intersect sequences within block
+
+	circle c = seq.get_helix().get_circle();
+
+	if( invertA ){
+	  result=intersect_circle_from_begin(c,ep);
+	  distanceA = nodes_[0].ep().distance(*ep).value();
+	}
+	else{
+	  result=intersect_circle_from_end(c,ep);
+	  distanceA = nodes_.back().ep().distance(*ep).value();
+	}
+	
+	if( print_level() >= mybhep::VVERBOSE )
+	  std::clog << " ... result of circles intersection: " << result << std::endl;
+
+	if(!result){
+	  return false;
+	}
+
+	if( invertB )
+	  distanceB = seq.nodes().back().ep().distance(*ep).value();
+	else
+	  distanceB = seq.nodes_[0].ep().distance(*ep).value();
+	
+	if( print_level() >= mybhep::VVERBOSE )
+	  std::clog << "ep (" << ep->x().value() << ", " << ep->y().value() << ", " << ep->z().value() << ") ... distanceA " << distanceA << " distanceB " << distanceB << " limit " << limit_distance << std::endl;
+	
+	return (result && distanceA <= limit_distance && distanceB <= limit_distance );
+      }
+
+      // intersect sequences across GAP
+
+      experimental_point pA, pB;
       if( invertA ){
-        result=intersect_circle_from_end(c,ep);
-        distanceA = nodes_[0].ep().distance(*ep).value();
+	pA = nodes_[0].ep();
       }
       else{
-        result=intersect_circle_from_begin(c,ep);
-        distanceA = nodes_.back().ep().distance(*ep).value();
+	pA = nodes_.back().ep();
+      }
+      if( invertB )
+	pB = seq.nodes().back().ep();
+      else
+	pB = seq.nodes_[0].ep();
+
+
+      experimental_point origin(0.,0.,0.,0.,0.,0.);
+
+      // a circle along the gap of the 1st sequence
+      circle cA(origin, pA.radius(), print_level(), probmin());
+
+      // a circle along the gap of the 2nd sequence
+      circle cB(origin, pB.radius(), print_level(), probmin());
+
+      bool resultA, resultB;
+      experimental_point epA, epB;
+      if( invertA ){
+	resultB=intersect_circle_from_begin(cB,&epB);
+      }
+      else{
+	resultB=intersect_circle_from_end(cB,&epB);
+      }
+      distanceB = pB.distance(epB).value();
+
+      if( invertB ){
+	resultA=seq.intersect_circle_from_end(cA,&epA);
+      }
+      else{
+	resultA=seq.intersect_circle_from_begin(cA,&epA);
+      }
+      distanceA = pA.distance(epA).value();
+
+      double distance;
+      if( resultA && resultB ){
+	if( distanceA < distanceB ){
+	  *ep = epA;
+	  distance = distanceA;
+	  *with_kink=1;
+	}
+	else{
+	  *ep = epB;
+	  distance = distanceB;
+	  *with_kink=2;
+	}
+      }else{
+	if( resultB ){ // intersection on B circle
+	  *ep = epB;
+	  distance = distanceB;
+	  *with_kink=1;
+	}
+	if( resultA ){ // intersection on A circle
+	  *ep = epA;
+	  distance = distanceA;
+	  *with_kink=2;
+	}
       }
 
-      if(!result) return false;
+	if( print_level() >= mybhep::VVERBOSE )
+	  std::clog << " ... resultA " << resultA << " ... resultB " << resultB << " distance " << distance << " limit " << 2.*limit_distance << std::endl;
 
-      if( invertB )
-        distanceB = seq.nodes().back().ep().distance(*ep).value();
-      else
-        distanceB = seq.nodes_[0].ep().distance(*ep).value();
+      return ( (resultA || resultB) && distance < 2.*limit_distance );
 
-
-      return (result && distanceA <= limit_distance && distanceB <= limit_distance );
 
     }
-
+  
 
     std::string sequence::family()const{
       size_t i1 = name().find("_");
@@ -2197,7 +2299,7 @@ namespace CAT {
       }
 
 
-      // if a layer is being skipped, the tangents should go in the same direction
+      // if a layer is being skipped the tangents should go in the same direction
       if( fabs(layer_distance) > 1 ){
 	if( (tang1*tang2).value() <= 0. ){
 	  if( print_level() >= mybhep::VVERBOSE )
@@ -2216,9 +2318,9 @@ namespace CAT {
       return true;
     }
 
+  
 
-
-    sequence sequence::match(const sequence & seq, bool invertA, bool invertB, bool *ok){
+    sequence sequence::match(const sequence & seq, bool invertA, bool invertB, bool *ok, int with_kink){
 
       sequence news;
       if( invertA )
@@ -2232,6 +2334,7 @@ namespace CAT {
       size_t index;
       int next_index;
       bool last;
+
       for(size_t i = 0; i < seq.nodes_.size(); i++){
         index = i;
         next_index = i+1;
@@ -2304,7 +2407,6 @@ namespace CAT {
         }
       }
 
-
       *ok = true;
       if( !news.calculate_helix() )
 	*ok = false;
@@ -2356,8 +2458,8 @@ namespace CAT {
     }
 
     bool sequence::good_match_with_kink(const sequence & seq,
-                                        bool &invertA, bool &invertB,
-                                        double limit_distance)const{
+                                        bool &invertA, bool &invertB, bool &acrossGAP,
+                                        double limit_distance, size_t NOffLayers)const{
 
       if( !seq.fast() ){
         if( print_level() >= mybhep::VVERBOSE )
@@ -2380,10 +2482,12 @@ namespace CAT {
         return false;
       }
 
+      
 
-
-
-
+      acrossGAP=false;
+      
+      int layer_distance;
+      
       double distFF = nodes_[0].ep().distance(seq.nodes_[0].ep()).value();
       double distFL = nodes_[0].ep().distance(seq.nodes().back().ep()).value();
       double distLF = nodes().back().ep().distance(seq.nodes_[0].ep()).value();
@@ -2393,19 +2497,22 @@ namespace CAT {
         invertA = false;
         invertB = false;
 
-        if( distLF > limit_distance){
+
+        // connection must be between neighboring blocks or within same block
+        if( fabs( last_node().c().block() - seq.nodes_[0].c().block()) > 1 ){
+          if( print_level() >= mybhep::VVERBOSE )
+            std::clog << " ... forbidden, because blocks are far away " << std::endl;
+          return false;
+        }
+
+        if( fabs( last_node().c().block() - seq.nodes_[0].c().block()) == 1 )
+	  acrossGAP=true;
+        else if( distLF > limit_distance){
           if( print_level() >= mybhep::VVERBOSE )
             std::clog << " ... forbidden, because distance " << distLF << " is larger than limit " << limit_distance << std::endl;
           return false;
         }
 
-        // connection must be within same block
-        if( fabs( last_node().c().block() - seq.nodes_[0].c().block()) > 0 ){
-          if( print_level() >= mybhep::VVERBOSE )
-            std::clog << " ... forbidden, because blocks are far away " << std::endl;
-          return false;
-        }
-
         if( has_decay_helix_vertex() && (decay_helix_vertex_type() == "calo" || decay_helix_vertex_type() == "foil") ){
           if( print_level() >= mybhep::VVERBOSE )
             std::clog << " ... forbidden, because 1st track already has decay helix_vertex on calo or foil " << std::endl;
@@ -2417,24 +2524,28 @@ namespace CAT {
           return false;
         }
 
-
+        layer_distance = last_node().c().layer() - seq.nodes_[0].c().layer();
+	
       }
       else if( distLL <= distFF && distLL <= distFL && distLL <= distLF ){ // last to last  FL -> LF
         invertA = false;
         invertB = true;
 
-        if( distLL > limit_distance){
+        // connection must be between neighboring blocks or within same block
+        if( fabs( last_node().c().block() - seq.last_node().c().block()) > 1 ){
+          if( print_level() >= mybhep::VVERBOSE )
+            std::clog << " ... forbidden, because blocks are far away " << std::endl;
+          return false;
+        }
+
+        if( fabs( last_node().c().block() - seq.last_node().c().block()) == 1 )
+	  acrossGAP=true;
+        else if( distLL > limit_distance){
           if( print_level() >= mybhep::VVERBOSE )
             std::clog << " ... forbidden, because distance " << distLL << " is larger than limit " << limit_distance << std::endl;
           return false;
         }
 
-        // connection must be within same block
-        if( fabs( last_node().c().block() - seq.last_node().c().block()) > 0 ){
-          if( print_level() >= mybhep::VVERBOSE )
-            std::clog << " ... forbidden, because blocks are far away " << std::endl;
-          return false;
-        }
 
         if( has_decay_helix_vertex() && (decay_helix_vertex_type() == "calo" || decay_helix_vertex_type() == "foil") ){
           if( print_level() >= mybhep::VVERBOSE )
@@ -2447,20 +2558,24 @@ namespace CAT {
           return false;
         }
 
+        layer_distance = last_node().c().layer() - seq.last_node().c().layer();
+
       }
       else if( distFL <= distFF && distFL <= distLL && distFL <= distLF ){ // first to last  LF -> LF
-        if( distFL > limit_distance){
-          if( print_level() >= mybhep::VVERBOSE )
-            std::clog << " ... forbidden, because distance " << distFL << " is larger than limit " << limit_distance << std::endl;
-          return false;
-        }
 
         invertA = true;
         invertB = true;
-        // connection must be within same block
-        if( fabs( nodes_[0].c().block() - seq.last_node().c().block()) > 0 ){
+        // connection must be between neighboring blocks or within same block
+        if( fabs( nodes_[0].c().block() - seq.last_node().c().block()) > 1 ){
           if( print_level() >= mybhep::VVERBOSE )
             std::clog << " ... forbidden, because blocks are far away " << std::endl;
+          return false;
+        }
+        if( fabs( nodes_[0].c().block() - seq.last_node().c().block()) == 1 )
+	  acrossGAP = true;
+        else if( distFL > limit_distance){
+          if( print_level() >= mybhep::VVERBOSE )
+            std::clog << " ... forbidden, because distance " << distFL << " is larger than limit " << limit_distance << std::endl;
           return false;
         }
 
@@ -2475,20 +2590,24 @@ namespace CAT {
           return false;
         }
 
+        layer_distance = nodes_[0].c().layer() - seq.last_node().c().layer();
+
       }
       else{ // first to first  LF -> FL
-        if( distFF > limit_distance){
-          if( print_level() >= mybhep::VVERBOSE )
-            std::clog << " ... forbidden, because distance " << distFF << " is larger than limit " << limit_distance << std::endl;
-          return false;
-        }
 
         invertA = true;
         invertB = false;
-        // connection must be within same block
-        if( fabs( nodes_[0].c().block() - seq.nodes_[0].c().block()) > 0 ){
+        // connection must be between neighboring blocks or within same block
+        if( fabs( nodes_[0].c().block() - seq.nodes_[0].c().block()) > 1 ){
           if( print_level() >= mybhep::VVERBOSE )
             std::clog << " ... forbidden, because blocks are far away " << std::endl;
+          return false;
+        }
+        if( fabs( nodes_[0].c().block() - seq.nodes_[0].c().block()) == 1 )
+	  acrossGAP=true;
+        else if( distFF > limit_distance){
+          if( print_level() >= mybhep::VVERBOSE )
+            std::clog << " ... forbidden, because distance " << distFF << " is larger than limit " << limit_distance << std::endl;
           return false;
         }
 
@@ -2503,13 +2622,21 @@ namespace CAT {
           return false;
         }
 
+        layer_distance = nodes_[0].c().layer() - seq.nodes_[0].c().layer();
+
       }
 
 
+      // connection must be between neighboring layers
+      if( fabs(layer_distance) > 1 + NOffLayers){
+        if( print_level() >= mybhep::VVERBOSE )
+          std::clog << " ... forbidden, because layers are far away by " << layer_distance << " planes " << std::endl;
+        return false;
+      }
 
 
       if( print_level() >= mybhep::VVERBOSE ){
-        std::clog << " ... good kink match, distances: FF " << distFF << " FL " << distFL << " LF " << distLF << " LL " << distLL << " so invertA " << invertA << " invertB " << invertB << std::endl;
+        std::clog << " ... good kink match, distances: FF " << distFF << " FL " << distFL << " LF " << distLF << " LL " << distLL << " so invertA " << invertA << " invertB " << invertB << " across gap " << acrossGAP << std::endl;
       }
 
 
