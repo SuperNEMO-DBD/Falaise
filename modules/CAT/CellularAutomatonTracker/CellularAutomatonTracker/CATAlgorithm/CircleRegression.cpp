@@ -344,21 +344,26 @@ namespace CAT{
     bool CircleRegression::points_in_good_order(void){
       // check the points are monotonically moving along the circle
 
-      if( xi_.size() < 3 ) return true;
+      size_t s = xi_.size();
+      if( s < 3 ) return true;
 
-      experimental_double phiA, phiB, deltaphiAB, deltaphi_product;
+      experimental_double deltaphiAB, deltaphi_product;
       size_t index;
 
-      experimental_double phi_initial =  c_.phi_of_point(experimental_point(xi_[0], experimental_double(0.,0.), yi_[0]));
-      experimental_double phi_final =  c_.phi_of_point(experimental_point(xi_.back(), experimental_double(0.,0.), yi_.back()), phi_initial.value());
+      experimental_double phi_second =  c_.phi_of_point(experimental_point(xi_[1], experimental_double(0.,0.), yi_[1]));
+      experimental_double phi_initial =  c_.phi_of_point(experimental_point(xi_[0], experimental_double(0.,0.), yi_[0]), phi_second.value());
+      experimental_double phi_final_minus_one =  c_.phi_of_point(experimental_point(xi_[s-2], experimental_double(0.,0.), yi_[s-2]), phi_initial.value());
+      experimental_double phi_final =  c_.phi_of_point(experimental_point(xi_.back(), experimental_double(0.,0.), yi_.back()), phi_final_minus_one.value());
       experimental_double deltaphi_overall =  phi_final - phi_initial;
+      experimental_double phiA = phi_initial;
+      experimental_double phiB = phi_initial;
 
       for(std::vector<experimental_double>::iterator it=xi_.begin(); it != xi_.end(); ++it)
 	{
 	  index = it - xi_.begin();
 	  if( index >= 1 ){
 	    phiA = c_.phi_of_point(experimental_point(xi_[index-1], experimental_double(0.,0.), yi_[index-1]), phiA.value());
-	    phiB = c_.phi_of_point(experimental_point(*it, experimental_double(0.,0.), yi_[index]), phiB.value());
+	    phiB = c_.phi_of_point(experimental_point(*it, experimental_double(0.,0.), yi_[index]), phiA.value());
 	    deltaphiAB = phiB-phiA;
 	    deltaphi_product = deltaphiAB*deltaphi_overall;
 	    if( deltaphi_product.value() < - deltaphi_product.error() ){

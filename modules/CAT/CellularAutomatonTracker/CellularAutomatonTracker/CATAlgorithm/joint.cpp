@@ -16,6 +16,7 @@ namespace CAT {
       appname_= "joint: ";
       used_ = false;
       chi2_ = 0.;
+      ndof_ = 0;
       p_ = 0.;
       return;
     }
@@ -40,6 +41,7 @@ namespace CAT {
       calculate_kinks();
       used_ = false;
       chi2_ = 0.;
+      ndof_ = 0;
       p_ = 0.;
     }
 
@@ -57,7 +59,7 @@ namespace CAT {
         }
 
       a_out << indent << appname_ << " -------------- " << std::endl;
-      a_out << indent << " used: " << used() << " chi2 " << chi2() << " prob " << p() << std::endl;
+      a_out << indent << " used: " << used() << " chi2 " << chi2() << " ndof " << ndof() << " prob " << p() << std::endl;
       a_out << indent << " first point " << std::endl;
       this->epa().dump(a_out, "", indent + "    ");
       a_out << indent << " second point " << std::endl;
@@ -124,6 +126,10 @@ namespace CAT {
     {
       chi2_ = chi2;
     }
+    void joint::set_ndof(int32_t ndof)
+    {
+      ndof_ = ndof;
+    }
     void joint::set_p(double p)
     {
       p_ = p;
@@ -170,6 +176,10 @@ namespace CAT {
     {
       return chi2_;
     }
+    int32_t joint::ndof() const
+    {
+      return ndof_;
+    }
     double joint::p() const
     {
       return p_;
@@ -185,6 +195,7 @@ namespace CAT {
       inverted.set_epc(epa());
       inverted.set_used(used());
       inverted.set_chi2(chi2());
+      inverted.set_ndof(ndof());
       inverted.set_p(p());
       inverted.set_kink_phi(-kink_phi());
       inverted.set_kink_theta(-kink_theta());

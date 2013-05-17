@@ -398,6 +398,7 @@ namespace CAT{
           if( ok ){
             joint j(newt1.epa(),p,newt2.epb(), print_level(), get_probmin());
             j.set_chi2(chi2);
+            j.set_ndof(ndof);
             j.set_p(probof(chi2, ndof));
             joints_.push_back(j);
           }

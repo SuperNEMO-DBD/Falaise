@@ -57,9 +57,9 @@ namespace CAT {
       decay_tangent_vertex_type_="default";
       calo_tangent_id_ = mybhep::default_integer;
 
-      chi2s_.clear();
+      chi2s_all_.clear();
       helix_chi2s_.clear();
-      probs_.clear();
+      probs_all_.clear();
       helix_ = helix();
       charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       helix_charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
@@ -112,9 +112,9 @@ namespace CAT {
                                                  mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
       decay_tangent_vertex_type_="default";
       calo_tangent_id_ = mybhep::default_integer;
-      chi2s_.clear();
+      chi2s_all_.clear();
       helix_chi2s_.clear();
-      probs_.clear();
+      probs_all_.clear();
       helix_ = helix();
       charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       helix_charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
@@ -164,9 +164,9 @@ namespace CAT {
                                                  mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
       decay_tangent_vertex_type_="default";
       calo_tangent_id_ = mybhep::default_integer;
-      chi2s_.clear();
+      chi2s_all_.clear();
       helix_chi2s_.clear();
-      probs_.clear();
+      probs_all_.clear();
       helix_ = helix();
       charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       helix_charge_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
@@ -280,7 +280,7 @@ namespace CAT {
 
     //! set chi2 list
     void sequence::set_chi2s(const std::vector<double> & chi2s){
-      chi2s_ = chi2s;
+      chi2s_all_ = chi2s;
     }
 
     //! set helix_chi2 list
@@ -290,7 +290,7 @@ namespace CAT {
 
     //! set prob list
     void sequence::set_probs(const std::vector<double> &probs){
-      probs_ = probs;
+      probs_all_ = probs;
     }
 
 
@@ -369,19 +369,13 @@ namespace CAT {
     //! get list of all chi2
     const std::vector<double>& sequence::chi2s_all() const
     {
-      return chi2s_;
-    }
-
-    //! get list of all helix_chi2
-    const std::vector<double>& sequence::helix_chi2s_all() const
-    {
-      return helix_chi2s_;
+      return chi2s_all_;
     }
 
     //! get list of prob
     const std::vector<double>& sequence::probs_all() const
     {
-      return probs_;
+      return probs_all_;
     }
 
     //! get list of chi2 used in the sequence
@@ -407,10 +401,8 @@ namespace CAT {
     {
       std::vector<double> p;
 
-      for(std::vector<double>::const_iterator iprob =probs_.begin();iprob !=probs_.end(); ++iprob){
-        if( probs_[iprob - probs_.begin()] > probmin() )
-          p.push_back(*iprob);
-      }
+      for(std::vector<node>::const_iterator in = nodes_.begin(); in != nodes_.end(); ++in)
+        p.push_back(in->Prob());
 
       return p;
     }
@@ -447,15 +439,10 @@ namespace CAT {
 
     // get ndof of sequence
     int32_t sequence::ndof()const{
-      // for each triplet, 2 angles and 2 separation angles
-      // except for the first triplet (only 2 angles)
-      std::vector<double> cs = chi2s();
-      int32_t ndof = 0;
-      if( cs.size() > 0 )
-        ndof += 2;
-      if( cs.size() > 1 )
-        ndof += (cs.size() - 1)*4;
 
+      int32_t ndof = 0;
+      for(std::vector<node>::const_iterator in = nodes_.begin(); in != nodes_.end(); ++in)
+        ndof += in->ndof();
       return ndof;
 
     }
@@ -1334,6 +1321,7 @@ namespace CAT {
               nodes_[s-2].set_ep(j.epa());
               nodes_[s-1].set_ep(j.epb());
               nodes_[s-1].set_chi2(j.chi2());
+              nodes_[s-1].set_ndof(j.ndof());
               *newp = j.epc();
               ok = true;
               break;
@@ -1445,9 +1433,10 @@ namespace CAT {
       }
 
       j->set_chi2(chi2);
+      j->set_ndof(ndof);
       j->set_p(local_prob);
-      chi2s_.push_back(chi2);
-      probs_.push_back(local_prob);
+      chi2s_all_.push_back(chi2);
+      probs_all_.push_back(local_prob);
 
 
       if( net_local_prob > probmin() ){
@@ -2335,6 +2324,10 @@ namespace CAT {
       int next_index;
       bool last;
 
+      if( with_kink == 1 ){
+	news.last_node().set_is_kink(true);
+      }
+
       for(size_t i = 0; i < seq.nodes_.size(); i++){
         index = i;
         next_index = i+1;
@@ -2354,6 +2347,9 @@ namespace CAT {
           cell_triplet ctA(news.nodes_[s-2].c(), news.nodes_[s-1].c(), in.c());
 	  //          news.nodes_[s-1].ccc_.push_back(ctA);
           news.nodes_[s-1].add_triplet(ctA);
+
+	  if( with_kink == 2 )
+	    in.set_is_kink(true);
         }
 
         if( !last ){
@@ -2809,6 +2805,23 @@ namespace CAT {
 
       return true;
 
+    }
+
+    bool sequence::has_kink(std::vector<size_t> *index) const{
+      bool has_kink=false;
+      for(std::vector<node>::const_iterator in = nodes_.begin(); in != nodes_.end(); ++in){
+	if( in->is_kink() ){
+	  has_kink=true;
+	  index->push_back(in - nodes_.begin());
+	}
+      }
+
+      return has_kink;
+    }
+
+    bool sequence::has_kink(void) const{
+      std::vector<size_t> index;
+      return has_kink(&index);
     }
 
   }

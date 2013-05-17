@@ -54,6 +54,9 @@ namespace CAT {
 
       // chi2 of connection in a sequence
       double chi2_;
+      int32_t ndof_;
+
+      bool is_kink_;
 
     public:
 
@@ -105,8 +108,14 @@ namespace CAT {
       //! set chi2
       void set_chi2(double chi2);
 
+      //! set ndof
+      void set_ndof(int32_t ndof);
+
       //! set fitted experimental_point
       void set_ep( const experimental_point &ep );
+
+      //! set is_kink
+      void set_is_kink(bool is_kink);
 
       //! get main cell
       const cell& c()const;
@@ -125,6 +134,15 @@ namespace CAT {
 
       //! get chi2
       double chi2()const;
+
+      //! get ndof
+      int32_t ndof()const;
+
+      //! get Prob
+      double Prob()const;
+
+      //! get is_kink
+      bool is_kink()const;
 
       //! get fitted experimental_point
       const experimental_point& ep()const;

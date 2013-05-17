@@ -45,6 +45,7 @@ namespace CAT {
 
       // chi2 of connection along a sequence
       double chi2_;
+      int32_t ndof_;
       double p_;
 
       //!Default constructor
@@ -88,6 +89,7 @@ namespace CAT {
 
       //! set chi2
       void set_chi2(double chi2);
+      void set_ndof(int32_t ndof);
       void set_p(double p);
 
       //! get experimental_point a
@@ -110,6 +112,7 @@ namespace CAT {
 
       //! get chi2
       double chi2() const;
+      int32_t ndof() const;
       double p() const;
 
       joint invert();

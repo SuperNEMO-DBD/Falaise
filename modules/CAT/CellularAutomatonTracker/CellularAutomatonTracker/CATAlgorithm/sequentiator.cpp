@@ -671,6 +671,7 @@ namespace CAT {
     clean_up_sequences();
     direct_out_of_foil();
 
+    interpret_physics(tracked_data_.get_calos());
     make_families();
 
     // //  match_through_gaps();
@@ -1673,7 +1674,7 @@ namespace CAT {
         if( level >= mybhep::VVERBOSE)
 	  print_a_sequence(*iseq);
 
-        if( !iseq->calculate_helix() ){
+        if( !iseq->has_kink() && !iseq->calculate_helix() ){
 	  size_t index = iseq - sequences_.begin();
           m.message(" erased sequence ", index, "not a good helix", mybhep::VERBOSE); fflush(stdout);
           sequences_.erase(iseq);
@@ -3009,7 +3010,6 @@ namespace CAT {
     if( level >= mybhep::VERBOSE){
       print_sequences();
     }
-
 
     return true;
 

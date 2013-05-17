@@ -40,13 +40,13 @@ namespace CAT {
 
       // list of all chi2 values found in the construction
       // of the sequence (some of them discarded, kept only for plotting)
-      std::vector<double> chi2s_;
+      std::vector<double> chi2s_all_;
 
-      // list of helix helix_chi2 values
+      // list of all prob values
+      std::vector<double> probs_all_;
+
+      // list of helix_chi2 values
       std::vector<double> helix_chi2s_;
-
-      // list of prob values
-      std::vector<double> probs_;
 
       // fitted helix
       helix helix_;
@@ -203,9 +203,6 @@ namespace CAT {
       //! get list of all chi2
       const std::vector<double>& chi2s_all() const;
 
-      //! get list of all helix_chi2
-      const std::vector<double>& helix_chi2s_all() const;
-
       //! get list of prob
       const std::vector<double> & probs_all() const;
 
@@ -338,6 +335,9 @@ namespace CAT {
 
       //! get middle node
       node middle_node()const;
+
+      bool has_kink(void) const;
+      bool has_kink(std::vector<size_t> *index) const;
 
     public:
 

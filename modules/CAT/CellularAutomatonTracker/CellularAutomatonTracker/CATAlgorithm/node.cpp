@@ -13,7 +13,9 @@ namespace CAT {
       {
         appname_= "node: ";
         free_ = false;
+	is_kink_ = false;
         chi2_ = 0.;
+	ndof_=0;
       }
 
       //!Default destructor
@@ -29,7 +31,9 @@ namespace CAT {
         cc_ = cc;
         ccc_ = ccc;
         free_ = false;
+	is_kink_ = false;
         chi2_ = 0.;
+	ndof_=0;
 	setup_cc_maps();
 	setup_ccc_maps();
       }
@@ -41,7 +45,9 @@ namespace CAT {
         appname_= "node: ";
         c_ = c;
         free_ = false;
+	is_kink_ = false;
         chi2_ = 0.;
+	ndof_=0;
       }
 
       //! constructor from bhep true hit
@@ -50,6 +56,7 @@ namespace CAT {
         set_probmin(probmin);
         appname_= "node: ";
         chi2_ = 0.;
+	ndof_=0;
         std::vector<double> cellpos;
         mybhep::vector_from_string(truehit.fetch_property("CELL_POS"), cellpos);
         double rpos = mybhep::float_from_string(truehit.fetch_property("DIST"));
@@ -118,6 +125,7 @@ namespace CAT {
         c_.set_iid(iid);
 
         free_ = false;
+	is_kink_ = false;
         {
           experimental_point tmp_ep(truehit.x().x(), truehit.x().y(), truehit.x().z(),
                                     0., 0., 0.); 
@@ -141,7 +149,7 @@ namespace CAT {
           }
 
         a_out << indent << appname_ << " --------------------- " << std::endl;
-        a_out << indent  << " main cell " << " free " << free() << " chi2 " << chi2() << std::endl;
+        a_out << indent  << " main cell " << " free " << free() << " chi2 " << chi2() << " ndof " << ndof() << std::endl;
         this->c().dump(a_out,"",indent + "   ");
         a_out << indent << " fitted point: "; ep().dump();
         a_out << indent << " cell couplets: " << cc().size() << std::endl;
@@ -208,9 +216,19 @@ namespace CAT {
         free_ = free;
       }
 
+      //! set is_kink
+      void node::set_is_kink(bool is_kink){
+        is_kink_ = is_kink;
+      }
+
       //! set chi2
       void node::set_chi2(double chi2){
         chi2_ = chi2;
+      }
+
+      //! set ndof
+      void node::set_ndof(int32_t ndof){
+        ndof_ = ndof;
       }
 
       //! set fitted experimental_point
@@ -245,9 +263,24 @@ namespace CAT {
         return free_;
       }
 
+      //! get is_kink
+      bool node::is_kink()const{
+        return is_kink_;
+      }
+
       //! get chi2
       double node::chi2()const{
         return chi2_;
+      }
+
+      //! get ndof
+      int32_t node::ndof()const{
+        return ndof_;
+      }
+
+      //! get prob
+      double node::Prob()const{
+        return probof(chi2(),ndof());
       }
 
       //! get fitted experimental_point
@@ -316,6 +349,7 @@ namespace CAT {
         inverted.set_ccc(ccc());
         inverted.set_free(free());
         inverted.set_chi2(chi2());
+        inverted.set_ndof(ndof());
         inverted.set_ep(ep());
         return inverted;
 
