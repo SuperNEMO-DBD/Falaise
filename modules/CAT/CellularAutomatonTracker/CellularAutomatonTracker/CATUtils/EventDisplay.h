@@ -214,6 +214,7 @@ class EventDisplay{
   void set_PlotCellIds(bool aValue) { PlotCellIds = aValue; }
   void set_PlotCellChi2s(bool aValue) { PlotCellChi2s = aValue; }
   void set_PlotCalos(bool aValue) { PlotCalos = aValue; }
+  void set_UseCalosInZoom(bool aValue) { UseCalosInZoom = aValue; }
   void set_PlotCaloEnergy(bool aValue) { PlotCaloEnergy = aValue; }
   void set_PlotHelices(bool aValue) { PlotHelices = aValue; }
   void set_PlotLegend(bool aValue) { PlotLegend = aValue; }
@@ -245,6 +246,7 @@ class EventDisplay{
   int PlotCellIds;
   int PlotCellChi2s;
   int PlotCalos;
+  int UseCalosInZoom;
   int PlotCaloEnergy;
   int PlotHelices;
   int PlotLegend;

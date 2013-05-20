@@ -342,6 +342,7 @@ namespace CAT{
 	  ep->z().value() == small_neg )
 	return false;
 
+      if( isnan(ep->x().value())  || isnan(ep->y().value()) || isnan(ep->z().value()) ) return false;
 
       // vector from center of plane face to extrapolated point
       experimental_vector dist = experimental_vector(pl.face(), *ep).hor();
@@ -435,6 +436,8 @@ namespace CAT{
 	  std::clog << " can't extrapolate circle to circle: ep is small_neg " << std::endl;
 	return false;
       }
+
+      if( isnan(ep->x().value())  || isnan(ep->y().value()) || isnan(ep->z().value()) ) return false;
 
       if( print_level() >= mybhep::VVERBOSE ){
 	clog << " track: "; dump(); 

@@ -55,6 +55,11 @@ using namespace CAT;
     else
       PlotCalos = 1;
 
+    if( st.find_istore("UseCalosInZoom") )
+      UseCalosInZoom = st.fetch_istore("UseCalosInZoom");
+    else
+      UseCalosInZoom = 1;
+
     if( st.find_istore("PlotTrueTracks") )
       PlotTrueTracks = st.fetch_istore("PlotTrueTracks");
     else
@@ -641,7 +646,7 @@ void EventDisplay::GetPlotLimit( std::vector<topology::calorimeter_hit> calos ) 
   }
 
 
-  if( PlotCalos ){
+  if( UseCalosInZoom ){
     for(size_t i=0; i<calos.size(); i++)
       {
 	

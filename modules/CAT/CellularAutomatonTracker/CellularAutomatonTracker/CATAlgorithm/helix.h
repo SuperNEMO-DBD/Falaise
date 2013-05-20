@@ -303,6 +303,8 @@ namespace CAT {
           bool result = get_circle().intersect_plane(pl, ep, _phi);
           ep->set_y(position(*ep,_phi.value()).y());
 	  
+	  if( isnan(ep->x().value())  || isnan(ep->y().value()) || isnan(ep->z().value()) ) return false;
+	  
           return result;
 	  
         }
@@ -327,6 +329,9 @@ namespace CAT {
 	    return false;
 
 	  ep->set_y(pl.face().y());
+
+	  if( isnan(ep->x().value())  || isnan(ep->y().value()) || isnan(ep->z().value()) ) return false;
+
 	  return true;
 	}
 	
@@ -370,6 +375,8 @@ namespace CAT {
 	if( print_level() >= mybhep::VVERBOSE ){
 	  std::clog << " center (" << c.center().x().value() << ", " << c.center().y().value() << ", " << c.center().z().value() << ") start (" << start.x().value() << ", " << start.y().value() << ", " << start.z().value() << ") cts (" << center_to_start.x().value() << ", " << center_to_start.y().value() << ", " << center_to_start.z().value() << ") beta " << beta.value()*180./acos(-1.) << " phi0 " << phi0.value()*180./acos(-1.) << " alpha " << alpha.value()*180./acos(-1.) << " sign " << sign.value() << " newangle " << (phi0+sign*alpha).value()*180./acos(-1.) << " pos: (" << ep->x().value() << ", " << ep->y().value() << ", " << ep->z().value() << ") " << std::endl;
 	}
+
+	if( isnan(ep->x().value())  || isnan(ep->y().value()) || isnan(ep->z().value()) ) return false;
 
 	return true;
       }

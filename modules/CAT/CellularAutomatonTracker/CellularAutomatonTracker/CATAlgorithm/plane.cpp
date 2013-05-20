@@ -196,6 +196,9 @@ namespace CAT {
     }
 
     bool plane::intersect(const experimental_point &ep)const{
+
+      if( isnan(ep.x().value())  || isnan(ep.y().value()) || isnan(ep.z().value()) ) return false;
+
       experimental_vector dist = ep - face();
 
       if( view() == "x" ){
