@@ -2161,9 +2161,6 @@ namespace CAT {
       double distFL = nodes_[0].ep().distance(seq.nodes().back().ep()).value();
       double distLF = nodes().back().ep().distance(seq.nodes_[0].ep()).value();
       double distLL = nodes().back().ep().distance(seq.nodes().back().ep()).value();
-      //experimental_vector cell_axis; 
-      experimental_vector tang1, tang2;
-      bool there_are_tangents=seq.nodes().size() > 1 && nodes_.size() > 1 ;
 
       if( distLF <= distFF && distLF <= distFL && distLF <= distLL ){  // last to first  FL --> FL
         invertA = false;
@@ -2187,11 +2184,6 @@ namespace CAT {
           return false;
         }
         layer_distance = last_node().c().layer() - seq.nodes_[0].c().layer();
-	if( there_are_tangents ){
-	  //cell_axis = experimental_vector(last_node().c().ep(), seq.nodes_[0].c().ep());
-	  tang1 = experimental_vector(second_last_node().ep(), last_node().ep());
-	  tang2 = experimental_vector(seq.nodes_[0].ep(), seq.nodes_[1].ep());
-	}
       }
       else if( distLL <= distFF && distLL <= distFL && distLL <= distLF ){ // last to last  FL -> LF
         invertA = false;
@@ -2215,12 +2207,6 @@ namespace CAT {
           return false;
         }
         layer_distance = last_node().c().layer() - seq.last_node().c().layer();
-	if( there_are_tangents ){
-	  //cell_axis = experimental_vector(last_node().c().ep(), seq.last_node().c().ep());
-	  tang1 = experimental_vector(second_last_node().ep(), last_node().ep());
-	  tang2 = experimental_vector(seq.last_node().ep(), seq.second_last_node().ep());
-	}
-
       }
       else if( distFL <= distFF && distFL <= distLL && distFL <= distLF ){ // first to last  LF -> LF
         invertA = true;
@@ -2243,11 +2229,6 @@ namespace CAT {
           return false;
         }
         layer_distance = nodes_[0].c().layer() - seq.last_node().c().layer();
-	if( there_are_tangents ){
-	  //cell_axis = experimental_vector(nodes_[0].c().ep(), seq.last_node().c().ep());
-	  tang1 = experimental_vector(nodes_[1].ep(), nodes_[0].ep());
-	  tang2 = experimental_vector(seq.last_node().ep(), seq.second_last_node().ep());
-	}
 
       }
       else{ // first to first  LF -> FL
@@ -2271,11 +2252,6 @@ namespace CAT {
           return false;
         }
         layer_distance = nodes_[0].c().layer() - seq.nodes_[0].c().layer();
-	if( there_are_tangents ){
-	  //cell_axis = experimental_vector(nodes_[0].c().ep(), seq.nodes_[0].c().ep());
-	  tang1 = experimental_vector(nodes_[1].ep(), nodes_[0].ep());
-	  tang2 = experimental_vector(seq.nodes_[0].ep(), seq.nodes_[1].ep());
-	}
 
       }
 
@@ -2285,16 +2261,6 @@ namespace CAT {
         if( print_level() >= mybhep::VVERBOSE )
           std::clog << " ... forbidden, because layers are far away by " << layer_distance << " planes " << std::endl;
         return false;
-      }
-
-
-      // if a layer is being skipped the tangents should go in the same direction
-      if( fabs(layer_distance) > 1 ){
-	if( (tang1*tang2).value() <= 0. ){
-	  if( print_level() >= mybhep::VVERBOSE )
-	    std::clog << " ... forbidden, because a layer is being skipped and the tangents are antiparallel : " << (tang1*tang2).value()  << std::endl;
-	  return false;
-	}
       }
 
 
@@ -2403,9 +2369,8 @@ namespace CAT {
         }
       }
 
-      *ok = true;
-      if( !news.calculate_helix() )
-	*ok = false;
+      *ok = news.calculate_helix();
+
 
       return news;
 
@@ -2822,6 +2787,11 @@ namespace CAT {
     bool sequence::has_kink(void) const{
       std::vector<size_t> index;
       return has_kink(&index);
+    }
+
+    void sequence::point_of_max_min_radius(experimental_point epa, experimental_point epb, experimental_point *epmax, experimental_point *epmin){
+      helix_.point_of_max_min_radius(epa, epb, epmax, epmin);
+      return;
     }
 
   }

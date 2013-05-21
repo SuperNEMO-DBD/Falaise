@@ -442,6 +442,8 @@ namespace CAT {
 
       bool helix_out_of_range(double lim);
 
+      void point_of_max_min_radius(experimental_point epa, experimental_point epb, experimental_point *epmax, experimental_point *epmin);
+
     };
 
   }

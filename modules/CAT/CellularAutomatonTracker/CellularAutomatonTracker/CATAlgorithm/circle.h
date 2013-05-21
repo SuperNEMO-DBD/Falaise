@@ -96,6 +96,9 @@ namespace CAT{
 
       bool intersect_circle(circle c, experimental_point * ep, experimental_double _phi);
 
+      // get the points of max and min radius (from the origin) along the arc of circle between epa and epb
+      void point_of_max_min_radius(experimental_point epa, experimental_point epb, experimental_point *epmax, experimental_point *epmin);
+
 
     };
 

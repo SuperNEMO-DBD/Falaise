@@ -674,7 +674,6 @@ namespace CAT {
     interpret_physics(tracked_data_.get_calos());
     make_families();
 
-    // //  match_through_gaps();
     match_gaps();
     direct_out_of_foil();
 
@@ -1722,42 +1721,6 @@ namespace CAT {
 	      
 	      m.message( " trying to extrapolate to calo hit ", ic - calos.begin(), " id ", ic->id(), " on view ", ic->pl_.view(), " energy ", ic->e().value(), mybhep::VVERBOSE);
 
-	      if( !near(iseq->nodes_[0].c(), *ic) ){
-		m.message( " begin is not near " , mybhep::VVERBOSE);
-	      }else{
-
-		if( !iseq->intersect_plane_from_begin(ic->pl(), &helix_extrapolation_local_from_begin) ){
-		  m.message( " no helix intersection from begin " , mybhep::VVERBOSE);
-		}
-		else{
-		  
-		  dist_from_begin = helix_extrapolation_local_from_begin.distance(ic->pl_.face()).value();
-		  if( dist_from_begin < helix_min_from_begin ){
-		    helix_min_from_begin = dist_from_begin;
-		    ihelix_min_from_begin = ic->id();
-		    helix_extrapolation_from_begin = helix_extrapolation_local_from_begin;
-		    helix_found_from_begin = true;
-		    m.message( " new helix intersection from begin with minimum distance " , dist_from_begin , " position: " , helix_extrapolation_from_begin.x().value() ,   helix_extrapolation_from_begin.y().value(),  helix_extrapolation_from_begin.z().value() , mybhep::VVERBOSE);
-		  }
-		}
-		
-		
-		if( !iseq->intersect_plane_with_tangent_from_begin(ic->pl(), &tangent_extrapolation_local_from_begin) ){
-		  m.message( " no tangent intersection from begin " , mybhep::VVERBOSE);
-		}
-		else{
-		  
-		  dist_from_begin = tangent_extrapolation_local_from_begin.distance(ic->pl_.face()).value();
-		  if( dist_from_begin < tangent_min_from_begin ){
-		    tangent_min_from_begin = dist_from_begin;
-		    itangent_min_from_begin = ic->id();
-		    tangent_extrapolation_from_begin = tangent_extrapolation_local_from_begin;
-		    tangent_found_from_begin = true;
-		    m.message( " new tangent intersection from begin with minimum distance " , dist_from_begin , " position: " , tangent_extrapolation_from_begin.x().value() ,   tangent_extrapolation_from_begin.y().value(),  tangent_extrapolation_from_begin.z().value() , mybhep::VVERBOSE);
-		  }
-		}
-	      }
-
 	      if( !near(iseq->last_node().c(), *ic) ){
 		m.message( " end is not near " , mybhep::VVERBOSE);
 	      }else{
@@ -1793,6 +1756,44 @@ namespace CAT {
 		  }
 		}
 	      }
+
+	      if( !near(iseq->nodes_[0].c(), *ic) ){
+		m.message( " begin is not near " , mybhep::VVERBOSE);
+	      }else if( ihelix_min_from_end == ic->id() || itangent_min_from_end == ic->id() ){
+		m.message( " begin is near, but end was already extrapolated to same calo " , mybhep::VVERBOSE);
+	      }else{
+		if( !iseq->intersect_plane_from_begin(ic->pl(), &helix_extrapolation_local_from_begin) ){
+		  m.message( " no helix intersection from begin " , mybhep::VVERBOSE);
+		}
+		else{
+		  
+		  dist_from_begin = helix_extrapolation_local_from_begin.distance(ic->pl_.face()).value();
+		  if( dist_from_begin < helix_min_from_begin ){
+		    helix_min_from_begin = dist_from_begin;
+		    ihelix_min_from_begin = ic->id();
+		    helix_extrapolation_from_begin = helix_extrapolation_local_from_begin;
+		    helix_found_from_begin = true;
+		    m.message( " new helix intersection from begin with minimum distance " , dist_from_begin , " position: " , helix_extrapolation_from_begin.x().value() ,   helix_extrapolation_from_begin.y().value(),  helix_extrapolation_from_begin.z().value() , mybhep::VVERBOSE);
+		  }
+		}
+		
+		
+		if( !iseq->intersect_plane_with_tangent_from_begin(ic->pl(), &tangent_extrapolation_local_from_begin) ){
+		  m.message( " no tangent intersection from begin " , mybhep::VVERBOSE);
+		}
+		else{
+		  
+		  dist_from_begin = tangent_extrapolation_local_from_begin.distance(ic->pl_.face()).value();
+		  if( dist_from_begin < tangent_min_from_begin ){
+		    tangent_min_from_begin = dist_from_begin;
+		    itangent_min_from_begin = ic->id();
+		    tangent_extrapolation_from_begin = tangent_extrapolation_local_from_begin;
+		    tangent_found_from_begin = true;
+		    m.message( " new tangent intersection from begin with minimum distance " , dist_from_begin , " position: " , tangent_extrapolation_from_begin.x().value() ,   tangent_extrapolation_from_begin.y().value(),  tangent_extrapolation_from_begin.z().value() , mybhep::VVERBOSE);
+		  }
+		}
+	      }
+
 	      
 	    } // finish loop on calos
 
@@ -2427,14 +2428,12 @@ namespace CAT {
 
     if( pl.view() == "x" ){
 
-      
-
       m.message(" matching cell ", c.id(), " with cell number ", c.cell_number(), " to calo on view ", pl.view(), " max cell number ", cell_max_number, " plane norm x ", pl.norm().x().value(), mybhep::VVERBOSE);
 
       if( pl.norm().x().value() > 0. )
-        return (fabs(cell_max_number + c.cell_number()) < 1);
+        return (fabs(cell_max_number + c.cell_number()) < 1 + NOffLayers);
 
-      return (fabs(cell_max_number - c.cell_number()) < 1);
+      return (fabs(cell_max_number - c.cell_number()) < 1 + NOffLayers);
     }
     else if( pl.view() == "y" ){
       m.message(" problem: matching cell to calo on view ", pl.view(), mybhep::NORMAL);
@@ -2446,9 +2445,9 @@ namespace CAT {
       
       m.message(" checking if cell ", c.id(), " on gap ", g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), mybhep::VVERBOSE);
       
-      if( g <= 0 ) return false; // cell is not on a gap or is facing the foil
+      if( g <= 0 || fabs(chlayer - c.layer()) > NOffLayers ) return false; // cell is not on a gap or is facing the foil
       
-      if( g == 1 ) return true;
+      if( g == 1 || fabs(chlayer - c.layer()) <= NOffLayers ) return true;
       
       m.message(" problem: can't match to calo on view ", pl.view(), mybhep::NORMAL);
 
@@ -2459,34 +2458,26 @@ namespace CAT {
       int ln = c.layer();
       int g = gap_number(c);
       m.message(" checking if cell ", c.id(), " layer and gap: ", ln, g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), " on view ", pl.view(), mybhep::VVERBOSE);
-      if( ln < 0 && g == 3 ) return true;
+      if( ln < 0 && (g == 3 ||
+		     fabs(ln - chlayer) <= NOffLayers )) return true;
       return false;
     }
     else if( pl.view() == "outer" ){
       int ln = c.layer();
       int g = gap_number(c);
       m.message(" checking if cell ", c.id(), " on layer and gap: ", ln, g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), " on view ", pl.view(), mybhep::VVERBOSE);
-      if( ln > 0 && g == 3 ) return true;
+      if( ln > 0 && (g == 3 ||
+		     fabs(ln - chlayer) <= NOffLayers )) return true;
       return false;
     }
-    else if( pl.view() == "top" ){
+    else if( pl.view() == "top" ||  pl.view() == "bottom" ){
       int ln = c.layer();
       int g = gap_number(c);
       m.message(" checking if cell ", c.id(), " on gap ", g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), " on view ", pl.view(), mybhep::VVERBOSE);
-      if( g == 1 && ln > 0 && chlayer == 3.5 ) return true;
-      if( g == 2 && ln > 0 && chlayer == 5.5 ) return true;
-      if( g == 1 && ln < 0 && chlayer == -3.5 ) return true;
-      if( g == 2 && ln < 0 && chlayer == -5.5 ) return true;
-      return false;
-    }
-    else if( pl.view() == "bottom" ){
-      int ln = c.layer();
-      int g = gap_number(c);
-      m.message(" checking if cell ", c.id(), " on gap ", g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), " on view ", pl.view(), mybhep::VVERBOSE);
-      if( g == 1 && ln > 0 && chlayer == 3.5 ) return true;
-      if( g == 2 && ln > 0 && chlayer == 5.5 ) return true;
-      if( g == 1 && ln < 0 && chlayer == -3.5 ) return true;
-      if( g == 2 && ln < 0 && chlayer == -5.5 ) return true;
+      if( ln > 0 && chlayer == 3.5 && (g == 1 || fabs(ln - chlayer) <= NOffLayers + 0.5 ) ) return true;
+      if( ln > 0 && chlayer == 5.5 && (g == 2 || fabs(ln - chlayer) <= NOffLayers + 0.5 ) ) return true;
+      if( ln < 0 && chlayer == -3.5 && (g == 1 || fabs(ln - chlayer) <= NOffLayers + 0.5 ) ) return true;
+      if( ln < 0 && chlayer == -5.5 && (g == 2 || fabs(ln - chlayer) <= NOffLayers + 0.5 ) ) return true;
       return false;
     }
 
@@ -2837,180 +2828,97 @@ namespace CAT {
 
 
   //*************************************************************
-  bool sequentiator::match_through_gaps(void){
+  bool sequentiator::sequence_is_within_range(topology::node nodeA, topology::node nodeB, topology::sequence seq){
     //*************************************************************
 
-    if( gaps_Z.empty() ) return true;
-    if( sequences_.size() < 2 ) return true;
+    topology::experimental_point epA = nodeA.ep();
+    topology::experimental_point epB = nodeB.ep();
+    topology::cell cA = nodeA.c();
+    topology::cell cB = nodeB.c();
 
-    clock.start(" sequentiator: match through gaps ", "cumulative");
+    int gnA = gap_number(cA);
+    int gnB = gap_number(cB);
+    int blockA = cA.block();
+    int blockB = cB.block();
 
-    std::vector<topology::sequence>::iterator iseq = sequences_.begin();
+    double rmin, rmax;
 
-    while( iseq != sequences_.end() ){
+    topology::experimental_point ep_maxr, ep_minr;
 
-      if( (size_t)(iseq - sequences_.begin()) > sequences_.size() - 1 ){
-        break;
+    // get the index of the gap through which the matching should occurr
+
+    if( blockA == blockB &&
+	((gnA == -1 && gnB == -1) ||
+	 gnA != gnB )){
+      // matching is within a single block and not through a gap
+      // so helix should be contained in the layers of the two cells
+      rmin = min(cA.ep().radius().value(),cB.ep().radius().value()) - CellDistance;
+      rmax = max(cA.ep().radius().value(),cB.ep().radius().value()) + CellDistance;
+    }else{
+    
+      if( blockA != blockB ){
+	// matching is between different blocks
+	rmin = min(cA.ep().radius().value(),cB.ep().radius().value()) - CellDistance;
+	rmax = max(cA.ep().radius().value(),cB.ep().radius().value()) + CellDistance;
       }
-
-      if( !good_first_to_be_matched(*iseq) ){
-        ++iseq;
-        continue;
+      else if( blockA == blockB && gnA == -1 && gnB != -1 ){ // B is on gap, A is inside
+	size_t gn = gnB;
+	if( cA.ep().radius().value() > cB.ep().radius().value() ){ // gap - B - A
+	  rmax = cA.ep().radius().value() + CellDistance;
+	  rmin = cB.ep().radius().value() - CellDistance - gaps_Z[gn];
+	}else{ // A - B - gap
+	  rmin = cA.ep().radius().value() - CellDistance;
+	  rmax = cB.ep().radius().value() + CellDistance + gaps_Z[gn];
+	}
       }
-
-      double probmax = mybhep::default_max;
-      double chi2min = mybhep::default_min;
-      int ndofbest = 1;
-      size_t index = 0;
-      topology::sequence bestmatch;
-      bool matched = false;
-
-      m.message(" try to match sequence ", iseq->name(), mybhep::VERBOSE);
-
-      if( level >= mybhep::VVERBOSE)
-        print_a_sequence(*iseq);
-
-      std::vector<topology::sequence>::iterator jseq = sequences_.begin();
-
-      while( jseq != sequences_.end() ){
-
-        if( (size_t)(jseq - sequences_.begin()) > sequences_.size() - 1 ){
-          break;
-        }
-
-        if( iseq == jseq ){
-          ++jseq;
-          continue;
-        }
-
-        m.message(" ... try to match sequence ", iseq->name(), " to ", jseq->name(), mybhep::VERBOSE);
-        if( level >= mybhep::VVERBOSE)
-          print_a_sequence(*jseq);
-
-
-        bool invertA, invertB;
-        if( !iseq->good_match(*jseq, invertA, invertB, NOffLayers) ){
-          ++jseq;
-	  m.message(" ... obviously no good match ", mybhep::VERBOSE);
-          continue;
-        }
-
-	bool ok;
-        topology::sequence news = iseq->match(*jseq, invertA, invertB, &ok,0);
-        if( !ok ){
-          ++jseq;
-	  m.message(" ... no good helix match ", mybhep::VERBOSE);
-          continue;
-        }
-
-        topology::experimental_point epa, epb;
-        size_t gn;
-        if( !invertA ){
-          epa = iseq->last_node().ep();
-          gn = gap_number(iseq->last_node().c());
-        }
-        else{
-          epa = iseq->nodes_[0].ep();
-          gn = gap_number(iseq->nodes_[0].c());
-        }
-
-        if( !invertB ){
-          epb = jseq->nodes_[0].ep();
-          if( gn < 0 )
-            gn = gap_number(jseq->nodes_[0].c());
-        }
-        else{
-          epb = jseq->last_node().ep();
-          if( gn < 0)
-            gn = gap_number(jseq->last_node().c());
-        }
-
-        double deltaphi = cos(news.delta_phi(epa, epb).value()/2.);
-        double penetration = fabs(news.radius().value()*(1 - cos(deltaphi)));
-
-        if( fabs(deltaphi)*180./acos(-1.) > 180. )
-          penetration = fabs(news.radius().value()*(1 + cos(deltaphi)));
-
-        double gapsize = gaps_Z[gn];
-
-        if( penetration > gapsize ){
-          m.message("SQ user: no good match because penetrating across the gap, penetration",  penetration, " gap ", gapsize, " deltaphi ", deltaphi*180./acos(-1.),  mybhep::VERBOSE);
-          ++jseq;
-          continue;
-        }
-
-
-        double p = news.helix_Prob();
-        double c = news.helix_chi2();
-        int nd = news.ndof();
-
-        m.message(" ... matched with chi2 ", c, " ndof ", nd, " prob ", p, mybhep::VVERBOSE);
-        matched = true;
-
-        if( p > probmax ){
-          probmax = p;
-          index = jseq - sequences_.begin();
-          chi2min = c;
-          ndofbest = nd;
-          bestmatch = news;
-        }
-        else if( p == probmax ){
-          if( c / nd < chi2min /ndofbest ){
-            probmax = p;
-            index = jseq - sequences_.begin();
-            chi2min = c;
-            ndofbest = nd;
-            bestmatch = news;
-          }
-        }
-
-        ++ jseq;
-
+      else if( blockA == blockB && gnA != -1 && gnB == -1 ){ // A is on gap, B is inside
+	size_t gn = gnA;
+	if( cA.ep().radius().value() < cB.ep().radius().value() ){ // gap - A - B
+	  rmax = cB.ep().radius().value() + CellDistance;
+	  rmin = cA.ep().radius().value() - CellDistance - gaps_Z[gn];
+	}else{ // B - A - gap
+	  rmin = cB.ep().radius().value() - CellDistance;
+	  rmax = cA.ep().radius().value() + CellDistance + gaps_Z[gn];
+	}
       }
-
-      if( !matched ){
-        ++iseq;
-        continue;
+      else if( blockA == blockB && gnA != -1 && gnB != -1 && gnA == gnB ){ // A and B on same gap
+	size_t gn = gnA;
+	size_t gaplayer=0;
+	for(size_t i=0; i<gn; i++)
+	  gaplayer += planes_per_block[i];  // 0, 4, 6, 9
+	if( abs(cA.layer()) < gaplayer ){ // foil - A,B - gap
+	  if( blockA > 0 ){ // origin - A, B - gap
+	    rmin = cA.ep().radius().value() - CellDistance;
+	    rmax = cA.ep().radius().value() + CellDistance + gaps_Z[gn];
+	  }else{ // origin - gap - A,B
+	    rmin = cA.ep().radius().value() - CellDistance - gaps_Z[gn];
+	    rmax = cA.ep().radius().value() + CellDistance;
+	  }
+	}else{ // foil - gap - A, B
+	  if( blockA > 0 ){ // origin - gap - A,B
+	    rmax = cA.ep().radius().value() + CellDistance;
+	    rmin = cA.ep().radius().value() - CellDistance - gaps_Z[gn];
+	  }else{ // origin - A,B - gap
+	    rmin = cA.ep().radius().value() - CellDistance;
+	    rmax = cA.ep().radius().value() + CellDistance + gaps_Z[gn];
+	  }
+	}
+	
       }
-
-      m.message(" best match to sequence ", iseq->name(),  " is ", sequences_[index].name(), " with prob ", probmax, " chi2 ", chi2min, " ndof ", ndofbest, mybhep::VVERBOSE);
-
-      if( probmax > 0 ){
-        m.message(" replace sequence ", iseq->name(), " with matched sequence ", mybhep::VERBOSE); fflush(stdout);
-        size_t restart_index = iseq - sequences_.begin();
-        std::swap(*iseq, bestmatch);
-        iseq = sequences_.begin();
-        advance(iseq, restart_index);
-
-        std::string delenda_family = sequences_[index].family();
-        m.message(" erase all sequences of family ", delenda_family, mybhep::VERBOSE); fflush(stdout);
-
-        std::vector<topology::sequence>::iterator jseq = sequences_.begin();
-        while( jseq != sequences_.end() ){
-
-          if( (size_t)(jseq - sequences_.begin()) > sequences_.size() - 1 ){
-            break;
-          }
-
-          if( jseq->family() == delenda_family ){
-            m.message(" erase sequence ", jseq->name(), mybhep::VVERBOSE); fflush(stdout);
-            sequences_.erase(jseq);
-          }
-          else
-            ++jseq;
-        }
-
-        continue;
+      else{
+	std::clog << " problem: blockA " << blockA << " blockB " << blockB << " gnA " << gnA << " gnB " << gnB << std::endl;
+	return true;
       }
-
-
-      ++ iseq;
-
     }
 
+    seq.point_of_max_min_radius(epA, epB, &ep_maxr, &ep_minr);
 
-    clock.stop(" sequentiator: match through gaps ");
-
+    if( ep_maxr.radius().value() > rmax || ep_minr.radius().value() < rmin ){
+      if( level >= mybhep::VVERBOSE ){
+	std::clog << " sequence penetrates outside of admissible range between cells " << nodeA.c().id() << " layer " << nodeA.c().layer() << " r " << nodeA.c().ep().radius().value() << " and " << nodeB.c().id() << " layer " << nodeB.c().layer() << " r " << nodeB.c().ep().radius().value() << ": point of max radius has radius " << ep_maxr.radius().value() << " rmax " << rmax << " point of min radius has radius " << ep_minr.radius().value() << " rmin " << rmin << std::endl;
+      }
+      return false;
+    }
     return true;
 
   }
@@ -3075,12 +2983,13 @@ namespace CAT {
       int with_kink = 0;
       while( can_match(newseq, &jmin, invertA, invertB, with_kink) )
         {
-          m.message(" best matching is ", sequences_[jmin].name(), " invertA ", invertA, " invertB ", invertB, mybhep::VERBOSE);
+          m.message(" best matching is ", sequences_[jmin].name(), " invertA ", invertA, " invertB ", invertB, " with kink ", with_kink, mybhep::VERBOSE);
           if( level >= mybhep::VVERBOSE)
             print_a_sequence(sequences_[jmin]);
 
 	  bool ok;
           newseq = newseq.match(sequences_[jmin], invertA, invertB, &ok, with_kink);
+
 	  if( !ok && !with_kink ){
 	    m.message(" ... no good helix match ", mybhep::VERBOSE);
 	    continue;
@@ -3147,6 +3056,7 @@ namespace CAT {
     double p;
     double c;
     int n;
+    topology::node nodeA, nodeB;
     with_kink=0;
 
     for(std::vector<topology::sequence>::iterator jseq=sequences_.begin(); jseq!=sequences_.end(); ++jseq)
@@ -3172,6 +3082,18 @@ namespace CAT {
 	if( ok_match )
 	  news = s.match(*jseq, invertA, invertB, &ok_match,with_kink);
 
+	if( !invertA )
+	  nodeA = s.last_node();
+	else
+	  nodeA = s.nodes_[0];
+	
+	if( !invertB )
+	  nodeB = jseq->nodes_[0];
+	else
+	  nodeB = jseq->last_node();
+
+	ok_match = ok_match && sequence_is_within_range(nodeA, nodeB, news);
+
 	if( ok_match ){
 	  p = news.helix_Prob();
 	  c = news.helix_chi2();
@@ -3192,9 +3114,25 @@ namespace CAT {
 	    m.message(" possible match with kink, across GAP", acrossGAP, " try to extrapolate ", mybhep::VVERBOSE);
 	    topology::experimental_point kink_point;
 	    ok_kink_match = s.intersect_sequence(*jseq, invertA, invertB, acrossGAP, &kink_point, limit_diagonal, &with_kink);
+
 	    if( ok_kink_match ){
-	      m.message(" good kink match ( ", kink_point.x().value(), ", ", kink_point.y().value(), ", ", kink_point.z().value(), ") to sequence ", jseq->name(), mybhep::VVERBOSE);
+
+	      if( !invertA )
+		nodeA = s.last_node();
+	      else
+		nodeA = s.nodes_[0];
+	    
+	      if( !invertB )
+		nodeB = jseq->nodes_[0];
+	      else
+		nodeB = jseq->last_node();
+	    
 	      news = s.match(*jseq, invertA, invertB, &ok_kink_match_chi2, with_kink);
+	      ok_kink_match = sequence_is_within_range(nodeA, nodeB, news);
+	    
+	      if( ok_kink_match )
+		m.message(" good kink match ( ", kink_point.x().value(), ", ", kink_point.y().value(), ", ", kink_point.z().value(), ") to sequence ", jseq->name(), mybhep::VVERBOSE);
+	    
 	    }else{
 	      m.message(" no good kink match to sequence ", jseq->name(), mybhep::VVERBOSE);
 	    }

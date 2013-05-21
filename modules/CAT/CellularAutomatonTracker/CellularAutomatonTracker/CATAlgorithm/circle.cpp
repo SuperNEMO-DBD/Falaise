@@ -452,6 +452,53 @@ namespace CAT{
     }
 
 
+    void circle::point_of_max_min_radius(experimental_point epa, experimental_point epb, experimental_point *epmax, experimental_point *epmin){
+      // get the points of max and min radius (from the origin) along the arc of circle between epa and epb
+
+      experimental_point origin(0.,0.,0.,0.,0.,0.);
+      experimental_vector oc(origin,center());
+      oc = oc.hor().unit();
+
+      experimental_point absolute_max = (center() + oc*radius()).point_from_vector();
+      experimental_point absolute_min = (center() - oc*radius()).point_from_vector();
+
+      double phiA = phi_of_point(epa).value();
+      double phiB = phi_of_point(epb, phiA).value();
+      double phi_absmax = phi_of_point(absolute_max, phiA).value();
+      double phi_absmin = phi_of_point(absolute_min, phiA).value();
+      double phi1 = min(phiA, phiB);
+      double phi2 = max(phiA, phiB);
+
+      if( phi1 < phi_absmax && phi2 > phi_absmax ) // absmax is in the arc
+	*epmax = absolute_max;
+      else{
+	if( epa.radius().value() > epb.radius().value() )
+	  *epmax = epa;
+	else
+	  *epmax = epb;
+      }
+
+      if( phi1 < phi_absmin && phi2 > phi_absmin ) // absmin is in the arc
+	*epmin = absolute_min;
+      else{
+	if( epa.radius().value() < epb.radius().value() )
+	  *epmin = epa;
+	else
+	  *epmin = epb;
+      }
+
+      if( print_level() >= mybhep::VVERBOSE ){
+	std::clog << " along the circle between points (" << epa.x().value() << ", " << epa.z().value() << ") and (" <<
+	  epb.x().value() << ", " << epb.z().value() << ") the point of max radius is (" <<
+	  epmax->x().value() << ", " << epmax->z().value() << "), that of min radius is (" <<
+	  epmin->x().value() << ", " << epmin->z().value() << ")" << std::endl;
+      }
+
+      return;
+
+    }
+
+
     // average
     circle average (const std::vector<circle> &vs)
     {
@@ -577,6 +624,8 @@ namespace CAT{
       return h; 
 
     }
+
+
 
   }
 }

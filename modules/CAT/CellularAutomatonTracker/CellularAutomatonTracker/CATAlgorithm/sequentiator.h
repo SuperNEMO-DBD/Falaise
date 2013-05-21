@@ -514,6 +514,7 @@ namespace CAT {
     bool can_be_linked(topology::sequence& p, bool inverted);
     bool can_match(topology::sequence &s, size_t* jmin, bool& bestinvertA, bool& bestinvertB, int& with_kink);
     bool select_nemo_tracks(topology::tracked_data & __tracked_data);
+    bool sequence_is_within_range(topology::node nodeA, topology::node nodeB, topology::sequence seq);
 
 
 

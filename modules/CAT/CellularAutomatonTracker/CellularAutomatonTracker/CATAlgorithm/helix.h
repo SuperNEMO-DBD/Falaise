@@ -392,6 +392,14 @@ namespace CAT {
 	return inverted;
       }
 
+      void point_of_max_min_radius(experimental_point epa, experimental_point epb, experimental_point *epmax, experimental_point *epmin){
+	
+	get_circle().point_of_max_min_radius(epa, epb, epmax, epmin);
+	
+      return;
+      
+      }
+
 
     };
 
@@ -460,7 +468,6 @@ namespace CAT {
       return h;
 
     }
-
 
   }
 
