@@ -512,7 +512,7 @@ namespace CAT {
     void print_a_scenario(const topology::scenario & scenario) const;
     size_t pick_best_scenario();
     bool can_be_linked(topology::sequence& p, bool inverted);
-    bool can_match(topology::sequence &s, size_t* jmin, bool& bestinvertA, bool& bestinvertB, int& with_kink);
+    bool can_match(topology::sequence &s, size_t* jmin, bool& bestinvertA, bool& bestinvertB, int& with_kink, int &cells_to_delete);
     bool select_nemo_tracks(topology::tracked_data & __tracked_data);
     bool sequence_is_within_range(topology::node nodeA, topology::node nodeB, topology::sequence seq);
 

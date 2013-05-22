@@ -2981,14 +2981,15 @@ namespace CAT {
       first = true;
       topology::sequence newseq = *iseq;
       int with_kink = 0;
-      while( can_match(newseq, &jmin, invertA, invertB, with_kink) )
+      int cells_to_delete = 0;
+      while( can_match(newseq, &jmin, invertA, invertB, with_kink, cells_to_delete) )
         {
           m.message(" best matching is ", sequences_[jmin].name(), " invertA ", invertA, " invertB ", invertB, " with kink ", with_kink, mybhep::VERBOSE);
           if( level >= mybhep::VVERBOSE)
             print_a_sequence(sequences_[jmin]);
 
 	  bool ok;
-          newseq = newseq.match(sequences_[jmin], invertA, invertB, &ok, with_kink);
+          newseq = newseq.match(sequences_[jmin], invertA, invertB, &ok, with_kink,cells_to_delete);
 
 	  if( !ok && !with_kink ){
 	    m.message(" ... no good helix match ", mybhep::VERBOSE);
@@ -3036,7 +3037,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  bool sequentiator::can_match(topology::sequence &s, size_t* jmin, bool& bestinvertA, bool& bestinvertB, int &with_kink) {
+  bool sequentiator::can_match(topology::sequence &s, size_t* jmin, bool& bestinvertA, bool& bestinvertB, int &with_kink, int &cells_to_delete_best) {
     //*************************************************************
 
     if( late() )
@@ -3050,6 +3051,7 @@ namespace CAT {
     double probmax = -1.;
     double chi2min = mybhep::default_min;
     int ndofbest = 1;
+    int cells_to_delete = 0;
 
     m.message(" try to match sequence", s.name(), " of chi2 = ", chi2min, " ndof ", ndofbest, " prob ", probmax, mybhep::VVERBOSE);
     bool invertA, invertB, acrossGAP;
@@ -3080,7 +3082,7 @@ namespace CAT {
 	bool ok_kink_match_chi2 = false;
 	topology::sequence news;
 	if( ok_match )
-	  news = s.match(*jseq, invertA, invertB, &ok_match,with_kink);
+	  news = s.match(*jseq, invertA, invertB, &ok_match,with_kink,0);
 
 	if( !invertA )
 	  nodeA = s.last_node();
@@ -3107,27 +3109,42 @@ namespace CAT {
 	else{
 	  m.message(" ... no good helix match, try to match with kink ", mybhep::VVERBOSE);
 	  
-	  ok_kink_match= s.good_match_with_kink(*jseq, invertA, invertB, acrossGAP, limit_diagonal, NOffLayers) ;
+	  ok_kink_match= s.good_match_with_kink(*jseq, invertA, invertB, acrossGAP, limit_diagonal, NOffLayers, cells_to_delete);
 	  if( !ok_kink_match )
 	    m.message(" ... obviously no good match with kink ", mybhep::VVERBOSE);
 	  else{
-	    m.message(" possible match with kink, across GAP", acrossGAP, " try to extrapolate ", mybhep::VVERBOSE);
+	    m.message(" possible match with kink, across GAP", acrossGAP, ", cells to delete ", cells_to_delete, ", try to extrapolate ", mybhep::VVERBOSE);
 	    topology::experimental_point kink_point;
-	    ok_kink_match = s.intersect_sequence(*jseq, invertA, invertB, acrossGAP, &kink_point, limit_diagonal, &with_kink);
+	    ok_kink_match = s.intersect_sequence(*jseq, invertA, invertB, acrossGAP, &kink_point, limit_diagonal, &with_kink, cells_to_delete);
 
 	    if( ok_kink_match ){
 
-	      if( !invertA )
-		nodeA = s.last_node();
-	      else
-		nodeA = s.nodes_[0];
-	    
-	      if( !invertB )
-		nodeB = jseq->nodes_[0];
-	      else
-		nodeB = jseq->last_node();
-	    
-	      news = s.match(*jseq, invertA, invertB, &ok_kink_match_chi2, with_kink);
+	      if( !invertA ){
+		if( cells_to_delete == 0 || cells_to_delete == 1 )
+		  nodeA = s.last_node();
+		else
+		  nodeA = s.second_last_node();	
+	      }
+	      else{
+		if( cells_to_delete == 0 || cells_to_delete == 1 )
+		  nodeA = s.nodes_[0];
+		else
+		  nodeA = s.nodes_[1];
+	      }
+
+	      if( !invertB ){
+		if( cells_to_delete != 1 )
+		  nodeB = jseq->nodes_[0];
+		else
+		  nodeB = jseq->nodes_[1];
+	      }else{
+		if( cells_to_delete != 1 )	
+		  nodeB = jseq->last_node();
+		else
+		  nodeB = jseq->second_last_node();
+	      }
+
+	      news = s.match(*jseq, invertA, invertB, &ok_kink_match_chi2, with_kink,cells_to_delete);
 	      ok_kink_match = sequence_is_within_range(nodeA, nodeB, news);
 	    
 	      if( ok_kink_match )
@@ -3156,6 +3173,7 @@ namespace CAT {
             ndofbest = n;
             bestinvertA = invertA;
             bestinvertB = invertB;
+	    cells_to_delete_best = cells_to_delete;
             ok = true;
           }
       }

@@ -401,12 +401,19 @@ namespace CAT {
 
       bool intersect_circle_from_end(const circle &c, experimental_point * ep)const;
 
+      bool intersect_circle_from_end_minus_one(const circle & c, experimental_point * ep)const;
+
       bool intersect_circle_with_tangent_from_begin(const circle & c, experimental_point * ep)const;
 
       bool intersect_circle_from_begin(const circle & c, experimental_point * ep)const;
 
+      bool intersect_circle_from_begin_minus_one(const circle & c, experimental_point * ep)const;
 
-      bool intersect_sequence(sequence & seq, bool invertA, bool invertB, bool acrossGAP, experimental_point * ep, double limit_distance, int* with_kink);
+      void remove_first_node();
+
+      void remove_last_node();
+
+      bool intersect_sequence(sequence & seq, bool invertA, bool invertB, bool acrossGAP, experimental_point * ep, double limit_distance, int* with_kink, int cells_to_delete);
 
       std::string family()const;
 
@@ -416,11 +423,12 @@ namespace CAT {
                       bool &invertA, bool &invertB, size_t NOffLayers)const;
 
 
-      sequence match(const sequence & seq, bool invertA, bool invertB, bool *ok, int with_kink);
+      sequence match(sequence & seq, bool invertA, bool invertB, bool *ok, int with_kink, int cells_to_delete);
 
       bool good_match_with_kink(const sequence & seq,
                                 bool &invertA, bool &invertB, bool &acrossGAP,
-                                double limit_distance, size_t NOffLayers)const;
+                                double limit_distance, size_t NOffLayers,
+				int &cells_to_delete)const;
 
       bool same_families(const topology::sequence & s)const;
 
