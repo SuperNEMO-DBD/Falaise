@@ -454,8 +454,8 @@ private:
   void print_cells(void);
   void draw_tangents_xz( void );
   void draw_tangents_yz( void );
-  void draw_helices_xz( void );
-  void draw_helices_yz( void );
+  void draw_helices_xz( std::string mode );
+  void draw_helices_yz( std::string mode );
   void draw_triplets_xz( void );
   void draw_triplets_yz( void );
   double get_x_ndc(double x);

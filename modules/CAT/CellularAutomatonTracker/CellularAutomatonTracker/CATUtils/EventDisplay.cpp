@@ -1644,6 +1644,10 @@ void EventDisplay::execute(size_t ievent, topology::tracked_data & __tracked_dat
   sequences_.clear();
   std::vector<topology::scenario> sc = __tracked_data.get_scenarios();
 
+  if( !SuperNemo )
+    {
+      set_nemo_sequences(__tracked_data.get_nemo_sequences() );
+    }
 
   GetPlotLimit( __tracked_data.get_calos());
 
@@ -1919,13 +1923,13 @@ void EventDisplay::event_display_xz(std::string mode, topology::tracked_data td)
     draw_triplets_xz();
 
   if( mode == "nemo" && PlotNemoTracks)
-    draw_cats_xz(mode, td.get_true_sequences());
+    draw_helices_xz(mode);
   
   if( mode == "cats" && PlotCats)
     draw_cats_xz(mode, td.get_true_sequences());
   
   if( mode == "cats" && PlotHelices )
-    draw_helices_xz();
+    draw_helices_xz(mode);
 
   if( mode == "true" && PlotTrueTracks ){
     draw_cats_xz(mode, td.get_true_sequences());
@@ -2364,30 +2368,60 @@ void EventDisplay::draw_tangents_xz( void ){
 }
 
 //*************************************************************
-void EventDisplay::draw_helices_xz( void ){
+void EventDisplay::draw_helices_xz(std::string mode){
 //*************************************************************
 
-  for(std::vector<topology::sequence>::iterator iclu=sequences_.begin(); iclu != sequences_.end(); ++iclu){
-    
-    if( iclu->nodes_.size() <= 2 ){
-      continue;
+  if( mode == "cats" ){
+
+    for(std::vector<topology::sequence>::iterator iclu=sequences_.begin(); iclu != sequences_.end(); ++iclu){
+      
+      if( iclu->nodes_.size() <= 2 ){
+	continue;
+      }
+      
+      double x = iclu->center().x().value();
+      double z = iclu->center().z().value();
+      double r = iclu->radius().value();
+      topology::experimental_point pi = iclu->nodes().front().ep();
+      if( iclu->has_helix_vertex() ){
+	const topology::experimental_point v = iclu->helix_vertex();
+	pi = v;
+      }
+      topology::experimental_point pf = iclu->nodes().back().ep();
+      if( iclu->has_decay_helix_vertex() )
+	pf = iclu->decay_helix_vertex();
+      double phi1 = topology::experimental_vector(iclu->center(), pi).phi().value();
+      double phi2 = topology::experimental_vector(iclu->center(), pf).phi().value();
+      mybhep::fix_angles(&phi1, &phi2);
+      draw_circle_xz(x, z, r, color_helix + (iclu - sequences_.begin()), 2, phi1, phi2);
+
+    }
+  } else if( mode == "nemo" ){
+
+    for(std::vector<topology::sequence>::iterator iclu=nemo_sequences_.begin(); iclu != nemo_sequences_.end(); ++iclu){
+      
+      if( iclu->nodes_.size() <= 2 ){
+	continue;
+      }
+      
+      double x = iclu->center().x().value();
+      double z = iclu->center().z().value();
+      double r = iclu->radius().value();
+      topology::experimental_point pi = iclu->nodes().front().ep();
+      if( iclu->has_helix_vertex() ){
+	const topology::experimental_point v = iclu->helix_vertex();
+	pi = v;
+      }
+      topology::experimental_point pf = iclu->nodes().back().ep();
+      if( iclu->has_decay_helix_vertex() )
+	pf = iclu->decay_helix_vertex();
+      double phi1 = topology::experimental_vector(iclu->center(), pi).phi().value();
+      double phi2 = topology::experimental_vector(iclu->center(), pf).phi().value();
+      mybhep::fix_angles(&phi1, &phi2);
+      draw_circle_xz(x, z, r, color_helix + (iclu - sequences_.begin()), 2, phi1, phi2);
+
     }
 
-    double x = iclu->center().x().value();
-    double z = iclu->center().z().value();
-    double r = iclu->radius().value();
-    topology::experimental_point pi = iclu->nodes().front().ep();
-    if( iclu->has_helix_vertex() ){
-      const topology::experimental_point v = iclu->helix_vertex();
-      pi = v;
-    }
-    topology::experimental_point pf = iclu->nodes().back().ep();
-    if( iclu->has_decay_helix_vertex() )
-      pf = iclu->decay_helix_vertex();
-    double phi1 = topology::experimental_vector(iclu->center(), pi).phi().value();
-    double phi2 = topology::experimental_vector(iclu->center(), pf).phi().value();
-    mybhep::fix_angles(&phi1, &phi2);
-    draw_circle_xz(x, z, r, color_helix + (iclu - sequences_.begin()), 2, phi1, phi2);
   }
 
 
@@ -2397,27 +2431,49 @@ void EventDisplay::draw_helices_xz( void ){
 
 
 //*************************************************************
-void EventDisplay::draw_helices_yz( void ){
+void EventDisplay::draw_helices_yz(std::string mode){
 //*************************************************************
 
-  for(std::vector<topology::sequence>::iterator iclu=sequences_.begin(); iclu != sequences_.end(); ++iclu){
-    double y = iclu->center().y().value();
-    double z = iclu->center().z().value();
-    double r = iclu->radius().value();
-    double p = iclu->pitch().value();
-    topology::experimental_point pi = iclu->nodes().front().ep();
-    if( iclu->has_helix_vertex() )
-      pi = iclu->helix_vertex();
-    topology::experimental_point pf = iclu->nodes().back().ep();
-    if( iclu->has_decay_helix_vertex() )
-      pf = iclu->decay_helix_vertex();
-    topology::helix h = iclu->get_helix();
-    double phi1 = h.phi_of_point(pi).value();
-    double phi2 = h.phi_of_point(pf).value();
-    draw_sine_yz(y, z, r, p, color_helix + (iclu - sequences_.begin()), 2, phi1, phi2);
+  if( mode == "cats" ){
+
+    for(std::vector<topology::sequence>::iterator iclu=sequences_.begin(); iclu != sequences_.end(); ++iclu){
+      double y = iclu->center().y().value();
+      double z = iclu->center().z().value();
+      double r = iclu->radius().value();
+      double p = iclu->pitch().value();
+      topology::experimental_point pi = iclu->nodes().front().ep();
+      if( iclu->has_helix_vertex() )
+	pi = iclu->helix_vertex();
+      topology::experimental_point pf = iclu->nodes().back().ep();
+      if( iclu->has_decay_helix_vertex() )
+	pf = iclu->decay_helix_vertex();
+      topology::helix h = iclu->get_helix();
+      double phi1 = h.phi_of_point(pi).value();
+      double phi2 = h.phi_of_point(pf).value();
+      draw_sine_yz(y, z, r, p, color_helix + (iclu - sequences_.begin()), 2, phi1, phi2);
+    }
+    
+  } else if( mode == "nemo" ){
+
+    for(std::vector<topology::sequence>::iterator iclu=nemo_sequences_.begin(); iclu != nemo_sequences_.end(); ++iclu){
+      double y = iclu->center().y().value();
+      double z = iclu->center().z().value();
+      double r = iclu->radius().value();
+      double p = iclu->pitch().value();
+      topology::experimental_point pi = iclu->nodes().front().ep();
+      if( iclu->has_helix_vertex() )
+	pi = iclu->helix_vertex();
+      topology::experimental_point pf = iclu->nodes().back().ep();
+      if( iclu->has_decay_helix_vertex() )
+	pf = iclu->decay_helix_vertex();
+      topology::helix h = iclu->get_helix();
+      double phi1 = h.phi_of_point(pi).value();
+      double phi2 = h.phi_of_point(pf).value();
+      draw_sine_yz(y, z, r, p, color_helix + (iclu - sequences_.begin()), 2, phi1, phi2);
+    }
+
   }
-
-
+    
   return;
 }
 
@@ -2691,6 +2747,7 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<topology::sequence
       }
   }
   else if( mode == "nemo" ){
+
     for(size_t i=0; i<nemo_sequences_.size(); i++)
       {
 	topology::sequence s = nemo_sequences_[i];
@@ -2727,12 +2784,14 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<topology::sequence
 	  {
 	    xt[0] = s.helix_vertex().x().value();
 	    zt[0] = s.helix_vertex().z().value();
+
 	  }
 	
 	if( s.has_decay_helix_vertex() )
 	  {
 	    xt[npoints-1] = s.decay_helix_vertex().x().value();
 	    zt[npoints-1] = s.decay_helix_vertex().z().value();
+
 	  }
 
 	for(size_t j=0; j<nnodes; j++)
@@ -2821,10 +2880,10 @@ void EventDisplay::event_display_yz(std::string mode, topology::tracked_data td)
     draw_triplets_yz();
 
   if( mode == "cats" && PlotHelices )
-    draw_helices_yz();
+    draw_helices_yz(mode);
 
   if( mode == "nemo" && PlotNemoTracks)
-    draw_cats_yz(mode, td.get_true_sequences());
+    draw_helices_yz(mode);
 
   if( mode == "cats" && PlotCats)
     draw_cats_yz(mode, td.get_true_sequences());
