@@ -2418,7 +2418,7 @@ void EventDisplay::draw_helices_xz(std::string mode){
       double phi1 = topology::experimental_vector(iclu->center(), pi).phi().value();
       double phi2 = topology::experimental_vector(iclu->center(), pf).phi().value();
       mybhep::fix_angles(&phi1, &phi2);
-      draw_circle_xz(x, z, r, color_helix + (iclu - sequences_.begin()), 2, phi1, phi2);
+      draw_circle_xz(x, z, r, color_helix + (iclu - nemo_sequences_.begin()), 2, phi1, phi2);
 
     }
 
@@ -2469,7 +2469,7 @@ void EventDisplay::draw_helices_yz(std::string mode){
       topology::helix h = iclu->get_helix();
       double phi1 = h.phi_of_point(pi).value();
       double phi2 = h.phi_of_point(pf).value();
-      draw_sine_yz(y, z, r, p, color_helix + (iclu - sequences_.begin()), 2, phi1, phi2);
+      draw_sine_yz(y, z, r, p, color_helix + (iclu - nemo_sequences_.begin()), 2, phi1, phi2);
     }
 
   }
