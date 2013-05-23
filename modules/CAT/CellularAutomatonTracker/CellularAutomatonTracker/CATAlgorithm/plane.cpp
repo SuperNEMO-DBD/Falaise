@@ -190,7 +190,19 @@ namespace CAT {
 
       else{ // Nemo3
 
-	return (center_ + norm()*sizes().x()/2.).point_from_vector();
+	experimental_double the_size;
+	if( view() == "inner" || view() == "outer" )
+	  the_size = sizes().x();
+	else if( view() == "top" || view() == "bottom" )
+	  the_size = sizes().y();
+	else{
+	  if( print_level() >= mybhep::NORMAL ){
+	    std::clog << " problem: unknown calo view " << view() << std::endl;
+	  }
+	  the_size = sizes().x();
+	}
+
+	return (center_ + norm()*the_size/2.).point_from_vector();
       }
 
     }
