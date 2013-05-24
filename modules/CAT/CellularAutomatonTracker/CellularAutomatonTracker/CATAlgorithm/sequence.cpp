@@ -2939,7 +2939,7 @@ namespace CAT {
 
     if( found ){
       *the_distance = min_distance;
-      if( print_level() >= mybhep::NORMAL ){
+      if( print_level() >= mybhep::VVERBOSE ){
 	std::clog << " sequences " << this->name() << " and " << seqB->name() << " have vertex on foil with distance " << min_distance << std::endl;
       }
     }
