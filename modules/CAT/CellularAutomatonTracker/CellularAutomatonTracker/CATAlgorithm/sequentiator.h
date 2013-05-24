@@ -83,7 +83,6 @@ namespace CAT {
     bool match_gaps(std::vector<topology::calorimeter_hit> & calos);
 
 
-
     //! get clusters
     const std::vector<topology::cluster>& get_clusters()const
     {

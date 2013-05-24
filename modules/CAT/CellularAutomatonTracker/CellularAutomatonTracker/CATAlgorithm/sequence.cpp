@@ -2898,6 +2898,58 @@ namespace CAT {
       return;
     }
 
+
+  //*************************************************************
+    bool sequence::common_vertex_on_foil(const sequence *seqB, double *the_distance)const{
+    //*************************************************************
+
+    std::vector<experimental_point> foil_vertex_A, foil_vertex_B;
+
+    if( this->has_helix_vertex() && this->helix_vertex_type() == "foil" )
+      foil_vertex_A.push_back(this->helix_vertex());
+    if( this->has_tangent_vertex() && this->tangent_vertex_type() == "foil" )
+      foil_vertex_A.push_back(this->tangent_vertex());
+    if( this->has_decay_helix_vertex() && this->decay_helix_vertex_type() == "foil" )
+      foil_vertex_A.push_back(this->decay_helix_vertex());
+    if( this->has_decay_tangent_vertex() && this->decay_tangent_vertex_type() == "foil" )
+      foil_vertex_A.push_back(this->decay_tangent_vertex());
+
+    if( seqB->has_helix_vertex() && seqB->helix_vertex_type() == "foil" )
+      foil_vertex_B.push_back(seqB->helix_vertex());
+    if( seqB->has_tangent_vertex() && seqB->tangent_vertex_type() == "foil" )
+      foil_vertex_B.push_back(seqB->tangent_vertex());
+    if( seqB->has_decay_helix_vertex() && seqB->decay_helix_vertex_type() == "foil" )
+      foil_vertex_B.push_back(seqB->decay_helix_vertex());
+    if( seqB->has_decay_tangent_vertex() && seqB->decay_tangent_vertex_type() == "foil" )
+      foil_vertex_B.push_back(seqB->decay_tangent_vertex());
+
+    bool found = false;
+    double distance;
+    double min_distance = mybhep::default_min;
+
+    for(std::vector<experimental_point>::const_iterator vA=foil_vertex_A.begin(); vA!=foil_vertex_A.end(); vA++)
+      for(std::vector<experimental_point>::const_iterator vB=foil_vertex_B.begin(); vB!=foil_vertex_B.end(); vB++)
+	{
+	  distance = (vA->distance(*vB)).value();
+	  if( distance < min_distance ){
+	    min_distance = distance;
+	    found = true;
+	  }
+	}
+
+    if( found ){
+      *the_distance = min_distance;
+      if( print_level() >= mybhep::NORMAL ){
+	std::clog << " sequences " << this->name() << " and " << seqB->name() << " have vertex on foil with distance " << min_distance << std::endl;
+      }
+    }
+
+    return found;
+
+  }
+
+
+
   }
 }
 

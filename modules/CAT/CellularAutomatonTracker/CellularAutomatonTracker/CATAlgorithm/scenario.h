@@ -105,7 +105,9 @@ namespace CAT {
 
       double Prob()const;
 
-      bool better_scenario_than( const scenario & s)const;
+      bool better_scenario_than( const scenario & s, double limit)const;
+
+      size_t n_of_common_vertexes(double limit)const;
 
     };
   }

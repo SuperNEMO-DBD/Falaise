@@ -686,6 +686,7 @@ namespace CAT {
         return false;
       }
 
+    
     make_scenarios(tracked_data_);
 
 
@@ -1422,6 +1423,8 @@ namespace CAT {
         print_a_sequence(*iseq);
 
       topology::scenario sc;
+      sc.level_ = level;
+      sc.set_probmin(probmin);
       sc.sequences_.push_back(*iseq);
       sc.calculate_n_free_families(td.get_cells(), td.get_calos());
       sc.calculate_n_overlaps(td.get_cells(), td.get_calos());
@@ -1493,7 +1496,7 @@ namespace CAT {
     for(std::vector<topology::scenario>::iterator sc=scenarios_.begin(); sc!=scenarios_.end(); ++sc){
       m.message("...scenario ", sc - scenarios_.begin(), " nff ", sc->n_free_families(), " noverls ", sc->n_overlaps(), " chi2 ", sc->chi2(), " prob ", sc->Prob(), mybhep::VVERBOSE);
 
-      if( sc->better_scenario_than( scenarios_[index] ) )
+      if( sc->better_scenario_than( scenarios_[index] , 2.*CellDistance ) )
         {
           index = sc - scenarios_.begin();
         }
@@ -1521,7 +1524,7 @@ namespace CAT {
       return false;
     }
 
-#if 1
+#if 0
     clock.start(" sequentiator: copy logic scenario ", "cumulative");
     topology::logic_scenario tmpmin = topology::logic_scenario(sc);
     topology::logic_scenario tmpsave = tmpmin;
@@ -1543,7 +1546,7 @@ namespace CAT {
 
 	if( scnames.count(jseq->name()) ) continue;
 
-#if 1
+#if 0
         clock.start(" sequentiator: copy logic scenario ", "cumulative");
         tmp = tmpsave;
         clock.stop(" sequentiator: copy logic scenario ");
@@ -1571,7 +1574,7 @@ namespace CAT {
         m.message(" ...nfree ", tmp.n_free_families(), " noverls ", tmp.n_overlaps(), " chi2 ", tmp.chi2(), " prob ", tmp.Prob(), mybhep::VVERBOSE);
 
         clock.start(" sequentiator: better scenario ", "cumulative");
-        if( tmp.better_scenario_than(tmpmin) )
+        if( tmp.better_scenario_than(tmpmin , 2.*CellDistance ) )
           {
             *jmin = jseq - sequences_.begin();
             *nfree = tmp.n_free_families();

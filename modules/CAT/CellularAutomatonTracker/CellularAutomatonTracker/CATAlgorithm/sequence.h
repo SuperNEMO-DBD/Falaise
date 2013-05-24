@@ -452,6 +452,8 @@ namespace CAT {
 
       void point_of_max_min_radius(experimental_point epa, experimental_point epb, experimental_point *epmax, experimental_point *epmin);
 
+      bool common_vertex_on_foil(const sequence *seqB, double *the_distance) const;
+
     };
 
   }

@@ -221,6 +221,32 @@ namespace CAT {
     }
 
 
+    size_t scenario::n_of_common_vertexes(double limit)const{
+      double local_distance = 0.;
+      double min_local_distance = 0.;
+      bool found;
+      size_t counter = 0;
+
+      for(std::vector<sequence>::const_iterator iseq = sequences_.begin(); iseq != sequences_.end(); ++iseq){
+	min_local_distance = limit;
+	found = false;
+	for(std::vector<sequence>::const_iterator jseq = iseq; jseq != sequences_.end(); ++jseq)
+	  {
+	    if( iseq == jseq ) continue;
+	    local_distance = 0.;
+	    if( iseq->common_vertex_on_foil(&(*jseq), &local_distance) ){
+	      if( local_distance < min_local_distance ){
+		min_local_distance = local_distance;
+		found = true;
+	      }
+	    }
+	  }
+	if( found ) counter ++;
+      }
+      return counter;
+    }
+
+
     void scenario::calculate_n_free_families(const std::vector<topology::cell> &cells,
                                              const std::vector<topology::calorimeter_hit> & calos){
 
@@ -323,7 +349,7 @@ namespace CAT {
       return probof(chi2(), ndof());
     }
 
-    bool scenario::better_scenario_than( const scenario & s)const{
+    bool scenario::better_scenario_than( const scenario & s, double limit)const{
 
       // - n of recovered cells
       int deltanfree = n_free_families() - s.n_free_families();
@@ -334,17 +360,23 @@ namespace CAT {
       double deltaprob = Prob() - s.Prob();
       double deltachi = chi2() - s.chi2();
 
+      int delta_n_common_vertexes = n_of_common_vertexes(limit) - s.n_of_common_vertexes(limit);
 
       if( print_level() >= mybhep::VVERBOSE ){
         std::clog << " delta n_free_families = (" << n_free_families()  << " - " << s.n_free_families() << ")= " << deltanfree
                   << " dela n_overlaps = (" << n_overlaps() << " - " << s.n_overlaps() << ")= " << deltanoverls
-                  << " delta prob = (" << Prob()  << " - " << s.Prob() << ") = " << deltaprob << std::endl;
+                  << " delta prob = (" << Prob()  << " - " << s.Prob() << ") = " << deltaprob 
+		  << " delta n common vertex = " << delta_n_common_vertexes << std::endl;
       }
 
       if( deltanoverls < - 2*deltanfree )
         return true;
 
       if( deltanoverls == - 2*deltanfree ){
+
+	if( delta_n_common_vertexes > 0 ) return true;
+
+	if( delta_n_common_vertexes < 0 ) return false;
 
         if( deltaprob > 0. )
           return true;

@@ -41,11 +41,11 @@ namespace mybhep{
     else return NORMAL;
   }
 
-  static const double small_neg = -999999;
-  static const double plus_infinity = 9999999;
-  static const size_t default_integer = 9999999;
-  static const double default_min = 9999999.;
-  static const double default_max = -9999999.;
+  static const double small_neg = -999999999999.;
+  static const double plus_infinity = -small_neg;
+  static const size_t default_integer = (size_t)plus_infinity;
+  static const double default_min = plus_infinity;
+  static const double default_max = -default_min;
 
   //! to string
   /**
