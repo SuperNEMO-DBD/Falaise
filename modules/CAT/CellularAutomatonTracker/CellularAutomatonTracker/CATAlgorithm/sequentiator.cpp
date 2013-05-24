@@ -674,7 +674,7 @@ namespace CAT {
     interpret_physics(tracked_data_.get_calos());
     make_families();
 
-    match_gaps();
+    match_gaps(tracked_data_.get_calos());
     direct_out_of_foil();
 
     interpret_physics(tracked_data_.get_calos());
@@ -2940,7 +2940,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  bool sequentiator::match_gaps(void){
+  bool sequentiator::match_gaps(std::vector<topology::calorimeter_hit> & calos){
     //*************************************************************
 
     if( gaps_Z.size() <= 1 ) return true;
@@ -2982,9 +2982,9 @@ namespace CAT {
       topology::sequence newseq = *iseq;
       int with_kink = 0;
       int cells_to_delete = 0;
-      while( can_match(newseq, &jmin, invertA, invertB, with_kink, cells_to_delete) )
+      while( can_match(newseq, &jmin, invertA, invertB, with_kink, cells_to_delete, calos) )
         {
-          m.message(" best matching is ", sequences_[jmin].name(), " invertA ", invertA, " invertB ", invertB, " with kink ", with_kink, mybhep::VERBOSE);
+          m.message(" best matching is ", sequences_[jmin].name(), " invertA ", invertA, " invertB ", invertB, " with kink ", with_kink, " delete cells ", cells_to_delete, mybhep::VERBOSE);
           if( level >= mybhep::VVERBOSE)
             print_a_sequence(sequences_[jmin]);
 
@@ -3037,7 +3037,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  bool sequentiator::can_match(topology::sequence &s, size_t* jmin, bool& bestinvertA, bool& bestinvertB, int &with_kink, int &cells_to_delete_best) {
+  bool sequentiator::can_match(topology::sequence &s, size_t* jmin, bool& bestinvertA, bool& bestinvertB, int &with_kink, int &cells_to_delete_best, std::vector<topology::calorimeter_hit> & calos) {
     //*************************************************************
 
     if( late() )
@@ -3051,7 +3051,7 @@ namespace CAT {
     double probmax = -1.;
     double chi2min = mybhep::default_min;
     int ndofbest = 1;
-    int cells_to_delete = 0;
+    int cells_to_delete;
 
     m.message(" try to match sequence", s.name(), " of chi2 = ", chi2min, " ndof ", ndofbest, " prob ", probmax, mybhep::VVERBOSE);
     bool invertA, invertB, acrossGAP;
@@ -3063,6 +3063,8 @@ namespace CAT {
 
     for(std::vector<topology::sequence>::iterator jseq=sequences_.begin(); jseq!=sequences_.end(); ++jseq)
       {
+
+	cells_to_delete = 0;
 
         m.message(" try to match sequence", s.name(), " to ", jseq->name(), mybhep::VVERBOSE);
         if( level >= mybhep::VVERBOSE){
@@ -3110,39 +3112,54 @@ namespace CAT {
 	  m.message(" ... no good helix match, try to match with kink ", mybhep::VVERBOSE);
 	  
 	  ok_kink_match= s.good_match_with_kink(*jseq, invertA, invertB, acrossGAP, limit_diagonal, NOffLayers, cells_to_delete);
-	  if( !ok_kink_match )
+	  if( !ok_kink_match ){
 	    m.message(" ... obviously no good match with kink ", mybhep::VVERBOSE);
+	  }
 	  else{
+	    // do not match with kink if the extreme is near a calo or near the foil
+
+	    if( !invertA ){
+	      if( cells_to_delete == 0 || cells_to_delete == 1 )
+		nodeA = s.last_node();
+	      else
+		nodeA = s.second_last_node();	
+	    }
+	    else{
+	      if( cells_to_delete == 0 || cells_to_delete == 1 )
+		nodeA = s.nodes_[0];
+	      else
+		nodeA = s.nodes_[1];
+	    }
+	    
+	    if( !invertB ){
+	      if( cells_to_delete != 1 )
+		nodeB = jseq->nodes_[0];
+	      else
+		nodeB = jseq->nodes_[1];
+	    }else{
+	      if( cells_to_delete != 1 )	
+		nodeB = jseq->last_node();
+	      else
+		nodeB = jseq->second_last_node();
+	    }
+
 	    m.message(" possible match with kink, across GAP", acrossGAP, ", cells to delete ", cells_to_delete, ", try to extrapolate ", mybhep::VVERBOSE);
+	    for(std::vector<topology::calorimeter_hit>::iterator ic=calos.begin(); ic != calos.end(); ++ic){
+	      if( near(nodeA.c(), *ic) ||  near(nodeB.c(), *ic) ){
+		ok_kink_match = false;
+		m.message(" will not match with kink because end cell is near calo ", ic - calos.begin(), mybhep::VVERBOSE);
+		break;
+	      }
+	    }
+	    if( gap_number(nodeA.c() ) != 0 || gap_number(nodeB.c() ) != 0 ){
+	      ok_kink_match = false;
+	      m.message(" will not match with kink because end cell is near foil ", mybhep::VVERBOSE);
+	    }
+
 	    topology::experimental_point kink_point;
-	    ok_kink_match = s.intersect_sequence(*jseq, invertA, invertB, acrossGAP, &kink_point, limit_diagonal, &with_kink, cells_to_delete);
+	    ok_kink_match = ok_kink_match && s.intersect_sequence(*jseq, invertA, invertB, acrossGAP, &kink_point, limit_diagonal, &with_kink, cells_to_delete);
 
 	    if( ok_kink_match ){
-
-	      if( !invertA ){
-		if( cells_to_delete == 0 || cells_to_delete == 1 )
-		  nodeA = s.last_node();
-		else
-		  nodeA = s.second_last_node();	
-	      }
-	      else{
-		if( cells_to_delete == 0 || cells_to_delete == 1 )
-		  nodeA = s.nodes_[0];
-		else
-		  nodeA = s.nodes_[1];
-	      }
-
-	      if( !invertB ){
-		if( cells_to_delete != 1 )
-		  nodeB = jseq->nodes_[0];
-		else
-		  nodeB = jseq->nodes_[1];
-	      }else{
-		if( cells_to_delete != 1 )	
-		  nodeB = jseq->last_node();
-		else
-		  nodeB = jseq->second_last_node();
-	      }
 
 	      news = s.match(*jseq, invertA, invertB, &ok_kink_match_chi2, with_kink,cells_to_delete);
 	      ok_kink_match = sequence_is_within_range(nodeA, nodeB, news);
@@ -3162,7 +3179,9 @@ namespace CAT {
         c = news.helix_chi2();
         n = news.ndof();
 
-        m.message(" ... matched to ", jseq->name(), ", chi2 =", c, " ndof ", n, " prob ", p, " with kink ", with_kink, mybhep::VVERBOSE);
+	if( level >= mybhep::VVERBOSE){
+	  std::clog << " ... matched to " << jseq->name() << ", chi2 =" << c << " ndof " << n << " prob " << p << " with kink " << with_kink << " cells_to_delete " << cells_to_delete << std::endl;
+	}
 
         if( p > probmax && 
 	    ((ok_match && p > news.probmin()) || ok_kink_match ) )
@@ -3179,7 +3198,9 @@ namespace CAT {
       }
     
     if( ok ){
-      m.message(" sequence ", s.name(), " can be matched to ", sequences_[*jmin].name(), ", chi2 =", chi2min, " ndof ", ndofbest, " prob ", probmax, mybhep::VVERBOSE);
+      if( level >= mybhep::VVERBOSE){	
+std::clog << " sequence " << s.name() << " can be matched to " << sequences_[*jmin].name() << ", chi2 =" << chi2min << " ndof " << ndofbest << " prob " << probmax << " cells_to_delete " << cells_to_delete << std::endl;
+      }
     }
     
     clock.stop(" sequentiator: can match ");

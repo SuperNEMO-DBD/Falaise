@@ -2493,6 +2493,8 @@ namespace CAT {
       cells_to_delete = 0;
       
       int layer_distance;
+      int block_distance;
+      int cell_number_distance;
       
       double distFF = nodes_[0].ep().distance(seq.nodes_[0].ep()).value();
       double distFL = nodes_[0].ep().distance(seq.nodes().back().ep()).value();
@@ -2503,15 +2505,15 @@ namespace CAT {
         invertA = false;
         invertB = false;
 
-
+	block_distance = last_node().c().block() - seq.nodes_[0].c().block();
         // connection must be between neighboring blocks or within same block
-        if( fabs( last_node().c().block() - seq.nodes_[0].c().block()) > 1 ){
+        if( fabs(block_distance ) > 1 ){
           if( print_level() >= mybhep::VVERBOSE )
             std::clog << " ... forbidden, because blocks are far away " << std::endl;
           return false;
         }
 
-        if( fabs( last_node().c().block() - seq.nodes_[0].c().block()) == 1 )
+        if( fabs( block_distance ) == 1 )
 	  acrossGAP=true;
         else if( distLF > limit_distance){
           if( print_level() >= mybhep::VVERBOSE )
@@ -2533,26 +2535,30 @@ namespace CAT {
 	if( last_node().c().id() == seq.nodes_[0].c().id() ){
 	  cells_to_delete = 1;
 	  layer_distance = last_node().c().layer() - seq.nodes_[1].c().layer();
+	  cell_number_distance = last_node().c().cell_number() - seq.nodes_[1].c().cell_number();
 	}else if( second_last_node().c().id() == seq.nodes_[0].c().id() 
 		  && last_node().c().id() == seq.nodes_[1].c().id()  ){
 	  cells_to_delete = 2;
 	  layer_distance = second_last_node().c().layer() - seq.nodes_[1].c().layer();
-	}else
+	  cell_number_distance = second_last_node().c().cell_number() - seq.nodes_[1].c().cell_number();
+	}else{
 	  layer_distance = last_node().c().layer() - seq.nodes_[0].c().layer();
-	
+	  cell_number_distance = last_node().c().cell_number() - seq.nodes_[0].c().cell_number();
+	}	
       }
       else if( distLL <= distFF && distLL <= distFL && distLL <= distLF ){ // last to last  FL -> LF
         invertA = false;
         invertB = true;
 
+	block_distance = last_node().c().block() - seq.last_node().c().block();
         // connection must be between neighboring blocks or within same block
-        if( fabs( last_node().c().block() - seq.last_node().c().block()) > 1 ){
+        if( fabs( block_distance ) > 1 ){
           if( print_level() >= mybhep::VVERBOSE )
             std::clog << " ... forbidden, because blocks are far away " << std::endl;
           return false;
         }
 
-        if( fabs( last_node().c().block() - seq.last_node().c().block()) == 1 )
+        if( fabs( block_distance ) == 1 )
 	  acrossGAP=true;
         else if( distLL > limit_distance){
           if( print_level() >= mybhep::VVERBOSE )
@@ -2575,25 +2581,30 @@ namespace CAT {
 	if( last_node().c().id() == seq.last_node().c().id() ){
 	  cells_to_delete = 1;
 	  layer_distance = last_node().c().layer() - seq.second_last_node().c().layer();
+	  cell_number_distance = last_node().c().cell_number() - seq.second_last_node().c().cell_number();
 	}else if( second_last_node().c().id() == seq.last_node().c().id() 
 		  && last_node().c().id() == seq.second_last_node().c().id()  ){
 	  cells_to_delete = 2;
 	  layer_distance = second_last_node().c().layer() - seq.second_last_node().c().layer();
-	}else
+	  cell_number_distance = second_last_node().c().cell_number() - seq.second_last_node().c().cell_number();
+	}else{
 	  layer_distance = last_node().c().layer() - seq.last_node().c().layer();
-
+	  cell_number_distance = last_node().c().cell_number() - seq.last_node().c().cell_number();
+	}
       }
       else if( distFL <= distFF && distFL <= distLL && distFL <= distLF ){ // first to last  LF -> LF
 
         invertA = true;
         invertB = true;
+
+	block_distance = nodes_[0].c().block() - seq.last_node().c().block();
         // connection must be between neighboring blocks or within same block
-        if( fabs( nodes_[0].c().block() - seq.last_node().c().block()) > 1 ){
+        if( fabs( block_distance ) > 1 ){
           if( print_level() >= mybhep::VVERBOSE )
             std::clog << " ... forbidden, because blocks are far away " << std::endl;
           return false;
         }
-        if( fabs( nodes_[0].c().block() - seq.last_node().c().block()) == 1 )
+        if( fabs( block_distance ) == 1 )
 	  acrossGAP = true;
         else if( distFL > limit_distance){
           if( print_level() >= mybhep::VVERBOSE )
@@ -2615,25 +2626,30 @@ namespace CAT {
 	if( nodes_[0].c().id() == seq.last_node().c().id() ){
 	  cells_to_delete = 1;
 	  layer_distance = nodes_[0].c().layer() - seq.second_last_node().c().layer();
+	  cell_number_distance = nodes_[0].c().cell_number() - seq.second_last_node().c().cell_number();
 	}else if( nodes_[1].c().id() == seq.last_node().c().id() 
 		  && nodes_[0].c().id() == seq.second_last_node().c().id()  ){
 	  cells_to_delete = 2;
 	  layer_distance = nodes_[1].c().layer() - seq.second_last_node().c().layer();
-	}else
+	  cell_number_distance = nodes_[1].c().cell_number() - seq.second_last_node().c().cell_number();
+	}else{
 	  layer_distance = nodes_[0].c().layer() - seq.last_node().c().layer();
-
+	  cell_number_distance = nodes_[0].c().cell_number() - seq.last_node().c().cell_number();
+	}
       }
       else{ // first to first  LF -> FL
 
         invertA = true;
         invertB = false;
+
+	block_distance = nodes_[0].c().block() - seq.nodes_[0].c().block();
         // connection must be between neighboring blocks or within same block
-        if( fabs( nodes_[0].c().block() - seq.nodes_[0].c().block()) > 1 ){
+        if( fabs( block_distance ) > 1 ){
           if( print_level() >= mybhep::VVERBOSE )
             std::clog << " ... forbidden, because blocks are far away " << std::endl;
           return false;
         }
-        if( fabs( nodes_[0].c().block() - seq.nodes_[0].c().block()) == 1 )
+        if( fabs( block_distance ) == 1 )
 	  acrossGAP=true;
         else if( distFF > limit_distance){
           if( print_level() >= mybhep::VVERBOSE )
@@ -2655,13 +2671,16 @@ namespace CAT {
 	if( nodes_[0].c().id() == seq.nodes_[0].c().id() ){
 	  cells_to_delete = 1;
 	  layer_distance = nodes_[0].c().layer() - seq.nodes_[1].c().layer();
+	  cell_number_distance = nodes_[0].c().cell_number() - seq.nodes_[1].c().cell_number();
 	}else if( nodes_[1].c().id() == seq.nodes_[0].c().id() 
 		  && nodes_[0].c().id() == seq.nodes_[1].c().id()  ){
 	  cells_to_delete = 2;
 	  layer_distance = nodes_[1].c().layer() - seq.nodes_[1].c().layer();
-	}else
+	  cell_number_distance = nodes_[1].c().cell_number() - seq.nodes_[1].c().cell_number();
+	}else{
 	  layer_distance = nodes_[0].c().layer() - seq.nodes_[0].c().layer();
-
+	  cell_number_distance = nodes_[0].c().cell_number() - seq.nodes_[0].c().cell_number();
+	}
       }
 
 
@@ -2669,6 +2688,14 @@ namespace CAT {
       if( fabs(layer_distance) > 1 + NOffLayers){
         if( print_level() >= mybhep::VVERBOSE )
           std::clog << " ... forbidden, because layers are far away by " << layer_distance << " planes " << std::endl;
+        return false;
+      }
+
+
+      // connection in the same block must be between neighbouring cell numbers
+      if( !acrossGAP && fabs(cell_number_distance) > 1 + NOffLayers){
+        if( print_level() >= mybhep::VVERBOSE )
+          std::clog << " ... forbidden, because block is the same and cell numbers are far away by " << cell_number_distance << " cells " << std::endl;
         return false;
       }
 

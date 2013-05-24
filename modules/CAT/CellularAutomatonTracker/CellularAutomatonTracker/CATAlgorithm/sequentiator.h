@@ -80,7 +80,8 @@ namespace CAT {
     void make_plots(topology::tracked_data __tracked_data);
     void plot_hard_scattering(topology::tracked_data __tracked_data);
     bool good_first_to_be_matched(topology::sequence& seq);
-    bool match_gaps(void);
+    bool match_gaps(std::vector<topology::calorimeter_hit> & calos);
+
 
 
     //! get clusters
@@ -484,7 +485,6 @@ namespace CAT {
     std::vector<topology::scenario> scenarios_;
 
 
-    bool match_through_gaps();
     bool make_scenarios(topology::tracked_data &td);
     void interpret_physics(std::vector<topology::calorimeter_hit> & calos);
     topology::plane get_foil_plane();
@@ -512,7 +512,7 @@ namespace CAT {
     void print_a_scenario(const topology::scenario & scenario) const;
     size_t pick_best_scenario();
     bool can_be_linked(topology::sequence& p, bool inverted);
-    bool can_match(topology::sequence &s, size_t* jmin, bool& bestinvertA, bool& bestinvertB, int& with_kink, int &cells_to_delete);
+    bool can_match(topology::sequence &s, size_t* jmin, bool& bestinvertA, bool& bestinvertB, int& with_kink, int &cells_to_delete, std::vector<topology::calorimeter_hit> & calos);
     bool select_nemo_tracks(topology::tracked_data & __tracked_data);
     bool sequence_is_within_range(topology::node nodeA, topology::node nodeB, topology::sequence seq);
 
