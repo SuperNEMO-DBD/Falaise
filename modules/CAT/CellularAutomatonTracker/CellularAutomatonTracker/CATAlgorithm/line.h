@@ -87,7 +87,7 @@ namespace CAT {
       experimental_double kink_theta(const line & l);
 
 
-      double chi2(const line & l, bool use_theta_kink);
+      double chi2(const line & l, bool use_theta_kink, double *chi2_just_phi);
 
 
       void set_a_forward_axis(const experimental_vector &  v);

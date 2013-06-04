@@ -247,6 +247,25 @@ namespace CAT {
     }
 
 
+    size_t scenario::n_of_ends_on_wire(void)const{
+      
+      size_t counter = 0;
+
+      for(std::vector<sequence>::const_iterator iseq = sequences_.begin(); iseq != sequences_.end(); ++iseq){
+
+	if( !iseq->has_helix_vertex() && !iseq->has_tangent_vertex() )
+	  counter ++;
+
+	if( !iseq->has_decay_helix_vertex() && !iseq->has_decay_tangent_vertex() )
+	  counter ++;
+
+      }
+
+      return counter;
+    }
+
+
+
     void scenario::calculate_n_free_families(const std::vector<topology::cell> &cells,
                                              const std::vector<topology::calorimeter_hit> & calos){
 
@@ -360,13 +379,11 @@ namespace CAT {
       double deltaprob = Prob() - s.Prob();
       double deltachi = chi2() - s.chi2();
 
-      int delta_n_common_vertexes = n_of_common_vertexes(limit) - s.n_of_common_vertexes(limit);
-
       if( print_level() >= mybhep::VVERBOSE ){
         std::clog << " delta n_free_families = (" << n_free_families()  << " - " << s.n_free_families() << ")= " << deltanfree
                   << " dela n_overlaps = (" << n_overlaps() << " - " << s.n_overlaps() << ")= " << deltanoverls
                   << " delta prob = (" << Prob()  << " - " << s.Prob() << ") = " << deltaprob 
-		  << " delta n common vertex = " << delta_n_common_vertexes << std::endl;
+		  << std::endl;
       }
 
       if( deltanoverls < - 2*deltanfree )
@@ -374,9 +391,17 @@ namespace CAT {
 
       if( deltanoverls == - 2*deltanfree ){
 
+	int delta_n_common_vertexes = n_of_common_vertexes(limit) - s.n_of_common_vertexes(limit);
+	if( print_level() >= mybhep::VVERBOSE )
+	  std::clog << " delta n common vertex = " << delta_n_common_vertexes << std::endl;
 	if( delta_n_common_vertexes > 0 ) return true;
-
 	if( delta_n_common_vertexes < 0 ) return false;
+
+	int delta_n_of_ends_on_wire = n_of_ends_on_wire() - s.n_of_ends_on_wire();
+	if( print_level() >= mybhep::VVERBOSE )
+	  std::clog << " delta n ends on wire = " << delta_n_of_ends_on_wire << std::endl;
+	if( delta_n_of_ends_on_wire < 0 ) return true;
+	if( delta_n_of_ends_on_wire > 0 ) return false;
 
         if( deltaprob > 0. )
           return true;

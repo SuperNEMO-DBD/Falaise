@@ -109,6 +109,9 @@ namespace CAT {
 
       size_t n_of_common_vertexes(double limit)const;
 
+      size_t n_of_ends_on_wire(void)const;
+      
+
     };
   }
 }

@@ -133,13 +133,15 @@ namespace CAT {
     return forward_axis_.kink_theta(l.forward_axis());
   }
 
-  double line::chi2(const line & l, bool use_theta_kink)
+  double line::chi2(const line & l, bool use_theta_kink, double *chi2_just_phi)
   {
 
     experimental_double phi_kink = kink_phi(l);
     experimental_double theta_kink = kink_theta(l);
 
     double result = square(phi_kink.value()/phi_kink.error()) ;
+
+    *chi2_just_phi = result;
 
     if( use_theta_kink ){
       result += square(theta_kink.value()/theta_kink.error());

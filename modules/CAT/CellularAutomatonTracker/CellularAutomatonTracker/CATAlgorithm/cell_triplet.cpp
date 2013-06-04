@@ -240,7 +240,7 @@ namespace CAT{
       int32_t ndof;
       experimental_point p;
       experimental_double newxa, newza;
-      double chi2, local_prob;
+      double chi2, local_prob, chi2_just_phi, prob_just_phi;
       bool ok, use_theta_kink;
       experimental_double phi_kink, theta_kink;
 
@@ -378,7 +378,10 @@ namespace CAT{
             use_theta_kink = !(ca_.unknown_vertical() || cb_.unknown_vertical() || cc_.unknown_vertical());
             if( !use_theta_kink ) ndof --;
 
-            chi2 = newt1.chi2(newt2, use_theta_kink);
+            chi2 = newt1.chi2(newt2, use_theta_kink, &chi2_just_phi);
+
+	    // also useul to check just the phi value (adding the theta information reduces the strength of the phi test)
+	    prob_just_phi = probof(chi2_just_phi,1);
 
             if( shall_include_separation )
               chi2 += square(local_separation.value()/local_separation.error());
@@ -386,11 +389,11 @@ namespace CAT{
             chi2s_.push_back(chi2);
             local_prob = probof(chi2, ndof);
             probs_.push_back(local_prob);
-            if( local_prob > probmin() )
+            if( local_prob > probmin() && prob_just_phi > probmin() )
               ok = true;
 
             if( print_level() > mybhep::VERBOSE ){
-              std::clog << "    chi2 " << chi2 << " prob " << probof(chi2, ndof) << " accepted: " << ok << std::endl;
+              std::clog << "    chi2 " << chi2 << " prob " << local_prob << " prob_just_phi " << prob_just_phi << " accepted: " << ok << std::endl;
             }
 
           }
@@ -454,13 +457,15 @@ namespace CAT{
       if( _joints.size() > max_njoints ){
 	_joints.erase(_joints.begin() + max_njoints, _joints.end());
       }
-
+    
       if( _joints.size() >= 2 && !(ca_.intersect(cb_) || ca_.intersect(cc_) || cb_.intersect(cc_) ) ){
 	std::vector<joint>::iterator ijoint = _joints.begin();
 	ijoint ++;
 	while( ijoint != _joints.end() ){
 	  if( (size_t)(ijoint - _joints.begin() + 1) > _joints.size() ) break;
 	  if( _joints[0].p() / ijoint->p() > Ratio ){
+	    if( print_level() > mybhep::VERBOSE )
+	      std::clog << " remove joint with p " << ijoint->p() << " in favor of 1st joint with p " << _joints[0].p() << std::endl;
 	    _joints.erase(ijoint);
 	    ijoint = _joints.begin() + (ijoint - _joints.begin());
 	  }else{
