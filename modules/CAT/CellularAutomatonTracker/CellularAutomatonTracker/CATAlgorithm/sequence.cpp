@@ -2113,6 +2113,7 @@ namespace CAT {
       circle cB(origin, pB.radius(), print_level(), probmin());
 
       bool resultA, resultB, result_tangent_A, result_tangent_B;
+      double distance_error_A, distance_error_B;
       experimental_point epA, epB, ep_tangent_A, ep_tangent_B;
       if( invertA ){
 	resultB=intersect_circle_from_begin(cB,&epB);
@@ -2122,15 +2123,16 @@ namespace CAT {
 	resultB=intersect_circle_from_end(cB,&epB);
 	result_tangent_B= intersect_circle_with_tangent_from_end(cB, &ep_tangent_B);
       }
-      local_distance = pB.distance(epB);
-      distanceB = fabs(std::max(local_distance.value()-local_distance.error(), 0.));
+      local_distance = pB.hor_distance(epB);
+      distanceB = local_distance.value();
+      distance_error_B = local_distance.error();
       if( result_tangent_B ){
 	resultB=true;
-	local_distance = pB.distance(ep_tangent_B);
+	local_distance = pB.hor_distance(ep_tangent_B);
 	if( print_level() >= mybhep::VVERBOSE )
-	  std::clog << " ... extrapolation through tangent B, pB (" << pB.x().value() << ", " << pB.y().value() << ", " << pB.z().value() << ") distance " << local_distance.value() << std::endl;
-	distanceB = fabs(std::min(local_distance.value()-local_distance.error(), distanceB));
-	distanceB = fabs(std::max(distanceB, 0.));
+	  std::clog << " ... extrapolation through tangent B, pB (" << pB.x().value() << ", " << pB.y().value() << ", " << pB.z().value() << ") distance " << local_distance.value() << " +- " << local_distance.error()  << std::endl;
+	distanceB = std::min(local_distance.value(), distanceB);
+	distance_error_B = local_distance.error();
       }
 
       if( invertB ){
@@ -2141,46 +2143,50 @@ namespace CAT {
 	resultA=seq.intersect_circle_from_begin(cA,&epA);
 	result_tangent_A= seq.intersect_circle_with_tangent_from_begin(cA, &ep_tangent_A);
       }
-      local_distance = pA.distance(epA);
+      local_distance = pA.hor_distance(epA);
       distanceA = fabs(std::max(local_distance.value()-local_distance.error(), 0.));
       if( result_tangent_A ){
 	resultA=true;
-	local_distance = pA.distance(ep_tangent_A);
+	local_distance = pA.hor_distance(ep_tangent_A);
 	if( print_level() >= mybhep::VVERBOSE )
-	  std::clog << " ... extrapolation through tangent A, pA (" << pA.x().value() << ", " << pA.y().value() << ", " << pA.z().value() << ") distance " << local_distance.value() << std::endl;
-	distanceA = fabs(std::min(local_distance.value()-local_distance.error(), distanceA));
-	distanceA = fabs(std::max(distanceA, 0.));
+	  std::clog << " ... extrapolation through tangent A, pA (" << pA.x().value() << ", " << pA.y().value() << ", " << pA.z().value() << ") distance " << local_distance.value() << " +- " << local_distance.error()  << std::endl;
+	distanceA = std::min(local_distance.value(), distanceA);
+	distance_error_A = local_distance.error();
       }
 
-      double distance;
+      double distance, distance_error;
       if( resultA && resultB ){
 	if( distanceA < distanceB ){
 	  *ep = epA;
 	  distance = distanceA;
+	  distance_error = distance_error_A;
 	  *with_kink=1;
 	}
 	else{
 	  *ep = epB;
 	  distance = distanceB;
+	  distance_error = distance_error_B;
 	  *with_kink=2;
 	}
       }else{
 	if( resultB ){ // intersection on B circle
 	  *ep = epB;
 	  distance = distanceB;
+	  distance_error = distance_error_B;
 	  *with_kink=1;
 	}
 	if( resultA ){ // intersection on A circle
 	  *ep = epA;
 	  distance = distanceA;
+	  distance_error = distance_error_A;
 	  *with_kink=2;
 	}
       }
 
       if( print_level() >= mybhep::VVERBOSE )
-	std::clog << " ... resultA " << resultA << " ... resultB " << resultB << " distanceA " << distanceA << " distanceB " << distanceB << " distance " << distance << " limit " << 2.*limit_distance << std::endl;
+	std::clog << " ... resultA " << resultA << " ... resultB " << resultB << " distanceA " << distanceA << " distanceB " << distanceB << " distance " << distance << " +- " << distance_error << " limit " << 2.*limit_distance << std::endl;
       
-      return ( (resultA || resultB) && distance < 2.*limit_distance );
+      return ( (resultA || resultB) && std::max(distance - distance_error, 0.) < 2.*limit_distance );
 
 
     }

@@ -195,6 +195,20 @@ namespace CAT{
       }
 
 
+      //! distance
+      experimental_double experimental_point::hor_distance(const experimental_point& p2) const
+      {
+        experimental_double result;
+
+        result.set_value( std::sqrt(mybhep::square(x_.value()-p2.x().value())+
+                               mybhep::square(z_.value()-p2.z().value())));
+        result.set_error( std::sqrt( mybhep::square(x_.value()*x_.error()) + mybhep::square(p2.x().value()*p2.x().error()) +
+                                mybhep::square(z_.value()*z_.error()) + mybhep::square(p2.z().value()*p2.z().error()))/result.value());
+
+        return result;
+      }
+
+
       void experimental_point::set_radius(){
         // propagate radius error:
         //  r = sqrt(x^2 + z^2)

@@ -97,6 +97,9 @@ namespace CAT{
       //! distance
         experimental_double distance(const experimental_point& p2) const;
 
+      //! distance
+        experimental_double hor_distance(const experimental_point& p2) const;
+
 
     private:
 

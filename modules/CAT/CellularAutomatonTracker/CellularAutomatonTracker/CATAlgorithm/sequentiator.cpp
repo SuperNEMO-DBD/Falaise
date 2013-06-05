@@ -2927,7 +2927,7 @@ namespace CAT {
 	size_t gn = gnA;
 	size_t gaplayer=0;
 	for(size_t i=0; i<gn; i++)
-	  gaplayer += planes_per_block[i];  // 0, 4, 6, 9
+	  gaplayer += (size_t)(planes_per_block[i]+0.5);  // 0, 4, 6, 9
 	if( abs(cA.layer()) < gaplayer ){ // foil - A,B - gap
 	  if( blockA > 0 ){ // origin - A, B - gap
 	    rmin = cA.ep().radius().value() - CellDistance;
@@ -3227,10 +3227,10 @@ namespace CAT {
         n = news.ndof();
 
 	if( level >= mybhep::VVERBOSE){
-	  std::clog << " ... matched to " << jseq->name() << ", chi2 =" << c << " ndof " << n << " prob " << p << " with kink " << with_kink << " cells_to_delete " << cells_to_delete << std::endl;
+	  std::clog << " ... matched to " << jseq->name() << ", chi2 =" << c << " ndof " << n << " prob " << p << " with kink " << with_kink << " cells_to_delete " << cells_to_delete << " probmax " << probmax << " chimin " << chi2min << std::endl;
 	}
 
-        if( p > probmax && 
+        if( (p > probmax || (p == probmax && c < chi2min ))  && 
 	    ((ok_match && p > news.probmin()) || ok_kink_match ) )
           {
             *jmin = jseq - sequences_.begin();
