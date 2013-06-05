@@ -557,8 +557,10 @@ namespace CAT {
     private:
       void set_radius(){
         r_ = r0_;
+	/*
         if( small() && fast() )
           r_.set_error(std::max(r0_.value(), r0_.error()));
+	*/
       }
 
 

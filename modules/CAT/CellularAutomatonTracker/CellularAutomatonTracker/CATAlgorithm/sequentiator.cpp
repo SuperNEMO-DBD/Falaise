@@ -3106,12 +3106,12 @@ namespace CAT {
     double c;
     int n;
     topology::node nodeA, nodeB;
-    with_kink=0;
 
     for(std::vector<topology::sequence>::iterator jseq=sequences_.begin(); jseq!=sequences_.end(); ++jseq)
       {
 
 	cells_to_delete = 0;
+	with_kink=0;
 
         m.message(" try to match sequence", s.name(), " to ", jseq->name(), mybhep::VVERBOSE);
         if( level >= mybhep::VVERBOSE){

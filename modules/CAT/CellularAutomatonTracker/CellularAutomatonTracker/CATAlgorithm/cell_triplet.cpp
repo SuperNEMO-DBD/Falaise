@@ -345,12 +345,14 @@ namespace CAT{
 
           line newt1(i1->epb(), p, print_level(), get_probmin());
           line newt2(p, i2->epb(), print_level(), get_probmin());
+	  phi_kink = newt1.kink_phi(newt2);
 
           if( print_level() > mybhep::VERBOSE ){
             std::clog << " p1: phi = "; ca_.dump_point(i1->epb()); std::clog << " " << std::endl;
             std::clog << " p2 average point: "; cb_.dump_point(p); std::clog << " " << std::endl;
             std::clog << " p3: "; cc_.dump_point(i2->epb()); std::clog << " " << std::endl;
             std::clog << "    separation: "; (local_separation*180/M_PI).dump(); std::clog << " " << std::endl;
+            std::clog << "    phi_kink: " << (phi_kink.value()*180/M_PI) << " " << std::endl;
           }
 
 	  chi2 = 0.;
@@ -359,7 +361,6 @@ namespace CAT{
           if( !use_ownerror ){
             if( fabs(local_separation.value()) <= separation_limit ){
 
-              phi_kink = newt1.kink_phi(newt2);
               theta_kink = newt1.kink_theta(newt2);
               if( print_level() > mybhep::VERBOSE ){
                 std::clog << " phi 1st tangent: "; (newt1.phi()*180./M_PI).dump();
@@ -389,11 +390,11 @@ namespace CAT{
             chi2s_.push_back(chi2);
             local_prob = probof(chi2, ndof);
             probs_.push_back(local_prob);
-            if( local_prob > probmin() && prob_just_phi > probmin() )
+            if( local_prob > probmin() && prob_just_phi > probmin() && fabs(phi_kink.value())*180./M_PI <= phi_limit )
               ok = true;
 
             if( print_level() > mybhep::VERBOSE ){
-              std::clog << "    chi2 " << chi2 << " prob " << local_prob << " prob_just_phi " << prob_just_phi << " accepted: " << ok << std::endl;
+              std::clog << "    chi2 " << chi2 << " prob " << local_prob << " prob_just_phi " << prob_just_phi << " phi_kink " << phi_kink.value()*180./M_PI << " limit " << phi_limit << " accepted: " << ok << std::endl;
             }
 
           }

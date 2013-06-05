@@ -2112,25 +2112,45 @@ namespace CAT {
       // a circle along the gap of the 2nd sequence
       circle cB(origin, pB.radius(), print_level(), probmin());
 
-      bool resultA, resultB;
-      experimental_point epA, epB;
+      bool resultA, resultB, result_tangent_A, result_tangent_B;
+      experimental_point epA, epB, ep_tangent_A, ep_tangent_B;
       if( invertA ){
 	resultB=intersect_circle_from_begin(cB,&epB);
+	result_tangent_B= intersect_circle_with_tangent_from_begin(cB, &ep_tangent_B);
       }
       else{
 	resultB=intersect_circle_from_end(cB,&epB);
+	result_tangent_B= intersect_circle_with_tangent_from_end(cB, &ep_tangent_B);
       }
       local_distance = pB.distance(epB);
       distanceB = fabs(std::max(local_distance.value()-local_distance.error(), 0.));
+      if( result_tangent_B ){
+	resultB=true;
+	local_distance = pB.distance(ep_tangent_B);
+	if( print_level() >= mybhep::VVERBOSE )
+	  std::clog << " ... extrapolation through tangent B, pB (" << pB.x().value() << ", " << pB.y().value() << ", " << pB.z().value() << ") distance " << local_distance.value() << std::endl;
+	distanceB = fabs(std::min(local_distance.value()-local_distance.error(), distanceB));
+	distanceB = fabs(std::max(distanceB, 0.));
+      }
 
       if( invertB ){
 	resultA=seq.intersect_circle_from_end(cA,&epA);
+	result_tangent_A= seq.intersect_circle_with_tangent_from_end(cA, &ep_tangent_A);
       }
       else{
 	resultA=seq.intersect_circle_from_begin(cA,&epA);
+	result_tangent_A= seq.intersect_circle_with_tangent_from_begin(cA, &ep_tangent_A);
       }
       local_distance = pA.distance(epA);
       distanceA = fabs(std::max(local_distance.value()-local_distance.error(), 0.));
+      if( result_tangent_A ){
+	resultA=true;
+	local_distance = pA.distance(ep_tangent_A);
+	if( print_level() >= mybhep::VVERBOSE )
+	  std::clog << " ... extrapolation through tangent A, pA (" << pA.x().value() << ", " << pA.y().value() << ", " << pA.z().value() << ") distance " << local_distance.value() << std::endl;
+	distanceA = fabs(std::min(local_distance.value()-local_distance.error(), distanceA));
+	distanceA = fabs(std::max(distanceA, 0.));
+      }
 
       double distance;
       if( resultA && resultB ){
