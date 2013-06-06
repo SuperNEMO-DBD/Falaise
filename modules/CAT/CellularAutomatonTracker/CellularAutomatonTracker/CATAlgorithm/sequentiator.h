@@ -486,6 +486,8 @@ namespace CAT {
 
     bool make_scenarios(topology::tracked_data &td);
     void interpret_physics(std::vector<topology::calorimeter_hit> & calos);
+    void refine_sequences_near_walls(std::vector<topology::calorimeter_hit> & calos);
+    bool belongs_to_other_family(topology::cell c, topology::sequence *iseq);
     topology::plane get_foil_plane();
     topology::circle get_foil_circle();
     void print_sequences() const;

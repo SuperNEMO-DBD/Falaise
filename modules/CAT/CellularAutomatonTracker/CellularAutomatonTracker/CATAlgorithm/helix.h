@@ -297,11 +297,11 @@ namespace CAT {
       }
 
 
-      bool intersect_plane(const plane &pl, experimental_point * ep, const experimental_double &_phi)const{
+      bool intersect_plane(const plane &pl, experimental_point * ep, const experimental_double &_phi, const double y_ref)const{
 
         if( pl.view() == "x" || pl.view() == "z" || pl.view() == "inner" || pl.view() == "outer" ){
           bool result = get_circle().intersect_plane(pl, ep, _phi);
-          ep->set_y(position(*ep,_phi.value()).y());
+          ep->set_y(position(*ep,_phi.value(), y_ref).y());
 	  
 	  if( isnan(ep->x().value())  || isnan(ep->y().value()) || isnan(ep->z().value()) ) return false;
 	  

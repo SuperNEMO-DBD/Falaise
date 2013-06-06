@@ -678,6 +678,7 @@ namespace CAT {
     clean_up_sequences();
     direct_out_of_foil();
 
+    refine_sequences_near_walls(tracked_data_.get_calos());
     interpret_physics(tracked_data_.get_calos());
 
     if (late())
@@ -1656,6 +1657,72 @@ namespace CAT {
 
   }
 
+
+  //*************************************************************
+  void sequentiator::refine_sequences_near_walls(std::vector<topology::calorimeter_hit> & calos){
+    //*************************************************************
+
+    for( std::vector<topology::sequence>::iterator iseq = sequences_.begin(); iseq!=sequences_.end(); ++iseq){
+
+      if( iseq->nodes_.size() < 3 ) continue;
+      if( gap_number( iseq->second_last_node().c() ) == 0 &&
+	  iseq->phi_kink(iseq->nodes_.size()-2)*180./M_PI > 45 &&
+	  belongs_to_other_family(iseq->last_node().c(), &(*iseq)) ){
+	m.message( " removing last node ", iseq->last_node().c(), " near foil of sequence ", iseq->name(),  "(it belongs to other family and makes large kink) ", mybhep::VVERBOSE); fflush(stdout);
+	iseq->remove_last_node();
+      }
+
+      if( iseq->nodes_.size() < 3 ) continue;
+      if( gap_number( iseq->nodes_[1].c() ) == 0 &&
+	  iseq->phi_kink(1)*180./M_PI > 45 &&
+	  belongs_to_other_family(iseq->nodes_[0].c(), &(*iseq)) ){
+	m.message( " removing 1st node ", iseq->last_node().c(), " near foil of sequence ", iseq->name(),  "(it belongs to other family and makes large kink) ", mybhep::VVERBOSE); fflush(stdout);
+	iseq->remove_first_node();
+      }
+
+
+      if( iseq->nodes_.size() < 3 ) continue;
+      for(std::vector<topology::calorimeter_hit>::iterator ic=calos.begin(); ic != calos.end(); ++ic){
+	if( near(iseq->nodes_[1].c(), *ic) &&
+	    iseq->phi_kink(1)*180./M_PI > 45 &&
+	    belongs_to_other_family(iseq->nodes_[0].c(), &(*iseq)) ){
+	  m.message( " removing 1st node ", iseq->last_node().c(), " near calo of sequence ", iseq->name(),  "(it belongs to other family and makes large kink) ", mybhep::VVERBOSE); fflush(stdout);
+	  iseq->remove_first_node();
+	  break;
+	}
+      }
+
+      if( iseq->nodes_.size() < 3 ) continue;
+      for(std::vector<topology::calorimeter_hit>::iterator ic=calos.begin(); ic != calos.end(); ++ic){
+	if( near(iseq->second_last_node().c(), *ic) &&
+	    iseq->phi_kink(iseq->nodes_.size()-2)*180./M_PI > 45 &&
+	    belongs_to_other_family(iseq->last_node().c(), &(*iseq)) ){
+	  m.message( " removing last node ", iseq->last_node().c(), " near calo of sequence ", iseq->name(),  "(it belongs to other family and makes large kink) ", mybhep::VVERBOSE); fflush(stdout);
+	  iseq->remove_last_node();
+	  break;
+	}
+      }
+    }
+
+    return;
+
+  }
+
+
+  //*************************************************************
+  bool sequentiator::belongs_to_other_family(topology::cell c, topology::sequence *iseq){
+    //*************************************************************
+
+    for( std::vector<topology::sequence>::iterator jseq = sequences_.begin(); jseq!=sequences_.end(); ++jseq){
+      if( iseq->same_families(*jseq) ) continue;
+      if( !jseq->has_cell(c) ) continue;
+      return true;
+    }
+
+    return false;
+
+  }
+  
   //*************************************************************
   void sequentiator::interpret_physics(std::vector<topology::calorimeter_hit> & calos){
     //*************************************************************

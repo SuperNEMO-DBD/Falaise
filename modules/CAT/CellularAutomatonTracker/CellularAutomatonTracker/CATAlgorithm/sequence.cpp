@@ -1920,7 +1920,7 @@ namespace CAT {
 
       experimental_double _phi = helix_.phi_of_point(last_node().ep());
 
-      bool result = helix_.intersect_plane(pl, ep, _phi);
+      bool result = helix_.intersect_plane(pl, ep, _phi, last_node().ep().y().value());
 
       return result;
 
@@ -1943,7 +1943,7 @@ namespace CAT {
 
       experimental_double _phi = helix_.phi_of_point(nodes_[0].ep());
 
-      bool result = helix_.intersect_plane(pl, ep, _phi);
+      bool result = helix_.intersect_plane(pl, ep, _phi, nodes_[0].ep().y().value());
 
       return result;
 
@@ -2879,6 +2879,18 @@ namespace CAT {
 
 
     // get node of largest horizontal kink
+    double sequence::phi_kink(size_t inode)const{
+
+      if( nodes_.size() <= 2 ) return 0.;
+      if( inode == 0 ) return 0.;
+      if( inode >= nodes_.size() - 1 ) return 0.;
+
+      double phi = fabs((joint(nodes_[inode - 1].ep(), nodes_[inode].ep(), nodes_[inode + 1].ep())).kink_phi().value());
+
+      return phi;
+    }
+
+    // get node of largest horizontal kink
     bool sequence::largest_kink_node(topology::node& n, double& phi)const{
 
       if( nodes_.size() <= 2 ) return false;
@@ -2893,7 +2905,7 @@ namespace CAT {
         if( index == 0 ) continue;
         if( index == nodes_.size() - 1 ) continue;
 
-        local_phi = fabs((joint(nodes_[index - 1].ep(), nodes_[index].ep(), nodes_[index + 1].ep())).kink_phi().value());
+        local_phi = phi_kink(index);
 
         if( local_phi > phimax ){
           phimax = local_phi;

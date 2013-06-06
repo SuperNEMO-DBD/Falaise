@@ -445,6 +445,8 @@ namespace CAT {
       //! get node of worst chi2
       bool worst_node(topology::node& n)const;
 
+      double phi_kink(size_t inode)const;
+
       // get node of largest horizontal kink
       bool largest_kink_node(topology::node& n, double& phi)const;
 
