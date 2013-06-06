@@ -2261,6 +2261,7 @@ namespace CAT {
 
       m.message(" should we erase sequence [", iseq - sequences_.begin(), "] " , iseq->name() , " because of connection out of range ? " ,mybhep::VVERBOSE); fflush(stdout);
       for(std::vector<topology::node>::iterator in=iseq->nodes_.begin(); in!=iseq->nodes_.end();in++){
+	if( changed ) continue;
 	if( in-iseq->nodes_.begin() +1 >= iseq->nodes_.size()) break;
 	topology::node nA = *in;
 	topology::node nB = iseq->nodes_[in-iseq->nodes_.begin()+1];
@@ -2270,7 +2271,7 @@ namespace CAT {
 	  changed = true;
 	  iseq = sequences_.begin() + (iseq - sequences_.begin());
 	  // now check the new iseq
-	  continue;
+	  break;
 	}
       }
 
