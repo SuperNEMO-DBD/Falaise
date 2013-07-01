@@ -2932,6 +2932,8 @@ namespace CAT {
   bool sequentiator::sequence_is_within_range(topology::node nodeA, topology::node nodeB, topology::sequence seq){
     //*************************************************************
 
+    if( gaps_Z.size() == 0 ) return true;
+
     topology::experimental_point epA = nodeA.ep();
     topology::experimental_point epB = nodeB.ep();
     topology::cell cA = nodeA.c();
@@ -2947,7 +2949,6 @@ namespace CAT {
     topology::experimental_point ep_maxr, ep_minr;
 
     // get the index of the gap through which the matching should occurr
-
     if( blockA == blockB &&
 	((gnA == -1 && gnB == -1) ||
 	 gnA != gnB )){
@@ -2992,6 +2993,9 @@ namespace CAT {
 	}
       }
       else if( blockA == blockB && gnA != -1 && gnB != -1 && gnA == gnB ){ // A and B on same gap
+
+	// get the index of the gap through which the matching should occurr
+
 	size_t gn = gnA;
 	size_t gaplayer=0;
 	for(size_t i=0; i<gn; i++)
