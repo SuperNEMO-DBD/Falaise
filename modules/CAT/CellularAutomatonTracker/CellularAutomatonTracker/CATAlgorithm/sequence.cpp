@@ -2572,14 +2572,6 @@ namespace CAT {
           return false;
         }
 
-        if( fabs( block_distance ) == 1 )
-	  acrossGAP=true;
-        else if( distLF > limit_distance){
-          if( print_level() >= mybhep::VVERBOSE )
-            std::clog << " ... forbidden, because distance " << distLF << " is larger than limit " << limit_distance << std::endl;
-          return false;
-        }
-
         if( has_decay_helix_vertex() && (decay_helix_vertex_type() == "calo" || decay_helix_vertex_type() == "foil") ){
           if( print_level() >= mybhep::VVERBOSE )
             std::clog << " ... forbidden, because 1st track already has decay helix_vertex on calo or foil " << std::endl;
@@ -2604,6 +2596,15 @@ namespace CAT {
 	  layer_distance = last_node().c().layer() - seq.nodes_[0].c().layer();
 	  cell_number_distance = last_node().c().cell_number() - seq.nodes_[0].c().cell_number();
 	}	
+
+        if( fabs( block_distance ) == 1 )
+	  acrossGAP=true;
+        else if( distLF > limit_distance*(cells_to_delete + 1)){
+          if( print_level() >= mybhep::VVERBOSE )
+            std::clog << " ... forbidden, because distance " << distLF << " is larger than limit " << limit_distance*(cells_to_delete + 1) << std::endl;
+          return false;
+        }
+
       }
       else if( distLL <= distFF && distLL <= distFL && distLL <= distLF ){ // last to last  FL -> LF
         invertA = false;
@@ -2614,14 +2615,6 @@ namespace CAT {
         if( fabs( block_distance ) > 1 ){
           if( print_level() >= mybhep::VVERBOSE )
             std::clog << " ... forbidden, because blocks are far away " << std::endl;
-          return false;
-        }
-
-        if( fabs( block_distance ) == 1 )
-	  acrossGAP=true;
-        else if( distLL > limit_distance){
-          if( print_level() >= mybhep::VVERBOSE )
-            std::clog << " ... forbidden, because distance " << distLL << " is larger than limit " << limit_distance << std::endl;
           return false;
         }
 
@@ -2650,6 +2643,16 @@ namespace CAT {
 	  layer_distance = last_node().c().layer() - seq.last_node().c().layer();
 	  cell_number_distance = last_node().c().cell_number() - seq.last_node().c().cell_number();
 	}
+
+        if( fabs( block_distance ) == 1 )
+	  acrossGAP=true;
+        else if( distLL > limit_distance*(cells_to_delete + 1)){
+          if( print_level() >= mybhep::VVERBOSE )
+            std::clog << " ... forbidden, because distance " << distLL << " is larger than limit " << limit_distance*(cells_to_delete + 1) << std::endl;
+          return false;
+        }
+
+
       }
       else if( distFL <= distFF && distFL <= distLL && distFL <= distLF ){ // first to last  LF -> LF
 
@@ -2661,13 +2664,6 @@ namespace CAT {
         if( fabs( block_distance ) > 1 ){
           if( print_level() >= mybhep::VVERBOSE )
             std::clog << " ... forbidden, because blocks are far away " << std::endl;
-          return false;
-        }
-        if( fabs( block_distance ) == 1 )
-	  acrossGAP = true;
-        else if( distFL > limit_distance){
-          if( print_level() >= mybhep::VVERBOSE )
-            std::clog << " ... forbidden, because distance " << distFL << " is larger than limit " << limit_distance << std::endl;
           return false;
         }
 
@@ -2695,6 +2691,15 @@ namespace CAT {
 	  layer_distance = nodes_[0].c().layer() - seq.last_node().c().layer();
 	  cell_number_distance = nodes_[0].c().cell_number() - seq.last_node().c().cell_number();
 	}
+
+        if( fabs( block_distance ) == 1 )
+	  acrossGAP = true;
+        else if( distFL > limit_distance*(cells_to_delete + 1)){
+          if( print_level() >= mybhep::VVERBOSE )
+            std::clog << " ... forbidden, because distance " << distFL << " is larger than limit " << limit_distance*(cells_to_delete + 1) << std::endl;
+          return false;
+        }
+
       }
       else{ // first to first  LF -> FL
 
@@ -2706,13 +2711,6 @@ namespace CAT {
         if( fabs( block_distance ) > 1 ){
           if( print_level() >= mybhep::VVERBOSE )
             std::clog << " ... forbidden, because blocks are far away " << std::endl;
-          return false;
-        }
-        if( fabs( block_distance ) == 1 )
-	  acrossGAP=true;
-        else if( distFF > limit_distance){
-          if( print_level() >= mybhep::VVERBOSE )
-            std::clog << " ... forbidden, because distance " << distFF << " is larger than limit " << limit_distance << std::endl;
           return false;
         }
 
@@ -2740,6 +2738,15 @@ namespace CAT {
 	  layer_distance = nodes_[0].c().layer() - seq.nodes_[0].c().layer();
 	  cell_number_distance = nodes_[0].c().cell_number() - seq.nodes_[0].c().cell_number();
 	}
+
+        if( fabs( block_distance ) == 1 )
+	  acrossGAP=true;
+        else if( distFF > limit_distance*(cells_to_delete + 1)){
+          if( print_level() >= mybhep::VVERBOSE )
+            std::clog << " ... forbidden, because distance " << distFF << " is larger than limit " << limit_distance*(cells_to_delete + 1) << std::endl;
+          return false;
+        }
+
       }
 
 

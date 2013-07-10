@@ -3062,7 +3062,7 @@ namespace CAT {
   bool sequentiator::match_gaps(std::vector<topology::calorimeter_hit> & calos){
     //*************************************************************
 
-    if( gaps_Z.size() <= 1 ) return true;
+    //if( gaps_Z.size() <= 1 ) return true;
     if( sequences_.size() < 2 ) return true;
 
     clock.start(" sequentiator: match gaps ", "cumulative");
