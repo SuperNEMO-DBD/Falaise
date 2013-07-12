@@ -44,12 +44,12 @@ namespace CAT {
     level                 = "normal";
     SuperNemo             = true;
     MaxTime               = 5000.0 * CLHEP::ms;
-    SmallRadius           =    0.1 * CLHEP::mm;
+    SmallRadius           =    2.0 * CLHEP::mm;
     TangentPhi            =   20.0 * CLHEP::degree;
     TangentTheta          =  160.0 * CLHEP::degree;
     SmallNumber           =    0.1 * CLHEP::mm;
     QuadrantAngle         =   90.0 * CLHEP::degree;
-    Ratio                 =   10.0;
+    Ratio                 =   10000.0;
     CompatibilityDistance = 4.0 * CLHEP::mm;
     MaxChi2               = 3.;
     probmin                = 0.;

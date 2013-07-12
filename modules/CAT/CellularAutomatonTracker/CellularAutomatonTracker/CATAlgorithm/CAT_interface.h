@@ -53,7 +53,7 @@ namespace CAT {
     /// Maximum computing time in ms
     double MaxTime;
 
-    /// Ratio of 2nd best to best chi2 which is acceptable as 2nd solution
+    /// Ratio of 2nd best to best probability which is acceptable as 2nd solution
     double Ratio;
 
     /// minimum p-value to be a straight line

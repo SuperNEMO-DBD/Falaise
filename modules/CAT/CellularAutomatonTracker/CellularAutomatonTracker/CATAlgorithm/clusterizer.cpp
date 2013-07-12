@@ -1119,6 +1119,7 @@ namespace CAT {
 
       for (size_t ihit=0; ihit<hits.size();ihit++){
         topology::cell c(*hits[ihit],ihit, SuperNemo, level, probmin);
+	c.set_small_radius(SmallRadius);
         cells_.push_back(c);
       }
 

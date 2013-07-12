@@ -55,6 +55,9 @@ namespace CAT {
       // N3 or SN
       std::string type_;
 
+      // radius below which a cell is small
+      double small_radius_;
+
     public:
 
 
@@ -81,6 +84,7 @@ namespace CAT {
         free_ = false;
         begun_ = false;
         type_ ="SN";
+	small_radius_= 0.;
       }
 
       //!Default destructor
@@ -103,6 +107,7 @@ namespace CAT {
         free_ = false;
         begun_ = false;
         type_ ="SN";
+	small_radius_= 0.;
       }
 
       //! constructor
@@ -123,6 +128,7 @@ namespace CAT {
         free_ = false;
         begun_ = false;
         type_ ="SN";
+	small_radius_= 0.;
       }
 
       //! constructor
@@ -143,6 +149,7 @@ namespace CAT {
         free_ = false;
         begun_ = false;
         type_ ="SN";
+	small_radius_= 0.;
       }
 
       //! constructor from bhep hit
@@ -153,6 +160,7 @@ namespace CAT {
         //ep_ = experimental_point(hit);
         r0_.set_value(mybhep::small_neg);
         r0_.set_error(0.5*mybhep::mm); // radial error
+	small_radius_= 0.;
 
         if( hit.find_property("DIST")){
           double rr = mybhep::double_from_string(hit.fetch_property("DIST"));
@@ -250,6 +258,7 @@ namespace CAT {
         free_ = false;
         begun_ = false;
         type_ ="SN";
+	small_radius_= 0.;
       }
 
 
@@ -319,6 +328,13 @@ namespace CAT {
         id_ = id;
       }
 
+      //! set small radius
+      void set_small_radius(double small_radius)
+      {
+        small_radius_ = small_radius;
+      }
+
+
       //! set layer
       void set_layer(size_t layer)
       {
@@ -371,7 +387,7 @@ namespace CAT {
         bool sm = false;
 
         //        if (r0_.value() <= probmin()*r0_.error() ) sm = true;
-        if (r0_.value() <= 2. ) sm = true;
+        if (r0_.value() <= small_radius() ) sm = true;
 
         return sm;
       }
@@ -406,6 +422,9 @@ namespace CAT {
 
       //!get id
       const size_t& id() const {return id_;}
+
+      //!get small_radius
+      const double& small_radius() const {return small_radius_;}
 
       //!get layer
       const int& layer() const {return layer_;}
