@@ -1,0 +1,106 @@
+# - Top level CMake script for Falaise
+#
+
+#-----------------------------------------------------------------------
+# Copyright 2012,2013 Ben Morgan <bmorgan.warwick@gmail.com>
+# Copyright 2012,2013 University of Warwick
+#
+# This file is part of Falaise.
+#
+# Falaise is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Falaise is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Falaise.  If not, see <http://www.gnu.org/licenses/>.
+#-----------------------------------------------------------------------
+
+#-----------------------------------------------------------------------
+# Enforce an out-of-source build.
+#
+if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+  message(STATUS "Falaise requires an out-of-source build.")
+  message(STATUS "Please remove these files from ${CMAKE_BINARY_DIR} first:")
+  message(STATUS "  CMakeCache.txt")
+  message(STATUS "  CMakeFiles")
+  message(STATUS "Once these files are removed, create a separate directory")
+  message(STATUS "and run CMake from there, pointing it to:")
+  message(STATUS "  ${CMAKE_SOURCE_DIR}")
+  message(FATAL_ERROR "in-source build detected")
+endif()
+
+#-----------------------------------------------------------------------
+# CMake/project requirements and configuration
+#
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+project(Falaise)
+
+# - Versioning
+set(Falaise_VERSION_MAJOR 1)
+set(Falaise_VERSION_MINOR 0)
+set(Falaise_VERSION_PATCH 0)
+set(Falaise_VERSION "${Falaise_VERSION_MAJOR}.${Falaise_VERSION_MINOR}.${Falaise_VERSION_PATCH}")
+
+# - SVN Versioning, if available
+set(Falaise_VERSION_REVISION 0)
+
+# - Configure output paths for products to give inplace build that roughly
+#   matches install layout.
+set(Falaise_BUILDPRODUCT_DIR "${PROJECT_BINARY_DIR}/BuildProducts")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${Falaise_BUILDPRODUCT_DIR}/lib")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY  "${Falaise_BUILDPRODUCT_DIR}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${Falaise_BUILDPRODUCT_DIR}/lib")
+
+#-----------------------------------------------------------------------
+# Configure testing if required
+#
+option(Falaise_ENABLE_TESTING "Build unit testing system for Falaise" OFF)
+if(Falaise_ENABLE_TESTING)
+  enable_testing()
+endif()
+
+#-----------------------------------------------------------------------
+# Configure/Build utilities as needed
+#
+option(Falaise_USE_SYSTEM_BAYEUX "Use system-installed Bayeux" OFF)
+mark_as_advanced(Falaise_USE_SYSTEM_BAYEUX)
+
+if(Falaise_USE_SYSTEM_BAYEUX)
+  find_package(Bayeux 1.0.0 REQUIRED)
+else()
+  # - Configure internal build
+  set(Bayeux_EMBEDDED 1)
+  set(Bayeux_BUILDPRODUCT_DIR ${Falaise_BUILDPRODUCT_DIR})
+  if(Falaise_ENABLE_TESTING)
+    set(Bayeux_ENABLE_TESTING ON)
+  endif()
+
+  # - Build
+  add_subdirectory(utilities/flbayeux)
+  
+  # - Set up so that Falaise will use the internal build
+  set(Bayeux_INCLUDE_DIRS "${Falaise_BUILDPRODUCT_DIR}/include")
+  set(Bayeux_LIBRARIES Bayeux)
+endif()
+
+
+#-----------------------------------------------------------------------
+# Build the subdirectories
+#
+#option(Falaise_BUILD_SIMULATION "Build Falaise detector simulation app" OFF)
+#if(Falaise_BUILD_SIMULATION)
+#add_subdirectory(utilties/flmctools)
+#add_subdirectory(simulation)
+#endif()
+#
+
+#-----------------------------------------------------------------------
+# Package Sources and Binaries
+#
+#include(FLCPack)
