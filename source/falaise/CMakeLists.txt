@@ -29,7 +29,7 @@ configure_file(version.h.in ${Falaise_BUILDPRODUCT_DIR}/include/falaise/version.
 # Declare sources
 #
 set(FalaiseLibrary_HEADERS
-  ${Falaise_BUILDPRODUCT_DIR}/falaise/version.h
+  ${Falaise_BUILDPRODUCT_DIR}/include/falaise/version.h
   )
 set(FalaiseLibrary_SOURCES
   version.cc
