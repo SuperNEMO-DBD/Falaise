@@ -93,12 +93,7 @@ endif()
 #-----------------------------------------------------------------------
 # Build the subdirectories
 #
-#option(Falaise_BUILD_SIMULATION "Build Falaise detector simulation app" OFF)
-#if(Falaise_BUILD_SIMULATION)
-#add_subdirectory(utilties/flmctools)
-#add_subdirectory(simulation)
-#endif()
-#
+add_subdirectory(source)
 
 #-----------------------------------------------------------------------
 # Package Sources and Binaries

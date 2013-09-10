@@ -1,0 +1,98 @@
+//! \file    version.h
+//! \brief   Describe the Falaise API version
+//! \details Querying the version of Falaise is needed at both
+//!          compile and runtime by clients so that they may adjust
+//!          their usage.
+//
+// Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com> 
+// Copyright (c) 2013 by The University of Warwick
+//
+// This file is part of Falaise.
+//
+// Falaise is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Falaise is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Falaise.  If not, see <http://www.gnu.org/licenses/>.
+
+#ifndef FALAISE_VERSION_H
+#define FALAISE_VERSION_H
+// Standard Library
+#include <string>
+
+// Third Party
+// - A
+
+// This Project
+
+//----------------------------------------------------------------------
+// - Compile Time API
+//! Major version number of falaise
+#define FALAISE_VERSION_MAJOR @Falaise_VERSION_MAJOR@
+
+//! Minor version number of falaise
+#define FALAISE_VERSION_MINOR @Falaise_VERSION_MINOR@
+
+//! Patch version number of falaise
+#define FALAISE_VERSION_PATCH @Falaise_VERSION_PATCH@
+
+//! Current revision/build number of falaise, 0 for a release
+#define FALAISE_VERSION_REVISION @Falaise_VERSION_REVISION@
+
+//! Encode falaise to ordered integer available at compile time
+#define FALAISE_ENCODE_VERSION(major, minor, patch) ( \
+        ((major) * 10000) \
+      + ((minor) *   100) \
+      + ((patch) *     1))
+
+//! Integer encoded falaise version available at compile time
+#define FALAISE_VERSION FALAISE_ENCODE_VERSION( \
+        FALAISE_VERSION_MAJOR, \
+        FALAISE_VERSION_MINOR, \
+        FALAISE_VERSION_PATCH)
+
+//! String encoded full version number, e.g. "1.2.3", available at compile time
+#define FALAISE_LIB_VERSION "@Falaise_VERSION_MAJOR@.@Falaise_VERSION_MINOR@.@Falaise_VERSION_PATCH@"
+
+//! Check current version >= (major, minor, patch) at compile time
+#define FALAISE_IS_AT_LEAST(major,minor,patch) ( \
+        FALAISE_VERSION >= \
+        FALAISE_ENCODE_VERSION(major,minor,patch))
+
+//----------------------------------------------------------------------
+// Runtime API
+namespace falaise {
+//! \brief Describe the falaise API version and features
+struct version {
+//! Return the major version number of falaise, e.g., 1 for '1.2.3'
+static int get_major();
+
+//! Return the minor version number of falaise, e.g., 2 for '1.2.3'
+static int get_minor();
+
+//! Return the patch version number of falaise, e.g., 3 for '1.2.3'
+static int get_patch();
+
+//! Return the revision/build number of falaise, e.g., 1234
+static int get_revision();
+
+//! Return the full version number of falaise as a string, e.g., '1.2.3'
+static std::string get_version();
+
+//! Return true if the current falaise version >= (major, minor, patch)
+static bool is_at_least(int major, int minor, int patch);
+
+//! Return true if the named feature is available in falaise
+static bool has_feature(const std::string& feature);
+};
+} // namespace falaise
+
+#endif // FALAISE_VERSION_H
+
