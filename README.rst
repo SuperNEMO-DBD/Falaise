@@ -12,14 +12,16 @@ Falaise C++ Library for the SuperNEMO experiment
 About Falaise
 =============
 
-Falaise provides a collection of C++ classes and functions designed
-for the simulation, recording and analysis of data for the SuperNEMO
-experiment. This functionality is split into two main applications:
+Falaise provides the main computational environment for the simulation,
+processing and analysis of data for the SuperNEMO double beta decay search
+experiment. 
 
-- FalaiseSim, the main detector simulation
-- FalaiseRec, the main reconstruction application
+The two main components are the applications
 
-FalaiseRec uses a pipeline architecture in which the pipeline stages
+- flsimulate, the main detector simulation
+- flreconstruct, the main reconstruction application
+
+A pipeline architecture is used in which the pipeline stages
 may be configured and added to at runtime via a plugin system.
 
 TODO : other apps and APIs.
@@ -99,6 +101,7 @@ though support will be on a best effort basis.
    -  CMake 2.8.0 or higher: http://www.cmake.org
    -  C/C++ compiler supporting at least C++03 standard
       (GNU/Clang/Intel)
+   -  Doxygen (for documentation development)
 
 On Linux, you should install these through the package manager for your
 distribution. Some older Linux systems (SL/CentOS, especially on
@@ -144,7 +147,7 @@ that you are using a UNIX system on the command line (i.e. Mac or Linux).
 We'll also assume that you're going to use the Cadfael SDK to provide
 the required third party packages.
 
-To build Bayeux, simply do, from the directory in which this file
+To build Falaise, simply do, from the directory in which this file
 resides:
 
 .. code:: sh
@@ -152,9 +155,12 @@ resides:
     $ mkdir build
     $ cd build
     $ cmake -DCMAKE_INSTALL_PREFIX=<where you want to install> -DCMAKE_PREFIX_PATH=<path to your Cadfael install> ..
-    $ make && make install
+    $ make
+    $ make install
 
-
+The `flreconstruct` and `flsimulate` applications will be installed to
+a subdirectory named `bin` under the directory used passed as 
+`CMAKE_INSTALL_PREFIX`.
 
 Troubleshooting
 ===============
