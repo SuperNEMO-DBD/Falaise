@@ -22,7 +22,9 @@
 
 #-----------------------------------------------------------------------
 # Configure application
-#
+# - Bit hacky for now
+find_package(Boost REQUIRED program_options)
+include_directories(${Boost_INCLUDE_DIRS})
 
 #-----------------------------------------------------------------------
 # Declare sources
@@ -33,7 +35,11 @@ set(flsimulate_SOURCES flsimulate.cc)
 # Build App
 #
 add_executable(flsimulate ${flsimulate_SOURCES})
-target_link_libraries(flsimulate Falaise)
+target_link_libraries(flsimulate 
+  Falaise
+  Bayeux
+  ${Boost_program_options_LIBRARY}
+  )
 
 #-----------------------------------------------------------------------
 # Build Tests
