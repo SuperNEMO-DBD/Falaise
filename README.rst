@@ -2,7 +2,7 @@
 Falaise C++ Library for the SuperNEMO experiment
 ================================================
 
-:Authors: François Mauger; Xavier Garrido, Ben Morgan
+:Authors: Ben Morgan, François Mauger; Xavier Garrido
 :Date:    Today
 
 .. contents::
@@ -156,11 +156,26 @@ resides:
     $ cd build
     $ cmake -DCMAKE_INSTALL_PREFIX=<where you want to install> -DCMAKE_PREFIX_PATH=<path to your Cadfael install> ..
     $ make
+
+Binaries and documentation will be output under a directory named 
+``BuildProducts`` in the build directory. The layout of this file
+follows POSIX conventions, so you can find, **and use**, the binaries,
+libraries and documents present therein. For example, you may do
+
+.. code:: sh
+
+    $ ./BuildProducts/bin/flreconstruct --help
+
+to run and get help on the ``flreconstruct`` application.
+
+If you need to install Falaise, after building you can run
+
+.. code:: sh
+
     $ make install
 
-The `flreconstruct` and `flsimulate` applications will be installed to
-a subdirectory named `bin` under the directory used passed as 
-`CMAKE_INSTALL_PREFIX`.
+to install everything in a POSIX style hierarchy under the directory passed as `CMAKE_INSTALL_PREFIX`.
+
 
 Troubleshooting
 ===============
