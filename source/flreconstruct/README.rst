@@ -12,14 +12,14 @@ Any code specific to the reconstruction application goes here as well.
 
 How to Use It
 =============
-Simply type `flreconstruct --help`
+Simply type ``flreconstruct --help``
 
-To get the current version, type `flreconstruct --version`
+To get the current version, type ``flreconstruct --version``
 
-For more detail use `-v`, e.g. `flreconstruct --version -v`
+For more detail use ``-v``, e.g. ``flreconstruct --version -v``
 
-To run, so `flreconstruct -i input.txt -o output.txt`, where `input.txt` 
-is the text file you want to process, and `output.txt` is the file you
+To run, so ``flreconstruct -i input.txt -o output.txt``, where ``input.txt``
+is the text file you want to process, and ``output.txt`` is the file you
 want to write the processed text to.
 
 
