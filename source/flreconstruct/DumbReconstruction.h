@@ -50,7 +50,7 @@ struct FLPipeline : public std::unary_function<char,char> {
 };
 
 namespace falaise {
-FLPipeline create_work_queue() {return FLPipeline);}
+FLPipeline create_pipeline() {return FLPipeline();}
 } // namespace falaise
 
 
