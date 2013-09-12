@@ -76,6 +76,10 @@ if(Falaise_BUILD_DOCS)
   # - For man pages, pandoc for now
   #find_package(Pandoc 1.10 REQUIRED)
   #find_package(<something to compress man?>)
+  find_program(Pandoc_EXECUTABLE pandoc
+    DOC "path to pandoc executable"
+    )
+  set(Pandoc_FOUND ${Pandoc_EXECUTABLE})  
 endif()
 
 #-----------------------------------------------------------------------

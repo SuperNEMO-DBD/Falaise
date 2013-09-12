@@ -39,3 +39,19 @@ add_subdirectory(flsimulate)
 # - Reconstruction
 add_subdirectory(flreconstruct)
 
+#-----------------------------------------------------------------------
+# Manual
+#
+if(Pandoc_FOUND)
+  set(Falaise_MANPAGE_IN  ${CMAKE_CURRENT_SOURCE_DIR}/Falaise.1.md)
+  set(Falaise_MANPAGE_OUT ${Falaise_BUILDPRODUCT_DIR}/share/man/man1/Falaise.1)
+
+  add_custom_command(OUTPUT ${Falaise_MANPAGE_OUT}
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${Falaise_BUILDPRODUCT_DIR}/share/man/man1
+    COMMAND ${Pandoc_EXECUTABLE} -s -w man ${Falaise_MANPAGE_IN} -o ${Falaise_MANPAGE_OUT}
+    COMMENT "Generating Falaise.1 man page"
+    DEPENDS ${Falaise_MANPAGE_IN}
+    )
+  add_custom_target(falaise_man ALL DEPENDS ${Falaise_MANPAGE_OUT})
+endif()
+
