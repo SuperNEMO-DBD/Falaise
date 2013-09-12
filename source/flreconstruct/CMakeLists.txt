@@ -24,13 +24,14 @@
 # Configure application
 # - Bit hacky for now
 find_package(Boost REQUIRED program_options)
-
 include_directories(${Boost_INCLUDE_DIRS})
+
+include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
 
 #-----------------------------------------------------------------------
 # Declare sources
 #
-set(flreconstruct_SOURCES flreconstruct.cc)
+set(flreconstruct_SOURCES flreconstruct.cc DumbReconstruction.h)
 
 #-----------------------------------------------------------------------
 # Build App

@@ -31,13 +31,13 @@
 
 // This Project
 #include <falaise/version.h>
+#include "DumbReconstruction.h"
 
 //----------------------------------------------------------------------
 // HACKY DEMO IMPLEMENTATION
 //
 namespace {
-  namespace bpo = boost::program_options;
-}
+namespace bpo = boost::program_options;
 
 //! Print version information ot an output stream
 //! Add detailed information if isVerbose is true
@@ -72,14 +72,17 @@ int FLProcessData(const std::string& source,
                   const std::string& sink,
                   bool isVerbose) {
   datatools::logger::priority logPriority = isVerbose ? datatools::logger::PRIO_INFORMATION : datatools::logger::PRIO_WARNING;
+  int errCode(1);
 
-  DT_LOG_INFORMATION(logPriority,"processing startup");
+  DumbReconstruction dummy;
+  bool isConfigured = dummy.doConfigure(source, sink, logPriority);
+  if (isConfigured) {
+    errCode = dummy.doReconstruction();
+  } else {
+    DT_LOG_FATAL(logPriority, "failed to configure reconstruction");
+  }
 
-  DT_LOG_INFORMATION(logPriority,"data source : " << source);
-  DT_LOG_INFORMATION(logPriority,"data sink   : " << sink);
-
-  DT_LOG_INFORMATION(logPriority,"processing shutdown");
-  return 0;
+  return errCode;
 }
 
 //! Run the command line application logic
@@ -135,7 +138,7 @@ int FLReconstructImpl(int argc, char *argv[]) {
 
   return processingCode;
 }
-
+} // namespace
 
 //----------------------------------------------------------------------
 // Here's the main
