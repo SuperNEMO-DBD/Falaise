@@ -31,6 +31,7 @@
 
 // This Project
 #include <falaise/version.h>
+#include "DumbSimulation.h"
 
 //----------------------------------------------------------------------
 // HACKY DEMO IMPLEMENTATION
@@ -72,22 +73,10 @@ std::string FLSimulateUsageMsg() {
 int FLRunSimulation(size_t events, const std::string& sink, bool isVerbose) {
   datatools::logger::priority logPriority = isVerbose ? datatools::logger::PRIO_INFORMATION : datatools::logger::PRIO_WARNING;
 
-  DT_LOG_INFORMATION(logPriority,"simulation startup");
-  DT_LOG_INFORMATION(logPriority,"will process " << events << " events");
-
-  if (!sink.empty()) {
-    DT_LOG_INFORMATION(logPriority,"data sink   : " << sink);
-  } else {
-    DT_LOG_INFORMATION(logPriority,"null data sink");
-  }
-
-  // Event loop
-  for (size_t i(0); i < events; ++i) {
-    DT_LOG_INFORMATION(logPriority, "processed event " << i);
-  }
-
-  DT_LOG_INFORMATION(logPriority,"simulation shutdown");
-  return 0;
+  DumbSimulation dummy;
+  dummy.doConfigure(sink, events, logPriority);
+  int errCode = dummy.doSimulate();
+  return errCode;
 }
 
 //! Run the command line application logic
