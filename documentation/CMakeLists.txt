@@ -21,11 +21,20 @@
 # along with Falaise.  If not, see <http://www.gnu.org/licenses/>.
 #-----------------------------------------------------------------------
 
-
+#-----------------------------------------------------------------------
+# Core Doxygen Configuration
+#
 set(Falaise_DOXYFILE_IN  falaise_doxygen.conf.in)
-set(Falaise_DOXYFILE_OUT ${PROJECT_BINARY_DIR}/doc/falaise_doxygen.conf)
+set(Falaise_DOXYFILE_OUT ${PROJECT_BINARY_DIR}/documentation/falaise_doxygen.conf)
 set(Falaise_DOXYGEN_OUTPUT_DIR  ${Falaise_BUILDPRODUCT_DIR}/share/Falaise-${Falaise_VERSION}/Documentation/API)
 set(Falaise_DOXYGEN_OUTPUT_FILE ${Falaise_DOXYGEN_OUTPUT_DIR}/html/index.html)
+
+#-----------------------------------------------------------------------
+# Individual Documents
+#
+set(Falaise_MARKDOWN_DOCS
+  Mainpage.md
+  )
 
 #-----------------------------------------------------------------------
 # Build doxygen docs
@@ -37,7 +46,7 @@ add_custom_command(
   COMMAND ${CMAKE_COMMAND} -E make_directory ${Falaise_DOXYGEN_OUTPUT_DIR}
   COMMAND ${DOXYGEN_EXECUTABLE} ${Falaise_DOXYFILE_OUT}
   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-  DEPENDS Falaise ${Falaise_DOXYFILE_OUT}
+  DEPENDS Falaise ${Falaise_DOXYFILE_OUT} ${Falaise_MARKDOWN_DOCS}
   COMMENT "Doxygenating Falaise"
   )
 

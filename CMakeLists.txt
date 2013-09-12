@@ -68,6 +68,7 @@ endif()
 #-----------------------------------------------------------------------
 # Configure documentation generation, if required
 #
+set(Falaise_DOCEXPORT_DIR "${PROJECT_BINARY_DIR}/documentation")
 option(Falaise_BUILD_DOCS "Build documentation for Falaise" OFF)
 if(Falaise_BUILD_DOCS)
   # - For main HTML docs
