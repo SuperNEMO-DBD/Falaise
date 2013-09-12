@@ -66,6 +66,18 @@ if(Falaise_ENABLE_TESTING)
 endif()
 
 #-----------------------------------------------------------------------
+# Configure documentation generation, if required
+#
+option(Falaise_BUILD_DOCS "Build documentation for Falaise" OFF)
+if(Falaise_BUILD_DOCS)
+  # - For main HTML docs
+  find_package(Doxygen 1.8 REQUIRED)
+  # - For man pages, pandoc for now
+  #find_package(Pandoc 1.10 REQUIRED)
+  #find_package(<something to compress man?>)
+endif()
+
+#-----------------------------------------------------------------------
 # Configure/Build utilities as needed
 #
 option(Falaise_USE_SYSTEM_BAYEUX "Use system-installed Bayeux" OFF)
@@ -87,13 +99,17 @@ else()
   # - Set up so that Falaise will use the internal build
   set(Bayeux_INCLUDE_DIRS "${Falaise_BUILDPRODUCT_DIR}/include")
   set(Bayeux_LIBRARIES Bayeux)
+  set(Bayeux_DOXYGEN_TAGFILE)
 endif()
 
 
 #-----------------------------------------------------------------------
-# Build the subdirectories
+# Build the subdirectories as required
 #
 add_subdirectory(source)
+if(Falaise_BUILD_DOCS)
+  add_subdirectory(documentation)
+endif()
 
 #-----------------------------------------------------------------------
 # Package Sources and Binaries
