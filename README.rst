@@ -101,7 +101,11 @@ though support will be on a best effort basis.
    -  CMake 2.8.0 or higher: http://www.cmake.org
    -  C/C++ compiler supporting at least C++03 standard
       (GNU/Clang/Intel)
+
+- **Optional Software** (Required for documentation development) 
+
    -  Doxygen (for documentation development)
+   -  Pandoc (for man page generation)
 
 On Linux, you should install these through the package manager for your
 distribution. Some older Linux systems (SL/CentOS, especially on
@@ -138,7 +142,6 @@ libraries for easy use by Bayeux and clients of Bayeux. You can use this
 bundle, or, at your discretion, your own, or system, installs of these
 packages.
 
-
    
 Installing Falaise
 ==================
@@ -166,15 +169,35 @@ libraries and documents present therein. For example, you may do
 
     $ ./BuildProducts/bin/flreconstruct --help
 
-to run and get help on the ``flreconstruct`` application.
+to run and get help on the ``flreconstruct`` application. Documentation,
+when built, is stored in the ``BuildProducts/share`` subdirectory of
+your Falaise build directory. Doxygen documentation may be viewed immediately
+via the terminal by running, on OS X:
 
+.. code:: sh
+
+    $ open ./BuildProducts/share/Falaise-<VERSION>/Documentation/API/html/index.html
+
+where ``<VERSION>`` is the current Falaise version (simply use tab-complete
+if you are unsure of this)
+which should open a new tab in your browser populated with the documentation
+"home page". On Linux, you can generally do the same by running
+
+.. code:: sh
+
+    $ xdg-open ./BuildProducts/share/Falaise-<VERSION>/Documentation/API/html/index.html
+
+though ``xdg-open`` may not always be present (``gnome-open`` may be used
+instead, for example).
+    
 If you need to install Falaise, after building you can run
 
 .. code:: sh
 
     $ make install
 
-to install everything in a POSIX style hierarchy under the directory passed as `CMAKE_INSTALL_PREFIX`.
+to install everything in a standard POSIX style hierarchy under the directory 
+passed as ``CMAKE_INSTALL_PREFIX``.
 
 
 Troubleshooting
