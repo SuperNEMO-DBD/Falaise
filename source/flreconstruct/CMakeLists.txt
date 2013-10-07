@@ -25,7 +25,7 @@
 # - Bit hacky for now
 find_package(Boost REQUIRED program_options)
 include_directories(${Boost_INCLUDE_DIRS})
-
+include_directories(BEFORE ${Bayeux_INCLUDE_DIRS}) 
 include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
 
 #-----------------------------------------------------------------------
@@ -39,7 +39,7 @@ set(flreconstruct_SOURCES flreconstruct.cc DumbReconstruction.h)
 add_executable(flreconstruct ${flreconstruct_SOURCES})
 target_link_libraries(flreconstruct 
   Falaise
-  Bayeux 
+  ${Bayeux_LIBRARIES}
   ${Boost_program_options_LIBRARY}
   )
 

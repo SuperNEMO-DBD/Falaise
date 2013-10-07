@@ -102,7 +102,7 @@ else()
   add_subdirectory(utilities/flbayeux)
   
   # - Set up so that Falaise will use the internal build
-  set(Bayeux_INCLUDE_DIRS "${Falaise_BUILDPRODUCT_DIR}/include")
+  set(Bayeux_INCLUDE_DIRS "${Falaise_BUILDPRODUCT_DIR}/include" "${Falaise_BUILDPRODUCT_DIR}/include/bayeux")
   set(Bayeux_LIBRARIES Bayeux)
   set(Bayeux_DOXYGEN_TAGFILE)
 endif()

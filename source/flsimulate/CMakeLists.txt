@@ -26,7 +26,7 @@
 find_package(Boost REQUIRED program_options)
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
-
+include_directories(BEFORE ${Bayeux_INCLUDE_DIRS})
 #-----------------------------------------------------------------------
 # Declare sources
 #
@@ -38,7 +38,7 @@ set(flsimulate_SOURCES flsimulate.cc DumbSimulation.h)
 add_executable(flsimulate ${flsimulate_SOURCES})
 target_link_libraries(flsimulate 
   Falaise
-  Bayeux
+  ${Bayeux_LIBRARIES}
   ${Boost_program_options_LIBRARY}
   )
 
