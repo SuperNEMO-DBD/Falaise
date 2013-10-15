@@ -97,6 +97,7 @@ else()
   if(Falaise_ENABLE_TESTING)
     set(Bayeux_ENABLE_TESTING ON)
   endif()
+  set(Bayeux_WITH_GEANT4 ON)
 
   # - Build
   add_subdirectory(utilities/flbayeux)
@@ -104,6 +105,7 @@ else()
   # - Set up so that Falaise will use the internal build
   set(Bayeux_INCLUDE_DIRS "${Falaise_BUILDPRODUCT_DIR}/include" "${Falaise_BUILDPRODUCT_DIR}/include/bayeux")
   set(Bayeux_LIBRARIES Bayeux)
+  set(Bayeux_MCTOOLS_GEANT4_LIBRARY Bayeux_mctools_geant4)
   set(Bayeux_DOXYGEN_TAGFILE)
 endif()
 
