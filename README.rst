@@ -14,7 +14,7 @@ About Falaise
 
 Falaise provides the main computational environment for the simulation,
 processing and analysis of data for the SuperNEMO double beta decay search
-experiment. 
+experiment.
 
 The two main components are the applications
 
@@ -61,7 +61,7 @@ can be listed by doing:
 
 .. code:: sh
 
-    $ svn ls https://nemo.lpc-caen.in2p3.fr/svn/Falaise/tags 
+    $ svn ls https://nemo.lpc-caen.in2p3.fr/svn/Falaise/tags
 
 and checked out in similar fashion to the trunk. If you use a tag, you
 should always take the newest version. However, Falaise is developed with
@@ -102,7 +102,7 @@ though support will be on a best effort basis.
    -  C/C++ compiler supporting at least C++03 standard
       (GNU/Clang/Intel)
 
-- **Optional Software** (Required for documentation development) 
+- **Optional Software** (Required for documentation development)
 
    -  Doxygen (for documentation development)
    -  Pandoc (for man page generation)
@@ -142,7 +142,7 @@ libraries for easy use by Bayeux and clients of Bayeux. You can use this
 bundle, or, at your discretion, your own, or system, installs of these
 packages.
 
-   
+
 Installing Falaise
 ==================
 Falaise provides a CMake based build system. We'll assume for brevity
@@ -160,7 +160,7 @@ resides:
     $ cmake -DCMAKE_INSTALL_PREFIX=<where you want to install> -DCMAKE_PREFIX_PATH=<path to your Cadfael install> ..
     $ make
 
-Binaries and documentation will be output under a directory named 
+Binaries and documentation will be output under a directory named
 ``BuildProducts`` in the build directory. The layout of this file
 follows POSIX conventions, so you can find, **and use**, the binaries,
 libraries and documents present therein. For example, you may do
@@ -189,14 +189,14 @@ which should open a new tab in your browser populated with the documentation
 
 though ``xdg-open`` may not always be present (``gnome-open`` may be used
 instead, for example).
-    
+
 If you need to install Falaise, after building you can run
 
 .. code:: sh
 
     $ make install
 
-to install everything in a standard POSIX style hierarchy under the directory 
+to install everything in a standard POSIX style hierarchy under the directory
 passed as ``CMAKE_INSTALL_PREFIX``.
 
 

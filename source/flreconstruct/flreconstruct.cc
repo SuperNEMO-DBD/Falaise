@@ -1,6 +1,6 @@
 // flreconstruct - SuperNEMO raw data reconstruction application
 //
-// Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com> 
+// Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com>
 // Copyright (c) 2013 by The University of Warwick
 //
 // This file is part of Falaise.
@@ -25,7 +25,7 @@
 #include <bayeux/version.h>
 #include <bayeux/datatools/logger.h>
 
-// - Boost 
+// - Boost
 #include <boost/version.hpp>
 #include <boost/program_options.hpp>
 
@@ -48,7 +48,7 @@ void FLPrintVersion(std::ostream& os, bool isVerbose) {
         << "Copyright (C) 2013 SuperNEMO Collaboration\n\n"
         << "Falaise uses the following external libraries:\n"
         << "* Bayeux : " << bayeux::version::get_version() << "\n"
-        << "* Boost  : " << BOOST_VERSION 
+        << "* Boost  : " << BOOST_VERSION
         << "\n\n";
   }
 }
@@ -68,7 +68,7 @@ std::string FLReconstructUsageMsg() {
 }
 
 //! Process data from input file to output file
-int FLProcessData(const std::string& source, 
+int FLProcessData(const std::string& source,
                   const std::string& sink,
                   bool isVerbose) {
   datatools::logger::priority logPriority = isVerbose ? datatools::logger::PRIO_INFORMATION : datatools::logger::PRIO_WARNING;
@@ -98,7 +98,7 @@ int FLReconstructImpl(int argc, char *argv[]) {
       ;
 
   // - Parse and handle errors
-  bpo::variables_map vMap; 
+  bpo::variables_map vMap;
   try {
     bpo::store(bpo::parse_command_line(argc, argv, opDesc), vMap);
     bpo::notify(vMap);
@@ -126,7 +126,7 @@ int FLReconstructImpl(int argc, char *argv[]) {
   // Handle filenames, if any
   std::string inFile;
   std::string outFile;
- 
+
   if (vMap.count("input-file")) {
     inFile = vMap["input-file"].as<std::string>();
   }

@@ -8,7 +8,7 @@ Core Applications
 =================
 For guides and man pages for the Falaise tools, see the following pages:
 
-- [Falaise](md_Falaise.html "Falaise man page") man page overview of the toolkit. 
+- [Falaise](md_Falaise.html "Falaise man page") man page overview of the toolkit.
 
 User Guides
 ===========

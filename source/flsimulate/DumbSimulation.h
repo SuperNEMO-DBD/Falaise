@@ -1,6 +1,6 @@
 // DumbSimulation - Trivial simulation to demo structure
 //
-// Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com> 
+// Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com>
 // Copyright (c) 2013 by The University of Warwick
 //
 // This file is part of Falaise.
@@ -34,7 +34,7 @@ class DumbSimulation {
   DumbSimulation() {;}
 
   //! configure simulation
-  void doConfigure(const std::string& file, size_t n, 
+  void doConfigure(const std::string& file, size_t n,
                    datatools::logger::priority p) {
     fileName_ = file;
     eventsToGenerate_ = n;

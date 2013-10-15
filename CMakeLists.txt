@@ -79,7 +79,7 @@ if(Falaise_BUILD_DOCS)
   find_program(Pandoc_EXECUTABLE pandoc
     DOC "path to pandoc executable"
     )
-  set(Pandoc_FOUND ${Pandoc_EXECUTABLE})  
+  set(Pandoc_FOUND ${Pandoc_EXECUTABLE})
 endif()
 
 #-----------------------------------------------------------------------
@@ -100,7 +100,7 @@ else()
 
   # - Build
   add_subdirectory(utilities/flbayeux)
-  
+
   # - Set up so that Falaise will use the internal build
   set(Bayeux_INCLUDE_DIRS "${Falaise_BUILDPRODUCT_DIR}/include" "${Falaise_BUILDPRODUCT_DIR}/include/bayeux")
   set(Bayeux_LIBRARIES Bayeux)

@@ -21,7 +21,7 @@ class DriftModel
     double _a, _b, _c, _d;  // parameters. DocDB 786 page 2
     double _tdcResolution;  // we assume only ONE value for all TDCs ??
     double _delay;          // trigger delay time.
-    
+
 };
 
 #endif    /* DRIFTMODEL_HPP */

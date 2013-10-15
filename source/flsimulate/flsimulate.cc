@@ -1,6 +1,6 @@
 // flsimulate - SuperNEMO raw data reconstruction application
 //
-// Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com> 
+// Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com>
 // Copyright (c) 2013 by The University of Warwick
 //
 // This file is part of Falaise.
@@ -25,7 +25,7 @@
 #include <bayeux/version.h>
 #include <bayeux/datatools/logger.h>
 
-// - Boost 
+// - Boost
 #include <boost/version.hpp>
 #include <boost/program_options.hpp>
 
@@ -50,7 +50,7 @@ void FLPrintVersion(std::ostream& os, bool isVerbose) {
         << "* Falaise : " << falaise::version::get_version() << "\n"
         << "* Bayeux  : " << bayeux::version::get_version() << "\n"
         << "* Boost   : " << BOOST_VERSION << "\n"
-        << "* Geant4  : " << "10.x (eventually)" 
+        << "* Geant4  : " << "10.x (eventually)"
         << "\n\n";
   }
 }
@@ -87,17 +87,17 @@ int FLSimulateImpl(int argc, char *argv[]) {
       ("help", "print this message")
       ("version", "print version number")
       ("verbose,v", "increase verbosity of output")
-      ("number,n", 
+      ("number,n",
        bpo::value<size_t>()->default_value(1)->value_name("[events]"),
        "number of events to simulate")
-      ("output-file,o", 
+      ("output-file,o",
        bpo::value<std::string>()->required()->value_name("[file]"),
        "path to output file")
       ;
 
   //--------------------------
   // - Parse command line and handle errors
-  bpo::variables_map vMap; 
+  bpo::variables_map vMap;
   try {
     bpo::store(bpo::parse_command_line(argc, argv, opDesc), vMap);
     bpo::notify(vMap);

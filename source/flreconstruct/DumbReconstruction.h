@@ -1,6 +1,6 @@
 // DumbReconstruction - Trivial reconstruction to demo structure
 //
-// Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com> 
+// Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com>
 // Copyright (c) 2013 by The University of Warwick
 //
 // This file is part of Falaise.
@@ -63,7 +63,7 @@ class DumbReconstruction {
   }
 
   //!configure reconstruction chain
-  bool doConfigure(const std::string& source, 
+  bool doConfigure(const std::string& source,
                    const std::string& sink,
                    datatools::logger::priority p) {
     this->onConfigurationChange();
@@ -97,15 +97,15 @@ class DumbReconstruction {
 
     // Run work queue
     DT_LOG_INFORMATION(logLevel_, "starting work queue");
-    std::transform(inQueue, inQueueEnd, 
+    std::transform(inQueue, inQueueEnd,
                    outQueue,
                   // Don't worry about the boost bind, the important
-                  // thing is that here's where we put the pipeline object 
+                  // thing is that here's where we put the pipeline object
                    boost::bind(boost::ref(worker),_1)
                    );
     DT_LOG_INFORMATION(logLevel_, "work queue completed");
 
-    DT_LOG_INFORMATION(logLevel_, 
+    DT_LOG_INFORMATION(logLevel_,
                        "processed " << worker.events << " events");
     return 0;
   }

@@ -33,21 +33,21 @@ points:
 - Where an event processor/pipeline/queue is created used.
 
 The ``flreconstruct.cc`` file implements the main command line logic.
-The ``main`` function simply calls the ``FLReconstructImpl`` function 
-(later, this can become an object if needed) with the command line 
-arguments. This function parses the command line, extracting the data and 
-handling errors (it's the later that takes the large amount of code). 
-Once parsing is complete and successful, it hands over the extracted 
+The ``main`` function simply calls the ``FLReconstructImpl`` function
+(later, this can become an object if needed) with the command line
+arguments. This function parses the command line, extracting the data and
+handling errors (it's the later that takes the large amount of code).
+Once parsing is complete and successful, it hands over the extracted
 arguments to the ``FLProcessData``
-function. This creates an instance of ``DumbReconstruction``, configures 
-it with command line parameters, and then runs it. 
+function. This creates an instance of ``DumbReconstruction``, configures
+it with command line parameters, and then runs it.
 
 ``DumbReconstruction`` is implemented in ``DumbReconstruction.h``. Ignore
 everything apart from the ``DumbReconstruction::doReconstruction()``
 method. This does the following:
 
 - Create an reader object and event iterator
-  
+
   - **This is where Ray's reader can come in**
 
 - Create a writer object and event iterator
@@ -61,13 +61,13 @@ method. This does the following:
     a configuration file and loadable modules.
 
 - Plug these together using ``std::transform`` as a controller of sorts
-  
+
   - Read each Event from the Reader
-  
+
   - Hand over Event to Pipeline for processing
-  
+
   - Pipeline returns processed Event
-  
+
   - Reader takes processed Event
 
 ``DumbReconstruction`` models events as ``char`` but you can see from the

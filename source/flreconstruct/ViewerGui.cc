@@ -123,5 +123,5 @@ void ViewerGui::buildGUI()
 
    //+ ------- added by hand ----------
    copyButtons(fTextButton918, fTextButton919, fTextButton920);
-}  
+}
 //- 1 ----------- end of generated gui builder code -----------

@@ -36,7 +36,7 @@ set(flsimulate_SOURCES flsimulate.cc DumbSimulation.h)
 # Build App
 #
 add_executable(flsimulate ${flsimulate_SOURCES})
-target_link_libraries(flsimulate 
+target_link_libraries(flsimulate
   Falaise
   ${Bayeux_LIBRARIES}
   ${Boost_program_options_LIBRARY}
