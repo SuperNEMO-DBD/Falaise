@@ -50,12 +50,24 @@ set(Falaise_VERSION "${Falaise_VERSION_MAJOR}.${Falaise_VERSION_MINOR}.${Falaise
 # - SVN Versioning, if available
 set(Falaise_VERSION_REVISION 0)
 
+# - Standard UNIX Tool install paths, including relative paths for use
+# by applications requiring resources
+# Validate that certain paths are relative, otherwise relocation may fail
+include(GNUInstallDirs)
+foreach(_dir BINDIR LIBDIR INCLUDEDIR DATAROOTDIR)
+  if(IS_ABSOLUTE "${CMAKE_INSTALL_${_dir}}")
+    message(FATAL_ERROR "Absolute path for CMAKE_INSTALL_${_dir} not allowed")
+  endif()
+endforeach()
+
+file(RELATIVE_PATH Falaise_BINDIR_TO_RESOURCEDIR "${CMAKE_INSTALL_FULL_BINDIR}" "${CMAKE_INSTALL_FULL_DATAROOTDIR}/${PROJECT_NAME}")
+
 # - Configure output paths for products to give inplace build that roughly
 #   matches install layout.
 set(Falaise_BUILDPRODUCT_DIR "${PROJECT_BINARY_DIR}/BuildProducts")
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${Falaise_BUILDPRODUCT_DIR}/lib")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY  "${Falaise_BUILDPRODUCT_DIR}/bin")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${Falaise_BUILDPRODUCT_DIR}/lib")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY  "${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_BINDIR}")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}")
 
 #-----------------------------------------------------------------------
 # Configure testing if required

@@ -23,23 +23,41 @@
 #-----------------------------------------------------------------------
 # Configure application
 # - Bit hacky for now
-find_package(Boost REQUIRED program_options)
+find_package(Boost REQUIRED program_options filesystem system)
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(BEFORE ${Bayeux_INCLUDE_DIRS})
-#-----------------------------------------------------------------------
-# Declare sources
-#
-set(flsimulate_SOURCES flsimulate.cc DumbSimulation.h)
+include_directories(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
 
 #-----------------------------------------------------------------------
-# Build App
+# Build command line app
 #
-add_executable(flsimulate ${flsimulate_SOURCES})
+# - Generate application configuration file
+configure_file(FLSimulateConfig.h.in FLSimulateConfig.h @ONLY)
+
+# - Generate binreloc header/source with mangled names, ensuring first
+# character(s) are a valid for a C identifier
+string(RANDOM LENGTH 18 MANGLE_BINRELOC_MAIN)
+set(MANGLE_BINRELOC "MB${MANGLE_BINRELOC_MAIN}")
+configure_file(FLSimulateBinReloc.h.in FLSimulateBinReloc.h @ONLY)
+
+set(FLSIMULATE_SOURCES
+  flsimulatemain.cc
+  FLSimulateConfig.h
+  FLSimulateResources.h
+  FLSimulateResources.cc
+  FLSimulateBinReloc.h
+  FLSimulateBinReloc.c
+  )
+
+add_executable(flsimulate ${FLSIMULATE_SOURCES})
+set_target_properties(flsimulate PROPERTIES COMPILE_DEFINITIONS ENABLE_BINRELOC)
+
 target_link_libraries(flsimulate
   Falaise
   ${Bayeux_LIBRARIES}
-  ${Boost_program_options_LIBRARY}
+  ${Bayeux_MCTOOLS_GEANT4_LIBRARY}
+  ${Boost_LIBRARIES}
   )
 
 #-----------------------------------------------------------------------
