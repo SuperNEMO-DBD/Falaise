@@ -46,15 +46,5 @@ target_link_libraries(flreconstruct
 #-----------------------------------------------------------------------
 # Build Tests
 #
+add_subdirectory(CommissioningIO)
 
-set(falaise_io_SOURCES
-    DriftModel.cc
-    GeigerEvent.cc
-    RawGeigerHit.cc
-    rawkeys.cc
-    Unpack.cc
-    UnpackingErrors.cc
-)
-add_library(falaise_io STATIC ${falaise_io_SOURCES})
-add_executable(testCommissioningIO testCommissioningIO.cc)
-target_link_libraries(testCommissioningIO falaise_io)
