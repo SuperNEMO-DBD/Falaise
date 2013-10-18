@@ -1,5 +1,19 @@
-// flsimulatemain - Command line flsimulate application
-//
+//! \file    flsimulatemain.cc
+//! \brief   Main program for flsimulate command line application
+//! \details Configure, setup and run the Geant4 based simulation
+//!          of the SuperNEMO experiment. Configuration is performed
+//!          in two steps, a default and then user command line input.
+//!          Error handling is through exceptions, except at the top
+//!          level where standard error codes are used.
+//! \todo    Improve error handling, with more logical exceptions.
+//!          Exceptions are good, the problem is to condense them from
+//!          the various places they can come from into a system
+//!          understandable by the user when errors are reported.
+//!          In other words, we don't want the user to see a detailed
+//!          low level report, rather a clean summary (e.g. "config
+//!          failed"), plus any further detail needed for them to report
+//!          the issue. This is also why we try to stop exceptions
+//!          propgating into main() so that these reports can be generated.
 // Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com>
 // Copyright (c) 2013 by The University of Warwick
 //
@@ -33,20 +47,16 @@ namespace bpo = boost::program_options;
 
 // This Project
 #include "falaise/version.h"
+#include "falaise/exitcodes.h"
 #include "FLSimulateResources.h"
 
 //----------------------------------------------------------------------
 // IMPLEMENTATION DETAILS
 //----------------------------------------------------------------------
-//! Commonly used exit status codes
-//! Based on the definitions in the 4.3BSD <sysexits.h> header file
-//! \todo Should check and use sysexits.h if available
-enum FLExitCode {
-  EXIT_HELP        = -1,  //! Help reported, not considered a failure
-  EXIT_OK          = 0,  //! Successful termination
-  EXIT_USAGE       = 64, //! Command line usage error
-  EXIT_UNAVAILABLE = 69, //! Service unavailable
-};
+//----------------------------------------------------------------------
+//! Exceptions for dialog
+class FLDialogHelpRequested : public std::exception {};
+class FLDialogOptionsError : public std::exception {};
 
 //! Handle printing of version information to given ostream
 void do_version(std::ostream& os, bool isVerbose) {
@@ -69,25 +79,13 @@ void do_help(const bpo::options_description& od) {
   std::cout << "Usage:\n"
             << "  flsimulate [options]\n"
             << "Options\n"
-            << od;
+            << od
+            << "\n";
 }
 
-//! Parse command line arguments to configure the simulation parameters
-FLExitCode do_configure(int argc, char *argv[], mctools::g4::manager_parameters& params) {
-  try {
-    FLSimulate::initResources();
-    params.set_defaults();
-    params.logging = "error";
-    params.manager_config_filename = FLSimulate::getResourceDir() + "/foo.txt";
-  } catch (std::exception& e) {
-    std::cerr << "[FLSimulate::do_configure] Unable to configure simulation"
-              << std::endl
-              << e.what() << std::endl;
-    return EXIT_UNAVAILABLE;
-  }
-
-
-  // Bind command line parser to exposed
+//! Handle command line argument dialog
+void do_cldialog(int argc, char *argv[], mctools::g4::manager_parameters& params) {
+  // Bind command line parser to exposed parameters
   namespace bpo = boost::program_options;
   bpo::options_description optDesc;
   optDesc.add_options()
@@ -111,11 +109,11 @@ FLExitCode do_configure(int argc, char *argv[], mctools::g4::manager_parameters&
     // We need to handle help/version even if required_option thrown
     if (!vMap.count("help") && !vMap.count("version")) {
       std::cerr << "[OptionsException] " << e.what() << std::endl;
-      return EXIT_USAGE;
+      throw FLDialogOptionsError();
     }
   } catch (const std::exception& e) {
     std::cerr << "[OptionsException] " << e.what() << std::endl;
-    return EXIT_USAGE;
+    throw FLDialogOptionsError();
   }
 
   // Handle verbose, which can't be bound yet
@@ -124,42 +122,73 @@ FLExitCode do_configure(int argc, char *argv[], mctools::g4::manager_parameters&
   // Handle any non-bound options
   if (vMap.count("help")) {
     do_help(optDesc);
-    return EXIT_HELP;
+    throw FLDialogHelpRequested();
   }
 
   if (vMap.count("version")) {
     do_version(std::cout, true);
-    return EXIT_HELP;
+    throw FLDialogHelpRequested();
   }
-
-  return EXIT_OK;
 }
 
-//! Perform simulation using command line args as given
-FLExitCode do_flsimulate(int argc, char *argv[]) {
-  mctools::g4::manager_parameters flSimParameters;
-  FLExitCode confStatus = do_configure(argc, argv, flSimParameters);
-  switch (confStatus) {
-    case EXIT_HELP:
-      return EXIT_OK;
-    case EXIT_OK:
-      break;
-    default:
-      return confStatus;
+//----------------------------------------------------------------------
+//! Exceptions for configuration
+class FLConfigDefaultError : public std::exception {};
+class FLConfigHelpHandled : public std::exception {};
+class FLConfigUserError : public std::exception {};
+
+//! Parse command line arguments to configure the simulation parameters
+void do_configure(int argc, char *argv[], mctools::g4::manager_parameters& params) {
+  // - Default Config
+  try {
+    FLSimulate::initResources();
+    params.set_defaults();
+    params.logging = "error";
+    params.manager_config_filename = FLSimulate::getResourceDir() + "/foo.txt";
+  } catch (std::exception& e) {
+    throw FLConfigDefaultError();
   }
 
+  // - Possible ".Falaise/flsimulate.rc" Config
+
+  // - CL Dialog Config
+  try {
+    do_cldialog(argc, argv, params);
+  } catch (FLDialogHelpRequested& e) {
+    throw FLConfigHelpHandled();
+  } catch (FLDialogOptionsError& e) {
+    throw FLConfigUserError();
+  }
+}
+
+//----------------------------------------------------------------------
+//! Perform simulation using command line args as given
+falaise::exit_code do_flsimulate(int argc, char *argv[]) {
+  // - Configure
+  mctools::g4::manager_parameters flSimParameters;
+  try {
+    do_configure(argc, argv, flSimParameters);
+  } catch (FLConfigDefaultError& e) {
+    std::cerr << "Unable to configure core of flsimulate" << std::endl;
+    return falaise::EXIT_UNAVAILABLE;
+  } catch (FLConfigHelpHandled& e) {
+    return falaise::EXIT_OK;
+  } catch (FLConfigUserError& e) {
+    return falaise::EXIT_USAGE;
+  }
+
+  // - Run
   try {
     mctools::g4::manager flSimulation;
     mctools::g4::manager_parameters::setup(flSimParameters, flSimulation);
     flSimulation.run_simulation();
   } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
-    return EXIT_UNAVAILABLE;
+    return falaise::EXIT_UNAVAILABLE;
   }
 
-  return EXIT_OK;
+  return falaise::EXIT_OK;
 }
-
 
 //----------------------------------------------------------------------
 // MAIN PROGRAM
@@ -172,16 +201,10 @@ int main(int argc, char *argv[]) {
   // - Do the simulation.
   // Ideally, exceptions SHOULD NOT propagate out of this  - the error
   // code should be enough.
-  FLExitCode ret = do_flsimulate(argc, argv);
+  falaise::exit_code ret = do_flsimulate(argc, argv);
 
   // - Needed, but nasty
   DATATOOLS_FINI()
   return ret;
 }
-
-
-
-
-
-
 
