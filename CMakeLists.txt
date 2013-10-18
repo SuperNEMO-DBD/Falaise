@@ -60,7 +60,7 @@ foreach(_dir BINDIR LIBDIR INCLUDEDIR DATAROOTDIR)
   endif()
 endforeach()
 
-file(RELATIVE_PATH Falaise_BINDIR_TO_RESOURCEDIR "${CMAKE_INSTALL_FULL_BINDIR}" "${CMAKE_INSTALL_FULL_DATAROOTDIR}/${PROJECT_NAME}")
+file(RELATIVE_PATH Falaise_BINDIR_TO_RESOURCEDIR "${CMAKE_INSTALL_FULL_BINDIR}" "${CMAKE_INSTALL_FULL_DATAROOTDIR}/${PROJECT_NAME}-${${PROJECT_NAME}_VERSION}")
 
 # - Configure output paths for products to give inplace build that roughly
 #   matches install layout.
