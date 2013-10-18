@@ -23,14 +23,20 @@
 #-----------------------------------------------------------------------
 # Configure library
 #
-configure_file(version.h.in ${Falaise_BUILDPRODUCT_DIR}/include/falaise/version.h)
+set(FalaiseLibrary_HEADERS
+  exitcodes.h
+  version.h.in
+  )
+
+# - Publish headers
+foreach(_hdrin ${FalaiseLibrary_HEADERS})
+  string(REGEX REPLACE "\\.in$" "" _hdrout "${_hdrin}")
+  configure_file(${_hdrin} ${Falaise_BUILDPRODUCT_DIR}/include/falaise/${_hdrout} @ONLY)
+endforeach()
 
 #-----------------------------------------------------------------------
 # Declare sources
 #
-set(FalaiseLibrary_HEADERS
-  ${Falaise_BUILDPRODUCT_DIR}/include/falaise/version.h
-  )
 set(FalaiseLibrary_SOURCES
   version.cc
   )
