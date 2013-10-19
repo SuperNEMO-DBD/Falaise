@@ -1,0 +1,241 @@
+# -*- mode: conf-unix; -*-
+# List of geometry ID categories/types (datatools::multi_properties):
+
+#@description List of geometry ID categories/types for SuperNEMO tracker commissioning setup
+#@key_label   "category"
+#@meta_label  "type"
+
+###################################
+# Numbering scheme for top volume #
+###################################
+
+###########################
+[category="world" type="0"]
+
+#@config This is the mandatory category that addresses top volumes (Geant4 idiom: 'world')
+
+#@description The world number of a 'world category' volume (0 is the default)
+addresses : string[1] = "world"
+
+# Note: There is only one 'world' volume supported by geomtools for now...
+#       and no support for parallel universes so far.
+
+
+##############################################
+# Numbering scheme for the experimental area #
+##############################################
+
+#############################
+[category="hall"  type="100"]
+
+#@config This category addresses a hall where some experimental setup is installed
+
+#@description The hall number of a 'hall category' volume
+addresses : string[1] = "hall"
+
+# Note: The hall number is at user discretion (0 is the default for simplicity)
+
+
+#############################################
+# Numbering scheme for the SuperNEMO module #
+#############################################
+
+###############################
+[category="module" type="1000"]
+
+#@config This category addresses a SuperNEMO detector module
+
+#@description The module number of a SuperNEMO detector module
+addresses : string[1] = "module"
+
+# Note: Only one SuperNEMO module is forseen for now: the so-called
+#      'demonstrator module' with module number 0)
+
+
+################################################
+# Numbering scheme for the muon trigger plates #
+################################################
+
+###################################
+[category="mu_trigger" type="1300"]
+
+#@config This category addresses a muon trigger scintillator plate
+
+#@description The position index locate the plate with regards to the C0-module
+addresses : string[1] = "position"
+
+# Note: The C0-module is sandwiched between two muon trigger plates.
+#       Convention should be:
+#       - position=0 for the bottom plate
+#       - position=1 for the top plate
+
+
+##############################################
+# Numbering scheme for the tracker submodule #
+##############################################
+
+##########################################
+[category="tracker_submodule" type="1200"]
+
+#@config This category addresses a tracker submodule
+
+#@description The tracker submodule address extends the module address
+extends : string    = "module"
+
+#@description The side number of the tracker submodule within its module
+by      : string[1] = "side"
+
+# Note: There is two tracker submodule per SuperNEMO module.
+#       Convention is:
+#       - side=0 for the X<0 submodule (France)
+#       - side=1 for the X>0 submodule (Italy)
+#
+
+##########################################
+[category="tracker_volume"    type="1201"]
+
+#@config This category addresses the mother tracking volume within a tracker submodule
+
+#@description The tracking volume address matches its mother tracker submodule address
+inherits : string   = "tracker_submodule"
+
+
+##########################################
+[category="tracker_layer"     type="1202"]
+
+#@config This category addresses a tracking layer within a tracking volume
+
+#@description The tracker layer address extends the tracking volume address
+extends : string    = "tracker_volume"
+
+#@description The layer number of the tracker submodule within its module
+by      : string[1] = "layer"
+
+
+##########################################
+[category="drift_cell"        type="1203"]
+
+#@config This category addresses a drift cell in a tracking layer
+
+#@description The drift cell address extends the layer address
+extends : string    = "tracker_layer"
+
+#@description The row number of the cell within its layer
+by      : string[1] = "row"
+
+
+##########################################
+[category="drift_cell_core"   type="1204"]
+
+#@config This category addresses the core tracking volume of a drift cell
+
+#@description The drift cell core volume address matches its mother drift cell address
+inherits : string   = "drift_cell"
+
+
+###################################################
+[category="drift_cell_anodic_wire"     type="1210"]
+
+#@config This category addresses the anodic wire within a drift cell
+
+#@description The anodic wire address matches its mother drift cell core address
+
+inherits : string   = "drift_cell_core"
+
+
+###################################################
+[category="drift_cell_cathodic_ring"   type="1211"]
+
+#@config This category addresses a cathodic ring within a drift cell
+
+extends : string    = "drift_cell_core"
+
+#@description The ring number of a cathodic ring within its cell
+by      : string[1] = "ring"
+
+
+###################################################
+[category="drift_cell_base"            type="1208"]
+
+#@config This category addresses a base within a drift cell
+
+extends : string    = "drift_cell_core"
+
+#@description The base number of a base within its cell
+by      : string[1] = "base"
+
+
+###################################################
+[category="drift_cell_field_wires_set" type="1212"]
+
+#@config This category addresses a set of (3) field wires around a drift cell
+
+extends : string    = "drift_cell"
+
+#@description The set number of a set of field wires surrounding a cell
+by      : string[1] = "set"
+
+
+###################################################
+[category="drift_cell_field_wire"      type="1207"]
+
+#@config This category addresses a  field wire within a set of field wires
+
+extends : string    = "drift_cell_field_wires_set"
+
+#@description The wire number of a field wire within its set
+by      : string[1] = "wire"
+
+
+###############################################
+# Numbering scheme for the X-wall calorimeter #
+###############################################
+
+# [category="xcalo_light_wall" type="1234"]
+# extends : string    = "tracker_submodule"
+# by      : string[1] = "wall"
+
+# [category="xcalo_light_column" type="1230"]
+# extends : string    = "xcalo_light_wall"
+# by      : string[1] = "column"
+
+# [category="xcalo_light_line"   type="1231"]
+# extends : string    = "xcalo_light_column"
+# by      : string[1] = "row"
+
+# [category="xcalo_block"        type="1232"]
+# inherits : string   = "xcalo_light_line"
+
+# [category="xcalo_wrapper"      type="1233"]
+# inherits : string   = "xcalo_light_line"
+
+
+####################################################
+#  Numbering scheme for the gamma veto calorimeter #
+####################################################
+
+# [category="gveto_light_row"  type="1250"]
+# extends : string    = "tracker_submodule"
+# by      : string[1] = "wall"
+
+# [category="gveto_light_line" type="1251"]
+# extends : string    = "gveto_light_row"
+# by      : string[1] = "column"
+
+# [category="gveto_block"      type="1252"]
+# inherits : string   = "gveto_light_line"
+
+# [category="gveto_wrapper"    type="1253"]
+# inherits : string   = "gveto_light_line"
+
+
+#################
+# Miscellaneous #
+#################
+
+[category="gas_seal_foil" type="1400"]
+extends : string    = "module"
+by      : string[2] = "side" "foil"
+
+
+# end
