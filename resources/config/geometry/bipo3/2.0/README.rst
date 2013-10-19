@@ -33,6 +33,7 @@ Files:
    setup,
  * Files  dedicated   to  the  building  of   *geometry  models*  (ala
    Geant4/GDML logical volume factories):
+
    * ``bipo3.geom``:
    * ``calibration_source.geom``:
    * ``optical_module.geom``: use the ``snemo::geometry::calo_tapered_scin_box_model``
