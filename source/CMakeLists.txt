@@ -25,11 +25,17 @@
 # Core configuration
 #
 include_directories(${Falaise_BUILDPRODUCT_DIR}/include)
-
+if(Falaise_USE_SYSTEM_BAYEUX)
+  include_directories(${Bayeux_INCLUDE_DIRS})
+endif()
 #-----------------------------------------------------------------------
 # Library
 #
 add_subdirectory(falaise)
+
+# Modules
+# - Geometry
+add_subdirectory(flsngeometry)
 
 #-----------------------------------------------------------------------
 # Apps
@@ -54,4 +60,3 @@ if(Pandoc_FOUND)
     )
   add_custom_target(falaise_man ALL DEPENDS ${Falaise_MANPAGE_OUT})
 endif()
-

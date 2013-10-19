@@ -41,12 +41,13 @@ namespace bpo = boost::program_options;
 
 // - Bayeux
 #include "bayeux/version.h"
-#include "bayeux/datatools/datatools.h"
+#include "bayeux/bayeux.h"
 #include "bayeux/mctools/g4/manager.h"
 #include "bayeux/mctools/g4/manager_parameters.h"
 
 // This Project
 #include "falaise/version.h"
+#include "falaise/falaise.h"
 #include "falaise/exitcodes.h"
 #include "FLSimulateResources.h"
 
@@ -194,9 +195,8 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
 // MAIN PROGRAM
 //----------------------------------------------------------------------
 int main(int argc, char *argv[]) {
-  // - Needed, but nasty, and DON'T let datatools interfere with the
-  // command line args
-  DATATOOLS_INIT_MAIN(0, 0);
+  // - Needed, but nasty
+  FALAISE_INIT();
 
   // - Do the simulation.
   // Ideally, exceptions SHOULD NOT propagate out of this  - the error
@@ -204,7 +204,6 @@ int main(int argc, char *argv[]) {
   falaise::exit_code ret = do_flsimulate(argc, argv);
 
   // - Needed, but nasty
-  DATATOOLS_FINI()
+  FALAISE_FINI();
   return ret;
 }
-

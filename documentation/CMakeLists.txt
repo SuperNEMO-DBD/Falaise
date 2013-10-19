@@ -26,7 +26,7 @@
 #
 set(Falaise_DOXYFILE_IN  falaise_doxygen.conf.in)
 set(Falaise_DOXYFILE_OUT ${PROJECT_BINARY_DIR}/documentation/falaise_doxygen.conf)
-set(Falaise_DOXYGEN_OUTPUT_DIR  ${Falaise_BUILDPRODUCT_DIR}/share/Falaise-${Falaise_VERSION}/Documentation/API)
+set(Falaise_DOXYGEN_OUTPUT_DIR  ${Falaise_DATAROOTDIR}/Documentation/API)
 set(Falaise_DOXYGEN_OUTPUT_FILE ${Falaise_DOXYGEN_OUTPUT_DIR}/html/index.html)
 
 #-----------------------------------------------------------------------
@@ -51,4 +51,3 @@ add_custom_command(
   )
 
 add_custom_target(falaise_docs ALL DEPENDS ${Falaise_DOXYGEN_OUTPUT_FILE})
-

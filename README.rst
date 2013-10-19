@@ -2,7 +2,7 @@
 Falaise C++ Library for the SuperNEMO experiment
 ================================================
 
-:Authors: Ben Morgan, François Mauger; Xavier Garrido
+:Authors: Ben Morgan, François Mauger, Xavier Garrido
 :Date:    Today
 
 .. contents::
@@ -30,7 +30,7 @@ TODO : other apps and APIs.
 Naming
 ------
 Falaise is named thus because Falaise_ is the town in Normandy where William
-the Conqueror was born.
+the Conqueror was born. Note this has nothing to do with SuperNEMO software!
 
 .. _Falaise: http://en.wikipedia.org/wiki/Falaise,_Calvados
 
@@ -129,7 +129,7 @@ clicking on the Downloads tab, and then installing Command Line Tools.
 -  **Core Libraries Required**
 
    -  Boost 1.53.0 or higher: http://www.boost.org
-       - with serialization, filesystem, system libraries.
+       - with serialization, filesystem, system... libraries.
    -  Camp 0.7.1 : https://github.com/tegesoft/camp
    -  GSL 1.15 or higher: http://www.gnu.org/s/gsl
    -  CLHEP 2.1.3.2 or higher: http://proj-clhep.web.cern.ch
@@ -213,5 +213,3 @@ Developing Falaise
 ==================
 
 To be done.
-
-

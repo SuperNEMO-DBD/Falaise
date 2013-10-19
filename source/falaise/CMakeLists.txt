@@ -23,10 +23,16 @@
 #-----------------------------------------------------------------------
 # Configure library
 #
+
 set(FalaiseLibrary_HEADERS
+  falaise.h
+  resource.h
   exitcodes.h
   version.h.in
   )
+
+message(STATUS "CMAKE_CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}")
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
 
 # - Publish headers
 foreach(_hdrin ${FalaiseLibrary_HEADERS})
@@ -37,8 +43,16 @@ endforeach()
 #-----------------------------------------------------------------------
 # Declare sources
 #
+
+# - configure falaise.cc
+configure_file(falaise.cc.in ${Falaise_BUILDPRODUCT_DIR}/src/falaise.cc)
+# - configure resources.cc
+configure_file(resource.cc.in ${Falaise_BUILDPRODUCT_DIR}/src/resource.cc)
+
 set(FalaiseLibrary_SOURCES
   version.cc
+  ${Falaise_BUILDPRODUCT_DIR}/src/falaise.cc
+  ${Falaise_BUILDPRODUCT_DIR}/src/resource.cc
   )
 
 #-----------------------------------------------------------------------
@@ -49,4 +63,3 @@ add_library(Falaise SHARED ${FalaiseLibrary_HEADERS} ${FalaiseLibrary_SOURCES})
 #-----------------------------------------------------------------------
 # Build Tests
 #
-
