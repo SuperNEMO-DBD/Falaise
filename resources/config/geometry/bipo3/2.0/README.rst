@@ -71,6 +71,11 @@ Check the geometry:
           --datatools::resource_path "falaise@$(pwd)/BuildProducts/share/Falaise-1.0.0/resources" \
           --load-dll Falaise_sngeometry \
           --manager-config "@falaise:config/geometry/bipo3/2.0/manager.conf"
+      ...
+      geomtools> help
+      ...
+      geomtools> display --no-labels --visu-view-3d --output bipo3-2.0.jpeg
+      geomtools> quit
 
      where:
 
