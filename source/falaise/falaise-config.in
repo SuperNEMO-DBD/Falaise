@@ -38,7 +38,7 @@ falaise_doc_dir="${falaise_root}/@CMAKE_INSTALL_DATAROOTDIR@/Documentation"
 
 falaise_version="@Falaise_VERSION@"
 
-falaise_submodules="Falaise_sngeometry;Falaise_sngenbb"
+falaise_submodules="@Falaise_SUBMODULES@"
 
 falaise_has_system_bayeux=@Falaise_USE_SYSTEM_BAYEUX@
 
@@ -46,9 +46,16 @@ falaise_enable_testing=@Falaise_ENABLE_TESTING@
 
 falaise_with_docs=@Falaise_BUILD_DOCS@
 
-falaise_has_sngeometry=1
-
+falaise_has_sngeometry=0
+echo ${falaise_submodules} | tr ';' '\n' | grep sngeometry > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    falaise_has_sngeometry=1
+fi
 falaise_has_sngenbb=1
+echo ${falaise_submodules} | tr ';' '\n' | grep sngenbb > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    falaise_has_sngenbb=1
+fi
 
 function print_help ()
 {

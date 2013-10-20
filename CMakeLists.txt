@@ -75,6 +75,11 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_
 # Configure testing if required
 #
 option(Falaise_ENABLE_TESTING "Build unit testing system for Falaise" OFF)
+if (Falaise_ENABLE_TESTING)
+  set(Falaise_ENABLE_TESTING 1)
+else()
+  set(Falaise_ENABLE_TESTING 0)
+endif()
 if(Falaise_ENABLE_TESTING)
   enable_testing()
 endif()
@@ -84,6 +89,11 @@ endif()
 #
 set(Falaise_DOCEXPORT_DIR "${PROJECT_BINARY_DIR}/documentation")
 option(Falaise_BUILD_DOCS "Build documentation for Falaise" OFF)
+if (Falaise_BUILD_DOCS)
+  set(Falaise_BUILD_DOCS 1)
+else()
+  set(Falaise_BUILD_DOCS 0)
+endif()
 if(Falaise_BUILD_DOCS)
   # - For main HTML docs
   find_package(Doxygen 1.8 REQUIRED)
@@ -100,6 +110,11 @@ endif()
 # Configure/Build utilities as needed
 #
 option(Falaise_USE_SYSTEM_BAYEUX "Use system-installed Bayeux" OFF)
+if (Falaise_USE_SYSTEM_BAYEUX)
+  set(Falaise_USE_SYSTEM_BAYEUX 1)
+else()
+  set(Falaise_USE_SYSTEM_BAYEUX 0)
+endif()
 mark_as_advanced(Falaise_USE_SYSTEM_BAYEUX)
 
 if(Falaise_USE_SYSTEM_BAYEUX)
