@@ -131,7 +131,6 @@ if(Falaise_BUILD_DOCS)
   add_subdirectory(documentation)
 endif()
 
-
 #-----------------------------------------------------------------------
 # Resource installation
 #
