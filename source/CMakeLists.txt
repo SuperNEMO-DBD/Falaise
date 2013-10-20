@@ -36,6 +36,8 @@ add_subdirectory(falaise)
 # Modules
 # - Geometry
 add_subdirectory(flsngeometry)
+# - Primary particle generation
+add_subdirectory(flsngenbb)
 
 #-----------------------------------------------------------------------
 # Apps
