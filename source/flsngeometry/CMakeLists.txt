@@ -1,4 +1,4 @@
-# - CMake build script for Falaise library
+# - CMake build script for Falaise sngeometry library
 
 #-----------------------------------------------------------------------
 # Copyright 2013 François Mauger <mauger@lpccaen.in2p3.fr>

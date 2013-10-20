@@ -26,6 +26,7 @@
 #include <exception>
 #include <algorithm>
 
+#include <bayeux/bayeux.h>
 #include <datatools/properties.h>
 #include <datatools/utils.h>
 #include <datatools/ioutils.h>

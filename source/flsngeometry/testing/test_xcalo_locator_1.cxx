@@ -30,6 +30,7 @@
 
 #include <boost/foreach.hpp>
 
+#include <bayeux/bayeux.h>
 #include <datatools/properties.h>
 #include <datatools/utils.h>
 #include <datatools/ioutils.h>
