@@ -28,8 +28,8 @@ Files:
    list  of resource  files for  the  CMake build  system through  the
    ``_falaise_list_of_resources_files`` variable. It  must be included
    in the  main Falaise  CMake script.   This file  is rebuilt  by the
-   ``_make_list_of_resource_files`` script each time there is it needed
-   (adding or removing files): ::
+   ``_make_list_of_resource_files`` script each time this is it needed
+   during the development cycle (adding or removing files): ::
 
     $ ./_make_list_of_resource_files
     $ ls -1 _resources.cmake
