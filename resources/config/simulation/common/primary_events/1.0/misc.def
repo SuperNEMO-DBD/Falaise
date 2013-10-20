@@ -16,7 +16,7 @@ particle_name : string = "electron"
 mode          : string = "monokinetic"
 
 #@description Flag to randomize the direction of the emitted particle (in 4xPi)
-randomized_direction : boolean = 0
+randomized_direction : boolean = 1
 
 ### Only for "monokinetic" mode:
 
@@ -38,7 +38,7 @@ particle_name : string = "electron"
 mode          : string = "monokinetic"
 
 #@description Flag to randomize the direction of the emitted particle (in 4xPi)
-randomized_direction : boolean = 0
+randomized_direction : boolean = 1
 
 ### Only for "monokinetic" mode:
 
@@ -60,7 +60,7 @@ particle_name : string = "electron"
 mode          : string = "monokinetic"
 
 #@description Flag to randomize the direction of the emitted particle (in 4xPi)
-randomized_direction : boolean = 0
+randomized_direction : boolean = 1
 
 ### Only for "monokinetic" mode:
 
@@ -82,7 +82,7 @@ particle_name : string = "electron"
 mode          : string = "monokinetic"
 
 #@description Flag to randomize the direction of the emitted particle (in 4xPi)
-randomized_direction : boolean = 0
+randomized_direction : boolean = 1
 
 ### Only for "monokinetic" mode:
 
@@ -104,7 +104,7 @@ particle_name : string = "electron"
 mode          : string = "monokinetic"
 
 #@description Flag to randomize the direction of the emitted particle (in 4xPi)
-randomized_direction : boolean = 0
+randomized_direction : boolean = 1
 
 ### Only for "monokinetic" mode:
 
@@ -126,7 +126,7 @@ particle_name : string = "electron"
 mode          : string = "monokinetic"
 
 #@description Flag to randomize the direction of the emitted particle (in 4xPi)
-randomized_direction : boolean = 0
+randomized_direction : boolean = 1
 
 ### Only for "monokinetic" mode:
 
@@ -148,7 +148,7 @@ particle_name : string = "electron"
 mode          : string = "monokinetic"
 
 #@description Flag to randomize the direction of the emitted particle (in 4xPi)
-randomized_direction : boolean = 0
+randomized_direction : boolean = 1
 
 ### Only for "monokinetic" mode:
 
@@ -170,7 +170,7 @@ particle_name : string = "electron"
 mode          : string = "monokinetic"
 
 #@description Flag to randomize the direction of the emitted particle (in 4xPi)
-randomized_direction : boolean = 0
+randomized_direction : boolean = 1
 
 ### Only for "monokinetic" mode:
 
@@ -192,7 +192,7 @@ particle_name : string = "electron"
 mode          : string = "energy_range"
 
 #@description Flag to randomize the direction of the emitted particle (in 4xPi)
-randomized_direction : boolean = 0
+randomized_direction : boolean = 1
 
 ### Only for "energy_range" mode:
 
@@ -217,7 +217,7 @@ particle_name : string = "gamma"
 mode          : string = "monokinetic"
 
 #@description Flag to randomize the direction of the emitted particle (in 4xPi)
-randomized_direction : boolean = 0
+randomized_direction : boolean = 1
 
 ### Only for "monokinetic" mode:
 
@@ -239,7 +239,7 @@ particle_name : string = "gamma"
 mode          : string = "monokinetic"
 
 #@description Flag to randomize the direction of the emitted particle (in 4xPi)
-randomized_direction : boolean = 0
+randomized_direction : boolean = 1
 
 ### Only for "monokinetic" mode:
 
@@ -261,7 +261,7 @@ particle_name : string = "gamma"
 mode          : string = "monokinetic"
 
 #@description Flag to randomize the direction of the emitted particle (in 4xPi)
-randomized_direction : boolean = 0
+randomized_direction : boolean = 1
 
 ### Only for "monokinetic" mode:
 
@@ -283,7 +283,7 @@ particle_name : string = "gamma"
 mode          : string = "monokinetic"
 
 #@description Flag to randomize the direction of the emitted particle (in 4xPi)
-randomized_direction : boolean = 0
+randomized_direction : boolean = 1
 
 ### Only for "monokinetic" mode:
 
@@ -305,7 +305,7 @@ particle_name : string = "gamma"
 mode          : string = "monokinetic"
 
 #@description Flag to randomize the direction of the emitted particle (in 4xPi)
-randomized_direction : boolean = 0
+randomized_direction : boolean = 1
 
 ### Only for "monokinetic" mode:
 
@@ -327,7 +327,7 @@ particle_name : string = "gamma"
 mode          : string = "monokinetic"
 
 #@description Flag to randomize the direction of the emitted particle (in 4xPi)
-randomized_direction : boolean = 0
+randomized_direction : boolean = 1
 
 ### Only for "monokinetic" mode:
 
@@ -349,7 +349,7 @@ particle_name : string = "gamma"
 mode          : string = "monokinetic"
 
 #@description Flag to randomize the direction of the emitted particle (in 4xPi)
-randomized_direction : boolean = 0
+randomized_direction : boolean = 1
 
 ### Only for "monokinetic" mode:
 
