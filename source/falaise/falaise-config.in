@@ -1,0 +1,247 @@
+#!/usr/bin/env bash
+# falaise-config
+# Author: F. Mauger <mauger@lpccaen.in2p3.fr>
+
+script_name="falaise-config"
+opwd=$(pwd)
+help=0
+debug=0
+
+function my_exit()
+{
+    cd ${opwd}
+    exit $1
+}
+
+falaise_system="@CMAKE_SYSTEM_NAME@-@CMAKE_SYSTEM_PROCESSOR@"
+
+falaise_root="@CMAKE_INSTALL_PREFIX@"
+# Future: support for relocatable Falaise:
+# which realpath > /dev/null 2>&1
+# if [ $? -eq 0 ]; then
+#     falaise_root="$(realpath $0)"
+#     ...
+# fi
+falaise_root="@Falaise_BUILDPRODUCT_DIR@"
+
+falaise_bin_dir="${falaise_root}/bin"
+
+falaise_include_dir="${falaise_root}/include"
+
+falaise_lib_dir="${falaise_root}/lib"
+
+falaise_cmake_config_dir="${falaise_root}/lib/cmake/Falaise-@Falaise_VERSION@"
+
+falaise_data_dir="${falaise_root}/@CMAKE_INSTALL_DATAROOTDIR@"
+
+falaise_doc_dir="${falaise_root}/@CMAKE_INSTALL_DATAROOTDIR@/Documentation"
+
+falaise_version="@Falaise_VERSION@"
+
+falaise_submodules="Falaise_sngeometry;Falaise_sngenbb"
+
+falaise_has_system_bayeux=@Falaise_USE_SYSTEM_BAYEUX@
+
+falaise_enable_testing=@Falaise_ENABLE_TESTING@
+
+falaise_with_docs=@Falaise_BUILD_DOCS@
+
+falaise_has_sngeometry=1
+
+falaise_has_sngenbb=1
+
+function print_help ()
+{
+    cat<<EOF
+Usage: ${script_name} [OPTION]
+
+Supported values for OPTION are:
+
+  --help                print this help then exit
+  --version             print version information
+  --system              print system
+  --prefix              print Falaise installation prefix
+  --bindir              print binary directory
+  --libdir              print library directory
+  --incdir              print include directory
+  --datadir             print data/resources base directory
+  --docdir              print documentation base directory
+  --cmake-config-dir    print the installation directory for the 'FalaiseConfig.cmake' file
+  --include             print include path pre-processor flags without dependencies
+  --cflags              print include path pre-processor flags with dependencies
+  --libs    [option]    print library linking information, without dependencies
+  --ldflags [option]
+    Options:
+    --relative-path     use relative DLL path (default)
+    --absolute-path     use absolute DLL path
+    --with-sngeometry   use the Falaise_sngeometry module
+    --with-sngenbb      use the Falaise_sngenbb module
+  --has-system-bayeux   test if Falaise use a Bayeux system installation
+  --has-docs            test if Falaise has builtin documentation
+
+Examples:
+
+   Print the Falaise's installation prefix:
+    \$ ${script_name} --prefix
+
+   Print LDFLAGS with absolute paths:
+    \$ ${script_name} --ldflags --absolute-path
+
+EOF
+    return 0
+}
+
+option="$1"
+shift 1
+
+if [ "x${option}" = "x" ]; then
+    echo "ERROR: ${script_name}: Missing option ! Abort !" 1>&2
+    help=1
+fi
+
+if [ "x${option}" = "x--help" -o "x${option}" = "x-h" -o "x${option}" = "x-?" ]; then
+    help=1
+fi
+
+if [ ${help} -eq 1 ]; then
+    print_help
+    my_exit 1
+fi
+
+if [ "x${option}" = "x--version" ]; then
+    echo "${falaise_version}"
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--system" ]; then
+    echo "${falaise_system}"
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--prefix" ]; then
+    echo "${falaise_root}"
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--version" ]; then
+    echo "${falaise_version}"
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--bindir" ]; then
+    echo "${falaise_bin_dir}"
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--libdir" ]; then
+    echo "${falaise_lib_dir}"
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--incdir" ]; then
+    echo "${falaise_include_dir}"
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--datadir" ]; then
+    echo "${falaise_data_dir}"
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--docdir" ]; then
+    echo "${falaise_doc_dir}"
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--cmake-config-dir" ]; then
+    echo "${falaise_cmake_config_dir}"
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--include" ]; then
+    echo -n "-I${falaise_include_dir}  "
+    echo -n "-I${falaise_include_dir}/falaise "
+    echo
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--cflags" ]; then
+    (
+	echo -n "-I${falaise_include_dir}  "
+	echo -n "-I${falaise_include_dir}/falaise "
+	echo -n " `bayeux-config --cflags` "
+	echo
+    ) | tr [[:space:]] ' ' | tr -s ' '  | tr ' ' '\n' | awk '!x[$0]++' | tr  '\n' ' '
+    echo
+    my_exit 0
+fi
+
+which tac > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo "ERROR: ${script_name}: tac (from coreutils) is not installed !" 1>&2
+    my_exit 1
+fi
+ldflags_abs_path=0
+libfalaise_with_sngeometry=1
+libfalaise_with_sngenbb=1
+
+if [ "x${option}" = "x--libs" -o "x${option}" = "x--ldflags" ]; then
+    while [ -n "$1" ]; do
+	lib_option="$1"
+	if [ "x${lib_option}" = "x--absolute-path" ]; then
+	    ldflags_abs_path=1
+	elif [ "x${lib_option}" = "x--relative-path" ]; then
+	    ldflags_abs_path=0
+	elif [ "x${lib_option}" = "x--with-sngeometry" ]; then
+	    if [ ${falaise_has_sngeometry} -eq 0 ]; then
+		echo "ERROR: ${script_name}: Falaise is not built with sngeometry module support !" 1>&2
+		my_exit 1
+	    fi
+	    libfalaise_with_sngeometry=1
+	elif [ "x${lib_option}" = "x--with-sngenbb" ]; then
+	    if [ ${falaise_has_sngenbb} -eq 0 ]; then
+		echo "ERROR: ${script_name}: Falaise is not built with sngenbb module support !" 1>&2
+		my_exit 1
+	    fi
+	    libfalaise_with_sngenbb=1
+	fi
+	shift 1
+    done
+fi
+
+if [ "x${option}" = "x--libs" -o "x${option}" = "x--ldflags" ]; then
+    (
+	if [ ${ldflags_abs_path} -eq 1 ]; then
+	    if [ ${falaise_has_sngeometry} -ne 0 -a ${libfalaise_with_sngeometry} -eq 1 ]; then
+		echo -n "${falaise_lib_dir}/libFalaise_sngeometry@CMAKE_SHARED_LIBRARY_SUFFIX@ "
+	    fi
+	    if [ ${falaise_has_sngenbb} -ne 0 -a ${libfalaise_with_sngenbb} -eq 1 ]; then
+		echo -n "${falaise_lib_dir}/libFalaise_sngenbb@CMAKE_SHARED_LIBRARY_SUFFIX@ "
+	    fi
+	    echo -n "${falaise_lib_dir}/libFalaise@CMAKE_SHARED_LIBRARY_SUFFIX@ "
+	    if [ "x${option}" = "x--ldflags" ]; then
+		echo -n " `bayeux-config --ldflags --absolute-path` "
+	    fi
+	else
+	    echo -n "-L${falaise_lib_dir} "
+	    if [ ${falaise_has_sngeometry} -ne 0 -a ${libfalaise_with_sngeometry} -eq 1 ]; then
+		echo -n "-lFalaise_sngeometry "
+	    fi
+	    if [ ${falaise_has_sngenbb} -ne 0 -a ${libfalaise_with_sngenbb} -eq 1 ]; then
+		echo -n "-lFalaise_sngenbb "
+	    fi
+	    echo -n "-lFalaise "
+	    if [ "x${option}" = "x--ldflags" ]; then
+		echo -n " `bayeux-config --ldflags` "
+	    fi
+	fi
+    ) | tr [[:space:]] ' ' | tr -s ' '  | tr ' ' '\n' | tac | awk '!x[$0]++' | tac | tr  '\n' ' '
+    echo
+    my_exit 0
+fi
+
+echo "ERROR: ${script_name}: Unknown option '${option}' !" 1>&2
+print_help
+my_exit 1
+
+# end of falaise-config

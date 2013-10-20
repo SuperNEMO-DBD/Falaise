@@ -33,7 +33,14 @@ endif()
 #
 add_subdirectory(falaise)
 
-# Modules
+#-----------------------------------------------------------------------
+# Submodules
+#
+# Submodules must be built before apps because they likely provide some
+# plugin classes dedicated to SuperNEMO tasks
+set(Falaise_SUBMODULES sngeometry sngenbb)
+
+# Preliminary: submodules are built as granular shared libraries
 # - Geometry
 add_subdirectory(flsngeometry)
 # - Primary particle generation
@@ -46,6 +53,27 @@ add_subdirectory(flsimulate)
 
 # - Reconstruction
 add_subdirectory(flreconstruct)
+
+#-----------------------------------------------------------------------
+# falaise-config utility script
+if(UNIX)
+  # - configure UNIX falaise-config scripts
+  configure_file(falaise/falaise-config.in
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/falaise-config
+    @ONLY
+    )
+
+  execute_process(COMMAND chmod a+x ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/falaise-config)
+
+  install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/falaise-config
+    DESTINATION bin
+    PERMISSIONS
+    OWNER_READ OWNER_WRITE OWNER_EXECUTE
+    GROUP_READ GROUP_WRITE GROUP_EXECUTE
+    WORLD_READ             WORLD_EXECUTE
+    COMPONENT  Development
+    )
+endif(UNIX)
 
 #-----------------------------------------------------------------------
 # Manual

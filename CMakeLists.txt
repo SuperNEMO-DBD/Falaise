@@ -60,13 +60,15 @@ foreach(_dir BINDIR LIBDIR INCLUDEDIR DATAROOTDIR)
   endif()
 endforeach()
 
-file(RELATIVE_PATH Falaise_BINDIR_TO_RESOURCEDIR "${CMAKE_INSTALL_FULL_BINDIR}" "${CMAKE_INSTALL_FULL_DATAROOTDIR}/${PROJECT_NAME}-${${PROJECT_NAME}_VERSION}")
+set(CMAKE_INSTALL_DATAROOTDIR "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}-${${PROJECT_NAME}_VERSION}")
+
+file(RELATIVE_PATH Falaise_BINDIR_TO_RESOURCEDIR "${CMAKE_INSTALL_FULL_BINDIR}" "${CMAKE_INSTALL_FULL_DATAROOTDIR}")
 
 # - Configure output paths for products to give inplace build that roughly
 #   matches install layout.
 set(Falaise_BUILDPRODUCT_DIR "${PROJECT_BINARY_DIR}/BuildProducts")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY  "${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_BINDIR}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_BINDIR}")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}")
 
 #-----------------------------------------------------------------------
@@ -121,7 +123,7 @@ else()
   set(Bayeux_DOXYGEN_TAGFILE)
 endif()
 
-set(Falaise_DATAROOTDIR ${Falaise_BUILDPRODUCT_DIR}/share/Falaise-${Falaise_VERSION})
+set(Falaise_DATAROOTDIR ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_DATAROOTDIR})
 
 #-----------------------------------------------------------------------
 # Build the subdirectories as required
