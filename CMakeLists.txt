@@ -107,8 +107,8 @@ if(Falaise_USE_SYSTEM_BAYEUX)
   if(NOT Bayeux_MCTOOLS_GEANT4_FOUND)
     message(FATAL_ERROR "
   Bayeux found, but it does not supply the MCTools/Geant4 module
-  "
-    )
+  "  )
+  endif()
 else()
   # - Configure internal build
   set(Bayeux_EMBEDDED 1)
