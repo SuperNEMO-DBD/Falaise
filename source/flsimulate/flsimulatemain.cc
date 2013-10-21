@@ -145,7 +145,7 @@ void do_configure(int argc, char *argv[], mctools::g4::manager_parameters& param
     FLSimulate::initResources();
     params.set_defaults();
     params.logging = "error";
-    params.manager_config_filename = FLSimulate::getResourceDir() + "/foo.txt";
+    params.manager_config_filename = FLSimulate::getResourceDir() + "/Falaise-1.0.0/resources/config/geometry/snemo/tracker_commissioning/1.0/manager.conf";
   } catch (std::exception& e) {
     throw FLConfigDefaultError();
   }
