@@ -75,11 +75,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_
 # Configure testing if required
 #
 option(Falaise_ENABLE_TESTING "Build unit testing system for Falaise" OFF)
-if (Falaise_ENABLE_TESTING)
-  set(Falaise_ENABLE_TESTING 1)
-else()
-  set(Falaise_ENABLE_TESTING 0)
-endif()
 if(Falaise_ENABLE_TESTING)
   enable_testing()
 endif()
@@ -89,11 +84,6 @@ endif()
 #
 set(Falaise_DOCEXPORT_DIR "${PROJECT_BINARY_DIR}/documentation")
 option(Falaise_BUILD_DOCS "Build documentation for Falaise" OFF)
-if (Falaise_BUILD_DOCS)
-  set(Falaise_BUILD_DOCS 1)
-else()
-  set(Falaise_BUILD_DOCS 0)
-endif()
 if(Falaise_BUILD_DOCS)
   # - For main HTML docs
   find_package(Doxygen 1.8 REQUIRED)
@@ -110,15 +100,15 @@ endif()
 # Configure/Build utilities as needed
 #
 option(Falaise_USE_SYSTEM_BAYEUX "Use system-installed Bayeux" OFF)
-if (Falaise_USE_SYSTEM_BAYEUX)
-  set(Falaise_USE_SYSTEM_BAYEUX 1)
-else()
-  set(Falaise_USE_SYSTEM_BAYEUX 0)
-endif()
 mark_as_advanced(Falaise_USE_SYSTEM_BAYEUX)
 
 if(Falaise_USE_SYSTEM_BAYEUX)
   find_package(Bayeux 1.0.0 REQUIRED)
+  if(NOT Bayeux_MCTOOLS_GEANT4_FOUND)
+    message(FATAL_ERROR "
+  Bayeux found, but it does not supply the MCTools/Geant4 module
+  "
+    )
 else()
   # - Configure internal build
   set(Bayeux_EMBEDDED 1)
@@ -132,10 +122,11 @@ else()
   add_subdirectory(utilities/flbayeux)
 
   # - Set up so that Falaise will use the internal build
-  set(Bayeux_INCLUDE_DIRS "${Falaise_BUILDPRODUCT_DIR}/include" "${Falaise_BUILDPRODUCT_DIR}/include/bayeux")
-  set(Bayeux_LIBRARIES Bayeux)
-  set(Bayeux_MCTOOLS_GEANT4_LIBRARY Bayeux_mctools_geant4)
-  set(Bayeux_DOXYGEN_TAGFILE)
+  #set(Bayeux_INCLUDE_DIRS "${Falaise_BUILDPRODUCT_DIR}/include" "${Falaise_BUILDPRODUCT_DIR}/include/bayeux")
+  #set(Bayeux_LIBRARIES Bayeux)
+  #set(Bayeux_MCTOOLS_GEANT4_LIBRARY Bayeux_mctools_geant4)
+  #set(Bayeux_DOXYGEN_TAGFILE)
+  include(${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/Bayeux-1.0.0/BayeuxConfig.cmake)
 endif()
 
 set(Falaise_DATAROOTDIR ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_DATAROOTDIR})

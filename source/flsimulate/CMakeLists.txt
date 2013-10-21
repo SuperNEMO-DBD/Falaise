@@ -30,7 +30,6 @@ find_package(Geant4 REQUIRED)
 
 include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(BEFORE ${Bayeux_INCLUDE_DIRS})
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/source)
 include_directories(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
 
 #-----------------------------------------------------------------------
@@ -63,8 +62,6 @@ target_link_libraries(flsimulate
   ${Bayeux_MCTOOLS_GEANT4_LIBRARY}
   ${Boost_LIBRARIES}
   ${Geant4_LIBRARIES}
-  G4OpenGL
-  G4gl2ps
   )
 
 #-----------------------------------------------------------------------

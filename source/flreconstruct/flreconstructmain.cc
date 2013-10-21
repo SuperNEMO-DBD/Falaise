@@ -4,7 +4,7 @@
 //!          reconstruction of SuperNEMO data.
 //
 //
-// Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com> 
+// Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com>
 // Copyright (c) 2013 by The University of Warwick
 //
 // This file is part of Falaise.
@@ -28,7 +28,7 @@
 // - A
 
 // This Project
-#include "falaise.h"
+#include "falaise/falaise.h"
 #include "falaise/exitcodes.h"
 
 //----------------------------------------------------------------------
