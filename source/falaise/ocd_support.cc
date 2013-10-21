@@ -2,7 +2,7 @@
 /* ocd_support.cc
  */
 
-#include <sngeometry/ocd_support.h>
+#include <falaise/ocd_support.h>
 
 /*
 // OCD support for class '::snemo::geometry::drift_cell_node_model' :
@@ -11,7 +11,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(::snemo::geometry::drift_cell_node_model,
 {
   ocd_.set_class_name("snemo::geometry::drift_cell_node_model");
   ocd_.set_class_description("A geometry model implementing a SuperNEMO node cell");
-  ocd_.set_class_library("sngeometry");
+  ocd_.set_class_library("falaise");
     ocd_.set_class_documentation("  \n"
     );
 
@@ -111,7 +111,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(::snemo::geometry::field_wires_set_model,
 {
   ocd_.set_class_name("snemo::geometry::field_wires_set_model");
   ocd_.set_class_description("A geometry model implementing SuperNEMO field wires of the Geiger cells");
-  ocd_.set_class_library("sngeometry");
+  ocd_.set_class_library("falaise");
   ocd_.set_class_documentation("  \n"
                                );
 

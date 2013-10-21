@@ -2,7 +2,7 @@
 /* calo_scin_box_model.cc
  */
 
-#include <sngeometry/calo_scin_box_model.h>
+#include <falaise/calo_scin_box_model.h>
 
 #include <datatools/units.h>
 

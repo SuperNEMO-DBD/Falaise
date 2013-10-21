@@ -1,11 +1,11 @@
 // -*- mode: c++ ; -*-
 /* locator_plugin.cc */
 
-#include <sngeometry/locator_plugin.h>
-#include <sngeometry/gg_locator.h>
-#include <sngeometry/calo_locator.h>
-#include <sngeometry/xcalo_locator.h>
-#include <sngeometry/gveto_locator.h>
+#include <falaise/locator_plugin.h>
+#include <falaise/gg_locator.h>
+#include <falaise/calo_locator.h>
+#include <falaise/xcalo_locator.h>
+#include <falaise/gveto_locator.h>
 
 namespace snemo {
 

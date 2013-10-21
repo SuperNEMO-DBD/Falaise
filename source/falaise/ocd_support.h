@@ -19,8 +19,8 @@
 
 #include <datatools/ocd_macros.h>
 
-// #include <sngeometry/drift_cell_node_model.h>
-// #include <sngeometry/field_wires_set_model.h>
+// #include <falaise/drift_cell_node_model.h>
+// #include <falaise/field_wires_set_model.h>
 
 // DOCD_CLASS_DECLARATION(snemo::geometry::drift_cell_node_model)
 // DOCD_CLASS_DECLARATION(snemo::geometry::field_wires_set_model)

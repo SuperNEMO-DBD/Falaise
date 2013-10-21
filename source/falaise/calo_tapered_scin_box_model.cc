@@ -2,7 +2,7 @@
 /* calo_tapered_scin_box_model.cc
  */
 
-#include <sngeometry/calo_tapered_scin_box_model.h>
+#include <falaise/calo_tapered_scin_box_model.h>
 
 #include <cstdlib>
 #include <cmath>

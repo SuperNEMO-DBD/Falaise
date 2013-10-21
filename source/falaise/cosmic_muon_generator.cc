@@ -3,7 +3,7 @@
  */
 
 // Ourselves
-#include <sngenbb/cosmic_muon_generator.h>
+#include <falaise/cosmic_muon_generator.h>
 
 // Standard library
 #include <stdexcept>

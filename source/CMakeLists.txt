@@ -33,19 +33,6 @@ include_directories(${Bayeux_INCLUDE_DIRS})
 add_subdirectory(falaise)
 
 #-----------------------------------------------------------------------
-# Submodules
-#
-# Submodules must be built before apps because they likely provide some
-# plugin classes dedicated to SuperNEMO tasks
-set(Falaise_SUBMODULES sngeometry sngenbb)
-
-# Preliminary: submodules are built as granular shared libraries
-# - Geometry
-add_subdirectory(flsngeometry)
-# - Primary particle generation
-add_subdirectory(flsngenbb)
-
-#-----------------------------------------------------------------------
 # Apps
 # - Simulation
 add_subdirectory(flsimulate)

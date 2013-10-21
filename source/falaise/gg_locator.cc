@@ -23,7 +23,7 @@
 
 #include <stdexcept>
 
-#include <sngeometry/gg_locator.h>
+#include <falaise/gg_locator.h>
 
 #include <datatools/utils.h>
 #include <datatools/units.h>

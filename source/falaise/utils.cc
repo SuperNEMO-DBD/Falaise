@@ -20,7 +20,7 @@
  *
  */
 
-#include <sngeometry/utils.h>
+#include <falaise/utils.h>
 
 namespace snemo {
 

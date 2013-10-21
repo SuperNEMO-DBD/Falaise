@@ -22,7 +22,7 @@
  */
 
 // Ourselves
-#include <sngeometry/calo_locator.h>
+#include <falaise/calo_locator.h>
 
 // Standard library
 #include <stdexcept>

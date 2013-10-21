@@ -24,9 +24,19 @@
 # Configure library
 #
 set(FalaiseLibrary_HEADERS
-  falaise.h
-  resource.h
+  calo_locator.h
+  calo_scin_box_model.h
+  calo_tapered_scin_box_model.h
+  cosmic_muon_generator.h
   exitcodes.h
+  falaise.h
+  gg_locator.h
+  gveto_locator.h
+  locator_plugin.h
+  ocd_support.h
+  resource.h
+  utils.h
+  xcalo_locator.h
   version.h.in
   )
 
@@ -43,7 +53,17 @@ configure_file(falaise.cc.in falaise.cc @ONLY)
 configure_file(resource.cc.in resource.cc @ONLY)
 
 set(FalaiseLibrary_SOURCES
+  calo_locator.cc
+  calo_scin_box_model.cc
+  calo_tapered_scin_box_model.cc
+  cosmic_muon_generator.cc
+  gg_locator.cc
+  gveto_locator.cc
+  locator_plugin.cc
+  ocd_support.cc
+  utils.cc
   version.cc
+  xcalo_locator.cc
   ${CMAKE_CURRENT_BINARY_DIR}/falaise.cc
   ${CMAKE_CURRENT_BINARY_DIR}/resource.cc
   )
