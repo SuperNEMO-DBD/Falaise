@@ -53,6 +53,7 @@ set(FLSIMULATE_SOURCES
   FLSimulateBinReloc.c
   )
 
+# - Compile/Link
 add_executable(flsimulate ${FLSIMULATE_SOURCES})
 set_target_properties(flsimulate PROPERTIES COMPILE_DEFINITIONS ENABLE_BINRELOC)
 
@@ -62,6 +63,12 @@ target_link_libraries(flsimulate
   ${Bayeux_MCTOOLS_GEANT4_LIBRARY}
   ${Boost_LIBRARIES}
   ${Geant4_LIBRARIES}
+  )
+
+# - Install
+# TODO : fixup rpaths as needed
+install(TARGETS flsimulate
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   )
 
 #-----------------------------------------------------------------------
