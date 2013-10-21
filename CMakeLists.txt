@@ -151,7 +151,7 @@ endif()
 #-----------------------------------------------------------------------
 # Resource installation
 #
-set(_falaise_resources_dir "${CMAKE_SOURCE_DIR}/resources")
+set(_falaise_resources_dir "${PROJECT_SOURCE_DIR}/resources")
 
 # - Load the  list of resource  files to be  published.  We don't  use a
 # 'file(GLOB  ...)'  because  it  is  not  recommended  by  the  CMake
@@ -164,7 +164,7 @@ include(resources/_resources.cmake)
 # variable defined in the 'resources/_resources.cmake' file:
 foreach(_rfin ${_falaise_list_of_resources_files})
   string(REGEX REPLACE "\\.in$" "" _rfout "${_rfin}")
-  string(REGEX REPLACE "^${CMAKE_SOURCE_DIR}/resources" "${Falaise_DATAROOTDIR}/resources" _rfout "${_rfout}")
+  string(REGEX REPLACE "^${PROJECT_SOURCE_DIR}/resources" "${Falaise_DATAROOTDIR}/resources" _rfout "${_rfout}")
   configure_file(${_rfin} ${_rfout} @ONLY)
 endforeach()
 

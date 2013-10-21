@@ -30,8 +30,7 @@ find_package(Geant4 REQUIRED)
 
 include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(BEFORE ${Bayeux_INCLUDE_DIRS})
-#message(STATUS "CMAKE_SOURCE_DIR='${CMAKE_SOURCE_DIR}'")
-include_directories(BEFORE ${CMAKE_SOURCE_DIR}/source)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/source)
 include_directories(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
 
 #-----------------------------------------------------------------------
