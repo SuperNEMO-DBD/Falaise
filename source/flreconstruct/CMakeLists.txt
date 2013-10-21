@@ -31,7 +31,7 @@ include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
 #-----------------------------------------------------------------------
 # Declare sources
 #
-set(flreconstruct_SOURCES flreconstruct.cc DumbReconstruction.h)
+set(flreconstruct_SOURCES flreconstructmain.cc)
 
 #-----------------------------------------------------------------------
 # Build App
