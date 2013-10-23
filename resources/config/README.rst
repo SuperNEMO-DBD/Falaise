@@ -21,6 +21,14 @@ Files:
 
 Directories:
 
+ * ``common`` :  This directory  contains resources files that are shared
+   by different experiments (BiPo3, SuperNEMO...).
+ * ``bipo3`` :  This directory  contains resources files that are related
+   to the BiPo3 experiment.
+ * ``snemo`` : This directory  contains resources files that are related
+   to the SuperNEMO experiment.
+
+
  * ``geometry`` :  This directory  is related  to the  modelization of
    virtual  geometry  setup  and   companion  tools.   It  hosts  some
    versionned sets  of configuration  files related  to the  BiPo3 and
