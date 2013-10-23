@@ -184,6 +184,7 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
     mctools::g4::manager_parameters::setup(flSimParameters, flSimulation);
     flSimulation.run_simulation();
   } catch (std::exception& e) {
+    std::cerr << "flsimulate : setup/run of simulation threw exception" << std::endl;
     std::cerr << e.what() << std::endl;
     return falaise::EXIT_UNAVAILABLE;
   }
