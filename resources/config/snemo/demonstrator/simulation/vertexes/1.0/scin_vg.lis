@@ -1,0 +1,53 @@
+# -*- mode: conf-unix; -*-
+# List of multi-properties (datatools::utils::multi_properties):
+
+#@description A list of vertex generators
+#@key_label   "name"
+#@meta_label  "type"
+
+
+#################################
+# Scintillator block generators #
+#################################
+
+# Generate vertex on the bulk volume of the wrapper for the main calorimeter's scintillator blocks:
+[name="calo_wrapper_bulk" type="snemo::genvertex::boxed_model_vg"]
+debug  : boolean = 0
+#origin : string  = "category=calorimeter_wrapper module={*} side={1} column={0;1;2;4;19} row={0;1;2;12;13}"
+origin : string  = "category=calorimeter_wrapper module={*} side={*} column={*} row={*}"
+mode   : string  = "bulk"
+
+# Generate vertex on the bulk volume of the wrapper for the X-calorimeter's scintillator blocks:
+[name="xcalo_wrapper_bulk" type="snemo::genvertex::boxed_model_vg"]
+debug  : boolean = 0
+origin : string  = "category=xcalo_wrapper module={*} side={*} column={*} row={*}"
+mode   : string  = "bulk"
+
+# Generate vertex on the bulk volume of the wrapper for the X-calorimeter's scintillator blocks:
+[name="gveto_wrapper_bulk" type="snemo::genvertex::boxed_model_vg"]
+debug  : boolean = 0
+origin : string  = "category=gveto_wrapper module={*} side={*} wall={*} column={*}"
+mode   : string  = "bulk"
+
+# Generate vertex on the bulk volume of the wrapper for the main calorimeter's scintillator blocks:
+[name="calo_wrapper_surface" type="snemo::genvertex::boxed_model_vg"]
+debug  : boolean = 0
+origin : string  = "category=calorimeter_wrapper module={*} side={*} column={*} row={*}"
+mode   : string  = "surface"
+mode.surface.top  : boolean = 1
+
+# Generate vertex on the bulk volume of the wrapper for the main calorimeter's scintillator blocks:
+[name="xcalo_wrapper_surface" type="snemo::genvertex::boxed_model_vg"]
+debug  : boolean = 0
+origin : string  = "category=xcalo_wrapper module={*} side={*} column={*} row={*}"
+mode   : string  = "surface"
+mode.surface.top  : boolean = 1
+
+# Generate vertex on the bulk volume of the wrapper for the main calorimeter's scintillator blocks:
+[name="gveto_wrapper_surface" type="snemo::genvertex::boxed_model_vg"]
+debug  : boolean = 0
+origin : string  = "category=gveto_wrapper module={*} side={*} wall={*} column={*}"
+mode   : string  = "surface"
+mode.surface.top  : boolean = 1
+
+# End of list of multi-properties.
