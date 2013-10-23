@@ -10,7 +10,6 @@ polycones are stored in special ASCII data files.
  * Setup label is : ``common::geometry::pmt``
  * Setup version is : ``1.0``
 
-F
 Files:
 
  * ``hamamatsu_R6594/hamamatsu_R6594_shape.data`` :  8 inches  PMT for
