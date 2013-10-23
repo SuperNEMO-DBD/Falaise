@@ -1,0 +1,93 @@
+# -*- mode: conf-unix; -*-
+# List of multi-properties (datatools::multi_properties):
+
+#@description A sample list of materials aliases
+#@key_label   "name"
+#@meta_label  "type"
+
+[name="vacuum" type="alias"]
+#@config The alias for standard vacuum
+#@description The name of the referenced material
+material : string = "std::vacuum"
+
+[name="tracking_gas" type="alias"]
+#@config The alias for tracking gas
+#@description The name of the referenced material
+material : string = "snemo::nemo3_tracking_gas"
+
+[name="copper" type="alias"]
+#@config The alias for metal
+#@description The name of the referenced material
+material : string = "std::copper"
+
+[name="iron" type="alias"]
+#@config The alias for metal
+#@description The name of the referenced material
+material : string = "std::iron"
+
+[name="ENVINET_PS_scintillator" type="alias"]
+#@config The alias for X-walls plastic scintillator
+#@description The name of the referenced material
+material : string = "std::NE110"
+
+[name="Dubna_PS_scintillator" type="alias"]
+#@config The alias for gamma veto plastic scintillator
+#@description The name of the referenced material
+material : string = "std::NE110"
+
+[name="PVT_scintillator" type="alias"]
+#@config The alias for PVT plastic scintillator
+#@description The name of the referenced material
+material : string = "std::PVT"
+
+[name="scin_wrapper" type="alias"]
+#@config The alias for plastic scintillator wrapping material
+#@description The name of the referenced material
+material : string = "std::mylar"
+
+[name="frame_metal" type="alias"]
+#@config The alias for the frames material
+#@description The name of the referenced material
+material : string = "std::iron"
+
+[name="wire_metal" type="alias"]
+#@config The alias for the wire material
+#@description The name of the referenced material
+material : string = "std::inox"
+
+[name="lab_air" type="alias"]
+#@config The alias for the air gas in the lab
+#@description The name of the referenced material
+material : string = "snemo::lab_air"
+
+[name="nitrogen" type="alias"]
+#@config The alias for the nitrogen gas
+#@description The name of the referenced material
+material : string = "snemo::nitrogen"
+
+[name="bb_source_material" type="alias"]
+#@config The alias for the source
+#@description The name of the referenced material
+material : string = "snemo::se82_source_material"
+
+[name="RTV" type="alias"]
+#@config The alias for the RTV material
+#@description The name of the referenced material
+material : string = "std::water"
+
+[name="SBR" type="alias"]
+#@config The alias for the SBR material
+#@description The name of the referenced material
+material : string = "std::water"
+
+[name="PFTE" type="alias"]
+#@config The alias for the PFTE material
+#@description The name of the referenced material
+material : string = "std::mylar"
+
+[name="glass" type="alias"]
+#@config The alias for the Pyrex (Borosilicate) material
+#@description The name of the referenced material
+material : string = "std::pyrex"
+
+# end
