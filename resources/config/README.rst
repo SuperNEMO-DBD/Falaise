@@ -3,7 +3,7 @@ Falaise configuration files
 ===========================
 
 :Authors: François Mauger
-:Date:    2013-10-20
+:Date:    2013-10-24
 
 .. contents::
    :depth: 3
@@ -17,23 +17,15 @@ provided by Falaise.
 
 Files:
 
- * ``README.rst`` : this file
+ * ``README.rst`` : This file.
 
 Directories:
 
- * ``common`` :  This directory  contains resources files that are shared
-   by different experiments (BiPo3, SuperNEMO...).
- * ``bipo3`` :  This directory  contains resources files that are related
-   to the BiPo3 experiment.
- * ``snemo`` : This directory  contains resources files that are related
-   to the SuperNEMO experiment.
-
-
- * ``geometry`` :  This directory  is related  to the  modelization of
-   virtual  geometry  setup  and   companion  tools.   It  hosts  some
-   versionned sets  of configuration  files related  to the  BiPo3 and
-   SuperNEMO detectors.
- * ``simulation``  : This  directory contains versionned sets of configuration
-   files used by the simulation tasks for the BiPo3 and SuperNEMO detectors.
- * ``reconstruction`` : This directory contains  versionned sets of configuration
-   files used by the reconstruction tasks for the BiPo3 and SuperNEMO detectors.
+ * ``common``  :  This directory  contains  resources  files that  are
+   shared by different experiments  (BiPo3, SuperNEMO...): elements of
+   geometry, event generators...
+ * ``bipo3``  :  This  directory  contains resources  files  that  are
+   related to the BiPo3 detector.
+ * ``snemo``  :  This  directory  contains resources  files  that  are
+   related to  the SuperNEMO  experiment (demonstrator  setup, tracker
+   commissioning setup...).
