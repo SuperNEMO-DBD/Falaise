@@ -39,6 +39,7 @@
 // Third Party
 // - Bayeux
 #include "bayeux/version.h"
+#include "bayeux/datatools/logger.h"
 #include "bayeux/dpp/module_manager.h"
 #include "bayeux/dpp/base_module.h"
 #include "bayeux/dpp/output_module.h"
@@ -63,6 +64,7 @@ namespace {
 }
 
 struct FLReconstructArgs {
+  datatools::logger::priority logLevel;
   std::string inputFile;
   std::string outputFile;
   std::string pipelineScript;
@@ -103,6 +105,38 @@ void do_error(std::ostream& os, const char* err) {
   os << "Try `flreconstruct --help` for more information\n";
 }
 
+// - Validation of verbosity command line arguments. must exist inside
+// the datatools namespace.
+// TODO : refactor operator>> into datatools, though can't do this
+// for validator (bpo dependency not wanted)
+namespace datatools {
+std::istream& operator>>(std::istream& in, datatools::logger::priority& p) {
+  std::string s;
+  in >> s;
+  p = datatools::logger::get_priority(s);
+  return in;
+}
+
+//! validate logging argument
+void validate(boost::any& v,
+              std::vector<std::string> const& values,
+              datatools::logger::priority* target_type,
+              int) {
+  // Make sure no previous assignment to v was made
+  bpo::validators::check_first_occurrence(v);
+
+  // Extract first string from values, If there is more than one string
+  // it's an error and an exception will be thrown
+  std::string const& s = bpo::validators::get_single_string(values);
+  datatools::logger::priority p = datatools::logger::get_priority(s);
+  if(p != datatools::logger::PRIO_UNDEFINED) {
+    v = boost::any(p);
+  } else {
+    throw bpo::validation_error(bpo::validation_error::invalid_option_value);
+  }
+}
+}
+
 FLDialogState do_cldialog(int argc, char *argv[], FLReconstructArgs& args) {
   // Bind command line parser to exposed parameters
   namespace bpo = boost::program_options;
@@ -110,7 +144,9 @@ FLDialogState do_cldialog(int argc, char *argv[], FLReconstructArgs& args) {
   optDesc.add_options()
       ("help,h","print this help message")
       ("version","print version number")
-      ("verbose,v","increase verbosity of logging")
+      ("verbose,v",
+       bpo::value<datatools::logger::priority>(&args.logLevel)->default_value(datatools::logger::PRIO_FATAL)->value_name("[level]"),
+       "set verbosity level of logging")
       ("input-file,i",
        bpo::value<std::string>(&args.inputFile)->required()->value_name("[file]"),
        "file from which to read data")
@@ -161,10 +197,12 @@ FLDialogState do_cldialog(int argc, char *argv[], FLReconstructArgs& args) {
 
 //! Configure and run the pipeline
 falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
+  // - Start up the module manager
   // Dual strategy here
   //  - If they supplied a script, use that, otherwise default to
   //  a single dump module.
   //  - An ass to deal with because of use of properties...
+  DT_LOG_TRACE(clArgs.logLevel,"configuring module_manager");
   boost::scoped_ptr<dpp::module_manager> moduleManager_(new dpp::module_manager);
   datatools::properties moduleManagerConfig;
 
@@ -181,14 +219,57 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
   }
 
   moduleManager_->initialize(moduleManagerConfig);
-  moduleManager_->tree_dump();
 
-  // - Can't configure these until we've handled the manager
-  const dpp::base_module& pipeline_ = moduleManager_->get("pipeline");
+  // - Plug together pipeline with input/output stages
+  // Always use the module tagged as "pipeline"
+  dpp::base_module* pipeline_;
+  try {
+    pipeline_ = &(moduleManager_->grab("pipeline"));
+  } catch (std::exception& e) {
+    DT_LOG_FATAL(clArgs.logLevel, "Failed to initialize pipeline : " << e.what());
+    return falaise::EXIT_UNAVAILABLE;
+  }
 
+  // Input module.... configured by properties, oh joy...
+  DT_LOG_TRACE(clArgs.logLevel,"configuring input module");
   boost::scoped_ptr<dpp::input_module> input_(new dpp::input_module);
-  boost::scoped_ptr<dpp::output_module> output_(new dpp::output_module);
+  datatools::properties inputModuleConfig;
+  inputModuleConfig.store("files.mode", "single");
+  inputModuleConfig.store("files.single.filename", clArgs.inputFile);
+  input_->initialize_standalone(inputModuleConfig);
 
+  // Output module.... configured by properties, oh joy..., but only
+  // if file was passed
+  DT_LOG_TRACE(clArgs.logLevel,"configuring output module");
+  boost::scoped_ptr<dpp::output_module> output_;
+  if(!clArgs.outputFile.empty()) {
+    DT_LOG_TRACE(clArgs.logLevel,"output module using file " << clArgs.outputFile);
+    output_.reset(new dpp::output_module);
+    datatools::properties outputModuleConfig;
+    outputModuleConfig.store("files.mode", "single");
+    outputModuleConfig.store("files.single.filename", clArgs.outputFile);
+    output_->initialize_standalone(outputModuleConfig);
+  }
+
+  // - Now the actual event loop
+  DT_LOG_TRACE(clArgs.logLevel,"begin event loop");
+
+  datatools::things workItem;
+  while (true) {
+    // Prepare and read work
+    workItem.clear();
+    if(input_->is_terminated()) break;
+    if(input_->process(workItem) != dpp::PROCESS_OK) {
+      DT_LOG_FATAL(clArgs.logLevel,"Failed to read data record from input source");
+      break;
+    }
+
+    // Feed through pipeline
+    pipeline_->process(workItem);
+
+    // Write item
+    if(output_) output_->process(workItem);
+  }
 
   return falaise::EXIT_OK;
 }
