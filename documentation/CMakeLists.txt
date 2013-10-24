@@ -34,6 +34,10 @@ set(Falaise_DOXYGEN_OUTPUT_FILE ${Falaise_DOXYGEN_OUTPUT_DIR}/html/index.html)
 #
 set(Falaise_MARKDOWN_DOCS
   Mainpage.md
+  InstallationGuide.md
+  flsimulate/FLSimulate.md
+  flreconstruct/FLReconstruct.md
+  flreconstruct/WritingFLReconstructModules.md
   )
 
 #-----------------------------------------------------------------------
