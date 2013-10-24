@@ -19,6 +19,7 @@ event generators as input for SuperNEMO or BiPo3 simulation.
   * Version is : ``1.0``
 
 Files:
+======
 
   * ``README.rst`` : this file,
   * ``manager.conf``   :   the   main  configuration   file   of   the
@@ -32,19 +33,22 @@ Files:
   * ``misc.def`` :
 
 List the name of the available particle generators:
+===================================================
 
-  From the ``primary_events/1.0`` directory: ::
+From the ``primary_events/1.0`` directory: ::
 
     $ cat *.def | grep ^\\\[name=\" | cut -d' ' -f1 | cut -d= -f2 | tr -d '"'
 
-  From the Falaise source directory: ::
+From the Falaise source directory: ::
 
    $ bxgenbb_inspector \
       --datatools::resource_path "falaise@$(pwd)/resources" \
       --configuration "@falaise:config/common/simulation/primary_events/1.0/manager.conf" \
-      --action "list"
+      --action "list" --list-print mode "raw"
+
 
 Generate 1000 primary events from the ``Bi214_Po214`` generator:
+================================================================
 
   From the Falaise source directory: ::
 

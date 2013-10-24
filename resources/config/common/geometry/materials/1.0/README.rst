@@ -21,6 +21,7 @@ geometry setups.
  * Setup version is : ``1.0``
 
 Files:
+======
 
  * ``README.rst`` : this file,
  * ``elements.def`` : list of elements,

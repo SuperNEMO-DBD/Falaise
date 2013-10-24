@@ -22,4 +22,4 @@ setups.
 
 Files:
 
- * ``README.rst`` : this file,
+ * ``README.rst`` : This file.

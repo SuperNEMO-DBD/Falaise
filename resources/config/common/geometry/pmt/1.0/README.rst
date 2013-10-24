@@ -11,6 +11,7 @@ polycones are stored in special ASCII data files.
  * Setup version is : ``1.0``
 
 Files:
+======
 
  * ``hamamatsu_R6594/hamamatsu_R6594_shape.data`` :  8 inches  PMT for
    SuperNEMO main walls,

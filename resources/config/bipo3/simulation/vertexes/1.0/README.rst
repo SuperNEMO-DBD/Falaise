@@ -9,7 +9,8 @@ of the Bipo3 detector.
  * Setup label is : ``bipo3::simulation::vertexes``
  * Setup version is : ``1.0``
 
-Files:
+Files
+=====
 
  * ``README.rst`` : This file.
  * ``manager.conf`` : The main configuration file for the vertex generator manager
@@ -18,9 +19,11 @@ Files:
    vertex generators used in the BiPo3 simulation.
 
 
-Check the configuration:
+Check the configuration
+=======================
 
-List the available vertex generators: ::
+List the available vertex generators
+------------------------------------
 
   1. First make sure the Bayeux software is installed and setup: ::
 
@@ -28,9 +31,8 @@ List the available vertex generators: ::
       ...
 
   2. Build Falaise from a build directory of your choice.
-  3. Then from Falaise build directory (this is preliminary):
-
-     * To print the list of available vertex generators, run: ::
+  3. Then from Falaise build directory (this is preliminary),
+     print the list of available vertex generators: ::
 
         $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
           bxgenvtx_production \
@@ -50,7 +52,10 @@ List the available vertex generators: ::
         |-- source_surface_back  : Generate vertex on the back surface of the source foil
         `-- source_surface_front  : Generate vertex on the front surface of the source foil
 
-     * To generate 10000 vertexes from the bulk volume of the source, run: ::
+Generate 10000 vertexes from the bulk volume of the source
+----------------------------------------------------------
+
+From the Falaise build directory, run: ::
 
         $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
           bxgenvtx_production \

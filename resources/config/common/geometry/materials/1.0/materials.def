@@ -133,9 +133,9 @@ composition.fraction_mass   : real    [5]  =     0.9159            0.0301    0.0
 density          : real   = 1.63
 density.unit     : string = "g/cm3"
 state            : string = "solid"
-composition.mode            : string       = "fraction_mass"
-composition.names           : string  [3]  = "snemo::calcium-48" "Calcium" "Fluorine"
-composition.fraction_mass   : real    [3]  =     0.39897          0.14756  0.45347
+composition.mode            : string      = "fraction_mass"
+composition.names           : string [3]  = "snemo::calcium-48" "Calcium" "Fluorine"
+composition.fraction_mass   : real   [3]  =     0.39897          0.14756  0.45347
 
 # From NEMO3 simulation program:
 # Composite Nd150
@@ -151,9 +151,9 @@ composition.fraction_mass   : real    [3]  =     0.39897          0.14756  0.453
 density          : real   = 3.0
 density.unit     : string = "g/cm3"
 state            : string = "solid"
-composition.mode            : string       = "fraction_mass"
-composition.names           : string  [4]  = "snemo::neodymium-150" "Oxygen" "Carbon" "Hydrogen"
-composition.fraction_mass   : real    [4]  =     0.79274            0.15632  0.04362   0.00732
+composition.mode            : string      = "fraction_mass"
+composition.names           : string [4]  = "snemo::neodymium-150" "Oxygen" "Carbon" "Hydrogen"
+composition.fraction_mass   : real   [4]  =     0.79274            0.15632  0.04362   0.00732
 
 [name="snemo::BPE" type="material"]
 #@config Borated PolyEthylene

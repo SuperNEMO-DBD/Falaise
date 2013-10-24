@@ -1,3 +1,4 @@
+# -*- mode: conf-unix; -*-
 # List of multi-properties (datatools::multi_properties):
 
 #@description A sample list of event generators
@@ -7,6 +8,7 @@
 
 #######################################################################
 [name="electron.cosmic.500MeV" type="genbb::single_particle_generator"]
+
 #@config Electron with monokinetic energy @ 500 MeV [cosmic]
 
 #@description Generated particle ("electron", "positron", "gamma", "alpha"):
@@ -42,7 +44,7 @@ energy        : real   = 1. GeV
 randomized_direction   : boolean = 1
 
 
-######################################################################
+#############################################################################
 [name="muon.cosmic.sea_level.toy" type="snemo::genbb::cosmic_muon_generator"]
 
 #@config Parameters for the "cosmic muon generator" mode [cosmic]
@@ -70,7 +72,7 @@ sea_level_toy.energy_sigma : real = 1.0 GeV
 #@description The maximum azimuthal angle for muon momentum
 sea_level_toy.maximum_theta : real = 70.0 degree
 
-#@description The N(mu+)/N(mu-) ration of cosmic muons at sea level (toy model: 0 => only "mu-", 1000 => only "mu+")
+#@description The N(mu+)/N(mu-) ratio of cosmic muons at sea level (toy model: 0 => only "mu-", 1000 => only "mu+")
 sea_level_toy.muon_ratio : real = 1.2
 
 

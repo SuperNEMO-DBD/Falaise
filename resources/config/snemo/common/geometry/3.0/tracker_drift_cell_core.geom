@@ -16,15 +16,23 @@
 # Geometry parameters #
 #######################
 
+#@description Default length unit
 length_unit        : string = "mm"
+
+#@description The name of the volume shape
 shape_type         : string = "cylinder"
+
+#@description The radius of the cylinder
 r                  : real as length =  1.32 mm
+
+#@description The length of the cylinder
 z                  : real as length = 82.0  mm
 
 #######################
 # Material parameters #
 #######################
 
+#@description The name of the material
 material.ref       : string = "std::copper"
 
 #########################
@@ -249,9 +257,3 @@ mapping.daughter_id.top_ring    : string = "[drift_cell_cathodic_ring:ring=1]"
 
 
 # end of tracker_drift_cell_core.geom
-
-
-
-
-
-

@@ -19,7 +19,8 @@ shielding.
  * Setup label is : ``bipo3``
  * Setup version is : ``2.0``
 
-Files:
+Files
+=====
 
  * ``README.rst`` : this file,
  * ``manager.conf``   :   the   main   configuration   file   of   the
@@ -50,7 +51,8 @@ Files:
      with the world top volume and an experimental area that hosts the
      detector.
 
-Check the geometry:
+Check the geometry
+==================
 
   The BiPo3 virtual geometry relies not only on generic geometry model
   classes  implemented  in  Bayeux/geomtools  but  also  on  dedicated

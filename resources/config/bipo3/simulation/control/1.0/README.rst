@@ -3,7 +3,7 @@ BiPo3 simulation control configuration
 ======================================
 
 :Authors: François Mauger, Xavier Garrido
-:Date:    2013-10-20
+:Date:    2013-10-24
 
 .. contents::
    :depth: 3
@@ -20,7 +20,8 @@ simulation of the BiPo3 module.
  * Setup version is : ``1.0``
 
 
-Files:
+Files
+=====
 
  * ``README.rst`` : This file.
  * ``manager.conf``   :   the   main   configuration   file   of   the
@@ -33,7 +34,8 @@ Files:
  * ``geant4_visualization.mac`` : Geant4 macro with visualization commands.
 
 
-Usage:
+Usage
+=====
 
  1. First make sure the Bayeux software is installed and setup with Geant support: ::
 
@@ -42,11 +44,10 @@ Usage:
 
  2. Build Falaise from a build directory of your choice.
 
- 3. From the Falaise build directory (preliminary):
-
-    Simulate 1000 Tl-208 decay  events from  the ``source_bulk``  in the
-    BiPo3 virtual geometry setup. Interactive mode with Geant4 online display
-    and no output data file: ::
+ 3. From  the Falaise  build  directory  (preliminary), simulate  1000
+    Tl-208 decay events from the  ``source_bulk`` in the BiPo3 virtual
+    geometry setup. Interactive mode with Geant4 online display and no
+    output data file: ::
 
       $ export BIPOMC_WORK_DIR=/tmp/${USER}/bipo3_simul.d
       $ mkdir -p ${BIPOMC_WORK_DIR}
@@ -67,7 +68,7 @@ Usage:
       Idle> /run/beamOn 10
       Idle> exit
 
-    Simulate 1000 Tl-208 decay  events from  the ``source_bulk``  in the
+ 4. Simulate 1000 Tl-208 decay events  from the ``source_bulk`` in the
     BiPo3 virtual geometry setup. Batch run with output data file: ::
 
       $ export BIPOMC_WORK_DIR=/tmp/${USER}/bipo3_simul.d
