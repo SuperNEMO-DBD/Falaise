@@ -36,6 +36,7 @@
 
 // Third Party
 // - Boost
+#include "boost/filesystem.hpp"
 #include "boost/program_options.hpp"
 namespace bpo = boost::program_options;
 
@@ -44,9 +45,12 @@ namespace bpo = boost::program_options;
 #include "bayeux/bayeux.h"
 #include "bayeux/mctools/g4/manager.h"
 #include "bayeux/mctools/g4/manager_parameters.h"
+#include "bayeux/datatools/kernel.h"
+#include "bayeux/datatools/library_info.h"
 
 // This Project
 #include "falaise/version.h"
+#include "falaise/resource.h"
 #include "falaise/falaise.h"
 #include "falaise/exitcodes.h"
 #include "FLSimulateResources.h"
@@ -90,16 +94,24 @@ void do_cldialog(int argc, char *argv[], mctools::g4::manager_parameters& params
   namespace bpo = boost::program_options;
   bpo::options_description optDesc;
   optDesc.add_options()
-      ("help,h","print this help message")
-      ("version","print version number")
-      ("verbose,v","increase verbosity of logging")
-      ("number,n",
-       bpo::value<uint32_t>(&params.number_of_events)->default_value(1)->value_name("[events]"),
-       "number of events to simulate")
-      ("output-file,o",
-       bpo::value<std::string>(&params.output_data_file)->required()->value_name("[file]"),
-       "file in which to store simulation results")
-      ;
+    ("help,h","print this help message")
+    ("version","print version number")
+    ("verbose,v","increase verbosity of logging")
+    ("number,n",
+     bpo::value<uint32_t>(&params.number_of_events)->default_value(1)->value_name("[events]"),
+     "number of events to simulate")
+    ("vertex-generator,x",
+     bpo::value<std::string>( &params.vg_name)->required()->value_name("[name]"),
+     "The name of the vertex generator"
+     )
+    ("event-generator,e",
+     bpo::value<std::string>( &params.eg_name)->required()->value_name("[name]"),
+     "The name of the event generator"
+     )
+    ("output-file,o",
+     bpo::value<std::string>(&params.output_data_file)->required()->value_name("[file]"),
+     "file in which to store simulation results")
+    ;
 
   // - Parse...
   bpo::variables_map vMap;
@@ -116,6 +128,19 @@ void do_cldialog(int argc, char *argv[], mctools::g4::manager_parameters& params
     std::cerr << "[OptionsException] " << e.what() << std::endl;
     throw FLDialogOptionsError();
   }
+
+  // Explicitely  set   the  seeds   of  the   4  embedded   PRNGs  to
+  // 'mygsl::random_utils::SEED_INVALID'   (0)    for   an   automated
+  // randomization  of seeds  from the  current time  (and some  other
+  // possible entropy  sources).  This is not  recommended because the
+  // interface should  enforce the user  to explicitely set  the seeds
+  // for a  simulation run.  Note  that the 'XXX_seed'  parameters are
+  // initialized  with  the 'mygsl::random_utils::SEED_INVALID'  value
+  // (-1) which leads to an exception at PRNG startup.
+  params.vg_seed   = mygsl::random_utils::SEED_TIME; // PRNG for the vertex generator
+  params.eg_seed   = mygsl::random_utils::SEED_TIME; // PRNG for the primary event generator
+  params.shpf_seed = mygsl::random_utils::SEED_TIME; // PRNG for the back end true hit processors
+  params.mgr_seed  = mygsl::random_utils::SEED_TIME; // PRNG for the Geant4 engine itself
 
   // Handle verbose, which can't be bound yet
   if (vMap.count("verbose")) params.logging = "information";
@@ -145,7 +170,7 @@ void do_configure(int argc, char *argv[], mctools::g4::manager_parameters& param
     FLSimulate::initResources();
     params.set_defaults();
     params.logging = "error";
-    params.manager_config_filename = FLSimulate::getResourceDir() + "/Falaise-1.0.0/resources/config/geometry/snemo/tracker_commissioning/1.0/manager.conf";
+    params.manager_config_filename = FLSimulate::getResourceDir() + "/Falaise-1.0.0/resources/config/snemo/tracker_commissioning/simulation/control/1.0/manager.conf";
   } catch (std::exception& e) {
     throw FLConfigDefaultError();
   }
@@ -193,11 +218,60 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
 }
 
 //----------------------------------------------------------------------
+//! Temporary trick: fix the registered resource path in the datatools' kernel
+//  Because the official configuration files use the "@falaise:foo.conf" syntax
+//  and "falaise" is assumed to refer to the installation path of resource files.
+//  Here we detect that we should run with the build directory.
+void do_fix_resource_path()
+{
+  FLSimulate::initResources();
+  boost::filesystem::path dyn_res_path = FLSimulate::getResourceDir() + "/Falaise-1.0.0/resources";
+  boost::filesystem::path install_res_path = falaise::get_resource_dir();
+  std::cerr << "DEVEL: " << "Dynamic resource path = '" << dyn_res_path << "'" << std::endl;
+  std::cerr << "DEVEL: " << "Installation resource path = '" << install_res_path << "'" << std::endl;
+  if (! boost::filesystem::exists(install_res_path)) {
+    DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Falaise resource installation directory is missing !"
+                  << "Revert to the build resource directory...");
+    datatools::kernel & krnl = datatools::kernel::instance();
+    if (krnl.has_library_info_register()) {
+      datatools::library_info & lib_info_reg
+        = krnl.grab_library_info_register();
+      if (lib_info_reg.has("falaise")) {
+        datatools::properties & falaise_lib_infos = lib_info_reg.grab("falaise");
+        falaise_lib_infos.update_string(datatools::library_info::keys::install_resource_dir(),
+                                        dyn_res_path.string()
+                                        );
+        DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Falaise resource installation directory was dynamically updated !");
+      } else {
+        datatools::properties & falaise_lib_infos
+          = lib_info_reg.registration("falaise",
+                                      "Falaise provides the main computational environment for the simulation,"
+                                      "processing and analysis of data for the SuperNEMO double beta decay "
+                                      "search experiment.",
+                                      falaise::version::get_version()
+                                      );
+        falaise_lib_infos.store_string(datatools::library_info::keys::install_resource_dir(),
+                                       dyn_res_path.string()
+                                       );
+        DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Falaise resource installation directory was dynamically set !");
+      }
+      // lib_info_reg.tree_dump(std::clog, "datatools' kernel library info register: ");
+    }
+  }
+  return;
+}
+
+//----------------------------------------------------------------------
 // MAIN PROGRAM
 //----------------------------------------------------------------------
 int main(int argc, char *argv[]) {
   // - Needed, but nasty
   FALAISE_INIT();
+
+  // - Fix the resource path
+  // This is a temporary trick for tests because Falaise's resource path
+  // registration uses the installation path and not the build path.
+  // do_fix_resource_path();
 
   // - Do the simulation.
   // Ideally, exceptions SHOULD NOT propagate out of this  - the error

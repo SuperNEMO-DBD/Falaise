@@ -117,3 +117,14 @@ Usage
 
       $ ls -l ${SNEMOTCMC_WORK_DIR}/g4_production_0.brio
       -rw-r--r-- 1 snemo snemo 6428779 oct.  23 23:57 /tmp/snemo/snemo_tc_simul.d/g4_production_0.brio
+
+
+Test with flsimulate
+====================
+
+This is preliminary...
+
+From the build directory: ::
+
+  $ FALAISE_RESOURCE_DIR=$(pwd)/BuildProducts/share/Falaise-1.0.0/resources \
+    ./BuildProducts/bin/flsimulate -n 1 -o snemo_tc_muons_roof.xml -e muon.cosmic.sea_level.toy -x experimental_hall_roof

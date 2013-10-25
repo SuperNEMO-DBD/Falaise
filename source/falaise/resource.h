@@ -39,7 +39,7 @@ namespace falaise {
 
 //! Return URL, i.e. a path, to the  base directory where resource files are installed
 //! \param overriden_env If set this flag trigger the search for the
-//!        environment variable FALAISE_DATA_DIR as a directory path on the filesystem
+//!        environment variable FALAISE_RESOURCE_DIR as a directory path on the filesystem
 //!        as an alternative base directory for resources in place of the
 //!        standard installation path
 std::string get_resource_dir(bool overriden_env = false);
@@ -47,11 +47,11 @@ std::string get_resource_dir(bool overriden_env = false);
 //! Return URL, i.e. a path, to named resource
 //! By default the encoded resource root, determined at compile time
 //! is used to search for the resource. This can be overriden by setting
-//! the FALAISE_DATA_DIR environment variable to a path holding custom
+//! the FALAISE_RESOURCE_DIR environment variable to a path holding custom
 //! resources.
 //! \param rname name of resource, given as a path relative to
 //!        resource root.
-//! \param overriden_env flag to allow path overriding by the FALAISE_DATA_DIR environment variable.
+//! \param overriden_env flag to allow path overriding by the FALAISE_RESOURCE_DIR environment variable.
 std::string get_resource(const std::string& rname, bool overriden_env = false);
 } // namespace falaise
 

@@ -66,8 +66,17 @@ namespace {
                                       "search experiment.",
                                       falaise::version::get_version()
                                       );
+
+        // Register the Falaise resource path in the datatools' kernel:
         falaise_lib_infos.store_string(datatools::library_info::keys::install_resource_dir(),
                                        falaise::get_resource_dir(false)
+                                       );
+
+        // If the 'FALAISE_RESOURCE_DIR' environment variable is set, it will supersed
+        // the official registered resource path above through the 'datatools::fetch_path_with_env'
+        // function:
+        falaise_lib_infos.store_string(datatools::library_info::keys::env_resource_dir(),
+                                       "FALAISE_RESOURCE_DIR"
                                        );
       }
     }

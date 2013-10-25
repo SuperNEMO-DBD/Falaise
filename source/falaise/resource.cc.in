@@ -34,19 +34,21 @@
 #include <datatools/logger.h>
 
 // This Project
+#include <falaise/version.h>
 
 namespace {
 //! Return the path to the root resource directory
 std::string get_resource_root(bool overriden_env) {
   static const boost::filesystem::path resource_path = "resources";
   static const boost::filesystem::path install_root = "@CMAKE_INSTALL_PREFIX@";
-  boost::filesystem::path install_data_root = install_root / "@CMAKE_INSTALL_DATADIR@";
+  boost::filesystem::path install_data_root = install_root / "@CMAKE_INSTALL_DATADIR@" /
+   "Falaise-" / FALAISE_LIB_VERSION;
   // Not sure to maintain this in the future:
   if(overriden_env) {
-    if (std::getenv("FALAISE_DATA_DIR")) {
+    if (std::getenv("FALAISE_RESOURCE_DIR")) {
       //DT_LOG_WARNING(datatools::logger::PRIO_WARNING,
-      //               "Using FALAISE_DATA_DIR overriding environ variable...");
-      install_data_root = std::string(std::getenv("FALAISE_DATA_DIR"));
+      //               "Using FALAISE_RESOURCE_DIR overriding environ variable...");
+      install_data_root = std::string(std::getenv("FALAISE_RESOURCE_DIR"));
     }
   }
   boost::filesystem::path install_resource_root = install_data_root / resource_path;
