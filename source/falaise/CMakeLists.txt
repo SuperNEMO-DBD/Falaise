@@ -31,6 +31,8 @@ set(FalaiseLibrary_HEADERS
   exitcodes.h
   falaise.h
   gg_locator.h
+  gg_step_hit_processor.h
+  gg_track_utils.h
   gveto_locator.h
   locator_plugin.h
   ocd_support.h
@@ -58,6 +60,8 @@ set(FalaiseLibrary_SOURCES
   calo_tapered_scin_box_model.cc
   cosmic_muon_generator.cc
   gg_locator.cc
+  gg_step_hit_processor.cc
+  gg_track_utils.cc
   gveto_locator.cc
   locator_plugin.cc
   ocd_support.cc
