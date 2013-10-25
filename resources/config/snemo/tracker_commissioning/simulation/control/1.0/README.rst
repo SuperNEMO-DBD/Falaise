@@ -48,17 +48,16 @@ Files
 Usage
 =====
 
- 1. First make sure the Bayeux software is installed and setup with Geant support: ::
+1. First make sure the Bayeux software is installed and setup with Geant support: ::
 
-      $ which bxg4_production
-      ...
+     $ which bxg4_production
+     ...
 
- 2. Build Falaise from a build directory of your choice.
-
- 3. From  the Falaise  build  directory  (preliminary), simulate  1000
-     cosmic muons events from the ``source_bulk`` in the BiPo3 virtual
-     geometry setup.  Interactive mode with Geant4  online display and
-     no output data file: ::
+2. Build Falaise from a build directory of your choice.
+3. From  the Falaise  build  directory  (preliminary), simulate  1000
+   cosmic muons events from the *roof of the experimental hall* in the  SuperNEMO tracker commissioning virtual
+   geometry setup.  Interactive mode with Geant4  online display and
+   no output data file: ::
 
       $ export SNEMOTCMC_WORK_DIR=/tmp/${USER}/snemotc_simul.d
       $ mkdir -p ${SNEMOTCMC_WORK_DIR}
@@ -79,8 +78,8 @@ Usage
       Idle> /run/beamOn 10
       Idle> exit
 
- 4. Simulate 1000 cosmic muons events  from the ``source_bulk`` in the
-    BiPo3 virtual geometry setup. Batch run with output data file: ::
+4. Simulate  1000 cosmic muons events from the *roof of the experimental hall* in the  SuperNEMO tracker commissioning
+   virtual geometry setup. Batch run with output data file: ::
 
       $ export SNEMOTCMC_WORK_DIR=/tmp/${USER}/snemo_tc_simul.d
       $ mkdir -p ${SNEMOTCMC_WORK_DIR}
