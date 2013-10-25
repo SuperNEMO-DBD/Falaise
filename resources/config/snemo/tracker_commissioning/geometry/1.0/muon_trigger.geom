@@ -11,12 +11,16 @@
 # Geometry parameters #
 #######################
 
+#@description Default length unit
 length_unit : string = "mm"
 
+#@description X dimension of the box
 x : real as length = 1000.0 mm
 
+#@description Y dimension of the box
 y : real as length = 1000.0 mm
 
+#@description Z dimension of the box
 z : real as length =   20.0 mm
 
 #######################
@@ -30,9 +34,10 @@ material.ref : string = "PVT_scintillator"
 # Visibility parameters #
 #########################
 
+#@description Hidden flag
 visibility.hidden           : boolean = 0
-#visibility.hidden_envelope  : boolean = 0
-#visibility.daughters.hidden : boolean = 0
+
+#@description Default color
 visibility.color            : string  = "blue"
 
 #################################
@@ -40,10 +45,6 @@ visibility.color            : string  = "blue"
 #################################
 
 #@description Sensitive detector category associated to any muon trigger plate
-sensitive.category  : string = "muon_trigger"
-
-#sensitive.record_alpha_quenching  : boolean = 1
-#sensitive.record_track_id         : boolean = 1
-#sensitive.record_primary_particle : boolean = 1
+sensitive.category : string = "trigger_SD"
 
 # end of muon_trigger.geom
