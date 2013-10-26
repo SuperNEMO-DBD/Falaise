@@ -113,15 +113,17 @@ else()
   # - Configure internal build
   set(Bayeux_EMBEDDED 1)
   set(Bayeux_BUILDPRODUCT_DIR ${Falaise_BUILDPRODUCT_DIR})
-  if(Falaise_ENABLE_TESTING)
-    set(Bayeux_ENABLE_TESTING ON)
-  endif()
+  set(Bayeux_ENABLE_TESTING ${Falaise_ENABLE_TESTING})
+  set(Bayeux_BUILD_DOCS ${Falaise_BUILD_DOCS}) 
   set(Bayeux_WITH_GEANT4 ON)
 
   # - Build
   add_subdirectory(utilities/flbayeux)
 
   # - Set up so that Falaise will use the internal build
+  # Hacked temporarily so we can use this technique on CMake < 2.8.11
+  # that doesn't allow duplicate imported targets.
+  set(Bayeux_TARGETS_LOADED 1)
   include(${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/Bayeux-1.0.0/BayeuxConfig.cmake)
 endif()
 
