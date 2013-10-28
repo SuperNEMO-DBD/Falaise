@@ -211,6 +211,13 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
   } catch (std::exception& e) {
     std::cerr << "flsimulate : setup/run of simulation threw exception" << std::endl;
     std::cerr << e.what() << std::endl;
+
+      datatools::kernel& krnl = datatools::kernel::instance();
+  datatools::library_info& lib_info_reg = krnl.grab_library_info_register();
+  datatools::properties& bayeux_lib_infos = lib_info_reg.grab("geomtools");
+
+  bayeux_lib_infos.tree_dump();
+
     return falaise::EXIT_UNAVAILABLE;
   }
 
@@ -218,18 +225,17 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
 }
 
 //----------------------------------------------------------------------
-//! Temporary trick: fix the registered resource path in the datatools' kernel
-//  Because the official configuration files use the "@falaise:foo.conf" syntax
-//  and "falaise" is assumed to refer to the installation path of resource files.
+//! Temporary trick: fix the registered resource path in the datatools'
+//  kernel.
+//  Because the official configuration files use the
+//  "@falaise:foo.conf" syntax and "falaise" is assumed to refer to the
+//  installation path of resource files.
 //  Here we detect that we should run with the build directory.
-void do_fix_resource_path()
-{
+void do_fix_resource_path() {
   FLSimulate::initResources();
   boost::filesystem::path dyn_res_path = FLSimulate::getResourceDir() + "/Falaise-1.0.0/resources";
   boost::filesystem::path install_res_path = falaise::get_resource_dir();
-  std::cerr << "DEVEL: " << "Dynamic resource path = '" << dyn_res_path << "'" << std::endl;
-  std::cerr << "DEVEL: " << "Installation resource path = '" << install_res_path << "'" << std::endl;
-  if (! boost::filesystem::exists(install_res_path)) {
+  if(!boost::filesystem::exists(install_res_path)) {
     DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Falaise resource installation directory is missing !"
                   << "Revert to the build resource directory...");
     datatools::kernel & krnl = datatools::kernel::instance();
@@ -258,7 +264,22 @@ void do_fix_resource_path()
       // lib_info_reg.tree_dump(std::clog, "datatools' kernel library info register: ");
     }
   }
-  return;
+
+  // Fix up Bayeux
+  boost::filesystem::path bx_res_path = FLSimulate::getResourceDir() + "/Bayeux-1.0.0/resources/geomtools";
+
+  datatools::kernel& krnl = datatools::kernel::instance();
+  datatools::library_info& lib_info_reg = krnl.grab_library_info_register();
+  datatools::properties& bayeux_lib_infos = lib_info_reg.grab("geomtools");
+
+  bayeux_lib_infos.tree_dump();
+  bayeux_lib_infos.update_string(datatools::library_info::keys::install_resource_dir(),
+                                 bx_res_path.string()
+                                 );
+  bayeux_lib_infos.tree_dump();
+
+
+
 }
 
 //----------------------------------------------------------------------
@@ -271,7 +292,7 @@ int main(int argc, char *argv[]) {
   // - Fix the resource path
   // This is a temporary trick for tests because Falaise's resource path
   // registration uses the installation path and not the build path.
-  // do_fix_resource_path();
+  do_fix_resource_path();
 
   // - Do the simulation.
   // Ideally, exceptions SHOULD NOT propagate out of this  - the error
