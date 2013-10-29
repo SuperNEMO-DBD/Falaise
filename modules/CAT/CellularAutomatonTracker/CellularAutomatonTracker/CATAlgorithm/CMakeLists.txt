@@ -26,6 +26,16 @@ install ( FILES ${PROJECT_BINARY_DIR}/CellularAutomatonTracker/CATAlgorithm/CAT_
 
 list (APPEND CATALGORITHM_HEADERS ${PROJECT_BINARY_DIR}/CellularAutomatonTracker/CATAlgorithm/CAT_config.h )
 
+configure_file ( ${PROJECT_SOURCE_DIR}/cmake/Templates/SULTAN_config.h.in
+  ${PROJECT_BINARY_DIR}/CellularAutomatonTracker/CATAlgorithm/SULTAN_config.h @ONLY )
+
+install ( FILES ${PROJECT_BINARY_DIR}/CellularAutomatonTracker/CATAlgorithm/SULTAN_config.h
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/CATAlgorithm
+  PERMISSIONS OWNER_READ GROUP_READ WORLD_READ
+  )
+
+list (APPEND CATALGORITHM_HEADERS ${PROJECT_BINARY_DIR}/CellularAutomatonTracker/CATAlgorithm/SULTAN_config.h )
+
 #----------------------------------------------------------------------------
 # Add the library targets, force them to be shared
 #
