@@ -43,8 +43,19 @@ target_link_libraries(flreconstruct
   ${Boost_program_options_LIBRARY}
   )
 
+# - RPath it
+set_target_properties(flreconstruct PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
+
+if(UNIX AND NOT APPLE)
+  set_target_properties(flreconstruct
+    PROPERTIES INSTALL_RPATH "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
+    )
+elseif(APPLE)
+  # Temporary setting - needs testing
+  set_target_properties(flreconstruct PROPERTIES INSTALL_RPATH "@rpath")
+endif()
+
 # - Install it
-# TODO : fixup rpaths as needed
 install(TARGETS flreconstruct
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   )

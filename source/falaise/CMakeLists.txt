@@ -78,12 +78,25 @@ set(FalaiseLibrary_SOURCES
 add_library(Falaise SHARED ${FalaiseLibrary_HEADERS} ${FalaiseLibrary_SOURCES})
 target_link_libraries(Falaise ${Bayeux_LIBRARIES})
 
+# - Rpath it
+set_target_properties(Falaise PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
+
+if(UNIX AND NOT APPLE)
+  set_target_properties(Falaise
+    PROPERTIES INSTALL_RPATH "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
+    )
+elseif(APPLE)
+  # Temporary setting - needs testing
+  set_target_properties(Falaise PROPERTIES INSTALL_RPATH "@rpath")
+endif()
+
 # - Install it
 # TODO : fixup rpaths as needed
 install(TARGETS Falaise
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   )
+
 
 #-----------------------------------------------------------------------
 # Build Tests

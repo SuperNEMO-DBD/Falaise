@@ -65,6 +65,18 @@ target_link_libraries(flsimulate
   ${Geant4_LIBRARIES}
   )
 
+# - RPath it
+set_target_properties(flsimulate PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
+
+if(UNIX AND NOT APPLE)
+  set_target_properties(flsimulate
+    PROPERTIES INSTALL_RPATH "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
+    )
+elseif(APPLE)
+  # Temporary setting - needs testing
+  set_target_properties(flsimulate PROPERTIES INSTALL_RPATH "@rpath")
+endif()
+
 # - Install
 # TODO : fixup rpaths as needed
 install(TARGETS flsimulate
