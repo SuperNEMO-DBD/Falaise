@@ -60,13 +60,14 @@ foreach(_dir BINDIR LIBDIR INCLUDEDIR DATAROOTDIR)
   endif()
 endforeach()
 
-set(CMAKE_INSTALL_DATAROOTDIR "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}-${${PROJECT_NAME}_VERSION}")
 
-file(RELATIVE_PATH Falaise_BINDIR_TO_RESOURCEDIR "${CMAKE_INSTALL_FULL_BINDIR}" "${CMAKE_INSTALL_FULL_DATAROOTDIR}")
 
 # - Configure output paths for products to give inplace build that roughly
 #   matches install layout.
 set(Falaise_BUILDPRODUCT_DIR "${PROJECT_BINARY_DIR}/BuildProducts")
+set(Falaise_DATAROOTDIR ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/Falaise-${Falaise_VERSION})
+file(RELATIVE_PATH Falaise_BINDIR_TO_RESOURCEDIR "${CMAKE_INSTALL_FULL_BINDIR}" "${CMAKE_INSTALL_FULL_DATAROOTDIR}/Falaise-${Falaise_VERSION}")
+
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_BINDIR}")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}")
@@ -114,7 +115,7 @@ else()
   set(Bayeux_EMBEDDED 1)
   set(Bayeux_BUILDPRODUCT_DIR ${Falaise_BUILDPRODUCT_DIR})
   set(Bayeux_ENABLE_TESTING ${Falaise_ENABLE_TESTING})
-  set(Bayeux_BUILD_DOCS ${Falaise_BUILD_DOCS}) 
+  set(Bayeux_BUILD_DOCS ${Falaise_BUILD_DOCS})
   set(Bayeux_WITH_GEANT4 ON)
 
   # - Build
@@ -127,7 +128,6 @@ else()
   include(${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/Bayeux-1.0.0/BayeuxConfig.cmake)
 endif()
 
-set(Falaise_DATAROOTDIR ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_DATAROOTDIR})
 
 #-----------------------------------------------------------------------
 # Build the subdirectories as required
@@ -156,6 +156,12 @@ foreach(_rfin ${_falaise_list_of_resources_files})
   string(REGEX REPLACE "^${PROJECT_SOURCE_DIR}/resources" "${Falaise_DATAROOTDIR}/resources" _rfout "${_rfout}")
   configure_file(${_rfin} ${_rfout} @ONLY)
 endforeach()
+
+
+# - Install published resources
+install(DIRECTORY ${Falaise_DATAROOTDIR}
+  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}
+  )
 
 #-----------------------------------------------------------------------
 # Package Sources and Binaries

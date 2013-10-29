@@ -170,7 +170,7 @@ void do_configure(int argc, char *argv[], mctools::g4::manager_parameters& param
     FLSimulate::initResources();
     params.set_defaults();
     params.logging = "error";
-    params.manager_config_filename = FLSimulate::getResourceDir() + "/Falaise-1.0.0/resources/config/snemo/tracker_commissioning/simulation/control/1.0/manager.conf";
+    params.manager_config_filename = FLSimulate::getResourceDir() + "/resources/config/snemo/tracker_commissioning/simulation/control/1.0/manager.conf";
   } catch (std::exception& e) {
     throw FLConfigDefaultError();
   }
@@ -211,13 +211,6 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
   } catch (std::exception& e) {
     std::cerr << "flsimulate : setup/run of simulation threw exception" << std::endl;
     std::cerr << e.what() << std::endl;
-
-      datatools::kernel& krnl = datatools::kernel::instance();
-  datatools::library_info& lib_info_reg = krnl.grab_library_info_register();
-  datatools::properties& bayeux_lib_infos = lib_info_reg.grab("geomtools");
-
-  bayeux_lib_infos.tree_dump();
-
     return falaise::EXIT_UNAVAILABLE;
   }
 
@@ -233,7 +226,7 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
 //  Here we detect that we should run with the build directory.
 void do_fix_resource_path() {
   FLSimulate::initResources();
-  boost::filesystem::path dyn_res_path = FLSimulate::getResourceDir() + "/Falaise-1.0.0/resources";
+  boost::filesystem::path dyn_res_path = FLSimulate::getResourceDir() + "/resources";
   boost::filesystem::path install_res_path = falaise::get_resource_dir();
   if(!boost::filesystem::exists(install_res_path)) {
     DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Falaise resource installation directory is missing !"
@@ -261,23 +254,22 @@ void do_fix_resource_path() {
                                        );
         DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Falaise resource installation directory was dynamically set !");
       }
-      // lib_info_reg.tree_dump(std::clog, "datatools' kernel library info register: ");
     }
   }
 
   // Fix up Bayeux
-  /*
-  boost::filesystem::path bx_res_path = FLSimulate::getResourceDir() + "/Bayeux-1.0.0/resources/geomtools";
-  datatools::kernel& krnl = datatools::kernel::instance();
-  datatools::library_info& lib_info_reg = krnl.grab_library_info_register();
-  datatools::properties& bayeux_lib_infos = lib_info_reg.grab("geomtools");
-  bayeux_lib_infos.tree_dump();
-  bayeux_lib_infos.update_string(datatools::library_info::keys::install_resource_dir(),
-                                 bx_res_path.string()
-                                 );
-  bayeux_lib_infos.tree_dump();
-  */
-  return;
+  boost::filesystem::path bx_res_path = FLSimulate::getResourceDir() + "/../Bayeux-1.0.0/resources";
+
+  boost::filesystem::path gt_res_path = bx_res_path / "geomtools";
+  setenv("GEOMTOOLS_RESOURCE_DIR", gt_res_path.c_str(), 1);
+
+  boost::filesystem::path mat_res_path = bx_res_path / "materials";
+  setenv("MATERIALS_RESOURCE_DIR", mat_res_path.c_str(), 1);
+
+  boost::filesystem::path gbb_res_path = bx_res_path / "genbb_help";
+  setenv("GENBB_HELP_RESOURCE_DIR", gbb_res_path.c_str(), 1);
+
+
 }
 
 //----------------------------------------------------------------------
@@ -290,7 +282,7 @@ int main(int argc, char *argv[]) {
   // - Fix the resource path
   // This is a temporary trick for tests because Falaise's resource path
   // registration uses the installation path and not the build path.
-  //do_fix_resource_path();
+  do_fix_resource_path();
 
   // - Do the simulation.
   // Ideally, exceptions SHOULD NOT propagate out of this  - the error
