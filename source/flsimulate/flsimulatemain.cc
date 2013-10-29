@@ -266,20 +266,18 @@ void do_fix_resource_path() {
   }
 
   // Fix up Bayeux
+  /*
   boost::filesystem::path bx_res_path = FLSimulate::getResourceDir() + "/Bayeux-1.0.0/resources/geomtools";
-
   datatools::kernel& krnl = datatools::kernel::instance();
   datatools::library_info& lib_info_reg = krnl.grab_library_info_register();
   datatools::properties& bayeux_lib_infos = lib_info_reg.grab("geomtools");
-
   bayeux_lib_infos.tree_dump();
   bayeux_lib_infos.update_string(datatools::library_info::keys::install_resource_dir(),
                                  bx_res_path.string()
                                  );
   bayeux_lib_infos.tree_dump();
-
-
-
+  */
+  return;
 }
 
 //----------------------------------------------------------------------
@@ -292,7 +290,7 @@ int main(int argc, char *argv[]) {
   // - Fix the resource path
   // This is a temporary trick for tests because Falaise's resource path
   // registration uses the installation path and not the build path.
-  do_fix_resource_path();
+  //do_fix_resource_path();
 
   // - Do the simulation.
   // Ideally, exceptions SHOULD NOT propagate out of this  - the error

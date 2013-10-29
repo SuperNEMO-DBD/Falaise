@@ -122,9 +122,36 @@ Usage
 Test with flsimulate
 ====================
 
-This is preliminary...
+From the build directory, the resource files from Bayeux's modules (materials, geomtools...) being not yet installed, it is necessary
+to address them through environment variables:
 
-From the build directory: ::
++---------------+-----------------------------+--------------------------------------+
+|    module     |     environment variable    | accessed files                       |
++===============+=============================+======================================+
+| ``materials`` | ``MATERIALS_RESOURCE_DIR``  | ``data/std_isotopes.def``            |
+|               |                             | ``data/std_elements.def``            |
+|               |                             | ``data/std_materials.def``           |
++---------------+-----------------------------+--------------------------------------+
+| ``geomtools`` | ``GEOMTOOLS_RESOURCE_DIR``  | ``gdml_schema/gdml.xsd``             |
++---------------+-----------------------------+--------------------------------------+
+| ``falaise``   | ``FALAISE_RESOURCE_DIR``    | ``config/...``                       |
++---------------+-----------------------------+--------------------------------------+
 
-  $ FALAISE_RESOURCE_DIR=$(pwd)/BuildProducts/share/Falaise-1.0.0/resources \
-    ./BuildProducts/bin/flsimulate -n 1 -o snemo_tc_muons_roof.xml -e muon.cosmic.sea_level.toy -x experimental_hall_roof
+Simulate 10 cosmic muons events from the *roof of the experimental hall* in the  SuperNEMO tracker commissioning
+virtual geometry setup. Batch run with output data file: ::
+
+  $ MATERIALS_RESOURCE_DIR=$(pwd)/BuildProducts/share/Bayeux-1.0.0/resources/materials \
+    GEOMTOOLS_RESOURCE_DIR=$(pwd)/BuildProducts/share/Bayeux-1.0.0/resources/geomtools \
+    FALAISE_RESOURCE_DIR=$(pwd)/BuildProducts/share/Falaise-1.0.0/resources \
+      ./BuildProducts/bin/flsimulate \
+      -n 10 \
+      -e muon.cosmic.sea_level.toy \
+      -x experimental_hall_roof \
+      -o snemo_tc_muons_roof.data.gz
+
+where:
+
+  * ``muon.cosmic.sea_level.toy`` : is the name of the primary event generator
+  * ``experimental_hall_roof`` : is the name of the vertex generator
+  * ``snemo_tc_muons_roof.data.gz`` : is the output data compressed file that contains simulated events stored as ``mctools::simulated_data``
+    objects in portable binary archives (from ``datatools``).
