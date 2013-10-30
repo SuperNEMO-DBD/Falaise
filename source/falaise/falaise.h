@@ -28,29 +28,33 @@
 #include <string>
 
 // This project
-//#include <falaise/falaise_config.h>
 
 namespace falaise {
 
+  /// Check if Bayeux is embedded
+  bool bayeux_embedded();
+
+  /// Initialize special resources of the Falaise library
   void initialize(int argc_ = 0, char * argv_[] = 0);
 
+  /// Terminate special resources of the Falaise library
   void terminate();
 
 }
 
-/// falaise initialization macro using main function arguments
-#define FALAISE_INIT_MAIN(Argc,Argv)		\
-  ::falaise::initialize( Argc , Argv );		\
+/// Falaise initialization macro using main function arguments
+#define FALAISE_INIT_MAIN(Argc,Argv)            \
+  ::falaise::initialize( Argc , Argv );         \
   /**/
 
-/// falaise initialization macro
-#define FALAISE_INIT()				\
-  ::falaise::initialize(0, 0);			\
+/// Falaise initialization macro
+#define FALAISE_INIT()                          \
+  ::falaise::initialize(0, 0);                  \
   /**/
 
-/// falaise termination macro
-#define FALAISE_FINI()				\
-  ::falaise::terminate();			\
+/// Falaise termination macro
+#define FALAISE_FINI()                          \
+  ::falaise::terminate();                       \
   /**/
 
 #endif // FALAISE_FALAISE_H

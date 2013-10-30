@@ -141,6 +141,10 @@ void do_cldialog(int argc, char *argv[], mctools::g4::manager_parameters& params
   params.eg_seed   = mygsl::random_utils::SEED_TIME; // PRNG for the primary event generator
   params.shpf_seed = mygsl::random_utils::SEED_TIME; // PRNG for the back end true hit processors
   params.mgr_seed  = mygsl::random_utils::SEED_TIME; // PRNG for the Geant4 engine itself
+  // params.vg_seed   = 1;
+  // params.eg_seed   = 2;
+  // params.shpf_seed = 3;
+  // params.mgr_seed  = 4;
 
   // Handle verbose, which can't be bound yet
   if (vMap.count("verbose")) params.logging = "information";
@@ -220,28 +224,40 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
 //----------------------------------------------------------------------
 //! Temporary trick: fix the registered resource path in the datatools'
 //  kernel.
-//  Because the official configuration files use the
-//  "@falaise:foo.conf" syntax and "falaise" is assumed to refer to the
-//  installation path of resource files.
-//  Here we detect that we should run with the build directory.
+//  The  official  configuration  files  use  the  "@falaise:foo.conf"
+//  syntax. "@falaise:" is  thus assumed to refer  to the installation
+//  path of resource files.  Here we  detect if we should run with the
+//  build directory.   In case Bayeux  is embedded in Falaise  and not
+//  yet  installed,  we  also  fix the  "geomtools",  "materials"  and
+//  "genbb_help" resource paths.
+
 void do_fix_resource_path() {
   FLSimulate::initResources();
   boost::filesystem::path dyn_res_path = FLSimulate::getResourceDir() + "/resources";
   boost::filesystem::path install_res_path = falaise::get_resource_dir();
+  bool fl_installed = true;
   if(!boost::filesystem::exists(install_res_path)) {
+    fl_installed = false;
     DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Falaise resource installation directory is missing !"
-                  << "Revert to the build resource directory...");
+                  << " Revert to the build resource directory...");
+    // Access to the datatools' kernel :
     datatools::kernel & krnl = datatools::kernel::instance();
     if (krnl.has_library_info_register()) {
+      // Access to the datatools' kernel library info register:
       datatools::library_info & lib_info_reg
         = krnl.grab_library_info_register();
       if (lib_info_reg.has("falaise")) {
+        // Kernel's library info already has en entry related to "falaise":
         datatools::properties & falaise_lib_infos = lib_info_reg.grab("falaise");
         falaise_lib_infos.update_string(datatools::library_info::keys::install_resource_dir(),
                                         dyn_res_path.string()
                                         );
+        falaise_lib_infos.update_string(datatools::library_info::keys::env_resource_dir(),
+                                        "FALAISE_RESOURCE_DIR"
+                                        );
         DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Falaise resource installation directory was dynamically updated !");
       } else {
+        // Kernel's library info does not have en entry related to "falaise":
         datatools::properties & falaise_lib_infos
           = lib_info_reg.registration("falaise",
                                       "Falaise provides the main computational environment for the simulation,"
@@ -252,23 +268,27 @@ void do_fix_resource_path() {
         falaise_lib_infos.store_string(datatools::library_info::keys::install_resource_dir(),
                                        dyn_res_path.string()
                                        );
+        falaise_lib_infos.store_string(datatools::library_info::keys::env_resource_dir(),
+                                       "FALAISE_RESOURCE_DIR"
+                                       );
         DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Falaise resource installation directory was dynamically set !");
       }
     }
   }
 
-  // Fix up Bayeux
-  boost::filesystem::path bx_res_path = FLSimulate::getResourceDir() + "/../Bayeux-1.0.0/resources";
+  // Fix up Bayeux's modules resource dir:
+  if (falaise::bayeux_embedded()) {
+    boost::filesystem::path bx_res_path = FLSimulate::getResourceDir() + "/../Bayeux-1.0.0/resources";
 
-  boost::filesystem::path gt_res_path = bx_res_path / "geomtools";
-  setenv("GEOMTOOLS_RESOURCE_DIR", gt_res_path.c_str(), 1);
+    boost::filesystem::path gt_res_path = bx_res_path / "geomtools";
+    setenv("GEOMTOOLS_RESOURCE_DIR", gt_res_path.c_str(), 1);
 
-  boost::filesystem::path mat_res_path = bx_res_path / "materials";
-  setenv("MATERIALS_RESOURCE_DIR", mat_res_path.c_str(), 1);
+    boost::filesystem::path mat_res_path = bx_res_path / "materials";
+    setenv("MATERIALS_RESOURCE_DIR", mat_res_path.c_str(), 1);
 
-  boost::filesystem::path gbb_res_path = bx_res_path / "genbb_help";
-  setenv("GENBB_HELP_RESOURCE_DIR", gbb_res_path.c_str(), 1);
-
+    boost::filesystem::path gbb_res_path = bx_res_path / "genbb_help";
+    setenv("GENBB_HELP_RESOURCE_DIR", gbb_res_path.c_str(), 1);
+  }
 
 }
 
