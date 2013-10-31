@@ -118,6 +118,11 @@ else()
   set(Bayeux_BUILD_DOCS ${Falaise_BUILD_DOCS})
   set(Bayeux_WITH_GEANT4 ON)
 
+  # - Option to build Bayeux's developer tools
+  option(Falaise_BUILD_DEVELOPER_TOOLS "Build tools for developing Falaise" OFF)
+  mark_as_advanced(Falaise_BUILD_DEVELOPER_TOOLS)
+  set(Bayeux_BUILD_TOOLS ${Falaise_BUILD_DEVELOPER_TOOLS})
+
   # - Build
   add_subdirectory(utilities/flbayeux)
 
