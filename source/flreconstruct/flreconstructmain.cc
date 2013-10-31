@@ -43,7 +43,7 @@
 #include "bayeux/dpp/module_manager.h"
 #include "bayeux/dpp/base_module.h"
 #include "bayeux/dpp/output_module.h"
-#include "bayeux/dpp/input_module.h"
+#include "bayeux/mctools/simulated_data_input_module.h"
 
 // - Boost
 #include "boost/program_options.hpp"
@@ -232,10 +232,10 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
 
   // Input module.... configured by properties, oh joy...
   DT_LOG_TRACE(clArgs.logLevel,"configuring input module");
-  boost::scoped_ptr<dpp::input_module> input_(new dpp::input_module);
+  boost::scoped_ptr<mctools::simulated_data_input_module> input_(new mctools::simulated_data_input_module);
   datatools::properties inputModuleConfig;
-  inputModuleConfig.store("files.mode", "single");
-  inputModuleConfig.store("files.single.filename", clArgs.inputFile);
+  inputModuleConfig.store("input.files.mode", "single");
+  inputModuleConfig.store("input.files.single.filename", clArgs.inputFile);
   input_->initialize_standalone(inputModuleConfig);
 
   // Output module.... configured by properties, oh joy..., but only
