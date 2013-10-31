@@ -230,13 +230,11 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
     return falaise::EXIT_UNAVAILABLE;
   }
 
-  // Input module.... configured by properties, oh joy...
+  // Input module...
   DT_LOG_TRACE(clArgs.logLevel,"configuring input module");
   boost::scoped_ptr<mctools::simulated_data_input_module> input_(new mctools::simulated_data_input_module);
-  datatools::properties inputModuleConfig;
-  inputModuleConfig.store("input.files.mode", "single");
-  inputModuleConfig.store("input.files.single.filename", clArgs.inputFile);
-  input_->initialize_standalone(inputModuleConfig);
+  input_->set_single_input_file(clArgs.inputFile);
+  input_->initialize_simple();
 
   // Output module.... configured by properties, oh joy..., but only
   // if file was passed
@@ -313,4 +311,3 @@ int main(int argc, char *argv[]) {
   FALAISE_FINI();
   return ret;
 }
-
