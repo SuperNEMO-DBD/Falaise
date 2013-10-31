@@ -98,14 +98,20 @@ void do_cldialog(int argc, char *argv[], mctools::g4::manager_parameters& params
     ("version","print version number")
     ("verbose,v","increase verbosity of logging")
     ("number,n",
-     bpo::value<uint32_t>(&params.number_of_events)->default_value(1)->value_name("[events]"),
+     bpo::value<uint32_t>(&params.number_of_events)
+      ->default_value(1)
+      ->value_name("[events]"),
      "number of events to simulate")
     ("vertex-generator,x",
-     bpo::value<std::string>( &params.vg_name)->required()->value_name("[name]"),
+     bpo::value<std::string>(&params.vg_name)
+      ->default_value("experimental_hall_roof")
+      ->value_name("[name]"),
      "The name of the vertex generator"
      )
     ("event-generator,e",
-     bpo::value<std::string>( &params.eg_name)->required()->value_name("[name]"),
+     bpo::value<std::string>(&params.eg_name)
+      ->default_value("muon.cosmic.sea_level.toy")
+      ->value_name("[name]"),
      "The name of the event generator"
      )
     ("output-file,o",
@@ -238,40 +244,35 @@ void do_fix_resource_path() {
   bool fl_installed = true;
   if(!boost::filesystem::exists(install_res_path)) {
     fl_installed = false;
-    DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Falaise resource installation directory is missing !"
-                  << " Revert to the build resource directory...");
     // Access to the datatools' kernel :
     datatools::kernel & krnl = datatools::kernel::instance();
     if (krnl.has_library_info_register()) {
       // Access to the datatools' kernel library info register:
-      datatools::library_info & lib_info_reg
-        = krnl.grab_library_info_register();
+      datatools::library_info& lib_info_reg = krnl.grab_library_info_register();
       if (lib_info_reg.has("falaise")) {
         // Kernel's library info already has en entry related to "falaise":
         datatools::properties & falaise_lib_infos = lib_info_reg.grab("falaise");
-        falaise_lib_infos.update_string(datatools::library_info::keys::install_resource_dir(),
-                                        dyn_res_path.string()
-                                        );
-        falaise_lib_infos.update_string(datatools::library_info::keys::env_resource_dir(),
-                                        "FALAISE_RESOURCE_DIR"
-                                        );
-        DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Falaise resource installation directory was dynamically updated !");
+        falaise_lib_infos.update_string(
+            datatools::library_info::keys::install_resource_dir(),
+            dyn_res_path.string());
+        falaise_lib_infos.update_string(
+            datatools::library_info::keys::env_resource_dir(),
+            "FALAISE_RESOURCE_DIR");
       } else {
-        // Kernel's library info does not have en entry related to "falaise":
-        datatools::properties & falaise_lib_infos
-          = lib_info_reg.registration("falaise",
-                                      "Falaise provides the main computational environment for the simulation,"
-                                      "processing and analysis of data for the SuperNEMO double beta decay "
-                                      "search experiment.",
-                                      falaise::version::get_version()
-                                      );
-        falaise_lib_infos.store_string(datatools::library_info::keys::install_resource_dir(),
-                                       dyn_res_path.string()
-                                       );
-        falaise_lib_infos.store_string(datatools::library_info::keys::env_resource_dir(),
-                                       "FALAISE_RESOURCE_DIR"
-                                       );
-        DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Falaise resource installation directory was dynamically set !");
+        // Kernel's library info does not have entry related to "falaise":
+        datatools::properties & falaise_lib_infos =
+            lib_info_reg.registration(
+                "falaise",
+                "Falaise provides the main computational environment for the simulation,"
+                "processing and analysis of data for the SuperNEMO double beta decay "
+                "search experiment.",
+                falaise::version::get_version());
+        falaise_lib_infos.store_string(
+            datatools::library_info::keys::install_resource_dir(),
+            dyn_res_path.string());
+        falaise_lib_infos.store_string(
+            datatools::library_info::keys::env_resource_dir(),
+            "FALAISE_RESOURCE_DIR");
       }
     }
   }
@@ -289,7 +290,6 @@ void do_fix_resource_path() {
     boost::filesystem::path gbb_res_path = bx_res_path / "genbb_help";
     setenv("GENBB_HELP_RESOURCE_DIR", gbb_res_path.c_str(), 1);
   }
-
 }
 
 //----------------------------------------------------------------------
