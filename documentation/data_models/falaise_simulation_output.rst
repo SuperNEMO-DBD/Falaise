@@ -77,4 +77,16 @@ Using the simulated data format
 
 Once  generated, the  simulated  data can  be read  by  a third  party
 application.    A  dedicated   reader   class  is   provided  by   the
-Bayeux/mctools library : the ``mctools::simulated_data_reader`` class.
+Bayeux/mctools library :  the ``mctools::simulated_data_reader`` class
+that is  able to  read plain ``mctools::simulated_data``  objects from
+Boost archive files (ASCII, XML, portable binary of Brio).
+
+Another way of processing plain simulated  data stored in a file is to
+use    the    ``mctools::simulated_data_input_module``   (also    from
+Bayeux/mctools)   from    the   SuperNEMO   pipeline    system.    The
+``mctools::simulated_data_input_module``      class      embeds      a
+``mctools::simulated_data_reader`` object and uses  it to create a new
+``"SD"`` data  bank in  the event  data record.   Such a  module being
+typically the first loaded in a pipeline module chain, next modules in
+the chain  are thus  free to  use the newly  created ``"SD"``  bank to
+access the simulated data model to perform reconstruction operations.
