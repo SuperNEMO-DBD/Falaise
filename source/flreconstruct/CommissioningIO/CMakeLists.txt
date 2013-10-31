@@ -37,3 +37,10 @@ add_library(falaise_io STATIC ${falaise_io_SOURCES})
 add_executable(testCommissioningIO testCommissioningIO.cc)
 target_link_libraries(testCommissioningIO falaise_io)
 
+# - For now, dump them into the testing output directory
+set_target_properties(falaise_io testCommissioningIO
+  PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fltests
+    ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fltests
+  )
+
