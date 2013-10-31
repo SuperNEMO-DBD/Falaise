@@ -69,14 +69,11 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_m
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_modules/pictures/tracker_front_volume.model.view_xy_0.jpeg
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_modules/pictures/tracker_front_submodule.model.view_xz_0.jpeg
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_modules/pictures/xwall_front_right.model.view_yz_0.jpeg
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_modules/pictures/cell_dimensions.pdf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_modules/pictures/gveto_line_left.model.view_yz_0.jpeg
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_modules/pictures/tracker_horizontal_beam_back_bottom.model.view_xz_0.jpeg
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_modules/pictures/xwall_inner_module.pdf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_modules/pictures/tracker_layer_base.model.view_xy_0.jpeg
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_modules/pictures/gveto_line_bottom.model.view_yz_0.jpeg
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_modules/pictures/field_wires_set.model.view_3d_0.jpeg
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_modules/pictures/cell_design.pdf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_modules/pictures/drift_cell_core.model.view_yz_1.jpeg
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_modules/pictures/tracker_front_submodule.model.view_yz_1.jpeg
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_modules/pictures/gveto_module_outer.model.view_yz_0.jpeg
@@ -92,8 +89,6 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_m
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_modules/pictures/tracker_front_volume.model.view_yz_0.jpeg
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_modules/pictures/gveto_module.model.view_xz_0.jpeg
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_modules/pmt_5inch.geom
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_modules/tracker_drift_cell_nodes.geom
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_modules/tracker_drift_cell_base.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_modules/xwall.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_modules/tracker_submodules.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/tracker_modules/gveto.geom

@@ -51,7 +51,7 @@ shape_type  : string = "polycone"
 build_mode  : string = "datafile"
 
 #@description The polycone coordinates filename
-datafile    : string = "@falaise:config/geometry/common/pmt/hamamatsu_R6594/hamamatsu_R6594_shape.data"
+datafile    : string = "@falaise:config/common/geometry/pmt/1.0/hamamatsu_R6594/hamamatsu_R6594_shape.data"
 
 #@description The 'filled' mode to build the model
 filled_mode : string = "by_envelope"

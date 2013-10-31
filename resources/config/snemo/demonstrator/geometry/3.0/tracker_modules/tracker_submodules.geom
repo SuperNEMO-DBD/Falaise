@@ -2,11 +2,10 @@
 # tracker_submodules.geom
 
 
-###########################
-# Front tracker submodule #
-###########################
-
+###############################################################################
 [name="tracker_front_submodule.model" type="geomtools::surrounded_boxed_model"]
+#@config Front tracker submodule
+
 material.ref            : string  = "tracking_gas"
 surrounded.centered_x   : boolean = 1
 surrounded.centered_y   : boolean = 1
@@ -38,11 +37,10 @@ visibility.hidden_envelop   : boolean = 0
 visibility.daughters.hidden : boolean = 0
 
 
-##########################
-# Back tracker submodule #
-##########################
-
+##############################################################################
 [name="tracker_back_submodule.model" type="geomtools::surrounded_boxed_model"]
+#@config Back tracker submodule
+
 material.ref            : string  = "tracking_gas"
 surrounded.centered_x   : boolean = 1
 surrounded.centered_y   : boolean = 1

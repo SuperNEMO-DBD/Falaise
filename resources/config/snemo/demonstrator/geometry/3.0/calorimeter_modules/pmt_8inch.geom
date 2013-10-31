@@ -4,8 +4,10 @@
 ### PMT HAMAMATSU R5912                       ###
 #################################################
 
-############ simplified dynodes ############
+
+##########################################################################
 [name="PMT_HAMAMATSU_R5912.dynodes" type="geomtools::simple_shaped_model"]
+#@config Simplified dynodes
 
 length_unit : string = "mm"
 shape_type  : string = "tube"
@@ -18,8 +20,10 @@ material.ref      : string = "std::copper"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "orange"
 
-############ simplified base ############
+
+#######################################################################
 [name="PMT_HAMAMATSU_R5912.base" type="geomtools::simple_shaped_model"]
+#@config Simplified base
 
 shape_type  : string = "cylinder"
 length_unit : string = "mm"
@@ -32,7 +36,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "orange"
 
 
-############ PMT glass ############
+##################################################################
 [name="PMT_HAMAMATSU_R5912" type="geomtools::simple_shaped_model"]
 #@config The configuration parameters for the PMT's bulb and its contents
 
@@ -46,7 +50,7 @@ shape_type  : string = "polycone"
 build_mode  : string = "datafile"
 
 #@description The polycone coordinates filename
-datafile    : string = "@falaise:config/geometry/common/pmt/hamamatsu_R5912MOD/hamamatsu_R5912MOD_shape.data"
+datafile    : string = "@falaise:config/common/geometry/pmt/1.0/hamamatsu_R5912MOD/hamamatsu_R5912MOD_shape.data"
 
 #@description The 'filled' mode to build the model
 filled_mode : string = "by_envelope"

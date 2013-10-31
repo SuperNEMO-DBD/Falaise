@@ -1,5 +1,6 @@
 # -*- mode: conf-unix; -*-
 
+
 # Packed neighbouring cells (but the first one) within
 # a standard tracker layer (not the first one in a block of layers):
 #
@@ -28,6 +29,7 @@
 #   + - +.
 #   . . .
 #
+##########################################################################
 [name="tracker_layer_base.model" type="geomtools::replicated_boxed_model"]
 material.ref               : string  = "tracking_gas"
 
@@ -43,6 +45,7 @@ visibility.color            : string = "cyan"
 
 # --> Daughters mapping informations:
 mapping.daughter_id.cells : string  = "[drift_cell:row+1]"
+
 
 # A standard tracker layer stacks the first cell and a pack of many successive cells :
 #
@@ -67,6 +70,7 @@ mapping.daughter_id.cells : string  = "[drift_cell:row+1]"
 #   +---+o
 #   o o o
 #
+############################################################
 [name="tracker_layer.model" type="geomtools::stacked_model"]
 material.ref             : string  = "tracking_gas"
 
@@ -84,6 +88,7 @@ visibility.color            : string  = "cyan"
 
 # --> Daughters mapping informations:
 mapping.daughter_id.first_drift_cell : string = "[drift_cell:row=0]"
+
 
 # Packed neighbouring cells (but the first one) within
 # the first tracker layer in a block of layers:
@@ -113,6 +118,7 @@ mapping.daughter_id.first_drift_cell : string = "[drift_cell:row=0]"
 #  .+ - +.
 #   . . .
 #
+##################################################################################
 [name="tracker_layer_base_closing.model" type="geomtools::replicated_boxed_model"]
 material.ref               : string  = "tracking_gas"
 
@@ -128,6 +134,7 @@ visibility.color            : string  = "cyan"
 
 # --> Daughters mapping informations:
 mapping.daughter_id.cells : string = "[drift_cell:row+1]"
+
 
 # The first tracker layer stacks the first cell and a pack of many successive cells :
 #
@@ -152,6 +159,7 @@ mapping.daughter_id.cells : string = "[drift_cell:row+1]"
 #  o+---+o
 #   o o o
 #
+####################################################################
 [name="tracker_layer_closing.model" type="geomtools::stacked_model"]
 material.ref             : string  = "tracking_gas"
 
@@ -170,8 +178,10 @@ visibility.color            : string  = "cyan"
 # --> Daughters mapping informations:
 mapping.daughter_id.first_drift_cell : string = "[drift_cell:row=0]"
 
-# A tracking gas gap between a tracking layer and the calorimeter:
+
+####################################################################
 [name="tracker_gap_calo.model" type="geomtools::simple_boxed_model"]
+#@config Tracking gas gap between a tracking layer and the calorimeter
 material.ref      : string  = "tracking_gas"
 x                 : real    =    6.975
 y                 : real    = 4972.05
@@ -180,8 +190,10 @@ length_unit       : string  = "mm"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "cyan"
 
-# A tracking gas gap between a tracking layer and the source:
+
+######################################################################
 [name="tracker_gap_source.model" type="geomtools::simple_boxed_model"]
+#@config Tracking gas gap between a tracking layer and the source:
 material.ref      : string  = "tracking_gas"
 x                 : real    =    1.975
 y                 : real    = 4972.05

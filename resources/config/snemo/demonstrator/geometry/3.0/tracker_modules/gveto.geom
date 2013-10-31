@@ -2,7 +2,7 @@
 # gveto.geom
 
 
-###############################################################################
+#######################################################################
 [name="gveto_line_left.model" type="geomtools::replicated_boxed_model"]
 material.ref                : string  = "tracking_gas"
 replicated.axis             : string  = "y"
@@ -18,7 +18,7 @@ visibility.color            : string = "grey"
 mapping.daughter_id.module : string = "[gveto_optical_module:column+0]"
 
 
-###############################################################################
+########################################################################
 [name="gveto_line_right.model" type="geomtools::replicated_boxed_model"]
 material.ref                : string  = "tracking_gas"
 replicated.axis             : string  = "y"
@@ -34,7 +34,7 @@ visibility.color            : string = "grey"
 mapping.daughter_id.module : string = "[gveto_optical_module:column+8]"
 
 
-##############################################################################
+###########################################################################
 [name="gveto_line_stock_plate.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   =  292.0 # mm
@@ -56,7 +56,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "grey"
 
 
-##############################################################################
+###########################################################################
 [name="gveto_line_stock_inner.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   =  292.0 # mm
@@ -67,7 +67,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "cyan"
 
 
-##############################################################################
+###############################################################
 [name="gveto_line_stock.model" type="geomtools::stacked_model"]
 material.ref            : string  = "lab_air"
 stacked.axis            : string = "z"
@@ -80,7 +80,7 @@ stacked.model_2   : string  = "gveto_line_stock_inner.model"
 stacked.label_2   : string  = "inner"
 
 
-##############################################################################
+#################################################################################
 [name="gveto_line_ender_stock_plate.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   =  292.0 # mm
@@ -91,7 +91,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "red"
 
 
-##############################################################################
+#################################################################################
 [name="gveto_line_ender_stock_outer.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   =  292.0 # mm
@@ -102,7 +102,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "grey"
 
 
-##############################################################################
+#################################################################################
 [name="gveto_line_ender_stock_inner.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   =  292.0 # mm
@@ -113,7 +113,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "cyan"
 
 
-##############################################################################
+#####################################################################
 [name="gveto_line_ender_stock.model" type="geomtools::stacked_model"]
 material.ref            : string  = "lab_air"
 stacked.axis            : string = "z"
@@ -130,7 +130,7 @@ visibility.hidden_envelop : boolean = 1
 visibility.color          : string  = "grey"
 
 
-##############################################################################
+#########################################################
 [name="gveto_line.model" type="geomtools::stacked_model"]
 material.ref            : string  = "lab_air"
 stacked.axis            : string = "y"
@@ -151,7 +151,7 @@ visibility.hidden_envelop : boolean = 1
 visibility.color          : string  = "grey"
 
 
-##############################################################################
+###################################################################
 [name="gveto_line_top.model" type="geomtools::rotated_boxed_model"]
 material.ref              : string  = "lab_air"
 rotated.axis              : string  = "y"
@@ -163,7 +163,7 @@ visibility.hidden_envelop : boolean = 1
 visibility.color          : string  = "grey"
 
 
-##############################################################################
+######################################################################
 [name="gveto_line_bottom.model" type="geomtools::rotated_boxed_model"]
 material.ref              : string  = "lab_air"
 rotated.axis              : string  = "y"
@@ -175,7 +175,7 @@ visibility.hidden_envelop : boolean = 1
 visibility.color          : string  = "grey"
 
 
-##############################################################################
+#######################################################################################
 [name="tracker_horizontal_beam_side_plate.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   =    6.5 # mm
@@ -186,7 +186,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "red"
 
 
-##############################################################################
+########################################################################################
 [name="tracker_horizontal_beam_outer_plate.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   =   84.5 # mm
@@ -196,7 +196,7 @@ material.ref      : string  = "std::iron"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "red"
 
-##############################################################################
+########################################################################################
 [name="tracker_horizontal_beam_inner_plate.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   =   28.5 # mm
@@ -206,7 +206,7 @@ material.ref      : string  = "std::iron"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "red"
 
-##############################################################################
+############################################################################################
 [name="tracker_horizontal_beam_outer_gas_stock.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   =   84.5 # mm
@@ -217,7 +217,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "cyan"
 
 
-##############################################################################
+############################################################################################
 [name="tracker_horizontal_beam_inner_gas_stock.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   =   28.5 # mm
@@ -228,7 +228,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "cyan"
 
 
-##############################################################################
+##################################################################################
 [name="tracker_horizontal_beam_inner.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   =   28.5 # mm
@@ -250,7 +250,7 @@ internal_item.placement.gas        : string  = "0 0 162.5 (mm)"
 internal_item.model.gas            : string  = "tracker_horizontal_beam_inner_gas_stock.model"
 
 
-##############################################################################
+##################################################################################
 [name="tracker_horizontal_beam_outer.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   =   84.5 # mm
@@ -261,7 +261,6 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "grey"
 
 internal_item.labels  : string[3] = "beam_side" "beam_inner" "gas"
-
 
 internal_item.placement.beam_side  : string  = "39.0 0 -80.25 (mm)"
 internal_item.model.beam_side      : string  = "tracker_horizontal_beam_side_plate.model"
@@ -282,7 +281,7 @@ rotated.model             : string  = "tracker_horizontal_beam_outer.model"
 visibility.hidden_envelop : boolean = 0
 
 
-###############################################################################################
+############################################################################################
 [name="tracker_horizontal_beam_outer_front_top.model" type="geomtools::rotated_boxed_model"]
 material.ref              : string  = "lab_air"
 rotated.axis              : string  = "x"
@@ -291,7 +290,7 @@ rotated.model             : string  = "tracker_horizontal_beam_outer.model"
 visibility.hidden_envelop : boolean = 0
 
 
-##############################################################################
+##############################################################################################
 [name="tracker_horizontal_beam_outer_back_bottom.model" type="geomtools::rotated_boxed_model"]
 material.ref              : string  = "lab_air"
 rotated.axis              : string  = "z"
@@ -300,7 +299,7 @@ rotated.model             : string  = "tracker_horizontal_beam_outer.model"
 visibility.hidden_envelop : boolean = 0
 
 
-##############################################################################
+###########################################################################################
 [name="tracker_horizontal_beam_outer_back_top.model" type="geomtools::rotated_boxed_model"]
 material.ref              : string  = "lab_air"
 rotated.axis              : string  = "y"
@@ -309,7 +308,7 @@ rotated.model             : string  = "tracker_horizontal_beam_outer.model"
 visibility.hidden_envelop : boolean = 0
 
 
-##########################################################################################
+###############################################################################################
 [name="tracker_horizontal_beam_inner_front_bottom.model" type="geomtools::rotated_boxed_model"]
 material.ref              : string  = "lab_air"
 rotated.axis              : string  = "x"
@@ -318,7 +317,7 @@ rotated.model             : string  = "tracker_horizontal_beam_inner.model"
 visibility.hidden_envelop : boolean = 0
 
 
-#######################################################################################
+############################################################################################
 [name="tracker_horizontal_beam_inner_front_top.model" type="geomtools::rotated_boxed_model"]
 material.ref              : string  = "lab_air"
 rotated.axis              : string  = "x"
@@ -327,7 +326,7 @@ rotated.model             : string  = "tracker_horizontal_beam_inner.model"
 visibility.hidden_envelop : boolean = 0
 
 
-#########################################################################################
+##############################################################################################
 [name="tracker_horizontal_beam_inner_back_bottom.model" type="geomtools::rotated_boxed_model"]
 material.ref              : string  = "lab_air"
 rotated.axis              : string  = "z"
@@ -336,7 +335,7 @@ rotated.model             : string  = "tracker_horizontal_beam_inner.model"
 visibility.hidden_envelop : boolean = 0
 
 
-######################################################################################
+###########################################################################################
 [name="tracker_horizontal_beam_inner_back_top.model" type="geomtools::rotated_boxed_model"]
 material.ref              : string  = "lab_air"
 rotated.axis              : string  = "y"
@@ -345,7 +344,7 @@ rotated.model             : string  = "tracker_horizontal_beam_inner.model"
 visibility.hidden_envelop : boolean = 0
 
 
-##############################################################################
+###################################################################################
 [name="tracker_horizontal_beam_front_bottom.model" type="geomtools::stacked_model"]
 material.ref            : string  = "lab_air"
 stacked.axis            : string = "x"
@@ -358,7 +357,7 @@ stacked.model_2   : string  = "tracker_horizontal_beam_outer_front_bottom.model"
 stacked.label_2   : string  = "outer"
 
 
-##############################################################################
+################################################################################
 [name="tracker_horizontal_beam_front_top.model" type="geomtools::stacked_model"]
 material.ref            : string  = "lab_air"
 stacked.axis            : string = "x"
@@ -371,7 +370,7 @@ stacked.model_2   : string  = "tracker_horizontal_beam_outer_front_top.model"
 stacked.label_2   : string  = "outer"
 
 
-##############################################################################
+##################################################################################
 [name="tracker_horizontal_beam_back_bottom.model" type="geomtools::stacked_model"]
 material.ref            : string  = "lab_air"
 stacked.axis            : string = "x"
@@ -384,7 +383,7 @@ stacked.model_2   : string  = "tracker_horizontal_beam_inner_back_bottom.model"
 stacked.label_2   : string  = "inner"
 
 
-##############################################################################
+###############################################################################
 [name="tracker_horizontal_beam_back_top.model" type="geomtools::stacked_model"]
 material.ref            : string  = "lab_air"
 stacked.axis            : string = "x"

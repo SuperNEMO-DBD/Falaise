@@ -5,6 +5,7 @@
 #########################################################
 
 
+####################################################################################
 [name="source_vertical_beam_main_plate.model" type="geomtools::simple_shaped_model"]
 shape_type         : string = "box"
 x                  : real   =    39   # mm
@@ -16,6 +17,7 @@ visibility.hidden  : boolean = 0
 visibility.color   : string  = "red"
 
 
+##################################################################################
 [name="source_vertical_beam_main_air.model" type="geomtools::simple_shaped_model"]
 shape_type         : string = "box"
 x                  : real   =   39   # mm
@@ -26,6 +28,7 @@ material.ref       : string = "lab_air"
 visibility.hidden  : boolean = 1
 
 
+#####################################################################
 [name="source_right_beam_main.model" type="geomtools::stacked_model"]
 stacked.axis            : string = "y"
 stacked.number_of_items : integer = 2
@@ -41,6 +44,7 @@ visibility.hidden : boolean   = 0
 visibility.color  : string    = "grey"
 
 
+####################################################################
 [name="source_left_beam_main.model" type="geomtools::stacked_model"]
 stacked.axis            : string = "y"
 stacked.number_of_items : integer = 2
@@ -56,6 +60,7 @@ visibility.hidden : boolean   = 0
 visibility.color  : string    = "grey"
 
 
+####################################################################################
 [name="source_vertical_beam_side_plate.model" type="geomtools::simple_shaped_model"]
 shape_type         : string = "box"
 x                  : real   =    6.5 # mm
@@ -66,10 +71,10 @@ material.ref       : string = "std::copper"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "red"
 
-#######################################################################################
-# Interface with the tracker frame :
 
+#####################################################################################
 [name="source_vertical_beam_interface_a.model" type="geomtools::simple_shaped_model"]
+#@config Interface with the tracker frame
 shape_type   : string  = "box"
 lenght_unit  : string  = "mm"
 x            : real    =    3
@@ -79,7 +84,9 @@ material.ref : string  = "std::copper"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "red"
 
+#####################################################################################
 [name="source_vertical_beam_interface_b.model" type="geomtools::simple_shaped_model"]
+#@config Interface with the tracker frame
 shape_type   : string  = "box"
 lenght_unit  : string  = "mm"
 x            : real    =    3
@@ -90,7 +97,9 @@ visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
 
+#####################################################################################
 [name="source_vertical_beam_interface_d.model" type="geomtools::simple_shaped_model"]
+#@config Interface with the tracker frame
 shape_type   : string  = "box"
 lenght_unit  : string  = "mm"
 x            : real    =    3
@@ -100,7 +109,9 @@ material.ref : string  = "std::copper"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "red"
 
+#####################################################################################
 [name="source_vertical_beam_interface_f.model" type="geomtools::simple_shaped_model"]
+#@config Interface with the tracker frame
 shape_type   : string  = "box"
 lenght_unit  : string  = "mm"
 x            : real    =    3
@@ -111,7 +122,9 @@ visibility.hidden  : boolean = 0
 visibility.color   : string  = "orange"
 
 
+################################################################################
 [name="source_right_beam_interface.model" type="geomtools::simple_shaped_model"]
+#@config Interface with the tracker frame
 shape_type   : string  = "box"
 lenght_unit  : string  = "mm"
 x            : real    =    3
@@ -138,7 +151,9 @@ visibility.hidden  : boolean = 0
 visibility.color   : string  = "grey"
 
 
+###############################################################################
 [name="source_left_beam_interface.model" type="geomtools::simple_shaped_model"]
+#@config Interface with the tracker frame
 shape_type   : string  = "box"
 lenght_unit  : string  = "mm"
 x            : real    =    3
@@ -165,9 +180,9 @@ visibility.hidden  : boolean = 0
 visibility.color   : string  = "grey"
 
 
-### Source beam (right)
-
+################################################################
 [name="source_right_beam.model" type="geomtools::stacked_model"]
+#@config Source beam (right)
 material.ref       : string = "std::air"
 visibility.hidden  : boolean = 0
 
@@ -189,9 +204,10 @@ stacked.label_1   : string  = "side0"
 stacked.model_0   : string  = "source_right_beam_interface.model"
 stacked.label_0   : string  = "interface0"
 
-### Source beam (left)
 
+###############################################################
 [name="source_left_beam.model" type="geomtools::stacked_model"]
+#@config Source beam (left)
 material.ref       : string = "std::air"
 visibility.hidden  : boolean = 0
 
@@ -215,8 +231,3 @@ stacked.label_0   : string  = "interface0"
 
 
 # end of file
-
-
-
-
-

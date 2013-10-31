@@ -2,6 +2,7 @@
 # source_module.geom
 # Author : F. Mauger
 # Date   : 2012-04-03
+# Updated : 2013-10-30
 #
 # Description :
 #
@@ -17,6 +18,7 @@
 #  Blocks of source strips  #
 #############################
 
+###################################################################
 [name="source_strip_block_0.model" type="geomtools::stacked_model"]
 
 material.ref      : string = "tracking_gas"
@@ -46,6 +48,8 @@ mapping.daughter_id.strip_0 : string = "[source_strip_path: strip=0]"
 mapping.daughter_id.strip_1 : string = "[source_strip_path: strip=1]"
 mapping.daughter_id.strip_2 : string = "[source_strip_path: strip=2]"
 
+
+###################################################################
 [name="source_strip_block_1.model" type="geomtools::stacked_model"]
 
 material.ref      : string = "tracking_gas"
@@ -96,6 +100,8 @@ mapping.daughter_id.strip_6 : string = "[source_strip_path: strip=6]"
 mapping.daughter_id.strip_7 : string = "[source_strip_path: strip=7]"
 mapping.daughter_id.strip_8 : string = "[source_strip_path: strip=8]"
 
+
+###################################################################
 [name="source_strip_block_2.model" type="geomtools::stacked_model"]
 
 material.ref      : string = "tracking_gas"
@@ -147,6 +153,8 @@ mapping.daughter_id.strip_12 : string = "[source_strip_path: strip=12]"
 mapping.daughter_id.strip_13 : string = "[source_strip_path: strip=13]"
 mapping.daughter_id.strip_14 : string = "[source_strip_path: strip=14]"
 
+
+###################################################################
 [name="source_strip_block_3.model" type="geomtools::stacked_model"]
 
 material.ref      : string = "tracking_gas"
@@ -197,6 +205,8 @@ mapping.daughter_id.strip_18 : string = "[source_strip_path: strip=18]"
 mapping.daughter_id.strip_19 : string = "[source_strip_path: strip=19]"
 mapping.daughter_id.strip_20 : string = "[source_strip_path: strip=20]"
 
+
+###################################################################
 [name="source_strip_block_4.model" type="geomtools::stacked_model"]
 
 material.ref      : string = "tracking_gas"
@@ -248,6 +258,8 @@ mapping.daughter_id.strip_24 : string = "[source_strip_path: strip=24]"
 mapping.daughter_id.strip_25 : string = "[source_strip_path: strip=25]"
 mapping.daughter_id.strip_26 : string = "[source_strip_path: strip=26]"
 
+
+###################################################################
 [name="source_strip_block_5.model" type="geomtools::stacked_model"]
 
 material.ref      : string = "tracking_gas"
@@ -298,6 +310,8 @@ mapping.daughter_id.strip_30 : string = "[source_strip_path: strip=30]"
 mapping.daughter_id.strip_31 : string = "[source_strip_path: strip=31]"
 mapping.daughter_id.strip_32 : string = "[source_strip_path: strip=32]"
 
+
+###################################################################
 [name="source_strip_block_6.model" type="geomtools::stacked_model"]
 
 material.ref      : string = "tracking_gas"
@@ -331,6 +345,8 @@ mapping.daughter_id.strip_35 : string = "[source_strip_path: strip=35]"
 #  The assembly of all blocks of source strips  #
 #################################################
 
+
+##########################################################################
 [name="source_strip_block_assembly.model" type="geomtools::stacked_model"]
 
 material.ref      : string = "tracking_gas"
@@ -398,6 +414,7 @@ mapping.daughter_id.calibration_5 : string = "[calibration_path: path=5]"
 #  The core volume  #
 #####################
 
+#################################################################
 [name="source_core_volume.model" type="geomtools::stacked_model"]
 material.ref      : string = "tracking_gas"
 length_unit       : string = "mm"
@@ -427,7 +444,7 @@ stacked.model_0   : string = "source_foil_bottom_gas_gap.model"
 stacked.label_0   : string = "bottom_gas_gap"
 
 
-#################################################
+#############################################################################
 [name="source_side_beam_gas_gap.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 x                  : real    =   58 # mm
@@ -439,6 +456,8 @@ material.ref       : string  = "tracking_gas"
 visibility.hidden          : boolean = 0
 visibility.color           : string  = "cyan"
 
+
+########################################################################
 [name="source_left_beam_with_gap.model" type="geomtools::stacked_model"]
 material.ref               : string = "tracking_gas"
 stacked.axis               : string = "y"
@@ -454,6 +473,8 @@ visibility.hidden          : boolean = 0
 visibility.hidden_envelop  : boolean = 1
 visibility.color           : string  = "grey"
 
+
+#########################################################################
 [name="source_right_beam_with_gap.model" type="geomtools::stacked_model"]
 material.ref               : string = "tracking_gas"
 stacked.axis               : string = "y"
@@ -473,6 +494,8 @@ visibility.color           : string  = "grey"
 #  The source submodule  #
 ##########################
 
+
+########################################################################
 [name="source_submodule.model" type="geomtools::surrounded_boxed_model"]
 material.ref          : string = "std::air"
 
@@ -496,5 +519,6 @@ surrounded.right_label  : string = "right_beam"
 visibility.hidden          : boolean = 0
 visibility.hidden_envelop  : boolean = 1
 visibility.color           : string  = "grey"
+
 
 # end of source_module.gom

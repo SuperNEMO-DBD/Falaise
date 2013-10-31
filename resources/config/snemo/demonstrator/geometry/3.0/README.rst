@@ -3,7 +3,7 @@ SuperNEMO virtual geometry setup
 ================================
 
 :Authors: François Mauger, Xavier Garrido
-:Date:    2013-10-19
+:Date:    2013-10-30
 
 .. contents::
    :depth: 3
@@ -66,8 +66,7 @@ Check the geometry:
 
   1. First make sure the Bayeux software is installed and setup: ::
 
-      $ which bayeux-config
-      $ bayeux-config --version
+      $ which bxgeomtools_inspector
 
   2. Build Falaise from a build directory of your choice.
   3. Then from Falaise build directory, run: ::
@@ -75,8 +74,8 @@ Check the geometry:
         bxgeomtools_inspector \
           --datatools::logging "warning" \
           --datatools::resource_path "falaise@$(pwd)/BuildProducts/share/Falaise-1.0.0/resources" \
-          --load-dll Falaise_sngeometry \
-          --manager-config "@falaise:config/geometry/snemo/3.0/manager.conf"
+          --load-dll Falaise \
+          --manager-config "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf"
 
      where:
 
@@ -85,5 +84,5 @@ Check the geometry:
          datatools' kernel for automated search for configuration file
          paths,
        * ``--manager-config
-         "@falaise:config/geometry/snemo/3.0/manager.conf"``
+         "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf"``
          indicates the main configuration file of the geometry manager.

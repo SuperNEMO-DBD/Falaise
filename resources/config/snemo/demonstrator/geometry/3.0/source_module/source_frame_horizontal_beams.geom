@@ -5,6 +5,7 @@
 #########################################################
 
 
+######################################################################################
 [name="source_horizontal_beam_main_plate.model" type="geomtools::simple_shaped_model"]
 shape_type         : string = "box"
 x                  : real   =   39.0 # mm
@@ -16,6 +17,7 @@ visibility.hidden  : boolean = 0
 visibility.color   : string  = "blue"
 
 
+####################################################################################
 [name="source_horizontal_beam_main_air.model" type="geomtools::simple_shaped_model"]
 shape_type         : string = "box"
 x                  : real   =   39.0 # mm
@@ -26,6 +28,7 @@ material.ref       : string = "lab_air"
 visibility.hidden  : boolean = 1
 
 
+###################################################################
 [name="source_top_beam_main.model" type="geomtools::stacked_model"]
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 2
@@ -41,6 +44,7 @@ visibility.hidden : boolean   = 0
 visibility.color  : string    = "grey"
 
 
+######################################################################
 [name="source_bottom_beam_main.model" type="geomtools::stacked_model"]
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 2
@@ -56,6 +60,7 @@ visibility.hidden : boolean   = 0
 visibility.color  : string    = "grey"
 
 
+######################################################################################
 [name="source_horizontal_beam_side_plate.model" type="geomtools::simple_shaped_model"]
 shape_type         : string = "box"
 x                  : real   =   6.5 # mm
@@ -66,10 +71,10 @@ material.ref       : string = "std::iron"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "blue"
 
-#######################################################################################
-# Interface with the tracker frame :
 
+#######################################################################################
 [name="source_horizontal_beam_interface_a.model" type="geomtools::simple_shaped_model"]
+#@config Interface with the tracker frame
 shape_type   : string  = "box"
 lenght_unit  : string  = "mm"
 x            : real    =    3
@@ -79,6 +84,8 @@ material.ref : string  = "std::iron"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "blue"
 
+
+#######################################################################################
 [name="source_horizontal_beam_interface_b.model" type="geomtools::simple_shaped_model"]
 shape_type   : string  = "box"
 lenght_unit  : string  = "mm"
@@ -89,6 +96,8 @@ material.ref : string  = "RTV"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
+
+#######################################################################################
 [name="source_horizontal_beam_interface_c.model" type="geomtools::simple_shaped_model"]
 shape_type   : string  = "box"
 lenght_unit  : string  = "mm"
@@ -100,6 +109,7 @@ visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
 
+#######################################################################################
 [name="source_horizontal_beam_interface_d.model" type="geomtools::simple_shaped_model"]
 shape_type   : string  = "box"
 lenght_unit  : string  = "mm"
@@ -111,6 +121,7 @@ visibility.hidden  : boolean = 0
 visibility.color   : string  = "blue"
 
 
+#######################################################################################
 [name="source_horizontal_beam_interface_e.model" type="geomtools::simple_shaped_model"]
 shape_type   : string  = "box"
 lenght_unit  : string  = "mm"
@@ -121,6 +132,7 @@ material.ref : string  = "std::iron"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "blue"
 
+#######################################################################################
 [name="source_horizontal_beam_interface_f.model" type="geomtools::simple_shaped_model"]
 shape_type   : string  = "box"
 lenght_unit  : string  = "mm"
@@ -132,6 +144,7 @@ visibility.hidden  : boolean = 0
 visibility.color   : string  = "orange"
 
 
+#######################################################################################
 [name="source_horizontal_beam_interface_g.model" type="geomtools::simple_shaped_model"]
 shape_type   : string  = "box"
 lenght_unit  : string  = "mm"
@@ -143,6 +156,7 @@ visibility.hidden  : boolean = 0
 visibility.color   : string  = "orange"
 
 
+##############################################################################
 [name="source_top_beam_interface.model" type="geomtools::simple_shaped_model"]
 shape_type   : string  = "box"
 lenght_unit  : string  = "mm"
@@ -155,7 +169,7 @@ internal_item.labels  : string[10] = \
 		      "a" "b" "d" "f" \
 		      "c_left" "c_right" \
 		      "e_left" "e_right" \
-		      "g_left" "g_right" 
+		      "g_left" "g_right"
 
 internal_item.placement.a : string  = "0 0 -15 (mm)"
 internal_item.model.a     : string  = "source_horizontal_beam_interface_a.model"
@@ -191,6 +205,7 @@ visibility.hidden  : boolean = 0
 visibility.color   : string  = "grey"
 
 
+#################################################################################
 [name="source_bottom_beam_interface.model" type="geomtools::simple_shaped_model"]
 shape_type   : string  = "box"
 lenght_unit  : string  = "mm"
@@ -203,7 +218,7 @@ internal_item.labels  : string[10] = \
 		      "a" "b" "d" "f" \
 		      "c_left" "c_right" \
 		      "e_left" "e_right" \
-		      "g_left" "g_right" 
+		      "g_left" "g_right"
 
 internal_item.placement.a : string  = "0 0 +15 (mm)"
 internal_item.model.a     : string  = "source_horizontal_beam_interface_a.model"
@@ -239,9 +254,9 @@ visibility.hidden  : boolean = 0
 visibility.color   : string  = "grey"
 
 
-### Source beam (top)
-
+##############################################################
 [name="source_top_beam.model" type="geomtools::stacked_model"]
+#@config Source beam (top)
 material.ref       : string = "std::air"
 visibility.hidden  : boolean = 0
 
@@ -263,9 +278,10 @@ stacked.label_1   : string  = "side0"
 stacked.model_0   : string  = "source_top_beam_interface.model"
 stacked.label_0   : string  = "interface0"
 
-### Source beam (bottom)
 
+#################################################################
 [name="source_bottom_beam.model" type="geomtools::stacked_model"]
+#@config Source beam (bottom)
 material.ref       : string = "std::air"
 visibility.hidden  : boolean = 0
 
@@ -289,8 +305,3 @@ stacked.label_0   : string  = "interface0"
 
 
 # end of file
-
-
-
-
-

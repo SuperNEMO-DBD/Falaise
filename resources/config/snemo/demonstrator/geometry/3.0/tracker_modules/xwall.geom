@@ -2,7 +2,7 @@
 # xwall.geom
 
 
-###############################################################################
+#########################################################################
 [name="xwall_column_left.model" type="geomtools::replicated_boxed_model"]
 material.ref                : string  = "tracking_gas"
 replicated.axis             : string  = "z"
@@ -18,7 +18,7 @@ visibility.color            : string = "grey"
 mapping.daughter_id.module : string = "[xcalo_optical_module:row+0]"
 
 
-###############################################################################
+##########################################################################
 [name="xwall_column_right.model" type="geomtools::replicated_boxed_model"]
 material.ref                : string  = "tracking_gas"
 replicated.axis             : string  = "z"
@@ -34,7 +34,7 @@ visibility.color            : string = "grey"
 mapping.daughter_id.module : string = "[xcalo_optical_module:row+0]"
 
 
-##############################################################################
+###########################################################################
 [name="xwall_left_column_left.model" type="geomtools::rotated_boxed_model"]
 material.ref              : string  = "tracking_gas"
 rotated.axis              : string  = "z"
@@ -43,7 +43,7 @@ rotated.model             : string  = "xwall_column_left.model"
 visibility.hidden_envelop : boolean = 0
 
 
-##############################################################################
+############################################################################
 [name="xwall_left_column_right.model" type="geomtools::rotated_boxed_model"]
 material.ref              : string  = "tracking_gas"
 rotated.axis              : string  = "z"
@@ -52,7 +52,7 @@ rotated.model             : string  = "xwall_column_right.model"
 visibility.hidden_envelop : boolean = 0
 
 
-##############################################################################
+############################################################################
 [name="xwall_right_column_left.model" type="geomtools::rotated_boxed_model"]
 material.ref              : string  = "tracking_gas"
 rotated.axis              : string  = "z"
@@ -61,7 +61,7 @@ rotated.model             : string  = "xwall_column_left.model"
 visibility.hidden_envelop : boolean = 0
 
 
-##############################################################################
+#############################################################################
 [name="xwall_right_column_right.model" type="geomtools::rotated_boxed_model"]
 material.ref              : string  = "tracking_gas"
 rotated.axis              : string  = "z"
@@ -70,7 +70,7 @@ rotated.model             : string  = "xwall_column_right.model"
 visibility.hidden_envelop : boolean = 0
 
 
-##############################################################################
+#################################################################################
 [name="tracker_frame_corner_plate_A.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real    =   6.5 # mm
@@ -81,7 +81,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "red"
 
 
-##############################################################################
+#################################################################################
 [name="tracker_frame_corner_plate_B.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   =   6.0 # mm
@@ -92,7 +92,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "red"
 
 
-##############################################################################
+#################################################################################
 [name="tracker_frame_corner_plate_C.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   = 392.0 # mm
@@ -103,7 +103,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "red"
 
 
-##############################################################################
+#################################################################################
 [name="tracker_frame_corner_plate_D.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   = 392.0 # mm
@@ -114,7 +114,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "red"
 
 
-##############################################################################
+#############################################################################
 [name="tracker_frame_corner_gas.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   = 405.0 # mm
@@ -125,7 +125,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "cyan"
 
 
-##############################################################################
+#########################################################################
 [name="tracker_frame_corner.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   = 405.0 # mm
@@ -166,7 +166,7 @@ internal_item.placement.gas : string  = "0 162.5 -162.5 (mm)"
 internal_item.model.gas     : string  = "tracker_frame_corner_gas.model"
 
 
-##############################################################################
+##################################################################################
 [name="tracker_frame_corner_top_left.model" type="geomtools::rotated_boxed_model"]
 material.ref              : string  = "lab_air"
 rotated.axis              : string  = "z"
@@ -175,7 +175,7 @@ rotated.model             : string  = "tracker_frame_corner.model"
 visibility.hidden_envelop : boolean = 0
 
 
-##############################################################################
+#####################################################################################
 [name="tracker_frame_corner_bottom_left.model" type="geomtools::rotated_boxed_model"]
 material.ref              : string  = "lab_air"
 rotated.axis              : string  = "y"
@@ -184,7 +184,7 @@ rotated.model             : string  = "tracker_frame_corner.model"
 visibility.hidden_envelop : boolean = 0
 
 
-##############################################################################
+###################################################################################
 [name="tracker_frame_corner_top_right.model" type="geomtools::rotated_boxed_model"]
 material.ref              : string  = "lab_air"
 rotated.axis              : string  = "z"
@@ -193,7 +193,7 @@ rotated.model             : string  = "tracker_frame_corner.model"
 visibility.hidden_envelop : boolean = 0
 
 
-##############################################################################
+######################################################################################
 [name="tracker_frame_corner_bottom_right.model" type="geomtools::rotated_boxed_model"]
 material.ref              : string  = "lab_air"
 rotated.axis              : string  = "x"
@@ -202,7 +202,7 @@ rotated.model             : string  = "tracker_frame_corner.model"
 visibility.hidden_envelop : boolean = 0
 
 
-##############################################################################
+#############################################################################
 [name="xwall_column_stock_plate.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   =    1.0 # mm
@@ -213,7 +213,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "red"
 
 
-##############################################################################
+#############################################################################
 [name="xwall_column_stock_outer.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   =    1.0 # mm
@@ -224,7 +224,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "grey"
 
 
-##############################################################################
+#############################################################################
 [name="xwall_column_stock_inner.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   =    1.0 # mm
@@ -235,7 +235,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "cyan"
 
 
-##############################################################################
+######################################################################
 [name="xwall_column_stock_left.model" type="geomtools::stacked_model"]
 material.ref            : string  = "lab_air"
 stacked.axis            : string = "y"
@@ -248,7 +248,7 @@ stacked.model_2   : string  = "xwall_column_stock_inner.model"
 stacked.label_2   : string  = "inner"
 
 
-##############################################################################
+#######################################################################
 [name="xwall_column_stock_right.model" type="geomtools::stacked_model"]
 material.ref            : string  = "lab_air"
 stacked.axis            : string = "y"
@@ -261,7 +261,7 @@ stacked.model_2   : string  = "xwall_column_stock_outer.model"
 stacked.label_2   : string  = "inner"
 
 
-##############################################################################
+########################################################################
 [name="xwall_front_right_columns.model" type="geomtools::stacked_model"]
 material.ref            : string  = "lab_air"
 stacked.axis            : string = "x"
@@ -277,7 +277,7 @@ mapping.daughter_id.inner_column : string = "[xcalo_column:column=0]"
 mapping.daughter_id.outer_column : string = "[xcalo_column:column=1]"
 
 
-##############################################################################
+#######################################################################
 [name="xwall_front_left_columns.model" type="geomtools::stacked_model"]
 material.ref            : string  = "lab_air"
 stacked.axis            : string = "x"
@@ -293,7 +293,7 @@ mapping.daughter_id.inner_column : string = "[xcalo_column:column=0]"
 mapping.daughter_id.outer_column : string = "[xcalo_column:column=1]"
 
 
-##############################################################################
+#######################################################################
 [name="xwall_back_right_columns.model" type="geomtools::stacked_model"]
 material.ref            : string  = "lab_air"
 stacked.axis            : string = "x"
@@ -309,7 +309,7 @@ mapping.daughter_id.inner_column : string = "[xcalo_column:column=0]"
 mapping.daughter_id.outer_column : string = "[xcalo_column:column=1]"
 
 
-##############################################################################
+######################################################################
 [name="xwall_back_left_columns.model" type="geomtools::stacked_model"]
 material.ref            : string  = "lab_air"
 stacked.axis            : string = "x"
@@ -325,7 +325,7 @@ mapping.daughter_id.inner_column : string = "[xcalo_column:column=0]"
 mapping.daughter_id.outer_column : string = "[xcalo_column:column=1]"
 
 
-######################################################################
+################################################################
 [name="xwall_front_right.model" type="geomtools::stacked_model"]
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 3
@@ -342,7 +342,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "grey"
 
 
-######################################################################
+###############################################################
 [name="xwall_front_left.model" type="geomtools::stacked_model"]
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 3
@@ -359,7 +359,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "grey"
 
 
-######################################################################
+###############################################################
 [name="xwall_back_right.model" type="geomtools::stacked_model"]
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 3
@@ -376,7 +376,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "grey"
 
 
-######################################################################
+##############################################################
 [name="xwall_back_left.model" type="geomtools::stacked_model"]
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 3

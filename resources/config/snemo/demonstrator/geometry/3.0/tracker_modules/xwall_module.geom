@@ -7,10 +7,10 @@
 
 
 #####################################################################
+[name="xwall_scin_block.model" type="geomtools::simple_shaped_model"]
 # DocDB 1599
 # SuperNEMO A2/5359/303-2
 #
-[name="xwall_scin_block.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   = 200.0 # mm
 y                 : real   = 208.5 # mm
@@ -38,7 +38,8 @@ material.ref      : string = "std::mylar"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
-#############################################################################
+
+#######################################################################################
 [name="xwall_scin_side_x_external_wrapper.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   =   0.012 # mm
@@ -50,7 +51,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
 
-#############################################################################
+#######################################################################################
 [name="xwall_scin_side_x_internal_wrapper.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   =   0.6 # mm
@@ -76,7 +77,7 @@ visibility.hidden_envelop : boolean = 1
 visibility.color          : string  = "grey"
 
 
-#############################################################################
+##############################################################################
 [name="xwall_scin_side_x_right_wrapper.model" type="geomtools::stacked_model"]
 material.ref            : string  = "tracking_gas"
 stacked.axis            : string  = "x"
@@ -90,7 +91,7 @@ visibility.hidden_envelop : boolean = 1
 visibility.color          : string  = "grey"
 
 
-##############################################################################
+#######################################################################################
 [name="xwall_scin_side_y_internal_wrapper.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   = 200.0 # mm
@@ -101,7 +102,8 @@ material.ref      : string = "std::pfte"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
-##############################################################################
+
+#######################################################################################
 [name="xwall_scin_side_y_external_wrapper.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   = 200.0   # mm
@@ -113,7 +115,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
 
-#############################################################################
+###############################################################################
 [name="xwall_scin_side_y_bottom_wrapper.model" type="geomtools::stacked_model"]
 material.ref            : string  = "tracking_gas"
 stacked.axis            : string  = "y"
@@ -127,7 +129,7 @@ visibility.hidden_envelop : boolean = 1
 visibility.color          : string  = "grey"
 
 
-#############################################################################
+############################################################################
 [name="xwall_scin_side_y_top_wrapper.model" type="geomtools::stacked_model"]
 material.ref            : string  = "tracking_gas"
 stacked.axis            : string  = "y"
@@ -139,6 +141,7 @@ stacked.label_0         : string  = "internal_wrapping"
 visibility.hidden         : boolean = 0
 visibility.hidden_envelop : boolean = 1
 visibility.color          : string  = "grey"
+
 
 ################################################################################
 [name="xwall_wrapped_scin_block.model" type="geomtools::surrounded_boxed_model"]
@@ -182,7 +185,7 @@ visibility.hidden_envelop : boolean = 0
 visibility.color  : string  = "green"
 
 
-###############################################################################
+############################################################################
 [name="xwall_light_guide_inner.model" type="geomtools::simple_shaped_model"]
 shape_type        : string  = "cylinder"
 r                 : real    =   64.0 # mm
@@ -193,7 +196,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "blue"
 
 
-###############################################################################
+###################################################################################
 [name="xwall_module_inner_front_chock.model" type="geomtools::simple_shaped_model"]
 shape_type        : string  = "box"
 x                 : real    = 202.0 # mm
@@ -205,7 +208,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "cyan"
 
 
-###############################################################################
+#################################################################
 [name="xwall_module_inner.model" type="geomtools::stacked_model"]
 material.ref            : string = "tracking_gas"
 length_unit             : string = "mm"
@@ -228,12 +231,13 @@ stacked.label_3   : string  = "front_chock"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "cyan"
 
+
 ###############
 # In air part #
 ###############
 
 
-##############################################################################
+###############################################################################
 [name="xwall_beam_support_plate.model" type="geomtools::plate_with_hole_model"]
 length_unit       : string  = "mm"
 x                 : real    = 202.0 # mm
@@ -244,7 +248,7 @@ material.ref      : string  = "std::iron"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "red"
 
-##############################################################################
+##########################################################################
 [name="xwall_beam_side_plate.model" type="geomtools::simple_shaped_model"]
 shape_type        : string  = "box"
 x                 : real    = 319.0 # mm
@@ -255,7 +259,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "red"
 
 
-###############################################################################
+##########################################################################
 [name="xwall_magnetic_shield.model" type="geomtools::simple_shaped_model"]
 shape_type   : string = "tube"
 inner_r      : real   =   73.3 # mm
@@ -267,7 +271,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "magenta"
 
 
-###############################################################################
+###########################################################################################
 [name="xwall_light_guide_outer.model" type="geomtools::spherical_extrusion_cylinder_model"]
 length_unit       : string  = "mm"
 r                 : real    =  64.0
@@ -279,7 +283,7 @@ material.ref      : string  = "std::plexiglass"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "blue"
 
-###############################################################################
+#############################################################################
 [name="xwall_module_outer_right.model" type="geomtools::simple_shaped_model"]
 shape_type              : string = "box"
 material.ref            : string = "lab_air"
@@ -318,7 +322,7 @@ internal_item.placement.pmt_base        : string  = "0 0 -74.25 (mm)"
 internal_item.model.pmt_base            : string  = "PMT_HAMAMATSU_R6594.base"
 
 
-###############################################################################
+############################################################################
 [name="xwall_module_outer_left.model" type="geomtools::simple_shaped_model"]
 shape_type              : string = "box"
 material.ref            : string = "lab_air"
@@ -356,7 +360,8 @@ internal_item.model.pmt                 : string  = "PMT_HAMAMATSU_R6594"
 internal_item.placement.pmt_base        : string  = "0 0 -74.25 (mm)"
 internal_item.model.pmt_base            : string  = "PMT_HAMAMATSU_R6594.base"
 
-###############################################################################
+
+#################################################################
 [name="xwall_module_right.model" type="geomtools::stacked_model"]
 material.ref            : string  = "tracking_gas"
 length_unit             : string  = "mm"
@@ -370,7 +375,7 @@ stacked.model_1   : string  = "xwall_module_inner.model"
 stacked.label_1   : string  = "xwall_module_inner"
 
 
-###############################################################################
+################################################################
 [name="xwall_module_left.model" type="geomtools::stacked_model"]
 material.ref            : string  = "tracking_gas"
 length_unit             : string  = "mm"
@@ -384,7 +389,7 @@ stacked.model_1   : string  = "xwall_module_inner.model"
 stacked.label_1   : string  = "xwall_module_inner"
 
 
-###############################################################################
+##############################################################################
 [name="xwall_module_left.rotated.model" type="geomtools::rotated_boxed_model"]
 material.ref              : string  = "tracking_gas"
 rotated.axis              : string  = "x"
@@ -400,5 +405,6 @@ rotated.axis              : string  = "x"
 rotated.special_angle     : string  = "90"
 rotated.model             : string  = "xwall_module_right.model"
 visibility.hidden_envelop : boolean = 0
+
 
 # end of xwall_module.geom

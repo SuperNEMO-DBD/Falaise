@@ -13,46 +13,55 @@
 # Source pad #
 ##############
 
+##################################################################################
 [name="source_external_support_strip.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
+length_unit        : string  = "mm"
 x                  : real    = 0.1  # mm
 y                  : real    = 125.0  # mm
 z                  : real    = 325.0 # mm
-length_unit        : string  = "mm"
 material.ref       : string  = "std::mylar"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "cyan"
 
+
+##################################################################################
 [name="source_internal_support_strip.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
+length_unit        : string  = "mm"
 x                  : real    = 0.1  # mm
 y                  : real    = 135.5  # mm
 z                  : real    = 325.0 # mm
-length_unit        : string  = "mm"
 material.ref       : string  = "std::mylar"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "cyan"
 
+
+##########################################################################
 [name="source_external_strip.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
+length_unit        : string  = "mm"
 y                  : real    = 125.0  # mm
 z                  : real    = 2700.0 # mm
 x                  : real    = 0.167  # mm
-length_unit        : string  = "mm"
 material.ref       : string  = "bb_source_material"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
+
+##########################################################################
 [name="source_internal_strip.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
+length_unit        : string  = "mm"
 y                  : real    = 135.5  # mm
 z                  : real    = 2700.0 # mm
 x                  : real    = 0.167  # mm
-length_unit        : string  = "mm"
 material.ref       : string  = "bb_source_material"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
+
+#########################################################################
 [name="source_internal_full_strip.model" type="geomtools::stacked_model"]
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
@@ -72,6 +81,8 @@ visibility.hidden  : boolean = 0
 # Mapping the source foil from its parent category :
 mapping.daughter_id.source_strip : string = "[source_strip]"
 
+
+#########################################################################
 [name="source_external_full_strip.model" type="geomtools::stacked_model"]
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
@@ -91,29 +102,28 @@ visibility.hidden  : boolean = 0
 # Mapping the source foil from its parent category :
 mapping.daughter_id.source_strip : string = "[source_strip]"
 
+
+#########################################################################
 [name="source_strip_spacing.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
+length_unit        : string  = "mm"
+x                  : real    =   58.0  # mm
 y                  : real    =    1.0  # mm
 z                  : real    = 3350.0  # mm
-x                  : real    =   58.0  # mm
-length_unit        : string  = "mm"
 material.ref       : string  = "tracking_gas"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "grey"
 
+
+###############################################################################
 [name="source_strip_ender_spacing.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
+length_unit        : string  = "mm"
+x                  : real    =   58.0  # mm
 y                  : real    =    3.0  # mm
 z                  : real    = 3350.0  # mm
-x                  : real    =   58.0  # mm
-length_unit        : string  = "mm"
 material.ref       : string  = "tracking_gas"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "grey"
 
 # end of file
-
-
-
-
-

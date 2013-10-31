@@ -1,5 +1,6 @@
 # -*- mode: conf-unix; -*-
 
+############################################################################
 [name="source_calibration_spot.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "cylinder"
 r                  : real    =   1.0     # mm
@@ -10,6 +11,7 @@ visibility.hidden  : boolean = 0
 visibility.color   : string  = "red"
 
 
+############################################################################
 [name="source_calibration_film.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 x                  : real    =   17.0     # mm
@@ -25,6 +27,7 @@ internal_item.model.spot     : string    = "source_calibration_spot.model"
 internal_item.placement.spot : string    = "0 0 0 (mm)"
 
 
+#######################################################################################
 [name="source_calibration_carrier_frame.model" type="geomtools::plate_with_hole_model"]
 x                  : real    =   26.0  # mm
 y                  : real    =   16.0  # mm
@@ -37,6 +40,7 @@ visibility.hidden  : boolean = 0
 visibility.color   : string  = "blue"
 
 
+#########################################################################
 [name="source_calibration_carrier.model" type="geomtools::stacked_model"]
 z                       : real    = 2.0
 length_unit             : string  = "mm"
@@ -57,6 +61,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "grey"
 
 
+#################################################################################
 [name="source_calibration_suspender.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 x                  : real    =  824.0  # mm
@@ -65,6 +70,7 @@ z                  : real    =    0.5 # mm
 material.ref       : string  = "std::copper"
 
 
+#############################################################################
 [name="source_calibration_track.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 y                  : real    =   18.0  # mm
@@ -76,6 +82,7 @@ visibility.hidden  : boolean = 0
 visibility.color   : string  = "grey"
 
 
+####################################################################################
 [name="source_calibration_track_active.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 y                  : real    =   18.0  # mm
@@ -90,7 +97,7 @@ internal_item.labels : string[4] = \
  "source_3" \
  "source_2" \
  "source_1" \
- "source_0" 
+ "source_0"
 
 internal_item.model.source_3     : string  = "source_calibration_carrier.model"
 internal_item.placement.source_3 : string  = "0 0 +1275 (mm) / y +90 (degree) "

@@ -1,11 +1,15 @@
 # -*- mode: conf-unix; -*-
 # gveto_module.geom
+#
+# DocDB 2079
+#
 
 ########################
 # In tracking gas part #
 ########################
 
-# DocDB 2079
+
+#####################################################################
 [name="gveto_scin_block.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   = 290.0 # mm
@@ -35,7 +39,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
 
-#############################################################################
+#######################################################################################
 [name="gveto_scin_side_x_external_wrapper.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   =   0.012 # mm
@@ -47,7 +51,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
 
-#############################################################################
+#######################################################################################
 [name="gveto_scin_side_x_internal_wrapper.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   =   0.6 # mm
@@ -73,7 +77,7 @@ visibility.hidden_envelop : boolean = 1
 visibility.color          : string  = "grey"
 
 
-#############################################################################
+##############################################################################
 [name="gveto_scin_side_x_right_wrapper.model" type="geomtools::stacked_model"]
 material.ref            : string  = "tracking_gas"
 stacked.axis            : string  = "x"
@@ -87,7 +91,7 @@ visibility.hidden_envelop : boolean = 1
 visibility.color          : string  = "grey"
 
 
-# #############################################################################
+# ##############################################################################
 # [name="gveto_scin_side_x_wrapper.model" type="geomtools::simple_shaped_model"]
 # shape_type        : string = "box"
 # x                 : real   =   0.6 # mm
@@ -99,7 +103,7 @@ visibility.color          : string  = "grey"
 # visibility.color  : string  = "green"
 
 
-##############################################################################
+#######################################################################################
 [name="gveto_scin_side_y_internal_wrapper.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   = 290.0 # mm
@@ -111,7 +115,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
 
-##############################################################################
+#######################################################################################
 [name="gveto_scin_side_y_external_wrapper.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real   = 290.0   # mm
@@ -123,7 +127,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
 
-#############################################################################
+###############################################################################
 [name="gveto_scin_side_y_bottom_wrapper.model" type="geomtools::stacked_model"]
 material.ref            : string  = "tracking_gas"
 stacked.axis            : string  = "y"
@@ -137,7 +141,7 @@ visibility.hidden_envelop : boolean = 1
 visibility.color          : string  = "grey"
 
 
-#############################################################################
+############################################################################
 [name="gveto_scin_side_y_top_wrapper.model" type="geomtools::stacked_model"]
 material.ref            : string  = "tracking_gas"
 stacked.axis            : string  = "y"
@@ -150,7 +154,7 @@ visibility.hidden         : boolean = 0
 visibility.hidden_envelop : boolean = 1
 visibility.color          : string  = "grey"
 
-# #############################################################################
+# ##############################################################################
 # [name="gveto_scin_side_y_wrapper.model" type="geomtools::simple_shaped_model"]
 # shape_type        : string = "box"
 # x                 : real   = 290.0 # mm
@@ -204,7 +208,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
 
-###############################################################################
+############################################################################
 [name="gveto_light_guide_inner.model" type="geomtools::simple_shaped_model"]
 shape_type        : string  = "cylinder"
 r                 : real    =   64.0 # mm
@@ -215,7 +219,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "blue"
 
 
-###############################################################################
+###################################################################################
 [name="gveto_module_inner_front_chock.model" type="geomtools::simple_shaped_model"]
 shape_type        : string  = "box"
 x                 : real    = 292.0 # mm
@@ -227,7 +231,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "cyan"
 
 
-###############################################################################
+#################################################################
 [name="gveto_module_inner.model" type="geomtools::stacked_model"]
 material.ref            : string = "tracking_gas"
 length_unit             : string = "mm"
@@ -251,12 +255,12 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "cyan"
 
 
-
 ###############
 # In air part #
 ###############
 
-##############################################################################
+
+###############################################################################
 [name="gveto_beam_support_plate.model" type="geomtools::plate_with_hole_model"]
 length_unit       : string = "mm"
 x                 : real   = 292.0 # mm
@@ -267,7 +271,8 @@ material.ref      : string  = "std::iron"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "red"
 
-###############################################################################
+
+##########################################################################
 [name="gveto_magnetic_shield.model" type="geomtools::simple_shaped_model"]
 shape_type   : string = "tube"
 inner_r      : real   =   73.3 # mm
@@ -279,7 +284,7 @@ visibility.hidden          : boolean = 0
 visibility.color           : string  = "magenta"
 
 
-###############################################################################
+###########################################################################################
 [name="gveto_light_guide_outer.model" type="geomtools::spherical_extrusion_cylinder_model"]
 length_unit       : string  = "mm"
 r                 : real    =  64.0
@@ -292,7 +297,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "blue"
 
 
-###############################################################################
+#######################################################################
 [name="gveto_module_outer.model" type="geomtools::simple_shaped_model"]
 shape_type              : string = "box"
 material.ref            : string = "lab_air"
@@ -325,7 +330,8 @@ internal_item.model.pmt                 : string  = "PMT_HAMAMATSU_R6594"
 internal_item.placement.pmt_base        : string  = "0 0 -75 (mm)"
 internal_item.model.pmt_base            : string  = "PMT_HAMAMATSU_R6594.base"
 
-###############################################################################
+
+###########################################################
 [name="gveto_module.model" type="geomtools::stacked_model"]
 material.ref            : string  = "tracking_gas"
 length_unit             : string  = "mm"
