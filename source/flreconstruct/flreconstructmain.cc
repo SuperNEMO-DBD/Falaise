@@ -42,6 +42,7 @@
 #include "bayeux/datatools/logger.h"
 #include "bayeux/dpp/module_manager.h"
 #include "bayeux/dpp/base_module.h"
+//#include "bayeux/dpp/input_module.h"
 #include "bayeux/dpp/output_module.h"
 #include "bayeux/mctools/simulated_data_input_module.h"
 
@@ -204,12 +205,9 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
   //  - An ass to deal with because of use of properties...
   DT_LOG_TRACE(clArgs.logLevel,"configuring module_manager");
   boost::scoped_ptr<dpp::module_manager> moduleManager_(new dpp::module_manager);
-  datatools::properties moduleManagerConfig;
 
   if (!clArgs.pipelineScript.empty()) {
-    std::vector<std::string> moduleFiles;
-    moduleFiles.push_back(clArgs.pipelineScript);
-    moduleManagerConfig.store("modules.configuration_files", moduleFiles);
+    moduleManager_->load_modules(clArgs.pipelineScript);
   } else {
     // Hand configure a dumb dump module
     datatools::properties dumbConfig;
@@ -218,7 +216,8 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
     moduleManager_->load_module("pipeline", "dpp::dump_module", dumbConfig);
   }
 
-  moduleManager_->initialize(moduleManagerConfig);
+  // Plain initialization
+  moduleManager_->initialize_simple();
 
   // - Plug together pipeline with input/output stages
   // Always use the module tagged as "pipeline"
@@ -236,17 +235,14 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
   input_->set_single_input_file(clArgs.inputFile);
   input_->initialize_simple();
 
-  // Output module.... configured by properties, oh joy..., but only
-  // if file was passed
+  // Output module... only if file was passed
   DT_LOG_TRACE(clArgs.logLevel,"configuring output module");
   boost::scoped_ptr<dpp::output_module> output_;
   if(!clArgs.outputFile.empty()) {
     DT_LOG_TRACE(clArgs.logLevel,"output module using file " << clArgs.outputFile);
     output_.reset(new dpp::output_module);
-    datatools::properties outputModuleConfig;
-    outputModuleConfig.store("files.mode", "single");
-    outputModuleConfig.store("files.single.filename", clArgs.outputFile);
-    output_->initialize_standalone(outputModuleConfig);
+    output_->set_single_output_file(clArgs.outputFile);
+    output_->initialize_simple();
   }
 
   // - Now the actual event loop
