@@ -24,8 +24,8 @@ namespace CAT {
   public:
 
     setup_data_sultan ();
-    bool check () const;
-    void reset ();
+    bool check() const;
+    void reset();
     const std::string & get_error_message () const;
 
   protected:
@@ -53,6 +53,10 @@ namespace CAT {
 
     /// minimum p-value
     double probmin;
+
+    /// Number of cells which can be skipped (because the cell did not
+    /// work) and still the cluster is continuous
+    int    nofflayers;
 
     /// first event to be processed
     /// (default = -1 to process all events)

@@ -21,47 +21,25 @@
 namespace CAT {
   using namespace mybhep;
   using namespace std;
+  using namespace topology;
 
-  //! get cells
-  const std::vector<topology::Cell>& Sultan::get_cells()const
-  {
-    return cells_;
+  //************************************************************
+  // Default constructor :
+  Sultan::Sultan(void){
+    //*************************************************************
+    _set_defaults ();
+    return;
   }
 
-  //! set cells
-  void Sultan::set_cells(const std::vector<topology::Cell> & cells)
-  {
-    //cells_.clear();
-    cells_ = cells;
+  //*************************************************************
+  Sultan::~Sultan() {
+    //*************************************************************
+    std::clog << "DEVEL: CATAlgorithm::Sultan::~Sultan: Done." << std::endl;
   }
 
-  //! get clusters
-  const std::vector<topology::cluster>& Sultan::get_clusters()const
-  {
-    return clusters_;
-  }
-
-  //! set clusters
-  void Sultan::set_clusters(const std::vector<topology::cluster> & clusters)
-  {
-    //clusters_.clear();
-    clusters_ = clusters;
-  }
-
-  //! get calorimeter_hits
-  const std::vector<topology::calorimeter_hit>& Sultan::get_calorimeter_hits()const
-  {
-    return calorimeter_hits_;
-  }
-
-  //! set calorimeter_hits
-  void Sultan::set_calorimeter_hits(const std::vector<topology::calorimeter_hit> & calorimeter_hits)
-  {
-    calorimeter_hits_.clear();
-    calorimeter_hits_ = calorimeter_hits;
-  }
-
+  //*************************************************************
   void Sultan::_set_defaults ()
+  //*************************************************************
   {
 
     level = mybhep::NORMAL;
@@ -86,14 +64,6 @@ namespace CAT {
     InnerRadius = OuterRadius= FoilRadius = std::numeric_limits<double>::quiet_NaN ();
     pmax = std::numeric_limits<double>::quiet_NaN ();
 
-    SmallRadius = std::numeric_limits<double>::quiet_NaN ();
-    TangentPhi = std::numeric_limits<double>::quiet_NaN ();
-    TangentTheta = std::numeric_limits<double>::quiet_NaN ();
-    SmallNumber = std::numeric_limits<double>::quiet_NaN ();
-    QuadrantAngle = std::numeric_limits<double>::quiet_NaN ();
-    Ratio = std::numeric_limits<double>::quiet_NaN ();
-    CompatibilityDistance = std::numeric_limits<double>::quiet_NaN ();
-    MaxChi2 = std::numeric_limits<double>::quiet_NaN ();
     probmin = std::numeric_limits<double>::quiet_NaN ();
     nofflayers = 0;
     first_event_number = 0;
@@ -136,15 +106,6 @@ namespace CAT {
     MaxTime = st.fetch_dstore("MaxTime");
     PrintMode = st.fetch_istore("PrintMode");
 
-    SmallRadius=st.fetch_dstore("SmallRadius")*mybhep::mm;
-    TangentPhi=st.fetch_dstore("TangentPhi");
-    TangentTheta=st.fetch_dstore("TangentTheta");
-    SmallNumber=st.fetch_dstore("SmallNumber")*mybhep::mm;
-    QuadrantAngle=st.fetch_dstore("QuadrantAngle");
-    Ratio=st.fetch_dstore("Ratio");
-    CompatibilityDistance=st.fetch_dstore("CompatibilityDistance");
-    MaxChi2=st.fetch_dstore("MaxChi2");
-
     if (st.find_sstore("histo_file"))
       hfile=st.fetch_sstore("histo_file");
     else
@@ -162,42 +123,16 @@ namespace CAT {
 
   }
 
-  //************************************************************
-  // Default constructor :
-  Sultan::Sultan(void){
-    //*************************************************************
-    _set_defaults ();
-    return;
-  }
-
-  //*************************************************************
-  Sultan::~Sultan() {
-    //*************************************************************
-    std::clog << "DEVEL: CATAlgorithm::Sultan::~Sultan: Done." << std::endl;
-  }
-
   //*************************************************************
   bool Sultan::_initialize(){
     //*************************************************************
-
-    if( PrintMode )
-      {
-        initializeHistos();
-      }
-    /*
-      if( !SuperNemo )
-      {
-
-      run_time = 0.;
-      run_list.clear();
-
-      }
-    */
 
     if (doDriftWires)
       {
         GenerateWires();
       }
+
+    detector_.set_cell_size(CellDistance);
 
     return true;
   }
@@ -206,7 +141,7 @@ namespace CAT {
   bool Sultan::initialize(const mybhep::sstore &store, const mybhep::gstore gs , mybhep::EventManager2 *eman) {
     //*************************************************************
 
-    m.message("\n Beginning algorithm Sultan \n",mybhep::VERBOSE);
+    m.message("\n Beginning algorithm Sultan \n",mybhep::VERBOSE); fflush(stdout);
 
     clock.start(" Sultan: initialize ");
 
@@ -244,18 +179,6 @@ namespace CAT {
     return true;
   }
 
-  //*************************************************************
-  void Sultan::initializeHistos( void ) {
-    //*************************************************************
-
-    //  hman.h1("chi2_triplet", "chi2 for each cell triplet", 100, -0.05, 20.05);
-    //  hman.h1("prob_triplet", "probability that chi2 is larger than observed for a good triplet", 100, -0.05, 1.05);
-    //  hman.h1("largest_true_kink", "largest kink in a true particle", 100, 0., 180.);
-    //  hman.h2("largest_true_kink_position", "position of largest kink in a true particle", 100, -rad/1.9, rad/1.9, 100, -rad/1.9, rad/1.9);
-
-    return;
-
-  }
 
 
   //*************************************************************
@@ -269,28 +192,12 @@ namespace CAT {
     m.message("Initial events: ", InitialEvents, mybhep::NORMAL);
     m.message("Skipped events: ", SkippedEvents, "(", 100.*SkippedEvents/InitialEvents, "\%)", mybhep::NORMAL);
 
-    if( PrintMode )
-      {
-        finalizeHistos();
-      }
     clock.stop(" Sultan: finalize ");
 
     clock.dump();
 
     _set_defaults ();
     return true;
-  }
-
-  //*************************************************************
-  void Sultan::finalizeHistos( void ) {
-    //*************************************************************
-
-    //  if( PrintMode )
-    //    hman.save();
-
-    m.message("Writing histograms in ", hfile, mybhep::NORMAL);
-
-    return;
   }
 
   //*************************************************************
@@ -376,23 +283,10 @@ namespace CAT {
     calo_Z= mybhep::double_from_string(global.fetch("GEOM_CALO_BLOCK_thick"));
 
     compute_lastlayer();
-    /*
-      lastlayer = 0;
-      for(size_t i=0; i<planes_per_block.size(); i++)
-      lastlayer += (int)planes_per_block[i];
-    */
 
     m.message("",mybhep::NORMAL);
 
     m.message("pmax",pmax,"MeV",mybhep::NORMAL);
-    m.message("small radius",SmallRadius,"mm",mybhep::NORMAL);
-    m.message("tangent phi: ",TangentPhi,mybhep::NORMAL);
-    m.message("tangent theta",TangentTheta,mybhep::NORMAL);
-    m.message("small number",SmallNumber,"mm",mybhep::NORMAL);
-    m.message("quadrant angle",QuadrantAngle,mybhep::NORMAL);
-    m.message("ratio",Ratio,mybhep::NORMAL);
-    m.message("compatibility distance", CompatibilityDistance,mybhep::NORMAL);
-    m.message("maximum chi2", MaxChi2, mybhep::NORMAL);
     m.message("xsize is read as",xsize,"mm",mybhep::NORMAL);
     m.message("ysize is read as",ysize,"mm",mybhep::NORMAL);
     m.message("zsize is read as",zsize,"mm",mybhep::NORMAL);
@@ -542,53 +436,15 @@ namespace CAT {
     //*************************************************************
     m.message("CATAlgorithm::Sultan::readDstProper: Entering...",mybhep::NORMAL);
 
-    //clock.start(" Sultan: read dst properties ");
-
     if (_MaxBlockSize <= 0)
       {
         _MaxBlockSize = 1;
         m.message("CATAlgorithm::Sultan::readDstProper: no bar design, MODULES Nr set to = ",_MaxBlockSize,"\n",mybhep::NORMAL);
       }
 
-    if(SuperNemo)
-      {
-        m.message("CATAlgorithm::Sultan::readDstProper: SuperNemo kind of data",mybhep::NORMAL);
-        if (num_blocks <= 0)
-          {
-            // Default :
-            set_num_blocks (1);
-            planes_per_block.at (0) = 9;
-          }
-      }
-    else
-      {
-        m.message("CATAlgorithm::Sultan::readDstProper: Nemo-3 kind of data",mybhep::NORMAL);
-        if (num_blocks <= 0)
-          {
-            // Default :
-            set_num_blocks (3);
-            planes_per_block.at (0) = 4;
-            planes_per_block.at (1) = 2;
-            planes_per_block.at (2) = 3;
-          }
-      }
-
     compute_lastlayer();
-    /*
-      lastlayer = 0;
-      for(size_t i=0; i<planes_per_block.size(); i++)
-      lastlayer += (int)planes_per_block[i];
-    */
 
     m.message("",mybhep::NORMAL);
-    m.message("small radius",SmallRadius,"mm",mybhep::NORMAL);
-    m.message("tangent phi",TangentPhi,mybhep::NORMAL);
-    m.message("tangent theta",TangentTheta,mybhep::NORMAL);
-    m.message("small number",SmallNumber,"mm",mybhep::NORMAL);
-    m.message("quadrant angle",QuadrantAngle,mybhep::NORMAL);
-    m.message("ratio",Ratio,mybhep::NORMAL);
-    m.message("compatibility distance", CompatibilityDistance,mybhep::NORMAL);
-    m.message("maximum chi2", MaxChi2, mybhep::NORMAL);
     m.message("probmin", probmin, mybhep::NORMAL);
     m.message("first event number", first_event_number, mybhep::NORMAL);
 
@@ -613,9 +469,6 @@ namespace CAT {
       }
     m.message("verbosity print level:", level, mybhep::NORMAL);
 
-    //parameters for error parametrization
-
-    //clock.stop(" Sultan: read dst properties ");
     m.message("CATAlgorithm::Sultan::readDstProper: Done.",mybhep::NORMAL);
 
     return;
@@ -884,7 +737,7 @@ namespace CAT {
                   double increment = GG_CELL_pitch*((double)iwire);
                   double xpos = -(CHAMBER_X-GG_GRND_diam)/2.+6.+increment+GG_CELL_pitch/2.;
 
-                  POINT point;
+		  CAT::POINT point;
                   point.x = xpos;
                   point.z = plane_pos_Z;
                   DriftWires.push_back( point );
@@ -972,7 +825,7 @@ namespace CAT {
                 double layerphi = 2.*M_PI/NOfWires[i];
                 double ph = FirstWirePhi[i] + j*layerphi;
 
-                POINT point;
+		CAT::POINT point;
                 point.x = LayerRadius[i]*cos(ph);
                 point.z = LayerRadius[i]*sin(ph);
 
@@ -1048,11 +901,11 @@ namespace CAT {
 
     clock.start(" Sultan: read event ","cumulative");
 
-    m.message(" local_tracking: reading event", mybhep::VERBOSE);
+    m.message(" sultan: reading event", mybhep::VERBOSE);
 
     cells_.clear();
-    parts.clear();
     clusters_.clear();
+    parts.clear();
     calorimeter_hits_.clear();
     true_sequences_.clear();
     nemo_sequences_.clear();
@@ -1117,7 +970,6 @@ namespace CAT {
 
       for (size_t ihit=0; ihit<hits.size();ihit++){
         topology::Cell c(*hits[ihit],ihit, SuperNemo, level, probmin);
-	c.set_small_radius(SmallRadius);
         cells_.push_back(c);
       }
 
@@ -1170,20 +1022,24 @@ namespace CAT {
     clock.start(" Sultan: prepare event ","cumulative");
 
     event_number ++;
-    m.message(" local_tracking: preparing event", event_number, mybhep::VERBOSE);
+
+    tracked_data_.reset();
+    clusters_.clear();
+    sequences_.clear();
+    parts.clear();
 
     if( event_number < first_event_number ){
-      m.message(" local_tracking: skip event", event_number, " first event is ", first_event_number,  mybhep::VERBOSE);
+      m.message(" sultan: skip event", event_number, " first event is ", first_event_number,  mybhep::VERBOSE);
       return false;
     }
 
-    parts.clear();
-    clusters_.clear();
+    m.message(" sultan: preparing event", event_number, " with ", cells_.size(), " cells ", mybhep::VERBOSE);
 
-    order_cells();
+    //order_cells();
     setup_cells();
 
     tracked_data_.set_cells(cells_);
+    detector_.set_cells(cells_);
 
     clock.stop(" Sultan: prepare event ");
 
@@ -1371,133 +1227,96 @@ namespace CAT {
 
 
 
-  //*******************************************************************
-  void Sultan::print_clusters(void)const{
-    //*******************************************************************
-
-    for(std::vector<topology::cluster>::const_iterator icluster=clusters_.begin(); icluster != clusters_.end(); ++icluster){
-      icluster->dump();
-    }
-
-    return;
-  }
-
-
 
   //*******************************************************************
-  void Sultan::clusterize(topology::Tracked_data & tracked_data_){
+  void Sultan::reconstruct(topology::Tracked_data & tracked_data_){
     //*******************************************************************
 
     if( event_number < first_event_number ) return;
 
+    clock.start(" Sultan: reconstruct ","cumulative");
+
+    clusterize();
+
+    for( std::vector< std::vector< topology::Cell > >::iterator iclu=clusters_.begin(); iclu != clusters_.end(); ++iclu)
+      reconstruct_cluster(*iclu);
+
+    tracked_data_.set_sequences(sequences_);
+
+    set_unclustered_cells(tracked_data_);
+
+    m.message(" sultan: reconstructed ", tracked_data_.get_sequences().size(), "tracks, leaving ", tracked_data_.get_unclustered_cells().size(), " unclustered hits", mybhep::VERBOSE);
+
+    clock.stop(" Sultan: reconstruct ");
+
+  }
+
+  //*******************************************************************
+  void Sultan::clusterize(void){
+    //*******************************************************************
+    // build clusters of cells, such that cells within each cluster:
+    // - all lie on the same side wrt the foil
+    // - all have the same time character (fast or slow)
+    // - are near some other cell in the cluster
+
     clock.start(" Sultan: clusterize ","cumulative");
 
-    m.message(" local_tracking: fill clusters ", mybhep::VERBOSE);
+    m.message(" sultan: fill clusters ", mybhep::VERBOSE);
 
     if( cells_.empty() ) return;
 
-    if( !select_true_tracks(tracked_data_) ){
-      m.message(" Sultan: event is not selected at true level ", mybhep::NORMAL);
-      tracked_data_.set_selected(false);
-      return;
-    }
+    std::map<int,bool > used;
+    for(size_t i=0; i<cells_.size(); i++)
+      used[cells_[i].id()] = false;
 
-    float side[2]; // loop on two sides of the foil
-    side[0] =  1.;
-    side[1] = -1.;
+    int the_cell_side;
+    bool the_cell_fast;
+    bool near_existing_cluster;
 
-    bool fast[2]; // loop on fast and slow hits
-    fast[0] = true;
-    fast[1] = false;
+    for(std::vector<topology::Cell>::const_iterator icell=cells_.begin(); icell!=cells_.end(); ++icell){
+      // pick a cell c that was never added
+      const topology::Cell & c = *icell;
+      if( used[c.id()] ) continue; // skip cells already used
+      used[c.id()] = true;
+      the_cell_side = cell_side(c);
+      the_cell_fast = c.fast();
 
-    std::map<int,unsigned int > flags;
+      m.message(" build cluster for cell ", c.id(), mybhep::VVERBOSE);
 
-    for(size_t ip=0; ip<2; ip++)  // loop on two sides of the foil
-      {
-        for(size_t iq=0; iq<2; iq++) // loop on fast and slow hits
-          {
-            for(size_t i=0; i<cells_.size(); i++)
-              {
-		flags[cells_[i].id()] = 0;
-              }
+      near_existing_cluster = false;
+      // check if cell c is near some already existing clusters
+      for( std::vector< std::vector< topology::Cell > >::iterator iclu=clusters_.begin(); iclu != clusters_.end(); ++iclu){
+	if( near_existing_cluster ) break;
+	if( iclu->size() == 0 ){
+	  m.message( " problem: cluster contains no cells ", mybhep::NORMAL);
+	  continue;
+	}
+	topology::Cell fc = iclu->front();
+	if( cell_side(fc) != the_cell_side ) continue; // cell must be on same side as cluster
+	if( fc.fast() != the_cell_fast ) continue; // cell must be as fast as cluster
 
-            for(std::vector<topology::Cell>::const_iterator icell=cells_.begin(); icell!=cells_.end(); ++icell){
-              // pick a cell c that was never added
-              const topology::Cell & c = *icell;
-              if( (cell_side(c) * side[ip]) < 0) continue;
-              if( c.fast() != fast[iq] ) continue;
-	      if( flags[c.id()] == 1 ) continue;
-	      flags[c.id()] = 1;
+	for( std::vector< topology::Cell >::const_iterator ccell=iclu->begin(); ccell != iclu->end(); ++ccell ){
+	  size_t nl = near_level(c, *ccell);
+	  if( nl > 0 ){
+	    m.message(" cell ", c.id(), " is near cell ", ccell->id(), " with level ", nl, mybhep::VVERBOSE);
+	    iclu->push_back(c);
+	    near_existing_cluster = true;
+	    break;
+	  }
+	} // finish loop on cells in cluster
+	if( near_existing_cluster ) break;
+      } // finish loop on clusters
 
-              // cell c will form a new cluster, i.e. a new list of nodes
-              topology::cluster cluster_connected_to_c;
-              std::vector<topology::node> nodes_connected_to_c;
-              m.message(" begin new cluster with cell ", c.id(), mybhep::VERBOSE);
-
-              // let's get the list of all the cells that can be reached from c
-              // without jumps
-              std::vector<topology::cell> cells_connected_to_c;
-              cells_connected_to_c.push_back(c);
-
-              for( size_t i=0; i<cells_connected_to_c.size(); i++){ // loop on connected cells
-                // take a connected cell (the first one is just c)
-                topology::cell cconn = cells_connected_to_c[i];
-
-                // the connected cell composes a new node
-                topology::node newnode(cconn, level, probmin);
-                std::vector<topology::cell_couplet> cc;
-
-                // get the list of cells near the connected cell
-                std::vector<topology::cell> cells_near_iconn;// = get_near_cells(cconn);
-
-                m.message(" cluster ", clusters_.size(), " starts with ", c.id(), " try to add cell ", cconn.id(), " with n of neighbours = ", cells_near_iconn.size(), mybhep::VERBOSE);
-                for(std::vector<topology::cell>::const_iterator icnc=cells_near_iconn.begin(); icnc!=cells_near_iconn.end(); ++icnc){
-
-                  topology::cell cnc = *icnc;
-
-                  if( !is_good_couplet(& cconn, cnc, cells_near_iconn) ) continue;
-
-                  topology::cell_couplet ccnc(cconn,cnc,level,probmin);
-                  cc.push_back(ccnc);
-
-                  m.message(" ... creating couplet ", cconn.id(), " -> ", cnc.id(), mybhep::VERBOSE);
-
-		  if( flags[cnc.id()] != 1 )
-		    {
-		      flags[cnc.id()] = 1 ;
-		      cells_connected_to_c.push_back(cnc);
-		    }
-		}
-                newnode.set_cc(cc);
-                newnode.calculate_triplets(Ratio, QuadrantAngle, TangentPhi, TangentTheta);
-                nodes_connected_to_c.push_back(newnode);
-
-                m.message(" cluster started with ", c.id(), " has been given cell ", cconn.id(), " with ", cc.size(), " couplets ", mybhep::VERBOSE);
-
-              }
-	      
-              cluster_connected_to_c.set_nodes(nodes_connected_to_c);
-	      
-              clusters_.push_back(cluster_connected_to_c);
-            }
-
-          }
+      if( !near_existing_cluster ){
+	m.message(" cell ", c.id(), " will form a new cluster ", mybhep::VVERBOSE);
+	std::vector<topology::Cell> cluster;
+	cluster.push_back(c);
+	clusters_.push_back(cluster);
       }
 
+    } // finish loop on cells
 
-    setup_clusters();
-
-    m.message(" there are ", clusters_.size(), " clusters of cells ", mybhep::VVERBOSE);
-
-    if( PrintMode )
-      make_plots(tracked_data_);
-
-    if( level >= mybhep::VVERBOSE ){
-      print_clusters();
-    }
-
-    tracked_data_.set_cells(cells_);
-    tracked_data_.set_clusters(clusters_);
+    m.message(" there are ", clusters_.size(), " clusters ", mybhep::VERBOSE);
 
     clock.stop(" Sultan: clusterize ");
 
@@ -1506,99 +1325,97 @@ namespace CAT {
 
   }
 
-  //*************************************************************
-  void Sultan::make_plots(topology::Tracked_data & tracked_data_){
-    //*************************************************************
-    /*
-      if( PrintMode ){
-      for(std::vector<topology::cluster>::iterator icluster = clusters_.begin(); icluster!=clusters_.end(); ++icluster){
-      for(std::vector<topology::node>::iterator inode = (*icluster).nodes_.begin(); inode != (*icluster).nodes_.end(); ++inode){
-      for(std::vector<topology::cell_triplet>::iterator iccc = (*inode).ccc_.begin(); iccc != (*inode).ccc_.end(); ++iccc){
-      topology::cell_triplet ccc = *iccc;
-      for(std::vector<double>::const_iterator ichi = ccc.chi2s().begin(); ichi != ccc.chi2s().end(); ++ichi){
-      hman.fill("chi2_triplet", *ichi);
-      }
-      for(std::vector<double>::const_iterator iprob = ccc.probs().begin(); iprob != ccc.probs().end(); ++iprob){
-      hman.fill("prob_triplet", *iprob);
-      }
-      }
-      }
 
-      }
+  //*******************************************************************
+  void Sultan::reconstruct_cluster(std::vector< topology::Cell > cluster){
+    //*******************************************************************
 
-      std::vector<topology::sequence> true_sequences = tracked_data_.get_true_sequences();
-      for(std::vector<topology::sequence>::iterator iseq=true_sequences.begin(); iseq != true_sequences.end(); ++iseq){
-      topology::node n;
-      double phi;
-      if( iseq->largest_kink_node(n, phi)){
-      phi *= 180./M_PI;
-      std::clog << " largest kink on true sequence " << iseq - true_sequences.begin() << " is " << phi << " on cell " << n.c().id() << std::endl;
-      hman.fill("largest_true_kink", phi);
-      if( phi > 20.){
-      topology::experimental_vector dist(n.c().ep(), n.ep());
-      hman.fill("largest_true_kink_position", dist.z().value(), dist.x().value());
-      }
-      }
+    clock.start(" Sultan: reconstruct_cluster ","cumulative");
 
-      }
+    m.message(" reconstruct cluster with ", cluster.size(), " cells ", mybhep::VERBOSE);
 
+    std::vector<Circle> * hs_reco_rough = new std::vector<Circle>();
+    std::vector<Circle> * hs_reco_precise = new std::vector<Circle>();
+    Circle h_reco_rough;
+    Circle h_reco_precise;
+    std::vector<Cell > cells_to_reconstruct = cluster;
+    topology::Sequence seq;
+    std::vector<Cell> track_cells;
+    std::vector<experimental_double> * phis = new std::vector<experimental_double>();
+    std::vector<experimental_double> * zs = new std::vector<experimental_double>();
 
+    // need 3 cells to make a circle
+    while( cells_to_reconstruct.size() > 3 ){
+      phis->clear();
+      zs->clear();
 
+      detector_.draw_surfaces_rough(&h_reco_rough, false, cells_to_reconstruct,event_number);
 
-      }
+      detector_.assign_reco_points_based_on_circle(cells_to_reconstruct, h_reco_rough, sequences_.size());
+      //detector_.fill_residual(&h_residual_rough);
 
-    */
-    return;
+      detector_.draw_surfaces_precise(h_reco_rough, &h_reco_precise, false, cells_to_reconstruct, event_number);
+      
+      detector_.assign_reco_points_based_on_circle(cells_to_reconstruct, h_reco_precise, sequences_.size());
+      //detector_.fill_residual(&h_residual_precise);
+      //detector_.fill_residual_circle(&h_residual_x0, &h_residual_y0, &h_residual_r, &h_pull_x0, &h_pull_y0, &h_pull_r, h_true, h_reco_precise);
+      
 
+      track_cells = detector_.cells(sequences_.size());
 
-  }
-
-  //*************************************************************
-  bool Sultan::is_good_couplet(topology::cell * mainc,
-                                    const topology::cell &candidatec,
-                                    const std::vector<topology::cell> & nearmain){
-    //*************************************************************
-
-    // the couplet mainc -> candidatec is good only if
-    // there is no other cell that is near to both and can form a triplet between them
-
-    clock.start(" Sultan: is good couplet ","cumulative");
-
-    topology::cell a=*mainc;
-
-
-    for(std::vector<topology::cell>::const_iterator icell=nearmain.begin(); icell != nearmain.end(); ++icell){
-
-      topology::cell b=*icell;
-      if( b.id() == candidatec.id()) continue;
-
-      if(near_level(b, candidatec) == 0 ) continue;
-
-      if(near_level(b, candidatec) < near_level(a, candidatec) ||
-         near_level(b, a) < near_level(a, candidatec) )
-        continue;  // cannot match a->b or b->c if a->c is nearer
-
-      //    if( icell->intersect(candidatec) || icell->intersect(mainc) ) continue;
-      // don't reject candidate based on a cell that intersects it
-
-      m.message(" ... ... check if near node ", b.id(), " has triplet ", a.id(), " <-> ", candidatec.id(), mybhep::VERBOSE);
-
-      topology::cell_triplet ccc(a,b,candidatec, level, probmin);
-      ccc.calculate_joints(Ratio, QuadrantAngle, TangentPhi, TangentTheta);
-      if(ccc.joints().size() > 0 ){
-        m.message(" ... ... yes it does: so couplet ", a.id(), " and ", candidatec.id(), " is not good",  mybhep::VERBOSE);
-        clock.stop(" Sultan: is good couplet ");
-        return false;
+      for(std::vector<Cell>::iterator ic=track_cells.begin(); ic!=track_cells.end(); ++ic){
+	phis->push_back(experimental_atan2(ic->p_reco().y() - ic->ep().y(), ic->p_reco().x() - ic->ep().x()));
+	zs->push_back(ic->ep().z());
       }
 
+      LinearRegression* l = new LinearRegression(*zs, *phis, level, probmin);
+
+      // fit best helix with through all points (vertical view)
+      l->fit();
+      l->invert(); // fit with y as more erroneous variable (phi = phi(y)),
+      // then invert the result to have y = y(phi)
+      l->dump();
+
+      for(std::vector<Cell>::iterator ic=track_cells.begin(); ic!=track_cells.end(); ++ic){
+	ic->set_p_reco(experimental_point(ic->p_reco().x(), ic->p_reco().y(),
+					  l->position(l->xi()[ic - track_cells.begin()])));
+      }
+
+      delete l;
+
+      seq.set_cells(track_cells);
+      seq.set_track_id(sequences_.size());
+      seq.set_helix(helix(h_reco_precise.center(), h_reco_precise.radius(), l->tangent()));
+      sequences_.push_back(seq);
+
+      hs_reco_rough->push_back(h_reco_rough);
+      hs_reco_precise->push_back(h_reco_precise);
+      cells_to_reconstruct = detector_.leftover_cells();
+
+      m.message(" assigned ", track_cells.size(), " cells to track ", seq.track_id(), " leaving ", cells_to_reconstruct.size(), " leftovers ", mybhep::VERBOSE);
     }
 
+    m.message( " reconstructed ", hs_reco_precise->size(), " circles from this cluster ", mybhep::VERBOSE);
 
-    clock.stop(" Sultan: is good couplet ");
-    return true;
+    delete hs_reco_rough;
+    delete hs_reco_precise;
+    delete phis;
+    delete zs;
 
+    clock.stop(" Sultan: reconstruct_cluster ");
+
+    return;
   }
 
+
+  //*******************************************************************
+  void Sultan::set_unclustered_cells(topology::Tracked_data & tracked_data_){
+    //*******************************************************************
+
+    tracked_data_.set_unclustered_cells(detector_.cells(-1));
+
+
+  }
 
   //*************************************************************
   void Sultan::fill_fast_information( mybhep::event& evt ){
@@ -1655,7 +1472,7 @@ namespace CAT {
 
     if( SuperNemo )
       {
-        if( c.ep().z().value() > 0. )
+        if( c.ep().x().value() > 0. )
           return 1;
 
         return -1;
@@ -1673,8 +1490,9 @@ namespace CAT {
   size_t Sultan::near_level( const topology::cell & c1, const topology::cell & c2 ){
 
     // returns 0 for far-away cell
-    // 1 for diagonal cells
-    // 2 for side-by-side cells
+    // 1 for cells separated by nofflayers
+    // 2 for diagonal cells
+    // 3 for side-by-side cells
 
     // side-by-side connection: distance = 1
     // diagonal connection: distance = sqrt(2) = 1.41
@@ -1699,13 +1517,17 @@ namespace CAT {
       }
     double precision = 0.15*limit_side;
 
+
     if( level >= mybhep::VVERBOSE )
       std::clog << " (c " << c2.id() << " d " << distance.value() << " )";
 
     if( fabs(distance.value() - limit_side) < precision )
-      return 2;
+      return 3;
 
     if( fabs(distance.value() - limit_diagonal) < precision )
+      return 2;
+
+    if( distance.value() < limit_diagonal*(1. + nofflayers) )
       return 1;
 
     return 0;
@@ -1713,44 +1535,6 @@ namespace CAT {
 
   }
 
-  /*
-  std::vector<topology::Cell> Sultan::get_near_cells(const topology::Cell & c){
-
-    clock.start(" Sultan: get near cells ","cumulative");
-
-    m.message(" filling list of cells near cell ", c.id(), " fast ", c.fast(), " side ", cell_side(c), mybhep::VVERBOSE);
-
-    std::vector<topology::Cell> cells;
-
-    for(std::vector<topology::Cell>::iterator kcell=cells_.begin(); kcell != cells_.end(); ++kcell){
-      if( kcell->id() == c.id() ) continue;
-
-      if( kcell->fast() != c.fast() ) continue;
-
-      if( cell_side(*kcell) != cell_side(c) ) continue;
-
-      size_t nl = near_level(c,*kcell);
-
-      if( nl > 0 )
-        {
-          if( level >= mybhep::VVERBOSE ){
-            std::clog << "*";
-          }
-
-          topology::Cell ck = *kcell;
-          cells.push_back(ck);
-        }
-    }
-
-    if( level >= mybhep::VVERBOSE )
-      std::clog << " " << std::endl;
-
-    clock.stop(" Sultan: get near cells ");
-
-    return cells;
-
-  }
-  */
 
   //*************************************************************
   void Sultan::setup_cells(){
@@ -1767,40 +1551,6 @@ namespace CAT {
 
 
 
-  //*************************************************************
-  void Sultan::setup_clusters(){
-    //*************************************************************
-
-    clock.start(" Sultan: setup_clusters ","cumulative");
-
-    // loop on clusters
-    for(std::vector<topology::cluster>::iterator icl=clusters_.begin(); icl != clusters_.end(); ++icl){
-      icl->set_print_level(level);
-      icl->set_probmin(probmin);
-
-      // loop on nodes
-      for(std::vector<topology::node>::iterator inode=(*icl).nodes_.begin(); inode != (*icl).nodes_.end(); ++inode){
-        inode->set_print_level(level);
-        inode->set_probmin(probmin);
-
-        for(std::vector<topology::cell_couplet>::iterator icc=(*inode).cc_.begin(); icc != (*inode).cc_.end(); ++icc){
-          icc->set_print_level(level);
-          icc->set_probmin(probmin);
-        }
-
-        for(std::vector<topology::cell_triplet>::iterator iccc=(*inode).ccc_.begin(); iccc != (*inode).ccc_.end(); ++iccc){
-          iccc->set_print_level(level);
-          iccc->set_probmin(probmin);
-        }
-
-      }
-
-    }
-
-    clock.stop(" Sultan: setup_clusters ");
-
-    return;
-  }
 
 
   //*************************************************************
@@ -2003,162 +1753,6 @@ namespace CAT {
 
   }
 
-  //*************************************************************
-  bool Sultan::select_true_tracks(topology::Tracked_data & tracked_data_){
-    //*************************************************************
-
-    return true;
-
-    std::vector<topology::sequence> true_sequences = tracked_data_.get_true_sequences();
-
-    m.message(" selecting events based on true tracks ", mybhep::VVERBOSE);
-
-    size_t counter = 0;
-    topology::sequence sa;
-    topology::sequence sb;
-
-    size_t n_tracks_ = 1;
-    double emin = 0.2;
-
-    for(std::vector<topology::sequence>::iterator iseq=true_sequences.begin(); iseq != true_sequences.end(); ++iseq){
-      if( !iseq->primary() ) continue;
-      if( counter == 0 )
-        sa = *iseq;
-      if( counter == 1 )
-        sb = *iseq;
-      counter ++;
-    }
-
-
-    if( counter != n_tracks_ ){
-      m.message(" reject: n primary tracks = ", counter, mybhep::NORMAL);
-      return false;
-    }
-    m.message(" n primary tracks = ", counter, mybhep::VVERBOSE);
-
-    if( !sa.one_side() ){
-      m.message(" reject: 1st track crosses the foil ", mybhep::NORMAL);
-      return false;
-    }
-
-    if( n_tracks_ == 2 ){
-      if( !sb.one_side() ){
-        m.message(" reject: 2nd track crosses the foil ", mybhep::NORMAL);
-        return false;
-      }
-    }
-
-    if( !sa.has_decay_helix_vertex() ){
-      m.message(" reject: 1st track has no calo ", mybhep::NORMAL);
-      return false;
-    }
-
-
-    if( n_tracks_ == 2 ){
-      if( !sb.has_decay_helix_vertex() ){
-        m.message(" reject: 2nd track has no calo ", mybhep::NORMAL);
-        return false;
-      }
-    }
-
-    if( n_tracks_ == 2 ){
-      if( sa.calo_helix_id() == sb.calo_helix_id() ){
-        m.message(" reject: same calo ", sa.calo_helix_id(), mybhep::NORMAL);
-        return false;
-      }
-    }
-
-    std::vector<topology::calorimeter_hit> calos = tracked_data_.get_calos();
-
-    topology::calorimeter_hit caloA = calos[sa.calo_helix_id()];
-
-
-    if( caloA.e().value() < emin ){
-      m.message(" reject: 1st calo has energy ", caloA.e().value(), mybhep::NORMAL);
-      return false;
-
-    }
-
-    if( n_tracks_ == 2 ){
-      topology::calorimeter_hit caloB = calos[sb.calo_helix_id()];
-      if( caloB.e().value() < emin ){
-        m.message(" reject: 2nd calo has energy ", caloA.e().value(), mybhep::NORMAL);
-        return false;
-      }
-    }
-
-    /*
-      if( sa.nodes().size() > 15 ){
-      m.message(" reject: 1st tracks has nhits = ", sa.nodes().size(), mybhep::NORMAL);
-      return false;
-      }
-
-      if( sb.nodes().size() > 15 ){
-      m.message(" reject: 2nd tracks has nhits = ", sb.nodes().size(), mybhep::NORMAL);
-      return false;
-      }
-    */
-
-    size_t calo_counter = 0;
-    size_t calo_counter_thr = 0;
-
-    for(std::vector<topology::calorimeter_hit>::iterator iseq=calos.begin(); iseq != calos.end(); ++iseq){
-      calo_counter ++;
-      if( iseq->e().value() <= emin ) continue;
-      calo_counter_thr ++;
-    }
-
-    if( calo_counter != n_tracks_ ){
-      m.message(" reject: n calos is ", calo_counter, mybhep::NORMAL);
-      return false;
-    }
-
-    if( calo_counter_thr != n_tracks_ ){
-      m.message(" reject: n calos with E > ", emin, " is ", calo_counter_thr, mybhep::NORMAL);
-      return false;
-    }
-
-#if 0 // cut on kinks
-
-    size_t all_kinks_counter = 0;
-    for(std::vector<topology::sequence>::iterator iseq=true_sequences.begin(); iseq != true_sequences.end(); ++iseq){
-      if( !iseq->primary() ) continue;
-      topology::node n;
-      double phi;
-      size_t kinks_counter = 0;
-      int layer = -100;
-      if( iseq->largest_kink_node(n, phi)){
-        phi *= 180./M_PI;
-        if( phi > 20.){
-          kinks_counter ++;
-          all_kinks_counter ++;
-          layer = n.c().layer();
-        }
-      }
-
-      if( kinks_counter > 1 ){
-        m.message(" reject: sequence ", iseq - true_sequences_.begin(), " has ", kinks_counter, " kinks ", mybhep::NORMAL);
-        return false;
-      }
-
-      if( kinks_counter > 0 && (layer == 0 || layer == 8 || layer == -8) ){
-        m.message(" reject: sequence ", iseq - true_sequences_.begin(), " has kink on plane ", layer, mybhep::NORMAL);
-        return false;
-      }
-
-    }
-
-    if( all_kinks_counter == 0 ){
-      m.message(" reject: no kinks in the event ", mybhep::NORMAL);
-      return false;
-    }
-
-
-#endif
-
-    return true;
-
-  }
 
   void Sultan::setDoDriftWires(bool ddw){
     doDriftWires=ddw;
@@ -2185,38 +1779,6 @@ namespace CAT {
 
   void Sultan::set_lastlayer(int ll_){
     lastlayer = ll_;
-    return;
-  }
-
-  void Sultan::set_num_blocks(int nb){
-    if (nb > 0)
-      {
-        num_blocks = nb;
-        planes_per_block.assign (num_blocks, 1);
-      }
-    else
-      {
-        std::cerr << "WARNING: CATAlgorithm::Sultan::set_num_blocks: "
-                  << "Invalid number of GG layer blocks !" << std::endl;
-        planes_per_block.clear ();
-        num_blocks = -1; // invalid value
-      }
-    return;
-  }
-
-  void Sultan::set_planes_per_block(int block, int nplanes){
-    if (block< 0 || block>=planes_per_block.size())
-      {
-        throw std::range_error ("CATAlgorithm::Sultan::set_planes_per_block: Invalid GG layer block index !");
-      }
-    if (nplanes > 0)
-      {
-        planes_per_block.at (block) = nplanes;
-      }
-    else
-      {
-        throw std::range_error ("CATAlgorithm::Sultan::set_planes_per_block: Invalid number of GG layers in block !");
-      }
     return;
   }
 
@@ -2279,46 +1841,6 @@ namespace CAT {
 
   void Sultan::set_PrintMode(bool v){
     PrintMode = v;
-    return;
-  }
-
-  void Sultan::set_SmallRadius(double v){
-    SmallRadius = v;
-    return;
-  }
-
-  void Sultan::set_TangentPhi(double v){
-    TangentPhi = v;
-    return;
-  }
-
-  void Sultan::set_TangentTheta(double v){
-    TangentTheta = v;
-    return;
-  }
-
-  void Sultan::set_SmallNumber(double v){
-    SmallNumber = v;
-    return;
-  }
-
-  void Sultan::set_QuadrantAngle(double v){
-    QuadrantAngle = v;
-    return;
-  }
-
-  void Sultan::set_Ratio(double v){
-    Ratio = v;
-    return;
-  }
-
-  void Sultan::set_CompatibilityDistance(double v){
-    CompatibilityDistance = v;
-    return;
-  }
-
-  void Sultan::set_MaxChi2(double v){
-    MaxChi2 = v;
     return;
   }
 

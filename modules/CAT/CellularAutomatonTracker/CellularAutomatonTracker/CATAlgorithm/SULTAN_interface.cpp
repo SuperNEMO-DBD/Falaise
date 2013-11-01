@@ -12,39 +12,40 @@
 
 namespace CAT {
 
-  const std::string & setup_data_sultan::get_error_message () const
+  const std::string & setup_data_sultan::get_error_message() const
   {
     return _error_message;
   }
 
-  void setup_data_sultan::_set_error_message (const std::string & message_)
+  void setup_data_sultan::_set_error_message(const std::string & message_)
   {
     std::ostringstream oss;
     oss << "SULTAN::setup_data_sultan: ";
     oss << message_;
-    _error_message = oss.str ();
+    _error_message = oss.str();
     return;
   }
 
-  setup_data_sultan::setup_data_sultan ()
+  setup_data_sultan::setup_data_sultan()
   {
-    _set_defaults ();
+    _set_defaults();
     return;
   }
 
-  void setup_data_sultan::reset ()
+  void setup_data_sultan::reset()
   {
-    _set_defaults ();
+    _set_defaults();
     return;
   }
 
-  void setup_data_sultan::_set_defaults ()
+  void setup_data_sultan::_set_defaults()
   {
-    _error_message.clear ();
+    _error_message.clear();
     level                 = "normal";
     SuperNemo             = true;
     MaxTime               = 5000.0 * CLHEP::ms;
     probmin                = 0.;
+    nofflayers            = 1;
     first_event            = -1;
     len                   = 2503. * CLHEP::mm;
     rad                   = 30.   * CLHEP::mm;
@@ -63,13 +64,13 @@ namespace CAT {
     return;
   }
 
-  bool setup_data_sultan::check () const
+  bool setup_data_sultan::check() const
   {
-    setup_data_sultan * mutable_this = const_cast<setup_data_sultan *> (this);
-    return mutable_this->_check_snemo ();
+    setup_data_sultan * mutable_this = const_cast<setup_data_sultan *>(this);
+    return mutable_this->_check_snemo();
   }
 
-  bool setup_data_sultan::_check_snemo ()
+  bool setup_data_sultan::_check_snemo()
   {
     if (probmin < 0.0)
       {
@@ -120,9 +121,9 @@ namespace CAT {
   {
     if (! setup_.check ())
       {
-        std::cerr << "ERROR: SULTAN::clusterizer_configure: "
+        std::cerr << "ERROR: SULTAN::sultan_configure: "
                   << setup_.get_error_message () << std::endl;
-        throw std::logic_error ("SULTAN::clusterizer_configure: Invalid setup data !");
+        throw std::logic_error ("SULTAN::sultan_configure: Invalid setup data !");
       }
 
     // General parameters :
@@ -135,6 +136,7 @@ namespace CAT {
 
     // Algorithm parameters :
     sultan_.set_probmin (setup_.probmin);
+    sultan_.set_nofflayers (setup_.nofflayers);
     sultan_.set_first_event (setup_.first_event);
     sultan_.set_len (setup_.len);
     sultan_.set_rad (setup_.rad);
@@ -158,7 +160,7 @@ namespace CAT {
       }
     else
       {
-        throw std::logic_error ("SULTAN::clusterizer_configure: Only SuperNEMO setup is supported !");
+        throw std::logic_error ("SULTAN::sultan_configure: Only SuperNEMO setup is supported !");
       }
 
     return;
@@ -182,8 +184,7 @@ namespace CAT {
 
   bool input_data_sultan::check () const
   {
-    // A map would be better to check cell IDs :
-    std::map<int,bool> mids;
+    std::vector<int> mids;
     for (int i = 0; i < cells.size (); i++)
       {
         const topology::Cell & c = cells.at(i);
@@ -195,49 +196,15 @@ namespace CAT {
                       << std::endl;
             return false;
           }
-        if (mids.find (cell_id) != mids.end ())
+        if (std::find(mids.begin(), mids.end(), cell_id) != mids.end ())
           {
             std::cerr << "ERROR: SULTAN::input_data_sultan::check: "
                       << "Duplicate cell ID '" <<  cell_id << "' !"
                       << std::endl;
             return false;
           }
-        mids[cell_id] = true;
       }
 
-    // Duplicate test for now :
-    std::vector<bool> ids;
-    ids.assign (cells.size (), false);
-    for (int i = 0; i < cells.size (); i++)
-      {
-        const topology::Cell & c = cells.at(i);
-        int cell_id = c.id();
-        if ((cell_id < 0) || (cell_id >= cells.size ()))
-          {
-            std::cerr << "ERROR: SULTAN::input_data_sultan::check: "
-                      << "Invalid cell ID '" <<  cell_id << "' !"
-                      << std::endl;
-            return false;
-          }
-        if (ids[cell_id])
-          {
-            std::cerr << "ERROR: SULTAN::input_data_sultan::check: "
-                      << "Duplicate cell ID '" <<  cell_id << "' !"
-                      << std::endl;
-            return false;
-          }
-        ids[cell_id] = true;
-      }
-    for (int i = 0; i < ids.size (); i++)
-      {
-        if (! ids[i])
-          {
-            std::cerr << "ERROR: SULTAN::input_data_sultan::check: "
-                      << "Cell ID '" << i << "' is not used ! There are some missing cells !"
-                      << std::endl;
-            return false;
-          }
-      }
     return true;
   }
 

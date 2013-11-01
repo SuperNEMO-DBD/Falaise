@@ -21,13 +21,10 @@ namespace CAT {
 
     private:
 
-      // true hit position
-      experimental_point p_true_;
-
       // reconstructed hit position
       experimental_point p_reco_;
 
-      bool on_;
+      int track_id_;
 
     public:
       Cell();
@@ -35,25 +32,38 @@ namespace CAT {
 
       Cell(mybhep::hit hit, size_t id, bool SuperNemo, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200):cell(hit, id, SuperNemo, level=mybhep::NORMAL, probmin=1.e-200){};
 
-      void set_p_true(experimental_point a);
       void set_p_reco(experimental_point a);
-      void set_on(bool a);
+      void set_track_id(int a);
 
-      experimental_point p_true(){return p_true_;}
-      experimental_point p_reco(){return p_reco_;}
+      /*** dump ***/
+      virtual void dump (std::ostream & a_out         = std::clog,
+                         const std::string & a_title  = "",
+                         const std::string & a_indent = "",
+                         bool a_inherit          = false) const{
+
+	std::string indent;
+	if (! a_indent.empty ()) indent = a_indent;
+	if (! a_title.empty ())
+	  {
+	    a_out << indent << a_title << std::endl;
+	  }
+	
+	a_out << indent << " Cell ------------------- " << " id " << id() << std::endl;
+	a_out << " wire position: ( " << this->ep().x().value() << ", " << this->ep().y().value() << ")" << std::endl;
+	a_out << " measurement: r = " << this->r().value() << " +- " << this->r().error() << ", z = " << this->ep().z().value() << " +- " << this->ep().z().error() << std::endl;
+	a_out << " reco position: ( " << this->p_reco().x().value() << " +- " << this->p_reco().x().error() << ", " << this->p_reco().y().value() << " +- " << this->p_reco().y().error() << ", " << this->p_reco().z().value() << " +- " << this->p_reco().z().error() << ")" << std::endl; 
+
+      }
+
+
+      const experimental_point p_reco()const {return p_reco_;}
+      int track_id();
       double phi();
-      bool on();
       void draw();
       double distance(Circle h);
-      double true_phi();
-      double p();
       double p(Circle h);
-      int legendre_sign();
-      int legendre_sign(Circle h);
-      double legendre();
-      double legendre(Circle h);
       double delta(Circle h);
-      double legendre_R(double X0, double Y0);
+      const double legendre_R(double X0, double Y0)const;
       void draw_surface(double xmin, double xmax, double ymin, double ymax);
       void reset();
 

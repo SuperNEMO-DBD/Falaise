@@ -27,7 +27,7 @@ namespace CAT {
 
     private:
 
-      std::vector<Cell> cells_;
+      std::map<size_t, Cell> cells_;
       std::vector<Cell> leftover_cells_;
       double x0_;
       double y0_;
@@ -39,7 +39,7 @@ namespace CAT {
       Detector();
       virtual ~Detector();
 
-      void set_cells(std::vector<Cell> a){cells_ = a;}
+      void set_cells(std::vector<Cell> a);
       void set_leftover_cells(std::vector<Cell> a){leftover_cells_ = a;}
       void set_x0(double a){x0_ = a;}
       void set_y0(double a){y0_ = a;}
@@ -47,7 +47,8 @@ namespace CAT {
       void set_Ly(double a){Ly_ = a;}
       void set_cell_size(double a){cell_size_ = a;}
 
-      std::vector<Cell> cells(){return cells_;}
+      std::vector<Cell> cells();
+
       std::vector<Cell> leftover_cells(){return leftover_cells_;}
       double x0(){return x0_;}
       double y0(){return y0_;}
@@ -58,16 +59,12 @@ namespace CAT {
       void build_cells();
       void draw();
       bool detect(Circle h, double sigma);
-      bool on();
-      size_t n_active_cells();
-      std::vector<Cell> active_cells();
+      std::vector<Cell> cells(int itrack);
       double average_x();
       double average_y();
       void draw_surfaces_rough(Circle *h, bool draw, std::vector<Cell> cs, int ievent);
-      void draw_surfaces_precise(Circle rough, Circle *h, bool draw, int ievent);
-      void assign_reco_points_based_on_circle(Circle h);
-      void fill_residual(TH1F* h);
-      void fill_residual_circle(TH1F* x0, TH1F* y0, TH1F* r, TH1F* px0, TH1F* py0, TH1F* pr, Circle htrue, Circle hreco);
+      void draw_surfaces_precise(Circle rough, Circle *h, bool draw, std::vector<Cell> cs, int ievent);
+      void assign_reco_points_based_on_circle(std::vector<Cell> cluster, Circle h, size_t itrack);
 
       void reset();
 
