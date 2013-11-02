@@ -87,7 +87,11 @@ if(UNIX AND NOT APPLE)
     )
 elseif(APPLE)
   # Temporary setting - needs testing
-  set_target_properties(Falaise PROPERTIES INSTALL_RPATH "@rpath")
+  set_target_properties(Falaise 
+    PROPERTIES 
+      INSTALL_NAME_DIR "@rpath"
+      #LINK_FLAGS "-Wl,-rpath,@loader_path"
+    )
 endif()
 
 # - Install it

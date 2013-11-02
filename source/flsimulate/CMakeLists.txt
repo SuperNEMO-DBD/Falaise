@@ -74,7 +74,11 @@ if(UNIX AND NOT APPLE)
     )
 elseif(APPLE)
   # Temporary setting - needs testing
-  set_target_properties(flsimulate PROPERTIES INSTALL_RPATH "@rpath")
+  set_target_properties(flsimulate 
+    PROPERTIES 
+      INSTALL_RPATH "@loader_path/../${CMAKE_INSTALL_LIBDIR}"
+      LINK_FLAGS "-Wl,-rpath,@loader_path/../${CMAKE_INSTALL_LIBDIR}" 
+    )    
 endif()
 
 # - Install
