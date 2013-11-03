@@ -84,7 +84,7 @@ endif()
 # Configure documentation generation, if required
 #
 set(Falaise_DOCEXPORT_DIR "${PROJECT_BINARY_DIR}/documentation")
-option(Falaise_BUILD_DOCS "Build documentation for Falaise" OFF)
+option(Falaise_BUILD_DOCS "Build documentation for Falaise" ON)
 if(Falaise_BUILD_DOCS)
   # - For main HTML docs
   find_package(Doxygen 1.8 REQUIRED)
