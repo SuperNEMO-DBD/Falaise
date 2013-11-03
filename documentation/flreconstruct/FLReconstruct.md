@@ -1,5 +1,5 @@
-The FLReconstruct Application
-=============================
+Using The FLReconstruct Application
+===================================
 
 \tableofcontents
 
