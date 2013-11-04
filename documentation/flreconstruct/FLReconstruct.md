@@ -22,19 +22,129 @@ modules is covered in [Writing FLReconstruct Modules](md_WritingFLReconstructMod
 Example Usage {#examples}
 =============
 The flreconstruct program is a command line application just like any
-other Unix style program (e.g. `ls`).
+other Unix style program (e.g. `ls`). In the following, we will
+write commands assuming that `flreconstruct` is in your path. If is not,
+simply use the relative or absolute path to `flsimulate`.
+
+You can get help on the
+options that can be passed to `flreconstruct` by running it with the `-h`
+of `--help` options, e.g.
+
+~~~~~
+$ flreconstruct --help
+flreconstruct 1.0.0
+Usage:
+  flreconstruct [options]
+Options
+  -h [ --help ]                 print this help message
+  --version                     print version number
+  -v [ --verbose ] [level] (=1) set verbosity level of logging
+  -i [ --input-file ] [file]    file from which to read data
+  -o [ --output-file ] [file]   file to which to write data
+  -p [ --pipeline ] [file]      run pipeline script
+
+$
+~~~~~
+
+The `--version` option provides detailed information of the current
+status of the application, including which libraries it uses:
+
+~~~~~
+$ flreconstruct --version
+flreconstruct 1.0.0
+
+Copyright (C) 2013 SuperNEMO Collaboration
+
+flreconstruct uses the following external libraries:
+* Falaise : 1.0.0
+* Bayeux  : 1.0.0
+* Boost   : 105300
+
+$
+~~~~~
+
+To examine a data file output by the `flsimulate` application, you
+need to supply, at minimum, an input file. By default, this will simply
+dump information on each event held in
+the file to std out. For example, say we have a file `example.brio`, then
+we can dump events in that file by doing:
+
+~~~~~
+$ flreconstruct -i example.brio
+[warning:void dpp::module_manager::initialize(const datatools::properties&):232] There is no 'service_manager.configuration' configuration property ! So we won't use an embedded service manager. For now, this is not a issue.
+[warning:void dpp::module_manager::initialize(const datatools::properties&):249] No service manager is available ! This will forbid the use of some processing modules that need to access to some specific external services. This depends on your pipeline setup. For now, we continue without a service manager.
+Reader configuration parameters:
+|-- Name : "files.mode"
+|   |-- Type  : string (scalar)
+|   `-- Value : "single"
+`-- Name : "files.single.filename"
+    |-- Type  : string (scalar)
+    `-- Value : "test.brio"
+flreconstruct::default:
+`-- Bank 'SD' : "mctools::simulated_data"
+    |-- Properties : <empty>
+    |   `-- <no property>
+    |-- Collection type : 1
+    |-- Collections of step hit handles :
+    |   `-- Category '__visu.tracks' has 51 hit(s) [capacity=51]
+    |-- Primary event :
+    |   |-- Valid: 1
+    |   |-- Label : ''
+    |   |-- Time  : 0 s
+    |   |-- Particles: [1]
+    |   |   `-- Particle #0 :
+    |   |       |-- Type           : 6 (mu-)
+    |   |       |-- Particle label : 'mu-'
+    |   |       |-- Time           : 0 ns
+    |   |       |-- Kinetic energy : 4416.76 MeV
+    |   |       |-- Momentum       : (-514.889,-36.7927,-4491.62) MeV
+    |   |       `-- Vertex         : <no vertex>
+    |   |-- GENBB weight : 1
+    |   `-- Classification : '0e0p0g0a1X'
+    `-- Vertex : (-979.688,2721.36,1000) mm
+
+... further events ...
+$
+~~~~~
+
+FLReconstruct implements a "pipeline" architecture in which events flow
+through an ordered sequence of "modules". Each module performs a specific
+task on the event (e.g. count hits). The sequence of modules and their
+configuration (e.g. reconstruction parameters) in the pipeline can be set
+up via a `datatools::multi_properties` script. This script can then be
+passed to `flreconstruct` via the `-p` argument, e.g.
+
+~~~~~
+$ flreconstruct -i example.brio -p myscript.txt
+~~~~~
+
+The following sections provide some simple examples of pipeline scripts.
+
 
 Trivial Pipeline {#trivial_pipeline}
 ----------------
 If you do not supply a pipeline configuration script, then `flreconstruct`
 will run a dumb pipeline that simple dumps each event to stdout.
 
-We can reproduce this behaviour using the following simple script:
+We can reproduce this behaviour using the following simple script to
+configure the pipeline as a single module:
 
 \include flreconstruct/SimplePipeline.conf
 
-The script is formatted as a `bayeux::datatools::multi_properties` ASCII
-file.
+The script is formatted as a `datatools::multi_properties` ASCII
+file. Note the comments, especially:
+
+* The required presence of the `@key_label` and `@meta_label` multi_properties flags
+* The module constituting the pipeline must have the `name` key set to `pipeline`. FLReconstruct will use this to build the pipeline.
+
+To try this out, copy the above text into a file, e.g.
+`trivial_pipeline.txt` and run `flreconstruct` with it:
+
+~~~~~
+$ flreconstruct -i example.brio -p trivial_pipeline.txt
+~~~~~
+
+You should see the same output as the default case.
 
 Creating a Chained Pipeline {#chain_pipeline}
 ---------------------------
@@ -42,20 +152,53 @@ A pipeline with one module isn't very useful! In most cases we want to
 plug together a sequence of modules, each performing a well defined
 task on the event data.
 
+Falaise supplies a special `chain_module` for chaining several modules
+together. We can reproduce the same default dump behaviour using a
+`chain_module` in a pipeline script as follows
+
 \include flreconstruct/ChainPipeline.conf
+
+Here, the `modules` key of the `pipeline` module takes a list of
+modules that will form the `chain_module`.
+To try this out, copy the above text into a file, e.g.
+`single_chain_pipeline.txt` and run `flreconstruct` with it:
+
+~~~~~
+$ flreconstruct -i example.brio -p single_chain_pipeline.txt
+~~~~~
+
+You should see the same output as the default case.
 
 Multi-Module Pipeline {#multi_pipeline}
 ---------------------
 A full chain pipeline can chain together 1 < N < X number of modules.
 The previous example showed the basic construct of a chained pipeline
-with a single module. We can of course go further and add another module
-to the pipeline:
+with a single module. We can of course go further and add further module
+to the pipeline. For example, we can chain two dump modules together.
+To distinguish these, we configure the modules to have different `title` and `indent` parameters.
 
 \include flreconstruct/AdvancedChainPipeline.conf
 
 The order in which the modules are processed is determined by the
 order in which you list them in the `modules` key of the `dpp::chain_module`
-configuration. Try swapping the order to see what happens, and also try
+configuration.
+
+To try this out, copy the above text into a file, e.g.
+`multi_chain_pipeline.txt` and run `flreconstruct` with it:
+
+~~~~~
+$ flreconstruct -i example.brio -p multi_chain_pipeline.txt
+~~~~~
+
+Try swapping the order of the modules to see what happens, and also try
 adding further dump modules to the pipeline to experiment with the
 sequence.
+
+
+Going Further {#further}
+=============
+DEFERRED TO ALPHA2
+
+You can also write your own modules in C++ and plug them into the pipeline.
+
 
