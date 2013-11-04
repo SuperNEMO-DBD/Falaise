@@ -655,7 +655,13 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
 
-INPUT                  = @PROJECT_SOURCE_DIR@/documentation @Falaise_DOCEXPORT_DIR@ @Falaise_BUILDPRODUCT_DIR@/include/falaise
+INPUT                  =  @PROJECT_SOURCE_DIR@/documentation/Mainpage.md \
+                          @PROJECT_SOURCE_DIR@/documentation/InstallationGuide.md \
+                          @PROJECT_SOURCE_DIR@/documentation/flsimulate \
+                          @PROJECT_SOURCE_DIR@/documentation/flreconstruct \
+                          @PROJECT_SOURCE_DIR@/documentation \
+                          @Falaise_DOCEXPORT_DIR@ \
+                          @Falaise_BUILDPRODUCT_DIR@/include/falaise
 
 
 # This tag can be used to specify the character encoding of the source files
@@ -1228,7 +1234,7 @@ SERVER_BASED_SEARCH    = NO
 # If the GENERATE_LATEX tag is set to YES (the default) Doxygen will
 # generate Latex output.
 
-GENERATE_LATEX         = NO
+GENERATE_LATEX         = @FALAISE_GENERATE_LATEX@
 
 # The LATEX_OUTPUT tag is used to specify where the LaTeX docs will be put.
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be
@@ -1254,7 +1260,7 @@ MAKEINDEX_CMD_NAME     = makeindex
 # LaTeX documents. This may be useful for small projects and may help to
 # save some trees in general.
 
-COMPACT_LATEX          = NO
+COMPACT_LATEX          = YES
 
 # The PAPER_TYPE tag can be used to set the paper type that is used
 # by the printer. Possible values are: a4, letter, legal and

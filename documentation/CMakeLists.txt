@@ -29,6 +29,14 @@ set(Falaise_DOXYFILE_OUT ${PROJECT_BINARY_DIR}/documentation/falaise_doxygen.con
 set(Falaise_DOXYGEN_OUTPUT_DIR  ${Falaise_DATAROOTDIR}/Documentation/API)
 set(Falaise_DOXYGEN_OUTPUT_FILE ${Falaise_DOXYGEN_OUTPUT_DIR}/html/index.html)
 
+option(Falaise_BUILD_LATEX_DOCS "Build LaTeX Manual for Falaise" OFF)
+mark_as_advanced(Falaise_BUILD_LATEX_DOCS)
+if(Falaise_BUILD_LATEX_DOCS)
+  set(FALAISE_GENERATE_LATEX "YES")
+else()
+  set(FALAISE_GENERATE_LATEX "NO")
+endif()
+
 #-----------------------------------------------------------------------
 # Individual Documents
 #

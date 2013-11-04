@@ -106,7 +106,8 @@ instructions will also work, simply remove the `--username` and
 ~~~~~
 $ pwd
 /path/to/your/chosen/workspace/SuperNEMO
-$ svn co https://nemo.lpc-caen.in2p3.fr/svn --username=visitor --no-auth-cache --depth empty lpc-caen.svn
+$ svn co https://nemo.lpc-caen.in2p3.fr/svn --username=visitor --no-auth-cache \
+--depth empty lpc-caen.svn
 ~~~~~
 
 At this point, you may see the following warning about certificates:
@@ -234,7 +235,8 @@ bootstrapping script as follows:
 
 ~~~~~
 $ cd /Users/ben/SuperNEMO
-$ ./lpc-caen.svn/Cadfael/trunk/cadfael-bootstrap -DCMAKE_INSTALL_PREFIX=$(pwd)/installs/Cadfael -DCADFAEL_BUILD_PREFIX=$(pwd)/builds/Cadfael
+$ ./lpc-caen.svn/Cadfael/trunk/cadfael-bootstrap -DCMAKE_INSTALL_PREFIX=$(pwd)/installs/Cadfael \
+-DCADFAEL_BUILD_PREFIX=$(pwd)/builds/Cadfael
 ~~~~~
 
 This will create a build directory under the `builds` area and install
@@ -320,7 +322,9 @@ workspace area, and to use the libraries provided in our prior install
 of Cadfael:
 
 ~~~~~
-$ cmake -DCMAKE_INSTALL_PREFIX=/Users/ben/SuperNEMO/installs/falaise.alpha1 -DCMAKE_PREFIX_PATH=/Users/ben/SuperNEMO/installs/Cadfael ../../lpc-caen.svn/Falaise/Falaise/tags/Falaise-1.0.0-alpha1
+$ cmake -DCMAKE_INSTALL_PREFIX=/Users/ben/SuperNEMO/installs/falaise.alpha1 \
+ -DCMAKE_PREFIX_PATH=/Users/ben/SuperNEMO/installs/Cadfael \
+ ../../lpc-caen.svn/Falaise/Falaise/tags/Falaise-1.0.0-alpha1
 -- The C compiler identification is GNU 4.3.4
 -- The CXX compiler identification is GNU 4.3.4
 -- Check for working C compiler: /usr/bin/cc
