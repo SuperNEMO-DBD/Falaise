@@ -27,9 +27,6 @@ namespace CAT {
       virtual ~Circle(){};
 
       double phi(double x, double y);
-      void draw(Color_t color);
-      void build_random(double x0, double y0, double Lx, double Ly);
-
     };
   }
 }

@@ -21,13 +21,26 @@ namespace CAT {
 
     //______________________________________________________________________________
     Detector::Detector(){
-      x0_=0;
-      y0_=0;
-      Lx_=0;
-      Ly_=0;
+
+      x0_=0.;
+      y0_=0.;
+      Lx_=0.;
+      Ly_=0.;
       cell_size_=0;
+      InnerRadius_ =0.;
+      OuterRadius_ =0.;
+      FoilRadius_ =0.;
+      nofflayers_ =0;
+
+      SuperNemo_ =false;
+      SuperNemoChannel_ =false;
+
       cells_.clear();
       leftover_cells_.clear();
+
+      surfaces_rough = NULL;
+      surfaces_precise = NULL;
+      
     }
 
     //______________________________________________________________________________
@@ -42,75 +55,16 @@ namespace CAT {
     }
 
     std::vector<Cell> Detector::cells(){
+      // return active cells in the detector
+
       std::vector<Cell> cs;
       for(std::map<size_t, Cell>::const_iterator ic=cells_.begin(); ic!=cells_.end(); ++ic)
 	cs.push_back(ic->second);
       return cs;
     }
 
-    void Detector::build_cells()
-    {
-
-      size_t ncells_x = (int)(2.*Lx_/cell_size_);
-      size_t ncells_y = (int)(2.*Ly_/cell_size_);
-  
-      for(size_t ix=0; ix<ncells_x; ix++){
-	double cell_x = x0_ - ncells_x*cell_size_/2. + (ix + 0.5)*cell_size_; 
-	for(size_t iy=0; iy<ncells_y; iy++){
-	  double cell_y = y0_ - ncells_y*cell_size_/2. + (iy + 0.5)*cell_size_;
-
-	  Cell c;
-	  c.set_p(experimental_point(experimental_double(cell_x,0.), experimental_double(cell_y,0.), experimental_double(0.,0.)));
-	  cells_[c.id()] = c;
-	}
-
-      }
-
-
-    }
-
-    void Detector::draw()
-    {
-
-      for(std::map<size_t, Cell>::iterator ic=cells_.begin(); ic!=cells_.end(); ++ic)
-	ic->second.draw();
-    }
-
-    bool Detector::detect(Circle h, double sigma){
-
-      double distance, digitized_distance;
-      double angle;
-      //std::time_t seed = std::time(0);
-      double seed;
-      TRandom *random = new TRandom();
-      double factor;
-      double x, y;
-      bool value = false;
-
-      seed = clock();
-      random->SetSeed((UInt_t)seed);
-      for(std::map<size_t, Cell>::iterator ic=cells_.begin(); ic!=cells_.end(); ++ic){
-	distance = ic->second.distance(h);
-	if( fabs(distance) < cell_size_/2. ){
-	  value = true;
-	  angle = atan2(ic->second.ep().y().value() - h.center().y().value(), ic->second.ep().x().value() - h.center().x().value());
-	  x = ic->second.ep().x().value() + distance*cos(angle);
-	  y = ic->second.ep().y().value() + distance*sin(angle);
-
-	  factor=random->Gaus(0,sigma)*this->cell_size();
-	  digitized_distance = fabs(distance)+factor;
-	  if( digitized_distance < 0. ) digitized_distance = 0.;
-
-	  ic->second.set_r(digitized_distance);
-	  ic->second.set_er(sigma*this->cell_size());
-	}
-      }
-
-      return value;
-
-    }
-
     std::vector<Cell> Detector::cells(int itrack){
+      // return active cells associated with track itrack
 
       std::vector<Cell> cs;
       for(std::map<size_t, Cell>::iterator ic=cells_.begin(); ic!=cells_.end(); ++ic)
@@ -121,29 +75,7 @@ namespace CAT {
 
     }
 
-    double Detector::average_x(){
-
-      std::vector<Cell> cs = this->cells();
-      double average=0.;
-      for(size_t i=0; i<cs.size(); i++)
-	average += cs[i].ep().x().value();
-      average /= cs.size();
-      return average;
-
-    }
-
-    double Detector::average_y(){
-
-      std::vector<Cell> cs = this->cells();
-      double average=0.;
-      for(size_t i=0; i<cs.size(); i++)
-	average += cs[i].ep().y().value();
-      average /= cs.size();
-      return average;
-
-    }
-
-    void Detector::draw_surfaces_rough(Circle *h, bool draw, std::vector<Cell> cs, int ievent){
+    void Detector::setup_histograms(){
 
       double xmin = 2.*(this->x0() - this->Lx());
       double xmax = 2.*(this->x0() + this->Lx());
@@ -152,7 +84,10 @@ namespace CAT {
       double rmin = 0.;
       double rmax = 2.*sqrt(pow(this->Lx(),2) + pow(this->Ly(),2));
 
-      TH3D* surfaces_rough= new TH3D(Form("surfaces_rough_%d", ievent),"surfaces_rough",
+      if( surfaces_rough )
+	delete surfaces_rough;
+
+      surfaces_rough = new TH3D("surfaces_rough","surfaces_rough",
 				     (int)((xmax - xmin)/this->cell_size()), xmin, xmax,
 				     (int)((ymax - ymin)/this->cell_size()), ymin, ymax,
 				     (int)((rmax - rmin)/this->cell_size()), rmin, rmax);
@@ -163,139 +98,279 @@ namespace CAT {
       surfaces_rough->GetZaxis()->SetTitle("R");
       surfaces_rough->GetZaxis()->SetTitleOffset(1.3);
 
-
-      double x, y;
-
-      for(size_t ix=1; ix<= (size_t)surfaces_rough->GetNbinsX(); ix++){
-	x = surfaces_rough->GetXaxis()->GetBinCenter(ix);
-	for(size_t iy=1; iy<= (size_t)surfaces_rough->GetNbinsY(); iy++){
-	  y = surfaces_rough->GetYaxis()->GetBinCenter(iy);
-	  for(std::vector<Cell>::const_iterator ic=cs.begin(); ic!=cs.end(); ++ic){
-	    surfaces_rough->Fill(x, y, ic->legendre_R(x, y));
-	  }
-	}
-      }
-
-      int ixmax, iymax, irmax;
-      surfaces_rough->GetMaximumBin(ixmax,iymax,irmax);
-      double X0 = surfaces_rough->GetXaxis()->GetBinCenter(ixmax);
-      double Y0 = surfaces_rough->GetYaxis()->GetBinCenter(iymax);
-      double R = surfaces_rough->GetZaxis()->GetBinCenter(irmax);
-
-      h->set_center(experimental_point(experimental_double(X0,0.), experimental_double(Y0,0.), experimental_double(0.,0.)));
-      h->set_radius(experimental_double(R, 0.));
-
-
-      if( draw ){
-	TPolyMarker3D *t = new TPolyMarker3D(1, 8);
-	t->SetMarkerColor(kRed);
-	t->SetPoint(0,X0,Y0,R);
-    
-	surfaces_rough->Draw("");
-	t->Draw("same");
-      }else{
-	surfaces_rough->Clear();
-	delete surfaces_rough;
-      }
-
-
-    }
-
-    void Detector::draw_surfaces_precise(Circle rough, Circle *h, bool draw, std::vector<Cell> cs, int ievent){
-
-      int ncells = 3;
-
-      double xmin = rough.center().x().value() - ncells*this->cell_size();
-      double xmax = rough.center().x().value() + ncells*this->cell_size();
-      double ymin = rough.center().y().value() - ncells*this->cell_size();
-      double ymax = rough.center().y().value() + ncells*this->cell_size();
-      double rmin = rough.radius().value() - ncells*this->cell_size();
-      double rmax = rough.radius().value() + ncells*this->cell_size();
-
       int nbins = 100;
+      if( surfaces_precise )
+	delete surfaces_precise;
 
-      TH3D* surfaces_precise= new TH3D(Form("surfaces_precise_%d", ievent),"surfaces_precise",
-				       nbins,xmin,xmax,
-				       nbins,ymin,ymax,
-				       nbins,rmin,rmax);
+      surfaces_precise= new TH3D("surfaces_precise","surfaces_precise",
+				 nbins,xmin,xmax,
+				 nbins,ymin,ymax,
+				 nbins,rmin,rmax);
       surfaces_precise->GetXaxis()->SetTitle("X0");
       surfaces_precise->GetXaxis()->SetTitleOffset(1.3);
       surfaces_precise->GetYaxis()->SetTitle("Y0");
       surfaces_precise->GetYaxis()->SetTitleOffset(1.4);
       surfaces_precise->GetZaxis()->SetTitle("R");
       surfaces_precise->GetZaxis()->SetTitleOffset(1.3);
+    }
 
-      double x, y, LR, r, LRup, LRdown;
+    void Detector::fill_surfaces_rough(std::vector<Cell>* cs){
+      // fill the rough histogram with all the legendre surfaces
+      // belonging to each cell in cs
 
-      for(size_t ix=1; ix<= (size_t)surfaces_precise->GetNbinsX(); ix++){
-	x = surfaces_precise->GetXaxis()->GetBinCenter(ix);
-	for(size_t iy=1; iy<= (size_t)surfaces_precise->GetNbinsY(); iy++){
-	  y = surfaces_precise->GetYaxis()->GetBinCenter(iy);
-	  for(std::vector<Cell>::const_iterator ic=cs.begin(); ic!=cs.end(); ++ic){
-	    LR = ic->legendre_R(x, y);
-	    r = ic->r().value();
-	    LRup = LR + r;
-	    LRdown = LR - r;
-	    surfaces_precise->Fill(x, y, LRup);
-	    surfaces_precise->Fill(x, y, LRdown);
+      clock.start(" Detector: fill_surfaces_rough ", "cumulative");
+
+      m.message(" build rough surfaces for ", cs->size(), " cells ", mybhep::VERBOSE);
+
+      double x, y;
+
+      // reset histograms (option "M" to reset minimum and maximum)
+      surfaces_rough->Reset("M");
+
+      // loop over (X, Y) bins
+      for(size_t ix=1; ix<= (size_t)surfaces_rough->GetNbinsX(); ix++){
+	x = surfaces_rough->GetXaxis()->GetBinCenter(ix);
+	for(size_t iy=1; iy<= (size_t)surfaces_rough->GetNbinsY(); iy++){
+	  y = surfaces_rough->GetYaxis()->GetBinCenter(iy);
+
+	  // loop over cells in cs
+	  for(std::vector<Cell>::const_iterator ic=cs->begin(); ic!=cs->end(); ++ic){
+	    surfaces_rough->Fill(x, y, ic->legendre_R(x, y));
 	  }
 	}
       }
 
-      int ixmax, iymax, irmax;
-      surfaces_precise->GetMaximumBin(ixmax,iymax,irmax);
-      double X0 = surfaces_precise->GetXaxis()->GetBinCenter(ixmax);
-      double Y0 = surfaces_precise->GetYaxis()->GetBinCenter(iymax);
-      double R = surfaces_precise->GetZaxis()->GetBinCenter(irmax);
-
-      double sigma_X0 = surfaces_precise->GetRMS(1);
-      double sigma_Y0 = surfaces_precise->GetRMS(2);
-      double sigma_R = surfaces_precise->GetRMS(3);
-
-      h->set_center(experimental_point(experimental_double(X0,sigma_X0), experimental_double(Y0,sigma_Y0), experimental_double(0.,0.)));
-      h->set_radius(experimental_double(R, sigma_R));
-
-      /*
-      cout << " X0 " << h->center().x().value() << " +- " << h->center().x().error() << endl;
-      cout << " Y0 " << h->center().y().value() << " +- " << h->center().y().error() << endl;
-      cout << " R " << h->radius().value() << " +- " << h->radius().error() << endl;
-      */
-
-      if( draw ){
-	TPolyMarker3D *t = new TPolyMarker3D(1, 8);
-	t->SetMarkerColor(kRed);
-	t->SetPoint(0,X0,Y0,R);
-    
-	surfaces_precise->Draw("");
-	t->Draw("same");
-      }else{
-	surfaces_precise->Clear();
-	delete surfaces_precise;
-      }
-
+      clock.stop(" Detector: fill_surfaces_rough ");
 
     }
 
-    void Detector::assign_reco_points_based_on_circle(std::vector<Cell> cluster, Circle h, size_t itrack){
+
+    void Detector::fill_surfaces_precise(Circle *h, std::vector<Cell>* cs){
+      // fill the precise histogram with all the legendre surfaces
+      // belonging to each cell in cs
+
+      clock.start(" Detector: fill_surfaces_precise ", "cumulative");
+
+      m.message(" build precise surfaces for ", cs->size(), " cells ", mybhep::VERBOSE);
+
+      // reset histograms (option "M" to reset minimum and maximum)
+      surfaces_precise->Reset("M");
+
+      int ncells = 3;
+      int nbins = 100;
+      double xmin = h->center().x().value() - ncells*this->cell_size();
+      double xmax = h->center().x().value() + ncells*this->cell_size();
+      double ymin = h->center().y().value() - ncells*this->cell_size();
+      double ymax = h->center().y().value() + ncells*this->cell_size();
+      double rmin = h->radius().value() - ncells*this->cell_size();
+      double rmax = h->radius().value() + ncells*this->cell_size();
+	
+      surfaces_precise->GetXaxis()->Set(nbins,xmin,xmax);
+      surfaces_precise->GetYaxis()->Set(nbins,ymin,ymax);
+      surfaces_precise->GetZaxis()->Set(nbins,rmin,rmax);
+
+      double x, y, LR, r;
+
+      // loop over (X, Y) bins
+      for(size_t ix=1; ix<= (size_t)surfaces_precise->GetNbinsX(); ix++){
+	x = surfaces_precise->GetXaxis()->GetBinCenter(ix);
+	for(size_t iy=1; iy<= (size_t)surfaces_precise->GetNbinsY(); iy++){
+	  y = surfaces_precise->GetYaxis()->GetBinCenter(iy);
+
+	  // loop over cells in cs
+	  for(std::vector<Cell>::const_iterator ic=cs->begin(); ic!=cs->end(); ++ic){
+	    LR = ic->legendre_R(x, y);
+	    r = ic->r().value();
+	    surfaces_precise->Fill(x, y, LR + r);
+	    surfaces_precise->Fill(x, y, LR - r);
+	  }
+	}
+      }
+
+
+      clock.stop(" Detector: fill_surfaces_precise ");
+
+    }
+
+    void Detector::set_messenger(mybhep::prlevel l){
+      level = l;
+      m = mybhep::messenger(level);
+    }
+
+    void Detector::draw_surfaces(Circle *h, std::vector<Cell>* cs, size_t itrack){
+
+      clock.start(" Detector: draw_surfaces ", "cumulative");
+
+      double X0, Y0, R, sigma_X0, sigma_Y0, sigma_R;
+      int ixmax_rough, iymax_rough, irmax_rough, ixmax_precise, iymax_precise, irmax_precise;
+      int nbins = 100;
+      double nentries;
+	
+      std::vector<Cell> assigned_cells;
+      std::vector<Cell> leftover_cells;
+      bool found_good_circle = false;
+      bool first = true;
+
+
+      // fill rough histogram
+      fill_surfaces_rough(cs);
+
+      // keep looking until a good circle is found
+      while (!found_good_circle ){
+
+	if( !first ){
+	  // remove dominant peak from histogram
+	  surfaces_rough->SetBinContent(ixmax_rough,iymax_rough,irmax_rough,0);
+	}
+
+	// find dominant peak in rough histogram
+	surfaces_rough->GetMaximumBin(ixmax_rough,iymax_rough,irmax_rough);
+
+	nentries = surfaces_rough->GetBinContent(ixmax_rough,iymax_rough,irmax_rough);
+	if( nentries < 3 ){
+	  // less than 3 cells cannot define a circle
+	  leftover_cells.clear();
+	  assigned_cells.clear();
+	  break;
+	}
+
+	// get circle parameters
+	X0 = surfaces_rough->GetXaxis()->GetBinCenter(ixmax_rough);
+	Y0 = surfaces_rough->GetYaxis()->GetBinCenter(iymax_rough);
+	R = surfaces_rough->GetZaxis()->GetBinCenter(irmax_rough);
+
+	m.message(" first try ", first, " rough intersection: (", X0, ", ", Y0, ", ", R, ") entries ", nentries, mybhep::VERBOSE);
+	
+
+	// assign parameters to circle h
+	h->set_center(experimental_point(experimental_double(X0,0.), experimental_double(Y0,0.), experimental_double(0.,0.)));
+	h->set_radius(experimental_double(R, 0.));
+	
+
+	// fill precise histogram
+	fill_surfaces_precise(h, cs);
+	
+	// find dominant peak in precise histogram
+	surfaces_precise->GetMaximumBin(ixmax_precise,iymax_precise,irmax_precise);
+
+	// get circle parameters
+	nentries = surfaces_precise->GetBinContent(ixmax_precise,iymax_precise,irmax_precise);
+	X0 = surfaces_precise->GetXaxis()->GetBinCenter(ixmax_precise);
+	Y0 = surfaces_precise->GetYaxis()->GetBinCenter(iymax_precise);
+	R = surfaces_precise->GetZaxis()->GetBinCenter(irmax_precise);
+
+	// get circle parameters errors
+	sigma_X0 = surfaces_precise->GetRMS(1);
+	sigma_Y0 = surfaces_precise->GetRMS(2);
+	sigma_R = surfaces_precise->GetRMS(3);
+	
+
+	// assign parameters to circle h
+	h->set_center(experimental_point(experimental_double(X0,sigma_X0), experimental_double(Y0,sigma_Y0), experimental_double(0.,0.)));
+	h->set_radius(experimental_double(R, sigma_R));
+	
+
+	m.message(" precise intersection: (", X0, ", ", Y0, ", ", R, ") entries ", nentries, mybhep::VERBOSE);
+
+	// split points in cs into "leftover" and "assigned"
+	// (the latter get a reconstructed point)
+	assign_reco_points_based_on_circle(cs, h, &assigned_cells, &leftover_cells);
+
+	// check if assigned cells form a contious track
+	found_good_circle = continous(&assigned_cells);
+
+	if( !found_good_circle){
+	  first = false;
+	}
+
+      }
+
+      if( found_good_circle ){
+
+	leftover_cells_ = leftover_cells;
+
+	for(vector<Cell>::iterator ic = assigned_cells.begin(); ic != assigned_cells.end(); ++ic){
+	  cells_[ic->id()] = *ic;
+	  cells_[ic->id()].set_track_id(itrack);
+	}
+
+      }
+
+	
+      clock.stop(" Detector: draw_surfaces ");
+
+    }
+
+
+    bool Detector::continous(std::vector<Cell>* cs){
+      // check if cells in cs form a continous strip
+
+      clock.start(" Detector: continous ", "cumulative");
+
+      size_t n_breaks = 0;
+      size_t next_index;
+
+      // order cells based on their angle wrt circle center
+      std::sort(cs->begin(),cs->end(),Cell::circle_order);
+      
+      // loop over cells
+      for(std::vector<Cell>::const_iterator ic=cs->begin(); ic!=cs->end(); ++ic){
+
+	next_index = ic - cs->begin() + 1;
+	if( next_index == cs->size() )
+	  next_index = 0;
+
+	if( near_level(*ic, cs->at(next_index) ) == 0 )
+	  n_breaks ++;
+
+      }
+
+      bool ok = (n_breaks == 1 );
+
+      m.message(" the ", cs->size(), " cells have ", n_breaks, " breaks, continous: ", ok, mybhep::VERBOSE);
+
+      clock.stop(" Detector: continous ");
+
+      return ok;
+    }
+
+
+  void Detector::assign_reco_points_based_on_circle(std::vector<Cell>* cluster, Circle *h, std::vector<Cell> * cs, std::vector<Cell> * ls){
+    // calculate reconstructed points for cells in cluster based on circle h
 
       double distance;
       double angle;
       double x, y;
-      size_t id;
+      Cell c;
 
-      leftover_cells_.clear();
+      cs->clear();
+      ls->clear();
 
-      for(std::vector<Cell>::iterator ic=cluster.begin(); ic!=cluster.end(); ++ic){
-	distance = ic->distance(h);
-	if( distance < this->cell_size() ){
-	  angle = atan2(ic->ep().y().value() - h.center().y().value(), ic->ep().x().value() - h.center().x().value());
+      // loop over cells in cluster
+      for(std::vector<Cell>::iterator ic=cluster->begin(); ic!=cluster->end(); ++ic){
+
+	// distance of cell from helix
+	distance = ic->distance(*h);
+
+	// if the circle goes through the cell...
+	if( distance < this->cell_size()/2. ){
+
+	  // angle of cell center wrt circle center
+	  angle = atan2(ic->ep().y().value() - h->center().y().value(), ic->ep().x().value() - h->center().x().value());
+
+	  // reconstructed point of cell
 	  x = ic->ep().x().value() + distance*cos(angle);
 	  y = ic->ep().y().value() + distance*sin(angle);
-	  
-	  cells_[ic->id()].set_p_reco(experimental_point(experimental_double(x,0.), experimental_double(y,0.), experimental_double(0.,0.)));
-	  cells_[ic->id()].set_track_id(itrack);
+
+	  // copy cell and assign reco point
+	  c = *ic;
+	  c.set_p_reco(experimental_point(experimental_double(x,0.), experimental_double(y,0.), experimental_double(0.,0.)));
+	  c.set_circle_phi(angle);
+	  cs->push_back(c);
+
+        // if the circle does not go through the cell
 	}else{
-	  leftover_cells_.push_back(cells_[ic->id()]);
+	  ls->push_back(*ic);
 	}
       }
 
@@ -307,5 +382,62 @@ namespace CAT {
 	ic->second.reset();
 
     }
+
+    size_t Detector::near_level( const topology::cell & c1, const topology::cell & c2 ){
+
+      // returns 0 for far-away cell
+      // 1 for cells separated by nofflayers
+      // 2 for diagonal cells
+      // 3 for side-by-side cells
+
+      // side-by-side connection: distance = 1
+      // diagonal connection: distance = sqrt(2) = 1.41
+      // skip 1 connection, side: distance = 2
+      // skip 1 connection, tilt: distance = sqrt(5) = 2.24
+      // skip 1 connection, diag: distance = 2 sqrt(2) = 2.83
+
+      topology::experimental_double distance = topology::experimental_vector(c1.ep(),c2.ep()).hor().length();
+
+      double limit_side;
+      double limit_diagonal;
+      if (SuperNemo() && SuperNemoChannel())
+	{
+	  limit_side = this->cell_size();
+	  limit_diagonal = sqrt(2.)*this->cell_size();
+	}
+      else
+	{
+	  double factor = cos(M_PI/8.); // 0.923879532511287 // octogonal factor = 0.92
+	  limit_side = factor*this->cell_size();
+	  limit_diagonal = sqrt(2.)*factor*this->cell_size(); // new factor = 1.31
+	}
+      double precision = 0.15*limit_side;
+
+
+      if( fabs(distance.value() - limit_side) < precision )
+	return 3;
+
+      if( fabs(distance.value() - limit_diagonal) < precision )
+	return 2;
+
+      if( distance.value() < limit_diagonal*(1. + nofflayers()) )
+	return 1;
+
+      return 0;
+
+
+    }
+
+    void Detector::finalize(){
+      clock.dump();
+      if( surfaces_rough )
+	delete surfaces_rough;
+      if( surfaces_precise )
+	delete surfaces_precise;
+    }
+
+
+
   }
 }
+

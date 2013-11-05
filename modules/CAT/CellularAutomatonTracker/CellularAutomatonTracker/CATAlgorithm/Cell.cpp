@@ -21,6 +21,7 @@ namespace CAT {
     //______________________________________________________________________________
     Cell::Cell(){
       track_id_ = -1;
+      circle_phi_ = 0.;
     }
 
     //______________________________________________________________________________
@@ -37,6 +38,7 @@ namespace CAT {
     }
 
     double Cell::phi(){
+      // phi of reco point wrt cell center
       return atan2(this->p_reco().y().value() - this->ep().y().value(), this->p_reco().x().value() - this->ep().x().value());
     }
 
@@ -44,44 +46,23 @@ namespace CAT {
       return track_id_;
     }
 
-    void Cell::draw(){
-
-      TEllipse *t = new TEllipse(this->ep().x().value(),this->ep().y().value(),this->r().value(),this->r().value());
-      t->SetLineColor(kBlue);
-      t->SetFillColor(0);
-      t->Draw("same");
-      TMarker *c = new TMarker(this->ep().x().value(),this->ep().y().value(),8);
-      c->SetMarkerColor(kBlack);
-      c->Draw("same");
-    }
-
     double Cell::distance(Circle h){
+      // distance of cell center from circle
+      // > 0 if    [circle center] ..... [cell center ] ... [common point]
+      // < 0 if    [circle center] ..... [common point] ... [cell center ]
 
-      double distance = h.radius().value() - sqrt(pow(this->ep().x().value() - h.center().x().value(),2) + pow(this->ep().y().value() - h.center().y().value(),2));
+      // distance of cell center from circle center
+      double dx = this->ep().x().value() - h.center().x().value();
+      double dy = this->ep().y().value() - h.center().y().value();
+
+      double distance = h.radius().value() - sqrt(pow(dx,2) + pow(dy,2));
       return distance;
 
     }
 
-    double Cell::p(Circle h){
-  
-      double dx = this->ep().x().value() - h.center().x().value();
-      double dy = this->ep().y().value() - h.center().y().value();
-      double val = - dx/dy;
-      return val;
-
-    }
-
-    double Cell::delta(Circle h){
-
-      double r = this->r().value();
-      double R = h.radius().value();
-      double dy = this->ep().y().value() - h.center().y().value();
-      return - 2.*r*(R+r)/dy;
-
-    }
-
-
     const double Cell::legendre_R(double X0, double Y0)const{
+      // radius of a circle with center in (X0, Y0)
+      // that reaches center of cell
 
       double dx = this->ep().x().value() - X0;
       double dy = this->ep().y().value() - Y0;
@@ -112,6 +93,8 @@ namespace CAT {
       this->set_p_reco(experimental_point(experimental_double(0.,0.), experimental_double(0.,0.), experimental_double(0.,0.)));
       this->set_r(0.);
       this->set_er(0.);
+      this->set_track_id(-1);
+      this->set_circle_phi(0.);
 
     }
 

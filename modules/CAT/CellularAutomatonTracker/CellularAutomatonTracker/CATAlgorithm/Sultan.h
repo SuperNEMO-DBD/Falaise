@@ -107,7 +107,6 @@ namespace CAT{
     void fill_fast_information( mybhep::particle* p );
     void fill_fast_information( mybhep::hit* h );
     int cell_side( const topology::cell & c);
-    size_t near_level( const topology::cell & c1, const topology::cell & c2 );
     //std::vector<topology::cell> get_near_cells(const topology::cell & c);
     void setup_cells();
     topology::calorimeter_hit make_calo_hit(const mybhep::hit & ahit, size_t id);

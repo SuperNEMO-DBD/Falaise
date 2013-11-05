@@ -132,7 +132,19 @@ namespace CAT {
         GenerateWires();
       }
 
+    detector_.set_messenger(level);
     detector_.set_cell_size(CellDistance);
+    detector_.set_SuperNemo(SuperNemo);
+    detector_.set_SuperNemoChannel(SuperNemoChannel);
+    detector_.set_nofflayers(nofflayers);
+    detector_.set_FoilRadius(FoilRadius);
+    detector_.set_InnerRadius(InnerRadius);
+    detector_.set_OuterRadius(OuterRadius);
+    detector_.set_x0(0.);
+    detector_.set_y0(0.);
+    detector_.set_Lx(xsize);
+    detector_.set_Ly(ysize);
+    detector_.setup_histograms();
 
     return true;
   }
@@ -194,6 +206,7 @@ namespace CAT {
 
     clock.stop(" Sultan: finalize ");
 
+    detector_.finalize();
     clock.dump();
 
     _set_defaults ();
@@ -1296,7 +1309,7 @@ namespace CAT {
 	if( fc.fast() != the_cell_fast ) continue; // cell must be as fast as cluster
 
 	for( std::vector< topology::Cell >::const_iterator ccell=iclu->begin(); ccell != iclu->end(); ++ccell ){
-	  size_t nl = near_level(c, *ccell);
+	  size_t nl = detector_.near_level(c, *ccell);
 	  if( nl > 0 ){
 	    m.message(" cell ", c.id(), " is near cell ", ccell->id(), " with level ", nl, mybhep::VVERBOSE);
 	    iclu->push_back(c);
@@ -1334,10 +1347,8 @@ namespace CAT {
 
     m.message(" reconstruct cluster with ", cluster.size(), " cells ", mybhep::VERBOSE);
 
-    std::vector<Circle> * hs_reco_rough = new std::vector<Circle>();
-    std::vector<Circle> * hs_reco_precise = new std::vector<Circle>();
-    Circle h_reco_rough;
-    Circle h_reco_precise;
+    std::vector<Circle> * hs_reco = new std::vector<Circle>();
+    Circle h_reco;
     std::vector<Cell > cells_to_reconstruct = cluster;
     topology::Sequence seq;
     std::vector<Cell> track_cells;
@@ -1349,14 +1360,9 @@ namespace CAT {
       phis->clear();
       zs->clear();
 
-      detector_.draw_surfaces_rough(&h_reco_rough, false, cells_to_reconstruct,event_number);
+      detector_.draw_surfaces(&h_reco, &cells_to_reconstruct, sequences_.size());
 
-      detector_.assign_reco_points_based_on_circle(cells_to_reconstruct, h_reco_rough, sequences_.size());
       //detector_.fill_residual(&h_residual_rough);
-
-      detector_.draw_surfaces_precise(h_reco_rough, &h_reco_precise, false, cells_to_reconstruct, event_number);
-      
-      detector_.assign_reco_points_based_on_circle(cells_to_reconstruct, h_reco_precise, sequences_.size());
       //detector_.fill_residual(&h_residual_precise);
       //detector_.fill_residual_circle(&h_residual_x0, &h_residual_y0, &h_residual_r, &h_pull_x0, &h_pull_y0, &h_pull_r, h_true, h_reco_precise);
       
@@ -1374,7 +1380,6 @@ namespace CAT {
       l->fit();
       l->invert(); // fit with y as more erroneous variable (phi = phi(y)),
       // then invert the result to have y = y(phi)
-      l->dump();
 
       for(std::vector<Cell>::iterator ic=track_cells.begin(); ic!=track_cells.end(); ++ic){
 	ic->set_p_reco(experimental_point(ic->p_reco().x(), ic->p_reco().y(),
@@ -1385,20 +1390,18 @@ namespace CAT {
 
       seq.set_cells(track_cells);
       seq.set_track_id(sequences_.size());
-      seq.set_helix(helix(h_reco_precise.center(), h_reco_precise.radius(), l->tangent()));
+      seq.set_helix(helix(h_reco.center(), h_reco.radius(), l->tangent()));
       sequences_.push_back(seq);
 
-      hs_reco_rough->push_back(h_reco_rough);
-      hs_reco_precise->push_back(h_reco_precise);
+      hs_reco->push_back(h_reco);
       cells_to_reconstruct = detector_.leftover_cells();
 
       m.message(" assigned ", track_cells.size(), " cells to track ", seq.track_id(), " leaving ", cells_to_reconstruct.size(), " leftovers ", mybhep::VERBOSE);
     }
 
-    m.message( " reconstructed ", hs_reco_precise->size(), " circles from this cluster ", mybhep::VERBOSE);
+    m.message( " reconstructed ", hs_reco->size(), " circles from this cluster ", mybhep::VERBOSE);
 
-    delete hs_reco_rough;
-    delete hs_reco_precise;
+    delete hs_reco;
     delete phis;
     delete zs;
 
@@ -1483,55 +1486,6 @@ namespace CAT {
       return 1;
 
     return -1;
-
-  }
-
-
-  size_t Sultan::near_level( const topology::cell & c1, const topology::cell & c2 ){
-
-    // returns 0 for far-away cell
-    // 1 for cells separated by nofflayers
-    // 2 for diagonal cells
-    // 3 for side-by-side cells
-
-    // side-by-side connection: distance = 1
-    // diagonal connection: distance = sqrt(2) = 1.41
-    // skip 1 connection, side: distance = 2
-    // skip 1 connection, tilt: distance = sqrt(5) = 2.24
-    // skip 1 connection, diag: distance = 2 sqrt(2) = 2.83
-
-    topology::experimental_double distance = topology::experimental_vector(c1.ep(),c2.ep()).hor().length();
-
-    double limit_side;
-    double limit_diagonal;
-    if (SuperNemo && SuperNemoChannel)
-      {
-        limit_side = GG_CELL_pitch;
-        limit_diagonal = sqrt(2.)*GG_CELL_pitch;
-      }
-    else
-      {
-        double factor = cos(M_PI/8.); // 0.923879532511287 // octogonal factor = 0.92
-        limit_side = factor*CellDistance;
-        limit_diagonal = sqrt(2.)*factor*CellDistance; // new factor = 1.31
-      }
-    double precision = 0.15*limit_side;
-
-
-    if( level >= mybhep::VVERBOSE )
-      std::clog << " (c " << c2.id() << " d " << distance.value() << " )";
-
-    if( fabs(distance.value() - limit_side) < precision )
-      return 3;
-
-    if( fabs(distance.value() - limit_diagonal) < precision )
-      return 2;
-
-    if( distance.value() < limit_diagonal*(1. + nofflayers) )
-      return 1;
-
-    return 0;
-
 
   }
 

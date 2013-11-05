@@ -26,6 +26,8 @@ namespace CAT {
 
       int track_id_;
 
+      double circle_phi_;
+
     public:
       Cell();
       virtual ~Cell();
@@ -34,6 +36,7 @@ namespace CAT {
 
       void set_p_reco(experimental_point a);
       void set_track_id(int a);
+      void set_circle_phi(double a){circle_phi_=a;}
 
       /*** dump ***/
       virtual void dump (std::ostream & a_out         = std::clog,
@@ -51,7 +54,7 @@ namespace CAT {
 	a_out << indent << " Cell ------------------- " << " id " << id() << std::endl;
 	a_out << " wire position: ( " << this->ep().x().value() << ", " << this->ep().y().value() << ")" << std::endl;
 	a_out << " measurement: r = " << this->r().value() << " +- " << this->r().error() << ", z = " << this->ep().z().value() << " +- " << this->ep().z().error() << std::endl;
-	a_out << " reco position: ( " << this->p_reco().x().value() << " +- " << this->p_reco().x().error() << ", " << this->p_reco().y().value() << " +- " << this->p_reco().y().error() << ", " << this->p_reco().z().value() << " +- " << this->p_reco().z().error() << ")" << std::endl; 
+	a_out << " reco position: ( " << this->p_reco().x().value() << " +- " << this->p_reco().x().error() << ", " << this->p_reco().y().value() << " +- " << this->p_reco().y().error() << ", " << this->p_reco().z().value() << " +- " << this->p_reco().z().error() << ") circle phi " << this->circle_phi() << std::endl; 
 
       }
 
@@ -59,13 +62,21 @@ namespace CAT {
       const experimental_point p_reco()const {return p_reco_;}
       int track_id();
       double phi();
-      void draw();
       double distance(Circle h);
-      double p(Circle h);
-      double delta(Circle h);
       const double legendre_R(double X0, double Y0)const;
       void draw_surface(double xmin, double xmax, double ymin, double ymax);
+      const double circle_phi()const{return circle_phi_;}
       void reset();
+
+      static bool circle_order(const topology::Cell& c1, const topology::Cell& c) {
+	// order cells based on their angle along an assigned circle
+
+        if( c1.circle_phi() < c.circle_phi() )
+          return false;
+
+        return true;
+
+      }
 
     };
   }
