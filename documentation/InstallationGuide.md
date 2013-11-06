@@ -242,10 +242,20 @@ $ ./lpc-caen.svn/Cadfael/trunk/cadfael-bootstrap -DCMAKE_INSTALL_PREFIX=$(pwd)/i
 This will create a build directory under the `builds` area and install
 Cadfael into a dedicated root under `installs`. Note that both
 `CMAKE_INSTALL_PREFIX` and `CADFAEL_BUILD_PREFIX` must be absolute paths,
-hence the use of the shell `$(pwd)`. Cadfael will maximally
-parallelize the builds for speed, but it may take up to an hour or two
-on older machines with fewer cores.
+hence the use of the shell `$(pwd)`. Note that the bootstrapping script
+ assumes you have a `cmake` executable in `/usr/bin`. If that is not the 
+case, you can run the script using your install of cmake directly:
 
+~~~~~
+$ cd /Users/ben/SuperNEMO
+$ /path/to/your/cmake -P ./lpc-caen.svn/Cadfael/trunk/cadfael-bootstrap \
+-DCMAKE_INSTALL_PREFIX=$(pwd)/installs/Cadfael \
+-DCADFAEL_BUILD_PREFIX=$(pwd)/builds/Cadfael
+~~~~~
+
+Cadfael will maximally parallelize the builds for speed, but it may take 
+up to an hour or two on older machines with fewer cores. It should
+generally complete in well under an hour on quad core and better systems.
 If bootstrapping completes successfully the `installs/Cadfael` directory
 will be populated with a POSIX style layout of the third party software
 required for SuperNEMO.
