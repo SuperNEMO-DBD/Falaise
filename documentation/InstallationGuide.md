@@ -243,7 +243,7 @@ This will create a build directory under the `builds` area and install
 Cadfael into a dedicated root under `installs`. Note that both
 `CMAKE_INSTALL_PREFIX` and `CADFAEL_BUILD_PREFIX` must be absolute paths,
 hence the use of the shell `$(pwd)`. Note that the bootstrapping script
- assumes you have a `cmake` executable in `/usr/bin`. If that is not the 
+ assumes you have a `cmake` executable in `/usr/bin`. If that is not the
 case, you can run the script using your install of cmake directly:
 
 ~~~~~
@@ -253,7 +253,7 @@ $ /path/to/your/cmake -P ./lpc-caen.svn/Cadfael/trunk/cadfael-bootstrap \
 -DCADFAEL_BUILD_PREFIX=$(pwd)/builds/Cadfael
 ~~~~~
 
-Cadfael will maximally parallelize the builds for speed, but it may take 
+Cadfael will maximally parallelize the builds for speed, but it may take
 up to an hour or two on older machines with fewer cores. It should
 generally complete in well under an hour on quad core and better systems.
 If bootstrapping completes successfully the `installs/Cadfael` directory
@@ -334,7 +334,7 @@ of Cadfael:
 ~~~~~
 $ cmake -DCMAKE_INSTALL_PREFIX=/Users/ben/SuperNEMO/installs/falaise.alpha1 \
  -DCMAKE_PREFIX_PATH=/Users/ben/SuperNEMO/installs/Cadfael \
- ../../lpc-caen.svn/Falaise/Falaise/tags/Falaise-1.0.0-alpha1
+ ../../lpc-caen.svn/Falaise/tags/Falaise-1.0.0-alpha1
 -- The C compiler identification is GNU 4.3.4
 -- The CXX compiler identification is GNU 4.3.4
 -- Check for working C compiler: /usr/bin/cc

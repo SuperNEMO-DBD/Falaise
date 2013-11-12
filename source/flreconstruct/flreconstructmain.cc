@@ -50,6 +50,7 @@
 #include "boost/program_options.hpp"
 #include "boost/scoped_ptr.hpp"
 #include "boost/version.hpp"
+#include "boost/foreach.hpp"
 
 
 // This Project
@@ -106,6 +107,48 @@ void do_error(std::ostream& os, const char* err) {
   os << "Try `flreconstruct --help` for more information\n";
 }
 
+
+
+//! Print list of known module names, one per line, to given stream
+void do_module_list(std::ostream& os) {
+  typedef std::vector<std::string> ModuleInfo;
+  ModuleInfo mods;
+  DATATOOLS_FACTORY_GET_SYSTEM_REGISTER(dpp::base_module).list_of_factories(mods);
+  BOOST_FOREACH(ModuleInfo::value_type entry, mods) {
+    os << entry << std::endl;
+  }
+}
+
+//! Print OCD help for supplied module name to given ostream
+void do_help_module(std::ostream& os, std::string module) {
+  // Is module valid?
+  typedef std::vector<std::string> ModuleInfo;
+  ModuleInfo mods;
+  DATATOOLS_FACTORY_GET_SYSTEM_REGISTER(dpp::base_module).list_of_factories(mods);
+  std::set<std::string> moduleSet(mods.begin(), mods.end());
+  if (moduleSet.find(module) == moduleSet.end()) {
+    os << "[error] Argument '" << module
+       << "' is not a flreconstruct module\n"
+       << "Use '--help-module-list' to see all modules"
+       << std::endl;
+    return;
+  }
+
+  // Is it in OCD?
+  const datatools::detail::ocd::ocd_registration& ocd_system_reg
+    = datatools::detail::ocd::ocd_registration::get_system_registration();
+  if (!ocd_system_reg.has_id(module)) {
+    os << "[error] Module '" << module
+       << "' is not documented"
+       << std::endl;
+    return;
+  }
+
+  const datatools::object_configuration_description& moduleDoc
+      = ocd_system_reg.get(module);
+  moduleDoc.print(os);
+}
+
 // - Validation of verbosity command line arguments. must exist inside
 // the datatools namespace.
 // TODO : refactor operator>> into datatools, though can't do this
@@ -144,10 +187,14 @@ FLDialogState do_cldialog(int argc, char *argv[], FLReconstructArgs& args) {
   bpo::options_description optDesc;
   optDesc.add_options()
       ("help,h","print this help message")
+      ("help-module-list","list available modules and exit")
+      ("help-module", bpo::value<std::string>()->value_name("[mod]"),
+       "print help for a single module and exit")
       ("version","print version number")
       ("verbose,v",
        bpo::value<datatools::logger::priority>(&args.logLevel)->default_value(datatools::logger::PRIO_FATAL)->value_name("[level]"),
        "set verbosity level of logging")
+
       ("input-file,i",
        bpo::value<std::string>(&args.inputFile)->required()->value_name("[file]"),
        "file from which to read data")
@@ -177,6 +224,16 @@ FLDialogState do_cldialog(int argc, char *argv[], FLReconstructArgs& args) {
   // Handle messaging if requested
   if (vMap.count("help")) {
     do_help(std::cout, optDesc);
+    return DIALOG_QUERY;
+  }
+
+  if (vMap.count("help-module-list")) {
+    do_module_list(std::cout);
+    return DIALOG_QUERY;
+  }
+
+  if (vMap.count("help-module")) {
+    do_help_module(std::cout, vMap["help-module"].as<std::string>());
     return DIALOG_QUERY;
   }
 

@@ -11,7 +11,7 @@ in the data, and write the reconstructed data to and output file.
 It uses a pipeline architecture for event processing, the pipeline
 is constructed as a sequence of "modules", the sequence of modules being
 selected by the user (i.e. you) at runtime. Falaise provides a standard
-set of modules, and you can write you own custom modules which
+set of modules, and you can write your own custom modules which
 FLReconstruct can load at runtime via a plugin mechanism.
 
 Here we present a brief overview of running FLReconstruct from the
@@ -28,7 +28,7 @@ simply use the relative or absolute path to `flsimulate`.
 
 You can get help on the
 options that can be passed to `flreconstruct` by running it with the `-h`
-of `--help` options, e.g.
+or `--help` options, e.g.
 
 ~~~~~
 $ flreconstruct --help
@@ -37,6 +37,8 @@ Usage:
   flreconstruct [options]
 Options
   -h [ --help ]                 print this help message
+  --help-module-list            list available modules and exit
+  --help-module [mod]           print help for a single module and exit
   --version                     print version number
   -v [ --verbose ] [level] (=1) set verbosity level of logging
   -i [ --input-file ] [file]    file from which to read data
@@ -118,7 +120,38 @@ passed to `flreconstruct` via the `-p` argument, e.g.
 $ flreconstruct -i example.brio -p myscript.txt
 ~~~~~
 
-The following sections provide some simple examples of pipeline scripts.
+A list of available modules can be obtained using the `--help-module-list`
+argument, which will print the module names to stdout:
+
+~~~~~
+$ flreconstruct --help-module-list
+dpp::chain_module
+dpp::dummy_module
+dpp::dump_module
+dpp::if_module
+dpp::input_module
+dpp::output_module
+dpp::skip_module
+dpp::utils_module
+mctools::simulated_data_input_module
+~~~~~
+
+Details about the purpose of a module and how it may be configured may
+be obtained by passing the module name as the argument of the `--help-module` command. This will print out detailed documentation, if it exists:
+
+~~~~~
+$ flreconstruct --help-module dpp::chain_module
+
+======================================
+Configuration of ``dpp::chain_module``
+======================================
+
+... further detailed output ...
+~~~~~
+
+This information can be used to select suitable modules and configurations
+for your own pipeline. The following sections provide some simple examples
+of pipeline scripts.
 
 
 Trivial Pipeline {#trivial_pipeline}
