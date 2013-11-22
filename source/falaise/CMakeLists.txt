@@ -87,8 +87,8 @@ if(UNIX AND NOT APPLE)
     )
 elseif(APPLE)
   # Temporary setting - needs testing
-  set_target_properties(Falaise 
-    PROPERTIES 
+  set_target_properties(Falaise
+    PROPERTIES
       INSTALL_NAME_DIR "@rpath"
       #LINK_FLAGS "-Wl,-rpath,@loader_path"
     )
@@ -101,6 +101,10 @@ install(TARGETS Falaise
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   )
 
+# - Install public headers (preliminary)
+install(DIRECTORY ${Falaise_BUILDPRODUCT_DIR}/include/
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  )
 
 #-----------------------------------------------------------------------
 # Build Tests
