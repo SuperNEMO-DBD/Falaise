@@ -259,7 +259,6 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
   // Dual strategy here
   //  - If they supplied a script, use that, otherwise default to
   //  a single dump module.
-  //  - An ass to deal with because of use of properties...
   DT_LOG_TRACE(clArgs.logLevel,"configuring module_manager");
   boost::scoped_ptr<dpp::module_manager> moduleManager_(new dpp::module_manager);
 
