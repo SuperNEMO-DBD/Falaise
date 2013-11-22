@@ -142,30 +142,43 @@ namespace falaise {
 
   void initialize(int argc_, char * argv_[])
   {
-    // Wrap Bayeux initialization because we need resources from various Bayeux's modules:
-    ::bayeux::initialize(argc_,argv_);
+    static bool _init = false;
+    if (! _init) {
+      // Wrap Bayeux initialization because we need resources from various Bayeux's modules:
+      ::bayeux::initialize(argc_,argv_);
 
-    // Tests :
-    // datatools::kernel & krnl = datatools::kernel::instance();
-    // if (krnl.has_library_info_register()) {
-    //   datatools::library_info & lib_info_reg
-    //     = krnl.grab_library_info_register();
-    //   lib_info_reg.tree_dump(std::cerr, "falaise::initialize: Before special initialize", "DEVEL: ");
-    // }
+      // Tests :
+      // datatools::kernel & krnl = datatools::kernel::instance();
+      // if (krnl.has_library_info_register()) {
+      //   datatools::library_info & lib_info_reg
+      //     = krnl.grab_library_info_register();
+      //   lib_info_reg.tree_dump(std::cerr, "falaise::initialize: Before special initialize", "DEVEL: ");
+      // }
 
-    // Initialization code from Falaise itself:
-    falaise_initialize_impl();
+      // Initialization code from Falaise itself:
+      falaise_initialize_impl();
+      _init = true;
+    } else {
+      DT_THROW_IF(true, std::logic_error,
+                  "Attempt to initialize the already initialized Falaise library!");
+    }
     return;
   }
 
   void terminate()
   {
-    // Termination code for Falaise:
-    falaise_terminate_impl();
+    static bool _fini = false;
+    if (! _fini) {
+      // Termination code for Falaise:
+      falaise_terminate_impl();
 
-    // Wrap Bayeux termination:
-    ::bayeux::terminate();
-
+      // Wrap Bayeux termination:
+      ::bayeux::terminate();
+      _fini = true;
+    } else {
+      DT_THROW_IF(true, std::logic_error,
+                  "Attempt to terminate the already terminated Falaise library!");
+    }
     return;
   }
 
