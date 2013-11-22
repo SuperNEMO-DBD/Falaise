@@ -42,7 +42,7 @@ std::string get_resource_root(bool overriden_env) {
   static const boost::filesystem::path resource_path = "resources";
   static const boost::filesystem::path install_root = "@CMAKE_INSTALL_PREFIX@";
   boost::filesystem::path install_data_root = install_root / "@CMAKE_INSTALL_DATADIR@" /
-   "Falaise-" / FALAISE_LIB_VERSION;
+   "Falaise-@Falaise_VERSION@";
   // Not sure to maintain this in the future:
   if(overriden_env) {
     if (std::getenv("FALAISE_RESOURCE_DIR")) {
