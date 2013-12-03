@@ -37,6 +37,14 @@ else()
   set(FALAISE_GENERATE_LATEX "NO")
 endif()
 
+# Bayeux tag files
+# If we're using an internal Bayeux, use relative paths, otherwise
+# absolute
+if(NOT Falaise_USE_SYSTEM_BAYEUX AND Bayeux_DOXYGEN_HTML_DIR)
+  file(RELATIVE_PATH Bayeux_DOXYGEN_HTML_DIR ${Falaise_DOXYGEN_OUTPUT_DIR}/html ${Bayeux_DOXYGEN_HTML_DIR})
+  file(RELATIVE_PATH Bayeux_DOXYGEN_TAGFILE ${PROJECT_BINARY_DIR} ${Bayeux_DOXYGEN_TAGFILE})
+endif()
+
 #-----------------------------------------------------------------------
 # Individual Documents
 #

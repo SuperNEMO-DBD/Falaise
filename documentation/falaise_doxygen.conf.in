@@ -128,7 +128,8 @@ FULL_PATH_NAMES        = YES
 # If left blank the directory from which doxygen is run is used as the
 # path to strip.
 
-STRIP_FROM_PATH        = @Falaise_BUILDPRODUCT_DIR@/include
+STRIP_FROM_PATH        = @Falaise_BUILDPRODUCT_DIR@/include \
+                         @PROJECT_SOURCE_DIR@
 
 # The STRIP_FROM_INC_PATH tag can be used to strip a user-defined part of
 # the path mentioned in the documentation of a class, which tells
@@ -137,7 +138,8 @@ STRIP_FROM_PATH        = @Falaise_BUILDPRODUCT_DIR@/include
 # definition is used. Otherwise one should specify the include paths that
 # are normally passed to the compiler using the -I flag.
 
-STRIP_FROM_INC_PATH    = @Falaise_BUILDPRODUCT_DIR@/include
+STRIP_FROM_INC_PATH    = @Falaise_BUILDPRODUCT_DIR@/include \
+                         @PROJECT_SOURCE_DIR@
 
 # If the SHORT_NAMES tag is set to YES, doxygen will generate much shorter
 # (but less readable) file names. This can be useful if your file system
@@ -703,7 +705,9 @@ RECURSIVE              = YES
 # Note that relative paths are relative to the directory from which doxygen is
 # run.
 
-EXCLUDE                = @PROJECT_SOURCE_DIR@/documentation/data_models @PROJECT_SOURCE_DIR@/documentation/data_processing_modules
+EXCLUDE                = @PROJECT_SOURCE_DIR@/documentation/data_models \
+                         @PROJECT_SOURCE_DIR@/documentation/data_processing_modules \
+                         @PROJECT_SOURCE_DIR@/documentation/flreconstruct/MyModule
 
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
@@ -1561,7 +1565,7 @@ SKIP_FUNCTION_MACROS   = YES
 # NOT include the path). If a tag file is not located in the directory in which
 # doxygen is run, you must also specify the path to the tagfile here.
 
-TAGFILES               = #"bayeux.doxy.tag=../../Bayeux-1.0.0"
+TAGFILES               = "@Bayeux_DOXYGEN_TAGFILE@=@Bayeux_DOXYGEN_HTML_DIR@"
 
 # When a file name is specified after GENERATE_TAGFILE, doxygen will create
 # a tag file that is based on the input files it reads.
