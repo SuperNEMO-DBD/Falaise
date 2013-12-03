@@ -13,7 +13,7 @@ toolkit, with I/O handled by the Bayeux framework.
 
 Here we present a brief overview of running FLSimulate from the command
 line to generate an output file suitable for input to the
-[FLReconstruct](md_FLReconstruct.html) application.
+[FLReconstruct](@ref md_FLReconstruct) application.
 
 At present (Alpha 1), FLSimulate only supports simulation of the SuperNEMO
 tracker module in its commissioning setup, with cosmic muon events. Further

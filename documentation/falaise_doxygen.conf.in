@@ -658,6 +658,7 @@ WARN_LOGFILE           =
 # with spaces.
 
 INPUT                  =  @PROJECT_SOURCE_DIR@/documentation/Mainpage.md \
+                          @PROJECT_SOURCE_DIR@/source/Falaise.1.md \
                           @PROJECT_SOURCE_DIR@/documentation/InstallationGuide.md \
                           @PROJECT_SOURCE_DIR@/documentation/flsimulate \
                           @PROJECT_SOURCE_DIR@/documentation/flreconstruct \
