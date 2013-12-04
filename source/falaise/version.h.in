@@ -1,4 +1,4 @@
-//! \file    version.h
+//! \file    falaise/version.h
 //! \brief   Describe the Falaise API version
 //! \details Querying the version of Falaise is needed at both
 //!          compile and runtime by clients so that they may adjust

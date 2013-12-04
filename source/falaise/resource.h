@@ -1,4 +1,4 @@
-//! \file    resource.h
+//! \file    falaise/resource.h
 //! \brief   Utilities for accessing falaise resource files
 //! \details The falaise library makes use of several resource files
 //!          containing isotopic and radioactive decays data.
