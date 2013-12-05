@@ -199,6 +199,11 @@ export(TARGETS
   FILE ${PROJECT_BINARY_DIR}/CellularAutomatonTrackerLibraryDepends.cmake
   )
 
+export(TARGETS 
+  sultan APPEND
+  FILE ${PROJECT_BINARY_DIR}/CellularAutomatonTrackerLibraryDepends.cmake
+  )
+
 configure_file(${PROJECT_SOURCE_DIR}/cmake/Templates/CellularAutomatonTrackerConfig.cmake.in
   ${PROJECT_BINARY_DIR}/CellularAutomatonTrackerConfig.cmake
   @ONLY

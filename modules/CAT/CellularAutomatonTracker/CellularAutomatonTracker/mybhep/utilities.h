@@ -23,6 +23,8 @@
 #include <sstream>
 #include <cmath>
 #include <cstdlib>
+#include <cfloat>
+#include <limits.h>
 
 namespace mybhep{
 
@@ -41,9 +43,9 @@ namespace mybhep{
     else return NORMAL;
   }
 
-  static const double small_neg = -999999999999.;
-  static const double plus_infinity = -small_neg;
-  static const size_t default_integer = (size_t)plus_infinity;
+  static const double plus_infinity = DBL_MAX;
+  static const double small_neg = -plus_infinity;
+  static const size_t default_integer = INT_MAX;
   static const double default_min = plus_infinity;
   static const double default_max = -default_min;
 

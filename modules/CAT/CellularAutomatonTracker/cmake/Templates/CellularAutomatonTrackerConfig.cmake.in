@@ -90,6 +90,7 @@ if ( NOT DEFINED CellularAutomatonTracker_CONFIG_GUARD_COUNTER )
   # endif ()
   # list (APPEND CellularAutomatonTracker_LIBRARIES mybhep)
   # list (APPEND CellularAutomatonTracker_LIBRARIES ${CellularAutomatonTracker_THIRD_PARTY_LIBRARIES} )
+  list (APPEND CellularAutomatonTracker_LIBRARIES sultan)
 
 
 else ( NOT DEFINED CellularAutomatonTracker_CONFIG_GUARD_COUNTER )
