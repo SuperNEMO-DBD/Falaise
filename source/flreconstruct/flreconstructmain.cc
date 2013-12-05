@@ -40,6 +40,7 @@
 // - Bayeux
 #include "bayeux/version.h"
 #include "bayeux/datatools/logger.h"
+#include "bayeux/datatools/library_loader.h"
 #include "bayeux/dpp/module_manager.h"
 #include "bayeux/dpp/base_module.h"
 //#include "bayeux/dpp/input_module.h"
@@ -262,6 +263,31 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
   DT_LOG_TRACE(clArgs.logLevel,"configuring module_manager");
   boost::scoped_ptr<dpp::module_manager> moduleManager_(new dpp::module_manager);
 
+  // - Configure the library loader for custom modules
+  datatools::multi_properties userLibConfig("name", "filename");
+  if(!clArgs.pipelineScript.empty()) {
+    datatools::multi_properties userConfig("name", "type");
+    userConfig.read(clArgs.pipelineScript);
+    try {
+      datatools::properties userFLPlugins = userConfig.get_section("flreconstruct.plugins");
+      std::vector<std::string> pList;
+      userFLPlugins.fetch("plugins", pList);
+
+      BOOST_FOREACH(std::string plugin, pList) {
+        datatools::properties& pSection = userLibConfig.add_section(plugin,"");
+        userFLPlugins.export_and_rename_starting_with(pSection,plugin+".","");
+        pSection.set_flag("autoload");
+      }
+    } catch(std::logic_error& e) {
+      // do nothing for now because we can't distinguish errors, and
+      // upcoming instantiation of library loader will handle
+      // any syntax errors in the properties
+    }
+  }
+
+  datatools::library_loader flLibLoader(datatools::library_loader::allow_unregistered, userLibConfig);
+
+  // Configure the modules themselves
   if (!clArgs.pipelineScript.empty()) {
     moduleManager_->load_modules(clArgs.pipelineScript);
   } else {
@@ -321,6 +347,9 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
     if(output_) output_->process(workItem);
   }
 
+  // - MUST delete the module manager BEFORE the library loader clears
+  // in case the manager is holding resources created from a shared lib
+  moduleManager_.reset();
   return falaise::EXIT_OK;
 }
 
