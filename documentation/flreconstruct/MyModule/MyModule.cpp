@@ -24,7 +24,7 @@ MyModule::MyModule() : dpp::base_module()
 // Destruct
 MyModule::~MyModule() {
   // MUST reset module at destruction
-  this->reset()
+  this->reset();
 }
 
 // Initialize

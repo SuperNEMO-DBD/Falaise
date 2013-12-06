@@ -10,6 +10,6 @@ find_package(Bayeux REQUIRED)
 # Ensure our code can see the Bayeux headers
 include_directories(${Bayeux_INCLUDE_DIRS})
 
-# Build a dynamic module from our sources
-add_library(MyModule MODULE MyModule.h MyModule.cpp)
+# Build a dynamic library from our sources
+add_library(MyModule SHARED MyModule.h MyModule.cpp)
 
