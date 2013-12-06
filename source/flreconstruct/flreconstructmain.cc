@@ -346,6 +346,7 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
     // Write item
     if(output_) output_->process(workItem);
   }
+  DT_LOG_TRACE(clArgs.logLevel,"event loop completed");
 
   // - MUST delete the module manager BEFORE the library loader clears
   // in case the manager is holding resources created from a shared lib
