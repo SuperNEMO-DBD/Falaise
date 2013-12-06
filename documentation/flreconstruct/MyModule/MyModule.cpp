@@ -22,18 +22,24 @@ MyModule::MyModule() : dpp::base_module()
 {}
 
 // Destruct
-MyModule::~MyModule()
-{}
+MyModule::~MyModule() {
+  // MUST reset module at destruction
+  this->reset()
+}
 
 // Initialize
-void MyModule::initialize(const datatools::properties& myConfig,
-                          datatools::service_manager& /*notused*/,
-                          dpp::module_handle_dict_type& /*notused*/) {
+void MyModule::initialize(const datatools::properties& /*myConfig*/,
+                          datatools::service_manager& /*flServices*/,
+                          dpp::module_handle_dict_type& /*moduleDict*/) {
   this->_set_initialized(true);
 }
 
 // Process
 int MyModule::process(datatools::things& /*workItem*/) {
+  // Hello world!
+  std::cout << "MyModule::process called!" << std::endl;
+
+  // MUST return a status, see ref dpp::processing_status_flags_type
   return dpp::PROCESS_OK;
 }
 
