@@ -54,6 +54,7 @@ set(Falaise_MARKDOWN_DOCS
   flsimulate/FLSimulate.md
   flreconstruct/FLReconstruct.md
   flreconstruct/WritingFLReconstructModules.md
+  flreconstruct/WorkingWithEventRecords.md
   )
 
 #-----------------------------------------------------------------------
