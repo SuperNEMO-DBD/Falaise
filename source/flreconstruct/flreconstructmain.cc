@@ -341,7 +341,13 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
     }
 
     // Feed through pipeline
-    pipeline_->process(workItem);
+    int pStatus = pipeline_->process(workItem);
+    // FATAL means actual processing has failed on current item
+    if(pStatus == dpp::PROCESS_FATAL) continue;
+
+    // INVALID means something very badly wrong, so need to exit whole
+    // event loop.
+    if(pStatus == dpp::PROCESS_INVALID) break;
 
     // Write item
     if(output_) output_->process(workItem);
