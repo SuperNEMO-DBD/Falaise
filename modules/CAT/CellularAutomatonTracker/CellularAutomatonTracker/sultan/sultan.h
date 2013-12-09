@@ -193,8 +193,13 @@ namespace SULTAN {
       return;
     }
 
-    void set_nsigma(double v){
-      nsigma = v;
+    void set_nsigma_r(double v){
+      nsigma_r = v;
+      return;
+    }
+
+    void set_nsigma_z(double v){
+      nsigma_z = v;
       return;
     }
 
@@ -305,7 +310,7 @@ namespace SULTAN {
     size_t min_ncells_in_cluster;
     size_t ncells_between_triplet_min;
     size_t ncells_between_triplet_range;
-    double nsigma;
+    double nsigma_r, nsigma_z;
 
     //error parametrization
     double sigma0;

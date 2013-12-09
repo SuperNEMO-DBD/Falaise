@@ -46,7 +46,8 @@ namespace SULTAN {
     Emax = std::numeric_limits<double>::quiet_NaN ();
 
     probmin = std::numeric_limits<double>::quiet_NaN ();
-    nsigma = std::numeric_limits<double>::quiet_NaN ();
+    nsigma_r = std::numeric_limits<double>::quiet_NaN ();
+    nsigma_z = std::numeric_limits<double>::quiet_NaN ();
     nofflayers = 0;
     first_event_number = -1;
     min_ncells_in_cluster=0;
@@ -172,7 +173,8 @@ namespace SULTAN {
     m.message("verbosity print level", level, mybhep::NORMAL);
     m.message("max_time",max_time,"ms",mybhep::NORMAL);
     m.message("probmin", probmin, mybhep::NORMAL);
-    m.message("nsigma", nsigma, mybhep::NORMAL);
+    m.message("nsigma_r", nsigma_r, mybhep::NORMAL);
+    m.message("nsigma_z", nsigma_z, mybhep::NORMAL);
     m.message("nofflayers",nofflayers,mybhep::NORMAL);
     m.message("first event number", first_event_number, mybhep::NORMAL);
     m.message("num_blocks",num_blocks,mybhep::NORMAL);
@@ -256,65 +258,65 @@ namespace SULTAN {
   //*************************************************************
 
     topology::experimental_double dr, dh;
+    vector<topology::node> leftover_nodes_copy=leftover_nodes;
     assigned_nodes.clear();
     leftover_nodes.clear();
     topology::experimental_point p;
     size_t best_helix_index;
     double angle;
     
-    for (vector<topology::node>::iterator
-	   inode = nodes.begin();
-	 inode != nodes.end(); ++inode)
-      {
-	if (level >= mybhep::VVERBOSE)
-	  {
-	    std::clog << " cell " << inode->c().id() << " ["; inode->c().ep().dump(); std::clog << "] r "; inode->c().r().dump(); std::clog << std::endl;
-	  }
-
-	bool active = false;
-	double drmin = mybhep::plus_infinity;
-	double dhmin = mybhep::plus_infinity;
-	for(std::vector<topology::experimental_helix>::iterator ihel=helices->begin(); ihel!=helices->end(); ++ihel){
-	  ihel->distance_from_cell_measurement(inode->c(), &dr, &dh);
-	  if (level >= mybhep::VVERBOSE){
-	    std::clog << " distance of helix " << ihel - helices->begin() << " from cell " << inode->c().id() << " dr (" << dr.value() << " +- " << dr.error() << ") dh (" << dh.value() << " +- " << dh.error() << ")" << std::endl;
-	  }
-	  if( fabs(dr.value()) < nsigma*inode->c().r().error() && fabs(dh.value()) < nsigma*inode->c().ep().z().error() ){
-	    active = true;
-	    if( fabs(dr.value()) < drmin && fabs(dh.value()) < dhmin ){
-	      drmin = fabs(dr.value());
-	      dhmin = fabs(dh.value());
-	      best_helix_index = ihel - helices->begin();
-	    }
-	  }
+    for (vector<topology::node>::iterator inode = nodes.begin(); inode != nodes.end(); ++inode){
+      if (level >= mybhep::VVERBOSE)
+	{
+	  std::clog << " cell " << inode->c().id() << " ["; inode->c().ep().dump(); std::clog << "] r "; inode->c().r().dump(); std::clog << std::endl;
 	}
-	
-	if( active ){
-	  p = helices->at(best_helix_index).position(inode->c().ep());
-	  if (level >= mybhep::VVERBOSE)
-	    {
-	      std::clog << " is near (" << p.x().value() << ", " << p.y().value() << ", " << p.z().value() << ")" << std::endl;
-	    }
-	  // angle of cell center wrt circle center
-	  angle = atan2(inode->c().ep().y().value() - b->y0().value(), inode->c().ep().x().value() - b->x0().value());
-	  inode->set_circle_phi(angle);
-	  inode->set_ep(p);
-	  assigned_nodes.push_back(*inode);
-	}else{
-	  if (level >= mybhep::VVERBOSE)
-	    {
-	      std::clog << " is not near " << std::endl;
-	    }
-	  leftover_nodes.push_back(*inode);
+      
+      bool active = false;
+      double drmin = mybhep::plus_infinity;
+      double dhmin = mybhep::plus_infinity;
+      for(std::vector<topology::experimental_helix>::iterator ihel=helices->begin(); ihel!=helices->end(); ++ihel){
+	ihel->distance_from_cell_measurement(inode->c(), &dr, &dh);
+	if (level >= mybhep::VVERBOSE){
+	  std::clog << " distance of helix " << ihel - helices->begin() << " from cell " << inode->c().id() << " dr (" << dr.value() << " +- " << dr.error() << ") dh (" << dh.value() << " +- " << dh.error() << ")" << std::endl;
+	}
+	if( fabs(dr.value()) < nsigma_r*inode->c().r().error() && fabs(dh.value()) < nsigma_z*inode->c().ep().z().error() ){
+	  active = true;
+	  if( fabs(dr.value()) < drmin && fabs(dh.value()) < dhmin ){
+	    drmin = fabs(dr.value());
+	    dhmin = fabs(dh.value());
+	    best_helix_index = ihel - helices->begin();
+	  }
 	}
       }
-
+      
+      if( active ){
+	p = helices->at(best_helix_index).position(inode->c().ep());
+	if (level >= mybhep::VVERBOSE)
+	  {
+	    std::clog << " is near (" << p.x().value() << ", " << p.y().value() << ", " << p.z().value() << ")" << std::endl;
+	  }
+	// angle of cell center wrt circle center
+	angle = atan2(inode->c().ep().y().value() - b->y0().value(), inode->c().ep().x().value() - b->x0().value());
+	inode->set_circle_phi(angle);
+	inode->set_ep(p);
+	assigned_nodes.push_back(*inode);
+      }else{
+	if (level >= mybhep::VVERBOSE){
+	  std::clog << " is not near " << std::endl;
+	}
+	if( std::find(leftover_nodes_copy.begin(), leftover_nodes_copy.end(), *inode) != leftover_nodes_copy.end() )
+	  leftover_nodes.push_back(*inode);
+      }
+    }
+    
     bool ok = check_continous_cells(assigned_nodes, leftover_nodes, b);
+    
+    m.message(" associated ", assigned_nodes.size(), " nodes to this helix out of ", nodes.size(), " so ", leftover_nodes.size(), " remain unassigned - initially there were ", leftover_nodes_copy.size(),  " -, continous ", ok, mybhep::VERBOSE);
 
-    m.message(" associated ", assigned_nodes.size(), " nodes to this helix out of ", nodes.size(), " so ", leftover_nodes.size(), " remain unassigned, continous ", ok, mybhep::VERBOSE);
-
-    return ok;
-
+    return ok && 
+      (leftover_nodes.size() < leftover_nodes_copy.size()) && 
+      (assigned_nodes.size() ) ;
+    
   }
 
 
@@ -382,7 +384,6 @@ namespace SULTAN {
 	  leftover_nodes.insert(leftover_nodes.end(),assigned_nodes.begin()+longest_piece_last,assigned_nodes.begin()+longest_piece_first);
 	  assigned_nodes = newnodes;
 	}
-	ok = true;
       }else{
 	m.message(" the longest piece is too short ", mybhep::VERBOSE);
 	assigned_nodes.clear();
@@ -502,10 +503,9 @@ namespace SULTAN {
 	count_helices ++;
       }
 
-      if (level >= mybhep::VERBOSE)
-	{
-	  std::clog << " leg vector has " << experimental_legendre_vector->helices().size() << " helices and " << count_helices << " helices " << std::endl; fflush(stdout);
-	}
+      if (level >= mybhep::VERBOSE){
+	std::clog << " leg vector has " << experimental_legendre_vector->helices().size() << " helices and " << count_helices << " helices " << std::endl; fflush(stdout);
+      }
       
       if( !count_helices ) break;
 
@@ -523,10 +523,9 @@ namespace SULTAN {
 	  std::clog << " associated " << neighbours.size() << " helices " << std::endl;
 	}
       
-      bool ok = assign_nodes_based_on_experimental_helix(leftover_nodes, assigned_nodes, leftover_nodes, &b, &neighbours);
+      bool ok = assign_nodes_based_on_experimental_helix(cluster_.nodes_, assigned_nodes, leftover_nodes, &b, &neighbours);
       
-      if( assigned_nodes.size() ){
-	if( ok ){
+      if( ok ){
 	  s = new topology::sequence(assigned_nodes, level, probmin);
 	  NFAMILY++;
 	  NCOPY = 0;
@@ -537,7 +536,6 @@ namespace SULTAN {
 	  s->set_helix(b);
 	  sequences_.push_back(*s);
 	  m.message(" finished track [", sequences_.size()-1, "] with ", s->nodes_.size(), " nodes", mybhep::VERBOSE); fflush(stdout);
-	}
       }else{
 	m.message(" could not make a track ", mybhep::VERBOSE); fflush(stdout);
 	break;

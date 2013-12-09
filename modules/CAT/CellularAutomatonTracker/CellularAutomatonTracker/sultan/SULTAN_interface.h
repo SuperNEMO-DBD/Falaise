@@ -58,7 +58,8 @@ namespace SULTAN {
     double probmin;
 
     /// number of sigmas
-    double nsigma;
+    double nsigma_r;
+    double nsigma_z;
 
     /// Number of cells which can be skipped (because the cell did not
     /// work) and still the cluster is continuous

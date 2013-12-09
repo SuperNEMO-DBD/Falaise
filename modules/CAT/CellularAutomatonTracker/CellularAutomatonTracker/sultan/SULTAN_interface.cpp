@@ -46,7 +46,8 @@ namespace SULTAN {
     SuperNemo                     = true;
     max_time                      = 5000.0; // ms
     probmin                       = 0.;
-    nsigma                        = 3.;
+    nsigma_r                      = 5.;
+    nsigma_z                      = 3.;
     nofflayers                    = 1;
     first_event                   = -1;
     min_ncells_in_cluster         = 0;
@@ -89,9 +90,14 @@ namespace SULTAN {
         _set_error_message ("Invalid 'probmin'");
         return false;
       }
-    if (nsigma < 0.0)
+    if (nsigma_r < 0.0)
       {
-        _set_error_message ("Invalid 'nsigma'");
+        _set_error_message ("Invalid 'nsigma_r'");
+        return false;
+      }
+    if (nsigma_z < 0.0)
+      {
+        _set_error_message ("Invalid 'nsigma_z'");
         return false;
       }
     if (nofflayers < 0.0)
@@ -243,7 +249,8 @@ namespace SULTAN {
 
     // Algorithm parameters :
     stor_.set_probmin (setup_.probmin);
-    stor_.set_nsigma (setup_.nsigma);
+    stor_.set_nsigma_r (setup_.nsigma_r);
+    stor_.set_nsigma_z (setup_.nsigma_z);
     stor_.set_nofflayers (setup_.nofflayers);
     stor_.set_first_event (setup_.first_event);
     stor_.set_min_ncells_in_cluster (setup_.min_ncells_in_cluster);
