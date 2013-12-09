@@ -379,9 +379,160 @@ code and recompiling the module. In most use cases hard-coding like this
 is sufficient, but if your module has parameters that may change
 frequently (e.g. a threshold that requires optimization), it is easy
 to make them configurable at runtime through the pipeline script.
+To demonstrate this, we'll modify the `MyModule` class from earlier to
+have a single `double` type data member and make this configurable.
 
-Whilst this configurability of modules is extremely useful, you should
-aim to minimize the number of parameters for ease of use. Remember that
-the modular structure of the pipeline means that tasks can be broken down
-into smaller chunks.
+Adding a Configurable Data Member {#minimalconfigurablemodulecpp}
+---------------------------------
+To begin with we simply add the declaration of the data member in the
+header file:
+
+\include flreconstruct/MyModuleConfigurable/MyModule.h
+
+and add extra code in the implementation file to handle the management
+of the member:
+
+\include flreconstruct/MyModuleConfigurable/MyModule.cpp
+
+The key additions are:
+
+1. Initializer for member in `MyModule` constructor.
+2. Reset of member to default value in `reset` method.
+3. Use of the `myConfig` datatools::properties instance passed to the
+`initialize` method to extract requested value for data member.
+
+The first two items are simply management tasks, and the third is where
+the main configuration is performed.
+
+The use of the `DT_THROW_IF` macro
+is used to enforce one-time initialization of the module so that we can't
+accidently and silently override the configuration. This locking
+behaviour is not required, but is useful to prevent such accidental
+overwrites.
+
+The try/catch block is used to "bind" the value of the `fudge_factor`
+string key from the `myConfig` `datatools::properties` instance to the
+actual `fudgeFactor_` data member. This is wrapped in a try/catch block
+because `datatools::properties` will throw a `std:logic_error` exception if
+
+1. The key cannot be found.
+2. The value of the key cannot be converted to the requested type (in this
+case `double`).
+
+We don't do anything if an exception is thrown here as we are
+happy in this case to use the default value for `fudgeFactor_` if the
+configuration does not override it or fails otherwise.
+Different error handling strategies can be applied to meet the needs of
+your own configurable parameters. You should consult the documentation
+for `datatools::properties` for full details of its key checking and
+  extraction API.
+
+An important restriction on configurable parameters is that they can only
+be of types understood by the `datatools::properties` class, namely:
+
+- `std::string`
+- `int`
+- `double`
+- `bool`
+- `std::vector` of all above types.
+
+Building a Loadable Shared Library for a Configurable Module
+------------------------------------------------------------
+No special build setup is needed for a configurable module, so you can
+use the CMake script
+[exactly as given for the basic module above](@ref minimalmodulebuilding).
+If you've made the changes as above, simply rebuild!
+
+
+Configuring MyModule from the Pipeline Script {#minimalconfigurablemodulescript}
+----------------------------------------------
+In the preceeding section, we saw that module configuration is passed to
+the module by an instance of the `datatools::properties` class.
+This instance is created by `flreconstruct` for the module from the
+properties, if any, supplied in the section of the pipeline script
+defining the module. To begin with, we can use the pipeline script from
+earlier to run the configurable module:
+
+\include flreconstruct/MyModule/MyModulePipeline.conf
+
+and run it in `flreconstruct` with
+
+~~~~~~
+$ cd /path/to/MyWorkSpace/MyModule-build
+$ ls
+CMakeCache.txt  cmake_install.cmake  Makefile
+CMakeFiles      libMyModule.so       MyModuleTest.brio
+$ flreconstruct -i MyModuleTest.brio -p ../MyModule/MyModulePipeline.conf
+[notice:void datatools::library_loader::init():410] Automatic loading of library  'MyModule'...
+...
+Reader configuration parameters:
+|-- Name : "files.mode"
+|   |-- Type  : string (scalar)
+|   `-- Value : "single"
+`-- Name : "files.single.filename"
+    |-- Type  : string (scalar)
+    `-- Value : "MyModuleTest.brio"
+MyModule::process using fudgeFactor(1)
+$
+~~~~~~
+
+We can see that the module has been run using the default value of the
+parameter. The section of the pipeline script defining `MyModule` is
+the line
+
+~~~~~~
+[name="pipeline" type="MyModule"]
+~~~~~~
+
+so to change the `fudgeFactor_` parameter, we simply add the appropriate
+`datatools::properties` key for it to the section:
+
+~~~~~~
+[name="pipeline" type="MyModule"]
+fudge_factor : real = 3.14;
+~~~~~~
+
+where the key name `fudge_factor` must match that looked for in the
+`MyModule::initialize` method. How to document parameters is covered in
+[a later tutorial](@ref md_DocumentingFLReconstructModules).
+The format of `datatools::properties` key entries is
+described in the documentation of that class.
+
+Having add the key, we can rerun with the updated pipeline script:
+
+~~~~~~
+$ flreconstruct -i MyModuleTest.brio -p ../MyModule/MyModulePipeline.conf
+[notice:void datatools::library_loader::init():410] Automatic loading of library  'MyModule'...
+...
+Reader configuration parameters:
+|-- Name : "files.mode"
+|   |-- Type  : string (scalar)
+|   `-- Value : "single"
+`-- Name : "files.single.filename"
+    |-- Type  : string (scalar)
+    `-- Value : "MyModuleTest.brio"
+MyModule::process using fudgeFactor(3.14)
+$
+~~~~~~
+
+and we see that the parameter has been changed to the value defined in
+the script. Try changing the value to see the effect.
+
+Keys are bound to the section they are defined in, so we can use the
+same module type multiple times but with different parameters. For example,
+try the following pipeline script:
+
+\include flreconstruct/MyModuleConfigurable/MyModulePipeline2.conf
+
+You should see each event being dumped, with the dumped info being
+bracketed by the output from each `MyModule` instance, each with
+different values of the fudge factor parameter.
+
+
+Whilst this ability to make modules configurable is extremely useful,
+*you should aim to minimize the number of parameters your module takes*.
+This helps to make the module easier to use and less error prone.
+Remember that the modular structure of the pipeline means that tasks
+are broken down into smaller chunks, so you should consider refactoring
+complex modules into smaller orthogonal units.
 
