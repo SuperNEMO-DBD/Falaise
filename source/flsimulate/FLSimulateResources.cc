@@ -33,20 +33,22 @@ namespace FLSimulate {
 //! Convert BrInitError code to a string describing the error
 //! \todo add errno to returned string
 std::string BRErrorAsString(const BrInitError& err) {
+  std::string errMsg;
   switch (err) {
     case BR_INIT_ERROR_NOMEM:
-      return "Unable to open /proc/self/maps";
+      errMsg = "Unable to open /proc/self/maps";
     case BR_INIT_ERROR_OPEN_MAPS:
-      return "Unable to read from /proc/self/maps";
+      errMsg =  "Unable to read from /proc/self/maps";
     case BR_INIT_ERROR_READ_MAPS:
-      return "The file format of /proc/self/maps";
+      errMsg = "The file format of /proc/self/maps";
     case BR_INIT_ERROR_INVALID_MAPS:
-      return "The file format of /proc/self/maps is invalid";
+      errMsg = "The file format of /proc/self/maps is invalid";
     case BR_INIT_ERROR_DISABLED:
-      return "Binary relocation disabled";
+      errMsg = "Binary relocation disabled";
     default:
       BOOST_ASSERT_MSG(1,"Invalid BrInitError");
   }
+  return errMsg;
 }
 
 void initResources() {
