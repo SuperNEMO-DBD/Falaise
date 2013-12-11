@@ -23,7 +23,7 @@ class MyModule : public dpp::base_module {
   //! Configure the module
   virtual void initialize(const datatools::properties& myConfig,
                           datatools::service_manager& flServices,
-                          dpp::module_handle_dict_type& what);
+                          dpp::module_handle_dict_type& moduleDict);
 
   //! Process supplied data record
   virtual int process(datatools::things& workItem);
@@ -38,4 +38,3 @@ class MyModule : public dpp::base_module {
 };
 
 #endif // MYMODULE_HH
-
