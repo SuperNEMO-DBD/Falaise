@@ -75,8 +75,8 @@ $
 At present, you can only run the simulation in batch mode using the
 Tracker Commissioning geometry and event generators. By default, 1
 event is generated, with vertices generated at the roof of the hall volume,
-and primary muons with energies/directions from the cosmic sea level
-spectrum. You can modify the number of events and the output file, which
+and primary muons (mu+ or mu-) with energies/directions from some cosmic sea level
+approximated spectrum. You can modify the number of events and the output file, which
 can be in XML or Brio format.
 
 For example, to generate 100 events and write them to a file named
@@ -89,4 +89,3 @@ $
 ~~~~~
 
 The resultant file can be examined with the `flreconstruct` application.
-
