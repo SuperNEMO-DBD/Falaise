@@ -164,7 +164,7 @@ Unpack::status Unpack::setTrig(std::string s)
   return OK;
 }
 
-Unpack::status Unpack::parseRunStart(std::string s)
+Unpack::status Unpack::parseRunStart(std::string /*s*/)
 {
   // std::cout << "Processing RUNSTART" << std::endl;
   return OK;
@@ -270,7 +270,7 @@ Unpack::status Unpack::parseD1(std::string s)
   return OK;
 }
 
-Unpack::status Unpack::parseEndRun(std::string s)
+Unpack::status Unpack::parseEndRun(std::string /*s*/)
 {
   if (_inEvent)
   {

@@ -9,7 +9,7 @@
 
 using namespace std;
 
-int main(int argc, char *argv[])
+int main(int /*argc*/, char *argv[])
 {
   Unpack unp(argv[1]);  // file name specified on command line
   GeigerEvent ev;

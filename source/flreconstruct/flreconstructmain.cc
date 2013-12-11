@@ -165,7 +165,7 @@ std::istream& operator>>(std::istream& in, datatools::logger::priority& p) {
 //! validate logging argument
 void validate(boost::any& v,
               std::vector<std::string> const& values,
-              datatools::logger::priority* target_type,
+              datatools::logger::priority* /*target_type*/,
               int) {
   // Make sure no previous assignment to v was made
   bpo::validators::check_first_occurrence(v);
@@ -341,7 +341,8 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
     }
 
     // Feed through pipeline
-    int pStatus = pipeline_->process(workItem);
+    // TODO Fix the process method to return the proper type
+    size_t pStatus = pipeline_->process(workItem);
     // FATAL means actual processing has failed on current item
     if(pStatus == dpp::PROCESS_FATAL) continue;
 
