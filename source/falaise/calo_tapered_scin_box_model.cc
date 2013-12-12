@@ -58,7 +58,7 @@ namespace snemo {
 
     void calo_tapered_scin_box_model::_at_construct (const std::string & name_,
                                                      const datatools::properties & config_,
-                                                     geomtools::models_col_type * models_)
+                                                     geomtools::models_col_type * /*models_*/)
     {
       if (config_.has_flag ("devel"))
         {

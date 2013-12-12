@@ -216,8 +216,8 @@ namespace snemo {
     }
 
     void cosmic_muon_generator::initialize (const datatools::properties & config_,
-                                            datatools::service_manager & service_manager_,
-                                            ::genbb::detail::pg_dict_type & dictionary_)
+                                            datatools::service_manager & /*service_manager_*/,
+                                            ::genbb::detail::pg_dict_type & /*dictionary_*/)
     {
       DT_THROW_IF(_initialized_,std::logic_error, "Operation prohibited ! Object is already initialized !");
 
