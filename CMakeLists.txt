@@ -41,6 +41,17 @@ endif()
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 project(Falaise)
 
+# - Enforce all warnings, but ensure other flags are retained
+# Note that the added flags *won't* show up in the cache.
+# TODO : better way to do this with the "Make Override" system?
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  set(Falaise_CXX_FLAGS "-W -Wall")
+elseif(CMAKE_CXX_COMPILER MATCHES "icpc.*|icc.*")
+  # Needs more testing
+  set(Falaise_CXX_FLAGS "-w2")
+endif()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Falaise_CXX_FLAGS}")
+
 # - Versioning
 set(Falaise_VERSION_MAJOR 1)
 set(Falaise_VERSION_MINOR 0)
@@ -59,8 +70,6 @@ foreach(_dir BINDIR LIBDIR INCLUDEDIR DATAROOTDIR)
     message(FATAL_ERROR "Absolute path for CMAKE_INSTALL_${_dir} not allowed")
   endif()
 endforeach()
-
-
 
 # - Configure output paths for products to give inplace build that roughly
 #   matches install layout.
