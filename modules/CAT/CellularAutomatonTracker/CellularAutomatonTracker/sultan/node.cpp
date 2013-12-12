@@ -72,17 +72,6 @@ namespace SULTAN {
         return ep_;
       }
 
-      node node::invert(){
-        node inverted;
-        inverted.set_print_level(print_level());
-        inverted.set_probmin(probmin());
-        inverted.set_c(c());
-        inverted.set_ep(ep());
-        return inverted;
-
-      }
-
-
       bool operator==(const node& left,
                       const node& right)
       {

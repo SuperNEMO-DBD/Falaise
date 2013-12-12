@@ -40,48 +40,19 @@ namespace SULTAN {
 
     level = mybhep::NORMAL;
     m = mybhep::messenger(level);
-    num_blocks = -1;
-    planes_per_block.clear ();
-    gaps_Z.clear ();
-    GG_GRND_diam = std::numeric_limits<double>::quiet_NaN ();
-    GG_CELL_diam = std::numeric_limits<double>::quiet_NaN ();
-    CHAMBER_X = std::numeric_limits<double>::quiet_NaN ();
-    GG_BLOCK_X = std::numeric_limits<double>::quiet_NaN ();
-    num_cells_per_plane = -1;
-    SOURCE_thick = std::numeric_limits<double>::quiet_NaN ();
-    lastlayer = 0;
-    vel  = std::numeric_limits<double>::quiet_NaN ();
-    rad  = std::numeric_limits<double>::quiet_NaN ();
-    len  = std::numeric_limits<double>::quiet_NaN ();
     cell_distance  = std::numeric_limits<double>::quiet_NaN ();
     xsize = ysize = zsize = std::numeric_limits<double>::quiet_NaN ();
-    calo_X = calo_Y = calo_Z = std::numeric_limits<double>::quiet_NaN ();
     inner_radius = outer_radius= foil_radius = std::numeric_limits<double>::quiet_NaN ();
-    Emin = std::numeric_limits<double>::quiet_NaN ();
-
-    SmallRadius = std::numeric_limits<double>::quiet_NaN ();
-    TangentPhi = std::numeric_limits<double>::quiet_NaN ();
-    TangentTheta = std::numeric_limits<double>::quiet_NaN ();
-    SmallNumber = std::numeric_limits<double>::quiet_NaN ();
-    QuadrantAngle = std::numeric_limits<double>::quiet_NaN ();
-    Ratio = std::numeric_limits<double>::quiet_NaN ();
-    CompatibilityDistance = std::numeric_limits<double>::quiet_NaN ();
-    MaxChi2 = std::numeric_limits<double>::quiet_NaN ();
     probmin = std::numeric_limits<double>::quiet_NaN ();
     nofflayers = 0;
     first_event_number = -1;
     SuperNemoChannel = false;
     max_time = std::numeric_limits<double>::quiet_NaN ();
     _moduleNR.clear ();
-    _MaxBlockSize = -1;
     event_number=-1;
-    hfile.clear ();
-
     nevent = 0;
     initial_events = 0;
     skipped_events = 0;
-    run_list.clear ();
-    run_time = std::numeric_limits<double>::quiet_NaN ();
     first_event=true;
 
     return;
@@ -110,11 +81,7 @@ namespace SULTAN {
 
     m.message("\n Beginning algorithm clusterizer \n",mybhep::VERBOSE);
 
-    //----------- read dst param -------------//
-
     read_properties();
-
-    //------- end of read pram -----------//
 
     nevent = 0;
     initial_events = 0;
@@ -151,31 +118,13 @@ namespace SULTAN {
     //*************************************************************
     m.message("SULTAN::clusterizer::read_properties: Entering...",mybhep::NORMAL);
 
-    if (_MaxBlockSize <= 0)
-      {
-        _MaxBlockSize = 1;
-        m.message("SULTAN::clusterizer::read_properties: no bar design, MODULES Nr set to = ",_MaxBlockSize,"\n",mybhep::NORMAL);
-      }
-
     if(SuperNemoChannel)
       {
         m.message("SULTAN::clusterizer::read_properties: SuperNemo kind of data",mybhep::NORMAL);
-        if (num_blocks <= 0)
-          {
-            set_num_blocks (1);
-            planes_per_block.at (0) = 9;
-          }
       }
     else
       {
         m.message("SULTAN::clusterizer::read_properties: Nemo-3 kind of data",mybhep::NORMAL);
-        if (num_blocks <= 0)
-          {
-            set_num_blocks (3);
-            planes_per_block.at (0) = 4;
-            planes_per_block.at (1) = 2;
-            planes_per_block.at (2) = 3;
-          }
       }
 
     m.message("",mybhep::NORMAL);
@@ -185,11 +134,7 @@ namespace SULTAN {
     m.message("probmin", probmin, mybhep::NORMAL);
     m.message("nofflayers",nofflayers,mybhep::NORMAL);
     m.message("first event number", first_event_number, mybhep::NORMAL);
-    m.message("num_blocks",num_blocks,mybhep::NORMAL);
-    m.message("num_cells_per_plane",num_cells_per_plane,mybhep::NORMAL);
     m.message("cell_distance",cell_distance,"mm",mybhep::NORMAL);
-    m.message("bfield",bfield,"T",mybhep::NORMAL);
-    m.message("Emin",Emin,"MeV",mybhep::NORMAL);
     m.message("xsize is",xsize,"mm",mybhep::NORMAL);
     m.message("ysize is",ysize,"mm",mybhep::NORMAL);
     m.message("zsize is",zsize,"mm",mybhep::NORMAL);
@@ -262,13 +207,19 @@ namespace SULTAN {
   void clusterizer::clusterize(topology::tracked_data & tracked_data_){
     //*******************************************************************
 
-    if( event_number < first_event_number ) return;
-
     clock.start(" clusterizer: clusterize ","cumulative");
+
+    if( event_number < first_event_number ){
+      clock.stop(" clusterizer: clusterize ");
+      return;
+    }
 
     m.message(" local_tracking: fill clusters ", mybhep::VERBOSE);
 
-    if( cells_.empty() ) return;
+    if( cells_.empty() ){
+      clock.stop(" clusterizer: clusterize ");
+      return;
+    }
 
     float side[2]; // loop on two sides of the foil
     side[0] =  1.;
@@ -338,16 +289,16 @@ namespace SULTAN {
 	      
               clusters_.push_back(cluster_connected_to_c);
             }
-
+	    
           }
       }
-
-
+    
+    
     setup_clusters();
 
     m.message(" there are ", clusters_.size(), " clusters of cells for a total of ", cells_.size(), " cells ", mybhep::VERBOSE);
     if( level >= mybhep::VERBOSE ){
-      for(std::vector<topology::cluster>::iterator iclu=clusters_.begin(); iclu!=clusters_.end(); ++iclu)
+      for(std::vector<topology::cluster>::const_iterator iclu=clusters_.begin(); iclu!=clusters_.end(); ++iclu)
 	m.message( " cluster ", iclu - clusters_.begin(), " has ", iclu->nodes().size(), " cells ", mybhep::VERBOSE);
     }
 
@@ -386,7 +337,9 @@ namespace SULTAN {
   }
 
 
+  //*************************************************************
   std::vector<topology::cell> clusterizer::get_near_cells(const topology::cell & c){
+  //*************************************************************
 
     clock.start(" clusterizer: get near cells ","cumulative");
 
@@ -394,7 +347,7 @@ namespace SULTAN {
 
     std::vector<topology::cell> cells;
 
-    for(std::vector<topology::cell>::iterator kcell=cells_.begin(); kcell != cells_.end(); ++kcell){
+    for(std::vector<topology::cell>::const_iterator kcell=cells_.begin(); kcell != cells_.end(); ++kcell){
       if( kcell->id() == c.id() ) continue;
 
       if( kcell->fast() != c.fast() ) continue;
@@ -465,152 +418,16 @@ namespace SULTAN {
   }
 
 
-  void clusterizer::set_GG_GRND_diam (double ggd){
-    GG_GRND_diam = ggd;
-    return;
-  }
-
-  void clusterizer::set_GG_CELL_diam (double ggcd){
-    GG_CELL_diam = ggcd;
-    return;
-  }
-
-  void clusterizer::set_lastlayer(int ll_){
-    lastlayer = ll_;
-    return;
-  }
-
-  void clusterizer::set_num_blocks(int nb){
-    if (nb > 0)
-      {
-        num_blocks = nb;
-        planes_per_block.assign (num_blocks, 1);
-      }
-    else
-      {
-        std::cerr << "WARNING: SULTAN::clusterizer::set_num_blocks: "
-                  << "Invalid number of GG layer blocks !" << std::endl;
-        planes_per_block.clear ();
-        num_blocks = -1; // invalid value
-      }
-    return;
-  }
-
-  void clusterizer::set_planes_per_block(int block, int nplanes){
-    if (block< 0 || block>=planes_per_block.size())
-      {
-        throw std::range_error ("SULTAN::clusterizer::set_planes_per_block: Invalid GG layer block index !");
-      }
-    if (nplanes > 0)
-      {
-        planes_per_block.at (block) = nplanes;
-      }
-    else
-      {
-        throw std::range_error ("SULTAN::clusterizer::set_planes_per_block: Invalid number of GG layers in block !");
-      }
-    return;
-  }
-
-  void clusterizer::set_num_cells_per_plane(int ncpp){
-    if (ncpp <= 0)
-      {
-        num_cells_per_plane = -1; // invalid value
-      }
-    else
-      {
-        num_cells_per_plane = ncpp;
-      }
-    return;
-  }
-
-  void clusterizer::set_SOURCE_thick(double st){
-    if (st <= 0.0)
-      {
-        SOURCE_thick = std::numeric_limits<double>::quiet_NaN ();
-      }
-    else
-      {
-        SOURCE_thick = st;
-      }
-    return;
-  }
-
-  // What is it ?
   void clusterizer::set_module_nr(const std::string & mID){
     _moduleNR=mID;
     return;
   }
-
-  // What is it ?
-  int clusterizer::get_module_nr(void){
-    return _MaxBlockSize;
-  }
-
-  void clusterizer::set_MaxBlockSize(int mbs){
-    _MaxBlockSize=mbs;
-    return;
-  }
-
-  void clusterizer::set_Emin(double v){
-    if ( v <= 0.0)
-      {
-        Emin = std::numeric_limits<double>::quiet_NaN ();
-      }
-    else
-      {
-        Emin = v;
-      }
-    return;
+  string clusterizer::get_module_nr(void){
+    return _moduleNR;
   }
 
   void clusterizer::set_max_time(double v){
     max_time = v;
-    return;
-  }
-
-  void clusterizer::set_SmallRadius(double v){
-    SmallRadius = v;
-    return;
-  }
-
-  void clusterizer::set_TangentPhi(double v){
-    TangentPhi = v;
-    return;
-  }
-
-  void clusterizer::set_TangentTheta(double v){
-    TangentTheta = v;
-    return;
-  }
-
-  void clusterizer::set_SmallNumber(double v){
-    SmallNumber = v;
-    return;
-  }
-
-  void clusterizer::set_QuadrantAngle(double v){
-    QuadrantAngle = v;
-    return;
-  }
-
-  void clusterizer::set_Ratio(double v){
-    Ratio = v;
-    return;
-  }
-
-  void clusterizer::set_CompatibilityDistance(double v){
-    CompatibilityDistance = v;
-    return;
-  }
-
-  void clusterizer::set_MaxChi2(double v){
-    MaxChi2 = v;
-    return;
-  }
-
-  void clusterizer::set_hfile(std::string v){
-    hfile = v;
     return;
   }
 
@@ -635,21 +452,6 @@ namespace SULTAN {
     return;
   }
 
-  void clusterizer::set_len(double v){
-    len = v;
-    return;
-  }
-
-  void clusterizer::set_vel(double v){
-    vel = v;
-    return;
-  }
-
-  void clusterizer::set_rad(double v){
-    rad = v;
-    return;
-  }
-
   void clusterizer::set_cell_distance(double v){
     cell_distance = v;
     return;
@@ -659,7 +461,6 @@ namespace SULTAN {
     if (v)
       {
         SuperNemoChannel = true;
-        set_MaxBlockSize (1);
       }
     else
       {
@@ -687,12 +488,6 @@ namespace SULTAN {
     zsize = v;
     return;
   }
-
-  void clusterizer::set_bfield(double v){
-    bfield = v;
-    return;
-  }
-
 
 
 }

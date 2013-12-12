@@ -19,9 +19,8 @@ namespace SULTAN {
 
     class node : public tracking_object {
 
-      // a node is composed of a main cell,
-      // a list of cell_couplet
-      // and a list of cell_triplet
+      // a node is composed of a cell
+      // and a fitted point
 
     protected:
       std::string appname_;
@@ -34,6 +33,7 @@ namespace SULTAN {
       // fitted point
       experimental_point ep_;
 
+      // angle along circle
       double circle_phi_;
 
     public:
@@ -79,11 +79,7 @@ namespace SULTAN {
       static bool circle_order(const topology::node& c1, const topology::node& c) {
 	// order nodes based on their angle along an assigned circle
 
-        if( c1.circle_phi() < c.circle_phi() )
-          return false;
-
-        return true;
-
+        return( c1.circle_phi() > c.circle_phi() );
       }
       
 

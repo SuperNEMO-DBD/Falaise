@@ -40,13 +40,18 @@ namespace SULTAN {
     bool finalize();
     void print_clocks();
     void read_properties( void );
-
     bool sequentiate(topology::tracked_data & tracked_data);
     bool assign_nodes_based_on_experimental_helix(std::vector<topology::node> nodes, std::vector<topology::node> &assigned_nodes, std::vector<topology::node> &leftover_nodes, topology::experimental_helix * b, std::vector<topology::experimental_helix> *helices);
     bool calculate_helices(std::vector<topology::node> nodes, std::vector<topology::experimental_helix> *the_helices);
     void sequentiate_cluster_with_experimental_vector(topology::cluster & cluster);
     void make_name(topology::sequence & seq);
     bool late();
+    void print_sequences() const;
+    void print_a_sequence(const topology::sequence & sequence) const;
+    void print_scenarios() const;
+    void print_a_scenario(const topology::scenario & scenario) const;
+    bool make_scenarios(topology::tracked_data &td);
+    bool check_continous_cells(std::vector<topology::node> &assigned_nodes, std::vector<topology::node> &leftover_nodes, topology::experimental_helix *b);
 
 
 
@@ -76,87 +81,18 @@ namespace SULTAN {
       sequences_ = sequences;
     }
 
-
-  public:
-
-    void set_GG_GRND_diam (double ggd){
-      GG_GRND_diam = ggd;
-      return;
-    }
-
-    void set_GG_CELL_diam (double ggcd){
-      GG_CELL_diam = ggcd;
-      return;
-    }
-
-    void set_num_blocks(int nb){
-      if (nb > 0)
-        {
-          num_blocks = nb;
-          planes_per_block.assign (num_blocks, 1);
-        }
-      else
-        {
-	  std::cerr << "WARNING: CAT::clusterizer::set_num_blocks: "
-                    << "Invalid number of GG layer blocks !" << std::endl;
-          planes_per_block.clear ();
-          num_blocks = -1; // invalid value
-        }
-      return;
-    }
-
-    void set_planes_per_block(int block, int nplanes){
-      if (block< 0 || block>=planes_per_block.size())
-        {
-          throw std::range_error ("CAT::clusterizer::set_planes_per_block: Invalid GG layer block index !");
-        }
-      if (nplanes > 0)
-        {
-          planes_per_block.at (block) = nplanes;
-	}
-      else
-        {
-          throw std::range_error ("CAT::clusterizer::set_planes_per_block: Invalid number of GG layers in block !");
-        }
-      return;
-    }
-
-    void set_num_cells_per_plane(int ncpp){
-      if (ncpp <= 0)
-        {
-          num_cells_per_plane = -1; // invalid value
-        }
-      else
-        {
-          num_cells_per_plane = ncpp;
-        }
-      return;
-    }
-    void set_SOURCE_thick(double st){
-      if (st <= 0.0)
-        {
-          SOURCE_thick = std::numeric_limits<double>::quiet_NaN ();
-        }
-      else
-        {
-          SOURCE_thick = st;
-        }
-      return;
-    }
-
     // module number (SuperNemo will be modular)
     void set_module_nr(std::string mID){
       _moduleNR=mID;
       return;
     }
 
-    int get_module_nr(void){
-      return _MaxBlockSize;
-    }
+    void SetModuleNR(std::string mID){
+      _moduleNR=mID;
+    };
 
-    void set_MaxBlockSize(int mbs){
-      _MaxBlockSize=mbs;
-      return;
+    std::string get_module_nr(void){
+      return _moduleNR;
     }
 
     void set_Emin(double v){
@@ -243,7 +179,6 @@ namespace SULTAN {
       if (v)
         {
           SuperNemoChannel = true;
-          set_MaxBlockSize (1);
         }
       else
         {
@@ -277,13 +212,6 @@ namespace SULTAN {
       return;
     }
 
-    void set_gaps_Z(std::vector<double> v){
-      gaps_Z.clear();
-      for(size_t i=0; i<v.size(); i++)
-	gaps_Z.push_back(v[i]);
-    }
-
-
   protected:
 
     Clock clock;
@@ -311,26 +239,9 @@ namespace SULTAN {
     size_t ncells_between_triplet_min;
     size_t ncells_between_triplet_range;
     double nsigma_r, nsigma_z;
-
-    //error parametrization
-    double sigma0;
-    double k0;
-    double k1;
-    double k2;
-    double k3;
-
-    double th0;
-    double th1;
-    double th2;
-    double th3;
-
-    double pnob;
-    double pnot;
-    double pnobt;
-
-    double l0;
-    double l1;
-
+    double dist_limit_inf;
+    double dist_limit_sup;
+    double Rmin, Rmax;
 
     // Support numbers
     double execution_time;
@@ -340,55 +251,16 @@ namespace SULTAN {
                             *  Falaise and Hereward.
                             */
 
-    int num_blocks;
-    std::vector<double> planes_per_block ;
-    std::vector<double> gaps_Z;
-    double GG_GRND_diam;
-    double GG_CELL_diam;
-    double CHAMBER_X;
-    double GG_BLOCK_X;
-    int num_cells_per_plane;
-    double SOURCE_thick;
     double bfield;
-    int cell_max_number;
 
-    double dist_limit_inf;
-    double dist_limit_sup;
-    double Rmin, Rmax;
+    std::string _moduleNR;
 
-    //  size_t dp_mode;
 
-    //----Modification for bar-module---
   private:
-    std::string  _moduleNR;
-    int     _MaxBlockSize;
-
-    int NFAMILY, NCOPY;
-
     std::vector<topology::cluster> clusters_;
     std::vector<topology::sequence> sequences_;
     std::vector<topology::cell> cells_;
     std::vector<topology::scenario> scenarios_;
-
-
-    void print_sequences() const;
-    void print_a_sequence(const topology::sequence & sequence) const;
-    int gap_number(const topology::cell &c);
-    void print_families( void );
-    void print_scenarios() const;
-    void print_a_scenario(const topology::scenario & scenario) const;
-    bool make_scenarios(topology::tracked_data &td);
-    bool check_continous_cells(std::vector<topology::node> &assigned_nodes, std::vector<topology::node> &leftover_nodes, topology::experimental_helix *b);
-
-  public:
-    void SetModuleNR(std::string mID){
-      _moduleNR=mID;
-    };
-    //----------------------------------------
-
-    // variables of nemo3 standard analysis
-
-    std::vector<int> run_list;
     double run_time;
     topology::experimental_legendre_vector * experimental_legendre_vector;
 

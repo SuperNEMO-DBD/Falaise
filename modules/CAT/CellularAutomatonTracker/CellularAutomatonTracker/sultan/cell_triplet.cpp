@@ -493,14 +493,6 @@ namespace SULTAN{
     }
 
 
-    cell_triplet cell_triplet::invert(){
-      cell_triplet inverted;
-      inverted.set(ccb(),cca());
-      return inverted;
-    }
-
-
-
     bool operator==(const cell_triplet& left,
                     const cell_triplet& right)
     {

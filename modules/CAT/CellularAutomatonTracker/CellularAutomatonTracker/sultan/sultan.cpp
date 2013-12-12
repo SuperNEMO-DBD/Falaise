@@ -29,22 +29,11 @@ namespace SULTAN {
     bfield = std::numeric_limits<double>::quiet_NaN ();
     level = mybhep::NORMAL;
     m = mybhep::messenger(level);
-    num_blocks = -1;
-    planes_per_block.clear ();
-    gaps_Z.clear ();
-    GG_GRND_diam = std::numeric_limits<double>::quiet_NaN ();
-    GG_CELL_diam = std::numeric_limits<double>::quiet_NaN ();
-    CHAMBER_X = std::numeric_limits<double>::quiet_NaN ();
-    GG_BLOCK_X = std::numeric_limits<double>::quiet_NaN ();
-    num_cells_per_plane = -1;
-    SOURCE_thick = std::numeric_limits<double>::quiet_NaN ();
-    //    lastlayer = 0;
     cell_distance  = std::numeric_limits<double>::quiet_NaN ();
     xsize = ysize = zsize = std::numeric_limits<double>::quiet_NaN ();
     inner_radius = outer_radius= foil_radius = std::numeric_limits<double>::quiet_NaN ();
     Emin = std::numeric_limits<double>::quiet_NaN ();
     Emax = std::numeric_limits<double>::quiet_NaN ();
-
     probmin = std::numeric_limits<double>::quiet_NaN ();
     nsigma_r = std::numeric_limits<double>::quiet_NaN ();
     nsigma_z = std::numeric_limits<double>::quiet_NaN ();
@@ -56,13 +45,10 @@ namespace SULTAN {
     SuperNemoChannel = false;
     max_time = std::numeric_limits<double>::quiet_NaN ();
     _moduleNR.clear ();
-    _MaxBlockSize = -1;
     event_number=-1;
-
     nevent = 0;
     initial_events = 0;
     skipped_events = 0;
-    run_list.clear ();
     run_time = std::numeric_limits<double>::quiet_NaN ();
     return;
   }
@@ -77,16 +63,11 @@ namespace SULTAN {
 
     //    clock.start(" sultan: initialize ");
 
-    //----------- read dst param -------------//
-
     read_properties();
-
-    //------- end of read pram -----------//
 
     nevent = 0;
     initial_events = 0;
     skipped_events = 0;
-
     experimental_legendre_vector = new topology::experimental_legendre_vector(level, probmin);
 
     //    clock.stop(" sultan: initialize ");
@@ -127,34 +108,14 @@ namespace SULTAN {
   void sultan::read_properties(void) {
     //*************************************************************
 
-    if (_MaxBlockSize <= 0)
-      {
-        _MaxBlockSize = 1;
-        m.message("SULTAN::sultan::read_properties: no bar design, MODULES Nr set to = ",_MaxBlockSize,"\n",mybhep::NORMAL);
-      }
-
     if(SuperNemoChannel)
       {
         m.message("SULTAN::sultan::read_properties: SuperNemo kind of data",mybhep::NORMAL);
-        if (num_blocks <= 0)
-          {
-            // Default :
-            set_num_blocks (1);
-            planes_per_block.at (0) = 9;
-          }
       }
     else
       {
         m.message("SULTAN::sultan::read_properties: Nemo-3 kind of data",mybhep::NORMAL);
         bfield = 0.0025;
-        if (num_blocks <= 0)
-          {
-            // Default :
-            set_num_blocks (3);
-            planes_per_block.at (0) = 4;
-            planes_per_block.at (1) = 2;
-            planes_per_block.at (2) = 3;
-          }
       }
 
     double ncells_to_skip = (double)ncells_between_triplet_min;
@@ -177,8 +138,6 @@ namespace SULTAN {
     m.message("nsigma_z", nsigma_z, mybhep::NORMAL);
     m.message("nofflayers",nofflayers,mybhep::NORMAL);
     m.message("first event number", first_event_number, mybhep::NORMAL);
-    m.message("num_blocks",num_blocks,mybhep::NORMAL);
-    m.message("num_cells_per_plane",num_cells_per_plane,mybhep::NORMAL);
     m.message("cell_distance",cell_distance,"mm",mybhep::NORMAL);
     m.message("bfield",bfield,"T",mybhep::NORMAL);
     m.message("Emin",Emin,"MeV",mybhep::NORMAL);
@@ -203,7 +162,7 @@ namespace SULTAN {
     //*************************************************************
 
     clock.start(" sultan: sequentiate ","cumulative");
-    clock.start(" sultan: sequentiation ","restart");
+    clock.start(" sultan: sequentiation ","restart"); // use this one to check late
 
     event_number ++;
     m.message(" local_tracking: preparing event", event_number, mybhep::VERBOSE);
@@ -214,11 +173,7 @@ namespace SULTAN {
       return true;
     }
 
-    // set_clusters(tracked_data_.get_clusters());
     vector<topology::cluster> & the_clusters = tracked_data_.get_clusters ();
-
-    NFAMILY = -1;
-    NCOPY = 0;
 
     if (the_clusters.empty ()) return true;
 
@@ -227,18 +182,13 @@ namespace SULTAN {
 
     tracked_data_.scenarios_.clear();
 
-    for (vector<topology::cluster>::iterator
-          icluster = the_clusters.begin();
-        icluster != the_clusters.end(); ++icluster)
-      {
-        topology::cluster & a_cluster = *icluster;
-
-        sequentiate_cluster_with_experimental_vector(a_cluster);
-      }
+    for (vector<topology::cluster>::iterator icluster = the_clusters.begin(); icluster != the_clusters.end(); ++icluster){
+      topology::cluster & a_cluster = *icluster;
+      sequentiate_cluster_with_experimental_vector(a_cluster);
+    }
 
     if (late())
       {
-        tracked_data_.set_skipped(true);
 	skipped_events ++;
         return false;
       }
@@ -257,6 +207,8 @@ namespace SULTAN {
   bool sultan::assign_nodes_based_on_experimental_helix(std::vector<topology::node> nodes, std::vector<topology::node> &assigned_nodes, std::vector<topology::node> &leftover_nodes, topology::experimental_helix * b, std::vector<topology::experimental_helix> *helices){
   //*************************************************************
 
+    clock.start(" sultan: assign_nodes_based_on_experimental_helix ", "cumulative");
+
     topology::experimental_double dr, dh;
     vector<topology::node> leftover_nodes_copy=leftover_nodes;
     assigned_nodes.clear();
@@ -265,16 +217,20 @@ namespace SULTAN {
     size_t best_helix_index;
     double angle;
     
+    bool active = false;
+    double drmin = mybhep::plus_infinity;
+    double dhmin = mybhep::plus_infinity;
+
     for (vector<topology::node>::iterator inode = nodes.begin(); inode != nodes.end(); ++inode){
       if (level >= mybhep::VVERBOSE)
 	{
 	  std::clog << " cell " << inode->c().id() << " ["; inode->c().ep().dump(); std::clog << "] r "; inode->c().r().dump(); std::clog << std::endl;
 	}
       
-      bool active = false;
-      double drmin = mybhep::plus_infinity;
-      double dhmin = mybhep::plus_infinity;
-      for(std::vector<topology::experimental_helix>::iterator ihel=helices->begin(); ihel!=helices->end(); ++ihel){
+      active = false;
+      drmin = mybhep::plus_infinity;
+      dhmin = mybhep::plus_infinity;
+      for(std::vector<topology::experimental_helix>::const_iterator ihel=helices->begin(); ihel!=helices->end(); ++ihel){
 	ihel->distance_from_cell_measurement(inode->c(), &dr, &dh);
 	if (level >= mybhep::VVERBOSE){
 	  std::clog << " distance of helix " << ihel - helices->begin() << " from cell " << inode->c().id() << " dr (" << dr.value() << " +- " << dr.error() << ") dh (" << dh.value() << " +- " << dh.error() << ")" << std::endl;
@@ -312,6 +268,8 @@ namespace SULTAN {
     bool ok = check_continous_cells(assigned_nodes, leftover_nodes, b);
     
     m.message(" associated ", assigned_nodes.size(), " nodes to this helix out of ", nodes.size(), " so ", leftover_nodes.size(), " remain unassigned - initially there were ", leftover_nodes_copy.size(),  " -, continous ", ok, mybhep::VERBOSE);
+
+    clock.stop(" sultan: assign_nodes_based_on_experimental_helix ");
 
     return ok && 
       (leftover_nodes.size() < leftover_nodes_copy.size()) && 
@@ -404,14 +362,18 @@ namespace SULTAN {
   bool sultan::calculate_helices(std::vector<topology::node> nodes, std::vector<topology::experimental_helix> *the_helices){
   //*************************************************************
       
+    clock.start(" sultan: calculate_helices ", "cumulative");
+
     size_t nnodes = nodes.size();
     
     m.message(" calculate helices for ", nnodes, " nodes, minimum ", min_ncells_in_cluster, mybhep::VERBOSE);
 
-    if( nnodes < min_ncells_in_cluster ) return false;
+    if( nnodes < min_ncells_in_cluster ) {
+      clock.stop(" sultan: calculate_helices ");
+      return false;
+    }
 
     the_helices->clear();
-    
     
     topology::cell_triplet *ccc;
     size_t ncells;
@@ -443,9 +405,10 @@ namespace SULTAN {
 	  ccc->calculate_helices(Rmin, Rmax);
 	  helices = ccc->helices();
 	  
-	  for(std::vector<topology::experimental_helix>::const_iterator hel=helices.begin(); hel!=helices.end(); ++hel)
-	    the_helices->push_back(*hel);
-	  
+	  the_helices->insert(the_helices->end(),helices.begin(),helices.end());
+
+	  delete ccc;
+
 	  m.message(" adding " , helices.size() , " helices, total " , the_helices->size() , mybhep::VVERBOSE);
 	  
 	}
@@ -453,6 +416,8 @@ namespace SULTAN {
     }
     
     
+    clock.stop(" sultan: calculate_helices ");
+
     return true;
     
   }
@@ -462,57 +427,65 @@ namespace SULTAN {
   void sultan::sequentiate_cluster_with_experimental_vector(topology::cluster & cluster_) {
     //*************************************************************
 
-    clock.start(" sultan: sequentiate_cluster_with_experimental_vector ","restart");
+    clock.start(" sultan: sequentiate_cluster_with_experimental_vector ","cumulative");
 
     experimental_legendre_vector->reset();
 
-    if( cluster_.nodes_.size() < 3 ) return;
+    if( cluster_.nodes_.size() < 3 ){
+      clock.stop(" sultan: sequentiate_cluster_with_experimental_vector ");
+      return;
+    }
 
     if (level >= mybhep::VERBOSE)
       {
 	std::clog << " sequentiate cluster with " << cluster_.nodes_.size() << " nodes, leg vector has " << experimental_legendre_vector->helices().size() << " helices " << std::endl; fflush(stdout);
       }
 
-    topology::experimental_double x, y1, y2, y3, z, x0, y0_12, y0_23, z0, R, H_12, H_23, phi_1, phi_2, phi_3, phi_12, phi_23;
-    size_t ida,idb,idc;
-    topology::experimental_point pa;
-    topology::experimental_point pb;
-    topology::experimental_point pc;
-    size_t count_helices = 0;
-    topology::experimental_helix a, b;
+    topology::experimental_helix b;
     vector<topology::node> assigned_nodes, leftover_nodes;
     topology::sequence *s;
     topology::experimental_point *center;
     topology::experimental_double radius;
     topology::experimental_double pitch;
     std::vector<topology::experimental_helix> neighbours;
+    std::vector<topology::experimental_helix> the_helices;
 
     leftover_nodes = cluster_.nodes_;
 
-    std::vector<topology::experimental_helix> the_helices;
-
     while( calculate_helices(leftover_nodes, &the_helices) ){
+
+      clock.start(" sultan: sequentiate_cluster_with_experimental_vector: helix loop: clean ","cumulative");
 
       assigned_nodes.clear();
       experimental_legendre_vector->reset();
-      count_helices = 0;
       neighbours.clear();
+
+      if (level >= mybhep::VERBOSE){
+	std::clog << " leg vector has " << experimental_legendre_vector->helices().size() << " helices " << std::endl; fflush(stdout);
+      }
+      
+      if( !the_helices.size() ){
+	clock.stop(" sultan: sequentiate_cluster_with_experimental_vector: helix loop: clean ");
+	break;
+      }
+      clock.stop(" sultan: sequentiate_cluster_with_experimental_vector: helix loop: clean ");
+
+
+      clock.start(" sultan: sequentiate_cluster_with_experimental_vector: helix loop: add helix ","cumulative");
 
       for(std::vector<topology::experimental_helix>::const_iterator hh = the_helices.begin(); hh!=the_helices.end(); ++hh){
 	experimental_legendre_vector->add_helix(*hh);
-	count_helices ++;
       }
 
-      if (level >= mybhep::VERBOSE){
-	std::clog << " leg vector has " << experimental_legendre_vector->helices().size() << " helices and " << count_helices << " helices " << std::endl; fflush(stdout);
-      }
-      
-      if( !count_helices ) break;
+      clock.stop(" sultan: sequentiate_cluster_with_experimental_vector: helix loop: add helix ");
+
+      clock.start(" sultan: sequentiate_cluster_with_experimental_vector: helix loop: max ","cumulative");
 
       b = experimental_legendre_vector->max(&neighbours);
       
       if( !b.ids().size() ){
       	m.message(" could not make a track ", mybhep::VERBOSE); fflush(stdout);
+	clock.stop(" sultan: sequentiate_cluster_with_experimental_vector: helix loop: max ");
 	break;
       }
 
@@ -523,23 +496,29 @@ namespace SULTAN {
 	  std::clog << " associated " << neighbours.size() << " helices " << std::endl;
 	}
       
+      clock.stop(" sultan: sequentiate_cluster_with_experimental_vector: helix loop: max ");
+      clock.start(" sultan: sequentiate_cluster_with_experimental_vector: helix loop: assign ","cumulative");
+
       bool ok = assign_nodes_based_on_experimental_helix(cluster_.nodes_, assigned_nodes, leftover_nodes, &b, &neighbours);
       
       if( ok ){
-	  s = new topology::sequence(assigned_nodes, level, probmin);
-	  NFAMILY++;
-	  NCOPY = 0;
-	  make_name(*s);
-	  center = new topology::experimental_point(b.x0(),b.y0(),b.z0());
-	  radius.set(b.R());
-	  pitch.set(b.H());
-	  s->set_helix(b);
-	  sequences_.push_back(*s);
-	  m.message(" finished track [", sequences_.size()-1, "] with ", s->nodes_.size(), " nodes", mybhep::VERBOSE); fflush(stdout);
+	s = new topology::sequence(assigned_nodes, level, probmin);
+	make_name(*s);
+	center = new topology::experimental_point(b.x0(),b.y0(),b.z0());
+	radius.set(b.R());
+	pitch.set(b.H());
+	s->set_helix(b);
+	sequences_.push_back(*s);
+	m.message(" finished track [", sequences_.size()-1, "] with ", s->nodes_.size(), " nodes", mybhep::VERBOSE); fflush(stdout);
+	delete s;
+	delete center;
       }else{
 	m.message(" could not make a track ", mybhep::VERBOSE); fflush(stdout);
+	clock.stop(" sultan: sequentiate_cluster_with_experimental_vector: helix loop: assign ");
 	break;
       }
+
+      clock.stop(" sultan: sequentiate_cluster_with_experimental_vector: helix loop: assign ");
 	
     }
 
@@ -554,7 +533,7 @@ namespace SULTAN {
   void sultan::make_name(topology::sequence & sequence_) {
     //*************************************************************
 
-    std::string number = mybhep::to_string(NFAMILY)+"_"+mybhep::to_string(NCOPY);
+    std::string number = mybhep::to_string(sequences_.size());
     std::string name = "track_"+number;
     sequence_.set_name(name);
 
@@ -567,9 +546,7 @@ namespace SULTAN {
     //*************************************************************
 
     if( clock.read(" sultan: sequentiation ") >= max_time ){
-
       m.message(" execution time " , clock.read(" sultan: sequentiation ") , " ms  greater than max_time" , max_time , " quitting! ", mybhep::NORMAL);
-
       return true;
     }
 
@@ -650,7 +627,7 @@ namespace SULTAN {
   void sultan::print_scenarios() const {
     //*************************************************************
 
-    clog << "Printing scenarios " << scenarios_.size() << endl; fflush(stdout);
+    std::clog << "Printing scenarios " << scenarios_.size() << std::endl; fflush(stdout);
 
     for(vector<topology::scenario>::const_iterator isc=scenarios_.begin(); isc!=scenarios_.end(); ++isc)
       {
@@ -667,44 +644,13 @@ namespace SULTAN {
   void sultan::print_a_scenario(const topology::scenario & scenario) const {
     //*************************************************************
 
-    clog << "Print associated sequences: " << endl;
-    for (vector<topology::sequence>::const_iterator iseq = scenario.sequences_.begin();
-         iseq != scenario.sequences_.end(); ++iseq)
+    std::clog << "Print associated sequences: " << std::endl;
+    for (vector<topology::sequence>::const_iterator iseq = scenario.sequences_.begin(); iseq != scenario.sequences_.end(); ++iseq)
       {
         print_a_sequence(*iseq);
       }
 
     return;
-  }
-
-
-  //*************************************************************
-  int sultan::gap_number(const topology::cell &c){
-    //*************************************************************
-
-    // returns the index of the gap on which the hit is facing: 1, 2, 3
-    // ... returns -1 if not on a gap
-    // ... returns 0 if the hit is on layer 0, facing the foil
-
-    size_t ln = abs(c.layer());
-
-    m.message(" cell ", c.id(), " layer ", c.layer(), mybhep::VVERBOSE);
-
-    if( ln == 0 ) return 0;
-
-    size_t counter = 0;
-    for(size_t i=0; i<planes_per_block.size(); i++){
-      counter += (int)planes_per_block[i];  // 4, 6, 9
-
-      if( ln == counter - 1 )  // layer = 3, 5, 8
-        return (i + 1);  // gap = 1, 2, 3
-      if( ln == counter )  // layer = 4, 6, 9
-        return (i + 1);  // gap = 1, 2, 3
-
-    }
-
-    return -1;
-
   }
 
 

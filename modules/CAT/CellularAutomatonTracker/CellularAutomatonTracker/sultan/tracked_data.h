@@ -38,24 +38,10 @@ namespace SULTAN{
       // list of scenarios
       std::vector<scenario> scenarios_;
 
-      // list of true sequences
-      std::vector<sequence> true_sequences_;
-
-      // list of nemo3 sequences
-      std::vector<sequence> nemo_sequences_;
-
-      // is event selcted?
-      bool selected_;
-
-      // is event skipped?
-      bool skipped_;
-
       //!Default constructor
       tracked_data()
       {
         appname_= "tracked_data: ";
-        selected_ = true;
-        skipped_ = false;
       }
 
       //!Default destructor
@@ -65,8 +51,6 @@ namespace SULTAN{
       tracked_data(const std::vector<cell> &cells,
                    const std::vector<cluster> &clusters,
                    const std::vector<scenario> &scenarios,
-                   const std::vector<sequence> &true_sequences,
-                   const std::vector<sequence> &nemo_sequences,
                    mybhep::prlevel level=mybhep::NORMAL,
                    double probmin=1.e-200){
         set_print_level(level);
@@ -75,10 +59,6 @@ namespace SULTAN{
         cells_ = cells;
         clusters_ = clusters;
         scenarios_ = scenarios;
-        true_sequences_ = true_sequences;
-        nemo_sequences_ = nemo_sequences;
-        selected_ = true;
-        skipped_ = false;
       }
 
       /*** dump ***/
@@ -126,30 +106,6 @@ namespace SULTAN{
         scenarios_ = scenarios;
       }
 
-      //! set true sequences
-      void set_true_sequences(const std::vector<sequence> & sequences)
-      {
-        true_sequences_ = sequences;
-      }
-
-      //! set nemo sequences
-      void set_nemo_sequences(const std::vector<sequence> & sequences)
-      {
-        nemo_sequences_ = sequences;
-      }
-
-      //! set selected
-      void set_selected(bool selected)
-      {
-        selected_ = selected;
-      }
-
-      //! set skipped
-      void set_skipped(bool skipped)
-      {
-        skipped_ = skipped;
-      }
-
       //! get cells
       std::vector<cell>& get_cells()
       {
@@ -183,47 +139,10 @@ namespace SULTAN{
         return scenarios_;
       }
 
-      //! get true sequences
-      std::vector<sequence>& get_true_sequences()
-      {
-        return true_sequences_;
-      }
-
-      const std::vector<sequence>& get_true_sequences()const
-      {
-        return true_sequences_;
-      }
-
-      //! get nemo sequences
-      std::vector<sequence>& get_nemo_sequences()
-      {
-        return nemo_sequences_;
-      }
-
-      const std::vector<sequence>& get_nemo_sequences()const
-      {
-        return nemo_sequences_;
-      }
-      //! get selected
-
-      bool selected()const
-      {
-        return selected_;
-      }
-
-      //! get skipped
-      bool skipped()const
-      {
-        return skipped_;
-      }
-
       void reset(){
 	cells_.clear();
 	clusters_.clear();
 	scenarios_.clear();
-	true_sequences_.clear();
-	nemo_sequences_.clear();
-
       }
 
 

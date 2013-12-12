@@ -39,75 +39,31 @@ namespace SULTAN {
                          const std::string & a_title  = "",
                          const std::string & a_indent = "",
                          bool a_inherit          = false){
-        {
-          std::string indent;
-          if (! a_indent.empty ()) indent = a_indent;
-          if (! a_title.empty ())
-            {
-              a_out << indent << a_title << std::endl;
-            }
-          a_out << indent << appname_  << std::endl;
-	  for(std::vector<experimental_helix>::const_iterator ip = helices_.begin(); ip != helices_.end(); ++ip){
-	    ip->dump(); 
+	std::string indent;
+	if (! a_indent.empty ()) indent = a_indent;
+	if (! a_title.empty ())
+	  {
+	    a_out << indent << a_title << std::endl;
 	  }
-
-          return;
-        }
-      }
-
-
-      void set_helices(std::vector<experimental_helix> a){helices_ = a;}
-
-      std::vector<experimental_helix> helices(){return helices_;}
-
-      void add_helix(experimental_helix a){
-	helices_.push_back(a);
-      }
-
-      void reset(){
-	helices_.clear();
-      }
-
-      void get_neighbours(experimental_helix* a, std::vector<experimental_helix>* neighbours){
-	experimental_double dx, dy, dz, dR, dH;
-	neighbours->clear();
+	a_out << indent << appname_  << std::endl;
 	for(std::vector<experimental_helix>::const_iterator ip = helices_.begin(); ip != helices_.end(); ++ip){
-	  if( !a->different_cells(*ip) ) continue;
-	  dx = a->x0() - ip->x0();
-	  dy = a->y0() - ip->y0();
-	  dz = a->z0() - ip->z0();
-	  dR = a->R() - ip->R();
-	  dH = a->H() - ip->H();
-
-	  if( fabs(dx.value()) < dx.error() &&
-	      fabs(dy.value()) < dy.error() &&
-	      fabs(dz.value()) < dz.error() &&
-	      fabs(dR.value()) < dR.error() &&
-	      fabs(dH.value()) < dH.error() )
-	    neighbours->push_back(*ip);
+	  ip->dump(); 
 	}
-	a->set_n_neighbours(neighbours->size());
+	
 	return;
       }
 
-      experimental_helix max(std::vector<experimental_helix> * neighbours){
-	experimental_helix r;
-	size_t n = 0;
-	size_t nmax = 0;
-	std::vector<experimental_helix> neis;
-	for(std::vector<experimental_helix>::iterator ip = helices_.begin(); ip != helices_.end(); ++ip){
-	  get_neighbours(&(*ip), &neis);
+      void set_helices(std::vector<experimental_helix> a);
 
-	  if( neis.size() > nmax ){
-	    nmax = neis.size();
-	    *neighbours = neis;
-	    r = *ip;
-	  }
-	}
+      std::vector<experimental_helix> helices();
 
-	return r;
-      }
+      void add_helix(experimental_helix a);
 
+      void reset();
+
+      void get_neighbours(experimental_helix* a, std::vector<experimental_helix>* neighbours);
+
+      experimental_helix max(std::vector<experimental_helix> * neighbours);
 
     };
 

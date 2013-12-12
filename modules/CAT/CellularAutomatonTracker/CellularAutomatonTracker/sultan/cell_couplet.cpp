@@ -161,26 +161,6 @@ namespace SULTAN{
       return distance_hor_;
     }
 
-    cell_couplet cell_couplet::invert(){
-
-      //      clock.start(" cell couplet: invert ","cumulative");
-
-
-      cell_couplet inverted;
-      inverted.set(cb(),ca());
-
-      experimental_vector O(0.,0.,0.,0.,0.,0.);
-      inverted.set_a_forward_axis(O-forward_axis());
-      inverted.set_a_transverse_axis(O-transverse_axis());
-      inverted.set_a_distance(-distance());
-      inverted.set_a_hor_distance(-distance_hor());
-
-      //      clock.stop(" cell couplet: invert ");
-
-      return inverted;
-    }
-
-
     bool operator==(const cell_couplet& left,
 
                            const cell_couplet& right)

@@ -24,12 +24,6 @@ namespace SULTAN {
     private:
       std::string appname_;
 
-      // n of free families
-      size_t n_free_families_;
-
-      // n of overlapping cells
-      size_t n_overlaps_;
-
     public:
 
       // tracks

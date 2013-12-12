@@ -19,8 +19,6 @@
 namespace SULTAN {
   namespace topology{
 
-
-
     class sequence : public tracking_object{
 
       // a sequence is composed of a list of nodes
@@ -36,8 +34,8 @@ namespace SULTAN {
       // list of nodes
       std::vector<node> nodes_;
 
-      // sequence's name(s)
-      std::vector<std::string> names_;
+      // sequence's name
+      std::string name_;
 
       //!Default constructor
       sequence();
@@ -63,14 +61,8 @@ namespace SULTAN {
       //! set name
       void set_name(const std::string & name);
 
-      //! set names
-      void set_names(const std::vector<std::string> &names);
-
-      //! add name
-      void add_name(const std::string &name);
-
       //! set helix
-      void set_helix(const  experimental_helix & h);
+      void set_helix(const experimental_helix & helix);
 
       //! get nodes
       const std::vector<node> & nodes()const;
@@ -78,19 +70,12 @@ namespace SULTAN {
       //! get name
       const std::string & name()const;
 
-      //! get names
-      const std::vector<std::string> & names()const;
-
       //! get helix
       const experimental_helix & get_helix()const;
 
     public:
 
       bool has_cell(const cell & c)const;
-
-      sequence invert();
-
-      topology::node node_of_cell(const topology::cell & c);
 
     };
 

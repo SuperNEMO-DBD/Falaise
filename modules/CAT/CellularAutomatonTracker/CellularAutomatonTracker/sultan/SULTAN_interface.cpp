@@ -202,11 +202,9 @@ namespace SULTAN {
     czer_.set_cell_distance (setup_.cell_distance);
     czer_.set_foil_radius (setup_.foil_radius);
 
-    czer_.set_bfield (setup_.bfield);
     czer_.set_xsize (setup_.xsize);
     czer_.set_ysize (setup_.ysize);
     czer_.set_zsize (setup_.zsize);
-    czer_.set_Emin (setup_.Emin);
 
     // Geometry description :
     if (setup_.SuperNemo)
@@ -214,13 +212,6 @@ namespace SULTAN {
         /// Activate the special new mode :
         czer_.set_SuperNemoChannel(true);
 
-        // Layout of the tracking chamber :
-        czer_.set_num_blocks (setup_.num_blocks);
-        for (int i = 0; i < setup_.num_blocks; i++)
-          {
-            czer_.set_planes_per_block (i, (int)(setup_.planes_per_block.at (i)+0.5));
-          }
-        czer_.set_num_cells_per_plane (setup_.num_cells_per_plane);
       }
     else
       {
@@ -273,13 +264,6 @@ namespace SULTAN {
         /// Activate the special new mode :
         stor_.set_SuperNemoChannel(true);
 
-        // Layout of the tracking chamber :
-        stor_.set_num_blocks (setup_.num_blocks);
-        for (int i = 0; i < setup_.num_blocks; i++)
-          {
-            stor_.set_planes_per_block (i, (int)(setup_.planes_per_block.at (i)+0.5));
-          }
-        stor_.set_num_cells_per_plane (setup_.num_cells_per_plane);
       }
     else
       {

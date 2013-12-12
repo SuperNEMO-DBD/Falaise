@@ -62,19 +62,6 @@ namespace SULTAN{
     }
     
     
-    cluster cluster::invert(){
-      cluster inverted;
-      inverted.set_print_level(print_level());
-      inverted.set_probmin(probmin());
-      std::vector<node> inverted_nodes;
-      for(std::vector<node>::iterator inode = nodes_.end(); inode != nodes_.begin(); --inode){
-	inverted_nodes.push_back(*inode);
-      }
-      inverted.set_nodes( inverted_nodes );
-      return inverted;
-      
-    }
-    
     topology::node cluster::node_of_cell(const topology::cell & c){
       
       std::vector<node>::iterator fnode = std::find(nodes_.begin(),
