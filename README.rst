@@ -23,6 +23,10 @@ The two main components are the applications
 
 A pipeline architecture is used in which the pipeline stages
 may be configured and added to at runtime via a plugin system.
+Code for pipeline stages is stored in the ``modules`` subdirectory
+with each module (or set of modules) having its own directory.
+Note that if you are using an SVN checkout of Falaise that some of these
+module directories may be imported via an svn:externals link.
 
 TODO : other apps and APIs.
 

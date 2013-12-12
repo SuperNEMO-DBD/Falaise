@@ -138,9 +138,12 @@ endif()
 # Build the subdirectories as required
 #
 add_subdirectory(source)
+
 if(Falaise_BUILD_DOCS)
   add_subdirectory(documentation)
 endif()
+
+add_subdirectory(modules)
 
 #-----------------------------------------------------------------------
 # Resource installation
