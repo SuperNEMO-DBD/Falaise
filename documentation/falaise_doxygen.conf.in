@@ -662,6 +662,7 @@ INPUT                  =  @PROJECT_SOURCE_DIR@/documentation/Mainpage.md \
                           @PROJECT_SOURCE_DIR@/documentation/InstallationGuide.md \
                           @PROJECT_SOURCE_DIR@/documentation/flsimulate \
                           @PROJECT_SOURCE_DIR@/documentation/flreconstruct \
+                          @PROJECT_SOURCE_DIR@/documentation/CodingStandards.md \
                           @PROJECT_SOURCE_DIR@/documentation \
                           @Falaise_DOCEXPORT_DIR@ \
                           @Falaise_BUILDPRODUCT_DIR@/include/falaise
