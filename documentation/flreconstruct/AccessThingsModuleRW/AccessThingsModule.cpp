@@ -21,6 +21,21 @@ void AccessThingsModule::initialize(const datatools::properties& /*myConfig*/,
 
 //! [AccessThingsModule::Process]
 int AccessThingsModule::process(datatools::things& workItem) {
+  int readStatus = this->read(workItem);
+  if (readStatus != dpp::PROCESS_OK) return readStatus;
+
+  int writeStatus = this->write(workItem);
+
+  // MUST return a status, see ref dpp::processing_status_flags_type
+  return writeStatus;
+}
+//! [AccessThingsModule::Process]
+
+void AccessThingsModule::reset() {
+  this->_set_initialized(false);
+}
+
+int AccessThingsModule::read(datatools::things& workItem) {
   // Print most basic information
   std::cout << "AccessThingsModule::process called!" << std::endl;
   std::cout << "[name]        : " << workItem.get_name() << std::endl;
@@ -51,12 +66,16 @@ int AccessThingsModule::process(datatools::things& workItem) {
     return dpp::PROCESS_INVALID;
   }
 
-  // MUST return a status, see ref dpp::processing_status_flags_type
   return dpp::PROCESS_OK;
 }
-//! [AccessThingsModule::Process]
 
-void AccessThingsModule::reset() {
-  this->_set_initialized(false);
+//! [AccessThingsModule::write]
+int AccessThingsModule::write(datatools::things& workItem) {
+  // Add a new entry to the things
+  datatools::properties& atmProperties = workItem.add<datatools::properties>("ATMProperties");
+  atmProperties.set_description("Properties added by the AccessThings Module");
+  atmProperties.store("foo", "bar");
+  atmProperties.store("baz", 3.14);
+
+  return dpp::PROCESS_OK;
 }
-
