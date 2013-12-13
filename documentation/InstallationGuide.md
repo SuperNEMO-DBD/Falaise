@@ -420,8 +420,12 @@ indicated by the last lines being:
 [100%] Built target flsimulate
 ~~~~~
 
-If you are in any doubt as to the success of the build, simply run
-make again without the `-j` argument and you should see:
+Note that because of the development state of Falaise, in this case,
+Alpha 2, you are likely to see a high number of warnings emitted by the
+compiler.
+These should not affect the success of the build, but if you are in any
+doubt as to this, simply run make again without the `-j` argument and
+you should see:
 
 ~~~~~
 $ make
