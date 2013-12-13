@@ -16,7 +16,7 @@ add_library(AccessThingsModule SHARED AccessThingsModule.h AccessThingsModule.cp
 # Apple linker requires dynamic lookup of symbols, so we
 # add link flags on this platform
 if(APPLE)
-  set_target_properties(MyModule
+  set_target_properties(AccessThingsModule
     PROPERTIES LINK_FLAGS "-undefined dynamic_lookup"
     )
 endif()
