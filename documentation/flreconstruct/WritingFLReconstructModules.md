@@ -144,15 +144,28 @@ the compiler for us. The `find_package` command will locate Bayeux for us,
 with the `REQUIRED` argument ensuring CMake will fail it Bayeux cannot be
 found for any reason. The `include_directories` command uses a variable set
 by the preceeding `find_package` command to ensure the compiler can locate
-Bayeux's headers. Finally, the `add_library` command is used to build the
-actual library. Breaking the argument to the command down one by one:
+Bayeux's headers. Finally, the `add_library` and `set_target_properties`
+commands are used to build and link actual library.
+Breaking the arguments to `add_library` down one by one:
 
 1. `MyModule` : the name of the library, which will be used to create the
 on disk name. For example, on Linux, this will output a library file `libMyModule.so`, and on Mac OS X a library file `libMyModule.dylib`.
 2. `SHARED` : the type of the library, in this case a dynamic library.
 3. `MyModule.h MyModule.cpp` : all the sources need to build the library. The header is also listed so that it will show up in IDEs like Xcode.
 
-For more detailed documentation on CMake, please refer to the [online help](http://www.cmake.org/cmake/help/documentation.html).
+The use of `set_target_properties` is restricted to Apple platforms, and
+adds flags to pass to the linker when linking the `MyModule` library.
+This is needed because the Apple dynamic linker requires all symbols (the
+functions/classes in/used by the binary library) to be found at link time.
+The `MyModule` class uses symbols from the Bayeux library, so strictly
+speaking we should link `libMyModule` to `libBayeux`. However, as we will
+load `libMyModule` into `flreconstruct`, we can rely on the latter to
+provide these symbols for us (so called dynamic lookup). The extra link
+flags therefore tell the Apple linker to use this runtime lookup
+mechanism.
+
+For more detailed documentation on CMake, please refer to the
+[online help](http://www.cmake.org/cmake/help/documentation.html).
 
 To build the library, we first create a so-called *build directory* so
 that we can
