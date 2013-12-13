@@ -711,7 +711,10 @@ RECURSIVE              = YES
 EXCLUDE                = @PROJECT_SOURCE_DIR@/documentation/data_models \
                          @PROJECT_SOURCE_DIR@/documentation/data_processing_modules \
                          @PROJECT_SOURCE_DIR@/documentation/flreconstruct/MyModule \
-                         @PROJECT_SOURCE_DIR@/documentation/flreconstruct/MyModuleConfigurable
+                         @PROJECT_SOURCE_DIR@/documentation/flreconstruct/MyModuleConfigurable \
+                         @PROJECT_SOURCE_DIR@/documentation/flreconstruct/AccessThingsModule \
+                         @PROJECT_SOURCE_DIR@/documentation/flreconstruct/AccessThingsModuleRW
+
 
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
