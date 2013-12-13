@@ -17,7 +17,7 @@ this document to be a work in progress. We welcome constructive comments,
 criticisms and suggestions for improvement, and these should be directed to
 the SuperNEMO Software Working Group.
 
-* Current Alpha Status : Alpha 1
+* Current Alpha Status : Alpha 2
 
 
 Preparing Your System for Installation {#preparation}
@@ -73,7 +73,11 @@ SuperNEMO/
 where the `SuperNEMO` directory can be located where you wish, though it
 must be on a filesystem with the required free space.
 
-To create this setup, open a terminal, and choose a directory for your
+Setting Up a Falaise Workspace {#installation_workspace}
+------------------------------
+If you already have a workspace setup, then you can skip to the
+[following section](@ref installation_checkout). Otherwise
+to create it, open a terminal, and choose a directory for your
 SuperNEMO workspace. For clarity in this guide, because absolute paths are
 needed in certain cases, we will use the dummy directory `/Users/ben`, but
 you should choose your own location. The first step is to create the
@@ -182,9 +186,24 @@ testing/
 you will get a listing of the contents in the upstream repository.
 This is what we mean by a "sparse checkout". Such a working copy allows you
 to query the repository for what is available, and then choose
-the parts you want to checkout.
+the parts you want to checkout. For example, you can get a list of the
+current tags of Falaise by doing
 
-Finally, we checkout the trunk of Cadfael, and the Alpha 1 tag of Falaise
+~~~~~
+$ svn ls Falaise/tags
+Falaise-1.0.0-alpha1
+Falaise-1.0.0-alpha2
+~~~~~
+
+Tags are always named using the standard `MAJOR.MINOR.PATCH` convention
+with an optional additional `-STATUSN` flag to indicate development lines.
+
+Checking out Cadfael and Falaise {#installation_checkout}
+--------------------------------
+With the workspace in place, we can checkout the required development
+lines of Cadfael and Falaise. For Cadfael this is the trunk of
+development, and for Falaise the Alpha 2 tag. To check these out from
+scratch we do
 
 ~~~~~
 $ svn up --set-depth infinity Cadfael/trunk
@@ -194,7 +213,7 @@ A    Cadfael/trunk/testing/ImportedTargets/CMakeLists.txt
 Updated to revision 13851.
 $ svn ls Falaise/tags
 ...
-$ svn up --set-depth infinity Falaise/tags/Falaise-1.0.0-alpha1
+$ svn up --set-depth infinity Falaise/tags/Falaise-1.0.0-alpha2
 ~~~~~
 
 The basic source code working copy is now in place. For more details on
@@ -217,7 +236,12 @@ You can reuse existing installations of these libraries to build Falaise,
 but for the easiest and most robust installation, we recommend using the
 `Cadfael` Software Development Kit. This bundles the configuration, build
 and installation of these libraries into a single easy to use toolchain.
+If you have an existing install of Cadfael that meets the version
+requirements above, you do not need to reinstall it. Otherwise, you
+should follow the following guide.
 
+Bootstrapping Cadfael {#cadfael_bootstrap}
+---------------------
 Cadfael uses the [CMake](http://www.cmake.org) tool for driving the
 configure, build and install of the above libraries. For convenience,
 a simple bootstrapping script, `cadfael-bootstrap` is provided to automate
@@ -320,8 +344,8 @@ $ cd /Users/ben/SuperNEMO
 $ ls
 builds  installs  lpc-caen.svn
 $ cd builds
-$ mkdir falaise.alpha1
-$ cd falaise.alpha1
+$ mkdir falaise.alpha2
+$ cd falaise.alpha2
 ~~~~~
 
 the naming of the directory is arbitrary, but it's useful to give them
@@ -332,9 +356,9 @@ workspace area, and to use the libraries provided in our prior install
 of Cadfael:
 
 ~~~~~
-$ cmake -DCMAKE_INSTALL_PREFIX=/Users/ben/SuperNEMO/installs/falaise.alpha1 \
+$ cmake -DCMAKE_INSTALL_PREFIX=/Users/ben/SuperNEMO/installs/falaise.alpha2 \
  -DCMAKE_PREFIX_PATH=/Users/ben/SuperNEMO/installs/Cadfael \
- ../../lpc-caen.svn/Falaise/tags/Falaise-1.0.0-alpha1
+ ../../lpc-caen.svn/Falaise/tags/Falaise-1.0.0-alpha2
 -- The C compiler identification is GNU 4.3.4
 -- The CXX compiler identification is GNU 4.3.4
 -- Check for working C compiler: /usr/bin/cc
@@ -358,7 +382,7 @@ Found Boost components:
    program_options
 -- Configuring done
 -- Generating done
--- Build files have been written to: /Users/ben/SuperNEMO/builds/falaise.alpha1
+-- Build files have been written to: /Users/ben/SuperNEMO/builds/falaise.alpha2
 ~~~~~
 
 The `CMAKE_INSTALL_PREFIX` variable tells cmake where to install, and
@@ -371,7 +395,7 @@ the last three lines
 ~~~~~
 -- Configuring done
 -- Generating done
--- Build files have been written to: /Users/ben/SuperNEMO/builds/falaise.alpha1
+-- Build files have been written to: /Users/ben/SuperNEMO/builds/falaise.alpha2
 ~~~~~
 
 which indicate a successful configuration. This process has generated
@@ -423,7 +447,7 @@ This will install everything required into a POSIX style hierarchy under
 the install prefix:
 
 ~~~~~
-installs/falaise.alpha1/
+installs/falaise.alpha2/
 |-- bin
 |-- include
 |   |-- bayeux
@@ -443,7 +467,7 @@ directly from the command line, e.g.
 
 ~~~~~
 $ cd /Users/ben/SuperNEMO
-$ ./installs/falaise.alpha1/bin/flsimulate -h
+$ ./installs/falaise.alpha2/bin/flsimulate -h
 ...
 $
 ~~~~~
@@ -456,20 +480,20 @@ C++ API and the `flsimulate` and `flreconstruct` programs. To view this,
 simply point your web browser to the file:
 
 ~~~~~
-installs/falaise.alpha1/share/Falaise-1.0.0/Documentation/API/html/index.html
+installs/falaise.alpha2/share/Falaise-1.0.0/Documentation/API/html/index.html
 ~~~~~
 
 A quick way to open this on Mac OS X systems is to run
 
 ~~~~~
-$ open installs/falaise.alpha1/share/Falaise-1.0.0/Documentation/API/html/index.html
+$ open installs/falaise.alpha2/share/Falaise-1.0.0/Documentation/API/html/index.html
 ~~~~~
 
 which will open the file your preferred HTML viewer.
 On Linux, this is can be done via
 
 ~~~~~
-$ xdg-open installs/falaise.alpha1/share/Falaise-1.0.0/Documentation/API/html/index.html
+$ xdg-open installs/falaise.alpha2/share/Falaise-1.0.0/Documentation/API/html/index.html
 ~~~~~
 
 though the existence of the `xdg-open` program may be dependent on the
@@ -493,8 +517,6 @@ issue.
 
 Developing Falaise {#developing}
 ==================
-FULL DESCRIPTION DEFERRED TO ALPHA 2
-
 Development of Falaise falls into two main categories
 
 * Implementing features in the Falaise core
@@ -502,9 +524,8 @@ Development of Falaise falls into two main categories
 
 The first of these is generally, though not exclusively, requires a
 developer account on the LPC Caen Trac system (one can also create and
-submit patches).
-Development of plugins does not require a developer account,
-though wil do should your module become part of the core.
+submit patches). Development of plugins does not require a developer
+account, though will do should your module become part of the core.
 
 We still recommend using the simple three level layout described earlier
 as the sparse checkout allows you full and easy access to all repository
@@ -519,5 +540,5 @@ SuperNEMO/
 |-- installs
 ~~~~~
 
-Further documentation on this topic will be added in Alpha 2.
+Further documentation on this topic will be added in Alpha 3.
 
