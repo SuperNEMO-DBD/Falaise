@@ -335,20 +335,19 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
     // Prepare and read work
     workItem.clear();
     if(input_->is_terminated()) break;
-    if(input_->process(workItem) != dpp::PROCESS_OK) {
+    if(input_->process(workItem) != dpp::base_module::PROCESS_OK) {
       DT_LOG_FATAL(clArgs.logLevel,"Failed to read data record from input source");
       break;
     }
 
     // Feed through pipeline
-    // TODO Fix the process method to return the proper type
-    size_t pStatus = pipeline_->process(workItem);
+    dpp::base_module::process_status pStatus = pipeline_->process(workItem);
     // FATAL means actual processing has failed on current item
-    if(pStatus == dpp::PROCESS_FATAL) continue;
+    if(pStatus == dpp::base_module::PROCESS_FATAL) continue;
 
     // INVALID means something very badly wrong, so need to exit whole
     // event loop.
-    if(pStatus == dpp::PROCESS_INVALID) break;
+    if(pStatus == dpp::base_module::PROCESS_INVALID) break;
 
     // Write item
     if(output_) output_->process(workItem);
