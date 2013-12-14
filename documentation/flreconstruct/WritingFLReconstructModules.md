@@ -102,8 +102,9 @@ As noted above, a later tutorial will cover the interface and use of
 @ref datatools::things . We therefore don't do anything with the event,
 and simply write a message to standard output so that we'll be able to
 see the method being called in `flreconstruct`. The [process method](@ref dpp::base_module::process)
-**must** return a [processing exit code](@ref dpp::processing_status_flags_type).
-In this case, our processing is always successful, so we return @ref dpp::PROCESS_OK.
+**must** return a [processing exit code](@ref dpp::base_module::process_status).
+In this case, our processing is always successful, so we
+return @ref dpp::base_module::PROCESS_OK.
 
 The [reset method](@ref dpp::base_module::reset) is used to reset any
 configuration performed by the
@@ -548,4 +549,3 @@ This helps to make the module easier to use and less error prone.
 Remember that the modular structure of the pipeline means that tasks
 are broken down into smaller chunks, so you should consider refactoring
 complex modules into smaller orthogonal units.
-

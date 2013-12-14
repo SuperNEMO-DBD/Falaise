@@ -9,14 +9,14 @@ The C++ type used to represent events in `flreconstruct` is the
 @ref datatools::things class. Pipeline module classes inherit from
 @ref dpp::base_module and thus must implement the
 pure abstract method @ref dpp::base_module::process . This method is
-called for each event, and is passed a reference to the
+called for each event, and is passed a reference to the mutable
 @ref datatools::things object representing the current event being
 passed through the pipeline.
 
 The `datatools::things` class implements an associative, hierarchical and
 heterogenous collection of objects. To put it in simpler terms, it provides
 a dictionary mapping string "keys" to object instances inheriting from
-the the `datatools::i_serializable` pure abstract base class. It's the
+the `datatools::i_serializable` pure abstract base class. It's the
 dictionary like interface that provides the associativity, and the
 storage of pointer-to-base-class that provides the heterogeneity (many
 different concrete types). As `datatools::things` itself inherits from
@@ -88,7 +88,7 @@ try {
   simData.tree_dump();
 } catch (std::logic_error& e) {
   std::cerr << "failed to grab SD bank : " << e.what() << std::endl;
-  return dpp::PROCESS_INVALID;
+  return dpp::base_module::PROCESS_ERROR;
 }
 ~~~~~~
 
@@ -109,7 +109,7 @@ then we can use it directly. In this example, we simply use the
 the object to screen. You should consult the documentation of the classes
 extracted to see what you can do with them. If an exception is thrown, then
 we report the error to the standard error stream, and return the
-`dpp::PROCESS_INVALID` flag. This will make the pipeline abort any further
+`dpp::base_module::PROCESS_INVALID` flag. This will make the pipeline abort any further
 processing of the event and subsequent events, but other flags are available
 to handle a range of process errors.
 
@@ -185,4 +185,3 @@ the information written into the `ATMProperties` bank.
 Implementing Custom Objects for Storage in datatools::things {#things_customdata}
 ============================================================
 DEFERRED TO ALPHA3
-

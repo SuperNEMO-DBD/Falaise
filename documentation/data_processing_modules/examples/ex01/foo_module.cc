@@ -91,7 +91,8 @@ namespace example {
   }
 
 
-  int foo_module::process(datatools::things & a_data_record)
+  dpp::base_module::process_status
+  foo_module::process(datatools::things & a_data_record)
   {
     DT_THROW_IF(! is_initialized(),
                 std::logic_error,
@@ -112,7 +113,7 @@ namespace example {
     // by the 'Foo' bank:
     aFoo.store_flag(_foo_flag_key_);
 
-    return dpp::PROCESS_OK;
+    return dpp::base_module::PROCESS_OK;
   }
 
   void foo_module::set_foo_bank_key(const std::string & key_)

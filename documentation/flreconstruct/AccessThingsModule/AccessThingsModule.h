@@ -11,7 +11,7 @@ class AccessThingsModule : public dpp::base_module {
                           datatools::service_manager& flServices,
                           dpp::module_handle_dict_type& what);
 
-  virtual int process(datatools::things& workItem);
+  virtual dpp::base_module::process_status process(datatools::things& workItem);
 
   virtual void reset();
 
@@ -20,4 +20,3 @@ class AccessThingsModule : public dpp::base_module {
 };
 
 #endif // ACCESSTHINGSMODULE_HH
-

@@ -35,16 +35,16 @@ void MyModule::initialize(const datatools::properties& /*myConfig*/,
 }
 
 // Process
-int MyModule::process(datatools::things& /*workItem*/) {
+dpp::base_module::process_status
+MyModule::process(datatools::things& /*workItem*/) {
   // Hello world!
   std::cout << "MyModule::process called!" << std::endl;
 
-  // MUST return a status, see ref dpp::processing_status_flags_type
-  return dpp::PROCESS_OK;
+  // MUST return a status, see ref dpp::base_module::process_status
+  return dpp::base_module::PROCESS_OK;
 }
 
 // Reset
 void MyModule::reset() {
   this->_set_initialized(false);
 }
-

@@ -48,7 +48,7 @@ namespace example {
     virtual void reset();
 
     /// Main data record processing method
-    virtual int process(datatools::things & a_data_record);
+    virtual dpp::base_module::process_status process(datatools::things & a_data_record);
 
     //   **********************
     //   * Specific interface *

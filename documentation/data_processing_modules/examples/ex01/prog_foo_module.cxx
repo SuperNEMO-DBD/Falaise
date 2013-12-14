@@ -34,14 +34,16 @@ void test_foo_module_simple()
     event_record.tree_dump(std::cout, "Event record: ");
 
     // Module processing the event record:
-    DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE,
-                  "Processing the event record...");
-    fm.process(event_record);
-
-    // Print the event record:
-    event_record.tree_dump(std::cout, "Event record: ");
-    const datatools::properties & aBar = event_record.get<datatools::properties>("Bar");
-    aBar.tree_dump(std::cout, "The 'Bar' from the event record: ");
+    DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Processing the event record...");
+    dpp::base_module::process_status status = fm.process(event_record);
+    if (status == dpp::base_module::PROCESS_OK) {
+      // Print the event record:
+      event_record.tree_dump(std::cout, "Event record: ");
+      const datatools::properties & aBar = event_record.get<datatools::properties>("Bar");
+      aBar.tree_dump(std::cout, "The 'Bar' from the event record: ");
+    } else {
+      DT_LOG_ERROR(datatools::logger::PRIO_ERROR, "Processing failed !");
+    }
   }
 
   return;
@@ -76,12 +78,16 @@ void test_foo_module_standalone()
     // Module processing the event record:
     DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE,
                   "Processing the event record...");
-    fm.process(event_record);
+    dpp::base_module::process_status status = fm.process(event_record);
 
-    // Print the event record:
-    event_record.tree_dump(std::cout, "Event record: ");
-    const datatools::properties & aBar = event_record.get<datatools::properties>("Bar");
-    aBar.tree_dump(std::cout, "The 'Bar' from the event record: ");
+    if (status == dpp::base_module::PROCESS_OK) {
+      // Print the event record:
+      event_record.tree_dump(std::cout, "Event record: ");
+      const datatools::properties & aBar = event_record.get<datatools::properties>("Bar");
+      aBar.tree_dump(std::cout, "The 'Bar' from the event record: ");
+    } else {
+      DT_LOG_ERROR(datatools::logger::PRIO_ERROR, "Processing failed !");
+    }
   }
 
   return;

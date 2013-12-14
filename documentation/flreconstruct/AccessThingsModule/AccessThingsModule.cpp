@@ -10,7 +10,7 @@ AccessThingsModule::AccessThingsModule() : dpp::base_module()
 {}
 
 AccessThingsModule::~AccessThingsModule() {
-  this->reset();
+  if (is_initialized()) this->reset();
 }
 
 void AccessThingsModule::initialize(const datatools::properties& /*myConfig*/,
@@ -20,7 +20,8 @@ void AccessThingsModule::initialize(const datatools::properties& /*myConfig*/,
 }
 
 //! [AccessThingsModule::Process]
-int AccessThingsModule::process(datatools::things& workItem) {
+dpp::base_module::process_status
+AccessThingsModule::process(datatools::things& workItem) {
   // Print most basic information
   std::cout << "AccessThingsModule::process called!" << std::endl;
   std::cout << "[name]        : " << workItem.get_name() << std::endl;
@@ -48,15 +49,14 @@ int AccessThingsModule::process(datatools::things& workItem) {
     simData.tree_dump();
   } catch (std::logic_error& e) {
     std::cerr << "failed to grab SD bank : " << e.what() << std::endl;
-    return dpp::PROCESS_INVALID;
+    return dpp::base_module::PROCESS_INVALID;
   }
 
   // MUST return a status, see ref dpp::processing_status_flags_type
-  return dpp::PROCESS_OK;
+  return dpp::base_module::PROCESS_OK;
 }
 //! [AccessThingsModule::Process]
 
 void AccessThingsModule::reset() {
   this->_set_initialized(false);
 }
-

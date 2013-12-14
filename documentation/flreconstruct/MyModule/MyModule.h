@@ -26,7 +26,7 @@ class MyModule : public dpp::base_module {
                           dpp::module_handle_dict_type& moduleDict);
 
   //! Process supplied data record
-  virtual int process(datatools::things& workItem);
+  virtual dpp::base_module::process_status process(datatools::things& workItem);
 
   //! Reset the module
   virtual void reset();

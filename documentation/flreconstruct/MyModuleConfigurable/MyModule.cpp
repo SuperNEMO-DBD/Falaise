@@ -25,7 +25,7 @@ MyModule::MyModule() : dpp::base_module(), fudgeFactor_(1.0) {
 // Destruct
 MyModule::~MyModule() {
   // MUST reset module at destruction
-  this->reset();
+  if (this->is_initialized()) this->reset();
 }
 
 // Initialize
@@ -50,18 +50,18 @@ void MyModule::initialize(const datatools::properties& myConfig,
 }
 
 // Process
-int MyModule::process(datatools::things& /*workItem*/) {
+dpp::base_module::process_status
+MyModule::process(datatools::things& /*workItem*/) {
   // Hello world!
   std::cout << "MyModule::process using fudgeFactor("
             << fudgeFactor_ << ")" << std::endl;
 
   // MUST return a status, see ref dpp::processing_status_flags_type
-  return dpp::PROCESS_OK;
+  return dpp::base_module::PROCESS_OK;
 }
 
 // Reset
 void MyModule::reset() {
-  fudgeFactor_ = 1.0;
   this->_set_initialized(false);
+  fudgeFactor_ = 1.0;
 }
-
