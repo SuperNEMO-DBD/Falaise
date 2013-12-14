@@ -113,7 +113,7 @@ namespace snemo {
                    std::logic_error,
                    "Invalid wall number (" << wall_ << ">" << NWALLS_PER_SIDE << ")!");
 
-      if (side_ == BACK_SIDE)
+      if (side_ == (uint32_t) BACK_SIDE)
         {
           DT_THROW_IF (column_ >= _back_block_x_[wall_].size (),
                        std::logic_error,
@@ -139,7 +139,7 @@ namespace snemo {
                    std::logic_error,
                    "Invalid wall number (" << wall_ << ">" << NWALLS_PER_SIDE << ")!");
 
-      if (side_ == BACK_SIDE)
+      if (side_ == (uint32_t) BACK_SIDE)
         {
           DT_THROW_IF (column_ >= _back_block_y_[wall_].size (),
                        std::logic_error,
@@ -235,7 +235,7 @@ namespace snemo {
       DT_THROW_IF (side_ >= NSIDES, std::logic_error, "Invalid side number (" << side_ << ">" << NSIDES << ")!");
       DT_THROW_IF (wall_ >= NWALLS_PER_SIDE, std::logic_error, "Invalid wall number (" << wall_ << ">" << NWALLS_PER_SIDE << ")!");
       geomtools::invalidate (position_);
-      if (side_ == BACK_SIDE)
+      if (side_ == (uint32_t) BACK_SIDE)
         {
           DT_THROW_IF (column_ >= _back_block_y_[wall_].size (),
                        std::logic_error,
@@ -301,7 +301,7 @@ namespace snemo {
           gid.set (_part_address_index_, _block_part_);
         }
       // back
-      if (side_ == BACK_SIDE)
+      if (side_ == (uint32_t) BACK_SIDE)
         {
           DT_THROW_IF (column_ >= _back_block_y_[wall_].size (),
                        std::logic_error,
@@ -374,7 +374,7 @@ namespace snemo {
         }
 
       // front:
-      if (side_ == FRONT_SIDE)
+      if (side_ == (uint32_t) FRONT_SIDE)
         {
           DT_THROW_IF (column_ >= _front_block_y_[wall_].size (),
                        std::logic_error,
@@ -461,14 +461,14 @@ namespace snemo {
       bool side     = false;
       const bool sides    = mask_ & NEIGHBOUR_SIDE;
       const bool diagonal = mask_ & NEIGHBOUR_DIAG;
-      if (side_ == BACK_SIDE)
+      if (side_ == (uint32_t) BACK_SIDE)
         {
           if ( (column_ == 0) || (column_ == _back_block_y_[wall_].size () - 1) )
             {
               side = true;
             }
         }
-      if (side_ == FRONT_SIDE)
+      if (side_ == (uint32_t) FRONT_SIDE)
         {
           if ( (column_ == 0) || (column_ == _front_block_y_[wall_].size () - 1) )
             {
@@ -500,11 +500,11 @@ namespace snemo {
       DT_THROW_IF (side_ >= NSIDES, std::logic_error, "Invalid side number (" << side_ << ">= " << NSIDES << ")!");
       DT_THROW_IF (wall_ >= NWALLS_PER_SIDE, std::logic_error, "Invalid wall number (" << wall_ << ">" << NWALLS_PER_SIDE << ")!");
       size_t nbr_columns = 0;
-      if (side_ == BACK_SIDE)
+      if (side_ == (uint32_t) BACK_SIDE)
         {
           nbr_columns = _back_block_y_[wall_].size ();
         }
-      else if (side_ == FRONT_SIDE)
+      else if (side_ == (uint32_t) FRONT_SIDE)
         {
           nbr_columns = _front_block_y_[wall_].size ();
         }

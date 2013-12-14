@@ -60,7 +60,7 @@ namespace snemo {
       static const int    BACK_SIDE   = 0; // Back submodule
       static const int    FRONT_SIDE  = 1; // Front submodule
 
-      // For geometry config >=2.0
+      // For geometry config snemo::demonstrator >=2.0
       static const int BLOCK_BACK_PART    = 0; // Back volume of scintillator (possibly extruded)
       static const int BLOCK_FRONT_PART   = 1; // Front volume of scintillator (entrance window)
       static const int DEFAULT_BLOCK_PART = BLOCK_FRONT_PART;

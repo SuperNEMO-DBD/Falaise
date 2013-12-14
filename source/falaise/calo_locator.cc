@@ -214,7 +214,7 @@ namespace snemo {
       DT_THROW_IF (! is_initialized (), std::logic_error, "Locator is not initialized !");
       DT_THROW_IF (side_ > 1, std::logic_error, "Invalid side number (" << side_ << "> 1)!");
       geomtools::invalidate (position_);
-      if (side_ == BACK_SIDE )
+      if (side_ == (uint32_t) BACK_SIDE )
         {
           DT_THROW_IF (column_ >= _back_block_y_.size (),
                        std::logic_error,
@@ -280,7 +280,7 @@ namespace snemo {
           gid.set (_part_address_index_, _block_part_);
         }
       // back
-      if (side_ == BACK_SIDE)
+      if (side_ == (uint32_t) BACK_SIDE)
         {
           DT_THROW_IF (column_ >= _back_block_y_.size (),
                        std::logic_error,
@@ -388,7 +388,7 @@ namespace snemo {
         }
 
       // front:
-      if (side_ == FRONT_SIDE)
+      if (side_ == (uint32_t) FRONT_SIDE)
         {
           DT_THROW_IF (column_ >= _front_block_y_.size (),
                        std::logic_error,
