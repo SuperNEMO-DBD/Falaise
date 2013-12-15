@@ -24,8 +24,13 @@
 
 // - Bayeux
 #include "bayeux/datatools/exception.h"
+#include "bayeux/datatools/kernel.h"
+#include "bayeux/datatools/library_info.h"
 
 // This Project
+#include "falaise/version.h"
+#include "falaise/resource.h"
+#include "falaise/falaise.h"
 #include "FLSimulateBinReloc.h"
 #include "FLSimulateConfig.h"
 
@@ -63,6 +68,70 @@ void initResources() {
               << ")")
 }
 
+void doFixupResourcePaths() {
+  // Temporary trick: fix the registered resource path in the datatools'
+  // kernel.
+  //  The  official  configuration  files  use  the  "@falaise:foo.conf"
+  //  syntax. "@falaise:" is  thus assumed to refer  to the installation
+  //  path of resource files.  Here we  detect if we should run with the
+  //  build directory.   In case Bayeux  is embedded in Falaise  and not
+  //  yet  installed,  we  also  fix the  "geomtools",  "materials"  and
+  //  "genbb_help" resource paths.
+
+  FLSimulate::initResources();
+  boost::filesystem::path dyn_res_path = FLSimulate::getResourceDir() + "/resources";
+  boost::filesystem::path install_res_path = falaise::get_resource_dir();
+  bool fl_installed = true;
+  if(!boost::filesystem::exists(install_res_path)) {
+    fl_installed = false;
+    // Access to the datatools' kernel :
+    datatools::kernel & krnl = datatools::kernel::instance();
+    if (krnl.has_library_info_register()) {
+      // Access to the datatools' kernel library info register:
+      datatools::library_info& lib_info_reg = krnl.grab_library_info_register();
+      if (lib_info_reg.has("falaise")) {
+        // Kernel's library info already has en entry related to "falaise":
+        datatools::properties & falaise_lib_infos = lib_info_reg.grab("falaise");
+        falaise_lib_infos.update_string(
+            datatools::library_info::keys::install_resource_dir(),
+            dyn_res_path.string());
+        falaise_lib_infos.update_string(
+            datatools::library_info::keys::env_resource_dir(),
+            "FALAISE_RESOURCE_DIR");
+      } else {
+        // Kernel's library info does not have entry related to "falaise":
+        datatools::properties & falaise_lib_infos =
+            lib_info_reg.registration(
+                "falaise",
+                "Falaise provides the main computational environment for the simulation,"
+                "processing and analysis of data for the SuperNEMO double beta decay "
+                "search experiment.",
+                falaise::version::get_version());
+        falaise_lib_infos.store_string(
+            datatools::library_info::keys::install_resource_dir(),
+            dyn_res_path.string());
+        falaise_lib_infos.store_string(
+            datatools::library_info::keys::env_resource_dir(),
+            "FALAISE_RESOURCE_DIR");
+      }
+    }
+  }
+
+  // Fix up Bayeux's modules resource dir:
+  if (falaise::bayeux_embedded()) {
+    boost::filesystem::path bx_res_path = FLSimulate::getResourceDir() + "/../Bayeux-1.0.0/resources";
+
+    boost::filesystem::path gt_res_path = bx_res_path / "geomtools";
+    setenv("GEOMTOOLS_RESOURCE_DIR", gt_res_path.c_str(), 1);
+
+    boost::filesystem::path mat_res_path = bx_res_path / "materials";
+    setenv("MATERIALS_RESOURCE_DIR", mat_res_path.c_str(), 1);
+
+    boost::filesystem::path gbb_res_path = bx_res_path / "genbb_help";
+    setenv("GENBB_HELP_RESOURCE_DIR", gbb_res_path.c_str(), 1);
+  }
+}
+
 std::string getApplicationDir() {
   char* exePath(0);
   exePath = br_find_exe_dir("");
@@ -78,6 +147,5 @@ std::string getResourceDir() {
   boost::filesystem::path absPath = boost::filesystem::canonical(tmpPath);
   return absPath.string();
 }
-
 } // namespace FLSimulate
 
