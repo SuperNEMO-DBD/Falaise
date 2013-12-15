@@ -127,7 +127,7 @@ namespace snemo {
                                         *     10-15 e- / cm
                                         */
 
-      double _geiger_dead_time_; /* Dead time before a Geiger cell
+      /*double _geiger_dead_time_;*/ /* Dead time before a Geiger cell
                                   * is active again after a former hit
                                   *
                                   * From Georges Szkarlz:
