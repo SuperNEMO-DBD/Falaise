@@ -363,7 +363,7 @@ namespace snemo {
       int muon_type = ::genbb::primary_particle::MUON_PLUS;
 
       if (_mode_ == MODE_SEA_LEVEL) {
-        double px, py, pz;
+        double px(0.0), py(0.0), pz(0.0);
         if (_sea_level_mode_ == SEA_LEVEL_TOY) {
           // randomize kinetic energy :
           double kinetic_energy = grab_random ().gaussian (_sea_level_toy_setup_.energy_mean,
