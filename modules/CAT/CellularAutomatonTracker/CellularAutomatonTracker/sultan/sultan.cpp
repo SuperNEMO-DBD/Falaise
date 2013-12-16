@@ -149,10 +149,10 @@ namespace SULTAN {
     m.message("ysize is",ysize,"mm",mybhep::NORMAL);
     m.message("zsize is",zsize,"mm",mybhep::NORMAL);
     m.message("foil radius: ",foil_radius,"mm",mybhep::NORMAL);
-    m.message(" min_ncells_in_cluster ", min_ncells_in_cluster, mybhep::VERBOSE);
-    m.message(" ncells_between_triplet_min ", ncells_between_triplet_min, mybhep::VERBOSE);
-    m.message(" ncells_between_triplet_range ", ncells_between_triplet_range, mybhep::VERBOSE);
-    m.message(" ncells to skip ", ncells_to_skip, " dist limit ", dist_limit_inf, " - ", dist_limit_sup, " Rmin ", Rmin, " Rmax ", Rmax, mybhep::VERBOSE);
+    m.message(" min_ncells_in_cluster ", min_ncells_in_cluster, mybhep::NORMAL);
+    m.message(" ncells_between_triplet_min ", ncells_between_triplet_min, mybhep::NORMAL);
+    m.message(" ncells_between_triplet_range ", ncells_between_triplet_range, mybhep::NORMAL);
+    m.message(" ncells to skip ", ncells_to_skip, " dist limit ", dist_limit_inf, " - ", dist_limit_sup, " Rmin ", Rmin, " Rmax ", Rmax, mybhep::NORMAL);
 
     //    clock.stop(" sultan: read dst properties ");
 
