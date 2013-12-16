@@ -13,6 +13,10 @@ namespace SULTAN {
     
     std::vector<experimental_helix> experimental_legendre_vector::helices(){return helices_;}
     
+    void experimental_legendre_vector::set_nsigmas(double a){nsigmas_=a;}
+
+    double experimental_legendre_vector::get_nsigmas(){return nsigmas_;}
+
     void experimental_legendre_vector::add_helix(experimental_helix a){
       helices_.push_back(a);
     }
@@ -32,11 +36,11 @@ namespace SULTAN {
 	dR = a->R() - ip->R();
 	dH = a->H() - ip->H();
 	
-	if( fabs(dx.value()) < dx.error() &&
-	    fabs(dy.value()) < dy.error() &&
-	    fabs(dz.value()) < dz.error() &&
-	    fabs(dR.value()) < dR.error() &&
-	    fabs(dH.value()) < dH.error() )
+	if( fabs(dx.value()) < get_nsigmas()*dx.error() &&
+	    fabs(dy.value()) < get_nsigmas()*dy.error() &&
+	    fabs(dz.value()) < get_nsigmas()*dz.error() &&
+	    fabs(dR.value()) < get_nsigmas()*dR.error() &&
+	    fabs(dH.value()) < get_nsigmas()*dH.error() )
 	  neighbours->push_back(*ip);
       }
       a->set_n_neighbours(neighbours->size());

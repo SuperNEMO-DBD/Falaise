@@ -85,6 +85,8 @@ namespace SULTAN {
 
     double bfield; // value of magnetic field
 
+    double nsigmas; // n of sigmas for clusterization in helix space
+
     double xsize, ysize, zsize; // chamber size
 
     double Emin; // minimum energy of detected electrons

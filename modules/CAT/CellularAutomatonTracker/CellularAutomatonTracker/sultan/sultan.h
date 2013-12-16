@@ -212,6 +212,11 @@ namespace SULTAN {
       return;
     }
 
+    void set_nsigmas(double v){
+      nsigmas = v;
+      return;
+    }
+
   protected:
 
     Clock clock;
@@ -252,6 +257,7 @@ namespace SULTAN {
                             */
 
     double bfield;
+    double nsigmas;
 
     std::string _moduleNR;
 

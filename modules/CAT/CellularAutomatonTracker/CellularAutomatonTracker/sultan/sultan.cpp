@@ -27,6 +27,7 @@ namespace SULTAN {
   void sultan::_set_defaults ()
   {
     bfield = std::numeric_limits<double>::quiet_NaN ();
+    nsigmas = std::numeric_limits<double>::quiet_NaN ();
     level = mybhep::NORMAL;
     m = mybhep::messenger(level);
     cell_distance  = std::numeric_limits<double>::quiet_NaN ();
@@ -69,6 +70,7 @@ namespace SULTAN {
     initial_events = 0;
     skipped_events = 0;
     experimental_legendre_vector = new topology::experimental_legendre_vector(level, probmin);
+    experimental_legendre_vector->set_nsigmas(nsigmas);
 
     //    clock.stop(" sultan: initialize ");
 
@@ -136,6 +138,7 @@ namespace SULTAN {
     m.message("probmin", probmin, mybhep::NORMAL);
     m.message("nsigma_r", nsigma_r, mybhep::NORMAL);
     m.message("nsigma_z", nsigma_z, mybhep::NORMAL);
+    m.message("nsigmas",nsigmas,mybhep::NORMAL);
     m.message("nofflayers",nofflayers,mybhep::NORMAL);
     m.message("first event number", first_event_number, mybhep::NORMAL);
     m.message("cell_distance",cell_distance,"mm",mybhep::NORMAL);
@@ -231,11 +234,12 @@ namespace SULTAN {
       drmin = mybhep::plus_infinity;
       dhmin = mybhep::plus_infinity;
       for(std::vector<topology::experimental_helix>::const_iterator ihel=helices->begin(); ihel!=helices->end(); ++ihel){
-	ihel->distance_from_cell_measurement(inode->c(), &dr, &dh);
+	//ihel->distance_from_cell_measurement(inode->c(), &dr, &dh);
+	ihel->distance_from_cell_center(inode->c(), &dr, &dh);
 	if (level >= mybhep::VVERBOSE){
 	  std::clog << " distance of helix " << ihel - helices->begin() << " from cell " << inode->c().id() << " dr (" << dr.value() << " +- " << dr.error() << ") dh (" << dh.value() << " +- " << dh.error() << ")" << std::endl;
 	}
-	if( fabs(dr.value()) < nsigma_r*inode->c().r().error() && fabs(dh.value()) < nsigma_z*inode->c().ep().z().error() ){
+	if( fabs(dr.value()) < cell_distance/2. + nsigma_r*inode->c().r().error() && fabs(dh.value()) < nsigma_z*inode->c().ep().z().error() ){
 	  active = true;
 	  if( fabs(dr.value()) < drmin && fabs(dh.value()) < dhmin ){
 	    drmin = fabs(dr.value());
@@ -482,7 +486,7 @@ namespace SULTAN {
       clock.start(" sultan: sequentiate_cluster_with_experimental_vector: helix loop: max ","cumulative");
 
       b = experimental_legendre_vector->max(&neighbours);
-      
+
       if( !b.ids().size() ){
       	m.message(" could not make a track ", mybhep::VERBOSE); fflush(stdout);
 	clock.stop(" sultan: sequentiate_cluster_with_experimental_vector: helix loop: max ");

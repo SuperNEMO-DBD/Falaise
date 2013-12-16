@@ -63,6 +63,7 @@ namespace SULTAN {
     planes_per_block.at(0) = 9;
     num_cells_per_plane    = 113;
     bfield                 = 0.0025;
+    nsigmas                 = 1.;
     xsize                  = 450.; // mm
     ysize                  = 2500.; // mm
     zsize                  = 1350.; // mm
@@ -148,6 +149,11 @@ namespace SULTAN {
     if (bfield < 0.0)
       {
         _set_error_message ("Invalid 'bfield'");
+        return false;
+      }
+    if (nsigmas < 0.0)
+      {
+        _set_error_message ("Invalid 'nsigmas'");
         return false;
       }
     if (xsize < 0.0)
@@ -251,6 +257,7 @@ namespace SULTAN {
     stor_.set_foil_radius (setup_.foil_radius);
 
     stor_.set_bfield (setup_.bfield);
+    stor_.set_nsigmas (setup_.nsigmas);
     stor_.set_xsize (setup_.xsize);
     stor_.set_ysize (setup_.ysize);
     stor_.set_zsize (setup_.zsize);

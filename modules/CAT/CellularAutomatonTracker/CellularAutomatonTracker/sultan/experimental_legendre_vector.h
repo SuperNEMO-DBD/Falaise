@@ -19,6 +19,8 @@ namespace SULTAN {
 
       std::vector<experimental_helix> helices_;
 
+      double nsigmas_;
+
     public:
 
 
@@ -29,6 +31,7 @@ namespace SULTAN {
 	helices_.clear();
         set_print_level(level);
         set_probmin(probmin);
+	nsigmas_=1.;
       }
 
       //!Default destructor
@@ -55,8 +58,12 @@ namespace SULTAN {
 
       void set_helices(std::vector<experimental_helix> a);
 
+      void set_nsigmas(double a);
+
       std::vector<experimental_helix> helices();
 
+      double get_nsigmas();
+      
       void add_helix(experimental_helix a);
 
       void reset();
