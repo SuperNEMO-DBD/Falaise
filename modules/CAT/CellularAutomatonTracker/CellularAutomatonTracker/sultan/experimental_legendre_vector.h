@@ -68,7 +68,7 @@ namespace SULTAN {
 
       void reset();
 
-      void get_neighbours(experimental_helix* a, std::vector<experimental_helix>* neighbours);
+      void get_neighbours(experimental_helix a, std::vector<experimental_helix>* neighbours);
 
       experimental_helix max(std::vector<experimental_helix> * neighbours);
 

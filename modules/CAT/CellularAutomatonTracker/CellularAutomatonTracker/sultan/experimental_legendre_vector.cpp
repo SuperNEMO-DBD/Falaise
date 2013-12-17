@@ -25,25 +25,23 @@ namespace SULTAN {
       helices_.clear();
     }
     
-    void experimental_legendre_vector::get_neighbours(experimental_helix* a, std::vector<experimental_helix>* neighbours){
+    void experimental_legendre_vector::get_neighbours(experimental_helix a, std::vector<experimental_helix>* neighbours){
       experimental_double dx, dy, dz, dR, dH;
       neighbours->clear();
       for(std::vector<experimental_helix>::const_iterator ip = helices_.begin(); ip != helices_.end(); ++ip){
-	if( !a->different_cells(*ip) ) continue;
-	dx = a->x0() - ip->x0();
-	dy = a->y0() - ip->y0();
-	dz = a->z0() - ip->z0();
-	dR = a->R() - ip->R();
-	dH = a->H() - ip->H();
-	
-	if( fabs(dx.value()) < get_nsigmas()*dx.error() &&
-	    fabs(dy.value()) < get_nsigmas()*dy.error() &&
-	    fabs(dz.value()) < get_nsigmas()*dz.error() &&
-	    fabs(dR.value()) < get_nsigmas()*dR.error() &&
-	    fabs(dH.value()) < get_nsigmas()*dH.error() )
-	  neighbours->push_back(*ip);
+	if( !a.different_cells(*ip) ) continue;
+	dx = a.x0() - ip->x0();
+	if( fabs(dx.value()) > get_nsigmas()*dx.error() ) continue;
+	dy = a.y0() - ip->y0();
+	if( fabs(dy.value()) > get_nsigmas()*dy.error() ) continue;
+	dz = a.z0() - ip->z0();
+	if( fabs(dz.value()) > get_nsigmas()*dz.error() ) continue;
+	dR = a.R() - ip->R();
+	if( fabs(dR.value()) > get_nsigmas()*dR.error() ) continue;
+	dH = a.H() - ip->H();
+	if( fabs(dH.value()) > get_nsigmas()*dH.error() ) continue;
+	neighbours->push_back(*ip);
       }
-      a->set_n_neighbours(neighbours->size());
       return;
     }
     
@@ -52,8 +50,8 @@ namespace SULTAN {
       size_t n = 0;
       size_t nmax = 0;
       std::vector<experimental_helix> neis;
-      for(std::vector<experimental_helix>::iterator ip = helices_.begin(); ip != helices_.end(); ++ip){
-	get_neighbours(&(*ip), &neis);
+      for(std::vector<experimental_helix>::const_iterator ip = helices_.begin(); ip != helices_.end(); ++ip){
+	get_neighbours(*ip, &neis);
 	
 	if( neis.size() > nmax ){
 	  nmax = neis.size();

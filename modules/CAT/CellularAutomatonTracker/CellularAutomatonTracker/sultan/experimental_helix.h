@@ -27,8 +27,6 @@ namespace SULTAN {
 
       std::vector<size_t> ids_;
 
-      size_t n_neighbours_;
-
       // points in the helix are given by:
       // x(phi) = x0 + R*cos(phi)
       // y(phi) = y0 + R*sin(phi)
@@ -45,7 +43,6 @@ namespace SULTAN {
         R_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
         H_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
 	ids_.clear();
-	n_neighbours_=0;
         set_print_level(level);
         set_probmin(probmin);
       }
@@ -89,7 +86,7 @@ namespace SULTAN {
           a_out << indent << appname_ << " center ["; ep_.dump(); a_out << "] radius: "; R_.dump(); a_out << " pitch: "; H_.dump(); a_out << " ids: ( ";
 	  for(std::vector<size_t>::const_iterator id= ids_.begin(); id!=ids_.end(); ++id)
 	    a_out << *id << " ";
-	  a_out << ") n_neighbours " << n_neighbours_ << std::endl;
+	  a_out << ") " << std::endl;
 
           return;
         }
@@ -112,11 +109,8 @@ namespace SULTAN {
 	R_=R;
 	H_=H;
       }
-      void set_n_neighbours(size_t a){n_neighbours_ = a;}
 
       std::vector<size_t> ids(){return ids_;}
-
-      size_t n_neighbours(){return n_neighbours_;}
 
       experimental_point center()const{return ep_;}
       experimental_double x0()const{return ep_.x();}
