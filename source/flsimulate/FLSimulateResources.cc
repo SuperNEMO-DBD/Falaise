@@ -35,6 +35,12 @@
 #include "FLSimulateConfig.h"
 
 namespace FLSimulate {
+//! Start resources
+void doInitResources();
+
+//! Fix internal/external resource paths
+void doFixupResourcePaths();
+
 //! Convert BrInitError code to a string describing the error
 //! \todo add errno to returned string
 std::string BRErrorAsString(const BrInitError& err) {
@@ -57,6 +63,11 @@ std::string BRErrorAsString(const BrInitError& err) {
 }
 
 void initResources() {
+  doInitResources();
+  doFixupResourcePaths();
+}
+
+void doInitResources() {
   BrInitError err;
   bool initSuccessful = br_init(&err);
   DT_THROW_IF(!initSuccessful,
@@ -65,7 +76,7 @@ void initResources() {
               << err
               << " ("
               << BRErrorAsString(err)
-              << ")")
+              << ")");
 }
 
 void doFixupResourcePaths() {
@@ -77,8 +88,6 @@ void doFixupResourcePaths() {
   //  build directory.   In case Bayeux  is embedded in Falaise  and not
   //  yet  installed,  we  also  fix the  "geomtools",  "materials"  and
   //  "genbb_help" resource paths.
-
-  FLSimulate::initResources();
   boost::filesystem::path dyn_res_path = FLSimulate::getResourceDir() + "/resources";
   boost::filesystem::path install_res_path = falaise::get_resource_dir();
   bool fl_installed = true;

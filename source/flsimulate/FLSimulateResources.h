@@ -23,9 +23,6 @@ namespace FLSimulate {
 //! Initialize the application resources, throws runtime_error on fail
 void initResources();
 
-//! Fix internal/external resource paths
-void doFixupResourcePaths();
-
 //! Return the path to the application directory
 std::string getApplicationDir();
 
