@@ -43,9 +43,8 @@
 #include "bayeux/datatools/library_loader.h"
 #include "bayeux/dpp/module_manager.h"
 #include "bayeux/dpp/base_module.h"
-//#include "bayeux/dpp/input_module.h"
+#include "bayeux/dpp/input_module.h"
 #include "bayeux/dpp/output_module.h"
-#include "bayeux/mctools/simulated_data_input_module.h"
 
 // - Boost
 #include "boost/program_options.hpp"
@@ -313,7 +312,7 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
 
   // Input module...
   DT_LOG_TRACE(clArgs.logLevel,"configuring input module");
-  boost::scoped_ptr<mctools::simulated_data_input_module> input_(new mctools::simulated_data_input_module);
+  boost::scoped_ptr<dpp::input_module> input_(new dpp::input_module);
   input_->set_single_input_file(clArgs.inputFile);
   input_->initialize_simple();
 

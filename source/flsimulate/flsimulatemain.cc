@@ -43,8 +43,13 @@ namespace bpo = boost::program_options;
 // - Bayeux
 #include "bayeux/version.h"
 #include "bayeux/bayeux.h"
-#include "bayeux/mctools/g4/manager.h"
+#include "bayeux/datatools/multi_properties.h"
+#include "bayeux/datatools/things.h"
+#include "bayeux/dpp/output_module.h"
+#include "bayeux/geomtools/manager.h"
+#include "bayeux/mctools/g4/simulation_module.h"
 #include "bayeux/mctools/g4/manager_parameters.h"
+#include "bayeux/mygsl/random_utils.h"
 
 // This Project
 #include "falaise/version.h"
@@ -192,6 +197,9 @@ void do_configure(int argc, char *argv[], mctools::g4::manager_parameters& param
   } catch (FLDialogOptionsError& e) {
     throw FLConfigUserError();
   }
+
+  // Override any core things
+  params.use_run_header_footer = true;
 }
 
 //----------------------------------------------------------------------
@@ -212,9 +220,54 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
 
   // - Run
   try {
-    mctools::g4::manager flSimulation;
-    mctools::g4::manager_parameters::setup(flSimParameters, flSimulation);
-    flSimulation.run_simulation();
+    // Have to setup geometry....
+    datatools::multi_properties flSimProperties("name","");
+    flSimProperties.read(flSimParameters.manager_config_filename);
+    datatools::properties flSimGeoManagerProperties;
+    std::string geoManagerFile = flSimProperties.get_section("geometry").fetch_path("manager.config");
+    geomtools::manager geoManager;
+    datatools::properties geoManagerProperties;
+    datatools::properties::read_config(geoManagerFile, geoManagerProperties);
+    geoManager.initialize(geoManagerProperties);
+
+
+    mctools::g4::simulation_module flSimModule;
+    flSimModule.set_name("G4SimulationModule");
+    flSimModule.set_sd_label("SD");
+    flSimModule.set_geometry_manager(geoManager);
+    flSimModule.set_simulation_manager_params(flSimParameters);
+    flSimModule.initialize_simple();
+
+    // Output module...
+    dpp::output_module simOutput;
+    simOutput.set_name("FLSimulateOutput");
+    simOutput.set_single_output_file(flSimParameters.output_data_file);
+    simOutput.initialize_simple();
+
+    // Manual Event loop....
+    datatools::things workItem;
+    dpp::base_module::process_status status;
+
+    for (unsigned int i(0); i < flSimParameters.number_of_events; ++i) {
+      workItem.clear();
+
+      status = flSimModule.process(workItem);
+      if (status != dpp::base_module::PROCESS_OK) {
+        DT_LOG_ERROR(datatools::logger::PRIO_ERROR,
+                     "Simulation module failed");
+        break;
+      }
+
+      status = simOutput.process(workItem);
+      if (status != dpp::base_module::PROCESS_OK) {
+        DT_LOG_ERROR(datatools::logger::PRIO_ERROR,
+                     "Output module failed");
+        break;
+      }
+    }
+    //mctools::g4::manager flSimulation;
+    //mctools::g4::manager_parameters::setup(flSimParameters, flSimulation);
+    //flSimulation.run_simulation();
   } catch (std::exception& e) {
     std::cerr << "flsimulate : setup/run of simulation threw exception" << std::endl;
     std::cerr << e.what() << std::endl;
