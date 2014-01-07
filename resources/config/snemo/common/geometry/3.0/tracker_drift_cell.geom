@@ -227,7 +227,7 @@ surrounded.right_label : string = "field_wires_set_right"
 #######################
 
 #@description Name of the material (may be a material alias)
-material.ref       : string = "std::copper"
+material.ref       : string = "tracking_gas"
 
 #########################
 # Visibility parameters #
@@ -294,7 +294,7 @@ surrounded.right_label : string = "field_wires_set_right"
 # Material parameters #
 #######################
 
-material.ref       : string = "std::copper"
+material.ref       : string = "tracking_gas"
 
 #########################
 # Visibility parameters #
@@ -358,7 +358,7 @@ surrounded.right_label : string = "field_wires_set_right"
 #######################
 
 #@description Name of the material (may be a material alias)
-material.ref       : string = "std::copper"
+material.ref       : string = "tracking_gas"
 
 #########################
 # Visibility parameters #
@@ -426,7 +426,7 @@ surrounded.right_label : string = "field_wires_set_right"
 #######################
 
 #@description Name of the material (may be a material alias)
-material.ref       : string = "std::copper"
+material.ref       : string = "tracking_gas"
 
 #########################
 # Visibility parameters #
