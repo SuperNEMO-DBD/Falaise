@@ -195,12 +195,12 @@ if(CAT_WITH_DEVEL_UTILS)
 endif ()
 
 export(TARGETS 
-  CATAlgorithm APPEND
+  sultan APPEND
   FILE ${PROJECT_BINARY_DIR}/CellularAutomatonTrackerLibraryDepends.cmake
   )
 
 export(TARGETS 
-  sultan APPEND
+  CATAlgorithm APPEND
   FILE ${PROJECT_BINARY_DIR}/CellularAutomatonTrackerLibraryDepends.cmake
   )
 

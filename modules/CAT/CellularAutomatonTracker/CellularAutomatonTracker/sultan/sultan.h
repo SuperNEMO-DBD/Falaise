@@ -12,6 +12,13 @@
 #include <stdlib.h>
 #include <math.h>
 
+//#if CAT_WITH_DEVEL_ROOT == 1
+#include "TApplication.h"
+#include <TROOT.h>
+#include "TFile.h"
+#include "TTree.h"
+//#endif
+
 #include <sultan/cell.h>
 #include <sultan/cluster.h>
 #include <sultan/sequence.h>
@@ -42,8 +49,9 @@ namespace SULTAN {
     void read_properties( void );
     bool sequentiate(topology::tracked_data & tracked_data);
     bool assign_nodes_based_on_experimental_helix(std::vector<topology::node> nodes, std::vector<topology::node> &assigned_nodes, std::vector<topology::node> &leftover_nodes, topology::experimental_helix * b, std::vector<topology::experimental_helix> *helices);
-    bool calculate_helices(std::vector<topology::node> nodes, std::vector<topology::experimental_helix> *the_helices);
-    void sequentiate_cluster_with_experimental_vector(topology::cluster & cluster);
+    bool calculate_helices(std::vector<topology::node> nodes, std::vector<topology::experimental_helix> *the_helices, size_t icluster);
+    void sequentiate_cluster_with_experimental_vector(topology::cluster & cluster, size_t icluster);
+    void sequentiate_cluster_with_experimental_vector_2(topology::cluster & cluster, size_t icluster);
     void make_name(topology::sequence & seq);
     bool late();
     void print_sequences() const;
@@ -52,8 +60,6 @@ namespace SULTAN {
     void print_a_scenario(const topology::scenario & scenario) const;
     bool make_scenarios(topology::tracked_data &td);
     bool check_continous_cells(std::vector<topology::node> &assigned_nodes, std::vector<topology::node> &leftover_nodes, topology::experimental_helix *b);
-
-
 
     //! get clusters
     const std::vector<topology::cluster>& get_clusters()const
@@ -121,6 +127,11 @@ namespace SULTAN {
 
     void set_max_time(double v){
       max_time = v;
+      return;
+    }
+
+    void set_print_event_display(bool v){
+      print_event_display = v;
       return;
     }
 
@@ -261,6 +272,8 @@ namespace SULTAN {
 
     std::string _moduleNR;
 
+    bool print_event_display;
+
 
   private:
     std::vector<topology::cluster> clusters_;
@@ -269,6 +282,7 @@ namespace SULTAN {
     std::vector<topology::scenario> scenarios_;
     double run_time;
     topology::experimental_legendre_vector * experimental_legendre_vector;
+    TFile *root_file_;
 
 
   };

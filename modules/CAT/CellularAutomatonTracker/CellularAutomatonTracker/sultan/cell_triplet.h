@@ -80,7 +80,7 @@ namespace SULTAN{
       const std::vector<experimental_helix> helices()const{ return helices_;}
 
 
-      void calculate_helices(double Rmin, double Rmax);
+      void calculate_helices(double Rmin, double Rmax, double nsigmas);
 
       cell_triplet invert();
 

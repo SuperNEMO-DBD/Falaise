@@ -74,6 +74,37 @@ namespace SULTAN {
       return false;
       
     }
+
+    bool experimental_helix::is_less_than__optimist(const topology::experimental_helix a, double nsigmas=1)const{
+
+      //
+      // is this less than a?
+      // each parameter must be less than a (optimistically)
+
+      if( !this->x0().is_less_than__optimist(a.x0(), nsigmas) ) return false;
+      if( !this->y0().is_less_than__optimist(a.y0(), nsigmas) ) return false;
+      if( !this->z0().is_less_than__optimist(a.z0(), nsigmas) ) return false;
+      if( !this->R().is_less_than__optimist(a.R(), nsigmas) ) return false;
+      if( !this->H().is_less_than__optimist(a.H(), nsigmas) ) return false;
+      return true;
+
+    }
+    
+    bool experimental_helix::is_more_than__optimist(const topology::experimental_helix a, double nsigmas=1)const{
+
+      //
+      // is this more than a?
+      // each parameter must be more than a (optimistically)
+
+      if( !this->x0().is_more_than__optimist(a.x0(), nsigmas) ) return false;
+      if( !this->y0().is_more_than__optimist(a.y0(), nsigmas) ) return false;
+      if( !this->z0().is_more_than__optimist(a.z0(), nsigmas) ) return false;
+      if( !this->R().is_more_than__optimist(a.R(), nsigmas) ) return false;
+      if( !this->H().is_more_than__optimist(a.H(), nsigmas) ) return false;
+
+      return true;
+
+    }
     
   }
 

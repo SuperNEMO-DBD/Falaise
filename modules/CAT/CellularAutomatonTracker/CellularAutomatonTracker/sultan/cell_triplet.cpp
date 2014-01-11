@@ -108,7 +108,7 @@ namespace SULTAN{
       return cc_;
     }      
 
-    void cell_triplet::calculate_helices(double Rmin = 0., double Rmax = mybhep::plus_infinity){
+    void cell_triplet::calculate_helices(double Rmin = 0., double Rmax = mybhep::plus_infinity, double nsigmas=1.){
       // get helices tangent to three circles
       
       ////////////////////////////////////////////////////////////////////////
@@ -282,18 +282,23 @@ namespace SULTAN{
 
 	      if( print_level() > mybhep::VERBOSE ){
 		std::clog << " R " << R << " Rerr " << Rerr << " dRdr1 " << dRdr1 << " dRdr2 " << dRdr2 << " dRdr3 " << dRdr3 << " det1 " << det1 << " det2 " << det2 << " det3 " << det3 << " theta " << theta << 
-		  " z0_12 num " << (z1*phi2 - z2*phi1).value() << " den " << phi2 - phi1 << " H_12 num " << (z2 - z1).value() << 
-		  " z0_23 num " << (z2*phi3 - z3*phi2).value() << " den " << phi3 - phi2 << " H_23 num " << (z3 - z2).value() << 
+		  " z0_12 num " << (z1*phi2 - z2*phi1).value() << " den " << phi2 - phi1 << " = " << z0_12.value() << " +- " << z0_12.error() << " H_12 num " << (z2 - z1).value() << " = " << H_12.value() << " +- " << H_12.error() <<
+		  " z0_23 num " << (z2*phi3 - z3*phi2).value() << " den " << phi3 - phi2 << " = " << z0_23.value() << " +- " << z0_23.error() << " H_23 num " << (z3 - z2).value() << " = " << H_23.value() << " +- " << H_23.error() << 
 		  std::endl;
 	      }
 
-	      helix.set(experimental_double(X0,X0err),experimental_double(Y0,Y0err),z0_12,experimental_double(R,Rerr),H_12);
-	      helices_.push_back(helix);
+	      
+	      if( z0_12.is_equal_to__optimist(z0_23, nsigmas) &&
+		  H_12.is_equal_to__optimist(H_23, nsigmas) ){
+		std::vector<topology::experimental_double> z0s, Hs;
+		z0s.push_back(z0_12);
+		z0s.push_back(z0_23);
+		Hs.push_back(H_12);
+		Hs.push_back(H_23);
 
-	      helix.set(experimental_double(X0,X0err),experimental_double(Y0,Y0err),z0_23,experimental_double(R,Rerr),H_23);
-	      helices_.push_back(helix);
-
-
+		helix.set(experimental_double(X0,X0err),experimental_double(Y0,Y0err),weighted_average(z0s),experimental_double(R,Rerr),weighted_average(Hs));
+		helices_.push_back(helix);
+	      }
 
 	    }
 	  }
@@ -455,16 +460,22 @@ namespace SULTAN{
 
 		if( print_level() > mybhep::VERBOSE ){
 		  std::clog << " R " << R << " Rerr " << Rerr << " dRdr1 " << dRdr1 << " dRdr2 " << dRdr2 << " dRdr3 " << dRdr3 << " det1 " << det1 << " det2 " << det2 << " det3 " << det3 << 
-		    " z0_12 num " << (z1*phi2 - z2*phi1).value() << " den " << phi2 - phi1 << " H_12 num " << (z2 - z1).value() << 
-		    " z0_23 num " << (z2*phi3 - z3*phi2).value() << " den " << phi3 - phi2 << " H_23 num " << (z3 - z2).value() << 
+		    " z0_12 num " << (z1*phi2 - z2*phi1).value() << " den " << phi2 - phi1 << " = " << z0_12.value() << " +- " << z0_12.error() << " H_12 num " << (z2 - z1).value() << " = " << H_12.value() << " +- " << H_12.error() << 
+		    " z0_23 num " << (z2*phi3 - z3*phi2).value() << " den " << phi3 - phi2 << " = " << z0_23.value() << " +- " << z0_23.error() << " H_23 num " << (z3 - z2).value() << " = " << H_23.value() << " +- " << H_23.error() << 
 		    std::endl;
 		}
 
-		helix.set(experimental_double(X0,X0err),experimental_double(Y0,Y0err),z0_12,experimental_double(R,Rerr),H_12);
-		helices_.push_back(helix);
-		helix.set(experimental_double(X0,X0err),experimental_double(Y0,Y0err),z0_23,experimental_double(R,Rerr),H_23);
-		helices_.push_back(helix);
-		
+		if( z0_12.is_equal_to__optimist(z0_23, nsigmas) &&
+		    H_12.is_equal_to__optimist(H_23, nsigmas) ){
+		  std::vector<topology::experimental_double> z0s, Hs;
+		  z0s.push_back(z0_12);
+		  z0s.push_back(z0_23);
+		  Hs.push_back(H_12);
+		  Hs.push_back(H_23);
+		  
+		  helix.set(experimental_double(X0,X0err),experimental_double(Y0,Y0err),weighted_average(z0s),experimental_double(R,Rerr),weighted_average(Hs));
+		  helices_.push_back(helix);
+		}
 	      }
 	    }
 	  }

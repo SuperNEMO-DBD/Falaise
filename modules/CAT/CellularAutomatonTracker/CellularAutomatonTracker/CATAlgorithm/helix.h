@@ -10,7 +10,6 @@
 #include <CATAlgorithm/experimental_vector.h>
 #include <CATAlgorithm/circle.h>
 
-
 namespace CAT {
   namespace topology{
 

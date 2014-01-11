@@ -54,6 +54,9 @@ namespace SULTAN {
     /// Maximum computing time in ms
     double max_time;
 
+    /// print an event display in the helix space?
+    bool print_event_display;
+
     /// minimum p-value
     double probmin;
 

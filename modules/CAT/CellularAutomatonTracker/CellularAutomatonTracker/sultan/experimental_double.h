@@ -77,6 +77,12 @@ namespace SULTAN {
       //! operador /= 
       experimental_double& operator /= (double a);
 
+      bool is_less_than__optimist(const experimental_double a, double nsigma)const;
+    
+      bool is_more_than__optimist(const experimental_double a, double nsigma)const;
+
+      bool is_equal_to__optimist(const experimental_double a, double nsigma)const;
+
     };
  
 
@@ -111,6 +117,12 @@ namespace SULTAN {
   
     // fabs(v) 
     experimental_double experimental_fabs (const experimental_double& v1);
+  
+    // min(v1, v2) 
+    experimental_double experimental_min (const experimental_double& v1, const experimental_double& v2);
+  
+    // min(v1, v2) 
+    experimental_double experimental_max (const experimental_double& v1, const experimental_double& v2);
   
     experimental_double operator - (const experimental_double& v1);
 

@@ -172,6 +172,115 @@ namespace SULTAN {
       return p1;
     }
 
+    bool experimental_double::is_less_than__optimist(const experimental_double a, double nsigmas=1)const{
+
+      //
+      // is this less than a?
+      //
+      // 1st case
+      //   .....a....   ___this___
+      //        --- delta -->
+      //  delta > sigma
+      //  false
+      //
+      // 2nd case
+      //   .....a..__this___
+      //        -delta->
+      //  delta > 0, delta < sigma
+      //  true
+      //
+      // 3rd case
+      //   .....this..__a___
+      //        <-delta-
+      //  delta < 0 < sigma
+      //  true
+      //
+      // 4th case
+      //   .....this....   ___a___
+      //        <-- delta ---
+      //  delta < 0 < sigma
+      //  true
+      //
+
+      experimental_double delta = *this - a;
+      if( delta.value() > nsigmas*delta.error() ) return false;
+      return true;
+
+    }
+
+    bool experimental_double::is_more_than__optimist(const experimental_double a, double nsigmas=1)const{
+
+      //
+      // is this more than a?
+      //
+      // 1st case
+      //   .....a....   ___this___
+      //        --- delta -->
+      //  delta > sigma > - nsigma
+      //  true
+      //
+      // 2nd case
+      //   .....a..__this___
+      //        -delta->
+      //  delta > 0, delta < sigma, delta > - sigma
+      //  true
+      //
+      // 3rd case
+      //   .....this..__a___
+      //        <-delta-
+      //  delta < 0 < sigma, |delta| < sigma, delta > - sigma
+      //  true
+      //
+      // 4th case
+      //   .....this....   ___a___
+      //        <-- delta ---
+      //  delta < 0 < sigma, |delta| > sigma, delta < - sigma
+      //  false
+      //
+
+      experimental_double delta = *this - a;
+      if( delta.value() < - nsigmas*delta.error() ) return false;
+      return true;
+
+    }
+
+
+    bool experimental_double::is_equal_to__optimist(const experimental_double a, double nsigmas=1)const{
+
+      //
+      // is this equal to a?
+      //
+      // 1st case
+      //   .....a....   ___this___
+      //        --- delta -->
+      //  |delta| > sigma
+      //  false
+      //
+      // 2nd case
+      //   .....a..__this___
+      //        -delta->
+      //  |delta| < sigma
+      //  true
+      //
+      // 3rd case
+      //   .....this..__a___
+      //        <-delta-
+      //  |delta| < sigma
+      //  true
+      //
+      // 4th case
+      //   .....this....   ___a___
+      //        <-- delta ---
+      //  |delta| > sigma
+      //  false
+      //
+
+      experimental_double delta = *this - a;
+      if( fabs(delta.value()) > nsigmas*delta.error() ) return false;
+      return true;
+
+    }
+
     // Operations with experimental_points
     // -v
     // sin(v) 
@@ -274,6 +383,24 @@ namespace SULTAN {
       experimental_double v;
       v.set_value(fabs(v1.value()));
       v.set_error(v1.error());
+      return v;
+    }
+  
+    // min(v1, v2) 
+    experimental_double experimental_min (const experimental_double& v1, const experimental_double& v2)
+    {
+      experimental_double v = v1;
+      if( v1.value() > v2.value() )
+	v = v2;
+      return v;
+    }
+  
+    // max(v1, v2) 
+    experimental_double experimental_max (const experimental_double& v1, const experimental_double& v2)
+    {
+      experimental_double v = v1;
+      if( v1.value() < v2.value() )
+	v = v2;
       return v;
     }
   
@@ -382,6 +509,7 @@ namespace SULTAN {
 
       return experimental_double(mean/inverr, sqrt(newerr));
     }
+
 
 
   }

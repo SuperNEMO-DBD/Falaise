@@ -9,6 +9,9 @@ file(GLOB SULTAN_HEADERS *.h)
 file(GLOB SULTAN_SOURCES *.cpp)
 
 include_directories(${CLHEP_INCLUDE_DIRS})
+if (_cat_needs_root)
+  include_directories(${ROOT_INCLUDES})
+endif ()
 
 add_definitions (-Wno-deprecated)
 
@@ -22,7 +25,7 @@ install ( FILES ${PROJECT_BINARY_DIR}/CellularAutomatonTracker/sultan/SULTAN_con
   PERMISSIONS OWNER_READ GROUP_READ WORLD_READ
   )
 
-list (APPEND CATALGORITHM_HEADERS ${PROJECT_BINARY_DIR}/CellularAutomatonTracker/sultan/SULTAN_config.h )
+list (APPEND SULTAN_HEADERS ${PROJECT_BINARY_DIR}/CellularAutomatonTracker/sultan/SULTAN_config.h )
 
 configure_file ( ${PROJECT_SOURCE_DIR}/cmake/Templates/SULTAN_config.h.in
   ${PROJECT_BINARY_DIR}/CellularAutomatonTracker/sultan/SULTAN_config.h @ONLY )
@@ -32,13 +35,20 @@ install ( FILES ${PROJECT_BINARY_DIR}/CellularAutomatonTracker/sultan/SULTAN_con
   PERMISSIONS OWNER_READ GROUP_READ WORLD_READ
   )
 
-list (APPEND CATALGORITHM_HEADERS ${PROJECT_BINARY_DIR}/CellularAutomatonTracker/sultan/SULTAN_config.h )
+list (APPEND SULTAN_HEADERS ${PROJECT_BINARY_DIR}/CellularAutomatonTracker/sultan/SULTAN_config.h )
 
 
 #----------------------------------------------------------------------------
 # Add the library targets, force them to be shared
 #
 add_library(sultan SHARED ${SULTAN_SOURCES} ${SULTAN_HEADERS})
+if (_cat_needs_root)
+  # Link them to ROOT libraries in special build modes
+  message(" qqq install root to sultan")
+  target_link_libraries(sultan ${ROOT_LIBRARIES})
+endif ()
+
+target_link_libraries(sultan ${CLHEP_LIBRARIES})
 
 # Link them as needed to ROOT libraries
 # Hmm, this isn't really right...

@@ -134,6 +134,10 @@ namespace SULTAN {
 
       bool different_cells(topology::experimental_helix b)const;
 
+      bool is_less_than__optimist(const topology::experimental_helix a, double nsigma)const;
+
+      bool is_more_than__optimist(const topology::experimental_helix a, double nsigma)const;
+
     };
 
   }
