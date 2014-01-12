@@ -439,61 +439,63 @@ namespace SULTAN {
     if( print_event_display && event_number < 10 ){
       clock.start(" sultan : calculate_helices : print_event_display ", "cumulative");
 
-      TString tree_name=Form("event_%d_cluster_%d", event_number, icluster);
-      TTree *root_tree = new TTree(tree_name,tree_name);
-  
-      TString x0_name=Form("x0_event_%d_cluster_%d", event_number, icluster);
-      TString y0_name=Form("y0_event_%d_cluster_%d", event_number, icluster);
-      TString z0_name=Form("z0_event_%d_cluster_%d", event_number, icluster);
-      TString R_name=Form("R_event_%d_cluster_%d", event_number, icluster);
-      TString H_name=Form("H_event_%d_cluster_%d", event_number, icluster);
+      if( the_helices->size() ){
 
-      TString x0_weight_name=Form("x0_weight_event_%d_cluster_%d", event_number, icluster);
-      TString y0_weight_name=Form("y0_weight_event_%d_cluster_%d", event_number, icluster);
-      TString z0_weight_name=Form("z0_weight_event_%d_cluster_%d", event_number, icluster);
-      TString R_weight_name=Form("R_weight_event_%d_cluster_%d", event_number, icluster);
-      TString H_weight_name=Form("H_weight_event_%d_cluster_%d", event_number, icluster);
-
-      double x0_value, x0_weight;
-      double y0_value, y0_weight;
-      double z0_value, z0_weight;
-      double R_value, R_weight;
-      double H_value, H_weight;
-
-      root_tree->Branch(x0_name,&x0_value);
-      root_tree->Branch(y0_name,&y0_value);
-      root_tree->Branch(z0_name,&z0_value);
-      root_tree->Branch(R_name,&R_value);
-      root_tree->Branch(H_name,&H_value);
-
-      root_tree->Branch(x0_weight_name,&x0_weight);
-      root_tree->Branch(y0_weight_name,&y0_weight);
-      root_tree->Branch(z0_weight_name,&z0_weight);
-      root_tree->Branch(R_weight_name,&R_weight);
-      root_tree->Branch(H_weight_name,&H_weight);
-
-      for(std::vector<topology::experimental_helix>::const_iterator ihel=the_helices->begin();
-	  ihel != the_helices->end(); ++ihel){
-	x0_value = ihel->x0().value();
-	y0_value = ihel->y0().value();
-	z0_value = ihel->z0().value();
-	R_value = ihel->R().value();
-	H_value = ihel->H().value();
-
-	x0_weight = pow(ihel->x0().error(),-2);
-	y0_weight = pow(ihel->y0().error(),-2);
-	z0_weight = pow(ihel->z0().error(),-2);
-	R_weight = pow(ihel->R().error(),-2);
-	H_weight = pow(ihel->H().error(),-2);
-
-	root_tree->Fill();
-
+	TString tree_name=Form("event_%d_cluster_%d", event_number, icluster);
+	TTree *root_tree = new TTree(tree_name,tree_name);
+	
+	TString x0_name=Form("x0_event_%d_cluster_%d", event_number, icluster);
+	TString y0_name=Form("y0_event_%d_cluster_%d", event_number, icluster);
+	TString z0_name=Form("z0_event_%d_cluster_%d", event_number, icluster);
+	TString R_name=Form("R_event_%d_cluster_%d", event_number, icluster);
+	TString H_name=Form("H_event_%d_cluster_%d", event_number, icluster);
+	
+	TString x0_weight_name=Form("x0_weight_event_%d_cluster_%d", event_number, icluster);
+	TString y0_weight_name=Form("y0_weight_event_%d_cluster_%d", event_number, icluster);
+	TString z0_weight_name=Form("z0_weight_event_%d_cluster_%d", event_number, icluster);
+	TString R_weight_name=Form("R_weight_event_%d_cluster_%d", event_number, icluster);
+	TString H_weight_name=Form("H_weight_event_%d_cluster_%d", event_number, icluster);
+	
+	double x0_value = 0., x0_weight = 0.;
+	double y0_value = 0., y0_weight = 0.;
+	double z0_value = 0., z0_weight = 0.;
+	double R_value = 0., R_weight = 0.;
+	double H_value = 0., H_weight = 0.;
+	
+	root_tree->Branch(x0_name,&x0_value);
+	root_tree->Branch(y0_name,&y0_value);
+	root_tree->Branch(z0_name,&z0_value);
+	root_tree->Branch(R_name,&R_value);
+	root_tree->Branch(H_name,&H_value);
+	
+	root_tree->Branch(x0_weight_name,&x0_weight);
+	root_tree->Branch(y0_weight_name,&y0_weight);
+	root_tree->Branch(z0_weight_name,&z0_weight);
+	root_tree->Branch(R_weight_name,&R_weight);
+	root_tree->Branch(H_weight_name,&H_weight);
+	
+	for(std::vector<topology::experimental_helix>::const_iterator ihel=the_helices->begin();
+	    ihel != the_helices->end(); ++ihel){
+	  x0_value = ihel->x0().value();
+	  y0_value = ihel->y0().value();
+	  z0_value = ihel->z0().value();
+	  R_value = ihel->R().value();
+	  H_value = ihel->H().value();
+	  
+	  x0_weight = pow(ihel->x0().error(),-2);
+	  y0_weight = pow(ihel->y0().error(),-2);
+	  z0_weight = pow(ihel->z0().error(),-2);
+	  R_weight = pow(ihel->R().error(),-2);
+	  H_weight = pow(ihel->H().error(),-2);
+	  
+	  root_tree->Fill();
+	  
+	}
+	
+	root_file_->cd();
+	root_tree->Write();
+	delete root_tree;
       }
-
-      root_file_->cd();
-      root_tree->Write();
-      delete root_tree;
-
       clock.stop(" sultan : calculate_helices : print_event_display ");
     }
 
