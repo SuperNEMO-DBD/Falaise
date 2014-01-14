@@ -30,7 +30,7 @@ Files:
     considered as calibration sources for the experimental setup,
   * ``dbd.def`` : a list of generators  of double beta decay for Ca48,
     Se82, Mo100 and Nd150,
-  * ``misc.def`` :
+  * ``misc.def`` : various generators of monokinetic electrons or gammas.
 
 List the name of the available particle generators:
 ===================================================
@@ -44,7 +44,7 @@ From the Falaise source directory: ::
    $ bxgenbb_inspector \
       --datatools::resource_path "falaise@$(pwd)/resources" \
       --configuration "@falaise:config/common/simulation/primary_events/1.0/manager.conf" \
-      --action "list" --list-print mode "raw"
+      --action "list" --list-print-mode "raw"
 
 
 Generate 1000 primary events from the ``Bi214_Po214`` generator:
