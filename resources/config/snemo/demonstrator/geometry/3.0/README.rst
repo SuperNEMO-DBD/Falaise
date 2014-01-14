@@ -3,7 +3,7 @@ SuperNEMO virtual geometry setup
 ================================
 
 :Authors: François Mauger, Xavier Garrido
-:Date:    2013-10-30
+:Date:    2014-01-13
 
 .. contents::
    :depth: 3
@@ -29,8 +29,8 @@ Files:
    this  allows to  build  a  dictionnary of  geometry  IDs to  enable
    automated location  of volumes  and navigation within  the geometry
    model,
- * Files  dedicated   to  the  building  of   *geometry  models*  (ala
-   Geant4/GDML logical volume factories):
+ * ``models/`` : the directory that contains files  dedicated   to  the
+   building  of   *geometry  models*  (ala Geant4/GDML logical volume factories)
 
    * ``setup.geom`` :
    * ``module_0.geom`` :
@@ -55,6 +55,18 @@ Files:
    * ``source_module/source_module.geom``:
    * ``source_module/source_strips.geom``:
 
+ * ``plugins/`` : the directory that contains files that describe
+   geometry plugins.
+
+   * ``materials_plugin.conf`` : definitions of materials,
+   * ``locators_plugin.conf`` : locators,
+   * ``magnetic_field_plugin.conf`` : support for magnetic field,
+
+     * ``magnetic_field_manager.conf`` : field manager,
+     * ``magnetic_fields.def`` : definitions of fields,
+
+   * ``mapping_plugins.conf`` : mapping.
+
 
 Check the geometry:
 
@@ -66,7 +78,11 @@ Check the geometry:
 
   1. First make sure the Bayeux software is installed and setup: ::
 
+      $ which bxquery
+      $ bxquery --version
+      ...
       $ which bxgeomtools_inspector
+      ...
 
   2. Build Falaise from a build directory of your choice.
   3. Then from Falaise build directory, run: ::

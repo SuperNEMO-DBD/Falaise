@@ -13,10 +13,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "blue"
 
 # Sensitive detector category:
-sensitive.category                : string = "calorimeter.SD"
-sensitive.record_alpha_quenching  : boolean = 1
-sensitive.record_track_id         : boolean = 1
-sensitive.record_primary_particle : boolean = 1
+sensitive.category : string = "calorimeter_SD"
 
 
 #####################################################################################################
@@ -219,10 +216,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "blue"
 
 # Sensitive detector category:
-sensitive.category                : string = "calorimeter.SD"
-sensitive.record_alpha_quenching  : boolean = 1
-sensitive.record_track_id         : boolean = 1
-sensitive.record_primary_particle : boolean = 1
+sensitive.category : string = "calorimeter_SD"
 
 
 ########################################################################################################
