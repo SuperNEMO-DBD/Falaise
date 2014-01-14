@@ -26,7 +26,7 @@ three main components:
     identifies a  given configuration of the  vertex generation engine
     based on the ``Bayeux/genvtx`` library module.
   * The  configuration files  for  Geant4 based  simulation engine  is
-    stored from  the ``control`` subdirectory. A  version number (i.e.
+    stored from  the ``geant4_control`` subdirectory. A  version number (i.e.
     ``1.0``) identifies a given configuration of the Geant4 simulation
     engine  based on  the  ``Bayeux/mctools`` library  module and  its
     Geant4 plugin.
