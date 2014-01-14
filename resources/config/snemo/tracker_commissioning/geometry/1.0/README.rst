@@ -30,23 +30,32 @@ Files:
    (drift  volumes, wires,  frame beams...);  this allows  to build  a
    dictionnary of geometry IDs to enable automated location of volumes
    and navigation within the geometry model,
- * Files  dedicated   to  the  building  of   *geometry  models*  (ala
-   Geant4/GDML logical volume factories):
-   * ``C0_shape_layers.geom`` : geometric  description of the tracking
+ * ``geometry_service.conf`` : Configuration file for the geometry service
+   associated to this geometry setup,
+ * ``models/`` : the directory that contains files  dedicated   to  the
+   building  of   *geometry  models*  (ala Geant4/GDML logical volume factories).
+
+   * ``C0_shape_layers.geom`` : description of the tracking
      layers,
-   * ``C0_module.geom`` : geometric description of the C0 module,
-   * ``muon_trigger.geom`` : geometric description of the muon trigger
+   * ``C0_module.geom`` : description of the C0 module,
+   * ``muon_trigger.geom`` : description of the muon trigger
      plates,
-   * ``setup.geom``  :  geometric  description  of  the  full  tracker
+   * ``setup.geom``  : description  of  the  full  tracker
      commissioning setup with the world top volume and an experimental
      area that hosts the detector.
+
+ * ``plugins/`` : the directory that contains files that describe
+   geometry plugins.
+
+   * ``materials_plugin.conf`` : the material plugin.
 
 Check the geometry:
 
   1. First make sure the Bayeux software is installed and setup: ::
 
-      $ which bayeux-config
-      $ bayeux-config --version
+      $ which bxquery
+      $ bxquery --version
+      ...
 
   2. Then run: ::
 
