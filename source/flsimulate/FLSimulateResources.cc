@@ -14,13 +14,15 @@
 #include "FLSimulateResources.h"
 
 // Standard Library
-#include <stdexcept>
+#include <map>
 
 // Third Party
 // - Boost
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 #include <boost/assert.hpp>
+#include <boost/assign.hpp>
+#include <boost/algorithm/string.hpp>
 
 // - Bayeux
 #include "bayeux/datatools/exception.h"
@@ -40,6 +42,29 @@ void doInitResources();
 
 //! Fix internal/external resource paths
 void doFixupResourcePaths();
+
+//! Define defaults and type for lookup table of experiment control files
+struct ExperimentLookup {
+  typedef std::map<std::string, std::string> Table;
+};
+
+//! Construct lookup table
+ExperimentLookup::Table constructLookupTable() {
+  ExperimentLookup::Table a;
+  boost::assign::insert(a)
+      ("",
+       "resources/config/snemo/demonstrator/simulation/geant4_control/1.0/manager.conf")
+      ("default",
+       "resources/config/snemo/demonstrator/simulation/geant4_control/1.0/manager.conf")
+      ("demonstrator",
+       "resources/config/snemo/demonstrator/simulation/geant4_control/1.0/manager.conf")
+      ("tracker_commissioning",
+       "resources/config/snemo/tracker_commissioning/simulation/geant4_control/1.0/manager.conf")
+      ("bipo3",
+       "resources/config/bipo3/simulation/geant4_control/1.0/manager.conf");
+
+  return a;
+}
 
 //! Convert BrInitError code to a string describing the error
 //! \todo add errno to returned string
@@ -156,5 +181,22 @@ std::string getResourceDir() {
   boost::filesystem::path absPath = boost::filesystem::canonical(tmpPath);
   return absPath.string();
 }
+
+std::string getControlFile(const std::string& experiment,
+                           const std::string& /*versionID*/) {
+  static ExperimentLookup::Table a;
+  if (a.empty()) a = constructLookupTable();
+
+  std::string canonicalName(boost::to_lower_copy(experiment));
+  ExperimentLookup::Table::const_iterator p = a.find(canonicalName);
+  if (p == a.end()) {
+    throw UnknownResourceException("no control file for '"+experiment+"'");
+  }
+
+  boost::filesystem::path basePath(getResourceDir());
+  basePath /= (*p).second;
+  return basePath.string();
+}
+
 } // namespace FLSimulate
 

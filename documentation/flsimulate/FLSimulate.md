@@ -15,10 +15,9 @@ Here we present a brief overview of running FLSimulate from the command
 line to generate an output file suitable for input to the
 [FLReconstruct](@ref md_FLReconstruct) application.
 
-At present (Alpha 1), FLSimulate only supports simulation of the SuperNEMO
-tracker module in its commissioning setup, with cosmic muon events. Further
-functionality will be added in later alphas for BiPo3 and the SuperNEMO
-demonstrator.
+At present (Alpha 3), FLSimulate supports simulation of the SuperNEMO
+demonstrator module, tracker module for commissioning and the BiPo3
+detector. Note however that this interface is not complete yet.
 
 Please contact the Software Working Group if you have any questions or
 feature requests.
@@ -44,6 +43,7 @@ Options
   --version                             print version number
   -v [ --verbose ]                      increase verbosity of logging
   -n [ --number ] [events] (=1)         number of events to simulate
+  --experiment [name] (=default)        experiment to simulate
   -x [ --vertex-generator ] [name] (=experimental_hall_roof)
                                         The name of the vertex generator
   -e [ --event-generator ] [name] (=muon.cosmic.sea_level.toy)
@@ -72,20 +72,40 @@ flsimulate uses the following external libraries:
 $
 ~~~~~
 
-At present, you can only run the simulation in batch mode using the
-Tracker Commissioning geometry and event generators. By default, 1
+At present, you can only run the simulation in batch mode. The Demonstrator
+Module, Tracker Commissioning and BiPo3 experiments can be selected to
+be simulated, the default being the Demonstrator Module. By default, 1
 event is generated, with vertices generated at the roof of the hall volume,
-and primary muons (mu+ or mu-) with energies/directions from some cosmic sea level
-approximated spectrum. You can modify the number of events and the output file, which
-can be in XML or Brio format.
+and primary muons (mu+ or mu-) with energies/directions from some cosmic
+sea level approximated spectrum. You can modify the number of events and
+the output file, which can be in XML or Brio format.
 
-For example, to generate 100 events and write them to a file named
-`example.brio` in the current working directory simply run
+Note that at present (Alpha3) the validity of the experiment and
+event/vertex generator combinations are not checked. You may therefore
+need to set all of these by hand to obtain a valid set for simulation.
+
+For example, to simulate 100 events in the Tracker Commissioning experiment
+and write them to a file named `example.brio` in the current working
+directory simply run
 
 ~~~~~
-$ flsimulate -n 100 -o example.brio
+$ flsimulate --experiment=tracker_commissioning -n 100 -o example.brio
 ... lots of logging ...
 $
 ~~~~~
 
 The resultant file can be examined with the `flreconstruct` application.
+
+Available Experiments {#fls_experiments}
+=====================
+The currently available experiment names in `flsimulate` that can be passed
+to the `--experiment` argument are:
+
+- Demonstrator
+- BiPo3
+- Tracker_Commissioning
+
+The above spellings must be used, but the interface is case insensitive.
+For example, "demo" would result in a failure, but any of "Demonstrator",
+"demonstrator", "DEMONSTRATOR" or "dEmOnStRaToR" would work.
+

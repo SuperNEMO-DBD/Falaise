@@ -13,6 +13,7 @@
 #define FLSIMULATERESOURCES_HH
 // Standard Library
 #include <string>
+#include <stdexcept>
 
 // Third Party
 // - A
@@ -20,6 +21,12 @@
 // This Project
 
 namespace FLSimulate {
+//! Exception for unknown resources
+class UnknownResourceException : public std::runtime_error {
+ public:
+  UnknownResourceException(const std::string& msg) : std::runtime_error(msg) {}
+};
+
 //! Initialize the application resources, throws runtime_error on fail
 void initResources();
 
@@ -28,6 +35,10 @@ std::string getApplicationDir();
 
 //! Return the path to the root of the resource directory
 std::string getResourceDir();
+
+//! Return the control file for the given experiment and version id
+std::string getControlFile(const std::string& experiment,
+                           const std::string& /*versionID*/ = "");
 }
 #endif // FLSIMULATERESOURCES_HH
 

@@ -93,6 +93,7 @@ void do_help(const bpo::options_description& od) {
 //! Handle command line argument dialog
 void do_cldialog(int argc, char *argv[], mctools::g4::manager_parameters& params) {
   // Bind command line parser to exposed parameters
+  std::string experimentID;
   namespace bpo = boost::program_options;
   bpo::options_description optDesc;
   optDesc.add_options()
@@ -104,6 +105,11 @@ void do_cldialog(int argc, char *argv[], mctools::g4::manager_parameters& params
       ->default_value(1)
       ->value_name("[events]"),
      "number of events to simulate")
+    ("experiment",
+     bpo::value<std::string>(&experimentID)
+     ->default_value("default")
+     ->value_name("[name]"),
+     "experiment to simulate")
     ("vertex-generator,x",
      bpo::value<std::string>(&params.vg_name)
       ->default_value("experimental_hall_roof")
@@ -134,6 +140,16 @@ void do_cldialog(int argc, char *argv[], mctools::g4::manager_parameters& params
     }
   } catch (const std::exception& e) {
     std::cerr << "[OptionsException] " << e.what() << std::endl;
+    throw FLDialogOptionsError();
+  }
+
+  // Handle the experiment
+  try {
+    params.manager_config_filename = FLSimulate::getControlFile(vMap["experiment"].as<std::string>());
+  } catch (FLSimulate::UnknownResourceException& e) {
+    std::cerr << "[FLSimulate::UnknownResourceException] "
+              << e.what()
+              << std::endl;
     throw FLDialogOptionsError();
   }
 
@@ -182,7 +198,7 @@ void do_configure(int argc, char *argv[], mctools::g4::manager_parameters& param
     FLSimulate::initResources();
     params.set_defaults();
     params.logging = "error";
-    params.manager_config_filename = FLSimulate::getResourceDir() + "/resources/config/snemo/tracker_commissioning/simulation/control/1.0/manager.conf";
+    params.manager_config_filename = FLSimulate::getControlFile("default");
   } catch (std::exception& e) {
     throw FLConfigDefaultError();
   }
