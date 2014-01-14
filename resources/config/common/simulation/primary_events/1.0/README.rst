@@ -22,8 +22,8 @@ Files:
 ======
 
   * ``README.rst`` : this file,
-  * ``manager.conf``   :   the   main  configuration   file   of   the
-    Bayeux/geomtools genbb/decay0 manager object,
+  * ``manager.conf`` : the   main  configuration file of   the
+    Bayeux/genbb_help genbb/decay0 manager object,
   * ``background.def`` :  a list of generators  of radioactive decays
     considered as background sources in a DBD experiment,
   * ``calibration.def`` : a list  of generators of radioactive decays

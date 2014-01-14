@@ -158,6 +158,7 @@ ${PROJECT_SOURCE_DIR}/resources/config/bipo3/simulation/geant4_control/1.0/step_
 ${PROJECT_SOURCE_DIR}/resources/config/bipo3/simulation/geant4_control/1.0/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/bipo3/simulation/geant4_control/1.0/step_hit_processors.all_tracks.conf
 ${PROJECT_SOURCE_DIR}/resources/config/bipo3/simulation/geant4_control/1.0/geant4_visualization.mac
+${PROJECT_SOURCE_DIR}/resources/config/bipo3/simulation/primary_events/1.0/manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/bipo3/simulation/vertexes/1.0/images/bipo3_vertexes_1.0_source_bulk.jpeg
 ${PROJECT_SOURCE_DIR}/resources/config/bipo3/simulation/vertexes/1.0/generators.lis
 ${PROJECT_SOURCE_DIR}/resources/config/bipo3/simulation/vertexes/1.0/manager.conf
