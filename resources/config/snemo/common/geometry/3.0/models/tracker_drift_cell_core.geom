@@ -296,7 +296,7 @@ visibility.color            : string  = "cyan"
 #################################
 
 #@description The name of the sensitive detector category
-sensitive.category          : string = "tracker_SD"
+sensitive.category : string = "tracker_SD"
 
 ######################
 # Mapping parameters #
