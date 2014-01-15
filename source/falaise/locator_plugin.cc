@@ -77,7 +77,7 @@ namespace snemo {
 
       geomtools::manager::base_plugin::_basic_initialize (config_);
 
-      DT_LOG_NOTICE (get_logging_priority(), "Building the embeded locators...");
+      DT_LOG_NOTICE (get_logging_priority(), "Building the embedded locators...");
       _build_locators (config_);
 
       _initialized_ = true;

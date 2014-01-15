@@ -913,17 +913,6 @@ namespace snemo {
       DT_THROW_IF (_module_number_ == geomtools::geom_id::INVALID_ADDRESS,
                    std::logic_error,
                    "Missing module number ! Use the 'set_module_number' method before !");
-      // Check if the geometry manager is for the SuperNEMO setup :
-      if (get_geo_manager ().get_setup_label () != "snemo")
-        {
-          // DT_THROW_IF (true,
-          //              std::logic_error,
-          //              "This locator is designed to use a SuperNEMO geometry setup labeled 'snemo', not '"
-          //              << get_geo_manager ().get_setup_label () << "' !");
-          DT_LOG_WARNING (get_logging_priority (),
-                          "This locator is going to be used with a SuperNEMO geometry setup labeled '"
-                          << get_geo_manager ().get_setup_label () << " which is NOT the expected official 'snemo' label ! ");
-        }
       _construct ();
       _initialized_ = true;
       return;
