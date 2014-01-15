@@ -14,7 +14,7 @@
 [name="source_strips_internal_bulk" type="snemo::genvertex::boxed_model_vg"]
 #@config Vertex generation from the bulk volume of the inner source strips
 debug  : boolean = 0
-geometry.setup_requirement : string = "snemo(>=2)"
+geometry.setup_requirement : string = "snemo::demonstrator(>=2)"
 origin : string  = "category=source_strip module={*} strip=[1;34]"
 mode   : string  = "bulk"
 
@@ -22,7 +22,7 @@ mode   : string  = "bulk"
 [name="source_strips_external_bulk" type="snemo::genvertex::boxed_model_vg"]
 #@config Vertex generation from the bulk volume of the outer source strips
 debug  : boolean = 0
-geometry.setup_requirement : string = "snemo(>=2)"
+geometry.setup_requirement : string = "snemo::demonstrator(>=2)"
 origin : string  = "category=source_strip module={*} strip={0;35}"
 mode   : string  = "bulk"
 
@@ -43,7 +43,7 @@ generators.source_strips_internal_bulk.absolute_weight : real  = 1.0
 # Generate vertex from the surface of the source foil (internal strips):
 [name="source_strips_internal_surface" type="snemo::genvertex::boxed_model_vg"]
 #@config Vertex generation from the surface of the inner source strips
-geometry.setup_requirement : string = "snemo(>=2)"
+geometry.setup_requirement : string = "snemo::demonstrator(>=2)"
 origin : string  = "category=source_strip module={*} strip=[1;34]"
 mode   : string  = "surface"
 mode.surface.back  : boolean = 1
@@ -52,7 +52,7 @@ mode.surface.front : boolean = 1
 # Generate vertex from the surface of the source foil (external strips):
 [name="source_strips_external_surface" type="snemo::genvertex::boxed_model_vg"]
 #@config Vertex generation from the surface of the outer source strips
-geometry.setup_requirement : string = "snemo(>=2)"
+geometry.setup_requirement : string = "snemo::demonstrator(>=2)"
 origin : string  = "category=source_strip module={*} strip={0;35}"
 mode   : string  = "surface"
 mode.surface.back  : boolean = 1

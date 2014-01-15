@@ -12,7 +12,7 @@
 
 # Generate vertex from the surface of the source foil:
 [name="source_pads_surface_all" type="snemo::genvertex::boxed_model_vg"]
-geometry.setup_requirement : string = "snemo(<2)"
+geometry.setup_requirement : string = "snemo::demonstrator(<2)"
 origin : string  = "category=source_pad module={*} column={*} row={*}"
 mode   : string  = "surface"
 mode.surface.back  : boolean = 1
@@ -21,7 +21,7 @@ mode.surface.front : boolean = 1
 
 # Generate vertex from the front surface of the source foil:
 [name="source_pads_surface_front" type="snemo::genvertex::boxed_model_vg"]
-geometry.setup_requirement : string = "snemo(<2)"
+geometry.setup_requirement : string = "snemo::demonstrator(<2)"
 origin : string  = "category=source_pad module={*} column={*} row={*}"
 mode   : string  = "surface"
 mode.surface.back  : boolean = 0
@@ -30,7 +30,7 @@ mode.surface.front : boolean = 1
 
 # Generate vertex from the back surface of the source foil:
 [name="source_pads_surface_back" type="snemo::genvertex::boxed_model_vg"]
-geometry.setup_requirement : string = "snemo(<2)"
+geometry.setup_requirement : string = "snemo::demonstrator(<2)"
 origin : string  = "category=source_pad module={*} column={*} row={*}"
 mode   : string  = "surface"
 mode.surface.back  : boolean = 1
@@ -39,7 +39,7 @@ mode.surface.front : boolean = 0
 
 # Generate vertex from the bulk volume of the source foil:
 [name="source_pads_bulk" type="snemo::genvertex::boxed_model_vg"]
-geometry.setup_requirement : string = "snemo(<2)"
+geometry.setup_requirement : string = "snemo::demonstrator(<2)"
 debug  : boolean = 0
 origin : string  = "category=source_pad module={*} column={*} row={*}"
 mode   : string  = "bulk"
@@ -47,7 +47,7 @@ mode   : string  = "bulk"
 
 # Generate vertex from both the bulk volume and the surface of the source foil :
 [name="source_pads_mix_1" type="snemo::genvertex::combined_vg"]
-geometry.setup_requirement : string = "snemo(<2)"
+geometry.setup_requirement : string = "snemo::demonstrator(<2)"
 debug  : boolean = 0
 generators : string[2]  = "source_pads_bulk" "source_pads_surface_all"
 generators.source_pads_bulk.absolute_weight         : real  = 1.0
@@ -56,7 +56,7 @@ generators.source_pads_surface_all.absolute_weight  : real  = 0.5
 
 # Generate vertex from both the bulk volume and the surface of the source foil :
 [name="source_pads_mix_2" type="snemo::genvertex::combined_vg"]
-geometry.setup_requirement : string = "snemo(<2)"
+geometry.setup_requirement : string = "snemo::demonstrator(<2)"
 debug  : boolean = 0
 generators : string[2]  = "source_pads_bulk" "source_pads_surface_all"
 # Here we set respectively the mass and surface activities for both embeded generators :
