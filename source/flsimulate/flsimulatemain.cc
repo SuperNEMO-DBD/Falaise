@@ -112,13 +112,13 @@ void do_cldialog(int argc, char *argv[], mctools::g4::manager_parameters& params
      "experiment to simulate")
     ("vertex-generator,x",
      bpo::value<std::string>(&params.vg_name)
-      ->default_value("experimental_hall_roof")
+      ->default_value("source_strips_bulk")
       ->value_name("[name]"),
      "The name of the vertex generator"
      )
     ("event-generator,e",
      bpo::value<std::string>(&params.eg_name)
-      ->default_value("muon.cosmic.sea_level.toy")
+      ->default_value("Se82.0nubb")
       ->value_name("[name]"),
      "The name of the event generator"
      )
