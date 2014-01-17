@@ -16,56 +16,54 @@ The code is organised as follows, but note that this is still a work
 in progress and is thus subject to aggressive refactoring (though
 changes will be noted here).
 
-~~~~~
-+- ./
-   ... Top Level Code ... (e.g. API, versioning)
-   +- common/
-   |  ... Placeholder for utilities common to all Falaise tasks ...
-   |  +- detail/
-   |  |  ... Implementation details that appear in public API ...
-   |  +- private/
-   |     ... Completely private implementation details ...
-   +- bipo3/
-   |  +- ... Any code specifically for BiPo3 ...
-   |  +- detail/
-   |  +- private/
-   +- snemo/
-      +- ... Any code specifically for SuperNEMO ...
-      +- detail/
-      +- private/
-~~~~~
+::
+    +- ./
+       ... Top Level Code ... (e.g. API, versioning)
+       +- common/
+       |  ... Placeholder for utilities common to all Falaise tasks ...
+       |  +- detail/
+       |  |  ... Implementation details that appear in public API ...
+       |  +- private/
+       |     ... Completely private implementation details ...
+       +- bipo3/
+       |  +- ... Any code specifically for BiPo3 ...
+       |  +- detail/
+       |  +- private/
+       +- snemo/
+          +- ... Any code specifically for SuperNEMO ...
+          +- detail/
+          +- private/
+
 
 Header files should be organised into the above hierarchy, with
 implementation files all in the main module directory, e.g.
 
-~~~~~
-+- common/
-   +- foo.h
-   +- foo.cc
-   +- bar.cc
-   +- baz.cc
-   +- detail/
-   |  +- bar.h
-   +- private/
-      +- baz.h
-~~~~~
+::
+    +- common/
+       +- foo.h
+       +- foo.cc
+       +- bar.cc
+       +- baz.cc
+       +- detail/
+       |  +- bar.h
+       +- private/
+          +- baz.h
 
 Code should be namespaced according to this structure. For example, if
 `foo.h`, `bar.h` and `baz.h` declare the classes `foo`, `bar` and `baz`,
 then these will have the namespace structure:
 
-~~~~~
-namespace falaise {
-namespace common {
-class foo;
+.. code:: c++
+    namespace falaise {
+    namespace common {
+    class foo;
 
-namespace detail {
-class bar;
-class baz;
-}
-}
-}
-~~~~~
+    namespace detail {
+    class bar;
+    class baz;
+    }
+    }
+    }
 
 In general, you
 
@@ -103,48 +101,45 @@ What are Public and Private Interfaces?
 ---------------------------------------
 Let's revisit our example from above:
 
-~~~~~
-+- common/
-   +- foo.h
-   +- foo.cc
-   +- bar.cc
-   +- baz.cc
-   +- detail/
-   |  +- bar.h
-   +- private/
-      +- baz.h
-~~~~~
+::
+    +- common/
+       +- foo.h
+       +- foo.cc
+       +- bar.cc
+       +- baz.cc
+       +- detail/
+       |  +- bar.h
+       +- private/
+          +- baz.h
 
 Here, `foo.h` is the only file of relevance to a client of the `common`
 module. It could look something like
 
-~~~~~
-#include <falaise/common/detail/bar.h>
+.. code:: c++
+    #include <falaise/common/detail/bar.h>
 
-namespace falaise {
-namespace common {
-class foo {
- public:
-  foo();
-  ~foo();
+    namespace falaise {
+    namespace common {
+    class foo {
+     public:
+      foo();
+      ~foo();
 
- private:
-  detail::bar<int> barCol_;
-  class detail::baz;
-  detail::baz* bazPtr_;
-};
-}
-}
-~~~~~
+     private:
+      detail::bar<int> barCol_;
+      class detail::baz;
+      detail::baz* bazPtr_;
+    };
+    }
+    }
 
 and the corresponding source file:
 
-~~~~~
-#include <falaise/common/foo.h>
-#include <falaise/private/baz.h>
+.. code:: c++
+    #include <falaise/common/foo.h>
+    #include <falaise/private/baz.h>
 
-...
-~~~~~
+    ...
 
 Here, both `bar` and `baz` are implementation details of `foo` class, i.e.
 they never appear in the public methods of `foo`. The difference between
