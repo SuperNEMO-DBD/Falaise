@@ -17,6 +17,7 @@ in progress and is thus subject to aggressive refactoring (though
 changes will be noted here).
 
 ::
+
     +- ./
        ... Top Level Code ... (e.g. API, versioning)
        +- common/
@@ -39,6 +40,7 @@ Header files should be organised into the above hierarchy, with
 implementation files all in the main module directory, e.g.
 
 ::
+
     +- common/
        +- foo.h
        +- foo.cc
@@ -53,7 +55,8 @@ Code should be namespaced according to this structure. For example, if
 `foo.h`, `bar.h` and `baz.h` declare the classes `foo`, `bar` and `baz`,
 then these will have the namespace structure:
 
-.. code:: c++
+.. code:: cpp
+
     namespace falaise {
     namespace common {
     class foo;
@@ -102,6 +105,7 @@ What are Public and Private Interfaces?
 Let's revisit our example from above:
 
 ::
+
     +- common/
        +- foo.h
        +- foo.cc
@@ -115,7 +119,8 @@ Let's revisit our example from above:
 Here, `foo.h` is the only file of relevance to a client of the `common`
 module. It could look something like
 
-.. code:: c++
+.. code:: cpp
+
     #include <falaise/common/detail/bar.h>
 
     namespace falaise {
@@ -135,7 +140,8 @@ module. It could look something like
 
 and the corresponding source file:
 
-.. code:: c++
+.. code:: cpp
+
     #include <falaise/common/foo.h>
     #include <falaise/private/baz.h>
 
