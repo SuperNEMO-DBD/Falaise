@@ -90,10 +90,22 @@ void do_help(const bpo::options_description& od) {
             << "\n";
 }
 
+//! Collect all needed configuration parameters in one data structure
+struct FLSimulateArgs {
+  datatools::logger::priority     logLevel;
+  unsigned int                    numberOfEvents;          //!< Number of events to be processed in the pipeline
+  std::string                     experimentID;            //!< The label of the virtual experimental setup
+  std::string                     setupGeometryVersion;    //!< The version number of the virtual geometry setup
+  std::string                     setupSimulationVersion;  //!< The version number of the simulation engine setup
+  mctools::g4::manager_parameters simulationManagerParams; /** Parameters for the Geant4 simulation manager
+                                                            *  embedded in the simulation module
+                                                            */
+  std::string                     outputFile;              //!< Output data file for the output module
+};
+
 //! Handle command line argument dialog
-void do_cldialog(int argc, char *argv[], mctools::g4::manager_parameters& params) {
+void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
   // Bind command line parser to exposed parameters
-  std::string experimentID;
   namespace bpo = boost::program_options;
   bpo::options_description optDesc;
   optDesc.add_options()
@@ -101,29 +113,29 @@ void do_cldialog(int argc, char *argv[], mctools::g4::manager_parameters& params
     ("version","print version number")
     ("verbose,v","increase verbosity of logging")
     ("number,n",
-     bpo::value<uint32_t>(&params.number_of_events)
+     bpo::value<uint32_t>(&params.numberOfEvents)
       ->default_value(1)
       ->value_name("[events]"),
      "number of events to simulate")
     ("experiment",
-     bpo::value<std::string>(&experimentID)
+     bpo::value<std::string>(&params.experimentID)
      ->default_value("default")
      ->value_name("[name]"),
      "experiment to simulate")
     ("vertex-generator,x",
-     bpo::value<std::string>(&params.vg_name)
+     bpo::value<std::string>(&params.simulationManagerParams.vg_name)
       ->default_value("source_strips_bulk")
       ->value_name("[name]"),
      "The name of the vertex generator"
      )
     ("event-generator,e",
-     bpo::value<std::string>(&params.eg_name)
+     bpo::value<std::string>(&params.simulationManagerParams.eg_name)
       ->default_value("Se82.0nubb")
       ->value_name("[name]"),
      "The name of the event generator"
      )
     ("output-file,o",
-     bpo::value<std::string>(&params.output_data_file)->required()->value_name("[file]"),
+     bpo::value<std::string>(&params.outputFile)->required()->value_name("[file]"),
      "file in which to store simulation results")
     ;
 
@@ -145,7 +157,7 @@ void do_cldialog(int argc, char *argv[], mctools::g4::manager_parameters& params
 
   // Handle the experiment
   try {
-    params.manager_config_filename = FLSimulate::getControlFile(vMap["experiment"].as<std::string>());
+    params.simulationManagerParams.manager_config_filename = FLSimulate::getControlFile(vMap["experiment"].as<std::string>());
   } catch (FLSimulate::UnknownResourceException& e) {
     std::cerr << "[FLSimulate::UnknownResourceException] "
               << e.what()
@@ -161,17 +173,17 @@ void do_cldialog(int argc, char *argv[], mctools::g4::manager_parameters& params
   // for a  simulation run.  Note  that the 'XXX_seed'  parameters are
   // initialized  with  the 'mygsl::random_utils::SEED_INVALID'  value
   // (-1) which leads to an exception at PRNG startup.
-  params.vg_seed   = mygsl::random_utils::SEED_TIME; // PRNG for the vertex generator
-  params.eg_seed   = mygsl::random_utils::SEED_TIME; // PRNG for the primary event generator
-  params.shpf_seed = mygsl::random_utils::SEED_TIME; // PRNG for the back end true hit processors
-  params.mgr_seed  = mygsl::random_utils::SEED_TIME; // PRNG for the Geant4 engine itself
+  params.simulationManagerParams.vg_seed   = mygsl::random_utils::SEED_TIME; // PRNG for the vertex generator
+  params.simulationManagerParams.eg_seed   = mygsl::random_utils::SEED_TIME; // PRNG for the primary event generator
+  params.simulationManagerParams.shpf_seed = mygsl::random_utils::SEED_TIME; // PRNG for the back end true hit processors
+  params.simulationManagerParams.mgr_seed  = mygsl::random_utils::SEED_TIME; // PRNG for the Geant4 engine itself
   // params.vg_seed   = 1;
   // params.eg_seed   = 2;
   // params.shpf_seed = 3;
   // params.mgr_seed  = 4;
 
   // Handle verbose, which can't be bound yet
-  if (vMap.count("verbose")) params.logging = "information";
+  if (vMap.count("verbose")) params.simulationManagerParams.logging = "information";
 
   // Handle any non-bound options
   if (vMap.count("help")) {
@@ -192,13 +204,19 @@ class FLConfigHelpHandled : public std::exception {};
 class FLConfigUserError : public std::exception {};
 
 //! Parse command line arguments to configure the simulation parameters
-void do_configure(int argc, char *argv[], mctools::g4::manager_parameters& params) {
+void do_configure(int argc, char *argv[], FLSimulateArgs& params) {
   // - Default Config
   try {
     FLSimulate::initResources();
-    params.set_defaults();
-    params.logging = "error";
-    params.manager_config_filename = FLSimulate::getControlFile("default");
+    params.logLevel = datatools::logger::PRIO_ERROR;
+    params.experimentID = "snemo";
+    params.setupGeometryVersion = "1.0";
+    params.setupSimulationVersion = "1.0";
+    params.simulationManagerParams.set_defaults();
+    params.simulationManagerParams.logging = "error";
+    params.simulationManagerParams.manager_config_filename = FLSimulate::getControlFile("default");
+    params.simulationManagerParams.vg_name = "experimental_hall_roof";
+    params.simulationManagerParams.eg_name = "muon.cosmic.sea_level.toy";
   } catch (std::exception& e) {
     throw FLConfigDefaultError();
   }
@@ -213,16 +231,13 @@ void do_configure(int argc, char *argv[], mctools::g4::manager_parameters& param
   } catch (FLDialogOptionsError& e) {
     throw FLConfigUserError();
   }
-
-  // Override any core things
-  params.use_run_header_footer = true;
 }
 
 //----------------------------------------------------------------------
 //! Perform simulation using command line args as given
 falaise::exit_code do_flsimulate(int argc, char *argv[]) {
   // - Configure
-  mctools::g4::manager_parameters flSimParameters;
+  FLSimulateArgs flSimParameters;
   try {
     do_configure(argc, argv, flSimParameters);
   } catch (FLConfigDefaultError& e) {
@@ -236,9 +251,9 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
 
   // - Run
   try {
-    // Have to setup geometry....
+    // Have to setup geometry:
     datatools::multi_properties flSimProperties("name","");
-    flSimProperties.read(flSimParameters.manager_config_filename);
+    flSimProperties.read(flSimParameters.simulationManagerParams.manager_config_filename);
     datatools::properties flSimGeoManagerProperties;
     std::string geoManagerFile = flSimProperties.get_section("geometry").fetch_path("manager.config");
     geomtools::manager geoManager;
@@ -246,32 +261,37 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
     datatools::properties::read_config(geoManagerFile, geoManagerProperties);
     geoManager.initialize(geoManagerProperties);
 
-
+    // Simulation module:
     mctools::g4::simulation_module flSimModule;
     flSimModule.set_name("G4SimulationModule");
     flSimModule.set_sd_label("SD");
     flSimModule.set_geometry_manager(geoManager);
-    flSimModule.set_simulation_manager_params(flSimParameters);
+    flSimModule.set_simulation_manager_params(flSimParameters.simulationManagerParams);
     flSimModule.initialize_simple();
 
-    // Output module...
+    // Output module:
     dpp::output_module simOutput;
     simOutput.set_name("FLSimulateOutput");
-    simOutput.set_single_output_file(flSimParameters.output_data_file);
+    simOutput.set_single_output_file(flSimParameters.outputFile);
     // Metadata management:
     datatools::multi_properties & metadataStore = simOutput.grab_metadata_store();
     datatools::properties & run_header = metadataStore.add_section("RunHeader");
     run_header.store_string("foo", "bar");
-    //run_header.store_integer("nevent", flSimParameters.number_of_events);
-    //run_header.store_string("experimentId", "blah-blah");
-    //run_header.store_string("experimentVersion", "bleh-bleh");
+    // run_header.store_integer("logLevel", flSimParameters.logLevel);
+    // run_header.store_integer("numberOfEvents", flSimParameters.numberOfEvents);
+    // run_header.store_string("experimentID", flSimParameters.experimentID);
+    // run_header.store_string("setupGeometryVersion", flSimParameters.setupGeometryVersion);
+    // run_header.store_flag("simulation");
+    // run_header.store_string("simulation.version", flSimParameters.setupSimulationVersion);
+    // run_header.store_string("simulation.vertexGenName", flSimParameters.simulationManagerParams.vg_name);
+    // run_header.store_string("simulation.eventGenName", flSimParameters.simulationManagerParams.eg_name);
     simOutput.initialize_simple();
 
     // Manual Event loop....
     datatools::things workItem;
     dpp::base_module::process_status status;
 
-    for (unsigned int i(0); i < flSimParameters.number_of_events; ++i) {
+    for (unsigned int i(0); i < flSimParameters.numberOfEvents; ++i) {
       workItem.clear();
 
       status = flSimModule.process(workItem);
@@ -288,9 +308,6 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
         break;
       }
     }
-    //mctools::g4::manager flSimulation;
-    //mctools::g4::manager_parameters::setup(flSimParameters, flSimulation);
-    //flSimulation.run_simulation();
   } catch (std::exception& e) {
     std::cerr << "flsimulate : setup/run of simulation threw exception" << std::endl;
     std::cerr << e.what() << std::endl;
