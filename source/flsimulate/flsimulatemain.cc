@@ -258,6 +258,13 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
     dpp::output_module simOutput;
     simOutput.set_name("FLSimulateOutput");
     simOutput.set_single_output_file(flSimParameters.output_data_file);
+    // Metadata management:
+    datatools::multi_properties & metadataStore = simOutput.grab_metadata_store();
+    datatools::properties & run_header = metadataStore.add_section("RunHeader");
+    run_header.store_string("foo", "bar");
+    //run_header.store_integer("nevent", flSimParameters.number_of_events);
+    //run_header.store_string("experimentId", "blah-blah");
+    //run_header.store_string("experimentVersion", "bleh-bleh");
     simOutput.initialize_simple();
 
     // Manual Event loop....
