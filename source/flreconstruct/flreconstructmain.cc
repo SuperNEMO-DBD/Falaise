@@ -311,20 +311,16 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
   }
 
   // Input module...
+  boost::scoped_ptr<dpp::input_module> recInput(new dpp::input_module);
   DT_LOG_TRACE(clArgs.logLevel,"configuring input module");
-  boost::scoped_ptr<dpp::input_module> input_(new dpp::input_module);
-  input_->set_single_input_file(clArgs.inputFile);
-  input_->initialize_simple();
+  recInput->set_single_input_file(clArgs.inputFile);
+  // Input metadata management:
+  const datatools::multi_properties & iMetadataStore = recInput->get_metadata_store();
+  const datatools::properties * iRunHeader = 0;
+  recInput->initialize_simple();
 
   // Output module... only if file was passed
-  DT_LOG_TRACE(clArgs.logLevel,"configuring output module");
-  boost::scoped_ptr<dpp::output_module> output_;
-  if(!clArgs.outputFile.empty()) {
-    DT_LOG_TRACE(clArgs.logLevel,"output module using file " << clArgs.outputFile);
-    output_.reset(new dpp::output_module);
-    output_->set_single_output_file(clArgs.outputFile);
-    output_->initialize_simple();
-  }
+  boost::scoped_ptr<dpp::output_module> recOutput; // Deferred in-loop initialization
 
   // - Now the actual event loop
   DT_LOG_TRACE(clArgs.logLevel,"begin event loop");
@@ -333,10 +329,18 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
   while (true) {
     // Prepare and read work
     workItem.clear();
-    if(input_->is_terminated()) break;
-    if(input_->process(workItem) != dpp::base_module::PROCESS_OK) {
+    if(recInput->is_terminated()) break;
+    if(recInput->process(workItem) != dpp::base_module::PROCESS_OK) {
       DT_LOG_FATAL(clArgs.logLevel,"Failed to read data record from input source");
       break;
+    }
+    // In-loop input metadata run header:
+    if (! iRunHeader && iMetadataStore.has_section("RunHeader")) {
+      if (iMetadataStore.has_section("RunHeader")) {
+        iRunHeader = &iMetadataStore.get_section("RunHeader");
+        // Here we can do something with the input metadata... just print for now
+        iRunHeader->tree_dump(std::clog, "Input metadata 'RunHeader':");
+      }
     }
 
     // Feed through pipeline
@@ -358,8 +362,21 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
     // if(pStatus == dpp::base_module::PROCESS_FATAL) break;
     if(pStatus == dpp::base_module::PROCESS_INVALID) break;
 
+    // In-loop output module instantiation/initialization:
+    if(!recOutput && !clArgs.outputFile.empty()) {
+      DT_LOG_TRACE(clArgs.logLevel,"configuring output module using file " << clArgs.outputFile);
+      // In-loop output metadata management:
+      recOutput.reset(new dpp::output_module);
+      datatools::multi_properties & oMetadataStore = recOutput->grab_metadata_store();
+      datatools::properties & oRunHeader = oMetadataStore.add_section("RunHeader");
+      oRunHeader = *iRunHeader; // For now we import input metadata...
+      oRunHeader.store_string("foo2", "bar2"); // and add more stuff in it...
+      oRunHeader.tree_dump(std::clog, "Output metadata 'RunHeader':");
+      recOutput->set_single_output_file(clArgs.outputFile);
+      recOutput->initialize_simple();
+    }
     // Write item
-    if(output_) output_->process(workItem);
+    if(recOutput) recOutput->process(workItem);
   }
   DT_LOG_TRACE(clArgs.logLevel,"event loop completed");
 
