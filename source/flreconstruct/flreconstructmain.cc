@@ -41,10 +41,12 @@
 #include "bayeux/version.h"
 #include "bayeux/datatools/logger.h"
 #include "bayeux/datatools/library_loader.h"
+#include "bayeux/datatools/service_manager.h"
 #include "bayeux/dpp/module_manager.h"
 #include "bayeux/dpp/base_module.h"
 #include "bayeux/dpp/input_module.h"
 #include "bayeux/dpp/output_module.h"
+#include "bayeux/geomtools/manager.h"
 
 // - Boost
 #include "boost/program_options.hpp"
@@ -57,6 +59,7 @@
 #include "falaise/falaise.h"
 #include "falaise/version.h"
 #include "falaise/exitcodes.h"
+#include "FLReconstructResources.h"
 
 //----------------------------------------------------------------------
 // IMPLEMENTATION DETAILS
@@ -253,14 +256,50 @@ FLDialogState do_cldialog(int argc, char *argv[], FLReconstructArgs& args) {
   return DIALOG_OK;
 }
 
+//! Extract metadata from input file
+datatools::multi_properties do_get_metadata(const std::string& file) {
+  // Metadata is currently only available *after* one event has been
+  // loaded. So, create a temporary input module and try and extract
+  // it by processing one event.
+  boost::scoped_ptr<dpp::input_module> recInput(new dpp::input_module);
+  recInput->set_single_input_file(file);
+  // Input metadata management:
+  const datatools::multi_properties& iMetadataStore = recInput->get_metadata_store();
+  recInput->initialize_simple();
+
+  datatools::things workItem;
+  recInput->process(workItem);
+  return iMetadataStore;
+}
+
+//! Hack services to start using input metadata
+void do_start_services(datatools::multi_properties& iData,
+                       datatools::service_manager& services) {
+
+  datatools::multi_properties serviceConfig("name","type");
+
+  // Geometry
+  datatools::properties& gs = serviceConfig.add_section("geometry", "geomtools::geometry_service");
+  gs.store("manager.configuration_file", iData.get_section("geometry").fetch_path("manager.config"));
+
+  // Init
+  services.load(serviceConfig);
+  services.initialize();
+}
+
+
 //! Configure and run the pipeline
 falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
+  // Need a service manager
+  datatools::service_manager flrServices;
+
   // - Start up the module manager
   // Dual strategy here
   //  - If they supplied a script, use that, otherwise default to
   //  a single dump module.
   DT_LOG_TRACE(clArgs.logLevel,"configuring module_manager");
   boost::scoped_ptr<dpp::module_manager> moduleManager_(new dpp::module_manager);
+  moduleManager_->set_service_manager(flrServices);
 
   // - Configure the library loader for custom modules
   datatools::multi_properties userLibConfig("name", "filename");
@@ -300,8 +339,17 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
   // Plain initialization
   moduleManager_->initialize_simple();
 
-  // - Plug together pipeline with input/output stages
-  // Always use the module tagged as "pipeline"
+  // Metadata and services - has to be done before we grab the pipeline
+  datatools::multi_properties mData = do_get_metadata(clArgs.inputFile);
+  do_start_services(mData, flrServices);
+
+  // Input module...
+  boost::scoped_ptr<dpp::input_module> recInput(new dpp::input_module);
+  DT_LOG_TRACE(clArgs.logLevel,"configuring input module");
+  recInput->set_single_input_file(clArgs.inputFile);
+  recInput->initialize_simple();
+
+  // - Pipeline
   dpp::base_module* pipeline_;
   try {
     pipeline_ = &(moduleManager_->grab("pipeline"));
@@ -310,14 +358,6 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
     return falaise::EXIT_UNAVAILABLE;
   }
 
-  // Input module...
-  boost::scoped_ptr<dpp::input_module> recInput(new dpp::input_module);
-  DT_LOG_TRACE(clArgs.logLevel,"configuring input module");
-  recInput->set_single_input_file(clArgs.inputFile);
-  // Input metadata management:
-  const datatools::multi_properties & iMetadataStore = recInput->get_metadata_store();
-  const datatools::properties * iRunHeader = 0;
-  recInput->initialize_simple();
 
   // Output module... only if file was passed
   boost::scoped_ptr<dpp::output_module> recOutput; // Deferred in-loop initialization
@@ -333,14 +373,6 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
     if(recInput->process(workItem) != dpp::base_module::PROCESS_OK) {
       DT_LOG_FATAL(clArgs.logLevel,"Failed to read data record from input source");
       break;
-    }
-    // In-loop input metadata run header:
-    if (! iRunHeader && iMetadataStore.has_section("RunHeader")) {
-      if (iMetadataStore.has_section("RunHeader")) {
-        iRunHeader = &iMetadataStore.get_section("RunHeader");
-        // Here we can do something with the input metadata... just print for now
-        iRunHeader->tree_dump(std::clog, "Input metadata 'RunHeader':");
-      }
     }
 
     // Feed through pipeline
@@ -362,19 +394,6 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
     // if(pStatus == dpp::base_module::PROCESS_FATAL) break;
     if(pStatus == dpp::base_module::PROCESS_INVALID) break;
 
-    // In-loop output module instantiation/initialization:
-    if(!recOutput && !clArgs.outputFile.empty()) {
-      DT_LOG_TRACE(clArgs.logLevel,"configuring output module using file " << clArgs.outputFile);
-      // In-loop output metadata management:
-      recOutput.reset(new dpp::output_module);
-      datatools::multi_properties & oMetadataStore = recOutput->grab_metadata_store();
-      datatools::properties & oRunHeader = oMetadataStore.add_section("RunHeader");
-      oRunHeader = *iRunHeader; // For now we import input metadata...
-      oRunHeader.store_string("foo2", "bar2"); // and add more stuff in it...
-      oRunHeader.tree_dump(std::clog, "Output metadata 'RunHeader':");
-      recOutput->set_single_output_file(clArgs.outputFile);
-      recOutput->initialize_simple();
-    }
     // Write item
     if(recOutput) recOutput->process(workItem);
   }
@@ -415,6 +434,7 @@ falaise::exit_code do_flreconstruct(int argc, char *argv[]) {
 int main(int argc, char *argv[]) {
   // - Needed...
   FALAISE_INIT();
+  FLReconstruct::initResources();
 
   // - Do the reconstruction
   // Ideally, exceptions should not propagate out of this - the error

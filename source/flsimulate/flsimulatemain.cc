@@ -275,8 +275,9 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
     simOutput.set_single_output_file(flSimParameters.outputFile);
     // Metadata management:
     datatools::multi_properties & metadataStore = simOutput.grab_metadata_store();
-    datatools::properties & run_header = metadataStore.add_section("RunHeader");
-    run_header.store_string("foo", "bar");
+    //datatools::properties & run_header = metadataStore.add_section("RunHeader");
+    //run_header.store_string("foo", "bar");
+    metadataStore = flSimProperties;
     // run_header.store_integer("logLevel", flSimParameters.logLevel);
     // run_header.store_integer("numberOfEvents", flSimParameters.numberOfEvents);
     // run_header.store_string("experimentID", flSimParameters.experimentID);

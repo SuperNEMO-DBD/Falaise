@@ -27,16 +27,35 @@ find_package(Boost REQUIRED program_options)
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(BEFORE ${Bayeux_INCLUDE_DIRS})
 include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
 
 #-----------------------------------------------------------------------
 # Declare sources
 #
-set(flreconstruct_SOURCES flreconstructmain.cc)
+# - Generate application configuration file
+configure_file(FLReconstructConfig.h.in FLReconstructConfig.h @ONLY)
+
+# - Generate binreloc header/source with mangled names, ensuring first
+# character(s) are a valid for a C identifier
+string(RANDOM LENGTH 18 MANGLE_BINRELOC_MAIN)
+set(MANGLE_BINRELOC "MB${MANGLE_BINRELOC_MAIN}")
+configure_file(FLReconstructBinReloc.h.in FLReconstructBinReloc.h @ONLY)
+
+set(flreconstruct_SOURCES
+  flreconstructmain.cc
+  FLReconstructConfig.h
+  FLReconstructResources.h
+  FLReconstructResources.cc
+  FLReconstructBinReloc.h
+  FLReconstructBinReloc.c
+  )
 
 #-----------------------------------------------------------------------
 # Compile/Link App
 #
 add_executable(flreconstruct ${flreconstruct_SOURCES})
+set_target_properties(flreconstruct PROPERTIES COMPILE_DEFINITIONS ENABLE_BINRELOC)
+
 target_link_libraries(flreconstruct
   Falaise
   ${Bayeux_LIBRARIES}
@@ -52,10 +71,10 @@ if(UNIX AND NOT APPLE)
     )
 elseif(APPLE)
   # Temporary setting - needs testing
-  set_target_properties(flreconstruct 
-    PROPERTIES 
+  set_target_properties(flreconstruct
+    PROPERTIES
       INSTALL_RPATH "@loader_path/../${CMAKE_INSTALL_LIBDIR}"
-      LINK_FLAGS "-Wl,-rpath,@loader_path/../${CMAKE_INSTALL_LIBDIR}" 
+      LINK_FLAGS "-Wl,-rpath,@loader_path/../${CMAKE_INSTALL_LIBDIR}"
       )
 endif()
 

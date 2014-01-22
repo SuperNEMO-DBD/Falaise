@@ -1,0 +1,22 @@
+// FLReconstructConfig.h - compile time configured properties
+//
+// Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com>
+// Copyright (c) 2013 by The University of Warwick
+//
+// Distributed under the OSI-approved BSD 3-Clause License (the "License");
+// see accompanying file License.txt for details.
+//
+// This software is distributed WITHOUT ANY WARRANTY; without even the
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the License for more information.
+#ifndef FLRECONSTRUCTCONFIG_HH
+#define FLRECONSTRUCTCONFIG_HH
+
+namespace FLReconstruct {
+//! Return relative path from application directory to root of resource dir
+std::string relativePathToResourceDir() {
+  return "@Falaise_BINDIR_TO_RESOURCEDIR@";
+} // namespace FLReconstruct
+}
+#endif // FLRECONSTRUCTCONFIG_HH
+
