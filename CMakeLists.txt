@@ -46,6 +46,11 @@ project(Falaise)
 # TODO : better way to do this with the "Make Override" system?
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set(Falaise_CXX_FLAGS "-W -Wall")
+
+  # On clang, need larger template depth
+  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    set(Falaise_CXX_FLAGS "${Falaise_CXX_FLAGS} -ftemplate-depth=512")
+  endif()
 elseif(CMAKE_CXX_COMPILER MATCHES "icpc.*|icc.*")
   # Needs more testing
   set(Falaise_CXX_FLAGS "-w2")
