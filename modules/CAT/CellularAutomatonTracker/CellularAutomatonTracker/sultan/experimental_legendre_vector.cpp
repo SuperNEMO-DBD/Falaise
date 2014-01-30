@@ -73,6 +73,34 @@ namespace SULTAN {
       return r;
     }
 
+    experimental_helix experimental_legendre_vector::max(std::vector<size_t> * neighbouring_cells){
+      experimental_helix r;
+      size_t n = 0;
+      size_t nmax = 0;
+      std::vector<experimental_helix> neis, neis_best;
+      for(std::vector<experimental_helix>::const_iterator ip = helices_.begin(); ip != helices_.end(); ++ip){
+	get_neighbours(*ip, &neis);
+	
+	if( neis.size() > nmax ){
+	  nmax = neis.size();
+	  neis_best = neis;
+	  r = *ip;
+	}
+      }
+      
+      neighbouring_cells->clear();
+      std::vector<size_t> ids;
+      for(std::vector<experimental_helix>::const_iterator ip = neis_best.begin(); ip != neis_best.end(); ++ip){
+	ids = ip->ids();
+	for(std::vector<size_t>::const_iterator id = ids.begin(); id!=ids.end(); ++id){
+	  if( std::find(neighbouring_cells->begin(), neighbouring_cells->end(), *id) == neighbouring_cells->end() )
+	    neighbouring_cells->push_back(*id);
+	}
+      }
+
+      return r;
+    }
+
     cluster_of_experimental_helices experimental_legendre_vector::max_cluster(experimental_helix * helix, bool * found){
 
 #if 1

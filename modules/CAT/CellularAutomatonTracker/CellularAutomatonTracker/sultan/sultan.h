@@ -49,9 +49,11 @@ namespace SULTAN {
     void read_properties( void );
     bool sequentiate(topology::tracked_data & tracked_data);
     bool assign_nodes_based_on_experimental_helix(std::vector<topology::node> nodes, std::vector<topology::node> &assigned_nodes, std::vector<topology::node> &leftover_nodes, topology::experimental_helix * b, std::vector<topology::experimental_helix> *helices);
+    bool assign_nodes_based_on_experimental_helix(std::vector<topology::node> nodes, std::vector<topology::node> &assigned_nodes, std::vector<topology::node> &leftover_nodes, topology::experimental_helix * b, std::vector<size_t> *neighbouring_cells);
     bool calculate_helices(std::vector<topology::node> nodes, std::vector<topology::experimental_helix> *the_helices, size_t icluster);
     void sequentiate_cluster_with_experimental_vector(topology::cluster & cluster, size_t icluster);
     void sequentiate_cluster_with_experimental_vector_2(topology::cluster & cluster, size_t icluster);
+    void sequentiate_cluster_with_experimental_vector_3(topology::cluster & cluster, size_t icluster);
     void make_name(topology::sequence & seq);
     bool late();
     void print_sequences() const;

@@ -94,6 +94,8 @@ namespace SULTAN {
 
       experimental_helix max(std::vector<experimental_helix> * neighbours);
 
+      experimental_helix max(std::vector<size_t> * neighbouring_cells);
+
       cluster_of_experimental_helices max_cluster(experimental_helix * helix, bool * found);
 
       void merge_cluster_of_index(size_t i);

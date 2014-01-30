@@ -200,8 +200,15 @@ namespace SULTAN {
 
     for (vector<topology::cluster>::iterator icluster = the_clusters.begin(); icluster != the_clusters.end(); ++icluster){
       topology::cluster & a_cluster = *icluster;
+      // look for cluster with largest number of triplet-neighbours
       sequentiate_cluster_with_experimental_vector(a_cluster, icluster - the_clusters.begin());
+
+      // keep track in smarter way of which cluster has the largest number of triplet-neighbours
       //sequentiate_cluster_with_experimental_vector_2(a_cluster, icluster - the_clusters.begin());
+
+      // look for cluster with largest number of cell-neighbours
+      //sequentiate_cluster_with_experimental_vector_3(a_cluster, icluster - the_clusters.begin());
+
     }
 
     if (late())
@@ -281,6 +288,70 @@ namespace SULTAN {
 	if( std::find(leftover_nodes_copy.begin(), leftover_nodes_copy.end(), *inode) != leftover_nodes_copy.end() )
 	  leftover_nodes.push_back(*inode);
       }
+    }
+    
+    bool ok = check_continous_cells(assigned_nodes, leftover_nodes, b);
+    
+    m.message(" associated ", assigned_nodes.size(), " nodes to this helix out of ", nodes.size(), " so ", leftover_nodes.size(), " remain unassigned - initially there were ", leftover_nodes_copy.size(),  " -, continous ", ok, mybhep::VERBOSE);
+
+    clock.stop(" sultan: assign_nodes_based_on_experimental_helix ");
+
+    return ok && 
+      (leftover_nodes.size() < leftover_nodes_copy.size()) && 
+      (assigned_nodes.size() ) ;
+    
+  }
+
+
+  //*************************************************************
+  bool sultan::assign_nodes_based_on_experimental_helix(std::vector<topology::node> nodes, std::vector<topology::node> &assigned_nodes, std::vector<topology::node> &leftover_nodes, topology::experimental_helix * b, std::vector<size_t> *neighbouring_cells){
+  //*************************************************************
+
+    clock.start(" sultan: assign_nodes_based_on_experimental_helix ", "cumulative");
+
+    topology::experimental_double dr, dh;
+    vector<topology::node> leftover_nodes_copy=leftover_nodes;
+    assigned_nodes.clear();
+    leftover_nodes.clear();
+    topology::experimental_point p;
+    size_t best_helix_index;
+    double angle;
+    
+    bool active = false;
+    double drmin = mybhep::plus_infinity;
+    double dhmin = mybhep::plus_infinity;
+
+    for (vector<topology::node>::iterator inode = nodes.begin(); inode != nodes.end(); ++inode){
+      if (level >= mybhep::VVERBOSE)
+	{
+	  std::clog << " cell " << inode->c().id() << " ["; inode->c().ep().dump(); std::clog << "] r "; inode->c().r().dump(); std::clog << std::endl;
+	}
+      
+      active = false;
+
+      if( std::find(neighbouring_cells->begin(), neighbouring_cells->end(), inode->c().id()) != neighbouring_cells->end() )
+	active = true;
+
+
+      if( active ){
+	p = b->position(inode->c().ep());
+	if (level >= mybhep::VVERBOSE)
+	  {
+	    std::clog << " is near (" << p.x().value() << ", " << p.y().value() << ", " << p.z().value() << ")" << std::endl;
+	  }
+	// angle of cell center wrt circle center
+	angle = atan2(inode->c().ep().y().value() - b->y0().value(), inode->c().ep().x().value() - b->x0().value());
+	inode->set_circle_phi(angle);
+	inode->set_ep(p);
+	assigned_nodes.push_back(*inode);
+      }else{
+	if (level >= mybhep::VVERBOSE){
+	  std::clog << " is not near " << std::endl;
+	}
+	if( std::find(leftover_nodes_copy.begin(), leftover_nodes_copy.end(), *inode) != leftover_nodes_copy.end() )
+	  leftover_nodes.push_back(*inode);
+      }
+
     }
     
     bool ok = check_continous_cells(assigned_nodes, leftover_nodes, b);
@@ -439,28 +510,30 @@ namespace SULTAN {
     if( print_event_display && event_number < 10 ){
       clock.start(" sultan : calculate_helices : print_event_display ", "cumulative");
 
+      double weight;
+
       if( the_helices->size() ){
 
 	TString tree_name=Form("event_%d_cluster_%d", event_number, icluster);
 	TTree *root_tree = new TTree(tree_name,tree_name);
 	
-	TString x0_name=Form("x0_event_%d_cluster_%d", event_number, icluster);
-	TString y0_name=Form("y0_event_%d_cluster_%d", event_number, icluster);
-	TString z0_name=Form("z0_event_%d_cluster_%d", event_number, icluster);
-	TString R_name=Form("R_event_%d_cluster_%d", event_number, icluster);
-	TString H_name=Form("H_event_%d_cluster_%d", event_number, icluster);
+	TString x0_name=Form("x0_"+tree_name, event_number, icluster);
+	TString y0_name=Form("y0_"+tree_name, event_number, icluster);
+	TString z0_name=Form("z0_"+tree_name, event_number, icluster);
+	TString R_name=Form("R_"+tree_name, event_number, icluster);
+	TString H_name=Form("H_"+tree_name, event_number, icluster);
 	
-	TString x0_weight_name=Form("x0_weight_event_%d_cluster_%d", event_number, icluster);
-	TString y0_weight_name=Form("y0_weight_event_%d_cluster_%d", event_number, icluster);
-	TString z0_weight_name=Form("z0_weight_event_%d_cluster_%d", event_number, icluster);
-	TString R_weight_name=Form("R_weight_event_%d_cluster_%d", event_number, icluster);
-	TString H_weight_name=Form("H_weight_event_%d_cluster_%d", event_number, icluster);
+	TString x0_error_name=Form("x0_error_"+tree_name, event_number, icluster);
+	TString y0_error_name=Form("y0_error_"+tree_name, event_number, icluster);
+	TString z0_error_name=Form("z0_error_"+tree_name, event_number, icluster);
+	TString R_error_name=Form("R_error_"+tree_name, event_number, icluster);
+	TString H_error_name=Form("H_error_"+tree_name, event_number, icluster);
 	
-	double x0_value = 0., x0_weight = 0.;
-	double y0_value = 0., y0_weight = 0.;
-	double z0_value = 0., z0_weight = 0.;
-	double R_value = 0., R_weight = 0.;
-	double H_value = 0., H_weight = 0.;
+	double x0_value = 0., x0_error = 0.;
+	double y0_value = 0., y0_error = 0.;
+	double z0_value = 0., z0_error = 0.;
+	double R_value = 0., R_error = 0.;
+	double H_value = 0., H_error = 0.;
 	
 	root_tree->Branch(x0_name,&x0_value);
 	root_tree->Branch(y0_name,&y0_value);
@@ -468,12 +541,14 @@ namespace SULTAN {
 	root_tree->Branch(R_name,&R_value);
 	root_tree->Branch(H_name,&H_value);
 	
-	root_tree->Branch(x0_weight_name,&x0_weight);
-	root_tree->Branch(y0_weight_name,&y0_weight);
-	root_tree->Branch(z0_weight_name,&z0_weight);
-	root_tree->Branch(R_weight_name,&R_weight);
-	root_tree->Branch(H_weight_name,&H_weight);
+	root_tree->Branch(x0_error_name,&x0_error);
+	root_tree->Branch(y0_error_name,&y0_error);
+	root_tree->Branch(z0_error_name,&z0_error);
+	root_tree->Branch(R_error_name,&R_error);
+	root_tree->Branch(H_error_name,&H_error);
 	
+	std::clog << " tree_name " << tree_name.Data() << " helices " << the_helices->size() << std::endl;
+
 	for(std::vector<topology::experimental_helix>::const_iterator ihel=the_helices->begin();
 	    ihel != the_helices->end(); ++ihel){
 	  x0_value = ihel->x0().value();
@@ -482,13 +557,22 @@ namespace SULTAN {
 	  R_value = ihel->R().value();
 	  H_value = ihel->H().value();
 	  
-	  x0_weight = pow(ihel->x0().error(),-2);
-	  y0_weight = pow(ihel->y0().error(),-2);
-	  z0_weight = pow(ihel->z0().error(),-2);
-	  R_weight = pow(ihel->R().error(),-2);
-	  H_weight = pow(ihel->H().error(),-2);
+	  x0_error = ihel->x0().error();
+	  y0_error = ihel->y0().error();
+	  z0_error = ihel->z0().error();
+	  R_error = ihel->R().error();
+	  H_error = ihel->H().error();
 	  
+	  weight = 1./(pow(x0_error,2) +
+		       pow(y0_error,2) +
+		       pow(z0_error,2) +
+		       pow(R_error,2) +
+		       pow(H_error,2)
+		       );
+
 	  root_tree->Fill();
+
+	  std::clog << " helix " << ihel - the_helices->begin() << " x0 " << x0_value << " +- " << x0_error 	  << " y0 " << y0_value << " +- " << y0_error 	  << " z0 " << z0_value << " +- " << z0_error 	  << " R " << R_value << " +- " << R_error 	  << " H " << H_value << " +- " << H_error << " weight " << weight <<  std::endl;
 	  
 	}
 	
@@ -727,6 +811,114 @@ namespace SULTAN {
 
 
     clock.stop(" sultan: sequentiate_cluster_with_experimental_vector_2 ");
+
+    return;
+  }
+
+
+  //*************************************************************
+  void sultan::sequentiate_cluster_with_experimental_vector_3(topology::cluster & cluster_, size_t icluster) {
+    //*************************************************************
+
+    clock.start(" sultan: sequentiate_cluster_with_experimental_vector_3 ","cumulative");
+
+    experimental_legendre_vector->reset();
+
+    if( cluster_.nodes_.size() < 3 ){
+      clock.stop(" sultan: sequentiate_cluster_with_experimental_vector_3 ");
+      return;
+    }
+
+    if (level >= mybhep::VERBOSE)
+      {
+	std::clog << " sequentiate cluster with " << cluster_.nodes_.size() << " nodes, leg vector has " << experimental_legendre_vector->helices().size() << " helices " << std::endl; fflush(stdout);
+      }
+
+    topology::experimental_helix b;
+    vector<topology::node> assigned_nodes, leftover_nodes;
+    topology::sequence *s;
+    topology::experimental_point *center;
+    topology::experimental_double radius;
+    topology::experimental_double pitch;
+    std::vector<size_t> neighbouring_cells;
+    std::vector<topology::experimental_helix> the_helices;
+
+    leftover_nodes = cluster_.nodes_;
+
+    while( calculate_helices(leftover_nodes, &the_helices, icluster) ){
+
+      clock.start(" sultan: sequentiate_cluster_with_experimental_vector_3: helix loop: clean ","cumulative");
+
+      assigned_nodes.clear();
+      experimental_legendre_vector->reset();
+      neighbouring_cells.clear();
+
+      if (level >= mybhep::VERBOSE){
+	std::clog << " leg vector has " << experimental_legendre_vector->helices().size() << " helices " << std::endl; fflush(stdout);
+      }
+      
+      if( !the_helices.size() ){
+	clock.stop(" sultan: sequentiate_cluster_with_experimental_vector_3: helix loop: clean ");
+	break;
+      }
+      clock.stop(" sultan: sequentiate_cluster_with_experimental_vector_3: helix loop: clean ");
+
+
+      clock.start(" sultan: sequentiate_cluster_with_experimental_vector_3: helix loop: add helix ","cumulative");
+
+      for(std::vector<topology::experimental_helix>::const_iterator hh = the_helices.begin(); hh!=the_helices.end(); ++hh){
+	experimental_legendre_vector->add_helix(*hh);
+      }
+
+      clock.stop(" sultan: sequentiate_cluster_with_experimental_vector_3: helix loop: add helix ");
+
+      clock.start(" sultan: sequentiate_cluster_with_experimental_vector_3: helix loop: max ","cumulative");
+
+      b = experimental_legendre_vector->max(&neighbouring_cells);
+
+      if( !b.ids().size() ){
+      	m.message(" could not make a track ", mybhep::VERBOSE); fflush(stdout);
+	clock.stop(" sultan: sequentiate_cluster_with_experimental_vector_3: helix loop: max ");
+	break;
+      }
+
+
+      if (level >= mybhep::VERBOSE)
+	{
+	  std::clog << " best helix: " ; b.dump();
+	  std::clog << " associated " << neighbouring_cells.size() << " cells to this cluster " << std::endl;
+	}
+      
+      clock.stop(" sultan: sequentiate_cluster_with_experimental_vector_3: helix loop: max ");
+      clock.start(" sultan: sequentiate_cluster_with_experimental_vector_3: helix loop: assign ","cumulative");
+
+      bool ok = assign_nodes_based_on_experimental_helix(cluster_.nodes_, assigned_nodes, leftover_nodes, &b, &neighbouring_cells);
+      
+      if( ok ){
+	s = new topology::sequence(assigned_nodes, level, probmin);
+	make_name(*s);
+	center = new topology::experimental_point(b.x0(),b.y0(),b.z0());
+	radius.set(b.R());
+	pitch.set(b.H());
+	s->set_helix(b);
+	sequences_.push_back(*s);
+	m.message(" finished track [", sequences_.size()-1, "] with ", s->nodes_.size(), " nodes", mybhep::VERBOSE); fflush(stdout);
+	delete s;
+	delete center;
+      }else{
+	m.message(" could not make a track ", mybhep::VERBOSE); fflush(stdout);
+	clock.stop(" sultan: sequentiate_cluster_with_experimental_vector_3: helix loop: assign ");
+	break;
+      }
+
+      clock.stop(" sultan: sequentiate_cluster_with_experimental_vector_3: helix loop: assign ");
+
+      if( print_event_display ) break;
+      
+    }
+
+
+    clock.stop(" sultan: sequentiate_cluster_with_experimental_vector_3 ");
 
     return;
   }

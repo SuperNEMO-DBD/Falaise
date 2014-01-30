@@ -110,7 +110,7 @@ namespace SULTAN {
 	H_=H;
       }
 
-      std::vector<size_t> ids(){return ids_;}
+      std::vector<size_t> ids()const{return ids_;}
 
       experimental_point center()const{return ep_;}
       experimental_double x0()const{return ep_.x();}
