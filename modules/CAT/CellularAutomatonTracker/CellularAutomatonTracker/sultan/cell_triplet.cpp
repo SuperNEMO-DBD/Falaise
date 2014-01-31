@@ -119,6 +119,12 @@ namespace SULTAN{
 
       
       helices_.clear();
+      size_t count_all_circles = 0;
+      size_t count_circles_good_radius = 0;
+      size_t count_all_helices = 0;
+      size_t count_selected_circles = 0;
+      bool selected_circle;
+      int sign3;
 
       int sign[4][2];
 
@@ -135,6 +141,8 @@ namespace SULTAN{
 	dRdr1, dRdr2, dRdr3, dX0dr1, dX0dr2, dX0dr3, dY0dr1, dY0dr2, dY0dr3,
 	det1, det2, det3,
 	phi1, phi2, phi3;
+      double check[2], check_chosen[3], H;
+      double diff[2], X0tmp[2], Y0tmp[2], Rtmp[2];
 
       topology::experimental_double H_12, H_23, z1, z2, z3, z0_12, z0_23;
       topology::experimental_helix helix;
@@ -198,7 +206,7 @@ namespace SULTAN{
 	double e13 = pow(a13,2) + pow(r[0],2) - pow(r[2],2);
 	double de13dr1 = 2.*r[0];
 	double de13dr3 = -2.*r[2];
-	double diff[2], X0tmp, Y0tmp[2], c12, c13, dc12dr1, dc12dr2, dc13dr1, dc13dr3,
+	double c12, c13, dc12dr1, dc12dr2, dc13dr1, dc13dr3,
 	  ddetdr1, ddetdr2, ddetdr3, dX0tmpdr1, dX0tmpdr2, dX0tmpdr3,
 	  dY0tmpdr1[2], dY0tmpdr2[2], dY0tmpdr3[2];
 	for(size_t i=0; i<2; i++){
@@ -214,7 +222,7 @@ namespace SULTAN{
 	      ddetdr1 = 4.*(-a12*dc13dr1 + a13*dc12dr1);
 	      ddetdr2 = 4.*a13*dc12dr2;
 	      ddetdr3 = -4.*a12*dc13dr3;
-	      X0tmp = 2.*(-e12*c13 + e13*c12)/det;
+	      X0tmp[0] = 2.*(-e12*c13 + e13*c12)/det;
 	      dX0tmpdr1 = 2.*((-e12*dc13dr1 + e13*dc12dr1 - de12dr1*c13 + de13dr1*c12)*det - (-e12*c13 + e13*c12)*ddetdr1)/pow(det,2);
 	      dX0tmpdr2 = 2.*((e13*dc12dr2 - de12dr2*c13)*det - (-e12*c13 + e13*c12)*ddetdr2)/pow(det,2);
 	      dX0tmpdr3 = 2.*((-e12*dc13dr3 + de13dr3*c12)*det - (-e12*c13 + e13*c12)*ddetdr3)/pow(det,2);
@@ -223,17 +231,17 @@ namespace SULTAN{
 	      dRdr2 = 2.*(- a13*de12dr2*det - (a12*e13 - a13*e12)*ddetdr2)/pow(det,2);
 	      dRdr3 = 2.*(a12*de13dr3*det - (a12*e13 - a13*e12)*ddetdr3)/pow(det,2);
 	      for(size_t m=0; m<2; m++){
-		Y0tmp[m] = sign[3][m]*sqrt(pow(R + sign[0][i]*r[0],2) - pow(X0tmp,2));
-		X0 = X0tmp*cos(theta) - Y0tmp[m]*sin(theta) + x[0];
-		Y0 = X0tmp*sin(theta) + Y0tmp[m]*cos(theta) + y[0];
+		Y0tmp[m] = sign[3][m]*sqrt(pow(R + sign[0][i]*r[0],2) - pow(X0tmp[0],2));
+		X0 = X0tmp[0]*cos(theta) - Y0tmp[m]*sin(theta) + x[0];
+		Y0 = X0tmp[0]*sin(theta) + Y0tmp[m]*cos(theta) + y[0];
 		diff[m] = pow(X0 - x[1],2) + pow(Y0 - y[1], 2) - pow(R + sign[1][j]*r[1],2);
 	      }
 	      if( fabs(diff[0]) < fabs(diff[1]) ){
-		X0 = X0tmp*cos(theta) - Y0tmp[0]*sin(theta) + x[0];
-		Y0 = X0tmp*sin(theta) + Y0tmp[0]*cos(theta) + y[0];
-		dY0tmpdr1[0] = ((R + sign[0][i]*r[0])*(dRdr1 + sign[0][i]) - X0tmp*dX0tmpdr1)/Y0tmp[0];
-		dY0tmpdr2[0] = ((R + sign[0][i]*r[0])*dRdr2 - X0tmp*dX0tmpdr2)/Y0tmp[0];
-		dY0tmpdr3[0] = ((R + sign[0][i]*r[0])*dRdr3 - X0tmp*dX0tmpdr3)/Y0tmp[0];
+		X0 = X0tmp[0]*cos(theta) - Y0tmp[0]*sin(theta) + x[0];
+		Y0 = X0tmp[0]*sin(theta) + Y0tmp[0]*cos(theta) + y[0];
+		dY0tmpdr1[0] = ((R + sign[0][i]*r[0])*(dRdr1 + sign[0][i]) - X0tmp[0]*dX0tmpdr1)/Y0tmp[0];
+		dY0tmpdr2[0] = ((R + sign[0][i]*r[0])*dRdr2 - X0tmp[0]*dX0tmpdr2)/Y0tmp[0];
+		dY0tmpdr3[0] = ((R + sign[0][i]*r[0])*dRdr3 - X0tmp[0]*dX0tmpdr3)/Y0tmp[0];
 		dX0dr1 = dX0tmpdr1*cos(theta) - dY0tmpdr1[0]*sin(theta);
 		dX0dr2 = dX0tmpdr2*cos(theta) - dY0tmpdr2[0]*sin(theta);
 		dX0dr3 = dX0tmpdr3*cos(theta) - dY0tmpdr3[0]*sin(theta);
@@ -241,11 +249,11 @@ namespace SULTAN{
 		dY0dr2 = dX0tmpdr2*sin(theta) + dY0tmpdr2[0]*cos(theta);
 		dY0dr3 = dX0tmpdr3*sin(theta) + dY0tmpdr3[0]*cos(theta);
 	      }else{
-		X0 = X0tmp*cos(theta) - Y0tmp[1]*sin(theta) + x[0];
-		Y0 = X0tmp*sin(theta) + Y0tmp[1]*cos(theta) + y[0];
-		dY0tmpdr1[1] = ((R + sign[0][i]*r[0])*(dRdr1 + sign[0][i]) - X0tmp*dX0tmpdr1)/Y0tmp[1];
-		dY0tmpdr2[1] = ((R + sign[0][i]*r[0])*dRdr2 - X0tmp*dX0tmpdr2)/Y0tmp[1];
-		dY0tmpdr3[1] = ((R + sign[0][i]*r[0])*dRdr3 - X0tmp*dX0tmpdr3)/Y0tmp[1];
+		X0 = X0tmp[0]*cos(theta) - Y0tmp[1]*sin(theta) + x[0];
+		Y0 = X0tmp[0]*sin(theta) + Y0tmp[1]*cos(theta) + y[0];
+		dY0tmpdr1[1] = ((R + sign[0][i]*r[0])*(dRdr1 + sign[0][i]) - X0tmp[0]*dX0tmpdr1)/Y0tmp[1];
+		dY0tmpdr2[1] = ((R + sign[0][i]*r[0])*dRdr2 - X0tmp[0]*dX0tmpdr2)/Y0tmp[1];
+		dY0tmpdr3[1] = ((R + sign[0][i]*r[0])*dRdr3 - X0tmp[0]*dX0tmpdr3)/Y0tmp[1];
 		dX0dr1 = dX0tmpdr1*cos(theta) - dY0tmpdr1[1]*sin(theta);
 		dX0dr2 = dX0tmpdr2*cos(theta) - dY0tmpdr2[1]*sin(theta);
 		dX0dr3 = dX0tmpdr3*cos(theta) - dY0tmpdr3[1]*sin(theta);
@@ -253,9 +261,13 @@ namespace SULTAN{
 		dY0dr2 = dX0tmpdr2*sin(theta) + dY0tmpdr2[1]*cos(theta);
 		dY0dr3 = dX0tmpdr3*sin(theta) + dY0tmpdr3[1]*cos(theta);
 	      }
+
+	      count_all_circles++;
+
 	      if( R < 0. ) continue;
 	      if( R < r[0] || R < r[1] || R < r[2] || R < Rmin || R > Rmax ) continue;
 
+	      count_circles_good_radius++;
 
 	      Rerr = sqrt(pow(dRdr1*rerr[0],2) +
 			  pow(dRdr2*rerr[1],2) +
@@ -287,9 +299,29 @@ namespace SULTAN{
 		  std::endl;
 	      }
 
+	      selected_circle = true;
+
+	      for(size_t i=0; i<3; i++){
+		for(size_t j=0; j<2; j++){
+		  check[j] = pow(X0 - x[i],2) + pow(Y0 - y[i],2) - pow(R + sign[i][j]*r[i],2);
+		}
+		check_chosen[i] = std::min(fabs(check[0]), fabs(check[1]));
+		if( print_level() > mybhep::VERBOSE ){
+		  std::clog << " circle  (X0 " << X0 << " +- " << X0err << ") (Y0 " << Y0 << " +- " << Y0err << ") (R " << R << " +- " << Rerr << ") (H " << H << " +- " << helix.H().error() << ") circle " << i << " check " << check_chosen[i] << std::endl;
+		}
+		
+		if( check_chosen[i] > 1 ){ // the circle obtained is a spurious solution
+		  selected_circle = false;
+		}
+	      }
+
+	      if( !selected_circle ) continue;
+
+	      count_selected_circles ++;
 	      
 	      if( z0_12.is_equal_to__optimist(z0_23, nsigmas) &&
 		  H_12.is_equal_to__optimist(H_23, nsigmas) ){
+
 		std::vector<topology::experimental_double> z0s, Hs;
 		z0s.push_back(z0_12);
 		z0s.push_back(z0_23);
@@ -297,13 +329,22 @@ namespace SULTAN{
 		Hs.push_back(H_23);
 
 		helix.set(experimental_double(X0,X0err),experimental_double(Y0,Y0err),weighted_average(z0s),experimental_double(R,Rerr),weighted_average(Hs));
+		
+		X0 = helix.x0().value();
+		Y0 = helix.y0().value();
+		R = helix.R().value();
+		H = helix.H().value();
+		X0err = helix.x0().error();
+		Y0err = helix.y0().error();
+		Rerr = helix.R().error();
+		count_all_helices++;
+		
 		helices_.push_back(helix);
 	      }
-
 	    }
 	  }
 	}
-      }else{
+      }else{ // large det
 
 	double c12, c13, alpha, beta, gamma, discr;
 	double dd12dr1 = - 2.*r[0];
@@ -350,6 +391,9 @@ namespace SULTAN{
 		    y[0] * (d13*a12 - d12*a13) )/det; 
 	    
 	      discr = pow(beta,2) - alpha*gamma;
+
+              count_all_circles++;
+
 	      if( discr < 0. ){
 		continue;
 	      }
@@ -416,90 +460,128 @@ namespace SULTAN{
 	      ddiscrdr2 = 2.*beta*dbetadr2 - dalphadr2*gamma - alpha*dgammadr2;
 	      ddiscrdr3 = 2.*beta*dbetadr3 - dalphadr3*gamma - alpha*dgammadr3;
 
+
 	      for(size_t l=0; l<2; l++){
-		R = fabs((- beta + sign[3][l]*sqrt(discr))/alpha);
-		if( R < 0. ) continue;
-		if( R < r[0] || R < r[1] || R < r[2] || R < Rmin || R > Rmax ) continue;
+		Rtmp[l] = fabs((- beta + sign[3][l]*sqrt(discr))/alpha);
+		X0tmp[l] = ((d12 - c12*Rtmp[l])*b13 - (d13 - c13*Rtmp[l])*b12)/det;
+		Y0tmp[l] = ((d13 - c13*Rtmp[l])*a12 - (d12 - c12*Rtmp[l])*a13)/det;
+		diff[l] = pow(X0tmp[l] - x[1],2) + pow(Y0tmp[l] - y[1], 2) - pow(Rtmp[l] + sign[1][j]*r[1],2);
+		sign3 = sign[3][l];
+	      }
 
-		X0 = ((d12 - c12*R)*b13 - (d13 - c13*R)*b12)/det;
-		Y0 = ((d13 - c13*R)*a12 - (d12 - c12*R)*a13)/det;
+	      if( fabs(diff[0]) < fabs(diff[1]) ){
+		R = Rtmp[0];
+		X0 = X0tmp[0];
+		Y0 = Y0tmp[0];
+	      }else{
+		R = Rtmp[1];
+		X0 = X0tmp[1];
+		Y0 = Y0tmp[1];
+	      }
 
-		dRdr1 = ((- dbetadr1 + sign[3][l]*ddiscrdr1/(2.*sqrt(discr)))*alpha - (- beta + sign[3][l]*sqrt(discr))*dalphadr1)/pow(alpha,2);
-		dRdr2 = ((- dbetadr2 + sign[3][l]*ddiscrdr2/(2.*sqrt(discr)))*alpha - (- beta + sign[3][l]*sqrt(discr))*dalphadr2)/pow(alpha,2);
-		dRdr3 = ((- dbetadr3 + sign[3][l]*ddiscrdr3/(2.*sqrt(discr)))*alpha - (- beta + sign[3][l]*sqrt(discr))*dalphadr3)/pow(alpha,2);
+	      if( R < 0. ) continue;
+	      if( R < r[0] || R < r[1] || R < r[2] || R < Rmin || R > Rmax ) continue;
 
-		dX0dr1 = ((dd12dr1 - dc12dr1*R - c12*dRdr1)*b13 - (dd13dr1 - dc13dr1*R - c13*dRdr1)*b12)/det;
-		dX0dr2 = ((dd12dr2 - dc12dr2*R - c12*dRdr2)*b13 + c13*dRdr2*b12)/det;
-		dX0dr3 = (- c12*dRdr3*b13 - (dd13dr3 - dc13dr3*R - c13*dRdr3)*b12)/det;
+
+	      count_circles_good_radius++;
+
+	      dRdr1 = ((- dbetadr1 + sign3*ddiscrdr1/(2.*sqrt(discr)))*alpha - (- beta + sign3*sqrt(discr))*dalphadr1)/pow(alpha,2);
+	      dRdr2 = ((- dbetadr2 + sign3*ddiscrdr2/(2.*sqrt(discr)))*alpha - (- beta + sign3*sqrt(discr))*dalphadr2)/pow(alpha,2);
+	      dRdr3 = ((- dbetadr3 + sign3*ddiscrdr3/(2.*sqrt(discr)))*alpha - (- beta + sign3*sqrt(discr))*dalphadr3)/pow(alpha,2);
+
+	      dX0dr1 = ((dd12dr1 - dc12dr1*R - c12*dRdr1)*b13 - (dd13dr1 - dc13dr1*R - c13*dRdr1)*b12)/det;
+	      dX0dr2 = ((dd12dr2 - dc12dr2*R - c12*dRdr2)*b13 + c13*dRdr2*b12)/det;
+	      dX0dr3 = (- c12*dRdr3*b13 - (dd13dr3 - dc13dr3*R - c13*dRdr3)*b12)/det;
 	      
-		dY0dr1 = ((dd13dr1 - dc13dr1*R - c13*dRdr1)*a12 - (dd12dr1 - dc12dr1*R - c12*dRdr1)*a13)/det;
-		dY0dr2 = (-c13*dRdr2*a12 - (dd12dr2 - dc12dr2*R - c12*dRdr2)*a13)/det;
-		dY0dr3 = ((dd13dr3 - dc13dr3*R - c13*dRdr3)*a12 + c12*dRdr3*a13)/det;
+	      dY0dr1 = ((dd13dr1 - dc13dr1*R - c13*dRdr1)*a12 - (dd12dr1 - dc12dr1*R - c12*dRdr1)*a13)/det;
+	      dY0dr2 = (-c13*dRdr2*a12 - (dd12dr2 - dc12dr2*R - c12*dRdr2)*a13)/det;
+	      dY0dr3 = ((dd13dr3 - dc13dr3*R - c13*dRdr3)*a12 + c12*dRdr3*a13)/det;
 
-		Rerr = sqrt(pow(dRdr1*rerr[0],2) +
-			    pow(dRdr2*rerr[1],2) +
-			    pow(dRdr3*rerr[2],2) );
+	      Rerr = sqrt(pow(dRdr1*rerr[0],2) +
+			  pow(dRdr2*rerr[1],2) +
+			  pow(dRdr3*rerr[2],2) );
 
-		X0err = sqrt(pow(dX0dr1*rerr[0],2) +
-			     pow(dX0dr2*rerr[1],2) +
-			     pow(dX0dr3*rerr[2],2) );
-		
-		Y0err = sqrt(pow(dY0dr1*rerr[0],2) +
-			     pow(dY0dr2*rerr[1],2) +
-			     pow(dY0dr3*rerr[2],2) );
+	      X0err = sqrt(pow(dX0dr1*rerr[0],2) +
+			   pow(dX0dr2*rerr[1],2) +
+			   pow(dX0dr3*rerr[2],2) );
+	      
+	      Y0err = sqrt(pow(dY0dr1*rerr[0],2) +
+			   pow(dY0dr2*rerr[1],2) +
+			   pow(dY0dr3*rerr[2],2) );
+	      
+	      phi1 = atan2(y[0] - Y0, x[0] - X0);
+	      phi2 = atan2(y[1] - Y0, x[1] - X0);
+	      phi3 = atan2(y[2] - Y0, x[2] - X0);
+	      
+	      z0_12 = (z1*phi2 - z2*phi1)/(phi2 - phi1);
+	      H_12 = (z2 - z1)/(phi2 - phi1);
+	      
+	      z0_23 = (z2*phi3 - z3*phi2)/(phi3 - phi2);
+	      H_23 = (z3 - z2)/(phi3 - phi2);
+	      
+	      if( print_level() > mybhep::VERBOSE ){
+		std::clog << " R " << R << " Rerr " << Rerr << " dRdr1 " << dRdr1 << " dRdr2 " << dRdr2 << " dRdr3 " << dRdr3 << " det1 " << det1 << " det2 " << det2 << " det3 " << det3 << 
+		  " z0_12 num " << (z1*phi2 - z2*phi1).value() << " den " << phi2 - phi1 << " = " << z0_12.value() << " +- " << z0_12.error() << " H_12 num " << (z2 - z1).value() << " = " << H_12.value() << " +- " << H_12.error() << 
+		  " z0_23 num " << (z2*phi3 - z3*phi2).value() << " den " << phi3 - phi2 << " = " << z0_23.value() << " +- " << z0_23.error() << " H_23 num " << (z3 - z2).value() << " = " << H_23.value() << " +- " << H_23.error() << 
+		  std::endl;
+	      }
+	      
 
-		phi1 = atan2(y[0] - Y0, x[0] - X0);
-		phi2 = atan2(y[1] - Y0, x[1] - X0);
-		phi3 = atan2(y[2] - Y0, x[2] - X0);
-		
-		z0_12 = (z1*phi2 - z2*phi1)/(phi2 - phi1);
-		H_12 = (z2 - z1)/(phi2 - phi1);
-		
-		z0_23 = (z2*phi3 - z3*phi2)/(phi3 - phi2);
-		H_23 = (z3 - z2)/(phi3 - phi2);
+	      selected_circle = true;
 
+	      for(size_t i=0; i<3; i++){
+		for(size_t j=0; j<2; j++){
+		  check[j] = pow(X0 - x[i],2) + pow(Y0 - y[i],2) - pow(R + sign[i][j]*r[i],2);
+		}
+		check_chosen[i] = std::min(fabs(check[0]), fabs(check[1]));
 		if( print_level() > mybhep::VERBOSE ){
-		  std::clog << " R " << R << " Rerr " << Rerr << " dRdr1 " << dRdr1 << " dRdr2 " << dRdr2 << " dRdr3 " << dRdr3 << " det1 " << det1 << " det2 " << det2 << " det3 " << det3 << 
-		    " z0_12 num " << (z1*phi2 - z2*phi1).value() << " den " << phi2 - phi1 << " = " << z0_12.value() << " +- " << z0_12.error() << " H_12 num " << (z2 - z1).value() << " = " << H_12.value() << " +- " << H_12.error() << 
-		    " z0_23 num " << (z2*phi3 - z3*phi2).value() << " den " << phi3 - phi2 << " = " << z0_23.value() << " +- " << z0_23.error() << " H_23 num " << (z3 - z2).value() << " = " << H_23.value() << " +- " << H_23.error() << 
-		    std::endl;
+		  std::clog << " circle  (X0 " << X0 << " +- " << X0err << ") (Y0 " << Y0 << " +- " << Y0err << ") (R " << R << " +- " << Rerr << ") (H " << H << " +- " << helix.H().error() << ") circle " << i << " check " << check_chosen[i] << std::endl;
 		}
+		
+		if( check_chosen[i] > 1 ){ // the circle obtained is a spurious solution
+		  selected_circle = false;
+		}
+	      }
 
-		if( z0_12.is_equal_to__optimist(z0_23, nsigmas) &&
-		    H_12.is_equal_to__optimist(H_23, nsigmas) ){
-		  std::vector<topology::experimental_double> z0s, Hs;
-		  z0s.push_back(z0_12);
-		  z0s.push_back(z0_23);
-		  Hs.push_back(H_12);
-		  Hs.push_back(H_23);
-		  
-		  helix.set(experimental_double(X0,X0err),experimental_double(Y0,Y0err),weighted_average(z0s),experimental_double(R,Rerr),weighted_average(Hs));
-		  helices_.push_back(helix);
-		}
+	      if( !selected_circle ) continue;
+
+	      count_selected_circles ++;
+
+	      if( z0_12.is_equal_to__optimist(z0_23, nsigmas) &&
+		  H_12.is_equal_to__optimist(H_23, nsigmas) ){
+		std::vector<topology::experimental_double> z0s, Hs;
+		z0s.push_back(z0_12);
+		z0s.push_back(z0_23);
+		Hs.push_back(H_12);
+		Hs.push_back(H_23);
+		
+		helix.set(experimental_double(X0,X0err),experimental_double(Y0,Y0err),weighted_average(z0s),experimental_double(R,Rerr),weighted_average(Hs));
+		
+		X0 = helix.x0().value();
+		Y0 = helix.y0().value();
+		R = helix.R().value();
+		H = helix.H().value();
+		X0err = helix.x0().error();
+		Y0err = helix.y0().error();
+		Rerr = helix.R().error();
+		
+		count_all_helices++;
+
+		helices_.push_back(helix);
 	      }
 	    }
 	  }
 	}
       }
-    
+
       if( print_level() > mybhep::VERBOSE ){
-	double check[2], check_chosen[3];
-	for(vector<experimental_helix>::iterator ic=helices_.begin(); ic!=helices_.end(); ++ic){
-	  X0 = ic->x0().value();
-	  double Y0 = ic->y0().value();
-	  Y0 = ic->y0().value();
-	  R = ic->R().value();
-	  double H = ic->H().value();
-	  for(size_t i=0; i<3; i++){
-	    for(size_t j=0; j<2; j++){
-	      check[j] = pow(X0 - x[i],2) + pow(Y0 - y[i],2) - pow(R + sign[i][j]*r[i],2);
-	    }
-	    check_chosen[i] = std::min(fabs(check[0]), fabs(check[1]));
-	    std::clog << " circle  (X0 " << X0 << " +- " << X0err << ") (Y0 " << Y0 << " +- " << Y0err << ") (R " << R << " +- " << Rerr << ") (H " << H << " +- " << ic->H().error() << ") circle " << i << " check " << check_chosen[i] << std::endl;
-	  }
-	}
+	std::clog << " summary of helices production for this triplet " << std::endl;
+	std::clog << " count_all_circles " << count_all_circles << std::endl;
+	std::clog << " count_circles_good_radius " << count_circles_good_radius << std::endl;
+	std::clog << " count_selected_circles " << count_selected_circles << std::endl;
+	std::clog << " count_all_helices " << count_all_helices << std::endl;
       }
-      
+
       return;
     }
 

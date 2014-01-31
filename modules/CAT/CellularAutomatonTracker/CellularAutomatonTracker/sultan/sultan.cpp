@@ -547,7 +547,7 @@ namespace SULTAN {
 	root_tree->Branch(R_error_name,&R_error);
 	root_tree->Branch(H_error_name,&H_error);
 	
-	std::clog << " tree_name " << tree_name.Data() << " helices " << the_helices->size() << std::endl;
+	//std::clog << " tree_name " << tree_name.Data() << " helices " << the_helices->size() << std::endl;
 
 	for(std::vector<topology::experimental_helix>::const_iterator ihel=the_helices->begin();
 	    ihel != the_helices->end(); ++ihel){
@@ -572,7 +572,7 @@ namespace SULTAN {
 
 	  root_tree->Fill();
 
-	  std::clog << " helix " << ihel - the_helices->begin() << " x0 " << x0_value << " +- " << x0_error 	  << " y0 " << y0_value << " +- " << y0_error 	  << " z0 " << z0_value << " +- " << z0_error 	  << " R " << R_value << " +- " << R_error 	  << " H " << H_value << " +- " << H_error << " weight " << weight <<  std::endl;
+	  //std::clog << " helix " << ihel - the_helices->begin() << " x0 " << x0_value << " +- " << x0_error 	  << " y0 " << y0_value << " +- " << y0_error 	  << " z0 " << z0_value << " +- " << z0_error 	  << " R " << R_value << " +- " << R_error 	  << " H " << H_value << " +- " << H_error << " weight " << weight <<  std::endl;
 	  
 	}
 	
