@@ -47,11 +47,11 @@ namespace SULTAN {
 
       if( !helices_.size() ) return true;
 
-      if( helix_min_.is_less_than__optimist(a,nsigmas) ) return true;
+      if( !helix_min_.is_less_than__optimist(a,nsigmas) ) return false;
 
-      if( helix_max_.is_more_than__optimist(a,nsigmas) ) return true;
+      if( !helix_max_.is_more_than__optimist(a,nsigmas) ) return false;
 
-      return false;
+      return true;
     }
 
     bool cluster_of_experimental_helices::can_merge__optimist(cluster_of_experimental_helices cluster, double nsigmas)const{
@@ -84,16 +84,16 @@ namespace SULTAN {
 
       if( !cluster.helices_.size() ) return true;
 
-      if( helix_min_.is_less_than__optimist(cluster.helix_max_,nsigmas) ) return true;
+      if( !helix_min_.is_less_than__optimist(cluster.helix_max_,nsigmas) ) return false;
 
-      if( helix_max_.is_more_than__optimist(cluster.helix_min_,nsigmas) ) return true;
+      if( !helix_max_.is_more_than__optimist(cluster.helix_min_,nsigmas) ) return false;
 
-      return false;
+      return true;
     }
 
     bool cluster_of_experimental_helices::add_helix(experimental_helix a){
+      // return true if the helix we are adding changes the min or the max of the cluster
       
-
       // update cluster min if necessary
       bool changed_min = false;
 

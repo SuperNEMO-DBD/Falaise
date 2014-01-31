@@ -471,24 +471,36 @@ namespace SULTAN {
     
     std::vector<topology::node> assigned_nodes, assigned_nodes_best;
     double distance12, distance23, distance13;
+    double dmin1, dmin2;
 
     std::vector<topology::experimental_helix> helices;
     
     for(std::vector<topology::node>::const_iterator inode=nodes.begin(); inode != nodes.end()-2; ++inode){
       for(std::vector<topology::node>::const_iterator jnode=inode+1; jnode != nodes.end()-1; ++jnode){
-	distance12 = (inode->c().ep().hor_distance(jnode->c().ep())).value();
-	m.message(" (triplet ", inode->c().id() , ", " , jnode->c().id() , ") d12 " , distance12, mybhep::VVERBOSE);
-	if( distance12 < dist_limit_inf || distance12 > dist_limit_sup ) continue;
+
+	if( jnode == inode ) continue;
+
 	for(std::vector<topology::node>::const_iterator knode=jnode+1; knode != nodes.end(); ++knode){
 	  
+	  if( knode == inode ) continue;
 	  if( knode == jnode ) continue;
 
+	  distance12 = (inode->c().ep().hor_distance(jnode->c().ep())).value();
 	  distance23 = (jnode->c().ep().hor_distance(knode->c().ep())).value();
-	  m.message(" (triplet " , inode->c().id() , ", " , jnode->c().id() , ", " , knode->c().id() , ") d23 " , distance23 , mybhep::VVERBOSE);
-	  if( distance23 < dist_limit_inf || distance23 > dist_limit_sup ) continue;
 	  distance13 = (inode->c().ep().hor_distance(knode->c().ep())).value();
-	  m.message(" (triplet " , inode->c().id() , ", " , jnode->c().id() , ", " , knode->c().id() , ") d13 " , distance13 , mybhep::VVERBOSE);
-	  if( distance13 < dist_limit_inf ) continue;
+
+	  dmin1 = distance12;
+	  if( distance12 > distance23 )
+	    dmin1 = distance23;
+
+	  dmin2 = distance12;
+	  if( distance12 > distance13 )
+	    dmin2 = distance13;
+	  
+	  m.message(" (triplet " , inode->c().id() , ", " , jnode->c().id() , ", " , knode->c().id() , ") dmin1 " , dmin1, " dmin2 ", dmin2 , mybhep::VVERBOSE);
+
+	  if( dmin1 < dist_limit_inf || dmin1 > dist_limit_sup ) continue;
+	  if( dmin2 < dist_limit_inf || dmin2 > dist_limit_sup ) continue;
 	  
 	  ccc = new topology::cell_triplet(inode->c(), jnode->c(), knode->c(), level);
 	  ccc->calculate_helices(Rmin, Rmax, nsigmas);
