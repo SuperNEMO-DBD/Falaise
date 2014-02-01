@@ -44,7 +44,6 @@ list (APPEND SULTAN_HEADERS ${PROJECT_BINARY_DIR}/CellularAutomatonTracker/sulta
 add_library(sultan SHARED ${SULTAN_SOURCES} ${SULTAN_HEADERS})
 if (_cat_needs_root)
   # Link them to ROOT libraries in special build modes
-  message(" qqq install root to sultan")
   target_link_libraries(sultan ${ROOT_LIBRARIES})
 endif ()
 

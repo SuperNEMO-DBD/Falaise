@@ -25,6 +25,8 @@ namespace SULTAN {
       experimental_helix helix_min_;
       experimental_helix helix_max_;
       std::vector<experimental_helix> helices_;
+      std::vector<size_t> ids_;
+      std::vector<size_t> assigned_ids_;
 
     public:
 
@@ -35,6 +37,8 @@ namespace SULTAN {
 	helices_.clear();
 	helix_min_ = experimental_helix();
 	helix_max_ = experimental_helix();
+	ids_.clear();
+	assigned_ids_.clear();
         set_print_level(level);
         set_probmin(probmin);
       }
@@ -59,7 +63,11 @@ namespace SULTAN {
 	a_out << helices_.size() << " helices: ";
 	for(std::vector<experimental_helix>::const_iterator ih=helices_.begin(); ih!=helices_.end(); ++ih)
 	  ih->dump();
-	
+	a_out << " ids: ( ";
+	for(std::vector<size_t>::const_iterator id= ids_.begin(); id!=ids_.end(); ++id)
+	  a_out << *id << " ";
+	a_out << ") " << std::endl;	
+
 	return;
       }
     
@@ -70,6 +78,24 @@ namespace SULTAN {
       experimental_helix helix_min()const{return helix_min_;}
       experimental_helix helix_max()const{return helix_max_;}
       std::vector<experimental_helix> helices()const{return helices_;}
+      std::vector<size_t> ids()const{return ids_;}
+      void reset_ids(){
+	ids_.clear();
+      }
+      std::vector<size_t> assigned_ids()const{return assigned_ids_;}
+      void reset_assigned_ids(){
+	assigned_ids_.clear();
+      }
+
+      void add_id(size_t id);
+      void add_assigned_id(size_t id);
+      void print_ids()const{
+	std::clog << " ( ";
+	for(std::vector<size_t>::const_iterator id= ids_.begin(); id!=ids_.end(); ++id)
+	  std::clog << *id << " ";
+	std::clog << ") ";
+      }
+
       bool can_store__optimist(experimental_helix a, double nsigmas);
       bool can_merge__optimist(cluster_of_experimental_helices cluster, double nsigmas)const;
       cluster_of_experimental_helices merge(cluster_of_experimental_helices b)const;

@@ -50,10 +50,12 @@ namespace SULTAN {
     bool sequentiate(topology::tracked_data & tracked_data);
     bool assign_nodes_based_on_experimental_helix(std::vector<topology::node> nodes, std::vector<topology::node> &assigned_nodes, std::vector<topology::node> &leftover_nodes, topology::experimental_helix * b, std::vector<topology::experimental_helix> *helices);
     bool assign_nodes_based_on_experimental_helix(std::vector<topology::node> nodes, std::vector<topology::node> &assigned_nodes, std::vector<topology::node> &leftover_nodes, topology::experimental_helix * b, std::vector<size_t> *neighbouring_cells);
-    bool calculate_helices(std::vector<topology::node> nodes, std::vector<topology::experimental_helix> *the_helices, size_t icluster);
+    bool form_triplets_from_cells(std::vector<topology::node> nodes);
+    bool form_helices_from_triplets(std::vector<topology::node> nodes, std::vector<topology::experimental_helix> *the_helices, size_t icluster);
     void sequentiate_cluster_with_experimental_vector(topology::cluster & cluster, size_t icluster);
     void sequentiate_cluster_with_experimental_vector_2(topology::cluster & cluster, size_t icluster);
     void sequentiate_cluster_with_experimental_vector_3(topology::cluster & cluster, size_t icluster);
+    void sequentiate_cluster_with_experimental_vector_4(topology::cluster & cluster, size_t icluster);
     void make_name(topology::sequence & seq);
     bool late();
     void print_sequences() const;
@@ -69,11 +71,24 @@ namespace SULTAN {
       return clusters_;
     }
 
+    //! get triplets
+    const std::vector<topology::cell_triplet>& get_triplets()const
+    {
+      return triplets_;
+    }
+
     //! set clusters
     void set_clusters(std::vector<topology::cluster> clusters)
     {
       clusters_.clear();
       clusters_ = clusters;
+    }
+
+    //! set triplets
+    void set_triplets(std::vector<topology::cell_triplet> triplets)
+    {
+      triplets_.clear();
+      triplets_ = triplets;
     }
 
     //! get sequences
@@ -275,6 +290,9 @@ namespace SULTAN {
     std::string _moduleNR;
 
     bool print_event_display;
+    void reset_triplets(){
+      triplets_.clear();
+    }
 
 
   private:
@@ -285,7 +303,7 @@ namespace SULTAN {
     double run_time;
     topology::experimental_legendre_vector * experimental_legendre_vector;
     TFile *root_file_;
-
+    std::vector<topology::cell_triplet> triplets_;
 
   };
 

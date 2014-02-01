@@ -154,6 +154,9 @@ namespace SULTAN {
 
       // add helix
       helices_.push_back(a);
+      std::vector<size_t> ids = a.ids();
+      for( std::vector<size_t>::const_iterator id = ids.begin(); id != ids.end(); ++id)
+	add_id(*id);
 
       return changed_min || changed_max;
     }
@@ -192,8 +195,27 @@ namespace SULTAN {
 
       // merge the two clusters in the new cluster
       b.add_helices(helices());
+      std::vector<size_t> ids = this->ids();
+      for( std::vector<size_t>::const_iterator id = ids.begin(); id != ids.end(); ++id)
+	b.add_id(*id);
+
+
       return b;
 
+    }
+
+    void cluster_of_experimental_helices::add_id(size_t id){
+      std::vector<size_t>::const_iterator fid = std::find(ids_.begin(), ids_.end(), id);
+      if( fid == ids_.end() ){
+	ids_.push_back(id);
+      }
+    }
+
+    void cluster_of_experimental_helices::add_assigned_id(size_t id){
+      std::vector<size_t>::const_iterator fid = std::find(assigned_ids_.begin(), assigned_ids_.end(), id);
+      if( fid == assigned_ids_.end() ){
+	assigned_ids_.push_back(id);
+      }
     }
 
     experimental_helix cluster_of_experimental_helices::average_helix()const{

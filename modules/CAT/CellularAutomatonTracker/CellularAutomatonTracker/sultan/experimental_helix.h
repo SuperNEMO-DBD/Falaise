@@ -83,10 +83,7 @@ namespace SULTAN {
               a_out << indent << a_title << std::endl;
             }
 
-          a_out << indent << appname_ << " center ["; ep_.dump(); a_out << "] radius: "; R_.dump(); a_out << " pitch: "; H_.dump(); a_out << " ids: ( ";
-	  for(std::vector<size_t>::const_iterator id= ids_.begin(); id!=ids_.end(); ++id)
-	    a_out << *id << " ";
-	  a_out << ") " << std::endl;
+          a_out << indent << appname_ << " center ["; ep_.dump(); a_out << "] radius: "; R_.dump(); a_out << " pitch: "; H_.dump(); a_out << " ids: "; print_ids(); a_out << " " << std::endl;
 
           return;
         }
@@ -111,6 +108,12 @@ namespace SULTAN {
       }
 
       std::vector<size_t> ids()const{return ids_;}
+      void print_ids()const{
+	std::clog << " ( ";
+	for(std::vector<size_t>::const_iterator id= ids_.begin(); id!=ids_.end(); ++id)
+	  std::clog << *id << " ";
+	std::clog << ") ";
+      }
 
       experimental_point center()const{return ep_;}
       experimental_double x0()const{return ep_.x();}

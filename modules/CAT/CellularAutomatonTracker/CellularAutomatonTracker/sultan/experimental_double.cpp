@@ -499,15 +499,18 @@ namespace SULTAN {
     {
       double mean = 0.;
       double inverr = 0.;
-      double newerr = 0.;
+      double sumwiei2 = 0.;
+
+      // w_i = 1/sigma_i^2
+      // mean = (sum_i w_i x_i)/(sum_k w_k)
+      // sigma(mean) = 1/sqrt(sum_k w_k)
 
       for(std::vector<experimental_double>::const_iterator iv=vs.begin(); iv!=vs.end(); ++iv){
-        mean += iv->value()/std::pow(iv->error(),2);
-        inverr += 1/std::pow(iv->error(),2);
-	newerr += std::pow(iv->error(),2);
+	mean += iv->value()/std::pow(iv->error(),2);
+	inverr += 1/std::pow(iv->error(),2);
       }
-
-      return experimental_double(mean/inverr, sqrt(newerr));
+      
+      return experimental_double(mean/inverr, 1./sqrt(inverr));
     }
 
 

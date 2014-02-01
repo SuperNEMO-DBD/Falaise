@@ -44,7 +44,6 @@ add_library(CATAlgorithm SHARED ${Boost_INCLUDE_DIR} ${CATALGORITHM_SOURCES} ${C
 
 if (_cat_needs_root)
   # Link them to ROOT libraries in special build modes
-  message(" qqq install root to catalgorithm")
   target_link_libraries(CATAlgorithm ${ROOT_LIBRARIES})
 endif ()
 

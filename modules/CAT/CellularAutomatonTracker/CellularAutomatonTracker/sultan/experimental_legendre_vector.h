@@ -106,6 +106,9 @@ namespace SULTAN {
 
       void print_clocks();
 
+      bool assign_cell(size_t cell_id);
+
+
     };
 
 
