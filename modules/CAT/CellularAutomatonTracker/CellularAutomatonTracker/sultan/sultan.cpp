@@ -1066,6 +1066,7 @@ namespace SULTAN {
     std::vector<topology::node> nodes;
     std::vector<topology::cluster_of_experimental_helices> best_clusters = experimental_legendre_vector->clusters();
 
+    std::vector<topology::sequence> sequences;
     for(std::vector<topology::cluster_of_experimental_helices>::const_iterator ic=best_clusters.begin(); ic!=best_clusters.end(); ++ic){
       nodes.clear();
       ids = ic->assigned_ids();
@@ -1101,8 +1102,7 @@ namespace SULTAN {
 	radius.set(b.R());
 	pitch.set(b.H());
 	s->set_helix(b);
-	sequences_.push_back(*s);
-	m.message(" finished track [", sequences_.size()-1, "] with ", s->nodes_.size(), " nodes", mybhep::VERBOSE); fflush(stdout);
+	sequences.push_back(*s);
 	delete s;
 	delete center;
       }
@@ -1112,11 +1112,26 @@ namespace SULTAN {
     if( unclustered_hits.size() ){
       s = new topology::sequence(unclustered_hits, level, probmin);
       make_name(*s);
-      sequences_.push_back(*s);
-      m.message(" finished track [", sequences_.size()-1, "] with ", s->nodes_.size(), " unclustered hits ", mybhep::VERBOSE); fflush(stdout);
+      sequences.push_back(*s);
+      //m.message(" finished track [", sequences.size()-1, "] with ", s->nodes_.size(), " unclustered hits ", mybhep::VERBOSE); fflush(stdout);
       delete s;
     }
 #endif
+
+    m.message(" based on cells clusters, ", sequences.size(), "candidate sequences have been created; ", unclustered_hits.size(), " hits remain unclustered ", mybhep::VERBOSE); fflush(stdout);
+
+    sequences = clean_up(sequences);
+
+
+    m.message(" after clean_up, ", sequences.size(), "sequences remain", mybhep::VERBOSE); fflush(stdout);
+
+    if (level >= mybhep::VERBOSE)
+      {
+	for(std::vector<topology::sequence>::const_iterator is=sequences.begin(); is!=sequences.end(); ++is)
+	  m.message(" sequence [", is - sequences.begin(), "] has ", is->nodes_.size(), " nodes", mybhep::VERBOSE); fflush(stdout);
+      }
+
+    sequences_.insert(sequences_.end(),sequences.begin(),sequences.end());;
 
     clock.stop(" sultan: sequentiate_cluster_with_experimental_vector_4: helix loop: assign ");
 	
@@ -1124,6 +1139,43 @@ namespace SULTAN {
 
     return;
   }
+
+  //*************************************************************
+  std::vector<topology::sequence> sultan::clean_up(std::vector<topology::sequence> seqs){
+
+    if( seqs.size() <= 1 ) return seqs;
+
+    std::vector<topology::sequence> cleaned_sequences;
+    
+    for(std::vector<topology::sequence>::const_iterator is = seqs.begin(); is!=seqs.end(); ++is){
+
+      bool this_sequence_is_clean = true;
+
+      for(std::vector<topology::sequence>::const_iterator js = seqs.begin(); js!=seqs.end(); ++js){
+
+	if( is == js ) continue;
+
+	if( is->is_contained_in(*js) ){
+	  if( !is->contains(*js) ){
+	    this_sequence_is_clean = false;
+	    break;
+	  }else{ // is and js have the same cells
+	         // keep only the first one
+	    if( is > js ) this_sequence_is_clean = false;
+
+	  }
+	}
+      }
+
+      if( this_sequence_is_clean ) cleaned_sequences.push_back(*is);
+
+
+    }
+
+
+    return cleaned_sequences;
+  }
+  //*************************************************************
 
 
   //*************************************************************

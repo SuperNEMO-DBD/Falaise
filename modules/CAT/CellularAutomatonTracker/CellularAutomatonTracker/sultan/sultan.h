@@ -64,6 +64,7 @@ namespace SULTAN {
     void print_a_scenario(const topology::scenario & scenario) const;
     bool make_scenarios(topology::tracked_data &td);
     bool check_continous_cells(std::vector<topology::node> &assigned_nodes, std::vector<topology::node> &leftover_nodes, topology::experimental_helix *b);
+    std::vector<topology::sequence> clean_up(std::vector<topology::sequence> seqs);
 
     //! get clusters
     const std::vector<topology::cluster>& get_clusters()const

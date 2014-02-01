@@ -77,6 +77,10 @@ namespace SULTAN {
 
       bool has_cell(const cell & c)const;
 
+      bool is_contained_in(const sequence & s)const;
+
+      bool contains(const sequence & s)const;
+
     };
 
   }

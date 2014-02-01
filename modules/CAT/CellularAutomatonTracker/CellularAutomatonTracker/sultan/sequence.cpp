@@ -94,6 +94,27 @@ namespace SULTAN {
       return false;
     }
 
+    bool sequence::is_contained_in(const sequence & s)const{
+
+      for(std::vector<node>::const_iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode ){
+	if( !s.has_cell(inode->c() ) )
+	  return false;
+      }
+
+      return true;
+    }
+
+    bool sequence::contains(const sequence & s)const{
+
+      std::vector<node> nodes = s.nodes();
+      for(std::vector<node>::const_iterator inode = nodes.begin(); inode != nodes.end(); ++inode ){
+	if( !this->has_cell(inode->c() ) )
+	  return false;
+      }
+
+      return true;
+    }
+
 
   }
 }
