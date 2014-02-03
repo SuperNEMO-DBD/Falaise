@@ -29,7 +29,7 @@ decay_isotope   : string  = "Bi212+Po212"
 #####################################
 [name="Pa234m" type="genbb::wdecay0"]
 #@config Pa-234m decay [background]
-format          : string  = "background"
+decay_type      : string  = "background"
 decay_isotope   : string  = "Pa234m"
 
 
