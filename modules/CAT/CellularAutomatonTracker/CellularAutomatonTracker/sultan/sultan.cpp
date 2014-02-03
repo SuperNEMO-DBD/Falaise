@@ -203,10 +203,10 @@ namespace SULTAN {
     for (vector<topology::cluster>::iterator icluster = the_clusters.begin(); icluster != the_clusters.end(); ++icluster){
       topology::cluster & a_cluster = *icluster;
 
-      m.message(" sultan: prepare to reduce cluster ", icluster - the_clusters.begin(), " of ", the_clusters.size(), mybhep::VERBOSE);
+      m.message(" sultan: prepare to reduce cluster ", icluster - the_clusters.begin(), " of ", the_clusters.size(), " having", icluster->nodes_.size(), " cells ", mybhep::VERBOSE);
 
       // look for cluster with largest number of triplet-neighbours
-      sequentiate_cluster_with_experimental_vector(a_cluster, icluster - the_clusters.begin());
+      //sequentiate_cluster_with_experimental_vector(a_cluster, icluster - the_clusters.begin());
 
       //keep track in smarter way of which cluster has the largest number of triplet-neighbours
       //sequentiate_cluster_with_experimental_vector_2(a_cluster, icluster - the_clusters.begin());
@@ -215,7 +215,7 @@ namespace SULTAN {
       //sequentiate_cluster_with_experimental_vector_3(a_cluster, icluster - the_clusters.begin());
 
       // put helices in clusters, assign each cell to the cluster with the largest n of cells
-      //sequentiate_cluster_with_experimental_vector_4(a_cluster, icluster - the_clusters.begin());
+      sequentiate_cluster_with_experimental_vector_4(a_cluster, icluster - the_clusters.begin());
 
     }
 
@@ -522,6 +522,8 @@ namespace SULTAN {
     
     clock.stop(" sultan: form_triplets_from_cells ");
 
+    m.message(" sultan: the ", nnodes, " cells have been combined into ", triplets_.size(), " triplets ", mybhep::VERBOSE);
+
     return true;
     
   }
@@ -533,7 +535,7 @@ namespace SULTAN {
       
     clock.start(" sultan: form_helices_from_triplets ", "cumulative");
 
-    m.message(" calculate helices for ", triplets_.size(), " triplets ", mybhep::VERBOSE);
+    m.message(" calculate helices for ", triplets_.size(), " triplets ", mybhep::VVERBOSE);
 
     if( triplets_.size() == 0 ) {
       clock.stop(" sultan: form_helices_from_triplets ");
@@ -640,6 +642,8 @@ namespace SULTAN {
       clock.stop(" sultan : form_helices_from_triplets : print_event_display ");
     }
 
+    m.message(" sultan: the", triplets_.size(), " triplets have given rise to ", the_helices->size(), " helices ", mybhep::VERBOSE);
+
     return true;
     
   }
@@ -653,15 +657,15 @@ namespace SULTAN {
 
     experimental_legendre_vector->reset();
 
+    if (level >= mybhep::VERBOSE)
+      {
+	std::clog << " sequentiate cluster with " << cluster_.nodes_.size() << " nodes " << std::endl; fflush(stdout);
+      }
+
     if( cluster_.nodes_.size() < 3 ){
       clock.stop(" sultan: sequentiate_cluster_with_experimental_vector ");
       return;
     }
-
-    if (level >= mybhep::VERBOSE)
-      {
-	std::clog << " sequentiate cluster with " << cluster_.nodes_.size() << " nodes, leg vector has " << experimental_legendre_vector->helices().size() << " helices " << std::endl; fflush(stdout);
-      }
 
     topology::experimental_helix b;
     vector<topology::node> assigned_nodes, leftover_nodes;
@@ -994,11 +998,6 @@ namespace SULTAN {
       return;
     }
 
-    if (level >= mybhep::VERBOSE)
-      {
-	std::clog << " sultan: prepare to sequentiate cluster of " << cluster_.nodes_.size() << " cells " << std::endl; fflush(stdout);
-      }
-
     topology::experimental_helix b;
     topology::sequence *s;
     topology::experimental_point *center;
@@ -1019,10 +1018,6 @@ namespace SULTAN {
     
     experimental_legendre_vector->reset();
 
-    if (level >= mybhep::VERBOSE){
-      std::clog << " sultan: the " << cluster_.nodes_.size() << " nodes have been combined to produce " << the_helices.size() << " helices " << std::endl; fflush(stdout);
-    }
-    
     clock.stop(" sultan: sequentiate_cluster_with_experimental_vector_4: helix loop: clean ");
 
     if( !the_helices.size() ){
@@ -1040,7 +1035,7 @@ namespace SULTAN {
 
     if (level >= mybhep::VERBOSE)
       {
-	std::clog << " sultan has combined the " <<  the_helices.size() << " helices into " << experimental_legendre_vector->clusters().size() << " clusters of helices " << std::endl; 
+	std::clog << " sultan: the " <<  the_helices.size() << " helices have been combined into " << experimental_legendre_vector->clusters().size() << " clusters of helices " << std::endl; 
       }
       
     clock.stop(" sultan: sequentiate_cluster_with_experimental_vector_4: helix loop: add helix to clusters ");
@@ -1118,12 +1113,12 @@ namespace SULTAN {
     }
 #endif
 
-    m.message(" based on cells clusters, ", sequences.size(), "candidate sequences have been created; ", unclustered_hits.size(), " hits remain unclustered ", mybhep::VERBOSE); fflush(stdout);
+    m.message(" sultan: the ", experimental_legendre_vector->clusters().size(), " clusters of helices have been reduced to ", sequences.size(), " candidate sequences; ", unclustered_hits.size(), " hits remain unclustered ", mybhep::VERBOSE); fflush(stdout);
 
     sequences = clean_up(sequences);
 
 
-    m.message(" after clean_up, ", sequences.size(), "sequences remain", mybhep::VERBOSE); fflush(stdout);
+    m.message(" sultan: after clean_up, ", sequences.size(), "sequences remain", mybhep::VERBOSE); fflush(stdout);
 
     if (level >= mybhep::VERBOSE)
       {
