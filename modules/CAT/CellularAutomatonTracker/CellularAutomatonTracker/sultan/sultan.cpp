@@ -465,7 +465,7 @@ namespace SULTAN {
 
     size_t nnodes = nodes.size();
     
-    m.message(" calculate triples for ", nnodes, " nodes, minimum ", min_ncells_in_cluster, mybhep::VERBOSE);
+    m.message(" calculate triples for ", nnodes, " nodes, minimum ", min_ncells_in_cluster, mybhep::VVERBOSE);
 
     if( nnodes < min_ncells_in_cluster ) {
       clock.stop(" sultan: form_triplets_from_cells ");
