@@ -55,6 +55,7 @@ set(Falaise_MARKDOWN_DOCS
   flreconstruct/FLReconstruct.md
   flreconstruct/WritingFLReconstructModules.md
   flreconstruct/WorkingWithEventRecords.md
+  flreconstruct/UsingServices.md
   flreconstruct/DocumentingFLReconstructModules.md
   CodingStandards.md
   )

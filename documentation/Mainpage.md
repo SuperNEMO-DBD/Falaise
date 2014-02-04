@@ -20,6 +20,7 @@ For guides and man pages for the Falaise tools, see the following pages:
 - [FLReconstruct](@ref md_FLReconstruct) guide for reconstructing data output by the FLSimulate detector simulation.
   - [Writing plugin modules](@ref md_WritingFLReconstructModules) for `flreconstruct`
   - [Working with Event Data in plugin modules](@ref md_WorkingWithEventRecords).
+  - [Accessing Services for Common Data](@ref md_UsingServices)
 
 User Guides
 ===========

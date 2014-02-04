@@ -713,9 +713,8 @@ EXCLUDE                = @PROJECT_SOURCE_DIR@/documentation/data_models \
                          @PROJECT_SOURCE_DIR@/documentation/flreconstruct/MyModule \
                          @PROJECT_SOURCE_DIR@/documentation/flreconstruct/MyModuleConfigurable \
                          @PROJECT_SOURCE_DIR@/documentation/flreconstruct/AccessThingsModule \
-                         @PROJECT_SOURCE_DIR@/documentation/flreconstruct/AccessThingsModuleRW
-
-
+                         @PROJECT_SOURCE_DIR@/documentation/flreconstruct/AccessThingsModuleRW \
+                         @PROJECT_SOURCE_DIR@/documentation/flreconstruct/UseServicesModule
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
