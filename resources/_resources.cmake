@@ -172,11 +172,16 @@ ${PROJECT_SOURCE_DIR}/resources/config/common/geometry/materials/1.0/elements.de
 ${PROJECT_SOURCE_DIR}/resources/config/common/geometry/materials/1.0/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/common/geometry/materials/1.0/materials_aliases.def
 ${PROJECT_SOURCE_DIR}/resources/config/common/geometry/materials/1.0/materials.def
+${PROJECT_SOURCE_DIR}/resources/config/common/simulation/primary_events/1.0/genbb_wdecay0.rst
 ${PROJECT_SOURCE_DIR}/resources/config/common/simulation/primary_events/1.0/dbd.def
+${PROJECT_SOURCE_DIR}/resources/config/common/simulation/primary_events/1.0/histos_Pa234m.root
+${PROJECT_SOURCE_DIR}/resources/config/common/simulation/primary_events/1.0/histos_Ca48.0nubbM1.root
 ${PROJECT_SOURCE_DIR}/resources/config/common/simulation/primary_events/1.0/misc.def
 ${PROJECT_SOURCE_DIR}/resources/config/common/simulation/primary_events/1.0/manager.conf
+${PROJECT_SOURCE_DIR}/resources/config/common/simulation/primary_events/1.0/test.bash
 ${PROJECT_SOURCE_DIR}/resources/config/common/simulation/primary_events/1.0/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/common/simulation/primary_events/1.0/calibration.def
+${PROJECT_SOURCE_DIR}/resources/config/common/simulation/primary_events/1.0/genbb_wdecay0.html
 ${PROJECT_SOURCE_DIR}/resources/config/common/simulation/primary_events/1.0/background.def
 ${PROJECT_SOURCE_DIR}/resources/README.rst
 )

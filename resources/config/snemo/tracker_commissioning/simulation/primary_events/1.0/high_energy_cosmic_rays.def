@@ -44,8 +44,8 @@ energy        : real   = 1. GeV
 randomized_direction   : boolean = 1
 
 
-#############################################################################
-[name="muon.cosmic.sea_level.toy" type="snemo::genbb::cosmic_muon_generator"]
+##################################################################################
+[name="muon.cosmic.sea_level.toy" type="snemo::simulation::cosmic_muon_generator"]
 
 #@config Parameters for the "cosmic muon generator" mode [cosmic]
 

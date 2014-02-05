@@ -140,7 +140,7 @@ generators.source_strips_external_surface.absolute_weight : real  = 0.054
 generators.source_strips_internal_surface.absolute_weight : real  = 1.0
 
 # Maybe the following could work (to be checked) :
-#generators.source_strips_internal_surface.activity : string  = "1.0 Bq/m2"
+#generators.source_strips_external_surface.activity : string  = "1.0 Bq/m2"
 #generators.source_strips_internal_surface.activity : string  = "1.0 Bq/m2"
 
 

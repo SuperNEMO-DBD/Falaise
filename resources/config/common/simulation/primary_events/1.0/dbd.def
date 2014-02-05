@@ -7,7 +7,7 @@
 
 ##########################################################################
 [name="Ca48.0nubb" type="genbb::wdecay0"]
-#@config Neutrinoless double beta decay of Ca-48, 0nubb(mn)[DBD]
+#@config Neutrinoless double beta decay of Ca-48, 0nubb(mn) [DBD]
 decay_type      : string  = "DBD"
 decay_isotope   : string  = "Ca48"
 decay_dbd_level : integer = 0
@@ -115,7 +115,7 @@ decay_dbd_mode  : integer = 6 # 0nubbM2
 
 ##########################################################################
 [name="Mo100.0nubb" type="genbb::wdecay0"]
-#@config Neutrinoless double beta decay of Mo-100, 0nubb(mn)[DBD]
+#@config Neutrinoless double beta decay of Mo-100, 0nubb(mn) [DBD]
 decay_type      : string  = "DBD"
 decay_isotope   : string  = "Mo100"
 decay_dbd_level : integer = 0
