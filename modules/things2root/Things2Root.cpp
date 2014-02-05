@@ -33,12 +33,12 @@ Things2Root::~Things2Root() {
 
 // Initialize
 void Things2Root::initialize(const datatools::properties& myConfig,
-			                       datatools::service_manager& flServices,
-			                       dpp::module_handle_dict_type& /*moduleDict*/) {
+                                               datatools::service_manager& flServices,
+                                               dpp::module_handle_dict_type& /*moduleDict*/) {
   // Throw logic exception if we've already initialized this instance
   DT_THROW_IF(this->is_initialized(),
-	      std::logic_error,
-	      "Things2Root already initialized");
+              std::logic_error,
+              "Things2Root already initialized");
   // Extract the filename_out key from the supplied config, if
   // the key exists. datatools::properties throws an exception if
   // the key isn't in the config, so catch this if thrown and don't do
@@ -63,7 +63,12 @@ void Things2Root::initialize(const datatools::properties& myConfig,
   hfile_ = new TFile(filename_output_.c_str(),"RECREATE","Output file of Simulation data");
   hfile_->cd();
 
-  tree_ = new TTree("SimData","SimData");
+  tree_ = new TTree("SimData", "SimData");
+  // 2014-02-05, F.Mauger: Force affectation of the tree's current directory to
+  // explicitly avoid the tree to be reaffcted to another concurrent TFile
+  // (output_module & brio format):
+  // TO BE CHECKED
+  /* tree_->SetDirectory(hfile_); */
   tree_->Branch("truetracker.nohits",&truetracker_.nohits_);
   tree_->Branch("truetracker.id",&truetracker_.id_);
   tree_->Branch("truetracker.module",&truetracker_.module_);
@@ -229,4 +234,3 @@ void Things2Root::reset() {
   filename_output_ = "things2root.default.root";
   this->_set_initialized(false);
 }
-
