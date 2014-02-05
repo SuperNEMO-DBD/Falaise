@@ -23,30 +23,13 @@
 #-----------------------------------------------------------------------
 # Configure library
 #
+
 set(FalaiseLibrary_HEADERS
-  calo_locator.h
-  calo_scin_box_model.h
-  calo_tapered_scin_box_model.h
-  cosmic_muon_generator.h
   exitcodes.h
   falaise.h
-  gg_locator.h
-  gg_step_hit_processor.h
-  gg_track_utils.h
-  gveto_locator.h
-  locator_plugin.h
-  ocd_support.h
   resource.h
-  utils.h
-  xcalo_locator.h
   version.h.in
-  )
-
-# - Publish headers
-foreach(_hdrin ${FalaiseLibrary_HEADERS})
-  string(REGEX REPLACE "\\.in$" "" _hdrout "${_hdrin}")
-  configure_file(${_hdrin} ${Falaise_BUILDPRODUCT_DIR}/include/falaise/${_hdrout} @ONLY)
-endforeach()
+)
 
 #-----------------------------------------------------------------------
 # Declare sources
@@ -55,22 +38,24 @@ configure_file(falaise.cc.in falaise.cc @ONLY)
 configure_file(resource.cc.in resource.cc @ONLY)
 
 set(FalaiseLibrary_SOURCES
-  calo_locator.cc
-  calo_scin_box_model.cc
-  calo_tapered_scin_box_model.cc
-  cosmic_muon_generator.cc
-  gg_locator.cc
-  gg_step_hit_processor.cc
-  gg_track_utils.cc
-  gveto_locator.cc
-  locator_plugin.cc
-  ocd_support.cc
-  utils.cc
   version.cc
-  xcalo_locator.cc
   ${CMAKE_CURRENT_BINARY_DIR}/falaise.cc
   ${CMAKE_CURRENT_BINARY_DIR}/resource.cc
   )
+
+set(FalaiseLibrary_TESTS )
+
+# - Declare headers, sources and test programs specific
+#   to various setups (snemo, bipo3...)
+include(snemo.cmake)
+include(bipo3.cmake)
+
+# - Publish headers
+foreach(_hdrin ${FalaiseLibrary_HEADERS})
+  string(REGEX REPLACE "\\.in$" "" _hdrout "${_hdrin}")
+  configure_file(${_hdrin} ${Falaise_BUILDPRODUCT_DIR}/include/falaise/${_hdrout} @ONLY)
+endforeach()
+
 
 #-----------------------------------------------------------------------
 # Build/Link Library
@@ -106,6 +91,35 @@ install(DIRECTORY ${Falaise_BUILDPRODUCT_DIR}/include/
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
   )
 
+if(Falaise_ENABLE_TESTING)
+  list(APPEND FalaiseLibrary_TESTS
+    testing/test_falaise.cxx
+    )
+endif()
+
 #-----------------------------------------------------------------------
 # Build Tests
 #
+
+if(Falaise_ENABLE_TESTING)
+
+  foreach(_testsource ${FalaiseLibrary_TESTS})
+    message( STATUS "Test source : '${_testsource}'" )
+    get_filename_component(_testname "${_testsource}" NAME_WE)
+    set(_testname "falaise-${_testname}")
+    add_executable(${_testname} ${_testsource})
+    target_link_libraries(${_testname} Falaise)
+    # - On Apple, ensure dynamic_lookup of undefined symbols
+    if(APPLE)
+      set_target_properties(${_testname} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+    endif()
+    add_test(NAME ${_testname} COMMAND ${_testname})
+    # - For now, dump them into the testing output directory
+    set_target_properties(${_testname}
+      PROPERTIES
+      RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fltests
+      ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fltests
+      )
+  endforeach()
+
+endif()

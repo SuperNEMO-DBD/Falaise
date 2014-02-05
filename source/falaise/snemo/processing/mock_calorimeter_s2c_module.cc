@@ -1,0 +1,538 @@
+// -*- mode: c++ ; -*-
+/** \file falaise/snemo/processing/mock_calorimeter_s2c_module.cc
+ */
+
+// Ourselves:
+#include <falaise/snemo/processing/mock_calorimeter_s2c_module.h>
+
+// Standard library:
+#include <stdexcept>
+#include <sstream>
+
+// Third party:
+// - Bayeux/datatools:
+#include <datatools/service_manager.h>
+// - Bayeux/geomtools:
+#include <geomtools/manager.h>
+#include <geomtools/geometry_service.h>
+// - Bayeux/mctools:
+#include <mctools/simulated_data.h>
+#include <mctools/utils.h>
+
+// This project :
+#include <falaise/snemo/datamodels/data_model.h>
+
+namespace snemo {
+
+  namespace processing {
+
+    // Registration instantiation macro :
+    DPP_MODULE_REGISTRATION_IMPLEMENT(mock_calorimeter_s2c_module,
+                                      "snemo::processing::mock_calorimeter_s2c_module");
+
+    void mock_calorimeter_s2c_module::set_geom_manager(const geomtools::manager & gmgr_)
+    {
+      DT_THROW_IF(is_initialized(),
+                  std::logic_error,
+                  "Module '" << get_name() << "' is already initialized ! ");
+      _geom_manager_ = &gmgr_;
+
+      // Check setup label:
+      const std::string & setup_label = _geom_manager_->get_setup_label();
+      DT_THROW_IF(!(setup_label == "snemo" || setup_label == "snemo::tracker_commissioning"),
+                  std::logic_error,
+                  "Setup label '" << setup_label << "' is not supported !");
+      return;
+    }
+
+    const geomtools::manager & mock_calorimeter_s2c_module::get_geom_manager() const
+    {
+      DT_THROW_IF(! is_initialized(),
+                  std::logic_error,
+                  "Module '" << get_name() << "' is not initialized ! ");
+      return *_geom_manager_;
+    }
+
+    void mock_calorimeter_s2c_module::initialize(const datatools::properties  & setup_,
+                                                 datatools::service_manager   & service_manager_,
+                                                 dpp::module_handle_dict_type & /* module_dict_ */)
+    {
+      DT_THROW_IF(is_initialized(),
+                  std::logic_error,
+                  "Module '" << get_name() << "' is already initialized ! ");
+
+      this->base_module::_common_initialize(setup_);
+
+      if (setup_.has_key("SD_label"))
+        {
+          _SD_label_ = setup_.fetch_string("SD_label");
+        }
+
+      if (setup_.has_key("CD_label"))
+        {
+          _CD_label_ = setup_.fetch_string("CD_label");
+        }
+
+      std::string geo_label = "Geo";
+      if (setup_.has_key("Geo_label"))
+        {
+          geo_label = setup_.fetch_string("Geo_label");
+        }
+
+      if (_geom_manager_ == 0)
+        {
+          DT_THROW_IF(geo_label.empty(), std::logic_error,
+                      "Module '" << get_name() << "' has no valid '" << "Geo_label" << "' property !");
+          DT_THROW_IF(! service_manager_.has(geo_label) ||
+                      ! service_manager_.is_a<geomtools::geometry_service>(geo_label),
+                      std::logic_error,
+                      "Module '" << get_name() << "' has no '" << geo_label << "' service !");
+          geomtools::geometry_service & Geo = service_manager_.get<geomtools::geometry_service>(geo_label);
+          set_geom_manager(Geo.get_geom_manager());
+        }
+      DT_THROW_IF(_geom_manager_ == 0, std::logic_error, "Missing geometry manager !");
+
+      int random_seed  = 12345;
+      if (setup_.has_key("random.seed"))
+        {
+          random_seed = setup_.fetch_integer("random.seed");
+        }
+      std::string random_id = "mt19937";
+      if (setup_.has_key("random.id"))
+        {
+          random_id = setup_.fetch_string("random.id");
+        }
+
+      // Initialize the embedded random number generator:
+      _random_.init(random_id, random_seed);
+
+      // Get the calorimeter categories:
+      if (setup_.has_key("hit_categories"))
+        {
+          setup_.fetch("hit_categories", _hit_categories_);
+        }
+
+      // Initialize the calorimeter regime utility:
+      for (category_col_type::const_iterator
+             icategory = _hit_categories_.begin();
+           icategory != _hit_categories_.end(); ++icategory)
+        {
+          const std::string & the_category = *icategory;
+          {
+            calorimeter_regime tmp_regime;
+            _calorimeter_regimes_[the_category] = tmp_regime;
+          }
+          calorimeter_regime & a_regime = _calorimeter_regimes_[the_category];
+          a_regime.set_category(the_category);
+          a_regime.initialize(setup_);
+        }
+
+      // Setup trigger time
+      if (setup_.has_key("cluster_time_width"))
+        {
+          _cluster_time_width_ = setup_.fetch_real("cluster_time_width") * CLHEP::ns;
+        }
+      // 2012-09-17 FM : support reference to the MC true hit ID
+      if (setup_.has_flag("store_mc_hit_id"))
+        {
+          _store_mc_hit_id_ = true;
+        }
+      // Get the alpha quenching:
+      if (setup_.has_key("alpha_quenching"))
+        {
+          _alpha_quenching_ = setup_.fetch_boolean("alpha_quenching");
+        }
+
+      this->base_module::_set_initialized(true);
+      return;
+    }
+
+    void mock_calorimeter_s2c_module::reset()
+    {
+      DT_THROW_IF(! is_initialized(),
+                  std::logic_error,
+                  "Module '" << get_name() << "' is not initialized !");
+
+      // Reset the random number generator:
+      _random_.reset();
+
+      // Reset the calorimeter regime utility:
+      for (calorimeter_regime_col_type::iterator icalo = _calorimeter_regimes_.begin();
+           icalo != _calorimeter_regimes_.end(); ++icalo)
+        {
+          icalo->second.reset();
+        }
+
+      _hit_categories_.clear();
+
+      this->base_module::_set_initialized(false);
+      return;
+    }
+
+    // Constructor :
+    mock_calorimeter_s2c_module::mock_calorimeter_s2c_module(datatools::logger::priority logging_priority_)
+      : dpp::base_module(logging_priority_)
+    {
+      _geom_manager_ = 0;
+
+      _SD_label_ = snemo::datamodel::data_info::SIMULATED_DATA_LABEL;
+      _CD_label_ = snemo::datamodel::data_info::CALIBRATED_DATA_LABEL;
+
+      // 2012-09-17 FM : support reference to the MC true hit ID
+      _store_mc_hit_id_    = false;
+      _cluster_time_width_ = 100 * CLHEP::ns;
+      _alpha_quenching_    = true;
+
+      return;
+    }
+
+    // Destructor :
+    mock_calorimeter_s2c_module::~mock_calorimeter_s2c_module()
+    {
+      if (is_initialized()) mock_calorimeter_s2c_module::reset();
+      return;
+    }
+
+    // Processing :
+    dpp::base_module::process_status mock_calorimeter_s2c_module::process(datatools::things & event_record_)
+    {
+      DT_THROW_IF(! is_initialized(),
+                  std::logic_error,
+                  "Module '" << get_name() << "' is not initialized !");
+
+      // Check simulated data
+      const bool abort_at_missing_input = true;
+      // check if some 'simulated_data' are available in the data model:
+      if (! event_record_.has(_SD_label_))
+        {
+          DT_THROW_IF(abort_at_missing_input, std::logic_error, "Missing simulated data to be processed !");
+          // leave the data unchanged.
+          return dpp::base_module::PROCESS_ERROR;
+        }
+      // grab the 'simulated_data' entry from the data model :
+      const mctools::simulated_data & the_simulated_data
+        = event_record_.get<mctools::simulated_data>(_SD_label_);
+
+      // Check calibrated data *
+      const bool abort_at_former_output = false;
+      const bool preserve_former_output = false;
+      // check if some 'calibrated_data' are available in the data model:
+      snemo::datamodel::calibrated_data * ptr_calib_data = 0;
+      if (! event_record_.has(_CD_label_))
+        {
+          ptr_calib_data = &(event_record_.add<snemo::datamodel::calibrated_data>(_CD_label_));
+        }
+      else
+        {
+          ptr_calib_data = &(event_record_.grab<snemo::datamodel::calibrated_data>(_CD_label_));
+        }
+      snemo::datamodel::calibrated_data & the_calibrated_data = *ptr_calib_data;
+      if (the_calibrated_data.calibrated_calorimeter_hits().size() > 0)
+        {
+          DT_THROW_IF(abort_at_former_output, std::logic_error, "Already has processed calorimeter calibrated data !");
+          if (! preserve_former_output)
+            {
+              the_calibrated_data.calibrated_calorimeter_hits().clear();
+            }
+        }
+
+      // Main processing method :
+      _process(the_simulated_data,
+               the_calibrated_data.calibrated_calorimeter_hits());
+
+      return dpp::base_module::PROCESS_SUCCESS;
+    }
+
+    mygsl::rng & mock_calorimeter_s2c_module::_get_random()
+    {
+      return _random_;
+    }
+
+    //
+    // Here collect the 'calos' raw hits from the simulation data source
+    // and build the final list of 'calorimeter' hits.
+    //
+    //
+
+    void mock_calorimeter_s2c_module::_process_calorimeter_digitization
+    (const mctools::simulated_data & simulated_data_,
+     snemo::datamodel::calibrated_data::calorimeter_hit_collection_type & calibrated_calorimeter_hits_)
+    {
+      DT_LOG_DEBUG(get_logging_priority(), "Entering...");
+
+      uint32_t calibrated_calorimeter_hit_id = 0;
+
+      // Loop over all 'calorimeter hit' categories:
+      for (category_col_type::const_iterator icategory = _hit_categories_.begin();
+           icategory != _hit_categories_.end(); ++icategory)
+        {
+          const std::string & category = *icategory;
+          if (! simulated_data_.has_step_hits(category))
+            {
+              // Nothing to do.
+              continue;
+            }
+
+          const size_t nb_hits = simulated_data_.get_number_of_step_hits(category);
+          for (size_t ihit = 0; ihit < nb_hits; ++ihit)
+            {
+              // Get a reference to the step hit through the handle :
+              //if(! i->has_data()) continue;
+              //const base_step_hit & a_calo_mc_hit = i->get();
+              const mctools::base_step_hit & a_calo_mc_hit = simulated_data_.get_step_hit(category, ihit);
+
+              // The hit ID of the true hit :
+              int true_calo_hit_id = geomtools::base_hit::INVALID_HIT_ID;
+              if (a_calo_mc_hit.has_hit_id())
+                {
+                  true_calo_hit_id = a_calo_mc_hit.get_hit_id();
+                }
+
+              // Extract the corresponding geom ID:
+              const geomtools::geom_id & gid = a_calo_mc_hit.get_geom_id();
+
+              // Get the step hit time start:
+              const double step_hit_time_start = a_calo_mc_hit.get_time_start();
+
+              // Get the step hit energy deposit:
+              double step_hit_energy_deposit = a_calo_mc_hit.get_energy_deposit();
+
+              // Quench the alpha particle energy:
+              if (a_calo_mc_hit.get_particle_name() == "alpha" && _alpha_quenching_)
+                {
+                  const calorimeter_regime & the_calo_regime = _calorimeter_regimes_.at(*icategory);
+                  const double quenched_energy
+                    = the_calo_regime.quench_alpha_energy(step_hit_energy_deposit);
+
+                  step_hit_energy_deposit = quenched_energy;
+                }
+
+              // Find if some calorimeter hit already uses this geom ID :
+              geomtools::base_hit::has_geom_id_predicate pred_has_gid(gid);
+              // Wrapper predicates :
+              datatools::mother_to_daughter_predicate<geomtools::base_hit, snemo::datamodel::calibrated_calorimeter_hit> pred_M2D(pred_has_gid);
+              datatools::handle_predicate<snemo::datamodel::calibrated_calorimeter_hit> pred_via_handle(pred_M2D);
+
+              snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::reverse_iterator found
+                = std::find_if(calibrated_calorimeter_hits_.rbegin(),
+                               calibrated_calorimeter_hits_.rend(),
+                               pred_via_handle);
+
+              if (found == calibrated_calorimeter_hits_.rend())
+                {
+                  // This geom_id is not used by any previous calorimeter hit:
+                  // we create a new calorimeter hit !
+                  snemo::datamodel::calibrated_data::calorimeter_hit_handle_type new_handle(new snemo::datamodel::calibrated_calorimeter_hit);
+                  snemo::datamodel::calibrated_calorimeter_hit & new_calibrated_calorimeter_hit = new_handle.grab();
+
+                  new_calibrated_calorimeter_hit.set_hit_id(calibrated_calorimeter_hit_id++);
+                  new_calibrated_calorimeter_hit.set_geom_id(a_calo_mc_hit.get_geom_id());
+
+                  // sigma time and sigma energy are computed later
+                  new_calibrated_calorimeter_hit.set_time(step_hit_time_start);
+                  new_calibrated_calorimeter_hit.set_energy(step_hit_energy_deposit);
+
+                  // Add a properties to ease the final calibration
+                  new_calibrated_calorimeter_hit.grab_auxiliaries().store("category", *icategory);
+
+                  // 2012-09-17 FM : support reference to the MC true hit ID
+                  if (_store_mc_hit_id_ && true_calo_hit_id > geomtools::base_hit::INVALID_HIT_ID)
+                    {
+                      new_calibrated_calorimeter_hit.grab_auxiliaries().store(mctools::hit_utils::HIT_MC_HIT_ID_KEY, true_calo_hit_id);
+                    }
+
+                  // Append it to the collection :
+                  calibrated_calorimeter_hits_.push_back(new_handle);
+                }
+              else
+                {
+                  // This geom_id is already used by some previous calorimeter hit:
+                  // we update this hit !
+                  snemo::datamodel::calibrated_calorimeter_hit & some_calibrated_calorimeter_hit = found->grab();
+
+                  // Grab auxiliaries :
+                  datatools::properties & cc_prop = some_calibrated_calorimeter_hit.grab_auxiliaries();
+
+                  // Check time between clusters
+                  const double delta_time = step_hit_time_start
+                    - some_calibrated_calorimeter_hit.get_time();
+
+                  // cluster arriving too late : do not care of it
+                  if (delta_time > _cluster_time_width_)
+                    {
+                      if (! cc_prop.has_key("pile_up"))
+                        {
+                          cc_prop.store_flag("pile_up");
+                        }
+                      continue;
+                    }
+
+                  // 2012-07-26 FM : support reference to the MC true hit ID
+                  if (_store_mc_hit_id_ && true_calo_hit_id > geomtools::base_hit::INVALID_HIT_ID)
+                    {
+                      cc_prop.update(mctools::hit_utils::HIT_MC_HIT_ID_KEY,
+                                     true_calo_hit_id);
+                    }
+
+                  // Cluster coming before : it becomes the new one
+                  if (delta_time < -_cluster_time_width_)
+                    {
+                      if (! cc_prop.has_key("pile_up"))
+                        {
+                          cc_prop.store_flag("pile_up");
+                        }
+                      some_calibrated_calorimeter_hit.set_time(step_hit_time_start);
+                      some_calibrated_calorimeter_hit.set_energy(step_hit_energy_deposit);
+                      continue;
+                    }
+
+                  // Find the first hit in time
+                  const double calo_time = std::min(step_hit_time_start,
+                                                    some_calibrated_calorimeter_hit.get_time());
+                  some_calibrated_calorimeter_hit.set_time(calo_time);
+
+                  // Sum energies
+                  const double calo_energy = step_hit_energy_deposit
+                    + some_calibrated_calorimeter_hit.get_energy();
+                  some_calibrated_calorimeter_hit.set_energy(calo_energy);
+                }
+            } // loop over hits
+        } // loop over hit category
+
+      DT_LOG_DEBUG(get_logging_priority(), "Exiting.");
+      return;
+    }
+
+    // Calibrate calorimeter hits from digitization informations:
+
+    void mock_calorimeter_s2c_module::_process_calorimeter_calibration
+    (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type & calibrated_calorimeter_hits_)
+    {
+      DT_LOG_DEBUG(get_logging_priority(), "Entering..." );
+
+      for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::iterator
+             icalo = calibrated_calorimeter_hits_.begin();
+           icalo != calibrated_calorimeter_hits_.end(); ++icalo)
+        {
+          snemo::datamodel::calibrated_calorimeter_hit & the_calo_cluster = icalo->grab();
+
+          // Setting category in order to get the correct energy resolution:
+          // first recover the calorimeter category
+          const std::string & category_name
+            = the_calo_cluster.get_auxiliaries().fetch_string("category");
+          const calorimeter_regime & the_calo_regime = _calorimeter_regimes_.at(category_name);
+
+          // Compute a random 'experimental' energy taking into account
+          // the expected energy resolution of the calorimeter hit:
+          const double energy           = the_calo_cluster.get_energy();
+          const double exp_energy       = the_calo_regime.randomize_energy(_get_random(), energy);
+          const double exp_sigma_energy = the_calo_regime.get_sigma_energy(exp_energy);
+          the_calo_cluster.set_energy(exp_energy);
+          the_calo_cluster.set_sigma_energy(exp_sigma_energy);
+
+          // Compute a random 'experimental' time taking into account
+          // the expected time resolution of the calorimeter hit:
+          const double time           = the_calo_cluster.get_time();
+          const double exp_time       = the_calo_regime.randomize_time(_get_random(), time, exp_energy);
+          const double exp_sigma_time = the_calo_regime.get_sigma_time(exp_energy);
+          the_calo_cluster.set_time(exp_time);
+          the_calo_cluster.set_sigma_time(exp_sigma_time);
+
+        }
+
+      DT_LOG_DEBUG(get_logging_priority(), "Exiting.");
+      return;
+    }
+
+    // Select calorimeter hit following trigger conditions
+
+    void mock_calorimeter_s2c_module::_process_calorimeter_trigger
+    (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type & calibrated_calorimeter_hits_)
+    {
+      DT_LOG_DEBUG(get_logging_priority(), "Entering..." );
+
+      bool high_threshold = false;
+      for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::iterator
+             icalo = calibrated_calorimeter_hits_.begin();
+           icalo != calibrated_calorimeter_hits_.end(); ++icalo)
+        {
+          snemo::datamodel::calibrated_calorimeter_hit & the_calo_cluster = icalo->grab();
+
+          // Setting category in order to get the correct trigger parameters:
+          // first recover the calorimeter category
+          const std::string & category_name
+            = the_calo_cluster.get_auxiliaries().fetch_string("category");
+          const calorimeter_regime & the_calo_regime
+            = _calorimeter_regimes_.at(category_name);
+
+          const double energy = the_calo_cluster.get_energy();
+          if (the_calo_regime.is_high_threshold(energy))
+            {
+              high_threshold = true;
+              // Find one is enough
+              break;
+            }
+        }
+
+      if (high_threshold)
+        {
+          // Search for low threshold hits:
+          for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::iterator
+                 icalo = calibrated_calorimeter_hits_.begin();
+               icalo != calibrated_calorimeter_hits_.end();/*++icalo*/)
+            {
+              snemo::datamodel::calibrated_calorimeter_hit & the_calo_cluster = icalo->grab();
+
+              const std::string & category_name
+                = the_calo_cluster.get_auxiliaries().fetch_string("category");
+              const calorimeter_regime & the_calo_regime
+                = _calorimeter_regimes_.at(category_name);
+
+              const double energy = the_calo_cluster.get_energy();
+              // If energy hit is too low then remove calorimeter hit
+              if (! the_calo_regime.is_low_threshold(energy))
+                {
+                  icalo = calibrated_calorimeter_hits_.erase(icalo);
+                }
+              else
+                {
+                  ++icalo;
+                }
+            }
+        }
+      else
+        {
+          DT_LOG_DEBUG(get_logging_priority(), "No 'high threshold' calorimeter hit was found !");
+          calibrated_calorimeter_hits_.clear();
+        }
+
+      DT_LOG_DEBUG(get_logging_priority(), "Exiting.");
+      return;
+    }
+
+
+    void mock_calorimeter_s2c_module::_process
+    (const mctools::simulated_data & simulated_data_,
+     snemo::datamodel::calibrated_data::calorimeter_hit_collection_type & calibrated_calorimeter_hits_)
+    {
+      DT_LOG_DEBUG(get_logging_priority(), "Entering...");
+      DT_THROW_IF(! is_initialized(), std::logic_error, "Module not intialized !");
+
+      // process "calo"-like raw(simulated) hits to build the list of digitized calorimeter hits:
+      _process_calorimeter_digitization(simulated_data_, calibrated_calorimeter_hits_);
+
+      // process digitized calorimeter(simulated) hits and calibrate geometry informations:
+      _process_calorimeter_calibration(calibrated_calorimeter_hits_);
+
+      // process digitized calorimeter(simulated) hits and select triggered ones:
+      _process_calorimeter_trigger(calibrated_calorimeter_hits_);
+
+      DT_LOG_DEBUG(get_logging_priority(), "Exiting.");
+      return;
+    }
+
+  } // end of namespace processing
+
+} // end of namespace snemo
+
+// end of falaise/snemo/processing/mock_calorimeter_s2c_module.cc
