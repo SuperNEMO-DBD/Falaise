@@ -209,7 +209,7 @@ void do_configure(int argc, char *argv[], FLSimulateArgs& params) {
   try {
     FLSimulate::initResources();
     params.logLevel = datatools::logger::PRIO_ERROR;
-    params.experimentID = "snemo";
+    params.experimentID = "tracker_commissioning";
     params.setupGeometryVersion = "1.0";
     params.setupSimulationVersion = "1.0";
     params.simulationManagerParams.set_defaults();
