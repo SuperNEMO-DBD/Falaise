@@ -25,6 +25,7 @@
 # Core configuration
 #
 include_directories(${Falaise_BUILDPRODUCT_DIR}/include)
+include_directories(${Falaise_BUILDPRODUCT_DIR}/include/falaise)
 include_directories(${Bayeux_INCLUDE_DIRS})
 
 #-----------------------------------------------------------------------
@@ -55,4 +56,3 @@ if(Pandoc_FOUND)
     )
   add_custom_target(falaise_man ALL DEPENDS ${Falaise_MANPAGE_OUT})
 endif()
-
