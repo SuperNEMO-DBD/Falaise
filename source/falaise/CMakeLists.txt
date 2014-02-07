@@ -49,6 +49,7 @@ set(FalaiseLibrary_TESTS )
 #   to various setups (snemo, bipo3...)
 include(snemo.cmake)
 include(bipo3.cmake)
+include(TrackerPreClustering.cmake)
 
 # - Publish headers
 foreach(_hdrin ${FalaiseLibrary_HEADERS})
