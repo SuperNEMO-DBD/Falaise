@@ -62,11 +62,14 @@ list(APPEND FalaiseLibrary_HEADERS
 
   snemo/simulation/cosmic_muon_generator.h
   snemo/simulation/gg_step_hit_processor.h
+  #snemo/simulation/pmt_signal_generator.h
 
   snemo/processing/calorimeter_regime.h
   snemo/processing/geiger_regime.h
   snemo/processing/mock_calorimeter_s2c_module.h
   snemo/processing/mock_tracker_s2c_module.h
+  snemo/processing/base_tracker_clusterizer.h
+  snemo/processing/tracker_clustering_module.h
 
   snemo/cuts/event_header_cut.h
   snemo/cuts/simulated_data_cut.h
@@ -99,19 +102,27 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/datamodels/data_model.cc
   snemo/datamodels/the_serializable.cc
   snemo/datamodels/gg_track_utils.cc
+
   snemo/geometry/calo_locator.cc
   snemo/geometry/xcalo_locator.cc
   snemo/geometry/gg_locator.cc
   snemo/geometry/gveto_locator.cc
   snemo/geometry/locator_plugin.cc
   snemo/geometry/utils.cc
+
   snemo/processing/calorimeter_regime.cc
   snemo/processing/geiger_regime.cc
   snemo/processing/mock_calorimeter_s2c_module.cc
   snemo/processing/mock_tracker_s2c_module.cc
+  snemo/processing/base_tracker_clusterizer.cc
+  snemo/processing/tracker_clustering_module.cc
+
   snemo/simulation/cosmic_muon_generator.cc
   snemo/simulation/gg_step_hit_processor.cc
+  #snemo/simulation/pmt_signal_generator.cc
+
   snemo/visualization/toy_display.cc
+
   snemo/cuts/event_header_cut.cc
   snemo/cuts/simulated_data_cut.cc
   snemo/cuts/calibrated_data_cut.cc
@@ -136,4 +147,5 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/testing/test_snemo_geometry_gveto_locator_1.cxx
   snemo/testing/test_snemo_geometry_retrieve_info.cxx
   snemo/testing/test_snemo_geometry_xcalo_locator_1.cxx
+  #snemo/testing/test_snemo_simulation_pmt_signal_generator.cxx
   )
