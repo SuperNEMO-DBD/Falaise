@@ -44,9 +44,9 @@ Options
   -v [ --verbose ]                      increase verbosity of logging
   -n [ --number ] [events] (=1)         number of events to simulate
   --experiment [name] (=default)        experiment to simulate
-  -x [ --vertex-generator ] [name] (=experimental_hall_roof)
+  -x [ --vertex-generator ] [name] (=source_strips_bulk)
                                         The name of the vertex generator
-  -e [ --event-generator ] [name] (=muon.cosmic.sea_level.toy)
+  -e [ --event-generator ] [name] (=Se82.0nubb)
                                         The name of the event generator
   -o [ --output-file ] [file]           file in which to store simulation
                                         results
@@ -75,14 +75,16 @@ $
 At present, you can only run the simulation in batch mode. The Demonstrator
 Module, Tracker Commissioning and BiPo3 experiments can be selected to
 be simulated, the default being the Demonstrator Module. By default, 1
-event is generated, with vertices generated at the roof of the hall volume,
-and primary muons (mu+ or mu-) with energies/directions from some cosmic
-sea level approximated spectrum. You can modify the number of events and
+event is generated, with vertices generated in the bulk of the source foil
+with particle energies/directions sampled from the zero neutrino double
+beta spectrum for Se82. You can modify the number of events and
 the output file, which can be in XML or Brio format.
 
 Note that at present (Alpha3) the validity of the experiment and
 event/vertex generator combinations are not checked. You may therefore
 need to set all of these by hand to obtain a valid set for simulation.
+Preliminary lists of valid vertex and event generators for each
+experiment are [tabulated below](@ref fls_generator_table).
 
 For example, to simulate 100 events in the Tracker Commissioning experiment
 and write them to a file named `example.brio` in the current working
@@ -108,4 +110,119 @@ to the `--experiment` argument are:
 The above spellings must be used, but the interface is case insensitive.
 For example, "demo" would result in a failure, but any of "Demonstrator",
 "demonstrator", "DEMONSTRATOR" or "dEmOnStRaToR" would work.
+
+Available Vertex/Event Generators {#fls_generator_table}
+=================================
+The architecture of `flsimulate` separates the specification of where
+events are generated (geometry) from the specification of how the events
+are generated (physics). With several different experiments being modelled
+and many background, signal and calibration physics sources available,
+a wide range of vertex and event generators are available.
+
+Here we tabulate the vertex and event generators available for each experiment. The first column in each table gives the argument that
+should be supplied to the `--vertex-generator` ("Vertex Generator ID") and
+`--event-generator` ("Event Generator ID") options of `flsimulate`.
+The second column gives a brief description of the generator, with
+subsequent columns indicating whether the generator applies to specific
+experiment simulations.
+
+Note that `flsimulate` will throw an exception if you supply an unknown generator for the experimental setup being simulated. However, it does not
+check that the combination of vertex and event generator are sensible.
+For example, you are at liberty to generate Se82.0nubb events within the
+bulk of the anode wires!
+
+**TODO** : Provide command line options to list available generators for a
+given experiment.
+
+Vertex Generators
+-----------------
+| Vertex Generator ID | Description | BiPo3 | Demonstrator | Tracker_Commissioning |
+| ------------------ | :---------- | :---: | :----------: | :-------------------: |
+| anode_wire_bulk | Generate vertex on the bulk volume of the anode wires | no | yes | yes |
+| anode_wire_surface | Generate vertex on the surface of the anode wires | no | yes | yes |
+| calo_wrapper_bulk | Vertex generation from the bulk of the main calorimeter wrapper | no | yes | no |
+| calo_wrapper_surface | Vertex generation from the surface of the main calorimeter wrapper | no | yes | no |
+| experimental_hall_roof | Generate vertex from the hall: | no | no | yes |
+| field_wire_bulk | Generate vertex on the bulk volume of the field wires | no | yes | yes |
+| field_wire_surface | Generate vertex on the surface of the anode wires: | no | yes | yes |
+| gveto_wrapper_bulk | Vertex generation from the bulk of the gamma veto wrapper | no | yes | no |
+| gveto_wrapper_surface | Vertex generation from the surface of the gamma veto wrapper | no | yes | no |
+| reflector_bulk | Generate vertex in the bulk of the scintillator entrance window reflector | yes | no | no |
+| reflector_deposit | Generate vertex on the front surface of the scintillator entrance window reflector | yes | no | no |
+| scintillator_bulk | Generate vertex in the bulk of the scintillator block | yes | no | no |
+| scintillator_side_surfaces | Generate vertex on the side surfaces of the scintillator block | yes | no | no |
+| source_bulk | Generate vertex in the bulk volume of the source foil | yes | no | no |
+| source_strips_bulk | Vertex generation from the bulk volume of the source strips | no | yes | no |
+| source_strips_external_bulk | Vertex generation from the bulk volume of the outer source strips | no | yes | no |
+| source_strips_external_surface | Vertex generation from the surface of the outer source strips | no | yes | no |
+| source_strips_internal_bulk | Vertex generation from the bulk volume of the inner source strips | no | yes | no |
+| source_strips_internal_surface | Vertex generation from the surface of the inner source strips | no | yes | no |
+| source_strips_surface | Vertex generation from the surface of the source strips | no | yes | no |
+| source_surface_all | Generate vertex on the surface of the source foil | yes | no | no |
+| source_surface_back | Generate vertex on the back surface of the source foil | yes | no | no |
+| source_surface_front | Generate vertex on the front surface of the source foil | yes | no | no |
+| top_trigger_surface | Generate vertex on the top surface of the muon trigger top scintillator plate | no | no | yes |
+| xcalo_wrapper_bulk | Vertex generation from the bulk of the X-wall calorimeter wrapper | no | yes | no |
+| xcalo_wrapper_surface | Vertex generation from the surface of the X-wall calorimeter wrapper | no | yes | no |
+
+Event Generators
+----------------
+| Event Generator ID | Description | BiPo3 | Demonstrator | Tracker_Commissioning |
+| ------------------ | :---------- | :---: | :----------: | :-------------------: |
+| Am241 | Am-241 decay [calibration] | yes | yes | yes |
+| Bi207 | Bi-207 decay [calibration] | yes | yes | yes |
+| Bi212_Po212 | Bi-212/Po-212 decay [background] | yes | yes | yes |
+| Bi214_Po214 | Bi-214/Po-214 decay [background] | yes | yes | yes |
+| Ca48.0nubb | Neutrinoless double beta decay of Ca-48, 0nubb(mn) [DBD] | yes | yes | yes |
+| Ca48.0nubbM1 | Neutrinoless double beta decay of Ca-48, 0nubbM1 [DBD] | yes | yes | yes |
+| Ca48.0nubbM2 | Neutrinoless double beta decay of Ca-48, 0nubbM2 [DBD] | yes | yes | yes |
+| Ca48.0nubb_rhc_lambda_0 | Neutrinoless double beta decay of Ca-48, 0nubb(rhc-lambda) 0+ -> 0+ {2n} [DBD] | yes | yes | yes |
+| Ca48.0nubb_rhc_lambda_0_2 | Neutrinoless double beta decay of Ca-48, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*} [DBD] | yes | yes | yes |
+| Ca48.2nubb | Two neutrino double beta decay of Ca-48, 2nubb [DBD] | yes | yes | yes |
+| Co60 | Co-60 decay [calibration] | yes | yes | yes |
+| K40 | K-40 decay [background] | yes | yes | yes |
+| Mn54 | Mn-54 decay [calibration] | yes | yes | yes |
+| Mo100.0nubb | Neutrinoless double beta decay of Mo-100, 0nubb(mn) [DBD] | yes | yes | yes |
+| Mo100.0nubbM1 | Neutrinoless double beta decay of Mo-100, 0nubbM1 [DBD] | yes | yes | yes |
+| Mo100.0nubbM2 | Neutrinoless double beta decay of Mo-100, 0nubbM2 [DBD] | yes | yes | yes |
+| Mo100.0nubb_rhc_lambda_0 | Neutrinoless double beta decay of Mo-100, 0nubb(rhc-lambda) 0+ -> 0+ {2n} [DBD] | yes | yes | yes |
+| Mo100.0nubb_rhc_lambda_0_2 | Neutrinoless double beta decay of Mo-100, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*} [DBD] | yes | yes | yes |
+| Mo100.2nubb | Two neutrino double beta decay of Mo-100, 2nubb [DBD] | yes | yes | yes |
+| Na22 | Na-22 decay [calibration] | yes | yes | yes |
+| Nd150.0nubb | Neutrinoless double beta decay of Nd-150, 0nubb(mn)[DBD] | yes | yes | yes |
+| Nd150.0nubbM1 | Neutrinoless double beta decay of Nd-150, 0nubbM1 [DBD] | yes | yes | yes |
+| Nd150.0nubbM2 | Neutrinoless double beta decay of Nd-150, 0nubbM2 [DBD] | yes | yes | yes |
+| Nd150.0nubb_rhc_lambda_0 | Neutrinoless double beta decay of Nd-150, 0nubb(rhc-lambda) 0+ -> 0+ {2n} [DBD] | yes | yes | yes |
+| Nd150.0nubb_rhc_lambda_0_2 | Neutrinoless double beta decay of Nd-150, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*} [DBD] | yes | yes | yes |
+| Nd150.2nubb | Two neutrino double beta decay of Nd-150, 2nubb [DBD] | yes | yes | yes |
+| Pa231 | Ra-226-90 decay [background] | yes | yes | yes |
+| Pa234m | Pa-234m decay [background] | yes | yes | yes |
+| Ra226 | Ra-226-90 decay [background] | yes | yes | yes |
+| Se82.0nubb | Neutrinoless double beta decay of Se-82, 0nubb(mn)[DBD] | yes | yes | yes |
+| Se82.0nubbM1 | Neutrinoless double beta decay of Se-82, 0nubbM1 [DBD] | yes | yes | yes |
+| Se82.0nubbM2 | Neutrinoless double beta decay of Se-82, 0nubbM2 [DBD] | yes | yes | yes |
+| Se82.0nubb_rhc_lambda_0 | Neutrinoless double beta decay of Se-82, 0nubb(rhc-lambda) 0+ -> 0+ {2n} [DBD] | yes | yes | yes |
+| Se82.0nubb_rhc_lambda_0_2 | Neutrinoless double beta decay of Se-82, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*} [DBD] | yes | yes | yes |
+| Se82.2nubb | Two neutrino double beta decay of Se-82, 2nubb [DBD] | yes | yes | yes |
+| Sr90 | Sr-90 decay [background] | yes | yes | yes |
+| Tl208 | Tl-208 decay [background] | yes | yes | yes |
+| Y90 | Y-90 decay [background] | yes | yes | yes |
+| electron.100keV | Electron with monokinetic energy @ 100 keV [miscellaneous] | yes | yes | yes |
+| electron.1MeV | Electron with monokinetic energy @ 1 MeV [miscellaneous] | yes | yes | yes |
+| electron.200keV | Electron with monokinetic energy @ 200 keV [miscellaneous] | yes | yes | yes |
+| electron.20keV | Electron with monokinetic energy @ 20 keV [miscellaneous] | yes | yes | yes |
+| electron.2MeV | Electron with monokinetic energy @ 2 MeV [miscellaneous] | yes | yes | yes |
+| electron.3MeV | Electron with monokinetic energy @ 3 MeV [miscellaneous] | yes | yes | yes |
+| electron.50-2000keV_flat | Electron with energy in the [50keV-2MeV] range [miscellaneous] | yes | yes | yes |
+| electron.500keV | Electron with monokinetic energy @ 500 keV [miscellaneous] | yes | yes | yes |
+| electron.50keV | Electron with monokinetic energy @ 50 keV [miscellaneous] | yes | yes | yes |
+| electron.cosmic.500MeV | Electron with monokinetic energy @ 500 MeV [cosmic] | no | no | yes |
+| gamma.100keV | Gamma with monokinetic energy @ 100 keV [miscellaneous] | yes | yes | yes |
+| gamma.1MeV | Gamma with monokinetic energy @ 1 MeV [miscellaneous] | yes | yes | yes |
+| gamma.20keV | Gamma with monokinetic energy @ 20 keV [miscellaneous] | yes | yes | yes |
+| gamma.2615keV | Gamma with monokinetic energy @ 2.615 MeV [miscellaneous] | yes | yes | yes |
+| gamma.2MeV | Gamma with monokinetic energy @ 2 MeV [miscellaneous] | yes | yes | yes |
+| gamma.500keV | Gamma with monokinetic energy @ 500 keV [miscellaneous] | yes | yes | yes |
+| gamma.50keV | Gamma with monokinetic energy @ 50 keV [miscellaneous] | yes | yes | yes |
+| muon.cosmic.sea_level.toy | Parameters for the "cosmic muon generator" mode [cosmic] | no | no | yes |
 
