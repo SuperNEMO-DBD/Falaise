@@ -16,7 +16,7 @@ Core Applications
 For guides and man pages for the Falaise tools, see the following pages:
 
 - [Falaise](@ref md_Falaise) man page overview of the toolkit.
-- [FLSimulate](@ref md_FLSimulate) guide for using the Geant4 based simulation of the detector.
+- [FLSimulate](@ref usingflsimulate) guide for using the Geant4 based simulation of the detector.
 - [FLReconstruct](@ref md_FLReconstruct) guide for reconstructing data output by the FLSimulate detector simulation.
   - [Writing plugin modules](@ref md_WritingFLReconstructModules) for `flreconstruct`
   - [Working with Event Data in plugin modules](@ref md_WorkingWithEventRecords).

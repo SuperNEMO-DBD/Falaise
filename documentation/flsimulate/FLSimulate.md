@@ -1,4 +1,4 @@
-Using The FLSimulate Application
+Using The FLSimulate Application {#usingflsimulate}
 ================================
 
 \tableofcontents
