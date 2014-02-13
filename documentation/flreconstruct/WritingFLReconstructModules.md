@@ -1,4 +1,4 @@
-Writing FLReconstruct Modules
+Writing FLReconstruct Modules {#writingflreconstructmodules}
 =============================
 
 \tableofcontents
@@ -8,14 +8,14 @@ Introduction {#introduction}
 
 If you have just started using Falaise or the FLReconstruct application,
 we strongly recommend that you familiarize yourself with the basic usage
-of FLReconstruct covered in [The FLReconstruct Application](@ref md_FLReconstruct).
+of FLReconstruct covered in [The FLReconstruct Application](@ref usingflreconstruct).
 
 FLReconstruct uses a [pipeline pattern](http://en.wikipedia.org/wiki/Pipeline_%28software%29) to process events. You can view this like a production
 line with each stage on the line performing some operation on the event.
 Each stage in the pipeline is called a "pipeline module" (or just "module")
 and is implemented as a C++ class. The FLReconstruct application can load
 new modules at runtime using a ["plugin" mechanism](http://en.wikipedia.org/wiki/Plug-in_%28computing%29). Scripting, as demonstrated in the
-@ref md_FLReconstruct tutorial, is used to load new modules from plugins,
+[tutorial on using FLReconstruct](@ref usingflreconstruct), is used to load new modules from plugins,
 select the modules to use in the pipeline, and configure each module.
 
 In this tutorial we will see how to implement our own modules for
@@ -27,7 +27,7 @@ use in the FLReconstruct pipeline. This will cover
 4. Implementing runtime module configuration
 
 Getting your module to actually do something with the events that are
-passed to it is deferred to [a later tutorial](@ref md_WorkingWithEventRecords).
+passed to it is deferred to [a later tutorial](@ref workingwitheventrecords).
 
 Implementing a Minimal flreconstruct Module {#minimalmodule}
 ===========================================
@@ -294,7 +294,7 @@ $ ls
 CMakeLists.txt  MyModule.cpp  MyModule.h  MyModulePipeline.conf
 ~~~~~~
 
-This script takes the same basic form as shown in the [tutorial on using flreconstruct](@ref md_FLReconstruct):
+This script takes the same basic form as shown in the [tutorial on using flreconstruct](@ref usingflreconstruct):
 
 \include flreconstruct/MyModule/MyModulePipeline.conf
 
@@ -508,7 +508,7 @@ fudge_factor : real = 3.14;
 
 where the key name `fudge_factor` must match that looked for in the
 `MyModule::initialize` method. How to document parameters is covered in
-[a later tutorial](@ref md_DocumentingFLReconstructModules).
+[a later tutorial](@ref documentingflreconstructmodules).
 The format of `datatools::properties` key entries is
 described in the documentation of that class.
 

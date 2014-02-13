@@ -1,4 +1,4 @@
-Using Services in FLReconstruct Modules
+Using Services in FLReconstruct Modules {#usingservices}
 =======================================
 
 \tableofcontents
@@ -8,8 +8,8 @@ Introduction {#useservices_introduction}
 
 If you have just started using Falaise or the FLReconstruct application,
 we strongly recommend that you familiarize yourself with the basic usage
-of FLReconstruct covered in [The FLReconstruct Application](@ref md_FLReconstruct). You should also be familiar with composing and using
-pipeline modules, as covered in [Writing FLReconstruct Modules](@ref md_WritingFLReconstructModules).
+of FLReconstruct covered in [The FLReconstruct Application](@ref usingflreconstruct). You should also be familiar with composing and using
+pipeline modules, as covered in [Writing FLReconstruct Modules](@ref writingflreconstructmodules).
 
 In FLReconstruct, modules are the basic "unit" for processing events.
 Each event stores data relevant to that event, but use and interpretation
@@ -43,7 +43,7 @@ Implementing a Service-Aware Module {#useservices_module}
 
 Source Code for Service-Awareness
 ---------------------------------
-This tutorial builds on the basic module implemented in [Writing FLReconstruct Modules](@ref md_WritingFLReconstructModules). You should
+This tutorial builds on the basic module implemented in [Writing FLReconstruct Modules](@ref writingflreconstructmodules). You should
 therefore have a workspace and module sources arranged as
 
 ~~~~~

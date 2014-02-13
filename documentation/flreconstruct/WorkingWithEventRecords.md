@@ -1,4 +1,4 @@
-Working With Events in FLReconstruct
+Working With Events in FLReconstruct {#workingwitheventrecords}
 ====================================
 
 \tableofcontents
@@ -36,14 +36,14 @@ custom pipeline module,
 Reading Data from datatools::things Instances {#things_readingdata}
 =============================================
 To work with events in the pipeline we first need to implement a pipeline
-module to do this. The basics of how to do this are covered in [a dedicated tutorial](@ref md_WritingFLReconstructModules) and you should familiarize
+module to do this. The basics of how to do this are covered in [a dedicated tutorial](@ref writingflreconstructmodules) and you should familiarize
 yourself with this material as this tutorial will build on it.
 
 First of all we implement our module, build it and write a pipeline script
 to use it in `flreconstruct`. Note that we have stripped all comments
 except those relating to the process methods, and that the module takes
 no configuration. If you require details on how to implement a basic
-flreconstruct method, please refer to the [introductory tutorial](@ref md_WritingFLReconstructModules) first. We begin with the header:
+flreconstruct method, please refer to the [introductory tutorial](@ref writingflreconstructmodules) first. We begin with the header:
 
 \include flreconstruct/AccessThingsModule/AccessThingsModule.h
 
@@ -92,7 +92,7 @@ try {
 }
 ~~~~~~
 
-We know that the "SD" (**S**imulated **D**ata) entry should map to an
+We know that the "SD" ( **S** imulated **D** ata) entry should map to an
 instance of `mctools::simulated_data` so we use the `datatools::things::get`
 method to obtain a const reference to it (const being read only). This
 method takes a template argument which is the typename we want to extract,

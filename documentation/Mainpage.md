@@ -11,16 +11,21 @@ If you're reading this online and don't yet have Falaise installed, an
 at present Falaise is only supported on POSIX platforms, and even here
 not all variants are guaranteed to work!
 
-Core Applications
-=================
+Core Applications and Libraries
+===============================
 For guides and man pages for the Falaise tools, see the following pages:
 
-- [Falaise](@ref md_Falaise) man page overview of the toolkit.
+- [Falaise](@ref falaiseman) man page overview of the toolkit.
 - [FLSimulate](@ref usingflsimulate) guide for using the Geant4 based simulation of the detector.
-- [FLReconstruct](@ref md_FLReconstruct) guide for reconstructing data output by the FLSimulate detector simulation.
-  - [Writing plugin modules](@ref md_WritingFLReconstructModules) for `flreconstruct`
-  - [Working with Event Data in plugin modules](@ref md_WorkingWithEventRecords).
-  - [Accessing Services for Common Data](@ref md_UsingServices)
+- [FLReconstruct](@ref usingflreconstruct) guide for reconstructing data output by the FLSimulate detector simulation.
+  - [Writing plugin modules](@ref writingflreconstructmodules) for `flreconstruct`
+  - [Working with Event Data in plugin modules](@ref workingwitheventrecords).
+  - [Accessing Services for Common Data](@ref usingservices)
+
+Developing Falaise
+==================
+Contributions to the core of Falaise are welcome. To begin developing,
+you should familiarize yourself with the [tools, languages and concepts](@ref developingfalaise) of its architecture and development model.
 
 User Guides
 ===========

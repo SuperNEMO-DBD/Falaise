@@ -50,6 +50,7 @@ endif()
 #
 set(Falaise_MARKDOWN_DOCS
   Mainpage.md
+  ${PROJECT_SOURCE_DIR}/source/Falaise.1.md
   InstallationGuide.md
   flsimulate/FLSimulate.md
   flreconstruct/FLReconstruct.md
@@ -57,8 +58,15 @@ set(Falaise_MARKDOWN_DOCS
   flreconstruct/WorkingWithEventRecords.md
   flreconstruct/UsingServices.md
   flreconstruct/DocumentingFLReconstructModules.md
-  CodingStandards.md
+  development/DevelopingFalaise.md
+  development/CodingStandards.md
   )
+
+set(Falaise_ABSOLUTE_MARKDOWN_DOCS)
+foreach(_mdDoc ${Falaise_MARKDOWN_DOCS})
+  get_filename_component(_absMdDoc ${_mdDoc} ABSOLUTE)
+  set(Falaise_ABSOLUTE_MARKDOWN_DOCS "${Falaise_ABSOLUTE_MARKDOWN_DOCS} ${_absMdDoc}")
+endforeach()
 
 #-----------------------------------------------------------------------
 # Build doxygen docs

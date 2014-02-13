@@ -1,11 +1,11 @@
-Documenting FLReconstruct Modules
+Documenting FLReconstruct Modules {#documentingflreconstructmodules}
 =================================
 
 \tableofcontents
 
 Introduction {#documentingflrecontrustmodules_introduction}
 ============
-As we saw in [the tutorial on writing custom modules for FLReconstruct](@ref md_WritingFLReconstructModules),
+As we saw in [the tutorial on writing custom modules for FLReconstruct](@ref writingflreconstructmodules),
 it is easy to make parameters of the module configurable at run time
 through the ASCII text `datatools::multi_properties` pipeline script.
 However, this creates an issue for the user of your module in finding

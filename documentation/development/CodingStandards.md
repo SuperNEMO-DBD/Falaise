@@ -1,4 +1,4 @@
-Coding Style and Standards for Falaise
+Coding Style and Standards for Falaise {#codingstandards}
 ======================================
 
 \tableofcontents

@@ -1,4 +1,4 @@
-Using The FLReconstruct Application
+Using The FLReconstruct Application {#usingflreconstruct}
 ===================================
 
 \tableofcontents
@@ -17,7 +17,7 @@ FLReconstruct can load at runtime via a plugin mechanism.
 Here we present a brief overview of running FLReconstruct from the
 command line, including examples of scripting the pipeline using builtin
 modules. The more advanced topic of writing and using your own custom
-modules is covered in [Writing FLReconstruct Modules](@ref md_WritingFLReconstructModules).
+modules is covered in [Writing FLReconstruct Modules](@ref  writingflreconstructmodules).
 
 Example Usage {#examples}
 =============
