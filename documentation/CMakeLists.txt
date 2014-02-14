@@ -54,6 +54,7 @@ set(Falaise_MARKDOWN_DOCS
   InstallationGuide.md
   flsimulate/FLSimulate.md
   flreconstruct/FLReconstruct.md
+  flreconstruct/UsingMockCalibration.md
   flreconstruct/WritingFLReconstructModules.md
   flreconstruct/WorkingWithEventRecords.md
   flreconstruct/UsingServices.md
