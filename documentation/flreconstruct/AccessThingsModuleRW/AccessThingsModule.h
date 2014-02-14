@@ -11,13 +11,13 @@ class AccessThingsModule : public dpp::base_module {
                           datatools::service_manager& flServices,
                           dpp::module_handle_dict_type& what);
 
-  virtual int process(datatools::things& workItem);
+  virtual dpp::base_module::process_status process(datatools::things& workItem);
 
   virtual void reset();
 
  private:
-  int read(datatools::things& workItem);
-  int write(datatools::things& workItem);
+  dpp::base_module::process_status read(datatools::things& workItem);
+  dpp::base_module::process_status write(datatools::things& workItem);
 
   DPP_MODULE_REGISTRATION_INTERFACE(AccessThingsModule);
 };

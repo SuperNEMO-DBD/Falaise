@@ -57,7 +57,7 @@ MyModule::process(datatools::things& /*workItem*/) {
             << fudgeFactor_ << ")" << std::endl;
 
   // MUST return a status, see ref dpp::processing_status_flags_type
-  return dpp::base_module::PROCESS_OK;
+  return PROCESS_OK;
 }
 
 // Reset

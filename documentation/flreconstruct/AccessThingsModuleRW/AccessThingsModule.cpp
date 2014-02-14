@@ -20,11 +20,12 @@ void AccessThingsModule::initialize(const datatools::properties& /*myConfig*/,
 }
 
 //! [AccessThingsModule::Process]
-int AccessThingsModule::process(datatools::things& workItem) {
-  int readStatus = this->read(workItem);
-  if (readStatus != dpp::PROCESS_OK) return readStatus;
+dpp::base_module::process_status AccessThingsModule::process(
+    datatools::things& workItem) {
+  process_status readStatus = this->read(workItem);
+  if (readStatus != PROCESS_OK) return readStatus;
 
-  int writeStatus = this->write(workItem);
+  process_status writeStatus = this->write(workItem);
 
   // MUST return a status, see ref dpp::processing_status_flags_type
   return writeStatus;
@@ -35,7 +36,7 @@ void AccessThingsModule::reset() {
   this->_set_initialized(false);
 }
 
-int AccessThingsModule::read(datatools::things& workItem) {
+dpp::base_module::process_status AccessThingsModule::read(datatools::things& workItem) {
   // Print most basic information
   std::cout << "AccessThingsModule::process called!" << std::endl;
   std::cout << "[name]        : " << workItem.get_name() << std::endl;
@@ -63,19 +64,19 @@ int AccessThingsModule::read(datatools::things& workItem) {
     simData.tree_dump();
   } catch (std::logic_error& e) {
     std::cerr << "failed to grab SD bank : " << e.what() << std::endl;
-    return dpp::PROCESS_INVALID;
+    return PROCESS_INVALID;
   }
 
-  return dpp::PROCESS_OK;
+  return PROCESS_OK;
 }
 
 //! [AccessThingsModule::write]
-int AccessThingsModule::write(datatools::things& workItem) {
+dpp::base_module::process_status AccessThingsModule::write(datatools::things& workItem) {
   // Add a new entry to the things
   datatools::properties& atmProperties = workItem.add<datatools::properties>("ATMProperties");
   atmProperties.set_description("Properties added by the AccessThings Module");
   atmProperties.store("foo", "bar");
   atmProperties.store("baz", 3.14);
 
-  return dpp::PROCESS_OK;
+  return PROCESS_OK;
 }

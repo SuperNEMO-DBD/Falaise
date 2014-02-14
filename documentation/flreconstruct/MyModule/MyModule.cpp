@@ -41,7 +41,7 @@ MyModule::process(datatools::things& /*workItem*/) {
   std::cout << "MyModule::process called!" << std::endl;
 
   // MUST return a status, see ref dpp::base_module::process_status
-  return dpp::base_module::PROCESS_OK;
+  return PROCESS_OK;
 }
 
 // Reset

@@ -28,7 +28,7 @@ dpp::base_module::process_status AccessThingsModule::process(
   MyDataType atmCounter = workItem.add<MyDataType>("ATMCounter");
   atmCounter.increment();
 
-  return dpp::base_module::PROCESS_OK;
+  return PROCESS_OK;
 
 }
 //! [AccessThingsModule::Process]
