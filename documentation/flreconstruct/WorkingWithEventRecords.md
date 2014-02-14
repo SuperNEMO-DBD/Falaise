@@ -129,8 +129,6 @@ You should see output similar to the dump modules we ran in earlier
 tutorials.
 
 
-
-
 Writing Data to datatools::things Instances {#things_writingdata}
 ===========================================
 As the `datatools::things` instance is passed to pipeline modules by
@@ -182,6 +180,76 @@ script to sandwich the module between two dump modules as follows
 You should see that the `PostProcess` stage results in output containing
 the information written into the `ATMProperties` bank.
 
+
 Implementing Custom Objects for Storage in datatools::things {#things_customdata}
 ============================================================
-DEFERRED TO ALPHA3
+As discussed above, the `datatools::things` object can store
+instances of any type inheriting from `datatools::i_serializable`.
+If the builtin types provided by Falaise and Bayeux do not meet
+your needs, you can implement a new custom class derived from
+`datatools::i_serializable`.
+
+In this example, we will implement a simple custom class and add it
+into the `datatools::things` event record. This class **must** inherit
+from the pure abstract base class `datatools::i_serializable` and hence
+**must**:
+
+- Provide a `public` default constructor
+- Provide a `public` virtual destructor
+- Concretely implement the `datatools::i_serializable::get_serial_tag()`
+pure virtual method
+
+In addition, to make the type usable by the serialization system, we
+need to use a couple of macros to declare and define the serialization
+mechanisms for us.
+
+We therefore begin by writing the header file, which we'll name
+`MyDataType.h`:
+
+\include flreconstruct/AccessThingsModuleCustom/MyDataType.h
+
+Note the inheritance from `datatools::i_serializable` and the use
+of the `DATATOOLS_SERIALIZATION_DECLARATION` macro, which declares the
+tagging/serialization methods for us. We have also provide concrete methods
+to implement this type as a simple increment-only counter.
+Note also the use
+of Doxygen markup to document the file and methods. You don't need to
+do this, but it is very useful and helps if your data type is to be
+integrated into the official mainline pipeline.
+
+With the header in place we not add the implementation file, which we'll
+name `MyDataType.cpp`
+
+\include flreconstruct/AccessThingsModuleCustom/MyDataType.cpp
+
+Here we've implemented the trivial constructor/destructor and the counter
+implementation, and added the
+`DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION`
+macro. This, together with the use of
+`DATATOOLS_SERIALIZATION_DECLARATION`
+in the header file provides the **minimal** boilerplate allowing the
+class to be stored in `datatools::things`. Further work is needed to
+make the type fully serializable, but we defer this to a later tutorial.
+
+To use this type in the pipeline, we update the implementation of the `AccessThings` module as follows for the header:
+
+\include flreconstruct/AccessThingsModuleCustom/AccessThingsModule.h
+
+and the implementation:
+
+\include flreconstruct/AccessThingsModuleCustom/AccessThingsModule.cpp
+
+Note the inclusion of the `MyDataType` header. We use the `datatools::things::add` method to add a `MyDataType` bank to the event.
+To compile the new type into a loadable module, we simply add the header
+and implementation to the `add_library` call in the `CMakeLists.txt` script:
+
+\include flreconstruct/AccessThingsModuleCustom/CMakeLists.txt
+
+To see the effect of writing our own type, we compile the above code
+into a shared library using the above CMake script and then use the following pipeline script to sandwich the module between two dump modules
+
+\include flreconstruct/AccessThingsModuleRW/AccessThingsPipeline.conf
+
+You should see that the `PostProcess` stage results in output containing
+the information written into the `ATMCounter` bank.
+
