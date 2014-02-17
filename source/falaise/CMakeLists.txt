@@ -104,9 +104,7 @@ endif()
 #
 
 if(Falaise_ENABLE_TESTING)
-
   foreach(_testsource ${FalaiseLibrary_TESTS})
-    message( STATUS "Test source : '${_testsource}'" )
     get_filename_component(_testname "${_testsource}" NAME_WE)
     set(_testname "falaise-${_testname}")
     add_executable(${_testname} ${_testsource})
@@ -123,5 +121,5 @@ if(Falaise_ENABLE_TESTING)
       ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fltests
       )
   endforeach()
-
 endif()
+
