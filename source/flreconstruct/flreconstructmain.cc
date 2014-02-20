@@ -323,7 +323,7 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
     }
   }
 
-  datatools::library_loader flLibLoader(datatools::library_loader::allow_unregistered, userLibConfig);
+  datatools::library_loader flLibLoader(userLibConfig);
 
   // Configure the modules themselves
   if (!clArgs.pipelineScript.empty()) {
