@@ -40,9 +40,9 @@ namespace mybhep{
   class reader_hdf5 : public random_reader
   {
   public:
-    void open_file(std::string s){out();}
+    void open_file(std::string /*s*/){out();}
     void close_file(){out();}
-    std::string get_record(std::string s1){out();return "dummy";}
+    std::string get_record(std::string /*s1*/){out();return "dummy";}
     size_t get_max_events(){out();return 0;}
     void out(){
       std::cerr<<"+++ BHEP compiled without HDF5 support. ABORT!!!"<<std::endl;

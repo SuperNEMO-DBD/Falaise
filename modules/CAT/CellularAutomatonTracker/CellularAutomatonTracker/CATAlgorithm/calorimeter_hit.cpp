@@ -11,7 +11,7 @@ namespace CAT {
     using namespace mybhep;
 
 
-      //!Default constructor 
+      //!Default constructor
     calorimeter_hit::calorimeter_hit(prlevel level, double probmin)
       {
         appname_= "calorimeter_hit: ";
@@ -31,12 +31,12 @@ namespace CAT {
       }
 
       //! constructor
-      calorimeter_hit::calorimeter_hit(const plane & pl, 
-                      const experimental_double & e, 
-                      const experimental_double & t, 
-                      size_t id, 
-                      double layer, 
-                      prlevel level, 
+      calorimeter_hit::calorimeter_hit(const plane & pl,
+                      const experimental_double & e,
+                      const experimental_double & t,
+                      size_t id,
+                      double layer,
+                      prlevel level,
                       double probmin)
       {
         set_print_level(level);
@@ -53,7 +53,7 @@ namespace CAT {
       void calorimeter_hit::dump (ostream & a_out,
                                   const std::string & a_title,
                                   const std::string & a_indent,
-                                  bool a_inherit)const
+                                  bool /* a_inherit */)const
       {
         std::string indent;
         if (! a_indent.empty ()) indent = a_indent;
@@ -61,7 +61,7 @@ namespace CAT {
           {
             a_out << indent << a_title << std::endl;
           }
-        
+
         a_out << indent << appname_ << " -------------- " << std::endl;
           a_out << indent << " id " << id() << " plane " << std::endl;
           pl_.dump(a_out, "", indent + "    ");
@@ -74,10 +74,10 @@ namespace CAT {
 
 
 
-      //! set 
-      void calorimeter_hit::set(const plane & pl, 
-                                const experimental_double & e, 
-                                const experimental_double & t, 
+      //! set
+      void calorimeter_hit::set(const plane & pl,
+                                const experimental_double & e,
+                                const experimental_double & t,
                                 size_t id)
       {
         pl_ = pl;
@@ -115,28 +115,28 @@ namespace CAT {
       const plane & calorimeter_hit::pl() const
       {
         return pl_;
-      }      
+      }
 
       //! get energy
       const experimental_double& calorimeter_hit::e()const
       {
         return e_;
-      }      
+      }
 
       //! get time
       const experimental_double& calorimeter_hit::t()const
       {
         return t_;
-      }      
+      }
 
       //! get id
     size_t calorimeter_hit::id()const
       {
         return id_;
-      }      
+      }
 
       //!get layer
-      double calorimeter_hit::layer() const 
+      double calorimeter_hit::layer() const
       {
         return layer_;
       }
@@ -146,7 +146,7 @@ namespace CAT {
 
         double dist = (experimental_vector(pl().center(), c.pl().center())).length().value();
 
-        if( dist < 0.1 ) 
+        if( dist < 0.1 )
           return true;
 
         return false;

@@ -34,11 +34,11 @@ namespace SULTAN {
       cluster_of_experimental_helices(mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200)
       {
         appname_= "cluster_of_experimental_helices: ";
-	helices_.clear();
-	helix_min_ = experimental_helix();
-	helix_max_ = experimental_helix();
-	ids_.clear();
-	assigned_ids_.clear();
+        helices_.clear();
+        helix_min_ = experimental_helix();
+        helix_max_ = experimental_helix();
+        ids_.clear();
+        assigned_ids_.clear();
         set_print_level(level);
         set_probmin(probmin);
       }
@@ -50,27 +50,27 @@ namespace SULTAN {
       virtual void dump (std::ostream & a_out         = std::clog,
                          const std::string & a_title  = "",
                          const std::string & a_indent = "",
-                         bool a_inherit          = false)const{
-	std::string indent;
-	if (! a_indent.empty ()) indent = a_indent;
-	if (! a_title.empty ())
-	  {
-	    a_out << indent << a_title << std::endl;
-	  }
-	
-	a_out << indent << appname_ << " helix min: "; helix_min_.dump();
-	a_out << " helix max: "; helix_max_.dump();
-	a_out << helices_.size() << " helices: ";
-	for(std::vector<experimental_helix>::const_iterator ih=helices_.begin(); ih!=helices_.end(); ++ih)
-	  ih->dump();
-	a_out << " ids: ( ";
-	for(std::vector<size_t>::const_iterator id= ids_.begin(); id!=ids_.end(); ++id)
-	  a_out << *id << " ";
-	a_out << ") " << std::endl;	
+                         bool /*a_inherit*/          = false)const{
+        std::string indent;
+        if (! a_indent.empty ()) indent = a_indent;
+        if (! a_title.empty ())
+          {
+            a_out << indent << a_title << std::endl;
+          }
 
-	return;
+        a_out << indent << appname_ << " helix min: "; helix_min_.dump();
+        a_out << " helix max: "; helix_max_.dump();
+        a_out << helices_.size() << " helices: ";
+        for(std::vector<experimental_helix>::const_iterator ih=helices_.begin(); ih!=helices_.end(); ++ih)
+          ih->dump();
+        a_out << " ids: ( ";
+        for(std::vector<size_t>::const_iterator id= ids_.begin(); id!=ids_.end(); ++id)
+          a_out << *id << " ";
+        a_out << ") " << std::endl;
+
+        return;
       }
-    
+
 
       void set_helix_min(experimental_helix a){helix_min_ = a;}
       void set_helix_max(experimental_helix a){helix_max_ = a;}
@@ -80,20 +80,20 @@ namespace SULTAN {
       std::vector<experimental_helix> helices()const{return helices_;}
       std::vector<size_t> ids()const{return ids_;}
       void reset_ids(){
-	ids_.clear();
+        ids_.clear();
       }
       std::vector<size_t> assigned_ids()const{return assigned_ids_;}
       void reset_assigned_ids(){
-	assigned_ids_.clear();
+        assigned_ids_.clear();
       }
 
       void add_id(size_t id);
       void add_assigned_id(size_t id);
       void print_ids()const{
-	std::clog << " ( ";
-	for(std::vector<size_t>::const_iterator id= ids_.begin(); id!=ids_.end(); ++id)
-	  std::clog << *id << " ";
-	std::clog << ") ";
+        std::clog << " ( ";
+        for(std::vector<size_t>::const_iterator id= ids_.begin(); id!=ids_.end(); ++id)
+          std::clog << *id << " ";
+        std::clog << ") ";
       }
 
       bool can_store__optimist(experimental_helix a, double nsigmas);

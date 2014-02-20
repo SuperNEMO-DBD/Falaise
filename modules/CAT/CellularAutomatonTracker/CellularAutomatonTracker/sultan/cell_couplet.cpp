@@ -4,7 +4,7 @@ namespace SULTAN{
   namespace topology{
 
     using namespace std;
-     
+
     cell_couplet::~cell_couplet()
     {
     }
@@ -23,7 +23,7 @@ namespace SULTAN{
         distance_ = experimental_double();
         distance_hor_ = experimental_double();
       }
-    
+
     cell_couplet::cell_couplet(const cell &ca, const cell &cb, mybhep::prlevel level, double probmin){
       set_print_level(level);
       set_probmin(probmin);
@@ -55,9 +55,9 @@ namespace SULTAN{
     }
 
     void cell_couplet::dump (std::ostream & a_out,
-			     const std::string & a_title,
-			     const std::string & a_indent,
-			     bool a_inherit) const{
+                             const std::string & a_title,
+                             const std::string & a_indent,
+                             bool /* a_inherit */) const{
       std::string indent;
       if (! a_indent.empty ()) indent = a_indent;
       if (! a_title.empty ())
@@ -173,4 +173,3 @@ namespace SULTAN{
 
   }
 }
-

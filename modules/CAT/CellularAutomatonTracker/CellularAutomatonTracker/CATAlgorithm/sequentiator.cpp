@@ -1,4 +1,4 @@
-#include "sequentiator.h"
+#include "CATAlgorithm/sequentiator.h"
 #include <vector>
 #include <mybhep/system_of_units.h>
 #include <sys/time.h>
@@ -138,7 +138,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  bool sequentiator::initialize( const mybhep::sstore & store, const mybhep::gstore &gs , mybhep::EventManager2 *eman) {
+  bool sequentiator::initialize( const mybhep::sstore & store, const mybhep::gstore & /*gs*/ , mybhep::EventManager2 *eman) {
     //*************************************************************
 
     m.message("\n Beginning algorithm sequentiator \n",mybhep::VERBOSE); fflush(stdout);
@@ -323,7 +323,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  void sequentiator::readDstProper(const mybhep::sstore & global, mybhep::EventManager2 *eman) {
+  void sequentiator::readDstProper(const mybhep::sstore & global, mybhep::EventManager2 */*eman*/) {
     //*************************************************************
 
     clock.start(" sequentiator: read dst properties ");
@@ -390,7 +390,7 @@ namespace CAT {
 
         SOURCE_thick= mybhep::double_from_string(global.fetch("GEOM_SOURCE_thick"));
 
-	bfield = mybhep::double_from_string(global.fetch("GEOM_B_int"))/mybhep::tesla;
+        bfield = mybhep::double_from_string(global.fetch("GEOM_B_int"))/mybhep::tesla;
 
         cell_max_number = (int) ( (xsize/2. - GG_GRND_diam) / (GG_CELL_diam*cos(M_PI/8.)) );
 
@@ -444,7 +444,7 @@ namespace CAT {
         else
           {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
-	    clock.stop(" sequentiator: read dst properties ");
+            clock.stop(" sequentiator: read dst properties ");
             exit(1);
           }
 
@@ -456,7 +456,7 @@ namespace CAT {
         else
           {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
-	    clock.stop(" sequentiator: read dst properties ");
+            clock.stop(" sequentiator: read dst properties ");
             exit(1);
           }
 
@@ -468,7 +468,7 @@ namespace CAT {
         else
           {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
-	    clock.stop(" sequentiator: read dst properties ");
+            clock.stop(" sequentiator: read dst properties ");
             exit(1);
           }
 
@@ -480,7 +480,7 @@ namespace CAT {
         else
           {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
-	    clock.stop(" sequentiator: read dst properties ");
+            clock.stop(" sequentiator: read dst properties ");
             exit(1);
           }
 
@@ -492,7 +492,7 @@ namespace CAT {
         else
           {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
-	    clock.stop(" sequentiator: read dst properties ");
+            clock.stop(" sequentiator: read dst properties ");
             exit(1);
           }
 
@@ -504,7 +504,7 @@ namespace CAT {
         else
           {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
-	    clock.stop(" sequentiator: read dst properties ");
+            clock.stop(" sequentiator: read dst properties ");
             exit(1);
           }
 
@@ -516,7 +516,7 @@ namespace CAT {
         else
           {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
-	    clock.stop(" sequentiator: read dst properties ");
+            clock.stop(" sequentiator: read dst properties ");
             exit(1);
           }
 
@@ -528,7 +528,7 @@ namespace CAT {
         else
           {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
-	    clock.stop(" sequentiator: read dst properties ");
+            clock.stop(" sequentiator: read dst properties ");
             exit(1);
           }
 
@@ -540,7 +540,7 @@ namespace CAT {
         else
           {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
-	    clock.stop(" sequentiator: read dst properties ");
+            clock.stop(" sequentiator: read dst properties ");
             exit(1);
           }
 
@@ -552,7 +552,7 @@ namespace CAT {
         else
           {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
-	    clock.stop(" sequentiator: read dst properties ");
+            clock.stop(" sequentiator: read dst properties ");
             exit(1);
           }
 
@@ -564,8 +564,8 @@ namespace CAT {
         else
           {
             m.message("+++ NEMO3 GG ERROR, GLOBAL PROPERTY NOT FOUND IN DST",pname,mybhep::NORMAL); fflush(stdout);
-	    clock.stop(" sequentiator: read dst properties ");
-	    exit(1);
+            clock.stop(" sequentiator: read dst properties ");
+            exit(1);
           }
       }
 
@@ -628,7 +628,7 @@ namespace CAT {
 
     if( event_number < first_event_number ){
       m.message(" local_tracking: skip event", event_number, " first event is "
-		, first_event_number,  mybhep::VERBOSE);
+                , first_event_number,  mybhep::VERBOSE);
       return true;
     }
 
@@ -664,7 +664,7 @@ namespace CAT {
     if (late())
       {
         tracked_data_.set_skipped(true);
-	SkippedEvents ++;
+        SkippedEvents ++;
         return false;
       }
 
@@ -684,18 +684,18 @@ namespace CAT {
     if (late())
       {
         tracked_data_.set_skipped(true);
-	SkippedEvents ++;
+        SkippedEvents ++;
         return false;
       }
 
-    
+
     make_scenarios(tracked_data_);
 
 
     if (late())
       {
         tracked_data_.set_skipped(true);
-	SkippedEvents ++;
+        SkippedEvents ++;
         return false;
       }
 
@@ -708,7 +708,7 @@ namespace CAT {
 
 
   //*************************************************************
-  void sequentiator::plot_hard_scattering(topology::tracked_data __tracked_data){
+  void sequentiator::plot_hard_scattering(topology::tracked_data /*__tracked_data*/){
     //*************************************************************
 
     /*
@@ -757,7 +757,7 @@ namespace CAT {
 
 
   //*************************************************************
-  void sequentiator::make_plots(topology::tracked_data __tracked_data){
+  void sequentiator::make_plots(topology::tracked_data /*__tracked_data*/){
     //*************************************************************
 
     /*
@@ -935,9 +935,9 @@ namespace CAT {
 
         if (level >= mybhep::VVERBOSE)
           {
-	    m.message(" original sequence after copy ", mybhep::VVERBOSE); fflush(stdout);
+            m.message(" original sequence after copy ", mybhep::VVERBOSE); fflush(stdout);
             print_a_sequence(sequences_[isequence]);
-	    m.message(" new copy ", mybhep::VVERBOSE); fflush(stdout);
+            m.message(" new copy ", mybhep::VVERBOSE); fflush(stdout);
             print_a_sequence(newcopy);
           }
 
@@ -980,10 +980,10 @@ namespace CAT {
                 size_t it1 = newcopy.get_link_index_of_cell(ilfn, newcopy.nodes()[ilfn + 1].c());
                 clock.stop(" sequentiator: get link index ");
                 m.message(" setting as used original node ", ilfn, "  cc ", it1, mybhep::VVERBOSE);
-		if( ilfn == 0 )
-		  sequences_[isequence].nodes_[ilfn].cc_[it1].set_all_used();
-		else
-		  sequences_[isequence].nodes_[ilfn].ccc_[it1].set_all_used();
+                if( ilfn == 0 )
+                  sequences_[isequence].nodes_[ilfn].cc_[it1].set_all_used();
+                else
+                  sequences_[isequence].nodes_[ilfn].ccc_[it1].set_all_used();
               }
               /*
                 if( sequences_[isequence].nodes().size() > 1 && ilfn > 0){
@@ -1204,10 +1204,10 @@ namespace CAT {
       clock.stop(" sequentiator: evolve ");
 
       if (sequence.nodes().size() == 1){
-	topology::experimental_point ep(sequence.nodes_[0].c().ep());
-	ep.set_ex(sequence.nodes_[0].c().r().value());
-	ep.set_ez(sequence.nodes_[0].c().r().value());
-	sequence.nodes_[0].set_ep(ep);
+        topology::experimental_point ep(sequence.nodes_[0].c().ep());
+        ep.set_ex(sequence.nodes_[0].c().r().value());
+        ep.set_ez(sequence.nodes_[0].c().r().value());
+        sequence.nodes_[0].set_ep(ep);
       }
 
 
@@ -1267,8 +1267,8 @@ namespace CAT {
 
     // check that node is not in the middle of a cell_triplet
     if( type != "VERTEX" &&
-        type != "MULTI_VERTEX" && 
-	type != "ISOLATED" ){
+        type != "MULTI_VERTEX" &&
+        type != "ISOLATED" ){
       // clock.stop(" sequentiator: good first node ");
       m.message(" not a good first node: type ", type, mybhep::VVERBOSE); fflush(stdout);
       return false;
@@ -1303,8 +1303,8 @@ namespace CAT {
               // add to done_connections cell ids of those cells
               // that have already been connected to NODE in other sequences
               fid = std::find(done_connections.begin(),
-			      done_connections.end(),
-			      iseq->nodes_[connection_node].c().id());
+                              done_connections.end(),
+                              iseq->nodes_[connection_node].c().id());
 
               if( fid == done_connections.end())
                 done_connections.push_back(iseq->nodes_[connection_node].c().id());
@@ -1507,7 +1507,7 @@ namespace CAT {
 
     for(std::vector<topology::scenario>::iterator sc=scenarios_.begin(); sc!=scenarios_.end(); ++sc){
       if( level >= mybhep::VVERBOSE)
-	std::clog << "...scenario " << sc - scenarios_.begin() << " nff " << sc->n_free_families() << " noverls " << sc->n_overlaps() << " common vertexes " << sc->n_of_common_vertexes(2.*CellDistance) << " n ends on wire " << sc->n_of_ends_on_wire() << " chi2 " << sc->chi2() << " prob " << sc->Prob() << std::endl;
+        std::clog << "...scenario " << sc - scenarios_.begin() << " nff " << sc->n_free_families() << " noverls " << sc->n_overlaps() << " common vertexes " << sc->n_of_common_vertexes(2.*CellDistance) << " n ends on wire " << sc->n_of_ends_on_wire() << " chi2 " << sc->chi2() << " prob " << sc->Prob() << std::endl;
 
       if( sc->better_scenario_than( scenarios_[index] , 2.*CellDistance ) )
         {
@@ -1557,7 +1557,7 @@ namespace CAT {
     for(std::vector<topology::sequence>::iterator jseq=sequences_.begin(); jseq!=sequences_.end(); ++jseq)
       {
 
-	if( scnames.count(jseq->name()) ) continue;
+        if( scnames.count(jseq->name()) ) continue;
 
 #if 0
         clock.start(" sequentiator: copy logic scenario ", "cumulative");
@@ -1628,7 +1628,7 @@ namespace CAT {
     std::string the_type="Nemo3";
     if( SuperNemo )
       the_type="SuperNEMO";
-    
+
     pl.set_type(the_type);
 
     return pl;
@@ -1666,41 +1666,41 @@ namespace CAT {
 
       if( iseq->nodes_.size() < 3 ) continue;
       if( gap_number( iseq->second_last_node().c() ) == 0 &&
-	  iseq->phi_kink(iseq->nodes_.size()-2)*180./M_PI > 45 &&
-	  belongs_to_other_family(iseq->last_node().c(), &(*iseq)) ){
-	m.message( " removing last node ", iseq->last_node().c(), " near foil of sequence ", iseq->name(),  "(it belongs to other family and makes large kink) ", mybhep::VVERBOSE); fflush(stdout);
-	iseq->remove_last_node();
+          iseq->phi_kink(iseq->nodes_.size()-2)*180./M_PI > 45 &&
+          belongs_to_other_family(iseq->last_node().c(), &(*iseq)) ){
+        m.message( " removing last node ", iseq->last_node().c(), " near foil of sequence ", iseq->name(),  "(it belongs to other family and makes large kink) ", mybhep::VVERBOSE); fflush(stdout);
+        iseq->remove_last_node();
       }
 
       if( iseq->nodes_.size() < 3 ) continue;
       if( gap_number( iseq->nodes_[1].c() ) == 0 &&
-	  iseq->phi_kink(1)*180./M_PI > 45 &&
-	  belongs_to_other_family(iseq->nodes_[0].c(), &(*iseq)) ){
-	m.message( " removing 1st node ", iseq->last_node().c(), " near foil of sequence ", iseq->name(),  "(it belongs to other family and makes large kink) ", mybhep::VVERBOSE); fflush(stdout);
-	iseq->remove_first_node();
+          iseq->phi_kink(1)*180./M_PI > 45 &&
+          belongs_to_other_family(iseq->nodes_[0].c(), &(*iseq)) ){
+        m.message( " removing 1st node ", iseq->last_node().c(), " near foil of sequence ", iseq->name(),  "(it belongs to other family and makes large kink) ", mybhep::VVERBOSE); fflush(stdout);
+        iseq->remove_first_node();
       }
 
 
       if( iseq->nodes_.size() < 3 ) continue;
       for(std::vector<topology::calorimeter_hit>::iterator ic=calos.begin(); ic != calos.end(); ++ic){
-	if( near(iseq->nodes_[1].c(), *ic) &&
-	    iseq->phi_kink(1)*180./M_PI > 45 &&
-	    belongs_to_other_family(iseq->nodes_[0].c(), &(*iseq)) ){
-	  m.message( " removing 1st node ", iseq->last_node().c(), " near calo of sequence ", iseq->name(),  "(it belongs to other family and makes large kink) ", mybhep::VVERBOSE); fflush(stdout);
-	  iseq->remove_first_node();
-	  break;
-	}
+        if( near(iseq->nodes_[1].c(), *ic) &&
+            iseq->phi_kink(1)*180./M_PI > 45 &&
+            belongs_to_other_family(iseq->nodes_[0].c(), &(*iseq)) ){
+          m.message( " removing 1st node ", iseq->last_node().c(), " near calo of sequence ", iseq->name(),  "(it belongs to other family and makes large kink) ", mybhep::VVERBOSE); fflush(stdout);
+          iseq->remove_first_node();
+          break;
+        }
       }
 
       if( iseq->nodes_.size() < 3 ) continue;
       for(std::vector<topology::calorimeter_hit>::iterator ic=calos.begin(); ic != calos.end(); ++ic){
-	if( near(iseq->second_last_node().c(), *ic) &&
-	    iseq->phi_kink(iseq->nodes_.size()-2)*180./M_PI > 45 &&
-	    belongs_to_other_family(iseq->last_node().c(), &(*iseq)) ){
-	  m.message( " removing last node ", iseq->last_node().c(), " near calo of sequence ", iseq->name(),  "(it belongs to other family and makes large kink) ", mybhep::VVERBOSE); fflush(stdout);
-	  iseq->remove_last_node();
-	  break;
-	}
+        if( near(iseq->second_last_node().c(), *ic) &&
+            iseq->phi_kink(iseq->nodes_.size()-2)*180./M_PI > 45 &&
+            belongs_to_other_family(iseq->last_node().c(), &(*iseq)) ){
+          m.message( " removing last node ", iseq->last_node().c(), " near calo of sequence ", iseq->name(),  "(it belongs to other family and makes large kink) ", mybhep::VVERBOSE); fflush(stdout);
+          iseq->remove_last_node();
+          break;
+        }
       }
     }
 
@@ -1722,7 +1722,7 @@ namespace CAT {
     return false;
 
   }
-  
+
   //*************************************************************
   void sequentiator::interpret_physics(std::vector<topology::calorimeter_hit> & calos){
     //*************************************************************
@@ -1740,12 +1740,12 @@ namespace CAT {
     size_t ihelix_min_from_begin = mybhep::default_integer;
     double tangent_min_from_begin = mybhep::default_min;
     size_t itangent_min_from_begin = mybhep::default_integer;
-    
+
     topology::experimental_point helix_extrapolation_from_end, helix_extrapolation_local_from_end;
     bool helix_found_from_end = false;
     topology::experimental_point helix_extrapolation_from_begin, helix_extrapolation_local_from_begin;
     bool helix_found_from_begin = false;
-    
+
     topology::experimental_point tangent_extrapolation_from_end, tangent_extrapolation_local_from_end;
     bool tangent_found_from_end = false;
     topology::experimental_point tangent_extrapolation_from_begin, tangent_extrapolation_local_from_begin;
@@ -1755,263 +1755,263 @@ namespace CAT {
     std::vector<topology::sequence>::iterator iseq = sequences_.begin();
     while( iseq != sequences_.end() )
       {
-	m.message(" ... interpreting physics of sequence ", iseq->name(), mybhep::VVERBOSE); fflush(stdout);
+        m.message(" ... interpreting physics of sequence ", iseq->name(), mybhep::VVERBOSE); fflush(stdout);
 
         if( iseq->nodes().size() <= 2 ){
-	  ++iseq;
-	  continue;
-	}
+          ++iseq;
+          continue;
+        }
 
         if( level >= mybhep::VVERBOSE)
-	  print_a_sequence(*iseq);
+          print_a_sequence(*iseq);
 
         if( !iseq->calculate_helix() && !iseq->has_kink() ){
-	  size_t index = iseq - sequences_.begin();
+          size_t index = iseq - sequences_.begin();
           m.message(" erased sequence ", index, "not a good helix", mybhep::VERBOSE); fflush(stdout);
           sequences_.erase(iseq);
           ++ iseq;
-	  if( index + 1 >= sequences_.size() )
-	    break;
+          if( index + 1 >= sequences_.size() )
+            break;
           continue;
-	}
+        }
         iseq->calculate_charge();
         iseq->calculate_momentum(bfield);
 
         // match to calorimeter
-	if (!calos.empty ())
-	  {
-	    
-	    m.message(" extrapolate decay vertex with ", calos.size(), " calo hits " , mybhep::VVERBOSE);
-	    
-	    helix_min_from_end = mybhep::default_min;
-	    ihelix_min_from_end = mybhep::default_integer;
-	    tangent_min_from_end = mybhep::default_min;
-	    itangent_min_from_end = mybhep::default_integer;
+        if (!calos.empty ())
+          {
 
-	    helix_min_from_begin = mybhep::default_min;
-	    ihelix_min_from_begin = mybhep::default_integer;
-	    tangent_min_from_begin = mybhep::default_min;
-	    itangent_min_from_begin = mybhep::default_integer;
+            m.message(" extrapolate decay vertex with ", calos.size(), " calo hits " , mybhep::VVERBOSE);
 
-	    helix_found_from_end = false;
-	    helix_found_from_begin = false;
+            helix_min_from_end = mybhep::default_min;
+            ihelix_min_from_end = mybhep::default_integer;
+            tangent_min_from_end = mybhep::default_min;
+            itangent_min_from_end = mybhep::default_integer;
 
-	    tangent_found_from_end = false;
-	    tangent_found_from_begin = false;
+            helix_min_from_begin = mybhep::default_min;
+            ihelix_min_from_begin = mybhep::default_integer;
+            tangent_min_from_begin = mybhep::default_min;
+            itangent_min_from_begin = mybhep::default_integer;
 
-	    for(std::vector<topology::calorimeter_hit>::iterator ic=calos.begin(); ic != calos.end(); ++ic){
-	      
-	      m.message( " trying to extrapolate to calo hit ", ic - calos.begin(), " id ", ic->id(), " on view ", ic->pl_.view(), " energy ", ic->e().value(), mybhep::VVERBOSE);
+            helix_found_from_end = false;
+            helix_found_from_begin = false;
 
-	      if( !near(iseq->last_node().c(), *ic) ){
-		m.message( " end is not near " , mybhep::VVERBOSE);
-	      }else{
-	      	      
-		if( !iseq->intersect_plane_from_end(ic->pl(), &helix_extrapolation_local_from_end) ){
-		  m.message( " no helix intersection from end " , mybhep::VVERBOSE);
-		}
-		else{
-		  
-		  dist_from_end = helix_extrapolation_local_from_end.distance(ic->pl_.face()).value();
-		  if( dist_from_end < helix_min_from_end ){
-		    helix_min_from_end = dist_from_end;
-		    ihelix_min_from_end = ic->id();
-		    helix_extrapolation_from_end = helix_extrapolation_local_from_end;
-		    helix_found_from_end = true;
-		    m.message( " new helix intersection from end with minimum distance " , dist_from_end , " position: " , helix_extrapolation_from_end.x().value() ,   helix_extrapolation_from_end.y().value(),  helix_extrapolation_from_end.z().value() , mybhep::VVERBOSE);
-		  }
-		}
-		
-		
-		if( !iseq->intersect_plane_with_tangent_from_end(ic->pl(), &tangent_extrapolation_local_from_end) ){
-		  m.message( " no tangent intersection from end " , mybhep::VVERBOSE);
-		}
-		else{
-		  
-		  dist_from_end = tangent_extrapolation_local_from_end.distance(ic->pl_.face()).value();
-		  if( dist_from_end < tangent_min_from_end ){
-		    tangent_min_from_end = dist_from_end;
-		    itangent_min_from_end = ic->id();
-		    tangent_extrapolation_from_end = tangent_extrapolation_local_from_end;
-		    tangent_found_from_end = true;
-		    m.message( " new tangent intersection from end with minimum distance " , dist_from_end , " position: " , tangent_extrapolation_from_end.x().value() ,   tangent_extrapolation_from_end.y().value(),  tangent_extrapolation_from_end.z().value() , mybhep::VVERBOSE);
-		  }
-		}
-	      }
+            tangent_found_from_end = false;
+            tangent_found_from_begin = false;
 
-	      if( !near(iseq->nodes_[0].c(), *ic) ){
-		m.message( " beginning is not near " , mybhep::VVERBOSE);
-	      }else if( ihelix_min_from_end == ic->id() || itangent_min_from_end == ic->id() ){
-		m.message( " beginning is near, but end was already extrapolated to same calo " , mybhep::VVERBOSE);
-	      }else{
-		if( !iseq->intersect_plane_from_begin(ic->pl(), &helix_extrapolation_local_from_begin) ){
-		  m.message( " no helix intersection from beginning " , mybhep::VVERBOSE);
-		}
-		else{
-		  
-		  dist_from_begin = helix_extrapolation_local_from_begin.distance(ic->pl_.face()).value();
-		  if( dist_from_begin < helix_min_from_begin ){
-		    helix_min_from_begin = dist_from_begin;
-		    ihelix_min_from_begin = ic->id();
-		    helix_extrapolation_from_begin = helix_extrapolation_local_from_begin;
-		    helix_found_from_begin = true;
-		    m.message( " new helix intersection from beginning with minimum distance " , dist_from_begin , " position: " , helix_extrapolation_from_begin.x().value() ,   helix_extrapolation_from_begin.y().value(),  helix_extrapolation_from_begin.z().value() , mybhep::VVERBOSE);
-		  }
-		}
-		
-		
-		if( !iseq->intersect_plane_with_tangent_from_begin(ic->pl(), &tangent_extrapolation_local_from_begin) ){
-		  m.message( " no tangent intersection from beginning " , mybhep::VVERBOSE);
-		}
-		else{
-		  
-		  dist_from_begin = tangent_extrapolation_local_from_begin.distance(ic->pl_.face()).value();
-		  if( dist_from_begin < tangent_min_from_begin ){
-		    tangent_min_from_begin = dist_from_begin;
-		    itangent_min_from_begin = ic->id();
-		    tangent_extrapolation_from_begin = tangent_extrapolation_local_from_begin;
-		    tangent_found_from_begin = true;
-		    m.message( " new tangent intersection from beginning with minimum distance " , dist_from_begin , " position: " , tangent_extrapolation_from_begin.x().value() ,   tangent_extrapolation_from_begin.y().value(),  tangent_extrapolation_from_begin.z().value() , mybhep::VVERBOSE);
-		  }
-		}
-	      }
+            for(std::vector<topology::calorimeter_hit>::iterator ic=calos.begin(); ic != calos.end(); ++ic){
 
-	      
-	    } // finish loop on calos
+              m.message( " trying to extrapolate to calo hit ", ic - calos.begin(), " id ", ic->id(), " on view ", ic->pl_.view(), " energy ", ic->e().value(), mybhep::VVERBOSE);
 
-	    if( helix_found_from_begin ){
-	      if( ihelix_min_from_begin >= calos.size() ){
-		m.message( " problem: calo hit of id " , ihelix_min_from_begin , " but n of calo hits is " , calos.size() , mybhep::NORMAL);
-	      }
-	      else{
-		m.message( " track extrapolated by helix to calo " , ihelix_min_from_begin, mybhep::VVERBOSE);
-		iseq->set_helix_vertex(helix_extrapolation_from_begin, "calo", ihelix_min_from_begin);
-	      }
-	    }
-	    
-	    if( tangent_found_from_begin ){
-	      if( itangent_min_from_begin >= calos.size() ){
-		m.message( " problem: tangent calo hit of id " , itangent_min_from_begin , " but n of calo hits is " , calos.size() , mybhep::NORMAL);
-	      }
-	      else{
-		m.message( " track extrapolated by tangent to calo " , itangent_min_from_begin, mybhep::VVERBOSE);
-		iseq->set_tangent_vertex(tangent_extrapolation_from_begin, "calo", itangent_min_from_begin);
-	      }
-	    }
+              if( !near(iseq->last_node().c(), *ic) ){
+                m.message( " end is not near " , mybhep::VVERBOSE);
+              }else{
 
-	    if( helix_found_from_end ){
-	      if( ihelix_min_from_end >= calos.size() ){
-		m.message( " problem: calo hit of id " , ihelix_min_from_end , " but n of calo hits is " , calos.size() , mybhep::NORMAL);
-	      }
-	      else{
-		m.message( " track extrapolated by helix to calo " , ihelix_min_from_end, mybhep::VVERBOSE);
-		iseq->set_decay_helix_vertex(helix_extrapolation_from_end, "calo", ihelix_min_from_end);
-	      }
-	    }
-	    
-	    if( tangent_found_from_end ){
-	      if( itangent_min_from_end >= calos.size() ){
-		m.message( " problem: tangent calo hit of id " , itangent_min_from_end , " but n of calo hits is " , calos.size() , mybhep::NORMAL);
-	      }
-	      else{
-		m.message( " track extrapolated by tangent to calo " , itangent_min_from_end, mybhep::VVERBOSE);
-		iseq->set_decay_tangent_vertex(tangent_extrapolation_from_end, "calo", itangent_min_from_end);
-	      }
-	    }
-	    
-	  }
+                if( !iseq->intersect_plane_from_end(ic->pl(), &helix_extrapolation_local_from_end) ){
+                  m.message( " no helix intersection from end " , mybhep::VVERBOSE);
+                }
+                else{
+
+                  dist_from_end = helix_extrapolation_local_from_end.distance(ic->pl_.face()).value();
+                  if( dist_from_end < helix_min_from_end ){
+                    helix_min_from_end = dist_from_end;
+                    ihelix_min_from_end = ic->id();
+                    helix_extrapolation_from_end = helix_extrapolation_local_from_end;
+                    helix_found_from_end = true;
+                    m.message( " new helix intersection from end with minimum distance " , dist_from_end , " position: " , helix_extrapolation_from_end.x().value() ,   helix_extrapolation_from_end.y().value(),  helix_extrapolation_from_end.z().value() , mybhep::VVERBOSE);
+                  }
+                }
+
+
+                if( !iseq->intersect_plane_with_tangent_from_end(ic->pl(), &tangent_extrapolation_local_from_end) ){
+                  m.message( " no tangent intersection from end " , mybhep::VVERBOSE);
+                }
+                else{
+
+                  dist_from_end = tangent_extrapolation_local_from_end.distance(ic->pl_.face()).value();
+                  if( dist_from_end < tangent_min_from_end ){
+                    tangent_min_from_end = dist_from_end;
+                    itangent_min_from_end = ic->id();
+                    tangent_extrapolation_from_end = tangent_extrapolation_local_from_end;
+                    tangent_found_from_end = true;
+                    m.message( " new tangent intersection from end with minimum distance " , dist_from_end , " position: " , tangent_extrapolation_from_end.x().value() ,   tangent_extrapolation_from_end.y().value(),  tangent_extrapolation_from_end.z().value() , mybhep::VVERBOSE);
+                  }
+                }
+              }
+
+              if( !near(iseq->nodes_[0].c(), *ic) ){
+                m.message( " beginning is not near " , mybhep::VVERBOSE);
+              }else if( ihelix_min_from_end == ic->id() || itangent_min_from_end == ic->id() ){
+                m.message( " beginning is near, but end was already extrapolated to same calo " , mybhep::VVERBOSE);
+              }else{
+                if( !iseq->intersect_plane_from_begin(ic->pl(), &helix_extrapolation_local_from_begin) ){
+                  m.message( " no helix intersection from beginning " , mybhep::VVERBOSE);
+                }
+                else{
+
+                  dist_from_begin = helix_extrapolation_local_from_begin.distance(ic->pl_.face()).value();
+                  if( dist_from_begin < helix_min_from_begin ){
+                    helix_min_from_begin = dist_from_begin;
+                    ihelix_min_from_begin = ic->id();
+                    helix_extrapolation_from_begin = helix_extrapolation_local_from_begin;
+                    helix_found_from_begin = true;
+                    m.message( " new helix intersection from beginning with minimum distance " , dist_from_begin , " position: " , helix_extrapolation_from_begin.x().value() ,   helix_extrapolation_from_begin.y().value(),  helix_extrapolation_from_begin.z().value() , mybhep::VVERBOSE);
+                  }
+                }
+
+
+                if( !iseq->intersect_plane_with_tangent_from_begin(ic->pl(), &tangent_extrapolation_local_from_begin) ){
+                  m.message( " no tangent intersection from beginning " , mybhep::VVERBOSE);
+                }
+                else{
+
+                  dist_from_begin = tangent_extrapolation_local_from_begin.distance(ic->pl_.face()).value();
+                  if( dist_from_begin < tangent_min_from_begin ){
+                    tangent_min_from_begin = dist_from_begin;
+                    itangent_min_from_begin = ic->id();
+                    tangent_extrapolation_from_begin = tangent_extrapolation_local_from_begin;
+                    tangent_found_from_begin = true;
+                    m.message( " new tangent intersection from beginning with minimum distance " , dist_from_begin , " position: " , tangent_extrapolation_from_begin.x().value() ,   tangent_extrapolation_from_begin.y().value(),  tangent_extrapolation_from_begin.z().value() , mybhep::VVERBOSE);
+                  }
+                }
+              }
+
+
+            } // finish loop on calos
+
+            if( helix_found_from_begin ){
+              if( ihelix_min_from_begin >= calos.size() ){
+                m.message( " problem: calo hit of id " , ihelix_min_from_begin , " but n of calo hits is " , calos.size() , mybhep::NORMAL);
+              }
+              else{
+                m.message( " track extrapolated by helix to calo " , ihelix_min_from_begin, mybhep::VVERBOSE);
+                iseq->set_helix_vertex(helix_extrapolation_from_begin, "calo", ihelix_min_from_begin);
+              }
+            }
+
+            if( tangent_found_from_begin ){
+              if( itangent_min_from_begin >= calos.size() ){
+                m.message( " problem: tangent calo hit of id " , itangent_min_from_begin , " but n of calo hits is " , calos.size() , mybhep::NORMAL);
+              }
+              else{
+                m.message( " track extrapolated by tangent to calo " , itangent_min_from_begin, mybhep::VVERBOSE);
+                iseq->set_tangent_vertex(tangent_extrapolation_from_begin, "calo", itangent_min_from_begin);
+              }
+            }
+
+            if( helix_found_from_end ){
+              if( ihelix_min_from_end >= calos.size() ){
+                m.message( " problem: calo hit of id " , ihelix_min_from_end , " but n of calo hits is " , calos.size() , mybhep::NORMAL);
+              }
+              else{
+                m.message( " track extrapolated by helix to calo " , ihelix_min_from_end, mybhep::VVERBOSE);
+                iseq->set_decay_helix_vertex(helix_extrapolation_from_end, "calo", ihelix_min_from_end);
+              }
+            }
+
+            if( tangent_found_from_end ){
+              if( itangent_min_from_end >= calos.size() ){
+                m.message( " problem: tangent calo hit of id " , itangent_min_from_end , " but n of calo hits is " , calos.size() , mybhep::NORMAL);
+              }
+              else{
+                m.message( " track extrapolated by tangent to calo " , itangent_min_from_end, mybhep::VVERBOSE);
+                iseq->set_decay_tangent_vertex(tangent_extrapolation_from_end, "calo", itangent_min_from_end);
+              }
+            }
+
+          }
 
         // match to foil
-	if( !iseq->nodes_.empty() ){
-	  
-	  m.message( " extrapolate vertex on foil: supernemo " , SuperNemo, mybhep::VVERBOSE);
+        if( !iseq->nodes_.empty() ){
 
-	  if( gap_number(iseq->last_node().c() ) != 0 ){
-	    m.message( " end not near ", mybhep::VVERBOSE); fflush(stdout);
-	  }else{
-	    if( SuperNemo ){
+          m.message( " extrapolate vertex on foil: supernemo " , SuperNemo, mybhep::VVERBOSE);
 
-	      if( !iseq->intersect_plane_from_end(get_foil_plane(), &helix_extrapolation_from_end) ){
+          if( gap_number(iseq->last_node().c() ) != 0 ){
+            m.message( " end not near ", mybhep::VVERBOSE); fflush(stdout);
+          }else{
+            if( SuperNemo ){
+
+              if( !iseq->intersect_plane_from_end(get_foil_plane(), &helix_extrapolation_from_end) ){
                 m.message(" no helix intersection from end ", mybhep::VVERBOSE); fflush(stdout);
-	      }
+              }
               else{
                 iseq->set_decay_helix_vertex(helix_extrapolation_from_end, "foil");
 
-	      }
+              }
 
-	      if( !iseq->intersect_plane_with_tangent_from_end(get_foil_plane(), &tangent_extrapolation_from_end) ){
+              if( !iseq->intersect_plane_with_tangent_from_end(get_foil_plane(), &tangent_extrapolation_from_end) ){
                 m.message(" no tangent intersection from end ", mybhep::VVERBOSE); fflush(stdout);
-	      }
+              }
               else
                 iseq->set_decay_tangent_vertex(tangent_extrapolation_from_end, "foil");
 
-	    }else{  // nemo3
+            }else{  // nemo3
 
 
-	      if( !iseq->intersect_circle_from_end(get_foil_circle(), &helix_extrapolation_from_end) ){
-		m.message(" no helix intersection from end ", mybhep::VVERBOSE); fflush(stdout);
-	      }
-	      else{
-		m.message( " track extrapolated by helix to foil from end ", mybhep::VVERBOSE);
-		iseq->set_decay_helix_vertex(helix_extrapolation_from_end, "foil");
-	      }
+              if( !iseq->intersect_circle_from_end(get_foil_circle(), &helix_extrapolation_from_end) ){
+                m.message(" no helix intersection from end ", mybhep::VVERBOSE); fflush(stdout);
+              }
+              else{
+                m.message( " track extrapolated by helix to foil from end ", mybhep::VVERBOSE);
+                iseq->set_decay_helix_vertex(helix_extrapolation_from_end, "foil");
+              }
 
-	      if( !iseq->intersect_circle_with_tangent_from_end(get_foil_circle(), &tangent_extrapolation_from_end) ){
-		m.message(" no tangent intersection from end ", mybhep::VVERBOSE); fflush(stdout);
-	      }
-	      else{
-		m.message( " track extrapolated by tangent to foil from end", mybhep::VVERBOSE);
-		iseq->set_decay_tangent_vertex(tangent_extrapolation_from_end, "foil");
-	      }
+              if( !iseq->intersect_circle_with_tangent_from_end(get_foil_circle(), &tangent_extrapolation_from_end) ){
+                m.message(" no tangent intersection from end ", mybhep::VVERBOSE); fflush(stdout);
+              }
+              else{
+                m.message( " track extrapolated by tangent to foil from end", mybhep::VVERBOSE);
+                iseq->set_decay_tangent_vertex(tangent_extrapolation_from_end, "foil");
+              }
 
-	    }
-	  }
-	    
-	  if( gap_number(iseq->nodes_[0].c() ) != 0 ){
-	    m.message( " beginning not near ", mybhep::VVERBOSE); fflush(stdout);
-	  }else{
-	    if( SuperNemo ){
+            }
+          }
 
-	      if( !iseq->intersect_plane_from_begin(get_foil_plane(), &helix_extrapolation_from_begin) ){
+          if( gap_number(iseq->nodes_[0].c() ) != 0 ){
+            m.message( " beginning not near ", mybhep::VVERBOSE); fflush(stdout);
+          }else{
+            if( SuperNemo ){
+
+              if( !iseq->intersect_plane_from_begin(get_foil_plane(), &helix_extrapolation_from_begin) ){
                 m.message(" no helix intersection from beginning ", mybhep::VVERBOSE); fflush(stdout);
-	      }
+              }
               else{
                 iseq->set_helix_vertex(helix_extrapolation_from_begin, "foil");
 
-	      }
+              }
 
-	      if( !iseq->intersect_plane_with_tangent_from_begin(get_foil_plane(), &tangent_extrapolation_from_begin) ){
+              if( !iseq->intersect_plane_with_tangent_from_begin(get_foil_plane(), &tangent_extrapolation_from_begin) ){
                 m.message(" no tangent intersection from beginning ", mybhep::VVERBOSE); fflush(stdout);
-	      }
+              }
               else
                 iseq->set_tangent_vertex(tangent_extrapolation_from_begin, "foil");
 
-	    }else{  // nemo3
+            }else{  // nemo3
 
 
-	      if( !iseq->intersect_circle_from_begin(get_foil_circle(), &helix_extrapolation_from_begin) ){
-		m.message(" no helix intersection from beginning ", mybhep::VVERBOSE); fflush(stdout);
-	      }
-	      else{
-		m.message( " track extrapolated by helix to foil from beginning ", mybhep::VVERBOSE);
-		iseq->set_helix_vertex(helix_extrapolation_from_begin, "foil");
-	      }
+              if( !iseq->intersect_circle_from_begin(get_foil_circle(), &helix_extrapolation_from_begin) ){
+                m.message(" no helix intersection from beginning ", mybhep::VVERBOSE); fflush(stdout);
+              }
+              else{
+                m.message( " track extrapolated by helix to foil from beginning ", mybhep::VVERBOSE);
+                iseq->set_helix_vertex(helix_extrapolation_from_begin, "foil");
+              }
 
-	      if( !iseq->intersect_circle_with_tangent_from_begin(get_foil_circle(), &tangent_extrapolation_from_begin) ){
-		m.message(" no tangent intersection from beginning ", mybhep::VVERBOSE); fflush(stdout);
-	      }
-	      else{
-		m.message( " track extrapolated by tangent to foil from begin", mybhep::VVERBOSE);
-		iseq->set_tangent_vertex(tangent_extrapolation_from_begin, "foil");
-	      }
+              if( !iseq->intersect_circle_with_tangent_from_begin(get_foil_circle(), &tangent_extrapolation_from_begin) ){
+                m.message(" no tangent intersection from beginning ", mybhep::VVERBOSE); fflush(stdout);
+              }
+              else{
+                m.message( " track extrapolated by tangent to foil from begin", mybhep::VVERBOSE);
+                iseq->set_tangent_vertex(tangent_extrapolation_from_begin, "foil");
+              }
 
-	    }
+            }
 
 
 
-	  }
+          }
         }
-	
+
         iseq->calculate_length();
 
         if( level >= mybhep::VVERBOSE ){
@@ -2021,36 +2021,36 @@ namespace CAT {
           std::clog << " pitch "; iseq->pitch().dump(); std::clog << " " << std::endl; fflush(stdout);
           std::clog << " momentum "; iseq->momentum().length().dump(); std::clog << " " << std::endl; fflush(stdout);
           std::clog << " charge "; iseq->charge().dump(); std::clog << " " << std::endl; fflush(stdout);
-	  if( iseq->has_helix_vertex() ){
-	    std::clog << " helix_vertex " << iseq->helix_vertex_type() << " "; iseq->helix_vertex().dump(); 
-	    if( iseq->helix_vertex_type() == "calo" ) std::clog << " icalo " << iseq->helix_vertex_id();
-	    std::clog << " " << std::endl; fflush(stdout);
-	  }
-	  if( iseq->has_decay_helix_vertex() ){
-	    std::clog << " decay helix_vertex " << iseq->decay_helix_vertex_type() << " "; iseq->decay_helix_vertex().dump(); 
-	    if( iseq->decay_helix_vertex_type() == "calo" ) std::clog << " icalo " << iseq->calo_helix_id();
-	    std::clog << " " << std::endl; fflush(stdout);
-	  }
-	  if( iseq->has_tangent_vertex() ){
-	    std::clog << " tangent_vertex " << iseq->tangent_vertex_type() << " "; iseq->tangent_vertex().dump(); 
-	    if( iseq->tangent_vertex_type() == "calo" ) std::clog << " icalo " << iseq->tangent_vertex_id();
-	    std::clog << " " << std::endl; fflush(stdout);
-	  }
-	  if( iseq->has_decay_tangent_vertex() ){
-	    std::clog << " decay tangent_vertex " << iseq->decay_tangent_vertex_type() << " "; iseq->decay_tangent_vertex().dump(); 
-	    if( iseq->decay_tangent_vertex_type() == "calo" ) std::clog << " icalo " << iseq->calo_tangent_id();
-	    std::clog << " " << std::endl; fflush(stdout);
-	  }
-	  if( iseq->has_tangent_length() ){
-	    std::clog << " tangent length "; iseq->tangent_length().dump(); std::clog << " " << std::endl; fflush(stdout);
-	  }
-	  if( iseq->has_helix_length() ){
-	    std::clog << " helix length "; iseq->helix_length().dump(); std::clog << " " << std::endl; fflush(stdout);
-	  }
+          if( iseq->has_helix_vertex() ){
+            std::clog << " helix_vertex " << iseq->helix_vertex_type() << " "; iseq->helix_vertex().dump();
+            if( iseq->helix_vertex_type() == "calo" ) std::clog << " icalo " << iseq->helix_vertex_id();
+            std::clog << " " << std::endl; fflush(stdout);
+          }
+          if( iseq->has_decay_helix_vertex() ){
+            std::clog << " decay helix_vertex " << iseq->decay_helix_vertex_type() << " "; iseq->decay_helix_vertex().dump();
+            if( iseq->decay_helix_vertex_type() == "calo" ) std::clog << " icalo " << iseq->calo_helix_id();
+            std::clog << " " << std::endl; fflush(stdout);
+          }
+          if( iseq->has_tangent_vertex() ){
+            std::clog << " tangent_vertex " << iseq->tangent_vertex_type() << " "; iseq->tangent_vertex().dump();
+            if( iseq->tangent_vertex_type() == "calo" ) std::clog << " icalo " << iseq->tangent_vertex_id();
+            std::clog << " " << std::endl; fflush(stdout);
+          }
+          if( iseq->has_decay_tangent_vertex() ){
+            std::clog << " decay tangent_vertex " << iseq->decay_tangent_vertex_type() << " "; iseq->decay_tangent_vertex().dump();
+            if( iseq->decay_tangent_vertex_type() == "calo" ) std::clog << " icalo " << iseq->calo_tangent_id();
+            std::clog << " " << std::endl; fflush(stdout);
+          }
+          if( iseq->has_tangent_length() ){
+            std::clog << " tangent length "; iseq->tangent_length().dump(); std::clog << " " << std::endl; fflush(stdout);
+          }
+          if( iseq->has_helix_length() ){
+            std::clog << " helix length "; iseq->helix_length().dump(); std::clog << " " << std::endl; fflush(stdout);
+          }
 
         }
-	++iseq;
-	continue;
+        ++iseq;
+        continue;
 
       }
 
@@ -2102,41 +2102,41 @@ namespace CAT {
         topology::experimental_vector v(inode->c().ep(),inode->ep());
 
         if( level >= mybhep::VVERBOSE ){
-	  std::clog << "[" << v.x().value() << ", " << v.z().value() << "]";fflush(stdout);
+          std::clog << "[" << v.x().value() << ", " << v.z().value() << "]";fflush(stdout);
 
-	  std::clog << "(";fflush(stdout);
+          std::clog << "(";fflush(stdout);
 
-	  for(vector<topology::cell>::const_iterator ilink=(*inode).links_.begin(); ilink != (*inode).links_.end(); ++ilink){
-	    iccc = sequence.get_link_index_of_cell(inode - sequence.nodes_.begin(), *ilink);
+          for(vector<topology::cell>::const_iterator ilink=(*inode).links_.begin(); ilink != (*inode).links_.end(); ++ilink){
+            iccc = sequence.get_link_index_of_cell(inode - sequence.nodes_.begin(), *ilink);
 
-	    if( iccc < 0 ) continue;  // connection through a gap
+            if( iccc < 0 ) continue;  // connection through a gap
 
-	    if( inode - sequence.nodes_.begin() < 1 ){
-	      std::clog << "->" << inode->cc()[iccc].cb().id();fflush(stdout);
-	      if( ilink->free() ){
-		std::clog << "[*]";fflush(stdout);
-	      }
-	      std::clog << "[" << inode->cc_[iccc].iteration() << " "
-		   << inode->cc()[iccc].tangents().size() << "]";fflush(stdout);
-	      if( ! ilink->begun() )
-		std::clog << "[n]";fflush(stdout);
-	    }else{
-	      std::clog << inode->ccc()[iccc].ca().id() << "<->" << inode->ccc()[iccc].cc().id();fflush(stdout);
-	      if( ilink->free() ){
-		std::clog << "[*]";fflush(stdout);
-	      }
-	      std::clog << "[" << inode->ccc_[iccc].iteration() << " "
-		   << inode->ccc()[iccc].joints().size() << "]";fflush(stdout);
-	      if( ! ilink->begun() )
-		std::clog << "[n]";fflush(stdout);
-	    }
-	  }
+            if( inode - sequence.nodes_.begin() < 1 ){
+              std::clog << "->" << inode->cc()[iccc].cb().id();fflush(stdout);
+              if( ilink->free() ){
+                std::clog << "[*]";fflush(stdout);
+              }
+              std::clog << "[" << inode->cc_[iccc].iteration() << " "
+                   << inode->cc()[iccc].tangents().size() << "]";fflush(stdout);
+              if( ! ilink->begun() )
+                std::clog << "[n]";fflush(stdout);
+            }else{
+              std::clog << inode->ccc()[iccc].ca().id() << "<->" << inode->ccc()[iccc].cc().id();fflush(stdout);
+              if( ilink->free() ){
+                std::clog << "[*]";fflush(stdout);
+              }
+              std::clog << "[" << inode->ccc_[iccc].iteration() << " "
+                   << inode->ccc()[iccc].joints().size() << "]";fflush(stdout);
+              if( ! ilink->begun() )
+                std::clog << "[n]";fflush(stdout);
+            }
+          }
 
-	  std::clog << " chi2 = " << inode->chi2();fflush(stdout);
+          std::clog << " chi2 = " << inode->chi2();fflush(stdout);
 
-	  std::clog << " )";fflush(stdout);
+          std::clog << " )";fflush(stdout);
 
-	}
+        }
       }
 
     std::clog << " center (" << sequence.center().x().value() << ", " << sequence.center().y().value() << ", " << sequence.center().z().value() << ")  radius " << sequence.radius().value() <<  " pitch " << sequence.pitch().value() << " momentum " << sequence.momentum().length().value() << "  tangent charge " << sequence.charge().value() << " +- " << sequence.charge().error() << " helix charge " << sequence.helix_charge().value()  << " +- " << sequence.helix_charge().error() << " detailed charge " << sequence.detailed_charge().value()  << " +- " << sequence.detailed_charge().error() << " chi2 " << sequence.chi2() << " prob " << sequence.Prob() << " helix chi2 " << sequence.helix_chi2() << " helix prob " << sequence.helix_Prob(); fflush(stdout);
@@ -2287,59 +2287,59 @@ namespace CAT {
 
       // compare iseq with last sequence
       if( (size_t)(iseq - sequences_.begin() + 1) >= sequences_.size() ){
-	// iseq is last sequence
-	// no need to check it against last sequence
-	break;
+        // iseq is last sequence
+        // no need to check it against last sequence
+        break;
       }
 
       m.message(" should we erase last sequence [", sequences_.size() - 1, "] " , sequences_.back().name() , " in favour of [", iseq - sequences_.begin(), "] " , iseq->name() , " ? " ,mybhep::VVERBOSE); fflush(stdout);
       if( !sequences_.back().contained( *iseq )){
-	m.message("no, it's not contained " ,mybhep::VVERBOSE); fflush(stdout);
-	//}else if( sequences_.back().Free() && !sequences_.back().contained_same_extreme_quadrants( *iseq ) ){
-	//	m.message("no, it's a free sequence with different extreme quadrants " ,mybhep::VVERBOSE); fflush(stdout);
+        m.message("no, it's not contained " ,mybhep::VVERBOSE); fflush(stdout);
+        //}else if( sequences_.back().Free() && !sequences_.back().contained_same_extreme_quadrants( *iseq ) ){
+        //      m.message("no, it's a free sequence with different extreme quadrants " ,mybhep::VVERBOSE); fflush(stdout);
       }else if( sequences_.back().Free() ){
-	m.message("no, it's a free sequence " ,mybhep::VVERBOSE); fflush(stdout);
+        m.message("no, it's a free sequence " ,mybhep::VVERBOSE); fflush(stdout);
       }else
         {
           m.message(" erased last sequence ", sequences_.size() - 1, "  contained in sequence", iseq - sequences_.begin(), mybhep::VERBOSE); fflush(stdout);
           sequences_.pop_back();
           changed =  true;
-	  // now check again the same iseq against the new last sequence
+          // now check again the same iseq against the new last sequence
           continue;
         }
 
       m.message(" should we erase sequence [", iseq - sequences_.begin(), "] " , iseq->name() , " in favour of the last [", sequences_.size() - 1, "] " , sequences_.back().name() , " ? " ,mybhep::VVERBOSE); fflush(stdout);
       if( !iseq->contained( sequences_.back() ) ){
-	m.message("no, it's not contained " ,mybhep::VVERBOSE); fflush(stdout);
-	//}else if( iseq->Free() && !iseq->contained_same_extreme_quadrants( sequences_.back() ) ){
-	//m.message("no, it's a free sequence with different extreme quadrants " ,mybhep::VVERBOSE); fflush(stdout);
+        m.message("no, it's not contained " ,mybhep::VVERBOSE); fflush(stdout);
+        //}else if( iseq->Free() && !iseq->contained_same_extreme_quadrants( sequences_.back() ) ){
+        //m.message("no, it's a free sequence with different extreme quadrants " ,mybhep::VVERBOSE); fflush(stdout);
       }else if( iseq->Free() ){
-	m.message("no, it's a free sequence" ,mybhep::VVERBOSE); fflush(stdout);
+        m.message("no, it's a free sequence" ,mybhep::VVERBOSE); fflush(stdout);
       }else
         {
           m.message(" erased sequence ", iseq - sequences_.begin(), "contained in last sequence", sequences_.size()-1, mybhep::VERBOSE); fflush(stdout);
           sequences_.erase(iseq);
           changed = true;
-	  iseq = sequences_.begin() + (iseq - sequences_.begin());
-	  // now check the new iseq against the same last sequence
+          iseq = sequences_.begin() + (iseq - sequences_.begin());
+          // now check the new iseq against the same last sequence
           continue;
         }
 
 
       m.message(" should we erase sequence [", iseq - sequences_.begin(), "] " , iseq->name() , " because of connection out of range ? " ,mybhep::VVERBOSE); fflush(stdout);
       for(std::vector<topology::node>::iterator in=iseq->nodes_.begin(); in!=iseq->nodes_.end();in++){
-	if( changed ) continue;
-	if( in-iseq->nodes_.begin() +1 >= iseq->nodes_.size()) break;
-	topology::node nA = *in;
-	topology::node nB = iseq->nodes_[in-iseq->nodes_.begin()+1];
-	if( !sequence_is_within_range(nA,nB,*iseq) ){
-	  m.message(" erased sequence ", iseq - sequences_.begin(), " not in range", mybhep::VERBOSE); fflush(stdout);
-	  sequences_.erase(iseq);
-	  changed = true;
-	  iseq = sequences_.begin() + (iseq - sequences_.begin());
-	  // now check the new iseq
-	  break;
-	}
+        if( changed ) continue;
+        if( in-iseq->nodes_.begin() +1 >= (int) iseq->nodes_.size()) break;
+        topology::node nA = *in;
+        topology::node nB = iseq->nodes_[in-iseq->nodes_.begin()+1];
+        if( !sequence_is_within_range(nA,nB,*iseq) ){
+          m.message(" erased sequence ", iseq - sequences_.begin(), " not in range", mybhep::VERBOSE); fflush(stdout);
+          sequences_.erase(iseq);
+          changed = true;
+          iseq = sequences_.begin() + (iseq - sequences_.begin());
+          // now check the new iseq
+          break;
+        }
       }
 
 
@@ -2356,60 +2356,60 @@ namespace CAT {
           continue;
         }
 
-	if( (size_t)(kseq - sequences_.begin() + 1) >= sequences_.size() ){
-	  // kseq is last sequence
-	  break;
-	}
+        if( (size_t)(kseq - sequences_.begin() + 1) >= sequences_.size() ){
+          // kseq is last sequence
+          break;
+        }
 
-	if( (size_t)(iseq - sequences_.begin() + 1) >= sequences_.size() ){
-	  // iseq is last sequence
-	  break;
-	}
+        if( (size_t)(iseq - sequences_.begin() + 1) >= sequences_.size() ){
+          // iseq is last sequence
+          break;
+        }
 
         if( level >= mybhep::VVERBOSE ){
-	  std::clog << " should we erase sequence ["<< kseq - sequences_.begin()<< "] " << kseq->name() << " as bridge between ["<< iseq - sequences_.begin()<< "] " << iseq->name()<< " and last ["<< sequences_.size() - 1<< "] "<< sequences_.back().name() << " ? " << std::endl; fflush(stdout);
-	}
+          std::clog << " should we erase sequence ["<< kseq - sequences_.begin()<< "] " << kseq->name() << " as bridge between ["<< iseq - sequences_.begin()<< "] " << iseq->name()<< " and last ["<< sequences_.size() - 1<< "] "<< sequences_.back().name() << " ? " << std::endl; fflush(stdout);
+        }
         if( kseq->is_bridge(*iseq, sequences_.back() ) &&
             (*kseq).nodes().size() < (*iseq).nodes().size() &&
             (*kseq).nodes().size() < sequences_.back().nodes().size()  &&
             !kseq->Free())
           {
 
-	    if( level >= mybhep::VVERBOSE ){
-	      std::clog <<" erased sequence  ["<< kseq - sequences_.begin()<< "] " << kseq->name() << " as bridge between ["<< iseq - sequences_.begin()<< "] " << iseq->name()<< " and last ["<< sequences_.size() - 1<< "] "<< sequences_.back().name() << std::endl; fflush(stdout);
-	    }
+            if( level >= mybhep::VVERBOSE ){
+              std::clog <<" erased sequence  ["<< kseq - sequences_.begin()<< "] " << kseq->name() << " as bridge between ["<< iseq - sequences_.begin()<< "] " << iseq->name()<< " and last ["<< sequences_.size() - 1<< "] "<< sequences_.back().name() << std::endl; fflush(stdout);
+            }
             sequences_.erase(kseq);
             changed = true;
-	    kseq = sequences_.begin() + (kseq - sequences_.begin());
-	    if( kseq - sequences_.begin() < iseq - sequences_.begin() )
-	      iseq = sequences_.begin() + (iseq - sequences_.begin() - 1);
-	    else
-	      iseq = sequences_.begin() + (iseq - sequences_.begin());
-	    // now check the new kseq
-	    continue;
-	  }
-	
+            kseq = sequences_.begin() + (kseq - sequences_.begin());
+            if( kseq - sequences_.begin() < iseq - sequences_.begin() )
+              iseq = sequences_.begin() + (iseq - sequences_.begin() - 1);
+            else
+              iseq = sequences_.begin() + (iseq - sequences_.begin());
+            // now check the new kseq
+            continue;
+          }
+
 
         if( level >= mybhep::VVERBOSE ){
-	  std::clog <<" should we erase last ["<< sequences_.size() - 1<< "] "<< sequences_.back().name() << " as bridge between ["<< iseq - sequences_.begin()<< "] " << iseq->name()<< " and  ["<< kseq - sequences_.begin()<< "] " << kseq->name() << " ? "<< std::endl; fflush(stdout);
-	}
+          std::clog <<" should we erase last ["<< sequences_.size() - 1<< "] "<< sequences_.back().name() << " as bridge between ["<< iseq - sequences_.begin()<< "] " << iseq->name()<< " and  ["<< kseq - sequences_.begin()<< "] " << kseq->name() << " ? "<< std::endl; fflush(stdout);
+        }
         if( sequences_.back().is_bridge(*iseq, *kseq ) &&
             sequences_.back().nodes().size() < (*iseq).nodes().size() &&
             sequences_.back().nodes().size() < (*kseq).nodes().size()  &&
             !sequences_.back().Free())
           {
-	    if( level >= mybhep::VVERBOSE ){
-	      std::clog <<" erased  last ["<< sequences_.size() - 1<< "] "<< sequences_.back().name() << " as bridge between ["<< iseq - sequences_.begin()<< "] " << iseq->name()<< " and  ["<< kseq - sequences_.begin()<< "] " << kseq->name()<< std::endl; fflush(stdout);
-	    }
+            if( level >= mybhep::VVERBOSE ){
+              std::clog <<" erased  last ["<< sequences_.size() - 1<< "] "<< sequences_.back().name() << " as bridge between ["<< iseq - sequences_.begin()<< "] " << iseq->name()<< " and  ["<< kseq - sequences_.begin()<< "] " << kseq->name()<< std::endl; fflush(stdout);
+            }
             sequences_.pop_back();
             changed =  true;
-	    iseq = sequences_.begin() + (iseq - sequences_.begin());
-	    // now check the same kseq with the new last sequence
+            iseq = sequences_.begin() + (iseq - sequences_.begin());
+            // now check the same kseq with the new last sequence
             continue;
           }
 
-	kseq ++;
-	continue;
+        kseq ++;
+        continue;
       }
 
       iseq++;
@@ -2481,12 +2481,12 @@ namespace CAT {
 
       for(std::vector<topology::sequence>::iterator iseq = isc->sequences_.begin(); iseq != isc->sequences_.end(); ++iseq){
 
-	if( distance_from_foil(iseq->nodes().front().ep()) >
-	    distance_from_foil(iseq->nodes().back().ep()) ){
-	  m.message(" sequence ", iseq - sequences_.begin(), " in scenario ", isc - scenarios_.begin(), " will be directed out of foil ", mybhep::VVERBOSE);
-	  topology::sequence is = iseq->invert();
-	  std::swap(*iseq, is);
-	}
+        if( distance_from_foil(iseq->nodes().front().ep()) >
+            distance_from_foil(iseq->nodes().back().ep()) ){
+          m.message(" sequence ", iseq - sequences_.begin(), " in scenario ", isc - scenarios_.begin(), " will be directed out of foil ", mybhep::VVERBOSE);
+          topology::sequence is = iseq->invert();
+          std::swap(*iseq, is);
+        }
       }
 
     }
@@ -2543,13 +2543,13 @@ namespace CAT {
     else if( pl.view() == "z" ){
 
       int g = gap_number(c);
-      
+
       m.message(" checking if cell ", c.id(), " on gap ", g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), mybhep::VVERBOSE);
-      
+
       if( g <= 0 || fabs(chlayer - c.layer()) > NOffLayers ) return false; // cell is not on a gap or is facing the foil
-      
+
       if( g == 1 || fabs(chlayer - c.layer()) <= NOffLayers ) return true;
-      
+
       m.message(" problem: can't match to calo on view ", pl.view(), mybhep::NORMAL);
 
       return false;
@@ -2560,7 +2560,7 @@ namespace CAT {
       int g = gap_number(c);
       m.message(" checking if cell ", c.id(), " layer and gap: ", ln, g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), " on view ", pl.view(), mybhep::VVERBOSE);
       if( ln < 0 && (g == 3 ||
-		     fabs(ln - chlayer) <= NOffLayers )) return true;
+                     fabs(ln - chlayer) <= NOffLayers )) return true;
       return false;
     }
     else if( pl.view() == "outer" ){
@@ -2568,7 +2568,7 @@ namespace CAT {
       int g = gap_number(c);
       m.message(" checking if cell ", c.id(), " on layer and gap: ", ln, g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), " on view ", pl.view(), mybhep::VVERBOSE);
       if( ln > 0 && (g == 3 ||
-		     fabs(ln - chlayer) <= NOffLayers )) return true;
+                     fabs(ln - chlayer) <= NOffLayers )) return true;
       return false;
     }
     else if( pl.view() == "top" ||  pl.view() == "bottom" ){
@@ -2794,7 +2794,7 @@ namespace CAT {
   }
 
   //*******************************************************************
-  void sequentiator::FillGGResiduals(topology::sequence &tp, topology::sequence &dp){
+  void sequentiator::FillGGResiduals(topology::sequence & /*tp*/, topology::sequence &/*dp*/){
     //*******************************************************************
 
     /*
@@ -2950,8 +2950,8 @@ namespace CAT {
 
     // get the index of the gap through which the matching should occurr
     if( blockA == blockB &&
-	((gnA == -1 && gnB == -1) ||
-	 gnA != gnB )){
+        ((gnA == -1 && gnB == -1) ||
+         gnA != gnB )){
       // matching is within a single block and not through a gap
       // so helix should be contained in the layers of the two cells
       rmin = min(cA.ep().radius().value(),cB.ep().radius().value()) - CellDistance;
@@ -2959,69 +2959,69 @@ namespace CAT {
     }else{
       if( blockA != blockB ){
 
-	/*
-	if( gnA != -1 && gnB != -1 && gnA != gnB ){
-	  if( level >= mybhep::VVERBOSE ){
-	    std::clog << " connection between cells " << nodeA.c().id() << " and " << nodeB.c().id() << " blocks " << blockA << " and " << blockB << " gaps " << gnA << " and " << gnB << " is forbidden (cells face different gaps) " << std::endl;
-	  }
-	  return false;
-	}
-	*/
+        /*
+        if( gnA != -1 && gnB != -1 && gnA != gnB ){
+          if( level >= mybhep::VVERBOSE ){
+            std::clog << " connection between cells " << nodeA.c().id() << " and " << nodeB.c().id() << " blocks " << blockA << " and " << blockB << " gaps " << gnA << " and " << gnB << " is forbidden (cells face different gaps) " << std::endl;
+          }
+          return false;
+        }
+        */
 
-	// matching is between different blocks
-	rmin = min(cA.ep().radius().value(),cB.ep().radius().value()) - CellDistance;
-	rmax = max(cA.ep().radius().value(),cB.ep().radius().value()) + CellDistance;
+        // matching is between different blocks
+        rmin = min(cA.ep().radius().value(),cB.ep().radius().value()) - CellDistance;
+        rmax = max(cA.ep().radius().value(),cB.ep().radius().value()) + CellDistance;
       }
       else if( blockA == blockB && gnA == -1 && gnB != -1 ){ // B is on gap, A is inside
-	size_t gn = gnB;
-	if( cA.ep().radius().value() > cB.ep().radius().value() ){ // gap - B - A
-	  rmax = cA.ep().radius().value() + CellDistance;
-	  rmin = cB.ep().radius().value() - CellDistance - gaps_Z[gn];
-	}else{ // A - B - gap
-	  rmin = cA.ep().radius().value() - CellDistance;
-	  rmax = cB.ep().radius().value() + CellDistance + gaps_Z[gn];
-	}
+        size_t gn = gnB;
+        if( cA.ep().radius().value() > cB.ep().radius().value() ){ // gap - B - A
+          rmax = cA.ep().radius().value() + CellDistance;
+          rmin = cB.ep().radius().value() - CellDistance - gaps_Z[gn];
+        }else{ // A - B - gap
+          rmin = cA.ep().radius().value() - CellDistance;
+          rmax = cB.ep().radius().value() + CellDistance + gaps_Z[gn];
+        }
       }
       else if( blockA == blockB && gnA != -1 && gnB == -1 ){ // A is on gap, B is inside
-	size_t gn = gnA;
-	if( cA.ep().radius().value() < cB.ep().radius().value() ){ // gap - A - B
-	  rmax = cB.ep().radius().value() + CellDistance;
-	  rmin = cA.ep().radius().value() - CellDistance - gaps_Z[gn];
-	}else{ // B - A - gap
-	  rmin = cB.ep().radius().value() - CellDistance;
-	  rmax = cA.ep().radius().value() + CellDistance + gaps_Z[gn];
-	}
+        size_t gn = gnA;
+        if( cA.ep().radius().value() < cB.ep().radius().value() ){ // gap - A - B
+          rmax = cB.ep().radius().value() + CellDistance;
+          rmin = cA.ep().radius().value() - CellDistance - gaps_Z[gn];
+        }else{ // B - A - gap
+          rmin = cB.ep().radius().value() - CellDistance;
+          rmax = cA.ep().radius().value() + CellDistance + gaps_Z[gn];
+        }
       }
       else if( blockA == blockB && gnA != -1 && gnB != -1 && gnA == gnB ){ // A and B on same gap
 
-	// get the index of the gap through which the matching should occurr
+        // get the index of the gap through which the matching should occurr
 
-	size_t gn = gnA;
-	size_t gaplayer=0;
-	for(size_t i=0; i<gn; i++)
-	  gaplayer += (size_t)(planes_per_block[i]+0.5);  // 0, 4, 6, 9
-	if( abs(cA.layer()) < gaplayer ){ // foil - A,B - gap
-	  if( blockA > 0 ){ // origin - A, B - gap
-	    rmin = cA.ep().radius().value() - CellDistance;
-	    rmax = cA.ep().radius().value() + CellDistance + gaps_Z[gn];
-	  }else{ // origin - gap - A,B
-	    rmin = cA.ep().radius().value() - CellDistance - gaps_Z[gn];
-	    rmax = cA.ep().radius().value() + CellDistance;
-	  }
-	}else{ // foil - gap - A, B
-	  if( blockA > 0 ){ // origin - gap - A,B
-	    rmax = cA.ep().radius().value() + CellDistance;
-	    rmin = cA.ep().radius().value() - CellDistance - gaps_Z[gn];
-	  }else{ // origin - A,B - gap
-	    rmin = cA.ep().radius().value() - CellDistance;
-	    rmax = cA.ep().radius().value() + CellDistance + gaps_Z[gn];
-	  }
-	}
-	
+        size_t gn = gnA;
+        size_t gaplayer=0;
+        for(size_t i=0; i<gn; i++)
+          gaplayer += (size_t)(planes_per_block[i]+0.5);  // 0, 4, 6, 9
+        if( abs(cA.layer()) < gaplayer ){ // foil - A,B - gap
+          if( blockA > 0 ){ // origin - A, B - gap
+            rmin = cA.ep().radius().value() - CellDistance;
+            rmax = cA.ep().radius().value() + CellDistance + gaps_Z[gn];
+          }else{ // origin - gap - A,B
+            rmin = cA.ep().radius().value() - CellDistance - gaps_Z[gn];
+            rmax = cA.ep().radius().value() + CellDistance;
+          }
+        }else{ // foil - gap - A, B
+          if( blockA > 0 ){ // origin - gap - A,B
+            rmax = cA.ep().radius().value() + CellDistance;
+            rmin = cA.ep().radius().value() - CellDistance - gaps_Z[gn];
+          }else{ // origin - A,B - gap
+            rmin = cA.ep().radius().value() - CellDistance;
+            rmax = cA.ep().radius().value() + CellDistance + gaps_Z[gn];
+          }
+        }
+
       }
       else{
-	std::clog << " problem: blockA " << blockA << " blockB " << blockB << " gnA " << gnA << " gnB " << gnB << std::endl;
-	return true;
+        std::clog << " problem: blockA " << blockA << " blockB " << blockB << " gnA " << gnA << " gnB " << gnB << std::endl;
+        return true;
       }
     }
 
@@ -3029,7 +3029,7 @@ namespace CAT {
 
     if( ep_maxr.radius().value() > rmax || ep_minr.radius().value() < rmin ){
       if( level >= mybhep::VVERBOSE ){
-	std::clog << " sequence penetrates outside of admissible range between cells " << nodeA.c().id() << " layer " << nodeA.c().layer() << " r " << nodeA.c().ep().radius().value() << " and " << nodeB.c().id() << " layer " << nodeB.c().layer() << " r " << nodeB.c().ep().radius().value() << ": point of max radius has radius " << ep_maxr.radius().value() << " rmax " << rmax << " point of min radius has radius " << ep_minr.radius().value() << " rmin " << rmin << std::endl;
+        std::clog << " sequence penetrates outside of admissible range between cells " << nodeA.c().id() << " layer " << nodeA.c().layer() << " r " << nodeA.c().ep().radius().value() << " and " << nodeB.c().id() << " layer " << nodeB.c().layer() << " r " << nodeB.c().ep().radius().value() << ": point of max radius has radius " << ep_maxr.radius().value() << " rmax " << rmax << " point of min radius has radius " << ep_minr.radius().value() << " rmin " << rmin << std::endl;
       }
       return false;
     }
@@ -3107,19 +3107,19 @@ namespace CAT {
           if( level >= mybhep::VVERBOSE)
             print_a_sequence(sequences_[jmin]);
 
-	  bool ok;
+          bool ok;
           newseq = newseq.match(sequences_[jmin], invertA, invertB, &ok, with_kink,cells_to_delete);
 
-	  if( !ok && !with_kink ){
-	    m.message(" ... no good helix match ", mybhep::VERBOSE);
-	    continue;
-	  }
+          if( !ok && !with_kink ){
+            m.message(" ... no good helix match ", mybhep::VERBOSE);
+            continue;
+          }
 
           if( level >= mybhep::VERBOSE)
             print_a_sequence(newseq);
 
           if( first ){
-	    //	    matched[ifam] = true;
+            //      matched[ifam] = true;
             first = false;
           }
           size_t ifa = mybhep::int_from_string(sequences_[jmin].family());
@@ -3165,7 +3165,7 @@ namespace CAT {
     clock.start(" sequentiator: can match ", "cumulative");
 
     bool ok = false;
-    double limit_diagonal = sqrt(2.)*cos(M_PI/8.)*CellDistance; 
+    double limit_diagonal = sqrt(2.)*cos(M_PI/8.)*CellDistance;
 
     double probmax = -1.;
     double chi2min = mybhep::default_min;
@@ -3182,8 +3182,8 @@ namespace CAT {
     for(std::vector<topology::sequence>::iterator jseq=sequences_.begin(); jseq!=sequences_.end(); ++jseq)
       {
 
-	cells_to_delete = 0;
-	with_kink=0;
+        cells_to_delete = 0;
+        with_kink=0;
 
         m.message(" try to match sequence", s.name(), " to ", jseq->name(), mybhep::VVERBOSE);
         if( level >= mybhep::VVERBOSE){
@@ -3197,113 +3197,113 @@ namespace CAT {
           continue;
         }
 
-	// match along helix
-	bool ok_match = s.good_match(*jseq, invertA, invertB, NOffLayers);
-	bool ok_kink_match=false;
-	bool ok_kink_match_chi2 = false;
-	topology::sequence news;
-	if( ok_match )
-	  news = s.match(*jseq, invertA, invertB, &ok_match,with_kink,0);
+        // match along helix
+        bool ok_match = s.good_match(*jseq, invertA, invertB, NOffLayers);
+        bool ok_kink_match=false;
+        bool ok_kink_match_chi2 = false;
+        topology::sequence news;
+        if( ok_match )
+          news = s.match(*jseq, invertA, invertB, &ok_match,with_kink,0);
 
-	if( !invertA )
-	  nodeA = s.last_node();
-	else
-	  nodeA = s.nodes_[0];
-	
-	if( !invertB )
-	  nodeB = jseq->nodes_[0];
-	else
-	  nodeB = jseq->last_node();
+        if( !invertA )
+          nodeA = s.last_node();
+        else
+          nodeA = s.nodes_[0];
 
-	ok_match = ok_match && sequence_is_within_range(nodeA, nodeB, news);
+        if( !invertB )
+          nodeB = jseq->nodes_[0];
+        else
+          nodeB = jseq->last_node();
 
-	if( ok_match ){
-	  p = news.helix_Prob();
-	  c = news.helix_chi2();
-	  n = news.ndof();
-	  
-	  m.message(" ... matched to ", jseq->name(), ", chi2 =", c, " ndof ", n, " prob ", p, mybhep::VVERBOSE);
-	}
+        ok_match = ok_match && sequence_is_within_range(nodeA, nodeB, news);
 
-	if( ok_match && (p > news.probmin()))
-	  m.message(" good helix match", mybhep::VVERBOSE);
-	else{
-	  m.message(" ... no good helix match, try to match with kink ", mybhep::VVERBOSE);
-	  
-	  ok_kink_match= s.good_match_with_kink(*jseq, invertA, invertB, acrossGAP, limit_diagonal, NOffLayers, cells_to_delete);
-	  if( !ok_kink_match ){
-	    m.message(" ... obviously no good match with kink ", mybhep::VVERBOSE);
-	  }
-	  else{
-	    // do not match with kink if the extreme is near a calo or near the foil
+        if( ok_match ){
+          p = news.helix_Prob();
+          c = news.helix_chi2();
+          n = news.ndof();
 
-	    if( !invertA ){
-	      if( cells_to_delete == 0 || cells_to_delete == 1 )
-		nodeA = s.last_node();
-	      else
-		nodeA = s.second_last_node();	
-	    }
-	    else{
-	      if( cells_to_delete == 0 || cells_to_delete == 1 )
-		nodeA = s.nodes_[0];
-	      else
-		nodeA = s.nodes_[1];
-	    }
-	    
-	    if( !invertB ){
-	      if( cells_to_delete != 1 )
-		nodeB = jseq->nodes_[0];
-	      else
-		nodeB = jseq->nodes_[1];
-	    }else{
-	      if( cells_to_delete != 1 )	
-		nodeB = jseq->last_node();
-	      else
-		nodeB = jseq->second_last_node();
-	    }
+          m.message(" ... matched to ", jseq->name(), ", chi2 =", c, " ndof ", n, " prob ", p, mybhep::VVERBOSE);
+        }
 
-	    m.message(" possible match with kink, across GAP", acrossGAP, ", cells to delete ", cells_to_delete, ", try to extrapolate ", mybhep::VVERBOSE);
-	    for(std::vector<topology::calorimeter_hit>::iterator ic=calos.begin(); ic != calos.end(); ++ic){
-	      if( near(nodeA.c(), *ic) ||  near(nodeB.c(), *ic) ){
-		ok_kink_match = false;
-		m.message(" will not match with kink because end cell is near calo ", ic - calos.begin(), mybhep::VVERBOSE);
-		break;
-	      }
-	    }
-	    if( gap_number(nodeA.c() ) == 0 || gap_number(nodeB.c() ) == 0 ){
-	      ok_kink_match = false;
-	      m.message(" will not match with kink because end cell is near foil ", mybhep::VVERBOSE);
-	    }
+        if( ok_match && (p > news.probmin()))
+          m.message(" good helix match", mybhep::VVERBOSE);
+        else{
+          m.message(" ... no good helix match, try to match with kink ", mybhep::VVERBOSE);
 
-	    topology::experimental_point kink_point;
-	    ok_kink_match = ok_kink_match && s.intersect_sequence(*jseq, invertA, invertB, acrossGAP, &kink_point, limit_diagonal, &with_kink, cells_to_delete);
+          ok_kink_match= s.good_match_with_kink(*jseq, invertA, invertB, acrossGAP, limit_diagonal, NOffLayers, cells_to_delete);
+          if( !ok_kink_match ){
+            m.message(" ... obviously no good match with kink ", mybhep::VVERBOSE);
+          }
+          else{
+            // do not match with kink if the extreme is near a calo or near the foil
 
-	    if( ok_kink_match ){
+            if( !invertA ){
+              if( cells_to_delete == 0 || cells_to_delete == 1 )
+                nodeA = s.last_node();
+              else
+                nodeA = s.second_last_node();
+            }
+            else{
+              if( cells_to_delete == 0 || cells_to_delete == 1 )
+                nodeA = s.nodes_[0];
+              else
+                nodeA = s.nodes_[1];
+            }
 
-	      news = s.match(*jseq, invertA, invertB, &ok_kink_match_chi2, with_kink,cells_to_delete);
-	      ok_kink_match = sequence_is_within_range(nodeA, nodeB, news);
-	    
-	      if( ok_kink_match )
-		m.message(" good kink match ( ", kink_point.x().value(), ", ", kink_point.y().value(), ", ", kink_point.z().value(), ") to sequence ", jseq->name(), mybhep::VVERBOSE);
-	    
-	    }else{
-	      m.message(" no good kink match to sequence ", jseq->name(), mybhep::VVERBOSE);
-	    }
-	  }
-	}
-      
-	if( !ok_match && !ok_kink_match ) continue;
+            if( !invertB ){
+              if( cells_to_delete != 1 )
+                nodeB = jseq->nodes_[0];
+              else
+                nodeB = jseq->nodes_[1];
+            }else{
+              if( cells_to_delete != 1 )
+                nodeB = jseq->last_node();
+              else
+                nodeB = jseq->second_last_node();
+            }
+
+            m.message(" possible match with kink, across GAP", acrossGAP, ", cells to delete ", cells_to_delete, ", try to extrapolate ", mybhep::VVERBOSE);
+            for(std::vector<topology::calorimeter_hit>::iterator ic=calos.begin(); ic != calos.end(); ++ic){
+              if( near(nodeA.c(), *ic) ||  near(nodeB.c(), *ic) ){
+                ok_kink_match = false;
+                m.message(" will not match with kink because end cell is near calo ", ic - calos.begin(), mybhep::VVERBOSE);
+                break;
+              }
+            }
+            if( gap_number(nodeA.c() ) == 0 || gap_number(nodeB.c() ) == 0 ){
+              ok_kink_match = false;
+              m.message(" will not match with kink because end cell is near foil ", mybhep::VVERBOSE);
+            }
+
+            topology::experimental_point kink_point;
+            ok_kink_match = ok_kink_match && s.intersect_sequence(*jseq, invertA, invertB, acrossGAP, &kink_point, limit_diagonal, &with_kink, cells_to_delete);
+
+            if( ok_kink_match ){
+
+              news = s.match(*jseq, invertA, invertB, &ok_kink_match_chi2, with_kink,cells_to_delete);
+              ok_kink_match = sequence_is_within_range(nodeA, nodeB, news);
+
+              if( ok_kink_match )
+                m.message(" good kink match ( ", kink_point.x().value(), ", ", kink_point.y().value(), ", ", kink_point.z().value(), ") to sequence ", jseq->name(), mybhep::VVERBOSE);
+
+            }else{
+              m.message(" no good kink match to sequence ", jseq->name(), mybhep::VVERBOSE);
+            }
+          }
+        }
+
+        if( !ok_match && !ok_kink_match ) continue;
 
         p = news.helix_Prob();
         c = news.helix_chi2();
         n = news.ndof();
 
-	if( level >= mybhep::VVERBOSE){
-	  std::clog << " ... matched to " << jseq->name() << ", chi2 =" << c << " ndof " << n << " prob " << p << " with kink " << with_kink << " cells_to_delete " << cells_to_delete << " probmax " << probmax << " chimin " << chi2min << std::endl;
-	}
+        if( level >= mybhep::VVERBOSE){
+          std::clog << " ... matched to " << jseq->name() << ", chi2 =" << c << " ndof " << n << " prob " << p << " with kink " << with_kink << " cells_to_delete " << cells_to_delete << " probmax " << probmax << " chimin " << chi2min << std::endl;
+        }
 
-        if( (p > probmax || (p == probmax && c < chi2min ))  && 
-	    ((ok_match && p > news.probmin()) || ok_kink_match ) )
+        if( (p > probmax || (p == probmax && c < chi2min ))  &&
+            ((ok_match && p > news.probmin()) || ok_kink_match ) )
           {
             *jmin = jseq - sequences_.begin();
             probmax = p;
@@ -3311,17 +3311,17 @@ namespace CAT {
             ndofbest = n;
             bestinvertA = invertA;
             bestinvertB = invertB;
-	    cells_to_delete_best = cells_to_delete;
+            cells_to_delete_best = cells_to_delete;
             ok = true;
           }
       }
-    
+
     if( ok ){
-      if( level >= mybhep::VVERBOSE){	
+      if( level >= mybhep::VVERBOSE){
 std::clog << " sequence " << s.name() << " can be matched to " << sequences_[*jmin].name() << ", chi2 =" << chi2min << " ndof " << ndofbest << " prob " << probmax << " cells_to_delete " << cells_to_delete << std::endl;
       }
     }
-    
+
     clock.stop(" sequentiator: can match ");
     return ok;
 

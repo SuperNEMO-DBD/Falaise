@@ -18,8 +18,8 @@ namespace SULTAN {
     }
 
     //! constructor
-    scenario::scenario(const std::vector<sequence> & seqs, 
-                       mybhep::prlevel level, double probmin){
+    scenario::scenario(const std::vector<sequence> & seqs,
+                       mybhep::prlevel /* level */, double probmin){
       appname_= "scenario: ";
       set_print_level(mybhep::NORMAL);
       set_probmin(probmin);
@@ -30,7 +30,7 @@ namespace SULTAN {
     void scenario::dump (std::ostream & a_out      ,
                          const std::string & a_title ,
                          const std::string & a_indent,
-                         bool a_inherit          )const{
+                         bool /* a_inherit */         )const{
       {
         std::string indent;
         if (! a_indent.empty ()) indent = a_indent;

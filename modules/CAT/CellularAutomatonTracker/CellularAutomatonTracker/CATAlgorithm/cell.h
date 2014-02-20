@@ -84,7 +84,7 @@ namespace CAT {
         free_ = false;
         begun_ = false;
         type_ ="SN";
-	small_radius_= 0.;
+        small_radius_= 0.;
       }
 
       //!Default destructor
@@ -107,7 +107,7 @@ namespace CAT {
         free_ = false;
         begun_ = false;
         type_ ="SN";
-	small_radius_= 0.;
+        small_radius_= 0.;
       }
 
       //! constructor
@@ -128,7 +128,7 @@ namespace CAT {
         free_ = false;
         begun_ = false;
         type_ ="SN";
-	small_radius_= 0.;
+        small_radius_= 0.;
       }
 
       //! constructor
@@ -149,7 +149,7 @@ namespace CAT {
         free_ = false;
         begun_ = false;
         type_ ="SN";
-	small_radius_= 0.;
+        small_radius_= 0.;
       }
 
       //! constructor from bhep hit
@@ -160,7 +160,7 @@ namespace CAT {
         //ep_ = experimental_point(hit);
         r0_.set_value(mybhep::small_neg);
         r0_.set_error(0.5*mybhep::mm); // radial error
-	small_radius_= 0.;
+        small_radius_= 0.;
 
         if( hit.find_property("DIST")){
           double rr = mybhep::double_from_string(hit.fetch_property("DIST"));
@@ -258,7 +258,7 @@ namespace CAT {
         free_ = false;
         begun_ = false;
         type_ ="SN";
-	small_radius_= 0.;
+        small_radius_= 0.;
       }
 
 
@@ -266,7 +266,7 @@ namespace CAT {
       virtual void dump (std::ostream & a_out         = std::clog,
                          const std::string & a_title  = "",
                          const std::string & a_indent = "",
-                         bool a_inherit          = false) const{
+                         bool /*a_inherit */         = false) const{
         {
           std::string indent;
           if (! a_indent.empty ()) indent = a_indent;
@@ -421,33 +421,33 @@ namespace CAT {
       }
 
       //!get id
-      const size_t& id() const {return id_;}
+       size_t id() const {return id_;}
 
       //!get small_radius
-      const double& small_radius() const {return small_radius_;}
+       double small_radius() const {return small_radius_;}
 
       //!get layer
-      const int& layer() const {return layer_;}
+       int layer() const {return layer_;}
 
       //!get block
-      const int& block() const {return block_;}
+       int block() const {return block_;}
 
       //!get iid
-      const int& iid() const {return iid_;}
+       int iid() const {return iid_;}
 
       //!get n3id
-      const int& n3id() const {return n3id_;}
+       int n3id() const {return n3id_;}
 
       //!get fast flag
-      const bool& fast() const {return fast_;}
+       bool fast() const {return fast_;}
 
       //! get free level
-      const bool free()const{
+       bool free()const{
         return free_;
       }
 
       //! get begun level
-      const bool begun()const{
+       bool begun()const{
         return begun_;
       }
 
@@ -516,7 +516,7 @@ namespace CAT {
         }
         if( this->block() > 0 && c.block() < 0 )
           return true;
-        
+
 
         // layer
         if(fabs(this->layer()) < fabs(c.layer())){
@@ -531,7 +531,7 @@ namespace CAT {
         }
         if(this->iid() > c.iid()){
           return true;
-	}
+        }
 
         if(this->n3id() <= c.n3id()){
           return false;
@@ -576,10 +576,10 @@ namespace CAT {
     private:
       void set_radius(){
         r_ = r0_;
-	/*
+        /*
         if( small() && fast() )
           r_.set_error(std::max(r0_.value(), r0_.error()));
-	*/
+        */
       }
 
 

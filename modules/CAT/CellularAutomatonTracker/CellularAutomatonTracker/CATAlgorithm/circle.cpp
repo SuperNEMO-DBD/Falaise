@@ -8,7 +8,7 @@ namespace CAT{
     using namespace std;
     using namespace mybhep;
 
-    //!Default constructor 
+    //!Default constructor
     circle::circle(prlevel level, double probmin)
     {
       appname_= "circle: ";
@@ -37,7 +37,7 @@ namespace CAT{
     void circle::dump (std::ostream & a_out,
                        const std::string & a_title,
                        const std::string & a_indent,
-                       bool a_inherit) const{
+                       bool /*a_inherit*/) const{
       {
         std::string indent;
         if (! a_indent.empty ()) indent = a_indent;
@@ -66,7 +66,7 @@ namespace CAT{
 
 
 
-    //! set 
+    //! set
     void circle::set(const experimental_point &center, const experimental_double &radius)
     {
       center_ = center;
@@ -90,19 +90,19 @@ namespace CAT{
     const experimental_point& circle::center()const
     {
       return center_;
-    }      
+    }
 
     //! get radius
     const experimental_double& circle::radius()const
     {
       return radius_;
-    }      
+    }
 
     //! get curvature
     experimental_double circle::curvature()const
     {
       return 1./radius_;
-    }      
+    }
 
     experimental_double circle::phi_of_point(const experimental_point &ep) const{
       return phi_of_point(ep,0.);
@@ -164,8 +164,8 @@ namespace CAT{
       experimental_double phi(0.,0.);
       double phi_ref=0.;
       for(std::vector<experimental_point>::iterator ip = ps.begin(); ip != ps.end(); ++ip){
-	phi_ref = phi.value();
-	phi = phi_of_point(*ip,phi_ref);
+        phi_ref = phi.value();
+        phi = phi_of_point(*ip,phi_ref);
         chi2 += experimental_vector(*ip , position(phi)).hor().length2().value();
       }
 
@@ -179,7 +179,7 @@ namespace CAT{
         std::clog << " problem: asking for best fit pitch for p std::vector of size " << ps.size() << std::endl;
         return;
       }
-      
+
 
       // fit parameters y0, pitch with formula
       // phi(y) = (y - y0)/pitch
@@ -194,10 +194,10 @@ namespace CAT{
 
       double phi_ref = 0.;
       experimental_double phi(0.,0.);
-      
+
       for(std::vector<experimental_point>::iterator ip=ps.begin(); ip!=ps.end(); ++ip){
         ys.push_back(ip->y());
-	phi_ref = phi.value();
+        phi_ref = phi.value();
         phi = phi_of_point(*ip, phi_ref);
         phis.push_back(phi);
         double weight = 1/square(ip->y().error());
@@ -208,9 +208,9 @@ namespace CAT{
         Syphi += ip->y().value()*phi.value()*weight;
         Sw += weight;
       }
-      
+
       double det = 1./(Sy2*Sw - square(Sy));
-      
+
       double one_over_pi = (Syphi*Sw - Sy*Sphi)/det;
       double min_ce_over_pi = average(phis).value() - average(ys).value()*one_over_pi;
       double one_over_pi_err = square(Sw)/(Sy2 - square(Sy));
@@ -225,41 +225,41 @@ namespace CAT{
 
       if( print_level() >= mybhep::VVERBOSE ){
         std::clog << " average y " << average(ys).value() << " average phi " << average(phis).value() << " 1/p " << one_over_pi << " -y0/p " << min_ce_over_pi << " center y " << ce << " pitch " << pi << " " << std::endl;
-      
-	double phi_ref = 0.;
-	experimental_double phi(0.,0.);
+
+        double phi_ref = 0.;
+        experimental_double phi(0.,0.);
 
         for(std::vector<experimental_point>::iterator ip=ps.begin(); ip!=ps.end(); ++ip){
-	  phi_ref = phi.value();
+          phi_ref = phi.value();
           phi = phi_of_point(*ip, phi_ref);
           experimental_double predicted = *_center + *_pitch*phi;
           experimental_double res = predicted - ip->y();
-          
+
           if( print_level() >= mybhep::VVERBOSE ){
-            std::clog << " input y: ( "; 
-            ip->y().dump(); 
-            std::clog << " ) predicted: ("; 
-            predicted.dump(); 
-            std::clog << " ) local res: " ; 
-            res.dump(); 
-            std::clog << " phi: " ; 
-            phi.dump(); 
+            std::clog << " input y: ( ";
+            ip->y().dump();
+            std::clog << " ) predicted: (";
+            predicted.dump();
+            std::clog << " ) local res: " ;
+            res.dump();
+            std::clog << " phi: " ;
+            phi.dump();
             std::clog << " " << std::endl;
           }
-          
-          
+
+
         }
       }
-      
+
       return;
-      
+
     }
 
     bool circle::intersect_plane(plane pl, experimental_point * ep, experimental_double _phi){
-      
+
       // normal vector from face of plane to parallel plane through center of circle
       experimental_vector ntp = pl.norm_to_point(center());
-      
+
       double diff = (ntp.length() - radius()).value();
       experimental_vector the_norm=pl.norm();
 
@@ -267,7 +267,7 @@ namespace CAT{
         *ep = (center() - the_norm*radius().value()).point_from_vector();
         return false;
       }
-      
+
       if( diff == 0. ){  // the circle is tangent to the plane face
         *ep = (center() - the_norm*radius().value()).point_from_vector();
       }
@@ -276,25 +276,25 @@ namespace CAT{
           std::clog << " intersecting circle with center " << center().x().value() << " " << center().z().value() <<
             " with plain with face " << pl.face().x().value() << " " << pl.face().z().value() << " phi " << _phi.value()*180./acos(-1.) << std::endl;
         }
-        
+
         if( pl.view() == "x" ){
-          
+
           double sign = 1.;
           if( sin(_phi.value()) < 0. )
             sign = -1.;
-          
+
           ep->set_x(pl.face().x());
           ep->set_z(center().z() + experimental_sqrt(experimental_square(radius()) -
                                                      ntp.length2())*sign);
           ep->set_y(center().y());
         }
-        
+
         else if( pl.view() == "z" ){
-          
+
           double sign = 1.;
           if( cos(_phi.value()) < 0. )
             sign = -1.;
-          
+
           ep->set_z(pl.face().z());
           ep->set_x(center().x() + experimental_sqrt(experimental_square(radius()) -
                                                      ntp.length2())*sign);
@@ -302,14 +302,14 @@ namespace CAT{
         }
         else if( pl.view() == "inner" || pl.view() == "outer" ){
 
-	  // point on the face plane in front of circle's center
-	  experimental_point foot = (center() - ntp).point_from_vector();
+          // point on the face plane in front of circle's center
+          experimental_point foot = (center() - ntp).point_from_vector();
 
-	  experimental_double transverse_dist = experimental_sqrt(experimental_square(radius()) -
-								  ntp.length2());
-	  experimental_double angle=the_norm.phi();
+          experimental_double transverse_dist = experimental_sqrt(experimental_square(radius()) -
+                                                                  ntp.length2());
+          experimental_double angle=the_norm.phi();
 
-	  experimental_point end_of_circle=position(_phi);
+          experimental_point end_of_circle=position(_phi);
 
           double signx = 1.;
           if( foot.x().value() > end_of_circle.x().value() ) // foot is above end-point
@@ -319,28 +319,28 @@ namespace CAT{
             signz = -1.;
 
 
-	  if( print_level() >= mybhep::VVERBOSE ){
-	    std::clog << " normal to plane (" << the_norm.x().value() << ", " << the_norm.y().value() << ", " << the_norm.z().value() << ") normal vector from face of plane to parallel plane through center of circle ( " << ntp.x().value() << ", " << ntp.y().value() << ", " << ntp.z().value() << ") diff " << diff << " foot on face of plane in front of circle center: ( " << foot.x().value() << ", " << foot.y().value() << ", " << foot.z().value() <<
-	      ") transverse dist: " << transverse_dist.value() << " angle " << angle.value()*180./acos(-1.) << std::endl;
-	  }
+          if( print_level() >= mybhep::VVERBOSE ){
+            std::clog << " normal to plane (" << the_norm.x().value() << ", " << the_norm.y().value() << ", " << the_norm.z().value() << ") normal vector from face of plane to parallel plane through center of circle ( " << ntp.x().value() << ", " << ntp.y().value() << ", " << ntp.z().value() << ") diff " << diff << " foot on face of plane in front of circle center: ( " << foot.x().value() << ", " << foot.y().value() << ", " << foot.z().value() <<
+              ") transverse dist: " << transverse_dist.value() << " angle " << angle.value()*180./acos(-1.) << std::endl;
+          }
 
-	  ep->set_x(foot.x() + transverse_dist*experimental_fabs(experimental_sin(angle))*signx);
-	  ep->set_z(foot.z() + transverse_dist*experimental_fabs(experimental_cos(angle))*signz);
+          ep->set_x(foot.x() + transverse_dist*experimental_fabs(experimental_sin(angle))*signx);
+          ep->set_z(foot.z() + transverse_dist*experimental_fabs(experimental_cos(angle))*signz);
 
           ep->set_y(center().y());
 
-	}
-	else{
-	  std::clog << " problem: cannot intersect circle with plane of view " << pl.view() << std::endl;
-	  return false;
-	}
+        }
+        else{
+          std::clog << " problem: cannot intersect circle with plane of view " << pl.view() << std::endl;
+          return false;
+        }
 
       }
 
       if( ep->x().value() == small_neg ||
-	  ep->y().value() == small_neg ||
-	  ep->z().value() == small_neg )
-	return false;
+          ep->y().value() == small_neg ||
+          ep->z().value() == small_neg )
+        return false;
 
       if( isnan(ep->x().value())  || isnan(ep->y().value()) || isnan(ep->z().value()) ) return false;
 
@@ -360,38 +360,38 @@ namespace CAT{
         return true;
       }
       if( pl.view() == "inner" || pl.view() == "outer" ){
-	experimental_vector transverse_dist = (dist)^(the_norm.hor());
+        experimental_vector transverse_dist = (dist)^(the_norm.hor());
 
-	if( transverse_dist.length().value() > pl.sizes().z().value()/2. )
+        if( transverse_dist.length().value() > pl.sizes().z().value()/2. )
           return false;
         return true;
       }
-      
+
       if( print_level() >= mybhep::NORMAL )
         std::clog << " problem: intersecting circle with plane of view " << pl.view() << std::endl;
 
       return false;
-      
+
     }
 
 
     bool circle::intersect_circle(circle c, experimental_point * ep, experimental_double _phi){
-      
+
       // check that circles are intersecting
       experimental_double dist = experimental_vector(center(), c.center()).hor().length();
       experimental_double rsum = radius() + c.radius();
 
       if( rsum.value() < dist.value() ){
-	if( print_level() >= mybhep::VVERBOSE ){
-	  std::clog << " can't extrapolate circle to circle: the circles don't intesect " << std::endl;
-	}
-	return false;
+        if( print_level() >= mybhep::VVERBOSE ){
+          std::clog << " can't extrapolate circle to circle: the circles don't intesect " << std::endl;
+        }
+        return false;
       }
 
 
       // find middle point between circles
       // a^2 + h^2 = R0^2,   b^2 + h^2 = R1^2
-      // so   
+      // so
       // a^2 - R0^2 = b^2 - R1^2 =
       //            = a^2 + d^2 - 2ad - R1^2
       // hence
@@ -425,30 +425,30 @@ namespace CAT{
 
       // pick closest to initial point of extrapolation
       if( dphi1 < dphi2 )
-	*ep = p1;
+        *ep = p1;
       else
-	*ep = p2;
+        *ep = p2;
 
       if( ep->x().value() == small_neg ||
-	  ep->y().value() == small_neg ||
-	  ep->z().value() == small_neg ){
-	if( print_level() >= mybhep::VVERBOSE )
-	  std::clog << " can't extrapolate circle to circle: ep is small_neg " << std::endl;
-	return false;
+          ep->y().value() == small_neg ||
+          ep->z().value() == small_neg ){
+        if( print_level() >= mybhep::VVERBOSE )
+          std::clog << " can't extrapolate circle to circle: ep is small_neg " << std::endl;
+        return false;
       }
 
       if( isnan(ep->x().value())  || isnan(ep->y().value()) || isnan(ep->z().value()) ) return false;
 
       if( print_level() >= mybhep::VVERBOSE ){
-	clog << " track: "; dump(); 
-	clog << " foil : "; c.dump();
-	clog << " intersection 1: "; p1.dump();	clog << " phi1 " << phi1 << " initial phi " << initial_phi1 << " dphi1 " << dphi1 << endl;
-	clog << " intersection 2: "; p2.dump();	clog << " phi2 " << phi2 << " initial phi " << initial_phi2 << " dphi2 " << dphi2 << endl;
-	clog << " dist "; dist.dump(); std::clog << " rsum "; rsum.dump(); std::clog << " a "; a.dump(); std::clog << " h "; h.dump(); std::clog << " middle "; middle.dump(); clog << " chosing intersection: "; ep->dump();
+        clog << " track: "; dump();
+        clog << " foil : "; c.dump();
+        clog << " intersection 1: "; p1.dump(); clog << " phi1 " << phi1 << " initial phi " << initial_phi1 << " dphi1 " << dphi1 << endl;
+        clog << " intersection 2: "; p2.dump(); clog << " phi2 " << phi2 << " initial phi " << initial_phi2 << " dphi2 " << dphi2 << endl;
+        clog << " dist "; dist.dump(); std::clog << " rsum "; rsum.dump(); std::clog << " a "; a.dump(); std::clog << " h "; h.dump(); std::clog << " middle "; middle.dump(); clog << " chosing intersection: "; ep->dump();
       }
 
       return true;
-      
+
     }
 
 
@@ -470,28 +470,28 @@ namespace CAT{
       double phi2 = max(phiA, phiB);
 
       if( phi1 < phi_absmax && phi2 > phi_absmax ) // absmax is in the arc
-	*epmax = absolute_max;
+        *epmax = absolute_max;
       else{
-	if( epa.radius().value() > epb.radius().value() )
-	  *epmax = epa;
-	else
-	  *epmax = epb;
+        if( epa.radius().value() > epb.radius().value() )
+          *epmax = epa;
+        else
+          *epmax = epb;
       }
 
       if( phi1 < phi_absmin && phi2 > phi_absmin ) // absmin is in the arc
-	*epmin = absolute_min;
+        *epmin = absolute_min;
       else{
-	if( epa.radius().value() < epb.radius().value() )
-	  *epmin = epa;
-	else
-	  *epmin = epb;
+        if( epa.radius().value() < epb.radius().value() )
+          *epmin = epa;
+        else
+          *epmin = epb;
       }
 
       if( print_level() >= mybhep::VVERBOSE ){
-	std::clog << " along the circle between points (" << epa.x().value() << ", " << epa.z().value() << ") and (" <<
-	  epb.x().value() << ", " << epb.z().value() << ") the point of max radius is (" <<
-	  epmax->x().value() << ", " << epmax->z().value() << "), that of min radius is (" <<
-	  epmin->x().value() << ", " << epmin->z().value() << ")" << std::endl;
+        std::clog << " along the circle between points (" << epa.x().value() << ", " << epa.z().value() << ") and (" <<
+          epb.x().value() << ", " << epb.z().value() << ") the point of max radius is (" <<
+          epmax->x().value() << ", " << epmax->z().value() << "), that of min radius is (" <<
+          epmin->x().value() << ", " << epmin->z().value() << ")" << std::endl;
       }
 
       return;
@@ -503,7 +503,7 @@ namespace CAT{
     circle average (const std::vector<circle> &vs)
     {
       circle mean;
-    
+
       std::vector<experimental_double> radii;
       std::vector<experimental_point> centers;
       for(std::vector<circle>::const_iterator iv=vs.begin(); iv!=vs.end(); ++iv){
@@ -517,37 +517,37 @@ namespace CAT{
 
     // get circle through three points
     circle three_points_circle(const experimental_point &epa, const experimental_point &epb, const experimental_point &epc) {
-    
+
       ////////////////////////////////////////////////////////////////////////
       //                                                                    //
       //  see http://local.wasp.uwa.edu.au/~pbourke/geometry/circlefrom3/   //
       //                                                                    //
       ////////////////////////////////////////////////////////////////////////
-    
+
       experimental_double ma = experimental_vector(epa, epb).tan_phi();
       experimental_double mb = experimental_vector(epb, epc).tan_phi();
-    
+
       experimental_double Xc = (ma*mb*(epa.z() - epc.z()) + mb*(epa.x() + epb.x()) - ma*(epb.x() + epc.x()))/((mb - ma)*2);
       experimental_double Zc;
       if( ma.value() != 0. )
         Zc = (epa.z() + epb.z())/2. - (Xc - (epa.x() + epb.x())/2.)/ma;
       else
         Zc = (epb.z() + epc.z())/2. - (Xc - (epb.x() + epc.x())/2.)/mb;
-    
-    
+
+
       experimental_double _radius = experimental_sqrt(experimental_square(Xc - epa.x()) + experimental_square(Zc - epa.z()));
-    
+
       if( isnan(_radius.value()) )
         _radius.set_value(small_neg);
-    
+
       experimental_double dist = epc.distance(epa);
-    
+
       experimental_double deviation;
       if( dist.value() < 2.*_radius.value() )
         deviation = experimental_asin(dist/(_radius*2.))*2.;
       else
         deviation = experimental_asin(experimental_double(1.,0.))*2.;
-    
+
       if( experimental_vector(epa, epb).phi().value() > experimental_vector(epb, epc).phi().value() )
         deviation.set_value(-deviation.value());
 
@@ -555,7 +555,7 @@ namespace CAT{
       circle h(_center,_radius);
 
       return h;
-    
+
     }
 
 
@@ -573,7 +573,7 @@ namespace CAT{
         std::clog << " problem: asking for best fit radius for z std::vector of size " << zs.size() << " x std::vector of size " << xs.size() << std::endl;
         return h;
       }
-    
+
       experimental_double xave = average(xs);
       experimental_double zave = average(zs);
 
@@ -592,7 +592,7 @@ namespace CAT{
       experimental_double Suuv(0.,0.);
       experimental_double Suvv(0.,0.);
       experimental_double Svvv(0.,0.);
-    
+
       for(std::vector<experimental_double>::iterator ix=xs.begin(); ix!=xs.end(); ++ix){
         experimental_double u = *ix - xave;
         experimental_double v = zs[ix - xs.begin()] - zave;
@@ -621,7 +621,7 @@ namespace CAT{
       experimental_double radius = experimental_sqrt( square(uc) + square(vc) + sum  );
 
       h = circle(center,radius);
-      return h; 
+      return h;
 
     }
 

@@ -150,7 +150,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  bool Sultan::initialize(const mybhep::sstore &store, const mybhep::gstore gs , mybhep::EventManager2 *eman) {
+  bool Sultan::initialize(const mybhep::sstore &store, const mybhep::gstore & /*gs*/ , mybhep::EventManager2 * /*eman*/) {
     //*************************************************************
 
     m.message("\n Beginning algorithm Sultan \n",mybhep::VERBOSE); fflush(stdout);
@@ -214,7 +214,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  void Sultan::readDstProper(const mybhep::sstore & global, mybhep::EventManager2 *eman) {
+  void Sultan::readDstProper(const mybhep::sstore & global, mybhep::EventManager2 */*eman*/) {
     //*************************************************************
 
     clock.start(" Sultan: read dst properties ");
@@ -750,7 +750,7 @@ namespace CAT {
                   double increment = GG_CELL_pitch*((double)iwire);
                   double xpos = -(CHAMBER_X-GG_GRND_diam)/2.+6.+increment+GG_CELL_pitch/2.;
 
-		  CAT::POINT point;
+                  CAT::POINT point;
                   point.x = xpos;
                   point.z = plane_pos_Z;
                   DriftWires.push_back( point );
@@ -838,7 +838,7 @@ namespace CAT {
                 double layerphi = 2.*M_PI/NOfWires[i];
                 double ph = FirstWirePhi[i] + j*layerphi;
 
-		CAT::POINT point;
+                CAT::POINT point;
                 point.x = LayerRadius[i]*cos(ph);
                 point.z = LayerRadius[i]*sin(ph);
 
@@ -1299,32 +1299,32 @@ namespace CAT {
       near_existing_cluster = false;
       // check if cell c is near some already existing clusters
       for( std::vector< std::vector< topology::Cell > >::iterator iclu=clusters_.begin(); iclu != clusters_.end(); ++iclu){
-	if( near_existing_cluster ) break;
-	if( iclu->size() == 0 ){
-	  m.message( " problem: cluster contains no cells ", mybhep::NORMAL);
-	  continue;
-	}
-	topology::Cell fc = iclu->front();
-	if( cell_side(fc) != the_cell_side ) continue; // cell must be on same side as cluster
-	if( fc.fast() != the_cell_fast ) continue; // cell must be as fast as cluster
+        if( near_existing_cluster ) break;
+        if( iclu->size() == 0 ){
+          m.message( " problem: cluster contains no cells ", mybhep::NORMAL);
+          continue;
+        }
+        topology::Cell fc = iclu->front();
+        if( cell_side(fc) != the_cell_side ) continue; // cell must be on same side as cluster
+        if( fc.fast() != the_cell_fast ) continue; // cell must be as fast as cluster
 
-	for( std::vector< topology::Cell >::const_iterator ccell=iclu->begin(); ccell != iclu->end(); ++ccell ){
-	  size_t nl = detector_.near_level(c, *ccell);
-	  if( nl > 0 ){
-	    m.message(" cell ", c.id(), " is near cell ", ccell->id(), " with level ", nl, mybhep::VVERBOSE);
-	    iclu->push_back(c);
-	    near_existing_cluster = true;
-	    break;
-	  }
-	} // finish loop on cells in cluster
-	if( near_existing_cluster ) break;
+        for( std::vector< topology::Cell >::const_iterator ccell=iclu->begin(); ccell != iclu->end(); ++ccell ){
+          size_t nl = detector_.near_level(c, *ccell);
+          if( nl > 0 ){
+            m.message(" cell ", c.id(), " is near cell ", ccell->id(), " with level ", nl, mybhep::VVERBOSE);
+            iclu->push_back(c);
+            near_existing_cluster = true;
+            break;
+          }
+        } // finish loop on cells in cluster
+        if( near_existing_cluster ) break;
       } // finish loop on clusters
 
       if( !near_existing_cluster ){
-	m.message(" cell ", c.id(), " will form a new cluster ", mybhep::VVERBOSE);
-	std::vector<topology::Cell> cluster;
-	cluster.push_back(c);
-	clusters_.push_back(cluster);
+        m.message(" cell ", c.id(), " will form a new cluster ", mybhep::VVERBOSE);
+        std::vector<topology::Cell> cluster;
+        cluster.push_back(c);
+        clusters_.push_back(cluster);
       }
 
     } // finish loop on cells
@@ -1340,7 +1340,7 @@ namespace CAT {
 
 
   //*******************************************************************
-  void Sultan::reconstruct_cluster(std::vector< topology::Cell > cluster){
+  void Sultan::reconstruct_cluster(const std::vector< topology::Cell > & cluster){
     //*******************************************************************
 
     clock.start(" Sultan: reconstruct_cluster ","cumulative");
@@ -1365,13 +1365,13 @@ namespace CAT {
       //detector_.fill_residual(&h_residual_rough);
       //detector_.fill_residual(&h_residual_precise);
       //detector_.fill_residual_circle(&h_residual_x0, &h_residual_y0, &h_residual_r, &h_pull_x0, &h_pull_y0, &h_pull_r, h_true, h_reco_precise);
-      
+
 
       track_cells = detector_.cells(sequences_.size());
 
       for(std::vector<Cell>::iterator ic=track_cells.begin(); ic!=track_cells.end(); ++ic){
-	phis->push_back(experimental_atan2(ic->p_reco().y() - ic->ep().y(), ic->p_reco().x() - ic->ep().x()));
-	zs->push_back(ic->ep().z());
+        phis->push_back(experimental_atan2(ic->p_reco().y() - ic->ep().y(), ic->p_reco().x() - ic->ep().x()));
+        zs->push_back(ic->ep().z());
       }
 
       LinearRegression* l = new LinearRegression(*zs, *phis, level, probmin);
@@ -1382,16 +1382,17 @@ namespace CAT {
       // then invert the result to have y = y(phi)
 
       for(std::vector<Cell>::iterator ic=track_cells.begin(); ic!=track_cells.end(); ++ic){
-	ic->set_p_reco(experimental_point(ic->p_reco().x(), ic->p_reco().y(),
-					  l->position(l->xi()[ic - track_cells.begin()])));
+        ic->set_p_reco(experimental_point(ic->p_reco().x(), ic->p_reco().y(),
+                                          l->position(l->xi()[ic - track_cells.begin()])));
       }
 
-      delete l;
 
       seq.set_cells(track_cells);
       seq.set_track_id(sequences_.size());
       seq.set_helix(helix(h_reco.center(), h_reco.radius(), l->tangent()));
       sequences_.push_back(seq);
+
+      delete l;
 
       hs_reco->push_back(h_reco);
       cells_to_reconstruct = detector_.leftover_cells();
@@ -1912,4 +1913,3 @@ namespace CAT {
 
 
 }
-

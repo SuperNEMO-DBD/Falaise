@@ -27,171 +27,171 @@
 
 
 namespace CAT {
-namespace topology{
+  namespace topology{
 
 
 
-  class logic_sequence : public tracking_object{
+    class logic_sequence : public tracking_object{
 
-    // a logic_sequence is composed of a list of logic cells
+      // a logic_sequence is composed of a list of logic cells
 
-  public:
+    public:
 
-    // list of logic cells
-    std::vector<logic_cell> cells_;
+      // list of logic cells
+      std::vector<logic_cell> cells_;
 
-    // sequence's vertex
-    bool has_helix_vertex_;
-    size_t helix_vertex_id_;
-    std::string helix_vertex_type_;
-    bool has_tangent_vertex_;
-    size_t tangent_vertex_id_;
-    std::string tangent_vertex_type_;
+      // sequence's vertex
+      bool has_helix_vertex_;
+      size_t helix_vertex_id_;
+      std::string helix_vertex_type_;
+      bool has_tangent_vertex_;
+      size_t tangent_vertex_id_;
+      std::string tangent_vertex_type_;
 
-    // sequence's decay_vertex
-    bool has_decay_helix_vertex_;
-    size_t calo_helix_id_;
-    std::string decay_helix_vertex_type_;
-    bool has_decay_tangent_vertex_;
-    size_t calo_tangent_id_;
-    std::string decay_tangent_vertex_type_;
+      // sequence's decay_vertex
+      bool has_decay_helix_vertex_;
+      size_t calo_helix_id_;
+      std::string decay_helix_vertex_type_;
+      bool has_decay_tangent_vertex_;
+      size_t calo_tangent_id_;
+      std::string decay_tangent_vertex_type_;
 
-    double chi2_;
-    int32_t ndof_;
+      double chi2_;
+      int32_t ndof_;
 
-    //!Default constructor
-    logic_sequence()
-    {
-      cells_.clear();
-      has_helix_vertex_ = false;
-      helix_vertex_id_ = mybhep::default_integer;
-      helix_vertex_type_="default";
-      has_tangent_vertex_ = false;
-      tangent_vertex_id_ = mybhep::default_integer;
-      tangent_vertex_type_="default";
-      has_decay_helix_vertex_ = false;
-      calo_helix_id_ = mybhep::default_integer;
-      decay_helix_vertex_type_="default";
-      has_decay_tangent_vertex_ = false;
-      calo_tangent_id_ = mybhep::default_integer;
-      decay_tangent_vertex_type_="default";
-      chi2_ = mybhep::small_neg;
-      ndof_ = mybhep::default_integer;
-    }
-
-    //!Default destructor
-    virtual ~logic_sequence(){};
-
-    //! constructor from sequence
-    logic_sequence(const topology::sequence &s){
-      for(std::vector<node>::const_iterator in=s.nodes_.begin(); in!=s.nodes_.end(); ++in)
-        cells_.push_back(logic_cell(in->c().id()));
-      has_helix_vertex_ = false;
-      helix_vertex_id_ = mybhep::default_integer;
-      helix_vertex_type_="default";
-      has_tangent_vertex_ = false;
-      tangent_vertex_id_ = mybhep::default_integer;
-      tangent_vertex_type_="default";
-      has_decay_helix_vertex_ = false;
-      calo_helix_id_ = mybhep::default_integer;
-      decay_helix_vertex_type_="default";
-      has_decay_tangent_vertex_ = false;
-      calo_tangent_id_ = mybhep::default_integer;
-      decay_tangent_vertex_type_="default";
-      if( s.has_helix_vertex() ){
-        has_helix_vertex_ = true;
-        helix_vertex_id_ = s.helix_vertex_id();
-	helix_vertex_type_=s.helix_vertex_type();
+      //!Default constructor
+      logic_sequence()
+      {
+        cells_.clear();
+        has_helix_vertex_ = false;
+        helix_vertex_id_ = mybhep::default_integer;
+        helix_vertex_type_="default";
+        has_tangent_vertex_ = false;
+        tangent_vertex_id_ = mybhep::default_integer;
+        tangent_vertex_type_="default";
+        has_decay_helix_vertex_ = false;
+        calo_helix_id_ = mybhep::default_integer;
+        decay_helix_vertex_type_="default";
+        has_decay_tangent_vertex_ = false;
+        calo_tangent_id_ = mybhep::default_integer;
+        decay_tangent_vertex_type_="default";
+        chi2_ = mybhep::small_neg;
+        ndof_ = mybhep::default_integer;
       }
-      if( s.has_decay_helix_vertex() ){
-        has_decay_helix_vertex_ = true;
-        calo_helix_id_ = s.calo_helix_id();
-	decay_helix_vertex_type_=s.decay_helix_vertex_type();
+
+      //!Default destructor
+      virtual ~logic_sequence(){};
+
+      //! constructor from sequence
+      logic_sequence(const topology::sequence &s){
+        for(std::vector<node>::const_iterator in=s.nodes_.begin(); in!=s.nodes_.end(); ++in)
+          cells_.push_back(logic_cell(in->c().id()));
+        has_helix_vertex_ = false;
+        helix_vertex_id_ = mybhep::default_integer;
+        helix_vertex_type_="default";
+        has_tangent_vertex_ = false;
+        tangent_vertex_id_ = mybhep::default_integer;
+        tangent_vertex_type_="default";
+        has_decay_helix_vertex_ = false;
+        calo_helix_id_ = mybhep::default_integer;
+        decay_helix_vertex_type_="default";
+        has_decay_tangent_vertex_ = false;
+        calo_tangent_id_ = mybhep::default_integer;
+        decay_tangent_vertex_type_="default";
+        if( s.has_helix_vertex() ){
+          has_helix_vertex_ = true;
+          helix_vertex_id_ = s.helix_vertex_id();
+          helix_vertex_type_=s.helix_vertex_type();
+        }
+        if( s.has_decay_helix_vertex() ){
+          has_decay_helix_vertex_ = true;
+          calo_helix_id_ = s.calo_helix_id();
+          decay_helix_vertex_type_=s.decay_helix_vertex_type();
+        }
+        if( s.has_tangent_vertex() ){
+          has_tangent_vertex_ = true;
+          tangent_vertex_id_ = s.tangent_vertex_id();
+          tangent_vertex_type_=s.tangent_vertex_type();
+        }
+        if( s.has_decay_tangent_vertex() ){
+          has_decay_tangent_vertex_ = true;
+          calo_tangent_id_ = s.calo_tangent_id();
+          decay_tangent_vertex_type_=s.decay_tangent_vertex_type();
+        }
+        chi2_ = s.chi2();
+        ndof_ = s.ndof();
+
       }
-      if( s.has_tangent_vertex() ){
-        has_tangent_vertex_ = true;
-        tangent_vertex_id_ = s.tangent_vertex_id();
-	tangent_vertex_type_=s.tangent_vertex_type();
+
+      //! get cells
+      const std::vector<logic_cell> cells()const{
+        return cells_;
       }
-      if( s.has_decay_tangent_vertex() ){
-        has_decay_tangent_vertex_ = true;
-        calo_tangent_id_ = s.calo_tangent_id();
-	decay_tangent_vertex_type_=s.decay_tangent_vertex_type();
+
+      //! has decay_vertex
+      bool has_decay_helix_vertex()const{
+        return has_decay_helix_vertex_;
       }
-      chi2_ = s.chi2();
-      ndof_ = s.ndof();
-
-    }
-
-    //! get cells
-    const std::vector<logic_cell> cells()const{
-      return cells_;
-    }
-
-    //! has decay_vertex
-    const bool has_decay_helix_vertex()const{
-      return has_decay_helix_vertex_;
-    }
-    const bool has_decay_tangent_vertex()const{
-      return has_decay_tangent_vertex_;
-    }
-    const std::string & decay_helix_vertex_type()const{
-      return decay_helix_vertex_type_;
-    }
-    const std::string & decay_tangent_vertex_type()const{
-      return decay_tangent_vertex_type_;
-    }
+      bool has_decay_tangent_vertex()const{
+        return has_decay_tangent_vertex_;
+      }
+      const std::string & decay_helix_vertex_type()const{
+        return decay_helix_vertex_type_;
+      }
+      const std::string & decay_tangent_vertex_type()const{
+        return decay_tangent_vertex_type_;
+      }
 
 
-    //! get calo id
-    const size_t calo_helix_id()const{
-      return calo_helix_id_;
-    }
-    const size_t calo_tangent_id()const{
-      return calo_tangent_id_;
-    }
+      //! get calo id
+      size_t calo_helix_id()const{
+        return calo_helix_id_;
+      }
+      size_t calo_tangent_id()const{
+        return calo_tangent_id_;
+      }
 
-    //! has vertex
-    const bool has_helix_vertex()const{
-      return has_helix_vertex_;
-    }
-    const bool has_tangent_vertex()const{
-      return has_tangent_vertex_;
-    }
-    const std::string & helix_vertex_type()const{
-      return helix_vertex_type_;
-    }
-    const std::string & tangent_vertex_type()const{
-      return tangent_vertex_type_;
-    }
+      //! has vertex
+      bool has_helix_vertex()const{
+        return has_helix_vertex_;
+      }
+      bool has_tangent_vertex()const{
+        return has_tangent_vertex_;
+      }
+      const std::string & helix_vertex_type()const{
+        return helix_vertex_type_;
+      }
+      const std::string & tangent_vertex_type()const{
+        return tangent_vertex_type_;
+      }
 
-    //! get vertex id
-    const size_t helix_vertex_id()const{
-      return helix_vertex_id_;
-    }
-    const size_t tangent_vertex_id()const{
-      return tangent_vertex_id_;
-    }
+      //! get vertex id
+      size_t helix_vertex_id()const{
+        return helix_vertex_id_;
+      }
+      size_t tangent_vertex_id()const{
+        return tangent_vertex_id_;
+      }
 
-    // get chi2 of sequence
-    double chi2(){
-      return chi2_;
-    }
+      // get chi2 of sequence
+      double chi2(){
+        return chi2_;
+      }
 
-    // get ndof of sequence
-    int32_t ndof(){
-      return ndof_;
-    }
+      // get ndof of sequence
+      int32_t ndof(){
+        return ndof_;
+      }
 
-    // get prob of sequence
-    double Prob(){
-      return probof(chi2(), ndof());
+      // get prob of sequence
+      double Prob(){
+        return probof(chi2(), ndof());
 
-    }
+      }
 
 
-  };
-}
+    };
+  }
 }
 
 #endif

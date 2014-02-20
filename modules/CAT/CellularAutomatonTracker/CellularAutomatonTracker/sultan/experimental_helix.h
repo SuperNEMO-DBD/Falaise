@@ -42,7 +42,7 @@ namespace SULTAN {
         ep_ = experimental_point();
         R_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
         H_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
-	ids_.clear();
+        ids_.clear();
         set_print_level(level);
         set_probmin(probmin);
       }
@@ -55,9 +55,9 @@ namespace SULTAN {
         set_print_level(level);
         set_probmin(probmin);
         appname_= "experimental_helix: ";
-	ep_ = ep;
-	R_ = R;
-	H_ = H;
+        ep_ = ep;
+        R_ = R;
+        H_ = H;
       }
 
       //! constructor
@@ -65,16 +65,16 @@ namespace SULTAN {
         set_print_level(level);
         set_probmin(probmin);
         appname_= "experimental_helix: ";
-	ep_.set(x0, y0, z0);
-	R_ = R;
-	H_ = H;
+        ep_.set(x0, y0, z0);
+        R_ = R;
+        H_ = H;
       }
 
       /*** dump ***/
       virtual void dump (std::ostream & a_out         = std::clog,
                          const std::string & a_title  = "",
                          const std::string & a_indent = "",
-                         bool a_inherit          = false)const{
+                         bool /*a_inherit*/          = false)const{
         {
           std::string indent;
           if (! a_indent.empty ()) indent = a_indent;
@@ -97,22 +97,22 @@ namespace SULTAN {
       void set_R(experimental_double a){R_ = a;}
       void set_H(experimental_double a){H_ = a;}
       void set(experimental_point ep, experimental_double R, experimental_double H){
-	ep_ = ep;
-	R_=R;
-	H_=H;
+        ep_ = ep;
+        R_=R;
+        H_=H;
       }
       void set(experimental_double x0, experimental_double y0, experimental_double z0, experimental_double R, experimental_double H){
-	ep_.set(x0,y0,z0);
-	R_=R;
-	H_=H;
+        ep_.set(x0,y0,z0);
+        R_=R;
+        H_=H;
       }
 
       std::vector<size_t> ids()const{return ids_;}
       void print_ids()const{
-	std::clog << " ( ";
-	for(std::vector<size_t>::const_iterator id= ids_.begin(); id!=ids_.end(); ++id)
-	  std::clog << *id << " ";
-	std::clog << ") ";
+        std::clog << " ( ";
+        for(std::vector<size_t>::const_iterator id= ids_.begin(); id!=ids_.end(); ++id)
+          std::clog << *id << " ";
+        std::clog << ") ";
       }
 
       experimental_point center()const{return ep_;}
@@ -126,7 +126,7 @@ namespace SULTAN {
       experimental_point position(const experimental_point &ep)const;
 
       void reset_ids(){
-	ids_.clear();
+        ids_.clear();
       }
 
       void add_id(size_t id);

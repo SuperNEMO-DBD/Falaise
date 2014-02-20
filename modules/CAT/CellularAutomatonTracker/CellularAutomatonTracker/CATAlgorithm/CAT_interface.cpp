@@ -139,7 +139,7 @@ namespace CAT {
         _set_error_message ("Invalid 'num_blocks'");
         return false;
       }
-    if (planes_per_block.size () != num_blocks)
+    if ((int) planes_per_block.size () != num_blocks)
       {
         _set_error_message ("Invalid size of 'planes_per_block'");
         return false;
@@ -333,7 +333,7 @@ namespace CAT {
   {
     // A map would be better to check cell IDs :
     std::map<int,bool> mids;
-    for (int i = 0; i < cells.size (); i++)
+    for (int i = 0; i < (int) cells.size (); i++)
       {
         const topology::cell & c = cells.at(i);
         int cell_id = c.id();
@@ -357,11 +357,11 @@ namespace CAT {
     // Duplicate test for now :
     std::vector<bool> ids;
     ids.assign (cells.size (), false);
-    for (int i = 0; i < cells.size (); i++)
+    for (int i = 0; i < (int) cells.size (); i++)
       {
         const topology::cell & c = cells.at(i);
         int cell_id = c.id();
-        if ((cell_id < 0) || (cell_id >= cells.size ()))
+        if ((cell_id < 0) || (cell_id >= (int) cells.size ()))
           {
             std::cerr << "ERROR: CAT::input_data::check: "
                       << "Invalid cell ID '" <<  cell_id << "' !"
@@ -377,7 +377,7 @@ namespace CAT {
           }
         ids[cell_id] = true;
       }
-    for (int i = 0; i < ids.size (); i++)
+    for (int i = 0; i < (int) ids.size (); i++)
       {
         if (! ids[i])
           {

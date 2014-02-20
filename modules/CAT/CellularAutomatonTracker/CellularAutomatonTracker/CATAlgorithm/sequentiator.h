@@ -134,7 +134,7 @@ namespace CAT {
         }
       else
         {
-	  std::cerr << "WARNING: CAT::clusterizer::set_num_blocks: "
+          std::cerr << "WARNING: CAT::clusterizer::set_num_blocks: "
                     << "Invalid number of GG layer blocks !" << std::endl;
           planes_per_block.clear ();
           num_blocks = -1; // invalid value
@@ -143,14 +143,14 @@ namespace CAT {
     }
 
     void set_planes_per_block(int block, int nplanes){
-      if (block< 0 || block>=planes_per_block.size())
+      if (block< 0 || block>=(int)planes_per_block.size())
         {
           throw std::range_error ("CAT::clusterizer::set_planes_per_block: Invalid GG layer block index !");
         }
       if (nplanes > 0)
         {
           planes_per_block.at (block) = nplanes;
-	}
+        }
       else
         {
           throw std::range_error ("CAT::clusterizer::set_planes_per_block: Invalid number of GG layers in block !");
@@ -198,13 +198,13 @@ namespace CAT {
 
     void set_pmax(double v){
       if ( v <= 0.0)
-	{
-	  pmax = std::numeric_limits<double>::quiet_NaN ();
+        {
+          pmax = std::numeric_limits<double>::quiet_NaN ();
         }
       else
-	{
-	  pmax = v;
-	}
+        {
+          pmax = v;
+        }
       return;
     }
 
@@ -370,7 +370,7 @@ namespace CAT {
     void set_gaps_Z(std::vector<double> v){
       gaps_Z.clear();
       for(size_t i=0; i<v.size(); i++)
-	gaps_Z.push_back(v[i]);
+        gaps_Z.push_back(v[i]);
     }
 
 

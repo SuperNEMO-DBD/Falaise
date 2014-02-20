@@ -33,12 +33,12 @@ namespace SULTAN {
       experimental_legendre_vector(mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200)
       {
         appname_= "experimental_legendre_vector: ";
-	helices_.clear();
-	clusters_.clear();
+        helices_.clear();
+        clusters_.clear();
         set_print_level(level);
         set_probmin(probmin);
-	nsigmas_=1.;
-	index_of_largest_cluster_=-1;
+        nsigmas_=1.;
+        index_of_largest_cluster_=-1;
       }
 
       //!Default destructor
@@ -48,23 +48,23 @@ namespace SULTAN {
       virtual void dump (std::ostream & a_out         = std::clog,
                          const std::string & a_title  = "",
                          const std::string & a_indent = "",
-                         bool a_inherit          = false){
-	std::string indent;
-	if (! a_indent.empty ()) indent = a_indent;
-	if (! a_title.empty ())
-	  {
-	    a_out << indent << a_title << std::endl;
-	  }
-	a_out << indent << appname_  << " helices " << helices_.size() << std::endl;
-	for(std::vector<experimental_helix>::const_iterator ip = helices_.begin(); ip != helices_.end(); ++ip){
-	  ip->dump(); 
-	}
-	a_out << " clusters " << clusters_.size() << std::endl;
-	for(std::vector<cluster_of_experimental_helices>::const_iterator ip = clusters_.begin(); ip != clusters_.end(); ++ip){
-	  ip->dump(); 
-	}
-	
-	return;
+                         bool /*a_inherit*/          = false){
+        std::string indent;
+        if (! a_indent.empty ()) indent = a_indent;
+        if (! a_title.empty ())
+          {
+            a_out << indent << a_title << std::endl;
+          }
+        a_out << indent << appname_  << " helices " << helices_.size() << std::endl;
+        for(std::vector<experimental_helix>::const_iterator ip = helices_.begin(); ip != helices_.end(); ++ip){
+          ip->dump();
+        }
+        a_out << " clusters " << clusters_.size() << std::endl;
+        for(std::vector<cluster_of_experimental_helices>::const_iterator ip = clusters_.begin(); ip != clusters_.end(); ++ip){
+          ip->dump();
+        }
+
+        return;
       }
 
 
@@ -81,9 +81,9 @@ namespace SULTAN {
       std::vector<cluster_of_experimental_helices> clusters();
 
       double get_nsigmas();
-      
+
       int get_index_of_largest_cluster();
-      
+
       void add_helix(experimental_helix a);
 
       void add_helix_to_clusters(experimental_helix a);

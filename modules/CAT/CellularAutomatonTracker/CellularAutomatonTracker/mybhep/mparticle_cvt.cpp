@@ -16,12 +16,12 @@
  */
 
 //#include "config.h"
-#ifndef HAVE_SSTREAM
-//#include <strstream.h>
-#include <strstream>
-#else
+// #ifndef HAVE_SSTREAM
+// //#include <strstream.h>
+// #include <strstream>
+// #else
 #include <sstream>
-#endif
+//#endif
 
 #include <mybhep/mparticle_cvt.h>
 #include <mybhep/particle_cvt.h>
@@ -32,7 +32,7 @@
 
 namespace mybhep{
 
-  using namespace std;
+  // using namespace std;
 
   // FIXME label consistency!
   mparticle_cvt::mparticle_cvt( const mparticle& par, int index )
@@ -71,17 +71,17 @@ namespace mybhep{
     to_string(tmp,particle_->yz());
     to_string(tmp,particle_->quality());
 
-    const map<string,string>& dmap = particle_->properties_map();
+    const std::map<std::string,std::string>& dmap = particle_->properties_map();
 
     to_string(tmp,dmap.size());
 
-    typedef map<string, string>::const_iterator I;
+    typedef std::map<std::string, std::string>::const_iterator I;
     for(I i=dmap.begin(); i !=dmap.end(); ++i)
       {
 
-	std::string tmp2 = to_string(i->first)+ " " +
-	  to_string(i->second);
-	to_string(tmp,tmp2);
+        std::string tmp2 = to_string(i->first)+ " " +
+          to_string(i->second);
+        to_string(tmp,tmp2);
       }
 
 
@@ -99,11 +99,11 @@ namespace mybhep{
   void  mparticle_cvt::restore( std::string def )
   {
 
-#ifndef HAVE_SSTREAM
-    istrstream istr (def.c_str());
-#else
-    istringstream istr(def.c_str());
-#endif
+// #ifndef HAVE_SSTREAM
+//     istrstream istr (def.c_str());
+// #else
+    std::istringstream istr(def.c_str());
+// #endif
 
 
     std::string name;
@@ -140,10 +140,10 @@ namespace mybhep{
 
     for(size_t i=0; i < ndata; ++i)
       {
-	std::string name;
-	std::string value;
-	istr >> name >> value;
-	nparticle_->add_property(name,value);
+        std::string name;
+        std::string value;
+        istr >> name >> value;
+        nparticle_->add_property(name,value);
       }
 
 
@@ -162,17 +162,17 @@ namespace mybhep{
 
     try
       {
-	particle_cvt& pcvt = *(dynamic_cast<particle_cvt*>
-			       (&csvc.converter(imirror_)));
+        particle_cvt& pcvt = *(dynamic_cast<particle_cvt*>
+                               (&csvc.converter(imirror_)));
 
-	particle& pp = pcvt.reference();
-	nparticle_->set_mirror(pp);
+        particle& pp = pcvt.reference();
+        nparticle_->set_mirror(pp);
       }
     catch (bad_index&)
       {
-	std::cerr << " could not resolve pointer to mirror particle " << endl;
-	std::cerr << "event is likely corrupted" << endl;
-	throw;
+        std::cerr << " could not resolve pointer to mirror particle " << std::endl;
+        std::cerr << "event is likely corrupted" << std::endl;
+        throw;
       }
   }
 
@@ -189,7 +189,7 @@ namespace mybhep{
   mparticle* mparticle_cvt::create()
   {
     Assert(nparticle_, __FILE__,__LINE__,
-	   internal_logic("  null pointer!!!"));
+           internal_logic("  null pointer!!!"));
 
     set_owner(false);
     return nparticle_;

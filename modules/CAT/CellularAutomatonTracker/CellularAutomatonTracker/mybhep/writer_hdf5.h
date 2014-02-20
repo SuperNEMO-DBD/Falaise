@@ -39,9 +39,9 @@ namespace mybhep{
   class writer_hdf5 : public random_writer
   {
   public:
-    void open_file(std::string s){out();}
+    void open_file(std::string /*s*/){out();}
     void close_file(){out();}
-    void write_record(std::string s1,std::string s2){out();}
+    void write_record(std::string /*s1*/,std::string /*s2*/){out();}
     void out(){
       std::cerr<<"+++ BHEP compiled without HDF5 support. ABORT !!!"<<std::endl;
       exit(1);

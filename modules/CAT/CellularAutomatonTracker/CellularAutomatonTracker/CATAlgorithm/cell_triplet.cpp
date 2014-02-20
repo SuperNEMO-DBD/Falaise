@@ -7,8 +7,8 @@ namespace CAT{
 
     using namespace std;
     using namespace mybhep;
- 
-    //!Default constructor     
+
+    //!Default constructor
     cell_triplet::cell_triplet()
     {
       appname_= "cell_triplet: ";
@@ -20,7 +20,7 @@ namespace CAT{
     cell_triplet::~cell_triplet(){};
 
     //! constructor
-    cell_triplet::cell_triplet(cell_couplet &cca, cell_couplet &ccb){
+    cell_triplet::cell_triplet(cell_couplet &/*cca*/, cell_couplet &/*ccb*/){
       appname_= "cell_triplet: ";
       free_ = false;
       begun_ = false;
@@ -44,7 +44,7 @@ namespace CAT{
     void cell_triplet::dump (std::ostream & a_out,
                              const std::string & a_title,
                              const std::string & a_indent,
-                             bool a_inherit) const{
+                             bool /* a_inherit */) const{
       std::string indent;
       if (! a_indent.empty ()) indent = a_indent;
       if (! a_title.empty ())
@@ -63,16 +63,16 @@ namespace CAT{
       for(std::vector<joint>::const_iterator ijoint=joints_.begin(); ijoint!=joints_.end(); ++ijoint)
         ijoint->dump(a_out,"",indent + "   ");
       a_out << indent  << " -------------- " << std::endl;
- 
+
       return;
     }
 
     /*** dump ***/
     void cell_triplet::dump_joint (joint j,
-				   std::ostream & a_out,
-				   const std::string & a_title,
-				   const std::string & a_indent,
-				   bool a_inherit) const{
+                                   std::ostream & a_out,
+                                   const std::string & a_title,
+                                   const std::string & a_indent,
+                                   bool /* a_inherit*/) const{
       std::string indent;
       if (! a_indent.empty ()) indent = a_indent;
       if (! a_title.empty ())
@@ -91,16 +91,16 @@ namespace CAT{
 
       return;
     }
-    
+
     //! set cells
     void cell_triplet::set(const cell_couplet &cca, const cell_couplet &ccb){
       cb_ = cca.ca();
       ca_ = cca.cb();
       cc_ = ccb.cb();
       if( cca.ca().id() != ccb.ca().id() ){
-        std::clog << " problem: trying to form a triplet of cell with cells " << cca.ca().id() << " " 
-             << cca.cb().id() << " " 
-             << ccb.ca().id() << " " 
+        std::clog << " problem: trying to form a triplet of cell with cells " << cca.ca().id() << " "
+             << cca.cb().id() << " "
+             << ccb.ca().id() << " "
              << ccb.cb().id() << std::endl;
       }
     }
@@ -143,14 +143,14 @@ namespace CAT{
     {
       cell_couplet cc1(cb_, ca_, print_level(), probmin());
       return cc1;
-    }      
+    }
 
     //! get second cell couplet
     cell_couplet cell_triplet::ccb()
     {
       cell_couplet cc2(cb_, cc_, print_level(), probmin());
       return cc2;
-    }      
+    }
 
     //! get joints
     const std::vector<joint>& cell_triplet::joints() const
@@ -162,31 +162,31 @@ namespace CAT{
     const cell& cell_triplet::ca()const
     {
       return ca_;
-    }      
+    }
 
     //! get second cell
     const cell& cell_triplet::cb()const
     {
       return cb_;
-    }      
+    }
 
     //! get third cell
     const cell& cell_triplet::cc()const
     {
       return cc_;
-    }      
+    }
 
     //! get list of chi2
     const std::vector<double>& cell_triplet::chi2s() const
     {
       return chi2s_;
-    }      
+    }
 
     //! get list of prob
     const std::vector<double>& cell_triplet::probs() const
     {
       return probs_;
-    }      
+    }
 
 
     //! get free level
@@ -215,19 +215,19 @@ namespace CAT{
 
       if( print_level() > mybhep::VERBOSE ){
         std::clog << appname_ << " angles of tangents " << ca_.id() << " -> " << cb_.id() << " :" << std::endl;
-	for(std::vector<line>::iterator i1=t1.begin(); i1!=t1.end(); ++i1){
-	  std::clog << i1 - t1.begin() << ":  phi "; ca_.dump_point_phi(i1->epb()); std::clog << " -> "; cb_.dump_point_phi(i1->epa()); std::clog << " " << std::endl;
-	}
+        for(std::vector<line>::iterator i1=t1.begin(); i1!=t1.end(); ++i1){
+          std::clog << i1 - t1.begin() << ":  phi "; ca_.dump_point_phi(i1->epb()); std::clog << " -> "; cb_.dump_point_phi(i1->epa()); std::clog << " " << std::endl;
+        }
         std::clog << appname_ << " angles of tangents " << cb_.id() << " -> " << cc_.id() << " :" << std::endl;
-	for(std::vector<line>::iterator i2=t2.begin(); i2!=t2.end(); ++i2){
-	  std::clog << i2 - t2.begin() << ":  phi ";  cb_.dump_point_phi(i2->epa()); std::clog << " -> " ; cc_.dump_point_phi(i2->epb()); std::clog << " " << std::endl;
-	}
-	if( ca_.small() ) std::clog << " cell " << ca_.id() << " is small " << std::endl;
-	if( cb_.small() ) std::clog << " cell " << cb_.id() << " is small " << std::endl;
-	if( cc_.small() ) std::clog << " cell " << cc_.id() << " is small " << std::endl;
-	if( intersect_ab ) std::clog << " cells " << ca_.id() << " and " << cb_.id() << " intersect " << std::endl;
-	if( intersect_bc ) std::clog << " cells " << cb_.id() << " and " << cc_.id() << " intersect " << std::endl;
-	if( intersect_ca ) std::clog << " cells " << cc_.id() << " and " << ca_.id() << " intersect " << std::endl;
+        for(std::vector<line>::iterator i2=t2.begin(); i2!=t2.end(); ++i2){
+          std::clog << i2 - t2.begin() << ":  phi ";  cb_.dump_point_phi(i2->epa()); std::clog << " -> " ; cc_.dump_point_phi(i2->epb()); std::clog << " " << std::endl;
+        }
+        if( ca_.small() ) std::clog << " cell " << ca_.id() << " is small " << std::endl;
+        if( cb_.small() ) std::clog << " cell " << cb_.id() << " is small " << std::endl;
+        if( cc_.small() ) std::clog << " cell " << cc_.id() << " is small " << std::endl;
+        if( intersect_ab ) std::clog << " cells " << ca_.id() << " and " << cb_.id() << " intersect " << std::endl;
+        if( intersect_bc ) std::clog << " cells " << cb_.id() << " and " << cc_.id() << " intersect " << std::endl;
+        if( intersect_ca ) std::clog << " cells " << cc_.id() << " and " << ca_.id() << " intersect " << std::endl;
       }
 
 
@@ -236,7 +236,8 @@ namespace CAT{
       experimental_double local_separation;
       bool shall_include_separation;
       experimental_vector a0, a, b0, b, c0, c, d0, d;
-      double psc, psc2, psc3, psc4;
+      double psc, psc2, psc3;
+      // double psc4;
       int32_t ndof;
       experimental_point p;
       experimental_double newxa, newza;
@@ -253,20 +254,20 @@ namespace CAT{
           }
 
           shall_include_separation = true;
-	  a0 = i1->forward_axis();
-	  a = a0.hor();
-	  d0 = i2->forward_axis();
-	  d = d0.hor();
+          a0 = i1->forward_axis();
+          a = a0.hor();
+          d0 = i2->forward_axis();
+          d = d0.hor();
 
-	  // keep only the connections that don't invert foward sense
-	  psc3 = a.kink_phi(d).value()*180./M_PI;
-	  
-	  if( fabs(psc3) < 60. ){
-	    if( print_level() > mybhep::VERBOSE ){
-	      std::clog << " rejected because direction is reversed: psc = " << psc3 << std::endl;
-	    }
-	    continue;
-	  }
+          // keep only the connections that don't invert foward sense
+          psc3 = a.kink_phi(d).value()*180./M_PI;
+
+          if( fabs(psc3) < 60. ){
+            if( print_level() > mybhep::VERBOSE ){
+              std::clog << " rejected because direction is reversed: psc = " << psc3 << std::endl;
+            }
+            continue;
+          }
 
 
           if( cb_.small() ){
@@ -278,43 +279,43 @@ namespace CAT{
           else if( intersect_ab ){
             b0 = cca().forward_axis();
             b = b0.hor();
-	    psc = a.kink_phi(b).value()*180./M_PI;
+            psc = a.kink_phi(b).value()*180./M_PI;
 
             if( fabs(psc - 90.) < 30. ||  fabs(psc + 90.) < 30.  ||  fabs(psc - 270.) < 30.  ){ // connection along the intersection
-	      /*
+              /*
               if( print_level() > mybhep::VERBOSE ){
                 std::clog << " no separation: connect along intersection AB ";
               }
               shall_include_separation = false;
-	      */
+              */
               // keep only the connection with consistent ordering of cells
               c0 = ccb().forward_axis();
               c = c0.hor();
-	      psc2 = b.kink_phi(c).value()*180./M_PI;
+              psc2 = b.kink_phi(c).value()*180./M_PI;
               if( fabs(psc2) < 60. ){
                 if( print_level() > mybhep::VERBOSE ){
                   std::clog << " rejected because first 2 cells intersect and the ordering is wrong: psc = " << psc2 << std::endl;
                 }
                 continue;
               }
-              
-            } 
+
+            }
           }
           else if( intersect_bc ){
             b0 = ccb().forward_axis();
             b = b0.hor();
-	    psc = d.kink_phi(b).value()*180./M_PI;
+            psc = d.kink_phi(b).value()*180./M_PI;
             if( fabs(psc - 90.) < 30. ||  fabs(psc + 90.) < 30.  ||  fabs(psc - 270.) < 30.  ){ // connection along the intersection
-	      /*
+              /*
               if( print_level() > mybhep::VERBOSE ){
                 std::clog << " no separation: connect along intersection BC ";
               }
               shall_include_separation = false;
-	      */
+              */
               // keep only the connection with consistent ordering of cells
               c0 = cca().forward_axis();
               c = c0.hor();
-	      psc2 = b.kink_phi(c).value()*180./M_PI;
+              psc2 = b.kink_phi(c).value()*180./M_PI;
               if( fabs(psc2) < 60. ){
                 if( print_level() > mybhep::VERBOSE ){
                   std::clog << " rejected because last 2 cells intersect and the ordering is wrong: psc = " << psc2 << std::endl;
@@ -323,9 +324,9 @@ namespace CAT{
               }
 
             }
-	    
+
           }
-	          
+
           ndof = 2;  // 2 kink angles, 0 or 1 one separation angle
           if( shall_include_separation )
             ndof ++;
@@ -345,7 +346,7 @@ namespace CAT{
 
           line newt1(i1->epb(), p, print_level(), get_probmin());
           line newt2(p, i2->epb(), print_level(), get_probmin());
-	  phi_kink = newt1.kink_phi(newt2);
+          phi_kink = newt1.kink_phi(newt2);
 
           if( print_level() > mybhep::VERBOSE ){
             std::clog << " p1: phi = "; ca_.dump_point(i1->epb()); std::clog << " " << std::endl;
@@ -355,8 +356,8 @@ namespace CAT{
             std::clog << "    phi_kink: " << (phi_kink.value()*180/M_PI) << " " << std::endl;
           }
 
-	  chi2 = 0.;
-	  ok = false;
+          chi2 = 0.;
+          ok = false;
 
           if( !use_ownerror ){
             if( fabs(local_separation.value()) <= separation_limit ){
@@ -370,7 +371,7 @@ namespace CAT{
                 std::clog << " theta 2nd tangent: "; (newt2.theta()*180./M_PI).dump();
                 std::clog << "    theta_kink " << theta_kink.value()*180/M_PI << " +- " << theta_kink.error()*180/M_PI << std::endl;
               }
-              
+
               if(  (fabs(phi_kink.value()) <= phi_limit ) && (fabs((newt1.kink_theta(newt2)).value()) <= theta_limit ) )
                 ok = true;
             }
@@ -381,8 +382,8 @@ namespace CAT{
 
             chi2 = newt1.chi2(newt2, use_theta_kink, &chi2_just_phi);
 
-	    // also useul to check just the phi value (adding the theta information reduces the strength of the phi test)
-	    prob_just_phi = probof(chi2_just_phi,1);
+            // also useul to check just the phi value (adding the theta information reduces the strength of the phi test)
+            prob_just_phi = probof(chi2_just_phi,1);
 
             if( shall_include_separation )
               chi2 += square(local_separation.value()/local_separation.error());
@@ -406,8 +407,8 @@ namespace CAT{
             j.set_p(probof(chi2, ndof));
             joints_.push_back(j);
           }
-        }  
-        
+        }
+
       }
 
 
@@ -430,56 +431,56 @@ namespace CAT{
         found = false;
         for(std::vector<joint>::const_iterator jjoint=joints.begin(); jjoint != joints.end(); ++jjoint){
           if( jjoint == ijoint ) continue;
-          
+
           if( ca_.same_quadrant(ijoint->epa(), jjoint->epa() ) &&
               cc_.same_quadrant(ijoint->epc(), jjoint->epc() ) &&
-	      ijoint->p() < jjoint->p() ){
-	    if( print_level() > mybhep::VERBOSE ){
-	      std::clog << " ... removing joint " << ijoint - joints.begin()  << " with prob " << ijoint->p() << " because joint " << jjoint - joints.begin()  <<  " with prob " << jjoint->p() << " has the same initial and final quadrant " << std::endl;
-	    }
-	    found = true;
-	    break;
-	  }
+              ijoint->p() < jjoint->p() ){
+            if( print_level() > mybhep::VERBOSE ){
+              std::clog << " ... removing joint " << ijoint - joints.begin()  << " with prob " << ijoint->p() << " because joint " << jjoint - joints.begin()  <<  " with prob " << jjoint->p() << " has the same initial and final quadrant " << std::endl;
+            }
+            found = true;
+            break;
+          }
         }
-        
+
         if( !found )
           _joints.push_back(*ijoint);
-        
+
       }
-      
+
 
       if( _joints.size() > 1 ){
-	// order joints in order of increasing chi2 (best joint comes first)
-	std::sort(_joints.begin(), _joints.end());
+        // order joints in order of increasing chi2 (best joint comes first)
+        std::sort(_joints.begin(), _joints.end());
       }
 
       // only keep best joints
       size_t max_njoints=4;
       if( _joints.size() > max_njoints ){
-	_joints.erase(_joints.begin() + max_njoints, _joints.end());
+        _joints.erase(_joints.begin() + max_njoints, _joints.end());
       }
-    
+
       if( _joints.size() >= 2 && !(ca_.intersect(cb_) || ca_.intersect(cc_) || cb_.intersect(cc_) ) ){
-	std::vector<joint>::iterator ijoint = _joints.begin();
-	ijoint ++;
-	while( ijoint != _joints.end() ){
-	  if( (size_t)(ijoint - _joints.begin() + 1) > _joints.size() ) break;
-	  if( _joints[0].p() / ijoint->p() > Ratio ){
-	    if( print_level() > mybhep::VERBOSE )
-	      std::clog << " remove joint with p " << ijoint->p() << " in favor of 1st joint with p " << _joints[0].p() << std::endl;
-	    _joints.erase(ijoint);
-	    ijoint = _joints.begin() + (ijoint - _joints.begin());
-	  }else{
-	    ijoint++;
-	  }
-	}
+        std::vector<joint>::iterator ijoint = _joints.begin();
+        ijoint ++;
+        while( ijoint != _joints.end() ){
+          if( (size_t)(ijoint - _joints.begin() + 1) > _joints.size() ) break;
+          if( _joints[0].p() / ijoint->p() > Ratio ){
+            if( print_level() > mybhep::VERBOSE )
+              std::clog << " remove joint with p " << ijoint->p() << " in favor of 1st joint with p " << _joints[0].p() << std::endl;
+            _joints.erase(ijoint);
+            ijoint = _joints.begin() + (ijoint - _joints.begin());
+          }else{
+            ijoint++;
+          }
+        }
       }
 
       if( print_level() > mybhep::VERBOSE ){
         std::clog << " after refining there are " << _joints.size() << " joints " << std::endl;
-	for(std::vector<joint>::const_iterator ij=_joints.begin(); ij!=_joints.end(); ++ij){
-	  std::clog << " joint " << ij - _joints.begin() << " : "; dump_joint(*ij);
-	}
+        for(std::vector<joint>::const_iterator ij=_joints.begin(); ij!=_joints.end(); ++ij){
+          std::clog << " joint " << ij - _joints.begin() << " : "; dump_joint(*ij);
+        }
       }
 
       return _joints;
@@ -530,10 +531,10 @@ namespace CAT{
     bool cell_triplet::same_last_cell(cell c)const{
       return ((this->ca().id() == c.id()) ||
               (this->cc().id() == c.id()) );
-      
+
     }
- 
-     
+
+
   }
 
 }

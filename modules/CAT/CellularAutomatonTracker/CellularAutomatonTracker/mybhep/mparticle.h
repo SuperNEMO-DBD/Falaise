@@ -22,6 +22,7 @@
 #include <string>
 #include <vector>
 #include <iomanip>
+#include <limits>
 #include <mybhep/bproperties.h>
 
 
@@ -64,10 +65,29 @@ namespace mybhep{
   public:
     //! default constructor
     mparticle ();
+    /*
+    {
+      mirror_ = 0;
+      xz_ = -1;
+      yz_ = -1;
+      q_ = std::numeric_limits<double>::quiet_NaN();
+    }
+    */
+
     //! construct from a particle (seed particle)
     mparticle (particle& p, std::string view="NULL", size_t xz=0, size_t yz=0);
+    /*
+    {
+      mirror_ = &p;
+      view_ = view;
+      xz_ = xz;
+      yz_ = yz;
+      q_ = std::numeric_limits<double>::quiet_NaN();
+    }
+    */
+
     //! destructor
-    ~mparticle() {};
+    virtual ~mparticle() {};
 
   public:
     //! set mirror
@@ -96,9 +116,15 @@ namespace mybhep{
     //! get quality
     double quality() const {return q_ ;}
 
+    friend std::ostream& operator << (std::ostream& s, const mparticle& ip);
+    /*
+    {
+      s << "mparticle={"<< &ip.mirror() << "}";
+      return s;
+    }
+    */
 
   };
-  std::ostream& operator << (std::ostream& s, const mparticle& ip);
 }
 
 #endif

@@ -5,7 +5,7 @@ namespace CAT{
 
     using namespace std;
     using namespace mybhep;
-     
+
     cell_couplet::~cell_couplet()
     {
     }
@@ -27,7 +27,7 @@ namespace CAT{
         free_ = false;
         begun_ = false;
       }
-    
+
     cell_couplet::cell_couplet(const cell &ca,const cell &cb,const std::vector<line> &tangents){
       appname_= "cell_couplet: ";
       ca_ = ca;
@@ -57,7 +57,7 @@ namespace CAT{
       begun_ = false;
     }
 
-    cell_couplet::cell_couplet(const cell &ca, const cell &cb, const std::string &just, mybhep::prlevel level, double probmin){
+    cell_couplet::cell_couplet(const cell &ca, const cell &cb, const std::string & /*just*/, mybhep::prlevel level, double probmin){
       set_print_level(level);
       set_probmin(probmin);
       appname_= "cell_couplet: ";
@@ -113,7 +113,7 @@ namespace CAT{
 void cell_couplet::dump (std::ostream & a_out,
                        const std::string & a_title,
                        const std::string & a_indent,
-                       bool a_inherit) const{
+                         bool /* a_inherit */) const{
       std::string indent;
       if (! a_indent.empty ()) indent = a_indent;
       if (! a_title.empty ())
@@ -256,15 +256,15 @@ void cell_couplet::dump (std::ostream & a_out,
       // parallel tangents
       for(size_t i=0; i<2; i++){
 
-	cosa = (ca().r() - cb().r()*sign_parallel_crossed[0])/distance_hor();  // parallel tangents
-	cosb = cosa*sign_parallel_crossed[0];
-	sina = experimental_sin(experimental_acos(cosa))*sign_parallel_crossed[0]*sign_up_down[i];
+        cosa = (ca().r() - cb().r()*sign_parallel_crossed[0])/distance_hor();  // parallel tangents
+        cosb = cosa*sign_parallel_crossed[0];
+        sina = experimental_sin(experimental_acos(cosa))*sign_parallel_crossed[0]*sign_up_down[i];
 
         epa = ca_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cosa, sign_parallel_crossed[0]*sign_up_down[i], false, 0.);
         epb = cb_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cosb, sign_parallel_crossed[0]*sign_up_down[i], false, 0.);
 
-	set_first_error_in_build_from_cell(sina.value(), sign_parallel_crossed[0], sign_up_down[i], &epa);
-	set_second_error_in_build_from_cell(sina.value(), sign_parallel_crossed[0], sign_up_down[i], &epb);
+        set_first_error_in_build_from_cell(sina.value(), sign_parallel_crossed[0], sign_up_down[i], &epa);
+        set_second_error_in_build_from_cell(sina.value(), sign_parallel_crossed[0], sign_up_down[i], &epb);
 
         line l(epa, epb, prlevel(), probmin());
 
@@ -276,8 +276,8 @@ void cell_couplet::dump (std::ostream & a_out,
         // tangent or intersecting circles
 
 
-	experimental_vector pA = ca().ep() + ca().r()*forward_axis();
-	experimental_vector pB = cb().ep() - cb().r()*forward_axis();
+        experimental_vector pA = ca().ep() + ca().r()*forward_axis();
+        experimental_vector pB = cb().ep() - cb().r()*forward_axis();
 
         experimental_vector average = (pA + pB)/2.;
         // a small offset with a big error
@@ -290,7 +290,7 @@ void cell_couplet::dump (std::ostream & a_out,
           epb = (average - transverse_axis()*sign_up_down[i]*small_offset).point_from_vector();
 
           line l(epa, epb, prlevel(), probmin());
-	  
+
           tangents_.push_back( l );
         }
 
@@ -299,15 +299,15 @@ void cell_couplet::dump (std::ostream & a_out,
         // crossed tangents
         for(size_t i=0; i<2; i++){
 
-	  cosa = (ca().r() - cb().r()*sign_parallel_crossed[1])/distance_hor();  // parallel tangents
-	  cosb = cosa*sign_parallel_crossed[1];
-	  sina = experimental_sin(experimental_acos(cosa))*sign_parallel_crossed[1]*sign_up_down[i];
+          cosa = (ca().r() - cb().r()*sign_parallel_crossed[1])/distance_hor();  // parallel tangents
+          cosb = cosa*sign_parallel_crossed[1];
+          sina = experimental_sin(experimental_acos(cosa))*sign_parallel_crossed[1]*sign_up_down[i];
 
-	  epa = ca_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cosa, sign_parallel_crossed[1]*sign_up_down[i], false, 0.);
-	  epb = cb_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cosb, sign_up_down[i], false, 0.);
+          epa = ca_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cosa, sign_parallel_crossed[1]*sign_up_down[i], false, 0.);
+          epb = cb_.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cosb, sign_up_down[i], false, 0.);
 
-	  set_first_error_in_build_from_cell(sina.value(), sign_parallel_crossed[1], sign_up_down[i], &epa);
-	  set_second_error_in_build_from_cell(sina.value(), sign_parallel_crossed[1], sign_up_down[i], &epb);
+          set_first_error_in_build_from_cell(sina.value(), sign_parallel_crossed[1], sign_up_down[i], &epa);
+          set_second_error_in_build_from_cell(sina.value(), sign_parallel_crossed[1], sign_up_down[i], &epb);
 
           line l(epa, epb, prlevel(), probmin());
 
@@ -323,7 +323,8 @@ void cell_couplet::dump (std::ostream & a_out,
 
     void cell_couplet::obtain_tangents_between_circle_and_point(const cell &c, experimental_point &ep){
 
-      int sign_parallel_crossed[2], sign_up_down[2];
+      // int sign_parallel_crossed[2];
+      int sign_up_down[2];
       sign_up_down[0] = 1;  // upper tangent
       sign_up_down[1] = -1;  // lower tangent
 
@@ -336,8 +337,8 @@ void cell_couplet::dump (std::ostream & a_out,
       for(size_t i=0; i<2; i++){
 
         epa = c.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos, sign_up_down[i], false, 0.);
-	sin = experimental_sin(experimental_acos(cos))*sign_up_down[i];
-	set_first_error_in_build_from_cell(sin.value(), 1, sign_up_down[i], &epa);
+        sin = experimental_sin(experimental_acos(cos))*sign_up_down[i];
+        set_first_error_in_build_from_cell(sin.value(), 1, sign_up_down[i], &epa);
 
         line l(epa, ep, prlevel(), probmin());
 
@@ -352,7 +353,8 @@ void cell_couplet::dump (std::ostream & a_out,
 
     void cell_couplet::obtain_tangents_between_point_and_circle(experimental_point &ep, const cell &c){
 
-      int sign_parallel_crossed[2], sign_up_down[2];
+      // int sign_parallel_crossed[2];
+      int sign_up_down[2];
       sign_up_down[0] = 1;  // upper tangent
       sign_up_down[1] = -1;  // lower tangent
 
@@ -365,8 +367,8 @@ void cell_couplet::dump (std::ostream & a_out,
       for(size_t i=0; i<2; i++){
 
         epb = c.build_from_cell(forward_axis_.hor().unit(), transverse_axis(), cos, sign_up_down[i], false, 0.);
-	sin = experimental_sin(experimental_acos(cos))*sign_up_down[i];
-	set_second_error_in_build_from_cell(sin.value(), 1, sign_up_down[i], &epb);
+        sin = experimental_sin(experimental_acos(cos))*sign_up_down[i];
+        set_second_error_in_build_from_cell(sin.value(), 1, sign_up_down[i], &epb);
 
         line l(ep, epb, prlevel(), probmin());
 
@@ -403,7 +405,7 @@ void cell_couplet::dump (std::ostream & a_out,
       epa->set_ez(erraz);
 
       return;
-      
+
     }
 
     void cell_couplet::set_second_error_in_build_from_cell(double sin, int sign_parallel_crossed, int sign_up_down, experimental_point *epb)const{
@@ -421,7 +423,7 @@ void cell_couplet::dump (std::ostream & a_out,
       epb->set_ez(errbz);
 
       return;
-      
+
     }
 
     //! set cells
@@ -515,12 +517,12 @@ void cell_couplet::dump (std::ostream & a_out,
     }
 
     //! get free level
-    const bool cell_couplet::free()const{
+    bool cell_couplet::free()const{
       return free_;
     }
 
     //! get begun level
-    const bool cell_couplet::begun()const{
+    bool cell_couplet::begun()const{
       return begun_;
     }
 
@@ -589,4 +591,3 @@ void cell_couplet::dump (std::ostream & a_out,
 
   }
 }
-

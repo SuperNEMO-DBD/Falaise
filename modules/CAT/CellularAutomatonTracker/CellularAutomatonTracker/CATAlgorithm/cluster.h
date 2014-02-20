@@ -65,7 +65,7 @@ namespace CAT{
       const std::vector<node> & nodes()const;
 
       //! get free level
-      const bool Free()const;
+      bool Free()const;
 
 
     public:

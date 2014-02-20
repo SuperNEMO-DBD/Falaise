@@ -8,7 +8,7 @@ namespace SULTAN {
     using namespace std;
     using namespace mybhep;
 
-      //!Default constructor     
+      //!Default constructor
     node::node()
       {
         appname_= "node: ";
@@ -26,14 +26,14 @@ namespace SULTAN {
         set_probmin(probmin);
         appname_= "node: ";
         c_ = c;
-	circle_phi_ = mybhep::small_neg;
+        circle_phi_ = mybhep::small_neg;
       }
 
       /*** dump ***/
       void node::dump (ostream & a_out,
                        const std::string & a_title,
                        const std::string & a_indent,
-                       bool a_inherit) const{
+                       bool /* a_inherit */) const{
         std::string indent;
         if (! a_indent.empty ()) indent = a_indent;
         if (! a_title.empty ())
@@ -45,10 +45,10 @@ namespace SULTAN {
         a_out << indent  << " main cell ";
         this->c().dump(a_out,"",indent + "   ");
         a_out << indent << " fitted point: "; ep().dump();
- 
+
         return;
       }
-    
+
       //! set main cell
       void node::set_c(const cell& c){
         c_ = c;
@@ -64,7 +64,7 @@ namespace SULTAN {
       const cell& node::c()const
       {
         return c_;
-      }      
+      }
 
       //! get fitted experimental_point
       const experimental_point& node::ep()const

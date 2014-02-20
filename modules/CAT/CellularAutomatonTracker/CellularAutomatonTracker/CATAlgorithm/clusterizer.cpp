@@ -205,7 +205,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  bool clusterizer::initialize(const mybhep::sstore &store, const mybhep::gstore gs , mybhep::EventManager2 *eman) {
+  bool clusterizer::initialize(const mybhep::sstore &store, const mybhep::gstore & /* gs */ , mybhep::EventManager2 * /* eman */) {
     //*************************************************************
 
     m.message("\n Beginning algorithm clusterizer \n",mybhep::VERBOSE);
@@ -296,7 +296,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  void clusterizer::readDstProper(const mybhep::sstore & global, mybhep::EventManager2 *eman) {
+  void clusterizer::readDstProper(const mybhep::sstore & global, mybhep::EventManager2 * /*eman */) {
     //*************************************************************
 
     clock.start(" clusterizer: read dst properties ");
@@ -1119,7 +1119,7 @@ namespace CAT {
 
       for (size_t ihit=0; ihit<hits.size();ihit++){
         topology::cell c(*hits[ihit],ihit, SuperNemo, level, probmin);
-	c.set_small_radius(SmallRadius);
+        c.set_small_radius(SmallRadius);
         cells_.push_back(c);
       }
 
@@ -1420,7 +1420,7 @@ namespace CAT {
           {
             for(size_t i=0; i<cells_.size(); i++)
               {
-		flags[cells_[i].id()] = 0;
+                flags[cells_[i].id()] = 0;
               }
 
             for(std::vector<topology::cell>::const_iterator icell=cells_.begin(); icell!=cells_.end(); ++icell){
@@ -1428,8 +1428,8 @@ namespace CAT {
               const topology::cell & c = *icell;
               if( (cell_side(c) * side[ip]) < 0) continue;
               if( c.fast() != fast[iq] ) continue;
-	      if( flags[c.id()] == 1 ) continue;
-	      flags[c.id()] = 1;
+              if( flags[c.id()] == 1 ) continue;
+              flags[c.id()] = 1;
 
               // cell c will form a new cluster, i.e. a new list of nodes
               topology::cluster cluster_connected_to_c;
@@ -1464,12 +1464,12 @@ namespace CAT {
 
                   m.message(" ... creating couplet ", cconn.id(), " -> ", cnc.id(), mybhep::VERBOSE);
 
-		  if( flags[cnc.id()] != 1 )
-		    {
-		      flags[cnc.id()] = 1 ;
-		      cells_connected_to_c.push_back(cnc);
-		    }
-		}
+                  if( flags[cnc.id()] != 1 )
+                    {
+                      flags[cnc.id()] = 1 ;
+                      cells_connected_to_c.push_back(cnc);
+                    }
+                }
                 newnode.set_cc(cc);
                 newnode.calculate_triplets(Ratio, QuadrantAngle, TangentPhi, TangentTheta);
                 nodes_connected_to_c.push_back(newnode);
@@ -1477,9 +1477,9 @@ namespace CAT {
                 m.message(" cluster started with ", c.id(), " has been given cell ", cconn.id(), " with ", cc.size(), " couplets ", mybhep::VERBOSE);
 
               }
-	      
+
               cluster_connected_to_c.set_nodes(nodes_connected_to_c);
-	      
+
               clusters_.push_back(cluster_connected_to_c);
             }
 
@@ -1509,7 +1509,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  void clusterizer::make_plots(topology::tracked_data & tracked_data_){
+  void clusterizer::make_plots(topology::tracked_data & /* tracked_data_ */){
     //*************************************************************
     /*
       if( PrintMode ){
@@ -1695,7 +1695,7 @@ namespace CAT {
       const int hit1_side  = c1.block();  // -1, 1
       const int hit1_layer = abs(c1.layer()); // 0, 1, ..., 8
       const int hit1_row   = c1.iid();  // -56, -55, ..., 55, 56
-      
+
       const int hit2_side  = c2.block();
       const int hit2_layer = abs(c2.layer());
       const int hit2_row   = c2.iid();
@@ -1708,10 +1708,10 @@ namespace CAT {
       const unsigned int row_distance = abs (hit1_row - hit2_row);
 
       if (layer_distance == 0 && row_distance == 0){
-	if( level >= mybhep::NORMAL ){
-	  std::clog << " problem: cat asking near level of cells with identical posiion (" << hit1_side << ", " << hit1_layer << ", " << hit1_row << ") (" << hit2_side << ", " << hit2_layer << ", " << hit2_row << ")" << std::endl;
-	}
-	return 3;
+        if( level >= mybhep::NORMAL ){
+          std::clog << " problem: cat asking near level of cells with identical posiion (" << hit1_side << ", " << hit1_layer << ", " << hit1_row << ") (" << hit2_side << ", " << hit2_layer << ", " << hit2_row << ")" << std::endl;
+        }
+        return 3;
       }
       else if (layer_distance == 1 && row_distance == 0) return 2;
       else if (layer_distance == 0 && row_distance == 1) return 2;
@@ -2242,7 +2242,7 @@ namespace CAT {
   }
 
   void clusterizer::set_planes_per_block(int block, int nplanes){
-    if (block< 0 || block>=planes_per_block.size())
+    if (block< 0 || block>= (int)planes_per_block.size())
       {
         throw std::range_error ("CAT::clusterizer::set_planes_per_block: Invalid GG layer block index !");
       }
@@ -2473,4 +2473,3 @@ namespace CAT {
 
 
 }
-

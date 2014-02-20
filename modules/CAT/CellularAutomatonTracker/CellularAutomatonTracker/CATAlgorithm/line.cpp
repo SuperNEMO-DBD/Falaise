@@ -9,7 +9,7 @@ namespace CAT {
     using namespace std;
     using namespace mybhep;
 
-    //!Default constructor 
+    //!Default constructor
     line::line(prlevel level, double probmin)
     {
       appname_= "line: ";
@@ -41,7 +41,7 @@ namespace CAT {
     void line::dump (std::ostream & a_out       ,
                      const std::string & a_title,
                      const std::string & a_indent,
-                     bool a_inherit) const
+                     bool /* a_inherit */) const
     {
       std::string indent;
       if (! a_indent.empty ()) indent = a_indent;
@@ -96,13 +96,13 @@ namespace CAT {
   const experimental_point& line::epa()const
   {
     return epa_;
-  }      
+  }
 
   //! get experimental_point b
   const experimental_point& line::epb()const
   {
     return epb_;
-  }      
+  }
 
   //! get forward axis
   const experimental_vector& line::forward_axis()const
@@ -119,7 +119,7 @@ namespace CAT {
   experimental_double line::phi(){
     return forward_axis_.phi();
   }
-    
+
   experimental_double line::theta(){
     return forward_axis_.theta();
   }
@@ -161,7 +161,7 @@ namespace CAT {
 
   void line::set_a_forward_axis(const experimental_vector &  v)
   {
-      
+
     forward_axis_ = v;
 
     return;
@@ -182,7 +182,7 @@ namespace CAT {
 
   void line::set_forward_axis()
   {
-      
+
     forward_axis_.set(epa(), epb());
 
     return;

@@ -54,7 +54,7 @@ namespace CAT {
     void plane::dump (ostream & a_out ,
                       const std::string & a_title,
                       const std::string & a_indent,
-                      bool a_inherit)const{
+                      bool /*a_inherit*/)const{
       {
         std::string indent;
         if (! a_indent.empty ()) indent = a_indent;
@@ -78,8 +78,8 @@ namespace CAT {
 
 
     //! set
-    void plane::set(const experimental_point &center, 
-                    const experimental_vector &sizes, 
+    void plane::set(const experimental_point &center,
+                    const experimental_vector &sizes,
                     const experimental_vector &norm)
     {
       center_ = center;
@@ -148,20 +148,20 @@ namespace CAT {
         return "z";
       }
       else if( type() == "Nemo3" ){
-	if( norm().y().value() == 0. ){ // inner and outer walls
-	  const experimental_point origin(0.,0.,0.,0.,0.,0.);
-	  experimental_vector v(origin, center_);  // vector from center of detector
-	        	        	                // to center of calo block
-	  if( (v.hor()*norm()).value() > 0. )
-	    return "inner";
-	  return "outer";
-	}
+        if( norm().y().value() == 0. ){ // inner and outer walls
+          const experimental_point origin(0.,0.,0.,0.,0.,0.);
+          experimental_vector v(origin, center_);  // vector from center of detector
+                                                        // to center of calo block
+          if( (v.hor()*norm()).value() > 0. )
+            return "inner";
+          return "outer";
+        }
 
-	if( norm().y().value() == 1. )
-	  return "bottom";
+        if( norm().y().value() == 1. )
+          return "bottom";
 
-	if( norm().y().value() == -1. )
-	  return "top";
+        if( norm().y().value() == -1. )
+          return "top";
 
         clog << " warning: undefined view for plane of type " << type() << std::endl;
         return "null";
@@ -186,23 +186,23 @@ namespace CAT {
         return (center_ + norm()*sizes().y()/2.).point_from_vector();
 
       else if( view() == "z" )
-	return (center_ + norm()*sizes().z()/2.).point_from_vector();
+        return (center_ + norm()*sizes().z()/2.).point_from_vector();
 
       else{ // Nemo3
 
-	experimental_double the_size;
-	if( view() == "inner" || view() == "outer" )
-	  the_size = sizes().x();
-	else if( view() == "top" || view() == "bottom" )
-	  the_size = sizes().y();
-	else{
-	  if( print_level() >= mybhep::NORMAL ){
-	    std::clog << " problem: unknown calo view " << view() << std::endl;
-	  }
-	  the_size = sizes().x();
-	}
+        experimental_double the_size;
+        if( view() == "inner" || view() == "outer" )
+          the_size = sizes().x();
+        else if( view() == "top" || view() == "bottom" )
+          the_size = sizes().y();
+        else{
+          if( print_level() >= mybhep::NORMAL ){
+            std::clog << " problem: unknown calo view " << view() << std::endl;
+          }
+          the_size = sizes().x();
+        }
 
-	return (center_ + norm()*the_size/2.).point_from_vector();
+        return (center_ + norm()*the_size/2.).point_from_vector();
       }
 
     }
@@ -241,45 +241,45 @@ namespace CAT {
       }
 
       else if( view() == "z" ){
-	if( fabs(dist.z().value()) > dist.z().error() )
-	  return false;
-	
-	if( fabs(dist.x().value()) > sizes().x().value()/2. + dist.x().error() )
-	  return false;
-	
-	if( fabs(dist.y().value()) > sizes().y().value()/2. + dist.y().error() )
-	  return false;
+        if( fabs(dist.z().value()) > dist.z().error() )
+          return false;
 
-	return true;
-	
+        if( fabs(dist.x().value()) > sizes().x().value()/2. + dist.x().error() )
+          return false;
+
+        if( fabs(dist.y().value()) > sizes().y().value()/2. + dist.y().error() )
+          return false;
+
+        return true;
+
       }
       else{
-	experimental_double dist_norm = dist*norm(); // distance along the normal
-	experimental_vector pv=dist^norm();
-	experimental_double dist_transv = pv.hor().length(); // transverse distance
-	experimental_double dist_vert = pv.y(); // vertical distance
+        experimental_double dist_norm = dist*norm(); // distance along the normal
+        experimental_vector pv=dist^norm();
+        experimental_double dist_transv = pv.hor().length(); // transverse distance
+        experimental_double dist_vert = pv.y(); // vertical distance
 
-	if( print_level() >= mybhep::VVERBOSE ){
-	  std::clog << " check intersection plane/point: face (" << face().x().value() << ", " << face().y().value() << ", " << face().z().value() << ") point ( "
-		    << ep.x().value() << ", " << ep.y().value() << ", " << ep.z().value() << ") dist_norm " << dist_norm.value() << " +- " << dist_norm.error()
-		    << " dist_transv " << dist_transv.value() << " +- " << dist_transv.error() << " dist_vert " << dist_vert.value() << " +- " << dist_vert.error() 
-		    << std::endl;
-	}
+        if( print_level() >= mybhep::VVERBOSE ){
+          std::clog << " check intersection plane/point: face (" << face().x().value() << ", " << face().y().value() << ", " << face().z().value() << ") point ( "
+                    << ep.x().value() << ", " << ep.y().value() << ", " << ep.z().value() << ") dist_norm " << dist_norm.value() << " +- " << dist_norm.error()
+                    << " dist_transv " << dist_transv.value() << " +- " << dist_transv.error() << " dist_vert " << dist_vert.value() << " +- " << dist_vert.error()
+                    << std::endl;
+        }
 
         if( fabs(dist_norm.value()) > fabs( dist_norm.error()))
           return false;
 
-	//if( fabs(dist_transv.value()) > sizes().z().value()/2. + dist_transv.error())
-	if( fabs(dist_transv.value()) > sizes().z().value()/2.)
+        //if( fabs(dist_transv.value()) > sizes().z().value()/2. + dist_transv.error())
+        if( fabs(dist_transv.value()) > sizes().z().value()/2.)
           return false;
 
-	//if( fabs(dist_vert.value()) > sizes().y().value()/2. + dist_vert.error())
-	if( fabs(dist_vert.value()) > sizes().y().value()/2.)
+        //if( fabs(dist_vert.value()) > sizes().y().value()/2. + dist_vert.error())
+        if( fabs(dist_vert.value()) > sizes().y().value()/2.)
           return false;
 
-	return true;
+        return true;
       }
-      
+
     }
 
     bool plane::intersect(const experimental_point &start, const experimental_vector &direction, experimental_point* ep)const{
@@ -308,25 +308,25 @@ namespace CAT {
       }
 
       else if( view() == "z" ){
-	if( direction.z().value() == 0 ){
-	  return false;
-	}
-	
-	experimental_double time = (face().z() - start.z())/direction.z();
-	
-	*ep = (experimental_vector(start) + time*direction).point_from_vector();
-	
-	return intersect(*ep);
+        if( direction.z().value() == 0 ){
+          return false;
+        }
+
+        experimental_double time = (face().z() - start.z())/direction.z();
+
+        *ep = (experimental_vector(start) + time*direction).point_from_vector();
+
+        return intersect(*ep);
       }
       else{ // Nemo3
 
-	if( (direction*norm()).value() == 0 ) return false;
+        if( (direction*norm()).value() == 0 ) return false;
 
-	experimental_double time = (face() - start)*norm()/(direction*norm());
-	
-	*ep = (experimental_vector(start) + time*direction).point_from_vector();
+        experimental_double time = (face() - start)*norm()/(direction*norm());
 
-	return intersect(*ep);
+        *ep = (experimental_vector(start) + time*direction).point_from_vector();
+
+        return intersect(*ep);
       }
 
 

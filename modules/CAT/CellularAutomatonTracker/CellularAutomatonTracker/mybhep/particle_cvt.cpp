@@ -16,13 +16,13 @@
  */
 
 //#include "config.h"
-#ifndef HAVE_SSTREAM
-#include <strstream>
-//#include <strstream.h>
-#else
+// #ifndef HAVE_SSTREAM
+// #include <strstream>
+// //#include <strstream.h>
+// #else
 #include <sstream>
+//#endif
 
-#endif
 #include <mybhep/particle_cvt.h>
 #include <mybhep/track_cvt.h>
 #include <mybhep/hit_cvt.h>
@@ -253,11 +253,11 @@ namespace mybhep{
 void  particle_cvt::restore( std::string def )
 {
 
-#ifndef HAVE_SSTREAM
-    istrstream istr (def.c_str());
-#else
-    istringstream istr(def.c_str());
-#endif
+// #ifndef HAVE_SSTREAM
+//     istrstream istr (def.c_str());
+// #else
+  std::istringstream istr(def.c_str());
+// #endif
 
     // get converter service
     converter_svc& csvc = mybhep_svc::instance().
@@ -616,11 +616,11 @@ void  particle_cvt::restore( std::string def )
 
   size_t  particle_cvt::number_of_hits( string& def )
   {
-#ifndef HAVE_SSTREAM
-    istrstream istr (def.c_str());
-#else
-    istringstream istr(def.c_str());
-#endif
+// #ifndef HAVE_SSTREAM
+//     istrstream istr (def.c_str());
+// #else
+    std::istringstream istr(def.c_str());
+// #endif
 
     size_t nhits;
     std::string label;
@@ -637,5 +637,3 @@ void  particle_cvt::restore( std::string def )
     return nhits;
   }
 }
-
-

@@ -79,7 +79,7 @@ namespace CAT {
       virtual void dump (std::ostream & a_out         = std::clog,
                          const std::string & a_title  = "",
                          const std::string & a_indent = "",
-                         bool a_inherit          = false)const{
+                         bool /*a_inherit */         = false)const{
         {
           std::string indent;
           if (! a_indent.empty ()) indent = a_indent;
@@ -94,7 +94,7 @@ namespace CAT {
           a_out << indent << " radius: "; radius().dump(); a_out << " " << std::endl;
           a_out << indent << " pitch: "; pitch().dump(); a_out << " " << std::endl;
           a_out << indent << " one round: " << std::endl;
-	  experimental_double theta(0.,0.);
+          experimental_double theta(0.,0.);
           for(size_t i=0; i<100; i++){
             theta.set_value(i*3.1417/100.);
             a_out << indent << " .. theta " << theta.value()*180./M_PI << " x " << position(theta).x().value() << " , z " << position(theta).z().value() << std::endl;
@@ -168,25 +168,25 @@ namespace CAT {
       // get the phi of a point
       experimental_double phi_of_point(const experimental_point &ep)const{
 
-	return phi_of_point(ep,0.);
+        return phi_of_point(ep,0.);
       }
 
       experimental_double phi_of_point(const experimental_point &ep, double phi_ref )const{
-	// if no ref is given, phi is in [-pi, pi]
-	// if ref is given is in [ref - \pi, ref + \pi]
-	
-	experimental_double phi = experimental_vector(center_, ep).phi();
-	
-	while( phi.value() - phi_ref > M_PI ){
-	  phi.set_value(phi.value() - 2.*M_PI);
-	}
-	
-	while( phi.value() - phi_ref < - M_PI ){
-	  phi.set_value(phi.value() + 2.*M_PI);
-	}
-	
-	return phi;
-	
+        // if no ref is given, phi is in [-pi, pi]
+        // if ref is given is in [ref - \pi, ref + \pi]
+
+        experimental_double phi = experimental_vector(center_, ep).phi();
+
+        while( phi.value() - phi_ref > M_PI ){
+          phi.set_value(phi.value() - 2.*M_PI);
+        }
+
+        while( phi.value() - phi_ref < - M_PI ){
+          phi.set_value(phi.value() + 2.*M_PI);
+        }
+
+        return phi;
+
       }
 
       // get delta-phi of two points
@@ -195,14 +195,14 @@ namespace CAT {
         experimental_double phi1 = experimental_vector(center_, epa).phi();
         experimental_double phi2 = experimental_vector(center_, epb).phi();
 
-	experimental_double dp = phi2 - phi1;
+        experimental_double dp = phi2 - phi1;
 
         double vphi1 = phi1.value();
         double vphi2 = phi2.value();
 
         mybhep::fix_angles(&vphi1, &vphi2);
 
-	dp.set_value(vphi2 - vphi1);
+        dp.set_value(vphi2 - vphi1);
         return dp;
 
       }
@@ -219,7 +219,7 @@ namespace CAT {
 
       // get the position at the theta of point p
       experimental_point position(const experimental_point &ep)const{
-	return position(ep,0.);
+        return position(ep,0.);
 
       }
 
@@ -230,15 +230,15 @@ namespace CAT {
       experimental_point position(const experimental_point &ep, double phi_ref , double y_ref)const{
         experimental_point pos = position(ep, phi_ref);
 
-	double one_turn=pitch().value()*2.*M_PI;
-	int n_extra_turns = (int)((pos.y().value() - y_ref)/one_turn);
-	pos.set_y(experimental_double(pos.y().value() - n_extra_turns*one_turn, pos.y().error()));
-	return pos;
+        double one_turn=pitch().value()*2.*M_PI;
+        int n_extra_turns = (int)((pos.y().value() - y_ref)/one_turn);
+        pos.set_y(experimental_double(pos.y().value() - n_extra_turns*one_turn, pos.y().error()));
+        return pos;
       }
 
       // get the chi2 with point p
       double chi2(const experimental_point &ep)const{
-	return chi2(ep,0.);
+        return chi2(ep,0.);
       }
 
       double chi2(const experimental_point &ep, double phi_ref )const{
@@ -259,15 +259,15 @@ namespace CAT {
       double chi2(std::vector<experimental_point> &ps)const{
 
         double _chi2 = 0.;
-	double phi_ref = 0.;
-	double phi_ref2 = 0.;
-	size_t index=0;
+        double phi_ref = 0.;
+        double phi_ref2 = 0.;
+        // size_t index=0;
         for(std::vector<experimental_point>::const_iterator ip = ps.begin(); ip != ps.end(); ++ip){
 
           _chi2 += chi2(*ip, phi_ref);
 
-	  phi_ref2 = phi_ref;
-	  phi_ref = phi_of_point(*ip, phi_ref2).value();
+          phi_ref2 = phi_ref;
+          phi_ref = phi_of_point(*ip, phi_ref2).value();
 
         }
 
@@ -279,15 +279,15 @@ namespace CAT {
       std::vector<double> chi2s(std::vector<experimental_point> & ps)const{
 
         std::vector<double> _chi2s;
-	double phi_ref = 0.;
-	double phi_ref2 = 0.;
-	size_t index=0;
+        double phi_ref = 0.;
+        double phi_ref2 = 0.;
+        //size_t index=0;
         for(std::vector<experimental_point>::const_iterator ip = ps.begin(); ip != ps.end(); ++ip){
 
           _chi2s.push_back(chi2(*ip, phi_ref));
 
-	  phi_ref2 = phi_ref;
-	  phi_ref = phi_of_point(*ip, phi_ref2).value();
+          phi_ref2 = phi_ref;
+          phi_ref = phi_of_point(*ip, phi_ref2).value();
 
         }
 
@@ -301,102 +301,102 @@ namespace CAT {
         if( pl.view() == "x" || pl.view() == "z" || pl.view() == "inner" || pl.view() == "outer" ){
           bool result = get_circle().intersect_plane(pl, ep, _phi);
           ep->set_y(position(*ep,_phi.value(), y_ref).y());
-	  
-	  if( isnan(ep->x().value())  || isnan(ep->y().value()) || isnan(ep->z().value()) ) return false;
-	  
+
+          if( isnan(ep->x().value())  || isnan(ep->y().value()) || isnan(ep->z().value()) ) return false;
+
           return result;
-	  
+
         }
-	
+
         if( pl.view() == "y" || pl.view() == "top" || pl.view() == "bottom" ){
-	  
-	  if( pitch().value() == 0.)
-	    return false;
-	  
-	  *ep = position((pl.face().y() - center().y())/pitch());
-	  
-	  
-	  // vector from center of plane face to extrapolated point
-	  experimental_vector dist = experimental_vector(pl.face(), *ep).hor();
-	  if( print_level() >= mybhep::VVERBOSE ){
-	    std::clog << " helix distance from extrapolation to plane face: " << dist.x().value() << ", " << dist.y().value() << ", " << dist.z().value() << " plane sizes: " << pl.sizes().x().value() << " " << pl.sizes().y().value() << " " << pl.sizes().z().value() << std::endl;
-	  }
-	  
-	  if( fabs(dist.x().value()) > pl.sizes().x().value()/2. )
-	    return false;
-	  if( fabs(dist.z().value()) > pl.sizes().z().value()/2. )
-	    return false;
 
-	  ep->set_y(pl.face().y());
+          if( pitch().value() == 0.)
+            return false;
 
-	  if( isnan(ep->x().value())  || isnan(ep->y().value()) || isnan(ep->z().value()) ) return false;
+          *ep = position((pl.face().y() - center().y())/pitch());
 
-	  return true;
-	}
-	
-	
-	std::clog << " problem: cannot intersect helix with plane of view " << pl.view() << std::endl;
-	return false;
+
+          // vector from center of plane face to extrapolated point
+          experimental_vector dist = experimental_vector(pl.face(), *ep).hor();
+          if( print_level() >= mybhep::VVERBOSE ){
+            std::clog << " helix distance from extrapolation to plane face: " << dist.x().value() << ", " << dist.y().value() << ", " << dist.z().value() << " plane sizes: " << pl.sizes().x().value() << " " << pl.sizes().y().value() << " " << pl.sizes().z().value() << std::endl;
+          }
+
+          if( fabs(dist.x().value()) > pl.sizes().x().value()/2. )
+            return false;
+          if( fabs(dist.z().value()) > pl.sizes().z().value()/2. )
+            return false;
+
+          ep->set_y(pl.face().y());
+
+          if( isnan(ep->x().value())  || isnan(ep->y().value()) || isnan(ep->z().value()) ) return false;
+
+          return true;
+        }
+
+
+        std::clog << " problem: cannot intersect helix with plane of view " << pl.view() << std::endl;
+        return false;
 
       }
 
       bool intersect_circle(const circle &c, experimental_point * ep, const experimental_double &_phi)const{
 
-	bool result = get_circle().intersect_circle(c, ep, _phi);
-	ep->set_y(position(*ep, _phi.value()).y());
+        bool result = get_circle().intersect_circle(c, ep, _phi);
+        ep->set_y(position(*ep, _phi.value()).y());
 
-	return result;
+        return result;
 
       }
 
       bool intersect_circle_with_tangent(const circle &c, const experimental_point &start, const experimental_vector &direction, experimental_point* ep)const{
-	
-	
-	experimental_vector center_to_start(c.center(),start);
-	center_to_start = center_to_start.hor();
 
-	experimental_vector rotation=(direction.unit())^(center_to_start.unit());
 
-	experimental_double beta=experimental_asin(rotation.y());
+        experimental_vector center_to_start(c.center(),start);
+        center_to_start = center_to_start.hor();
 
-	//	experimental_double angle_at_center=center_to_start.kink_phi(direction)/2.;
-	experimental_double phi0=c.phi_of_point(start);
-	experimental_double alpha=experimental_double(asin(1.),0.)-beta-experimental_acos(center_to_start.length()/c.radius()*rotation.y());
+        experimental_vector rotation=(direction.unit())^(center_to_start.unit());
 
-	experimental_double sign(1.,0.);  // if the track is in the outer part of the foil
-	if( (center_to_start*direction).value() > 0 ) // the track in in the inner part of the foil
-	  sign.set_value(-1.);
+        experimental_double beta=experimental_asin(rotation.y());
 
-	//	*ep = c.position(phi0 + angle_at_center);
-	*ep = c.position(phi0 + sign*alpha);
-	ep->set_y(position(*ep, phi0.value(),start.y().value()).y());
+        //      experimental_double angle_at_center=center_to_start.kink_phi(direction)/2.;
+        experimental_double phi0=c.phi_of_point(start);
+        experimental_double alpha=experimental_double(asin(1.),0.)-beta-experimental_acos(center_to_start.length()/c.radius()*rotation.y());
 
-	if( print_level() >= mybhep::VVERBOSE ){
-	  std::clog << " center (" << c.center().x().value() << ", " << c.center().y().value() << ", " << c.center().z().value() << ") start (" << start.x().value() << ", " << start.y().value() << ", " << start.z().value() << ") cts (" << center_to_start.x().value() << ", " << center_to_start.y().value() << ", " << center_to_start.z().value() << ") beta " << beta.value()*180./acos(-1.) << " phi0 " << phi0.value()*180./acos(-1.) << " alpha " << alpha.value()*180./acos(-1.) << " sign " << sign.value() << " newangle " << (phi0+sign*alpha).value()*180./acos(-1.) << " pos: (" << ep->x().value() << ", " << ep->y().value() << ", " << ep->z().value() << ") " << std::endl;
-	}
+        experimental_double sign(1.,0.);  // if the track is in the outer part of the foil
+        if( (center_to_start*direction).value() > 0 ) // the track in in the inner part of the foil
+          sign.set_value(-1.);
 
-	if( isnan(ep->x().value())  || isnan(ep->y().value()) || isnan(ep->z().value()) ) return false;
+        //      *ep = c.position(phi0 + angle_at_center);
+        *ep = c.position(phi0 + sign*alpha);
+        ep->set_y(position(*ep, phi0.value(),start.y().value()).y());
 
-	return true;
+        if( print_level() >= mybhep::VVERBOSE ){
+          std::clog << " center (" << c.center().x().value() << ", " << c.center().y().value() << ", " << c.center().z().value() << ") start (" << start.x().value() << ", " << start.y().value() << ", " << start.z().value() << ") cts (" << center_to_start.x().value() << ", " << center_to_start.y().value() << ", " << center_to_start.z().value() << ") beta " << beta.value()*180./acos(-1.) << " phi0 " << phi0.value()*180./acos(-1.) << " alpha " << alpha.value()*180./acos(-1.) << " sign " << sign.value() << " newangle " << (phi0+sign*alpha).value()*180./acos(-1.) << " pos: (" << ep->x().value() << ", " << ep->y().value() << ", " << ep->z().value() << ") " << std::endl;
+        }
+
+        if( isnan(ep->x().value())  || isnan(ep->y().value()) || isnan(ep->z().value()) ) return false;
+
+        return true;
       }
 
 
       helix invert(){
-	helix inverted;
-	inverted.set_print_level(print_level());
-	inverted.set_probmin(probmin());
-	inverted.set_center(center());
-	inverted.set_radius(radius());
-	inverted.set_pitch(pitch());
-	return inverted;
+        helix inverted;
+        inverted.set_print_level(print_level());
+        inverted.set_probmin(probmin());
+        inverted.set_center(center());
+        inverted.set_radius(radius());
+        inverted.set_pitch(pitch());
+        return inverted;
       }
 
       void point_of_max_min_radius(experimental_point epa, experimental_point epb, experimental_point *epmax, experimental_point *epmin){
-	
-	get_circle().point_of_max_min_radius(epa, epb, epmax, epmin);
-	
+
+        get_circle().point_of_max_min_radius(epa, epb, epmax, epmin);
+
       return;
-      
+
       }
 
 

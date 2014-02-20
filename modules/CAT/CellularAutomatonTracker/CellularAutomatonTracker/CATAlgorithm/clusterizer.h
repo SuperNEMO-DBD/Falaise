@@ -53,7 +53,7 @@ namespace CAT{
 
   public:
     bool initialize( void );
-    bool initialize( const mybhep::sstore &store, const mybhep::gstore gs, mybhep::EventManager2 *eman=0);
+    bool initialize( const mybhep::sstore &store, const mybhep::gstore & gs, mybhep::EventManager2 *eman=0);
     void initializeHistos( void );
     bool execute(mybhep::event& evt, int ievent);
     bool finalize();
@@ -64,15 +64,15 @@ namespace CAT{
     void FillTrueVertexes( mybhep::event& evt );
     void FillTrueVertexes( mybhep::particle* p );
     void FillHistos(mybhep::event& evt );
-    bool read_event(mybhep::event& evt, topology::tracked_data & __tracked_data);
-    bool prepare_event(topology::tracked_data & __tracked_data);
+    bool read_event(mybhep::event& evt, topology::tracked_data & tracked_data_);
+    bool prepare_event(topology::tracked_data & tracked_data_);
     void read_true_sequences(mybhep::event& evt);
     void read_nemo_sequences(mybhep::event& evt);
     void read_true_sequences();
     void read_nemo_sequences();
     void print_cells(void)const;
     void print_calos(void)const;
-    void clusterize(topology::tracked_data & __tracked_data);
+    void clusterize(topology::tracked_data & tracked_data_);
     void print_clusters(void) const;
     void print_true_sequences(void)const;
     void print_nemo_sequences(void)const;
@@ -213,8 +213,8 @@ namespace CAT{
 
     //histogram file
     std::string hfile;
-    bool is_good_couplet(topology::cell* mainc, 
-                         const topology::cell &candidatec, 
+    bool is_good_couplet(topology::cell* mainc,
+                         const topology::cell &candidatec,
                          const std::vector<topology::cell> &nearmain);
     size_t get_true_hit_index(mybhep::hit& hit, bool print);
     size_t get_nemo_hit_index(mybhep::hit& hit, bool print);

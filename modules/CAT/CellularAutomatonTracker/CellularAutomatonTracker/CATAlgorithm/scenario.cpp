@@ -23,8 +23,8 @@ namespace CAT {
     }
 
     //! constructor
-    scenario::scenario(const std::vector<sequence> & seqs, 
-                       mybhep::prlevel level, double probmin){
+    scenario::scenario(const std::vector<sequence> & seqs,
+                       mybhep::prlevel /* level */, double probmin){
       appname_= "scenario: ";
       set_print_level(mybhep::NORMAL);
       set_probmin(probmin);
@@ -39,7 +39,7 @@ namespace CAT {
     void scenario::dump (std::ostream & a_out      ,
                          const std::string & a_title ,
                          const std::string & a_indent,
-                         bool a_inherit          )const{
+                         bool /* a_inherit */          )const{
       {
         std::string indent;
         if (! a_indent.empty ()) indent = a_indent;
@@ -168,12 +168,12 @@ namespace CAT {
             continue;
           }
 
-	  if( iseq->helix_vertex_id() != iseq->calo_helix_id() ){ // avoid double counting if both extrapolations point to the same calo
-	    if( freecalos[iseq->helix_vertex_id()] )
-	      freecalos[iseq->helix_vertex_id()] = 0;
-	    else
-	      counter ++;
-	  }
+          if( iseq->helix_vertex_id() != iseq->calo_helix_id() ){ // avoid double counting if both extrapolations point to the same calo
+            if( freecalos[iseq->helix_vertex_id()] )
+              freecalos[iseq->helix_vertex_id()] = 0;
+            else
+              counter ++;
+          }
         }
 
         if( iseq->has_decay_tangent_vertex() && iseq->decay_tangent_vertex_type() == "calo" ){
@@ -183,13 +183,13 @@ namespace CAT {
             continue;
           }
 
-	  if( iseq->calo_tangent_id() != iseq->calo_helix_id() &&
-	      iseq->calo_tangent_id() != iseq->helix_vertex_id() ){ // avoid double counting if both extrapolations point to the same calo
-	    if( freecalos[iseq->calo_tangent_id()] )
-	      freecalos[iseq->calo_tangent_id()] = 0;
-	    else
-	      counter ++;
-	  }
+          if( iseq->calo_tangent_id() != iseq->calo_helix_id() &&
+              iseq->calo_tangent_id() != iseq->helix_vertex_id() ){ // avoid double counting if both extrapolations point to the same calo
+            if( freecalos[iseq->calo_tangent_id()] )
+              freecalos[iseq->calo_tangent_id()] = 0;
+            else
+              counter ++;
+          }
         }
 
         if( iseq->has_tangent_vertex() && iseq->tangent_vertex_type() == "calo" ){
@@ -199,14 +199,14 @@ namespace CAT {
             continue;
           }
 
-	  if( iseq->tangent_vertex_id() != iseq->calo_helix_id() &&
-	      iseq->tangent_vertex_id() != iseq->calo_tangent_id() &&
-	      iseq->tangent_vertex_id() != iseq->helix_vertex_id() ){ // avoid double counting if both extrapolations point to the same calo
-	    if( freecalos[iseq->tangent_vertex_id()] )
-	      freecalos[iseq->tangent_vertex_id()] = 0;
-	    else
-	      counter ++;
-	  }
+          if( iseq->tangent_vertex_id() != iseq->calo_helix_id() &&
+              iseq->tangent_vertex_id() != iseq->calo_tangent_id() &&
+              iseq->tangent_vertex_id() != iseq->helix_vertex_id() ){ // avoid double counting if both extrapolations point to the same calo
+            if( freecalos[iseq->tangent_vertex_id()] )
+              freecalos[iseq->tangent_vertex_id()] = 0;
+            else
+              counter ++;
+          }
         }
 
 
@@ -228,36 +228,36 @@ namespace CAT {
       size_t counter = 0;
 
       for(std::vector<sequence>::const_iterator iseq = sequences_.begin(); iseq != sequences_.end(); ++iseq){
-	min_local_distance = limit;
-	found = false;
-	for(std::vector<sequence>::const_iterator jseq = iseq; jseq != sequences_.end(); ++jseq)
-	  {
-	    if( iseq == jseq ) continue;
-	    local_distance = 0.;
-	    if( iseq->common_vertex_on_foil(&(*jseq), &local_distance) ){
-	      if( local_distance < min_local_distance ){
-		min_local_distance = local_distance;
-		found = true;
-	      }
-	    }
-	  }
-	if( found ) counter ++;
+        min_local_distance = limit;
+        found = false;
+        for(std::vector<sequence>::const_iterator jseq = iseq; jseq != sequences_.end(); ++jseq)
+          {
+            if( iseq == jseq ) continue;
+            local_distance = 0.;
+            if( iseq->common_vertex_on_foil(&(*jseq), &local_distance) ){
+              if( local_distance < min_local_distance ){
+                min_local_distance = local_distance;
+                found = true;
+              }
+            }
+          }
+        if( found ) counter ++;
       }
       return counter;
     }
 
 
     size_t scenario::n_of_ends_on_wire(void)const{
-      
+
       size_t counter = 0;
 
       for(std::vector<sequence>::const_iterator iseq = sequences_.begin(); iseq != sequences_.end(); ++iseq){
 
-	if( !iseq->has_helix_vertex() && !iseq->has_tangent_vertex() )
-	  counter ++;
+        if( !iseq->has_helix_vertex() && !iseq->has_tangent_vertex() )
+          counter ++;
 
-	if( !iseq->has_decay_helix_vertex() && !iseq->has_decay_tangent_vertex() )
-	  counter ++;
+        if( !iseq->has_decay_helix_vertex() && !iseq->has_decay_tangent_vertex() )
+          counter ++;
 
       }
 
@@ -291,48 +291,48 @@ namespace CAT {
 
         if( iseq->has_decay_helix_vertex() && iseq->decay_helix_vertex_type() == "calo" ){
 
-	  if( iseq->calo_helix_id() >= calos.size() ){
-	    if( print_level() >= mybhep::VVERBOSE )
-	      std::clog << " problem: helix calo " << iseq->calo_helix_id() << " has larger id than n of calos " << calos.size() << std::endl;
-	    continue;
-	  }
-	  freecalos[iseq->calo_helix_id()] = 0;
-	}
+          if( iseq->calo_helix_id() >= calos.size() ){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " problem: helix calo " << iseq->calo_helix_id() << " has larger id than n of calos " << calos.size() << std::endl;
+            continue;
+          }
+          freecalos[iseq->calo_helix_id()] = 0;
+        }
 
         if( iseq->has_helix_vertex() && iseq->helix_vertex_type() == "calo" ){
 
-	  if( iseq->helix_vertex_id() >= calos.size() ){
-	    if( print_level() >= mybhep::VVERBOSE )
-	      std::clog << " problem: helix calo-vertex " << iseq->helix_vertex_id() << " has larger id than n of calos " << calos.size() << std::endl;
-	    continue;
-	  }
-	  freecalos[iseq->helix_vertex_id()] = 0;
-	}
+          if( iseq->helix_vertex_id() >= calos.size() ){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " problem: helix calo-vertex " << iseq->helix_vertex_id() << " has larger id than n of calos " << calos.size() << std::endl;
+            continue;
+          }
+          freecalos[iseq->helix_vertex_id()] = 0;
+        }
 
         if( iseq->has_decay_tangent_vertex() && iseq->decay_tangent_vertex_type() == "calo" ){
 
-	  if( iseq->calo_tangent_id() >= calos.size() ){
-	    if( print_level() >= mybhep::VVERBOSE )
-	      std::clog << " problem: tangent calo " << iseq->calo_tangent_id() << " has larger id than n of calos " << calos.size() << std::endl;
-	    continue;
-	  }
-	  freecalos[iseq->calo_tangent_id()] = 0;
-	}
+          if( iseq->calo_tangent_id() >= calos.size() ){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " problem: tangent calo " << iseq->calo_tangent_id() << " has larger id than n of calos " << calos.size() << std::endl;
+            continue;
+          }
+          freecalos[iseq->calo_tangent_id()] = 0;
+        }
 
         if( iseq->has_tangent_vertex() && iseq->tangent_vertex_type() == "calo" ){
 
-	  if( iseq->tangent_vertex_id() >= calos.size() ){
-	    if( print_level() >= mybhep::VVERBOSE )
-	      std::clog << " problem: tangent calo-vertex " << iseq->tangent_vertex_id() << " has larger id than n of calos " << calos.size() << std::endl;
-	    continue;
-	  }
-	  freecalos[iseq->tangent_vertex_id()] = 0;
-	}
+          if( iseq->tangent_vertex_id() >= calos.size() ){
+            if( print_level() >= mybhep::VVERBOSE )
+              std::clog << " problem: tangent calo-vertex " << iseq->tangent_vertex_id() << " has larger id than n of calos " << calos.size() << std::endl;
+            continue;
+          }
+          freecalos[iseq->tangent_vertex_id()] = 0;
+        }
 
 
 
       }
-      
+
       size_t counter = 0;
       for(std::vector<int>::iterator i=freecells.begin(); i!= freecells.end(); ++i)
         if( *i )
@@ -382,8 +382,8 @@ namespace CAT {
       if( print_level() >= mybhep::VVERBOSE ){
         std::clog << " delta n_free_families = (" << n_free_families()  << " - " << s.n_free_families() << ")= " << deltanfree
                   << " dela n_overlaps = (" << n_overlaps() << " - " << s.n_overlaps() << ")= " << deltanoverls
-                  << " delta prob = (" << Prob()  << " - " << s.Prob() << ") = " << deltaprob 
-		  << std::endl;
+                  << " delta prob = (" << Prob()  << " - " << s.Prob() << ") = " << deltaprob
+                  << std::endl;
       }
 
       if( deltanoverls < - 2*deltanfree )
@@ -391,17 +391,17 @@ namespace CAT {
 
       if( deltanoverls == - 2*deltanfree ){
 
-	int delta_n_common_vertexes = n_of_common_vertexes(limit) - s.n_of_common_vertexes(limit);
-	if( print_level() >= mybhep::VVERBOSE )
-	  std::clog << " delta n common vertex = " << delta_n_common_vertexes << std::endl;
-	if( delta_n_common_vertexes > 0 ) return true;
-	if( delta_n_common_vertexes < 0 ) return false;
+        int delta_n_common_vertexes = n_of_common_vertexes(limit) - s.n_of_common_vertexes(limit);
+        if( print_level() >= mybhep::VVERBOSE )
+          std::clog << " delta n common vertex = " << delta_n_common_vertexes << std::endl;
+        if( delta_n_common_vertexes > 0 ) return true;
+        if( delta_n_common_vertexes < 0 ) return false;
 
-	int delta_n_of_ends_on_wire = n_of_ends_on_wire() - s.n_of_ends_on_wire();
-	if( print_level() >= mybhep::VVERBOSE )
-	  std::clog << " delta n ends on wire = " << delta_n_of_ends_on_wire << std::endl;
-	if( delta_n_of_ends_on_wire < 0 ) return true;
-	if( delta_n_of_ends_on_wire > 0 ) return false;
+        int delta_n_of_ends_on_wire = n_of_ends_on_wire() - s.n_of_ends_on_wire();
+        if( print_level() >= mybhep::VVERBOSE )
+          std::clog << " delta n ends on wire = " << delta_n_of_ends_on_wire << std::endl;
+        if( delta_n_of_ends_on_wire < 0 ) return true;
+        if( delta_n_of_ends_on_wire > 0 ) return false;
 
         if( deltaprob > 0. )
           return true;

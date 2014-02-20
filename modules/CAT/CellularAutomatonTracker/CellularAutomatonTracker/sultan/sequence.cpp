@@ -7,7 +7,7 @@
 #include <sultan/node.h>
 #include <sultan/experimental_helix.h>
 
-#include <sys/time.h> 
+#include <sys/time.h>
 
 namespace SULTAN {
   namespace topology{
@@ -38,7 +38,7 @@ namespace SULTAN {
     void sequence::dump (std::ostream & a_out   ,
                          const std::string & a_title ,
                          const std::string & a_indent ,
-                         bool a_inherit          ) const{
+                         bool /* a_inherit */         ) const{
       std::string indent;
       if (! a_indent.empty ()) indent = a_indent;
       if (! a_title.empty ())
@@ -97,8 +97,8 @@ namespace SULTAN {
     bool sequence::is_contained_in(const sequence & s)const{
 
       for(std::vector<node>::const_iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode ){
-	if( !s.has_cell(inode->c() ) )
-	  return false;
+        if( !s.has_cell(inode->c() ) )
+          return false;
       }
 
       return true;
@@ -108,8 +108,8 @@ namespace SULTAN {
 
       std::vector<node> nodes = s.nodes();
       for(std::vector<node>::const_iterator inode = nodes.begin(); inode != nodes.end(); ++inode ){
-	if( !this->has_cell(inode->c() ) )
-	  return false;
+        if( !this->has_cell(inode->c() ) )
+          return false;
       }
 
       return true;

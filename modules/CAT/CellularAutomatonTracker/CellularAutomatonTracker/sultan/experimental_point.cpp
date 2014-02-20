@@ -43,18 +43,18 @@ namespace SULTAN{
 
     /*** dump ***/
     void experimental_point::dump (std::ostream & a_out,
-				   const std::string & a_title  ,
-				   const std::string & a_indent ,
-				   bool a_inherit              ) const{
+                                   const std::string & a_title  ,
+                                   const std::string & a_indent ,
+                                   bool /* a_inherit */              ) const{
       std::string indent;
       if (! a_indent.empty ()) indent = a_indent;
       if (! a_title.empty ())
-	{
-	  a_out << indent << a_title << std::endl;
-	}
-	
+        {
+          a_out << indent << a_title << std::endl;
+        }
+
       a_out << indent << " x ("; x().dump(); a_out << ") , y ("; y().dump(); a_out << ") , z ("; z().dump(); a_out << ") ";
-	
+
       return;
     }
 
@@ -66,7 +66,7 @@ namespace SULTAN{
       z_ = z;
       set_radius();
     }
-    
+
     //! set x
     void experimental_point::set_x(const experimental_double &x)
     {
@@ -141,11 +141,11 @@ namespace SULTAN{
       experimental_double result;
 
       result.set_value( std::sqrt(pow(x_.value()-p2.x().value(),2) +
-				  pow(y_.value()-p2.y().value(),2) +
-				  pow(z_.value()-p2.z().value(),2)));
+                                  pow(y_.value()-p2.y().value(),2) +
+                                  pow(z_.value()-p2.z().value(),2)));
       result.set_error( std::sqrt( pow(x_.value()*x_.error(),2) + pow(p2.x().value()*p2.x().error(),2) +
-				   pow(y_.value()*y_.error(),2) + pow(p2.y().value()*p2.y().error(),2) +
-				   pow(z_.value()*z_.error(),2) + pow(p2.z().value()*p2.z().error(),2))/result.value());
+                                   pow(y_.value()*y_.error(),2) + pow(p2.y().value()*p2.y().error(),2) +
+                                   pow(z_.value()*z_.error(),2) + pow(p2.z().value()*p2.z().error(),2))/result.value());
 
       return result;
     }
@@ -157,9 +157,9 @@ namespace SULTAN{
       experimental_double result;
 
       result.set_value( std::sqrt(pow(x_.value()-p2.x().value(),2)+
-				  pow(y_.value()-p2.y().value(),2)));
+                                  pow(y_.value()-p2.y().value(),2)));
       result.set_error( std::sqrt( pow(x_.value()*x_.error(),2) + pow(p2.x().value()*p2.x().error(),2) +
-				   pow(y_.value()*y_.error(),2) + pow(p2.y().value()*p2.y().error(),2))/result.value());
+                                   pow(y_.value()*y_.error(),2) + pow(p2.y().value()*p2.y().error(),2))/result.value());
 
       return result;
     }
@@ -174,7 +174,7 @@ namespace SULTAN{
       double rr = std::sqrt(pow(x_.value(),2) + pow(y_.value(),2));
       if( isnan(rr) ) rr = mybhep::small_neg;
       double err = std::sqrt(pow(x_.value()*x_.error(),2)
-			     + pow(y_.value()*y_.error(),2))/rr;
+                             + pow(y_.value()*y_.error(),2))/rr;
       if( isnan(err) ) err = mybhep::small_neg;
 
       radius_.set_value(rr);

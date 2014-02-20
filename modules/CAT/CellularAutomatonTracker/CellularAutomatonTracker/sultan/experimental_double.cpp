@@ -14,18 +14,18 @@ namespace SULTAN {
     {
       return is_value_valid () && is_error_valid ();
     }
-    
+
     bool experimental_double::is_value_valid () const
     {
       return v_ == v_;
     }
-    
+
     bool experimental_double::is_error_valid () const
     {
       return e_ == e_;
     }
 
-    //!Default constructor     
+    //!Default constructor
     experimental_double::experimental_double()
     {
       v_ = std::numeric_limits<double>::quiet_NaN ();
@@ -38,7 +38,7 @@ namespace SULTAN {
     {
       return;
     }
-    
+
 
     //! constructor
     experimental_double::experimental_double(const double &v, const double &e)
@@ -50,9 +50,9 @@ namespace SULTAN {
 
     /*** dump ***/
     void experimental_double::dump (ostream & a_out,
-                                    const std::string & a_title,
-                                    const std::string & a_indent,
-                                    bool a_inherit) const
+                                    const std::string & /* a_title */,
+                                    const std::string & /* a_indent */,
+                                    bool /* a_inherit */) const
     {
       a_out << value() << " +- " << error();
       return;
@@ -91,7 +91,7 @@ namespace SULTAN {
     }
 
     // Operators
-    //! operador += 
+    //! operador +=
     experimental_double& experimental_double::operator += (const experimental_double& p2)
     {
       experimental_double& p1= *this;
@@ -102,7 +102,7 @@ namespace SULTAN {
       return p1;
     }
 
-    //! operador -= 
+    //! operador -=
     experimental_double& experimental_double::operator -= (const experimental_double& p2)
     {
       experimental_double& p1= *this;
@@ -114,7 +114,7 @@ namespace SULTAN {
       return p1;
     }
 
-    //! operador *= 
+    //! operador *=
     experimental_double& experimental_double::operator *= (experimental_double a)
     {
       experimental_double& p1= *this;
@@ -127,7 +127,7 @@ namespace SULTAN {
       return p1;
     }
 
-    //! operador *= 
+    //! operador *=
     experimental_double& experimental_double::operator *= (double a)
     {
       experimental_double& p1= *this;
@@ -140,7 +140,7 @@ namespace SULTAN {
       return p1;
     }
 
-    //! operador /= 
+    //! operador /=
     experimental_double& experimental_double::operator /= (experimental_double a)
     {
       experimental_double& p1= *this;
@@ -156,7 +156,7 @@ namespace SULTAN {
       return p1;
     }
 
-    //! operador /= 
+    //! operador /=
     experimental_double& experimental_double::operator /= (double a)
     {
       experimental_double& p1= *this;
@@ -283,7 +283,7 @@ namespace SULTAN {
 
     // Operations with experimental_points
     // -v
-    // sin(v) 
+    // sin(v)
     experimental_double experimental_sin (const experimental_double& v1)
     {
       experimental_double v;
@@ -291,8 +291,8 @@ namespace SULTAN {
       v.set_error(fabs(cos(v1.value()))*v1.error());
       return v;
     }
-  
-    // cos(v) 
+
+    // cos(v)
     experimental_double experimental_cos (const experimental_double& v1)
     {
       experimental_double v;
@@ -300,8 +300,8 @@ namespace SULTAN {
       v.set_error(fabs(sin(v1.value()))*v1.error());
       return v;
     }
-  
-    // tan(v) 
+
+    // tan(v)
     experimental_double experimental_tan (const experimental_double& v1)
     {
       experimental_double v;
@@ -309,8 +309,8 @@ namespace SULTAN {
       v.set_error((1. + std::pow(v.value(),2))*v1.error());
       return v;
     }
-  
-    // asin(v) 
+
+    // asin(v)
     experimental_double experimental_asin (const experimental_double& v1)
     {
       experimental_double v;
@@ -318,8 +318,8 @@ namespace SULTAN {
       v.set_error(v1.error()/std::sqrt(1 - std::pow(v1.value(),2)));
       return v;
     }
-  
-    // acos(v) 
+
+    // acos(v)
     experimental_double experimental_acos (const experimental_double& v1)
     {
       experimental_double v;
@@ -327,8 +327,8 @@ namespace SULTAN {
       v.set_error(v1.error()/std::sqrt(1 - std::pow(v1.value(),2)));
       return v;
     }
-  
-    // atan(v) 
+
+    // atan(v)
     experimental_double experimental_atan2 (const experimental_double& v1, const experimental_double& v2)
     {
       experimental_double v;
@@ -345,12 +345,12 @@ namespace SULTAN {
         double den = 1 + std::pow(v1.value()/v2.value(),2);
         double num = std::pow(v1.error()/v2.value(),2) + std::pow(v1.value()*v2.error()/std::pow(v2.value(),2),2);
         v.set_error(std::sqrt(num)/den);
-      
+
       }
       return v;
     }
-  
-    // square(v) 
+
+    // square(v)
     experimental_double experimental_square (const experimental_double& v1)
     {
       experimental_double v;
@@ -358,8 +358,8 @@ namespace SULTAN {
       v.set_error(2*fabs(v1.value())*v1.error());
       return v;
     }
-  
-    // sqrt(v) 
+
+    // sqrt(v)
     experimental_double experimental_sqrt (const experimental_double& v1)
     {
       experimental_double v;
@@ -367,8 +367,8 @@ namespace SULTAN {
       v.set_error(v1.error()/(2*v.value()));
       return v;
     }
-  
-    // cube(v) 
+
+    // cube(v)
     experimental_double experimental_cube (const experimental_double& v1)
     {
       experimental_double v;
@@ -376,8 +376,8 @@ namespace SULTAN {
       v.set_error(3*std::pow(v1.value(),2)*v1.error());
       return v;
     }
-  
-    // fabs(v) 
+
+    // fabs(v)
     experimental_double experimental_fabs (const experimental_double& v1)
     {
       experimental_double v;
@@ -385,80 +385,80 @@ namespace SULTAN {
       v.set_error(v1.error());
       return v;
     }
-  
-    // min(v1, v2) 
+
+    // min(v1, v2)
     experimental_double experimental_min (const experimental_double& v1, const experimental_double& v2)
     {
       experimental_double v = v1;
       if( v1.value() > v2.value() )
-	v = v2;
+        v = v2;
       return v;
     }
-  
-    // max(v1, v2) 
+
+    // max(v1, v2)
     experimental_double experimental_max (const experimental_double& v1, const experimental_double& v2)
     {
       experimental_double v = v1;
       if( v1.value() < v2.value() )
-	v = v2;
+        v = v2;
       return v;
     }
-  
+
     experimental_double operator - (const experimental_double& v1)
     {
       experimental_double v = v1;
       v.set_value(-v1.value());
       v.set_error(v1.error());
-    
+
       return v;
     }
 
     // v1+v2
     experimental_double operator + (const experimental_double& v1, const experimental_double& v2)
     {
-      experimental_double v = v1; 
-      v+=v2;   
+      experimental_double v = v1;
+      v+=v2;
       return v;
     }
     //! v1-v2
     experimental_double operator - (const experimental_double& v1, const experimental_double& v2)
     {
-      experimental_double v = v1; 
-      v-=v2;   
+      experimental_double v = v1;
+      v-=v2;
       return v;
     }
 
     // v*d
     experimental_double operator * (const experimental_double& v1, const experimental_double& d)
     {
-      experimental_double v = v1; 
-      v*=d;   
+      experimental_double v = v1;
+      v*=d;
       return v;
     }
 
     // v/d
     experimental_double operator / (const experimental_double& v1, const experimental_double& d)
     {
-      experimental_double v = v1; 
-      v/=d;   
+      experimental_double v = v1;
+      v/=d;
       return v;
     }
 
     // v*d
     experimental_double operator * (const experimental_double& v1, double d)
     {
-      experimental_double v = v1; 
+      experimental_double v = v1;
       experimental_double dd(d,0.);
-      v*=dd;   
+      v*=dd;
       return v;
     }
 
     // v/d
     experimental_double operator / (const experimental_double& v1, double d)
     {
-      experimental_double v = v1; 
+      experimental_double v = v1;
       experimental_double dd(d,0.);
-      v/=dd;   
+      v/=dd;
       return v;
     }
 
@@ -466,8 +466,8 @@ namespace SULTAN {
     experimental_double operator / (double d, const experimental_double& v1)
     {
       experimental_double dd(d,0.);
-      experimental_double v = v1; 
-      dd/=v;   
+      experimental_double v = v1;
+      dd/=v;
       return dd;
     }
 
@@ -499,17 +499,17 @@ namespace SULTAN {
     {
       double mean = 0.;
       double inverr = 0.;
-      double sumwiei2 = 0.;
+      //double sumwiei2 = 0.;
 
       // w_i = 1/sigma_i^2
       // mean = (sum_i w_i x_i)/(sum_k w_k)
       // sigma(mean) = 1/sqrt(sum_k w_k)
 
       for(std::vector<experimental_double>::const_iterator iv=vs.begin(); iv!=vs.end(); ++iv){
-	mean += iv->value()/std::pow(iv->error(),2);
-	inverr += 1/std::pow(iv->error(),2);
+        mean += iv->value()/std::pow(iv->error(),2);
+        inverr += 1/std::pow(iv->error(),2);
       }
-      
+
       return experimental_double(mean/inverr, 1./sqrt(inverr));
     }
 

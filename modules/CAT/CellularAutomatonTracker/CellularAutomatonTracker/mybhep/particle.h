@@ -119,7 +119,7 @@ namespace mybhep {
     particle(ptype type, int code, idcode scheme=GEANT3);
     //! general constructor
     particle(ptype type, std::string name, int pdg, double m,
-	     double q, double l=-1);
+             double q, double l=-1);
 
     //! destructor
     virtual ~particle();
@@ -210,43 +210,43 @@ namespace mybhep {
     mybhep::Vector4D& p4() {return *p4_;}
 
     //! return particle momentum (magnitude)  at production vertex
-    const double p() const {return r_->p3().mag();}
+    double p() const {return r_->p3().mag();}
     //! return px at production vertex
-    const double px() const {return r_->p3().x();}
+    double px() const {return r_->p3().x();}
     //! return py at production vertex
-    const double py() const {return r_->p3().y();}
+    double py() const {return r_->p3().y();}
     //! return pz at production vertex
-    const double pz() const {return r_->p3().z();}
+    double pz() const {return r_->p3().z();}
     //! return pt at production vertex
-    const double pt() const {return r_->p3().perp();}
+    double pt() const {return r_->p3().perp();}
 
     //! return particle momentum (magnitude)  at decay vertex
-    const double pd() const {return rd_->p3().mag();}
+    double pd() const {return rd_->p3().mag();}
     //! return px at decay vertex
-    const double pxd() const {return rd_->p3().x();}
+    double pxd() const {return rd_->p3().x();}
     //! return py at decay vertex
-    const double pyd() const {return rd_->p3().y();}
+    double pyd() const {return rd_->p3().y();}
     //! return pz at decay vertex
-    const double pzd() const {return rd_->p3().z();}
+    double pzd() const {return rd_->p3().z();}
     //! return pt at decay vertex
-    const double ptd() const {return rd_->p3().perp();}
+    double ptd() const {return rd_->p3().perp();}
 
     //! return energy
     double e() const {return p4_->e();}
 
     //! return production vertex x
-    const double x() const {return vertex().x();}
+    double x() const {return vertex().x();}
     //! return production vertex y
-    const double y() const {return vertex().y();}
+    double y() const {return vertex().y();}
     //! return production vertex z
-    const double z() const {return vertex().z();}
+    double z() const {return vertex().z();}
 
     //! return decay vertex x
-    const double xd() const {return decay_vertex().x();}
+    double xd() const {return decay_vertex().x();}
     //! return decay vertex y
-    const double yd() const {return decay_vertex().y();}
+    double yd() const {return decay_vertex().y();}
     //! return decay vertex z
-    const double zd() const {return decay_vertex().z();}
+    double zd() const {return decay_vertex().z();}
 
     //! return mother
     const particle&  mother() const {
@@ -321,12 +321,3 @@ namespace mybhep {
   std::ostream& operator << (std::ostream& s, const particle& ip);
 }
 #endif
-
-
-
-
-
-
-
-
-

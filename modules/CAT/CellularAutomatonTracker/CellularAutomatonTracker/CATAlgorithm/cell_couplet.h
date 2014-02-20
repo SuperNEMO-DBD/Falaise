@@ -66,7 +66,7 @@ namespace CAT{
 
       //! constructor
       cell_couplet(const cell &ca, const cell &cb, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
-   
+
       //! constructor
       cell_couplet(const cell &ca, const cell &cb, const std::string &just, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
 
@@ -129,10 +129,10 @@ namespace CAT{
       const experimental_double& distance_hor()const;
 
       //! get free level
-      const bool free()const;
+      bool free()const;
 
       //! get begun level
-      const bool begun()const;
+      bool begun()const;
 
     protected:
 
@@ -156,8 +156,8 @@ namespace CAT{
                              const cell_couplet& right);
 
       //! are the two circles tangent or intersecting?
-        bool intersecting()const;
-    
+      bool intersecting()const;
+
 
 
     };

@@ -63,7 +63,7 @@ namespace SULTAN{
     void experimental_vector::dump (std::ostream & a_out,
                                     const std::string & a_title,
                                     const std::string & a_indent,
-                                    bool a_inherit              ) const{
+                                    bool /* a_inherit */             ) const{
       {
         std::string indent;
         if (! a_indent.empty ()) indent = a_indent;
@@ -72,7 +72,7 @@ namespace SULTAN{
             a_out << indent << a_title << std::endl;
           }
 
-	a_out << indent << " x ("; x().dump(); a_out << ") , ("; y().dump(); a_out << ") , ("; z().dump(); a_out << std::endl;
+        a_out << indent << " x ("; x().dump(); a_out << ") , ("; y().dump(); a_out << ") , ("; z().dump(); a_out << std::endl;
 
         return;
       }

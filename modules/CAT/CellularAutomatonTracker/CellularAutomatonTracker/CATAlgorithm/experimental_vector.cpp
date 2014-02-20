@@ -63,7 +63,7 @@ namespace CAT{
     void experimental_vector::dump (std::ostream & a_out,
                                     const std::string & a_title,
                                     const std::string & a_indent,
-                                    bool a_inherit              ) const{
+                                    bool /* a_inherit */              ) const{
       {
         std::string indent;
         if (! a_indent.empty ()) indent = a_indent;

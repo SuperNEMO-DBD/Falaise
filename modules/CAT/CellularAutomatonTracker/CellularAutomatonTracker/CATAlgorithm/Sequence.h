@@ -58,25 +58,25 @@ namespace CAT {
 
       void set_track_id(size_t a){track_id_ = a;};
 
-      const size_t track_id()const{return track_id_;};
+      size_t track_id()const{return track_id_;};
 
       /*** dump ***/
       virtual void dump (std::ostream & a_out         = std::clog,
                          const std::string & a_title  = "",
                          const std::string & a_indent = "",
-                         bool a_inherit          = false) const{
+                         bool /*a_inherit*/          = false) const{
 
-	std::string indent;
-	if (! a_indent.empty ()) indent = a_indent;
-	if (! a_title.empty ())
-	  {
-	    a_out << indent << a_title << std::endl;
-	  }
-	
-	a_out << indent << " Sequence ------------------- " << this->track_id() << " cells " << cells_.size() << std::endl;
-	for(std::vector<Cell>::const_iterator ic=cells_.begin(); ic!=cells_.end(); ++ic)
-	  ic->dump();
-	
+        std::string indent;
+        if (! a_indent.empty ()) indent = a_indent;
+        if (! a_title.empty ())
+          {
+            a_out << indent << a_title << std::endl;
+          }
+
+        a_out << indent << " Sequence ------------------- " << this->track_id() << " cells " << cells_.size() << std::endl;
+        for(std::vector<Cell>::const_iterator ic=cells_.begin(); ic!=cells_.end(); ++ic)
+          ic->dump();
+
       }
 
     };

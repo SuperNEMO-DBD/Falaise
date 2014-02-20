@@ -24,13 +24,13 @@
 #include <cstdio>
 #include <cstdlib>
 
-#ifndef HAVE_SSTREAM
-#include <strstream>
-using std::strstream;
-//#include <strstream.h>
-#else
+// #ifndef HAVE_SSTREAM
+// #include <strstream>
+// using std::strstream;
+// //#include <strstream.h>
+// #else
 #include <sstream>
-#endif
+// #endif
 
 #include <mybhep/event_cvt.h>
 #include <mybhep/particle_cvt.h>
@@ -205,11 +205,11 @@ namespace mybhep{
   {
 
 
-#ifndef HAVE_SSTREAM
-    istrstream istr (s.c_str());
-#else
-    istringstream istr(s.c_str());
-#endif
+// #ifndef HAVE_SSTREAM
+//     istrstream istr (s.c_str());
+// #else
+    std::istringstream istr(s.c_str());
+// #endif
 
     // get converter service
     converter_svc& csvc = mybhep_svc::instance().

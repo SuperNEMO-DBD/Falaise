@@ -40,7 +40,7 @@ namespace mybhep{
 
   }
   // copy constructor
-  hit::hit(const hit& tr)
+  hit::hit(const hit& tr) : bproperties()
   {
     mother_ = &tr.mother_particle();
     detector_ = tr.detector_;
@@ -83,9 +83,9 @@ namespace mybhep{
     for(I i=ih.data_map().begin(); i !=ih.data_map().end(); ++i)
       {
 
-	s << " data name = " << i->first
-	  << " data value = " << i->second
-	  <<endl;
+        s << " data name = " << i->first
+          << " data value = " << i->second
+          <<endl;
       }
 
     return s;

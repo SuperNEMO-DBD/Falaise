@@ -16,12 +16,12 @@
  */
 
 //#include "config.h"
-#ifndef HAVE_SSTREAM
-//#include <strstream.h>
-#include <strstream>
-#else
+// #ifndef HAVE_SSTREAM
+// //#include <strstream.h>
+// #include <strstream>
+// #else
 #include <sstream>
-#endif
+// #endif
 
 #include <mybhep/track_cvt.h>
 #include <mybhep/particle_cvt.h>
@@ -101,11 +101,11 @@ namespace mybhep{
 
 void  track_cvt::restore( std::string def )
 {
-#ifndef HAVE_SSTREAM
-    istrstream istr (def.c_str());
-#else
-    istringstream istr(def.c_str());
-#endif
+// #ifndef HAVE_SSTREAM
+//     istrstream istr (def.c_str());
+// #else
+  std::istringstream istr(def.c_str());
+// #endif
 
     std::string name;
     istr >> name ;
@@ -210,5 +210,3 @@ void  track_cvt::restore( std::string def )
   }
 
 }
-
-

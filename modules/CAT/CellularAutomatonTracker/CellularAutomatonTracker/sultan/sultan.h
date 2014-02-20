@@ -50,8 +50,8 @@ namespace SULTAN {
     bool sequentiate(topology::tracked_data & tracked_data);
     bool assign_nodes_based_on_experimental_helix(std::vector<topology::node> nodes, std::vector<topology::node> &assigned_nodes, std::vector<topology::node> &leftover_nodes, topology::experimental_helix * b, std::vector<topology::experimental_helix> *helices);
     bool assign_nodes_based_on_experimental_helix(std::vector<topology::node> nodes, std::vector<topology::node> &assigned_nodes, std::vector<topology::node> &leftover_nodes, topology::experimental_helix * b, std::vector<size_t> *neighbouring_cells);
-    bool form_triplets_from_cells(std::vector<topology::node> nodes);
-    bool form_helices_from_triplets(std::vector<topology::node> nodes, std::vector<topology::experimental_helix> *the_helices, size_t icluster);
+    bool form_triplets_from_cells(const std::vector<topology::node> & nodes);
+    bool form_helices_from_triplets(const std::vector<topology::node> & nodes, std::vector<topology::experimental_helix> *the_helices, size_t icluster);
     void sequentiate_cluster_with_experimental_vector(topology::cluster & cluster, size_t icluster);
     void sequentiate_cluster_with_experimental_vector_2(topology::cluster & cluster, size_t icluster);
     void sequentiate_cluster_with_experimental_vector_3(topology::cluster & cluster, size_t icluster);
@@ -121,25 +121,25 @@ namespace SULTAN {
 
     void set_Emin(double v){
       if ( v <= 0.0)
-	{
-	  Emin = std::numeric_limits<double>::quiet_NaN ();
+        {
+          Emin = std::numeric_limits<double>::quiet_NaN ();
         }
       else
-	{
-	  Emin = v;
-	}
+        {
+          Emin = v;
+        }
       return;
     }
 
     void set_Emax(double v){
       if ( v <= 0.0)
-	{
-	  Emax = std::numeric_limits<double>::quiet_NaN ();
+        {
+          Emax = std::numeric_limits<double>::quiet_NaN ();
         }
       else
-	{
-	  Emax = v;
-	}
+        {
+          Emax = v;
+        }
       return;
     }
 

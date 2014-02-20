@@ -6,12 +6,12 @@ namespace SULTAN {
 
   using namespace std;
 
-  bool clockable::compare(const clockable& c1, const clockable& c2) 
+  bool clockable::compare(const clockable& c1, const clockable& c2)
   {
     return c1.time_ > c2.time_; //notice that you have private access rights, which can be useful.
   }
 
-    
+
   //!Default constructor
   clockable::clockable(std::string name)
   {
@@ -28,9 +28,9 @@ namespace SULTAN {
 
   void clockable::dump (double max,
                         std::ostream & a_out,
-                        const std::string & a_title,
-                        const std::string & a_indent,
-                        bool a_inherit) const
+                        const std::string & /* a_title */,
+                        const std::string & /* a_indent */,
+                        bool /* a_inherit */) const
   {
     a_out << " time of " << name_ << " : " << time_ << " ms (" << time_/max*100. << " \%)" << std::endl;
     return;

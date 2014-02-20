@@ -3,53 +3,53 @@
 
 namespace SULTAN{
   namespace topology{
-    
+
     using namespace mybhep;
     using namespace std;
-    
+
     experimental_double cell::distance(cell c) const{
-      
+
       experimental_vector v(ep(),c.ep());
-      
+
       return v.length();
-      
+
     }
 
 
     void cell::dump_point(experimental_point epp)const{
-      
+
       experimental_vector v(ep(), epp);
-      
+
       std::clog << " x: "; (v.x()).dump();
       std::clog << " y: "; (v.y()).dump();
       std::clog << " z: "; (v.z()).dump();
       std::clog << " phi: "; (v.phi()*180./M_PI).dump();
-      
+
     }
 
 
     void cell::dump_point_phi(experimental_point epp)const{
-      
+
       experimental_vector v(ep(), epp);
       std::clog << " phi: "; (v.phi()*180./M_PI).dump();
-      
+
     }
 
 
     bool cell::same_cell(topology::cell c)const{
-      
+
       if( block() == c.block() &&
-	  layer() == c.layer() &&
-	  iid() == c.iid() &&
-	  n3id() == c.n3id() )
-	return true;
-      
+          layer() == c.layer() &&
+          iid() == c.iid() &&
+          n3id() == c.n3id() )
+        return true;
+
       return false;
-      
+
     }
 
 
-    size_t cell::near_level( const topology::cell & cell, double nofflayers, double cell_distance )const{
+    size_t cell::near_level( const topology::cell & cell, double nofflayers, double /* cell_distance */ )const{
 
       // returns 0 for far-away cell
       // 1 for cells separated by nofflayers
@@ -71,7 +71,7 @@ namespace SULTAN{
       const int hit1_side  = this->block();  // -1, 1
       const int hit1_layer = abs(this->layer()); // 0, 1, ..., 8
       const int hit1_row   = this->iid();  // -56, -55, ..., 55, 56
-      
+
       const int hit2_side  = cell.block();
       const int hit2_layer = abs(cell.layer());
       const int hit2_row   = cell.iid();
@@ -84,10 +84,10 @@ namespace SULTAN{
       const unsigned int row_distance = abs (hit1_row - hit2_row);
 
       if (layer_distance == 0 && row_distance == 0){
-	if( print_level() >= mybhep::NORMAL ){
-	  std::clog << " problem: sultan asking near level of cells with identical posiion (" << hit1_side << ", " << hit1_layer << ", " << hit1_row << ") (" << hit2_side << ", " << hit2_layer << ", " << hit2_row << ")" << std::endl;
-	}
-	return 3;
+        if( print_level() >= mybhep::NORMAL ){
+          std::clog << " problem: sultan asking near level of cells with identical posiion (" << hit1_side << ", " << hit1_layer << ", " << hit1_row << ") (" << hit2_side << ", " << hit2_layer << ", " << hit2_row << ")" << std::endl;
+        }
+        return 3;
       }
       else if (layer_distance == 1 && row_distance == 0) return 3;
       else if (layer_distance == 0 && row_distance == 1) return 3;
@@ -104,16 +104,16 @@ namespace SULTAN{
 
 
       if( print_level() >= mybhep::VVERBOSE )
-	std::clog << " (c " << this->id() << " d " << distance.value() << " )";
+        std::clog << " (c " << this->id() << " d " << distance.value() << " )";
 
       if( fabs(distance.value() - limit_side) < precision )
-	return 3;
+        return 3;
 
       if( fabs(distance.value() - limit_diagonal) < precision )
-	return 2;
+        return 2;
 
       if( distance.value() < limit_diagonal*(1. + nofflayers) )
-	return 1;
+        return 1;
 
       return 0;
 #endif
@@ -124,4 +124,3 @@ namespace SULTAN{
 
   }
 }
-

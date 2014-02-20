@@ -185,7 +185,7 @@ namespace CAT {
   bool input_data_sultan::check () const
   {
     std::vector<int> mids;
-    for (int i = 0; i < cells.size (); i++)
+    for (int i = 0; i < (int) cells.size (); i++)
       {
         const topology::Cell & c = cells.at(i);
         int cell_id = c.id();

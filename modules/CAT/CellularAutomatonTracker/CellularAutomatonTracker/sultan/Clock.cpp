@@ -19,22 +19,22 @@ namespace SULTAN {
     return;
   }
 
-  void Clock::dump (ostream & a_out,
-                    const std::string & a_title,
-                    const std::string & a_indent,
-                    bool a_inherit) const{
+  void Clock::dump (ostream & /* a_out */,
+                    const std::string & /* a_title */,
+                    const std::string & /* a_indent */,
+                    bool /* a_inherit */) const{
     // Trick to workaround the constness of the dump method :
     // because 'this' is const, we cannot modify/sort the 'clockables_' STL collection,
     // so we use 'mutable_this' :
     Clock * mutable_this = const_cast<Clock *>(this);
     if( mutable_this->clockables_.size() ){
-      std::sort( mutable_this->clockables_.begin(), 
-		 mutable_this->clockables_.end(), clockable::compare );
-      
+      std::sort( mutable_this->clockables_.begin(),
+                 mutable_this->clockables_.end(), clockable::compare );
+
       double max = clockables_.begin()->time_;
-      
+
       for(size_t i=0; i<clockables_.size(); i++){
-	this->clockables_[i].dump(max);
+        this->clockables_[i].dump(max);
       }
     }
     return;
@@ -104,7 +104,7 @@ namespace SULTAN {
   {
     size_t index;
     if( has(name , &index) )
-      clockables()[index].stop();  
+      clockables()[index].stop();
     else
       std::clog << " problem: can't stop clockable " << name << " which is not there " << std::endl;
   }
@@ -113,7 +113,7 @@ namespace SULTAN {
   {
     size_t index;
     if( has(name , &index) )
-      return clockables()[index].read();  
+      return clockables()[index].read();
 
     std::clog << " problem: request time of clockable " << name << " which is not there " << std::endl;
     return 0;

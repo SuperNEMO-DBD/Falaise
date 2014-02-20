@@ -1,6 +1,8 @@
 /* -*- mode: c++ -*- */
 #include <CATAlgorithm/sequence.h>
 
+#include <limits>
+
 #include <CATAlgorithm/experimental_point.h>
 #include <CATAlgorithm/experimental_vector.h>
 #include <CATAlgorithm/cell.h>
@@ -15,7 +17,7 @@
 #include <CATAlgorithm/LinearRegression.h>
 #include <CATAlgorithm/CircleRegression.h>
 
-#include <sys/time.h> 
+#include <sys/time.h>
 
 namespace CAT {
   namespace topology{
@@ -181,7 +183,7 @@ namespace CAT {
     void sequence::dump (std::ostream & a_out   ,
                          const std::string & a_title ,
                          const std::string & a_indent ,
-                         bool a_inherit          ) const{
+                         bool /*a_inherit*/          ) const{
       std::string indent;
       if (! a_indent.empty ()) indent = a_indent;
       if (! a_title.empty ())
@@ -195,19 +197,19 @@ namespace CAT {
         inode->dump(a_out, "",indent + "     ");
       if( has_helix_vertex() ){
         a_out << indent << " helix_vertex type: " << helix_vertex_type() << " helix_vertex: "; helix_vertex_.dump();
-	if( helix_vertex_type() == "calo" ) a_out << " icalo " << helix_vertex_id();
+        if( helix_vertex_type() == "calo" ) a_out << " icalo " << helix_vertex_id();
       }
       if( has_decay_helix_vertex() ){
         a_out << indent << " decay helix_vertex type " << decay_helix_vertex_type()  << " decay_helix_vertex : "; decay_helix_vertex_.dump();
-	if( decay_helix_vertex_type() == "calo" ) a_out << " icalo " << calo_helix_id();
+        if( decay_helix_vertex_type() == "calo" ) a_out << " icalo " << calo_helix_id();
       }
       if( has_tangent_vertex() ){
         a_out << indent << " tangent_vertex type: " << tangent_vertex_type() << " tangent_vertex: "; tangent_vertex_.dump();
-	if( tangent_vertex_type() == "calo" ) a_out << " icalo " << tangent_vertex_id();
+        if( tangent_vertex_type() == "calo" ) a_out << " icalo " << tangent_vertex_id();
       }
       if( has_decay_tangent_vertex() ){
         a_out << indent << " decay tangent_vertex type " << decay_tangent_vertex_type() << " decay_tangent_vertex : "; decay_tangent_vertex_.dump();
-	if( decay_tangent_vertex_type() == "calo" ) a_out << " icalo " << calo_tangent_id();
+        if( decay_tangent_vertex_type() == "calo" ) a_out << " icalo " << calo_tangent_id();
       }
       a_out << indent << " ------------------- " << std::endl;
 
@@ -1049,46 +1051,46 @@ namespace CAT {
           newsequence.nodes_.push_back( nodes()[i] );
           newsequence.nodes_[i].set_free( false );
 
-	  std::vector<cell_couplet>::iterator icc = newsequence.nodes_[i].cc_.begin();
-	  while( icc != newsequence.nodes_[i].cc_.end() ){
-	    if( i < lfn || (i == lfn && (size_t)(icc - newsequence.nodes_[i].cc_.begin()) < link ) ){
-	      icc->set_free( false);
-	      icc->set_begun( true);
-	      icc->set_all_used();
-	    }
-	    ++icc;
-	    continue;
-	  }
-	  std::vector<cell_triplet>::iterator iccc = newsequence.nodes_[i].ccc_.begin();
-	  while( iccc != newsequence.nodes_[i].ccc_.end() ){
-	    if( i < lfn  || (i == lfn && (size_t)(iccc - newsequence.nodes_[i].ccc_.begin()) < link ) ){
-	      iccc->set_free( false);
-	      iccc->set_begun( true);
-	      iccc->set_all_used();
-	    }
-	    ++iccc;
-	    continue;
-	  }
+          std::vector<cell_couplet>::iterator icc = newsequence.nodes_[i].cc_.begin();
+          while( icc != newsequence.nodes_[i].cc_.end() ){
+            if( i < lfn || (i == lfn && (size_t)(icc - newsequence.nodes_[i].cc_.begin()) < link ) ){
+              icc->set_free( false);
+              icc->set_begun( true);
+              icc->set_all_used();
+            }
+            ++icc;
+            continue;
+          }
+          std::vector<cell_triplet>::iterator iccc = newsequence.nodes_[i].ccc_.begin();
+          while( iccc != newsequence.nodes_[i].ccc_.end() ){
+            if( i < lfn  || (i == lfn && (size_t)(iccc - newsequence.nodes_[i].ccc_.begin()) < link ) ){
+              iccc->set_free( false);
+              iccc->set_begun( true);
+              iccc->set_all_used();
+            }
+            ++iccc;
+            continue;
+          }
 
-	  std::vector<cell>::iterator ilink = newsequence.nodes_[i].links_.begin();
-	  while( ilink != newsequence.nodes_[i].links_.end() ){
-	    if( ilink - newsequence.nodes_[i].links_.begin() >= newsequence.nodes_[i].links_.size() ){
-	      break;
-	    }
+          std::vector<cell>::iterator ilink = newsequence.nodes_[i].links_.begin();
+          while( ilink != newsequence.nodes_[i].links_.end() ){
+            if( ilink - newsequence.nodes_[i].links_.begin() >= (int) newsequence.nodes_[i].links_.size() ){
+              break;
+            }
 
-	    if( i < lfn  || (i == lfn && (size_t)(ilink - newsequence.nodes_[i].links_.begin()) < link ) ){
+            if( i < lfn  || (i == lfn && (size_t)(ilink - newsequence.nodes_[i].links_.begin()) < link ) ){
                 ilink->set_free( false);
                 ilink->set_begun( true);
               }
-	    if( i == lfn && (size_t)(ilink - newsequence.nodes_[i].links_.begin()) > link ){
-	      if( print_level() >= mybhep::VVERBOSE )
-		std::clog << " removing from node " << newsequence.nodes_[i].c().id()  << "  link " << ilink - newsequence.nodes_[i].links_.begin() << " id " << ilink->id() << " larger than link " << link << " from copied sequence " << std::endl;
-		newsequence.nodes_[i].remove_link(ilink - newsequence.nodes_[i].links_.begin());
-	    }
-	    ++ilink;
-	    continue;
-	  }
-	}
+            if( i == lfn && (size_t)(ilink - newsequence.nodes_[i].links_.begin()) > link ){
+              if( print_level() >= mybhep::VVERBOSE )
+                std::clog << " removing from node " << newsequence.nodes_[i].c().id()  << "  link " << ilink - newsequence.nodes_[i].links_.begin() << " id " << ilink->id() << " larger than link " << link << " from copied sequence " << std::endl;
+                newsequence.nodes_[i].remove_link(ilink - newsequence.nodes_[i].links_.begin());
+            }
+            ++ilink;
+            continue;
+          }
+        }
 
       //      if( nodes()[lfn].cc()[link].begun() )
       increase_iteration(lfn,link);
@@ -1223,8 +1225,8 @@ namespace CAT {
               break;
             }else{
 
-	      iccc = get_link_index_of_cell(s-1, *itlink);
-	      
+              iccc = get_link_index_of_cell(s-1, *itlink);
+
               iteration = nodes_[s-1].ccc_[iccc].iteration();
 
               if( iteration >= nodes_[s-1].ccc_[iccc].joints().size() ){
@@ -1298,24 +1300,24 @@ namespace CAT {
 
               topology::joint j = nodes_[s-1].ccc_[iccc].joints_[iteration];
               if( print_level() >= mybhep::VVERBOSE ){
-		nodes_[s-1].ccc_[iccc].dump_joint(j);
+                nodes_[s-1].ccc_[iccc].dump_joint(j);
               }
 
-	      if( s >= 3 ){ // recalculate chi2 of node A
-		double chi2_change_A, chi2_change_alpha;
-		get_chi2_change_for_changing_end_of_sequence(j.epa(), j.epb(), &chi2_change_A, &chi2_change_alpha);
-		if( print_level() >= mybhep::VVERBOSE ){
-		  std::clog << " will change for cell A " << nodes_[s-2].c().id() << " chi2 from " << nodes_[s-2].chi2() << " to " << nodes_[s-2].chi2() + chi2_change_A << std::endl; fflush(stdout);
-		}
+              if( s >= 3 ){ // recalculate chi2 of node A
+                double chi2_change_A, chi2_change_alpha;
+                get_chi2_change_for_changing_end_of_sequence(j.epa(), j.epb(), &chi2_change_A, &chi2_change_alpha);
+                if( print_level() >= mybhep::VVERBOSE ){
+                  std::clog << " will change for cell A " << nodes_[s-2].c().id() << " chi2 from " << nodes_[s-2].chi2() << " to " << nodes_[s-2].chi2() + chi2_change_A << std::endl; fflush(stdout);
+                }
 
-		nodes_[s-2].set_chi2(nodes_[s-2].chi2() + chi2_change_A);
-		if( s >= 4 ){ // recalculate chi2 of node alpha
-		  if( print_level() >= mybhep::VVERBOSE ){
-		    std::clog << " will change for cell alpha " << nodes_[s-3].c().id() << " chi2 from " << nodes_[s-3].chi2() << " to " << nodes_[s-3].chi2() + chi2_change_alpha << std::endl; fflush(stdout);
-		  }
-		  nodes_[s-3].set_chi2(nodes_[s-3].chi2() + chi2_change_alpha);
-		}
-	      }
+                nodes_[s-2].set_chi2(nodes_[s-2].chi2() + chi2_change_A);
+                if( s >= 4 ){ // recalculate chi2 of node alpha
+                  if( print_level() >= mybhep::VVERBOSE ){
+                    std::clog << " will change for cell alpha " << nodes_[s-3].c().id() << " chi2 from " << nodes_[s-3].chi2() << " to " << nodes_[s-3].chi2() + chi2_change_alpha << std::endl; fflush(stdout);
+                  }
+                  nodes_[s-3].set_chi2(nodes_[s-3].chi2() + chi2_change_alpha);
+                }
+              }
 
               nodes_[s-2].set_ep(j.epa());
               nodes_[s-1].set_ep(j.epb());
@@ -1337,7 +1339,7 @@ namespace CAT {
     }
 
     bool sequence::compatible(joint *j, cell cc){
-      // sequence: [ ... alpha A B ]    C 
+      // sequence: [ ... alpha A B ]    C
       // C = cc is the proposed new cell
 
       size_t s = nodes().size();
@@ -1363,67 +1365,67 @@ namespace CAT {
       topology::experimental_point pb = j->epb();
       topology::cell ca = second_last_node().c();
       topology::cell cb = last_node().c();
-      
+
       if(ca.unknown_vertical() || cb.unknown_vertical() || cc.unknown_vertical()){
-	use_theta_kink = false;
-	ndof --;
+        use_theta_kink = false;
+        ndof --;
       }
-      
+
       if( !ca.small() && !ca.same_quadrant(second_last_node().ep(), j->epa() ) ){
-	if( print_level() >= mybhep::VVERBOSE ){
-	  std::clog << " connecting cell " << last_node().c().id() << " with this joint is incompatible: points on cell " << ca.id() << " on different quadrants " << std::endl;
-	}
-	return false;
+        if( print_level() >= mybhep::VVERBOSE ){
+          std::clog << " connecting cell " << last_node().c().id() << " with this joint is incompatible: points on cell " << ca.id() << " on different quadrants " << std::endl;
+        }
+        return false;
       }
 
       if( !cb.small() && !cb.same_quadrant(last_node().ep(), j->epb() ) ){
-	if( print_level() >= mybhep::VVERBOSE ){
-	  std::clog << " connecting cell " << last_node().c().id() << " with this joint is incompatible: points on cell " << cb.id() << " on different quadrants " << std::endl;
-	}
-	return false;
+        if( print_level() >= mybhep::VVERBOSE ){
+          std::clog << " connecting cell " << last_node().c().id() << " with this joint is incompatible: points on cell " << cb.id() << " on different quadrants " << std::endl;
+        }
+        return false;
       }
 
       if( s > 2 ){
-	if( !ca.small() && !ca.intersect(cb) ){
-	  pa = ca.angular_average(second_last_node().ep(), j->epa(), &local_separation_a);
-	  chi2_separation_a = mybhep::square(local_separation_a.value()/local_separation_a.error());
-	  if( print_level() >= mybhep::VVERBOSE ){
-	    std::clog << " separation chi2 for cell " << ca.id() << " is " << chi2_separation_a << std::endl; fflush(stdout);
-	  }
-	  ndof ++;
-	}
-	
-	if( !cb.small() && !cb.intersect(ca) && !cb.intersect(cc) ){
-	  pb = cb.angular_average(last_node().ep(), j->epb(), &local_separation_b);
-	  chi2_separation_b = mybhep::square(local_separation_b.value()/local_separation_b.error());
-	  if( print_level() >= mybhep::VVERBOSE ){
-	    std::clog << " separation chi2 for cell " << cb.id() << " is " << chi2_separation_b << std::endl; fflush(stdout);
-	  }
-	  ndof ++;
-	}
-	
-	experimental_vector alpha_A = experimental_vector(nodes_[s-3].ep(), second_last_node().ep());
-	experimental_vector B_C = experimental_vector(last_node().ep(), j->epc());
-	experimental_double phi_kink = alpha_A.kink_phi(B_C);
-	if( fabs(phi_kink.value())*180./M_PI > 90. ){
-	  if( print_level() >= mybhep::VVERBOSE )
-	    std::clog << " incompatible connection: kink between alpha_A and B_C is " << phi_kink.value()*180./M_PI << std::endl;
-	  return false;
-	}
+        if( !ca.small() && !ca.intersect(cb) ){
+          pa = ca.angular_average(second_last_node().ep(), j->epa(), &local_separation_a);
+          chi2_separation_a = mybhep::square(local_separation_a.value()/local_separation_a.error());
+          if( print_level() >= mybhep::VVERBOSE ){
+            std::clog << " separation chi2 for cell " << ca.id() << " is " << chi2_separation_a << std::endl; fflush(stdout);
+          }
+          ndof ++;
+        }
+
+        if( !cb.small() && !cb.intersect(ca) && !cb.intersect(cc) ){
+          pb = cb.angular_average(last_node().ep(), j->epb(), &local_separation_b);
+          chi2_separation_b = mybhep::square(local_separation_b.value()/local_separation_b.error());
+          if( print_level() >= mybhep::VVERBOSE ){
+            std::clog << " separation chi2 for cell " << cb.id() << " is " << chi2_separation_b << std::endl; fflush(stdout);
+          }
+          ndof ++;
+        }
+
+        experimental_vector alpha_A = experimental_vector(nodes_[s-3].ep(), second_last_node().ep());
+        experimental_vector B_C = experimental_vector(last_node().ep(), j->epc());
+        experimental_double phi_kink = alpha_A.kink_phi(B_C);
+        if( fabs(phi_kink.value())*180./M_PI > 90. ){
+          if( print_level() >= mybhep::VVERBOSE )
+            std::clog << " incompatible connection: kink between alpha_A and B_C is " << phi_kink.value()*180./M_PI << std::endl;
+          return false;
+        }
 
 
-	if( s >= 3 ){ // we are changing points A and B, affecting the chi2 of connections alpha0-alpha-A and alpha-A-B
-	  get_chi2_change_for_changing_end_of_sequence(pa, pb, &chi2_change_A, &chi2_change_alpha);
-	  if( print_level() >= mybhep::VVERBOSE ){
-	    std::clog << " connecting cell " << cb.id() << " to " << cc.id() << " changes chi2 of cell A, i.e. : " << nodes_[s-2].c().id() << " by " << chi2_change_A << std::endl; fflush(stdout);
-	    if( s >= 4 )
-	      std::clog << " connecting cell " << cb.id() << " to " << cc.id() << " changes chi2 of cell alpha, i.e." << nodes_[s-3].c().id() << " by " << chi2_change_alpha  << std::endl; fflush(stdout);
-	  }
-	}
-	
-	
+        if( s >= 3 ){ // we are changing points A and B, affecting the chi2 of connections alpha0-alpha-A and alpha-A-B
+          get_chi2_change_for_changing_end_of_sequence(pa, pb, &chi2_change_A, &chi2_change_alpha);
+          if( print_level() >= mybhep::VVERBOSE ){
+            std::clog << " connecting cell " << cb.id() << " to " << cc.id() << " changes chi2 of cell A, i.e. : " << nodes_[s-2].c().id() << " by " << chi2_change_A << std::endl; fflush(stdout);
+            if( s >= 4 )
+              std::clog << " connecting cell " << cb.id() << " to " << cc.id() << " changes chi2 of cell alpha, i.e." << nodes_[s-3].c().id() << " by " << chi2_change_alpha  << std::endl; fflush(stdout);
+          }
+        }
+
+
       }
-      
+
 
       topology::line l1(pa, pb, print_level(), probmin());
       topology::line l2(pb, j->epc(), print_level(), probmin());
@@ -1438,9 +1440,9 @@ namespace CAT {
       double net_local_prob;
       double net_chi2 = chi2 + chi2_change_A + chi2_change_alpha;
       if( net_chi2 <= 0 ){
-	net_local_prob = 1.;
+        net_local_prob = 1.;
       } else {
-	net_local_prob = probof(net_chi2, ndof);
+        net_local_prob = probof(net_chi2, ndof);
       }
 
       j->set_chi2(chi2);
@@ -1500,12 +1502,12 @@ namespace CAT {
       double old_chi2 = l_alpha_A.chi2(l_A_B, use_theta_kink_alpha_A_B, &chi2_just_phi);
       double old_chi2_check = second_last_node().chi2();
       if( old_chi2 > old_chi2_check ){
-	if( fabs(old_chi2 - old_chi2_check) > tolerance ){
-	  if( print_level() >= mybhep::NORMAL ){
-	    std::clog << " problem: cell A " << second_last_node().c().id() << " has old chi2 " << old_chi2_check << " but just kink component is " << old_chi2 << " delta " <<  old_chi2 - old_chi2_check << std::endl;
-	  }
-	}
-	old_chi2 = old_chi2_check;
+        if( fabs(old_chi2 - old_chi2_check) > tolerance ){
+          if( print_level() >= mybhep::NORMAL ){
+            std::clog << " problem: cell A " << second_last_node().c().id() << " has old chi2 " << old_chi2_check << " but just kink component is " << old_chi2 << " delta " <<  old_chi2 - old_chi2_check << std::endl;
+          }
+        }
+        old_chi2 = old_chi2_check;
       }
 
       topology::line new_l_alpha_A(palpha, new_pa, print_level(), probmin());
@@ -1516,32 +1518,32 @@ namespace CAT {
       if( *delta_chi_A + old_chi2 <= 0 ){
         if( print_level() >= mybhep::NORMAL ){
           std::clog << " problem: node A has old chi2 " << old_chi2 << " new " << new_chi2 << " delta " << *delta_chi_A << std::endl;
-	}
-	*delta_chi_A = 0.;
+        }
+        *delta_chi_A = 0.;
       }
 
       if( s >= 4 ){
-	bool use_theta_kink_alpha0_alpha_A = !(nodes_[s-4].c().unknown_vertical() || nodes_[s-3].c().unknown_vertical() || nodes_[s-2].c().unknown_vertical() );
-	topology::experimental_point palpha0 = nodes_[s-4].ep();
-	topology::line l_alpha0_alpha(palpha0, palpha, print_level(), probmin());
-	old_chi2 = l_alpha0_alpha.chi2(l_alpha_A, use_theta_kink_alpha0_alpha_A, &chi2_just_phi);
-	old_chi2_check = nodes_[s-3].chi2();
-	if( old_chi2 > old_chi2_check ){
-	  if( fabs(old_chi2 - old_chi2_check) > tolerance ){
-	    if( print_level() >= mybhep::NORMAL ){
-	      std::clog << " problem: cell alpha " << nodes_[s-3].c().id() << " has old chi2 " << old_chi2_check << " but just kink component is " << old_chi2 << " delta " <<  old_chi2 - old_chi2_check <<  std::endl;
-	    }
-	  }
-	  old_chi2 = old_chi2_check;
-	}
+        bool use_theta_kink_alpha0_alpha_A = !(nodes_[s-4].c().unknown_vertical() || nodes_[s-3].c().unknown_vertical() || nodes_[s-2].c().unknown_vertical() );
+        topology::experimental_point palpha0 = nodes_[s-4].ep();
+        topology::line l_alpha0_alpha(palpha0, palpha, print_level(), probmin());
+        old_chi2 = l_alpha0_alpha.chi2(l_alpha_A, use_theta_kink_alpha0_alpha_A, &chi2_just_phi);
+        old_chi2_check = nodes_[s-3].chi2();
+        if( old_chi2 > old_chi2_check ){
+          if( fabs(old_chi2 - old_chi2_check) > tolerance ){
+            if( print_level() >= mybhep::NORMAL ){
+              std::clog << " problem: cell alpha " << nodes_[s-3].c().id() << " has old chi2 " << old_chi2_check << " but just kink component is " << old_chi2 << " delta " <<  old_chi2 - old_chi2_check <<  std::endl;
+            }
+          }
+          old_chi2 = old_chi2_check;
+        }
 
-	new_chi2 = l_alpha0_alpha.chi2(new_l_alpha_A, use_theta_kink_alpha0_alpha_A, &chi2_just_phi);
-	*delta_chi_alpha = new_chi2 - old_chi2;
-	if( old_chi2 + *delta_chi_alpha <= 0. ){
-	  if( print_level() >= mybhep::NORMAL )
-	    std::clog << " problem: node alpha has old chi2 " << old_chi2 << " new " << new_chi2  << " delta " << *delta_chi_alpha << std::endl;
-	  *delta_chi_alpha = 0.;
-	}
+        new_chi2 = l_alpha0_alpha.chi2(new_l_alpha_A, use_theta_kink_alpha0_alpha_A, &chi2_just_phi);
+        *delta_chi_alpha = new_chi2 - old_chi2;
+        if( old_chi2 + *delta_chi_alpha <= 0. ){
+          if( print_level() >= mybhep::NORMAL )
+            std::clog << " problem: node alpha has old chi2 " << old_chi2 << " new " << new_chi2  << " delta " << *delta_chi_alpha << std::endl;
+          *delta_chi_alpha = 0.;
+        }
 
       }
 
@@ -1589,15 +1591,15 @@ namespace CAT {
 
         return fcouplet - ccv.begin();
 #else
-	
-	size_t index;
-	if( !nodes()[inode].has_couplet(link,&index) ){
-	  if( print_level() >= mybhep::NORMAL )
-	    std::clog << " problem: looking for couplet from cell index " << inode << " to " << link.id() << " but it's not there " << std::endl;
-	  return 0;
-	}
 
-	return index;
+        size_t index;
+        if( !nodes()[inode].has_couplet(link,&index) ){
+          if( print_level() >= mybhep::NORMAL )
+            std::clog << " problem: looking for couplet from cell index " << inode << " to " << link.id() << " but it's not there " << std::endl;
+          return 0;
+        }
+
+        return index;
 
 #endif
       }
@@ -1620,13 +1622,13 @@ namespace CAT {
 
       size_t index;
       if( !nodes()[inode].has_triplet(link,nodes_[inode-1].c(),&index) ){
-	if( print_level() >= mybhep::NORMAL )
-	  std::clog << " problem: looking for triplet from cell index " << inode << " id " << nodes()[inode].c().id()  << " to cell id " << link.id() << " but it's not there " << std::endl; fflush(stdout);
-	return 0;
+        if( print_level() >= mybhep::NORMAL )
+          std::clog << " problem: looking for triplet from cell index " << inode << " id " << nodes()[inode].c().id()  << " to cell id " << link.id() << " but it's not there " << std::endl; fflush(stdout);
+        return 0;
       }
 
       return index;
-	
+
 #endif
 
     }
@@ -1658,7 +1660,7 @@ namespace CAT {
       case 1: {
 
         std::vector<helix> helices;
-	std::vector<node>::iterator anode, cnode;
+        std::vector<node>::iterator anode, cnode;
         for(std::vector<node>::iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode){
           if( inode - nodes_.begin() == 0 || nodes_.end() - inode == 1 ) continue;
 
@@ -1812,8 +1814,8 @@ namespace CAT {
       }
 
       if( print_level() >= mybhep::VVERBOSE ){
-	std::clog << " sequence radius " << radius().value() << " pitch " << pitch().value() << " bfield " << bfield
-		  << " mom " << mom.value() << " dir (" << initial_dir().x().value() << ", " <<  initial_dir().y().value() << ", " << initial_dir().z().value() << ")" << std::endl;
+        std::clog << " sequence radius " << radius().value() << " pitch " << pitch().value() << " bfield " << bfield
+                  << " mom " << mom.value() << " dir (" << initial_dir().x().value() << ", " <<  initial_dir().y().value() << ", " << initial_dir().z().value() << ")" << std::endl;
       }
 
     }
@@ -1836,9 +1838,9 @@ namespace CAT {
         has_charge_ = true;
         charge_ = deltaphi/fabs(deltaphi.value());
       }
-      
+
       if( print_level() >= mybhep::VVERBOSE ){
-	std::clog << " calculate tangent charge: initial phi " << phi1*180./acos(-1.) << " final phi " << phi2*180./acos(-1.) << " deltaphi " << deltaphi.value() << " charge " << charge_.value() << " +- " << charge_.error() << std::endl;
+        std::clog << " calculate tangent charge: initial phi " << phi1*180./acos(-1.) << " final phi " << phi2*180./acos(-1.) << " deltaphi " << deltaphi.value() << " charge " << charge_.value() << " +- " << charge_.error() << std::endl;
       }
 
       experimental_double first_helix_phi = helix_.phi_of_point(nodes().front().ep());
@@ -1857,45 +1859,45 @@ namespace CAT {
       }
 
       if( print_level() >= mybhep::VVERBOSE ){
-	std::clog << " calculate helix charge: initial helix phi " << helix_phi1*180./acos(-1.) << " final phi " << helix_phi2*180./acos(-1.) << " deltaphi " << deltahelix_phi.value() << " charge " << helix_charge_.value() << " +- " << helix_charge_.error() << std::endl;
-	std::clog << " calculate detailed charges: " << std::endl;
+        std::clog << " calculate helix charge: initial helix phi " << helix_phi1*180./acos(-1.) << " final phi " << helix_phi2*180./acos(-1.) << " deltaphi " << deltahelix_phi.value() << " charge " << helix_charge_.value() << " +- " << helix_charge_.error() << std::endl;
+        std::clog << " calculate detailed charges: " << std::endl;
       }
 
 
 
       std::vector<experimental_double> angles;
       for(size_t i=0; i<nodes().size()-2; i++){
-	experimental_vector vi(nodes_[i].ep(), nodes_[i+1].ep());
-	experimental_vector vf(nodes_[i+1].ep(), nodes_[i+2].ep());
+        experimental_vector vi(nodes_[i].ep(), nodes_[i+1].ep());
+        experimental_vector vf(nodes_[i+1].ep(), nodes_[i+2].ep());
 
-	double phi1 = vi.phi().value();
-	double phi2 = vf.phi().value();
-	mybhep::fix_angles(&phi1, &phi2);
+        double phi1 = vi.phi().value();
+        double phi2 = vf.phi().value();
+        mybhep::fix_angles(&phi1, &phi2);
 
-	experimental_double deltaphi = vf.phi() - vi.phi();
-	deltaphi.set_value(phi2 - phi1);
+        experimental_double deltaphi = vf.phi() - vi.phi();
+        deltaphi.set_value(phi2 - phi1);
 
-	if( deltaphi.value() ){
-	  has_detailed_charge_ = true;
-	  angles.push_back(deltaphi/fabs(deltaphi.value()));
-	  if( print_level() >= mybhep::VVERBOSE ){
-	    std::clog << " triplet: " << i << " q " << angles.back().value() << " +- " << angles.back().error() << std::endl;
-	  }
-	}
+        if( deltaphi.value() ){
+          has_detailed_charge_ = true;
+          angles.push_back(deltaphi/fabs(deltaphi.value()));
+          if( print_level() >= mybhep::VVERBOSE ){
+            std::clog << " triplet: " << i << " q " << angles.back().value() << " +- " << angles.back().error() << std::endl;
+          }
+        }
       }
       detailed_charge_=average(angles);
       if( detailed_charge_.value() )
-	detailed_charge_/=fabs(detailed_charge_.value());
+        detailed_charge_/=fabs(detailed_charge_.value());
       else{
-	detailed_charge_=weighted_average(angles);
-	if( detailed_charge_.value() )
-	  detailed_charge_/=fabs(detailed_charge_.value());
-	else
-	  detailed_charge_.set(0.,0.);
+        detailed_charge_=weighted_average(angles);
+        if( detailed_charge_.value() )
+          detailed_charge_/=fabs(detailed_charge_.value());
+        else
+          detailed_charge_.set(0.,0.);
       }
 
       if( print_level() >= mybhep::VVERBOSE ){
-	std::clog << " detailed charge " << detailed_charge_.value() << " +- " << detailed_charge_.error() << std::endl;
+        std::clog << " detailed charge " << detailed_charge_.value() << " +- " << detailed_charge_.error() << std::endl;
       }
 
       return;
@@ -2020,88 +2022,90 @@ namespace CAT {
       return result;
 
     }
-  
+
 
     bool sequence::intersect_sequence(sequence & seq,
                                       bool invertA, bool invertB, bool acrossGAP,
                                       experimental_point * ep,
                                       double limit_distance, int* with_kink, int cells_to_delete){
-      bool result;
+      bool result(false);
       double distanceA, distanceB;
+      distanceA = std::numeric_limits<double>::quiet_NaN();
+      distanceB = std::numeric_limits<double>::quiet_NaN();
       experimental_double local_distance;
       *with_kink = 0;
 
       if( print_level() >= mybhep::VVERBOSE )
-	std::clog << " ... intersecting sequences, acrossGap " << acrossGAP << std::endl;
+        std::clog << " ... intersecting sequences, acrossGap " << acrossGAP << std::endl;
 
       if( !has_helix() ) calculate_helix();
       if( !seq.has_helix() ) seq.calculate_helix();
 
       if( !acrossGAP ){
-	// intersect sequences within block
+        // intersect sequences within block
 
-	circle c = seq.get_helix().get_circle();
+        circle c = seq.get_helix().get_circle();
 
-	if( invertA ){
-	  if( cells_to_delete == 0 || cells_to_delete == 1 ){
-	    result=intersect_circle_from_begin(c,ep);
-	    local_distance = nodes_[0].ep().distance(*ep);
-	  }else if( cells_to_delete == 2 ){
-	    result=intersect_circle_from_begin_minus_one(c,ep);
-	    local_distance = nodes_[1].ep().distance(*ep);
-	  }
-	}
-	else{
-	  if( cells_to_delete == 0 || cells_to_delete == 1 ){
-	    result=intersect_circle_from_end(c,ep);
-	    local_distance = nodes_.back().ep().distance(*ep);
-	  }else if( cells_to_delete == 2 ){
-	    result=intersect_circle_from_end_minus_one(c,ep);
-	    local_distance = second_last_node().ep().distance(*ep);
-	  }
-	}
-	distanceA = fabs(std::max(local_distance.value()-local_distance.error(), 0.));
-	
-	if( print_level() >= mybhep::VVERBOSE )
-	  std::clog << " ... result of circles intersection: " << result << std::endl;
-      
-	if(!result){
-	  return false;
-	}
+        if( invertA ){
+          if( cells_to_delete == 0 || cells_to_delete == 1 ){
+            result=intersect_circle_from_begin(c,ep);
+            local_distance = nodes_[0].ep().distance(*ep);
+          }else if( cells_to_delete == 2 ){
+            result=intersect_circle_from_begin_minus_one(c,ep);
+            local_distance = nodes_[1].ep().distance(*ep);
+          }
+        }
+        else{
+          if( cells_to_delete == 0 || cells_to_delete == 1 ){
+            result=intersect_circle_from_end(c,ep);
+            local_distance = nodes_.back().ep().distance(*ep);
+          }else if( cells_to_delete == 2 ){
+            result=intersect_circle_from_end_minus_one(c,ep);
+            local_distance = second_last_node().ep().distance(*ep);
+          }
+        }
+        distanceA = fabs(std::max(local_distance.value()-local_distance.error(), 0.));
 
-	if( invertB ){	
-	  if( cells_to_delete != 1 )
-	    local_distance = seq.nodes().back().ep().distance(*ep);
-	  else
-	    local_distance = seq.second_last_node().ep().distance(*ep);
-	}
-	else{
-	  if( cells_to_delete != 1 )
-	    local_distance = seq.nodes_[0].ep().distance(*ep);
-	  else
-	    local_distance = seq.nodes_[1].ep().distance(*ep);
-	}
-	distanceB = fabs(std::max(local_distance.value()-local_distance.error(), 0.));
-      
-	if( print_level() >= mybhep::VVERBOSE )
-	  std::clog << "ep (" << ep->x().value() << ", " << ep->y().value() << ", " << ep->z().value() << ") ... distanceA " << distanceA << " distanceB " << distanceB << " limit " << limit_distance << std::endl;
-	
-	return (result && distanceA <= limit_distance && distanceB <= limit_distance );
+        if( print_level() >= mybhep::VVERBOSE )
+          std::clog << " ... result of circles intersection: " << result << std::endl;
+
+        if(!result){
+          return false;
+        }
+
+        if( invertB ){
+          if( cells_to_delete != 1 )
+            local_distance = seq.nodes().back().ep().distance(*ep);
+          else
+            local_distance = seq.second_last_node().ep().distance(*ep);
+        }
+        else{
+          if( cells_to_delete != 1 )
+            local_distance = seq.nodes_[0].ep().distance(*ep);
+          else
+            local_distance = seq.nodes_[1].ep().distance(*ep);
+        }
+        distanceB = fabs(std::max(local_distance.value()-local_distance.error(), 0.));
+
+        if( print_level() >= mybhep::VVERBOSE )
+          std::clog << "ep (" << ep->x().value() << ", " << ep->y().value() << ", " << ep->z().value() << ") ... distanceA " << distanceA << " distanceB " << distanceB << " limit " << limit_distance << std::endl;
+
+        return (result && distanceA <= limit_distance && distanceB <= limit_distance );
       }
 
       // intersect sequences across GAP
 
       experimental_point pA, pB;
       if( invertA ){
-	pA = nodes_[0].ep();
+        pA = nodes_[0].ep();
       }
       else{
-	pA = nodes_.back().ep();
+        pA = nodes_.back().ep();
       }
       if( invertB )
-	pB = seq.nodes().back().ep();
+        pB = seq.nodes().back().ep();
       else
-	pB = seq.nodes_[0].ep();
+        pB = seq.nodes_[0].ep();
 
 
       experimental_point origin(0.,0.,0.,0.,0.,0.);
@@ -2112,85 +2116,94 @@ namespace CAT {
       // a circle along the gap of the 2nd sequence
       circle cB(origin, pB.radius(), print_level(), probmin());
 
-      bool resultA, resultB, result_tangent_A, result_tangent_B;
+      bool resultA(false), resultB(false), result_tangent_A(false), result_tangent_B(false);
       double distance_error_A, distance_error_B;
+      distance_error_A = std::numeric_limits<double>::quiet_NaN();
+      distance_error_B = std::numeric_limits<double>::quiet_NaN();
+
       experimental_point epA, epB, ep_tangent_A, ep_tangent_B;
       if( invertA ){
-	resultB=intersect_circle_from_begin(cB,&epB);
-	result_tangent_B= intersect_circle_with_tangent_from_begin(cB, &ep_tangent_B);
+        resultB=intersect_circle_from_begin(cB,&epB);
+        result_tangent_B= intersect_circle_with_tangent_from_begin(cB, &ep_tangent_B);
       }
       else{
-	resultB=intersect_circle_from_end(cB,&epB);
-	result_tangent_B= intersect_circle_with_tangent_from_end(cB, &ep_tangent_B);
+        resultB=intersect_circle_from_end(cB,&epB);
+        result_tangent_B= intersect_circle_with_tangent_from_end(cB, &ep_tangent_B);
       }
       local_distance = pB.hor_distance(epB);
       distanceB = local_distance.value();
       distance_error_B = local_distance.error();
       if( result_tangent_B ){
-	resultB=true;
-	local_distance = pB.hor_distance(ep_tangent_B);
-	if( print_level() >= mybhep::VVERBOSE )
-	  std::clog << " ... extrapolation through tangent B, pB (" << pB.x().value() << ", " << pB.y().value() << ", " << pB.z().value() << ") distance " << local_distance.value() << " +- " << local_distance.error()  << std::endl;
-	distanceB = std::min(local_distance.value(), distanceB);
-	distance_error_B = local_distance.error();
+        resultB=true;
+        local_distance = pB.hor_distance(ep_tangent_B);
+        if( print_level() >= mybhep::VVERBOSE )
+          std::clog << " ... extrapolation through tangent B, pB (" << pB.x().value() << ", " << pB.y().value() << ", " << pB.z().value() << ") distance " << local_distance.value() << " +- " << local_distance.error()  << std::endl;
+        distanceB = std::min(local_distance.value(), distanceB);
+        distance_error_B = local_distance.error();
       }
 
       if( invertB ){
-	resultA=seq.intersect_circle_from_end(cA,&epA);
-	result_tangent_A= seq.intersect_circle_with_tangent_from_end(cA, &ep_tangent_A);
+        resultA=seq.intersect_circle_from_end(cA,&epA);
+        result_tangent_A= seq.intersect_circle_with_tangent_from_end(cA, &ep_tangent_A);
       }
       else{
-	resultA=seq.intersect_circle_from_begin(cA,&epA);
-	result_tangent_A= seq.intersect_circle_with_tangent_from_begin(cA, &ep_tangent_A);
+        resultA=seq.intersect_circle_from_begin(cA,&epA);
+        result_tangent_A= seq.intersect_circle_with_tangent_from_begin(cA, &ep_tangent_A);
       }
       local_distance = pA.hor_distance(epA);
       distanceA = fabs(std::max(local_distance.value()-local_distance.error(), 0.));
       if( result_tangent_A ){
-	resultA=true;
-	local_distance = pA.hor_distance(ep_tangent_A);
-	if( print_level() >= mybhep::VVERBOSE )
-	  std::clog << " ... extrapolation through tangent A, pA (" << pA.x().value() << ", " << pA.y().value() << ", " << pA.z().value() << ") distance " << local_distance.value() << " +- " << local_distance.error()  << std::endl;
-	distanceA = std::min(local_distance.value(), distanceA);
-	distance_error_A = local_distance.error();
+        resultA=true;
+        local_distance = pA.hor_distance(ep_tangent_A);
+        if( print_level() >= mybhep::VVERBOSE )
+          std::clog << " ... extrapolation through tangent A, pA (" << pA.x().value() << ", " << pA.y().value() << ", " << pA.z().value() << ") distance " << local_distance.value() << " +- " << local_distance.error()  << std::endl;
+        distanceA = std::min(local_distance.value(), distanceA);
+        distance_error_A = local_distance.error();
       }
 
       double distance, distance_error;
+      distance = std::numeric_limits<double>::quiet_NaN();
+      distance_error = std::numeric_limits<double>::quiet_NaN();
       if( resultA && resultB ){
-	if( distanceA < distanceB ){
-	  *ep = epA;
-	  distance = distanceA;
-	  distance_error = distance_error_A;
-	  *with_kink=1;
-	}
-	else{
-	  *ep = epB;
-	  distance = distanceB;
-	  distance_error = distance_error_B;
-	  *with_kink=2;
-	}
+        if( distanceA < distanceB ){
+          *ep = epA;
+          distance = distanceA;
+          distance_error = distance_error_A;
+          *with_kink=1;
+        }
+        else{
+          *ep = epB;
+          distance = distanceB;
+          distance_error = distance_error_B;
+          *with_kink=2;
+        }
       }else{
-	if( resultB ){ // intersection on B circle
-	  *ep = epB;
-	  distance = distanceB;
-	  distance_error = distance_error_B;
-	  *with_kink=1;
-	}
-	if( resultA ){ // intersection on A circle
-	  *ep = epA;
-	  distance = distanceA;
-	  distance_error = distance_error_A;
-	  *with_kink=2;
-	}
+        if( resultB ){ // intersection on B circle
+          *ep = epB;
+          distance = distanceB;
+          distance_error = distance_error_B;
+          *with_kink=1;
+        }
+        if( resultA ){ // intersection on A circle
+          *ep = epA;
+          distance = distanceA;
+          distance_error = distance_error_A;
+          *with_kink=2;
+        }
       }
 
       if( print_level() >= mybhep::VVERBOSE )
-	std::clog << " ... resultA " << resultA << " ... resultB " << resultB << " distanceA " << distanceA << " distanceB " << distanceB << " distance " << distance << " +- " << distance_error << " limit " << 2.*limit_distance << std::endl;
-      
+        std::clog << " ... resultA " << resultA << " ... resultB " << resultB << " distanceA " << distanceA << " distanceB " << distanceB << " distance " << distance << " +- " << distance_error << " limit " << 2.*limit_distance << std::endl;
+
+      if ((distance != distance) || (distance_error != distance_error)) {
+        throw std::logic_error("CAT::sequence::intersect_sequence: Could not compute 'distance' or 'distance_error' !");
+      }
+
       return ( (resultA || resultB) && std::max(distance - distance_error, 0.) < 2.*limit_distance );
 
 
     }
-  
+
 
     std::string sequence::family()const{
       size_t i1 = name().find("_");
@@ -2253,7 +2266,7 @@ namespace CAT {
         invertA = false;
         invertB = false;
 
-	block_distance = last_node().c().block() - seq.nodes_[0].c().block();
+        block_distance = last_node().c().block() - seq.nodes_[0].c().block();
 
         // connection must be between neighboring blocks or within same block
         if( fabs( block_distance ) > 1 ){
@@ -2273,13 +2286,13 @@ namespace CAT {
           return false;
         }
         layer_distance = last_node().c().layer() - seq.nodes_[0].c().layer();
-	cell_number_distance = last_node().c().cell_number() - seq.nodes_[0].c().cell_number();
+        cell_number_distance = last_node().c().cell_number() - seq.nodes_[0].c().cell_number();
       }
       else if( distLL <= distFF && distLL <= distFL && distLL <= distLF ){ // last to last  FL -> LF
         invertA = false;
         invertB = true;
 
-	block_distance = last_node().c().block() - seq.last_node().c().block();
+        block_distance = last_node().c().block() - seq.last_node().c().block();
         // connection must be between neighboring blocks or within same block
         if( fabs( block_distance ) > 1 ){
           if( print_level() >= mybhep::VVERBOSE )
@@ -2298,12 +2311,12 @@ namespace CAT {
           return false;
         }
         layer_distance = last_node().c().layer() - seq.last_node().c().layer();
-	cell_number_distance = last_node().c().cell_number() - seq.last_node().c().cell_number();
+        cell_number_distance = last_node().c().cell_number() - seq.last_node().c().cell_number();
       }
       else if( distFL <= distFF && distFL <= distLL && distFL <= distLF ){ // first to last  LF -> LF
         invertA = true;
         invertB = true;
-	block_distance = nodes_[0].c().block() - seq.last_node().c().block();
+        block_distance = nodes_[0].c().block() - seq.last_node().c().block();
         // connection must be between neighboring blocks or within same block
         if( fabs( block_distance ) > 1 ){
           if( print_level() >= mybhep::VVERBOSE )
@@ -2322,12 +2335,12 @@ namespace CAT {
           return false;
         }
         layer_distance = nodes_[0].c().layer() - seq.last_node().c().layer();
-	cell_number_distance = nodes_[0].c().cell_number() - seq.last_node().c().cell_number();
+        cell_number_distance = nodes_[0].c().cell_number() - seq.last_node().c().cell_number();
       }
       else{ // first to first  LF -> FL
         invertA = true;
         invertB = false;
-	block_distance = nodes_[0].c().block() - seq.nodes_[0].c().block();
+        block_distance = nodes_[0].c().block() - seq.nodes_[0].c().block();
         // connection must be between neighboring blocks or within same block
         if( fabs( block_distance ) > 1 ){
           if( print_level() >= mybhep::VVERBOSE )
@@ -2346,7 +2359,7 @@ namespace CAT {
           return false;
         }
         layer_distance = nodes_[0].c().layer() - seq.nodes_[0].c().layer();
-	cell_number_distance = nodes_[0].c().cell_number() - seq.nodes_[0].c().cell_number();
+        cell_number_distance = nodes_[0].c().cell_number() - seq.nodes_[0].c().cell_number();
       }
 
 
@@ -2406,9 +2419,9 @@ namespace CAT {
       new_first_sequence.add_name(new_second_sequence.name());
 
       if( cells_to_delete == 1 ||  cells_to_delete == 2 )
-	new_second_sequence.remove_first_node();
+        new_second_sequence.remove_first_node();
       if( cells_to_delete == 2 )
-	new_first_sequence.remove_last_node();
+        new_first_sequence.remove_last_node();
 
       size_t s = new_first_sequence.nodes().size();
       size_t index;
@@ -2416,7 +2429,7 @@ namespace CAT {
       bool last;
 
       if( with_kink == 1 ){
-	new_first_sequence.last_node().set_is_kink(true);
+        new_first_sequence.last_node().set_is_kink(true);
       }
 
       for(size_t i = 0; i < new_second_sequence.nodes_.size(); i++){
@@ -2432,11 +2445,11 @@ namespace CAT {
         if( i == 0 ){ // 1st added cell must get a new triplet
           new_first_sequence.nodes_[s-1].links_.push_back(in.c());
           cell_triplet ctA(new_first_sequence.nodes_[s-2].c(), new_first_sequence.nodes_[s-1].c(), in.c());
-	  //          new_first_sequence.nodes_[s-1].ccc_.push_back(ctA);
+          //          new_first_sequence.nodes_[s-1].ccc_.push_back(ctA);
           new_first_sequence.nodes_[s-1].add_triplet(ctA);
 
-	  if( with_kink == 2 )
-	    in.set_is_kink(true);
+          if( with_kink == 2 )
+            in.set_is_kink(true);
         }
 
         if( !last ){
@@ -2457,18 +2470,18 @@ namespace CAT {
       }
 
       if( new_second_sequence.has_decay_helix_vertex() ){
-	if( new_second_sequence.decay_helix_vertex_type() == "foil" || new_second_sequence.decay_helix_vertex_type() == "kink")
-	  new_first_sequence.set_decay_helix_vertex( new_second_sequence.decay_helix_vertex(), new_second_sequence.decay_helix_vertex_type() );
-	else if( new_second_sequence.decay_helix_vertex_type() == "calo" )
-	  new_first_sequence.set_decay_helix_vertex( new_second_sequence.decay_helix_vertex(), new_second_sequence.decay_helix_vertex_type(), new_second_sequence.calo_helix_id() );
+        if( new_second_sequence.decay_helix_vertex_type() == "foil" || new_second_sequence.decay_helix_vertex_type() == "kink")
+          new_first_sequence.set_decay_helix_vertex( new_second_sequence.decay_helix_vertex(), new_second_sequence.decay_helix_vertex_type() );
+        else if( new_second_sequence.decay_helix_vertex_type() == "calo" )
+          new_first_sequence.set_decay_helix_vertex( new_second_sequence.decay_helix_vertex(), new_second_sequence.decay_helix_vertex_type(), new_second_sequence.calo_helix_id() );
       }
-      
+
       if( new_second_sequence.has_decay_tangent_vertex() ){
-	if( new_second_sequence.decay_tangent_vertex_type() == "foil" || new_second_sequence.decay_tangent_vertex_type() == "kink")
-	  new_first_sequence.set_decay_tangent_vertex( new_second_sequence.decay_tangent_vertex(), new_second_sequence.decay_tangent_vertex_type() );
-	else if( new_second_sequence.decay_tangent_vertex_type() == "calo" )
-	  new_first_sequence.set_decay_tangent_vertex( new_second_sequence.decay_tangent_vertex(), new_second_sequence.decay_tangent_vertex_type(), new_second_sequence.calo_tangent_id() );
-	
+        if( new_second_sequence.decay_tangent_vertex_type() == "foil" || new_second_sequence.decay_tangent_vertex_type() == "kink")
+          new_first_sequence.set_decay_tangent_vertex( new_second_sequence.decay_tangent_vertex(), new_second_sequence.decay_tangent_vertex_type() );
+        else if( new_second_sequence.decay_tangent_vertex_type() == "calo" )
+          new_first_sequence.set_decay_tangent_vertex( new_second_sequence.decay_tangent_vertex(), new_second_sequence.decay_tangent_vertex_type(), new_second_sequence.calo_tangent_id() );
+
       }
 
       *ok = new_first_sequence.calculate_helix();
@@ -2482,38 +2495,38 @@ namespace CAT {
     void sequence::calculate_length(void) {
 
       if( nodes_.size() >= 3 ){
-	experimental_point fp = nodes_[0].ep();
-	experimental_point lp = nodes_.back().ep();
-	if( has_helix_vertex() )
-	  fp = helix_vertex();
-	if( has_decay_helix_vertex() )
-	  lp = decay_helix_vertex();
-	
-	experimental_double deltaphi = helix_.delta_phi(fp, lp);
-	helix_length_ = experimental_sqrt(experimental_square(helix_.radius()) + experimental_square(helix_.pitch()))*experimental_fabs(deltaphi);
-	has_helix_length_ = true;
+        experimental_point fp = nodes_[0].ep();
+        experimental_point lp = nodes_.back().ep();
+        if( has_helix_vertex() )
+          fp = helix_vertex();
+        if( has_decay_helix_vertex() )
+          lp = decay_helix_vertex();
+
+        experimental_double deltaphi = helix_.delta_phi(fp, lp);
+        helix_length_ = experimental_sqrt(experimental_square(helix_.radius()) + experimental_square(helix_.pitch()))*experimental_fabs(deltaphi);
+        has_helix_length_ = true;
       }
 
       if( nodes_.size() >= 2 ){
-	experimental_double tl(0.,0.);
-	int nindex=0;
-	for(std::vector<node>::const_iterator inode=nodes_.begin(); inode != nodes_.end(); ++inode){
-	  nindex = inode - nodes_.begin();
-	  if( nindex == 0 ){
-	    continue;
-	  }
-	  tl += inode->ep().distance(nodes_[nindex-1].ep());
-	}
-	
-	if( has_tangent_vertex() ){
-	  tl += tangent_vertex().distance(nodes_[0].ep());
-	}
-	if( has_decay_tangent_vertex() ){
-	  tl += nodes_.back().ep().distance(decay_tangent_vertex());
-	}
+        experimental_double tl(0.,0.);
+        int nindex=0;
+        for(std::vector<node>::const_iterator inode=nodes_.begin(); inode != nodes_.end(); ++inode){
+          nindex = inode - nodes_.begin();
+          if( nindex == 0 ){
+            continue;
+          }
+          tl += inode->ep().distance(nodes_[nindex-1].ep());
+        }
 
-	tangent_length_ = tl;
-	has_tangent_length_ = true;
+        if( has_tangent_vertex() ){
+          tl += tangent_vertex().distance(nodes_[0].ep());
+        }
+        if( has_decay_tangent_vertex() ){
+          tl += nodes_.back().ep().distance(decay_tangent_vertex());
+        }
+
+        tangent_length_ = tl;
+        has_tangent_length_ = true;
       }
 
       return;
@@ -2523,7 +2536,7 @@ namespace CAT {
     bool sequence::good_match_with_kink(const sequence & seq,
                                         bool &invertA, bool &invertB, bool &acrossGAP,
                                         double limit_distance, size_t NOffLayers,
-					int &cells_to_delete)const{
+                                        int &cells_to_delete)const{
 
       if( !seq.fast() ){
         if( print_level() >= mybhep::VVERBOSE )
@@ -2546,15 +2559,15 @@ namespace CAT {
         return false;
       }
 
-      
+
 
       acrossGAP=false;
       cells_to_delete = 0;
-      
+
       int layer_distance;
       int block_distance;
       int cell_number_distance;
-      
+
       double distFF = nodes_[0].ep().distance(seq.nodes_[0].ep()).value();
       double distFL = nodes_[0].ep().distance(seq.nodes().back().ep()).value();
       double distLF = nodes().back().ep().distance(seq.nodes_[0].ep()).value();
@@ -2564,7 +2577,7 @@ namespace CAT {
         invertA = false;
         invertB = false;
 
-	block_distance = last_node().c().block() - seq.nodes_[0].c().block();
+        block_distance = last_node().c().block() - seq.nodes_[0].c().block();
         // connection must be between neighboring blocks or within same block
         if( fabs(block_distance ) > 1 ){
           if( print_level() >= mybhep::VVERBOSE )
@@ -2583,22 +2596,22 @@ namespace CAT {
           return false;
         }
 
-	if( last_node().c().id() == seq.nodes_[0].c().id() ){
-	  cells_to_delete = 1;
-	  layer_distance = last_node().c().layer() - seq.nodes_[1].c().layer();
-	  cell_number_distance = last_node().c().cell_number() - seq.nodes_[1].c().cell_number();
-	}else if( second_last_node().c().id() == seq.nodes_[0].c().id() 
-		  && last_node().c().id() == seq.nodes_[1].c().id()  ){
-	  cells_to_delete = 2;
-	  layer_distance = second_last_node().c().layer() - seq.nodes_[1].c().layer();
-	  cell_number_distance = second_last_node().c().cell_number() - seq.nodes_[1].c().cell_number();
-	}else{
-	  layer_distance = last_node().c().layer() - seq.nodes_[0].c().layer();
-	  cell_number_distance = last_node().c().cell_number() - seq.nodes_[0].c().cell_number();
-	}	
+        if( last_node().c().id() == seq.nodes_[0].c().id() ){
+          cells_to_delete = 1;
+          layer_distance = last_node().c().layer() - seq.nodes_[1].c().layer();
+          cell_number_distance = last_node().c().cell_number() - seq.nodes_[1].c().cell_number();
+        }else if( second_last_node().c().id() == seq.nodes_[0].c().id()
+                  && last_node().c().id() == seq.nodes_[1].c().id()  ){
+          cells_to_delete = 2;
+          layer_distance = second_last_node().c().layer() - seq.nodes_[1].c().layer();
+          cell_number_distance = second_last_node().c().cell_number() - seq.nodes_[1].c().cell_number();
+        }else{
+          layer_distance = last_node().c().layer() - seq.nodes_[0].c().layer();
+          cell_number_distance = last_node().c().cell_number() - seq.nodes_[0].c().cell_number();
+        }
 
         if( fabs( block_distance ) == 1 )
-	  acrossGAP=true;
+          acrossGAP=true;
         else if( distLF > limit_distance*(cells_to_delete + 1)){
           if( print_level() >= mybhep::VVERBOSE )
             std::clog << " ... forbidden, because distance " << distLF << " is larger than limit " << limit_distance*(cells_to_delete + 1) << std::endl;
@@ -2610,7 +2623,7 @@ namespace CAT {
         invertA = false;
         invertB = true;
 
-	block_distance = last_node().c().block() - seq.last_node().c().block();
+        block_distance = last_node().c().block() - seq.last_node().c().block();
         // connection must be between neighboring blocks or within same block
         if( fabs( block_distance ) > 1 ){
           if( print_level() >= mybhep::VVERBOSE )
@@ -2630,22 +2643,22 @@ namespace CAT {
           return false;
         }
 
-	if( last_node().c().id() == seq.last_node().c().id() ){
-	  cells_to_delete = 1;
-	  layer_distance = last_node().c().layer() - seq.second_last_node().c().layer();
-	  cell_number_distance = last_node().c().cell_number() - seq.second_last_node().c().cell_number();
-	}else if( second_last_node().c().id() == seq.last_node().c().id() 
-		  && last_node().c().id() == seq.second_last_node().c().id()  ){
-	  cells_to_delete = 2;
-	  layer_distance = second_last_node().c().layer() - seq.second_last_node().c().layer();
-	  cell_number_distance = second_last_node().c().cell_number() - seq.second_last_node().c().cell_number();
-	}else{
-	  layer_distance = last_node().c().layer() - seq.last_node().c().layer();
-	  cell_number_distance = last_node().c().cell_number() - seq.last_node().c().cell_number();
-	}
+        if( last_node().c().id() == seq.last_node().c().id() ){
+          cells_to_delete = 1;
+          layer_distance = last_node().c().layer() - seq.second_last_node().c().layer();
+          cell_number_distance = last_node().c().cell_number() - seq.second_last_node().c().cell_number();
+        }else if( second_last_node().c().id() == seq.last_node().c().id()
+                  && last_node().c().id() == seq.second_last_node().c().id()  ){
+          cells_to_delete = 2;
+          layer_distance = second_last_node().c().layer() - seq.second_last_node().c().layer();
+          cell_number_distance = second_last_node().c().cell_number() - seq.second_last_node().c().cell_number();
+        }else{
+          layer_distance = last_node().c().layer() - seq.last_node().c().layer();
+          cell_number_distance = last_node().c().cell_number() - seq.last_node().c().cell_number();
+        }
 
         if( fabs( block_distance ) == 1 )
-	  acrossGAP=true;
+          acrossGAP=true;
         else if( distLL > limit_distance*(cells_to_delete + 1)){
           if( print_level() >= mybhep::VVERBOSE )
             std::clog << " ... forbidden, because distance " << distLL << " is larger than limit " << limit_distance*(cells_to_delete + 1) << std::endl;
@@ -2659,7 +2672,7 @@ namespace CAT {
         invertA = true;
         invertB = true;
 
-	block_distance = nodes_[0].c().block() - seq.last_node().c().block();
+        block_distance = nodes_[0].c().block() - seq.last_node().c().block();
         // connection must be between neighboring blocks or within same block
         if( fabs( block_distance ) > 1 ){
           if( print_level() >= mybhep::VVERBOSE )
@@ -2678,22 +2691,22 @@ namespace CAT {
           return false;
         }
 
-	if( nodes_[0].c().id() == seq.last_node().c().id() ){
-	  cells_to_delete = 1;
-	  layer_distance = nodes_[0].c().layer() - seq.second_last_node().c().layer();
-	  cell_number_distance = nodes_[0].c().cell_number() - seq.second_last_node().c().cell_number();
-	}else if( nodes_[1].c().id() == seq.last_node().c().id() 
-		  && nodes_[0].c().id() == seq.second_last_node().c().id()  ){
-	  cells_to_delete = 2;
-	  layer_distance = nodes_[1].c().layer() - seq.second_last_node().c().layer();
-	  cell_number_distance = nodes_[1].c().cell_number() - seq.second_last_node().c().cell_number();
-	}else{
-	  layer_distance = nodes_[0].c().layer() - seq.last_node().c().layer();
-	  cell_number_distance = nodes_[0].c().cell_number() - seq.last_node().c().cell_number();
-	}
+        if( nodes_[0].c().id() == seq.last_node().c().id() ){
+          cells_to_delete = 1;
+          layer_distance = nodes_[0].c().layer() - seq.second_last_node().c().layer();
+          cell_number_distance = nodes_[0].c().cell_number() - seq.second_last_node().c().cell_number();
+        }else if( nodes_[1].c().id() == seq.last_node().c().id()
+                  && nodes_[0].c().id() == seq.second_last_node().c().id()  ){
+          cells_to_delete = 2;
+          layer_distance = nodes_[1].c().layer() - seq.second_last_node().c().layer();
+          cell_number_distance = nodes_[1].c().cell_number() - seq.second_last_node().c().cell_number();
+        }else{
+          layer_distance = nodes_[0].c().layer() - seq.last_node().c().layer();
+          cell_number_distance = nodes_[0].c().cell_number() - seq.last_node().c().cell_number();
+        }
 
         if( fabs( block_distance ) == 1 )
-	  acrossGAP = true;
+          acrossGAP = true;
         else if( distFL > limit_distance*(cells_to_delete + 1)){
           if( print_level() >= mybhep::VVERBOSE )
             std::clog << " ... forbidden, because distance " << distFL << " is larger than limit " << limit_distance*(cells_to_delete + 1) << std::endl;
@@ -2706,7 +2719,7 @@ namespace CAT {
         invertA = true;
         invertB = false;
 
-	block_distance = nodes_[0].c().block() - seq.nodes_[0].c().block();
+        block_distance = nodes_[0].c().block() - seq.nodes_[0].c().block();
         // connection must be between neighboring blocks or within same block
         if( fabs( block_distance ) > 1 ){
           if( print_level() >= mybhep::VVERBOSE )
@@ -2725,22 +2738,22 @@ namespace CAT {
           return false;
         }
 
-	if( nodes_[0].c().id() == seq.nodes_[0].c().id() ){
-	  cells_to_delete = 1;
-	  layer_distance = nodes_[0].c().layer() - seq.nodes_[1].c().layer();
-	  cell_number_distance = nodes_[0].c().cell_number() - seq.nodes_[1].c().cell_number();
-	}else if( nodes_[1].c().id() == seq.nodes_[0].c().id() 
-		  && nodes_[0].c().id() == seq.nodes_[1].c().id()  ){
-	  cells_to_delete = 2;
-	  layer_distance = nodes_[1].c().layer() - seq.nodes_[1].c().layer();
-	  cell_number_distance = nodes_[1].c().cell_number() - seq.nodes_[1].c().cell_number();
-	}else{
-	  layer_distance = nodes_[0].c().layer() - seq.nodes_[0].c().layer();
-	  cell_number_distance = nodes_[0].c().cell_number() - seq.nodes_[0].c().cell_number();
-	}
+        if( nodes_[0].c().id() == seq.nodes_[0].c().id() ){
+          cells_to_delete = 1;
+          layer_distance = nodes_[0].c().layer() - seq.nodes_[1].c().layer();
+          cell_number_distance = nodes_[0].c().cell_number() - seq.nodes_[1].c().cell_number();
+        }else if( nodes_[1].c().id() == seq.nodes_[0].c().id()
+                  && nodes_[0].c().id() == seq.nodes_[1].c().id()  ){
+          cells_to_delete = 2;
+          layer_distance = nodes_[1].c().layer() - seq.nodes_[1].c().layer();
+          cell_number_distance = nodes_[1].c().cell_number() - seq.nodes_[1].c().cell_number();
+        }else{
+          layer_distance = nodes_[0].c().layer() - seq.nodes_[0].c().layer();
+          cell_number_distance = nodes_[0].c().cell_number() - seq.nodes_[0].c().cell_number();
+        }
 
         if( fabs( block_distance ) == 1 )
-	  acrossGAP=true;
+          acrossGAP=true;
         else if( distFF > limit_distance*(cells_to_delete + 1)){
           if( print_level() >= mybhep::VVERBOSE )
             std::clog << " ... forbidden, because distance " << distFF << " is larger than limit " << limit_distance*(cells_to_delete + 1) << std::endl;
@@ -2957,10 +2970,10 @@ namespace CAT {
     bool sequence::has_kink(std::vector<size_t> *index) const{
       bool has_kink=false;
       for(std::vector<node>::const_iterator in = nodes_.begin(); in != nodes_.end(); ++in){
-	if( in->is_kink() ){
-	  has_kink=true;
-	  index->push_back(in - nodes_.begin());
-	}
+        if( in->is_kink() ){
+          has_kink=true;
+          index->push_back(in - nodes_.begin());
+        }
       }
 
       return has_kink;
@@ -3007,18 +3020,18 @@ namespace CAT {
 
     for(std::vector<experimental_point>::const_iterator vA=foil_vertex_A.begin(); vA!=foil_vertex_A.end(); vA++)
       for(std::vector<experimental_point>::const_iterator vB=foil_vertex_B.begin(); vB!=foil_vertex_B.end(); vB++)
-	{
-	  distance = (vA->distance(*vB)).value();
-	  if( distance < min_distance ){
-	    min_distance = distance;
-	    found = true;
-	  }
-	}
+        {
+          distance = (vA->distance(*vB)).value();
+          if( distance < min_distance ){
+            min_distance = distance;
+            found = true;
+          }
+        }
 
     if( found ){
       *the_distance = min_distance;
       if( print_level() >= mybhep::VVERBOSE ){
-	std::clog << " sequences " << this->name() << " and " << seqB->name() << " have vertex on foil with distance " << min_distance << std::endl;
+        std::clog << " sequences " << this->name() << " and " << seqB->name() << " have vertex on foil with distance " << min_distance << std::endl;
       }
     }
 

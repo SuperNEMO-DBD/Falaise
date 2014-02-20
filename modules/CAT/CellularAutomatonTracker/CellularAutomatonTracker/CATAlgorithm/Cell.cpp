@@ -60,7 +60,7 @@ namespace CAT {
 
     }
 
-    const double Cell::legendre_R(double X0, double Y0)const{
+    double Cell::legendre_R(double X0, double Y0)const{
       // radius of a circle with center in (X0, Y0)
       // that reaches center of cell
 

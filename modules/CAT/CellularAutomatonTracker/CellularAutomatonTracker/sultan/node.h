@@ -69,7 +69,7 @@ namespace SULTAN {
       const experimental_point& ep()const;
 
       //! get circle phi
-      const double circle_phi()const{return circle_phi_;}
+      double circle_phi()const{return circle_phi_;}
 
       node invert();
 
@@ -77,11 +77,11 @@ namespace SULTAN {
                              const node& right);
 
       static bool circle_order(const topology::node& c1, const topology::node& c) {
-	// order nodes based on their angle along an assigned circle
+        // order nodes based on their angle along an assigned circle
 
         return( c1.circle_phi() > c.circle_phi() );
       }
-      
+
 
 
   };

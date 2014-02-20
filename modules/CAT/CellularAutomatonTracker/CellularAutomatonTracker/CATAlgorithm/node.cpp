@@ -8,14 +8,14 @@ namespace CAT {
     using namespace std;
     using namespace mybhep;
 
-      //!Default constructor     
+      //!Default constructor
     node::node()
       {
         appname_= "node: ";
         free_ = false;
-	is_kink_ = false;
+        is_kink_ = false;
         chi2_ = 0.;
-	ndof_=0;
+        ndof_=0;
       }
 
       //!Default destructor
@@ -31,11 +31,11 @@ namespace CAT {
         cc_ = cc;
         ccc_ = ccc;
         free_ = false;
-	is_kink_ = false;
+        is_kink_ = false;
         chi2_ = 0.;
-	ndof_=0;
-	setup_cc_maps();
-	setup_ccc_maps();
+        ndof_=0;
+        setup_cc_maps();
+        setup_ccc_maps();
       }
 
       //! constructor
@@ -45,9 +45,9 @@ namespace CAT {
         appname_= "node: ";
         c_ = c;
         free_ = false;
-	is_kink_ = false;
+        is_kink_ = false;
         chi2_ = 0.;
-	ndof_=0;
+        ndof_=0;
       }
 
       //! constructor from bhep true hit
@@ -56,7 +56,7 @@ namespace CAT {
         set_probmin(probmin);
         appname_= "node: ";
         chi2_ = 0.;
-	ndof_=0;
+        ndof_=0;
         std::vector<double> cellpos;
         mybhep::vector_from_string(truehit.fetch_property("CELL_POS"), cellpos);
         double rpos = mybhep::float_from_string(truehit.fetch_property("DIST"));
@@ -78,12 +78,12 @@ namespace CAT {
           {
             c_.set_type("SN");
             std::string value = truehit.fetch_property("CELL"); // GG_CELL_block_plane_id
-          
+
             sscanf(value.c_str(),"GG_CELL_%d_%d_%d",&block,&plane,&iid);
             plane --;
             if( block < 0 ) plane *= -1;
             n3id = 0;
-          
+
           }
         else
           {
@@ -93,7 +93,7 @@ namespace CAT {
             // io = 1 if hit is between foil and external calorimeter
             //     0 if hit is between foil and internal calorimeter
             // layer = 0-8
-      
+
             int io;
             sscanf(value.c_str(),"%d_%d_%d",&block,&io,&iid);
 
@@ -125,10 +125,10 @@ namespace CAT {
         c_.set_iid(iid);
 
         free_ = false;
-	is_kink_ = false;
+        is_kink_ = false;
         {
           experimental_point tmp_ep(truehit.x().x(), truehit.x().y(), truehit.x().z(),
-                                    0., 0., 0.); 
+                                    0., 0., 0.);
           ep_ = tmp_ep;
         }
         return;
@@ -140,7 +140,7 @@ namespace CAT {
       void node::dump (ostream & a_out,
                        const std::string & a_title,
                        const std::string & a_indent,
-                       bool a_inherit) const{
+                       bool /*a_inherit*/) const{
         std::string indent;
         if (! a_indent.empty ()) indent = a_indent;
         if (! a_title.empty ())
@@ -159,14 +159,14 @@ namespace CAT {
         for(std::vector<cell_triplet>::const_iterator iccc=ccc_.begin(); iccc!=ccc_.end(); ++iccc)
           iccc->dump(a_out, "",indent + "     ");
         a_out << indent  << " --------------------- " << std::endl;
- 
+
         return;
       }
-    
+
     void node::setup_cc_maps(){
       cc_index_.clear();
       for(std::vector<cell_couplet>::const_iterator icc=cc_.begin(); icc!=cc_.end(); ++icc){
-	cc_index_[icc->cb().id()] = icc-cc_.begin();
+        cc_index_[icc->cb().id()] = icc-cc_.begin();
       }
     }
 
@@ -174,8 +174,8 @@ namespace CAT {
       ccc_ca_index_.clear();
       ccc_cc_index_.clear();
       for(std::vector<cell_triplet>::const_iterator iccc=ccc_.begin(); iccc!=ccc_.end(); ++iccc){
-	ccc_ca_index_[iccc->cb().id()] = iccc-ccc_.begin();
-	ccc_cc_index_[iccc->cc().id()] = iccc-ccc_.begin();
+        ccc_ca_index_[iccc->cb().id()] = iccc-ccc_.begin();
+        ccc_cc_index_[iccc->cc().id()] = iccc-ccc_.begin();
       }
     }
 
@@ -185,8 +185,8 @@ namespace CAT {
         c_ = c;
         cc_ = cc;
         ccc_ = ccc;
-	setup_cc_maps();
-	setup_ccc_maps();
+        setup_cc_maps();
+        setup_ccc_maps();
       }
 
       //! set main cell
@@ -197,8 +197,8 @@ namespace CAT {
       //! set cell couplets
       void node::set_cc(const std::vector<cell_couplet> &cc){
         cc_ = cc;
-	setup_cc_maps();
-	setup_ccc_maps();
+        setup_cc_maps();
+        setup_ccc_maps();
       }
 
       //! set cell triplets
@@ -241,7 +241,7 @@ namespace CAT {
       const cell& node::c()const
       {
         return c_;
-      }      
+      }
 
       //! get cell couplets
       const std::vector<cell_couplet> &node::cc()const{
@@ -289,7 +289,7 @@ namespace CAT {
         return ep_;
       }
 
-      void node::calculate_triplets(double Ratio, 
+      void node::calculate_triplets(double Ratio,
                               double separation_limit, double phi_limit, double theta_limit){
         if( cc_.size() < 2 ) return;
         for(std::vector<cell_couplet>::const_iterator icc=cc_.begin(); icc!=cc_.end(); ++icc){
@@ -389,7 +389,7 @@ namespace CAT {
 
 
       bool node::has_couplet(const cell & a, cell_couplet* ct)const {
-	
+
 #if 0
         cell null;
         std::vector<cell_couplet>::const_iterator fcouplet = std::find(cc_.begin(), cc_.end(), cell_couplet(null, a));
@@ -402,15 +402,15 @@ namespace CAT {
         return false;
 #else
 
-	if( !cc_index_.count(a.id()) ) return false;
-	size_t index=cc_index()[a.id()];
-	if( index >= cc_.size() ){
-	  std::clog << " problem: cc index " << index << " for cell a of id " << a.id() << " is larger than cc size " << cc_.size() << endl;
-	  dump();
-	  return false;
-	}
-	*ct = cc_.at(index);
-	return true;
+        if( !cc_index_.count(a.id()) ) return false;
+        size_t index=cc_index()[a.id()];
+        if( index >= cc_.size() ){
+          std::clog << " problem: cc index " << index << " for cell a of id " << a.id() << " is larger than cc size " << cc_.size() << endl;
+          dump();
+          return false;
+        }
+        *ct = cc_.at(index);
+        return true;
 #endif
 
       }
@@ -430,14 +430,14 @@ namespace CAT {
         return false;
 #else
 
-	if( !cc_index_.count(a.id()) ) return false;
-	*index= cc_index()[a.id()];
-	if( *index >= cc_.size() ){
-	  std::clog << " problem: cc index " << *index << " for cell of id " << a.id() << " is larger than cc size " << cc_.size() << endl;
-	  dump();
-	  return false;
-	}
-	return true;
+        if( !cc_index_.count(a.id()) ) return false;
+        *index= cc_index()[a.id()];
+        if( *index >= cc_.size() ){
+          std::clog << " problem: cc index " << *index << " for cell of id " << a.id() << " is larger than cc size " << cc_.size() << endl;
+          dump();
+          return false;
+        }
+        return true;
 #endif
 
       }
@@ -450,14 +450,14 @@ namespace CAT {
         return has_couplet(null, index);
 #else
 
-	if( !cc_index_.count(idd) ) return false;
-	*index= cc_index()[idd];
-	if( *index >= cc_.size() ){
-	  std::clog << " problem: cc index " << *index << " for id " << idd << " is larger than cc size " << cc_.size() << endl;
-	  dump();
-	  return false;
-	}
-	return true;
+        if( !cc_index_.count(idd) ) return false;
+        *index= cc_index()[idd];
+        if( *index >= cc_.size() ){
+          std::clog << " problem: cc index " << *index << " for id " << idd << " is larger than cc size " << cc_.size() << endl;
+          dump();
+          return false;
+        }
+        return true;
 
 #endif
 
@@ -470,27 +470,27 @@ namespace CAT {
       std::vector<cell_triplet>::const_iterator ftriplet = std::find(ccc().begin(), ccc().end(),cell_triplet(a,null,c) );
 
       if( ftriplet != ccc().end() ){
-	*index = ftriplet - ccc().begin();
-	return true;
+        *index = ftriplet - ccc().begin();
+        return true;
       }
       return false;
 #else
 
-	if( !ccc_ca_index_.count(a.id()) ) return false;
-	if( !ccc_cc_index_.count(c.id()) ) return false;
-	size_t indexa=ccc_ca_index()[a.id()];
-	if( indexa >= ccc_ca_index_.size() ){
-	  std::clog << " problem: ccc ca index " << indexa << " is larger than ccc size " << ccc_.size() << endl;
-	  return false;
-	}
-	size_t indexc=ccc_cc_index()[c.id()];
-	if( indexc >= ccc_cc_index_.size() ){
-	  std::clog << " problem: ccc cc index " << indexc << " is larger than ccc size " << ccc_.size() << endl;
-	  return false;
-	}
-	if( indexa != indexc ) return false;
-	*index = indexa;
-	return true;
+        if( !ccc_ca_index_.count(a.id()) ) return false;
+        if( !ccc_cc_index_.count(c.id()) ) return false;
+        size_t indexa=ccc_ca_index()[a.id()];
+        if( indexa >= ccc_ca_index_.size() ){
+          std::clog << " problem: ccc ca index " << indexa << " is larger than ccc size " << ccc_.size() << endl;
+          return false;
+        }
+        size_t indexc=ccc_cc_index()[c.id()];
+        if( indexc >= ccc_cc_index_.size() ){
+          std::clog << " problem: ccc cc index " << indexc << " is larger than ccc size " << ccc_.size() << endl;
+          return false;
+        }
+        if( indexa != indexc ) return false;
+        *index = indexa;
+        return true;
 #endif
 
       }
@@ -501,23 +501,23 @@ namespace CAT {
         cell null;
         if( std::find(ccc().begin(), ccc().end(),cell_triplet(a,null,c) ) != ccc().end() )
           return true;
-	return false;
+        return false;
 #else
 
-	if( !ccc_ca_index_.count(a.id()) ) return false;
-	if( !ccc_cc_index_.count(c.id()) ) return false;
-	size_t indexa=ccc_ca_index()[a.id()];
-	if( indexa >= ccc_ca_index_.size() ){
-	  std::clog << " problem: ccc ca index " << indexa << " is larger than ccc size " << ccc_.size() << endl;
-	  return false;
-	}
-	size_t indexc=ccc_cc_index()[c.id()];
-	if( indexc >= ccc_cc_index_.size() ){
-	  std::clog << " problem: ccc cc index " << indexc << " is larger than ccc size " << ccc_.size() << endl;
-	  return false;
-	}
-	if( indexa != indexc ) return false;
-	return true;
+        if( !ccc_ca_index_.count(a.id()) ) return false;
+        if( !ccc_cc_index_.count(c.id()) ) return false;
+        size_t indexa=ccc_ca_index()[a.id()];
+        if( indexa >= ccc_ca_index_.size() ){
+          std::clog << " problem: ccc ca index " << indexa << " is larger than ccc size " << ccc_.size() << endl;
+          return false;
+        }
+        size_t indexc=ccc_cc_index()[c.id()];
+        if( indexc >= ccc_cc_index_.size() ){
+          std::clog << " problem: ccc cc index " << indexc << " is larger than ccc size " << ccc_.size() << endl;
+          return false;
+        }
+        if( indexa != indexc ) return false;
+        return true;
 #endif
 
       }
@@ -532,11 +532,11 @@ namespace CAT {
             return true;
           }
         }
-      
+
         return false;
 #else
 
-	return( ccc_ca_index_.count(a.id()) || ccc_cc_index_.count(a.id()) );
+        return( ccc_ca_index_.count(a.id()) || ccc_cc_index_.count(a.id()) );
 
 #endif
 

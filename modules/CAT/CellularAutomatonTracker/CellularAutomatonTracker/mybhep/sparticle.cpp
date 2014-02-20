@@ -24,7 +24,7 @@
 
 namespace mybhep{
 
-  using namespace std;
+  // using namespace std;
 
   // default constructor
   sparticle::sparticle ()
@@ -87,26 +87,24 @@ namespace mybhep{
     q_.push_back(q);
   }
 
-  ostream& operator << (ostream& s, const sparticle& ip) {
-    s << endl;
+  std::ostream& operator << (std::ostream& s, const sparticle& ip) {
+    s << std::endl;
 
     s  << " sparticle info: particle = " << ip.seed_particle() << " "
-       << endl;
+       << std::endl;
 
     s << " List of suparticles "
-      << "-----------------------------" << endl;
+      << "-----------------------------" << std::endl;
 
     for(size_t i=0; i< ip.subparticles().size(); i++){
 
       const particle& p = *ip.subparticles()[i];
-      s << p << endl;
+      s << p << std::endl;
     }
 
     s << " List of matching quantities "
-      << print_vector(ip.quality()) << endl;
+      << print_vector(ip.quality()) << std::endl;
 
     return s;
   }
 }
-
-

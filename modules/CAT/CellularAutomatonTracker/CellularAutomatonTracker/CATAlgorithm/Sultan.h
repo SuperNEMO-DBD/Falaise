@@ -53,7 +53,7 @@ namespace CAT{
 
   public:
     bool initialize( void );
-    bool initialize( const mybhep::sstore &store, const mybhep::gstore gs, mybhep::EventManager2 *eman=0);
+    bool initialize( const mybhep::sstore &store, const mybhep::gstore & gs, mybhep::EventManager2 *eman=0);
     bool execute(mybhep::event& evt, int ievent);
     bool finalize();
     void FillYPositions( mybhep::event& evt );
@@ -72,7 +72,7 @@ namespace CAT{
     void print_calos(void)const;
     void clusterize(void);
     void reconstruct(topology::Tracked_data & __tracked_data);
-    void reconstruct_cluster(std::vector< topology::Cell > cluster);
+    void reconstruct_cluster(const std::vector< topology::Cell > & cluster);
     void set_unclustered_cells(topology::Tracked_data & tracked_data_);
     void print_true_sequences(void)const;
     void print_nemo_sequences(void)const;
@@ -92,14 +92,14 @@ namespace CAT{
 
     //! get calorimeter_hits
     const std::vector<topology::calorimeter_hit>& get_calorimeter_hits()const{return calorimeter_hits_;};
-    
+
     //! set calorimeter_hits
     void set_calorimeter_hits(const std::vector<topology::calorimeter_hit> & calorimeter_hits)
     {
       calorimeter_hits_.clear();
       calorimeter_hits_ = calorimeter_hits;
     };
-    
+
   protected:
 
     void fill_fast_information( );
