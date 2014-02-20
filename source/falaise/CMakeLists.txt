@@ -50,6 +50,7 @@ set(FalaiseLibrary_TESTS )
 include(snemo.cmake)
 include(bipo3.cmake)
 include(TrackerPreClustering.cmake)
+#include(Yaca.cmake)
 include(TrackFit.cmake)
 
 # - Publish headers
@@ -84,8 +85,10 @@ endif()
 # - Install it
 # TODO : fixup rpaths as needed
 install(TARGETS Falaise
+  EXPORT  FalaiseTargets
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   )
 
 # - Install public headers (preliminary)
@@ -100,9 +103,38 @@ if(Falaise_ENABLE_TESTING)
 endif()
 
 #-----------------------------------------------------------------------
+# Configure/Install support files
+# Done here so that external package variables are visible
+#
+# - Targets
+# export(TARGETS Falaise ${Falaise_ADDON_TARGETS} FILE ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/${Falaise_TAG}/FalaiseTargets.cmake)
+# install(EXPORT FalaiseTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${Falaise_TAG})
+
+# # - Versioning (build and install trees)
+# configure_file(${PROJECT_SOURCE_DIR}/cmake/FalaiseConfigVersion.cmake.in
+#   ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/${Falaise_TAG}/FalaiseConfigVersion.cmake
+#   @ONLY
+#   )
+
+# # - Config (build and install trees *at present*)
+# configure_file(${PROJECT_SOURCE_DIR}/cmake/FalaiseConfig.cmake.in
+#   ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/${Falaise_TAG}/FalaiseConfig.cmake
+#   @ONLY
+#   )
+
+# install(
+#   FILES
+#     ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/${Falaise_TAG}/FalaiseConfigVersion.cmake
+#     ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/${Falaise_TAG}/FalaiseConfig.cmake
+#   DESTINATION
+#     ${CMAKE_INSTALL_LIBDIR}/cmake/${Falaise_TAG}
+#   )
+
+#-----------------------------------------------------------------------
 # Build Tests
 #
-
+# - NB assumes each test .cxx file generates a single executable
+# - We also output the executables to a dedicated directory
 if(Falaise_ENABLE_TESTING)
   foreach(_testsource ${FalaiseLibrary_TESTS})
     get_filename_component(_testname "${_testsource}" NAME_WE)
@@ -122,4 +154,3 @@ if(Falaise_ENABLE_TESTING)
       )
   endforeach()
 endif()
-
