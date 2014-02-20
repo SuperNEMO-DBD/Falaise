@@ -40,10 +40,9 @@ namespace snemo {
       return initialized_;
     }
 
-    void toy_display_processor::set_interactive (bool interactive_)
+    void toy_display_processor::set_interactive (bool isInteractive)
     {
-      interactive_ = interactive_;
-      return;
+      interactive_ = isInteractive;
     }
 
     bool toy_display_processor::is_interactive () const
@@ -56,10 +55,10 @@ namespace snemo {
       return ! is_interactive ();
     }
 
-    void toy_display_processor::set_module_number (int module_number_)
+    void toy_display_processor::set_module_number (int module_number)
     {
       DT_THROW_IF (is_initialized (), std::logic_error, "Already initialized !");
-      module_number_ = module_number_;
+      module_number_ = module_number;
       return;
     }
 

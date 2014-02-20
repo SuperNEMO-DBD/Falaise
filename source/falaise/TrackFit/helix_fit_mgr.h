@@ -46,7 +46,7 @@
 namespace TrackFit {
 
   /// Drift time to radius calibration interface
-  class i_drift_time_calibration;
+  struct i_drift_time_calibration;
 
   /// \brief Parameters of the helix fit
   struct helix_fit_params

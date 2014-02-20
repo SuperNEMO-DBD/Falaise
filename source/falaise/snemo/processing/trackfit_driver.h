@@ -49,10 +49,10 @@
 #include <snemo/processing/base_tracker_fitter.h>
 
 namespace TrackFit {
-  class line_fit_solution;
-  class helix_fit_solution;
-  class line_fit_params;
-  class helix_fit_params;
+  struct line_fit_solution;
+  struct helix_fit_solution;
+  struct line_fit_params;
+  struct helix_fit_params;
 }
 
 namespace geomtools {
@@ -76,7 +76,7 @@ namespace snemo {
       snemo_drift_time_calibration  ();
 
       /// Destructor
-      ~snemo_drift_time_calibration ();
+      virtual ~snemo_drift_time_calibration ();
 
       virtual double get_sensitive_cell_radius () const;
       virtual double get_max_cell_radius () const;

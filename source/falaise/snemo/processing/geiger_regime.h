@@ -80,6 +80,8 @@ namespace snemo {
 
         /// Default constructor
         geiger_regime ();
+        
+        virtual ~geiger_regime() {;}
 
         /// Initialization from parameters
         void initialize (const datatools::properties & config_);

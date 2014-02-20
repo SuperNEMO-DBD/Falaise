@@ -39,6 +39,7 @@ namespace TrackFit {
   /// \brief Abstract interface for any object for drift time calibration
   struct i_drift_time_calibration
   {
+    virtual ~i_drift_time_calibration() {}
     /// Return the fiducial radius of a cell for Geiger avalanche drift
     virtual double get_sensitive_cell_radius() const = 0;
     /// Return the maximum radius of the Geiger cell
