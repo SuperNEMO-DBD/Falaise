@@ -1,24 +1,23 @@
 /* -*- mode: c++ -*- */
-#ifndef __CATAlgorithm___sultan___
-#define __CATAlgorithm___sultan___
-
+#ifndef CATALGORITHM_SULTAN_H
+#define CATALGORITHM_SULTAN_H
 
 #include <stdexcept>
-#include <mybhep/gstore.h>
-#include <mybhep/messenger.h>
-#include <mybhep/event.h>
-#include <CLHEP/Units/SystemOfUnits.h>
-#include <mybhep/system_of_units.h>
-
 #include <iostream>
 #include <vector>
 
+#include <CLHEP/Units/SystemOfUnits.h>
+
+#include <mybhep/gstore.h>
+#include <mybhep/messenger.h>
+#include <mybhep/event.h>
+#include <mybhep/system_of_units.h>
 #include <mybhep/EventManager2.h>
+
 #include <CATAlgorithm/line.h>
 #include <CATAlgorithm/cell_couplet.h>
 #include <CATAlgorithm/cell_triplet.h>
 #include <CATAlgorithm/experimental_double.h>
-
 #include <CATAlgorithm/Clock.h>
 #include <CATAlgorithm/cell.h>
 #include <CATAlgorithm/cluster.h>
@@ -32,9 +31,7 @@
 #include <CATAlgorithm/Sequence.h>
 #include <CATAlgorithm/LinearRegression.h>
 
-
 namespace CAT{
-
 
   /// The Sultan algorithm
   class Sultan{
@@ -297,4 +294,4 @@ namespace CAT{
 
 }
 
-#endif
+#endif // CATALGORITHM_SULTAN_H

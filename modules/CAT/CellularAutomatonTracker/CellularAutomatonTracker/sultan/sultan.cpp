@@ -1,9 +1,11 @@
 #include "sultan/sultan.h"
+
 #include <vector>
-#include <mybhep/system_of_units.h>
-#include <sys/time.h>
 #include <cmath>
 #include <sstream>
+#include <sys/time.h>
+
+#include <mybhep/system_of_units.h>
 
 namespace SULTAN {
 

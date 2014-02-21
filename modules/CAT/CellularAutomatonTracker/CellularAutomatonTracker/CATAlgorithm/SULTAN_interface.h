@@ -1,8 +1,8 @@
 /* -*- mode: c++ -*- */
 // SULTAN_interface.h
 
-#ifndef _SULTAN_interface_h_
-#define _SULTAN_interface_h_ 1
+#ifndef _CAT_SULTAN_interface_h_
+#define _CAT_SULTAN_interface_h_ 1
 
 #include <vector>
 #include <iostream>
@@ -111,6 +111,6 @@ namespace CAT {
 
 }
 
-#endif // _SULTAN_interface_h_
+#endif // _CAT_SULTAN_interface_h_
 
 // end of SULTAN_interface.h

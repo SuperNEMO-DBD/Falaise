@@ -209,8 +209,14 @@ namespace CAT {
       //! get list of chi2 used in the sequence
       std::vector<double> chi2s()const;
 
+      //! compute the list of chi2s  used in the sequence
+      void make_chi2s(std::vector<double> &) const;
+
       //! get list of helix_chi2
       const std::vector<double> & helix_chi2s() const;
+
+      //! compute the list of probs  used in the sequence
+      void make_probs(std::vector<double> &) const;
 
       //! get list of probs used in the sequence
       std::vector<double> probs()const;
@@ -428,7 +434,7 @@ namespace CAT {
       bool good_match_with_kink(const sequence & seq,
                                 bool &invertA, bool &invertB, bool &acrossGAP,
                                 double limit_distance, size_t NOffLayers,
-				int &cells_to_delete)const;
+                                int &cells_to_delete)const;
 
       bool same_families(const topology::sequence & s)const;
 

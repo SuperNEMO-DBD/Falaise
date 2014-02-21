@@ -1,16 +1,17 @@
 /* -*- mode: c++ -*- */
-#ifndef __sultan___sultan___
-#define __sultan___sultan___
-
-#include <mybhep/messenger.h>
-#include <mybhep/utilities.h>
-#include <boost/cstdint.hpp>
+#ifndef SULTAN_SULTAN_H
+#define SULTAN_SULTAN_H
 
 #include <iostream>
 #include <vector>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+
+#include <boost/cstdint.hpp>
+
+#include <mybhep/messenger.h>
+#include <mybhep/utilities.h>
 
 //#if CAT_WITH_DEVEL_ROOT == 1
 #include "TApplication.h"
@@ -29,7 +30,6 @@
 #include <sultan/scenario.h>
 #include <sultan/cell_triplet.h>
 #include <sultan/experimental_legendre_vector.h>
-
 
 namespace SULTAN {
   class sultan{
@@ -310,4 +310,4 @@ namespace SULTAN {
 
 } // end of namespace CAT
 
-#endif
+#endif // SULTAN_SULTAN_H

@@ -379,14 +379,21 @@ namespace CAT {
       return probs_all_;
     }
 
+    void sequence::make_chi2s(std::vector<double> & c) const
+    {
+      c.clear();
+      c.reserve(nodes_.size());
+      for(std::vector<node>::const_iterator in = nodes_.begin(); in != nodes_.end(); ++in) {
+        c.push_back(in->chi2());
+      }
+      return;
+    }
+
     //! get list of chi2 used in the sequence
     std::vector<double> sequence::chi2s()const
     {
       std::vector<double> c;
-
-      for(std::vector<node>::const_iterator in = nodes_.begin(); in != nodes_.end(); ++in)
-        c.push_back(in->chi2());
-
+      make_chi2s(c);
       return c;
     }
 
@@ -397,14 +404,21 @@ namespace CAT {
       return helix_chi2s_;
     }
 
+    void sequence::make_probs(std::vector<double> & p) const
+    {
+      p.clear();
+      p.reserve(nodes_.size());
+      for(std::vector<node>::const_iterator in = nodes_.begin(); in != nodes_.end(); ++in) {
+        p.push_back(in->Prob());
+      }
+      return;
+    }
+
     //! get list of probs used in the sequence
     std::vector<double> sequence::probs()const
     {
       std::vector<double> p;
-
-      for(std::vector<node>::const_iterator in = nodes_.begin(); in != nodes_.end(); ++in)
-        p.push_back(in->Prob());
-
+      make_probs(p);
       return p;
     }
 
