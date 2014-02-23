@@ -132,7 +132,7 @@ namespace snemo {
         _SULTAN_setup_.nsigma_z = setup_.fetch_real("SULTAN.nsigma_z");
       }
 
-      // Number of cells which can be skipped(because the cell did not
+      // Number of cells which can be skipped (because the cell did not
       // work) and still the cluster is continuous
       if (setup_.has_key("SULTAN.nofflayers")) {
         _SULTAN_setup_.nofflayers = setup_.fetch_integer("SULTAN.nofflayers");
@@ -517,9 +517,146 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_driver,ocd_)
       ;
   }
 
+  {
+    // Description of the 'SULTAN.Emin' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("SULTAN.Emin")
+      .set_terse_description("Minimum energy of detected electron")
+      .set_traits(datatools::TYPE_REAL)
+      .set_mandatory(false)
+      .set_long_description("Default value: 0.2 MeV")
+      .add_example("Use default value::                \n"
+                   "                                   \n"
+                   "  SULTAN.Emin : real = 0.2 MeV     \n"
+                   "                                   \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'SULTAN.Emax' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("SULTAN.Emax")
+      .set_terse_description("Maximum energy of detected electron")
+      .set_traits(datatools::TYPE_REAL)
+      .set_mandatory(false)
+      .set_long_description("Default value: 7.0 MeV")
+      .add_example("Use default value::                \n"
+                   "                                   \n"
+                   "  SULTAN.Emax : real = 7.0 MeV     \n"
+                   "                                   \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'SULTAN.probmin' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("SULTAN.probmin")
+      .set_terse_description("Minimal probability away from the straight line")
+      .set_traits(datatools::TYPE_REAL)
+      .set_mandatory(false)
+      .set_long_description("Default value: 0.0")
+      .add_example("Use default value::                \n"
+                   "                                   \n"
+                   "  SULTAN.probmin : real = 0.0      \n"
+                   "                                   \n"
+                   )
+      ;
+  }
 
 
-  ocd_.set_validation_support(false);
+  {
+    // Description of the 'SULTAN.nsigma_r' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("SULTAN.nsigma_r")
+      .set_terse_description("Number of sigmas for tolerance on the drift radius")
+      .set_traits(datatools::TYPE_REAL)
+      .set_mandatory(false)
+      .set_long_description("Default value: 5.0")
+      .add_example("Use default value::                \n"
+                   "                                   \n"
+                   "  SULTAN.nsigma_r : real = 5.0     \n"
+                   "                                   \n"
+                   )
+      ;
+  }
+
+
+  {
+    // Description of the 'SULTAN.nsigma_z' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("SULTAN.nsigma_z")
+      .set_terse_description("Number of sigmas for tolerance on the longitudinal position")
+      .set_traits(datatools::TYPE_REAL)
+      .set_mandatory(false)
+      .set_long_description("Default value: 3.0")
+      .add_example("Use default value::                \n"
+                   "                                   \n"
+                   "  SULTAN.nsigma_z : real = 3.0     \n"
+                   "                                   \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'SULTAN.nofflayers' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("SULTAN.nofflayers")
+      .set_terse_description("Number of cells which can be skipped (because the cell did not work) and still the cluster is continuous")
+      .set_traits(datatools::TYPE_INTEGER)
+      .set_mandatory(false)
+      .set_long_description("Default value: 1")
+      .add_example("Use default value::               \n"
+                   "                                  \n"
+                   "  SULTAN.nofflayers : integer = 1 \n"
+                   "                                  \n"
+                   )
+      ;
+  }
+
+
+  {
+    // Description of the 'SULTAN.first_event' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("SULTAN.first_event")
+      .set_terse_description("First event to be processed")
+      .set_traits(datatools::TYPE_INTEGER)
+      .set_mandatory(false)
+      .set_long_description("Default value: -1")
+      .add_example("Do not specify any first event::     \n"
+                   "                                     \n"
+                   "  SULTAN.first_event : integer = -1  \n"
+                   "                                     \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'SULTAN.driver.sigma_z_factor' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("SULTAN.driver.sigma_z_factor")
+      .set_terse_description("Sigma Z factor")
+      .set_traits(datatools::TYPE_REAL)
+      .set_mandatory(false)
+      .set_long_description("Default value: 1.0")
+      .add_example("Use the default value::                     \n"
+                   "                                            \n"
+                   "  SULTAN.driver.sigma_z_factor : real = 1.0 \n"
+                   "                                            \n"
+                   )
+      ;
+  }
+
+  ocd_.set_validation_support(true);
   ocd_.lock();
   return;
 }

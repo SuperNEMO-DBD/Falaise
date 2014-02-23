@@ -324,9 +324,9 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::cat_tracker_clustering_mo
       .set_mandatory(false)
       .set_long_description(ldesc.str())
       .add_example("Use an alternative name for the geometry service:: \n"
-                   "                                  \n"
-                   "  Geo_label : string = \"Geo\"    \n"
-                   "                                  \n"
+                   "                                    \n"
+                   "  Geo_label : string = \"geometry\" \n"
+                   "                                    \n"
                    )
       ;
   }
@@ -337,11 +337,11 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::cat_tracker_clustering_mo
                                "                                         \n"
                                "  CD_label  : string = \"CD\"            \n"
                                "  TCD_label : string = \"TCD\"           \n"
-                               "  Geo_label : string = \"Geo\"           \n"
+                               "  Geo_label : string = \"geometry\"  d     \n"
                                "                                         \n"
-                               "Additional specific parameters are used to configure   \n"
-                               "the embedded ``CAT`` driver itself; see the OCD support\n"
-                               "of the ``snemo::reconstruction::cat_driver`` class.        \n"
+                               "Additional specific parameters are used to configure    \n"
+                               "the embedded ``CAT`` driver itself; see the OCD support \n"
+                               "of the ``snemo::reconstruction::cat_driver`` class.     \n"
                                );
 
   ocd_.set_validation_support(true);

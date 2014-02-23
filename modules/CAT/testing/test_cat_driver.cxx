@@ -25,7 +25,7 @@
 // Testing resources:
 #include <utilities.h>
 
-int main()
+int main(int argc_, char ** argv_)
 {
   FALAISE_INIT();
   int error_code = EXIT_SUCCESS;
@@ -33,6 +33,24 @@ int main()
   try {
     std::clog << "Hello, World!\n";
     bool draw = false;
+    int iarg = 1;
+    while (iarg < argc_) {
+      std::string token = argv_[iarg];
+      if (token[0] == '-') {
+        std::string option = token;
+        if ((option == "-D") || (option == "--draw")) {
+          draw = true;
+        } else {
+          std::clog << "warning: ignoring option '" << option << "'!" << std::endl;
+        }
+      } else {
+        std::string argument = token;
+        {
+          std::clog << "warning: ignoring argument '" << argument << "'!" << std::endl;
+        }
+      }
+      iarg++;
+    }
 
     srand48(314159);
 
