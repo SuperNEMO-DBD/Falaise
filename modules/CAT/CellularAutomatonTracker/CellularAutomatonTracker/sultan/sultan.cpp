@@ -64,7 +64,7 @@ namespace SULTAN {
   bool sultan::initialize( void ){
     //*************************************************************
 
-    m.message("\n Beginning algorithm sultan \n",mybhep::VERBOSE); fflush(stdout);
+    m.message("SULTAN:sultan::initialize: Beginning algorithm sultan",mybhep::VERBOSE); fflush(stdout);
 
     //    clock.start(" sultan: initialize ");
 
@@ -99,10 +99,10 @@ namespace SULTAN {
     }
 
 
-    m.message("\n Ending algorithm sultan \n ",mybhep::NORMAL); fflush(stdout);
+    m.message("SULTAN:sultan::finalize: Ending algorithm sultan",mybhep::NORMAL); fflush(stdout);
 
-    m.message("Initial events: ", initial_events, mybhep::NORMAL);
-    m.message("Skipped events: ", skipped_events, "(", 100.*skipped_events/initial_events, "\%)", mybhep::NORMAL);
+    m.message("SULTAN:sultan::finalize: Initial events: ", initial_events, mybhep::NORMAL);
+    m.message("SULTAN:sultan::finalize: Skipped events: ", skipped_events, "(", 100.*skipped_events/initial_events, "\%)", mybhep::NORMAL);
 
     clock.stop(" sultan: finalize ");
 
@@ -146,29 +146,28 @@ namespace SULTAN {
     Rmin = pmin/(0.3*bfield);
     Rmax = pmax/(0.3*bfield);
 
-    m.message("",mybhep::NORMAL);
-    m.message("SULTAN sultan parameters",mybhep::NORMAL);
-    m.message("verbosity print level", level, mybhep::NORMAL);
-    m.message("max_time",max_time,"ms",mybhep::NORMAL);
-    m.message("print_event_display",print_event_display,mybhep::NORMAL);
-    m.message("probmin", probmin, mybhep::NORMAL);
-    m.message("nsigma_r", nsigma_r, mybhep::NORMAL);
-    m.message("nsigma_z", nsigma_z, mybhep::NORMAL);
-    m.message("nsigmas",nsigmas,mybhep::NORMAL);
-    m.message("nofflayers",nofflayers,mybhep::NORMAL);
-    m.message("first event number", first_event_number, mybhep::NORMAL);
-    m.message("cell_distance",cell_distance,"mm",mybhep::NORMAL);
-    m.message("bfield",bfield,"T",mybhep::NORMAL);
-    m.message("Emin",Emin,"MeV",mybhep::NORMAL);
-    m.message("Emax",Emax,"MeV",mybhep::NORMAL);
-    m.message("xsize is",xsize,"mm",mybhep::NORMAL);
-    m.message("ysize is",ysize,"mm",mybhep::NORMAL);
-    m.message("zsize is",zsize,"mm",mybhep::NORMAL);
-    m.message("foil radius: ",foil_radius,"mm",mybhep::NORMAL);
-    m.message(" min_ncells_in_cluster ", min_ncells_in_cluster, mybhep::NORMAL);
-    m.message(" ncells_between_triplet_min ", ncells_between_triplet_min, mybhep::NORMAL);
-    m.message(" ncells_between_triplet_range ", ncells_between_triplet_range, mybhep::NORMAL);
-    m.message(" ncells to skip ", ncells_to_skip, " dist limit ", dist_limit_inf, " - ", dist_limit_sup, " Rmin ", Rmin, " Rmax ", Rmax, mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: SULTAN sultan parameters",mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: verbosity print level", level, mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: max_time",max_time,"ms",mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: print_event_display",print_event_display,mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: probmin", probmin, mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: nsigma_r", nsigma_r, mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: nsigma_z", nsigma_z, mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: nsigmas",nsigmas,mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: nofflayers",nofflayers,mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: first event number", first_event_number, mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: cell_distance",cell_distance,"mm",mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: bfield",bfield,"T",mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: Emin",Emin,"MeV",mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: Emax",Emax,"MeV",mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: xsize is",xsize,"mm",mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: ysize is",ysize,"mm",mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: zsize is",zsize,"mm",mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: foil radius: ",foil_radius,"mm",mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: min_ncells_in_cluster ", min_ncells_in_cluster, mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: ncells_between_triplet_min ", ncells_between_triplet_min, mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: ncells_between_triplet_range ", ncells_between_triplet_range, mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: ncells to skip ", ncells_to_skip, " dist limit ", dist_limit_inf, " - ", dist_limit_sup, " Rmin ", Rmin, " Rmax ", Rmax, mybhep::NORMAL);
 
     //    clock.stop(" sultan: read dst properties ");
 
@@ -184,10 +183,10 @@ namespace SULTAN {
     clock.start(" sultan: sequentiation ","restart"); // use this one to check late
 
     event_number ++;
-    m.message(" sultan: preparing event", event_number, mybhep::VERBOSE);
+    m.message("SULTAN::sultan::sequentiate: preparing event", event_number, mybhep::VERBOSE);
 
     if( event_number < first_event_number ){
-      m.message(" local_tracking: skip event", event_number, " first event is "
+      m.message("SULTAN::sultan::sequentiate: local_tracking: skip event", event_number, " first event is "
                 , first_event_number,  mybhep::VERBOSE);
       return true;
     }
@@ -201,12 +200,12 @@ namespace SULTAN {
 
     tracked_data_.scenarios_.clear();
 
-    m.message(" sultan: prepare to reduce ", the_clusters.size(), " clusters of cells to more refined clusters ", mybhep::VERBOSE);
+    m.message("SULTAN::sultan::sequentiate: prepare to reduce ", the_clusters.size(), " clusters of cells to more refined clusters ", mybhep::VERBOSE);
 
     for (vector<topology::cluster>::iterator icluster = the_clusters.begin(); icluster != the_clusters.end(); ++icluster){
       topology::cluster & a_cluster = *icluster;
 
-      m.message(" sultan: prepare to reduce cluster ", icluster - the_clusters.begin(), " of ", the_clusters.size(), " having", icluster->nodes_.size(), " cells ", mybhep::VERBOSE);
+      m.message("SULTAN::sultan::sequentiate: prepare to reduce cluster ", icluster - the_clusters.begin(), " of ", the_clusters.size(), " having", icluster->nodes_.size(), " cells ", mybhep::VERBOSE);
 
       // look for cluster with largest number of triplet-neighbours
       //sequentiate_cluster_with_experimental_vector(a_cluster, icluster - the_clusters.begin());
@@ -231,7 +230,7 @@ namespace SULTAN {
 
     make_scenarios(tracked_data_);
 
-    m.message(" SULTAN has created ", scenarios_.size(), " scenarios and ", sequences_.size(), " sequences for this event ", mybhep::VERBOSE);
+    m.message("SULTAN::sultan::sequentiate: SULTAN has created ", scenarios_.size(), " scenarios and ", sequences_.size(), " sequences for this event ", mybhep::VERBOSE);
 
     clock.stop(" sultan: sequentiate ");
 
@@ -259,7 +258,8 @@ namespace SULTAN {
     for (vector<topology::node>::iterator inode = nodes.begin(); inode != nodes.end(); ++inode){
       if (level >= mybhep::VVERBOSE)
         {
-          std::clog << " cell " << inode->c().id() << " ["; inode->c().ep().dump(); std::clog << "] r "; inode->c().r().dump(); std::clog << std::endl;
+          std::clog << "SULTAN::sultan::assign_nodes_based_on_experimental_helix: cell " << inode->c().id() << " ["; inode->c().ep().dump();
+          std::clog << "] r "; inode->c().r().dump(); std::clog << std::endl;
         }
 
       active = false;
@@ -269,7 +269,7 @@ namespace SULTAN {
         //ihel->distance_from_cell_measurement(inode->c(), &dr, &dh);
         ihel->distance_from_cell_center(inode->c(), &dr, &dh);
         if (level >= mybhep::VVERBOSE){
-          std::clog << " distance of helix " << ihel - helices->begin() << " from cell " << inode->c().id() << " dr (" << dr.value() << " +- " << dr.error() << ") dh (" << dh.value() << " +- " << dh.error() << ")" << std::endl;
+          std::clog << "SULTAN::sultan::assign_nodes_based_on_experimental_helix: distance of helix " << ihel - helices->begin() << " from cell " << inode->c().id() << " dr (" << dr.value() << " +- " << dr.error() << ") dh (" << dh.value() << " +- " << dh.error() << ")" << std::endl;
         }
         if( fabs(dr.value()) < cell_distance/2. + nsigma_r*inode->c().r().error() && fabs(dh.value()) < nsigma_z*inode->c().ep().z().error() ){
           active = true;
@@ -285,7 +285,7 @@ namespace SULTAN {
         p = helices->at(best_helix_index).position(inode->c().ep());
         if (level >= mybhep::VVERBOSE)
           {
-            std::clog << " is near (" << p.x().value() << ", " << p.y().value() << ", " << p.z().value() << ")" << std::endl;
+            std::clog << "SULTAN::sultan::assign_nodes_based_on_experimental_helix:  is near (" << p.x().value() << ", " << p.y().value() << ", " << p.z().value() << ")" << std::endl;
           }
         // angle of cell center wrt circle center
         angle = atan2(inode->c().ep().y().value() - b->y0().value(), inode->c().ep().x().value() - b->x0().value());
@@ -294,7 +294,7 @@ namespace SULTAN {
         assigned_nodes.push_back(*inode);
       }else{
         if (level >= mybhep::VVERBOSE){
-          std::clog << " is not near " << std::endl;
+          std::clog << "SULTAN::sultan::assign_nodes_based_on_experimental_helix:  is not near " << std::endl;
         }
         if( std::find(leftover_nodes_copy.begin(), leftover_nodes_copy.end(), *inode) != leftover_nodes_copy.end() )
           leftover_nodes.push_back(*inode);
@@ -303,7 +303,7 @@ namespace SULTAN {
 
     bool ok = check_continous_cells(assigned_nodes, leftover_nodes, b);
 
-    m.message(" associated ", assigned_nodes.size(), " nodes to this helix out of ", nodes.size(), " so ", leftover_nodes.size(), " remain unassigned - initially there were ", leftover_nodes_copy.size(),  " -, continous ", ok, mybhep::VERBOSE);
+    m.message("SULTAN::sultan::assign_nodes_based_on_experimental_helix:  associated ", assigned_nodes.size(), " nodes to this helix out of ", nodes.size(), " so ", leftover_nodes.size(), " remain unassigned - initially there were ", leftover_nodes_copy.size(),  " -, continous ", ok, mybhep::VERBOSE);
 
     clock.stop(" sultan: assign_nodes_based_on_experimental_helix ");
 
@@ -367,7 +367,7 @@ namespace SULTAN {
 
     bool ok = check_continous_cells(assigned_nodes, leftover_nodes, b);
 
-    m.message(" associated ", assigned_nodes.size(), " nodes to this helix out of ", nodes.size(), " so ", leftover_nodes.size(), " remain unassigned - initially there were ", leftover_nodes_copy.size(),  " -, continous ", ok, mybhep::VERBOSE);
+    m.message("SULTAN::sultan::assign_nodes_based_on_experimental_helix: associated ", assigned_nodes.size(), " nodes to this helix out of ", nodes.size(), " so ", leftover_nodes.size(), " remain unassigned - initially there were ", leftover_nodes_copy.size(),  " -, continous ", ok, mybhep::VERBOSE);
 
     clock.stop(" sultan: assign_nodes_based_on_experimental_helix ");
 
@@ -406,7 +406,7 @@ namespace SULTAN {
 
     bool ok = (first_cell_of_piece.size() <= 1 );
 
-    m.message(" the ", assigned_nodes.size(), " assigned nodes have ", first_cell_of_piece.size(), " breaks, continous: ", ok, mybhep::VERBOSE);
+    m.message("SULTAN::sultan::check_continous_cells: the ", assigned_nodes.size(), " assigned nodes have ", first_cell_of_piece.size(), " breaks, continous: ", ok, mybhep::VERBOSE);
 
     if( !ok ){
       int length;
@@ -414,12 +414,12 @@ namespace SULTAN {
       for(size_t i=1; i<first_cell_of_piece.size(); i++){
         length = first_cell_of_piece[i] - first_cell_of_piece[i-1];
         if( length < 0 ) length += assigned_nodes.size();
-        m.message(" piece ", i - 1, " from ", first_cell_of_piece[i-1], " to ", first_cell_of_piece[i], " length ", length, mybhep::VERBOSE);
+        m.message("SULTAN::sultan::check_continous_cells:  piece ", i - 1, " from ", first_cell_of_piece[i-1], " to ", first_cell_of_piece[i], " length ", length, mybhep::VERBOSE);
         length_of_piece.push_back(length);
       }
       length = first_cell_of_piece.front() - first_cell_of_piece.back();
       if( length < 0 ) length += assigned_nodes.size();
-      m.message(" piece ", first_cell_of_piece.size()-1, " from ", first_cell_of_piece.back(), " to ", first_cell_of_piece.front(), " length ", length, mybhep::VERBOSE);
+      m.message("SULTAN::sultan::check_continous_cells:  piece ", first_cell_of_piece.size()-1, " from ", first_cell_of_piece.back(), " to ", first_cell_of_piece.front(), " length ", length, mybhep::VERBOSE);
       length_of_piece.push_back(length);
       std::vector<size_t>::const_iterator ml = max_element(length_of_piece.begin(), length_of_piece.end());
       if( *ml >= 3 ){
@@ -430,7 +430,7 @@ namespace SULTAN {
           longest_piece_last = first_cell_of_piece[ml - length_of_piece.begin()+1];
         else
           longest_piece_last = first_cell_of_piece.front();
-        m.message(" longest piece from ", longest_piece_first, " to ", longest_piece_last, " with length ", *ml, mybhep::VERBOSE);
+        m.message("SULTAN::sultan::check_continous_cells:  longest piece from ", longest_piece_first, " to ", longest_piece_last, " with length ", *ml, mybhep::VERBOSE);
         if( longest_piece_first < longest_piece_last ){
           std::vector<topology::node> newnodes(assigned_nodes.begin()+longest_piece_first, assigned_nodes.begin()+longest_piece_last);
           leftover_nodes.insert(leftover_nodes.end(),assigned_nodes.begin()+longest_piece_last,assigned_nodes.end());
@@ -443,10 +443,10 @@ namespace SULTAN {
           assigned_nodes = newnodes;
         }
       }else{
-        m.message(" the longest piece is too short ", mybhep::VERBOSE);
+        m.message("SULTAN::sultan::check_continous_cells:  the longest piece is too short ", mybhep::VERBOSE);
         assigned_nodes.clear();
       }
-      m.message(" return piece of length ", assigned_nodes.size(), mybhep::VERBOSE);
+      m.message("SULTAN::sultan::check_continous_cells:  return piece of length ", assigned_nodes.size(), mybhep::VERBOSE);
     }
 
 
@@ -468,7 +468,7 @@ namespace SULTAN {
 
     size_t nnodes = nodes.size();
 
-    m.message(" calculate triples for ", nnodes, " nodes, minimum ", min_ncells_in_cluster, mybhep::VVERBOSE);
+    m.message("SULTAN::sultan::form_triplets_from_cells: calculate triples for ", nnodes, " nodes, minimum ", min_ncells_in_cluster, mybhep::VVERBOSE);
 
     if( nnodes < min_ncells_in_cluster ) {
       clock.stop(" sultan: form_triplets_from_cells ");
@@ -507,7 +507,7 @@ namespace SULTAN {
           if( distance12 > distance13 )
             dmin2 = distance13;
 
-          m.message(" (triplet " , inode->c().id() , ", " , jnode->c().id() , ", " , knode->c().id() , ") dmin1 " , dmin1, " dmin2 ", dmin2 , mybhep::VVERBOSE);
+          m.message("SULTAN::sultan::form_triplets_from_cells: (triplet " , inode->c().id() , ", " , jnode->c().id() , ", " , knode->c().id() , ") dmin1 " , dmin1, " dmin2 ", dmin2 , mybhep::VVERBOSE);
 
           if( dmin1 < dist_limit_inf || dmin1 > dist_limit_sup ) continue;
           if( dmin2 < dist_limit_inf || dmin2 > dist_limit_sup ) continue;
@@ -517,7 +517,7 @@ namespace SULTAN {
 
           delete ccc;
 
-          m.message(" adding triplet, total " , triplets_.size() , mybhep::VVERBOSE);
+          m.message("SULTAN::sultan::form_triplets_from_cells: adding triplet, total " , triplets_.size() , mybhep::VVERBOSE);
 
         }
       }
@@ -525,7 +525,7 @@ namespace SULTAN {
 
     clock.stop(" sultan: form_triplets_from_cells ");
 
-    m.message(" sultan: the ", nnodes, " cells have been combined into ", triplets_.size(), " triplets ", mybhep::VERBOSE);
+    m.message("SULTAN::sultan::form_triplets_from_cells: the ", nnodes, " cells have been combined into ", triplets_.size(), " triplets ", mybhep::VERBOSE);
 
     return true;
 
@@ -538,7 +538,7 @@ namespace SULTAN {
 
     clock.start(" sultan: form_helices_from_triplets ", "cumulative");
 
-    m.message(" calculate helices for ", triplets_.size(), " triplets ", mybhep::VVERBOSE);
+    m.message("SULTAN::sultan::form_helices_from_triplets: calculate helices for ", triplets_.size(), " triplets ", mybhep::VVERBOSE);
 
     if( triplets_.size() == 0 ) {
       clock.stop(" sultan: form_helices_from_triplets ");
@@ -563,7 +563,7 @@ namespace SULTAN {
 
       the_helices->insert(the_helices->end(),helices.begin(),helices.end());
 
-      m.message(" adding " , helices.size() , " helices, total " , the_helices->size() , mybhep::VVERBOSE);
+      m.message("SULTAN::sultan::form_helices_from_triplets: adding " , helices.size() , " helices, total " , the_helices->size() , mybhep::VVERBOSE);
 
     }
 
@@ -648,7 +648,7 @@ namespace SULTAN {
       clock.stop(" sultan : form_helices_from_triplets : print_event_display ");
     }
 
-    m.message(" sultan: the", triplets_.size(), " triplets have given rise to ", the_helices->size(), " helices ", mybhep::VERBOSE);
+    m.message("SULTAN::sultan::form_helices_from_triplets: the", triplets_.size(), " triplets have given rise to ", the_helices->size(), " helices ", mybhep::VERBOSE);
 
     return true;
 
@@ -665,7 +665,7 @@ namespace SULTAN {
 
     if (level >= mybhep::VERBOSE)
       {
-        std::clog << " sequentiate cluster with " << cluster_.nodes_.size() << " nodes " << std::endl; fflush(stdout);
+        std::clog << "SULTAN::sultan::sequentiate_cluster_with_experimental_vector: sequentiate cluster with " << cluster_.nodes_.size() << " nodes " << std::endl; fflush(stdout);
       }
 
     if( cluster_.nodes_.size() < 3 ){
@@ -693,7 +693,7 @@ namespace SULTAN {
       neighbours.clear();
 
       if (level >= mybhep::VERBOSE){
-        std::clog << " leg vector has " << experimental_legendre_vector->helices().size() << " helices " << std::endl; fflush(stdout);
+        std::clog << "SULTAN::sultan::sequentiate_cluster_with_experimental_vector: leg vector has " << experimental_legendre_vector->helices().size() << " helices " << std::endl; fflush(stdout);
       }
 
       if( !the_helices.size() ){
@@ -716,7 +716,7 @@ namespace SULTAN {
       b = experimental_legendre_vector->max(&neighbours);
 
       if( !b.ids().size() ){
-        m.message(" could not make a track ", mybhep::VERBOSE); fflush(stdout);
+        m.message("SULTAN::sultan::sequentiate_cluster_with_experimental_vector: could not make a track ", mybhep::VERBOSE); fflush(stdout);
         clock.stop(" sultan: sequentiate_cluster_with_experimental_vector: helix loop: max ");
         break;
       }
@@ -724,8 +724,8 @@ namespace SULTAN {
 
       if (level >= mybhep::VERBOSE)
         {
-          std::clog << " best helix: " ; b.dump();
-          std::clog << " associated " << neighbours.size() << " helices " << std::endl;
+          std::clog << "SULTAN::sultan::sequentiate_cluster_with_experimental_vector: best helix: " ; b.dump();
+          std::clog << "SULTAN::sultan::sequentiate_cluster_with_experimental_vector: associated " << neighbours.size() << " helices " << std::endl;
         }
 
       clock.stop(" sultan: sequentiate_cluster_with_experimental_vector: helix loop: max ");
@@ -741,11 +741,11 @@ namespace SULTAN {
         pitch.set(b.H());
         s->set_helix(b);
         sequences_.push_back(*s);
-        m.message(" finished track [", sequences_.size()-1, "] with ", s->nodes_.size(), " nodes", mybhep::VERBOSE); fflush(stdout);
+        m.message("SULTAN::sultan::sequentiate_cluster_with_experimental_vector: finished track [", sequences_.size()-1, "] with ", s->nodes_.size(), " nodes", mybhep::VERBOSE); fflush(stdout);
         delete s;
         delete center;
       }else{
-        m.message(" could not make a track ", mybhep::VERBOSE); fflush(stdout);
+        m.message("SULTAN::sultan::sequentiate_cluster_with_experimental_vector:  could not make a track ", mybhep::VERBOSE); fflush(stdout);
         clock.stop(" sultan: sequentiate_cluster_with_experimental_vector: helix loop: assign ");
         break;
       }
@@ -778,7 +778,7 @@ namespace SULTAN {
 
     if (level >= mybhep::VERBOSE)
       {
-        std::clog << " sequentiate cluster with " << cluster_.nodes_.size() << " nodes, leg vector has " << experimental_legendre_vector->helices().size() << " helices " << std::endl; fflush(stdout);
+        std::clog << "SULTAN::sultan::sequentiate_cluster_with_experimental_vector_2:  sequentiate cluster with " << cluster_.nodes_.size() << " nodes, leg vector has " << experimental_legendre_vector->helices().size() << " helices " << std::endl; fflush(stdout);
       }
 
     topology::experimental_helix b;
@@ -803,7 +803,7 @@ namespace SULTAN {
       experimental_legendre_vector->reset();
 
       if (level >= mybhep::VERBOSE){
-        std::clog << " there are " << leftover_nodes.size() << " leftover nodes and " << assigned_nodes.size() << " assigned nodes, the leg vector has " << experimental_legendre_vector->helices().size() << " helices and " << the_helices.size() << " have been prepared " << std::endl; fflush(stdout);
+        std::clog << "SULTAN::sultan::sequentiate_cluster_with_experimental_vector_2: there are " << leftover_nodes.size() << " leftover nodes and " << assigned_nodes.size() << " assigned nodes, the leg vector has " << experimental_legendre_vector->helices().size() << " helices and " << the_helices.size() << " have been prepared " << std::endl; fflush(stdout);
       }
 
       if( !the_helices.size() ){
@@ -831,7 +831,7 @@ namespace SULTAN {
       best_cluster = experimental_legendre_vector->max_cluster(&b, &found);
 
       if( !found ){
-        m.message(" could not make a track ", mybhep::VERBOSE); fflush(stdout);
+        m.message("SULTAN::sultan::sequentiate_cluster_with_experimental_vector_2: could not make a track ", mybhep::VERBOSE); fflush(stdout);
         clock.stop(" sultan: sequentiate_cluster_with_experimental_vector_2: helix loop: max ");
         break;
       }
@@ -865,7 +865,7 @@ namespace SULTAN {
         delete s;
         delete center;
       }else{
-        m.message(" could not make a track ", mybhep::VERBOSE); fflush(stdout);
+        m.message("SULTAN::sultan::sequentiate_cluster_with_experimental_vector_2:  could not make a track ", mybhep::VERBOSE); fflush(stdout);
         clock.stop(" sultan: sequentiate_cluster_with_experimental_vector_2: helix loop: assign ");
         break;
       }
@@ -898,7 +898,7 @@ namespace SULTAN {
 
     if (level >= mybhep::VERBOSE)
       {
-        std::clog << " sequentiate cluster with " << cluster_.nodes_.size() << " nodes, leg vector has " << experimental_legendre_vector->helices().size() << " helices " << std::endl; fflush(stdout);
+        std::clog << "SULTAN::sultan::sequentiate_cluster_with_experimental_vector_3: sequentiate cluster with " << cluster_.nodes_.size() << " nodes, leg vector has " << experimental_legendre_vector->helices().size() << " helices " << std::endl; fflush(stdout);
       }
 
     topology::experimental_helix b;
@@ -921,7 +921,7 @@ namespace SULTAN {
       neighbouring_cells.clear();
 
       if (level >= mybhep::VERBOSE){
-        std::clog << " leg vector has " << experimental_legendre_vector->helices().size() << " helices " << std::endl; fflush(stdout);
+        std::clog << "SULTAN::sultan::sequentiate_cluster_with_experimental_vector_3: leg vector has " << experimental_legendre_vector->helices().size() << " helices " << std::endl; fflush(stdout);
       }
 
       if( !the_helices.size() ){
@@ -944,7 +944,7 @@ namespace SULTAN {
       b = experimental_legendre_vector->max(&neighbouring_cells);
 
       if( !b.ids().size() ){
-        m.message(" could not make a track ", mybhep::VERBOSE); fflush(stdout);
+        m.message("SULTAN::sultan::sequentiate_cluster_with_experimental_vector_3: could not make a track ", mybhep::VERBOSE); fflush(stdout);
         clock.stop(" sultan: sequentiate_cluster_with_experimental_vector_3: helix loop: max ");
         break;
       }
@@ -952,8 +952,8 @@ namespace SULTAN {
 
       if (level >= mybhep::VERBOSE)
         {
-          std::clog << " best helix: " ; b.dump();
-          std::clog << " associated " << neighbouring_cells.size() << " cells to this cluster " << std::endl;
+          std::clog << "SULTAN::sultan::sequentiate_cluster_with_experimental_vector_3: best helix: " ; b.dump();
+          std::clog << "SULTAN::sultan::sequentiate_cluster_with_experimental_vector_3: associated " << neighbouring_cells.size() << " cells to this cluster " << std::endl;
         }
 
       clock.stop(" sultan: sequentiate_cluster_with_experimental_vector_3: helix loop: max ");
@@ -969,11 +969,11 @@ namespace SULTAN {
         pitch.set(b.H());
         s->set_helix(b);
         sequences_.push_back(*s);
-        m.message(" finished track [", sequences_.size()-1, "] with ", s->nodes_.size(), " nodes", mybhep::VERBOSE); fflush(stdout);
+        m.message("SULTAN::sultan::sequentiate_cluster_with_experimental_vector_3: finished track [", sequences_.size()-1, "] with ", s->nodes_.size(), " nodes", mybhep::VERBOSE); fflush(stdout);
         delete s;
         delete center;
       }else{
-        m.message(" could not make a track ", mybhep::VERBOSE); fflush(stdout);
+        m.message("SULTAN::sultan::sequentiate_cluster_with_experimental_vector_3: could not make a track ", mybhep::VERBOSE); fflush(stdout);
         clock.stop(" sultan: sequentiate_cluster_with_experimental_vector_3: helix loop: assign ");
         break;
       }
@@ -1028,7 +1028,7 @@ namespace SULTAN {
 
     if( !the_helices.size() ){
       clock.stop(" sultan: sequentiate_cluster_with_experimental_vector_4 ");
-      m.message(" could not make a track ", mybhep::VERBOSE); fflush(stdout);
+      m.message("SULTAN::sultan::sequentiate_cluster_with_experimental_vector_4: could not make a track ", mybhep::VERBOSE); fflush(stdout);
       return;
     }
 
@@ -1041,7 +1041,7 @@ namespace SULTAN {
 
     if (level >= mybhep::VERBOSE)
       {
-        std::clog << " sultan: the " <<  the_helices.size() << " helices have been combined into " << experimental_legendre_vector->clusters().size() << " clusters of helices " << std::endl;
+        std::clog << "SULTAN::sultan::sequentiate_cluster_with_experimental_vector_4: the " <<  the_helices.size() << " helices have been combined into " << experimental_legendre_vector->clusters().size() << " clusters of helices " << std::endl;
       }
 
     clock.stop(" sultan: sequentiate_cluster_with_experimental_vector_4: helix loop: add helix to clusters ");
@@ -1054,7 +1054,7 @@ namespace SULTAN {
       assigned_node = experimental_legendre_vector->assign_cell(in->c().id());
       if (level >= mybhep::VVERBOSE)
         {
-          std::clog << " cell " << in->c().id() << " assigned " << assigned_node << " to cluster " << std::endl;
+          std::clog << "SULTAN::sultan::sequentiate_cluster_with_experimental_vector_4: cell " << in->c().id() << " assigned " << assigned_node << " to cluster " << std::endl;
         }
       if( !assigned_node )
         unclustered_hits.push_back(*in);
@@ -1083,7 +1083,7 @@ namespace SULTAN {
 
       if (level >= mybhep::VVERBOSE)
         {
-          std::clog << " cluster " << ic - best_clusters.begin() << " has " << ic->ids().size() << " different cells and " << ids.size() << " assigned cells and " << nodes.size() << " assigned nodes " << std::endl;
+          std::clog << "SULTAN::sultan::sequentiate_cluster_with_experimental_vector_4: cluster " << ic - best_clusters.begin() << " has " << ic->ids().size() << " different cells and " << ids.size() << " assigned cells and " << nodes.size() << " assigned nodes " << std::endl;
         }
 
       if( nodes.size() ){
@@ -1114,22 +1114,22 @@ namespace SULTAN {
       s = new topology::sequence(unclustered_hits, level, probmin);
       make_name(*s);
       sequences.push_back(*s);
-      //m.message(" finished track [", sequences.size()-1, "] with ", s->nodes_.size(), " unclustered hits ", mybhep::VERBOSE); fflush(stdout);
+      //m.message("SULTAN::sultan::sequentiate_cluster_with_experimental_vector_4: finished track [", sequences.size()-1, "] with ", s->nodes_.size(), " unclustered hits ", mybhep::VERBOSE); fflush(stdout);
       delete s;
     }
 #endif
 
-    m.message(" sultan: the ", experimental_legendre_vector->clusters().size(), " clusters of helices have been reduced to ", sequences.size(), " candidate sequences; ", unclustered_hits.size(), " hits remain unclustered ", mybhep::VERBOSE); fflush(stdout);
+    m.message("SULTAN::sultan::sequentiate_cluster_with_experimental_vector_4: the ", experimental_legendre_vector->clusters().size(), " clusters of helices have been reduced to ", sequences.size(), " candidate sequences; ", unclustered_hits.size(), " hits remain unclustered ", mybhep::VERBOSE); fflush(stdout);
 
     sequences = clean_up(sequences);
 
 
-    m.message(" sultan: after clean_up, ", sequences.size(), "sequences remain", mybhep::VERBOSE); fflush(stdout);
+    m.message("SULTAN::sultan::sequentiate_cluster_with_experimental_vector_4: after clean_up, ", sequences.size(), "sequences remain", mybhep::VERBOSE); fflush(stdout);
 
     if (level >= mybhep::VERBOSE)
       {
         for(std::vector<topology::sequence>::const_iterator is=sequences.begin(); is!=sequences.end(); ++is)
-          m.message(" sequence [", is - sequences.begin(), "] has ", is->nodes_.size(), " nodes", mybhep::VERBOSE); fflush(stdout);
+          m.message("SULTAN::sultan::sequentiate_cluster_with_experimental_vector_4: sequence [", is - sequences.begin(), "] has ", is->nodes_.size(), " nodes", mybhep::VERBOSE); fflush(stdout);
       }
 
     sequences_.insert(sequences_.end(),sequences.begin(),sequences.end());;
@@ -1196,7 +1196,7 @@ namespace SULTAN {
     //*************************************************************
 
     if( clock.read(" sultan: sequentiation ") >= max_time ){
-      m.message(" execution time " , clock.read(" sultan: sequentiation ") , " ms  greater than max_time" , max_time , " quitting! ", mybhep::NORMAL);
+      m.message("SULTAN::sultan::late: execution time " , clock.read(" sultan: sequentiation ") , " ms  greater than max_time" , max_time , " quitting! ", mybhep::NORMAL);
       return true;
     }
 
@@ -1208,10 +1208,10 @@ namespace SULTAN {
   void sultan::print_sequences() const {
     //*************************************************************
 
-    m.message(" sequence matrix is", mybhep::NORMAL); fflush(stdout);
+    m.message("SULTAN::sultan::print_sequences: sequence matrix is", mybhep::NORMAL); fflush(stdout);
     for(vector<topology::sequence>::const_iterator iseq=sequences_.begin(); iseq!=sequences_.end(); ++iseq)
       {
-        std::clog << " [" << iseq - sequences_.begin() << "]";
+        std::clog << "SULTAN::sultan::print_sequences: [" << iseq - sequences_.begin() << "]";
         print_a_sequence(*iseq);
       }
 
@@ -1229,12 +1229,12 @@ namespace SULTAN {
     for(vector<topology::node>::const_iterator inode = sequence.nodes_.begin();
         inode != sequence.nodes_.end(); ++inode)
       {
-        std::clog << " " << (int)inode->c().id();fflush(stdout);
+        std::clog << "SULTAN::sultan::print_a_sequence: " << (int)inode->c().id();fflush(stdout);
 
         topology::experimental_vector v(inode->c().ep(),inode->ep());
 
         if( level >= mybhep::VVERBOSE ){
-          std::clog << "[" << v.x().value() << ", " << v.z().value() << "]";fflush(stdout);
+          std::clog << "SULTAN::sultan::print_a_sequence: [" << v.x().value() << ", " << v.z().value() << "]";fflush(stdout);
 
         }
       }

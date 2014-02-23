@@ -70,7 +70,7 @@ namespace SULTAN {
   //*************************************************************
   clusterizer::~clusterizer() {
     //*************************************************************
-    std::clog << "DEVEL: SULTAN::clusterizer::~clusterizer: Done." << std::endl;
+    // std::clog << "DEVEL: SULTAN::clusterizer::~clusterizer: Done." << std::endl;
   }
 
   //*************************************************************
@@ -79,7 +79,7 @@ namespace SULTAN {
 
     m.message("SULTAN::clusterizer::initialize: Entering...",mybhep::NORMAL);
 
-    m.message("\n Beginning algorithm clusterizer \n",mybhep::VERBOSE);
+    m.message("SULTAN::clusterizer::initialize: Beginning algorithm clusterizer",mybhep::VERBOSE);
 
     read_properties();
 
@@ -99,10 +99,10 @@ namespace SULTAN {
 
     clock.start(" clusterizer: finalize ");
 
-    m.message("\n Ending algorithm clusterizer \n ",mybhep::NORMAL);
+    m.message("SULTAN::clusterizer::finalize: Ending algorithm clusterizer",mybhep::NORMAL);
 
-    m.message("Initial events: ", initial_events, mybhep::NORMAL);
-    m.message("Skipped events: ", skipped_events, "(", 100.*skipped_events/initial_events, "\%)", mybhep::NORMAL);
+    m.message("SULTAN::clusterizer::finalize: Initial events: ", initial_events, mybhep::NORMAL);
+    m.message("SULTAN::clusterizer::finalize: Skipped events: ", skipped_events, "(", 100.*skipped_events/initial_events, "\%)", mybhep::NORMAL);
 
     clock.stop(" clusterizer: finalize ");
 
@@ -127,18 +127,17 @@ namespace SULTAN {
         m.message("SULTAN::clusterizer::read_properties: Nemo-3 kind of data",mybhep::NORMAL);
       }
 
-    m.message("",mybhep::NORMAL);
-    m.message("SULTAN clusterizer parameters",mybhep::NORMAL);
-    m.message("verbosity print level", level, mybhep::NORMAL);
-    m.message("max_time",max_time,"ms",mybhep::NORMAL);
-    m.message("probmin", probmin, mybhep::NORMAL);
-    m.message("nofflayers",nofflayers,mybhep::NORMAL);
-    m.message("first event number", first_event_number, mybhep::NORMAL);
-    m.message("cell_distance",cell_distance,"mm",mybhep::NORMAL);
-    m.message("xsize is",xsize,"mm",mybhep::NORMAL);
-    m.message("ysize is",ysize,"mm",mybhep::NORMAL);
-    m.message("zsize is",zsize,"mm",mybhep::NORMAL);
-    m.message("foil radius: ",foil_radius,"mm",mybhep::NORMAL);
+    m.message("SULTAN::clusterizer::read_properties: SULTAN clusterizer parameters",mybhep::NORMAL);
+    m.message("SULTAN::clusterizer::read_properties: verbosity print level", level, mybhep::NORMAL);
+    m.message("SULTAN::clusterizer::read_properties: max_time",max_time,"ms",mybhep::NORMAL);
+    m.message("SULTAN::clusterizer::read_properties: probmin", probmin, mybhep::NORMAL);
+    m.message("SULTAN::clusterizer::read_properties: nofflayers",nofflayers,mybhep::NORMAL);
+    m.message("SULTAN::clusterizer::read_properties: first event number", first_event_number, mybhep::NORMAL);
+    m.message("SULTAN::clusterizer::read_properties: cell_distance",cell_distance,"mm",mybhep::NORMAL);
+    m.message("SULTAN::clusterizer::read_properties: xsize is",xsize,"mm",mybhep::NORMAL);
+    m.message("SULTAN::clusterizer::read_properties: ysize is",ysize,"mm",mybhep::NORMAL);
+    m.message("SULTAN::clusterizer::read_properties: zsize is",zsize,"mm",mybhep::NORMAL);
+    m.message("SULTAN::clusterizer::read_properties: foil radius: ",foil_radius,"mm",mybhep::NORMAL);
 
     m.message("SULTAN::clusterizer::read_properties: Done.",mybhep::NORMAL);
 
@@ -153,10 +152,10 @@ namespace SULTAN {
     clock.start(" clusterizer: prepare event ","cumulative");
 
     event_number ++;
-    m.message(" local_tracking: preparing event", event_number, mybhep::VERBOSE);
+    m.message("SULTAN::clusterizer::prepare_event: local_tracking: preparing event", event_number, mybhep::VERBOSE);
 
     if( event_number < first_event_number ){
-      m.message(" local_tracking: skip event", event_number, " first event is ", first_event_number,  mybhep::VERBOSE);
+      m.message("SULTAN::clusterizer::prepare_event: local_tracking: skip event", event_number, " first event is ", first_event_number,  mybhep::VERBOSE);
       return false;
     }
 
@@ -214,7 +213,7 @@ namespace SULTAN {
       return;
     }
 
-    m.message(" local_tracking: fill clusters ", mybhep::VERBOSE);
+    m.message("SULTAN::clusterizer::clusterize: local_tracking: fill clusters ", mybhep::VERBOSE);
 
     if( cells_.empty() ){
       clock.stop(" clusterizer: clusterize ");
@@ -237,7 +236,7 @@ namespace SULTAN {
           {
             for(size_t i=0; i<cells_.size(); i++)
               {
-		used[cells_[i].id()] = false;
+                used[cells_[i].id()] = false;
               }
 
             for(std::vector<topology::cell>::const_iterator icell=cells_.begin(); icell!=cells_.end(); ++icell){
@@ -245,13 +244,13 @@ namespace SULTAN {
               const topology::cell & c = *icell;
               if( (cell_side(c) * side[ip]) < 0) continue;
               if( c.fast() != fast[iq] ) continue;
-	      if( used[c.id()] ) continue;
-	      used[c.id()] = true;
+              if( used[c.id()] ) continue;
+              used[c.id()] = true;
 
               // cell c will form a new cluster, i.e. a new list of nodes
               topology::cluster cluster_connected_to_c;
               std::vector<topology::node> nodes_connected_to_c;
-              m.message(" begin new cluster with cell ", c.id(), mybhep::VERBOSE);
+              m.message("SULTAN::clusterizer::clusterize: begin new cluster with cell ", c.id(), mybhep::VERBOSE);
 
               // let's get the list of all the cells that can be reached from c
               // without jumps
@@ -268,38 +267,38 @@ namespace SULTAN {
                 // get the list of cells near the connected cell
                 std::vector<topology::cell> cells_near_iconn = get_near_cells(cconn);
 
-                m.message(" cluster ", clusters_.size(), " starts with ", c.id(), " try to add cell ", cconn.id(), " with n of neighbours = ", cells_near_iconn.size(), mybhep::VERBOSE);
+                m.message("SULTAN::clusterizer::clusterize: cluster ", clusters_.size(), " starts with ", c.id(), " try to add cell ", cconn.id(), " with n of neighbours = ", cells_near_iconn.size(), mybhep::VERBOSE);
                 for(std::vector<topology::cell>::const_iterator icnc=cells_near_iconn.begin(); icnc!=cells_near_iconn.end(); ++icnc){
 
                   topology::cell cnc = *icnc;
 
-		  if( !used[cnc.id()] )
-		    {
-		      used[cnc.id()] = true ;
-		      cells_connected_to_c.push_back(cnc);
-		    }
-		}
+                  if( !used[cnc.id()] )
+                    {
+                      used[cnc.id()] = true ;
+                      cells_connected_to_c.push_back(cnc);
+                    }
+                }
                 nodes_connected_to_c.push_back(newnode);
 
-                m.message(" cluster started with ", c.id(), " has been given cell ", cconn.id(), " cluster size ", cells_connected_to_c.size(), " i ", i, mybhep::VERBOSE);
+                m.message("SULTAN::clusterizer::clusterize: cluster started with ", c.id(), " has been given cell ", cconn.id(), " cluster size ", cells_connected_to_c.size(), " i ", i, mybhep::VERBOSE);
 
               }
-	      
+
               cluster_connected_to_c.set_nodes(nodes_connected_to_c);
-	      
+
               clusters_.push_back(cluster_connected_to_c);
             }
-	    
+
           }
       }
-    
-    
+
+
     setup_clusters();
 
-    m.message(" there are ", clusters_.size(), " clusters of cells for a total of ", cells_.size(), " cells ", mybhep::VERBOSE);
+    m.message("SULTAN::clusterizer::clusterize: there are ", clusters_.size(), " clusters of cells for a total of ", cells_.size(), " cells ", mybhep::VERBOSE);
     if( level >= mybhep::VERBOSE ){
       for(std::vector<topology::cluster>::const_iterator iclu=clusters_.begin(); iclu!=clusters_.end(); ++iclu)
-	m.message( " cluster ", iclu - clusters_.begin(), " has ", iclu->nodes().size(), " cells ", mybhep::VERBOSE);
+        m.message( "SULTAN::clusterizer::clusterize: cluster ", iclu - clusters_.begin(), " has ", iclu->nodes().size(), " cells ", mybhep::VERBOSE);
     }
 
     if( level >= mybhep::VVERBOSE ){
@@ -343,7 +342,7 @@ namespace SULTAN {
 
     clock.start(" clusterizer: get near cells ","cumulative");
 
-    m.message(" filling list of cells near cell ", c.id(), " fast ", c.fast(), " side ", cell_side(c), mybhep::VVERBOSE);
+    m.message("SULTAN::clusterizer::get_near_cells: filling list of cells near cell ", c.id(), " fast ", c.fast(), " side ", cell_side(c), mybhep::VVERBOSE);
 
     std::vector<topology::cell> cells;
 
@@ -491,4 +490,3 @@ namespace SULTAN {
 
 
 }
-

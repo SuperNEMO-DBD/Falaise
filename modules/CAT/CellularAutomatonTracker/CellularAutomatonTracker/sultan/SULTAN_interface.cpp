@@ -41,8 +41,8 @@ namespace SULTAN {
   void setup_data::_set_defaults ()
   {
     _error_message.clear ();
-    clusterizer_level                         = "normal";
-    sequentiator_level                         = "normal";
+    clusterizer_level             = "normal";
+    sequentiator_level            = "normal";
     SuperNemo                     = true;
     max_time                      = 5000.0; // ms
     print_event_display           = false;
