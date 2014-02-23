@@ -437,3 +437,93 @@ namespace snemo {
   } // end of namespace reconstruction
 
 } // end of namespace snemo
+
+
+/* OCD support */
+#include <datatools/object_configuration_description.h>
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_driver,ocd_)
+{
+  ocd_.set_class_name("snemo::reconstruction::sultan_driver");
+  ocd_.set_class_description("A driver class for the SULTAN algorithm");
+  ocd_.set_class_library("Falaise_CAT");
+  ocd_.set_class_documentation("This driver manager for the SULTAN clustering algorithm.");
+
+  {
+    // Description of the 'SULTAN.magnetic_field' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("SULTAN.magnetic_field")
+      .set_terse_description("Force the magnetic field value (vertical)")
+      .set_traits(datatools::TYPE_REAL)
+      .set_mandatory(false)
+      .set_long_description("Default value: 25 gauss")
+      .add_example("Use no magnetic field::                    \n"
+                   "                                           \n"
+                   "  SULTAN.magnetic_field : real = 0.0 gauss \n"
+                   "                                           \n"
+                   )
+      ;
+  }
+
+
+  {
+    // Description of the 'SULTAN.clusterizer_level' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("SULTAN.clusterizer_level")
+      .set_terse_description("SULTAN clusterizer's verbosity level")
+      .set_traits(datatools::TYPE_STRING)
+      .set_mandatory(false)
+      .set_long_description("Default value: \"normal\"")
+      .add_example("Use normal verbosity::                           \n"
+                   "                                                 \n"
+                   "  SULTAN.clusterizer_level : string = \"normal\" \n"
+                   "                                                 \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'SULTAN.sequentiator_level' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("SULTAN.sequentiator_level")
+      .set_terse_description("SULTAN sequentiator's verbosity level")
+      .set_traits(datatools::TYPE_STRING)
+      .set_mandatory(false)
+      .set_long_description("Default value: \"normal\"")
+      .add_example("Use normal verbosity::                           \n"
+                   "                                                 \n"
+                   "  SULTAN.sequentiator_level : string = \"normal\" \n"
+                   "                                                 \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'SULTAN.max_time' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("SULTAN.max_time")
+      .set_terse_description("Maximum processing time")
+      .set_traits(datatools::TYPE_REAL)
+      .set_mandatory(false)
+      .set_long_description("Default value: 5000 ms")
+      .add_example("Use default value::                \n"
+                   "                                   \n"
+                   "  SULTAN.max_time : real = 5000 ms \n"
+                   "                                   \n"
+                   )
+      ;
+  }
+
+
+
+  ocd_.set_validation_support(false);
+  ocd_.lock();
+  return;
+}
+
+DOCD_CLASS_IMPLEMENT_LOAD_END() // Closing macro for implementation
+DOCD_CLASS_SYSTEM_REGISTRATION(snemo::reconstruction::sultan_driver,
+                               "snemo::reconstruction::sultan_driver")

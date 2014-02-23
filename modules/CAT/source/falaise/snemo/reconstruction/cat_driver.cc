@@ -103,7 +103,7 @@ namespace snemo {
         _CAT_setup_.probmin = setup_.fetch_real("CAT.probmin");
       }
 
-      // Number of cells which can be skipped(because the cell did not
+      // Number of cells which can be skipped (because the cell did not
       // work) and still the cluster is continuous
       if (setup_.has_key("CAT.nofflayers")) {
         _CAT_setup_.nofflayers = setup_.fetch_integer("CAT.nofflayers");
@@ -635,3 +635,176 @@ namespace snemo {
   }  // end of namespace reconstruction
 
 }  // end of namespace snemo
+
+/* OCD support */
+#include <datatools/object_configuration_description.h>
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::cat_driver,ocd_)
+{
+  ocd_.set_class_name("snemo::reconstruction::cat_driver");
+  ocd_.set_class_description("A driver class for the CAT algorithm");
+  ocd_.set_class_library("Falaise_CAT");
+  ocd_.set_class_documentation("This driver manager for the CAT clustering algorithm.");
+
+  {
+    // Description of the 'CAT.magnetic_field' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("CAT.magnetic_field")
+      .set_terse_description("Force the magnetic field value (vertical)")
+      .set_traits(datatools::TYPE_REAL)
+      .set_mandatory(false)
+      .set_long_description("Default value: 25 gauss")
+      .add_example("Use no magnetic field::               \n"
+                   "                                      \n"
+                   "  CAT.magnetic_field : real = 0 gauss \n"
+                   "                                      \n"
+                   )
+      ;
+  }
+
+
+  {
+    // Description of the 'CAT.level' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("CAT.level")
+      .set_terse_description("Verbosity level")
+      .set_traits(datatools::TYPE_STRING)
+      .set_mandatory(false)
+      .set_long_description("Default value: \"normal\"")
+      .add_example("Use normal verbosity:: \n"
+                   "                                  \n"
+                   "  CAT.level : string = \"normal\" \n"
+                   "                                  \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'CAT.max_time' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("CAT.max_time")
+      .set_terse_description("Maximum processing time")
+      .set_traits(datatools::TYPE_REAL)
+      .set_mandatory(false)
+      .set_long_description("Default value: 5000 ms")
+      .add_example("Use default value::               \n"
+                   "                                  \n"
+                   "  CAT.max_time : real = 5000 ms   \n"
+                   "                                  \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'CAT.small_radius' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("CAT.small_radius")
+      .set_terse_description("Max radius of cells to be not treated as points in distance unit")
+      .set_traits(datatools::TYPE_REAL)
+      .set_mandatory(false)
+      .set_long_description("Default value: 2.0 mm")
+      .add_example("Use default value::                \n"
+                   "                                   \n"
+                   "  CAT.small_radius : real = 2.0 mm \n"
+                   "                                   \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'CAT.probmin' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("CAT.probmin")
+      .set_terse_description("Minimal probability away from the straight line")
+      .set_traits(datatools::TYPE_REAL)
+      .set_mandatory(false)
+      .set_long_description("Default value: 0.0")
+      .add_example("Use default value::               \n"
+                   "                                  \n"
+                   "  CAT.probmin : real = 0.0        \n"
+                   "                                  \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'CAT.nofflayers' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("CAT.nofflayers")
+      .set_terse_description("Number of cells which can be skipped (because the cell did not work) and still the cluster is continuous")
+      .set_traits(datatools::TYPE_INTEGER)
+      .set_mandatory(false)
+      .set_long_description("Default value: 1")
+      .add_example("Use default value::               \n"
+                   "                                  \n"
+                   "  CAT.nofflayers : integer = 1    \n"
+                   "                                  \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'CAT.first_event' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("CAT.first_event")
+      .set_terse_description("First event to be processed")
+      .set_traits(datatools::TYPE_INTEGER)
+      .set_mandatory(false)
+      .set_long_description("Default value: -1")
+      .add_example("Do not specify any first event::  \n"
+                   "                                  \n"
+                   "  CAT.first_event : integer = -1  \n"
+                   "                                  \n"
+                   )
+      ;
+  }
+
+
+  {
+    // Description of the 'CAT.ratio' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("CAT.ratio")
+      .set_terse_description("Ratio of 2nd best to best chi2 which is acceptable as 2nd solution")
+      .set_traits(datatools::TYPE_REAL)
+      .set_mandatory(false)
+      .set_long_description("Default value: 10000.0")
+      .add_example("Use the default value::          \n"
+                   "                                 \n"
+                   "  CAT.ratio : real = 10000.0     \n"
+                   "                                 \n"
+                   )
+      ;
+  }
+
+
+  {
+    // Description of the 'CAT.driver.sigma_z_factor' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("CAT.driver.sigma_z_factor")
+      .set_terse_description("Sigma Z factor")
+      .set_traits(datatools::TYPE_REAL)
+      .set_mandatory(false)
+      .set_long_description("Default value: 1.0")
+      .add_example("Use the default value::                  \n"
+                   "                                         \n"
+                   "  CAT.driver.sigma_z_factor : real = 1.0 \n"
+                   "                                         \n"
+                   )
+      ;
+  }
+
+  ocd_.set_validation_support(true);
+  ocd_.lock();
+  return;
+}
+DOCD_CLASS_IMPLEMENT_LOAD_END() // Closing macro for implementation
+DOCD_CLASS_SYSTEM_REGISTRATION(snemo::reconstruction::cat_driver,
+                               "snemo::reconstruction::cat_driver")

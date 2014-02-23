@@ -96,6 +96,11 @@ namespace snemo {
 
 }  // end of namespace snemo
 
+#include <datatools/ocd_macros.h>
+
+// Declare the OCD interface of the module
+DOCD_CLASS_DECLARATION(snemo::reconstruction::cat_driver)
+
 #endif // FALAISE_CAT_PLUGIN_SNEMO_RECONSTRUCTION_CAT_DRIVER_H
 
 /*

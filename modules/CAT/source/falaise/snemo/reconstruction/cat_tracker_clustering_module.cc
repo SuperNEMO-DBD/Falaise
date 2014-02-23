@@ -261,7 +261,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::cat_tracker_clustering_mo
 {
   ocd_.set_class_name("snemo::reconstruction::cat_tracker_clustering_module");
   ocd_.set_class_description("A module that performs the CAT clusterization of tracker hits");
-  ocd_.set_class_library("falaise");
+  ocd_.set_class_library("Falaise_CAT");
   ocd_.set_class_documentation("This module uses the CAT clustering algorithm.");
 
   dpp::base_module::common_ocd(ocd_);
