@@ -1,0 +1,14 @@
+/* -*- mode: c++ -*- */
+// \file CATAlgorithm/SULTAN_config.h
+
+#ifndef CATALGORITHM_SULTAN_CONFIG_H
+#define CATALGORITHM_SULTAN_CONFIG_H 1
+
+#define SULTAN_VERSION @CellularAutomatonTracker_VERSION@
+
+#cmakedefine01 SULTAN_WITH_DEVEL_UTILS
+#cmakedefine01 SULTAN_WITH_DEVEL_DISPLAY
+#cmakedefine01 SULTAN_WITH_DEVEL_HISTOGRAMS
+#cmakedefine01 SULTAN_WITH_DEVEL_ROOT
+
+#endif // CATALGORITHM_SULTAN_CONFIG_H

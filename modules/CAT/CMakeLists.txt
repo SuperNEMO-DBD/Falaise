@@ -2,16 +2,44 @@
 # Check version meets ou requirements
 # Declare project, which will configure compiler for us
 cmake_minimum_required(VERSION 2.8)
-project(CAT)
+project(FalaiseCATPlugin)
 
 # Modules use Falaise, so we need to locate this or fail
-find_package(Falaise REQUIRED)
+# find_package(Falaise REQUIRED)
 
 # Ensure our code can see the Falaise headers
-include_directories(${Falaise_INCLUDE_DIRS})
+#include_directories(${Falaise_INCLUDE_DIRS})
+include_directories(${Falaise_BUILDPRODUCT_DIR}/include)
+include_directories(${Falaise_BUILDPRODUCT_DIR}/include/falaise)
+include_directories(${Bayeux_INCLUDE_DIRS})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
+############################################################################################
+# - Include directives to build the CellularAutomatonTracker source code (svn:externals)
+#   from the Channel repository:
+include(cmake/CAT_import.cmake)
+
+############################################################################################
+# - CAT & SULTAN modules:
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source/falaise)
+
+# - Headers:
+list(APPEND FalaiseCATPlugin_HEADERS source/falaise/snemo/reconstruction/cat_driver.h)
+list(APPEND FalaiseCATPlugin_HEADERS source/falaise/snemo/reconstruction/sultan_driver.h)
+list(APPEND FalaiseCATPlugin_HEADERS source/falaise/snemo/reconstruction/cat_tracker_clustering_module.h)
+list(APPEND FalaiseCATPlugin_HEADERS source/falaise/snemo/reconstruction/sultan_tracker_clustering_module.h)
+
+# - Sources:
+list(APPEND FalaiseCATPlugin_SOURCES source/falaise/snemo/reconstruction/cat_driver.cc)
+list(APPEND FalaiseCATPlugin_SOURCES source/falaise/snemo/reconstruction/sultan_driver.cc)
+list(APPEND FalaiseCATPlugin_SOURCES source/falaise/snemo/reconstruction/cat_tracker_clustering_module.cc)
+list(APPEND FalaiseCATPlugin_SOURCES source/falaise/snemo/reconstruction/sultan_tracker_clustering_module.cc)
+
+############################################################################################
 
 # Build a dynamic library from our sources
-add_library(Falaise_CAT SHARED ${CAT_HEADERS} ${CAT_SOURCES})
+add_library(Falaise_CAT SHARED ${FalaiseCATPlugin_HEADERS} ${FalaiseCATPlugin_SOURCES})
 
 # Apple linker requires dynamic lookup of symbols, so we
 # add link flags on this platform
@@ -21,5 +49,12 @@ if(APPLE)
     )
 endif()
 
-# Install it
+# Install it:
 install(TARGETS Falaise_CAT DESTINATION ${CMAKE_INSTALL_LIBDIR}/Falaise/modules)
+
+# Test support:
+option(FalaiseCATPlugin_ENABLE_TESTING "Build unit testing system for FalaiseCATPlugin" ON)
+if(FalaiseCATPlugin_ENABLE_TESTING)
+  enable_testing()
+  add_subdirectory(testing)
+endif()
