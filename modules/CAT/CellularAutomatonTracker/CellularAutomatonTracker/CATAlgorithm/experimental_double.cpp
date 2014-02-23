@@ -147,7 +147,7 @@ namespace CAT {
       experimental_double& p1= *this;
 
       if( a.value() == 0 ){
-        std::clog << " problem: division by experimental_double with value " << a.value() << std::endl;
+        std::clog << "CAT::experimental_double::operator/=: problem: division by experimental_double with value " << a.value() << std::endl;
       }
 
       double val = p1.value()/a.value();
@@ -163,7 +163,7 @@ namespace CAT {
       experimental_double& p1= *this;
 
       if( a == 0 ){
-        std::clog << " problem: division by double with value " << a << std::endl;
+        std::clog << "CAT::experimental_double::operator/=: problem: division by double with value " << a << std::endl;
       }
 
       double val = p1.value()/a;
@@ -362,7 +362,7 @@ namespace CAT {
 
       if( vs.size() == 0 ){
         experimental_double bad;
-        std::clog << " problem: avereging std::vector of size " << vs.size() << std::endl;
+        std::clog << "CAT::average: problem: averaging std::vector of size " << vs.size() << std::endl;
         return bad;
       }
 

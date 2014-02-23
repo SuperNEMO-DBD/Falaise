@@ -88,7 +88,7 @@ namespace CAT{
 
         if( xi_.size() != yi_.size() ){
           if( print_level() >= mybhep::NORMAL ){
-            std::clog << " problem: in circle regression, sizes x " << xi_.size() << " y " << yi_.size() << std::endl;
+            std::clog << "CAT::CircleRegression::fit: problem: in circle regression, sizes x " << xi_.size() << " y " << yi_.size() << std::endl;
           }
           return false;
         }
@@ -125,12 +125,12 @@ namespace CAT{
         if( method1 ){
           xave = average(xi_).value();
           yave = average(yi_).value();
-          std::clog << " xave " << xave << " yave " << yave << std::endl;
+          std::clog << "CAT::CircleRegression::fit: xave " << xave << " yave " << yave << std::endl;
 
         }
 
-	double mean_error_x = 0.;
-	double mean_error_y = 0.;
+        double mean_error_x = 0.;
+        double mean_error_y = 0.;
 
         for(std::vector<experimental_double>::iterator it=xi_.begin(); it != xi_.end(); ++it)
           {
@@ -140,8 +140,8 @@ namespace CAT{
             if( isnan(w) || isinf(w) )
               w = 1.;
             Sw += w;
-	    mean_error_x += mybhep::square(it->error());
-	    mean_error_y += mybhep::square(yerr);
+            mean_error_x += mybhep::square(it->error());
+            mean_error_y += mybhep::square(yerr);
 
             if( method1 ){
               double u = it->value() - xave;
@@ -171,7 +171,7 @@ namespace CAT{
 
           if( delta == 0.){
             if( print_level() >= mybhep::NORMAL ){
-              std::clog << " problem: in circle regression, delta " << delta << " Swuu " << Swuu << " Swvv " << Swvv << " Swuv " << Swuv << std::endl;
+              std::clog << "CAT::CircleRegression::fit: problem: in circle regression, delta " << delta << " Swuu " << Swuu << " Swvv " << Swvv << " Swuv " << Swuv << std::endl;
             }
             return false;
           }
@@ -183,7 +183,7 @@ namespace CAT{
           double alpha = mybhep::square(uc) + mybhep::square(vc) + (Swuu + Swvv)/Sw;
           double erralpha = 0.;
 
-          std::clog << " uc " << uc << " vc " << vc << std::endl;
+          std::clog << "CAT::CircleRegression::fit: uc " << uc << " vc " << vc << std::endl;
 
           xc.set(uc + xave, erruc);
           yc.set(vc + yave, errvc);
@@ -199,34 +199,34 @@ namespace CAT{
 
           if( isnan(A) || isinf(A) ){
             if( print_level() >= mybhep::NORMAL ){
-              std::clog << " problem: in circle regression, A " << A << " Sw " << Sw << " Swxx " << Swxx << " Swx " << Swx << std::endl;
+              std::clog << "CAT::CircleRegression::fit: problem: in circle regression, A " << A << " Sw " << Sw << " Swxx " << Swxx << " Swx " << Swx << std::endl;
             }
             return false;
           }
           if( isnan(B) || isinf(B) ){
             if( print_level() >= mybhep::NORMAL ){
-              std::clog << " problem: in circle regression, B " << B << " Sw " << Sw << " Swxy " << Swxy << " Swx " << Swx << " Swy " << Swy << std::endl;
+              std::clog << "CAT::CircleRegression::fit: problem: in circle regression, B " << B << " Sw " << Sw << " Swxy " << Swxy << " Swx " << Swx << " Swy " << Swy << std::endl;
             }
             return false;
 
           }
           if( isnan(C) || isinf(C) ){
             if( print_level() >= mybhep::NORMAL ){
-              std::clog << " problem: in circle regression, C " << C << " Sw " << Sw << " Swyy " << Swyy << " Swy " << Swy << std::endl;
+              std::clog << "CAT::CircleRegression::fit: problem: in circle regression, C " << C << " Sw " << Sw << " Swyy " << Swyy << " Swy " << Swy << std::endl;
             }
             return false;
 
           }
           if( isnan(D) || isinf(D) ){
             if( print_level() >= mybhep::NORMAL ){
-              std::clog << " problem: in circle regression, D " << D << " Sw " << Sw << " Swxyy " << Swxyy << " Swx " << Swx << " Swyy " << Swyy << " Swxxx " << Swxxx << " Swxx " << Swxx <<std::endl;
+              std::clog << "CAT::CircleRegression::fit: problem: in circle regression, D " << D << " Sw " << Sw << " Swxyy " << Swxyy << " Swx " << Swx << " Swyy " << Swyy << " Swxxx " << Swxxx << " Swxx " << Swxx <<std::endl;
             }
             return false;
 
           }
           if( isnan(E) || isinf(E) ){
             if( print_level() >= mybhep::NORMAL ){
-              std::clog << " problem: in circle regression, E " << E << " Sw " << Sw << " Swxxy " << Swxxy << " Swy " << Swy << " Swxx " << Swxx << " Swyyy " << Swyyy << " Swyy " << Swyy <<std::endl;
+              std::clog << "CAT::CircleRegression::fit: problem: in circle regression, E " << E << " Sw " << Sw << " Swxxy " << Swxxy << " Swy " << Swy << " Swxx " << Swxx << " Swyyy " << Swyyy << " Swyy " << Swyy <<std::endl;
             }
             return false;
 
@@ -235,7 +235,7 @@ namespace CAT{
 
           if( delta == 0.){
             if( print_level() >= mybhep::NORMAL ){
-              std::clog << " problem: in circle regression, delta " << delta << " A " << A << " C " << C << " B " << B << std::endl;
+              std::clog << "CAT::CircleRegression::fit: problem: in circle regression, delta " << delta << " A " << A << " C " << C << " B " << B << std::endl;
             }
             return false;
           }
@@ -255,7 +255,7 @@ namespace CAT{
           r.set(rsum/xi_.size() , 0. );
 
           if( print_level() >= mybhep::VVERBOSE ){
-            std::clog << " fitted circle through " << xi_.size() << " points: xc: "; xc.dump(); std::clog << " yc: "; yc.dump(); std::clog << " r: "; r.dump(); std::clog << " " << std::endl;
+            std::clog << "CAT::CircleRegression::fit: fitted circle through " << xi_.size() << " points: xc: "; xc.dump(); std::clog << " yc: "; yc.dump(); std::clog << " r: "; r.dump(); std::clog << " " << std::endl;
           }
         }
 
@@ -268,10 +268,10 @@ namespace CAT{
 
 #if CAT_WITH_DEVEL_ROOT == 1
       bool CircleRegression::minuit_fit(void){
-       
+
        if( xi_.size() != yi_.size() ){
           if( print_level() >= mybhep::NORMAL ){
-            std::clog << " problem: in circle regression, sizes x " << xi_.size() << " y " << yi_.size() << std::endl;
+            std::clog << "CAT::CircleRegression::minuit_fit: problem: in circle regression, sizes x " << xi_.size() << " y " << yi_.size() << std::endl;
           }
           return false;
         }
@@ -307,7 +307,7 @@ namespace CAT{
 
         const double *xs = min->X();
         if( print_level() >= mybhep::VVERBOSE ){
-          std::clog << "Minimum: f(" << xs[0] << "," << xs[1] << ", " << xs[2] << "): "
+          std::clog << "CAT::CircleRegression::minuit_fit:Minimum: f(" << xs[0] << "," << xs[1] << ", " << xs[2] << "): "
                     << expression_to_be_minimized(xs) << std::endl;
         }
 
@@ -319,7 +319,7 @@ namespace CAT{
 
         if( final_value > initial_value ){
           if( print_level() >= mybhep::VVERBOSE ){
-            std::clog << " the minimization result " << final_value << " is worse than the seed " << initial_value << std::endl;
+            std::clog << "CAT::CircleRegression::minuit_fit: the minimization result " << final_value << " is worse than the seed " << initial_value << std::endl;
           }
           return false;
         }
@@ -329,7 +329,7 @@ namespace CAT{
         r.set(xs[2],0.);
 
         c_ = circle(experimental_point(xc, experimental_double(0.,0.), yc), r, print_level(), probmin());
-        
+
         return points_in_good_order();
 
 
@@ -337,7 +337,7 @@ namespace CAT{
 #endif // CAT_WITH_DEVEL_ROOT == 1
 
     experimental_point CircleRegression::position(experimental_double &phi){
-      
+
       return c_.position(phi);
     }
 
@@ -359,29 +359,24 @@ namespace CAT{
       experimental_double phiB = phi_initial;
 
       for(std::vector<experimental_double>::iterator it=xi_.begin(); it != xi_.end(); ++it)
-	{
-	  index = it - xi_.begin();
-	  if( index >= 1 ){
-	    phiA = c_.phi_of_point(experimental_point(xi_[index-1], experimental_double(0.,0.), yi_[index-1]), phiA.value());
-	    phiB = c_.phi_of_point(experimental_point(*it, experimental_double(0.,0.), yi_[index]), phiA.value());
-	    deltaphiAB = phiB-phiA;
-	    deltaphi_product = deltaphiAB*deltaphi_overall;
-	    if( deltaphi_product.value() < - deltaphi_product.error() ){
-	      if( print_level() >= mybhep::VVERBOSE ){
-		std::clog << " points are not in good order: phi[ " << index-1 << "] = " << phiA.value() << ", phi[" << index << "] = " << phiB.value() << ", deltaphi_overall = " << deltaphi_overall.value() << std::endl;
-	      }
-	      return false;
-	    }
-	  }
-	}
+        {
+          index = it - xi_.begin();
+          if( index >= 1 ){
+            phiA = c_.phi_of_point(experimental_point(xi_[index-1], experimental_double(0.,0.), yi_[index-1]), phiA.value());
+            phiB = c_.phi_of_point(experimental_point(*it, experimental_double(0.,0.), yi_[index]), phiA.value());
+            deltaphiAB = phiB-phiA;
+            deltaphi_product = deltaphiAB*deltaphi_overall;
+            if( deltaphi_product.value() < - deltaphi_product.error() ){
+              if( print_level() >= mybhep::VVERBOSE ){
+                std::clog << "CAT::CircleRegression::points_in_good_order: points are not in good order: phi[ " << index-1 << "] = " << phiA.value() << ", phi[" << index << "] = " << phiB.value() << ", deltaphi_overall = " << deltaphi_overall.value() << std::endl;
+              }
+              return false;
+            }
+          }
+        }
       return true;
     }
 
   };
 
 }
-
-
-
-
-

@@ -62,7 +62,7 @@ namespace CAT {
     if( mode == "once" ){
       size_t index=0;
       if( has(name, &index ) ){
-        std::clog << " problem: starting a clockable " << name << " which is already there " << index << std::endl;
+        std::clog << "CAT::Clock::start: problem: starting a clockable " << name << " which is already there " << index << std::endl;
         clockables()[index].start();
       }
       else{
@@ -106,7 +106,7 @@ namespace CAT {
     if( has(name , &index) )
       clockables()[index].stop();
     else
-      std::clog << " problem: can't stop clockable " << name << " which is not there " << std::endl;
+      std::clog << "CAT::Clock::stop: problem: can't stop clockable " << name << " which is not there " << std::endl;
   }
 
   double Clock::read(const std::string & name)
@@ -115,7 +115,7 @@ namespace CAT {
     if( has(name , &index) )
       return clockables()[index].read();
 
-    std::clog << " problem: request time of clockable " << name << " which is not there " << std::endl;
+    std::clog << "CAT::Clock::stop: problem: request time of clockable " << name << " which is not there " << std::endl;
     return 0;
   }
 

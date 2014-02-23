@@ -1,14 +1,20 @@
 /* -*- mode: c++ -*- */
 // CAT_interface.cpp
 
+// Standard library:
 #include <stdexcept>
 #include <limits>
 #include <map>
 #include <vector>
 #include <sstream>
+
+// Third party:
+// - Boost:
+#include <boost/algorithm/string.hpp>
+
+// This project:
 #include <CATAlgorithm/CAT_interface.h>
 #include <CATAlgorithm/tracked_data.h>
-#include <boost/algorithm/string.hpp>
 
 namespace CAT {
 
@@ -188,9 +194,10 @@ namespace CAT {
   {
     if (! setup_.check ())
       {
-        std::cerr << "ERROR: CAT::clusterizer_configure: "
-                  << setup_.get_error_message () << std::endl;
-        throw std::logic_error ("CAT::clusterizer_configure: Invalid setup data !");
+        std::ostringstream emess;
+        emess << "ERROR: CAT::clusterizer_configure: Invalid setup data :"
+             << setup_.get_error_message ();
+        throw std::logic_error(emess.str());
       }
 
     // General parameters :
@@ -252,9 +259,10 @@ namespace CAT {
   {
     if (! setup_.check ())
       {
-        std::cerr << "ERROR: CAT::sequentiator_configure: "
-                  << setup_.get_error_message () << std::endl;
-        throw std::logic_error ("CAT::sequentiator_configure: Invalid setup data !");
+        std::ostringstream emess;
+        emess << "ERROR: CAT::sequentiator_configure: Invalid setup data :"
+             << setup_.get_error_message ();
+        throw std::logic_error(emess.str());
       }
 
     // General parameters :
