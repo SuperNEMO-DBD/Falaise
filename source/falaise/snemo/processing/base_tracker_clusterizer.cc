@@ -75,7 +75,9 @@ namespace snemo {
       /*** initialization stuff ***/
 
       const std::string & geo_setup_label = _geometry_manager_->get_setup_label ();
-      DT_THROW_IF (geo_setup_label != "snemo", std::logic_error,
+      DT_THROW_IF (geo_setup_label != "snemo::demonstrator" &&
+                   geo_setup_label != "snemo::tracker_commissioning",
+                   std::logic_error,
                    "Invalid geometry setup label '" << geo_setup_label << "' !");
 
       // Get the Geiger cell locator from geometry plugins :
@@ -163,7 +165,6 @@ namespace snemo {
 
     void base_tracker_clusterizer::_reset ()
     {
-      DT_THROW_IF (! is_initialized (), std::logic_error, "Not initialized !");
       _set_initialized (false);
 
       /*** Clear working arrays ***/

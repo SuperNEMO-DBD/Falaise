@@ -50,8 +50,6 @@ set(FalaiseLibrary_TESTS )
 include(snemo.cmake)
 include(bipo3.cmake)
 include(TrackerPreClustering.cmake)
-#include(Yaca.cmake)
-include(TrackFit.cmake)
 
 # - Publish headers
 foreach(_hdrin ${FalaiseLibrary_HEADERS})
