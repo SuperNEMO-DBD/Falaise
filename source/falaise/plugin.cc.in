@@ -1,0 +1,73 @@
+// falaise/plugin.cc - Implementation of falaise plugin
+//
+// Copyright (c) 2014 by François Mauger <mauger@lpccaen.in2p3.fr>
+//
+// This file is part of falaise.
+//
+// falaise is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// falaise is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with falaise.  If not, see <http://www.gnu.org/licenses/>.
+
+// Ourselves
+#include <falaise/plugin.h>
+
+// Standard Library
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+
+// Third Party
+// Boost
+#include <boost/filesystem.hpp>
+// - datatools
+#include <datatools/exception.h>
+#include <datatools/logger.h>
+
+// This Project
+#include <falaise/version.h>
+
+namespace {
+//! Return the path to the root plugin directory
+std::string get_plugin_root(bool overriden_env) {
+  static const boost::filesystem::path install_root = "@CMAKE_INSTALL_PREFIX@";
+  boost::filesystem::path install_plugin_root = install_root / "@CMAKE_INSTALL_LIBDIR@" / "Falaise" / "modules";
+  // Not sure to maintain this in the future:
+  if(overriden_env) {
+    if (std::getenv("FALAISE_PLUGIN_LIB_DIR")) {
+      //DT_LOG_WARNING(datatools::logger::PRIO_WARNING,
+      //               "Using FALAISE_PLUGIN_DIR overriding environ variable...");
+      install_plugin_root = std::string(std::getenv("FALAISE_PLUGIN_LIB_DIR"));
+    }
+  }
+  return install_plugin_root.string();
+}
+} // namespace
+
+namespace falaise {
+
+std::string get_plugin_dir(bool overriden_env) {
+  return get_plugin_root(overriden_env);
+}
+
+std::string get_plugin(const std::string& rname, bool overriden_env)
+{
+  DT_THROW_IF(rname[0] == '/', std::logic_error, "invalid plugin name");
+
+  std::string fullpath(get_plugin_root(overriden_env) + "/" + rname);
+  std::ifstream check(fullpath.c_str());
+  DT_THROW_IF(!check.good(),
+              std::runtime_error,
+              "Unreadable plugin '" << fullpath << "'")
+  return fullpath;
+}
+
+} // namespace falaise

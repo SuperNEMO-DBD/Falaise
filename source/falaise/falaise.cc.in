@@ -36,6 +36,7 @@
 #include "falaise/falaise.h"
 #include "falaise/version.h"
 #include "falaise/resource.h"
+#include "falaise/plugin.h"
 
 #cmakedefine01 Bayeux_EMBEDDED
 
@@ -80,6 +81,18 @@ namespace {
         // function:
         falaise_lib_infos.store_string(datatools::library_info::keys::env_resource_dir(),
                                        "FALAISE_RESOURCE_DIR"
+                                       );
+
+        // Register the Falaise plugin path in the datatools' kernel:
+        falaise_lib_infos.store_string(datatools::library_info::keys::install_plugin_lib_dir(),
+                                       falaise::get_plugin_dir(false)
+                                       );
+
+        // If the 'FALAISE_PLUGIN_LIB_DIR' environment variable is set, it will supersed
+        // the official registered plugin path above through the 'datatools::library_loader'
+        // function:
+        falaise_lib_infos.store_string(datatools::library_info::keys::env_plugin_lib_dir(),
+                                       "FALAISE_PLUGIN_LIB_DIR"
                                        );
       }
     }

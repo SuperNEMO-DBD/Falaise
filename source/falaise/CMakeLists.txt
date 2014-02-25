@@ -28,19 +28,22 @@ set(FalaiseLibrary_HEADERS
   exitcodes.h
   falaise.h
   resource.h
+  plugin.h
   version.h.in
 )
 
 #-----------------------------------------------------------------------
 # Declare sources
 #
-configure_file(falaise.cc.in falaise.cc @ONLY)
+configure_file(falaise.cc.in  falaise.cc @ONLY)
 configure_file(resource.cc.in resource.cc @ONLY)
+configure_file(plugin.cc.in   plugin.cc @ONLY)
 
 set(FalaiseLibrary_SOURCES
   version.cc
   ${CMAKE_CURRENT_BINARY_DIR}/falaise.cc
   ${CMAKE_CURRENT_BINARY_DIR}/resource.cc
+  ${CMAKE_CURRENT_BINARY_DIR}/plugin.cc
   )
 
 set(FalaiseLibrary_TESTS )
