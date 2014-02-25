@@ -921,6 +921,37 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_tracker_s2c_module,ocd_)
       ;
   }
 
+  // Additionnal configuration hints :
+  ocd_.set_configuration_hints("Here is a full configuration example in the                  \n"
+                               "``datatools::properties`` ASCII format::                     \n"
+                                "                                                            \n"
+                               "  SD_label        : string = \"SD\"                          \n"
+                               "  CD_label        : string = \"CD\"                          \n"
+                               "  Geo_label       : string = \"geometry\"                    \n"
+                               "  random.seed     : integer = 314159                         \n"
+                               "  random.id       : string = \"taus2\"                       \n"
+                               "  module_category : string = \"module\"                      \n"
+                               "  peripheral_drift_time_threshold : real = 4.0 us            \n"
+                               "  delayed_drift_time_threshold    : real = 10.0 us           \n"
+                               "  store_mc_hit_id  : boolean = 0                             \n"
+                               "  hit_category     : string = \"gg\"                         \n"
+                               "  cell_diameter    : real as length = 44 mm                  \n"
+                               "  cell_length      : real as length = 2900 mm                \n"
+                               "  sigma_anode_time : real as time = 12.5 ns                  \n"
+                               "  tcut             : real as time = 10.0 us                  \n"
+                               "  sigma_cathode_time      : real = 100 ns                    \n"
+                               "  sigma_z                 : real = 1.0 cm                    \n"
+                               "  sigma_z_missing_cathode : real as length = 5.0 cm          \n"
+                               "  sigma_r_a  : real as length = 0.425 mm                     \n"
+                               "  sigma_r_b  : real = 0.0083                                 \n"
+                               "  sigma_r_r0 : real as length = 12.25 mm                     \n"
+                               "  base_anode_efficiency     : real = 1.0                     \n"
+                               "  base_cathode_efficiency   : real = 1.0                     \n"
+                               "  plasma_longitudinal_speed : real = 5.0 cm/us               \n"
+                               "  sigma_plasma_longitudinal_speed : real = 0.5 cm/us         \n"
+                               "                                                             \n"
+                               );
+
   ocd_.set_validation_support(true);
   ocd_.lock();
   return;
