@@ -3,13 +3,13 @@ The SuperNEMO demonstrator module configuration files
 
 
 Virtual geometry
-================
+----------------
 
 The modelization of the virtual geometry is stored
 from the ``geometry`` directory, with a version number (i.e. `3.0`).
 
 Simulation
-==========
+----------
 
 The parameters to configure the various components of the simulation
 are stored in files from the ``simulation`` directory. There are
@@ -30,3 +30,9 @@ three main components:
     ``1.0``) identifies a given configuration of the Geant4 simulation
     engine  based on  the  ``Bayeux/mctools`` library  module and  its
     Geant4 plugin.
+
+Reconstruction
+--------------
+
+The parameters to configure the various components of the reconstruction
+are stored in files from the ``reconstruction`` directory.

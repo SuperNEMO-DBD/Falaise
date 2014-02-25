@@ -27,6 +27,7 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/simulation/ve
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/simulation/vertexes/1.0/generators.lis
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/simulation/vertexes/1.0/manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/simulation/vertexes/1.0/README.rst
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/1.0/mock_calorimeter_s2c.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/categories.lis
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/manager.conf
@@ -131,6 +132,7 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/1.
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/1.0/shield_vg.lis
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/1.0/hall_vg.lis
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/1.0/source_vg.lis
+${PROJECT_SOURCE_DIR}/resources/config/snemo/common/reconstruction/1.0/mock_tracker_s2c.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/common/geometry/materials/1.0/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/common/geometry/3.0/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/common/geometry/3.0/models/tracker_drift_cell_core.geom
