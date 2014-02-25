@@ -614,7 +614,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module,o
   }
 
   {
-     // Description of the 'random.seed' configuration property :
+    // Description of the 'random.seed' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
     cpd.set_name_pattern("random.seed")
@@ -631,7 +631,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module,o
   }
 
   {
-     // Description of the 'random.id' configuration property :
+    // Description of the 'random.id' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
     cpd.set_name_pattern("random.id")
@@ -648,7 +648,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module,o
   }
 
   {
-     // Description of the 'cluster_time_width' configuration property :
+    // Description of the 'cluster_time_width' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
     cpd.set_name_pattern("cluster_time_width")
@@ -665,7 +665,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module,o
   }
 
   {
-     // Description of the 'alpha_quenching' configuration property :
+    // Description of the 'alpha_quenching' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
     cpd.set_name_pattern("alpha_quenching")
@@ -682,7 +682,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module,o
   }
 
   {
-     // Description of the 'store_mc_hit_id' configuration property :
+    // Description of the 'store_mc_hit_id' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
     cpd.set_name_pattern("store_mc_hit_id")
@@ -699,7 +699,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module,o
   }
 
   {
-     // Description of the 'hit_categories' configuration property :
+    // Description of the 'hit_categories' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
     cpd.set_name_pattern("hit_categories")

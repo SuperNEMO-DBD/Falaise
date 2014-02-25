@@ -796,7 +796,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_tracker_s2c_module,ocd_)
   }
 
   {
-     // Description of the 'random.seed' configuration property :
+    // Description of the 'random.seed' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
     cpd.set_name_pattern("random.seed")
@@ -814,7 +814,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_tracker_s2c_module,ocd_)
   }
 
   {
-     // Description of the 'random.id' configuration property :
+    // Description of the 'random.id' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
     cpd.set_name_pattern("random.id")
@@ -832,7 +832,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_tracker_s2c_module,ocd_)
   }
 
   {
-     // Description of the 'module_category' configuration property :
+    // Description of the 'module_category' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
     cpd.set_name_pattern("module_category")
@@ -849,7 +849,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_tracker_s2c_module,ocd_)
   }
 
   {
-     // Description of the 'peripheral_drift_time_threshold' configuration property :
+    // Description of the 'peripheral_drift_time_threshold' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
     cpd.set_name_pattern("peripheral_drift_time_threshold")
@@ -866,7 +866,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_tracker_s2c_module,ocd_)
   }
 
   {
-     // Description of the 'delayed_drift_time_threshold' configuration property :
+    // Description of the 'delayed_drift_time_threshold' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
     cpd.set_name_pattern("delayed_drift_time_threshold")
@@ -883,7 +883,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_tracker_s2c_module,ocd_)
   }
 
   {
-     // Description of the 'store_mc_hit_id' configuration property :
+    // Description of the 'store_mc_hit_id' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
     cpd.set_name_pattern("store_mc_hit_id")
@@ -900,7 +900,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_tracker_s2c_module,ocd_)
   }
 
   {
-     // Description of the 'hit_category' configuration property :
+    // Description of the 'hit_category' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
     cpd.set_name_pattern("hit_category")
@@ -924,7 +924,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_tracker_s2c_module,ocd_)
   // Additionnal configuration hints :
   ocd_.set_configuration_hints("Here is a full configuration example in the                  \n"
                                "``datatools::properties`` ASCII format::                     \n"
-                                "                                                            \n"
+                               "                                                             \n"
                                "  SD_label        : string = \"SD\"                          \n"
                                "  CD_label        : string = \"CD\"                          \n"
                                "  Geo_label       : string = \"geometry\"                    \n"
