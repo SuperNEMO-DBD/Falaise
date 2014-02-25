@@ -88,15 +88,23 @@ namespace snemo {
 
       this->base_module::_common_initialize(setup_);
 
-      if (setup_.has_key("SD_label"))
-        {
+      if (_SD_label_.empty()) {
+        if (setup_.has_key("SD_label")) {
           _SD_label_ = setup_.fetch_string("SD_label");
         }
+      }
+      if (_SD_label_.empty()) {
+        _SD_label_ = snemo::datamodel::data_info::SIMULATED_DATA_LABEL;
+      }
 
-      if (setup_.has_key("CD_label"))
-        {
+      if (_CD_label_.empty()) {
+        if (setup_.has_key("CD_label")) {
           _CD_label_ = setup_.fetch_string("CD_label");
         }
+      }
+      if (_CD_label_.empty()) {
+        _CD_label_ = snemo::datamodel::data_info::CALIBRATED_DATA_LABEL;
+      }
 
       if (setup_.has_key("module_category"))
         {
@@ -698,5 +706,229 @@ namespace snemo {
   } // end of namespace processing
 
 } // end of namespace snemo
+
+/********************************
+ * OCD support : implementation *
+ ********************************/
+
+#include <datatools/object_configuration_description.h>
+
+/** Opening macro for implementation
+ *  @arg snemo::processing::mock_tracker_s2c_module the full class name
+ *  @arg ocd_ is the identifier of the 'datatools::object_configuration_description'
+ *            to be initialized (passed by mutable reference).
+ */
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_tracker_s2c_module,ocd_)
+{
+  ocd_.set_class_name("snemo::processing::mock_tracker_s2c_module");
+  ocd_.set_class_description("A module that performs a mock digitization/calibration of the tracker simulated data");
+  ocd_.set_class_library("falaise");
+  //ocd_.set_class_documentation("");
+
+  dpp::base_module::common_ocd(ocd_);
+
+
+  {
+    std::ostringstream ldesc;
+    ldesc << "This is the name of the bank to be used \n"
+          << "as the input simulated calorimeter hits.    \n"
+          << "Default value is: \"" << snemo::datamodel::data_info::SIMULATED_DATA_LABEL<< "\".  \n";
+    // Description of the 'SD_label' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("SD_label")
+      .set_terse_description("The label/name of the 'simulated data' bank")
+      .set_traits(datatools::TYPE_STRING)
+      .set_mandatory(false)
+      .set_long_description(ldesc.str())
+      .add_example("Use an alternative name for the 'simulated data' bank:: \n"
+                   "                                \n"
+                   "  SD_label : string = \"SD2\"   \n"
+                   "                                \n"
+                   )
+      ;
+  }
+
+
+  {
+    std::ostringstream ldesc;
+    ldesc << "This is the name of the bank to be used \n"
+          << "as the output calibrated calorimeter hits.    \n"
+          << "Default value is: \"" << snemo::datamodel::data_info::CALIBRATED_DATA_LABEL<< "\".  \n";
+    // Description of the 'CD_label' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("CD_label")
+      .set_terse_description("The label/name of the 'calibrated data' bank")
+      .set_traits(datatools::TYPE_STRING)
+      .set_mandatory(false)
+      .set_long_description(ldesc.str())
+      .add_example("Use an alternative name for the 'calibrated data' bank:: \n"
+                   "                                \n"
+                   "  CD_label : string = \"CD2\"   \n"
+                   "                                \n"
+                   )
+      ;
+  }
+
+
+  {
+    std::ostringstream ldesc;
+    ldesc << "This is the name of the service to be used as the \n"
+          << "geometry service.                                 \n"
+          << "Default value is: \"" << "Geo" << "\".            \n"
+          << "This property is only used if no geoemtry manager \n"
+          << "as been provided to the module.                   \n";
+    // Description of the 'Geo_label' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("Geo_label")
+      .set_terse_description("The label/name of the geometry service")
+      .set_traits(datatools::TYPE_STRING)
+      .set_mandatory(false)
+      .set_long_description(ldesc.str())
+      .add_example("Use an alternative name for the geometry service:: \n"
+                   "                                    \n"
+                   "  Geo_label : string = \"geometry\" \n"
+                   "                                    \n"
+                   )
+      ;
+  }
+
+  {
+     // Description of the 'random.seed' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("random.seed")
+      .set_terse_description("The seed for the embedded PRNG")
+      .set_traits(datatools::TYPE_INTEGER)
+      .set_mandatory(false)
+      .set_long_description("Default value: ``12345``")
+      .set_complex_triggering_conditions(true)
+      .add_example("Use an alternative seed for the PRNG:: \n"
+                   "                                       \n"
+                   "  random.seed : integer = 314159       \n"
+                   "                                       \n"
+                   )
+      ;
+  }
+
+  {
+     // Description of the 'random.id' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("random.id")
+      .set_terse_description("The Id for the embedded PRNG (GSL)")
+      .set_traits(datatools::TYPE_STRING)
+      .set_mandatory(false)
+      .set_long_description("Default value: ``mt19937``")
+      .set_complex_triggering_conditions(true)
+      .add_example("Use an alternative Id for the PRNG::   \n"
+                   "                                       \n"
+                   "  random.id : string = \"taus2\"       \n"
+                   "                                       \n"
+                   )
+      ;
+  }
+
+  {
+     // Description of the 'module_category' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("module_category")
+      .set_terse_description("The geometry category of the SuperNEMO module")
+      .set_traits(datatools::TYPE_STRING)
+      .set_mandatory(false)
+      .set_long_description("Default value: ``\"module\"``")
+      .add_example("Use the default value::                 \n"
+                   "                                        \n"
+                   "  module_category : string = \"module\" \n"
+                   "                                        \n"
+                   )
+      ;
+  }
+
+  {
+     // Description of the 'peripheral_drift_time_threshold' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("peripheral_drift_time_threshold")
+      .set_terse_description("The minimum drift time for peripheral Geiger hit")
+      .set_traits(datatools::TYPE_REAL)
+      .set_mandatory(false)
+      .set_long_description("Default value: ``4.0 us``")
+      .add_example("Use the default value::                         \n"
+                   "                                       \n"
+                   "  peripheral_drift_time_threshold : real = 4.0 us \n"
+                   "                                       \n"
+                   )
+      ;
+  }
+
+  {
+     // Description of the 'delayed_drift_time_threshold' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("delayed_drift_time_threshold")
+      .set_terse_description("The minimum drift time for delayed Geiger hit")
+      .set_traits(datatools::TYPE_REAL)
+      .set_mandatory(false)
+      .set_long_description("Default value: ``10.0 us``")
+      .add_example("Use the default value::                         \n"
+                   "                                                \n"
+                   "  delayed_drift_time_threshold : real = 10.0 us \n"
+                   "                                                \n"
+                   )
+      ;
+  }
+
+  {
+     // Description of the 'store_mc_hit_id' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("store_mc_hit_id")
+      .set_terse_description("Flag to activate the storage of the truth hit Ids in the calibrated hits")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .set_mandatory(false)
+      .set_long_description("Default value: ``0`` ")
+      .add_example("Use the default value::          \n"
+                   "                                 \n"
+                   "  store_mc_hit_id : boolean = 0  \n"
+                   "                                 \n"
+                   )
+      ;
+  }
+
+  {
+     // Description of the 'hit_category' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("hit_category")
+      .set_terse_description("The category of the traker hits to be processed")
+      .set_traits(datatools::TYPE_STRING)
+      .set_mandatory(false)
+      .set_long_description("Default value: ``\"gg\"``                   \n"
+                            "For this hit category, we must declare some \n"
+                            "configuration parameters for the associated \n"
+                            "geiger regime (see OCD support for the      \n"
+                            "``snemo::processing::geiger_regime`` class).\n"
+                            )
+      .add_example("Use the default value::          \n"
+                   "                                 \n"
+                   "  hit_category : string = \"gg\" \n"
+                   "                                 \n"
+                   )
+      ;
+  }
+
+  ocd_.set_validation_support(true);
+  ocd_.lock();
+  return;
+}
+DOCD_CLASS_IMPLEMENT_LOAD_END() // Closing macro for implementation
+
+// Registration macro for class 'snemo::processing::mock_tracker_s2c_module' :
+DOCD_CLASS_SYSTEM_REGISTRATION(snemo::processing::mock_tracker_s2c_module,
+                               "snemo::processing::mock_tracker_s2c_module")
 
 // end of falaise/snemo/processing/mock_tracker_s2c_module.cc

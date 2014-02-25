@@ -36,6 +36,9 @@ namespace snemo {
       DT_THROW_IF (is_initialized (), std::logic_error, "Calorimeter regime is already initialized !");
       DT_THROW_IF (_category_.empty (), std::logic_error, "Category is not defined !");
 
+      double energy_unit = CLHEP::keV;
+      double time_unit = CLHEP::ns;
+
       // Energy resolution
       {
         const std::string & key_name = this->get_category () + ".resolution";
@@ -52,7 +55,7 @@ namespace snemo {
         if (config_.has_key (key_name)) {
           _high_threshold_ = config_.fetch_real (key_name);
           if (! config_.has_explicit_unit (key_name)){
-            _high_threshold_ *= CLHEP::keV;
+            _high_threshold_ *= energy_unit;
           }
         }
       }
@@ -63,7 +66,7 @@ namespace snemo {
         if (config_.has_key (key_name)) {
           _low_threshold_ = config_.fetch_real (key_name);
           if (! config_.has_explicit_unit (key_name)){
-            _low_threshold_ *= CLHEP::keV;
+            _low_threshold_ *= energy_unit;
           }
         }
       }
@@ -85,7 +88,7 @@ namespace snemo {
         if (config_.has_key (key_name)) {
           _scintillator_relaxation_time_ = config_.fetch_real (key_name);
           if (! config_.has_explicit_unit (key_name)){
-            _scintillator_relaxation_time_ *= CLHEP::ns;
+            _scintillator_relaxation_time_ *= time_unit;
           }
         }
       }
@@ -233,26 +236,188 @@ namespace snemo {
       out_ << indent << datatools::i_tree_dumpable::tag
            << "Initialized          : " << is_initialized () << std::endl;
       out_ << indent << datatools::i_tree_dumpable::tag
-           << "Energy resolution    = " << _resolution_ << std::endl;
+           << "Energy resolution     = " << _resolution_ << std::endl;
       out_ << indent << datatools::i_tree_dumpable::tag
-           << "Low threshold        = " << _low_threshold_ / CLHEP::keV << " keV" << std::endl;
+           << "Low energy threshold  = " << _low_threshold_ / CLHEP::keV << " keV" << std::endl;
       out_ << indent << datatools::i_tree_dumpable::tag
-           << "High threshold       = " << _high_threshold_ / CLHEP::keV << " keV" << std::endl;
+           << "High energy threshold = " << _high_threshold_ / CLHEP::keV << " keV" << std::endl;
       out_ << indent << datatools::i_tree_dumpable::tag
-           << "Relaxation time      = " << _scintillator_relaxation_time_ / CLHEP::ns << " ns" << std::endl;
+           << "Relaxation time       = " << _scintillator_relaxation_time_ / CLHEP::ns << " ns" << std::endl;
       out_ << indent << datatools::i_tree_dumpable::tag
-           << "Alpha quenching par0 = " << _alpha_quenching_0_ << std::endl;
+           << "Alpha quenching par0  = " << _alpha_quenching_0_ << std::endl;
       out_ << indent << datatools::i_tree_dumpable::tag
-           << "Alpha quenching par1 = " << _alpha_quenching_1_ << std::endl;
+           << "Alpha quenching par1  = " << _alpha_quenching_1_ << std::endl;
       out_ << indent << datatools::i_tree_dumpable::tag
-           << "Alpha quenching par2 = " << _alpha_quenching_2_ << std::endl;
+           << "Alpha quenching par2  = " << _alpha_quenching_2_ << std::endl;
       out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
-           << "Category             = " << _category_ << std::endl;
+           << "Category              = " << _category_ << std::endl;
       return;
     }
 
   } // end of namespace processing
 
 } // end of namespace snemo
+
+/********************************
+ * OCD support : implementation *
+ ********************************/
+
+#include <datatools/object_configuration_description.h>
+
+/** Opening macro for implementation
+ *  @arg snemo::processing::calorimeter_regime  the full class name
+ *  @arg ocd_ is the identifier of the 'datatools::object_configuration_description'
+ *            to be initialized (passed by mutable reference).
+ */
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::calorimeter_regime,ocd_)
+{
+  ocd_.set_class_name("snemo::processing::calorimeter_regime");
+  ocd_.set_class_description("This object describes the calorimeter regime of SuperNEMO optical line");
+  ocd_.set_class_library("falaise");
+  //ocd_.set_class_documentation("");
+
+  {
+    // Description of the 'energy.resolution' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("energy.resolution")
+      .set_terse_description("The optical line energy resolution for electrons at 1 MeV")
+      .set_traits(datatools::TYPE_REAL)
+      .set_long_description("Default value: ``0.08``                 \n")
+      .add_example("Set the default value::                          \n"
+                   "                                                 \n"
+                   "  energy.resolution : real = 0.08                       \n"
+                   "                                                 \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'energy.low_threshold' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("energy.low_threshold")
+      .set_terse_description("The optical line low energy threshold")
+      .set_traits(datatools::TYPE_REAL)
+      .set_long_description("Default value: ``50 keV``               \n")
+      .add_example("Set the default value::                          \n"
+                   "                                                 \n"
+                   "  energy.low_threshold : real as energy = 50 keV        \n"
+                   "                                                 \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'energy.high_threshold' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("energy.high_threshold")
+      .set_terse_description("The optical line high energy threshold")
+      .set_traits(datatools::TYPE_REAL)
+      .set_long_description("Default value: ``150 keV``              \n")
+      .add_example("Set the default value::                          \n"
+                   "                                                 \n"
+                   "  energy.high_threshold : real as energy = 150 keV \n"
+                   "                                                 \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'scintillator_relaxation_time' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("scintillator_relaxation_time")
+      .set_terse_description("The scintillator relaxation time")
+      .set_traits(datatools::TYPE_REAL)
+      .set_long_description("Default value: ``6.0 ns``                     \n")
+      .add_example("Set the default value::                                \n"
+                   "                                                       \n"
+                   "  scintillator_relaxation_time : real as time = 6.0 ns \n"
+                   "                                                       \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'alpha_quenching_parameters' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("alpha_quenching_parameters")
+      .set_terse_description("Activation of the quenching for alpha particles")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .set_long_description("Default value: ``0``      \n")
+      .add_example("Set the default value::                    \n"
+                   "                                           \n"
+                   "  alpha_quenching_parameters : boolean = 1 \n"
+                   "                                           \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'alpha_quenching_0' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("alpha_quenching_0")
+      .set_terse_description("Parametrization of the quenching for alpha particles (first parameter")
+      .set_traits(datatools::TYPE_REAL)
+      .set_long_description("Default value: ``77.4``  \n")
+      .add_example("Set the default value::           \n"
+                   "                                  \n"
+                   "  alpha_quenching_0 : real = 77.4 \n"
+                   "                                  \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'alpha_quenching_1' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("alpha_quenching_1")
+      .set_terse_description("Parametrization of the quenching for alpha particles (second parameter")
+      .set_traits(datatools::TYPE_REAL)
+      .set_long_description("Default value: ``0.639``  \n")
+      .add_example("Set the default value::            \n"
+                   "                                   \n"
+                   "  alpha_quenching_1 : real = 0.639 \n"
+                   "                                   \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'alpha_quenching_2' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("alpha_quenching_2")
+      .set_terse_description("Parametrization of the quenching for alpha particles (third parameter")
+      .set_traits(datatools::TYPE_REAL)
+      .set_long_description("Default value: ``2.34``   \n")
+      .add_example("Set the default value::            \n"
+                   "                                   \n"
+                   "  alpha_quenching_2 : real = 2.34  \n"
+                   "                                   \n"
+                   )
+      ;
+  }
+
+  // Additionnal configuration hints :
+  ocd_.set_configuration_hints("Here is a full configuration example in the      \n"
+                               "``datatools::properties`` ASCII format::         \n"
+                               "                                                 \n"
+                               "  energy.resolution     : real = 0.08                  \n"
+                               "  energy.low_threshold  : real as energy = 50 keV      \n"
+                               "  energy.high_threshold : real as energy = 150 keV     \n"
+                               "  scintillator_relaxation_time : real as time = 6.0 ns \n"
+                               "  alpha_quenching_parameters : boolean = 1             \n"
+                               "  alpha_quenching_0 : real = 77.4  \n"
+                               "  alpha_quenching_1 : real = 0.639 \n"
+                               "  alpha_quenching_2 : real = 2.34  \n"
+                               "                                   \n"
+                               );
+
+  ocd_.set_validation_support(true);
+  ocd_.lock();
+  return;
+}
+DOCD_CLASS_IMPLEMENT_LOAD_END() // Closing macro for implementation
+
+// Registration macro for class 'snemo::processing::calorimeter_regime' :
+DOCD_CLASS_SYSTEM_REGISTRATION(snemo::processing::calorimeter_regime,"snemo::processing::calorimeter_regime")
 
 // end of falaise/snemo/processing/calorimeter_regime.cc

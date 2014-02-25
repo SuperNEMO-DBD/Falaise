@@ -98,14 +98,20 @@ namespace snemo {
       (const mctools::simulated_data & simulated_data_,
        snemo::datamodel::calibrated_data::calorimeter_hit_collection_type & calibrated_calorimeter_hits_);
 
+    protected:
+
+      /// Set default attributes values
+      void _set_defaults();
+
     private:
 
-      const geomtools::manager *  _geom_manager_;         //!< The geometry manager
+      const geomtools::manager *  _geom_manager_;        //!< The geometry manager
       mygsl::rng                  _random_;              //!< PRN generator
       category_col_type           _hit_categories_;      //!< Calorimeter categories
       calorimeter_regime_col_type _calorimeter_regimes_; //!< Calorimeter regime tools
       std::string                 _SD_label_;            //!< The label of the simulated data bank
       std::string                 _CD_label_;            //!< The label of the calibrated data bank
+      std::string                 _Geo_label_;           //!< The label of the geometry service
       double                      _cluster_time_width_;  //!< Time width of a calo cluster
       bool                        _alpha_quenching_;     //!< Flag to (dis)activate the alpha quenching
       bool                        _store_mc_hit_id_;     //!< The flag to reference MC true hit
@@ -118,6 +124,15 @@ namespace snemo {
   } // end of namespace processing
 
 } // end of namespace snemo
+
+/***************************
+ * OCD support : interface *
+ ***************************/
+
+#include <datatools/ocd_macros.h>
+
+// @arg snemo::processing::mock_calorimeter_s2c_module the name the registered class
+DOCD_CLASS_DECLARATION(snemo::processing::mock_calorimeter_s2c_module)
 
 #endif // FALAISE_SNEMO_PROCESSING_MOCK_CALORIMETER_S2C_MODULE_H
 

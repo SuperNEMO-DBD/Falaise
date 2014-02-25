@@ -75,8 +75,7 @@ namespace snemo {
       set_logging_priority(lp);
 
       // Maximum number of fit to be saved :
-      if (setup_.has_key ("maximum_number_of_fits"))
-        {
+      if (setup_.has_key ("maximum_number_of_fits")) {
           _maximum_number_of_fits_ = setup_.fetch_integer ("maximum_number_of_fits");
         }
 
@@ -90,13 +89,11 @@ namespace snemo {
       // Get the Geiger cell locator from geometry plugins :
       const geomtools::manager & geo_mgr = get_geometry_manager ();
       std::string locator_plugin_name;
-      if (setup_.has_key ("locator_plugin_name"))
-        {
+      if (setup_.has_key ("locator_plugin_name")) {
           locator_plugin_name = setup_.fetch_string ("locator_plugin_name");
         }
       // If no locator plugin name is set, then search for the first one
-      if (locator_plugin_name.empty ())
-        {
+      if (locator_plugin_name.empty ()) {
           const geomtools::manager::plugins_dict_type & plugins = geo_mgr.get_plugins ();
           for (geomtools::manager::plugins_dict_type::const_iterator ip = plugins.begin ();
                ip != plugins.end ();
@@ -118,8 +115,7 @@ namespace snemo {
         // Set the Geiger cell locator :
         _gg_locator_ = dynamic_cast<const snemo::geometry::gg_locator*>(&(lp.get_gg_locator ()));
       }
-      if (get_logging_priority () >= datatools::logger::PRIO_DEBUG)
-        {
+      if (get_logging_priority () >= datatools::logger::PRIO_DEBUG) {
           DT_LOG_DEBUG (get_logging_priority (), "Geiger locator :");
           _gg_locator_->dump (std::clog);
         }
@@ -406,6 +402,46 @@ namespace snemo {
       _post_process (trajectory_);
       return status;
     } // end of base_tracker_fitter::process
+
+    // static
+    void base_tracker_fitter::_ocd_support(datatools::object_configuration_description & ocd_,
+                                           const std::string & prefix_)
+    {
+
+      datatools::logger::declare_ocd_logging_configuration(ocd_, "fatal", prefix_);
+
+      {
+        // Description of the 'maximum_number_of_fits' configuration property :
+        datatools::configuration_property_description & cpd = ocd_.add_property_info();
+        cpd.set_name_pattern("maximum_number_of_fits")
+          .set_terse_description("The maximum number of fitting solutions to be addressed by the algorithm")
+          .set_traits(datatools::TYPE_INTEGER)
+          .set_long_description("Default value: ``0`` means no limit     \n")
+          .add_example("Set the default value::                          \n"
+                       "                                                 \n"
+                       "  maximum_number_of_fits : integer = 0           \n"
+                       "                                                 \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'locator_plugin_name' configuration property :
+        datatools::configuration_property_description & cpd = ocd_.add_property_info();
+        cpd.set_name_pattern("locator_plugin_name")
+          .set_terse_description("The name of the geometry Geiger locator plugin to be used")
+          .set_traits(datatools::TYPE_STRING)
+          .set_long_description("Default value: empty means no automatic search   \n")
+          .add_example("Set the default value::                          \n"
+                       "                                                 \n"
+                       "  locator_plugin_name : string = \"gg_loc\"      \n"
+                       "                                                 \n"
+                       )
+          ;
+      }
+
+      return;
+    }
 
   }  // end of namespace processing
 

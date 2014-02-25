@@ -127,6 +127,15 @@ namespace snemo {
 
 } // end of namespace snemo
 
+/***************************
+ * OCD support : interface *
+ ***************************/
+
+#include <datatools/ocd_macros.h>
+
+// @arg snemo::processing::mock_tracker_s2c_module the name the registered class
+DOCD_CLASS_DECLARATION(snemo::processing::mock_tracker_s2c_module)
+
 #endif // FALAISE_SNEMO_PROCESSING_MOCK_TRACKER_S2C_MODULE_H
 
 // end of falaise/snemo/processing/mock_tracker_s2c_module.h

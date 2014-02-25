@@ -33,6 +33,9 @@
 // Third party:
 // - Boost:
 #include <boost/cstdint.hpp>
+// - Bayeux/datatools:
+#include <datatools/logger.h>
+#include <datatools/object_configuration_description.h>
 
 // This project:
 #include <snemo/datamodels/calibrated_data.h>
@@ -119,6 +122,10 @@ namespace snemo {
 
       /// Initialize the clusterizer through configuration properties
       void _initialize(const datatools::properties & setup_);
+
+      /// OCD support
+      static void _ocd_support (datatools::object_configuration_description &,
+                                const std::string & prefix_ = "");
 
       /// Reset the clusterizer
       void _reset();

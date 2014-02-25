@@ -120,6 +120,7 @@ namespace snemo {
 
       TrackerPreClustering::setup_data tpc_setup_data;
       tpc_setup_data.debug = get_logging_priority () == datatools::logger::PRIO_DEBUG;
+      tpc_setup_data.delayed_hit_cluster_time = 10.0 * CLHEP::microsecond;
       tpc_setup_data.cell_size = get_gg_locator ().get_cell_diameter ();
 
       double default_time_unit = CLHEP::microsecond;
@@ -453,6 +454,92 @@ namespace snemo {
       _post_process (hits_, clustering_);
       return status;
     } // end of base_tracker_clusterizer::process
+
+    // static
+    void base_tracker_clusterizer::_ocd_support(datatools::object_configuration_description & ocd_,
+                                                const std::string & prefix_)
+    {
+
+      datatools::logger::declare_ocd_logging_configuration(ocd_, "fatal", prefix_);
+
+      {
+        // Description of the 'locator_plugin_name' configuration property :
+        datatools::configuration_property_description & cpd = ocd_.add_property_info();
+        cpd.set_name_pattern("locator_plugin_name")
+          .set_terse_description("The name of the geometry Geiger locator plugin to be used")
+          .set_traits(datatools::TYPE_STRING)
+          .set_long_description("Default value: empty means no automatic search   \n")
+          .add_example("Set the default value::                          \n"
+                       "                                                 \n"
+                       "  locator_plugin_name : string = \"gg_loc\"      \n"
+                       "                                                 \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'TPC.delayed_hit_cluster_time' configuration property :
+        datatools::configuration_property_description & cpd = ocd_.add_property_info();
+        cpd.set_name_pattern("TPC.delayed_hit_cluster_time")
+          .set_terse_description("The minimum time to consider a Geiger hit as delayed")
+          .set_traits(datatools::TYPE_REAL)
+          .set_long_description("Default value: ``10 us``   \n")
+          .add_example("Set the default value::                          \n"
+                       "                                                 \n"
+                       "  TPC.delayed_hit_cluster_time : real = 10 us    \n"
+                       "                                                 \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'TPC.processing_prompt_hits' configuration property :
+        datatools::configuration_property_description & cpd = ocd_.add_property_info();
+        cpd.set_name_pattern("TPC.processing_prompt_hits")
+          .set_terse_description("Flag to process prompt Geiger hits")
+          .set_traits(datatools::TYPE_REAL)
+          .set_long_description("Default value: ``1``   \n")
+          .add_example("Set the default value::                       \n"
+                       "                                              \n"
+                       "  TPC.processing_prompt_hits : boolean = 1    \n"
+                       "                                              \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'TPC.processing_delayed_hits' configuration property :
+        datatools::configuration_property_description & cpd = ocd_.add_property_info();
+        cpd.set_name_pattern("TPC.processing_delayed_hits")
+          .set_terse_description("Flag to process delayed Geiger hits")
+          .set_traits(datatools::TYPE_REAL)
+          .set_long_description("Default value: ``1``   \n")
+          .add_example("Set the default value::                       \n"
+                       "                                              \n"
+                       "  TPC.processing_delayed_hits : boolean = 1   \n"
+                       "                                              \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'TPC.split_chamber' configuration property :
+        datatools::configuration_property_description & cpd = ocd_.add_property_info();
+        cpd.set_name_pattern("TPC.split_chamber")
+          .set_terse_description("Flag to process distinctly delayed Geiger hits from different sides of the tracking chamber")
+          .set_traits(datatools::TYPE_REAL)
+          .set_long_description("Default value: ``0``   \n")
+          .add_example("Split chamber in 2 sides::          \n"
+                       "                                    \n"
+                       "  TPC.split_chamber : boolean = 1   \n"
+                       "                                    \n"
+                       )
+          ;
+      }
+
+      return;
+    }
+
 
   }  // end of namespace processing
 
