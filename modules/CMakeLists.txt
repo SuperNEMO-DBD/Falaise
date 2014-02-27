@@ -10,7 +10,25 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_
 # them to the current Bayeux/Falaise
 set(Bayeux_DIR "${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/Bayeux-1.0.0")
 
-# - Process modules here...
-# add_subdirectory(things2root)
-add_subdirectory(CAT)
-#add_subdirectory(TrackFit)
+# - List of plugins:
+set(_falaise_PLUGINS
+  #things2root
+  CAT
+  TrackFit
+)
+
+# - Process modules here:
+foreach(_flplugin ${_falaise_PLUGINS})
+  if(EXISTS ${PROJECT_SOURCE_DIR}/modules/${_flplugin})
+    add_subdirectory(${PROJECT_SOURCE_DIR}/modules/${_flplugin})
+    # Publish resource files for this plugin:
+    if(EXISTS ${PROJECT_SOURCE_DIR}/modules/${_flplugin}/resources/_resources.cmake)
+      include(${PROJECT_SOURCE_DIR}/modules/${_flplugin}/resources/_resources.cmake)
+      foreach(_rfin ${_falaise_${_flplugin}_RESOURCES_FILES})
+	string(REGEX REPLACE "\\.in$" "" _rfout "${_rfin}")
+	string(REGEX REPLACE "^${PROJECT_SOURCE_DIR}/modules/${_flplugin}/resources/" "${Falaise_DATAROOTDIR}/resources/modules/${_flplugin}/" _rfout "${_rfout}")
+	configure_file(${_rfin} ${_rfout} @ONLY)
+      endforeach()
+    endif()
+  endif()
+endforeach()
