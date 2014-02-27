@@ -13,6 +13,8 @@ include_directories(${Falaise_BUILDPRODUCT_DIR}/include)
 include_directories(${Falaise_BUILDPRODUCT_DIR}/include/falaise)
 include_directories(${Bayeux_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source/falaise)
 
 ############################################################################################
 # - Include directives to build the CellularAutomatonTracker source code (svn:externals)
@@ -21,8 +23,6 @@ include(cmake/CAT_import.cmake)
 
 ############################################################################################
 # - CAT & SULTAN modules:
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source/falaise)
 
 # - Headers:
 list(APPEND FalaiseCATPlugin_HEADERS source/falaise/snemo/reconstruction/cat_driver.h)
@@ -50,7 +50,7 @@ if(APPLE)
 endif()
 
 # Install it:
-install(TARGETS Falaise_CAT DESTINATION ${CMAKE_INSTALL_LIBDIR}/Falaise/modules)
+install(TARGETS Falaise_CAT DESTINATION ${CMAKE_INSTALL_LIBDIR}/${Falaise_PLUGINLIBDIR})
 
 # Test support:
 option(FalaiseCATPlugin_ENABLE_TESTING "Build unit testing system for FalaiseCATPlugin" ON)

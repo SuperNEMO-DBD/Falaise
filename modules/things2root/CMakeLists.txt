@@ -22,5 +22,4 @@ if(APPLE)
 endif()
 
 # Install it
-install(TARGETS Things2Root DESTINATION ${CMAKE_INSTALL_LIBDIR}/Falaise/modules)
-
+install(TARGETS Things2Root DESTINATION ${CMAKE_INSTALL_LIBDIR}/${Falaise_PLUGINLIBDIR})
