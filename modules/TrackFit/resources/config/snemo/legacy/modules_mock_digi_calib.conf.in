@@ -1,0 +1,233 @@
+# SuperNEMO Demonstrator Event Record Mock Digitization/Calibration Modules
+
+#@description A list of event record processing modules
+#@key_label   "name"
+#@meta_label  "type"
+
+
+############################################################################
+# A processor that remove the 'bank' of calibrated data stored in the event
+# record :
+[name="remove_calibrated_data" type="snemo::core::processing::utils_module"]
+
+#@description Debug flag
+debug : boolean = 0
+
+#@description The processor mode
+mode : string = "remove_bank"
+
+#@description The label of the bank to be removed
+mode.remove_bank.label : string = "CD"
+
+
+############################################################################
+# A module that computes calibrated tracker hits (CD) from simulated tracker 
+# MC hits (SD) :
+[name="tracker_s2c" type="snemo::core::processing::basic_tracker_s2c_module"]
+
+#@config Parameters for the embedded tracker simulated data processor 
+
+#@description Debug flag
+debug : boolean = 0
+
+#@description Verbosity flag
+verbose : boolean = 0
+
+#@description The label of the Geometry service
+Geo_label : string  = "Geo"
+
+#@description The label of the 'Event Header' bank
+EH_label : string  = "EH"
+
+#@description The label of the 'Simulated Data' bank
+SD_label : string  = "SD"
+
+#@description The label of the 'Calibrated Data' bank
+CD_label : string  = "CD"
+
+#@description The geometry category of the SuperNEMO module
+module_category  : string  = "module"
+
+#@description The category of hits to be processed as Geiger hits
+hit_category  : string  = "gg"
+
+#@description Pseudo-random numbers generator setup : PRNG type
+random.id   : string  = "mt19937"
+
+#@description Pseudo-random numbers generator setup : PRNG seed
+random.seed : integer = 12345
+
+#@description Drift cell effective/active diameter
+cell_diameter : real = 44.0   # mm
+
+#@description Drift cell effective/active length
+cell_length   : real = 2900.0 # mm
+
+#@description anode efficiency
+base_anode_efficiency   : real = 1.0
+
+#@description cathode efficiency
+base_cathode_efficiency : real = 1.0
+
+#@description plasma longitudinal speed
+plasma_longitudinal_speed : real = 5.0 # cm/us
+
+#@description Store the hit ID of the true MC Geiger hit from which the calibrated hit has been built
+store_mc_hit_id : boolean = 1
+
+#@description Error on reconstructed longitudinal position (from a plot by Irina)
+sigma_z                  : real = 1.0     # cm (to be confirmed)
+
+#@description Error on reconstructed longitudinal position when one cathode signal is missing
+sigma_z_missing_cathode  : real = 5.0     # cm (to be confirmed)
+
+#@description Error on reconstructed horizontal position (parameters of a fit of data by Irina)
+sigma_r_a  : real = 0.425   # mm
+sigma_r_b  : real = 0.0083  # dimensionless
+sigma_r_r0 : real = 12.25   # mm
+
+#@description Drift time threshold to consider the hit as 'peripheral'
+#peripheral_drift_time_threshold : real = 4.0 # microsecond
+
+#@description Drift time threshold to consider the hit as 'delayed'
+#delayed_drift_time_threshold : real = 10.0 # microsecond
+
+
+############################################################################
+# A module that computes calibrated scintillator/calorimeter hits (CD) from 
+# simulated scintillator/calorimeter MC hits (SD):
+[name="calorimeter_s2c" type="snemo::core::processing::basic_calorimeter_s2c_module"]
+#@config Parameters for the embedded calorimeter simulated data processor 
+
+#@description Debug flag
+debug : boolean = 0
+
+#@description The label of the Geometry service
+Geo_label : string  = "Geo"
+
+#@description The label of the 'Event Header' bank
+EH_label : string  = "EH"
+
+#@description The label of the 'Simulated Data' bank
+SD_label : string  = "SD"
+
+#@description The label of the 'Calibrated Data' bank
+CD_label : string  = "CD"
+
+#@description The cluster time width (trigger time window)
+cluster_time_width : real = 100 #ns
+
+#@description The categories of hits to be processed as calorimeter hits
+hit_categories  : string[3]  = "calo" "xcalo" "gveto"
+
+#@description Pseudo-random numbers generator setup : PRNG type
+random.id   : string  = "mt19937"
+
+#@description Pseudo-random numbers generator setup : PRNG seed
+random.seed : integer = 12345
+
+#@description Alpha quenching parameters
+alpha_quenching : boolean = 1
+alpha_quenching_parameters : real[3] = 77.4 0.639 2.34
+
+#@description Time resolution parameters
+scintillator_relaxation_time : real = 6.0 # ns
+
+#@description Optical lines resolutions (FWHM @ 1 MeV)
+calo.resolution  : real = 0.08
+xcalo.resolution : real = 0.12
+gveto.resolution : real = 0.15
+
+#@description Optical lines trigger thresholds
+calo.high_threshold  : real = 150 # keV
+xcalo.high_threshold : real = 150 # keV
+gveto.high_threshold : real = 150 # keV
+
+calo.low_threshold   : real = 50  # keV
+xcalo.low_threshold  : real = 50  # keV
+gveto.low_threshold  : real = 50  # keV
+
+
+############################################################################
+# A processor that removes the 'visualization' MC hits from the 'bank' 
+# of simulated data (SD) stored in the event record :
+[name="remove_mc_visu_hits" type="snemo::core::processing::utils_module"]
+
+#@description Debug flag
+debug : boolean = 0
+
+#@description The 'Simulated data' bank label in the event record
+SD_label  : string = "SD"
+
+#@description The processor mode
+mode : string = "remove_mc_hits"
+
+#@description The label of the MC hits to be removed
+mode.remove_mc_hits.label : string = "__visu.tracks"
+
+############################################################################
+# The plain S2C processor configuration :
+#
+# Sequence of the data processing chain :
+#
+#  1) former 'calibrated data' bank is removed if it exists.
+#
+#  2) the mock digitization-calibration procedure is applied to
+#     the tracker MC hits (Geiger hits) and added to the
+#     'calibrated data' bank (CD) which is created if it does not exists yet.
+#
+#  3) the mock digitization-calibration procedure is applied to
+#     the calorimeter MC hits (calo/xcalo/gveto hits) and added to the
+#     'calibrated data' bank (CD) which is created if it does not exists yet.
+#
+[name="s2c" type="snemo::core::processing::chain_module"]
+
+#@description Debug flag
+debug : boolean = 0
+
+#@description The list of processing modules to be applied (in this order) :
+modules : string [3] = \
+	"remove_calibrated_data" \
+        "tracker_s2c" \
+        "calorimeter_s2c" 
+
+
+############################################################################
+# A variant of the S2C module processor :
+#
+# Sequence of the data processing chain :
+#
+#  1) plain "s2c" algorithm
+#
+#  2) the collection of 'track visualization' MC hits is removed from
+#     the 'simulated data' bank if it exists (because it uses a lot of
+#     storage).
+#
+[name="s2c_no_visu" type="snemo::core::processing::chain_module"]
+
+#@description Debug flag
+debug : boolean = 0
+
+#@description The list of processing modules to be applied (in this order) :
+modules : string [2] = "s2c" "remove_mc_visu_hits"
+
+
+############################################################################
+# A variant of the S2C module processor :
+#
+# Sequence of the data processing chain :
+#
+#  1) plain "s2c" algorithm
+#
+#  2) the 'simulated data' bank (SD) is removed if it exists.
+#
+[name="s2c_no_sd" type="snemo::core::processing::chain_module"]
+
+#@description Debug flag
+debug : boolean = 0
+
+#@description The list of processing modules to be applied (in this order) :
+modules : string [2] = "s2c" "remove_simulated_data"
+
+
+# end
