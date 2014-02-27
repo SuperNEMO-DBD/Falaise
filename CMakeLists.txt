@@ -80,11 +80,19 @@ endforeach()
 #   matches install layout.
 set(Falaise_BUILDPRODUCT_DIR "${PROJECT_BINARY_DIR}/BuildProducts")
 set(Falaise_DATAROOTDIR ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/Falaise-${Falaise_VERSION})
-file(RELATIVE_PATH Falaise_BINDIR_TO_RESOURCEDIR "${CMAKE_INSTALL_FULL_BINDIR}" "${CMAKE_INSTALL_FULL_DATAROOTDIR}/Falaise-${Falaise_VERSION}")
+file(RELATIVE_PATH Falaise_BINDIR_TO_RESOURCEDIR "${CMAKE_INSTALL_FULL_BINDIR}"  "${CMAKE_INSTALL_FULL_DATAROOTDIR}/Falaise-${Falaise_VERSION}")
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_BINDIR}")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}")
+
+#-----------------------------------------------------------------------
+# Configure plugin/module related stuff
+#
+set(Falaise_PLUGINLIBDIR "Falaise/modules")
+file(RELATIVE_PATH Falaise_BINDIR_TO_PLUGINLIBDIR
+  "${CMAKE_INSTALL_FULL_BINDIR}"
+  "${CMAKE_INSTALL_FULL_LIBDIR}/${Falaise_PLUGINLIBDIR}" )
 
 #-----------------------------------------------------------------------
 # Configure testing if required
