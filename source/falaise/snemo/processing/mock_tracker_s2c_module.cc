@@ -732,7 +732,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_tracker_s2c_module,ocd_)
     std::ostringstream ldesc;
     ldesc << "This is the name of the bank to be used \n"
           << "as the input simulated calorimeter hits.    \n"
-          << "Default value is: \"" << snemo::datamodel::data_info::SIMULATED_DATA_LABEL<< "\".  \n";
+          << "Default value is: \"" << "snemo::datamodel::data_info::SIMULATED_DATA_LABEL" << "\".  \n";
     // Description of the 'SD_label' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
@@ -754,7 +754,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_tracker_s2c_module,ocd_)
     std::ostringstream ldesc;
     ldesc << "This is the name of the bank to be used \n"
           << "as the output calibrated calorimeter hits.    \n"
-          << "Default value is: \"" << snemo::datamodel::data_info::CALIBRATED_DATA_LABEL<< "\".  \n";
+          << "Default value is: \"" << "snemo::datamodel::data_info::CALIBRATED_DATA_LABEL" << "\".  \n";
     // Description of the 'CD_label' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
