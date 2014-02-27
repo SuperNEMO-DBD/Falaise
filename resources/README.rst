@@ -25,8 +25,8 @@ Contents:
    reusability  of  versioned  resource  files.
 
    All  files  should  be  accessible from  within  Bayeux  file  path
-   utilities (``datatools::fetch_path``, ``datatools::fetch_path_with_env``...)
-   with the  following syntax: ::
+   utilities    (``datatools::fetch_path_with_env``...)    with    the
+   following syntax: ::
 
      "@falaise:config/topic/subtopic/.../version/filename"
 
@@ -34,3 +34,12 @@ Contents:
    demonstrator module virtual geometry: ::
 
      "@falaise:config/geometry/snemo/demonstrator/3.0/manager.conf"
+
+ * ``modules``  :  the  top  directory  for  all  configuration  files
+   associated  to plugin  modules.  A  module with  name ``Foo``  must
+   stores  its  resource files  in  the  ``modules/Foo/``.
+
+   Example for a typical configuration  file for the ``Foo`` module is
+   then addressed with the following syntax: ::
+
+     "@falaise:modules/Foo/config/snemo/reconstruction/1.0/foo.conf"
