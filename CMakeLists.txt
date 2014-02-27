@@ -165,8 +165,6 @@ if(Falaise_BUILD_DOCS)
   add_subdirectory(documentation)
 endif()
 
-add_subdirectory(modules)
-
 #-----------------------------------------------------------------------
 # Resource installation
 #
@@ -187,8 +185,12 @@ foreach(_rfin ${_falaise_list_of_resources_files})
   configure_file(${_rfin} ${_rfout} @ONLY)
 endforeach()
 
+#-----------------------------------------------------------------------
+# Plugins/modules installation
+add_subdirectory(modules)
 
-# - Install published resources
+#-----------------------------------------------------------------------
+# - Install published resources and documentation
 install(DIRECTORY ${Falaise_DATAROOTDIR}
   DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}
   )
