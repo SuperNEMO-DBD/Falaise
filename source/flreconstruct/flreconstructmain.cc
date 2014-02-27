@@ -110,8 +110,6 @@ void do_error(std::ostream& os, const char* err) {
   os << "Try `flreconstruct --help` for more information\n";
 }
 
-
-
 //! Print list of known module names, one per line, to given stream
 void do_module_list(std::ostream& os) {
   typedef std::vector<std::string> ModuleInfo;
@@ -197,7 +195,6 @@ FLDialogState do_cldialog(int argc, char *argv[], FLReconstructArgs& args) {
       ("verbose,v",
        bpo::value<datatools::logger::priority>(&args.logLevel)->default_value(datatools::logger::PRIO_FATAL)->value_name("[level]"),
        "set verbosity level of logging")
-
       ("input-file,i",
        bpo::value<std::string>(&args.inputFile)->required()->value_name("[file]"),
        "file from which to read data")
@@ -258,17 +255,13 @@ FLDialogState do_cldialog(int argc, char *argv[], FLReconstructArgs& args) {
 
 //! Extract metadata from input file
 datatools::multi_properties do_get_metadata(const std::string& file) {
-  // Metadata is currently only available *after* one event has been
-  // loaded. So, create a temporary input module and try and extract
-  // it by processing one event.
+  // Metadata is currently available as soon as the input module is
+  // initialized.
   boost::scoped_ptr<dpp::input_module> recInput(new dpp::input_module);
   recInput->set_single_input_file(file);
   // Input metadata management:
   const datatools::multi_properties& iMetadataStore = recInput->get_metadata_store();
   recInput->initialize_simple();
-
-  datatools::things workItem;
-  recInput->process(workItem);
   return iMetadataStore;
 }
 
@@ -314,14 +307,20 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
       BOOST_FOREACH(std::string plugin, pList) {
         datatools::properties& pSection = userLibConfig.add_section(plugin,"");
         userFLPlugins.export_and_rename_starting_with(pSection,plugin+".","");
-        pSection.set_flag("autoload");
+        pSection.store_flag("autoload");
+        // - Default, search plugin DLL in the falaise plugin install directory:
+        if (!pSection.has_key("directory")) {
+          pSection.store_string("directory", "@falaise.plugins:");
+        }
       }
     } catch(std::logic_error& e) {
       // do nothing for now because we can't distinguish errors, and
       // upcoming instantiation of library loader will handle
       // any syntax errors in the properties
     }
+    // userConfig.tree_dump(std::cerr, "User config: ", "DEVEL: ");
   }
+  // userLibConfig.tree_dump(std::cerr, "User library config: ", "DEVEL: ");
 
   datatools::library_loader flLibLoader(userLibConfig);
 
@@ -332,7 +331,7 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
     // Hand configure a dumb dump module
     datatools::properties dumbConfig;
     dumbConfig.store("title", "flreconstruct::default");
-    dumbConfig.store("output","cout");
+    dumbConfig.store("output", "cout");
     moduleManager_->load_module("pipeline", "dpp::dump_module", dumbConfig);
   }
 
@@ -348,6 +347,7 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
   DT_LOG_TRACE(clArgs.logLevel,"configuring input module");
   recInput->set_single_input_file(clArgs.inputFile);
   recInput->initialize_simple();
+  // mData = recInput->get_metadata_store();
 
   // - Pipeline
   dpp::base_module* pipeline_;
@@ -358,9 +358,20 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
     return falaise::EXIT_UNAVAILABLE;
   }
 
-
   // Output module... only if file was passed
-  boost::scoped_ptr<dpp::output_module> recOutput; // Deferred in-loop initialization
+  boost::scoped_ptr<dpp::output_module> recOutput;
+  if (!clArgs.outputFile.empty()) {
+    recOutput.reset(new dpp::output_module);
+    recOutput->set_name("FLReconstructOutput");
+    recOutput->set_single_output_file(clArgs.outputFile);
+    // Metadata management:
+    // Fetch the metadata to be stored through the output module
+    datatools::multi_properties & metadataStore = recOutput->grab_metadata_store();
+    // Copy metadata from the input module
+    metadataStore = mData;
+    // TO DO: add more sections in metadata (from userConfig) ...
+    recOutput->initialize_simple();
+  }
 
   // - Now the actual event loop
   DT_LOG_TRACE(clArgs.logLevel,"begin event loop");
@@ -395,7 +406,13 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
     if(pStatus == dpp::base_module::PROCESS_INVALID) break;
 
     // Write item
-    if(recOutput) recOutput->process(workItem);
+    if(recOutput) {
+      pStatus = recOutput->process(workItem);
+      if(pStatus != dpp::base_module::PROCESS_OK) {
+        DT_LOG_FATAL(clArgs.logLevel,"Failed to read data record from input source");
+        break;
+      }
+    }
   }
   DT_LOG_TRACE(clArgs.logLevel,"event loop completed");
 

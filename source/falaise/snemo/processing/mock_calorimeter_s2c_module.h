@@ -2,7 +2,7 @@
 /** \file falaise/snemo/processing/mock_calorimeter_s2c_module.h
  * Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2011-01-12
- * Last modified: 2014-01-30
+ * Last modified: 2014-02-27
  *
  * License:
  *
@@ -49,14 +49,23 @@ namespace snemo {
     {
     public:
 
+      /// Dictionary of calorimeter regime objects associated to collection of calorimeter-like hits
       typedef std::map<std::string, calorimeter_regime> calorimeter_regime_col_type;
-      typedef std::vector<std::string>                  category_col_type;
 
       /// Setting geometry manager
       void set_geom_manager(const geomtools::manager & gmgr_);
 
       /// Getting geometry manager
       const geomtools::manager & get_geom_manager() const;
+
+      /// Set the external PRNG
+      void set_external_random(mygsl::rng & rng_);
+
+      /// Reset the external PRNG
+      void reset_external_random();
+
+      /// Check if the module use an external PRNG
+      bool has_external_random() const;
 
       /// Constructor
       mock_calorimeter_s2c_module(datatools::logger::priority = datatools::logger::PRIO_FATAL);
@@ -77,8 +86,11 @@ namespace snemo {
 
     protected:
 
+      /// Set default attributes values
+      void _set_defaults();
+
       /// Getting random number generator
-      mygsl::rng & _get_random ();
+      mygsl::rng & _get_random();
 
       /// Digitize calorimeter hits
       void _process_calorimeter_digitization
@@ -98,16 +110,12 @@ namespace snemo {
       (const mctools::simulated_data & simulated_data_,
        snemo::datamodel::calibrated_data::calorimeter_hit_collection_type & calibrated_calorimeter_hits_);
 
-    protected:
-
-      /// Set default attributes values
-      void _set_defaults();
-
     private:
 
       const geomtools::manager *  _geom_manager_;        //!< The geometry manager
       mygsl::rng                  _random_;              //!< PRN generator
-      category_col_type           _hit_categories_;      //!< Calorimeter categories
+      mygsl::rng *                _external_random_;     //!< external PRN generator
+      std::vector<std::string>    _hit_categories_;      //!< Calorimeter hit categories
       calorimeter_regime_col_type _calorimeter_regimes_; //!< Calorimeter regime tools
       std::string                 _SD_label_;            //!< The label of the simulated data bank
       std::string                 _CD_label_;            //!< The label of the calibrated data bank
@@ -116,9 +124,9 @@ namespace snemo {
       bool                        _alpha_quenching_;     //!< Flag to (dis)activate the alpha quenching
       bool                        _store_mc_hit_id_;     //!< The flag to reference MC true hit
 
-
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(mock_calorimeter_s2c_module);
+
     };
 
   } // end of namespace processing

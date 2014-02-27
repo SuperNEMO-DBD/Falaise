@@ -551,7 +551,11 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::geiger_regime,ocd_)
     cpd.set_name_pattern("cell_diameter")
       .set_terse_description("The diameter of drift cell")
       .set_traits(datatools::TYPE_REAL)
-      .set_long_description("Default value: ``44 mm``                \n")
+      // .set_long_description("Default value: ``44 mm``                \n")
+      .set_explicit_unit(true)
+      .set_unit_label("length")
+      .set_unit_symbol("mm")
+      .set_default_value_real(44 * CLHEP::mm)
       .add_example("Set the default value::                          \n"
                    "                                                 \n"
                    "  cell_diameter : real = 44 mm                   \n"
@@ -566,7 +570,11 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::geiger_regime,ocd_)
     cpd.set_name_pattern("cell_length")
       .set_terse_description("The length of drift cell")
       .set_traits(datatools::TYPE_REAL)
-      .set_long_description("Default value: ``2900 mm``              \n")
+      // .set_long_description("Default value: ``2900 mm``              \n")
+      .set_explicit_unit(true)
+      .set_unit_label("length")
+      .set_unit_symbol("mm")
+      .set_default_value_real(2900 * CLHEP::mm)
       .add_example("Set the default value::                          \n"
                    "                                                 \n"
                    "  cell_length : real = 2900 mm                   \n"
@@ -581,7 +589,11 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::geiger_regime,ocd_)
     cpd.set_name_pattern("sigma_anode_time")
       .set_terse_description("The error on anode drift time")
       .set_traits(datatools::TYPE_REAL)
-      .set_long_description("Default value: ``12.5 ns``              \n")
+      // .set_long_description("Default value: ``12.5 ns``              \n")
+      .set_explicit_unit(true)
+      .set_unit_label("time")
+      .set_unit_symbol("ns")
+      .set_default_value_real(12.5 * CLHEP::ns)
       .add_example("Set the default value::                          \n"
                    "                                                 \n"
                    "  sigma_anode_time : real = 12.5 ns              \n"
@@ -596,7 +608,11 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::geiger_regime,ocd_)
     cpd.set_name_pattern("tcut")
       .set_terse_description("Maximum drift time to be calibrated")
       .set_traits(datatools::TYPE_REAL)
-      .set_long_description("Default value: ``10.0 us``              \n")
+      // .set_long_description("Default value: ``10.0 us``              \n")
+      .set_explicit_unit(true)
+      .set_unit_label("time")
+      .set_unit_symbol("ns")
+      .set_default_value_real(10 * CLHEP::ns)
       .add_example("Set the default value::                          \n"
                    "                                                 \n"
                    "  tcut : real as time = 10.0 us                  \n"
@@ -611,7 +627,11 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::geiger_regime,ocd_)
     cpd.set_name_pattern("sigma_cathode_time")
       .set_terse_description("The error on cathode drift time")
       .set_traits(datatools::TYPE_REAL)
-      .set_long_description("Default value: ``100 ns``               \n")
+      // .set_long_description("Default value: ``100 ns``               \n")
+      .set_explicit_unit(true)
+      .set_unit_label("time")
+      .set_unit_symbol("ns")
+      .set_default_value_real(100 * CLHEP::ns)
       .add_example("Set the default value::                          \n"
                    "                                                 \n"
                    "  sigma_cathode_time : real = 100 ns             \n"
@@ -626,7 +646,11 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::geiger_regime,ocd_)
     cpd.set_name_pattern("sigma_z")
       .set_terse_description("The error on longitudinal position")
       .set_traits(datatools::TYPE_REAL)
-      .set_long_description("Default value: ``1.0 cm``               \n")
+      //.set_long_description("Default value: ``1.0 cm``               \n")
+      .set_explicit_unit(true)
+      .set_unit_label("length")
+      .set_unit_symbol("cm")
+      .set_default_value_real(1.0 * CLHEP::cm)
       .add_example("Set the default value::                          \n"
                    "                                                 \n"
                    "  sigma_z : real as length = 1.0 cm              \n"
@@ -641,7 +665,11 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::geiger_regime,ocd_)
     cpd.set_name_pattern("sigma_z_missing_cathode")
       .set_terse_description("The error on longitudinal position in case of a missing cathode")
       .set_traits(datatools::TYPE_REAL)
-      .set_long_description("Default value: ``5.0 cm``                  \n")
+      // .set_long_description("Default value: ``5.0 cm``                  \n")
+      .set_explicit_unit(true)
+      .set_unit_label("length")
+      .set_unit_symbol("cm")
+      .set_default_value_real(5.0 * CLHEP::cm)
       .add_example("Set the default value::                             \n"
                    "                                                    \n"
                    "  sigma_z_missing_cathode : real as length = 5.0 cm \n"
@@ -656,7 +684,11 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::geiger_regime,ocd_)
     cpd.set_name_pattern("sigma_r_a")
       .set_terse_description("First parameter of the error on drift radius")
       .set_traits(datatools::TYPE_REAL)
-      .set_long_description("Default value: ``0.425 mm``             \n")
+      //.set_long_description("Default value: ``0.425 mm``             \n")
+      .set_explicit_unit(true)
+      .set_unit_label("length")
+      .set_unit_symbol("mm")
+      .set_default_value_real(0.425 * CLHEP::mm)
       .add_example("Set the default value::                          \n"
                    "                                                 \n"
                    "  sigma_r_a : real = 0.425 mm                    \n"
@@ -671,7 +703,9 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::geiger_regime,ocd_)
     cpd.set_name_pattern("sigma_r_b")
       .set_terse_description("Second parameter of the error on drift radius")
       .set_traits(datatools::TYPE_REAL)
-      .set_long_description("Default value: ``0.0083``  \n")
+      //.set_long_description("Default value: ``0.0083``  \n")
+      .set_explicit_unit(false)
+      .set_default_value_real(0.0083)
       .add_example("Set the default value::     \n"
                    "                            \n"
                    "  sigma_r_b : real = 0.0083 \n"
@@ -686,7 +720,11 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::geiger_regime,ocd_)
     cpd.set_name_pattern("sigma_r_r0")
       .set_terse_description("Third parameter of the error on drift radius")
       .set_traits(datatools::TYPE_REAL)
-      .set_long_description("Default value: ``12.25 mm``\n")
+      // .set_long_description("Default value: ``12.25 mm``\n")
+      .set_explicit_unit(true)
+      .set_unit_label("length")
+      .set_unit_symbol("mm")
+      .set_default_value_real(12.25 * CLHEP::mm)
       .add_example("Set the default value::          \n"
                    "                                 \n"
                    "  sigma_r_r0 : real = 12.25 mm   \n"
@@ -702,7 +740,9 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::geiger_regime,ocd_)
     cpd.set_name_pattern("base_anode_efficiency")
       .set_terse_description("Base anode efficiency")
       .set_traits(datatools::TYPE_REAL)
-      .set_long_description("Default value: ``1.0``          \n")
+      //.set_long_description("Default value: ``1.0``          \n")
+      .set_explicit_unit(false)
+      .set_default_value_real(1.0)
       .add_example("Set the default value::              \n"
                    "                                     \n"
                    "  base_anode_efficiency : real = 1.0 \n"
@@ -717,7 +757,9 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::geiger_regime,ocd_)
     cpd.set_name_pattern("base_cathode_efficiency")
       .set_terse_description("Base cathode efficiency")
       .set_traits(datatools::TYPE_REAL)
-      .set_long_description("Default value: ``1.0``                      \n")
+      //.set_long_description("Default value: ``1.0``                      \n")
+      .set_explicit_unit(false)
+      .set_default_value_real(1.0)
       .add_example("Set the default value::                          \n"
                    "                                                 \n"
                    "  base_cathode_efficiency : real = 1.0           \n"
@@ -732,7 +774,11 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::geiger_regime,ocd_)
     cpd.set_name_pattern("plasma_longitudinal_speed")
       .set_terse_description("Plasma longitudinal speed")
       .set_traits(datatools::TYPE_REAL)
-      .set_long_description("Default value: ``5.0 cm/us``                \n")
+      // .set_long_description("Default value: ``5.0 cm/us``                \n")
+      .set_explicit_unit(true)
+      .set_unit_label("speed")
+      .set_unit_symbol("cm/us")
+      .set_default_value_real(5.0 * CLHEP::cm / CLHEP::microsecond)
       .add_example("Set the default value::                                 \n"
                    "                                                        \n"
                    "  plasma_longitudinal_speed : real as speed = 5.0 cm/us \n"
@@ -747,7 +793,11 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::geiger_regime,ocd_)
     cpd.set_name_pattern("sigma_plasma_longitudinal_speed")
       .set_terse_description("Error on plasma longitudinal speed")
       .set_traits(datatools::TYPE_REAL)
-      .set_long_description("Default value: ``0.5 cm/us``                \n")
+      //.set_long_description("Default value: ``0.5 cm/us``                \n")
+      .set_explicit_unit(true)
+      .set_unit_label("speed")
+      .set_unit_symbol("cm/us")
+      .set_default_value_real(0.5 * CLHEP::cm / CLHEP::microsecond)
       .add_example("Set the default value::                                       \n"
                    "                                                              \n"
                    "  sigma_plasma_longitudinal_speed : real as speed = 0.5 cm/us \n"

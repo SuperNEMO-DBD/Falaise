@@ -39,7 +39,9 @@ namespace {
 //! Return the path to the root plugin directory
 std::string get_plugin_root(bool overriden_env) {
   static const boost::filesystem::path install_root = "@CMAKE_INSTALL_PREFIX@";
-  boost::filesystem::path install_plugin_root = install_root / "@CMAKE_INSTALL_LIBDIR@" / "Falaise" / "modules";
+  boost::filesystem::path install_plugin_root =
+    install_root / "@CMAKE_INSTALL_LIBDIR@" / "@Falaise_PLUGINLIBDIR@";
+  /* / "Falaise" / "modules"*/
   // Not sure to maintain this in the future:
   if(overriden_env) {
     if (std::getenv("FALAISE_PLUGIN_LIB_DIR")) {

@@ -22,6 +22,7 @@
 
 // This project :
 #include <falaise/snemo/datamodels/data_model.h>
+#include <falaise/snemo/processing/services.h>
 
 namespace snemo {
 
@@ -54,6 +55,29 @@ namespace snemo {
       return *_geom_manager_;
     }
 
+    bool mock_calorimeter_s2c_module::has_external_random() const
+    {
+      return _external_random_ != 0;
+    }
+
+    void mock_calorimeter_s2c_module::reset_external_random()
+    {
+      DT_THROW_IF(is_initialized(),
+                  std::logic_error,
+                  "Module '" << get_name() << "' is already initialized ! ");
+      _external_random_ = 0;
+      return;
+    }
+
+    void mock_calorimeter_s2c_module::set_external_random(mygsl::rng & rng_)
+    {
+      DT_THROW_IF(is_initialized(),
+                  std::logic_error,
+                  "Module '" << get_name() << "' is already initialized ! ");
+      _external_random_ = &rng_;
+      return;
+    }
+
     void mock_calorimeter_s2c_module::initialize(const datatools::properties  & setup_,
                                                  datatools::service_manager   & service_manager_,
                                                  dpp::module_handle_dict_type & /* module_dict_ */)
@@ -82,7 +106,6 @@ namespace snemo {
         _CD_label_ = snemo::datamodel::data_info::CALIBRATED_DATA_LABEL;
       }
 
-      std::string geo_label = "Geo";
       if (_Geo_label_.empty()) {
         if (setup_.has_key("Geo_label")){
           _Geo_label_ = setup_.fetch_string("Geo_label");
@@ -92,28 +115,30 @@ namespace snemo {
         _Geo_label_ = "Geo";
       }
       if (_geom_manager_ == 0) {
-        DT_THROW_IF(geo_label.empty(), std::logic_error,
+        DT_THROW_IF(_Geo_label_.empty(), std::logic_error,
                     "Module '" << get_name() << "' has no valid '" << _Geo_label_ << "' property !");
         DT_THROW_IF(! service_manager_.has(_Geo_label_) ||
                     ! service_manager_.is_a<geomtools::geometry_service>(_Geo_label_),
                     std::logic_error,
                     "Module '" << get_name() << "' has no '" << _Geo_label_ << "' service !");
-        geomtools::geometry_service & Geo = service_manager_.get<geomtools::geometry_service>(geo_label);
+        geomtools::geometry_service & Geo = service_manager_.get<geomtools::geometry_service>(_Geo_label_);
         set_geom_manager(Geo.get_geom_manager());
       }
       DT_THROW_IF(_geom_manager_ == 0, std::logic_error, "Missing geometry manager !");
 
-      int random_seed  = 12345;
-      if (setup_.has_key("random.seed"))  {
-        random_seed = setup_.fetch_integer("random.seed");
-      }
-      std::string random_id = "mt19937";
-      if (setup_.has_key("random.id")) {
-        random_id = setup_.fetch_string("random.id");
-      }
+      if (! has_external_random()) {
+        int random_seed  = 12345;
+        if (setup_.has_key("random.seed"))  {
+          random_seed = setup_.fetch_integer("random.seed");
+        }
+        std::string random_id = "mt19937";
+        if (setup_.has_key("random.id")) {
+          random_id = setup_.fetch_string("random.id");
+        }
 
-      // Initialize the embedded random number generator:
-      _random_.init(random_id, random_seed);
+        // Initialize the embedded random number generator:
+        _random_.init(random_id, random_seed);
+      }
 
       // Get the calorimeter categories:
       if (setup_.has_key("hit_categories")) {
@@ -121,9 +146,9 @@ namespace snemo {
       }
 
       // Initialize the calorimeter regime utility:
-      for (category_col_type::const_iterator
-             icategory = _hit_categories_.begin();
-           icategory != _hit_categories_.end(); ++icategory) {
+      for (std::vector<std::string>::const_iterator icategory = _hit_categories_.begin();
+           icategory != _hit_categories_.end();
+           ++icategory) {
         const std::string & the_category = *icategory;
         {
           calorimeter_regime tmp_regime;
@@ -131,7 +156,9 @@ namespace snemo {
         }
         calorimeter_regime & a_regime = _calorimeter_regimes_[the_category];
         a_regime.set_category(the_category);
-        a_regime.initialize(setup_);
+        datatools::properties per_category_setup;
+        setup_.export_and_rename_starting_with(per_category_setup, the_category, "");
+        a_regime.initialize(per_category_setup);
       }
 
       // Setup trigger time
@@ -151,6 +178,7 @@ namespace snemo {
       if (setup_.has_flag("store_mc_hit_id")) {
         _store_mc_hit_id_ = true;
       }
+
       // Get the alpha quenching:
       if (setup_.has_key("alpha_quenching")) {
         _alpha_quenching_ = setup_.fetch_boolean("alpha_quenching");
@@ -168,16 +196,17 @@ namespace snemo {
 
       this->base_module::_set_initialized(false);
 
-      // Reset the random number generator:
-      _random_.reset();
+      if (! has_external_random()) {
+        // Reset the random number generator:
+        _random_.reset();
+      }
+      _external_random_ = 0;
 
       // Reset the calorimeter regime utility:
       for (calorimeter_regime_col_type::iterator icalo = _calorimeter_regimes_.begin();
            icalo != _calorimeter_regimes_.end(); ++icalo) {
         icalo->second.reset();
       }
-      _SD_label_.clear();
-      _CD_label_.clear();
       _hit_categories_.clear();
       _set_defaults();
       return;
@@ -185,9 +214,11 @@ namespace snemo {
 
     void mock_calorimeter_s2c_module::_set_defaults()
     {
+      _external_random_ = 0;
       _geom_manager_ = 0;
-      _SD_label_ = "";
-      _CD_label_ = "";
+      _SD_label_.clear();
+      _CD_label_.clear();
+      _Geo_label_.clear();
       datatools::invalidate(_cluster_time_width_);
       _alpha_quenching_    = true;
       _store_mc_hit_id_    = false;
@@ -200,9 +231,8 @@ namespace snemo {
       : dpp::base_module(logging_priority_)
     {
       _geom_manager_ = 0;
-
+      _external_random_ = 0;
       _set_defaults();
-
       return;
     }
 
@@ -223,8 +253,7 @@ namespace snemo {
       // Check simulated data
       const bool abort_at_missing_input = true;
       // check if some 'simulated_data' are available in the data model:
-      if (! event_record_.has(_SD_label_))
-        {
+      if (! event_record_.has(_SD_label_)) {
           DT_THROW_IF(abort_at_missing_input, std::logic_error, "Missing simulated data to be processed !");
           // leave the data unchanged.
           return dpp::base_module::PROCESS_ERROR;
@@ -260,11 +289,12 @@ namespace snemo {
 
     mygsl::rng & mock_calorimeter_s2c_module::_get_random()
     {
+      if (has_external_random()) return *_external_random_;
       return _random_;
     }
 
     //
-    // Here collect the 'calos' raw hits from the simulation data source
+    // Here collect the 'calorileter' raw hits from the simulation data source
     // and build the final list of 'calorimeter' hits.
     //
     //
@@ -278,10 +308,10 @@ namespace snemo {
       uint32_t calibrated_calorimeter_hit_id = 0;
 
       // Loop over all 'calorimeter hit' categories:
-      for (category_col_type::const_iterator icategory = _hit_categories_.begin();
+      for (std::vector<std::string>::const_iterator icategory = _hit_categories_.begin();
            icategory != _hit_categories_.end(); ++icategory) {
         const std::string & category = *icategory;
-        if (! simulated_data_.has_step_hits(category)){
+        if (! simulated_data_.has_step_hits(category)) {
           // Nothing to do.
           continue;
         }
@@ -437,7 +467,6 @@ namespace snemo {
         const double exp_sigma_time = the_calo_regime.get_sigma_time(exp_energy);
         the_calo_cluster.set_time(exp_time);
         the_calo_cluster.set_sigma_time(exp_sigma_time);
-
       }
 
       DT_LOG_DEBUG(get_logging_priority(), "Exiting.");
@@ -547,10 +576,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module,o
   dpp::base_module::common_ocd(ocd_);
 
   {
-    std::ostringstream ldesc;
-    ldesc << "This is the name of the bank to be used \n"
-          << "as the input simulated calorimeter hits.    \n"
-          << "Default value is: \"" << "snemo::datamodel::data_info::SIMULATED_DATA_LABEL" << "\".  \n";
     // Description of the 'SD_label' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
@@ -558,7 +583,10 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module,o
       .set_terse_description("The label/name of the 'simulated data' bank")
       .set_traits(datatools::TYPE_STRING)
       .set_mandatory(false)
-      .set_long_description(ldesc.str())
+      .set_long_description("This is the name of the bank to be used   \n"
+                            "as the input simulated calorimeter hits.  \n"
+                            )
+      .set_default_value_string(snemo::datamodel::data_info::default_simulated_data_label())
       .add_example("Use an alternative name for the 'simulated data' bank:: \n"
                    "                                \n"
                    "  SD_label : string = \"SD2\"   \n"
@@ -569,10 +597,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module,o
 
 
   {
-    std::ostringstream ldesc;
-    ldesc << "This is the name of the bank to be used \n"
-          << "as the output calibrated calorimeter hits.    \n"
-          << "Default value is: \"" << "snemo::datamodel::data_info::CALIBRATED_DATA_LABEL" << "\".  \n";
     // Description of the 'CD_label' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
@@ -580,7 +604,10 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module,o
       .set_terse_description("The label/name of the 'calibrated data' bank")
       .set_traits(datatools::TYPE_STRING)
       .set_mandatory(false)
-      .set_long_description(ldesc.str())
+      .set_long_description("This is the name of the bank to be used    \n"
+                            "as the output calibrated calorimeter hits. \n"
+                            )
+      .set_default_value_string(snemo::datamodel::data_info::default_calibrated_data_label())
       .add_example("Use an alternative name for the 'calibrated data' bank:: \n"
                    "                                \n"
                    "  CD_label : string = \"CD2\"   \n"
@@ -589,13 +616,11 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module,o
       ;
   }
 
-
   {
     std::ostringstream ldesc;
     ldesc << "This is the name of the service to be used as the \n"
           << "geometry service.                                 \n"
-          << "Default value is: \"" << "Geo" << "\".            \n"
-          << "This property is only used if no geoemtry manager \n"
+          << "This property is only used if no geometry manager \n"
           << "as been provided to the module.                   \n";
     // Description of the 'Geo_label' configuration property :
     datatools::configuration_property_description & cpd
@@ -605,10 +630,11 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module,o
       .set_traits(datatools::TYPE_STRING)
       .set_mandatory(false)
       .set_long_description(ldesc.str())
+      .set_default_value_string(snemo::processing::service_info::default_geometry_service_label())
       .add_example("Use an alternative name for the geometry service:: \n"
-                   "                                    \n"
-                   "  Geo_label : string = \"geometry\" \n"
-                   "                                    \n"
+                   "                                     \n"
+                   "  Geo_label : string = \"geometry2\" \n"
+                   "                                     \n"
                    )
       ;
   }
@@ -621,7 +647,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module,o
       .set_terse_description("The seed for the embedded PRNG")
       .set_traits(datatools::TYPE_INTEGER)
       .set_mandatory(false)
-      .set_long_description("Default value: ``12345``")
+      .set_long_description("Only used if no external PRNG is provided.")
+      .set_default_value_integer(12345)
       .add_example("Use an alternative seed for the PRNG:: \n"
                    "                                       \n"
                    "  random.seed : integer = 314159       \n"
@@ -638,7 +665,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module,o
       .set_terse_description("The Id for the embedded PRNG")
       .set_traits(datatools::TYPE_STRING)
       .set_mandatory(false)
-      .set_long_description("Default value: ``mt19937``")
+      .set_long_description("Only used if no external PRNG is provided.")
+      .set_default_value_string("mt19937")
       .add_example("Use an alternative Id for the PRNG::   \n"
                    "                                       \n"
                    "  random.id : string = \"taus2\"       \n"
@@ -655,7 +683,12 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module,o
       .set_terse_description("The width of the clustering time window")
       .set_traits(datatools::TYPE_REAL)
       .set_mandatory(false)
-      .set_long_description("Default value: ``100 ns``")
+      .set_long_description("This is the time spread in which one consider a set of \n"
+                            "calorimeter hits to be part of the same signal.        \n")
+      .set_explicit_unit(true)
+      .set_unit_label("energy")
+      .set_unit_symbol("ns")
+      .set_default_value_real(100 * CLHEP::ns)
       .add_example("Use the default value::                     \n"
                    "                                             \n"
                    "  cluster_time_width : real as time = 100 ns \n"
@@ -672,7 +705,11 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module,o
       .set_terse_description("Flag to activate the energy quenching effect for alpha particles")
       .set_traits(datatools::TYPE_BOOLEAN)
       .set_mandatory(false)
-      .set_long_description("Default value: ``1`` ")
+      .set_long_description("When activated, this flag computes the quenching factor for alpha \n"
+                            "particles that deposit some energy in the calorimeter volumes,    \n"
+                            "taking into account delta-rays.                                   \n"
+                            )
+      .set_default_value_boolean(true)
       .add_example("Use the default value::          \n"
                    "                                 \n"
                    "  alpha_quenching : boolean = 1  \n"
@@ -689,7 +726,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module,o
       .set_terse_description("Flag to activate the storage of the truth hit Ids in the calibrated hits")
       .set_traits(datatools::TYPE_BOOLEAN)
       .set_mandatory(false)
-      .set_long_description("Default value: ``0`` ")
+      // .set_long_description("Default value: ``0`` ")
+      .set_default_value_boolean(false)
       .add_example("Use the default value::          \n"
                    "                                 \n"
                    "  store_mc_hit_id : boolean = 0  \n"
@@ -716,56 +754,54 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module,o
       .add_example("Use 2 hit categories to be processed by this module:: \n"
                    "                                                      \n"
                    "                                                      \n"
-                   "  hit_categories : string[2] = \"calo\" \"xcalo\"           \n"
-                   "                                                            \n"
-                   "  # Parameters for the calorimeter regime for 'calo' hits:  \n"
-                   "  calo.energy.resolution : real = 0.08                      \n"
-                   "  calo.energy.low_threshold : real as energy = 50 keV       \n"
-                   "  calo.energy.high_threshold : real as energy = 150 keV     \n"
-                   "  ...                                                       \n"
-                   "  # Parameters for the calorimeter regime for 'xcalo' hits: \n"
-                   "  xcalo.energy.resolution : real = 0.12                     \n"
-                   "  xcalo.energy.low_threshold : real as energy = 50 keV      \n"
-                   "  xcalo.energy.high_threshold : real as energy = 150 keV    \n"
-                   "  ...                                                       \n"
-                   "                                                            \n"
+                   "  hit_categories : string[2] = \"calo\" \"xcalo\"               \n"
+                   "                                                                \n"
+                   "  # Parameters for the calorimeter regime for 'calo' hits:      \n"
+                   "  calo.energy.resolution     : real = 0.08                      \n"
+                   "  calo.energy.low_threshold  : real as energy = 50 keV          \n"
+                   "  calo.energy.high_threshold : real as energy = 150 keV         \n"
+                   "  calo.scintillator_relaxation_time : real as time = 6.0 ns     \n"
+                   "  calo.alpha_quenching_parameters   : real[3] = 77.4 0.639 2.34 \n"
+                   "  ...                                                           \n"
+                   "  # Parameters for the calorimeter regime for 'xcalo' hits:     \n"
+                   "  xcalo.energy.resolution     : real = 0.12                     \n"
+                   "  xcalo.energy.low_threshold  : real as energy = 50 keV         \n"
+                   "  xcalo.energy.high_threshold : real as energy = 150 keV        \n"
+                   "  xcalo.scintillator_relaxation_time : real as time = 6.0 ns    \n"
+                   "  xcalo.alpha_quenching_parameters   : real[3] = 77.4 0.639 2.34\n"
+                   "  ...                                                           \n"
+                   "                                                                \n"
                    )
       ;
   }
 
   // Additionnal configuration hints :
-  ocd_.set_configuration_hints("Here is a full configuration example in the                  \n"
-                               "``datatools::properties`` ASCII format::                     \n"
-                               "                                                             \n"
-                               "  SD_label    : string = \"SD\"                              \n"
-                               "  CD_label    : string = \"CD\"                              \n"
-                               "  Geo_label   : string = \"geometry\"                        \n"
-                               "  random.seed : integer = 314159                             \n"
-                               "  random.id   : string = \"taus2\"                           \n"
-                               "  cluster_time_width : real as time = 100 ns                 \n"
-                               "  alpha_quenching    : boolean = 1                           \n"
-                               "  store_mc_hit_id    : boolean = 0                           \n"
-                               "                                                             \n"
-                               "  hit_categories     : string[2] = \"calo\" \"xcalo\"        \n"
-                               "                                                             \n"
-                               "  calo.energy.resolution     : real = 0.08                   \n"
-                               "  calo.energy.low_threshold  : real as energy = 50 keV       \n"
-                               "  calo.energy.high_threshold : real as energy = 150 keV      \n"
-                               "  calo.scintillator_relaxation_time : real as time = 6.0 ns  \n"
-                               "  calo.alpha_quenching_parameters : boolean = 1              \n"
-                               "  calo.alpha_quenching_0 : real = 77.4                       \n"
-                               "  calo.alpha_quenching_1 : real = 0.639                      \n"
-                               "  calo.alpha_quenching_2 : real = 2.34                       \n"
-                               "                                                             \n"
-                               "  xcalo.energy.resolution     : real = 0.12                  \n"
-                               "  xcalo.energy.low_threshold  : real as energy = 50 keV      \n"
-                               "  xcalo.energy.high_threshold : real as energy = 150 keV     \n"
-                               "  xcalo.scintillator_relaxation_time : real as time = 6.0 ns \n"
-                               "  xcalo.alpha_quenching_parameters   : boolean = 1           \n"
-                               "  xcalo.alpha_quenching_0 : real = 77.4                      \n"
-                               "  xcalo.alpha_quenching_1 : real = 0.639                     \n"
-                               "  xcalo.alpha_quenching_2 : real = 2.34                      \n"
-                               "                                                             \n"
+  ocd_.set_configuration_hints("Here is a full configuration example in the                    \n"
+                               "``datatools::properties`` ASCII format::                       \n"
+                               "                                                               \n"
+                               "  SD_label    : string = \"SD\"                                \n"
+                               "  CD_label    : string = \"CD\"                                \n"
+                               "  Geo_label   : string = \"geometry\"                          \n"
+                               "  random.seed : integer = 314159                               \n"
+                               "  random.id   : string = \"taus2\"                             \n"
+                               "  cluster_time_width : real as time = 100 ns                   \n"
+                               "  alpha_quenching    : boolean = 1                             \n"
+                               "  store_mc_hit_id    : boolean = 0                             \n"
+                               "                                                               \n"
+                               "  hit_categories     : string[2] = \"calo\" \"xcalo\"          \n"
+                               "                                                               \n"
+                               "  calo.energy.resolution     : real = 0.08                     \n"
+                               "  calo.energy.low_threshold  : real as energy = 50 keV         \n"
+                               "  calo.energy.high_threshold : real as energy = 150 keV        \n"
+                               "  calo.scintillator_relaxation_time : real as time = 6.0 ns    \n"
+                               "  calo.alpha_quenching_parameters : real[3] = 77.4 0.639 2.34  \n"
+                               "                                                               \n"
+                               "  xcalo.energy.resolution     : real = 0.12                    \n"
+                               "  xcalo.energy.low_threshold  : real as energy = 50 keV        \n"
+                               "  xcalo.energy.high_threshold : real as energy = 150 keV       \n"
+                               "  xcalo.scintillator_relaxation_time : real as time = 6.0 ns   \n"
+                               "  xcalo.alpha_quenching_parameters : real[3] = 77.4 0.639 2.34 \n"
+                                "                                                              \n"
                                );
 
   ocd_.set_validation_support(true);

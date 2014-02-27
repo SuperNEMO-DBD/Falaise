@@ -36,9 +36,11 @@ std::string getApplicationDir();
 //! Return the path to the root of the resource directory
 std::string getResourceDir();
 
+//! Return the path to the root of the plugin/module DLL directory
+std::string getPluginLibDir();
+
 //! Return the control file for the given experiment and version id
 std::string getControlFile(const std::string& experiment,
                            const std::string& /*versionID*/ = "");
 }
 #endif // FLRECONSTRUCTRESOURCES_HH
-

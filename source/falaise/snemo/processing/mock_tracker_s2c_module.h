@@ -2,7 +2,7 @@
 /** \file falaise/snemo/processing/mock_tracker_s2c_module.h
  * Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2011-01-09
- * Last modified: 2014-01-30
+ * Last modified: 2014-02-27
  *
  * License:
  *
@@ -45,6 +45,7 @@ namespace snemo {
 
   namespace processing {
 
+    /// \brief Simple modelling of the time and space measurement with the SuperNEMO drift cells in Geiger mode
     class mock_tracker_s2c_module : public dpp::base_module
     {
     public:
@@ -53,22 +54,25 @@ namespace snemo {
       typedef std::list<snemo::datamodel::mock_raw_tracker_hit> raw_tracker_hit_col_type;
 
       /// Set the geometry manager
-      void set_geom_manager (const geomtools::manager & gmgr_);
+      void set_geom_manager(const geomtools::manager & gmgr_);
+
+      /// Getting geometry manager
+      const geomtools::manager & get_geom_manager() const;
 
       /// Set the external PRNG
-      void set_external_random (mygsl::rng & rng_);
+      void set_external_random(mygsl::rng & rng_);
 
       /// Reset the external PRNG
-      void reset_external_random ();
+      void reset_external_random();
 
       /// Check if the module use an external PRNG
-      bool has_external_random () const;
+      bool has_external_random() const;
 
       /// Return the drift time threshold for peripheral Geiger hits (far from the anode wire)
-      double get_peripheral_drift_time_threshold () const;
+      double get_peripheral_drift_time_threshold() const;
 
       /// Return the drift time threshold for delayed Geiger hits
-      double get_delayed_drift_time_threshold () const;
+      double get_delayed_drift_time_threshold() const;
 
       /// Constructor
       mock_tracker_s2c_module(datatools::logger::priority = datatools::logger::PRIO_FATAL);
@@ -89,20 +93,23 @@ namespace snemo {
 
     protected:
 
+      /// Set default attributes values
+      void _set_defaults();
+
       /// Getting random number generator
-      mygsl::rng & _get_random ();
+      mygsl::rng & _get_random();
 
       /// Digitize tracker hits
-      void _process_tracker_digitization (const mctools::simulated_data & simulated_data_,
-                                          raw_tracker_hit_col_type & raw_tracker_hits_);
+      void _process_tracker_digitization(const mctools::simulated_data & simulated_data_,
+                                         raw_tracker_hit_col_type & raw_tracker_hits_);
 
       /// Calibrate tracker hits (longitudinal and transverse spread)
-      void _process_tracker_calibration (const raw_tracker_hit_col_type & raw_tracker_hits_,
-                                         snemo::datamodel::calibrated_data::tracker_hit_collection_type & calibrated_tracker_hits_);
+      void _process_tracker_calibration(const raw_tracker_hit_col_type & raw_tracker_hits_,
+                                        snemo::datamodel::calibrated_data::tracker_hit_collection_type & calibrated_tracker_hits_);
 
       /// Main process function
-      void _process (const mctools::simulated_data & simulated_data_,
-                     snemo::datamodel::calibrated_data::tracker_hit_collection_type & calibrated_tracker_hits_);
+      void _process(const mctools::simulated_data & simulated_data_,
+                    snemo::datamodel::calibrated_data::tracker_hit_collection_type & calibrated_tracker_hits_);
 
     private:
 
@@ -116,6 +123,7 @@ namespace snemo {
       double        _delayed_drift_time_threshold_;    //!< Delayed drift time threshold
       std::string   _SD_label_;                        //!< The label of the simulated data bank
       std::string   _CD_label_;                        //!< The label of the calibrated data bank
+      std::string   _Geo_label_;                       //!< The label of the geometry service
       bool          _store_mc_hit_id_;                 //!< Flag to store the MC true hit ID
 
       // Macro to automate the registration of the module :

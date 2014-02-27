@@ -37,52 +37,65 @@ namespace snemo {
 
   namespace processing {
 
+    /// \brief Simple modelling of the energy and time measurement with the SuperNEMO calorimeter optical lines
     class calorimeter_regime : public datatools::i_tree_dumpable
     {
     public:
 
+      /// Return the default energy resolution
+      static const double & default_energy_resolution();
+
+      /// Return the default low energy threshold
+      static const double & default_low_energy_threshold();
+
+      /// Return the default high energy threshold
+      static const double & default_high_energy_threshold();
+
+      /// Return the default scintillator relaxation time
+      static const double & default_scintillator_relaxation_time();
+
       /// Check initialization flag
-      bool is_initialized () const;
+      bool is_initialized() const;
 
       /// Default constructor
-      calorimeter_regime ();
+      calorimeter_regime();
 
       /// Initialization from parameters
-      void initialize (const datatools::properties & config_);
+      void initialize(const datatools::properties & config_);
 
       /// Reset
-      void reset ();
+      void reset();
 
       /// Randomize the measured energy value given the true energy
-      double randomize_energy (mygsl::rng & ran_, const double energy_) const;
+      double randomize_energy(mygsl::rng & ran_, const double energy_) const;
 
       /// Return the error on energy
-      double get_sigma_energy (const double energy_) const;
+      double get_sigma_energy(const double energy_) const;
 
       /// Compute the effective quenched energy for alpha particle
-      double quench_alpha_energy (const double energy_) const;
+      double quench_alpha_energy(const double energy_) const;
 
       /// Randomize the measured time value given the true time and energy
-      double randomize_time (mygsl::rng & ran_,
+      double randomize_time(mygsl::rng & ran_,
                              const double time_, const double energy_) const;
 
       /// Return the error on time
-      double get_sigma_time (const double energy_) const;
+      double get_sigma_time(const double energy_) const;
 
       /// Check if a given energy passes the high threshold
-      bool is_high_threshold (const double energy_) const;
+      bool is_high_threshold(const double energy_) const;
 
       /// Check if a given energy passes the low threshold
-      bool is_low_threshold  (const double energy_) const;
+      bool is_low_threshold (const double energy_) const;
 
       /// Set the category of the optical modules associated to this calorimeter regime
-      void set_category (const std::string & category_);
+      void set_category(const std::string & category_);
 
       /// Return the category of the optical modules associated to this calorimeter regime
-      const std::string & get_category () const;
+      const std::string & get_category() const;
 
       /// Smart print
-      virtual void tree_dump (std::ostream & a_out         = std::clog,
+      virtual void tree_dump(std::ostream & a_out         = std::clog,
                               const std::string & a_title  = "",
                               const std::string & a_indent = "",
                               bool a_inherit               = false) const;
@@ -101,7 +114,7 @@ namespace snemo {
 
     private:
 
-      void _init_defaults_ ();
+      void _init_defaults_();
     };
 
   } // end of namespace processing

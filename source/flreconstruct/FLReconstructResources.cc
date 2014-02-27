@@ -32,6 +32,7 @@
 // This Project
 #include "falaise/version.h"
 #include "falaise/resource.h"
+#include "falaise/plugin.h"
 #include "falaise/falaise.h"
 #include "FLReconstructBinReloc.h"
 #include "FLReconstructConfig.h"
@@ -107,17 +108,22 @@ void doInitResources() {
 void doFixupResourcePaths() {
   // Temporary trick: fix the registered resource path in the datatools'
   // kernel.
-  //  The  official  configuration  files  use  the  "@falaise:foo.conf"
-  //  syntax. "@falaise:" is  thus assumed to refer  to the installation
-  //  path of resource files.  Here we  detect if we should run with the
-  //  build directory.   In case Bayeux  is embedded in Falaise  and not
-  //  yet  installed,  we  also  fix the  "geomtools",  "materials"  and
-  //  "genbb_help" resource paths.
-  boost::filesystem::path dyn_res_path = FLReconstruct::getResourceDir() + "/resources";
-  boost::filesystem::path install_res_path = falaise::get_resource_dir();
-  bool fl_installed = true;
+  //  The  official configuration  files  use the  "@falaise:foo.conf"
+  //  syntax. "@falaise:"  (or "@falaise.resources:") is  thus assumed
+  //  to  refer  to the  installation  path  of resource  files.   The
+  //  plugin/module  DLL  files  may  use  the  "@falaise.plugins:..."
+  //  syntax.  "@falaise.plugins:" is  thus  assumed to  refer to  the
+  //  installation path of the plugin DLL files.  Here we detect if we
+  //  should run with the build directory.  In case Bayeux is embedded
+  //  in Falaise and  not yet installed, we also  fix the "geomtools",
+  //  "materials" and "genbb_help" resource paths.
+  boost::filesystem::path dyn_res_path        = FLReconstruct::getResourceDir() + "/resources";
+  boost::filesystem::path install_res_path    = falaise::get_resource_dir();
+  boost::filesystem::path dyn_plugin_path     = FLReconstruct::getPluginLibDir();
+  boost::filesystem::path install_plugin_path = falaise::get_plugin_dir();
+  // bool fl_installed = true;
   if(!boost::filesystem::exists(install_res_path)) {
-    fl_installed = false;
+    // fl_installed = false;
     // Access to the datatools' kernel :
     datatools::kernel & krnl = datatools::kernel::instance();
     if (krnl.has_library_info_register()) {
@@ -126,12 +132,23 @@ void doFixupResourcePaths() {
       if (lib_info_reg.has("falaise")) {
         // Kernel's library info already has en entry related to "falaise":
         datatools::properties & falaise_lib_infos = lib_info_reg.grab("falaise");
+
+        // Fix resource path:
         falaise_lib_infos.update_string(
             datatools::library_info::keys::install_resource_dir(),
             dyn_res_path.string());
         falaise_lib_infos.update_string(
             datatools::library_info::keys::env_resource_dir(),
             "FALAISE_RESOURCE_DIR");
+
+        // Fix plugin path:
+        falaise_lib_infos.update_string(
+            datatools::library_info::keys::install_plugin_lib_dir(),
+            dyn_plugin_path.string());
+        falaise_lib_infos.update_string(
+            datatools::library_info::keys::env_plugin_lib_dir(),
+            "FALAISE_PLUGIN_LIB_DIR");
+
       } else {
         // Kernel's library info does not have entry related to "falaise":
         datatools::properties & falaise_lib_infos =
@@ -141,12 +158,22 @@ void doFixupResourcePaths() {
                 "processing and analysis of data for the SuperNEMO double beta decay "
                 "search experiment.",
                 falaise::version::get_version());
+
+        // Fix resource path:
         falaise_lib_infos.store_string(
             datatools::library_info::keys::install_resource_dir(),
             dyn_res_path.string());
         falaise_lib_infos.store_string(
             datatools::library_info::keys::env_resource_dir(),
             "FALAISE_RESOURCE_DIR");
+
+        // Fix plugin path:
+        falaise_lib_infos.update_string(
+            datatools::library_info::keys::install_plugin_lib_dir(),
+            dyn_plugin_path.string());
+        falaise_lib_infos.update_string(
+            datatools::library_info::keys::env_plugin_lib_dir(),
+            "FALAISE_PLUGIN_LIB_DIR");
       }
     }
   }
@@ -178,6 +205,15 @@ std::string getApplicationDir() {
 std::string getResourceDir() {
   boost::filesystem::path tmpPath(getApplicationDir());
   tmpPath /= relativePathToResourceDir();
+  // std::cerr << "DEVEL: getResourceDir = '" << tmpPath << "'" << std::endl;
+  boost::filesystem::path absPath = boost::filesystem::canonical(tmpPath);
+  return absPath.string();
+}
+
+std::string getPluginLibDir() {
+  boost::filesystem::path tmpPath(getApplicationDir());
+  tmpPath /= relativePathToPluginLibDir();
+  // std::cerr << "DEVEL: getPluginLibDir = '" << tmpPath << "'" << std::endl;
   boost::filesystem::path absPath = boost::filesystem::canonical(tmpPath);
   return absPath.string();
 }
@@ -199,4 +235,3 @@ std::string getControlFile(const std::string& experiment,
 }
 
 } // namespace FLReconstruct
-
