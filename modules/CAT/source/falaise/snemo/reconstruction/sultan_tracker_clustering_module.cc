@@ -18,6 +18,7 @@
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/tracker_clustering_data.h>
 #include <falaise/snemo/processing/base_tracker_clusterizer.h>
+#include <falaise/snemo/processing/services.h>
 
 // This plugin:
 #include <snemo/reconstruction/sultan_driver.h>
@@ -99,19 +100,27 @@ namespace snemo {
           _CD_label_ = setup_.fetch_string("CD_label");
         }
       }
+      // Default label:
+      if (_CD_label_.empty()) {
+        _CD_label_  = snemo::datamodel::data_info::default_calibrated_data_label();
+      }
 
       if (_TCD_label_.empty()) {
         if (setup_.has_key("TCD_label")) {
           _TCD_label_ = setup_.fetch_string("TCD_label");
         }
       }
-
-      std::string geo_label = "Geo";
-      if (setup_.has_key("Geo_label")) {
-        geo_label = setup_.fetch_string("Geo_label");
+      // Default label:
+      if (_TCD_label_.empty()) {
+        _TCD_label_ = snemo::datamodel::data_info::default_tracker_clustering_data_label();
       }
-      // Geometry manager :
+
       if (_geometry_manager_ == 0) {
+        std::string geo_label =  snemo::processing::service_info::default_geometry_service_label();
+        if (setup_.has_key("Geo_label")) {
+          geo_label = setup_.fetch_string("Geo_label");
+        }
+        // Geometry manager :
         DT_THROW_IF (geo_label.empty(), std::logic_error,
                      "Module '" << get_name() << "' has no valid '" << "Geo_label" << "' property !");
         DT_THROW_IF (! service_manager_.has(geo_label) ||
@@ -123,20 +132,12 @@ namespace snemo {
         set_geometry_manager(Geo.get_geom_manager());
       }
 
-      // Default labels for input/output banks:
-      if (_CD_label_.empty()) {
-        _CD_label_  = snemo::datamodel::data_info::CALIBRATED_DATA_LABEL;
-      }
-      if (_TCD_label_.empty()) {
-        _TCD_label_ = snemo::datamodel::data_info::TRACKER_CLUSTERING_DATA_LABEL;
-      }
-
       // Clustering algorithm :
       std::string algorithm_id = sultan_driver::SULTAN_ID;
       _driver_.reset(new sultan_driver);
       DT_THROW_IF (! _driver_, std::logic_error,
                    "Module '" << get_name() << "' could not instantiate the '"
-                   << algorithm_id << "' clusterizer algorithm !");
+                   << algorithm_id << "' tracker clusterizer algorithm !");
 
       // Plug the geometry manager :
       _driver_.get()->set_geometry_manager(get_geometry_manager());
@@ -154,7 +155,6 @@ namespace snemo {
                    std::logic_error,
                    "Module '" << get_name() << "' is not initialized !");
       _set_initialized(false);
-
       // Reset the clusterizer driver :
       if (_driver_) {
         if (_driver_->is_initialized()) {
@@ -162,7 +162,6 @@ namespace snemo {
         }
         _driver_.reset();
       }
-
       _set_defaults();
       return;
     }
@@ -257,7 +256,7 @@ namespace snemo {
 
 /* OCD support */
 #include <datatools/object_configuration_description.h>
-DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_tracker_clustering_module,ocd_)
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_tracker_clustering_module, ocd_)
 {
   ocd_.set_class_name("snemo::reconstruction::sultan_tracker_clustering_module");
   ocd_.set_class_description("A module that performs the SULTAN clusterization of tracker hits");
@@ -270,7 +269,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_tracker_clustering
     std::ostringstream ldesc;
     ldesc << "This is the name of the bank to be used \n"
           << "as the source of input tracker hits.    \n"
-          << "Default value is: \"" << snemo::datamodel::data_info::CALIBRATED_DATA_LABEL<< "\".  \n";
+          << "Default value is: \"" << snemo::datamodel::data_info::default_calibrated_data_label() << "\".  \n";
     // Description of the 'CD_label' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
@@ -279,6 +278,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_tracker_clustering
       .set_traits(datatools::TYPE_STRING)
       .set_mandatory(false)
       .set_long_description(ldesc.str())
+      .set_default_value_string(snemo::datamodel::data_info::default_calibrated_data_label())
       .add_example("Use an alternative name for the 'calibrated data' bank:: \n"
                    "                                \n"
                    "  CD_label : string = \"CD2\"   \n"
@@ -291,7 +291,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_tracker_clustering
     std::ostringstream ldesc;
     ldesc << "This is the name of the bank to be used \n"
           << "as the sink of output clusters of tracker hits.    \n"
-          << "Default value is: \"" << snemo::datamodel::data_info::TRACKER_CLUSTERING_DATA_LABEL << "\".  \n";
+          << "Default value is: \"" << snemo::datamodel::data_info::default_tracker_clustering_data_label() << "\".  \n";
     // Description of the 'TCD_label' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
@@ -300,6 +300,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_tracker_clustering
       .set_traits(datatools::TYPE_STRING)
       .set_mandatory(false)
       .set_long_description(ldesc.str())
+      .set_default_value_string(snemo::datamodel::data_info::default_tracker_clustering_data_label())
       .add_example("Use an alternative name for the 'tracker clustering data' bank:: \n"
                    "                                  \n"
                    "  TCD_label : string = \"TCD2\"   \n"
@@ -309,12 +310,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_tracker_clustering
   }
 
   {
-    std::ostringstream ldesc;
-    ldesc << "This is the name of the service to be used as the \n"
-          << "geometry service.                                 \n"
-          << "Default value is: \"" << "Geo" << "\".            \n"
-          << "This property is only used if no geoemtry manager \n"
-          << "as been provided to the module.                   \n";
     // Description of the 'Geo_label' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
@@ -322,11 +317,16 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_tracker_clustering
       .set_terse_description("The label/name of the geometry service")
       .set_traits(datatools::TYPE_STRING)
       .set_mandatory(false)
-      .set_long_description(ldesc.str())
-      .add_example("Use an alternative name for the geometry service:: \n"
-                   "                                                   \n"
-                   "  Geo_label : string = \"geometry\"                \n"
-                   "                                                   \n"
+      .set_long_description("This is the name of the service to be used as the \n"
+                            "geometry service.                                 \n"
+                            "This property is only used if no geometry manager \n"
+                            "as been provided to the module.                   \n"
+                            )
+      .set_default_value_string(snemo::processing::service_info::default_geometry_service_label())
+      .add_example("Use an alternative name for the geometry service::  \n"
+                   "                                                    \n"
+                   "  Geo_label : string = \"geometry2\"                \n"
+                   "                                                    \n"
                    )
       ;
   }

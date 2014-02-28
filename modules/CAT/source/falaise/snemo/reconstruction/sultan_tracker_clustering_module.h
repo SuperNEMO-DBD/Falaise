@@ -109,8 +109,8 @@ namespace snemo {
     private:
 
       const geomtools::manager * _geometry_manager_; //!< The geometry manager
-      std::string _CD_label_;                        //!< The label of the calibrated data bank
-      std::string _TCD_label_;                       //!< The label of the tracker clustering data bank
+      std::string _CD_label_;                        //!< The label of the input calibrated data bank
+      std::string _TCD_label_;                       //!< The label of the output tracker clustering data bank
       boost::scoped_ptr< ::snemo::processing::base_tracker_clusterizer> _driver_; //!< Handle to the embedded clustering algorithm with dynamic memory auto-deletion
 
       // Macro to automate the registration of the module :
