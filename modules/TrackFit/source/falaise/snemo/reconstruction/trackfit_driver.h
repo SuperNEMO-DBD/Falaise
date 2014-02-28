@@ -93,8 +93,7 @@ namespace snemo {
     };
 
     /// Driver for the Bayeux/trackfit fitting algorithms
-    class trackfit_driver :
-      public ::snemo::processing::base_tracker_fitter
+    class trackfit_driver : public ::snemo::processing::base_tracker_fitter
     {
     public:
 
@@ -201,16 +200,20 @@ namespace snemo {
       uint32_t _trackfit_flag_;                   /// Special flags for trackfit algorithm
       std::string _drift_time_calibration_label_; /// Drift time calibration driver label
       boost::scoped_ptr<TrackFit::i_drift_time_calibration> _dtc_; /// Drift time calibration driver
-      bool _use_line_fit_;                                     /// Flag to use 'line' fit
+
+      // Specific to line fit:
+      bool _use_line_fit_; /// Flag to use 'line' fit
       TrackFit::line_fit_mgr::guess_utils _line_guess_driver_; /// Guess driver for line fit
       std::map<std::string, int> _line_guess_dict_;            /// Guess dictionary for 'line' fit
       datatools::properties _line_fit_setup_;                  /// Setup for the 'line' fit algorithm
-      bool                                 _use_helix_fit_;      /// Use 'helix' fit
+      TrackFit::gg_hits_col      _gg_hits_referential_; /// Geiger hits in the best frame ('line' fit)
+      geomtools::placement *     _working_referential_; /// Working referential ('line' fit)
+
+      // Specific to helix fit:
+      bool _use_helix_fit_; /// Use 'helix' fit
       TrackFit::helix_fit_mgr::guess_utils _helix_guess_driver_; /// Guess driver for helix fit
       std::map<std::string, int> _helix_guess_dict_;    /// Guess dictionary for 'helix' fit
       datatools::properties      _helix_fit_setup_;     /// Setup for the 'helix' fit algorithm
-      TrackFit::gg_hits_col      _gg_hits_referential_; /// Geiger hits in the best frame ('line' fit)
-      geomtools::placement *     _working_referential_; /// Working referential ('line' fit)
 
     };
 
@@ -218,9 +221,9 @@ namespace snemo {
 
 }  // end of namespace snemo
 
-#include <datatools/ocd_macros.h>
 
 // Declare the OCD interface of the module
+#include <datatools/ocd_macros.h>
 DOCD_CLASS_DECLARATION(snemo::reconstruction::trackfit_driver)
 
 #endif // FALAISE_TRACKFIT_PLUGIN_SNEMO_RECONSTRUCTION_TRACKFIT_DRIVER_H

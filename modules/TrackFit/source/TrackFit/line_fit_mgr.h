@@ -36,6 +36,8 @@
 #include <sstream>
 
 // Third party:
+// - Boost:
+#include <boost/utility.hpp>
 // - GSL:
 #include <gsl/gsl_multifit_nlin.h>
 
@@ -61,31 +63,31 @@ namespace TrackFit {
     /// \brief Index associated to each parameter of the line fit
     enum param_index_type {
         PARAM_INDEX_INVALID = -1,
-        PARAM_INDEX_Z0      = 0,
-        PARAM_INDEX_Y0      = 1,
-        PARAM_INDEX_PHI     = 2,
-        PARAM_INDEX_THETA   = 3,
-        PARAM_INDEX_T0      = 4,
+        PARAM_INDEX_Z0      =  0, /// Index of the Z0 free parameter
+        PARAM_INDEX_Y0      =  1, /// Index of the Y0 free parameter
+        PARAM_INDEX_PHI     =  2, /// Index of the PHI free parameter
+        PARAM_INDEX_THETA   =  3, /// Index of the THETA free parameter
+        PARAM_INDEX_T0      =  4, /// Index of the T0 free parameter (if used)
       };
 
     /// Constructor
-    line_fit_params ();
+    line_fit_params();
 
     /// Check the validity of the data
-    bool is_valid () const;
+    bool is_valid() const;
 
     /// Reset
-    void reset ();
+    void reset();
 
     /// Smart print
-    void draw (std::ostream & out_, double length_) const;
+    void draw(std::ostream & out_, double length_) const;
 
     // Attributes:
-    double y0;
-    double z0;
-    double phi;
-    double theta;
-    double t0;  /// Reference time (default = 0, set by user)
+    double y0;    /// Y coordinate of the reference point of the fitted line
+    double z0;    /// Z coordinate of the reference point of the fitted line
+    double phi;   /// Phi angle of the direction of the fitted line
+    double theta; /// Theta angle of the direction of the fitted line
+    double t0;    /// Reference time (default = 0, set by user)
 
   };
 
@@ -94,11 +96,11 @@ namespace TrackFit {
   struct line_fit_data
   {
     /// Default constructor
-    line_fit_data ();
+    line_fit_data();
     /// Check validity
-    bool is_valid () const;
+    bool is_valid() const;
     /// Reset
-    void reset ();
+    void reset();
 
     // Attributes:
     bool using_first;         /// Use first flag (default = false)
@@ -113,20 +115,20 @@ namespace TrackFit {
   struct line_fit_solution : public line_fit_params
   {
    /// Constructor
-    line_fit_solution ();
+    line_fit_solution();
    /// Destructor
-    ~line_fit_solution ();
+    ~line_fit_solution();
     /// Reset
-    void reset ();
+    void reset();
    /// Compute P-probability
-    double probability_p () const;
+    double probability_p() const;
     /// Compute Q-probability
-    double probability_q () const;
+    double probability_q() const;
     /// Basic print of the solution
-    void print (std::ostream &) const;
+    void print(std::ostream &) const;
     // Attributes:
     bool   ok;        /// Status if the solution
-    double err_t0;    /// Error on the TO
+    double err_t0;    /// Error on the T0 (if used)
     double err_y0;    /// Error on the Y0
     double err_z0;    /// Error on the Z0
     double err_phi;   /// Error on phi
@@ -142,115 +144,115 @@ namespace TrackFit {
   {
     /// \brief Type of residuals
     enum residual_type {
-        RESIDUAL_INVALID = -1,
-        RESIDUAL_ALPHA   = 0,
-        RESIDUAL_BETA    = 1
-      };
+      RESIDUAL_INVALID = -1, /// Invalid value
+      RESIDUAL_ALPHA   =  0, /// Identifier of the 'alpha' residuals (computed in the XY Geiger drift plane)
+      RESIDUAL_BETA    =  1  /// Identifier of the 'beta' residuals (computed along the Z Geiger plasma propagation axis)
+    };
 
     /// Default constructor
-    line_fit_residual_function_param ();
+    line_fit_residual_function_param();
 
     // Attributes:
-    bool   using_first; /// Use the first flag
-    bool   using_last; /// Use the last flag
+    bool   using_first;      /// Use the first flag
+    bool   using_last;       /// Use the last flag
     bool   using_drift_time; /// Use the drift time
-    bool   fit_start_time; /// Fit the start time
-    int    mode; /// Mode
-    int    residual_type; /// Type of residual
-    bool   first; /// First flag
-    bool   last; /// Last flag
+    bool   fit_start_time;   /// Fit the start time
+    int    mode;             /// Mode
+    int    residual_type;    /// Type of residual
+    bool   first;            /// First flag
+    bool   last;             /// Last flag
     double xi, yi, zi, szi, ti, ti_min, ri, dri, rmaxi; /// Data points
-    double t0; /// Reference time
+    double t0;                  /// Reference time (eventually a free paramter)
     double y0, z0, phi, theta;  /// Free parameters
     const i_drift_time_calibration * dtc; /// Handle to the drift time to radius calibration
   };
 
   /// \brief Manager of the line fit
-  class line_fit_mgr
+  class line_fit_mgr : boost::noncopyable
   {
   public:
 
     /// \brief Constants
     struct constants {
-      static const unsigned int & default_fit_max_iter ();
-      static const double & default_fit_eps ();
-      static const unsigned int & min_number_of_hits ();
+      static const unsigned int & default_fit_max_iter(); /// Default maximum number of iterations of the fit
+      static const double &       default_fit_eps();      /// Default tolerance of the fit
+      static const unsigned int & min_number_of_hits();   /// Minimum number of hits to perform the fit
     };
 
     /// Set the logging priority threshold
-    void set_logging_priority (datatools::logger::priority priority_);
+    void set_logging_priority(datatools::logger::priority priority_);
 
     /// Return the logging priority threshold
-    datatools::logger::priority get_logging_priority () const;
+    datatools::logger::priority get_logging_priority() const;
 
     /// Check the initialization flag
-    bool is_initialized () const;
+    bool is_initialized() const;
 
     /// Check the debug flag
-    bool is_debug () const;
+    bool is_debug() const;
 
     /// Set the debug flag
-    void set_debug (bool);
+    void set_debug(bool);
 
     /// Check if the fit uses the 'last' flag of hits
-    bool is_using_last () const;
+    bool is_using_last() const;
 
     /// Check if the fit uses the 'first' flag of hits
-    bool is_using_first () const;
+    bool is_using_first() const;
 
     /// Check if the fit uses the drift time
-    bool is_using_drift_time () const;
+    bool is_using_drift_time() const;
 
     /// Check if the fit fits the reference time
-    bool is_fitting_start_time () const;
+    bool is_fitting_start_time() const;
 
     /// Set the fit tolerance
-    void set_fit_eps (double eps_);
+    void set_fit_eps(double eps_);
 
-    /// Set the reference time of the hits (if not part of the free parameters)
-    void set_t0 (double);
+    /// Set the reference time of the hits(if not part of the free parameters)
+    void set_t0(double);
 
     /// Return the non-mutable solution of the fit
-    const line_fit_solution & get_solution ();
+    const line_fit_solution & get_solution();
 
     /// Return the mutable solution of the fit
-     line_fit_solution & grab_solution ();
+     line_fit_solution & grab_solution();
 
     /// Set the fit guess
-    void set_guess (const line_fit_params &);
+    void set_guess(const line_fit_params &);
 
     /// Set the collection of hits to be fitted
-    void set_hits (const gg_hits_col & hits_);
+    void set_hits(const gg_hits_col & hits_);
 
     /// Set the calibration object to be used along the fit
-    void set_calibration (const i_drift_time_calibration & calibration_);
+    void set_calibration(const i_drift_time_calibration & calibration_);
 
     /// Check if a calibration object is available
-    bool has_calibration () const;
+    bool has_calibration() const;
 
     /// Default constructor
-    line_fit_mgr (bool debug_ = false);
+    line_fit_mgr(bool debug_ = false);
 
     /// Destructor
-    virtual ~line_fit_mgr ();
+    virtual ~line_fit_mgr();
 
     /// Initialization from parameters
-    void initialize (const datatools::properties & config_);
+    void initialize(const datatools::properties & config_);
 
     /// Initialization from parameters
-    void init (const datatools::properties & config_);
+    void init(const datatools::properties & config_);
 
     /// Reset
-    void reset ();
+    void reset();
 
     /// Print the fit status
-    void print_fit_status (std::ostream & out_ = std::clog) const;
+    void print_fit_status(std::ostream & out_ = std::clog) const;
 
     /// Action perfomed at each step
-    virtual void at_fit_step_do ();
+    virtual void at_fit_step_do();
 
     /// Perform the fit
-    void fit ();
+    void fit();
 
     /// \brief Utility class for building input fit guess
     struct guess_utils
@@ -261,95 +263,116 @@ namespace TrackFit {
       static const size_t NUMBER_OF_GUESS;
 
       /// \brief Guess mode type
+      /**
+       *   4 different guess lines can be built from two
+       *   Geiger hits with enough distance between them.
+       *   In the working reference frame (O'X'Y'Z'):
+       *    - [T] corresponds to a point just above the starting or stopping cell
+       *    - [B] corresponds to a point just below the starting or stopping cell
+       *   Thus, we can build the following candidate segment to initiate
+       *   the fit: (TT), (TB), (BT), (BB).
+       *
+       *                         ^ Y'
+       *                         |
+       *                         |         [T]
+       *             [T]         |          :
+       *              :        O'|       o  o <-- stopping
+       *         - - -o- o - - - + - -o -o- :- - - - - -> X'
+       * starting --> :  o  o  o | o       [B]
+       *             [B]         |
+       *                         |
+       *                         |
+       *
+       */
       enum guess_mode_type {
-          GUESS_MODE_BB = 0,
-          GUESS_MODE_BT = 1,
-          GUESS_MODE_TB = 2,
-          GUESS_MODE_TT = 3
-        };
+        GUESS_MODE_BB = 0, // Bottom-Bottom guess
+        GUESS_MODE_BT = 1, // Bottom-Top guess
+        GUESS_MODE_TB = 2, // Top-Bottom guess
+        GUESS_MODE_TT = 3  // Top-Top guess
+      };
 
       /// Return the label from a guess mode
-      static std::string guess_mode_label (int);
+      static std::string guess_mode_label(int);
 
-      /// Default constrcutor
-      guess_utils ();
+      /// Default constructor
+      guess_utils();
 
       /// Initialization from parameters
-      void initialize (const datatools::properties & config_);
+      void initialize(const datatools::properties & config_);
 
       /// Reset
-     void reset ();
+     void reset();
 
       /// Compute a initial guess for the fit
-      bool compute_guess (const gg_hits_col & hits_,
+      bool compute_guess(const gg_hits_col & hits_,
                           int guess_mode_,
                           line_fit_params & guess_);
 
     protected :
 
      /// Set default attribute values
-       void _set_defaults ();
+       void _set_defaults();
 
     private :
 
       datatools::logger::priority _logging_priority_; /// Logging priority threshold
-      bool   _use_max_radius_; /// Flag to use the maximum radius
-      double _max_radius_factor_; /// Factor for maximum radius
-      bool   _use_guess_trust_; /// Flag to use guess trust
-      int    _guess_trust_mode_; /// Mode for guess trust
-      bool   _fit_delay_cluster_; /// Flag to fit delayed clusters
+      bool   _use_max_radius_;       /// Flag to use the maximum radius
+      double _max_radius_factor_;    /// Factor for maximum radius
+      bool   _use_guess_trust_;      /// Flag to use guess trust
+      int    _guess_trust_mode_;     /// Mode for guess trust
+      bool   _fit_delayed_clusters_; /// Flag to fit delayed clusters
 
     };
 
     /// Compute the best reference frame
-    static void compute_best_frame (const gg_hits_col & hits_,
+    static void compute_best_frame(const gg_hits_col & hits_,
                                     gg_hits_col & hits_ref_,
                                     geomtools::placement & pl_,
                                     const uint32_t flags_ = 0);
     /*
-    static bool compute_guess (const gg_hits_col & hits_,
+    static bool compute_guess(const gg_hits_col & hits_,
                                line_fit_params & guess_,
                                int guess_mode_,
                                datatools::properties & config_,
                                const uint32_t flags_ = 0);
     */
 
-    /// Compute residual (GSL interface)
-    static double residual_function (double x_, void * params_);
+    /// Compute residual(GSL interface)
+    static double residual_function(double x_, void * params_);
 
-    /// Compute residual (GSL interface)
-    static int residual_f (const gsl_vector * x_,
+    /// Compute residual(GSL interface)
+    static int residual_f(const gsl_vector * x_,
                            void *             params_,
                            gsl_vector *       f_);
 
-    /// Compute residual difference (GSL interface)
-    static int residual_df (const gsl_vector * x_,
+    /// Compute residual difference(GSL interface)
+    static int residual_df(const gsl_vector * x_,
                             void *             params_,
                             gsl_matrix *       J_);
 
-    /// Compute residual and difference (GSL interface)
-    static int residual_fdf (const gsl_vector * x_,
+    /// Compute residual and difference(GSL interface)
+    static int residual_fdf(const gsl_vector * x_,
                              void *             params_,
                              gsl_vector *       f_,
                              gsl_matrix *       J_);
 
     /// Access to residual parameters associated to an individual hit
-    void get_residuals_per_hit (size_t hit_index_,
+    void get_residuals_per_hit(size_t hit_index_,
                                 double & alpha_residual_,
                                 double & beta_residual_,
                                 bool at_solution_ = false) const;
 
     /// Generate display data for the temporary solution
-    void draw_temporary_solution (std::ostream & out_) const;
+    void draw_temporary_solution(std::ostream & out_) const;
 
     /// Generation of display data for solution
-    void draw_solution (std::ostream & out_, const line_fit_solution &) const;
+    void draw_solution(std::ostream & out_, const line_fit_solution &) const;
 
     /// Generation of display data for embedded solution
-    void draw_solution (std::ostream & out_) const;
+    void draw_solution(std::ostream & out_) const;
 
     /// Convert solution in the user reference frame
-    static void convert_solution (const gg_hits_col & hits_ref_,
+    static void convert_solution(const gg_hits_col & hits_ref_,
                                   const line_fit_solution & sol_,
                                   const geomtools::placement & pl_,
                                   geomtools::line_3d & line_);
@@ -357,18 +380,12 @@ namespace TrackFit {
   protected:
 
     /// Set the initialization flag
-    void _set_initialized (bool);
+    void _set_initialized(bool);
 
   private:
 
     /// Set default attribute values
-    void _set_defaults_ ();
-
-    /// Non-copyable
-    line_fit_mgr(const line_fit_mgr &);
-
-    /// Non-copyable
-    line_fit_mgr & operator=(const line_fit_mgr &);
+    void _set_defaults_();
 
   private:
 

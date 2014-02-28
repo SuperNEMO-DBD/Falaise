@@ -16,13 +16,17 @@
 // Falaise:
 #include <falaise/falaise.h>
 #include <falaise/snemo/datamodels/tracker_clustering_data.h>
+#include <falaise/snemo/datamodels/tracker_trajectory_data.h>
 #include <falaise/snemo/geometry/locator_plugin.h>
 #include <falaise/snemo/geometry/gg_locator.h>
 
 // This project:
 #include <snemo/reconstruction/trackfit_driver.h>
 
-int main()
+// Testing resources:
+#include <utilities.h>
+
+int main(int argc_, char ** argv_)
 {
   FALAISE_INIT();
   int error_code = EXIT_SUCCESS;
@@ -30,6 +34,25 @@ int main()
   try {
     std::clog << "Hello, World!\n";
     bool draw = false;
+    int iarg = 1;
+    while (iarg < argc_) {
+      std::string token = argv_[iarg];
+      if (token[0] == '-') {
+        std::string option = token;
+        if ((option == "-D") || (option == "--draw")) {
+          draw = true;
+        } else {
+          std::clog << "warning: ignoring option '" << option << "'!" << std::endl;
+        }
+      } else {
+        std::string argument = token;
+        {
+          std::clog << "warning: ignoring argument '" << argument << "'!" << std::endl;
+        }
+      }
+      iarg++;
+    }
+
 
     srand48(314159);
 
@@ -41,9 +64,9 @@ int main()
     models.push_back("helix");
     TrackFitconfig.store("trackfit.models", models);
     std::vector<std::string> line_only_guess;
-    TrackFitconfig.store_real("trackfit.line.only_guess", line_only_guess);
+    TrackFitconfig.store("trackfit.line.only_guess", line_only_guess);
     std::vector<std::string> helix_only_guess;
-    TrackFitconfig.store_real("trackfit.helix.only_guess", helix_only_guess);
+    TrackFitconfig.store("trackfit.helix.only_guess", helix_only_guess);
 
     // Geometry manager:
     geomtools::manager Geo;
@@ -69,22 +92,32 @@ int main()
     snemo::reconstruction::trackfit_driver TF;
     TF.set_logging_priority(logging);
     TF.set_geometry_manager(Geo);
-    TF.initialize(CATconfig);
+    TF.initialize(TrackFitconfig);
 
     // Event loop:
     for (int i = 0; i < 3; i++) {
       std::clog << "Processing event #" << i << "\n";
-      /*
-      snemo::reconstruction::trackfit_driver::hit_collection_type gghits;
-      generate_gg_hits(*gg_locator, gghits);
-      snemo::datamodel::tracker_clustering_data clustering_data;
-      int code = TF.process(gghits, clustering_data);
+      snemo::datamodel::calibrated_data::tracker_hit_collection_type CTH;
+      snemo::datamodel::tracker_clustering_data TCD;
+      generate_tcd(*gg_locator, CTH, TCD);
+      snemo::datamodel::tracker_trajectory_data TTD;
+      int code = TF.process(TCD, TTD);
       if (code != 0) {
         break;
       }
-      clustering_data.tree_dump(std::clog, "Clustering data: ");
-      if (draw) display_event(*gg_locator, gghits, clustering_data);
-      */
+      TTD.tree_dump(std::clog, "Trajectory data: ", "", true);
+      for (int j = 0; j < (int) TTD.get_solutions().size(); j++) {
+        std::string indent = "|   ";
+        if (j == (int) TTD.get_solutions().size()-1) {
+          std::cerr << "`-- ";
+          indent = "    ";
+        } else {
+          std::cerr << "|-- ";
+        }
+        std::cerr << "TrackFit solution 0: " << std::endl;
+        TTD.get_solutions()[j].get().tree_dump(std::clog, "TrackFit solution: ", indent);
+      }
+      if (draw) display_event(*gg_locator, CTH, TCD, TTD);
     }
 
     // Terminate the TrackFit driver:

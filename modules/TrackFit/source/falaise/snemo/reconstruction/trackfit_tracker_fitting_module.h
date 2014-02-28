@@ -2,7 +2,7 @@
 /** \file falaise/snemo/reconstruction/trackfit_tracker_fitting_module.h
  * Author(s) :    Xavier Garrido <garrido@lal.in2p3.fr>
  * Creation date: 2012-10-07
- * Last modified: 2014-02-08
+ * Last modified: 2014-02-28
  *
  * Copyright (C) 2011-2014 Xavier Garrido <garrido@lal.in2p3.fr>
  *
@@ -97,8 +97,8 @@ namespace snemo {
     private:
 
       const geomtools::manager * _geometry_manager_; //!< The geometry manager
-      std::string _TCD_label_;                       //!< The label of the tracker clustering data bank
-      std::string _TTD_label_;                       //!< The label of the tracker trajectory data bank
+      std::string _TCD_label_;                       //!< The label of the input tracker clustering data bank
+      std::string _TTD_label_;                       //!< The label of the output tracker trajectory data bank
       boost::scoped_ptr< ::snemo::processing::base_tracker_fitter> _driver_; //!< Handle to the embedded fitter algorithm with dynamic memory auto-deletion
 
 

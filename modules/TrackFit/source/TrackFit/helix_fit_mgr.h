@@ -37,6 +37,8 @@
 #include <string>
 
 // Third party:
+// - Boost:
+#include <boost/utility.hpp>
 // - GSL:
 #include <gsl/gsl_multifit_nlin.h>
 
@@ -57,11 +59,11 @@ namespace TrackFit {
     /// \brief Index associated to each parameter of the helix fit
     enum param_index_type {
       PARAM_INDEX_INVALID = -1,
-      PARAM_INDEX_X0      = 0,
-      PARAM_INDEX_Y0      = 1,
-      PARAM_INDEX_Z0      = 2,
-      PARAM_INDEX_R       = 3,
-      PARAM_INDEX_STEP    = 4,
+      PARAM_INDEX_X0      =  0, /// Index of the X0 free parameter
+      PARAM_INDEX_Y0      =  1, /// Index of the Y0 free parameter
+      PARAM_INDEX_Z0      =  2, /// Index of the Z0 free parameter
+      PARAM_INDEX_R       =  3, /// Index of the R free parameter
+      PARAM_INDEX_STEP    =  4, /// Index of the STEP free parameter
     };
 
     /// Check if the quality is available
@@ -115,12 +117,12 @@ namespace TrackFit {
     /// Reset
     void reset();
     // Attributes:
+    bool   using_first;       /// Use first flag (default = false)
+    bool   using_last;        /// Use last flag (default = false)
+    bool   using_drift_time;  /// Use drift time (default = false)
+    double start_time;        /// Reference time for all hits
     const gg_hits_col * hits; /// Collection of Geiger hits
     const i_drift_time_calibration * calibration; /// Handle to the drift time to radius calibration object
-    bool   using_first;      /// Use first flag (default = false)
-    bool   using_last;       /// Use last flag (default = false)
-    bool   using_drift_time; /// Use drift time (default = false)
-    double start_time; /// Reference time for all hits
   };
 
   /// \brief The solution of the helix fit
@@ -157,38 +159,38 @@ namespace TrackFit {
   {
     /// \brief Type of residuals
     enum residual_type {
-      RESIDUAL_INVALID = -1,
-      RESIDUAL_ALPHA   = 0,
-      RESIDUAL_BETA    = 1
+      RESIDUAL_INVALID = -1, /// Invalid value
+      RESIDUAL_ALPHA   =  0, /// Identifier of the 'alpha' residuals (computed in the XY Geiger drift plane)
+      RESIDUAL_BETA    =  1  /// Identifier of the 'beta' residuals (computed along the Z Geiger plasma propagation axis)
     };
 
     /// Default constructor
     helix_fit_residual_function_param();
 
     // Attributes:
-    bool   using_first; /// Use the first flag
-    bool   using_last; /// Use the last flag
+    bool   using_first;      /// Use the first flag
+    bool   using_last;       /// Use the last flag
     bool   using_drift_time; /// Use the drift time
-    int    mode; /// Mode
-    int    residual_type; /// Type of residual
-    bool   first; /// First flag
-    bool   last; /// Last flag
+    int    mode;             /// Mode
+    int    residual_type;    /// Type of residual
+    bool   first;            /// First flag
+    bool   last;             /// Last flag
     double xi, yi, zi, szi, ti, ti_min, ri, dri, rmaxi; /// Data points
-    double start_time; /// Reference time
+    double start_time;       /// Reference time (fixed)
     double x0, y0, z0, r, step; /// Free parameters
     const i_drift_time_calibration * dtc; /// Handle to the drift time to radius calibration
   };
 
   /// \brief Manager of the helix fit
-  class helix_fit_mgr
+  class helix_fit_mgr : boost::noncopyable
   {
   public:
 
     /// \brief Constants
     struct constants {
-      static const unsigned int & default_fit_max_iter();
-      static const double & default_fit_eps();
-      static const unsigned int & min_number_of_hits();
+      static const unsigned int & default_fit_max_iter(); /// Default maximum number of iterations of the fit
+      static const double &       default_fit_eps();      /// Default tolerance of the fit
+      static const unsigned int & min_number_of_hits();   /// Minimum number of hits to perform the fit
     };
 
     /// Set the logging priority threshold
@@ -278,21 +280,41 @@ namespace TrackFit {
       static const size_t NUMBER_OF_GUESS;
 
       /// \brief Guess mode type
-      enum guess_mode_type {
-        GUESS_MODE_BBB = 0,
-        GUESS_MODE_BBT = 1,
-        GUESS_MODE_BTB = 2,
-        GUESS_MODE_BTT = 3,
-        GUESS_MODE_TBB = 4,
-        GUESS_MODE_TBT = 5,
-        GUESS_MODE_TTB = 6,
-        GUESS_MODE_TTT = 7
+      /// \brief Guess mode type
+      /**
+       *   9 different guess helix can be built from three
+       *   Geiger hits with enough distance between them.
+       *   In the working reference frame (O'X'Y'Z'):
+       *    - [T] corresponds to a point just above the starting, middle or stopping cell
+       *    - [B] corresponds to a point just below the starting, middle or stopping cell
+       *
+       *                         ^ Y'
+       *                         |
+       *                         |         [T]
+       *             [T]         |          :
+       *              :        O'|       o  o <-- stopping
+       *         - - -o- o - - - +[T]- o-o- :- - - - - -> X'
+       * starting --> :  o  o    | : o     [B]
+       *             [B]      o  o o <-- middle
+       *                         | :
+       *                         |[B]
+       *                         |
+       */
+       enum guess_mode_type {
+        GUESS_MODE_BBB = 0, // Bottom-Bottom-Bottom guess
+        GUESS_MODE_BBT = 1, // Bottom-Bottom-Top guess
+        GUESS_MODE_BTB = 2, // Bottom-Top-Bottom guess
+        GUESS_MODE_BTT = 3, // Bottom-Top-Top guess
+        GUESS_MODE_TBB = 4, // Top-Bottom-Bottom guess
+        GUESS_MODE_TBT = 5, // Top-Bottom-Top guess
+        GUESS_MODE_TTB = 6, // Top-Top-Bottom guess
+        GUESS_MODE_TTT = 7  // Top-Top-Top guess
       };
 
       /// Return the label from a guess mode
       static std::string guess_mode_label(int);
 
-      /// Default constrcutor
+      /// Default constructor
       guess_utils();
 
       /// Initialization from parameters
@@ -315,11 +337,11 @@ namespace TrackFit {
     private :
 
       datatools::logger::priority _logging_priority_; /// Logging priority threshold
-      bool   _use_max_radius_; /// Flag to use the maximum radius
-      double _max_radius_factor_; /// Factor for maximum radius
-      bool   _use_guess_trust_; /// Flag to use guess trust
-      int    _guess_trust_mode_; /// Mode for guess trust
-      bool   _fit_delay_cluster_; /// Flag to fit delayed clusters
+      bool   _use_max_radius_;       /// Flag to use the maximum radius
+      double _max_radius_factor_;    /// Factor for maximum radius
+      bool   _use_guess_trust_;      /// Flag to use guess trust
+      int    _guess_trust_mode_;     /// Mode for guess trust
+      bool   _fit_delayed_clusters_; /// Flag to fit delayed clusters
 
     };
 
@@ -370,12 +392,6 @@ namespace TrackFit {
 
     /// Set default attribute values
     void _set_defaults_();
-
-    /// Non-copyable
-    helix_fit_mgr(const helix_fit_mgr &);
-
-    /// Non-copyable
-    helix_fit_mgr & operator=(const helix_fit_mgr &);
 
   private:
 

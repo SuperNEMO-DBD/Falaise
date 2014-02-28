@@ -6,13 +6,13 @@ set(FalaiseTrackFitPlugin_TESTS
   test_trackfit_gg_hit.cxx
   test_trackfit_helix_fit_mgr.cxx
   test_trackfit_line_fit_mgr.cxx
-  # test_trackfit_driver.cxx
+  test_trackfit_driver.cxx
   # test_trackfit_tracker_fitting_module.cxx
   )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-set(testing_SOURCES )
+set(testing_SOURCES utilities.cc)
 
 if(FalaiseTrackFitPlugin_ENABLE_TESTING)
   foreach(_testsource ${FalaiseTrackFitPlugin_TESTS})

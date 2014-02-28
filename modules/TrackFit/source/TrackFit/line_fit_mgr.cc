@@ -15,6 +15,7 @@
 #include <datatools/ioutils.h>
 #include <datatools/utils.h>
 #include <datatools/temporary_files.h>
+#include <datatools/logger.h>
 // - Bayeux/geomtools:
 #include <geomtools/clhep.h>
 #include <geomtools/placement.h>
@@ -441,7 +442,7 @@ namespace TrackFit {
 
   void line_fit_mgr::_set_defaults_()
   {
-    _logging_priority_  = datatools::logger::PRIO_WARNING;
+    _logging_priority_  = datatools::logger::PRIO_FATAL;
 
     _fit_npars_         = line_fit_params::LINE_FIT_NOPARS;
     _fit_npoints_       = 0;
@@ -938,7 +939,7 @@ namespace TrackFit {
 
     double drift_distance       = param.ri  * CLHEP::mm;
     double sigma_drift_distance = param.dri * CLHEP::mm;
-    // 2012-11-15 XG: if a isolated cell is time delayed
+    // 2012-11-15 XG: if a isolated cell is delayed
     // i.e. 'drift_distance' is invalid then force the
     // 'drift_distance' value to rmax and 'sigma_drift_distance' to be
     // large enough : the cell weight is then pretty small
@@ -1400,12 +1401,12 @@ namespace TrackFit {
 
   void line_fit_mgr::guess_utils::_set_defaults()
   {
-    _logging_priority_  = datatools::logger::PRIO_ERROR;
+    _logging_priority_  = datatools::logger::PRIO_FATAL;
     _use_max_radius_    = false;
     _max_radius_factor_ = fit_utils::default_guess_bt_factor();
     _use_guess_trust_   = false;
     _guess_trust_mode_  = fit_utils::GUESS_TRUST_MODE_COUNTER;
-    _fit_delay_cluster_ = false;
+    _fit_delayed_clusters_ = false;
     return;
   }
 
@@ -1424,12 +1425,11 @@ namespace TrackFit {
 
   void line_fit_mgr::guess_utils::initialize(const datatools::properties & config_)
   {
-    if (config_.has_key("logging.priority")) {
-      std::string prio_label = config_.fetch_string("logging.priority");
-      datatools::logger::priority p = datatools::logger::get_priority(prio_label);
-      DT_THROW_IF (p == datatools::logger::PRIO_UNDEFINED,
-                   std::domain_error,
-                   "Unknow logging priority ``" << prio_label << "`` !");
+    datatools::logger::priority p = datatools::logger::PRIO_UNDEFINED;
+    p = datatools::logger::extract_logging_configuration(config_,
+                                                         datatools::logger::PRIO_FATAL,
+                                                         false);
+    if (p != datatools::logger::PRIO_UNDEFINED) {
       _logging_priority_ = p;
     }
 
@@ -1440,8 +1440,8 @@ namespace TrackFit {
       }
     }
 
-    if (config_.has_flag("fit_delay_cluster")) {
-      _fit_delay_cluster_ = true;
+    if (config_.has_flag("fit_delayed_clusters")) {
+      _fit_delayed_clusters_ = true;
     }
 
     if (config_.has_flag("use_guess_trust")) {
@@ -1488,8 +1488,8 @@ namespace TrackFit {
         break;
       }
     }
-    if (is_cluster_delayed && !_fit_delay_cluster_) {
-      DT_LOG_WARNING(_logging_priority_, "Cluster is time delayed !");
+    if (is_cluster_delayed && !_fit_delayed_clusters_) {
+      DT_LOG_WARNING(_logging_priority_, "Cluster is delayed !");
       return false;
     }
 
