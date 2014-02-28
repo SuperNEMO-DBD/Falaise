@@ -1,7 +1,7 @@
 /** \file falaise/snemo/datamodels/tracker_trajectory_solution.h */
-/* Author (s) : François Mauger <mauger@lpccaen.in2p3.fr>
+/* Author(s) :    François Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2012-03-19
- * Last modified: 2014-01-27
+ * Last modified: 2014-02-28
  *
  * Description: A trajectory solution
  */
@@ -55,85 +55,85 @@ namespace snemo {
       typedef std::vector<cluster_handle_type> cluster_col_type;
 
       /// Default constructor
-      tracker_trajectory_solution ();
+      tracker_trajectory_solution();
 
       /// Default constructor
-      virtual ~tracker_trajectory_solution ();
+      virtual ~tracker_trajectory_solution();
 
       /// Reset the tracker cluster solution
-      void reset ();
+      void reset();
 
       /*** Solution ID ***/
 
       /// Check if there is a valid solution ID
-      bool has_solution_id () const;
+      bool has_solution_id() const;
 
       /// Get the solution ID
-      int get_solution_id () const;
+      int get_solution_id() const;
 
       /// Set the solution ID
-      void set_solution_id (int32_t);
+      void set_solution_id(int32_t);
 
       /// Invalidate the solution ID
-      void invalidate_solution_id ();
+      void invalidate_solution_id();
 
       /*** Reference clustering solution ***/
 
       /// Check if there is a valid reference clustering solution
-      bool has_clustering_solution () const;
+      bool has_clustering_solution() const;
 
       /// Set the reference clustering solution
-      void set_clustering_solution (const handle_clustering_solution_type & clustering_solution_);
+      void set_clustering_solution(const handle_clustering_solution_type & clustering_solution_);
 
       /// Reset the reference clustering solution
-      void invalidate_clustering_solution ();
+      void invalidate_clustering_solution();
 
       /// Return a mutable reference on the reference clustering solution
-      tracker_clustering_solution & grab_clustering_solution ();
+      tracker_clustering_solution & grab_clustering_solution();
 
       /// Return a non mutable reference on the reference clustering solution
-      const tracker_clustering_solution & get_clustering_solution () const;
+      const tracker_clustering_solution & get_clustering_solution() const;
 
       /*** Auxiliaries ***/
 
       /// Return a mutable reference on the container of auxiliary properties
-      datatools::properties & grab_auxiliaries ();
+      datatools::properties & grab_auxiliaries();
 
       /// Return a non mutable reference on the container of auxiliary properties
-      const datatools::properties & get_auxiliaries () const;
+      const datatools::properties & get_auxiliaries() const;
 
       /*** Trajectories ***/
 
       /// Return a mutable reference on the container of trajectories
-      trajectory_col_type & grab_trajectories ();
+      trajectory_col_type & grab_trajectories();
 
       /// Return a non mutable reference on the container of trajectories
-      const trajectory_col_type & get_trajectories () const;
+      const trajectory_col_type & get_trajectories() const;
 
       /// Reset the trajectories
-      void invalidate_trajectories ();
+      void invalidate_trajectories();
 
       /*** Unfitted clusters ***/
 
       /// Return a mutable reference on the container of handles on unfitted clusters
-      cluster_col_type & grab_unfitted_clusters ();
+      cluster_col_type & grab_unfitted_clusters();
 
       /// Return a non mutable reference on the container of handles on unfitted clusters
-      const cluster_col_type & get_unfitted_clusters () const;
+      const cluster_col_type & get_unfitted_clusters() const;
 
       /// Reset the unfitted clusters
-      void invalidate_unfitted_clusters ();
+      void invalidate_unfitted_clusters();
 
       /*** Utilities ***/
 
       /// Empty the contents of the tracker trajectories solution
-      virtual void clear ();
+      virtual void clear();
 
       /// Smart print
-      virtual void tree_dump (std::ostream      & out_    = std::clog,
-                              const std::string & title_  = "",
-                              const std::string & indent_ = "",
-                              bool inherit_               = false) const;
+      virtual void tree_dump(std::ostream      & out_    = std::clog,
+                             const std::string & title_  = "",
+                             const std::string & indent_ = "",
+                             bool inherit_               = false) const;
 
     private:
 
