@@ -125,6 +125,7 @@ namespace snemo {
       std::string   _CD_label_;                        //!< The label of the calibrated data bank
       std::string   _Geo_label_;                       //!< The label of the geometry service
       bool          _store_mc_hit_id_;                 //!< Flag to store the MC true hit ID
+      bool          _store_mc_truth_track_ids_;        //!< The flag to reference the MC engine track and parent track IDs associated to this calibrated Geiger hit
 
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(mock_tracker_s2c_module);

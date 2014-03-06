@@ -208,6 +208,12 @@ namespace snemo {
         _store_mc_hit_id_ = true;
       }
 
+      // 2014-03-06 FM : support reference to the track ID associated
+      // to this calibrated hit
+      if (setup_.has_flag("_store_mc_truth_track_ids")) {
+        _store_mc_truth_track_ids_ = true;
+      }
+
       this->base_module::_set_initialized(true);
       return;
     }
@@ -231,6 +237,7 @@ namespace snemo {
       _module_category_.clear();
       _hit_category_.clear();
       _store_mc_hit_id_ = false;
+      _store_mc_truth_track_ids_ = false;
       return;
     }
 
@@ -246,6 +253,7 @@ namespace snemo {
       datatools::invalidate(_peripheral_drift_time_threshold_);
       datatools::invalidate(_delayed_drift_time_threshold_);
       _store_mc_hit_id_    = false;
+      _store_mc_truth_track_ids_ = false;
       return;
     }
 
@@ -355,10 +363,22 @@ namespace snemo {
         // XXX : Maybe inefficient :
         const mctools::base_step_hit & a_tracker_hit = simulated_data_.get_step_hit(_hit_category_, ihit);
 
-        // The hit ID of the true hit :
+        // The hit ID of the truth hit :
         int true_tracker_hit_id = geomtools::base_hit::INVALID_HIT_ID;
         if (a_tracker_hit.has_hit_id()) {
           true_tracker_hit_id = a_tracker_hit.get_hit_id();
+        }
+
+        // The ID of the truth track associated to this hit:
+        int true_tracker_truth_track_id = mctools::track_utils::INVALID_TRACK_ID;
+        if (a_tracker_hit.has_track_id()) {
+          true_tracker_truth_track_id = a_tracker_hit.get_track_id();
+        }
+
+        // The ID of the truth parent track associated to this hit:
+        int true_tracker_truth_parent_track_id = mctools::track_utils::INVALID_TRACK_ID;
+        if (a_tracker_hit.has_parent_track_id()) {
+          true_tracker_truth_parent_track_id = a_tracker_hit.get_parent_track_id();
         }
 
         // extract the corresponding geom ID:
@@ -446,10 +466,21 @@ namespace snemo {
           // assign a hit ID and the geometry ID to the hit:
           new_raw_tracker_hit.set_hit_id(raw_tracker_hit_id);
           new_raw_tracker_hit.set_geom_id(a_tracker_hit.get_geom_id());
-          // 2012-07-26 FM : support reference to the MC true hit ID
+          // 2012-07-26 FM : support reference to the MC truth hit ID
           if (_store_mc_hit_id_ && true_tracker_hit_id > geomtools::base_hit::INVALID_HIT_ID) {
             new_raw_tracker_hit.grab_auxiliaries().store(mctools::hit_utils::HIT_MC_HIT_ID_KEY,
-                                                         true_tracker_hit_id); // XXX
+                                                         true_tracker_hit_id);
+          }
+          // 2014-04-06 FM : support reference to the MC truth track and parent track IDs
+          if (_store_mc_truth_track_ids_) {
+            if (true_tracker_truth_track_id > mctools::track_utils::INVALID_TRACK_ID) {
+              new_raw_tracker_hit.grab_auxiliaries().store(mctools::track_utils::TRACK_ID_KEY,
+                                                           true_tracker_truth_track_id);
+            }
+            if (true_tracker_truth_parent_track_id > mctools::track_utils::INVALID_TRACK_ID) {
+              new_raw_tracker_hit.grab_auxiliaries().store(mctools::track_utils::PARENT_TRACK_ID_KEY,
+                                                           true_tracker_truth_parent_track_id);
+            }
           }
 
           if (datatools::is_valid(anode_time)) {
@@ -484,11 +515,25 @@ namespace snemo {
                 some_raw_tracker_hit.set_bottom_time(bottom_cathode_time);
                 some_raw_tracker_hit.set_sigma_bottom_time(sigma_cathode_time);
               }
+
               // 2012-07-26 FM : support reference to the MC true hit ID
               if (_store_mc_hit_id_ && true_tracker_hit_id > geomtools::base_hit::INVALID_HIT_ID) {
                 some_raw_tracker_hit.grab_auxiliaries().update(mctools::hit_utils::HIT_MC_HIT_ID_KEY,
-                                                               true_tracker_hit_id); // XXX
+                                                               true_tracker_hit_id);
               }
+
+              // 2014-04-06 FM : support reference to the MC truth track and parent track IDs
+              if (_store_mc_truth_track_ids_) {
+                if (true_tracker_truth_track_id > mctools::track_utils::INVALID_TRACK_ID) {
+                  some_raw_tracker_hit.grab_auxiliaries().update(mctools::track_utils::TRACK_ID_KEY,
+                                                                true_tracker_truth_track_id);
+                }
+                if (true_tracker_truth_parent_track_id > mctools::track_utils::INVALID_TRACK_ID) {
+                  some_raw_tracker_hit.grab_auxiliaries().update(mctools::track_utils::PARENT_TRACK_ID_KEY,
+                                                                true_tracker_truth_parent_track_id);
+                }
+              }
+
             }
           }
         }
@@ -890,6 +935,26 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_tracker_s2c_module,ocd_)
   }
 
   {
+    // Description of the 'store_mc_track_id' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("store_mc_track_id")
+      .set_terse_description("Flag to activate the storage of the truth track Id in the calibrated hits")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .set_mandatory(false)
+      .set_long_description("This information is only available under conditions: \n"
+                            "the step hit processor must be configured to register\n"
+                            "this information from the MC engine (Geant4).        \n")
+      .set_default_value_boolean(false)
+      .add_example("Use the default value::          \n"
+                   "                                 \n"
+                   "  store_mc_track_id : boolean = 0  \n"
+                   "                                 \n"
+                   )
+      ;
+  }
+
+  {
     // Description of the 'hit_category' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
@@ -924,6 +989,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_tracker_s2c_module,ocd_)
                                "  peripheral_drift_time_threshold : real = 4.0 us            \n"
                                "  delayed_drift_time_threshold    : real = 10.0 us           \n"
                                "  store_mc_hit_id  : boolean = 0                             \n"
+                               "  store_mc_track_id : boolean = 0                            \n"
                                "  hit_category     : string = \"gg\"                         \n"
                                "  cell_diameter    : real as length = 44 mm                  \n"
                                "  cell_length      : real as length = 2900 mm                \n"
