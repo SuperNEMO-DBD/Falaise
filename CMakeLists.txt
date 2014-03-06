@@ -122,6 +122,9 @@ endif()
 #-----------------------------------------------------------------------
 # Configure/Build utilities as needed
 #
+option(Falaise_BUILD_DEVELOPER_TOOLS "Build tools for developing Falaise" OFF)
+mark_as_advanced(Falaise_BUILD_DEVELOPER_TOOLS)
+
 option(Falaise_USE_SYSTEM_BAYEUX "Use system-installed Bayeux" OFF)
 mark_as_advanced(Falaise_USE_SYSTEM_BAYEUX)
 
@@ -141,8 +144,6 @@ else()
   set(Bayeux_WITH_GEANT4 ON)
 
   # - Option to build Bayeux's developer tools
-  option(Falaise_BUILD_DEVELOPER_TOOLS "Build tools for developing Falaise" OFF)
-  mark_as_advanced(Falaise_BUILD_DEVELOPER_TOOLS)
   set(Bayeux_BUILD_TOOLS ${Falaise_BUILD_DEVELOPER_TOOLS})
 
   # - Build
