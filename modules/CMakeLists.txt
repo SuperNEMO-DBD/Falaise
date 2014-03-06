@@ -14,6 +14,7 @@ set(Bayeux_DIR "${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/Bayeux
 set(_falaise_PLUGINS
   #things2root
   CAT
+  #Yaca
   TrackFit
 )
 

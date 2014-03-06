@@ -107,29 +107,32 @@ endif()
 # Configure/Install support files
 # Done here so that external package variables are visible
 #
+
+if(Falaise_BUILD_DEVELOPER_TOOLS)
 # - Targets
-# export(TARGETS Falaise ${Falaise_ADDON_TARGETS} FILE ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/${Falaise_TAG}/FalaiseTargets.cmake)
-# install(EXPORT FalaiseTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${Falaise_TAG})
+export(TARGETS Falaise ${Falaise_ADDON_TARGETS} FILE ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/${Falaise_TAG}/FalaiseTargets.cmake)
+install(EXPORT FalaiseTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${Falaise_TAG})
 
-# # - Versioning (build and install trees)
-# configure_file(${PROJECT_SOURCE_DIR}/cmake/FalaiseConfigVersion.cmake.in
-#   ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/${Falaise_TAG}/FalaiseConfigVersion.cmake
-#   @ONLY
-#   )
+# - Versioning (build and install trees)
+configure_file(${PROJECT_SOURCE_DIR}/cmake/FalaiseConfigVersion.cmake.in
+  ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/${Falaise_TAG}/FalaiseConfigVersion.cmake
+  @ONLY
+  )
 
-# # - Config (build and install trees *at present*)
-# configure_file(${PROJECT_SOURCE_DIR}/cmake/FalaiseConfig.cmake.in
-#   ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/${Falaise_TAG}/FalaiseConfig.cmake
-#   @ONLY
-#   )
+# - Config (build and install trees *at present*)
+configure_file(${PROJECT_SOURCE_DIR}/cmake/FalaiseConfig.cmake.in
+  ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/${Falaise_TAG}/FalaiseConfig.cmake
+  @ONLY
+  )
 
-# install(
-#   FILES
-#     ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/${Falaise_TAG}/FalaiseConfigVersion.cmake
-#     ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/${Falaise_TAG}/FalaiseConfig.cmake
-#   DESTINATION
-#     ${CMAKE_INSTALL_LIBDIR}/cmake/${Falaise_TAG}
-#   )
+install(
+  FILES
+    ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/${Falaise_TAG}/FalaiseConfigVersion.cmake
+    ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/${Falaise_TAG}/FalaiseConfig.cmake
+  DESTINATION
+    ${CMAKE_INSTALL_LIBDIR}/cmake/${Falaise_TAG}
+  )
+endif()
 
 #-----------------------------------------------------------------------
 # Build Tests
