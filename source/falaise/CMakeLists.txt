@@ -136,6 +136,7 @@ endif()
 #
 # - NB assumes each test .cxx file generates a single executable
 # - We also output the executables to a dedicated directory
+set(_falaise_TEST_ENVIRONMENT "FALAISE_RESOURCE_DIR=${Falaise_DATAROOTDIR}/resources")
 if(Falaise_ENABLE_TESTING)
   foreach(_testsource ${FalaiseLibrary_TESTS})
     get_filename_component(_testname "${_testsource}" NAME_WE)
@@ -147,6 +148,9 @@ if(Falaise_ENABLE_TESTING)
       set_target_properties(${_testname} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
     endif()
     add_test(NAME ${_testname} COMMAND ${_testname})
+    set_property(TEST ${_testname}
+      APPEND PROPERTY ENVIRONMENT ${_falaise_TEST_ENVIRONMENT}
+      )
     # - For now, dump them into the testing output directory
     set_target_properties(${_testname}
       PROPERTIES

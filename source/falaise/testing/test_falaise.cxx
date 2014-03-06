@@ -24,6 +24,9 @@ int main(/* int argc_, char ** argv_ */)
               << falaise::version::get_version() << std::endl;
     std::clog << "Falaise resource dir : '"
               << falaise::get_resource_dir() << "'" << std::endl;
+    std::clog << "Falaise resource file : '"
+              << falaise::get_resource("README.rst", true) << "'"
+              << std::endl;
 
     std::clog << "The end." << std::endl;
   }

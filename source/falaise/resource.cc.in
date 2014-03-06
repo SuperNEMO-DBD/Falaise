@@ -43,15 +43,14 @@ std::string get_resource_root(bool overriden_env) {
   static const boost::filesystem::path install_root = "@CMAKE_INSTALL_PREFIX@";
   boost::filesystem::path install_data_root = install_root / "@CMAKE_INSTALL_DATADIR@" /
    "Falaise-@Falaise_VERSION@";
-  // Not sure to maintain this in the future:
+  boost::filesystem::path install_resource_root = install_data_root / resource_path;
   if(overriden_env) {
     if (std::getenv("FALAISE_RESOURCE_DIR")) {
-      //DT_LOG_WARNING(datatools::logger::PRIO_WARNING,
-      //               "Using FALAISE_RESOURCE_DIR overriding environ variable...");
-      install_data_root = std::string(std::getenv("FALAISE_RESOURCE_DIR"));
+      DT_LOG_WARNING(datatools::logger::PRIO_WARNING,
+                     "Using FALAISE_RESOURCE_DIR overriding environ variable...");
+      install_resource_root = std::string(std::getenv("FALAISE_RESOURCE_DIR"));
     }
   }
-  boost::filesystem::path install_resource_root = install_data_root / resource_path;
   return install_resource_root.string();
 }
 } // namespace
@@ -66,10 +65,21 @@ std::string get_resource(const std::string& rname, bool overriden_env) {
   DT_THROW_IF(rname[0] == '/', std::logic_error, "invalid resource name");
 
   std::string fullpath(get_resource_root(overriden_env) + "/" + rname);
-  std::ifstream check(fullpath.c_str());
-  DT_THROW_IF(!check.good(),
-              std::runtime_error,
-              "Unreadable resource '" << fullpath << "'")
+  if (boost::filesystem::is_directory(fullpath.c_str())) {
+    try {
+      boost::filesystem::directory_iterator test(fullpath.c_str());
+    }
+    catch (boost::filesystem::filesystem_error& fex) {
+      DT_THROW_IF(true,
+                  std::runtime_error,
+                  "Unreadable directory resource '" << fullpath << "'");
+    }
+  } else {
+    std::ifstream check(fullpath.c_str());
+    DT_THROW_IF(!check.good(),
+                std::runtime_error,
+                "Unreadable resource '" << fullpath << "'");
+  }
   return fullpath;
 }
 } // namespace falaise
