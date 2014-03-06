@@ -1,0 +1,97 @@
+# - Config file for the Falaise package
+# It defines the following variables
+#  Falaise_INCLUDE_DIRS - include directories for Falaise
+#  Falaise_DEFINITIONS  - compile definitions needed to use Falaise
+#  Falaise_LIBRARIES    - libraries to link against
+#
+#  Falaise_DOXYGEN_HTML_DIR - path to directory holding Doxygen docs
+#                            for Falaise. Empty if docs were not built
+#  Falaise_DOXYGEN_TAGFILE  - path to Doxygen tagfile for Falaise's docs
+#                            Empty if docs were not built
+#
+
+#----------------------------------------------------------------------
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#----------------------------------------------------------------------
+
+#-----------------------------------------------------------------------
+# Locate ourselves, since all our config files should have been installed
+# alongside us...
+#
+get_filename_component(__falaise_config_dir "${CMAKE_CURRENT_LIST_FILE}" PATH)
+
+#-----------------------------------------------------------------------
+# Hard code paths to headers for now...
+#
+get_filename_component(Falaise_INCLUDE_DIR "${__falaise_config_dir}/../../../include/" ABSOLUTE CACHE)
+mark_as_advanced(Falaise_INCLUDE_DIR)
+
+set(Falaise_INCLUDE_DIRS "${Falaise_INCLUDE_DIR}" "${Falaise_INCLUDE_DIR}/falaise")
+
+set(Falaise_DEFINITIONS)
+
+#-----------------------------------------------------------------------
+# Handle paths/targets for third party deps here...
+# At present, simply hard code paths that Cadfael will have supplied.
+# Basic, but gets the job done for now. Later on we can provide better
+# fallback functionality to allow other sources than Cadfael.
+
+# # - Boost
+# find_package(Boost @Boost_VERSION@ EXACT REQUIRED
+#   COMPONENTS filesystem system serialization iostreams
+#   NO_MODULE
+#   PATHS @Boost_DIR@
+#   NO_DEFAULT_PATH
+#   )
+
+# - Bayeux
+find_package(Bayeux @Bayeux_VERSION@ EXACT REQUIRED
+  NO_MODULE
+  PATHS @Bayeux_DIR@
+  NO_DEFAULT_PATH
+  )
+
+#-----------------------------------------------------------------------
+# Append third party include directories to Falaise's so exposed
+# headers are visible
+#
+list(APPEND Falaise_INCLUDE_DIRS
+  ${Bayeux_INCLUDE_DIRS}
+  )
+
+#-----------------------------------------------------------------------
+# Include the file listing all the imported targets.
+# This is installed in the same location as us...
+#
+if(NOT Falaise_TARGETS_LOADED)
+  include("${__falaise_config_dir}/FalaiseTargets.cmake")
+  set(Falaise_TARGETS_LOADED 1)
+endif()
+
+# - Falaise itself
+set(Falaise_LIBRARY Falaise CACHE FILE "Falaise library (imported)")
+set(Falaise_LIBRARIES ${Falaise_LIBRARY})
+mark_as_advanced(Falaise_LIBRARY)
+
+# # - Optional XXX Module
+# if(TARGET Falaise_XXX)
+#   set(Falaise_XXX_FOUND 1)
+#   set(Falaise_XXX_LIBRARY Falaise_xxx CACHE FILE "Falaise xxx module (imported)")
+#   mark_as_advanced(Falaise_XXX_LIBRARY)
+# endif()
+
+#-----------------------------------------------------------------------
+# Documentation - loaded optionally from its own file
+#
+include("${__falaise_config_dir}/FalaiseDocs.cmake" OPTIONAL)
