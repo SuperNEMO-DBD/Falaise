@@ -9,6 +9,9 @@ find_package(Bayeux REQUIRED)
 
 # Ensure our code can see the Bayeux headers
 include_directories(${Bayeux_INCLUDE_DIRS})
+# Ensure our code can see the Falaise headers
+include_directories(${Falaise_BUILDPRODUCT_DIR}/include)
+include_directories(${Falaise_BUILDPRODUCT_DIR}/include/falaise)
 
 # Build a dynamic library from our sources
 add_library(Things2Root SHARED Things2Root.h Things2Root.cpp)
