@@ -12,7 +12,7 @@ set(Bayeux_DIR "${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/Bayeux
 
 # - List of plugins:
 set(_falaise_PLUGINS
-  #things2root
+  things2root
   CAT
   #Yaca
   TrackFit
