@@ -76,6 +76,10 @@ foreach(_dir BINDIR LIBDIR INCLUDEDIR DATAROOTDIR)
   endif()
 endforeach()
 
+# Add a path for CMake config files
+set(CMAKE_INSTALL_CMAKEDIR ${CMAKE_INSTALL_LIBDIR}/cmake)
+
+
 # - Configure output paths for products to give inplace build that roughly
 #   matches install layout.
 set(Falaise_BUILDPRODUCT_DIR "${PROJECT_BINARY_DIR}/BuildProducts")
@@ -153,7 +157,7 @@ else()
   # Hacked temporarily so we can use this technique on CMake < 2.8.11
   # that doesn't allow duplicate imported targets.
   set(Bayeux_TARGETS_LOADED 1)
-  include(${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake/Bayeux-1.0.0/BayeuxConfig.cmake)
+  include(${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Bayeux-1.0.0/BayeuxConfig.cmake)
 endif()
 
 
@@ -187,13 +191,60 @@ foreach(_rfin ${_falaise_list_of_resources_files})
 endforeach()
 
 #-----------------------------------------------------------------------
-# Plugins/modules installation
+# - Plugins/modules installation
 add_subdirectory(modules)
 
 #-----------------------------------------------------------------------
 # - Install published resources and documentation
 install(DIRECTORY ${Falaise_DATAROOTDIR}
   DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}
+  )
+
+#-----------------------------------------------------------------------
+# - CMake Support files
+# - Config (build and install trees *at present*)
+configure_file(${PROJECT_SOURCE_DIR}/cmake/FalaiseConfig.cmake.in
+  ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseConfig.cmake
+  @ONLY
+  )
+
+# - Versioning (build and install trees)
+configure_file(${PROJECT_SOURCE_DIR}/cmake/FalaiseConfigVersion.cmake.in
+  ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseConfigVersion.cmake
+  @ONLY
+  )
+
+# - Targets (build tree)
+if(Falaise_USE_SYSTEM_BAYEUX)
+  set(_fbfile cmake/FalaiseBayeux-system.cmake.in)
+else()
+  list(APPEND Falaise_ADDON_TARGETS Bayeux)
+  set(Bayeux_TARGETS_PRESENT 1)
+  set(_fbfile cmake/FalaiseBayeux-builtin.cmake.in)
+endif()
+
+configure_file(${_fbfile} ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseBayeux.cmake @ONLY)
+
+export(TARGETS Falaise ${Falaise_ADDON_TARGETS} FILE ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseTargets.cmake)
+
+# - Targets (install tree)
+install(EXPORT FalaiseTargets DESTINATION ${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION})
+
+if(Falaise_USE_SYSTEM_BAYEUX)
+  set(_fbinstallfile ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseBayeux.cmake)
+else()
+  set(Bayeux_TARGETS_PRESENT )
+  configure_file(${_fbfile} InstallTreeFiles/FalaiseBayeux.cmake @ONLY)
+  set(_fbinstallfile ${PROJECT_BINARY_DIR}/InstallTreeFiles/FalaiseBayeux.cmake)
+endif()
+
+# - Installation of, well, install tree files
+install(FILES
+    ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseConfigVersion.cmake
+    ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseConfig.cmake
+    ${_fbinstallfile}
+  DESTINATION
+    ${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}
   )
 
 #-----------------------------------------------------------------------

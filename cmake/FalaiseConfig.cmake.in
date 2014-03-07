@@ -43,24 +43,12 @@ set(Falaise_DEFINITIONS)
 
 #-----------------------------------------------------------------------
 # Handle paths/targets for third party deps here...
-# At present, simply hard code paths that Cadfael will have supplied.
-# Basic, but gets the job done for now. Later on we can provide better
-# fallback functionality to allow other sources than Cadfael.
-
-# # - Boost
-# find_package(Boost @Boost_VERSION@ EXACT REQUIRED
-#   COMPONENTS filesystem system serialization iostreams
-#   NO_MODULE
-#   PATHS @Boost_DIR@
-#   NO_DEFAULT_PATH
-#   )
-
-# - Bayeux
-find_package(Bayeux @Bayeux_VERSION@ EXACT REQUIRED
-  NO_MODULE
-  PATHS @Bayeux_DIR@
-  NO_DEFAULT_PATH
-  )
+# Our main dependency is Bayeux, and this will supply the main third
+# party deps.
+# However, we may have used a builtin or system install of Bayeux,
+# so abstract this to a separate file
+#
+include(${__falaise_config_dir}/FalaiseBayeux.cmake)
 
 #-----------------------------------------------------------------------
 # Append third party include directories to Falaise's so exposed
@@ -84,14 +72,8 @@ set(Falaise_LIBRARY Falaise CACHE FILE "Falaise library (imported)")
 set(Falaise_LIBRARIES ${Falaise_LIBRARY})
 mark_as_advanced(Falaise_LIBRARY)
 
-# # - Optional XXX Module
-# if(TARGET Falaise_XXX)
-#   set(Falaise_XXX_FOUND 1)
-#   set(Falaise_XXX_LIBRARY Falaise_xxx CACHE FILE "Falaise xxx module (imported)")
-#   mark_as_advanced(Falaise_XXX_LIBRARY)
-# endif()
-
 #-----------------------------------------------------------------------
 # Documentation - loaded optionally from its own file
 #
 include("${__falaise_config_dir}/FalaiseDocs.cmake" OPTIONAL)
+

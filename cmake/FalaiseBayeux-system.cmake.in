@@ -1,0 +1,8 @@
+# - Bayeux configuration for system Bayeux (Build/Install tree)
+#
+find_package(Bayeux @Bayeux_VERSION@ EXACT REQUIRED
+  NO_MODULE
+  PATHS @Bayeux_DIR@
+  NO_DEFAULT_PATH
+  )
+

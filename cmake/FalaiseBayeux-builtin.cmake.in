@@ -1,0 +1,5 @@
+# - Bayeux configuration for builtin Bayeux (Build/Install tree)
+#
+set(Bayeux_TARGETS_LOADED @Bayeux_TARGETS_PRESENT@)
+include(${__falaise_config_dir}/../Bayeux-1.0.0/BayeuxConfig.cmake)
+
