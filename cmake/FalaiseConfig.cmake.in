@@ -33,8 +33,12 @@ get_filename_component(__falaise_config_dir "${CMAKE_CURRENT_LIST_FILE}" PATH)
 
 #-----------------------------------------------------------------------
 # Hard code paths to headers for now...
-#
-get_filename_component(Falaise_INCLUDE_DIR "${__falaise_config_dir}/../../../include/" ABSOLUTE CACHE)
+if (CMAKE_LIBRARY_ARCHITECTURE STREQUAL "")
+  get_filename_component(Falaise_INCLUDE_DIR "${__falaise_config_dir}/../../include/" ABSOLUTE CACHE)
+else()
+  # Debian/Ubuntu multiarch support has one more subdir level from lib:
+  get_filename_component(Falaise_INCLUDE_DIR "${__falaise_config_dir}/../../../include/" ABSOLUTE CACHE)
+endif()
 mark_as_advanced(Falaise_INCLUDE_DIR)
 
 set(Falaise_INCLUDE_DIRS "${Falaise_INCLUDE_DIR}" "${Falaise_INCLUDE_DIR}/falaise")
@@ -76,4 +80,3 @@ mark_as_advanced(Falaise_LIBRARY)
 # Documentation - loaded optionally from its own file
 #
 include("${__falaise_config_dir}/FalaiseDocs.cmake" OPTIONAL)
-
