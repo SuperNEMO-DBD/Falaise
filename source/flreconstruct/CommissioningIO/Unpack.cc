@@ -142,14 +142,14 @@ Unpack::status Unpack::setTrig(std::string s)
   // This assumes a fixed 20ns binning on all TDCs.
   //
   std::istringstream cstr(s, std::ios_base::in);
-  int delay, alpha, skip;
+  int delay, alpha;
   std::string key;
   cstr >> key;
   try
   {
     delay = getHexValue(cstr, s);
     alpha = getHexValue(cstr, s);
-    skip = getHexValue(cstr, s);  // just to check for error in previous item!
+    getHexValue(cstr, s);  // just to check for error in previous item!
   }
   catch (std::exception &e)
   {
@@ -215,10 +215,10 @@ Unpack::status Unpack::parseD0(std::string s)
   std::istringstream cstr(s, std::ios_base::in);
   std::string key;
   cstr >> key;
-  int skip, address;  // hardware address, Geiger cell address.
+  int address;  // hardware address, Geiger cell address.
   try
   {
-    skip = getHexValue(cstr, s);
+    getHexValue(cstr, s);
     address = getHexValue(cstr, s);
     if (!cstr.eof()) throw std::invalid_argument(s.c_str());
   }
@@ -246,11 +246,11 @@ Unpack::status Unpack::parseD1(std::string s)
   if (!_inEvent) throw std::logic_error("Unexpected TDC D1 card");
   std::istringstream cstr(s, std::ios_base::in);
   std::string key;
-  int skip, anode, cathodeT, cathodeB, alpha; // ASIC status + 4 TDC values.
+  int anode, cathodeT, cathodeB, alpha; // ASIC status + 4 TDC values.
   cstr >> key;
   try
   {
-    skip = getHexValue(cstr, s);
+    getHexValue(cstr, s);
     anode = getHexValue(cstr, s);
     cathodeT = getHexValue(cstr, s);
     cathodeB = getHexValue(cstr, s);
@@ -282,7 +282,7 @@ Unpack::status Unpack::parseEndRun(std::string /*s*/)
 
 int Unpack::getHexValue(std::istringstream& cstr, std::string& s)
 {
-  int value;
+  int value(0);
   cstr >> std::hex >> value;
   if (cstr.fail()) throw std::invalid_argument(s.c_str());
   return value;
