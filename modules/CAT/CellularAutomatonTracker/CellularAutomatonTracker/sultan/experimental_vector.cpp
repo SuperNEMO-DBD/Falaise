@@ -72,7 +72,7 @@ namespace SULTAN{
             a_out << indent << a_title << std::endl;
           }
 
-        a_out << indent << " x ("; x().dump(); a_out << ") , ("; y().dump(); a_out << ") , ("; z().dump(); a_out << std::endl;
+        a_out << indent << " x ("; x().dump(); a_out << ") , ("; y().dump(); a_out << ") , ("; z().dump(); a_out << ")" << std::endl;
 
         return;
       }

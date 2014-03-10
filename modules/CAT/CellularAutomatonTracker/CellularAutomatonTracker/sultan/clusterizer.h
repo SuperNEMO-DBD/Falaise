@@ -14,6 +14,7 @@
 #include <sultan/cluster.h>
 #include <sultan/sequence.h>
 #include <sultan/tracked_data.h>
+#include <CATAlgorithm/calorimeter_hit.h>
 
 
 namespace SULTAN{
@@ -61,6 +62,12 @@ namespace SULTAN{
     //! set clusters
     void set_clusters(const std::vector<topology::cluster> & clusters);
 
+    //! get calorimeter_hits
+    const std::vector<topology::calorimeter_hit>& get_calorimeter_hits()const;
+
+    //! set calorimeter_hits
+    void set_calorimeter_hits(const std::vector<topology::calorimeter_hit> & calorimeter_hits);
+
   protected:
 
     int cell_side( const topology::cell & c);
@@ -105,6 +112,7 @@ namespace SULTAN{
 
     std::vector<topology::cell> cells_;
     std::vector<topology::cluster> clusters_;
+    std::vector<topology::calorimeter_hit> calorimeter_hits_;
 
   };
 

@@ -11,6 +11,7 @@
 #include <sultan/experimental_vector.h>
 #include <sultan/cell.h>
 #include <sultan/node.h>
+#include <sultan/calorimeter_hit.h>
 #include <sultan/scenario.h>
 
 
@@ -32,6 +33,9 @@ namespace SULTAN{
       // list of cells
       std::vector<cell> cells_;
 
+      // list of calos
+      std::vector<calorimeter_hit> calos_;
+
       // list of clusters
       std::vector<cluster> clusters_;
 
@@ -49,6 +53,7 @@ namespace SULTAN{
 
       //! constructor
       tracked_data(const std::vector<cell> &cells,
+                   const std::vector<calorimeter_hit> &calos,
                    const std::vector<cluster> &clusters,
                    const std::vector<scenario> &scenarios,
                    mybhep::prlevel level=mybhep::NORMAL,
@@ -57,6 +62,7 @@ namespace SULTAN{
         set_probmin(probmin);
         appname_= "tracked_data: ";
         cells_ = cells;
+        calos_ = calos;
         clusters_ = clusters;
         scenarios_ = scenarios;
       }
@@ -77,6 +83,9 @@ namespace SULTAN{
         a_out << indent << " number of cells : " << cells_.size() << std::endl;
         for(std::vector<cell>::const_iterator icell=cells_.begin(); icell!=cells_.end();++icell)
           icell->dump(a_out, "",indent + "     ");
+        a_out << indent << " number of calos : " << calos_.size() << std::endl;
+        for(std::vector<calorimeter_hit>::const_iterator icalo=calos_.begin(); icalo!=calos_.end();++icalo)
+          icalo->dump(a_out, "",indent + "     ");
         a_out << indent << " number of clusters : " << clusters_.size() << std::endl;
         for(std::vector<cluster>::const_iterator icluster=clusters_.begin(); icluster!=clusters_.end();++icluster)
           icluster->dump(a_out, "",indent + "     ");
@@ -92,6 +101,12 @@ namespace SULTAN{
       void set_cells(const std::vector<cell> & cells)
       {
         cells_ = cells;
+      }
+
+      //! set calos
+      void set_calos(const std::vector<calorimeter_hit> & calos)
+      {
+        calos_ = calos;
       }
 
       //! set clusters
@@ -115,6 +130,17 @@ namespace SULTAN{
       const std::vector<cell>& get_cells()const
       {
         return cells_;
+      }
+
+      //! get calos
+      std::vector<calorimeter_hit>& get_calos()
+      {
+        return calos_;
+      }
+
+      const std::vector<calorimeter_hit>& get_calos()const
+      {
+        return calos_;
       }
 
       //! get clusters

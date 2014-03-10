@@ -309,6 +309,11 @@ namespace SULTAN {
       void dump_point_phi(experimental_point ep) const;
       bool same_cell(topology::cell c) const;
       size_t near_level( const topology::cell & cell, double nofflayers, double cell_distance )const;
+      bool is_near_foil()const;
+      bool is_near_calo()const;
+      bool is_near_xcalo()const;
+      bool is_near_gveto()const;
+
 
       bool operator<(const topology::cell& c) const{
 

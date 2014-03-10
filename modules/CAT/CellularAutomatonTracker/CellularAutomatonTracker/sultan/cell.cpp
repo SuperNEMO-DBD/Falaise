@@ -49,7 +49,7 @@ namespace SULTAN{
     }
 
 
-    size_t cell::near_level( const topology::cell & cell, double nofflayers, double /* cell_distance */ )const{
+    size_t cell::near_level( const topology::cell & cell, double nofflayers, double cell_distance )const{
 
       // returns 0 for far-away cell
       // 1 for cells separated by nofflayers
@@ -85,7 +85,7 @@ namespace SULTAN{
 
       if (layer_distance == 0 && row_distance == 0){
         if( print_level() >= mybhep::NORMAL ){
-          std::clog << " problem: sultan asking near level of cells with identical posiion (" << hit1_side << ", " << hit1_layer << ", " << hit1_row << ") (" << hit2_side << ", " << hit2_layer << ", " << hit2_row << ")" << std::endl;
+          std::clog << " problem: sultan asking near level of cells with identical position (" << hit1_side << ", " << hit1_layer << ", " << hit1_row << ") (" << hit2_side << ", " << hit2_layer << ", " << hit2_row << ")" << std::endl;
         }
         return 3;
       }
@@ -119,6 +119,38 @@ namespace SULTAN{
 #endif
 
 
+    }
+
+    bool cell::is_near_foil()const{
+      // blocks = -1, 1
+      // layers = 0, +-1, ..., +-8
+      // rows = -56, -55, ..., 55, 56
+
+      return (this->layer()==0) ? true : false;
+
+    }
+
+    bool cell::is_near_calo()const{
+      // blocks = -1, 1
+      // layers = 0, +-1, ..., +-8
+      // rows = -56, -55, ..., 55, 56
+
+      return (abs(this->layer())==8) ? true : false;
+    }
+
+
+    bool cell::is_near_xcalo()const{
+      // blocks = -1, 1
+      // layers = 0, +-1, ..., +-8
+      // rows = -56, -55, ..., 55, 56
+
+      return (abs(this->iid())==56) ? true : false;
+    }
+
+
+    bool cell::is_near_gveto()const{
+
+      return true;
     }
 
 

@@ -28,15 +28,30 @@ namespace SULTAN {
     
     
     void experimental_helix::distance_from_cell_measurement(topology::cell c, experimental_double *DR, experimental_double *DH)const{
+       //////////////////////////////////////////////////////////////////////////
+      //   center_of_helix              radius_of_helix    center_of_cell
+      //          O                            )(                ep
+      //          ------------- R -------------><-------- r ------
+      //          -------------- delta -------------------------->
+      //          ---------------- dr1 -------------------------->
+      //          --- dr2 --><-------- r ------
+      //
+      //   center_of_helix              center_of_cell    radius_of_helix
+      //          O                            ep                ))
+      //          ----------- delta ----------->--------- r ----->
+      //          ------------------- R ------------------------->
+      //          ---------------- dr1 ----------------------------------- r ----->
+      //          ------------ dr2 ------------>
+      //////////////////////////////////////////////////////////////////////////
       experimental_vector delta = c.ep() - this->center();
-      experimental_double dr_center = delta.hor().length();
+      experimental_double delta_hor = delta.hor().length();
       experimental_double dr1 = R() + c.r();
       experimental_double dr2 = R() - c.r();
       experimental_double dr;
-      if( fabs(dr_center.value() - dr1.value()) < fabs(dr_center.value() - dr2.value()) )
-	dr = experimental_fabs(dr_center - dr1);
+      if( fabs(delta_hor.value() - dr1.value()) < fabs(delta_hor.value() - dr2.value()) )
+	dr = experimental_fabs(delta_hor - dr1);
       else
-	dr = experimental_fabs(dr_center - dr2);
+	dr = experimental_fabs(delta_hor - dr2);
       
       experimental_double phi = delta.phi();
       experimental_double dh = z0() + H()*phi - c.ep().z();
@@ -48,17 +63,41 @@ namespace SULTAN {
     }
     
     void experimental_helix::distance_from_cell_center(topology::cell c, experimental_double *DR, experimental_double *DH)const{
+      //////////////////////////////////////////////////////////////////////////
+      //   center_of_helix              radius_of_helix    center_of_cell
+      //          O                            )(                ep
+      //          ------------- R ------------->
+      //          -------------- delta -------------------------->
+      //
+      //   center_of_helix              center_of_cell    radius_of_helix
+      //          O                            ep                ))
+      //          ----------- delta ----------->
+      //          ------------------- R ------------------------->
+      //////////////////////////////////////////////////////////////////////////
       experimental_vector delta = c.ep() - this->center();
-      experimental_double dr_center = delta.hor().length();
+      experimental_double delta_hor = delta.hor().length();
       experimental_double phi = delta.phi();
       experimental_double dh = z0() + H()*phi - c.ep().z();
       
-      *DR = experimental_fabs(dr_center - R());
+      *DR = experimental_fabs(delta_hor - this->R());
       *DH = experimental_fabs(dh);
       
       return;
     }
     
+    void experimental_helix::get_phi_of_point(topology::experimental_point input_p, topology::experimental_point * p, double * angle){
+
+      *p = this->position(input_p);
+      // angle of cell center wrt circle center
+      *angle = atan2(
+		     input_p.y().value() - this->y0().value(), 
+		     input_p.x().value() - this->x0().value()
+		     );
+      return;
+      
+    }
+
+
     bool experimental_helix::different_cells(topology::experimental_helix b)const{
       std::vector<size_t> bids = b.ids();
       for(std::vector<size_t>::const_iterator id = ids_.begin(); id !=ids_.end(); ++id){

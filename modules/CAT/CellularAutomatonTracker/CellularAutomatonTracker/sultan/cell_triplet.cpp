@@ -18,11 +18,6 @@ namespace SULTAN{
     cell_triplet::~cell_triplet(){};
 
     //! constructor
-    cell_triplet::cell_triplet(cell_couplet & /*cca*/, cell_couplet & /*ccb*/){
-      appname_= "cell_triplet: ";
-    }
-
-    //! constructor
     cell_triplet::cell_triplet(const cell &ca, const cell &cb, const cell &cc, prlevel level, double probmin){
       set_print_level(level);
       set_probmin(probmin);
@@ -108,6 +103,13 @@ namespace SULTAN{
       return cc_;
     }
 
+    bool cell_triplet::has_cell_of_id(size_t id)const{
+      return (ca_.id() == id ||
+	      cb_.id() == id ||
+	      cc_.id() == id);
+    }
+
+
     void cell_triplet::calculate_helices(double Rmin = 0., double Rmax = mybhep::plus_infinity, double nsigmas=1.){
       // get helices tangent to three circles
 
@@ -138,11 +140,11 @@ namespace SULTAN{
       double x[3], y[3];
       experimental_double r[3], z[3];
       double X0, Y0, R, X0err, Y0err, Rerr;
-      double dX0dr[3], dY0dr[3], dRdr[3]/* , dX0dz[3] */ /* , dY0dz[3] */ /* , dRdz[3]*/;
+      double dX0dr[3], dY0dr[3], dRdr[3];
       double phi1, phi2, phi3;
-      double check[2] /* , H */;
-      double X0tmp, Y0tmp[2] /*, Rtmp[2]*/;
-      double dX0tmpdr[3], dY0tmpdr[2][3] /*, dRtmpdr[2][3] */;
+      double check[3] ;
+      double X0tmp, Y0tmp[2] ;
+      double dX0tmpdr[3], dY0tmpdr[2][3] ;
 
       topology::experimental_double H_12, H_23, z0_12, z0_23;
       topology::experimental_helix helix;
@@ -201,10 +203,10 @@ namespace SULTAN{
       dd13dr[2] = 2.*r[2].value();
 
 
-      if( print_level() > mybhep::VERBOSE ){
-        std::clog << " triplet (" << x[0] << ", " << y[0] << ", "; r[0].dump(); z[0].dump(); std::clog << "), ("
-                  << x[1] << ", " << y[1] << ", "; r[1].dump(); z[1].dump(); std::clog << "), ("
-                  << x[2] << ", " << y[2] << ", "; r[2].dump(); z[2].dump(); std::clog << ") detA " << detA << std::endl;
+       if( print_level() > mybhep::VERBOSE ){
+	std::clog << " triplet (" << x[0] << ", " << y[0] << ", "; r[0].dump(); std::clog << " "; z[0].dump(); std::clog << "), ("
+		  << x[1] << ", " << y[1] << ", "; r[1].dump(); std::clog << " "; z[1].dump(); std::clog << "), ("
+		  << x[2] << ", " << y[2] << ", "; r[2].dump(); std::clog << " "; z[2].dump(); std::clog << ") detA " << detA << std::endl;
       }
 
 
@@ -306,8 +308,7 @@ namespace SULTAN{
 
 
                 selected_circle = true;
-                //for(size_t ii=0; ii<3; ii++){
-                for(size_t ii=0; ii<2; ii++){
+                for(size_t ii=0; ii<3; ii++){
                   if( ii == 0 ) the_sign = sign[0][i];
                   else if( ii == 1 ) the_sign = sign[1][j];
                   else the_sign = sign[2][k];
@@ -489,8 +490,7 @@ namespace SULTAN{
                 }
 
                 selected_circle = true;
-                // for(size_t ii=0; ii<3; ii++){
-                for(size_t ii=0; ii<2; ii++){
+		for(size_t ii=0; ii<3; ii++){
                   if( ii == 0 ) the_sign = sign[0][i];
                   else if( ii == 1 ) the_sign = sign[1][j];
                   else the_sign = sign[2][k];
@@ -560,9 +560,9 @@ namespace SULTAN{
         }
       }
 
-      if( print_level() >= mybhep::VERBOSE ){
+      if( print_level() >= mybhep::NORMAL ){
         if( count_circles_positive_radius != 8 ){
-          std::clog << " warning: det " << detA << " one triplet of cells has produced " << count_tangent_circles << " tangent circles of which " << count_circles_positive_radius << " have positive radius (expected to be 8) "  << std::endl;
+          std::clog << " problem: det " << detA << " one triplet of cells has produced " << count_tangent_circles << " tangent circles of which " << count_circles_positive_radius << " have positive radius (expected to be 8) "  << std::endl;
         }
       }
 

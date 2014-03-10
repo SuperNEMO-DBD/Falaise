@@ -43,9 +43,6 @@ namespace SULTAN{
       virtual ~cell_triplet();
 
       //! constructor
-      cell_triplet(cell_couplet &cca, cell_couplet &ccb);
-
-      //! constructor
       cell_triplet(const cell &ca, const cell &cb, const cell &cc, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
 
       /*** dump ***/
@@ -86,6 +83,8 @@ namespace SULTAN{
 
       friend bool operator==(const cell_triplet& left,
                              const cell_triplet& right);
+
+      bool has_cell_of_id(size_t id)const;
 
     };
 

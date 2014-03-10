@@ -35,6 +35,19 @@ namespace SULTAN {
     clusters_ = clusters;
   }
 
+  //! get calorimeter_hits
+  const std::vector<topology::calorimeter_hit>& clusterizer::get_calorimeter_hits()const
+  {
+    return calorimeter_hits_;
+  }
+
+  //! set calorimeter_hits
+  void clusterizer::set_calorimeter_hits(const std::vector<topology::calorimeter_hit> & calorimeter_hits)
+  {
+    calorimeter_hits_.clear();
+    calorimeter_hits_ = calorimeter_hits;
+  }
+
   void clusterizer::_set_defaults ()
   {
 
@@ -164,6 +177,7 @@ namespace SULTAN {
     setup_cells();
 
     tracked_data_.set_cells(cells_);
+    tracked_data_.set_calos(calorimeter_hits_);
 
     if( level >= mybhep::VVERBOSE )
       print_cells();

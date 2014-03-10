@@ -53,6 +53,40 @@ namespace SULTAN{
       return nodes_;
     }
 
+    //! add nodes
+    void cluster::add_nodes(const std::vector<node> &nodes){
+      for(std::vector<topology::node>::const_iterator inode=nodes.begin(); inode!=nodes.end();++inode){
+	bool already_there=false;
+	for(std::vector<topology::node>::const_iterator jnode=nodes_.begin(); jnode!=nodes_.end();++jnode){
+	  if( inode->c().id() == jnode->c().id() ){
+	    already_there=true;
+	    break;
+	  }
+	}
+
+	if( !already_there ){
+	  nodes_.push_back(*inode);
+	}
+      }
+    }
+
+    //! remove node
+    void cluster::remove_node_with_id(size_t id){
+      for(std::vector<topology::node>::const_iterator inode=nodes_.begin(); inode!=nodes_.end();++inode){
+	if( inode->c().id() == id ){
+	  nodes_.erase(nodes_.begin() + (inode - nodes_.begin()));
+	  return;
+	}
+      }
+      return;
+    }
+
+    //! remove nodes
+    void cluster::remove_nodes(const std::vector<node> &nodes){
+      for(std::vector<topology::node>::const_iterator inode=nodes.begin(); inode!=nodes.end(); ++inode)
+	remove_node_with_id(inode->c().id());
+    }
+
     bool cluster::has_cell(const cell & c)const{
 
       if(std::find(nodes_.begin(), nodes_.end(), c) != nodes_.end())
@@ -87,6 +121,30 @@ namespace SULTAN{
 
     }
 
+    bool cluster::is_good()const{
+      return (this->nodes().size() >= 4);
+    }
+
+    bool cluster::is_contained_in(const cluster & s)const{
+
+      for(std::vector<node>::const_iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode ){
+        if( !s.has_cell(inode->c() ) )
+          return false;
+      }
+
+      return true;
+    }
+
+    bool cluster::contains(const cluster & s)const{
+      
+      const std::vector<node> & nodes = s.nodes();
+      for(std::vector<node>::const_iterator inode = nodes.begin(); inode != nodes.end(); ++inode ){
+        if( !this->has_cell(inode->c() ) )
+          return false;
+      }
+
+      return true;
+    }
 
 
   }

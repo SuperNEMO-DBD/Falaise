@@ -15,6 +15,7 @@
 #include <sultan/cell.h>
 #include <sultan/clusterizer.h>
 #include <sultan/sultan.h>
+#include <sultan/plane.h>
 
 namespace SULTAN {
   
@@ -121,11 +122,15 @@ namespace SULTAN {
   {
   public:
     topology::cell & add_cell ();
+    topology::calorimeter_hit & add_calo_cell ();
     input_data ();
     bool check () const;
+    bool gg_check () const;
+    bool calo_check () const;
 
   public:
     std::vector<topology::cell> cells;
+    std::vector<topology::calorimeter_hit> calo_cells;
   };
 
   /// Output data model

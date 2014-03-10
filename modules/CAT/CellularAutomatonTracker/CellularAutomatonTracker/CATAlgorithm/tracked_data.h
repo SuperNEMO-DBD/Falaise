@@ -40,7 +40,7 @@ namespace CAT{
       // list of cells
       std::vector<cell> cells_;
 
-      // list of cells
+      // list of calos
       std::vector<calorimeter_hit> calos_;
 
       // list of clusters
