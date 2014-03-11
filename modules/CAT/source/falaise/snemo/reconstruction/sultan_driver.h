@@ -74,7 +74,8 @@ namespace snemo {
 
       /// Main clustering method
       virtual int _process_algo(const snemo::datamodel::calibrated_data::tracker_hit_collection_type & hits_,
-                                snemo::datamodel::tracker_clustering_data & clustering_ );
+                                snemo::datamodel::tracker_clustering_data & clustering_
+                                );
 
     private:
 
@@ -85,6 +86,7 @@ namespace snemo {
       SULTAN::sultan       _SULTAN_sultan_;      /// SULTAN algorithm
       double               _sigma_z_factor_;     /// Factor for longitudinal error
       double               _magfield_;           /// Enforced magnetic field
+      bool                 _process_calo_hits_;  /// Flag to process associated calorimeter hits
     };
 
   }  // end of namespace reconstruction

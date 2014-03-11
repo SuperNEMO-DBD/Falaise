@@ -45,6 +45,7 @@ namespace snemo {
     {
       _sigma_z_factor_ = 1.0;
       datatools::invalidate(_magfield_);
+      _process_calo_hits_ = false;
       return;
     }
 
@@ -179,8 +180,8 @@ namespace snemo {
       _SULTAN_setup_.planes_per_block.clear();
       _SULTAN_setup_.planes_per_block.push_back(_SULTAN_setup_.num_blocks);
       _SULTAN_setup_.planes_per_block.at(0) = get_gg_locator().get_number_of_layers(0);
-      _SULTAN_setup_.num_cells_per_plane     = get_gg_locator().get_number_of_rows(0);
-      _SULTAN_setup_.cell_distance           = get_gg_locator().get_cell_diameter();
+      _SULTAN_setup_.num_cells_per_plane    = get_gg_locator().get_number_of_rows(0);
+      _SULTAN_setup_.cell_distance          = get_gg_locator().get_cell_diameter();
 
       // Hard-coded values of bfield and chamber size
       _SULTAN_setup_.bfield = _magfield_ / CLHEP::tesla;
@@ -217,10 +218,18 @@ namespace snemo {
       _SULTAN_setup_.reset();
       _sigma_z_factor_ = 1.0;
       datatools::invalidate(_magfield_);
+      _process_calo_hits_ = false;
       this->base_tracker_clusterizer::_reset();
       return;
     }
 
+    /*
+      // Future support also with calo hits...
+    int sultan_driver::_process_algo(
+       const snemo::datamodel::calibrated_data::tracker_hit_collection_type & hits_,
+       const snemo::datamodel::calibrated_data::calorimeter_hit_collection_type & calo_hits_,
+       snemo::datamodel::tracker_clustering_data & clustering_ )
+    */
 
     // Main clustering method
     int sultan_driver::_process_algo(const hit_collection_type & hits_,
@@ -340,6 +349,42 @@ namespace snemo {
                      << "to SULTAN input data with id number #" << c.id());
       }
 
+      /*
+      // NOT SUPPORTED:
+      // Calo hit loop :
+      {
+        int calo_hit_counter = 0;
+        BOOST_FOREACH(const sdm::calibrated_data::calorimeter_hit_handle_type & calo_handle,
+                      calo_hits_) {
+          // Skip NULL handle :
+          if (! calo_handle.has_data()) continue;
+
+          // Get a const reference on the calibrated calo hit :
+          const sdm::calibrated_calorimeter_hit & snemo_calo_hit = calo_handle.get();
+
+          st::calorimeter_hit & caloh = _SULTAN_input_.add_calo_cell();
+          // caloh.set_id(snemo_calo_hit.get_id());
+          caloh.set_id(calo_hit_counter);
+
+          // E, t the calo cell :
+          st::experimental_double e;
+          e.set_value(snemo_calo_hit.get_energy());
+          e.set_error(snemo_calo_hit.get_sigma_energy());
+          st::experimental_double t;
+          t.set_value(snemo_calo_hit.get_time());
+          t.set_error(snemo_calo_hit.get_sigma_time());
+
+          caloh.set_e(e);
+          caloh_set_t(t);
+
+          caloh.set_layer(????);
+          caloh.set_plane(????);
+
+          calo_hit_counter++;
+        }
+      }
+      */
+
       // Validate the input data :
       if (! _SULTAN_input_.check()) {
         DT_LOG_ERROR(get_logging_priority(), "Invalid SULTAN input data !");
@@ -348,6 +393,9 @@ namespace snemo {
 
       // Install the input data model within the algorithm object :
       _SULTAN_clusterizer_.set_cells(_SULTAN_input_.cells);
+
+      // Install the input data model within the algorithm object :
+      _SULTAN_clusterizer_.set_calorimeter_hits(_SULTAN_input_.calo_cells);
 
       // Prepare the output data model :
       _SULTAN_clusterizer_.prepare_event(_SULTAN_output_.tracked_data);

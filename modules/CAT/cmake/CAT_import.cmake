@@ -270,6 +270,9 @@ set(_sultan_HEADERS
   CellularAutomatonTracker/CellularAutomatonTracker/sultan/experimental_legendre_vector.h
   CellularAutomatonTracker/CellularAutomatonTracker/sultan/tracking_object.h
   CellularAutomatonTracker/CellularAutomatonTracker/sultan/experimental_point.h
+  CellularAutomatonTracker/CellularAutomatonTracker/sultan/calorimeter_hit.h
+  CellularAutomatonTracker/CellularAutomatonTracker/sultan/experimental_line.h
+  CellularAutomatonTracker/CellularAutomatonTracker/sultan/plane.h
   )
 
 set(_sultan_SOURCES
@@ -293,6 +296,9 @@ set(_sultan_SOURCES
   CellularAutomatonTracker/CellularAutomatonTracker/sultan/scenario.cpp
   CellularAutomatonTracker/CellularAutomatonTracker/sultan/Clock.cpp
   CellularAutomatonTracker/CellularAutomatonTracker/sultan/cell.cpp
+  CellularAutomatonTracker/CellularAutomatonTracker/sultan/calorimeter_hit.cpp
+  CellularAutomatonTracker/CellularAutomatonTracker/sultan/experimental_line.cpp
+  CellularAutomatonTracker/CellularAutomatonTracker/sultan/plane.cpp
   )
 list(APPEND FalaiseCATPlugin_HEADERS ${_sultan_HEADERS})
 list(APPEND FalaiseCATPlugin_SOURCES ${_sultan_SOURCES})
