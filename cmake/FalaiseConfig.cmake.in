@@ -32,13 +32,8 @@
 get_filename_component(__falaise_config_dir "${CMAKE_CURRENT_LIST_FILE}" PATH)
 
 #-----------------------------------------------------------------------
-# Hard code paths to headers for now...
-get_filename_component(Falaise_INCLUDE_DIR "${__falaise_config_dir}/../../../include/" ABSOLUTE CACHE)
-if (DEFINED CMAKE_LIBRARY_ACHITECTURE AND NOT
-    CMAKE_LIBRARY_ARCHITECTURE STREQUAL "")
-  # Debian/Ubuntu multiarch support has one more subdir level from lib:
-  get_filename_component(Falaise_INCLUDE_DIR "${__falaise_config_dir}/../../../../include/" ABSOLUTE CACHE)
-endif()
+# Use expansion variable to locate include dire from where we are
+get_filename_component(Falaise_INCLUDE_DIR "${__falaise_config_dir}/@Falaise_CMAKEDIR_TO_INCLUDEDIR@" ABSOLUTE CACHE)
 mark_as_advanced(Falaise_INCLUDE_DIR)
 
 set(Falaise_INCLUDE_DIRS "${Falaise_INCLUDE_DIR}" "${Falaise_INCLUDE_DIR}/falaise")
