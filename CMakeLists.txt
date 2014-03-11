@@ -175,22 +175,7 @@ endif()
 #-----------------------------------------------------------------------
 # Resource installation
 #
-set(_falaise_resources_dir "${PROJECT_SOURCE_DIR}/resources")
-
-# - Load the  list of resource  files to be  published.  We don't  use a
-# 'file(GLOB  ...)'  because  it  is  not  recommended  by  the  CMake
-# documentation.   The  'resources/_resources.cmake'   file  is   thus
-# explicitely  built  by the  'resources/_make_list_of_resource_files'
-# shell script:
-include(resources/_resources.cmake)
-
-# - Publish resource files using the '_falaise_list_of_resources_files'
-# variable defined in the 'resources/_resources.cmake' file:
-foreach(_rfin ${_falaise_list_of_resources_files})
-  string(REGEX REPLACE "\\.in$" "" _rfout "${_rfin}")
-  string(REGEX REPLACE "^${PROJECT_SOURCE_DIR}/resources" "${Falaise_DATAROOTDIR}/resources" _rfout "${_rfout}")
-  configure_file(${_rfin} ${_rfout} @ONLY)
-endforeach()
+add_subdirectory(resources)
 
 #-----------------------------------------------------------------------
 # - Plugins/modules installation
