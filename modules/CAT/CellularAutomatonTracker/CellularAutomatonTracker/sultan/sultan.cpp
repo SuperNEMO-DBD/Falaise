@@ -1329,6 +1329,8 @@ namespace SULTAN {
       dist = cp - p;
       distance = dist.length();
 
+      m.message("SULTAN::sultan::check_if_cell_is_near_calo: cell - calo distance", distance.value(), " +- ", distance.error(), mybhep::VVERBOSE);
+
       if( distance.is_less_than__optimist(topology::experimental_double(0.,0.), nsigmas) ) return true;
 
     }
@@ -1372,6 +1374,7 @@ namespace SULTAN {
       // hit on a calo must be near a calo hit
       if( !on_foil ){
 	on_calo_hit = check_if_cell_is_near_calo(inode->c_);
+	m.message("SULTAN::sultan::get_clusters_of_cells_to_be_used_as_end_points: cell " , inode->c().id() , " is on calo " , on_calo, " on xcalo ", on_xcalo, " on calo hit ", on_calo_hit , mybhep::VVERBOSE);
 	if( !on_calo_hit ) 
 	  continue;
       }

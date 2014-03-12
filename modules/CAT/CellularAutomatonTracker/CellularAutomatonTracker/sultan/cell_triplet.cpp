@@ -223,6 +223,14 @@ namespace SULTAN{
         dist12 = sqrt(pow(x[1] - x[0],2) + pow(y[1] - y[0],2));
         dist13 = sqrt(pow(x[2] - x[0],2) + pow(y[2] - y[0],2));
 
+	// if the cells are 1 ... 2 ... 3 we are ok
+	// if they are 3 ... 1 ... 2 the dist13 must reverse sign
+	double A31 = 2.*(y[0] - y[2]);
+	double A11 = 2.*(x[0] - x[2]);
+        double theta13 = atan2(-A31,-A11);
+	if( theta * theta13 < 0. ) dist13 *= -1.;
+
+
         // known terms in the linear system, with error
         N1 = pow(dist12,2) - pow(r[1].value(),2) + pow(r[0].value(),2);
         N2 = pow(dist13,2) - pow(r[2].value(),2) + pow(r[0].value(),2);
