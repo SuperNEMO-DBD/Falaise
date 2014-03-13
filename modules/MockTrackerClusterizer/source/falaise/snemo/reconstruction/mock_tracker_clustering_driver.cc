@@ -1,0 +1,311 @@
+/** \file falaise/snemo/reconstruction/mock_tracker_clustering_driver.cc */
+
+// Ourselves:
+#include <falaise/snemo/reconstruction/mock_tracker_clustering_driver.h>
+
+// Standard library:
+#include <sstream>
+#include <stdexcept>
+
+// Third party:
+// - Boost :
+#include <boost/foreach.hpp>
+// - Bayeux/datatools :
+#include <datatools/properties.h>
+#include <datatools/exception.h>
+#include <datatools/logger.h>
+#include <datatools/utils.h>
+// - Bayeux/geomtools :
+#include <geomtools/manager.h>
+
+// This project :
+#include <falaise/snemo/datamodels/tracker_clustering_data.h>
+#include <falaise/snemo/geometry/gg_locator.h>
+
+namespace snemo {
+
+  namespace reconstruction {
+
+    const std::string mock_tracker_clustering_driver::MTC_ID = "MTC";
+
+    mock_tracker_clustering_driver::mock_tracker_clustering_driver() :
+      ::snemo::processing::base_tracker_clusterizer(mock_tracker_clustering_driver::MTC_ID)
+    {
+      _max_row_distance_   = 2;
+      _max_layer_distance_ = 2;
+      _max_sum_distance_   = 0;
+      return;
+    }
+
+    mock_tracker_clustering_driver::~mock_tracker_clustering_driver()
+    {
+      if (is_initialized()) {
+        this->mock_tracker_clustering_driver::reset();
+      }
+      return;
+    }
+
+    // Initialize the driver through configuration properties
+    void mock_tracker_clustering_driver::initialize(const datatools::properties & setup_)
+    {
+      // Invoke initialization at parent level :
+      this->snemo::processing::base_tracker_clusterizer::_initialize(setup_);
+
+      if (setup_.has_key("MTC.max_layer_distance")) {
+        int value = setup_.fetch_integer("MTC.max_layer_distance");
+        DT_THROW_IF(value < 0, std::range_error, "Invalid value for max layer distance !");
+        _max_layer_distance_ = value;
+      }
+
+      if (setup_.has_key("MTC.max_row_distance")) {
+        int value = setup_.fetch_integer("MTC.max_row_distance");
+        DT_THROW_IF(value < 0, std::range_error, "Invalid value for max row distance !");
+        _max_row_distance_ = value;
+      }
+
+      if (setup_.has_key("MTC.max_sum_distance")) {
+        int value = setup_.fetch_integer("MTC.max_sum_distance");
+        DT_THROW_IF(value < 0, std::range_error, "Invalid value for max sum distance !");
+        _max_sum_distance_ = value;
+      }
+
+      DT_THROW_IF(_max_row_distance_ + _max_layer_distance_ + _max_sum_distance_ == 0,
+                  std::logic_error,
+                  "At least one maximum layer/row/sum distance must be non zero !");
+
+      _set_initialized(true);
+      return;
+    }
+
+    // Reset the clusterizer
+    void mock_tracker_clustering_driver::reset()
+    {
+      DT_THROW_IF (! is_initialized(), std::logic_error,
+                   "MockTrackerClusterizer driver is not initialized !");
+      _set_initialized(false);
+      _max_row_distance_   = 2;
+      _max_layer_distance_ = 2;
+      _max_sum_distance_   = 0;
+      this->snemo::processing::base_tracker_clusterizer::_reset();
+      return;
+    }
+
+    // Main clustering method
+    int mock_tracker_clustering_driver::_process_algo(
+                                                      const hit_collection_type & tracker_hits_,
+                                                      snemo::datamodel::tracker_clustering_data & clustering_ )
+    {
+      namespace sdm = snemo::datamodel;
+      if (tracker_hits_.empty()) {
+        // No tracker hit to be clusterized: we leave
+        return 0;
+      }
+
+      // Internal model:
+      std::vector<sdm::calibrated_data::tracker_hit_collection_type> track_collection;
+
+      // Build a collection of pre-clusters:
+      this->isolate_tracks(tracker_hits_, track_collection);
+
+      // Filling now the tracker_clustering_solution:
+      // Create a tracker clustering solution (here only one):
+      sdm::tracker_clustering_solution::handle_type ht_solution(new sdm::tracker_clustering_solution);
+      // Add it to 'tracker_clustering_data' and make it the default solution:
+      clustering_.add_solution(ht_solution, true);
+
+      // Retrieve solution reference and set its unique Id:
+      sdm::tracker_clustering_solution & tc_solution = ht_solution.grab();
+      tc_solution.set_solution_id(0);
+
+      // Loop over tracks:
+      int32_t cluster_id = 0;
+      tc_solution.grab_clusters().reserve(tc_solution.grab_clusters().size() + track_collection.size());
+      for (std::vector<sdm::calibrated_data::tracker_hit_collection_type>::const_iterator
+             itrack = track_collection.begin();
+           itrack != track_collection.end();
+           ++itrack){
+        // Create a tracker cluster handle:
+        sdm::tracker_cluster::handle_type ht_cluster(new sdm::tracker_cluster);
+        ht_cluster.grab().set_cluster_id(cluster_id++);
+        tc_solution.grab_clusters().push_back(ht_cluster);
+        if (itrack->size() == 1) {
+          tc_solution.grab_unclustered_hits().push_back(*itrack->begin());
+        } else if (itrack->size() > 1){
+          for (sdm::calibrated_data::tracker_hit_collection_type::const_iterator
+                 ihit = itrack->begin();
+               ihit != itrack->end();
+               ++ihit) {
+            sdm::tracker_cluster & tc_cluster = ht_cluster.grab();
+            tc_cluster.grab_hits().push_back(*ihit);
+          }
+        }
+      }
+
+      return 0;
+    }
+
+    void mock_tracker_clustering_driver::isolate_tracks(
+      const hit_collection_type & hits_,
+      std::vector<snemo::datamodel::calibrated_data::tracker_hit_collection_type> & tracks_) const
+    {
+      namespace sdm = snemo::datamodel;
+      // No tracker hit:
+      if (hits_.empty()) {
+        return;
+      }
+
+      // Candidate clusters:
+      hit_collection_type calib_track;
+      calib_track.reserve(20);
+
+      // Address of the current previous hit:
+      const sdm::calibrated_tracker_hit * previous_tracker_hit = 0;
+
+      // GG hit loop :
+      BOOST_FOREACH(const sdm::calibrated_data::tracker_hit_handle_type & gg_handle,
+                    hits_) {
+        // Skip NULL handle if any:
+        if (! gg_handle) continue;
+
+        // Get a const reference on the calibrated Geiger hit :
+        const sdm::calibrated_tracker_hit & a_tracker_hit = gg_handle.get();
+
+        if (previous_tracker_hit != 0) {
+          const bool neighbours_hits
+            = are_neighbours(a_tracker_hit.get_geom_id(),
+                             previous_tracker_hit->get_geom_id());
+          if (!neighbours_hits) {
+            // New track found:
+            tracks_.push_back(calib_track);
+            calib_track.clear();
+          }
+        }
+
+        // Continue to fill the track with tracker hits:
+        calib_track.push_back(gg_handle);
+        previous_tracker_hit = &a_tracker_hit;
+      }
+
+      // Store the last track after the loop:
+      tracks_.push_back(calib_track);
+
+      return;
+    }
+
+    bool mock_tracker_clustering_driver::are_neighbours(const geomtools::geom_id & tracker_hit_id1_,
+                                                        const geomtools::geom_id & tracker_hit_id2_) const
+    {
+      DT_THROW_IF (! is_initialized(), std::logic_error,
+                   "MockTrackerClusterizer driver is not initialized !");
+
+      const snemo::geometry::gg_locator & gg_locator = get_gg_locator();
+
+      // Use Geiger locator for such research Warning: use integer
+      // because uint32_t has strange behavior with absolute value
+      // cmath::abs
+      const int hit1_side  = gg_locator.extract_side (tracker_hit_id1_);
+      const int hit1_layer = gg_locator.extract_layer(tracker_hit_id1_);
+      const int hit1_row   = gg_locator.extract_row  (tracker_hit_id1_);
+
+      const int hit2_side  = gg_locator.extract_side (tracker_hit_id2_);
+      const int hit2_layer = gg_locator.extract_layer(tracker_hit_id2_);
+      const int hit2_row   = gg_locator.extract_row  (tracker_hit_id2_);
+
+      // Good test but I have no clue how to do that with locator !!
+      // if (current_hit_module != a_hit_module) return false;
+
+      // Do not cross the foil
+      if (hit1_side != hit2_side) return false;
+
+      // Check neighbouring
+      const unsigned int layer_distance = std::abs(hit1_layer - hit2_layer);
+      const unsigned int row_distance   = std::abs(hit1_row   - hit2_row);
+      if ( _max_layer_distance_ > 0 ) {
+        if (layer_distance > _max_layer_distance_) return false;
+      }
+      if ( _max_row_distance_ > 0 ) {
+        if (row_distance > _max_row_distance_) return false;
+      }
+      if ( _max_sum_distance_ > 0 ) {
+        if ((layer_distance + row_distance) > _max_sum_distance_) return false;
+      }
+
+      return true;
+    }
+
+  }  // end of namespace reconstruction
+
+}  // end of namespace snemo
+
+/* OCD support */
+#include <datatools/object_configuration_description.h>
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::mock_tracker_clustering_driver,ocd_)
+{
+  ocd_.set_class_name("snemo::reconstruction::mock_tracker_clustering_driver");
+  ocd_.set_class_description("A driver class for the mock tracker clustering algorithm");
+  ocd_.set_class_library("Falaise_MockTrackerClusterizer");
+  ocd_.set_class_documentation("This driver manager for the mock tracker clustering clustering algorithm.\n"
+                               "This algorithm is only used for simulated data.                          \n"
+                               );
+
+  {
+    // Description of the 'MTC.max_layer_distance' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("MTC.max_layer_distance")
+      .set_terse_description("Maximum layer distance between two neighbour hits")
+      .set_traits(datatools::TYPE_INTEGER)
+      .set_mandatory(false)
+      .set_long_description("Value ``0`` disables this test.")
+      .set_default_value_integer(2)
+      .add_example("Use the default value::                \n"
+                   "                                       \n"
+                   "  MTC.max_layer_distance : integer = 2 \n"
+                   "                                       \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'MTC.max_row_distance' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("MTC.max_row_distance")
+      .set_terse_description("Maximum row distance between two neighbour hits")
+      .set_traits(datatools::TYPE_INTEGER)
+      .set_mandatory(false)
+      .set_long_description("Value ``0`` disables this test.")
+      .set_default_value_integer(2)
+      .add_example("Use the default value::                \n"
+                   "                                       \n"
+                   "  MTC.max_row_distance : integer = 2 \n"
+                   "                                       \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'MTC.max_sum_distance' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("MTC.max_sum_distance")
+      .set_terse_description("Maximum row+layer distance between two neighbour hits")
+      .set_traits(datatools::TYPE_INTEGER)
+      .set_mandatory(false)
+      .set_long_description("Value ``0`` disables this test.")
+      .set_default_value_integer(0)
+      .add_example("Use the default value::                \n"
+                   "                                       \n"
+                   "  MTC.max_sum_distance : integer = 3 \n"
+                   "                                       \n"
+                   )
+      ;
+  }
+
+  ocd_.set_validation_support(true);
+  ocd_.lock();
+  return;
+}
+DOCD_CLASS_IMPLEMENT_LOAD_END() // Closing macro for implementation
+DOCD_CLASS_SYSTEM_REGISTRATION(snemo::reconstruction::mock_tracker_clustering_driver,
+                               "snemo::reconstruction::mock_tracker_clustering_driver")
