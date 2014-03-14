@@ -90,113 +90,76 @@ namespace snemo {
       return;
     }
 
-    // Main clustering method
-    int mock_tracker_clustering_driver::_process_algo(
-                                                      const hit_collection_type & tracker_hits_,
-                                                      snemo::datamodel::tracker_clustering_data & clustering_ )
+    int mock_tracker_clustering_driver::_prepare_process (const hit_collection_type & tracker_hits_,
+                                                          snemo::datamodel::tracker_clustering_data & clustering_)
     {
+      base_tracker_clusterizer::_prepare_process(tracker_hits_, clustering_);
+
       namespace sdm = snemo::datamodel;
-      if (tracker_hits_.empty()) {
-        // No tracker hit to be clusterized: we leave
-        return 0;
-      }
-
-      // Internal model:
-      std::vector<sdm::calibrated_data::tracker_hit_collection_type> track_collection;
-
-      // Build a collection of pre-clusters:
-      this->isolate_tracks(tracker_hits_, track_collection);
-
-      // Filling now the tracker_clustering_solution:
-      // Create a tracker clustering solution (here only one):
+      // Create a unique tracker clustering solution :
       sdm::tracker_clustering_solution::handle_type ht_solution(new sdm::tracker_clustering_solution);
+      ht_solution.grab().set_solution_id(0);
       // Add it to 'tracker_clustering_data' and make it the default solution:
       clustering_.add_solution(ht_solution, true);
 
-      // Retrieve solution reference and set its unique Id:
-      sdm::tracker_clustering_solution & tc_solution = ht_solution.grab();
-      tc_solution.set_solution_id(0);
+      return 0;
+    }
 
-      // Loop over tracks:
-      int32_t cluster_id = 0;
-      tc_solution.grab_clusters().reserve(tc_solution.grab_clusters().size() + track_collection.size());
-      for (std::vector<sdm::calibrated_data::tracker_hit_collection_type>::const_iterator
-             itrack = track_collection.begin();
-           itrack != track_collection.end();
-           ++itrack){
-        // Create a tracker cluster handle:
-        sdm::tracker_cluster::handle_type ht_cluster(new sdm::tracker_cluster);
-        ht_cluster.grab().set_cluster_id(cluster_id++);
-        tc_solution.grab_clusters().push_back(ht_cluster);
-        if (itrack->size() == 1) {
-          tc_solution.grab_unclustered_hits().push_back(*itrack->begin());
-        } else if (itrack->size() > 1){
-          for (sdm::calibrated_data::tracker_hit_collection_type::const_iterator
-                 ihit = itrack->begin();
-               ihit != itrack->end();
-               ++ihit) {
-            sdm::tracker_cluster & tc_cluster = ht_cluster.grab();
-            tc_cluster.grab_hits().push_back(*ihit);
+    // Main clustering method
+    int mock_tracker_clustering_driver::_process_algo(const hit_collection_type & tracker_hits_,
+                                                      snemo::datamodel::tracker_clustering_data & clustering_ )
+    {
+      namespace sdm = snemo::datamodel;
+      // Filling now the tracker_clustering_solution:
+      // Retrieve default solution reference created in _prepare_process:
+      sdm::tracker_clustering_solution & tc_solution = clustering_.grab_default_solution();
+
+      // GG hit loop :
+      sdm::calibrated_tracker_hit previous_gg_hit = tracker_hits_.begin()->get();
+      for (hit_collection_type::const_iterator igg = tracker_hits_.begin();
+           igg != tracker_hits_.end(); ++igg) {
+
+        // Get a const reference on the calibrated Geiger hit :
+        const sdm::calibrated_tracker_hit & a_gg_hit = igg->get();
+
+        const snemo::geometry::gg_locator & gg_locator = get_gg_locator();
+        const geomtools::geom_id & gg_hit_gid = a_gg_hit.get_geom_id();
+        DT_THROW_IF(!gg_locator.is_drift_cell_volume(gg_hit_gid),
+                    std::logic_error,
+                    "Calibrated tracker hit can not be located inside detector !");
+
+        if (!gg_locator.is_drift_cell_volume_in_current_module(gg_hit_gid))
+          {
+            DT_LOG_DEBUG(get_logging_priority(), "Current Geiger cell is not in the module!");
+            continue;
           }
-        }
+
+        if (!are_neighbours(a_gg_hit.get_geom_id(), previous_gg_hit.get_geom_id()))
+          {
+            DT_LOG_TRACE(get_logging_priority(), "New track found !");
+            // Create a tracker cluster handle:
+            sdm::tracker_cluster::handle_type ht_cluster(new sdm::tracker_cluster);
+            ht_cluster.grab().set_cluster_id(tc_solution.get_clusters().size());
+            tc_solution.grab_clusters().push_back(ht_cluster);
+          }
+
+        // Continue to fill the current track
+        sdm::tracker_cluster::handle_type & cluster_handle = tc_solution.grab_clusters().back();
+        DT_LOG_TRACE(get_logging_priority (), "Current cluster id " << cluster_handle.get().get_cluster_id());
+        cluster_handle.grab().grab_hits().push_back(*igg);
+        previous_gg_hit = a_gg_hit;
       }
 
       return 0;
     }
 
-    void mock_tracker_clustering_driver::isolate_tracks(
-      const hit_collection_type & hits_,
-      std::vector<snemo::datamodel::calibrated_data::tracker_hit_collection_type> & tracks_) const
-    {
-      namespace sdm = snemo::datamodel;
-      // No tracker hit:
-      if (hits_.empty()) {
-        return;
-      }
-
-      // Candidate clusters:
-      hit_collection_type calib_track;
-      calib_track.reserve(20);
-
-      // Address of the current previous hit:
-      const sdm::calibrated_tracker_hit * previous_tracker_hit = 0;
-
-      // GG hit loop :
-      BOOST_FOREACH(const sdm::calibrated_data::tracker_hit_handle_type & gg_handle,
-                    hits_) {
-        // Skip NULL handle if any:
-        if (! gg_handle) continue;
-
-        // Get a const reference on the calibrated Geiger hit :
-        const sdm::calibrated_tracker_hit & a_tracker_hit = gg_handle.get();
-
-        if (previous_tracker_hit != 0) {
-          const bool neighbours_hits
-            = are_neighbours(a_tracker_hit.get_geom_id(),
-                             previous_tracker_hit->get_geom_id());
-          if (!neighbours_hits) {
-            // New track found:
-            tracks_.push_back(calib_track);
-            calib_track.clear();
-          }
-        }
-
-        // Continue to fill the track with tracker hits:
-        calib_track.push_back(gg_handle);
-        previous_tracker_hit = &a_tracker_hit;
-      }
-
-      // Store the last track after the loop:
-      tracks_.push_back(calib_track);
-
-      return;
-    }
-
     bool mock_tracker_clustering_driver::are_neighbours(const geomtools::geom_id & tracker_hit_id1_,
                                                         const geomtools::geom_id & tracker_hit_id2_) const
     {
-      DT_THROW_IF (! is_initialized(), std::logic_error,
-                   "MockTrackerClusterizer driver is not initialized !");
+      DT_THROW_IF(! is_initialized(), std::logic_error,
+                  "MockTrackerClusterizer driver is not initialized !");
+
+      if (tracker_hit_id1_ == tracker_hit_id2_) return false;
 
       const snemo::geometry::gg_locator & gg_locator = get_gg_locator();
 

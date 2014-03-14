@@ -67,6 +67,10 @@ namespace snemo {
       /// Reset the clusterizer
       virtual void reset();
 
+      /// Prepare cluster for processing
+      virtual int _prepare_process(const snemo::datamodel::calibrated_data::tracker_hit_collection_type & hits_,
+                                   snemo::datamodel::tracker_clustering_data & clustering_);
+
       /// Main clustering method
       virtual int _process_algo(const snemo::datamodel::calibrated_data::tracker_hit_collection_type & hits_,
                                 snemo::datamodel::tracker_clustering_data & clustering_ );
@@ -74,9 +78,6 @@ namespace snemo {
       // /// Post-processing
       // virtual int _post_process(const snemo::datamodel::calibrated_data::tracker_hit_collection_type & hits_,
       //                           snemo::datamodel::tracker_clustering_data & clustering_);
-
-      void isolate_tracks(const snemo::datamodel::calibrated_data::tracker_hit_collection_type & hits_,
-                          std::vector<snemo::datamodel::calibrated_data::tracker_hit_collection_type> & tracks_) const;
 
       /// Check if 2 tracker cells are neighbours
       bool are_neighbours(const geomtools::geom_id & tracker_hit_id1_,
