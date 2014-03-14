@@ -72,6 +72,7 @@ namespace SULTAN {
     std::vector<size_t> first_cells(std::vector<topology::node> assigned_nodes);
     bool break_cluster_into_continous_parts(topology::cluster * assigned_nodes_cluster, std::vector<size_t> * the_first_cell_of_piece, std::vector<size_t> * length_of_piece, std::vector<topology::node> * the_assigned_nodes);
     bool check_continous_cells(topology::cluster * assigned_nodes);
+    bool check_continous_cells(topology::cluster * assigned_nodes, topology::node a, topology::node b);
     std::vector<topology::sequence> clean_up(std::vector<topology::sequence> seqs);
     std::vector<topology::cluster> clean_up(std::vector<topology::cluster> clusters);
     std::vector<topology::cluster> get_clusters_of_cells_to_be_used_as_end_points();

@@ -313,6 +313,7 @@ namespace SULTAN {
       bool is_near_calo()const;
       bool is_near_xcalo()const;
       bool is_near_gveto()const;
+      bool intersect(topology::cell c)const;
 
 
       bool operator<(const topology::cell& c) const{

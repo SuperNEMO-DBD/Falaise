@@ -16,6 +16,23 @@ namespace SULTAN{
     }
 
 
+   bool cell::intersect(cell c) const{
+
+
+     // fraction of radius after which cells intersect
+     double fraction_limit = 1.; 
+
+     // horizontal distance between cell centers
+     double dist = experimental_vector(ep(), c.ep()).hor().length().value();
+
+     // sum if radii
+     double rsum = (r() + c.r()).value();
+
+     return (rsum >= dist*fraction_limit );
+
+    }
+
+
     void cell::dump_point(experimental_point epp)const{
 
       experimental_vector v(ep(), epp);

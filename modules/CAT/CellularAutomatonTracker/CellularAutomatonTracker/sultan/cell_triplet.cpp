@@ -159,6 +159,17 @@ namespace SULTAN{
       double dc12dr[3];
       double dc13dr[3];
 
+      bool cells_intersect=false;
+      bool cells_intersect_ab=ca().intersect(cb());
+      bool cells_intersect_bc=cb().intersect(cc());
+      bool cells_intersect_ca=cc().intersect(ca());
+      if( print_level() > mybhep::VERBOSE ){
+	std::clog << " triplet intersects: ab " << cells_intersect_ab << " bc " << cells_intersect_bc << " ca " << cells_intersect_ca << std::endl;
+      }
+      if( cells_intersect_ab || cells_intersect_bc || cells_intersect_ca ){
+	cells_intersect = true;
+      }
+
       x[0] = ca().ep().x().value();
       x[1] = cb().ep().x().value();
       x[2] = cc().ep().x().value();
@@ -225,10 +236,10 @@ namespace SULTAN{
 
 	// if the cells are 1 ... 2 ... 3 we are ok
 	// if they are 3 ... 1 ... 2 the dist13 must reverse sign
-	double A31 = 2.*(y[0] - y[2]);
-	double A11 = 2.*(x[0] - x[2]);
-        double theta13 = atan2(-A31,-A11);
-	if( theta * theta13 < 0. ) dist13 *= -1.;
+        double theta13 = atan2(-A22,-A12);
+	if( theta * theta13 < 0. || // works provided theta and theta13 != 0
+	    ((theta == 0. || theta13 == 0.) && (A11*A12 < 0) ) ) // works in case theta or theta13 = 0
+	  dist13 *= -1.;
 
 
         // known terms in the linear system, with error
@@ -461,6 +472,12 @@ namespace SULTAN{
                 ddiscrdr[ierr] = 2.*beta*dbetadr[ierr] - dalphadr[ierr]*gamma - alpha*dgammadr[ierr];
 
               if( discr < 0. ){
+		// the circles of the cells intersect
+		if( !cells_intersect ){
+                  if( print_level() >= mybhep::NORMAL ){
+                    std::clog << " problem: triplet with detA " << detA << " intersects " << cells_intersect << " but has discriminant " << discr << std::endl;
+                  }
+		}
                 continue;
               }
 
@@ -568,9 +585,12 @@ namespace SULTAN{
         }
       }
 
+      int expected_n_of_circles=8;
+      if( cells_intersect )  expected_n_of_circles=4;
+
       if( print_level() >= mybhep::NORMAL ){
-        if( count_circles_positive_radius != 8 ){
-          std::clog << " problem: det " << detA << " one triplet of cells has produced " << count_tangent_circles << " tangent circles of which " << count_circles_positive_radius << " have positive radius (expected to be 8) "  << std::endl;
+        if( count_circles_positive_radius < expected_n_of_circles ){
+          std::clog << " problem: det " << detA << " one triplet of cells has produced " << count_tangent_circles << " tangent circles of which " << count_circles_positive_radius << " have positive radius (expected to be >= " << expected_n_of_circles << ") "  << std::endl;
         }
       }
 

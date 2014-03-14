@@ -191,6 +191,7 @@ namespace SULTAN {
     if( event_number < first_event_number ){
       m.message("SULTAN::sultan::sequentiate: local_tracking: skip event", event_number, " first event is "
                 , first_event_number,  mybhep::VERBOSE);
+      clock.stop(" sultan: sequentiate ");
       return true;
     }
 
@@ -198,7 +199,10 @@ namespace SULTAN {
 
     calos_ = tracked_data_.get_calos ();
 
-    if (the_clusters.empty ()) return true;
+    if (the_clusters.empty ()){
+      clock.stop(" sultan: sequentiate ");
+      return true;
+    }
 
     sequences_.clear();
     scenarios_.clear();
@@ -232,6 +236,7 @@ namespace SULTAN {
     if (late())
       {
         skipped_events ++;
+	clock.stop(" sultan: sequentiate ");
         return false;
       }
 
@@ -490,6 +495,33 @@ namespace SULTAN {
     bool ok = break_cluster_into_continous_parts(assigned_nodes_cluster, &the_first_cell_of_piece, &length_of_piece, &the_assigned_nodes);
 
     assigned_nodes_cluster->set_nodes(the_assigned_nodes);
+
+    clock.stop(" sultan: continous ");
+
+    return ok;
+  }
+
+
+  //*************************************************************
+  bool sultan::check_continous_cells(topology::cluster * assigned_nodes_cluster, topology::node a, topology::node b){
+  //*************************************************************
+    // - assigned_nodes = input
+    // - order them according to parameter along model
+    // - count n of breaks
+    // - if n > 1, keep the longest piece in assigned_nodes wich connects a to b
+
+    clock.start(" sultan: continous ", "cumulative");
+
+    std::vector<size_t> the_first_cell_of_piece, length_of_piece;
+    std::vector<topology::node> the_assigned_nodes;
+
+    bool ok = break_cluster_into_continous_parts(assigned_nodes_cluster, &the_first_cell_of_piece, &length_of_piece, &the_assigned_nodes);
+
+    if( the_assigned_nodes.size() > 1 &&
+	( (the_assigned_nodes.front().c().id() == a.c().id() && the_assigned_nodes.back().c().id() == b.c().id()) ||
+	  (the_assigned_nodes.back().c().id() == a.c().id() && the_assigned_nodes.front().c().id() == b.c().id()) ) ){
+      assigned_nodes_cluster->set_nodes(the_assigned_nodes);
+    }
 
     clock.stop(" sultan: continous ");
 
@@ -1953,7 +1985,7 @@ namespace SULTAN {
       // add to cluster from full nodes
       c = add_cells_to_helix_cluster_from(c, full_nodes, t, helix);
       
-      check_continous_cells(&c);
+      check_continous_cells(&c, t.ca(), t.cc());
     }
 
 
@@ -2124,7 +2156,7 @@ namespace SULTAN {
       
       c = add_cells_to_line_cluster_from(c, full_cluster, a_node, b_node);
       
-      check_continous_cells(&c);
+      check_continous_cells(&c, a_node, b_node);
 
     }
 
@@ -2230,7 +2262,7 @@ namespace SULTAN {
   //*************************************************************
   std::vector<topology::cluster> sultan::get_helix_clusters_from(std::vector<topology::node> full_nodes, topology::node a, topology::node b, size_t icluster, bool *cluster_is_finished){
   //*************************************************************
-    // get all clusters based on helices built on triplets (a, X, b), with X in cluster
+    // get all clusters based on helices built on triplets (a, X, b), with X in leftover cluster
     m.message("SULTAN::sultan::get_helix_clusters_from: get all clusters based on helices built on triplets (a, X, b), with X in cluster of", leftover_cluster_->nodes().size(), " cells " , mybhep::VVERBOSE);
     std::vector<topology::cluster> cs;
     std::vector<topology::experimental_helix> helices;
