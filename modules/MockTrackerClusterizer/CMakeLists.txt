@@ -35,7 +35,7 @@ add_library(Falaise_MockTrackerClusterizer SHARED
   ${FalaiseMockTrackerClusterizerPlugin_HEADERS}
   ${FalaiseMockTrackerClusterizerPlugin_SOURCES})
 
-target_link_libraries(Falaise_MockTrackerClusterizer ${Bayeux_LIBRARIES})
+target_link_libraries(Falaise_MockTrackerClusterizer Falaise)
 
 # Apple linker requires dynamic lookup of symbols, so we
 # add link flags on this platform
