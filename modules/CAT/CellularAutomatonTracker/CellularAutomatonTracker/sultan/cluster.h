@@ -17,7 +17,6 @@
 namespace SULTAN{
   namespace topology{
 
-
     class cluster : public tracking_object{
 
       // a cluster is composed of a list of nodes
@@ -29,6 +28,9 @@ namespace SULTAN{
 
       // list of nodes
       std::vector<node> nodes_;
+
+      // cluster type: "neighbouring_cells", "broken_line", "straight_line", "helix"
+      std::string cluster_type_;
 
       //!Default constructor
       cluster();
@@ -58,6 +60,17 @@ namespace SULTAN{
 
       //! remove nodes
       void remove_nodes(const std::vector<node> &nodes);
+
+      //! set cluster type
+      void set_cluster_type(std::string a){
+	cluster_type_ = a;
+      }
+
+
+      //! get cluster type
+      std::string get_cluster_type(){
+	return cluster_type_;
+      }
 
     public:
 

@@ -299,6 +299,7 @@ namespace SULTAN {
               }
 
               cluster_connected_to_c.set_nodes(nodes_connected_to_c);
+              cluster_connected_to_c.set_cluster_type("neighbouring_cells");
 
               clusters_.push_back(cluster_connected_to_c);
             }

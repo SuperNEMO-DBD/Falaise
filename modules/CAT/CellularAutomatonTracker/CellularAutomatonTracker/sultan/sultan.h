@@ -57,10 +57,10 @@ namespace SULTAN {
     void sequentiate_cluster_with_experimental_vector_2(topology::cluster & cluster, size_t icluster);
     void sequentiate_cluster_with_experimental_vector_3(topology::cluster & cluster, size_t icluster);
     void sequentiate_cluster_with_experimental_vector_4(topology::cluster & cluster, size_t icluster);
-    void sequentiate_cluster_with_experimental_vector_5(topology::cluster & cluster, size_t icluster);
-    void sequentiate_cluster_with_experimental_vector_5_on_vector_of_clusters_of_endpoints(topology::cluster & cluster_, size_t icluster, std::vector<topology::cluster> * cs, std::vector<topology::cluster> clusters_of_endpoints, bool * cluster_is_finished );
-    void sequentiate_cluster_with_experimental_vector_5_on_clusters_of_endpoints(topology::cluster & cluster_, size_t icluster, bool * cluster_is_finished,  const std::vector<topology::node> &inodes,  const std::vector<topology::node> &jnodes, std::vector<topology::cluster> * cs );
-    void sequentiate_cluster_with_experimental_vector_5_on_endpoints(topology::cluster & cluster_, size_t icluster, bool * cluster_is_finished, std::vector<topology::cluster> * cs_given_endpoints, std::vector<topology::node>::const_iterator inode , std::vector<topology::node>::const_iterator jnode  ) ;
+    void reduce_cluster_based_on_endpoints(size_t icluster);
+    void reduce_cluster_based_on_endpoints_on_vector_of_clusters_of_endpoints(size_t icluster, std::vector<topology::cluster> * cs, std::vector<topology::cluster> clusters_of_endpoints, bool * cluster_is_finished );
+    void reduce_cluster_based_on_endpoints_on_clusters_of_endpoints(size_t icluster, bool * cluster_is_finished,  const std::vector<topology::node> &inodes,  const std::vector<topology::node> &jnodes, std::vector<topology::cluster> * cs );
+    void reduce_cluster_based_on_endpoints_on_endpoints(size_t icluster, bool * cluster_is_finished, std::vector<topology::cluster> * cs_given_endpoints, std::vector<topology::node>::const_iterator inode , std::vector<topology::node>::const_iterator jnode  ) ;
     void make_name(topology::sequence & seq);
     bool late();
     void print_sequences() const;
@@ -76,16 +76,18 @@ namespace SULTAN {
     std::vector<topology::sequence> clean_up(std::vector<topology::sequence> seqs);
     std::vector<topology::cluster> clean_up(std::vector<topology::cluster> clusters);
     std::vector<topology::cluster> get_clusters_of_cells_to_be_used_as_end_points();
-    topology::cluster get_cluster_from(topology::cell_triplet t, topology::experimental_helix helix, std::vector<topology::node> full_nodes);
-    topology::cluster add_cells_to_helix_cluster_from(topology::cluster c, std::vector<topology::node> full_nodes, topology::cell_triplet t, topology::experimental_helix helix);
+    topology::cluster get_cluster_from(topology::cell_triplet t, topology::experimental_helix helix);
+    topology::cluster add_cells_to_helix_cluster_from(topology::cluster c, topology::cell_triplet t, topology::experimental_helix helix);
     void assign_nodes_of_cluster(topology::cluster c);
-    topology::cluster get_line_cluster_from(topology::cluster full_cluster, topology::node a, topology::node b);
-    topology::cluster add_cells_to_line_cluster_from(topology::cluster clusters, topology::cluster full_cluster, topology::node a, topology::node b);
-    std::vector<topology::cluster> get_helix_clusters_from(std::vector<topology::node> nodes, topology::node a, topology::node b, size_t icluster, bool *cluster_is_finished);
-    std::vector<topology::cluster> get_clusters_from(topology::cluster full_cluster, topology::node a, topology::node b, size_t icluster, bool * cluster_is_finished);
+    topology::cluster get_line_cluster_from(topology::node a, topology::node b);
+    topology::cluster add_cells_to_line_cluster_from(topology::cluster clusters, topology::node a, topology::node b);
+    std::vector<topology::cluster> get_helix_clusters_from(topology::node a, topology::node b, size_t icluster, bool *cluster_is_finished);
+    std::vector<topology::cluster> get_clusters_from(topology::node a, topology::node b, size_t icluster, bool * cluster_is_finished);
     void create_sequence_from_cluster(std::vector<topology::sequence> * sequences, const std::vector<topology::node> & nodes);
     void get_angle_of_point( topology::experimental_point * p, double * angle);
-
+    std::vector<topology::cluster> make_unclustered_hits();
+    topology::cluster make_cluster_with_first_last(size_t first, size_t last);
+    void make_sequences_from_clusters();
 
     //! get clusters
     const std::vector<topology::cluster>& get_clusters()const
@@ -293,6 +295,8 @@ namespace SULTAN {
 
     bool check_if_cell_is_near_calo(topology::cell c);
 
+    void reduce_clusters();
+
   protected:
 
     Clock clock;
@@ -342,18 +346,44 @@ namespace SULTAN {
       triplets_.clear();
     }
 
+    void status();
+
 
   private:
+    // vector of clusters of neighbouring cells (input)
     std::vector<topology::cluster> clusters_;
-    std::vector<topology::sequence> sequences_;
-    std::vector<topology::cell> cells_;
-    std::vector<topology::calorimeter_hit> calos_;
+
+    // vector of scenarios returned by sultan (output)
     std::vector<topology::scenario> scenarios_;
+
+    // vector of sequences to be returned
+    std::vector<topology::sequence> sequences_;
+
+    // vector of clusters to be returned
+    std::vector<topology::cluster> made_clusters_;
+
+    // all the gg cells in the event
+    std::vector<topology::cell> cells_;
+
+    // all the calo hits in the event
+    std::vector<topology::calorimeter_hit> calos_;
+
+    // cluster of neighbouring cells under study:
+    topology::cluster * full_cluster_;
+
+    // all the cell triplets under study
+    std::vector<topology::cell_triplet> triplets_;
+
+    // cluster of neighbouring cells under study: leftover hits
+    topology::cluster * leftover_cluster_;
+
+    // cluster of neighbouring cells under study: assigned hits
+    topology::cluster * assigned_cluster_;
+
+
     double run_time;
     topology::experimental_legendre_vector * experimental_legendre_vector;
     TFile *root_file_;
-    std::vector<topology::cell_triplet> triplets_;
-    topology::cluster * leftover_cluster_, * assigned_cluster_;
 
   };
 
