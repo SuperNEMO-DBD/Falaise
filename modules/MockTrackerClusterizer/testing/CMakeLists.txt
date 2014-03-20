@@ -14,7 +14,7 @@ set(_cat_TEST_ENVIRONMENT "FALAISE_RESOURCE_DIR=${Falaise_DATAROOTDIR}/resources
 if(FalaiseMockTrackerClusterizerPlugin_ENABLE_TESTING)
   foreach(_testsource ${FalaiseMockTrackerClusteringPlugin_TESTS})
     get_filename_component(_testname "${_testsource}" NAME_WE)
-    set(_testname "falaisecatplugin-${_testname}")
+    set(_testname "falaisemocktrackerclusterizerplugin-${_testname}")
     add_executable(${_testname} ${_testsource} ${testing_SOURCES})
     target_link_libraries(${_testname} Falaise_MockTrackerClusterizer Falaise)
     # - On Apple, ensure dynamic_lookup of undefined symbols
