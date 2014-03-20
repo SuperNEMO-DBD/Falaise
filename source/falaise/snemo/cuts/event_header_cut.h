@@ -70,10 +70,10 @@ namespace snemo {
             MODE_LIST_OF_EVENT_IDS = 0x8,
           };
 
-        /// Set the 'Event heander' bank label/name
+        /// Set the 'Event header' bank label/name
         void set_EH_label (const std::string & EH_label_);
 
-        /// Return the 'Event heander' bank label/name
+        /// Return the 'Event header' bank label/name
         const std::string & get_EH_label () const;
 
         /// Return the cut mode
