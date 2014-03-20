@@ -75,6 +75,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/cuts/event_header_cut.h
   snemo/cuts/simulated_data_cut.h
   snemo/cuts/calibrated_data_cut.h
+  snemo/cuts/tracker_clustering_data_cut.h
 
   snemo/visualization/toy_display.h
   )
@@ -128,6 +129,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/cuts/event_header_cut.cc
   snemo/cuts/simulated_data_cut.cc
   snemo/cuts/calibrated_data_cut.cc
+  snemo/cuts/tracker_clustering_data_cut.cc
   )
 
 list(APPEND FalaiseLibrary_TESTS
