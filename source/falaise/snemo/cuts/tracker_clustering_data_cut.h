@@ -85,7 +85,7 @@ namespace snemo {
       const std::string & get_flag_name () const;
 
       /// Constructor
-      tracker_clustered_datar_cut (datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
+      tracker_clustering_data_cut (datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
 
       /// Destructor
       virtual ~tracker_clustering_data_cut ();
