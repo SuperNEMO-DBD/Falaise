@@ -543,27 +543,27 @@ namespace SULTAN {
 
 
   //*************************************************************
-  //qqqbool sultan::form_triplets_from_cells(const std::vector<topology::node> & nodes){
   bool sultan::form_triplets_from_cells(){
   //*************************************************************
+    // combine leftover_cluster nodes
+    // to produce triplets (A, B, C) such that
+    // the distances A-B and B-C are in specified range
+
 
     clock.start(" sultan: form_triplets_from_cells ", "cumulative");
 
     reset_triplets();
 
-    size_t nnodes = leftover_cluster_->nodes_.size();
+    m.message("SULTAN::sultan::form_triplets_from_cells: calculate triples for ", leftover_cluster_->nodes_.size(), " nodes, minimum ", min_ncells_in_cluster, mybhep::VVERBOSE);
 
-    m.message("SULTAN::sultan::form_triplets_from_cells: calculate triples for ", nnodes, " nodes, minimum ", min_ncells_in_cluster, mybhep::VVERBOSE);
-
-    if( nnodes < min_ncells_in_cluster ) {
+    if( leftover_cluster_->nodes_.size() < min_ncells_in_cluster ) {
+      // not enough cells to form a cluster
       clock.stop(" sultan: form_triplets_from_cells ");
       return false;
     }
 
 
     topology::cell_triplet *ccc;
-    // size_t ncells;
-    // size_t ncells_max = 0;
     topology::experimental_helix best_helix;
 
     std::vector<topology::node> assigned_nodes_best;
@@ -575,22 +575,20 @@ namespace SULTAN {
 
         if( jnode == inode ) continue;
 
+	distance12 = (inode->c().ep().hor_distance(jnode->c().ep())).value();
+
         for(std::vector<topology::node>::const_iterator knode=jnode+1; knode != leftover_cluster_->nodes_.end(); ++knode){
 
           if( knode == inode ) continue;
           if( knode == jnode ) continue;
 
-          distance12 = (inode->c().ep().hor_distance(jnode->c().ep())).value();
           distance23 = (jnode->c().ep().hor_distance(knode->c().ep())).value();
           distance13 = (inode->c().ep().hor_distance(knode->c().ep())).value();
 
-          dmin1 = distance12;
-          if( distance12 > distance23 )
-            dmin1 = distance23;
-
-          dmin2 = distance12;
-          if( distance12 > distance13 )
-            dmin2 = distance13;
+          dmin1 = std::min( distance12,  distance13 );
+          dmin2 = std::min( distance12,  distance23 );
+	  if( dmin1 == dmin2 )
+	    dmin2 = std::min( distance13,  distance23 );
 
           m.message(" (triplet " , inode->c().id() , ", " , jnode->c().id() , ", " , knode->c().id() , ") dmin1 " , dmin1, " dmin2 ", dmin2 , mybhep::VVERBOSE);
 
@@ -610,7 +608,7 @@ namespace SULTAN {
 
     clock.stop(" sultan: form_triplets_from_cells ");
 
-    m.message("SULTAN::sultan::form_triplets_from_cells: sultan: the ", nnodes, " cells have been combined into ", triplets_.size(), " triplets ", mybhep::VERBOSE);
+    m.message("SULTAN::sultan::form_triplets_from_cells: sultan: the ", leftover_cluster_->nodes_.size(), " cells have been combined into ", triplets_.size(), " triplets ", mybhep::VERBOSE);
 
     return true;
 
@@ -766,7 +764,6 @@ namespace SULTAN {
     std::vector<topology::experimental_helix> neighbours;
     std::vector<topology::experimental_helix> the_helices;
 
-    //qqqwhile( form_triplets_from_cells(leftover_nodes) && form_helices_from_triplets(&the_helices, icluster) ){
     while( form_triplets_from_cells() && form_helices_from_triplets(&the_helices, icluster) ){
 
       clock.start(" sultan: sequentiate_cluster_with_experimental_vector: helix loop: clean ","cumulative");
@@ -1236,8 +1233,12 @@ namespace SULTAN {
     if( c.is_near_calo() ) cview="x";
     else if( c.is_near_xcalo() ) cview="y";
     else if( c.is_near_gveto() ) cview="z";
-    else
+    else{
+      m.message("SULTAN::sultan::check_if_cell_is_near_calo: problem: cell is not near any calo", mybhep::NORMAL);
       return false;
+    }
+
+    m.message("SULTAN::sultan::check_if_cell_is_near_calo: check if cell", c.id(), " with view ", cview, " is near one of ", calos_.size(), " calos", mybhep::VVERBOSE);
 
     topology::experimental_vector dist;
     topology::experimental_point cp;
@@ -1252,6 +1253,8 @@ namespace SULTAN {
 
     // loop on calo hits
     for(std::vector<topology::calorimeter_hit>::const_iterator icalo=calos_.begin(); icalo<calos_.end(); ++icalo){
+
+      m.message("SULTAN::sultan::check_if_cell_is_near_calo: calorimeter ", icalo - calos_.begin(), " with view ", icalo->pl().view(), mybhep::VVERBOSE);
 
       if( strcmp(icalo->pl().view().c_str(), cview.c_str()) != 0 ) continue;
 
@@ -2268,12 +2271,22 @@ namespace SULTAN {
 
 
     // loop on cells in the cluster of leftover nodes for form a triplet (a, X, b)
-    for(std::vector<topology::node>::const_iterator inode= leftover_cluster_->nodes_.begin(); inode!=leftover_cluster_->nodes_.end(); ++inode){
+    
+    std::vector<topology::node>::iterator inode= leftover_cluster_->nodes_.begin();
+    while( inode != leftover_cluster_->nodes_.end()){
+
+      if( inode - leftover_cluster_->nodes_.begin() + 1 > leftover_cluster_->nodes_.size() ) break;
 
       m.message("SULTAN::sultan::get_helix_clusters_from:  ... build helices for triplet ( " , a.c().id() , ", " , inode->c().id() , ", " , b.c().id() , ") using node ", inode - leftover_cluster_->nodes_.begin(), " of ", leftover_cluster_->nodes_.size(), mybhep::VVERBOSE);
 
-      if( inode->c().id() == a.c().id() ) continue;
-      if( inode->c().id() == b.c().id() ) continue;
+      if( inode->c().id() == a.c().id() ){
+	++inode;
+	continue;
+      }
+      if( inode->c().id() == b.c().id() ){
+	++inode;
+	continue;
+      }
 
       triplets_.clear();
       topology::cell_triplet t(a.c(), inode->c(), b.c(), level, probmin);
@@ -2283,7 +2296,10 @@ namespace SULTAN {
       m.message("SULTAN::sultan::get_helix_clusters_from:  ... build helices for triplet ( " , a.c().id() , ", " , inode->c().id() , ", " , b.c().id() , ")" , mybhep::VVERBOSE);
 
 
-      if( !form_helices_from_triplets(&helices, icluster) ) continue;
+      if( !form_helices_from_triplets(&helices, icluster) ){
+	++inode;
+	continue;
+      }
 
       m.message("SULTAN::sultan::get_helix_clusters_from:  ..., " , helices.size() , " helices produced " , mybhep::VVERBOSE);
           
@@ -2308,8 +2324,8 @@ namespace SULTAN {
 	  
 	  std::vector<topology::node> the_nodes = c.nodes();
 	  std::clog << "SULTAN::sultan::get_helix_clusters_from:  helix " << ihelix - helices.begin() << " for triplet ( " << a.c().id() << ", " << inode->c().id() << ", " << b.c().id() << ") makes a good cluster of " << c.nodes().size()<< " cells, cluster: ( ";
-	  for(std::vector<topology::node>::const_iterator inode=the_nodes.begin(); inode!=the_nodes.end(); ++inode)
-	    std::clog << inode->c().id() << " ";
+	  for(std::vector<topology::node>::const_iterator jnode=the_nodes.begin(); jnode!=the_nodes.end(); ++jnode)
+	    std::clog << jnode->c().id() << " ";
 	  std::clog << ")" << std::endl;
 	}
 	
@@ -2343,7 +2359,8 @@ namespace SULTAN {
 	}
 	
       }
-      
+     
+      ++inode;
     } // finish loop on cell X in (a, X, b)
 
 
@@ -2398,7 +2415,7 @@ namespace SULTAN {
 
     get_line_clusters_from(a, b, icluster, cluster_is_finished, &cs);
     status();
-    if( cluster_is_finished ){
+    if( *cluster_is_finished ){
       clock.stop(" sultan: get_clusters_from ");
       return cs;
     }
