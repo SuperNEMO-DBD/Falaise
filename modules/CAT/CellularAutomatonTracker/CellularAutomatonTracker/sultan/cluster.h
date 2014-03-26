@@ -32,6 +32,13 @@ namespace SULTAN{
       // cluster type: "neighbouring_cells", "broken_line", "straight_line", "helix"
       std::string cluster_type_;
 
+      // fitted helix
+      experimental_helix helix_;
+
+      // vector of pieces: length, first cell
+      std::vector<size_t> first_cell_of_piece_;
+      std::vector<size_t> length_of_piece_;
+
       //!Default constructor
       cluster();
 
@@ -66,17 +73,30 @@ namespace SULTAN{
 	cluster_type_ = a;
       }
 
-
       //! get cluster type
-      std::string get_cluster_type(){
+      std::string get_cluster_type()const{
 	return cluster_type_;
       }
+
+      //! set helix
+      void set_helix(const experimental_helix & helix);
+
+     //! get helix
+      const experimental_helix & get_helix()const;
+
+      std::vector<size_t> first_cell_of_piece(size_t nofflayers, double cell_distance);
+
+      std::vector<size_t> length_of_piece(){ return length_of_piece_;}
+
+      std::vector<size_t> first_cell_of_piece(){ return first_cell_of_piece_;}
 
     public:
 
       bool has_cell(const cell & c)const;
 
       cluster invert();
+
+      void circle_order();
 
       topology::node node_of_cell(const topology::cell & c);
 
@@ -85,6 +105,22 @@ namespace SULTAN{
       bool is_contained_in(const cluster & s)const;
 
       bool contains(const cluster & s)const;
+
+      topology::cluster get_cluster_with_first_last(size_t first, size_t last);
+
+      topology::cluster remove_cluster_with_first_last(size_t first, size_t last);
+
+      size_t get_next_index(size_t index);
+
+      topology::cluster longest_piece();
+
+      void break_into_continous_pieces(size_t nofflayers, double cell_distance);
+
+      void self_order(topology::node * n);
+
+      bool is_continous();
+
+      size_t max_length_of_piece();
 
     };
 

@@ -57,7 +57,7 @@ namespace SULTAN {
       experimental_double dh = z0() + H()*phi - c.ep().z();
       
       *DR = dr;
-      *DH = dh;
+      *DH = experimental_fabs(dh);
       
       return;
     }

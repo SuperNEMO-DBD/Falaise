@@ -83,6 +83,8 @@ namespace SULTAN {
 
       bool is_equal_to__optimist(const experimental_double a, double nsigma)const;
 
+      bool is_zero__optimist(double nsigma)const;
+
     };
  
 

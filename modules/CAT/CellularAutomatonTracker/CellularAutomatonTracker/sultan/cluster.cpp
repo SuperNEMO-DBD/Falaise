@@ -87,6 +87,16 @@ namespace SULTAN{
 	remove_node_with_id(inode->c().id());
     }
 
+    //! set helix
+    void cluster::set_helix(const  experimental_helix & h){
+      helix_ = h;
+    }
+
+    //! get sequence
+    const experimental_helix & cluster::get_helix()const{
+      return helix_;
+    }
+
     bool cluster::has_cell(const cell & c)const{
 
       if(std::find(nodes_.begin(), nodes_.end(), c) != nodes_.end())
@@ -94,6 +104,15 @@ namespace SULTAN{
 
       return false;
     }
+
+
+    void cluster::circle_order(){
+
+      std::sort(nodes_.begin(),nodes_.end(),topology::node::circle_order);
+
+      return;
+    }
+
 
 
     topology::node cluster::node_of_cell(const topology::cell & c){
@@ -104,7 +123,7 @@ namespace SULTAN{
 
       if( fnode == nodes_.end()){
         if( print_level() >= mybhep::NORMAL ){
-          std::clog << " problem: requested cell " << c.id() << " has no node in cluster. cluster nodes are: " << std::endl;
+          std::clog << "SULTAN::cluster::node_of_cell: problem: requested cell " << c.id() << " has no node in cluster. cluster nodes are: " << std::endl;
 
           for(std::vector<node>::iterator in = nodes_.begin(); in != nodes_.end(); ++in){
             std::clog << " " << in->c().id();
@@ -146,6 +165,300 @@ namespace SULTAN{
       return true;
     }
 
+
+    topology::cluster cluster::get_cluster_with_first_last(size_t first, size_t last){
+
+      // take the nodes A .... B of the cluster
+      // isolate the portion F .. L:
+      //  A ... (F ... L) ... B
+      // return (F ... L) as a cluster
+
+      if( print_level() >= mybhep::VVERBOSE ){
+	std::clog << " SULTAN::cluster::get_cluster_with_first_last: first " << first << " last " << last << std::endl; fflush(stdout);
+      }      
+
+      std::vector<topology::node> the_nodes;
+      if( first < last ){ // A ... (F ... L) ... B
+	the_nodes.insert(the_nodes.end(), nodes_.begin() + first, nodes_.begin() + last);
+      }else if( first == last ){ // there is only one piece A ... )F( ... B
+	the_nodes.insert(the_nodes.end(), nodes_.begin() + first, nodes_.end());
+	the_nodes.insert(the_nodes.end(), nodes_.begin(), nodes_.begin() + first); 
+     }else{ // A ... L) ... (F ... B
+	the_nodes.insert(the_nodes.end(), nodes_.begin() + first, nodes_.end());
+	the_nodes.insert(the_nodes.end(), nodes_.begin(), nodes_.begin() + last);
+      }
+      
+      topology::cluster c;
+      c.set_nodes(the_nodes);
+
+      if( print_level() >= mybhep::VVERBOSE ){
+	std::clog << " SULTAN::cluster::get_cluster_with_first_last: picked " << the_nodes.size() << " nodes " << std::endl;
+      }      
+
+      return c;
+    }
+
+    topology::cluster cluster::remove_cluster_with_first_last(size_t first, size_t last){
+      // take the nodes A .... B of the cluster
+      // isolate the portion F .. L:
+      //  A ... (F ... L) ... B
+      // remove (F ... L) from A ... B and return it as a cluster
+
+      topology::cluster c = get_cluster_with_first_last(first,last);
+      remove_nodes(c.nodes());
+      
+      return c;
+      
+    }
+
+    
+    size_t cluster::get_next_index(size_t index){
+      // get index of following cell
+
+      if( index + 1 > nodes_.size() ){
+	std::clog << "SULTAN::cluster::next_index: problem: index " << index << " size " << nodes_.size() << std::endl;
+	return 0;
+      }
+
+      size_t next_index = index + 1;
+      if( next_index == nodes_.size() ) next_index = 0;
+
+      return next_index;
+
+
+    }
+
+
+
+    topology::cluster cluster::longest_piece(){
+
+      topology::cluster c;
+
+      if( !length_of_piece_.size() ){
+        if( print_level() >= mybhep::NORMAL ){
+          std::clog << "SULTAN::cluster::longest_piece: problem: requested logenst piece whene pieces size is " << length_of_piece_.size() << std::endl;
+	}
+	return c;
+      }
+
+      if( first_cell_of_piece_.size() != length_of_piece_.size() ){
+        if( print_level() >= mybhep::NORMAL ){
+          std::clog << "SULTAN::cluster::longest_piece: problem: requested logenst piece whene pieces size is " << length_of_piece_.size() << " and first cell of pieces size " << first_cell_of_piece_.size() << std::endl;
+	}
+	return c;
+      }
+
+      // get longest piece
+      std::vector<size_t>::const_iterator ml = max_element(length_of_piece_.begin(), length_of_piece_.end());
+
+      // get indexes of first and last cell of longest piece
+      size_t longest_piece_first = first_cell_of_piece_[ml - length_of_piece_.begin()];
+      size_t longest_piece_last;
+      if( ml - length_of_piece_.begin() + 1 < (int) length_of_piece_.size() )
+	longest_piece_last = first_cell_of_piece_[ml - length_of_piece_.begin()+1];
+      else
+	longest_piece_last = first_cell_of_piece_.front();
+
+      c = get_cluster_with_first_last(longest_piece_first, longest_piece_last);
+	
+      if( print_level() >= mybhep::VERBOSE ){
+	std::clog << "SULTAN::cluster::longest_piece:  longest piece from "<< nodes_[longest_piece_first].c().id() << " to "<< nodes_[longest_piece_last].c().id() << " with length "<< *ml << " (" ;
+	for(std::vector<topology::node>::const_iterator inode=c.nodes_.begin(); inode!=c.nodes_.end(); ++inode)
+	  std::clog << " " << inode->c().id();
+	std::clog << " )" << std::endl;
+      }
+
+      return c;
+    }
+
+
+    void cluster::break_into_continous_pieces(size_t nofflayers, double cell_distance){
+      // if cluster = (a)
+      //    first_cell=(0)
+      //    length=1
+      // else cluster = (a ... (a1 ... b1) (a2 ... b2) (a3 ... b3) ...  b )
+      //    first_cell=(a1 a2 a3 ...)
+      //    length=(b1 - a1  b2 - a2  ...)
+      // if cluster = (a ... b) is all near
+      //    first_cell=(a)
+      //    length=(b - a)
+
+
+      first_cell_of_piece_.clear();
+      length_of_piece_.clear();
+
+      if( nodes_.size() < 1 ){
+	return;
+      }
+
+      // order node based on their angle wrt helix center
+      circle_order();
+
+      if (print_level() >= mybhep::VERBOSE){
+	std::clog << "SULTAN::cluster::break_into_continous_pieces: for given " << nodes_.size() << " hits: (";
+	for(std::vector<topology::node>::const_iterator inode=nodes_.begin(); inode != nodes_.end(); ++inode)
+	  std::clog << inode->c().id() << " ";
+	std::clog << ") " << std::endl;
+      }
+      
+      //////////////////////////////////////
+      //  get first cells of each piece  ///
+      //////////////////////////////////////
+      if( nodes_.size() == 1 ){
+	first_cell_of_piece_.push_back(0);
+      }
+      else{ // loop over cells
+	size_t next_index;
+	for(std::vector<topology::node>::const_iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode){
+	  
+	  // get index of following cell
+	  next_index = get_next_index(inode - nodes_.begin());
+	  
+	  if( inode->c().near_level(nodes_.at(next_index).c(), nofflayers, cell_distance ) == 0 ){
+	    if( print_level() >= mybhep::VVERBOSE ){
+	      std::clog << "SULTAN::cluster::break_into_continous_pieces:  cells " << inode->c().id() << " and " << nodes_.at(next_index).c().id() << " are far " << std::endl;
+	    }
+	    first_cell_of_piece_.push_back(next_index);
+	  }
+	  
+	}
+      }
+      
+      if( !first_cell_of_piece_.size() ){ // there are >1 nodes but no breaks
+	first_cell_of_piece_.push_back(0);      
+      }
+
+
+      //////////////////////////////////////
+      //    get length of each piece     ///
+      //////////////////////////////////////
+      int the_length;
+      if( first_cell_of_piece_.size() <= 1 ){ // there is only one piece
+	length_of_piece_.push_back(nodes_.size());
+      }else{
+	// loop on all 1st cells of pieces (excluded the 1st)
+	for(size_t i=1; i<first_cell_of_piece_.size(); i++){
+
+	  // length (= n of cells) of this piece
+	  the_length = first_cell_of_piece_[i] - first_cell_of_piece_[i-1];
+	  if( the_length < 0 ) the_length += nodes_.size();
+	  if( print_level() >= mybhep::VERBOSE ){
+	    std::clog << "SULTAN::cluster::break_into_continous_pieces:  piece " << i - 1 << " from " << first_cell_of_piece_[i-1] << " to " << first_cell_of_piece_[i] << " length " << the_length << std::endl;
+	  }
+	  length_of_piece_.push_back(the_length);
+	}
+
+	// add length of the 1st piece
+	// front .... back
+	the_length = first_cell_of_piece_.front() - first_cell_of_piece_.back();
+	if( the_length < 0 ) the_length += nodes_.size();
+	if( print_level() >= mybhep::VERBOSE ){
+	  std::clog << "SULTAN::cluster::break_into_continous_pieces:  piece "<< first_cell_of_piece_.size()-1<< " from "<< first_cell_of_piece_.back()<< " to "<< first_cell_of_piece_.front()<< " length "<< the_length << std::endl;
+	}
+	length_of_piece_.push_back(the_length);
+      }
+
+      return;
+    }
+
+
+    void cluster::self_order(topology::node * n = 0){
+      // if n = 0
+      // calculate self circle of cluster
+      // and order cells based on that
+      // otherwise use n as endpoint
+
+
+      if (print_level() >= mybhep::VVERBOSE){
+	std::clog << "SULTAN::cluster::self_order cluster of " << nodes_.size() << " cells (";
+	for(std::vector<topology::node>::const_iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode)
+	  std::clog << inode->c().id() << " ";
+	std::clog << ") without endpoint?: " << (bool)(n == 0) << std::endl;
+      }
+
+      double angle;
+      if( nodes_.size() <= 3 ){
+	for(std::vector<topology::node>::iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode){
+	  angle = (double)(inode - nodes_.begin())/(double)nodes_.size();
+	  inode->set_circle_phi(angle);
+	}
+	return;
+      }
+      
+
+      if( n == 0 ){ // calculate self circle
+
+	double x0 = 0.;
+	double y0 = 0.;
+	for(std::vector<topology::node>::const_iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode){
+	  x0 += inode->c().ep().x().value();
+	  y0 += inode->c().ep().y().value();
+	}
+	x0 /= nodes_.size();
+	y0 /= nodes_.size();
+	
+	for(std::vector<topology::node>::iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode){
+	  angle = atan2(inode->c().ep().y().value() - y0, inode->c().ep().x().value() - x0);
+	  inode->set_circle_phi(angle);
+	}
+      }else{ // use n as endpoint
+
+	double dist2max = 0.;
+	double dist2;
+	for(std::vector<topology::node>::const_iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode){
+	  dist2 = pow(inode->c().ep().x().value() - n->c().ep().x().value(),2) + pow(inode->c().ep().y().value() - n->c().ep().y().value(),2);
+	  if( dist2 > dist2max ) dist2max = dist2;
+	}
+	
+	for(std::vector<topology::node>::iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode){
+	  dist2 = pow(inode->c().ep().x().value() - n->c().ep().x().value(),2) + pow(inode->c().ep().y().value() - n->c().ep().y().value(),2);
+	  angle = dist2/dist2max;
+	  inode->set_circle_phi(angle);
+	}
+
+      }
+
+      circle_order();
+
+      if (print_level() >= mybhep::VVERBOSE){
+	std::clog << "SULTAN::cluster::self_order: ordered cluster of " << nodes_.size() << " cells (";
+	for(std::vector<topology::node>::const_iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode)
+	  std::clog << inode->c().id() << " [" << inode->circle_phi() << "] ";
+	std::clog << ") " << std::endl;
+      }
+
+
+      return;
+    }
+
+
+    bool cluster::is_continous(){
+      return (length_of_piece_.size() <= 1);
+
+    }
+
+    size_t cluster::max_length_of_piece(){
+      
+      if( !length_of_piece_.size() ){
+        if( print_level() >= mybhep::NORMAL ){
+          std::clog << "SULTAN::cluster::max_length_of_piece: problem: requested logenst piece whene pieces size is " << length_of_piece_.size() << std::endl;
+	}
+	return 0;
+      }
+      
+      if( first_cell_of_piece_.size() != length_of_piece_.size() ){
+        if( print_level() >= mybhep::NORMAL ){
+          std::clog << "SULTAN::cluster::max_length_of_piece: problem: requested logenst piece whene pieces size is " << length_of_piece_.size() << " and first cell of pieces size " << first_cell_of_piece_.size() << std::endl;
+	}
+	return 0;
+      }
+      
+      // get longest piece
+      std::vector<size_t>::const_iterator ml = max_element(length_of_piece_.begin(), length_of_piece_.end());
+      
+      return *ml;
+      
+    }
 
   }
 }

@@ -185,7 +185,7 @@ namespace SULTAN {
 
     // turn clusters to sequences
     for(std::vector<topology::cluster>::const_iterator iclu = made_clusters_.begin(); iclu != made_clusters_.end(); ++iclu){
-      create_sequence_from_cluster(&sequences_, iclu->nodes());
+      create_sequence_from_cluster(&sequences_, *iclu);
     }
     
     return;
@@ -209,7 +209,7 @@ namespace SULTAN {
       reduce_cluster_based_on_endpoints(icluster - clusters_.begin());
 
       // look for cluster with largest number of triplet-neighbours
-      //sequentiate_cluster_with_experimental_vector(a_cluster, icluster - clusters_.begin());
+      //sequentiate_cluster_with_experimental_vector(icluster - clusters_.begin());
 
       //keep track in smarter way of which cluster has the largest number of triplet-neighbours
       //sequentiate_cluster_with_experimental_vector_2(a_cluster, icluster - clusters_.begin());
@@ -228,6 +228,20 @@ namespace SULTAN {
     sequences_ = clean_up(sequences_);
     status();
 
+
+  }
+
+  //*************************************************************
+  void sultan::reset(){
+    //*************************************************************
+
+    made_clusters_.clear();
+    sequences_.clear();
+    scenarios_.clear();
+    full_cluster_->nodes_.clear();
+    leftover_cluster_->nodes_.clear();
+    assigned_cluster_->nodes_.clear();
+    triplets_.clear();
 
   }
 
@@ -251,23 +265,23 @@ namespace SULTAN {
     }
 
     // setup input data
+    reset();
+    tracked_data_.scenarios_.clear();
     clusters_ = tracked_data_.get_clusters (); // clusters from clusterizer
+    for( std::vector<topology::cluster>::iterator iclu=clusters_.begin(); iclu!=clusters_.end(); ++iclu){
+      iclu->set_probmin(probmin);
+      iclu->set_print_level(level);
+    }
     if (clusters_.empty ()){
       clock.stop(" sultan: sequentiate ");
       return true;
     }
     cells_ = tracked_data_.get_cells();
     calos_ = tracked_data_.get_calos ();
-    made_clusters_.clear();
-    sequences_.clear();
-    scenarios_.clear();
-    tracked_data_.scenarios_.clear();
-    triplets_.clear();
 
 
     // reduce input clusters to output clusters
     m.message("SULTAN::sultan::sequentiate: prepare to reduce ", clusters_.size(), " clusters of cells to output clusters with ", calos_.size(), " calos ", mybhep::VERBOSE);
-    status();
     reduce_clusters();
 
 
@@ -292,15 +306,15 @@ namespace SULTAN {
   }
 
   //*************************************************************
-  bool sultan::assign_nodes_based_on_experimental_helix(std::vector<topology::node> nodes, std::vector<topology::node> &assigned_nodes, std::vector<topology::node> &leftover_nodes, topology::experimental_helix * b, std::vector<topology::experimental_helix> *helices){
+  bool sultan::assign_nodes_based_on_experimental_helix(topology::experimental_helix * b, std::vector<topology::experimental_helix> *helices){
   //*************************************************************
 
     clock.start(" sultan: assign_nodes_based_on_experimental_helix ", "cumulative");
 
     topology::experimental_double dr, dh;
-    vector<topology::node> leftover_nodes_copy=leftover_nodes;
-    assigned_nodes.clear();
-    leftover_nodes.clear();
+    vector<topology::node> leftover_nodes_copy=leftover_cluster_->nodes_;
+    assigned_cluster_->nodes_.clear();
+    leftover_cluster_->nodes_.clear();
     topology::experimental_point p;
     size_t best_helix_index;
     double angle;
@@ -309,7 +323,7 @@ namespace SULTAN {
     double drmin = mybhep::plus_infinity;
     double dhmin = mybhep::plus_infinity;
 
-    for (vector<topology::node>::iterator inode = nodes.begin(); inode != nodes.end(); ++inode){
+    for (vector<topology::node>::iterator inode = full_cluster_->nodes_.begin(); inode != full_cluster_->nodes_.end(); ++inode){
       if (level >= mybhep::VVERBOSE)
         {
           std::clog << "SULTAN::sultan::assign_nodes_based_on_experimental_helix: cell " << inode->c().id() << " ["; inode->c().ep().dump(); std::clog << "] r "; inode->c().r().dump(); std::clog << std::endl;
@@ -344,39 +358,39 @@ namespace SULTAN {
         angle = atan2(inode->c().ep().y().value() - b->y0().value(), inode->c().ep().x().value() - b->x0().value());
         inode->set_circle_phi(angle);
         inode->set_ep(p);
-        assigned_nodes.push_back(*inode);
+        assigned_cluster_->nodes_.push_back(*inode);
       }else{
         if (level >= mybhep::VVERBOSE){
           std::clog << "SULTAN::sultan::assign_nodes_based_on_experimental_helix: is not near " << std::endl;
         }
         if( std::find(leftover_nodes_copy.begin(), leftover_nodes_copy.end(), *inode) != leftover_nodes_copy.end() )
-          leftover_nodes.push_back(*inode);
+          leftover_cluster_->nodes_.push_back(*inode);
       }
     }
 
-    bool ok = check_continous_cells(assigned_nodes, leftover_nodes, b);
+    bool ok = check_continous_cells(b);
 
-    m.message("SULTAN::sultan::assign_nodes_based_on_experimental_helix: associated ", assigned_nodes.size(), " nodes to this helix out of ", nodes.size(), " so ", leftover_nodes.size(), " remain unassigned - initially there were ", leftover_nodes_copy.size(),  " -, continous ", ok, mybhep::VERBOSE);
+    m.message("SULTAN::sultan::assign_nodes_based_on_experimental_helix: associated ", assigned_cluster_->nodes_.size(), " nodes to this helix out of ", full_cluster_->nodes_.size(), " so ", leftover_cluster_->nodes_.size(), " remain unassigned - initially there were ", leftover_nodes_copy.size(),  " -, continous ", ok, mybhep::VERBOSE);
 
     clock.stop(" sultan: assign_nodes_based_on_experimental_helix ");
 
     return ok &&
-      (leftover_nodes.size() < leftover_nodes_copy.size()) &&
-      (assigned_nodes.size() ) ;
+      (leftover_cluster_->nodes_.size() < leftover_nodes_copy.size()) &&
+      (assigned_cluster_->nodes_.size() ) ;
 
   }
 
 
   //*************************************************************
-  bool sultan::assign_nodes_based_on_experimental_helix(std::vector<topology::node> nodes, std::vector<topology::node> &assigned_nodes, std::vector<topology::node> &leftover_nodes, topology::experimental_helix * b, std::vector<size_t> *neighbouring_cells){
+  bool sultan::assign_nodes_based_on_experimental_helix(topology::experimental_helix * b, std::vector<size_t> *neighbouring_cells){
   //*************************************************************
 
     clock.start(" sultan: assign_nodes_based_on_experimental_helix ", "cumulative");
 
     topology::experimental_double dr, dh;
-    vector<topology::node> leftover_nodes_copy=leftover_nodes;
-    assigned_nodes.clear();
-    leftover_nodes.clear();
+    vector<topology::node> leftover_nodes_copy=leftover_cluster_->nodes_;
+    assigned_cluster_->nodes_.clear();
+    leftover_cluster_->nodes_.clear();
     topology::experimental_point p;
     // size_t best_helix_index;
     double angle;
@@ -385,7 +399,7 @@ namespace SULTAN {
     //double drmin = mybhep::plus_infinity;
     //double dhmin = mybhep::plus_infinity;
 
-    for (vector<topology::node>::iterator inode = nodes.begin(); inode != nodes.end(); ++inode){
+    for (vector<topology::node>::iterator inode = full_cluster_->nodes_.begin(); inode != full_cluster_->nodes_.end(); ++inode){
       if (level >= mybhep::VVERBOSE)
         {
           std::clog << "SULTAN::sultan::assign_nodes_based_on_experimental_helix: cell " << inode->c().id() << " ["; inode->c().ep().dump(); std::clog << "] r "; inode->c().r().dump(); std::clog << std::endl;
@@ -407,297 +421,137 @@ namespace SULTAN {
         angle = atan2(inode->c().ep().y().value() - b->y0().value(), inode->c().ep().x().value() - b->x0().value());
         inode->set_circle_phi(angle);
         inode->set_ep(p);
-        assigned_nodes.push_back(*inode);
+        assigned_cluster_->nodes_.push_back(*inode);
       }else{
         if (level >= mybhep::VVERBOSE){
           std::clog << "SULTAN::sultan::assign_nodes_based_on_experimental_helix: is not near " << std::endl;
         }
         if( std::find(leftover_nodes_copy.begin(), leftover_nodes_copy.end(), *inode) != leftover_nodes_copy.end() )
-          leftover_nodes.push_back(*inode);
+          leftover_cluster_->nodes_.push_back(*inode);
       }
 
     }
 
-    bool ok = check_continous_cells(assigned_nodes, leftover_nodes, b);
+    bool ok = check_continous_cells(b);
 
-    m.message("SULTAN::sultan::assign_nodes_based_on_experimental_helix: associated ", assigned_nodes.size(), " nodes to this helix out of ", nodes.size(), " so ", leftover_nodes.size(), " remain unassigned - initially there were ", leftover_nodes_copy.size(),  " -, continous ", ok, mybhep::VERBOSE);
+    m.message("SULTAN::sultan::assign_nodes_based_on_experimental_helix: associated ", assigned_cluster_->nodes_.size(), " nodes to this helix out of ", full_cluster_->nodes_.size(), " so ", leftover_cluster_->nodes_.size(), " remain unassigned - initially there were ", leftover_nodes_copy.size(),  " -, continous ", ok, mybhep::VERBOSE);
 
     clock.stop(" sultan: assign_nodes_based_on_experimental_helix ");
 
     return ok &&
-      (leftover_nodes.size() < leftover_nodes_copy.size()) &&
-      (assigned_nodes.size() ) ;
+      (leftover_cluster_->nodes_.size() < leftover_nodes_copy.size()) &&
+      (assigned_cluster_->nodes_.size() ) ;
 
   }
 
 
   //*************************************************************
-  bool sultan::check_continous_cells(std::vector<topology::node> &assigned_nodes, std::vector<topology::node> &leftover_nodes, topology::experimental_helix *b){
+  bool sultan::check_continous_cells(topology::experimental_helix *b){
   //*************************************************************
-    // - assigned_nodes = input
+    // - take assigned_nodes as input
     // - order them according to parameter along model
     // - count n of breaks
     // - if n > 1, keep the longest piece in assigned_nodes and put the others in leftover_nodes
 
     clock.start(" sultan: continous ", "cumulative");
 
-    size_t next_index;
+    int min_length = 3;
 
-    // order node based on their angle wrt helix center
-    std::sort(assigned_nodes.begin(),assigned_nodes.end(),topology::node::circle_order);
+    // get lengths of each piece
+    size_t longest_piece_first, longest_piece_last;
+    vector<size_t> length_of_piece;
+    size_t maxlength;
+    std::vector<size_t> the_first_cell_of_piece;
+    
+    assigned_cluster_->break_into_continous_pieces(nofflayers, cell_distance);
 
-    vector<size_t> first_cell_of_piece;
-
-    // loop over cells
-    for(std::vector<topology::node>::const_iterator inode=assigned_nodes.begin(); inode!=assigned_nodes.end(); ++inode){
-
-      next_index = inode - assigned_nodes.begin() + 1;
-      if( next_index == assigned_nodes.size() )
-        next_index = 0;
-
-      if( inode->c().near_level(assigned_nodes.at(next_index).c(), nofflayers, cell_distance ) == 0 ){
-        first_cell_of_piece.push_back(next_index);
-      }
-
-    }
-
-    bool ok = (first_cell_of_piece.size() <= 1 );
-
-    m.message("SULTAN::sultan::check_continous_cells:  the ", assigned_nodes.size(), " assigned nodes have ", first_cell_of_piece.size(), " breaks, continous: ", ok, mybhep::VVERBOSE);
+    bool ok = assigned_cluster_->is_continous();
 
     if( !ok ){
-      int length;
-      vector<size_t> length_of_piece;
-      for(size_t i=1; i<first_cell_of_piece.size(); i++){
-        length = first_cell_of_piece[i] - first_cell_of_piece[i-1];
-        if( length < 0 ) length += assigned_nodes.size();
-        m.message("SULTAN::sultan::check_continous_cells:  piece ", i - 1, " from ", first_cell_of_piece[i-1], " to ", first_cell_of_piece[i], " length ", length, mybhep::VERBOSE);
-        length_of_piece.push_back(length);
-      }
-      length = first_cell_of_piece.front() - first_cell_of_piece.back();
-      if( length < 0 ) length += assigned_nodes.size();
-      m.message("SULTAN::sultan::check_continous_cells:  piece ", first_cell_of_piece.size()-1, " from ", first_cell_of_piece.back(), " to ", first_cell_of_piece.front(), " length ", length, mybhep::VERBOSE);
-      length_of_piece.push_back(length);
-      std::vector<size_t>::const_iterator ml = max_element(length_of_piece.begin(), length_of_piece.end());
-      if( *ml >= 3 ){
+      // get lengths of each piece
+
+      maxlength = assigned_cluster_->max_length_of_piece();
+
+      if( maxlength >= min_length ){
         ok = true;
-        size_t longest_piece_first = first_cell_of_piece[ml - length_of_piece.begin()];
-        size_t longest_piece_last;
-        if( ml - length_of_piece.begin() + 1 < (int) length_of_piece.size() )
-          longest_piece_last = first_cell_of_piece[ml - length_of_piece.begin()+1];
-        else
-          longest_piece_last = first_cell_of_piece.front();
-        m.message("SULTAN::sultan::check_continous_cells:  longest piece from ", longest_piece_first, " to ", longest_piece_last, " with length ", *ml, mybhep::VERBOSE);
-        if( longest_piece_first < longest_piece_last ){
-          std::vector<topology::node> newnodes(assigned_nodes.begin()+longest_piece_first, assigned_nodes.begin()+longest_piece_last);
-          leftover_nodes.insert(leftover_nodes.end(),assigned_nodes.begin()+longest_piece_last,assigned_nodes.end());
-          leftover_nodes.insert(leftover_nodes.end(),assigned_nodes.begin(),assigned_nodes.begin()+longest_piece_first);
-          assigned_nodes = newnodes;
-        }else{
-          std::vector<topology::node> newnodes(assigned_nodes.begin()+longest_piece_first, assigned_nodes.end());
-          newnodes.insert(newnodes.end(),assigned_nodes.begin(), assigned_nodes.begin()+longest_piece_last);
-          leftover_nodes.insert(leftover_nodes.end(),assigned_nodes.begin()+longest_piece_last,assigned_nodes.begin()+longest_piece_first);
-          assigned_nodes = newnodes;
-        }
-      }else{
-        m.message("SULTAN::sultan::check_continous_cells:  the longest piece is too short ", mybhep::VERBOSE);
-        assigned_nodes.clear();
+
+	topology::cluster longest_cluster =  assigned_cluster_->longest_piece();
+
+	// setup leftover and assigned clusters qqq
+	
+	
+	//         if( longest_piece_first < longest_piece_last ){
+	//           leftover_cluster_->nodes_.insert(leftover_cluster_->nodes_.end(),assigned_cluster_->nodes_.begin()+longest_piece_last,assigned_cluster_->nodes_.end());
+	//           leftover_cluster_->nodes_.insert(leftover_cluster_->nodes_.end(),assigned_cluster_->nodes_.begin(),assigned_cluster_->nodes_.begin()+longest_piece_first);
+	//           std::vector<topology::node> newnodes(assigned_cluster_->nodes_.begin()+longest_piece_first, assigned_cluster_->nodes_.begin()+longest_piece_last);
+	//           assigned_cluster_->set_nodes(newnodes);
+	//         }else{
+	//           leftover_cluster_->nodes_.insert(leftover_cluster_->nodes_.end(),assigned_cluster_->nodes_.begin()+longest_piece_last,assigned_cluster_->nodes_.begin()+longest_piece_first);
+	//           std::vector<topology::node> newnodes(assigned_cluster_->nodes_.begin()+longest_piece_first, assigned_cluster_->nodes_.end());
+	//           newnodes.insert(newnodes.end(),assigned_cluster_->nodes_.begin(), assigned_cluster_->nodes_.begin()+longest_piece_last);
+	//           assigned_cluster_->set_nodes(newnodes);
+	//         }
+	//       }else{
+	//         m.message("SULTAN::sultan::check_continous_cells:  the longest piece is too short: ", length, " limit: ", min_length, mybhep::VERBOSE);
+	// 	leftover_cluster_->nodes_.insert(leftover_cluster_->nodes_.end(),assigned_cluster_->nodes_.begin(),assigned_cluster_->nodes_.end());
+	//         assigned_cluster_->nodes_.clear();
       }
+	
+      if( assigned_cluster_->nodes_.size() != maxlength ){
+	m.message("SULTAN::sultan::check_continous_cells:  problem: assigned cluster size", assigned_cluster_->nodes_.size(), " length ", maxlength, mybhep::NORMAL);
+      }
+      
       if (level >= mybhep::VERBOSE){
-	std::clog << "SULTAN::sultan::check_continous_cells:  return piece of length " << assigned_nodes.size() << ": ( ";
-	for(std::vector<topology::node>::const_iterator inode=assigned_nodes.begin(); inode!=assigned_nodes.end(); ++inode)
+	std::clog << "SULTAN::sultan::check_continous_cells:  return piece of length " << assigned_cluster_->nodes_.size() << ": ( ";
+	for(std::vector<topology::node>::const_iterator inode=assigned_cluster_->nodes_.begin(); inode!=assigned_cluster_->nodes_.end(); ++inode)
 	  std::clog << inode->c().id() << " ";
 	std::clog << ")" << std::endl;
       }
     }
-
-
-    for(std::vector<topology::node>::const_iterator inode=assigned_nodes.begin(); inode!=assigned_nodes.end(); ++inode)
+    
+    
+    for(std::vector<topology::node>::const_iterator inode=assigned_cluster_->nodes_.begin(); inode!=assigned_cluster_->nodes_.end(); ++inode)
       b->add_id(inode->c().id());
-
-    clock.stop(" sultan: continous ");
-
-    return ok;
-  }
-
-  //*************************************************************
-  bool sultan::check_continous_cells(topology::cluster * assigned_nodes_cluster){
-  //*************************************************************
-    // - assigned_nodes = input
-    // - order them according to parameter along model
-    // - count n of breaks
-    // - if n > 1, keep the longest piece in assigned_nodes
-
-    clock.start(" sultan: continous ", "cumulative");
-
-    std::vector<size_t> the_first_cell_of_piece, length_of_piece;
-    std::vector<topology::node> the_assigned_nodes;
-
-    bool ok = break_cluster_into_continous_parts(assigned_nodes_cluster, &the_first_cell_of_piece, &length_of_piece, &the_assigned_nodes);
-
-    assigned_nodes_cluster->set_nodes(the_assigned_nodes);
-
-    clock.stop(" sultan: continous ");
-
-    return ok;
-  }
-
-
-  //*************************************************************
-  bool sultan::check_continous_cells(topology::cluster * assigned_nodes_cluster, topology::node a, topology::node b){
-  //*************************************************************
-    // - assigned_nodes = input
-    // - order them according to parameter along model
-    // - count n of breaks
-    // - if n > 1, keep the longest piece in assigned_nodes wich connects a to b
-
-    clock.start(" sultan: continous ", "cumulative");
-
-    std::vector<size_t> the_first_cell_of_piece, length_of_piece;
-    std::vector<topology::node> the_assigned_nodes;
-
-    bool ok = break_cluster_into_continous_parts(assigned_nodes_cluster, &the_first_cell_of_piece, &length_of_piece, &the_assigned_nodes);
-
-    if( the_assigned_nodes.size() > 1 &&
-	( (the_assigned_nodes.front().c().id() == a.c().id() && the_assigned_nodes.back().c().id() == b.c().id()) ||
-	  (the_assigned_nodes.back().c().id() == a.c().id() && the_assigned_nodes.front().c().id() == b.c().id()) ) ){
-      assigned_nodes_cluster->set_nodes(the_assigned_nodes);
-    }else{
-      assigned_nodes_cluster->nodes_.clear();
-    }
-
-    clock.stop(" sultan: continous ");
-
-    return ok;
-  }
-
-
-  //*************************************************************
-  std::vector<size_t> sultan::first_cells(std::vector<topology::node> assigned_nodes){
-  //*************************************************************
-    // input nodes = (a1, ..., an)
-    // - returns a vector (a b ... c) (a vector of indexes)
-    // where the nodes "(nodes[a], nodes[b-1])" form continuous strip of cells
-    // if needed it's the nodes "(nodes[c], an) + (a1, nodes[a])" that form a continous strip
-    // - if there is only one input node = (a), returns (0)
-    // - if all input cells are near, returns (0)
-
-    std::vector<size_t> first_cell_of_piece;
     
-    if( assigned_nodes.size() == 1 ){
-      first_cell_of_piece.push_back(0);
-    }
-    else{ // loop over cells
-      size_t next_index;
-      for(std::vector<topology::node>::const_iterator inode=assigned_nodes.begin(); inode!=assigned_nodes.end(); ++inode){
-	
-	next_index = inode - assigned_nodes.begin() + 1;
-	if( next_index == assigned_nodes.size() )
-	  next_index = 0;
-	
-	if( inode->c().near_level(assigned_nodes.at(next_index).c(), nofflayers, cell_distance ) == 0 ){
-	  first_cell_of_piece.push_back(next_index);
-	}
-	
-      }
-    }
-
-    if( !first_cell_of_piece.size() ){ // there are >1 nodes but no breaks
-      first_cell_of_piece.push_back(0);      
-    }
-
-    return first_cell_of_piece;
-
-  }
-
-  //*************************************************************
-  bool sultan::break_cluster_into_continous_parts(topology::cluster * assigned_nodes_cluster, std::vector<size_t> * the_first_cell_of_piece, std::vector<size_t> * the_length_of_piece, std::vector<topology::node> * the_assigned_nodes){
-  //*************************************************************
-    // - assigned_nodes = input
-    // - order them according to parameter along model
-    // - count n of breaks
-    // - if n > 1, keep the longest piece in the_assigned_nodes
-
-    clock.start(" sultan: break ", "cumulative");
-
-    std::vector<topology::node> assigned_nodes = assigned_nodes_cluster->nodes();
-
-    // order node based on their angle wrt helix center
-    std::sort(assigned_nodes.begin(),assigned_nodes.end(),topology::node::circle_order);
-
-    vector<size_t> first_cell_of_piece = first_cells(assigned_nodes);
-
-    bool ok = (first_cell_of_piece.size() <= 1 );
-
-    m.message("SULTAN::sultan::break_cluster_into_continous_parts:  the ", assigned_nodes.size(), " assigned nodes have ", first_cell_of_piece.size(), " breaks, continous: ", ok, mybhep::VVERBOSE);
+    clock.stop(" sultan: continous ");
     
-    std::vector<size_t> length_of_piece;
-
-    if( first_cell_of_piece.size() <= 1 ){ // there is only one piece
-      length_of_piece.push_back(assigned_nodes.size());
-    }
-    else{ // there are at least 2 pieces
-      int length;
-      for(size_t i=1; i<first_cell_of_piece.size(); i++){
-        length = first_cell_of_piece[i] - first_cell_of_piece[i-1];
-        if( length < 0 ) length += assigned_nodes.size();
-        m.message("SULTAN::sultan::break_cluster_into_continous_parts:  piece ", i - 1, " from ", first_cell_of_piece[i-1], " to ", first_cell_of_piece[i], " length ", length, mybhep::VVERBOSE);
-        length_of_piece.push_back(length);
-      }
-      length = first_cell_of_piece.front() - first_cell_of_piece.back();
-      if( length < 0 ) length += assigned_nodes.size();
-      m.message("SULTAN::sultan::break_cluster_into_continous_parts:  piece ", first_cell_of_piece.size()-1, " from ", first_cell_of_piece.back(), " to ", first_cell_of_piece.front(), " length ", length, mybhep::VVERBOSE);
-      length_of_piece.push_back(length);
-      std::vector<size_t>::const_iterator ml = max_element(length_of_piece.begin(), length_of_piece.end());
-      if( *ml >= 3 ){
-        ok = true;
-        size_t longest_piece_first = first_cell_of_piece[ml - length_of_piece.begin()];
-        size_t longest_piece_last;
-        if( ml - length_of_piece.begin() + 1 < (int) length_of_piece.size() )
-          longest_piece_last = first_cell_of_piece[ml - length_of_piece.begin()+1];
-        else
-          longest_piece_last = first_cell_of_piece.front();
-        m.message("SULTAN::sultan::break_cluster_into_continous_parts:  longest piece from ", longest_piece_first, " to ", longest_piece_last, " with length ", *ml, mybhep::VVERBOSE);
-        if( longest_piece_first < longest_piece_last ){
-          std::vector<topology::node> newnodes(assigned_nodes.begin()+longest_piece_first, assigned_nodes.begin()+longest_piece_last);
-          assigned_nodes = newnodes;
-        }else{
-          std::vector<topology::node> newnodes(assigned_nodes.begin()+longest_piece_first, assigned_nodes.end());
-          newnodes.insert(newnodes.end(),assigned_nodes.begin(), assigned_nodes.begin()+longest_piece_last);
-          assigned_nodes = newnodes;
-        }
-      }else{
-        m.message("SULTAN::sultan::break_cluster_into_continous_parts:  the longest piece is too short ", mybhep::VVERBOSE);
-        assigned_nodes.clear();
-      }
-      if (level >= mybhep::VVERBOSE){
-	std::clog << "SULTAN::sultan::break_cluster_into_continous_parts:  return piece of length " << assigned_nodes.size() << ": ( ";
-	for(std::vector<topology::node>::const_iterator inode=assigned_nodes.begin(); inode!=assigned_nodes.end(); ++inode)
-	  std::clog << inode->c().id() << " ";
-	std::clog << ")" << std::endl;
-      }
-    }
-
-
-    * the_first_cell_of_piece = first_cell_of_piece;
-    * the_length_of_piece = length_of_piece;
-    * the_assigned_nodes = assigned_nodes;
-
-    clock.stop(" sultan: break ");
-
     return ok;
   }
+  
+
+  //*************************************************************
+  bool sultan::get_longest_piece(topology::cluster * given_cluster, topology::node a, topology::node b, topology::cluster * longest_piece){
+  //*************************************************************
+
+    int min_length = 2;
+
+    given_cluster->set_probmin(probmin);
+    given_cluster->set_print_level(level);
+    topology::cluster cluster_copy = *given_cluster;
+
+    cluster_copy.break_into_continous_pieces( nofflayers, cell_distance);
+    *longest_piece = cluster_copy.longest_piece();
+
+    if( longest_piece->nodes_.size() >= min_length &&
+	( (longest_piece->nodes_.front().c().id() == a.c().id() && longest_piece->nodes_.back().c().id() == b.c().id()) ||
+	  (longest_piece->nodes_.back().c().id() == a.c().id() && longest_piece->nodes_.front().c().id() == b.c().id()) ) )
+      return true;
+
+    return false;
+  }
+
 
 
   //*************************************************************
-  bool sultan::form_triplets_from_cells(const std::vector<topology::node> & nodes){
+  //qqqbool sultan::form_triplets_from_cells(const std::vector<topology::node> & nodes){
+  bool sultan::form_triplets_from_cells(){
   //*************************************************************
 
     clock.start(" sultan: form_triplets_from_cells ", "cumulative");
 
     reset_triplets();
 
-    size_t nnodes = nodes.size();
+    size_t nnodes = leftover_cluster_->nodes_.size();
 
     m.message("SULTAN::sultan::form_triplets_from_cells: calculate triples for ", nnodes, " nodes, minimum ", min_ncells_in_cluster, mybhep::VVERBOSE);
 
@@ -712,16 +566,16 @@ namespace SULTAN {
     // size_t ncells_max = 0;
     topology::experimental_helix best_helix;
 
-    std::vector<topology::node> assigned_nodes, assigned_nodes_best;
+    std::vector<topology::node> assigned_nodes_best;
     double distance12, distance23, distance13;
     double dmin1, dmin2;
 
-    for(std::vector<topology::node>::const_iterator inode=nodes.begin(); inode != nodes.end()-2; ++inode){
-      for(std::vector<topology::node>::const_iterator jnode=inode+1; jnode != nodes.end()-1; ++jnode){
+    for(std::vector<topology::node>::const_iterator inode=leftover_cluster_->nodes_.begin(); inode != leftover_cluster_->nodes_.end()-2; ++inode){
+      for(std::vector<topology::node>::const_iterator jnode=inode+1; jnode != leftover_cluster_->nodes_.end()-1; ++jnode){
 
         if( jnode == inode ) continue;
 
-        for(std::vector<topology::node>::const_iterator knode=jnode+1; knode != nodes.end(); ++knode){
+        for(std::vector<topology::node>::const_iterator knode=jnode+1; knode != leftover_cluster_->nodes_.end(); ++knode){
 
           if( knode == inode ) continue;
           if( knode == jnode ) continue;
@@ -782,7 +636,7 @@ namespace SULTAN {
     // size_t ncells_max = 0;
     topology::experimental_helix best_helix;
 
-    std::vector<topology::node> assigned_nodes, assigned_nodes_best;
+    std::vector<topology::node> assigned_nodes_best;
 
     std::vector<topology::experimental_helix> helices;
 
@@ -887,7 +741,7 @@ namespace SULTAN {
 
 
   //*************************************************************
-  void sultan::sequentiate_cluster_with_experimental_vector(topology::cluster & cluster_, size_t icluster) {
+  void sultan::sequentiate_cluster_with_experimental_vector( size_t icluster) {
     //*************************************************************
 
     clock.start(" sultan: sequentiate_cluster_with_experimental_vector ","cumulative");
@@ -896,16 +750,15 @@ namespace SULTAN {
 
     if (level >= mybhep::VERBOSE)
       {
-        std::clog << "SULTAN::sultan::sequentiate_cluster_with_experimental_vector:  sequentiate cluster with " << cluster_.nodes_.size() << " nodes " << std::endl; fflush(stdout);
+        std::clog << "SULTAN::sultan::sequentiate_cluster_with_experimental_vector:  sequentiate cluster with " << full_cluster_->nodes_.size() << " nodes " << std::endl; fflush(stdout);
       }
 
-    if( cluster_.nodes_.size() < 3 ){
+    if( full_cluster_->nodes_.size() < 3 ){
       clock.stop(" sultan: sequentiate_cluster_with_experimental_vector ");
       return;
     }
 
     topology::experimental_helix b;
-    vector<topology::node> assigned_nodes, leftover_nodes;
     topology::sequence *s;
     topology::experimental_point *center;
     topology::experimental_double radius;
@@ -913,13 +766,12 @@ namespace SULTAN {
     std::vector<topology::experimental_helix> neighbours;
     std::vector<topology::experimental_helix> the_helices;
 
-    leftover_nodes = cluster_.nodes_;
-
-    while( form_triplets_from_cells(leftover_nodes) && form_helices_from_triplets(&the_helices, icluster) ){
+    //qqqwhile( form_triplets_from_cells(leftover_nodes) && form_helices_from_triplets(&the_helices, icluster) ){
+    while( form_triplets_from_cells() && form_helices_from_triplets(&the_helices, icluster) ){
 
       clock.start(" sultan: sequentiate_cluster_with_experimental_vector: helix loop: clean ","cumulative");
 
-      assigned_nodes.clear();
+      assigned_cluster_->nodes_.clear();
       experimental_legendre_vector->reset();
       neighbours.clear();
 
@@ -962,19 +814,19 @@ namespace SULTAN {
       clock.stop(" sultan: sequentiate_cluster_with_experimental_vector: helix loop: max ");
       clock.start(" sultan: sequentiate_cluster_with_experimental_vector: helix loop: assign ","cumulative");
 
-      bool ok = assign_nodes_based_on_experimental_helix(cluster_.nodes_, assigned_nodes, leftover_nodes, &b, &neighbours);
+      bool ok = assign_nodes_based_on_experimental_helix(&b, &neighbours);
 
       if( ok ){
-        s = new topology::sequence(assigned_nodes, level, probmin);
-        make_name(*s);
+	topology::cluster newc;
+	newc.set_nodes(assigned_cluster_->nodes_);
+	newc.set_cluster_type("helix");
         center = new topology::experimental_point(b.x0(),b.y0(),b.z0());
         radius.set(b.R());
         pitch.set(b.H());
-        s->set_helix(b);
-        sequences_.push_back(*s);
-        m.message("SULTAN::sultan::sequentiate_cluster_with_experimental_vector:  finished track [", sequences_.size()-1, "] with ", s->nodes_.size(), " nodes", mybhep::VERBOSE); fflush(stdout);
-        delete s;
+        newc.set_helix(b);
+	made_clusters_.push_back(newc);
         delete center;
+        m.message("SULTAN::sultan::sequentiate_cluster_with_experimental_vector:  finished cluster [", made_clusters_.size()-1, "] with ", assigned_cluster_->nodes_.size(), " nodes", mybhep::VERBOSE); fflush(stdout);
       }else{
         m.message("SULTAN::sultan::sequentiate_cluster_with_experimental_vector:  could not make a track ", mybhep::VERBOSE); fflush(stdout);
         clock.stop(" sultan: sequentiate_cluster_with_experimental_vector: helix loop: assign ");
@@ -982,9 +834,9 @@ namespace SULTAN {
       }
 
       clock.stop(" sultan: sequentiate_cluster_with_experimental_vector: helix loop: assign ");
-
+      
       if( print_event_display ) break;
-
+      
     }
 
 
@@ -1013,7 +865,7 @@ namespace SULTAN {
       }
 
     topology::experimental_helix b;
-    vector<topology::node> assigned_nodes, leftover_nodes;
+    vector<topology::node> leftover_nodes;
     topology::sequence *s;
     topology::experimental_point *center;
     topology::experimental_double radius;
@@ -1026,15 +878,16 @@ namespace SULTAN {
     topology::cluster_of_experimental_helices best_cluster;
     bool found;
 
-    while( form_triplets_from_cells(leftover_nodes) && form_helices_from_triplets(&the_helices, icluster) ){
+    //qqqwhile( form_triplets_from_cells(leftover_nodes) && form_helices_from_triplets(&the_helices, icluster) ){
+    while( form_triplets_from_cells() && form_helices_from_triplets(&the_helices, icluster) ){
 
       clock.start(" sultan: sequentiate_cluster_with_experimental_vector_2: helix loop: clean ","cumulative");
 
-      assigned_nodes.clear();
+      assigned_cluster_->nodes_.clear();
       experimental_legendre_vector->reset();
 
       if (level >= mybhep::VERBOSE){
-        std::clog << "SULTAN::sultan::sequentiate_cluster_with_experimental_vector_2:  there are " << leftover_nodes.size() << " leftover nodes and " << assigned_nodes.size() << " assigned nodes, the leg vector has " << experimental_legendre_vector->helices().size() << " helices and " << the_helices.size() << " have been prepared " << std::endl; fflush(stdout);
+        std::clog << "SULTAN::sultan::sequentiate_cluster_with_experimental_vector_2:  there are " << leftover_nodes.size() << " leftover nodes and " << assigned_cluster_->nodes_.size() << " assigned nodes, the leg vector has " << experimental_legendre_vector->helices().size() << " helices and " << the_helices.size() << " have been prepared " << std::endl; fflush(stdout);
       }
 
       if( !the_helices.size() ){
@@ -1082,10 +935,10 @@ namespace SULTAN {
       clock.stop(" sultan: sequentiate_cluster_with_experimental_vector_2: helix loop: max ");
       clock.start(" sultan: sequentiate_cluster_with_experimental_vector_2: helix loop: assign ","cumulative");
 
-      bool ok = assign_nodes_based_on_experimental_helix(cluster_.nodes_, assigned_nodes, leftover_nodes, &b, &neighbours);
+      bool ok = assign_nodes_based_on_experimental_helix(&b, &neighbours);
 
       if( ok ){
-        s = new topology::sequence(assigned_nodes, level, probmin);
+        s = new topology::sequence(assigned_cluster_->nodes_, level, probmin);
         make_name(*s);
         center = new topology::experimental_point(b.x0(),b.y0(),b.z0());
         radius.set(b.R());
@@ -1133,7 +986,7 @@ namespace SULTAN {
       }
 
     topology::experimental_helix b;
-    vector<topology::node> assigned_nodes, leftover_nodes;
+    vector<topology::node> leftover_nodes;
     topology::sequence *s;
     topology::experimental_point *center;
     topology::experimental_double radius;
@@ -1143,11 +996,12 @@ namespace SULTAN {
 
     leftover_nodes = cluster_.nodes_;
 
-    while( form_triplets_from_cells(leftover_nodes) && form_helices_from_triplets(&the_helices, icluster) ){
+    //qqqwhile( form_triplets_from_cells(leftover_nodes) && form_helices_from_triplets(&the_helices, icluster) ){
+    while( form_triplets_from_cells() && form_helices_from_triplets(&the_helices, icluster) ){
 
       clock.start(" sultan: sequentiate_cluster_with_experimental_vector_3: helix loop: clean ","cumulative");
 
-      assigned_nodes.clear();
+      assigned_cluster_->nodes_.clear();
       experimental_legendre_vector->reset();
       neighbouring_cells.clear();
 
@@ -1190,10 +1044,10 @@ namespace SULTAN {
       clock.stop(" sultan: sequentiate_cluster_with_experimental_vector_3: helix loop: max ");
       clock.start(" sultan: sequentiate_cluster_with_experimental_vector_3: helix loop: assign ","cumulative");
 
-      bool ok = assign_nodes_based_on_experimental_helix(cluster_.nodes_, assigned_nodes, leftover_nodes, &b, &neighbouring_cells);
+      bool ok = assign_nodes_based_on_experimental_helix(&b, &neighbouring_cells);
 
       if( ok ){
-        s = new topology::sequence(assigned_nodes, level, probmin);
+        s = new topology::sequence(assigned_cluster_->nodes_, level, probmin);
         make_name(*s);
         center = new topology::experimental_point(b.x0(),b.y0(),b.z0());
         radius.set(b.R());
@@ -1248,7 +1102,8 @@ namespace SULTAN {
     topology::experimental_point p;
     double angle;
 
-    form_triplets_from_cells(cluster_.nodes_);
+    //form_triplets_from_cells(cluster_.nodes_);
+    form_triplets_from_cells();
     form_helices_from_triplets(&the_helices, icluster);
 
     clock.start(" sultan: sequentiate_cluster_with_experimental_vector_4: helix loop: clean ","cumulative");
@@ -1392,21 +1247,24 @@ namespace SULTAN {
     p.set_x(topology::experimental_double(p.x().value(), cell_distance));
     p.set_y(topology::experimental_double(p.y().value(), cell_distance));
 
+    // increase the error on calo sizes to allow for diagonal connections
+    double factor=2.;
+
     // loop on calo hits
     for(std::vector<topology::calorimeter_hit>::const_iterator icalo=calos_.begin(); icalo<calos_.end(); ++icalo){
 
       if( strcmp(icalo->pl().view().c_str(), cview.c_str()) != 0 ) continue;
 
       cp = icalo->pl().face();
-      cp.set_x(topology::experimental_double(cp.x().value(), icalo->pl().sizes().x().value()));
-      cp.set_y(topology::experimental_double(cp.y().value(), icalo->pl().sizes().y().value()));
-      cp.set_z(topology::experimental_double(cp.z().value(), icalo->pl().sizes().z().value()));
+      cp.set_x(topology::experimental_double(cp.x().value(), factor*icalo->pl().sizes().x().value()));
+      cp.set_y(topology::experimental_double(cp.y().value(), factor*icalo->pl().sizes().y().value()));
+      cp.set_z(topology::experimental_double(cp.z().value(), factor*icalo->pl().sizes().z().value()));
       dist = cp - p;
       distance = dist.length();
 
       m.message("SULTAN::sultan::check_if_cell_is_near_calo: cell - calo distance", distance.value(), " +- ", distance.error(), mybhep::VVERBOSE);
 
-      if( distance.is_less_than__optimist(topology::experimental_double(0.,0.), nsigmas) ) return true;
+      if( distance.is_zero__optimist(nsigmas) ) return true;
 
     }
 
@@ -1418,8 +1276,9 @@ namespace SULTAN {
   std::vector<topology::cluster> sultan::get_clusters_of_cells_to_be_used_as_end_points(){
   //*************************************************************
 
-    const std::vector<topology::node> & input_nodes = leftover_cluster_->nodes();
-    m.message("SULTAN::sultan::get_clusters_of_cells_to_be_used_as_end_points: looking for clusters of endpoints in a cluster of ", input_nodes.size(), " cells, with ", calos_.size(), " calo hits", mybhep::VVERBOSE);
+    m.message("SULTAN::sultan::get_clusters_of_cells_to_be_used_as_end_points: looking for clusters of endpoints in a cluster of ", leftover_cluster_->nodes_.size(), " cells, with ", calos_.size(), " calo hits", mybhep::VVERBOSE);
+
+    clock.start(" sultan: get_clusters_of_cells_to_be_used_as_end_points ","cumulative");
 
     std::vector<topology::cluster> clusters;
 
@@ -1427,8 +1286,8 @@ namespace SULTAN {
 
     bool on_foil, on_calo, on_xcalo, on_gveto, on_calo_hit;
 
-    // loop on all input nodes
-    for(std::vector<topology::node>::const_iterator inode=input_nodes.begin(); inode<input_nodes.end(); ++inode){
+    // loop on all leftover nodes
+    for(std::vector<topology::node>::const_iterator inode=leftover_cluster_->nodes_.begin(); inode<leftover_cluster_->nodes_.end(); ++inode){
 
       on_foil=inode->c_.is_near_foil();
       on_calo=inode->c_.is_near_calo();
@@ -1463,7 +1322,11 @@ namespace SULTAN {
 	if( node_has_been_added_to_cluster ) break; // go back to loop on input nodes
 	const std::vector<topology::node> & cluster_nodes = iclu->nodes();
 	for( std::vector<topology::node>::const_iterator jnode=cluster_nodes.begin(); jnode!=cluster_nodes.end(); ++jnode){
-	  if( jnode->c().near_level(inode->c(), nofflayers, cell_distance) == 3 ){  // side-by-side cells
+	  // side-by-side cells
+	  bool side_by_side_cells = (jnode->c().near_level(inode->c(), nofflayers, cell_distance) == 3);
+	  if( side_by_side_cells ){  
+	    topology::experimental_double vertical_dist = jnode->c().ep().z() - inode->c().ep().z();
+	    if( !vertical_dist.is_zero__optimist(nsigma_z) ) continue;
 	    // "inode" gets added to the same cluster as jnode
 	    iclu->nodes_.push_back(*inode);
 	    node_has_been_added_to_cluster = true;
@@ -1484,7 +1347,7 @@ namespace SULTAN {
     } // finish loop in input nodes
 
 
-    m.message("SULTAN::sultan::get_clusters_of_cells_to_be_used_as_end_points: " , clusters.size() , " clusters of endpoints have been found in a cluster of ", input_nodes.size(), " cells " , mybhep::VERBOSE);
+    m.message("SULTAN::sultan::get_clusters_of_cells_to_be_used_as_end_points: " , clusters.size() , " clusters of endpoints have been found in a cluster of ", leftover_cluster_->nodes_.size(), " cells " , mybhep::VERBOSE);
     if (level >= mybhep::VERBOSE){
       for( std::vector<topology::cluster>::iterator iclu= clusters.begin(); iclu!=clusters.end(); ++iclu){
 	std::clog <<"SULTAN::sultan::get_clusters_of_cells_to_be_used_as_end_points: cluster of endpoints [" << iclu - clusters.begin() << "] ";
@@ -1502,20 +1365,25 @@ namespace SULTAN {
       }
     }
 
+
+    clock.stop(" sultan: get_clusters_of_cells_to_be_used_as_end_points ");
+
     return clusters;
 
   }
 
   //*************************************************************
-  void sultan::reduce_cluster_based_on_endpoints_on_endpoints(size_t icluster, bool * cluster_is_finished, std::vector<topology::cluster> * cs_given_endpoints, std::vector<topology::node>::const_iterator inode , std::vector<topology::node>::const_iterator jnode  ) {
+  void sultan::reduce_cluster__with_2_endpoints(size_t icluster, bool * cluster_is_finished, std::vector<topology::cluster> * cs_given_endpoints, std::vector<topology::node>::const_iterator inode , std::vector<topology::node>::const_iterator jnode  ) {
     //*************************************************************
-    m.message("SULTAN::sultan::reduce_cluster_based_on_endpoints_on_endpoints: ", mybhep::VVERBOSE);
+    m.message("SULTAN::sultan::reduce_cluster__with_2_endpoints: ", mybhep::VVERBOSE);
+    // put in cs_given_endpoints all clusters between inode and jnode
 
+    clock.start(" sultan: reduce_cluster__with_2_endpoints ","cumulative");
 
     *cs_given_endpoints = get_clusters_from(*inode, *jnode, icluster, cluster_is_finished);
     
     if (level >= mybhep::VERBOSE){
-      std::clog << "SULTAN::sultan::reduce_cluster_based_on_endpoints_on_endpoints:  endpoints : " << inode->c().id() << " -> " << jnode->c().id() << " contribute " << cs_given_endpoints->size() << " clusters of cells containing: (" ;
+      std::clog << "SULTAN::sultan::reduce_cluster__with_2_endpoints:  endpoints : " << inode->c().id() << " -> " << jnode->c().id() << " contribute " << cs_given_endpoints->size() << " clusters of cells containing: (" ;
       for( std::vector<topology::cluster>::const_iterator pclu=cs_given_endpoints->begin(); pclu!=cs_given_endpoints->end(); ++pclu){
 	std::clog << pclu->nodes().size() << " ";
       }
@@ -1523,16 +1391,21 @@ namespace SULTAN {
       std::clog << ") cells " << std::endl;
     }
     *cs_given_endpoints = clean_up(*cs_given_endpoints);
-    m.message("SULTAN::sultan::reduce_cluster_based_on_endpoints_on_endpoints:  after cleaning ", cs_given_endpoints->size(), " clusters remain with endpoints : ", inode->c().id(), " - " , jnode->c().id(), " cluster_is_finished: ", *cluster_is_finished, mybhep::VERBOSE);
+    m.message("SULTAN::sultan::reduce_cluster__with_2_endpoints:  after cleaning ", cs_given_endpoints->size(), " clusters remain with endpoints : ", inode->c().id(), " - " , jnode->c().id(), " cluster_is_finished: ", *cluster_is_finished, mybhep::VERBOSE);
+
+    clock.stop(" sultan: reduce_cluster__with_2_endpoints ");
 
     return;
 
   }
 
   //*************************************************************
-  void sultan::reduce_cluster_based_on_endpoints_on_clusters_of_endpoints(size_t icluster, bool * cluster_is_finished,  const std::vector<topology::node> &inodes,  const std::vector<topology::node> &jnodes, std::vector<topology::cluster> * cs ) {
+  void sultan::reduce_cluster__with_2_clusters_of_endpoints(size_t icluster, bool * cluster_is_finished,  const std::vector<topology::node> &inodes,  const std::vector<topology::node> &jnodes, std::vector<topology::cluster> * cs ) {
     //*************************************************************
-    m.message("SULTAN::sultan::reduce_cluster_based_on_endpoints_on_clusters_of_endpoints:  2nd cluster of endpints has " , jnodes.size() , " nodes " , mybhep::VVERBOSE);
+    m.message("SULTAN::sultan::reduce_cluster__with_2_clusters_of_endpoints:  2nd cluster of endpints has " , jnodes.size() , " nodes " , mybhep::VVERBOSE);
+    // we expect at most 1 cluster between 2 clusters of endpoints
+
+    clock.start(" sultan: reduce_cluster__with_2_clusters_of_endpoints ","cumulative");
     
     std::vector<topology::cluster> cs_given_endpoints;
     std::vector<topology::cluster> cs_given_clusters_of_endpoints;
@@ -1545,11 +1418,11 @@ namespace SULTAN {
 	
 	if( * cluster_is_finished ) break;
 	
-	reduce_cluster_based_on_endpoints_on_endpoints(icluster, cluster_is_finished, &cs_given_endpoints, inode, jnode);
+	reduce_cluster__with_2_endpoints(icluster, cluster_is_finished, &cs_given_endpoints, inode, jnode);
 
 	cs_given_clusters_of_endpoints.insert(cs_given_clusters_of_endpoints.end(),cs_given_endpoints.begin(),cs_given_endpoints.end());
 
-	m.message("SULTAN::sultan::reduce_cluster_based_on_endpoints_on_clusters_of_endpoints: ", inode->c().id(), "->", jnode->c().id(), " contributes ", cs_given_endpoints.size(), " clusters, total = ",  cs_given_clusters_of_endpoints.size() , mybhep::VERBOSE);
+	m.message("SULTAN::sultan::reduce_cluster__with_2_clusters_of_endpoints: ", inode->c().id(), "->", jnode->c().id(), " contributes ", cs_given_endpoints.size(), " clusters, total = ",  cs_given_clusters_of_endpoints.size() , mybhep::VERBOSE);
 
 	if( * cluster_is_finished ){
 	  break;
@@ -1557,19 +1430,26 @@ namespace SULTAN {
       }
     }
 
-    m.message("SULTAN::sultan::reduce_cluster_based_on_endpoints_on_clusters_of_endpoints:  " , cs_given_clusters_of_endpoints.size() , " clusters of cells have been done between 2 clusters of endpoints " , mybhep::VERBOSE);
-    cs_given_clusters_of_endpoints = clean_up(cs_given_clusters_of_endpoints);
-    cs->insert(cs->end(),cs_given_clusters_of_endpoints.begin(),cs_given_clusters_of_endpoints.end());
-    m.message("SULTAN::sultan::reduce_cluster_based_on_endpoints_on_clusters_of_endpoints:  after cleaning ", cs_given_clusters_of_endpoints.size(), " clusters remain between 2 clusters of endpoints, total = ", cs->size(), mybhep::VERBOSE);
-    
+    m.message("SULTAN::sultan::reduce_cluster__with_2_clusters_of_endpoints:  " , cs_given_clusters_of_endpoints.size() , " clusters of cells have been done between 2 clusters of endpoints " , mybhep::VERBOSE);
+
+    if( cs_given_clusters_of_endpoints.size() ) {
+      cs_given_clusters_of_endpoints = clean_up(cs_given_clusters_of_endpoints);
+      topology::cluster best_cluster = get_best_cluster_from(cs_given_clusters_of_endpoints);
+      cs->push_back(best_cluster);
+      m.message("SULTAN::sultan::reduce_cluster__with_2_clusters_of_endpoints:  after cleaning ", cs_given_clusters_of_endpoints.size(), " clusters remain between 2 clusters of endpoints, chosen a best, total = ", cs->size(), mybhep::VERBOSE);
+    }
+
+    clock.stop(" sultan: reduce_cluster__with_2_clusters_of_endpoints ");
+
     return;
 
   }
 
   //*************************************************************
-  void sultan::reduce_cluster_based_on_endpoints_on_vector_of_clusters_of_endpoints(size_t icluster, std::vector<topology::cluster> * cs, std::vector<topology::cluster> clusters_of_endpoints, bool * cluster_is_finished ) {
+  void sultan::reduce_cluster__with_vector_of_clusters_of_endpoints(size_t icluster, std::vector<topology::cluster> * cs, std::vector<topology::cluster> clusters_of_endpoints, bool * cluster_is_finished ) {
     //*************************************************************
 
+    clock.start(" sultan: reduce_cluster__with_vector_of_clusters_of_endpoints ","cumulative");
 
     // loop on 1st cluster of endpoints
     for(std::vector<topology::cluster>::const_iterator iclu = clusters_of_endpoints.begin(); iclu != clusters_of_endpoints.end() - 1; ++iclu){
@@ -1580,7 +1460,7 @@ namespace SULTAN {
 	break;
       }
       
-      m.message("SULTAN::sultan::reduce_cluster_based_on_endpoints_on_vector_of_clusters_of_endpoints:  1st cluster of endpints has " , inodes.size() , " nodes " , mybhep::VVERBOSE);
+      m.message("SULTAN::sultan::reduce_cluster__with_vector_of_clusters_of_endpoints:  1st cluster of endpints has " , inodes.size() , " nodes " , mybhep::VVERBOSE);
       
       // loop on 2nd cluster of endpoints
       for(std::vector<topology::cluster>::const_iterator jclu = iclu+1; jclu != clusters_of_endpoints.end(); ++jclu){
@@ -1591,85 +1471,64 @@ namespace SULTAN {
 	
 	const std::vector<topology::node> &jnodes = jclu->nodes();
 	
-	reduce_cluster_based_on_endpoints_on_clusters_of_endpoints(icluster, cluster_is_finished, inodes, jnodes, cs);
+	// we expect only 1 cluster between 2 clusters of endpoints
+	reduce_cluster__with_2_clusters_of_endpoints(icluster, cluster_is_finished, inodes, jnodes, cs);
 
       }
     }
+
+    clock.stop(" sultan: reduce_cluster__with_vector_of_clusters_of_endpoints ");
 
     return;
 
   }
 
   //*************************************************************
-  topology::cluster sultan::make_cluster_with_first_last(size_t first, size_t last){
-  //*************************************************************
-
-    std::vector<topology::node> the_nodes;
-    if( first < last ){ // F ... L
-      for( std::vector<topology::node>::const_iterator inode=leftover_cluster_->nodes_.begin() + first; inode!=leftover_cluster_->nodes_.begin() + last; ++inode){
-	the_nodes.push_back(*inode);
-      }
-    }else if( first == last ){ // there is only one piece
-      for( std::vector<topology::node>::const_iterator inode=leftover_cluster_->nodes_.begin(); inode!=leftover_cluster_->nodes_.end(); ++inode){
-	the_nodes.push_back(*inode);
-      }
-    }else{ // L ... F 
-      //qqqfor( std::vector<topology::node>::const_iterator inode=leftover_cluster_->nodes_.begin() + last; inode!=leftover_cluster_->nodes_.end(); ++inode){
-      for( std::vector<topology::node>::const_iterator inode=leftover_cluster_->nodes_.begin() + first; inode!=leftover_cluster_->nodes_.end(); ++inode){
-	the_nodes.push_back(*inode);
-      }
-      //qqqfor( std::vector<topology::node>::const_iterator inode=leftover_cluster_->nodes_.begin(); inode!=leftover_cluster_->nodes_.begin() + first; ++inode){
-      for( std::vector<topology::node>::const_iterator inode=leftover_cluster_->nodes_.begin(); inode!=leftover_cluster_->nodes_.begin() + last; ++inode){
-	the_nodes.push_back(*inode);
-      }
-      
-    }
-
-    topology::cluster c;
-    c.set_nodes(the_nodes);
-
-    return c;
-
-  }
-
-  //*************************************************************
-  std::vector<topology::cluster> sultan::make_unclustered_hits() {
+  std::vector<topology::cluster> sultan::make_unclustered_hits(topology::node * n = 0) {
     //*************************************************************
+
+    size_t minimum_length=2;
 
     std::vector<topology::cluster> cs;
     // separate unclustered hits into clusters based solely on nearness
     if( leftover_cluster_->nodes_.size() ){
       
-      std::vector<size_t> the_first_cell_of_piece, length_of_piece;
-      std::vector<topology::node> the_assigned_nodes;
-      size_t minimum_length=2;
 
+      if (level >= mybhep::VVERBOSE){
+	std::clog << "SULTAN::sultan::make_unclustered_hits: make unclustered hits for " << leftover_cluster_->nodes_.size() << " hits: (";
+	for(std::vector<topology::node>::const_iterator inode=leftover_cluster_->nodes_.begin(); inode != leftover_cluster_->nodes_.end(); ++inode)
+	  std::clog << inode->c().id() << " " ;
+	std::clog << ") without endpoint ? " << (bool)(n == 0) << std::endl;
+      }
 
-      // sort all leftover nodes
-      std::sort(leftover_cluster_->nodes_.begin(),leftover_cluster_->nodes_.end(),topology::node::circle_order);
-
-
-      // break leftover nodes into continous parts
-      bool ok = break_cluster_into_continous_parts(leftover_cluster_, &the_first_cell_of_piece, &length_of_piece, &the_assigned_nodes);
+      
+      leftover_cluster_->self_order(n);
+      leftover_cluster_->break_into_continous_pieces(nofflayers, cell_distance);
+      vector<size_t> length_of_piece = leftover_cluster_->length_of_piece();
+      std::vector<size_t> the_first_cell_of_piece = leftover_cluster_->first_cell_of_piece();
+      
       m.message("SULTAN::sultan::make_unclustered_hits:  leftover hits = ", 
-		leftover_cluster_->nodes_.size(), " broken into ", length_of_piece.size(), " pieces with ", the_first_cell_of_piece.size(), " first cells", mybhep::VERBOSE); fflush(stdout);
+		leftover_cluster_->nodes_.size(), " broken into ", length_of_piece.size(), " pieces with ", the_first_cell_of_piece.size(), " first cells ", mybhep::VERBOSE); fflush(stdout);
       
-      
-      
-      std::vector<topology::sequence> sequences;
       
       // for each continuous piece, make a cluster
       for(std::vector<size_t>::const_iterator il=length_of_piece.begin();il!=length_of_piece.end();++il){
+
 	size_t index= il - length_of_piece.begin();
+
 	size_t first=the_first_cell_of_piece[index];
+
 	size_t last=the_first_cell_of_piece[0];
 	if( index + 1 < length_of_piece.size() )
 	  last = the_first_cell_of_piece[index + 1];
+
 	m.message("SULTAN::sultan::make_unclustered_hits:  piece ", index, " L ", *il, " first ", first, "last", last, " minimum length ", minimum_length, mybhep::VVERBOSE); fflush(stdout);
 
 	if( *il < minimum_length ) continue;
 
-	cs.push_back(make_cluster_with_first_last(first,last));
+	topology::cluster c = leftover_cluster_->get_cluster_with_first_last(first,last);
+
+	cs.push_back(c);
 	
       }
     }
@@ -1693,8 +1552,10 @@ namespace SULTAN {
     std::vector<topology::cluster> cs, newly_made_clusters;
     bool there_are_nodes_to_clusterize=true;
     int iteration = -1;
-    bool cluster_is_finished;
+    bool cluster_is_finished = false;
     std::vector<topology::cluster> clusters_of_endpoints;
+
+    size_t n_of_leftover_cells;
 
     // while loop: continue to reduce while there are nodes to clusterize
     while( there_are_nodes_to_clusterize ){
@@ -1707,6 +1568,7 @@ namespace SULTAN {
       // setup
       cs.clear();
       cluster_is_finished = false;
+      n_of_leftover_cells = leftover_cluster_->nodes().size();
 
 
       // get the clusters of endpoints for this input cluster of neighbouring cells
@@ -1718,18 +1580,14 @@ namespace SULTAN {
 
 
       // make clusters between the endpoints
-      reduce_cluster_based_on_endpoints_on_vector_of_clusters_of_endpoints(icluster, & cs, clusters_of_endpoints, &cluster_is_finished);
+      reduce_cluster__with_vector_of_clusters_of_endpoints(icluster, & cs, clusters_of_endpoints, &cluster_is_finished);
       m.message("SULTAN::sultan::reduce_cluster_based_on_endpoints:  " , cs.size() , " clusters of cells have been done between all", clusters_of_endpoints.size(), " clusters of endpoints " , mybhep::VERBOSE);
       status();
 
-      if( leftover_cluster_->nodes().size() + assigned_cluster_->nodes().size() != full_cluster_->nodes().size() ){
-	m.message("SULTAN::sultan::reduce_cluster_based_on_endpoints:  problem: leftover nodes: ", leftover_cluster_->nodes().size(), " assigned nodes: ", assigned_cluster_->nodes().size(), " initial nodes: ",  full_cluster_->nodes().size(), mybhep::NORMAL); fflush(stdout);
-
-      }
-            
       // add clusters just made to the vector of made clusters
-      m.message("SULTAN::sultan::reduce_cluster_based_on_endpoints:  the ", full_cluster_->nodes().size(), " cells have been reduced to ", cs.size(), " cluster, to be added to ", newly_made_clusters.size(), " newly made clusters ", mybhep::VERBOSE); fflush(stdout);
+      m.message("SULTAN::sultan::reduce_cluster_based_on_endpoints:  the ", full_cluster_->nodes().size(), " cells have been reduced to ", cs.size(), " clusters, to be added to ", newly_made_clusters.size(), " newly made clusters so far ", mybhep::VERBOSE); fflush(stdout);
       cs = clean_up(cs);
+      //assign_nodes_of_clusters(cs);
       newly_made_clusters.insert(newly_made_clusters.end(), cs.begin(), cs.end());
       newly_made_clusters = clean_up(newly_made_clusters);
       m.message("SULTAN::sultan::reduce_cluster_based_on_endpoints:  after clean_up, ", newly_made_clusters.size(), "newly made clusters remain", mybhep::VERBOSE); fflush(stdout);
@@ -1748,10 +1606,16 @@ namespace SULTAN {
 	}
     
 
+      // clusterize again if:
+      // the cluster is not finished
+      // AND some clusters have been obtained in this round
+      // AND the leftover cells have decreased
+      // AND some cells have been assigned
       there_are_nodes_to_clusterize = !cluster_is_finished &&
 	cs.size() &&
-	(leftover_cluster_->nodes().size() < full_cluster_->nodes().size()) &&
+	(leftover_cluster_->nodes().size() < n_of_leftover_cells) &&
 	(assigned_cluster_->nodes().size() ) ;
+
 
       m.message("SULTAN::sultan::reduce_cluster_based_on_endpoints:  status: newly made size: ", newly_made_clusters.size(), " leftover:", leftover_cluster_->nodes().size(), " assigned:", assigned_cluster_->nodes().size(), " cluster_is_finished:", cluster_is_finished, " there_are_nodes_to_clusterize:", there_are_nodes_to_clusterize, mybhep::VERBOSE); fflush(stdout);
 
@@ -1760,7 +1624,13 @@ namespace SULTAN {
     status();
 
     // make clusters with unclustered hits
-    std::vector<topology::cluster> unclustered_clusters = make_unclustered_hits();
+    std::vector<topology::cluster> unclustered_clusters;
+    if( clusters_of_endpoints.size() && clusters_of_endpoints[0].nodes().size() ) { // at least 1 end point was found
+      topology::node n = clusters_of_endpoints[0].nodes()[0];
+      unclustered_clusters = make_unclustered_hits(&n);      
+    }else{ 
+      unclustered_clusters = make_unclustered_hits();
+    }
     newly_made_clusters.insert(newly_made_clusters.end(), unclustered_clusters.begin(), unclustered_clusters.end());
 
     // add clusters to list of clusters
@@ -1775,17 +1645,33 @@ namespace SULTAN {
 
 
   //*************************************************************
-  void sultan::create_sequence_from_cluster(std::vector<topology::sequence> * sequences, const std::vector<topology::node> & nodes){
+  void sultan::assign_nodes_of_clusters(std::vector<topology::cluster> clusters){
+    //*************************************************************
+
+    for( std::vector<topology::cluster>::const_iterator iclu=clusters.begin(); iclu!=clusters.end(); ++iclu){
+      assign_nodes_of_cluster(*iclu);
+    }
+
+    
+  }
+
+  //*************************************************************
+  void sultan::create_sequence_from_cluster(std::vector<topology::sequence> * sequences, const topology::cluster & c){
   //*************************************************************
 
-      if( nodes.size() ){
-
-	topology::sequence s(nodes, level, probmin);
-	make_name(s);
-	sequences->push_back(s);
+    const std::vector<topology::node> & nodes = c.nodes();
+    if( nodes.size() ){
+      
+      topology::sequence s(nodes, level, probmin);
+      make_name(s);
+      if( !strcmp((c.get_cluster_type()).c_str(), "helix") ){
+	s.set_helix(c.get_helix());
       }
+      sequences->push_back(s);
+    }
 
-      return;
+    
+    return;
 
   }
 
@@ -1991,45 +1877,25 @@ namespace SULTAN {
 
 
   //*************************************************************
-  topology::cluster sultan::get_cluster_from(topology::cell_triplet t, topology::experimental_helix helix){
+  topology::cluster sultan::get_helix_cluster_from(topology::cell_triplet t, topology::experimental_helix helix){
   //*************************************************************
     // make a cluster with the nodes intercepted by helix
-    m.message("SULTAN::sultan::get_cluster_from: , make a cluster with the nodes intercepted by helix through ", t.ca().id()," - ", t.cb().id(), " - ",t.cc().id(), mybhep::VVERBOSE);
-
+    m.message("SULTAN::sultan::get_helix_cluster_from: , make a cluster with the nodes intercepted by helix through ", t.ca().id()," - ", t.cb().id(), " - ",t.cc().id(), mybhep::VVERBOSE);
 
 
     topology::cluster c;
     topology::experimental_double DR, DH;
-    //topology::experimental_double DR_limit(cell_distance,0.);
-    topology::experimental_double DR_limit(0.,0.);
-    topology::experimental_double DH_limit(0.,0.);
-    topology::experimental_point p_circle;
-    double angle, angle_a, angle_b;
-
-    helix.get_phi_of_point(t.ca().ep(), &p_circle, &angle_a);
-    helix.get_phi_of_point(t.cc().ep(), &p_circle, &angle_b);
-    if( angle_a > angle_b ){ // swap, ensure angle_a < angle_b
-      angle=angle_a;
-      angle_a = angle_b;
-      angle_b= angle;
-    }
       
     if( level >= mybhep::VVERBOSE ){
-      std::clog << "SULTAN::sultan::get_cluster_from: ...: [cell, distance_hor, distance_vert, chosen] : ";
+      std::clog << "SULTAN::sultan::get_helix_cluster_from: ...: [cell, distance_hor, distance_vert, chosen] : ";
     }
+
+    bool chosen;
 
     // loop on cells in the cluster
     for(std::vector<topology::node>::iterator inode= leftover_cluster_->nodes_.begin(); inode!=leftover_cluster_->nodes_.end(); ++inode){
 	
-      //helix.distance_from_cell_center(inode->c(), &DR, &DH);
-      helix.distance_from_cell_measurement(inode->c(), &DR, &DH);
-      
-
-      bool chosen = (bool)(DR.is_less_than__optimist(DR_limit, nsigma_r) && DH.is_less_than__optimist(DH_limit, nsigma_z));
-
-      if( level >= mybhep::VVERBOSE ){
-	std::clog << "SULTAN::sultan::get_cluster_from: ..., cell " << inode->c().id() << " has distance hor "; DR.dump(); std::clog << ",  vert "; DH.dump(); std::clog << " from helix, chosen " << chosen << std::endl;
-      }
+      chosen = helix_is_near_cell(t, helix, &DR, &DH, &(*inode));
 
       if( level >= mybhep::VVERBOSE ){
 	std::clog << "[" << inode->c().id() << ", "; DR.dump(); std::clog << ",  "; DH.dump(); std::clog << " , " << chosen << "] ";
@@ -2038,28 +1904,6 @@ namespace SULTAN {
       if( !chosen ) continue;
       
       // cell is close to helix
-      
-      helix.get_phi_of_point(inode->c().ep(), &p_circle, &angle);
-
-      // ensure cell is between limits
-      if( angle < angle_a ){ 
-	if( level >= mybhep::VVERBOSE ){
-	  std::clog << "[" << inode->c().id() << " before a] ";
-	}
-	continue;
-      }
-      if( angle > angle_b ){
-	if( level >= mybhep::VVERBOSE ){
-	  std::clog << "[" << inode->c().id() << " after b] ";
-	}
-	continue;
-      }
-
-      m.message("SULTAN::sultan::get_cluster_from: ... ..., cell " , inode->c().id() , " is intercepted " , mybhep::VVERBOSE);
-
-      // add circle position
-      inode->set_circle_phi(angle);
-      inode->set_ep(p_circle);
 
       c.nodes_.push_back(*inode);
       
@@ -2069,14 +1913,22 @@ namespace SULTAN {
       std::clog << " " << std::endl;
     }
 
-    m.message("SULTAN::sultan::get_cluster_from: , a cluster for the helix has been made with ", c.nodes().size(), " nodes", mybhep::VVERBOSE);
+    m.message("SULTAN::sultan::get_helix_cluster_from: , a cluster for the helix has been made with ", c.nodes().size(), " nodes", mybhep::VVERBOSE);
 
     if( c.is_good() ){
       
       // add to cluster from full nodes
       c = add_cells_to_helix_cluster_from(c, t, helix);
-      
-      check_continous_cells(&c, t.ca(), t.cc());
+
+      topology::cluster longest_piece;
+
+      if( get_longest_piece(&c, t.ca(), t.cc(), &longest_piece) ){
+	c = longest_piece;
+      }else{
+	c.nodes_.clear();
+      }
+    }else{
+      c.nodes_.clear();
     }
 
 
@@ -2093,31 +1945,17 @@ namespace SULTAN {
     m.message("SULTAN::sultan::add_cells_to_helix_cluster_from: , make a cluster with the nodes intercepted by helix ", mybhep::VVERBOSE);
 
 
-
     topology::cluster c = cluster;
     topology::experimental_double DR, DH;
-    //topology::experimental_double DR_limit(cell_distance,0.);
-    topology::experimental_double DR_limit(0.,0.);
-    topology::experimental_double DH_limit(0.,0.);
-    topology::experimental_point p_circle;
-    double angle, angle_a, angle_b;
 
-    helix.get_phi_of_point(t.ca().ep(), &p_circle, &angle_a);
-    helix.get_phi_of_point(t.cc().ep(), &p_circle, &angle_b);
-    if( angle_a > angle_b ){ // swap, ensure angle_a < angle_b
-      angle=angle_a;
-      angle_a = angle_b;
-      angle_b= angle;
-    }
-
-    const std::vector<topology::node> nodes_to_be_skipped = leftover_cluster_->nodes();
+    bool chosen;
 
     // loop on cells in the cluster
     for(std::vector<topology::node>::iterator inode= full_cluster_->nodes_.begin(); inode!=full_cluster_->nodes_.end(); ++inode){
 
       bool node_already_in_cluster = false;
 
-      for(std::vector<topology::node>::const_iterator jnode= nodes_to_be_skipped.begin(); jnode!=nodes_to_be_skipped.end(); ++jnode){
+      for(std::vector<topology::node>::const_iterator jnode= leftover_cluster_->nodes_.begin(); jnode!=leftover_cluster_->nodes_.end(); ++jnode){
 	if( inode->c().id() == jnode->c().id() ){
 	  node_already_in_cluster = true;
 	  break;
@@ -2126,28 +1964,9 @@ namespace SULTAN {
       
       if( node_already_in_cluster ) continue;
 
+      chosen = helix_is_near_cell(t, helix, &DR, &DH, &(*inode));
 	
-      //helix.distance_from_cell_center(inode->c(), &DR, &DH);
-      helix.distance_from_cell_measurement(inode->c(), &DR, &DH);
-      
-      m.message("SULTAN::sultan::add_cells_to_helix_cluster_from: ..., cell " , inode->c().id() , " has distance DR " , DR.value() , " +- " , DR.error() , " DH " , DH.value() , " +- " , DH.error() , " from helix " , mybhep::VVERBOSE);
-      
-      if( !DR.is_less_than__optimist(DR_limit, nsigma_r) ) continue;
-      
-      if( !DH.is_less_than__optimist(DH_limit, nsigma_z) ) continue;
-      
-      // cell is close to helix
-      m.message("SULTAN::sultan::add_cells_to_helix_cluster_from: ... ..., cell " , inode->c().id() , " is intercepted " , mybhep::VVERBOSE);
-      
-      // add circle position
-      helix.get_phi_of_point(inode->c().ep(), &p_circle, &angle);
-
-      // ensure cell is between limits
-      if( angle < angle_a ) continue;
-      if( angle > angle_b ) continue;
-
-      inode->set_circle_phi(angle);
-      inode->set_ep(p_circle);
+      if( !chosen ) continue;
 
       c.nodes_.push_back(*inode);
       
@@ -2161,12 +1980,101 @@ namespace SULTAN {
 
 
   //*************************************************************
+  bool sultan::line_is_near_cell(topology::experimental_line line, topology::experimental_double * DR, topology::experimental_double * DH, topology::node * node){
+  //*************************************************************
+
+    bool chosen = false;
+
+    double normalized_parameter_along_line = line.distance_from_cell_center(node->c(), DR, DH);
+
+    // ensure parameter is between limits
+    if( normalized_parameter_along_line < 0 ){
+      if( level >= mybhep::VVERBOSE ){
+	std::clog << "[" << node->c().id() << " before a] ";
+      }
+      return chosen;
+    }
+    if( normalized_parameter_along_line > 1 ){
+      if( level >= mybhep::VVERBOSE ){
+	std::clog << "[" << node->c().id() << " after b] ";
+      }
+      return chosen;
+    }
+
+    chosen = (bool)(DR->is_zero__optimist(nsigma_r) && DH->is_zero__optimist(nsigma_z));
+
+    if( level >= mybhep::VVERBOSE ){
+      std::clog << "[" << node->c().id() << ", "; DR->dump(); std::clog << ",  "; DH->dump(); std::clog << " , " << chosen << "] ";
+    }
+
+    if( chosen ){
+      // add circle position: in case of line it is parameter along line
+      node->set_circle_phi(normalized_parameter_along_line);
+    }
+
+    return chosen;
+
+  }
+
+
+  //*************************************************************
+  bool sultan::helix_is_near_cell(topology::cell_triplet t, topology::experimental_helix helix, topology::experimental_double * DR, topology::experimental_double * DH, topology::node * node){
+  //*************************************************************
+
+    bool chosen = false;
+
+    topology::experimental_point p_circle;
+    double angle, angle_a, angle_b;
+
+    helix.get_phi_of_point(t.ca().ep(), &p_circle, &angle_a);
+    helix.get_phi_of_point(t.cc().ep(), &p_circle, &angle_b);
+    if( angle_a > angle_b ){ // swap, ensure angle_a < angle_b
+      angle=angle_a;
+      angle_a = angle_b;
+      angle_b= angle;
+    }
+
+    //helix.distance_from_cell_center(inode->c(), &DR, &DH);
+    helix.distance_from_cell_measurement(node->c(), DR, DH);
+      
+    m.message("SULTAN::sultan::helix_is_near_cell: ..., cell " , node->c().id() , " has distance DR " , DR->value() , " +- " , DR->error() , " DH " , DH->value() , " +- " , DH->error() , " from helix " , mybhep::VVERBOSE);
+      
+    if( !DR->is_zero__optimist( nsigma_r) ) return chosen;
+    
+    if( !DH->is_zero__optimist( nsigma_z) ) return chosen;
+      
+    helix.get_phi_of_point(node->c().ep(), &p_circle, &angle);
+
+    if( angle < angle_a || angle > angle_b ) return chosen;
+
+    chosen=true;
+
+    // cell is close to helix
+    m.message("SULTAN::sultan::helix_is_near_cell: ... ..., cell " , node->c().id() , " is intercepted, angle ", angle , mybhep::VVERBOSE);
+      
+    // add circle position: in case of helix it is parameter along helix
+    node->set_circle_phi(angle);
+    node->set_ep(p_circle);
+
+
+    return chosen;
+
+  }
+
+
+
+
+  //*************************************************************
   topology::cluster sultan::get_line_cluster_from(topology::node a_node, topology::node b_node){
   //*************************************************************
     // get cluster with cells intercepted by line ab
-    std::vector<topology::node> nodes = leftover_cluster_->nodes();
-    m.message("SULTAN::sultan::get_line_cluster_from: get cluster with cells intercepted by line ab ", a_node.c().id(), "-", b_node.c().id(), " in ", nodes.size(), " cells ", mybhep::VVERBOSE);
+    m.message("SULTAN::sultan::get_line_cluster_from: get cluster with cells intercepted by line ab ", a_node.c().id(), "-", b_node.c().id(), " in ", leftover_cluster_->nodes_.size(), " leftover cells ", mybhep::VVERBOSE);
 
+    clock.start(" sultan: get_line_cluster_from ","cumulative");
+
+    /////////////////////////////////
+    ///   built thick line a->b   ///
+    /////////////////////////////////
     topology::experimental_point a = a_node.c().ep();
     double cell_center_error = cell_distance/2.;
     //a.set_x(topology::experimental_double(a.x().value(), a_node.c().r().value()));
@@ -2181,56 +2089,33 @@ namespace SULTAN {
 
     topology::experimental_line line(a, b, level, probmin);
 
+
+    /////////////////////////////////////
+    ///   clusterize from line a->b   ///
+    /////////////////////////////////////
+    
     topology::cluster c;
     a_node.set_circle_phi(0);
     c.nodes_.push_back(a_node);
 
-    //topology::experimental_double dist_hor_limit(cell_distance,0.);
-    topology::experimental_double dist_hor_limit(0.,0.);
-    topology::experimental_double dist_vert_limit(0.,0.);
-
     topology::experimental_double DR, DH;
-    double normalized_parameter_along_line;
 
     if( level >= mybhep::VVERBOSE ){
       std::clog << "SULTAN::sultan::get_line_cluster_from: ...: [cell, distance_hor, distance_vert, chosen] : ";
     }
 
+    bool chosen;
     // loop on cells in the cluster
-    for(std::vector<topology::node>::iterator inode= nodes.begin(); inode!=nodes.end(); ++inode){
+    for(std::vector<topology::node>::iterator inode= leftover_cluster_->nodes_.begin(); inode!=leftover_cluster_->nodes_.end(); ++inode){
 
       if( inode->c().id() == a_node.c().id() ) continue;
       if( inode->c().id() == b_node.c().id() ) continue;
 
-      normalized_parameter_along_line = line.distance_from_cell_center(inode->c(), &DR, &DH);
+      chosen = line_is_near_cell(line, &DR, &DH, &(*inode));
 
-      // ensure parameter is between limits
-      if( normalized_parameter_along_line < 0 ){
-	if( level >= mybhep::VVERBOSE ){
-	  std::clog << "[" << inode->c().id() << " before a] ";
-	}
-	continue;
-      }
-      if( normalized_parameter_along_line > 1 ){
-	if( level >= mybhep::VVERBOSE ){
-	  std::clog << "[" << inode->c().id() << " after b] ";
-	}
-	continue;
-      }
-
-      bool chosen = (bool)(DR.is_less_than__optimist(dist_hor_limit, nsigma_r) && DH.is_less_than__optimist(dist_vert_limit, nsigma_z));
-
-      if( level >= mybhep::VVERBOSE ){
-	std::clog << "[" << inode->c().id() << ", "; DR.dump(); std::clog << ",  "; DH.dump(); std::clog << " , " << chosen << "] ";
-      }
-
-      
       if( !chosen ) continue;
       
       // cell is close to line
-      
-      // add circle position: in case of line it is parameter along line
-      inode->set_circle_phi(normalized_parameter_along_line);
 
       c.nodes_.push_back(*inode);
       
@@ -2247,58 +2132,44 @@ namespace SULTAN {
 
     if( c.is_good() ){
       
-      c = add_cells_to_line_cluster_from(c, a_node, b_node);
+      c = add_cells_to_line_cluster_from(line, a_node.c().id(), b_node.c().id(), c);
       
-      check_continous_cells(&c, a_node, b_node);
-
+      topology::cluster longest_piece;
+      if( get_longest_piece(&c, a_node, b_node, &longest_piece) ){
+	c = longest_piece;
+      }else{
+	c.nodes_.clear();
+      }
+    }else{
+      c.nodes_.clear();
     }
 
+    clock.stop(" sultan: get_line_cluster_from ");
     return c;
 
 
   }
 
-
   //*************************************************************
-  topology::cluster sultan::add_cells_to_line_cluster_from(topology::cluster cluster, topology::node a_node, topology::node b_node){
+  topology::cluster sultan::add_cells_to_line_cluster_from(topology::experimental_line line, size_t ida, size_t idb, topology::cluster cluster){
   //*************************************************************
     // add to line (obtained from cluster) cells from full_cluster
     m.message("SULTAN::sultan::add_cells_to_line_cluster_from: get cluster with cells intercepted by line ab " , mybhep::VVERBOSE);
 
-    topology::experimental_point a = a_node.c().ep();
-    a.set_x(topology::experimental_double(a.x().value(), a_node.c().r().value()));
-    a.set_y(topology::experimental_double(a.y().value(), a_node.c().r().value()));
-    topology::experimental_point b = b_node.c().ep();
-    b.set_x(topology::experimental_double(b.x().value(), b_node.c().r().value()));
-    b.set_y(topology::experimental_double(b.y().value(), b_node.c().r().value()));
-
     topology::cluster c = cluster;
 
-    topology::experimental_vector ab = b - a;
-    // unit direction from a to b
-    topology::experimental_vector dir = ab.unit();
-
-    //topology::experimental_double dist_hor_limit(cell_distance,0.);
-    topology::experimental_double dist_hor_limit(0.,0.);
-    topology::experimental_double dist_vert_limit(0.,0.);
-
-    std::vector<topology::node> cnodes = leftover_cluster_->nodes();
-
-    topology::experimental_point p;
-    topology::experimental_vector ap, dist;
     topology::experimental_double dist_hor, dist_vert;
-    topology::experimental_double parameter_along_line;
-    double normalized_parameter_along_line;
+    bool chosen;
 
-    // loop on cells in the cluster
+    // loop on cells in the full cluster
     for(std::vector<topology::node>::iterator inode= full_cluster_->nodes_.begin(); inode!=full_cluster_->nodes_.end(); ++inode){
 
-      if( inode->c().id() == a_node.c().id() ) continue;
-      if( inode->c().id() == b_node.c().id() ) continue;
+      if( inode->c().id() == ida ) continue;
+      if( inode->c().id() == idb ) continue;
 
       bool node_already_in_cluster = false;
 
-      for(std::vector<topology::node>::iterator jnode= cnodes.begin(); jnode!=cnodes.end(); ++jnode){
+      for(std::vector<topology::node>::iterator jnode= cluster.nodes_.begin(); jnode!=cluster.nodes_.end(); ++jnode){
 	if( inode->c().id() == jnode->c().id() ){
 	  node_already_in_cluster = true;
 	  break;
@@ -2307,43 +2178,18 @@ namespace SULTAN {
 
       if( node_already_in_cluster ) continue;
 
-      p = inode->c().ep();
-      p.set_x(topology::experimental_double(p.x().value(), inode->c().r().value()));
-      p.set_y(topology::experimental_double(p.y().value(), inode->c().r().value()));
-      
-      // vector from a to p
-      ap = p - a;
+      chosen = line_is_near_cell(line, &dist_hor, &dist_vert, &(*inode));
 
-      parameter_along_line=dir*ap;
-      // 0 for p = a
-      // 1 for p = b
-      normalized_parameter_along_line = parameter_along_line.value()/ab.length().value();
+      if( !chosen ) continue;
 
-      // ensure parameter is between limits
-      if( normalized_parameter_along_line < 0 ) continue;
-      if( normalized_parameter_along_line > 1 ) continue;
-
-      dist = dir*parameter_along_line - ap;
-      dist_hor = dist.hor().length();
-      dist_vert = experimental_fabs(dist.z());
-
-      m.message("SULTAN::sultan::add_cells_to_line_cluster_from: ..., cell " , inode->c().id() , " has distance hor " , dist_hor.value() , " +- " , dist_hor.error() , " vert " , dist_vert.value() , " +- " , dist_vert.error() , " from line " , mybhep::VVERBOSE);
-      
-      if( !dist_hor.is_less_than__optimist(dist_hor_limit, nsigma_r) ) continue;
-      
-      if( !dist_vert.is_less_than__optimist(dist_vert_limit, nsigma_z) ) continue;
-      
       // cell is close to line
       m.message("SULTAN::sultan::add_cells_to_line_cluster_from: ... ..., cell " , inode->c().id() , " is intercepted " , mybhep::VVERBOSE);
       
-      // add circle position: in case of line it is parameter along line
-      inode->set_circle_phi(normalized_parameter_along_line);
-
       c.nodes_.push_back(*inode);
       
     }
 
-    m.message("SULTAN::sultan::add_cells_to_line_cluster_from: the line ",a_node.c().id(), " - ", b_node.c().id(), " intercepts " , c.nodes_.size() , " nodes " , mybhep::VVERBOSE);
+    m.message("SULTAN::sultan::add_cells_to_line_cluster_from: the line intercepts " , c.nodes_.size() , " nodes " , mybhep::VVERBOSE);
 
     return c;
 
@@ -2352,20 +2198,79 @@ namespace SULTAN {
 
 
   //*************************************************************
-  std::vector<topology::cluster> sultan::get_helix_clusters_from(topology::node a, topology::node b, size_t icluster, bool *cluster_is_finished){
+   topology::cluster sultan::get_best_cluster_from(std::vector<topology::cluster> cs){
+  //*************************************************************
+     
+     // choose 1 best cluster from cs
+     size_t nmax=0;
+     topology::cluster cmax;
+     
+     // loop on clusters
+     for(std::vector<topology::cluster>::const_iterator iclu = cs.begin(); iclu != cs.end(); ++iclu){
+       if( iclu->nodes_.size() > nmax ){
+	 nmax = iclu->nodes_.size();
+	 cmax = *iclu;
+       }
+     }
+     
+     m.message("SULTAN::sultan::get_best_cluster_from:  the best cluster of ", cs.size(),  " has ", nmax, " nodes ", mybhep::VVERBOSE);
+
+     return cmax;
+   }
+
+
+  //*************************************************************
+  void sultan::get_line_clusters_from(topology::node a, topology::node b, size_t icluster, bool *cluster_is_finished, std::vector<topology::cluster> * cs){
+  //*************************************************************
+    // get all clusters based on line (a, b), with X in leftover cluster
+    // all clusters returned are "good"
+
+    m.message("SULTAN::sultan::get_line_clusters_from: get all clusters based on line (a, b), with X in cluster of", leftover_cluster_->nodes().size(), " cells " , mybhep::VVERBOSE);
+
+    topology::cluster c = get_line_cluster_from(a, b);
+    if( !c.is_good() ){
+      if (level >= mybhep::VERBOSE){
+	std::clog << "SULTAN::sultan::get_line_clusters_from:  " << a.c().id() << " -> " << b.c().id() << " not clusterized as line " << std::endl;
+      }
+      return;
+    }
+
+    assign_nodes_of_cluster(c);
+    cs->push_back(c);
+
+    if (level >= mybhep::VERBOSE){
+      const std::vector<topology::node> & cnodes = c.nodes();
+      std::clog << "SULTAN::sultan::get_line_clusters_from:  " << a.c().id() << " -> " << b.c().id() << " clusterized as line with " << cnodes.size() << " cells ( ";
+      for( std::vector<topology::node>::const_iterator inode=cnodes.begin(); inode!=cnodes.end(); ++inode){
+	std::clog <<inode->c().id() << " ";
+      }
+      std::clog <<")" << std::endl;
+    }
+
+    if( c.nodes().size() == full_cluster_->nodes().size() ){
+      m.message("SULTAN::sultan::get_line_clusters_from: all", c.nodes().size(), "cells of cluster have been assigned as a line ", mybhep::VERBOSE);
+      *cluster_is_finished = true;
+    }
+
+    return;
+
+  }
+
+  //*************************************************************
+  void sultan::get_helix_clusters_from(topology::node a, topology::node b, size_t icluster, bool *cluster_is_finished, std::vector<topology::cluster> * cs){
   //*************************************************************
     // get all clusters based on helices built on triplets (a, X, b), with X in leftover cluster
-    m.message("SULTAN::sultan::get_helix_clusters_from: get all clusters based on helices built on triplets (a, X, b), with X in cluster of", leftover_cluster_->nodes().size(), " cells " , mybhep::VVERBOSE);
-    std::vector<topology::cluster> cs;
-    std::vector<topology::experimental_helix> helices;
+    // all clusters returned are "good"
 
-    const std::vector<topology::node> leftover_nodes = leftover_cluster_->nodes();
+    m.message("SULTAN::sultan::get_helix_clusters_from: get all clusters based on helices built on triplets (a, X, b), with X in cluster of", leftover_cluster_->nodes().size(), " cells " , mybhep::VVERBOSE);
+
+    std::vector<topology::experimental_helix> helices;
 
 
     // loop on cells in the cluster of leftover nodes for form a triplet (a, X, b)
-    for(std::vector<topology::node>::const_iterator inode= leftover_nodes.begin(); inode!=leftover_nodes.end(); ++inode){
+    for(std::vector<topology::node>::const_iterator inode= leftover_cluster_->nodes_.begin(); inode!=leftover_cluster_->nodes_.end(); ++inode){
 
-      m.message("SULTAN::sultan::get_helix_clusters_from:  ... build helices for triplet ( " , a.c().id() , ", " , inode->c().id() , ", " , b.c().id() , ") using node ", inode - leftover_nodes.begin(), " of ", leftover_nodes.size(), mybhep::VVERBOSE);
+      m.message("SULTAN::sultan::get_helix_clusters_from:  ... build helices for triplet ( " , a.c().id() , ", " , inode->c().id() , ", " , b.c().id() , ") using node ", inode - leftover_cluster_->nodes_.begin(), " of ", leftover_cluster_->nodes_.size(), mybhep::VVERBOSE);
 
       if( inode->c().id() == a.c().id() ) continue;
       if( inode->c().id() == b.c().id() ) continue;
@@ -2387,71 +2292,63 @@ namespace SULTAN {
 	  std::clog << " triplet (" << a.c().id() << ", " << inode->c().id() << ", " << b.c().id() << ") gives " << helices.size() << " helices " << std::endl;
       }
 
-      // choose 1 best cluster from triplet (a, X, b)
-      size_t nmax=0;
-      topology::cluster cmax;
+
+      // clusters from helix
+      std::vector<topology::cluster> csh;
 
       // loop on helices
       for(std::vector<topology::experimental_helix>::const_iterator ihelix= helices.begin(); ihelix!=helices.end(); ++ihelix){
 
 	// form cluster from leftover nodes
-	topology::cluster c = get_cluster_from(t, *ihelix);
+	topology::cluster c = get_helix_cluster_from(t, *ihelix);
 
-	if( c.is_good() ){
+	if( !c.is_good() ) continue;
 
-	  check_continous_cells(&c, t.ca(), t.cc());
-
-	  if( !c.is_good() ) continue;
-
-	  if (level >= mybhep::VERBOSE){
-
-	    std::vector<topology::node> the_nodes = c.nodes();
-	    std::clog << "SULTAN::sultan::get_helix_clusters_from:  helix " << ihelix - helices.begin() << " for triplet ( " << a.c().id() << ", " << inode->c().id() << ", " << b.c().id() << ") makes a good cluster of " << c.nodes().size()<< " cells, nmax "<< nmax << " cluster: ( ";
-	    for(std::vector<topology::node>::const_iterator inode=the_nodes.begin(); inode!=the_nodes.end(); ++inode)
-	      std::clog << inode->c().id() << " ";
-	    std::clog << ")" << std::endl;
-	  }
+	if (level >= mybhep::VERBOSE){
 	  
-	  const std::vector<topology::node> & cnodes = c.nodes();
-	  if( cnodes.size() > nmax ){
-	    nmax = cnodes.size();
-	    cmax = c;
-	    
-	    if( cnodes.size() == full_cluster_->nodes_.size() ){
-	      m.message("SULTAN::sultan::get_helix_clusters_from:  all", cnodes.size(), "cells of cluster have been assigned as a helix ", mybhep::VERBOSE);
-	      *cluster_is_finished = true;
-	      assign_nodes_of_cluster(c);
-	      cs.push_back(c);
-	      return cs;
-	    }
-	    
-	  }
+	  std::vector<topology::node> the_nodes = c.nodes();
+	  std::clog << "SULTAN::sultan::get_helix_clusters_from:  helix " << ihelix - helices.begin() << " for triplet ( " << a.c().id() << ", " << inode->c().id() << ", " << b.c().id() << ") makes a good cluster of " << c.nodes().size()<< " cells, cluster: ( ";
+	  for(std::vector<topology::node>::const_iterator inode=the_nodes.begin(); inode!=the_nodes.end(); ++inode)
+	    std::clog << inode->c().id() << " ";
+	  std::clog << ")" << std::endl;
+	}
+	
+	if( c.nodes().size() == full_cluster_->nodes_.size() ){
+	  m.message("SULTAN::sultan::get_helix_clusters_from:  all", c.nodes().size(), "cells of cluster have been assigned as helix ", mybhep::VERBOSE);
+	  *cluster_is_finished = true;
+	  assign_nodes_of_cluster(c);
+	  cs->push_back(c);
+	  return;
+	}else{
+	  csh.push_back(c);
 	}
 
       } // finish loop on helices from (a, X, b)
 
+      topology::cluster cmax = get_best_cluster_from(csh);
+      size_t nmax=cmax.nodes().size();
+
       m.message("SULTAN::sultan::get_helix_clusters_from:  the best cluster has ", nmax, " nodes ", mybhep::VVERBOSE);
-      if( nmax > 0 ){ // 1 best cluster was found
+      if( nmax > 0 && cmax.is_good() ){ // 1 best cluster was found in (a, X, b)
 
-	assign_nodes_of_cluster(cmax);
-	cs.push_back(cmax);
-
-	if( assigned_cluster_->nodes().size() == full_cluster_->nodes_.size() ){
-	  m.message("SULTAN::sultan::get_helix_clusters_from:  all", assigned_cluster_->nodes().size(), "cells of cluster have been assigned as a helix ", mybhep::VERBOSE);
+	assign_nodes_of_cluster(cmax); // this will remove the assigned nodes from leftover
+	                               // reducing Y range for future searches in triplets (a, Y, b)
+	cs->push_back(cmax);
+	m.message("SULTAN::sultan::get_helix_clusters_from: cells assigned as helix ", mybhep::VERBOSE);
+	
+	if( cmax.nodes().size() == full_cluster_->nodes_.size() ){
+	  m.message("SULTAN::sultan::get_helix_clusters_from:  all", cmax.nodes().size(), "cells of cluster have been assigned as helix ", mybhep::VERBOSE);
 	  *cluster_is_finished = true;
-	  return cs;
+	  return;
 	}
 	
       }
-
+      
     } // finish loop on cell X in (a, X, b)
 
-    m.message("SULTAN::sultan::get_helix_clusters_from:  helices built on triplets (a, X, b), with X in cluster, have produced " , cs.size() , " clusters " , mybhep::VVERBOSE);
 
-    return cs;
+    return;
     
-
-
   }
 
 
@@ -2459,16 +2356,18 @@ namespace SULTAN {
   void sultan::assign_nodes_of_cluster(topology::cluster c){
   //*************************************************************
 
-    const std::vector<topology::node> & cnodes = c.nodes();
-    assigned_cluster_->add_nodes(cnodes);
-    leftover_cluster_->remove_nodes(cnodes);
+    assigned_cluster_->add_nodes(c.nodes());
+    leftover_cluster_->remove_nodes(c.nodes());
+
   }
 
   //*************************************************************
   std::vector<topology::cluster> sultan::get_clusters_from(topology::node a, topology::node b, size_t icluster, bool * cluster_is_finished){
   //*************************************************************
-
     // get all clusters with endpoints a and b
+
+    clock.start(" sultan: get_clusters_from ","cumulative");
+
     if (level >= mybhep::VERBOSE){
       bool on_foil, on_calo, on_xcalo, on_gveto, on_calo_hit;
       on_foil=a.c().is_near_foil();
@@ -2496,64 +2395,33 @@ namespace SULTAN {
 
     std::vector<topology::cluster> cs;
 
-    topology::cluster c = get_line_cluster_from(a, b);
-    bool clusterized_as_line=false;
-    if( c.is_good() ){
-      assign_nodes_of_cluster(c);
-      cs.push_back(c);
-      clusterized_as_line=true;
-    }
 
-    if (level >= mybhep::VERBOSE){
-      if( clusterized_as_line ){
-	const std::vector<topology::node> & cnodes = c.nodes();
-	std::clog << "SULTAN::sultan::get_clusters_from:  " << a.c().id() << " -> " << b.c().id() << " clusterized as line with " << cnodes.size() << " cells ( ";
-	for( std::vector<topology::node>::const_iterator inode=cnodes.begin(); inode!=cnodes.end(); ++inode){
-	  std::clog <<inode->c().id() << " ";
-	}
-	std::clog <<")" << std::endl;
-      }else{
-	std::clog << "SULTAN::sultan::get_clusters_from:  " << a.c().id() << " -> " << b.c().id() << " not clusterized as line " << std::endl;
-      }
-    }
-
-    if( assigned_cluster_->nodes().size() == full_cluster_->nodes().size() ){
-      m.message("SULTAN::sultan::get_clusters_from: all", assigned_cluster_->nodes().size(), "cells of cluster have been assigned as a line ", mybhep::VERBOSE);
-      *cluster_is_finished = true;
+    get_line_clusters_from(a, b, icluster, cluster_is_finished, &cs);
+    status();
+    if( cluster_is_finished ){
+      clock.stop(" sultan: get_clusters_from ");
       return cs;
     }
 
 
-    std::vector<topology::cluster> csh = get_helix_clusters_from(a, b, icluster, cluster_is_finished);
+    get_helix_clusters_from(a, b, icluster, cluster_is_finished, &cs);
+    status();
   
+    m.message("SULTAN::sultan::get_clusters_from: gotten " , cs.size() , " good clusters with endpoints a " , a.c().id() , " and b " , b.c().id() , mybhep::VVERBOSE);
     if (level >= mybhep::VERBOSE){
-      if( csh.size() ){
-	for( std::vector<topology::cluster>::const_iterator iclu=csh.begin(); iclu!=csh.end(); ++iclu){
-	  const std::vector<topology::node> & cnodes = iclu->nodes();
-	  std::clog << "SULTAN::sultan::get_clusters_from:  " << a.c().id() << " -> " << b.c().id() << " clusterized as helix with " << cnodes.size() << " cells ( ";
-	  for( std::vector<topology::node>::const_iterator inode=cnodes.begin(); inode!=cnodes.end(); ++inode){
-	    std::clog <<inode->c().id() << " ";
-	  }
-	  std::clog <<")" << std::endl;
+      for( std::vector<topology::cluster>::const_iterator iclu=cs.begin(); iclu!=cs.end(); ++iclu){
+	const std::vector<topology::node> & cnodes = iclu->nodes();
+	std::clog << "SULTAN::sultan::get_clusters_from:  " << a.c().id() << " -> " << b.c().id() << " clusterized as " << iclu->get_cluster_type() << " with " << cnodes.size() << " cells ( ";
+	for( std::vector<topology::node>::const_iterator inode=cnodes.begin(); inode!=cnodes.end(); ++inode){
+	  std::clog <<inode->c().id() << " ";
 	}
-      }else{
-	std::clog << "SULTAN::sultan::get_clusters_from:  " << a.c().id() << " -> " << b.c().id() << " not clusterized as helix " << std::endl;
+	std::clog <<")" << std::endl;
       }
     }
-
-    m.message("SULTAN::sultan::get_clusters_from: gotten " , csh.size() , " helix clusters with endpoints a " , a.c().id() , " and b " , b.c().id() , mybhep::VVERBOSE);
-
-    // loop on helix clusters
-    for(std::vector<topology::cluster>::const_iterator iclu= csh.begin(); iclu!=csh.end(); ++iclu){
-      if( iclu->is_good() )
-	cs.push_back(*iclu);
-    }
-
-
-    m.message("SULTAN::sultan::get_clusters_from: gotten " , cs.size() , " good clusters with endpoints a " , a.c().id() , " and b " , b.c().id() , mybhep::VVERBOSE);
-
+    
+    clock.stop(" sultan: get_clusters_from ");
     return cs;
-
+    
 
   }
 

@@ -203,6 +203,7 @@ namespace SULTAN {
       //
 
       experimental_double delta = *this - a;
+
       if( delta.value() > nsigmas*delta.error() ) return false;
       return true;
 
@@ -278,6 +279,15 @@ namespace SULTAN {
       experimental_double delta = *this - a;
       if( fabs(delta.value()) > nsigmas*delta.error() ) return false;
       return true;
+
+    }
+
+    bool experimental_double::is_zero__optimist(double nsigmas=1)const{
+
+      topology::experimental_double zero(0.,0.);
+      experimental_double magn = experimental_fabs(*this);
+
+      return magn.is_less_than__optimist(zero, nsigmas);
 
     }
 
