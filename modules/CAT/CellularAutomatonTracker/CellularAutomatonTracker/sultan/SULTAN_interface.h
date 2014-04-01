@@ -58,6 +58,9 @@ namespace SULTAN {
     /// print an event display in the helix space?
     bool print_event_display;
 
+    /// use clocks to time different parts of the software
+    bool use_clocks;
+
     /// minimum p-value
     double probmin;
 

@@ -47,11 +47,10 @@ namespace SULTAN {
       experimental_double delta_hor = delta.hor().length();
       experimental_double dr1 = R() + c.r();
       experimental_double dr2 = R() - c.r();
-      experimental_double dr;
-      if( fabs(delta_hor.value() - dr1.value()) < fabs(delta_hor.value() - dr2.value()) )
-	dr = experimental_fabs(delta_hor - dr1);
-      else
-	dr = experimental_fabs(delta_hor - dr2);
+      experimental_double dr = experimental_min(
+						experimental_fabs(delta_hor - dr1),
+						experimental_fabs(delta_hor - dr2)
+						);
       
       experimental_double phi = delta.phi();
       experimental_double dh = z0() + H()*phi - c.ep().z();

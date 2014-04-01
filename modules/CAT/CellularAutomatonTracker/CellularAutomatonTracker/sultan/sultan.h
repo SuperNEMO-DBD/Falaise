@@ -68,7 +68,7 @@ namespace SULTAN {
     void print_scenarios() const;
     void print_a_scenario(const topology::scenario & scenario) const;
     bool make_scenarios(topology::tracked_data &td);
-    bool check_continous_cells(topology::experimental_helix *b);
+    bool check_continous_cells(topology::cluster * given_cluster, topology::experimental_helix *b);
     bool get_longest_piece(topology::cluster * given_cluster, topology::node a, topology::node b, topology::cluster * longest_piece);
     std::vector<topology::sequence> clean_up(std::vector<topology::sequence> seqs);
     std::vector<topology::cluster> clean_up(std::vector<topology::cluster> clusters);
@@ -203,6 +203,11 @@ namespace SULTAN {
       return;
     }
 
+    void set_use_clocks(bool v){
+      use_clocks = v;
+      return;
+    }
+
     void set_probmin(double v){
       probmin = v;
       return;
@@ -309,7 +314,6 @@ namespace SULTAN {
     mybhep::messenger m;
     int nevent;
     int event_number;
-    int initial_events;
     int skipped_events;
 
     //geom param
@@ -345,6 +349,7 @@ namespace SULTAN {
     std::string _moduleNR;
 
     bool print_event_display;
+    bool use_clocks;
     void reset_triplets(){
       triplets_.clear();
     }
