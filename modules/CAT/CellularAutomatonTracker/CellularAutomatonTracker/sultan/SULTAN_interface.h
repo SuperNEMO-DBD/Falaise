@@ -61,6 +61,9 @@ namespace SULTAN {
     /// use clocks to time different parts of the software
     bool use_clocks;
 
+    /// clusterize with endpoints using helix model
+    bool clusterize_with_helix_model;
+
     /// minimum p-value
     double probmin;
 

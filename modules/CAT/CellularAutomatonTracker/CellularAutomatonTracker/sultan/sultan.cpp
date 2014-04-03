@@ -50,6 +50,7 @@ namespace SULTAN {
     max_time = std::numeric_limits<double>::quiet_NaN ();
     print_event_display = false;
     use_clocks = false;
+    clusterize_with_helix_model = false;
     _moduleNR.clear ();
     event_number=-1;
     nevent = 0;
@@ -163,6 +164,7 @@ namespace SULTAN {
     m.message("SULTAN::sultan::read_properties: max_time",max_time,"ms",mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties: print_event_display",print_event_display,mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties: use_clocks",use_clocks,mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: clusterize_with_helix_model",clusterize_with_helix_model,mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties: probmin", probmin, mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties: nsigma_r", nsigma_r, mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties: nsigma_z", nsigma_z, mybhep::NORMAL);
@@ -685,7 +687,7 @@ namespace SULTAN {
 
     if( print_event_display && event_number < 10 ){
       if( use_clocks )
-	clock.start(" sultan : form_helices_from_triplets : print_event_display ", "cumulative");
+	clock.start(" sultan: form_helices_from_triplets : print_event_display ", "cumulative");
 
       // double weight = 0.0;
 
@@ -761,7 +763,7 @@ namespace SULTAN {
         delete root_tree;
       }
       if( use_clocks )
-	clock.stop(" sultan : form_helices_from_triplets : print_event_display ");
+	clock.stop(" sultan: form_helices_from_triplets : print_event_display ");
     }
 
     m.message("SULTAN::sultan::form_helices_from_triplets:  sultan: the", triplets_.size(), " triplets have given rise to ", the_helices->size(), " helices ", mybhep::VVERBOSE);
@@ -799,6 +801,8 @@ namespace SULTAN {
     std::vector<topology::experimental_helix> the_helices;
     std::vector<topology::cluster> newly_made_clusters;
 
+    size_t n_of_leftover_nodes;
+
     // while loop: keep trying as long as 
     // one can form triplets and helices out of them
     while( form_triplets_from_cells() && form_helices_from_triplets(&the_helices, icluster) ){
@@ -809,6 +813,7 @@ namespace SULTAN {
       // reset
       experimental_legendre_vector->reset();
       neighbours.clear();
+      n_of_leftover_nodes = leftover_cluster_->nodes_.size();
 
       if (level >= mybhep::VERBOSE){
         std::clog << "SULTAN::sultan::sequentiate_cluster_with_experimental_vector:  leg vector has " << experimental_legendre_vector->helices().size() << " helices " << std::endl; fflush(stdout);
@@ -875,6 +880,12 @@ namespace SULTAN {
       
       if( print_event_display ) break;
       
+
+      if( leftover_cluster_->nodes_.size() == n_of_leftover_nodes ){
+        m.message("SULTAN::sultan::sequentiate_cluster_with_experimental_vector: leftover nodes have not been reduced; break ", mybhep::VERBOSE); fflush(stdout);
+	break;
+      }
+
     }
 
 
@@ -2557,9 +2568,14 @@ namespace SULTAN {
 
     get_line_clusters_from(a, b, icluster, cluster_is_finished, &cs);
     status();
-    //if( *cluster_is_finished ){ // qqq giusto
-    //    if( cluster_is_finished ){ // qqq rapido ?
-    if( true ){ // qqq rapido2 ?
+
+    if( !clusterize_with_helix_model ){
+      if( use_clocks )
+	clock.stop(" sultan: get_clusters_from ");
+      return cs;
+    }
+
+    if( *cluster_is_finished ){ 
       if( use_clocks )
 	clock.stop(" sultan: get_clusters_from ");
       return cs;

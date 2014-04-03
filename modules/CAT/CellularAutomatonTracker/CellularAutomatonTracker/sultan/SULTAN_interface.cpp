@@ -46,7 +46,8 @@ namespace SULTAN {
     SuperNemo                     = true;
     max_time                      = 5000.0; // ms
     print_event_display           = false;
-    use_clocks           = false;
+    use_clocks                    = false;
+    clusterize_with_helix_model   = false;
     probmin                       = 0.;
     nsigma_r                      = 5.;
     nsigma_z                      = 3.;
@@ -243,6 +244,7 @@ namespace SULTAN {
     stor_.set_max_time (setup_.max_time );
     stor_.set_print_event_display (setup_.print_event_display );
     stor_.set_use_clocks (setup_.use_clocks );
+    stor_.set_clusterize_with_helix_model (setup_.clusterize_with_helix_model );
     std::string leveltmp = setup_.sequentiator_level;
     boost::to_upper(leveltmp);
 

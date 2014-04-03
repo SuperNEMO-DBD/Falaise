@@ -208,6 +208,11 @@ namespace SULTAN {
       return;
     }
 
+    void set_clusterize_with_helix_model(bool v){
+      clusterize_with_helix_model = v;
+      return;
+    }
+
     void set_probmin(double v){
       probmin = v;
       return;
@@ -350,6 +355,7 @@ namespace SULTAN {
 
     bool print_event_display;
     bool use_clocks;
+    bool clusterize_with_helix_model;
     void reset_triplets(){
       triplets_.clear();
     }
