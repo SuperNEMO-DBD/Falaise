@@ -689,7 +689,7 @@ namespace SULTAN {
       if( use_clocks )
 	clock.start(" sultan: form_helices_from_triplets : print_event_display ", "cumulative");
 
-      // double weight = 0.0;
+      root_file_->cd();
 
       if( the_helices->size() ){
 
@@ -710,11 +710,17 @@ namespace SULTAN {
         TString R_error_name=Form("R_error_"+tree_name, event_number, icluster);
         TString H_error_name=Form("H_error_"+tree_name, event_number, icluster);
 
-        double x0_value = 0., x0_error = 0.;
-        double y0_value = 0., y0_error = 0.;
-        double z0_value = 0., z0_error = 0.;
-        double R_value = 0., R_error = 0.;
-        double H_value = 0., H_error = 0.;
+        double x0_value = 0.; 
+	double x0_error = 0.;
+        double y0_value = 0.; 
+	double y0_error = 0.;
+        double z0_value = 0.; 
+	double z0_error = 0.;
+        double R_value = 0.; 
+	double R_error = 0.;
+        double H_value = 0.; 
+	double H_error = 0.;
+	double weight;
 
         root_tree->Branch(x0_name,&x0_value);
         root_tree->Branch(y0_name,&y0_value);
@@ -744,13 +750,13 @@ namespace SULTAN {
           R_error = ihel->R().error();
           H_error = ihel->H().error();
 
-          double weight = 1./(pow(x0_error,2) +
+          weight = 1./(pow(x0_error,2) +
                        pow(y0_error,2) +
                        pow(z0_error,2) +
                        pow(R_error,2) +
                        pow(H_error,2)
                        );
-          weight += 0.0; // trick to avoid warn
+          //weight += 0.0; // trick to avoid warn
 
           root_tree->Fill();
 
@@ -758,7 +764,6 @@ namespace SULTAN {
 
         }
 
-        root_file_->cd();
         root_tree->Write();
         delete root_tree;
       }
@@ -1497,7 +1502,7 @@ namespace SULTAN {
   //*************************************************************
   void sultan::reduce_cluster__with_2_clusters_of_endpoints(size_t icluster, bool * cluster_is_finished,  const std::vector<topology::node> &inodes,  const std::vector<topology::node> &jnodes, std::vector<topology::cluster> * cs ) {
     //*************************************************************
-    m.message("SULTAN::sultan::reduce_cluster__with_2_clusters_of_endpoints:  2nd cluster of endpints has " , jnodes.size() , " nodes " , mybhep::VVERBOSE);
+    m.message("SULTAN::sultan::reduce_cluster__with_2_clusters_of_endpoints:  2nd cluster of endpoints has " , jnodes.size() , " nodes " , mybhep::VVERBOSE);
     // we expect at most 1 cluster between 2 clusters of endpoints
 
     if( use_clocks )
@@ -1558,7 +1563,7 @@ namespace SULTAN {
 	break;
       }
       
-      m.message("SULTAN::sultan::reduce_cluster__with_vector_of_clusters_of_endpoints:  1st cluster of endpints has " , inodes.size() , " nodes " , mybhep::VVERBOSE);
+      m.message("SULTAN::sultan::reduce_cluster__with_vector_of_clusters_of_endpoints:  1st cluster of endpoints has " , inodes.size() , " nodes " , mybhep::VVERBOSE);
       
       // loop on 2nd cluster of endpoints
       for(std::vector<topology::cluster>::const_iterator jclu = iclu+1; jclu != clusters_of_endpoints.end(); ++jclu){
@@ -2415,7 +2420,7 @@ namespace SULTAN {
 
 
     // loop on cells in the cluster of leftover nodes for form a triplet (a, X, b)
-    
+    double distance12, distance23;
     std::vector<topology::node>::iterator inode= leftover_cluster_->nodes_.begin();
     while( inode != leftover_cluster_->nodes_.end()){
 
@@ -2428,6 +2433,20 @@ namespace SULTAN {
 	continue;
       }
       if( inode->c().id() == b.c().id() ){
+	++inode;
+	continue;
+      }
+
+      distance12 = (a.c().ep().hor_distance(inode->c().ep())).value();
+      distance23 = (inode->c().ep().hor_distance(b.c().ep())).value();
+
+      m.message(" (triplet " , a.c().id() , ", " , inode->c().id() , ", " , b.c().id() , ") distance12 " , distance12, " distance23 ", distance23 , mybhep::VVERBOSE);
+
+      if( distance12 < dist_limit_inf ){
+	++inode;
+	continue;
+      }
+      if( distance23 < dist_limit_inf ){
 	++inode;
 	continue;
       }
