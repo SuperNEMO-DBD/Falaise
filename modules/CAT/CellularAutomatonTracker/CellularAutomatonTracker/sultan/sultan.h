@@ -208,6 +208,16 @@ namespace SULTAN {
       return;
     }
 
+    void set_use_endpoints(bool v){
+      use_endpoints = v;
+      return;
+    }
+
+    void set_use_legendre(bool v){
+      use_legendre = v;
+      return;
+    }
+
     void set_clusterize_with_helix_model(bool v){
       clusterize_with_helix_model = v;
       return;
@@ -355,6 +365,8 @@ namespace SULTAN {
 
     bool print_event_display;
     bool use_clocks;
+    bool use_endpoints;
+    bool use_legendre;
     bool clusterize_with_helix_model;
     void reset_triplets(){
       triplets_.clear();

@@ -50,6 +50,8 @@ namespace SULTAN {
     max_time = std::numeric_limits<double>::quiet_NaN ();
     print_event_display = false;
     use_clocks = false;
+    use_endpoints = true;
+    use_legendre = false;
     clusterize_with_helix_model = false;
     _moduleNR.clear ();
     event_number=-1;
@@ -164,6 +166,8 @@ namespace SULTAN {
     m.message("SULTAN::sultan::read_properties: max_time",max_time,"ms",mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties: print_event_display",print_event_display,mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties: use_clocks",use_clocks,mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: use_endpoints",use_endpoints,mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: use_legendre",use_legendre,mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties: clusterize_with_helix_model",clusterize_with_helix_model,mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties: probmin", probmin, mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties: nsigma_r", nsigma_r, mybhep::NORMAL);
@@ -214,20 +218,24 @@ namespace SULTAN {
       status();
       m.message("SULTAN::sultan::reduce_clusters: prepare to reduce cluster ", icluster - clusters_.begin(), " of ", clusters_.size(), " having", icluster->nodes_.size(), "gg cells ", mybhep::VERBOSE);
 
-      // form clusters between endpoints (foil, calo hits)
-      reduce_cluster_based_on_endpoints(icluster - clusters_.begin());
+      if( use_endpoints ){
+	// form clusters between endpoints (foil, calo hits)
+	reduce_cluster_based_on_endpoints(icluster - clusters_.begin());
+      }
 
-      // look for cluster with largest number of triplet-neighbours
-      //sequentiate_cluster_with_experimental_vector(icluster - clusters_.begin());
-
-      //keep track in smarter way of which cluster has the largest number of triplet-neighbours
-      //sequentiate_cluster_with_experimental_vector_2(a_cluster, icluster - clusters_.begin());
-
-      // look for cluster with largest number of cell-neighbours
-      //sequentiate_cluster_with_experimental_vector_3(a_cluster, icluster - clusters_.begin());
-
-      // put helices in clusters, assign each cell to the cluster with the largest n of cells
-      //sequentiate_cluster_with_experimental_vector_4(a_cluster, icluster - clusters_.begin());
+      if( use_legendre ){
+	// look for cluster with largest number of triplet-neighbours
+	sequentiate_cluster_with_experimental_vector(icluster - clusters_.begin());
+	
+	//keep track in smarter way of which cluster has the largest number of triplet-neighbours
+	//sequentiate_cluster_with_experimental_vector_2(a_cluster, icluster - clusters_.begin());
+	
+	// look for cluster with largest number of cell-neighbours
+	//sequentiate_cluster_with_experimental_vector_3(a_cluster, icluster - clusters_.begin());
+	
+	// put helices in clusters, assign each cell to the cluster with the largest n of cells
+	//sequentiate_cluster_with_experimental_vector_4(a_cluster, icluster - clusters_.begin());
+      }
 
     }
 

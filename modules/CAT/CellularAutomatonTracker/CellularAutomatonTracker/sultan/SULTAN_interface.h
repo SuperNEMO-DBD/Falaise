@@ -61,6 +61,12 @@ namespace SULTAN {
     /// use clocks to time different parts of the software
     bool use_clocks;
 
+    /// use endpoints to clusterize
+    bool use_endpoints;
+
+    /// use legendre transform to clusterize
+    bool use_legendre;
+
     /// clusterize with endpoints using helix model
     bool clusterize_with_helix_model;
 
