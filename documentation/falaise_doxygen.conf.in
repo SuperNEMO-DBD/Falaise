@@ -335,7 +335,7 @@ TYPEDEF_HIDES_STRUCT   = NO
 # 2^(16+SYMBOL_CACHE_SIZE). The valid range is 0..9, the default is 0,
 # corresponding to a cache size of 2^16 = 65536 symbols.
 
-SYMBOL_CACHE_SIZE      = 0
+# SYMBOL_CACHE_SIZE      = 0
 
 # Similar to the SYMBOL_CACHE_SIZE the size of the symbol lookup cache can be
 # set using LOOKUP_CACHE_SIZE. This cache is used to resolve symbols given
@@ -659,7 +659,7 @@ WARN_LOGFILE           =
 # We use expansion variables to explicitly list input files. This
 # ensures correct ordering of "Related Pages" and when generating pdf
 
-INPUT                  =  @Falaise_ABSOLUTE_MARKDOWN_DOCS@ \ 
+INPUT                  =  @Falaise_ABSOLUTE_MARKDOWN_DOCS@ \
                           @Falaise_DOCEXPORT_DIR@ \
                           @Falaise_BUILDPRODUCT_DIR@/include/falaise
 
