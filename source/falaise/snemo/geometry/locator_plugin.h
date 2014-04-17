@@ -90,8 +90,6 @@ namespace snemo {
       /// Internal mapping build method
       void _build_locators (const datatools::properties & config_);
 
-      //void _get_locator (const std::string & locator_name_);
-
     private:
 
       bool                _initialized_;   //!< Initialization flag
@@ -110,5 +108,3 @@ namespace snemo {
 } // end of namespace snemo
 
 #endif // FALAISE_SNEMO_GEOMETRY_LOCATOR_PLUGIN_H
-
-// end of falaise/snemo/geometry/locator_plugin.h

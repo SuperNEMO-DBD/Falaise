@@ -253,16 +253,17 @@ namespace snemo {
       return;
     } // end of base_tracker_clusterizer::tree_dump
 
-    int base_tracker_clusterizer::_prepare_process (const base_tracker_clusterizer::hit_collection_type & hits_,
+    int base_tracker_clusterizer::_prepare_process (const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+                                                    const base_tracker_clusterizer::calo_hit_collection_type & /* calo_hits_ */,
                                                     snemo::datamodel::tracker_clustering_data & /* clustering_ */)
     {
       /****************
        * Locate cells *
        ****************/
-
-      DT_LOG_DEBUG (get_logging_priority (), "Number of Geiger hits = " << hits_.size ());
+      const base_tracker_clusterizer::hit_collection_type & gg_hits = gg_hits_;
+      DT_LOG_DEBUG (get_logging_priority (), "Number of Geiger hits = " << gg_hits.size ());
       // Ensure the hits have registered X/Y position :
-      BOOST_FOREACH (const snemo::datamodel::calibrated_data::tracker_hit_handle_type & gg_handle, hits_)
+      BOOST_FOREACH (const snemo::datamodel::calibrated_data::tracker_hit_handle_type & gg_handle, gg_hits)
         {
           if (! gg_handle.has_data ()) continue;
           const snemo::datamodel::calibrated_tracker_hit & sncore_gg_hit = gg_handle.get ();
@@ -289,12 +290,12 @@ namespace snemo {
 
       // Input data
       TrackerPreClustering::input_data<hit_type> idata;
-      idata.hits.reserve (hits_.size());
+      idata.hits.reserve (gg_hits.size());
       std::map<const hit_type *, hit_handle_type > pre_cluster_mapping;
 
       // Fill the TrackerPreClustering input data model :
       BOOST_FOREACH (const snemo::datamodel::calibrated_data::tracker_hit_handle_type & gg_handle,
-                     hits_)
+                     gg_hits)
         {
           if (! gg_handle.has_data ()) continue;
           const snemo::datamodel::calibrated_tracker_hit & sncore_gg_hit = gg_handle.get ();
@@ -396,7 +397,8 @@ namespace snemo {
       return;
     }
 
-    int base_tracker_clusterizer::_post_process (const base_tracker_clusterizer::hit_collection_type & /* hits_ */,
+    int base_tracker_clusterizer::_post_process (const base_tracker_clusterizer::hit_collection_type & /* gg_hits_ */,
+                                                 const base_tracker_clusterizer::calo_hit_collection_type & /* calo_hits_ */,
                                                  snemo::datamodel::tracker_clustering_data & clustering_)
     {
       // 2012-10-03 FM : Hits ignored by the pre-clusterizer are classified
@@ -407,9 +409,9 @@ namespace snemo {
       return 0;
     } // end of base_tracker_clusterizer::_post_process
 
-
-    int base_tracker_clusterizer::process (const base_tracker_clusterizer::hit_collection_type & hits_,
-                                           snemo::datamodel::tracker_clustering_data & clustering_)
+    int base_tracker_clusterizer::process(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+                                          const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
+                                          snemo::datamodel::tracker_clustering_data & clustering_)
     {
       int status = 0;
       DT_THROW_IF (! is_initialized (), std::logic_error,
@@ -420,7 +422,7 @@ namespace snemo {
 
       // Run pre-processing based on time-coincidence to determine what are prompt hits,
       // what are candidate clusters of delayed hits :
-      status = _prepare_process (hits_, clustering_);
+      status = _prepare_process (gg_hits_, calo_hits_, clustering_);
       if (status != 0)
         {
           DT_LOG_ERROR (get_logging_priority (), "Pre-processing based on time-coincidence has failed !");
@@ -431,7 +433,7 @@ namespace snemo {
       for (size_t i = 0; i < _prompt_time_clusters_.size (); i++)
         {
           const hit_collection_type & prompt_clusters = _prompt_time_clusters_[i];
-          status = _process_algo (prompt_clusters, clustering_);
+          status = _process_algo (prompt_clusters, calo_hits_, clustering_);
           if (status != 0)
             {
               DT_LOG_ERROR (get_logging_priority (), "Processing of prompt hits by '" << _id_ << "' algorithm has failed !");
@@ -443,7 +445,7 @@ namespace snemo {
       for (size_t i = 0; i < _delayed_time_clusters_.size (); i++)
         {
           const hit_collection_type & delayed_clusters = _delayed_time_clusters_[i];
-          status = _process_algo (delayed_clusters, clustering_);
+          status = _process_algo (delayed_clusters, calo_hits_, clustering_);
           if (status != 0)
             {
               DT_LOG_ERROR (get_logging_priority (), "Processing of delayed hits by '" << _id_ << "' algorithm has failed !");
@@ -451,13 +453,13 @@ namespace snemo {
             }
         }
 
-      _post_process (hits_, clustering_);
+      _post_process (gg_hits_, calo_hits_, clustering_);
       return status;
     } // end of base_tracker_clusterizer::process
 
     // static
-    void base_tracker_clusterizer::_ocd_support(datatools::object_configuration_description & ocd_,
-                                                const std::string & prefix_)
+    void base_tracker_clusterizer::ocd_support(datatools::object_configuration_description & ocd_,
+                                               const std::string & prefix_)
     {
 
       datatools::logger::declare_ocd_logging_configuration(ocd_, "fatal", prefix_);
@@ -467,6 +469,7 @@ namespace snemo {
         datatools::configuration_property_description & cpd = ocd_.add_property_info();
         cpd.set_name_pattern("locator_plugin_name")
           .set_terse_description("The name of the geometry Geiger locator plugin to be used")
+          .set_from("snemo::processing::base_tracker_clusterizer")
           .set_traits(datatools::TYPE_STRING)
           .set_long_description("Default value: empty means no automatic search   \n")
           .add_example("Set the default value::                          \n"
@@ -482,6 +485,7 @@ namespace snemo {
         datatools::configuration_property_description & cpd = ocd_.add_property_info();
         cpd.set_name_pattern("TPC.delayed_hit_cluster_time")
           .set_terse_description("The minimum time to consider a Geiger hit as delayed")
+          .set_from("snemo::processing::base_tracker_clusterizer")
           .set_traits(datatools::TYPE_REAL)
           .set_long_description("Default value: ``10 us``   \n")
           .add_example("Set the default value::                          \n"
@@ -497,6 +501,7 @@ namespace snemo {
         datatools::configuration_property_description & cpd = ocd_.add_property_info();
         cpd.set_name_pattern("TPC.processing_prompt_hits")
           .set_terse_description("Flag to process prompt Geiger hits")
+          .set_from("snemo::processing::base_tracker_clusterizer")
           .set_traits(datatools::TYPE_REAL)
           .set_long_description("Default value: ``1``   \n")
           .add_example("Set the default value::                       \n"
@@ -512,6 +517,7 @@ namespace snemo {
         datatools::configuration_property_description & cpd = ocd_.add_property_info();
         cpd.set_name_pattern("TPC.processing_delayed_hits")
           .set_terse_description("Flag to process delayed Geiger hits")
+          .set_from("snemo::processing::base_tracker_clusterizer")
           .set_traits(datatools::TYPE_REAL)
           .set_long_description("Default value: ``1``   \n")
           .add_example("Set the default value::                       \n"
@@ -527,6 +533,7 @@ namespace snemo {
         datatools::configuration_property_description & cpd = ocd_.add_property_info();
         cpd.set_name_pattern("TPC.split_chamber")
           .set_terse_description("Flag to process distinctly delayed Geiger hits from different sides of the tracking chamber")
+          .set_from("snemo::processing::base_tracker_clusterizer")
           .set_traits(datatools::TYPE_REAL)
           .set_long_description("Default value: ``0``   \n")
           .add_example("Split chamber in 2 sides::          \n"

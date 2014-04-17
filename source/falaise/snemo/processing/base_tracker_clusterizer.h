@@ -37,8 +37,10 @@
 #include <datatools/logger.h>
 #include <datatools/object_configuration_description.h>
 
-// This project:
+// Falaise:
 #include <snemo/datamodels/calibrated_data.h>
+
+// Falaise module:
 #include <TrackerPreClustering/pre_clusterizer.h>
 
 // Forward declaration :
@@ -68,9 +70,10 @@ namespace snemo {
     public:
 
       // Typedefs
-      typedef snemo::datamodel::calibrated_tracker_hit                       hit_type;
-      typedef snemo::datamodel::calibrated_tracker_hit::handle_type          hit_handle_type;
-      typedef snemo::datamodel::calibrated_data::tracker_hit_collection_type hit_collection_type;
+      typedef snemo::datamodel::calibrated_tracker_hit                           hit_type;
+      typedef snemo::datamodel::calibrated_tracker_hit::handle_type              hit_handle_type;
+      typedef snemo::datamodel::calibrated_data::tracker_hit_collection_type     hit_collection_type;
+      typedef snemo::datamodel::calibrated_data::calorimeter_hit_collection_type calo_hit_collection_type;
 
       /// Set logging priority level
       void set_logging_priority(datatools::logger::priority logging_priority_);
@@ -103,7 +106,8 @@ namespace snemo {
       virtual ~base_tracker_clusterizer();
 
       /// Main clustering process
-      int process(const hit_collection_type & hits_,
+      int process(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+                  const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
                   snemo::datamodel::tracker_clustering_data & clustering_);
 
       // Smart print
@@ -118,14 +122,14 @@ namespace snemo {
       /// Reset the clusterizer
       virtual void reset() = 0;
 
+      /// OCD support
+      static void ocd_support(datatools::object_configuration_description &,
+                               const std::string & prefix_ = "");
+
     protected :
 
       /// Initialize the clusterizer through configuration properties
       void _initialize(const datatools::properties & setup_);
-
-      /// OCD support
-      static void _ocd_support (datatools::object_configuration_description &,
-                                const std::string & prefix_ = "");
 
       /// Reset the clusterizer
       void _reset();
@@ -140,15 +144,18 @@ namespace snemo {
       void _set_initialized(bool);
 
       /// Prepare cluster for processing
-      virtual int _prepare_process(const hit_collection_type & hits_,
+      virtual int _prepare_process(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+                                   const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
                                    snemo::datamodel::tracker_clustering_data & clustering_);
 
       /// Specific clustering algorithm
-      virtual int _process_algo(const hit_collection_type & hits_,
+      virtual int _process_algo(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+                                const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
                                 snemo::datamodel::tracker_clustering_data & clustering_) = 0;
 
       /// Post processing
-      virtual int _post_process(const hit_collection_type & hits_,
+      virtual int _post_process(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+                                const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
                                 snemo::datamodel::tracker_clustering_data & clustering_);
 
       /// Post processing of the ignored hits
