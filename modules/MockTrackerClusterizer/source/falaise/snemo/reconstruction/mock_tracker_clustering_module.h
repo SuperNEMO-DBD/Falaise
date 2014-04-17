@@ -102,7 +102,7 @@ namespace snemo {
     protected:
 
       /// Main process function
-      void _process(const snemo::datamodel::calibrated_data::tracker_hit_collection_type & calibrated_tracker_hits_,
+      void _process(const snemo::datamodel::calibrated_data & calib_data_,
                     snemo::datamodel::tracker_clustering_data & clustering_data_);
 
       /// Give default values to specific class members.

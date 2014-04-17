@@ -237,19 +237,20 @@ namespace snemo {
        ********************/
 
       // Main processing method :
-      _process(the_calibrated_data.calibrated_tracker_hits(),
-               the_clustering_data);
+      _process(the_calibrated_data, the_clustering_data);
 
       return dpp::base_module::PROCESS_SUCCESS;
     }
 
-    void mock_tracker_clustering_module::_process(const snemo::datamodel::calibrated_data::tracker_hit_collection_type & calibrated_tracker_hits_,
+    void mock_tracker_clustering_module::_process(const snemo::datamodel::calibrated_data & calib_data_,
                                                   snemo::datamodel::tracker_clustering_data & clustering_data_)
     {
       DT_LOG_TRACE(get_logging_priority(), "Entering...");
 
       // Process the clusterizer driver :
-      _driver_.get()->process(calibrated_tracker_hits_, clustering_data_);
+      _driver_.get()->process(calib_data_.calibrated_tracker_hits(),
+                              calib_data_.calibrated_calorimeter_hits(),
+                              clustering_data_);
 
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");
       return;

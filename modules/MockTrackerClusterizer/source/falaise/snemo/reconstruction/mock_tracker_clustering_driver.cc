@@ -90,10 +90,11 @@ namespace snemo {
       return;
     }
 
-    int mock_tracker_clustering_driver::_prepare_process (const hit_collection_type & tracker_hits_,
+    int mock_tracker_clustering_driver::_prepare_process (const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+                                                          const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
                                                           snemo::datamodel::tracker_clustering_data & clustering_)
     {
-      base_tracker_clusterizer::_prepare_process(tracker_hits_, clustering_);
+      base_tracker_clusterizer::_prepare_process(gg_hits_, calo_hits_, clustering_);
 
       namespace sdm = snemo::datamodel;
       // Create a unique tracker clustering solution :
@@ -106,7 +107,8 @@ namespace snemo {
     }
 
     // Main clustering method
-    int mock_tracker_clustering_driver::_process_algo(const hit_collection_type & tracker_hits_,
+    int mock_tracker_clustering_driver::_process_algo(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+                                                      const base_tracker_clusterizer::calo_hit_collection_type & /* calo_hits_ */,
                                                       snemo::datamodel::tracker_clustering_data & clustering_ )
     {
       namespace sdm = snemo::datamodel;
@@ -115,9 +117,8 @@ namespace snemo {
       sdm::tracker_clustering_solution & tc_solution = clustering_.grab_default_solution();
 
       // GG hit loop :
-      sdm::calibrated_tracker_hit previous_gg_hit = tracker_hits_.begin()->get();
-      for (hit_collection_type::const_iterator igg = tracker_hits_.begin();
-           igg != tracker_hits_.end(); ++igg) {
+      sdm::calibrated_tracker_hit previous_gg_hit = gg_hits_.begin()->get();
+      for (hit_collection_type::const_iterator igg = gg_hits_.begin(); igg != gg_hits_.end(); ++igg) {
 
         // Get a const reference on the calibrated Geiger hit :
         const sdm::calibrated_tracker_hit & a_gg_hit = igg->get();
@@ -174,9 +175,6 @@ namespace snemo {
       const int hit2_layer = gg_locator.extract_layer(tracker_hit_id2_);
       const int hit2_row   = gg_locator.extract_row  (tracker_hit_id2_);
 
-      // Good test but I have no clue how to do that with locator !!
-      // if (current_hit_module != a_hit_module) return false;
-
       // Do not cross the foil
       if (hit1_side != hit2_side) return false;
 
@@ -210,6 +208,9 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::mock_tracker_clustering_d
   ocd_.set_class_documentation("This driver manager for the mock tracker clustering clustering algorithm.\n"
                                "This algorithm is only used for simulated data.                          \n"
                                );
+
+  // Invoke OCD support at parent level :
+  ::snemo::processing::base_tracker_clusterizer::ocd_support(ocd_);
 
   {
     // Description of the 'MTC.max_layer_distance' configuration property :
@@ -259,7 +260,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::mock_tracker_clustering_d
       .set_default_value_integer(0)
       .add_example("Use the default value::                \n"
                    "                                       \n"
-                   "  MTC.max_sum_distance : integer = 3 \n"
+                   "  MTC.max_sum_distance : integer = 3   \n"
                    "                                       \n"
                    )
       ;
