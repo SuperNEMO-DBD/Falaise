@@ -106,8 +106,9 @@ int main(int argc_, char ** argv_)
       std::clog << "Processing event #" << i << "\n";
       snemo::reconstruction::sultan_driver::hit_collection_type gghits;
       generate_gg_hits(*gg_locator, gghits);
+      snemo::reconstruction::sultan_driver::calo_hit_collection_type calohits;
       snemo::datamodel::tracker_clustering_data clustering_data;
-      int code = SULTAN.process(gghits, clustering_data);
+      int code = SULTAN.process(gghits, calohits, clustering_data);
       if (code != 0) {
         break;
       }

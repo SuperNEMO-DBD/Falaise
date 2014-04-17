@@ -232,19 +232,20 @@ namespace snemo {
        ********************/
 
       // Main processing method :
-      _process(the_calibrated_data.calibrated_tracker_hits(),
-               the_clustering_data);
+      _process(the_calibrated_data, the_clustering_data);
 
       return dpp::base_module::PROCESS_SUCCESS;
     }
 
-    void cat_tracker_clustering_module::_process(const snemo::datamodel::calibrated_data::tracker_hit_collection_type & calibrated_tracker_hits_,
+    void cat_tracker_clustering_module::_process(const snemo::datamodel::calibrated_data & calib_data_,
                                                  snemo::datamodel::tracker_clustering_data & clustering_data_)
     {
       DT_LOG_TRACE(get_logging_priority(), "Entering...");
 
       // Process the clusterizer driver :
-      _driver_.get()->process(calibrated_tracker_hits_, clustering_data_);
+      _driver_.get()->process(calib_data_.calibrated_tracker_hits(),
+                              calib_data_.calibrated_calorimeter_hits(),
+                              clustering_data_);
 
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");
       return;
@@ -333,7 +334,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::cat_tracker_clustering_mo
                                "                                         \n"
                                "  CD_label  : string = \"CD\"            \n"
                                "  TCD_label : string = \"TCD\"           \n"
-                               "  Geo_label : string = \"geometry\"  d     \n"
+                               "  Geo_label : string = \"geometry\"      \n"
                                "                                         \n"
                                "Additional specific parameters are used to configure    \n"
                                "the embedded ``CAT`` driver itself; see the OCD support \n"

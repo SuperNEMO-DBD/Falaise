@@ -21,6 +21,10 @@
 // This project :
 #include <falaise/snemo/datamodels/tracker_clustering_data.h>
 #include <falaise/snemo/geometry/gg_locator.h>
+#include <falaise/snemo/geometry/calo_locator.h>
+#include <falaise/snemo/geometry/xcalo_locator.h>
+#include <falaise/snemo/geometry/gveto_locator.h>
+#include <falaise/snemo/geometry/locator_plugin.h>
 
 namespace snemo {
 
@@ -43,9 +47,7 @@ namespace snemo {
     sultan_driver::sultan_driver() :
       ::snemo::processing::base_tracker_clusterizer(sultan_driver::SULTAN_ID)
     {
-      _sigma_z_factor_ = 1.0;
-      datatools::invalidate(_magfield_);
-      _process_calo_hits_ = false;
+      _set_defaults();
       return;
     }
 
@@ -65,8 +67,10 @@ namespace snemo {
       // Invoke initialization at parent level :
       this->snemo::processing::base_tracker_clusterizer::_initialize(setup_);
 
-      double default_time_unit = CLHEP::ms;
-      double default_energy_unit = CLHEP::MeV;
+      _SULTAN_setup_.SuperNemo = true;
+      _SULTAN_setup_.foil_radius = 0.0;
+
+
       double default_magfield_unit = CLHEP::tesla;
 
       // Forcing magnetic field (a temporary trick)
@@ -90,33 +94,60 @@ namespace snemo {
         _SULTAN_setup_.sequentiator_level = setup_.fetch_string("SULTAN.sequentiator_level");
       }
 
+      // Process calorimeter hits
+      if (setup_.has_key("SULTAN.process_calo_hits")) {
+        _process_calo_hits_ = setup_.fetch_boolean("SULTAN.process_calo_hits");
+      }
+
       // Maximum processing time in ms
       if (setup_.has_key("SULTAN.max_time")) {
         _SULTAN_setup_.max_time = setup_.fetch_real("SULTAN.max_time");
         if (! setup_.has_explicit_unit("SULTAN.max_time")) {
-          _SULTAN_setup_.max_time *= default_time_unit;
+          _SULTAN_setup_.max_time *= CLHEP::ms;
         }
       }
 
-      // make an event display?
+      // Make an event display?
       if (setup_.has_key("SULTAN.print_event_display")){
         _SULTAN_setup_.print_event_display = setup_.fetch_boolean("SULTAN.print_event_display");
+      }
+
+      // Use clocks to time the software ?
+      if (setup_.has_key("SULTAN.use_clocks")) {
+        _SULTAN_setup_.use_clocks = setup_.fetch_boolean("SULTAN.use_clocks");
+      }
+
+      // Use endpoints to clusterize ?
+      if (setup_.has_key("SULTAN.use_endpoints")) {
+        _SULTAN_setup_.use_endpoints = setup_.fetch_boolean("SULTAN.use_endpoints");
+      }
+
+      // Use Legendre transform to clusterize ?
+      if (setup_.has_key("SULTAN.use_legendre")) {
+        _SULTAN_setup_.use_legendre = setup_.fetch_boolean("SULTAN.use_legendre");
+      }
+
+      // Clusterize endpoints with helix model ?
+      if (setup_.has_key("SULTAN.clusterize_with_helix_model")) {
+        _SULTAN_setup_.clusterize_with_helix_model = setup_.fetch_boolean("SULTAN.clusterize_with_helix_model");
       }
 
       // Minimum energy of detected electron
       if (setup_.has_key("SULTAN.Emin")) {
         _SULTAN_setup_.Emin = setup_.fetch_real("SULTAN.Emin");
         if (! setup_.has_explicit_unit("SULTAN.Emin")) {
-          _SULTAN_setup_.Emin *= default_energy_unit;
+          _SULTAN_setup_.Emin *= CLHEP::MeV;
         }
+        _SULTAN_setup_.Emin /= CLHEP::MeV;
       }
 
       // Maximum energy of detected electron
       if (setup_.has_key("SULTAN.Emax")) {
         _SULTAN_setup_.Emax = setup_.fetch_real("SULTAN.Emax");
         if (! setup_.has_explicit_unit("SULTAN.Emax")) {
-          _SULTAN_setup_.Emax *= default_energy_unit;
+          _SULTAN_setup_.Emax *= CLHEP::MeV;
         }
+        _SULTAN_setup_.Emax /= CLHEP::MeV;
       }
 
       // Minimal probability away from the straight line
@@ -148,11 +179,11 @@ namespace snemo {
       }
 
       // Sigma Z factor
-      if (setup_.has_key("SULTAN.driver.sigma_z_factor")) {
-        _sigma_z_factor_ = setup_.fetch_real("SULTAN.driver.sigma_z_factor");
-        if (_sigma_z_factor_ <= 0.0 || _sigma_z_factor_ >= 100.0) {
-          DT_THROW_IF (true, std::logic_error, "Invalid Sigma Z factor(" << _sigma_z_factor_ << ") !");
-        }
+      if (setup_.has_key("SULTAN.sigma_z_factor")) {
+        _sigma_z_factor_ = setup_.fetch_real("SULTAN.sigma_z_factor");
+        DT_THROW_IF (_sigma_z_factor_ <= 0.0 || _sigma_z_factor_ >= 100.0,
+                     std::logic_error,
+                     "Invalid Sigma Z factor(" << _sigma_z_factor_ << ") !");
       }
 
       if (setup_.has_key("SULTAN.min_ncells_in_cluster")) {
@@ -173,6 +204,46 @@ namespace snemo {
 
       if (!datatools::is_valid(_magfield_)) {
         set_magfield(0.0025 * CLHEP::tesla);
+      }
+
+      // Get the calorimeter locators from a geometry plugin :
+      const geomtools::manager & geo_mgr = get_geometry_manager();
+      std::string locator_plugin_name;
+      if (setup_.has_key("locator_plugin_name")) {
+        locator_plugin_name = setup_.fetch_string("locator_plugin_name");
+      }
+      // If no locator plugin name is set, then search for the first one
+      if (locator_plugin_name.empty()) {
+        const geomtools::manager::plugins_dict_type & plugins = geo_mgr.get_plugins();
+        for (geomtools::manager::plugins_dict_type::const_iterator ip = plugins.begin();
+             ip != plugins.end();
+             ip++) {
+          const std::string & plugin_name = ip->first;
+          if (geo_mgr.is_plugin_a<snemo::geometry::locator_plugin>(plugin_name)) {
+            DT_LOG_DEBUG (get_logging_priority(), "Find locator plugin with name = " << plugin_name);
+            locator_plugin_name = plugin_name;
+            break;
+          }
+        }
+      }
+      // Access to a given plugin by name and type :
+      if (geo_mgr.has_plugin(locator_plugin_name)
+          && geo_mgr.is_plugin_a<snemo::geometry::locator_plugin>(locator_plugin_name)) {
+        DT_LOG_NOTICE (get_logging_priority(), "Found locator plugin named '" << locator_plugin_name << "'");
+        const snemo::geometry::locator_plugin & lp
+          = geo_mgr.get_plugin<snemo::geometry::locator_plugin> (locator_plugin_name);
+        // Set the calo cell locator :
+        _calo_locator_ = dynamic_cast<const snemo::geometry::calo_locator*>(&(lp.get_calo_locator ()));
+        _xcalo_locator_ = dynamic_cast<const snemo::geometry::xcalo_locator*>(&(lp.get_xcalo_locator ()));
+        _gveto_locator_ = dynamic_cast<const snemo::geometry::gveto_locator*>(&(lp.get_gveto_locator ()));
+      }
+      if (get_logging_priority () >= datatools::logger::PRIO_DEBUG) {
+        DT_LOG_DEBUG (get_logging_priority (), "Calo locator :");
+        _calo_locator_->dump (std::clog);
+        DT_LOG_DEBUG (get_logging_priority (), "X-calo locator :");
+        _xcalo_locator_->dump (std::clog);
+        DT_LOG_DEBUG (get_logging_priority (), "G-veto locator :");
+        _gveto_locator_->dump (std::clog);
       }
 
       // Geometry description :
@@ -206,6 +277,18 @@ namespace snemo {
       return;
     }
 
+    void sultan_driver::_set_defaults()
+    {
+      _SULTAN_setup_.reset();
+      _sigma_z_factor_ = 1.0;
+      datatools::invalidate(_magfield_);
+      _process_calo_hits_ = true;
+      _calo_locator_  = 0;
+      _xcalo_locator_ = 0;
+      _gveto_locator_ = 0;
+      this->base_tracker_clusterizer::_reset();
+      return;
+    }
 
     // Reset the Sultan
     void sultan_driver::reset()
@@ -215,24 +298,13 @@ namespace snemo {
       _set_initialized(false);
       _SULTAN_clusterizer_.finalize();
       _SULTAN_sultan_.finalize();
-      _SULTAN_setup_.reset();
-      _sigma_z_factor_ = 1.0;
-      datatools::invalidate(_magfield_);
-      _process_calo_hits_ = false;
-      this->base_tracker_clusterizer::_reset();
+      _set_defaults();
       return;
     }
 
-    /*
-      // Future support also with calo hits...
-    int sultan_driver::_process_algo(
-       const snemo::datamodel::calibrated_data::tracker_hit_collection_type & hits_,
-       const snemo::datamodel::calibrated_data::calorimeter_hit_collection_type & calo_hits_,
-       snemo::datamodel::tracker_clustering_data & clustering_ )
-    */
-
     // Main clustering method
-    int sultan_driver::_process_algo(const hit_collection_type & hits_,
+    int sultan_driver::_process_algo(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+                                     const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
                                      snemo::datamodel::tracker_clustering_data & clustering_ )
     {
 
@@ -241,19 +313,19 @@ namespace snemo {
 
       // SULTAN input data model :
       _SULTAN_input_.cells.clear();
-      if (_SULTAN_input_.cells.capacity() < hits_.size()) {
-        _SULTAN_input_.cells.reserve(hits_.size());
+      if (_SULTAN_input_.cells.capacity() < gg_hits_.size()) {
+        _SULTAN_input_.cells.reserve(gg_hits_.size());
       }
       _SULTAN_output_.tracked_data.reset();
       int ihit = 0;
 
       // Hit accounting :
-      std::map<int, sdm::calibrated_data::tracker_hit_handle_type> hits_mapping;
-      std::map<int, int> hits_status;
+      std::map<int, sdm::calibrated_data::tracker_hit_handle_type> gg_hits_mapping;
+      std::map<int, int> gg_hits_status;
 
       // GG hit loop :
       BOOST_FOREACH(const sdm::calibrated_data::tracker_hit_handle_type & gg_handle,
-                    hits_) {
+                    gg_hits_) {
         // Skip NULL handle :
         if (! gg_handle.has_data()) continue;
 
@@ -341,49 +413,107 @@ namespace snemo {
         c.set_fast(fast);
 
         // Store mapping info between both data models :
-        hits_mapping[c.id()] = gg_handle;
-        hits_status[c.id()] = 0;
+        gg_hits_mapping[c.id()] = gg_handle;
+        gg_hits_status[c.id()] = 0;
 
         DT_LOG_DEBUG(get_logging_priority(),
                      "Geiger cell #" << snemo_gg_hit.get_id() << " has been added "
                      << "to SULTAN input data with id number #" << c.id());
       }
 
-      /*
-      // NOT SUPPORTED:
-      // Calo hit loop :
-      {
-        int calo_hit_counter = 0;
-        BOOST_FOREACH(const sdm::calibrated_data::calorimeter_hit_handle_type & calo_handle,
-                      calo_hits_) {
+      // Take into account calo hits:
+      _SULTAN_input_.calo_cells.clear ();
+      // Calo hit accounting :
+      std::map<int, sdm::calibrated_data::calorimeter_hit_handle_type> calo_hits_mapping;
+      std::map<int, int> calo_hits_status;
+      if (_process_calo_hits_) {
+        if (_SULTAN_input_.calo_cells.capacity() < calo_hits_.size()) {
+          _SULTAN_input_.calo_cells.reserve(calo_hits_.size());
+        }
+        _SULTAN_output_.tracked_data.reset();
+        int ihit = 0;
+
+        // CALO hit loop :
+        BOOST_FOREACH (const sdm::calibrated_data::calorimeter_hit_handle_type & calo_handle,
+                       calo_hits_) {
           // Skip NULL handle :
           if (! calo_handle.has_data()) continue;
 
-          // Get a const reference on the calibrated calo hit :
-          const sdm::calibrated_calorimeter_hit & snemo_calo_hit = calo_handle.get();
+          // Get a const reference on the calibrated Calo hit :
+          const sdm::calibrated_calorimeter_hit & sncore_calo_hit = calo_handle.get();
 
-          st::calorimeter_hit & caloh = _SULTAN_input_.add_calo_cell();
-          // caloh.set_id(snemo_calo_hit.get_id());
-          caloh.set_id(calo_hit_counter);
+          // Get calibrated calo. geom_id
+          const geomtools::geom_id & a_calo_hit_gid = sncore_calo_hit.get_geom_id();
+          // Extract the numbering scheme of the calo_cell from its geom ID :
+          // int side  = sncore_calo_hit.get_geom_id ().get (1);
+          // int wall, column, row, type;
+          int column = -1;
+          double width, height, thickness;
+          datatools::invalidate(width);
+          datatools::invalidate(height);
+          datatools::invalidate(thickness);
+          int side        = sncore_calo_hit.get_geom_id().get(1);
+          int side_number = (side == 0) ? -1: 1;
+          st::experimental_vector norm(0., 0., 0., 0., 0., 0.);
+          geomtools::vector_3d block_position;
+          // Extract the numbering scheme of the scin block from its geom ID :
+          if (_calo_locator_->is_calo_block_in_current_module(a_calo_hit_gid)) {
+            _calo_locator_->get_block_position(a_calo_hit_gid, block_position);
+            width     = _calo_locator_->get_block_width();
+            height    = _calo_locator_->get_block_height();
+            thickness = _calo_locator_->get_block_thickness();
+            column    = _calo_locator_->extract_column(a_calo_hit_gid);
+            norm.set_x(st::experimental_double(-(double) side_number, 0.));
+          } else if (_xcalo_locator_->is_calo_block_in_current_module(a_calo_hit_gid)) {
+            _xcalo_locator_->get_block_position(a_calo_hit_gid, block_position);
+            width     = _xcalo_locator_->get_block_width();
+            height    = _xcalo_locator_->get_block_height();
+            thickness = _xcalo_locator_->get_block_thickness();
+            column    = _xcalo_locator_->extract_column(a_calo_hit_gid);
+            norm.set_y(st::experimental_double(-(double) side_number, 0.));
+          } else if (_gveto_locator_->is_calo_block_in_current_module(a_calo_hit_gid)) {
+            _gveto_locator_->get_block_position(a_calo_hit_gid, block_position);
+            width     = _gveto_locator_->get_block_width();
+            height    = _gveto_locator_->get_block_height();
+            thickness = _gveto_locator_->get_block_thickness();
+            column    = _gveto_locator_->extract_column(a_calo_hit_gid);
+            norm.set_z(st::experimental_double(-(double) side_number, 0.));
+          }
 
-          // E, t the calo cell :
-          st::experimental_double e;
-          e.set_value(snemo_calo_hit.get_energy());
-          e.set_error(snemo_calo_hit.get_sigma_energy());
-          st::experimental_double t;
-          t.set_value(snemo_calo_hit.get_time());
-          t.set_error(snemo_calo_hit.get_sigma_time());
+          st::experimental_double energy(sncore_calo_hit.get_energy(),
+                                         sncore_calo_hit.get_sigma_energy());
+          st::experimental_double time(sncore_calo_hit.get_time(),
+                                       sncore_calo_hit.get_sigma_time());
+          // size_t id = sncore_calo_hit.get_hit_id ();
+          st::experimental_point center(block_position.x(),
+                                        block_position.y(),
+                                        block_position.z(),
+                                        0., 0., 0.);
+          st::experimental_vector sizes(width, height, thickness,
+                                        0., 0., 0.);
+          st::plane pl(center, sizes, norm);
+          pl.set_probmin(_SULTAN_setup_.probmin);
+          pl.set_type("SuperNEMO");
 
-          caloh.set_e(e);
-          caloh_set_t(t);
+          // Build the Calo hit position :
+          // Add a new hit calo_cell in the SULTAN input data model :
+          st::calorimeter_hit & c = _SULTAN_input_.add_calo_cell();
+          c.set_pl(pl);
+          c.set_e(energy);
+          c.set_t(time);
+          c.set_probmin(_SULTAN_setup_.probmin);
+          c.set_layer(column);
+          c.set_id(ihit++);
 
-          caloh.set_layer(????);
-          caloh.set_plane(????);
+          // Store mapping info between both data models :
+          calo_hits_mapping[c.id()] = calo_handle;
+          calo_hits_status[c.id()] = 0;
 
-          calo_hit_counter++;
+          DT_LOG_DEBUG(get_logging_priority(),
+                       "Calo_cell #" << sncore_calo_hit.get_hit_id () << " has been added "
+                       << "to SULTAN input data with id number #" << c.id ());
         }
       }
-      */
 
       // Validate the input data :
       if (! _SULTAN_input_.check()) {
@@ -410,8 +540,8 @@ namespace snemo {
       for (std::vector<st::scenario>::const_iterator iscenario = tss.begin();
            iscenario != tss.end();
            ++iscenario){
-        for (std::map<int,int>::iterator ihs = hits_status.begin();
-             ihs != hits_status.end();
+        for (std::map<int,int>::iterator ihs = gg_hits_status.begin();
+             ihs != gg_hits_status.end();
              ihs++) {
           ihs->second = 0;
         }
@@ -422,7 +552,7 @@ namespace snemo {
         clustering_.add_solution(htcs, true);
         clustering_.grab_default_solution().set_solution_id(clustering_.get_number_of_solutions() - 1);
         sdm::tracker_clustering_solution & clustering_solution = clustering_.grab_default_solution();
-        clustering_solution.grab_auxiliaries().update_string("tracker_clusterizer", "SULTAN");
+        clustering_solution.grab_auxiliaries().update_string("tracker_clusterizer", SULTAN_ID);
 
         const std::vector<st::sequence> & the_sequences = iscenario->sequences();
         DT_LOG_DEBUG(get_logging_priority(), "Number of sequences = " << the_sequences.size());
@@ -448,8 +578,8 @@ namespace snemo {
           cluster_handle.grab().grab_auxiliaries().update("SULTAN_helix_x0", seq_helix.x0().value());
           cluster_handle.grab().grab_auxiliaries().update("SULTAN_helix_y0", seq_helix.y0().value());
           cluster_handle.grab().grab_auxiliaries().update("SULTAN_helix_z0", seq_helix.z0().value());
-          cluster_handle.grab().grab_auxiliaries().update("SULTAN_helix_R", seq_helix.R().value());
-          cluster_handle.grab().grab_auxiliaries().update("SULTAN_helix_H", seq_helix.H().value());
+          cluster_handle.grab().grab_auxiliaries().update("SULTAN_helix_R",  seq_helix.R().value());
+          cluster_handle.grab().grab_auxiliaries().update("SULTAN_helix_H",  seq_helix.H().value());
 
           // Loop on all hits within the sequence(nodes) :
           const size_t seqsz = a_sequence.nodes().size();
@@ -457,8 +587,8 @@ namespace snemo {
           for (int i = 0; i <(int) seqsz; i++) {
             const st::node & a_node = a_sequence.nodes()[i];
             int hit_id = a_node.c().id();
-            cluster_handle.grab().grab_hits().push_back(hits_mapping[hit_id]);
-            hits_status[hit_id]= true;
+            cluster_handle.grab().grab_hits().push_back(gg_hits_mapping[hit_id]);
+            gg_hits_status[hit_id]= true;
             DT_LOG_DEBUG(get_logging_priority(), "Add tracker hit with id #" << hit_id);
 
             const double xt    = a_node.ep().x().value();
@@ -468,7 +598,7 @@ namespace snemo {
             const double yterr = a_node.ep().y().error();
             const double zterr = a_node.ep().z().error();
 
-            sdm::calibrated_tracker_hit & the_last_cell = hits_mapping[hit_id].grab();
+            sdm::calibrated_tracker_hit & the_last_cell = gg_hits_mapping[hit_id].grab();
             the_last_cell.grab_auxiliaries().update("SULTAN_x", xt);
             the_last_cell.grab_auxiliaries().update("SULTAN_y", yt);
             the_last_cell.grab_auxiliaries().update("SULTAN_z", zt);
@@ -496,6 +626,9 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_driver,ocd_)
   ocd_.set_class_library("Falaise_CAT");
   ocd_.set_class_documentation("This driver manager for the SULTAN clustering algorithm.");
 
+  // Invoke OCD support at parent level :
+  ::snemo::processing::base_tracker_clusterizer::ocd_support(ocd_);
+
   {
     // Description of the 'SULTAN.magnetic_field' configuration property :
     datatools::configuration_property_description & cpd
@@ -504,7 +637,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_driver,ocd_)
       .set_terse_description("Force the magnetic field value (vertical)")
       .set_traits(datatools::TYPE_REAL)
       .set_mandatory(false)
-      .set_long_description("Default value: 25 gauss")
+      // .set_long_description("Default value: 25 gauss")
+      .set_default_value_real(25 * CLHEP::gauss, "gauss")
       .add_example("Use no magnetic field::                    \n"
                    "                                           \n"
                    "  SULTAN.magnetic_field : real = 0.0 gauss \n"
@@ -522,7 +656,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_driver,ocd_)
       .set_terse_description("SULTAN clusterizer's verbosity level")
       .set_traits(datatools::TYPE_STRING)
       .set_mandatory(false)
-      .set_long_description("Default value: \"normal\"")
+      // .set_long_description("Default value: \"normal\"")
+      .set_default_value_string("normal")
       .add_example("Use normal verbosity::                           \n"
                    "                                                 \n"
                    "  SULTAN.clusterizer_level : string = \"normal\" \n"
@@ -539,7 +674,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_driver,ocd_)
       .set_terse_description("SULTAN sequentiator's verbosity level")
       .set_traits(datatools::TYPE_STRING)
       .set_mandatory(false)
-      .set_long_description("Default value: \"normal\"")
+      // .set_long_description("Default value: \"normal\"")
+      .set_default_value_string("normal")
       .add_example("Use normal verbosity::                           \n"
                    "                                                 \n"
                    "  SULTAN.sequentiator_level : string = \"normal\" \n"
@@ -556,11 +692,97 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_driver,ocd_)
       .set_terse_description("Maximum processing time")
       .set_traits(datatools::TYPE_REAL)
       .set_mandatory(false)
-      .set_long_description("Default value: 5000 ms")
+      // .set_long_description("Default value: 5000 ms")
+      .set_default_value_real(5000 * CLHEP::ms, "ms")
       .add_example("Use default value::                \n"
                    "                                   \n"
                    "  SULTAN.max_time : real = 5000 ms \n"
                    "                                   \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'SULTAN.print_event_display' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("SULTAN.print_event_display")
+      .set_terse_description("Activate the SULTAN print event display")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .set_mandatory(false)
+      .set_default_value_boolean(false)
+      .add_example("Use normal verbosity::                           \n"
+                   "                                                 \n"
+                   "  SULTAN.print_event_display : boolean = 0       \n"
+                   "                                                 \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'SULTAN.use_clocks' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("SULTAN.use_clocks")
+      .set_terse_description("Activate the SULTAN clocks")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .set_mandatory(false)
+      .set_default_value_boolean(false)
+      .add_example("Activate clocks::                                \n"
+                   "                                                 \n"
+                   "  SULTAN.use_clocks : boolean = 1                \n"
+                   "                                                 \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'SULTAN.endpoints' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("SULTAN.endpoints")
+      .set_terse_description("Use end points to clusterize")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .set_mandatory(false)
+      .set_default_value_boolean(false)
+      .add_example("Activate endpoints::                             \n"
+                   "                                                 \n"
+                   "  SULTAN.endpoints : boolean = 1                 \n"
+                   "                                                 \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'SULTAN.legendre' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("SULTAN.legendre")
+      .set_terse_description("Use Legendre transform to clusterize")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .set_mandatory(false)
+      .set_default_value_boolean(false)
+      .add_example("Activate Legendre transform::                    \n"
+                   "                                                 \n"
+                   "  SULTAN.legendre : boolean = 1                  \n"
+                   "                                                 \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'SULTAN.clusterize_with_helix_model' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("SULTAN.clusterize_with_helix_model")
+      .set_terse_description("Use helix model to clusterize")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .set_mandatory(false)
+      .set_default_value_boolean(false)
+      .add_example("Activate helix model::                             \n"
+                   "                                                   \n"
+                   "  SULTAN.clusterize_with_helix_model : boolean = 1 \n"
+                   "                                                   \n"
                    )
       ;
   }
@@ -573,7 +795,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_driver,ocd_)
       .set_terse_description("Minimum energy of detected electron")
       .set_traits(datatools::TYPE_REAL)
       .set_mandatory(false)
-      .set_long_description("Default value: 0.2 MeV")
+      // .set_long_description("Default value: 0.2 MeV")
+      .set_default_value_real(0.2 * CLHEP::MeV, "MeV")
       .add_example("Use default value::                \n"
                    "                                   \n"
                    "  SULTAN.Emin : real = 0.2 MeV     \n"
@@ -590,7 +813,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_driver,ocd_)
       .set_terse_description("Maximum energy of detected electron")
       .set_traits(datatools::TYPE_REAL)
       .set_mandatory(false)
-      .set_long_description("Default value: 7.0 MeV")
+      // .set_long_description("Default value: 7.0 MeV")
+      .set_default_value_real(7.0 * CLHEP::MeV, "MeV")
       .add_example("Use default value::                \n"
                    "                                   \n"
                    "  SULTAN.Emax : real = 7.0 MeV     \n"
@@ -607,7 +831,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_driver,ocd_)
       .set_terse_description("Minimal probability away from the straight line")
       .set_traits(datatools::TYPE_REAL)
       .set_mandatory(false)
-      .set_long_description("Default value: 0.0")
+      // .set_long_description("Default value: 0.0")
+      .set_default_value_real(0.0)
       .add_example("Use default value::                \n"
                    "                                   \n"
                    "  SULTAN.probmin : real = 0.0      \n"
@@ -625,7 +850,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_driver,ocd_)
       .set_terse_description("Number of sigmas for tolerance on the drift radius")
       .set_traits(datatools::TYPE_REAL)
       .set_mandatory(false)
-      .set_long_description("Default value: 5.0")
+      // .set_long_description("Default value: 5.0")
+      .set_default_value_real(5.0)
       .add_example("Use default value::                \n"
                    "                                   \n"
                    "  SULTAN.nsigma_r : real = 5.0     \n"
@@ -643,7 +869,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_driver,ocd_)
       .set_terse_description("Number of sigmas for tolerance on the longitudinal position")
       .set_traits(datatools::TYPE_REAL)
       .set_mandatory(false)
-      .set_long_description("Default value: 3.0")
+      // .set_long_description("Default value: 3.0")
+      .set_default_value_real(3.0)
       .add_example("Use default value::                \n"
                    "                                   \n"
                    "  SULTAN.nsigma_z : real = 3.0     \n"
@@ -660,7 +887,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_driver,ocd_)
       .set_terse_description("Number of cells which can be skipped (because the cell did not work) and still the cluster is continuous")
       .set_traits(datatools::TYPE_INTEGER)
       .set_mandatory(false)
-      .set_long_description("Default value: 1")
+      // .set_long_description("Default value: 1")
+      .set_default_value_integer(1)
       .add_example("Use default value::               \n"
                    "                                  \n"
                    "  SULTAN.nofflayers : integer = 1 \n"
@@ -678,7 +906,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_driver,ocd_)
       .set_terse_description("First event to be processed")
       .set_traits(datatools::TYPE_INTEGER)
       .set_mandatory(false)
-      .set_long_description("Default value: -1")
+      // .set_long_description("Default value: -1")
+      .set_default_value_integer(-1)
       .add_example("Do not specify any first event::     \n"
                    "                                     \n"
                    "  SULTAN.first_event : integer = -1  \n"
@@ -688,18 +917,73 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_driver,ocd_)
   }
 
   {
-    // Description of the 'SULTAN.driver.sigma_z_factor' configuration property :
+    // Description of the 'SULTAN.sigma_z_factor' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
-    cpd.set_name_pattern("SULTAN.driver.sigma_z_factor")
+    cpd.set_name_pattern("SULTAN.sigma_z_factor")
       .set_terse_description("Sigma Z factor")
       .set_traits(datatools::TYPE_REAL)
       .set_mandatory(false)
-      .set_long_description("Default value: 1.0")
+      // .set_long_description("Default value: 1.0")
+      .set_default_value_real(1.0)
       .add_example("Use the default value::                     \n"
                    "                                            \n"
-                   "  SULTAN.driver.sigma_z_factor : real = 1.0 \n"
+                   "  SULTAN.sigma_z_factor : real = 1.0 \n"
                    "                                            \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'SULTAN.min_ncells_in_cluster' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("SULTAN.min_ncells_in_cluster")
+      .set_terse_description("Minimum number of cells in a cluster")
+      .set_traits(datatools::TYPE_INTEGER)
+      .set_mandatory(false)
+      // .set_long_description("Default value: -1")
+      .set_default_value_integer(0)
+      .add_example("Do not specify any min value::                \n"
+                   "                                              \n"
+                   "  SULTAN.min_ncells_in_cluster : integer = 0  \n"
+                   "                                              \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'SULTAN.ncells_between_triplet_min' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("SULTAN.ncells_between_triplet_min")
+      .set_terse_description("Minimum distance between cells in a triplet")
+      .set_traits(datatools::TYPE_INTEGER)
+      .set_mandatory(false)
+      // .set_long_description("Default value: -1")
+      .set_default_value_integer(0)
+      .add_example("Do not specify any min value::                \n"
+                   "                                              \n"
+                   "  SULTAN.ncells_between_triplet_min : integer = 0  \n"
+                   "                                              \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'SULTAN.ncells_between_triplet_range' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("SULTAN.ncells_between_triplet_range")
+      .set_terse_description("Range distance between cells in a triplet")
+      .set_traits(datatools::TYPE_INTEGER)
+      .set_mandatory(false)
+      // .set_long_description("Default value: -1")
+      .set_default_value_integer(0)
+      .add_example("Do not specify any min value::                \n"
+                   "                                              \n"
+                   "  SULTAN.ncells_between_triplet_range : integer = 0  \n"
+                   "                                              \n"
                    )
       ;
   }
@@ -708,7 +992,5 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_driver,ocd_)
   ocd_.lock();
   return;
 }
-
 DOCD_CLASS_IMPLEMENT_LOAD_END() // Closing macro for implementation
-DOCD_CLASS_SYSTEM_REGISTRATION(snemo::reconstruction::sultan_driver,
-                               "snemo::reconstruction::sultan_driver")
+DOCD_CLASS_SYSTEM_REGISTRATION(snemo::reconstruction::sultan_driver, "snemo::reconstruction::sultan_driver")

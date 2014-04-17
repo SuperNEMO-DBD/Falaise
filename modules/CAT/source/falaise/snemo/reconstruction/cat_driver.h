@@ -72,12 +72,19 @@ namespace snemo {
       /// Reset the clusterizer
       virtual void reset();
 
+      // /// Prepare cluster for processing
+      // virtual int _prepare_process(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+      //                              const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
+      //                              snemo::datamodel::tracker_clustering_data & clustering_);
+
       /// Main clustering method
-      virtual int _process_algo(const snemo::datamodel::calibrated_data::tracker_hit_collection_type & hits_,
+      virtual int _process_algo(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+                                const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
                                 snemo::datamodel::tracker_clustering_data & clustering_ );
 
-      /// Post-processing
-      //virtual int _post_process(const snemo::datamodel::calibrated_data::tracker_hit_collection_type & hits_,
+      // /// Post-processing
+      // virtual int _post_process(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+      //                           const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
       //                           snemo::datamodel::tracker_clustering_data & clustering_);
 
     private:

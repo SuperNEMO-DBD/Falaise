@@ -45,6 +45,12 @@ namespace datatools {
 
 namespace snemo {
 
+  namespace geometry {
+    class calo_locator;
+    class xcalo_locator;
+    class gveto_locator;
+  }
+
   namespace reconstruction {
 
     /// Driver for the Channel/sultan clustering algorithms
@@ -73,9 +79,15 @@ namespace snemo {
       virtual void reset();
 
       /// Main clustering method
-      virtual int _process_algo(const snemo::datamodel::calibrated_data::tracker_hit_collection_type & hits_,
+      virtual int _process_algo(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+                                const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
                                 snemo::datamodel::tracker_clustering_data & clustering_
                                 );
+
+    protected:
+
+      /// Set default attributes
+      void _set_defaults();
 
     private:
 
@@ -87,6 +99,12 @@ namespace snemo {
       double               _sigma_z_factor_;     /// Factor for longitudinal error
       double               _magfield_;           /// Enforced magnetic field
       bool                 _process_calo_hits_;  /// Flag to process associated calorimeter hits
+
+      /// Calorimeter locators
+      const snemo::geometry::calo_locator  * _calo_locator_;
+      const snemo::geometry::xcalo_locator * _xcalo_locator_;
+      const snemo::geometry::gveto_locator * _gveto_locator_;
+
     };
 
   }  // end of namespace reconstruction

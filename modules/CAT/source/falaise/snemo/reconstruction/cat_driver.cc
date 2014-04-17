@@ -62,8 +62,9 @@ namespace snemo {
       // Invoke initialization at parent level :
       this->snemo::processing::base_tracker_clusterizer::_initialize(setup_);
 
-      double default_time_unit = CLHEP::ms;
-      double default_length_unit = CLHEP::mm;
+      _CAT_setup_.SuperNemo = true;
+      _CAT_setup_.FoilRadius = 0.0;
+
       double default_magfield_unit = CLHEP::tesla;
 
       // Forcing magnetic field (a temporary trick)
@@ -86,7 +87,7 @@ namespace snemo {
       if (setup_.has_key("CAT.max_time")) {
         _CAT_setup_.MaxTime = setup_.fetch_real("CAT.max_time");
         if (! setup_.has_explicit_unit("CAT.max_time")) {
-          _CAT_setup_.MaxTime *= default_time_unit;
+          _CAT_setup_.MaxTime *= CLHEP::ms;
         }
       }
 
@@ -94,7 +95,7 @@ namespace snemo {
       if (setup_.has_key("CAT.small_radius")) {
         _CAT_setup_.SmallRadius = setup_.fetch_real("CAT.small_radius");
         if (! setup_.has_explicit_unit("CAT.small_radius")) {
-          _CAT_setup_.SmallRadius *= default_length_unit;
+          _CAT_setup_.SmallRadius *= CLHEP::mm;
         }
       }
 
@@ -125,11 +126,11 @@ namespace snemo {
       }
 
       // Sigma Z factor
-      if (setup_.has_key("CAT.driver.sigma_z_factor")) {
-        _sigma_z_factor_ = setup_.fetch_real("CAT.driver.sigma_z_factor");
-        if (_sigma_z_factor_ <= 0.0 || _sigma_z_factor_ >= 100.0) {
-          DT_THROW_IF(true, std::logic_error, "Invalid Sigma Z factor(" << _sigma_z_factor_ << ") !");
-        }
+      if (setup_.has_key("CAT.sigma_z_factor")) {
+        _sigma_z_factor_ = setup_.fetch_real("CAT.sigma_z_factor");
+        DT_THROW_IF (_sigma_z_factor_ <= 0.0 || _sigma_z_factor_ >= 100.0,
+                     std::logic_error,
+                     "Invalid Sigma Z factor(" << _sigma_z_factor_ << ") !");
       }
 
       if (!datatools::is_valid(_magfield_)) {
@@ -185,22 +186,17 @@ namespace snemo {
 
 
     /// Main clustering method
-    int cat_driver::_process_algo(const hit_collection_type & hits_,
+    int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+                                  const base_tracker_clusterizer::calo_hit_collection_type & /* calo_hits_ */,
                                   snemo::datamodel::tracker_clustering_data & clustering_ )
     {
       namespace ct = CAT::topology;
       namespace sdm = snemo::datamodel;
 
-      // cerr << datatools::io::devel
-      //      << "====: "
-      //      << "snemo::reconstruction::reconstruction::cat_driver::_process_algo: "
-      //      << "Entering..."
-      //      << std::endl;
-
       // CAT input data model :
       _CAT_input_.cells.clear();
-      if (_CAT_input_.cells.capacity() < hits_.size()){
-        _CAT_input_.cells.reserve(hits_.size());
+      if (_CAT_input_.cells.capacity() < gg_hits_.size()){
+        _CAT_input_.cells.reserve(gg_hits_.size());
       }
       int ihit = 0;
 
@@ -210,7 +206,7 @@ namespace snemo {
 
       // GG hit loop :
       BOOST_FOREACH(const sdm::calibrated_data::tracker_hit_handle_type & gg_handle,
-                    hits_) {
+                    gg_hits_) {
         // Skip NULL handle :
         if (! gg_handle) continue;
 
@@ -315,7 +311,7 @@ namespace snemo {
         DT_LOG_DEBUG (get_logging_priority (),
                       "Geiger cell #" << snemo_gg_hit.get_id() << " has been added "
                       << "to CAT input data with id number #" << c.id());
-      } // BOOST_FOREACH(hits_)
+      } // BOOST_FOREACH(gg_hits_)
 
       // for (std::map<int, int>::const_iterator ihs = hits_status.begin();
       //      ihs !=  hits_status.end();
@@ -645,6 +641,9 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::cat_driver,ocd_)
   ocd_.set_class_library("Falaise_CAT");
   ocd_.set_class_documentation("This driver manager for the CAT clustering algorithm.");
 
+  // Invoke OCD support at parent level :
+  ::snemo::processing::base_tracker_clusterizer::ocd_support(ocd_);
+
   {
     // Description of the 'CAT.magnetic_field' configuration property :
     datatools::configuration_property_description & cpd
@@ -653,7 +652,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::cat_driver,ocd_)
       .set_terse_description("Force the magnetic field value (vertical)")
       .set_traits(datatools::TYPE_REAL)
       .set_mandatory(false)
-      .set_long_description("Default value: 25 gauss")
+      // .set_long_description("Default value: 25 gauss")
+      .set_default_value_real(25 * CLHEP::gauss, "gauss")
       .add_example("Use no magnetic field::               \n"
                    "                                      \n"
                    "  CAT.magnetic_field : real = 0 gauss \n"
@@ -671,7 +671,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::cat_driver,ocd_)
       .set_terse_description("Verbosity level")
       .set_traits(datatools::TYPE_STRING)
       .set_mandatory(false)
-      .set_long_description("Default value: \"normal\"")
+      // .set_long_description("Default value: \"normal\"")
+      .set_default_value_string("normal")
       .add_example("Use normal verbosity:: \n"
                    "                                  \n"
                    "  CAT.level : string = \"normal\" \n"
@@ -688,7 +689,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::cat_driver,ocd_)
       .set_terse_description("Maximum processing time")
       .set_traits(datatools::TYPE_REAL)
       .set_mandatory(false)
-      .set_long_description("Default value: 5000 ms")
+      // .set_long_description("Default value: 5000 ms")
+      .set_default_value_real(5000 * CLHEP::ms, "ms")
       .add_example("Use default value::               \n"
                    "                                  \n"
                    "  CAT.max_time : real = 5000 ms   \n"
@@ -788,14 +790,14 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::cat_driver,ocd_)
     // Description of the 'CAT.driver.sigma_z_factor' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
-    cpd.set_name_pattern("CAT.driver.sigma_z_factor")
+    cpd.set_name_pattern("CAT.sigma_z_factor")
       .set_terse_description("Sigma Z factor")
       .set_traits(datatools::TYPE_REAL)
       .set_mandatory(false)
       .set_long_description("Default value: 1.0")
       .add_example("Use the default value::                  \n"
                    "                                         \n"
-                   "  CAT.driver.sigma_z_factor : real = 1.0 \n"
+                   "  CAT.sigma_z_factor : real = 1.0        \n"
                    "                                         \n"
                    )
       ;
@@ -806,5 +808,4 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::cat_driver,ocd_)
   return;
 }
 DOCD_CLASS_IMPLEMENT_LOAD_END() // Closing macro for implementation
-DOCD_CLASS_SYSTEM_REGISTRATION(snemo::reconstruction::cat_driver,
-                               "snemo::reconstruction::cat_driver")
+DOCD_CLASS_SYSTEM_REGISTRATION(snemo::reconstruction::cat_driver, "snemo::reconstruction::cat_driver")
