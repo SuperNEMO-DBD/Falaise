@@ -45,6 +45,8 @@ list(APPEND FalaiseCATPlugin_SOURCES
 # Build a dynamic library from our sources
 add_library(Falaise_CAT SHARED ${FalaiseCATPlugin_HEADERS} ${FalaiseCATPlugin_SOURCES})
 
+target_link_libraries(Falaise_CAT Falaise)
+
 # Apple linker requires dynamic lookup of symbols, so we
 # add link flags on this platform
 if(APPLE)
