@@ -115,6 +115,7 @@ namespace snemo {
       // Filling now the tracker_clustering_solution:
       // Retrieve default solution reference created in _prepare_process:
       sdm::tracker_clustering_solution & tc_solution = clustering_.grab_default_solution();
+      tc_solution.grab_auxiliaries().update_string("tracker_clusterizer", MTC_ID);
 
       // GG hit loop :
       sdm::calibrated_tracker_hit previous_gg_hit = gg_hits_.begin()->get();

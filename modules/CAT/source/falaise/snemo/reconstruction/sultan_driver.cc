@@ -70,7 +70,6 @@ namespace snemo {
       _SULTAN_setup_.SuperNemo = true;
       _SULTAN_setup_.foil_radius = 0.0;
 
-
       double default_magfield_unit = CLHEP::tesla;
 
       // Forcing magnetic field (a temporary trick)
