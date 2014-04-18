@@ -320,7 +320,6 @@ namespace snemo {
 
       // Hit accounting :
       std::map<int, sdm::calibrated_data::tracker_hit_handle_type> gg_hits_mapping;
-      std::map<int, int> gg_hits_status;
 
       // GG hit loop :
       BOOST_FOREACH(const sdm::calibrated_data::tracker_hit_handle_type & gg_handle,
@@ -413,7 +412,6 @@ namespace snemo {
 
         // Store mapping info between both data models :
         gg_hits_mapping[c.id()] = gg_handle;
-        gg_hits_status[c.id()] = 0;
 
         DT_LOG_DEBUG(get_logging_priority(),
                      "Geiger cell #" << snemo_gg_hit.get_id() << " has been added "
@@ -535,16 +533,11 @@ namespace snemo {
 
       // Analyse the Sultan output: scenarios made of sequences
       const std::vector<st::scenario> & tss = _SULTAN_output_.tracked_data.get_scenarios();
+      DT_LOG_DEBUG(get_logging_priority(), "Number of scenarios = " << tss.size());
 
       for (std::vector<st::scenario>::const_iterator iscenario = tss.begin();
            iscenario != tss.end();
            ++iscenario){
-        for (std::map<int,int>::iterator ihs = gg_hits_status.begin();
-             ihs != gg_hits_status.end();
-             ihs++) {
-          ihs->second = 0;
-        }
-        DT_LOG_DEBUG(get_logging_priority(), "Number of scenarios = " << tss.size());
 
         // If not default solution, add a new one :
         sdm::tracker_clustering_solution::handle_type htcs(new sdm::tracker_clustering_solution);
@@ -587,7 +580,6 @@ namespace snemo {
             const st::node & a_node = a_sequence.nodes()[i];
             int hit_id = a_node.c().id();
             cluster_handle.grab().grab_hits().push_back(gg_hits_mapping[hit_id]);
-            gg_hits_status[hit_id]= true;
             DT_LOG_DEBUG(get_logging_priority(), "Add tracker hit with id #" << hit_id);
 
             const double xt    = a_node.ep().x().value();
