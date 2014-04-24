@@ -1,8 +1,8 @@
 //! \file Things2Root
 //! \brief User processing module for flreconstruct
 //! \details Process a things object and convert data to ROOT file output.
-#ifndef THINGS2ROOT_HH
-#define THINGS2ROOT_HH
+#ifndef THINGS2ROOT_H
+#define THINGS2ROOT_H
 
 // Standard Library
 #include <vector>
@@ -10,9 +10,6 @@
 #include <string>
 
 // Third Party
-#include "TFile.h"
-#include "TTree.h"
-#include <boost/foreach.hpp>
 
 // - Bayeux
 #include "bayeux/dpp/base_module.h"
@@ -24,6 +21,10 @@
 // - Falaise
 #include "falaise/snemo/datamodels/calibrated_data.h"
 #include "falaise/snemo/datamodels/event_header.h"
+
+// Forward:
+class TTree;
+class TFile;
 
 // This Project
 typedef struct HeaderEventStorage{
@@ -48,6 +49,8 @@ typedef struct TrackerEventStorage{
   std::vector<double>* r_;
   std::vector<double>* sigmar_;
   std::vector<int>* truehitid_;
+  std::vector<int>* truetrackid_;
+  std::vector<int>* trueparenttrackid_;
 } trackereventstorage;
 
 typedef struct CaloEventStorage{
@@ -156,8 +159,12 @@ class Things2Root : public dpp::base_module {
   TrackerEventStorage tracker_;
   CaloEventStorage calo_;
 
+  // Forward declaration for PIMPL:
+  struct working_space;
+  working_space * ws_;
+
   // Macro which automatically creates the interface needed
   // to enable the module to be loaded at runtime
   DPP_MODULE_REGISTRATION_INTERFACE(Things2Root);
 };
-#endif // Things2Root_HH
+#endif // THINGS2ROOT_H

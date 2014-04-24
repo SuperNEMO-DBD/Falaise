@@ -4,14 +4,14 @@ MockTrackerClusterizer Falaise module
 Introduction
 ------------
 
-This  example  shows  how  to  build  a  flreconstruct  pipeline  that
+This  example shows  how to  build a  ``flreconstruct`` pipeline  that
 processes the  SuperNEMO simulated data  (SD bank from  the flsimulate
 output)  to produce  mock calibration  data  (CD bank)  then the  mock
 tracker clusterizer (TCD bank).
 
 Configuration file(s):
 
-  * ``config/pipeline.conf``    :     the    flreconstruct    pipeline
+  * ``config/pipeline.conf``   :    the   ``flreconstruct``   pipeline
     configuration  files that  describes the  chain of  modules to  be
     processed.
 
@@ -44,7 +44,7 @@ Usage
 	--pipeline "config/pipeline.conf" \
         --output-file "Se82.0nubb-source_strips_bulk_SD-CD-TCD.brio"
 
-     The   ``flreconstruct``  executable   should  perfrom   the  mock
+     The   ``flreconstruct``  executable   should  perform   the  mock
      pre-reconstruction and then print  the structure of the processed
      event records  in the  terminal. You  should be  able to  see the
      ``"SD"``, ``"CD"`` and ``"TCD"`` banks.
