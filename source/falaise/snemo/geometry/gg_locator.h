@@ -320,7 +320,6 @@ namespace snemo {
 
 #endif // FALAISE_SNEMO_GEOMETRY_GG_LOCATOR_H
 
-// end of falaise/snemo/geometry/gg_locator.h
 /*
 ** Local Variables: --
 ** mode: c++ --

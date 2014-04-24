@@ -635,7 +635,7 @@ namespace snemo {
       _module_box_    = 0;
       _cell_box_      = 0;
 
-      _tolerance_ = GEOMTOOLS_DEFAULT_TOLERANCE;
+      _tolerance_ = 1.0e-7 * CLHEP::mm;
       datatools::invalidate (_anode_wire_length_);
       datatools::invalidate (_anode_wire_diameter_);
       datatools::invalidate (_field_wire_length_);
@@ -1012,7 +1012,8 @@ namespace snemo {
                                    double tolerance_) const
     {
       DT_THROW_IF (! is_initialized (), std::logic_error, "Locator is not initialized !");
-      return _module_box_->is_inside (module_position_, tolerance_);
+      // return _module_box_->is_inside (module_position_, tolerance_);
+      return ! _module_box_->is_outside (module_position_, tolerance_);
     }
 
     bool gg_locator::is_in_cell (const geomtools::vector_3d & module_position_,
@@ -1025,7 +1026,8 @@ namespace snemo {
       geomtools::vector_3d to_cell_pos = module_position_;
       to_cell_pos -= get_cell_position (side_, layer_, row_);
       // here one misses one transformation step (rotation) but it is ok :
-      return _cell_box_->is_inside (to_cell_pos, tolerance_);
+      // return _cell_box_->is_inside (to_cell_pos, tolerance_);
+      return ! _cell_box_->is_outside (to_cell_pos, tolerance_);
     }
 
     bool gg_locator::is_world_position_in_cell (const geomtools::vector_3d & world_position_,
@@ -1065,7 +1067,7 @@ namespace snemo {
       this->transform_world_to_module (world_position_, in_module_position);
 
       // First check if it is inside the module :
-      if (! _module_box_->is_inside (in_module_position, tolerance_)) {
+      if (! _module_box_->is_inside(in_module_position, tolerance_)) {
         // Not in this module :
         return false;
       }
@@ -1098,7 +1100,7 @@ namespace snemo {
       gid.set (_row_index_,    geomtools::geom_id::INVALID_ADDRESS);
       const double z = in_module_position_.z ();
       // 2012-06-05 FM: add tolerance for z-testing
-      if (std::abs (z) < (_cell_box_->get_half_z () + 0.5 * _tolerance_)) {
+      if (std::abs(z) < (_cell_box_->get_half_z () + 0.5 * _tolerance_)) {
         gid.set (_module_index_, _module_number_);
         const double y = in_module_position_.y ();
         const double x = in_module_position_.x ();
@@ -1147,7 +1149,7 @@ namespace snemo {
           // 2012-05-31 FM : we check if the 'world' position is in the volume:
           geomtools::vector_3d world_position;
           transform_module_to_world (in_module_position_, world_position);
-          if (_mapping_->check_inside (*ginfo_ptr, world_position, _tolerance_)) {
+          if (_mapping_->check_inside (*ginfo_ptr, world_position, _tolerance_, true)) {
             DT_LOG_TRACE (get_logging_priority (), "Position inside gid = " << gid);
             return true;
           }
@@ -1163,7 +1165,6 @@ namespace snemo {
 
 }  // end of namespace snemo
 
-// end of falaise/snemo/geometrygg_locator.cc
 /*
 ** Local Variables: --
 ** mode: c++ --

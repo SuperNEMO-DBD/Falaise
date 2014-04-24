@@ -1,9 +1,10 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/snemo/simulation/gg_step_hit_processor.cc
- */
+/** \file falaise/snemo/simulation/gg_step_hit_processor.cc */
 
 // Ourselves:
 #include <falaise/snemo/simulation/gg_step_hit_processor.h>
+
+// Standard library:
+#include <fstream>
 
 // Third party:
 // - Bayeux/mygsl:
@@ -56,23 +57,18 @@ namespace snemo {
     {
       _mapping_    = 0;
       _categories_ = 0;
-
       _external_rng_ = 0;
-
       _time_resolution_        = 25. * CLHEP::ns;
       _mean_ionization_energy_ = 50. * CLHEP::eV;
       datatools::invalidate (_fiducial_drift_radius_);
       datatools::invalidate (_fiducial_drift_length_);
-
       _use_continuous_ionization_         = false;
       _compute_minimum_approach_position_ = false;
       _store_track_infos_                 = false;
       _gg_cell_type_ = geomtools::geom_id::INVALID_TYPE;
       _module_type_  = geomtools::geom_id::INVALID_TYPE;
-
       _mapping_category_ = "";
       _module_category_ = "module";
-
       return;
     }
 
@@ -82,7 +78,6 @@ namespace snemo {
       return;
     }
 
-    // dtor:
     gg_step_hit_processor::~gg_step_hit_processor ()
     {
       if (_gg_cell_type_ != geomtools::geom_id::INVALID_TYPE) {
@@ -97,17 +92,16 @@ namespace snemo {
       return;
     }
 
-    // ctor:
     gg_step_hit_processor::gg_step_hit_processor () : base_step_hit_processor ()
     {
       _set_defaults ();
       return;
     }
 
-    MCTOOLS_STEP_HIT_PROCESSOR_INITIALIZE_IMPLEMENT_HEAD (gg_step_hit_processor,
-                                                          config_,
-                                                          service_mgr_)
+    void gg_step_hit_processor::initialize(const ::datatools::properties & config_,
+                                           ::datatools::service_manager & service_mgr_)
     {
+      std::cerr << "***** DEVEL: " << "gg_step_hit_processor::initialize: Entering..." << std::endl;
       this->base_step_hit_processor::initialize (config_, service_mgr_);
 
       // The geometry manager is mandatory for this processor:
@@ -194,8 +188,8 @@ namespace snemo {
       // check if the sensitive category is known:
       _categories_ = &(_geom_manager->get_id_mgr ().categories_by_name ());
       geomtools::id_mgr::categories_by_name_col_type::const_iterator icat
-        = _categories_->find (_mapping_category_);
-      DT_THROW_IF (icat == _categories_->end (), std::logic_error,
+        = _categories_->find(_mapping_category_);
+      DT_THROW_IF (icat == _categories_->end(), std::logic_error,
                    "Cannot find geometry ID category '" << _mapping_category_ << "' string property !");
 
       // initialize the ID locators for this category of volumes:
@@ -207,6 +201,16 @@ namespace snemo {
       _gg_cell_locator_.set_gmap (*_mapping_);
       _gg_cell_locator_.set_logging_priority (get_logging_priority ());
       _gg_cell_locator_.initialize (_gg_cell_type_);
+      std::cerr << "***** DEVEL: " << "gg_step_hit_processor::initialize: Basic smart locator for setup '"
+                << _geom_manager->get_setup_label() << "'" << std::endl;
+
+      // static bool pi = false;
+      // if (! pi) {
+      //   std::ofstream fpi("/tmp/gg_step_hit_processor.geom_ids.data");
+      //   _gg_cell_locator_.print_infos(fpi);
+      //   pi = true;
+      // }
+
       if (get_logging_priority () >= datatools::logger::PRIO_TRACE) {
         DT_LOG_TRACE (get_logging_priority (), "mapping_category = " << _mapping_category_);
         DT_LOG_TRACE (get_logging_priority (), "gg_cell_type     = " << _gg_cell_type_);
@@ -215,36 +219,42 @@ namespace snemo {
         DT_LOG_TRACE (get_logging_priority (), "Geiger locator:");
         _gg_cell_locator_.dump (std::cerr);
       }
-      if (_geom_manager->get_setup_label () == "snemo") {
+      if (_geom_manager->get_setup_label().substr(0, 7) == "XXXsnemo::") {
+        //
+        // if (_geom_manager->get_setup_label() == "snemo") {
+
+        std::cerr << "***** DEVEL: " << "gg_step_hit_processor::initialize: Fast locator for setup '"
+                  << _geom_manager->get_setup_label() << "'" << std::endl;
+
         // 2012-05-04 FM : to be discarded
         {
-          _fast_gg_cell_locator_.set_geo_manager (*_geom_manager);
+          _fast_gg_cell_locator_.set_geo_manager(*_geom_manager);
           const uint32_t module_number = 0;
-          DT_LOG_WARNING (get_logging_priority (), "Use default module number " << module_number);
-          _fast_gg_cell_locator_.set_module_number (module_number);
-          _fast_gg_cell_locator_.initialize ();
+          DT_LOG_WARNING (get_logging_priority(), "Use default module number " << module_number);
+          _fast_gg_cell_locator_.set_module_number(module_number);
+          _fast_gg_cell_locator_.initialize();
         }
 
         // 2012-05-04 FM : now use the following
         {
           const std::list<const geomtools::geom_info *> & module_infos =
-            _module_locator_.get_ginfos ();
+            _module_locator_.get_ginfos();
           for (std::list<const geomtools::geom_info *>::const_iterator i
-                 = module_infos.begin ();
-               i !=  module_infos.end ();
+                 = module_infos.begin();
+               i !=  module_infos.end();
                i++) {
             const geomtools::geom_info * ginfo = *i;
-            const uint32_t module_number = ginfo->get_geom_id ().get (0);
-            DT_LOG_NOTICE (get_logging_priority (), "Found module #" << module_number);
+            const uint32_t module_number = ginfo->get_geom_id().get(0);
+            DT_LOG_NOTICE (get_logging_priority(), "Found module #" << module_number);
             {
               snemo::geometry::gg_locator tmp_fggloc;
               _fast_gg_cell_locators_per_module_[module_number] = tmp_fggloc;
             }
             snemo::geometry::gg_locator & fggloc
               = _fast_gg_cell_locators_per_module_[module_number];
-            fggloc.set_geo_manager (*_geom_manager);
-            fggloc.set_module_number (module_number);
-            fggloc.initialize ();
+            fggloc.set_geo_manager(*_geom_manager);
+            fggloc.set_module_number(module_number);
+            fggloc.initialize();
           }
         }
       }
@@ -264,7 +274,7 @@ namespace snemo {
       // Particles are crossing very fastly a drift cell:
       // Ex:
       //   ~100 ps for an electron @ 1 MeV
-      //   ~10 ns for an alpha @ 1 MeV
+      //   ~10 ns  for an alpha @ 1 MeV
       //
       // The clock of the tracker electronics is ~80MHz
       // and we expect a time resolution ~15 ns on the anode signal timestamp.
@@ -284,10 +294,10 @@ namespace snemo {
       // Check if the step hit time is comparable to
       // the Geiger hit time using a confidence time window
       // @ time resolution:
-      const double t1 = gg_hit_.get_time_start () - _time_resolution_;
-      const double t2 = gg_hit_.get_time_start () + _time_resolution_;
-      const double ta = step_hit_.get_time_start ();
-      const double tb = step_hit_.get_time_stop ();
+      const double t1 = gg_hit_.get_time_start() - _time_resolution_;
+      const double t2 = gg_hit_.get_time_start() + _time_resolution_;
+      const double ta = step_hit_.get_time_start();
+      const double tb = step_hit_.get_time_stop();
       /*
        *   The Current Geiger hit:
        *     Creation of a ion/electron pair
@@ -343,19 +353,19 @@ namespace snemo {
       return true;
     }
 
-    MCTOOLS_STEP_HIT_PROCESSOR_PROCESS_PLAIN_IMPLEMENT_HEAD(gg_step_hit_processor,
-                                                            shpc_,
-                                                            plain_gg_hits_)
+    void gg_step_hit_processor::process(
+      const ::mctools::base_step_hit_processor::step_hit_ptr_collection_type & the_base_step_hits,
+      ::mctools::simulated_data::hit_collection_type & the_plain_gg_hits)
     {
-      _process (shpc_, (mctools::simulated_data::hit_handle_collection_type *) 0, &plain_gg_hits_);
+      _process(the_base_step_hits, (mctools::simulated_data::hit_handle_collection_type *) 0, &the_plain_gg_hits);
       return;
     }
 
-    MCTOOLS_STEP_HIT_PROCESSOR_PROCESS_HANDLE_IMPLEMENT_HEAD(gg_step_hit_processor,
-                                                             shpc_,
-                                                             gg_hits_)
+    void gg_step_hit_processor::process(
+      const ::mctools::base_step_hit_processor::step_hit_ptr_collection_type & the_base_step_hits,
+      ::mctools::simulated_data::hit_handle_collection_type & the_gg_hits)
     {
-      _process (shpc_, &gg_hits_, (mctools::simulated_data::hit_collection_type *) 0);
+      _process(the_base_step_hits, &the_gg_hits, (mctools::simulated_data::hit_collection_type *) 0);
       return;
     }
 
@@ -380,14 +390,16 @@ namespace snemo {
       // anode wire:
       // Prereservation :
       if (use_handles) {
-        gg_hits_->reserve (100);
+        gg_hits_->reserve(100);
       } else {
-        plain_gg_hits_->reserve (100);
+        plain_gg_hits_->reserve(100);
       }
 
       // Debug stuff:
       size_t missing_hits_count = 0;
       DT_LOG_TRACE (get_logging_priority (), "shpc.size = " << shpc_.size ());
+
+      double locator_tolerance = 0.1 * CLHEP::micrometer;
 
       for (mctools::base_step_hit_processor::step_hit_ptr_collection_type::const_iterator
              ihit = shpc_.begin (); ihit != shpc_.end (); ++ihit) {
@@ -396,6 +408,8 @@ namespace snemo {
 
         if (is_debug ()) _CT1_.start ();
         const double        hit_energy_deposit = the_step_hit.get_energy_deposit ();
+        // XXX
+        // if (hit_energy_deposit == 0) continue;
         const std::string & hit_particle_name  = the_step_hit.get_particle_name ();
         const double        hit_time_start     = the_step_hit.get_time_start ();
         const double        hit_time_stop      = the_step_hit.get_time_stop ();
@@ -429,6 +443,7 @@ namespace snemo {
         const geomtools::vector_3d world_hit_pos_median = 0.5 * (world_hit_pos_start + world_hit_pos_stop);
         geomtools::geom_id gid;
         if (! _fast_gg_cell_locators_per_module_.empty ()) {
+          //DT_LOG_WARNING (get_logging_priority (), "Using fast_gg_cell_locator per module...");
           const geomtools::geom_id & module_gid = _module_locator_.get_geom_id (world_hit_pos_median, _module_type_);
           const uint32_t module_number = module_gid.get (0);
           DT_THROW_IF (_fast_gg_cell_locators_per_module_.find (module_number) == _fast_gg_cell_locators_per_module_.end (),
@@ -441,17 +456,27 @@ namespace snemo {
             gid.invalidate ();
           }
         } else if (_fast_gg_cell_locator_.is_initialized ()) {
+          //DT_LOG_WARNING (get_logging_priority (), "Using fast_gg_cell_locator...");
           // 2012-06-05 FM : add 'find_cell_geom_id' method's returned value check:
           bool find_success =
-            _fast_gg_cell_locator_.find_cell_geom_id (world_hit_pos_median, gid);
+            _fast_gg_cell_locator_.find_cell_geom_id (world_hit_pos_median, gid, locator_tolerance);
           if (! find_success) {
             gid.invalidate ();
           }
         } else {
-          gid = _gg_cell_locator_.get_geom_id (world_hit_pos_median, _gg_cell_type_);
+          //DT_LOG_WARNING (get_logging_priority (), "Using basic gg_cell_locator...");
+          gid = _gg_cell_locator_.get_geom_id (world_hit_pos_median, _gg_cell_type_, locator_tolerance);
+          if (! gid.is_valid ()) {
+            std::cerr << "***** DEVEL: " << "gg_step_hit_processor::initialize: "
+                      << "Invalid GID from basic locator "
+                      << std::endl;
+          }
         }
 
         if (! gid.is_valid ()) {
+          the_step_hit.tree_dump(std::clog, "Current step hit: ", "WARNING: ");
+          DT_LOG_WARNING (get_logging_priority (),
+                          "world_hit_pos_median = " << std::setprecision(15)  << world_hit_pos_median / CLHEP::mm << " mm");
           // We do not process such a hit: Should we consider this case as
           // a bug ?
           DT_LOG_WARNING (get_logging_priority (),
@@ -636,16 +661,14 @@ namespace snemo {
             // Check if the ionization occurs in a fiducial cylinder (if requested):
 
             // In the drift cell XY plane:
-            if (datatools::is_valid (_fiducial_drift_radius_))
-              {
-                // not in the fiducial drift X-Y circular region:
-                if (drift_distance > _fiducial_drift_radius_)
-                  {
-                    // drop this ion/electron pair which will not
-                    // produce a Geiger avalanche and thus is sterile:
-                    continue;
-                  }
+            if (datatools::is_valid (_fiducial_drift_radius_)) {
+              // not in the fiducial drift X-Y circular region:
+              if (drift_distance > _fiducial_drift_radius_) {
+                // drop this ion/electron pair which will not
+                // produce a Geiger avalanche and thus is sterile:
+                continue;
               }
+            }
 
             // Along the drift cell Z axis:
             if (datatools::is_valid (_fiducial_drift_length_)) {
@@ -1207,5 +1230,3 @@ namespace snemo {
   } // end of namespace simulation
 
 } // end of namespace snemo
-
-// end of falaise/snemo/simulation/gg_step_hit_processor.cc

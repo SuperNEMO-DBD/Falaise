@@ -46,7 +46,7 @@ namespace snemo {
 
   namespace simulation {
 
-    MCTOOLS_STEP_HIT_PROCESSOR_CLASS_DECLARE(gg_step_hit_processor)
+    class gg_step_hit_processor : public mctools::base_step_hit_processor
     {
     public:
 
@@ -74,14 +74,17 @@ namespace snemo {
       /// Reset
       virtual void reset ();
 
-      /// Main setup routine:
-      MCTOOLS_STEP_HIT_PROCESSOR_INITIALIZE_DECLARE();
+      /// Main setup routine
+      virtual void initialize (const ::datatools::properties & config_,
+                               ::datatools::service_manager & service_mgr_);
 
       /// Main processing routine :
-      MCTOOLS_STEP_HIT_PROCESSOR_PROCESS_HANDLE_DECLARE();
+      virtual void process (const ::mctools::base_step_hit_processor::step_hit_ptr_collection_type & the_base_step_hits,
+                            ::mctools::simulated_data::hit_handle_collection_type & the_handle_hits);
 
       /// Main processing routine :
-      MCTOOLS_STEP_HIT_PROCESSOR_PROCESS_PLAIN_DECLARE();
+      virtual void process (const ::mctools::base_step_hit_processor::step_hit_ptr_collection_type & the_base_step_hits,
+                            ::mctools::simulated_data::hit_collection_type & the_plain_hits);
 
       /// Check if a step hit is a candidate for being part within a proposed Geiger hit
       bool match_gg_hit (const mctools::base_step_hit & gg_hit_,
@@ -181,5 +184,3 @@ namespace snemo {
 } // end of namespace snemo
 
 #endif // FALAISE_SNEMO_SIMULATION_GG_STEP_HIT_PROCESSOR_H
-
-// end of falaise/snemo/simulation/gg_step_hit_processor.h
