@@ -25,7 +25,7 @@ Contents:
    official list of published resource files for each module
  * Modules:
 
-    * ``things2root/`` : a module that build a Root tree from Falaise data models
+    * ``things2root/`` : a module that builds a Root tree from Falaise data models (ntuplizer)
     * ``MockTrackerClusterizer/`` : a module that builds clusters of tracker hits
       as track candidates for particle trajectory fitting
     * ``CAT/`` : The CAT and SULTAN modules that build clusters of tracker hits
