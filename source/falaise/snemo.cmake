@@ -77,7 +77,6 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/cuts/calibrated_data_cut.h
   snemo/cuts/tracker_clustering_data_cut.h
 
-  snemo/visualization/toy_display.h
   )
 
 list(APPEND FalaiseLibrary_SOURCES
@@ -123,8 +122,6 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/simulation/cosmic_muon_generator.cc
   snemo/simulation/gg_step_hit_processor.cc
   #snemo/simulation/pmt_signal_generator.cc
-
-  snemo/visualization/toy_display.cc
 
   snemo/cuts/event_header_cut.cc
   snemo/cuts/simulated_data_cut.cc
