@@ -17,6 +17,7 @@ set(_falaise_PLUGINS
   MockTrackerClusterizer
   #Yaca
   TrackFit
+  VisuToy
 )
 
 # - Process modules here:
