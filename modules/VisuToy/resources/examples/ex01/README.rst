@@ -30,11 +30,15 @@ Usage
 
   3. Run the pipeline: ::
 
+      * Events with "SD" and "CD" banks::
 
-      $ flreconstruct \
-        --input-file "@falaise.resources:modules/VisuToy/examples/data/Se82.0nubb-source_strips_bulk_SD.brio" \
-	--pipeline "config/pipeline.conf"
+         $ flreconstruct \
+          --input-file "@falaise.resources:modules/VisuToy/examples/data/Se82.0nubb-source_strips_bulk_SD.brio" \
+          --pipeline "config/pipeline.conf"
 
-      $ flreconstruct \
-        --input-file "data/Se82.0nubb-source_strips_bulk_SD.brio" \
-	--pipeline "config/pipeline.conf"
+
+      * Events with "SD", "CD" and "TCD" banks (not supported yet)::
+
+         $ flreconstruct \
+           --input-file "@falaise.resources:modules/VisuToy/examples/data/Se82.0nubb-source_strips_bulk_SD-CD-TCD.brio" \
+          --pipeline "config/pipeline.conf"
