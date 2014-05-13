@@ -1,5 +1,5 @@
-/** \file falaise/snemo/geometry/calo_locator.cc
- *
+/// \file falaise/snemo/geometry/calo_locator.cc
+/*
  * Copyright (C) 2011-2014 Francois Mauger <mauger@lpccaen.in2p3.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -1202,6 +1202,11 @@ namespace snemo {
     {
       DT_LOG_TRACE (get_logging_priority (), "Entering...");
 
+      double tolerance = tolerance_;
+      if (tolerance == GEOMTOOLS_PROPER_TOLERANCE) {
+        tolerance = _block_box_->get_tolerance();
+      }
+
       geomtools::geom_id & gid  = gid_;
       gid.invalidate ();
       uint32_t side_number (geomtools::geom_id::INVALID_ADDRESS);
@@ -1229,7 +1234,7 @@ namespace snemo {
         if (x < 0.0) {
           side_number = utils::SIDE_BACK;
           const double delta_x = std::abs (x - _block_x_[side_number] - 0.5 * get_block_thickness ());
-          if (delta_x > tolerance_) {
+          if (delta_x > tolerance) {
             gid.invalidate ();
             return false;
           }
@@ -1244,7 +1249,7 @@ namespace snemo {
         } else {
           side_number = utils::SIDE_FRONT;
           const double delta_x = std::abs (x - _block_x_[side_number] - 0.5 * get_block_thickness ());
-          if (delta_x > tolerance_) {
+          if (delta_x > tolerance) {
             gid.invalidate ();
             return false;
           }
@@ -1271,10 +1276,9 @@ namespace snemo {
         gid.set (_side_address_index_, side_number);
         DT_LOG_TRACE (get_logging_priority (), "gid = " << gid);
         const int iy = (int) (((y - first_block_y) / block_delta_y) + 0.5);
-        if ((iy >= 0) && (iy < (int)ncolumns))
-          {
-            column_number = iy;
-          }
+        if ((iy >= 0) && (iy < (int)ncolumns)) {
+          column_number = iy;
+        }
         gid.set (_column_address_index_, column_number);
         DT_LOG_TRACE (get_logging_priority (), "gid = " << gid);
         const int iz = (int) (((z - first_block_z) / block_delta_z) + 0.5);
@@ -1294,7 +1298,7 @@ namespace snemo {
           // 2012-05-31 FM : we check if the 'world' position is in the volume:
           geomtools::vector_3d world_position;
           transform_module_to_world (in_module_position_, world_position);
-          if (_mapping_->check_inside (*ginfo_ptr, world_position, tolerance_)) {
+          if (_mapping_->check_inside (*ginfo_ptr, world_position, tolerance)) {
             DT_LOG_TRACE (get_logging_priority (), "INSIDE " << gid);
             return true;
           }
@@ -1308,7 +1312,6 @@ namespace snemo {
 
 }  // end of namespace snemo
 
-// end of falaise/snemo/geometry/calo_locator.cc
 /*
 ** Local Variables: --
 ** mode: c++ --
