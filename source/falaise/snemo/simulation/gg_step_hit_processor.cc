@@ -201,15 +201,6 @@ namespace snemo {
       _gg_cell_locator_.set_gmap (*_mapping_);
       _gg_cell_locator_.set_logging_priority (get_logging_priority ());
       _gg_cell_locator_.initialize (_gg_cell_type_);
-      std::cerr << "***** DEVEL: " << "gg_step_hit_processor::initialize: Basic smart locator for setup '"
-                << _geom_manager->get_setup_label() << "'" << std::endl;
-
-      // static bool pi = false;
-      // if (! pi) {
-      //   std::ofstream fpi("/tmp/gg_step_hit_processor.geom_ids.data");
-      //   _gg_cell_locator_.print_infos(fpi);
-      //   pi = true;
-      // }
 
       if (get_logging_priority () >= datatools::logger::PRIO_TRACE) {
         DT_LOG_TRACE (get_logging_priority (), "mapping_category = " << _mapping_category_);
@@ -219,12 +210,9 @@ namespace snemo {
         DT_LOG_TRACE (get_logging_priority (), "Geiger locator:");
         _gg_cell_locator_.dump (std::cerr);
       }
-      if (_geom_manager->get_setup_label().substr(0, 7) == "XXXsnemo::") {
-        //
-        // if (_geom_manager->get_setup_label() == "snemo") {
-
-        std::cerr << "***** DEVEL: " << "gg_step_hit_processor::initialize: Fast locator for setup '"
-                  << _geom_manager->get_setup_label() << "'" << std::endl;
+      if (_geom_manager->get_setup_label().find("snemo::") != std::string::npos) {
+        DT_LOG_TRACE (get_logging_priority(), "Fast locator for setup '"
+                      << _geom_manager->get_setup_label() << "'");
 
         // 2012-05-04 FM : to be discarded
         {
@@ -443,7 +431,7 @@ namespace snemo {
         const geomtools::vector_3d world_hit_pos_median = 0.5 * (world_hit_pos_start + world_hit_pos_stop);
         geomtools::geom_id gid;
         if (! _fast_gg_cell_locators_per_module_.empty ()) {
-          //DT_LOG_WARNING (get_logging_priority (), "Using fast_gg_cell_locator per module...");
+          DT_LOG_TRACE (get_logging_priority (), "Using fast_gg_cell_locator per module...");
           const geomtools::geom_id & module_gid = _module_locator_.get_geom_id (world_hit_pos_median, _module_type_);
           const uint32_t module_number = module_gid.get (0);
           DT_THROW_IF (_fast_gg_cell_locators_per_module_.find (module_number) == _fast_gg_cell_locators_per_module_.end (),
@@ -456,7 +444,7 @@ namespace snemo {
             gid.invalidate ();
           }
         } else if (_fast_gg_cell_locator_.is_initialized ()) {
-          //DT_LOG_WARNING (get_logging_priority (), "Using fast_gg_cell_locator...");
+          DT_LOG_TRACE (get_logging_priority (), "Using fast_gg_cell_locator...");
           // 2012-06-05 FM : add 'find_cell_geom_id' method's returned value check:
           bool find_success =
             _fast_gg_cell_locator_.find_cell_geom_id (world_hit_pos_median, gid, locator_tolerance);
@@ -464,13 +452,8 @@ namespace snemo {
             gid.invalidate ();
           }
         } else {
-          //DT_LOG_WARNING (get_logging_priority (), "Using basic gg_cell_locator...");
+          DT_LOG_TRACE (get_logging_priority (), "Using basic gg_cell_locator...");
           gid = _gg_cell_locator_.get_geom_id (world_hit_pos_median, _gg_cell_type_, locator_tolerance);
-          if (! gid.is_valid ()) {
-            std::cerr << "***** DEVEL: " << "gg_step_hit_processor::initialize: "
-                      << "Invalid GID from basic locator "
-                      << std::endl;
-          }
         }
 
         if (! gid.is_valid ()) {
