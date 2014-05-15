@@ -422,7 +422,6 @@ namespace snemo {
       _SULTAN_input_.calo_cells.clear ();
       // Calo hit accounting :
       std::map<int, sdm::calibrated_data::calorimeter_hit_handle_type> calo_hits_mapping;
-      std::map<int, int> calo_hits_status;
       if (_process_calo_hits_) {
         if (_SULTAN_input_.calo_cells.capacity() < calo_hits_.size()) {
           _SULTAN_input_.calo_cells.reserve(calo_hits_.size());
@@ -504,7 +503,6 @@ namespace snemo {
 
           // Store mapping info between both data models :
           calo_hits_mapping[c.id()] = calo_handle;
-          calo_hits_status[c.id()] = 0;
 
           DT_LOG_DEBUG(get_logging_priority(),
                        "Calo_cell #" << sncore_calo_hit.get_hit_id () << " has been added "
