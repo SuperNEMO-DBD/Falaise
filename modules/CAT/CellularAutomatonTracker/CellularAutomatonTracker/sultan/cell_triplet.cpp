@@ -121,7 +121,7 @@ namespace SULTAN{
 
 
       helices_.clear();
-      double tolerance_for_smallness = 1.;
+      double tolerance_for_smallness = 1.; // mm
       size_t count_all_circles = 0;
       size_t count_circles_positive_radius = 0;
       size_t count_circles_good_radius = 0;
@@ -225,9 +225,7 @@ namespace SULTAN{
 
 	// if the cells are 1 ... 2 ... 3 we are ok
 	// if they are 3 ... 1 ... 2 the dist13 must reverse sign
-	double A31 = 2.*(y[0] - y[2]);
-	double A11 = 2.*(x[0] - x[2]);
-        double theta13 = atan2(-A31,-A11);
+        double theta13 = atan2(-A22,-A12);
 	if( theta * theta13 < 0. ) dist13 *= -1.;
 
 
@@ -284,9 +282,9 @@ namespace SULTAN{
 
               for(size_t m=0; m<2; m++){
                 Y0tmp[m] = sign[3][m]*sqrt(pow(R + sign[0][i]*r[0].value(),2) - pow(X0tmp,2));
-                dY0tmpdr[m][0] = sign[3][m]  /  sqrt(pow(R + sign[0][i]*r[0].value(),2) - pow(X0tmp,2))  *  (R + sign[0][i]*r[0].value())*(dRdr[0] + sign[0][i]) - X0tmp*dX0tmpdr[0];
-                dY0tmpdr[m][1] = sign[3][m]  /  sqrt(pow(R + sign[1][j]*r[1].value(),2) - pow(X0tmp,2))  *  (R + sign[0][i]*r[0].value())*dRdr[1] - X0tmp*dX0tmpdr[1];
-                dY0tmpdr[m][2] = sign[3][m]  /  sqrt(pow(R + sign[2][k]*r[2].value(),2) - pow(X0tmp,2))  *  (R + sign[0][i]*r[0].value())*dRdr[2] - X0tmp*dX0tmpdr[2];
+                dY0tmpdr[m][0] = sign[3][m]  /  sqrt(pow(R + sign[0][i]*r[0].value(),2) - pow(X0tmp,2))  *  ((R + sign[0][i]*r[0].value())*(dRdr[0] + sign[0][i]) - X0tmp*dX0tmpdr[0]);
+                dY0tmpdr[m][1] = sign[3][m]  /  sqrt(pow(R + sign[0][i]*r[0].value(),2) - pow(X0tmp,2))  *  ((R + sign[0][i]*r[0].value())*dRdr[1] - X0tmp*dX0tmpdr[1]);
+		dY0tmpdr[m][2] = sign[3][m]  /  sqrt(pow(R + sign[0][i]*r[0].value(),2) - pow(X0tmp,2))  *  ((R + sign[0][i]*r[0].value())*dRdr[2] - X0tmp*dX0tmpdr[2]);
 
 
                 // translate and rotate
@@ -343,7 +341,6 @@ namespace SULTAN{
                 count_circles_good_radius++;
 
 
-
                 // now extend circle to helix
                 // phi angle from center of solution to center of cell i; exact
                 phi1 = atan2(y[0] - Y0, x[0] - X0);
@@ -379,7 +376,22 @@ namespace SULTAN{
 
                   count_all_helices++;
 
-                  helices_.push_back(helix);
+		  if( helix.x0().experimental_isnan() || 
+		      helix.y0().experimental_isnan() || 
+		      helix.z0().experimental_isnan() || 
+		      helix.R().experimental_isnan() || 
+		      helix.H().experimental_isnan() || 
+		      helix.x0().experimental_isinf() || 
+		      helix.y0().experimental_isinf() || 
+		      helix.z0().experimental_isinf() || 
+		      helix.R().experimental_isinf() || 
+		      helix.H().experimental_isinf() ){
+		    if( print_level() >= mybhep::NORMAL ){
+		      std::clog << " problem: det " << detA << " helix is nan or inf "; helix.dump(); std::clog << " " << std::endl;
+		    }
+		  }else{
+		    helices_.push_back(helix);
+		  }
                 }
               }
             }
@@ -559,6 +571,23 @@ namespace SULTAN{
                   }
 
                   count_all_helices++;
+
+		  if( helix.x0().experimental_isnan() || 
+		      helix.y0().experimental_isnan() || 
+		      helix.z0().experimental_isnan() || 
+		      helix.R().experimental_isnan() || 
+		      helix.H().experimental_isnan() || 
+		      helix.x0().experimental_isinf() || 
+		      helix.y0().experimental_isinf() || 
+		      helix.z0().experimental_isinf() || 
+		      helix.R().experimental_isinf() || 
+		      helix.H().experimental_isinf() ){
+		    if( print_level() >= mybhep::NORMAL ){
+		      std::clog << " problem: det " << detA << " helix is nan or inf "; helix.dump(); std::clog << " " << std::endl;
+		    }
+		  }else{
+		    helices_.push_back(helix);
+		  }
 
                   helices_.push_back(helix);
                 }

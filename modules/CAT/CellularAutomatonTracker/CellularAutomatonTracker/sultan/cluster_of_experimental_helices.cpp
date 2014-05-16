@@ -8,6 +8,7 @@ namespace SULTAN {
 
       //
       // can store a in cluster
+      // only if it adds at least one new cell id
       //
       // 1st case
       //  __ min__ ........ __max__  __a__
@@ -51,13 +52,15 @@ namespace SULTAN {
 
       if( !helix_max_.is_more_than__optimist(a,nsigmas) ) return false;
 
-      return true;
+      return different_cells(a);
+
     }
 
     bool cluster_of_experimental_helices::can_merge__optimist(cluster_of_experimental_helices cluster, double nsigmas)const{
 
       //
       // can merge cluster with this?
+      // only if it adds at least one new cell id
       //
       // 1st case
       //  ___ this___  ...cluster...
@@ -88,7 +91,39 @@ namespace SULTAN {
 
       if( !helix_max_.is_more_than__optimist(cluster.helix_min_,nsigmas) ) return false;
 
-      return true;
+      return different_cells(cluster);
+    }
+
+    bool cluster_of_experimental_helices::different_cells(topology::experimental_helix b)const{
+      std::vector<size_t> bids = b.ids();
+      for(std::vector<size_t>::const_iterator id = ids_.begin(); id !=ids_.end(); ++id){
+	if( std::find(bids.begin(), bids.end(), *id) == bids.end() )
+	  return true;
+      }
+      
+      for(std::vector<size_t>::const_iterator id = bids.begin(); id !=bids.end(); ++id){
+	if( std::find(ids_.begin(), ids_.end(), *id) == ids_.end() )
+	  return true;
+      }
+      
+      return false;
+      
+    }
+
+    bool cluster_of_experimental_helices::different_cells(topology::cluster_of_experimental_helices b)const{
+      std::vector<size_t> bids = b.ids();
+      for(std::vector<size_t>::const_iterator id = ids_.begin(); id !=ids_.end(); ++id){
+	if( std::find(bids.begin(), bids.end(), *id) == bids.end() )
+	  return true;
+      }
+      
+      for(std::vector<size_t>::const_iterator id = bids.begin(); id !=bids.end(); ++id){
+	if( std::find(ids_.begin(), ids_.end(), *id) == ids_.end() )
+	  return true;
+      }
+      
+      return false;
+      
     }
 
     bool cluster_of_experimental_helices::add_helix(experimental_helix a){

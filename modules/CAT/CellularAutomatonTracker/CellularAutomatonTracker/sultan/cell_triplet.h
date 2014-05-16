@@ -86,6 +86,10 @@ namespace SULTAN{
 
       bool has_cell_of_id(size_t id)const;
 
+      void print_ids()const{
+        std::clog << " ( " << ca_.id() << ", " << cb_.id() << ", " << cc_.id() << ") ";
+      }
+
     };
 
 

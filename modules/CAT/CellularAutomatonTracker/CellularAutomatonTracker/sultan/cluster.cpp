@@ -460,6 +460,129 @@ namespace SULTAN{
       
     }
 
+
+    void cluster::recalculate(size_t n_iterations){
+
+      for(size_t iter=0; iter<n_iterations; iter++){
+	recalculate_R();
+	recalculate_x0();
+	recalculate_y0();
+      }
+
+    }
+
+    void cluster::recalculate_x0(){
+
+      double error = helix_.x0().error();
+      std::vector<double> x0s, local_x0s;
+      double local_x0, dy, delta;
+
+      for(std::vector<topology::node>::const_iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode){
+	dy = helix_.y0().value() - inode->c().ep().y().value();
+	delta = pow(helix_.R().value() + inode->c().r().value(),2) - pow(dy,2);
+	if( delta >= 0. ){
+	  local_x0s.push_back( inode->c().ep().x().value() + sqrt(delta) );
+	  local_x0s.push_back( inode->c().ep().x().value() - sqrt(delta) );
+	}
+	delta = pow(helix_.R().value() - inode->c().r().value(),2) - pow(dy,2);
+	if( delta >= 0. ){
+	  local_x0s.push_back( inode->c().ep().x().value() + sqrt(delta) );
+	  local_x0s.push_back( inode->c().ep().x().value() - sqrt(delta) );
+	}
+	if( local_x0s.size() ){
+	  local_x0 = local_x0s[0];
+	  for(size_t j=1; j<local_x0s.size(); j++)
+	    if( fabs(local_x0s[j] - helix_.x0().value() ) < fabs( local_x0 - helix_.x0().value() ) )
+	      local_x0 = local_x0s[j];
+	  x0s.push_back(local_x0);
+	}
+      }
+
+      if( x0s.size() ){
+	double average_x0 = average(x0s);
+	helix_.set_x0(experimental_double(average_x0,error));
+      }
+
+    }
+
+
+    void cluster::recalculate_y0(){
+
+      double error = helix_.y0().error();
+      std::vector<double> y0s, local_y0s;
+      double local_y0, dx, delta;
+
+      for(std::vector<topology::node>::const_iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode){
+	dx = helix_.x0().value() - inode->c().ep().x().value();
+	delta = pow(helix_.R().value() + inode->c().r().value(),2) - pow(dx,2);
+	if( delta >= 0. ){
+	  local_y0s.push_back( inode->c().ep().x().value() + sqrt(delta) );
+	  local_y0s.push_back( inode->c().ep().x().value() - sqrt(delta) );
+	}
+	delta = pow(helix_.R().value() - inode->c().r().value(),2) - pow(dx,2);
+	if( delta >= 0. ){
+	  local_y0s.push_back( inode->c().ep().x().value() + sqrt(delta) );
+	  local_y0s.push_back( inode->c().ep().x().value() - sqrt(delta) );
+	}
+	if( local_y0s.size() ){
+	  local_y0 = local_y0s[0];
+	  for(size_t j=1; j<local_y0s.size(); j++)
+	    if( fabs(local_y0s[j] - helix_.y0().value() ) < fabs( local_y0 - helix_.y0().value() ) )
+	      local_y0 = local_y0s[j];
+	  y0s.push_back(local_y0);
+	}
+      }
+
+      if( y0s.size() ){
+	double average_y0 = average(y0s);
+	helix_.set_y0(experimental_double(average_y0,error));
+      }
+
+    }
+
+
+    void cluster::recalculate_z0(){
+
+    }
+
+    void cluster::recalculate_R(){
+
+      double error = helix_.R().error();
+      std::vector<topology::experimental_double> Rs;
+      experimental_double local_R1, local_R2, local_R;
+
+      for(std::vector<topology::node>::const_iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode){
+#if 0
+	local_R1 = fabs(sqrt(pow(helix_.x0().value() - inode->c().ep().x().value(),2) +
+			     pow(helix_.y0().value() - inode->c().ep().y().value(),2) 
+			     ) + inode->c().r().value());
+	local_R2 = fabs(sqrt(pow(helix_.x0().value() - inode->c().ep().x().value(),2) +
+			     pow(helix_.y0().value() - inode->c().ep().y().value(),2) 
+			     ) - inode->c().r().value());
+	if( fabs(local_R1 - helix_.R().value() ) < fabs(local_R2 - helix_.R().value() ) )
+	  local_R = local_R1;
+	else
+	  local_R = local_R2;
+#else
+	local_R = experimental_sqrt(experimental_square(helix_.x0() - inode->c().ep().x()) +
+				    experimental_square(helix_.y0() - inode->c().ep().y()) );
+#endif
+	Rs.push_back(local_R);
+
+      }
+
+      experimental_double average_R = weighted_average(Rs);
+
+      helix_.set_R(average_R);
+
+    }
+
+    void cluster::recalculate_H(){
+
+
+    }
+
+
   }
 }
 

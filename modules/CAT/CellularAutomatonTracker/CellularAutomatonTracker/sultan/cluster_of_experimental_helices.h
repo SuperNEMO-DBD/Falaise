@@ -102,6 +102,8 @@ namespace SULTAN {
       bool add_helix(experimental_helix a);
       void add_helices(std::vector<experimental_helix> as);
       experimental_helix average_helix()const;
+      bool different_cells(topology::experimental_helix b)const;
+      bool different_cells(topology::cluster_of_experimental_helices b)const;
 
 
     };

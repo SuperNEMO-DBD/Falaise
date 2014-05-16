@@ -239,6 +239,45 @@ namespace SULTAN {
 
     }
 
+  
+
+    if( use_endpoints ){
+      size_t n_iterations = 10;
+      std::vector<topology::experimental_helix> the_helices;
+      std::vector<topology::experimental_helix> neighbours;
+      m.message("SULTAN::sultan::reduce_clusters: assign helices to ", made_clusters_.size(), " clusters ", mybhep::VERBOSE);
+      for(std::vector<topology::cluster>::iterator iclu = made_clusters_.begin(); iclu != made_clusters_.end(); ++iclu){
+	*leftover_cluster_ = *iclu;
+	if( leftover_cluster_->nodes_.size() < min_ncells_in_cluster ) continue;
+	experimental_legendre_vector->reset();
+	neighbours.clear();
+	//form_triplets_from_cells_with_endpoints();
+	form_triplets_from_cells();
+	form_helices_from_triplets(&the_helices, iclu - made_clusters_.begin());
+	if( !the_helices.size() ) continue;
+	for(std::vector<topology::experimental_helix>::const_iterator hh = the_helices.begin(); hh!=the_helices.end(); ++hh){
+	  experimental_legendre_vector->add_helix(*hh);
+	}
+	m.message("SULTAN::sultan::reduce_clusters: cluster ", iclu - made_clusters_.begin(), " has ", leftover_cluster_->nodes_.size(), " nodes, ", triplets_.size(), " triplets, ", the_helices.size(), " helices ", mybhep::VERBOSE);
+	if (level >= mybhep::VERBOSE){
+	  for(std::vector<topology::cell_triplet>::const_iterator tr = triplets_.begin(); tr!=triplets_.end(); ++tr){
+	    tr->print_ids();
+	  }	  
+	  std::clog << " " << std::endl;
+	}	
+	//experimental_legendre_vector->reset_helices_errors();
+	//experimental_legendre_vector->calculate_metric();
+	topology::experimental_helix b = experimental_legendre_vector->max(&neighbours);
+	//topology::experimental_helix b = experimental_legendre_vector->max_with_ids();
+	//topology::experimental_helix b = experimental_legendre_vector->max_with_metric();
+	//b = experimental_legendre_vector->gaussian_max(n_iterations, b);
+	iclu->set_helix(b);
+	iclu->recalculate_R();
+	//iclu->recalculate(n_iterations);
+	iclu->set_cluster_type("helix");
+      }
+    }
+
     // turn clusters to sequences
     m.message("SULTAN::sultan::reduce_clusters: make sequences", mybhep::VERBOSE);
     make_sequences_from_clusters();
@@ -654,6 +693,63 @@ namespace SULTAN {
 
 
   //*************************************************************
+  bool sultan::form_triplets_from_cells_with_endpoints(){
+  //*************************************************************
+    // combine leftover_cluster nodes
+    // to produce triplets (A, B, C) with A and C fixed
+
+
+    if( use_clocks )
+      clock.start(" sultan: form_triplets_from_cells_with_endpoints ", "cumulative");
+
+    reset_triplets();
+
+    m.message("SULTAN::sultan::form_triplets_from_cells_with_endpoints: calculate triples for ", leftover_cluster_->nodes_.size(), " nodes, minimum ", min_ncells_in_cluster, mybhep::VVERBOSE);
+
+    if( leftover_cluster_->nodes_.size() < min_ncells_in_cluster ) {
+      // not enough cells to form a cluster
+      if( use_clocks )
+	clock.stop(" sultan: form_triplets_from_cells_with_endpoints ");
+      return false;
+    }
+
+
+    topology::cell_triplet *ccc;
+
+    const topology::cell A = leftover_cluster_->nodes_.begin()->c();
+    const topology::cell C = leftover_cluster_->nodes_.back().c();
+
+    if( A.id() == C.id() ){
+      if( use_clocks )
+	clock.stop(" sultan: form_triplets_from_cells_with_endpoints ");
+      return false;
+    }
+
+    for(std::vector<topology::node>::const_iterator jnode=leftover_cluster_->nodes_.begin(); jnode != leftover_cluster_->nodes_.end(); ++jnode){
+      
+      if( jnode->c().id() == A.id() ) continue;
+      if( jnode->c().id() == C.id() ) continue;
+      
+      ccc = new topology::cell_triplet(A, jnode->c(), C, level);
+      triplets_.push_back(*ccc);
+      
+      delete ccc;
+      
+      m.message(" adding triplet, total " , triplets_.size() , mybhep::VVERBOSE);
+      
+    }
+
+    if( use_clocks )
+      clock.stop(" sultan: form_triplets_from_cells_with_endpoints ");
+
+    m.message("SULTAN::sultan::form_triplets_from_cells_with_endpoints: sultan: the ", leftover_cluster_->nodes_.size(), " cells have been combined into ", triplets_.size(), " triplets ", mybhep::VERBOSE);
+
+    return true;
+
+  }
+
+
+  //*************************************************************
   bool sultan::form_helices_from_triplets(std::vector<topology::experimental_helix> *the_helices, size_t icluster){
   //*************************************************************
 
@@ -662,13 +758,13 @@ namespace SULTAN {
 
     m.message("SULTAN::sultan::form_helices_from_triplets:  calculate helices for ", triplets_.size(), " triplets ", mybhep::VVERBOSE);
 
+    the_helices->clear();
+
     if( triplets_.size() == 0 ) {
       if( use_clocks )
 	clock.stop(" sultan: form_helices_from_triplets ");
       return false;
     }
-
-    the_helices->clear();
 
     // size_t ncells;
     // size_t ncells_max = 0;

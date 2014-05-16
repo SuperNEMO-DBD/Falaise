@@ -131,6 +131,8 @@ namespace SULTAN {
 
       void add_id(size_t id);
 
+      void add_ids(std::vector<size_t> ids);
+
       void distance_from_cell_measurement(topology::cell c, experimental_double *DR, experimental_double *DH)const;
 
       void distance_from_cell_center(topology::cell c, experimental_double *DR, experimental_double *DH)const;
@@ -142,6 +144,10 @@ namespace SULTAN {
       bool is_less_than__optimist(const topology::experimental_helix a, double nsigma)const;
 
       bool is_more_than__optimist(const topology::experimental_helix a, double nsigma)const;
+
+      bool isnan()const;
+
+      bool isinf()const;
 
     };
 

@@ -291,6 +291,18 @@ namespace SULTAN {
 
     }
 
+    bool experimental_double::experimental_isnan()const{
+
+      return isnan(this->value()) || isnan(this->error());
+
+    }
+
+    bool experimental_double::experimental_isinf()const{
+
+      return isinf(this->value()) || isinf(this->error());
+
+    }
+
     // Operations with experimental_points
     // -v
     // sin(v)
@@ -479,6 +491,27 @@ namespace SULTAN {
       experimental_double v = v1;
       dd/=v;
       return dd;
+    }
+
+    // average
+    double average (const std::vector<double> vs)
+    {
+
+      if( vs.size() == 0 ){
+        double bad;
+        std::clog << " problem: avereging std::vector of size " << vs.size() << std::endl;
+        return bad;
+      }
+
+
+      double mean = 0.;
+
+      for(std::vector<double>::const_iterator iv=vs.begin(); iv!=vs.end(); ++iv){
+        mean += *iv;
+      }
+
+      return mean/vs.size();
+
     }
 
     // average

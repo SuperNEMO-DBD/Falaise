@@ -122,6 +122,14 @@ namespace SULTAN{
 
       size_t max_length_of_piece();
 
+      void recalculate(size_t n_iterations);
+
+      void recalculate_x0();
+      void recalculate_y0();
+      void recalculate_z0();
+      void recalculate_R();
+      void recalculate_H();
+
     };
 
   }

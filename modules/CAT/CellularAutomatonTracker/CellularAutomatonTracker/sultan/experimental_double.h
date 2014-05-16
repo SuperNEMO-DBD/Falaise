@@ -3,6 +3,7 @@
 #define __sultan__experimental_double 1
 
 #include <iostream>
+#include <cmath>
 #include <vector>
 
 namespace SULTAN {
@@ -85,6 +86,10 @@ namespace SULTAN {
 
       bool is_zero__optimist(double nsigma)const;
 
+      bool experimental_isnan()const;
+
+      bool experimental_isinf()const;
+
     };
  
 
@@ -148,6 +153,9 @@ namespace SULTAN {
 
     // v/d
     experimental_double operator / (double d, const experimental_double& v1);
+
+    // average
+    double average (const std::vector<double> vs);
 
     // average
     experimental_double average (const std::vector<experimental_double> vs);

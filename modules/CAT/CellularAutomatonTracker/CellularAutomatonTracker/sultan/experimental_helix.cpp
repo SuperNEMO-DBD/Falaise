@@ -27,6 +27,12 @@ namespace SULTAN {
     }
     
     
+    void experimental_helix::add_ids(std::vector<size_t> ids){
+      for(std::vector<size_t>::const_iterator fid = ids.begin(); fid!=ids.end(); ++fid)
+	add_id(*fid);
+    }
+    
+    
     void experimental_helix::distance_from_cell_measurement(topology::cell c, experimental_double *DR, experimental_double *DH)const{
        //////////////////////////////////////////////////////////////////////////
       //   center_of_helix              radius_of_helix    center_of_cell
@@ -142,6 +148,24 @@ namespace SULTAN {
 
       return true;
 
+    }
+
+    bool experimental_helix::isnan()const{
+      return (
+	      this->x0().experimental_isnan() ||
+	      this->y0().experimental_isnan() ||
+	      this->z0().experimental_isnan() ||
+	      this->R().experimental_isnan() ||
+	      this->H().experimental_isnan() );
+    }
+
+    bool experimental_helix::isinf()const{
+      return (
+	      this->x0().experimental_isinf() ||
+	      this->y0().experimental_isinf() ||
+	      this->z0().experimental_isinf() ||
+	      this->R().experimental_isinf() ||
+	      this->H().experimental_isinf() );
     }
     
   }

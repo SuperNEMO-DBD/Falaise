@@ -24,6 +24,12 @@ namespace SULTAN {
 
       double nsigmas_;
 
+      double x0dist_;
+      double y0dist_;
+      double z0dist_;
+      double Rdist_;
+      double Hdist_;
+
     protected:
       Clock clock;
 
@@ -39,6 +45,11 @@ namespace SULTAN {
         set_probmin(probmin);
         nsigmas_=1.;
         index_of_largest_cluster_=-1;
+	x0dist_ = mybhep::default_min;
+	y0dist_ = mybhep::default_min;
+	z0dist_ = mybhep::default_min;
+	Rdist_ = mybhep::default_min;
+	Hdist_ = mybhep::default_min;
       }
 
       //!Default destructor
@@ -88,19 +99,37 @@ namespace SULTAN {
 
       void add_helix_to_clusters(experimental_helix a);
 
+      void add_a_helix_to_clusters(experimental_helix a);
+
       void reset();
 
       void get_neighbours(experimental_helix a, std::vector<experimental_helix>* neighbours);
+
+      void get_neighbours_ids(experimental_helix a, size_t* nids);
+
+      void get_neighbour_ids(experimental_helix a, size_t* nids);
+
+      double gauss(double mean, double sigma);
+
+      experimental_helix gaussian_max(size_t n_iterations, experimental_helix seed);
 
       experimental_helix max(std::vector<experimental_helix> * neighbours);
 
       experimental_helix max(std::vector<size_t> * neighbouring_cells);
 
+      experimental_helix max_with_metric();
+
+      experimental_helix max_with_ids();
+
       cluster_of_experimental_helices max_cluster(experimental_helix * helix, bool * found);
 
       void merge_cluster_of_index(size_t i);
 
+      void merge_the_cluster_of_index(size_t i);
+
       void merge_clusters();
+
+      void merge_the_clusters();
 
       void create_cluster(experimental_helix a);
 
@@ -108,6 +137,9 @@ namespace SULTAN {
 
       bool assign_cell(size_t cell_id);
 
+      void reset_helices_errors();
+
+      void calculate_metric();
 
     };
 
