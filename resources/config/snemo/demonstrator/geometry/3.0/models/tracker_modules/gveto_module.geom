@@ -21,7 +21,7 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "blue"
 
 # Sensitive detector category:
-sensiative.category : string ="gveto_SD"
+sensitive.category : string ="gveto_SD"
 
 
 #############################################################################
