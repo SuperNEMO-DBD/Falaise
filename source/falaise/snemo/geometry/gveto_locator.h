@@ -107,7 +107,9 @@ namespace snemo {
 
       /**
        */
-      bool find_block_geom_id_ (const geomtools::vector_3d & in_module_position_, geomtools::geom_id & gid_);
+      bool find_block_geom_id_ (const geomtools::vector_3d & in_module_position_,
+                                geomtools::geom_id & gid_,
+                                double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE);
 
       void _set_defaults_ ();
 

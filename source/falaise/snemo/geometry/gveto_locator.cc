@@ -1044,7 +1044,7 @@ namespace snemo {
         // Not in this module :
         return false;
       }
-      return const_cast<gveto_locator *>(this)->gveto_locator::find_block_geom_id_(in_module_position, gid_);
+      return const_cast<gveto_locator *>(this)->gveto_locator::find_block_geom_id_(in_module_position, gid_, tolerance_);
     }
 
     bool gveto_locator::id_is_valid(uint32_t side_, uint32_t wall_, uint32_t column_) const
@@ -1069,13 +1069,18 @@ namespace snemo {
     }
 
     bool gveto_locator::find_block_geom_id_(const geomtools::vector_3d & in_module_position_,
-                                            geomtools::geom_id & gid_)
+                                            geomtools::geom_id & gid_,
+                                            double tolerance_)
     {
-      //_logging_priority = datatools::logger::PRIO_TRACE;
       DT_LOG_TRACE(get_logging_priority(), "Entering...");
 
+      double tolerance = tolerance_;
+      if (tolerance == GEOMTOOLS_PROPER_TOLERANCE) {
+        tolerance = _block_box_->get_tolerance();
+      }
+
       geomtools::geom_id & gid  = gid_;
-      gid.invalidate();
+      gid.reset();
       uint32_t side_number  (geomtools::geom_id::INVALID_ADDRESS);
       uint32_t wall_number  (geomtools::geom_id::INVALID_ADDRESS);
       uint32_t column_number(geomtools::geom_id::INVALID_ADDRESS);
@@ -1104,8 +1109,8 @@ namespace snemo {
         if(z < 0.0) {
           wall_number = WALL_BOTTOM;
           DT_LOG_TRACE(get_logging_priority(), "wall_number = " << wall_number);
-
-          if(std::abs(z -_block_z_[side_number][wall_number]) > 0.5 * get_block_thickness()) {
+          const double delta_z = std::abs(z -_block_z_[side_number][wall_number]) - 0.5 * get_block_thickness();
+          if(delta_z > tolerance) {
             gid.invalidate();
             return false;
           }
@@ -1129,7 +1134,8 @@ namespace snemo {
         } else {
           wall_number = WALL_TOP;
           DT_LOG_TRACE(get_logging_priority(), "wall_number = " << wall_number);
-          if(std::abs(z -_block_z_[side_number][wall_number]) > 0.5 * get_block_thickness()) {
+          const double delta_z = std::abs(z -_block_z_[side_number][wall_number]) - 0.5 * get_block_thickness();
+          if(delta_z > tolerance) {
             gid.invalidate();
             return false;
           }
