@@ -62,6 +62,7 @@ list(APPEND FalaiseLibrary_HEADERS
 
   snemo/simulation/cosmic_muon_generator.h
   snemo/simulation/gg_step_hit_processor.h
+  snemo/simulation/calorimeter_step_hit_processor.h
   #snemo/simulation/pmt_signal_generator.h
 
   snemo/processing/calorimeter_regime.h
@@ -121,6 +122,7 @@ list(APPEND FalaiseLibrary_SOURCES
 
   snemo/simulation/cosmic_muon_generator.cc
   snemo/simulation/gg_step_hit_processor.cc
+  snemo/simulation/calorimeter_step_hit_processor.cc
   #snemo/simulation/pmt_signal_generator.cc
 
   snemo/cuts/event_header_cut.cc
