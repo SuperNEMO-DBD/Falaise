@@ -1187,7 +1187,7 @@ namespace snemo {
         // Not in this module :
         return false;
       }
-      return const_cast<xcalo_locator *> (this)->xcalo_locator::find_block_geom_id_ (in_module_position, gid_);
+      return const_cast<xcalo_locator *> (this)->xcalo_locator::find_block_geom_id_ (in_module_position, gid_, tolerance_);
     }
 
     bool xcalo_locator::id_is_valid (uint32_t side_, uint32_t wall_, uint32_t column_, uint32_t row_) const
@@ -1215,10 +1215,15 @@ namespace snemo {
     }
 
     bool xcalo_locator::find_block_geom_id_ (const geomtools::vector_3d & in_module_position_,
-                                             geomtools::geom_id & gid_)
+                                             geomtools::geom_id & gid_,
+                                             double tolerance_)
     {
-      //_logging_priority = datatools::logger::PRIO_TRACE;
       DT_LOG_TRACE (get_logging_priority (), "Entering...");
+
+      double tolerance = tolerance_;
+      if (tolerance == GEOMTOOLS_PROPER_TOLERANCE) {
+        tolerance = _block_box_->get_tolerance();
+      }
 
       geomtools::geom_id & gid  = gid_;
       gid.invalidate ();
@@ -1254,8 +1259,8 @@ namespace snemo {
         if (y < 0.0) {
           wall_number = WALL_LEFT;
           DT_LOG_TRACE (get_logging_priority (), "wall_number = " << wall_number);
-
-          if (std::abs(y -_block_y_[side_number][wall_number]) > 0.5 * get_block_thickness ()) {
+          const double delta_y = std::abs(y -_block_y_[side_number][wall_number]) - 0.5 * get_block_thickness ();
+          if (delta_y > tolerance) {
             gid.invalidate ();
             return false;
           }
@@ -1269,7 +1274,8 @@ namespace snemo {
         } else {
           wall_number = WALL_RIGHT;
           DT_LOG_TRACE (get_logging_priority (), "wall_number = " << wall_number);
-          if (std::abs(y -_block_y_[side_number][wall_number]) > 0.5 * get_block_thickness ()) {
+          const double delta_y = std::abs(y -_block_y_[side_number][wall_number]) - 0.5 * get_block_thickness ();
+          if (delta_y > tolerance) {
             gid.invalidate ();
             return false;
           }
