@@ -635,7 +635,6 @@ namespace snemo {
       _module_box_    = 0;
       _cell_box_      = 0;
 
-      _tolerance_ = 1.0e-7 * CLHEP::mm;
       datatools::invalidate (_anode_wire_length_);
       datatools::invalidate (_anode_wire_diameter_);
       datatools::invalidate (_field_wire_length_);
@@ -1082,10 +1081,15 @@ namespace snemo {
     }
 
     bool gg_locator::_find_cell_geom_id (const geomtools::vector_3d & in_module_position_,
-                                         geomtools::geom_id & gid_)
+                                         geomtools::geom_id & gid_,
+                                         double tolerance_)
     {
-      //_logging_priority = datatools::logger::PRIO_TRACE;
       DT_LOG_TRACE (get_logging_priority (), "Entering...");
+
+      double tolerance = tolerance_;
+      if (tolerance == GEOMTOOLS_PROPER_TOLERANCE) {
+        tolerance = _cell_box_->get_tolerance();
+      }
 
       geomtools::geom_id & gid  = gid_;
       gid.invalidate ();
@@ -1100,7 +1104,7 @@ namespace snemo {
       gid.set (_row_index_,    geomtools::geom_id::INVALID_ADDRESS);
       const double z = in_module_position_.z ();
       // 2012-06-05 FM: add tolerance for z-testing
-      if (std::abs(z) < (_cell_box_->get_half_z () + 0.5 * _tolerance_)) {
+      if (std::abs(z) < (_cell_box_->get_half_z () + 0.5 * tolerance)) {
         gid.set (_module_index_, _module_number_);
         const double y = in_module_position_.y ();
         const double x = in_module_position_.x ();
@@ -1149,7 +1153,7 @@ namespace snemo {
           // 2012-05-31 FM : we check if the 'world' position is in the volume:
           geomtools::vector_3d world_position;
           transform_module_to_world (in_module_position_, world_position);
-          if (_mapping_->check_inside (*ginfo_ptr, world_position, _tolerance_, true)) {
+          if (_mapping_->check_inside (*ginfo_ptr, world_position, tolerance, true)) {
             DT_LOG_TRACE (get_logging_priority (), "Position inside gid = " << gid);
             return true;
           }

@@ -96,7 +96,8 @@ namespace snemo {
       /**
        */
       bool _find_cell_geom_id (const geomtools::vector_3d & in_module_position_,
-                               geomtools::geom_id & gid_);
+                               geomtools::geom_id & gid_,
+                               double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE);
 
     public:
       /**! @return the number of the module (>=0).
@@ -297,7 +298,6 @@ namespace snemo {
       const geomtools::box       * _module_box_;
       const geomtools::box       * _cell_box_;
 
-      double _tolerance_;
       std::vector<double> _back_cell_x_;
       std::vector<double> _front_cell_x_;
       std::vector<double> _back_cell_y_;
