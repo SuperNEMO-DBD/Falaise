@@ -1233,7 +1233,7 @@ namespace snemo {
         size_t nrows;
         if (x < 0.0) {
           side_number = utils::SIDE_BACK;
-          const double delta_x = std::abs (x - _block_x_[side_number] - 0.5 * get_block_thickness ());
+          const double delta_x = std::abs (x - _block_x_[side_number]) - 0.5 * get_block_thickness ();
           if (delta_x > tolerance) {
             gid.invalidate ();
             return false;
@@ -1248,7 +1248,7 @@ namespace snemo {
           block_delta_z = (_back_block_z_.back () - _back_block_z_.front ()) / (_back_block_z_.size () - 1);
         } else {
           side_number = utils::SIDE_FRONT;
-          const double delta_x = std::abs (x - _block_x_[side_number] - 0.5 * get_block_thickness ());
+          const double delta_x = std::abs (x - _block_x_[side_number]) - 0.5 * get_block_thickness ();
           if (delta_x > tolerance) {
             gid.invalidate ();
             return false;
