@@ -101,7 +101,6 @@ namespace snemo {
     void gg_step_hit_processor::initialize(const ::datatools::properties & config_,
                                            ::datatools::service_manager & service_mgr_)
     {
-      std::cerr << "***** DEVEL: " << "gg_step_hit_processor::initialize: Entering..." << std::endl;
       this->base_step_hit_processor::initialize (config_, service_mgr_);
 
       // The geometry manager is mandatory for this processor:
