@@ -1226,7 +1226,7 @@ namespace snemo {
       }
 
       geomtools::geom_id & gid  = gid_;
-      gid.invalidate ();
+      gid.reset ();
       uint32_t side_number   (geomtools::geom_id::INVALID_ADDRESS);
       uint32_t wall_number   (geomtools::geom_id::INVALID_ADDRESS);
       uint32_t column_number (geomtools::geom_id::INVALID_ADDRESS);
