@@ -48,15 +48,6 @@ namespace snemo {
       virtual bool locate_calorimeter_block(const geomtools::vector_3d & position_,
                                             geomtools::geom_id & gid_) const;
 
-      // /// Default constructor
-      // calorimeter_step_hit_processor ();
-
-      // /// Destructor
-      // virtual ~calorimeter_step_hit_processor ();
-
-      // /// Reset
-      // virtual void reset ();
-
       /// Main setup routine
       virtual void initialize (const ::datatools::properties & config_,
                                ::datatools::service_manager & service_mgr_);
