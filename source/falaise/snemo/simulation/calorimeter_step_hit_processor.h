@@ -31,12 +31,11 @@
 // - Bayeux/mctools :
 #include <mctools/calorimeter_step_hit_processor.h>
 
-// This project:
-#include <falaise/snemo/geometry/calo_locator.h>
-#include <falaise/snemo/geometry/xcalo_locator.h>
-#include <falaise/snemo/geometry/gveto_locator.h>
-
 namespace snemo {
+
+  namespace geometry {
+    class locator_plugin;
+  }
 
   namespace simulation {
 
@@ -54,9 +53,7 @@ namespace snemo {
 
     private:
 
-      geometry::calo_locator  _calo_locator_;  //!< A fast locator for main wall calorimeters
-      geometry::xcalo_locator _xcalo_locator_; //!< A fast locator for X-wall calorimeters
-      geometry::gveto_locator _gveto_locator_; //!< A fast locator for gamma veto calorimeters
+      const snemo::geometry::locator_plugin * _locator_plugin_; //!< SuperNEMO Locator plugin
 
       // Registration macro :
       MCTOOLS_STEP_HIT_PROCESSOR_REGISTRATION_INTERFACE (calorimeter_step_hit_processor);

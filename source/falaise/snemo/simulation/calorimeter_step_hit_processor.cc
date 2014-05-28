@@ -3,6 +3,12 @@
 // Ourselves:
 #include <falaise/snemo/simulation/calorimeter_step_hit_processor.h>
 
+// Geometry:
+#include <falaise/snemo/geometry/locator_plugin.h>
+#include <falaise/snemo/geometry/calo_locator.h>
+#include <falaise/snemo/geometry/xcalo_locator.h>
+#include <falaise/snemo/geometry/gveto_locator.h>
+
 namespace snemo {
 
   namespace simulation {
@@ -13,17 +19,17 @@ namespace snemo {
     bool calorimeter_step_hit_processor::locate_calorimeter_block(const geomtools::vector_3d & position_,
                                                                   geomtools::geom_id & gid_) const
     {
-      if (_calo_locator_.find_block_geom_id(position_, gid_))
+      if (_locator_plugin_->get_calo_locator().find_block_geom_id(position_, gid_))
         {
           DT_LOG_DEBUG(get_logging_priority(), "Find step within main wall calorimeter");
           return true;
         }
-      if (_xcalo_locator_.find_block_geom_id(position_, gid_))
+      if (_locator_plugin_->get_xcalo_locator().find_block_geom_id(position_, gid_))
         {
           DT_LOG_DEBUG(get_logging_priority(), "Find step within X-wall calorimeter");
           return true;
         }
-      if (_gveto_locator_.find_block_geom_id(position_, gid_))
+      if (_locator_plugin_->get_gveto_locator().find_block_geom_id(position_, gid_))
         {
           DT_LOG_DEBUG(get_logging_priority(), "Find step within gamma veto calorimeter");
           return true;
@@ -37,19 +43,34 @@ namespace snemo {
     {
       this->mctools::calorimeter_step_hit_processor::initialize(config_, service_mgr_);
 
-      // 2014-05-21 XG : Use demonstrator module i.e. module number 0
-      const uint32_t module_number = 0;
-      DT_LOG_WARNING (get_logging_priority(), "Use default module number " << module_number);
-
-      _calo_locator_.set_module_number(module_number);
-      _calo_locator_.set_geo_manager(*_geom_manager);
-      _calo_locator_.initialize();
-      _xcalo_locator_.set_module_number(module_number);
-      _xcalo_locator_.set_geo_manager(*_geom_manager);
-      _xcalo_locator_.initialize();
-      _gveto_locator_.set_module_number(module_number);
-      _gveto_locator_.set_geo_manager(*_geom_manager);
-      _gveto_locator_.initialize();
+      // Get geometry locator plugin
+      const geomtools::manager & geo_mgr = get_geom_manager ();
+      std::string locator_plugin_name;
+      if (config_.has_key ("locator_plugin_name"))
+        {
+          locator_plugin_name = config_.fetch_string ("locator_plugin_name");
+        }
+      else
+        {
+          // If no locator plugin name is set, then search for the first one
+          const geomtools::manager::plugins_dict_type & plugins = geo_mgr.get_plugins ();
+          for (geomtools::manager::plugins_dict_type::const_iterator ip = plugins.begin ();
+               ip != plugins.end ();
+               ip++) {
+            const std::string & plugin_name = ip->first;
+            if (geo_mgr.is_plugin_a<snemo::geometry::locator_plugin> (plugin_name)) {
+              DT_LOG_DEBUG (get_logging_priority (), "Find locator plugin with name = " << plugin_name);
+              locator_plugin_name = plugin_name;
+              break;
+            }
+          }
+        }
+      // Access to a given plugin by name and type :
+      DT_THROW_IF (! geo_mgr.has_plugin (locator_plugin_name) ||
+                   ! geo_mgr.is_plugin_a<snemo::geometry::locator_plugin> (locator_plugin_name),
+                   std::logic_error,
+                   "Found no locator plugin named '" << locator_plugin_name << "'");
+      _locator_plugin_ = &geo_mgr.get_plugin<snemo::geometry::locator_plugin> (locator_plugin_name);
 
       return;
     }
