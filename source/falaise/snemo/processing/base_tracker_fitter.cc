@@ -114,7 +114,7 @@ namespace snemo {
         const snemo::geometry::locator_plugin & lp
           = geo_mgr.get_plugin<snemo::geometry::locator_plugin>(locator_plugin_name);
         // Set the Geiger cell locator :
-        _gg_locator_ = dynamic_cast<const snemo::geometry::gg_locator*>(&(lp.get_gg_locator()));
+        _gg_locator_ = &(lp.get_gg_locator());
       }
       DT_THROW_IF (_gg_locator_ == 0,  std::logic_error,
                    "Cannot find Geiger locator !");

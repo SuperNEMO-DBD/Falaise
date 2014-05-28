@@ -232,9 +232,9 @@ namespace snemo {
         const snemo::geometry::locator_plugin & lp
           = geo_mgr.get_plugin<snemo::geometry::locator_plugin> (locator_plugin_name);
         // Set the calo cell locator :
-        _calo_locator_ = dynamic_cast<const snemo::geometry::calo_locator*>(&(lp.get_calo_locator ()));
-        _xcalo_locator_ = dynamic_cast<const snemo::geometry::xcalo_locator*>(&(lp.get_xcalo_locator ()));
-        _gveto_locator_ = dynamic_cast<const snemo::geometry::gveto_locator*>(&(lp.get_gveto_locator ()));
+        _calo_locator_ = &(lp.get_calo_locator ());
+        _xcalo_locator_ = &(lp.get_xcalo_locator ());
+        _gveto_locator_ = &(lp.get_gveto_locator ());
       }
       if (get_logging_priority () >= datatools::logger::PRIO_DEBUG) {
         DT_LOG_DEBUG (get_logging_priority (), "Calo locator :");
