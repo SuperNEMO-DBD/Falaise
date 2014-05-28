@@ -32,6 +32,11 @@ namespace snemo {
 
   namespace geometry {
 
+    class gg_locator;
+    class calo_locator;
+    class xcalo_locator;
+    class gveto_locator;
+
     /// \brief A geometry manager plugin with embedded SuperNEMO locators.
     class locator_plugin : public geomtools::manager::base_plugin
     {
@@ -74,16 +79,16 @@ namespace snemo {
       locator_dict_type & grab_locators ();
 
       /// Returns a non-mutable reference to the geiger locator
-      const geomtools::base_locator & get_gg_locator () const;
+      const snemo::geometry::gg_locator & get_gg_locator () const;
 
       /// Returns a non-mutable reference to the main wall locator
-      const geomtools::base_locator & get_calo_locator () const;
+      const snemo::geometry::calo_locator & get_calo_locator () const;
 
       /// Returns a non-mutable reference to the X wall locator
-      const geomtools::base_locator & get_xcalo_locator () const;
+      const snemo::geometry::xcalo_locator & get_xcalo_locator () const;
 
       /// Returns a non-mutable reference to the gamma veto locator
-      const geomtools::base_locator & get_gveto_locator () const;
+      const snemo::geometry::gveto_locator & get_gveto_locator () const;
 
      protected:
 
@@ -92,12 +97,12 @@ namespace snemo {
 
     private:
 
-      bool                _initialized_;   //!< Initialization flag
-      locator_dict_type   _locators_;      //!< Locator dictionary
-      locator_handle_type _gg_locator_;    //!< Handle to Geiger locator
-      locator_handle_type _calo_locator_;  //!< Handle to main wall locator
-      locator_handle_type _xcalo_locator_; //!< Handle to X-wall locator
-      locator_handle_type _gveto_locator_; //!< Handle to gamma-veto locator
+      bool              _initialized_;   //!< Initialization flag
+      locator_dict_type _locators_;      //!< Locator dictionary
+      const snemo::geometry::gg_locator    * _gg_locator_;    //!< Geiger locator
+      const snemo::geometry::calo_locator  * _calo_locator_;  //!< Main wall locator
+      const snemo::geometry::xcalo_locator * _xcalo_locator_; //!< X-wall locator
+      const snemo::geometry::gveto_locator * _gveto_locator_; //!< gamma-veto locator
 
       GEOMTOOLS_PLUGIN_REGISTRATION_INTERFACE(locator_plugin);
 

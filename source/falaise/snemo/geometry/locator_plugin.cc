@@ -16,28 +16,28 @@ namespace snemo {
 
     GEOMTOOLS_PLUGIN_REGISTRATION_IMPLEMENT(locator_plugin,"snemo::geometry::locator_plugin");
 
-    const geomtools::base_locator & locator_plugin::get_gg_locator() const
+    const snemo::geometry::gg_locator & locator_plugin::get_gg_locator() const
     {
       DT_THROW_IF(! is_initialized(), std::logic_error, "Locator plugin is not initialized !");
-      return _gg_locator_.get();
+      return *_gg_locator_;
     }
 
-    const geomtools::base_locator & locator_plugin::get_calo_locator() const
+    const snemo::geometry::calo_locator & locator_plugin::get_calo_locator() const
     {
       DT_THROW_IF(! is_initialized(), std::logic_error, "Locator plugin is not initialized !");
-      return _calo_locator_.get();
+      return *_calo_locator_;
     }
 
-    const geomtools::base_locator & locator_plugin::get_xcalo_locator() const
+    const snemo::geometry::xcalo_locator & locator_plugin::get_xcalo_locator() const
     {
       DT_THROW_IF(! is_initialized(), std::logic_error, "Locator plugin is not initialized !");
-      return _xcalo_locator_.get();
+      return *_xcalo_locator_;
     }
 
-    const geomtools::base_locator & locator_plugin::get_gveto_locator() const
+    const snemo::geometry::gveto_locator & locator_plugin::get_gveto_locator() const
     {
       DT_THROW_IF(! is_initialized(), std::logic_error, "Locator plugin is not initialized !");
-      return _gveto_locator_.get();
+      return *_gveto_locator_;
     }
 
     const locator_plugin::locator_dict_type & locator_plugin::get_locators() const
@@ -72,8 +72,8 @@ namespace snemo {
     }
 
     int locator_plugin::initialize(const datatools::properties & config_,
-                                    const geomtools::manager::plugins_dict_type & /*plugins_*/,
-                                    const datatools::service_dict_type & /*services_*/)
+                                   const geomtools::manager::plugins_dict_type & /*plugins_*/,
+                                   const datatools::service_dict_type & /*services_*/)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Plugin is already initialized !");
 
@@ -114,7 +114,7 @@ namespace snemo {
         _locators_[name] = tmp_entry;
         _locators_[name].locator_handle.reset(new gg_locator(get_geo_manager(), module_number));
         _locators_[name].locator_handle.grab().initialize(config_);
-        _gg_locator_ = _locators_[name].locator_handle;
+        _gg_locator_ = dynamic_cast<const gg_locator*>(&_locators_[name].locator_handle.get());
       }
       {
         // Add a new entry for main wall locator
@@ -124,7 +124,7 @@ namespace snemo {
         _locators_[name] = tmp_entry;
         _locators_[name].locator_handle.reset(new calo_locator(get_geo_manager(), module_number));
         _locators_[name].locator_handle.grab().initialize(config_);
-        _calo_locator_ = _locators_[name].locator_handle;
+        _calo_locator_ = dynamic_cast<const calo_locator*>(&_locators_[name].locator_handle.get());
       }
       {
         // Add a new entry for X wall locator
@@ -134,7 +134,7 @@ namespace snemo {
         _locators_[name] = tmp_entry;
         _locators_[name].locator_handle.reset(new xcalo_locator(get_geo_manager(), module_number));
         _locators_[name].locator_handle.grab().initialize(config_);
-        _xcalo_locator_ = _locators_[name].locator_handle;
+        _xcalo_locator_ = dynamic_cast<const xcalo_locator*>(&_locators_[name].locator_handle.get());
       }
       {
         // Add a new entry for geiger locator
@@ -144,7 +144,7 @@ namespace snemo {
         _locators_[name] = tmp_entry;
         _locators_[name].locator_handle.reset(new gveto_locator(get_geo_manager(), module_number));
         _locators_[name].locator_handle.grab().initialize(config_);
-        _gveto_locator_ = _locators_[name].locator_handle;
+        _gveto_locator_ = dynamic_cast<const gveto_locator*>(&_locators_[name].locator_handle.get());
       }
 
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");
