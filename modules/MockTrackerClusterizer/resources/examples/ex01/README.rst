@@ -34,21 +34,33 @@ Usage
         --experiment "demonstrator" \
         --vertex-generator "source_strips_bulk" \
         --event-generator  "Se82.0nubb" \
-	--number 100 \
-	--output-file "Se82.0nubb-source_strips_bulk_SD.brio"
+	--number 10 \
+	--output-file "Se82_0nubb-source_strips_bulk_SD.brio"
 
-  4. Run the reconstruction pipeline: ::
+  4. Run the reconstruction pipeline:
 
-      $ flreconstruct \
-        --input-file "Se82.0nubb-source_strips_bulk_SD.brio" \
-	--pipeline "config/pipeline.conf" \
-        --output-file "Se82.0nubb-source_strips_bulk_SD-CD-TCD.brio"
+      * Browse the manual for the mock tracker clustering module: ::
 
-     The   ``flreconstruct``  executable   should  perform   the  mock
-     pre-reconstruction and then print  the structure of the processed
-     event records  in the  terminal. You  should be  able to  see the
-     ``"SD"``, ``"CD"`` and ``"TCD"`` banks.
+          $ bxocd_manual \
+            --load-dll Falaise@${FALAISE_INSTALL_DIR}/lib/x86_64-linux-gnu \
+            --load-dll Falaise_MockTrackerClusterizer@${FALAISE_INSTALL_DIR}/lib/x86_64-linux-gnu/Falaise/modules \
+            --action show snemo::reconstruction::mock_tracker_clustering_module > falaise_mtc.rst
+          $ pandoc -w html falaise_mtc.rst -o falaise_mtc.html
+	  $ xdg-open falaise_mtc.html &
 
-     The output  file ``Se82.0nubb-source_strips_bulk_SD-CD-TCD.brio``
-     is  thus ready  for  further reconstruction  (track fitting)  and
-     analysis.
+
+      * Run the reconstruction pipeline: ::
+
+          $ flreconstruct \
+            --input-file "Se82_0nubb-source_strips_bulk_SD.brio" \
+	    --pipeline "config/pipeline.conf" \
+            --output-file "Se82_0nubb-source_strips_bulk_SD-CD-TCD.brio"
+
+        The  ``flreconstruct``  executable  should  perform  the  mock
+        pre-reconstruction and then print  the structure of the processed
+        event records  in the  terminal. You  should be  able to  see the
+        ``"SD"``, ``"CD"`` and ``"TCD"`` banks.
+
+        The output  file ``Se82_0nubb-source_strips_bulk_SD-CD-TCD.brio``
+        is  thus ready  for  further reconstruction  (track fitting)  and
+        analysis.
