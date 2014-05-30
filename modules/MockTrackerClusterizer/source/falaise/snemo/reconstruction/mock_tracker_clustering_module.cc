@@ -267,11 +267,15 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::mock_tracker_clustering_m
   ocd_.set_class_name("snemo::reconstruction::mock_tracker_clustering_module");
   ocd_.set_class_description("A module that performs the mock clusterization of tracker hits");
   ocd_.set_class_library("Falaise_MockTrackerClusterizer");
-  ocd_.set_class_documentation("This module uses a very simple and basic mock clustering algorithm.   \n"
-                               "It should be used only with simulated data with the tracker hits      \n"
-                               "naturally ordered by hthe GEant4 simulation engine.                   \n");
+  ocd_.set_class_documentation("This module uses a very simple and basic mock tracker clustering algorithm. \n"
+                               "It should be used only with simulated data with the tracker hits            \n"
+                               "naturally ordered by the Geant4 simulation engine.                          \n");
 
+  // Invoke OCD support from parent class :
   dpp::base_module::common_ocd(ocd_);
+
+  // Invoke specific OCD support from the driver class:
+  ::snemo::reconstruction::mock_tracker_clustering_driver::init_ocd(ocd_);
 
   {
     // Description of the 'CD_label' configuration property :
@@ -331,23 +335,34 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::mock_tracker_clustering_m
       .set_default_value_string(snemo::processing::service_info::default_geometry_service_label())
       .add_example("Use an alternative name for the geometry service:: \n"
                    "                                                   \n"
-                   "  Geo_label : string = \"geometry\"                \n"
+                   "  Geo_label : string = \"geometry2\"               \n"
                    "                                                   \n"
                    )
       ;
   }
 
   // Additionnal configuration hints :
-  ocd_.set_configuration_hints("Here is a full configuration example in the                          \n"
-                               "``datatools::properties`` ASCII format::                             \n"
+  ocd_.set_configuration_hints("Here is a full configuration example in the ``datatools::properties``\n"
+                               "ASCII format::                                                       \n"
                                "                                                                     \n"
-                               "  CD_label  : string = \"CD\"                                        \n"
-                               "  TCD_label : string = \"TCD\"                                       \n"
-                               "  Geo_label : string = \"geometry\"                                  \n"
+                               "  TC.logging.priority          : string = \"fatal\"                  \n"
+                               "  TC.locator_plugin_name       : string = \"locators_driver\"        \n"
+                               "  TPC.delayed_hit_cluster_time : real as time = 10 us                \n"
+                               "  TPC.processing_prompt_hits   : boolean = 1                         \n"
+                               "  TPC.processing_delayed_hits  : boolean = 1                         \n"
+                               "  TPC.split_chamber            : boolean = 1                         \n"
+                               "  MTC.max_layer_distance       : integer = 2                         \n"
+                               "  MTC.max_row_distance         : integer = 2                         \n"
+                               "  MTC.max_sum_distance         : integer = 2                         \n"
+                               "  CD_label                     : string = \"CD\"                     \n"
+                               "  TCD_label                    : string = \"TCD\"                    \n"
+                               "  Geo_label                    : string = \"geometry\"               \n"
                                "                                                                     \n"
-                               "Additional specific parameters are used to configure the embedded    \n"
-                               "``mock_tracker_clustering`` driver itself; see the OCD support of    \n"
-                               "the ``snemo::reconstruction::mock_tracker_clustering_driver`` class. \n"
+                               // "                                                                     \n"
+                               // "                                                                     \n"
+                               // "Additional specific parameters are used to configure the embedded    \n"
+                               // "``mock_tracker_clustering`` driver itself; see the OCD support of    \n"
+                               // "the ``snemo::reconstruction::mock_tracker_clustering_driver`` class. \n"
                                );
 
   ocd_.set_validation_support(true);

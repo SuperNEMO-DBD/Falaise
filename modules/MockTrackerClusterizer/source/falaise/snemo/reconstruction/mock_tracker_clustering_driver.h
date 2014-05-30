@@ -1,5 +1,5 @@
-/** \file falaise/snemo/processing/cat_driver.h
- * Author(s)     : Xavier Garrido <garrido@lal.in2p3.fr>
+/// \file falaise/snemo/processing/cat_driver.h
+/* Author(s)     : Xavier Garrido <garrido@lal.in2p3.fr>
  *                 Mathieu Bongrand <bongrand@lal.in2p3.fr>
  *                 Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date : 2014-03-13
@@ -67,10 +67,10 @@ namespace snemo {
       /// Reset the clusterizer
       virtual void reset();
 
-      /// Prepare cluster for processing
-      virtual int _prepare_process(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
-                                   const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
-                                   snemo::datamodel::tracker_clustering_data & clustering_);
+      // /// Prepare cluster for processing
+      // virtual int _prepare_process(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+      //                              const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
+      //                              snemo::datamodel::tracker_clustering_data & clustering_);
 
       /// Main clustering method
       virtual int _process_algo(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
@@ -85,6 +85,9 @@ namespace snemo {
       /// Check if 2 tracker cells are neighbours
       bool are_neighbours(const geomtools::geom_id & tracker_hit_id1_,
                           const geomtools::geom_id & tracker_hit_id2_) const;
+
+      /// OCD support:
+      static void init_ocd(datatools::object_configuration_description & ocd_);
 
     private:
 

@@ -1,5 +1,5 @@
-/* \file snemo/reconstruction/mock_tracker_clustering_module.h
- * Author(s)     : Xavier Garrido <garrido@lal.in2p3.fr>
+/// \file snemo/reconstruction/mock_tracker_clustering_module.h
+/* Author(s)     : Xavier Garrido <garrido@lal.in2p3.fr>
  * Creation date : 2011-11-27
  * Last modified : 2014-03-13
  *
