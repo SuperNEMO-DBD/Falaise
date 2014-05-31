@@ -40,8 +40,7 @@
 // - Bayeux/geomtools:
 #include <geomtools/placement.h>
 #include <geomtools/smart_id_locator.h>
-
-// This project :
+// - Falaise :
 #include <falaise/snemo/geometry/gg_locator.h>
 
 class Gnuplot;
@@ -138,6 +137,10 @@ namespace snemo {
 
       void _set_defaults();
 
+      void _ui_init();
+
+      void _ui_terminate();
+
     public :
 
       datatools::logger::priority logging_priority;
@@ -204,11 +207,13 @@ namespace snemo {
       bool wxt;
       bool display_key;
       bool display_title;
+
       bool display_Geo;
       bool display_Geo_Src;
       bool display_Geo_Calo;
       bool display_Geo_Xcalo;
       bool display_Geo_Gveto;
+
       bool display_SD;
       bool display_SD_hits;
       bool display_SD_hits_boxes;
@@ -216,14 +221,19 @@ namespace snemo {
       bool display_SD_visu_track;
       bool display_SD_visu_track_points;
       bool display_SD_vertex;
+
       bool display_CD;
       bool display_CD_tracker_prompt;
       bool display_CD_tracker_delayed;
       bool display_CD_tracker_noisy;
+
       bool display_TCD;
-      bool display_TCD_unclustered_hits;
+      bool display_TCD_def_clusters;
+      bool display_TCD_def_unclustered_hits;
+
       bool display_TJD;
-      bool display_TJD_orphans_hits;
+      bool display_TJD_def_trajectories;
+      bool display_TJD_def_orphans_hits;
 
       double zoom_factor_2d;
       double zoom_center_x;
@@ -233,7 +243,10 @@ namespace snemo {
       double range_y;
       double range_z;
 
+      std::string ui_prompt;
+      std::string ui_history_filename;
       std::string ui_command_line_;
+      std::string ui_last_hist;
       std::list<std::string> tmp_filenames;
 
     };

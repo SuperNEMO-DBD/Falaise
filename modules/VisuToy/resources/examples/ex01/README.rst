@@ -28,17 +28,36 @@ Usage
           --datatools::resource_path "falaise@${FALAISE_INSTALL_DIR}/share/Falaise-1.0.0/resources" \
           --manager-config "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf"
 
-  3. Run the pipeline: ::
+  3. Generate a set of simulated events: ::
 
-      * Events with "SD" and "CD" banks::
+      $ flsimulate \
+        --experiment "demonstrator" \
+        --vertex-generator "source_strips_bulk" \
+        --event-generator  "Se82.0nubb" \
+	--number 10 \
+	--output-file "Se82_0nubb-source_strips_bulk_SD.brio"
 
-         $ flreconstruct \
-          --input-file "@falaise.resources:modules/VisuToy/examples/data/Se82.0nubb-source_strips_bulk_SD.brio" \
-          --pipeline "config/pipeline.conf"
+  4. Run the visualization pipeline: ::
 
+      $ flreconstruct \
+        --input-file "Se82_0nubb-source_strips_bulk_SD.brio" \
+        --pipeline "config/mc_visu_pipeline.conf"
 
-      * Events with "SD", "CD" and "TCD" banks (not supported yet)::
+  5. Run a reconstruction pipeline to fill the CD bank: ::
 
-         $ flreconstruct \
-           --input-file "@falaise.resources:modules/VisuToy/examples/data/Se82.0nubb-source_strips_bulk_SD-CD-TCD.brio" \
-          --pipeline "config/pipeline.conf"
+      $ flreconstruct \
+        --input-file "Se82_0nubb-source_strips_bulk_SD.brio" \
+        --pipeline "config/mc_recons_cd_pipeline.conf" \
+        --output-file "Se82_0nubb-source_strips_bulk_SD-CD.brio"
+
+     Then visualize it: ::
+
+      $ flreconstruct \
+        --input-file "Se82_0nubb-source_strips_bulk_SD-CD.brio" \
+        --pipeline "config/mc_visu_pipeline.conf"
+
+  6. Run the visualization pipeline on some events with "SD", "CD" and "TCD" banks: ::
+
+      $ flreconstruct \
+        --input-file "@falaise.resources:modules/VisuToy/examples/data/Se82_0nubb-source_strips_bulk_SD-CD-TCD.brio" \
+        --pipeline "config/mc_visu_pipeline.conf"

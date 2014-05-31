@@ -5,6 +5,8 @@
 
 // Standard library:
 #include <iostream>
+#include <string>
+#include <vector>
 #include <unistd.h>
 
 // Third party:
@@ -21,16 +23,24 @@
 #include <geomtools/box.h>
 #include <geomtools/gnuplot_draw.h>
 #include <geomtools/gnuplot_i.h>
+#include <geomtools/color.h>
 // - Bayeux/mctools:
 #include <mctools/utils.h>
 #include <mctools/simulated_data.h>
-
-// This project :
+// - Falaise :
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/event_header.h>
 #include <falaise/snemo/datamodels/calibrated_data.h>
 #include <falaise/snemo/datamodels/tracker_clustering_data.h>
 #include <falaise/snemo/datamodels/gg_track_utils.h>
+
+// This project:
+#include <falaise/snemo/visualization/visu_toy_config.h>
+
+#if FALAISEVISUTOYPLUGIN_WITH_READLINE == 1
+#include <readline/readline.h>
+#include <readline/history.h>
+#endif // FALAISEVISUTOYPLUGIN_WITH_READLINE == 1
 
 namespace snemo {
 
@@ -109,13 +119,13 @@ namespace snemo {
       default_range_z = 5000 * CLHEP::mm;
       zoom_range_xyz  = 4000 * CLHEP::mm;
       wxt                          = false;
-      display_key        = true;
-      display_title      = true;
-      display_Geo        = true;
-      display_Geo_Src    = true;
-      display_Geo_Calo   = true;
-      display_Geo_Xcalo  = true;;
-      display_Geo_Gveto  = true;;
+      display_key                  = true;
+      display_title                = true;
+      display_Geo                  = true;
+      display_Geo_Src              = true;
+      display_Geo_Calo             = true;
+      display_Geo_Xcalo            = true;
+      display_Geo_Gveto            = true;
       display_SD                   = true;
       display_SD_hits              = true;
       display_SD_hits_boxes        = true;
@@ -127,11 +137,14 @@ namespace snemo {
       display_CD_tracker_prompt    = true;
       display_CD_tracker_delayed   = true;
       display_CD_tracker_noisy     = true;
-      display_TCD                  = true;
-      display_TCD_unclustered_hits = true;
-      display_TJD                  = true;
-      display_TJD_orphans_hits     = true;
+      display_TCD                      = true;
+      display_TCD_def_clusters         = true;
+      display_TCD_def_unclustered_hits = true;
+      display_TJD                      = true;
+      display_TJD_def_trajectories     = true;
+      display_TJD_def_orphans_hits     = true;
       reset_display_geom_params_ ();
+
       return;
     }
 
@@ -237,6 +250,8 @@ namespace snemo {
       module_number_ = 0;
       prepare_draw_module_ ();
 
+      _ui_init();
+
       initialized_ = true;
       return;
     }
@@ -244,6 +259,7 @@ namespace snemo {
     void toy_display_driver::reset ()
     {
       DT_THROW_IF (! is_initialized (), std::logic_error, "Not initialized !");
+      _ui_terminate();
 
       if (gnuplot_driver_) {
         if (! wxt) {
@@ -301,9 +317,42 @@ namespace snemo {
       source_pad_type          = geomtools::geom_id::INVALID_TYPE;
       tc_mu_trigger_block_type = geomtools::geom_id::INVALID_TYPE;
       set_default_view_parameters ();
+      ui_prompt = "flvisutoy> ";
+      ui_history_filename = "~/.flvisutoy.history";
+      datatools::fetch_path_with_env(ui_history_filename);
       return;
     }
 
+
+    void toy_display_driver::_ui_init()
+    {
+#if FALAISEVISUTOYPLUGIN_WITH_READLINE == 1
+      using_history (); // use readline library
+      if (boost::filesystem::exists(ui_history_filename)) {
+        int error = read_history(ui_history_filename.c_str());
+        if (error) {
+          DT_LOG_ERROR(datatools::logger::PRIO_ERROR,
+                       "Cannot read history file '" << ui_history_filename << "'!");
+        }
+      }
+#endif // FALAISEVISUTOYPLUGIN_WITH_READLINE == 1
+      return;
+    }
+
+    void toy_display_driver::_ui_terminate()
+    {
+#if FALAISEVISUTOYPLUGIN_WITH_READLINE == 1
+      DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Saving history file '" << ui_history_filename << "'...");
+      int error = write_history(ui_history_filename.c_str());
+      if (error) {
+        DT_LOG_ERROR(datatools::logger::PRIO_ERROR,
+                     "Cannot write history file '" << ui_history_filename << "' !");
+      }
+      history_truncate_file(ui_history_filename.c_str(), 200);
+      clear_history();
+#endif // FALAISEVISUTOYPLUGIN_WITH_READLINE == 1
+      return;
+    }
 
     toy_display_driver::toy_display_driver (datatools::logger::priority priority_)
     {
@@ -377,6 +426,7 @@ namespace snemo {
         // display_mp.tree_dump ();
         geomtools::gnuplot_draw::draw (temp_geom_file->out (), mp, mshape);
         temp_geom_file->out () << std::endl << std::endl;
+        temp_geom_file->out () << "##############################################" << std::endl;
         geom_data["Geom.module"] = index++;
       }
 
@@ -394,6 +444,7 @@ namespace snemo {
           geomtools::gnuplot_draw::draw (temp_geom_file->out (), a_placement, a_shape);
         }
         temp_geom_file->out () << std::endl << std::endl;
+        temp_geom_file->out () << "##############################################" << std::endl;
         geom_data["Geom.tracker_volume"] = index++;
       }
 
@@ -414,6 +465,7 @@ namespace snemo {
           geomtools::gnuplot_draw::draw (temp_geom_file->out (), a_placement, a_shape);
         }
         temp_geom_file->out () << std::endl << std::endl;
+        temp_geom_file->out () << "##############################################" << std::endl;
         geom_data["Geom.source"] = index++;
       }
 
@@ -434,6 +486,7 @@ namespace snemo {
           geomtools::gnuplot_draw::draw (temp_geom_file->out (), a_placement, a_shape);
         }
         temp_geom_file->out () << std::endl << std::endl;
+        temp_geom_file->out () << "##############################################" << std::endl;
         geom_data["Geom.calo_blocks"] = index++;
       }
 
@@ -454,6 +507,7 @@ namespace snemo {
           geomtools::gnuplot_draw::draw (temp_geom_file->out (), a_placement, a_shape);
         }
         temp_geom_file->out () << std::endl << std::endl;
+        temp_geom_file->out () << "##############################################" << std::endl;
         geom_data["Geom.xcalo_blocks"] = index++;
       }
 
@@ -475,6 +529,7 @@ namespace snemo {
             geomtools::gnuplot_draw::draw (temp_geom_file->out (), a_placement, a_shape);
           }
           temp_geom_file->out () << std::endl << std::endl;
+          temp_geom_file->out () << "##############################################" << std::endl;
           geom_data["Geom.gveto_blocks"] = index++;
         }
 
@@ -495,6 +550,7 @@ namespace snemo {
           geomtools::gnuplot_draw::draw (temp_geom_file->out (), a_placement, a_shape);
         }
         temp_geom_file->out () << std::endl << std::endl;
+        temp_geom_file->out () << "##############################################" << std::endl;
         geom_data["Geom.mu_trigger_blocks"] = index++;
       }
 
@@ -553,7 +609,7 @@ namespace snemo {
         count++;
       }
       std::cerr << "DEVEL: List of temporary filenames : " << tmp_filenames.size() << std::endl;
-     for (std::list<std::string>::const_iterator i = tmp_filenames.begin();
+      for (std::list<std::string>::const_iterator i = tmp_filenames.begin();
            i != tmp_filenames.end();
            i++) {
         const std::string & tmp_filename = *i;
@@ -561,6 +617,7 @@ namespace snemo {
       }
       return;
     }
+
 
     void toy_display_driver::generate_data_files_ ()
     {
@@ -591,7 +648,7 @@ namespace snemo {
       DT_LOG_DEBUG (logging_priority, "setup_label = '" << setup_label << "'");
 
       int index = 0;
-      data.clear ();
+      data.clear();
 
       // Simulated data :
       if (get_current_event_record_ ().has (snemo::datamodel::data_info::SIMULATED_DATA_LABEL)) {
@@ -612,6 +669,7 @@ namespace snemo {
             geomtools::gnuplot_draw::basic_draw_point (temp_draw_file->out (), vertex);
             data["SD.vertex"] = index++;
             temp_draw_file->out () << std::endl << std::endl;
+            temp_draw_file->out () << "##############################################" << std::endl;
           }
         }
 
@@ -658,6 +716,7 @@ namespace snemo {
             if (count) {
               data["SD." + hit_category] = index++;
               temp_draw_file->out () << std::endl << std::endl;
+              temp_draw_file->out () << "##############################################" << std::endl;
             }
           }
         }
@@ -697,6 +756,7 @@ namespace snemo {
             if (count) {
               data["SD." + hit_category] = index++;
               temp_draw_file->out () << std::endl << std::endl;
+              temp_draw_file->out () << "##############################################" << std::endl;
             }
           }
         }
@@ -736,6 +796,7 @@ namespace snemo {
             if (count) {
               data["SD." + hit_category] = index++;
               temp_draw_file->out () << std::endl << std::endl;
+              temp_draw_file->out () << "##############################################" << std::endl;
             }
           }
         }
@@ -777,6 +838,7 @@ namespace snemo {
             if (count) {
               data["SD." + hit_category] = index++;
               temp_draw_file->out () << std::endl << std::endl;
+              temp_draw_file->out () << "##############################################" << std::endl;
             }
           }
           DT_LOG_DEBUG (logging_priority, "'snemo::tracker_commissioning' is done !");
@@ -824,6 +886,7 @@ namespace snemo {
           if (count) {
             data["SD.scin_hit"] = index++;
             temp_draw_file->out () << std::endl << std::endl;
+            temp_draw_file->out () << "##############################################" << std::endl;
           }
           DT_LOG_DEBUG (logging_priority, "'SD.scin_hit' is done !");
         }
@@ -883,6 +946,7 @@ namespace snemo {
             if (BSHC.size ()) {
               data["SD." + hit_category] = index++;
               temp_draw_file->out () << std::endl << std::endl;
+              temp_draw_file->out () << "##############################################" << std::endl;
             }
           }
           DT_LOG_DEBUG (logging_priority, "'tracker' hits are done !");
@@ -919,6 +983,7 @@ namespace snemo {
           if (count) {
             data["SD.gg_hit"] = index++;
             temp_draw_file->out () << std::endl << std::endl;
+            temp_draw_file->out () << "##############################################" << std::endl;
           }
           DT_LOG_DEBUG (logging_priority, "'SD.gg_hit' is done !");
         }
@@ -957,6 +1022,7 @@ namespace snemo {
               data_label << "SD." + hit_category + ".MAP";
               data[data_label.str ()] = index++;
               temp_draw_file->out () << std::endl << std::endl;
+              temp_draw_file->out () << "##############################################" << std::endl;
             }
           }
         }
@@ -1148,6 +1214,7 @@ namespace snemo {
               if (hit_count > 0) {
                 data[hit_category] = index++;
                 temp_draw_file->out () << std::endl << std::endl;
+                temp_draw_file->out () << "##############################################" << std::endl;
               }
             } // End of normal hits.
 
@@ -1206,6 +1273,7 @@ namespace snemo {
               if (hit_count > 0) {
                 data[hit_category] = index++;
                 temp_draw_file->out () << std::endl << std::endl;
+                temp_draw_file->out () << "##############################################" << std::endl;
               }
             } // End of delayed hits
 
@@ -1263,6 +1331,7 @@ namespace snemo {
               if (hit_count > 0) {
                 data[hit_category] = index++;
                 temp_draw_file->out () << std::endl << std::endl;
+                temp_draw_file->out () << "##############################################" << std::endl;
               }
             } // End of noisy hits
 
@@ -1304,10 +1373,10 @@ namespace snemo {
               const geomtools::placement & scin_block_world_plcmt = scin_block_ginfo->get_world_placement ();
               const geomtools::logical_volume & scin_block_log = scin_block_ginfo->get_logical ();
               const geomtools::i_shape_3d & scin_block_shape = scin_block_log.get_shape ();
+              if (hit_count == 0) {
+                temp_draw_file->out () << "# '" << hit_category << "' hits @ index " << index << ": " << std::endl;
+              }
               if (scin_block_shape.has_user_draw ()) {
-                if (hit_count == 0) {
-                  temp_draw_file->out () << "# '" << hit_category << "' hits @ index " << index << ": " << std::endl;
-                }
                 void * user_draw_void_function = scin_block_shape.get_user_draw ();
                 geomtools::gnuplot_draw::draw_user_function_type user_draw_function
                   = reinterpret_cast<geomtools::gnuplot_draw::draw_user_function_type> (user_draw_void_function);
@@ -1326,6 +1395,7 @@ namespace snemo {
             if (hit_count > 0) {
               data[hit_category] = index++;
               temp_draw_file->out () << std::endl << std::endl;
+              temp_draw_file->out () << "##############################################" << std::endl;
             }
           }
         }
@@ -1356,10 +1426,10 @@ namespace snemo {
               const geomtools::placement & scin_block_world_plcmt = scin_block_ginfo->get_world_placement ();
               const geomtools::logical_volume & scin_block_log = scin_block_ginfo->get_logical ();
               const geomtools::i_shape_3d & scin_block_shape = scin_block_log.get_shape ();
+              if (hit_count == 0) {
+                temp_draw_file->out () << "# '" << hit_category << "' hits @ index " << index << ": " << std::endl;
+              }
               if (scin_block_shape.has_user_draw ()) {
-                if (hit_count == 0) {
-                  temp_draw_file->out () << "# '" << hit_category << "' hits @ index " << index << ": " << std::endl;
-                }
                 void * user_draw_void_function = scin_block_shape.get_user_draw ();
                 geomtools::gnuplot_draw::draw_user_function_type user_draw_function
                   = reinterpret_cast<geomtools::gnuplot_draw::draw_user_function_type> (user_draw_void_function);
@@ -1378,6 +1448,7 @@ namespace snemo {
             if (hit_count > 0) {
               data[hit_category] = index++;
               temp_draw_file->out () << std::endl << std::endl;
+              temp_draw_file->out () << "##############################################" << std::endl;
             }
           }
         }
@@ -1392,28 +1463,63 @@ namespace snemo {
                      "Data model has an item named '" << snemo::datamodel::data_info::TRACKER_CLUSTERING_DATA_LABEL
                      << "' but which is not a 'tracker_clustering_data' instance !");
         snemo::datamodel::tracker_clustering_data & the_tcd
-          = get_current_event_record_ ().grab<snemo::datamodel::tracker_clustering_data> (snemo::datamodel::data_info::TRACKER_CLUSTERING_DATA_LABEL);
-        if (the_tcd.has_default_solution ()) {
+          = get_current_event_record_().grab<snemo::datamodel::tracker_clustering_data>(snemo::datamodel::data_info::TRACKER_CLUSTERING_DATA_LABEL);
+        if (the_tcd.has_default_solution()) {
+          // Color context:
+          geomtools::color::context & CC = geomtools::gnuplot_draw::color_context();
           const snemo::datamodel::tracker_clustering_solution & the_tcs
-            = the_tcd.get_default_solution ();
-          for (size_t i = 0; i < the_tcs.get_clusters ().size (); ++i) {
-            // const snemo::datamodel::tracker_cluster & the_cluster =
-            //   the_tcs.get_clusters ()[i].get ();
-            // Produce tracker cluster rendering data
-          }
-          /*
-            if (the_tcs.get_clusters ().size ())
-            {
-            data["TCD.clusters"] = index++;
-            temp_draw_file->out () << std::endl << std::endl;
+            = the_tcd.get_default_solution();
+          double cell_diameter = 44.0 * CLHEP::mm;
+          size_t cluster_count = 0;
+          for (int i = 0; i < (int) the_tcs.get_clusters().size (); ++i) {
+            const snemo::datamodel::tracker_cluster & the_cluster
+              = the_tcs.get_clusters()[i].get();
+            const snemo::datamodel::calibrated_tracker_hit::collection_type & clhits
+              = the_cluster.get_hits();
+            //int test1 = geomtools::color::COLOR_TEST;
+            //geomtools::color::code_type code = geomtools::color:: COLOR_MAGENTA;
+            //geomtools::color::COLOR_MAGENTA;
+
+            if (i == 0) CC.set_color_code(geomtools::color::COLOR_MAGENTA);
+            if (i == 1) CC.set_color_code(geomtools::color::COLOR_GREEN);
+            if (i == 2) CC.set_color_code(geomtools::color::COLOR_BLUE);
+            if (i == 3) CC.set_color_code(geomtools::color::COLOR_YELLOW);
+            if (i == 4) CC.set_color_code(geomtools::color::COLOR_ORANGE);
+            if (i >= 5) CC.set_color_code(geomtools::color::COLOR_RED);
+
+            // Produce tracker cluster rendering data for each hit in the current cluster:
+            for (int j = 0; j < (int) clhits.size(); j++) {
+              const snemo::datamodel::calibrated_data::tracker_hit_handle_type & hclhit = clhits[j];
+              const snemo::datamodel::calibrated_tracker_hit & clhit = hclhit.get();
+              double x  = clhit.get_x();
+              double y  = clhit.get_y();
+              double z  = clhit.get_z();
+              double ez = clhit.get_sigma_z();
+              if (cluster_count == 0 && j == 0) {
+                temp_draw_file->out () << "# '" << "TCD.clusters" << "' @ index " << index << ": " << std::endl;
+              }
+              geomtools::vector_3d hit_pos(x, y, z);
+              geomtools::rotation_3d identity;
+              geomtools::gnuplot_draw::draw_box(temp_draw_file->out(),
+                                                hit_pos,
+                                                identity,
+                                                cell_diameter,
+                                                cell_diameter,
+                                                2 * ez);
             }
-          */
-          const snemo::datamodel::calibrated_tracker_hit::collection_type & the_uhits
-            = the_tcs.get_unclustered_hits ();
-          for (size_t i = 0; i < the_uhits.size (); ++i) {
-            // const snemo::datamodel::calibrated_tracker_hit & the_hit = the_uhits[i].get ();
-            // Produce tracker unclustered hits rendering data
+            ++cluster_count;
           }
+          if (cluster_count > 0) {
+            data["TCD.default.clusters"] = index++;
+            temp_draw_file->out () << std::endl << std::endl;
+            temp_draw_file->out () << "##############################################" << std::endl;
+          }
+          // const snemo::datamodel::calibrated_tracker_hit::collection_type & the_uhits
+          //   = the_tcs.get_unclustered_hits();
+          // for (int i = 0; i < (int) the_uhits.size (); ++i) {
+          //   const snemo::datamodel::calibrated_tracker_hit & the_hit = the_uhits[i].get ();
+          //   Produce tracker unclustered hits rendering data
+          // }
           /*
             if (the_uhits.size ())
             {
@@ -1592,7 +1698,7 @@ namespace snemo {
         if (geom_data.find ("Geom.module") != geom_data.end ()) {
           if (count) cmdstr << ", ";
           cmdstr << "'"   << temp_geom_file->get_filename () << "' index "
-               << geom_data.find ("Geom.module")->second << " "
+                 << geom_data.find ("Geom.module")->second << " "
                  << uopt
                  << " notitle with lines lt 0";
           count++;
@@ -1912,6 +2018,20 @@ namespace snemo {
         }
       } // if (display_CD)
 
+      if (display_TCD) {
+
+        // plot tracker clustering data :
+        if (display_TCD_def_clusters && data.find("TCD.default.clusters") != data.end ()) {
+          std::string uopt2 = uopt + ":4";
+          if (count) cmdstr << ", ";
+          cmdstr << "'" << temp_draw_file->get_filename()  << "' index "
+                 << data.find("TCD.default.clusters")->second << " "
+                 << uopt2 << " title \"Tracker clusters (TCD)\" with lines linecolor variable lw 1";
+          count++;
+        }
+
+      } // if (display_TCD)
+
       // if (!interactive_) {
       //   cmdstr << "; "
       //          << " ! rm -f " << temp_geom_file->get_filename() << " ; ";
@@ -1926,15 +2046,30 @@ namespace snemo {
 
     int toy_display_driver::tui ()
     {
-      print_menu ();
-      std::clog << "  Your choice ? ";
       std::string line;
+#if FALAISEVISUTOYPLUGIN_WITH_READLINE == 1
+      char * readline_line = 0;
+      readline_line = readline(ui_prompt.c_str()); // use readline library
+      if (readline_line != 0) {
+        line = readline_line; // use readline library
+        if (! line.empty()) {
+          if (ui_last_hist != line) {
+            add_history(readline_line); // use readline/history library
+            ui_last_hist = line;
+          }
+        }
+        free(readline_line);
+        readline_line = 0;
+      }
+#else // FALAISEVISUTOYPLUGIN_WITH_READLINE == 1
+      std::cerr << ui_prompt << std::flush;
       std::getline (std::cin, line);
-      if (! std::cin) {
+      if (! std::cin || std::cin.eof()) {
         return 1;
       }
+#endif // FALAISEVISUTOYPLUGIN_WITH_READLINE == 1
       if (line.empty ()) {
-        return 1;
+        return 0;
       }
       ui_command_line_ = line;
       int status = interpret_command_line ();
@@ -1954,12 +2089,12 @@ namespace snemo {
       std::string cmd;
       iss >> cmd;
       if (cmd.empty ()) {
+        return 0;
+      } else if (cmd == "q" || cmd == "quit") {
         return 1;
-      }
-      if (cmd == "q" || cmd == "quit") {
-        return 1;
-      }
-      if (cmd == "print") {
+      } else if (cmd == "menu" || cmd == "help") {
+        print_menu();
+      } else if (cmd == "print") {
         std::string filename;
         iss >> filename;
         if (! filename.empty ()) {
@@ -1994,202 +2129,144 @@ namespace snemo {
         } else {
           std::string arg;
           iss >> arg;
-          if (! arg.empty ())
-            {
-              if (arg == "+")
-                {
-                  zoom_factor_2d /= 2.0;
+          if (! arg.empty ()) {
+            if (arg == "+") {
+              zoom_factor_2d /= 2.0;
+            } else if (arg == "-") {
+              zoom_factor_2d *= 2.0;
+            } else if (arg == "++") {
+              zoom_factor_2d /= 10.0;
+            } else if (arg == "--") {
+              zoom_factor_2d *= 10.0;
+            } else {
+              std::istringstream iss (arg);
+              double zf;
+              iss >> zf;
+              if (! iss) {
+                std::cerr << "Invalid format for zoom factor '" << arg << "' for command '" << cmd << "' !" << std::endl;
+              } else {
+                if (zf <= 0.0) {
+                  std::cerr << "Invalid value for zoom factor '" << arg << "' for command '" << cmd << "' !" << std::endl;
+                } else {
+                  zoom_factor_2d = (1. / zf);
                 }
-              else if (arg == "-")
-                {
-                  zoom_factor_2d *= 2.0;
-                }
-              else if (arg == "++")
-                {
-                  zoom_factor_2d /= 10.0;
-                }
-              else if (arg == "--")
-                {
-                  zoom_factor_2d *= 10.0;
-                }
-              else
-                {
-                  std::istringstream iss (arg);
-                  double zf;
-                  iss >> zf;
-                  if (! iss)
-                    {
-                      std::cerr << "Invalid format for zoom factor '" << arg << "' for command '" << cmd << "' !" << std::endl;
-                    }
-                  else
-                    {
-                      if (zf <= 0.0)
-                        {
-                          std::cerr << "Invalid value for zoom factor '" << arg << "' for command '" << cmd << "' !" << std::endl;
-                        }
-                      else
-                        {
-                          zoom_factor_2d = (1. / zf);
-                        }
-                    }
-                }
+              }
             }
+          }
         }
       } else if (cmd == "nomove") {
-        if (view_mode == "3d")
-          {
-            std::cerr << "Invalid command '" << cmd << "' in 3D mode !" << std::endl;
-          }
-        else
-          {
-            zoom_center_x = 0.0;
-            zoom_center_y = 0.0;
-            zoom_center_z = 0.0;
-          }
+        if (view_mode == "3d") {
+          std::cerr << "Invalid command '" << cmd << "' in 3D mode !" << std::endl;
+        } else {
+          zoom_center_x = 0.0;
+          zoom_center_y = 0.0;
+          zoom_center_z = 0.0;
+        }
       } else if (cmd == "move") {
-        if (view_mode == "3d")
-          {
-            std::cerr << "Invalid command '" << cmd << "' in 3D mode !" << std::endl;
+        if (view_mode == "3d") {
+          std::cerr << "Invalid command '" << cmd << "' in 3D mode !" << std::endl;
+        } else {
+          double unit = CLHEP::mm;
+          double a, b;
+          iss >> a >> b;
+          if (! iss) {
+            std::cerr << "Invalid argument for command '" << cmd << "' !" << std::endl;
+          } else {
+            std::string unit_str;
+            iss >> unit_str;
+            if (! unit_str.empty ()) {
+              unit = datatools::units::get_length_unit_from (unit_str);
+            }
           }
-        else
-          {
-            double unit = CLHEP::mm;
-            double a, b;
-            iss >> a >> b;
-            if (! iss)
-              {
-                std::cerr << "Invalid argument for command '" << cmd << "' !" << std::endl;
-              }
-            else
-              {
-                std::string unit_str;
-                iss >> unit_str;
-                if (! unit_str.empty ())
-                  {
-                    unit = datatools::units::get_length_unit_from (unit_str);
-                  }
-              }
-            a *= unit;
-            b *= unit;
-            if (view_mode == "xy")
-              {
-                zoom_center_x = a;
-                zoom_center_y = b;
-              }
-            if (view_mode == "yz")
-              {
-                zoom_center_y = a;
-                zoom_center_z = b;
-              }
-            if (view_mode == "xz")
-              {
-                zoom_center_x = a;
-                zoom_center_z = b;
-              }
+          a *= unit;
+          b *= unit;
+          if (view_mode == "xy") {
+            zoom_center_x = a;
+            zoom_center_y = b;
           }
+          if (view_mode == "yz") {
+            zoom_center_y = a;
+            zoom_center_z = b;
+          }
+          if (view_mode == "xz") {
+            zoom_center_x = a;
+            zoom_center_z = b;
+          }
+        }
       } else if (cmd == "skip") {
-        if (view_mode == "3d")
-          {
-            std::cerr << "Invalid command '" << cmd << "' in 3D mode !" << std::endl;
+        if (view_mode == "3d") {
+          std::cerr << "Invalid command '" << cmd << "' in 3D mode !" << std::endl;
+        } else {
+          double unit = CLHEP::mm;
+          double a, b;
+          iss >> a >> b;
+          if (! iss) {
+            std::cerr << "Invalid argument for command '" << cmd << "' !" << std::endl;
+          } else {
+            std::string unit_str;
+            iss >> unit_str;
+            if (! unit_str.empty ()) {
+              unit = datatools::units::get_length_unit_from (unit_str);
+            }
           }
-        else
-          {
-            double unit = CLHEP::mm;
-            double a, b;
-            iss >> a >> b;
-            if (! iss)
-              {
-                std::cerr << "Invalid argument for command '" << cmd << "' !" << std::endl;
-              }
-            else
-              {
-                std::string unit_str;
-                iss >> unit_str;
-                if (! unit_str.empty ())
-                  {
-                    unit = datatools::units::get_length_unit_from (unit_str);
-                  }
-              }
-            a *= unit;
-            b *= unit;
-            if (view_mode == "xy")
-              {
-                zoom_center_x += a;
-                zoom_center_y += b;
-              }
-            if (view_mode == "yz")
-              {
-                zoom_center_y += a;
-                zoom_center_z += b;
-              }
-            if (view_mode == "xz")
-              {
-                zoom_center_x += a;
-                zoom_center_z += b;
-              }
+          a *= unit;
+          b *= unit;
+          if (view_mode == "xy") {
+            zoom_center_x += a;
+            zoom_center_y += b;
           }
-      }
-      else if (cmd == "Geo")
-        {
-          display_Geo = ! display_Geo;
+          if (view_mode == "yz") {
+            zoom_center_y += a;
+            zoom_center_z += b;
+          }
+          if (view_mode == "xz") {
+            zoom_center_x += a;
+            zoom_center_z += b;
+          }
         }
-      else if (cmd == "Geo.Src")
-        {
-          display_Geo_Src = ! display_Geo_Src;
-        }
-      else if (cmd == "Geo.Xcalo")
-        {
-          display_Geo_Xcalo = ! display_Geo_Xcalo;
-        }
-      else if (cmd == "Geo.Calo")
-        {
-          display_Geo_Calo = ! display_Geo_Calo;
-        }
-      else if (cmd == "Geo.Gveto")
-        {
-          display_Geo_Gveto = ! display_Geo_Gveto;
-        }
-      else if (cmd == "SD")
-        {
-          display_SD = ! display_SD;
-        }
-      else if (cmd == "SD.Hits")
-        {
-          display_SD_hits = ! display_SD_hits;
-        }
-      else if (cmd == "SD.Hits.Boxes")
-        {
-          display_SD_hits_boxes = ! display_SD_hits_boxes;
-        }
-      else if (cmd == "SD.Hits.Geiger.MAP")
-        {
-          display_SD_gg_MAP = ! display_SD_gg_MAP;
-        }
-      else if (cmd == "SD.Tracks")
-        {
-          display_SD_visu_track = ! display_SD_visu_track;
-        }
-      else if (cmd == "SD.Tracks.Points")
-        {
-          display_SD_visu_track_points = ! display_SD_visu_track_points;
-        }
-      else if (cmd == "SD.Vertex") {
+      } else if (cmd == "Geo") {
+        display_Geo = ! display_Geo;
+      } else if (cmd == "Geo.Src") {
+        display_Geo_Src = ! display_Geo_Src;
+      } else if (cmd == "Geo.Xcalo") {
+        display_Geo_Xcalo = ! display_Geo_Xcalo;
+      } else if (cmd == "Geo.Calo") {
+        display_Geo_Calo = ! display_Geo_Calo;
+      } else if (cmd == "Geo.Gveto") {
+        display_Geo_Gveto = ! display_Geo_Gveto;
+      } else if (cmd == "SD") {
+        display_SD = ! display_SD;
+      } else if (cmd == "SD.Hits") {
+        display_SD_hits = ! display_SD_hits;
+      } else if (cmd == "SD.Hits.Boxes") {
+        display_SD_hits_boxes = ! display_SD_hits_boxes;
+      } else if (cmd == "SD.Hits.Geiger.MAP") {
+        display_SD_gg_MAP = ! display_SD_gg_MAP;
+      } else if (cmd == "SD.Tracks") {
+        display_SD_visu_track = ! display_SD_visu_track;
+      } else if (cmd == "SD.Tracks.Points") {
+        display_SD_visu_track_points = ! display_SD_visu_track_points;
+      } else if (cmd == "SD.Vertex") {
         display_SD_vertex = ! display_SD_vertex;
       } else if (cmd == "CD") {
         display_CD = ! display_CD;
-      } else if (cmd == "TCD.clusters") {
+      } else if (cmd == "TCD") {
         display_TCD = ! display_TCD;
-      } else if (cmd == "TCD.unclustered_hits") {
-        display_TCD_unclustered_hits = ! display_TCD_unclustered_hits;
-      } else if (cmd == "TJD.trajectories") {
+      } else if (cmd == "TCD.Def.Clusters") {
+        display_TCD_def_clusters = ! display_TCD_def_clusters;
+      } else if (cmd == "TCD.Def.Unclustered") {
+        display_TCD_def_unclustered_hits = ! display_TCD_def_unclustered_hits;
+      } else if (cmd == "TJD") {
         display_TJD = ! display_TJD;
-      } else if (cmd == "TJD.orphans_hits") {
-        display_TJD_orphans_hits = ! display_TJD_orphans_hits;
+      } else if (cmd == "TJD.Def.Trajectories") {
+        display_TJD_def_trajectories = ! display_TJD_def_trajectories;
+      } else if (cmd == "TJD.Def.Orphans") {
+        display_TJD_def_orphans_hits = ! display_TJD_def_orphans_hits;
       } else if (cmd == "key") {
         display_key = ! display_key;
       } else if (cmd == "title") {
         display_title = ! display_title;
-       } else if (cmd == "debug") {
+      } else if (cmd == "debug") {
         logging_priority = datatools::logger::PRIO_DEBUG;
       } else if (cmd == "nodebug") {
         logging_priority = datatools::logger::PRIO_WARNING;
@@ -2338,7 +2415,7 @@ namespace snemo {
       }
 
       out_ << std::endl << "Allowed commands :" << std::endl;
-      out_ << "  [Enter]                 quit this event" << std::endl;
+      out_ << "  [Enter]                 do nothing" << std::endl;
       out_ << "  quit                    quit this event" << std::endl;
       out_ << "  3d                      use 3D display mode" << std::endl;
       out_ << "  xy                      use XY 2D display mode" << std::endl;
@@ -2357,6 +2434,12 @@ namespace snemo {
       out_ << "    SD.Tracks             toggle the display of true tracks" << std::endl;
       out_ << "      SD.Tracks.Points    toggle the display of true tracks with points" << std::endl;
       out_ << "  CD                      toggle the display of calibrated data" << std::endl;
+      out_ << "  TCD                     toggle the display of tracker clustering data" << std::endl;
+      out_ << "    TCD.Def.Clusters      toggle the display of the clusters (default solution)" << std::endl;
+      out_ << "    TCD.Def.Unclustered   toggle the display of the unclustered hits (default solution)" << std::endl;
+      out_ << "  TJD                     toggle the display of tracker trajectory data" << std::endl;
+      out_ << "    TJD.Def.Trajectories  toggle the display of the trajectories (default solution)" << std::endl;
+      out_ << "    TJD.Def.Orphans       toggle the display of the orphan hits (default solution)" << std::endl;
       out_ << "  2D modes only :" << std::endl;
       out_ << "    zoom +                zoom in by a relative factor 2" << std::endl;
       out_ << "    zoom ++               zoom in by a relative factor 10" << std::endl;
@@ -2377,7 +2460,7 @@ namespace snemo {
       out_ << "  display                 display the event" << std::endl;
       out_ << "  dump                    print the data structure" << std::endl;
       out_ << "  status                  print the status of the display processor" << std::endl;
-      out_ << "  wxt                     toggle wxt terminal" << std::endl;
+      out_ << "  wxt                     toggle wxt/X11 terminals" << std::endl;
       out_ << "  print <file>            produce an image" << std::endl;
       out_ << "  abort                   terminate the display" << std::endl;
       return;
@@ -2385,57 +2468,59 @@ namespace snemo {
 
     void toy_display_driver::cmd_dump (datatools::things & a_data)
     {
-      const snemo::datamodel::event_header     * eh_ptr = 0;
+      namespace sdm = snemo::datamodel;
+      const sdm::event_header     * eh_ptr = 0;
       const mctools::simulated_data * sd_ptr = 0;
-      const snemo::datamodel::calibrated_data  * cd_ptr = 0;
+      const sdm::calibrated_data  * cd_ptr = 0;
+      const sdm::tracker_clustering_data  * tcd_ptr = 0;
 
-      if (a_data.has (snemo::datamodel::data_info::EVENT_HEADER_LABEL))
-        {
-          eh_ptr = &(a_data.get<snemo::datamodel::event_header> (snemo::datamodel::data_info::EVENT_HEADER_LABEL));
-        }
+      if (a_data.has (sdm::data_info::default_event_header_label())) {
+        eh_ptr = &(a_data.get<sdm::event_header>(sdm::data_info::default_event_header_label()));
+      }
 
-      if (a_data.has (snemo::datamodel::data_info::SIMULATED_DATA_LABEL))
-        {
-          sd_ptr = &(a_data.get<mctools::simulated_data> (snemo::datamodel::data_info::SIMULATED_DATA_LABEL));
-        }
+      if (a_data.has (sdm::data_info::default_simulated_data_label())) {
+        sd_ptr = &(a_data.get<mctools::simulated_data>(sdm::data_info::default_simulated_data_label()));
+      }
 
-      if (a_data.has (snemo::datamodel::data_info::CALIBRATED_DATA_LABEL))
-        {
-          cd_ptr = &(a_data.get<snemo::datamodel::calibrated_data> (snemo::datamodel::data_info::CALIBRATED_DATA_LABEL));
-        }
+      if (a_data.has (sdm::data_info::default_calibrated_data_label())) {
+        cd_ptr = &(a_data.get<sdm::calibrated_data>(sdm::data_info::default_calibrated_data_label()));
+      }
 
-      if (eh_ptr != 0)
-        {
-          const snemo::datamodel::event_header & eh = *eh_ptr;
-          std::clog << " -> " << "Event header :" << std::endl;
-          eh.tree_dump (std::clog, "", "    ");
-        }
-      else
-        {
-          std::clog << " -> " << "No event header." << std::endl;
-        }
+      if (a_data.has (sdm::data_info::default_tracker_clustering_data_label())) {
+        tcd_ptr = &(a_data.get<sdm::tracker_clustering_data>(sdm::data_info::default_tracker_clustering_data_label()));
+      }
 
-      if (sd_ptr != 0)
-        {
-          const mctools::simulated_data & sd = *sd_ptr;
-          std::clog << " -> " << "Simulated data : " << std::endl;
-          sd.tree_dump (std::clog, "", "    ");
-        }
-      else
-        {
-          std::clog << " -> " << "No simulated data." << std::endl;
-        }
+      if (eh_ptr != 0) {
+        const sdm::event_header & eh = *eh_ptr;
+        std::clog << "EH : " << "Event header :" << std::endl;
+        eh.tree_dump (std::clog, "", "EH : ");
+      } else {
+        std::clog << "EH : " << "No event header." << std::endl;
+      }
 
-      if (cd_ptr != 0)
-        {
-          const snemo::datamodel::calibrated_data & cd = *cd_ptr;
-          std::clog << " -> " << "Calibrated data : " << std::endl;
-          cd.tree_dump (std::clog, "", "    ");
-        }
-      else
-        {
-          std::clog << " -> " << "No calibrated data." << std::endl;
-        }
+      if (sd_ptr != 0) {
+        const mctools::simulated_data & sd = *sd_ptr;
+        std::clog << "SD : " << "Simulated data : " << std::endl;
+        sd.tree_dump (std::clog, "", "SD : ");
+      } else {
+        std::clog << "SD : " << "No simulated data." << std::endl;
+      }
+
+      if (cd_ptr != 0) {
+        const sdm::calibrated_data & cd = *cd_ptr;
+        std::clog << "CD : " << "Calibrated data : " << std::endl;
+        cd.tree_dump (std::clog, "", "CD : ");
+      } else {
+        std::clog << "CD : " << "No calibrated data." << std::endl;
+      }
+
+      if (tcd_ptr != 0) {
+        const sdm::tracker_clustering_data & tcd = *tcd_ptr;
+        std::clog << "TCD: " << "Tracker clustering data : " << std::endl;
+        tcd.tree_dump (std::clog, "", "TCD: ");
+      } else {
+        std::clog << "TCD: " << "No tracker clustering data." << std::endl;
+      }
 
       return;
     }
@@ -2462,6 +2547,8 @@ namespace snemo {
       out_ << "|-- Display tracker trajectory data   : " << display_TJD << std::endl;
       out_ << "|-- Last plot command : " << std::endl;
       std::vector<std::string> lines;
+
+
       boost::split(lines, last_plot_command_,boost::is_any_of(",;"));
       for (int line = 0; line < (int) lines.size(); line++) {
         out_ << "|   " << lines[line] << " " << std::endl;

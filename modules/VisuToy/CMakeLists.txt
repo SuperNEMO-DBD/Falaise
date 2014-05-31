@@ -15,14 +15,33 @@ include_directories(${Bayeux_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source)
 
+list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR}/cmake)
+
+# - Readline:
+find_package(Readline QUIET)
+if (Readline_FOUND)
+  set(FALAISEVISUTOYPLUGIN_WITH_READLINE 1)
+  message (STATUS "FalaiseVisuToyPlugin:  Readline library was found.")
+else()
+  message (STATUS "FalaiseVisuToyPlugin: Readline library not found!")
+endif()
 
 ############################################################################################
 # - VisuToy module:
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source/falaise)
 
+configure_file(source/falaise/snemo/visualization/visu_toy_config.h.in
+  ${CMAKE_CURRENT_BINARY_DIR}/falaise/snemo/visualization/visu_toy_config.h
+  @ONLY)
+
+### ${Falaise_BUILDPRODUCT_DIR}/include/falaise/snemo/visualization/visu_toy_config.h
+
 # - Headers:
 list(APPEND FalaiseVisuToyPlugin_HEADERS source/falaise/snemo/visualization/toy_display_driver.h)
-list(APPEND FalaiseVisuToyPlugin_HEADERS source/falaise/snemo/visualization/visu_toy_module.h)
+list(APPEND FalaiseVisuToyPlugin_HEADERS source/falaise/snemo/visualization/visu_toy_module.h
+            ${CMAKE_CURRENT_BINARY_DIR}/falaise/snemo/visualization/visu_toy_config.h)
+
+### ${Falaise_BUILDPRODUCT_DIR}/include/falaise/snemo/visualization/visu_toy_config.h )
 
 # - Sources:
 list(APPEND FalaiseVisuToyPlugin_SOURCES source/falaise/snemo/visualization/toy_display_driver.cc)
@@ -36,6 +55,11 @@ add_library(Falaise_VisuToy SHARED
   ${FalaiseVisuToyPlugin_SOURCES})
 
 target_link_libraries(Falaise_VisuToy Falaise)
+
+if(FALAISEVISUTOYPLUGIN_WITH_READLINE)
+  include_directories(${Readline_INCLUDE_DIR})
+  target_link_libraries(Falaise_VisuToy ${Readline_LIBRARIES})
+endif()
 
 # Apple linker requires dynamic lookup of symbols, so we
 # add link flags on this platform
