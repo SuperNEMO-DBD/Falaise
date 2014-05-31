@@ -2,7 +2,7 @@
 #
 # Author(s) : Francois Mauger <mauger@lpccaen.in2p3.fr>
 # Creation date: 2014-02-27
-# Last modified: 2014-02-28
+# Last modified: 2014-06-01
 #
 # Copyright 2014 F. Mauger <mauger@lpccaen.in2p3.fr>
 #
@@ -34,19 +34,47 @@
 #
 
 # List of known plugins (unused):
-# plugins="things2root CAT TrackFit"
+# plugins="things2root MockTrackerClusterizer CAT TrackFit VisuToy"
 
 only_plugins=
+
+function print_usage()
+{
+    cat<<EOF
+
+_make_list_of_plugins_resource_files :
+
+   Update the list of publishable resource files for Falaise's modules.
+
+Usage:
+
+  _make_list_of_plugins_resource_files -h|--help :
+
+     Print this help then exit.
+
+  _make_list_of_plugins_resource_files -o|--only MODULE_NAME :
+
+     Only update the list of publishable resource files for
+     module named MODULE_NAME.
+
+Example:
+
+  ./_make_list_of_plugins_resource_files --only VisuToy
+
+EOF
+    return 0
+}
 
 while [ -n "$1" ]; do
     token="$1"
     if [ "x${token:0:1}" = "x-" ]; then
 	option="${token}"
-	# echo "DEVEL: Processing option '${option}'..." >&2
-	if [ "${option}" = "-o" -o "${option}" = "--only" ]; then
+	if [ "${option}" = "-h" -o "${option}" = "--help" ]; then
+	    print_usage
+	    exit 0
+	elif [ "${option}" = "-o" -o "${option}" = "--only" ]; then
 	    shift 1
 	    plugin="$1"
-	    # echo "DEVEL: Only plugin '${plugin}'" >&2
 	    only_plugins="${only_plugins} ${plugin} "
 	else
 	    echo "WARNING: Ignoring option '${option}'..." >&2
@@ -99,7 +127,5 @@ EOF
 	fi # [ ${do_it} -eq 1 ]
     fi
 done
-
-
 
 exit 0
