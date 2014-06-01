@@ -1,6 +1,5 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/TrackerPreClustering/pre_clusterizer.h
- * Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
+/// \file falaise/TrackerPreClustering/pre_clusterizer.h
+/* Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2012-03-30
  * Last modified: 2014-02-07
  *
@@ -159,3 +158,11 @@ namespace TrackerPreClustering {
 #include <TrackerPreClustering/pre_clusterizer.tpp>
 
 #endif // FALAISE_TRACKERPRECLUSTERING_PRE_CLUSTERIZER_H
+
+/*
+** Local Variables: --
+** mode: c++ --
+** c-file-style: "gnu" --
+** tab-width: 2 --
+** End: --
+*/

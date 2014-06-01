@@ -1,6 +1,4 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/TrackerPreClustering/pre_clusterizer.tpp
- */
+/// \file falaise/TrackerPreClustering/pre_clusterizer.tpp
 
 #ifndef FALAISE_TRACKERPRECLUSTERING_PRE_CLUSTERIZER_TPP
 #define FALAISE_TRACKERPRECLUSTERING_PRE_CLUSTERIZER_TPP 1
@@ -149,6 +147,7 @@ namespace TrackerPreClustering {
           if (is_debug()) {
             DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "  `-> ignored prompt hit");
           }
+          // std::cerr << "DEVEL: TPC: ignored hit = " << prompt_hits[side][0] << std::endl;
           output_data_.ignored_hits.push_back(prompt_hits[side][0]);
           continue;
         }
@@ -268,3 +267,11 @@ namespace TrackerPreClustering {
 } // end of namespace TrackerPreClustering
 
 #endif // FALAISE_TRACKERPRECLUSTERING_PRE_CLUSTERIZER_TPP
+
+/*
+** Local Variables: --
+** mode: c++ --
+** c-file-style: "gnu" --
+** tab-width: 2 --
+** End: --
+*/

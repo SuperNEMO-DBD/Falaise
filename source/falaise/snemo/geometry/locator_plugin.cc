@@ -154,5 +154,3 @@ namespace snemo {
   } // end of namespace geometry
 
 } // end of snemo
-
-/* end of  falaise/snemo/geometry/locator_plugin.cc */

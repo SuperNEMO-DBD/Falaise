@@ -1,4 +1,4 @@
-/** \file falaise/snemo/datamodels/tracker_clustering_solution.h */
+/// \file falaise/snemo/datamodels/tracker_clustering_solution.h
 /* Author (s) : François Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2012-03-05
  * Last modified: 2014-01-27
@@ -76,7 +76,7 @@ namespace snemo {
      * +------------------------+
      * |                   0    |  Legend: 0 : hits belonging to cluster #0
      * | 11              00     |          1 : hits belonging to cluster #1
-     * |   111      00000       |          2 : hits belonging to cluster #1
+     * |   111      00000       |          2 : hits belonging to cluster #2
      * |     1111100            |          U : unclustered hits
      * |          2      U      |
      * |          22        U   |
@@ -102,7 +102,7 @@ namespace snemo {
       /// Collection of calibrated hit handles
       typedef calibrated_tracker_hit::collection_type hit_collection_type;
 
-      /// Dictionnary of hit/cluster belonging
+      /// Dictionary of hit/cluster belonging
       typedef std::map<int32_t, cluster_col_type> hit_belonging_col_type;
 
       /// Default constructor
@@ -134,6 +134,12 @@ namespace snemo {
 
       /// Return a non mutable reference on the container of clusters
       const cluster_col_type & get_clusters() const;
+
+      // /// Return a mutable reference on the container of delayed clusters
+      // cluster_col_type & grab_delayed_clusters() const;
+
+      // /// Return a non mutable reference on the container of delayed clusters
+      // const cluster_col_type & get_delayed_clusters() const;
 
       /// Return a mutable reference on the container of handles on unclustered calibrated tracker hits
       hit_collection_type & grab_unclustered_hits();
@@ -188,10 +194,21 @@ namespace snemo {
       static void compute_hit_belonging_from_solution(const tracker_clustering_solution & tcs_,
                                                       hit_belonging_col_type &hbc_);
 
+      /// Merge two clustering solutions in a single one (only if both are built from different sets of hits)
+      static int merge_two_solutions_in_ones(const tracker_clustering_solution & source0_,
+                                             const tracker_clustering_solution & source1_,
+                                             tracker_clustering_solution & target_);
+
+      /// Copy one clustering solution in another one
+      static int copy_one_solution_in_one(const tracker_clustering_solution & source_,
+                                          tracker_clustering_solution & target_);
+
+
     private:
 
       int32_t                      _solution_id_;      /// Unique solution ID
-      cluster_col_type             _clusters_;         /// Collection of handles on Geiger hits clusters
+      cluster_col_type             _clusters_;         /// Collection of handles on prompt Geiger hits clusters
+      //cluster_col_type             _delayed_clusters_; /// Collection of handles on delayed Geiger hits clusters
       hit_collection_type          _unclustered_hits_; /// Collection of handles on unclustered Geiger hits
       datatools::properties        _auxiliaries_;      /// List of auxiliary properties
 
@@ -208,7 +225,6 @@ namespace snemo {
 
 #endif // FALAISE_SNEMO_DATAMODELS_TRACKER_CLUSTERING_SOLUTION_H
 
-// end of falaise/snemo/datamodels/tracker_clustering_solution.h
 /*
 ** Local Variables: --
 ** mode: c++ --

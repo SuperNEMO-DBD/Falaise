@@ -102,8 +102,6 @@ namespace snemo {
       /// Return a non mutable reference on the container of auxiliary properties
       const datatools::properties & get_auxiliaries() const;
 
-      /*** Trajectories ***/
-
       /// Return a mutable reference on the container of trajectories
       trajectory_col_type & grab_trajectories();
 
@@ -113,8 +111,6 @@ namespace snemo {
       /// Reset the trajectories
       void invalidate_trajectories();
 
-      /*** Unfitted clusters ***/
-
       /// Return a mutable reference on the container of handles on unfitted clusters
       cluster_col_type & grab_unfitted_clusters();
 
@@ -123,8 +119,6 @@ namespace snemo {
 
       /// Reset the unfitted clusters
       void invalidate_unfitted_clusters();
-
-      /*** Utilities ***/
 
       /// Empty the contents of the tracker trajectories solution
       virtual void clear();
@@ -153,7 +147,6 @@ namespace snemo {
 
 #endif // FALAISE_SNEMO_DATAMODELS_TRACKER_TRAJECTORY_SOLUTION_H
 
-// end of falaise/snemo/datamodels/tracker_trajectory_solution.h
 /*
 ** Local Variables: --
 ** mode: c++ --

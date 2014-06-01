@@ -89,15 +89,21 @@ namespace snemo {
     void calibrated_tracker_hit::set_delayed_time (double delayed_time_,
                                                    double delayed_time_error_)
     {
-      set_delayed (true);
-      _delayed_time_ = delayed_time_;
-      _delayed_time_error_ = delayed_time_error_;
+      if (datatools::is_valid(delayed_time_)) {
+        set_delayed (true);
+        _delayed_time_ = delayed_time_;
+        _delayed_time_error_ = delayed_time_error_;
+      } else {
+        set_delayed(false);
+        datatools::invalidate(_delayed_time_);
+        datatools::invalidate(_delayed_time_error_);
+      }
       return;
     }
 
     bool calibrated_tracker_hit::has_delayed_time () const
     {
-      return datatools::is_valid (_delayed_time_);
+      return datatools::is_valid(_delayed_time_);
     }
 
     /// Return the delayed reference time of the hit
@@ -270,7 +276,6 @@ namespace snemo {
       return;
     }
 
-    // ctor:
     calibrated_tracker_hit::calibrated_tracker_hit () : base_hit ()
     {
       _traits_  = 0x0;
@@ -285,7 +290,6 @@ namespace snemo {
       return;
     }
 
-    // dtor:
     calibrated_tracker_hit::~calibrated_tracker_hit ()
     {
       return;
@@ -445,5 +449,3 @@ namespace snemo {
   } // end of namespace datamodel
 
 } // end of namespace snemo
-
-// end of falaise/snemo/datamodels/calibrated_tracker_hit.cc

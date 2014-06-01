@@ -101,5 +101,3 @@ namespace snemo {
 //BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::calibrated_calorimeter_hit, "snemo::datamodel::calibrated_calorimeter_hit")
 
 #endif // FALAISE_SNEMO_DATAMODELS_CALIBRATED_CALORIMETER_HIT_H
-
-// end of falaise/snemo/datamodels/calibrated_calorimeter_hit.h

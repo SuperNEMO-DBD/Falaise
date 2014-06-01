@@ -30,10 +30,13 @@ namespace snemo {
                                                 const unsigned int /* version_ */)
     {
       ar_ & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
-      ar_ & boost::serialization::make_nvp ("solution_id",      _solution_id_);
-      ar_ & boost::serialization::make_nvp ("clusters",         _clusters_);
-      ar_ & boost::serialization::make_nvp ("unclustered_hits", _unclustered_hits_);
-      ar_ & boost::serialization::make_nvp ("auxiliaries",      _auxiliaries_);
+      ar_ & boost::serialization::make_nvp("solution_id",      _solution_id_);
+      ar_ & boost::serialization::make_nvp("clusters",         _clusters_);
+      // if (version_ > 0) {
+      //   ar_ & boost::serialization::make_nvp("delayed_clusters", _delayed__clusters_);
+      // }
+      ar_ & boost::serialization::make_nvp("unclustered_hits", _unclustered_hits_);
+      ar_ & boost::serialization::make_nvp("auxiliaries",      _auxiliaries_);
       return;
     }
 
@@ -41,6 +44,7 @@ namespace snemo {
 
 } // end of namespace snemo
 
-#endif // FALAISE_SNEMO_DATAMODELS_TRACKER_CLUSTERING_SOLUTION_IPP
+// #include <boost/serialization/version.hpp>
+// BOOST_CLASS_VERSION(snemo::datamodel::tracker_clustering_solution, 1)
 
-// end of falaise/snemo/datamodels/tracker_clustering_solution.ipp
+#endif // FALAISE_SNEMO_DATAMODELS_TRACKER_CLUSTERING_SOLUTION_IPP

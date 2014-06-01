@@ -118,7 +118,6 @@ BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::tracker_trajectory_data, "snemo::datam
 
 #endif // FALAISE_SNEMO_DATAMODELS_TRACKER_TRAJECTORY_DATA_H
 
-// end of tracker_trajectory_data.h
 /*
 ** Local Variables: --
 ** mode: c++ --

@@ -5,6 +5,10 @@
 // Ourselves
 #include <falaise/snemo/datamodels/calibrated_data.h>
 
+// Third party:
+// - Bayeux/datatools:
+#include <datatools/clhep_units.h>
+
 namespace snemo {
 
   namespace datamodel {
@@ -127,10 +131,38 @@ namespace snemo {
       // Calibrated calorimeter hits:
       out_ << indent << datatools::i_tree_dumpable::tag;
       out_ << "Calibrated calorimeter hits: " << _calibrated_calorimeter_hits_.size() << std::endl;
+      for (int i = 0; i < (int) _calibrated_calorimeter_hits_.size(); i++) {
+        const calibrated_calorimeter_hit & calo_calib_hit = _calibrated_calorimeter_hits_.at(i).get();
+        out_ << indent << datatools::i_tree_dumpable::skip_tag;
+        if ( i + 1 == (int) _calibrated_calorimeter_hits_.size()) {
+          out_ << datatools::i_tree_dumpable::last_tag;
+        } else {
+          out_ << datatools::i_tree_dumpable::tag;
+        }
+        out_ << "Hit #" << i << " : Id=" << calo_calib_hit.get_hit_id()
+             << " GID=" << calo_calib_hit.get_geom_id()
+             << " E=" << calo_calib_hit.get_energy() / CLHEP::keV << " keV"
+             << " t=" << calo_calib_hit.get_time() / CLHEP::ns
+             << std::endl;
+      }
 
       // Calibrated tracker hits:
       out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_);
       out_ << "Calibrated tracker hits: " << _calibrated_tracker_hits_.size() << std::endl;
+      for (int i = 0; i < (int) _calibrated_tracker_hits_.size(); i++) {
+        const calibrated_tracker_hit & tracker_calib_hit = _calibrated_tracker_hits_.at(i).get();
+        out_ << indent << datatools::i_tree_dumpable::inherit_skip_tag(inherit_);
+        if ( i + 1 == (int) _calibrated_tracker_hits_.size()) {
+          out_ << datatools::i_tree_dumpable::last_tag;
+        } else {
+          out_ << datatools::i_tree_dumpable::tag;
+        }
+        out_ << "Hit #" << i << " : Id=" << tracker_calib_hit.get_hit_id()
+             << " GID=" << tracker_calib_hit.get_geom_id() << ' ';
+        if (tracker_calib_hit.is_prompt()) out_ << "[prompt]";
+        if (tracker_calib_hit.is_delayed()) out_ << "[delayed]";
+        out_ << std::endl;
+      }
 
       return;
     }
@@ -138,5 +170,3 @@ namespace snemo {
   } // end of namespace datamodel
 
 } // end of namespace snemo
-
-// end of falaise/snemo/datamodels/calibrated_data.cc

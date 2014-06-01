@@ -110,3 +110,11 @@ namespace TrackerPreClustering {
 #include <TrackerPreClustering/event_display.tpp>
 
 #endif // FALAISE_TRACKERPRECLUSTERING_EVENT_DISPLAY_H
+
+/*
+** Local Variables: --
+** mode: c++ --
+** c-file-style: "gnu" --
+** tab-width: 2 --
+** End: --
+*/

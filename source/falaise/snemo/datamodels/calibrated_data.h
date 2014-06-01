@@ -129,5 +129,3 @@ namespace snemo {
 BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::calibrated_data, "snemo::datamodel::calibrated_data")
 
 #endif // FALAISE_SNEMO_DATAMODEL_CALIBRATED_DATA_H
-
-// end of falaise/snemo/datamodels/calibrated_data.h

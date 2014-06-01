@@ -126,5 +126,3 @@ namespace snemo {
   } // end of namespace datamodel
 
 } // end of namespace snemo
-
-// end of falaise/snemo/datamodel/calibrated_calorimeter_hit.cc

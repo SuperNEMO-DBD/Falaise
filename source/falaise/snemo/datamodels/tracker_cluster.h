@@ -72,6 +72,9 @@ namespace snemo {
       /// Return a non mutable reference on the container of handles on calibrated tracker hits
       const calibrated_tracker_hit::collection_type & get_hits() const;
 
+      /// Return a non mutable reference on the calibrated tracker hit given its index
+      const calibrated_tracker_hit & get_hit(int i_) const;
+
       /// Reset/invalidate the contents of the tracker cluster
       void clear();
 
@@ -97,8 +100,6 @@ namespace snemo {
 } // end of namespace snemo
 
 #endif // FALAISE_SNEMO_DATAMODELS_TRACKER_CLUSTER_H
-
-// end of falaise/snemo/datamodels/tracker_cluster.h
 /*
 ** Local Variables: --
 ** mode: c++ --

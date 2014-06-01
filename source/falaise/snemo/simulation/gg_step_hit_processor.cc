@@ -209,10 +209,10 @@ namespace snemo {
         DT_LOG_TRACE (get_logging_priority (), "Geiger locator:");
         _gg_cell_locator_.dump (std::cerr);
       }
-      if (_geom_manager->get_setup_label().find("snemo::") != std::string::npos) {
+      // if (_geom_manager->get_setup_label().find("snemo::") != std::string::npos) {
+      if (_geom_manager->get_setup_label().substr(0, 7) == "snemo::") {
         DT_LOG_TRACE (get_logging_priority(), "Fast locator for setup '"
                       << _geom_manager->get_setup_label() << "'");
-
         // 2012-05-04 FM : to be discarded
         {
           _fast_gg_cell_locator_.set_geo_manager(*_geom_manager);

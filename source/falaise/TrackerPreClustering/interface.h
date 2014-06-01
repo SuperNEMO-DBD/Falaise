@@ -1,6 +1,5 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/TrackerPreClustering/interface.h
- * Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
+/// \file falaise/TrackerPreClustering/interface.h
+/* Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2012-03-30
  * Last modified: 2014-02-07
  *
@@ -27,7 +26,6 @@
  *  Tracker Pre-Clustering templatized algorithm.
  *
  */
-
 
 #ifndef FALAISE_TRACKERPRECLUSTERING_INTERFACE_H
 #define FALAISE_TRACKERPRECLUSTERING_INTERFACE_H 1
@@ -140,3 +138,11 @@ namespace TrackerPreClustering {
 #include <TrackerPreClustering/interface.tpp>
 
 #endif // FALAISE_TRACKERPRECLUSTERING_INTERFACE_H
+
+/*
+** Local Variables: --
+** mode: c++ --
+** c-file-style: "gnu" --
+** tab-width: 2 --
+** End: --
+*/

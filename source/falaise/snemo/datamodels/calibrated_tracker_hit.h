@@ -1,4 +1,3 @@
-// -*- mode: c++ ; -*-
 /** \file falaise/snemo/datamodels/calibrated_tracker_hit.h
  * Author (s) :   Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2010-03-15
@@ -264,5 +263,10 @@ namespace snemo {
 //BOOST_CLASS_EXPORT_KEY2(snemo::core::model::calibrated_tracker_hit, "snemo::core::model::calibrated_tracker_hit")
 
 #endif // FALAISE_SNEMO_DATAMODELS_CALIBRATED_TRACKER_HIT_H
-
-// end of falaise/snemo/datamodels/calibrated_tracker_hit.h
+/*
+** Local Variables: --
+** mode: c++ --
+** c-file-style: "gnu" --
+** tab-width: 2 --
+** End: --
+*/

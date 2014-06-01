@@ -1,6 +1,5 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/TrackerPreClustering/gg_hit.h
- * Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
+/// \file falaise/TrackerPreClustering/gg_hit.h
+/* Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2012-03-30
  * Last modified: 2014-02-07
  *
@@ -147,3 +146,11 @@ namespace TrackerPreClustering {
 } // end of namespace TrackerPreClustering
 
 #endif // FALAISE_TRACKERPRECLUSTERING_GG_HIT_H
+
+/*
+** Local Variables: --
+** mode: c++ --
+** c-file-style: "gnu" --
+** tab-width: 2 --
+** End: --
+*/

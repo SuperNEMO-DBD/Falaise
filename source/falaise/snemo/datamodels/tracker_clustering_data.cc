@@ -1,5 +1,4 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/tracker_clustering_data.cc */
+/// \file falaise/snemo/datamodels/tracker_clustering_data.cc
 
 // Ourselves
 #include <falaise/snemo/datamodels/tracker_clustering_data.h>
@@ -7,6 +6,34 @@
 namespace snemo {
 
   namespace datamodel {
+
+    // static
+    const std::string & tracker_clustering_data::prompt_key()
+    {
+      static const std::string _key("prompt");
+      return _key;
+    }
+
+    // static
+    const std::string & tracker_clustering_data::delayed_key()
+    {
+      static const std::string _key("delayed");
+      return _key;
+    }
+
+    // static
+    const std::string & tracker_clustering_data::delayed_id_key()
+    {
+      static const std::string _key("delayed.id");
+      return _key;
+    }
+
+    // static
+    const std::string & tracker_clustering_data::clusterizer_id_key()
+    {
+      static const std::string _key("clusterizer.id");
+      return _key;
+    }
 
     bool tracker_clustering_data::has_solutions() const
     {
@@ -17,13 +44,6 @@ namespace snemo {
     {
       return _solutions_.size();
     }
-
-    /*
-      tracker_clustering_solution & tracker_clustering_data::grab_solution(int i_)
-      {
-      return _solutions_.at(i_).get();
-      }
-    */
 
     const tracker_clustering_solution & tracker_clustering_data::get_solution(int i_) const
     {
@@ -140,10 +160,25 @@ namespace snemo {
       }
 
       out_ << indent << datatools::i_tree_dumpable::tag
-           << "Solutions : " << _solutions_.size() << std::endl;
+           << "Solution(s) : " << _solutions_.size() << std::endl;
+      for (int i = 0; i < (int) get_number_of_solutions(); i++) {
+        const tracker_clustering_solution & tcsol = get_solution(i);
+        std::ostringstream indent2;
+        out_ << indent << datatools::i_tree_dumpable::skip_tag;
+        indent2 << indent << datatools::i_tree_dumpable::skip_tag;
+        if (i == (int) _solutions_.size() - 1) {
+          out_ << datatools::i_tree_dumpable::last_tag;
+          indent2 << datatools::i_tree_dumpable::last_skip_tag;
+        } else {
+          out_ << datatools::i_tree_dumpable::tag;
+          indent2 << datatools::i_tree_dumpable::skip_tag;
+        }
+        out_ << "Solution #" << i << " : " << std::endl;
+        tcsol.tree_dump(out_, "", indent2.str());
+      }
 
       out_ << indent << datatools::i_tree_dumpable::tag
-           << "Default solutions : " <<(!_default_solution_  ? "No" : "Yes") << std::endl;
+           << "Default solution : " << (!_default_solution_  ? "No" : "Yes") << std::endl;
 
       out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
            << "Auxiliaries : ";
@@ -167,5 +202,3 @@ namespace snemo {
   } // end of namespace datamodel
 
 } // end of namespace snemo
-
-// end of falaise/snemo/datamodels/tracker_clustering_data.cc

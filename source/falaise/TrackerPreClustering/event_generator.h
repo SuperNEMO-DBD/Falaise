@@ -1,6 +1,5 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/TrackerPreClustering/event_generator.h
- * Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
+/// \file falaise/TrackerPreClustering/event_generator.h
+/* Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2012-03-30
  * Last modified: 2014-02-07
  *
@@ -112,3 +111,11 @@ namespace TrackerPreClustering {
 } // end of namespace TrackerPreClustering
 
 #endif // FALAISE_TRACKERPRECLUSTERING_EVENT_GENERATOR_H
+
+/*
+** Local Variables: --
+** mode: c++ --
+** c-file-style: "gnu" --
+** tab-width: 2 --
+** End: --
+*/

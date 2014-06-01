@@ -1,5 +1,4 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/tracker_cluster.cc */
+/// \file falaise/snemo/datamodels/tracker_cluster.cc
 
 // Ourselves
 #include <falaise/snemo/datamodels/tracker_cluster.h>
@@ -9,7 +8,6 @@ namespace snemo {
   namespace datamodel {
 
     // Serial tag for datatools::serialization::i_serializable interface :
-    //DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(tracker_cluster, "snemo::core::model::tracker_cluster")
     DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(tracker_cluster,
                                                       "snemo::datamodel::tracker_cluster")
 
@@ -98,6 +96,14 @@ namespace snemo {
       return;
     }
 
+    const calibrated_tracker_hit & tracker_cluster::get_hit(int i_) const
+    {
+      DT_THROW_IF(i_ < 0 || i_ >= (int) _hits_.size(),
+                  std::range_error,
+                  "Invalid clustered hit index (" << i_ << ") !");
+      return _hits_[i_].get();
+    }
+
     void tracker_cluster::tree_dump(std::ostream      & out_,
                                     const std::string & title_,
                                     const std::string & indent_,
@@ -110,8 +116,20 @@ namespace snemo {
       base_hit::tree_dump(out_, title_, indent, true);
 
       out_ << indent << datatools::i_tree_dumpable::tag
-           << "Hits        : " << _hits_.size() << std::endl;
+           << "Hit(s) : " << _hits_.size() << std::endl;
+      for (int i = 0; i < (int) _hits_.size(); i++) {
+        const calibrated_tracker_hit & gg_calib_hit = _hits_.at(i).get();
+        out_ << indent << datatools::i_tree_dumpable::skip_tag;
+        if ( i + 1 == (int) _hits_.size()) {
+          out_ << datatools::i_tree_dumpable::last_tag;
+        } else {
+          out_ << datatools::i_tree_dumpable::tag;
+        }
+        out_ << "Hit #" << i << " : Id=" << gg_calib_hit.get_hit_id()
+             << " GID=" << gg_calib_hit.get_geom_id()
+             << std::endl;
 
+      }
       out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
            << "Cluster ID  : " << get_cluster_id() << std::endl;
 
@@ -121,5 +139,3 @@ namespace snemo {
   } // end of namespace datamodel
 
 } // end of namespace snemo
-
-// end of falaise/snemo/datamodels/tracker_cluster.cc

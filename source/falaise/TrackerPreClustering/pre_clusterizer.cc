@@ -1,4 +1,3 @@
-// -*- mode: c++ ; -*-
 /// \file falaise/TrackerPreClustering/pre_clusterizer.cc
 
 // Ourselves:
