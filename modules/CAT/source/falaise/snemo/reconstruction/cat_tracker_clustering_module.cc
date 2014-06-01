@@ -264,7 +264,11 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::cat_tracker_clustering_mo
   ocd_.set_class_library("Falaise_CAT");
   ocd_.set_class_documentation("This module uses the CAT clustering algorithm.");
 
+  // Invoke OCD support from parent class :
   dpp::base_module::common_ocd(ocd_);
+
+  // Invoke specific OCD support from the driver class:
+  ::snemo::reconstruction::cat_driver::init_ocd(ocd_);
 
   {
     // Description of the 'CD_label' configuration property :
@@ -321,24 +325,33 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::cat_tracker_clustering_mo
                             )
       .set_default_value_string(snemo::processing::service_info::default_geometry_service_label())
       .add_example("Use an alternative name for the geometry service:: \n"
-                   "                                    \n"
-                   "  Geo_label : string = \"geometry\" \n"
-                   "                                    \n"
+                   "                                                   \n"
+                   "  Geo_label : string = \"geometry2\"               \n"
+                   "                                                   \n"
                    )
       ;
   }
 
   // Additionnal configuration hints :
-  ocd_.set_configuration_hints("Here is a full configuration example in the      \n"
-                               "``datatools::properties`` ASCII format::         \n"
-                               "                                         \n"
-                               "  CD_label  : string = \"CD\"            \n"
-                               "  TCD_label : string = \"TCD\"           \n"
-                               "  Geo_label : string = \"geometry\"      \n"
-                               "                                         \n"
-                               "Additional specific parameters are used to configure    \n"
-                               "the embedded ``CAT`` driver itself; see the OCD support \n"
-                               "of the ``snemo::reconstruction::cat_driver`` class.     \n"
+  ocd_.set_configuration_hints("Here is a full configuration example in the                          \n"
+                               "``datatools::properties`` ASCII format::                             \n"
+                               "                                                                     \n"
+                               "  TC.logging.priority          : string = \"fatal\"                  \n"
+                               "  TC.locator_plugin_name       : string = \"locators_driver\"        \n"
+                               "  TPC.delayed_hit_cluster_time : real as time = 10 us                \n"
+                               "  TPC.processing_prompt_hits   : boolean = 1                         \n"
+                               "  TPC.processing_delayed_hits  : boolean = 1                         \n"
+                               "  TPC.split_chamber            : boolean = 0                         \n"
+                               "  CD_label                     : string = \"CD\"                     \n"
+                               "  TCD_label                    : string = \"TCD\"                    \n"
+                               "  Geo_label                    : string = \"geometry\"               \n"
+                               "  CAT.magnetic_field           : real   = 25 gauss                   \n"
+                               "  CAT.max_time                 : real   = 5000.0 ms                  \n"
+                               "  CAT.nofflayers               : integer = 1                         \n"
+                               "                                                                     \n"
+                               "Additional specific parameters can be used to configure              \n"
+                               "the embedded ``CAT`` driver itself; see the OCD support              \n"
+                               "of the ``snemo::reconstruction::cat_driver`` class.                  \n"
                                );
 
   ocd_.set_validation_support(true);

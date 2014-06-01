@@ -104,7 +104,7 @@ namespace snemo {
                     // const snemo::datamodel::calibrated_data::tracker_hit_collection_type & calibrated_tracker_hits_,
                     snemo::datamodel::tracker_clustering_data & clustering_data_);
 
-      /// Give default values to specific class members.
+      /// Give default values to specific class members
       void _set_defaults();
 
     private:

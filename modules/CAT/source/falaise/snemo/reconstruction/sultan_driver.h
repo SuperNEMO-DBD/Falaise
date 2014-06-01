@@ -84,6 +84,9 @@ namespace snemo {
                                 snemo::datamodel::tracker_clustering_data & clustering_
                                 );
 
+      /// OCD support:
+      static void init_ocd(datatools::object_configuration_description & ocd_);
+
     protected:
 
       /// Set default attributes

@@ -264,7 +264,11 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_tracker_clustering
   ocd_.set_class_library("falaise");
   ocd_.set_class_documentation("This module uses the SULTAN clustering algorithm.");
 
+  // Invoke OCD support from parent class :
   dpp::base_module::common_ocd(ocd_);
+
+  // Invoke specific OCD support from the driver class:
+  ::snemo::reconstruction::sultan_driver::init_ocd(ocd_);
 
   {
     std::ostringstream ldesc;
@@ -333,16 +337,31 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_tracker_clustering
   }
 
   // Additionnal configuration hints :
-  ocd_.set_configuration_hints("Here is a full configuration example in the      \n"
-                               "``datatools::properties`` ASCII format::         \n"
-                               "                                         \n"
-                               "  CD_label  : string = \"CD\"            \n"
-                               "  TCD_label : string = \"TCD\"           \n"
-                               "  Geo_label : string = \"geometry\"      \n"
-                               "                                         \n"
-                               "Additional specific parameters are used to configure       \n"
-                               "the embedded ``SULTAN`` driver itself; see the OCD support \n"
-                               "of the ``snemo::reconstruction::sultan_driver`` class.     \n"
+  ocd_.set_configuration_hints("Here is a full configuration example in the                          \n"
+                               "``datatools::properties`` ASCII format::                             \n"
+                               "                                                                     \n"
+                               "  TC.logging.priority          : string = \"fatal\"                  \n"
+                               "  TC.locator_plugin_name       : string = \"locators_driver\"        \n"
+                               "  TPC.delayed_hit_cluster_time : real as time = 10 us                \n"
+                               "  TPC.processing_prompt_hits   : boolean = 1                         \n"
+                               "  TPC.processing_delayed_hits  : boolean = 1                         \n"
+                               "  TPC.split_chamber            : boolean = 0                         \n"
+                               "  CD_label                     : string = \"CD\"                     \n"
+                               "  TCD_label                    : string = \"TCD\"                    \n"
+                               "  Geo_label                    : string = \"geometry\"               \n"
+                               "  SULTAN.magnetic_field        : real   = 25 gauss                   \n"
+                               "  SULTAN.max_time              : real   = 5000.0 ms                  \n"
+                               "  SULTAN.Emin                  : real  = 120 keV                     \n"
+                               "  SULTAN.Emax                  : real  = 3.3 MeV                     \n"
+                               "  SULTAN.nsigma_r              : real  = 3.0                         \n"
+                               "  SULTAN.nsigma_z              : real  = 4.0                         \n"
+                               "  SULTAN.nofflayers            : integer = 1                         \n"
+                               "  SULTAN.nsigmas               : real  = 1.0                         \n"
+                               "  SULTAN.sigma_z_factor        : real  = 1.0                         \n"
+                               "                                                                     \n"
+                               "Additional specific parameters can be used to configure              \n"
+                               "the embedded ``SULTAN`` driver itself; see the OCD support           \n"
+                               "of the ``snemo::reconstruction::sultan_driver`` class.               \n"
                                );
 
   ocd_.set_validation_support(true);

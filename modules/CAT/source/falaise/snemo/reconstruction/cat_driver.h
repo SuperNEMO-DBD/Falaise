@@ -87,6 +87,9 @@ namespace snemo {
       //                           const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
       //                           snemo::datamodel::tracker_clustering_data & clustering_);
 
+      /// OCD support:
+      static void init_ocd(datatools::object_configuration_description & ocd_);
+
     private:
 
       CAT::setup_data   _CAT_setup_;        /// Configuration data

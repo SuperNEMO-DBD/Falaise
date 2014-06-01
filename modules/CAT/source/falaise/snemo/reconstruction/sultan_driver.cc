@@ -537,12 +537,12 @@ namespace snemo {
            iscenario != tss.end();
            ++iscenario){
 
-        // If not default solution, add a new one :
+        // Add a new solution :
         sdm::tracker_clustering_solution::handle_type htcs(new sdm::tracker_clustering_solution);
         clustering_.add_solution(htcs, true);
         clustering_.grab_default_solution().set_solution_id(clustering_.get_number_of_solutions() - 1);
         sdm::tracker_clustering_solution & clustering_solution = clustering_.grab_default_solution();
-        clustering_solution.grab_auxiliaries().update_string("tracker_clusterizer", SULTAN_ID);
+        clustering_solution.grab_auxiliaries().update_string(sdm::tracker_clustering_data::clusterizer_id_key(), SULTAN_ID);
 
         const std::vector<st::sequence> & the_sequences = iscenario->sequences();
         DT_LOG_DEBUG(get_logging_priority(), "Number of sequences = " << the_sequences.size());
@@ -601,6 +601,395 @@ namespace snemo {
       return 0;
     }
 
+    // static
+    void sultan_driver::init_ocd(datatools::object_configuration_description & ocd_)
+    {
+
+      // Invoke OCD support from parent class :
+      ::snemo::processing::base_tracker_clusterizer::ocd_support(ocd_);
+
+      {
+        // Description of the 'SULTAN.magnetic_field' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("SULTAN.magnetic_field")
+          .set_from("snemo::reconstruction::sultan_driver")
+          .set_terse_description("Force the magnetic field value (vertical)")
+          .set_traits(datatools::TYPE_REAL)
+          .set_mandatory(false)
+          // .set_long_description("Default value: 25 gauss")
+          .set_default_value_real(25 * CLHEP::gauss, "gauss")
+          .add_example("Use no magnetic field::                    \n"
+                       "                                           \n"
+                       "  SULTAN.magnetic_field : real = 0.0 gauss \n"
+                       "                                           \n"
+                       )
+          ;
+      }
+
+
+      {
+        // Description of the 'SULTAN.clusterizer_level' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("SULTAN.clusterizer_level")
+          .set_from("snemo::reconstruction::sultan_driver")
+          .set_terse_description("SULTAN clusterizer's verbosity level")
+          .set_traits(datatools::TYPE_STRING)
+          .set_mandatory(false)
+          // .set_long_description("Default value: \"normal\"")
+          .set_default_value_string("normal")
+          .add_example("Use normal verbosity::                           \n"
+                       "                                                 \n"
+                       "  SULTAN.clusterizer_level : string = \"normal\" \n"
+                       "                                                 \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'SULTAN.sequentiator_level' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("SULTAN.sequentiator_level")
+          .set_from("snemo::reconstruction::sultan_driver")
+          .set_terse_description("SULTAN sequentiator's verbosity level")
+          .set_traits(datatools::TYPE_STRING)
+          .set_mandatory(false)
+          // .set_long_description("Default value: \"normal\"")
+          .set_default_value_string("normal")
+          .add_example("Use normal verbosity::                           \n"
+                       "                                                 \n"
+                       "  SULTAN.sequentiator_level : string = \"normal\" \n"
+                       "                                                 \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'SULTAN.max_time' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("SULTAN.max_time")
+          .set_from("snemo::reconstruction::sultan_driver")
+          .set_terse_description("Maximum processing time")
+          .set_traits(datatools::TYPE_REAL)
+          .set_mandatory(false)
+          // .set_long_description("Default value: 5000 ms")
+          .set_default_value_real(5000 * CLHEP::ms, "ms")
+          .add_example("Use default value::                \n"
+                       "                                   \n"
+                       "  SULTAN.max_time : real = 5000 ms \n"
+                       "                                   \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'SULTAN.print_event_display' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("SULTAN.print_event_display")
+          .set_from("snemo::reconstruction::sultan_driver")
+          .set_terse_description("Activate the SULTAN print event display")
+          .set_traits(datatools::TYPE_BOOLEAN)
+          .set_mandatory(false)
+          .set_default_value_boolean(false)
+          .add_example("Use normal verbosity::                           \n"
+                       "                                                 \n"
+                       "  SULTAN.print_event_display : boolean = 0       \n"
+                       "                                                 \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'SULTAN.use_clocks' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("SULTAN.use_clocks")
+          .set_from("snemo::reconstruction::sultan_driver")
+          .set_terse_description("Activate the SULTAN clocks")
+          .set_traits(datatools::TYPE_BOOLEAN)
+          .set_mandatory(false)
+          .set_default_value_boolean(false)
+          .add_example("Activate clocks::                                \n"
+                       "                                                 \n"
+                       "  SULTAN.use_clocks : boolean = 1                \n"
+                       "                                                 \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'SULTAN.endpoints' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("SULTAN.endpoints")
+          .set_from("snemo::reconstruction::sultan_driver")
+          .set_terse_description("Use end points to clusterize")
+          .set_traits(datatools::TYPE_BOOLEAN)
+          .set_mandatory(false)
+          .set_default_value_boolean(false)
+          .add_example("Activate endpoints::                             \n"
+                       "                                                 \n"
+                       "  SULTAN.endpoints : boolean = 1                 \n"
+                       "                                                 \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'SULTAN.legendre' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("SULTAN.legendre")
+          .set_from("snemo::reconstruction::sultan_driver")
+          .set_terse_description("Use Legendre transform to clusterize")
+          .set_traits(datatools::TYPE_BOOLEAN)
+          .set_mandatory(false)
+          .set_default_value_boolean(false)
+          .add_example("Activate Legendre transform::                    \n"
+                       "                                                 \n"
+                       "  SULTAN.legendre : boolean = 1                  \n"
+                       "                                                 \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'SULTAN.clusterize_with_helix_model' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("SULTAN.clusterize_with_helix_model")
+          .set_from("snemo::reconstruction::sultan_driver")
+          .set_terse_description("Use helix model to clusterize")
+          .set_traits(datatools::TYPE_BOOLEAN)
+          .set_mandatory(false)
+          .set_default_value_boolean(false)
+          .add_example("Activate helix model::                             \n"
+                       "                                                   \n"
+                       "  SULTAN.clusterize_with_helix_model : boolean = 1 \n"
+                       "                                                   \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'SULTAN.Emin' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("SULTAN.Emin")
+          .set_from("snemo::reconstruction::sultan_driver")
+          .set_terse_description("Minimum energy of detected electron")
+          .set_traits(datatools::TYPE_REAL)
+          .set_mandatory(false)
+          // .set_long_description("Default value: 0.2 MeV")
+          .set_default_value_real(0.2 * CLHEP::MeV, "MeV")
+          .add_example("Use default value::                \n"
+                       "                                   \n"
+                       "  SULTAN.Emin : real = 0.2 MeV     \n"
+                       "                                   \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'SULTAN.Emax' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("SULTAN.Emax")
+          .set_from("snemo::reconstruction::sultan_driver")
+          .set_terse_description("Maximum energy of detected electron")
+          .set_traits(datatools::TYPE_REAL)
+          .set_mandatory(false)
+          // .set_long_description("Default value: 7.0 MeV")
+          .set_default_value_real(7.0 * CLHEP::MeV, "MeV")
+          .add_example("Use default value::                \n"
+                       "                                   \n"
+                       "  SULTAN.Emax : real = 7.0 MeV     \n"
+                       "                                   \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'SULTAN.probmin' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("SULTAN.probmin")
+          .set_from("snemo::reconstruction::sultan_driver")
+          .set_terse_description("Minimal probability away from the straight line")
+          .set_traits(datatools::TYPE_REAL)
+          .set_mandatory(false)
+          // .set_long_description("Default value: 0.0")
+          .set_default_value_real(0.0)
+          .add_example("Use default value::                \n"
+                       "                                   \n"
+                       "  SULTAN.probmin : real = 0.0      \n"
+                       "                                   \n"
+                       )
+          ;
+      }
+
+
+      {
+        // Description of the 'SULTAN.nsigma_r' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("SULTAN.nsigma_r")
+          .set_from("snemo::reconstruction::sultan_driver")
+          .set_terse_description("Number of sigmas for tolerance on the drift radius")
+          .set_traits(datatools::TYPE_REAL)
+          .set_mandatory(false)
+          // .set_long_description("Default value: 5.0")
+          .set_default_value_real(5.0)
+          .add_example("Use default value::                \n"
+                       "                                   \n"
+                       "  SULTAN.nsigma_r : real = 5.0     \n"
+                       "                                   \n"
+                       )
+          ;
+      }
+
+
+      {
+        // Description of the 'SULTAN.nsigma_z' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("SULTAN.nsigma_z")
+          .set_from("snemo::reconstruction::sultan_driver")
+          .set_terse_description("Number of sigmas for tolerance on the longitudinal position")
+          .set_traits(datatools::TYPE_REAL)
+          .set_mandatory(false)
+          // .set_long_description("Default value: 3.0")
+          .set_default_value_real(3.0)
+          .add_example("Use default value::                \n"
+                       "                                   \n"
+                       "  SULTAN.nsigma_z : real = 3.0     \n"
+                       "                                   \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'SULTAN.nofflayers' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("SULTAN.nofflayers")
+          .set_from("snemo::reconstruction::sultan_driver")
+          .set_terse_description("Number of cells which can be skipped (because the cell did not work) and still the cluster is continuous")
+          .set_traits(datatools::TYPE_INTEGER)
+          .set_mandatory(false)
+          // .set_long_description("Default value: 1")
+          .set_default_value_integer(1)
+          .add_example("Use default value::               \n"
+                       "                                  \n"
+                       "  SULTAN.nofflayers : integer = 1 \n"
+                       "                                  \n"
+                       )
+          ;
+      }
+
+
+      {
+        // Description of the 'SULTAN.first_event' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("SULTAN.first_event")
+          .set_from("snemo::reconstruction::sultan_driver")
+          .set_terse_description("First event to be processed")
+          .set_traits(datatools::TYPE_INTEGER)
+          .set_mandatory(false)
+          // .set_long_description("Default value: -1")
+          .set_default_value_integer(-1)
+          .add_example("Do not specify any first event::     \n"
+                       "                                     \n"
+                       "  SULTAN.first_event : integer = -1  \n"
+                       "                                     \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'SULTAN.sigma_z_factor' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("SULTAN.sigma_z_factor")
+          .set_from("snemo::reconstruction::sultan_driver")
+          .set_terse_description("Sigma Z factor")
+          .set_traits(datatools::TYPE_REAL)
+          .set_mandatory(false)
+          // .set_long_description("Default value: 1.0")
+          .set_default_value_real(1.0)
+          .add_example("Use the default value::                     \n"
+                       "                                            \n"
+                       "  SULTAN.sigma_z_factor : real = 1.0 \n"
+                       "                                            \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'SULTAN.min_ncells_in_cluster' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("SULTAN.min_ncells_in_cluster")
+          .set_from("snemo::reconstruction::sultan_driver")
+          .set_terse_description("Minimum number of cells in a cluster")
+          .set_traits(datatools::TYPE_INTEGER)
+          .set_mandatory(false)
+          // .set_long_description("Default value: -1")
+          .set_default_value_integer(0)
+          .add_example("Do not specify any min value::                \n"
+                       "                                              \n"
+                       "  SULTAN.min_ncells_in_cluster : integer = 0  \n"
+                       "                                              \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'SULTAN.ncells_between_triplet_min' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("SULTAN.ncells_between_triplet_min")
+          .set_from("snemo::reconstruction::sultan_driver")
+          .set_terse_description("Minimum distance between cells in a triplet")
+          .set_traits(datatools::TYPE_INTEGER)
+          .set_mandatory(false)
+          // .set_long_description("Default value: -1")
+          .set_default_value_integer(0)
+          .add_example("Do not specify any min value::                \n"
+                       "                                              \n"
+                       "  SULTAN.ncells_between_triplet_min : integer = 0  \n"
+                       "                                              \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'SULTAN.ncells_between_triplet_range' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("SULTAN.ncells_between_triplet_range")
+          .set_from("snemo::reconstruction::sultan_driver")
+          .set_terse_description("Range distance between cells in a triplet")
+          .set_traits(datatools::TYPE_INTEGER)
+          .set_mandatory(false)
+          // .set_long_description("Default value: -1")
+          .set_default_value_integer(0)
+          .add_example("Do not specify any min value::                \n"
+                       "                                              \n"
+                       "  SULTAN.ncells_between_triplet_range : integer = 0  \n"
+                       "                                              \n"
+                       )
+          ;
+      }
+
+      return;
+    }
+
   } // end of namespace reconstruction
 
 } // end of namespace snemo
@@ -615,367 +1004,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_driver,ocd_)
   ocd_.set_class_library("Falaise_CAT");
   ocd_.set_class_documentation("This driver manager for the SULTAN clustering algorithm.");
 
-  // Invoke OCD support at parent level :
-  ::snemo::processing::base_tracker_clusterizer::ocd_support(ocd_);
-
-  {
-    // Description of the 'SULTAN.magnetic_field' configuration property :
-    datatools::configuration_property_description & cpd
-      = ocd_.add_property_info();
-    cpd.set_name_pattern("SULTAN.magnetic_field")
-      .set_terse_description("Force the magnetic field value (vertical)")
-      .set_traits(datatools::TYPE_REAL)
-      .set_mandatory(false)
-      // .set_long_description("Default value: 25 gauss")
-      .set_default_value_real(25 * CLHEP::gauss, "gauss")
-      .add_example("Use no magnetic field::                    \n"
-                   "                                           \n"
-                   "  SULTAN.magnetic_field : real = 0.0 gauss \n"
-                   "                                           \n"
-                   )
-      ;
-  }
-
-
-  {
-    // Description of the 'SULTAN.clusterizer_level' configuration property :
-    datatools::configuration_property_description & cpd
-      = ocd_.add_property_info();
-    cpd.set_name_pattern("SULTAN.clusterizer_level")
-      .set_terse_description("SULTAN clusterizer's verbosity level")
-      .set_traits(datatools::TYPE_STRING)
-      .set_mandatory(false)
-      // .set_long_description("Default value: \"normal\"")
-      .set_default_value_string("normal")
-      .add_example("Use normal verbosity::                           \n"
-                   "                                                 \n"
-                   "  SULTAN.clusterizer_level : string = \"normal\" \n"
-                   "                                                 \n"
-                   )
-      ;
-  }
-
-  {
-    // Description of the 'SULTAN.sequentiator_level' configuration property :
-    datatools::configuration_property_description & cpd
-      = ocd_.add_property_info();
-    cpd.set_name_pattern("SULTAN.sequentiator_level")
-      .set_terse_description("SULTAN sequentiator's verbosity level")
-      .set_traits(datatools::TYPE_STRING)
-      .set_mandatory(false)
-      // .set_long_description("Default value: \"normal\"")
-      .set_default_value_string("normal")
-      .add_example("Use normal verbosity::                           \n"
-                   "                                                 \n"
-                   "  SULTAN.sequentiator_level : string = \"normal\" \n"
-                   "                                                 \n"
-                   )
-      ;
-  }
-
-  {
-    // Description of the 'SULTAN.max_time' configuration property :
-    datatools::configuration_property_description & cpd
-      = ocd_.add_property_info();
-    cpd.set_name_pattern("SULTAN.max_time")
-      .set_terse_description("Maximum processing time")
-      .set_traits(datatools::TYPE_REAL)
-      .set_mandatory(false)
-      // .set_long_description("Default value: 5000 ms")
-      .set_default_value_real(5000 * CLHEP::ms, "ms")
-      .add_example("Use default value::                \n"
-                   "                                   \n"
-                   "  SULTAN.max_time : real = 5000 ms \n"
-                   "                                   \n"
-                   )
-      ;
-  }
-
-  {
-    // Description of the 'SULTAN.print_event_display' configuration property :
-    datatools::configuration_property_description & cpd
-      = ocd_.add_property_info();
-    cpd.set_name_pattern("SULTAN.print_event_display")
-      .set_terse_description("Activate the SULTAN print event display")
-      .set_traits(datatools::TYPE_BOOLEAN)
-      .set_mandatory(false)
-      .set_default_value_boolean(false)
-      .add_example("Use normal verbosity::                           \n"
-                   "                                                 \n"
-                   "  SULTAN.print_event_display : boolean = 0       \n"
-                   "                                                 \n"
-                   )
-      ;
-  }
-
-  {
-    // Description of the 'SULTAN.use_clocks' configuration property :
-    datatools::configuration_property_description & cpd
-      = ocd_.add_property_info();
-    cpd.set_name_pattern("SULTAN.use_clocks")
-      .set_terse_description("Activate the SULTAN clocks")
-      .set_traits(datatools::TYPE_BOOLEAN)
-      .set_mandatory(false)
-      .set_default_value_boolean(false)
-      .add_example("Activate clocks::                                \n"
-                   "                                                 \n"
-                   "  SULTAN.use_clocks : boolean = 1                \n"
-                   "                                                 \n"
-                   )
-      ;
-  }
-
-  {
-    // Description of the 'SULTAN.endpoints' configuration property :
-    datatools::configuration_property_description & cpd
-      = ocd_.add_property_info();
-    cpd.set_name_pattern("SULTAN.endpoints")
-      .set_terse_description("Use end points to clusterize")
-      .set_traits(datatools::TYPE_BOOLEAN)
-      .set_mandatory(false)
-      .set_default_value_boolean(false)
-      .add_example("Activate endpoints::                             \n"
-                   "                                                 \n"
-                   "  SULTAN.endpoints : boolean = 1                 \n"
-                   "                                                 \n"
-                   )
-      ;
-  }
-
-  {
-    // Description of the 'SULTAN.legendre' configuration property :
-    datatools::configuration_property_description & cpd
-      = ocd_.add_property_info();
-    cpd.set_name_pattern("SULTAN.legendre")
-      .set_terse_description("Use Legendre transform to clusterize")
-      .set_traits(datatools::TYPE_BOOLEAN)
-      .set_mandatory(false)
-      .set_default_value_boolean(false)
-      .add_example("Activate Legendre transform::                    \n"
-                   "                                                 \n"
-                   "  SULTAN.legendre : boolean = 1                  \n"
-                   "                                                 \n"
-                   )
-      ;
-  }
-
-  {
-    // Description of the 'SULTAN.clusterize_with_helix_model' configuration property :
-    datatools::configuration_property_description & cpd
-      = ocd_.add_property_info();
-    cpd.set_name_pattern("SULTAN.clusterize_with_helix_model")
-      .set_terse_description("Use helix model to clusterize")
-      .set_traits(datatools::TYPE_BOOLEAN)
-      .set_mandatory(false)
-      .set_default_value_boolean(false)
-      .add_example("Activate helix model::                             \n"
-                   "                                                   \n"
-                   "  SULTAN.clusterize_with_helix_model : boolean = 1 \n"
-                   "                                                   \n"
-                   )
-      ;
-  }
-
-  {
-    // Description of the 'SULTAN.Emin' configuration property :
-    datatools::configuration_property_description & cpd
-      = ocd_.add_property_info();
-    cpd.set_name_pattern("SULTAN.Emin")
-      .set_terse_description("Minimum energy of detected electron")
-      .set_traits(datatools::TYPE_REAL)
-      .set_mandatory(false)
-      // .set_long_description("Default value: 0.2 MeV")
-      .set_default_value_real(0.2 * CLHEP::MeV, "MeV")
-      .add_example("Use default value::                \n"
-                   "                                   \n"
-                   "  SULTAN.Emin : real = 0.2 MeV     \n"
-                   "                                   \n"
-                   )
-      ;
-  }
-
-  {
-    // Description of the 'SULTAN.Emax' configuration property :
-    datatools::configuration_property_description & cpd
-      = ocd_.add_property_info();
-    cpd.set_name_pattern("SULTAN.Emax")
-      .set_terse_description("Maximum energy of detected electron")
-      .set_traits(datatools::TYPE_REAL)
-      .set_mandatory(false)
-      // .set_long_description("Default value: 7.0 MeV")
-      .set_default_value_real(7.0 * CLHEP::MeV, "MeV")
-      .add_example("Use default value::                \n"
-                   "                                   \n"
-                   "  SULTAN.Emax : real = 7.0 MeV     \n"
-                   "                                   \n"
-                   )
-      ;
-  }
-
-  {
-    // Description of the 'SULTAN.probmin' configuration property :
-    datatools::configuration_property_description & cpd
-      = ocd_.add_property_info();
-    cpd.set_name_pattern("SULTAN.probmin")
-      .set_terse_description("Minimal probability away from the straight line")
-      .set_traits(datatools::TYPE_REAL)
-      .set_mandatory(false)
-      // .set_long_description("Default value: 0.0")
-      .set_default_value_real(0.0)
-      .add_example("Use default value::                \n"
-                   "                                   \n"
-                   "  SULTAN.probmin : real = 0.0      \n"
-                   "                                   \n"
-                   )
-      ;
-  }
-
-
-  {
-    // Description of the 'SULTAN.nsigma_r' configuration property :
-    datatools::configuration_property_description & cpd
-      = ocd_.add_property_info();
-    cpd.set_name_pattern("SULTAN.nsigma_r")
-      .set_terse_description("Number of sigmas for tolerance on the drift radius")
-      .set_traits(datatools::TYPE_REAL)
-      .set_mandatory(false)
-      // .set_long_description("Default value: 5.0")
-      .set_default_value_real(5.0)
-      .add_example("Use default value::                \n"
-                   "                                   \n"
-                   "  SULTAN.nsigma_r : real = 5.0     \n"
-                   "                                   \n"
-                   )
-      ;
-  }
-
-
-  {
-    // Description of the 'SULTAN.nsigma_z' configuration property :
-    datatools::configuration_property_description & cpd
-      = ocd_.add_property_info();
-    cpd.set_name_pattern("SULTAN.nsigma_z")
-      .set_terse_description("Number of sigmas for tolerance on the longitudinal position")
-      .set_traits(datatools::TYPE_REAL)
-      .set_mandatory(false)
-      // .set_long_description("Default value: 3.0")
-      .set_default_value_real(3.0)
-      .add_example("Use default value::                \n"
-                   "                                   \n"
-                   "  SULTAN.nsigma_z : real = 3.0     \n"
-                   "                                   \n"
-                   )
-      ;
-  }
-
-  {
-    // Description of the 'SULTAN.nofflayers' configuration property :
-    datatools::configuration_property_description & cpd
-      = ocd_.add_property_info();
-    cpd.set_name_pattern("SULTAN.nofflayers")
-      .set_terse_description("Number of cells which can be skipped (because the cell did not work) and still the cluster is continuous")
-      .set_traits(datatools::TYPE_INTEGER)
-      .set_mandatory(false)
-      // .set_long_description("Default value: 1")
-      .set_default_value_integer(1)
-      .add_example("Use default value::               \n"
-                   "                                  \n"
-                   "  SULTAN.nofflayers : integer = 1 \n"
-                   "                                  \n"
-                   )
-      ;
-  }
-
-
-  {
-    // Description of the 'SULTAN.first_event' configuration property :
-    datatools::configuration_property_description & cpd
-      = ocd_.add_property_info();
-    cpd.set_name_pattern("SULTAN.first_event")
-      .set_terse_description("First event to be processed")
-      .set_traits(datatools::TYPE_INTEGER)
-      .set_mandatory(false)
-      // .set_long_description("Default value: -1")
-      .set_default_value_integer(-1)
-      .add_example("Do not specify any first event::     \n"
-                   "                                     \n"
-                   "  SULTAN.first_event : integer = -1  \n"
-                   "                                     \n"
-                   )
-      ;
-  }
-
-  {
-    // Description of the 'SULTAN.sigma_z_factor' configuration property :
-    datatools::configuration_property_description & cpd
-      = ocd_.add_property_info();
-    cpd.set_name_pattern("SULTAN.sigma_z_factor")
-      .set_terse_description("Sigma Z factor")
-      .set_traits(datatools::TYPE_REAL)
-      .set_mandatory(false)
-      // .set_long_description("Default value: 1.0")
-      .set_default_value_real(1.0)
-      .add_example("Use the default value::                     \n"
-                   "                                            \n"
-                   "  SULTAN.sigma_z_factor : real = 1.0 \n"
-                   "                                            \n"
-                   )
-      ;
-  }
-
-  {
-    // Description of the 'SULTAN.min_ncells_in_cluster' configuration property :
-    datatools::configuration_property_description & cpd
-      = ocd_.add_property_info();
-    cpd.set_name_pattern("SULTAN.min_ncells_in_cluster")
-      .set_terse_description("Minimum number of cells in a cluster")
-      .set_traits(datatools::TYPE_INTEGER)
-      .set_mandatory(false)
-      // .set_long_description("Default value: -1")
-      .set_default_value_integer(0)
-      .add_example("Do not specify any min value::                \n"
-                   "                                              \n"
-                   "  SULTAN.min_ncells_in_cluster : integer = 0  \n"
-                   "                                              \n"
-                   )
-      ;
-  }
-
-  {
-    // Description of the 'SULTAN.ncells_between_triplet_min' configuration property :
-    datatools::configuration_property_description & cpd
-      = ocd_.add_property_info();
-    cpd.set_name_pattern("SULTAN.ncells_between_triplet_min")
-      .set_terse_description("Minimum distance between cells in a triplet")
-      .set_traits(datatools::TYPE_INTEGER)
-      .set_mandatory(false)
-      // .set_long_description("Default value: -1")
-      .set_default_value_integer(0)
-      .add_example("Do not specify any min value::                \n"
-                   "                                              \n"
-                   "  SULTAN.ncells_between_triplet_min : integer = 0  \n"
-                   "                                              \n"
-                   )
-      ;
-  }
-
-  {
-    // Description of the 'SULTAN.ncells_between_triplet_range' configuration property :
-    datatools::configuration_property_description & cpd
-      = ocd_.add_property_info();
-    cpd.set_name_pattern("SULTAN.ncells_between_triplet_range")
-      .set_terse_description("Range distance between cells in a triplet")
-      .set_traits(datatools::TYPE_INTEGER)
-      .set_mandatory(false)
-      // .set_long_description("Default value: -1")
-      .set_default_value_integer(0)
-      .add_example("Do not specify any min value::                \n"
-                   "                                              \n"
-                   "  SULTAN.ncells_between_triplet_range : integer = 0  \n"
-                   "                                              \n"
-                   )
-      ;
-  }
+  // Invoke specific OCD support :
+  ::snemo::reconstruction::sultan_driver::init_ocd(ocd_);
 
   ocd_.set_validation_support(true);
   ocd_.lock();
