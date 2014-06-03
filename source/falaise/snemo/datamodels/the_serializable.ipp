@@ -30,6 +30,7 @@
 #include <falaise/snemo/datamodels/tracker_trajectory_data.ipp>
 
 #include <falaise/snemo/datamodels/particle_track.ipp>
+#include <falaise/snemo/datamodels/particle_track_data.ipp>
 
 #endif // FALAISE_SNEMO_DATAMODEL_THE_SERIALIZABLE_IPP
 

@@ -48,7 +48,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/particle_track.h
   snemo/datamodels/particle_track.ipp
   snemo/datamodels/particle_track_data.h
-#  snemo/datamodels/particle_track_data.ipp
+  snemo/datamodels/particle_track_data.ipp
 
   snemo/datamodels/data_model.h
 
@@ -152,6 +152,7 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/testing/test_snemo_datamodel_tracker_trajectory.cxx
   snemo/testing/test_snemo_datamodel_tracker_trajectory_solution.cxx
   snemo/testing/test_snemo_datamodel_particle_track.cxx
+  snemo/testing/test_snemo_datamodel_particle_track_data.cxx
   snemo/testing/test_snemo_geometry_calo_locator_1.cxx
   snemo/testing/test_snemo_geometry_gg_locator_1.cxx
   snemo/testing/test_snemo_geometry_gveto_locator_1.cxx
