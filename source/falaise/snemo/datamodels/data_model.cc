@@ -74,6 +74,12 @@ namespace snemo {
         return lbl;
       }
 
+      const std::string & data_info::default_particle_track_data_label()
+      {
+        static std::string lbl("PTD");
+        return lbl;
+      }
+
     } // end of namespace datamodel
 
 } // end of namespace snemo

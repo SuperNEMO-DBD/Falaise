@@ -80,6 +80,9 @@ namespace snemo {
       /// Return the default string label/name for the 'tracker trajectory data'
       static const std::string & default_tracker_trajectory_data_label();
 
+      /// Return the default string label/name for the 'particle track data'
+      static const std::string & default_particle_track_data_label();
+
     };
 
     /// Alias for the event record container type
