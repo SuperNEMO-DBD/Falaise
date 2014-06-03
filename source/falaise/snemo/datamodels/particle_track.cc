@@ -231,10 +231,3 @@ namespace snemo {
 } // end of namespace snemo
 
 // end of falaise/snemo/datamodels/particle_track.cc
-/*
-** Local Variables: --
-** mode: c++ --
-** c-file-style: "gnu" --
-** tab-width: 2 --
-** End: --
-*/
