@@ -46,7 +46,9 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/tracker_trajectory_data.h
   snemo/datamodels/tracker_trajectory_data.ipp
   snemo/datamodels/particle_track.h
-#  snemo/datamodels/particle_track.ipp
+  snemo/datamodels/particle_track.ipp
+  snemo/datamodels/particle_track_data.h
+#  snemo/datamodels/particle_track_data.ipp
 
   snemo/datamodels/data_model.h
 
@@ -99,6 +101,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/datamodels/tracker_trajectory_solution.cc
   snemo/datamodels/tracker_trajectory_data.cc
   snemo/datamodels/particle_track.cc
+  snemo/datamodels/particle_track_data.cc
   snemo/datamodels/raw_trigger_infos.cc
   snemo/datamodels/raw_calorimeter_hit.cc
   snemo/datamodels/raw_tracker_hit.cc
