@@ -29,6 +29,8 @@
 #include <falaise/snemo/datamodels/tracker_trajectory_solution.ipp>
 #include <falaise/snemo/datamodels/tracker_trajectory_data.ipp>
 
+#include <falaise/snemo/datamodels/particle_track.ipp>
+
 #endif // FALAISE_SNEMO_DATAMODEL_THE_SERIALIZABLE_IPP
 
 /* end of falaise/snemo/datamodels/the_serializable.ipp */

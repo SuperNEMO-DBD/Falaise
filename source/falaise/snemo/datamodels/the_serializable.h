@@ -122,6 +122,16 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::tracke
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::tracker_trajectory_data)
 BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::tracker_trajectory_data)
 
+/*****************************************
+ * snemo::datamodel::particle_track_data *
+ *****************************************/
+
+#include <falaise/snemo/datamodels/particle_track.ipp>
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::particle_track)
+// #include <falaise/snemo/datamodels/tracker_clustering_data.ipp>
+// DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::tracker_clustering_data)
+// BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::tracker_clustering_data)
+
 
 #endif // FALAISE_SNEMO_DATAMODELS_THE_SERIALIZABLE_H
 
