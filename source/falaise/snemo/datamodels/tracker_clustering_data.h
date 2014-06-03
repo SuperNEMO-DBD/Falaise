@@ -213,7 +213,6 @@ namespace snemo {
 
     private :
 
-      bool                         _debug_;                        //!< Debug flag
       solution_col_type            _solutions_;                    //!< Collection of Geiger cluster solution handles
       tracker_clustering_solution::handle_type _default_solution_; //!< Handle to the default/best solution
       datatools::properties        _auxiliaries_;                  //!< Auxiliary properties

@@ -14,7 +14,6 @@
 #include <boost/cstdint.hpp>
 // - Bayeux/datatools
 #include <datatools/handle.h>
-#include <datatools/properties.h>
 // - Bayeux/geomtools
 #include <geomtools/base_hit.h>
 

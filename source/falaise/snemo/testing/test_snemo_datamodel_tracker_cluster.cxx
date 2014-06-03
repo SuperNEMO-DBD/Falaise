@@ -1,5 +1,5 @@
 // -*- mode: c++ ; -*-
-// test_tracker_cluster.cxx
+// test_snemo_datamodel_tracker_cluster.cxx
 
 // Standard library:
 #include <cstdlib>
@@ -116,4 +116,4 @@ int main(/* int argc_, char ** argv_ */)
   return(error_code);
 }
 
-// end of test_tracker_cluster.cxx
+// end of test_snemo_datamodel_tracker_cluster.cxx
