@@ -274,7 +274,7 @@ namespace snemo {
 
 }  // end of namespace snemo
 
-// end of tracker_clustering_data_cut.cc
+// end of falaise/snemo/cuts/tracker_clustering_data_cut.cc
 /*
 ** Local Variables: --
 ** mode: c++ --
