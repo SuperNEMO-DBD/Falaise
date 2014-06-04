@@ -81,6 +81,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/cuts/simulated_data_cut.h
   snemo/cuts/calibrated_data_cut.h
   snemo/cuts/tracker_clustering_data_cut.h
+  snemo/cuts/particle_track_data_cut.h
 
   )
 
@@ -135,6 +136,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/cuts/simulated_data_cut.cc
   snemo/cuts/calibrated_data_cut.cc
   snemo/cuts/tracker_clustering_data_cut.cc
+  snemo/cuts/particle_track_data_cut.cc
   )
 
 list(APPEND FalaiseLibrary_TESTS
