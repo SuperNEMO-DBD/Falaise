@@ -20,8 +20,8 @@
 #include <falaise/snemo/datamodels/tracker_trajectory_data.h>
 #include <falaise/snemo/datamodels/particle_track_data.h>
 
-// // This plugin (ChargedParticleTracking):
-// #include <snemo/reconstruction/vertex_extrapolation_driver.h>
+// This plugin (ChargedParticleTracking):
+#include <snemo/reconstruction/vertex_extrapolation_driver.h>
 // #include <snemo/reconstruction/charge_computation_driver.h>
 // #include <snemo/reconstruction/calorimeter_association_driver.h>
 
@@ -54,7 +54,7 @@ namespace snemo {
 
       _geometry_manager_  = 0;
 
-      // _VED_.reset();
+      _VED_.reset();
       // _CCD_.reset();
       // _CAD_.reset();
       return;
@@ -62,7 +62,7 @@ namespace snemo {
 
     void charged_particle_tracking_module::initialize(const datatools::properties  & setup_,
                                                       datatools::service_manager   & service_manager_,
-                                                      dpp::module_handle_dict_type & module_dict_)
+                                                      dpp::module_handle_dict_type & /* module_dict_ */)
     {
       DT_THROW_IF(is_initialized(),
                   std::logic_error,
@@ -105,25 +105,24 @@ namespace snemo {
         }
 
       // Drivers :
-      // DT_THROW_IF (! setup_.has_key ("drivers"), std::logic_error, "Missing 'drivers' key !");
-      // std::vector<std::string> driver_names;
-      // setup_.fetch ("drivers", driver_names);
-      // for (std::vector<std::string>::const_iterator
-      //        idriver = driver_names.begin ();
-      //      idriver != driver_names.end (); ++idriver)
-      //   {
-      //     const std::string & a_driver_name = *idriver;
+      DT_THROW_IF(! setup_.has_key ("drivers"), std::logic_error, "Missing 'drivers' key !");
+      std::vector<std::string> driver_names;
+      setup_.fetch("drivers", driver_names);
+      for (std::vector<std::string>::const_iterator
+             idriver = driver_names.begin();
+           idriver != driver_names.end(); ++idriver)
+        {
+          const std::string & a_driver_name = *idriver;
 
-      //     if (a_driver_name == "VED")
-      //       {
-      //         // Initialize Vertex Extrapolation Driver
-      //         _VED_.reset (new snemo::analysis::processing::vertex_extrapolation_driver);
-      //         _VED_->set_geometry_manager (get_geometry_manager ());
-      //         //_VED_->set_module_number (_module_number_);
-      //         datatools::properties VED_config;
-      //         setup_.export_and_rename_starting_with (VED_config, std::string (a_driver_name + "."), "");
-      //         _VED_->initialize (VED_config);
-      //       }
+          if (a_driver_name == "VED")
+            {
+              // Initialize Vertex Extrapolation Driver
+              _VED_.reset(new snemo::reconstruction::vertex_extrapolation_driver);
+              _VED_->set_geometry_manager(get_geometry_manager ());
+              datatools::properties VED_config;
+              setup_.export_and_rename_starting_with(VED_config, std::string (a_driver_name + "."), "");
+              _VED_->initialize(VED_config);
+            }
       //     else if (a_driver_name == "CCD")
       //       {
       //         // Initialize Charge Computation Driver
@@ -141,11 +140,11 @@ namespace snemo {
       //         setup_.export_and_rename_starting_with (CAD_config, std::string (a_driver_name + "."), "");
       //         _CAD_->initialize (CAD_config);
       //       }
-      //     else
-      //       {
-      //         DT_THROW_IF (true, std::logic_error, "Driver '" << a_driver_name << "' does not exist !");
-      //       }
-      //   }
+          // else
+          //   {
+          //     DT_THROW_IF (true, std::logic_error, "Driver '" << a_driver_name << "' does not exist !");
+          //   }
+        }
 
       // Tag the module as initialized :
       _set_initialized (true);
@@ -272,26 +271,24 @@ namespace snemo {
         }
 
       const snemo::datamodel::tracker_trajectory_solution & def_solution
-        = tracker_trajectory_data_.get_default_solution ();
+        = tracker_trajectory_data_.get_default_solution();
       const snemo::datamodel::tracker_trajectory_solution::trajectory_col_type & trajectories
-        = def_solution.get_trajectories ();
+        = def_solution.get_trajectories();
       for (snemo::datamodel::tracker_trajectory_solution::trajectory_col_type::const_iterator
-             itrajectory = trajectories.begin ();
-           itrajectory != trajectories.end (); ++itrajectory)
+             itrajectory = trajectories.begin();
+           itrajectory != trajectories.end(); ++itrajectory)
         {
-          const snemo::datamodel::tracker_trajectory & a_trajectory = itrajectory->get ();
+          const snemo::datamodel::tracker_trajectory & a_trajectory = itrajectory->get();
 
           // Look into properties to find the default
           // trajectory. Here, default means the one with the best
-          // chi2. This flag is set by the 'fitting' module (check
-          // charged_tracker_fitting_module).
-          if (!a_trajectory.get_auxiliaries ().has_flag ("default")) continue;
+          // chi2. This flag is set by the 'fitting' module.
+          if (!a_trajectory.get_auxiliaries().has_flag("default")) continue;
 
           // Add a new particle_track
-          snemo::datamodel::particle_track::handle_type
-            hPT (new snemo::datamodel::particle_track);
-          hPT.grab ().set_trajectory_handle (*itrajectory);
-          particle_track_data_.add_particle (hPT);
+          snemo::datamodel::particle_track::handle_type hPT(new snemo::datamodel::particle_track);
+          hPT.grab().set_trajectory_handle(*itrajectory);
+          particle_track_data_.add_particle(hPT);
 
           // // Compute particle charge
           // if (_CCD_.get () != 0 && _CCD_->is_initialized ())
@@ -299,11 +296,8 @@ namespace snemo {
           //     _CCD_->process (a_trajectory, hPT.grab ());
           //   }
 
-          // // Determine track vertices
-          // if (_VED_.get () != 0 && _VED_->is_initialized ())
-          //   {
-          //     _VED_->process (a_trajectory, hPT.grab ());
-          //   }
+          // Determine track vertices
+          _VED_->process(a_trajectory, hPT.grab());
 
           // // Associate vertices to calorimeter hits
           // if (_CAD_.get () != 0 && _CAD_->is_initialized ())
