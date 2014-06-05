@@ -56,8 +56,8 @@ namespace snemo {
   namespace reconstruction {
 
     class vertex_extrapolation_driver;
-    // class charge_computation_driver;
-    // class calorimeter_association_driver;
+    class charge_computation_driver;
+    class calorimeter_association_driver;
 
     /// \brief Charged particle tracking module
     class charged_particle_tracking_module : public dpp::base_module
@@ -107,11 +107,11 @@ namespace snemo {
       /// Vertex Extrapolation Driver :
       boost::scoped_ptr<snemo::reconstruction::vertex_extrapolation_driver> _VED_;
 
-      // /// Charge Computation Driver :
-      // boost::scoped_ptr<snemo::reconstruction::charge_computation_driver> _CCD_;
+      /// Charge Computation Driver :
+      boost::scoped_ptr<snemo::reconstruction::charge_computation_driver> _CCD_;
 
-      // /// Calorimeter Association Driver :
-      // boost::scoped_ptr<snemo::reconstruction::calorimeter_association_driver> _CAD_;
+      /// Calorimeter Association Driver :
+      boost::scoped_ptr<snemo::reconstruction::calorimeter_association_driver> _CAD_;
 
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(charged_particle_tracking_module);

@@ -22,8 +22,8 @@
 
 // This plugin (ChargedParticleTracking):
 #include <snemo/reconstruction/vertex_extrapolation_driver.h>
-// #include <snemo/reconstruction/charge_computation_driver.h>
-// #include <snemo/reconstruction/calorimeter_association_driver.h>
+#include <snemo/reconstruction/charge_computation_driver.h>
+#include <snemo/reconstruction/calorimeter_association_driver.h>
 
 namespace snemo {
 
@@ -55,8 +55,8 @@ namespace snemo {
       _geometry_manager_  = 0;
 
       _VED_.reset();
-      // _CCD_.reset();
-      // _CAD_.reset();
+      _CCD_.reset();
+      _CAD_.reset();
       return;
     }
 
@@ -120,30 +120,30 @@ namespace snemo {
               _VED_.reset(new snemo::reconstruction::vertex_extrapolation_driver);
               _VED_->set_geometry_manager(get_geometry_manager ());
               datatools::properties VED_config;
-              setup_.export_and_rename_starting_with(VED_config, std::string (a_driver_name + "."), "");
+              setup_.export_and_rename_starting_with(VED_config, std::string(a_driver_name + "."), "");
               _VED_->initialize(VED_config);
             }
-      //     else if (a_driver_name == "CCD")
-      //       {
-      //         // Initialize Charge Computation Driver
-      //         _CCD_.reset (new snemo::analysis::processing::charge_computation_driver);
-      //         datatools::properties CCD_config;
-      //         setup_.export_and_rename_starting_with (CCD_config, std::string (a_driver_name + "."), "");
-      //         _CCD_->initialize (CCD_config);
-      //       }
-      //     else if (a_driver_name == "CAD")
-      //       {
-      //         // Initialize Calorimeter Association Driver
-      //         _CAD_.reset (new snemo::analysis::processing::calorimeter_association_driver);
-      //         _CAD_->set_geometry_manager (get_geometry_manager ());
-      //         datatools::properties CAD_config;
-      //         setup_.export_and_rename_starting_with (CAD_config, std::string (a_driver_name + "."), "");
-      //         _CAD_->initialize (CAD_config);
-      //       }
-          // else
-          //   {
-          //     DT_THROW_IF (true, std::logic_error, "Driver '" << a_driver_name << "' does not exist !");
-          //   }
+          else if (a_driver_name == "CCD")
+            {
+              // Initialize Charge Computation Driver
+              _CCD_.reset(new snemo::reconstruction::charge_computation_driver);
+              datatools::properties CCD_config;
+              setup_.export_and_rename_starting_with(CCD_config, std::string(a_driver_name + "."), "");
+              _CCD_->initialize(CCD_config);
+            }
+          else if (a_driver_name == "CAD")
+            {
+              // Initialize Calorimeter Association Driver
+              _CAD_.reset(new snemo::reconstruction::calorimeter_association_driver);
+              _CAD_->set_geometry_manager(get_geometry_manager ());
+              datatools::properties CAD_config;
+              setup_.export_and_rename_starting_with(CAD_config, std::string(a_driver_name + "."), "");
+              _CAD_->initialize(CAD_config);
+            }
+          else
+            {
+              DT_THROW_IF (true, std::logic_error, "Driver '" << a_driver_name << "' does not exist !");
+            }
         }
 
       // Tag the module as initialized :
@@ -290,20 +290,14 @@ namespace snemo {
           hPT.grab().set_trajectory_handle(*itrajectory);
           particle_track_data_.add_particle(hPT);
 
-          // // Compute particle charge
-          // if (_CCD_.get () != 0 && _CCD_->is_initialized ())
-          //   {
-          //     _CCD_->process (a_trajectory, hPT.grab ());
-          //   }
+          // Compute particle charge
+          _CCD_->process(a_trajectory, hPT.grab());
 
           // Determine track vertices
           _VED_->process(a_trajectory, hPT.grab());
 
-          // // Associate vertices to calorimeter hits
-          // if (_CAD_.get () != 0 && _CAD_->is_initialized ())
-          //   {
-          //     _CAD_->process (calibrated_data_.calibrated_calorimeter_hits (), hPT.grab ());
-          //   }
+          // Associate vertices to calorimeter hits
+          _CAD_->process(calibrated_data_.calibrated_calorimeter_hits(), hPT.grab());
         }
 
       // Grab non associated calorimeters :
