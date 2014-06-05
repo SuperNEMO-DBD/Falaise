@@ -128,9 +128,6 @@ namespace snemo {
 
         if (!gg_locator.is_drift_cell_volume_in_current_module(gg_hit_gid)) {
           DT_LOG_DEBUG(get_logging_priority(), "Current Geiger cell is not in the module!");
-          // std::cerr << "DEVEL: " << "Current Geiger cell is not in the module! "
-          //           << " GID=" << gg_hit_gid
-          //           << std::endl;
           continue;
         }
 
@@ -153,21 +150,20 @@ namespace snemo {
       for (hit_collection_type::const_iterator igg = gg_hits_.begin(); igg != gg_hits_.end(); ++igg) {
         const sdm::calibrated_tracker_hit & a_gg_hit = igg->get();
         if (hits_ids.count(a_gg_hit.get_hit_id()) == 0) {
-          std::cerr << "******* DEVEL: "
-                    << "Hit " << a_gg_hit.get_hit_id() << " (GID=" << a_gg_hit.get_geom_id() << ") is not clustered!"
-                    << std::endl;
+          DT_LOG_TRACE(get_logging_priority(),
+                       "Hit " << a_gg_hit.get_hit_id() << " (GID=" << a_gg_hit.get_geom_id() << ") is not clustered!");
           tc_solution.grab_unclustered_hits().push_back(*igg);
         } else {
-          std::cerr << "******* DEVEL: "
-                    << "Hit " << a_gg_hit.get_hit_id() << " (GID=" << a_gg_hit.get_geom_id() << ") is clustered!"
-                    << std::endl;
+          DT_LOG_TRACE(get_logging_priority(),
+                       "Hit " << a_gg_hit.get_hit_id() << " (GID=" << a_gg_hit.get_geom_id() << ") is clustered!");
         }
       }
 
       // Set a unique Id to this solution:
       tc_solution.set_solution_id(clustering_.get_number_of_solutions());
 
-      tc_solution.tree_dump(std::cerr , "Mock: ", "DEVEL: ");
+      if (get_logging_priority() >= datatools::logger::PRIO_TRACE)
+        tc_solution.tree_dump(std::clog, "Mock Tracker Clustering solution: ", "DEVEL: ");
 
       // Add the solution as the default one:
       clustering_.add_solution(htcs, true);
