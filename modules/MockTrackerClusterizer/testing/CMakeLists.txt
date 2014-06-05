@@ -9,7 +9,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(testing_SOURCES utilities.cc)
 
-set(_cat_TEST_ENVIRONMENT "FALAISE_RESOURCE_DIR=${Falaise_DATAROOTDIR}/resources")
+set(_mtc_TEST_ENVIRONMENT "FALAISE_RESOURCE_DIR=${Falaise_DATAROOTDIR}/resources")
 
 if(FalaiseMockTrackerClusterizerPlugin_ENABLE_TESTING)
   foreach(_testsource ${FalaiseMockTrackerClusteringPlugin_TESTS})
@@ -23,7 +23,7 @@ if(FalaiseMockTrackerClusterizerPlugin_ENABLE_TESTING)
     endif()
     add_test(NAME ${_testname} COMMAND ${_testname})
     set_property(TEST ${_testname}
-      APPEND PROPERTY ENVIRONMENT ${_cat_TEST_ENVIRONMENT}
+      APPEND PROPERTY ENVIRONMENT ${_mtc_TEST_ENVIRONMENT}
       )
     # - For now, dump them into the testing output directory
     set_target_properties(${_testname}
