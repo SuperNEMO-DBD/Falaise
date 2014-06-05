@@ -66,9 +66,9 @@ namespace snemo {
 
       // Logging priority
       datatools::logger::priority lp = datatools::logger::extract_logging_configuration (setup_);
-      DT_THROW_IF (lp == datatools::logger::PRIO_UNDEFINED,
-                   std::logic_error,
-                   "Invalid logging priority level for geometry manager !");
+      DT_THROW_IF(lp == datatools::logger::PRIO_UNDEFINED,
+                  std::logic_error,
+                  "Invalid logging priority level for geometry manager !");
       set_logging_priority(lp);
 
       if (setup_.has_key ("charge_from_source"))

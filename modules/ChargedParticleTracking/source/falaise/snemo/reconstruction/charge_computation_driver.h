@@ -54,7 +54,7 @@ namespace snemo {
     {
     public:
 
-      /// Initialization flag
+      /// Setting initialization flag
       void set_initialized(const bool initialized_);
 
       /// Getting initialization flag
