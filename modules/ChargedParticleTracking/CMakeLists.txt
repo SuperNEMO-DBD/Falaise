@@ -22,11 +22,13 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source/falaise)
 
 # - Headers:
 list(APPEND FalaiseChargedParticleTrackingPlugin_HEADERS
+  source/falaise/snemo/reconstruction/charge_computation_driver.h
   source/falaise/snemo/reconstruction/vertex_extrapolation_driver.h
   source/falaise/snemo/reconstruction/charged_particle_tracking_module.h)
 
 # - Sources:
 list(APPEND FalaiseChargedParticleTrackingPlugin_SOURCES
+  source/falaise/snemo/reconstruction/charge_computation_driver.cc
   source/falaise/snemo/reconstruction/vertex_extrapolation_driver.cc
   source/falaise/snemo/reconstruction/charged_particle_tracking_module.cc)
 
