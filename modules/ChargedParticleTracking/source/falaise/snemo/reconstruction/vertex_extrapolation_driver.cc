@@ -145,7 +145,7 @@ namespace snemo {
 
     void vertex_extrapolation_driver::_set_defaults()
     {
-      _initialized_ = false;
+      _initialized_      = false;
       _logging_priority_ = datatools::logger::PRIO_WARNING;
 
       _geometry_manager_ = 0;
@@ -229,7 +229,7 @@ namespace snemo {
               const bool is_angle1 = std::fabs(first_point.x()) < std::fabs(last_point.x());
 
               // Changing angle sign since acos function gives a 0 to PI angle
-              double angle = acos(cangle);
+              double angle = std::acos(cangle);
               if (is_angle1  && a_helix.get_angle1()*angle < 0.0) angle *= -1.0;
               if (!is_angle1 && a_helix.get_angle2()*angle < 0.0) angle *= -1.0;
 
