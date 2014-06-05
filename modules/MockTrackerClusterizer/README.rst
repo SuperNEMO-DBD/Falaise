@@ -25,4 +25,5 @@ Geant4 simulation engine.
 
 Authors:
 
+ * Mathieu Bongrand <bongrand@lal.in2p3.fr>
  * Xavier Garrido <garrido@lal.in2p3.fr>
