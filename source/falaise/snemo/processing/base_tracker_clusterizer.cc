@@ -487,6 +487,10 @@ namespace snemo {
         } else {
           DT_THROW_IF(true, std::logic_error, "Cannot handle case with more than 2 prompt input clusters!");
         }
+        // If only one solution has been set, then set it as the default one.
+        if (clustering_.get_solutions().size() == 1) {
+          clustering_.set_default_solution(0);
+        }
       }
 
       // Process delayed time-clusters :
@@ -536,10 +540,6 @@ namespace snemo {
             clustering_.grab_solutions().push_back(h_tc_sol);
           }
         }
-      }
-      // If only one solution has been set, then set it to the default one.
-      if (clustering_.get_solutions().size() == 1) {
-        clustering_.set_default_solution(0);
       }
 
       _post_process (gg_hits_, calo_hits_, clustering_);
