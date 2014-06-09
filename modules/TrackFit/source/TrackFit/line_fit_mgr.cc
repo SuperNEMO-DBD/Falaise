@@ -554,7 +554,7 @@ namespace TrackFit {
     bool is_cluster_delayed = true;
     for (gg_hits_col::const_iterator i = _hits_->begin(); i != _hits_->end(); ++i) {
       const gg_hit & a_hit = *i;
-      if (! a_hit.get_properties().has_flag("__delayed")) {
+      if (! a_hit.get_properties().has_flag(gg_hit::delayed_flag())) {
         is_cluster_delayed = false;
         break;
       }
@@ -1483,7 +1483,7 @@ namespace TrackFit {
          i != hits_.end();
          ++i) {
       const gg_hit & a_hit = *i;
-      if (! a_hit.get_properties().has_flag("__delayed")) {
+      if (! a_hit.get_properties().has_flag(gg_hit::delayed_flag())) {
         is_cluster_delayed = false;
         break;
       }

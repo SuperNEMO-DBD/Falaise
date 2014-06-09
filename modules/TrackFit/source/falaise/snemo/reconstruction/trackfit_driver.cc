@@ -377,10 +377,6 @@ namespace snemo {
                igg != hits.end(); ++igg) {
             const snemo::datamodel::calibrated_tracker_hit & a_gg_hit = igg->get();
 
-            if (a_gg_hit.has_delayed_time()) {
-              DT_LOG_DEBUG(get_logging_priority(), "A delayed geiger hit is added to the cell collection !");
-            }
-
             // Fill TrackFit::gg_hits_col
             {
               TrackFit::gg_hit hit;
@@ -408,8 +404,9 @@ namespace snemo {
             // 2012-11-03 XG: Flag the delayed hit to fit also the start
             // time
             if (a_gg_hit.has_delayed_time()) {
+              DT_LOG_DEBUG(get_logging_priority(), "A delayed geiger hit is added to the cell collection !");
               hit.set_t(a_gg_hit.get_delayed_time());
-              hit.grab_properties().store_flag("__delayed");
+              hit.grab_properties().store_flag(TrackFit::gg_hit::delayed_flag());
             } else {
               hit.set_t(a_gg_hit.get_anode_time());
             }

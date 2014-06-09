@@ -16,6 +16,18 @@
 
 namespace TrackFit {
 
+  const std::string & gg_hit::prompt_flag()
+  {
+    static const std::string flag("prompt");
+    return flag;
+  }
+
+  const std::string & gg_hit::delayed_flag()
+  {
+    static const std::string flag("delayed");
+    return flag;
+  }
+
   const std::string & gg_hit::last_flag()
   {
     static std::string flag = "last_hit";
