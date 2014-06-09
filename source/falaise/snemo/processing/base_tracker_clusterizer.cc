@@ -432,7 +432,9 @@ namespace snemo {
           }
         }
 
-        if (_prompt_time_clusters_.size() == 1) {
+        if (_prompt_time_clusters_.size() == 0) {
+          DT_LOG_DEBUG(get_logging_priority(), "No cluster of prompt hits to be processed !");
+        } else if (_prompt_time_clusters_.size() == 1) {
           // In this case, only one clustering algorithm has been performed on
           // only one side of the tracking chamber or on both sides in a single shot:
           sdm::tracker_clustering_data & prompt_cd = prompt_work_clusterings[0];
@@ -485,10 +487,6 @@ namespace snemo {
         } else {
           DT_THROW_IF(true, std::logic_error, "Cannot handle case with more than 2 prompt input clusters!");
         }
-        if (clustering_.get_solutions().size() == 1) {
-          clustering_.set_default_solution(0);
-        }
-
       }
 
       // Process delayed time-clusters :
@@ -538,7 +536,10 @@ namespace snemo {
             clustering_.grab_solutions().push_back(h_tc_sol);
           }
         }
-
+      }
+      // If only one solution has been set, then set it to the default one.
+      if (clustering_.get_solutions().size() == 1) {
+        clustering_.set_default_solution(0);
       }
 
       _post_process (gg_hits_, calo_hits_, clustering_);
