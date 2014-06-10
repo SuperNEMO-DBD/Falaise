@@ -32,6 +32,9 @@ Contents:
       as track candidates for particle trajectory fitting
     * ``TrackFit/`` : a module that fits clusters of tracker hits with
       linear or helical trajectories.
+    * ``ChargedParticleTracking/`` : a module that interpret tracker
+      trajectories given SuperNEMO detector *i.e.* determine electric charge,
+      associate trajectory to calorimeter hits and extrapolate vertices.
 
 
 Management of resource files
