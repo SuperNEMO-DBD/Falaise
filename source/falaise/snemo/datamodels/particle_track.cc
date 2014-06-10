@@ -186,17 +186,12 @@ namespace snemo {
 
       out_ << indent << datatools::i_tree_dumpable::tag
            << "Particle charge : ";
-      if (get_charge () == invalid)
-        {
-          out_ << "invalid";
-        }
-      else
-        {
-          out_ << (int)get_charge ();
-        }
+      if (get_charge () == invalid)       out_ << "invalid";
+      else if (get_charge () == negative) out_ << "negative";
+      else if (get_charge () == positive) out_ << "positive";
       out_ << std::endl;
 
-      out_ << indent << datatools::i_tree_dumpable::inherit_tag (inherit_)
+      out_ << indent << datatools::i_tree_dumpable::tag
            << "Vertices : ";
       if (has_vertices ())
         {

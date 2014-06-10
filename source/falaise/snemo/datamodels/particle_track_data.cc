@@ -119,7 +119,23 @@ namespace snemo {
         }
 
       out_ << indent << datatools::i_tree_dumpable::tag
-           << "Particles : " << _particles_.size () << std::endl;
+           << "Particle(s) : " << _particles_.size () << std::endl;
+
+      for (size_t i = 0; i < get_number_of_particles(); i++) {
+        const particle_track & ptrack = get_particle(i);
+        std::ostringstream indent2;
+        out_ << indent << datatools::i_tree_dumpable::skip_tag;
+        indent2 << indent << datatools::i_tree_dumpable::skip_tag;
+        if (i == get_number_of_particles() - 1) {
+          out_ << datatools::i_tree_dumpable::last_tag;
+          indent2 << datatools::i_tree_dumpable::last_skip_tag;
+        } else {
+          out_ << datatools::i_tree_dumpable::tag;
+          indent2 << datatools::i_tree_dumpable::skip_tag;
+        }
+        out_ << "Particle #" << i << " : " << std::endl;
+        ptrack.tree_dump(out_, "", indent2.str());
+      }
 
       out_ << indent << datatools::i_tree_dumpable::inherit_tag (inherit_)
            << "Auxiliaries : ";
