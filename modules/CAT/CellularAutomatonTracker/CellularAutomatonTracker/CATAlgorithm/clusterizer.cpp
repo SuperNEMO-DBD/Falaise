@@ -1682,8 +1682,7 @@ namespace CAT {
 
     topology::experimental_double distance = topology::experimental_vector(c1.ep(),c2.ep()).hor().length();
 
-#if 1  // use side, layer and row
-
+    if( SuperNemo ){  // use side, layer and row
 
       // Use geiger locator for such research Warning: use integer
       // because uint32_t has strange behavior with absolute value
@@ -1714,36 +1713,36 @@ namespace CAT {
       else if (layer_distance == 1 && row_distance == 1) return 1;
       return 0;
 
-#else // use physical distance
+    }else{ // use physical distance
 
-    double limit_side;
-    double limit_diagonal;
-    if (SuperNemo && SuperNemoChannel)
-      {
-        limit_side = GG_CELL_pitch;
-        limit_diagonal = sqrt(2.)*GG_CELL_pitch;
-      }
-    else
-      {
-        double factor = cos(M_PI/8.); // 0.923879532511287 // octogonal factor = 0.92
-        limit_side = factor*CellDistance;
-        limit_diagonal = sqrt(2.)*factor*CellDistance; // new factor = 1.31
-      }
-    double precision = 0.15*limit_side;
+      double limit_side;
+      double limit_diagonal;
+      if (SuperNemo && SuperNemoChannel)
+	{
+	  limit_side = GG_CELL_pitch;
+	  limit_diagonal = sqrt(2.)*GG_CELL_pitch;
+	}
+      else
+	{
+	  double factor = cos(M_PI/8.); // 0.923879532511287 // octogonal factor = 0.92
+	  limit_side = factor*CellDistance;
+	  limit_diagonal = sqrt(2.)*factor*CellDistance; // new factor = 1.31
+	}
+      double precision = 0.15*limit_side;
+      
+      if( level >= mybhep::VVERBOSE )
+	std::clog << "CAT::clusterizer::near_level: (c " << c2.id() << " d " << distance.value() << " )"
+		  << std::endl;
+      
+      if( fabs(distance.value() - limit_side) < precision )
+	return 2;
+      
+      if( fabs(distance.value() - limit_diagonal) < precision )
+	return 1;
+      
+      return 0;
+    }
 
-    if( level >= mybhep::VVERBOSE )
-      std::clog << "CAT::clusterizer::near_level: (c " << c2.id() << " d " << distance.value() << " )"
-                << std::endl;
-
-    if( fabs(distance.value() - limit_side) < precision )
-      return 2;
-
-    if( fabs(distance.value() - limit_diagonal) < precision )
-      return 1;
-
-    return 0;
-
-#endif
 
   }
 

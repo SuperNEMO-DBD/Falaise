@@ -361,7 +361,10 @@ namespace CAT {
 
         //      experimental_double angle_at_center=center_to_start.kink_phi(direction)/2.;
         experimental_double phi0=c.phi_of_point(start);
-        experimental_double alpha=experimental_double(asin(1.),0.)-beta-experimental_acos(center_to_start.length()/c.radius()*rotation.y());
+	experimental_double angle = center_to_start.length()/c.radius()*rotation.y();
+	if( angle.value() > 1. ) angle.set_value(1.);
+	if( angle.value() < -1. ) angle.set_value(-1.);
+        experimental_double alpha=experimental_double(asin(1.),0.)-beta-experimental_acos(angle);
 
         experimental_double sign(1.,0.);  // if the track is in the outer part of the foil
         if( (center_to_start*direction).value() > 0 ) // the track in in the inner part of the foil
@@ -372,7 +375,7 @@ namespace CAT {
         ep->set_y(position(*ep, phi0.value(),start.y().value()).y());
 
         if( print_level() >= mybhep::VVERBOSE ){
-          std::clog << " center (" << c.center().x().value() << ", " << c.center().y().value() << ", " << c.center().z().value() << ") start (" << start.x().value() << ", " << start.y().value() << ", " << start.z().value() << ") cts (" << center_to_start.x().value() << ", " << center_to_start.y().value() << ", " << center_to_start.z().value() << ") beta " << beta.value()*180./acos(-1.) << " phi0 " << phi0.value()*180./acos(-1.) << " alpha " << alpha.value()*180./acos(-1.) << " sign " << sign.value() << " newangle " << (phi0+sign*alpha).value()*180./acos(-1.) << " pos: (" << ep->x().value() << ", " << ep->y().value() << ", " << ep->z().value() << ") " << std::endl;
+          std::clog << " center (" << c.center().x().value() << ", " << c.center().y().value() << ", " << c.center().z().value() << ") r " << c.radius().value() << " +- " << c.radius().error() << " start (" << start.x().value() << ", " << start.y().value() << ", " << start.z().value() << ") cts (" << center_to_start.x().value() << ", " << center_to_start.y().value() << ", " << center_to_start.z().value() << ") length " << center_to_start.length().value() << " +- " << center_to_start.length().error() <<  " beta " << beta.value()*180./acos(-1.) << " +- " << beta.error()*180./acos(-1.) << " phi0 " << phi0.value()*180./acos(-1.) << " angle " << angle.value() << " +- " << angle.error() << " alpha " << alpha.value()*180./acos(-1.) << " sign " << sign.value() << " newangle " << (phi0+sign*alpha).value()*180./acos(-1.) << " pos: (" << ep->x().value() << ", " << ep->y().value() << ", " << ep->z().value() << ") " << std::endl;
         }
 
         if( isnan(ep->x().value())  || isnan(ep->y().value()) || isnan(ep->z().value()) ) return false;

@@ -272,7 +272,7 @@ namespace SULTAN {
 	//topology::experimental_helix b = experimental_legendre_vector->max_with_metric();
 	//b = experimental_legendre_vector->gaussian_max(n_iterations, b);
 	iclu->set_helix(b);
-	iclu->recalculate_R();
+	//iclu->recalculate_R();
 	//iclu->recalculate(n_iterations);
 	iclu->set_cluster_type("helix");
       }

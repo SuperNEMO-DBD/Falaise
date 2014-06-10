@@ -552,14 +552,14 @@ namespace SULTAN{
       experimental_double local_R1, local_R2, local_R;
 
       for(std::vector<topology::node>::const_iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode){
-#if 0
-	local_R1 = fabs(sqrt(pow(helix_.x0().value() - inode->c().ep().x().value(),2) +
-			     pow(helix_.y0().value() - inode->c().ep().y().value(),2) 
-			     ) + inode->c().r().value());
-	local_R2 = fabs(sqrt(pow(helix_.x0().value() - inode->c().ep().x().value(),2) +
-			     pow(helix_.y0().value() - inode->c().ep().y().value(),2) 
-			     ) - inode->c().r().value());
-	if( fabs(local_R1 - helix_.R().value() ) < fabs(local_R2 - helix_.R().value() ) )
+#if 1
+	local_R1 = experimental_sqrt(experimental_square(helix_.x0() - inode->c().ep().x()) +
+				     experimental_square(helix_.y0() - inode->c().ep().y()) 
+				     ) + inode->c().r();
+	local_R2 = experimental_fabs(experimental_sqrt(experimental_square(helix_.x0() - inode->c().ep().x()) +
+						       experimental_square(helix_.y0() - inode->c().ep().y()) 
+						       ) - inode->c().r());
+	if( fabs(local_R1.value() - helix_.R().value() ) < fabs(local_R2.value() - helix_.R().value() ) )
 	  local_R = local_R1;
 	else
 	  local_R = local_R2;
