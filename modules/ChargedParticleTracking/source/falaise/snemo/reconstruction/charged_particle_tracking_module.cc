@@ -431,6 +431,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::charged_particle_tracking
 
   // Invoke specific OCD support from the driver class:
   ::snemo::reconstruction::vertex_extrapolation_driver::init_ocd(ocd_);
+  ::snemo::reconstruction::charge_computation_driver::init_ocd(ocd_);
+  ::snemo::reconstruction::calorimeter_association_driver::init_ocd(ocd_);
 
   // Additionnal configuration hints :
   ocd_.set_configuration_hints("Here is a full configuration example in the ``datatools::properties`` \n"

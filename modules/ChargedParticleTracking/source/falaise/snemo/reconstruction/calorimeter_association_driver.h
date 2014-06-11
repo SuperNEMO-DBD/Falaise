@@ -91,6 +91,9 @@ namespace snemo {
       void process(const snemo::datamodel::calibrated_data::calorimeter_hit_collection_type & calorimeter_hits_,
                    snemo::datamodel::particle_track & particle_);
 
+      /// OCD support:
+      static void init_ocd(datatools::object_configuration_description & ocd_);
+
     protected:
 
       /// Set default values to class members:
@@ -114,6 +117,11 @@ namespace snemo {
   }  // end of namespace reconstruction
 
 }  // end of namespace snemo
+
+#include <datatools/ocd_macros.h>
+
+// Declare the OCD interface of the module
+DOCD_CLASS_DECLARATION(snemo::reconstruction::calorimeter_association_driver)
 
 #endif // FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_CALORIMETER_ASSOCIATION_DRIVER_H
 

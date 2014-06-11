@@ -140,16 +140,69 @@ namespace snemo {
       const geomtools::vector_3d last_point  = ptr_helix->get_helix().get_last();
       const bool is_negative = std::fabs(first_point.x()) < std::fabs(last_point.x());
 
-      if (is_negative) particle_.set_charge(snemo::datamodel::particle_track::negative);
-      else             particle_.set_charge(snemo::datamodel::particle_track::positive);
+      if (_charge_from_source_) {
+        if (is_negative) particle_.set_charge(snemo::datamodel::particle_track::negative);
+        else             particle_.set_charge(snemo::datamodel::particle_track::positive);
+      } else {
+        if (is_negative) particle_.set_charge(snemo::datamodel::particle_track::positive);
+        else             particle_.set_charge(snemo::datamodel::particle_track::negative);
+      }
 
       DT_LOG_TRACE(get_logging_priority(), "Particle charge is " << (is_negative ? "negative" : "positive"));
 
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");
       return;
     }
+
+    // static
+    void charge_computation_driver::init_ocd(datatools::object_configuration_description & ocd_)
+    {
+
+      // Prefix "CCD" stands for "Charge Computation Driver" :
+      datatools::logger::declare_ocd_logging_configuration(ocd_, "fatal", "CCD.");
+
+      {
+        // Description of the 'CCD.charge_from_source' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("CCD.charge_from_source")
+          .set_from("snemo::reconstruction::charge_computation_driver")
+          .set_terse_description("Set the default origin of the particle track to compute its electric charge")
+          .set_traits(datatools::TYPE_BOOLEAN)
+          .set_mandatory(false)
+          .set_default_value_boolean(true)
+          .add_example("Set the default value::                \n"
+                       "                                       \n"
+                       "  CCD.charge_from_source : boolean = 1 \n"
+                       "                                       \n"
+                       )
+          ;
+      }
+    }
+
   }  // end of namespace reconstruction
 
 }  // end of namespace snemo
+
+/* OCD support */
+#include <datatools/object_configuration_description.h>
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::charge_computation_driver,ocd_)
+{
+  ocd_.set_class_name("snemo::reconstruction::charge_computation_driver");
+  ocd_.set_class_description("A driver class for electric charge computation algorithm");
+  ocd_.set_class_library("Falaise_ChargedParticleTracking");
+  ocd_.set_class_documentation("This drivers determines the electric charge of the particle track. \n"
+                               );
+
+  // Invoke specific OCD support :
+  ::snemo::reconstruction::charge_computation_driver::init_ocd(ocd_);
+
+  ocd_.set_validation_support(true);
+  ocd_.lock();
+  return;
+}
+DOCD_CLASS_IMPLEMENT_LOAD_END() // Closing macro for implementation
+DOCD_CLASS_SYSTEM_REGISTRATION(snemo::reconstruction::charge_computation_driver,
+                               "snemo::reconstruction::charge_computation_driver")
 
 // end of falaise/snemo/reconstruction/charge_computation_driver.cc

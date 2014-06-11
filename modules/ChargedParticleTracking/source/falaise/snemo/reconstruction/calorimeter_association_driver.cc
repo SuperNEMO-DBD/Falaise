@@ -237,9 +237,58 @@ namespace snemo {
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");
       return;
     }
+    // static
+    void calorimeter_association_driver::init_ocd(datatools::object_configuration_description & ocd_)
+    {
+
+      // Prefix "CAD" stands for "Calorimeter Association Driver" :
+      datatools::logger::declare_ocd_logging_configuration(ocd_, "fatal", "CAD.");
+
+      {
+        // Description of the 'VED.matching_tolerance' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("VED.matching_tolerance")
+          .set_from("snemo::reconstruction::calorimeter_association_driver")
+          .set_terse_description("Set matching length tolerance between vertex track and calo. block")
+          .set_traits(datatools::TYPE_REAL)
+          .set_mandatory(false)
+          .set_explicit_unit(true)
+          .set_unit_label("length")
+          .set_unit_symbol("mm")
+          .set_default_value_real(50.)
+          .add_example("Set the default value::                           \n"
+                       "                                                  \n"
+                       "  CAD.matching_tolerance : real as length = 50 mm \n"
+                       "                                                  \n"
+                       )
+          ;
+      }
+    }
 
   }  // end of namespace reconstruction
 
 }  // end of namespace snemo
+
+/* OCD support */
+#include <datatools/object_configuration_description.h>
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::calorimeter_association_driver,ocd_)
+{
+  ocd_.set_class_name("snemo::reconstruction::calorimeter_assocation_driver");
+  ocd_.set_class_description("A driver class for calorimeter association algorithm");
+  ocd_.set_class_library("Falaise_ChargedParticleTracking");
+  ocd_.set_class_documentation("This drivers does the association between a particle track and a calorimter hit. \n"
+                               );
+
+  // Invoke specific OCD support :
+  ::snemo::reconstruction::calorimeter_association_driver::init_ocd(ocd_);
+
+  ocd_.set_validation_support(true);
+  ocd_.lock();
+  return;
+}
+DOCD_CLASS_IMPLEMENT_LOAD_END() // Closing macro for implementation
+DOCD_CLASS_SYSTEM_REGISTRATION(snemo::reconstruction::calorimeter_association_driver,
+                               "snemo::reconstruction::calorimeter_association_driver")
 
 // end of falaise/snemo/reconstruction/calorimeter_association_driver.cc
