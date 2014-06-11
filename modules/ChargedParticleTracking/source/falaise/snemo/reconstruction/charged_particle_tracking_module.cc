@@ -15,6 +15,7 @@
 #include <geomtools/manager.h>
 
 // This project (Falaise):
+#include <falaise/snemo/processing/services.h>
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/calibrated_data.h>
 #include <falaise/snemo/datamodels/tracker_trajectory_data.h>
@@ -324,5 +325,136 @@ namespace snemo {
   } // end of namespace reconstruction
 
 } // end of namespace snemo
+
+/* OCD support */
+#include <datatools/object_configuration_description.h>
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::charged_particle_tracking_module, ocd_)
+{
+  ocd_.set_class_name("snemo::reconstruction::charged_particle_tracking_module");
+  ocd_.set_class_description("A module that performs the physical interpretation of tracker trajectory");
+  ocd_.set_class_library("Falaise_ChargedParticleTracking");
+  ocd_.set_class_documentation("This module uses some dedicated drivers to reconstruct physical quantities   \n"
+                               "such as electric charge or track vertices.                                   \n"
+                               "It uses 3 dedicated drivers to perform reconstruction steps:                 \n"
+                               " 1) Charge Computation Driver determines the electric charge of the track    \n"
+                               " 2) Vertex Extrapolation Driver builds the list of vertices such as          \n"
+                               "    foil vertex or calorimeter wall vertices                                 \n"
+                               " 3) Calorimeter Association Driver associates a track with a calorimeter hit \n");
+
+  // Invoke OCD support from parent class :
+  dpp::base_module::common_ocd(ocd_);
+
+  {
+    // Description of the 'CD_label' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("CD_label")
+      .set_terse_description("The label/name of the 'calibrated data' bank")
+      .set_traits(datatools::TYPE_STRING)
+      .set_mandatory(false)
+      .set_long_description("This is the name of the bank to be used  \n"
+                            "as the source of input calorimeter hits. \n"
+                            )
+      .set_default_value_string(snemo::datamodel::data_info::default_calibrated_data_label())
+      .add_example("Use an alternative name for the \n"
+                   "'calibrated data' bank::        \n"
+                   "                                \n"
+                   "  CD_label : string = \"CD2\"   \n"
+                   "                                \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'TTD_label' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("TTD_label")
+      .set_terse_description("The label/name of the 'tracker trajectory data' bank")
+      .set_traits(datatools::TYPE_STRING)
+      .set_mandatory(false)
+      .set_long_description("This is the name of the bank to be used      \n"
+                            "as the source of input tracker trajectories. \n"
+                            )
+      .set_default_value_string(snemo::datamodel::data_info::default_tracker_trajectory_data_label())
+      .add_example("Use an alternative name for the  \n"
+                   "'tracker trajectory data' bank:: \n"
+                   "                                 \n"
+                   "  TTD_label : string = \"TTD2\"  \n"
+                   "                                 \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'PTD_label' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("PTD_label")
+      .set_terse_description("The label/name of the 'particle track data' bank")
+      .set_traits(datatools::TYPE_STRING)
+      .set_mandatory(false)
+      .set_long_description("This is the name of the bank to be used as \n"
+                            "the sink of output particle tracks.        \n"
+                            )
+      .set_default_value_string(snemo::datamodel::data_info::default_particle_track_data_label())
+      .add_example("Use an alternative name for the \n"
+                   "'particle track data' bank::    \n"
+                   "                                \n"
+                   "  PTD_label : string = \"PTD2\" \n"
+                   "                                \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'Geo_label' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("Geo_label")
+      .set_terse_description("The label/name of the geometry service")
+      .set_traits(datatools::TYPE_STRING)
+      .set_mandatory(false)
+      .set_long_description("This is the name of the service to be used as the \n"
+                            "geometry service.                                 \n"
+                            "This property is only used if no geometry manager \n"
+                            "as been provided to the module.                   \n"
+                            )
+      .set_default_value_string(snemo::processing::service_info::default_geometry_service_label())
+      .add_example("Use an alternative name for the geometry service:: \n"
+                   "                                                   \n"
+                   "  Geo_label : string = \"geometry2\"               \n"
+                   "                                                   \n"
+                   )
+      ;
+  }
+
+  // Invoke specific OCD support from the driver class:
+  ::snemo::reconstruction::vertex_extrapolation_driver::init_ocd(ocd_);
+
+  // Additionnal configuration hints :
+  ocd_.set_configuration_hints("Here is a full configuration example in the ``datatools::properties`` \n"
+                               "ASCII format::                                                        \n"
+                               "                                                                      \n"
+                               "  CD_label                     : string = \"CD\"                      \n"
+                               "  TTD_label                    : string = \"TTD\"                     \n"
+                               "  PTD_label                    : string = \"PTD\"                     \n"
+                               "  Geo_label                    : string = \"geometry\"                \n"
+                               "  VED.logging.priority         : string = \"fatal\"                   \n"
+                               "  VED.use_linear_extrapolation : boolean = 0                          \n"
+                               "  CCD.logging_priority         : string = \"fatal\"                   \n"
+                               "  CCD.charge_from_source       : boolean = 1                          \n"
+                               "  CAD.logging_priority         : string = \"fatal\"                   \n"
+                               "  CAD.matching_tolerance       : real as length = 50 mm               \n"
+                               "                                                                      \n"
+                               );
+
+  ocd_.set_validation_support(true);
+  ocd_.lock();
+  return;
+}
+DOCD_CLASS_IMPLEMENT_LOAD_END() // Closing macro for implementation
+DOCD_CLASS_SYSTEM_REGISTRATION(snemo::reconstruction::charged_particle_tracking_module,
+                               "snemo::reconstruction::charged_particle_tracking_module")
 
 // end of falaise/snemo/reconstruction/charged_particle_tracking_module.cc

@@ -635,8 +635,57 @@ namespace snemo {
       return;
     }
 
+    // static
+    void vertex_extrapolation_driver::init_ocd(datatools::object_configuration_description & ocd_)
+    {
+
+      // Prefix "VED" stands for "Vertex Extrapolation Driver" :
+      datatools::logger::declare_ocd_logging_configuration(ocd_, "fatal", "VED.");
+
+      {
+        // Description of the 'VED.use_linear_extrapolation' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("VED.use_linear_extrapolation")
+          .set_from("snemo::reconstruction::vertex_extrapolation_driver")
+          .set_terse_description("Use a linear extrapolation to determine vertex position")
+          .set_traits(datatools::TYPE_BOOLEAN)
+          .set_mandatory(false)
+          .set_default_value_boolean(false)
+          .set_long_description("Feature to be implemented")
+          .add_example("Set the default value::                      \n"
+                       "                                             \n"
+                       "  VED.use_linear_extrapolation : boolean = 0 \n"
+                       "                                             \n"
+                       )
+          ;
+      }
+    }
+
   }  // end of namespace reconstruction
 
 }  // end of namespace snemo
+
+/* OCD support */
+#include <datatools/object_configuration_description.h>
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::vertex_extrapolation_driver,ocd_)
+{
+  ocd_.set_class_name("snemo::reconstruction::vertex_extrapolation_driver");
+  ocd_.set_class_description("A driver class for vertex extrapolation algorithm");
+  ocd_.set_class_library("Falaise_ChargedParticleTracking");
+  ocd_.set_class_documentation("This drivers does the extrapolation of tracker trajectories     \n"
+                               "and builds the list of vertices attached to the particle track. \n"
+                               );
+
+  // Invoke specific OCD support :
+  ::snemo::reconstruction::vertex_extrapolation_driver::init_ocd(ocd_);
+
+  ocd_.set_validation_support(true);
+  ocd_.lock();
+  return;
+}
+DOCD_CLASS_IMPLEMENT_LOAD_END() // Closing macro for implementation
+DOCD_CLASS_SYSTEM_REGISTRATION(snemo::reconstruction::vertex_extrapolation_driver,
+                               "snemo::reconstruction::vertex_extrapolation_driver")
 
 // end of falaise/snemo/reconstruction/vertex_extrapolation_driver.cc

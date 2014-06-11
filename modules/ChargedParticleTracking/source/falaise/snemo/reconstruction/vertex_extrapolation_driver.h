@@ -97,6 +97,9 @@ namespace snemo {
       void process(const snemo::datamodel::tracker_trajectory & trajectory_,
                    snemo::datamodel::particle_track           & particle_);
 
+      /// OCD support:
+      static void init_ocd(datatools::object_configuration_description & ocd_);
+
     protected:
 
       /// Set default values to class members:
@@ -126,6 +129,11 @@ namespace snemo {
   }  // end of namespace reconstruction
 
 }  // end of namespace snemo
+
+#include <datatools/ocd_macros.h>
+
+// Declare the OCD interface of the module
+DOCD_CLASS_DECLARATION(snemo::reconstruction::vertex_extrapolation_driver)
 
 #endif // FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_VERTEX_EXTRAPOLATION_DRIVER_H
 

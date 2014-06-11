@@ -122,10 +122,10 @@ namespace snemo {
 
 } // namespace snemo
 
-// #include <datatools/ocd_macros.h>
+#include <datatools/ocd_macros.h>
 
-// // Declare the OCD interface of the module
-// DOCD_CLASS_DECLARATION(snemo::reconstruction::charged_particle_tracking_module)
+// Declare the OCD interface of the module
+DOCD_CLASS_DECLARATION(snemo::reconstruction::charged_particle_tracking_module)
 
 #endif // FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_CHARGED_PARTICLE_TRACKING_MODULE_H
 
