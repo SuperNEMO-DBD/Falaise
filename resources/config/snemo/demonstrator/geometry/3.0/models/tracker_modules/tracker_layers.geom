@@ -38,7 +38,7 @@ replicated.model           : string  = "drift_cell_node_13.model"
 replicated.axis            : string  = "y"
 replicated.label           : string = "cells"
 
-visibility.hidden           : boolean = 0c
+visibility.hidden           : boolean = 0
 visibility.hidden_envelop   : boolean = 1 #1
 visibility.daughters.hidden : boolean = 0 #1
 visibility.color            : string = "cyan"
