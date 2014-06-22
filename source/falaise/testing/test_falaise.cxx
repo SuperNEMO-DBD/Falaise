@@ -1,4 +1,3 @@
-// -*- mode: c++ ; -*-
 // test_falaise.cxx
 
 // Standard library
@@ -12,7 +11,7 @@
 #include <falaise/version.h>
 #include <falaise/resource.h>
 
-int main(/* int argc_, char ** argv_ */)
+int main(int /* argc_ */, char ** /* argv_ */)
 {
   FALAISE_INIT();
   int error_code = EXIT_SUCCESS;
@@ -41,5 +40,3 @@ int main(/* int argc_, char ** argv_ */)
   FALAISE_FINI();
   return (error_code);
 }
-
-// end of test_falaise.cxx

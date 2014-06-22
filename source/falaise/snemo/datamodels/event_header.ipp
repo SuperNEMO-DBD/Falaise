@@ -1,5 +1,5 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/event_header.ipp */
+/// \file falaise/snemo/datamodels/event_header.ipp
 
 #ifndef FALAISE_SNEMO_DATAMODEL_EVENT_HEADER_IPP
 #define FALAISE_SNEMO_DATAMODEL_EVENT_HEADER_IPP 1
@@ -24,15 +24,15 @@ namespace snemo {
   namespace datamodel {
 
     template<class Archive>
-    void event_header::serialize (Archive & ar, const unsigned int version)
+    void event_header::serialize (Archive & ar_, const unsigned int version_)
     {
-      if (version > 0) {
-        ar & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
+      if (version_ > 0) {
+        ar_ & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
       }
-      ar & boost::serialization::make_nvp ("id",         _id_);
-      ar & boost::serialization::make_nvp ("generation", _generation_);
-      ar & boost::serialization::make_nvp ("timestamp",  _timestamp_);
-      ar & boost::serialization::make_nvp ("properties", _properties_);
+      ar_ & boost::serialization::make_nvp("id",         _id_);
+      ar_ & boost::serialization::make_nvp("generation", _generation_);
+      ar_ & boost::serialization::make_nvp("timestamp",  _timestamp_);
+      ar_ & boost::serialization::make_nvp("properties", _properties_);
       return;
     }
 
@@ -44,5 +44,3 @@ namespace snemo {
 BOOST_CLASS_VERSION(snemo::datamodel::event_header, 1)
 
 #endif // FALAISE_SNEMO_DATAMODEL_EVENT_HEADER_IPP
-
-// end of event_header.ipp

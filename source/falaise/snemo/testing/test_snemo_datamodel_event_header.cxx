@@ -1,4 +1,3 @@
-// -*- mode: c++ ; -*-
 // test_event_header.cxx
 
 // Standard library
@@ -10,7 +9,7 @@
 // This project
 #include <falaise/snemo/datamodels/event_header.h>
 
-int main (/* int argc_, char ** argv_ */)
+int main(int /* argc_ */, char ** /* argv_ */)
 {
   int error_code = EXIT_SUCCESS;
   try {
@@ -40,5 +39,3 @@ int main (/* int argc_, char ** argv_ */)
   }
   return (error_code);
 }
-
-// end of test_event_header.cxx

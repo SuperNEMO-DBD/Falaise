@@ -90,5 +90,3 @@ namespace snemo {
 } // end of namespace snemo
 
 #endif // FALAISE_SNEMO_DATAMODELS_TIMESTAMP_H
-
-// end of timestamp.h
