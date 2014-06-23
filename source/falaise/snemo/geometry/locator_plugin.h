@@ -56,10 +56,10 @@ namespace snemo {
       typedef std::map<std::string, locator_entry_type> locator_dict_type;
 
       /// Default constructor
-      locator_plugin ();
+      locator_plugin();
 
       /// Destructor
-      virtual ~locator_plugin ();
+      virtual ~locator_plugin();
 
       /// Main plugin initialization method
       virtual int initialize(const datatools::properties & config_,
@@ -67,33 +67,45 @@ namespace snemo {
                              const datatools::service_dict_type & services_);
 
       /// Plugin reset method
-      virtual int reset ();
+      virtual int reset();
 
       /// Check if plugin is initialized
-      virtual bool is_initialized () const;
+      virtual bool is_initialized() const;
 
       /// Returns a non-mutable reference to the dictionary of locators
-      const locator_dict_type & get_locators () const;
+      const locator_dict_type & get_locators() const;
 
       /// Returns a mutable reference to the dictionary of locators
-      locator_dict_type & grab_locators ();
+      locator_dict_type & grab_locators();
+
+      /// Check if geiger locator is available
+      bool has_gg_locator() const;
+
+      /// Check if calo locator is available
+      bool has_calo_locator() const;
+
+      /// Check if xcalo locator is available
+      bool has_xcalo_locator() const;
+
+      /// Check if gveto locator is available
+      bool has_gveto_locator() const;
 
       /// Returns a non-mutable reference to the geiger locator
-      const snemo::geometry::gg_locator & get_gg_locator () const;
+      const snemo::geometry::gg_locator & get_gg_locator() const;
 
       /// Returns a non-mutable reference to the main wall locator
-      const snemo::geometry::calo_locator & get_calo_locator () const;
+      const snemo::geometry::calo_locator & get_calo_locator() const;
 
       /// Returns a non-mutable reference to the X wall locator
-      const snemo::geometry::xcalo_locator & get_xcalo_locator () const;
+      const snemo::geometry::xcalo_locator & get_xcalo_locator() const;
 
       /// Returns a non-mutable reference to the gamma veto locator
-      const snemo::geometry::gveto_locator & get_gveto_locator () const;
+      const snemo::geometry::gveto_locator & get_gveto_locator() const;
 
      protected:
 
       /// Internal mapping build method
-      void _build_locators (const datatools::properties & config_);
+      void _build_locators(const datatools::properties & config_);
 
     private:
 

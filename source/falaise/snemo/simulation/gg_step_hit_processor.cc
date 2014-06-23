@@ -210,14 +210,16 @@ namespace snemo {
         _gg_cell_locator_.dump (std::cerr);
       }
       // if (_geom_manager->get_setup_label().find("snemo::") != std::string::npos) {
-      if (_geom_manager->get_setup_label().substr(0, 7) == "snemo::") {
+      // if (_geom_manager->get_setup_label().substr(0, 7) == "snemo::") {
+      // Only for the 'snemo::demonstrator' setup:
+      if (_geom_manager->get_setup_label() == "snemo::demonstrator") {
         DT_LOG_TRACE (get_logging_priority(), "Fast locator for setup '"
                       << _geom_manager->get_setup_label() << "'");
         // 2012-05-04 FM : to be discarded
         {
           _fast_gg_cell_locator_.set_geo_manager(*_geom_manager);
           const uint32_t module_number = 0;
-          DT_LOG_WARNING (get_logging_priority(), "Use default module number " << module_number);
+          DT_LOG_NOTICE(get_logging_priority(), "Use default module number " << module_number);
           _fast_gg_cell_locator_.set_module_number(module_number);
           _fast_gg_cell_locator_.initialize();
         }
@@ -228,7 +230,7 @@ namespace snemo {
             _module_locator_.get_ginfos();
           for (std::list<const geomtools::geom_info *>::const_iterator i
                  = module_infos.begin();
-               i !=  module_infos.end();
+               i != module_infos.end();
                i++) {
             const geomtools::geom_info * ginfo = *i;
             const uint32_t module_number = ginfo->get_geom_id().get(0);
@@ -451,6 +453,7 @@ namespace snemo {
             gid.invalidate ();
           }
         } else {
+          // Fallback to a simple locator:
           DT_LOG_TRACE (get_logging_priority (), "Using basic gg_cell_locator...");
           gid = _gg_cell_locator_.get_geom_id (world_hit_pos_median, _gg_cell_type_, locator_tolerance);
         }
@@ -461,7 +464,7 @@ namespace snemo {
                           "world_hit_pos_median = " << std::setprecision(15)  << world_hit_pos_median / CLHEP::mm << " mm");
           // We do not process such a hit: Should we consider this case as
           // a bug ?
-          DT_LOG_WARNING (get_logging_priority (),
+          DT_LOG_ERROR (get_logging_priority (),
                           "We skip this hit for one cannot locate it through the locator attached to the '"
                           << _mapping_category_ << "' ! "
                           << " This is probably due to another mapping category registered in the current '"

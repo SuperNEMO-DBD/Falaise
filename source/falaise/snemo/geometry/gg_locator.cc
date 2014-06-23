@@ -645,14 +645,14 @@ namespace snemo {
     }
 
 
-    // ctor:
+    // Constructor:
     gg_locator::gg_locator () : base_locator ()
     {
       _set_defaults ();
       return;
     }
 
-    // ctor:
+    // Constructor:
     gg_locator::gg_locator (const ::geomtools::manager & mgr_,
                             uint32_t module_number_) :
       base_locator ()
@@ -666,7 +666,7 @@ namespace snemo {
       return;
     }
 
-    // dtor:
+    // Destructor:
     gg_locator::~gg_locator ()
     {
       if (is_initialized ()) {
@@ -786,7 +786,9 @@ namespace snemo {
         const geomtools::i_model * anode_wire_model = 0;
         std::string model_name = "anode_wire.model"; // default model name
         if (geom_mgr_setup_vid.has_major ()) {
-          if (geom_mgr_setup_vid.get_major () < 2) {
+          // trick for an old version of the geometry
+          if (get_geo_manager().get_setup_label() == "snemo::demonstrator"
+              && geom_mgr_setup_vid.get_major () < 2) {
             model_name = "anode_wire";
           }
         }
@@ -819,7 +821,9 @@ namespace snemo {
         const geomtools::i_model * field_wire_model = 0;
         std::string model_name = "field_wire.model"; // default model name
         if (geom_mgr_setup_vid.has_major ()) {
-          if (geom_mgr_setup_vid.get_major () < 2) {
+         // trick for an old version of the geometry
+          if (get_geo_manager().get_setup_label() == "snemo::demonstrator"
+              && geom_mgr_setup_vid.get_major () < 2) {
             model_name = "field_wire";
           }
         }
@@ -1085,7 +1089,7 @@ namespace snemo {
                                          double tolerance_)
     {
       DT_LOG_TRACE (get_logging_priority (), "Entering...");
-
+      // std::cerr << "DEVEL: " << "gg_locator::_find_cell_geom_id: " << "Entering..." << std::endl;
       double tolerance = tolerance_;
       if (tolerance == GEOMTOOLS_PROPER_TOLERANCE) {
         tolerance = _cell_box_->get_tolerance();
@@ -1103,8 +1107,10 @@ namespace snemo {
       gid.set (_layer_index_,  geomtools::geom_id::INVALID_ADDRESS);
       gid.set (_row_index_,    geomtools::geom_id::INVALID_ADDRESS);
       const double z = in_module_position_.z ();
+      // std::cerr << "DEVEL: " << "gg_locator::_find_cell_geom_id: " << "STEP 1" << std::endl;
       // 2012-06-05 FM: add tolerance for z-testing
       if (std::abs(z) < (_cell_box_->get_half_z () + 0.5 * tolerance)) {
+        // std::cerr << "DEVEL: " << "gg_locator::_find_cell_geom_id: " << "STEP 2" << std::endl;
         gid.set (_module_index_, _module_number_);
         const double y = in_module_position_.y ();
         const double x = in_module_position_.x ();
@@ -1112,24 +1118,39 @@ namespace snemo {
         double cell_delta_x;
         double first_cell_y;
         double cell_delta_y;
-        size_t nlayers;
-        size_t nrows;
+        size_t nlayers = 0;
+        size_t nrows   = 0;
         if (x < 0.0) {
-          side_number = 0;
+          // std::cerr << "DEVEL: " << "gg_locator::_find_cell_geom_id: " << "STEP 3a" << " x(" << x << ") < 0.0" << std::endl;
           nlayers = _back_cell_x_.size ();
           nrows = _back_cell_y_.size ();
-          first_cell_x = _back_cell_x_.front ();
-          cell_delta_x = (_back_cell_x_.back () - _back_cell_x_.front ()) / (_back_cell_x_.size () - 1);
-          first_cell_y = _back_cell_y_.front ();
-          cell_delta_y = (_back_cell_y_.back () - _back_cell_y_.front ()) / (_back_cell_y_.size () - 1);
+          // std::cerr << "DEVEL: " << "gg_locator::_find_cell_geom_id: " << "STEP 3a" << " nlayers=" << nlayers << std::endl;
+          // std::cerr << "DEVEL: " << "gg_locator::_find_cell_geom_id: " << "STEP 3a" << " nrows=" << nrows << std::endl;
+          if (nlayers > 0 && nrows > 0) {
+            side_number = 0;
+            first_cell_x = _back_cell_x_.front ();
+            cell_delta_x = (_back_cell_x_.back () - _back_cell_x_.front ()) / (_back_cell_x_.size () - 1);
+            first_cell_y = _back_cell_y_.front ();
+            cell_delta_y = (_back_cell_y_.back () - _back_cell_y_.front ()) / (_back_cell_y_.size () - 1);
+          }
         } else {
-          side_number = 1;
-          nlayers = _front_cell_x_.size ();
+          // std::cerr << "DEVEL: " << "gg_locator::_find_cell_geom_id: " << "STEP 3b" << " x(" << x << ") >= 0.0" << std::endl;
+           nlayers = _front_cell_x_.size ();
           nrows = _front_cell_y_.size ();
-          first_cell_x = _front_cell_x_.front ();
-          cell_delta_x = (_front_cell_x_.back () - _front_cell_x_.front ()) / (_front_cell_x_.size () - 1);
-          first_cell_y = _front_cell_y_.front ();
-          cell_delta_y = (_front_cell_y_.back () - _front_cell_y_.front ()) / (_front_cell_y_.size () - 1);
+          // std::cerr << "DEVEL: " << "gg_locator::_find_cell_geom_id: " << "STEP 3b" << " nlayers=" << nlayers << std::endl;
+          // std::cerr << "DEVEL: " << "gg_locator::_find_cell_geom_id: " << "STEP 3b" << " nrows=" << nrows << std::endl;
+          if (nlayers > 0 && nrows > 0) {
+            side_number = 1;
+            first_cell_x = _front_cell_x_.front ();
+            cell_delta_x = (_front_cell_x_.back () - _front_cell_x_.front ()) / (_front_cell_x_.size () - 1);
+            first_cell_y = _front_cell_y_.front ();
+            cell_delta_y = (_front_cell_y_.back () - _front_cell_y_.front ()) / (_front_cell_y_.size () - 1);
+          }
+        }
+        if (side_number == geomtools::geom_id::INVALID_ADDRESS) {
+          // std::cerr << "DEVEL: " << "gg_locator::_find_cell_geom_id: " << "STEP 4" << " Not a valid side!" << std::endl;
+          gid.invalidate ();
+          return false;
         }
         gid.set (_side_index_, side_number);
         const int ix = (int) (((x - first_cell_x) / cell_delta_x) + 0.5);
@@ -1142,6 +1163,7 @@ namespace snemo {
           cell_number = iy;
         }
         gid.set (_row_index_, cell_number);
+        // std::cerr << "DEVEL: " << "gg_locator::_find_cell_geom_id: " << "STEP 5" << " GID=" << gid << std::endl;
         if (gid.is_valid ()) {
           // 2012-05-31 FM : use ginfo from mapping (see below)
           const geomtools::geom_info * ginfo_ptr = _mapping_->get_geom_info_ptr (gid);
@@ -1162,6 +1184,7 @@ namespace snemo {
       }
       // 2012-06-05 FM: add missing invalidate call
       gid.invalidate ();
+      // std::cerr << "DEVEL: " << "gg_locator::_find_cell_geom_id: " << "End." << std::endl;
       return false;
     }
 
