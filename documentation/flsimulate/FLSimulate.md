@@ -237,11 +237,16 @@ Available output profiles {#fls_output_profiles}
 By default FLSimulate produces collections of truth MC hits and stored them in the output
 data model (the \ref mctools::simulated_data class).
 
-For the Demonstrator configuration, four *official* collections of truth hits are thus populated:
+For the `Demonstrator` configuration, four *official* collections of truth hits are thus populated:
 
 - `calo` : truth MC hits collected from the scintillator blocks of the main calorimeter
 - `xcalo` : truth MC hits collected from the scintillator blocks of the X-calorimeter
 - `gveto` : truth MC hits collected from the scintillator blocks of the gamma veto
+- `gg` : truth MC hits collected from the drift volume of the tracker cells
+
+For the `tracker_commissioning` configuration, two *official* collections of truth hits are supported:
+
+- `trig` : truth MC hits collected from the muon trigger scintillator plates
 - `gg` : truth MC hits collected from the drift volume of the tracker cells
 
 Additional  collections of  hits can  be generated  : the  detailed MC
@@ -249,18 +254,29 @@ hits.  So far,  we  use  one unique  collection  of  truth hits  named
 `__visu.tracks`. The `__visu.tracks` collection  collects all *MC step
 hits* that have been generated along particle tracks that crossed some
 volumes of interest. To activate the recording of such output, several
-*output profiles* have been made available:
+*output profiles* have been made available.
 
-- `calo_details` :  collect all Geant4 step hits from the calo, xcalo and gveto sensitive detectors
+For the `Demonstrator` configuration, these are:
+
+- `calo_details`    : collect all Geant4 step hits from the calo, xcalo and gveto sensitive detectors
 - `tracker_details` : collect all Geant4 step hits from within volumes in the tracker part of the detector
-- `source_details` : collect all Geant4 step hits from within volumes in the source part of the detector
-- `all_details` : collect all Geant4 step hits from any volumes of interest (same as `calo_details+tracker_details+source_details`)
+- `source_details`  : collect all Geant4 step hits from within volumes in the source part of the detector
+- `all_details`     : collect all Geant4 step hits from any volumes of interest
+                      (shortcut for `calo_details+tracker_details+source_details`)
+
+For the `tracker_commissioning` configuration, these are:
+
+- `trigger_details` : collect all Geant4 step hits from the muon trigger sensitive detectors
+- `tracker_details` : collect all Geant4 step hits from within volumes in the tracker part of the detector
+- `outside_details` : collect all Geant4 step hits from within volumes filled with air outside the detector
+- `all_details`     : collect all Geant4 step hits from any volumes of interest
+                      (shortcut for `trigger_details+tracker_details+outside_details`)
 
 The  activation   of  some   additional  output   is  done   with  the
-`--output-profiles` options. Example:
+`--output-profiles` option. Example:
 
 ~~~~~
-$ flsimulate --experiment=Demonstrator -n 100 --output-profiles "calo_details+tracker_details" -o example_with_visu_hits.brio
+$ flsimulate --experiment "Demonstrator" -n 100 --output-profiles "calo_details + tracker_details" -o example_with_visu_hits.brio
 ...
 $
 ~~~~~
@@ -271,5 +287,4 @@ option should  thus be reserved  for dedicated studies,  debugging
 and visualization  purpose, not  for production  of large  datasets of
 simulated data.
 
-This   feature   is   not   implemented  yet   for   the   BiPo3   and
-tracker_commissioning setups.
+This feature is not used yet for the BiPo3 setup.
