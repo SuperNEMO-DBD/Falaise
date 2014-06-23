@@ -48,6 +48,9 @@ Options
                                         The name of the vertex generator
   -e [ --event-generator ] [name] (=Se82.0nubb)
                                         The name of the event generator
+  -p [ --output-profiles ] [rule]       The output profiles activation rule
+                                        (setup the truth hits' level of
+                                        details)
   -o [ --output-file ] [file]           file in which to store simulation
                                         results
 
@@ -66,7 +69,7 @@ Copyright (C) 2013 SuperNEMO Collaboration
 flsimulate uses the following external libraries:
 * Falaise : 1.0.0
 * Bayeux  : 1.0.0
-* Boost   : 105300
+* Boost   : 105500
 * Geant4  : 10.x (eventually)
 
 $
@@ -78,7 +81,8 @@ be simulated, the default being the Demonstrator Module. By default, 1
 event is generated, with vertices generated in the bulk of the source foil
 with particle energies/directions sampled from the zero neutrino double
 beta spectrum for Se82. You can modify the number of events and
-the output file, which can be in XML or Brio format.
+the output file, which can be in XML (for debugging purpose) or Brio format
+(for production).
 
 Note that at present (Alpha3) the validity of the experiment and
 event/vertex generator combinations are not checked. You may therefore
@@ -119,7 +123,8 @@ are generated (physics). With several different experiments being modelled
 and many background, signal and calibration physics sources available,
 a wide range of vertex and event generators are available.
 
-Here we tabulate the vertex and event generators available for each experiment. The first column in each table gives the argument that
+Here we tabulate the vertex and event generators available for each experiment.
+The first column in each table gives the argument that
 should be supplied to the `--vertex-generator` ("Vertex Generator ID") and
 `--event-generator` ("Event Generator ID") options of `flsimulate`.
 The second column gives a brief description of the generator, with
@@ -226,3 +231,45 @@ Event Generators
 | gamma.50keV | Gamma with monokinetic energy @ 50 keV [miscellaneous] | yes | yes | yes |
 | muon.cosmic.sea_level.toy | Parameters for the "cosmic muon generator" mode [cosmic] | no | no | yes |
 
+Available output profiles {#fls_output_profiles}
+=========================
+
+By default FLSimulate produces collections of truth MC hits and stored them in the output
+data model (the \ref mctools::simulated_data class).
+
+For the Demonstrator configuration, four *official* collections of truth hits are thus populated:
+
+- `calo` : truth MC hits collected from the scintillator blocks of the main calorimeter
+- `xcalo` : truth MC hits collected from the scintillator blocks of the X-calorimeter
+- `gveto` : truth MC hits collected from the scintillator blocks of the gamma veto
+- `gg` : truth MC hits collected from the drift volume of the tracker cells
+
+Additional  collections of  hits can  be generated  : the  detailed MC
+hits.  So far,  we  use  one unique  collection  of  truth hits  named
+`__visu.tracks`. The `__visu.tracks` collection  collects all *MC step
+hits* that have been generated along particle tracks that crossed some
+volumes of interest. To activate the recording of such output, several
+*output profiles* have been made available:
+
+- `calo_details` :  collect all Geant4 step hits from the calo, xcalo and gveto sensitive detectors
+- `tracker_details` : collect all Geant4 step hits from within volumes in the tracker part of the detector
+- `source_details` : collect all Geant4 step hits from within volumes in the source part of the detector
+- `all_details` : collect all Geant4 step hits from any volumes of interest (same as `calo_details+tracker_details+source_details`)
+
+The  activation   of  some   additional  output   is  done   with  the
+`--output-profiles` options. Example:
+
+~~~~~
+$ flsimulate --experiment=Demonstrator -n 100 --output-profiles "calo_details+tracker_details" -o example_with_visu_hits.brio
+...
+$
+~~~~~
+
+Be aware that using this feature  implies that the simulation will use
+additional CPU  and the output  file will use  a lot of  storage. This
+option should  thus be reserved  for dedicated studies,  debugging
+and visualization  purpose, not  for production  of large  datasets of
+simulated data.
+
+This   feature   is   not   implemented  yet   for   the   BiPo3   and
+tracker_commissioning setups.
