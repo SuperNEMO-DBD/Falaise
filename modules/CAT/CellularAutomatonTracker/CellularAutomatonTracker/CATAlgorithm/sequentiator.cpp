@@ -2227,6 +2227,7 @@ namespace CAT {
 
     bool erased = true;
 
+    m.message("CAT::sequentiator::add_pair: n of tangents: ", cc.tangents_.size(), mybhep::VVERBOSE); fflush(stdout);
     topology::sequence pair(nodes, level, probmin);
     for(std::vector<topology::line>::iterator itangent=cc.tangents_.begin(); itangent != cc.tangents_.end(); ++itangent){
 
@@ -2251,7 +2252,9 @@ namespace CAT {
       make_name(pair);
       sequences_.push_back(pair);
 
-      m.message("CAT::sequentiator::add_pair: made track [", sequences_.size()-1, "] with cells ", na.c().id(), "and", nb.c().id(), mybhep::VVERBOSE); fflush(stdout);
+      if( level >= mybhep::VVERBOSE ){
+	std::clog << "CAT::sequentiator::add_pair: made track [" << sequences_.size()-1 << "] with cells " << na.c().id() << " [" << pair.nodes_[0].ep().x().value() << ", " << pair.nodes_[0].ep().z().value() << "]" <<  "and" << nb.c().id() << " [" << pair.nodes_[1].ep().x().value() << ", " << pair.nodes_[1].ep().z().value() << "]" << std::endl;fflush(stdout);
+      }
 
       if( erased )
         erased = clean_up_sequences();

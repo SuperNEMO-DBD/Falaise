@@ -402,6 +402,18 @@ namespace CAT {
 
       }
 
+      experimental_vector direction_at(const experimental_point & ep)const{
+
+	const experimental_double phi = phi_of_point(ep);
+
+	experimental_vector dir(-radius() * experimental_sin(phi),
+				pitch(),
+				radius() * experimental_cos(phi));
+
+	return dir.unit();
+
+      }
+
 
     };
 

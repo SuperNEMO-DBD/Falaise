@@ -1798,6 +1798,28 @@ namespace CAT {
       }
 
 
+      // for each point, the helix axis should be ~ parallel to the tangent line
+      if( good_fit ){
+	double phi_limit = 30.*acos(-1.)/180.;
+        for(std::vector<node>::iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode){
+	  size_t index = inode - nodes_.begin();
+	  if( index + 1 >= nodes_.size() ) continue;
+	  if( fabs( inode->c().block() - nodes_[index+1].c().block()) >= 1 ) continue; 	  // the connection happens through a gap
+
+	  experimental_vector helix_dir = helix_.direction_at(inode->ep()).hor().unit();
+	  experimental_vector tangent_dir = (nodes_[index+1].ep() - inode->ep()).hor().unit();
+	  double local_angle = acos((helix_dir*tangent_dir).value());
+	  if( fabs(local_angle) > phi_limit ){
+	    if( print_level() >= mybhep::VVERBOSE ){
+	      std::clog << " connection " << inode->c().id() << " - " << nodes_[index+1].c().id() << " has angular separation " << local_angle << " between helix and tangent, maximum " << phi_limit << " so reject helix " << std::endl;
+	    }
+	    good_fit = false;
+	    break;
+	  }
+	}
+      }
+
+
       return good_fit;
     }
 
@@ -2499,7 +2521,6 @@ namespace CAT {
       }
 
       *ok = new_first_sequence.calculate_helix();
-
 
       return new_first_sequence;
 
