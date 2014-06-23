@@ -17,8 +17,8 @@
 [name="source_external_support_strip.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "mm"
-x                  : real    = 0.1  # mm
-y                  : real    = 125.0  # mm
+x                  : real    = 0.1   # mm
+y                  : real    = 125.0 # mm
 z                  : real    = 325.0 # mm
 material.ref       : string  = "std::mylar"
 visibility.hidden  : boolean = 0
@@ -29,8 +29,8 @@ visibility.color   : string  = "cyan"
 [name="source_internal_support_strip.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "mm"
-x                  : real    = 0.1  # mm
-y                  : real    = 135.5  # mm
+x                  : real    = 0.1   # mm
+y                  : real    = 135.5 # mm
 z                  : real    = 325.0 # mm
 material.ref       : string  = "std::mylar"
 visibility.hidden  : boolean = 0
