@@ -14,7 +14,6 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/simulation/ge
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/simulation/geant4_control/1.0/images/snemotc_mc_muons_from_roof_0.jpeg
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/simulation/geant4_control/1.0/images/snemotc_mc_muon_from_roof_1.jpeg
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/simulation/geant4_control/1.0/manager.conf
-${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/simulation/geant4_control/1.0/step_hit_processors.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/simulation/geant4_control/1.0/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/simulation/geant4_control/1.0/step_hit_processors-no_visu_tracks.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/simulation/geant4_control/1.0/step_hit_processors-only_visu_tracks.conf
