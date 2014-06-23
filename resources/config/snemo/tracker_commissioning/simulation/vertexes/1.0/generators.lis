@@ -30,6 +30,23 @@ mode   : string  = "surface"
 mode.surface.top  : boolean = 1
 
 
+#####################################################
+[name="top_trigger_bulk" type="genvtx::box_model_vg"]
+#@config Generate vertex on the top surface of the muon trigger top scintillator plate
+
+#@description The requirements on the geometry setup this generator is related to
+geometry.setup_requirement : string = "snemo::tracker_commissioning (>=1)"
+
+#@description Debug flag
+debug  : boolean = 0
+
+#@description The mapping directives that addresses the implied physical volume
+origin : string  = "category='mu_trigger' position={1}"
+
+#@description The surface vertex generation mode
+mode   : string  = "bulk"
+
+
 ###############
 # Anode wires #
 ###############
