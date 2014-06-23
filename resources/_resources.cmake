@@ -8,6 +8,7 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/geometry/1.0/
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/geometry/1.0/models/C0_shape_layers.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/geometry/1.0/models/setup.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/geometry/1.0/models/muon_trigger.geom
+${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/geometry/1.0/plugins/mapping_plugins.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/geometry/1.0/plugins/materials_plugin.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/simulation/geant4_control/1.0/processes/particles.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/simulation/geant4_control/1.0/processes/em.conf
