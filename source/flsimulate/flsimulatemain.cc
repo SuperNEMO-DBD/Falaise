@@ -92,7 +92,7 @@ void do_help(const bpo::options_description& od) {
 
 //! Collect all needed configuration parameters in one data structure
 struct FLSimulateArgs {
-  datatools::logger::priority     logLevel;
+  datatools::logger::priority     logLevel;                //!< Logging priority threshold
   unsigned int                    numberOfEvents;          //!< Number of events to be processed in the pipeline
   std::string                     experimentID;            //!< The label of the virtual experimental setup
   std::string                     setupGeometryVersion;    //!< The version number of the virtual geometry setup
@@ -134,6 +134,12 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
       ->value_name("[name]"),
      "The name of the event generator"
      )
+    ("output-profiles,p",
+     bpo::value<std::string>(&params.simulationManagerParams.output_profiles_activation_rule)
+      ->default_value("")
+      ->value_name("[rule]"),
+     "The output profiles activation rule (setup the truth hits' level of details)"
+     )
     ("output-file,o",
      bpo::value<std::string>(&params.outputFile)->required()->value_name("[file]"),
      "file in which to store simulation results")
@@ -156,6 +162,8 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
   }
 
   // Handle the experiment
+  // TODO: in the future, we will use the datatools variant configuration API to build
+  // a configuration menu of variant parameters...
   try {
     params.simulationManagerParams.manager_config_filename = FLSimulate::getControlFile(vMap["experiment"].as<std::string>());
   } catch (FLSimulate::UnknownResourceException& e) {
@@ -183,7 +191,14 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
   // params.mgr_seed  = 4;
 
   // Handle verbose, which can't be bound yet
-  if (vMap.count("verbose")) params.simulationManagerParams.logging = "information";
+  if (vMap.count("verbose")) {
+    params.logLevel = datatools::logger::PRIO_INFORMATION;
+    params.simulationManagerParams.logging = "information";
+  }
+
+  if (params.logLevel == datatools::logger::PRIO_INFORMATION) {
+    params.simulationManagerParams.print(std::clog);
+  }
 
   // Handle any non-bound options
   if (vMap.count("help")) {
@@ -209,14 +224,15 @@ void do_configure(int argc, char *argv[], FLSimulateArgs& params) {
   try {
     FLSimulate::initResources();
     params.logLevel = datatools::logger::PRIO_ERROR;
-    params.experimentID = "tracker_commissioning";
-    params.setupGeometryVersion = "1.0";
+    params.experimentID = "demonstrator"; // "tracker_commissioning";
+    params.setupGeometryVersion = "3.0";   // "1.0";
     params.setupSimulationVersion = "1.0";
     params.simulationManagerParams.set_defaults();
     params.simulationManagerParams.logging = "error";
     params.simulationManagerParams.manager_config_filename = FLSimulate::getControlFile("default");
-    params.simulationManagerParams.vg_name = "experimental_hall_roof";
-    params.simulationManagerParams.eg_name = "muon.cosmic.sea_level.toy";
+    params.simulationManagerParams.vg_name = "source_strips_bulk"; // "experimental_hall_roof";
+    params.simulationManagerParams.eg_name = "Se82.0nubb";         // "muon.cosmic.sea_level.toy";
+    params.simulationManagerParams.output_profiles_activation_rule = "";
   } catch (std::exception& e) {
     throw FLConfigDefaultError();
   }
@@ -251,10 +267,34 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
 
   // - Run
   try {
-    // Have to setup geometry:
+
+    // Analyse the simulation manager configuration:
     datatools::multi_properties flSimProperties("name","");
     flSimProperties.read(flSimParameters.simulationManagerParams.manager_config_filename);
-    datatools::properties flSimGeoManagerProperties;
+
+    // Output profiles:
+    /*
+    // Fetch the list of supported output profiles:
+    if (flSimProperties.get_section("manager").has_key("output_profiles")) {
+      datatools::properties flSimOutputProfilesProperties;
+      std::vector<std::string> supported_output_profiles;
+      flSimProperties.get_section("manager").fetch("output_profiles", supported_output_profiles);
+      std::clog << "Supported output profiles : " << std::endl << std::endl;
+      for (size_t i(0); i < supported_output_profiles.size(); i++) {
+        std::ostringstream sop_desc_key;
+        sop_desc_key << "output_profiles." << supported_output_profiles[i] << ".description";
+        std::string sop_desc = "Not documented";
+        if (flSimProperties.get_section("manager").has_key(sop_desc_key.str())) {
+          sop_desc = flSimProperties.get_section("manager").fetch_string(sop_desc_key.str());
+        }
+        std::clog << "  - " << supported_output_profiles[i] << " : " << sop_desc << std::endl;
+      }
+      std::clog << std::endl;
+    }
+    */
+
+    // Have to setup geometry:
+    // datatools::properties flSimGeoManagerProperties;
     std::string geoManagerFile = flSimProperties.get_section("geometry").fetch_path("manager.config");
     geomtools::manager geoManager;
     datatools::properties geoManagerProperties;

@@ -31,6 +31,9 @@ Run a Geant4 simulation of a SuperNEMO detector
 **-o, --output-file**=FILE
 :    Write events and simulation metadata to file FILE. Mandatory.
 
+**-p, --output-profiles**=RULE
+:    Set the rule for generating detailed additional truth MC hits.
+
 **-v, --verbose**
 :    Increase verbosity of logging.
 
@@ -47,4 +50,3 @@ Run a Geant4 simulation of a SuperNEMO detector
 # COPYRIGHT
 
 Copyright (C) 2013 SuperNEMO Collaboration
-
