@@ -140,7 +140,8 @@ Password for 'visitor':
 Checked out revision 13809.
 ~~~~~
 
-The revision number you see will vary depending on the current state of development. If you now list the contents of the `lpc-caen.svn` directory
+The revision number you see will vary depending on the current state of development.
+If you now list the contents of the `lpc-caen.svn` directory
 it will be empty apart from a `.svn` directory. We now checkout the parts
 we need, specifically the `Cadfael` Software Development Kit (SDK) and
 the `Falaise` project.
@@ -545,4 +546,3 @@ SuperNEMO/
 ~~~~~
 
 Further documentation on this topic will be added in Alpha 3.
-
