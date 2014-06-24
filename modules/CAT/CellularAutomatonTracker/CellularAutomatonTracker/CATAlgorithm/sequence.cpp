@@ -1804,14 +1804,17 @@ namespace CAT {
         for(std::vector<node>::iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode){
 	  size_t index = inode - nodes_.begin();
 	  if( index + 1 >= nodes_.size() ) continue;
-	  if( fabs( inode->c().block() - nodes_[index+1].c().block()) >= 1 ) continue; 	  // the connection happens through a gap
+	  if( fabs( inode->c().block() - nodes_[index+1].c().block()) >= 1 ) continue; // check only connections within a block
 
 	  experimental_vector helix_dir = helix_.direction_at(inode->ep()).hor().unit();
 	  experimental_vector tangent_dir = (nodes_[index+1].ep() - inode->ep()).hor().unit();
-	  double local_angle = acos((helix_dir*tangent_dir).value());
+	  int sign = 1;
+	  double sp = (helix_dir*tangent_dir).value();
+	  if( sp < 0 ) sign = -1; // the helix could be run backwards
+	  double local_angle = acos(sp*sign);
 	  if( fabs(local_angle) > phi_limit ){
 	    if( print_level() >= mybhep::VVERBOSE ){
-	      std::clog << " connection " << inode->c().id() << " - " << nodes_[index+1].c().id() << " has angular separation " << local_angle << " between helix and tangent, maximum " << phi_limit << " so reject helix " << std::endl;
+	      std::clog << " connection " << inode->c().id() << " - " << nodes_[index+1].c().id() << " has helix dir (" << helix_dir.x().value() << ", " << helix_dir.z().value() << ") tangent dir (" << tangent_dir.x().value() << ", " << tangent_dir.z().value() << ") angular separation " << local_angle << " between helix and tangent, maximum " << phi_limit << " so reject helix " << std::endl;
 	    }
 	    good_fit = false;
 	    break;
