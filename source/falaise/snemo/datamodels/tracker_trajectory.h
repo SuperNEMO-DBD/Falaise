@@ -138,7 +138,6 @@ namespace snemo {
 
 #endif // FALAISE_SNEMO_DATAMODELS_TRACKER_TRAJECTORY_H
 
-// end of falaise/snemo/datamodels/tracker_trajectory.h
 /*
 ** Local Variables: --
 ** mode: c++ --
