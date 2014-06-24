@@ -242,7 +242,7 @@ namespace SULTAN {
   
 
     if( use_endpoints ){
-      size_t n_iterations = 10;
+      //size_t n_iterations = 10;
       std::vector<topology::experimental_helix> the_helices;
       std::vector<topology::experimental_helix> neighbours;
       m.message("SULTAN::sultan::reduce_clusters: assign helices to ", made_clusters_.size(), " clusters ", mybhep::VERBOSE);
@@ -378,7 +378,7 @@ namespace SULTAN {
     assigned_cluster.set_print_level(level);
     assigned_cluster.set_probmin(probmin);
     topology::experimental_point p;
-    size_t best_helix_index;
+    size_t best_helix_index = 0;
     double angle;
 
     bool active = false;
@@ -407,8 +407,8 @@ namespace SULTAN {
         }
 
 	if( dr.is_zero__optimist( nsigma_r) && dh.is_zero__optimist( nsigma_z) ){
-	  active = true;
           if( fabs(dr.value()) < drmin && fabs(dh.value()) < dhmin ){
+	    active = true;
             drmin = fabs(dr.value());
             dhmin = fabs(dh.value());
             best_helix_index = ihel - helices->begin();
@@ -536,10 +536,10 @@ namespace SULTAN {
     if( use_clocks )
       clock.start(" sultan: continous ", "cumulative");
 
-    int min_length = 3;
+    size_t min_length = 3;
 
     // get lengths of each piece
-    size_t longest_piece_first, longest_piece_last;
+    //size_t longest_piece_first, longest_piece_last;
     vector<size_t> length_of_piece;
     size_t maxlength;
     std::vector<size_t> the_first_cell_of_piece;
@@ -591,7 +591,7 @@ namespace SULTAN {
     if( use_clocks )
       clock.start(" sultan: get_longest_piece ", "cumulative");
 
-    int min_length = 2;
+    size_t min_length = 2;
 
     given_cluster->set_probmin(probmin);
     given_cluster->set_print_level(level);
@@ -905,7 +905,7 @@ namespace SULTAN {
     }
 
     topology::experimental_helix b;
-    topology::sequence *s;
+    //topology::sequence *s;
     std::vector<topology::experimental_helix> neighbours;
     std::vector<topology::experimental_helix> the_helices;
     std::vector<topology::cluster> newly_made_clusters;
@@ -2528,7 +2528,7 @@ namespace SULTAN {
     std::vector<topology::node>::iterator inode= leftover_cluster_->nodes_.begin();
     while( inode != leftover_cluster_->nodes_.end()){
 
-      if( inode - leftover_cluster_->nodes_.begin() + 1 > leftover_cluster_->nodes_.size() ) break;
+      if( inode - leftover_cluster_->nodes_.begin() + 1 > (int)leftover_cluster_->nodes_.size() ) break;
 
       m.message("SULTAN::sultan::get_helix_clusters_from:  ... build helices for triplet ( " , a.c().id() , ", " , inode->c().id() , ", " , b.c().id() , ") using node ", inode - leftover_cluster_->nodes_.begin(), " of ", leftover_cluster_->nodes_.size(), mybhep::VVERBOSE);
 
@@ -2662,7 +2662,7 @@ namespace SULTAN {
       clock.start(" sultan: get_clusters_from ","cumulative");
 
     if (level >= mybhep::VERBOSE){
-      bool on_foil, on_calo, on_xcalo, on_gveto, on_calo_hit;
+      bool on_foil, on_calo, on_xcalo, on_gveto;
       on_foil=a.c().is_near_foil();
       on_calo=a.c().is_near_calo();
       on_xcalo=a.c().is_near_xcalo();

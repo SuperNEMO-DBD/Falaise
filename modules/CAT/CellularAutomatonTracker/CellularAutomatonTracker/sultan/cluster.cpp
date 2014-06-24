@@ -547,7 +547,7 @@ namespace SULTAN{
 
     void cluster::recalculate_R(){
 
-      double error = helix_.R().error();
+      //double error = helix_.R().error();
       std::vector<topology::experimental_double> Rs;
       experimental_double local_R1, local_R2, local_R;
 

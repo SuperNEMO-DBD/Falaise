@@ -498,7 +498,7 @@ namespace SULTAN {
     {
 
       if( vs.size() == 0 ){
-        double bad;
+        double bad = 0.;
         std::clog << " problem: avereging std::vector of size " << vs.size() << std::endl;
         return bad;
       }

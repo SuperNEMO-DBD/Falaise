@@ -3000,7 +3000,7 @@ namespace CAT {
         size_t gaplayer=0;
         for(size_t i=0; i<gn; i++)
           gaplayer += (size_t)(planes_per_block[i]+0.5);  // 0, 4, 6, 9
-        if( abs(cA.layer()) < gaplayer ){ // foil - A,B - gap
+        if( abs(cA.layer()) < (int)gaplayer ){ // foil - A,B - gap
           if( blockA > 0 ){ // origin - A, B - gap
             rmin = cA.ep().radius().value() - CellDistance;
             rmax = cA.ep().radius().value() + CellDistance + gaps_Z[gn];

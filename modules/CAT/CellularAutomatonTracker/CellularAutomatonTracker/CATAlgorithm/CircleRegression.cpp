@@ -21,7 +21,7 @@ namespace CAT{
 
 
         double expression = 0.;
-        for (int i=0;i<xi_.size(); i++) {
+        for (size_t i=0;i<xi_.size(); i++) {
           expression += fabs(pow(xi_[i].value() - xc,2) + pow(yi_[i].value() - yc,2) - pow(rad,2));
           /*
           std::clog << " point " << i << " x " << xi_[i].value() << " par " << xc << " diff " << xi_[i].value() - xc

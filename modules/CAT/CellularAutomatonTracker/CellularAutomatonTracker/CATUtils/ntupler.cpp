@@ -573,7 +573,7 @@ void ntupler::__fill ()
 
   /// start tracking study
 
-  bool skipped_event = true;
+  //bool skipped_event = true;
 
   if( !tracked_data_.scenarios_.empty() ){
 

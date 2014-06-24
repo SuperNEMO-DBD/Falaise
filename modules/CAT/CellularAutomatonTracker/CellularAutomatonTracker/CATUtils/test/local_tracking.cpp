@@ -200,18 +200,16 @@ int main(int argc_, char* argv_[]){
 
   eman->initialize();
 
-  ntupler* nt;
+  ntupler* nt = new ntupler();
   if( root_ntuple_mode ){
-    nt = new ntupler();
     nt->initialize();
   }
 
   mybhep::sstore properties = eman->get_dst_properties(); 
 
   // set event display                                                                                                          
-  EventDisplay* display;
+  EventDisplay* display = new EventDisplay(store);
   if( plot_mode ){
-    display = new EventDisplay(store);
     //    TApplication *OpenRoot;
     //    OpenRoot = new  TApplication("OpenRoot",0,0);
     display->InitializeDisplayEvent(properties, store, eman);
