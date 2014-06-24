@@ -35,20 +35,21 @@ Usage
         --vertex-generator "source_strips_bulk" \
         --event-generator  "Se82.0nubb" \
 	--number 100 \
-	--output-file "Se82.0nubb-source_strips_bulk_SD.brio"
+	--output-profiles "all_details" \
+	--output-file "Se82_0nubb-source_strips_bulk_SD.brio"
 
   4. Run the reconstruction pipeline: ::
 
       $ flreconstruct \
-        --input-file "Se82.0nubb-source_strips_bulk_SD.brio" \
+        --input-file "Se82_0nubb-source_strips_bulk_SD.brio" \
 	--pipeline "config/pipeline.conf" \
-        --output-file "Se82.0nubb-source_strips_bulk_SD-CD-TCD.brio"
+        --output-file "Se82_0nubb-source_strips_bulk_SD-CD-TCD.brio"
 
      The   ``flreconstruct``  executable   should  perform   the  mock
      pre-reconstruction and then print  the structure of the processed
      event records  in the  terminal. You  should be  able to  see the
      ``"SD"``, ``"CD"`` and ``"TCD"`` banks.
 
-     The output  file ``Se82.0nubb-source_strips_bulk_SD-CD-TCD.brio``
+     The output  file ``Se82_0nubb-source_strips_bulk_SD-CD-TCD.brio``
      is  thus ready  for  further reconstruction  (track fitting)  and
      analysis.
