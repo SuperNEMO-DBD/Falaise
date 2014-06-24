@@ -113,6 +113,16 @@ namespace snemo {
 
       void generate_data_files_();
 
+      void generate_SD_data_(std::ostream & out_, int & index_);
+
+      void generate_CD_data_(std::ostream & out_, int & index_);
+
+      void generate_TCD_data_(std::ostream & out_, int & index_);
+
+      void generate_TTD_data_(std::ostream & out_, int & index_);
+
+      void generate_PTD_data_(std::ostream & out_, int & index_);
+
       void build_draw_command_();
 
       void display_();
@@ -231,9 +241,11 @@ namespace snemo {
       bool display_TCD_def_clusters;
       bool display_TCD_def_unclustered_hits;
 
-      bool display_TJD;
-      bool display_TJD_def_trajectories;
-      bool display_TJD_def_orphans_hits;
+      bool display_TTD;
+      bool display_TTD_def_trajectories;
+      bool display_TTD_def_orphans_hits;
+
+      bool display_PTD;
 
       double zoom_factor_2d;
       double zoom_center_x;
