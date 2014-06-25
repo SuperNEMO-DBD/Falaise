@@ -109,9 +109,8 @@ namespace snemo {
       // Filling a unique tracker clustering solution:
       sdm::tracker_clustering_solution::handle_type htcs(new sdm::tracker_clustering_solution);
       sdm::tracker_clustering_solution & tc_solution = htcs.grab();
-      tc_solution.grab_auxiliaries().update_string(sdm::tracker_clustering_data::clusterizer_id_key(), MTC_ID);
-
-      std::set<int> hits_ids;
+      tc_solution.grab_auxiliaries().update_string(sdm::tracker_clustering_data::clusterizer_id_key(),
+                                                   MTC_ID);
 
       // GG hit loop :
       sdm::calibrated_tracker_hit previous_gg_hit = gg_hits_.begin()->get();
@@ -143,20 +142,8 @@ namespace snemo {
         sdm::tracker_cluster::handle_type & cluster_handle = tc_solution.grab_clusters().back();
         DT_LOG_TRACE(get_logging_priority (), "Current cluster id " << cluster_handle.get().get_cluster_id());
         cluster_handle.grab().grab_hits().push_back(*igg);
-        hits_ids.insert(a_gg_hit.get_hit_id());
+        // hits_ids.insert(a_gg_hit.get_hit_id());
         previous_gg_hit = a_gg_hit;
-      }
-
-      for (hit_collection_type::const_iterator igg = gg_hits_.begin(); igg != gg_hits_.end(); ++igg) {
-        const sdm::calibrated_tracker_hit & a_gg_hit = igg->get();
-        if (hits_ids.count(a_gg_hit.get_hit_id()) == 0) {
-          DT_LOG_TRACE(get_logging_priority(),
-                       "Hit " << a_gg_hit.get_hit_id() << " (GID=" << a_gg_hit.get_geom_id() << ") is not clustered!");
-          tc_solution.grab_unclustered_hits().push_back(*igg);
-        } else {
-          DT_LOG_TRACE(get_logging_priority(),
-                       "Hit " << a_gg_hit.get_hit_id() << " (GID=" << a_gg_hit.get_geom_id() << ") is clustered!");
-        }
       }
 
       // Set a unique Id to this solution:
