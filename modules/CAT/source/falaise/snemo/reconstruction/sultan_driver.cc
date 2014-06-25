@@ -542,7 +542,8 @@ namespace snemo {
         clustering_.add_solution(htcs, true);
         clustering_.grab_default_solution().set_solution_id(clustering_.get_number_of_solutions() - 1);
         sdm::tracker_clustering_solution & clustering_solution = clustering_.grab_default_solution();
-        clustering_solution.grab_auxiliaries().update_string(sdm::tracker_clustering_data::clusterizer_id_key(), SULTAN_ID);
+        clustering_solution.grab_auxiliaries().update_string(sdm::tracker_clustering_data::clusterizer_id_key(),
+                                                             SULTAN_ID);
 
         const std::vector<st::sequence> & the_sequences = iscenario->sequences();
         DT_LOG_DEBUG(get_logging_priority(), "Number of sequences = " << the_sequences.size());
@@ -551,7 +552,11 @@ namespace snemo {
              isequence != the_sequences.end();
              ++isequence) {
           const st::sequence & a_sequence = *isequence;
-
+          const size_t seqsz = a_sequence.nodes().size();
+          if (seqsz <= 1) {
+            // A SULTAN cluster with only one hit/cell(node) is ignored:
+            continue;
+          }
           // Append a new cluster :
           sdm::tracker_cluster::handle_type tch(new sdm::tracker_cluster);
           clustering_solution.grab_clusters().push_back(tch);
@@ -572,8 +577,6 @@ namespace snemo {
           cluster_handle.grab().grab_auxiliaries().update("SULTAN_helix_H",  seq_helix.H().value());
 
           // Loop on all hits within the sequence(nodes) :
-          const size_t seqsz = a_sequence.nodes().size();
-
           for (int i = 0; i <(int) seqsz; i++) {
             const st::node & a_node = a_sequence.nodes()[i];
             int hit_id = a_node.c().id();

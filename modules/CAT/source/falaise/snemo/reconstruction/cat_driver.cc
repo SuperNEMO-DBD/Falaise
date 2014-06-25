@@ -372,10 +372,10 @@ namespace snemo {
           const CAT::topology::sequence & a_sequence = *isequence;
           const size_t seqsz = a_sequence.nodes().size();
           if (seqsz == 1) {
-            // A CAT cluster with only one hit/cell(node) :
+            // A CAT cluster with only one hit/cell(node) is ignored:
             int hit_id = a_sequence.nodes()[0].c().id();
-            hits_status[hit_id] = 1;
-            clustering_solution.grab_unclustered_hits().push_back(hits_mapping[hit_id]);
+            // hits_status[hit_id] = 1;
+            // clustering_solution.grab_unclustered_hits().push_back(hits_mapping[hit_id]);
           } else {
             // A CAT cluster with more than one hit/cell(node) :
             {
@@ -600,29 +600,25 @@ namespace snemo {
           }
         } /* for sequence */
 
-        // for (std::map<int, int>::const_iterator ihs = hits_status.begin();
-        //      ihs !=  hits_status.end();
-        //      ihs++)
-        //   {
-        //     cerr << datatools::utils::io::devel
-        //          << "BBBB: "
-        //          << "snemo::reconstruction::reconstruction::cat_driver::_process_algo: "
-        //          << "GG hit #" << ihs->first << " status=" << ihs->second
-        //          << std::endl;
+        // // Search for remaining unclustered hits :
+        // DT_LOG_NOTICE(get_logging_priority(), "Search for remaining unclustered hits: ");
+        // std::cerr << "DEVEL: " << "Search for remaining unclustered hits: \n";
+        // for (std::map<int,int>::const_iterator ihs = hits_status.begin();
+        //      ihs != hits_status.end();
+        //      ihs++) {
+        //   int hit_id = ihs->first;
+        //   DT_LOG_NOTICE(get_logging_priority(), "  => hit_id = " << hit_id << "  status=" << ihs->second);
+        //   // std::cerr << "DEVEL: " << " => hit_id = " << hit_id << "  status=" << ihs->second << std::endl;
+        //   if (ihs->second == 0) {
+        //     std::cerr << "DEVEL: " << "   => make it an unclustered hit = " << hits_mapping[hit_id].get().get_geom_id() << std::endl;
+        //     clustering_solution.grab_unclustered_hits().push_back(hits_mapping[hit_id]);
+        //   }
         // }
-
-        // Search for remaining unclustered hits :
-        for (std::map<int,int>::const_iterator ihs = hits_status.begin();
-             ihs != hits_status.end();
-             ihs++) {
-          int hit_id = ihs->first;
-          if (ihs->second == 0) {
-            clustering_solution.grab_unclustered_hits().push_back(hits_mapping[hit_id]);
-          }
-        }
-
+        // // std::cerr << "DEVEL: " << "Number of unclustered hits : " << clustering_solution.grab_unclustered_hits().size() << std::endl;
+        // // std::cerr << "DEVEL: " << "Number of clusters         : " <<clustering_solution.grab_clusters().size() << std::endl;
       } // finish loop on scenario
 
+      // clustering_.tree_dump(std::cerr, "Output clustering data : ", "DEVEL: ");
       return 0;
     }
 
