@@ -409,6 +409,15 @@ namespace snemo {
         if (! process_this_hit && hit_energy_deposit >= 0.0) {
           process_this_hit = true;
         }
+        // Do not process neutral (non-ionizing) particles:
+        if (hit_energy_deposit == 0.0) {
+          if (hit_particle_name == "gamma") {
+            process_this_hit = false;
+          }
+          if (hit_particle_name == "neutron") {
+            process_this_hit = false;
+          }
+        }
         /*
           if (! process_this_hit && hit_particle_name == "e-")
           {

@@ -71,6 +71,9 @@ namespace snemo {
       /// Return a non mutable reference on the container of handles on calibrated tracker hits
       const calibrated_tracker_hit::collection_type & get_hits() const;
 
+      /// Return the number of hits in the cluster
+      unsigned int get_number_of_hits() const;
+
       /// Return a non mutable reference on the calibrated tracker hit given its index
       const calibrated_tracker_hit & get_hit(int i_) const;
 

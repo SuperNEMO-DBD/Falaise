@@ -96,6 +96,11 @@ namespace snemo {
       return;
     }
 
+    unsigned int tracker_cluster::get_number_of_hits() const
+    {
+      return _hits_.size();
+    }
+
     const calibrated_tracker_hit & tracker_cluster::get_hit(int i_) const
     {
       DT_THROW_IF(i_ < 0 || i_ >= (int) _hits_.size(),

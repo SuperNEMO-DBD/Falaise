@@ -144,26 +144,27 @@ namespace snemo {
         tc.tree_dump(out_, "", indent2.str());
       }
 
-      // out_ << indent << datatools::i_tree_dumpable::tag
-      //      << "Delayed cluster(s)   : " <<  get_delayed_clusters().size() << std::endl;
-      // for (int i = 0; i < (int) get_delayed_clusters().size(); i++) {
-      //   const tracker_cluster & tc = get_delayed_clusters()[i].get();
-      //   std::ostringstream indent2;
-      //   out_ << indent << datatools::i_tree_dumpable::skip_tag;
-      //   indent2 << indent << datatools::i_tree_dumpable::skip_tag;
-      //   if (i == (int) get_delayed_clusters().size() - 1) {
-      //     out_ << datatools::i_tree_dumpable::last_tag;
-      //     indent2 << datatools::i_tree_dumpable::last_skip_tag;
-      //   } else {
-      //     out_ << datatools::i_tree_dumpable::tag;
-      //     indent2 << datatools::i_tree_dumpable::skip_tag;
-      //   }
-      //   out_ << "Delayed cluster #" << i << " : " << std::endl;
-      //   tc.tree_dump(out_, "", indent2.str());
-      // }
-
-      out_ << indent << datatools::i_tree_dumpable::tag
-           << "Unclustered hit(s) : " << _unclustered_hits_.size() << std::endl;
+      {
+        int hit_index = 0;
+        out_ << indent << datatools::i_tree_dumpable::tag
+             << "Unclustered hit(s) : " << _unclustered_hits_.size() << std::endl;
+        for (hit_collection_type::const_iterator i = _unclustered_hits_.begin();
+             i != _unclustered_hits_.end();
+             i++) {
+          out_ << indent << datatools::i_tree_dumpable::skip_tag;
+          hit_collection_type::const_iterator j = i;
+          j++;
+          if (j == _unclustered_hits_.end()) {
+            out_ << datatools::i_tree_dumpable::last_tag;
+          } else {
+            out_ << datatools::i_tree_dumpable::tag;
+          }
+          out_ << "Hit #" << hit_index << " : Id=" << i->get().get_hit_id()
+               << " GID=" << i->get().get_geom_id();
+          out_ << std::endl;
+          hit_index++;
+        }
+      }
 
       out_ << indent << datatools::i_tree_dumpable::tag
            << "Hits belonging : " << _hit_belonging_.size() << std::endl;

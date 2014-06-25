@@ -363,36 +363,67 @@ namespace snemo {
       return 0;
     } // end of base_tracker_clusterizer::_prepare_process
 
-    void base_tracker_clusterizer::_post_process_ignored_hits (snemo::datamodel::tracker_clustering_data & clustering_)
+    // void base_tracker_clusterizer::_post_process_ignored_hits (snemo::datamodel::tracker_clustering_data & clustering_)
+    // {
+    //   // Process ignored hits :
+    //   for (size_t i = 0; i < _ignored_hits_.size (); i++) {
+    //     const hit_handle_type & the_hit = _ignored_hits_[i];
+    //     // All ignored hits are pushed as unclustered hits in
+    //     // all clustering solutions :
+    //     for (size_t j = 0; j < clustering_.get_solutions ().size (); j++) {
+    //       snemo::datamodel::tracker_clustering_solution & the_solution =
+    //         clustering_.grab_solutions ()[j].grab ();
+    //       the_solution.grab_unclustered_hits ().push_back (the_hit);
+    //     }
+    //   }
+    //   return;
+    // }
+
+    void base_tracker_clusterizer::_post_process_collect_unclustered_hits (const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+                                                                           snemo::datamodel::tracker_clustering_data &  clustering_)
     {
-      // Process ignored hits :
-      for (size_t i = 0; i < _ignored_hits_.size (); i++) {
-        const hit_handle_type & the_hit = _ignored_hits_[i];
-        // All ignored hits are pushed as unclustered hits in
-        // all clustering solutions :
-        for (size_t j = 0; j < clustering_.get_solutions ().size (); j++) {
-          snemo::datamodel::tracker_clustering_solution & the_solution =
-            clustering_.grab_solutions ()[j].grab ();
-          the_solution.grab_unclustered_hits ().push_back (the_hit);
-        }
+      namespace sdm = snemo::datamodel;
+      // std::cerr << "base_tracker_clusterizer::_post_process_collect_unclustered_hits: " << std::endl;
+      // std::set<int> hit_ids;
+      // for (size_t ihit = 0; ihit < gg_hits_.size(); ihit++) {
+      //   int hit_id = gg_hits_.at(ihit).get().get_hit_id();
+      //   hit_ids.insert(hit_id);
+      //   // std::cerr << "  -> insert hit ID : " << hit_id << std::endl;
+      // } // hit loop
+
+      for (size_t isol = 0; isol < clustering_.get_solutions().size(); isol++) {
+        sdm::tracker_clustering_solution & the_solution =
+          clustering_.grab_solutions()[isol].grab();
+        std::set<int> clustered_hits_ids;
+        for (size_t icluster = 0; icluster < the_solution.get_clusters().size(); icluster++) {
+          const sdm::tracker_cluster & the_cluster =
+            the_solution.get_clusters()[icluster].get();
+          for (size_t ihit = 0; ihit < the_cluster.get_number_of_hits(); ihit++) {
+            const sdm::calibrated_tracker_hit & the_hit =
+              the_cluster.get_hit(ihit);
+            int hit_id = the_hit.get_hit_id();
+            clustered_hits_ids.insert(hit_id);
+            // std::cerr << "  -> clustered hit ID : " << hit_id << std::endl;
+          } // hit loop
+        } // cluster loop
+        for (size_t ihit = 0; ihit < gg_hits_.size(); ihit++) {
+          const sdm::calibrated_tracker_hit::handle_type & hhit = gg_hits_.at(ihit);
+          int hit_id = hhit.get().get_hit_id();
+          if (clustered_hits_ids.count(hit_id) == 0) {
+            // This hit is not clustered in any of the clusters:
+            the_solution.grab_unclustered_hits().push_back(hhit);
+            // std::cerr << "  -> unclustered hit ID : " << hit_id << std::endl;
+          }
+        } // hit loop
       }
       return;
     }
 
-    void base_tracker_clusterizer::_post_process_collect_unclustered_hits (snemo::datamodel::tracker_clustering_data & /* clustering_ */)
-    {
-      return;
-    }
-
-    int base_tracker_clusterizer::_post_process (const base_tracker_clusterizer::hit_collection_type & /* gg_hits_ */,
+    int base_tracker_clusterizer::_post_process (const base_tracker_clusterizer::hit_collection_type & gg_hits_,
                                                  const base_tracker_clusterizer::calo_hit_collection_type & /* calo_hits_ */,
                                                  snemo::datamodel::tracker_clustering_data & clustering_)
     {
-
-      // 2012-10-03 FM : Hits ignored by the pre-clusterizer are classified
-      // as 'unclustered' hits;
-      _post_process_ignored_hits(clustering_);
-
+      _post_process_collect_unclustered_hits(gg_hits_, clustering_);
       return 0;
     }
 
@@ -428,7 +459,7 @@ namespace snemo {
             sdm::tracker_clustering_data dummy;
             prompt_work_clusterings.push_back(dummy);
           }
-          status = _process_algo (prompt_clusters, calo_hits_, prompt_work_clusterings.back());
+          status = _process_algo(prompt_clusters, calo_hits_, prompt_work_clusterings.back());
           if (status != 0) {
             DT_LOG_ERROR (get_logging_priority (), "Processing of prompt hits by '" << _id_ << "' algorithm has failed !");
             return status;

@@ -208,7 +208,6 @@ namespace snemo {
 
       int32_t                      _solution_id_;      /// Unique solution ID
       cluster_col_type             _clusters_;         /// Collection of handles on prompt Geiger hits clusters
-      //cluster_col_type             _delayed_clusters_; /// Collection of handles on delayed Geiger hits clusters
       hit_collection_type          _unclustered_hits_; /// Collection of handles on unclustered Geiger hits
       datatools::properties        _auxiliaries_;      /// List of auxiliary properties
 

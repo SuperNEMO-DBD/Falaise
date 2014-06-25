@@ -158,11 +158,12 @@ namespace snemo {
                                 const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
                                 snemo::datamodel::tracker_clustering_data & clustering_);
 
-      /// Post processing of the ignored hits
-      void _post_process_ignored_hits(snemo::datamodel::tracker_clustering_data & clustering_);
+      // /// Post processing of the ignored hits
+      // void _post_process_ignored_hits(snemo::datamodel::tracker_clustering_data & clustering_);
 
       /// Post processing to collect unclustered hits
-      void _post_process_collect_unclustered_hits(snemo::datamodel::tracker_clustering_data & clustering_);
+      void _post_process_collect_unclustered_hits(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+                                                  snemo::datamodel::tracker_clustering_data & clustering_);
 
     protected:
 
