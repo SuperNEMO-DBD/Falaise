@@ -1941,6 +1941,8 @@ namespace snemo {
 
       // plot simulated data :
       if (display_SD) {
+
+        // Display the vertex:
         if (display_SD_vertex) {
           if (data.find("SD.vertex") != data.end()) {
             if (count) cmdstr << ", ";
@@ -1950,8 +1952,14 @@ namespace snemo {
             count++;
           }
         } // if (display_SD_vertex)
+
+        // Display the visu tracks (truth step hits):
         if (display_SD_visu_track) {
           bool with_points = display_SD_visu_track_points;
+          double with_points_size = 1.0;
+          //with_points_size = 0.25;
+
+          // Gammas:
           if (data.find("SD.__visu.tracks.gamma") != data.end()) {
             if (count) cmdstr << ", ";
             cmdstr << "'" << temp_draw_file->get_filename()  << "' index "
@@ -1960,10 +1968,11 @@ namespace snemo {
             if (with_points) {
               cmdstr << ", '" << temp_draw_file->get_filename()  << "' index "
                      << data.find("SD.__visu.tracks.gamma")->second << " "
-                     << uopt << " notitle with point lt 2 pt 6 ps 0.25";
+                     << uopt << " notitle with point lt 2 pt 6 ps " << with_points_size;
             }
             count++;
           }
+          // Alphas:
           if (data.find("SD.__visu.tracks.alpha") != data.end()) {
             if (count) cmdstr << ", ";
             cmdstr << "'" << temp_draw_file->get_filename()  << "' index "
@@ -1972,10 +1981,11 @@ namespace snemo {
             if (with_points) {
               cmdstr << ", '" << temp_draw_file->get_filename()  << "' index "
                      << data.find("SD.__visu.tracks.alpha")->second << " "
-                     << uopt << " notitle with point lt 4 pt 6 ps 0.25";
+                     << uopt << " notitle with point lt 4 pt 6 ps " << with_points_size;
             }
             count++;
           }
+          // Delta rays from alphas:
           if (data.find("SD.__visu.tracks.delta_ray_from_alpha") != data.end()) {
             if (count) cmdstr << ", ";
             cmdstr << "'" << temp_draw_file->get_filename()  << "' index "
@@ -1984,10 +1994,10 @@ namespace snemo {
             if (with_points) {
               cmdstr << ", '" << temp_draw_file->get_filename()  << "' index "
                      << data.find("SD.__visu.tracks.delta_ray_from_alpha")->second << " "
-                     << uopt << " notitle with point lt 4 pt 6 ps 0.25";
+                     << uopt << " notitle with point lt 4 pt 6 ps " << with_points_size;
             }
-            count++;
           }
+          // Electrons:
           if (data.find("SD.__visu.tracks.e-") != data.end()) {
             DT_LOG_TRACE(logging_priority, "Hits: SD.__visu.tracks.e-");
             if (count) cmdstr << ", ";
@@ -1997,10 +2007,11 @@ namespace snemo {
             if (with_points) {
               cmdstr << ", '" << temp_draw_file->get_filename()  << "' index "
                      << data.find("SD.__visu.tracks.e-")->second << " "
-                     << uopt << " notitle with point lt 3 pt 6 ps 0.25";
+                     << uopt << " notitle with point lt 3 pt 6 ps " << with_points_size;
             }
             count++;
           }
+          // Positrons:
           if (data.find("SD.__visu.tracks.e+") != data.end()) {
             DT_LOG_TRACE(logging_priority, "Hits: SD.__visu.tracks.e+");
             if (count) cmdstr << ", ";
@@ -2010,10 +2021,11 @@ namespace snemo {
             if (with_points) {
               cmdstr << ", '" << temp_draw_file->get_filename()  << "' index "
                      << data.find("SD.__visu.tracks.e+")->second << " "
-                     << uopt << " notitle with point lt 1 pt 6 ps 0.25";
+                     << uopt << " notitle with point lt 1 pt 6 ps " << with_points_size;
             }
             count++;
           }
+          // Neutrons:
           if (data.find("SD.__visu.tracks.neutron") != data.end()) {
             DT_LOG_TRACE(logging_priority, "Hits: SD.__visu.tracks.neutron");
             if (count) cmdstr << ", ";
@@ -2023,38 +2035,39 @@ namespace snemo {
             if (with_points) {
               cmdstr << ", '" << temp_draw_file->get_filename()  << "' index "
                      << data.find("SD.__visu.tracks.neutron")->second << " "
-                     << uopt << " notitle with point lt 2 pt 6 ps 0.25";
+                     << uopt << " notitle with point lt 2 pt 6 ps " << with_points_size;
             }
             count++;
           }
+          // Muons+:
           if (data.find("SD.__visu.tracks.mu+") != data.end()) {
             DT_LOG_TRACE(logging_priority, "Hits: SD.__visu.tracks.mu+");
             if (count) cmdstr << ", ";
             cmdstr << "'" << temp_draw_file->get_filename()  << "' index "
                    << data.find("SD.__visu.tracks.mu+")->second << " "
                    << uopt << " title \"mu+ true tracks(SD)\" with lines lt 1";
-            if (with_points)
-              {
-                cmdstr << ", '" << temp_draw_file->get_filename()  << "' index "
-                       << data.find("SD.__visu.tracks.mu+")->second << " "
-                       << uopt << " notitle with point lt 1 pt 6 ps 0.25";
-              }
+            if (with_points) {
+              cmdstr << ", '" << temp_draw_file->get_filename()  << "' index "
+                     << data.find("SD.__visu.tracks.mu+")->second << " "
+                     << uopt << " notitle with point lt 1 pt 6 ps " << with_points_size;
+            }
             count++;
           }
+          // Muons-:
           if (data.find("SD.__visu.tracks.mu-") != data.end()) {
             DT_LOG_TRACE(logging_priority, "Hits: SD.__visu.tracks.mu-");
             if (count) cmdstr << ", ";
             cmdstr << "'" << temp_draw_file->get_filename()  << "' index "
                    << data.find("SD.__visu.tracks.mu-")->second << " "
                    << uopt << " title \"mu- true tracks(SD)\" with lines lt 1";
-            if (with_points)
-              {
-                cmdstr << ", '" << temp_draw_file->get_filename()  << "' index "
-                       << data.find("SD.__visu.tracks.mu-")->second << " "
-                       << uopt << " notitle with point lt 3 pt 6 ps 0.25";
-              }
+            if (with_points) {
+              cmdstr << ", '" << temp_draw_file->get_filename()  << "' index "
+                     << data.find("SD.__visu.tracks.mu-")->second << " "
+                     << uopt << " notitle with point lt 3 pt 6 ps " << with_points_size;
+            }
             count++;
           }
+          // All other kind of particles:
           if (data.find("SD.__visu.tracks.__other__") != data.end()) {
             DT_LOG_TRACE(logging_priority, "Hits: SD.__visu.tracks.__other__");
             if (count) cmdstr << ", ";
@@ -2064,7 +2077,7 @@ namespace snemo {
             if (with_points) {
               cmdstr << ", '" << temp_draw_file->get_filename()  << "' index "
                      << data.find("SD.__visu.tracks.__other__")->second << " "
-                     << uopt << " notitle with point lt 8 pt 6 ps 0.25";
+                     << uopt << " notitle with point lt 8 pt 6 ps " << with_points_size;
             }
             count++;
           }
@@ -2136,11 +2149,12 @@ namespace snemo {
         } // if (display_SD_hits)
 
         if (display_SD_gg_MAP) {
+          double sd_gg_MAP_size = 1.0;
           if (data.find("SD.gg.MAP") != data.end()) {
             if (count) cmdstr << ", ";
             cmdstr << "'" << temp_draw_file->get_filename()  << "' index "
                    << data.find("SD.gg.MAP")->second << " "
-                   << uopt << " title \"Geiger MAP (SD)\" with point lt 4 pt 4 ps 0.25";
+                   << uopt << " title \"Geiger MAP (SD)\" with point lt 4 pt 4 ps " << sd_gg_MAP_size;
             count++;
           }
         } // if (display_SD_gg_MAP)
@@ -2206,7 +2220,7 @@ namespace snemo {
           if (count) cmdstr << ", ";
           cmdstr << "'" << temp_draw_file->get_filename()  << "' index "
                  << data.find("TCD.default.unclustered_hits")->second << " "
-                 << uopt2 << " title \"Tracker uncluster hits (TCD)\" with lines lt -1 lw 1";
+                 << uopt2 << " title \"Tracker unclustered hits (TCD)\" with lines lt -1 lw 1";
           count++;
         }
 
@@ -2437,8 +2451,9 @@ namespace snemo {
           std::cerr << "Invalid command '" << cmd << "' in 3D mode !" << std::endl;
         } else {
           double unit = CLHEP::mm;
-          double a = 100.0;
+          double a = 400.0;
           a *= unit;
+          a *= zoom_factor_2d;
           if (view_mode == "xy") {
             zoom_center_x += a;
           }
@@ -2454,8 +2469,9 @@ namespace snemo {
           std::cerr << "Invalid command '" << cmd << "' in 3D mode !" << std::endl;
         } else {
           double unit = CLHEP::mm;
-          double a = 100.0;
+          double a = 400.0;
           a *= unit;
+          a *= zoom_factor_2d;
           if (view_mode == "xy") {
             zoom_center_x -= a;
           }
@@ -2471,8 +2487,10 @@ namespace snemo {
           std::cerr << "Invalid command '" << cmd << "' in 3D mode !" << std::endl;
         } else {
           double unit = CLHEP::mm;
-          double a = 100.0;
+          double a = 400.0;
           a *= unit;
+          a *= zoom_factor_2d;
+          // std::cerr << "zoom_factor_2d=" << zoom_factor_2d << " a=" << a / CLHEP::mm << " mm" << std::endl;
           if (view_mode == "xy") {
             zoom_center_y += a;
           }
@@ -2488,8 +2506,9 @@ namespace snemo {
           std::cerr << "Invalid command '" << cmd << "' in 3D mode !" << std::endl;
         } else {
           double unit = CLHEP::mm;
-          double a = 100.0;
+          double a = 400.0;
           a *= unit;
+          a *= zoom_factor_2d;
           if (view_mode == "xy") {
             zoom_center_y -= a;
           }
@@ -2565,7 +2584,7 @@ namespace snemo {
           usleep(1000);
         }
         wxt = ! wxt;
-      } else if (cmd == "abort") {
+      } else if (cmd == "abort" || cmd == "exit") {
         set_inhibited(true);
         return 1;
       } else {
@@ -2741,7 +2760,7 @@ namespace snemo {
       out_ << "  status                  print the status of the display processor" << std::endl;
       out_ << "  wxt                     toggle wxt/X11 terminals" << std::endl;
       out_ << "  print <file>            produce an image" << std::endl;
-      out_ << "  abort                   terminate the display" << std::endl;
+      out_ << "  abort | exit            terminate the display" << std::endl;
       return;
     }
 
