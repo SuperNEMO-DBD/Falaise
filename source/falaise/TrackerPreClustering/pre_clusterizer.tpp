@@ -21,8 +21,6 @@ namespace TrackerPreClustering {
   {
     typedef Hit                            hit_type;
     typedef std::vector<const hit_type *>  hit_collection_type;
-    typedef input_data<hit_type>           input_data_type;
-    typedef output_data<hit_type>          output_data_type;
 
     // Collection of hit per half-chamber :
     static hit_collection_type prompt_hits[2];
