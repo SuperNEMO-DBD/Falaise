@@ -34,7 +34,7 @@ namespace TrackerPreClustering {
     delayed_hit_cluster_time = std::numeric_limits<double>::quiet_NaN();
     processing_prompt_hits   = true;
     processing_delayed_hits  = true;
-    split_chamber            = true;
+    split_chamber            = false;
     _last_error_message.clear();
     return;
   }

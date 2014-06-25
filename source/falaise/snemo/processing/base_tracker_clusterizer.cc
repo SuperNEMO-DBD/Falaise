@@ -122,10 +122,13 @@ namespace snemo {
         _gg_locator_->dump (std::clog);
       }
 
-      // TrackerPreClustering :
+      // Default value for the TrackerPreClustering :
       _tpc_setup_data_.debug = (get_logging_priority () == datatools::logger::PRIO_DEBUG);
       _tpc_setup_data_.delayed_hit_cluster_time = 10.0 * CLHEP::microsecond;
       _tpc_setup_data_.cell_size = get_gg_locator().get_cell_diameter ();
+      _tpc_setup_data_.processing_prompt_hits  = true;
+      _tpc_setup_data_.processing_delayed_hits = true;
+      _tpc_setup_data_.split_chamber           = false;
 
       double default_time_unit = CLHEP::microsecond;
 
@@ -622,10 +625,10 @@ namespace snemo {
         // Description of the 'TPC.split_chamber' configuration property :
         datatools::configuration_property_description & cpd = ocd_.add_property_info();
         cpd.set_name_pattern("TPC.split_chamber")
-          .set_terse_description("Flag to process distinctly delayed Geiger hits from different sides of the tracking chamber")
+          .set_terse_description("Flag to process distinctly Geiger hits from different sides of the tracking chamber")
           .set_from("snemo::processing::base_tracker_clusterizer")
           .set_traits(datatools::TYPE_BOOLEAN)
-          .set_default_value_boolean(true)
+          .set_default_value_boolean(false)
           .add_example("Split chamber in 2 sides::          \n"
                        "                                    \n"
                        "  TPC.split_chamber : boolean = 1   \n"
