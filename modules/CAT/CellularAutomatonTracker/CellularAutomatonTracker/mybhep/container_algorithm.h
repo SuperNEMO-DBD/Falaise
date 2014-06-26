@@ -32,12 +32,12 @@ namespace mybhep{
 
   template <class T> class unary : public std::unary_function<T,bool> {
   public:
-    virtual bool operator() (const T t) const {return true;}
+    virtual bool operator() (const T) const {return true;}
   };
 
   template <class T> class binary : public std::binary_function<T,T,bool> {
   public:
-    virtual bool operator() (const T t1, const T t2) const
+    virtual bool operator() (const T, const T) const
     {return true;}
   };
 
