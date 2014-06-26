@@ -155,13 +155,13 @@ endif()
 ############################################################################################
 # - CATAlgorithm
 set(_CATAlgorithm_HEADERS
-  CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/circle.h
-  CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/sequence.h
+  CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/circle_base.h
+  CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/sequence_base.h
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/calorimeter_hit.h
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/clockable.h
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/sequentiator.h
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/Detector.h
-  CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/cell.h
+  CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/cell_base.h
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/lt_utils.h
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/Sequence.h
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/Sultan.h
@@ -181,7 +181,7 @@ set(_CATAlgorithm_HEADERS
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/joint.h
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/printable.h
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/experimental_vector.h
-  CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/tracked_data.h
+  CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/tracked_data_base.h
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/logic_sequence.h
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/Circle.h
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/logic_cell.h
@@ -207,11 +207,11 @@ set(_CATAlgorithm_SOURCES
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/Detector.cpp
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/clusterizer.cpp
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/Cell.cpp
-  CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/sequence.cpp
+  CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/sequence_base.cpp
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/node.cpp
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/joint.cpp
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/LinearRegression.cpp
-  CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/circle.cpp
+  CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/circle_base.cpp
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/cell_triplet.cpp
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/calorimeter_hit.cpp
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/mparticle.cpp
@@ -229,7 +229,7 @@ set(_CATAlgorithm_SOURCES
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/plane.cpp
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/scenario.cpp
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/Clock.cpp
-  CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/cell.cpp
+  CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/cell_base.cpp
   )
 list(APPEND FalaiseCATPlugin_HEADERS ${_CATAlgorithm_HEADERS})
 list(APPEND FalaiseCATPlugin_SOURCES ${_CATAlgorithm_SOURCES})
