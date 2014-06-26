@@ -62,7 +62,7 @@ namespace mybhep{
   }
 
   template <class T>
-  inline std::string to_string_precision(T i, char* sprecision = "8")
+  inline std::string to_string_precision(T i, const char* sprecision = "8")
   {
     std::ostringstream ostr;
     int precision=atoi(sprecision);
