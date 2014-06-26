@@ -373,7 +373,7 @@ namespace snemo {
           const size_t seqsz = a_sequence.nodes().size();
           if (seqsz == 1) {
             // A CAT cluster with only one hit/cell(node) is ignored:
-            int hit_id = a_sequence.nodes()[0].c().id();
+            //int hit_id = a_sequence.nodes()[0].c().id();
             // hits_status[hit_id] = 1;
             // clustering_solution.grab_unclustered_hits().push_back(hits_mapping[hit_id]);
           } else {
