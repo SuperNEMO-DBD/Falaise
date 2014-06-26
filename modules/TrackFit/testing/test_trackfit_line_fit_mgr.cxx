@@ -420,7 +420,7 @@ geomtools::line_3d generate_aligned_geiger_hits ( mygsl::rng & random_,
     hit.set_t (drift_time);
     hit.set_rmax (rcell_);
     if (i == 0) hit.set_first (true);
-    if (i == (nhits_ -1)) hit.set_last (true);
+    if (i == ((int)nhits_ -1)) hit.set_last (true);
     hits_.push_back (hit);
     geomtools::vector_3d pos (xi, yi, zi);
     geomtools::rotation  rot;
