@@ -37,10 +37,10 @@
 #include <CATAlgorithm/sequence_base.h>
 #include <CATAlgorithm/helix.h>
 #include <CATAlgorithm/calorimeter_hit.h>
+#include <sultan/tracked_data.h>
 #include <mybhep/utilities.h>
 #include <CATAlgorithm/scenario.h>
 
-namespace CAT{
 
 typedef struct{
   float calorimeter;
@@ -50,7 +50,7 @@ typedef struct{
 } FLAG;
 
 typedef struct{
-  POINT center;
+  CAT::POINT center;
   float radius;
 } CIRCLE;
 
@@ -181,7 +181,7 @@ class EventDisplay{
   void DrawCircleYZ( void );
   void DrawHitYZ(mybhep::event& evt, std::string mode);
   void GetCellId(mybhep::hit hit,int &block,int &plane,int &id, int &n3id);
-  void GetPlotLimit( std::vector<topology::calorimeter_hit> calos );
+  void GetPlotLimit( std::vector<CAT::topology::calorimeter_hit> calos );
   void DrawDetectorXZ( void );
   void DrawDetectorCircleXZ( double radius, size_t color );
   void DrawDetectorYZ( void );
@@ -209,6 +209,7 @@ class EventDisplay{
   void set_PlotTriplets(bool aValue) { PlotTriplets = aValue; }
   void set_PlotTrueTracks(bool aValue) { PlotTrueTracks = aValue; }
   void set_PlotCats(bool aValue) { PlotCats = aValue; }
+  void set_PlotSultan(bool aValue) { PlotSultan = aValue; }
   void set_PlotNemoraTracks(bool aValue) { PlotNemoraTracks = aValue; }
   void set_PlotNemoTracks(bool aValue) { PlotNemoTracks = aValue; }
   void set_PlotCellIds(bool aValue) { PlotCellIds = aValue; }
@@ -240,6 +241,7 @@ class EventDisplay{
   int PlotTangents;
   int PlotTriplets;
   int PlotCats;
+  int PlotSultan;
   int PlotTrueTracks;
   int PlotNemoraTracks;
   int PlotNemoTracks;
@@ -306,7 +308,7 @@ class EventDisplay{
 
   mybhep::EventManager2* eman;
 
-  std::vector<POINT> DriftWires;
+  std::vector<CAT::POINT> DriftWires;
 
   int num_blocks;
   mybhep::dvector<double> planes_per_block ;
@@ -326,6 +328,7 @@ class EventDisplay{
   Color_t color_cells;
   Color_t color_fast_cells;
   Color_t color_cats;
+  Color_t color_sultan;
   Color_t color_nemora;
   Color_t color_true_track;
   Color_t color_tangent;
@@ -337,17 +340,17 @@ class EventDisplay{
 
   /////// topological tracking 
 public:
-  void execute(mybhep::event& evt, size_t ievent, topology::tracked_data & __tracked_data);
-  void execute(size_t ievent, topology::tracked_data & __tracked_data);
+  void execute(mybhep::event& evt, size_t ievent, CAT::topology::tracked_data & __tracked_data);
+  void execute(size_t ievent, CAT::topology::tracked_data & __CAT_tracked_data, SULTAN::topology::tracked_data & __SULTAN_tracked_data);
 
   //! get cells 
-  const std::vector<topology::cell>& get_cells()const
+  const std::vector<CAT::topology::cell>& get_cells()const
   {
     return cells_;
   }
 
   //! set cells 
-  void set_cells(std::vector<topology::cell> cells)
+  void set_cells(std::vector<CAT::topology::cell> cells)
   {
     cells_.clear();
     cells_ = cells;
@@ -355,13 +358,13 @@ public:
 
 
   //! get clusters 
-  const std::vector<topology::cluster>& get_clusters()const
+  const std::vector<CAT::topology::cluster>& get_clusters()const
   {
     return clusters_;
   }
 
   //! set clusters 
-  void set_clusters(std::vector<topology::cluster> clusters)
+  void set_clusters(std::vector<CAT::topology::cluster> clusters)
   {
     clusters_.clear();
     clusters_ = clusters;
@@ -369,26 +372,26 @@ public:
 
 
   //! get sequences
-  const std::vector<topology::sequence>& get_sequences()const
+  const std::vector<CAT::topology::sequence>& get_CAT_sequences()const
   {
-    return sequences_;
+    return CAT_sequences_;
   }
 
   //! get nemo sequences
-  const std::vector<topology::sequence>& get_nemo_sequences()const
+  const std::vector<CAT::topology::sequence>& get_nemo_sequences()const
   {
     return nemo_sequences_;
   }
 
   //! set sequences
-  void set_sequences(std::vector<topology::sequence> sequences)
+  void set_CAT_sequences(std::vector<CAT::topology::sequence> sequences)
   {
-    sequences_.clear();
-    sequences_ = sequences;
+    CAT_sequences_.clear();
+    CAT_sequences_ = sequences;
   }
 
   //! set nemo sequences
-  void set_nemo_sequences(std::vector<topology::sequence> sequences)
+  void set_nemo_sequences(std::vector<CAT::topology::sequence> sequences)
   {
     nemo_sequences_.clear();
     nemo_sequences_ = sequences;
@@ -441,16 +444,16 @@ public:
 
 
 private:
-  void event_display_xz(std::string mode, topology::tracked_data td);
+  void event_display_xz(std::string mode, CAT::topology::tracked_data td);
   void draw_circle_xz( double x0, double z0, double radius, size_t color, size_t thickness, double phi1, double phi2);
   void draw_initial_hits_xz( void );
-  void draw_calos_xz( std::vector<topology::calorimeter_hit> calos );
+  void draw_calos_xz( std::vector<CAT::topology::calorimeter_hit> calos );
   void draw_sine_yz( double y0, double z0, double radius, double pitch, size_t color, size_t thickness, double phi1 , double phi2);
-  void draw_cats_xz(std::string mode, std::vector<topology::sequence> true_seqs);
-  void event_display_yz(std::string mode, topology::tracked_data td);
-  void draw_calos_yz( std::vector<topology::calorimeter_hit> calos );
+  void draw_cats_xz(std::string mode, std::vector<CAT::topology::sequence> true_seqs);
+  void event_display_yz(std::string mode, CAT::topology::tracked_data td);
+  void draw_calos_yz( std::vector<CAT::topology::calorimeter_hit> calos );
   void draw_initial_hits_yz( void );
-  void draw_cats_yz(std::string mode, std::vector<topology::sequence> true_seqs);
+  void draw_cats_yz(std::string mode, std::vector<CAT::topology::sequence> true_seqs);
   void print_cells(void);
   void draw_tangents_xz( void );
   void draw_tangents_yz( void );
@@ -466,18 +469,18 @@ private:
     name = name.substr(0,i1);
     return name;
   }
-  int getCalWalli( topology::calorimeter_hit h );
-  int quadrant_xz( topology::cell c );
-  int quadrant_yz( topology::cell c );
+  int getCalWalli( CAT::topology::calorimeter_hit h );
+  int quadrant_xz( CAT::topology::cell c );
+  int quadrant_yz( CAT::topology::cell c );
   void init_quadrant_counters();
   void locate_legend_xz();
   void locate_legend_yz();
   size_t least_occupied_quadrant();
 
-  std::vector<topology::cell> cells_;
-  std::vector<topology::cluster> clusters_;
-  std::vector<topology::sequence> sequences_;
-  std::vector<topology::sequence> nemo_sequences_;
+  std::vector<CAT::topology::cell> cells_;
+  std::vector<CAT::topology::cluster> clusters_;
+  std::vector<CAT::topology::sequence> CAT_sequences_;
+  std::vector<CAT::topology::sequence> nemo_sequences_;
 
   size_t n_cells_quad[4];
 
@@ -503,7 +506,7 @@ public:
 
 
 };
-}
+
 
 
 #endif

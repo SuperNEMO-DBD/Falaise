@@ -148,7 +148,7 @@ namespace SULTAN {
         return "z";
       }
       else if( type() == "Nemo3" ){
-        if( norm().y().value() == 0. ){ // inner and outer walls
+        if( norm().z().value() == 0. ){ // inner and outer walls
           const experimental_point origin(0.,0.,0.,0.,0.,0.);
           experimental_vector v(origin, center_);  // vector from center of detector
                                                         // to center of calo block
@@ -157,13 +157,13 @@ namespace SULTAN {
           return "outer";
         }
 
-        if( norm().y().value() == 1. )
+        if( norm().z().value() == 1. )
           return "bottom";
 
-        if( norm().y().value() == -1. )
+        if( norm().z().value() == -1. )
           return "top";
 
-        clog << " warning: undefined view for plane of type " << type() << std::endl;
+        clog << " warning: undefined view for plane of type " << type() <<  " norm (" << norm().x().value() << ", " << norm().y().value() << ", " << norm().z().value() << ")" << std::endl;
         return "null";
       }
 

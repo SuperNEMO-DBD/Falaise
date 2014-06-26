@@ -4,6 +4,7 @@
 #include <sys/time.h>
 
 using namespace CAT;
+using namespace SULTAN;
 
 //************************************************************
    EventDisplay::EventDisplay(mybhep::gstore st){
@@ -472,21 +473,22 @@ void EventDisplay::initialize( ) {
     ncanvas ++;
   if( PlotTrueTracks )
     ncanvas ++;
-  if( PlotCats || PlotHelices )
+  if( PlotCats || PlotHelices || PlotSultan )
     ncanvas ++;
 
   canvas->Divide(sv, ncanvas);
 
-    color_detector = kBlack;
-    color_cells = kBlue;
-    color_fast_cells = kBlue + 2;
-    color_cats = kCyan;
-    color_nemora = kRed;
-    color_true_track = kPink;
-    color_tangent = kBlack;
-    color_triplet = kMagenta;
-    color_helix = kOrange;
-    color_calos = kAzure;
+  color_detector = kBlack;
+  color_cells = kBlue;
+  color_fast_cells = kBlue + 2;
+  color_cats = kCyan;
+  color_sultan = kViolet;
+  color_nemora = kRed;
+  color_true_track = kPink;
+  color_tangent = kBlack;
+  color_triplet = kMagenta;
+  color_helix = kOrange;
+  color_calos = kAzure;
 
 
   return;
@@ -591,6 +593,7 @@ bool EventDisplay::InitializeDisplayEvent( mybhep::sstore store, mybhep::gstore 
     color_cells = kBlue; // clear blue
     color_fast_cells = kBlue + 2; // blue
     color_cats = kCyan; // black
+    color_sultan = kViolet;
     color_nemora = kRed; // red
     color_true_track = kPink; // pink
     color_tangent = kGray; // grey
@@ -613,7 +616,7 @@ void EventDisplay::SetPlutsMode( bool plutsmode ) {
 
 
 //*************************************************************
-void EventDisplay::GetPlotLimit( std::vector<topology::calorimeter_hit> calos ) {
+void EventDisplay::GetPlotLimit( std::vector<CAT::topology::calorimeter_hit> calos ) {
 //*************************************************************
 
   float XMin = mybhep::default_min;
@@ -625,7 +628,7 @@ void EventDisplay::GetPlotLimit( std::vector<topology::calorimeter_hit> calos ) 
 
 
   for(size_t i=0; i<cells_.size(); i++){
-    topology::cell c = cells_[i];
+    CAT::topology::cell c = cells_[i];
 
     if( !c.fast() ) continue;
 
@@ -650,7 +653,7 @@ void EventDisplay::GetPlotLimit( std::vector<topology::calorimeter_hit> calos ) 
     for(size_t i=0; i<calos.size(); i++)
       {
 
-        topology::calorimeter_hit h = calos[i];
+        CAT::topology::calorimeter_hit h = calos[i];
 
         if( h.pl().center().x().value() - calo_X/2. < XMin )
           XMin = h.pl().center().x().value() - calo_X/2.;
@@ -1065,7 +1068,7 @@ void EventDisplay::GenerateWires( void ){
                 double increment = GG_CELL_pitch*((double)iwire);
                 double xpos = -(CHAMBER_X-GG_GRND_diam)/2.+increment+GG_CELL_pitch + x_offset;
 
-                POINT point;
+                CAT::POINT point;
                 point.x = xpos;
                 point.z = plane_pos_Z;
                 DriftWires.push_back( point );
@@ -1153,7 +1156,7 @@ void EventDisplay::GenerateWires( void ){
               double layerphi = 2.*acos(-1.)/NOfWires[i];
               double ph = FirstWirePhi[i] + j*layerphi;
 
-              POINT point;
+              CAT::POINT point;
               point.x = LayerRadius[i]*cos(ph);
               point.z = LayerRadius[i]*sin(ph);
 
@@ -1506,7 +1509,7 @@ void EventDisplay::Finalize( void ){
 
 
 //*************************************************************
-void EventDisplay::execute(mybhep::event& evt, size_t ievent, topology::tracked_data & __tracked_data){
+void EventDisplay::execute(mybhep::event& evt, size_t ievent, CAT::topology::tracked_data & __tracked_data){
 //*************************************************************
 
   m.message(" Display Event \n",mybhep::VERBOSE); fflush(stdout);
@@ -1516,14 +1519,14 @@ void EventDisplay::execute(mybhep::event& evt, size_t ievent, topology::tracked_
 
   set_cells(__tracked_data.get_cells());
   set_clusters(__tracked_data.get_clusters());
-  std::vector<topology::scenario> sc = __tracked_data.get_scenarios();
+  std::vector<CAT::topology::scenario> CAT_sc = __tracked_data.get_scenarios();
 
-  if( sc.size() == 0 ){
-    m.message(" warning: scenarios size is ", sc.size(), mybhep::VVERBOSE);
+  if( CAT_sc.size() == 0 ){
+    m.message(" warning: CAT_scenarios size is ", CAT_sc.size(), mybhep::VVERBOSE);
     return;
   }
 
-  set_sequences(sc[0].sequences());
+  set_CAT_sequences(CAT_sc[0].sequences());
 
   if( !SuperNemo )
     {
@@ -1603,8 +1606,8 @@ void EventDisplay::execute(mybhep::event& evt, size_t ievent, topology::tracked_
     pave_chi2.SetFillColor(4000);
     pave_chi2.SetTextSize(0.025);
 
-    for(size_t i=0; i<sequences_.size(); i++){
-      topology::sequence s = sequences_[i];
+    for(size_t i=0; i<CAT_sequences_.size(); i++){
+      CAT::topology::sequence s = CAT_sequences_[i];
       size_t nnodes = s.nodes().size();
       std::vector<double> helix_chi2s = s.helix_chi2s();
 
@@ -1634,27 +1637,27 @@ void EventDisplay::execute(mybhep::event& evt, size_t ievent, topology::tracked_
 }
 
 //*************************************************************
-void EventDisplay::execute(size_t ievent, topology::tracked_data & __tracked_data){
+void EventDisplay::execute(size_t ievent, CAT::topology::tracked_data & __CAT_tracked_data, SULTAN::topology::tracked_data & __SULTAN_tracked_data){
 //*************************************************************
 
   m.message(" Display Event \n",mybhep::VERBOSE); fflush(stdout);
 
-  set_cells(__tracked_data.get_cells());
-  set_clusters(__tracked_data.get_clusters());
-  sequences_.clear();
-  std::vector<topology::scenario> sc = __tracked_data.get_scenarios();
+  set_cells(__CAT_tracked_data.get_cells());
+  set_clusters(__CAT_tracked_data.get_clusters());
+  CAT_sequences_.clear();
+  std::vector<CAT::topology::scenario> CAT_sc = __CAT_tracked_data.get_scenarios();
 
   if( !SuperNemo )
     {
-      set_nemo_sequences(__tracked_data.get_nemo_sequences() );
+      set_nemo_sequences(__CAT_tracked_data.get_nemo_sequences() );
     }
 
-  GetPlotLimit( __tracked_data.get_calos());
+  GetPlotLimit( __CAT_tracked_data.get_calos());
 
   icanvas = 0;
 
   if( !PlotInitialHits && !PlotTrueTracks
-      && !PlotCats && !PlotHelices && !PlotNemoTracks ){
+      && !PlotCats && !PlotHelices && !PlotNemoTracks && !PlotSultan ){
     m.message(" problem: nothing to plot", mybhep::NORMAL);
     return;
   }
@@ -1662,45 +1665,44 @@ void EventDisplay::execute(size_t ievent, topology::tracked_data & __tracked_dat
 
   if( PlotInitialHits ){
     if( PlotTopView )
-      event_display_xz("InitialHits", __tracked_data);
+      event_display_xz("InitialHits", __CAT_tracked_data);
     if( PlotSideView )
-      event_display_yz("InitialHits", __tracked_data);
+      event_display_yz("InitialHits", __CAT_tracked_data);
   }
 
 
-  if( sc.size() == 0 ){
-    m.message(" warning: scenarios size is ", sc.size(), mybhep::VVERBOSE);
+  if( PlotTrueTracks ){
+    
+    if( PlotTopView )
+      event_display_xz("true", __CAT_tracked_data);
+    if( PlotSideView )
+      event_display_yz("true", __CAT_tracked_data);
+    
+  }
+  
+  
+  if( PlotNemoTracks ){
+    
+    if( PlotTopView )
+      event_display_xz("nemo", __CAT_tracked_data);
+    if( PlotSideView )
+      event_display_yz("nemo", __CAT_tracked_data);
+    
+  }
+  
+  
+  if( CAT_sc.size() == 0 ){
+    m.message(" warning: CAT_scenarios size is ", CAT_sc.size(), mybhep::VVERBOSE);
   }
   else{
-    set_sequences(sc[0].sequences());
-
-    if( PlotTrueTracks ){
-
-      if( PlotTopView )
-        event_display_xz("true", __tracked_data);
-      if( PlotSideView )
-        event_display_yz("true", __tracked_data);
-
-    }
-
-
-    if( PlotNemoTracks ){
-
-      if( PlotTopView )
-        event_display_xz("nemo", __tracked_data);
-      if( PlotSideView )
-        event_display_yz("nemo", __tracked_data);
-
-    }
-
+    set_CAT_sequences(CAT_sc[0].sequences());
 
     if( PlotCats || PlotHelices ){
       if( PlotTopView )
-        event_display_xz("cats", __tracked_data);
+        event_display_xz("cats", __CAT_tracked_data);
       if( PlotSideView )
-        event_display_yz("cats", __tracked_data);
+        event_display_yz("cats", __CAT_tracked_data);
     }
-
 
     /*
       if( !SuperNemo ){
@@ -1730,8 +1732,8 @@ void EventDisplay::execute(size_t ievent, topology::tracked_data & __tracked_dat
     pave_chi2.SetFillColor(4000);
     pave_chi2.SetTextSize(0.03);
 
-    for(size_t i=0; i<sequences_.size(); i++){
-      topology::sequence s = sequences_[i];
+    for(size_t i=0; i<CAT_sequences_.size(); i++){
+      CAT::topology::sequence s = CAT_sequences_[i];
       size_t nnodes = s.nodes().size();
       std::vector<double> helix_chi2s = s.helix_chi2s();
 
@@ -1792,7 +1794,7 @@ void EventDisplay::locate_legend_xz(){
 
   double x, z;
   double dz = 0.20;
-  double dx = 0.015*sequences_.size();
+  double dx = 0.015*CAT_sequences_.size();
 
   switch(iquad)
     {
@@ -1840,7 +1842,7 @@ void EventDisplay::locate_legend_yz(){
 
   double y, z;
   double dz = 0.20;
-  double dy = 0.015*sequences_.size();
+  double dy = 0.015*CAT_sequences_.size();
 
   switch(iquad)
     {
@@ -1882,7 +1884,7 @@ void EventDisplay::locate_legend_yz(){
 
 
 //*************************************************************
-void EventDisplay::event_display_xz(std::string mode, topology::tracked_data td){
+void EventDisplay::event_display_xz(std::string mode, CAT::topology::tracked_data td){
 //*************************************************************
 
   icanvas ++;
@@ -2024,7 +2026,7 @@ void EventDisplay::draw_sine_yz( double y0, double z0, double radius, double pit
 }
 
 //*************************************************************
-int EventDisplay::quadrant_xz( topology::cell c ){
+int EventDisplay::quadrant_xz( CAT::topology::cell c ){
 //*************************************************************
 
 
@@ -2040,7 +2042,7 @@ int EventDisplay::quadrant_xz( topology::cell c ){
 }
 
 //*************************************************************
-int EventDisplay::quadrant_yz( topology::cell c ){
+int EventDisplay::quadrant_yz( CAT::topology::cell c ){
 //*************************************************************
 
 
@@ -2069,7 +2071,7 @@ void EventDisplay::draw_initial_hits_xz( void ){
   size_t index = 0;
   for(size_t i=0; i< npoints; i++)  // loop on hits
     {
-      topology::cell c = cells_[i];
+      CAT::topology::cell c = cells_[i];
 
       x[index] = c.ep().x().value();
       z[index] = c.ep().z().value();
@@ -2110,7 +2112,7 @@ void EventDisplay::draw_initial_hits_xz( void ){
 }
 
 //*************************************************************
-int EventDisplay::getCalWalli( topology::calorimeter_hit h ){
+int EventDisplay::getCalWalli( CAT::topology::calorimeter_hit h ){
 //*************************************************************
 
   m.message(" problem: requesting calo wall", mybhep::NORMAL);
@@ -2121,7 +2123,7 @@ int EventDisplay::getCalWalli( topology::calorimeter_hit h ){
 
 
 //*************************************************************
-void EventDisplay::draw_calos_xz( std::vector<topology::calorimeter_hit> calos ){
+void EventDisplay::draw_calos_xz( std::vector<CAT::topology::calorimeter_hit> calos ){
 //*************************************************************
 
 
@@ -2129,9 +2131,9 @@ void EventDisplay::draw_calos_xz( std::vector<topology::calorimeter_hit> calos )
 
   for(size_t i=0; i< npoints; i++)  // plotting calorimeter hits
     {
-      topology::calorimeter_hit h = calos[i];
+      CAT::topology::calorimeter_hit h = calos[i];
 
-      topology::experimental_vector sizes = h.pl().sizes();
+      CAT::topology::experimental_vector sizes = h.pl().sizes();
       double local_calo_x = sizes.x().value();
       double local_calo_z = sizes.z().value();
 
@@ -2223,15 +2225,15 @@ void EventDisplay::draw_calos_xz( std::vector<topology::calorimeter_hit> calos )
 
 
 //*************************************************************
-void EventDisplay::draw_calos_yz( std::vector<topology::calorimeter_hit> calos ){
+void EventDisplay::draw_calos_yz( std::vector<CAT::topology::calorimeter_hit> calos ){
 //*************************************************************
 
   size_t npoints = calos.size();
   for(size_t i=0; i< npoints; i++)  // plotting calorimeter hits
     {
-      topology::calorimeter_hit h = calos[i];
+      CAT::topology::calorimeter_hit h = calos[i];
 
-      topology::experimental_vector sizes = h.pl().sizes();
+      CAT::topology::experimental_vector sizes = h.pl().sizes();
       double local_calo_x = sizes.x().value();
       double local_calo_y = sizes.y().value();
       double local_calo_z = sizes.z().value();
@@ -2334,13 +2336,13 @@ void EventDisplay::draw_tangents_xz( void ){
 
   for(size_t iclu=0; iclu<clusters_.size(); iclu++){
 
-    std::vector<topology::node> nodes = clusters_[iclu].nodes();
+    std::vector<CAT::topology::node> nodes = clusters_[iclu].nodes();
     for(size_t inode=0; inode<nodes.size(); inode++){
-      std::vector<topology::cell_couplet> ccs = nodes[inode].cc();
+      std::vector<CAT::topology::cell_couplet> ccs = nodes[inode].cc();
       for(size_t icc=0; icc<ccs.size(); icc++){
-        std::vector<topology::line>  tangents = ccs[icc].tangents();
+        std::vector<CAT::topology::line>  tangents = ccs[icc].tangents();
         for(size_t itang=0; itang<tangents.size(); itang++){
-          topology::line l = tangents[itang];
+          CAT::topology::line l = tangents[itang];
 
           double* ztan = (double*)malloc(sizeof(double)*2);
           double* xtan = (double*)malloc(sizeof(double)*2);
@@ -2373,7 +2375,7 @@ void EventDisplay::draw_helices_xz(std::string mode){
 
   if( mode == "cats" ){
 
-    for(std::vector<topology::sequence>::iterator iclu=sequences_.begin(); iclu != sequences_.end(); ++iclu){
+    for(std::vector<CAT::topology::sequence>::iterator iclu=CAT_sequences_.begin(); iclu != CAT_sequences_.end(); ++iclu){
 
       if( iclu->nodes_.size() <= 2 ){
         continue;
@@ -2382,23 +2384,23 @@ void EventDisplay::draw_helices_xz(std::string mode){
       double x = iclu->center().x().value();
       double z = iclu->center().z().value();
       double r = iclu->radius().value();
-      topology::experimental_point pi = iclu->nodes().front().ep();
+      CAT::topology::experimental_point pi = iclu->nodes().front().ep();
       if( iclu->has_helix_vertex() ){
-        const topology::experimental_point v = iclu->helix_vertex();
+        const CAT::topology::experimental_point v = iclu->helix_vertex();
         pi = v;
       }
-      topology::experimental_point pf = iclu->nodes().back().ep();
+      CAT::topology::experimental_point pf = iclu->nodes().back().ep();
       if( iclu->has_decay_helix_vertex() )
         pf = iclu->decay_helix_vertex();
-      double phi1 = topology::experimental_vector(iclu->center(), pi).phi().value();
-      double phi2 = topology::experimental_vector(iclu->center(), pf).phi().value();
+      double phi1 = CAT::topology::experimental_vector(iclu->center(), pi).phi().value();
+      double phi2 = CAT::topology::experimental_vector(iclu->center(), pf).phi().value();
       mybhep::fix_angles(&phi1, &phi2);
-      draw_circle_xz(x, z, r, color_helix + (iclu - sequences_.begin()), 2, phi1, phi2);
+      draw_circle_xz(x, z, r, color_helix + (iclu - CAT_sequences_.begin()), 2, phi1, phi2);
 
     }
   } else if( mode == "nemo" ){
 
-    for(std::vector<topology::sequence>::iterator iclu=nemo_sequences_.begin(); iclu != nemo_sequences_.end(); ++iclu){
+    for(std::vector<CAT::topology::sequence>::iterator iclu=nemo_sequences_.begin(); iclu != nemo_sequences_.end(); ++iclu){
 
       if( iclu->nodes_.size() <= 2 ){
         continue;
@@ -2407,16 +2409,16 @@ void EventDisplay::draw_helices_xz(std::string mode){
       double x = iclu->center().x().value();
       double z = iclu->center().z().value();
       double r = iclu->radius().value();
-      topology::experimental_point pi = iclu->nodes().front().ep();
+      CAT::topology::experimental_point pi = iclu->nodes().front().ep();
       if( iclu->has_helix_vertex() ){
-        const topology::experimental_point v = iclu->helix_vertex();
+        const CAT::topology::experimental_point v = iclu->helix_vertex();
         pi = v;
       }
-      topology::experimental_point pf = iclu->nodes().back().ep();
+      CAT::topology::experimental_point pf = iclu->nodes().back().ep();
       if( iclu->has_decay_helix_vertex() )
         pf = iclu->decay_helix_vertex();
-      double phi1 = topology::experimental_vector(iclu->center(), pi).phi().value();
-      double phi2 = topology::experimental_vector(iclu->center(), pf).phi().value();
+      double phi1 = CAT::topology::experimental_vector(iclu->center(), pi).phi().value();
+      double phi2 = CAT::topology::experimental_vector(iclu->center(), pf).phi().value();
       mybhep::fix_angles(&phi1, &phi2);
       draw_circle_xz(x, z, r, color_helix + (iclu - nemo_sequences_.begin()), 2, phi1, phi2);
 
@@ -2436,37 +2438,37 @@ void EventDisplay::draw_helices_yz(std::string mode){
 
   if( mode == "cats" ){
 
-    for(std::vector<topology::sequence>::iterator iclu=sequences_.begin(); iclu != sequences_.end(); ++iclu){
+    for(std::vector<CAT::topology::sequence>::iterator iclu=CAT_sequences_.begin(); iclu != CAT_sequences_.end(); ++iclu){
       double y = iclu->center().y().value();
       double z = iclu->center().z().value();
       double r = iclu->radius().value();
       double p = iclu->pitch().value();
-      topology::experimental_point pi = iclu->nodes().front().ep();
+      CAT::topology::experimental_point pi = iclu->nodes().front().ep();
       if( iclu->has_helix_vertex() )
         pi = iclu->helix_vertex();
-      topology::experimental_point pf = iclu->nodes().back().ep();
+      CAT::topology::experimental_point pf = iclu->nodes().back().ep();
       if( iclu->has_decay_helix_vertex() )
         pf = iclu->decay_helix_vertex();
-      topology::helix h = iclu->get_helix();
+      CAT::topology::helix h = iclu->get_helix();
       double phi1 = h.phi_of_point(pi).value();
       double phi2 = h.phi_of_point(pf).value();
-      draw_sine_yz(y, z, r, p, color_helix + (iclu - sequences_.begin()), 2, phi1, phi2);
+      draw_sine_yz(y, z, r, p, color_helix + (iclu - CAT_sequences_.begin()), 2, phi1, phi2);
     }
 
   } else if( mode == "nemo" ){
 
-    for(std::vector<topology::sequence>::iterator iclu=nemo_sequences_.begin(); iclu != nemo_sequences_.end(); ++iclu){
+    for(std::vector<CAT::topology::sequence>::iterator iclu=nemo_sequences_.begin(); iclu != nemo_sequences_.end(); ++iclu){
       double y = iclu->center().y().value();
       double z = iclu->center().z().value();
       double r = iclu->radius().value();
       double p = iclu->pitch().value();
-      topology::experimental_point pi = iclu->nodes().front().ep();
+      CAT::topology::experimental_point pi = iclu->nodes().front().ep();
       if( iclu->has_helix_vertex() )
         pi = iclu->helix_vertex();
-      topology::experimental_point pf = iclu->nodes().back().ep();
+      CAT::topology::experimental_point pf = iclu->nodes().back().ep();
       if( iclu->has_decay_helix_vertex() )
         pf = iclu->decay_helix_vertex();
-      topology::helix h = iclu->get_helix();
+      CAT::topology::helix h = iclu->get_helix();
       double phi1 = h.phi_of_point(pi).value();
       double phi2 = h.phi_of_point(pf).value();
       draw_sine_yz(y, z, r, p, color_helix + (iclu - nemo_sequences_.begin()), 2, phi1, phi2);
@@ -2486,13 +2488,13 @@ void EventDisplay::draw_triplets_xz( void ){
 
   for(size_t iclu=0; iclu<clusters_.size(); iclu++){
 
-    std::vector<topology::node> nodes = clusters_[iclu].nodes();
+    std::vector<CAT::topology::node> nodes = clusters_[iclu].nodes();
     for(size_t inode=0; inode<nodes.size(); inode++){
-      std::vector<topology::cell_triplet> ccs = nodes[inode].ccc();
+      std::vector<CAT::topology::cell_triplet> ccs = nodes[inode].ccc();
       for(size_t icc=0; icc<ccs.size(); icc++){
-        std::vector<topology::joint>  joints = ccs[icc].joints();
+        std::vector<CAT::topology::joint>  joints = ccs[icc].joints();
         for(size_t itang=0; itang<joints.size(); itang++){
-          topology::joint j = joints[itang];
+          CAT::topology::joint j = joints[itang];
 
           double* ztan = (double*)malloc(sizeof(double)*3);
           double* xtan = (double*)malloc(sizeof(double)*3);
@@ -2528,13 +2530,13 @@ void EventDisplay::draw_tangents_yz( void ){
 
   for(size_t iclu=0; iclu<clusters_.size(); iclu++){
 
-    std::vector<topology::node> nodes = clusters_[iclu].nodes();
+    std::vector<CAT::topology::node> nodes = clusters_[iclu].nodes();
     for(size_t inode=0; inode<nodes.size(); inode++){
-      std::vector<topology::cell_couplet> ccs = nodes[inode].cc();
+      std::vector<CAT::topology::cell_couplet> ccs = nodes[inode].cc();
       for(size_t icc=0; icc<ccs.size(); icc++){
-        std::vector<topology::line>  tangents = ccs[icc].tangents();
+        std::vector<CAT::topology::line>  tangents = ccs[icc].tangents();
         for(size_t itripl=0; itripl<tangents.size(); itripl++){
-          topology::line l = tangents[itripl];
+          CAT::topology::line l = tangents[itripl];
 
           double* ztan = (double*)malloc(sizeof(double)*2);
           double* ytan = (double*)malloc(sizeof(double)*2);
@@ -2568,13 +2570,13 @@ void EventDisplay::draw_triplets_yz( void ){
 
   for(size_t iclu=0; iclu<clusters_.size(); iclu++){
 
-    std::vector<topology::node> nodes = clusters_[iclu].nodes();
+    std::vector<CAT::topology::node> nodes = clusters_[iclu].nodes();
     for(size_t inode=0; inode<nodes.size(); inode++){
-      std::vector<topology::cell_triplet> ccs = nodes[inode].ccc();
+      std::vector<CAT::topology::cell_triplet> ccs = nodes[inode].ccc();
       for(size_t icc=0; icc<ccs.size(); icc++){
-        std::vector<topology::joint>  joints = ccs[icc].joints();
+        std::vector<CAT::topology::joint>  joints = ccs[icc].joints();
         for(size_t itripl=0; itripl<joints.size(); itripl++){
-          topology::joint j = joints[itripl];
+          CAT::topology::joint j = joints[itripl];
 
           double* ztan = (double*)malloc(sizeof(double)*3);
           double* ytan = (double*)malloc(sizeof(double)*3);
@@ -2606,7 +2608,7 @@ void EventDisplay::draw_triplets_yz( void ){
 
 
 //*************************************************************
-void EventDisplay::draw_cats_xz(std::string mode, std::vector<topology::sequence> true_seqs ){
+void EventDisplay::draw_cats_xz(std::string mode, std::vector<CAT::topology::sequence> true_seqs ){
 //*************************************************************
 
   if( mode == "true" ){
@@ -2614,7 +2616,7 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<topology::sequence
     for(size_t i=0; i<true_seqs.size(); i++)
       {
 
-        topology::sequence s = true_seqs[i];
+        CAT::topology::sequence s = true_seqs[i];
 
         if( !s.primary() ) continue;
 
@@ -2656,7 +2658,7 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<topology::sequence
         for(size_t j=0; j<nnodes; j++)
           {
 
-            topology::experimental_point p = s.nodes()[j].ep();
+            CAT::topology::experimental_point p = s.nodes()[j].ep();
 
 
             xt[j+offset] = p.x().value();
@@ -2678,9 +2680,9 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<topology::sequence
 
   }
   else if( mode == "cats" ){
-    for(size_t i=0; i<sequences_.size(); i++)
+    for(size_t i=0; i<CAT_sequences_.size(); i++)
       {
-        topology::sequence s = sequences_[i];
+        CAT::topology::sequence s = CAT_sequences_[i];
 
         if( s.name() == "LOST" ) continue;
 
@@ -2724,7 +2726,7 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<topology::sequence
         for(size_t j=0; j<nnodes; j++)
           {
 
-            topology::experimental_point p = s.nodes()[j].ep();
+            CAT::topology::experimental_point p = s.nodes()[j].ep();
 
             xt[j+offset] = p.x().value();
             zt[j+offset] = p.z().value();
@@ -2750,7 +2752,7 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<topology::sequence
 
     for(size_t i=0; i<nemo_sequences_.size(); i++)
       {
-        topology::sequence s = nemo_sequences_[i];
+        CAT::topology::sequence s = nemo_sequences_[i];
 
         size_t color = color_nemora;
 
@@ -2797,7 +2799,7 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<topology::sequence
         for(size_t j=0; j<nnodes; j++)
           {
 
-            topology::experimental_point p = s.nodes()[j].ep();
+            CAT::topology::experimental_point p = s.nodes()[j].ep();
 
 
             xt[j+offset] = p.x().value();
@@ -2841,7 +2843,7 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<topology::sequence
 }
 
 //*************************************************************
-void EventDisplay::event_display_yz(std::string mode, topology::tracked_data td){
+void EventDisplay::event_display_yz(std::string mode, CAT::topology::tracked_data td){
 //*************************************************************
 
   icanvas ++;
@@ -2912,7 +2914,7 @@ void EventDisplay::draw_initial_hits_yz( void ){
 
   for(size_t i=0; i< npoints; i++)  // loop on hits
     {
-      topology::cell c = cells_[i];
+      CAT::topology::cell c = cells_[i];
 
       double* y = (double*)malloc(sizeof(double)*7);
       double* z = (double*)malloc(sizeof(double)*7);
@@ -2970,14 +2972,14 @@ void EventDisplay::draw_initial_hits_yz( void ){
 }
 
 //*************************************************************
-void EventDisplay::draw_cats_yz(std::string mode, std::vector<topology::sequence> true_seqs ){
+void EventDisplay::draw_cats_yz(std::string mode, std::vector<CAT::topology::sequence> true_seqs ){
 //*************************************************************
 
   if( mode == "true" ){
 
     for(size_t i=0; i<true_seqs.size(); i++)
       {
-        topology::sequence s = true_seqs[i];
+        CAT::topology::sequence s = true_seqs[i];
 
         if( !s.primary() ) continue;
 
@@ -3017,7 +3019,7 @@ void EventDisplay::draw_cats_yz(std::string mode, std::vector<topology::sequence
         for(size_t j=0; j<nnodes; j++)
           {
 
-            topology::experimental_point p = s.nodes()[j].ep();
+            CAT::topology::experimental_point p = s.nodes()[j].ep();
 
             yt[j+offset] = p.y().value();
             zt[j+offset] = p.z().value();
@@ -3039,9 +3041,9 @@ void EventDisplay::draw_cats_yz(std::string mode, std::vector<topology::sequence
 
   }
   else if( mode == "cats" ){
-    for(size_t i=0; i<sequences_.size(); i++)
+    for(size_t i=0; i<CAT_sequences_.size(); i++)
       {
-        topology::sequence s = sequences_[i];
+        CAT::topology::sequence s = CAT_sequences_[i];
 
         if( s.name() == "LOST" ) continue;
 
@@ -3082,7 +3084,7 @@ void EventDisplay::draw_cats_yz(std::string mode, std::vector<topology::sequence
         for(size_t j=0; j<nnodes; j++)
           {
 
-            topology::experimental_point p = s.nodes()[j].ep();
+            CAT::topology::experimental_point p = s.nodes()[j].ep();
 
             color = color_cats;
 
@@ -3107,7 +3109,7 @@ void EventDisplay::draw_cats_yz(std::string mode, std::vector<topology::sequence
   else if( mode == "nemo" ){
     for(size_t i=0; i<nemo_sequences_.size(); i++)
       {
-        topology::sequence s = nemo_sequences_[i];
+        CAT::topology::sequence s = nemo_sequences_[i];
 
         if( s.name() == "LOST" ) continue;
 
@@ -3154,7 +3156,7 @@ void EventDisplay::draw_cats_yz(std::string mode, std::vector<topology::sequence
         for(size_t j=0; j<nnodes; j++)
           {
 
-            topology::experimental_point p = s.nodes()[j].ep();
+            CAT::topology::experimental_point p = s.nodes()[j].ep();
 
             yt[j+offset] = p.y().value();
             zt[j+offset] = p.z().value();
