@@ -17,9 +17,9 @@ namespace CAT {
     class Legendre_function {
 
     private:
-      double x0_;
-      double y0_;
-      double r_;
+      //double x0_;
+      //double y0_;
+      //double r_;
 
     public:
       Legendre_function();
