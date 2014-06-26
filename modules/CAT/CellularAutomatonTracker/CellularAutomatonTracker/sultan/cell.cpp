@@ -20,7 +20,7 @@ namespace SULTAN{
 
 
      // fraction of radius after which cells intersect
-     double fraction_limit = 1.; 
+     double fraction_limit = 1.;
 
      // horizontal distance between cell centers
      double dist = experimental_vector(ep(), c.ep()).hor().length().value();
@@ -66,7 +66,7 @@ namespace SULTAN{
     }
 
 
-    size_t cell::near_level( const topology::cell & cell, double nofflayers, double cell_distance )const{
+    size_t cell::near_level( const topology::cell & cell, double nofflayers, double /*cell_distance*/ )const{
 
       // returns 0 for far-away cell
       // 1 for cells separated by nofflayers
