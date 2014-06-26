@@ -21,10 +21,10 @@
 #include <iostream>
 #include <iomanip>
 #include <mybhep/utilities.h>
-#include <CATAlgorithm/cell.h>
+#include <CATAlgorithm/cell_base.h>
 #include <CATAlgorithm/node.h>
 #include <CATAlgorithm/cluster.h>
-#include <CATAlgorithm/tracked_data.h>
+#include <CATAlgorithm/tracked_data_base.h>
 
 #include <list>
 #include <vector>

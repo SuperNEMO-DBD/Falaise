@@ -66,7 +66,7 @@ namespace SULTAN{
     }
 
 
-    size_t cell::near_level( const topology::cell & cell, double nofflayers, double /*cell_distance*/ )const{
+    size_t cell::near_level( const topology::cell & cell, double nofflayers, double cell_distance )const{
 
       // returns 0 for far-away cell
       // 1 for cells separated by nofflayers
@@ -79,42 +79,42 @@ namespace SULTAN{
       // skip 1 connection, tilt: distance = sqrt(5) = 2.24
       // skip 1 connection, diag: distance = 2 sqrt(2) = 2.83
 
-#if 1  // use side, layer and row
+      if( type_ == "SN" ){  // use side, layer and row
 
-
-      // Use geiger locator for such research Warning: use integer
-      // because uint32_t has strange behavior with absolute value
-      // cmath::abs
-      const int hit1_side  = this->block();  // -1, 1
-      const int hit1_layer = abs(this->layer()); // 0, 1, ..., 8
-      const int hit1_row   = this->iid();  // -56, -55, ..., 55, 56
-
-      const int hit2_side  = cell.block();
-      const int hit2_layer = abs(cell.layer());
-      const int hit2_row   = cell.iid();
-
-      // Do not cross the foil
-      if (hit1_side != hit2_side) return 0;
-
-      // Check neighboring
-      const unsigned int layer_distance = abs (hit1_layer - hit2_layer); // 1 --> side-by-side
-      const unsigned int row_distance = abs (hit1_row - hit2_row);
-
-      if (layer_distance == 0 && row_distance == 0){
-        if( print_level() >= mybhep::NORMAL ){
-          std::clog << " problem: sultan asking near level of cells with identical position (" << hit1_side << ", " << hit1_layer << ", " << hit1_row << ") (" << hit2_side << ", " << hit2_layer << ", " << hit2_row << ")" << std::endl;
-        }
-        return 3;
+	// Use geiger locator for such research Warning: use integer
+	// because uint32_t has strange behavior with absolute value
+	// cmath::abs
+	const int hit1_side  = this->block();  // -1, 1
+	const int hit1_layer = abs(this->layer()); // 0, 1, ..., 8
+	const int hit1_row   = this->iid();  // -56, -55, ..., 55, 56
+	
+	const int hit2_side  = cell.block();
+	const int hit2_layer = abs(cell.layer());
+	const int hit2_row   = cell.iid();
+	
+	// Do not cross the foil
+	if (hit1_side != hit2_side) return 0;
+	
+	// Check neighboring
+	const unsigned int layer_distance = abs (hit1_layer - hit2_layer); // 1 --> side-by-side
+	const unsigned int row_distance = abs (hit1_row - hit2_row);
+	
+	if (layer_distance == 0 && row_distance == 0){
+	  if( print_level() >= mybhep::NORMAL ){
+	    std::clog << " problem: sultan asking near level of cells with identical position (" << hit1_side << ", " << hit1_layer << ", " << hit1_row << ") (" << hit2_side << ", " << hit2_layer << ", " << hit2_row << ")" << std::endl;
+	  }
+	  return 3;
+	}
+	else if (layer_distance == 1 && row_distance == 0) return 3;
+	else if (layer_distance == 0 && row_distance == 1) return 3;
+	else if (layer_distance == 1 && row_distance == 1) return 2;
+	else if (layer_distance > nofflayers + 1 || row_distance > nofflayers + 1) return 0;
+	return 1;
       }
-      else if (layer_distance == 1 && row_distance == 0) return 3;
-      else if (layer_distance == 0 && row_distance == 1) return 3;
-      else if (layer_distance == 1 && row_distance == 1) return 2;
-      else if (layer_distance > nofflayers + 1 || row_distance > nofflayers + 1) return 0;
-      return 1;
 
-#else // use physical distance
+      // for NEMO3 use physical distance
       topology::experimental_double distance = topology::experimental_vector(this->ep(),cell.ep()).hor().length();
-
+      
       double limit_side = cell_distance;
       double limit_diagonal = sqrt(2.)*cell_distance;
       double precision = 0.15*limit_side;
@@ -133,8 +133,6 @@ namespace SULTAN{
         return 1;
 
       return 0;
-#endif
-
 
     }
 

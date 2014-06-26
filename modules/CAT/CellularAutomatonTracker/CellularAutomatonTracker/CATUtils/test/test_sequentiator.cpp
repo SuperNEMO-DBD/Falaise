@@ -3,7 +3,7 @@
 #include <CATAlgorithm/experimental_double.h>
 #include <CATAlgorithm/experimental_point.h>
 #include <CATAlgorithm/experimental_vector.h>
-#include <CATAlgorithm/cell.h>
+#include <CATAlgorithm/cell_base.h>
 #include <CATAlgorithm/line.h>
 #include <CATAlgorithm/joint.h>
 #include <CATAlgorithm/cell_couplet.h>

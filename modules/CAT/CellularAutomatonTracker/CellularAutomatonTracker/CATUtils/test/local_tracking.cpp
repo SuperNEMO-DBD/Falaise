@@ -4,12 +4,12 @@
 #include <string.h>
 #include <CLHEP/Units/SystemOfUnits.h>
 #include <mybhep/system_of_units.h>
-#include <CATAlgorithm/cell.h>
+#include <CATAlgorithm/cell_base.h>
 #include <CATAlgorithm/experimental_point.h>
 #include <CATAlgorithm/experimental_vector.h>
 #include <CATAlgorithm/line.h>
 #include <CATAlgorithm/cell_couplet.h>
-#include <CATAlgorithm/tracked_data.h>
+#include <CATAlgorithm/tracked_data_base.h>
 #include <CATAlgorithm/clusterizer.h>
 #include <CATAlgorithm/sequentiator.h>
 #include <CATUtils/EventDisplay.h>
