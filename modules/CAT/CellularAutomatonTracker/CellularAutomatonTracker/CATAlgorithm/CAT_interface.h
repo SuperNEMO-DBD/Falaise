@@ -9,10 +9,9 @@
 #include <string>
 
 #include <CATAlgorithm/CAT_config.h>
-#include <CATAlgorithm/cell.h>
-#include <CATAlgorithm/tracked_data.h>
+#include <CATAlgorithm/tracked_data_base.h>
 #include <CATAlgorithm/experimental_point.h>
-#include <CATAlgorithm/cell.h>
+#include <CATAlgorithm/cell_base.h>
 #include <CATAlgorithm/clusterizer.h>
 #include <CATAlgorithm/sequentiator.h>
 

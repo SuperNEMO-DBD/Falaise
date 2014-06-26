@@ -1,6 +1,6 @@
 /* -*- mode: c++ -*- */
 
-#include <CATAlgorithm/circle.h>
+#include <CATAlgorithm/circle_base.h>
 
 namespace CAT{
   namespace topology{

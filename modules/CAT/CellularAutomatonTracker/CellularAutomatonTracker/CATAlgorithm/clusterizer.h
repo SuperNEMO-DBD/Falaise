@@ -22,11 +22,11 @@
 #include <CATAlgorithm/experimental_double.h>
 
 #include <CATAlgorithm/Clock.h>
-#include <CATAlgorithm/cell.h>
+#include <CATAlgorithm/cell_base.h>
 #include <CATAlgorithm/cluster.h>
 #include <CATAlgorithm/calorimeter_hit.h>
-#include <CATAlgorithm/sequence.h>
-#include <CATAlgorithm/tracked_data.h>
+#include <CATAlgorithm/sequence_base.h>
+#include <CATAlgorithm/tracked_data_base.h>
 
 
 namespace CAT{

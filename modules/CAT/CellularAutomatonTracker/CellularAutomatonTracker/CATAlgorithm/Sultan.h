@@ -19,11 +19,11 @@
 #include <CATAlgorithm/cell_triplet.h>
 #include <CATAlgorithm/experimental_double.h>
 #include <CATAlgorithm/Clock.h>
-#include <CATAlgorithm/cell.h>
+#include <CATAlgorithm/cell_base.h>
 #include <CATAlgorithm/cluster.h>
 #include <CATAlgorithm/clusterizer.h>
 #include <CATAlgorithm/calorimeter_hit.h>
-#include <CATAlgorithm/sequence.h>
+#include <CATAlgorithm/sequence_base.h>
 #include <CATAlgorithm/Tracked_data.h>
 #include <CATAlgorithm/Cell.h>
 #include <CATAlgorithm/Detector.h>

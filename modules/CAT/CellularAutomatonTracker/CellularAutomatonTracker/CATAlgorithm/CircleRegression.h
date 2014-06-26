@@ -6,7 +6,7 @@
 #include <cmath>
 #include <CATAlgorithm/CAT_config.h>
 #include <CATAlgorithm/experimental_double.h>
-#include <CATAlgorithm/circle.h>
+#include <CATAlgorithm/circle_base.h>
 
 
 namespace CAT{

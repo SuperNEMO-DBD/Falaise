@@ -18,7 +18,7 @@
 #include <CATAlgorithm/node.h>
 #include <CATAlgorithm/calorimeter_hit.h>
 #include <CATAlgorithm/scenario.h>
-#include <CATAlgorithm/tracked_data.h>
+#include <CATAlgorithm/tracked_data_base.h>
 #include <CATAlgorithm/Cell.h>
 #include <CATAlgorithm/Sequence.h>
 

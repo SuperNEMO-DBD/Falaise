@@ -8,7 +8,7 @@
 #include <mybhep/point.h>
 #include <CATAlgorithm/experimental_point.h>
 #include <CATAlgorithm/experimental_vector.h>
-#include <CATAlgorithm/circle.h>
+#include <CATAlgorithm/circle_base.h>
 
 namespace CAT {
   namespace topology{

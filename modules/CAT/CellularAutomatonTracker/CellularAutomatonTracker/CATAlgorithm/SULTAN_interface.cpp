@@ -7,7 +7,6 @@
 #include <vector>
 #include <sstream>
 #include <CATAlgorithm/SULTAN_interface.h>
-#include <CATAlgorithm/tracked_data.h>
 #include <boost/algorithm/string.hpp>
 
 namespace CAT {

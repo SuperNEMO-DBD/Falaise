@@ -13,7 +13,7 @@
 #include <CATAlgorithm/tracking_object.h>
 #include <CATAlgorithm/experimental_point.h>
 #include <CATAlgorithm/experimental_vector.h>
-#include <CATAlgorithm/sequence.h>
+#include <CATAlgorithm/sequence_base.h>
 #include <CATAlgorithm/node.h>
 #include <CATAlgorithm/calorimeter_hit.h>
 #include <CATAlgorithm/scenario.h>

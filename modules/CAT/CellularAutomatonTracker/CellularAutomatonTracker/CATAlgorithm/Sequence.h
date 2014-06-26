@@ -14,7 +14,7 @@
 
 #include <CATAlgorithm/experimental_point.h>
 #include <CATAlgorithm/experimental_vector.h>
-#include <CATAlgorithm/cell.h>
+#include <CATAlgorithm/cell_base.h>
 #include <CATAlgorithm/line.h>
 #include <CATAlgorithm/cell_couplet.h>
 #include <CATAlgorithm/cell_triplet.h>
@@ -23,7 +23,7 @@
 #include <CATAlgorithm/plane.h>
 #include <CATAlgorithm/cluster.h>
 #include <CATAlgorithm/calorimeter_hit.h>
-#include <CATAlgorithm/sequence.h>
+#include <CATAlgorithm/sequence_base.h>
 #include <CATAlgorithm/Cell.h>
 
 

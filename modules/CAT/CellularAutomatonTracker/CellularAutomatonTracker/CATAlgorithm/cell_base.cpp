@@ -1,4 +1,4 @@
-#include <CATAlgorithm/cell.h>
+#include <CATAlgorithm/cell_base.h>
 #include <cmath>
 
 namespace CAT{

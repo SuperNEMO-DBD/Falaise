@@ -14,7 +14,6 @@
 
 // This project:
 #include <CATAlgorithm/CAT_interface.h>
-#include <CATAlgorithm/tracked_data.h>
 
 namespace CAT {
 

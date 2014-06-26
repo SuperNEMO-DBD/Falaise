@@ -6,7 +6,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include <CATAlgorithm/cell.h>
+#include <CATAlgorithm/cell_base.h>
 #include <CATAlgorithm/cell_couplet.h>
 #include <CATAlgorithm/joint.h>
 

@@ -12,7 +12,7 @@
 
 #include <cmath>
 #include <CATAlgorithm/Circle.h>
-#include <CATAlgorithm/cell.h>
+#include <CATAlgorithm/cell_base.h>
 
 namespace CAT {
   namespace topology{

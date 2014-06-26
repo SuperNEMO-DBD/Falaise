@@ -34,18 +34,18 @@
 
 #include <mybhep/EventManager2.h>
 //#include <CATUtils/NHistoManager2.h>
-#include <CATAlgorithm/cell.h>
+#include <CATAlgorithm/cell_base.h>
 #include <CATAlgorithm/line.h>
 #include <CATAlgorithm/cell_couplet.h>
 #include <CATAlgorithm/cell_triplet.h>
 #include <CATAlgorithm/cluster.h>
 #include <CATAlgorithm/calorimeter_hit.h>
-#include <CATAlgorithm/sequence.h>
+#include <CATAlgorithm/sequence_base.h>
 #include <CATAlgorithm/logic_sequence.h>
 #include <CATAlgorithm/experimental_double.h>
 #include <CATAlgorithm/Clock.h>
 #include <CATAlgorithm/plane.h>
-#include <CATAlgorithm/tracked_data.h>
+#include <CATAlgorithm/tracked_data_base.h>
 #include <CATAlgorithm/helix.h>
 #include <CATAlgorithm/scenario.h>
 #include <CATAlgorithm/logic_scenario.h>
