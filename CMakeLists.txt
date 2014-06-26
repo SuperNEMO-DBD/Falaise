@@ -178,10 +178,6 @@ endif()
 add_subdirectory(resources)
 
 #-----------------------------------------------------------------------
-# - Plugins/modules installation
-add_subdirectory(modules)
-
-#-----------------------------------------------------------------------
 # - Install published resources and documentation
 install(DIRECTORY ${Falaise_DATAROOTDIR}
   DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}
@@ -233,6 +229,12 @@ install(FILES
   DESTINATION
     ${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}
   )
+
+#-----------------------------------------------------------------------
+# - Plugins/modules installation - Must come last because they must find
+# Falaise
+add_subdirectory(modules)
+
 
 #-----------------------------------------------------------------------
 # Package Sources and Binaries

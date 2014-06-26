@@ -2,16 +2,13 @@
 # Check version meets ou requirements
 # Declare project, which will configure compiler for us
 cmake_minimum_required(VERSION 2.8)
-project(RConvert)
+project(Things2Root)
 
-# Modules use Bayeux, so we need to locate this or fail
-# find_package(Bayeux REQUIRED)
+# Modules use Falaise/Bayeux, so we need to locate this or fail
+find_package(Falaise REQUIRED)
 
-# Ensure our code can see the Bayeux headers
-include_directories(${Bayeux_INCLUDE_DIRS})
-# Ensure our code can see the Falaise headers
-include_directories(${Falaise_BUILDPRODUCT_DIR}/include)
-include_directories(${Falaise_BUILDPRODUCT_DIR}/include/falaise)
+# Ensure our code can see the Falaise/Bayeux headers
+include_directories(${Falaise_INCLUDE_DIRS})
 
 # Build a dynamic library from our sources
 add_library(Things2Root SHARED Things2Root.h Things2Root.cpp)
