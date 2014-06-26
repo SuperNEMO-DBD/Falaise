@@ -49,7 +49,7 @@ namespace snemo {
 
   namespace visualization {
 
-    class toy_display_driver;
+    struct toy_display_driver;
 
     /// \brief Visualization module for SuperNEMO event record
     class visu_toy_module : public dpp::base_module
