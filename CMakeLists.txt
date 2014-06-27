@@ -128,7 +128,7 @@ endif()
 #-----------------------------------------------------------------------
 # Configure/Build utilities as needed
 #
-option(Falaise_BUILD_DEVELOPER_TOOLS "Build tools for developing Falaise" OFF)
+option(Falaise_BUILD_DEVELOPER_TOOLS "Build tools for developing Falaise" ON)
 mark_as_advanced(Falaise_BUILD_DEVELOPER_TOOLS)
 
 option(Falaise_USE_SYSTEM_BAYEUX "Use system-installed Bayeux" OFF)
