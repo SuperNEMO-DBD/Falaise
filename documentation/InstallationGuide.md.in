@@ -9,15 +9,9 @@ This walkthrough is intended to get you up and running with Falaise
 as fast as possible. It therefore adopts a specific layout of where
 working copies of sources, builds of these sources and installs of the
 builds. You do not have to follow this layout, but we recommend it
-as a fast and convenient way to organise things.
-
-Falaise is currently at the Alpha stage of development,
-so you should consider
-this document to be a work in progress. We welcome constructive comments,
-criticisms and suggestions for improvement, and these should be directed to
-the SuperNEMO Software Working Group.
-
-* Current Alpha Status : Alpha 2
+as a fast and convenient way to organise things. We welcome
+constructive comments,criticisms and suggestions for improvement, and
+these should be directed to the SuperNEMO Software Working Group.
 
 
 Preparing Your System for Installation {#preparation}
@@ -25,8 +19,10 @@ Preparing Your System for Installation {#preparation}
 To install the Falaise stack, you first need the following:
 
 * UNIX Operating System
-  * Linux
-  * Mac OS X 10.7/8 (Lion/Mountain Lion) (10.6 and 10.9 should work, but are not tested)
+  * Linux (Ubuntu, SUSE, RedHat/CentOS/Scientific)
+    * Other distributions should work provided they supply the software requirements listed below
+  * Mac OS X 10.8/9 (Mountain Lion/Mavericks)
+    * Earlier versions should work, but are not tested
 * Several GB of free disk space:
   * At least 200MB for a source code check out
   * At least 6.5GB for a first from scratch build
@@ -40,11 +36,13 @@ To install the Falaise stack, you first need the following:
     * If available, you should use a C++11 compliant compiler
       * GCC 4.7 or higher, Clang 3.3 or higher
       * This is purely for the best forward compatibility, it is not a requirement.
+    * On OS X systems, you should install Xcode from the App Store, and ensure the Command Line Tools are installed
   * BZip2 Library and Headers
   * zlib Library and Headers
+  * readline Library and Headers
 
 We recommend that the Required Software are installed via the relevant
-package manager (e.g. yum, apt on Linux, MacPorts, Homebrew on Mac OS X)
+package manager (e.g. yum, apt on Linux, Homebrew or MacPorts on Mac OS X)
 for your system, unless the version requirement listed is not met.
 
 We expect the Falaise stack to compile and run on most modern BSD or Linux
@@ -114,7 +112,7 @@ $ svn co https://nemo.lpc-caen.in2p3.fr/svn --username=visitor --no-auth-cache \
 --depth empty lpc-caen.svn
 ~~~~~
 
-At this point, you may see the following warning about certificates:
+At this point, you may see a warning about certificates:
 
 ~~~~~
 Error validating server certificate for 'https://nemo.lpc-caen.in2p3.fr:443':
@@ -192,6 +190,7 @@ current tags of Falaise by doing
 
 ~~~~~
 $ svn ls Falaise/tags
+Falaise-1.0.0
 Falaise-1.0.0-alpha1
 Falaise-1.0.0-alpha2
 ~~~~~
@@ -202,19 +201,19 @@ with an optional additional `-STATUSN` flag to indicate development lines.
 Checking out Cadfael and Falaise {#installation_checkout}
 --------------------------------
 With the workspace in place, we can checkout the required development
-lines of Cadfael and Falaise. For Cadfael this is the trunk of
-development, and for Falaise the Alpha 2 tag. To check these out from
-scratch we do
+lines of Cadfael and Falaise. The version of Falaise to which this
+documentation refers is @Falaise_VERSION@, and this requires Cadfael
+version @Cadfael_VERSION@. To check these tags out from scratch we do
 
 ~~~~~
-$ svn up --set-depth infinity Cadfael/trunk
-A    Cadfael/trunk/License.txt
+$ svn up --set-depth infinity Cadfael/tags/Cadfael-1.0.1
+A    Cadfael/tags/Cadfael-1.0.1/License.txt
 ...
-A    Cadfael/trunk/testing/ImportedTargets/CMakeLists.txt
-Updated to revision 13851.
+A    Cadfael/tags/Cadfael-1.0.1/testing/ImportedTargets/CMakeLists.txt
+Updated to revision 14881.
 $ svn ls Falaise/tags
 ...
-$ svn up --set-depth infinity Falaise/tags/Falaise-1.0.0-alpha2
+$ svn up --set-depth infinity Falaise/tags/Falaise-@Falaise_VERSION@
 ~~~~~
 
 The basic source code working copy is now in place. For more details on
@@ -247,7 +246,7 @@ Cadfael uses the [CMake](http://www.cmake.org) tool for driving the
 configure, build and install of the above libraries. For convenience,
 a simple bootstrapping script, `cadfael-bootstrap` is provided to automate
 this process. If you require more control over the configuration, you
-should consult the `README.rst` file in the `Cadfael/trunk` directory.
+should consult the `README.rst` file in the `Cadfael/tags/Cadfael-@Cadfael_VERSION@` directory.
 
 All SuperNEMO software requires builds and installs to be in separate
 directories from source code. This is enforced because builds can generate
@@ -260,7 +259,7 @@ bootstrapping script as follows:
 
 ~~~~~
 $ cd /Users/ben/SuperNEMO
-$ ./lpc-caen.svn/Cadfael/trunk/cadfael-bootstrap -DCMAKE_INSTALL_PREFIX=$(pwd)/installs/Cadfael \
+$ ./lpc-caen.svn/Cadfael/tags/Cadfael-@Cadfael_VERSION@/cadfael-bootstrap -DCMAKE_INSTALL_PREFIX=$(pwd)/installs/Cadfael \
 -DCADFAEL_BUILD_PREFIX=$(pwd)/builds/Cadfael
 ~~~~~
 
@@ -273,7 +272,7 @@ case, you can run the script using your install of cmake directly:
 
 ~~~~~
 $ cd /Users/ben/SuperNEMO
-$ /path/to/your/cmake -P ./lpc-caen.svn/Cadfael/trunk/cadfael-bootstrap \
+$ /path/to/your/cmake -P ./lpc-caen.svn/Cadfael/tags/Cadfael-@Cadfael_VERSION@/cadfael-bootstrap \
 -DCMAKE_INSTALL_PREFIX=$(pwd)/installs/Cadfael \
 -DCADFAEL_BUILD_PREFIX=$(pwd)/builds/Cadfael
 ~~~~~
@@ -345,8 +344,8 @@ $ cd /Users/ben/SuperNEMO
 $ ls
 builds  installs  lpc-caen.svn
 $ cd builds
-$ mkdir falaise.alpha2
-$ cd falaise.alpha2
+$ mkdir falaise-@Falaise_VERSION@
+$ cd falaise-@Falaise_VERSION@
 ~~~~~
 
 the naming of the directory is arbitrary, but it's useful to give them
@@ -357,9 +356,9 @@ workspace area, and to use the libraries provided in our prior install
 of Cadfael:
 
 ~~~~~
-$ cmake -DCMAKE_INSTALL_PREFIX=/Users/ben/SuperNEMO/installs/falaise.alpha2 \
+$ cmake -DCMAKE_INSTALL_PREFIX=/Users/ben/SuperNEMO/installs/falaise-@Falaise_VERSION@ \
  -DCMAKE_PREFIX_PATH=/Users/ben/SuperNEMO/installs/Cadfael \
- ../../lpc-caen.svn/Falaise/tags/Falaise-1.0.0-alpha2
+ ../../lpc-caen.svn/Falaise/tags/Falaise-@Falaise_VERSION@
 -- The C compiler identification is GNU 4.3.4
 -- The CXX compiler identification is GNU 4.3.4
 -- Check for working C compiler: /usr/bin/cc
@@ -383,7 +382,7 @@ Found Boost components:
    program_options
 -- Configuring done
 -- Generating done
--- Build files have been written to: /Users/ben/SuperNEMO/builds/falaise.alpha2
+-- Build files have been written to: /Users/ben/SuperNEMO/builds/falaise-@Falaise_VERSION@
 ~~~~~
 
 The `CMAKE_INSTALL_PREFIX` variable tells cmake where to install, and
@@ -396,7 +395,7 @@ the last three lines
 ~~~~~
 -- Configuring done
 -- Generating done
--- Build files have been written to: /Users/ben/SuperNEMO/builds/falaise.alpha2
+-- Build files have been written to: /Users/ben/SuperNEMO/builds/falaise-@Falaise_VERSION@
 ~~~~~
 
 which indicate a successful configuration. This process has generated
@@ -421,12 +420,11 @@ indicated by the last lines being:
 [100%] Built target flsimulate
 ~~~~~
 
-Note that because of the development state of Falaise, in this case,
-Alpha 2, you are likely to see a high number of warnings emitted by the
-compiler.
-These should not affect the success of the build, but if you are in any
-doubt as to this, simply run make again without the `-j` argument and
-you should see:
+Development of Falaise enforces removal of compiler warnings as far as
+possible, so you should not see any on when building release versions
+on the tested platforms listed earlier.
+If you do see any warnings or errors, these should be reported to the
+Software Working Group. Warnings should not affect success of the build, but if you are in any doubt as to this, simply run make again without the `-j` argument and you should see output similar to:
 
 ~~~~~
 $ make
@@ -452,16 +450,17 @@ This will install everything required into a POSIX style hierarchy under
 the install prefix:
 
 ~~~~~
-installs/falaise.alpha2/
+installs/falaise-@Falaise_VERSION@
 |-- bin
 |-- include
 |   |-- bayeux
 |   `-- falaise
 |-- lib64
-|   `-- cmake
+|   |-- cmake
+|   `-- Falaise
 `-- share
     |-- Bayeux-1.0.0
-    `-- Falaise-1.0.0
+    `-- Falaise-@Falaise_VERSION@
 ~~~~~
 
 Using Falaise {#using}
@@ -472,7 +471,7 @@ directly from the command line, e.g.
 
 ~~~~~
 $ cd /Users/ben/SuperNEMO
-$ ./installs/falaise.alpha2/bin/flsimulate -h
+$ ./installs/falaise-@Falaise_VERSION@/bin/flsimulate -h
 ...
 $
 ~~~~~
@@ -485,20 +484,20 @@ C++ API and the `flsimulate` and `flreconstruct` programs. To view this,
 simply point your web browser to the file:
 
 ~~~~~
-installs/falaise.alpha2/share/Falaise-1.0.0/Documentation/API/html/index.html
+installs/falaise-@Falaise_VERSION@/share/Falaise-@Falaise_VERSION@/Documentation/API/html/index.html
 ~~~~~
 
 A quick way to open this on Mac OS X systems is to run
 
 ~~~~~
-$ open installs/falaise.alpha2/share/Falaise-1.0.0/Documentation/API/html/index.html
+$ open installs/falaise-@Falaise_VERSION@/share/Falaise-@Falaise_VERSION@/Documentation/API/html/index.html
 ~~~~~
 
 which will open the file your preferred HTML viewer.
 On Linux, this is can be done via
 
 ~~~~~
-$ xdg-open installs/falaise.alpha2/share/Falaise-1.0.0/Documentation/API/html/index.html
+$ xdg-open installs/falaise-@Falaise_VERSION@/share/Falaise-@Falaise_VERSION@/Documentation/API/html/index.html
 ~~~~~
 
 though the existence of the `xdg-open` program may be dependent on the
@@ -517,7 +516,8 @@ email your issue to:
 
 * Ben Morgan (Ben.Morgan@warwick.ac.uk)
 
-Please attach as much information as possible to assist in diagnosing the
+Please attach as much information as possible (operating system and version,
+compiler and version, CMake version etc) to assist in diagnosing the
 issue.
 
 Developing Falaise {#developing}
@@ -545,4 +545,28 @@ SuperNEMO/
 |-- installs
 ~~~~~
 
-Further documentation on this topic will be added in Alpha 3.
+To checkout the trunk of Falaise, we use the same proceedure as for
+checking out a release and just change the path slightly:
+
+~~~~~
+$ cd /Users/ben/SuperNEMO
+$ ls
+builds  installs  lpc-caen.svn
+$ cd lpc-caen.svn
+$ svn up --set-depth infinity Falaise/trunk
+...
+$ ls Falaise/trunk
+cmake           documentation  README.rst  utilities
+CMakeLists.txt  LICENSE.txt    resources
+COPYING.txt     modules        source
+$
+~~~~~
+
+This trunk version can be built and installed just as the tagged release
+versions. Whilst the trunk aims for stability, full functionality cannot
+be guaranteed but you are welcome to try it and report any issues you
+find. Contributing to Falaise requires familiarity with Subversion, CMake,
+the C++ language and modern software development practices.
+An introduction to these topics is in preparation in a [dedicated topic](@ref developingfalaise).
+
+

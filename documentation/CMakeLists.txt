@@ -48,10 +48,13 @@ endif()
 #-----------------------------------------------------------------------
 # Individual Documents
 #
+set(Cadfael_VERSION "1.0.1")
+configure_file(InstallationGuide.md.in InstallationGuide.md @ONLY)
+
 set(Falaise_MARKDOWN_DOCS
   Mainpage.md
   ${PROJECT_SOURCE_DIR}/source/Falaise.1.md
-  InstallationGuide.md
+  ${CMAKE_CURRENT_BINARY_DIR}/InstallationGuide.md
   flsimulate/FLSimulate.md
   flreconstruct/FLReconstruct.md
   flreconstruct/UsingMockCalibration.md
