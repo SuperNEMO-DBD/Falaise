@@ -311,6 +311,8 @@ namespace SULTAN {
       size_t near_level( const topology::cell & cell, double nofflayers, double cell_distance )const;
       bool is_near_foil()const;
       bool is_near_calo()const;
+      bool is_near_outer_calo()const;
+      bool is_near_inner_calo()const;
       bool is_near_xcalo()const;
       bool is_near_gveto()const;
       bool intersect(topology::cell c)const;

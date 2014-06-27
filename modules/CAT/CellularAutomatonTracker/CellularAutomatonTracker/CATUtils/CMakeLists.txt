@@ -23,7 +23,7 @@ add_library(CATUtils SHARED ${CATUTILS_SOURCES} ${CATUTILS_HEADERS})
 
 # Link them as needed to ROOT libraries
 # Hmm, this isn't really right...
-target_link_libraries(CATUtils CATAlgorithm)
+target_link_libraries(CATUtils CATAlgorithm sultan)
 
 add_executable(test_experimental_classes test/test_experimental_classes.cpp)
 target_link_libraries(test_experimental_classes CATUtils)

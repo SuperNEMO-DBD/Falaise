@@ -40,6 +40,7 @@
 #include <sultan/tracked_data.h>
 #include <mybhep/utilities.h>
 #include <CATAlgorithm/scenario.h>
+#include <sultan/scenario.h>
 
 
 typedef struct{
@@ -340,7 +341,6 @@ class EventDisplay{
 
   /////// topological tracking 
 public:
-  void execute(mybhep::event& evt, size_t ievent, CAT::topology::tracked_data & __tracked_data);
   void execute(size_t ievent, CAT::topology::tracked_data & __CAT_tracked_data, SULTAN::topology::tracked_data & __SULTAN_tracked_data);
 
   //! get cells 
@@ -376,6 +376,10 @@ public:
   {
     return CAT_sequences_;
   }
+  const std::vector<SULTAN::topology::sequence>& get_SULTAN_sequences()const
+  {
+    return SULTAN_sequences_;
+  }
 
   //! get nemo sequences
   const std::vector<CAT::topology::sequence>& get_nemo_sequences()const
@@ -388,6 +392,11 @@ public:
   {
     CAT_sequences_.clear();
     CAT_sequences_ = sequences;
+  }
+  void set_SULTAN_sequences(std::vector<SULTAN::topology::sequence> sequences)
+  {
+    SULTAN_sequences_.clear();
+    SULTAN_sequences_ = sequences;
   }
 
   //! set nemo sequences
@@ -444,16 +453,18 @@ public:
 
 
 private:
-  void event_display_xz(std::string mode, CAT::topology::tracked_data td);
+  void event_display_xz(std::string mode, CAT::topology::tracked_data td, SULTAN::topology::tracked_data td);
   void draw_circle_xz( double x0, double z0, double radius, size_t color, size_t thickness, double phi1, double phi2);
   void draw_initial_hits_xz( void );
   void draw_calos_xz( std::vector<CAT::topology::calorimeter_hit> calos );
   void draw_sine_yz( double y0, double z0, double radius, double pitch, size_t color, size_t thickness, double phi1 , double phi2);
   void draw_cats_xz(std::string mode, std::vector<CAT::topology::sequence> true_seqs);
-  void event_display_yz(std::string mode, CAT::topology::tracked_data td);
+  void draw_sultan_xz();
+  void event_display_yz(std::string mode, CAT::topology::tracked_data td, SULTAN::topology::tracked_data td);
   void draw_calos_yz( std::vector<CAT::topology::calorimeter_hit> calos );
   void draw_initial_hits_yz( void );
   void draw_cats_yz(std::string mode, std::vector<CAT::topology::sequence> true_seqs);
+  void draw_sultan_yz();
   void print_cells(void);
   void draw_tangents_xz( void );
   void draw_tangents_yz( void );
@@ -481,6 +492,7 @@ private:
   std::vector<CAT::topology::cluster> clusters_;
   std::vector<CAT::topology::sequence> CAT_sequences_;
   std::vector<CAT::topology::sequence> nemo_sequences_;
+  std::vector<SULTAN::topology::sequence> SULTAN_sequences_;
 
   size_t n_cells_quad[4];
 

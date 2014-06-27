@@ -1427,7 +1427,16 @@ namespace SULTAN {
   //*************************************************************
 
     std::string cview;
-    if( c.is_near_calo() ) cview="x";
+    if( c.is_near_calo() ){
+      if( c.type() == "SN" ){
+	cview="x";
+      }else{
+	if( c.is_near_outer_calo() )
+	  cview="outer";
+	else
+	  cview="inner";
+      }
+    }
     else if( c.is_near_xcalo() ) cview="y";
     else if( c.is_near_gveto() ) cview="z";
     else{

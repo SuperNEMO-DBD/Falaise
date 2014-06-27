@@ -1508,133 +1508,6 @@ void EventDisplay::Finalize( void ){
 }
 
 
-//*************************************************************
-void EventDisplay::execute(mybhep::event& evt, size_t ievent, CAT::topology::tracked_data & __tracked_data){
-//*************************************************************
-
-  m.message(" Display Event \n",mybhep::VERBOSE); fflush(stdout);
-
-  //  event_number ++;
-  //  if( event_number < first_event_number ) return false;
-
-  set_cells(__tracked_data.get_cells());
-  set_clusters(__tracked_data.get_clusters());
-  std::vector<CAT::topology::scenario> CAT_sc = __tracked_data.get_scenarios();
-
-  if( CAT_sc.size() == 0 ){
-    m.message(" warning: CAT_scenarios size is ", CAT_sc.size(), mybhep::VVERBOSE);
-    return;
-  }
-
-  set_CAT_sequences(CAT_sc[0].sequences());
-
-  if( !SuperNemo )
-    {
-      fill_nemo3_event(evt);
-      fill_nemo3_parts_display( evt );
-      set_nemo_sequences(__tracked_data.get_nemo_sequences() );
-    }
-
-
-  GetPlotLimit( __tracked_data.get_calos());
-
-  icanvas = 0;
-
-  if( !PlotInitialHits && !PlotTrueTracks
-      && !PlotCats && !PlotHelices && !PlotNemoTracks ){
-    m.message(" problem: nothing to plot", mybhep::NORMAL);
-    return;
-  }
-
-
-  if( PlotInitialHits ){
-    if( PlotTopView )
-      event_display_xz("InitialHits", __tracked_data);
-    if( PlotSideView )
-      event_display_yz("InitialHits", __tracked_data);
-  }
-
-  if( PlotTrueTracks ){
-
-    if( PlotTopView )
-      event_display_xz("true", __tracked_data);
-    if( PlotSideView )
-      event_display_yz("true", __tracked_data);
-
-  }
-
-
-  if( PlotNemoTracks ){
-
-    if( PlotTopView )
-      event_display_xz("nemo", __tracked_data);
-    if( PlotSideView )
-      event_display_yz("nemo", __tracked_data);
-
-  }
-
-
-  if( PlotCats || PlotHelices ){
-    if( PlotTopView )
-      event_display_xz("cats", __tracked_data);
-    if( PlotSideView )
-      event_display_yz("cats", __tracked_data);
-  }
-
-
-  /*
-  if( !SuperNemo ){
-    if( PlotTopView )
-    Nemo3event_display_xz();
-    if( PlotSideView )
-    Nemo3event_display_yz();
-  }
-
-  */
-
-  canvas->Update();
-
-  if( PlutsMode )
-    {
-      std::string sname = "figure/event"+mybhep::to_string(ievent)+"."+PlotFormat;
-      const char *name = sname.c_str();
-      canvas->Print(name);
-    }
-
-  if( PlotCellChi2s && PlutsMode ){
-    TPaveText pave_chi2(0.8,0.6,1.,1.);
-    pave_chi2.SetFillColor(4000);
-    pave_chi2.SetTextSize(0.025);
-
-    for(size_t i=0; i<CAT_sequences_.size(); i++){
-      CAT::topology::sequence s = CAT_sequences_[i];
-      size_t nnodes = s.nodes().size();
-      std::vector<double> helix_chi2s = s.helix_chi2s();
-
-      for(size_t j=0; j<nnodes; j++)
-        {
-          size_t cid = s.nodes()[j].c().id();
-          std::string title=(std::string)("cell "+mybhep::to_string(cid)+" chi2 "+mybhep::to_string_precision(helix_chi2s[j],"2"));
-          pave_chi2.AddText(title.c_str());
-
-        }
-    }
-
-
-
-    pave_chi2.Draw();
-
-    canvas->Update();
-
-    std::string sname = "figure/chi2_event"+mybhep::to_string(ievent)+"."+PlotFormat;
-    const char *name = sname.c_str();
-    canvas->Print(name);
-
-  }
-
-
-  return;
-}
 
 //*************************************************************
 void EventDisplay::execute(size_t ievent, CAT::topology::tracked_data & __CAT_tracked_data, SULTAN::topology::tracked_data & __SULTAN_tracked_data){
@@ -1645,7 +1518,9 @@ void EventDisplay::execute(size_t ievent, CAT::topology::tracked_data & __CAT_tr
   set_cells(__CAT_tracked_data.get_cells());
   set_clusters(__CAT_tracked_data.get_clusters());
   CAT_sequences_.clear();
+  SULTAN_sequences_.clear();
   std::vector<CAT::topology::scenario> CAT_sc = __CAT_tracked_data.get_scenarios();
+  std::vector<SULTAN::topology::scenario> SULTAN_sc = __SULTAN_tracked_data.get_scenarios();
 
   if( !SuperNemo )
     {
@@ -1665,18 +1540,18 @@ void EventDisplay::execute(size_t ievent, CAT::topology::tracked_data & __CAT_tr
 
   if( PlotInitialHits ){
     if( PlotTopView )
-      event_display_xz("InitialHits", __CAT_tracked_data);
+      event_display_xz("InitialHits", __CAT_tracked_data, __SULTAN_tracked_data);
     if( PlotSideView )
-      event_display_yz("InitialHits", __CAT_tracked_data);
+      event_display_yz("InitialHits", __CAT_tracked_data, __SULTAN_tracked_data);
   }
 
 
   if( PlotTrueTracks ){
     
     if( PlotTopView )
-      event_display_xz("true", __CAT_tracked_data);
+      event_display_xz("true", __CAT_tracked_data, __SULTAN_tracked_data);
     if( PlotSideView )
-      event_display_yz("true", __CAT_tracked_data);
+      event_display_yz("true", __CAT_tracked_data, __SULTAN_tracked_data);
     
   }
   
@@ -1684,13 +1559,12 @@ void EventDisplay::execute(size_t ievent, CAT::topology::tracked_data & __CAT_tr
   if( PlotNemoTracks ){
     
     if( PlotTopView )
-      event_display_xz("nemo", __CAT_tracked_data);
+      event_display_xz("nemo", __CAT_tracked_data, __SULTAN_tracked_data);
     if( PlotSideView )
-      event_display_yz("nemo", __CAT_tracked_data);
+      event_display_yz("nemo", __CAT_tracked_data, __SULTAN_tracked_data);
     
   }
-  
-  
+
   if( CAT_sc.size() == 0 ){
     m.message(" warning: CAT_scenarios size is ", CAT_sc.size(), mybhep::VVERBOSE);
   }
@@ -1699,9 +1573,9 @@ void EventDisplay::execute(size_t ievent, CAT::topology::tracked_data & __CAT_tr
 
     if( PlotCats || PlotHelices ){
       if( PlotTopView )
-        event_display_xz("cats", __CAT_tracked_data);
+        event_display_xz("cats", __CAT_tracked_data, __SULTAN_tracked_data);
       if( PlotSideView )
-        event_display_yz("cats", __CAT_tracked_data);
+        event_display_yz("cats", __CAT_tracked_data, __SULTAN_tracked_data);
     }
 
     /*
@@ -1715,6 +1589,19 @@ void EventDisplay::execute(size_t ievent, CAT::topology::tracked_data & __CAT_tr
     */
   }
 
+  if( SULTAN_sc.size() == 0 ){
+    m.message(" warning: SULTAN_scenarios size is ", SULTAN_sc.size(), mybhep::VVERBOSE);
+  }
+  else{
+    set_SULTAN_sequences(SULTAN_sc[0].sequences());
+
+    if( PlotSultan ){
+      if( PlotTopView )
+        event_display_xz("sultan", __CAT_tracked_data, __SULTAN_tracked_data);
+      if( PlotSideView )
+        event_display_yz("sultan", __CAT_tracked_data, __SULTAN_tracked_data);
+    }
+  }
 
   canvas->Update();
 
@@ -1884,14 +1771,14 @@ void EventDisplay::locate_legend_yz(){
 
 
 //*************************************************************
-void EventDisplay::event_display_xz(std::string mode, CAT::topology::tracked_data td){
+void EventDisplay::event_display_xz(std::string mode, CAT::topology::tracked_data CAT_td, SULTAN::topology::tracked_data SULTAN_td){
 //*************************************************************
 
   icanvas ++;
   canvas->cd(icanvas);
 
   if( PlotLegend ){
-    if( mode == "cats" )
+    if( mode == "cats" || mode == "sultan" )
       leg_xz->Clear();
     if( PlotTrueTracks && mode == "true" )
       leg_xz_true->Clear();
@@ -1902,7 +1789,7 @@ void EventDisplay::event_display_xz(std::string mode, CAT::topology::tracked_dat
   std::string title;
   if(mode=="InitialHits")
     title="TOP VIEW (z, x) plane: initial hits";
-  else if(mode=="cats")
+  else if(mode=="cats" || mode == "sultan" )
     title="TOP VIEW (z, x) plane: cats segments";
   else if(mode=="true")
     title="TOP VIEW (z, x) plane: true tracks";
@@ -1917,7 +1804,7 @@ void EventDisplay::event_display_xz(std::string mode, CAT::topology::tracked_dat
   draw_initial_hits_xz();
 
   if( PlotCalos )
-    draw_calos_xz(td.get_calos());
+    draw_calos_xz(CAT_td.get_calos());
 
   if( mode == "InitialHits" && PlotTangents )
     draw_tangents_xz();
@@ -1928,19 +1815,22 @@ void EventDisplay::event_display_xz(std::string mode, CAT::topology::tracked_dat
     draw_helices_xz(mode);
 
   if( mode == "cats" && PlotCats)
-    draw_cats_xz(mode, td.get_true_sequences());
+    draw_cats_xz(mode, CAT_td.get_true_sequences());
 
   if( mode == "cats" && PlotHelices )
     draw_helices_xz(mode);
 
+  if( mode == "sultan" && PlotSultan)
+    draw_sultan_xz();
+
   if( mode == "true" && PlotTrueTracks ){
-    draw_cats_xz(mode, td.get_true_sequences());
+    draw_cats_xz(mode, CAT_td.get_true_sequences());
   }
 
 
   if( PlotLegend ){
     locate_legend_xz();
-    if( mode == "cats" )
+    if( mode == "cats" || mode == "sultan" )
       leg_xz->Draw("same");
     if( PlotTrueTracks && mode == "true ")
       leg_xz_true->Draw("same");
@@ -2843,7 +2733,55 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<CAT::topology::seq
 }
 
 //*************************************************************
-void EventDisplay::event_display_yz(std::string mode, CAT::topology::tracked_data td){
+void EventDisplay::draw_sultan_xz(){
+//*************************************************************
+
+  for(size_t i=0; i<SULTAN_sequences_.size(); i++)
+    {
+      SULTAN::topology::sequence s = SULTAN_sequences_[i];
+
+      size_t color = color_sultan;
+
+      size_t nnodes = s.nodes().size();
+      if( nnodes == 0 ) continue;
+
+      size_t npoints = nnodes;
+      size_t offset = 0;
+
+      double* zt = (double*)malloc(sizeof(double)*npoints);
+      double* xt = (double*)malloc(sizeof(double)*npoints);
+
+      for(size_t j=0; j<nnodes; j++)
+	{
+
+	  SULTAN::topology::experimental_point p = s.nodes()[j].ep();
+
+	  xt[j+offset] = p.x().value();
+	  zt[j+offset] = -p.y().value();
+
+	}
+
+      TGraph *graph = new TGraph(npoints,zt,xt);
+      graph->Draw();
+      graph->SetLineColor(color + i);
+      graph->SetLineWidth(2);
+      if( PlotLegend )
+	leg_xz->AddEntry(graph, s.name().c_str(),"l");
+      graphlist.push_back(graph);
+
+
+      free(xt);
+      free(zt);
+
+
+    }
+  
+  return;
+
+}
+
+//*************************************************************
+void EventDisplay::event_display_yz(std::string mode, CAT::topology::tracked_data CAT_td, SULTAN::topology::tracked_data SULTAN_td){
 //*************************************************************
 
   icanvas ++;
@@ -2851,7 +2789,7 @@ void EventDisplay::event_display_yz(std::string mode, CAT::topology::tracked_dat
 
   if( PlotLegend ){
     init_quadrant_counters();
-    if( mode == "cats" )
+    if( mode == "cats" || mode == "sultan" )
       leg_yz->Clear();
     if( mode == "true" && PlotTrueTracks )
       leg_yz_true->Clear();
@@ -2860,7 +2798,7 @@ void EventDisplay::event_display_yz(std::string mode, CAT::topology::tracked_dat
   std::string title;
   if(mode=="InitialHits")
     title="SIDE VIEW (z, y) plane: initial hits";
-  else if(mode=="cats")
+  else if(mode=="cats" || mode == "sultan")
     title="SIDE VIEW (z, y) plane: cats segments";
   else if(mode=="true")
     title="SIDE VIEW (z, y) plane: true tracks";
@@ -2874,7 +2812,7 @@ void EventDisplay::event_display_yz(std::string mode, CAT::topology::tracked_dat
   draw_initial_hits_yz( );
 
   if( PlotCalos )
-    draw_calos_yz(td.get_calos());
+    draw_calos_yz(CAT_td.get_calos());
 
   if( mode == "InitialHits" && PlotTangents )
     draw_tangents_yz();
@@ -2888,14 +2826,17 @@ void EventDisplay::event_display_yz(std::string mode, CAT::topology::tracked_dat
     draw_helices_yz(mode);
 
   if( mode == "cats" && PlotCats)
-    draw_cats_yz(mode, td.get_true_sequences());
+    draw_cats_yz(mode, CAT_td.get_true_sequences());
+
+  if( mode == "sultan" && PlotSultan)
+    draw_sultan_yz();
 
   if( mode == "true" && PlotTrueTracks )
-    draw_cats_yz(mode, td.get_true_sequences());
+    draw_cats_yz(mode, CAT_td.get_true_sequences());
 
   if( PlotLegend ){
     locate_legend_yz();
-    if( mode == "cats" )
+    if( mode == "cats" || mode == "sultan")
       leg_yz->Draw("same");
     if( mode == "true" && PlotTrueTracks )
       leg_yz_true->Draw("same");
@@ -3177,6 +3118,55 @@ void EventDisplay::draw_cats_yz(std::string mode, std::vector<CAT::topology::seq
       }
   }
 
+
+  return;
+
+}
+
+
+//*************************************************************
+void EventDisplay::draw_sultan_yz(){
+//*************************************************************
+
+  for(size_t i=0; i<SULTAN_sequences_.size(); i++)
+    {
+      SULTAN::topology::sequence s = SULTAN_sequences_[i];
+
+      size_t color = color_sultan;
+
+      size_t nnodes = s.nodes().size();
+      if( nnodes == 0 ) continue;
+
+      size_t npoints = nnodes;
+      size_t offset = 0;
+
+      double* zt = (double*)malloc(sizeof(double)*npoints);
+      double* yt = (double*)malloc(sizeof(double)*npoints);
+
+      for(size_t j=0; j<nnodes; j++)
+	{
+
+	  SULTAN::topology::experimental_point p = s.nodes()[j].ep();
+
+	  color = color_sultan;
+
+	  yt[j+offset] = p.z().value();
+	  zt[j+offset] = -p.y().value();
+
+	}
+
+      TGraph *graph = new TGraph(npoints,zt,yt);
+      graph->Draw();
+      graph->SetLineColor(color + i);
+      graph->SetLineWidth(2);
+      if( PlotLegend )
+	leg_yz->AddEntry(graph, s.name().c_str(),"l");
+      graphlist.push_back(graph);
+
+      free(yt);
+      free(zt);
+
+    }
 
   return;
 

@@ -12,14 +12,15 @@
 #include <CATAlgorithm/tracked_data_base.h>
 #include <CATAlgorithm/clusterizer.h>
 #include <CATAlgorithm/sequentiator.h>
-#include <CATUtils/EventDisplay.h>
 #include <CATUtils/ntupler.h>
 #include <CATAlgorithm/Clock.h>
+#include <sultan/tracked_data.h>
 
 #define APPNAME_PREFIX "local_tracking: "
 
 using namespace std;
 using namespace CAT;
+using namespace SULTAN;
 
 int main(int argc_, char* argv_[]){
     
@@ -31,7 +32,6 @@ int main(int argc_, char* argv_[]){
   int first_event_number = -1;
   int verbosity_level = 5;
   int modulo = 1;
-  bool plot_mode = false;
   bool root_ntuple_mode = false;
   string param_file="param/cats.param";
   string limits_file="param/limits.param";
@@ -73,7 +73,6 @@ int main(int argc_, char* argv_[]){
 		   << endl << "             8 = details, "
 		   << endl << "             9 = , "
 		   << endl << "            10 = all, "
-		   << endl << "   -p or --plot :      plot event display and save picture"
 		   << endl << "   --with-root-ntuple :      create root ntuple"
 		   << endl << ""
 		   << endl << ""
@@ -104,11 +103,6 @@ int main(int argc_, char* argv_[]){
 	      iarg++;
 	      verbosity_level = atoi(argv_[iarg]);
 	      cout << APPNAME_PREFIX << " verbosity level: " << verbosity_level << endl;
-	    }
-	  else if ((option == "-p") || (option == "--plot"))
-	    {
-	      plot_mode = true;
-	      cout << APPNAME_PREFIX << " will plot event display " << endl;
 	    }
 	  else if (option == "--with-root-ntuple")
 	    {
@@ -207,15 +201,6 @@ int main(int argc_, char* argv_[]){
 
   mybhep::sstore properties = eman->get_dst_properties(); 
 
-  // set event display                                                                                                          
-  EventDisplay* display = new EventDisplay(store);
-  if( plot_mode ){
-    //    TApplication *OpenRoot;
-    //    OpenRoot = new  TApplication("OpenRoot",0,0);
-    display->InitializeDisplayEvent(properties, store, eman);
-    display->SetPlutsMode(true);                                                                                            
-  }
-
 
   clustering_machine->initialize( properties, store, eman);
   sequentiating_machine->initialize( properties, store, eman);
@@ -270,7 +255,7 @@ int main(int argc_, char* argv_[]){
 
 	clustering_machine->set_module_nr(mybhep::to_string(im));
 
-	topology::tracked_data tracked_data_;
+	CAT::topology::tracked_data tracked_data_;
 
 	if( !clustering_machine->read_event(event_ref, tracked_data_) ){
 	  continue;
@@ -295,10 +280,6 @@ int main(int argc_, char* argv_[]){
 	}
 
 	if( !skip_processing ){
-	  if( plot_mode ){
-	    display->DeleteDisplay();
-	    display->execute(event_ref, evn, tracked_data_ );
-	  }
 	  
 	  if( root_ntuple_mode ){
 	    nt->set_tracked_data(tracked_data_);
@@ -320,8 +301,6 @@ int main(int argc_, char* argv_[]){
   sequentiating_machine->finalize();
   eman->finalize();
 
-  if( plot_mode )
-    display->Finalize();
 
   if( root_ntuple_mode )
     nt->finalize();
