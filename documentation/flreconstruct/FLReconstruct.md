@@ -230,8 +230,8 @@ sequence.
 
 Going Further {#further}
 =============
-DEFERRED TO ALPHA2
-
-You can also write your own modules in C++ and plug them into the pipeline.
+You can also write your own modules in C++ and plug them into the pipeline
+to provide additional functionality. The proceedure for writing and
+using new modules is covered in several stages, beginning with a [simple example](@ref writingflreconstructmodules).
 
 
