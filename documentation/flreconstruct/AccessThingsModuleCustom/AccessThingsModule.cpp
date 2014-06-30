@@ -25,7 +25,7 @@ void AccessThingsModule::initialize(const datatools::properties& /*myConfig*/,
 dpp::base_module::process_status AccessThingsModule::process(
     datatools::things& workItem) {
   // Add our custom type to the item
-  MyDataType atmCounter = workItem.add<MyDataType>("ATMCounter");
+  MyDataType & atmCounter = workItem.add<MyDataType>("ATMCounter");
   atmCounter.increment();
 
   return PROCESS_OK;
@@ -36,4 +36,3 @@ dpp::base_module::process_status AccessThingsModule::process(
 void AccessThingsModule::reset() {
   this->_set_initialized(false);
 }
-
