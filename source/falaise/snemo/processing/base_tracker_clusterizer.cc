@@ -595,7 +595,7 @@ namespace snemo {
           .set_terse_description("The name of the geometry Geiger locator plugin to be used")
           .set_from("snemo::processing::base_tracker_clusterizer")
           .set_traits(datatools::TYPE_STRING)
-          .set_long_description("Empty value means no automatic search   \n")
+          .set_long_description("Empty value means automatic search   \n")
           .add_example("Set a specific value::                                  \n"
                        "                                                        \n"
                        "  TC.locator_plugin_name : string = \"locators_driver\" \n"
