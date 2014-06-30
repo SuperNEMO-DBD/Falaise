@@ -18,7 +18,6 @@ set(_falaise_PLUGINS
   things2root
   CAT
   MockTrackerClusterizer
-  #Yaca
   TrackFit
   ChargedParticleTracking
   VisuToy
