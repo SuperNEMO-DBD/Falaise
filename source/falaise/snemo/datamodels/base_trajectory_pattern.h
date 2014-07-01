@@ -1,5 +1,5 @@
-/** \file falaise/snemo/datamodels/base_trajectory_pattern.h
- * Author (s) : François Mauger <mauger@lpccaen.in2p3.fr>
+/// \file falaise/snemo/datamodels/base_trajectory_pattern.h
+/* Author(s) :    François Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2012-03-19
  * Last modified: 2014-01-27
  *
@@ -9,12 +9,14 @@
 #ifndef FALAISE_SNEMO_DATAMODEL_BASE_TRAJECTORY_PATTERN_H
 #define FALAISE_SNEMO_DATAMODEL_BASE_TRAJECTORY_PATTERN_H 1
 
-// Standard library
+// Standard library:
 #include <string>
 
-// Third party
-// - Bayeux/datatools
+// Third party:
+// - Bayeux/datatools:
 #include <datatools/i_serializable.h>
+// - Bayeux/geomtools:
+#include <geomtools/i_shape_1d.h>
 
 namespace snemo {
 
@@ -28,8 +30,11 @@ namespace snemo {
       /// Check if a valid pattern ID exists
       bool has_pattern_id() const;
 
-      /// Get the pattern ID
+      /// Return the pattern ID
       const std::string & get_pattern_id() const;
+
+      /// Return the reference to the 1D shape associated to the trajectory
+      virtual const geomtools::i_shape_1d & get_shape() const = 0;
 
       /// Constructor
       base_trajectory_pattern(const std::string & pattern_id_ = "");
@@ -56,7 +61,6 @@ namespace snemo {
 
 #endif // FALAISE_SNEMO_DATAMODEL_BASE_TRAJECTORY_PATTERN_H
 
-// end of falaise/snemo/datamodels/base_trajectory_pattern.h
 /*
 ** Local Variables: --
 ** mode: c++ --
