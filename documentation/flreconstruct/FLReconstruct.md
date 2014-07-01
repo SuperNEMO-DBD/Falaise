@@ -125,6 +125,8 @@ argument, which will print the module names to stdout:
 
 ~~~~~
 $ flreconstruct --help-module-list
+Things2Root
+bipo3::processing::calorimeter_s2c_module
 dpp::chain_module
 dpp::dummy_module
 dpp::dump_module
@@ -134,6 +136,14 @@ dpp::output_module
 dpp::skip_module
 dpp::utils_module
 mctools::simulated_data_input_module
+snemo::processing::mock_calorimeter_s2c_module
+snemo::processing::mock_tracker_s2c_module
+snemo::reconstruction::cat_tracker_clustering_module
+snemo::reconstruction::charged_particle_tracking_module
+snemo::reconstruction::mock_tracker_clustering_module
+snemo::reconstruction::sultan_tracker_clustering_module
+snemo::reconstruction::trackfit_tracker_fitting_module
+snemo::visualization::visu_toy_module
 ~~~~~
 
 Details about the purpose of a module and how it may be configured may

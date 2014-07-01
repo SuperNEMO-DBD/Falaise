@@ -16,8 +16,8 @@
 //!          interface usable.
 //
 //
-// Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com>
-// Copyright (c) 2013 by The University of Warwick
+// Copyright (c) 2013-2014 by Ben Morgan <bmorgan.warwick@gmail.com>
+// Copyright (c) 2013-2014 by The University of Warwick
 //
 // This file is part of Falaise.
 //
@@ -110,10 +110,26 @@ void do_error(std::ostream& os, const char* err) {
   os << "Try `flreconstruct --help` for more information\n";
 }
 
+//! load all default plugins
+void do_load_plugins(datatools::library_loader& libLoader) {
+  std::string pluginPath = FLReconstruct::getPluginLibDir();
+  // explicitly list for now...
+  libLoader.load("Falaise_CAT", pluginPath);
+  libLoader.load("Falaise_ChargedParticleTracking", pluginPath);
+  libLoader.load("Falaise_MockTrackerClusterizer", pluginPath);
+  libLoader.load("Falaise_TrackFit", pluginPath);
+  libLoader.load("Falaise_VisuToy", pluginPath);
+  libLoader.load("Things2Root", pluginPath);
+  libLoader.load("TrackFit", pluginPath);
+}
+
 //! Print list of known module names, one per line, to given stream
 void do_module_list(std::ostream& os) {
+  datatools::library_loader libLoader;
+  do_load_plugins(libLoader);
   typedef std::vector<std::string> ModuleInfo;
   ModuleInfo mods;
+  // Builtin
   DATATOOLS_FACTORY_GET_SYSTEM_REGISTER(dpp::base_module).list_of_factories(mods);
   BOOST_FOREACH(ModuleInfo::value_type entry, mods) {
     os << entry << std::endl;
@@ -122,6 +138,8 @@ void do_module_list(std::ostream& os) {
 
 //! Print OCD help for supplied module name to given ostream
 void do_help_module(std::ostream& os, std::string module) {
+  datatools::library_loader libLoader;
+  do_load_plugins(libLoader);
   // Is module valid?
   typedef std::vector<std::string> ModuleInfo;
   ModuleInfo mods;
@@ -203,7 +221,7 @@ FLDialogState do_cldialog(int argc, char *argv[], FLReconstructArgs& args) {
        "file to which to write data")
       ("pipeline,p",
        bpo::value<std::string>(&args.pipelineScript)->value_name("[file]"),
-       "run pipeline script")
+       "run pipeline script or resource")
       ;
   bpo::positional_options_description posOptDesc;
   posOptDesc.add("input-file",-1);
@@ -318,9 +336,7 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
       // upcoming instantiation of library loader will handle
       // any syntax errors in the properties
     }
-    // userConfig.tree_dump(std::cerr, "User config: ", "DEVEL: ");
   }
-  // userLibConfig.tree_dump(std::cerr, "User library config: ", "DEVEL: ");
 
   datatools::library_loader flLibLoader(userLibConfig);
 

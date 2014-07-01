@@ -205,7 +205,6 @@ std::string getApplicationDir() {
 std::string getResourceDir() {
   boost::filesystem::path tmpPath(getApplicationDir());
   tmpPath /= relativePathToResourceDir();
-  // std::cerr << "DEVEL: getResourceDir = '" << tmpPath << "'" << std::endl;
   boost::filesystem::path absPath = boost::filesystem::canonical(tmpPath);
   return absPath.string();
 }
@@ -213,7 +212,6 @@ std::string getResourceDir() {
 std::string getPluginLibDir() {
   boost::filesystem::path tmpPath(getApplicationDir());
   tmpPath /= relativePathToPluginLibDir();
-  // std::cerr << "DEVEL: getPluginLibDir = '" << tmpPath << "'" << std::endl;
   boost::filesystem::path absPath = boost::filesystem::canonical(tmpPath);
   return absPath.string();
 }
