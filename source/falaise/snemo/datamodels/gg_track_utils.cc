@@ -1,7 +1,7 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/gg_track_utils.cc */
+/// \file falaise/snemo/datamodels/gg_track_utils.cc
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/datamodels/gg_track_utils.h>
 
 namespace snemo {

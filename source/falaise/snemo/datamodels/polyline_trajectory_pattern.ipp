@@ -1,17 +1,17 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/polyline_trajectory_pattern.ipp */
+/// \file falaise/snemo/datamodels/polyline_trajectory_pattern.ipp
 
 #ifndef FALAISE_SNEMO_DATAMODEL_POLYLINE_TRAJECTORY_PATTERN_IPP
 #define FALAISE_SNEMO_DATAMODEL_POLYLINE_TRAJECTORY_PATTERN_IPP 1
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/datamodels/polyline_trajectory_pattern.h>
 
-// Third party
-// - Boost
+// Third party:
+// - Boost:
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/nvp.hpp>
-// - Bayeux/geomtools
+// - Bayeux/geomtools:
 #include <geomtools/line_3d.ipp>
 
 // This project
@@ -34,5 +34,3 @@ namespace snemo {
 } // end of namespace snemo
 
 #endif // FALAISE_SNEMO_DATAMODEL_POLYLINE_TRAJECTORY_PATTERN_IPP
-
-// end of falaise/snemo/datamodels/polyline_trajectory_pattern.ipp

@@ -1,19 +1,18 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/tracker_trajectory.cc */
+// falaise/snemo/datamodels/tracker_trajectory.cc
 
 // Ourselves:
 #include <falaise/snemo/datamodels/tracker_trajectory.ipp>
 
-// This project
+// This project:
 #include <falaise/snemo/datamodels/base_trajectory_pattern.h>
 
 namespace snemo {
 
   namespace datamodel {
 
-    // serial tag for datatools::serialization::i_serializable interface :
-    //DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(tracker_trajectory, "snemo::core::model::tracker_trajectory")
-    DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(tracker_trajectory, "snemo::datamodel::tracker_trajectory")
+    // serial tag for datatools::i_serializable interface :
+    DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(tracker_trajectory,
+                                                      "snemo::datamodel::tracker_trajectory")
 
     bool tracker_trajectory::has_trajectory_id() const
     {
@@ -205,7 +204,6 @@ namespace snemo {
 
 } // end of namespace snemo
 
-// end of falaise/snemo/datamodels/tracker_trajectory.cc
 /*
 ** Local Variables: --
 ** mode: c++ --

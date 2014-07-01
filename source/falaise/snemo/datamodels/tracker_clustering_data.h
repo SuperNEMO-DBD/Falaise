@@ -1,4 +1,4 @@
-/** \file falaise/snemo/datamodels/tracker_clustering_data.h */
+/// \file falaise/snemo/datamodels/tracker_clustering_data.h
 /* Author (s) : François Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2012-03-05
  * Last modified: 2014-01-27
@@ -12,24 +12,24 @@
 #ifndef FALAISE_SNEMO_DATAMODELS_TRACKER_CLUSTERING_DATA_H
 #define FALAISE_SNEMO_DATAMODELS_TRACKER_CLUSTERING_DATA_H 1
 
-// Standard library
+// Standard library:
 #include <typeinfo>
 #include <sstream>
 #include <vector>
 #include <stdexcept>
 
 // Third party:
-// - Boost
+// - Boost:
 #include <boost/serialization/access.hpp>
 #include <boost/cstdint.hpp>
-// - Bayeux/datatools
+// - Bayeux/datatools:
 #include <datatools/i_serializable.h>
 #include <datatools/i_tree_dump.h>
 #include <datatools/i_clear.h>
 #include <datatools/utils.h>
 #include <datatools/properties.h>
 
-// This project
+// This project:
 #include <falaise/snemo/datamodels/tracker_clustering_solution.h>
 
 namespace snemo {
@@ -226,7 +226,8 @@ namespace snemo {
 } // end of namespace snemo
 
 #include <boost/serialization/export.hpp>
-BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::tracker_clustering_data, "snemo::datamodel::tracker_clustering_data")
+BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::tracker_clustering_data,
+                        "snemo::datamodel::tracker_clustering_data")
 
 #endif // FALAISE_SNEMO_DATAMODELS_TRACKER_CLUSTERING_DATA_H
 

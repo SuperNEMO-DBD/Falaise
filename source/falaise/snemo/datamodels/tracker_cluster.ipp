@@ -1,5 +1,5 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/tracker_cluster.ipp */
+/// \file falaise/snemo/datamodels/tracker_cluster.ipp
 
 #ifndef FALAISE_SNEMO_DATAMODELS_TRACKER_CLUSTER_IPP
 #define FALAISE_SNEMO_DATAMODELS_TRACKER_CLUSTER_IPP 1
@@ -8,13 +8,13 @@
 #include <falaise/snemo/datamodels/tracker_cluster.h>
 
 // Third party:
-// - Boost
+// - Boost:
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/vector.hpp>
-// - Bayeux/datatools
+// - Bayeux/datatools:
 #include <datatools/i_serializable.ipp>
-// - Bayeux/geomtools
+// - Bayeux/geomtools:
 #include <geomtools/base_hit.ipp>
 
 // This project:
@@ -37,5 +37,3 @@ namespace snemo {
 } // end of namespace snemo
 
 #endif // FALAISE_SNEMO_DATAMODELS_TRACKER_CLUSTER_IPP
-
-// end of falaise/snemo/datamodels/tracker_cluster.ipp

@@ -1,8 +1,7 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/raw_data.cc
- */
+/// \file falaise/snemo/datamodels/raw_data.cc
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/datamodels/raw_data.h>
 
 namespace snemo {
@@ -127,5 +126,3 @@ namespace snemo {
   } // end of namespace datamodel
 
 } // end of namespace snemo
-
-// end of falaise/snemo/datamodels/calibrated_data.cc

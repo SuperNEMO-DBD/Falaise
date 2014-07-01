@@ -1,5 +1,5 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/senmo/datamodels/particle_track_data.ipp */
+/// \file falaise/snemo/datamodels/particle_track_data.ipp
 
 #ifndef FALAISE_SNEMO_DATAMODEL_PARTICLE_TRACK_DATA_IPP
 #define FALAISE_SNEMO_DATAMODEL_PARTICLE_TRACK_DATA_IPP 1
@@ -8,11 +8,11 @@
 #include <falaise/snemo/datamodels/particle_track_data.h>
 
 // Third party:
-// - Boost
+// - Boost:
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/vector.hpp>
-// - Bayeux/datatools
+// - Bayeux/datatools:
 #include <datatools/properties.ipp>
 
 // This project:
@@ -37,5 +37,3 @@ namespace snemo {
 } // end of namespace snemo
 
 #endif // FALAISE_SNEMO_DATAMODEL_PARTICLE_TRACK_DATA_IPP
-
-// end of falaise/snemo/datamodels/particle_track_data.ipp

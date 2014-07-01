@@ -1,4 +1,4 @@
-/** \file falaise/snemo/datamodels/tracker_cluster.h */
+/// \file falaise/snemo/datamodels/tracker_cluster.h
 /* Author (s) : François Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2012-03-05
  * Last modified: 2014-01-27
@@ -10,11 +10,11 @@
 #define FALAISE_SNEMO_DATAMODELS_TRACKER_CLUSTER_H 1
 
 // Third party:
-// - Boost
+// - Boost:
 #include <boost/cstdint.hpp>
-// - Bayeux/datatools
+// - Bayeux/datatools:
 #include <datatools/handle.h>
-// - Bayeux/geomtools
+// - Bayeux/geomtools:
 #include <geomtools/base_hit.h>
 
 // This project:

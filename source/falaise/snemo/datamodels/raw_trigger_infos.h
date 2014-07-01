@@ -1,4 +1,4 @@
-/** \file falaise/snemo/datamodels/raw_trigger_infos.h */
+/// \file falaise/snemo/datamodels/raw_trigger_infos.h
 /* Author(s) : François Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2012-03-19
  * Last modified: 2014-01-28
@@ -12,11 +12,11 @@
 // Standard library:
 #include <bitset>
 
-// Third party
+// Third party:
 // - Boost :
 #include <boost/cstdint.hpp>
 #include <boost/serialization/access.hpp>
-// - Bayeux/datatools
+// - Bayeux/datatools:
 #include <datatools/i_serializable.h>
 #include <datatools/i_tree_dump.h>
 

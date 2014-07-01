@@ -1,12 +1,11 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/raw_calorimeter_hit.cc
- */
+/// \file falaise/snemo/datamodels/raw_calorimeter_hit.cc
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/datamodels/raw_calorimeter_hit.h>
 
-// Third party
-// - Bayeux/datatools
+// Third party:
+// - Bayeux/datatools:
 //#include <datatools/clhep_units.h>
 //#include <datatools/utils.h>
 

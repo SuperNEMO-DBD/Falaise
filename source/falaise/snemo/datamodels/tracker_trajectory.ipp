@@ -1,5 +1,5 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/tracker_trajectory.ipp */
+/// \file falaise/snemo/datamodels/tracker_trajectory.ipp
 
 #ifndef FALAISE_SNEMO_DATAMODELS_TRACKER_TRAJECTORY_IPP
 #define FALAISE_SNEMO_DATAMODELS_TRACKER_TRAJECTORY_IPP 1
@@ -8,13 +8,13 @@
 #include <falaise/snemo/datamodels/tracker_trajectory.h>
 
 // Third party:
-// - Boost
+// - Boost:
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/nvp.hpp>
-// - Bayeux/geomtools
+// - Bayeux/geomtools:
 #include <geomtools/base_hit.ipp>
 
-// This project
+// This project:
 #include <falaise/snemo/datamodels/tracker_cluster.ipp>
 #include <falaise/snemo/datamodels/calibrated_tracker_hit.ipp>
 #include <falaise/snemo/datamodels/base_trajectory_pattern.ipp>
@@ -40,5 +40,3 @@ namespace snemo {
 } // end of namespace snemo
 
 #endif // FALAISE_SNEMO_DATAMODELS_TRACKER_TRAJECTORY_IPP
-
-// end of falaise/snemo/datamodels/tracker_trajectory.ipp

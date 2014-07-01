@@ -4,19 +4,19 @@
 #ifndef FALAISE_SNEMO_DATAMODEL_EVENT_HEADER_IPP
 #define FALAISE_SNEMO_DATAMODEL_EVENT_HEADER_IPP 1
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/datamodels/event_header.h>
 
-// Third party
-// - Boost
+// Third party:
+// - Boost:
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/nvp.hpp>
-// - Bayeux/datatools
+// - Bayeux/datatools:
 #include <datatools/i_serializable.ipp>
 #include <datatools/event_id.ipp>
 #include <datatools/properties.ipp>
 
-// This project
+// This project:
 #include <falaise/snemo/datamodels/timestamp.ipp>
 
 namespace snemo {

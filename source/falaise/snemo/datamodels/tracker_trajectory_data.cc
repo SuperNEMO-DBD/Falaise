@@ -1,5 +1,5 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/tracker_trajectory_data.cc */
+// falaise/snemo/datamodels/tracker_trajectory_data.cc
 
 // Ourselves:
 #include <falaise/snemo/datamodels/tracker_trajectory_data.h>
@@ -162,5 +162,3 @@ namespace snemo {
   } // end of namespace datamodel
 
 } // end of namespace snemo
-
-// end of falaise/snemo/datamodels/tracker_trajectory_data.cc

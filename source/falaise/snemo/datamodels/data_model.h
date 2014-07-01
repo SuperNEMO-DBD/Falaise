@@ -1,5 +1,5 @@
-/** \file falaise/snemo/datamodels/data_model.h */
 // -*- mode: c++ ; -*-
+/// \file falaise/snemo/datamodels/data_model.h
 /* Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2011-03-21
  * Last modified: 2014-02-27
@@ -15,11 +15,11 @@
 #ifndef FALAISE_SNEMO_DATAMODEL_DATA_MODEL_H
 #define FALAISE_SNEMO_DATAMODEL_DATA_MODEL_H 1
 
-// Standard library
+// Standard library:
 #include <string>
 
-// Third party
-// - Bayeux/datatools
+// Third party:
+// - Bayeux/datatools:
 #include <datatools/things.h>
 
 namespace snemo {

@@ -1,13 +1,13 @@
 // -*- mode: c++; -*-
-/** \file falaise/snemo/datamodels/the_serializable.h */
+/// \file falaise/snemo/datamodels/the_serializable.h
 
 #ifndef FALAISE_SNEMO_DATAMODELS_THE_SERIALIZABLE_H
 #define FALAISE_SNEMO_DATAMODELS_THE_SERIALIZABLE_H 1
 
-// Third party
-// - Boost
+// Third party:
+// - Boost:
 #include <boost/serialization/export.hpp>
-// - Bayeux/datatools
+// - Bayeux/datatools:
 #include <datatools/archives_instantiation.h>
 
 /*******************************
@@ -134,5 +134,3 @@ BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::particle_track_data)
 
 
 #endif // FALAISE_SNEMO_DATAMODELS_THE_SERIALIZABLE_H
-
-/* end of falaise/sncore/models/the_serializable.h */

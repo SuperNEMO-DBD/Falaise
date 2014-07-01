@@ -1,7 +1,6 @@
-// -*- mode: c++ ; -*-
-/** \file  particle_track_data.cc */
+// particle_track_data.cc
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/datamodels/particle_track_data.h>
 
 namespace snemo {
@@ -160,5 +159,3 @@ namespace snemo {
   } // end of namespace model
 
 } // end of namespace snemo
-
-// end of falaise/snemo/datamodels/particle_track_data.cc

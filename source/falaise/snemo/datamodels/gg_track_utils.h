@@ -1,6 +1,6 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/gg_track_utils.h
- * Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
+/// \file falaise/snemo/datamodels/gg_track_utils.h
+/* Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2010-07-04
  * Last modified: 2014-01-30
  */
@@ -8,7 +8,7 @@
 #ifndef FALAISE_SNEMO_DATAMODEL_GG_TRACK_UTILS_H
 #define FALAISE_SNEMO_DATAMODEL_GG_TRACK_UTILS_H 1
 
-// Standard library
+// Standard library:
 #include <string>
 
 namespace snemo {

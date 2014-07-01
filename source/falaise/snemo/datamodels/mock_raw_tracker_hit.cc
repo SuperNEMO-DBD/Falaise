@@ -1,6 +1,5 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/mock_raw_tracker_hit.cc
- */
+// falaise/snemo/datamodels/mock_raw_tracker_hit.cc
 
 // Ourselves:
 #include <falaise/snemo/datamodels/mock_raw_tracker_hit.h>
@@ -242,5 +241,3 @@ namespace snemo {
   } // end of namespace datamodel
 
 } // end of namespace snemo
-
-// end of falaise/snemo/processing/mock_raw_tracker_hit.cc

@@ -1,20 +1,20 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/calibrated_tracker_hit.ipp */
+/// \file falaise/snemo/datamodels/calibrated_tracker_hit.ipp
 
 #ifndef FALAISE_SNEMO_DATAMODELS_CALIBRATED_TRACKER_HIT_IPP
 #define FALAISE_SNEMO_DATAMODELS_CALIBRATED_TRACKER_HIT_IPP 1
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/datamodels/calibrated_tracker_hit.h>
 
-// Third party
-// - Boost
+// Third party:
+// - Boost:
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/map.hpp>
-// - Bayeux/datatools
+// - Bayeux/datatools:
 #include <datatools/utils.h>
-// - Bayeux/geomtools
+// - Bayeux/geomtools:
 #include <geomtools/base_hit.ipp>
 
 namespace snemo {
@@ -23,10 +23,10 @@ namespace snemo {
 
     template<class Archive>
     void calibrated_tracker_hit::serialize(Archive & ar_,
-                                            const unsigned int version_)
+                                           const unsigned int version_)
     {
       ar_ & BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_hit);
-      if(version_ == 0 && Archive::is_loading::value) {
+      if (version_ == 0 && Archive::is_loading::value) {
         _traits_ = 0x0;
         ar_ & boost::serialization::make_nvp("r",       _r_);
         ar_ & boost::serialization::make_nvp("sigma_r", _sigma_r_);
@@ -50,11 +50,11 @@ namespace snemo {
       ar_ & boost::serialization::make_nvp("sigma_r", _sigma_r_);
       ar_ & boost::serialization::make_nvp("z",       _z_);
       ar_ & boost::serialization::make_nvp("sigma_z", _sigma_z_);
-      if(has_xy()) {
+      if (has_xy()) {
         ar_ & boost::serialization::make_nvp("x", _x_);
         ar_ & boost::serialization::make_nvp("y", _y_);
       }
-      if(is_delayed()) {
+      if (is_delayed()) {
         ar_ & boost::serialization::make_nvp("delayed_time",       _delayed_time_);
         ar_ & boost::serialization::make_nvp("delayed_time_error", _delayed_time_error_);
       }
@@ -69,5 +69,3 @@ namespace snemo {
 BOOST_CLASS_VERSION(snemo::datamodel::calibrated_tracker_hit, 1)
 
 #endif // FALAISE_SNEMO_DATAMODELS_CALIBRATED_TRACKER_HIT_IPP
-
-// end of falaise/snemo/datamodels/calibrated_tracker_hit.ipp

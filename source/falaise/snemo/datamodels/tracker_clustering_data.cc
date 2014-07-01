@@ -1,6 +1,6 @@
 /// \file falaise/snemo/datamodels/tracker_clustering_data.cc
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/datamodels/tracker_clustering_data.h>
 
 namespace snemo {

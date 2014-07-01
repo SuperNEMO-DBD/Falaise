@@ -1,6 +1,6 @@
 /// \file falaise/snemo/datamodels/event_header.cc
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/datamodels/event_header.h>
 
 namespace snemo {

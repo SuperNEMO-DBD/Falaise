@@ -1,6 +1,6 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/calibrated_calorimeter_hit.h
- * Author (s) :   Francois Mauger <mauger@lpccaen.in2p3.fr>
+/// \file falaise/snemo/datamodels/calibrated_calorimeter_hit.h
+/* Author (s) :   Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2010-03-16
  * Last modified: 2014-01-27
  *
@@ -16,10 +16,10 @@
 #ifndef FALAISE_SNEMO_DATAMODELS_CALIBRATED_CALORIMETER_HIT_H
 #define FALAISE_SNEMO_DATAMODELS_CALIBRATED_CALORIMETER_HIT_H 1
 
-// Third party
-// - Bayeux/datatools
+// Third party:
+// - Bayeux/datatools:
 #include <datatools/handle.h>
-// - Bayeux/geomtools
+// - Bayeux/geomtools:
 #include <geomtools/base_hit.h>
 
 namespace snemo {
@@ -96,8 +96,5 @@ namespace snemo {
     } // end of namespace datamodel
 
 } // end of namespace snemo
-
-//#include <boost/serialization/export.hpp>
-//BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::calibrated_calorimeter_hit, "snemo::datamodel::calibrated_calorimeter_hit")
 
 #endif // FALAISE_SNEMO_DATAMODELS_CALIBRATED_CALORIMETER_HIT_H

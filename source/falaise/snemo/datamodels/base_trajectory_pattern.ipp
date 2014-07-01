@@ -1,18 +1,18 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/base_trajectory_pattern.ipp */
+/// \file falaise/snemo/datamodels/base_trajectory_pattern.ipp
 
 #ifndef FALAISE_SNEMO_DATAMODEL_BASE_TRAJECTORY_PATTERN_IPP
 #define FALAISE_SNEMO_DATAMODEL_BASE_TRAJECTORY_PATTERN_IPP 1
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/datamodels/base_trajectory_pattern.h>
 
-// Third party
-// - Boost
+// Third party:
+// - Boost:
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/string.hpp>
-// - Bayeux/datatools
+// - Bayeux/datatools:
 #include <datatools/i_serializable.ipp>
 
 namespace snemo {
@@ -33,5 +33,3 @@ namespace snemo {
 } // end of namespace snemo
 
 #endif // FALAISE_SNEMO_DATAMODEL_BASE_TRAJECTORY_PATTERN_IPP
-
-// end of falaise/snemo/datamodels/base_trajectory_pattern.ipp

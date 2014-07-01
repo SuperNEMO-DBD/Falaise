@@ -1,4 +1,4 @@
-/** \file falaise/snemo/datamodels/particle_track.h */
+/// \file falaise/snemo/datamodels/particle_track.h
 /* Author (s) : Mathieu Bongrand <bongrand@lal.in2p3.fr>
  *              Xavier  Garrido  <garrido@lal.in2p3.fr>
  * Creation date: 2012-04-17
@@ -12,16 +12,17 @@
 #ifndef FALAISE_SNEMO_DATAMODELS_PARTICLE_TRACK_H
 #define FALAISE_SNEMO_DATAMODELS_PARTICLE_TRACK_H 1
 
+// Standard library:
 #include <vector>
 
 // Third party:
-// - Boost
+// - Boost:
 #include <boost/cstdint.hpp>
-// - Bayeux/geomtools
+// - Bayeux/geomtools:
 #include <geomtools/blur_spot.h>
 #include <geomtools/base_hit.h>
 
-// This project
+// This project:
 #include <falaise/snemo/datamodels/tracker_trajectory.h>
 #include <falaise/snemo/datamodels/calibrated_calorimeter_hit.h>
 
@@ -159,7 +160,6 @@ namespace snemo {
 
 #endif // FALAISE_SNEMO_DATAMODELS_PARTICLE_TRACK_H
 
-// end of particle_track.h
 /*
 ** Local Variables: --
 ** mode: c++ --

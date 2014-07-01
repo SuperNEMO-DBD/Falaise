@@ -1,18 +1,18 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/raw_tracker_hit.ipp */
+/// \file falaise/snemo/datamodels/raw_tracker_hit.ipp
 
 #ifndef FALAISE_SNEMO_DATAMODELS_RAW_TRACKER_HIT_IPP
 #define FALAISE_SNEMO_DATAMODELS_RAW_TRACKER_HIT_IPP 1
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/datamodels/raw_tracker_hit.h>
 
-// Third party
-// - Boost
+// Third party:
+// - Boost:
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/map.hpp>
-// - Bayeux/geomtools
+// - Bayeux/geomtools:
 #include <geomtools/base_hit.ipp>
 
 namespace snemo {

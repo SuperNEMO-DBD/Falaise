@@ -1,4 +1,4 @@
-/** \file falaise/snemo/datamodels/raw_data.h */
+/// \file falaise/snemo/datamodels/raw_data.h
 /* Author (s) : François Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2012-03-19
  * Last modified: 2014-02-04
@@ -9,14 +9,14 @@
 #ifndef FALAISE_SNEMO_DATAMODEL_RAW_DATA_H
 #define FALAISE_SNEMO_DATAMODEL_RAW_DATA_H 1
 
-// Standard library
+// Standard library:
 #include <string>
 #include <vector>
 
-// Third party
+// Third party:
 // - Boost :
 #include <boost/serialization/access.hpp>
-// - Bayeux/datatools
+// - Bayeux/datatools:
 #include <datatools/i_serializable.h>
 #include <datatools/i_tree_dump.h>
 #include <datatools/properties.h>
@@ -99,7 +99,6 @@ namespace snemo {
 
 #endif // FALAISE_SNEMO_DATAMODEL_RAW_DATA_H
 
-// end of falaise/snemo/datamodels/raw_data.h
 /*
 ** Local Variables: --
 ** mode: c++ --

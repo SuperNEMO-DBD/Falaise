@@ -1,5 +1,5 @@
 // -*- mode: c++; -*-
-/** \file falaise/snemo/datamodels/the_serializable.ipp */
+/// \file falaise/snemo/datamodels/the_serializable.ipp
 
 #ifndef FALAISE_SNEMO_DATAMODEL_THE_SERIALIZABLE_IPP
 #define FALAISE_SNEMO_DATAMODEL_THE_SERIALIZABLE_IPP 1
@@ -33,5 +33,3 @@
 #include <falaise/snemo/datamodels/particle_track_data.ipp>
 
 #endif // FALAISE_SNEMO_DATAMODEL_THE_SERIALIZABLE_IPP
-
-/* end of falaise/snemo/datamodels/the_serializable.ipp */

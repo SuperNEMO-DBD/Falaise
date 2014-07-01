@@ -1,12 +1,11 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/raw_tracker_hit.cc
- */
+// falaise/snemo/datamodels/raw_tracker_hit.cc
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/datamodels/raw_tracker_hit.h>
 
-// Third party
-// - Bayeux/datatools
+// Third party:
+// - Bayeux/datatools:
 //#include <datatools/clhep_units.h>
 //#include <datatools/utils.h>
 
@@ -14,8 +13,9 @@ namespace snemo {
 
   namespace datamodel {
 
-    // Serial tag for datatools::serialization::i_serializable interface :
-    DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(raw_tracker_hit, "snemo::datamodel::raw_tracker_hit")
+    // Serial tag for datatools::i_serializable interface :
+    DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(raw_tracker_hit,
+                                                      "snemo::datamodel::raw_tracker_hit")
 
     bool raw_tracker_hit::is_valid() const
     {

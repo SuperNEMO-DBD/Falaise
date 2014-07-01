@@ -1,4 +1,4 @@
-/** \file falaise/snemo/datamodels/tracker_trajectory_data.h */
+/// \file falaise/snemo/datamodels/tracker_trajectory_data.h
 /* Author (s) : François Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2012-03-19
  * Last modified: 2014-01-27
@@ -13,15 +13,15 @@
 #define FALAISE_SNEMO_DATAMODELS_TRACKER_TRAJECTORY_DATA_H 1
 
 // Third party:
-// - Boost
+// - Boost:
 #include <boost/serialization/access.hpp>
-// - Bayeux/datatools
+// - Bayeux/datatools:
 #include <datatools/i_serializable.h>
 #include <datatools/i_tree_dump.h>
 #include <datatools/i_clear.h>
 #include <datatools/properties.h>
 
-// This project:
+// This project::
 #include <falaise/snemo/datamodels/tracker_trajectory_solution.h>
 
 namespace snemo {
@@ -114,7 +114,8 @@ namespace snemo {
 } // end of namespace snemo
 
 #include <boost/serialization/export.hpp>
-BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::tracker_trajectory_data, "snemo::datamodel::tracker_trajectory_data")
+BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::tracker_trajectory_data,
+                        "snemo::datamodel::tracker_trajectory_data")
 
 #endif // FALAISE_SNEMO_DATAMODELS_TRACKER_TRAJECTORY_DATA_H
 

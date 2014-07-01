@@ -1,7 +1,6 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/particle_track.cc */
+// falaise/snemo/datamodels/particle_track.cc
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/datamodels/particle_track.h>
 
 namespace snemo {

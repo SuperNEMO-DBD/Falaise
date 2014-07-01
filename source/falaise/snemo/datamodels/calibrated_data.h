@@ -1,6 +1,6 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/calibrated_data.h
- * Author (s) :   Mathieu Bongrand <bongrand@lal.in2p3.fr>
+/// \file falaise/snemo/datamodels/calibrated_data.h
+/* Author(s) :    Mathieu Bongrand <bongrand@lal.in2p3.fr>
  * Creation date: 2011-02-08
  * Last modified: 2014-01-27
  *
@@ -18,14 +18,14 @@
 #ifndef FALAISE_SNEMO_DATAMODEL_CALIBRATED_DATA_H
 #define FALAISE_SNEMO_DATAMODEL_CALIBRATED_DATA_H 1
 
-// Standard library
+// Standard library:
 #include <string>
 #include <vector>
 
-// Third party
+// Third party:
 // - Boost :
 #include <boost/serialization/access.hpp>
-// - Bayeux/datatools
+// - Bayeux/datatools:
 #include <datatools/i_serializable.h>
 #include <datatools/i_tree_dump.h>
 #include <datatools/i_clear.h>
@@ -126,6 +126,7 @@ namespace snemo {
 } // end of namespace snemo
 
 #include <boost/serialization/export.hpp>
-BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::calibrated_data, "snemo::datamodel::calibrated_data")
+BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::calibrated_data,
+                        "snemo::datamodel::calibrated_data")
 
 #endif // FALAISE_SNEMO_DATAMODEL_CALIBRATED_DATA_H

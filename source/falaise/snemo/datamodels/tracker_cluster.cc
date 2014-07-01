@@ -1,13 +1,13 @@
 /// \file falaise/snemo/datamodels/tracker_cluster.cc
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/datamodels/tracker_cluster.h>
 
 namespace snemo {
 
   namespace datamodel {
 
-    // Serial tag for datatools::serialization::i_serializable interface :
+    // Serial tag for datatools::i_serializable interface :
     DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(tracker_cluster,
                                                       "snemo::datamodel::tracker_cluster")
 

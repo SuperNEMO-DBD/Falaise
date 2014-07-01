@@ -1,5 +1,5 @@
-/** \file falaise/snemo/datamodels/calibrated_tracker_hit.h
- * Author (s) :   Francois Mauger <mauger@lpccaen.in2p3.fr>
+/// \file falaise/snemo/datamodels/calibrated_tracker_hit.h
+/* Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2010-03-15
  * Last modified: 2014-01-27
  *
@@ -14,17 +14,17 @@
 #ifndef FALAISE_SNEMO_DATAMODELS_CALIBRATED_TRACKER_HIT_H
 #define FALAISE_SNEMO_DATAMODELS_CALIBRATED_TRACKER_HIT_H 1
 
-// Standard library
+// Standard library:
 #include <vector>
 #include <string>
 
-// Third party
-// - Boost
+// Third party:
+// - Boost:
 #include <boost/cstdint.hpp>
-// - Bayeux/datatools
+// - Bayeux/datatools:
 #include <datatools/handle.h>
 #include <datatools/bit_mask.h>
-// - Bayeux/geomtools
+// - Bayeux/geomtools:
 #include <geomtools/base_hit.h>
 
 namespace snemo {
@@ -258,9 +258,6 @@ namespace snemo {
   } // end of namespace datamodel
 
 } // end of namespace snemo
-
-//#include <boost/serialization/export.hpp>
-//BOOST_CLASS_EXPORT_KEY2(snemo::core::model::calibrated_tracker_hit, "snemo::core::model::calibrated_tracker_hit")
 
 #endif // FALAISE_SNEMO_DATAMODELS_CALIBRATED_TRACKER_HIT_H
 /*

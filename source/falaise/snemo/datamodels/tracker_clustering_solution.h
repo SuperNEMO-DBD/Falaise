@@ -9,18 +9,18 @@
 #ifndef FALAISE_SNEMO_DATAMODELS_TRACKER_CLUSTERING_SOLUTION_H
 #define FALAISE_SNEMO_DATAMODELS_TRACKER_CLUSTERING_SOLUTION_H 1
 
-// Standard library
+// Standard library:
 #include <vector>
 #include <map>
 
 // Third party:
-// - Boost
+// - Boost:
 #include <boost/cstdint.hpp>
-// - Bayeux/datatools
+// - Bayeux/datatools:
 #include <datatools/handle.h>
 #include <datatools/properties.h>
 
-// This project
+// This project:
 #include <falaise/snemo/datamodels/tracker_cluster.h>
 
 namespace snemo {

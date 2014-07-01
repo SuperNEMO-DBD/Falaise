@@ -1,6 +1,5 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/raw_trigger_infos.cc
- */
+// falaise/snemo/datamodels/raw_trigger_infos.cc
 
 // Ourselves:
 #include <falaise/snemo/datamodels/raw_trigger_infos.h>
@@ -165,7 +164,6 @@ namespace snemo {
 
 } // end of namespace snemo
 
-// end of falaise/snemo/datamodels/raw_trigger_infos.cc
 /*
 ** Local Variables: --
 ** mode: c++ --

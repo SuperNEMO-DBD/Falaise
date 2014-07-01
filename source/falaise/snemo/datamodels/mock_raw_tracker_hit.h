@@ -1,6 +1,6 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/mock_raw_tracker_hit.h
- * Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
+/// \file falaise/snemo/datamodels/mock_raw_tracker_hit.h
+/* Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2010-03-15
  * Last modified: 2014-01-30
  *
@@ -132,5 +132,3 @@ namespace snemo {
 
 
 #endif // FALAISE_SNEMO_DATAMODEL_MOCK_RAW_TRACKER_HIT_H
-
-// end of falaise/snemo/datamodels/mock_raw_tracker_hit.h

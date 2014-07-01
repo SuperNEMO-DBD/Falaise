@@ -1,11 +1,10 @@
 // -*- mode: c++ ; -*-
-/* * \file falaise/snemo/datamodels/timestamp.cc
- */
+/// \file falaise/snemo/datamodels/timestamp.cc
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/datamodels/timestamp.h>
 
-// Standard library
+// Standard library:
 #include <limits>
 #include <time.h>
 
@@ -13,8 +12,7 @@ namespace snemo {
 
   namespace datamodel {
 
-    // serial tag for datatools::serialization::i_serializable interface :
-    //DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(timestamp, "snemo::core::utils::timestamp")
+    // serial tag for datatools::i_serializable interface :
     DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(timestamp, "snemo::datamodel::timestamp")
 
     const int64_t timestamp::INVALID_SECONDS     = std::numeric_limits<int64_t>::min ();
@@ -210,5 +208,3 @@ namespace snemo {
   } // end of namespace datamodel
 
 } // end of namespace snemo
-
-// end of timestamp.cc

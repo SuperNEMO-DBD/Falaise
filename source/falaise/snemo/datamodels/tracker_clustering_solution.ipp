@@ -1,10 +1,10 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/tracker_clustering_solution.ipp */
+/// \file falaise/snemo/datamodels/tracker_clustering_solution.ipp
 
 #ifndef FALAISE_SNEMO_DATAMODELS_TRACKER_CLUSTERING_SOLUTION_IPP
 #define FALAISE_SNEMO_DATAMODELS_TRACKER_CLUSTERING_SOLUTION_IPP 1
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/datamodels/tracker_clustering_solution.h>
 
 // Third party:
@@ -12,11 +12,11 @@
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/vector.hpp>
-// - Bayeux/datatools
+// - Bayeux/datatools:
 #include <datatools/i_serializable.ipp>
 #include <datatools/properties.ipp>
 
-// This project
+// This project:
 #include <falaise/snemo/datamodels/tracker_cluster.h>
 #include <falaise/snemo/datamodels/calibrated_tracker_hit.h>
 

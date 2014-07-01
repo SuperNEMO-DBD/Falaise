@@ -1,4 +1,4 @@
-/** \file falaise/snemo/datamodels/raw_tracker_hit.h */
+/// \file falaise/snemo/datamodels/raw_tracker_hit.h
 /* Author(s) :    François Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2014-01-30
  * Last modified: 2014-01-31
@@ -13,10 +13,10 @@
 #include <bitset>
 #include <vector>
 
-// Third party
+// Third party:
 // - Boost :
 #include <boost/cstdint.hpp>
-// - Bayeux/geomtools
+// - Bayeux/geomtools:
 #include <geomtools/base_hit.h>
 
 namespace snemo {

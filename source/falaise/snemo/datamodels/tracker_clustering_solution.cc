@@ -1,9 +1,9 @@
-/** \file falaise/snemo/datamodels/tracker_clustering_solution.cc */
+// falaise/snemo/datamodels/tracker_clustering_solution.cc
 
 // Standard library:
 #include <set>
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/datamodels/tracker_clustering_solution.h>
 
 namespace snemo {

@@ -1,6 +1,6 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/event_header.h
- * Author (s) :   Francois Mauger <mauger@lpccaen.in2p3.fr>
+/// \file falaise/snemo/datamodels/event_header.h
+/* Author (s) :   Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2010-11-07
  * Last modified: 2014-01-27
  *
@@ -17,7 +17,7 @@
 #ifndef FALAISE_SNEMO_DATAMODEL_EVENT_HEADER_H
 #define FALAISE_SNEMO_DATAMODEL_EVENT_HEADER_H 1
 
-// Third party
+// Third party:
 // - Boost :
 #include <boost/serialization/access.hpp>
 #include <boost/cstdint.hpp>
@@ -28,7 +28,7 @@
 #include <datatools/event_id.h>
 #include <datatools/properties.h>
 
-// This project
+// This project:
 #include <falaise/snemo/datamodels/timestamp.h>
 
 namespace snemo {

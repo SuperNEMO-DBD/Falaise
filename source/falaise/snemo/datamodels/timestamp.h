@@ -1,6 +1,6 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/timestamp.h
- * Author (s) :     Francois Mauger <mauger@lpccaen.in2p3.fr>
+/// \file falaise/snemo/datamodels/timestamp.h
+/* Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2010-03-15
  * Last modified: 2014-01-27
  *
@@ -17,7 +17,7 @@
 #ifndef FALAISE_SNEMO_DATAMODELS_TIMESTAMP_H
 #define FALAISE_SNEMO_DATAMODELS_TIMESTAMP_H 1
 
-// Third party
+// Third party:
 // - Boost:
 #include <boost/cstdint.hpp>
 #include <boost/serialization/access.hpp>

@@ -1,8 +1,6 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/calibrated_data.cc
- */
+// falaise/snemo/datamodels/calibrated_data.cc
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/datamodels/calibrated_data.h>
 
 // Third party:
@@ -13,9 +11,9 @@ namespace snemo {
 
   namespace datamodel {
 
-    // Serial tag for datatools::serialization::i_serializable interface :
-    // DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(calibrated_data, "snemo::core::model::calibrated_data")
-    DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(calibrated_data, "snemo::datamodel::calibrated_data")
+    // Serial tag for datatools::i_serializable interface :
+    DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(calibrated_data,
+                                                      "snemo::datamodel::calibrated_data")
 
     bool calibrated_data::has_data() const
     {

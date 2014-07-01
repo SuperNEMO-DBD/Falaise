@@ -1,5 +1,4 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/tracker_trajectory_solution.cc */
+// falaise/snemo/datamodels/tracker_trajectory_solution.cc
 
 // Ourselves:
 #include <falaise/snemo/datamodels/tracker_trajectory_solution.h>
@@ -8,7 +7,7 @@
 #include <sstream>
 #include <stdexcept>
 
-// This project
+// This project:
 #include <falaise/snemo/datamodels/tracker_cluster.h>
 #include <falaise/snemo/datamodels/tracker_clustering_solution.h>
 
@@ -16,9 +15,9 @@ namespace snemo {
 
   namespace datamodel {
 
-    // serial tag for datatools::serialization::i_serializable interface :
-    //DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(tracker_trajectory_solution, "snemo::core::model::tracker_trajectory_solution")
-    DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(tracker_trajectory_solution, "snemo::datamodel::tracker_trajectory_solution")
+    // serial tag for datatools::i_serializable interface :
+    DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(tracker_trajectory_solution,
+                                                      "snemo::datamodel::tracker_trajectory_solution")
 
     bool tracker_trajectory_solution::has_solution_id() const
     {
@@ -215,5 +214,3 @@ namespace snemo {
   } // end of namespace datamodel
 
 } // end of namespace snemo
-
-// end of falaise/snemo/datamodels/tracker_trajectory_solution.cc

@@ -1,21 +1,21 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/calibrated_data.ipp */
+/// \file falaise/snemo/datamodels/calibrated_data.ipp
 
 #ifndef FALAISE_SNEMO_DATAMODEL_CALIBRATED_DATA_IPP
 #define FALAISE_SNEMO_DATAMODEL_CALIBRATED_DATA_IPP 1
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/datamodels/calibrated_data.h>
 
-// Third party
-// - Boost
+// Third party:
+// - Boost:
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/nvp.hpp>
-// - Bayeux/datatools
+// - Bayeux/datatools:
 #include <datatools/i_serializable.ipp>
 #include <datatools/properties.ipp>
 
-// This project
+// This project:
 #include <falaise/snemo/datamodels/calibrated_calorimeter_hit.ipp>
 #include <falaise/snemo/datamodels/calibrated_tracker_hit.ipp>
 
@@ -47,5 +47,3 @@ namespace snemo {
 BOOST_CLASS_VERSION(snemo::datamodel::calibrated_data, 1)
 
 #endif // FALAISE_SNEMO_DATAMODEL_CALIBRATED_DATA_IPP
-
-// end of falaise/snemo/datamodels/calibrated_data.ipp
