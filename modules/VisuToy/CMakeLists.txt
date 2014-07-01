@@ -21,9 +21,6 @@ list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR}/cmake)
 find_package(Readline QUIET)
 if (Readline_FOUND)
   set(FALAISEVISUTOYPLUGIN_WITH_READLINE 1)
-  message (STATUS "FalaiseVisuToyPlugin:  Readline library was found.")
-else()
-  message (STATUS "FalaiseVisuToyPlugin: Readline library not found!")
 endif()
 
 ############################################################################################
