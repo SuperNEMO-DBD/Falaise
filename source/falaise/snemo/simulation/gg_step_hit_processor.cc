@@ -1,4 +1,4 @@
-/** \file falaise/snemo/simulation/gg_step_hit_processor.cc */
+// falaise/snemo/simulation/gg_step_hit_processor.cc
 
 // Ourselves:
 #include <falaise/snemo/simulation/gg_step_hit_processor.h>

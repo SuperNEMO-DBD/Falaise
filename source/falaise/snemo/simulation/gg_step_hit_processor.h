@@ -1,6 +1,6 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/simulation/gg_step_hit_processor.h
- * Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
+/// \file falaise/snemo/simulation/gg_step_hit_processor.h
+/* Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2010-07-04
  * Last modified: 2014-01-30
  *
@@ -46,6 +46,7 @@ namespace snemo {
 
   namespace simulation {
 
+    /// \brief A basic processor of simulated step hits in some drift cell in Geiger regime
     class gg_step_hit_processor : public mctools::base_step_hit_processor
     {
     public:

@@ -1,6 +1,5 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/snemo/simulation/calorimeter_step_hit_processor.h
- * Author(s) :    Steven Calvez <calvez@lal.in2p3.fr>
+/// \file falaise/snemo/simulation/calorimeter_step_hit_processor.h
+/* Author(s) :    Steven Calvez <calvez@lal.in2p3.fr>
  * Creation date: 2014-04-15
  * Last modified: 2014-04-15
  *
@@ -28,6 +27,7 @@
 #ifndef FALAISE_SNEMO_SIMULATION_CALORIMETER_STEP_HIT_PROCESSOR_H
 #define FALAISE_SNEMO_SIMULATION_CALORIMETER_STEP_HIT_PROCESSOR_H 1
 
+// Third party:
 // - Bayeux/mctools :
 #include <mctools/calorimeter_step_hit_processor.h>
 
@@ -39,6 +39,7 @@ namespace snemo {
 
   namespace simulation {
 
+    /// \brief A basic processor of simulated step hits in SuperNEMO calorimeter blocks
     class calorimeter_step_hit_processor : public mctools::calorimeter_step_hit_processor
     {
     public:

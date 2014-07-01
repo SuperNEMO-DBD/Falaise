@@ -1,26 +1,24 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/snemo/simulation/cosmic_muon_generator.cc
- */
+// falaise/snemo/simulation/cosmic_muon_generator.cc
 
 // Ourselves
 #include <falaise/snemo/simulation/cosmic_muon_generator.h>
 
-// Standard library
+// Standard library:
 #include <stdexcept>
 
-// Third party
-// - datatools
+// Third party:
+// - Bayeux/datatools:
 #include <datatools/properties.h>
 #include <datatools/utils.h>
 #include <datatools/units.h>
 #include <datatools/exception.h>
 #include <datatools/logger.h>
-// - mygsl
+// - Bayeux/mygsl:
 #include <mygsl/tabulated_function.h>
 #include <mygsl/von_neumann_method.h>
 #include <mygsl/histogram.h>
 #include <mygsl/i_unary_function.h>
-// - genbb_help
+// - Bayeux/genbb_help:
 #include <genbb_help/single_particle_generator.h>
 #include <genbb_help/primary_event.h>
 
@@ -28,7 +26,8 @@ namespace snemo {
 
   namespace simulation {
 
-    GENBB_PG_REGISTRATION_IMPLEMENT(cosmic_muon_generator,"snemo::simulation::cosmic_muon_generator");
+    GENBB_PG_REGISTRATION_IMPLEMENT(cosmic_muon_generator,
+                                    "snemo::simulation::cosmic_muon_generator");
 
     /* sea_level_toy_theta_density_function */
 
@@ -435,5 +434,3 @@ namespace snemo {
   } // end of namespace simulation
 
 } // end of namespace snemo
-
-// end of falaise/snemo/simulation/cosmic_muon_generator.cc

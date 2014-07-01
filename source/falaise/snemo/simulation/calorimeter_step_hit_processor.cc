@@ -1,9 +1,9 @@
-/** \file falaise/snemo/simulation/calorimeter_step_hit_processor.cc */
+// falaise/snemo/simulation/calorimeter_step_hit_processor.cc
 
 // Ourselves:
 #include <falaise/snemo/simulation/calorimeter_step_hit_processor.h>
 
-// Geometry:
+// This project:
 #include <falaise/snemo/geometry/locator_plugin.h>
 #include <falaise/snemo/geometry/calo_locator.h>
 #include <falaise/snemo/geometry/xcalo_locator.h>
