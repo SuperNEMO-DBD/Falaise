@@ -1,5 +1,5 @@
-/** \file falaise/snemo/processing/base_tracker_clusterizer.h
- * Author(s)     : Francois Mauger <mauger@lpccaen.in2p3.fr>
+/// \file falaise/snemo/processing/base_tracker_clusterizer.h
+/* Author(s)     : Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date : 2012-03-29
  * Last modified : 2014-02-07
  *

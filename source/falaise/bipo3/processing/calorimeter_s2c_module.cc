@@ -1,21 +1,19 @@
-// -*- mode: c++ ; -*-
-/** falaise/bipo3/processing/calorimeter_s2c_module.cc
- */
+// falaise/bipo3/processing/calorimeter_s2c_module.cc
 
-// Ourselves
+// Ourselves:
 #include <falaise/bipo3/processing/calorimeter_s2c_module.h>
 
-// Standard library
+// Standard library:
 #include <stdexcept>
 #include <sstream>
 
-// Third party
-// - Bayeux/datatools
+// Third party:
+// - Bayeux/datatools:
 #include <datatools/service_manager.h>
-// - Bayeux/geomtools
+// - Bayeux/geomtools:
 #include <geomtools/manager.h>
 #include <geomtools/geometry_service.h>
-// - Bayeux/mctools
+// - Bayeux/mctools:
 #include <mctools/simulated_data.h>
 
 // This project:

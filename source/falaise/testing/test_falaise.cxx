@@ -1,12 +1,12 @@
 // test_falaise.cxx
 
-// Standard library
+// Standard library:
 #include <cstdlib>
 #include <iostream>
 #include <string>
 #include <exception>
 
-// This project
+// This project:
 #include <falaise/falaise.h>
 #include <falaise/version.h>
 #include <falaise/resource.h>
