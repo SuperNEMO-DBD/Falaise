@@ -1,5 +1,4 @@
-// -*- mode: c++ ; -*-
-/// \file falaise/testing/test_trackerpreclustering.cxx
+// falaise/testing/test_trackerpreclustering.cxx
 
 // Standard library:
 #include <cstdlib>
