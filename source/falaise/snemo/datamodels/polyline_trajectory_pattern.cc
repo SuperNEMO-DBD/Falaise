@@ -1,15 +1,13 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/polyline_trajectory_pattern.cc
- */
+// falaise/snemo/datamodels/polyline_trajectory_pattern.cc
 
+// Ourselves:
 #include <falaise/snemo/datamodels/polyline_trajectory_pattern.h>
 
 namespace snemo {
 
   namespace datamodel {
 
-    // serial tag for datatools::serialization::i_serializable interface :
-    //DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(polyline_trajectory_pattern, "snemo::core::model::polyline_trajectory_pattern")
+    // Serial tag for datatools::i_serializable interface :
     DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(polyline_trajectory_pattern, "snemo::datamodel::polyline_trajectory_pattern")
 
     // static
@@ -40,11 +38,16 @@ namespace snemo {
       return _path_;
     }
 
+    // virtual
+    const geomtools::i_shape_1d & polyline_trajectory_pattern::get_shape() const
+    {
+      return dynamic_cast<const geomtools::i_shape_1d &>(_path_);
+    }
+
   } // end of namespace datamodel
 
 } // end of namespace snemo
 
-// end of falaise/snemo/datamodels/polyline_trajectory_pattern.cc
 /*
 ** Local Variables: --
 ** mode: c++ --

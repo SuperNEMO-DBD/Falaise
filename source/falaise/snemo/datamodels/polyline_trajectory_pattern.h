@@ -1,4 +1,4 @@
-/** \file falaise/snemo/datamodels/polyline_trajectory_pattern.h */
+/// \file falaise/snemo/datamodels/polyline_trajectory_pattern.h
 /* Author (s) : François Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2012-03-19
  * Last modified: 2014-01-28
@@ -9,11 +9,11 @@
 #ifndef FALAISE_SNEMO_DATAMODEL_POLYLINE_TRAJECTORY_PATTERN_H
 #define FALAISE_SNEMO_DATAMODEL_POLYLINE_TRAJECTORY_PATTERN_H 1
 
-// Third party
-// - Bayeux/geomtools
+// Third party:
+// - Bayeux/geomtools:
 #include <geomtools/polyline_3d.h>
 
-// This project
+// This project:
 #include <falaise/snemo/datamodels/base_trajectory_pattern.h>
 
 namespace snemo {
@@ -40,6 +40,9 @@ namespace snemo {
         /// Get a reference to the non mutable polyline path embedded model
         const geomtools::polyline_3d & get_path() const;
 
+        /// Return the reference to the 1D shape associated to the trajectory
+        virtual const geomtools::i_shape_1d & get_shape() const;
+
       private:
 
         geomtools::polyline_3d _path_; /// The polyline path embedded model
@@ -54,7 +57,6 @@ namespace snemo {
 
 #endif // FALAISE_SNEMO_DATAMODEL_POLYLINE_TRAJECTORY_PATTERN_H
 
-// end of falaise/snemo/datamodels/polyline_trajectory_pattern.h
 /*
 ** Local Variables: --
 ** mode: c++ --
