@@ -1,15 +1,13 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/snemo/cuts/particle_track_data_cut.cc
- */
+// falaise/snemo/cuts/particle_track_data_cut.cc
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/cuts/particle_track_data_cut.h>
 
-// Standard library
+// Standard library:
 #include <stdexcept>
 #include <sstream>
 
-// Third party
+// Third party:
 // - Bayeux/datatools:
 #include <datatools/properties.h>
 #include <datatools/things.h>
@@ -498,7 +496,6 @@ namespace snemo {
 
 }  // end of namespace snemo
 
-// end of falaise/snemo/cuts/particle_track_data_cut.cc
 /*
 ** Local Variables: --
 ** mode: c++ --

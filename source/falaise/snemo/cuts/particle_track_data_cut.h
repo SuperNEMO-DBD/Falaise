@@ -1,5 +1,5 @@
-/** \file falaise/snemo/cuts/particle_track_data_cut.h
- * Author(s)     : Steven Calvez <calvez@lal.in2p3.fr>
+/// \file falaise/snemo/cuts/particle_track_data_cut.h
+/* Author(s)     : Steven Calvez <calvez@lal.in2p3.fr>
  * Creation date : 2012-06-15
  * Last modified : 2014-06-04
  *
@@ -33,7 +33,7 @@
 #ifndef FALAISE_SNEMO_CUT_PARTICLE_TRACK_DATA_CUT_H
 #define FALAISE_SNEMO_CUT_PARTICLE_TRACK_DATA_CUT_H 1
 
-// Standard library
+// Standard library:
 #include <string>
 
 // Third party:
@@ -54,16 +54,15 @@ namespace snemo {
     public:
 
       /// Mode of the cut
-      enum mode_type
-        {
-          MODE_UNDEFINED                     = 0,
-          MODE_CHARGE                        = datatools::bit_mask::bit00,
-          MODE_HAS_PARTICLES                 = datatools::bit_mask::bit01,
-          MODE_RANGE_PARTICLES               = datatools::bit_mask::bit02,
-          MODE_HAS_ASSOCIATED_CALORIMETERS   = datatools::bit_mask::bit03,
-          MODE_RANGE_ASSOCIATED_CALORIMETERS = datatools::bit_mask::bit04,
-          MODE_HAS_VERTEX_ON_FOIL            = datatools::bit_mask::bit05
-        };
+      enum mode_type {
+        MODE_UNDEFINED                     = 0,
+        MODE_CHARGE                        = datatools::bit_mask::bit00,
+        MODE_HAS_PARTICLES                 = datatools::bit_mask::bit01,
+        MODE_RANGE_PARTICLES               = datatools::bit_mask::bit02,
+        MODE_HAS_ASSOCIATED_CALORIMETERS   = datatools::bit_mask::bit03,
+        MODE_RANGE_ASSOCIATED_CALORIMETERS = datatools::bit_mask::bit04,
+        MODE_HAS_VERTEX_ON_FOIL            = datatools::bit_mask::bit05
+      };
 
       /// Set the 'Particle Track Data' bank label/name
       void set_PTD_label(const std::string & PTD_label_);
@@ -134,7 +133,6 @@ namespace snemo {
 
 #endif // FALAISE_SNEMO_CUT_PARTICLE_TRACK_DATA_CUT_H
 
-// end of falaise/snemo/cuts/particle_track_data_cut.h
 /*
 ** Local Variables: --
 ** mode: c++ --

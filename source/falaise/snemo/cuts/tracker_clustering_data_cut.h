@@ -1,5 +1,5 @@
-/** \file falaise/snemo/cuts/tracker_clustering_data_cut.h
- * Author(s)     : Xavier Garrido <garrido@lal.in2p3.fr>
+/// \file falaise/snemo/cuts/tracker_clustering_data_cut.h
+/* Author(s)     : Xavier Garrido <garrido@lal.in2p3.fr>
  * Creation date : 2011-11-27
  * Last modified : 2014-03-20
  *
@@ -54,13 +54,12 @@ namespace snemo {
     public:
 
       /// \brief Mode of the cut
-      enum mode_type
-        {
-          MODE_UNDEFINED         = 0,
-          MODE_FLAG              = datatools::bit_mask::bit00,
-          MODE_HAS_CLUSTER       = datatools::bit_mask::bit01,
-          MODE_RANGE_CLUSTER     = datatools::bit_mask::bit02
-        };
+      enum mode_type {
+        MODE_UNDEFINED         = 0,
+        MODE_FLAG              = datatools::bit_mask::bit00,
+        MODE_HAS_CLUSTER       = datatools::bit_mask::bit01,
+        MODE_RANGE_CLUSTER     = datatools::bit_mask::bit02
+      };
 
       /// Set the 'Tracker clustering' bank label/name
       void set_TCD_label (const std::string & TCD_label_);
@@ -125,7 +124,6 @@ namespace snemo {
 
 #endif // FALAISE_SNEMO_CUT_TRACKER_CLUSTERING_DATA_CUT_H
 
-// end of falaise/snemo/cuts/tracker_clustering_data_cut.h
 /*
 ** Local Variables: --
 ** mode: c++ --

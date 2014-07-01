@@ -1,20 +1,18 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/snemo/cuts/calibrated_data_cut.cc
- */
+// falaise/snemo/cuts/calibrated_data_cut.cc
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/cuts/calibrated_data_cut.h>
 
-/// Standard library
+/// Standard library:
 #include <stdexcept>
 #include <sstream>
 
-// Third party
+// Third party:
 // - Bayeux/datatools:
 #include <datatools/properties.h>
 #include <datatools/things.h>
 
-// SuperNEMO data models :
+// This project :
 #include <falaise/snemo/datamodels/calibrated_data.h>
 
 namespace snemo {
@@ -295,7 +293,6 @@ namespace snemo {
 
 }  // end of namespace snemo
 
-// end of falaise/snemo/cuts/calibrated_data_cut.cc
 /*
 ** Local Variables: --
 ** mode: c++ --

@@ -1,5 +1,5 @@
-/** \file falaise/snemo/cuts/calibrated_data_cut.h
- * Author(s)     : Xavier Garrido <garrido@lal.in2p3.fr>
+/// \file falaise/snemo/cuts/calibrated_data_cut.h
+/* Author(s)     : Xavier Garrido <garrido@lal.in2p3.fr>
  * Creation date : 2011-11-24
  * Last modified : 2014-01-30
  *
@@ -53,6 +53,7 @@ namespace snemo {
 
   namespace cut {
 
+    /// \brief A cut performed on the event record's 'calibrated data' bank
     class calibrated_data_cut : public cuts::i_cut
     {
     public:
@@ -131,7 +132,6 @@ namespace snemo {
 
 #endif // FALAISE_SNEMO_CUT_CALIBRATED_DATA_CUT_H
 
-// end of calibrated_data_cut.h
 /*
 ** Local Variables: --
 ** mode: c++ --

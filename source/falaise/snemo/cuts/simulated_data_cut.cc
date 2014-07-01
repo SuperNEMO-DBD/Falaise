@@ -1,21 +1,18 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/snemo/cuts/simulated_data_cut.cc
- */
+// falaise/snemo/cuts/simulated_data_cut.cc
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/cuts/simulated_data_cut.h>
 
-/// Standard library
+/// Standard library:
 #include <stdexcept>
 #include <sstream>
 
-// Third party
+// Third party:
 // - Bayeux/datatools:
 #include <datatools/properties.h>
 #include <datatools/things.h>
 // - Bayeux/mctools:
 #include <mctools/simulated_data.h>
-
 
 namespace snemo {
 
@@ -404,7 +401,6 @@ namespace snemo {
 
 }  // end of namespace snemo
 
-// end of simulated_data_cut.cc
 /*
 ** Local Variables: --
 ** mode: c++ --

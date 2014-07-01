@@ -57,19 +57,22 @@ namespace snemo {
     {
     public:
 
-      enum mode_type
-        {
-          MODE_UNDEFINED          = 0,
-          MODE_FLAG               = datatools::bit_mask::bit00,
-          MODE_HAS_HIT_CATEGORY   = datatools::bit_mask::bit01, // simulated_data::has_step_hits
-          MODE_RANGE_HIT_CATEGORY = datatools::bit_mask::bit02, // simulated_data::get_number_of_step_hits
-          MODE_HAS_HIT_PROPERTY   = datatools::bit_mask::bit03, //
-        };
+      /// \brief The cut mode
+      enum mode_type {
+        MODE_UNDEFINED          = 0,
+        MODE_FLAG               = datatools::bit_mask::bit00,
+        MODE_HAS_HIT_CATEGORY   = datatools::bit_mask::bit01, // simulated_data::has_step_hits
+        MODE_RANGE_HIT_CATEGORY = datatools::bit_mask::bit02, // simulated_data::get_number_of_step_hits
+        MODE_HAS_HIT_PROPERTY   = datatools::bit_mask::bit03, //
+      };
 
+      /// Set the SD bank key
       void set_SD_label (const std::string & SD_label_);
 
+      /// Return the SD bank key
       const std::string & get_SD_label () const;
 
+      /// Return the cut mode
       uint32_t get_mode () const;
 
       /// Check mode MODE_FLAG:

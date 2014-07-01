@@ -1,5 +1,5 @@
-/** \file falaise/snemo/cuts/event_header_cut.h
- * Author(s)     : Francois Mauger <mauger@lpccaen.in2p3.fr>
+/// \file falaise/snemo/cuts/event_header_cut.h
+/* Author(s)     : Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date : 2011-09-18
  * Last modified : 2014-01-30
  *
@@ -61,14 +61,13 @@ namespace snemo {
       public:
 
         /// \brief Mode of the cut
-        enum mode_type
-          {
-            MODE_UNDEFINED    = 0,
-            MODE_FLAG         = 0x1,
-            MODE_RUN_NUMBER   = 0x2,
-            MODE_EVENT_NUMBER = 0x4,
-            MODE_LIST_OF_EVENT_IDS = 0x8,
-          };
+        enum mode_type {
+          MODE_UNDEFINED    = 0,
+          MODE_FLAG         = 0x1,
+          MODE_RUN_NUMBER   = 0x2,
+          MODE_EVENT_NUMBER = 0x4,
+          MODE_LIST_OF_EVENT_IDS = 0x8,
+        };
 
         /// Set the 'Event header' bank label/name
         void set_EH_label (const std::string & EH_label_);
@@ -155,7 +154,6 @@ namespace snemo {
 
 #endif // FALAISE_SNEMO_CUT_EVENT_HEADER_CUT_H
 
-// end of falaise/snemo/cuts/event_header_cut.h
 /*
 ** Local Variables: --
 ** mode: c++ --

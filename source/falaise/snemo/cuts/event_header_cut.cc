@@ -1,6 +1,4 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/snemo/cuts/event_header_cut.cc
- */
+// falaise/snemo/cuts/event_header_cut.cc
 
 // Ourselves:
 #include <falaise/snemo/cuts/event_header_cut.h>
@@ -474,7 +472,6 @@ namespace snemo {
 
 }  // end of namespace snemo
 
-// end of falaise/snemo/cuts/event_header_cut.cc
 /*
 ** Local Variables: --
 ** mode: c++ --
