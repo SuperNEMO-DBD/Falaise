@@ -1,4 +1,3 @@
-// -*- mode: c++ ; -*-
 /// \file falaise/TrackerPreClustering/event_display.cc
 
 // Ourselves:
@@ -138,5 +137,3 @@ namespace TrackerPreClustering {
   }
 
 } // end of namespace TrackerPreClustering
-
-// end of event_display.cc

@@ -1,4 +1,3 @@
-// -*- mode: c++ ; -*-
 // interface.cc
 
 // Ourselves:
