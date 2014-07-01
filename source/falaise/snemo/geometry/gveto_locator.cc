@@ -1,4 +1,4 @@
-/** \file falaise/snemo/geometry/gveto_locator.cc */
+// falaise/snemo/geometry/gveto_locator.cc
 /* Copyright (C) 2011-2014 Francois Mauger <mauger@lpccaen.in2p3.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -1195,7 +1195,6 @@ namespace snemo {
 
 }  // end of namespace snemo
 
-// end of falaise/snemo/geometry/gveto_locator.cc
 /*
 ** Local Variables: --
 ** mode: c++ --

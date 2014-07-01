@@ -1,7 +1,5 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/snemo/geometry/utils.cc
- *
- * Copyright 2007-2014 F. Mauger
+// falaise/snemo/geometry/utils.cc
+/* Copyright 2007-2014 F. Mauger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,5 +58,3 @@ namespace snemo {
   } // end of namespace geometry
 
 } // end of namespace snemo
-
-// end of falaise/snemo/geometry/utils.cc

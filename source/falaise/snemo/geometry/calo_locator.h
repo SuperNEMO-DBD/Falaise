@@ -1,4 +1,4 @@
-/** \file falaise/snemo/geometry/calo_locator.h */
+/// \file falaise/snemo/geometry/calo_locator.h
 /* Author(s)     :     Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date : 2011-05-05
  * Last modified : 2014-01-28
@@ -34,16 +34,16 @@
 // Standard library:
 #include <string>
 
-// Third party
+// Third party:
 // - Boost :
 #include <boost/cstdint.hpp>
-// - Bayeux/geomtools
+// - Bayeux/geomtools:
 #include <geomtools/i_locator.h>
 
 // This project:
 #include <falaise/snemo/geometry/utils.h>
 
-/** forward declaration */
+// Forward declaration:
 namespace geomtools {
   class mapping;
   class id_mgr;
@@ -371,7 +371,6 @@ namespace snemo {
 
 #endif // FALAISE_SNEMO_GEOMETRY_CALO_LOCATOR_H
 
-// end of falaise/snemo/geometry/calo_locator.h
 /*
 ** Local Variables: --
 ** mode: c++ --

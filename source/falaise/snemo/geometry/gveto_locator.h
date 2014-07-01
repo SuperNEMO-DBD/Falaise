@@ -1,4 +1,4 @@
-/** \file falaise/snemo/geometry/gveto_locator.h */
+/// \file falaise/snemo/geometry/gveto_locator.h */
 /* Author(s)     : Xavier Garrido <garrido@lal.in2p3.fr>
  * Creation date : 2012-06-12
  * Last modified : 2014-01-28
@@ -34,10 +34,10 @@
 // Standard library:
 #include <string>
 
-// Third party
+// Third party:
 // - Boost :
 #include <boost/cstdint.hpp>
-// - Bayeux/geomtools
+// - Bayeux/geomtools:
 #include <geomtools/i_locator.h>
 
 // This project:
@@ -353,7 +353,6 @@ namespace snemo {
 
 #endif // FALAISE_SNEMO_GEOMETRY_GVETO_LOCATOR_H
 
-// end of falaise/snemo/geometry/gveto_locator.h
 /*
 ** Local Variables: --
 ** mode: c++ --

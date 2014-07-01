@@ -1,6 +1,5 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/snemo/geometry/locator_plugin.h */
-/* Author (s) :   Xavier Garrido <garrido@lal.in2p3.fr>
+// falaise/snemo/geometry/locator_plugin.h
+/* Author(s) :    Xavier Garrido <garrido@lal.in2p3.fr>
  * Creation date: 2013-07-15
  * Last modified: 2014-01-28
  *
@@ -20,7 +19,7 @@
 // Third party:
 // - Boost :
 #include <boost/cstdint.hpp>
-// - Bayeux/geomtools
+// - Bayeux/geomtools:
 #include <geomtools/manager.h>
 #include <geomtools/manager_macros.h>
 

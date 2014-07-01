@@ -1,4 +1,4 @@
-/** \file falaise/snemo/geometry/gg_locator.cc */
+// falaise/snemo/geometry/gg_locator.cc
 /* Copyright (C) 2011-2014 Francois Mauger <mauger@lpccaen.in2p3.fr>
  *
  * This program is free software; you can redistribute it and/or modify

@@ -1,4 +1,4 @@
-/** \file falaise/snemo/geometry/xcalo_locator.cc */
+// falaise/snemo/geometry/xcalo_locator.cc
 /* Copyright (C) 2011-2014 Francois Mauger <mauger@lpccaen.in2p3.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -27,10 +27,10 @@
 #include <stdexcept>
 
 // Third party:
-// - Bayeux/datatools
+// - Bayeux/datatools:
 #include <datatools/utils.h>
 #include <datatools/version_id.h>
-// - Bayeux/geomtools
+// - Bayeux/geomtools:
 #include <geomtools/i_composite_shape_3d.h>
 #include <geomtools/intersection_3d.h>
 #include <geomtools/subtraction_3d.h>
@@ -1339,7 +1339,6 @@ namespace snemo {
 
 }  // end of namespace snemo
 
-// end of falaise/snemo/geometry/xcalo_locator.cc
 /*
 ** Local Variables: --
 ** mode: c++ --

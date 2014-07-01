@@ -1,6 +1,6 @@
 // -*- mode: c++ ; -*-
-/* calo_scin_box_model.h
- * Author (s) :     Francois Mauger <mauger@lpccaen.in2p3.fr>
+/// \file snemo/geometry/calo_scin_box_model.h
+/* Author (s) :     Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2010-03-25
  * Last modified: 2010-03-25
  *
@@ -15,9 +15,10 @@
  *
  */
 
-#ifndef FLSNGEOMETRY_CALO_SCIN_BOX_MODEL_H_
-#define FLSNGEOMETRY_CALO_SCIN_BOX_MODEL_H_ 1
+#ifndef FALAISE_SNEMO_GEOMETRY_CALO_SCIN_BOX_MODEL_H
+#define FALAISE_SNEMO_GEOMETRY_CALO_SCIN_BOX_MODEL_H 1
 
+// Standard library:
 #include <cstdlib>
 #include <cmath>
 #include <stdexcept>
@@ -26,11 +27,12 @@
 #include <sstream>
 #include <string>
 
+// Third party:
+// - Bayeux/geomtools:
 #include <geomtools/i_model.h>
 #include <geomtools/box.h>
 #include <geomtools/sphere.h>
 #include <geomtools/subtraction_3d.h>
-
 #include <geomtools/placement.h>
 #include <geomtools/physical_volume.h>
 #include <geomtools/logical_volume.h>
@@ -40,6 +42,7 @@ namespace snemo {
 
   namespace geometry {
 
+    /// \brief The geometry model for a SuperNEMO calorimeter block
     GEOMTOOLS_MODEL_CLASS_DECLARE(calo_scin_box_model)
     {
     public:
@@ -50,23 +53,26 @@ namespace snemo {
 
       virtual std::string get_model_id () const;
 
-      // ctor:
+      /// Default constructor
       calo_scin_box_model ();
 
-      // dtor:
+      /// Destructor
       virtual ~calo_scin_box_model ();
 
+      /// Smart print
       virtual void tree_dump (std::ostream & out_         = std::clog,
                               const std::string & title_  = "",
                               const std::string & indent_ = "",
                               bool inherit_               = false) const;
     protected:
 
+      /// Main construction
       virtual void _at_construct (const std::string & name_,
                                   const datatools::properties & setup_,
                                   geomtools::models_col_type * models_ = 0);
     private:
 
+      /// Gnuplot rendering method
       static void gnuplot_draw_user_function (std::ostream &,
                                               const geomtools::vector_3d &,
                                               const geomtools::rotation_3d &,
@@ -82,7 +88,7 @@ namespace snemo {
       double                    _h_;
       double                    _optical_glue_thickness_;
 
-      // registration interface :
+      // Registration interface :
       GEOMTOOLS_MODEL_REGISTRATION_INTERFACE(calo_scin_box_model);
 
     };
@@ -91,6 +97,4 @@ namespace snemo {
 
 } // end of namespace snemo
 
-#endif // FLSNGEOMETRY_CALO_SCIN_BOX_MODEL_H_
-
-// end of calo_scin_box_model.h
+#endif // FALAISE_SNEMO_GEOMETRY_CALO_SCIN_BOX_MODEL_H

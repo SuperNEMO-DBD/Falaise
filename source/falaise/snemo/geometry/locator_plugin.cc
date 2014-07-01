@@ -1,10 +1,9 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/snemo/geometry/locator_plugin.cc */
+// falaise/snemo/geometry/locator_plugin.cc
 
 // Ourselves:
 #include <falaise/snemo/geometry/locator_plugin.h>
 
-// Third party
+// Third party:
 // - Bayeux/datatools :
 #include <datatools/version_id.h>
 
@@ -18,7 +17,8 @@ namespace snemo {
 
   namespace geometry {
 
-    GEOMTOOLS_PLUGIN_REGISTRATION_IMPLEMENT(locator_plugin,"snemo::geometry::locator_plugin");
+    GEOMTOOLS_PLUGIN_REGISTRATION_IMPLEMENT(locator_plugin,
+                                            "snemo::geometry::locator_plugin");
 
     bool locator_plugin::has_gg_locator() const
     {

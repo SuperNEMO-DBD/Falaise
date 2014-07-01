@@ -1,16 +1,17 @@
-// -*- mode: c++ ; -*-
-/* calo_scin_box_model.cc
- */
+// calo_scin_box_model.cc
 
+// Ourselves:
 #include <falaise/calo_scin_box_model.h>
 
+// Third party:
+// - Bayeux/datatools:
 #include <datatools/units.h>
 
 namespace snemo {
 
   namespace geometry {
 
-    // registration :
+    // Registration :
     GEOMTOOLS_MODEL_REGISTRATION_IMPLEMENT(calo_scin_box_model,"snemo::geometry::calo_scin_box_model");
 
     std::string calo_scin_box_model::get_model_id () const
@@ -384,5 +385,3 @@ namespace snemo {
   } // end of namespace geometry
 
 } // end of namespace snemo
-
-// end of calo_scin_box_model.cc

@@ -1,4 +1,4 @@
-/** \file falaise/snemo/geometry/xcalo_locator.h */
+/// \file falaise/snemo/geometry/xcalo_locator.h
 /* Author(s)     : Xavier Garrido <garrido@lal.in2p3.fr>
  * Creation date : 2012-06-11
  * Last modified : 2014-01-28
@@ -37,7 +37,7 @@
 // Third party:
 // - Boost :
 #include <boost/cstdint.hpp>
-// - Bayeux/geomtools
+// - Bayeux/geomtools:
 #include <geomtools/i_locator.h>
 
 // This project:
@@ -57,6 +57,7 @@ namespace snemo {
 
   namespace geometry {
 
+    /// \brief Fast locator class for SuperNEMO X calorimeter scintillator block volumes
     class xcalo_locator : public geomtools::base_locator
     {
     public:
@@ -65,12 +66,11 @@ namespace snemo {
       static const unsigned int NWALLS_PER_SIDE = 2;
 
       /// \brief Wall identifier constants (SuperNEMO module Y axis)
-      enum wall_type
-        {
-          WALL_INVALID = -1, //!< Invalid/undefined wall
-          WALL_LEFT    = 0,  //!< Left wall
-          WALL_RIGHT   = 1   //!< Right wall
-        };
+      enum wall_type {
+        WALL_INVALID = -1, //!< Invalid/undefined wall
+        WALL_LEFT    = 0,  //!< Left wall
+        WALL_RIGHT   = 1   //!< Right wall
+      };
 
       virtual bool is_initialized () const;
 
@@ -377,7 +377,6 @@ namespace snemo {
 
 #endif // FALAISE_SNEMO_GEOMETRY_XCALO_LOCATOR_H
 
-// end of falaise/snemo/geometry/xcalo_locator.h
 /*
 ** Local Variables: --
 ** mode: c++ --

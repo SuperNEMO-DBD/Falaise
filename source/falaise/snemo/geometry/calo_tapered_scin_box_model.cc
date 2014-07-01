@@ -1,17 +1,19 @@
-// -*- mode: c++ ; -*-
-/* calo_tapered_scin_box_model.cc
- */
+// calo_tapered_scin_box_model.cc
 
+// Ourselves:
 #include <falaise/calo_tapered_scin_box_model.h>
 
+// Standard library:
 #include <cstdlib>
 #include <cmath>
 #include <stdexcept>
 #include <iomanip>
 #include <sstream>
 
+// Third party:
+// - Bayeux/datatools:
 #include <datatools/units.h>
-
+// - Bayeux/geomtools:
 #include <geomtools/polyline_3d.h>
 #include <geomtools/gnuplot_draw.h>
 
@@ -19,7 +21,7 @@ namespace snemo {
 
   namespace geometry {
 
-    // registration :
+    // Registration :
     GEOMTOOLS_MODEL_REGISTRATION_IMPLEMENT(calo_tapered_scin_box_model,
                                            "snemo::geometry::calo_tapered_scin_box_model");
 
@@ -33,7 +35,6 @@ namespace snemo {
       return _solid_;
     }
 
-    // ctor:
     calo_tapered_scin_box_model::calo_tapered_scin_box_model () :
       i_model ("calo_tapered_scin_box_model")
     {
@@ -50,7 +51,6 @@ namespace snemo {
       return;
     }
 
-    // dtor:
     calo_tapered_scin_box_model::~calo_tapered_scin_box_model ()
     {
       return;
@@ -633,5 +633,3 @@ namespace snemo {
   } // end of namespace geometry
 
 } // end of namespace snemo
-
-// end of calo_tapered_scin_box_model.cc

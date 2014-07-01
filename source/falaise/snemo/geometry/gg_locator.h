@@ -1,4 +1,4 @@
-/** \file falaise/snemo/geometry/gg_locator.h */
+/// \file falaise/snemo/geometry/gg_locator.h
 /* Author(s)     : Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date : 2011-04-12
  * Last modified : 2014-01-28
