@@ -1,18 +1,17 @@
-// -*- mode: c++ ; -*-
 // test_timestamp.cxx
 
-// Standard library
+// Standard library:
 #include <cstdlib>
 #include <iostream>
 #include <string>
 #include <exception>
 #include <limits>
 
-// Third party
+// Third party:
 // - Boost:
 #include <boost/cstdint.hpp>
 
-// This project
+// This project:
 #include <falaise/snemo/datamodels/timestamp.h>
 
 int main(/* int argc_, char ** argv_ */)
@@ -100,5 +99,3 @@ int main(/* int argc_, char ** argv_ */)
   }
   return(error_code);
 }
-
-// end of test_timestamp.cxx

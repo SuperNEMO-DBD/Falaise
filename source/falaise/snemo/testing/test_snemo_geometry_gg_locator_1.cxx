@@ -1,4 +1,3 @@
-// -*- mode: c++ ; -*-
 // test_gg_locator_1.cxx
 /*
  * Copyright 2011-2013 F. Mauger
@@ -863,5 +862,3 @@ int main (int argc_, char ** argv_)
   FALAISE_FINI();
   return (error_code);
 }
-
-// end of test_gg_locator_1.cxx

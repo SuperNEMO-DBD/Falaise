@@ -1,4 +1,3 @@
-// -*- mode: c++ ; -*-
 // test_retrieve_info.cxx
 /*
  * Copyright 2007-2014 F. Mauger
@@ -229,5 +228,3 @@ int main (int argc_, char ** argv_)
   FALAISE_FINI();
   return (error_code);
 }
-
-// end of test_retrieve_info.cxx

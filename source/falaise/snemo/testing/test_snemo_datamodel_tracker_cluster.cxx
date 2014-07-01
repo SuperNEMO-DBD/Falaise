@@ -1,4 +1,3 @@
-// -*- mode: c++ ; -*-
 // test_snemo_datamodel_tracker_cluster.cxx
 
 // Standard library:
@@ -8,7 +7,7 @@
 #include <exception>
 
 // Third party:
-// - Boost/datatools
+// - Boost/datatools:
 #include <datatools/clhep_units.h>
 
 // This project:
@@ -115,5 +114,3 @@ int main(/* int argc_, char ** argv_ */)
   }
   return(error_code);
 }
-
-// end of test_snemo_datamodel_tracker_cluster.cxx

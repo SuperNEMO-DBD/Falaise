@@ -1,18 +1,17 @@
-// -*- mode: c++ ; -*-
 // test_snemo_datamodel_raw_tracker_hit.cxx
 
-// Standard library
+// Standard library:
 #include <cstdlib>
 #include <iostream>
 #include <string>
 #include <exception>
 
-// Third party
-// - Bayeux/datatools
+// Third party:
+// - Bayeux/datatools:
 #include <datatools/smart_ref.h>
 #include <datatools/clhep_units.h>
 
-// This project
+// This project:
 #include <falaise/snemo/datamodels/raw_tracker_hit.h>
 
 int main(/* int argc_, char ** argv_ */)
@@ -64,5 +63,3 @@ int main(/* int argc_, char ** argv_ */)
   }
   return(error_code);
 }
-
-// end of test_snemo_datamodel_raw_tracker_hit.cxx

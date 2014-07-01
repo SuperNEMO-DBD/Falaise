@@ -1,12 +1,12 @@
 // test_event_header.cxx
 
-// Standard library
+// Standard library:
 #include <cstdlib>
 #include <iostream>
 #include <string>
 #include <exception>
 
-// This project
+// This project:
 #include <falaise/snemo/datamodels/event_header.h>
 
 int main(int /* argc_ */, char ** /* argv_ */)

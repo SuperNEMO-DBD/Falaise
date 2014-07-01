@@ -1,4 +1,3 @@
-// -*- mode: c++ ; -*-
 // test_snemo_datamodel_raw_trigger_infos.cxx
 
 // Standard library:

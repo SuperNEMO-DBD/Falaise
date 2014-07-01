@@ -1,4 +1,3 @@
-// -*- mode: c++ ; -*-
 // test_tracker_clustering_solution.cxx
 
 // Standard library:
@@ -10,9 +9,9 @@
 #include <exception>
 
 // Third party:
-// - Boost/datatools
+// - Boost/datatools:
 #include <datatools/clhep_units.h>
-// - Boost/geomtools
+// - Boost/geomtools:
 #include <geomtools/utils.h>
 #include <geomtools/gnuplot_draw.h>
 #include <geomtools/gnuplot_i.h>
@@ -306,5 +305,3 @@ void wait_for_key()
 #endif
   return;
 }
-
-// end of test_tracker_clustering_solution.cxx

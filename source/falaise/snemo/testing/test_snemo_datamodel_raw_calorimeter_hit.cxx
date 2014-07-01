@@ -1,4 +1,3 @@
-// -*- mode: c++ ; -*-
 // test_snemo_datamodel_raw_calorimeter_hit.cxx
 
 // Standard library:
@@ -64,5 +63,3 @@ int main(/* int argc_, char ** argv_ */)
   }
   return(error_code);
 }
-
-// end of test_snemo_datamodel_raw_calorimeter_hit.cxx

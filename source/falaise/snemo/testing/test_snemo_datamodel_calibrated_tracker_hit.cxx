@@ -1,4 +1,3 @@
-// -*- mode: c++ ; -*-
 // test_calibrated_tracker_hit.cxx
 
 // Standard library
@@ -152,5 +151,3 @@ int main(/* int argc_, char ** argv_ */)
   }
   return(error_code);
 }
-
-// end of test_calibrated_tracker_hit.cxx

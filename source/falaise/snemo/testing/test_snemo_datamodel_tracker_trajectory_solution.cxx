@@ -1,4 +1,3 @@
-// -*- mode: c++ ; -*-
 // test_tracker_trajectory_solution.cxx
 
 // Standard library
@@ -242,5 +241,3 @@ int main(/* int argc_, char ** argv_ */)
   }
   return(error_code);
 }
-
-// end of test_tracker_trajectory_solution.cxx

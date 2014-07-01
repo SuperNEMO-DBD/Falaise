@@ -1,4 +1,3 @@
-// -*- mode: c++ ; -*-
 // test_xcalo_locator_1.cxx
 /*
  * Copyright 2011-2012 F. Mauger
@@ -945,5 +944,3 @@ int main (int argc_, char ** argv_)
   FALAISE_FINI();
   return (error_code);
 }
-
-// end of test_xcalo_locator_1.cxx

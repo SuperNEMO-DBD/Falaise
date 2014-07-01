@@ -1,4 +1,3 @@
-// -*- mode: c++ ; -*-
 // test_snemo_datamodel_particle_track.cxx
 
 // Standard library:
@@ -7,6 +6,7 @@
 #include <string>
 #include <exception>
 
+// This project:
 #include <falaise/snemo/datamodels/particle_track.h>
 #include <falaise/snemo/datamodels/tracker_trajectory.h>
 #include <falaise/snemo/datamodels/line_trajectory_pattern.h>
