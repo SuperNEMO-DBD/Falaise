@@ -1,15 +1,13 @@
-// -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/helix_trajectory_pattern.cc */
+// falaise/snemo/datamodels/helix_trajectory_pattern.cc
 
-// Ourselves
+// Ourselves:
 #include <falaise/snemo/datamodels/helix_trajectory_pattern.h>
 
 namespace snemo {
 
   namespace datamodel {
 
-    // Serial tag for datatools::serialization::i_serializable interface :
-    // DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(helix_trajectory_pattern, "snemo::core::model::helix_trajectory_pattern")
+    // Serial tag for datatools::i_serializable interface :
     DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(helix_trajectory_pattern,
                                                       "snemo::datamodel::helix_trajectory_pattern")
 
@@ -41,11 +39,16 @@ namespace snemo {
       return _helix_;
     }
 
+    // virtual
+    const geomtools::i_shape_1d & helix_trajectory_pattern::get_shape() const
+    {
+      return dynamic_cast<const geomtools::i_shape_1d &>(_helix_);
+    }
+
   } // end of namespace datamodel
 
 } // end of namespace snemo
 
-// end of falaise/snemo/datamodels/helix_trajectory_pattern.cc
 /*
 ** Local Variables: --
 ** mode: c++ --
