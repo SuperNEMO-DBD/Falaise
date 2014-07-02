@@ -154,6 +154,11 @@ namespace snemo {
       display_TTD                      = true;
       display_TTD_def_trajectories     = true;
       display_TTD_def_orphans_hits     = true;
+      display_TTD_def_default_tracks   = true;
+      display_TTD_helix_pvalue_high_threshold = 0.05;
+      display_TTD_helix_pvalue_low_threshold  = 0.01;
+      display_TTD_line_pvalue_high_threshold = 1e-5;
+      display_TTD_line_pvalue_low_threshold  = 1e-8;
       display_PTD                      = true;
       reset_display_geom_params_();
 
@@ -599,7 +604,7 @@ namespace snemo {
           if (purge_all) {
             delete_it = true;
           }
-          std::cerr << "DEVEL: Removing temporary file : '" << tmp_filename << "'" << std::endl;
+          // std::cerr << "DEVEL: Removing temporary file : '" << tmp_filename << "'" << std::endl;
           if (delete_it) {
             boost::filesystem::remove(tmp_filename);
           }
@@ -613,19 +618,19 @@ namespace snemo {
         //}
         if (! purge_all) {
           if (count >= n_) {
-            std::cerr << "DEVEL: Purged " << count << " temporary files..." << std::endl;
+            // std::cerr << "DEVEL: Purged " << count << " temporary files..." << std::endl;
             break;
           }
         }
         count++;
       }
-      std::cerr << "DEVEL: List of temporary filenames : " << tmp_filenames.size() << std::endl;
-      for (std::list<std::string>::const_iterator i = tmp_filenames.begin();
-           i != tmp_filenames.end();
-           i++) {
-        const std::string & tmp_filename = *i;
-        std::cerr << "DEVEL:   Filename = '" << tmp_filename << "'" << std::endl;
-      }
+      // std::cerr << "DEVEL: List of temporary filenames : " << tmp_filenames.size() << std::endl;
+      // for (std::list<std::string>::const_iterator i = tmp_filenames.begin();
+      //      i != tmp_filenames.end();
+      //      i++) {
+      //   const std::string & tmp_filename = *i;
+      //   std::cerr << "DEVEL:   Filename = '" << tmp_filename << "'" << std::endl;
+      // }
       return;
     }
 
@@ -1345,11 +1350,16 @@ namespace snemo {
               const snemo::datamodel::calibrated_calorimeter_hit & CCH = the_handle.get();
 
               geomtools::geom_id scin_block_gid = CCH.get_geom_id();
+              geomtools::geom_id scin_block_gid2;
               const geomtools::geom_info * scin_block_ginfo = 0;
+              const geomtools::geom_info * scin_block_ginfo2 = 0;
               if (scin_block_gid.is_type(calorimeter_block_type)) {
                 if (scin_block_gid.get_depth() == 5) {
                   if (scin_block_gid.is_any(4)) {
                     scin_block_gid.set(4, 1);
+                    scin_block_gid2 = CCH.get_geom_id();
+                    scin_block_gid2.set(4, 0);
+                    scin_block_ginfo2 = &(calo_block_locator.get_geom_info(scin_block_gid2));
                   }
                 }
                 scin_block_ginfo = &(calo_block_locator.get_geom_info(scin_block_gid));
@@ -1382,7 +1392,24 @@ namespace snemo {
                 //                 <<  scin_block_gid << "' !");
                 geomtools::gnuplot_draw::draw(out_, scin_block_world_plcmt, scin_block_shape);
               }
-              ++hit_count;
+              if (scin_block_ginfo2) {
+                const geomtools::placement & scin_block_world_plcmt2 = scin_block_ginfo2->get_world_placement();
+                const geomtools::logical_volume & scin_block_log2 = scin_block_ginfo2->get_logical();
+                const geomtools::i_shape_3d & scin_block_shape2 = scin_block_log2.get_shape();
+                if (scin_block_shape2.has_user_draw()) {
+                  void * user_draw_void_function2 = scin_block_shape2.get_user_draw();
+                  geomtools::gnuplot_draw::draw_user_function_type user_draw_function2
+                    = reinterpret_cast<geomtools::gnuplot_draw::draw_user_function_type>(user_draw_void_function2);
+                  (*user_draw_function2)(out_,
+                                        scin_block_world_plcmt2.get_translation(),
+                                        scin_block_world_plcmt2.get_rotation(),
+                                        scin_block_shape2,
+                                        0);
+                } else {
+                  geomtools::gnuplot_draw::draw(out_, scin_block_world_plcmt2, scin_block_shape2);
+                }
+              }
+             ++hit_count;
             }
             if (hit_count > 0) {
               data[hit_category] = index++;
@@ -1575,28 +1602,70 @@ namespace snemo {
           size_t trajectory_count = 0;
           for (int i = 0; i < (int) the_tts.get_trajectories().size(); ++i) {
             const snemo::datamodel::tracker_trajectory & traj = the_tts.get_trajectories().at(i).get();
+            bool draw_it = false;
+            // Display default tracks only:
+            bool default_track = false;
+            // Compute P-value and apply a threshold on it:
             double chi2;
             datatools::invalidate(chi2);
-            if (traj.get_auxiliaries().has_key("chi2")) {
-              chi2 = traj.get_auxiliaries().fetch_real("chi2");
-            }
             int    ndof = -1;
-            if (traj.get_auxiliaries().has_key("ndof")) {
-              ndof = traj.get_auxiliaries().fetch_integer("ndof");
-            }
             double Pvalue;
             datatools::invalidate(Pvalue);
-            if (ndof >= 0 && datatools::is_valid(chi2)) {
-              Pvalue = 1.0 - gsl_cdf_chisq_P(chi2, ndof);
+            if (traj.get_auxiliaries().has_flag("default")) {
+              default_track = true;
+            }
+            if (display_TTD_def_default_tracks) {
+              if (default_track) {
+                draw_it = true;
+              }
+            } else {
+              if (traj.get_auxiliaries().has_key("chi2")) {
+                chi2 = traj.get_auxiliaries().fetch_real("chi2");
+              }
+              if (traj.get_auxiliaries().has_key("ndof")) {
+                ndof = traj.get_auxiliaries().fetch_integer("ndof");
+              }
+              if (ndof >= 0 && datatools::is_valid(chi2)) {
+                Pvalue = 1.0 - gsl_cdf_chisq_P(chi2, ndof);
+              }
             }
             const snemo::datamodel::base_trajectory_pattern & pattern = traj.get_pattern();
             const std::string & pattern_id = pattern.get_pattern_id();
             // std::cerr << "DEVEL: ********** Pattern ID='" << pattern_id << "' : chi2=" << chi2 << " ndof=" << ndof << " ==> P-value=" << Pvalue << std::endl;
-            double prob_high_threshold = 0.05;
-            double prob_low_threshold  = 0.025;
-            bool draw_it = true;
-            if (datatools::is_valid(Pvalue) && Pvalue < prob_low_threshold) {
-              draw_it = false;
+            if (datatools::is_valid(Pvalue)) {
+              double prob_high_threshold = 0.0;
+              double prob_low_threshold  = 0.0;
+              if (pattern_id == snemo::datamodel::line_trajectory_pattern::pattern_id()) {
+                prob_high_threshold = display_TTD_line_pvalue_high_threshold;
+                prob_low_threshold  = display_TTD_line_pvalue_low_threshold;
+                if (Pvalue > prob_low_threshold) {
+                  CC.set_color_code(geomtools::color::COLOR_ORANGE);
+                  draw_it = true;
+                  if (Pvalue > prob_high_threshold) {
+                    CC.set_color_code(geomtools::color::COLOR_MAGENTA);
+                  }
+                }
+              } else if (pattern_id == snemo::datamodel::helix_trajectory_pattern::pattern_id()) {
+                prob_high_threshold = display_TTD_helix_pvalue_high_threshold;
+                prob_low_threshold  = display_TTD_helix_pvalue_low_threshold;
+                if (Pvalue > prob_low_threshold) {
+                  CC.set_color_code(geomtools::color::COLOR_CYAN);
+                  draw_it = true;
+                  if (Pvalue > prob_high_threshold) {
+                    CC.set_color_code(geomtools::color::COLOR_BLUE);
+                  }
+                }
+              }
+              draw_it = true;
+              if (datatools::is_valid(Pvalue) && Pvalue < prob_low_threshold) {
+                draw_it = false;
+              }
+            } else {
+              if (pattern_id == snemo::datamodel::line_trajectory_pattern::pattern_id()) {
+                CC.set_color_code(geomtools::color::COLOR_MAGENTA);
+              } else if (pattern_id == snemo::datamodel::helix_trajectory_pattern::pattern_id()) {
+                CC.set_color_code(geomtools::color::COLOR_BLUE);
+              }
             }
             if (draw_it) {
               if (pattern_id == snemo::datamodel::line_trajectory_pattern::pattern_id()) {
@@ -1604,21 +1673,13 @@ namespace snemo {
                   = dynamic_cast<const snemo::datamodel::line_trajectory_pattern &>(pattern);
                 const geomtools::line_3d & line = line_pattern.get_segment();
                 ++trajectory_count;
-                CC.set_color_code(geomtools::color::COLOR_YELLOW);
-                if (datatools::is_valid(Pvalue) && Pvalue > prob_high_threshold) {
-                  CC.set_color_code(geomtools::color::COLOR_MAGENTA);
-                }
                 geomtools::gnuplot_draw::draw_line(out_, line, true);
               } else if (pattern_id == snemo::datamodel::helix_trajectory_pattern::pattern_id()) {
                 const snemo::datamodel::helix_trajectory_pattern & helix_pattern
                   = dynamic_cast<const snemo::datamodel::helix_trajectory_pattern &>(pattern);
                 const geomtools::helix_3d & helix = helix_pattern.get_helix();
                 ++trajectory_count;
-                CC.set_color_code(geomtools::color::COLOR_ORANGE);
-                if (datatools::is_valid(Pvalue) && Pvalue > prob_high_threshold) {
-                  CC.set_color_code(geomtools::color::COLOR_BLUE);
-                }
-                geomtools::gnuplot_draw::draw_helix(out_, helix, true);
+                geomtools::gnuplot_draw::draw_helix(out_, helix, 5.0 * CLHEP::degree);
                 // } else if (pattern_id == snemo::datamodel::polyline_trajectory_pattern::pattern_id()) {
                 //   const snemo::datamodel::polyline_trajectory_pattern & polyline_pattern
                 //      = dynamic_cast<const snemo::datamodel::polyline_trajectory_pattern &>(pattern);
@@ -2313,6 +2374,7 @@ namespace snemo {
       if (cmd.empty()) {
         return 0;
       } else if (cmd == "q" || cmd == "quit") {
+        reset_display_geom_params_();
         return 1;
       } else if (cmd == "menu" || cmd == "help") {
         print_menu();
@@ -2557,6 +2619,76 @@ namespace snemo {
         display_TTD_def_trajectories = ! display_TTD_def_trajectories;
       } else if (cmd == "TTD.Def.Orphans") {
         display_TTD_def_orphans_hits = ! display_TTD_def_orphans_hits;
+      } else if (cmd == "TTD.Def.DefaultTracks") {
+        display_TTD_def_default_tracks = ! display_TTD_def_default_tracks;
+      } else if (cmd == "TTD.Helix.PValue.HighThreshold") {
+        double ht;
+        iss >> ht;
+        if (! iss) {
+          std::cerr << "Invalid argument for command '" << cmd << "' !" << std::endl;
+        } else {
+          if (ht < 0.0 || ht > 1.0) {
+            std::cerr << "Invalid argument value for command '" << cmd << "' !" << std::endl;
+          } else {
+            display_TTD_helix_pvalue_high_threshold = ht;
+            if (display_TTD_helix_pvalue_high_threshold < display_TTD_helix_pvalue_low_threshold) {
+              display_TTD_helix_pvalue_low_threshold = display_TTD_helix_pvalue_high_threshold;
+            }
+          }
+        }
+        std::clog << "TTD.Helix.PValue.HighThreshold = " << display_TTD_helix_pvalue_high_threshold << std::endl;
+        generate_data_files_();
+      } else if (cmd == "TTD.Helix.PValue.LowThreshold") {
+        double lt;
+        iss >> lt;
+        if (! iss) {
+          std::cerr << "Invalid argument for command '" << cmd << "' !" << std::endl;
+        } else {
+          if (lt < 0.0 || lt > 1.0) {
+            std::cerr << "Invalid argument value for command '" << cmd << "' !" << std::endl;
+          } else {
+            display_TTD_helix_pvalue_low_threshold = lt;
+            if (display_TTD_helix_pvalue_high_threshold < display_TTD_helix_pvalue_low_threshold) {
+              display_TTD_helix_pvalue_high_threshold = display_TTD_helix_pvalue_low_threshold;
+            }
+          }
+        }
+        std::clog << "TTD.Helix.PValue.LowThreshold = " << display_TTD_helix_pvalue_low_threshold << std::endl;
+        generate_data_files_();
+      } else if (cmd == "TTD.Line.PValue.HighThreshold") {
+        double ht;
+        iss >> ht;
+        if (! iss) {
+          std::cerr << "Invalid argument for command '" << cmd << "' !" << std::endl;
+        } else {
+          if (ht < 0.0 || ht > 1.0) {
+            std::cerr << "Invalid argument value for command '" << cmd << "' !" << std::endl;
+          } else {
+            display_TTD_line_pvalue_high_threshold = ht;
+            if (display_TTD_line_pvalue_high_threshold < display_TTD_line_pvalue_low_threshold) {
+              display_TTD_line_pvalue_low_threshold = display_TTD_line_pvalue_high_threshold;
+            }
+          }
+        }
+        std::clog << "TTD.Line.PValue.HighThreshold = " << display_TTD_line_pvalue_high_threshold << std::endl;
+        generate_data_files_();
+      } else if (cmd == "TTD.Line.PValue.LowThreshold") {
+        double lt;
+        iss >> lt;
+        if (! iss) {
+          std::cerr << "Invalid argument for command '" << cmd << "' !" << std::endl;
+        } else {
+          if (lt < 0.0 || lt > 1.0) {
+            std::cerr << "Invalid argument value for command '" << cmd << "' !" << std::endl;
+          } else {
+            display_TTD_line_pvalue_low_threshold = lt;
+            if (display_TTD_line_pvalue_high_threshold < display_TTD_line_pvalue_low_threshold) {
+              display_TTD_line_pvalue_high_threshold = display_TTD_line_pvalue_low_threshold;
+            }
+          }
+        }
+        std::clog << "TTD.Line.PValue.LowThreshold = " << display_TTD_line_pvalue_low_threshold << std::endl;
+        generate_data_files_();
       } else if (cmd == "PTD") {
         display_PTD = ! display_PTD;
       } else if (cmd == "key") {
@@ -2732,11 +2864,20 @@ namespace snemo {
       out_ << "      SD.Tracks.Points    toggle the display of true tracks with points" << std::endl;
       out_ << "  CD                      toggle the display of calibrated data" << std::endl;
       out_ << "  TCD                     toggle the display of tracker clustering data" << std::endl;
-      out_ << "    TCD.Def.Clusters      toggle the display of the clusters(default solution)" << std::endl;
-      out_ << "    TCD.Def.Unclustered   toggle the display of the unclustered hits(default solution)" << std::endl;
+      out_ << "    TCD.Def.Clusters      toggle the display of the clusters (default solution)" << std::endl;
+      out_ << "    TCD.Def.Unclustered   toggle the display of the unclustered hits (default solution)" << std::endl;
       out_ << "  TTD                     toggle the display of tracker trajectory data" << std::endl;
-      out_ << "    TTD.Def.Trajectories  toggle the display of the trajectories(default solution)" << std::endl;
-      out_ << "    TTD.Def.Orphans       toggle the display of the orphan hits(default solution)" << std::endl;
+      out_ << "    TTD.Def.Trajectories  toggle the display of the trajectories (default solution)" << std::endl;
+      out_ << "    TTD.Def.Orphans       toggle the display of the orphan hits (default solution)" << std::endl;
+      out_ << "    TTD.Def.DefaultTracks toggle the display of the only default fits (default solution)" << std::endl;
+      out_ << "    TTD.Helix.PValue.HighThreshold [value] " << std::endl;
+      out_ << "                          set the high P-value threshold for helix track fit display" << std::endl;
+      out_ << "    TTD.Helix.PValue.LowThreshold [value] " << std::endl;
+      out_ << "                          set the low P-value threshold for helix track fit display" << std::endl;
+      out_ << "    TTD.Line.PValue.HighThreshold [value] " << std::endl;
+      out_ << "                          set the high P-value threshold for line track fit display" << std::endl;
+      out_ << "    TTD.Line.PValue.LowThreshold [value] " << std::endl;
+      out_ << "                          set the low P-value threshold for line track fit display" << std::endl;
       out_ << "  PTD                     toggle the display of particle track data" << std::endl;
       out_ << "  2D modes only :" << std::endl;
       out_ << "    zoom +                zoom in by a relative factor 2" << std::endl;

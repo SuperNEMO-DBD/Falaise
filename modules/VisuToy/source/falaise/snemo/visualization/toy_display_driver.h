@@ -244,6 +244,12 @@ namespace snemo {
       bool display_TTD;
       bool display_TTD_def_trajectories;
       bool display_TTD_def_orphans_hits;
+      bool display_TTD_def_default_tracks;
+      double display_TTD_helix_pvalue_high_threshold;
+      double display_TTD_helix_pvalue_low_threshold;
+      double display_TTD_line_pvalue_high_threshold;
+      double display_TTD_line_pvalue_low_threshold;
+
 
       bool display_PTD;
 
