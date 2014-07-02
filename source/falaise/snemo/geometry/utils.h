@@ -49,24 +49,22 @@ namespace snemo {
       static const unsigned int NSUBMODULES = NSIDES;
 
       /// \brief Direction identifier constants in the SuperNEMO reference frame
-      enum direction_index
-        {
-          DIRECTION_INVALID = -1, //!< Invalid/undefined direction
-          DIRECTION_BACK    = 0, //!< Back direction (X-)
-          DIRECTION_FRONT   = 1, //!< Front direction (X+)
-          DIRECTION_LEFT    = 2, //!< Left direction (Y-)
-          DIRECTION_RIGHT   = 3, //!< Right direction (Y+)
-          DIRECTION_BOTTOM  = 4, //!< Bottom direction (Z-)
-          DIRECTION_TOP     = 5, //!< Top direction (Z+)
-        };
+      enum direction_index {
+        DIRECTION_INVALID = -1, //!< Invalid/undefined direction
+        DIRECTION_BACK    = 0, //!< Back direction (X-)
+        DIRECTION_FRONT   = 1, //!< Front direction (X+)
+        DIRECTION_LEFT    = 2, //!< Left direction (Y-)
+        DIRECTION_RIGHT   = 3, //!< Right direction (Y+)
+        DIRECTION_BOTTOM  = 4, //!< Bottom direction (Z-)
+        DIRECTION_TOP     = 5, //!< Top direction (Z+)
+      };
 
       /// \brief Side identifier constants (X axis in the SuperNEMO reference frame)
-      enum side_index
-        {
-          SIDE_INVALID = -1, //!< Invalid/undefined side
-          SIDE_BACK    = DIRECTION_BACK, //!< Back side (X-)
-          SIDE_FRONT   = DIRECTION_FRONT //!< Front side (X+)
-        };
+      enum side_index {
+        SIDE_INVALID = -1, //!< Invalid/undefined side
+        SIDE_BACK    = DIRECTION_BACK, //!< Back side (X-)
+        SIDE_FRONT   = DIRECTION_FRONT //!< Front side (X+)
+      };
 
       /// Return a label representing the "back" side
       static const std::string & side_back_label();
@@ -88,14 +86,13 @@ namespace snemo {
        *  [s][s][s][s][s]
        *
        */
-      enum grid_neighbour_mask_type
-        {
-          NEIGHBOUR_NONE = 0x0,   ///
-          NEIGHBOUR_SIDE = 0x1,   /// S : nearest neighbours (side)
-          NEIGHBOUR_DIAG = 0x2,   /// D : nearest diagonal
-          NEIGHBOUR_FIRST = NEIGHBOUR_SIDE | NEIGHBOUR_DIAG, /// S or D
-          NEIGHBOUR_SECOND = 0x4, /// s : second ranked neighbours
-        };
+      enum grid_neighbour_mask_type {
+        NEIGHBOUR_NONE = 0x0,   ///
+        NEIGHBOUR_SIDE = 0x1,   /// S : nearest neighbours (side)
+        NEIGHBOUR_DIAG = 0x2,   /// D : nearest diagonal
+        NEIGHBOUR_FIRST = NEIGHBOUR_SIDE | NEIGHBOUR_DIAG, /// S or D
+        NEIGHBOUR_SECOND = 0x4, /// s : second ranked neighbours
+      };
 
     };
 
