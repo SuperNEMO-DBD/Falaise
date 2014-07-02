@@ -316,7 +316,9 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
   datatools::multi_properties userLibConfig("name", "filename");
   if(!clArgs.pipelineScript.empty()) {
     datatools::multi_properties userConfig("name", "type");
-    userConfig.read(clArgs.pipelineScript);
+    std::string pipelineScript = clArgs.pipelineScript;
+    datatools::fetch_path_with_env(pipelineScript);
+    userConfig.read(pipelineScript);
     try {
       datatools::properties userFLPlugins = userConfig.get_section("flreconstruct.plugins");
       std::vector<std::string> pList;
