@@ -166,7 +166,7 @@ namespace snemo {
       if(has_clustering_solution()) {
         out_ << _clustering_solution_.get().get_solution_id() ;
       } else {
-        out_ << "<No>";
+        out_ << "<none>";
       }
       out_ << std::endl;
 
@@ -175,7 +175,6 @@ namespace snemo {
       for(size_t i = 0; i < _trajectories_.size(); i++) {
         const datatools::handle<tracker_trajectory> & htraj = _trajectories_.at(i);
         const tracker_trajectory & traj = htraj.get();
-        //DATATOOLS_UTILS_HANDLE_GET_REF(traj, htraj, tracker_trajectory);
         out_ << indent << datatools::i_tree_dumpable::skip_tag;
         std::ostringstream indent2_oss;
         indent2_oss << indent << datatools::i_tree_dumpable::skip_tag;
