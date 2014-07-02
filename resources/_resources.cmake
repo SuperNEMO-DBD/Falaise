@@ -27,6 +27,7 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/simulation/ve
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/simulation/vertexes/1.0/generators.lis
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/simulation/vertexes/1.0/manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/simulation/vertexes/1.0/README.rst
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/official-1.0.0.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/1.0/mock_calorimeter_s2c.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/categories.lis
