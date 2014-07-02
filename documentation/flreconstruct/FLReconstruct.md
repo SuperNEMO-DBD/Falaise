@@ -17,18 +17,17 @@ FLReconstruct can load at runtime via a plugin mechanism.
 Here we present a brief overview of running FLReconstruct from the
 command line, including examples of scripting the pipeline using builtin
 modules. The more advanced topic of writing and using your own custom
-modules is covered in [Writing FLReconstruct Modules](@ref  writingflreconstructmodules).
+modules is covered in [Writing FLReconstruct Modules](@ref writingflreconstructmodules).
 
 Example Usage {#examples}
 =============
 The flreconstruct program is a command line application just like any
 other Unix style program (e.g. `ls`). In the following, we will
 write commands assuming that `flreconstruct` is in your path. If is not,
-simply use the relative or absolute path to `flsimulate`.
+simply use the relative or absolute path to `flreconstruct`.
 
-You can get help on the
-options that can be passed to `flreconstruct` by running it with the `-h`
-or `--help` options, e.g.
+You can get help on the options that can be passed to `flreconstruct`
+by running it with the `-h` or `--help` options, e.g.
 
 ~~~~~
 $ flreconstruct --help
@@ -43,7 +42,7 @@ Options
   -v [ --verbose ] [level] (=1) set verbosity level of logging
   -i [ --input-file ] [file]    file from which to read data
   -o [ --output-file ] [file]   file to which to write data
-  -p [ --pipeline ] [file]      run pipeline script
+  -p [ --pipeline ] [file]      run pipeline script or resource
 
 $
 ~~~~~
@@ -55,21 +54,21 @@ status of the application, including which libraries it uses:
 $ flreconstruct --version
 flreconstruct 1.0.0
 
-Copyright (C) 2013 SuperNEMO Collaboration
+Copyright (C) 2013-2014 SuperNEMO Collaboration
 
 flreconstruct uses the following external libraries:
 * Falaise : 1.0.0
 * Bayeux  : 1.0.0
-* Boost   : 105300
+* Boost   : 105500
 
 $
 ~~~~~
 
 To examine a data file output by the `flsimulate` application, you
 need to supply, at minimum, an input file. By default, this will simply
-dump information on each event held in
-the file to std out. For example, say we have a file `example.brio`, then
-we can dump events in that file by doing:
+dump information on each event held in the file to standard output (i.e.
+the current terminal). For example, say we have a file `example.brio`,
+then we can dump events in that file by doing:
 
 ~~~~~
 $ flreconstruct -i example.brio
@@ -111,10 +110,11 @@ $
 
 FLReconstruct implements a "pipeline" architecture in which events flow
 through an ordered sequence of "modules". Each module performs a specific
-task on the event (e.g. count hits). The sequence of modules and their
-configuration (e.g. reconstruction parameters) in the pipeline can be set
-up via a `datatools::multi_properties` script. This script can then be
-passed to `flreconstruct` via the `-p` argument, e.g.
+task on the event (e.g. count hits), writing its results into the event
+for further processing by downstream modules. The sequence of modules
+and their configuration (e.g. reconstruction parameters) in the pipeline
+can be set up via a `datatools::multi_properties` script. This script can
+then be passed to `flreconstruct` via the `-p` argument, e.g.
 
 ~~~~~
 $ flreconstruct -i example.brio -p myscript.txt
