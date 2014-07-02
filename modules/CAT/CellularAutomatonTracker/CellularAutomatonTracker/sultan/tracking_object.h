@@ -9,11 +9,6 @@
 #include <cmath>
 #include <mybhep/utilities.h>
 #include <sultan/printable.h>
-//#include "TMath.h"
-#include <boost/math/special_functions/gamma.hpp>
-
-//#include <util/Clock.h>
-
 
 namespace SULTAN{
   namespace topology{

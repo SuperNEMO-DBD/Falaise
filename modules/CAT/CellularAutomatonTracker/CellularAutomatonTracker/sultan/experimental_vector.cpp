@@ -287,7 +287,7 @@ namespace SULTAN{
       result.set_error( std::sqrt( pow(x_.value()*x_.error(),2) +
                                    pow(y_.value()*y_.error(),2) +
                                    pow(z_.value()*z_.error(),2) )/result.value());
-      if( isnan(result.error()) || isinf(result.error())  ) result.set_error(mybhep::small_neg);
+      if( std::isnan(result.error()) || std::isinf(result.error())  ) result.set_error(mybhep::small_neg);
       return result;
 
     }

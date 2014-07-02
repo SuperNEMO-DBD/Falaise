@@ -137,7 +137,7 @@ namespace CAT{
             double y = yi_[it - xi_.begin()].value();
             double yerr = yi_[it - xi_.begin()].error();
             double w = 1./(mybhep::square(it->error())) + 1./(mybhep::square(yerr));
-            if( isnan(w) || isinf(w) )
+            if( std::isnan(w) || std::isinf(w) )
               w = 1.;
             Sw += w;
             mean_error_x += mybhep::square(it->error());
@@ -197,34 +197,34 @@ namespace CAT{
           double E = (Sw*Swxxy - Swy*Swxx + Sw*Swyyy - Swy*Swyy)/2.;
           delta = A*C - mybhep::square(B);
 
-          if( isnan(A) || isinf(A) ){
+          if( std::isnan(A) || std::isinf(A) ){
             if( print_level() >= mybhep::NORMAL ){
               std::clog << "CAT::CircleRegression::fit: problem: in circle regression, A " << A << " Sw " << Sw << " Swxx " << Swxx << " Swx " << Swx << std::endl;
             }
             return false;
           }
-          if( isnan(B) || isinf(B) ){
+          if( std::isnan(B) || std::isinf(B) ){
             if( print_level() >= mybhep::NORMAL ){
               std::clog << "CAT::CircleRegression::fit: problem: in circle regression, B " << B << " Sw " << Sw << " Swxy " << Swxy << " Swx " << Swx << " Swy " << Swy << std::endl;
             }
             return false;
 
           }
-          if( isnan(C) || isinf(C) ){
+          if( std::isnan(C) || std::isinf(C) ){
             if( print_level() >= mybhep::NORMAL ){
               std::clog << "CAT::CircleRegression::fit: problem: in circle regression, C " << C << " Sw " << Sw << " Swyy " << Swyy << " Swy " << Swy << std::endl;
             }
             return false;
 
           }
-          if( isnan(D) || isinf(D) ){
+          if( std::isnan(D) || std::isinf(D) ){
             if( print_level() >= mybhep::NORMAL ){
               std::clog << "CAT::CircleRegression::fit: problem: in circle regression, D " << D << " Sw " << Sw << " Swxyy " << Swxyy << " Swx " << Swx << " Swyy " << Swyy << " Swxxx " << Swxxx << " Swxx " << Swxx <<std::endl;
             }
             return false;
 
           }
-          if( isnan(E) || isinf(E) ){
+          if( std::isnan(E) || std::isinf(E) ){
             if( print_level() >= mybhep::NORMAL ){
               std::clog << "CAT::CircleRegression::fit: problem: in circle regression, E " << E << " Sw " << Sw << " Swxxy " << Swxxy << " Swy " << Swy << " Swxx " << Swxx << " Swyyy " << Swyyy << " Swyy " << Swyy <<std::endl;
             }
@@ -311,9 +311,9 @@ namespace CAT{
                     << expression_to_be_minimized(xs) << std::endl;
         }
 
-        if( isnan(xs[0]) ||
-            isnan(xs[1]) ||
-            isnan(xs[2]) ) return false;
+        if( std::isnan(xs[0]) ||
+            std::isnan(xs[1]) ||
+            std::isnan(xs[2]) ) return false;
 
         double final_value=expression_to_be_minimized(xs);
 

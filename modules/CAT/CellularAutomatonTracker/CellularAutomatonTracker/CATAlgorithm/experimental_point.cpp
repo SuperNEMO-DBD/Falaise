@@ -69,7 +69,7 @@ namespace CAT{
 
         if( hit.find_property("ERRY") ){
           double erry = mybhep::double_from_string(hit.fetch_property("ERRY"));
-          if(! isnan(erry) && !isinf(erry) )
+          if(! std::isnan(erry) && !std::isinf(erry) )
             y_.set_error(erry);
         }
 
@@ -216,10 +216,10 @@ namespace CAT{
         //  dr/dz = z/r
 
         double rr = std::sqrt(mybhep::square(x_.value()) + mybhep::square(z_.value()));
-        if( isnan(rr) ) rr = mybhep::small_neg;
+        if( std::isnan(rr) ) rr = mybhep::small_neg;
         double err = std::sqrt(mybhep::square(x_.value()*x_.error())
                           + mybhep::square(z_.value()*z_.error()))/rr;
-        if( isnan(err) ) err = mybhep::small_neg;
+        if( std::isnan(err) ) err = mybhep::small_neg;
 
         radius_.set_value(rr);
         radius_.set_error(err);

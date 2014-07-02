@@ -1845,9 +1845,9 @@ namespace CAT {
 
       momentum_=mom*initial_dir();
 
-      if( !isnan(momentum_.x().value()) &&
-          !isnan(momentum_.y().value()) &&
-          !isnan(momentum_.z().value()) ){
+      if( !std::isnan(momentum_.x().value()) &&
+          !std::isnan(momentum_.y().value()) &&
+          !std::isnan(momentum_.z().value()) ){
         has_momentum_ = true;
       }
 

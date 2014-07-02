@@ -172,10 +172,10 @@ namespace SULTAN{
       //  dr/dy = y/r
 
       double rr = std::sqrt(pow(x_.value(),2) + pow(y_.value(),2));
-      if( isnan(rr) ) rr = mybhep::small_neg;
+      if( std::isnan(rr) ) rr = mybhep::small_neg;
       double err = std::sqrt(pow(x_.value()*x_.error(),2)
                              + pow(y_.value()*y_.error(),2))/rr;
-      if( isnan(err) ) err = mybhep::small_neg;
+      if( std::isnan(err) ) err = mybhep::small_neg;
 
       radius_.set_value(rr);
       radius_.set_error(err);

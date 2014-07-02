@@ -164,7 +164,7 @@ namespace CAT {
 
         if( hit.find_property("DIST")){
           double rr = mybhep::double_from_string(hit.fetch_property("DIST"));
-          if( isnan(rr) || isinf(rr) ) rr = mybhep::small_neg;
+          if( std::isnan(rr) || std::isinf(rr) ) rr = mybhep::small_neg;
           r0_.set_value(rr);
         }
 
@@ -240,7 +240,7 @@ namespace CAT {
 
         if( hit.find_property("DIST")){
           double rr = mybhep::double_from_string(hit.fetch_property("DIST"));
-          if( isnan(rr) || isinf(rr) ) rr = mybhep::small_neg;
+          if( std::isnan(rr) || std::isinf(rr) ) rr = mybhep::small_neg;
           r0_.set_value(rr);
         }
 

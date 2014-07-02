@@ -293,7 +293,7 @@ namespace CAT{
       result.set_error( std::sqrt( mybhep::square(x_.value()*x_.error()) +
                                    mybhep::square(y_.value()*y_.error()) +
                                    mybhep::square(z_.value()*z_.error()) )/result.value());
-      if( isnan(result.error()) || isinf(result.error())  ) result.set_error(mybhep::small_neg);
+      if( std::isnan(result.error()) || std::isinf(result.error())  ) result.set_error(mybhep::small_neg);
       return result;
 
     }

@@ -302,7 +302,7 @@ namespace CAT {
           bool result = get_circle().intersect_plane(pl, ep, _phi);
           ep->set_y(position(*ep,_phi.value(), y_ref).y());
 
-          if( isnan(ep->x().value())  || isnan(ep->y().value()) || isnan(ep->z().value()) ) return false;
+          if( std::isnan(ep->x().value())  || std::isnan(ep->y().value()) || std::isnan(ep->z().value()) ) return false;
 
           return result;
 
@@ -329,7 +329,7 @@ namespace CAT {
 
           ep->set_y(pl.face().y());
 
-          if( isnan(ep->x().value())  || isnan(ep->y().value()) || isnan(ep->z().value()) ) return false;
+          if( std::isnan(ep->x().value())  || std::isnan(ep->y().value()) || std::isnan(ep->z().value()) ) return false;
 
           return true;
         }
@@ -378,7 +378,7 @@ namespace CAT {
           std::clog << " center (" << c.center().x().value() << ", " << c.center().y().value() << ", " << c.center().z().value() << ") r " << c.radius().value() << " +- " << c.radius().error() << " start (" << start.x().value() << ", " << start.y().value() << ", " << start.z().value() << ") cts (" << center_to_start.x().value() << ", " << center_to_start.y().value() << ", " << center_to_start.z().value() << ") length " << center_to_start.length().value() << " +- " << center_to_start.length().error() <<  " beta " << beta.value()*180./acos(-1.) << " +- " << beta.error()*180./acos(-1.) << " phi0 " << phi0.value()*180./acos(-1.) << " angle " << angle.value() << " +- " << angle.error() << " alpha " << alpha.value()*180./acos(-1.) << " sign " << sign.value() << " newangle " << (phi0+sign*alpha).value()*180./acos(-1.) << " pos: (" << ep->x().value() << ", " << ep->y().value() << ", " << ep->z().value() << ") " << std::endl;
         }
 
-        if( isnan(ep->x().value())  || isnan(ep->y().value()) || isnan(ep->z().value()) ) return false;
+        if( std::isnan(ep->x().value())  || std::isnan(ep->y().value()) || std::isnan(ep->z().value()) ) return false;
 
         return true;
       }
@@ -457,7 +457,7 @@ namespace CAT {
 
       experimental_double _radius = experimental_sqrt(experimental_square(Xc - epa.x()) + experimental_square(Zc - epa.z()));
 
-      if( isnan(_radius.value()) || isinf(_radius.value()) )
+      if( std::isnan(_radius.value()) || std::isinf(_radius.value()) )
         _radius.set_value(mybhep::small_neg);
 
       experimental_double dist = epc.distance(epa);
