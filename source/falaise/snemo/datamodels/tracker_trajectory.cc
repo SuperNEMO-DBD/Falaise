@@ -172,7 +172,7 @@ namespace snemo {
       if(has_cluster()) {
         out_ << _cluster_.get().get_cluster_id() ;
       } else {
-        out_ << "<No>";
+        out_ << "<none>";
       }
       out_ << std::endl;
 
@@ -181,16 +181,16 @@ namespace snemo {
       if(has_orphans()) {
         out_ << _orphans_.size();
       } else {
-        out_ << "<No>";
+        out_ << "<none>";
       }
       out_ << std::endl;
 
       out_ << indent << datatools::i_tree_dumpable::tag
            << "Pattern : ";
       if(! has_pattern()) {
-        out_ << "<No>";
+        out_ << "<none>";
       } else {
-        out_ << _pattern_.get().get_pattern_id() ;
+        out_ << "'" << _pattern_.get().get_pattern_id() << "'";
       }
       out_ << std::endl;
 
