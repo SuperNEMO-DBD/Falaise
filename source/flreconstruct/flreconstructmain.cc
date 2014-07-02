@@ -53,7 +53,7 @@
 #include "boost/scoped_ptr.hpp"
 #include "boost/version.hpp"
 #include "boost/foreach.hpp"
-
+#include "boost/filesystem.hpp"
 
 // This Project
 #include "falaise/falaise.h"
@@ -168,6 +168,25 @@ void do_help_module(std::ostream& os, std::string module) {
   moduleDoc.print(os);
 }
 
+//! Print list of standard pipeline configurations to supplied ostream
+void do_help_pipeline_list(std::ostream& os) {
+  std::string shortResourceRoot("@falaise:pipeline");
+  std::string fullResourceRoot(shortResourceRoot);
+  datatools::fetch_path_with_env(fullResourceRoot);
+
+  os << shortResourceRoot << std::endl;
+  std::string indent;
+  for (boost::filesystem::recursive_directory_iterator end, dir(fullResourceRoot); dir != end; ++dir) {
+    boost::filesystem::path currentResource = (*dir).path();
+    os << " "
+       << indent.assign(dir.level()*2, ' ')
+       << "+-"
+       << currentResource.filename()
+       << std::endl;
+  }
+
+}
+
 // - Validation of verbosity command line arguments. must exist inside
 // the datatools namespace.
 // TODO : refactor operator>> into datatools, though can't do this
@@ -209,6 +228,7 @@ FLDialogState do_cldialog(int argc, char *argv[], FLReconstructArgs& args) {
       ("help-module-list","list available modules and exit")
       ("help-module", bpo::value<std::string>()->value_name("[mod]"),
        "print help for a single module and exit")
+      ("help-pipeline-list","list available pipeline configurations and exit")
       ("version","print version number")
       ("verbose,v",
        bpo::value<datatools::logger::priority>(&args.logLevel)->default_value(datatools::logger::PRIO_FATAL)->value_name("[level]"),
@@ -252,6 +272,11 @@ FLDialogState do_cldialog(int argc, char *argv[], FLReconstructArgs& args) {
 
   if (vMap.count("help-module")) {
     do_help_module(std::cout, vMap["help-module"].as<std::string>());
+    return DIALOG_QUERY;
+  }
+
+  if(vMap.count("help-pipeline-list")) {
+    do_help_pipeline_list(std::cout);
     return DIALOG_QUERY;
   }
 
