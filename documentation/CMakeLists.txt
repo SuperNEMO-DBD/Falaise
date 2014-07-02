@@ -57,6 +57,7 @@ set(Falaise_MARKDOWN_DOCS
   ${CMAKE_CURRENT_BINARY_DIR}/InstallationGuide.md
   flsimulate/FLSimulate.md
   flreconstruct/FLReconstruct.md
+  flreconstruct/SupportedFLReconstructModules.md
   flreconstruct/UsingMockCalibration.md
   flreconstruct/WritingFLReconstructModules.md
   flreconstruct/WorkingWithEventRecords.md
