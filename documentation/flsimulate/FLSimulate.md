@@ -15,9 +15,9 @@ Here we present a brief overview of running FLSimulate from the command
 line to generate an output file suitable for input to the
 [FLReconstruct](@ref usingflreconstruct) application.
 
-At present (Alpha 3), FLSimulate supports simulation of the SuperNEMO
+At present, FLSimulate supports simulation of the SuperNEMO
 demonstrator module, tracker module for commissioning and the BiPo3
-detector. Note however that this interface is not complete yet.
+detector. Note however that these interfaces are not complete yet.
 
 Please contact the Software Working Group if you have any questions or
 feature requests.
@@ -64,7 +64,7 @@ status of the application, including which libraries it uses:
 $ flsimulate --version
 flsimulate 1.0.0
 
-Copyright (C) 2013 SuperNEMO Collaboration
+Copyright (C) 2013-2014 SuperNEMO Collaboration
 
 flsimulate uses the following external libraries:
 * Falaise : 1.0.0
@@ -84,7 +84,7 @@ beta spectrum for Se82. You can modify the number of events and
 the output file, which can be in XML (for debugging purpose) or Brio format
 (for production).
 
-Note that at present (Alpha3) the validity of the experiment and
+Note that at present the validity of the experiment and
 event/vertex generator combinations are not checked. You may therefore
 need to set all of these by hand to obtain a valid set for simulation.
 Preliminary lists of valid vertex and event generators for each
