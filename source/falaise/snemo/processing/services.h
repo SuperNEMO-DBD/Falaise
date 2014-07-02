@@ -1,4 +1,4 @@
-/** \file falaise/snemo/processing/services.h */
+/// \file falaise/snemo/processing/services.h
 // -*- mode: c++ ; -*-
 /* Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2014-02-27
@@ -6,7 +6,7 @@
  *
  * Description:
  *
- *   SuperNEMO data model
+ *   SuperNEMO service utility
  *
  * History:
  *
@@ -15,13 +15,14 @@
 #ifndef FALAISE_SNEMO_PROCESSING_SERVICES_H
 #define FALAISE_SNEMO_PROCESSING_SERVICES_H 1
 
-// Standard library
+// Standard library:
 #include <string>
 
 namespace snemo {
 
   namespace processing {
 
+    /// \brief Service utility
     class service_info
     {
     public:
