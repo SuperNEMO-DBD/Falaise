@@ -148,7 +148,7 @@ namespace snemo {
       int8_t                                      _charge_from_source_;      ///!< Particle charge
       tracker_trajectory::handle_type             _trajectory_;              ///!< Handle to the fitted trajectory
       vertex_collection_type                      _vertices_;                ///!< Collection of vertices
-      calibrated_calorimeter_hit::collection_type _associated_calorimeters_; ///!< Collection of associated calorimeters
+      calibrated_calorimeter_hit::collection_type _associated_calorimeters_; ///!< Collection of associated calorimeter hits
 
       DATATOOLS_SERIALIZATION_DECLARATION();
 
