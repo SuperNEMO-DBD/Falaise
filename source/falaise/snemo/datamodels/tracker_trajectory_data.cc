@@ -138,7 +138,13 @@ namespace snemo {
            << "Solutions : " << _solutions_.size () << std::endl;
 
       out_ << indent << datatools::i_tree_dumpable::tag
-           << "Default solutions : " << (_default_solution_  ? "Yes" : "No") << std::endl;
+           << "Default solution : " << (_default_solution_  ? "Yes" : "No") << std::endl;
+      if (_default_solution_) {
+        std::ostringstream indent_oss;
+        indent_oss << indent;
+        indent_oss << datatools::i_tree_dumpable::skip_tag ;
+        _default_solution_.get().tree_dump (out_, "", indent_oss.str());
+      }
 
       out_ << indent << datatools::i_tree_dumpable::inherit_tag (inherit_)
            << "Auxiliaries : ";
