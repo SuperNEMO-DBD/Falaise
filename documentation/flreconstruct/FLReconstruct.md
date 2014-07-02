@@ -11,13 +11,15 @@ in the data, and write the reconstructed data to and output file.
 It uses a pipeline architecture for event processing, the pipeline
 is constructed as a sequence of "modules", the sequence of modules being
 selected by the user (i.e. you) at runtime. Falaise provides a standard
-set of modules, and you can write your own custom modules which
-FLReconstruct can load at runtime via a plugin mechanism.
+set of pipelines and modules, and you can write your own custom pipeline
+scripts and modules which FLReconstruct can load at runtime via a plugin
+mechanism.
 
 Here we present a brief overview of running FLReconstruct from the
-command line, including examples of scripting the pipeline using builtin
-modules. The more advanced topic of writing and using your own custom
-modules is covered in [Writing FLReconstruct Modules](@ref writingflreconstructmodules).
+command line using the standard pipeline scripts. The more advanced topics
+of scripting the pipeline and writing custom modules are covered in the
+[Writing FLReconstruct Pipeline Scripts](@ref writingflreconstructpipelinescripts) and [Writing FLReconstruct Modules](@ref writingflreconstructmodules)
+tutorials.
 
 Example Usage {#examples}
 =============
@@ -108,140 +110,47 @@ flreconstruct::default:
 $
 ~~~~~
 
+
+Using Standard Pipelines {#usingstandardpipelines}
+========================
 FLReconstruct implements a "pipeline" architecture in which events flow
 through an ordered sequence of "modules". Each module performs a specific
 task on the event (e.g. count hits), writing its results into the event
 for further processing by downstream modules. The sequence of modules
-and their configuration (e.g. reconstruction parameters) in the pipeline
-can be set up via a `datatools::multi_properties` script. This script can
-then be passed to `flreconstruct` via the `-p` argument, e.g.
+and their configuration (e.g. algorithm parameters) in the pipeline
+are constructed via a `datatools::multi_properties` script. A set of
+pipeline scripts are supplied with Falaise by the Software Board
+to provide easy to use, validated reconstruction chains.
+
+The available pipelines can be viewed by passing the `--help-pipeline-list`
+argument to `flreconstruct`. This will print a tree of the available pipelines:
 
 ~~~~~
-$ flreconstruct -i example.brio -p myscript.txt
+$ flreconstruct --help-pipeline-list
+@falaise:pipeline
+ +-"snemo.demonstrator"
+   +-"1.0.0"
+   +-"1.0.0.visual"
+$
 ~~~~~
 
-A list of available modules can be obtained using the `--help-module-list`
-argument, which will print the module names to stdout:
+This pipeline can be passed to `flreconstruct` via the `-p` argument using
+the "resource path" notation:
 
 ~~~~~
-$ flreconstruct --help-module-list
-Things2Root
-bipo3::processing::calorimeter_s2c_module
-dpp::chain_module
-dpp::dummy_module
-dpp::dump_module
-dpp::if_module
-dpp::input_module
-dpp::output_module
-dpp::skip_module
-dpp::utils_module
-mctools::simulated_data_input_module
-snemo::processing::mock_calorimeter_s2c_module
-snemo::processing::mock_tracker_s2c_module
-snemo::reconstruction::cat_tracker_clustering_module
-snemo::reconstruction::charged_particle_tracking_module
-snemo::reconstruction::mock_tracker_clustering_module
-snemo::reconstruction::sultan_tracker_clustering_module
-snemo::reconstruction::trackfit_tracker_fitting_module
-snemo::visualization::visu_toy_module
+$ flreconstruct -i example.brio -p @falaise:pipeline/snemo.demonstrator/1.0.0
 ~~~~~
 
-Details about the purpose of a module and how it may be configured may
-be obtained by passing the module name as the argument of the `--help-module` command. This will print out detailed documentation, if it exists:
+Here `@falaise:` means "the root directory of Falaise resources" and can
+be viewed as a "mount point" for the resources. The subsequent path is
+simply the path from that root to the relevant file.
 
-~~~~~
-$ flreconstruct --help-module dpp::chain_module
-
-======================================
-Configuration of ``dpp::chain_module``
-======================================
-
-... further detailed output ...
-~~~~~
-
-This information can be used to select suitable modules and configurations
-for your own pipeline. The following sections provide some simple examples
-of pipeline scripts.
-
-
-Trivial Pipeline {#trivial_pipeline}
-----------------
-If you do not supply a pipeline configuration script, then `flreconstruct`
-will run a dumb pipeline that simple dumps each event to stdout.
-
-We can reproduce this behaviour using the following simple script to
-configure the pipeline as a single module:
-
-\include flreconstruct/SimplePipeline.conf
-
-The script is formatted as a `datatools::multi_properties` ASCII
-file. Note the comments, especially:
-
-* The required presence of the `@key_label` and `@meta_label` multi_properties flags
-* The module constituting the pipeline must have the `name` key set to `pipeline`. FLReconstruct will use this to build the pipeline.
-
-To try this out, copy the above text into a file, e.g.
-`trivial_pipeline.txt` and run `flreconstruct` with it:
-
-~~~~~
-$ flreconstruct -i example.brio -p trivial_pipeline.txt
-~~~~~
-
-You should see the same output as the default case.
-
-Creating a Chained Pipeline {#chain_pipeline}
----------------------------
-A pipeline with one module isn't very useful! In most cases we want to
-plug together a sequence of modules, each performing a well defined
-task on the event data.
-
-Falaise supplies a special `chain_module` for chaining several modules
-together. We can reproduce the same default dump behaviour using a
-`chain_module` in a pipeline script as follows
-
-\include flreconstruct/ChainPipeline.conf
-
-Here, the `modules` key of the `pipeline` module takes a list of
-modules that will form the `chain_module`.
-To try this out, copy the above text into a file, e.g.
-`single_chain_pipeline.txt` and run `flreconstruct` with it:
-
-~~~~~
-$ flreconstruct -i example.brio -p single_chain_pipeline.txt
-~~~~~
-
-You should see the same output as the default case.
-
-Multi-Module Pipeline {#multi_pipeline}
----------------------
-A full chain pipeline can chain together 1 < N < X number of modules.
-The previous example showed the basic construct of a chained pipeline
-with a single module. We can of course go further and add further module
-to the pipeline. For example, we can chain two dump modules together.
-To distinguish these, we configure the modules to have different `title` and `indent` parameters.
-
-\include flreconstruct/AdvancedChainPipeline.conf
-
-The order in which the modules are processed is determined by the
-order in which you list them in the `modules` key of the `dpp::chain_module`
-configuration.
-
-To try this out, copy the above text into a file, e.g.
-`multi_chain_pipeline.txt` and run `flreconstruct` with it:
-
-~~~~~
-$ flreconstruct -i example.brio -p multi_chain_pipeline.txt
-~~~~~
-
-Try swapping the order of the modules to see what happens, and also try
-adding further dump modules to the pipeline to experiment with the
-sequence.
-
-
-Going Further {#further}
-=============
-You can also write your own modules in C++ and plug them into the pipeline
-to provide additional functionality. The proceedure for writing and
-using new modules is covered in several stages, beginning with a [simple example](@ref writingflreconstructmodules).
-
+Using Custom Pipelines {#usingcustompipelines}
+========================
+The standard pipelines provided by Falaise are intended to cover a wide
+range of use cases for standard reconstruction tasks leading to analyses.
+However, if you need to study improvements to the reconstruction via tuning
+existing modules or adding new ones then custom pipeline scripts can be
+used in `flreconstruct`. The
+[Writing FLReconstruct Pipeline Scripts](@ref writingflreconstructpipelinescripts) tutorial covers the syntax and structure of custom pipeline scripts.
 
