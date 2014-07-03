@@ -160,134 +160,14 @@ namespace snemo {
 
       DT_THROW_IF(! is_initialized(), std::logic_error, "Driver is not initialized !");
 
-      this->_measure_foil_vertex_(trajectory_, particle_.grab_vertices());
-      this->_measure_calorimeter_vertex_(trajectory_, particle_.grab_vertices());
+      this->_measure_vertices_(trajectory_, particle_.grab_vertices());
 
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");
       return;
     }
 
-    void vertex_extrapolation_driver::_measure_foil_vertex_(const snemo::datamodel::tracker_trajectory               & trajectory_,
-                                                            snemo::datamodel::particle_track::vertex_collection_type & vertices_)
-    {
-      DT_LOG_TRACE(get_logging_priority(), "Entering...");
-
-      // Look first if trajectory pattern is an helix or not
-      const snemo::datamodel::base_trajectory_pattern & a_track_pattern
-        = trajectory_.get_pattern();
-
-      const std::string & a_pattern_id = a_track_pattern.get_pattern_id();
-
-      // Extrapolate foil vertex
-      geomtools::vector_3d vertex;
-      geomtools::invalidate(vertex);
-
-      if (a_pattern_id == snemo::datamodel::line_trajectory_pattern::pattern_id())
-        {
-          const snemo::datamodel::line_trajectory_pattern * ptr_line
-            = dynamic_cast<const snemo::datamodel::line_trajectory_pattern *>(&a_track_pattern);
-          const geomtools::line_3d & a_line = ptr_line->get_segment();
-          const geomtools::vector_3d & first = a_line.get_first();
-          const geomtools::vector_3d & last  = a_line.get_last();
-          const geomtools::vector_3d direction = first - last;
-
-          const bool is_first = std::fabs(first.x()) < std::fabs(last.x());
-
-          const double x = 0.0 * CLHEP::mm;
-          const double y = direction.y()/direction.x() *(x - first.x()) + first.y();
-          const double z = direction.z()/direction.y() *(y - first.y()) + first.z();
-
-          // Set value
-          vertex.set(x, y, z);
-          if (geomtools::is_valid(vertex))
-            {
-              // Create a mutable line object to set the new angle
-              geomtools::line_3d * a_mutable_line = const_cast<geomtools::line_3d *>(&a_line);
-              if (is_first) a_mutable_line->set_first(vertex);
-              else          a_mutable_line->set_last (vertex);
-            }
-        }
-      else if (a_pattern_id == snemo::datamodel::helix_trajectory_pattern::pattern_id())
-        {
-          const snemo::datamodel::helix_trajectory_pattern * ptr_helix
-            = dynamic_cast<const snemo::datamodel::helix_trajectory_pattern *>(&a_track_pattern);
-          const geomtools::helix_3d & a_helix = ptr_helix->get_helix();
-
-          DT_LOG_TRACE(get_logging_priority(), "Helix initial angles:");
-          DT_LOG_TRACE(get_logging_priority(), "angle 1 = " << a_helix.get_angle1());
-          DT_LOG_TRACE(get_logging_priority(), "angle 2 = " << a_helix.get_angle2());
-
-          const double xfoil   = 0.0 * CLHEP::mm;
-          const double xcenter = a_helix.get_center().x();
-          const double cangle  = (xfoil - xcenter) / a_helix.get_radius();
-
-          if (std::fabs(cangle) < 1.0)
-            {
-              // Determine new angle
-              const geomtools::vector_3d first_point = a_helix.get_first();
-              const geomtools::vector_3d last_point  = a_helix.get_last();
-              const bool is_angle1 = std::fabs(first_point.x()) < std::fabs(last_point.x());
-
-              // Changing angle sign since acos function gives a 0 to PI angle
-              double angle = std::acos(cangle);
-              if (is_angle1  && a_helix.get_angle1()*angle < 0.0) angle *= -1.0;
-              if (!is_angle1 && a_helix.get_angle2()*angle < 0.0) angle *= -1.0;
-
-              // Create a mutable helix object to set the new angle
-              geomtools::helix_3d * a_mutable_helix = const_cast<geomtools::helix_3d *>(&a_helix);
-              if (is_angle1) a_mutable_helix->set_angle1(angle);
-              else           a_mutable_helix->set_angle2(angle);
-
-              if (is_angle1) vertex = a_helix.get_first();
-              else           vertex = a_helix.get_last ();
-            }
-          else if (_use_geiger_cell_layer_)
-            {
-              // If no vertex found then try a very basic way by using the closest
-              // cell position wrt to source foil (i.e. the first layer cells)
-              DT_LOG_TRACE(get_logging_priority(),
-                           "Looking for source foil vertex from Geiger cell");
-              // Get Geiger locator to extract cell layer
-              const snemo::geometry::gg_locator & gg_locator
-                = dynamic_cast<const snemo::geometry::gg_locator&>(_locator_plugin_->get_gg_locator());
-              const snemo::datamodel::tracker_cluster & a_cluster = trajectory_.get_cluster();
-              const snemo::datamodel::calibrated_tracker_hit::collection_type & hits
-                = a_cluster.get_hits();
-              for (snemo::datamodel::calibrated_tracker_hit::collection_type::const_iterator
-                     igg = hits.begin();
-                   igg != hits.end(); ++igg)
-                {
-                  const snemo::datamodel::calibrated_tracker_hit & a_gg_hit = igg->get();
-                  const uint32_t layer = gg_locator.extract_layer(a_gg_hit.get_geom_id());
-                  if (layer != 0) continue;
-                  // Build a vertex given the position of the closest cell
-                  gg_locator.get_cell_position(a_gg_hit.get_geom_id(), vertex);
-                  vertex.setX(0.0);
-                  break;
-                }
-            }
-        }
-
-      if (geomtools::is_valid(vertex))
-        {
-          snemo::datamodel::particle_track::handle_spot hBS(new geomtools::blur_spot());
-          vertices_.push_back(hBS);
-          hBS.grab().set_blur_dimension(geomtools::blur_spot::dimension_three);
-          hBS.grab().set_position(vertex);
-          hBS.grab().grab_auxiliaries().update_flag("foil_vertex");
-          if (get_logging_priority() >= datatools::logger::PRIO_TRACE)
-            {
-              DT_LOG_TRACE(get_logging_priority(), "Foil vertex:");
-              hBS.get().tree_dump(std::clog);
-            }
-        }
-
-      DT_LOG_TRACE(get_logging_priority(), "Exiting.");
-      return;
-    }
-
-    void vertex_extrapolation_driver::_measure_calorimeter_vertex_(const snemo::datamodel::tracker_trajectory               & trajectory_,
-                                                                   snemo::datamodel::particle_track::vertex_collection_type & vertices_)
+    void vertex_extrapolation_driver::_measure_vertices_(const snemo::datamodel::tracker_trajectory               & trajectory_,
+                                                         snemo::datamodel::particle_track::vertex_collection_type & vertices_)
     {
       DT_LOG_TRACE(get_logging_priority(), "Entering...");
 
@@ -304,10 +184,7 @@ namespace snemo {
           DT_LOG_ERROR(get_logging_priority(), "Trajectory geom_id " << gid << " has no 'module' or 'side' address!");
           return;
         }
-      else
-        {
-          DT_LOG_TRACE(get_logging_priority(), "Trajectory geom_id = " << gid);
-        }
+      DT_LOG_TRACE(get_logging_priority(), "Trajectory geom_id = " << gid);
       const int side = id_mgr.get(gid, "side");
 
       // Set the calorimeter locators :
@@ -315,11 +192,6 @@ namespace snemo {
       const snemo::geometry::xcalo_locator & xcalo_locator = _locator_plugin_->get_xcalo_locator();
       const snemo::geometry::gveto_locator & gveto_locator = _locator_plugin_->get_gveto_locator();
 
-      // Given the 'module' and the 'side' address get the calorimeter bounds
-      // 2013-03-11 XG: There is a possibility that the helix track will cross
-      // the oppposite calorimeter wall. So we calculate the extrapolation on
-      // the two main wall sides and we reject later the vertex on the other
-      // side (cf. ~ line 800)
       const double xcalo_bd[2]
         = {calo_locator.get_wall_window_x(snemo::geometry::utils::SIDE_BACK),
            calo_locator.get_wall_window_x(snemo::geometry::utils::SIDE_FRONT)};
@@ -334,9 +206,8 @@ namespace snemo {
       const snemo::datamodel::base_trajectory_pattern & a_track_pattern = trajectory_.get_pattern();
       const std::string & a_pattern_id = a_track_pattern.get_pattern_id();
 
-      // Extrapolate calorimeter vertex
-      geomtools::vector_3d vertex;
-      geomtools::invalidate(vertex);
+      // Extrapolated vertices
+      std::map<std::string, geomtools::vector_3d> vertices;
 
       // Add a flag into 'blur_spot' auxiliaries to refer to the hit calo
       std::string calo_category_flag;
@@ -349,132 +220,96 @@ namespace snemo {
           const geomtools::vector_3d & last  = a_line.get_last();
           const geomtools::vector_3d direction = first - last;
 
-          // Determine which line point should be modified (first or
-          // last point)
-          bool is_first = true;
-          bool found_vertex = false;
+          typedef std::map<geomtools::vector_3d, std::string> vertex_dict_type;
+          vertex_dict_type vtxlist;
+          // Source foil
+          {
+            DT_LOG_TRACE(get_logging_priority(), "Looking for vertex on source foil...");
+            const double x = 0.0 * CLHEP::mm;
+            const double y = direction.y()/direction.x() *(x - first.x()) + first.y();
+            const double z = direction.z()/direction.y() *(y - first.y()) + first.z();
+
+            // Extrapolated vertex
+            const geomtools::vector_3d a_vertex(x, y, z);
+            vtxlist.insert(std::make_pair(a_vertex, "foil_vertex"));
+          }// end of source foil search
 
           // Calorimeter walls
-          if (!found_vertex)
+          {
+            DT_LOG_TRACE(get_logging_priority(), "Looking for vertex on main wall...");
+            for (size_t iside = 0; iside < snemo::geometry::utils::NSIDES; ++iside)
+              {
+                const double x = xcalo_bd[iside];
+                const double y = direction.y()/direction.x() *(x - first.x()) + first.y();
+                const double z = direction.z()/direction.y() *(y - first.y()) + first.z();
+
+                // Extrapolated vertex
+                const geomtools::vector_3d a_vertex(x, y, z);
+                vtxlist.insert(std::make_pair(a_vertex, "calo"));
+              }
+          }// end of main wall search
+
+          // Calorimeter on xwalls
+          {
+            DT_LOG_TRACE(get_logging_priority(), "Looking for vertex on X-wall...");
+            for (size_t iwall = 0; iwall < snemo::geometry::xcalo_locator::NWALLS_PER_SIDE; ++iwall)
+              {
+                const double y = ycalo_bd[iwall];
+                const double z = direction.z()/direction.y() *(y - first.y()) + first.z();
+                const double x = direction.x()/direction.y() *(y - first.y()) + first.x();
+
+                // Extrapolate vertex
+                const geomtools::vector_3d a_vertex(x, y, z);
+                vtxlist.insert(std::make_pair(a_vertex, "xcalo"));
+              }
+          }// end of x-wall search
+
+          // Calorimeter on gveto
+          {
+            DT_LOG_TRACE(get_logging_priority(), "Looking for vertex on gamma veto...");
+            for (size_t iwall = 0; iwall < snemo::geometry::gveto_locator::NWALLS_PER_SIDE; ++iwall)
+              {
+                const double z = zcalo_bd[iwall];
+                const double y = direction.y()/direction.z() *(z - first.z()) + first.y();
+                const double x = direction.x()/direction.y() *(y - first.y()) + first.x();
+
+                // Extrapolate vertex
+                const geomtools::vector_3d a_vertex(x, y, z);
+                vtxlist.insert(std::make_pair(a_vertex, "gveto"));
+              }
+          }// end of gveto search
+
+          std::pair<double, double> min_distances;
+          datatools::infinity(min_distances.first);
+          datatools::infinity(min_distances.second);
+          vertex_dict_type::const_iterator jt1 = vtxlist.begin();
+          vertex_dict_type::const_iterator jt2 = vtxlist.begin();
+          for (vertex_dict_type::const_iterator it = vtxlist.begin();
+               it != vtxlist.end(); ++it)
             {
-              DT_LOG_TRACE(get_logging_priority(), "Looking for vertex on main wall...");
+              const double l1 = (first - it->first).mag();
+              const double l2 = (last - it->first).mag();
 
-              is_first = std::fabs(first.x()) > std::fabs(last.x());
-              const double x = xcalo_bd[side];
-              const double y = direction.y()/direction.x() *(x - first.x()) + first.y();
-              const double z = direction.z()/direction.y() *(y - first.y()) + first.z();
-
-              // Extrapolate vertex
-              const geomtools::vector_3d a_vertex(x, y, z);
-
-              if (a_vertex.y() > ycalo_bd[snemo::geometry::xcalo_locator::WALL_RIGHT] ||
-                  a_vertex.y() < ycalo_bd[snemo::geometry::xcalo_locator::WALL_LEFT])
+              if (l1 < l2)
                 {
-                  DT_LOG_TRACE(get_logging_priority(), "Cross xwall before!");
-                  // Track meets xcalo before main wall
-                  found_vertex = false;
-                }
-              else if (a_vertex.z() > zcalo_bd[snemo::geometry::gveto_locator::WALL_TOP] ||
-                       a_vertex.z() < zcalo_bd[snemo::geometry::gveto_locator::WALL_BOTTOM])
-                {
-                  DT_LOG_TRACE(get_logging_priority(), "Cross gveto before!");
-                  // Track meets gveto before main wall
-                  found_vertex = false;
+                  if (l1 > min_distances.first) continue;
+                  jt1 = it;
+                  min_distances.first = l1;
                 }
               else
                 {
-                  // Copy vertex
-                  vertex = a_vertex;
-                  found_vertex = true;
-                  calo_category_flag = "calo";
+                  if (l2 > min_distances.second) continue;
+                  jt2 = it;
+                  min_distances.second = l2;
                 }
-            }// end of main wall search
-
-          // Calorimeter on xwalls
-          if (!found_vertex)
-            {
-              DT_LOG_TRACE(get_logging_priority(), "Looking for vertex on X-wall...");
-
-              is_first = std::fabs(first.y()) > std::fabs(last.y());
-              for (size_t iwall = 0; iwall < snemo::geometry::xcalo_locator::NWALLS_PER_SIDE; ++iwall)
-                {
-                  const double y = ycalo_bd[iwall];
-                  const double z = direction.z()/direction.y() *(y - first.y()) + first.z();
-                  const double x = direction.x()/direction.y() *(y - first.y()) + first.x();
-
-                  // Extrapolate vertex
-                  const geomtools::vector_3d a_vertex(x, y, z);
-
-                  if (std::fabs(a_vertex.x()) > std::fabs(xcalo_bd[side]))
-                    {
-                      DT_LOG_TRACE(get_logging_priority(), "Cross main wall before!");
-                      // Track meets main wall before x-wall
-                      found_vertex = false;
-                    }
-                  else if (a_vertex.z() > zcalo_bd[snemo::geometry::gveto_locator::WALL_TOP] ||
-                           a_vertex.z() < zcalo_bd[snemo::geometry::gveto_locator::WALL_BOTTOM])
-                    {
-                      DT_LOG_TRACE(get_logging_priority(), "Cross gveto before!");
-                      // Track meets gveto before main wall
-                      found_vertex = false;
-                    }
-                  else
-                    {
-                      // Copy vertex
-                      vertex = a_vertex;
-                      found_vertex = true;
-                      calo_category_flag = "xcalo";
-                      break;
-                    }
-                }
-            }// end of x-wall search
-
-          // Calorimeter on gveto
-          if (!found_vertex)
-            {
-              DT_LOG_TRACE(get_logging_priority(), "Looking for vertex on gamma veto...");
-              is_first = std::fabs(first.z()) > std::fabs(last.z());
-              for (size_t iwall = 0; iwall < snemo::geometry::gveto_locator::NWALLS_PER_SIDE; ++iwall)
-                {
-                  const double z = zcalo_bd[iwall];
-                  const double y = direction.y()/direction.z() *(z - first.z()) + first.y();
-                  const double x = direction.x()/direction.y() *(y - first.y()) + first.x();
-
-                  // Extrapolate vertex
-                  const geomtools::vector_3d a_vertex(x, y, z);
-
-                  if (std::fabs(a_vertex.x()) > std::fabs(xcalo_bd[side]))
-                    {
-                      DT_LOG_TRACE(get_logging_priority(), "Cross main wall before!");
-                      // Track meets main wall before x-wall
-                      found_vertex = false;
-                    }
-                  else if (a_vertex.y() > ycalo_bd[snemo::geometry::xcalo_locator::WALL_RIGHT] ||
-                           a_vertex.y() < ycalo_bd[snemo::geometry::xcalo_locator::WALL_LEFT])
-                    {
-                      DT_LOG_TRACE(get_logging_priority(), "Cross xwall before!");
-                      // Track meets gveto before main wall
-                      found_vertex = false;
-                    }
-                  else
-                    {
-                      // Copy vertex
-                      vertex = a_vertex;
-                      found_vertex = true;
-                      calo_category_flag = "gveto";
-                      break;
-                    }
-                }
-            }// end of gveto search
-
-          // Save new first and last position of the line
-          if (geomtools::is_valid(vertex))
-            {
-              // Create a mutable line object to set the new position
-              geomtools::line_3d * a_mutable_line = const_cast<geomtools::line_3d *>(&a_line);
-              if (is_first) a_mutable_line->set_first(vertex);
-              else          a_mutable_line->set_last (vertex);
             }
+
+            // Create a mutable line object to set the new position
+            geomtools::line_3d * a_mutable_line = const_cast<geomtools::line_3d *>(&a_line);
+            a_mutable_line->set_first(jt1->first);
+            a_mutable_line->set_last(jt2->first);
+            vertices[jt1->second] = jt1->first;
+            vertices[jt2->second] = jt2->first;
         }// end of line pattern
       else if (a_pattern_id == snemo::datamodel::helix_trajectory_pattern::pattern_id())
         {
@@ -488,6 +323,21 @@ namespace snemo {
 
           // Store all the computed t parameter values
           std::map<double, std::string> tparams;
+
+          // Source foil
+          {
+            DT_LOG_TRACE(get_logging_priority(), "Looking for vertex on source foil...");
+            const double xfoil   = 0.0 * CLHEP::mm;
+            const double xcenter = hcenter.x();
+            const double cangle  = (xfoil - xcenter) / hradius;
+
+            if (std::fabs(cangle) < 1.0)
+              {
+                const double angle = std::acos(cangle);
+                tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(+angle), "foil_vertex"));
+                tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(-angle), "foil_vertex"));
+              }
+          } // end of source foil search
 
           // Calorimeter walls
           {
@@ -549,10 +399,16 @@ namespace snemo {
           // Choose which helix angle to change
           const double t1 = a_helix.get_t1();
           const double t2 = a_helix.get_t2();
+          DT_LOG_TRACE(get_logging_priority(), "t1 =" << t1);
+          DT_LOG_TRACE(get_logging_priority(), "t2 =" << t2);
 
-          double new_t; datatools::invalidate(new_t);
-          double min_distance = std::numeric_limits<double>::infinity();
-          bool is_t1 = true;
+          std::pair<double,double> new_ts;
+          datatools::invalidate(new_ts.first);
+          datatools::invalidate(new_ts.second);
+          std::pair<double,double> min_distances;
+          datatools::infinity(min_distances.first);
+          datatools::infinity(min_distances.second);
+          std::pair<std::string, std::string> category_flags;
 
           for (std::map<double, std::string>::const_iterator it = tparams.begin();
                it != tparams.end(); ++it)
@@ -567,66 +423,57 @@ namespace snemo {
               // Keep smallest distance but remove also too long extrapolation
               if (delta1 < delta2)
                 {
-                  if (delta1 > min_distance || delta1 > 1.0) continue;
-                  is_t1 = true;
-                  new_t = t;
-                  calo_category_flag = category;
-                  min_distance = delta1;
+                  if (delta1 > min_distances.first || delta1 > 1.0) continue;
+                  new_ts.first = t;
+                  category_flags.first = category;
+                  min_distances.first = delta1;
                 }
               else
                 {
-                  if (delta2 > min_distance || delta2 > 1.0) continue;
-                  is_t1 = false;
-                  new_t = t;
-                  calo_category_flag = category;
-                  min_distance = delta2;
+                  if (delta2 > min_distances.second || delta2 > 1.0) continue;
+                  new_ts.second = t;
+                  category_flags.second = category;
+                  min_distances.second = delta2;
                 }
             }
 
-          // No angle has been found -> no calorimeter vertices
-          if (! datatools::is_valid(new_t))
-            {
-              DT_LOG_TRACE(get_logging_priority(), "No vertices on calorimeter has been found!");
-              return;
-            }
-
-          // Check vertex side is on the same side as the trajectory (for xwall)
-          const geomtools::vector_3d xy = a_helix.get_point(new_t);
-          if ((side == snemo::geometry::utils::SIDE_BACK  && xy.x() > 0.0) ||
-              (side == snemo::geometry::utils::SIDE_FRONT && xy.x() < 0.0))
-            {
-              DT_LOG_TRACE(get_logging_priority(), "Closest vertex is on the opposite side!");
-              return;
-            }
+          // // Check vertex side is on the same side as the trajectory (for xwall)
+          // const geomtools::vector_3d xy = a_helix.get_point(new_t1);
+          // if ((side == snemo::geometry::utils::SIDE_BACK  && xy.x() > 0.0) ||
+          //     (side == snemo::geometry::utils::SIDE_FRONT && xy.x() < 0.0))
+          //   {
+          //     DT_LOG_TRACE(get_logging_priority(), "Closest vertex is on the opposite side!");
+          //     return;
+          //   }
 
 
           // New angle & calorimeter category
           // Create a mutable helix object to set the new angle
           geomtools::helix_3d * a_mutable_helix = const_cast<geomtools::helix_3d *>(&a_helix);
-          if (is_t1)
+          if (datatools::is_valid(new_ts.first))
             {
-              a_mutable_helix->set_t1(new_t);
-              vertex = a_mutable_helix->get_first();
+              a_mutable_helix->set_t1(new_ts.first);
+              vertices[category_flags.first] = a_mutable_helix->get_first();
             }
-          else
+          if (datatools::is_valid(new_ts.second))
             {
-              a_mutable_helix->set_t2(new_t);
-              vertex = a_mutable_helix->get_last();
+              a_mutable_helix->set_t2(new_ts.second);
+              vertices[category_flags.second] = a_mutable_helix->get_last();
             }
         }// end of helix pattern
 
       // Save new vertex
-      if (geomtools::is_valid(vertex))
+      for (std::map<std::string, geomtools::vector_3d>::const_iterator
+             it = vertices.begin(); it != vertices.end(); ++it)
         {
           snemo::datamodel::particle_track::handle_spot hBS(new geomtools::blur_spot());
           vertices_.push_back(hBS);
           hBS.grab().set_blur_dimension(geomtools::blur_spot::dimension_three);
-          hBS.grab().set_position(vertex);
-          if (!calo_category_flag.empty())
-            hBS.grab().grab_auxiliaries().update_flag(calo_category_flag);
+          hBS.grab().set_position(it->second);
+          hBS.grab().grab_auxiliaries().update_flag(it->first);
           if (get_logging_priority() >= datatools::logger::PRIO_TRACE)
             {
-              DT_LOG_TRACE(get_logging_priority(), "Calorimeter vertex:");
+              DT_LOG_TRACE(get_logging_priority(), "Vertex:");
               hBS.get().tree_dump(std::clog);
             }
         }

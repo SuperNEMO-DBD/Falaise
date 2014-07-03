@@ -107,13 +107,8 @@ namespace snemo {
 
     private:
 
-      /// Measure vertex on the source foil:
-      void _measure_foil_vertex_
-      (const snemo::datamodel::tracker_trajectory               & trajectory_,
-       snemo::datamodel::particle_track::vertex_collection_type & vertices_);
-
-      /// Measure vertex on the calorimeter walls:
-      void _measure_calorimeter_vertex_
+      /// Measure vertex on the calorimeter walls and source foil
+      void _measure_vertices_
       (const snemo::datamodel::tracker_trajectory               & trajectory_,
        snemo::datamodel::particle_track::vertex_collection_type & vertices_);
 
