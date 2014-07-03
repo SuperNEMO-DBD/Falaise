@@ -117,10 +117,10 @@ void do_load_plugins(datatools::library_loader& libLoader) {
   libLoader.load("Falaise_CAT", pluginPath);
   libLoader.load("Falaise_ChargedParticleTracking", pluginPath);
   libLoader.load("Falaise_MockTrackerClusterizer", pluginPath);
+  libLoader.load("TrackFit", pluginPath);
   libLoader.load("Falaise_TrackFit", pluginPath);
   libLoader.load("Falaise_VisuToy", pluginPath);
   libLoader.load("Things2Root", pluginPath);
-  libLoader.load("TrackFit", pluginPath);
 }
 
 //! Print list of known module names, one per line, to given stream
