@@ -463,7 +463,7 @@ namespace snemo {
                   const geomtools::blur_spot & a_vertex = ivertex->get();
                   const datatools::properties & prop = a_vertex.get_auxiliaries();
 
-                  if (prop.has_flag("foil_vertex"))
+                  if (prop.has_flag(snemo::datamodel::particle_track::vertex_on_source_foil_flag()))
                     {
                       has_vertex = true;
                     }

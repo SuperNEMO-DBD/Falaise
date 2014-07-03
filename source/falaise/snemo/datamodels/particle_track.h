@@ -36,20 +36,41 @@ namespace snemo {
     public:
 
       /// Electric charge enumeration
-      enum charge_type
-        {
-          INVALID   = -4,
-          invalid   = INVALID,
-          UNDEFINED = -3,
-          undefined = UNDEFINED,
-          NEUTRAL   = 0,
-          neutral   = NEUTRAL,
-          POSITIVE  = +1,
-          positive  = POSITIVE,
-          NEGATIVE  = -1,
-          negative  = NEGATIVE
-        };
+      enum charge_type {
+        INVALID   = -4,
+        invalid   = INVALID,
+        UNDEFINED = -3,
+        undefined = UNDEFINED,
+        NEUTRAL   = 0,
+        neutral   = NEUTRAL,
+        POSITIVE  = +1,
+        positive  = POSITIVE,
+        NEGATIVE  = -1,
+        negative  = NEGATIVE
+      };
 
+
+      /// Vertex flags
+      enum vertex_type {
+        VERTEX_NONE                 = 0x0,
+        VERTEX_ON_SOURCE_FOIL       = datatools::bit_mask::bit00,
+        VERTEX_ON_MAIN_CALORIMETER  = datatools::bit_mask::bit01,
+        VERTEX_ON_X_CALORIMETER     = datatools::bit_mask::bit02,
+        VERTEX_ON_GAMMA_CALORIMETER = datatools::bit_mask::bit03,
+        VERTEX_ON_WIRE              = datatools::bit_mask::bit04
+      };
+
+      /// Associated 'VERTEX_ON_SOURCE_FOIL' flag for auxiliary property
+      static const std::string & vertex_on_source_foil_flag();
+
+      /// Associated 'VERTEX_ON_MAIN_CALORIMETER' flag for auxiliary property
+      static const std::string & vertex_on_main_calorimeter_flag();
+
+      /// Associated 'VERTEX_ON_X_CALORIMETER' flag for auxiliary property
+      static const std::string & vertex_on_x_calorimeter_flag();
+
+      /// Associated 'VERTEX_ON_GAMMA_CALORIMETER' flag for auxiliary property
+      static const std::string & vertex_on_gamma_calorimeter_flag();
 
       /// Handle on particle track
       typedef datatools::handle<particle_track> handle_type;

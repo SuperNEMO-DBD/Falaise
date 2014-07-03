@@ -231,7 +231,7 @@ namespace snemo {
 
             // Extrapolated vertex
             const geomtools::vector_3d a_vertex(x, y, z);
-            vtxlist.insert(std::make_pair(a_vertex, "foil_vertex"));
+            vtxlist.insert(std::make_pair(a_vertex, snemo::datamodel::particle_track::vertex_on_source_foil_flag()));
           }// end of source foil search
 
           // Calorimeter walls
@@ -245,7 +245,7 @@ namespace snemo {
 
                 // Extrapolated vertex
                 const geomtools::vector_3d a_vertex(x, y, z);
-                vtxlist.insert(std::make_pair(a_vertex, "calo"));
+                vtxlist.insert(std::make_pair(a_vertex, snemo::datamodel::particle_track::vertex_on_main_calorimeter_flag()));
               }
           }// end of main wall search
 
@@ -260,7 +260,7 @@ namespace snemo {
 
                 // Extrapolate vertex
                 const geomtools::vector_3d a_vertex(x, y, z);
-                vtxlist.insert(std::make_pair(a_vertex, "xcalo"));
+                vtxlist.insert(std::make_pair(a_vertex, snemo::datamodel::particle_track::vertex_on_x_calorimeter_flag()));
               }
           }// end of x-wall search
 
@@ -275,7 +275,7 @@ namespace snemo {
 
                 // Extrapolate vertex
                 const geomtools::vector_3d a_vertex(x, y, z);
-                vtxlist.insert(std::make_pair(a_vertex, "gveto"));
+                vtxlist.insert(std::make_pair(a_vertex,  snemo::datamodel::particle_track::vertex_on_gamma_calorimeter_flag()));
               }
           }// end of gveto search
 
@@ -334,8 +334,8 @@ namespace snemo {
             if (std::fabs(cangle) < 1.0)
               {
                 const double angle = std::acos(cangle);
-                tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(+angle), "foil_vertex"));
-                tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(-angle), "foil_vertex"));
+                tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(+angle), snemo::datamodel::particle_track::vertex_on_source_foil_flag()));
+                tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(-angle), snemo::datamodel::particle_track::vertex_on_source_foil_flag()));
               }
           } // end of source foil search
 
@@ -350,8 +350,8 @@ namespace snemo {
                 if (std::fabs(cangle) < 1.0)
                   {
                     const double angle = std::acos(cangle);
-                    tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(+angle), "calo"));
-                    tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(-angle), "calo"));
+                    tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(+angle), snemo::datamodel::particle_track::vertex_on_main_calorimeter_flag()));
+                    tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(-angle), snemo::datamodel::particle_track::vertex_on_main_calorimeter_flag()));
                   }
               }
           }// end of main wall search
@@ -367,11 +367,11 @@ namespace snemo {
                 if (std::fabs(cangle) < 1.0)
                   {
                     double angle = std::asin(cangle);
-                    tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(angle), "xcalo"));
+                    tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(angle), snemo::datamodel::particle_track::vertex_on_x_calorimeter_flag()));
                     const double mean_angle =(a_helix.get_angle1() + a_helix.get_angle2())/2.0;
                     if (mean_angle < 0.0) angle = - M_PI - angle;
                     else                  angle = + M_PI - angle;
-                    tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(angle), "xcalo"));
+                    tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(angle), snemo::datamodel::particle_track::vertex_on_x_calorimeter_flag()));
                   }
               }// end of x-wall loop
           }// end of x-wall search
@@ -382,7 +382,7 @@ namespace snemo {
             for (size_t iwall = 0; iwall < snemo::geometry::xcalo_locator::NWALLS_PER_SIDE; ++iwall)
               {
                 const double t = a_helix.get_t_from_z(zcalo_bd[iwall]);
-                tparams.insert(std::make_pair(t, "gveto"));
+                tparams.insert(std::make_pair(t, snemo::datamodel::particle_track::vertex_on_gamma_calorimeter_flag()));
               }
           }// end of gveto search
 
@@ -437,16 +437,6 @@ namespace snemo {
                 }
             }
 
-          // // Check vertex side is on the same side as the trajectory (for xwall)
-          // const geomtools::vector_3d xy = a_helix.get_point(new_t1);
-          // if ((side == snemo::geometry::utils::SIDE_BACK  && xy.x() > 0.0) ||
-          //     (side == snemo::geometry::utils::SIDE_FRONT && xy.x() < 0.0))
-          //   {
-          //     DT_LOG_TRACE(get_logging_priority(), "Closest vertex is on the opposite side!");
-          //     return;
-          //   }
-
-
           // New angle & calorimeter category
           // Create a mutable helix object to set the new angle
           geomtools::helix_3d * a_mutable_helix = const_cast<geomtools::helix_3d *>(&a_helix);
@@ -466,6 +456,12 @@ namespace snemo {
       for (std::map<std::string, geomtools::vector_3d>::const_iterator
              it = vertices.begin(); it != vertices.end(); ++it)
         {
+          // Check vertex side is on the same side as the trajectory
+          if ((side == snemo::geometry::utils::SIDE_BACK  && it->second.x() > 0.0) ||
+              (side == snemo::geometry::utils::SIDE_FRONT && it->second.x() < 0.0))
+            {
+              DT_LOG_DEBUG(get_logging_priority(), "Closest vertex is on the opposite side!");
+            }
           snemo::datamodel::particle_track::handle_spot hBS(new geomtools::blur_spot());
           vertices_.push_back(hBS);
           hBS.grab().set_blur_dimension(geomtools::blur_spot::dimension_three);

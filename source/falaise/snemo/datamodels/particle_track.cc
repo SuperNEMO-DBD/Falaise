@@ -7,6 +7,30 @@ namespace snemo {
 
   namespace datamodel {
 
+    const std::string & particle_track::vertex_on_source_foil_flag()
+    {
+      static const std::string _flag("foil");
+      return _flag;
+    }
+
+    const std::string & particle_track::vertex_on_main_calorimeter_flag()
+    {
+      static const std::string _flag("calo");
+      return _flag;
+    }
+
+    const std::string & particle_track::vertex_on_x_calorimeter_flag()
+    {
+      static const std::string _flag("xcalo");
+      return _flag;
+    }
+
+    const std::string & particle_track::vertex_on_gamma_calorimeter_flag()
+    {
+      static const std::string _flag("gveto");
+      return _flag;
+    }
+
     bool particle_track::has_track_id() const
     {
       return has_hit_id();
