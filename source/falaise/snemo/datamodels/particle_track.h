@@ -39,13 +39,13 @@ namespace snemo {
       enum charge_type {
         INVALID   = -4,
         invalid   = INVALID,
-        UNDEFINED = -3,
+        UNDEFINED = -3, /// Particle with undefined charge
         undefined = UNDEFINED,
-        NEUTRAL   = 0,
+        NEUTRAL   = 0,  /// Neutral particle
         neutral   = NEUTRAL,
-        POSITIVE  = +1,
+        POSITIVE  = +1, /// Positively charged particle
         positive  = POSITIVE,
-        NEGATIVE  = -1,
+        NEGATIVE  = -1, /// Negatively charged particle
         negative  = NEGATIVE
       };
 
