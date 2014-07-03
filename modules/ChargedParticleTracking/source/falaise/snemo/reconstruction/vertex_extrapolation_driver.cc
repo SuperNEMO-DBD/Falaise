@@ -147,9 +147,7 @@ namespace snemo {
     {
       _initialized_      = false;
       _logging_priority_ = datatools::logger::PRIO_WARNING;
-
       _geometry_manager_ = 0;
-      _use_geiger_cell_layer_ = false;
       return;
     }
 

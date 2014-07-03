@@ -118,7 +118,6 @@ namespace snemo {
       datatools::logger::priority _logging_priority_;           //!< Logging priority
       const geomtools::manager * _geometry_manager_;            //!< The SuperNEMO geometry manager
       const snemo::geometry::locator_plugin * _locator_plugin_; //!< The SuperNEMO locator plugin
-      bool _use_geiger_cell_layer_;                             //!< Use Geiger cell layer information
     };
 
   }  // end of namespace reconstruction
