@@ -167,25 +167,25 @@ namespace snemo {
       return ivtx;
     }
 
-    bool particle_track::has_associated_calorimeters() const
+    bool particle_track::has_associated_calorimeter_hits() const
     {
-      return !_associated_calorimeters_.empty();
+      return !_associated_calorimeter_hits_.empty();
     }
 
-    void particle_track::reset_associated_calorimeters()
+    void particle_track::reset_associated_calorimeter_hits()
     {
-      _associated_calorimeters_.clear();
+      _associated_calorimeter_hits_.clear();
       return;
     }
 
-    calibrated_calorimeter_hit::collection_type & particle_track::grab_associated_calorimeters()
+    calibrated_calorimeter_hit::collection_type & particle_track::grab_associated_calorimeter_hits()
     {
-      return _associated_calorimeters_;
+      return _associated_calorimeter_hits_;
     }
 
-    const calibrated_calorimeter_hit::collection_type & particle_track::get_associated_calorimeters() const
+    const calibrated_calorimeter_hit::collection_type & particle_track::get_associated_calorimeter_hits() const
     {
-      return _associated_calorimeters_;
+      return _associated_calorimeter_hits_;
     }
 
     void particle_track::reset()
@@ -197,7 +197,7 @@ namespace snemo {
     void particle_track::clear()
     {
       reset_vertices();
-      reset_associated_calorimeters();
+      reset_associated_calorimeter_hits();
       detach_trajectory();
       base_hit::clear();
 
@@ -242,9 +242,9 @@ namespace snemo {
 
       out_ << indent << datatools::i_tree_dumpable::tag
            << "Vertices : ";
-      if (has_vertices ())
+      if (has_vertices())
         {
-          out_ << _vertices_.size ();
+          out_ << _vertices_.size();
         }
       else
         {
@@ -252,11 +252,11 @@ namespace snemo {
         }
       out_ << std::endl;
 
-      out_ << indent << datatools::i_tree_dumpable::inherit_tag (inherit_)
-           << "Associated calorimeter(s) : ";
-      if (has_associated_calorimeters ())
+      out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
+           << "Associated calorimeter hit(s) : ";
+      if (has_associated_calorimeter_hits())
         {
-          out_ << _associated_calorimeters_.size ();
+          out_ << _associated_calorimeter_hits_.size ();
         }
       else
         {

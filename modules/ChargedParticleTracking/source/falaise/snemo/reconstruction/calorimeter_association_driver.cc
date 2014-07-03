@@ -219,7 +219,7 @@ namespace snemo {
                 }// end of calorimeter gids
               if (has_associated_calorimeter)
                 {
-                  particle_.grab_associated_calorimeters().push_back(*icalo);
+                  particle_.grab_associated_calorimeter_hits().push_back(*icalo);
                   // Add a private property
                   snemo::datamodel::calibrated_calorimeter_hit * mutable_hit
                     = const_cast<snemo::datamodel::calibrated_calorimeter_hit *>(&(a_calo_hit));

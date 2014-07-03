@@ -28,7 +28,7 @@ namespace snemo {
       ar_ & boost::serialization::make_nvp("charge_from_source", _charge_from_source_);
       ar_ & boost::serialization::make_nvp("trajectory", _trajectory_);
       ar_ & boost::serialization::make_nvp("vertices",   _vertices_);
-      ar_ & boost::serialization::make_nvp("associated_calorimeters", _associated_calorimeters_);
+      ar_ & boost::serialization::make_nvp("associated_calorimeter_hits", _associated_calorimeter_hits_);
       return;
     }
 

@@ -31,8 +31,8 @@ namespace snemo {
       _charge_type_            = "";
       _particles_range_min_    = -1;
       _particles_range_max_    = -1;
-      _calorimeters_range_min_ = -1;
-      _calorimeters_range_max_ = -1;
+      _calorimeter_hits_range_min_ = -1;
+      _calorimeter_hits_range_max_ = -1;
       return;
     }
 
@@ -67,14 +67,14 @@ namespace snemo {
       return _mode_ & MODE_CHARGE;
     }
 
-    bool particle_track_data_cut::is_mode_has_associated_calorimeters() const
+    bool particle_track_data_cut::is_mode_has_associated_calorimeter_hits() const
     {
-      return _mode_ & MODE_HAS_ASSOCIATED_CALORIMETERS;
+      return _mode_ & MODE_HAS_ASSOCIATED_CALORIMETER_HITS;
     }
 
-    bool particle_track_data_cut::is_mode_range_associated_calorimeters() const
+    bool particle_track_data_cut::is_mode_range_associated_calorimeter_hits() const
     {
-      return _mode_ & MODE_RANGE_ASSOCIATED_CALORIMETERS;
+      return _mode_ & MODE_RANGE_ASSOCIATED_CALORIMETER_HITS;
     }
 
     bool particle_track_data_cut::is_mode_has_vertex_on_foil() const
@@ -136,14 +136,14 @@ namespace snemo {
               _mode_ |= MODE_CHARGE;
             }
 
-          if (configuration_.has_flag("mode.has_associated_calorimeters"))
+          if (configuration_.has_flag("mode.has_associated_calorimeter_hits"))
             {
-              _mode_ |= MODE_HAS_ASSOCIATED_CALORIMETERS;
+              _mode_ |= MODE_HAS_ASSOCIATED_CALORIMETER_HITS;
             }
 
-          if (configuration_.has_flag("mode.range_associated_calorimeters"))
+          if (configuration_.has_flag("mode.range_associated_calorimeter_hits"))
             {
-              _mode_ |= MODE_RANGE_ASSOCIATED_CALORIMETERS;
+              _mode_ |= MODE_RANGE_ASSOCIATED_CALORIMETER_HITS;
             }
 
           if (configuration_.has_flag("mode.has_vertex_on_foil"))
@@ -202,38 +202,38 @@ namespace snemo {
             } // end if is_mode_charge
 
           // mode HAS_ASSOCIATED_CALORIMETERS:
-          if (is_mode_has_associated_calorimeters())
+          if (is_mode_has_associated_calorimeter_hits())
             {
-              DT_LOG_DEBUG(get_logging_priority(), "Using HAS_ASSOCIATED_CALORIMETERS mode...");
+              DT_LOG_DEBUG(get_logging_priority(), "Using HAS_ASSOCIATED_CALORIMETER_HITS mode...");
             } // end if is_mode_has_associated_calorimeters
 
           // mode RANGE_ASSOCIATED_CALORIMETERS:
-          if (is_mode_range_associated_calorimeters())
+          if (is_mode_range_associated_calorimeter_hits())
             {
-              DT_LOG_DEBUG(get_logging_priority(), "Using RANGE_ASSOCIATED_CALORIMETERS mode...");
+              DT_LOG_DEBUG(get_logging_priority(), "Using RANGE_ASSOCIATED_CALORIMETER_HITS mode...");
               int count = 0;
-              if (configuration_.has_key("range_associated_calorimeters.min"))
+              if (configuration_.has_key("range_associated_calorimeter_hits.min"))
                 {
-                  const int nmin = configuration_.fetch_integer("range_associated_calorimeters.min");
+                  const int nmin = configuration_.fetch_integer("range_associated_calorimeter_hits.min");
                   DT_THROW_IF(nmin < 0, std::range_error,
-                              "Invalid min number of associated calorimeters (" << nmin << ") !");
-                  _calorimeters_range_min_ = nmin;
+                              "Invalid min number of associated calorimeter hits (" << nmin << ") !");
+                  _calorimeter_hits_range_min_ = nmin;
                   count++;
                 }
-              if (configuration_.has_key("range_associated_calorimeters.max"))
+              if (configuration_.has_key("range_associated_calorimeter_hits.max"))
                 {
-                  const int nmax = configuration_.fetch_integer("range_associated_calorimeters.max");
+                  const int nmax = configuration_.fetch_integer("range_associated_calorimeter_hits.max");
                   DT_THROW_IF(nmax < 0, std::range_error,
-                              "Invalid max number of associated calorimeters (" << nmax << ") !");
-                  _calorimeters_range_max_ = nmax;
+                              "Invalid max number of associated calorimeter hits (" << nmax << ") !");
+                  _calorimeter_hits_range_max_ = nmax;
                   count++;
                 }
               DT_THROW_IF(count == 0, std::logic_error,
-                          "Missing 'range_associated_calorimeters.min' or 'range_associated_calorimeters.max' property !");
-              if (count == 2 && _calorimeters_range_min_ >= 0 && _calorimeters_range_max_ >= 0)
+                          "Missing 'range_associated_calorimeters.min' or 'range_associated_calorimeter_hits.max' property !");
+              if (count == 2 && _calorimeter_hits_range_min_ >= 0 && _calorimeter_hits_range_max_ >= 0)
                 {
-                  DT_THROW_IF(_calorimeters_range_min_ > _calorimeters_range_max_, std::logic_error,
-                              "Invalid 'range_associated_calorimeters.min' > 'range_associated_calorimeters.max' values !");
+                  DT_THROW_IF(_calorimeter_hits_range_min_ > _calorimeter_hits_range_max_, std::logic_error,
+                              "Invalid 'range_associated_calorimeter_hits.min' > 'range_associated_calorimeter_hits.max' values !");
                 }
 
             } // end if is_mode_range_associated_calorimeters
@@ -354,9 +354,9 @@ namespace snemo {
 
       // Check if each particle tracks have an associated calorimeter hit :
       bool check_association = true;
-      if (is_mode_has_associated_calorimeters())
+      if (is_mode_has_associated_calorimeter_hits())
         {
-          DT_LOG_DEBUG(get_logging_priority(), "Running HAS_ASSOCIATED_CALORIMETERS mode...");
+          DT_LOG_DEBUG(get_logging_priority(), "Running HAS_ASSOCIATED_CALORIMETER_HITS mode...");
           const snemo::datamodel::particle_track_data::particle_collection_type & the_particles
             = PTD.get_particles();
 
@@ -370,19 +370,19 @@ namespace snemo {
             {
               const snemo::datamodel::particle_track & a_particle = iparticle->get();
 
-              if (!a_particle.has_associated_calorimeters())
+              if (!a_particle.has_associated_calorimeter_hits())
                 {
-                  DT_LOG_DEBUG(get_logging_priority(), "A particle has no associated calorimeter !");
+                  DT_LOG_DEBUG(get_logging_priority(), "A particle has no associated calorimeter hit!");
                   check_association = false;
                   break;
                 }
             }
-        }// end mode HAS_ASSOCIATED_CALORIMETERS
+        }// end mode HAS_ASSOCIATED_CALORIMETER_HITS
 
-      bool check_range_calorimeters = true;
-      if (is_mode_range_associated_calorimeters())
+      bool check_range_calorimeter_hits = true;
+      if (is_mode_range_associated_calorimeter_hits())
         {
-          DT_LOG_DEBUG(get_logging_priority(), "Running RANGE_ASSOCIATED_CALORIMETERS mode...");
+          DT_LOG_DEBUG(get_logging_priority(), "Running RANGE_ASSOCIATED_CALORIMETER_HITS mode...");
 
           const snemo::datamodel::particle_track_data::particle_collection_type & the_particles
             = PTD.get_particles();
@@ -397,35 +397,35 @@ namespace snemo {
             {
               const snemo::datamodel::particle_track & a_particle = iparticle->get();
 
-              if (!a_particle.has_associated_calorimeters())
+              if (!a_particle.has_associated_calorimeter_hits())
                 {
-                  DT_LOG_DEBUG(get_logging_priority(), "A particle has no associated calorimeter !");
+                  DT_LOG_DEBUG(get_logging_priority(), "A particle has no associated calorimeter hits !");
                   return cuts::SELECTION_INAPPLICABLE;
                 }
 
               const snemo::datamodel::calibrated_calorimeter_hit::collection_type & the_calorimeters
-                = a_particle.get_associated_calorimeters();
+                = a_particle.get_associated_calorimeter_hits();
               const size_t ncalorimeters = the_calorimeters.size();
               DT_LOG_DEBUG(get_logging_priority(),
                            "Number of associated calorimeters = " << ncalorimeters << " (min = "
-                           << _calorimeters_range_min_ << " , max = " << _calorimeters_range_max_ << ")");
+                           << _calorimeter_hits_range_min_ << " , max = " << _calorimeter_hits_range_max_ << ")");
 
               bool check = true;
-              if (_calorimeters_range_min_ >= 0 && ncalorimeters < (size_t)_calorimeters_range_min_)
+              if (_calorimeter_hits_range_min_ >= 0 && ncalorimeters < (size_t)_calorimeter_hits_range_min_)
                 {
                   check = false;
                 }
-              if (_calorimeters_range_max_ >= 0 && ncalorimeters > (size_t)_calorimeters_range_max_)
+              if (_calorimeter_hits_range_max_ >= 0 && ncalorimeters > (size_t)_calorimeter_hits_range_max_)
                 {
                   check = false;
                 }
               if (! check)
                 {
-                  DT_LOG_DEBUG(get_logging_priority(), "Event rejected by RANGE_ASSOCIATED_CALORIMETERS cut!");
-                  check_range_calorimeters = false;
+                  DT_LOG_DEBUG(get_logging_priority(), "Event rejected by RANGE_ASSOCIATED_CALORIMETER_HITS cut!");
+                  check_range_calorimeter_hits = false;
                 }
             }
-        }// end mode RANGE_ASSOCIATED_CALORIMETERS
+        }// end mode RANGE_ASSOCIATED_CALORIMETER_HITS
 
 
       // Check if each particle tracks have an vertex on foil :
@@ -479,11 +479,11 @@ namespace snemo {
         }// end mode HAS_VERTEX_ON_FOIL
 
       cut_returned = cuts::SELECTION_REJECTED;
-      if (check_charge             &&
-          check_has_particles      &&
-          check_range_particles    &&
-          check_association        &&
-          check_range_calorimeters &&
+      if (check_charge                 &&
+          check_has_particles          &&
+          check_range_particles        &&
+          check_association            &&
+          check_range_calorimeter_hits &&
           check_vertex_on_foil)
         {
           cut_returned = cuts::SELECTION_ACCEPTED;

@@ -146,17 +146,17 @@ namespace snemo {
       /// meaning that the list will be cleaned before pushing new vertex spot.
       size_t compute_vertices(vertex_collection_type & vertices_, const uint32_t flags_, const bool clear_ = false) const;
 
-      /// Check if there are some associated calorimeter
-      bool has_associated_calorimeters() const;
+      /// Check if there are some associated calorimeter hits
+      bool has_associated_calorimeter_hits() const;
 
-      /// Reset the collection of associated calorimeters
-      void reset_associated_calorimeters();
+      /// Reset the collection of associated calorimeter hits
+      void reset_associated_calorimeter_hits();
 
-      /// Return a mutable reference on the collection of associated calorimeters (handles)
-      calibrated_calorimeter_hit::collection_type & grab_associated_calorimeters();
+      /// Return a mutable reference on the collection of associated calorimeter hits (handles)
+      calibrated_calorimeter_hit::collection_type & grab_associated_calorimeter_hits();
 
-      /// Return a non mutable reference on the collection of associated calorimeters (handles)
-      const calibrated_calorimeter_hit::collection_type & get_associated_calorimeters() const;
+      /// Return a non mutable reference on the collection of associated calorimeter hits (handles)
+      const calibrated_calorimeter_hit::collection_type & get_associated_calorimeter_hits() const;
 
       /// Empty the contents of the particle track
       void clear();
@@ -171,10 +171,10 @@ namespace snemo {
                              bool inherit_               = false) const;
 
     private:
-      int8_t                                      _charge_from_source_;      ///!< Particle charge
-      tracker_trajectory::handle_type             _trajectory_;              ///!< Handle to the fitted trajectory
-      vertex_collection_type                      _vertices_;                ///!< Collection of vertices
-      calibrated_calorimeter_hit::collection_type _associated_calorimeters_; ///!< Collection of associated calorimeter hits
+      int8_t                                      _charge_from_source_;          ///!< Particle charge
+      tracker_trajectory::handle_type             _trajectory_;                  ///!< Handle to the fitted trajectory
+      vertex_collection_type                      _vertices_;                    ///!< Collection of vertices
+      calibrated_calorimeter_hit::collection_type _associated_calorimeter_hits_; ///!< Collection of associated calorimeter hits
 
       DATATOOLS_SERIALIZATION_DECLARATION();
 
