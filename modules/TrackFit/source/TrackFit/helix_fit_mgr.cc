@@ -387,19 +387,19 @@ namespace TrackFit {
 
   /*****************************************************************/
 
-  const unsigned int & helix_fit_mgr::constants::default_fit_max_iter()
+  unsigned int helix_fit_mgr::constants::default_fit_max_iter()
   {
     static unsigned int max_iteration = 100;
     return max_iteration;
   }
 
-  const double & helix_fit_mgr::constants::default_fit_eps()
+  double helix_fit_mgr::constants::default_fit_eps()
   {
     static double epsilon = 1.e-3;
     return epsilon;
   }
 
-  const unsigned int & helix_fit_mgr::constants::min_number_of_hits()
+  unsigned int helix_fit_mgr::constants::min_number_of_hits()
   {
     static unsigned int minimal_nbr_hits = 4;
     return minimal_nbr_hits;
@@ -1293,8 +1293,6 @@ namespace TrackFit {
     return GSL_SUCCESS;
   }
 
-  const size_t helix_fit_mgr::guess_utils::NUMBER_OF_GUESS = 8;
-
   std::string helix_fit_mgr::guess_utils::guess_mode_label(int guess_mode_)
   {
     switch(guess_mode_) {
@@ -1930,14 +1928,6 @@ namespace TrackFit {
       ftmp0.set_remove_at_destroy(true);
       ftmp0.create("/tmp", "trackfit__helix_fit_mgr_guess_");
 
-      /*
-        char tmp[256];
-        sprintf(tmp, "%s",".trackfit__helix_fit_mgr__guess__XXXXXX");
-        char * c = mktemp(tmp);
-        const std::string tmp_filename = tmp;
-        std::ofstream tmp_file(tmp_filename.c_str());
-      */
-
       Gnuplot g1("lines");
 
       std::ostringstream title_oss;
@@ -2033,28 +2023,27 @@ namespace TrackFit {
       g1.set_grid();
 
       const bool plot_3d = false;
-      if (! plot_3d)
-        {
-          g1.cmd("set key on outside right top vertical");
-          g1.cmd("set size ratio -1");
-          g1.cmd("set grid");
-          std::ostringstream title_oss;
-          title_oss << "Guess '" << mode_label << "'(XY-view)";
-          g1.set_title(title_oss.str());
-          g1.set_xlabel("x(mm)").set_ylabel("y(mm)");
-          std::ostringstream cmdoss;
-          cmdoss << "plot ";
-          cmdoss << " '" << ftmp0.get_filename() << "' index 0 using 1:2 title \"Hits\" with lines, ";
-          cmdoss << " '" << ftmp0.get_filename() << "' index 1 using 1:2 title \"Working frame\" with lines, ";
-          cmdoss << " '" << ftmp0.get_filename() << "' index 2 using 1:2 title \"Guess points\" with lines, ";
-          cmdoss << " '" << ftmp0.get_filename() << "' index 3 using 1:2 title \"Special\" with lines, ";
-          cmdoss << " '" << ftmp0.get_filename() << "' index 4 using 1:2 title \"Radius\" with lines, ";
-          cmdoss << " '" << ftmp0.get_filename() << "' index 5 using 1:2 title \"O123/P1/P2/P3\" with lines, ";
-          cmdoss << " '" << ftmp0.get_filename() << "' index 6 using 1:2 title \"Helix\" with lines ";
-          g1.cmd(cmdoss.str());
-          g1.showonscreen(); // window output
-          geomtools::gnuplot_drawer::wait_for_key();
-        } else {
+      if (! plot_3d) {
+        g1.cmd("set key on outside right top vertical");
+        g1.cmd("set size ratio -1");
+        g1.cmd("set grid");
+        std::ostringstream title_oss;
+        title_oss << "Guess '" << mode_label << "'(XY-view)";
+        g1.set_title(title_oss.str());
+        g1.set_xlabel("x(mm)").set_ylabel("y(mm)");
+        std::ostringstream cmdoss;
+        cmdoss << "plot ";
+        cmdoss << " '" << ftmp0.get_filename() << "' index 0 using 1:2 title \"Hits\" with lines, ";
+        cmdoss << " '" << ftmp0.get_filename() << "' index 1 using 1:2 title \"Working frame\" with lines, ";
+        cmdoss << " '" << ftmp0.get_filename() << "' index 2 using 1:2 title \"Guess points\" with lines, ";
+        cmdoss << " '" << ftmp0.get_filename() << "' index 3 using 1:2 title \"Special\" with lines, ";
+        cmdoss << " '" << ftmp0.get_filename() << "' index 4 using 1:2 title \"Radius\" with lines, ";
+        cmdoss << " '" << ftmp0.get_filename() << "' index 5 using 1:2 title \"O123/P1/P2/P3\" with lines, ";
+        cmdoss << " '" << ftmp0.get_filename() << "' index 6 using 1:2 title \"Helix\" with lines ";
+        g1.cmd(cmdoss.str());
+        g1.showonscreen(); // window output
+        geomtools::gnuplot_drawer::wait_for_key();
+      } else {
         std::ostringstream title_oss;
         title_oss << "Guess '" << mode_label << "'(XYZ-view)";
         g1.set_title(title_oss.str());

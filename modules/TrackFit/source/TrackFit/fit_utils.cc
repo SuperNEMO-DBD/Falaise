@@ -9,15 +9,13 @@
 
 namespace TrackFit {
 
-  double fit_utils::_vicinity_factor_ = 3.;
-
-  const double & fit_utils::default_guess_bt_factor()
+  double fit_utils::default_guess_bt_factor()
   {
     static double factor = 1.;
     return factor;
   }
 
-  const double & fit_utils::default_vicinity_factor()
+  double fit_utils::default_vicinity_factor()
   {
     static double factor = 3.;
     return factor;
@@ -48,9 +46,11 @@ namespace TrackFit {
     const geomtools::vector_2d bottom_pos(bottom_pos_.x(), bottom_pos_.y());
     const geomtools::vector_2d top_pos   (top_pos_.x(),    top_pos_.y()   );
 
+    double vicinity_factor = default_vicinity_factor();
+
     size_t near_bottom_counter = 0;
     size_t near_top_counter    = 0;
-    const double min_distance = _vicinity_factor_ * hits_.begin()->get_rmax();
+    const double min_distance = vicinity_factor * hits_.begin()->get_rmax();
 
     for (gg_hits_col::const_iterator it_hit = hits_.begin();
          it_hit != hits_.end(); ++it_hit) {
@@ -105,6 +105,7 @@ namespace TrackFit {
   {
     set_vicinity_factor(fit_utils::default_vicinity_factor());
     set_debug(false);
+    _config_.clear();
     return;
   }
 
@@ -117,7 +118,6 @@ namespace TrackFit {
 
   fit_utils::~fit_utils()
   {
-    reset();
     return;
   }
 

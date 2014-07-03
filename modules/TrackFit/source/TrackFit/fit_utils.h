@@ -82,26 +82,24 @@ namespace TrackFit {
   public:
 
     /// Default guess Bottom/Top factor
-    static const double & default_guess_bt_factor ();
+    static double default_guess_bt_factor();
 
     /// Default vicinity factor
-    static const double & default_vicinity_factor ();
+    static double default_vicinity_factor();
 
     /// \brief Type of guess hypothesis
-    enum guess_hypothesis_type
-      {
-        INVALID_HYPOTHESIS  = -1,
-        BOTTOM_HYPOTHESIS   = 0,
-        TOP_HYPOTHESIS      = 1
-      };
+    enum guess_hypothesis_type {
+      INVALID_HYPOTHESIS  = -1,
+      BOTTOM_HYPOTHESIS   = 0,
+      TOP_HYPOTHESIS      = 1
+    };
 
     /// \brief Type of trust mode
-    enum guess_trust_mode
-      {
-        GUESS_TRUST_MODE_INVALID    = -1,
-        GUESS_TRUST_MODE_BARYCENTER =  0,
-        GUESS_TRUST_MODE_COUNTER    =  1
-      };
+    enum guess_trust_mode {
+      GUESS_TRUST_MODE_INVALID    = -1,
+      GUESS_TRUST_MODE_BARYCENTER =  0,
+      GUESS_TRUST_MODE_COUNTER    =  1
+    };
 
     /// Not documented yet
     static int compute_guess_trust_barycenter (const gg_hit_info_dict_type & hits_infos_,
@@ -139,7 +137,7 @@ namespace TrackFit {
   private:
 
     bool                  _debug_; /// Debug flag
-    static double         _vicinity_factor_; /// Vicinity factor
+    double                _vicinity_factor_; /// Vicinity factor
     datatools::properties _config_; /// Configuration parameters
 
   };

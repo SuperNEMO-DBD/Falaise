@@ -174,9 +174,9 @@ namespace TrackFit {
 
     /// \brief Constants
     struct constants {
-      static const unsigned int & default_fit_max_iter(); /// Default maximum number of iterations of the fit
-      static const double &       default_fit_eps();      /// Default tolerance of the fit
-      static const unsigned int & min_number_of_hits();   /// Minimum number of hits to perform the fit
+      static unsigned int default_fit_max_iter(); /// Default maximum number of iterations of the fit
+      static double       default_fit_eps();      /// Default tolerance of the fit
+      static unsigned int min_number_of_hits();   /// Minimum number of hits to perform the fit
     };
 
     /// Set the logging priority threshold
@@ -260,7 +260,7 @@ namespace TrackFit {
     public:
 
       /// Number of possible guess
-      static const size_t NUMBER_OF_GUESS;
+      static const size_t NUMBER_OF_GUESS = 4;
 
       /// \brief Guess mode type
       /**

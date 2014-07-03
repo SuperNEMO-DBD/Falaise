@@ -348,19 +348,19 @@ namespace TrackFit {
     return;
   }
 
-  const unsigned int & line_fit_mgr::constants::default_fit_max_iter()
+  unsigned int line_fit_mgr::constants::default_fit_max_iter()
   {
     static unsigned int max_iteration = 100;
     return max_iteration;
   }
 
-  const double & line_fit_mgr::constants::default_fit_eps()
+  double line_fit_mgr::constants::default_fit_eps()
   {
     static double epsilon = 1.e-3;
     return epsilon;
   }
 
-  const unsigned int & line_fit_mgr::constants::min_number_of_hits()
+  unsigned int line_fit_mgr::constants::min_number_of_hits()
   {
     static unsigned int minimal_nbr_hits = 4;
     return minimal_nbr_hits;
@@ -439,7 +439,6 @@ namespace TrackFit {
     DT_LOG_DEBUG(get_logging_priority(), "Exiting.");
     return;
   }
-
   void line_fit_mgr::_set_defaults_()
   {
     _logging_priority_  = datatools::logger::PRIO_FATAL;
@@ -1384,8 +1383,6 @@ namespace TrackFit {
 
 
   /****************************************************************************/
-
-  const size_t line_fit_mgr::guess_utils::NUMBER_OF_GUESS = 4;
 
   std::string line_fit_mgr::guess_utils::guess_mode_label(int guess_mode_)
   {
