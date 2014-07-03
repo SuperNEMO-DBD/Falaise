@@ -141,6 +141,32 @@ namespace snemo {
       return _vertices_;
     }
 
+    size_t particle_track::compute_vertices(vertex_collection_type & vertices_, const uint32_t flags_, const bool clear_) const
+    {
+      if (clear_) vertices_.clear();
+      size_t ivtx = 0;
+      for (vertex_collection_type::const_iterator i = get_vertices().begin();
+           i != get_vertices().end(); ++i)
+        {
+          const handle_spot & a_vertex = *i;
+          const datatools::properties & aux = a_vertex.get().get_auxiliaries();
+
+          const bool has_vertex_on_foil  = (flags_ & VERTEX_ON_SOURCE_FOIL) && aux.has_flag(vertex_on_source_foil_flag());
+          const bool has_vertex_on_calo  = (flags_ & VERTEX_ON_MAIN_CALORIMETER) && aux.has_flag(vertex_on_main_calorimeter_flag());
+          const bool has_vertex_on_xcalo = (flags_ & VERTEX_ON_X_CALORIMETER) && aux.has_flag(vertex_on_x_calorimeter_flag());
+          const bool has_vertex_on_gveto = (flags_ & VERTEX_ON_GAMMA_CALORIMETER) && aux.has_flag(vertex_on_gamma_calorimeter_flag());
+
+          if (has_vertex_on_foil  ||
+              has_vertex_on_calo  ||
+              has_vertex_on_xcalo ||
+              has_vertex_on_gveto) {
+            vertices_.push_back(a_vertex);
+            ivtx++;
+          }
+        }
+      return ivtx;
+    }
+
     bool particle_track::has_associated_calorimeters() const
     {
       return !_associated_calorimeters_.empty();

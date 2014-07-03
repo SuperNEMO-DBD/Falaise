@@ -141,6 +141,11 @@ namespace snemo {
       /// Return a non mutable reference on the collection of vertices (handles)
       const vertex_collection_type & get_vertices() const;
 
+      /// Function to return the number of vertices found given a 'vertex' flag
+      /// bits. The list of vertices can be retrieved, the 'clear' option
+      /// meaning that the list will be cleaned before pushing new vertex spot.
+      size_t compute_vertices(vertex_collection_type & vertices_, const uint32_t flags_, const bool clear_ = false) const;
+
       /// Check if there are some associated calorimeter
       bool has_associated_calorimeters() const;
 

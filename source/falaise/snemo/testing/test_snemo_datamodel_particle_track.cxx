@@ -18,40 +18,6 @@ int main (/* int argc_, char ** argv_ */)
     {
       std::clog << "Test program for the 'particle_track' class." << std::endl;
 
-      // bool debug = false;
-      // bool verbose = false;
-
-      // int iarg = 1;
-      // while (iarg < argc_)
-      //   {
-      //     string token = argv_[iarg];
-
-      //     if (token[0] == '-')
-      //       {
-      //          string option = token;
-      //          if ((option == "-d") || (option == "--debug"))
-      //            {
-      //              debug = true;
-      //            }
-      //          else if ((option == "-v") || (option == "--verbose"))
-      //            {
-      //              verbose = true;
-      //            }
-      //          else
-      //            {
-      //               clog << "warning: ignoring option '" << option << "'!" << endl;
-      //            }
-      //       }
-      //     else
-      //       {
-      //         string argument = token;
-      //         {
-      //           clog << "warning: ignoring argument '" << argument << "'!" << endl;
-      //         }
-      //       }
-      //     iarg++;
-      // }
-
       namespace sdm = snemo::datamodel;
 
       // Create a handle on some trajectory pattern :
@@ -83,7 +49,7 @@ int main (/* int argc_, char ** argv_ */)
       hV0.grab ().set_x_error (0.5 * CLHEP::mm);
       hV0.grab ().set_y_error (0.5 * CLHEP::mm);
       hV0.grab ().set_z_error (0.5 * CLHEP::mm);
-      hV0.grab ().grab_auxiliaries ().store_flag ("vertex_on_foil");
+      hV0.grab ().grab_auxiliaries ().store_flag (sdm::particle_track::vertex_on_source_foil_flag());
       hV0.get ().tree_dump (std::clog, "Foil vertex : ");
 
       datatools::handle<geomtools::blur_spot> hV1;
@@ -94,7 +60,7 @@ int main (/* int argc_, char ** argv_ */)
       hV1.grab ().set_x_error (2.5 * CLHEP::mm);
       hV1.grab ().set_y_error (2.5 * CLHEP::mm);
       hV1.grab ().set_z_error (2.5 * CLHEP::mm);
-      hV1.grab ().grab_auxiliaries ().store_flag ("vertex_on_calorimeter");
+      hV1.grab ().grab_auxiliaries ().store_flag (sdm::particle_track::vertex_on_main_calorimeter_flag());
       hV1.get ().tree_dump (std::clog, "Calorimeter vertex : ");
 
       // Create the particle track :
@@ -106,6 +72,25 @@ int main (/* int argc_, char ** argv_ */)
       PT0.grab_vertices ().push_back (hV1);
       PT0.grab_auxiliaries ().store_flag ("fake_electron");
       PT0.tree_dump (std::clog, "Particle track : ");
+
+      // Retrieve a subset of vertices
+      sdm::particle_track::vertex_collection_type vertices;
+      {
+        const size_t nvtx = PT0.compute_vertices(vertices, sdm::particle_track::VERTEX_ON_SOURCE_FOIL);
+        std::clog << "Number of vertices on the source foil = " << nvtx << std::endl;
+        std::clog << "Total number of vertices = " << vertices.size() << std::endl;
+      }
+      {
+        const size_t nvtx = PT0.compute_vertices(vertices, sdm::particle_track::VERTEX_ON_MAIN_CALORIMETER);
+        std::clog << "Number of vertices on the main calorimeter = " << nvtx << std::endl;
+        std::clog << "Total number of vertices = " << vertices.size() << std::endl;
+      }
+      {
+        const size_t nvtx = PT0.compute_vertices(vertices, sdm::particle_track::VERTEX_ON_MAIN_CALORIMETER | sdm::particle_track::VERTEX_ON_SOURCE_FOIL, true);
+        std::clog << "Number of vertices on the source foil & the main calorimeter = " << nvtx << std::endl;
+        std::clog << "Total number of vertices = " << vertices.size() << std::endl;
+      }
+
     }
   catch (std::exception & x)
     {
