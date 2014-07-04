@@ -28,6 +28,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 include_directories(BEFORE ${Bayeux_INCLUDE_DIRS})
 include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${PROJECT_SOURCE_DIR}/modules)
 
 #-----------------------------------------------------------------------
 # Declare sources
@@ -58,6 +59,7 @@ set_target_properties(flreconstruct PROPERTIES COMPILE_DEFINITIONS ENABLE_BINREL
 
 target_link_libraries(flreconstruct
   Falaise
+  Things2Root
   ${Bayeux_LIBRARIES}
   ${Boost_program_options_LIBRARY}
   )

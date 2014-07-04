@@ -54,11 +54,13 @@
 #include "boost/version.hpp"
 #include "boost/foreach.hpp"
 #include "boost/filesystem.hpp"
+#include "boost/algorithm/string/predicate.hpp"
 
 // This Project
 #include "falaise/falaise.h"
 #include "falaise/version.h"
 #include "falaise/exitcodes.h"
+#include "things2root/Things2Root.h"
 #include "FLReconstructResources.h"
 
 //----------------------------------------------------------------------
@@ -402,18 +404,32 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
   }
 
   // Output module... only if file was passed
-  boost::scoped_ptr<dpp::output_module> recOutput;
+  boost::shared_ptr<dpp::base_module> recOutput;
   if (!clArgs.outputFile.empty()) {
-    recOutput.reset(new dpp::output_module);
-    recOutput->set_name("FLReconstructOutput");
-    recOutput->set_single_output_file(clArgs.outputFile);
-    // Metadata management:
-    // Fetch the metadata to be stored through the output module
-    datatools::multi_properties & metadataStore = recOutput->grab_metadata_store();
-    // Copy metadata from the input module
-    metadataStore = mData;
-    // TO DO: add more sections in metadata (from userConfig) ...
-    recOutput->initialize_simple();
+    DT_LOG_TRACE(clArgs.logLevel,"configuring output module");
+    if (boost::algorithm::ends_with(clArgs.outputFile, ".root")) {
+      DT_LOG_TRACE(clArgs.logLevel, "using ROOT format for output");
+      boost::shared_ptr<Things2Root> rootOutput(new Things2Root);
+      rootOutput->set_name("FLReconstructOutput");
+      datatools::properties rootOutputConfig;
+      rootOutputConfig.store("output_file", clArgs.outputFile);
+      rootOutput->initialize_with_service(rootOutputConfig, flrServices);
+      recOutput = rootOutput;
+    } else {
+      // default to brio...
+      DT_LOG_TRACE(clArgs.logLevel, "using BRIO format for output");
+      boost::shared_ptr<dpp::output_module> brioOutput(new dpp::output_module);
+      brioOutput->set_name("FLReconstructOutput");
+      brioOutput->set_single_output_file(clArgs.outputFile);
+      // Metadata management:
+      // Fetch the metadata to be stored through the output module
+      datatools::multi_properties & metadataStore = brioOutput->grab_metadata_store();
+      // Copy metadata from the input module
+      metadataStore = mData;
+      // TO DO: add more sections in metadata (from userConfig) ...
+      brioOutput->initialize_simple();
+      recOutput = brioOutput;
+    }
   }
 
   // - Now the actual event loop
