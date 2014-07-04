@@ -40,6 +40,7 @@ Options
   -h [ --help ]                 print this help message
   --help-module-list            list available modules and exit
   --help-module [mod]           print help for a single module and exit
+  --help-pipeline-list          list available pipeline configurations and exit
   --version                     print version number
   -v [ --verbose ] [level] (=1) set verbosity level of logging
   -i [ --input-file ] [file]    file from which to read data
@@ -123,7 +124,8 @@ pipeline scripts are supplied with Falaise by the Software Board
 to provide easy to use, validated reconstruction chains.
 
 The available pipelines can be viewed by passing the `--help-pipeline-list`
-argument to `flreconstruct`. This will print a tree of the available pipelines:
+argument to `flreconstruct`. This will print a tree of the available
+pipelines
 
 ~~~~~
 $ flreconstruct --help-pipeline-list
@@ -134,16 +136,38 @@ $ flreconstruct --help-pipeline-list
 $
 ~~~~~
 
-This pipeline can be passed to `flreconstruct` via the `-p` argument using
-the "resource path" notation:
+Standard pipeline scripts are organised into directories based on the
+experiment they apply to, and should only be used for reconstructing
+data from these experiments. Note that `flreconstruct` does not validate
+that a pipeline script can be applied to the input data. Scripts for
+each experiments are tagged with a version and optional visualization tag.
+You should always regard the highest version tag as the current approved
+script to use for production.
+The visualization tag adds a final GNUPlot based visualization of each
+event after pipeline processing, so can be used to view events and
+the results of reconstruction. Visualization enabled scripts should not
+be used for production purposes due to their interactive nature.
+
+Built in pipelines can be run in `flreconstruct` by passing with the `-p`
+argument using the "resource path" notation:
 
 ~~~~~
 $ flreconstruct -i example.brio -p @falaise:pipeline/snemo.demonstrator/1.0.0
 ~~~~~
 
-Here `@falaise:` means "the root directory of Falaise resources" and can
-be viewed as a "mount point" for the resources. The subsequent path is
-simply the path from that root to the relevant file.
+Here `@falaise:` is simply shorthand for "the root directory of standard
+Falaise resources" and can be viewed as a "mount point" for standard
+resources. The subsequent path is simply the path from that root to a
+standard pipeline script. This path can be derived from the information
+output by the `--help-pipeline-list` argument described above.
+
+
+Writing Reconstruction Results to File {#usingoutputpaths}
+======================================
+Running `flreconstruct` as presented above will process data but not
+persist any reconstruction results to file (e.g. for later analysis).
+To write results to file, the `-o` option may be used to write processed
+events to a file supplied as the argument.
 
 Using Custom Pipelines {#usingcustompipelines}
 ========================
