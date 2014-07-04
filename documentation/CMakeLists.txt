@@ -56,6 +56,7 @@ set(Falaise_MARKDOWN_DOCS
   ${PROJECT_SOURCE_DIR}/source/Falaise.1.md
   ${CMAKE_CURRENT_BINARY_DIR}/InstallationGuide.md
   flsimulate/FLSimulate.md
+  flsimulate/FLSimulateOutput.md
   flreconstruct/FLReconstruct.md
   flreconstruct/WritingFLReconstructPipelineScripts.md
   flreconstruct/SupportedFLReconstructModules.md
@@ -64,6 +65,7 @@ set(Falaise_MARKDOWN_DOCS
   flreconstruct/WorkingWithEventRecords.md
   flreconstruct/UsingServices.md
   flreconstruct/DocumentingFLReconstructModules.md
+  flreconstruct/PipelineOutput.md
   development/DevelopingFalaise.md
   development/CodingStandards.md
   )

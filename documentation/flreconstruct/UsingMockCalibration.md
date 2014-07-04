@@ -31,7 +31,7 @@ as the last stage to demonstrate that the "CD" (**C** alibrated **D** ata)
 data bank is added. It is this bank that should be used for any
 reconstruction or analysis task, and it should be read as an instance
 of `snemo::datamodel::calibrated_data`. The documentation of that object
-should be consulted for for information on accessing Geiger and Calorimeter
+should be consulted for information on accessing Geiger and Calorimeter
 data.
 
 You can replace the dump module in the above example with a chain of your
@@ -74,4 +74,3 @@ Your calibration model **must** output data in the form of an instance of
 `snemo::datamodel::calibrated_data`. You would write this into the
 `datatools::things` event instance as a new data bank named, say,
 "CD_NewModel" to avoid clashes with the official "CD" bank. Downstream modules can access both banks for comparison and validation.
-
