@@ -245,7 +245,7 @@ pairs are simple ignored.
 The final *tracker hit* records the following attributes
 in the output `mctools::base_step_hit` object (see [this section](@ref flsimulateoutput_mctoolsbasestephitclass)):
  - the unique identifier of the hit in the collection,
- - the GID locating the scintillator block where the raw hits were produced (type is `1302` for main wall blocks, `1232` for X-calorimeter blocks  and `1252` for gamma veto blocks),
+ - the GID locating the Geiger cell where the raw tracker hits were produced (geometry type is `1204`),
  - a collection of auxiliary properties (`datatools::properties`).
  - the position of the creation of the pair (`geomtools::vector_3d`),
  - the position of the impact of the Geiger avalanche on the anode wire (`geomtools::vector_3d`),
