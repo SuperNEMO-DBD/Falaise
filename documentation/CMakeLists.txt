@@ -28,6 +28,7 @@ set(Falaise_DOXYFILE_IN  falaise_doxygen.conf.in)
 set(Falaise_DOXYFILE_OUT ${PROJECT_BINARY_DIR}/documentation/falaise_doxygen.conf)
 set(Falaise_DOXYGEN_OUTPUT_DIR  ${Falaise_DATAROOTDIR}/Documentation/API)
 set(Falaise_DOXYGEN_OUTPUT_FILE ${Falaise_DOXYGEN_OUTPUT_DIR}/html/index.html)
+set(Falaise_DOXYGEN_OUTPUT_IMAGE_DIR ${Falaise_DOXYGEN_OUTPUT_DIR}/html/images)
 
 option(Falaise_BUILD_LATEX_DOCS "Build LaTeX Manual for Falaise" OFF)
 mark_as_advanced(Falaise_BUILD_LATEX_DOCS)
@@ -91,3 +92,10 @@ add_custom_command(
   )
 
 add_custom_target(falaise_docs ALL DEPENDS ${Falaise_DOXYGEN_OUTPUT_FILE})
+
+
+install(FILES
+        flsimulate/images/fls_calorimeter_step_hit_processor_0.jpg
+        flsimulate/images/fls_gg_step_hit_processor_0.jpg
+        DESTINATION ${Falaise_DOXYGEN_OUTPUT_IMAGE_DIR}
+)
