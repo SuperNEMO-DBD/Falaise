@@ -216,6 +216,7 @@ namespace snemo {
       std::string print_file;
       bool wxt;
       bool display_key;
+      bool display_grid;
       bool display_title;
 
       bool display_Geo;
@@ -226,6 +227,7 @@ namespace snemo {
 
       bool display_SD;
       bool display_SD_hits;
+      bool display_SD_hits_data;
       bool display_SD_hits_boxes;
       bool display_SD_gg_MAP;
       bool display_SD_visu_track;

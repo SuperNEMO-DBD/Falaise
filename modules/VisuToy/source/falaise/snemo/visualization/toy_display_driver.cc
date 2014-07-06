@@ -131,6 +131,7 @@ namespace snemo {
       zoom_range_xyz  = 4000 * CLHEP::mm;
       wxt                          = false;
       display_key                  = true;
+      display_grid                 = true;
       display_title                = true;
       display_Geo                  = true;
       display_Geo_Src              = true;
@@ -139,6 +140,7 @@ namespace snemo {
       display_Geo_Gveto            = true;
       display_SD                   = true;
       display_SD_hits              = true;
+      display_SD_hits_data         = true;
       display_SD_hits_boxes        = true;
       display_SD_gg_MAP            = false;
       display_SD_visu_track        = false;
@@ -430,7 +432,7 @@ namespace snemo {
         // Pickup geometry informations about the SuperNEMO module #0:
         geomtools::geom_id module_id(module_type, module_number);
         DT_THROW_IF (! mapping->validate_id(module_id), std::logic_error,
-                    "No module with ID " << module_id << " !");
+                     "No module with ID " << module_id << " !");
         const geomtools::geom_info & module_geom_info = mapping->get_geom_info(module_id);
         const geomtools::placement & mp = module_geom_info.get_world_placement();
         const geomtools::logical_volume & mlog = module_geom_info.get_logical();
@@ -529,29 +531,29 @@ namespace snemo {
       }
 
       if (setup_label == snemo_demo_label()) {
-          temp_geom_file->out() << "#draw Gamma-veto blocks:" << std::endl;
-          for (std::list<const geomtools::geom_info *>::const_iterator i
-                 = gveto_block_locator.get_ginfos().begin();
-               i != gveto_block_locator.get_ginfos().end();
-               i++) {
-            const geomtools::geom_info & gi = **i;
-            // Pickup geometry informations about a specific calo block:
-            //const geomtools::geom_info & a_geom_info
-            //  = mapping->get_geom_info(gi.get_id());
-            const geomtools::placement & a_placement = gi.get_world_placement();
-            const geomtools::logical_volume & a_log = gi.get_logical();
-            const geomtools::i_shape_3d & a_shape = a_log.get_shape();
-            DT_LOG_DEBUG(logging_priority, "Gamma-veto block geometry info: " << gi);
-            geomtools::gnuplot_draw::draw(temp_geom_file->out(), a_placement, a_shape);
-          }
-          temp_geom_file->out() << std::endl << std::endl;
-          temp_geom_file->out() << "##############################################" << std::endl;
-          geom_data["Geom.gveto_blocks"] = index++;
+        temp_geom_file->out() << "#draw Gamma-veto blocks:" << std::endl;
+        for (std::list<const geomtools::geom_info *>::const_iterator i
+               = gveto_block_locator.get_ginfos().begin();
+             i != gveto_block_locator.get_ginfos().end();
+             i++) {
+          const geomtools::geom_info & gi = **i;
+          // Pickup geometry informations about a specific calo block:
+          //const geomtools::geom_info & a_geom_info
+          //  = mapping->get_geom_info(gi.get_id());
+          const geomtools::placement & a_placement = gi.get_world_placement();
+          const geomtools::logical_volume & a_log = gi.get_logical();
+          const geomtools::i_shape_3d & a_shape = a_log.get_shape();
+          DT_LOG_DEBUG(logging_priority, "Gamma-veto block geometry info: " << gi);
+          geomtools::gnuplot_draw::draw(temp_geom_file->out(), a_placement, a_shape);
         }
+        temp_geom_file->out() << std::endl << std::endl;
+        temp_geom_file->out() << "##############################################" << std::endl;
+        geom_data["Geom.gveto_blocks"] = index++;
+      }
 
       if (setup_label == snemo_tc_label()) {
         DT_LOG_DEBUG(logging_priority, "# of muon-trigger blocks ="
-                      << tc_mu_trigger_block_locator.get_ginfos().size());
+                     << tc_mu_trigger_block_locator.get_ginfos().size());
 
         temp_geom_file->out() << "#draw muon-trigger blocks:" << std::endl;
         for (std::list<const geomtools::geom_info *>::const_iterator i
@@ -859,11 +861,11 @@ namespace snemo {
               void * user_draw_void_function = shape.get_user_draw();
               geomtools::gnuplot_draw::draw_user_function_type user_draw_function
                 = reinterpret_cast<geomtools::gnuplot_draw::draw_user_function_type>(user_draw_void_function);
-             (*user_draw_function)(out_,
-                                     world_plcmt.get_translation(),
-                                     world_plcmt.get_rotation(),
-                                     shape,
-                                     0);
+              (*user_draw_function)(out_,
+                                    world_plcmt.get_translation(),
+                                    world_plcmt.get_rotation(),
+                                    shape,
+                                    0);
               out_ << "# test 1 " << std::endl;
               //std::cerr << "********* DEVEL: " << "user_draw_void_function for shape at = " << sb_gid << std::endl;
             } else {
@@ -922,9 +924,9 @@ namespace snemo {
               // const double d = drift_cell_box.get_y();
               const double drift_radius =(BSH.get_position_start() - BSH.get_position_stop()).mag();
               geomtools::gnuplot_draw::draw_circle(out_,
-                                                    BSH.get_position_stop(),
-                                                    drift_cell_world_plcmt.get_rotation(),
-                                                    drift_radius);
+                                                   BSH.get_position_stop(),
+                                                   drift_cell_world_plcmt.get_rotation(),
+                                                   drift_radius);
               gg_hits[drift_cell_gid] = BSH.get_position_stop();
 
               // geomtools::box draw_box(w, d, 1.0 * CLHEP::cm);
@@ -994,7 +996,7 @@ namespace snemo {
               if (BSH.get_auxiliaries().has_key(snemo::datamodel::gg_track::minimum_approach_position_key())) {
                 std::vector<double> vMAP;
                 BSH.get_auxiliaries().fetch(snemo::datamodel::gg_track::minimum_approach_position_key(),
-                                              vMAP);
+                                            vMAP);
                 geomtools::vector_3d the_MAP(vMAP[0], vMAP[1], vMAP[2]);
                 //std::cerr << "********* DEVEL: MAP=" << the_MAP << std::endl;
                 if (count == 0) {
@@ -1115,8 +1117,8 @@ namespace snemo {
               const std::string & pname = i->first;
               if (VP_counters[pname] > 0) {
                 out_ << "# 'SD." << hit_category
-                                       << "' step hits(" << VP_counters[pname]
-                                       << ") for " << pname << " particles @ index " << index << ": " << std::endl;
+                     << "' step hits(" << VP_counters[pname]
+                     << ") for " << pname << " particles @ index " << index << ": " << std::endl;
                 out_ << i->second->str();
                 out_ << std::endl;
                 std::ostringstream label;
@@ -1198,13 +1200,13 @@ namespace snemo {
                   geomtools::vector_3d pos = drift_cell_world_plcmt.get_translation();
                   pos.setZ(CTH.get_z());
                   geomtools::gnuplot_draw::draw_circle(out_,
-                                                        pos,
-                                                        drift_cell_world_plcmt.get_rotation(),
-                                                        CTH.get_r() - CTH.get_sigma_r());
+                                                       pos,
+                                                       drift_cell_world_plcmt.get_rotation(),
+                                                       CTH.get_r() - CTH.get_sigma_r());
                   geomtools::gnuplot_draw::draw_circle(out_,
-                                                        pos,
-                                                        drift_cell_world_plcmt.get_rotation(),
-                                                        CTH.get_r() + CTH.get_sigma_r());
+                                                       pos,
+                                                       drift_cell_world_plcmt.get_rotation(),
+                                                       CTH.get_r() + CTH.get_sigma_r());
                 }
                 ++hit_count;
               }
@@ -1261,9 +1263,9 @@ namespace snemo {
                   pos.setZ(CTH.get_z());
                   const double rmax = 22. * CLHEP::mm;
                   geomtools::gnuplot_draw::draw_circle(out_,
-                                                        pos,
-                                                        drift_cell_world_plcmt.get_rotation(),
-                                                        rmax);
+                                                       pos,
+                                                       drift_cell_world_plcmt.get_rotation(),
+                                                       rmax);
                 }
                 ++hit_count;
               }
@@ -1319,9 +1321,9 @@ namespace snemo {
                   pos.setZ(CTH.get_z());
                   const double rmax = 22. * CLHEP::mm;
                   geomtools::gnuplot_draw::draw_rectangle(out_,
-                                                           pos,
-                                                           drift_cell_world_plcmt.get_rotation(),
-                                                           2 * rmax, 2 * rmax);
+                                                          pos,
+                                                          drift_cell_world_plcmt.get_rotation(),
+                                                          2 * rmax, 2 * rmax);
                 }
                 ++hit_count;
               }
@@ -1369,7 +1371,7 @@ namespace snemo {
                 scin_block_ginfo = &(gveto_block_locator.get_geom_info(scin_block_gid));
               } else {
                 DT_LOG_WARNING(logging_priority, "Cannot identify calorimeter hit GID = '"
-                                <<  scin_block_gid << "' !");
+                               <<  scin_block_gid << "' !");
                 continue;
               }
               const geomtools::placement & scin_block_world_plcmt = scin_block_ginfo->get_world_placement();
@@ -1382,11 +1384,11 @@ namespace snemo {
                 void * user_draw_void_function = scin_block_shape.get_user_draw();
                 geomtools::gnuplot_draw::draw_user_function_type user_draw_function
                   = reinterpret_cast<geomtools::gnuplot_draw::draw_user_function_type>(user_draw_void_function);
-               (*user_draw_function)(out_,
-                                       scin_block_world_plcmt.get_translation(),
-                                       scin_block_world_plcmt.get_rotation(),
-                                       scin_block_shape,
-                                       0);
+                (*user_draw_function)(out_,
+                                      scin_block_world_plcmt.get_translation(),
+                                      scin_block_world_plcmt.get_rotation(),
+                                      scin_block_shape,
+                                      0);
               } else {
                 // DT_LOG_WARNING(logging_priority, "Cannot draw calorimeter block @ GID = '"
                 //                 <<  scin_block_gid << "' !");
@@ -1401,15 +1403,15 @@ namespace snemo {
                   geomtools::gnuplot_draw::draw_user_function_type user_draw_function2
                     = reinterpret_cast<geomtools::gnuplot_draw::draw_user_function_type>(user_draw_void_function2);
                   (*user_draw_function2)(out_,
-                                        scin_block_world_plcmt2.get_translation(),
-                                        scin_block_world_plcmt2.get_rotation(),
-                                        scin_block_shape2,
-                                        0);
+                                         scin_block_world_plcmt2.get_translation(),
+                                         scin_block_world_plcmt2.get_rotation(),
+                                         scin_block_shape2,
+                                         0);
                 } else {
                   geomtools::gnuplot_draw::draw(out_, scin_block_world_plcmt2, scin_block_shape2);
                 }
               }
-             ++hit_count;
+              ++hit_count;
             }
             if (hit_count > 0) {
               data[hit_category] = index++;
@@ -1439,7 +1441,7 @@ namespace snemo {
                 scin_block_ginfo = &(tc_mu_trigger_block_locator.get_geom_info(scin_block_gid));
               } else {
                 DT_LOG_WARNING(logging_priority, "Cannot identify muon trigger hit GID = '"
-                                <<  scin_block_gid << "' !");
+                               <<  scin_block_gid << "' !");
                 continue;
               }
               const geomtools::placement & scin_block_world_plcmt = scin_block_ginfo->get_world_placement();
@@ -1452,11 +1454,11 @@ namespace snemo {
                 void * user_draw_void_function = scin_block_shape.get_user_draw();
                 geomtools::gnuplot_draw::draw_user_function_type user_draw_function
                   = reinterpret_cast<geomtools::gnuplot_draw::draw_user_function_type>(user_draw_void_function);
-               (*user_draw_function)(out_,
-                                       scin_block_world_plcmt.get_translation(),
-                                       scin_block_world_plcmt.get_rotation(),
-                                       scin_block_shape,
-                                       0);
+                (*user_draw_function)(out_,
+                                      scin_block_world_plcmt.get_translation(),
+                                      scin_block_world_plcmt.get_rotation(),
+                                      scin_block_shape,
+                                      0);
               } else {
                 // DT_LOG_WARNING(logging_priority, "Cannot draw muon trigger block @ GID = '"
                 //                 <<  scin_block_gid << "' !");
@@ -1549,21 +1551,21 @@ namespace snemo {
           for (int i = 0; i < (int) the_uhits.size(); ++i) {
             const snemo::datamodel::calibrated_tracker_hit & uclhit = the_uhits[i].get();
             // Produce tracker unclustered hits rendering data
-              double x  = uclhit.get_x();
-              double y  = uclhit.get_y();
-              double z  = uclhit.get_z();
-              double ez = uclhit.get_sigma_z();
-              if (i == 0) {
-                out_ << "# '" << "TCD.default.unclustered_hits" << "' @ index " << index << ": " << std::endl;
-              }
-              geomtools::vector_3d hit_pos(x, y, z);
-              geomtools::rotation_3d identity;
-              geomtools::gnuplot_draw::draw_box(out_,
-                                                hit_pos,
-                                                identity,
-                                                cell_diameter,
-                                                cell_diameter,
-                                                2 * ez);
+            double x  = uclhit.get_x();
+            double y  = uclhit.get_y();
+            double z  = uclhit.get_z();
+            double ez = uclhit.get_sigma_z();
+            if (i == 0) {
+              out_ << "# '" << "TCD.default.unclustered_hits" << "' @ index " << index << ": " << std::endl;
+            }
+            geomtools::vector_3d hit_pos(x, y, z);
+            geomtools::rotation_3d identity;
+            geomtools::gnuplot_draw::draw_box(out_,
+                                              hit_pos,
+                                              identity,
+                                              cell_diameter,
+                                              cell_diameter,
+                                              2 * ez);
           }
 
           if (the_uhits.size()) {
@@ -1811,7 +1813,7 @@ namespace snemo {
             } while(true);
           } else {
             DT_LOG_WARNING(logging_priority, "Unsupported interactive mode '"
-                            << interactive_mode_ << "'! ");
+                           << interactive_mode_ << "'! ");
           }
         } else {
           // std::list<std::string>::iterator i_current_filename = tmp_filenames.begin();
@@ -1911,7 +1913,12 @@ namespace snemo {
       std::ostringstream cmdstr;
       bool use_legend = display_key;
       if (view_mode != "3d") {
-        cmdstr << "set size ratio -1;  set grid; set clip two; ";
+        cmdstr << "set size ratio -1; set clip two; ";
+        if (display_grid) {
+          cmdstr << "set grid; ";
+        } else {
+          cmdstr << "unset grid; ";
+        }
       } else {
         use_legend = false;
         cmdstr << "set size ratio -1;  set view equal xyz; set clip two; ";
@@ -2145,38 +2152,40 @@ namespace snemo {
         } // if (display_SD_visu_track)
 
         if (display_SD_hits) {
-          if (data.find("SD.calo") != data.end()) {
-            //cmdstr << ", '" << temp_draw_file->get_filename()  << "' index " << data.find("calorimeter")->second << " "
-            //   << uopt << " title \"calorimeter hits\" with point lt 1 ps 0.5 pt 6";
-            if (count) cmdstr << ", ";
-            cmdstr << "'" << temp_draw_file->get_filename()  << "' index "
-                   << data.find("SD.calo")->second << " "
-                   << uopt << " notitle with lines lt 1 lw 2";
-            count++;
-          }
+          if (display_SD_hits_data) {
+            if (data.find("SD.calo") != data.end()) {
+              //cmdstr << ", '" << temp_draw_file->get_filename()  << "' index " << data.find("calorimeter")->second << " "
+              //   << uopt << " title \"calorimeter hits\" with point lt 1 ps 0.5 pt 6";
+              if (count) cmdstr << ", ";
+              cmdstr << "'" << temp_draw_file->get_filename()  << "' index "
+                     << data.find("SD.calo")->second << " "
+                     << uopt << " notitle with lines lt 1 lw 2";
+              count++;
+            }
 
-          if (data.find("SD.xcalo") != data.end()) {
-            if (count) cmdstr << ", ";
-            cmdstr << "'" << temp_draw_file->get_filename()  << "' index "
-                   << data.find("SD.xcalo")->second << " "
-                   << uopt << " notitle with lines lt 1 lw 2";
-            count++;
-          }
+            if (data.find("SD.xcalo") != data.end()) {
+              if (count) cmdstr << ", ";
+              cmdstr << "'" << temp_draw_file->get_filename()  << "' index "
+                     << data.find("SD.xcalo")->second << " "
+                     << uopt << " notitle with lines lt 1 lw 2";
+              count++;
+            }
 
-          if (data.find("SD.gveto") != data.end()) {
-            if (count) cmdstr << ", ";
-            cmdstr << "'" << temp_draw_file->get_filename()  << "' index "
-                   << data.find("SD.gveto")->second << " "
-                   << uopt << " notitle with lines lt 1 lw 2";
-            count++;
-          }
+            if (data.find("SD.gveto") != data.end()) {
+              if (count) cmdstr << ", ";
+              cmdstr << "'" << temp_draw_file->get_filename()  << "' index "
+                     << data.find("SD.gveto")->second << " "
+                     << uopt << " notitle with lines lt 1 lw 2";
+              count++;
+            }
 
-          if (data.find("SD.trig") != data.end()) {
-            if (count) cmdstr << ", ";
-            cmdstr << "'" << temp_draw_file->get_filename()  << "' index "
-                   << data.find("SD.trig")->second << " "
-                   << uopt << " notitle with lines lt 1 lw 2";
-            count++;
+            if (data.find("SD.trig") != data.end()) {
+              if (count) cmdstr << ", ";
+              cmdstr << "'" << temp_draw_file->get_filename()  << "' index "
+                     << data.find("SD.trig")->second << " "
+                     << uopt << " notitle with lines lt 1 lw 2";
+              count++;
+            }
           }
 
           if (display_SD_hits_boxes) {
@@ -2189,12 +2198,14 @@ namespace snemo {
             }
           }
 
-          if (data.find("SD.gg") != data.end()) {
-            if (count) cmdstr << ", ";
-            cmdstr << "'" << temp_draw_file->get_filename()  << "' index "
-                   << data.find("SD.gg")->second << " "
-                   << uopt << " title \"Geiger hits (SD)\" with lines lt 8 lw 1";
-            count++;
+          if (display_SD_hits_data) {
+            if (data.find("SD.gg") != data.end()) {
+              if (count) cmdstr << ", ";
+              cmdstr << "'" << temp_draw_file->get_filename()  << "' index "
+                     << data.find("SD.gg")->second << " "
+                     << uopt << " title \"Geiger hits (SD)\" with lines lt 8 lw 1";
+              count++;
+            }
           }
 
           if (display_SD_hits_boxes) {
@@ -2219,11 +2230,13 @@ namespace snemo {
             count++;
           }
         } // if (display_SD_gg_MAP)
-      }
+
+      } // if (display_SD)
 
       if (display_CD) {
         // plot calibrated data :
-        if (display_CD_tracker_prompt && data.find("CD.tracker") != data.end()) {
+        if (display_CD_tracker_prompt
+            && data.find("CD.tracker") != data.end()) {
           if (count) cmdstr << ", ";
           cmdstr << "'" << temp_draw_file->get_filename()  << "' index "
                  << data.find("CD.tracker")->second << " "
@@ -2231,7 +2244,8 @@ namespace snemo {
           count++;
         }
 
-        if (display_CD_tracker_delayed && data.find("CD.tracker_delayed") != data.end()) {
+        if (display_CD_tracker_delayed
+            && data.find("CD.tracker_delayed") != data.end()) {
           if (count) cmdstr << ", ";
           cmdstr << "'" << temp_draw_file->get_filename()  << "' index "
                  << data.find("CD.tracker_delayed")->second << " "
@@ -2239,7 +2253,8 @@ namespace snemo {
           count++;
         }
 
-        if (display_CD_tracker_noisy && data.find("CD.tracker_noisy") != data.end()) {
+        if (display_CD_tracker_noisy
+            && data.find("CD.tracker_noisy") != data.end()) {
           if (count) cmdstr << ", ";
           cmdstr << "'" << temp_draw_file->get_filename()  << "' index "
                  << data.find("CD.tracker_noisy")->second << " "
@@ -2595,6 +2610,8 @@ namespace snemo {
         display_SD = ! display_SD;
       } else if (cmd == "SD.Hits") {
         display_SD_hits = ! display_SD_hits;
+      } else if (cmd == "SD.Hits.Data") {
+        display_SD_hits_data = ! display_SD_hits_data;
       } else if (cmd == "SD.Hits.Boxes") {
         display_SD_hits_boxes = ! display_SD_hits_boxes;
       } else if (cmd == "SD.Hits.Geiger.MAP") {
@@ -2693,6 +2710,8 @@ namespace snemo {
         display_PTD = ! display_PTD;
       } else if (cmd == "key") {
         display_key = ! display_key;
+      } else if (cmd == "grid") {
+        display_grid = ! display_grid;
       } else if (cmd == "title") {
         display_title = ! display_title;
       } else if (cmd == "debug") {
@@ -2857,11 +2876,12 @@ namespace snemo {
       out_ << "    Geo.Gveto             toggle the display of the gamma-veto blocks" << std::endl;
       out_ << "  SD                      toggle the display of simulated data" << std::endl;
       out_ << "    SD.Vertex             toggle the display of simulated vertex" << std::endl;
-      out_ << "    SD.Hits               toggle the display of true hits" << std::endl;
-      out_ << "      SD.Hits.Boxes       toggle the display of bounding boxes around true hits " << std::endl;
-      out_ << "      SD.Hits.Geiger.MAP  toggle the display of MAP for Geiger true hits" << std::endl;
-      out_ << "    SD.Tracks             toggle the display of true tracks" << std::endl;
-      out_ << "      SD.Tracks.Points    toggle the display of true tracks with points" << std::endl;
+      out_ << "    SD.Hits               toggle the display of truth hits" << std::endl;
+      out_ << "      SD.Hits.Data        toggle the display of truth hits data" << std::endl;
+      out_ << "      SD.Hits.Boxes       toggle the display of bounding boxes around truth hits " << std::endl;
+      out_ << "      SD.Hits.Geiger.MAP  toggle the display of MAP for Geiger truth hits" << std::endl;
+      out_ << "    SD.Tracks             toggle the display of truth tracks" << std::endl;
+      out_ << "      SD.Tracks.Points    toggle the display of truth tracks with points" << std::endl;
       out_ << "  CD                      toggle the display of calibrated data" << std::endl;
       out_ << "  TCD                     toggle the display of tracker clustering data" << std::endl;
       out_ << "    TCD.Def.Clusters      toggle the display of the clusters (default solution)" << std::endl;
@@ -2895,6 +2915,7 @@ namespace snemo {
       out_ << "    skip <dx> <dz> [unit] skip position by <dx> <dz>(XZ view)" << std::endl;
       out_ << "    reset                 reset zoom and move to default(nozoom/nomove)" << std::endl;
       out_ << "  key                     toggle the display of the legend" << std::endl;
+      out_ << "  grid                    toggle the display of the grid" << std::endl;
       out_ << "  title                   toggle the display of the main title" << std::endl;
       out_ << "  display                 display the event" << std::endl;
       out_ << "  dump                    print the data structure" << std::endl;
@@ -3002,8 +3023,9 @@ namespace snemo {
       out_ << "|   |-- X-calo blocks                 : " << display_Geo_Xcalo << std::endl;
       out_ << "|   `-- gamma veto blocks             : " << display_Geo_Gveto << std::endl;
       out_ << "|-- Display simulated data            : " << display_SD << std::endl;
-      out_ << "|   |-- True hits                     : " << display_SD_hits << std::endl;
-      out_ << "|   |-- Bounding boxes                : " << display_SD_hits_boxes << std::endl;
+      out_ << "|   |-- Truth hits                    : " << display_SD_hits << std::endl;
+      out_ << "|   |   |-- Truth hits data           : " << display_SD_hits_data << std::endl;
+      out_ << "|   |   `-- Truth hits Bounding boxes : " << display_SD_hits_boxes << std::endl;
       out_ << "|   |-- Geiger hits MAP               : " << display_SD_gg_MAP << std::endl;
       out_ << "|   |-- Visu tracks                   : " << display_SD_visu_track << std::endl;
       out_ << "|   |   `-- with points               : " << display_SD_visu_track_points << std::endl;
