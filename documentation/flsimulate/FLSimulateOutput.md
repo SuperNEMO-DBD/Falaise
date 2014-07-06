@@ -329,3 +329,72 @@ Together with the multiple scattering  of electrons (and positrons) in
 the tracking gas  and the time resolution of  the tracker electronics,
 this is  a source of experimental  error in the reconstruction  of the
 charged particles' trajectories.
+
+An example of simulated event in the SuperNEMO demonstrator {#flsimulateoutput_exampleofsimulatedeventinthesupernemodemonstrator}
+===========================================================
+
+The figure below show a simulated neutrinoless double beta decay of Se-82 from the source foil in the SuperNEMO demonstrator.
+The display of truth tracks, calorimeter hits and tracker hits is activated.
+
+![An example of a simulated neutrinoless double beta decay of Se-82 from the source foil in the SuperNEMO demonstrator.](@ref images/fls_demonstrator_sd_0.jpg)
+
+The lines below shows the structure of the corresponding output `mctools::simulated_data` object which is stored in the `SD` bank of the
+event record.
+
+~~~~~~~
+Simulated data :
+|-- Properties : <empty>
+|   `-- <no property>
+|-- Collection type : 1
+|-- Collections of step hit handles :
+|   |-- Category '__visu.tracks' has 325 hit(s) [capacity=325]
+|   |-- Category 'calo' has 2 hit(s) [capacity=2]
+|   `-- Category 'gg' has 26 hit(s) [capacity=26]
+|-- Primary event :
+|   |-- Auxiliary properties: <none>
+|   |-- Label : 'Se82.0nubb'
+|   |-- Time  : 0 s
+|   |-- Particles: [2]
+|   |   |-- Particle #0 :
+|   |   |   |-- Type           : 3 (label='e-')
+|   |   |   |-- PDG code       : <none>
+|   |   |   |-- Mass           : 0.510999 MeV
+|   |   |   |-- Charge         : -1 e
+|   |   |   |-- Time           : 0 ns
+|   |   |   |-- Kinetic energy : 1.82335 MeV
+|   |   |   |-- Momentum       : (-2.17652,-0.564218,0.364033) MeV
+|   |   |   |-- Vertex         : <no vertex>
+|   |   |   |-- Auxiliary properties: <none>
+|   |   |   `-- Valid          : 1
+|   |   `-- Particle #1 :
+|   |       |-- Type           : 3 (label='e-')
+|   |       |-- PDG code       : <none>
+|   |       |-- Mass           : 0.510999 MeV
+|   |       |-- Charge         : -1 e
+|   |       |-- Time           : 0 ns
+|   |       |-- Kinetic energy : 1.17165 MeV
+|   |       |-- Momentum       : (1.12332,-0.536882,-1.01) MeV
+|   |       |-- Vertex         : <no vertex>
+|   |       |-- Auxiliary properties: <none>
+|   |       `-- Valid          : 1
+|   |-- GENBB weight : 1
+|   |-- Classification : '2e0p0g0a0X'
+|   `-- Valid: 1
+`-- Vertex : (-0.0348284,-391.675,-377.86) mm
+~~~~~~~
+
+We can check that the vertex position, the nature and initial kinematics of generated particles are stored in the data structure:
+ - vertex position along the X axis is -0.0348284 mm which clearly shows that it lies in the bulk volume of one of the source
+   foil strips (167 micrometers in this geometry setup used for the simulation),
+ - the primary event contains the two electrons emitted by the neutrinoless double beta decay of Se-82 (we check that their energy sum match the Q value of the decay: 2995 keV).
+
+The name of the event generator (`Se82.0nubb`) is also recorded.
+
+The bank contains three collections of truth hits created by the backend processors of the Bayeux/mctools Geant4 driver used in FLSimulate:
+ - The `__visu.tracks` collection contains 325 truth Geant4 raw step hits collected from all volumes of interest as defined by the step hit processors
+   that have been activated by the output profile chosen by the user,
+ - The 'calo' collection contains 2 truth calorimeter-like hits,
+ - The 'gg' collection contains 26 truth Geiger-like hits.
+
+This result has been obtained by activating the `"all_details"` output profile. This illustrates that the `__visu.tracks` collection may typically
+store one order of magnitude more raw truth hits than the one collected in other collection of hits.

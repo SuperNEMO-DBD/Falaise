@@ -98,5 +98,6 @@ install(FILES
         flsimulate/images/fls_calorimeter_step_hit_processor_0.jpg
         flsimulate/images/fls_gg_step_hit_processor_0.jpg
         flsimulate/images/fls_demonstrator_geom_ids_0.jpg
+        flsimulate/images/fls_demonstrator_sd_0.jpg
         DESTINATION ${Falaise_DOXYGEN_OUTPUT_IMAGE_DIR}
 )
