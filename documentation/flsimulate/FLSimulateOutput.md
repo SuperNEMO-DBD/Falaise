@@ -39,43 +39,46 @@ Monte-Carlo program.
 The geometry identifier concept {#flsimulateoutput_thegeometryidentifierconcept}
 ===============================
 
-A very important concept, massively used within the Falaise simulation and data processing,
-is the *geometry identifier* (GID).
-A GID is an object that uniquely identifies a geometry volume in the
-experimental setup. Given some dedicated rules, the description of the
-virtual geometry of the experiment is able to associate such an unique GID
-to each volumes of interest in the geometry (this technique is called
-*geometry mapping* and is under the responsibility of the
-*geometry manager* object and its embedded *GID manager* object).
+A very important concept, massively used within the Falaise simulation
+and data processing, is the *geometry  identifier* (GID).  A GID is an
+object that uniquely identifies a  geometry volume in the experimental
+setup.  Given some  dedicated rules,  the description  of the  virtual
+geometry of the experiment is able  to associate such an unique GID to
+each volumes  of interest  in the geometry  (this technique  is called
+*geometry mapping*  and is under  the responsibility of  the *geometry
+manager* object and its embedded *GID manager* object).
 
-What is important to know about any GID object is that it stores
-two kinds of information:
- - the *geometry type* is an unique positive integer identifier that indicates
-   which type of geometry volume is addressed by the GID. A *geometry type*
-   is conventionaly associated to a *geometry category* which is an unique human
-   readable string (the list of *geometry types and categories* supported by a given
-   experimental setup is defined in a special
-   configuration file).
+What is important to  know about any GID object is  that it stores two
+kinds of information:
 
-   The table below presents some geometry categories of interest in the SuperNEMO demonstrator
-   geometry:
+ - the *geometry type*  is an unique positive  integer identifier that
+   indicates which type of geometry volume  is addressed by the GID. A
+   *geometry  type*   is  conventionaly  associated  to   a  *geometry
+   category* which  is an  unique human readable  string (the  list of
+   *geometry types  and categories* supported by  a given experimental
+   setup is defined in a special configuration file).
+
+   The  table  below presents  some  official  geometry categories  of
+   interest in the SuperNEMO demonstrator geometry:
 
 | Category | Type | Address contents | Description | Example  |
 | -------- | ---- | ---------------- | ----------- | -------- |
-| `"world"`       | `0` | *world* number   | Conventionaly identifies the world volume   | [0:0] represents the top-level geometry volume |
-| `"module"`       | `1000` | *module* number   | Identifies any detector module   | [1000:0] represents the demonstrator module |
-| `"source_strip"` | `1102` | *module* and *strip* numbers  | Identifies any source foil strip | [1102:0.3] represents the fourth strip in the demonstrator module |
-| `"tracker_submodule"` | `1200` | *module* and *side* numbers | Identifies any tracker submodule | [1200:0.1] represents the French side tracker in the demonstrator module |
-| `"tracker_layer"`     | `1202` | *module*, *side* and *layer* numbers | Identifies any tracker layer of drift cells    |  [1202:0.1.8] represents the layer near the wall in the French side tracker |
-| `"drift_cell_core"`   | `1204` | *module*, *side*, *layer* and *row* numbers | Identifies any tracker drift cell    | [1204:0.1.8.112] represents the cell at the French/Tunnel corner of the tracking chamber |
-| `"xcalo_block"`   | `1232` | *module*, *side*, *wall*, *column* and *row* numbers | Identifies any X-calo block    | [1232:0.1.1.0.15] represents the block at the French/Tunnel top corner of the detector |
-| `"gveto_block"`   | `1252` | *module*, *side*, *wall* and *column* numbers | Identifies any gamma veto block    | [1252:0.1.1.15] represents the block at the French/Tunnel top corner of the detector |
-| `"calorimeter_block"`   | `1302` | *module*, *side*, *column*, *row* and *part* numbers | Identifies any main calorimeter block    | [1302:0.1.19.12.1] represents the front part of the scintillator block at the French/Tunnel top corner of the detector |
+| `"world"` | `0` | *world* number | Conventionaly identifies the world volume | [0:0] represents the top-level geometry volume |
+| `"module"` | `1000` | *module* number | Identifies any detector module | [1000:0] represents the demonstrator module |
+| `"source_strip"` | `1102` | *module* and *strip* numbers | Identifies any source foil strip | [1102:0.3] represents the fourth strip in the demonstrator module |
+| `"tracker_submodule"` | `1200` | *module* and *side* numbers  | Identifies any tracker submodule | [1200:0.1] represents the French side tracker in the demonstrator module |
+| `"tracker_layer"` | `1202` | *module*, *side* and *layer* numbers | Identifies any tracker layer of drift cells | [1202:0.1.8] represents the layer near the wall in the French side tracker |
+| `"drift_cell_core"` | `1204` | *module*, *side*, *layer* and *row* numbers | Identifies any tracker drift cell | [1204:0.1.8.112] represents the cell at the French/Tunnel corner of the tracking chamber |
+| `"xcalo_block"` | `1232` | *module*, *side*, *wall*, *column* and *row* numbers | Identifies any X-calo block | [1232:0.1.1.0.15] represents the block at the French/Tunnel top corner of the detector |
+| `"gveto_block"` | `1252` | *module*, *side*, *wall* and *column* numbers | Identifies any gamma veto block | [1252:0.1.1.15] represents the block at the French/Tunnel top corner of the detector |
+| `"calorimeter_block"` | `1302` | *module*, *side*, *column*, *row* and *part* numbers | Identifies any main calorimeter block | [1302:0.1.19.12.1] represents the front part of the scintillator block at the French/Tunnel top corner of the detector |
 
- - the *address* of the GID is an ordered collection of positive integer identifiers that
-   informs about the effective positioning of the volume in the
-   geometry hierarchy : module (only 0 for the demonstrator), side number (italian/french), source strip number (from 0 to 35),
-   main clorimeter column (from 0 to 19), Geiger cell layer (from 0 to 8)...
+ - the  *address* of  the GID  is  an ordered  collection of  positive
+   integer identifiers that informs about the effective positioning of
+   the  volume in  the geometry  hierarchy :  module (only  0 for  the
+   demonstrator),  side number  (italian/french), source  strip number
+   (from 0 to 35), main clorimeter  column (from 0 to 19), Geiger cell
+   layer (from 0 to 8)...
 
 It is thus possible to extract these informations from any GID object.
 
@@ -94,9 +97,63 @@ Example with GID with value [1200:0.1] :
 
    A: The GID will respond `1` (this is the French *tracker submodule* number in the geometry convention of the experiment).
 
-The GID object is thus the unique repository where to store the geometrical identification and localization
-of a volume and particularly for Monte-Carlo truth hits.
+The  GID object  is  thus the  unique repository  where  to store  the
+geometrical   identification  and   localization  of   a  volume   and
+particularly for Monte-Carlo truth hits.
 
+
+The  figure  below  illustrates  the  identification  of  the  volumes
+traverses by  simulated electron tracks in  the SuperNEMO demonstrator
+module:
+
+![Two simulated electron tracks traversing several volumes of the detector associated to various geometry categories.](@ref images/fls_demonstrator_geom_ids_0.jpg)
+
+From this example, we can determine the geometry identifiers (GIDs) associated to these volumes, thanks
+to the *mapping* and *locator* mechanisms implemented in the geometry modelling manager:
+ - The two electrons are emitted from a source strip (green segment on the right). This source strip
+   volume belongs to the `"source_strip"` geometry category (type 1102). It is the last one
+   placed in the source frame. Its geometry identifier is [1102:0.35] with module number 0 and source strip number 35.
+ - The first truth track (bottom) traverses the drift volumes of 11 Geiger cells (blue squares)
+   of which the geometry category is `"drift_cell_core"` (type 1204). All the hit cells
+   are in the Italian side of the demonstrator module. The corresponding
+   GIDS are:
+    - [1204:0.0.0.110] is associated to the cell close to the vertex represented by a small square in the source foil; the GID address
+      consists in module number O, side number 0 (Italian side), layer number 0 (near the source frame)
+      and row number 110 (one of the last 9-cells rows on the Tunnel side),
+    - [1204:0.0.1.110],
+    - [1204:0.0.2.110],
+    - [1204:0.0.3.110],
+    - [1204:0.0.3.111],
+    - [1204:0.0.4.111],
+    - [1204:0.0.5.111],
+    - [1204:0.0.6.111],
+    - [1204:0.0.7.111],
+    - [1204:0.0.8.111],
+    - [1204:0.0.8.112] is associated to the cell at the top left corner of the Italian tracker submodule (in the "C1" C-shape).
+
+   Then the first track terminates in the front part of a scintillator block (category `"calorimeter_block"`) of the
+   Italian main wall (left purple rectangle). Its GID is [1302:0.0.19.11.1] which means:
+    - module number 0 (demonstrator module),
+    - side number 0 (Italian),
+    - column number 19 (the last column in the calorimeter main wall on the Tunnel side on the Y axis),
+    - row number 11 (not visible here on this X-Y projection),
+    - part number 1 (because these scintillator blocks are modeled in two parts, the back
+      part which is an extruded
+      scintillator block on the photomultiplier side (part number is 0)
+      and the front block which is a simple scintillator block on the tracker
+      side (part number is 1)).
+ - The second truth track (top) traverses the drift volumes of 2 Geiger cells (blue squares) of which the GIDs are:
+    - [1204:0.0.0.111] nearest the vertex,
+    - [1204:0.0.0.112] nearest the X-calo scintillator block.
+
+   The track terminates in a scintillator block (category `"xcalo_block"`)
+   at the Tunnel side of the Italian main wall (top purple rectangle).
+   Its GID is [1232:0.0.1.0.8] which means:
+    - module number 0 (demonstrator module),
+    - side number 0 (Italian),
+    - wall number 1 (Tunnel side on the Y axis),
+    - column number 0 (the first column near the source frame on the X axis),
+    - row number 8 (not visible here on this X-Y projection).
 
 The mctools::base_step_hit class {#flsimulateoutput_mctoolsbasestephitclass}
 ================================

@@ -288,3 +288,6 @@ and visualization  purpose, not  for production  of large  datasets of
 simulated data.
 
 This feature is not used yet for the BiPo3 setup.
+
+The description of the output simulation data model is described
+in a [dedicated page on FLSimulate output](@ref flsimulateoutput).

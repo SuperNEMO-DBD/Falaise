@@ -97,5 +97,6 @@ add_custom_target(falaise_docs ALL DEPENDS ${Falaise_DOXYGEN_OUTPUT_FILE})
 install(FILES
         flsimulate/images/fls_calorimeter_step_hit_processor_0.jpg
         flsimulate/images/fls_gg_step_hit_processor_0.jpg
+        flsimulate/images/fls_demonstrator_geom_ids_0.jpg
         DESTINATION ${Falaise_DOXYGEN_OUTPUT_IMAGE_DIR}
 )
