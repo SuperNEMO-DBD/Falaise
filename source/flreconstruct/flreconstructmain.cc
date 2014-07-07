@@ -60,7 +60,6 @@
 #include "falaise/falaise.h"
 #include "falaise/version.h"
 #include "falaise/exitcodes.h"
-#include "things2root/Things2Root.h"
 #include "FLReconstructResources.h"
 
 //----------------------------------------------------------------------
@@ -380,6 +379,20 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
     moduleManager_->load_module("pipeline", "dpp::dump_module", dumbConfig);
   }
 
+  // Load a Things2Root module in the manager before initialization
+  if (!clArgs.outputFile.empty()) {
+    DT_LOG_TRACE(clArgs.logLevel,"configuring output module");
+    if (boost::algorithm::ends_with(clArgs.outputFile, ".root")) {
+      std::string pluginPath = FLReconstruct::getPluginLibDir();
+      datatools::library_loader libLoader;
+      libLoader.load("Things2Root", pluginPath);
+      DT_LOG_TRACE(clArgs.logLevel, "using ROOT format for output");
+      datatools::properties t2rConfig;
+      t2rConfig.store("output_file", clArgs.outputFile);
+      moduleManager_->load_module("t2rRecOutput", "Things2Root", t2rConfig);
+    }
+  }
+
   // Plain initialization
   moduleManager_->initialize_simple();
 
@@ -403,33 +416,25 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
     return falaise::EXIT_UNAVAILABLE;
   }
 
-  // Output module... only if file was passed
-  boost::shared_ptr<dpp::base_module> recOutput;
-  if (!clArgs.outputFile.empty()) {
-    DT_LOG_TRACE(clArgs.logLevel,"configuring output module");
-    if (boost::algorithm::ends_with(clArgs.outputFile, ".root")) {
-      DT_LOG_TRACE(clArgs.logLevel, "using ROOT format for output");
-      boost::shared_ptr<Things2Root> rootOutput(new Things2Root);
-      rootOutput->set_name("FLReconstructOutput");
-      datatools::properties rootOutputConfig;
-      rootOutputConfig.store("output_file", clArgs.outputFile);
-      rootOutput->initialize_with_service(rootOutputConfig, flrServices);
-      recOutput = rootOutput;
-    } else {
-      // default to brio...
-      DT_LOG_TRACE(clArgs.logLevel, "using BRIO format for output");
-      boost::shared_ptr<dpp::output_module> brioOutput(new dpp::output_module);
-      brioOutput->set_name("FLReconstructOutput");
-      brioOutput->set_single_output_file(clArgs.outputFile);
-      // Metadata management:
-      // Fetch the metadata to be stored through the output module
-      datatools::multi_properties & metadataStore = brioOutput->grab_metadata_store();
-      // Copy metadata from the input module
-      metadataStore = mData;
-      // TO DO: add more sections in metadata (from userConfig) ...
-      brioOutput->initialize_simple();
-      recOutput = brioOutput;
-    }
+  // Output module... only if added in the module manager
+  dpp::base_module * recOutput = 0;
+  boost::scoped_ptr<dpp::output_module> flRecOutput;
+  if (moduleManager_->has("t2rRecOutput")) {
+    // We instantiate and fetch the t2r module from the manager
+    recOutput = &moduleManager_->grab("t2rRecOutput");
+  } else if (!clArgs.outputFile.empty()) {
+    // We try to setup an output module
+    flRecOutput.reset(new dpp::output_module);
+    flRecOutput->set_name("FLReconstructOutput");
+    flRecOutput->set_single_output_file(clArgs.outputFile);
+    // Metadata management:
+    // Fetch the metadata to be stored through the output module
+    datatools::multi_properties & metadataStore = flRecOutput->grab_metadata_store();
+    // Copy metadata from the input module
+    metadataStore = mData;
+    // TO DO: add more sections in metadata (from userConfig) ...
+    flRecOutput->initialize_simple();
+    recOutput = flRecOutput.get();
   }
 
   // - Now the actual event loop

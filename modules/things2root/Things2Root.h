@@ -51,7 +51,24 @@ typedef struct TrackerEventStorage{
   std::vector<int>* truehitid_;
   std::vector<int>* truetrackid_;
   std::vector<int>* trueparenttrackid_;
-} trackereventstorage;
+
+  TrackerEventStorage() :
+      nohits_(0),
+      id_(0),
+      module_(0),
+      side_(0),
+      layer_(0),
+      column_(0),
+      x_(0),
+      y_(0),
+      z_(0),
+      sigmaz_(0),
+      r_(0),
+      sigmar_(0),
+      truehitid_(0),
+      truetrackid_(0),
+      trueparenttrackid_(0) {}
+  } trackereventstorage;
 
 typedef struct CaloEventStorage{
   int nohits_;
@@ -66,6 +83,20 @@ typedef struct CaloEventStorage{
   std::vector<double>* sigmatime_;
   std::vector<double>* energy_;
   std::vector<double>* sigmaenergy_;
+
+  CaloEventStorage() :
+      nohits_(0),
+      id_(0),
+      type_(0),
+      module_(0),
+      side_(0),
+      column_(0),
+      row_(0),
+      wall_(0),
+      time_(0),
+      sigmatime_(0),
+      energy_(0),
+      sigmaenergy_(0) {}
 } caloeventstorage;
 
 typedef struct TrueVertexStorage{
@@ -84,6 +115,16 @@ typedef struct TrueParticleStorage{
   std::vector<double>* pz_;
   std::vector<double>* time_;
   std::vector<double>* ke_;
+
+  TrueParticleStorage() :
+      noparticles_(0),
+      id_(0),
+      type_(0),
+      px_(0),
+      py_(0),
+      pz_(0),
+      time_(0),
+      ke_(0) {}
 } TrueParticleStorage;
 
 typedef struct TrueCaloStorage{
@@ -100,6 +141,21 @@ typedef struct TrueCaloStorage{
   std::vector<double>* z_;
   std::vector<double>* time_;
   std::vector<double>* energy_;
+
+  TrueCaloStorage() :
+      nohits_(0),
+      id_(0),
+      type_(0),
+      module_(0),
+      side_(0),
+      column_(0),
+      row_(0),
+      wall_(0),
+      x_(0),
+      y_(0),
+      z_(0),
+      time_(0),
+      energy_(0) {}
 } truecalostorage;
 
 typedef struct TrueTrackerStorage{
@@ -118,6 +174,23 @@ typedef struct TrueTrackerStorage{
   std::vector<double>* zstop_;
   std::vector<int>* trackid_;
   std::vector<int>* parenttrackid_;
+
+  TrueTrackerStorage() :
+      nohits_(0),
+      id_(0),
+      module_(0),
+      side_(0),
+      layer_(0),
+      column_(0),
+      time_(0),
+      xstart_(0),
+      ystart_(0),
+      zstart_(0),
+      xstop_(0),
+      ystop_(0),
+      zstop_(0),
+      trackid_(0),
+      parenttrackid_(0) {}
 } TrueTrackerStorage;
 
 class Things2Root : public dpp::base_module {
