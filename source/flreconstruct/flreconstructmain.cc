@@ -380,11 +380,11 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
   }
 
   // Load a Things2Root module in the manager before initialization
+  datatools::library_loader libLoader;
   if (!clArgs.outputFile.empty()) {
     DT_LOG_TRACE(clArgs.logLevel,"configuring output module");
     if (boost::algorithm::ends_with(clArgs.outputFile, ".root")) {
       std::string pluginPath = FLReconstruct::getPluginLibDir();
-      datatools::library_loader libLoader;
       libLoader.load("Things2Root", pluginPath);
       DT_LOG_TRACE(clArgs.logLevel, "using ROOT format for output");
       datatools::properties t2rConfig;
