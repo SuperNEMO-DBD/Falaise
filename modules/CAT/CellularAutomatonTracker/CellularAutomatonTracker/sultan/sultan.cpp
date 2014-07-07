@@ -249,13 +249,26 @@ namespace SULTAN {
       m.message("SULTAN::sultan::reduce_clusters: assign helices to ", made_clusters_.size(), " clusters ", mybhep::VERBOSE);
       for(std::vector<topology::cluster>::iterator iclu = made_clusters_.begin(); iclu != made_clusters_.end(); ++iclu){
         *leftover_cluster_ = *iclu;
-        if( leftover_cluster_->nodes_.size() < min_ncells_in_cluster ) continue;
+        if( leftover_cluster_->nodes_.size() < min_ncells_in_cluster ){
+
+	  for(std::vector<topology::node>::iterator inode=iclu->nodes_.begin(); inode!=iclu->nodes_.end(); ++inode){
+	    inode->set_ep(inode->c().ep());
+	  }
+
+	  continue;
+	}
         experimental_legendre_vector->reset();
         neighbours.clear();
         //form_triplets_from_cells_with_endpoints();
         form_triplets_from_cells();
         form_helices_from_triplets(&the_helices, iclu - made_clusters_.begin());
-        if( !the_helices.size() ) continue;
+        if( !the_helices.size() ){
+	  for(std::vector<topology::node>::iterator inode=iclu->nodes_.begin(); inode!=iclu->nodes_.end(); ++inode){
+	    inode->set_ep(inode->c().ep());
+	  }
+
+	  continue;
+	}
         for(std::vector<topology::experimental_helix>::const_iterator hh = the_helices.begin(); hh!=the_helices.end(); ++hh){
           experimental_legendre_vector->add_helix(*hh);
         }
@@ -1807,7 +1820,7 @@ namespace SULTAN {
       // add clusters just made to the vector of made clusters
       m.message("SULTAN::sultan::reduce_cluster_based_on_endpoints:  the ", full_cluster_->nodes().size(), " cells have been reduced to ", cs.size(), " clusters, to be added to ", newly_made_clusters.size(), " newly made clusters so far ", mybhep::VERBOSE); fflush(stdout);
       cs = clean_up(cs);
-      //assign_nodes_of_clusters(cs);
+      assign_nodes_of_clusters(cs);
       newly_made_clusters.insert(newly_made_clusters.end(), cs.begin(), cs.end());
       newly_made_clusters = clean_up(newly_made_clusters);
       m.message("SULTAN::sultan::reduce_cluster_based_on_endpoints:  after clean_up, ", newly_made_clusters.size(), "newly made clusters remain", mybhep::VERBOSE); fflush(stdout);
@@ -2497,7 +2510,7 @@ namespace SULTAN {
     }
 
     c.set_cluster_type("straight_line");
-    assign_nodes_of_cluster(c);
+    //assign_nodes_of_cluster(c);
     cs->push_back(c);
 
     if (level >= mybhep::VERBOSE){
@@ -2612,7 +2625,7 @@ namespace SULTAN {
         if( c.nodes().size() == full_cluster_->nodes_.size() ){
           m.message("SULTAN::sultan::get_helix_clusters_from:  all", c.nodes().size(), "cells of cluster have been assigned as helix ", mybhep::VERBOSE);
           *cluster_is_finished = true;
-          assign_nodes_of_cluster(c);
+          //assign_nodes_of_cluster(c);
           cs->push_back(c);
           if( use_clocks )
             clock.stop(" sultan: get_helix_clusters_from ");
@@ -2630,7 +2643,7 @@ namespace SULTAN {
       if( nmax > 0 && cmax.is_good() ){ // 1 best cluster was found in (a, X, b)
 
         cmax.set_cluster_type("helix");
-        assign_nodes_of_cluster(cmax); // this will remove the assigned nodes from leftover
+        //assign_nodes_of_cluster(cmax); // this will remove the assigned nodes from leftover
                                        // reducing Y range for future searches in triplets (a, Y, b)
         cs->push_back(cmax);
         m.message("SULTAN::sultan::get_helix_clusters_from: cells assigned as helix ", mybhep::VERBOSE);

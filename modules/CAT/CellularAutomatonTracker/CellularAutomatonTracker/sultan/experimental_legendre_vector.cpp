@@ -171,8 +171,6 @@ namespace SULTAN {
         bestR=numR/denR;
         bestH=numH/denH;
 
-        std::clog << " qqq iter " << iter << " x0 " << bestx0 << " y0 " << besty0 << " z0 " << bestz0 << " R " << bestR << " H " << bestH << std::endl;
-
       }
 
       experimental_helix r(experimental_double(bestx0,0.),experimental_double(besty0,0.),experimental_double(bestz0,0.),

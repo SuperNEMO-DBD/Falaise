@@ -12,6 +12,7 @@
 #include <sultan/cell.h>
 #include <sultan/node.h>
 #include <sultan/experimental_helix.h>
+#include <sultan/LinearRegression.h>
 
 
 namespace SULTAN{

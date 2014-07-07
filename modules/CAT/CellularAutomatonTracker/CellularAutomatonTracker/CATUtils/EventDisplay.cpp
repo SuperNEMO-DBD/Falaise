@@ -473,7 +473,9 @@ void EventDisplay::initialize( ) {
     ncanvas ++;
   if( PlotTrueTracks )
     ncanvas ++;
-  if( PlotCats || PlotHelices || PlotSultan )
+  if( PlotCats || PlotHelices )
+    ncanvas ++;
+  if(  PlotSultan )
     ncanvas ++;
 
   canvas->Divide(sv, ncanvas);
@@ -566,6 +568,8 @@ bool EventDisplay::InitializeDisplayEvent( mybhep::sstore store, mybhep::gstore 
   if( PlotTrueTracks )
     ncanvas ++;
   if( PlotCats || PlotHelices )
+    ncanvas ++;
+  if( PlotSultan )
     ncanvas ++;
 
   canvas->Divide(sv, ncanvas);
@@ -1576,6 +1580,7 @@ void EventDisplay::execute(size_t ievent, CAT::topology::tracked_data & __CAT_tr
         event_display_xz("cats", __CAT_tracked_data, __SULTAN_tracked_data);
       if( PlotSideView )
         event_display_yz("cats", __CAT_tracked_data, __SULTAN_tracked_data);
+
     }
 
     /*
@@ -1600,7 +1605,10 @@ void EventDisplay::execute(size_t ievent, CAT::topology::tracked_data & __CAT_tr
         event_display_xz("sultan", __CAT_tracked_data, __SULTAN_tracked_data);
       if( PlotSideView )
         event_display_yz("sultan", __CAT_tracked_data, __SULTAN_tracked_data);
+
     }
+
+
   }
 
   canvas->Update();
@@ -2570,6 +2578,7 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<CAT::topology::seq
 
   }
   else if( mode == "cats" ){
+
     for(size_t i=0; i<CAT_sequences_.size(); i++)
       {
         CAT::topology::sequence s = CAT_sequences_[i];
@@ -2757,7 +2766,7 @@ void EventDisplay::draw_sultan_xz(){
 	  SULTAN::topology::experimental_point p = s.nodes()[j].ep();
 
 	  xt[j+offset] = p.x().value();
-	  zt[j+offset] = -p.y().value();
+	  zt[j+offset] = p.y().value();
 
 	}
 

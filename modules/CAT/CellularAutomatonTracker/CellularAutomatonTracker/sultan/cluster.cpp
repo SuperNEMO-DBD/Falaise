@@ -90,6 +90,9 @@ namespace SULTAN{
     //! set helix
     void cluster::set_helix(const  experimental_helix & h){
       helix_ = h;
+      for(std::vector<topology::node>::iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode){
+	inode->set_ep(h.position(inode->c().ep()));
+      }
     }
 
     //! get sequence
@@ -364,7 +367,7 @@ namespace SULTAN{
 
     void cluster::self_order(topology::node * n = 0){
       // if n = 0
-      // calculate self circle of cluster
+      // calculate self line of cluster
       // and order cells based on that
       // otherwise use n as endpoint
 
@@ -386,20 +389,26 @@ namespace SULTAN{
       }
       
 
-      if( n == 0 ){ // calculate self circle
+      if( n == 0 ){ // calculate self line
 
-	double x0 = 0.;
-	double y0 = 0.;
+
+        std::vector<double> xs;
+        std::vector<double> ys;
+
 	for(std::vector<topology::node>::const_iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode){
-	  x0 += inode->c().ep().x().value();
-	  y0 += inode->c().ep().y().value();
+	  xs.push_back( inode->c().ep().x().value());
+	  ys.push_back( inode->c().ep().y().value());
 	}
-	x0 /= nodes_.size();
-	y0 /= nodes_.size();
-	
+
+
+        LinearRegression l(xs, ys, print_level(), probmin());
+
+	l.set_xi(xs);
+	l.set_yi(ys);
+	l.fit();
+
 	for(std::vector<topology::node>::iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode){
-	  angle = atan2(inode->c().ep().y().value() - y0, inode->c().ep().x().value() - x0);
-	  inode->set_circle_phi(angle);
+	  inode->set_circle_phi(l.parameter(inode->c().ep().x().value()));
 	}
       }else{ // use n as endpoint
 

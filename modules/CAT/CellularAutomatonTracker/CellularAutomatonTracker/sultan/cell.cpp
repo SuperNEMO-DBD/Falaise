@@ -113,6 +113,29 @@ namespace SULTAN{
       }
 
       // for NEMO3 use physical distance
+      // also, return 2 for cells sitting on the same gap
+
+      const int hit1_layer = this->layer(); // 0, +-1, ..., +-8
+      const int hit2_layer = cell.layer();
+
+      if( hit1_layer*hit2_layer < 0 ) return 0; // opposite side of foil
+      if( abs(hit1_layer) == 3 &&
+	  abs(hit2_layer) == 3 ) return 2;
+      if( abs(hit1_layer) == 3 &&
+	  abs(hit2_layer) == 4 ) return 2;
+      if( abs(hit1_layer) == 4 &&
+	  abs(hit2_layer) == 3 ) return 2;
+      if( abs(hit1_layer) == 4 &&
+	  abs(hit2_layer) == 4 ) return 2;
+      if( abs(hit1_layer) == 5 &&
+	  abs(hit2_layer) == 5 ) return 2;
+      if( abs(hit1_layer) == 5 &&
+	  abs(hit2_layer) == 6 ) return 2;
+      if( abs(hit1_layer) == 6 &&
+	  abs(hit2_layer) == 5 ) return 2;
+      if( abs(hit1_layer) == 6 &&
+	  abs(hit2_layer) == 6 ) return 2;
+
       topology::experimental_double distance = topology::experimental_vector(this->ep(),cell.ep()).hor().length();
       
       double limit_side = cell_distance;
