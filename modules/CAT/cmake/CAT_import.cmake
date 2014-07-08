@@ -273,6 +273,7 @@ set(_sultan_HEADERS
   CellularAutomatonTracker/CellularAutomatonTracker/sultan/calorimeter_hit.h
   CellularAutomatonTracker/CellularAutomatonTracker/sultan/experimental_line.h
   CellularAutomatonTracker/CellularAutomatonTracker/sultan/plane.h
+  CellularAutomatonTracker/CellularAutomatonTracker/sultan/LinearRegression.h
   )
 
 set(_sultan_SOURCES
@@ -299,6 +300,7 @@ set(_sultan_SOURCES
   CellularAutomatonTracker/CellularAutomatonTracker/sultan/calorimeter_hit.cpp
   CellularAutomatonTracker/CellularAutomatonTracker/sultan/experimental_line.cpp
   CellularAutomatonTracker/CellularAutomatonTracker/sultan/plane.cpp
+  CellularAutomatonTracker/CellularAutomatonTracker/sultan/LinearRegression.cpp
   )
 list(APPEND FalaiseCATPlugin_HEADERS ${_sultan_HEADERS})
 list(APPEND FalaiseCATPlugin_SOURCES ${_sultan_SOURCES})
