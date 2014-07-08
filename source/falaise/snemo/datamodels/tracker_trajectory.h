@@ -32,95 +32,103 @@ namespace snemo {
     public:
 
       /// Handle on tracker trajectory
-      typedef datatools::handle<tracker_trajectory>       handle_type;
-      typedef tracker_cluster::handle_type                handle_cluster;
-      typedef datatools::handle<base_trajectory_pattern>  handle_pattern;
-      typedef std::vector<tracker_cluster::handle_type>   clusters_collection_type;
-      typedef calibrated_tracker_hit::collection_type     orphans_collection_type;
+      typedef datatools::handle<tracker_trajectory> handle_type;
+
+      /// Handle on tracker cluster
+      typedef tracker_cluster::handle_type handle_cluster;
+
+      /// Collection of handles on tracker clusters
+      typedef std::vector<handle_cluster> clusters_collection_type;
+
+      /// Handle on trajectory pattern
+      typedef datatools::handle<base_trajectory_pattern> handle_pattern;
+
+      /// Collection of handles of calibrated tracker hit
+      typedef calibrated_tracker_hit::collection_type orphans_collection_type;
 
       /// Default constructor
-      tracker_trajectory ();
+      tracker_trajectory();
 
       /// Destructor
-      virtual ~tracker_trajectory ();
+      virtual ~tracker_trajectory();
 
       /// Check if there is a valid trajectory ID
-      bool has_trajectory_id () const;
+      bool has_trajectory_id() const;
 
       /// Get the trajectory ID
-      int get_trajectory_id () const;
+      int get_trajectory_id() const;
 
       /// Set the trajectory ID
-      void set_trajectory_id (int32_t);
+      void set_trajectory_id(int32_t);
 
       /// Invalidate the trajectory ID
-      void invalidate_trajectory_id ();
+      void invalidate_trajectory_id();
 
       /// Check if the cluster is present
-      bool has_cluster () const;
+      bool has_cluster() const;
 
       /// Detach the cluster
-      void detach_cluster ();
+      void detach_cluster();
 
       /// Attach a cluster by handle
-      void set_cluster_handle (const handle_cluster & cluster_handle_);
+      void set_cluster_handle(const handle_cluster & cluster_handle_);
 
       /// Return a mutable reference on the cluster handle
-      handle_cluster & grab_cluster_handle ();
+      handle_cluster & grab_cluster_handle();
 
       /// Return a non mutable reference on the cluster handle
-      const handle_cluster & get_cluster_handle () const;
+      const handle_cluster & get_cluster_handle() const;
 
       /// Return a mutable reference on the cluster
-      tracker_cluster & grab_cluster ();
+      tracker_cluster & grab_cluster();
 
       /// Return a non mutable reference on the cluster
-      const tracker_cluster & get_cluster () const;
+      const tracker_cluster & get_cluster() const;
 
       /// Check if there are some orphan hits along the fitted trajectory
-      bool has_orphans () const;
+      bool has_orphans() const;
 
       /// Reset the collection of orphan hits
-      void reset_orphans ();
+      void reset_orphans();
 
       /// Return a mutable reference on the collection of orphan hits (handles)
-      orphans_collection_type & grab_orphans ();
+      orphans_collection_type & grab_orphans();
 
       /// Return a non mutable reference on the collection of orphan hits (handles)
-      const orphans_collection_type & get_orphans () const;
+      const orphans_collection_type & get_orphans() const;
 
       /// Check if the pattern is present
-      bool has_pattern () const;
+      bool has_pattern() const;
 
       /// Detach the pattern
-      void detach_pattern ();
+      void detach_pattern();
 
       /// Attach a pattern by handle
-      void set_pattern_handle (const handle_pattern & pattern_handle_);
+      void set_pattern_handle(const handle_pattern & pattern_handle_);
 
       /// Return a mutable reference on the pattern handle
-      handle_pattern & grab_pattern_handle ();
+      handle_pattern & grab_pattern_handle();
 
       /// Return a non mutable reference on the pattern handle
-      const handle_pattern & get_pattern_handle () const;
+      const handle_pattern & get_pattern_handle() const;
 
       /// Return a mutable reference on the pattern
-      base_trajectory_pattern & grab_pattern ();
+      base_trajectory_pattern & grab_pattern();
 
       /// Return a non mutable reference on the pattern
-      const base_trajectory_pattern & get_pattern () const;
+      const base_trajectory_pattern & get_pattern() const;
 
       /// Reset the tracker trajectory (see clear)
-      void reset ();
+      void reset();
 
       /// Empty the contents of the tracker trajectory
-      virtual void clear ();
+      virtual void clear();
 
       /// Smart print
-      virtual void tree_dump (std::ostream      & out     = std::clog,
-                              const std::string & title_  = "",
-                              const std::string & indent_ = "",
-                              bool inherit_               = false) const;
+      virtual void tree_dump(std::ostream      & out     = std::clog,
+                             const std::string & title_  = "",
+                             const std::string & indent_ = "",
+                             bool inherit_               = false) const;
 
     private:
 
