@@ -83,7 +83,7 @@ directory hierarchy:
 
 ~~~~~
 $ cd /Users/ben
-$ mkdir -p SuperNEMO/{lpc-caen.svn, builds, installs}
+$ mkdir -p SuperNEMO/{lpc-caen.svn,builds,installs}
 $ cd SuperNEMO
 $ ls
 builds  installs  lpc-caen.svn
