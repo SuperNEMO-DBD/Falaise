@@ -67,8 +67,8 @@ int main (/* int argc_, char ** argv_ */)
       hV1.grab ().set_x_error (2.5 * CLHEP::mm);
       hV1.grab ().set_y_error (2.5 * CLHEP::mm);
       hV1.grab ().set_z_error (2.5 * CLHEP::mm);
-      hV1.grab ().grab_auxiliaries ().store_flag (sdm::particle_track::vertex_type_key(),
-                                                  sdm::particle_track::vertex_on_main_calorimeter_label());
+      hV1.grab ().grab_auxiliaries ().store(sdm::particle_track::vertex_type_key(),
+                                            sdm::particle_track::vertex_on_main_calorimeter_label());
       hV1.get ().tree_dump (std::clog, "Calorimeter vertex : ");
 
       // Create the particle track :
