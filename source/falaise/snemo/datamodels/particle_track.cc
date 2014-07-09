@@ -16,11 +16,11 @@ namespace snemo {
     const std::string & particle_track::vertex_type_to_label(vertex_type vt_)
     {
       switch(vt_) {
-      case VERTEX_ON_SOURCE_FOIL: return vertex_on_source_foil_label();
+      case VERTEX_ON_SOURCE_FOIL:      return vertex_on_source_foil_label();
       case VERTEX_ON_MAIN_CALORIMETER: return vertex_on_main_calorimeter_label();
-      case VERTEX_ON_X_CALORIMETER: return vertex_on_x_calorimeter_label();
-      case VERTEX_ON_GAMMA_VETO: return vertex_on_gamma_veto_label();
-      case VERTEX_ON_WIRE: return vertex_on_wire_label();
+      case VERTEX_ON_X_CALORIMETER:    return vertex_on_x_calorimeter_label();
+      case VERTEX_ON_GAMMA_VETO:       return vertex_on_gamma_veto_label();
+      case VERTEX_ON_WIRE:             return vertex_on_wire_label();
       default:
         return vertex_none_label();
       }
@@ -28,11 +28,11 @@ namespace snemo {
 
     particle_track::vertex_type particle_track::label_to_vertex_type(const std::string & label_)
     {
-      if (label_ == vertex_on_source_foil_label()) return VERTEX_ON_SOURCE_FOIL;
+      if (label_ == vertex_on_source_foil_label())      return VERTEX_ON_SOURCE_FOIL;
       if (label_ == vertex_on_main_calorimeter_label()) return VERTEX_ON_MAIN_CALORIMETER;
-      if (label_ == vertex_on_x_calorimeter_label()) return VERTEX_ON_X_CALORIMETER;
-      if (label_ == vertex_on_gamma_veto_label()) return VERTEX_ON_GAMMA_VETO;
-      if (label_ == vertex_on_wire_label()) return VERTEX_ON_WIRE;
+      if (label_ == vertex_on_x_calorimeter_label())    return VERTEX_ON_X_CALORIMETER;
+      if (label_ == vertex_on_gamma_veto_label())       return VERTEX_ON_GAMMA_VETO;
+      if (label_ == vertex_on_wire_label())             return VERTEX_ON_WIRE;
       return VERTEX_NONE;
     }
 
