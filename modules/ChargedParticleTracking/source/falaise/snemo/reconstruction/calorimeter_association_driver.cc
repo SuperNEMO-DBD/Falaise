@@ -169,8 +169,8 @@ namespace snemo {
 
           // Only take care of main wall and x-calorimeter vertex
           // 2014-06-05 XG: I am not sure we need to be so strict...
-          if (! a_vertex.get_auxiliaries().has_flag(snemo::datamodel::particle_track::vertex_on_main_calorimeter_flag()) &&
-              ! a_vertex.get_auxiliaries().has_flag(snemo::datamodel::particle_track::vertex_on_x_calorimeter_flag()))
+          if (! snemo::datamodel::particle_track::vertex_is_on_main_calorimeter(a_vertex)
+               && ! snemo::datamodel::particle_track::vertex_is_on_x_calorimeter(a_vertex))
             continue;
 
           if (get_logging_priority() >= datatools::logger::PRIO_TRACE)

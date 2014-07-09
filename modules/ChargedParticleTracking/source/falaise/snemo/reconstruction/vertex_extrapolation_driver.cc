@@ -172,8 +172,8 @@ namespace snemo {
       // Extract the side from the geom_id of the tracker_trajectory object:
       if (! trajectory_.has_geom_id())
         {
-          DT_LOG_ERROR(get_logging_priority(), "Tracker trajectory has no geom_id! Abort!")
-            return;
+          DT_LOG_ERROR(get_logging_priority(), "Tracker trajectory has no geom_id! Abort!");
+          return;
         }
       const geomtools::geom_id & gid = trajectory_.get_geom_id();
       const geomtools::id_mgr & id_mgr = get_geometry_manager().get_id_mgr();
@@ -189,6 +189,7 @@ namespace snemo {
       const snemo::geometry::calo_locator  & calo_locator  = _locator_plugin_->get_calo_locator();
       const snemo::geometry::xcalo_locator & xcalo_locator = _locator_plugin_->get_xcalo_locator();
       const snemo::geometry::gveto_locator & gveto_locator = _locator_plugin_->get_gveto_locator();
+      // TODO: Add source strip locator...
 
       const double xcalo_bd[2]
         = {calo_locator.get_wall_window_x(snemo::geometry::utils::SIDE_BACK),
@@ -204,10 +205,10 @@ namespace snemo {
       const snemo::datamodel::base_trajectory_pattern & a_track_pattern = trajectory_.get_pattern();
       const std::string & a_pattern_id = a_track_pattern.get_pattern_id();
 
-      // Extrapolated vertices
+      // Extrapolated vertices:
       std::map<std::string, geomtools::vector_3d> vertices;
 
-      // Add a flag into 'blur_spot' auxiliaries to refer to the hit calo
+      // Add a property into 'blur_spot' auxiliaries to refer to the hit calo:
       std::string calo_category_flag;
       if (a_pattern_id == snemo::datamodel::line_trajectory_pattern::pattern_id())
         {
@@ -220,19 +221,19 @@ namespace snemo {
 
           typedef std::map<geomtools::vector_3d, std::string> vertex_dict_type;
           vertex_dict_type vtxlist;
-          // Source foil
+          // Source foil:
           {
             DT_LOG_TRACE(get_logging_priority(), "Looking for vertex on source foil...");
             const double x = 0.0 * CLHEP::mm;
             const double y = direction.y()/direction.x() *(x - first.x()) + first.y();
             const double z = direction.z()/direction.y() *(y - first.y()) + first.z();
 
-            // Extrapolated vertex
+            // Extrapolated vertex:
             const geomtools::vector_3d a_vertex(x, y, z);
-            vtxlist.insert(std::make_pair(a_vertex, snemo::datamodel::particle_track::vertex_on_source_foil_flag()));
+            vtxlist.insert(std::make_pair(a_vertex, snemo::datamodel::particle_track::vertex_on_source_foil_label()));
           }// end of source foil search
 
-          // Calorimeter walls
+          // Calorimeter walls:
           {
             DT_LOG_TRACE(get_logging_priority(), "Looking for vertex on main wall...");
             for (size_t iside = 0; iside < snemo::geometry::utils::NSIDES; ++iside)
@@ -243,7 +244,7 @@ namespace snemo {
 
                 // Extrapolated vertex
                 const geomtools::vector_3d a_vertex(x, y, z);
-                vtxlist.insert(std::make_pair(a_vertex, snemo::datamodel::particle_track::vertex_on_main_calorimeter_flag()));
+                vtxlist.insert(std::make_pair(a_vertex, snemo::datamodel::particle_track::vertex_on_main_calorimeter_label()));
               }
           }// end of main wall search
 
@@ -258,7 +259,7 @@ namespace snemo {
 
                 // Extrapolate vertex
                 const geomtools::vector_3d a_vertex(x, y, z);
-                vtxlist.insert(std::make_pair(a_vertex, snemo::datamodel::particle_track::vertex_on_x_calorimeter_flag()));
+                vtxlist.insert(std::make_pair(a_vertex, snemo::datamodel::particle_track::vertex_on_x_calorimeter_label()));
               }
           }// end of x-wall search
 
@@ -273,7 +274,7 @@ namespace snemo {
 
                 // Extrapolate vertex
                 const geomtools::vector_3d a_vertex(x, y, z);
-                vtxlist.insert(std::make_pair(a_vertex,  snemo::datamodel::particle_track::vertex_on_gamma_calorimeter_flag()));
+                vtxlist.insert(std::make_pair(a_vertex,  snemo::datamodel::particle_track::vertex_on_gamma_veto_label()));
               }
           }// end of gveto search
 
@@ -332,8 +333,8 @@ namespace snemo {
             if (std::fabs(cangle) < 1.0)
               {
                 const double angle = std::acos(cangle);
-                tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(+angle), snemo::datamodel::particle_track::vertex_on_source_foil_flag()));
-                tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(-angle), snemo::datamodel::particle_track::vertex_on_source_foil_flag()));
+                tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(+angle), snemo::datamodel::particle_track::vertex_on_source_foil_label()));
+                tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(-angle), snemo::datamodel::particle_track::vertex_on_source_foil_label()));
               }
           } // end of source foil search
 
@@ -348,8 +349,8 @@ namespace snemo {
                 if (std::fabs(cangle) < 1.0)
                   {
                     const double angle = std::acos(cangle);
-                    tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(+angle), snemo::datamodel::particle_track::vertex_on_main_calorimeter_flag()));
-                    tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(-angle), snemo::datamodel::particle_track::vertex_on_main_calorimeter_flag()));
+                    tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(+angle), snemo::datamodel::particle_track::vertex_on_main_calorimeter_label()));
+                    tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(-angle), snemo::datamodel::particle_track::vertex_on_main_calorimeter_label()));
                   }
               }
           }// end of main wall search
@@ -365,11 +366,11 @@ namespace snemo {
                 if (std::fabs(cangle) < 1.0)
                   {
                     double angle = std::asin(cangle);
-                    tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(angle), snemo::datamodel::particle_track::vertex_on_x_calorimeter_flag()));
+                    tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(angle), snemo::datamodel::particle_track::vertex_on_x_calorimeter_label()));
                     const double mean_angle =(a_helix.get_angle1() + a_helix.get_angle2())/2.0;
                     if (mean_angle < 0.0) angle = - M_PI - angle;
                     else                  angle = + M_PI - angle;
-                    tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(angle), snemo::datamodel::particle_track::vertex_on_x_calorimeter_flag()));
+                    tparams.insert(std::make_pair(geomtools::helix_3d::angle_to_t(angle), snemo::datamodel::particle_track::vertex_on_x_calorimeter_label()));
                   }
               }// end of x-wall loop
           }// end of x-wall search
@@ -380,7 +381,7 @@ namespace snemo {
             for (size_t iwall = 0; iwall < snemo::geometry::xcalo_locator::NWALLS_PER_SIDE; ++iwall)
               {
                 const double t = a_helix.get_t_from_z(zcalo_bd[iwall]);
-                tparams.insert(std::make_pair(t, snemo::datamodel::particle_track::vertex_on_gamma_calorimeter_flag()));
+                tparams.insert(std::make_pair(t, snemo::datamodel::particle_track::vertex_on_gamma_veto_label()));
               }
           }// end of gveto search
 
@@ -451,8 +452,9 @@ namespace snemo {
         }// end of helix pattern
 
       // Save new vertex
+      int spot_id = 0;
       for (std::map<std::string, geomtools::vector_3d>::const_iterator
-             it = vertices.begin(); it != vertices.end(); ++it)
+             it = vertices.begin(); it != vertices.end(); ++it, ++spot_id)
         {
           // Check vertex side is on the same side as the trajectory
           if ((side == snemo::geometry::utils::SIDE_BACK  && it->second.x() > 0.0) ||
@@ -460,16 +462,71 @@ namespace snemo {
             {
               DT_LOG_DEBUG(get_logging_priority(), "Closest vertex is on the opposite side!");
             }
-          snemo::datamodel::particle_track::handle_spot hBS(new geomtools::blur_spot());
+          snemo::datamodel::particle_track::handle_spot hBS(new geomtools::blur_spot);
           vertices_.push_back(hBS);
-          hBS.grab().set_blur_dimension(geomtools::blur_spot::dimension_three);
-          hBS.grab().set_position(it->second);
-          hBS.grab().grab_auxiliaries().update_flag(it->first);
+          geomtools::blur_spot & spot = hBS.grab();
+          spot.set_hit_id(spot_id);
+          spot.grab_auxiliaries().update(snemo::datamodel::particle_track::vertex_type_key(),
+                                         it->first);
+          // Future: determine the GID of the scintillator block or source strip
+          // associated to the impact vertex:
+          //
+          //   int module = 0;
+          //   int side = 0;
+          //   int strip = -1;
+          //   spot.grab_geom_id().set_type(???);
+          //   spot.grab_geom_id().set_addresses(module, side/strip?, wall?, column?, row?...);
+          // or:
+          //   spot.set_geom_id(matchind_gid?);
+          //
+
+          // For now it is dimension 3 with no errors nor rotation defined:
+          spot.set_blur_dimension(geomtools::blur_spot::dimension_three);
+          spot.set_position(it->second);
+          //
+          // Future implementation:= ???
+          //
+          //   double sigma_x = ???; // Computed from the TrackFit error matrix
+          //   double sigma_y = ???; // Computed from the TrackFit error matrix
+          //   double sigma_z = ???; // Computed from the TrackFit error matrix
+          //   spot.grab_placement().set_translation(it->second);
+          //   if (snemo::datamodel::particle_track::vertex_is_on_main_calorimeter(spot)) {
+          //     //
+          //     // Possibility:
+          //     //    +---------------------------------+
+          //     //   /                                 /|
+          //     //  /                                 / |
+          //     // +---------------------------------+  |
+          //     // |           ^ z        Calo block |  |
+          //     // |  sigma(z) :            entrance |  |
+          //     // |          ---            surface |  |
+          //     // |         / : \                   |  |
+          //     // |        /  :  \ sigma(y)         |  |
+          //     // |    - - |- + -|- - -> y          |  |
+          //     // |        | /:  |                  |  |
+          //     // |  --->   / : /  2D blur spot     |  +
+          //     // | normal / ---                    | /
+          //     // |       L   :                     |/
+          //     // +---------------------------------+
+          //     //
+          //     //
+          //     spot.set_blur_dimension(geomtools::blur_spot::dimension_two);
+          //     if (side == snemo::geometry::utils::SIDE_BACK) {
+          //       spot.grab_placement().set_orientation(ROTATION_AXIS_Y, 90.0 * CLHEP::degree);
+          //     } else {
+          //       spot.grab_placement().set_orientation(ROTATION_AXIS_Y, -90.0 * CLHEP::degree);
+          //     }
+          //     spot.set_errors(sigma_y, sigma_z);
+          //   } else ...
+          //
           if (get_logging_priority() >= datatools::logger::PRIO_TRACE)
             {
               DT_LOG_TRACE(get_logging_priority(), "Vertex:");
-              hBS.get().tree_dump(std::clog);
+              spot.tree_dump(std::clog);
             }
+          std::cerr << "DEVEL ***** "
+                    << "Vertex #" << spot_id << " @ pos=" << it->second / CLHEP::mm << " mm is of type='" << it->first << "'"
+                    << std::endl;
         }
 
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");
