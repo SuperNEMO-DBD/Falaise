@@ -375,6 +375,22 @@ namespace snemo {
           out_ << "<No>";
         }
       out_ << std::endl;
+      for (calibrated_calorimeter_hit::collection_type::const_iterator i = _associated_calorimeter_hits_.begin();
+           i != _associated_calorimeter_hits_.end();
+           i++) {
+        out_ << indent << datatools::i_tree_dumpable::inherit_skip_tag(inherit_);
+        calibrated_calorimeter_hit::collection_type::const_iterator j = i;
+        j++;
+        if (j == _associated_calorimeter_hits_.end()) {
+          out_ << datatools::i_tree_dumpable::last_tag;
+        } else {
+          out_ << datatools::i_tree_dumpable::tag;
+        }
+        const calibrated_calorimeter_hit & calo_hit = i->get();
+        out_ << "Hit Id=" << calo_hit.get_hit_id()
+             << " @ " << calo_hit.get_geom_id();
+        out_ << std::endl;
+      }
 
       return;
     }
