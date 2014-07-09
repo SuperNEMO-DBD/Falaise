@@ -77,6 +77,9 @@ foreach(_mdDoc ${Falaise_MARKDOWN_DOCS})
   set(Falaise_ABSOLUTE_MARKDOWN_DOCS "${Falaise_ABSOLUTE_MARKDOWN_DOCS} ${_absMdDoc}")
 endforeach()
 
+# - Image paths
+set(Falaise_DOXYGEN_IMAGE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate/images")
+
 #-----------------------------------------------------------------------
 # Build doxygen docs
 #
@@ -94,10 +97,4 @@ add_custom_command(
 add_custom_target(falaise_docs ALL DEPENDS ${Falaise_DOXYGEN_OUTPUT_FILE})
 
 
-install(FILES
-        flsimulate/images/fls_calorimeter_step_hit_processor_0.jpg
-        flsimulate/images/fls_gg_step_hit_processor_0.jpg
-        flsimulate/images/fls_demonstrator_geom_ids_0.jpg
-        flsimulate/images/fls_demonstrator_sd_0.jpg
-        DESTINATION ${Falaise_DOXYGEN_OUTPUT_IMAGE_DIR}
-)
+
