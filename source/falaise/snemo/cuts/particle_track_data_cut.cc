@@ -428,7 +428,7 @@ namespace snemo {
         }// end mode RANGE_ASSOCIATED_CALORIMETER_HITS
 
 
-      // Check if each particle tracks have an vertex on foil :
+      // Check if each particle tracks have a vertex on foil :
       bool check_vertex_on_foil = true;
       if (is_mode_has_vertex_on_foil())
         {
@@ -461,9 +461,7 @@ namespace snemo {
                    ivertex != the_vertices.end(); ++ivertex)
                 {
                   const geomtools::blur_spot & a_vertex = ivertex->get();
-                  const datatools::properties & prop = a_vertex.get_auxiliaries();
-
-                  if (prop.has_flag(snemo::datamodel::particle_track::vertex_on_source_foil_flag()))
+                  if (snemo::datamodel::particle_track::vertex_is_on_source_foil(a_vertex))
                     {
                       has_vertex = true;
                     }

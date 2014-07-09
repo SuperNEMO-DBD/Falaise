@@ -56,21 +56,54 @@ namespace snemo {
         VERTEX_ON_SOURCE_FOIL       = datatools::bit_mask::bit00,
         VERTEX_ON_MAIN_CALORIMETER  = datatools::bit_mask::bit01,
         VERTEX_ON_X_CALORIMETER     = datatools::bit_mask::bit02,
-        VERTEX_ON_GAMMA_CALORIMETER = datatools::bit_mask::bit03,
-        VERTEX_ON_WIRE              = datatools::bit_mask::bit04
+        VERTEX_ON_GAMMA_VETO        = datatools::bit_mask::bit04,
+        VERTEX_ON_WIRE              = datatools::bit_mask::bit08,
       };
 
+      /// Key for the vertex type property
+      static const std::string & vertex_type_key();
+
+      /// Return the label from the vertex type
+      static const std::string & vertex_type_to_label(vertex_type);
+
+      /// Return the vertex type from the label
+      static vertex_type label_to_vertex_type(const std::string &);
+
+      /// Associated 'VERTEX_NONE' flag for auxiliary property
+      static const std::string & vertex_none_label();
+
       /// Associated 'VERTEX_ON_SOURCE_FOIL' flag for auxiliary property
-      static const std::string & vertex_on_source_foil_flag();
+      static const std::string & vertex_on_source_foil_label();
 
       /// Associated 'VERTEX_ON_MAIN_CALORIMETER' flag for auxiliary property
-      static const std::string & vertex_on_main_calorimeter_flag();
+      static const std::string & vertex_on_main_calorimeter_label();
 
       /// Associated 'VERTEX_ON_X_CALORIMETER' flag for auxiliary property
-      static const std::string & vertex_on_x_calorimeter_flag();
+      static const std::string & vertex_on_x_calorimeter_label();
 
       /// Associated 'VERTEX_ON_GAMMA_CALORIMETER' flag for auxiliary property
-      static const std::string & vertex_on_gamma_calorimeter_flag();
+      static const std::string & vertex_on_gamma_veto_label();
+
+      /// Associated 'VERTEX_ON_WIRE' flag for auxiliary property
+      static const std::string & vertex_on_wire_label();
+
+      /// Check a vertex type
+      static bool vertex_is(const geomtools::blur_spot &, vertex_type);
+
+      /// Check a vertex on source foil
+      static bool vertex_is_on_source_foil(const geomtools::blur_spot &);
+
+      /// Check a vertex on main calorimeter
+      static bool vertex_is_on_main_calorimeter(const geomtools::blur_spot &);
+
+      /// Check a vertex on X calorimeter
+      static bool vertex_is_on_x_calorimeter(const geomtools::blur_spot &);
+
+      /// Check a vertex on gamma veto
+      static bool vertex_is_on_gamma_veto(const geomtools::blur_spot &);
+
+      /// Check a vertex on wire
+      static bool vertex_is_on_wire(const geomtools::blur_spot &);
 
       /// Handle on particle track
       typedef datatools::handle<particle_track> handle_type;
