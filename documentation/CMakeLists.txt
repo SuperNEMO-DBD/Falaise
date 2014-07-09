@@ -59,6 +59,7 @@ set(Falaise_MARKDOWN_DOCS
   flsimulate/FLSimulate.md
   flsimulate/FLSimulateOutput.md
   flreconstruct/FLReconstruct.md
+  flreconstruct/PipelineOutput.md
   flreconstruct/WritingFLReconstructPipelineScripts.md
   flreconstruct/SupportedFLReconstructModules.md
   flreconstruct/UsingMockCalibration.md
@@ -66,7 +67,6 @@ set(Falaise_MARKDOWN_DOCS
   flreconstruct/WorkingWithEventRecords.md
   flreconstruct/UsingServices.md
   flreconstruct/DocumentingFLReconstructModules.md
-  flreconstruct/PipelineOutput.md
   development/DevelopingFalaise.md
   development/CodingStandards.md
   )
