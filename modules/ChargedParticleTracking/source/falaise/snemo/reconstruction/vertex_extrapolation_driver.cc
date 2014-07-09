@@ -524,9 +524,6 @@ namespace snemo {
               DT_LOG_TRACE(get_logging_priority(), "Vertex:");
               spot.tree_dump(std::clog);
             }
-          std::cerr << "DEVEL ***** "
-                    << "Vertex #" << spot_id << " @ pos=" << it->second / CLHEP::mm << " mm is of type='" << it->first << "'"
-                    << std::endl;
         }
 
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");
