@@ -167,7 +167,35 @@ Writing Reconstruction Results to File {#usingoutputpaths}
 Running `flreconstruct` as presented above will process data but not
 persist any reconstruction results to file (e.g. for later analysis).
 To write results to file, the `-o` option may be used to write processed
-events to a file supplied as the argument.
+events to a file supplied as the argument, with the output format chosen
+based on the file extension.
+
+To output to the BRIO format recognised by `flreconstruct` use the `.brio`
+extension:
+
+~~~~~
+$ flreconstruct -i example.brio -p @falaise:pipeline/snemo.demonstrator/1.0.0 -o results.brio
+~~~~~
+
+The resultant file may be subsequently passed through
+`flreconstruct` with a pipeline constructed from your own analysis
+modules. Please see the document on [FLReconstruct Pipeline Output](@ref flreconstructpipelineoutput)
+for details of the data structures stored for each processed event.
+Further documents are available detailing [how to write your reconstruction/analysis modules](@ref writingflreconstructmodules), and
+[how to access event data from modules](@ref workingwitheventrecords).
+
+Output to ROOT format is also possible by supplying an output file with
+the `.root` extension:
+
+~~~~~
+$ flreconstruct -i example.brio -p @falaise:pipeline/snemo.demonstrator/1.0.0 -o results.root
+~~~~~
+
+The resultant file contains a single flat `TTree` structure that may be
+browsed interactively. Note that currently this format only outputs
+simulated and calibrated data, with no further reconstruction results.
+Work is in progress to extend this format to supply all data structures.
+
 
 Using Custom Pipelines {#usingcustompipelines}
 ========================
