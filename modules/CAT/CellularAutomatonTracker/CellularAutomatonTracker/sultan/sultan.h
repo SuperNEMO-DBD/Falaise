@@ -86,12 +86,13 @@ namespace SULTAN {
     std::vector<topology::cluster> get_clusters_from(topology::node a, topology::node b, size_t icluster, bool * cluster_is_finished);
     void create_sequence_from_cluster(std::vector<topology::sequence> * sequences, const topology::cluster & c);
     void get_angle_of_point( topology::experimental_point * p, double * angle);
-    std::vector<topology::cluster> make_unclustered_hits(topology::node * n );
+    std::vector<topology::cluster> make_unclustered_hits(std::vector<topology::node> * endpoints );
     void make_sequences_from_clusters();
     void reset();
     bool line_is_near_cell(topology::experimental_line line, topology::experimental_double * DR, topology::experimental_double * DH, topology::node * node);
     bool helix_is_near_cell(topology::cell_triplet t, topology::experimental_helix helix, topology::experimental_double * DR, topology::experimental_double * DH, topology::node * node);
     topology::cluster get_best_cluster_from(std::vector<topology::cluster> cs);
+    std::vector<topology::node> get_furthest_end_points(std::vector<topology::cluster> clusters_of_endpoints);
 
 
     //! get clusters

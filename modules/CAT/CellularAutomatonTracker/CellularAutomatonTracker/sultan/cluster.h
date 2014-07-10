@@ -11,6 +11,7 @@
 #include <sultan/experimental_vector.h>
 #include <sultan/cell.h>
 #include <sultan/node.h>
+#include <sultan/experimental_line.h>
 #include <sultan/experimental_helix.h>
 #include <sultan/LinearRegression.h>
 
@@ -117,7 +118,7 @@ namespace SULTAN{
 
       void break_into_continous_pieces(size_t nofflayers, double cell_distance);
 
-      void self_order(topology::node * n);
+      void self_order(std::vector<topology::node> * endpoints);
 
       bool is_continous();
 

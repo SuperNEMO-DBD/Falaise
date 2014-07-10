@@ -365,18 +365,18 @@ namespace SULTAN{
     }
 
 
-    void cluster::self_order(topology::node * n = 0){
-      // if n = 0
+    void cluster::self_order(std::vector<topology::node> * endpoints = 0){
+      // if endpoints = 0
       // calculate self line of cluster
       // and order cells based on that
-      // otherwise use n as endpoint
+      // otherwise use endpoints
 
 
       if (print_level() >= mybhep::VVERBOSE){
 	std::clog << "SULTAN::cluster::self_order cluster of " << nodes_.size() << " cells (";
 	for(std::vector<topology::node>::const_iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode)
 	  std::clog << inode->c().id() << " ";
-	std::clog << ") without endpoint?: " << (bool)(n == 0) << std::endl;
+	std::clog << ") without endpoint?: " << (bool)(endpoints == 0) << std::endl;
       }
 
       double angle;
@@ -389,7 +389,7 @@ namespace SULTAN{
       }
       
 
-      if( n == 0 ){ // calculate self line
+      if( endpoints == 0 ){ // calculate self line
 
 
         std::vector<double> xs;
@@ -410,19 +410,36 @@ namespace SULTAN{
 	for(std::vector<topology::node>::iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode){
 	  inode->set_circle_phi(l.parameter(inode->c().ep().x().value()));
 	}
-      }else{ // use n as endpoint
+      }else{ // use endpoints
 
-	double dist2max = 0.;
-	double dist2;
-	for(std::vector<topology::node>::const_iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode){
-	  dist2 = pow(inode->c().ep().x().value() - n->c().ep().x().value(),2) + pow(inode->c().ep().y().value() - n->c().ep().y().value(),2);
-	  if( dist2 > dist2max ) dist2max = dist2;
-	}
-	
-	for(std::vector<topology::node>::iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode){
-	  dist2 = pow(inode->c().ep().x().value() - n->c().ep().x().value(),2) + pow(inode->c().ep().y().value() - n->c().ep().y().value(),2);
-	  angle = dist2/dist2max;
-	  inode->set_circle_phi(angle);
+	if( endpoints->size() == 1 ){
+
+	  const topology::node n = endpoints->at(0);
+
+	  double dist2max = 0.;
+	  double dist2;
+	  for(std::vector<topology::node>::const_iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode){
+	    dist2 = pow(inode->c().ep().x().value() - n.c().ep().x().value(),2) + pow(inode->c().ep().y().value() - n.c().ep().y().value(),2);
+	    if( dist2 > dist2max ) dist2max = dist2;
+	  }
+	  
+	  for(std::vector<topology::node>::iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode){
+	    dist2 = pow(inode->c().ep().x().value() - n.c().ep().x().value(),2) + pow(inode->c().ep().y().value() - n.c().ep().y().value(),2);
+	    angle = dist2/dist2max;
+	    inode->set_circle_phi(angle);
+	  }
+	}else{
+
+	  const topology::node a = endpoints->at(0);
+	  const topology::node b = endpoints->at(1);
+
+	  topology::experimental_double DR, DH;
+	  topology::experimental_line line(a.c().ep(), b.c().ep(), print_level(), probmin());
+
+	  for(std::vector<topology::node>::iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode){
+	    inode->set_circle_phi(line.distance_from_cell_center(inode->c(), &DR, &DH));
+	  }
+
 	}
 
       }

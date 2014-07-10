@@ -1716,7 +1716,7 @@ namespace SULTAN {
   }
 
   //*************************************************************
-  std::vector<topology::cluster> sultan::make_unclustered_hits(topology::node * n = 0) {
+  std::vector<topology::cluster> sultan::make_unclustered_hits(std::vector<topology::node> * endpoints = 0) {
     //*************************************************************
 
     size_t minimum_length=2;
@@ -1730,11 +1730,11 @@ namespace SULTAN {
         std::clog << "SULTAN::sultan::make_unclustered_hits: make unclustered hits for " << leftover_cluster_->nodes_.size() << " hits: (";
         for(std::vector<topology::node>::const_iterator inode=leftover_cluster_->nodes_.begin(); inode != leftover_cluster_->nodes_.end(); ++inode)
           std::clog << inode->c().id() << " " ;
-        std::clog << ") without endpoint ? " << (bool)(n == 0) << std::endl;
+        std::clog << ") without endpoint ? " << (bool)(endpoints == 0) << std::endl;
       }
 
 
-      leftover_cluster_->self_order(n);
+      leftover_cluster_->self_order(endpoints);
       leftover_cluster_->break_into_continous_pieces(nofflayers, cell_distance);
       vector<size_t> length_of_piece = leftover_cluster_->length_of_piece();
       std::vector<size_t> the_first_cell_of_piece = leftover_cluster_->first_cell_of_piece();
@@ -1770,6 +1770,46 @@ namespace SULTAN {
     return cs;
   }
 
+
+  //*************************************************************
+  std::vector<topology::node> sultan::get_furthest_end_points(std::vector<topology::cluster> clusters_of_endpoints){
+  //*************************************************************
+
+    std::vector<topology::node> nodes;
+    if( clusters_of_endpoints.size() == 1 ){
+      nodes.push_back( clusters_of_endpoints[0].nodes()[0] );
+      return nodes;
+    }
+
+    double dist = -1.;
+    double local_dist;
+    topology::node a, b;
+    for(std::vector<topology::cluster>::const_iterator iclu = clusters_of_endpoints.begin(); iclu!=clusters_of_endpoints.end() - 1; ++iclu){
+      const std::vector<topology::node> &inodes = iclu->nodes();
+
+      for(std::vector<topology::cluster>::const_iterator jclu = iclu + 1; jclu!=clusters_of_endpoints.end(); ++jclu){
+        const std::vector<topology::node> &jnodes = jclu->nodes();
+
+	for( std::vector<topology::node>::const_iterator inode = inodes.begin(); inode != inodes.end(); ++inode ){
+	  for( std::vector<topology::node>::const_iterator jnode = jnodes.begin(); jnode != jnodes.end(); ++jnode ){
+	    local_dist = (inode->c().ep().distance(jnode->c().ep())).value();
+	    if( local_dist > dist ){
+	      dist = local_dist;
+	      a = *inode;
+	      b = *jnode;
+	    }
+	  }
+	}
+
+      }
+    }
+
+    nodes.push_back(a);
+    nodes.push_back(b);
+
+    return nodes;
+
+  }
 
   //*************************************************************
   void sultan::reduce_cluster_based_on_endpoints(size_t icluster) {
@@ -1856,9 +1896,9 @@ namespace SULTAN {
 
     // make clusters with unclustered hits
     std::vector<topology::cluster> unclustered_clusters;
-    if( clusters_of_endpoints.size() && clusters_of_endpoints[0].nodes().size() ) { // at least 1 end point was found
-      topology::node n = clusters_of_endpoints[0].nodes()[0];
-      unclustered_clusters = make_unclustered_hits(&n);
+    if( clusters_of_endpoints.size() ) { // at least 1 end point was found
+      std::vector<topology::node> endpoints = get_furthest_end_points(clusters_of_endpoints);
+      unclustered_clusters = make_unclustered_hits(&endpoints);
     }else{
       unclustered_clusters = make_unclustered_hits();
     }
