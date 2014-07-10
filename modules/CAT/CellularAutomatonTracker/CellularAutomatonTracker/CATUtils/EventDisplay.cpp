@@ -3160,7 +3160,7 @@ void EventDisplay::draw_sultan_yz(){
 	  color = color_sultan;
 
 	  yt[j+offset] = p.z().value();
-	  zt[j+offset] = -p.y().value();
+	  zt[j+offset] = p.y().value();
 
 	}
 

@@ -1504,6 +1504,128 @@ namespace CAT {
 
   }
 
+  //*******************************************************************
+  void clusterizer::clusterize_after_sultan(topology::tracked_data & tracked_data_){
+    //*******************************************************************
+
+    if( event_number < first_event_number ) return;
+
+    clock.start(" clusterizer: clusterize_after_sultan ","cumulative");
+
+    m.message("CAT::clusterizer::clusterize_after_sultan: local_tracking: fill clusters ", mybhep::VERBOSE);
+
+    if( cells_.empty() ) return;
+
+    if( !select_true_tracks(tracked_data_) ){
+      m.message("CAT::clusterizer::clusterize_after_sultan: event is not selected at true level ", mybhep::NORMAL);
+      tracked_data_.set_selected(false);
+      return;
+    }
+
+    float side[2]; // loop on two sides of the foil
+    side[0] =  1.;
+    side[1] = -1.;
+
+    bool fast[2]; // loop on fast and slow hits
+    fast[0] = true;
+    fast[1] = false;
+
+    std::map<int,unsigned int > flags;
+
+    for(size_t ip=0; ip<2; ip++)  // loop on two sides of the foil
+      {
+        for(size_t iq=0; iq<2; iq++) // loop on fast and slow hits
+          {
+            for(size_t i=0; i<cells_.size(); i++)
+              {
+                flags[cells_[i].id()] = 0;
+              }
+
+            for(std::vector<topology::cell>::const_iterator icell=cells_.begin(); icell!=cells_.end(); ++icell){
+              // pick a cell c that was never added
+              const topology::cell & c = *icell;
+              if( (cell_side(c) * side[ip]) < 0) continue;
+              if( c.fast() != fast[iq] ) continue;
+              if( flags[c.id()] == 1 ) continue;
+              flags[c.id()] = 1;
+
+              // cell c will form a new cluster, i.e. a new list of nodes
+              topology::cluster cluster_connected_to_c;
+              std::vector<topology::node> nodes_connected_to_c;
+              m.message("CAT::clusterizer::clusterize_after_sultan: begin new cluster with cell ", c.id(), mybhep::VERBOSE);
+
+              // let's get the list of all the cells that can be reached from c
+              // without jumps
+              std::vector<topology::cell> cells_connected_to_c;
+              cells_connected_to_c.push_back(c);
+
+              for( size_t i=0; i<cells_connected_to_c.size(); i++){ // loop on connected cells
+                // take a connected cell (the first one is just c)
+                topology::cell cconn = cells_connected_to_c[i];
+
+                // the connected cell composes a new node
+                topology::node newnode(cconn, level, probmin);
+                std::vector<topology::cell_couplet> cc;
+
+                // get the list of cells near the connected cell
+                std::vector<topology::cell> cells_near_iconn = get_near_cells(cconn);
+
+                m.message("CAT::clusterizer::clusterize_after_sultan: cluster ", clusters_.size(), " starts with ", c.id(), " try to add cell ", cconn.id(), " with n of neighbours = ", cells_near_iconn.size(), mybhep::VERBOSE);
+                for(std::vector<topology::cell>::const_iterator icnc=cells_near_iconn.begin(); icnc!=cells_near_iconn.end(); ++icnc){
+
+                  topology::cell cnc = *icnc;
+
+                  if( !is_good_couplet(& cconn, cnc, cells_near_iconn) ) continue;
+
+                  topology::cell_couplet ccnc(cconn,cnc,level,probmin);
+                  cc.push_back(ccnc);
+
+                  m.message("CAT::clusterizer::clusterize_after_sultan: ... creating couplet ", cconn.id(), " -> ", cnc.id(), mybhep::VERBOSE);
+
+                  if( flags[cnc.id()] != 1 )
+                    {
+                      flags[cnc.id()] = 1 ;
+                      cells_connected_to_c.push_back(cnc);
+                    }
+                }
+                newnode.set_cc(cc);
+                newnode.calculate_triplets(Ratio, QuadrantAngle, TangentPhi, TangentTheta);
+                nodes_connected_to_c.push_back(newnode);
+
+                m.message("CAT::clusterizer::clusterize_after_sultan: cluster started with ", c.id(), " has been given cell ", cconn.id(), " with ", cc.size(), " couplets ", mybhep::VERBOSE);
+
+              }
+
+              cluster_connected_to_c.set_nodes(nodes_connected_to_c);
+
+              clusters_.push_back(cluster_connected_to_c);
+            }
+
+          }
+      }
+
+
+    setup_clusters();
+
+    m.message("CAT::clusterizer::clusterize_after_sultan: there are ", clusters_.size(), " clusters of cells ", mybhep::VVERBOSE);
+
+    if( PrintMode )
+      make_plots(tracked_data_);
+
+    if( level >= mybhep::VVERBOSE ){
+      print_clusters();
+    }
+
+    tracked_data_.set_cells(cells_);
+    tracked_data_.set_clusters(clusters_);
+
+    clock.stop(" clusterizer: clusterize_after_sultan ");
+
+
+    return;
+
+  }
+
   //*************************************************************
   void clusterizer::make_plots(topology::tracked_data & /* tracked_data_ */){
     //*************************************************************

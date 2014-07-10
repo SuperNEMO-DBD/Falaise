@@ -73,6 +73,7 @@ namespace CAT{
     void print_cells(void)const;
     void print_calos(void)const;
     void clusterize(topology::tracked_data & tracked_data_);
+    void clusterize_after_sultan(topology::tracked_data & tracked_data_);
     void print_clusters(void) const;
     void print_true_sequences(void)const;
     void print_nemo_sequences(void)const;
