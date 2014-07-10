@@ -1550,8 +1550,8 @@ namespace SULTAN {
           // side-by-side cells
           bool side_by_side_cells = (jnode->c().near_level(inode->c(), nofflayers, cell_distance) == 3);
           if( side_by_side_cells ){
-            topology::experimental_double vertical_dist = jnode->c().ep().z() - inode->c().ep().z();
-            if( !vertical_dist.is_zero__optimist(nsigma_z) ) continue;
+            //topology::experimental_double vertical_dist = jnode->c().ep().z() - inode->c().ep().z();
+            //if( !vertical_dist.is_zero__optimist(nsigma_z) ) continue;
             // "inode" gets added to the same cluster as jnode
             iclu->nodes_.push_back(*inode);
             node_has_been_added_to_cluster = true;
@@ -2643,7 +2643,7 @@ namespace SULTAN {
       if( nmax > 0 && cmax.is_good() ){ // 1 best cluster was found in (a, X, b)
 
         cmax.set_cluster_type("helix");
-        //assign_nodes_of_cluster(cmax); // this will remove the assigned nodes from leftover
+        //assign_nodes_of_cluster(cmax); // this removes the assigned nodes from leftover
                                        // reducing Y range for future searches in triplets (a, Y, b)
         cs->push_back(cmax);
         m.message("SULTAN::sultan::get_helix_clusters_from: cells assigned as helix ", mybhep::VERBOSE);
