@@ -29,7 +29,7 @@ To install the Falaise stack, you first need the following:
 * Familiarity with the UNIX command line
 * Required Software
   * Subversion 1.6 or above
-  * CMake 2.8.8 or above
+  * CMake 2.8.11 or above
   * Doxygen 1.8 or above
   * C/C++ compiler supporting at least the C++03 standard
     * GCC 4.5 or above, and Clang 3.1 or above are recommended
@@ -562,8 +562,49 @@ COPYING.txt     modules        source
 $
 ~~~~~
 
-This trunk version can be built and installed just as the tagged release
-versions. Whilst the trunk aims for stability, full functionality cannot
+This trunk version can be built just as the tagged release versions.
+It can also be installed, but is recommended not to do this due to the
+rapid development cycle expected. All of the programs and libraries in
+a build of Falaise are directly usable without installation, and are
+output to a directory named `BuildProducts` under the main build directory:
+
+~~~~~
+$ cd /Users/ben/SuperNEMO/builds
+$ ls
+falaise-@Falaise_VERSION@  trunk
+$ cd trunk
+$ ls
+BuildProducts   cmake_install.cmake  install_manifest.txt  modules    Testing
+CMakeCache.txt  CTestTestfile.cmake  InstallTreeFiles      resources  utilities
+CMakeFiles      documentation        Makefile              source
+$
+~~~~~
+
+The structure of the `BuildProducts` directory is designed to match that
+of the installed Falaise:
+
+~~~~~
+BuildProducts/
+|-- bin
+|   |-- flreconstruct
+|   |-- flsimulate
+|-- include
+|   |-- bayeux
+|   `-- falaise
+|-- lib64
+|   |-- Falaise
+|   |-- cmake
+|   |-- libBayeux.so
+|   |-- libBayeux_mctools_geant4.so
+|   `-- libFalaise.so
+`-- share
+    |-- Bayeux-1.0.0
+    `-- Falaise-1.0.0
+~~~~~
+
+The executables under `BuildProducts/bin` are directly runnable, so
+you can rapidly develop, compile and run without having to reinstall.
+Whilst the trunk aims for stability, full functionality cannot
 be guaranteed but you are welcome to try it and report any issues you
 find. Contributing to Falaise requires familiarity with Subversion, CMake,
 the C++ language and modern software development practices.
