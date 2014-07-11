@@ -2040,7 +2040,7 @@ namespace SULTAN {
     //*************************************************************
 
     if( clock.read(" sultan: sequentiation ") >= max_time ){
-      m.message(" execution time " , clock.read(" sultan: sequentiation ") , " ms  greater than max_time" , max_time , " quitting! ", mybhep::NORMAL);
+      m.message("SULTAN::sultan::late: execution time " , clock.read(" sultan: sequentiation ") , " ms  greater than max_time" , max_time , " quitting! ", mybhep::NORMAL);
       return true;
     }
 

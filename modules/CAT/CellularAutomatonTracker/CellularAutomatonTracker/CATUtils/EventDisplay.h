@@ -480,7 +480,6 @@ private:
     name = name.substr(0,i1);
     return name;
   }
-  int getCalWalli( CAT::topology::calorimeter_hit h );
   int quadrant_xz( CAT::topology::cell c );
   int quadrant_yz( CAT::topology::cell c );
   void init_quadrant_counters();

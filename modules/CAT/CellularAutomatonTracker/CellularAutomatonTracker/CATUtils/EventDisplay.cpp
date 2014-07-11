@@ -2009,16 +2009,6 @@ void EventDisplay::draw_initial_hits_xz( void ){
   return;
 }
 
-//*************************************************************
-int EventDisplay::getCalWalli( CAT::topology::calorimeter_hit h ){
-//*************************************************************
-
-  m.message(" problem: requesting calo wall", mybhep::NORMAL);
-
-  return 1;
-
-}
-
 
 //*************************************************************
 void EventDisplay::draw_calos_xz( std::vector<CAT::topology::calorimeter_hit> calos ){
@@ -2063,9 +2053,6 @@ void EventDisplay::draw_calos_xz( std::vector<CAT::topology::calorimeter_hit> ca
         double theta = atan2(h.pl().center().z().value(), h.pl().center().x().value());
 
         double offset = 0.;
-        //int wall = getCalWalli(h);
-        //if( wall == 6 ) offset = -local_calo_x/2.;  // inner
-        //else if( wall == 7 ) offset = local_calo_x/2.;  // outer
 
         zcal[0] = h.pl().center().z().value() + offset*sin(theta) - local_calo_x/2.*sin(theta) + local_calo_z/2.*cos(theta);
         zcal[1] = h.pl().center().z().value() + offset*sin(theta) + local_calo_x/2.*sin(theta) + local_calo_z/2.*cos(theta);
@@ -2148,9 +2135,12 @@ void EventDisplay::draw_calos_yz( std::vector<CAT::topology::calorimeter_hit> ca
 
       if( !SuperNemo ){
 
-        int wall = getCalWalli(h);
-        if( wall == 8 ) offsetY = -local_calo_y/2.;  // bottom
-        else if( wall == 9 ) offsetY = local_calo_y/2.;  // top
+	std::string view = h.pl().view();
+
+	if( 0 == strcmp(view.c_str(),"bottom") )
+	  offsetY = -local_calo_y/2.;  // bottom
+	else if( 0 == strcmp(view.c_str(),"top") )
+	  offsetY = local_calo_y/2.;  // top
 
       }
 
@@ -2167,9 +2157,12 @@ void EventDisplay::draw_calos_yz( std::vector<CAT::topology::calorimeter_hit> ca
         double theta = atan2(h.pl().center().z().value(), h.pl().center().x().value());
 
         double offset = 0.;
-        int wall = getCalWalli(h);
-        if( wall == 6 ) offset = -local_calo_x/2.;  // inner
-        else if( wall == 7 ) offset = local_calo_x/2.;  // outer
+
+	std::string view = h.pl().view();
+	if( 0 == strcmp(view.c_str(),"inner") )
+	  offset = -local_calo_x/2.;  // inner
+	else if( 0 == strcmp(view.c_str(),"outer") )
+	  offset = local_calo_x/2.;  // outer
 
         zcal[0] = h.pl().center().z().value() + offset*sin(theta) - local_calo_x/2.*fabs(sin(theta)) - local_calo_z/2.*fabs(cos(theta));
         zcal[1] = h.pl().center().z().value() + offset*sin(theta) + local_calo_x/2.*fabs(sin(theta)) + local_calo_z/2.*fabs(cos(theta));
