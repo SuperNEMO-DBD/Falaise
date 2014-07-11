@@ -70,6 +70,9 @@ namespace SULTAN {
     /// clusterize with endpoints using helix model
     bool clusterize_with_helix_model;
 
+    /// assign a helix to each cluster
+    bool assign_helices_to_clusters;
+
     /// minimum p-value
     double probmin;
 

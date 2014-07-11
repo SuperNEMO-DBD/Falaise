@@ -50,6 +50,7 @@ namespace SULTAN {
     use_endpoints                 = true;
     use_legendre                  = false;
     clusterize_with_helix_model   = false;
+    assign_helices_to_clusters    = true;
     probmin                       = 0.;
     nsigma_r                      = 5.;
     nsigma_z                      = 3.;
@@ -247,6 +248,7 @@ namespace SULTAN {
     stor_.set_print_event_display (setup_.print_event_display );
     stor_.set_use_clocks (setup_.use_clocks );
     stor_.set_use_endpoints (setup_.use_endpoints );
+    stor_.set_assign_helices_to_clusters (setup_.assign_helices_to_clusters );
     stor_.set_use_legendre (setup_.use_legendre );
     stor_.set_clusterize_with_helix_model (setup_.clusterize_with_helix_model );
     std::string leveltmp = setup_.sequentiator_level;

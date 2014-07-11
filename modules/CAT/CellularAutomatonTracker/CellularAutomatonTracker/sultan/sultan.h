@@ -93,6 +93,7 @@ namespace SULTAN {
     bool helix_is_near_cell(topology::cell_triplet t, topology::experimental_helix helix, topology::experimental_double * DR, topology::experimental_double * DH, topology::node * node);
     topology::cluster get_best_cluster_from(std::vector<topology::cluster> cs);
     std::vector<topology::node> get_furthest_end_points(std::vector<topology::cluster> clusters_of_endpoints);
+    void assign_helices_to_clusters();
 
 
     //! get clusters
@@ -213,6 +214,11 @@ namespace SULTAN {
 
     void set_use_endpoints(bool v){
       use_endpoints = v;
+      return;
+    }
+
+    void set_assign_helices_to_clusters(bool v){
+      assign_helices_to_clusters_ = v;
       return;
     }
 
@@ -369,6 +375,7 @@ namespace SULTAN {
     bool print_event_display;
     bool use_clocks;
     bool use_endpoints;
+    bool assign_helices_to_clusters_;
     bool use_legendre;
     bool clusterize_with_helix_model;
     void reset_triplets(){

@@ -52,6 +52,7 @@ namespace SULTAN {
     print_event_display = false;
     use_clocks = false;
     use_endpoints = true;
+    assign_helices_to_clusters_ = true;
     use_legendre = false;
     clusterize_with_helix_model = false;
     _moduleNR.clear ();
@@ -170,6 +171,7 @@ namespace SULTAN {
     m.message("SULTAN::sultan::read_properties: use_endpoints",use_endpoints,mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties: use_legendre",use_legendre,mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties: clusterize_with_helix_model",clusterize_with_helix_model,mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: assign_helices_to_clusters",assign_helices_to_clusters_,mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties: probmin", probmin, mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties: nsigma_r", nsigma_r, mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties: nsigma_z", nsigma_z, mybhep::NORMAL);
@@ -208,8 +210,73 @@ namespace SULTAN {
   }
 
   //*************************************************************
+  void sultan::assign_helices_to_clusters(){
+  //*************************************************************
+
+    if( use_clocks )
+      clock.start(" sultan: assign_helices_to_clusters ","cumulative");
+
+    //size_t n_iterations = 10;
+    std::vector<topology::experimental_helix> the_helices;
+    std::vector<topology::experimental_helix> neighbours;
+    m.message("SULTAN::sultan::reduce_clusters: assign helices to ", made_clusters_.size(), " clusters ", mybhep::VERBOSE);
+    for(std::vector<topology::cluster>::iterator iclu = made_clusters_.begin(); iclu != made_clusters_.end(); ++iclu){
+      *leftover_cluster_ = *iclu;
+      if( leftover_cluster_->nodes_.size() < min_ncells_in_cluster ){
+	
+	for(std::vector<topology::node>::iterator inode=iclu->nodes_.begin(); inode!=iclu->nodes_.end(); ++inode){
+	  inode->set_ep(inode->c().ep());
+	}
+	
+	continue;
+      }
+      experimental_legendre_vector->reset();
+      neighbours.clear();
+      //form_triplets_from_cells_with_endpoints();
+      form_triplets_from_cells();
+      form_helices_from_triplets(&the_helices, iclu - made_clusters_.begin());
+      if( !the_helices.size() ){
+	for(std::vector<topology::node>::iterator inode=iclu->nodes_.begin(); inode!=iclu->nodes_.end(); ++inode){
+	  inode->set_ep(inode->c().ep());
+	}
+	
+	continue;
+      }
+      for(std::vector<topology::experimental_helix>::const_iterator hh = the_helices.begin(); hh!=the_helices.end(); ++hh){
+	experimental_legendre_vector->add_helix(*hh);
+      }
+      m.message("SULTAN::sultan::reduce_clusters: cluster ", iclu - made_clusters_.begin(), " has ", leftover_cluster_->nodes_.size(), " nodes, ", triplets_.size(), " triplets, ", the_helices.size(), " helices ", mybhep::VERBOSE);
+      if (level >= mybhep::VERBOSE){
+	for(std::vector<topology::cell_triplet>::const_iterator tr = triplets_.begin(); tr!=triplets_.end(); ++tr){
+	  tr->print_ids();
+	}
+	std::clog << " " << std::endl;
+      }
+      //experimental_legendre_vector->reset_helices_errors();
+      //experimental_legendre_vector->calculate_metric();
+      topology::experimental_helix b = experimental_legendre_vector->max(&neighbours);
+      //topology::experimental_helix b = experimental_legendre_vector->max_with_ids();
+      //topology::experimental_helix b = experimental_legendre_vector->max_with_metric();
+      //b = experimental_legendre_vector->gaussian_max(n_iterations, b);
+      iclu->set_helix(b);
+      //iclu->recalculate_R();
+      //iclu->recalculate(n_iterations);
+      iclu->set_cluster_type("helix");
+    }
+
+    if( use_clocks )
+      clock.stop(" sultan: assign_helices_to_clusters ");
+   
+
+    return;
+  }
+
+  //*************************************************************
   void sultan::reduce_clusters() {
     //*************************************************************
+
+    if( use_clocks )
+      clock.start(" sultan: reduce_clusters ","cumulative");
 
     for (vector<topology::cluster>::iterator icluster = clusters_.begin(); icluster != clusters_.end(); ++icluster){
 
@@ -242,54 +309,8 @@ namespace SULTAN {
 
 
 
-    if( use_endpoints ){
-      //size_t n_iterations = 10;
-      std::vector<topology::experimental_helix> the_helices;
-      std::vector<topology::experimental_helix> neighbours;
-      m.message("SULTAN::sultan::reduce_clusters: assign helices to ", made_clusters_.size(), " clusters ", mybhep::VERBOSE);
-      for(std::vector<topology::cluster>::iterator iclu = made_clusters_.begin(); iclu != made_clusters_.end(); ++iclu){
-        *leftover_cluster_ = *iclu;
-        if( leftover_cluster_->nodes_.size() < min_ncells_in_cluster ){
-
-	  for(std::vector<topology::node>::iterator inode=iclu->nodes_.begin(); inode!=iclu->nodes_.end(); ++inode){
-	    inode->set_ep(inode->c().ep());
-	  }
-
-	  continue;
-	}
-        experimental_legendre_vector->reset();
-        neighbours.clear();
-        //form_triplets_from_cells_with_endpoints();
-        form_triplets_from_cells();
-        form_helices_from_triplets(&the_helices, iclu - made_clusters_.begin());
-        if( !the_helices.size() ){
-	  for(std::vector<topology::node>::iterator inode=iclu->nodes_.begin(); inode!=iclu->nodes_.end(); ++inode){
-	    inode->set_ep(inode->c().ep());
-	  }
-
-	  continue;
-	}
-        for(std::vector<topology::experimental_helix>::const_iterator hh = the_helices.begin(); hh!=the_helices.end(); ++hh){
-          experimental_legendre_vector->add_helix(*hh);
-        }
-        m.message("SULTAN::sultan::reduce_clusters: cluster ", iclu - made_clusters_.begin(), " has ", leftover_cluster_->nodes_.size(), " nodes, ", triplets_.size(), " triplets, ", the_helices.size(), " helices ", mybhep::VERBOSE);
-        if (level >= mybhep::VERBOSE){
-          for(std::vector<topology::cell_triplet>::const_iterator tr = triplets_.begin(); tr!=triplets_.end(); ++tr){
-            tr->print_ids();
-          }
-          std::clog << " " << std::endl;
-        }
-        //experimental_legendre_vector->reset_helices_errors();
-        //experimental_legendre_vector->calculate_metric();
-        topology::experimental_helix b = experimental_legendre_vector->max(&neighbours);
-        //topology::experimental_helix b = experimental_legendre_vector->max_with_ids();
-        //topology::experimental_helix b = experimental_legendre_vector->max_with_metric();
-        //b = experimental_legendre_vector->gaussian_max(n_iterations, b);
-        iclu->set_helix(b);
-        //iclu->recalculate_R();
-        //iclu->recalculate(n_iterations);
-        iclu->set_cluster_type("helix");
-      }
+    if( use_endpoints && assign_helices_to_clusters_ ){
+      assign_helices_to_clusters();
     }
 
     // turn clusters to sequences
@@ -298,6 +319,10 @@ namespace SULTAN {
     sequences_ = clean_up(sequences_);
     status();
 
+    if( use_clocks )
+      clock.stop(" sultan: reduce_clusters ");
+
+    return;
 
   }
 
