@@ -27,6 +27,8 @@ namespace snemo {
       _flag_name_         = "";
       _cluster_range_min_ = -1;
       _cluster_range_max_ = -1;
+      _unclustered_range_min_ = -1;
+      _unclustered_range_max_ = -1;
       return;
     }
 
@@ -59,6 +61,16 @@ namespace snemo {
     bool tracker_clustering_data_cut::is_mode_range_cluster () const
     {
       return _mode_ & MODE_RANGE_CLUSTER;
+    }
+
+    bool tracker_clustering_data_cut::is_mode_has_unclustered_hits () const
+    {
+      return _mode_ & MODE_HAS_UNCLUSTERED_HITS;
+    }
+
+    bool tracker_clustering_data_cut::is_mode_range_unclustered_hits () const
+    {
+      return _mode_ & MODE_RANGE_UNCLUSTERED_HITS;
     }
 
     void tracker_clustering_data_cut::set_flag_name (const std::string & flag_name_)
@@ -126,6 +138,16 @@ namespace snemo {
               _mode_ |= MODE_RANGE_CLUSTER;
             }
 
+          if (configuration_.has_flag ("mode.has_unclustered_hits"))
+            {
+              _mode_ |= MODE_HAS_UNCLUSTERED_HITS;
+            }
+
+          if (configuration_.has_flag ("mode.range_unclustered_hits"))
+            {
+              _mode_ |= MODE_RANGE_UNCLUSTERED_HITS;
+            }
+
           DT_THROW_IF (_mode_ == MODE_UNDEFINED, std::logic_error,
                        "Missing at least a 'mode.XXX' property ! ");
 
@@ -174,6 +196,42 @@ namespace snemo {
                                "Invalid 'range_cluster.min' > 'range_cluster.max' values !");
                 }
             } // end if is_mode_range_cluster
+
+          // mode HAS_UNCLUSTERED_HITS:
+          if (is_mode_has_unclustered_hits ())
+            {
+              DT_LOG_DEBUG (get_logging_priority (), "Using HAS_UNCLUSTERED_HITS mode...");
+            } // end if is_mode_has_unclustered_hits
+
+          // mode RANGE_UNCLUSTERED_HITS:
+          if (is_mode_range_unclustered_hits ())
+            {
+              DT_LOG_DEBUG (get_logging_priority (), "Using RANGE_UNCLUSTERED_HITS mode...");
+              int count = 0;
+              if (configuration_.has_key ("range_unclustered_hits.min"))
+                {
+                  int nmin = configuration_.fetch_integer ("range_unclustered_hits.min");
+                  DT_THROW_IF (nmin < 0, std::range_error,
+                               "Invalid min number of unclustered hits (" << nmin << ") !");
+                  _unclustered_range_min_ = nmin;
+                  count++;
+                }
+              if (configuration_.has_key ("range_unclustered_hits.max"))
+                {
+                  int nmax = configuration_.fetch_integer ("range_unclustered_hits.max");
+                  DT_THROW_IF (nmax < 0, std::range_error,
+                               "Invalid max number of unclustered hits (" << nmax << ") !");
+                  _unclustered_range_max_ = nmax;
+                  count++;
+                }
+              DT_THROW_IF (count == 0, std::logic_error,
+                           "Missing 'range_unclustered_hits.min' or 'range_unclustered_hits.max' property !");
+              if (count == 2 && _unclustered_range_min_ >= 0 && _unclustered_range_max_ >= 0)
+                {
+                  DT_THROW_IF (_unclustered_range_min_ > _unclustered_range_max_, std::logic_error,
+                               "Invalid 'range_unclustered_hits.min' > 'range_unclustered_hits.max' values !");
+                }
+            } // end if is_mode_range_unclustered_hits
         }
 
       this->i_cut::_set_initialized (true);
@@ -257,10 +315,59 @@ namespace snemo {
             }
         }
 
+      // Check if the tarcker clustering data has unclustered hits
+      bool check_has_unclustered_hits = true;
+      if (is_mode_has_unclustered_hits ())
+        {
+          DT_LOG_DEBUG (get_logging_priority (), "Running HAS_UNCLUSTERED_HITS mode...");
+          // 2012-05-13 XG: Here we only take care of the default solution
+          if (!TCD.has_default_solution ()) check_has_unclustered_hits = false;
+          else check_has_unclustered_hits = ! TCD.get_default_solution ().get_unclustered_hits ().empty ();
+        }
+
+      // Check if the tracker clustering data has a range of unclustered hits :
+      bool check_range_unclustered_hits = true;
+      if (is_mode_range_unclustered_hits ())
+        {
+          DT_LOG_DEBUG (get_logging_priority (), "Running RANGE_UNCLUSTERED_HITS mode...");
+          // 2012-05-13 XG: Here we only take care of the default solution
+          bool check_has_unclustered_hits = true;
+          if (!TCD.has_default_solution ()) check_has_unclustered_hits = false;
+          else check_has_unclustered_hits = ! TCD.get_default_solution ().get_unclustered_hits ().empty ();
+          if (!check_has_unclustered_hits)
+            {
+              DT_LOG_DEBUG (get_logging_priority (), "Tracker clustering data has no unclustered hits");
+              return cuts::SELECTION_INAPPLICABLE;
+            }
+
+          const size_t nunclustered_hits
+            = TCD.get_default_solution ().get_unclustered_hits ().size ();
+          DT_LOG_DEBUG (get_logging_priority (), "Number of unclustered cluster= " << nunclustered_hits << " "
+                        << "unclustered_hits_min= " << _unclustered_range_min_ << " "
+                        << "unclustered_hits_max= " << _unclustered_range_max_);
+
+          if (_unclustered_range_min_ >= 0)
+            {
+              if (nunclustered_hits < (size_t)_unclustered_range_min_)
+                {
+                  check_range_unclustered_hits = false;
+                }
+            }
+          if (_unclustered_range_max_ >= 0)
+            {
+              if (nunclustered_hits > (size_t)_unclustered_range_max_)
+                {
+                  check_range_unclustered_hits = false;
+                }
+            }
+        }
+
       cut_returned = cuts::SELECTION_REJECTED;
       if (check_flag        &&
           check_has_cluster &&
-          check_range_cluster)
+          check_range_cluster &&
+          check_has_unclustered_hits &&
+          check_range_unclustered_hits)
         {
           cut_returned = cuts::SELECTION_ACCEPTED;
         }

@@ -55,10 +55,12 @@ namespace snemo {
 
       /// \brief Mode of the cut
       enum mode_type {
-        MODE_UNDEFINED         = 0,
-        MODE_FLAG              = datatools::bit_mask::bit00,
-        MODE_HAS_CLUSTER       = datatools::bit_mask::bit01,
-        MODE_RANGE_CLUSTER     = datatools::bit_mask::bit02
+        MODE_UNDEFINED              = 0,
+        MODE_FLAG                   = datatools::bit_mask::bit00,
+        MODE_HAS_CLUSTER            = datatools::bit_mask::bit01,
+        MODE_RANGE_CLUSTER          = datatools::bit_mask::bit02,
+        MODE_HAS_UNCLUSTERED_HITS   = datatools::bit_mask::bit03,
+        MODE_RANGE_UNCLUSTERED_HITS = datatools::bit_mask::bit04
       };
 
       /// Set the 'Tracker clustering' bank label/name
@@ -78,6 +80,12 @@ namespace snemo {
 
       /// Check mode RANGE_CLUSTER:
       bool is_mode_range_cluster () const;
+
+      /// Check mode HAS_UNCLUSTERED_HITS:
+      bool is_mode_has_unclustered_hits () const;
+
+      /// Check mode RANGE_UNCLUSTERED_HITS:
+      bool is_mode_range_unclustered_hits () const;
 
       void set_flag_name (const std::string & flag_name_);
 
@@ -107,11 +115,13 @@ namespace snemo {
 
     private:
 
-      std::string _TCD_label_;         //!< Name of the "tracker clustering data" bank
-      uint32_t    _mode_;              //!< Mode of the cut
-      std::string _flag_name_;         //!< Name of the boolean property in the tracker clustering data
-      int         _cluster_range_min_; //!< Minimal number of cluster
-      int         _cluster_range_max_; //!< Maximal number of cluster
+      std::string _TCD_label_;             //!< Name of the "tracker clustering data" bank
+      uint32_t    _mode_;                  //!< Mode of the cut
+      std::string _flag_name_;             //!< Name of the boolean property in the tracker clustering data
+      int         _cluster_range_min_;     //!< Minimal number of cluster
+      int         _cluster_range_max_;     //!< Maximal number of cluster
+      int         _unclustered_range_min_; //!< Minimal number of unclustered hits
+      int         _unclustered_range_max_; //!< Maximal number of unclustered hits
 
       // Macro to automate the registration of the cut :
       CUT_REGISTRATION_INTERFACE(tracker_clustering_data_cut);
