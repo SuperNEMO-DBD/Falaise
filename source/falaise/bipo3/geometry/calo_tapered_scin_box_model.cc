@@ -1,7 +1,7 @@
 // calo_tapered_scin_box_model.cc
 
 // Ourselves:
-#include <falaise/calo_tapered_scin_box_model.h>
+#include <falaise/bipo3/geometry/calo_tapered_scin_box_model.h>
 
 // Standard library:
 #include <cstdlib>
