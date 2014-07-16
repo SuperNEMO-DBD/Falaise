@@ -756,7 +756,7 @@ namespace CAT {
     clean_up_sequences();
     direct_out_of_foil();
 
-    //interpret_physics(tracked_data_.get_calos());
+    interpret_physics(tracked_data_.get_calos());
     make_families();
 
     refine_sequences_near_walls(tracked_data_.get_calos());
@@ -1079,12 +1079,15 @@ namespace CAT {
     topology::cell prev_cell, next_cell;
 
 
-    // first, find out which gaps are being crossed
+    // first, work out which gaps are being crossed
     // joint at node: you give it the node index, it gives you back the joint index
     std::map<size_t, size_t > joint_at_node;
+    std::vector<size_t> index_of_nodes_on_gap;
     for(std::vector<topology::node>::const_iterator inode=local_cluster_->nodes_.begin() + 2; inode!=local_cluster_->nodes_.end()-1; ++inode){
       next_cell = local_cluster_->nodes_[inode - local_cluster_->nodes_.begin() + 1].c();
       if( inode->c().block() != next_cell.block()){
+	index_of_nodes_on_gap.push_back(inode - local_cluster_->nodes_.begin());
+	index_of_nodes_on_gap.push_back(inode - local_cluster_->nodes_.begin() + 1);
 	if( inode->ccc()[0].joints().size() > 1 ){
 	  joint_at_node[inode - local_cluster_->nodes_.begin()] = 0;
 	}
@@ -1158,21 +1161,31 @@ namespace CAT {
        // look at nodes C D ... X Y
        for(std::vector<topology::node>::const_iterator inode=local_cluster_->nodes_.begin() + 2; inode!=local_cluster_->nodes_.end()-1; ++inode){
 	 prev_cell = local_cluster_->nodes_[inode - local_cluster_->nodes_.begin() - 1].c();
+
+	 bool node_is_on_gap = (std::find(index_of_nodes_on_gap.begin(), index_of_nodes_on_gap.end(), inode - local_cluster_->nodes_.begin()) != index_of_nodes_on_gap.end());
+
 	 if( joint_at_node.count(inode - local_cluster_->nodes_.begin()) == 0 ){ // node is not on gap or has only 1 joint
 	   local_joints = inode->ccc()[0].joints();
-	   m.message(" CAT::sequentiator::make_new_sequence_after_sultan: node ", inode->c().id(), " has ", local_joints.size(), " joints", mybhep::VERBOSE);
+	   m.message(" CAT::sequentiator::make_new_sequence_after_sultan: node ", inode->c().id(), " has ", local_joints.size(), " joints, is on gap:", node_is_on_gap, mybhep::VERBOSE);
 	   best_joint = find_best_matching_joint(joints.back(), local_joints, prev_cell, inode->c(), &chi2);
 	   joints.push_back(best_joint);
-	   chi2s.push_back(chi2);
+	   if( !node_is_on_gap )
+	     chi2s.push_back(chi2);
+	   else
+	     chi2s.push_back(0.);
 	 }else{ // node is on gap and has 2 joints
 	   size_t index_of_local_joint = joint_at_node[inode - local_cluster_->nodes_.begin()];
-	   m.message(" CAT::sequentiator::make_new_sequence_after_sultan: node ", inode->c().id(), " is on gap, pick joint ", index_of_local_joint, mybhep::VERBOSE);
+	   m.message(" CAT::sequentiator::make_new_sequence_after_sultan: node ", inode->c().id(), " is on gap, pick joint ", index_of_local_joint, ", is on gap:", node_is_on_gap, mybhep::VERBOSE);
 	   local_joint = inode->ccc()[0].joints()[index_of_local_joint];
+	   // local joint:    A B C
+	   // joints back:    0 A B
 	   chi2 = local_joint.calculate_chi2(joints.back(), prev_cell, inode->c(), &best_joint);
 	   joints.push_back(best_joint);
-	   chi2s.push_back(chi2);
+	   chi2s.push_back(0.);
 	 }
+
        }
+
        chi2s.push_back(0.);
        
        newsequence.nodes_[0].set_ep(joints.front().epa());
@@ -2355,7 +2368,7 @@ namespace CAT {
           size_t index = iseq - sequences_.begin();
           m.message("CAT::sequentiator::interpret_physics: erased sequence ", index, "not a good helix", mybhep::VERBOSE); fflush(stdout);
           sequences_.erase(iseq);
-          ++ iseq;
+          iseq = sequences_.begin() + index;
           if( index + 1 >= sequences_.size() )
             break;
           continue;

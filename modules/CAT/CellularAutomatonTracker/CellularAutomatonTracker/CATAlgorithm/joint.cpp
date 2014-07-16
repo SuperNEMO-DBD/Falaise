@@ -217,6 +217,9 @@ namespace CAT {
     }
 
     double joint::calculate_chi2(joint j, topology::cell A, topology::cell B, joint * modified)const{
+      // this: A B C
+      // j:    0 A B
+
       topology::experimental_double angle_AA, angle_BB, angle_phi, angle_theta;
       topology::experimental_point pa = A.angular_average(j.epb(), this->epa(), &angle_AA);
       topology::experimental_point pb = B.angular_average(j.epc(), this->epb(), &angle_BB);
@@ -224,9 +227,10 @@ namespace CAT {
       angle_phi = lj.kink_phi();
       angle_theta = lj.kink_theta();
       *modified = lj;
-      double local_chi2 = pow(angle_AA.value()/angle_AA.error(),2) + pow(angle_BB.value()/angle_BB.error(),2) + pow(angle_phi.value()/angle_phi.error(),2) + pow(angle_theta.value()/angle_theta.error(),2);
+      //double local_chi2 = pow(angle_AA.value()/angle_AA.error(),2) + pow(angle_BB.value()/angle_BB.error(),2) + pow(angle_phi.value()/angle_phi.error(),2) + pow(angle_theta.value()/angle_theta.error(),2);
+      double local_chi2 = pow(angle_phi.value(),2);
       if (print_level() >= mybhep::VVERBOSE){
-	std::clog << " CAT::joint::calculate_chi2: angle_AA " << angle_AA.value() << " +- " << angle_AA.error() <<  " angle_BB " << angle_BB.value() << " +- " << angle_BB.error() << " angle_phi " << angle_phi.value() << " +- " << angle_phi.error() << " angle_theta " << angle_theta.value() << " +- " << angle_theta.error() << " local chi2 " << local_chi2 << std::endl;
+	std::clog << " CAT::joint::calculate_chi2: cell A " << A.id() << " angle_AA " << angle_AA.value() << " +- " << angle_AA.error() <<  " B " << B.id() << " angle_BB " << angle_BB.value() << " +- " << angle_BB.error() << " angle_phi " << angle_phi.value() << " +- " << angle_phi.error() << " angle_theta " << angle_theta.value() << " +- " << angle_theta.error() << " local chi2 " << local_chi2 << std::endl;
       }
       return local_chi2;
 

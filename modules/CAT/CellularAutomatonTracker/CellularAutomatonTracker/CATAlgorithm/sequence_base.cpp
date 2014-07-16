@@ -1831,6 +1831,189 @@ namespace CAT {
     }
 
 
+    bool sequence::calculate_helix_after_sultan(void) {
+
+      bool good_fit=true;
+
+      has_helix_ = true;
+
+      helix_chi2s_.clear();
+
+      int method = 3;
+      // method 1:
+      // fit a helix throgh every three consecutive points
+      // then average
+      //
+      // method 2:
+      // fit a helix throgh 1st, middle and last point
+      //
+      // method 3:
+      // fit best circle, then best helix, through all points
+      //
+
+
+      switch(method){
+
+      case 1: {
+
+        std::vector<helix> helices;
+        std::vector<node>::iterator anode, cnode;
+        for(std::vector<node>::iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode){
+          if( inode - nodes_.begin() == 0 || nodes_.end() - inode == 1 ) continue;
+
+          anode = inode;
+          cnode = inode;
+          --anode; ++cnode;
+          if( print_level() >= mybhep::VVERBOSE ){
+            std::clog << " calculate helix for three points " << anode->c().id() << " , " << inode->c().id() << " , " << cnode->c().id() << std::endl;
+          }
+          helices.push_back(three_points_helix(anode->ep(), inode->ep(), cnode->ep()));
+
+        }
+
+        helix_ = average(helices);
+        helix_.set_print_level(print_level());
+        helix_.set_probmin(probmin());
+
+        experimental_point _center = helix_.center();
+        experimental_double Yc = middle_node().ep().y() - helix_.pitch()*experimental_vector(_center, middle_node().ep()).phi();
+        _center.set_y(Yc);
+        helix_.set_center(_center);
+
+        break;
+      }
+      case 2:{
+
+        circle ci = three_points_circle(nodes().front().ep(), middle_node().ep(), nodes().back().ep());
+
+        break;
+      }
+      case 3:{
+        // fit best circle through all points (horizontal view)
+
+        std::vector<experimental_point> ps;
+        std::vector<experimental_double> phis;
+        std::vector<experimental_double> xs;
+        std::vector<experimental_double> ys;
+        std::vector<experimental_double> zs;
+
+        for(std::vector<node>::iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode){
+          ps.push_back(inode->ep());
+          xs.push_back(inode->ep().x());
+          ys.push_back(inode->ep().y());
+          zs.push_back(inode->ep().z());
+        }
+
+        CircleRegression cl(xs, zs, print_level(), probmin());
+        if( !cl.fit() ) good_fit = false;
+        //      cl.minuit_fit();
+
+        if( print_level() >= mybhep::VVERBOSE ){
+          cl.dump();
+        }
+
+
+        circle ci = cl.c();
+
+        bool first = true;
+        experimental_double offset(0.,0.);;
+
+        experimental_double p(0.,0.);
+        double phi_ref = 0.;
+        for(std::vector<node>::iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode){
+          phi_ref = p.value();
+          p = ci.phi_of_point(inode->ep(), phi_ref);
+          if( !phis.empty() && first){
+            if( fabs(p.value() - phis.back().value()) > M_PI ){
+
+              first = false;
+              if( p.value() > phis.back().value() )
+                offset.set_value(-2.*M_PI);
+              else
+                offset.set_value(2.*M_PI);
+            }
+          }
+
+
+          phis.push_back(p + offset);
+        }
+
+
+
+        LinearRegression l(phis, ys, print_level(), probmin());
+
+#if CAT_WITH_DEVEL_ROOT == 1
+        if ( !l.root_fit() ){  // fit with root
+#endif // CAT_WITH_DEVEL_ROOT == 1
+
+          // if root does not work or is not used
+          // fit best helix with through all points (vertical view)
+          l.set_xi(ys);
+          l.set_yi(phis);
+          l.fit();
+          l.invert(); // fit with y as more erroneous variable (phi = phi(y)),
+          // then invert the result to have y = y(phi)
+
+#if CAT_WITH_DEVEL_ROOT == 1
+         }
+#endif // CAT_WITH_DEVEL_ROOT == 1
+
+        if( print_level() >= mybhep::VVERBOSE ){
+          l.dump();
+        }
+
+
+        // build helix
+        ci.set_center(experimental_point(ci.center().x(), l.y0(), ci.center().z()));
+        helix_ = helix(ci, l.tangent(), print_level(), probmin());
+
+
+
+        helix_chi2s_ = helix_.chi2s(ps);
+
+        break;
+      }
+      default:
+
+        if( print_level() >= mybhep::NORMAL ){
+          std::clog << " problem: unknonw method "<< method << " to fit a helix " << std::endl;
+        }
+      }
+
+
+      // for each point, the helix axis should be ~ parallel to the tangent line
+      if( good_fit ){
+	double phi_limit = 30.*acos(-1.)/180.;
+        for(std::vector<node>::iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode){
+	  size_t index = inode - nodes_.begin();
+	  if( index + 1 >= nodes_.size() ) continue;
+	  if( fabs( inode->c().block() - nodes_[index+1].c().block()) >= 1 ) continue; // check only connections within a block
+	  if( inode->c().id() == nodes_[index+1].c().id() ) continue; // the cell can be the same
+
+	  experimental_vector helix_dir = helix_.direction_at(inode->ep()).hor().unit();
+	  experimental_vector tangent_dir = (nodes_[index+1].ep() - inode->ep()).hor().unit();
+	  int sign = 1;
+	  double sp = (helix_dir*tangent_dir).value();
+	  if( sp < 0 ) sign = -1; // the helix could be run backwards
+	  double local_angle = acos(sp*sign);
+	  if( print_level() >= mybhep::VVERBOSE ){
+	    std::clog << " connection " << inode->c().id() << " - " << nodes_[index+1].c().id() << " has helix dir (" << helix_dir.x().value() << ", " << helix_dir.z().value() << ") tangent dir (" << tangent_dir.x().value() << ", " << tangent_dir.z().value() << ") angular separation " << local_angle << " between helix and tangent, maximum " << phi_limit << std::endl;
+	  }
+	  if( fabs(local_angle) > phi_limit ){
+	    if( print_level() >= mybhep::VVERBOSE ){
+	      std::clog << " so reject helix " << std::endl;
+	    }
+	    good_fit = false;
+	    break;
+	  }
+	}
+      }
+
+
+      return good_fit;
+    }
+
+
     const experimental_double & sequence::radius()const{
       return helix_.radius();
     }

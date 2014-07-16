@@ -382,6 +382,8 @@ namespace CAT {
 
       bool calculate_helix(void);
 
+      bool calculate_helix_after_sultan(void);
+
       const experimental_double & radius() const;
 
       const experimental_double & pitch()const;
