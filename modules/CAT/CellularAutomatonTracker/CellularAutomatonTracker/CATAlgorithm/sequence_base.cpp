@@ -811,7 +811,7 @@ namespace CAT {
     void sequence::set_free_level(){
 
       set_free(false);
-      size_t iccc;
+      int iccc;
       for(std::vector<node>::iterator inode=nodes_.begin(); inode != nodes_.end(); ++inode)
         {
           inode->set_free(false);
@@ -837,6 +837,7 @@ namespace CAT {
                 }
               }
             }else{
+
               if( has_cell((*inode).ccc_[iccc].ca()) &&
                   has_cell((*inode).ccc_[iccc].cc()) ){
                 ilink->set_begun(true);
@@ -1578,12 +1579,12 @@ namespace CAT {
       }
 
 
-
+      /*
       if( fabs( nodes()[inode].c().block() - link.block()) == 1 ){
         // the connection happens through a gap
         return -1;
       }
-
+      */
 
       cell null;
 

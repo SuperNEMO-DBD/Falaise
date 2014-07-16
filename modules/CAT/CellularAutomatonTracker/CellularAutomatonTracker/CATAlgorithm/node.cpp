@@ -316,6 +316,38 @@ namespace CAT {
         }
       }
 
+    void node::calculate_triplets_after_sultan(double Ratio){
+      // always get 1 triplet with 1 or 2 joints
+      if( cc_.size() != 2 ){
+	return;
+      }
+
+      cell c1 = cc_[0].cb();
+      cell c2 = cc_[1].cb();
+      if( c1.id() == c2.id() ){
+	if( print_level() >= mybhep::NORMAL ){
+	  std::clog << appname_ << " problem: calculate triplets after sultan: cc id1 " << c1.id() << " id2 " << c2.id() << std::endl;
+	}
+	return;
+      }
+
+      cell_triplet ccc(c1,c_,c2, print_level(), probmin());
+      if( print_level() >= mybhep::VVERBOSE ){
+	std::clog << appname_ << " calculate joints for three cells: " << ccc.ca().id() << "  " << ccc.cb().id() << "  " << ccc.cc().id() << std::endl;
+      }
+      ccc.calculate_joints_after_sultan(Ratio);
+      if( ccc.joints().size() > 0 ){
+	if( print_level() >= mybhep::VVERBOSE ){
+	  std::clog << appname_ << " adding joints " << std::endl;
+	  for(std::vector<joint>::iterator ijoint = ccc.joints_.begin(); ijoint != ccc.joints_.end(); ++ ijoint )
+	    std::clog << " joint " << ijoint - ccc.joints_.begin() << " phia: " << experimental_vector(ccc.ca().ep(), ijoint->epa()).phi().value()*180./M_PI
+		      << " phib: " << experimental_vector(ccc.cb().ep(), ijoint->epb()).phi().value()*180./M_PI
+		      << " phic: " << experimental_vector(ccc.cc().ep(), ijoint->epc()).phi().value()*180./M_PI << " chi2 " << ijoint->chi2() << std::endl;
+	}
+	add_triplet(ccc);
+      }
+    }
+
     void node::add_triplet(const cell_triplet &ccc){
       ccc_.push_back(ccc);
       ccc_ca_index_[ccc.ca().id()] = ccc_.size() - 1;

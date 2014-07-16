@@ -9,6 +9,7 @@
 #include <CATAlgorithm/experimental_point.h>
 #include <CATAlgorithm/experimental_vector.h>
 #include <CATAlgorithm/tracking_object.h>
+#include <CATAlgorithm/cell_base.h>
 
 
 namespace CAT {
@@ -118,6 +119,8 @@ namespace CAT {
       joint invert();
 
       bool operator<(const joint &j) const;
+
+      double calculate_chi2(joint j, topology::cell A, topology::cell B, joint * modified)const;
 
     private:
 

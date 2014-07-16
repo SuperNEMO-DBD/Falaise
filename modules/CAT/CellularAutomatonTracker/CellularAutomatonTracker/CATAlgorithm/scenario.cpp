@@ -11,7 +11,8 @@ namespace CAT {
       set_print_level(mybhep::NORMAL);
       set_probmin(10.);
       //sequences_.clear();
-      chi2_ = mybhep::small_neg;
+      helix_chi2_ = mybhep::small_neg;
+      tangent_chi2_ = mybhep::small_neg;
       ndof_ = mybhep::default_integer;
       n_free_families_ = mybhep::default_integer;
       n_overlaps_ = mybhep::default_integer;
@@ -29,7 +30,8 @@ namespace CAT {
       set_print_level(mybhep::NORMAL);
       set_probmin(probmin);
       sequences_ = seqs;
-      chi2_ = mybhep::small_neg;
+      helix_chi2_ = mybhep::small_neg;
+      tangent_chi2_ = mybhep::small_neg;
       ndof_ = mybhep::default_integer;
       n_free_families_ = mybhep::default_integer;
       n_overlaps_ = mybhep::default_integer;
@@ -49,7 +51,7 @@ namespace CAT {
           }
 
         a_out << indent << appname_ << " -------------- " << std::endl;
-        a_out << indent << "chi2 : " << chi2() << " ndof " << ndof() << " prob " << Prob() << std::endl;
+        a_out << indent << "helix_chi2 : " << helix_chi2() << "tangent_chi2 : " << tangent_chi2() << " ndof " << ndof() << " helix_prob " << helix_Prob() << " tangent_prob " << tangent_Prob() << std::endl;
         a_out << indent << "n free families : " << n_free_families() << std::endl;
         a_out << indent << "n overlaps : " << n_overlaps() << std::endl;
         for(std::vector<sequence>::const_iterator iseq = sequences_.begin(); iseq != sequences_.end(); ++iseq)
@@ -66,7 +68,8 @@ namespace CAT {
     void scenario::set(const std::vector<sequence> & seqs){
       appname_= "scenario: ";
       sequences_ = seqs;
-      chi2_ = mybhep::small_neg;
+      helix_chi2_ = mybhep::small_neg;
+      tangent_chi2_ = mybhep::small_neg;
       n_free_families_ = mybhep::default_integer;
       n_overlaps_ = mybhep::default_integer;
     }
@@ -76,9 +79,14 @@ namespace CAT {
       sequences_ = seqs;
     }
 
-    //! set chi2
-    void scenario::set_chi2(double chi2){
-      chi2_ = chi2;
+    //! set helix_chi2
+    void scenario::set_helix_chi2(double helix_chi2){
+      helix_chi2_ = helix_chi2;
+    }
+
+    //! set tangent_chi2
+    void scenario::set_tangent_chi2(double tangent_chi2){
+      tangent_chi2_ = tangent_chi2;
     }
 
     //! set n free families
@@ -102,10 +110,16 @@ namespace CAT {
       return sequences_;
     }
 
-    //!get chi2
-    double scenario::chi2() const
+    //!get helix_chi2
+    double scenario::helix_chi2() const
     {
-      return chi2_;
+      return helix_chi2_;
+    }
+
+    //!get tangent_chi2
+    double scenario::tangent_chi2() const
+    {
+      return tangent_chi2_;
     }
 
     //!get ndof
@@ -350,22 +364,29 @@ namespace CAT {
 
     void scenario::calculate_chi2(){
 
-      double chi2 = 0.;
+      double helix_chi2 = 0.;
+      double tangent_chi2 = 0.;
       int32_t ndof = 0;
       for(std::vector<sequence>::iterator iseq = sequences_.begin(); iseq != sequences_.end(); ++iseq){
-        chi2 += iseq->helix_chi2();
+        helix_chi2 += iseq->helix_chi2();
+        tangent_chi2 += iseq->chi2();
         ndof += iseq->ndof();
       }
 
-      chi2_ = chi2;
+      helix_chi2_ = helix_chi2;
+      tangent_chi2_ = tangent_chi2;
       ndof_ = ndof;
 
       return;
     }
 
 
-    double scenario::Prob()const{
-      return probof(chi2(), ndof());
+    double scenario::helix_Prob()const{
+      return probof(helix_chi2(), ndof());
+    }
+
+    double scenario::tangent_Prob()const{
+      return probof(helix_chi2(), ndof());
     }
 
     bool scenario::better_scenario_than( const scenario & s, double limit)const{
@@ -376,13 +397,16 @@ namespace CAT {
       // n of new overlaps
       int deltanoverls = n_overlaps() - s.n_overlaps();
 
-      double deltaprob = Prob() - s.Prob();
-      double deltachi = chi2() - s.chi2();
+      double deltaprob_helix = helix_Prob() - s.helix_Prob();
+      double deltachi_helix = helix_chi2() - s.helix_chi2();
+      double deltaprob_tangent = tangent_Prob() - s.tangent_Prob();
+      double deltachi_tangent = tangent_chi2() - s.tangent_chi2();
 
       if( print_level() >= mybhep::VVERBOSE ){
         std::clog << " delta n_free_families = (" << n_free_families()  << " - " << s.n_free_families() << ")= " << deltanfree
                   << " dela n_overlaps = (" << n_overlaps() << " - " << s.n_overlaps() << ")= " << deltanoverls
-                  << " delta prob = (" << Prob()  << " - " << s.Prob() << ") = " << deltaprob
+		  << " delta prob_helix = (" << helix_Prob()  << " - " << s.helix_Prob() << ") = " << deltaprob_helix
+		  << " delta prob_tangent = (" << tangent_Prob()  << " - " << s.tangent_Prob() << ") = " << deltaprob_tangent
                   << std::endl;
       }
 
@@ -403,10 +427,16 @@ namespace CAT {
         if( delta_n_of_ends_on_wire < 0 ) return true;
         if( delta_n_of_ends_on_wire > 0 ) return false;
 
-        if( deltaprob > 0. )
+        if( deltaprob_helix > 0. )
           return true;
 
-        if( deltaprob == 0. && deltachi < 0. )
+        if( deltaprob_tangent > 0. )
+          return true;
+
+        if( deltaprob_helix == 0. && deltachi_helix < 0. )
+          return true;
+
+        if( deltaprob_tangent == 0. && deltachi_tangent < 0. )
           return true;
 
       }

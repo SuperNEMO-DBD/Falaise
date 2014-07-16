@@ -146,7 +146,9 @@ namespace CAT{
 
       void calculate_joints(double Ratio, double separation_limit=90., double phi_limit=25., double theta_limit=180.);
 
-      std::vector<joint> refine(const std::vector<joint> & joints, double Ratio);
+      void calculate_joints_after_sultan(double Ratio);
+
+      std::vector<joint> refine(const std::vector<joint> & joints, double Ratio, size_t max_njoints=4);
 
       size_t iteration()const;
 

@@ -72,8 +72,12 @@ namespace CAT {
 
     bool sequentiate(topology::tracked_data & tracked_data);
     void sequentiate_cluster(topology::cluster & cluster);
+    bool sequentiate_after_sultan(topology::tracked_data & tracked_data);
+    void sequentiate_cluster_after_sultan();
     void make_new_sequence(topology::node & first_node);
     void make_copy_sequence(topology::node & first_node);
+    void make_new_sequence_after_sultan();
+    void make_copy_sequence_after_sultan();
     bool evolve(topology::sequence & sequence);
     void fill_links(topology::sequence *sequence);
     bool good_first_node(topology::node & node_);
@@ -516,6 +520,7 @@ namespace CAT {
     bool can_match(topology::sequence &s, size_t* jmin, bool& bestinvertA, bool& bestinvertB, int& with_kink, int &cells_to_delete, std::vector<topology::calorimeter_hit> & calos);
     bool select_nemo_tracks(topology::tracked_data & __tracked_data);
     bool sequence_is_within_range(topology::node nodeA, topology::node nodeB, topology::sequence seq);
+    topology::joint find_best_matching_joint(topology::joint j, std::vector<topology::joint> js, topology::cell A, topology::cell B, double *chi2);
 
 
 

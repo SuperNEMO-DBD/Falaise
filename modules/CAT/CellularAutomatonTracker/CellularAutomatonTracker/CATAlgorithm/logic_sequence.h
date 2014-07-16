@@ -56,7 +56,8 @@ namespace CAT {
       size_t calo_tangent_id_;
       std::string decay_tangent_vertex_type_;
 
-      double chi2_;
+      double helix_chi2_;
+      double tangent_chi2_;
       int32_t ndof_;
 
       //!Default constructor
@@ -75,7 +76,8 @@ namespace CAT {
         has_decay_tangent_vertex_ = false;
         calo_tangent_id_ = mybhep::default_integer;
         decay_tangent_vertex_type_="default";
-        chi2_ = mybhep::small_neg;
+        helix_chi2_ = mybhep::small_neg;
+        tangent_chi2_ = mybhep::small_neg;
         ndof_ = mybhep::default_integer;
       }
 
@@ -118,7 +120,8 @@ namespace CAT {
           calo_tangent_id_ = s.calo_tangent_id();
           decay_tangent_vertex_type_=s.decay_tangent_vertex_type();
         }
-        chi2_ = s.chi2();
+        helix_chi2_ = s.helix_chi2();
+        tangent_chi2_ = s.chi2();
         ndof_ = s.ndof();
 
       }
@@ -174,8 +177,13 @@ namespace CAT {
       }
 
       // get chi2 of sequence
-      double chi2(){
-        return chi2_;
+      double tangent_chi2(){
+        return tangent_chi2_;
+      }
+
+      // get chi2 of sequence
+      double helix_chi2(){
+        return helix_chi2_;
       }
 
       // get ndof of sequence
@@ -184,8 +192,14 @@ namespace CAT {
       }
 
       // get prob of sequence
-      double Prob(){
-        return probof(chi2(), ndof());
+      double helix_Prob(){
+        return probof(helix_chi2(), ndof());
+
+      }
+
+      // get prob of sequence
+      double tangent_Prob(){
+        return probof(tangent_chi2(), ndof());
 
       }
 

@@ -76,8 +76,8 @@ namespace topology{
 
     if( print_level() >= mybhep::VVERBOSE ){
       std::clog << "CAT::cell::angular_average: averaging phi1: "; (phi1*180./M_PI).dump();
-      std::clog << "CAT::cell::angular_average: and phi2: "; (phi2*180./M_PI).dump();
-      std::clog << "CAT::cell::angular_average: to phi_ave: "; (ave_phi*180./M_PI).dump();
+      std::clog << " and phi2: "; (phi2*180./M_PI).dump();
+      std::clog << " to phi_ave: "; (ave_phi*180./M_PI).dump();
       std::clog << " " << std::endl;
     }
 

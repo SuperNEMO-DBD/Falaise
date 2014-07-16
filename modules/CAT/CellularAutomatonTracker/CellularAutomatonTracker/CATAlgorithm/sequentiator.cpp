@@ -698,7 +698,90 @@ namespace CAT {
 
     // make_plots(tracked_data_);
 
+    m.message("CAT::sequentiator::sequentiate: sequentiation done ", mybhep::VVERBOSE); fflush(stdout);
+
     clock.stop(" sequentiator: sequentiate ");
+
+    return true;
+  }
+
+
+  //*************************************************************
+  bool sequentiator::sequentiate_after_sultan(topology::tracked_data & tracked_data_) {
+    //*************************************************************
+
+    event_number ++;
+    m.message("CAT::sequentiator::sequentiate_after_sultan: local_tracking: preparing event", event_number, mybhep::VERBOSE);
+
+    if( event_number < first_event_number ){
+      m.message("CAT::sequentiator::sequentiate_after_sultan:  local_tracking: skip event", event_number, " first event is "
+                , first_event_number,  mybhep::VERBOSE);
+      return true;
+    }
+
+    clock.start(" sequentiator: sequentiate_after_sultan ","cumulative");
+    clock.start(" sequentiator: sequentiation ","restart");
+
+    // set_clusters(tracked_data_.get_clusters());
+    vector<topology::cluster> & the_clusters = tracked_data_.get_clusters ();
+
+    m.message("CAT::sequentiator::sequentiate_after_sultan: sequentiate ", the_clusters.size(), " clusters ", mybhep::VVERBOSE); fflush(stdout);
+
+    NFAMILY = 0;
+    NCOPY = 0;
+
+    if (the_clusters.empty ()) return true;
+
+    sequences_.clear();
+    scenarios_.clear();
+
+    tracked_data_.scenarios_.clear();
+
+    for (vector<topology::cluster>::iterator
+          icluster = the_clusters.begin();
+        icluster != the_clusters.end(); ++icluster)
+      {
+        local_cluster_ = &(*icluster);
+
+        sequentiate_cluster_after_sultan();
+      }
+
+    if (late())
+      {
+        tracked_data_.set_skipped(true);
+        SkippedEvents ++;
+        return false;
+      }
+
+    clean_up_sequences();
+    direct_out_of_foil();
+
+    //interpret_physics(tracked_data_.get_calos());
+    make_families();
+
+    refine_sequences_near_walls(tracked_data_.get_calos());
+
+    if (late())
+      {
+        tracked_data_.set_skipped(true);
+        SkippedEvents ++;
+        return false;
+      }
+
+
+    make_scenarios(tracked_data_);
+
+
+    if (late())
+      {
+        tracked_data_.set_skipped(true);
+        SkippedEvents ++;
+        return false;
+      }
+
+    // make_plots(tracked_data_);
+
+    clock.stop(" sequentiator: sequentiate_after_sultan ");
 
     return true;
   }
@@ -829,6 +912,20 @@ namespace CAT {
 
 
   //*************************************************************
+  void sequentiator::sequentiate_cluster_after_sultan(){
+    //*************************************************************
+
+    make_new_sequence_after_sultan();
+    
+    if (late()) return;
+    
+    //make_copy_sequence_after_sultan();
+
+    return;
+  }
+
+
+  //*************************************************************
   void sequentiator::make_new_sequence(topology::node & first_node){
     //*************************************************************
 
@@ -874,6 +971,293 @@ namespace CAT {
       }
 
     clock.stop(" sequentiator: make new sequence ");
+
+    return;
+  }
+
+
+  //*************************************************************
+  topology::joint sequentiator::find_best_matching_joint(topology::joint j, std::vector<topology::joint> js, topology::cell A, topology::cell B, double *chi2){
+  //*************************************************************
+
+    // match joint 0-A-B and joint A-B-C
+    double local_chi2;
+    double chi2_best = mybhep::default_min;
+    topology::joint jbest, lj;
+
+    for(std::vector<topology::joint>::const_iterator ij=js.begin(); ij!=js.end(); ++ij){
+      local_chi2 = ij->calculate_chi2(j, A, B, &lj);
+      if( local_chi2 < chi2_best ){
+	chi2_best = local_chi2;
+	jbest = lj;
+      }
+    }
+
+    *chi2 = chi2_best;
+    return jbest;
+
+  }
+
+  //*************************************************************
+  void sequentiator::make_new_sequence_after_sultan(){
+    //*************************************************************
+
+    if (late()) return;
+
+    clock.start(" sequentiator: make new sequence after sultan ","cumulative");
+
+    size_t s = local_cluster_->nodes().size();
+    NFAMILY = 0;
+    NCOPY = 0;
+
+    if (level >= mybhep::VERBOSE){
+      std::clog << " CAT::sequentiator::make_new_sequence_after_sultan: cluster size is " <<  s ;
+      for(std::vector<topology::node>::const_iterator in=local_cluster_->nodes_.begin(); in!=local_cluster_->nodes_.end(); ++in)
+	std::clog << " [" << in->c().id() << "]";
+      std::clog << " " << std::endl;
+    }
+
+    if( s == 0 ){
+      m.message(" problem: CAT::sequentiator::make_new_sequence_after_sultan: cluster size is ", s, mybhep::NORMAL);
+      return;
+    }
+
+    if( s == 1 ){
+      topology::node n = local_cluster_->nodes()[0];
+      n.set_ep(n.c().ep());
+      topology::sequence newsequence(n, level, probmin);
+      make_name(newsequence);
+      sequences_.push_back(newsequence);
+
+      if (level >= mybhep::VERBOSE)
+	{
+	  clog << "CAT::sequentiator::make_new_sequence_after_sultan: made sequence " << endl;
+	  print_a_sequence(newsequence);
+	}
+
+      clean_up_sequences();
+      return;
+    }
+
+    if( s == 2 ){
+      topology::sequence newsequence(local_cluster_->nodes(), level, probmin);
+      add_pair(newsequence);
+      
+      clean_up_sequences();
+      return;
+    }
+
+    if( s == 3 ){
+      std::vector<topology::joint> joints = local_cluster_->nodes()[1].ccc()[0].joints();
+      m.message(" CAT::sequentiator::make_new_sequence_after_sultan: make sequence with size ", s, " and ", joints.size(), " joints ", mybhep::VERBOSE);
+      for(std::vector<topology::joint>::const_iterator ij=joints.begin(); ij!=joints.end(); ++ij){
+	topology::sequence newsequence(local_cluster_->nodes(), level, probmin);
+	newsequence.nodes_[0].set_ep(ij->epa());
+	newsequence.nodes_[1].set_ep(ij->epb());
+	newsequence.nodes_[2].set_ep(ij->epc());
+	make_name(newsequence);
+	sequences_.push_back(newsequence);
+	if (level >= mybhep::VERBOSE)
+	  {
+	    clog << "CAT::sequentiator::make_new_sequence_after_sultan: made sequence " << endl;
+	    print_a_sequence(newsequence);
+	  }
+	NFAMILY ++;
+      }
+      
+      clean_up_sequences();
+      return;
+    }
+
+    
+    // make 1 or 2 sequences
+    // cluster = A B C D ... X Y Z
+    topology::sequence newsequence(local_cluster_->nodes(), level, probmin);
+    std::vector<topology::joint> joints, local_joints;
+    std::vector<double> chi2s;
+    topology::joint best_joint, local_joint;
+    topology::cell prev_cell, next_cell;
+
+
+    // first, find out which gaps are being crossed
+    // joint at node: you give it the node index, it gives you back the joint index
+    std::map<size_t, size_t > joint_at_node;
+    for(std::vector<topology::node>::const_iterator inode=local_cluster_->nodes_.begin() + 2; inode!=local_cluster_->nodes_.end()-1; ++inode){
+      next_cell = local_cluster_->nodes_[inode - local_cluster_->nodes_.begin() + 1].c();
+      if( inode->c().block() != next_cell.block()){
+	if( inode->ccc()[0].joints().size() > 1 ){
+	  joint_at_node[inode - local_cluster_->nodes_.begin()] = 0;
+	}
+      }
+    }
+
+
+    bool there_are_inexplored_gaps_permutations = true;
+    while( there_are_inexplored_gaps_permutations ){
+
+      if (level >= mybhep::VVERBOSE)
+	{
+	  std::clog << " gaps permutations: ";
+	  for( std::map<size_t, size_t >::const_iterator im=joint_at_node.begin(); im!=joint_at_node.end(); ++im){
+	    std::clog << "[" << local_cluster_->nodes_[im->first].c().id() << "] " << im->second ;
+	  }
+	  std::clog << " " << std::endl;
+	}
+
+      // find first node with a 1
+      size_t i_first_node_with_1 = s;
+      for(size_t i=0; i<s; i++){
+	// skip nodes not at gap or with 1 joint
+	if( joint_at_node.count(i) == 0 ) continue;
+
+	if( joint_at_node[i] == 1 ){
+	  i_first_node_with_1 = i;
+	  break;
+	}
+      }
+
+
+      // find last node with a 0 after the first node with a 1
+      size_t i_last_node_with_0 = s;
+      for(size_t i=s-1; i > i_first_node_with_1; i--){
+	// skip nodes not at gap or with 1 joint
+	if( joint_at_node.count(i) == 0 ) continue;
+
+	if( joint_at_node[i] == 0 ){
+	  i_last_node_with_0 = i;
+	  break;
+	}
+      }
+
+     if (level >= mybhep::VVERBOSE)
+       {
+	 if( i_first_node_with_1 < s ){
+	   std::clog << " first_node_with_1: " << local_cluster_->nodes_[i_first_node_with_1].c().id();
+	 }else{
+	   std::clog << " i_first_node_with_1 = s " << std::endl;
+	 }
+	 if( i_last_node_with_0 < s ){
+	   std::clog << " last_node_with_0: " << local_cluster_->nodes_[i_last_node_with_0].c().id();
+	 }else{
+	   std::clog << " i_last_node_with_0 = s " << std::endl;
+	 }
+       }
+     
+     // first_joints A-B-C
+     std::vector<topology::joint> first_joints = local_cluster_->nodes()[1].ccc()[0].joints();
+     double chi2;
+     for(std::vector<topology::joint>::const_iterator first_j=first_joints.begin(); first_j!=first_joints.end(); ++first_j){
+       m.message(" CAT::sequentiator::make_new_sequence_after_sultan: node ", local_cluster_->nodes()[1].c().id(), " has ", first_joints.size(), " joints, pick the one with index", first_j - first_joints.begin(), mybhep::VERBOSE);
+       joints.clear();
+       chi2s.clear();
+       
+       joints.push_back(*first_j);
+       chi2s.push_back(0.);
+       chi2s.push_back(0.);
+       
+       // look at nodes C D ... X Y
+       for(std::vector<topology::node>::const_iterator inode=local_cluster_->nodes_.begin() + 2; inode!=local_cluster_->nodes_.end()-1; ++inode){
+	 prev_cell = local_cluster_->nodes_[inode - local_cluster_->nodes_.begin() - 1].c();
+	 if( joint_at_node.count(inode - local_cluster_->nodes_.begin()) == 0 ){ // node is not on gap or has only 1 joint
+	   local_joints = inode->ccc()[0].joints();
+	   m.message(" CAT::sequentiator::make_new_sequence_after_sultan: node ", inode->c().id(), " has ", local_joints.size(), " joints", mybhep::VERBOSE);
+	   best_joint = find_best_matching_joint(joints.back(), local_joints, prev_cell, inode->c(), &chi2);
+	   joints.push_back(best_joint);
+	   chi2s.push_back(chi2);
+	 }else{ // node is on gap and has 2 joints
+	   size_t index_of_local_joint = joint_at_node[inode - local_cluster_->nodes_.begin()];
+	   m.message(" CAT::sequentiator::make_new_sequence_after_sultan: node ", inode->c().id(), " is on gap, pick joint ", index_of_local_joint, mybhep::VERBOSE);
+	   local_joint = inode->ccc()[0].joints()[index_of_local_joint];
+	   chi2 = local_joint.calculate_chi2(joints.back(), prev_cell, inode->c(), &best_joint);
+	   joints.push_back(best_joint);
+	   chi2s.push_back(chi2);
+	 }
+       }
+       chi2s.push_back(0.);
+       
+       newsequence.nodes_[0].set_ep(joints.front().epa());
+       newsequence.nodes_[0].set_chi2(chi2s[0]);
+       for(size_t i=1; i<s-1; i++){
+	 newsequence.nodes_[i].set_ep(joints[i-1].epb());
+	 newsequence.nodes_[i].set_chi2(chi2s[i]);
+       }
+       newsequence.nodes_[s-1].set_ep(joints.back().epc());
+       newsequence.nodes_[s-1].set_chi2(chi2s[s-1]);
+       make_name(newsequence);
+       sequences_.push_back(newsequence);
+       if (level >= mybhep::VERBOSE)
+	 {
+	   clog << "CAT::sequentiator::make_new_sequence_after_sultan: made sequence " << endl;
+	   print_a_sequence(newsequence);
+	 }
+       NFAMILY ++;
+     }
+
+     // update permutations of gaps
+     m.message(" CAT::sequentiator::make_new_sequence_after_sultan: updating gaps permutations, i_first_node_with_1", i_first_node_with_1, " i_last_node_with_0 ", i_last_node_with_0, " s ", s, mybhep::VERBOSE);
+     there_are_inexplored_gaps_permutations = false;
+     if( joint_at_node.size() == 0 ){
+       there_are_inexplored_gaps_permutations = false;
+     }else if( i_first_node_with_1 == s ){ // (0, ..., 0)
+       for(size_t i=s-1; i >= 0; i--){
+	 // skip nodes not at gap or with 1 joint
+	 if( joint_at_node.count(i) == 0 ) continue;
+	 joint_at_node[i] = 1;
+	 there_are_inexplored_gaps_permutations = true;
+	 break;
+       }
+     }else{
+       if( i_last_node_with_0 == s ){ // (0, ..., 0, 1, ..., 1)
+	 // is there a 0 before the 1st 1?
+	 bool there_is = false;
+	 for(size_t i=0; i<i_first_node_with_1; i++){
+	   // skip nodes not at gap or with 1 joint
+	   if( joint_at_node.count(i) == 0 ) continue;
+	   there_is = true;
+	   break;
+	 }
+	 if( !there_is ){ // (1, ..., 1)
+	   there_are_inexplored_gaps_permutations = false;
+	 }else{
+	   for(size_t i=i_first_node_with_1; i<s; i++){
+	     // skip nodes not at gap or with 1 joint
+	     if( joint_at_node.count(i) == 0 ) continue;
+	     joint_at_node[i] = 0;
+	   }
+	   for(size_t i=i_first_node_with_1-1; i >= 0; i--){
+	     // skip nodes not at gap or with 1 joint
+	     if( joint_at_node.count(i) == 0 ) continue;
+	     joint_at_node[i] = 1;
+	     there_are_inexplored_gaps_permutations = true;
+	     break;
+	   }
+	 }
+       }else{ // (0, ..., 0, 1, 0, 0, 1, 1)
+
+	 for(size_t i=i_last_node_with_0 + 1; i<s; i++){
+	   // skip nodes not at gap or with 1 joint
+	   if( joint_at_node.count(i) == 0 ) continue;
+	   joint_at_node[i] = 0;
+	 }
+	 joint_at_node[i_last_node_with_0] = 1;
+	 there_are_inexplored_gaps_permutations = true;
+       }
+     }
+    
+     if (level >= mybhep::VVERBOSE)
+       {
+	  std::clog << " gaps permutations: ";
+	  for( std::map<size_t, size_t >::const_iterator im=joint_at_node.begin(); im!=joint_at_node.end(); ++im){
+	    std::clog << "[" << local_cluster_->nodes_[im->first].c().id() << "] " << im->second ;
+	  }
+	  std::clog << " there_are_inexplored_gaps_permutations " << there_are_inexplored_gaps_permutations << std::endl;
+       }
+     
+ 
+    }
+    clean_up_sequences();
+
+    clock.stop(" sequentiator: make new sequence after sultan ");
 
     return;
   }
@@ -1091,6 +1475,211 @@ namespace CAT {
     NCOPY = 0;
 
     clock.stop(" sequentiator: make copy sequence ");
+
+    return;
+  }
+
+  //*************************************************************
+  void sequentiator::make_copy_sequence_after_sultan(){
+    //*************************************************************
+
+    const bool local_devel = false;
+    topology::node first_node = local_cluster_->nodes()[0];
+    if (local_devel)
+      {
+        level = mybhep::VVERBOSE;
+        clog << "DEVEL: " << "CAT::sequentiator::make_copy_sequence_after_sultan: "
+             << "Entering..." << endl;
+      }
+
+    clock.start(" sequentiator: make copy sequence after sultan ","cumulative");
+
+    size_t isequence;
+    while (there_is_free_sequence_beginning_with(first_node.c(), &isequence))
+      {
+        if (late()) return;
+
+        clock.start(" sequentiator: make copy sequence after sultan: part A ","cumulative");
+        clock.start(" sequentiator: make copy sequence after sultan: part A: alpha ","cumulative");
+
+        m.message("CAT::sequentiator::make_copy_sequence_after_sultan: begin, with cell", first_node.c().id(), ", parallel track ", sequences_.size(), " to track ", isequence, mybhep::VERBOSE); fflush(stdout);
+
+        if (level >= mybhep::VVERBOSE)
+          {
+            std::clog << "CAT::sequentiator::make_copy_sequence_after_sultan: original sequence before copying: " << std::endl;
+            print_a_sequence(sequences_[isequence]);
+          }
+
+        clock.stop(" sequentiator: make copy sequence after sultan: part A: alpha ");
+        clock.start(" sequentiator: copy to lfn ","cumulative");
+        size_t ilink, ilfn;
+        topology::sequence newcopy = sequences_[isequence].copy_to_last_free_node(&ilfn, &ilink);
+        clock.stop(" sequentiator: copy to lfn ");
+
+        clock.start(" sequentiator: make copy sequence after sultan: part A: beta ","cumulative");
+        m.message("CAT::sequentiator::make_copy_sequence_after_sultan: copied from sequence  ", isequence, mybhep::VVERBOSE); fflush(stdout);
+
+        if (level >= mybhep::VVERBOSE)
+          {
+            m.message("CAT::sequentiator::make_copy_sequence_after_sultan: original sequence after copy ", mybhep::VVERBOSE); fflush(stdout);
+            print_a_sequence(sequences_[isequence]);
+            m.message("CAT::sequentiator::make_copy_sequence_after_sultan: new copy ", mybhep::VVERBOSE); fflush(stdout);
+            print_a_sequence(newcopy);
+          }
+
+        clock.stop(" sequentiator: make copy sequence after sultan: part A: beta ");
+        clock.start(" sequentiator: make copy sequence after sultan: evolve ","cumulative");
+
+        bool updated = true;
+        while (updated)
+          updated = evolve(newcopy);
+        clock.stop(" sequentiator: make copy sequence after sultan: evolve ");
+
+        if (late()) return;
+
+        if(level >= mybhep::VVERBOSE)
+          print_a_sequence(newcopy);
+
+        clock.stop(" sequentiator: make copy sequence after sultan: part A ");
+        clock.start(" sequentiator: manage copy sequence after sultan ","cumulative");
+
+        if (local_devel)
+          {
+            clog << "DEVEL: " << "CAT::sequentiator::make_copy_sequence_after_sultan: "
+                 << "Checking study case for sequence #" << isequence << " "
+                 << "and node #" << first_node.c ().id () << endl;
+          }
+
+        // not adding: case 1: new sequence did not evolve
+        if (newcopy.nodes().size() == ilfn + 1)
+          {
+            m.message("CAT::sequentiator::make_copy_sequence_after_sultan: not adding new sequence, since it couldn't evolve past lfn ", mybhep::VERBOSE); fflush(stdout);
+            clean_up_sequences();
+          }
+        else
+          {
+            // if copy has evolved past level ilfn, the link from node ilfn it used
+            // is set to used in the original
+            if( newcopy.nodes().size() > ilfn + 1 ){
+              if( !sequences_[isequence].nodes().empty() ){
+                clock.start(" sequentiator: get link index ","cumulative");
+                size_t it1 = newcopy.get_link_index_of_cell(ilfn, newcopy.nodes()[ilfn + 1].c());
+                clock.stop(" sequentiator: get link index ");
+                m.message("CAT::sequentiator::make_copy_sequence_after_sultan: setting as used original node ", ilfn, "  cc ", it1, mybhep::VVERBOSE);
+                if( ilfn == 0 )
+                  sequences_[isequence].nodes_[ilfn].cc_[it1].set_all_used();
+                else
+                  sequences_[isequence].nodes_[ilfn].ccc_[it1].set_all_used();
+              }
+              /*
+                if( sequences_[isequence].nodes().size() > 1 && ilfn > 0){
+                clock.start(" sequentiator: get link index ","cumulative");
+                size_t it2 = newcopy.get_link_index_of_cell(1, newcopy.nodes()[2].c());
+                clock.stop(" sequentiator: get link index ");
+                m.message(" setting as used original node 1  ccc ", it2, mybhep::VVERBOSE);
+                sequences_[isequence].nodes_[1].ccc_[it2].set_all_used();
+                }
+              */
+              clock.start(" sequentiator: set free level ","cumulative");
+              sequences_[isequence].set_free_level();
+              clock.stop(" sequentiator: set free level ");
+            }
+
+          // not adding: case 2: new sequence contained
+          if (newcopy.contained(sequences_[isequence]) && !newcopy.Free())  // new copy is contained in original
+            {
+              m.message("CAT::sequentiator::make_copy_sequence_after_sultan: not adding new sequence, contained in ", isequence, "from which it was copied", mybhep::VERBOSE); fflush(stdout);
+              clean_up_sequences();
+            }
+          else
+            { // adding: case 3
+              if (sequences_[isequence].contained(newcopy))
+                { // original is contained in new copy
+                  for (size_t k=0; k<ilfn; k++)
+                    {
+                      newcopy.nodes_[k].set_free( sequences_[isequence].nodes()[k].free());
+
+                      for (vector<topology::cell_couplet>::iterator icc = sequences_[isequence].nodes_[k].cc_.begin();
+                          icc != sequences_[isequence].nodes_[k].cc_.end(); ++icc)
+                        {
+                          newcopy.nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].set_free( icc->free());
+                          newcopy.nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].set_begun( icc->begun());
+
+                          for(vector<topology::line>::iterator itang = sequences_[isequence].nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].tangents_.begin(); itang != sequences_[isequence].nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].tangents_.end(); ++itang)
+                            newcopy.nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].tangents_[itang - sequences_[isequence].nodes_[k].cc_[icc - sequences_[isequence].nodes_[k].cc_.begin()].tangents_.begin()].set_used(itang->used() );
+
+                        }
+
+                      for (vector<topology::cell_triplet>::iterator iccc = sequences_[isequence].nodes_[k].ccc_.begin();
+                           iccc != sequences_[isequence].nodes_[k].ccc_.end(); ++iccc)
+                        {
+                          newcopy.nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].set_free( iccc->free());
+                          newcopy.nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].set_begun( iccc->begun());
+
+                          for (vector<topology::joint>::iterator ijoint = sequences_[isequence].nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].joints_.begin(); ijoint != sequences_[isequence].nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].joints_.end(); ++ijoint)
+                            newcopy.nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].joints_[ijoint - sequences_[isequence].nodes_[k].ccc_[iccc - sequences_[isequence].nodes_[k].ccc_.begin()].joints_.begin()].set_used(ijoint->used() );
+
+                        }
+                    }
+
+                  if (ilfn < 2)
+                    {
+                      for (vector<topology::cell_couplet>::iterator icc = sequences_[isequence].nodes_[ilfn].cc_.begin();
+                           icc != sequences_[isequence].nodes_[ilfn].cc_.end(); ++icc)
+                        if ((size_t)(icc - sequences_[isequence].nodes_[ilfn].cc_.begin()) != ilink)
+                          {
+                            newcopy.nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].set_free( icc->free());
+                            newcopy.nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].set_begun( icc->begun());
+
+                            for (vector<topology::line>::iterator itang = sequences_[isequence].nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].tangents_.begin(); itang !=sequences_[isequence].nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].tangents_.end(); ++itang)
+                              newcopy.nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].tangents_[itang - sequences_[isequence].nodes_[ilfn].cc_[icc - sequences_[isequence].nodes_[ilfn].cc_.begin()].tangents_.begin()].set_used(itang->used() );
+                          }
+                    }
+                  else
+                    {
+                      for (vector<topology::cell_triplet>::iterator iccc = sequences_[isequence].nodes_[ilfn].ccc_.begin();
+                          iccc != sequences_[isequence].nodes_[ilfn].ccc_.end(); ++iccc)
+                        if ((size_t)(iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()) != ilink )
+                          {
+                            newcopy.nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].set_free( iccc->free());
+                            newcopy.nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].set_begun( iccc->begun());
+
+                            for (vector<topology::joint>::iterator ijoint = sequences_[isequence].nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].joints_.begin(); ijoint !=sequences_[isequence].nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].joints_.end(); ++ijoint)
+                              newcopy.nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].joints_[ijoint - sequences_[isequence].nodes_[ilfn].ccc_[iccc - sequences_[isequence].nodes_[ilfn].ccc_.begin()].joints_.begin()].set_used(ijoint->used() );
+                          }
+                    }
+
+                  clock.start(" sequentiator: set free level ","cumulative");
+                  newcopy.set_free_level();
+                  clock.stop(" sequentiator: set free level ");
+
+                  sequences_.erase(sequences_.begin()+isequence);
+                  m.message("CAT::sequentiator::make_copy_sequence_after_sultan: erased original sequence ", isequence, "contained in sequence", sequences_.size()+1, "which was copied from it", mybhep::VERBOSE); fflush(stdout);
+                  clean_up_sequences();
+
+                }
+
+              NCOPY++;
+              if (newcopy.nodes().size() != 2)
+                {
+                  make_name(newcopy);
+                  sequences_.push_back( newcopy );
+                  m.message("CAT::sequentiator::make_copy_sequence_after_sultan: finished track [", sequences_.size()-1, "] ", mybhep::VERBOSE); fflush(stdout);
+                  clean_up_sequences();
+                }
+              else
+                {
+                  add_pair(newcopy);
+                }
+            }// end of case 3
+          }
+
+        clock.stop(" sequentiator: manage copy sequence after sultan ");
+      }
+
+    NCOPY = 0;
+
+    clock.stop(" sequentiator: make copy sequence after sultan ");
 
     return;
   }
@@ -1447,7 +2036,7 @@ namespace CAT {
           m.message("CAT::sequentiator::make_scenarios: nfree ", nfree, " noverls ", noverlaps, " Chi2 ", Chi2, mybhep::VVERBOSE);
           sc.sequences_.push_back(sequences_[jmin]);
           sc.set_n_free_families(nfree);
-          sc.set_chi2(Chi2);
+          sc.set_helix_chi2(Chi2);
           sc.set_ndof(ndof);
           sc.set_n_overlaps(noverlaps);
         }
@@ -1504,7 +2093,7 @@ namespace CAT {
 
     for(std::vector<topology::scenario>::iterator sc=scenarios_.begin(); sc!=scenarios_.end(); ++sc){
       if( level >= mybhep::VVERBOSE)
-        std::clog << "CAT::sequentiator::pick_best_scenario: ...scenario " << sc - scenarios_.begin() << " nff " << sc->n_free_families() << " noverls " << sc->n_overlaps() << " common vertexes " << sc->n_of_common_vertexes(2.*CellDistance) << " n ends on wire " << sc->n_of_ends_on_wire() << " chi2 " << sc->chi2() << " prob " << sc->Prob() << std::endl;
+        std::clog << "CAT::sequentiator::pick_best_scenario: ...scenario " << sc - scenarios_.begin() << " nff " << sc->n_free_families() << " noverls " << sc->n_overlaps() << " common vertexes " << sc->n_of_common_vertexes(2.*CellDistance) << " n ends on wire " << sc->n_of_ends_on_wire() << " chi2 " << sc->helix_chi2() << " prob " << sc->helix_Prob() << std::endl;
 
       if( sc->better_scenario_than( scenarios_[index] , 2.*CellDistance ) )
         {
@@ -1581,7 +2170,7 @@ namespace CAT {
         m.message("CAT::sequentiator::can_add_family: ...try to add sequence ", jseq->name(), mybhep::VVERBOSE);
         if( level >= mybhep::VVERBOSE)
           print_a_sequence(*jseq);
-        m.message("CAT::sequentiator::can_add_family: ...nfree ", tmp.n_free_families(), " noverls ", tmp.n_overlaps(), " chi2 ", tmp.chi2(), " prob ", tmp.Prob(), mybhep::VVERBOSE);
+        m.message("CAT::sequentiator::can_add_family: ...nfree ", tmp.n_free_families(), " noverls ", tmp.n_overlaps(), " chi2 ", tmp.helix_chi2(), " prob ", tmp.helix_Prob(), mybhep::VVERBOSE);
 
         clock.start(" sequentiator: better scenario ", "cumulative");
         if( tmp.better_scenario_than(tmpmin , 2.*CellDistance ) )
@@ -1589,7 +2178,7 @@ namespace CAT {
             *jmin = jseq - sequences_.begin();
             *nfree = tmp.n_free_families();
             *noverlaps = tmp.n_overlaps();
-            *Chi2 = tmp.chi2();
+            *Chi2 = tmp.helix_chi2();
             *ndof = tmp.ndof();
             tmpmin = tmp;
             ok = true;
@@ -2190,8 +2779,8 @@ namespace CAT {
     clog << "Print scenario parameters" << endl;
     clog << " |-- nfree " << scenario.n_free_families() << endl;
     clog << " |-- noverls " << scenario.n_overlaps() << endl;
-    clog << " |-- chi2 " << scenario.chi2() << endl;
-    clog << " `-- prob " << scenario.Prob() << endl;
+    clog << " |-- helix_chi2 " << scenario.helix_chi2() << endl;
+    clog << " `-- helix_prob " << scenario.helix_Prob() << endl;
 
     return;
   }

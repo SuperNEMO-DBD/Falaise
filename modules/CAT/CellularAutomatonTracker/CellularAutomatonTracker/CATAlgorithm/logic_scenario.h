@@ -32,7 +32,8 @@ namespace topology{
 
   private:
     // chi2
-    double chi2_;
+    double helix_chi2_;
+    double tangent_chi2_;
     int32_t ndof_;
 
     // n of free families
@@ -50,7 +51,8 @@ namespace topology{
     logic_scenario()
     {
       sequences_.clear();
-      chi2_ = mybhep::small_neg;
+      helix_chi2_ = mybhep::small_neg;
+      tangent_chi2_ = mybhep::small_neg;
       ndof_ = mybhep::default_integer;
       n_free_families_ = mybhep::default_integer;
       n_overlaps_ = mybhep::default_integer;
@@ -63,7 +65,8 @@ namespace topology{
     logic_scenario(const topology::scenario &sc){
       for(std::vector<topology::sequence>::const_iterator iseq=sc.sequences_.begin(); iseq!=sc.sequences_.end(); ++iseq)
         sequences_.push_back(logic_sequence(*iseq));
-      chi2_ = sc.chi2();
+      helix_chi2_ = sc.helix_chi2();
+      tangent_chi2_ = sc.tangent_chi2();
       ndof_ = sc.ndof();
       n_free_families_ = sc.n_free_families();
       n_overlaps_ = sc.n_overlaps();
@@ -75,10 +78,16 @@ namespace topology{
       return sequences_;
     }
 
-    //!get chi2
-    const double& chi2() const
+    //!get helix_chi2
+    const double& helix_chi2() const
     {
-      return chi2_;
+      return helix_chi2_;
+    }
+
+    //!get tangent_chi2
+    const double& tangent_chi2() const
+    {
+      return tangent_chi2_;
     }
 
     //!get ndof
@@ -273,22 +282,29 @@ namespace topology{
 
     void calculate_chi2(){
 
-      double chi2 = 0.;
+      double helix_chi2 = 0.;
+      double tangent_chi2 = 0.;
       int32_t ndof = 0;
       for(std::vector<logic_sequence>::iterator iseq = sequences_.begin(); iseq != sequences_.end(); ++iseq){
-        chi2 += iseq->chi2();
+        helix_chi2 += iseq->helix_chi2();
+        tangent_chi2 += iseq->tangent_chi2();
         ndof += iseq->ndof();
       }
 
-      chi2_ = chi2;
+      helix_chi2_ = helix_chi2;
+      tangent_chi2_ = tangent_chi2;
       ndof_ = ndof;
 
       return;
     }
 
 
-    double Prob() const{
-      return probof(chi2(), ndof());
+    double helix_Prob() const{
+      return probof(helix_chi2(), ndof());
+    }
+
+    double tangent_Prob() const{
+      return probof(tangent_chi2(), ndof());
     }
 
     bool better_scenario_than(const logic_scenario &s){
@@ -299,13 +315,18 @@ namespace topology{
       // n of new overlaps
       int deltanoverls = n_overlaps() - s.n_overlaps();
 
-      double deltaprob = Prob() - s.Prob();
+      double deltaprob_helix = helix_Prob() - s.helix_Prob();
+      double deltachi_helix = helix_chi2() - s.helix_chi2();
+      double deltaprob_tangent = tangent_Prob() - s.tangent_Prob();
+      double deltachi_tangent = tangent_chi2() - s.tangent_chi2();
 
 
       if( print_level() >= mybhep::VVERBOSE ){
         std::clog << " delta n_free_families = (" << n_free_families()  << " - " << s.n_free_families() << ")= " << deltanfree
              << " dela n_overlaps = (" << n_overlaps() << " - " << s.n_overlaps() << ")= " << deltanoverls
-             << " delta prob = (" << Prob()  << " - " << s.Prob() << ") = " << deltaprob << std::endl;
+		  << " delta prob_helix = (" << helix_Prob()  << " - " << s.helix_Prob() << ") = " << deltaprob_helix
+		  << " delta prob_tangent = (" << tangent_Prob()  << " - " << s.tangent_Prob() << ") = " << deltaprob_tangent
+                  << std::endl;
       }
 
       if( deltanoverls < - 2*deltanfree )
@@ -313,8 +334,17 @@ namespace topology{
 
       if( deltanoverls == - 2*deltanfree ){
 
-        if( deltaprob > 0. )
-            return true;
+        if( deltaprob_helix > 0. )
+          return true;
+
+        if( deltaprob_tangent > 0. )
+          return true;
+
+        if( deltaprob_helix == 0. && deltachi_helix < 0. )
+          return true;
+
+        if( deltaprob_tangent == 0. && deltachi_tangent < 0. )
+          return true;
       }
 
       return false;

@@ -31,7 +31,8 @@ namespace CAT {
       std::string appname_;
 
       // chi2
-      double chi2_;
+      double helix_chi2_;
+      double tangent_chi2_;
       int32_t ndof_;
 
       // n of free families
@@ -67,8 +68,11 @@ namespace CAT {
       //! set sequences
       void set_sequences(const std::vector<sequence> & seqs);
 
-      //! set chi2
-      void set_chi2(double chi2);
+      //! set helix_chi2
+      void set_helix_chi2(double helix_chi2);
+
+      //! set tangent_chi2
+      void set_tangent_chi2(double tangent_chi2);
 
       //! set n free families
       void set_n_free_families(size_t n);
@@ -82,8 +86,11 @@ namespace CAT {
       //! get sequences
       const std::vector<sequence> & sequences()const;
 
-      //!get chi2
-      double chi2() const;
+      //!get helix_chi2
+      double helix_chi2() const;
+
+      //!get tangent_chi2
+      double tangent_chi2() const;
 
       //!get ndof
       int32_t ndof() const;
@@ -103,7 +110,9 @@ namespace CAT {
 
       void calculate_chi2();
 
-      double Prob()const;
+      double helix_Prob()const;
+
+      double tangent_Prob()const;
 
       bool better_scenario_than( const scenario & s, double limit)const;
 

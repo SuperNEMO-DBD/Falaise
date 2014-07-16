@@ -170,6 +170,8 @@ namespace CAT {
 
       void calculate_triplets(double Ratio, double separation_limit=90., double phi_limit=25., double theta_limit=180.);
 
+      void calculate_triplets_after_sultan(double Ratio);
+
       node invert();
 
       std::string topological_type() const;

@@ -387,9 +387,14 @@ namespace CAT {
       double newerr = 0.;
 
       for(std::vector<experimental_double>::const_iterator iv=vs.begin(); iv!=vs.end(); ++iv){
-        mean += iv->value()/mybhep::square(iv->error());
-        inverr += 1/mybhep::square(iv->error());
-        newerr += mybhep::square(iv->error());
+	if( iv->error() ){
+	  mean += iv->value()/mybhep::square(iv->error());
+	  inverr += 1/mybhep::square(iv->error());
+	  newerr += mybhep::square(iv->error());
+	}else{
+	  std::clog << "CAT::weighted_average: problem: double has error zero; switch to normal average " << std::endl;
+	  return average(vs);
+	}
       }
 
       return experimental_double(mean/inverr, sqrt(newerr));
