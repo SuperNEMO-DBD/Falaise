@@ -354,13 +354,13 @@ namespace CAT {
         if (mids.find (cell_id) != mids.end ())
           {
             std::cerr << "ERROR: CAT::input_data::check: "
-                      << "Duplicate cell ID '" <<  cell_id << "' !"
+                      << "mids Duplicate cell ID '" <<  cell_id << "' !"
                       << std::endl;
             return false;
           }
         mids[cell_id] = true;
       }
-
+  
     // Duplicate test for now :
     std::vector<bool> ids;
     ids.assign (cells.size (), false);
@@ -378,7 +378,7 @@ namespace CAT {
         if (ids[cell_id])
           {
             std::cerr << "ERROR: CAT::input_data::check: "
-                      << "Duplicate cell ID '" <<  cell_id << "' !"
+                      << "ids Duplicate cell ID '" <<  cell_id << "' !"
                       << std::endl;
             return false;
           }

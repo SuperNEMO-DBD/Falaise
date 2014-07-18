@@ -256,6 +256,11 @@ namespace CAT{
         return skipped_;
       }
 
+      void reset(){
+        cells_.clear();
+        clusters_.clear();
+        scenarios_.clear();
+      }
 
     };
   }
