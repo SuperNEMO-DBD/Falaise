@@ -453,7 +453,7 @@ public:
 
 
 private:
-  void event_display_xz(std::string mode, CAT::topology::tracked_data td, SULTAN::topology::tracked_data td);
+  void event_display_xz(std::string mode, CAT::topology::tracked_data CAT_td, SULTAN::topology::tracked_data SULTAN_td);
   void draw_circle_xz( double x0, double z0, double radius, size_t color, size_t thickness, double phi1, double phi2);
   void draw_initial_hits_xz( void );
   void draw_calos_xz( std::vector<CAT::topology::calorimeter_hit> calos );
