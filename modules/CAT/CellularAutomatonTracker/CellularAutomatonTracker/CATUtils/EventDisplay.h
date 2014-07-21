@@ -460,7 +460,7 @@ private:
   void draw_sine_yz( double y0, double z0, double radius, double pitch, size_t color, size_t thickness, double phi1 , double phi2);
   void draw_cats_xz(std::string mode, std::vector<CAT::topology::sequence> true_seqs);
   void draw_sultan_xz();
-  void event_display_yz(std::string mode, CAT::topology::tracked_data td, SULTAN::topology::tracked_data td);
+  void event_display_yz(std::string mode, CAT::topology::tracked_data CAT_td, SULTAN::topology::tracked_data SULTAN_td);
   void draw_calos_yz( std::vector<CAT::topology::calorimeter_hit> calos );
   void draw_initial_hits_yz( void );
   void draw_cats_yz(std::string mode, std::vector<CAT::topology::sequence> true_seqs);
