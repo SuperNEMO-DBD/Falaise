@@ -140,7 +140,7 @@ namespace snemo {
         out_ << "Hit #" << i << " : Id=" << calo_calib_hit.get_hit_id()
              << " GID=" << calo_calib_hit.get_geom_id()
              << " E=" << calo_calib_hit.get_energy() / CLHEP::keV << " keV"
-             << " t=" << calo_calib_hit.get_time() / CLHEP::ns
+             << " t=" << calo_calib_hit.get_time() / CLHEP::ns << " ns"
              << std::endl;
       }
 
