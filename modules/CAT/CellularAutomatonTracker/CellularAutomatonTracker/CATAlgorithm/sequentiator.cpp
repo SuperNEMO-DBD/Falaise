@@ -744,6 +744,8 @@ namespace CAT {
         local_cluster_ = &(*icluster);
 
         sequentiate_cluster_after_sultan();
+
+	NFAMILY ++;
       }
 
     if (late())
@@ -1007,7 +1009,6 @@ namespace CAT {
     clock.start(" sequentiator: make new sequence after sultan ","cumulative");
 
     size_t s = local_cluster_->nodes().size();
-    NFAMILY = 0;
     NCOPY = 0;
 
     if (level >= mybhep::VERBOSE){
@@ -1036,6 +1037,7 @@ namespace CAT {
 	}
 
       clean_up_sequences();
+      NCOPY ++;
       return;
     }
 
@@ -1062,7 +1064,7 @@ namespace CAT {
 	    clog << "CAT::sequentiator::make_new_sequence_after_sultan: made sequence " << endl;
 	    print_a_sequence(newsequence);
 	  }
-	NFAMILY ++;
+	NCOPY ++;
       }
       
       clean_up_sequences();
@@ -1203,7 +1205,7 @@ namespace CAT {
 	   clog << "CAT::sequentiator::make_new_sequence_after_sultan: made sequence " << endl;
 	   print_a_sequence(newsequence);
 	 }
-       NFAMILY ++;
+       NCOPY ++;
      }
 
      // update permutations of gaps
