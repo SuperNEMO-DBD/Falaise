@@ -1648,190 +1648,94 @@ namespace CAT {
     }
 
 
-    bool sequence::calculate_helix(void) {
+    void sequence::circle_order(double Ratio){
 
-      bool good_fit=true;
+      std::vector<size_t> original_ids;
+      for(std::vector<node>::iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode)
+	original_ids.push_back(inode->c().id());
 
-      has_helix_ = true;
-
-      helix_chi2s_.clear();
-
-      int method = 3;
-      // method 1:
-      // fit a helix throgh every three consecutive points
-      // then average
-      //
-      // method 2:
-      // fit a helix throgh 1st, middle and last point
-      //
-      // method 3:
-      // fit best circle, then best helix, through all points
-      //
-
-
-      switch(method){
-
-      case 1: {
-
-        std::vector<helix> helices;
-        std::vector<node>::iterator anode, cnode;
-        for(std::vector<node>::iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode){
-          if( inode - nodes_.begin() == 0 || nodes_.end() - inode == 1 ) continue;
-
-          anode = inode;
-          cnode = inode;
-          --anode; ++cnode;
-          if( print_level() >= mybhep::VVERBOSE ){
-            std::clog << " calculate helix for three points " << anode->c().id() << " , " << inode->c().id() << " , " << cnode->c().id() << std::endl;
-          }
-          helices.push_back(three_points_helix(anode->ep(), inode->ep(), cnode->ep()));
-
-        }
-
-        helix_ = average(helices);
-        helix_.set_print_level(print_level());
-        helix_.set_probmin(probmin());
-
-        experimental_point _center = helix_.center();
-        experimental_double Yc = middle_node().ep().y() - helix_.pitch()*experimental_vector(_center, middle_node().ep()).phi();
-        _center.set_y(Yc);
-        helix_.set_center(_center);
-
-        break;
-      }
-      case 2:{
-
-        circle ci = three_points_circle(nodes().front().ep(), middle_node().ep(), nodes().back().ep());
-
-        break;
-      }
-      case 3:{
-        // fit best circle through all points (horizontal view)
-
-        std::vector<experimental_point> ps;
-        std::vector<experimental_double> phis;
-        std::vector<experimental_double> xs;
-        std::vector<experimental_double> ys;
-        std::vector<experimental_double> zs;
-
-        for(std::vector<node>::iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode){
-          ps.push_back(inode->ep());
-          xs.push_back(inode->ep().x());
-          ys.push_back(inode->ep().y());
-          zs.push_back(inode->ep().z());
-        }
-
-        CircleRegression cl(xs, zs, print_level(), probmin());
-        if( !cl.fit() ) good_fit = false;
-        //      cl.minuit_fit();
-
-        if( print_level() >= mybhep::VVERBOSE ){
-          cl.dump();
-        }
-
-
-        circle ci = cl.c();
-
-        bool first = true;
-        experimental_double offset(0.,0.);;
-
-        experimental_double p(0.,0.);
-        double phi_ref = 0.;
-        for(std::vector<node>::iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode){
-          phi_ref = p.value();
-          p = ci.phi_of_point(inode->ep(), phi_ref);
-          if( !phis.empty() && first){
-            if( fabs(p.value() - phis.back().value()) > M_PI ){
-
-              first = false;
-              if( p.value() > phis.back().value() )
-                offset.set_value(-2.*M_PI);
-              else
-                offset.set_value(2.*M_PI);
-            }
-          }
-
-
-          phis.push_back(p + offset);
-        }
-
-
-
-        LinearRegression l(phis, ys, print_level(), probmin());
-
-#if CAT_WITH_DEVEL_ROOT == 1
-        if ( !l.root_fit() ){  // fit with root
-#endif // CAT_WITH_DEVEL_ROOT == 1
-
-          // if root does not work or is not used
-          // fit best helix with through all points (vertical view)
-          l.set_xi(ys);
-          l.set_yi(phis);
-          l.fit();
-          l.invert(); // fit with y as more erroneous variable (phi = phi(y)),
-          // then invert the result to have y = y(phi)
-
-#if CAT_WITH_DEVEL_ROOT == 1
-         }
-#endif // CAT_WITH_DEVEL_ROOT == 1
-
-        if( print_level() >= mybhep::VVERBOSE ){
-          l.dump();
-        }
-
-
-        // build helix
-        ci.set_center(experimental_point(ci.center().x(), l.y0(), ci.center().z()));
-        helix_ = helix(ci, l.tangent(), print_level(), probmin());
-
-
-
-        helix_chi2s_ = helix_.chi2s(ps);
-
-        break;
-      }
-      default:
-
-        if( print_level() >= mybhep::NORMAL ){
-          std::clog << " problem: unknonw method "<< method << " to fit a helix " << std::endl;
-        }
+      if( print_level() >= mybhep::VERBOSE ){
+	std::clog << " sequence before circle reordering: ";
+	for(std::vector<node>::const_iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode)
+	  std::clog << inode->c().id() << " ";
+	std::clog << " " << std::endl;
       }
 
+      std::sort(nodes_.begin(),nodes_.end(),topology::node::circle_order);
 
-      // for each point, the helix axis should be ~ parallel to the tangent line
-      if( good_fit ){
-	double phi_limit = 30.*acos(-1.)/180.;
-        for(std::vector<node>::iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode){
-	  size_t index = inode - nodes_.begin();
-	  if( index + 1 >= nodes_.size() ) continue;
-	  if( fabs( inode->c().block() - nodes_[index+1].c().block()) >= 1 ) continue; // check only connections within a block
-	  if( inode->c().id() == nodes_[index+1].c().id() ) continue; // the cell can be the same
+      if( print_level() >= mybhep::VERBOSE ){
+	std::clog << " sequence after circle reordering: "; 
+	for(std::vector<node>::const_iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode)
+	  std::clog << inode->c().id() << " ";
+	std::clog << " " << std::endl;
+      }
 
-	  experimental_vector helix_dir = helix_.direction_at(inode->ep()).hor().unit();
-	  experimental_vector tangent_dir = (nodes_[index+1].ep() - inode->ep()).hor().unit();
-	  int sign = 1;
-	  double sp = (helix_dir*tangent_dir).value();
-	  if( sp < 0 ) sign = -1; // the helix could be run backwards
-	  double local_angle = acos(sp*sign);
-	  if( print_level() >= mybhep::VVERBOSE ){
-	    std::clog << " connection " << inode->c().id() << " - " << nodes_[index+1].c().id() << " has helix dir (" << helix_dir.x().value() << ", " << helix_dir.z().value() << ") tangent dir (" << tangent_dir.x().value() << ", " << tangent_dir.z().value() << ") angular separation " << local_angle << " between helix and tangent, maximum " << phi_limit << std::endl;
+      for(std::vector<node>::iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode){
+	size_t index = inode - nodes_.begin();
+	if( inode->c().id() != original_ids[index] ){
+
+	  topology::cell c = inode->c();
+	  
+	  std::vector<topology::cell_couplet> cc;
+	  std::vector<topology::cell> links;
+	  if( index > 0 ){
+	    topology::cell pc = nodes_[index - 1].c();
+	    topology::cell_couplet pcc(c, pc);
+	    cc.push_back(pcc);
 	  }
-	  if( fabs(local_angle) > phi_limit ){
-	    if( print_level() >= mybhep::VVERBOSE ){
-	      std::clog << " so reject helix " << std::endl;
+	  if( (size_t)(index + 1) < nodes_.size() ){
+	    topology::cell nc = nodes_[index + 1].c();
+	    topology::cell_couplet ncc(c,nc);
+	    cc.push_back(ncc);
+	    links.push_back(nc);
+	  }
+	  
+	  inode->set_cc(cc);
+	  inode->set_links(links);
+	  inode->calculate_triplets_after_sultan(Ratio);
+
+	  experimental_point helix_point = helix_.position(inode->c().ep());
+	  double local_diff;
+	  double diff = mybhep::default_min;
+	  for(std::vector<topology::cell_couplet>::const_iterator icc = cc.begin(); icc!=cc.end(); ++icc){
+	    std::vector<line> tangents = icc->tangents();
+	    for( std::vector<line>::const_iterator il=tangents.begin(); il!=tangents.end(); ++il){
+	      local_diff = il->epa().distance(helix_point).value();
+	      if( local_diff < diff ){
+		diff = local_diff;
+		inode->set_ep(il->epa());
+	      }
 	    }
-	    good_fit = false;
-	    break;
 	  }
+
+
 	}
+
       }
 
-
-      return good_fit;
+      return;
     }
 
+    void sequence::reorder_cells(double Ratio){
 
-    bool sequence::calculate_helix_after_sultan(void) {
+      double angle = 0.;
+      for(std::vector<node>::iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode){
+	if( inode - nodes_.begin() == 0 )
+	  angle = helix_.phi_of_point(inode->c().ep()).value();
+	else
+	  angle = helix_.phi_of_point(inode->c().ep(), angle).value();
+	
+	if( print_level() >= mybhep::VVERBOSE ){
+	  std::clog << " node " << inode->c().id() << " has circle phi " << angle << std::endl;
+	}
+	inode->set_circle_phi(angle);
+      }
+      
+      this->circle_order(Ratio);
+
+    }
+
+    bool sequence::calculate_helix(double Ratio, bool after_sultan) {
 
       bool good_fit=true;
 
@@ -1980,9 +1884,14 @@ namespace CAT {
         }
       }
 
-
       // for each point, the helix axis should be ~ parallel to the tangent line
       if( good_fit ){
+
+	if( after_sultan ){
+	  // make sure cells are ordered as dictated by helix
+	  reorder_cells(Ratio);
+	}
+
 	double phi_limit = 30.*acos(-1.)/180.;
         for(std::vector<node>::iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode){
 	  size_t index = inode - nodes_.begin();
@@ -1995,6 +1904,7 @@ namespace CAT {
 	  int sign = 1;
 	  double sp = (helix_dir*tangent_dir).value();
 	  if( sp < 0 ) sign = -1; // the helix could be run backwards
+	  helix_dir *= sign;
 	  double local_angle = acos(sp*sign);
 	  if( print_level() >= mybhep::VVERBOSE ){
 	    std::clog << " connection " << inode->c().id() << " - " << nodes_[index+1].c().id() << " has helix dir (" << helix_dir.x().value() << ", " << helix_dir.z().value() << ") tangent dir (" << tangent_dir.x().value() << ", " << tangent_dir.z().value() << ") angular separation " << local_angle << " between helix and tangent, maximum " << phi_limit << std::endl;
@@ -2253,7 +2163,7 @@ namespace CAT {
     bool sequence::intersect_sequence(sequence & seq,
                                       bool invertA, bool invertB, bool acrossGAP,
                                       experimental_point * ep,
-                                      double limit_distance, int* with_kink, int cells_to_delete){
+                                      double limit_distance, int* with_kink, int cells_to_delete, double Ratio){
       bool result(false);
       double distanceA, distanceB;
       distanceA = std::numeric_limits<double>::quiet_NaN();
@@ -2264,8 +2174,8 @@ namespace CAT {
       if( print_level() >= mybhep::VVERBOSE )
         std::clog << " ... intersecting sequences, acrossGap " << acrossGAP << std::endl;
 
-      if( !has_helix() ) calculate_helix();
-      if( !seq.has_helix() ) seq.calculate_helix();
+      if( !has_helix() ) calculate_helix(Ratio);
+      if( !seq.has_helix() ) seq.calculate_helix(Ratio);
 
       if( !acrossGAP ){
         // intersect sequences within block
@@ -2628,7 +2538,7 @@ namespace CAT {
       nodes_.pop_back();
     }
 
-    sequence sequence::match(sequence & seq, bool invertA, bool invertB, bool *ok, int with_kink, int cells_to_delete){
+    sequence sequence::match(sequence & seq, bool invertA, bool invertB, bool *ok, int with_kink, int cells_to_delete, double Ratio){
 
       sequence new_first_sequence;
       if( invertA )
@@ -2710,7 +2620,7 @@ namespace CAT {
 
       }
 
-      *ok = new_first_sequence.calculate_helix();
+      *ok = new_first_sequence.calculate_helix(Ratio);
 
       return new_first_sequence;
 

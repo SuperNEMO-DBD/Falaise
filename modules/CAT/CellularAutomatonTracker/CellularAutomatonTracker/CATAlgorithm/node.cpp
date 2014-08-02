@@ -16,6 +16,7 @@ namespace CAT {
         is_kink_ = false;
         chi2_ = 0.;
         ndof_=0;
+        circle_phi_ = mybhep::small_neg;
       }
 
       //!Default destructor
@@ -36,6 +37,7 @@ namespace CAT {
         ndof_=0;
         setup_cc_maps();
         setup_ccc_maps();
+        circle_phi_ = mybhep::small_neg;
       }
 
       //! constructor
@@ -48,6 +50,7 @@ namespace CAT {
         is_kink_ = false;
         chi2_ = 0.;
         ndof_=0;
+        circle_phi_ = mybhep::small_neg;
       }
 
       //! constructor from bhep true hit
@@ -131,6 +134,7 @@ namespace CAT {
                                     0., 0., 0.);
           ep_ = tmp_ep;
         }
+        circle_phi_ = mybhep::small_neg;
         return;
 
 

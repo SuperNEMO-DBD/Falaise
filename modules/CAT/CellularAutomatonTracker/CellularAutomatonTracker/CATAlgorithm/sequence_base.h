@@ -380,9 +380,9 @@ namespace CAT {
 
       int get_link_index_of_cell(size_t inode, const cell &link) const;
 
-      bool calculate_helix(void);
+      bool calculate_helix(double Ratio, bool after_sultan = false);
 
-      bool calculate_helix_after_sultan(void);
+      void reorder_cells(double Ratio);
 
       const experimental_double & radius() const;
 
@@ -421,7 +421,7 @@ namespace CAT {
 
       void remove_last_node();
 
-      bool intersect_sequence(sequence & seq, bool invertA, bool invertB, bool acrossGAP, experimental_point * ep, double limit_distance, int* with_kink, int cells_to_delete);
+      bool intersect_sequence(sequence & seq, bool invertA, bool invertB, bool acrossGAP, experimental_point * ep, double limit_distance, int* with_kink, int cells_to_delete, double Ratio);
 
       std::string family()const;
 
@@ -431,7 +431,7 @@ namespace CAT {
                       bool &invertA, bool &invertB, size_t NOffLayers)const;
 
 
-      sequence match(sequence & seq, bool invertA, bool invertB, bool *ok, int with_kink, int cells_to_delete);
+      sequence match(sequence & seq, bool invertA, bool invertB, bool *ok, int with_kink, int cells_to_delete, double Ratio);
 
       bool good_match_with_kink(const sequence & seq,
                                 bool &invertA, bool &invertB, bool &acrossGAP,
@@ -463,6 +463,8 @@ namespace CAT {
       void point_of_max_min_radius(experimental_point epa, experimental_point epb, experimental_point *epmax, experimental_point *epmin);
 
       bool common_vertex_on_foil(const sequence *seqB, double *the_distance) const;
+
+      void circle_order(double Ratio);
 
     };
 

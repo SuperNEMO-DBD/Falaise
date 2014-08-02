@@ -58,6 +58,10 @@ namespace CAT {
 
       bool is_kink_;
 
+      // angle along circle
+      double circle_phi_;
+
+ 
     public:
 
       //!Default constructor
@@ -114,6 +118,9 @@ namespace CAT {
       //! set fitted experimental_point
       void set_ep( const experimental_point &ep );
 
+      //! set circle phi
+      void set_circle_phi(double a){circle_phi_=a;}
+
       //! set is_kink
       void set_is_kink(bool is_kink);
 
@@ -146,6 +153,9 @@ namespace CAT {
 
       //! get fitted experimental_point
       const experimental_point& ep()const;
+
+      //! get circle phi
+      double circle_phi()const{return circle_phi_;}
 
       //! grab cc index map
       std::map<size_t,size_t> cc_index()const;
@@ -190,6 +200,12 @@ namespace CAT {
 
       friend bool operator==(const node& left,
                              const node& right);
+
+      static bool circle_order(const topology::node& c1, const topology::node& c) {
+        // order nodes based on their angle along an assigned circle
+
+        return( c1.circle_phi() > c.circle_phi() );
+      }
 
   };
 }

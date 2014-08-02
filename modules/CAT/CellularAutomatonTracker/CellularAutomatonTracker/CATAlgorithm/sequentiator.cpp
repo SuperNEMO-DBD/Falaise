@@ -758,7 +758,7 @@ namespace CAT {
     clean_up_sequences();
     direct_out_of_foil();
 
-    interpret_physics(tracked_data_.get_calos());
+    interpret_physics_after_sultan(tracked_data_.get_calos());
     make_families();
 
     refine_sequences_near_walls(tracked_data_.get_calos());
@@ -2366,7 +2366,7 @@ namespace CAT {
         if( level >= mybhep::VVERBOSE)
           print_a_sequence(*iseq);
 
-        if( !iseq->calculate_helix() && !iseq->has_kink() ){
+        if( !iseq->calculate_helix(Ratio) && !iseq->has_kink() ){
           size_t index = iseq - sequences_.begin();
           m.message("CAT::sequentiator::interpret_physics: erased sequence ", index, "not a good helix", mybhep::VERBOSE); fflush(stdout);
           sequences_.erase(iseq);
@@ -2661,6 +2661,347 @@ namespace CAT {
     return;
 
   }
+
+
+
+  //*************************************************************
+  void sequentiator::interpret_physics_after_sultan(std::vector<topology::calorimeter_hit> & calos){
+    //*************************************************************
+
+    clock.start(" sequentiator: interpret physics after sultan ", "cumulative");
+
+    m.message("CAT::sequentiator::interpret_physics_after_sultan: interpreting physics of ", sequences_.size(), " sequences with ", calos.size(), " calorimeter hits ", mybhep::VVERBOSE); fflush(stdout);
+
+    double helix_min_from_end = mybhep::default_min;
+    size_t ihelix_min_from_end = mybhep::default_integer;
+    double tangent_min_from_end = mybhep::default_min;
+    size_t itangent_min_from_end = mybhep::default_integer;
+
+    double helix_min_from_begin = mybhep::default_min;
+    size_t ihelix_min_from_begin = mybhep::default_integer;
+    double tangent_min_from_begin = mybhep::default_min;
+    size_t itangent_min_from_begin = mybhep::default_integer;
+
+    topology::experimental_point helix_extrapolation_from_end, helix_extrapolation_local_from_end;
+    bool helix_found_from_end = false;
+    topology::experimental_point helix_extrapolation_from_begin, helix_extrapolation_local_from_begin;
+    bool helix_found_from_begin = false;
+
+    topology::experimental_point tangent_extrapolation_from_end, tangent_extrapolation_local_from_end;
+    bool tangent_found_from_end = false;
+    topology::experimental_point tangent_extrapolation_from_begin, tangent_extrapolation_local_from_begin;
+    bool tangent_found_from_begin = false;
+
+    double dist_from_end, dist_from_begin;
+    std::vector<topology::sequence>::iterator iseq = sequences_.begin();
+    while( iseq != sequences_.end() )
+      {
+        m.message("CAT::sequentiator::interpret_physics_after_sultan: ... interpreting physics of sequence ", iseq->name(), mybhep::VVERBOSE); fflush(stdout);
+
+        if( iseq->nodes().size() <= 2 ){
+          ++iseq;
+          continue;
+        }
+
+        if( level >= mybhep::VVERBOSE)
+          print_a_sequence(*iseq);
+
+        if( !iseq->calculate_helix(Ratio,true) && !iseq->has_kink() ){
+          size_t index = iseq - sequences_.begin();
+          m.message("CAT::sequentiator::interpret_physics_after_sultan: erased sequence ", index, "not a good helix", mybhep::VERBOSE); fflush(stdout);
+          sequences_.erase(iseq);
+          iseq = sequences_.begin() + index;
+          if( index + 1 >= sequences_.size() )
+            break;
+          continue;
+        }
+        iseq->calculate_charge();
+        iseq->calculate_momentum(bfield);
+
+        // match to calorimeter
+        if (!calos.empty ())
+          {
+
+            m.message("CAT::sequentiator::interpret_physics_after_sultan: extrapolate decay vertex with ", calos.size(), " calo hits " , mybhep::VVERBOSE);
+
+            helix_min_from_end = mybhep::default_min;
+            ihelix_min_from_end = mybhep::default_integer;
+            tangent_min_from_end = mybhep::default_min;
+            itangent_min_from_end = mybhep::default_integer;
+
+            helix_min_from_begin = mybhep::default_min;
+            ihelix_min_from_begin = mybhep::default_integer;
+            tangent_min_from_begin = mybhep::default_min;
+            itangent_min_from_begin = mybhep::default_integer;
+
+            helix_found_from_end = false;
+            helix_found_from_begin = false;
+
+            tangent_found_from_end = false;
+            tangent_found_from_begin = false;
+
+            for(std::vector<topology::calorimeter_hit>::iterator ic=calos.begin(); ic != calos.end(); ++ic){
+
+              m.message( "CAT::sequentiator::interpret_physics_after_sultan: trying to extrapolate to calo hit ", ic - calos.begin(), " id ", ic->id(), " on view ", ic->pl_.view(), " energy ", ic->e().value(), mybhep::VVERBOSE);
+
+              if( !near(iseq->last_node().c(), *ic) ){
+                m.message( "CAT::sequentiator::interpret_physics_after_sultan: end is not near " , mybhep::VVERBOSE);
+              }else{
+
+                if( !iseq->intersect_plane_from_end(ic->pl(), &helix_extrapolation_local_from_end) ){
+                  m.message( "CAT::sequentiator::interpret_physics_after_sultan: no helix intersection from end " , mybhep::VVERBOSE);
+                }
+                else{
+
+                  dist_from_end = helix_extrapolation_local_from_end.distance(ic->pl_.face()).value();
+                  if( dist_from_end < helix_min_from_end ){
+                    helix_min_from_end = dist_from_end;
+                    ihelix_min_from_end = ic->id();
+                    helix_extrapolation_from_end = helix_extrapolation_local_from_end;
+                    helix_found_from_end = true;
+                    m.message( "CAT::sequentiator::interpret_physics_after_sultan: new helix intersection from end with minimum distance " , dist_from_end , " position: " , helix_extrapolation_from_end.x().value() ,   helix_extrapolation_from_end.y().value(),  helix_extrapolation_from_end.z().value() , mybhep::VVERBOSE);
+                  }
+                }
+
+
+                if( !iseq->intersect_plane_with_tangent_from_end(ic->pl(), &tangent_extrapolation_local_from_end) ){
+                  m.message( "CAT::sequentiator::interpret_physics_after_sultan: no tangent intersection from end " , mybhep::VVERBOSE);
+                }
+                else{
+
+                  dist_from_end = tangent_extrapolation_local_from_end.distance(ic->pl_.face()).value();
+                  if( dist_from_end < tangent_min_from_end ){
+                    tangent_min_from_end = dist_from_end;
+                    itangent_min_from_end = ic->id();
+                    tangent_extrapolation_from_end = tangent_extrapolation_local_from_end;
+                    tangent_found_from_end = true;
+                    m.message( "CAT::sequentiator::interpret_physics_after_sultan: new tangent intersection from end with minimum distance " , dist_from_end , " position: " , tangent_extrapolation_from_end.x().value() ,   tangent_extrapolation_from_end.y().value(),  tangent_extrapolation_from_end.z().value() , mybhep::VVERBOSE);
+                  }
+                }
+              }
+
+              if( !near(iseq->nodes_[0].c(), *ic) ){
+                m.message( "CAT::sequentiator::interpret_physics_after_sultan: beginning is not near " , mybhep::VVERBOSE);
+              }else if( ihelix_min_from_end == ic->id() || itangent_min_from_end == ic->id() ){
+                m.message( "CAT::sequentiator::interpret_physics_after_sultan: beginning is near, but end was already extrapolated to same calo " , mybhep::VVERBOSE);
+              }else{
+                if( !iseq->intersect_plane_from_begin(ic->pl(), &helix_extrapolation_local_from_begin) ){
+                  m.message( "CAT::sequentiator::interpret_physics_after_sultan: no helix intersection from beginning " , mybhep::VVERBOSE);
+                }
+                else{
+
+                  dist_from_begin = helix_extrapolation_local_from_begin.distance(ic->pl_.face()).value();
+                  if( dist_from_begin < helix_min_from_begin ){
+                    helix_min_from_begin = dist_from_begin;
+                    ihelix_min_from_begin = ic->id();
+                    helix_extrapolation_from_begin = helix_extrapolation_local_from_begin;
+                    helix_found_from_begin = true;
+                    m.message( "CAT::sequentiator::interpret_physics_after_sultan: new helix intersection from beginning with minimum distance " , dist_from_begin , " position: " , helix_extrapolation_from_begin.x().value() ,   helix_extrapolation_from_begin.y().value(),  helix_extrapolation_from_begin.z().value() , mybhep::VVERBOSE);
+                  }
+                }
+
+
+                if( !iseq->intersect_plane_with_tangent_from_begin(ic->pl(), &tangent_extrapolation_local_from_begin) ){
+                  m.message( "CAT::sequentiator::interpret_physics_after_sultan: no tangent intersection from beginning " , mybhep::VVERBOSE);
+                }
+                else{
+
+                  dist_from_begin = tangent_extrapolation_local_from_begin.distance(ic->pl_.face()).value();
+                  if( dist_from_begin < tangent_min_from_begin ){
+                    tangent_min_from_begin = dist_from_begin;
+                    itangent_min_from_begin = ic->id();
+                    tangent_extrapolation_from_begin = tangent_extrapolation_local_from_begin;
+                    tangent_found_from_begin = true;
+                    m.message( "CAT::sequentiator::interpret_physics_after_sultan: new tangent intersection from beginning with minimum distance " , dist_from_begin , " position: " , tangent_extrapolation_from_begin.x().value() ,   tangent_extrapolation_from_begin.y().value(),  tangent_extrapolation_from_begin.z().value() , mybhep::VVERBOSE);
+                  }
+                }
+              }
+
+
+            } // finish loop on calos
+
+            if( helix_found_from_begin ){
+              if( ihelix_min_from_begin >= calos.size() ){
+                m.message( "CAT::sequentiator::interpret_physics_after_sultan: problem: calo hit of id " , ihelix_min_from_begin , " but n of calo hits is " , calos.size() , mybhep::NORMAL);
+              }
+              else{
+                m.message( "CAT::sequentiator::interpret_physics_after_sultan: track extrapolated by helix to calo " , ihelix_min_from_begin, mybhep::VVERBOSE);
+                iseq->set_helix_vertex(helix_extrapolation_from_begin, "calo", ihelix_min_from_begin);
+              }
+            }
+
+            if( tangent_found_from_begin ){
+              if( itangent_min_from_begin >= calos.size() ){
+                m.message( "CAT::sequentiator::interpret_physics_after_sultan: problem: tangent calo hit of id " , itangent_min_from_begin , " but n of calo hits is " , calos.size() , mybhep::NORMAL);
+              }
+              else{
+                m.message( "CAT::sequentiator::interpret_physics_after_sultan: track extrapolated by tangent to calo " , itangent_min_from_begin, mybhep::VVERBOSE);
+                iseq->set_tangent_vertex(tangent_extrapolation_from_begin, "calo", itangent_min_from_begin);
+              }
+            }
+
+            if( helix_found_from_end ){
+              if( ihelix_min_from_end >= calos.size() ){
+                m.message( "CAT::sequentiator::interpret_physics_after_sultan: problem: calo hit of id " , ihelix_min_from_end , " but n of calo hits is " , calos.size() , mybhep::NORMAL);
+              }
+              else{
+                m.message( "CAT::sequentiator::interpret_physics_after_sultan: track extrapolated by helix to calo " , ihelix_min_from_end, mybhep::VVERBOSE);
+                iseq->set_decay_helix_vertex(helix_extrapolation_from_end, "calo", ihelix_min_from_end);
+              }
+            }
+
+            if( tangent_found_from_end ){
+              if( itangent_min_from_end >= calos.size() ){
+                m.message( "CAT::sequentiator::interpret_physics_after_sultan: problem: tangent calo hit of id " , itangent_min_from_end , " but n of calo hits is " , calos.size() , mybhep::NORMAL);
+              }
+              else{
+                m.message( "CAT::sequentiator::interpret_physics_after_sultan: track extrapolated by tangent to calo " , itangent_min_from_end, mybhep::VVERBOSE);
+                iseq->set_decay_tangent_vertex(tangent_extrapolation_from_end, "calo", itangent_min_from_end);
+              }
+            }
+
+          }
+
+        // match to foil
+        if( !iseq->nodes_.empty() ){
+
+          m.message( "CAT::sequentiator::interpret_physics_after_sultan: extrapolate vertex on foil: supernemo " , SuperNemo, mybhep::VVERBOSE);
+
+          if( gap_number(iseq->last_node().c() ) != 0 ){
+            m.message( "CAT::sequentiator::interpret_physics_after_sultan: end not near ", mybhep::VVERBOSE); fflush(stdout);
+          }else{
+            if( SuperNemo ){
+
+              if( !iseq->intersect_plane_from_end(get_foil_plane(), &helix_extrapolation_from_end) ){
+                m.message("CAT::sequentiator::interpret_physics_after_sultan: no helix intersection from end ", mybhep::VVERBOSE); fflush(stdout);
+              }
+              else{
+                iseq->set_decay_helix_vertex(helix_extrapolation_from_end, "foil");
+
+              }
+
+              if( !iseq->intersect_plane_with_tangent_from_end(get_foil_plane(), &tangent_extrapolation_from_end) ){
+                m.message("CAT::sequentiator::interpret_physics_after_sultan: no tangent intersection from end ", mybhep::VVERBOSE); fflush(stdout);
+              }
+              else
+                iseq->set_decay_tangent_vertex(tangent_extrapolation_from_end, "foil");
+
+            }else{  // nemo3
+
+
+              if( !iseq->intersect_circle_from_end(get_foil_circle(), &helix_extrapolation_from_end) ){
+                m.message("CAT::sequentiator::interpret_physics_after_sultan: no helix intersection from end ", mybhep::VVERBOSE); fflush(stdout);
+              }
+              else{
+                m.message( "CAT::sequentiator::interpret_physics_after_sultan: track extrapolated by helix to foil from end ", mybhep::VVERBOSE);
+                iseq->set_decay_helix_vertex(helix_extrapolation_from_end, "foil");
+              }
+
+              if( !iseq->intersect_circle_with_tangent_from_end(get_foil_circle(), &tangent_extrapolation_from_end) ){
+                m.message("CAT::sequentiator::interpret_physics_after_sultan: no tangent intersection from end ", mybhep::VVERBOSE); fflush(stdout);
+              }
+              else{
+                m.message( "CAT::sequentiator::interpret_physics_after_sultan: track extrapolated by tangent to foil from end", mybhep::VVERBOSE);
+                iseq->set_decay_tangent_vertex(tangent_extrapolation_from_end, "foil");
+              }
+
+            }
+          }
+
+          if( gap_number(iseq->nodes_[0].c() ) != 0 ){
+            m.message( "CAT::sequentiator::interpret_physics_after_sultan: beginning not near ", mybhep::VVERBOSE); fflush(stdout);
+          }else{
+            if( SuperNemo ){
+
+              if( !iseq->intersect_plane_from_begin(get_foil_plane(), &helix_extrapolation_from_begin) ){
+                m.message("CAT::sequentiator::interpret_physics_after_sultan: no helix intersection from beginning ", mybhep::VVERBOSE); fflush(stdout);
+              }
+              else{
+                iseq->set_helix_vertex(helix_extrapolation_from_begin, "foil");
+
+              }
+
+              if( !iseq->intersect_plane_with_tangent_from_begin(get_foil_plane(), &tangent_extrapolation_from_begin) ){
+                m.message("CAT::sequentiator::interpret_physics_after_sultan: no tangent intersection from beginning ", mybhep::VVERBOSE); fflush(stdout);
+              }
+              else
+                iseq->set_tangent_vertex(tangent_extrapolation_from_begin, "foil");
+
+            }else{  // nemo3
+
+
+              if( !iseq->intersect_circle_from_begin(get_foil_circle(), &helix_extrapolation_from_begin) ){
+                m.message("CAT::sequentiator::interpret_physics_after_sultan: no helix intersection from beginning ", mybhep::VVERBOSE); fflush(stdout);
+              }
+              else{
+                m.message( "CAT::sequentiator::interpret_physics_after_sultan: track extrapolated by helix to foil from beginning ", mybhep::VVERBOSE);
+                iseq->set_helix_vertex(helix_extrapolation_from_begin, "foil");
+              }
+
+              if( !iseq->intersect_circle_with_tangent_from_begin(get_foil_circle(), &tangent_extrapolation_from_begin) ){
+                m.message("CAT::sequentiator::interpret_physics_after_sultan: no tangent intersection from beginning ", mybhep::VVERBOSE); fflush(stdout);
+              }
+              else{
+                m.message( "CAT::sequentiator::interpret_physics_after_sultan: track extrapolated by tangent to foil from begin", mybhep::VVERBOSE);
+                iseq->set_tangent_vertex(tangent_extrapolation_from_begin, "foil");
+              }
+
+            }
+
+
+
+          }
+        }
+
+        iseq->calculate_length();
+
+        if( level >= mybhep::VVERBOSE ){
+          std::clog << "CAT::sequentiator::interpret_physics_after_sultan: sequence " << iseq - sequences_.begin() << " has: " << std::endl; fflush(stdout);
+          std::clog << "CAT::sequentiator::interpret_physics_after_sultan: center "; iseq->center().dump(); fflush(stdout);
+          std::clog << "CAT::sequentiator::interpret_physics_after_sultan: radius "; iseq->radius().dump(); std::clog << " " << std::endl; fflush(stdout);
+          std::clog << "CAT::sequentiator::interpret_physics_after_sultan: pitch "; iseq->pitch().dump(); std::clog << " " << std::endl; fflush(stdout);
+          std::clog << "CAT::sequentiator::interpret_physics_after_sultan: momentum "; iseq->momentum().length().dump(); std::clog << " " << std::endl; fflush(stdout);
+          std::clog << "CAT::sequentiator::interpret_physics_after_sultan: charge "; iseq->charge().dump(); std::clog << " " << std::endl; fflush(stdout);
+          if( iseq->has_helix_vertex() ){
+            std::clog << "CAT::sequentiator::interpret_physics_after_sultan: helix_vertex " << iseq->helix_vertex_type() << " "; iseq->helix_vertex().dump();
+            if( iseq->helix_vertex_type() == "calo" ) std::clog << " icalo " << iseq->helix_vertex_id();
+            std::clog << " " << std::endl; fflush(stdout);
+          }
+          if( iseq->has_decay_helix_vertex() ){
+            std::clog << "CAT::sequentiator::interpret_physics_after_sultan: decay helix_vertex " << iseq->decay_helix_vertex_type() << " "; iseq->decay_helix_vertex().dump();
+            if( iseq->decay_helix_vertex_type() == "calo" ) std::clog << " icalo " << iseq->calo_helix_id();
+            std::clog << " " << std::endl; fflush(stdout);
+          }
+          if( iseq->has_tangent_vertex() ){
+            std::clog << "CAT::sequentiator::interpret_physics_after_sultan: tangent_vertex " << iseq->tangent_vertex_type() << " "; iseq->tangent_vertex().dump();
+            if( iseq->tangent_vertex_type() == "calo" ) std::clog << " icalo " << iseq->tangent_vertex_id();
+            std::clog << " " << std::endl; fflush(stdout);
+          }
+          if( iseq->has_decay_tangent_vertex() ){
+            std::clog << "CAT::sequentiator::interpret_physics_after_sultan: decay tangent_vertex " << iseq->decay_tangent_vertex_type() << " "; iseq->decay_tangent_vertex().dump();
+            if( iseq->decay_tangent_vertex_type() == "calo" ) std::clog << " icalo " << iseq->calo_tangent_id();
+            std::clog << " " << std::endl; fflush(stdout);
+          }
+          if( iseq->has_tangent_length() ){
+            std::clog << "CAT::sequentiator::interpret_physics_after_sultan: tangent length "; iseq->tangent_length().dump(); std::clog << " " << std::endl; fflush(stdout);
+          }
+          if( iseq->has_helix_length() ){
+            std::clog << "CAT::sequentiator::interpret_physics_after_sultan: helix length "; iseq->helix_length().dump(); std::clog << " " << std::endl; fflush(stdout);
+          }
+
+        }
+        ++iseq;
+        continue;
+
+      }
+
+
+    clock.stop(" sequentiator: interpret physics after sultan ");
+
+    return;
+
+  }
+
 
 
   //*************************************************************
@@ -3712,7 +4053,7 @@ namespace CAT {
             print_a_sequence(sequences_[jmin]);
 
           bool ok;
-          newseq = newseq.match(sequences_[jmin], invertA, invertB, &ok, with_kink,cells_to_delete);
+          newseq = newseq.match(sequences_[jmin], invertA, invertB, &ok, with_kink,cells_to_delete, Ratio);
 
           if( !ok && !with_kink ){
             m.message("CAT::sequentiator::match_gaps:  ... no good helix match ", mybhep::VERBOSE);
@@ -3807,7 +4148,7 @@ namespace CAT {
         bool ok_kink_match_chi2 = false;
         topology::sequence news;
         if( ok_match )
-          news = s.match(*jseq, invertA, invertB, &ok_match,with_kink,0);
+          news = s.match(*jseq, invertA, invertB, &ok_match,with_kink,0, Ratio);
 
         if( !invertA )
           nodeA = s.last_node();
@@ -3880,11 +4221,11 @@ namespace CAT {
             }
 
             topology::experimental_point kink_point;
-            ok_kink_match = ok_kink_match && s.intersect_sequence(*jseq, invertA, invertB, acrossGAP, &kink_point, limit_diagonal, &with_kink, cells_to_delete);
+            ok_kink_match = ok_kink_match && s.intersect_sequence(*jseq, invertA, invertB, acrossGAP, &kink_point, limit_diagonal, &with_kink, cells_to_delete, Ratio);
 
             if( ok_kink_match ){
 
-              news = s.match(*jseq, invertA, invertB, &ok_kink_match_chi2, with_kink,cells_to_delete);
+              news = s.match(*jseq, invertA, invertB, &ok_kink_match_chi2, with_kink,cells_to_delete, Ratio);
               ok_kink_match = sequence_is_within_range(nodeA, nodeB, news);
 
               if( ok_kink_match )
