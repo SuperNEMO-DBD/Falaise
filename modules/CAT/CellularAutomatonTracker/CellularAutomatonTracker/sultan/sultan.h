@@ -325,7 +325,7 @@ namespace SULTAN {
       return;
     }
 
-    bool check_if_cell_is_near_calo(topology::cell c);
+    int check_if_cell_is_near_calo(topology::cell c);
 
     void reduce_clusters();
 

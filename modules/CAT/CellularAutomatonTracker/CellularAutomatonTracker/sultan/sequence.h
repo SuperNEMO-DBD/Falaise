@@ -37,6 +37,9 @@ namespace SULTAN {
       // sequence's name
       std::string name_;
 
+      // calo id
+      size_t calo_id_;
+
       //!Default constructor
       sequence();
 
@@ -64,6 +67,11 @@ namespace SULTAN {
       //! set helix
       void set_helix(const experimental_helix & helix);
 
+      //! set calo_id
+      void set_calo_id(const size_t id){
+	calo_id_ = id;
+      }
+
       //! get nodes
       const std::vector<node> & nodes()const;
 
@@ -72,6 +80,9 @@ namespace SULTAN {
 
       //! get helix
       const experimental_helix & get_helix()const;
+
+      //! get calo id
+      size_t calo_id()const;
 
     public:
 

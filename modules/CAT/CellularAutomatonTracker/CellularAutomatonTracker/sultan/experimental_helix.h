@@ -125,6 +125,16 @@ namespace SULTAN {
 
       experimental_point position(const experimental_point &ep)const;
 
+      // get the position at parameter phi
+      experimental_point position(const experimental_double &phi)const{
+
+        experimental_double deltax = experimental_cos(phi)*R();
+        experimental_double deltay = experimental_sin(phi)*R();
+        experimental_double deltaz = phi*H();
+
+        return (experimental_vector(center()) + experimental_vector(deltax, deltay, deltaz)).point_from_vector();
+      }
+
       void reset_ids(){
         ids_.clear();
       }
@@ -138,6 +148,24 @@ namespace SULTAN {
       void distance_from_cell_center(topology::cell c, experimental_double *DR, experimental_double *DH)const;
 
       bool different_cells(topology::experimental_helix b)const;
+
+      experimental_double phi_of_point(const experimental_point &ep, double phi_ref )const{
+        // if no ref is given, phi is in [-pi, pi]
+        // if ref is given is in [ref - \pi, ref + \pi]
+
+        experimental_double phi = experimental_vector(center(), ep).phi();
+
+        while( phi.value() - phi_ref > M_PI ){
+          phi.set_value(phi.value() - 2.*M_PI);
+        }
+
+        while( phi.value() - phi_ref < - M_PI ){
+          phi.set_value(phi.value() + 2.*M_PI);
+        }
+
+        return phi;
+
+      }
 
       void get_phi_of_point(topology::experimental_point input_p, topology::experimental_point * p, double * angle);
 

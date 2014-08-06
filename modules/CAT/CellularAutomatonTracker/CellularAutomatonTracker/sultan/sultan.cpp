@@ -1462,7 +1462,7 @@ namespace SULTAN {
 
 
   //*************************************************************
-  bool sultan::check_if_cell_is_near_calo(topology::cell c){
+  int sultan::check_if_cell_is_near_calo(topology::cell c){
   //*************************************************************
 
     std::string cview;
@@ -1480,7 +1480,7 @@ namespace SULTAN {
     else if( c.is_near_gveto() ) cview="z";
     else{
       m.message("SULTAN::sultan::check_if_cell_is_near_calo: problem: cell is not near any calo", mybhep::NORMAL);
-      return false;
+      return -1;
     }
 
     m.message("SULTAN::sultan::check_if_cell_is_near_calo: check if cell", c.id(), " with view ", cview, " is near one of ", calos_.size(), " calos", mybhep::VVERBOSE);
@@ -1512,11 +1512,11 @@ namespace SULTAN {
 
       m.message("SULTAN::sultan::check_if_cell_is_near_calo: cell - calo distance", distance.value(), " +- ", distance.error(), mybhep::VVERBOSE);
 
-      if( distance.is_zero__optimist(nsigmas) ) return true;
+      if( distance.is_zero__optimist(nsigmas) ) return icalo->id();
 
     }
 
-    return false;
+    return -1;
 
   }
 
@@ -1533,7 +1533,8 @@ namespace SULTAN {
 
     bool node_has_been_added_to_cluster;
 
-    bool on_foil, on_calo, on_xcalo, on_calo_hit;
+    bool on_foil, on_calo, on_xcalo;
+    int on_calo_hit;
     //bool on_gveto;
 
     // loop on all leftover nodes
@@ -1559,7 +1560,7 @@ namespace SULTAN {
       if( !on_foil ){
         on_calo_hit = check_if_cell_is_near_calo(inode->c_);
         m.message("SULTAN::sultan::get_clusters_of_cells_to_be_used_as_end_points: cell " , inode->c().id() , " is on calo " , on_calo, " on xcalo ", on_xcalo, " on calo hit ", on_calo_hit , mybhep::VVERBOSE);
-        if( !on_calo_hit )
+        if( ! (on_calo_hit >= 0) )
           continue;
       }
 
@@ -1964,6 +1965,19 @@ namespace SULTAN {
       if( !strcmp((c.get_cluster_type()).c_str(), "helix") ){
         s.set_helix(c.get_helix());
       }
+
+      if( nodes[0].c().is_near_calo() || nodes[0].c().is_near_xcalo() ){
+	int icalo = check_if_cell_is_near_calo(nodes[0].c());
+	if( icalo >= 0 )
+	  s.set_calo_id(icalo);
+      }
+
+      if( nodes.back().c().is_near_calo() || nodes.back().c().is_near_xcalo() ){
+	int icalo = check_if_cell_is_near_calo(nodes.back().c());
+	if( icalo >= 0 )
+	  s.set_calo_id(icalo);
+      }
+
       sequences->push_back(s);
     }
 

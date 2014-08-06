@@ -18,6 +18,7 @@ namespace SULTAN {
       appname_= "sequence: ";
       nodes_.clear();
       name_ = "default";
+      calo_id_ = mybhep::default_integer;
     }
 
     //!Default destructor
@@ -32,6 +33,7 @@ namespace SULTAN {
       appname_= "sequence: ";
       nodes_ = nodes;
       name_ = "default";
+      calo_id_ = mybhep::default_integer;
     }
 
     /*** dump ***/
@@ -69,6 +71,11 @@ namespace SULTAN {
       helix_ = h;
     }
 
+
+    //! get calo id
+    size_t sequence::calo_id()const{
+      return calo_id_;
+    }
 
     //! get nodes
     const std::vector<node> & sequence::nodes()const{
