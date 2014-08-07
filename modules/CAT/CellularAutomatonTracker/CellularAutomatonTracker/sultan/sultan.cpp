@@ -683,32 +683,50 @@ namespace SULTAN {
 
     std::vector<topology::node> assigned_nodes_best;
     double distance12, distance23, distance13;
+    int block1, block2, block3;
     double dmin1, dmin2;
 
     for(std::vector<topology::node>::const_iterator inode=leftover_cluster_->nodes_.begin(); inode != leftover_cluster_->nodes_.end()-2; ++inode){
+
+      if( !SuperNemoChannel )
+	block1 = inode->c().block();
+
       for(std::vector<topology::node>::const_iterator jnode=inode+1; jnode != leftover_cluster_->nodes_.end()-1; ++jnode){
 
         if( jnode == inode ) continue;
 
-        distance12 = (inode->c().ep().hor_distance(jnode->c().ep())).value();
+	if( SuperNemoChannel )
+	  distance12 = (inode->c().ep().hor_distance(jnode->c().ep())).value();
+	else{
+	  block2 = jnode->c().block();
+	  m.message(" (triplet " , inode->c().id() , ", " , jnode->c().id() , ", ... ) block1 " , block1, " block2 ", block2 , mybhep::VVERBOSE);
+	  if( block1 == block2 ) continue;
+	}
 
         for(std::vector<topology::node>::const_iterator knode=jnode+1; knode != leftover_cluster_->nodes_.end(); ++knode){
 
           if( knode == inode ) continue;
           if( knode == jnode ) continue;
 
-          distance23 = (jnode->c().ep().hor_distance(knode->c().ep())).value();
-          distance13 = (inode->c().ep().hor_distance(knode->c().ep())).value();
+	  if( SuperNemoChannel ){
+	    distance23 = (jnode->c().ep().hor_distance(knode->c().ep())).value();
+	    distance13 = (inode->c().ep().hor_distance(knode->c().ep())).value();
 
-          dmin1 = std::min( distance12,  distance13 );
-          dmin2 = std::min( distance12,  distance23 );
-          if( dmin1 == dmin2 )
-            dmin2 = std::min( distance13,  distance23 );
+	    dmin1 = std::min( distance12,  distance13 );
+	    dmin2 = std::min( distance12,  distance23 );
+	    if( dmin1 == dmin2 )
+	      dmin2 = std::min( distance13,  distance23 );
+	    
+	    m.message(" (triplet " , inode->c().id() , ", " , jnode->c().id() , ", " , knode->c().id() , ") dmin1 " , dmin1, " dmin2 ", dmin2 , mybhep::VVERBOSE);
+	    
+	    if( dmin1 < dist_limit_inf || dmin1 > dist_limit_sup ) continue;
+	    if( dmin2 < dist_limit_inf || dmin2 > dist_limit_sup ) continue;
+	  }else{
+	    block3 = knode->c().block();
+	    m.message(" (triplet " , inode->c().id() , ", " , jnode->c().id() , ", " , knode->c().id() , ") block2 ", block2 , " block3 ", block3, mybhep::VVERBOSE);
+	    if( block2 == block3 ) continue;
 
-          m.message(" (triplet " , inode->c().id() , ", " , jnode->c().id() , ", " , knode->c().id() , ") dmin1 " , dmin1, " dmin2 ", dmin2 , mybhep::VVERBOSE);
-
-          if( dmin1 < dist_limit_inf || dmin1 > dist_limit_sup ) continue;
-          if( dmin2 < dist_limit_inf || dmin2 > dist_limit_sup ) continue;
+	  }
 
           ccc = new topology::cell_triplet(inode->c(), jnode->c(), knode->c(), level);
           triplets_.push_back(*ccc);
