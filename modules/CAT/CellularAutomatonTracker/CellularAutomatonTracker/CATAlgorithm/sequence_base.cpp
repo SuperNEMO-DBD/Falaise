@@ -1892,6 +1892,9 @@ namespace CAT {
 	  reorder_cells(Ratio);
 	}
 
+
+#if 0
+
 	double phi_limit = 30.*acos(-1.)/180.;
         for(std::vector<node>::iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode){
 	  size_t index = inode - nodes_.begin();
@@ -1917,6 +1920,23 @@ namespace CAT {
 	    break;
 	  }
 	}
+#else
+
+	double prob = helix_Prob();
+	if( print_level() >= mybhep::VVERBOSE ){
+	  std::clog << " helix prob " << prob << " min " << probmin() << std::endl;
+	}
+
+	if( prob < probmin() ){
+	  if( print_level() >= mybhep::VVERBOSE ){
+	    std::clog << " so reject helix " << std::endl;
+	  }
+	  
+	  good_fit = false;
+	}
+      
+#endif
+
       }
 
 
