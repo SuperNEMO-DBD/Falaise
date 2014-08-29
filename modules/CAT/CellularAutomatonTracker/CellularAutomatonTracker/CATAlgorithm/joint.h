@@ -120,7 +120,7 @@ namespace CAT {
 
       bool operator<(const joint &j) const;
 
-      double calculate_chi2(joint j, topology::cell A, topology::cell B, joint * modified)const;
+      double calculate_chi2(joint j, topology::cell A, topology::cell B, topology::cell C, joint * modified, bool A_is_on_gap, bool B_is_on_gap)const;
 
     private:
 

@@ -216,13 +216,18 @@ namespace CAT {
       return;
     }
 
-    double joint::calculate_chi2(joint j, topology::cell A, topology::cell B, joint * modified)const{
+    double joint::calculate_chi2(joint j, topology::cell A, topology::cell B, topology::cell C, joint * modified, bool A_is_on_gap, bool B_is_on_gap)const{
       // this: A B C
       // j:    0 A B
 
       topology::experimental_double angle_AA, angle_BB, angle_phi, angle_theta;
-      topology::experimental_point pa = A.angular_average(j.epb(), this->epa(), &angle_AA);
-      topology::experimental_point pb = B.angular_average(j.epc(), this->epb(), &angle_BB);
+      topology::experimental_point pa = j.epb();
+      topology::experimental_point pb= this->epb();
+
+      if( !A_is_on_gap && !B_is_on_gap){ // connection A->B is not through a gap
+	pa = A.angular_average(pa, this->epa(), &angle_AA);
+	pb = B.angular_average(j.epc(), pb, &angle_BB);
+      }
       topology::joint lj(pa, pb, this->epc());
       angle_phi = lj.kink_phi();
       angle_theta = lj.kink_theta();
@@ -230,7 +235,7 @@ namespace CAT {
       //double local_chi2 = pow(angle_AA.value()/angle_AA.error(),2) + pow(angle_BB.value()/angle_BB.error(),2) + pow(angle_phi.value()/angle_phi.error(),2) + pow(angle_theta.value()/angle_theta.error(),2);
       double local_chi2 = pow(angle_phi.value(),2);
       if (print_level() >= mybhep::VVERBOSE){
-	std::clog << " CAT::joint::calculate_chi2: cell A " << A.id() << " angle_AA " << angle_AA.value() << " +- " << angle_AA.error() <<  " B " << B.id() << " angle_BB " << angle_BB.value() << " +- " << angle_BB.error() << " angle_phi " << angle_phi.value() << " +- " << angle_phi.error() << " angle_theta " << angle_theta.value() << " +- " << angle_theta.error() << " local chi2 " << local_chi2 << std::endl;
+	std::clog << " CAT::joint::calculate_chi2: phiA " << experimental_vector(A.ep(), lj.epa()).phi().value()*180./acos(-1.) <<  " phiB " << experimental_vector(B.ep(), lj.epb()).phi().value()*180./acos(-1.) << " phiC " << experimental_vector(C.ep(), lj.epc()).phi().value()*180./acos(-1.) << " cell A_is_on_gap " << A_is_on_gap << " A " << A.id() << " angle_AA " << angle_AA.value() << " +- " << angle_AA.error() <<  " B_is_on_gap " << B_is_on_gap << " B " << B.id() << " angle_BB " << angle_BB.value() << " +- " << angle_BB.error() << " angle_phi " << angle_phi.value() << " +- " << angle_phi.error() << " angle_theta " << angle_theta.value() << " +- " << angle_theta.error() << " local chi2 " << local_chi2 << std::endl;
       }
       return local_chi2;
 

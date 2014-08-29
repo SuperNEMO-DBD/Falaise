@@ -979,16 +979,17 @@ namespace CAT {
 
 
   //*************************************************************
-  topology::joint sequentiator::find_best_matching_joint(topology::joint j, std::vector<topology::joint> js, topology::cell A, topology::cell B, double *chi2){
+  topology::joint sequentiator::find_best_matching_joint(topology::joint j, std::vector<topology::joint> js, topology::cell A, topology::cell B, topology::cell C, double *chi2, bool A_is_on_gap, bool B_is_on_gap){
   //*************************************************************
 
-    // match joint 0-A-B and joint A-B-C
+    // match joint j = 0-A-B and joint {js} = A-B-C
+    // node B is not on gap or has only 1 joint
     double local_chi2;
     double chi2_best = mybhep::default_min;
     topology::joint jbest, lj;
 
     for(std::vector<topology::joint>::const_iterator ij=js.begin(); ij!=js.end(); ++ij){
-      local_chi2 = ij->calculate_chi2(j, A, B, &lj);
+      local_chi2 = ij->calculate_chi2(j, A, B, C, &lj, A_is_on_gap, B_is_on_gap);
       if( local_chi2 < chi2_best ){
 	chi2_best = local_chi2;
 	jbest = lj;
@@ -1163,13 +1164,15 @@ namespace CAT {
        // look at nodes C D ... X Y
        for(std::vector<topology::node>::const_iterator inode=local_cluster_->nodes_.begin() + 2; inode!=local_cluster_->nodes_.end()-1; ++inode){
 	 prev_cell = local_cluster_->nodes_[inode - local_cluster_->nodes_.begin() - 1].c();
+	 next_cell = local_cluster_->nodes_[inode - local_cluster_->nodes_.begin() + 1].c();
 
+	 bool prev_node_is_on_gap = (std::find(index_of_nodes_on_gap.begin(), index_of_nodes_on_gap.end(), inode - local_cluster_->nodes_.begin() - 1) != index_of_nodes_on_gap.end());
 	 bool node_is_on_gap = (std::find(index_of_nodes_on_gap.begin(), index_of_nodes_on_gap.end(), inode - local_cluster_->nodes_.begin()) != index_of_nodes_on_gap.end());
 
-	 if( joint_at_node.count(inode - local_cluster_->nodes_.begin()) == 0 ){ // node is not on gap or has only 1 joint
+	 if( !node_is_on_gap || joint_at_node.count(inode - local_cluster_->nodes_.begin()) == 0 ){ // node is not on gap or has only 1 joint
 	   local_joints = inode->ccc()[0].joints();
 	   m.message(" CAT::sequentiator::make_new_sequence_after_sultan: node ", inode->c().id(), " has ", local_joints.size(), " joints, is on gap:", node_is_on_gap, mybhep::VERBOSE);
-	   best_joint = find_best_matching_joint(joints.back(), local_joints, prev_cell, inode->c(), &chi2);
+	   best_joint = find_best_matching_joint(joints.back(), local_joints, prev_cell, inode->c(), next_cell, &chi2, prev_node_is_on_gap, node_is_on_gap);
 	   joints.push_back(best_joint);
 	   if( !node_is_on_gap )
 	     chi2s.push_back(chi2);
@@ -1181,7 +1184,7 @@ namespace CAT {
 	   local_joint = inode->ccc()[0].joints()[index_of_local_joint];
 	   // local joint:    A B C
 	   // joints back:    0 A B
-	   chi2 = local_joint.calculate_chi2(joints.back(), prev_cell, inode->c(), &best_joint);
+	   chi2 = local_joint.calculate_chi2(joints.back(), prev_cell, inode->c(), next_cell, &best_joint, prev_node_is_on_gap, node_is_on_gap);
 	   joints.push_back(best_joint);
 	   chi2s.push_back(0.);
 	 }
