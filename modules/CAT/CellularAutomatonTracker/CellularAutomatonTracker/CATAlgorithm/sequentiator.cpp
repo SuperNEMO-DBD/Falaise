@@ -1072,214 +1072,181 @@ namespace CAT {
       return;
     }
 
-    
-    // make 1 or 2 sequences
-    // cluster = A B C D ... X Y Z
-    topology::sequence newsequence(local_cluster_->nodes(), level, probmin);
-    std::vector<topology::joint> joints, local_joints;
-    std::vector<double> chi2s;
-    topology::joint best_joint, local_joint;
-    topology::cell prev_cell, next_cell;
 
+    std::vector< std::vector<topology::broken_line> > sets_of_bl_alternatives;
 
-    // first, work out which gaps are being crossed
-    // joint at node: you give it the node index, it gives you back the joint index
-    std::map<size_t, size_t > joint_at_node;
-    std::vector<size_t> index_of_nodes_on_gap;
-    for(std::vector<topology::node>::const_iterator inode=local_cluster_->nodes_.begin() + 2; inode!=local_cluster_->nodes_.end()-1; ++inode){
-      next_cell = local_cluster_->nodes_[inode - local_cluster_->nodes_.begin() + 1].c();
-      if( inode->c().block() != next_cell.block()){
-	index_of_nodes_on_gap.push_back(inode - local_cluster_->nodes_.begin());
-	index_of_nodes_on_gap.push_back(inode - local_cluster_->nodes_.begin() + 1);
-	if( inode->ccc()[0].joints().size() > 1 ){
-	  joint_at_node[inode - local_cluster_->nodes_.begin()] = 0;
-	}
+    local_cluster_->solve_ambiguities(&sets_of_bl_alternatives);
+
+    std::vector<topology::sequence> seqs;
+
+    if( build_sequences_from_ambiguous_alternatives(sets_of_bl_alternatives, &seqs) ){
+      for( std::vector<topology::sequence>::iterator iseq = seqs.begin(); iseq!=seqs.end(); ++iseq){
+	make_name(*iseq);
+	sequences_.push_back(*iseq);
+	if (level >= mybhep::VERBOSE)
+	  {
+	    clog << "CAT::sequentiator::make_new_sequence_after_sultan: made sequence " << endl;
+	    print_a_sequence(*iseq);
+	  }
+	NCOPY ++;
       }
     }
 
-
-    bool there_are_inexplored_gaps_permutations = true;
-    while( there_are_inexplored_gaps_permutations ){
-
-      if (level >= mybhep::VVERBOSE)
-	{
-	  std::clog << " gaps permutations: ";
-	  for( std::map<size_t, size_t >::const_iterator im=joint_at_node.begin(); im!=joint_at_node.end(); ++im){
-	    std::clog << "[" << local_cluster_->nodes_[im->first].c().id() << "] " << im->second ;
-	  }
-	  std::clog << " " << std::endl;
-	}
-
-      // find first node with a 1
-      size_t i_first_node_with_1 = s;
-      for(size_t i=0; i<s; i++){
-	// skip nodes not at gap or with 1 joint
-	if( joint_at_node.count(i) == 0 ) continue;
-
-	if( joint_at_node[i] == 1 ){
-	  i_first_node_with_1 = i;
-	  break;
-	}
-      }
-
-
-      // find last node with a 0 after the first node with a 1
-      size_t i_last_node_with_0 = s;
-      for(size_t i=s-1; i > i_first_node_with_1; i--){
-	// skip nodes not at gap or with 1 joint
-	if( joint_at_node.count(i) == 0 ) continue;
-
-	if( joint_at_node[i] == 0 ){
-	  i_last_node_with_0 = i;
-	  break;
-	}
-      }
-
-     if (level >= mybhep::VVERBOSE)
-       {
-	 if( i_first_node_with_1 < s ){
-	   std::clog << " first_node_with_1: " << local_cluster_->nodes_[i_first_node_with_1].c().id();
-	 }else{
-	   std::clog << " i_first_node_with_1 = s " << std::endl;
-	 }
-	 if( i_last_node_with_0 < s ){
-	   std::clog << " last_node_with_0: " << local_cluster_->nodes_[i_last_node_with_0].c().id();
-	 }else{
-	   std::clog << " i_last_node_with_0 = s " << std::endl;
-	 }
-       }
-     
-     // first_joints A-B-C
-     std::vector<topology::joint> first_joints = local_cluster_->nodes()[1].ccc()[0].joints();
-     double chi2;
-     for(std::vector<topology::joint>::const_iterator first_j=first_joints.begin(); first_j!=first_joints.end(); ++first_j){
-       m.message(" CAT::sequentiator::make_new_sequence_after_sultan: node ", local_cluster_->nodes()[1].c().id(), " has ", first_joints.size(), " joints, pick the one with index", first_j - first_joints.begin(), mybhep::VERBOSE);
-       joints.clear();
-       chi2s.clear();
-       
-       joints.push_back(*first_j);
-       chi2s.push_back(0.);
-       chi2s.push_back(0.);
-       
-       // look at nodes C D ... X Y
-       for(std::vector<topology::node>::const_iterator inode=local_cluster_->nodes_.begin() + 2; inode!=local_cluster_->nodes_.end()-1; ++inode){
-	 prev_cell = local_cluster_->nodes_[inode - local_cluster_->nodes_.begin() - 1].c();
-	 next_cell = local_cluster_->nodes_[inode - local_cluster_->nodes_.begin() + 1].c();
-
-	 bool prev_node_is_on_gap = (std::find(index_of_nodes_on_gap.begin(), index_of_nodes_on_gap.end(), inode - local_cluster_->nodes_.begin() - 1) != index_of_nodes_on_gap.end());
-	 bool node_is_on_gap = (std::find(index_of_nodes_on_gap.begin(), index_of_nodes_on_gap.end(), inode - local_cluster_->nodes_.begin()) != index_of_nodes_on_gap.end());
-
-	 if( !node_is_on_gap || joint_at_node.count(inode - local_cluster_->nodes_.begin()) == 0 ){ // node is not on gap or has only 1 joint
-	   local_joints = inode->ccc()[0].joints();
-	   m.message(" CAT::sequentiator::make_new_sequence_after_sultan: node ", inode->c().id(), " has ", local_joints.size(), " joints, is on gap:", node_is_on_gap, mybhep::VERBOSE);
-	   best_joint = find_best_matching_joint(joints.back(), local_joints, prev_cell, inode->c(), next_cell, &chi2, prev_node_is_on_gap, node_is_on_gap);
-	   joints.push_back(best_joint);
-	   if( !node_is_on_gap )
-	     chi2s.push_back(chi2);
-	   else
-	     chi2s.push_back(0.);
-	 }else{ // node is on gap and has 2 joints
-	   size_t index_of_local_joint = joint_at_node[inode - local_cluster_->nodes_.begin()];
-	   m.message(" CAT::sequentiator::make_new_sequence_after_sultan: node ", inode->c().id(), " is on gap, pick joint ", index_of_local_joint, ", is on gap:", node_is_on_gap, mybhep::VERBOSE);
-	   local_joint = inode->ccc()[0].joints()[index_of_local_joint];
-	   // local joint:    A B C
-	   // joints back:    0 A B
-	   chi2 = local_joint.calculate_chi2(joints.back(), prev_cell, inode->c(), next_cell, &best_joint, prev_node_is_on_gap, node_is_on_gap);
-	   joints.push_back(best_joint);
-	   chi2s.push_back(0.);
-	 }
-
-       }
-
-       chi2s.push_back(0.);
-       
-       newsequence.nodes_[0].set_ep(joints.front().epa());
-       newsequence.nodes_[0].set_chi2(chi2s[0]);
-       for(size_t i=1; i<s-1; i++){
-	 newsequence.nodes_[i].set_ep(joints[i-1].epb());
-	 newsequence.nodes_[i].set_chi2(chi2s[i]);
-       }
-       newsequence.nodes_[s-1].set_ep(joints.back().epc());
-       newsequence.nodes_[s-1].set_chi2(chi2s[s-1]);
-       make_name(newsequence);
-       sequences_.push_back(newsequence);
-       if (level >= mybhep::VERBOSE)
-	 {
-	   clog << "CAT::sequentiator::make_new_sequence_after_sultan: made sequence " << endl;
-	   print_a_sequence(newsequence);
-	 }
-       NCOPY ++;
-     }
-
-     // update permutations of gaps
-     m.message(" CAT::sequentiator::make_new_sequence_after_sultan: updating gaps permutations, i_first_node_with_1", i_first_node_with_1, " i_last_node_with_0 ", i_last_node_with_0, " s ", s, mybhep::VERBOSE);
-     there_are_inexplored_gaps_permutations = false;
-     if( joint_at_node.size() == 0 ){
-       there_are_inexplored_gaps_permutations = false;
-     }else if( i_first_node_with_1 == s ){ // (0, ..., 0)
-       for(size_t i=s-1; i >= 0; i--){
-	 // skip nodes not at gap or with 1 joint
-	 if( joint_at_node.count(i) == 0 ) continue;
-	 joint_at_node[i] = 1;
-	 there_are_inexplored_gaps_permutations = true;
-	 break;
-       }
-     }else{
-       if( i_last_node_with_0 == s ){ // (0, ..., 0, 1, ..., 1)
-	 // is there a 0 before the 1st 1?
-	 bool there_is = false;
-	 for(size_t i=0; i<i_first_node_with_1; i++){
-	   // skip nodes not at gap or with 1 joint
-	   if( joint_at_node.count(i) == 0 ) continue;
-	   there_is = true;
-	   break;
-	 }
-	 if( !there_is ){ // (1, ..., 1)
-	   there_are_inexplored_gaps_permutations = false;
-	 }else{
-	   for(size_t i=i_first_node_with_1; i<s; i++){
-	     // skip nodes not at gap or with 1 joint
-	     if( joint_at_node.count(i) == 0 ) continue;
-	     joint_at_node[i] = 0;
-	   }
-	   for(size_t i=i_first_node_with_1-1; i >= 0; i--){
-	     // skip nodes not at gap or with 1 joint
-	     if( joint_at_node.count(i) == 0 ) continue;
-	     joint_at_node[i] = 1;
-	     there_are_inexplored_gaps_permutations = true;
-	     break;
-	   }
-	 }
-       }else{ // (0, ..., 0, 1, 0, 0, 1, 1)
-
-	 for(size_t i=i_last_node_with_0 + 1; i<s; i++){
-	   // skip nodes not at gap or with 1 joint
-	   if( joint_at_node.count(i) == 0 ) continue;
-	   joint_at_node[i] = 0;
-	 }
-	 joint_at_node[i_last_node_with_0] = 1;
-	 there_are_inexplored_gaps_permutations = true;
-       }
-     }
-    
-     if (level >= mybhep::VVERBOSE)
-       {
-	  std::clog << " gaps permutations: ";
-	  for( std::map<size_t, size_t >::const_iterator im=joint_at_node.begin(); im!=joint_at_node.end(); ++im){
-	    std::clog << "[" << local_cluster_->nodes_[im->first].c().id() << "] " << im->second ;
-	  }
-	  std::clog << " there_are_inexplored_gaps_permutations " << there_are_inexplored_gaps_permutations << std::endl;
-       }
-     
- 
-    }
     clean_up_sequences();
 
+    
     clock.stop(" sequentiator: make new sequence after sultan ");
 
     return;
   }
 
+
+  //*************************************************************
+  bool sequentiator::increase_iterations(std::vector< std::vector<topology::broken_line> > sets_of_bl_alternatives, std::vector<size_t> * iterations, int * block_which_is_increasing, int * first_augmented_block){
+  //*************************************************************
+
+    clock.start(" sequentiator: increase_iterations ","cumulative");
+
+    iterations->at(*block_which_is_increasing) ++;
+    if( iterations->at(*block_which_is_increasing) == sets_of_bl_alternatives[*block_which_is_increasing].size() ){
+      iterations->at(*block_which_is_increasing) = 0;
+      int prev_block = *block_which_is_increasing - 1;
+      if( prev_block < 0 ){
+	clock.stop(" sequentiator: increase_iterations ");
+	return false;
+      }
+      while( true ){
+	iterations->at(prev_block) ++;
+	if( iterations->at(prev_block) == sets_of_bl_alternatives[prev_block].size() ){
+	  iterations->at(prev_block) = 0;
+	  prev_block --;
+	  if( prev_block < 0 ) break;
+	}else{
+	  clock.stop(" sequentiator: increase_iterations ");
+	  return true;
+	}
+      }
+      if( prev_block < 0 ){
+	clock.stop(" sequentiator: increase_iterations ");
+	return false;
+      }
+      if( prev_block < *first_augmented_block )
+	*first_augmented_block = prev_block;
+    }
+
+    clock.stop(" sequentiator: increase_iterations ");
+    return true;
+    
+  }
+
+  //*************************************************************
+  bool sequentiator::build_sequences_from_ambiguous_alternatives(std::vector< std::vector<topology::broken_line> > sets_of_bl_alternatives, std::vector<topology::sequence> *seqs){
+  //*************************************************************
+
+    clock.start(" sequentiator: build_sequences_from_ambiguous_alternatives ","cumulative");
+
+    if( level >= mybhep::VERBOSE ){
+      std::clog << " CAT::cluster::build_sequences_from_ambiguous_alternatives: there are " << sets_of_bl_alternatives.size() << " sets_of_bl_alternatives " << std::endl;
+      for( std::vector< std::vector<topology::broken_line> >::const_iterator iset = sets_of_bl_alternatives.begin(); iset != sets_of_bl_alternatives.end(); ++iset ){
+	std::clog << " CAT::cluster::build_sequences_from_ambiguous_alternatives: set " << iset - sets_of_bl_alternatives.begin() << " has " << iset->size() << " alternatives, from " << local_cluster_->nodes_[iset->front().ifirst()].c().id() << " to " << local_cluster_->nodes_[iset->front().ilast()].c().id()  << std::endl;
+      }
+    }
+
+    // the cluster here has at least 4 cells
+    // prepare a base broken_line (1 point for each cell in the cluster)
+    topology::broken_line base_bl;
+    base_bl.set_ifirst(0);
+    base_bl.set_ilast(local_cluster_->nodes_.size() - 1);
+    base_bl.eps_.push_back(local_cluster_->nodes_[1].ccc()[0].joints()[0].epa());
+    for(std::vector<topology::node>::const_iterator inode = local_cluster_->nodes_.begin()+1; inode != local_cluster_->nodes_.end()-1; ++inode){
+      base_bl.eps_.push_back(inode->ccc()[0].joints()[0].epb());
+    }
+    base_bl.eps_.push_back(local_cluster_->nodes_[local_cluster_->nodes_.size()-2].ccc()[0].joints()[0].epc());
+
+
+    if( sets_of_bl_alternatives.size() == 0 ){
+      topology::sequence best_seq(local_cluster_->nodes(), level, probmin);
+      for(std::vector<topology::node>::iterator inode = best_seq.nodes_.begin(); inode != best_seq.nodes_.end(); ++inode){
+	inode->set_ep(base_bl.eps_[inode - best_seq.nodes_.begin()] );
+      }
+      seqs->push_back(best_seq);
+      clock.stop(" sequentiator: build_sequences_from_ambiguous_alternatives ");
+      return true;
+    }
+
+    std::vector<size_t> iterations;
+    for( std::vector< std::vector<topology::broken_line> >::const_iterator iset = sets_of_bl_alternatives.begin(); iset != sets_of_bl_alternatives.end(); ++iset )
+      iterations.push_back(0);
+
+    int block_which_is_increasing = sets_of_bl_alternatives.size() - 1;
+    int first_augmented_block = sets_of_bl_alternatives.size() - 1;
+      
+    topology::sequence best_seq;
+    double min_chi2 = mybhep::default_min;
+    bool found = false;
+    while( true ){
+
+      if( level >= mybhep::VERBOSE ){
+	std::clog << " iterations: (";
+	for( std::vector<size_t>::const_iterator it = iterations.begin(); it != iterations.end(); ++it)
+	  std::clog << " " << *it ;
+	std::clog << ")" << std::endl;
+      }
+
+      std::vector<topology::broken_line> bls;
+      for( std::vector< std::vector<topology::broken_line> >::const_iterator iset = sets_of_bl_alternatives.begin(); iset != sets_of_bl_alternatives.end(); ++iset ){
+	size_t index = iterations[iset - sets_of_bl_alternatives.begin()];
+	bls.push_back( iset->at(index) );
+      }
+
+      topology::broken_line local_bl = base_bl;
+      topology::sequence local_seq(local_cluster_->nodes(), level, probmin);
+      for( std::vector<topology::broken_line>::const_iterator ibl = bls.begin(); ibl!=bls.end(); ++ibl){
+	size_t ifirst = ibl->ifirst();
+	for( std::vector<topology::experimental_point>::const_iterator ipoint = ibl->eps_.begin(); ipoint != ibl->eps_.end(); ++ipoint)
+	  local_bl.eps_[ifirst + ipoint - ibl->eps_.begin()] = *ipoint;
+      }
+
+      for( std::vector<topology::experimental_point>::const_iterator ipoint = local_bl.eps_.begin(); ipoint != local_bl.eps_.end(); ++ipoint)
+	local_seq.nodes_[ipoint - local_bl.eps_.begin()].set_ep(*ipoint);
+
+      if( level >= mybhep::VERBOSE ){
+	std::clog << " points: [";
+	for(std::vector<topology::node>::iterator inode = local_seq.nodes_.begin(); inode != local_seq.nodes_.end(); ++inode){
+	  topology::experimental_point ep = inode->ep();
+	  std::clog << inode->c().id() << " (" << ep.x().value() << ", " << ep.z().value() << ") ";
+	}
+	std::clog << "]" << std::endl;
+      }
+
+      if( !local_seq.calculate_helix(Ratio,true) && !local_seq.has_kink() ){
+          m.message("CAT::sequentiator::build_sequences_from_ambiguous_alternatives: not a good helix", mybhep::VERBOSE); fflush(stdout);
+	  if( ! increase_iterations(sets_of_bl_alternatives, & iterations, &block_which_is_increasing, & first_augmented_block) ) break;
+          continue;
+      }
+
+      found = true;
+      double chi2 = local_seq.helix_chi2();
+      if( chi2 < min_chi2 ){
+	min_chi2 = chi2;
+	best_seq = local_seq;
+      }
+
+      if( level >= mybhep::VERBOSE ){
+	std::clog << " chi2 " << chi2 << std::endl;
+      }
+
+      if( ! increase_iterations(sets_of_bl_alternatives, & iterations, &block_which_is_increasing, & first_augmented_block) ) break;
+    }
+
+
+    seqs->push_back(best_seq);
+
+
+    clock.stop(" sequentiator: build_sequences_from_ambiguous_alternatives ");
+    return found;
+
+  }
 
   //*************************************************************
   void sequentiator::make_name(topology::sequence & sequence_) {
