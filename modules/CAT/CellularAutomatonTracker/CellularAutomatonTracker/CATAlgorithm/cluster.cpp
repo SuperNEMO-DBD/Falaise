@@ -431,8 +431,6 @@ namespace CAT{
 
       std::vector<topology::broken_line> bls;
 
-      double maxprob = mybhep::default_max;
-
       ////////////////////////////////////////////////////////////
       // ... if first ambiguous node is right after a gap:   gap - A
       if( first_ambiguous_is_after_gap ){
@@ -586,6 +584,7 @@ namespace CAT{
       best_bl.set_ifirst(ifirst);
       best_bl.set_ilast(ifirst);
       topology::experimental_point pAbest;
+      double min_chi2 = mybhep::default_min;
       for( size_t joint_index_A = 0; joint_index_A <= 1; ++joint_index_A){
 	topology::broken_line bl;
 	topology::experimental_point pA = nodes_[ifirst].ccc()[0].joints()[joint_index_A].epb();
@@ -593,8 +592,8 @@ namespace CAT{
 	bl.eps_.push_back(pA);
 	bl.eps_.push_back(pb);
 	bl.calculate_chi2();
-	if( bl.p() > maxprob ){
-	  maxprob = bl.p();
+	if( bl.chi2() < min_chi2 ){
+	  min_chi2 = bl.chi2();
 	  pAbest = pA;
 	}
       }
@@ -609,8 +608,6 @@ namespace CAT{
     std::vector<topology::broken_line> cluster::solve_ambiguities_with_ends__2_nodes(size_t ifirst, size_t ilast, bool first_ambiguous_is_after_gap, bool first_ambiguous_is_second, bool last_ambiguous_is_begore_gap, bool last_ambiguous_is_last_but_one){
 
       std::vector<topology::broken_line> bls;
-
-      double maxprob = mybhep::default_max;
 
 
       ////////////////////////////////////////////////////////////
@@ -670,6 +667,7 @@ namespace CAT{
 	  best_bl.set_ifirst(ifirst);
 	  best_bl.set_ilast(ilast);
 	  topology::experimental_point pBbest;
+	  double min_chi2 = mybhep::default_min;
 	  for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 	    topology::broken_line bl;
 	    topology::experimental_point pB = nodes_[ilast].ccc()[0].joints()[joint_index_B].epb();
@@ -677,8 +675,8 @@ namespace CAT{
 	    bl.eps_.push_back(pB);
 	    bl.eps_.push_back(pc);
 	    bl.calculate_chi2();
-	    if( bl.p() > maxprob ){
-	      maxprob = bl.p();
+	    if( bl.chi2() < min_chi2 ){
+	      min_chi2 = bl.chi2();
 	      pBbest = pB;
 	    }
 	  }
@@ -749,6 +747,7 @@ namespace CAT{
 	  best_bl.set_ifirst(ifirst-1);
 	  best_bl.set_ilast(ilast);
 	  topology::experimental_point pBbest;
+	  double min_chi2 = mybhep::default_min;
 	  for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 	    topology::broken_line bl;
 	    topology::experimental_point pB = nodes_[ilast].ccc()[0].joints()[joint_index_B].epb();
@@ -758,8 +757,8 @@ namespace CAT{
 	    bl.eps_.push_back(pB);
 	    bl.eps_.push_back(pN);
 	    bl.calculate_chi2();
-	    if( bl.p() > maxprob ){
-	      maxprob = bl.p();
+	    if( bl.chi2() < min_chi2 ){
+	      min_chi2 = bl.chi2();
 	      pBbest = pB;
 	    }
 	  }
@@ -785,6 +784,7 @@ namespace CAT{
 	  best_bl.set_ifirst(ifirst);
 	  best_bl.set_ilast(ilast+1);
 	  topology::experimental_point pAbest;
+	  double min_chi2 = mybhep::default_min;
 	  for( size_t joint_index_A = 0; joint_index_A <= 1; ++joint_index_A){
 	    topology::broken_line bl;
 	    topology::experimental_point pA = nodes_[ifirst].ccc()[0].joints()[joint_index_A].epb();
@@ -793,8 +793,8 @@ namespace CAT{
 	    bl.eps_.push_back(pB);
 	    bl.eps_.push_back(pN);
 	    bl.calculate_chi2();
-	    if( bl.p() > maxprob ){
-	      maxprob = bl.p();
+	    if( bl.chi2() < min_chi2 ){
+	      min_chi2 = bl.chi2();
 	      pAbest = pA;
 	    }
 	  }
@@ -817,6 +817,7 @@ namespace CAT{
 	  best_bl.set_ifirst(ifirst);
 	  best_bl.set_ilast(ilast);
 	  topology::experimental_point pAbest;
+	  double min_chi2 = mybhep::default_min;
 	  for( size_t joint_index_A = 0; joint_index_A <= 1; ++joint_index_A){
 	    topology::broken_line bl;
 	    topology::experimental_point pA = nodes_[ifirst].ccc()[0].joints()[joint_index_A].epb();
@@ -824,8 +825,8 @@ namespace CAT{
 	    bl.eps_.push_back(pA);
 	    bl.eps_.push_back(pB);
 	    bl.calculate_chi2();
-	    if( bl.p() > maxprob ){
-	      maxprob = bl.p();
+	    if( bl.chi2() < min_chi2 ){
+	      min_chi2 = bl.chi2();
 	      pAbest = pA;
 	    }
 	  }
@@ -848,6 +849,7 @@ namespace CAT{
       best_bl.set_ilast(ilast);
       topology::experimental_point pAbest;
       topology::experimental_point pBbest;
+      double min_chi2 = mybhep::default_min;
       for( size_t joint_index_A = 0; joint_index_A <= 1; ++joint_index_A){
 	for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 	  topology::broken_line bl;
@@ -858,8 +860,8 @@ namespace CAT{
 	  bl.eps_.push_back(pB);
 	  bl.eps_.push_back(pb);
 	  bl.calculate_chi2();
-	  if( bl.p() > maxprob ){
-	    maxprob = bl.p();
+	  if( bl.chi2() < min_chi2 ){
+	    min_chi2 = bl.chi2();
 	    pAbest = pA;
 	    pBbest = pB;
 	  }
@@ -877,8 +879,6 @@ namespace CAT{
     std::vector<topology::broken_line> cluster::solve_ambiguities_with_ends__3_nodes(size_t ifirst, size_t ilast, bool first_ambiguous_is_after_gap, bool first_ambiguous_is_second, bool last_ambiguous_is_begore_gap, bool last_ambiguous_is_last_but_one){
 
       std::vector<topology::broken_line> bls;
-
-      double maxprob = mybhep::default_max;
 
 
       ////////////////////////////////////////////////////////////
@@ -898,6 +898,7 @@ namespace CAT{
 	      best_bl.set_ifirst(ifirst);
 	      best_bl.set_ilast(ilast+1);
 	      topology::experimental_point pBbest;
+	      double min_chi2 = mybhep::default_min;
 	      for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 		topology::broken_line bl;
 		topology::experimental_point pB = nodes_[ilast].ccc()[0].joints()[joint_index_B].epb();
@@ -906,8 +907,8 @@ namespace CAT{
 		bl.eps_.push_back(pC);
 		bl.eps_.push_back(pN);
 		bl.calculate_chi2();
-		if( bl.p() > maxprob ){
-		  maxprob = bl.p();
+		if( bl.chi2() < min_chi2 ){
+		  min_chi2 = bl.chi2();
 		  pBbest= pB;
 		}
 	      }
@@ -934,6 +935,7 @@ namespace CAT{
 	      topology::broken_line best_bl;
 	      best_bl.set_ifirst(ifirst);
 	      best_bl.set_ilast(ilast);
+	      double min_chi2 = mybhep::default_min;
 	      for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 		topology::broken_line bl;
 		topology::experimental_point pB = nodes_[ilast].ccc()[0].joints()[joint_index_B].epb();
@@ -941,8 +943,8 @@ namespace CAT{
 		bl.eps_.push_back(pB);
 		bl.eps_.push_back(pC);
 		bl.calculate_chi2();
-		if( bl.p() > maxprob ){
-		  maxprob = bl.p();
+		if( bl.chi2() < min_chi2 ){
+		  min_chi2 = bl.chi2();
 		  pBbest = pB;
 		}
 	      }
@@ -968,6 +970,7 @@ namespace CAT{
 	  best_bl.set_ilast(ilast);
 	  topology::experimental_point pBbest;
 	  topology::experimental_point pCbest;
+	  double min_chi2 = mybhep::default_min;
 	  for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 	    for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
 	      topology::broken_line bl;
@@ -978,8 +981,8 @@ namespace CAT{
 	      bl.eps_.push_back(pC);
 	      bl.eps_.push_back(pd);
 	      bl.calculate_chi2();
-	      if( bl.p() > maxprob ){
-		maxprob = bl.p();
+	      if( bl.chi2() < min_chi2 ){
+		min_chi2 = bl.chi2();
 		pBbest = pB;
 		pCbest = pC;
 	      }
@@ -1011,6 +1014,7 @@ namespace CAT{
 	      topology::broken_line best_bl;
 	      best_bl.set_ifirst(ifirst-1);
 	      best_bl.set_ilast(ilast);
+	      double min_chi2 = mybhep::default_min;
 	      for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 		topology::broken_line bl;
 		topology::experimental_point pB = nodes_[ifirst+1].ccc()[0].joints()[joint_index_B].epb();
@@ -1019,8 +1023,8 @@ namespace CAT{
 		bl.eps_.push_back(pB);
 		bl.eps_.push_back(pC);
 		bl.calculate_chi2();
-		if( bl.p() > maxprob ){
-		  maxprob = bl.p();
+		if( bl.chi2() < min_chi2 ){
+		  min_chi2 = bl.chi2();
 		  pBbest = pB;
 		}
 	      }
@@ -1050,6 +1054,7 @@ namespace CAT{
 	      topology::broken_line best_bl;
 	      best_bl.set_ifirst(ifirst-1);
 	      best_bl.set_ilast(ilast+1);
+	      double min_chi2 = mybhep::default_min;
 	      for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 		topology::broken_line bl;
 		topology::experimental_point pB = nodes_[ifirst+1].ccc()[0].joints()[joint_index_B].epb();
@@ -1059,8 +1064,8 @@ namespace CAT{
 		bl.eps_.push_back(pC);
 		bl.eps_.push_back(pN);
 		bl.calculate_chi2();
-		if( bl.p() > maxprob ){
-		  maxprob = bl.p();
+		if( bl.chi2() < min_chi2 ){
+		  min_chi2 = bl.chi2();
 		  pBbest = pB;
 		}
 	      }
@@ -1091,6 +1096,7 @@ namespace CAT{
 	  best_bl.set_ilast(ilast);
 	  topology::experimental_point pBbest;
 	  topology::experimental_point pCbest;
+	  double min_chi2 = mybhep::default_min;
 	  for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 	    for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
 	      topology::broken_line bl;
@@ -1102,8 +1108,8 @@ namespace CAT{
 	      bl.eps_.push_back(pC);
 	      bl.eps_.push_back(pd);
 	      bl.calculate_chi2();
-	      if( bl.p() > maxprob ){
-		maxprob = bl.p();
+	      if( bl.chi2() < min_chi2 ){
+		min_chi2 = bl.chi2();
 		pBbest = pB;
 		pCbest = pC;
 	      }
@@ -1135,6 +1141,7 @@ namespace CAT{
 	  topology::broken_line best_bl;
 	  best_bl.set_ifirst(ifirst);
 	  best_bl.set_ilast(ilast);
+	  double min_chi2 = mybhep::default_min;
 	  for( size_t joint_index_A = 0; joint_index_A <= 1; ++joint_index_A){
 	    for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 	      topology::broken_line bl;
@@ -1145,8 +1152,8 @@ namespace CAT{
 	      bl.eps_.push_back(pB);
 	      bl.eps_.push_back(pC);
 	      bl.calculate_chi2();
-	      if( bl.p() > maxprob ){
-		maxprob = bl.p();
+	      if( bl.chi2() < min_chi2 ){
+		min_chi2 = bl.chi2();
 		pAbest = pA;
 		pBbest = pB;
 	      }
@@ -1176,6 +1183,7 @@ namespace CAT{
 	  topology::broken_line best_bl;
 	  best_bl.set_ifirst(ifirst);
 	  best_bl.set_ilast(ilast+1);
+	  double min_chi2 = mybhep::default_min;
 	  for( size_t joint_index_A = 0; joint_index_A <= 1; ++joint_index_A){
 	    for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 	      topology::broken_line bl;
@@ -1187,8 +1195,8 @@ namespace CAT{
 	      bl.eps_.push_back(pC);
 	      bl.eps_.push_back(pN);
 	      bl.calculate_chi2();
-	      if( bl.p() > maxprob ){
-		maxprob = bl.p();
+	      if( bl.chi2() < min_chi2 ){
+		min_chi2 = bl.chi2();
 		pAbest = pA;
 		pBbest = pB;
 	      }
@@ -1218,6 +1226,7 @@ namespace CAT{
       topology::broken_line best_bl;
       best_bl.set_ifirst(ifirst);
       best_bl.set_ilast(ilast);
+      double min_chi2 = mybhep::default_min;
       for( size_t joint_index_A = 0; joint_index_A <= 1; ++joint_index_A){
 	for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 	  for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
@@ -1231,8 +1240,8 @@ namespace CAT{
 	    bl.eps_.push_back(pC);
 	    bl.eps_.push_back(pd);
 	    bl.calculate_chi2();
-	    if( bl.p() > maxprob ){
-	      maxprob = bl.p();
+	    if( bl.chi2() < min_chi2 ){
+	      min_chi2 = bl.chi2();
 	      pAbest = pA;
 	      pBbest = pB;
 	      pCbest = pC;
@@ -1254,8 +1263,6 @@ namespace CAT{
 
       std::vector<topology::broken_line> bls;
 
-      double maxprob = mybhep::default_max;
-
 
       ////////////////////////////////////////////////////////////
       // ... if first ambiguous node is right after a gap:   gap - A - B - C - D
@@ -1275,6 +1282,7 @@ namespace CAT{
 	      best_bl.set_ilast(ilast+1);
 	      topology::experimental_point pBbest;
 	      topology::experimental_point pCbest;
+	      double min_chi2 = mybhep::default_min;
 	      for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 		for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
 		  topology::broken_line bl;
@@ -1286,8 +1294,8 @@ namespace CAT{
 		  bl.eps_.push_back(pD);
 		  bl.eps_.push_back(pN);
 		  bl.calculate_chi2();
-		  if( bl.p() > maxprob ){
-		    maxprob = bl.p();
+		  if( bl.chi2() < min_chi2 ){
+		    min_chi2 = bl.chi2();
 		    pBbest= pB;
 		    pCbest= pC;
 		  }
@@ -1318,6 +1326,7 @@ namespace CAT{
 	      topology::broken_line best_bl;
 	      best_bl.set_ifirst(ifirst);
 	      best_bl.set_ilast(ilast);
+	      double min_chi2 = mybhep::default_min;
 	      for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 		for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
 		  topology::broken_line bl;
@@ -1328,8 +1337,8 @@ namespace CAT{
 		  bl.eps_.push_back(pC);
 		  bl.eps_.push_back(pD);
 		  bl.calculate_chi2();
-		  if( bl.p() > maxprob ){
-		    maxprob = bl.p();
+		  if( bl.chi2() < min_chi2 ){
+		    min_chi2 = bl.chi2();
 		    pBbest = pB;
 		    pCbest = pC;
 		  }
@@ -1359,6 +1368,7 @@ namespace CAT{
 	  topology::experimental_point pBbest;
 	  topology::experimental_point pCbest;
 	  topology::experimental_point pDbest;
+	  double min_chi2 = mybhep::default_min;
 	  for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 	    for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
 	      for( size_t joint_index_D = 0; joint_index_D <= 1; ++joint_index_D){
@@ -1372,8 +1382,8 @@ namespace CAT{
 		bl.eps_.push_back(pD);
 		bl.eps_.push_back(pe);
 		bl.calculate_chi2();
-		if( bl.p() > maxprob ){
-		  maxprob = bl.p();
+		if( bl.chi2() < min_chi2 ){
+		  min_chi2 = bl.chi2();
 		  pBbest = pB;
 		  pCbest = pC;
 		  pDbest = pD;
@@ -1409,6 +1419,7 @@ namespace CAT{
 	      topology::broken_line best_bl;
 	      best_bl.set_ifirst(ifirst-1);
 	      best_bl.set_ilast(ilast);
+	      double min_chi2 = mybhep::default_min;
 	      for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 		for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
 		  topology::broken_line bl;
@@ -1420,8 +1431,8 @@ namespace CAT{
 		  bl.eps_.push_back(pC);
 		  bl.eps_.push_back(pD);
 		  bl.calculate_chi2();
-		  if( bl.p() > maxprob ){
-		    maxprob = bl.p();
+		  if( bl.chi2() < min_chi2 ){
+		    min_chi2 = bl.chi2();
 		    pBbest = pB;
 		    pCbest = pC;
 		  }
@@ -1455,6 +1466,7 @@ namespace CAT{
 	      topology::broken_line best_bl;
 	      best_bl.set_ifirst(ifirst-1);
 	      best_bl.set_ilast(ilast+1);
+	      double min_chi2 = mybhep::default_min;
 	      for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 		for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
 		  topology::broken_line bl;
@@ -1467,8 +1479,8 @@ namespace CAT{
 		  bl.eps_.push_back(pD);
 		  bl.eps_.push_back(pN);
 		  bl.calculate_chi2();
-		  if( bl.p() > maxprob ){
-		    maxprob = bl.p();
+		  if( bl.chi2() < min_chi2 ){
+		    min_chi2 = bl.chi2();
 		    pBbest = pB;
 		    pCbest = pC;
 		  }
@@ -1503,6 +1515,7 @@ namespace CAT{
 	  topology::experimental_point pBbest;
 	  topology::experimental_point pCbest;
 	  topology::experimental_point pDbest;
+	  double min_chi2 = mybhep::default_min;
 	  for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 	    for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
 	      for( size_t joint_index_D = 0; joint_index_D <= 1; ++joint_index_D){
@@ -1517,8 +1530,8 @@ namespace CAT{
 	      bl.eps_.push_back(pD);
 	      bl.eps_.push_back(pe);
 	      bl.calculate_chi2();
-	      if( bl.p() > maxprob ){
-		maxprob = bl.p();
+	      if( bl.chi2() < min_chi2 ){
+		min_chi2 = bl.chi2();
 		pBbest = pB;
 		pCbest = pC;
 		pDbest = pD;
@@ -1554,6 +1567,7 @@ namespace CAT{
 	  topology::broken_line best_bl;
 	  best_bl.set_ifirst(ifirst);
 	  best_bl.set_ilast(ilast);
+	  double min_chi2 = mybhep::default_min;
 	  for( size_t joint_index_A = 0; joint_index_A <= 1; ++joint_index_A){
 	    for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 	      for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
@@ -1567,8 +1581,8 @@ namespace CAT{
 		bl.eps_.push_back(pC);
 		bl.eps_.push_back(pD);
 		bl.calculate_chi2();
-		if( bl.p() > maxprob ){
-		  maxprob = bl.p();
+		if( bl.chi2() < min_chi2 ){
+		  min_chi2 = bl.chi2();
 		  pAbest = pA;
 		  pBbest = pB;
 		  pCbest = pC;
@@ -1602,6 +1616,7 @@ namespace CAT{
 	  topology::broken_line best_bl;
 	  best_bl.set_ifirst(ifirst);
 	  best_bl.set_ilast(ilast+1);
+	  double min_chi2 = mybhep::default_min;
 	  for( size_t joint_index_A = 0; joint_index_A <= 1; ++joint_index_A){
 	    for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 	      for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
@@ -1616,8 +1631,8 @@ namespace CAT{
 		bl.eps_.push_back(pD);
 		bl.eps_.push_back(pN);
 		bl.calculate_chi2();
-		if( bl.p() > maxprob ){
-		  maxprob = bl.p();
+		if( bl.chi2() < min_chi2 ){
+		  min_chi2 = bl.chi2();
 		  pAbest = pA;
 		  pBbest = pB;
 		  pCbest = pC;
@@ -1651,6 +1666,7 @@ namespace CAT{
       topology::broken_line best_bl;
       best_bl.set_ifirst(ifirst);
       best_bl.set_ilast(ilast);
+      double min_chi2 = mybhep::default_min;
       for( size_t joint_index_A = 0; joint_index_A <= 1; ++joint_index_A){
 	for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 	  for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
@@ -1667,8 +1683,8 @@ namespace CAT{
 	      bl.eps_.push_back(pD);
 	      bl.eps_.push_back(pe);
 	      bl.calculate_chi2();
-	      if( bl.p() > maxprob ){
-		maxprob = bl.p();
+	      if( bl.chi2() < min_chi2 ){
+		min_chi2 = bl.chi2();
 		pAbest = pA;
 		pBbest = pB;
 		pCbest = pC;
@@ -1693,8 +1709,6 @@ namespace CAT{
 
       std::vector<topology::broken_line> bls;
 
-      double maxprob = mybhep::default_max;
-
       ////////////////////////////////////////////////////////////
       // ... if first ambiguous node is right after a gap:   gap - A - B - C - D
       if( first_ambiguous_is_after_gap ){
@@ -1712,6 +1726,7 @@ namespace CAT{
 	      best_bl.set_ifirst(ifirst);
 	      best_bl.set_ilast(ilast);
 	      topology::experimental_point pBbest;
+	      double min_chi2 = mybhep::default_min;
 	      for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 		topology::broken_line bl;
 		topology::experimental_point pB = nodes_[ifirst+1].ccc()[0].joints()[joint_index_B].epb();
@@ -1720,8 +1735,8 @@ namespace CAT{
 		bl.eps_.push_back(pC);
 		bl.eps_.push_back(pD);
 		bl.calculate_chi2();
-		if( bl.p() > maxprob ){
-		  maxprob = bl.p();
+		if( bl.chi2() < min_chi2 ){
+		  min_chi2 = bl.chi2();
 		  pBbest= pB;
 		}
 	      }
@@ -1754,6 +1769,7 @@ namespace CAT{
 	      topology::broken_line best_bl;
 	      best_bl.set_ifirst(ifirst-1);
 	      best_bl.set_ilast(ilast);
+	      double min_chi2 = mybhep::default_min;
 	      for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 		topology::broken_line bl;
 		topology::experimental_point pB = nodes_[ifirst+1].ccc()[0].joints()[joint_index_B].epb();
@@ -1763,8 +1779,8 @@ namespace CAT{
 		bl.eps_.push_back(pC);
 		bl.eps_.push_back(pD);
 		bl.calculate_chi2();
-		if( bl.p() > maxprob ){
-		  maxprob = bl.p();
+		if( bl.chi2() < min_chi2 ){
+		  min_chi2 = bl.chi2();
 		  pBbest = pB;
 		}
 	      }
@@ -1797,6 +1813,7 @@ namespace CAT{
 	    topology::broken_line best_bl;
 	    best_bl.set_ifirst(ifirst);
 	    best_bl.set_ilast(ilast);
+	    double min_chi2 = mybhep::default_min;
 	    for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 	      topology::broken_line bl;
 	      topology::experimental_point pB = nodes_[ifirst+1].ccc()[0].joints()[joint_index_B].epb();
@@ -1806,8 +1823,8 @@ namespace CAT{
 	      bl.eps_.push_back(pC);
 	      bl.eps_.push_back(pD);
 	      bl.calculate_chi2();
-	      if( bl.p() > maxprob ){
-		maxprob = bl.p();
+	      if( bl.chi2() < min_chi2 ){
+		min_chi2 = bl.chi2();
 		pBbest = pB;
 	      }
 	    }
@@ -1829,8 +1846,6 @@ namespace CAT{
 
       std::vector<topology::broken_line> bls;
 
-      double maxprob = mybhep::default_max;
-
       // ... AN - A - B - C - D
       if( print_level() >= mybhep::VERBOSE ){
 	std::clog << " CAT::cluster::solve_ambiguities_with_ends__more_than_4_nodes: ... - AN - A - B - C - D ; optimize B " <<  std::endl;
@@ -1849,6 +1864,7 @@ namespace CAT{
 	      topology::broken_line best_bl;
 	      best_bl.set_ifirst(ifirst);
 	      best_bl.set_ilast(ilast);
+	      double min_chi2 = mybhep::default_min;
 	      for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 		topology::broken_line bl;
 		topology::experimental_point pB = nodes_[ifirst+1].ccc()[0].joints()[joint_index_B].epb();
@@ -1858,8 +1874,8 @@ namespace CAT{
 		bl.eps_.push_back(pC);
 		bl.eps_.push_back(pD);
 		bl.calculate_chi2();
-		if( bl.p() > maxprob ){
-		  maxprob = bl.p();
+		if( bl.chi2() < min_chi2 ){
+		  min_chi2 = bl.chi2();
 		  pBbest = pB;
 		}
 	      }
@@ -1934,18 +1950,16 @@ namespace CAT{
 
       std::vector<topology::broken_line> bls;
 
-      double maxprob = mybhep::default_max;
-      double min_chi2 = mybhep::default_min;
-
       if( n_residuals == 0 ){
 	for( size_t joint_index_A = 0; joint_index_A <= 1; ++joint_index_A){
 	  for( size_t joint_index_D = 0; joint_index_D <= 1; ++joint_index_D){
 	    topology::broken_line best_bl;
+	    double min_chi2 = mybhep::default_min;
 	    for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
 	      topology::broken_line bl = ACD[joint_index_A][joint_index_C][joint_index_D];
 	      bl.calculate_chi2();
-	      if( bl.p() > maxprob ){
-		maxprob = bl.p();
+	      if( bl.chi2() < min_chi2 ){
+		min_chi2 = bl.chi2();
 		best_bl = bl;
 	      }
 	    }
@@ -1963,6 +1977,7 @@ namespace CAT{
 	    topology::experimental_point pZ = nodes_[ilast].ccc()[0].joints()[joint_index_Z].epb();
 	    topology::broken_line best_bl;
 
+	    double min_chi2 = mybhep::default_min;
 	    for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
 	      for( size_t joint_index_D = 0; joint_index_D <= 1; ++joint_index_D){
 	    
@@ -1990,6 +2005,7 @@ namespace CAT{
 	    topology::experimental_point pZ = nodes_[ilast].ccc()[0].joints()[joint_index_Z].epb();
 	    topology::broken_line best_bl;
 	    
+	    double min_chi2 = mybhep::default_min;
 	    for( size_t joint_index_Y = 0; joint_index_Y <= 1; ++joint_index_Y){
 	      topology::experimental_point pY = nodes_[ilast-1].ccc()[0].joints()[joint_index_Y].epb();
 	      
@@ -2021,7 +2037,7 @@ namespace CAT{
 	  for( size_t joint_index_Z = 0; joint_index_Z <= 1; ++joint_index_Z){
 	    topology::experimental_point pZ = nodes_[ilast].ccc()[0].joints()[joint_index_Z].epb();
 	    topology::broken_line best_bl;
-	    
+	    double min_chi2 = mybhep::default_min;
 	    for( size_t joint_index_X = 0; joint_index_X <= 1; ++joint_index_X){
 	      topology::experimental_point pX = nodes_[ilast-2].ccc()[0].joints()[joint_index_X].epb();
 	      for( size_t joint_index_Y = 0; joint_index_Y <= 1; ++joint_index_Y){
@@ -2056,7 +2072,7 @@ namespace CAT{
 	for( size_t joint_index_Z = 0; joint_index_Z <= 1; ++joint_index_Z){
 	  topology::experimental_point pZ = nodes_[ilast].ccc()[0].joints()[joint_index_Z].epb();
 	  topology::broken_line best_bl;
-	    
+	  double min_chi2 = mybhep::default_min;
 	  for( size_t joint_index_W = 0; joint_index_W <= 1; ++joint_index_W){
 	    topology::experimental_point pW = nodes_[ilast-3].ccc()[0].joints()[joint_index_W].epb();
 	    for( size_t joint_index_X = 0; joint_index_X <= 1; ++joint_index_X){
