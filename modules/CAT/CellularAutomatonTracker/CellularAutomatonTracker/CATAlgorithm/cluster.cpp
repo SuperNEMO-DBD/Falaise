@@ -901,7 +901,7 @@ namespace CAT{
 	      double min_chi2 = mybhep::default_min;
 	      for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 		topology::broken_line bl;
-		topology::experimental_point pB = nodes_[ilast].ccc()[0].joints()[joint_index_B].epb();
+		topology::experimental_point pB = nodes_[ifirst+1].ccc()[0].joints()[joint_index_B].epb();
 		bl.eps_.push_back(pA);
 		bl.eps_.push_back(pB);
 		bl.eps_.push_back(pC);
@@ -938,7 +938,7 @@ namespace CAT{
 	      double min_chi2 = mybhep::default_min;
 	      for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 		topology::broken_line bl;
-		topology::experimental_point pB = nodes_[ilast].ccc()[0].joints()[joint_index_B].epb();
+		topology::experimental_point pB = nodes_[ifirst+1].ccc()[0].joints()[joint_index_B].epb();
 		bl.eps_.push_back(pA);
 		bl.eps_.push_back(pB);
 		bl.eps_.push_back(pC);

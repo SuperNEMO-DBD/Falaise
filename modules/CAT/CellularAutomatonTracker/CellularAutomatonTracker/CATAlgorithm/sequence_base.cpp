@@ -1694,6 +1694,8 @@ namespace CAT {
 	  inode->set_links(links);
 	  inode->calculate_triplets_after_sultan(Ratio);
 
+	  /*
+	  // recalculate position closest to helix
 	  experimental_point helix_point = helix_.position(inode->c().ep());
 	  double local_diff;
 	  double diff = mybhep::default_min;
@@ -1707,7 +1709,7 @@ namespace CAT {
 	      }
 	    }
 	  }
-
+	  */
 
 	}
 
