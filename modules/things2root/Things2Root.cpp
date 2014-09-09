@@ -50,13 +50,17 @@ struct Things2Root::working_space {
   std::vector<int> calomodule;
   std::vector<int> caloside;
   std::vector<int> calocolumn;
+  std::vector<int> xcalocolumn;
+  std::vector<int> gvetocolumn;
   std::vector<int> calorow;
-  std::vector<int> calowall;
+  std::vector<int> xcalowall;
+  std::vector<int> gvetowall;
   std::vector<double> calotime;
   std::vector<double> calosigmatime;
   std::vector<double> caloenergy;
   std::vector<double> calosigmaenergy;
   std::vector<int> calotype;
+  std::vector<int> truecalohitid;
 
   // for true gg hits
   std::vector<int> truetrackerid;
@@ -80,22 +84,99 @@ struct Things2Root::working_space {
   std::vector<int> truecalomodule;
   std::vector<int> truecaloside;
   std::vector<int> truecalocolumn;
+  std::vector<int> truexcalocolumn;
+  std::vector<int> truegvetocolumn;
   std::vector<int> truecalorow;
-  std::vector<int> truecalowall;
+  std::vector<int> truexcalowall;
+  std::vector<int> truegvetowall;
   std::vector<double> truecalox;
   std::vector<double> truecaloy;
   std::vector<double> truecaloz;
   std::vector<double> truecalotime;
   std::vector<double> truecaloenergy;
 
-  // for primary particles
-  std::vector<int> partid;
-  std::vector<int> parttype;
-  std::vector<double> partpx;
-  std::vector<double> partpy;
-  std::vector<double> partpz;
-  std::vector<double> parttime;
-  std::vector<double> partenergy;
+  // for primary (true) particles
+  std::vector<int> truepartid;
+  std::vector<int> trueparttype;
+  std::vector<double> truepartpx;
+  std::vector<double> truepartpy;
+  std::vector<double> truepartpz;
+  std::vector<double> trueparttime;
+  std::vector<double> truepartenergy;
+  std::vector<double> truepartmass;
+
+  // for clusters
+  std::vector<int> clustersolutionid;
+  std::vector<int> nounclusteredhits;
+  std::vector<int> noclusters;
+  //std::vector< std::vector <int> > clusterid;
+  std::vector<int> clusterid;
+  std::vector<int> nohits;
+  std::vector<int> clustertrackerid;
+  std::vector<double> catcharge;
+  std::vector<double> catdetailedcharge;
+  std::vector<double> catchi2s;
+  //std::vector<double> catchi2sall;
+  std::vector<double> catprobs;
+  //std::vector<double> catprobsall;
+  std::vector<double> catpx;
+  std::vector<double> catpy;
+  std::vector<double> catpz;
+  std::vector<double> cathelixcharge;
+  std::vector<double> cathelixlength;
+  std::vector<double> cathelixlengtherror;
+  std::vector<double> cathelixvertexx;
+  std::vector<double> cathelixvertexxerror;
+  std::vector<double> cathelixvertexy;
+  std::vector<double> cathelixvertexyerror;
+  std::vector<double> cathelixvertexz;
+  std::vector<double> cathelixvertexzerror;
+  std::vector<double> cathelixdecayvertexx;
+  std::vector<double> cathelixdecayvertexxerror;
+  std::vector<double> cathelixdecayvertexy;
+  std::vector<double> cathelixdecayvertexyerror;
+  std::vector<double> cathelixdecayvertexz;
+  std::vector<double> cathelixdecayvertexzerror;
+  std::vector<double> cattangentlength;
+  std::vector<double> cattangentlengtherror;
+  std::vector<double> cattangentvertexx;
+  std::vector<double> cattangentvertexxerror;
+  std::vector<double> cattangentvertexy;
+  std::vector<double> cattangentvertexyerror;
+  std::vector<double> cattangentvertexz;
+  std::vector<double> cattangentvertexzerror;
+  std::vector<double> cattangentdecayvertexx;
+  std::vector<double> cattangentdecayvertexxerror;
+  std::vector<double> cattangentdecayvertexy;
+  std::vector<double> cattangentdecayvertexyerror;
+  std::vector<double> cattangentdecayvertexz;
+  std::vector<double> cattangentdecayvertexzerror;
+  //std::vector<double> cathelixchi2s;
+
+  // for trajectory data
+  std::vector<int> trajectorysolutionid;
+  std::vector<int> notrajectories;
+  std::vector<int> nounfittedclusters;
+  std::vector<int> nounfittedhits;
+  std::vector<int> trajectoryid;
+  std::vector<int> trajectoryclusterid;
+  std::vector<double> chi2;
+  std::vector<int> ndof;
+  std::vector<double> trajectorylength;
+
+  // for particle data
+  std::vector<int> charge;
+  std::vector<int> nocalohits;
+  std::vector<double> energy;
+  std::vector<double> particlecalotime;
+  std::vector<int> novertices;
+  std::vector<double> vertexx;
+  std::vector<double> vertexy;
+  std::vector<double> vertexz;
+  std::vector<double> vertexxerror;
+  std::vector<double> vertexyerror;
+  std::vector<double> vertexzerror;
+  std::vector<int> particletrajid;
 
   void clear();
 };
@@ -123,13 +204,17 @@ void Things2Root::working_space::clear()
   calomodule.clear();
   caloside.clear();
   calocolumn.clear();
+  xcalocolumn.clear();
+  gvetocolumn.clear();
   calorow.clear();
-  calowall.clear();
+  xcalowall.clear();
+  gvetowall.clear();
   calotime.clear();
   calosigmatime.clear();
   caloenergy.clear();
   calosigmaenergy.clear();
   calotype.clear();
+  truecalohitid.clear();
 
   // clear true gg hits
   truetrackerid.clear();
@@ -153,8 +238,11 @@ void Things2Root::working_space::clear()
   truecalomodule.clear();
   truecaloside.clear();
   truecalocolumn.clear();
+  truexcalocolumn.clear();
+  truegvetocolumn.clear();
   truecalorow.clear();
-  truecalowall.clear();
+  truexcalowall.clear();
+  truegvetowall.clear();
   truecalox.clear();
   truecaloy.clear();
   truecaloz.clear();
@@ -162,13 +250,86 @@ void Things2Root::working_space::clear()
   truecaloenergy.clear();
 
   // clear primary particles
-  partid.clear();
-  parttype.clear();
-  partpx.clear();
-  partpy.clear();
-  partpz.clear();
-  parttime.clear();
-  partenergy.clear();
+  truepartid.clear();
+  trueparttype.clear();
+  truepartpx.clear();
+  truepartpy.clear();
+  truepartpz.clear();
+  trueparttime.clear();
+  truepartenergy.clear();
+  truepartmass.clear();
+
+  // clear clusters
+  clustersolutionid.clear();
+  nounclusteredhits.clear();
+  noclusters.clear();
+  clusterid.clear();
+  nohits.clear();
+  clustertrackerid.clear();
+  catcharge.clear();
+  catdetailedcharge.clear();
+  catchi2s.clear();
+  //catchi2sall.clear();
+  catprobs.clear();
+  //catprobsall.clear();
+  catpx.clear();
+  catpy.clear();
+  catpz.clear();
+  cathelixcharge.clear();
+  cathelixlength.clear();
+  cathelixlengtherror.clear();
+  cathelixvertexx.clear();
+  cathelixvertexxerror.clear();
+  cathelixvertexy.clear();
+  cathelixvertexyerror.clear();
+  cathelixvertexz.clear();
+  cathelixvertexzerror.clear();
+  cathelixdecayvertexx.clear();
+  cathelixdecayvertexxerror.clear();
+  cathelixdecayvertexy.clear();
+  cathelixdecayvertexyerror.clear();
+  cathelixdecayvertexz.clear();
+  cathelixdecayvertexzerror.clear();
+  //cathelixchi2s.clear();
+  cattangentlength.clear();
+  cattangentlengtherror.clear();
+  cattangentvertexx.clear();
+  cattangentvertexxerror.clear();
+  cattangentvertexy.clear();
+  cattangentvertexyerror.clear();
+  cattangentvertexz.clear();
+  cattangentvertexzerror.clear();
+  cattangentdecayvertexx.clear();
+  cattangentdecayvertexxerror.clear();
+  cattangentdecayvertexy.clear();
+  cattangentdecayvertexyerror.clear();
+  cattangentdecayvertexz.clear();
+  cattangentdecayvertexzerror.clear();
+
+  // clear trajectories
+  trajectorysolutionid.clear();
+  notrajectories.clear();
+  nounfittedclusters.clear();
+  nounfittedhits.clear();
+  trajectoryid.clear();
+  trajectoryclusterid.clear();
+  chi2.clear();
+  ndof.clear();
+  trajectorylength.clear();
+
+  // clear particles
+  charge.clear();
+  nocalohits.clear();
+  energy.clear();
+  particlecalotime.clear();
+  novertices.clear();
+  vertexx.clear();
+  vertexy.clear();
+  vertexz.clear();
+  vertexxerror.clear();
+  vertexyerror.clear();
+  vertexzerror.clear();
+  particletrajid.clear();
 }
 
 
@@ -258,13 +419,17 @@ void Things2Root::initialize(const datatools::properties& myConfig,
   tree_->Branch("calo.module",&calo_.module_);
   tree_->Branch("calo.side",&calo_.side_);
   tree_->Branch("calo.column",&calo_.column_);
+  tree_->Branch("calo.xcalocolumn",&calo_.xcalocolumn_);
+  tree_->Branch("calo.gvetocolumn",&calo_.gvetocolumn_);
   tree_->Branch("calo.row",&calo_.row_);
-  tree_->Branch("calo.wall",&calo_.wall_);
+  tree_->Branch("calo.xcalowall",&calo_.xcalowall_);
+  tree_->Branch("calo.gvetowall",&calo_.gvetowall_);
   tree_->Branch("calo.time",&calo_.time_);
   tree_->Branch("calo.sigmatime",&calo_.sigmatime_);
   tree_->Branch("calo.energy",&calo_.energy_);
   tree_->Branch("calo.sigmaenergy",&calo_.sigmaenergy_);
   tree_->Branch("calo.type",&calo_.type_);
+  tree_->Branch("calo.truecaloid",&calo_.truecaloid_);
 
   // truth tracker data
   tree_->Branch("truetracker.nohits",&truetracker_.nohits_);
@@ -294,8 +459,11 @@ void Things2Root::initialize(const datatools::properties& myConfig,
   tree_->Branch("truecalo.energy",&truecalo_.energy_);
   tree_->Branch("truecalo.module",&truecalo_.module_);
   tree_->Branch("truecalo.side",&truecalo_.side_);
-  tree_->Branch("truecalo.wall",&truecalo_.wall_);
+  tree_->Branch("truecalo.xcalowall",&truecalo_.xcalowall_);
+  tree_->Branch("truecalo.gvetowall",&truecalo_.gvetowall_);
   tree_->Branch("truecalo.column",&truecalo_.column_);
+  tree_->Branch("truecalo.xcalocolumn",&truecalo_.xcalocolumn_);
+  tree_->Branch("truecalo.gvetocolumn",&truecalo_.gvetocolumn_);
   tree_->Branch("truecalo.row",&truecalo_.row_);
 
   // truth vertex data
@@ -313,6 +481,82 @@ void Things2Root::initialize(const datatools::properties& myConfig,
   tree_->Branch("trueparticle.pz",&trueparticle_.pz_);
   tree_->Branch("trueparticle.time",&trueparticle_.time_);
   tree_->Branch("trueparticle.kinenergy",&trueparticle_.ke_);
+  tree_->Branch("trueparticle.mass",&trueparticle_.mass_);
+
+  // cluster data
+  tree_->Branch("cluster.nosolutions",&cluster_.nosolutions_);
+  tree_->Branch("cluster.clustersolutionid",&cluster_.clustersolutionid_);
+  tree_->Branch("cluster.nounclusteredhits",&cluster_.nounclusteredhits_);
+  tree_->Branch("cluster.noclusters",&cluster_.noclusters_);
+  tree_->Branch("cluster.clusterid",&cluster_.clusterid_);
+  tree_->Branch("cluster.nohits",&cluster_.nohits_);
+  tree_->Branch("cluster.hitid",&cluster_.hitid_);
+  tree_->Branch("cluster.catcharge",&cluster_.catcharge_);
+  tree_->Branch("cluster.catdetailedcharge",&cluster_.catdetailedcharge_);
+  tree_->Branch("cluster.catchi2s",&cluster_.catchi2s_);
+  //tree_->Branch("cluster.catchi2sall",&cluster_.catchi2sall_);
+  tree_->Branch("cluster.catprobs",&cluster_.catprobs_);
+  //tree_->Branch("cluster.catprobsall",&cluster_.catprobsall_);
+  tree_->Branch("cluster.catpx",&cluster_.catpx_);
+  tree_->Branch("cluster.catpy",&cluster_.catpy_);
+  tree_->Branch("cluster.catpz",&cluster_.catpz_);
+  tree_->Branch("cluster.cathelixcharge",&cluster_.cathelixcharge_);
+  tree_->Branch("cluster.cathelixlength",&cluster_.cathelixlength_);
+  tree_->Branch("cluster.cathelixlengtherror",&cluster_.cathelixlengtherror_);
+  tree_->Branch("cluster.cathelixvertexx",&cluster_.cathelixvertexx_);
+  tree_->Branch("cluster.cathelixvertexxerror",&cluster_.cathelixvertexxerror_);
+  tree_->Branch("cluster.cathelixvertexy",&cluster_.cathelixvertexy_);
+  tree_->Branch("cluster.cathelixvertexyerror",&cluster_.cathelixvertexyerror_);
+  tree_->Branch("cluster.cathelixvertexz",&cluster_.cathelixvertexz_);
+  tree_->Branch("cluster.cathelixvertexzerror",&cluster_.cathelixvertexzerror_);
+  tree_->Branch("cluster.cathelixdecayvertexx",&cluster_.cathelixdecayvertexx_);
+  tree_->Branch("cluster.cathelixdecayvertexxerror",&cluster_.cathelixdecayvertexxerror_);
+  tree_->Branch("cluster.cathelixdecayvertexy",&cluster_.cathelixdecayvertexy_);
+  tree_->Branch("cluster.cathelixdecayvertexyerror",&cluster_.cathelixdecayvertexyerror_);
+  tree_->Branch("cluster.cathelixdecayvertexz",&cluster_.cathelixdecayvertexz_);
+  tree_->Branch("cluster.cathelixdecayvertexzerror",&cluster_.cathelixdecayvertexzerror_);
+  //tree_->Branch("cluster.cathelixchi2s",&cluster_.cathelixchi2s_);
+  tree_->Branch("cluster.cattangentlength",&cluster_.cattangentlength_);
+  tree_->Branch("cluster.cattangentlengtherror",&cluster_.cattangentlengtherror_);
+  tree_->Branch("cluster.cattangentvertexx",&cluster_.cattangentvertexx_);
+  tree_->Branch("cluster.cattangentvertexxerror",&cluster_.cattangentvertexxerror_);
+  tree_->Branch("cluster.cattangentvertexy",&cluster_.cattangentvertexy_);
+  tree_->Branch("cluster.cattangentvertexyerror",&cluster_.cattangentvertexyerror_);
+  tree_->Branch("cluster.cattangentvertexz",&cluster_.cattangentvertexz_);
+  tree_->Branch("cluster.cattangentvertexzerror",&cluster_.cattangentvertexzerror_);
+  tree_->Branch("cluster.cattangentdecayvertexx",&cluster_.cattangentdecayvertexx_);
+  tree_->Branch("cluster.cattangentdecayvertexxerror",&cluster_.cattangentdecayvertexxerror_);
+  tree_->Branch("cluster.cattangentdecayvertexy",&cluster_.cattangentdecayvertexy_);
+  tree_->Branch("cluster.cattangentdecayvertexyerror",&cluster_.cattangentdecayvertexyerror_);
+  tree_->Branch("cluster.cattangentdecayvertexz",&cluster_.cattangentdecayvertexz_);
+  tree_->Branch("cluster.cattangentdecayvertexzerror",&cluster_.cattangentdecayvertexzerror_);
+
+  // trajectory data
+  tree_->Branch("trajectory.nosolutions",&trajectory_.nosolutions_);
+  tree_->Branch("trajectory.trajectorysolutionid",&trajectory_.trajectorysolutionid_);
+  tree_->Branch("trajectory.notrajectories",&trajectory_.notrajectories_);
+  tree_->Branch("trajectory.nounfittedclusters",&trajectory_.nounfittedclusters_);
+  tree_->Branch("trajectory.nounfittedhits",&trajectory_.nounfittedhits_);
+  tree_->Branch("trajectory.trajectoryid",&trajectory_.trajectoryid_);
+  tree_->Branch("trajectory.clusterid",&trajectory_.clusterid_);
+  tree_->Branch("trajectory.chi2",&trajectory_.chi2_);
+  tree_->Branch("trajectory.ndof",&trajectory_.ndof_);
+  tree_->Branch("trajectory.length",&trajectory_.length_);
+
+  // particle data
+  tree_->Branch("particle.noparticles",&particle_.noparticles_);
+  tree_->Branch("particle.charge",&particle_.charge_);
+  tree_->Branch("particle.nocalohits",&particle_.nocalohits_);
+  tree_->Branch("particle.energy",&particle_.energy_);
+  tree_->Branch("particle.calotime",&particle_.calotime_);
+  tree_->Branch("particle.novertices",&particle_.novertices_);
+  tree_->Branch("particle.vertexx",&particle_.vertexx_);
+  tree_->Branch("particle.vertexy",&particle_.vertexy_);
+  tree_->Branch("particle.vertexz",&particle_.vertexz_);
+  tree_->Branch("particle.vertexxerror",&particle_.vertexxerror_);
+  tree_->Branch("particle.vertexyerror",&particle_.vertexyerror_);
+  tree_->Branch("particle.vertexzerror",&particle_.vertexzerror_);
+  tree_->Branch("particle.trajectoryid",&particle_.trajectoryid_);
 
   this->_set_initialized(true);
 }
@@ -344,28 +588,31 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
 
       for (std::list<genbb::primary_particle>::const_iterator it = prcoll.begin() ; it != prcoll.end(); ++it) {
         genbb::primary_particle the_particle = *it;
-        ws_->partid.push_back(count);
-        ws_->parttype.push_back(the_particle.get_type());
-        ws_->partpx.push_back(the_particle.get_momentum().x());
-        ws_->partpy.push_back(the_particle.get_momentum().y());
-        ws_->partpz.push_back(the_particle.get_momentum().z());
-        ws_->parttime.push_back(the_particle.get_time());
-        ws_->partenergy.push_back(the_particle.get_kinetic_energy());
+        ws_->truepartid.push_back(count);
+        ws_->trueparttype.push_back(the_particle.get_type());
+        ws_->truepartpx.push_back(the_particle.get_momentum().x());
+        ws_->truepartpy.push_back(the_particle.get_momentum().y());
+        ws_->truepartpz.push_back(the_particle.get_momentum().z());
+        ws_->trueparttime.push_back(the_particle.get_time());
+        ws_->truepartenergy.push_back(the_particle.get_kinetic_energy());
+        ws_->truepartmass.push_back(the_particle.get_mass());
         count++;
       }
 
-      trueparticle_.id_ = &ws_->partid;
-      trueparticle_.type_ = &ws_->parttype;
-      trueparticle_.px_ = &ws_->partpx;
-      trueparticle_.py_ = &ws_->partpy;
-      trueparticle_.pz_ = &ws_->partpz;
-      trueparticle_.time_ = &ws_->parttime;
-      trueparticle_.ke_ = &ws_->partenergy;
+      trueparticle_.id_ = &ws_->truepartid;
+      trueparticle_.type_ = &ws_->trueparttype;
+      trueparticle_.px_ = &ws_->truepartpx;
+      trueparticle_.py_ = &ws_->truepartpy;
+      trueparticle_.pz_ = &ws_->truepartpz;
+      trueparticle_.time_ = &ws_->trueparttime;
+      trueparticle_.ke_ = &ws_->truepartenergy;
+      trueparticle_.mass_ = &ws_->truepartmass;
 
       // tracker truth hits
       if (SD.has_step_hits("gg")) {
         int nggtruehits = SD.get_number_of_step_hits("gg");
         truetracker_.nohits_ = nggtruehits;
+        //std::cout << SD.get_number_of_step_hits("gg") << " - " << nggtruehits << " - " << truetracker_.nohits_ << std::endl;
 
         // this needs the geometry manager
         static int gid_gg_module_index = geometry_manager_->get_id_mgr().get_category_info("drift_cell_core").get_subaddress_index("module");
@@ -379,7 +626,8 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
         // this is the event loop
         for (int i = 0; i < nggtruehits; ++i) {
           const mctools::base_step_hit& gg_true_hit = SD.get_step_hit("gg",i);
-          ws_->truetrackerid.push_back(gg_true_hit.get_hit_id());
+          //ws_->truetrackerid.push_back(gg_true_hit.get_hit_id());
+          ws_->truetrackerid.push_back(i);
           ws_->truetrackermodule.push_back(gg_true_hit.get_geom_id().get(gid_gg_module_index));
           ws_->truetrackerside.push_back(gg_true_hit.get_geom_id().get(gid_gg_side_index));
           ws_->truetrackerlayer.push_back(gg_true_hit.get_geom_id().get (gid_gg_layer_index));
@@ -415,12 +663,12 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
       // calorimeter truth hits
       truecalo_.nohits_ = 0;
 
-      if (SD.has_step_hits ("calorimeter"))
+      if (SD.has_step_hits ("calo"))
         {
-          truecalo_.nohits_ += SD.get_number_of_step_hits ("calorimeter");
+          truecalo_.nohits_ += SD.get_number_of_step_hits("calo");
           for (int ihit = 0; ihit < truecalo_.nohits_; ihit++)
             {
-              const mctools::base_step_hit& the_scin_hit= SD.get_step_hit ("calorimeter", ihit);
+              const mctools::base_step_hit& the_scin_hit= SD.get_step_hit ("calo", ihit);
 
               static int gid_calo_module_index
                 = geometry_manager_->get_id_mgr ().get_category_info ("calorimeter_block").get_subaddress_index ("module");
@@ -439,13 +687,14 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
               ws_->truecaloenergy.push_back(the_scin_hit.get_energy_deposit () / CLHEP::MeV);
 
               ws_->truecalotype.push_back(0);
-              ws_->truecalowall.push_back(0);
+              //ws_->truecalowall.push_back(0);
               ws_->truecalomodule.push_back(the_scin_hit.get_geom_id ().get (gid_calo_module_index));
               ws_->truecaloside.push_back(the_scin_hit.get_geom_id ().get (gid_calo_side_index));
               ws_->truecalocolumn.push_back(the_scin_hit.get_geom_id ().get (gid_calo_column_index));
               ws_->truecalorow.push_back(the_scin_hit.get_geom_id ().get (gid_calo_row_index));
             }
         }
+      //std::cout << truecalo_.nohits_ << " side calo hits" << std::endl;
 
       if (SD.has_step_hits ("xcalo"))
         {
@@ -475,8 +724,8 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
               ws_->truecalotype.push_back(1);
               ws_->truecalomodule.push_back(the_scin_hit.get_geom_id ().get (gid_xcalo_module_index));
               ws_->truecaloside.push_back(the_scin_hit.get_geom_id ().get (gid_xcalo_side_index));
-              ws_->truecalowall.push_back(the_scin_hit.get_geom_id ().get (gid_xcalo_wall_index));
-              ws_->truecalocolumn.push_back(the_scin_hit.get_geom_id ().get (gid_xcalo_column_index));
+              ws_->truexcalowall.push_back(the_scin_hit.get_geom_id ().get (gid_xcalo_wall_index));
+              ws_->truexcalocolumn.push_back(the_scin_hit.get_geom_id ().get (gid_xcalo_column_index));
               ws_->truecalorow.push_back(the_scin_hit.get_geom_id ().get (gid_xcalo_row_index));
             }
         }
@@ -505,11 +754,11 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
               ws_->truecaloenergy.push_back(the_scin_hit.get_energy_deposit () / CLHEP::MeV);
 
               ws_->truecalotype.push_back(2);
-              ws_->truecalorow.push_back(0);
+              //ws_->truecalorow.push_back(0);
               ws_->truecalomodule.push_back(the_scin_hit.get_geom_id ().get (gid_gveto_module_index));
               ws_->truecaloside.push_back(the_scin_hit.get_geom_id ().get (gid_gveto_side_index));
-              ws_->truecalowall.push_back(the_scin_hit.get_geom_id ().get (gid_gveto_wall_index));
-             ws_-> truecalocolumn.push_back(the_scin_hit.get_geom_id ().get (gid_gveto_column_index));
+              ws_->truegvetowall.push_back(the_scin_hit.get_geom_id ().get (gid_gveto_wall_index));
+              ws_->truegvetocolumn.push_back(the_scin_hit.get_geom_id ().get (gid_gveto_column_index));
             }
         }
 
@@ -518,8 +767,11 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
       truecalo_.module_ = &ws_->truecalomodule;
       truecalo_.side_ = &ws_->truecaloside;
       truecalo_.column_ = &ws_->truecalocolumn;
+      truecalo_.xcalocolumn_ = &ws_->truexcalocolumn;
+      truecalo_.gvetocolumn_ = &ws_->truegvetocolumn;
       truecalo_.row_ = &ws_->truecalorow;
-      truecalo_.wall_ = &ws_->truecalowall;
+      truecalo_.xcalowall_ = &ws_->truexcalowall;
+      truecalo_.gvetowall_ = &ws_->truegvetowall;
       truecalo_.x_ = &ws_->truecalox;
       truecalo_.y_ = &ws_->truecaloy;
       truecalo_.z_ = &ws_->truecaloz;
@@ -555,8 +807,22 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
           ws_->trackerz.push_back(sncore_gg_hit.get_z());
           ws_->trackersigmaz.push_back(sncore_gg_hit.get_sigma_z());
           ws_->trackerr.push_back(sncore_gg_hit.get_r());
-          ws_->trackersigmar.push_back(sncore_gg_hit.get_sigma_r());
-          ws_->trackertruehitid.push_back(sncore_gg_hit.get_id());
+          ws_->trackersigmar.push_back(sncore_gg_hit.get_sigma_r());      
+
+          for (int truegghit= sncore_gg_hit.get_hit_id(); truegghit < ws_->truetrackerid.size(); ++truegghit)
+            {
+              if(sncore_gg_hit.get_geom_id().get(0) == ws_->truetrackermodule[truegghit]
+                 && sncore_gg_hit.get_geom_id().get(1) == ws_->truetrackerside[truegghit]
+                 && sncore_gg_hit.get_geom_id().get(2) == ws_->truetrackerlayer[truegghit]
+                 && sncore_gg_hit.get_geom_id().get(3) == ws_->truetrackercolumn[truegghit])
+                {
+                  ws_->trackertruehitid.push_back(ws_->truetrackerid[truegghit]);
+                  break;
+                }
+            }
+
+          //ws_->trackertruehitid.push_back(sncore_gg_hit.get_id());
+
           // special infos about truth tracks:
           int truth_track_id = -1;
           if (sncore_gg_hit.get_auxiliaries().has_key(mctools::track_utils::TRACK_ID_KEY)) {
@@ -599,26 +865,76 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
           if (the_calo_hit.get_geom_id ().get_type () == calo_geom_type)
             {
               // CALO
-              ws_->calowall.push_back(0);
               ws_->calocolumn.push_back(the_calo_hit.get_geom_id ().get (2));
               ws_->calorow.push_back(the_calo_hit.get_geom_id ().get (3));
               ws_->calotype.push_back(0);
+              for (int ntruecalohit = the_calo_hit.get_hit_id (); ntruecalohit < ws_->truecaloid.size(); ++ntruecalohit)
+                {
+                  if (ws_->truecalotype[ntruecalohit] == 0
+                      && the_calo_hit.get_geom_id ().get (0) == ws_->truecalomodule[ntruecalohit]
+                      && the_calo_hit.get_geom_id ().get (1) == ws_->truecaloside[ntruecalohit]
+                      && the_calo_hit.get_geom_id ().get (2) == ws_->truecalocolumn[ntruecalohit]
+                      && the_calo_hit.get_geom_id ().get (3) == ws_->truecalorow[ntruecalohit])
+                    {
+                      ws_->truecalohitid.push_back(ws_->truecaloid[ntruecalohit]);
+                      break;
+                    }
+                }
             }
           if (the_calo_hit.get_geom_id ().get_type () == xcalo_geom_type)
             {
               // XCALO
-              ws_->calowall.push_back(the_calo_hit.get_geom_id ().get (2));
-              ws_->calocolumn.push_back(the_calo_hit.get_geom_id ().get (3));
-              ws_->calorow.push_back(the_calo_hit.get_geom_id ().get (0));
+              ws_->xcalowall.push_back(the_calo_hit.get_geom_id ().get (2));
+              ws_->xcalocolumn.push_back(the_calo_hit.get_geom_id ().get (3));
+              ws_->calorow.push_back(the_calo_hit.get_geom_id ().get (4));
               ws_->calotype.push_back(1);
+              //std::cout << "there's an xcalo..." << std::endl;
+              for (int ntruecalohit = the_calo_hit.get_hit_id (); ntruecalohit < ws_->truecaloid.size(); ++ntruecalohit)
+                {
+                  if (ws_->truecalotype[ntruecalohit] == 1
+                      && the_calo_hit.get_geom_id ().get (0) == ws_->truecalomodule[ntruecalohit]
+                      && the_calo_hit.get_geom_id ().get (1) == ws_->truecaloside[ntruecalohit]
+                      && the_calo_hit.get_geom_id ().get (4) == ws_->truecalorow[ntruecalohit])
+                    {
+                      //std::cout << "xcalo passed the first if!" << std::endl;
+                      for (int ntruexcalohit = 0; ntruexcalohit < ws_->truexcalowall.size(); ++ntruexcalohit)
+                        {
+                          //std::cout << "xcalo iteration " << ntruexcalohit  << std::endl;
+                          if(the_calo_hit.get_geom_id ().get (2) == ws_->truexcalowall[ntruexcalohit]
+                             && the_calo_hit.get_geom_id ().get (3) == ws_->truexcalocolumn[ntruexcalohit])
+                            {
+                              //std::cout << "xcalo passed the second if!" << std::endl;
+                              ws_->truecalohitid.push_back(ws_->truecaloid[ntruecalohit]);
+                              break; 
+                            }
+                        }
+                    }
+                }
             }
           if (the_calo_hit.get_geom_id ().get_type () == gveto_geom_type)
             {
               // GVETO
-              ws_->calowall.push_back(the_calo_hit.get_geom_id ().get (2));
-              ws_->calocolumn.push_back(the_calo_hit.get_geom_id ().get (3));
-              ws_->calorow.push_back(0);
+              ws_->gvetowall.push_back(the_calo_hit.get_geom_id ().get (2));
+              ws_->gvetocolumn.push_back(the_calo_hit.get_geom_id ().get (3));
+              //ws_->calorow.push_back(0);
               ws_->calotype.push_back(2);
+              for (int ntruecalohit = the_calo_hit.get_hit_id (); ntruecalohit < ws_->truecaloid.size(); ++ntruecalohit)
+                {
+                  if (ws_->truecalotype[ntruecalohit] == 2
+                      && the_calo_hit.get_geom_id ().get (0) == ws_->truecalomodule[ntruecalohit]
+                      && the_calo_hit.get_geom_id ().get (1) == ws_->truecaloside[ntruecalohit])
+                    {
+                      for (int ntruegvetohit = 0; ntruegvetohit < ws_->truegvetowall.size(); ++ntruegvetohit)
+                        {
+                          if (the_calo_hit.get_geom_id ().get (2) == ws_->truegvetowall[ntruegvetohit]
+                              && the_calo_hit.get_geom_id ().get (3) == ws_->truegvetocolumn[ntruegvetohit])
+                            {
+                              ws_->truecalohitid.push_back(ws_->truecaloid[ntruecalohit]);
+                              break;
+                            }
+                        }
+                    }
+                }
             }
 
           ws_->calotime.push_back(the_calo_hit.get_time());
@@ -631,12 +947,16 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
       calo_.module_      = &ws_->calomodule;
       calo_.side_        = &ws_->caloside;
       calo_.column_      = &ws_->calocolumn;
+      calo_.xcalocolumn_      = &ws_->xcalocolumn;
+      calo_.gvetocolumn_      = &ws_->gvetocolumn;
       calo_.row_         = &ws_->calorow;
-      calo_.wall_        = &ws_->calowall;
+      calo_.xcalowall_        = &ws_->xcalowall;
+      calo_.gvetowall_        = &ws_->gvetowall;
       calo_.time_        = &ws_->calotime;
       calo_.sigmatime_   = &ws_->calosigmatime;
       calo_.energy_      = &ws_->caloenergy;
       calo_.sigmaenergy_ = &ws_->calosigmaenergy;
+      calo_.truecaloid_ = &ws_->truecalohitid;
 
     }
   // look for event header
@@ -651,9 +971,236 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
       header_.simulated_ = (EH.is_simulated () ? true : false);
     }
 
+  // look for cluster data
+  if(workItem.has("TCD"))
+    {
+      const snemo::datamodel::tracker_clustering_data & TCD = workItem.get<snemo::datamodel::tracker_clustering_data>("TCD");
+      if(TCD.has_solutions())
+        {
+          cluster_.nosolutions_ = TCD.get_number_of_solutions();
+          int nsolutions = TCD.get_number_of_solutions();
+          for (int i = 0; i < nsolutions; ++i)
+            {
+              const snemo::datamodel::tracker_clustering_solution & solution = TCD.get_solution(i);
+              ws_->clustersolutionid.push_back(solution.get_solution_id());
+              ws_->nounclusteredhits.push_back(solution.get_unclustered_hits().size());
+              int nclusters = solution.get_clusters() .size();
+              ws_->noclusters.push_back(nclusters);
+              if (nclusters == 0) continue;
+              for (int j = 0; j < nclusters; ++j)
+                {
+                  const snemo::datamodel::tracker_cluster & cluster = solution.get_clusters()[j].get();
+                  ws_->clusterid.push_back(cluster.get_cluster_id());
+                  ws_->nohits.push_back(cluster.get_number_of_hits());
+                  int nhits = cluster.get_number_of_hits();
+
+                  const datatools::properties & aux = cluster.get_auxiliaries();
+                  if(aux.fetch_boolean_scalar("CAT_has_charge")) ws_->catcharge.push_back(aux.fetch_real_scalar("CAT_charge"));
+                  if(aux.fetch_boolean_scalar("CAT_has_detailed_charge")) ws_->catdetailedcharge.push_back(aux.fetch_real_scalar("CAT_detailed_charge"));
+                  if(aux.fetch_boolean_scalar("CAT_has_momentum"))
+                    {
+                      ws_->catpx.push_back(aux.fetch_real_scalar("CAT_momentum_x"));
+                      ws_->catpy.push_back(aux.fetch_real_scalar("CAT_momentum_y"));
+                      ws_->catpz.push_back(aux.fetch_real_scalar("CAT_momentum_z"));
+                    }
+                  for(int k = 0; k < nhits; ++k)
+                    {
+                      ws_->catchi2s.push_back(aux.fetch_real("CAT_chi2s",k));
+                      ws_->catprobs.push_back(aux.fetch_real("CAT_probs",k));
+                      //if(aux.fetch_real("CAT_chi2s_all",k) != NULL) ws_->catchi2sall.push_back(aux.fetch_real("CAT_chi2s_all",k));
+                      //if(aux.fetch_real("CAT_probs_all",k) != NULL) ws_->catprobsall.push_back(aux.fetch_real("CAT_probs_all",k));
+
+                      //if(aux.fetch_real("CAT_helix_chi2s",k) != NULL) ws_->cathelixchi2s.push_back(aux.fetch_real("CAT_helix_chi2s",k));
+                      ws_->clustertrackerid.push_back(cluster.get_hit(k).get_id());
+                    }
+
+                  if(aux.fetch_boolean_scalar("CAT_has_helix_charge")) ws_->cathelixcharge.push_back(aux.fetch_real_scalar("CAT_helix_charge"));
+                  if(aux.fetch_boolean_scalar("CAT_has_helix_length"))
+                    {
+                      ws_->cathelixlength.push_back(aux.fetch_real_scalar("CAT_helix_length"));
+                      ws_->cathelixlengtherror.push_back(aux.fetch_real_scalar("CAT_helix_length_error"));
+                    }
+                  if(aux.fetch_boolean_scalar("CAT_has_helix_vertex"))
+                    {
+                      ws_->cathelixvertexx.push_back(aux.fetch_real_scalar("CAT_helix_vertex_x"));
+                      ws_->cathelixvertexxerror.push_back(aux.fetch_real_scalar("CAT_helix_vertex_x_error"));
+                      ws_->cathelixvertexy.push_back(aux.fetch_real_scalar("CAT_helix_vertex_y"));
+                      ws_->cathelixvertexyerror.push_back(aux.fetch_real_scalar("CAT_helix_vertex_y_error"));
+                      ws_->cathelixvertexz.push_back(aux.fetch_real_scalar("CAT_helix_vertex_z"));
+                      ws_->cathelixvertexzerror.push_back(aux.fetch_real_scalar("CAT_helix_vertex_z_error"));
+                    }
+                  if(aux.fetch_boolean_scalar("CAT_has_helix_decay_vertex"))
+                    {
+                      ws_->cathelixdecayvertexx.push_back(aux.fetch_real_scalar("CAT_helix_decay_vertex_x"));
+                      ws_->cathelixdecayvertexxerror.push_back(aux.fetch_real_scalar("CAT_helix_decay_vertex_x_error"));
+                      ws_->cathelixdecayvertexy.push_back(aux.fetch_real_scalar("CAT_helix_decay_vertex_y"));
+                      ws_->cathelixdecayvertexyerror.push_back(aux.fetch_real_scalar("CAT_helix_decay_vertex_y_error"));
+                      ws_->cathelixdecayvertexz.push_back(aux.fetch_real_scalar("CAT_helix_decay_vertex_z"));
+                      ws_->cathelixdecayvertexzerror.push_back(aux.fetch_real_scalar("CAT_helix_decay_vertex_z_error"));
+                    }
+
+                  if(aux.fetch_boolean_scalar("CAT_has_tangent_length"))
+                    {
+                      ws_->cattangentlength.push_back(aux.fetch_real_scalar("CAT_tangent_length"));
+                      ws_->cattangentlengtherror.push_back(aux.fetch_real_scalar("CAT_tangent_length_error"));
+                    }
+                  if(aux.fetch_boolean_scalar("CAT_has_tangent_vertex"))
+                    {
+                      ws_->cattangentvertexx.push_back(aux.fetch_real_scalar("CAT_tangent_vertex_x"));
+                      ws_->cattangentvertexxerror.push_back(aux.fetch_real_scalar("CAT_tangent_vertex_x_error"));
+                      ws_->cattangentvertexy.push_back(aux.fetch_real_scalar("CAT_tangent_vertex_y"));
+                      ws_->cattangentvertexyerror.push_back(aux.fetch_real_scalar("CAT_tangent_vertex_y_error"));
+                      ws_->cattangentvertexz.push_back(aux.fetch_real_scalar("CAT_tangent_vertex_z"));
+                      ws_->cattangentvertexzerror.push_back(aux.fetch_real_scalar("CAT_tangent_vertex_z_error"));
+                    }
+                  if(aux.fetch_boolean_scalar("CAT_has_tangent_decay_vertex"))
+                    {
+                      ws_->cattangentdecayvertexx.push_back(aux.fetch_real_scalar("CAT_tangent_decay_vertex_x"));
+                      ws_->cattangentdecayvertexxerror.push_back(aux.fetch_real_scalar("CAT_tangent_decay_vertex_x_error"));
+                      ws_->cattangentdecayvertexy.push_back(aux.fetch_real_scalar("CAT_tangent_decay_vertex_y"));
+                      ws_->cattangentdecayvertexyerror.push_back(aux.fetch_real_scalar("CAT_tangent_decay_vertex_y_error"));
+                      ws_->cattangentdecayvertexz.push_back(aux.fetch_real_scalar("CAT_tangent_decay_vertex_z"));
+                      ws_->cattangentdecayvertexzerror.push_back(aux.fetch_real_scalar("CAT_tangent_decay_vertex_z_error"));
+                    }
+                  //cluster_.clusterid_ = &ws_-> clusterid[j];
+                }
+            }
+          cluster_.clustersolutionid_ = &ws_-> clustersolutionid;
+          cluster_.nounclusteredhits_ = &ws_-> nounclusteredhits;
+          cluster_.noclusters_ = &ws_-> noclusters;
+          cluster_.clusterid_ = &ws_-> clusterid;
+          cluster_.nohits_ = &ws_-> nohits;
+          cluster_.hitid_ = &ws_->clustertrackerid;
+          cluster_.catcharge_ = &ws_-> catcharge;
+          cluster_.catdetailedcharge_ = &ws_-> catdetailedcharge;
+          cluster_.catchi2s_ = &ws_-> catchi2s;
+          //cluster_.catchi2sall_ = &ws_-> catchi2sall;
+          cluster_.catprobs_ = &ws_-> catprobs;
+          //cluster_.catprobsall_ = &ws_-> catprobsall;
+          cluster_.catpx_ = &ws_-> catpx;
+          cluster_.catpy_ = &ws_-> catpy;
+          cluster_.catpz_ = &ws_-> catpz;
+          cluster_.cathelixcharge_ = &ws_-> cathelixcharge;
+          cluster_.cathelixlength_ = &ws_-> cathelixlength;
+          cluster_.cathelixlengtherror_ = &ws_-> cathelixlengtherror;
+          cluster_.cathelixvertexx_ = &ws_-> cathelixvertexx;
+          cluster_.cathelixvertexxerror_ = &ws_-> cathelixvertexxerror;
+          cluster_.cathelixvertexy_ = &ws_-> cathelixvertexy;
+          cluster_.cathelixvertexyerror_ = &ws_-> cathelixvertexyerror;
+          cluster_.cathelixvertexz_ = &ws_-> cathelixvertexz;
+          cluster_.cathelixvertexzerror_ = &ws_-> cathelixvertexzerror;
+          cluster_.cathelixdecayvertexx_ = &ws_-> cathelixdecayvertexx;
+          cluster_.cathelixdecayvertexxerror_ = &ws_-> cathelixdecayvertexxerror;
+          cluster_.cathelixdecayvertexy_ = &ws_-> cathelixdecayvertexy;
+          cluster_.cathelixdecayvertexyerror_ = &ws_-> cathelixdecayvertexyerror;
+          cluster_.cathelixdecayvertexz_ = &ws_-> cathelixdecayvertexz;
+          cluster_.cathelixdecayvertexzerror_ = &ws_-> cathelixdecayvertexzerror;
+          cluster_.cattangentvertexx_ = &ws_-> cattangentvertexx;
+          cluster_.cattangentvertexxerror_ = &ws_-> cattangentvertexxerror;
+          cluster_.cattangentvertexy_ = &ws_-> cattangentvertexy;
+          cluster_.cattangentvertexyerror_ = &ws_-> cattangentvertexyerror;
+          cluster_.cattangentvertexz_ = &ws_-> cattangentvertexz;
+          cluster_.cattangentvertexzerror_ = &ws_-> cattangentvertexzerror;
+          cluster_.cattangentdecayvertexx_ = &ws_-> cattangentdecayvertexx;
+          cluster_.cattangentdecayvertexxerror_ = &ws_-> cattangentdecayvertexxerror;
+          cluster_.cattangentdecayvertexy_ = &ws_-> cattangentdecayvertexy;
+          cluster_.cattangentdecayvertexyerror_ = &ws_-> cattangentdecayvertexyerror;
+          cluster_.cattangentdecayvertexz_ = &ws_-> cattangentdecayvertexz;
+          cluster_.cattangentdecayvertexzerror_ = &ws_-> cattangentdecayvertexzerror;
+          //cluster_.cathelixchi2s_ = &ws_-> cathelixchi2s;
+          cluster_.cattangentlength_ = &ws_-> cattangentlength;
+          cluster_.cattangentlengtherror_ = &ws_-> cattangentlengtherror;
+        }
+    }
+
+  // look for trajectory data
+  if(workItem.has("TTD"))
+    {
+      const snemo::datamodel::tracker_trajectory_data & TTD = workItem.get<snemo::datamodel::tracker_trajectory_data>("TTD");
+      if(TTD.has_solutions())
+        {
+          trajectory_.nosolutions_ = TTD.get_number_of_solutions();
+          int nsolutions = TTD.get_number_of_solutions();
+          for (int i = 0; i < nsolutions; ++i)
+            {
+              const snemo::datamodel::tracker_trajectory_solution & solution = TTD.get_solution(i);
+              ws_->trajectorysolutionid.push_back(solution.get_solution_id());
+              ws_->notrajectories.push_back(solution.get_trajectories().size());
+              int ntrajectories = solution.get_trajectories().size();
+              ws_->nounfittedclusters.push_back(solution.get_unfitted_clusters().size());
+              for (int j = 0; j < ntrajectories; ++j)
+                {
+                  const snemo::datamodel::tracker_trajectory & traj = solution.get_trajectories()[j].get();
+                  const datatools::properties & aux = traj.get_auxiliaries();
+                  if(traj.has_trajectory_id()) ws_->trajectoryid.push_back(traj.get_trajectory_id());
+                  ws_->chi2.push_back(aux.fetch_real_scalar("chi2"));
+                  ws_->ndof.push_back(aux.fetch_integer_scalar("ndof"));
+                  ws_->trajectorylength.push_back(traj.get_pattern().get_shape().get_length());
+                  ws_->nounfittedhits.push_back(traj.get_orphans().size());
+                  ws_->trajectoryclusterid.push_back(traj.get_cluster().get_cluster_id());
+                }
+            }
+          trajectory_.trajectorysolutionid_ = &ws_-> trajectorysolutionid;
+          trajectory_.notrajectories_ = &ws_-> notrajectories;
+          trajectory_.nounfittedclusters_ = &ws_-> nounfittedclusters;
+          trajectory_.nounfittedhits_ = &ws_-> nounfittedhits;
+          trajectory_.trajectoryid_ = &ws_-> trajectoryid;
+          trajectory_.clusterid_ = &ws_-> trajectoryclusterid;
+          trajectory_.chi2_ = &ws_-> chi2;
+          trajectory_.ndof_ = &ws_-> ndof;
+          trajectory_.length_ = &ws_-> trajectorylength;
+        }
+    }
+
+  //Look for charged particle tracker data
+  if(workItem.has("PTD"))
+    {
+      const snemo::datamodel::particle_track_data & PTD = workItem.get<snemo::datamodel::particle_track_data>("PTD");
+      particle_.noparticles_ = PTD.get_number_of_particles();
+      int nparticles = PTD.get_number_of_particles();
+      for(int i = 0; i < nparticles; ++i)
+        {
+          const snemo::datamodel::particle_track & the_particle = PTD.get_particle(i);
+          ws_-> charge.push_back(the_particle.get_charge());
+          ws_-> nocalohits.push_back(the_particle.get_associated_calorimeter_hits().size());
+          int ncalohits = the_particle.get_associated_calorimeter_hits().size();
+          for (int j = 0; j < ncalohits; ++j)
+            {
+              const snemo::datamodel::calibrated_calorimeter_hit & calo_hit = the_particle.get_associated_calorimeter_hits()[j].get();
+              ws_-> energy.push_back(calo_hit.get_energy());
+              ws_-> particlecalotime.push_back(calo_hit.get_time());
+            }
+          ws_-> novertices.push_back(the_particle.get_vertices().size());
+          int nvertices = the_particle.get_vertices().size();
+          for (int j = 0; j < nvertices; ++j)
+            {
+              const geomtools::blur_spot vertex = the_particle.get_vertices()[j].get();
+              ws_-> vertexx.push_back(vertex.get_position().getX());
+              ws_-> vertexxerror.push_back(vertex.get_x_error());
+              ws_-> vertexy.push_back(vertex.get_position().y());
+              ws_-> vertexyerror.push_back(vertex.get_y_error());
+              ws_-> vertexz.push_back(vertex.get_position().z());
+              ws_-> vertexzerror.push_back(vertex.get_z_error());
+            }
+          ws_-> particletrajid.push_back(the_particle.get_trajectory().get_trajectory_id());
+        }
+      particle_.charge_ = &ws_-> charge;
+      particle_.nocalohits_ = &ws_-> nocalohits;
+      particle_.energy_ = &ws_-> energy;
+      particle_.calotime_ = &ws_-> particlecalotime;
+      particle_.novertices_ = &ws_-> novertices;
+      particle_.vertexx_ = &ws_-> vertexx;
+      particle_.vertexy_ = &ws_-> vertexy;
+      particle_.vertexz_ = &ws_-> vertexz;
+      particle_.vertexxerror_ = &ws_-> vertexxerror;
+      particle_.vertexyerror_ = &ws_-> vertexyerror;
+      particle_.vertexzerror_ = &ws_-> vertexzerror;
+      particle_.trajectoryid_ = &ws_-> particletrajid;
+    }
+  
   tree_->Fill();
 
-  // MUST return a status, see ref dpp::processing_status_flags_type
+  // MUST return a status, see ref dpp::processing_status_flags_type 
   return dpp::base_module::PROCESS_OK;
 }
 
