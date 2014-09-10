@@ -196,6 +196,7 @@ set(_CATAlgorithm_HEADERS
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/Cell.h
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/CircleRegression.h
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/Tracked_data.h
+  CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/broken_line.h
   )
 
 set(_CATAlgorithm_SOURCES
@@ -230,6 +231,7 @@ set(_CATAlgorithm_SOURCES
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/scenario.cpp
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/Clock.cpp
   CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/cell_base.cpp
+  CellularAutomatonTracker/CellularAutomatonTracker/CATAlgorithm/broken_line.cpp
   )
 list(APPEND FalaiseCATPlugin_HEADERS ${_CATAlgorithm_HEADERS})
 list(APPEND FalaiseCATPlugin_SOURCES ${_CATAlgorithm_SOURCES})
