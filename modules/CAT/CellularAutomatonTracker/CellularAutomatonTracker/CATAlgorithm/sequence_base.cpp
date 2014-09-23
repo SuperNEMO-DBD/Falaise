@@ -1811,7 +1811,7 @@ namespace CAT {
         }
 
         CircleRegression cl(xs, zs, print_level(), probmin());
-        if( !cl.fit() ) good_fit = false;
+        if( !cl.fit() && !after_sultan ) good_fit = false;
         //      cl.minuit_fit();
 
         if( print_level() >= mybhep::VVERBOSE ){
