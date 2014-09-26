@@ -481,8 +481,8 @@ namespace snemo {
               const double dt = w / n;
               for (unsigned int j = 0; j <= n; j++)
                 {
-                  double x1;
-                  double y1;
+                  double x1 = 0.0;
+                  double y1 = 0.0;
                   if (i == 0)
                     {
                       x1 = 0.5 * w;
