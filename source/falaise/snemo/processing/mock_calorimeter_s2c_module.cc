@@ -157,8 +157,12 @@ namespace snemo {
         calorimeter_regime & a_regime = _calorimeter_regimes_[the_category];
         a_regime.set_category(the_category);
         datatools::properties per_category_setup;
-        setup_.export_and_rename_starting_with(per_category_setup, the_category, "");
+        setup_.export_and_rename_starting_with(per_category_setup, the_category + ".", "");
         a_regime.initialize(per_category_setup);
+        if (get_logging_priority() >= datatools::logger::PRIO_DEBUG) {
+          DT_LOG_DEBUG(get_logging_priority(), "Calorimeter '" << the_category << "' parameters:");
+          a_regime.tree_dump();
+        }
       }
 
       // Setup trigger time
@@ -220,8 +224,8 @@ namespace snemo {
       _CD_label_.clear();
       _Geo_label_.clear();
       datatools::invalidate(_cluster_time_width_);
-      _alpha_quenching_    = true;
-      _store_mc_hit_id_    = false;
+      _alpha_quenching_ = true;
+      _store_mc_hit_id_ = false;
       return;
     }
 
@@ -390,9 +394,7 @@ namespace snemo {
             datatools::properties & cc_prop = some_calibrated_calorimeter_hit.grab_auxiliaries();
 
             // Check time between clusters
-            const double delta_time = step_hit_time_start
-              - some_calibrated_calorimeter_hit.get_time();
-
+            const double delta_time = step_hit_time_start - some_calibrated_calorimeter_hit.get_time();
             // cluster arriving too late : do not care of it
             if (delta_time > _cluster_time_width_) {
               if (! cc_prop.has_key("pile_up")) {
@@ -488,11 +490,8 @@ namespace snemo {
 
         // Setting category in order to get the correct trigger parameters:
         // first recover the calorimeter category
-        const std::string & category_name
-          = the_calo_cluster.get_auxiliaries().fetch_string("category");
-        const calorimeter_regime & the_calo_regime
-          = _calorimeter_regimes_.at(category_name);
-
+        const std::string & category_name = the_calo_cluster.get_auxiliaries().fetch_string("category");
+        const calorimeter_regime & the_calo_regime = _calorimeter_regimes_.at(category_name);
         const double energy = the_calo_cluster.get_energy();
         if (the_calo_regime.is_high_threshold(energy)) {
           high_threshold = true;
@@ -508,16 +507,13 @@ namespace snemo {
              icalo != calibrated_calorimeter_hits_.end();/*++icalo*/) {
           snemo::datamodel::calibrated_calorimeter_hit & the_calo_cluster = icalo->grab();
 
-          const std::string & category_name
-            = the_calo_cluster.get_auxiliaries().fetch_string("category");
-          const calorimeter_regime & the_calo_regime
-            = _calorimeter_regimes_.at(category_name);
-
+          const std::string & category_name = the_calo_cluster.get_auxiliaries().fetch_string("category");
+          const calorimeter_regime & the_calo_regime = _calorimeter_regimes_.at(category_name);
           const double energy = the_calo_cluster.get_energy();
           // If energy hit is too low then remove calorimeter hit
           if (! the_calo_regime.is_low_threshold(energy)) {
             icalo = calibrated_calorimeter_hits_.erase(icalo);
-          } else{
+          } else {
             ++icalo;
           }
         }
