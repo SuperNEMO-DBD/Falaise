@@ -1182,6 +1182,7 @@ namespace CAT {
     setup_cells();
 
     tracked_data_.set_cells(cells_);
+    tracked_data_.set_calos(calorimeter_hits_);
 
     clock.stop(" clusterizer: prepare event ");
 

@@ -105,6 +105,12 @@ namespace CAT {
         t_ = t;
       }
 
+      //! set id
+      void calorimeter_hit::set_id(size_t id)
+      {
+        id_ = id;
+      }
+
       //! set layer
       void calorimeter_hit::set_layer(double layer)
       {

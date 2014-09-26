@@ -336,7 +336,26 @@ namespace CAT {
     return cells.back ();
   }
 
-  bool input_data::check () const
+  topology::calorimeter_hit & input_data::add_calo_cell ()
+  {
+
+    if (calo_cells.size () == 0)
+      {
+        // memory preallocation at the first calo_cell
+        calo_cells.reserve (50);
+      }
+    {
+      topology::calorimeter_hit tmp;
+      calo_cells.push_back (tmp);
+    }
+    return calo_cells.back ();
+  }
+
+  bool input_data::check () const{
+    return gg_check() && calo_check();
+  }
+
+  bool input_data::gg_check () const
   {
     // A map would be better to check cell IDs :
     std::map<int,bool> mids;
@@ -390,6 +409,67 @@ namespace CAT {
           {
             std::cerr << "ERROR: CAT::input_data::check: "
                       << "Cell ID '" << i << "' is not used ! There are some missing cells !"
+                      << std::endl;
+            return false;
+          }
+      }
+    return true;
+  }
+
+  bool input_data::calo_check () const
+  {
+    // A map would be better to check cell IDs :
+    std::map<int,bool> mids;
+    for (int i = 0; i < (int) calo_cells.size (); i++)
+      {
+        const topology::calorimeter_hit & c = calo_cells.at(i);
+        int calo_cell_id = c.id();
+        if (calo_cell_id < 0 || calo_cell_id > 10000)
+          {
+            std::cerr << "ERROR: CAT::input_data::calo_check: "
+                      << "Out of range calo_cell ID '" <<  calo_cell_id << "' !"
+                      << std::endl;
+            return false;
+          }
+        if (mids.find (calo_cell_id) != mids.end ())
+          {
+            std::cerr << "ERROR: CAT::input_data::check: "
+                      << "Duplicate calo_cell ID '" <<  calo_cell_id << "' !"
+                      << std::endl;
+            return false;
+          }
+        mids[calo_cell_id] = true;
+      }
+
+    // Duplicate test for now :
+    std::vector<bool> ids;
+    ids.assign (calo_cells.size (), false);
+    for (int i = 0; i < (int) calo_cells.size (); i++)
+      {
+        const topology::calorimeter_hit & c = calo_cells.at(i);
+        int calo_cell_id = c.id();
+        if ((calo_cell_id < 0) || (calo_cell_id >= (int) calo_cells.size ()))
+          {
+            std::cerr << "ERROR: CAT::input_data::check: "
+                      << "Invalid calo_cell ID '" <<  calo_cell_id << "' !"
+                      << std::endl;
+            return false;
+          }
+        if (ids[calo_cell_id])
+          {
+            std::cerr << "ERROR: CAT::input_data::check: "
+                      << "Duplicate calo_cell ID '" <<  calo_cell_id << "' !"
+                      << std::endl;
+            return false;
+          }
+        ids[calo_cell_id] = true;
+      }
+    for (int i = 0; i < (int) ids.size (); i++)
+      {
+        if (! ids[i])
+          {
+            std::cerr << "ERROR: CAT::input_data::check: "
+                      << "Calo_Cell ID '" << i << "' is not used ! There are some missing calo_cells !"
                       << std::endl;
             return false;
           }

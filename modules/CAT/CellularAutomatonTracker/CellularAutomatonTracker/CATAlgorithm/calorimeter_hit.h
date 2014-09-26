@@ -65,6 +65,9 @@ namespace CAT {
       //! set
       void set(const plane & pl, const experimental_double & e, const experimental_double & t, size_t id);
 
+      //! set id
+      void set_id(size_t id);
+
       //! set plane
       void set_pl(const plane & pl);
 
