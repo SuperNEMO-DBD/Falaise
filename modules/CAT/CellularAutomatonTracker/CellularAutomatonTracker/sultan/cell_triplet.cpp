@@ -159,6 +159,7 @@ namespace SULTAN{
       double dc12dr[3];
       double dc13dr[3];
 
+
       x[0] = ca().ep().x().value();
       x[1] = cb().ep().x().value();
       x[2] = cc().ep().x().value();

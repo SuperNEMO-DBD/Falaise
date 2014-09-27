@@ -272,6 +272,50 @@ namespace SULTAN {
   }
 
   //*************************************************************
+  void sultan::assign_helices_to_sequences(){
+  //*************************************************************
+
+    if( use_clocks )
+      clock.start(" sultan: assign_helices_to_sequences ","cumulative");
+
+    std::vector<topology::experimental_helix> the_helices;
+    std::vector<topology::experimental_helix> neighbours;
+    m.message("SULTAN::sultan::assign_helices_to_sequences: assign helices to ", sequences_.size(), " sequences ", mybhep::VERBOSE);
+    for(std::vector<topology::sequence>::iterator iseq = sequences_.begin(); iseq != sequences_.end(); ++iseq){
+      m.message("SULTAN::sultan::assign_helices_to_sequences: deal with sequence ", iseq - sequences_.begin(), " with ", iseq->nodes().size(), " nodes ", mybhep::VERBOSE);
+      if( iseq->nodes_.size() < min_ncells_in_cluster ){
+	continue;
+      }
+      experimental_legendre_vector->reset();
+      neighbours.clear();
+      leftover_cluster_->set_nodes(iseq->nodes());
+      form_triplets_from_cells();
+      form_helices_from_triplets(&the_helices, iseq - sequences_.begin(), true);
+      if( !the_helices.size() ){
+	continue;
+      }
+      for(std::vector<topology::experimental_helix>::const_iterator hh = the_helices.begin(); hh!=the_helices.end(); ++hh){
+	experimental_legendre_vector->add_helix(*hh);
+      }
+      m.message("SULTAN::sultan::assign_helices_to_sequences: sequence ", iseq - sequences_.begin(), " has ", iseq->nodes_.size(), " nodes, ", triplets_.size(), " triplets, ", the_helices.size(), " helices ", mybhep::VERBOSE);
+      if (level >= mybhep::VERBOSE){
+	for(std::vector<topology::cell_triplet>::const_iterator tr = triplets_.begin(); tr!=triplets_.end(); ++tr){
+	  tr->print_ids();
+	}
+	std::clog << " " << std::endl;
+      }
+      topology::experimental_helix b = experimental_legendre_vector->max(&neighbours);
+      iseq->set_helix(b);
+    }
+
+    if( use_clocks )
+      clock.stop(" sultan: assign_helices_to_sequences ");
+   
+
+    return;
+  }
+
+  //*************************************************************
   void sultan::reduce_clusters() {
     //*************************************************************
 
@@ -401,6 +445,52 @@ namespace SULTAN {
     // stop clock
     //if( use_clocks )
     clock.stop(" sultan: sequentiate ");
+
+    return true;
+  }
+
+  //*************************************************************
+  bool sultan::sequentiate_after_cat(topology::tracked_data & tracked_data_) {
+    //*************************************************************
+    // main method
+
+    // start clocks
+    //if( use_clocks ){
+    clock.start(" sultan: sequentiate_after_cat ","cumulative");
+    //}
+    clock.start(" sultan: sequentiation ","restart"); // use this one to check late
+
+    m.message("SULTAN::sultan::sequentiate_after_cat:  preparing event", event_number, mybhep::VERBOSE);
+    if( event_number < first_event_number ){
+      m.message("SULTAN::sultan::sequentiate_after_cat: local_tracking: skip event", event_number, " first event is "
+                , first_event_number,  mybhep::VERBOSE);
+      //if( use_clocks )
+      clock.stop(" sultan: sequentiate_after_cat ");
+      return true;
+    }
+
+    // setup input data
+    std::vector<SULTAN::topology::scenario> scenarios = tracked_data_.get_scenarios();
+    if( scenarios.size() == 0 ){
+      m.message("SULTAN::sultan::sequentiate_after_cat:  no scenarios", mybhep::VERBOSE);
+      //if( use_clocks )
+      clock.stop(" sultan: sequentiate ");
+      return true;
+    }
+
+    sequences_ = scenarios[0].sequences();
+
+    m.message("SULTAN::sultan::sequentiate_after_cat: ", sequences_.size(), " sequences to which to assign helix ", mybhep::VERBOSE);
+
+    assign_helices_to_sequences();
+
+    scenarios[0].set_sequences(sequences_);
+
+    tracked_data_.set_scenarios(scenarios);
+
+    // stop clock
+    //if( use_clocks )
+    clock.stop(" sultan: sequentiate_after_cat ");
 
     return true;
   }
@@ -807,7 +897,7 @@ namespace SULTAN {
 
 
   //*************************************************************
-  bool sultan::form_helices_from_triplets(std::vector<topology::experimental_helix> *the_helices, size_t icluster){
+  bool sultan::form_helices_from_triplets(std::vector<topology::experimental_helix> *the_helices, size_t icluster, bool after_cat){
   //*************************************************************
 
     if( use_clocks )
@@ -831,11 +921,74 @@ namespace SULTAN {
 
     std::vector<topology::experimental_helix> helices;
 
+    double distance_from_cat_points;
+    double distance_from_cat_points_min;
 
     for(std::vector<topology::cell_triplet>::iterator ccc = triplets_.begin(); ccc!= triplets_.end(); ++ccc){
 
       ccc->calculate_helices(Rmin, Rmax, nsigmas);
       helices = ccc->helices();
+
+      if( after_cat ){
+	// only keep the helix which goes closest to cat points
+
+	topology::experimental_point cat_pa, cat_pb, cat_pc;
+	bool found_a = false;
+	bool found_b = false;
+	bool found_c = false;
+	for( std::vector<topology::node>::iterator inode = sequences_[icluster].nodes_.begin(); inode != sequences_[icluster].nodes_.end(); ++inode ){
+	  if( inode->c().id() == ccc->ca().id() ){
+	    found_a = true;
+	    cat_pa = inode->ep();
+	  }
+	  if( inode->c().id() == ccc->cb().id() ){
+	    found_b = true;
+	    cat_pb = inode->ep();
+	  }
+	  if( inode->c().id() == ccc->cc().id() ){
+	    found_c = true;
+	    cat_pc = inode->ep();
+	  }
+	  if( found_a && found_b && found_c ) break;
+	}
+	if( !found_a || !found_b || !found_c ){
+	  if (level >= mybhep::NORMAL){
+	    std::clog << "SULTAN::sultan::form_helices_from_triplets: problem: triplet (" << ccc->ca().id() << ", " << ccc->cb().id() << ", " << ccc->cc().id() << ") found_a " << found_a << " found_b " << found_b << " found_c " << found_c << " in sequence of " << sequences_[icluster].nodes_.size() << " nodes " << std::endl;
+	  }
+	  continue;
+	}
+
+	if (level >= mybhep::VVERBOSE){
+	  std::clog << "SULTAN::sultan::form_helices_from_triplets: triplet (" << ccc->ca().id() << ", " << ccc->cb().id() << ", " << ccc->cc().id() << ") has made " << helices.size() << " helices " << std::endl;
+	}
+
+	distance_from_cat_points_min = mybhep::default_min;
+	topology::experimental_helix best_helix_from_triplet;
+	bool found_helix = false;
+	for( std::vector<topology::experimental_helix>::const_iterator ihel = helices.begin(); ihel!=helices.end(); ++ihel){
+	  topology::experimental_point hel_pa = ihel->position(ccc->ca().ep());
+	  topology::experimental_point hel_pb = ihel->position(ccc->cb().ep());
+	  topology::experimental_point hel_pc = ihel->position(ccc->cc().ep());
+	  distance_from_cat_points = sqrt(pow(cat_pa.hor_distance(hel_pa).value(),2) +
+					  pow(cat_pb.hor_distance(hel_pb).value(),2) +
+					  pow(cat_pc.hor_distance(hel_pc).value(),2));
+	  if (level >= mybhep::VVERBOSE){
+	    std::clog << "SULTAN::sultan::form_helices_from_triplets: helix " << ihel - helices.begin() << " distance_from_cat_points " << distance_from_cat_points << std::endl;
+	  }
+	  if( distance_from_cat_points < distance_from_cat_points_min ){
+	    distance_from_cat_points_min = distance_from_cat_points;
+	    best_helix_from_triplet = *ihel;
+	    found_helix = true;
+	  }
+	}
+	helices.clear();
+	if( found_helix ){
+	  if (level >= mybhep::VVERBOSE){
+	    std::clog << "SULTAN::sultan::form_helices_from_triplets: best helix: center(" << best_helix_from_triplet.x0().value() << ", " << best_helix_from_triplet.y0().value() << ", " << best_helix_from_triplet.z0().value() << ") R " << best_helix_from_triplet.R().value() << ", H " <<  best_helix_from_triplet.H().value() <<  std::endl;
+	  }
+	  helices.push_back(best_helix_from_triplet);
+	}
+      }
 
       the_helices->insert(the_helices->end(),helices.begin(),helices.end());
 

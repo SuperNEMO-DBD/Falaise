@@ -68,6 +68,8 @@ namespace CAT {
       helix_length_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       momentum_ = experimental_vector(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                       mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
+      helix_momentum_ = experimental_vector(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
+                                      mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
       primary_ = true;
     }
 
@@ -123,6 +125,8 @@ namespace CAT {
       helix_length_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       momentum_ = experimental_vector(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                       mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
+      helix_momentum_ = experimental_vector(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
+                                      mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
       primary_ = true;
     }
 
@@ -174,6 +178,8 @@ namespace CAT {
       tangent_length_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       helix_length_ = experimental_double(mybhep::small_neg, mybhep::small_neg);
       momentum_ = experimental_vector(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
+                                      mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
+      helix_momentum_ = experimental_vector(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
                                       mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
       primary_ = true;
     }
@@ -316,6 +322,12 @@ namespace CAT {
     void sequence::set_momentum(const experimental_vector &mom){
       has_momentum_ = true;
       momentum_ = mom;
+    }
+
+    //! set helix_momentum
+    void sequence::set_helix_momentum(const experimental_vector &mom){
+      has_momentum_ = true;
+      helix_momentum_ = mom;
     }
 
     //! set tangent length
@@ -613,6 +625,12 @@ namespace CAT {
       return momentum_;
     }
 
+    //! get helix_momentum
+    const experimental_vector & sequence::helix_momentum() const
+    {
+      return helix_momentum_;
+    }
+
     //! get tangent_length
     const experimental_double & sequence::tangent_length() const
     {
@@ -749,6 +767,8 @@ namespace CAT {
       if( has_momentum() ){
         experimental_vector newmom(-momentum().x(), -momentum().y(), -momentum().z());
         inverted.set_momentum(newmom);
+        experimental_vector hnewmom(-helix_momentum().x(), -helix_momentum().y(), -helix_momentum().z());
+        inverted.set_helix_momentum(hnewmom);
       }
 
       if( has_charge() ){
@@ -1965,6 +1985,8 @@ namespace CAT {
 
       momentum_=mom*initial_dir();
 
+      helix_momentum_=mom*initial_helix_dir();
+
       if( !std::isnan(momentum_.x().value()) &&
           !std::isnan(momentum_.y().value()) &&
           !std::isnan(momentum_.z().value()) ){
@@ -3005,6 +3027,21 @@ namespace CAT {
       }
 
       return experimental_vector(nodes_[0].ep(), nodes_[1].ep()).unit();
+
+    }
+
+    experimental_vector sequence::initial_helix_dir()const{
+      if( has_helix_vertex() ){
+        return helix_.direction_at(helix_vertex_);
+      }
+      if( nodes_.size() < 1 ){
+        if( print_level() >= mybhep::NORMAL ){
+          std::clog << " problem: asking for initial helix dir of sequence with " << nodes_.size() << " nodes " << std::endl;
+          return experimental_vector();
+        }
+      }
+
+      return helix_.direction_at(helix_.position(nodes_[0].ep()));
 
     }
 

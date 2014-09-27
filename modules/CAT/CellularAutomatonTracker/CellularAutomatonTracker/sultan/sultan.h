@@ -50,11 +50,12 @@ namespace SULTAN {
     void print_clocks();
     void read_properties( void );
     bool sequentiate(topology::tracked_data & tracked_data);
+    bool sequentiate_after_cat(topology::tracked_data & tracked_data);
     bool assign_nodes_based_on_experimental_helix(topology::experimental_helix * b, std::vector<topology::experimental_helix> *helices);
     bool assign_nodes_based_on_experimental_helix(topology::experimental_helix * b, std::vector<size_t> *neighbouring_cells);
     bool form_triplets_from_cells();
     bool form_triplets_from_cells_with_endpoints();
-    bool form_helices_from_triplets(std::vector<topology::experimental_helix> *the_helices, size_t icluster);
+    bool form_helices_from_triplets(std::vector<topology::experimental_helix> *the_helices, size_t icluster, bool after_cat = false);
     void sequentiate_cluster_with_experimental_vector(size_t icluster);
     void sequentiate_cluster_with_experimental_vector_2(topology::cluster & cluster, size_t icluster);
     void sequentiate_cluster_with_experimental_vector_3(topology::cluster & cluster, size_t icluster);
@@ -94,6 +95,7 @@ namespace SULTAN {
     topology::cluster get_best_cluster_from(std::vector<topology::cluster> cs);
     std::vector<topology::node> get_furthest_end_points(std::vector<topology::cluster> clusters_of_endpoints);
     void assign_helices_to_clusters();
+    void assign_helices_to_sequences();
 
 
     //! get clusters

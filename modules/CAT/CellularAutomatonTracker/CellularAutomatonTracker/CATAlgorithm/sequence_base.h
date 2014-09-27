@@ -63,6 +63,8 @@ namespace CAT {
 
       experimental_vector momentum_;
 
+      experimental_vector helix_momentum_;
+
       bool primary_;
 
     public:
@@ -178,6 +180,9 @@ namespace CAT {
 
       //! set momentum
       void set_momentum(const experimental_vector &mom);
+
+      //! set helix_momentum
+      void set_helix_momentum(const experimental_vector &mom);
 
       //! set primary
       void set_primary(bool primary);
@@ -323,6 +328,9 @@ namespace CAT {
       //! get momentum
       const experimental_vector & momentum() const;
 
+      //! get helix_momentum
+      const experimental_vector & helix_momentum() const;
+
       //! get helix
       const helix & get_helix() const;
 
@@ -447,6 +455,8 @@ namespace CAT {
       bool one_side()const;
 
       experimental_vector initial_dir()const;
+
+      experimental_vector initial_helix_dir()const;
 
       experimental_vector final_dir()const;
 
