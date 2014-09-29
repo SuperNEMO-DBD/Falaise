@@ -18,13 +18,13 @@
 #include <geomtools/base_hit.h>
 
 // This project:
+#include <falaise/snemo/datamodels/base_trajectory_pattern.h>
 #include <falaise/snemo/datamodels/tracker_cluster.h>
 
 namespace snemo {
 
   namespace datamodel {
 
-    class base_trajectory_pattern;
 
     /// A trajectory of Geiger calibrated hits referenced by handles
     class tracker_trajectory : public geomtools::base_hit
