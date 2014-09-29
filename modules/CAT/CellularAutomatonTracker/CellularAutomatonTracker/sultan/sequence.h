@@ -29,6 +29,8 @@ namespace SULTAN {
       // fitted helix
       experimental_helix helix_;
 
+      experimental_vector helix_momentum_;
+
     public:
 
       // list of nodes
@@ -67,6 +69,9 @@ namespace SULTAN {
       //! set helix
       void set_helix(const experimental_helix & helix);
 
+      //! set helix_momentum
+      void set_helix_momentum(const experimental_vector &mom);
+
       //! set calo_id
       void set_calo_id(const size_t id){
 	calo_id_ = id;
@@ -81,6 +86,9 @@ namespace SULTAN {
       //! get helix
       const experimental_helix & get_helix()const;
 
+      //! get helix_momentum
+      const experimental_vector & helix_momentum() const;
+
       //! get calo id
       size_t calo_id()const;
 
@@ -91,6 +99,10 @@ namespace SULTAN {
       bool is_contained_in(const sequence & s)const;
 
       bool contains(const sequence & s)const;
+
+      experimental_vector initial_helix_dir()const;
+
+      void calculate_momentum(double bfield);
 
     };
 

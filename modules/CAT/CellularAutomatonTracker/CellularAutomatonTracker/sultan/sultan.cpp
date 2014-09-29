@@ -306,6 +306,7 @@ namespace SULTAN {
       }
       topology::experimental_helix b = experimental_legendre_vector->max(&neighbours);
       iseq->set_helix(b);
+      iseq->calculate_momentum(bfield);
     }
 
     if( use_clocks )

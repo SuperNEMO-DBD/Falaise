@@ -170,6 +170,19 @@ namespace SULTAN {
               this->H().experimental_isinf() );
     }
 
+    experimental_vector experimental_helix::direction_at(const experimental_point & ep)const{
+      
+      const experimental_double phi = phi_of_point(ep, 0.);
+      
+      experimental_vector dir(-R() * experimental_sin(phi),
+			      R() * experimental_cos(phi),
+			      H());
+      
+      return dir.unit();
+      
+    }
+
+
   }
 
 }

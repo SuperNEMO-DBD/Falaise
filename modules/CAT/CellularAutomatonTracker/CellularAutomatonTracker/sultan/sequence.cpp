@@ -19,6 +19,8 @@ namespace SULTAN {
       nodes_.clear();
       name_ = "default";
       calo_id_ = mybhep::default_integer;
+      helix_momentum_ = experimental_vector(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
+                                      mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
     }
 
     //!Default destructor
@@ -34,6 +36,8 @@ namespace SULTAN {
       nodes_ = nodes;
       name_ = "default";
       calo_id_ = mybhep::default_integer;
+      helix_momentum_ = experimental_vector(mybhep::small_neg,mybhep::small_neg,mybhep::small_neg,
+                                      mybhep::small_neg, mybhep::small_neg, mybhep::small_neg);
     }
 
     /*** dump ***/
@@ -71,6 +75,10 @@ namespace SULTAN {
       helix_ = h;
     }
 
+    //! set helix_momentum
+    void sequence::set_helix_momentum(const experimental_vector &mom){
+      helix_momentum_ = mom;
+    }
 
     //! get calo id
     size_t sequence::calo_id()const{
@@ -91,6 +99,12 @@ namespace SULTAN {
     //! get sequence
     const experimental_helix & sequence::get_helix()const{
       return helix_;
+    }
+
+    //! get helix_momentum
+    const experimental_vector & sequence::helix_momentum() const
+    {
+      return helix_momentum_;
     }
 
     bool sequence::has_cell(const cell & c)const{
@@ -122,6 +136,30 @@ namespace SULTAN {
       return true;
     }
 
+    experimental_vector sequence::initial_helix_dir()const{
+      if( nodes_.size() < 1 ){
+        if( print_level() >= mybhep::NORMAL ){
+          std::clog << " problem: asking for initial helix dir of sequence with " << nodes_.size() << " nodes " << std::endl;
+          return experimental_vector();
+        }
+      }
+
+      return helix_.direction_at(helix_.position(nodes_[0].ep()));
+
+    }
+
+    void sequence::calculate_momentum(double bfield){
+
+      experimental_double mom = experimental_sqrt(experimental_square(helix_.R()) + experimental_square(helix_.H()))*0.3*bfield;
+
+      helix_momentum_=mom*initial_helix_dir();
+
+      if( print_level() >= mybhep::VVERBOSE ){
+        std::clog << " sequence radius " << helix_.R().value() << " pitch " << helix_.H().value() << " bfield " << bfield
+                  << " helix_mom " << mom.value() << " dir (" << initial_helix_dir().x().value() << ", " <<  initial_helix_dir().y().value() << ", " << initial_helix_dir().z().value() << ")" << std::endl;
+      }
+
+    }
 
   }
 }

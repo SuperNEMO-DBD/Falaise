@@ -177,6 +177,8 @@ namespace SULTAN {
 
       bool isinf()const;
 
+      experimental_vector direction_at(const experimental_point & ep)const;
+
     };
 
   }
