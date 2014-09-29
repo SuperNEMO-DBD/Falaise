@@ -488,7 +488,7 @@ namespace CAT {
     std::vector<topology::scenario> scenarios_;
 
 
-    bool make_scenarios(topology::tracked_data &td);
+    bool make_scenarios(topology::tracked_data &td, bool after_sultan = false);
     void interpret_physics(std::vector<topology::calorimeter_hit> & calos);
     void interpret_physics_after_sultan(std::vector<topology::calorimeter_hit> & calos);
     void refine_sequences_near_walls(std::vector<topology::calorimeter_hit> & calos);
@@ -496,7 +496,7 @@ namespace CAT {
     topology::plane get_foil_plane();
     topology::circle get_foil_circle();
     void print_sequences() const;
-    void print_a_sequence(const topology::sequence & sequence) const;
+    void print_a_sequence(const topology::sequence & sequence, bool after_sultan = false) const;
     void add_pair(const topology::sequence & sequence);
     bool clean_up_sequences();
     bool there_is_free_sequence_beginning_with(const topology::cell &c, size_t *index);
@@ -513,9 +513,9 @@ namespace CAT {
     bool direct_scenarios_out_of_foil(void);
     void print_families( void );
     void make_families();
-    bool can_add_family(topology::scenario &sc, size_t* jmin, size_t* nfree, double* Chi2, size_t* noverlaps, int32_t* ndof, topology::tracked_data &td);
-    void print_scenarios() const;
-    void print_a_scenario(const topology::scenario & scenario) const;
+    bool can_add_family(topology::scenario &sc, size_t* jmin, size_t* nfree, double* Chi2, size_t* noverlaps, int32_t* ndof, topology::tracked_data &td, bool after_sultan);
+    void print_scenarios(bool after_sultan = false) const;
+    void print_a_scenario(const topology::scenario & scenario, bool after_sultan = false) const;
     size_t pick_best_scenario();
     bool can_be_linked(topology::sequence& p, bool inverted);
     bool can_match(topology::sequence &s, size_t* jmin, bool& bestinvertA, bool& bestinvertB, int& with_kink, int &cells_to_delete, std::vector<topology::calorimeter_hit> & calos);

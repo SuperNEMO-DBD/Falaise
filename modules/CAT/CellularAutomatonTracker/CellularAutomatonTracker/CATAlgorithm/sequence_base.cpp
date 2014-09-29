@@ -1712,7 +1712,7 @@ namespace CAT {
 	  
 	  inode->set_cc(cc);
 	  inode->set_links(links);
-	  inode->calculate_triplets_after_sultan(Ratio);
+	  //inode->calculate_triplets_after_sultan(Ratio);
 
 	  /*
 	  // recalculate position closest to helix

@@ -771,7 +771,7 @@ namespace CAT {
       }
 
 
-    make_scenarios(tracked_data_);
+    make_scenarios(tracked_data_,true);
 
 
     if (late())
@@ -1034,7 +1034,7 @@ namespace CAT {
       if (level >= mybhep::VERBOSE)
 	{
 	  clog << "CAT::sequentiator::make_new_sequence_after_sultan: made sequence " << endl;
-	  print_a_sequence(newsequence);
+	  print_a_sequence(newsequence,true);
 	}
 
       clean_up_sequences();
@@ -1063,7 +1063,7 @@ namespace CAT {
 	if (level >= mybhep::VERBOSE)
 	  {
 	    clog << "CAT::sequentiator::make_new_sequence_after_sultan: made sequence " << endl;
-	    print_a_sequence(newsequence);
+	    print_a_sequence(newsequence,true);
 	  }
 	NCOPY ++;
       }
@@ -1086,7 +1086,7 @@ namespace CAT {
 	if (level >= mybhep::VERBOSE)
 	  {
 	    clog << "CAT::sequentiator::make_new_sequence_after_sultan: made sequence " << endl;
-	    print_a_sequence(*iseq);
+	    print_a_sequence(*iseq,true);
 	  }
 	NCOPY ++;
       }
@@ -1984,7 +1984,7 @@ namespace CAT {
 
 
   //*************************************************************
-  bool sequentiator::make_scenarios(topology::tracked_data &td){
+  bool sequentiator::make_scenarios(topology::tracked_data &td, bool after_sultan){
     //*************************************************************
 
     clock.start(" sequentiator: make scenarios ", "cumulative");
@@ -2003,7 +2003,7 @@ namespace CAT {
 
       m.message("CAT::sequentiator::make_scenarios: begin scenario with sequence ", iseq->name(), mybhep::VVERBOSE);
       if( level >= mybhep::VVERBOSE)
-        print_a_sequence(*iseq);
+        print_a_sequence(*iseq,after_sultan);
 
       topology::scenario sc;
       sc.level_ = level;
@@ -2013,11 +2013,11 @@ namespace CAT {
       sc.calculate_n_overlaps(td.get_cells(), td.get_calos());
       sc.calculate_chi2();
 
-      while( can_add_family(sc, &jmin, &nfree, &Chi2, &noverlaps, &ndof, td) )
+      while( can_add_family(sc, &jmin, &nfree, &Chi2, &noverlaps, &ndof, td,after_sultan) )
         {
           m.message("CAT::sequentiator::make_scenarios: best sequence to add is ", jmin, mybhep::VVERBOSE);
           if( level >= mybhep::VVERBOSE)
-            print_a_sequence(sequences_[jmin]);
+            print_a_sequence(sequences_[jmin],after_sultan);
           m.message("CAT::sequentiator::make_scenarios: nfree ", nfree, " noverls ", noverlaps, " Chi2 ", Chi2, mybhep::VVERBOSE);
           sc.sequences_.push_back(sequences_[jmin]);
           sc.set_n_free_families(nfree);
@@ -2040,14 +2040,14 @@ namespace CAT {
     direct_scenarios_out_of_foil();
 
     if( level >= mybhep::VERBOSE)
-      print_scenarios();
+      print_scenarios(after_sultan);
 
     if( scenarios_.size() > 0 ){
 
       size_t index_tmp = pick_best_scenario();
 
       if( level > mybhep::NORMAL)
-        print_a_scenario(scenarios_[index_tmp]);
+        print_a_scenario(scenarios_[index_tmp],after_sultan);
 
 
       m.message("CAT::sequentiator::make_scenarios: made scenario ", mybhep::VERBOSE);
@@ -2093,7 +2093,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  bool sequentiator::can_add_family(topology::scenario &sc, size_t* jmin, size_t* nfree, double* Chi2, size_t* noverlaps, int* ndof, topology::tracked_data &td) {
+  bool sequentiator::can_add_family(topology::scenario &sc, size_t* jmin, size_t* nfree, double* Chi2, size_t* noverlaps, int* ndof, topology::tracked_data &td, bool after_sultan) {
     //*************************************************************
 
     if( late() )
@@ -2154,7 +2154,7 @@ namespace CAT {
 
         m.message("CAT::sequentiator::can_add_family: ...try to add sequence ", jseq->name(), mybhep::VVERBOSE);
         if( level >= mybhep::VVERBOSE)
-          print_a_sequence(*jseq);
+          print_a_sequence(*jseq,after_sultan);
         m.message("CAT::sequentiator::can_add_family: ...nfree ", tmp.n_free_families(), " noverls ", tmp.n_overlaps(), " chi2 ", tmp.helix_chi2(), " prob ", tmp.helix_Prob(), mybhep::VVERBOSE);
 
         clock.start(" sequentiator: better scenario ", "cumulative");
@@ -2674,7 +2674,7 @@ namespace CAT {
         }
 
         if( level >= mybhep::VVERBOSE)
-          print_a_sequence(*iseq);
+          print_a_sequence(*iseq,true);
 
         if( !iseq->calculate_helix(Ratio,true) && !iseq->has_kink() ){
           size_t index = iseq - sequences_.begin();
@@ -2991,7 +2991,7 @@ namespace CAT {
 
 
   //*************************************************************
-  void sequentiator::print_a_sequence(const topology::sequence & sequence) const {
+  void sequentiator::print_a_sequence(const topology::sequence & sequence, bool after_sultan ) const {
     //*************************************************************
 
     std::clog << sequence.name();
@@ -3016,38 +3016,39 @@ namespace CAT {
         if( level >= mybhep::VVERBOSE ){
           std::clog << "[" << v.x().value() << ", " << v.z().value() << "]";fflush(stdout);
 
-          std::clog << "(";fflush(stdout);
+	  if( !after_sultan ){
+	    std::clog << "(";fflush(stdout);
+	    
+	    for(vector<topology::cell>::const_iterator ilink=(*inode).links_.begin(); ilink != (*inode).links_.end(); ++ilink){
+	      iccc = sequence.get_link_index_of_cell(inode - sequence.nodes_.begin(), *ilink);
+	      
+	      if( iccc < 0 ) continue;  // connection through a gap
+	      
+	      if( inode - sequence.nodes_.begin() < 1 ){
+		std::clog << "->" << inode->cc()[iccc].cb().id();fflush(stdout);
+		if( ilink->free() ){
+		  std::clog << "[*]";fflush(stdout);
+		}
+		std::clog << "[" << inode->cc_[iccc].iteration() << " "
+			  << inode->cc()[iccc].tangents().size() << "]";fflush(stdout);
+		if( ! ilink->begun() )
+		  std::clog << "[n]";fflush(stdout);
+	      }else{
+		std::clog << inode->ccc()[iccc].ca().id() << "<->" << inode->ccc()[iccc].cc().id();fflush(stdout);
+		if( ilink->free() ){
+		  std::clog << "[*]";fflush(stdout);
+		}
+		std::clog << "[" << inode->ccc_[iccc].iteration() << " "
+			  << inode->ccc()[iccc].joints().size() << "]";fflush(stdout);
+		if( ! ilink->begun() )
+		  std::clog << "[n]";fflush(stdout);
+	      }
+	    }
 
-          for(vector<topology::cell>::const_iterator ilink=(*inode).links_.begin(); ilink != (*inode).links_.end(); ++ilink){
-            iccc = sequence.get_link_index_of_cell(inode - sequence.nodes_.begin(), *ilink);
-
-            if( iccc < 0 ) continue;  // connection through a gap
-
-            if( inode - sequence.nodes_.begin() < 1 ){
-              std::clog << "->" << inode->cc()[iccc].cb().id();fflush(stdout);
-              if( ilink->free() ){
-                std::clog << "[*]";fflush(stdout);
-              }
-              std::clog << "[" << inode->cc_[iccc].iteration() << " "
-                   << inode->cc()[iccc].tangents().size() << "]";fflush(stdout);
-              if( ! ilink->begun() )
-                std::clog << "[n]";fflush(stdout);
-            }else{
-              std::clog << inode->ccc()[iccc].ca().id() << "<->" << inode->ccc()[iccc].cc().id();fflush(stdout);
-              if( ilink->free() ){
-                std::clog << "[*]";fflush(stdout);
-              }
-              std::clog << "[" << inode->ccc_[iccc].iteration() << " "
-                   << inode->ccc()[iccc].joints().size() << "]";fflush(stdout);
-              if( ! ilink->begun() )
-                std::clog << "[n]";fflush(stdout);
-            }
-          }
-
-          std::clog << " chi2 = " << inode->chi2();fflush(stdout);
-
-          std::clog << " )";fflush(stdout);
-
+	    std::clog << " chi2 = " << inode->chi2();fflush(stdout);
+	    
+	    std::clog << " )";fflush(stdout);
+	  }
         }
       }
 
@@ -3075,7 +3076,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  void sequentiator::print_scenarios() const {
+  void sequentiator::print_scenarios(bool after_sultan) const {
     //*************************************************************
 
     clog << "CAT::sequentiator::print_scenarios: Printing scenarios: " << scenarios_.size() << endl; fflush(stdout);
@@ -3083,7 +3084,7 @@ namespace CAT {
     for(vector<topology::scenario>::const_iterator isc=scenarios_.begin(); isc!=scenarios_.end(); ++isc)
       {
         std::clog << " scenario " << isc - scenarios_.begin() << std::endl;
-        print_a_scenario(*isc);
+        print_a_scenario(*isc, after_sultan);
       }
 
     return;
@@ -3092,14 +3093,14 @@ namespace CAT {
 
 
   //*************************************************************
-  void sequentiator::print_a_scenario(const topology::scenario & scenario) const {
+  void sequentiator::print_a_scenario(const topology::scenario & scenario, bool after_sultan) const {
     //*************************************************************
 
     clog << "Print associated sequences: " << endl;
     for (vector<topology::sequence>::const_iterator iseq = scenario.sequences_.begin();
          iseq != scenario.sequences_.end(); ++iseq)
       {
-        print_a_sequence(*iseq);
+        print_a_sequence(*iseq,after_sultan);
       }
 
     clog << "Print scenario parameters" << endl;
