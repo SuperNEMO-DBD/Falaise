@@ -207,7 +207,7 @@ visibility.color  : string  = "cyan"
 
 #################################################################
 [name="xwall_module_inner.model" type="geomtools::stacked_model"]
-material.ref            : string = "tracking_gas"
+material.ref            : string = "lab_air"
 length_unit             : string = "mm"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 4
