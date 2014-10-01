@@ -157,41 +157,42 @@ namespace SULTAN {
 	  double sign = 1.;
 	  if( s > 1 ){ // the helix could be run backwards
 	    experimental_vector tangent_dir(p_first, nodes_[1].ep());
-	    double sp = (helix_dir*tangent_dir).value();
+	    double sp = (helix_dir.hor()*tangent_dir.hor()).value();
 	    if( sp < 0 ) sign = -1;
 	  }
-	  return helix_.direction_at(p_first)*sign;
+	  return helix_dir*sign;
 	}
 	experimental_vector helix_dir = helix_.direction_at(p_last);
 	double sign = 1.;
 	if( s > 1 ){ // the helix could be run backwards
 	  experimental_vector tangent_dir(p_last, nodes_[s-2].ep());
-	  double sp = (helix_dir*tangent_dir).value();
+	  double sp = (helix_dir.hor()*tangent_dir.hor()).value();
 	  if( sp < 0 ) sign = -1;
 	}
-	return helix_.direction_at(p_last)*sign;
+	return helix_dir*sign;
       }
 
       dist_first = fabs(p_first.radius().value() - ref_value);
       dist_last = fabs(p_last.radius().value() - ref_value);
+
       if( dist_first < dist_last ){
 	experimental_vector helix_dir = helix_.direction_at(p_first);
 	double sign = 1.;
 	if( s > 1 ){ // the helix could be run backwards
 	  experimental_vector tangent_dir(p_first, nodes_[1].ep());
-	  double sp = (helix_dir*tangent_dir).value();
+	  double sp = (helix_dir.hor()*tangent_dir.hor()).value();
 	  if( sp < 0 ) sign = -1;
 	}
-	return helix_.direction_at(p_first)*sign;
+	return helix_dir*sign;
       }
       experimental_vector helix_dir = helix_.direction_at(p_last);
       double sign = 1.;
       if( s > 1 ){ // the helix could be run backwards
 	experimental_vector tangent_dir(p_last, nodes_[s-2].ep());
-	double sp = (helix_dir*tangent_dir).value();
+	double sp = (helix_dir.hor()*tangent_dir.hor()).value();
 	if( sp < 0 ) sign = -1;
       }
-      return helix_.direction_at(p_last)*sign;
+      return helix_dir*sign;
 
     }
 

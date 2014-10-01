@@ -1927,7 +1927,7 @@ namespace CAT {
 	  experimental_vector helix_dir = helix_.direction_at(inode->ep()).hor().unit();
 	  experimental_vector tangent_dir = (nodes_[index+1].ep() - inode->ep()).hor().unit();
 	  int sign = 1;
-	  double sp = (helix_dir*tangent_dir).value();
+	  double sp = (helix_dir.hor()*tangent_dir.hor()).value();
 	  if( sp < 0 ) sign = -1; // the helix could be run backwards
 	  helix_dir *= sign;
 	  double local_angle = acos(sp*sign);
