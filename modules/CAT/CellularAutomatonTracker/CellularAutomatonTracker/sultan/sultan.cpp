@@ -45,6 +45,7 @@ namespace SULTAN {
     nofflayers = 0;
     first_event_number = -1;
     min_ncells_in_cluster=0;
+    min_layer_for_triplet=0;
     ncells_between_triplet_min=0;
     ncells_between_triplet_range=0;
     SuperNemoChannel = false;
@@ -60,6 +61,7 @@ namespace SULTAN {
     nevent = 0;
     skipped_events = 0;
     run_time = std::numeric_limits<double>::quiet_NaN ();
+    planes_per_block.clear ();
     return;
   }
 
@@ -144,6 +146,28 @@ namespace SULTAN {
 
     if(SuperNemoChannel)
       {
+        if (num_blocks <= 0)
+          {
+            // Default :
+            set_num_blocks (1);
+            planes_per_block.at (0) = 9;
+          }
+      }
+    else
+      {
+        if (num_blocks <= 0)
+          {
+            // Default :
+            set_num_blocks (3);
+            planes_per_block.at (0) = 4;
+            planes_per_block.at (1) = 2;
+            planes_per_block.at (2) = 3;
+          }
+      }
+    
+
+    if(SuperNemoChannel)
+      {
         m.message("SULTAN::sultan::read_properties: SuperNemo kind of data",mybhep::NORMAL);
       }
     else
@@ -187,6 +211,7 @@ namespace SULTAN {
     m.message("SULTAN::sultan::read_properties: zsize is",zsize,"mm",mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties: foil radius: ",foil_radius,"mm",mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties:  min_ncells_in_cluster ", min_ncells_in_cluster, mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties:  min_layer_for_triplet ", min_layer_for_triplet, mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties:  ncells_between_triplet_min ", ncells_between_triplet_min, mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties:  ncells_between_triplet_range ", ncells_between_triplet_range, mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties:  ncells to skip ", ncells_to_skip, " dist limit ", dist_limit_inf, " - ", dist_limit_sup, " Rmin ", Rmin, " Rmax ", Rmax, mybhep::NORMAL);
@@ -271,6 +296,66 @@ namespace SULTAN {
     return;
   }
 
+
+  //*************************************************************
+  int sultan::gap_number(const topology::cell &c){
+    //*************************************************************
+
+    // returns the index of the gap on which the hit is facing: 1, 2, 3
+    // ... returns -1 if not on a gap
+    // ... returns 0 if the hit is on layer 0, facing the foil
+
+    size_t ln = abs(c.layer());
+
+    m.message("SULTAN::sultan::gap_number: cell ", c.id(), " layer ", c.layer(), mybhep::VVERBOSE);
+
+    if( ln == 0 ) return 0;
+
+    size_t counter = 0;
+    for(size_t i=0; i<planes_per_block.size(); i++){
+      counter += (int)planes_per_block[i];  // 4, 6, 9
+
+      if( ln == counter - 1 )  // layer = 3, 5, 8
+        return (i + 1);  // gap = 1, 2, 3
+      if( ln == counter )  // layer = 4, 6, 9
+        return (i + 1);  // gap = 1, 2, 3
+
+    }
+
+    return -1;
+
+  }
+
+  //*************************************************************
+  topology::plane sultan::get_foil_plane(){
+    //*************************************************************
+
+    if( !SuperNemoChannel ){
+      m.message("SULTAN::sultan::get_foil_plane: problem: asking for foil plane in Nemo3! ", mybhep::NORMAL);
+      topology::plane null;
+      return null;
+    }
+
+    topology::experimental_point center(0., 0., 0., 0., 0., 0.);
+
+    topology::experimental_vector norm(1.,0.,0.,0.,0.,0.);
+
+    topology::experimental_vector sizes(0., ysize, zsize,
+                                        0., 0., 0.);
+
+    topology::plane pl(center, sizes, norm, level, probmin);
+
+    std::string the_type="Nemo3";
+    if( SuperNemoChannel )
+      the_type="SuperNEMO";
+
+    pl.set_type(the_type);
+
+    return pl;
+
+
+  }
+
   //*************************************************************
   void sultan::assign_helices_to_sequences(){
   //*************************************************************
@@ -289,7 +374,7 @@ namespace SULTAN {
       experimental_legendre_vector->reset();
       neighbours.clear();
       leftover_cluster_->set_nodes(iseq->nodes());
-      form_triplets_from_cells();
+      form_triplets_from_cells(true);
       form_helices_from_triplets(&the_helices, iseq - sequences_.begin(), true);
       if( !the_helices.size() ){
 	continue;
@@ -306,7 +391,10 @@ namespace SULTAN {
       }
       topology::experimental_helix b = experimental_legendre_vector->max(&neighbours);
       iseq->set_helix(b);
-      iseq->calculate_momentum(bfield);
+      if( SuperNemoChannel )
+	iseq->calculate_momentum(bfield, SuperNemoChannel, 0.);
+      else
+	iseq->calculate_momentum(bfield, SuperNemoChannel, foil_radius);
     }
 
     if( use_clocks )
@@ -747,7 +835,7 @@ namespace SULTAN {
 
 
   //*************************************************************
-  bool sultan::form_triplets_from_cells(){
+  bool sultan::form_triplets_from_cells(bool after_cat){
   //*************************************************************
     // combine leftover_cluster nodes
     // to produce triplets (A, B, C) such that
@@ -759,7 +847,7 @@ namespace SULTAN {
 
     reset_triplets();
 
-    m.message("SULTAN::sultan::form_triplets_from_cells: calculate triples for ", leftover_cluster_->nodes_.size(), " nodes, minimum ", min_ncells_in_cluster, mybhep::VVERBOSE);
+    m.message("SULTAN::sultan::form_triplets_from_cells: calculate triples for ", leftover_cluster_->nodes_.size(), " nodes, minimum ", min_ncells_in_cluster, " min layer in triplet ", min_layer_for_triplet, mybhep::VVERBOSE);
 
     if( leftover_cluster_->nodes_.size() < min_ncells_in_cluster ) {
       // not enough cells to form a cluster
@@ -776,11 +864,20 @@ namespace SULTAN {
     double distance12, distance23, distance13;
     int block1, block2, block3;
     double dmin1, dmin2;
+    size_t min_triplet_layer;
 
     for(std::vector<topology::node>::const_iterator inode=leftover_cluster_->nodes_.begin(); inode != leftover_cluster_->nodes_.end()-2; ++inode){
 
       if( !SuperNemoChannel )
 	block1 = inode->c().block();
+
+      if( after_cat ){
+	min_triplet_layer = abs(inode->c().layer());
+	if( min_triplet_layer < min_layer_for_triplet ){
+	  m.message(" cell ", inode->c().id(), " layer ", inode->c().layer(), " cannot be in triplet, min layer ", min_layer_for_triplet , mybhep::VVERBOSE);
+	  continue;
+	}
+      }
 
       for(std::vector<topology::node>::const_iterator jnode=inode+1; jnode != leftover_cluster_->nodes_.end()-1; ++jnode){
 
@@ -794,10 +891,26 @@ namespace SULTAN {
 	  if( block1 == block2 ) continue;
 	}
 
+	if( after_cat ){
+	  min_triplet_layer = abs(jnode->c().layer());
+	  if( min_triplet_layer < min_layer_for_triplet ){
+	    m.message(" cell ", jnode->c().id(), " layer ", jnode->c().layer(), " cannot be in triplet, min layer ", min_layer_for_triplet , mybhep::VVERBOSE);
+	    continue;
+	  }
+	}
+
         for(std::vector<topology::node>::const_iterator knode=jnode+1; knode != leftover_cluster_->nodes_.end(); ++knode){
 
           if( knode == inode ) continue;
           if( knode == jnode ) continue;
+
+	  if( after_cat ){
+	    min_triplet_layer = abs(knode->c().layer());
+	    if( min_triplet_layer < min_layer_for_triplet ){
+	      m.message(" cell ", knode->c().id(), " layer ", knode->c().layer(), " cannot be in triplet, min layer ", min_layer_for_triplet , mybhep::VVERBOSE);
+	      continue;
+	    }
+	  }
 
 	  if( SuperNemoChannel ){
 	    distance23 = (jnode->c().ep().hor_distance(knode->c().ep())).value();

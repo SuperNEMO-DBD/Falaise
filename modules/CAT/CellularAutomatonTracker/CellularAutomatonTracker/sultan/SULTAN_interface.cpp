@@ -57,6 +57,7 @@ namespace SULTAN {
     nofflayers                    = 1;
     first_event                   = -1;
     min_ncells_in_cluster         = 0;
+    min_layer_for_triplet         = 0;
     ncells_between_triplet_min    = 0;
     ncells_between_triplet_range  = 0;
     cell_distance                 = 30.; // mm
@@ -115,6 +116,11 @@ namespace SULTAN {
     if (min_ncells_in_cluster < 0.0)
       {
         _set_error_message ("Invalid 'min_ncells_in_cluster'");
+        return false;
+      }
+    if (min_layer_for_triplet < 0.0)
+      {
+        _set_error_message ("Invalid 'min_layer_for_triplet'");
         return false;
       }
     if (ncells_between_triplet_min < 0.0)
@@ -263,6 +269,7 @@ namespace SULTAN {
     stor_.set_nofflayers (setup_.nofflayers);
     stor_.set_first_event (setup_.first_event);
     stor_.set_min_ncells_in_cluster (setup_.min_ncells_in_cluster);
+    stor_.set_min_layer_for_triplet (setup_.min_layer_for_triplet);
     stor_.set_ncells_between_triplet_min (setup_.ncells_between_triplet_min);
     stor_.set_ncells_between_triplet_range (setup_.ncells_between_triplet_range);
     stor_.set_cell_distance (setup_.cell_distance);
@@ -282,6 +289,13 @@ namespace SULTAN {
 
         /// Activate the special new mode :
         stor_.set_SuperNemoChannel(true);
+
+        // Layout of the tracking chamber :
+        stor_.set_num_blocks (setup_.num_blocks);
+        for (int i = 0; i < setup_.num_blocks; i++)
+          {
+            stor_.set_planes_per_block (i, (int)(setup_.planes_per_block.at (i)+0.5));
+          }
 
       }
     else

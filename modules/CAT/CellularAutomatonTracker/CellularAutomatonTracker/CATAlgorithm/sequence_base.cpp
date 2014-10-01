@@ -1978,14 +1978,14 @@ namespace CAT {
       return helix_.center();
     }
 
-    void sequence::calculate_momentum(double bfield){
+    void sequence::calculate_momentum(double bfield,bool SuperNEMO, double ref_value){
 
       experimental_double mom = experimental_sqrt(experimental_square(radius()) + experimental_square(pitch()))*0.3*bfield;
 
 
-      momentum_=mom*initial_dir();
+      momentum_=mom*initial_dir(SuperNEMO, ref_value);
 
-      helix_momentum_=mom*initial_helix_dir();
+      helix_momentum_=mom*initial_helix_dir(SuperNEMO, ref_value);
 
       if( !std::isnan(momentum_.x().value()) &&
           !std::isnan(momentum_.y().value()) &&
@@ -1995,7 +1995,7 @@ namespace CAT {
 
       if( print_level() >= mybhep::VVERBOSE ){
         std::clog << " sequence radius " << radius().value() << " pitch " << pitch().value() << " bfield " << bfield
-                  << " mom " << mom.value() << " dir (" << initial_dir().x().value() << ", " <<  initial_dir().y().value() << ", " << initial_dir().z().value() << ")" << std::endl;
+                  << " mom " << mom.value() << " dir (" << initial_dir(SuperNEMO, ref_value).x().value() << ", " <<  initial_dir(SuperNEMO, ref_value).y().value() << ", " << initial_dir(SuperNEMO, ref_value).z().value() << ")" << std::endl;
       }
 
     }
@@ -3009,39 +3009,79 @@ namespace CAT {
     }
 
 
-    experimental_vector sequence::initial_dir()const{
-      if( has_helix_vertex() ){
-        if( nodes_.size() < 1 ){
-          if( print_level() >= mybhep::NORMAL ){
-            std::clog << " problem: asking for initial dir of sequence with " << nodes_.size() << " nodes " << std::endl;
-            return experimental_vector();
-          }
-        }
-        return experimental_vector(helix_vertex_, nodes_[0].ep()).unit();
+    experimental_vector sequence::initial_dir(bool SuperNEMO, double ref_value)const{
+
+      size_t s = nodes_.size();
+      if( s < 1 ){
+	if( print_level() >= mybhep::NORMAL ){
+	  std::clog << " problem: asking for initial dir of sequence with " << s << " nodes " << std::endl;
+	  return experimental_vector();
+	}
       }
-      if( nodes_.size() < 2 ){
+      experimental_point p_first = nodes_[0].ep();
+      experimental_point p_last = nodes_[s-1].ep();
+      double dist_first, dist_last;
+      if( has_helix_vertex() ){
+	dist_first = helix_vertex_.distance(p_first).value();
+	dist_last = helix_vertex_.distance(p_last).value();
+	if( dist_first < dist_last )
+	  return experimental_vector(helix_vertex_, p_first).unit();
+	return experimental_vector(helix_vertex_, p_last).unit();
+      }
+      if( s < 2 ){
         if( print_level() >= mybhep::NORMAL ){
-          std::clog << " problem: asking for initial dir of sequence with " << nodes_.size() << " nodes " << std::endl;
+          std::clog << " problem: asking for initial dir of sequence with " << s << " nodes " << std::endl;
           return experimental_vector();
         }
       }
+      
+      if( SuperNEMO ){
+	dist_first = fabs(p_first.z().value() - ref_value);
+	dist_last = fabs(p_last.z().value() - ref_value);
+	if( dist_first < dist_last )
+	  return experimental_vector(p_first, nodes_[1].ep()).unit();
+	return experimental_vector(p_last, nodes_[s-2].ep()).unit();
+      }
 
-      return experimental_vector(nodes_[0].ep(), nodes_[1].ep()).unit();
+      dist_first = fabs(p_first.radius().value() - ref_value);
+      dist_last = fabs(p_last.radius().value() - ref_value);
+      if( dist_first < dist_last )
+	return experimental_vector(p_first, nodes_[1].ep()).unit();
+      return experimental_vector(p_last, nodes_[s-2].ep()).unit();
 
     }
 
-    experimental_vector sequence::initial_helix_dir()const{
+    experimental_vector sequence::initial_helix_dir(bool SuperNEMO, double ref_value)const{
       if( has_helix_vertex() ){
         return helix_.direction_at(helix_vertex_);
       }
-      if( nodes_.size() < 1 ){
+      size_t s = nodes_.size();
+      if( s < 1 ){
         if( print_level() >= mybhep::NORMAL ){
-          std::clog << " problem: asking for initial helix dir of sequence with " << nodes_.size() << " nodes " << std::endl;
+          std::clog << " problem: asking for initial helix dir of sequence with " << s << " nodes " << std::endl;
           return experimental_vector();
         }
       }
 
       return helix_.direction_at(helix_.position(nodes_[0].ep()));
+
+      experimental_point p_first = nodes_[0].ep();
+      experimental_point p_last = nodes_[s-1].ep();
+      double dist_first, dist_last;
+      
+      if( SuperNEMO ){
+	dist_first = fabs(p_first.z().value() - ref_value);
+	dist_last = fabs(p_last.z().value() - ref_value);
+	if( dist_first < dist_last )
+	  return helix_.direction_at(p_first);
+	return helix_.direction_at(p_last);
+      }
+
+      dist_first = fabs(p_first.radius().value() - ref_value);
+      dist_last = fabs(p_last.radius().value() - ref_value);
+      if( dist_first < dist_last )
+	return helix_.direction_at(p_first);
+      return helix_.direction_at(p_last);
 
     }
 

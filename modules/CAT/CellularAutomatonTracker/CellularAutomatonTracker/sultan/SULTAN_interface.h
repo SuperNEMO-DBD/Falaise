@@ -91,6 +91,9 @@ namespace SULTAN {
     // minimum n of cells in a cluster
     size_t min_ncells_in_cluster;
 
+    // minimum layer for a cell to be in a triplet
+    size_t min_layer_for_triplet;
+
     // minimum distance between cells in a triplet (units of cell size)
     size_t ncells_between_triplet_min;
 

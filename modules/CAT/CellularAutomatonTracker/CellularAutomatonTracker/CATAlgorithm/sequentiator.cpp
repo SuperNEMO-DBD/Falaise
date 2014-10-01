@@ -2346,7 +2346,6 @@ namespace CAT {
           continue;
         }
         iseq->calculate_charge();
-        iseq->calculate_momentum(bfield);
 
         // match to calorimeter
         if (!calos.empty ())
@@ -2583,6 +2582,10 @@ namespace CAT {
           }
         }
 
+	if( SuperNemo )
+	  iseq->calculate_momentum(bfield, SuperNemo, get_foil_plane().center().z().value());
+	else
+	  iseq->calculate_momentum(bfield, SuperNemo, FoilRadius);
         iseq->calculate_length();
 
         if( level >= mybhep::VVERBOSE ){
@@ -2686,7 +2689,6 @@ namespace CAT {
           continue;
         }
         iseq->calculate_charge();
-        iseq->calculate_momentum(bfield);
 
         // match to calorimeter
         if (!calos.empty ())
@@ -2923,6 +2925,10 @@ namespace CAT {
           }
         }
 
+	if( SuperNemo )
+	  iseq->calculate_momentum(bfield, SuperNemo, get_foil_plane().center().z().value());
+	else
+	  iseq->calculate_momentum(bfield, SuperNemo, FoilRadius);
         iseq->calculate_length();
 
         if( level >= mybhep::VVERBOSE ){

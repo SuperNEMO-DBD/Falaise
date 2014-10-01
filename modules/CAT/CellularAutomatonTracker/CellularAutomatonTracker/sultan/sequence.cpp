@@ -136,27 +136,74 @@ namespace SULTAN {
       return true;
     }
 
-    experimental_vector sequence::initial_helix_dir()const{
-      if( nodes_.size() < 1 ){
+    experimental_vector sequence::initial_helix_dir(bool SuperNEMO, double ref_value)const{
+      size_t s = nodes_.size();
+      if( s < 1 ){
         if( print_level() >= mybhep::NORMAL ){
-          std::clog << " problem: asking for initial helix dir of sequence with " << nodes_.size() << " nodes " << std::endl;
+          std::clog << " problem: sultan asking for initial helix dir of sequence with " << s << " nodes " << std::endl;
           return experimental_vector();
         }
       }
 
-      return helix_.direction_at(helix_.position(nodes_[0].ep()));
+      experimental_point p_first = nodes_[0].ep();
+      experimental_point p_last = nodes_[s-1].ep();
+      double dist_first, dist_last;
+      
+      if( SuperNEMO ){
+	dist_first = fabs(p_first.x().value() - ref_value);
+	dist_last = fabs(p_last.x().value() - ref_value);
+	if( dist_first < dist_last ){
+	  experimental_vector helix_dir = helix_.direction_at(p_first);
+	  double sign = 1.;
+	  if( s > 1 ){ // the helix could be run backwards
+	    experimental_vector tangent_dir(p_first, nodes_[1].ep());
+	    double sp = (helix_dir*tangent_dir).value();
+	    if( sp < 0 ) sign = -1;
+	  }
+	  return helix_.direction_at(p_first)*sign;
+	}
+	experimental_vector helix_dir = helix_.direction_at(p_last);
+	double sign = 1.;
+	if( s > 1 ){ // the helix could be run backwards
+	  experimental_vector tangent_dir(p_last, nodes_[s-2].ep());
+	  double sp = (helix_dir*tangent_dir).value();
+	  if( sp < 0 ) sign = -1;
+	}
+	return helix_.direction_at(p_last)*sign;
+      }
+
+      dist_first = fabs(p_first.radius().value() - ref_value);
+      dist_last = fabs(p_last.radius().value() - ref_value);
+      if( dist_first < dist_last ){
+	experimental_vector helix_dir = helix_.direction_at(p_first);
+	double sign = 1.;
+	if( s > 1 ){ // the helix could be run backwards
+	  experimental_vector tangent_dir(p_first, nodes_[1].ep());
+	  double sp = (helix_dir*tangent_dir).value();
+	  if( sp < 0 ) sign = -1;
+	}
+	return helix_.direction_at(p_first)*sign;
+      }
+      experimental_vector helix_dir = helix_.direction_at(p_last);
+      double sign = 1.;
+      if( s > 1 ){ // the helix could be run backwards
+	experimental_vector tangent_dir(p_last, nodes_[s-2].ep());
+	double sp = (helix_dir*tangent_dir).value();
+	if( sp < 0 ) sign = -1;
+      }
+      return helix_.direction_at(p_last)*sign;
 
     }
 
-    void sequence::calculate_momentum(double bfield){
+    void sequence::calculate_momentum(double bfield, bool SuperNEMO, double ref_value){
 
       experimental_double mom = experimental_sqrt(experimental_square(helix_.R()) + experimental_square(helix_.H()))*0.3*bfield;
 
-      helix_momentum_=mom*initial_helix_dir();
+      helix_momentum_=mom*initial_helix_dir(SuperNEMO, ref_value);
 
       if( print_level() >= mybhep::VVERBOSE ){
         std::clog << " sequence radius " << helix_.R().value() << " pitch " << helix_.H().value() << " bfield " << bfield
-                  << " helix_mom " << mom.value() << " dir (" << initial_helix_dir().x().value() << ", " <<  initial_helix_dir().y().value() << ", " << initial_helix_dir().z().value() << ")" << std::endl;
+                  << " helix_mom " << mom.value() << " dir (" << initial_helix_dir(SuperNEMO, ref_value).x().value() << ", " <<  initial_helix_dir(SuperNEMO, ref_value).y().value() << ", " << initial_helix_dir(SuperNEMO, ref_value).z().value() << ")" << std::endl;
       }
 
     }

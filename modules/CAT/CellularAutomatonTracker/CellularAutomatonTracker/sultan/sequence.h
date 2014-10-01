@@ -100,9 +100,9 @@ namespace SULTAN {
 
       bool contains(const sequence & s)const;
 
-      experimental_vector initial_helix_dir()const;
+      experimental_vector initial_helix_dir(bool SuperNEMO, double ref_value)const;
 
-      void calculate_momentum(double bfield);
+      void calculate_momentum(double bfield, bool SuperNEMO, double ref_value);
 
     };
 

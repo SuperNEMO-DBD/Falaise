@@ -398,7 +398,7 @@ namespace CAT {
 
       const experimental_point & center()const;
 
-      void calculate_momentum(double bfield);
+      void calculate_momentum(double bfield,bool SuperNEMO, double ref_value);
 
       void calculate_charge(void);
 
@@ -454,9 +454,9 @@ namespace CAT {
       // is the (true) track all on one side of the foil?
       bool one_side()const;
 
-      experimental_vector initial_dir()const;
+      experimental_vector initial_dir(bool SupeNEMO, double ref_value)const;
 
-      experimental_vector initial_helix_dir()const;
+      experimental_vector initial_helix_dir(bool SuperNEMO, double ref_value)const;
 
       experimental_vector final_dir()const;
 
