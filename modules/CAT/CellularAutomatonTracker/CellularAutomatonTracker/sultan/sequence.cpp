@@ -152,46 +152,44 @@ namespace SULTAN {
       if( SuperNEMO ){
 	dist_first = fabs(p_first.x().value() - ref_value);
 	dist_last = fabs(p_last.x().value() - ref_value);
+	experimental_vector foil_normal(1.,0.,0.,0.,0.,0.);
+	double sign = 1.;
 	if( dist_first < dist_last ){
 	  experimental_vector helix_dir = helix_.direction_at(p_first);
-	  double sign = 1.;
-	  if( s > 1 ){ // the helix could be run backwards
-	    experimental_vector tangent_dir(p_first, nodes_[1].ep());
-	    double sp = (helix_dir.hor()*tangent_dir.hor()).value();
-	    if( sp < 0 ) sign = -1;
-	  }
+	  if( nodes_[0].c().ep().x().value() < 0. )
+	    foil_normal *= -1.;
+	  double sp = (helix_dir*foil_normal).value(); // the helix could be run backwards
+	  if( sp < 0 ) sign = -1.;
 	  return helix_dir*sign;
 	}
 	experimental_vector helix_dir = helix_.direction_at(p_last);
-	double sign = 1.;
-	if( s > 1 ){ // the helix could be run backwards
-	  experimental_vector tangent_dir(p_last, nodes_[s-2].ep());
-	  double sp = (helix_dir.hor()*tangent_dir.hor()).value();
-	  if( sp < 0 ) sign = -1;
-	}
+	if( nodes_[s-1].c().ep().x().value() < 0. )
+	  foil_normal *= -1.;
+	double sp = (helix_dir*foil_normal).value();
+	if( sp < 0 ) sign = -1.;
 	return helix_dir*sign;
       }
 
       dist_first = fabs(p_first.radius().value() - ref_value);
       dist_last = fabs(p_last.radius().value() - ref_value);
-
+      experimental_point origin(0.,0.,0.,0.,0.,0.);
+      double sign = 1.;
       if( dist_first < dist_last ){
+	experimental_vector foil_normal = (nodes_[0].c().ep() - origin).hor().unit();
+	if( nodes_[0].c().ep().radius().value() - ref_value < 0. )
+	  foil_normal *= -1.;
 	experimental_vector helix_dir = helix_.direction_at(p_first);
-	double sign = 1.;
-	if( s > 1 ){ // the helix could be run backwards
-	  experimental_vector tangent_dir(p_first, nodes_[1].ep());
-	  double sp = (helix_dir.hor()*tangent_dir.hor()).value();
-	  if( sp < 0 ) sign = -1;
-	}
+	double sp = (helix_dir*foil_normal).value();
+	if( sp < 0 ) sign = -1;
 	return helix_dir*sign;
       }
+
+      experimental_vector foil_normal = (nodes_[s-1].c().ep() - origin).hor().unit();
+      if( nodes_[s-1].c().ep().radius().value() - ref_value < 0. )
+	foil_normal *= -1.;
       experimental_vector helix_dir = helix_.direction_at(p_last);
-      double sign = 1.;
-      if( s > 1 ){ // the helix could be run backwards
-	experimental_vector tangent_dir(p_last, nodes_[s-2].ep());
-	double sp = (helix_dir.hor()*tangent_dir.hor()).value();
-	if( sp < 0 ) sign = -1;
-      }
+      double sp = (helix_dir*foil_normal).value();
+      if( sp < 0 ) sign = -1;
       return helix_dir*sign;
 
     }
