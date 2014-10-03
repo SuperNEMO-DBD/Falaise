@@ -71,6 +71,9 @@ namespace snemo {
       /// Reset the particle tracks
       void invalidate_particles();
 
+      /// Check if there are some non associated calorimeters
+      bool has_non_associated_calorimeters() const;
+
       /// Return a non mutable reference to non associated calorimeters
       const calibrated_calorimeter_hit::collection_type & get_non_associated_calorimeters() const;
 

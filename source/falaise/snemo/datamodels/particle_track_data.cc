@@ -51,6 +51,11 @@ namespace snemo {
       return;
     }
 
+    bool particle_track_data::has_non_associated_calorimeters() const
+    {
+      return get_non_associated_calorimeters().size() > 0;
+    }
+
     calibrated_calorimeter_hit::collection_type & particle_track_data::grab_non_associated_calorimeters()
     {
       return _non_associated_calorimeters_;
