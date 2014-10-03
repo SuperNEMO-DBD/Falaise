@@ -55,13 +55,15 @@ namespace snemo {
 
       /// Mode of the cut
       enum mode_type {
-        MODE_UNDEFINED                         = 0,
-        MODE_CHARGE                            = datatools::bit_mask::bit00,
-        MODE_HAS_PARTICLES                     = datatools::bit_mask::bit01,
-        MODE_RANGE_PARTICLES                   = datatools::bit_mask::bit02,
-        MODE_HAS_ASSOCIATED_CALORIMETER_HITS   = datatools::bit_mask::bit03,
-        MODE_RANGE_ASSOCIATED_CALORIMETER_HITS = datatools::bit_mask::bit04,
-        MODE_HAS_VERTEX_ON_FOIL                = datatools::bit_mask::bit05
+        MODE_UNDEFINED                                  = 0,
+        MODE_HAS_NON_ASSOCIATED_CALORIMETER_HITS        = datatools::bit_mask::bit01,
+        MODE_RANGE_NON_ASSOCIATED_CALORIMETER_HITS      = datatools::bit_mask::bit02,
+        MODE_HAS_PARTICLES                              = datatools::bit_mask::bit03,
+        MODE_RANGE_PARTICLES                            = datatools::bit_mask::bit04,
+        MODE_PARTICLE_CHARGE                            = datatools::bit_mask::bit05,
+        MODE_PARTICLE_HAS_ASSOCIATED_CALORIMETER_HITS   = datatools::bit_mask::bit06,
+        MODE_PARTICLE_RANGE_ASSOCIATED_CALORIMETER_HITS = datatools::bit_mask::bit07,
+        MODE_PARTICLE_HAS_VERTEX_ON_FOIL                = datatools::bit_mask::bit08
       };
 
       /// Set the 'Particle Track Data' bank label/name
@@ -73,23 +75,29 @@ namespace snemo {
       /// Return the cut mode
       uint32_t get_mode() const;
 
+      /// Check mode HAS_NON_ASSOCIATED_CALORIMETER_HITS
+      bool is_mode_has_non_associated_calorimeter_hits() const;
+
+      /// Check mode RANGE_NON_ASSOCIATED_CALORIMETER_HITS
+      bool is_mode_range_non_associated_calorimeter_hits() const;
+
       /// Check mode HAS_PARTICLES
       bool is_mode_has_particles() const;
 
       /// Check mode RANGE_PARTICLES
       bool is_mode_range_particles() const;
 
-      /// Check mode HAS_ASSOCIATED_CALORIMETER_HITS
-      bool is_mode_has_associated_calorimeter_hits() const;
+      /// Check mode HAS_PARTICLE_ASSOCIATED_CALORIMETER_HITS
+      bool is_mode_particle_has_associated_calorimeter_hits() const;
 
-      /// Check mode RANGE_ASSOCIATED_CALORIMETER_HITS
-      bool is_mode_range_associated_calorimeter_hits() const;
+      /// Check mode PARTICLE_RANGE_ASSOCIATED_CALORIMETER_HITS
+      bool is_mode_particle_range_associated_calorimeter_hits() const;
 
-      /// Check mode HAS_VERTEX_ON_FOIL
-      bool is_mode_has_vertex_on_foil() const;
+      /// Check mode PARTICLE_HAS_VERTEX_ON_FOIL
+      bool is_mode_particle_has_vertex_on_foil() const;
 
-      /// Check mode CHARGE
-      bool is_mode_charge() const;
+      /// Check mode PARTICLE_CHARGE
+      bool is_mode_particle_charge() const;
 
       /// Constructor
       particle_track_data_cut(datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
@@ -115,13 +123,15 @@ namespace snemo {
 
     private:
 
-      std::string _PTD_label_;                  //!< Name of the "Particle track data" bank
-      uint32_t    _mode_;                       //!< Mode of the cut
-      std::string _charge_type_;                //!< Name of the boolean property in the particle track data
-      int         _particles_range_min_;        //!< Minimal number of particles for range_particles mode
-      int         _particles_range_max_;        //!< Maximal number of particles for range_particles mode
-      int         _calorimeter_hits_range_min_; //!< Minimal number of ass. calo for range_associated_calorimeter_hits mode
-      int         _calorimeter_hits_range_max_; //!< Maximal number of ass. calo for range_associated_calorimeter_hits mode
+      std::string _PTD_label_;                         //!< Name of the "Particle track data" bank
+      uint32_t    _mode_;                              //!< Mode of the cut
+      std::string _particle_charge_type_;              //!< Name of the boolean property in the particle track data
+      int _particles_range_min_;                       //!< Minimal number of particles for range_particles mode
+      int _particles_range_max_;                       //!< Maximal number of particles for range_particles mode
+      int _calorimeter_hits_range_min_;                //!< Minimal number of ass. calo for particle_range_associated_calorimeter_hits mode
+      int _calorimeter_hits_range_max_;                //!< Maximal number of ass. calo for particle_range_associated_calorimeter_hits mode
+      int _non_associated_calorimeter_hits_range_min_; //!< Minimal number of ass. calo for range_non_associated_calorimeter_hits mode
+      int _non_associated_calorimeter_hits_range_max_; //!< Maximal number of ass. calo for range_non_associated_calorimeter_hits mode
 
       // Macro to automate the registration of the cut :
       CUT_REGISTRATION_INTERFACE(particle_track_data_cut);
