@@ -28,7 +28,7 @@ namespace snemo {
     {
       _PTD_label_              = "";
       _mode_                   = MODE_UNDEFINED;
-      _charge_type_            = "";
+      _particle_charge_type_   = "";
       _particles_range_min_    = -1;
       _particles_range_max_    = -1;
       _calorimeter_hits_range_min_ = -1;
@@ -252,9 +252,9 @@ namespace snemo {
           if (is_mode_particle_charge())
             {
               DT_LOG_DEBUG(get_logging_priority(), "Using PARTICLE_CHARGE mode...");
-              DT_THROW_IF(! configuration_.has_key("has_particle_charge.type"), std::logic_error,
+              DT_THROW_IF(! configuration_.has_key("particle_has_charge.type"), std::logic_error,
                           "Missing 'has_particle_charge.type' property !");
-              _particle_charge_type_ = configuration_.fetch_string("has_particle_charge.type");
+              _particle_charge_type_ = configuration_.fetch_string("particle_has_charge.type");
               DT_THROW_IF (_particle_charge_type_ != "negative" && _particle_charge_type_ != "positive" && _particle_charge_type_ != "undefined",
                            std::logic_error,
                            "Invalid charge type label ! Must be either 'negative', 'positive' or 'undefined'.");
@@ -346,13 +346,13 @@ namespace snemo {
               DT_LOG_DEBUG(get_logging_priority(), "The event does not have non associated calorimeter hits !");
               return cuts::SELECTION_INAPPLICABLE;
             }
-          const size_t n_unasso_calorimeters = PTD.get_non_associated_calorimeters();
+          const size_t n_unasso_calorimeters = PTD.get_non_associated_calorimeters().size();
           DT_LOG_DEBUG(get_logging_priority(),
                        "Number of non associated calorimeters = " << n_unasso_calorimeters << " (min = "
                        << _non_associated_calorimeter_hits_range_min_ << " , max = " << _non_associated_calorimeter_hits_range_max_ << ")");
 
               bool check = true;
-              if (_non_associated_calorimeter_hits_range_min_ >= 0 && n_unasso_calorimeters < (size_t)_non_associated_calorimeter_hits_range_min__)
+              if (_non_associated_calorimeter_hits_range_min_ >= 0 && n_unasso_calorimeters < (size_t)_non_associated_calorimeter_hits_range_min_)
                 {
                   check = false;
                 }
@@ -365,7 +365,6 @@ namespace snemo {
                   DT_LOG_DEBUG(get_logging_priority(), "Event rejected by RANGE_NON_ASSOCIATED_CALORIMETER_HITS cut!");
                   check_range_non_associated_calorimeter_hits = false;
                 }
-            }
         }// end mode RANGE_NON_ASSOCIATED_CALORIMETER_HITS
 
       // Check if the particle track data has some specific particle trajectory :
@@ -416,7 +415,7 @@ namespace snemo {
         }
 
       // Check if the charge of the particle track :
-      bool check_charge = true;
+      bool check_particle_charge = true;
       if (is_mode_particle_charge())
         {
           DT_LOG_DEBUG(get_logging_priority(), "Running PARTICLE_CHARGE mode...");
@@ -435,19 +434,19 @@ namespace snemo {
               if (a_charge == snemo::datamodel::particle_track::negative && _particle_charge_type_ != "negative")
                 {
                   DT_LOG_DEBUG(get_logging_priority(), "Found negative particle! Reject event!");
-                  check_charge = false;
+                  check_particle_charge = false;
                   break;
                 }
               else if (a_charge == snemo::datamodel::particle_track::positive && _particle_charge_type_ != "positive")
                 {
                   DT_LOG_DEBUG(get_logging_priority(), "Found positive particle! Reject event!");
-                  check_charge = false;
+                  check_particle_charge = false;
                   break;
                 }
               else if (a_charge == snemo::datamodel::particle_track::undefined && _particle_charge_type_ != "undefined")
                 {
                   DT_LOG_DEBUG(get_logging_priority(), "Found undefined particle! Reject event!");
-                  check_charge = false;
+                  check_particle_charge = false;
                   break;
                 }
             }
@@ -549,7 +548,7 @@ namespace snemo {
               if (!a_particle.has_vertices())
                 {
                   DT_LOG_DEBUG(get_logging_priority(), "A particle has no vertices !");
-                  check_vertex_on_foil = false;
+                  check_particle_vertex_on_foil = false;
                   break;
                 }
 
@@ -583,7 +582,7 @@ namespace snemo {
           check_has_particles                         &&
           check_range_particles                       &&
           check_particle_association                  &&
-          check_range_calorimeter_hits                &&
+          check_particle_range_calorimeter_hits       &&
           check_particle_vertex_on_foil)
         {
           cut_returned = cuts::SELECTION_ACCEPTED;
