@@ -480,7 +480,7 @@ namespace CAT {
       std::vector<double> cs = helix_chi2s();
       int32_t ndof = 0;
       if( cs.size() > 2 )
-        ndof += 3*(cs.size() - 2)*3;
+        ndof += 3*(cs.size() - 2);
 
       return probof(c, ndof);
 
