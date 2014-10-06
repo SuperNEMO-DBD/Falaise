@@ -2591,7 +2591,8 @@ namespace SULTAN {
 
     bool chosen = false;
 
-    double normalized_parameter_along_line = line.distance_from_cell_center(node->c(), DR, DH);
+    //double normalized_parameter_along_line = line.distance_from_cell_center(node->c(), DR, DH);
+    double normalized_parameter_along_line = line.distance_from_cell_measurement(node->c(), DR, DH);
 
     // ensure parameter is between limits
     if( normalized_parameter_along_line < 0 ){

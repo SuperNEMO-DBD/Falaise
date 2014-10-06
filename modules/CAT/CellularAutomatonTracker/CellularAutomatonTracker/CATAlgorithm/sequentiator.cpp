@@ -2688,6 +2688,7 @@ namespace CAT {
             break;
           continue;
         }
+	reassign_cells_based_on_helix(&(*iseq));
         iseq->calculate_charge();
 
         // match to calorimeter
@@ -4302,5 +4303,113 @@ std::clog << "CAT::sequentiator::can_match:  sequence " << s.name() << " can be 
     return true;
 
   }
+
+  size_t sequentiator::near_level( const topology::cell & c1, const topology::cell & c2 ){
+
+    // returns 0 for far-away cell
+    // 1 for diagonal cells
+    // 2 for side-by-side cells
+
+    // side-by-side connection: distance = 1
+    // diagonal connection: distance = sqrt(2) = 1.41
+    // skip 1 connection, side: distance = 2
+    // skip 1 connection, tilt: distance = sqrt(5) = 2.24
+    // skip 1 connection, diag: distance = 2 sqrt(2) = 2.83
+
+    topology::experimental_double distance = topology::experimental_vector(c1.ep(),c2.ep()).hor().length();
+
+    if( SuperNemo ){  // use side, layer and row
+
+      // Use geiger locator for such research Warning: use integer
+      // because uint32_t has strange behavior with absolute value
+      // cmath::abs
+      const int hit1_side  = c1.block();  // -1, 1
+      const int hit1_layer = abs(c1.layer()); // 0, 1, ..., 8
+      const int hit1_row   = c1.iid();  // -56, -55, ..., 55, 56
+
+      const int hit2_side  = c2.block();
+      const int hit2_layer = abs(c2.layer());
+      const int hit2_row   = c2.iid();
+
+      // Do not cross the foil
+      if (hit1_side != hit2_side) return 0;
+
+      // Check neighboring
+      const unsigned int layer_distance = abs (hit1_layer - hit2_layer); // 1 --> side-by-side
+      const unsigned int row_distance = abs (hit1_row - hit2_row);
+
+      if (layer_distance == 0 && row_distance == 0){
+        if( level >= mybhep::NORMAL ){
+          std::clog << "CAT::sequentiator::near_level: problem: cat asking near level of cells with identical posiion (" << hit1_side << ", " << hit1_layer << ", " << hit1_row << ") (" << hit2_side << ", " << hit2_layer << ", " << hit2_row << ")" << std::endl;
+        }
+        return 3;
+      }
+      else if (layer_distance == 1 && row_distance == 0) return 2;
+      else if (layer_distance == 0 && row_distance == 1) return 2;
+      else if (layer_distance == 1 && row_distance == 1) return 1;
+      return 0;
+
+    }else{ // use physical distance
+
+      double limit_side;
+      double limit_diagonal;
+      if (SuperNemo && SuperNemoChannel)
+	{
+	  limit_side = GG_CELL_pitch;
+	  limit_diagonal = sqrt(2.)*GG_CELL_pitch;
+	}
+      else
+	{
+	  double factor = cos(M_PI/8.); // 0.923879532511287 // octogonal factor = 0.92
+	  limit_side = factor*CellDistance;
+	  limit_diagonal = sqrt(2.)*factor*CellDistance; // new factor = 1.31
+	}
+      double precision = 0.15*limit_side;
+      
+      if( level >= mybhep::VVERBOSE )
+	std::clog << "CAT::sequentiator::near_level: (c " << c2.id() << " d " << distance.value() << " )"
+		  << std::endl;
+      
+      if( fabs(distance.value() - limit_side) < precision )
+	return 2;
+      
+      if( fabs(distance.value() - limit_diagonal) < precision )
+	return 1;
+      
+      return 0;
+    }
+
+
+  }
+
+  void sequentiator::reassign_cells_based_on_helix( topology::sequence * seq ){
+
+    topology::experimental_point helix_pos;
+    topology::experimental_double distance;
+    size_t index;
+    for( std::vector<topology::node>::iterator inode = seq->nodes_.begin()+1; inode!=seq->nodes_.end()-1;++inode){
+
+      helix_pos = seq->get_helix().position(inode->ep());
+      distance = helix_pos.distance(inode->ep());
+      index = inode - seq->nodes_.begin();
+
+      if( level >= mybhep::VVERBOSE )
+	std::clog << "CAT::sequentiator::reassign_cells_based_on_helix: sequence of " << seq->nodes_.size() << " nodes, node " << index << " id " << inode->c().id() << " distance from helix " << distance.value() << " +- " << distance.error() << std::endl;
+
+      if( distance.value() > CellDistance/2. &&
+	  near_level(seq->nodes_[index-1].c(), seq->nodes_[index+1].c()) ){
+	if( level >= mybhep::VERBOSE )
+	  std::clog << "CAT::sequentiator::reassign_cells_based_on_helix: sequence of " << seq->nodes_.size() << " nodes, node " << index << " id " << inode->c().id() << " distance from helix " << distance.value() << " +- " << distance.error() << " remove node " << std::endl;
+	seq->nodes_.erase(inode);
+	index = inode - seq->nodes_.begin();
+	inode = seq->nodes_.begin() + index;
+	if( index + 1 >= seq->nodes_.size() )
+	  break;
+	continue;
+      }
+    }
+
+  }
+
 
 } // end of namespace CAT

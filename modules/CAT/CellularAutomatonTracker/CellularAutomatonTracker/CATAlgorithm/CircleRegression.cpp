@@ -129,9 +129,7 @@ namespace CAT{
 
         }
 
-        double mean_error_x = 0.;
-        double mean_error_y = 0.;
-
+	// calculate parameters for circle
         for(std::vector<experimental_double>::iterator it=xi_.begin(); it != xi_.end(); ++it)
           {
             double y = yi_[it - xi_.begin()].value();
@@ -140,8 +138,6 @@ namespace CAT{
             if( std::isnan(w) || std::isinf(w) )
               w = 1.;
             Sw += w;
-            mean_error_x += mybhep::square(it->error());
-            mean_error_y += mybhep::square(yerr);
 
             if( method1 ){
               double u = it->value() - xave;
@@ -240,19 +236,39 @@ namespace CAT{
             return false;
           }
 
-          xc.set((D*C - B*E)/delta, std::sqrt(mean_error_x)/xi_.size());
-          yc.set((A*E - B*D)/delta, std::sqrt(mean_error_y)/xi_.size());
-
+	  double XC = (D*C - B*E)/delta;
+	  double YC = (A*E - B*D)/delta;
           double rsum = 0.;
           for(std::vector<experimental_double>::iterator it=xi_.begin(); it != xi_.end(); ++it)
             {
-              double u = it->value() - xc.value();
+              double u = it->value() - XC;
               double y = yi_[it - xi_.begin()].value();
-              double v = y - yc.value();
+              double v = y - YC;
               rsum += std::sqrt(mybhep::square(u) + mybhep::square(v));
             }
+	  rsum /= xi_.size();
 
-          r.set(rsum/xi_.size() , 0. );
+          xc.set(XC, 0.);
+          yc.set(YC, 0.);
+          r.set(rsum , 0. );
+	  c_ = circle(experimental_point(xc, experimental_double(0.,0.), yc), r, print_level(), probmin());
+
+	  double mean_error_x = 0.;
+	  double mean_error_y = 0.;
+	  double mean_error_r = 0.;
+	  for(std::vector<experimental_double>::iterator it=xi_.begin(); it != xi_.end(); ++it)
+	    {
+	      topology::experimental_point local_point(*it, experimental_double(0.,0.), yi_[it - xi_.begin()]);
+	      topology::experimental_point circle_point = c_.position(local_point);
+	      topology::experimental_vector distance(local_point, circle_point);
+	      mean_error_x += pow(distance.x().value(),2);
+	      mean_error_y += pow(distance.z().value(),2);
+	      mean_error_r += pow(distance.x().value(),2) + pow(distance.z().value(),2);
+	    }
+
+          xc.set_error(std::sqrt(mean_error_x/xi_.size()));
+          yc.set_error(std::sqrt(mean_error_y/xi_.size()));
+	  r.set_error(std::sqrt(mean_error_r/xi_.size()));
 
           if( print_level() >= mybhep::VVERBOSE ){
             std::clog << "CAT::CircleRegression::fit: fitted circle through " << xi_.size() << " points: xc: "; xc.dump(); std::clog << " yc: "; yc.dump(); std::clog << " r: "; r.dump(); std::clog << " " << std::endl;

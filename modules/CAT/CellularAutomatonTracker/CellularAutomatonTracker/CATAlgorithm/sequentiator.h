@@ -524,6 +524,8 @@ namespace CAT {
     topology::joint find_best_matching_joint(topology::joint j, std::vector<topology::joint> js, topology::cell A, topology::cell B, topology::cell C, double *chi2, bool A_in_on_gap, bool B_is_on_gap);
     bool build_sequences_from_ambiguous_alternatives(std::vector< std::vector<topology::broken_line> > sets_of_bl_alternatives, std::vector<topology::sequence> *seqs);
     bool increase_iterations(std::vector< std::vector<topology::broken_line> > sets_of_bl_alternatives, std::vector<size_t> * iterations, int * block_which_is_increasing, int * first_augmented_block);
+    size_t near_level( const topology::cell & c1, const topology::cell & c2 );
+    void reassign_cells_based_on_helix( topology::sequence * seq );
 
   public:
     void SetModuleNR(std::string mID){
