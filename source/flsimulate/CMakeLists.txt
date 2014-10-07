@@ -59,8 +59,8 @@ set_target_properties(flsimulate PROPERTIES COMPILE_DEFINITIONS ENABLE_BINRELOC)
 
 target_link_libraries(flsimulate
   Falaise
-  ${Bayeux_LIBRARIES}
   ${Bayeux_MCTOOLS_GEANT4_LIBRARY}
+  ${Bayeux_LIBRARIES}
   ${Boost_LIBRARIES}
   ${Geant4_LIBRARIES}
   )
