@@ -368,6 +368,7 @@ namespace SULTAN {
     m.message("SULTAN::sultan::assign_helices_to_sequences: assign helices to ", sequences_.size(), " sequences ", mybhep::VERBOSE);
     for(std::vector<topology::sequence>::iterator iseq = sequences_.begin(); iseq != sequences_.end(); ++iseq){
       m.message("SULTAN::sultan::assign_helices_to_sequences: deal with sequence ", iseq - sequences_.begin(), " with ", iseq->nodes().size(), " nodes ", mybhep::VERBOSE);
+      if( !iseq->nodes_.size() ) continue;
       if( iseq->nodes_.size() < min_ncells_in_cluster ){
 	continue;
       }

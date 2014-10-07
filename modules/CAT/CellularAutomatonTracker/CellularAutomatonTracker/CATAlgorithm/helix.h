@@ -252,9 +252,13 @@ namespace CAT {
 	// the helix errors are based on fluctuation of points from helix curve
 	// so they cannot be used for chi2 (they are large for a bad helix giving it a good chi2)
 	// use just error on point
-        double res2 = mybhep::square(residual.x().value()/ep.x().error()) +
-          mybhep::square(residual.y().value()/ep.y().error()) +
-          mybhep::square(residual.z().value()/ep.z().error());
+	if( ep.x().error() ) residual.set_x(residual.x()/ep.x().error());
+	if( ep.y().error() ) residual.set_y(residual.y()/ep.y().error());
+	if( ep.z().error() ) residual.set_z(residual.z()/ep.z().error());
+
+        double res2 = mybhep::square(residual.x().value()) +
+          mybhep::square(residual.y().value()) +
+          mybhep::square(residual.z().value());
 
         if( print_level() >= mybhep::VVERBOSE ){
           std::clog << " input point: ( "; ep.x().dump(); std::clog << " , "; ep.y().dump(); std::clog << " , "; ep.z().dump(); std::clog << " ) helix: ("; predicted.x().dump(); std::clog << " , "; predicted.y().dump(); std::clog << " , ";predicted.z().dump(); std::clog << " ) local chi2: " << res2  << " " << std::endl;
