@@ -4384,29 +4384,37 @@ std::clog << "CAT::sequentiator::can_match:  sequence " << s.name() << " can be 
 
   void sequentiator::reassign_cells_based_on_helix( topology::sequence * seq ){
 
+    if( seq->nodes_.size() < 3 ) return;
+
     topology::experimental_point helix_pos;
     topology::experimental_double distance;
     size_t index;
-    for( std::vector<topology::node>::iterator inode = seq->nodes_.begin()+1; inode!=seq->nodes_.end()-1;++inode){
+    std::vector<topology::node>::iterator inode = seq->nodes_.begin();
+    inode ++;
+    while( (size_t)(inode - seq->nodes_.begin()) < seq->nodes_.size()-1 && seq->nodes_.size() >= 3){
 
       helix_pos = seq->get_helix().position(inode->ep());
       distance = helix_pos.distance(inode->ep());
       index = inode - seq->nodes_.begin();
-
+      
       if( level >= mybhep::VVERBOSE )
 	std::clog << "CAT::sequentiator::reassign_cells_based_on_helix: sequence of " << seq->nodes_.size() << " nodes, node " << index << " id " << inode->c().id() << " distance from helix " << distance.value() << " +- " << distance.error() << std::endl;
-
+      
       if( distance.value() > CellDistance/2. &&
 	  near_level(seq->nodes_[index-1].c(), seq->nodes_[index+1].c()) ){
 	if( level >= mybhep::VERBOSE )
 	  std::clog << "CAT::sequentiator::reassign_cells_based_on_helix: sequence of " << seq->nodes_.size() << " nodes, node " << index << " id " << inode->c().id() << " distance from helix " << distance.value() << " +- " << distance.error() << " remove node " << std::endl;
 	seq->nodes_.erase(inode);
+	inode = seq->nodes_.begin() + (inode - seq->nodes_.begin());
 	index = inode - seq->nodes_.begin();
 	inode = seq->nodes_.begin() + index;
-	if( index + 1 >= seq->nodes_.size() )
+	if( index == 0 || index + 2 >= seq->nodes_.size() )
 	  break;
 	continue;
       }
+
+      ++inode;
+      continue;
     }
 
   }
