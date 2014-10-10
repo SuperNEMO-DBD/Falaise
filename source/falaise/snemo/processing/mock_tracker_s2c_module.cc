@@ -157,9 +157,25 @@ namespace snemo {
         _hit_category_ = "gg";
       }
 
+      if (! has_external_random()) {
+        int random_seed = 12345;
+        if (setup_.has_key("random.seed")) {
+          random_seed = setup_.fetch_integer("random.seed");
+        }
+        std::string random_id = "mt19937";
+        if (setup_.has_key("random.id")) {
+          random_id = setup_.fetch_string("random.id");
+        }
+        // Initialize the embedded random number generator:
+        _random_.init(random_id, random_seed);
+      }
+
+      // Initialize the Geiger regime utility:
+      _geiger_.initialize(setup_);
+
       const double time_unit = CLHEP::microsecond;
 
-      // Set minium drift time for peripheral hits:
+      // Set minimum drift time for peripheral hits:
       if (setup_.has_key("peripheral_drift_time_threshold")) {
         _peripheral_drift_time_threshold_ = setup_.fetch_real("peripheral_drift_time_threshold");
         if (! setup_.has_explicit_unit("peripheral_drift_time_threshold")) {
@@ -186,22 +202,6 @@ namespace snemo {
       }
       DT_LOG_DEBUG(get_logging_priority(), "delayed_drift_time_threshold = "
                    << _delayed_drift_time_threshold_ / CLHEP::microsecond << " us");
-
-      if (! has_external_random()) {
-        int random_seed = 12345;
-        if (setup_.has_key("random.seed")) {
-          random_seed = setup_.fetch_integer("random.seed");
-        }
-        std::string random_id = "mt19937";
-        if (setup_.has_key("random.id")) {
-          random_id = setup_.fetch_string("random.id");
-        }
-        // Initialize the embedded random number generator:
-        _random_.init(random_id, random_seed);
-      }
-
-      // Initialize the Geiger regime utility:
-      _geiger_.initialize(setup_);
 
       // 2012-07-26 FM : support reference to the MC true hit ID
       if (setup_.has_flag("store_mc_hit_id")) {
@@ -609,9 +609,13 @@ namespace snemo {
             _geiger_.calibrate_drift_radius_from_drift_time(anode_time, radius, sigma_radius);
             the_calibrated_tracker_hit.set_anode_time(anode_time);
             if (anode_time > _peripheral_drift_time_threshold_) {
+              DT_LOG_TRACE(get_logging_priority(),
+                           "Peripheral Geiger hit with anode time = " << anode / CLHEP::microsecond << " us");
               the_calibrated_tracker_hit.set_peripheral(true);
             }
           } else {
+            DT_LOG_TRACE(get_logging_priority(),
+                         "Delayed Geiger hit with anode time = " << anode_time / CLHEP::microsecond << " us");
             // 2012-03-29 FM : store the anode_time as the reference delayed time
             the_calibrated_tracker_hit.set_delayed_time(anode_time,
                                                         _geiger_.get_sigma_anode_time(anode_time));
