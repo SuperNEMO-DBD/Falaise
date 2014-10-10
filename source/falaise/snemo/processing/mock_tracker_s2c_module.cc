@@ -610,7 +610,7 @@ namespace snemo {
             the_calibrated_tracker_hit.set_anode_time(anode_time);
             if (anode_time > _peripheral_drift_time_threshold_) {
               DT_LOG_TRACE(get_logging_priority(),
-                           "Peripheral Geiger hit with anode time = " << anode / CLHEP::microsecond << " us");
+                           "Peripheral Geiger hit with anode time = " << anode_time / CLHEP::microsecond << " us");
               the_calibrated_tracker_hit.set_peripheral(true);
             }
           } else {
