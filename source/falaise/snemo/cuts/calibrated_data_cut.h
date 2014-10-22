@@ -60,10 +60,12 @@ namespace snemo {
 
       /// \brief Type of cut on calibrated data model
       enum mode_type {
-        MODE_UNDEFINED          = 0,
-        MODE_FLAG               = datatools::bit_mask::bit00,
-        MODE_HAS_HIT_CATEGORY   = datatools::bit_mask::bit01,
-        MODE_RANGE_HIT_CATEGORY = datatools::bit_mask::bit02
+        MODE_UNDEFINED              = 0,
+        MODE_FLAG                   = datatools::bit_mask::bit00,
+        MODE_HAS_HIT_CATEGORY       = datatools::bit_mask::bit01,
+        MODE_RANGE_HIT_CATEGORY     = datatools::bit_mask::bit02,
+        MODE_TRACKER_HIT_HAS_TRAITS = datatools::bit_mask::bit03,
+        MODE_TRACKER_HIT_IS_DELAYED = datatools::bit_mask::bit04
       };
 
       /// Set the calibrated data bank label/name
@@ -83,6 +85,12 @@ namespace snemo {
 
       /// Check cut mode MODE_RANGE_HIT_CATEGORY:
       bool is_mode_range_hit_category () const;
+
+      /// Check cut mode MODE_TRACKER_HIT_HAS_TRAITS:
+      bool is_mode_tracker_hit_has_traits () const;
+
+      /// Check cut mode MODE_TRACKER_HIT_IS_DELAYED:
+      bool is_mode_tracker_hit_is_delayed () const;
 
       /// Set the name of cut mode MODE_FLAG
       void set_flag_name (const std::string & flag_name_);
@@ -114,13 +122,14 @@ namespace snemo {
 
     private:
 
-      std::string _CD_label_;               //!< Name of the "Calibrated data" bank
-      uint32_t    _mode_;                   //!< Mode of the cut
-      std::string _flag_name_;              //!< Name of the boolean property in the calibrated data
-      std::string _hit_category_;           //!< Name of the hit category to be checked
-      int         _hit_category_range_min_; //!< Minimal number of hits in a category
-      int         _hit_category_range_max_; //!< Maximal number of hits in a category
-
+      std::string _CD_label_;                 //!< Name of the "Calibrated data" bank
+      uint32_t    _mode_;                     //!< Mode of the cut
+      std::string _flag_name_;                //!< Name of the boolean property in the calibrated data
+      std::string _hit_category_;             //!< Name of the hit category to be checked
+      int         _hit_category_range_min_;   //!< Minimal number of hits in a category
+      int         _hit_category_range_max_;   //!< Maximal number of hits in a category
+      int         _tracker_hit_trait_bits_;   //!< Tracker hit traits bits
+      double      _tracker_hit_delayed_time_; //!< Tracker hit delayed time
       // Macro to automate the registration of the cut :
       CUT_REGISTRATION_INTERFACE(calibrated_data_cut);
 
