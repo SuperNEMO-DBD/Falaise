@@ -20,6 +20,11 @@ namespace snemo {
     const std::string calibrated_tracker_hit::BOTTOM_CATHODE_TIME_KEY = "bottom_cathode_time";
     const std::string calibrated_tracker_hit::TOP_CATHODE_TIME_KEY    = "top_cathode_time";
 
+    bool calibrated_tracker_hit::get_trait_bit(uint32_t mask_) const
+    {
+      return _get_trait_bit(mask_);
+    }
+
     bool calibrated_tracker_hit::_get_trait_bit (uint32_t mask_) const
     {
       return _traits_ & mask_;

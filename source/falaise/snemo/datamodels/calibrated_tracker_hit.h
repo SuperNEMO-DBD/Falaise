@@ -130,6 +130,9 @@ namespace snemo {
       /// Get the anode drift time from a stored auxiliary property
       double get_anode_time() const;
 
+      /// Interface to deal with trait bits
+      bool get_trait_bit(uint32_t mask_) const;
+
       /// Check if the hit is marked as noisy
       bool is_noisy() const;
 
