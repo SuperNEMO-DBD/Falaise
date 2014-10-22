@@ -122,14 +122,14 @@ namespace snemo {
 
     private:
 
-      std::string _CD_label_;                 //!< Name of the "Calibrated data" bank
-      uint32_t    _mode_;                     //!< Mode of the cut
-      std::string _flag_name_;                //!< Name of the boolean property in the calibrated data
-      std::string _hit_category_;             //!< Name of the hit category to be checked
-      int         _hit_category_range_min_;   //!< Minimal number of hits in a category
-      int         _hit_category_range_max_;   //!< Maximal number of hits in a category
-      int         _tracker_hit_trait_bits_;   //!< Tracker hit traits bits
-      double      _tracker_hit_delayed_time_; //!< Tracker hit delayed time
+      std::string _CD_label_;               //!< Name of the "Calibrated data" bank
+      uint32_t    _mode_;                   //!< Mode of the cut
+      std::string _flag_name_;              //!< Name of the boolean property in the calibrated data
+      std::string _hit_category_;           //!< Name of the hit category to be checked
+      int         _hit_category_range_min_; //!< Minimal number of hits in a category
+      int         _hit_category_range_max_; //!< Maximal number of hits in a category
+      int         _tracker_hit_trait_bits_; //!< Tracker hit traits bits
+      double      _tracker_hit_delay_time_; //!< Tracker hit delayed time
       // Macro to automate the registration of the cut :
       CUT_REGISTRATION_INTERFACE(calibrated_data_cut);
 

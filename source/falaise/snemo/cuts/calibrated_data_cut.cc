@@ -33,7 +33,7 @@ namespace snemo {
       _hit_category_range_min_ = -1;
       _hit_category_range_max_ = -1;
       _tracker_hit_trait_bits_ = snemo::datamodel::calibrated_tracker_hit::none;
-      _tracker_hit_delayed_time_ = 0.0 * CLHEP::microsecond;
+      _tracker_hit_delay_time_ = 0.0 * CLHEP::microsecond;
       return;
     }
 
@@ -252,10 +252,10 @@ namespace snemo {
         // mode TRACKER_HIT_IS_DELAYED:
         if (is_mode_tracker_hit_is_delayed()) {
           DT_LOG_DEBUG (get_logging_priority (), "Using TRACKER_HIT_IS_DELAYED mode...");
-          if (configuration_.has_key("tracker_hit_is_delayed.delayed_time")) {
-            _tracker_hit_delayed_time_ = configuration_.fetch_real("tracker_hit_is_delayed.delayed_time");
-            if (! configuration_.has_explicit_unit("tracker_hit_is_delayed.delayed_time")) {
-              _tracker_hit_delayed_time_ *= CLHEP::microsecond;
+          if (configuration_.has_key("tracker_hit_is_delayed.delay_time")) {
+            _tracker_hit_delay_time_ = configuration_.fetch_real("tracker_hit_is_delayed.delay_time");
+            if (! configuration_.has_explicit_unit("tracker_hit_is_delayed.delay_time")) {
+              _tracker_hit_delay_time_ *= CLHEP::microsecond;
             }
           }
         }// end of is_mode_tracker_hit_is_delayed
@@ -383,7 +383,7 @@ namespace snemo {
         for (snemo::datamodel::calibrated_data::tracker_hit_collection_type::const_iterator
                ihit = hits.begin(); ihit != hits.end(); ++ihit) {
           const snemo::datamodel::calibrated_tracker_hit & a_hit = ihit->get();
-          if (a_hit.is_delayed() && a_hit.get_delayed_time() > _tracker_hit_delayed_time_) {
+          if (a_hit.is_delayed() && a_hit.get_delayed_time() > _tracker_hit_delay_time_) {
             check_tracker_hit_is_delayed = true;
             break;
           }
