@@ -69,6 +69,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/simulation/calorimeter_step_hit_processor.h
   #snemo/simulation/pmt_signal_generator.h
 
+  snemo/processing/event_header_utils_module.h
   snemo/processing/calorimeter_regime.h
   snemo/processing/geiger_regime.h
   snemo/processing/mock_calorimeter_s2c_module.h
@@ -119,6 +120,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/geometry/locator_plugin.cc
   snemo/geometry/utils.cc
 
+  snemo/processing/event_header_utils_module.cc
   snemo/processing/calorimeter_regime.cc
   snemo/processing/geiger_regime.cc
   snemo/processing/mock_calorimeter_s2c_module.cc
