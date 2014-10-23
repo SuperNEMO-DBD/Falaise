@@ -83,6 +83,15 @@ namespace snemo {
 
 } // end of namespace snemo
 
+/***************************
+ * OCD support : interface *
+ ***************************/
+
+#include <datatools/ocd_macros.h>
+
+// @arg snemo::processing::event_header_utils_module the name the registered class
+DOCD_CLASS_DECLARATION(snemo::processing::event_header_utils_module)
+
 #endif // FALAISE_SNEMO_PROCESSING_EVENT_HEADER_UTILS_MODULE_H
 
 // end of event_header_utils_module.h
