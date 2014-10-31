@@ -776,13 +776,13 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::geiger_regime,ocd_)
       .set_traits(datatools::TYPE_REAL)
       // .set_long_description("Default value: ``5.0 cm/us``                \n")
       .set_explicit_unit(true)
-      .set_unit_label("speed")
+      .set_unit_label("velocity")
       .set_unit_symbol("cm/us")
       .set_default_value_real(5.0 * CLHEP::cm / CLHEP::microsecond)
-      .add_example("Set the default value::                                 \n"
-                   "                                                        \n"
-                   "  plasma_longitudinal_speed : real as speed = 5.0 cm/us \n"
-                   "                                                        \n"
+      .add_example("Set the default value::                                    \n"
+                   "                                                           \n"
+                   "  plasma_longitudinal_speed : real as velocity = 5.0 cm/us \n"
+                   "                                                           \n"
                    )
       ;
   }
@@ -795,36 +795,36 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::geiger_regime,ocd_)
       .set_traits(datatools::TYPE_REAL)
       //.set_long_description("Default value: ``0.5 cm/us``                \n")
       .set_explicit_unit(true)
-      .set_unit_label("speed")
+      .set_unit_label("velocity")
       .set_unit_symbol("cm/us")
       .set_default_value_real(0.5 * CLHEP::cm / CLHEP::microsecond)
-      .add_example("Set the default value::                                       \n"
-                   "                                                              \n"
-                   "  sigma_plasma_longitudinal_speed : real as speed = 0.5 cm/us \n"
-                   "                                                              \n"
+      .add_example("Set the default value::                                          \n"
+                   "                                                                 \n"
+                   "  sigma_plasma_longitudinal_speed : real as velocity = 0.5 cm/us \n"
+                   "                                                                 \n"
                    )
       ;
   }
 
   // Additionnal configuration hints :
-  ocd_.set_configuration_hints("Here is a full configuration example in the            \n"
-                               "``datatools::properties`` ASCII format::               \n"
-                               "                                                       \n"
-                               "  cell_diameter : real as length = 44 mm               \n"
-                               "  cell_length : real as length = 2900 mm               \n"
-                               "  sigma_anode_time : real as time = 12.5 ns            \n"
-                               "  tcut : real as time = 10.0 us                        \n"
-                               "  sigma_cathode_time : real = 100 ns                   \n"
-                               "  sigma_z : real = 1.0 cm                              \n"
-                               "  sigma_z_missing_cathode : real as length = 5.0 cm    \n"
-                               "  sigma_r_a : real as length = 0.425 mm                \n"
-                               "  sigma_r_b : real = 0.0083                            \n"
-                               "  sigma_r_r0 : real as length = 12.25 mm               \n"
-                               "  base_anode_efficiency : real = 1.0                   \n"
-                               "  base_cathode_efficiency : real = 1.0                 \n"
-                               "  plasma_longitudinal_speed : real = 5.0 cm/us         \n"
-                               "  sigma_plasma_longitudinal_speed : real = 0.5 cm/us   \n"
-                               "                                                       \n"
+  ocd_.set_configuration_hints("Here is a full configuration example in the                      \n"
+                               "``datatools::properties`` ASCII format::                         \n"
+                               "                                                                 \n"
+                               "  cell_diameter : real as length = 44 mm                         \n"
+                               "  cell_length : real as length = 2900 mm                         \n"
+                               "  sigma_anode_time : real as time = 12.5 ns                      \n"
+                               "  tcut : real as time = 10.0 us                                  \n"
+                               "  sigma_cathode_time : real = 100 ns                             \n"
+                               "  sigma_z : real = 1.0 cm                                        \n"
+                               "  sigma_z_missing_cathode : real as length = 5.0 cm              \n"
+                               "  sigma_r_a : real as length = 0.425 mm                          \n"
+                               "  sigma_r_b : real = 0.0083                                      \n"
+                               "  sigma_r_r0 : real as length = 12.25 mm                         \n"
+                               "  base_anode_efficiency : real = 1.0                             \n"
+                               "  base_cathode_efficiency : real = 1.0                           \n"
+                               "  plasma_longitudinal_speed : real as velocity = 5.0 cm/us       \n"
+                               "  sigma_plasma_longitudinal_speed : real as velocity = 0.5 cm/us \n"
+                               "                                                                 \n"
                                );
 
   ocd_.set_validation_support(true);
