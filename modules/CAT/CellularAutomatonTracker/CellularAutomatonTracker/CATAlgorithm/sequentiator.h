@@ -72,11 +72,11 @@ namespace CAT {
 
     bool sequentiate(topology::tracked_data & tracked_data);
     void sequentiate_cluster(topology::cluster & cluster);
-    bool sequentiate_after_sultan(topology::tracked_data & tracked_data);
-    void sequentiate_cluster_after_sultan();
+    bool sequentiate_after_sultan(topology::tracked_data & tracked_data, bool conserve_clustering);
+    void sequentiate_cluster_after_sultan(bool conserve_clustering);
     void make_new_sequence(topology::node & first_node);
     void make_copy_sequence(topology::node & first_node);
-    void make_new_sequence_after_sultan();
+    void make_new_sequence_after_sultan(bool conserve_clustering = false);
     void make_copy_sequence_after_sultan();
     bool evolve(topology::sequence & sequence);
     void fill_links(topology::sequence *sequence);
@@ -490,7 +490,7 @@ namespace CAT {
 
     bool make_scenarios(topology::tracked_data &td, bool after_sultan = false);
     void interpret_physics(std::vector<topology::calorimeter_hit> & calos);
-    void interpret_physics_after_sultan(std::vector<topology::calorimeter_hit> & calos);
+    void interpret_physics_after_sultan(std::vector<topology::calorimeter_hit> & calos, bool conserve_clustering);
     void refine_sequences_near_walls(std::vector<topology::calorimeter_hit> & calos);
     bool belongs_to_other_family(topology::cell c, topology::sequence *iseq);
     topology::plane get_foil_plane();
@@ -522,7 +522,7 @@ namespace CAT {
     bool select_nemo_tracks(topology::tracked_data & __tracked_data);
     bool sequence_is_within_range(topology::node nodeA, topology::node nodeB, topology::sequence seq);
     topology::joint find_best_matching_joint(topology::joint j, std::vector<topology::joint> js, topology::cell A, topology::cell B, topology::cell C, double *chi2, bool A_in_on_gap, bool B_is_on_gap);
-    bool build_sequences_from_ambiguous_alternatives(std::vector< std::vector<topology::broken_line> > sets_of_bl_alternatives, std::vector<topology::sequence> *seqs);
+    bool build_sequences_from_ambiguous_alternatives(std::vector< std::vector<topology::broken_line> > sets_of_bl_alternatives, std::vector<topology::sequence> *seqs, bool conserve_clustering);
     bool increase_iterations(std::vector< std::vector<topology::broken_line> > sets_of_bl_alternatives, std::vector<size_t> * iterations, int * block_which_is_increasing, int * first_augmented_block);
     size_t near_level( const topology::cell & c1, const topology::cell & c2 );
     void reassign_cells_based_on_helix( topology::sequence * seq );

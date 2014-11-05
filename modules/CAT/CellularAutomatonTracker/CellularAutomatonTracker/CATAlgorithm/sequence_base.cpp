@@ -1712,7 +1712,6 @@ namespace CAT {
 	  
 	  inode->set_cc(cc);
 	  inode->set_links(links);
-	  //inode->calculate_triplets_after_sultan(Ratio);
 
 	  /*
 	  // recalculate position closest to helix
@@ -1757,7 +1756,7 @@ namespace CAT {
 
     }
 
-    bool sequence::calculate_helix(double Ratio, bool after_sultan) {
+    bool sequence::calculate_helix(double Ratio, bool after_sultan, bool conserve_clustering_from_reordering) {
 
       bool good_fit=true;
 
@@ -1831,7 +1830,12 @@ namespace CAT {
         }
 
         CircleRegression cl(xs, zs, print_level(), probmin());
-        if( !cl.fit() && !after_sultan ) good_fit = false;
+	// if a clustering is given from nemor or sultan, accept it as good although it does not look like a circle
+	bool good_circle_fit = cl.fit();
+	if( after_sultan || conserve_clustering_from_reordering )
+	  ;
+	else
+	  good_fit = good_circle_fit;
         //      cl.minuit_fit();
 
         if( print_level() >= mybhep::VVERBOSE ){
@@ -1909,7 +1913,9 @@ namespace CAT {
       // for each point, the helix axis should be ~ parallel to the tangent line
       if( good_fit ){
 
-	if( after_sultan ){
+	// if clustering is from sultan, reorder cells 
+	// if conserve, do not reorder cells
+	if( after_sultan && ! conserve_clustering_from_reordering){
 	  // make sure cells are ordered as dictated by helix
 	  reorder_cells(Ratio);
 	}

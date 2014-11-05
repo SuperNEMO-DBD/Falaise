@@ -388,7 +388,7 @@ namespace CAT {
 
       int get_link_index_of_cell(size_t inode, const cell &link) const;
 
-      bool calculate_helix(double Ratio, bool after_sultan = false);
+      bool calculate_helix(double Ratio, bool after_sultan = false, bool conserve_clustering_from_reordering = false);
 
       void reorder_cells(double Ratio);
 
