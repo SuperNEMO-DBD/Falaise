@@ -68,7 +68,7 @@ int main(int argc_, char ** argv_)
 
     // The algorithm's configuration parameters :
     TrackerPreClustering::setup_data PC_config;
-    PC_config.debug = debug;
+    if (debug) PC_config.logging = datatools::logger::PRIO_DEBUG;
     PC_config.cell_size                = 44.0 * CLHEP::mm;
     PC_config.delayed_hit_cluster_time = 10.0 * CLHEP::microsecond;
     PC_config.processing_prompt_hits   = process_prompt;
