@@ -101,8 +101,6 @@ namespace snemo {
 
     public:
 
-      bool is_debug () const;
-      void set_debug (bool);
       bool is_initialized () const;
       int get_mode () const;
       void set_mode (int);
@@ -142,7 +140,6 @@ namespace snemo {
 
     private:
 
-      bool   _debug_;       //!< Debug flag
       bool   _initialized_; //!< Initialization flag
       int    _mode_;        //!< Mode
 

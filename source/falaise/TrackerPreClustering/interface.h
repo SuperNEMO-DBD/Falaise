@@ -41,6 +41,8 @@
 // Third party:
 // - Boost:
 #include <boost/cstdint.hpp>
+// - Bayeux/datatools:
+#include <datatools/logger.h>
 
 namespace TrackerPreClustering {
 
@@ -63,7 +65,7 @@ namespace TrackerPreClustering {
     bool check() const;
 
     // Attributes:
-    bool   debug; /// Debug flag
+    datatools::logger::priority logging; /// Logging flag
     double cell_size; /// The dimension of a cell
     double delayed_hit_cluster_time; /// Delayed hit cluster time
     bool   processing_prompt_hits; /// Flag for processing of prompt hits

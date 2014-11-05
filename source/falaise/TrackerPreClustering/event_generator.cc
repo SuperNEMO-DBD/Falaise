@@ -107,9 +107,8 @@ namespace TrackerPreClustering {
   {
     DT_THROW_IF(! is_initialized(), std::logic_error,
                 "Event generator is not initialized!");
-    bool devel = false;
-    if (devel) DT_LOG_TRACE(datatools::logger::PRIO_TRACE,
-                            "Entering...");
+    const datatools::logger::priority local_priority = datatools::logger::PRIO_WARNING;
+    DT_LOG_TRACE(local_priority, "Entering...");
 
     boost::random::mt19937 & generator = *_generator_;
     boost::uniform_real<> uni_dist(0, 1);
@@ -118,8 +117,7 @@ namespace TrackerPreClustering {
 
     boost::random::uniform_int_distribution<> prompt_tracks_dist(1, 3);
     unsigned int nb_prompt_tracks = prompt_tracks_dist(generator);
-    if (devel) DT_LOG_TRACE(datatools::logger::PRIO_TRACE,
-                            "nb_prompt_tracks=" << nb_prompt_tracks);
+    DT_LOG_TRACE(local_priority, "nb_prompt_tracks=" << nb_prompt_tracks);
     for (unsigned int itrack = 0; itrack < nb_prompt_tracks; itrack++) {
       boost::random::uniform_int_distribution<> prompt_hits_dist(3, 15);
       unsigned int nb_prompt_hits = prompt_hits_dist(generator);
@@ -174,15 +172,10 @@ namespace TrackerPreClustering {
         hits_.push_back(h);
         n0++;
       }
-      if (devel) DT_LOG_TRACE(datatools::logger::PRIO_TRACE,
-                              "nb_prompt_hits=" << n0);
+      DT_LOG_TRACE(local_priority, "nb_prompt_hits=" << n0);
     }
-    if (devel) {
-      DT_LOG_TRACE(datatools::logger::PRIO_TRACE,
-                   "N hits=" << _gids_.size());
-      DT_LOG_TRACE(datatools::logger::PRIO_TRACE,
-                   "Exiting.");
-    }
+    DT_LOG_TRACE(local_priority, "N hits=" << _gids_.size());
+    DT_LOG_TRACE(local_priority, "Exiting.");
     return;
   }
 
@@ -190,9 +183,8 @@ namespace TrackerPreClustering {
   {
     DT_THROW_IF(! is_initialized(), std::logic_error,
                 "Event generator is not initialized!");
-    bool devel = false;
-    if (devel) DT_LOG_TRACE(datatools::logger::PRIO_TRACE,
-                            "Entering...");
+    const datatools::logger::priority local_priority = datatools::logger::PRIO_WARNING;
+    DT_LOG_TRACE(local_priority, "Entering...");
 
     boost::random::mt19937 & generator = *_generator_;
     boost::uniform_real<> uni_dist(0, 1);
@@ -201,8 +193,7 @@ namespace TrackerPreClustering {
 
     boost::random::uniform_int_distribution<> delayed_tracks_dist(1, 3);
     unsigned int nb_delayed_tracks = delayed_tracks_dist(generator);
-    if (devel) DT_LOG_TRACE(datatools::logger::PRIO_TRACE,
-                            "nb_delayed_tracks=" << nb_delayed_tracks);
+    DT_LOG_TRACE(local_priority, "nb_delayed_tracks=" << nb_delayed_tracks);
     for (unsigned int itrack = 0; itrack < nb_delayed_tracks; itrack++) {
       boost::random::uniform_int_distribution<> delayed_hits_dist(3, 15);
       unsigned int nb_delayed_hits = delayed_hits_dist(generator);
@@ -256,15 +247,10 @@ namespace TrackerPreClustering {
         hits_.push_back(h);
         n0++;
       }
-      if (devel) DT_LOG_TRACE(datatools::logger::PRIO_TRACE,
-                              "nb_delayed_hits=" << n0);
+      DT_LOG_TRACE(local_priority, "nb_delayed_hits=" << n0);
     }
-    if (devel) {
-      DT_LOG_TRACE(datatools::logger::PRIO_TRACE,
-                   "N hits=" << _gids_.size());
-      DT_LOG_TRACE(datatools::logger::PRIO_TRACE,
-                   "Exiting.");
-    }
+    DT_LOG_TRACE(local_priority, "N hits=" << _gids_.size());
+    DT_LOG_TRACE(local_priority, "Exiting.");
     return;
   }
 

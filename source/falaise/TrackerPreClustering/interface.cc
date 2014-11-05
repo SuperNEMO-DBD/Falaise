@@ -28,7 +28,7 @@ namespace TrackerPreClustering {
 
   void setup_data::reset()
   {
-    debug = false;
+    logging = datatools::logger::PRIO_WARNING;
     cell_size = std::numeric_limits<double>::quiet_NaN();
     delayed_hit_cluster_time = std::numeric_limits<double>::quiet_NaN();
     processing_prompt_hits   = true;

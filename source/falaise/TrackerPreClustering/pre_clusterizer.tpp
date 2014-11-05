@@ -31,33 +31,23 @@ namespace TrackerPreClustering {
     delayed_hits[1].clear();
 
     BOOST_FOREACH(const hit_type * hitref, input_data_.hits) {
-      if (is_debug()) {
-        DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "Hit ID : " << hitref->get_id());
-      }
+      DT_LOG_DEBUG(_logging_, "Hit ID : " << hitref->get_id());
       if (hitref->is_sterile()) {
-        if (is_debug()) {
-          DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "  `-> sterile hit");
-        }
+        DT_LOG_DEBUG(_logging_, "  `-> sterile hit");
         output_data_.ignored_hits.push_back(hitref);
         continue;
       }
       if (hitref->is_noisy()) {
-        if (is_debug()) {
-          DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "  `-> noisy hit");
-        }
+        DT_LOG_DEBUG(_logging_, "  `-> noisy hit");
         output_data_.ignored_hits.push_back(hitref);
         continue;
       }
       if (! hitref->has_xy()) {
-        if (is_debug()) {
-          DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "  `-> no XY hit");
-        }
+        DT_LOG_DEBUG(_logging_, "  `-> no XY hit");
         return ERROR;
       }
       if (! hitref->has_geom_id()) {
-        if (is_debug()) {
-          DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "  `-> no GID hit");
-        }
+        DT_LOG_DEBUG(_logging_, "  `-> no GID hit");
         return ERROR;
       }
 
@@ -67,58 +57,42 @@ namespace TrackerPreClustering {
       // int row    = hitref->get_row();
 
       if (hitref->is_prompt()) {
-        if (is_debug()) {
-          DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "  `-> prompt hit");
-        }
+        DT_LOG_DEBUG(_logging_, "  `-> prompt hit");
         if (is_processing_prompt_hits()) {
           if (side == 0 || side == 1) {
-            if (is_debug()) {
-              DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "  `-> push with prompt hit(side " << side << ")");
-            }
+            DT_LOG_DEBUG(_logging_, "  `-> push with prompt hit(side " << side << ")");
             int effective_side = side;
             if (! is_split_chamber()) {
               effective_side = 0;
             }
             prompt_hits[effective_side].push_back(hitref);
           } else {
-            if (is_debug()) {
-              DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "  `-> ignored prompt hit");
-            }
+            DT_LOG_DEBUG(_logging_, "  `-> ignored prompt hit");
             output_data_.ignored_hits.push_back(hitref);
           }
         } else {
-          if (is_debug()) {
-            DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "  `-> ignored prompt hit");
-          }
+          DT_LOG_DEBUG(_logging_, "  `-> ignored prompt hit");
           output_data_.ignored_hits.push_back(hitref);
         }
         continue;
       }
 
       if (hitref->is_delayed()) {
-        if (is_debug()) {
-          DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "  `-> delayed hit");
-        }
+        DT_LOG_DEBUG(_logging_, "  `-> delayed hit");
         if (is_processing_delayed_hits()) {
           if (side == 0 || side == 1) {
-            if (is_debug()) {
-              DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "   push with delayed hit(side " << side << ")");
-            }
+            DT_LOG_DEBUG(_logging_, "   push with delayed hit(side " << side << ")");
             int effective_side = side;
             if (! is_split_chamber()) {
               effective_side = 0;
             }
             delayed_hits[effective_side].push_back(hitref);
           } else {
-            if (is_debug()) {
-              DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "  `-> ignored delayed hit");
-            }
+            DT_LOG_DEBUG(_logging_, "  `-> ignored delayed hit");
             output_data_.ignored_hits.push_back(hitref);
           }
         }  else {
-          if (is_debug()) {
-            DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "  `-> ignored delayed hit");
-          }
+          DT_LOG_DEBUG(_logging_, "  `-> ignored delayed hit");
           output_data_.ignored_hits.push_back(hitref);
         }
         continue;
@@ -126,25 +100,19 @@ namespace TrackerPreClustering {
     }
 
     if (is_processing_prompt_hits()) {
-      if (is_debug()) {
-        DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "Processing prompt hits...");
-      }
+      DT_LOG_DEBUG(_logging_, "Processing prompt hits...");
       unsigned int max_side = 2;
       if (! is_split_chamber()) {
         max_side = 1;
       }
       // For each side of the tracking chamber, we collect one unique candidate time-cluster of prompt hits.
       for (unsigned int side = 0; side < max_side; side++) {
-        if (is_debug()) {
-          DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG,
-                       (side == max_side - 1 ? "`- " : "|- ")
-                       << "Side " << side);
-        }
+        DT_LOG_DEBUG(_logging_,
+                     (side == max_side - 1 ? "`- " : "|- ")
+                     << "Side " << side);
         hit_collection_type * new_prompt_cluster = 0;
         if (prompt_hits[side].size() == 1) {
-          if (is_debug()) {
-            DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "  `-> ignored prompt hit");
-          }
+          DT_LOG_DEBUG(_logging_, "  `-> ignored prompt hit");
           // std::cerr << "DEVEL: TPC: ignored hit = " << prompt_hits[side][0] << std::endl;
           output_data_.ignored_hits.push_back(prompt_hits[side][0]);
           continue;
@@ -152,13 +120,11 @@ namespace TrackerPreClustering {
         for (unsigned int i = 0; i < prompt_hits[side].size(); i++) {
           // Traverse the prompt hits in this side :
           const hit_type * hit_ref = prompt_hits[side].at(i);
-          if (is_debug()) {
-            DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG,
-                         (side == max_side - 1 ? " " : "|")
-                         <<(i == prompt_hits[side].size()-1 ? "   `- " : "   |- ")
-                         << "Hit ID : " << hit_ref->get_id()
-                         );
-          }
+          DT_LOG_DEBUG(_logging_,
+                       (side == max_side - 1 ? " " : "|")
+                       <<(i == prompt_hits[side].size()-1 ? "   `- " : "   |- ")
+                       << "Hit ID : " << hit_ref->get_id()
+                       );
           if (new_prompt_cluster == 0) {
             hit_collection_type tmp;
             output_data_.prompt_clusters.push_back(tmp);
@@ -170,9 +136,7 @@ namespace TrackerPreClustering {
     }
 
     if (is_processing_delayed_hits()) {
-      if (is_debug()) {
-        DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "Processing delayed hits...");
-      }
+      DT_LOG_DEBUG(_logging_, "Processing delayed hits...");
       // For each side of the tracking chamber, we try to collect some candidate time-clusters of delayed hits.
       // The aggregation criterion uses a time-interval of width '_delayed_hit_cluster_time_' (~10usec).
       unsigned int max_side = 2;
@@ -180,24 +144,16 @@ namespace TrackerPreClustering {
         max_side = 1;
       }
       for (unsigned int side = 0; side < max_side; side++) {
-        if (is_debug()) {
-          DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "Side " << side);
-        }
+        DT_LOG_DEBUG(_logging_, "Side " << side);
         // Sort the collection of delayed hits by delayed time :
         compare_tracker_hit_ptr_by_delayed_time<hit_type> cthpbdt;
         std::sort(delayed_hits[side].begin(),
                   delayed_hits[side].end(),
                   cthpbdt);
-        if (is_debug()) {
-          DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG,
-                       "Delayed hits on side " << side << " have been time ordered.");
-        }
+        DT_LOG_DEBUG(_logging_, "Delayed hits on side " << side << " have been time ordered.");
         if (delayed_hits[side].size() < 2) {
           if (delayed_hits[side].size() == 1) {
-            if (is_debug()) {
-              DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG,
-                           "  -> ignored delayed hit");
-            }
+            DT_LOG_DEBUG(_logging_, "  -> ignored delayed hit");
             output_data_.ignored_hits.push_back(delayed_hits[side][0]);
           }
           continue;
@@ -207,14 +163,10 @@ namespace TrackerPreClustering {
         const hit_type * hit_ref_1 = delayed_hits[side].at(0);
         hit_collection_type * new_cluster = 0;
         for (unsigned int i = 1; i < delayed_hits[side].size(); i++) {
-          if (is_debug()) {
-            DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG,"Hit #1 ID : " << hit_ref_1->get_id());
-          }
+          DT_LOG_DEBUG(_logging_,"Hit #1 ID : " << hit_ref_1->get_id());
           // Traverse the other delayed hits in this side :
           const hit_type * hit_ref_2 = delayed_hits[side].at(i);
-          if (is_debug()) {
-            DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG,"Hit #2 ID : " << hit_ref_2->get_id());
-          }
+          DT_LOG_DEBUG(_logging_,"Hit #2 ID : " << hit_ref_2->get_id());
           // Check if the delayed time falls in a time window of given width and starting from
           // the time reference given by the 'first' hit :
           if ( hit_ref_2->get_delayed_time() >
@@ -222,10 +174,7 @@ namespace TrackerPreClustering {
             // If the delay between both hits is too large:
             // If no current cluster was initiated, drop the current starting cluster hit :
             if (new_cluster == 0) {
-              if (is_debug()) {
-                DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG,
-                             "  -> ignored hit #1");
-              }
+              DT_LOG_DEBUG(_logging_, "  -> ignored hit #1");
               output_data_.ignored_hits.push_back(hit_ref_1);
             }
             // Make the current hit the new start for a cluster :
@@ -244,16 +193,10 @@ namespace TrackerPreClustering {
             new_cluster = &(output_data_.delayed_clusters.back());
             // Record the first hit of this new time-cluster :
             new_cluster->push_back(hit_ref_1);
-            if (is_debug()) {
-              DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG,
-                           "  -> start a new delayed cluster");
-            }
+            DT_LOG_DEBUG(_logging_, "  -> start a new delayed cluster");
           }
           // Record the current hit in the current time-cluster :
-          if (is_debug()) {
-            DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG,
-                         "  -> add the hit #2 in the current delayed cluster");
-          }
+          DT_LOG_DEBUG(_logging_, "  -> add the hit #2 in the current delayed cluster");
           new_cluster->push_back(hit_ref_2);
         }
       }

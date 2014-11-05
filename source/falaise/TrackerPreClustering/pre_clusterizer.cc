@@ -25,14 +25,14 @@ namespace TrackerPreClustering {
     return _locked_;
   }
 
-  bool pre_clusterizer::is_debug() const
+  datatools::logger::priority pre_clusterizer::get_logging_priority() const
   {
-    return _debug_;
+    return _logging_;
   }
 
-  void pre_clusterizer::set_debug(bool debug_)
+  void pre_clusterizer::set_logging_priority(datatools::logger::priority logging_)
   {
-    _debug_ = debug_;
+    _logging_ = logging_;
     return;
   }
 
@@ -122,7 +122,7 @@ namespace TrackerPreClustering {
   pre_clusterizer::pre_clusterizer()
   {
     _locked_ = false;
-    _debug_ = false;
+    _logging_ = datatools::logger::PRIO_WARNING;
     _set_defaults();
     return;
   }
@@ -135,7 +135,7 @@ namespace TrackerPreClustering {
   int pre_clusterizer::initialize(const setup_data & setup_)
   {
     DT_THROW_IF(is_locked(), std::logic_error, "Pre clusterizer is locked!");
-    set_debug(setup_.debug);
+    set_logging_priority(setup_.logging);
     set_cell_size(setup_.cell_size);
     set_delayed_hit_cluster_time(setup_.delayed_hit_cluster_time);
     set_processing_prompt_hits(setup_.processing_prompt_hits);

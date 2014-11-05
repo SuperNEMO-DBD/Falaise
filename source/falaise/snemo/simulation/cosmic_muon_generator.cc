@@ -127,17 +127,6 @@ namespace snemo {
 
     /*** cosmic_muon_generator ***/
 
-    bool cosmic_muon_generator::is_debug () const
-    {
-      return _debug_;
-    }
-
-    void cosmic_muon_generator::set_debug (bool new_value_)
-    {
-      _debug_ = new_value_;
-      return;
-    }
-
     bool cosmic_muon_generator::is_initialized () const
     {
       return _initialized_;
@@ -157,7 +146,6 @@ namespace snemo {
 
     cosmic_muon_generator::cosmic_muon_generator () : ::genbb::i_genbb ()
     {
-      _debug_ = false;
       _initialized_ = false;
 
       _at_reset_ ();
@@ -221,10 +209,6 @@ namespace snemo {
       DT_THROW_IF(_initialized_,std::logic_error, "Operation prohibited ! Object is already initialized !");
 
       _initialize_base(config_);
-
-      if (config_.has_flag ("debug")) {
-        set_debug (true);
-      }
 
       if (! has_external_random ()) {
         DT_THROW_IF (! config_.has_key ("seed"), std::logic_error,
@@ -352,9 +336,7 @@ namespace snemo {
     void cosmic_muon_generator::_load_next (::genbb::primary_event & event_,
                                             bool compute_classification_)
     {
-      if (_debug_) {
-        DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG,"Entering...");
-      }
+      DT_LOG_DEBUG(get_logging_priority(), "Entering...");
       DT_THROW_IF (! _initialized_, std::logic_error, "Generator is not locked/initialized !");
       event_.reset ();
 
@@ -411,9 +393,7 @@ namespace snemo {
         event_.compute_classification ();
       }
 
-      if (_debug_) {
-        DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG,"Exiting.");
-      }
+      DT_LOG_DEBUG(get_logging_priority(),"Exiting.");
       return;
     }
 

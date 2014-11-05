@@ -32,6 +32,10 @@
 #ifndef FALAISE_TRACKERPRECLUSTERING_PRE_CLUSTERIZER_H
 #define FALAISE_TRACKERPRECLUSTERING_PRE_CLUSTERIZER_H 1
 
+// Third party:
+// - Bayeux/datatools:
+#include <datatools/logger.h>
+
 // This project:
 #include <TrackerPreClustering/interface.h>
 
@@ -68,11 +72,11 @@ namespace TrackerPreClustering {
     /// Check the lock flag
     bool is_locked() const;
 
-    /// Check the debug flag
-    bool is_debug() const;
+    /// Return logging threshold
+    datatools::logger::priority get_logging_priority() const;
 
-    /// Set the debug flag
-    void set_debug(bool debug_);
+    /// Set logging threshold
+    void set_logging_priority(datatools::logger::priority logging_);
 
     /// Default constructor
     pre_clusterizer();
@@ -128,13 +132,13 @@ namespace TrackerPreClustering {
 
   private:
 
-    bool   _locked_;    /// Lock flag
-    bool   _debug_;     /// Debug flag
-    double _cell_size_; /// Size of a cell (embedded length units)
-    double _delayed_hit_cluster_time_; /// Delayed hit cluster time window (embedded time units)
-    bool   _processing_prompt_hits_;   /// Activation of the processing of prompt hits
-    bool   _processing_delayed_hits_;  /// Activation of the processing of delayed hits
-    bool   _split_chamber_; /// Split the chamber in two half-chambers to classify the hits and time-clusters
+    bool   _locked_;                       /// Lock flag
+    datatools::logger::priority _logging_; /// Logging flag
+    double _cell_size_;                    /// Size of a cell (embedded length units)
+    double _delayed_hit_cluster_time_;     /// Delayed hit cluster time window (embedded time units)
+    bool   _processing_prompt_hits_;       /// Activation of the processing of prompt hits
+    bool   _processing_delayed_hits_;      /// Activation of the processing of delayed hits
+    bool   _split_chamber_;                /// Split the chamber in two half-chambers to classify the hits and time-clusters
   };
 
   /// A functor for handle on tracker hits that perform a comparison by delayed time
