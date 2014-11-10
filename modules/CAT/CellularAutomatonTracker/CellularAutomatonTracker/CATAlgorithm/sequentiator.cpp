@@ -707,8 +707,10 @@ namespace CAT {
 
 
   //*************************************************************
-  bool sequentiator::sequentiate_after_sultan(topology::tracked_data & tracked_data_, bool conserve_clustering) {
+  bool sequentiator::sequentiate_after_sultan(topology::tracked_data & tracked_data_, bool conserve_clustering_from_removal_of_cells) {
     //*************************************************************
+    // for sultan, conserve_clustering_from_removal_of_cells should be false
+    // for nemor, conserve_clustering_from_removal_of_cells should be true
 
     event_number ++;
     m.message("CAT::sequentiator::sequentiate_after_sultan: local_tracking: preparing event", event_number, mybhep::VERBOSE);
@@ -743,7 +745,7 @@ namespace CAT {
       {
         local_cluster_ = &(*icluster);
 
-        sequentiate_cluster_after_sultan(conserve_clustering);
+        sequentiate_cluster_after_sultan(conserve_clustering_from_removal_of_cells);
 
 	NFAMILY ++;
       }
@@ -758,7 +760,7 @@ namespace CAT {
     clean_up_sequences();
     direct_out_of_foil();
 
-    interpret_physics_after_sultan(tracked_data_.get_calos(), conserve_clustering);
+    interpret_physics_after_sultan(tracked_data_.get_calos(), conserve_clustering_from_removal_of_cells);
     make_families();
 
     refine_sequences_near_walls(tracked_data_.get_calos());
@@ -787,6 +789,7 @@ namespace CAT {
 
     return true;
   }
+
 
 
   //*************************************************************
@@ -914,17 +917,16 @@ namespace CAT {
 
 
   //*************************************************************
-  void sequentiator::sequentiate_cluster_after_sultan(bool conserve_clustering){
+  void sequentiator::sequentiate_cluster_after_sultan(bool conserve_clustering_from_removal_of_cells){
     //*************************************************************
 
-    make_new_sequence_after_sultan(conserve_clustering);
+    make_new_sequence_after_sultan(conserve_clustering_from_removal_of_cells);
     
     if (late()) return;
     
-    //make_copy_sequence_after_sultan();
-
     return;
   }
+
 
 
   //*************************************************************
@@ -1002,8 +1004,10 @@ namespace CAT {
   }
 
   //*************************************************************
-  void sequentiator::make_new_sequence_after_sultan(bool conserve_clustering){
+  void sequentiator::make_new_sequence_after_sultan(bool conserve_clustering_from_removal_of_cells){
     //*************************************************************
+    // if after_sultan, conserve_clustering_from_removal_of_cells = false
+    // if after_nemor, conserve_clustering_from_removal_of_cells = true
 
     if (late()) return;
 
@@ -1079,7 +1083,7 @@ namespace CAT {
 
     std::vector<topology::sequence> seqs;
 
-    if( build_sequences_from_ambiguous_alternatives(sets_of_bl_alternatives, &seqs, conserve_clustering) ){
+    if( build_sequences_from_ambiguous_alternatives(sets_of_bl_alternatives, &seqs, conserve_clustering_from_removal_of_cells) ){
       for( std::vector<topology::sequence>::iterator iseq = seqs.begin(); iseq!=seqs.end(); ++iseq){
 	make_name(*iseq);
 	sequences_.push_back(*iseq);
@@ -1099,6 +1103,7 @@ namespace CAT {
 
     return;
   }
+
 
 
   //*************************************************************
@@ -1140,8 +1145,14 @@ namespace CAT {
   }
 
   //*************************************************************
-  bool sequentiator::build_sequences_from_ambiguous_alternatives(std::vector< std::vector<topology::broken_line> > sets_of_bl_alternatives, std::vector<topology::sequence> *seqs, bool conserve_clustering){
+  bool sequentiator::build_sequences_from_ambiguous_alternatives(std::vector< std::vector<topology::broken_line> > sets_of_bl_alternatives, std::vector<topology::sequence> *seqs, bool conserve_clustering_from_removal_of_cells){
   //*************************************************************
+    // if after_sultan, conserve_clustering_from_removal_of_cells = false
+    // if after_nemor, conserve_clustering_from_removal_of_cells = true
+
+    bool conserve_clustering_from_removal = true;
+    bool conserve_clustering_from_reordering = false;
+
 
     clock.start(" sequentiator: build_sequences_from_ambiguous_alternatives ","cumulative");
 
@@ -1181,8 +1192,6 @@ namespace CAT {
     int block_which_is_increasing = sets_of_bl_alternatives.size() - 1;
     int first_augmented_block = sets_of_bl_alternatives.size() - 1;
       
-    bool after_sultan = true;
-    bool conserve_clustering_from_reordering = false;
 
     topology::sequence best_seq;
     double min_chi2 = mybhep::default_min;
@@ -1222,7 +1231,7 @@ namespace CAT {
 	std::clog << "]" << std::endl;
       }
 
-      if( !local_seq.calculate_helix(Ratio,after_sultan,conserve_clustering_from_reordering) && !local_seq.has_kink() ){
+      if( !local_seq.calculate_helix(Ratio,conserve_clustering_from_removal,conserve_clustering_from_reordering) && !local_seq.has_kink() ){
           m.message("CAT::sequentiator::build_sequences_from_ambiguous_alternatives: not a good helix", mybhep::VERBOSE); fflush(stdout);
 	  if( ! increase_iterations(sets_of_bl_alternatives, & iterations, &block_which_is_increasing, & first_augmented_block) ) break;
           continue;
@@ -1668,6 +1677,15 @@ namespace CAT {
     NCOPY = 0;
 
     clock.stop(" sequentiator: make copy sequence after sultan ");
+
+    return;
+  }
+
+  //*************************************************************
+  void sequentiator::make_copy_sequence_after_nemor(){
+    //*************************************************************
+
+    make_copy_sequence_after_sultan();
 
     return;
   }
@@ -2325,8 +2343,6 @@ namespace CAT {
     topology::experimental_point tangent_extrapolation_from_begin, tangent_extrapolation_local_from_begin;
     bool tangent_found_from_begin = false;
 
-    bool after_sultan = false;
-
     double dist_from_end, dist_from_begin;
     std::vector<topology::sequence>::iterator iseq = sequences_.begin();
     while( iseq != sequences_.end() )
@@ -2341,6 +2357,7 @@ namespace CAT {
         if( level >= mybhep::VVERBOSE)
           print_a_sequence(*iseq);
 
+      // by default, conserve_clustering_from_removal_of_whole_cluster = false and conserve_clustering_from_reordering = true
         if( !iseq->calculate_helix(Ratio) && !iseq->has_kink() ){
           size_t index = iseq - sequences_.begin();
           m.message("CAT::sequentiator::interpret_physics: erased sequence ", index, "not a good helix", mybhep::VERBOSE); fflush(stdout);
@@ -2643,12 +2660,19 @@ namespace CAT {
 
 
   //*************************************************************
-  void sequentiator::interpret_physics_after_sultan(std::vector<topology::calorimeter_hit> & calos, bool conserve_clustering){
+  void sequentiator::interpret_physics_after_sultan(std::vector<topology::calorimeter_hit> & calos, bool conserve_clustering_from_removal_of_cells){
     //*************************************************************
 
+    // if after_sultan, conserve_clustering_from_removal_of_cells = false
+    // if after_nemor, conserve_clustering_from_removal_of_cells = true
     clock.start(" sequentiator: interpret physics after sultan ", "cumulative");
 
     m.message("CAT::sequentiator::interpret_physics_after_sultan: interpreting physics of ", sequences_.size(), " sequences with ", calos.size(), " calorimeter hits ", mybhep::VVERBOSE); fflush(stdout);
+
+    // after_sultan, conserve_clustering_from_removal  = true, conserve_clustering_from_reordering = false, conserve_clustering_from_removal_of_cells = false
+    // after_nemor, conserve_clustering_from_removal  = true, conserve_clustering_from_reordering = false, conserve_clustering_from_removal_of_cells = true
+    bool conserve_clustering_from_removal_of_whole_cluster = true;
+    bool conserve_clustering_from_reordering = false;
 
     double helix_min_from_end = mybhep::default_min;
     size_t ihelix_min_from_end = mybhep::default_integer;
@@ -2670,8 +2694,6 @@ namespace CAT {
     topology::experimental_point tangent_extrapolation_from_begin, tangent_extrapolation_local_from_begin;
     bool tangent_found_from_begin = false;
 
-    bool after_sultan = true;
-    bool conserve_clustering_from_reordering = false;
 
     double dist_from_end, dist_from_begin;
     std::vector<topology::sequence>::iterator iseq = sequences_.begin();
@@ -2687,7 +2709,7 @@ namespace CAT {
         if( level >= mybhep::VVERBOSE)
           print_a_sequence(*iseq,true);
 
-	if( !iseq->calculate_helix(Ratio,after_sultan,conserve_clustering_from_reordering) && !iseq->has_kink() ){
+	if( !iseq->calculate_helix(Ratio,conserve_clustering_from_removal_of_whole_cluster,conserve_clustering_from_reordering) && !iseq->has_kink() ){
           size_t index = iseq - sequences_.begin();
           m.message("CAT::sequentiator::interpret_physics_after_sultan: erased sequence ", index, "not a good helix", mybhep::VERBOSE); fflush(stdout);
           sequences_.erase(iseq);
@@ -2696,7 +2718,7 @@ namespace CAT {
             break;
           continue;
         }
-	if( !conserve_clustering ) 
+	if( !conserve_clustering_from_removal_of_cells ) 
 	  // don't to this if you don't want cells to be removed from sequence
 	  reassign_cells_based_on_helix(&(*iseq));
         iseq->calculate_charge();
@@ -2988,6 +3010,8 @@ namespace CAT {
     return;
 
   }
+
+
 
 
 
