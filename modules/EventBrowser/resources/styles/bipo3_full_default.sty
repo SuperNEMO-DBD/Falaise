@@ -1,0 +1,100 @@
+# -*- mode: conf-unix; -*-
+
+[name="browser_settings"]
+
+#@description Setup label
+setup_label : string = "bipo3"
+
+#@description Tab to view at startup.
+# 0: 3D Display 1: Raw Data 2: Options, 3: Selection
+startup_tab : integer = 0
+
+# 0: Top view 1: Front view 2: Side view
+startup_2d_view : integer = 1
+
+#@description Background color of displays
+background_color : integer[3] = 0 0 0
+
+#########################################################
+
+[name="geometry_settings"]
+
+#@description List of detectors to take care
+volume_category_list : string[16] = "pmt.category"                \
+	                            "light_guide.category"        \
+                                    "source.category"             \
+                                    "scin_block.category"         \
+                                    "protection_endcap.category"  \
+                                    "protection_tube.category"    \
+                                    "support_plate.category"      \
+                                    "nitrogen_inner_gap.category" \
+                                    "calibration_source.category" \
+                                    "iron_tank.category"          \
+                                    "iron_plate.category"         \
+                                    "nitrogen_gap.category"       \
+                                    "lead_shield.category"        \
+                                    "inox_tank.category"          \
+                                    "water_tank.category"         \
+                                    "shielded_bipo3_module.category"
+
+#@description Detector visibility (visible/invisible/disable)
+source.category.visibility                  : string = "visible"
+calibration_source.category.visibility      : string = "visible"
+scin_block.category.visibility              : string = "visible"
+light_guide.category.visibility             : string = "visible"
+pmt.category.visibility                     : string = "visible"
+shielded_bipo3_module.category.visibility   : string = "invisible"
+iron_tank.category.visibility               : string = "visible"
+water_tank.category.visibility              : string = "visible"
+lead_shield.category.visibility             : string = "visible"
+inox_tank.category.visibility               : string = "visible"
+iron_plate.category.visibility              : string = "visible"
+nitrogen_gap.category.visibility            : string = "visible"
+nitrogen_inner_gap.category.visibility      : string = "visible"
+support_plate.category.visibility           : string = "visible"
+protection_endcap.category.visibility       : string = "visible"
+protection_tube.category.visibility         : string = "visible"
+
+#@description Detector color
+source.category.color			: string = "kGreen"
+calibration_source.category.color       : string = "kWhite"
+scin_block.category.color		: string = "kYellow"
+light_guide.category.color		: string = "kCyan"
+pmt.category.color			: string = "kGray"
+shielded_bipo3_module.category.color	: string = "kGray"
+iron_tank.category.color		: string = "kGreen"
+water_tank.category.color		: string = "kBlue"
+lead_shield.category.color              : string = "kViolet"
+inox_tank.category.color 		: string = "kRed"
+nitrogen_gap.category.color             : string = "kViolet"
+nitrogen_inner_gap.category.color       : string = "kGreen"
+iron_plate.category.color               : string = "kYellow"
+support_plate.category.color          	: string = "kGray"
+protection_endcap.category.color 	: string = "kGray"
+protection_tube.category.color    	: string = "kGray"
+
+#########################################################
+
+[name="particle_settings"]
+
+#@description MC particle color
+gamma.color                : string = "kYellow"
+electron.color             : string = "kBlue"
+positron.color             : string = "kCyan"
+alpha.color                : string = "kMagenta"
+delta_ray_from_alpha.color : string = "kGreen"
+
+#########################################################
+
+[name="miscellaneous"]
+
+#@description MC line style
+mc_line_style : string = "kSolid"
+mc_line_width : integer = 1;
+
+#@description Figure save options
+save.directory : string = "."
+save.extension : string = ".eps"
+save.prefix    : string = "event_"
+
+# end of file

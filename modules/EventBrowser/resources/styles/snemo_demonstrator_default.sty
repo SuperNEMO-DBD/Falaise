@@ -1,0 +1,82 @@
+# -*- mode: conf-unix; -*-
+
+[name="browser_settings"]
+
+#@description Setup label
+setup_label : string = "snemo::demonstrator"
+
+#@description Tab to view at startup.
+# 0: 3D Display 1: Raw Data 2: Options, 3: Selection
+startup_tab : integer = 0
+
+#@description Background color of displays
+background_color : string = "#000000"
+
+color_palette : string[7] = "#FF4136" "#0074D9" "#2ECC40" "#FFDC00" "#FF851B" \
+                            "#F012BE" "#B10DC9"
+
+
+#########################################################
+
+[name="geometry_settings"]
+
+#@description List of volumes to take care
+volume_category_list : string[7] = "module"            \
+                                   "calorimeter_block" \
+                                   "calorimeter_pmt"   \
+                                   "xcalo_block"       \
+                                   "gveto_block"       \
+                                   "drift_cell_core"   \
+                                   "source_strip"
+
+#@description Volume visibility (visible/invisible/disable)
+module.visibility            : string = "invisible"
+calorimeter_block.visibility : string = "visible"
+calorimeter_pmt.visibility   : string = "invisible"
+xcalo_block.visibility       : string = "invisible"
+gveto_block.visibility       : string = "invisible"
+drift_cell_core.visibility   : string = "disable"
+source_strip.visibility      : string = "visible"
+
+#@description Volume color
+module.color            : string = "#FF0000"
+calorimeter_block.color : string = "#444444"
+calorimeter_pmt.color   : string = "#444444"
+xcalo_block.color       : string = "#444444"
+gveto_block.color       : string = "#444444"
+drift_cell_core.color   : string = "#D3CE87"
+source_strip.color      : string = "#003366"
+
+#@description Volume transparency (0-100 range)
+module.transparency            : integer = 80
+calorimeter_block.transparency : integer = 90
+calorimeter_pmt.transparency   : integer = 80
+xcalo_block.transparency       : integer = 80
+gveto_block.transparency       : integer = 80
+drift_cell_core.transparency   : integer = 80
+source_strip.transparency      : integer = 50
+
+#########################################################
+
+[name="particle_settings"]
+
+#@description MC particle color
+gamma.color                : string = "#F1C40F"
+electron.color             : string = "#7FDBFF"
+positron.color             : string = "#1ABC9C"
+alpha.color                : string = "#D35400"
+
+#########################################################
+
+[name="miscellaneous"]
+
+#@description MC line style
+mc_line_style : string = "kSolid"
+mc_line_width : integer = 1
+
+#@description Figure save options
+save.directory : string = "."
+save.extension : string = ".eps"
+save.prefix    : string = "event_"
+
+# end of file

@@ -1,0 +1,16 @@
+/// \file falaise/snemo/event_browser_config.h
+
+#ifndef FALAISE_SNEMO_EVENT_BROWSER_CONFIG_H
+#define FALAISE_SNEMO_EVENT_BROWSER_CONFIG_H 1
+
+#cmakedefine EVENTBROWSER_USE_OPENGL
+
+#endif // FALAISE_SNEMO_EVENT_BROWSER_CONFIG_H
+
+/*
+** Local Variables: --
+** mode: c++ --
+** c-file-style: "gnu" --
+** tab-width: 2 --
+** End: --
+*/

@@ -1,0 +1,76 @@
+# -*- mode: conf-unix; -*-
+
+[name="browser_settings"]
+
+#@description Setup label
+setup_label : string = "snemo::tracker_commissioning"
+
+#@description Tab to view at startup.
+# 0: 3D Display 1: Raw Data 2: Options, 3: Selection
+startup_tab : integer = 0
+
+# 0: Top view 1: Front view 2: Side view
+startup_2d_view : integer = 2
+
+#@description Background color of displays using RGB convention
+background_color : integer[3] = 0 0 0
+
+#########################################################
+
+[name="geometry_settings"]
+
+#@description List of volumes to take care
+volume_category_list : string[5] = "module"                 \
+                                   "mu_trigger"             \
+                                   "tracker_submodule"      \
+                                   "drift_cell_anodic_wire" \
+                                   "drift_cell_cathodic_ring"
+
+
+#@description Volume visibility (visible/invisible/disable)
+module.visibility                   : string = "invisible"
+mu_trigger.visibility               : string = "visible"
+tracker_submodule.visibility        : string = "visible"
+drift_cell_anodic_wire.visibility   : string = "visible"
+drift_cell_cathodic_ring.visibility : string = "invisible"
+
+
+#@description Volume color
+module.color                   : string = "kRed"
+mu_trigger.color               : string = "kBlue"
+tracker_submodule.color        : string = "kOrange"
+drift_cell_anodic_wire.color   : string = "kGray + 100"
+drift_cell_cathodic_ring.color : string = "kWhite"
+
+#@description Volume transparency (0-100 range)
+#module.transparency                   : integer = 10
+#drift_cell_anodic_wire.transparency   : integer = 90
+#drift_cell_cathodic_ring.transparency : integer = 90
+
+#########################################################
+
+[name="particle_settings"]
+
+#@description MC particle color
+gamma.color                : string = "kYellow"
+electron.color             : string = "kBlue"
+positron.color             : string = "kCyan"
+alpha.color                : string = "kMagenta"
+delta_ray_from_alpha.color : string = "kRed"
+muon_plus.color            : string = "kGreen"
+muon_minus.color           : string = "kViolet"
+
+#########################################################
+
+[name="miscellaneous"]
+
+#@description MC line style
+mc_line_style : string = "kSolid"
+mc_line_width : integer = 1
+
+#@description Figure save options
+save.directory : string = "."
+save.extension : string = ".eps"
+save.prefix    : string = "event_"
+
+# end of file

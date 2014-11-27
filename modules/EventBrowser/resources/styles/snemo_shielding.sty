@@ -1,0 +1,96 @@
+# -*- mode: conf-unix; -*-
+
+[name="browser_settings"]
+
+#@description Setup label.
+setup_label : string = "snemo"
+
+#@description Tab to view at startup.
+# 0: 3D Display 1: Raw Data 2: Options, 3: Selection
+startup_tab : integer = 0
+
+#@description Background color of displays.
+background_color : integer[3] =   0   0   0
+
+#########################################################
+
+[name="geometry_settings"]
+
+#@description List of volumes to take care.
+volume_category_list : string[11] = "calorimeter_block"     \
+                                    "calorimeter_pmt"       \
+                                    "drift_cell_core"       \
+                                    "external_shield_bpe"   \
+                                    "external_shield_iron"  \
+                                    "external_shield_water" \
+                                    "gveto_block"           \
+                                    "hall"                  \
+                                    "module"                \
+                                    "source_pad"            \
+                                    "xcalo_block"
+
+#@description Volume visibility (visible/invisible/disable)
+calorimeter_block.visibility     : string = "visible"
+calorimeter_pmt.visibility       : string = "disable"
+drift_cell_core.visibility       : string = "disable"
+external_shield_bpe.visibility   : string = "visible"
+external_shield_iron.visibility  : string = "invisible"
+external_shield_water.visibility : string = "invisible"
+gveto_block.visibility           : string = "visible"
+hall.visibility                  : string = "invisible"
+module.visibility                : string = "visible"
+source_pad.visibility            : string = "visible"
+xcalo_block.visibility           : string = "visible"
+
+#@description Volume color
+calorimeter_block.color     : integer[3] =  51  51  51
+calorimeter_pmt.color       : integer[3] =  51  51  51
+drift_cell_core.color       : integer[3] = 211 206 135
+external_shield_bpe.color   : integer[3] = 153 153 255
+external_shield_iron.color  : integer[3] = 211  89  84
+external_shield_water.color : integer[3] =   0   0 255
+gveto_block.color           : integer[3] =  51  51  51
+hall.color                  : integer[3] = 255 255 255
+module.color                : integer[3] = 255   0   0
+source_pad.color            : integer[3] =   0  51 102
+xcalo_block.color           : integer[3] =  51  51  51
+
+#@description Volume transparency (0-100 range)
+#note: this is disabled if OpenGL is not used
+calorimeter_block.transparency     : integer = 90
+calorimeter_pmt.transparency       : integer = 80
+drift_cell_core.transparency       : integer = 80
+external_shield_bpe.transparency   : integer = 0
+external_shield_iron.transparency  : integer = 0
+external_shield_water.transparency : integer = 0
+gveto_block.transparency           : integer = 80
+hall.transparency                  : integer = 0
+module.transparency                : integer = 80
+source_pad.transparency            : integer = 50
+xcalo_block.transparency           : integer = 80
+
+#########################################################
+
+[name="particle_settings"]
+
+#@description MC particle color
+alpha.color                : integer[3] = 255   0 255
+delta_ray_from_alpha.color : integer[3] = 255   0   0
+electron.color             : integer[3] =   0   0 255
+gamma.color                : integer[3] = 255 255   0
+neutron.color              : integer[3] =   0 255   0
+positron.color             : integer[3] =   0 255 255
+proton.color               : integer[3] = 204   0 255
+
+#########################################################
+
+[name="miscellaneous"]
+
+#@description MC line style
+mc_line_style : integer = 1
+mc_line_width : integer = 1
+
+#@description Figure save options
+save.directory : string = "."
+save.extension : string = ".eps"
+save.prefix    : string = "event_"

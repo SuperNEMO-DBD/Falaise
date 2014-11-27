@@ -21,6 +21,7 @@ set(_falaise_PLUGINS
   TrackFit
   ChargedParticleTracking
   VisuToy
+  EventBrowser
 )
 
 # - Process modules here:

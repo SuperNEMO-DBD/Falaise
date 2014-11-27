@@ -1,0 +1,88 @@
+//! \file    falaise/snemo/event_browser_version.h
+//! \brief   Describe the EventBrowser API version
+//! \details Querying the version of EventBrowser is needed at both
+//!          compile and runtime by clients so that they may adjust
+//!          their usage.
+//
+// Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com>
+// Copyright (c) 2013 by The University of Warwick
+//
+// This file is part of EventBrowser.
+//
+// EventBrowser is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// EventBrowser is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with EventBrowser.  If not, see <http://www.gnu.org/licenses/>.
+
+#ifndef FALAISE_SNEMO_EVENT_BROWSER_VERSION_H
+#define FALAISE_SNEMO_EVENT_BROWSER_VERSION_H 1
+
+// Standard Library:
+#include <string>
+
+//----------------------------------------------------------------------
+// - Compile Time API
+//! Major version number of EventBrowser
+#define EVENTBROWSER_VERSION_MAJOR @FalaiseEventBrowserPlugin_VERSION_MAJOR@
+
+//! Minor version number of EventBrowser
+#define EVENTBROWSER_VERSION_MINOR @FalaiseEventBrowserPlugin_VERSION_MINOR@
+
+//! Patch version number of EventBrowser
+#define EVENTBROWSER_VERSION_PATCH @FalaiseEventBrowserPlugin_VERSION_PATCH@
+
+//! Encode EventBrowser to ordered integer available at compile time
+#define EVENTBROWSER_ENCODE_VERSION(major, minor, patch) ( \
+        ((major) * 10000) \
+      + ((minor) *   100) \
+      + ((patch) *     1))
+
+//! Integer encoded EventBrowser version available at compile time
+#define EVENTBROWSER_VERSION EVENTBROWSER_ENCODE_VERSION( \
+        EVENTBROWSER_VERSION_MAJOR, \
+        EVENTBROWSER_VERSION_MINOR, \
+        EVENTBROWSER_VERSION_PATCH)
+
+//! String encoded full version number, e.g. "1.2.3", available at compile time
+#define EVENTBROWSER_LIB_VERSION                                        \
+  "@FalaiseEventBrowserPlugin_VERSION@.@FalaiseEventBrowserPlugin_VERSION_MINOR@.@FalaiseEventBrowserPlugin_VERSION_PATCH"
+
+//! Check current version >= (major, minor, patch) at compile time
+#define EVENTBROWSER_IS_AT_LEAST(major,minor,patch) ( \
+        EVENTBROWSER_VERSION >= \
+        EVENTBROWSER_ENCODE_VERSION(major,minor,patch))
+
+//----------------------------------------------------------------------
+// Runtime API
+namespace EventBrowser {
+//! \brief Describe the EventBrowser API version and features
+struct version {
+//! Return the major version number of EventBrowser, e.g., 1 for '1.2.3'
+static int get_major();
+
+//! Return the minor version number of EventBrowser, e.g., 2 for '1.2.3'
+static int get_minor();
+
+//! Return the patch version number of EventBrowser, e.g., 3 for '1.2.3'
+static int get_patch();
+
+//! Return the full version number of EventBrowser as a string, e.g., '1.2.3'
+static std::string get_version();
+
+//! Return true if the current EventBrowser version >= (major, minor, patch)
+static bool is_at_least(int major, int minor, int patch);
+
+//! Return true if the named feature is available in EventBrowser
+static bool has_feature(const std::string& feature);
+};
+} // namespace EventBrowser
+
+#endif // FALAISE_SNEMO_EVENT_BROWSER_VERSION_H
