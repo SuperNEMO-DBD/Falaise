@@ -187,7 +187,6 @@ namespace snemo {
           if (setup_label_name == "snemo::tracker_commissioning") {
             _calorimeter_hit_renderer_.push_simulated_hits("trig");
           } else {
-            DT_LOG_TRACE(datatools::logger::PRIO_TRACE, "Entering");
             _calorimeter_hit_renderer_.push_simulated_hits("scin.hit");
             _calorimeter_hit_renderer_.push_simulated_hits("calo");
             _calorimeter_hit_renderer_.push_simulated_hits("gveto");
