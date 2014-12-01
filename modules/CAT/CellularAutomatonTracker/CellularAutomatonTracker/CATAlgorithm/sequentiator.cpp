@@ -709,7 +709,7 @@ namespace CAT {
   //*************************************************************
   bool sequentiator::sequentiate_after_sultan(topology::tracked_data & tracked_data_, bool conserve_clustering_from_removal_of_cells) {
     //*************************************************************
-    // for sultan, conserve_clustering_from_removal_of_cells should be false
+    // for sultan, conserve_clustering_from_removal_of_cells should be false (N3), true (SN)
     // for nemor, conserve_clustering_from_removal_of_cells should be true
 
     event_number ++;
@@ -745,7 +745,7 @@ namespace CAT {
       {
         local_cluster_ = &(*icluster);
 
-        sequentiate_cluster_after_sultan(conserve_clustering_from_removal_of_cells);
+        sequentiate_cluster_after_sultan();
 
 	NFAMILY ++;
       }
@@ -917,10 +917,10 @@ namespace CAT {
 
 
   //*************************************************************
-  void sequentiator::sequentiate_cluster_after_sultan(bool conserve_clustering_from_removal_of_cells){
+  void sequentiator::sequentiate_cluster_after_sultan(){
     //*************************************************************
 
-    make_new_sequence_after_sultan(conserve_clustering_from_removal_of_cells);
+    make_new_sequence_after_sultan();
     
     if (late()) return;
     
@@ -1004,10 +1004,8 @@ namespace CAT {
   }
 
   //*************************************************************
-  void sequentiator::make_new_sequence_after_sultan(bool conserve_clustering_from_removal_of_cells){
+  void sequentiator::make_new_sequence_after_sultan(){
     //*************************************************************
-    // if after_sultan, conserve_clustering_from_removal_of_cells = false
-    // if after_nemor, conserve_clustering_from_removal_of_cells = true
 
     if (late()) return;
 
@@ -1083,7 +1081,7 @@ namespace CAT {
 
     std::vector<topology::sequence> seqs;
 
-    if( build_sequences_from_ambiguous_alternatives(sets_of_bl_alternatives, &seqs, conserve_clustering_from_removal_of_cells) ){
+    if( build_sequences_from_ambiguous_alternatives(sets_of_bl_alternatives, &seqs) ){
       for( std::vector<topology::sequence>::iterator iseq = seqs.begin(); iseq!=seqs.end(); ++iseq){
 	make_name(*iseq);
 	sequences_.push_back(*iseq);
@@ -1145,10 +1143,8 @@ namespace CAT {
   }
 
   //*************************************************************
-  bool sequentiator::build_sequences_from_ambiguous_alternatives(std::vector< std::vector<topology::broken_line> > sets_of_bl_alternatives, std::vector<topology::sequence> *seqs, bool conserve_clustering_from_removal_of_cells){
+  bool sequentiator::build_sequences_from_ambiguous_alternatives(std::vector< std::vector<topology::broken_line> > sets_of_bl_alternatives, std::vector<topology::sequence> *seqs){
   //*************************************************************
-    // if after_sultan, conserve_clustering_from_removal_of_cells = false
-    // if after_nemor, conserve_clustering_from_removal_of_cells = true
 
     bool conserve_clustering_from_removal = true;
     bool conserve_clustering_from_reordering = false;
@@ -2663,13 +2659,13 @@ namespace CAT {
   void sequentiator::interpret_physics_after_sultan(std::vector<topology::calorimeter_hit> & calos, bool conserve_clustering_from_removal_of_cells){
     //*************************************************************
 
-    // if after_sultan, conserve_clustering_from_removal_of_cells = false
-    // if after_nemor, conserve_clustering_from_removal_of_cells = true
+    // for sultan, conserve_clustering_from_removal_of_cells should be false (N3), true (SN)
+    // for nemor, conserve_clustering_from_removal_of_cells should be true
     clock.start(" sequentiator: interpret physics after sultan ", "cumulative");
 
     m.message("CAT::sequentiator::interpret_physics_after_sultan: interpreting physics of ", sequences_.size(), " sequences with ", calos.size(), " calorimeter hits ", mybhep::VVERBOSE); fflush(stdout);
 
-    // after_sultan, conserve_clustering_from_removal  = true, conserve_clustering_from_reordering = false, conserve_clustering_from_removal_of_cells = false
+    // after_sultan, conserve_clustering_from_removal  = true, conserve_clustering_from_reordering = false, conserve_clustering_from_removal_of_cells = false (N3), true (SN)
     // after_nemor, conserve_clustering_from_removal  = true, conserve_clustering_from_reordering = false, conserve_clustering_from_removal_of_cells = true
     bool conserve_clustering_from_removal_of_whole_cluster = true;
     bool conserve_clustering_from_reordering = false;
