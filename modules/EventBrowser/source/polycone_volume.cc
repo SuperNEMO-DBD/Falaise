@@ -37,7 +37,7 @@ namespace snemo {
 
       // ctor:
       polycone_volume::polycone_volume(const std::string & name_,
-                                        const std::string & category_) :
+                                       const std::string & category_) :
         i_root_volume(name_, category_)
       {
         _type = "polycone";
@@ -71,9 +71,9 @@ namespace snemo {
       }
 
       void polycone_volume::tree_dump(std::ostream      & out_,
-                                       const std::string & title_,
-                                       const std::string & indent_,
-                                       bool inherit_) const
+                                      const std::string & title_,
+                                      const std::string & indent_,
+                                      bool inherit_) const
       {
         std::string indent;
         if (! indent_.empty()) indent = indent_;
