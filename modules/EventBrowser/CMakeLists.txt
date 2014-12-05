@@ -25,7 +25,7 @@ find_package(Boost 1.47 REQUIRED ${Boost_COMPONENTS})
 
 # - ROOT
 # find_package(ROOT 5.34.00 REQUIRED Gui Geom GeomPainter Physics)
-set(ROOT_COMPONENTS Gui Geom GeomPainter Physics)
+set(ROOT_COMPONENTS Gui Geom GeomPainter Physics Graf3d)
 find_package(ROOT 5.34.00 QUIET COMPONENTS ${ROOT_COMPONENTS} NO_MODULE)
 find_package(ROOT 5.34.00 REQUIRED ${ROOT_COMPONENTS})
 
