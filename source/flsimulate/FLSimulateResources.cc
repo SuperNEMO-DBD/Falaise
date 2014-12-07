@@ -180,7 +180,7 @@ void doFixupResourcePaths() {
 
   // Fix up Bayeux's modules resource dir:
   if (falaise::bayeux_embedded()) {
-    boost::filesystem::path bx_res_path = FLSimulate::getResourceDir() + "/../Bayeux-1.0.0/resources";
+    boost::filesystem::path bx_res_path = FLSimulate::getResourceDir() + "/../Bayeux-2.0.0/resources";
 
     boost::filesystem::path gt_res_path = bx_res_path / "geomtools";
     setenv("GEOMTOOLS_RESOURCE_DIR", gt_res_path.c_str(), 1);

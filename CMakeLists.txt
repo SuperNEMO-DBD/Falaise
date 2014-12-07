@@ -159,7 +159,7 @@ else()
   # Hacked temporarily so we can use this technique on CMake < 2.8.11
   # that doesn't allow duplicate imported targets.
   set(Bayeux_TARGETS_LOADED 1)
-  include(${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Bayeux-1.0.0/BayeuxConfig.cmake)
+  include(${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Bayeux-2.0.0/BayeuxConfig.cmake)
 endif()
 
 
