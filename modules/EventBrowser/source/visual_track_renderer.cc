@@ -282,6 +282,21 @@ namespace snemo {
                 mark->SetPoint(0, a_position.x(), a_position.y(), a_position.z());
               }
             }// end of vertex list
+
+            // Gamma tracks
+            if (a_particle.get_charge() == snemo::datamodel::particle_track::neutral) {
+              std::vector<geomtools::vector_3d> vtces;
+              for (snemo::datamodel::particle_track::vertex_collection_type::const_iterator
+                     ivtx = vtx.begin(); ivtx != vtx.end(); ++ivtx) {
+                vtces.push_back(ivtx->get().get_position());
+             }
+              TPolyLine3D * track = base_renderer::make_polyline(vtces);
+              _objects->Add(track);
+              track->SetLineColor(color);
+              track->SetLineStyle(kDashed);
+              // track->SetLineWidth(line_width);
+            }
+
           } else {
             DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
                          "No vertex associated to particle track");
