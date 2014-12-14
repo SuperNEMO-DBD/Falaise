@@ -236,16 +236,16 @@ namespace snemo {
         DT_THROW_IF(column_ >= _back_block_y_[wall_].size(),
                     std::logic_error,
                     "Invalid column number(" << column_ << ">" << _back_block_y_[wall_].size() - 1 << ")!");
-        position_.set(_back_block_x_[wall_][column_],
+        position_.set(_back_block_x_[wall_][0],
                       _back_block_y_[wall_][column_],
-                      _block_z_[utils::SIDE_BACK][wall_]);
+                      _block_z_[side_][wall_]);
       } else {
         DT_THROW_IF(column_ >= _front_block_y_[wall_].size(),
                     std::logic_error,
                     "Invalid column number(" << column_ << ">" << _front_block_y_[wall_].size() - 1 << ")!");
-        position_.set(_front_block_x_[wall_][column_],
+        position_.set(_front_block_x_[wall_][0],
                       _front_block_y_[wall_][column_],
-                      _block_z_[utils::SIDE_FRONT][wall_]);
+                      _block_z_[side_][wall_]);
       }
       return;
     }
@@ -520,7 +520,7 @@ namespace snemo {
     }
 
     // Constructor:
-    gveto_locator::gveto_locator() :base_locator()
+    gveto_locator::gveto_locator() : base_locator()
     {
       _set_defaults_();
       return;
