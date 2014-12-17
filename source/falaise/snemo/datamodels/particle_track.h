@@ -37,18 +37,32 @@ namespace snemo {
 
       /// Electric charge enumeration
       enum charge_type {
-        INVALID   = -4,
+        INVALID   = 0x0,
         invalid   = INVALID,
-        UNDEFINED = -3, /// Particle with undefined charge
+        UNDEFINED = datatools::bit_mask::bit00, /// Particle with undefined charge
         undefined = UNDEFINED,
-        NEUTRAL   = 0,  /// Neutral particle
+        NEUTRAL   = datatools::bit_mask::bit01,  /// Neutral particle
         neutral   = NEUTRAL,
-        POSITIVE  = +1, /// Positively charged particle
+        POSITIVE  = datatools::bit_mask::bit02, /// Positively charged particle
         positive  = POSITIVE,
-        NEGATIVE  = -1, /// Negatively charged particle
+        NEGATIVE  = datatools::bit_mask::bit04, /// Negatively charged particle
         negative  = NEGATIVE
       };
 
+      /// Check a particle charge type
+      static bool particle_is(const particle_track &, charge_type);
+
+      /// Check a particle is electron
+      static bool particle_is_electron(const particle_track &);
+
+      /// Check a particle is positron
+      static bool particle_is_positron(const particle_track &);
+
+      /// Check a particle is alpha
+      static bool particle_is_alpha(const particle_track &);
+
+      /// Check a particle is gamma
+      static bool particle_is_gamma(const particle_track &);
 
       /// Vertex flags
       enum vertex_type {
@@ -105,14 +119,14 @@ namespace snemo {
       /// Check a vertex on wire
       static bool vertex_is_on_wire(const geomtools::blur_spot &);
 
-      /// Handle on particle track
-      typedef datatools::handle<particle_track> handle_type;
-
       /// Handle on vertex spot
       typedef datatools::handle<geomtools::blur_spot> handle_spot;
 
       /// Collection of vertex spots
       typedef std::vector<handle_spot> vertex_collection_type;
+
+      /// Handle on particle track
+      typedef datatools::handle<particle_track> handle_type;
 
       /// Default constructor
       particle_track();
@@ -137,9 +151,6 @@ namespace snemo {
 
       /// Get particle charge
       charge_type get_charge() const;
-
-      /// Get negative charged particle
-      bool has_negative_charge() const;
 
       /// Check if the trajectory is present
       bool has_trajectory() const;

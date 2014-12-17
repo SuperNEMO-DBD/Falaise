@@ -7,6 +7,31 @@ namespace snemo {
 
   namespace datamodel {
 
+    bool particle_track::particle_is(const particle_track & pt_, charge_type charge_)
+    {
+      return pt_.get_charge() == charge_;
+    }
+
+    bool particle_track::particle_is_electron(const particle_track & pt_)
+    {
+      return particle_is(pt_, NEGATIVE);
+    }
+
+    bool particle_track::particle_is_positron(const particle_track & pt_)
+    {
+      return particle_is(pt_, POSITIVE);
+    }
+
+    bool particle_track::particle_is_alpha(const particle_track & pt_)
+    {
+      return particle_is(pt_, UNDEFINED);
+    }
+
+    bool particle_track::particle_is_gamma(const particle_track & pt_)
+    {
+      return particle_is(pt_, NEUTRAL);
+    }
+
     const std::string & particle_track::vertex_type_key()
     {
       static const std::string _flag("vertex.type");
@@ -141,12 +166,6 @@ namespace snemo {
     particle_track::charge_type particle_track::get_charge() const
     {
       return _charge_from_source_;
-    }
-
-    bool particle_track::has_negative_charge() const
-    {
-      if (_charge_from_source_ == negative) return true;
-      return false;
     }
 
     particle_track::particle_track()

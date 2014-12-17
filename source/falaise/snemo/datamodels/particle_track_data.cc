@@ -52,7 +52,7 @@ namespace snemo {
     }
 
     size_t particle_track_data::fetch_particles(particle_collection_type & particles_,
-                                                const particle_track::charge_type charge_,
+                                                const uint32_t flags_,
                                                 const bool clear_) const
     {
       if (clear_) particles_.clear();
@@ -60,8 +60,16 @@ namespace snemo {
       for (particle_collection_type::const_iterator i = get_particles().begin();
            i != get_particles().end(); ++i) {
         const particle_track::handle_type & a_particle = *i;
-        const particle_track::charge_type a_charge = a_particle.get().get_charge();
-        if (a_charge == charge_) {
+        const bool is_electron = (flags_ & particle_track::NEGATIVE)
+          && particle_track::particle_is_electron(a_particle.get());
+        const bool is_positron = (flags_ & particle_track::POSITIVE)
+          && particle_track::particle_is_positron(a_particle.get());
+        const bool is_alpha = (flags_ & particle_track::UNDEFINED)
+          && particle_track::particle_is_alpha(a_particle.get());
+        const bool is_gamma = (flags_ & particle_track::NEUTRAL)
+          && particle_track::particle_is_gamma(a_particle.get());
+
+        if (is_electron || is_positron || is_alpha || is_gamma) {
           particles_.push_back(a_particle);
           ipart++;
         }

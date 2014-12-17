@@ -73,7 +73,7 @@ namespace snemo {
 
       /// Retrieve particles given their charge
       size_t fetch_particles(particle_collection_type & particles_,
-                             const particle_track::charge_type charge_,
+                             const uint32_t flags_,
                              const bool clear_ = false) const;
 
       /// Check if there are some non associated calorimeters
