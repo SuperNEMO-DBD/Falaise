@@ -265,7 +265,7 @@ namespace snemo {
           break;
         case LOAD_DETECTOR:
           {
-            const std::string dir = falaise::get_resource_dir();
+            const std::string dir = falaise::get_resource_dir(true);
             TString directory(dir.c_str());
             TGFileInfo file_info;
             const char * config_file_types [] = { "Geometry config files" , "*.conf" ,
@@ -287,7 +287,7 @@ namespace snemo {
           break;
         case LOAD_STYLE:
           {
-            const std::string dir = falaise::get_resource_dir() +
+            const std::string dir = falaise::get_resource_dir(true) +
               "/modules/EventBrowser/styles";
             TString directory(dir.c_str());
             TGFileInfo file_info;

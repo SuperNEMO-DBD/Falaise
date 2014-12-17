@@ -24,7 +24,7 @@ int main()
     // Setting detector manager
     detector_manager & my_detector_manager = detector_manager::get_instance();
     {
-      const string detector_config_file = falaise::get_resource_dir() +
+      const string detector_config_file = falaise::get_resource_dir(true) +
         "/config/snemo/demonstrator/geometry/3.0/manager.conf";
       my_detector_manager.initialize(detector_config_file);
       my_detector_manager.construct();
@@ -33,7 +33,7 @@ int main()
 
     // Reset the detector manager and load another one
     {
-      const std::string detector_config_file = falaise::get_resource_dir() +
+      const std::string detector_config_file = falaise::get_resource_dir(true) +
         "/config/snemo/tracker_commissioning/geometry/1.0/manager.conf";
       my_detector_manager.reset();
       my_detector_manager.initialize(detector_config_file);

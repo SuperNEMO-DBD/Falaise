@@ -373,7 +373,7 @@ namespace snemo {
               _geo_manager_config_file_ = geo_manager_config_file;
             } else {
               // Otherwise, use SuperNEMO/demonstrator config 3.0
-              const std::string resource_dir  = falaise::get_resource_dir();
+              const std::string resource_dir  = falaise::get_resource_dir(true);
               const std::string setup_name    = "snemo/demonstrator";
               const std::string setup_version = "3.0";
               _geo_manager_config_file_ = resource_dir + "/config/"
