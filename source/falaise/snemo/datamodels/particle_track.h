@@ -133,10 +133,10 @@ namespace snemo {
       void invalidate_track_id();
 
       //// Set particle charge
-      void set_charge(int8_t charge_);
+      void set_charge(charge_type charge_);
 
       /// Get particle charge
-      int8_t get_charge() const;
+      charge_type get_charge() const;
 
       /// Get negative charged particle
       bool has_negative_charge() const;
@@ -204,7 +204,7 @@ namespace snemo {
                              bool inherit_               = false) const;
 
     private:
-      int8_t                                      _charge_from_source_;          ///!< Particle charge
+      charge_type                                 _charge_from_source_;          ///!< Particle charge
       tracker_trajectory::handle_type             _trajectory_;                  ///!< Handle to the fitted trajectory
       vertex_collection_type                      _vertices_;                    ///!< Collection of vertices
       calibrated_calorimeter_hit::collection_type _associated_calorimeter_hits_; ///!< Collection of associated calorimeter hits

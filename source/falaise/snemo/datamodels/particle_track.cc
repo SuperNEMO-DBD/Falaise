@@ -132,13 +132,13 @@ namespace snemo {
       return;
     }
 
-    void particle_track::set_charge(int8_t charge_)
+    void particle_track::set_charge(charge_type charge_)
     {
       _charge_from_source_ = charge_;
       return;
     }
 
-    int8_t particle_track::get_charge() const
+    particle_track::charge_type particle_track::get_charge() const
     {
       return _charge_from_source_;
     }
