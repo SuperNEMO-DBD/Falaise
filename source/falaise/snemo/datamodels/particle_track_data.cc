@@ -51,6 +51,24 @@ namespace snemo {
       return;
     }
 
+    size_t particle_track_data::extract_particles(particle_collection_type & particles_,
+                                                  const particle_track::charge_type charge_,
+                                                  const bool clear_) const
+    {
+      if (clear_) particles_.clear();
+      size_t ipart = 0;
+      for (particle_collection_type::const_iterator i = get_particles().begin();
+           i != get_particles().end(); ++i) {
+        const particle_track::handle_type & a_particle = *i;
+        const particle_track::charge_type a_charge = a_particle.get().get_charge();
+        if (a_charge == charge_) {
+          particles_.push_back(a_particle);
+          ipart++;
+        }
+      }
+      return ipart;
+    }
+
     bool particle_track_data::has_non_associated_calorimeters() const
     {
       return get_non_associated_calorimeters().size() > 0;

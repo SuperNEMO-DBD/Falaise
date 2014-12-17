@@ -71,6 +71,11 @@ namespace snemo {
       /// Reset the particle tracks
       void invalidate_particles();
 
+      /// Retrieve particles given their charge
+      size_t extract_particles(particle_collection_type & particles_,
+                               const particle_track::charge_type charge_,
+                               const bool clear_ = false) const;
+
       /// Check if there are some non associated calorimeters
       bool has_non_associated_calorimeters() const;
 
@@ -81,7 +86,7 @@ namespace snemo {
       calibrated_calorimeter_hit::collection_type & grab_non_associated_calorimeters();
 
       /// Reset the non associated calorimeters
-      void reset_non_associated_calorimeters ();
+      void reset_non_associated_calorimeters();
 
       /// Reset the internals
       void reset();
