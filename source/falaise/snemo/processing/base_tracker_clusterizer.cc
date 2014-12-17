@@ -63,26 +63,12 @@ namespace snemo {
       DT_THROW_IF (_geometry_manager_ == 0, std::logic_error, "Missing geometry manager !");
       DT_THROW_IF (!_geometry_manager_->is_initialized (), std::logic_error, "Geometry manager is not initialized !");
 
-      std::string locator_plugin_name;
-
-      // Parse configuration parameters specific to the tracker clusterizer (prefix by "TC."):
-      {
-        datatools::properties tc_setup;
-        setup_.export_and_rename_starting_with(tc_setup, "TC.", "");
-
-        // Logging priority:
-        datatools::logger::priority lp = datatools::logger::extract_logging_configuration (tc_setup);
-        DT_THROW_IF (lp == datatools::logger::PRIO_UNDEFINED,
-                     std::logic_error,
-                     "Invalid logging priority level for geometry manager !");
-        set_logging_priority(lp);
-
-        // Locator plugin:
-        if (setup_.has_key ("locator_plugin_name")) {
-          locator_plugin_name = setup_.fetch_string ("locator_plugin_name");
-        }
-
-      }
+      // Logging priority:
+      datatools::logger::priority lp = datatools::logger::extract_logging_configuration(setup_);
+      DT_THROW_IF (lp == datatools::logger::PRIO_UNDEFINED,
+                   std::logic_error,
+                   "Invalid logging priority level for geometry manager !");
+      set_logging_priority(lp);
 
       // Initialization stuff:
       const std::string & geo_setup_label = _geometry_manager_->get_setup_label ();
@@ -93,6 +79,12 @@ namespace snemo {
 
       // Get the Geiger cell locator from geometry plugins :
       const geomtools::manager & geo_mgr = get_geometry_manager ();
+
+      // Locator plugin:
+      std::string locator_plugin_name;
+      if (setup_.has_key ("locator_plugin_name")) {
+        locator_plugin_name = setup_.fetch_string ("locator_plugin_name");
+      }
 
       // If no locator plugin name is set, then search for the first one
       if (locator_plugin_name.empty ()) {
