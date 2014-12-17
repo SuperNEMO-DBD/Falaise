@@ -225,39 +225,38 @@ namespace snemo {
       if (clear_) vertices_.clear();
       size_t ivtx = 0;
       for (vertex_collection_type::const_iterator i = get_vertices().begin();
-           i != get_vertices().end(); ++i)
-        {
-          const handle_spot & a_vertex = *i;
-          const datatools::properties & aux = a_vertex.get().get_auxiliaries();
-          std::string vtx_type;
-          if (aux.has_key(vertex_type_key())) {
-            vtx_type = aux.fetch_string(vertex_type_key());
-          }
-          const bool has_vertex_on_foil  =
-            (flags_ & VERTEX_ON_SOURCE_FOIL)
-            && vertex_is_on_source_foil(a_vertex.get());
-          const bool has_vertex_on_calo  =
-            (flags_ & VERTEX_ON_MAIN_CALORIMETER)
-            && vertex_is_on_main_calorimeter(a_vertex.get());
-          const bool has_vertex_on_xcalo =
-            (flags_ & VERTEX_ON_X_CALORIMETER)
-            && vertex_is_on_x_calorimeter(a_vertex.get());
-          const bool has_vertex_on_gveto =
-            (flags_ & VERTEX_ON_GAMMA_VETO)
-            && vertex_is_on_gamma_veto(a_vertex.get());
-          const bool has_vertex_on_wire  =
-            (flags_ & VERTEX_ON_WIRE)
-            && vertex_is_on_wire(a_vertex.get());
-
-          if (has_vertex_on_foil  ||
-              has_vertex_on_calo  ||
-              has_vertex_on_xcalo ||
-              has_vertex_on_gveto ||
-              has_vertex_on_wire) {
-            vertices_.push_back(a_vertex);
-            ivtx++;
-          }
+           i != get_vertices().end(); ++i) {
+        const handle_spot & a_vertex = *i;
+        const datatools::properties & aux = a_vertex.get().get_auxiliaries();
+        std::string vtx_type;
+        if (aux.has_key(vertex_type_key())) {
+          vtx_type = aux.fetch_string(vertex_type_key());
         }
+        const bool has_vertex_on_foil  =
+          (flags_ & VERTEX_ON_SOURCE_FOIL)
+          && vertex_is_on_source_foil(a_vertex.get());
+        const bool has_vertex_on_calo  =
+          (flags_ & VERTEX_ON_MAIN_CALORIMETER)
+          && vertex_is_on_main_calorimeter(a_vertex.get());
+        const bool has_vertex_on_xcalo =
+          (flags_ & VERTEX_ON_X_CALORIMETER)
+          && vertex_is_on_x_calorimeter(a_vertex.get());
+        const bool has_vertex_on_gveto =
+          (flags_ & VERTEX_ON_GAMMA_VETO)
+          && vertex_is_on_gamma_veto(a_vertex.get());
+        const bool has_vertex_on_wire  =
+          (flags_ & VERTEX_ON_WIRE)
+          && vertex_is_on_wire(a_vertex.get());
+
+        if (has_vertex_on_foil  ||
+            has_vertex_on_calo  ||
+            has_vertex_on_xcalo ||
+            has_vertex_on_gveto ||
+            has_vertex_on_wire) {
+          vertices_.push_back(a_vertex);
+          ivtx++;
+        }
+      }
       return ivtx;
     }
 
