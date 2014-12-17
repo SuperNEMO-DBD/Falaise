@@ -80,7 +80,7 @@ int main (/*int argc_, char ** argv_*/)
       hPT0.grab ().set_trajectory_handle (hTJ0);
       hPT0.grab ().grab_vertices ().push_back (hV0);
       hPT0.grab ().grab_vertices ().push_back (hV1);
-      hPT0.grab ().grab_auxiliaries ().store_flag ("fake_electron");
+      hPT0.grab ().grab_auxiliaries ().store_flag ("fake_positron");
       hPT0.get ().tree_dump (std::clog, "Particle track : ");
 
       // Event record :
@@ -93,6 +93,10 @@ int main (/*int argc_, char ** argv_*/)
       PTD.grab_auxiliaries ().store_flag ("test_ptd");
       PTD.tree_dump (std::clog, "Particle track data :");
 
+      // Retrieve electrons if any
+      sdm::particle_track_data::particle_collection_type electrons;
+      const size_t nelectrons = PTD.extract_particles(electrons, sdm::particle_track::negative);
+      std::clog << "Number of electrons = " << nelectrons << std::endl;
     }
   catch (std::exception & x)
     {
