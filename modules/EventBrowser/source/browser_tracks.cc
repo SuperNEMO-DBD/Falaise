@@ -348,6 +348,7 @@ namespace snemo {
                                          "Primary particles",
                                          _get_colored_icon_("ofolder"),
                                          _get_colored_icon_("folder"));
+          _tracks_list_box_->OpenItem(item_primary_event);
           item_primary_event->SetCheckBox(false);
           item_primary_event->SetUserData((void*)(intptr_t)++icheck_id);
 
