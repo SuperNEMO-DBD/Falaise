@@ -220,7 +220,9 @@ namespace snemo {
       return _vertices_;
     }
 
-    size_t particle_track::compute_vertices(vertex_collection_type & vertices_, const uint32_t flags_, const bool clear_) const
+    size_t particle_track::extract_vertices(vertex_collection_type & vertices_,
+                                            const uint32_t flags_,
+                                            const bool clear_) const
     {
       if (clear_) vertices_.clear();
       size_t ivtx = 0;
