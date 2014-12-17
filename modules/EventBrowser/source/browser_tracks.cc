@@ -1043,7 +1043,7 @@ namespace snemo {
                                                                 checked);
                 _tracks_list_box_->AddItem(item_solution,
                                            item_helix_solution);
-                _tracks_list_box_->OpenItem(item_helix_solution);
+                // _tracks_list_box_->OpenItem(item_helix_solution);
                 item_helix_solution->SetUserData((void*)(intptr_t)++icheck_id);
                 if (a_auxiliaries.has_key(browser_tracks::CHECKED_FLAG))
                   item_helix_solution->CheckItem(a_auxiliaries.has_flag(browser_tracks::CHECKED_FLAG));
@@ -1067,7 +1067,7 @@ namespace snemo {
                                                                checked);
                 _tracks_list_box_->AddItem(item_solution,
                                            item_line_solution);
-                _tracks_list_box_->OpenItem(item_line_solution);
+                // _tracks_list_box_->OpenItem(item_line_solution);
                 item_line_solution->SetUserData((void*)(intptr_t)++icheck_id);
                 if (a_auxiliaries.has_key(browser_tracks::CHECKED_FLAG))
                   item_line_solution->CheckItem(a_auxiliaries.has_flag(browser_tracks::CHECKED_FLAG));
