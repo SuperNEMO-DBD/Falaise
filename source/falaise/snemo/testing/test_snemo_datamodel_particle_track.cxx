@@ -84,17 +84,17 @@ int main (/* int argc_, char ** argv_ */)
       // Retrieve a subset of vertices
       sdm::particle_track::vertex_collection_type vertices;
       {
-        const size_t nvtx = PT0.compute_vertices(vertices, sdm::particle_track::VERTEX_ON_SOURCE_FOIL);
+        const size_t nvtx = PT0.extract_vertices(vertices, sdm::particle_track::VERTEX_ON_SOURCE_FOIL);
         std::clog << "Number of vertices on the source foil = " << nvtx << std::endl;
         std::clog << "Total number of vertices = " << vertices.size() << std::endl;
       }
       {
-        const size_t nvtx = PT0.compute_vertices(vertices, sdm::particle_track::VERTEX_ON_MAIN_CALORIMETER);
+        const size_t nvtx = PT0.extract_vertices(vertices, sdm::particle_track::VERTEX_ON_MAIN_CALORIMETER);
         std::clog << "Number of vertices on the main calorimeter = " << nvtx << std::endl;
         std::clog << "Total number of vertices = " << vertices.size() << std::endl;
       }
       {
-        const size_t nvtx = PT0.compute_vertices(vertices, sdm::particle_track::VERTEX_ON_MAIN_CALORIMETER | sdm::particle_track::VERTEX_ON_SOURCE_FOIL, true);
+        const size_t nvtx = PT0.extract_vertices(vertices, sdm::particle_track::VERTEX_ON_MAIN_CALORIMETER | sdm::particle_track::VERTEX_ON_SOURCE_FOIL, true);
         std::clog << "Number of vertices on the source foil & the main calorimeter = " << nvtx << std::endl;
         std::clog << "Total number of vertices = " << vertices.size() << std::endl;
       }
