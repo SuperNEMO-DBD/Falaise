@@ -177,9 +177,9 @@ namespace snemo {
       /// Function to return the number of vertices found given a 'vertex' flag
       /// bits. The list of vertices can be retrieved, the 'clear' option
       /// meaning that the list will be cleaned before pushing new vertex spot.
-      size_t extract_vertices(vertex_collection_type & vertices_,
-                              const uint32_t flags_,
-                              const bool clear_ = false) const;
+      size_t fetch_vertices(vertex_collection_type & vertices_,
+                            const uint32_t flags_,
+                            const bool clear_ = false) const;
 
       /// Check if there are some associated calorimeter hits
       bool has_associated_calorimeter_hits() const;

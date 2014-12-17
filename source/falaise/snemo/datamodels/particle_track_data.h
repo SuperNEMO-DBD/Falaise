@@ -72,9 +72,9 @@ namespace snemo {
       void invalidate_particles();
 
       /// Retrieve particles given their charge
-      size_t extract_particles(particle_collection_type & particles_,
-                               const particle_track::charge_type charge_,
-                               const bool clear_ = false) const;
+      size_t fetch_particles(particle_collection_type & particles_,
+                             const particle_track::charge_type charge_,
+                             const bool clear_ = false) const;
 
       /// Check if there are some non associated calorimeters
       bool has_non_associated_calorimeters() const;

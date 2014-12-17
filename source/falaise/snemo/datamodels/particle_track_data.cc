@@ -51,9 +51,9 @@ namespace snemo {
       return;
     }
 
-    size_t particle_track_data::extract_particles(particle_collection_type & particles_,
-                                                  const particle_track::charge_type charge_,
-                                                  const bool clear_) const
+    size_t particle_track_data::fetch_particles(particle_collection_type & particles_,
+                                                const particle_track::charge_type charge_,
+                                                const bool clear_) const
     {
       if (clear_) particles_.clear();
       size_t ipart = 0;

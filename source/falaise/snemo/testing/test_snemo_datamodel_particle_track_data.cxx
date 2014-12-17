@@ -95,7 +95,7 @@ int main (/*int argc_, char ** argv_*/)
 
       // Retrieve electrons if any
       sdm::particle_track_data::particle_collection_type electrons;
-      const size_t nelectrons = PTD.extract_particles(electrons, sdm::particle_track::negative);
+      const size_t nelectrons = PTD.fetch_particles(electrons, sdm::particle_track::negative);
       std::clog << "Number of electrons = " << nelectrons << std::endl;
     }
   catch (std::exception & x)
