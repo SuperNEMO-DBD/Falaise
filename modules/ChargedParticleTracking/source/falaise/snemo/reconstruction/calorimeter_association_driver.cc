@@ -94,18 +94,16 @@ namespace snemo {
       set_logging_priority(lp);
 
       // Matching distance tolerance for calorimeter association
-      if (setup_.has_key("matching_tolerance"))
-        {
-          _matching_tolerance_ = setup_.fetch_real("matching_tolerance");
-          if (! setup_.has_explicit_unit("matching_tolerance")) {
-            _matching_tolerance_ *= CLHEP::mm;
-          }
+      if (setup_.has_key("matching_tolerance")) {
+        _matching_tolerance_ = setup_.fetch_real("matching_tolerance");
+        if (! setup_.has_explicit_unit("matching_tolerance")) {
+          _matching_tolerance_ *= CLHEP::mm;
         }
+      }
 
-      if (setup_.has_key("use_last_geiger_cell"))
-        {
-          _use_last_geiger_cell_ = setup_.fetch_boolean("use_last_geiger_cell");
-        }
+      if (setup_.has_key("use_last_geiger_cell")) {
+        _use_last_geiger_cell_ = setup_.fetch_boolean("use_last_geiger_cell");
+      }
 
       set_initialized(true);
       return;
@@ -135,11 +133,10 @@ namespace snemo {
       DT_LOG_TRACE(get_logging_priority(), "Entering...");
       DT_THROW_IF(! is_initialized(), std::logic_error, "Driver is not initialized !");
 
-      if (_use_last_geiger_cell_)
-        {
-          DT_LOG_WARNING(get_logging_priority(), "Association mode using Geiger cell is not implemented yet !");
-          return;
-        }
+      if (_use_last_geiger_cell_) {
+        DT_LOG_WARNING(get_logging_priority(), "Association mode using Geiger cell is not implemented yet !");
+        return;
+      }
 
       this->_measure_matching_calorimeters_(calorimeter_hits_, particle_);
 
@@ -153,81 +150,71 @@ namespace snemo {
     {
       DT_LOG_TRACE(get_logging_priority(), "Entering...");
 
-      if (! particle_.has_vertices())
-        {
-          DT_LOG_DEBUG(get_logging_priority(), "No vertices have been found for the current particle!");
-          return;
-        }
+      if (! particle_.has_vertices()) {
+        DT_LOG_DEBUG(get_logging_priority(), "No vertices have been found for the current particle!");
+        return;
+      }
 
       const snemo::datamodel::particle_track::vertex_collection_type & the_vertices
         = particle_.get_vertices();
       for (snemo::datamodel::particle_track::vertex_collection_type::const_iterator
              ivertex = the_vertices.begin();
-           ivertex != the_vertices.end(); ++ivertex)
-        {
-          const geomtools::blur_spot & a_vertex = ivertex->get();
+           ivertex != the_vertices.end(); ++ivertex) {
+        const geomtools::blur_spot & a_vertex = ivertex->get();
 
-          if (get_logging_priority() >= datatools::logger::PRIO_TRACE)
-            {
-              DT_LOG_TRACE(get_logging_priority(), "Vertex:");
-              a_vertex.tree_dump(std::clog);
+        if (get_logging_priority() >= datatools::logger::PRIO_TRACE) {
+          DT_LOG_TRACE(get_logging_priority(), "Vertex:");
+          a_vertex.tree_dump(std::clog);
+        }
+
+        // Look for matching calorimeters
+        for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::const_iterator
+               icalo = calorimeter_hits_.begin();
+             icalo != calorimeter_hits_.end(); ++icalo) {
+          const snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit = icalo->get();
+          const geomtools::geom_id & gid = a_calo_hit.get_geom_id();
+
+          bool has_associated_calorimeter = false;
+
+          // Getting geometry mapping
+          const geomtools::mapping & the_mapping = get_geometry_manager().get_mapping();
+          std::vector<geomtools::geom_id> gids;
+          the_mapping.compute_matching_geom_id(gid, gids);
+          for (size_t i = 0; i < gids.size(); ++i) {
+            const geomtools::geom_id & a_gid = gids.at(i);
+            const geomtools::geom_info * ginfo_ptr = the_mapping.get_geom_info_ptr(a_gid);
+            if (! ginfo_ptr) {
+              DT_LOG_WARNING(get_logging_priority(), "Unmapped geom id " << a_gid << "!");
+              continue;
             }
 
-          // Look for matching calorimeters
-          for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::const_iterator
-                 icalo = calorimeter_hits_.begin();
-               icalo != calorimeter_hits_.end(); ++icalo)
-            {
-              const snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit = icalo->get();
-              const geomtools::geom_id & gid = a_calo_hit.get_geom_id();
+            // Tolerance must be understood as 'skin' tolerance
+            // so must be multiplied by a factor of 2
+            const double tolerance = _matching_tolerance_;
+            if (the_mapping.check_inside(*ginfo_ptr, a_vertex.get_position(), tolerance, true)) {
+              DT_LOG_DEBUG(get_logging_priority(), "Found matching calorimeter with the following geom_id " << a_gid);
+              has_associated_calorimeter = true;
+            } else {
+              // Try in a different way
+              DT_LOG_DEBUG(get_logging_priority(), "No matching calorimeter !");
+            }
+          }// end of calorimeter gids
+          if (has_associated_calorimeter) {
+            particle_.grab_associated_calorimeter_hits().push_back(*icalo);
+            // Add a private property
+            snemo::datamodel::calibrated_calorimeter_hit * mutable_hit
+              = const_cast<snemo::datamodel::calibrated_calorimeter_hit *>(&(a_calo_hit));
+            mutable_hit->grab_auxiliaries().update_flag("__associated");
+          }
+        }// end of calorimeter hits
 
-              bool has_associated_calorimeter = false;
+        // 2012-06-15 XG: If no triggered calorimeter has been
+        // associated to track, one may try to find one silent
+        // calorimeter by using the 'calo_locator' and finding
+        // the corresponding calorimeter block. To be
+        // continued...
 
-              // Getting geometry mapping
-              const geomtools::mapping & the_mapping = get_geometry_manager().get_mapping();
-              std::vector<geomtools::geom_id> gids;
-              the_mapping.compute_matching_geom_id(gid, gids);
-              for (size_t i = 0; i < gids.size(); ++i)
-                {
-                  const geomtools::geom_id & a_gid = gids.at(i);
-                  const geomtools::geom_info * ginfo_ptr = the_mapping.get_geom_info_ptr(a_gid);
-                  if (! ginfo_ptr)
-                    {
-                      DT_LOG_WARNING(get_logging_priority(), "Unmapped geom id " << a_gid << "!");
-                      continue;
-                    }
-
-                  // Tolerance must be understood as 'skin' tolerance
-                  // so must be multiplied by a factor of 2
-                  const double tolerance = _matching_tolerance_;
-                  if (the_mapping.check_inside(*ginfo_ptr, a_vertex.get_position(), tolerance, true))
-                    {
-                      DT_LOG_DEBUG(get_logging_priority(), "Found matching calorimeter with the following geom_id " << a_gid);
-                      has_associated_calorimeter = true;
-                    }
-                  else
-                    {
-                      // Try in a different way
-                      DT_LOG_DEBUG(get_logging_priority(), "No matching calorimeter !");
-                    }
-                }// end of calorimeter gids
-              if (has_associated_calorimeter)
-                {
-                  particle_.grab_associated_calorimeter_hits().push_back(*icalo);
-                  // Add a private property
-                  snemo::datamodel::calibrated_calorimeter_hit * mutable_hit
-                    = const_cast<snemo::datamodel::calibrated_calorimeter_hit *>(&(a_calo_hit));
-                  mutable_hit->grab_auxiliaries().update_flag("__associated");
-                }
-            }// end of calorimeter hits
-
-          // 2012-06-15 XG: If no triggered calorimeter has been
-          // associated to track, one may try to find one silent
-          // calorimeter by using the 'calo_locator' and finding
-          // the corresponding calorimeter block. To be
-          // continued...
-
-        }// end of vertices
+      }// end of vertices
 
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");
       return;
