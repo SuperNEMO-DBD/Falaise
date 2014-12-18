@@ -35,7 +35,7 @@ namespace snemo {
         typedef datatools::handle<calibrated_calorimeter_hit> handle_type;
 
         /// Collection of handles of calibrated calorimeter hit
-        typedef std::vector<handle_type>                      collection_type;
+        typedef std::vector<handle_type> collection_type;
 
         /// Return the time associated to the hit
         double get_time() const;
