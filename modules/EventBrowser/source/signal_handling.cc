@@ -56,7 +56,8 @@ namespace snemo {
         { kKey_Escape, kKey_PageDown, kKey_PageUp,
           kKey_Home,   kKey_End,      kKey_Space,
           kKey_Tab,    kKey_Backtab,  kKey_P,
-          kKey_A,      kKey_D,        kKey_o };
+          kKey_A,      kKey_D,        kKey_o,
+          kKey_r };
       const unsigned int g__nbr_binded_keys =
         sizeof (g__binded_keys)/sizeof(unsigned int);
 
@@ -130,6 +131,9 @@ namespace snemo {
             break;
           case kKey_d:
             _browser_->update_menu(DUMP_EVENT);
+            break;
+          case kKey_r:
+            _browser_->initialize_event_server();
             break;
           default:
             break;
@@ -216,6 +220,11 @@ namespace snemo {
               options_manager::get_instance().set_input_files(tmp);
               _browser_->initialize_event_server();
             }
+          }
+          break;
+        case FILE_RELOAD:
+          {
+            _browser_->initialize_event_server();
           }
           break;
           // case CONNECT_TO_DAQ:

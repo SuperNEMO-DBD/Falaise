@@ -242,6 +242,7 @@ namespace snemo {
         TGPopupMenuPlus * menu_file = new TGPopupMenuPlus(gClient->GetRoot());
         menu_file->AddEntry("Open file...", FILE_OPEN);
         menu_file->AddEntry("Connect to DAQ server...", CONNECT_TO_DAQ);
+        menu_file->AddEntry("Reload", FILE_RELOAD);
         menu_file->AddSeparator();
         menu_file->AddEntry("Save event as xml", SAVE_EVENT_TO_XML);
         menu_file->AddEntry("Save event as...", SAVE_EVENT_AS);

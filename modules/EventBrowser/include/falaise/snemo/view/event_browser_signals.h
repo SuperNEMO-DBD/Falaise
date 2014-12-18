@@ -41,6 +41,7 @@ enum button_signals_type
 
     // File menu
     FILE_OPEN,
+    FILE_RELOAD,
     CONNECT_TO_DAQ,
     SAVE_EVENT_TO_XML,
     SAVE_EVENT_AS,
