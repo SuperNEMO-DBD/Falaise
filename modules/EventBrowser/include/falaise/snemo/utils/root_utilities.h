@@ -93,10 +93,6 @@ namespace snemo {
         static bool   g_initialized;
         static size_t g_geo_id;
 
-      public:
-        root_utilities();
-        ~root_utilities();
-
         /// Convert property into ROOT line style
         static unsigned int get_line_style(const std::string & key_,
                                            const datatools::properties & property_);
@@ -113,6 +109,9 @@ namespace snemo {
 
         /// Get ROOT color id for a fading color
         static unsigned int get_fade_color_from(const unsigned int color_, const double ratio);
+
+        /// Get color as hexadecimal string
+        static std::string get_hex_color(const unsigned int color_);
 
         /// Write RGB color into stream
         static void write_rgb_color(std::ostream & out_, const unsigned int color_);

@@ -98,18 +98,6 @@ namespace snemo {
       bool   root_utilities::g_initialized = false;
       size_t root_utilities::g_geo_id      = 0;
 
-      // ctor:
-      root_utilities::root_utilities()
-      {
-        return;
-      }
-
-      // dtor:
-      root_utilities::~root_utilities()
-      {
-        return;
-      }
-
       unsigned int root_utilities::get_line_style(const std::string & key_,
                                                   const datatools::properties & property_)
       {
@@ -242,6 +230,12 @@ namespace snemo {
         gg *= ratio_;
         bb *= ratio_;
         return TColor::GetColor(rr, gg, bb);
+      }
+
+      std::string root_utilities::get_hex_color(const unsigned int color_)
+      {
+        const long pixel = TColor::Number2Pixel(color_);
+        return TColor::PixelAsHexString(pixel);
       }
 
       void root_utilities::write_rgb_color(ostream & out_, const unsigned int color_)
