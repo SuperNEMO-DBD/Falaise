@@ -219,6 +219,7 @@ namespace snemo {
               tmp.push_back (std::string(file_info.fFilename));
               options_manager::get_instance().set_input_files(tmp);
               _browser_->initialize_event_server();
+              options_manager::get_instance().set_default_options();
             }
           }
           break;
