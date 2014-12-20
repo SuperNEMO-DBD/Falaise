@@ -274,6 +274,7 @@ namespace snemo {
         // Add a new particle_track
         snemo::datamodel::particle_track::handle_type hPT(new snemo::datamodel::particle_track);
         hPT.grab().set_trajectory_handle(*itrajectory);
+        hPT.grab().set_track_id(particle_track_data_.get_number_of_particles());
         particle_track_data_.add_particle(hPT);
 
         // Compute particle charge
