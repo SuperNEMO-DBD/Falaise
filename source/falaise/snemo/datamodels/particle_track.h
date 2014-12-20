@@ -45,7 +45,7 @@ namespace snemo {
         neutral   = NEUTRAL,
         POSITIVE  = datatools::bit_mask::bit02, /// Positively charged particle
         positive  = POSITIVE,
-        NEGATIVE  = datatools::bit_mask::bit04, /// Negatively charged particle
+        NEGATIVE  = datatools::bit_mask::bit03, /// Negatively charged particle
         negative  = NEGATIVE
       };
 
@@ -70,8 +70,8 @@ namespace snemo {
         VERTEX_ON_SOURCE_FOIL       = datatools::bit_mask::bit00,
         VERTEX_ON_MAIN_CALORIMETER  = datatools::bit_mask::bit01,
         VERTEX_ON_X_CALORIMETER     = datatools::bit_mask::bit02,
-        VERTEX_ON_GAMMA_VETO        = datatools::bit_mask::bit04,
-        VERTEX_ON_WIRE              = datatools::bit_mask::bit08,
+        VERTEX_ON_GAMMA_VETO        = datatools::bit_mask::bit03,
+        VERTEX_ON_WIRE              = datatools::bit_mask::bit04,
       };
 
       /// Key for the vertex type property
