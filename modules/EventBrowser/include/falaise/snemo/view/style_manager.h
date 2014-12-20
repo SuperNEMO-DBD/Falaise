@@ -62,15 +62,15 @@ namespace snemo {
         struct volume_properties
         {
           detector::visibility_type _visibility_;
-          unsigned int              _color_;
-          unsigned int              _transparency_;
+          size_t              _color_;
+          size_t              _transparency_;
         };
 
         /// Structure that defines particle properties
         struct particle_properties
         {
           bool         _visibility_;
-          unsigned int _color_;
+          size_t _color_;
           std::string  _latex_name_;
         };
 
@@ -93,31 +93,31 @@ namespace snemo {
         const std::string & get_filename() const;
 
         /// Get startup tab for event browser
-        unsigned int get_startup_tab() const;
+        size_t get_startup_tab() const;
 
         /// Get startup tab for 2D tab component
-        unsigned int get_startup_2d_view() const;
+        size_t get_startup_2d_view() const;
 
         /// Set background color
-        void set_background_color(const unsigned int color_);
+        void set_background_color(const size_t color_);
 
         /// Get background color
-        unsigned int get_background_color() const;
+        size_t get_background_color() const;
 
         /// Set Monte-Carlo line style (solid, dashed)
-        void set_mc_line_style(const unsigned int style_);
+        void set_mc_line_style(const size_t style_);
 
         /// Get Monte-Carlo line style
-        unsigned int get_mc_line_style() const;
+        size_t get_mc_line_style() const;
 
         /// Set Monte-Carlo line width
-        void set_mc_line_width(const unsigned int width_);
+        void set_mc_line_width(const size_t width_);
 
         /// Get Monte-Carlo line width
-        unsigned int get_mc_line_width() const;
+        size_t get_mc_line_width() const;
 
         /// Get color for calibrated info
-        unsigned int get_calibrated_data_color() const;
+        size_t get_calibrated_data_color() const;
 
         /// Check color palette availability
         bool has_color_palette() const;
@@ -135,10 +135,10 @@ namespace snemo {
         bool has_volume_properties(const std::string & volume_name_) const;
 
         /// Get volume color for a given volume name
-        unsigned int get_volume_color(const std::string & volume_name_) const;
+        size_t get_volume_color(const std::string & volume_name_) const;
 
         /// Get volume transparency for a a given volume name
-        unsigned int get_volume_transparency(const std::string & volume_name_) const;
+        size_t get_volume_transparency(const std::string & volume_name_) const;
 
         /// Get volume visibility for a given volume name
         detector::visibility_type get_volume_visibility(const std::string & volume_name_) const;
@@ -156,7 +156,7 @@ namespace snemo {
         bool has_particle_properties(const std::string & particle_name_) const;
 
         /// Get particle color for a given particle name
-        unsigned int get_particle_color(const std::string & particle_name_) const;
+        size_t get_particle_color(const std::string & particle_name_) const;
 
         /// Get particle visbility for a given particle name
         bool get_particle_visibility(const std::string & particle_name_) const;
@@ -193,9 +193,9 @@ namespace snemo {
 
         /// Smart dump
         virtual void tree_dump(std::ostream & out_         = std::clog,
-                                const std::string & title_  = "",
-                                const std::string & indent_ = "",
-                                bool inherit_               = false) const;
+                               const std::string & title_  = "",
+                               const std::string & indent_ = "",
+                               bool inherit_               = false) const;
 
       private:
 
@@ -244,25 +244,25 @@ namespace snemo {
         std::string  _filename_;//!< Style filename location
         std::string  _setup_label_;//!< Dectetor setup label
 
-        unsigned int _startup_tab_;
-        unsigned int _startup_2d_view_;
-        unsigned int _background_color_;
+        size_t _startup_tab_;
+        size_t _startup_2d_view_;
+        size_t _background_color_;
 
         // volume stuff
-        unsigned int                             _default_volume_color_;
-        unsigned int                             _default_volume_transparency_;
-        detector::visibility_type                _default_volume_visibility_;
+        size_t _default_volume_color_;
+        size_t _default_volume_transparency_;
+        detector::visibility_type _default_volume_visibility_;
         std::map<std::string, volume_properties> _volumes_properties_;
 
         // MC stuff
-        unsigned int                               _mc_line_style_;
-        unsigned int                               _mc_line_width_;
-        unsigned int                               _undefined_particle_color_;
+        size_t _mc_line_style_;
+        size_t _mc_line_width_;
+        size_t _undefined_particle_color_;
         std::map<std::string, particle_properties> _particles_properties_;
         std::map<std::string, std::string>         _particle_name_dict_;
 
         // Calibrated stuff
-        unsigned int _calibrated_data_color_;
+        size_t _calibrated_data_color_;
 
         // Save options
         std::string _save_directory_;

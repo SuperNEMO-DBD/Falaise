@@ -105,9 +105,9 @@ namespace snemo {
 
           if (!style_mgr.get_particle_visibility(particle_name)) continue;
 
-          unsigned int line_color = style_mgr.get_particle_color(particle_name);
-          unsigned int line_width = style_mgr.get_mc_line_width();
-          unsigned int line_style = style_mgr.get_mc_line_style();
+          size_t line_color = style_mgr.get_particle_color(particle_name);
+          size_t line_width = style_mgr.get_mc_line_width();
+          size_t line_style = style_mgr.get_mc_line_style();
 
           const datatools::properties & hit_aux = a_hit.get_auxiliaries();
           const int track_id = a_hit.get_track_id();

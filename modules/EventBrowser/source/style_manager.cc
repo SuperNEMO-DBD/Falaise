@@ -84,47 +84,47 @@ namespace snemo {
         return _setup_label_;
       }
 
-      unsigned int style_manager::get_startup_tab() const
+      size_t style_manager::get_startup_tab() const
       {
         return _startup_tab_;
       }
 
-      unsigned int style_manager::get_startup_2d_view() const
+      size_t style_manager::get_startup_2d_view() const
       {
         return _startup_2d_view_;
       }
 
-      void style_manager::set_background_color(const unsigned int color_)
+      void style_manager::set_background_color(const size_t color_)
       {
         _background_color_ = color_;
       }
 
-      unsigned int style_manager::get_background_color() const
+      size_t style_manager::get_background_color() const
       {
         return _background_color_;
       }
 
-      void style_manager::set_mc_line_style(const unsigned int style_)
+      void style_manager::set_mc_line_style(const size_t style_)
       {
         _mc_line_style_ = style_;
       }
 
-      unsigned int style_manager::get_mc_line_style() const
+      size_t style_manager::get_mc_line_style() const
       {
         return _mc_line_style_;
       }
 
-      void style_manager::set_mc_line_width(const unsigned int width_)
+      void style_manager::set_mc_line_width(const size_t width_)
       {
         _mc_line_width_ = width_;
       }
 
-      unsigned int style_manager::get_mc_line_width() const
+      size_t style_manager::get_mc_line_width() const
       {
         return _mc_line_width_;
       }
 
-      unsigned int style_manager::get_calibrated_data_color() const
+      size_t style_manager::get_calibrated_data_color() const
       {
         return _calibrated_data_color_;
       }
@@ -166,17 +166,17 @@ namespace snemo {
         return true;
       }
 
-      unsigned int style_manager::get_volume_color(const std::string & volume_name_) const
+      size_t style_manager::get_volume_color(const std::string & volume_name_) const
       {
-        unsigned int volume_color = _default_volume_color_;
+        size_t volume_color = _default_volume_color_;
         if (has_volume_properties(volume_name_))
           volume_color = _volumes_properties_.at(volume_name_)._color_;
         return volume_color;
       }
 
-      unsigned int style_manager::get_volume_transparency(const std::string & volume_name_) const
+      size_t style_manager::get_volume_transparency(const std::string & volume_name_) const
       {
-        unsigned int volume_transparency = _default_volume_transparency_;
+        size_t volume_transparency = _default_volume_transparency_;
         if (has_volume_properties(volume_name_))
           volume_transparency = _volumes_properties_.at(volume_name_)._transparency_;
         // Take care of pad vs. opengl : if opengl is not used then
@@ -231,9 +231,9 @@ namespace snemo {
         return true;
       }
 
-      unsigned int style_manager::get_particle_color(const std::string & particle_name_) const
+      size_t style_manager::get_particle_color(const std::string & particle_name_) const
       {
-        unsigned int particle_color = _undefined_particle_color_;
+        size_t particle_color = _undefined_particle_color_;
         if (has_particle_properties(particle_name_))
           particle_color = _particles_properties_.at(particle_name_)._color_;
         return particle_color;
