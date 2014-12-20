@@ -78,6 +78,7 @@ namespace snemo {
           return;
         }
 
+        std::set<int> highlight_track_id;
         for (mctools::simulated_data::hit_handle_collection_type::const_iterator
                it_hit = hit_collection.begin();
              it_hit != hit_collection.end(); ++it_hit) {
@@ -108,9 +109,17 @@ namespace snemo {
           unsigned int line_width = style_mgr.get_mc_line_width();
           unsigned int line_style = style_mgr.get_mc_line_style();
 
-          if (a_hit.get_auxiliaries().has_flag(browser_tracks::HIGHLIGHT_FLAG) &&
-              a_hit.get_auxiliaries().has_flag(mctools::hit_utils::HIT_VISU_HIGHLIGHTED_KEY)) {
-            line_width = 3;
+          const datatools::properties & hit_aux = a_hit.get_auxiliaries();
+          const int track_id = a_hit.get_track_id();
+          if (hit_aux.has_key(browser_tracks::CHECKED_FLAG) &&
+              ! hit_aux.has_flag(browser_tracks::CHECKED_FLAG)) {
+            highlight_track_id.insert(track_id);
+          }
+          if (highlight_track_id.count(track_id)) continue;
+
+          if (hit_aux.has_flag(browser_tracks::HIGHLIGHT_FLAG)) {//  &&
+              // a_hit.get_auxiliaries().has_flag(mctools::hit_utils::HIT_VISU_HIGHLIGHTED_KEY)) {
+            line_width += 3;
             TPolyMarker3D * mark1 = new TPolyMarker3D;
             _objects->Add(mark1);
             mark1->SetMarkerColor(kRed);
