@@ -120,41 +120,31 @@ namespace snemo {
           if (hit_aux.has_flag(browser_tracks::HIGHLIGHT_FLAG)) {//  &&
               // a_hit.get_auxiliaries().has_flag(mctools::hit_utils::HIT_VISU_HIGHLIGHTED_KEY)) {
             line_width += 3;
-            TPolyMarker3D * mark1 = new TPolyMarker3D;
+            TPolyMarker3D * mark1 = this->make_polymarker(a_hit.get_position_start());
             _objects->Add(mark1);
             mark1->SetMarkerColor(kRed);
             mark1->SetMarkerStyle(kPlus);
-            mark1->SetPoint(0,
-                            a_hit.get_position_start().x(),
-                            a_hit.get_position_start().y(),
-                            a_hit.get_position_start().z());
-            TPolyMarker3D * mark2 = new TPolyMarker3D;
+            TPolyMarker3D * mark2 = this->make_polymarker(a_hit.get_position_stop());
             _objects->Add(mark2);
             mark2->SetMarkerColor(kRed);
             mark2->SetMarkerStyle(kCircle);
-            mark2->SetPoint(0,
-                            a_hit.get_position_stop().x(),
-                            a_hit.get_position_stop().y(),
-                            a_hit.get_position_stop().z());
           }
-
-          TPolyLine3D * mc_path = new TPolyLine3D;
+          std::vector<geomtools::vector_3d> points;
+          points.push_back(a_hit.get_position_start());
+          points.push_back(a_hit.get_position_stop());
+          TPolyLine3D * mc_path = this->make_polyline(points);
           _objects->Add(mc_path);
           mc_path->SetLineColor(line_color);
           mc_path->SetLineWidth(line_width);
           mc_path->SetLineStyle(line_style);
-          // std::vector<geomtools::vector_3d> points;
-          // points.push_back(a_hit.get_position_start());
-          // points.push_back(a_hit.get_position_stop());
-          // this->_make_polyline()
-          mc_path->SetPoint(0,
-                            a_hit.get_position_start().x(),
-                            a_hit.get_position_start().y(),
-                            a_hit.get_position_start().z());
-          mc_path->SetPoint(1,
-                            a_hit.get_position_stop().x(),
-                            a_hit.get_position_stop().y(),
-                            a_hit.get_position_stop().z());
+          // mc_path->SetPoint(0,
+          //                   a_hit.get_position_start().x(),
+          //                   a_hit.get_position_start().y(),
+          //                   a_hit.get_position_start().z());
+          // mc_path->SetPoint(1,
+          //                   a_hit.get_position_stop().x(),
+          //                   a_hit.get_position_stop().y(),
+          //                   a_hit.get_position_stop().z());
         }
         return;
       }
@@ -279,12 +269,12 @@ namespace snemo {
               const geomtools::blur_spot & a_vertex = ivtx->get();
               const geomtools::vector_3d & a_position = a_vertex.get_position();
 
-              TPolyMarker3D * mark = base_renderer::make_vertex(a_position);
+              TPolyMarker3D * mark = this->make_polymarker(a_position);
               _objects->Add(mark);
               mark->SetMarkerColor(color);
               mark->SetMarkerStyle(kPlus);
               if (a_vertex.get_auxiliaries().has_flag(browser_tracks::HIGHLIGHT_FLAG)) {
-                TPolyMarker3D * mark = base_renderer::make_vertex(a_position);
+                TPolyMarker3D * mark = this->make_polymarker(a_position);
                 _objects->Add(mark);
                 mark->SetMarkerColor(color);
                 mark->SetMarkerStyle(kCircle);

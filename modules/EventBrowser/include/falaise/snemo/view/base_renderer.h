@@ -111,7 +111,7 @@ namespace snemo {
         void highlight_geom_id(const geomtools::geom_id & gid_, const size_t color_, const std::string & text_ = "");
 
         /// Build a marker from a 3D point
-        static TPolyMarker3D * make_vertex(const geomtools::vector_3d & point_);
+        static TPolyMarker3D * make_polymarker(const geomtools::vector_3d & point_);
 
         /// Build a polyline from a set of 3D points
         static TPolyLine3D * make_polyline(const std::vector<geomtools::vector_3d> & points_);

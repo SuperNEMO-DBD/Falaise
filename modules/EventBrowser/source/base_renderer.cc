@@ -178,7 +178,7 @@ namespace snemo {
         return;
       }
 
-      TPolyMarker3D * base_renderer::make_vertex(const geomtools::vector_3d & point_)
+      TPolyMarker3D * base_renderer::make_polymarker(const geomtools::vector_3d & point_)
       {
         TPolyMarker3D * marker = new TPolyMarker3D;
         marker->SetPoint(0, point_.x(), point_.y(), point_.z());
