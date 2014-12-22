@@ -78,7 +78,24 @@ namespace snemo {
           return;
         }
 
-        std::set<int> highlight_track_id;
+        // Enable/disable
+        std::set<int> enable_tracks;
+        // Highlight track from primary particles
+        const mctools::simulated_data::primary_event_type & pevent = sim_data.get_primary_event();
+        const genbb::primary_event::particles_col_type & particles = pevent.get_particles();
+
+        for (genbb::primary_event::particles_col_type::const_iterator ip = particles.begin();
+             ip != particles.end(); ++ip) {
+          const genbb::primary_particle & a_primary = *ip;
+          if (! a_primary.has_generation_id()) continue;
+          const datatools::properties particle_aux = a_primary.get_auxiliaries();
+          const int track_id = a_primary.get_generation_id() + 1;
+          if (particle_aux.has_key(browser_tracks::CHECKED_FLAG) &&
+              ! particle_aux.has_flag(browser_tracks::CHECKED_FLAG)) {
+            enable_tracks.insert(track_id);
+          }
+        }
+
         for (mctools::simulated_data::hit_handle_collection_type::const_iterator
                it_hit = hit_collection.begin();
              it_hit != hit_collection.end(); ++it_hit) {
@@ -113,9 +130,9 @@ namespace snemo {
           const int track_id = a_hit.get_track_id();
           if (hit_aux.has_key(browser_tracks::CHECKED_FLAG) &&
               ! hit_aux.has_flag(browser_tracks::CHECKED_FLAG)) {
-            highlight_track_id.insert(track_id);
+            enable_tracks.insert(track_id);
           }
-          if (highlight_track_id.count(track_id)) continue;
+          if (enable_tracks.count(track_id)) continue;
 
           if (hit_aux.has_flag(browser_tracks::HIGHLIGHT_FLAG)) {//  &&
               // a_hit.get_auxiliaries().has_flag(mctools::hit_utils::HIT_VISU_HIGHLIGHTED_KEY)) {

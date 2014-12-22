@@ -353,9 +353,9 @@ namespace snemo {
           item_primary_event->SetUserData((void*)(intptr_t)++icheck_id);
 
           mctools::simulated_data::primary_event_type & pevent = sd.grab_primary_event();
-          const genbb::primary_event::particles_col_type & particles = pevent.get_particles();
+          genbb::primary_event::particles_col_type & particles = pevent.grab_particles();
 
-          for (genbb::primary_event::particles_col_type::const_iterator ip = particles.begin();
+          for (genbb::primary_event::particles_col_type::iterator ip = particles.begin();
                ip != particles.end(); ++ip) {
             std::ostringstream label;
             label.precision(3);
@@ -368,7 +368,7 @@ namespace snemo {
             if (sd.has_vertex()) {
               label << sd.get_vertex() / CLHEP:: mm << " mm";
             } else {
-              label << "no";
+              label << "no vertex position";
             }
 
             const std::string hex_str = utils::root_utilities::get_hex_color(kViolet);
@@ -377,9 +377,18 @@ namespace snemo {
                                            label.str().c_str(),
                                            _get_colored_icon_("vertex", hex_str, true),
                                            _get_colored_icon_("vertex", hex_str));
-            item_particle->SetCheckBox(false);
+            item_particle->SetCheckBox(ip->has_generation_id());
             item_particle->SetUserData((void*)(intptr_t)-(++icheck_id));
-            _properties_dictionnary_[-icheck_id] = &(pevent.grab_auxiliaries());
+            // _properties_dictionnary_[-icheck_id] = &(pevent.grab_auxiliaries());
+            _properties_dictionnary_[-icheck_id] = &(ip->grab_auxiliaries());
+            std::ostringstream tip_text;
+            if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
+              ip->tree_dump(tip_text);
+            } else {
+              tip_text << "Double click to highlight track "
+                       << "and to dump info on terminal";
+            }
+            item_particle->SetTipText(tip_text.str().c_str());
           }
         }
 
