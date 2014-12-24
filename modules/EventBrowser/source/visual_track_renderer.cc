@@ -137,11 +137,11 @@ namespace snemo {
           if (hit_aux.has_flag(browser_tracks::HIGHLIGHT_FLAG)) {//  &&
               // a_hit.get_auxiliaries().has_flag(mctools::hit_utils::HIT_VISU_HIGHLIGHTED_KEY)) {
             line_width += 3;
-            TPolyMarker3D * mark1 = this->make_polymarker(a_hit.get_position_start());
+            TPolyMarker3D * mark1 = base_renderer::make_polymarker(a_hit.get_position_start());
             _objects->Add(mark1);
             mark1->SetMarkerColor(kRed);
             mark1->SetMarkerStyle(kPlus);
-            TPolyMarker3D * mark2 = this->make_polymarker(a_hit.get_position_stop());
+            TPolyMarker3D * mark2 = base_renderer::make_polymarker(a_hit.get_position_stop());
             _objects->Add(mark2);
             mark2->SetMarkerColor(kRed);
             mark2->SetMarkerStyle(kCircle);
@@ -149,19 +149,11 @@ namespace snemo {
           std::vector<geomtools::vector_3d> points;
           points.push_back(a_hit.get_position_start());
           points.push_back(a_hit.get_position_stop());
-          TPolyLine3D * mc_path = this->make_polyline(points);
+          TPolyLine3D * mc_path = base_renderer::make_polyline(points);
           _objects->Add(mc_path);
           mc_path->SetLineColor(line_color);
           mc_path->SetLineWidth(line_width);
           mc_path->SetLineStyle(line_style);
-          // mc_path->SetPoint(0,
-          //                   a_hit.get_position_start().x(),
-          //                   a_hit.get_position_start().y(),
-          //                   a_hit.get_position_start().z());
-          // mc_path->SetPoint(1,
-          //                   a_hit.get_position_stop().x(),
-          //                   a_hit.get_position_stop().y(),
-          //                   a_hit.get_position_stop().z());
         }
         return;
       }
@@ -174,7 +166,6 @@ namespace snemo {
 
         double x = 1.00;
         double y = 0.97;
-
         const double dx = 0.05;
 
         for (std::map<std::string, style_manager::particle_properties>::const_iterator
@@ -276,7 +267,6 @@ namespace snemo {
             color = style_manager::get_instance().get_particle_color("alpha");
           }
 
-
           // Show reconstructed vertices
           if (a_particle.has_vertices()) {
             const snemo::datamodel::particle_track::vertex_collection_type & vtx
@@ -286,16 +276,15 @@ namespace snemo {
               const geomtools::blur_spot & a_vertex = ivtx->get();
               const geomtools::vector_3d & a_position = a_vertex.get_position();
 
-              TPolyMarker3D * mark = this->make_polymarker(a_position);
+              TPolyMarker3D * mark = base_renderer::make_polymarker(a_position);
               _objects->Add(mark);
               mark->SetMarkerColor(color);
               mark->SetMarkerStyle(kPlus);
               if (a_vertex.get_auxiliaries().has_flag(browser_tracks::HIGHLIGHT_FLAG)) {
-                TPolyMarker3D * mark = this->make_polymarker(a_position);
+                TPolyMarker3D * mark = base_renderer::make_polymarker(a_position);
                 _objects->Add(mark);
                 mark->SetMarkerColor(color);
                 mark->SetMarkerStyle(kCircle);
-                mark->SetPoint(0, a_position.x(), a_position.y(), a_position.z());
               }
             }// end of vertex list
 
@@ -371,7 +360,6 @@ namespace snemo {
             }
             _objects->Add(track);
             track->SetLineColor(color);
-
           }
         }
         return;
