@@ -58,7 +58,7 @@ namespace snemo {
         virtual ~visual_track_renderer();
 
         /// Build Monte-Carlo tracks
-        void push_mc_tracks(const std::string & hit_category_);
+        void push_mc_tracks();
 
         /// Build Monte-Carlo legend
         void push_mc_legend();

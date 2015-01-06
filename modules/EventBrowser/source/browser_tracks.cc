@@ -394,125 +394,129 @@ namespace snemo {
 
         // Add MC step hits information:
         if (options_mgr.get_option_flag(SHOW_MC_TRACKS)) {
-          if (sd.has_step_hits("__visu.tracks")) {
-            mctools::simulated_data::hit_handle_collection_type & hit_collection
-              = sd.grab_step_hits("__visu.tracks");
+          // Get hit categories related to visual track
+          std::vector<std::string> visual_categories;
+          sd.get_step_hits_categories(visual_categories,
+                                      mctools::simulated_data::HIT_CATEGORY_TYPE_PREFIX,
+                                      "__visu.tracks");
+          typedef std::pair<size_t, TGListTreeItem*> entry_type;
+          std::map<int, entry_type> item_tracks;
+          if (!visual_categories.empty()) {
+            TGListTreeItem * item_mc_tracks
+              = _tracks_list_box_->AddItem(item_simulated_data,
+                                           "Simulated tracks",
+                                           _get_colored_icon_("ofolder"),
+                                           _get_colored_icon_("folder"));
+            item_mc_tracks->SetCheckBox(false);
+            item_mc_tracks->SetUserData((void*)(intptr_t)++icheck_id);
 
-            if (!hit_collection.empty()) {
-              TGListTreeItem * item_mc_tracks
-                = _tracks_list_box_->AddItem(item_simulated_data,
-                                             "Simulated tracks",
-                                             _get_colored_icon_("ofolder"),
-                                             _get_colored_icon_("folder"));
-              item_mc_tracks->SetCheckBox(false);
-              item_mc_tracks->SetUserData((void*)(intptr_t)++icheck_id);
+            TGListTreeItem * item_mc_highlight_step_hits
+              = _tracks_list_box_->AddItem(item_simulated_data,
+                                           "Highlighted simulated step hits",
+                                           _get_colored_icon_("ofolder"),
+                                           _get_colored_icon_("folder"));
+            item_mc_highlight_step_hits->SetCheckBox(false);
+            item_mc_highlight_step_hits->SetUserData((void*)(intptr_t)++icheck_id);
+            for (size_t icat = 0; icat < visual_categories.size(); ++icat) {
+              const std::string & category = visual_categories[icat];
+              if (sd.has_step_hits(category)) {
+                mctools::simulated_data::hit_handle_collection_type & hit_collection
+                  = sd.grab_step_hits(category);
+                for (mctools::simulated_data::hit_handle_collection_type::iterator
+                       it_hit = hit_collection.begin();
+                     it_hit != hit_collection.end(); ++it_hit) {
+                  mctools::base_step_hit & a_step = it_hit->grab();
+                  datatools::properties & a_auxiliaries = a_step.grab_auxiliaries();
 
-              TGListTreeItem * item_mc_highlight_step_hits
-                = _tracks_list_box_->AddItem(item_simulated_data,
-                                             "Highlighted simulated step hits",
-                                             _get_colored_icon_("ofolder"),
-                                             _get_colored_icon_("folder"));
-              item_mc_highlight_step_hits->SetCheckBox(false);
-              item_mc_highlight_step_hits->SetUserData((void*)(intptr_t)++icheck_id);
-
-              typedef std::pair<size_t, TGListTreeItem*> entry_type;
-              std::map<int, entry_type> item_tracks;
-
-              for (mctools::simulated_data::hit_handle_collection_type::iterator
-                     it_hit = hit_collection.begin();
-                   it_hit != hit_collection.end(); ++it_hit) {
-                mctools::base_step_hit & a_step = it_hit->grab();
-                datatools::properties & a_auxiliaries = a_step.grab_auxiliaries();
-
-                std::string name = a_step.get_particle_name();
-                if (name == "e-") name = "electron";
-                if (name == "e+") name = "positron";
-                const size_t color
-                  = style_manager::get_instance().get_particle_color(name);
-                const std::string hex_str = utils::root_utilities::get_hex_color(color);
-                TGListTreeItem * item = 0;
-                if (a_auxiliaries.has_flag(mctools::hit_utils::HIT_VISU_HIGHLIGHTED_KEY)) {
-                  item = item_mc_highlight_step_hits;
-                } else {
-                  const int a_track_id = a_step.get_track_id();
-                  if (! item_tracks.count(a_track_id)) {
-                    std::ostringstream track_label;
-                    track_label.precision(3);
-                    track_label.setf(std::ios::fixed, std::ios::floatfield);
-                    track_label << a_step.get_particle_name() << " track";
-                    if (a_step.is_primary_particle()) track_label << " (primary)";
-                    item = _tracks_list_box_->AddItem(item_mc_tracks,
-                                                      track_label.str().c_str(),
-                                                      _get_colored_icon_("track", hex_str),
-                                                      _get_colored_icon_("track", hex_str));
-                    entry_type a_pair = std::make_pair(1, item);
-                    item_tracks.insert(std::make_pair(a_track_id, a_pair));
-                    item->SetUserData((void*)(intptr_t)-(++icheck_id));
-                    _base_hit_dictionnary_[-icheck_id] = &(a_step);
-                    _properties_dictionnary_[-icheck_id] = &(a_auxiliaries);
-                 } else {
-                    entry_type & a_entry = item_tracks[a_track_id];
-                    item = a_entry.second;
-                    a_entry.first++;
+                  std::string name = a_step.get_particle_name();
+                  if (name == "e-") name = "electron";
+                  if (name == "e+") name = "positron";
+                  const size_t color
+                    = style_manager::get_instance().get_particle_color(name);
+                  const std::string hex_str = utils::root_utilities::get_hex_color(color);
+                  TGListTreeItem * item = 0;
+                  if (a_auxiliaries.has_flag(mctools::hit_utils::HIT_VISU_HIGHLIGHTED_KEY)) {
+                    item = item_mc_highlight_step_hits;
+                  } else {
+                    const int a_track_id = a_step.get_track_id();
+                    if (! item_tracks.count(a_track_id)) {
+                      std::ostringstream track_label;
+                      track_label.precision(3);
+                      track_label.setf(std::ios::fixed, std::ios::floatfield);
+                      track_label << a_step.get_particle_name() << " track";
+                      if (a_step.is_primary_particle()) track_label << " (primary)";
+                      item = _tracks_list_box_->AddItem(item_mc_tracks,
+                                                        track_label.str().c_str(),
+                                                        _get_colored_icon_("track", hex_str),
+                                                        _get_colored_icon_("track", hex_str));
+                      entry_type a_pair = std::make_pair(1, item);
+                      item_tracks.insert(std::make_pair(a_track_id, a_pair));
+                      item->SetUserData((void*)(intptr_t)-(++icheck_id));
+                      _base_hit_dictionnary_[-icheck_id] = &(a_step);
+                      _properties_dictionnary_[-icheck_id] = &(a_auxiliaries);
+                    } else {
+                      entry_type & a_entry = item_tracks[a_track_id];
+                      item = a_entry.second;
+                      a_entry.first++;
+                    }
+                    item->SetCheckBox(true);
                   }
-                  item->SetCheckBox(true);
-                }
 
-                // Add subsubitem:
-                std::ostringstream label_hit;
-                label_hit.precision(3);
-                label_hit.setf(std::ios::fixed, std::ios::floatfield);
-                label_hit << "Step #" << a_step.get_hit_id() << " - "
-                          << "particle " << a_step.get_particle_name();
-                if (a_step.get_energy_deposit() > 0.0) {
-                  label_hit << " / energy deposit = "
-                            << a_step.get_energy_deposit() / CLHEP::keV << " keV";
-                }
-                TGListTreeItem * item_hit
-                  = _tracks_list_box_->AddItem(item, label_hit.str().c_str());
-                item_hit->SetUserData((void*)(intptr_t)-(++icheck_id));
-                _base_hit_dictionnary_[-icheck_id] = &(a_step);
-                item_hit->SetPictures(_get_colored_icon_("step", hex_str, true),
-                                      _get_colored_icon_("step", hex_str));
+                  // Add subsubitem:
+                  std::ostringstream label_hit;
+                  label_hit.precision(3);
+                  label_hit.setf(std::ios::fixed, std::ios::floatfield);
+                  label_hit << "Step #" << a_step.get_hit_id() << " - "
+                            << "particle " << a_step.get_particle_name();
+                  if (a_step.get_energy_deposit() > 0.0) {
+                    label_hit << " / energy deposit = "
+                              << a_step.get_energy_deposit() / CLHEP::keV << " keV";
+                  }
+                  TGListTreeItem * item_hit
+                    = _tracks_list_box_->AddItem(item, label_hit.str().c_str());
+                  item_hit->SetUserData((void*)(intptr_t)-(++icheck_id));
+                  _base_hit_dictionnary_[-icheck_id] = &(a_step);
+                  item_hit->SetPictures(_get_colored_icon_("step", hex_str, true),
+                                        _get_colored_icon_("step", hex_str));
 
-                std::ostringstream tip_text;
-                if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
-                  a_step.tree_dump(tip_text);
-                } else {
-                  tip_text << "Double click to highlight step hit "
-                           << "and to dump info on terminal";
+                  std::ostringstream tip_text;
+                  if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
+                    a_step.tree_dump(tip_text);
+                  } else {
+                    tip_text << "Double click to highlight step hit "
+                             << "and to dump info on terminal";
+                  }
+                  item_hit->SetTipText(tip_text.str().c_str());
                 }
-                item_hit->SetTipText(tip_text.str().c_str());
               }
-              // Update item text following the number of hits found
-              for (std::map<int, entry_type>::iterator i = item_tracks.begin();
-                   i != item_tracks.end(); ++i) {
-                entry_type a_entry = i->second;
-                const size_t count = a_entry.first;
-                TGListTreeItem * item = a_entry.second;
-                std::ostringstream oss;
-                oss << item->GetText();
-                if (count == 0) {
-                  oss << " - no hits";
-                } else {
-                  oss << " - " << count << " hit";
-                  if (count > 1) oss << "s";
-                }
-                item->SetText(oss.str().c_str());
-              }
-
-              // Update number of tracks
+            }
+            // Update item text following the number of hits found
+            for (std::map<int, entry_type>::iterator i = item_tracks.begin();
+                 i != item_tracks.end(); ++i) {
+              entry_type a_entry = i->second;
+              const size_t count = a_entry.first;
+              TGListTreeItem * item = a_entry.second;
               std::ostringstream oss;
-              oss << item_mc_tracks->GetText();
-              const size_t count = item_tracks.size();
+              oss << item->GetText();
               if (count == 0) {
-                oss << " - no tracks";
+                oss << " - no hits";
               } else {
-                oss << " - " << count << " track";
+                oss << " - " << count << " hit";
                 if (count > 1) oss << "s";
               }
-              item_mc_tracks->SetText(oss.str().c_str());
+              item->SetText(oss.str().c_str());
             }
+            // Update number of tracks
+            std::ostringstream oss;
+            oss << item_mc_tracks->GetText();
+            const size_t count = item_tracks.size();
+            if (count == 0) {
+              oss << " - no tracks";
+            } else {
+              oss << " - " << count << " track";
+              if (count > 1) oss << "s";
+            }
+            item_mc_tracks->SetText(oss.str().c_str());
           }
         }
 
@@ -1350,10 +1354,10 @@ namespace snemo {
               label.setf(std::ios::fixed, std::ios::floatfield);
               label << a_vertex.get_position() / CLHEP:: mm << " mm";
               TGListTreeItem * item_vertex
-              = _tracks_list_box_->AddItem(item_particle,
-                                           label.str().c_str(),
-                                           _get_colored_icon_("vertex", hex_str, true),
-                                           _get_colored_icon_("vertex", hex_str));
+                = _tracks_list_box_->AddItem(item_particle,
+                                             label.str().c_str(),
+                                             _get_colored_icon_("vertex", hex_str, true),
+                                             _get_colored_icon_("vertex", hex_str));
               item_vertex->SetCheckBox(false);
               item_vertex->SetUserData((void*)(intptr_t)-(++icheck_id));
               // Update properties dictionnary:

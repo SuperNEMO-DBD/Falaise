@@ -176,7 +176,7 @@ namespace snemo {
           this->_add_simulated_hits_();
 
         if (options_mgr.get_option_flag(SHOW_MC_TRACKS)) {
-          _visual_track_renderer_.push_mc_tracks("__visu.tracks");
+          _visual_track_renderer_.push_mc_tracks();
           _visual_track_renderer_.push_mc_legend();
         }
 

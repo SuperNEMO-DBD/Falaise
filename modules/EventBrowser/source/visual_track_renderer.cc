@@ -58,27 +58,23 @@ namespace snemo {
         return;
       }
 
-      void visual_track_renderer::push_mc_tracks(const std::string & hit_category_)
+      void visual_track_renderer::push_mc_tracks()
       {
         const io::event_record & event = _server->get_event();
         const mctools::simulated_data & sim_data = event.get<mctools::simulated_data>(io::SD_LABEL);
 
-        if (!sim_data.has_step_hits(hit_category_)) {
+        // Get hit categories related to visual track
+        std::vector<std::string> visual_categories;
+        sim_data.get_step_hits_categories(visual_categories,
+                                          mctools::simulated_data::HIT_CATEGORY_TYPE_PREFIX,
+                                          "__visu.tracks");
+        if (visual_categories.empty()) {
           DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
-                             "Event has no " << hit_category_ << " hits");
+                             "Event has no __visu.tracks* hits");
           return;
         }
 
-        const mctools::simulated_data::hit_handle_collection_type & hit_collection
-          = sim_data.get_step_hits(hit_category_);
-
-        if (hit_collection.empty()) {
-          DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
-                             "No MC hits");
-          return;
-        }
-
-        // Enable/disable
+        // Enable/disable track hits
         std::set<int> enable_tracks;
         // Highlight track from primary particles
         const mctools::simulated_data::primary_event_type & pevent = sim_data.get_primary_event();
@@ -96,65 +92,75 @@ namespace snemo {
           }
         }
 
-        for (mctools::simulated_data::hit_handle_collection_type::const_iterator
-               it_hit = hit_collection.begin();
-             it_hit != hit_collection.end(); ++it_hit) {
-          const mctools::base_step_hit & a_hit = it_hit->get();
-          std::string particle_name = a_hit.get_particle_name();
+        for (size_t icat = 0; icat < visual_categories.size(); ++icat) {
+          const mctools::simulated_data::hit_handle_collection_type & hit_collection
+            = sim_data.get_step_hits(visual_categories[icat]);
+          if (hit_collection.empty()) {
+            DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
+                               "No MC hits");
+            continue;
+          }
 
-          const std::string delta_ray_from_alpha_flag = mctools::track_utils::DELTA_RAY_FROM_ALPHA_FLAG;
-          const bool is_delta_ray_from_alpha
-            = a_hit.get_auxiliaries().has_flag(delta_ray_from_alpha_flag);
+          for (mctools::simulated_data::hit_handle_collection_type::const_iterator
+                 it_hit = hit_collection.begin();
+               it_hit != hit_collection.end(); ++it_hit) {
+            const mctools::base_step_hit & a_hit = it_hit->get();
+            std::string particle_name = a_hit.get_particle_name();
 
-          if (is_delta_ray_from_alpha)     particle_name = "delta_ray_from_alpha";
-          else if (particle_name == "e+")  particle_name = "positron";
-          else if (particle_name == "e-")  particle_name = "electron";
-          else if (particle_name == "mu+") particle_name = "muon_plus";
-          else if (particle_name == "mu-") particle_name = "muon_minus";
+            const std::string delta_ray_from_alpha_flag = mctools::track_utils::DELTA_RAY_FROM_ALPHA_FLAG;
+            const bool is_delta_ray_from_alpha
+              = a_hit.get_auxiliaries().has_flag(delta_ray_from_alpha_flag);
 
-          style_manager & style_mgr = style_manager::get_instance();
-          if (!style_mgr.has_particle_properties(particle_name)) {
-            if (!style_mgr.add_particle_properties(particle_name)) {
-              DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
-                                 "Particle '" << particle_name << "' has no properties set !");
+            if (is_delta_ray_from_alpha)     particle_name = "delta_ray_from_alpha";
+            else if (particle_name == "e+")  particle_name = "positron";
+            else if (particle_name == "e-")  particle_name = "electron";
+            else if (particle_name == "mu+") particle_name = "muon_plus";
+            else if (particle_name == "mu-") particle_name = "muon_minus";
+
+            style_manager & style_mgr = style_manager::get_instance();
+            if (!style_mgr.has_particle_properties(particle_name)) {
+              if (!style_mgr.add_particle_properties(particle_name)) {
+                DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
+                                   "Particle '" << particle_name << "' has no properties set !");
+              }
             }
-          }
 
-          if (!style_mgr.get_particle_visibility(particle_name)) continue;
+            if (!style_mgr.get_particle_visibility(particle_name)) continue;
 
-          size_t line_color = style_mgr.get_particle_color(particle_name);
-          size_t line_width = style_mgr.get_mc_line_width();
-          size_t line_style = style_mgr.get_mc_line_style();
+            size_t line_color = style_mgr.get_particle_color(particle_name);
+            size_t line_width = style_mgr.get_mc_line_width();
+            size_t line_style = style_mgr.get_mc_line_style();
 
-          const datatools::properties & hit_aux = a_hit.get_auxiliaries();
-          const int track_id = a_hit.get_track_id();
-          if (hit_aux.has_key(browser_tracks::CHECKED_FLAG) &&
-              ! hit_aux.has_flag(browser_tracks::CHECKED_FLAG)) {
-            enable_tracks.insert(track_id);
-          }
-          if (enable_tracks.count(track_id)) continue;
+            const datatools::properties & hit_aux = a_hit.get_auxiliaries();
+            const int track_id = a_hit.get_track_id();
+            if (hit_aux.has_key(browser_tracks::CHECKED_FLAG) &&
+                ! hit_aux.has_flag(browser_tracks::CHECKED_FLAG)) {
+              enable_tracks.insert(track_id);
+            }
+            if (enable_tracks.count(track_id)) continue;
 
-          if (hit_aux.has_flag(browser_tracks::HIGHLIGHT_FLAG)) {//  &&
+            if (hit_aux.has_flag(browser_tracks::HIGHLIGHT_FLAG)) {//  &&
               // a_hit.get_auxiliaries().has_flag(mctools::hit_utils::HIT_VISU_HIGHLIGHTED_KEY)) {
-            line_width += 3;
-            TPolyMarker3D * mark1 = base_renderer::make_polymarker(a_hit.get_position_start());
-            _objects->Add(mark1);
-            mark1->SetMarkerColor(kRed);
-            mark1->SetMarkerStyle(kPlus);
-            TPolyMarker3D * mark2 = base_renderer::make_polymarker(a_hit.get_position_stop());
-            _objects->Add(mark2);
-            mark2->SetMarkerColor(kRed);
-            mark2->SetMarkerStyle(kCircle);
+              line_width += 3;
+              TPolyMarker3D * mark1 = base_renderer::make_polymarker(a_hit.get_position_start());
+              _objects->Add(mark1);
+              mark1->SetMarkerColor(kRed);
+              mark1->SetMarkerStyle(kPlus);
+              TPolyMarker3D * mark2 = base_renderer::make_polymarker(a_hit.get_position_stop());
+              _objects->Add(mark2);
+              mark2->SetMarkerColor(kRed);
+              mark2->SetMarkerStyle(kCircle);
+            }
+            std::vector<geomtools::vector_3d> points;
+            points.push_back(a_hit.get_position_start());
+            points.push_back(a_hit.get_position_stop());
+            TPolyLine3D * mc_path = base_renderer::make_polyline(points);
+            _objects->Add(mc_path);
+            mc_path->SetLineColor(line_color);
+            mc_path->SetLineWidth(line_width);
+            mc_path->SetLineStyle(line_style);
           }
-          std::vector<geomtools::vector_3d> points;
-          points.push_back(a_hit.get_position_start());
-          points.push_back(a_hit.get_position_stop());
-          TPolyLine3D * mc_path = base_renderer::make_polyline(points);
-          _objects->Add(mc_path);
-          mc_path->SetLineColor(line_color);
-          mc_path->SetLineWidth(line_width);
-          mc_path->SetLineStyle(line_style);
-        }
+        } // end of category list
         return;
       }
 
