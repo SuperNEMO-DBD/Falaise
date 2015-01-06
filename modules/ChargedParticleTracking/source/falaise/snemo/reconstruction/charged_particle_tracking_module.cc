@@ -245,8 +245,8 @@ namespace snemo {
 
       // Process trajectories using external resource:
       if (!tracker_trajectory_data_.has_default_solution()) {
-        DT_LOG_WARNING(get_logging_priority(),
-                       "No default trajectory solution has been found");
+        DT_LOG_DEBUG(get_logging_priority(),
+                     "No default trajectory solution has been found");
         // Fill non associated calorimeter hits
         const snemo::datamodel::calibrated_data::calorimeter_hit_collection_type & chits
           = calibrated_data_.calibrated_calorimeter_hits();
