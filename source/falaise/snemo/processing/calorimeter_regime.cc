@@ -61,11 +61,10 @@ namespace snemo {
 
     void calorimeter_regime::initialize(const datatools::properties & config_)
     {
-      DT_THROW_IF (is_initialized(), std::logic_error, "Calorimeter regime is already initialized !");
-      // DT_THROW_IF (_category_.empty(), std::logic_error, "Category is not defined !");
+      DT_THROW_IF(is_initialized(), std::logic_error, "Calorimeter regime is already initialized !");
 
-      double energy_unit = CLHEP::keV;
-      double time_unit = CLHEP::ns;
+      const double energy_unit = CLHEP::keV;
+      const double time_unit   = CLHEP::ns;
 
       // Energy resolution
       {
@@ -127,7 +126,7 @@ namespace snemo {
 
     void calorimeter_regime::_init_defaults_()
     {
-     // Default energy resolution:
+      // Default energy resolution:
       _resolution_ = default_energy_resolution();
 
       // Default trigger thresholds:
@@ -150,7 +149,7 @@ namespace snemo {
 
     void calorimeter_regime::reset()
     {
-      DT_THROW_IF (! is_initialized(), std::logic_error, "Not initialized !");
+      DT_THROW_IF(! is_initialized(), std::logic_error, "Not initialized !");
       _init_defaults_();
       _initialized_ = false;
       return;
@@ -168,7 +167,7 @@ namespace snemo {
 
     double calorimeter_regime::randomize_energy(mygsl::rng & ran_, const double energy_) const
     {
-      DT_THROW_IF (! is_initialized(), std::logic_error, "Not initialized !");
+      DT_THROW_IF(! is_initialized(), std::logic_error, "Not initialized !");
 
       const double sigma_energy  = get_sigma_energy(energy_);
       const double spread_energy = ran_.gaussian(energy_, sigma_energy);
@@ -178,7 +177,7 @@ namespace snemo {
 
     double calorimeter_regime::get_sigma_energy(const double energy_) const
     {
-      DT_THROW_IF (! is_initialized(), std::logic_error, "Not initialized !");
+      DT_THROW_IF(! is_initialized(), std::logic_error, "Not initialized !");
 
       const double fwhm2sig = 1.0/(2*sqrt(2*log(2.0)));
 
@@ -187,7 +186,7 @@ namespace snemo {
 
     double calorimeter_regime::quench_alpha_energy(const double energy_) const
     {
-      DT_THROW_IF (! is_initialized(), std::logic_error, "Not initialized !");
+      DT_THROW_IF(! is_initialized(), std::logic_error, "Not initialized !");
 
       const double energy = energy_ * CLHEP::MeV;
 
@@ -205,10 +204,10 @@ namespace snemo {
     }
 
     double calorimeter_regime::randomize_time(mygsl::rng & ran_,
-                                               const double time_,
-                                               const double energy_) const
+                                              const double time_,
+                                              const double energy_) const
     {
-      DT_THROW_IF (! is_initialized(), std::logic_error, "Not initialized !");
+      DT_THROW_IF(! is_initialized(), std::logic_error, "Not initialized !");
 
       const double sigma_time  = get_sigma_time(energy_);
       const double spread_time = ran_.gaussian(time_, sigma_time);
@@ -220,7 +219,7 @@ namespace snemo {
 
     double calorimeter_regime::get_sigma_time(const double energy_) const
     {
-      DT_THROW_IF (! is_initialized(), std::logic_error, "Not initialized !");
+      DT_THROW_IF(! is_initialized(), std::logic_error, "Not initialized !");
 
       // Have a look inside Gregoire Pichenot thesis(NEMO2) and
       // L. Simard parametrization for NEMO3 simulation
@@ -236,13 +235,13 @@ namespace snemo {
 
     bool calorimeter_regime::is_high_threshold(const double energy_) const
     {
-      DT_THROW_IF (! is_initialized(), std::logic_error, "Not initialized !");
+      DT_THROW_IF(! is_initialized(), std::logic_error, "Not initialized !");
       return(energy_ >= _high_threshold_);
     }
 
     bool calorimeter_regime::is_low_threshold(const double energy_) const
     {
-      DT_THROW_IF (! is_initialized(), std::logic_error, "Not initialized !");
+      DT_THROW_IF(! is_initialized(), std::logic_error, "Not initialized !");
       return(energy_ >= _low_threshold_);
     }
 
