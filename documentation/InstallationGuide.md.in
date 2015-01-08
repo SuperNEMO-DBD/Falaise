@@ -21,7 +21,7 @@ To install the Falaise stack, you first need the following:
 * UNIX Operating System
   * Linux (Ubuntu, SUSE, RedHat/CentOS/Scientific)
     * Other distributions should work provided they supply the software requirements listed below
-  * Mac OS X 10.8/9 (Mountain Lion/Mavericks)
+  * Mac OS X 10.8/9/10 (Mountain Lion/Mavericks/Yosemite)
     * Earlier versions should work, but are not tested
 * Several GB of free disk space:
   * At least 200MB for a source code check out
@@ -206,10 +206,10 @@ documentation refers is @Falaise_VERSION@, and this requires Cadfael
 version @Cadfael_VERSION@. To check these tags out from scratch we do
 
 ~~~~~
-$ svn up --set-depth infinity Cadfael/tags/Cadfael-1.0.1
-A    Cadfael/tags/Cadfael-1.0.1/License.txt
+$ svn up --set-depth infinity Cadfael/tags/Cadfael-@Cadfael_VERSION@
+A    Cadfael/tags/Cadfael-@Cadfael_VERSION@/License.txt
 ...
-A    Cadfael/tags/Cadfael-1.0.1/testing/ImportedTargets/CMakeLists.txt
+A    Cadfael/tags/Cadfael-@Cadfael_VERSION@/testing/ImportedTargets/CMakeLists.txt
 Updated to revision 14881.
 $ svn ls Falaise/tags
 ...
@@ -229,7 +229,7 @@ specifically
 - [CAMP C++ Reflection Library](https://github.com/tegesoft/camp) 0.7.1 and higher
 - [CLHEP C++ HEP Library](http://proj-clhep.web.cern.ch/proj-clhep/) 2.1.3.1 and higher
 - [GNU Scientific Library](http://www.gnu.org/software/gsl/) 1.15 and higher
-- [ROOT C++ HEP Toolkit](http://root.cern.ch) 5.34.00 and higher
+- [ROOT C++ HEP Toolkit](http://root.cern.ch) 5.34.18 and higher
 - [Geant4 C++ Toolkit for Detector Simulations](http://geant4.cern.ch) 9.6.1 and higher
 
 You can reuse existing installations of these libraries to build Falaise,

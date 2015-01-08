@@ -49,7 +49,7 @@ endif()
 #-----------------------------------------------------------------------
 # Individual Documents
 #
-set(Cadfael_VERSION "1.0.1")
+set(Cadfael_VERSION "1.1.0")
 configure_file(InstallationGuide.md.in InstallationGuide.md @ONLY)
 
 set(Falaise_MARKDOWN_DOCS

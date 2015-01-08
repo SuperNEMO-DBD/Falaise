@@ -107,6 +107,9 @@ traverses by  simulated electron tracks in  the SuperNEMO demonstrator
 module:
 
 ![Two simulated electron tracks traversing several volumes of the detector associated to various geometry categories.](@ref images/fls_demonstrator_geom_ids_0.jpg)
+@latexonly
+\includegraphics{fls_demonstrator_geom_ids_0}
+@endlatexonly
 
 From this example, we can determine the geometry identifiers (GIDs) associated to these volumes, thanks
 to the *mapping* and *locator* mechanisms implemented in the geometry modelling manager:
