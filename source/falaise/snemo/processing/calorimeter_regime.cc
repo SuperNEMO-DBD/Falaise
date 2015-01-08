@@ -181,7 +181,7 @@ namespace snemo {
 
       const double fwhm2sig = 1.0/(2*sqrt(2*log(2.0)));
 
-      return _resolution_ * fwhm2sig * sqrt(energy_);
+      return _resolution_ * fwhm2sig * sqrt(energy_ / CLHEP::MeV);
     }
 
     double calorimeter_regime::quench_alpha_energy(const double energy_) const
