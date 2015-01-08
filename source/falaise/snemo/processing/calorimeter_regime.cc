@@ -169,10 +169,15 @@ namespace snemo {
     {
       DT_THROW_IF(! is_initialized(), std::logic_error, "Not initialized !");
 
-      const double sigma_energy  = get_sigma_energy(energy_);
-      const double spread_energy = ran_.gaussian(energy_, sigma_energy);
+      // 2015-01-08 XG: Implement a better energy calibration based on Poisson
+      // statistics for the number of photons inside scintillator. This
+      // technique should be more accurate for low energy deposit.
+      const double fwhm2sig = 2*sqrt(2*log(2.0));
+      const double nrj2photon = std::pow(fwhm2sig/_resolution_, 2);
+      const double mu = energy_ / CLHEP::MeV * nrj2photon;
+      const double spread_energy = ran_.poisson(mu) / nrj2photon;
 
-      return(spread_energy < 0.0 ? 0.0 : spread_energy);
+      return spread_energy;
     }
 
     double calorimeter_regime::get_sigma_energy(const double energy_) const
