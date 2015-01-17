@@ -70,11 +70,10 @@ namespace snemo {
       _SULTAN_setup_.SuperNemo = true;
       _SULTAN_setup_.foil_radius = 0.0;
 
-      double default_magfield_unit = CLHEP::tesla;
-
       // Forcing magnetic field (a temporary trick)
       if (! datatools::is_valid(_magfield_)) {
         if (setup_.has_key("SULTAN.magnetic_field")) {
+          const double default_magfield_unit = CLHEP::tesla;
           double magfield = setup_.fetch_real("SULTAN.magnetic_field");
           if (! setup_.has_explicit_unit("SULTAN.magnetic_field")) {
             magfield *= default_magfield_unit;
@@ -169,8 +168,8 @@ namespace snemo {
         _SULTAN_setup_.nofflayers = setup_.fetch_integer("SULTAN.nofflayers");
       }
 
-      DT_THROW_IF (_SULTAN_setup_.nofflayers < 0, std::logic_error,
-                   "Invalid number of 'off' layers(" << _SULTAN_setup_.nofflayers << ") !");
+      DT_THROW_IF(_SULTAN_setup_.nofflayers < 0, std::logic_error,
+                  "Invalid number of 'off' layers(" << _SULTAN_setup_.nofflayers << ") !");
 
       // 1st event to be processed
       if (setup_.has_key("SULTAN.first_event")) {
@@ -180,9 +179,9 @@ namespace snemo {
       // Sigma Z factor
       if (setup_.has_key("SULTAN.sigma_z_factor")) {
         _sigma_z_factor_ = setup_.fetch_real("SULTAN.sigma_z_factor");
-        DT_THROW_IF (_sigma_z_factor_ <= 0.0 || _sigma_z_factor_ >= 100.0,
-                     std::logic_error,
-                     "Invalid Sigma Z factor(" << _sigma_z_factor_ << ") !");
+        DT_THROW_IF(_sigma_z_factor_ <= 0.0 || _sigma_z_factor_ >= 100.0,
+                    std::logic_error,
+                    "Invalid Sigma Z factor(" << _sigma_z_factor_ << ") !");
       }
 
       if (setup_.has_key("SULTAN.min_ncells_in_cluster")) {
@@ -219,7 +218,7 @@ namespace snemo {
              ip++) {
           const std::string & plugin_name = ip->first;
           if (geo_mgr.is_plugin_a<snemo::geometry::locator_plugin>(plugin_name)) {
-            DT_LOG_DEBUG (get_logging_priority(), "Find locator plugin with name = " << plugin_name);
+            DT_LOG_DEBUG(get_logging_priority(), "Find locator plugin with name = " << plugin_name);
             locator_plugin_name = plugin_name;
             break;
           }
@@ -228,41 +227,44 @@ namespace snemo {
       // Access to a given plugin by name and type :
       if (geo_mgr.has_plugin(locator_plugin_name)
           && geo_mgr.is_plugin_a<snemo::geometry::locator_plugin>(locator_plugin_name)) {
-        DT_LOG_NOTICE (get_logging_priority(), "Found locator plugin named '" << locator_plugin_name << "'");
+        DT_LOG_NOTICE(get_logging_priority(), "Found locator plugin named '" << locator_plugin_name << "'");
         const snemo::geometry::locator_plugin & lp
-          = geo_mgr.get_plugin<snemo::geometry::locator_plugin> (locator_plugin_name);
+          = geo_mgr.get_plugin<snemo::geometry::locator_plugin>(locator_plugin_name);
         // Set the calo cell locator :
-        _calo_locator_ = &(lp.get_calo_locator ());
-        _xcalo_locator_ = &(lp.get_xcalo_locator ());
-        _gveto_locator_ = &(lp.get_gveto_locator ());
+        _calo_locator_ = &(lp.get_calo_locator());
+        _xcalo_locator_ = &(lp.get_xcalo_locator());
+        _gveto_locator_ = &(lp.get_gveto_locator());
       }
-      if (get_logging_priority () >= datatools::logger::PRIO_DEBUG) {
-        DT_LOG_DEBUG (get_logging_priority (), "Calo locator :");
-        _calo_locator_->dump (std::clog);
-        DT_LOG_DEBUG (get_logging_priority (), "X-calo locator :");
-        _xcalo_locator_->dump (std::clog);
-        DT_LOG_DEBUG (get_logging_priority (), "G-veto locator :");
-        _gveto_locator_->dump (std::clog);
+      if (get_logging_priority() >= datatools::logger::PRIO_DEBUG) {
+        DT_LOG_DEBUG(get_logging_priority(), "Calo locator :");
+        _calo_locator_->dump(std::clog);
+        DT_LOG_DEBUG(get_logging_priority(), "X-calo locator :");
+        _xcalo_locator_->dump(std::clog);
+        DT_LOG_DEBUG(get_logging_priority(), "G-veto locator :");
+        _gveto_locator_->dump(std::clog);
       }
 
       // Geometry description :
       _SULTAN_setup_.num_blocks = 1;
       _SULTAN_setup_.planes_per_block.clear();
       _SULTAN_setup_.planes_per_block.push_back(_SULTAN_setup_.num_blocks);
-      _SULTAN_setup_.planes_per_block.at(0) = get_gg_locator().get_number_of_layers(0);
-      _SULTAN_setup_.num_cells_per_plane    = get_gg_locator().get_number_of_rows(0);
-      _SULTAN_setup_.cell_distance          = get_gg_locator().get_cell_diameter();
+      const size_t nlayers = get_gg_locator().get_number_of_layers(0);
+      const size_t nrows   = get_gg_locator().get_number_of_rows(0);
+      const double cell_diameter = get_gg_locator().get_cell_diameter();
+      _SULTAN_setup_.planes_per_block.at(0) = nlayers;
+      _SULTAN_setup_.num_cells_per_plane    = nrows;
+      _SULTAN_setup_.cell_distance          = cell_diameter;
 
       // Hard-coded values of bfield and chamber size
       _SULTAN_setup_.bfield = _magfield_ / CLHEP::tesla;
-      _SULTAN_setup_.xsize  = 0.5 * get_gg_locator().get_number_of_rows(0) * get_gg_locator().get_cell_diameter();
-      _SULTAN_setup_.ysize  = 0.5 * get_gg_locator().get_number_of_layers(0) * get_gg_locator().get_cell_diameter();
+      _SULTAN_setup_.xsize  = 0.5 * nrows * cell_diameter;
+      _SULTAN_setup_.ysize  = 0.5 * nlayers * cell_diameter;
       _SULTAN_setup_.zsize  = 0.5 * get_gg_locator().get_cell_length();
 
       // Check the validity of the SULTAN setup data :
-      DT_THROW_IF (! _SULTAN_setup_.check(), std::logic_error,
-                   "Setup data for the SULTAN machine is not checked : "
-                   << _SULTAN_setup_.get_error_message() << " !");
+      DT_THROW_IF(! _SULTAN_setup_.check(), std::logic_error,
+                  "Setup data for the SULTAN machine is not checked : "
+                  << _SULTAN_setup_.get_error_message() << " !");
 
       // Configure and initialize the SULTAN machine :
       SULTAN::clusterizer_configure(_SULTAN_clusterizer_, _SULTAN_setup_);
@@ -292,8 +294,8 @@ namespace snemo {
     // Reset the Sultan
     void sultan_driver::reset()
     {
-      DT_THROW_IF (! is_initialized(), std::logic_error,
-                   "SULTAN driver is not initialized !");
+      DT_THROW_IF(! is_initialized(), std::logic_error,
+                  "SULTAN driver is not initialized !");
       _set_initialized(false);
       _SULTAN_clusterizer_.finalize();
       _SULTAN_sultan_.finalize();
@@ -333,9 +335,9 @@ namespace snemo {
         // Check the geometry ID as a Geiger cell :
         const snemo::geometry::gg_locator & gg_locator = get_gg_locator();
         const geomtools::geom_id & gg_hit_gid = snemo_gg_hit.get_geom_id();
-        DT_THROW_IF (! gg_locator.is_drift_cell_volume(gg_hit_gid),
-                     std::logic_error,
-                     "Calibrated tracker hit can not be located inside detector !");
+        DT_THROW_IF(! gg_locator.is_drift_cell_volume(gg_hit_gid),
+                    std::logic_error,
+                    "Calibrated tracker hit can not be located inside detector !");
 
         if (!gg_locator.is_drift_cell_volume_in_current_module(gg_hit_gid)) {
           DT_LOG_DEBUG(get_logging_priority(), "Current Geiger cell is not in the module!");
@@ -343,7 +345,7 @@ namespace snemo {
         }
 
         /*            int gg_hit_type = snemo_gg_hit.get_geom_id().get_type();
-                      DT_THROW_IF (gg_hit_type != _gg_cell_geom_type_,
+                      DT_THROW_IF(gg_hit_type != _gg_cell_geom_type_,
                       std::logic_error,
                       "Not the proper type of geometry category for a Geiger hit !");
 
@@ -388,11 +390,11 @@ namespace snemo {
         z.set_error(_sigma_z_factor_ * snemo_gg_hit.get_sigma_z());
 
         // Prompt/delayed trait of the hit :
-        bool fast = snemo_gg_hit.is_prompt();
+        const bool fast = snemo_gg_hit.is_prompt();
 
         // Transverse Geiger drift distance :
-        double rdrift     = snemo_gg_hit.get_r();
-        double rdrift_err = snemo_gg_hit.get_sigma_r();
+        const double rdrift     = snemo_gg_hit.get_r();
+        const double rdrift_err = snemo_gg_hit.get_sigma_r();
 
         // Build the Geiger hit position :
         st::experimental_point gg_hit_position(x,y,z);
@@ -419,7 +421,7 @@ namespace snemo {
       }
 
       // Take into account calo hits:
-      _SULTAN_input_.calo_cells.clear ();
+      _SULTAN_input_.calo_cells.clear();
       // Calo hit accounting :
       std::map<int, sdm::calibrated_data::calorimeter_hit_handle_type> calo_hits_mapping;
       if (_process_calo_hits_) {
@@ -430,8 +432,8 @@ namespace snemo {
         int ihit = 0;
 
         // CALO hit loop :
-        BOOST_FOREACH (const sdm::calibrated_data::calorimeter_hit_handle_type & calo_handle,
-                       calo_hits_) {
+        BOOST_FOREACH(const sdm::calibrated_data::calorimeter_hit_handle_type & calo_handle,
+                      calo_hits_) {
           // Skip NULL handle :
           if (! calo_handle.has_data()) continue;
 
@@ -441,15 +443,11 @@ namespace snemo {
           // Get calibrated calo. geom_id
           const geomtools::geom_id & a_calo_hit_gid = sncore_calo_hit.get_geom_id();
           // Extract the numbering scheme of the calo_cell from its geom ID :
-          // int side  = sncore_calo_hit.get_geom_id ().get (1);
-          // int wall, column, row, type;
           int column = -1;
-          double width, height, thickness;
-          datatools::invalidate(width);
-          datatools::invalidate(height);
-          datatools::invalidate(thickness);
-          int side        = sncore_calo_hit.get_geom_id().get(1);
-          int side_number = (side == 0) ? -1: 1;
+          int side = -1;
+          double width = datatools::invalid_real();
+          double height = datatools::invalid_real();
+          double thickness = datatools::invalid_real();
           st::experimental_vector norm(0., 0., 0., 0., 0., 0.);
           geomtools::vector_3d block_position;
           // Extract the numbering scheme of the scin block from its geom ID :
@@ -459,28 +457,34 @@ namespace snemo {
             height    = _calo_locator_->get_block_height();
             thickness = _calo_locator_->get_block_thickness();
             column    = _calo_locator_->extract_column(a_calo_hit_gid);
-            norm.set_x(st::experimental_double(-(double) side_number, 0.));
+            side      = _calo_locator_->extract_side(a_calo_hit_gid);
+            const int side_number = (side == snemo::geometry::utils::SIDE_BACK) ? 1: -1;
+            norm.set_x(st::experimental_double((double) side_number, 0.));
           } else if (_xcalo_locator_->is_calo_block_in_current_module(a_calo_hit_gid)) {
             _xcalo_locator_->get_block_position(a_calo_hit_gid, block_position);
             width     = _xcalo_locator_->get_block_width();
             height    = _xcalo_locator_->get_block_height();
             thickness = _xcalo_locator_->get_block_thickness();
             column    = _xcalo_locator_->extract_column(a_calo_hit_gid);
-            norm.set_y(st::experimental_double(-(double) side_number, 0.));
+            side      = _xcalo_locator_->extract_side(a_calo_hit_gid);
+            const int side_number = (side == snemo::geometry::utils::SIDE_BACK) ? 1: -1;
+            norm.set_y(st::experimental_double((double) side_number, 0.));
           } else if (_gveto_locator_->is_calo_block_in_current_module(a_calo_hit_gid)) {
             _gveto_locator_->get_block_position(a_calo_hit_gid, block_position);
             width     = _gveto_locator_->get_block_width();
             height    = _gveto_locator_->get_block_height();
             thickness = _gveto_locator_->get_block_thickness();
             column    = _gveto_locator_->extract_column(a_calo_hit_gid);
-            norm.set_z(st::experimental_double(-(double) side_number, 0.));
+            side      = _xcalo_locator_->extract_side(a_calo_hit_gid);
+            const int side_number = (side == snemo::geometry::utils::SIDE_BACK) ? 1: -1;
+            norm.set_z(st::experimental_double((double) side_number, 0.));
           }
 
           st::experimental_double energy(sncore_calo_hit.get_energy(),
                                          sncore_calo_hit.get_sigma_energy());
           st::experimental_double time(sncore_calo_hit.get_time(),
                                        sncore_calo_hit.get_sigma_time());
-          // size_t id = sncore_calo_hit.get_hit_id ();
+          // size_t id = sncore_calo_hit.get_hit_id();
           st::experimental_point center(block_position.x(),
                                         block_position.y(),
                                         block_position.z(),
@@ -505,8 +509,8 @@ namespace snemo {
           calo_hits_mapping[c.id()] = calo_handle;
 
           DT_LOG_DEBUG(get_logging_priority(),
-                       "Calo_cell #" << sncore_calo_hit.get_hit_id () << " has been added "
-                       << "to SULTAN input data with id number #" << c.id ());
+                       "Calo_cell #" << sncore_calo_hit.get_hit_id() << " has been added "
+                       << "to SULTAN input data with id number #" << c.id());
         }
       }
 
@@ -577,7 +581,7 @@ namespace snemo {
           cluster_handle.grab().grab_auxiliaries().update("SULTAN_helix_H",  seq_helix.H().value());
 
           // Loop on all hits within the sequence(nodes) :
-          for (int i = 0; i <(int) seqsz; i++) {
+          for (size_t i = 0; i < seqsz; i++) {
             const st::node & a_node = a_sequence.nodes()[i];
             int hit_id = a_node.c().id();
             cluster_handle.grab().grab_hits().push_back(gg_hits_mapping[hit_id]);
