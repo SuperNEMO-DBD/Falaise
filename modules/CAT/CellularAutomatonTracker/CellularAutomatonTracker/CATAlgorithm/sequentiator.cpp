@@ -3490,7 +3490,7 @@ namespace CAT {
       return (fabs(cell_max_number - c.cell_number()) < 1 + NOffLayers);
     }
     else if( pl.view() == "y" ){
-      m.message("CAT::sequentiator::near:  problem: matching cell to calo on view ", pl.view(), mybhep::NORMAL);
+      m.message("CAT::sequentiator::near:  problem: matching cell to calo on view ", pl.view(), mybhep::VERBOSE);
       return false;
     }
     else if( pl.view() == "z" ){
