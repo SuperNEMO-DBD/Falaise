@@ -28,6 +28,7 @@ include(cmake/CAT_import.cmake)
 list(APPEND FalaiseCATPlugin_HEADERS
   source/falaise/snemo/reconstruction/cat_driver.h
   source/falaise/snemo/reconstruction/sultan_driver.h
+  source/falaise/snemo/reconstruction/sultan_then_cat_driver.h
   source/falaise/snemo/reconstruction/cat_tracker_clustering_module.h
   source/falaise/snemo/reconstruction/sultan_tracker_clustering_module.h
 )
@@ -36,6 +37,7 @@ list(APPEND FalaiseCATPlugin_HEADERS
 list(APPEND FalaiseCATPlugin_SOURCES
   source/falaise/snemo/reconstruction/cat_driver.cc
   source/falaise/snemo/reconstruction/sultan_driver.cc
+  source/falaise/snemo/reconstruction/sultan_then_cat_driver.cc
   source/falaise/snemo/reconstruction/cat_tracker_clustering_module.cc
   source/falaise/snemo/reconstruction/sultan_tracker_clustering_module.cc
 )
