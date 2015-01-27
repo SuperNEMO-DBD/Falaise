@@ -300,6 +300,7 @@ namespace snemo {
       _SULTAN_clusterizer_.finalize();
       _SULTAN_sultan_.finalize();
       _set_defaults();
+      this->base_tracker_clusterizer::_reset();
       return;
     }
 
