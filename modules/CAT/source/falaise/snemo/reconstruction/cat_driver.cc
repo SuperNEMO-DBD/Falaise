@@ -21,6 +21,10 @@
 // This project :
 #include <falaise/snemo/datamodels/tracker_clustering_data.h>
 #include <falaise/snemo/geometry/gg_locator.h>
+#include <falaise/snemo/geometry/calo_locator.h>
+#include <falaise/snemo/geometry/xcalo_locator.h>
+#include <falaise/snemo/geometry/gveto_locator.h>
+#include <falaise/snemo/geometry/locator_plugin.h>
 
 namespace snemo {
 
@@ -43,8 +47,7 @@ namespace snemo {
     cat_driver::cat_driver() :
       ::snemo::processing::base_tracker_clusterizer(cat_driver::CAT_ID)
     {
-      _sigma_z_factor_ = 1.0;
-      datatools::invalidate(_magfield_);
+      _set_defaults();
       return;
     }
 
@@ -81,6 +84,11 @@ namespace snemo {
       // Verbosity level
       if (setup_.has_key("CAT.level")) {
         _CAT_setup_.level = setup_.fetch_string("CAT.level");
+      }
+
+      // Process calorimeter hits
+      if (setup_.has_key("CAT.process_calo_hits")) {
+        _process_calo_hits_ = setup_.fetch_boolean("CAT.process_calo_hits");
       }
 
       // Maximum processing time
@@ -137,6 +145,46 @@ namespace snemo {
         set_magfield(0.0025 * CLHEP::tesla);
       }
 
+      // Get the calorimeter locators from a geometry plugin :
+      const geomtools::manager & geo_mgr = get_geometry_manager();
+      std::string locator_plugin_name;
+      if (setup_.has_key("locator_plugin_name")) {
+        locator_plugin_name = setup_.fetch_string("locator_plugin_name");
+      }
+      // If no locator plugin name is set, then search for the first one
+      if (locator_plugin_name.empty()) {
+        const geomtools::manager::plugins_dict_type & plugins = geo_mgr.get_plugins();
+        for (geomtools::manager::plugins_dict_type::const_iterator ip = plugins.begin();
+             ip != plugins.end();
+             ip++) {
+          const std::string & plugin_name = ip->first;
+          if (geo_mgr.is_plugin_a<snemo::geometry::locator_plugin>(plugin_name)) {
+            DT_LOG_DEBUG(get_logging_priority(), "Find locator plugin with name = " << plugin_name);
+            locator_plugin_name = plugin_name;
+            break;
+          }
+        }
+      }
+      // Access to a given plugin by name and type :
+      if (geo_mgr.has_plugin(locator_plugin_name)
+          && geo_mgr.is_plugin_a<snemo::geometry::locator_plugin>(locator_plugin_name)) {
+        DT_LOG_NOTICE(get_logging_priority(), "Found locator plugin named '" << locator_plugin_name << "'");
+        const snemo::geometry::locator_plugin & lp
+          = geo_mgr.get_plugin<snemo::geometry::locator_plugin>(locator_plugin_name);
+        // Set the calo cell locator :
+        _calo_locator_ = &(lp.get_calo_locator());
+        _xcalo_locator_ = &(lp.get_xcalo_locator());
+        _gveto_locator_ = &(lp.get_gveto_locator());
+      }
+      if (get_logging_priority() >= datatools::logger::PRIO_DEBUG) {
+        DT_LOG_DEBUG(get_logging_priority(), "Calo locator :");
+        _calo_locator_->dump(std::clog);
+        DT_LOG_DEBUG(get_logging_priority(), "X-calo locator :");
+        _xcalo_locator_->dump(std::clog);
+        DT_LOG_DEBUG(get_logging_priority(), "G-veto locator :");
+        _gveto_locator_->dump(std::clog);
+      }
+
       // Geometry description :
       _CAT_setup_.num_blocks = 1;
       _CAT_setup_.planes_per_block.clear();
@@ -168,6 +216,18 @@ namespace snemo {
       return;
     }
 
+    void cat_driver::_set_defaults()
+    {
+      _CAT_setup_.reset();
+      _sigma_z_factor_ = 1.0;
+      datatools::invalidate(_magfield_);
+      _process_calo_hits_ = true;
+      _calo_locator_  = 0;
+      _xcalo_locator_ = 0;
+      _gveto_locator_ = 0;
+      this->base_tracker_clusterizer::_reset();
+      return;
+    }
 
     // Reset the clusterizer
     void cat_driver::reset()
@@ -178,8 +238,7 @@ namespace snemo {
       _CAT_clusterizer_.finalize();
       _CAT_sequentiator_.finalize();
       _CAT_setup_.reset();
-      _sigma_z_factor_ = 1.0;
-      datatools::invalidate(_magfield_);
+      _set_defaults();
       this->base_tracker_clusterizer::_reset();
       return;
     }
@@ -187,7 +246,7 @@ namespace snemo {
 
     /// Main clustering method
     int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
-                                  const base_tracker_clusterizer::calo_hit_collection_type & /* calo_hits_ */,
+                                  const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
                                   snemo::datamodel::tracker_clustering_data & clustering_ )
     {
       namespace ct = CAT::topology;
@@ -229,29 +288,6 @@ namespace snemo {
         const int side  = gg_locator.extract_side(gg_hit_gid);
         const int layer = gg_locator.extract_layer(gg_hit_gid);
         const int row   = gg_locator.extract_row(gg_hit_gid);
-
-        /*
-        // Check the geometry ID as a Geiger cell :
-        int gg_hit_type = snemo_gg_hit.get_geom_id().get_type();
-        if (gg_hit_type != _gg_cell_geom_type_) {
-        DT_THROW_IF(true, std::logic_error,
-        "Not the proper type of geometry category for a Geiger hit !");
-        }
-        */
-
-        /*
-        // Extract the module number from its geom ID :
-        int gg_hit_module = snemo_gg_hit.get_geom_id().get(0);
-        if (gg_hit_module != _module_number_) {
-        // Not the target module
-        continue;
-        }
-        */
-
-        // // Extract the numbering scheme of the cell from its geom ID :
-        // int side  = snemo_gg_hit.get_geom_id().get(1);
-        // int layer = snemo_gg_hit.get_geom_id().get(2);
-        // int row   = snemo_gg_hit.get_geom_id().get(3);
 
         // Translate into the CAT's numbering scheme :
         // -1 : negative X side; +1 : positive X side
@@ -313,16 +349,99 @@ namespace snemo {
                       << "to CAT input data with id number #" << c.id());
       } // BOOST_FOREACH(gg_hits_)
 
-      // for (std::map<int, int>::const_iterator ihs = hits_status.begin();
-      //      ihs !=  hits_status.end();
-      //      ihs++)
-      //   {
-      //     cerr << datatools::utils::io::devel
-      //          << "AAAA: "
-      //          << "snemo::reconstruction::reconstruction::cat_driver::_process_algo: "
-      //          << "GG hit #" << ihs->first << " status=" << ihs->second
-      //          << std::endl;
-      //   }
+      // Take into account calo hits:
+      _CAT_input_.calo_cells.clear();
+      // Calo hit accounting :
+      std::map<int, sdm::calibrated_data::calorimeter_hit_handle_type> calo_hits_mapping;
+      if (_process_calo_hits_) {
+        if (_CAT_input_.calo_cells.capacity() < calo_hits_.size()) {
+          _CAT_input_.calo_cells.reserve(calo_hits_.size());
+        }
+        _CAT_output_.tracked_data.reset();
+        int ihit = 0;
+
+        // CALO hit loop :
+        BOOST_FOREACH(const sdm::calibrated_data::calorimeter_hit_handle_type & calo_handle,
+                      calo_hits_) {
+          // Skip NULL handle :
+          if (! calo_handle.has_data()) continue;
+
+          // Get a const reference on the calibrated Calo hit :
+          const sdm::calibrated_calorimeter_hit & sncore_calo_hit = calo_handle.get();
+
+          // Get calibrated calo. geom_id
+          const geomtools::geom_id & a_calo_hit_gid = sncore_calo_hit.get_geom_id();
+          // Extract the numbering scheme of the calo_cell from its geom ID :
+          int column = -1;
+          int side = -1;
+          double width = datatools::invalid_real();
+          double height = datatools::invalid_real();
+          double thickness = datatools::invalid_real();
+          ct::experimental_vector norm(0., 0., 0., 0., 0., 0.);
+          geomtools::vector_3d block_position;
+          // Extract the numbering scheme of the scin block from its geom ID :
+          if (_calo_locator_->is_calo_block_in_current_module(a_calo_hit_gid)) {
+            _calo_locator_->get_block_position(a_calo_hit_gid, block_position);
+            width     = _calo_locator_->get_block_width();
+            height    = _calo_locator_->get_block_height();
+            thickness = _calo_locator_->get_block_thickness();
+            column    = _calo_locator_->extract_column(a_calo_hit_gid);
+            side      = _calo_locator_->extract_side(a_calo_hit_gid);
+            const int side_number = (side == snemo::geometry::utils::SIDE_BACK) ? 1: -1;
+            norm.set_x(ct::experimental_double((double) side_number, 0.));
+          } else if (_xcalo_locator_->is_calo_block_in_current_module(a_calo_hit_gid)) {
+            _xcalo_locator_->get_block_position(a_calo_hit_gid, block_position);
+            width     = _xcalo_locator_->get_block_width();
+            height    = _xcalo_locator_->get_block_height();
+            thickness = _xcalo_locator_->get_block_thickness();
+            column    = _xcalo_locator_->extract_column(a_calo_hit_gid);
+            side      = _xcalo_locator_->extract_side(a_calo_hit_gid);
+            const int side_number = (side == snemo::geometry::utils::SIDE_BACK) ? 1: -1;
+            norm.set_y(ct::experimental_double((double) side_number, 0.));
+          } else if (_gveto_locator_->is_calo_block_in_current_module(a_calo_hit_gid)) {
+            _gveto_locator_->get_block_position(a_calo_hit_gid, block_position);
+            width     = _gveto_locator_->get_block_width();
+            height    = _gveto_locator_->get_block_height();
+            thickness = _gveto_locator_->get_block_thickness();
+            column    = _gveto_locator_->extract_column(a_calo_hit_gid);
+            side      = _xcalo_locator_->extract_side(a_calo_hit_gid);
+            const int side_number = (side == snemo::geometry::utils::SIDE_BACK) ? 1: -1;
+            norm.set_z(ct::experimental_double((double) side_number, 0.));
+          }
+
+          ct::experimental_double energy(sncore_calo_hit.get_energy(),
+                                         sncore_calo_hit.get_sigma_energy());
+          ct::experimental_double time(sncore_calo_hit.get_time(),
+                                       sncore_calo_hit.get_sigma_time());
+          // size_t id = sncore_calo_hit.get_hit_id();
+          ct::experimental_point center(block_position.x(),
+                                        block_position.y(),
+                                        block_position.z(),
+                                        0., 0., 0.);
+          ct::experimental_vector sizes(width, height, thickness,
+                                        0., 0., 0.);
+          ct::plane pl(center, sizes, norm);
+          pl.set_probmin(_CAT_setup_.probmin);
+          pl.set_type("SuperNEMO");
+
+          // Build the Calo hit position :
+          // Add a new hit calo_cell in the CAT input data model :
+          ct::calorimeter_hit & c = _CAT_input_.add_calo_cell();
+          c.set_pl(pl);
+          c.set_e(energy);
+          c.set_t(time);
+          c.set_probmin(_CAT_setup_.probmin);
+          c.set_layer(column);
+          c.set_id(ihit++);
+
+          // Store mapping info between both data models :
+          calo_hits_mapping[c.id()] = calo_handle;
+
+          DT_LOG_DEBUG(get_logging_priority(),
+                       "Calo_cell #" << sncore_calo_hit.get_hit_id() << " has been added "
+                       << "to CAT input data with id number #" << c.id());
+        }
+      }
 
       // Validate the input data :
       if (! _CAT_input_.check()) {
@@ -333,9 +452,11 @@ namespace snemo {
       // Install the input data model within the algorithm object :
       _CAT_clusterizer_.set_cells(_CAT_input_.cells);
 
+      // Install the input data model within the algorithm object :
+      _CAT_clusterizer_.set_calorimeter_hits(_CAT_input_.calo_cells);
+
       // Prepare the output data model :
       _CAT_clusterizer_.prepare_event(_CAT_output_.tracked_data);
-
 
       // Run the clusterizer algorithm :
       _CAT_clusterizer_.clusterize(_CAT_output_.tracked_data);
@@ -393,9 +514,8 @@ namespace snemo {
             // - helix points
             // - track tangency vertex
             // - track helix vertex
-            // from CAT algorithm. Since it is a none generic
-            // information, this info will be added to
-            // calibrated data cells as properties.
+            // from CAT algorithm. Since it is a none generic information, this
+            // info will be added to calibrated data cells as properties.
             // Be careful of the system coordinate :
             // xcat -> y_snemo
             // ycat -> z_snemo

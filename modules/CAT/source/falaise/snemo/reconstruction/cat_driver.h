@@ -45,6 +45,12 @@ namespace datatools {
 
 namespace snemo {
 
+  namespace geometry {
+    class calo_locator;
+    class xcalo_locator;
+    class gveto_locator;
+  }
+
   namespace reconstruction {
 
     /// Driver for the Channel/CellularAutomatonTracker (CAT) clustering algorithms
@@ -72,33 +78,35 @@ namespace snemo {
       /// Reset the clusterizer
       virtual void reset();
 
-      // /// Prepare cluster for processing
-      // virtual int _prepare_process(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
-      //                              const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
-      //                              snemo::datamodel::tracker_clustering_data & clustering_);
 
       /// Main clustering method
       virtual int _process_algo(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
                                 const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
                                 snemo::datamodel::tracker_clustering_data & clustering_ );
 
-      // /// Post-processing
-      // virtual int _post_process(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
-      //                           const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
-      //                           snemo::datamodel::tracker_clustering_data & clustering_);
-
       /// OCD support:
       static void init_ocd(datatools::object_configuration_description & ocd_);
 
+    protected:
+
+      /// Set default attributes
+      void _set_defaults();
+
     private:
 
-      CAT::setup_data   _CAT_setup_;        /// Configuration data
-      CAT::input_data   _CAT_input_;        /// Input data
-      CAT::output_data  _CAT_output_;       /// Output data
-      CAT::clusterizer  _CAT_clusterizer_;  /// CAT clusterizer
-      CAT::sequentiator _CAT_sequentiator_; /// CAT sequentiator
-      double            _sigma_z_factor_;   /// Factor for longitudinal error
-      double            _magfield_;         /// Enforced magnetic field
+      CAT::setup_data   _CAT_setup_;         /// Configuration data
+      CAT::input_data   _CAT_input_;         /// Input data
+      CAT::output_data  _CAT_output_;        /// Output data
+      CAT::clusterizer  _CAT_clusterizer_;   /// CAT clusterizer
+      CAT::sequentiator _CAT_sequentiator_;  /// CAT sequentiator
+      double            _sigma_z_factor_;    /// Factor for longitudinal error
+      double            _magfield_;          /// Enforced magnetic field
+      bool              _process_calo_hits_; /// Flag to process associated calorimeter hits
+
+      /// Calorimeter locators
+      const snemo::geometry::calo_locator  * _calo_locator_;
+      const snemo::geometry::xcalo_locator * _xcalo_locator_;
+      const snemo::geometry::gveto_locator * _gveto_locator_;
 
     };
 
