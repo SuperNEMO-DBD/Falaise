@@ -313,7 +313,7 @@ namespace snemo {
                   count++;
                 }
               DT_THROW_IF (count == 0, std::logic_error,
-                           "Missing 'list_of_event_ids.ids' or 'list_of_event_ids.file_list' property !");
+                           "Missing 'list_of_event_ids.ids' or 'list_of_event_ids.file' property !");
               DT_LOG_DEBUG (get_logging_priority (), "Dumping list of event id:");
               if (is_debug ())
                 {
@@ -429,7 +429,7 @@ namespace snemo {
 
       // Check if the event ID belongs to a given list :
       bool check_list_of_events = true;
-      if (is_mode_event_number ())
+      if (is_mode_list_of_event_ids ())
         {
           DT_LOG_DEBUG (get_logging_priority (), "Running LIST_OF_EVENT_IDS mode...");
           if (! EH.get_id ().is_valid ())
