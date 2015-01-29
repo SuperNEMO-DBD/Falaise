@@ -20,6 +20,7 @@ set(_falaise_PLUGINS
   MockTrackerClusterizer
   TrackFit
   ChargedParticleTracking
+  GammaTracking
   VisuToy
   EventBrowser
 )
