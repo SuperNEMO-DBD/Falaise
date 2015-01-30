@@ -277,7 +277,11 @@ namespace snemo {
       gid.set (_row_address_index_, geomtools::geom_id::INVALID_ADDRESS);
       if (is_block_partitioned ())
         {
-          gid.set (_part_address_index_, _block_part_);
+          gid.set_any (_part_address_index_);
+          // 2015-01-30 XG: use wildcard address for partitioned block otherwise
+          // comparison between these geom ids with one coming from calibrated
+          // blocks differs due to non matching 'part' address
+          // gid.set (_part_address_index_, _block_part_);
         }
       // back
       if (side_ == (uint32_t) utils::SIDE_BACK)
