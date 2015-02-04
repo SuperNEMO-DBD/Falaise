@@ -9,23 +9,22 @@ namespace snemo {
 
     bool particle_track_data::has_particles() const
     {
-      return get_number_of_particles () > 0;
+      return get_number_of_particles() > 0;
     }
 
     size_t particle_track_data::get_number_of_particles() const
     {
-      return _particles_.size ();
+      return _particles_.size();
     }
 
     void particle_track_data::add_particle(const particle_track::handle_type & particle_handle_)
     {
-      for (size_t i = 0; i < _particles_.size (); i++)
-        {
-          particle_track::handle_type h = _particles_.at (i);
-          particle_track * addr = &(h.grab());
-          DT_THROW_IF (addr == &(particle_handle_.get()), std::logic_error,
-                       "Duplicated particles is not allowed!");
-        }
+      for (size_t i = 0; i < _particles_.size(); i++) {
+        particle_track::handle_type h = _particles_.at(i);
+        particle_track * addr = &(h.grab());
+        DT_THROW_IF(addr == &(particle_handle_.get()), std::logic_error,
+                    "Duplicated particles is not allowed!");
+      }
       _particles_.push_back(particle_handle_);
       return;
     }
@@ -129,27 +128,25 @@ namespace snemo {
 
     particle_track_data::~particle_track_data()
     {
-      this->reset ();
+      this->reset();
       return;
     }
 
-    void particle_track_data::tree_dump (std::ostream      & out_,
-                                         const std::string & title_,
-                                         const std::string & indent_,
-                                         bool inherit_) const
+    void particle_track_data::tree_dump(std::ostream      & out_,
+                                        const std::string & title_,
+                                        const std::string & indent_,
+                                        bool inherit_) const
     {
       std::string indent;
-      if (! indent_.empty ())
-        {
-          indent = indent_;
-        }
-      if ( ! title_.empty () )
-        {
-          out_ << indent << title_ << std::endl;
-        }
+      if (! indent_.empty()) {
+        indent = indent_;
+      }
+      if (! title_.empty()) {
+        out_ << indent << title_ << std::endl;
+      }
 
       out_ << indent << datatools::i_tree_dumpable::tag
-           << "Particle(s) : " << _particles_.size () << std::endl;
+           << "Particle(s) : " << _particles_.size() << std::endl;
 
       for (size_t i = 0; i < get_number_of_particles(); i++) {
         const particle_track & ptrack = get_particle(i);
@@ -167,18 +164,17 @@ namespace snemo {
         ptrack.tree_dump(out_, "", indent2.str());
       }
 
-      out_ << indent << datatools::i_tree_dumpable::inherit_tag (inherit_)
+      out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
            << "Auxiliaries : ";
-      if (_auxiliaries_.empty ())
-        {
-          out_ << "<empty>";
-        }
+      if (_auxiliaries_.empty()) {
+        out_ << "<empty>";
+      }
       out_ << std::endl;
       {
         std::ostringstream indent_oss;
         indent_oss << indent;
-        indent_oss << datatools::i_tree_dumpable::inherit_skip_tag (inherit_) ;
-        _auxiliaries_.tree_dump (out_, "", indent_oss.str ());
+        indent_oss << datatools::i_tree_dumpable::inherit_skip_tag(inherit_) ;
+        _auxiliaries_.tree_dump(out_, "", indent_oss.str());
       }
 
       return;
