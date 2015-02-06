@@ -44,9 +44,7 @@ namespace snemo {
 
       // Check setup label:
       const std::string & setup_label = _geometry_manager_->get_setup_label();
-      DT_THROW_IF (setup_label != "snemo::demonstrator" &&
-                   setup_label != "snemo::tracker_commissioning",
-                   std::logic_error,
+      DT_THROW_IF (setup_label != "snemo::demonstrator", std::logic_error,
                    "Setup label '" << setup_label << "' is not supported !");
       return;
     }
