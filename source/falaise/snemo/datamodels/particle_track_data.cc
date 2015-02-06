@@ -29,9 +29,9 @@ namespace snemo {
       return;
     }
 
-    const particle_track & particle_track_data::get_particle(size_t i_) const
+    const particle_track & particle_track_data::get_particle(size_t index_) const
     {
-      return _particles_.at(i_).get();
+      return _particles_.at(index_).get();
     }
 
     particle_track_data::particle_collection_type & particle_track_data::grab_particles()
@@ -42,6 +42,21 @@ namespace snemo {
     const particle_track_data::particle_collection_type & particle_track_data::get_particles() const
     {
       return _particles_;
+    }
+
+    void particle_track_data::remove_particle(size_t index_) {
+      DT_THROW_IF(index_ > _particles_.size(), std::logic_error,
+                  "Particle index does not exist ! Index must be smaller than " << _particles_.size());
+      _particles_.erase(_particles_.begin() + index_);
+      return;
+    }
+
+    void particle_track_data::remove_particles(std::vector<size_t> & indexes_) {
+      std::sort(indexes_.begin(), indexes_.end());
+      for (size_t i = 0; i < indexes_.size(); i++) {
+        remove_particle(indexes_.at(i) - i);
+      }
+      return;
     }
 
     void particle_track_data::invalidate_particles()

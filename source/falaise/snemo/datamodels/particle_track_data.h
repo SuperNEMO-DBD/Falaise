@@ -60,13 +60,19 @@ namespace snemo {
       void add_particle(const particle_track::handle_type & handle_);
 
       /// Return a non mutable reference to a particle by index
-      const particle_track & get_particle(size_t i_) const;
+      const particle_track & get_particle(size_t index_) const;
 
       /// Return a mutable reference to particles
       particle_collection_type & grab_particles();
 
       /// Return a non mutable reference to particles
       const particle_collection_type & get_particles() const;
+
+      /// Remove a particle given its index
+      void remove_particle(size_t index_);
+
+      /// Remove particles given a list of indexes
+      void remove_particles(std::vector<size_t> & indexes_);
 
       /// Reset the particle tracks
       void invalidate_particles();
