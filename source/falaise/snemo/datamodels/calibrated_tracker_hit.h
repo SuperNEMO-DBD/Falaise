@@ -251,7 +251,7 @@ namespace snemo {
 
     };
 
-    /// Functor that compare hits by delayed time
+    /// Functor that compares hits by delayed time
     struct compare_tracker_hit_by_delayed_time
     {
       bool operator()(const calibrated_tracker_hit & hit_i_,
