@@ -2,11 +2,11 @@
 /// \file falaise/snemo/geometry/calo_tapered_scin_box_model.h
 /* Author (s) :     Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2010-03-25
- * Last modified: 2010-03-25
+ * Last modified: 2015-02-10
  *
  * License:
  *
- * Copyright 2007-2011 F. Mauger
+ * Copyright 2007-2015 F. Mauger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,8 @@
 #include <string>
 
 // Third party:
+// - Boost:
+#include <boost/scoped_ptr.hpp>
 // - Bayeux/geomtools:
 #include <geomtools/i_model.h>
 #include <geomtools/box.h>
@@ -47,13 +49,14 @@
 #include <geomtools/subtraction_3d.h>
 #include <geomtools/intersection_3d.h>
 #include <geomtools/polycone.h>
+#include <geomtools/i_wires_drawer.h>
 
 namespace snemo {
 
   namespace geometry {
 
     /// \brief The geometry model for SuperNEMO calorimeter tapered scintillator block
-    GEOMTOOLS_MODEL_CLASS_DECLARE(calo_tapered_scin_box_model)
+    class calo_tapered_scin_box_model : public geomtools::i_model
     {
     public:
 
@@ -74,20 +77,25 @@ namespace snemo {
                               const std::string & title_  = "",
                               const std::string & indent_ = "",
                               bool inherit_               = false) const;
+
+      /// \brief  Special Gnuplot wires 3D rendering
+      struct wires_drawer : public geomtools::i_wires_drawer
+      {
+        wires_drawer(const calo_tapered_scin_box_model & model_);
+        virtual ~wires_drawer();
+        virtual void generate_wires(std::ostream & out_,
+                                    const geomtools::vector_3d & position_,
+                                    const geomtools::rotation_3d & rotation_);
+      private:
+        const calo_tapered_scin_box_model * _model_; //!< Handle to the model
+      };
+
     protected:
 
       /// Main construction
-      virtual void _at_construct (const std::string & name_,
-                                  const datatools::properties & setup_,
-                                  geomtools::models_col_type * models_ = 0);
-    private:
-
-      /// Gnuplot rendering method
-      static void gnuplot_draw_user_function (std::ostream &,
-                                              const geomtools::vector_3d &,
-                                              const geomtools::rotation_3d &,
-                                              const geomtools::i_object_3d &,
-                                              void * = 0);
+      virtual void _at_construct(const std::string & name_,
+                                 const datatools::properties & setup_,
+                                 geomtools::models_col_type * models_ = 0);
 
     private:
 
@@ -100,12 +108,18 @@ namespace snemo {
       double                      _w_;
       double                      _x_;
       double                      _y_;
-      double                      _h_;
       double                      _z_;
+      double                      _h_;
       double                      _r_;
       double                      _tapered_r_;
       double                      _tapered_angle_;
       double                      _optical_glue_thickness_;
+      double                      _zt_;
+      double                      _ze_;
+      double                      _re_;
+      double                      _angle_e_;
+
+      boost::scoped_ptr<wires_drawer> _drawer_;
 
       // registration interface :
       GEOMTOOLS_MODEL_REGISTRATION_INTERFACE(calo_tapered_scin_box_model);

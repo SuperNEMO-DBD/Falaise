@@ -28,6 +28,8 @@
 #include <string>
 
 // Third party:
+// - Boost:
+#include <boost/scoped_ptr.hpp>
 // - Bayeux/geomtools:
 #include <geomtools/i_model.h>
 #include <geomtools/box.h>
@@ -36,14 +38,14 @@
 #include <geomtools/placement.h>
 #include <geomtools/physical_volume.h>
 #include <geomtools/logical_volume.h>
-#include <geomtools/gnuplot_draw.h>
+#include <geomtools/i_wires_drawer.h>
 
 namespace snemo {
 
   namespace geometry {
 
     /// \brief The geometry model for a SuperNEMO calorimeter block
-    GEOMTOOLS_MODEL_CLASS_DECLARE(calo_scin_box_model)
+    class calo_scin_box_model : public geomtools::i_model
     {
     public:
 
@@ -64,20 +66,25 @@ namespace snemo {
                               const std::string & title_  = "",
                               const std::string & indent_ = "",
                               bool inherit_               = false) const;
+
+      /// \brief Special Gnuplot wires 3D rendering
+      struct wires_drawer : public geomtools::i_wires_drawer
+      {
+        wires_drawer(const calo_scin_box_model & model_);
+        virtual ~wires_drawer();
+        virtual void generate_wires(std::ostream & out_,
+                                    const geomtools::vector_3d & position_,
+                                    const geomtools::rotation_3d & rotation_);
+      private:
+        const calo_scin_box_model * _model_; //!< Handle to the model
+      };
+
     protected:
 
       /// Main construction
       virtual void _at_construct (const std::string & name_,
                                   const datatools::properties & setup_,
                                   geomtools::models_col_type * models_ = 0);
-    private:
-
-      /// Gnuplot rendering method
-      static void gnuplot_draw_user_function (std::ostream &,
-                                              const geomtools::vector_3d &,
-                                              const geomtools::rotation_3d &,
-                                              const geomtools::i_object_3d &,
-                                              void * = 0);
 
     private:
 
@@ -87,6 +94,8 @@ namespace snemo {
       geomtools::subtraction_3d _solid_;
       double                    _h_;
       double                    _optical_glue_thickness_;
+
+      boost::scoped_ptr<wires_drawer> _drawer_;
 
       // Registration interface :
       GEOMTOOLS_MODEL_REGISTRATION_INTERFACE(calo_scin_box_model);
