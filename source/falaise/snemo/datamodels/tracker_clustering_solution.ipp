@@ -44,7 +44,4 @@ namespace snemo {
 
 } // end of namespace snemo
 
-// #include <boost/serialization/version.hpp>
-// BOOST_CLASS_VERSION(snemo::datamodel::tracker_clustering_solution, 1)
-
 #endif // FALAISE_SNEMO_DATAMODELS_TRACKER_CLUSTERING_SOLUTION_IPP

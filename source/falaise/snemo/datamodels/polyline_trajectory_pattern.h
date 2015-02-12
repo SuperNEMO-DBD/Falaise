@@ -45,7 +45,7 @@ namespace snemo {
 
       private:
 
-        geomtools::polyline_3d _path_; /// The polyline path embedded model
+        geomtools::polyline_3d _path_; //!< The polyline path embedded model
 
         DATATOOLS_SERIALIZATION_DECLARATION();
 

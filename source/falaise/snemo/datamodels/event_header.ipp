@@ -40,7 +40,4 @@ namespace snemo {
 
 } // end of namespace snemo
 
-#include <boost/serialization/version.hpp>
-BOOST_CLASS_VERSION(snemo::datamodel::event_header, 1)
-
 #endif // FALAISE_SNEMO_DATAMODEL_EVENT_HEADER_IPP

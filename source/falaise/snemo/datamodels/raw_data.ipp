@@ -39,7 +39,4 @@ namespace snemo {
 
 } // end of namespace snemo
 
-// #include <boost/serialization/version.hpp>
-// BOOST_CLASS_VERSION(snemo::datamodel::raw_data, 1)
-
 #endif // FALAISE_SNEMO_DATAMODEL_RAW_DATA_IPP

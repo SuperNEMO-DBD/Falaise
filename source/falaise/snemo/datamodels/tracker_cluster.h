@@ -91,7 +91,7 @@ namespace snemo {
 
     private:
 
-      calibrated_tracker_hit::collection_type _hits_; /// Collection of Geiger hit handles
+      calibrated_tracker_hit::collection_type _hits_; //!< Collection of Geiger hit handles
 
       DATATOOLS_SERIALIZATION_DECLARATION();
 

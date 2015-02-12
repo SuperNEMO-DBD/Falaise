@@ -217,10 +217,10 @@ namespace snemo {
                              bool inherit_               = false) const;
 
     private:
-      charge_type                                 _charge_from_source_;          ///!< Particle charge
-      tracker_trajectory::handle_type             _trajectory_;                  ///!< Handle to the fitted trajectory
-      vertex_collection_type                      _vertices_;                    ///!< Collection of vertices
-      calibrated_calorimeter_hit::collection_type _associated_calorimeter_hits_; ///!< Collection of associated calorimeter hits
+      charge_type                                 _charge_from_source_;          //!< Particle charge
+      tracker_trajectory::handle_type             _trajectory_;                  //!< Handle to the fitted trajectory
+      vertex_collection_type                      _vertices_;                    //!< Collection of vertices
+      calibrated_calorimeter_hit::collection_type _associated_calorimeter_hits_; //!< Collection of associated calorimeter hits
 
       DATATOOLS_SERIALIZATION_DECLARATION();
 

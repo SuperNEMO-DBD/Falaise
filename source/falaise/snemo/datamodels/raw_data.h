@@ -84,7 +84,7 @@ namespace snemo {
 
     private:
 
-      raw_trigger_infos       _raw_trigger_infos_;        //!< Trigger raw informations
+      raw_trigger_infos       _raw_trigger_infos_;    //!< Trigger raw informations
       raw_calorimeter_hit_col _raw_calorimeter_hits_; //!< Collection of raw calorimeter hits
       raw_tracker_hit_col     _raw_tracker_hits_;     //!< Collection of raw tracker hits
       datatools::properties   _auxiliaries_;          //!< Auxiliary properties
@@ -96,6 +96,11 @@ namespace snemo {
   } // end of namespace datamodel
 
 } // end of namespace snemo
+
+// // Class version:
+// #include <boost/serialization/version.hpp>
+// BOOST_CLASS_VERSION(snemo::datamodel::raw_data, 0)
+
 
 #endif // FALAISE_SNEMO_DATAMODEL_RAW_DATA_H
 

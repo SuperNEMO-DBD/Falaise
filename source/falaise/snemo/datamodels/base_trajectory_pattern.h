@@ -49,7 +49,7 @@ namespace snemo {
 
     private:
 
-      std::string _pattern_id_; /// The pattern identifier
+      std::string _pattern_id_; //!< The pattern identifier
 
       DATATOOLS_SERIALIZATION_DECLARATION();
 

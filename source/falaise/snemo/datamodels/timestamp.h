@@ -61,7 +61,7 @@ namespace snemo {
       /// Invalidate the timestamp object
       void invalidate ();
 
-      /// Compare with a other timestamp
+      /// Compare with another timestamp
       int compare (const timestamp &) const;
 
       friend bool operator== (const timestamp &, const timestamp &);
@@ -78,7 +78,7 @@ namespace snemo {
 
     private:
 
-      int64_t seconds_; //!< Number of seconds
+      int64_t seconds_;     //!< Number of seconds
       int64_t picoseconds_; //!< Number of picosecond
 
       DATATOOLS_SERIALIZATION_DECLARATION();
@@ -88,5 +88,8 @@ namespace snemo {
   } // end of namespace datamodel
 
 } // end of namespace snemo
+
+#include <boost/serialization/version.hpp>
+BOOST_CLASS_VERSION(snemo::datamodel::timestamp, 1)
 
 #endif // FALAISE_SNEMO_DATAMODELS_TIMESTAMP_H

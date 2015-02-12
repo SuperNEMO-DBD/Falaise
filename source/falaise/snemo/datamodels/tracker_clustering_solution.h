@@ -206,13 +206,13 @@ namespace snemo {
 
     private:
 
-      int32_t                      _solution_id_;      /// Unique solution ID
-      cluster_col_type             _clusters_;         /// Collection of handles on prompt Geiger hits clusters
-      hit_collection_type          _unclustered_hits_; /// Collection of handles on unclustered Geiger hits
-      datatools::properties        _auxiliaries_;      /// List of auxiliary properties
+      int32_t                      _solution_id_;      //!< Unique solution ID
+      cluster_col_type             _clusters_;         //!< Collection of handles on prompt Geiger hits clusters
+      hit_collection_type          _unclustered_hits_; //!< Collection of handles on unclustered Geiger hits
+      datatools::properties        _auxiliaries_;      //!< List of auxiliary properties
 
       // Non persistent information :
-      hit_belonging_col_type       _hit_belonging_;    /// List of clusters for each clustered hits
+      hit_belonging_col_type       _hit_belonging_;    //!< List of clusters for each clustered hits
 
       DATATOOLS_SERIALIZATION_DECLARATION();
 
@@ -221,6 +221,10 @@ namespace snemo {
   } // end of namespace datamodel
 
 } // end of namespace snemo
+
+// Class version:
+// #include <boost/serialization/version.hpp>
+// BOOST_CLASS_VERSION(snemo::datamodel::tracker_clustering_solution, 0)
 
 #endif // FALAISE_SNEMO_DATAMODELS_TRACKER_CLUSTERING_SOLUTION_H
 

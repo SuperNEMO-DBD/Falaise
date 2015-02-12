@@ -111,10 +111,10 @@ namespace snemo {
 
     private:
 
-      datatools::event_id         _id_;         /// Run/Event ID
-      generation_type             _generation_; /// Generation flag
-      snemo::datamodel::timestamp _timestamp_;  /// Reference time of the event
-      datatools::properties       _properties_; /// Dictionary of properties
+      datatools::event_id         _id_;         //!< Run/Event ID
+      generation_type             _generation_; //!< Generation flag
+      snemo::datamodel::timestamp _timestamp_;  //!< Reference time of the event
+      datatools::properties       _properties_; //!< Dictionary of properties
 
       DATATOOLS_SERIALIZATION_DECLARATION();
 
@@ -126,5 +126,9 @@ namespace snemo {
 
 #include <boost/serialization/export.hpp>
 BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::event_header, "snemo::datamodel::event_header")
+
+// Class version:
+#include <boost/serialization/version.hpp>
+BOOST_CLASS_VERSION(snemo::datamodel::event_header, 1)
 
 #endif // FALAISE_SNEMO_DATAMODEL_EVENT_HEADER_H

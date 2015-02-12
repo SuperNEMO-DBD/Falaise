@@ -262,6 +262,10 @@ namespace snemo {
 
 } // end of namespace snemo
 
+// Class version:
+#include <boost/serialization/version.hpp>
+BOOST_CLASS_VERSION(snemo::datamodel::calibrated_tracker_hit, 1)
+
 #endif // FALAISE_SNEMO_DATAMODELS_CALIBRATED_TRACKER_HIT_H
 /*
 ** Local Variables: --

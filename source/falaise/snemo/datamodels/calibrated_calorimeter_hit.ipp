@@ -1,5 +1,5 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/calibrated_calorimeter_hit.ipp */
+/// \file falaise/snemo/datamodels/calibrated_calorimeter_hit.ipp
 
 #ifndef FALAISE_SNEMO_DATAMODELS_CALIBRATED_CALORIMETER_HIT_IPP
 #define FALAISE_SNEMO_DATAMODELS_CALIBRATED_CALORIMETER_HIT_IPP 1
@@ -37,5 +37,3 @@ namespace snemo {
 } // end of namespace snemo
 
 #endif // FALAISE_SNEMO_DATAMODELS_CALIBRATED_CALORIMETER_HIT_IPP
-
-// end of falaise/snemo/datamodel/calibrated_calorimeter_hit.ipp

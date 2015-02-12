@@ -131,11 +131,11 @@ namespace snemo {
 
     private:
 
-      int32_t                         _solution_id_;         /// Unique solution ID
-      handle_clustering_solution_type _clustering_solution_; /// The reference clustering solution
-      trajectory_col_type             _trajectories_;        /// Collection of handles on trajectories associated to clusters
-      cluster_col_type                _unfitted_clusters_;   /// Collection of handles on unfitted clusters
-      datatools::properties           _auxiliaries_;         /// List of auxiliary properties
+      int32_t                         _solution_id_;         //!< Unique solution ID
+      handle_clustering_solution_type _clustering_solution_; //!< The reference clustering solution
+      trajectory_col_type             _trajectories_;        //!< Collection of handles on trajectories associated to clusters
+      cluster_col_type                _unfitted_clusters_;   //!< Collection of handles on unfitted clusters
+      datatools::properties           _auxiliaries_;         //!< List of auxiliary properties
 
       DATATOOLS_SERIALIZATION_DECLARATION();
 
