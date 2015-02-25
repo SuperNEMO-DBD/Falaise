@@ -21,7 +21,6 @@
 // Gamma_Tracking library
 #include <GammaTracking/event.h>
 #include <GammaTracking/tof_computing.h>
-#include <GammaTracking/gamma_tracking.h>
 
 namespace snemo {
 
@@ -135,7 +134,11 @@ namespace snemo {
       _locator_plugin_ = &geo_mgr.get_plugin<snemo::geometry::locator_plugin>(locator_plugin_name);
 
       // Extract the setup of the gamma tracking algo :
-      setup_.export_and_rename_starting_with(_gt_setup_, "GT.", "");
+      datatools::properties gt_setup;
+      setup_.export_and_rename_starting_with(gt_setup, "GT.", "");
+
+      // Initialize Gamma Tracking
+      _gt_.initialize(gt_setup);
 
       set_initialized(true);
       return;
@@ -155,6 +158,13 @@ namespace snemo {
       int status = 0;
       DT_THROW_IF(! is_initialized(), std::logic_error, "Driver '" << gamma_tracking_id() << "' is already initialized !");
 
+      status = _prepare_process(hits_, ptd_);
+      if (status != 0) {
+        DT_LOG_ERROR(get_logging_priority(),
+                     "Pre-processing of calorimeter hits by '" << gamma_tracking_id() << "' algorithm has failed !");
+        return status;
+      }
+
       status = _process_algo(hits_, ptd_);
       if (status != 0) {
         DT_LOG_ERROR(get_logging_priority(),
@@ -162,7 +172,13 @@ namespace snemo {
         return status;
       }
 
-      _post_process(ptd_);
+      status = _post_process(ptd_);
+      if (status != 0) {
+        DT_LOG_ERROR(get_logging_priority(),
+                     "Post-processing of calorimeter hits by '" << gamma_tracking_id() << "' algorithm has failed !");
+        return status;
+      }
+
       return status;
     }
 
@@ -227,15 +243,13 @@ namespace snemo {
       }
 
       // Running gamma tracking
-      gt::gamma_tracking gt;
-      gt.initialize(_gt_setup_);
-      gt.prepare_process(an_event);
-      gt.process();
+      _gt_.prepare_process(an_event);
+      _gt_.process();
       gt::gamma_tracking::solution_type gamma_tracks;
-      gt.get_reflects(gamma_tracks);
+      _gt_.get_reflects(gamma_tracks);
       if (get_logging_priority() >= datatools::logger::PRIO_DEBUG) {
         DT_LOG_DEBUG(get_logging_priority(), "Number of gammas = " << gamma_tracks.size());
-        gt.dump();
+        _gt_.dump();
       }
 
       for (gt::gamma_tracking::solution_type::const_iterator
