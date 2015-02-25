@@ -1,7 +1,6 @@
 // Ourselves:
 #include "gamma_tracking.h"
 // This project
-#include "event.h"
 #include "tof_computing.h"
 
 // Standard library:
@@ -430,9 +429,19 @@ namespace gt {
     return _min_chi2_[freedom_];
   }
 
-  void gamma_tracking::prepare_process(const event & event_)
+  const event & gamma_tracking::get_event() const
   {
-    const event::calorimeter_collection_type & the_gamma_calos = event_.get_calorimeters();
+    return _event_;
+  }
+
+  event & gamma_tracking::grab_event()
+  {
+    return _event_;
+  }
+
+  void gamma_tracking::prepare_process()
+  {
+    const event::calorimeter_collection_type & the_gamma_calos = _event_.get_calorimeters();
 
     if (the_gamma_calos.size() == 1) {
       add(the_gamma_calos.begin()->first);

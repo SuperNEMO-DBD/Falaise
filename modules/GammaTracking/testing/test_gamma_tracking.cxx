@@ -76,15 +76,15 @@ int main()
   const size_t nbr_events = 1;
 
   for (size_t i_evt = 0; i_evt < nbr_events; i_evt++) {
-    gt::event a_event;
+    // Gamma tracking
+    gt::gamma_tracking gt;
+    gt::event & a_event = gt.grab_event();
     generate_calorimeters(a_event);
 
     std::cout << "Event #" << i_evt << std::endl;
     std::cout << a_event << std::endl;
 
-    // Gamma tracking
-    gt::gamma_tracking gt;
-    gt.prepare_process(a_event);
+    gt.prepare_process();
     // gt.set_absolute(true);
     gt.process();
     gt::gamma_tracking::solution_type gamma_tracked_coll;

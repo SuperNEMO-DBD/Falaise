@@ -10,6 +10,9 @@
 // - Bayeux/datatools:
 #include <datatools/logger.h>
 
+// This plugin
+#include "event.h"
+
 namespace datatools {
   class properties;
 }
@@ -176,8 +179,14 @@ namespace gt {
     /// Get the chi square limit of _min_prob_ depend on degree of freedom
     double get_chi_limit(unsigned int);
 
+    /// Get a non mutable reference to internal event data model
+    const event & get_event() const;
+
+    /// Get a mutable reference to internal event data model
+    event & grab_event();
+
     /// Prepare process by computing the internal probability of all calorimeter pairs
-    void prepare_process(const event & event_) ;
+    void prepare_process() ;
 
     /// Main calculation before the gamma_tracking::get_reflects
     void process() ;
@@ -215,7 +224,7 @@ namespace gt {
     std::map<int, double> _min_chi2_;               //!< Dictionnary of chi squares : deg of freedom: size-1 VS the chi2
     std::map<const list_type* ,double> _chi2_;      //!< Dictionnary of chi square based on gamma tracked pointer
     std::map<const list_type* ,double> _proba_;     //!< Dictionnary of probabilities based on gamma tracked pointer
-
+    event _event_;                              //!< Internal gamma tracking event
   };
 }
 

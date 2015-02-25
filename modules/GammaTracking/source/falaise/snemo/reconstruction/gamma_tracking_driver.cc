@@ -190,19 +190,10 @@ namespace snemo {
       return;
     }
 
-    int gamma_tracking_driver::_prepare_process(const snemo::datamodel::calibrated_calorimeter_hit::collection_type & /*hits_*/,
+    int gamma_tracking_driver::_prepare_process(const snemo::datamodel::calibrated_calorimeter_hit::collection_type & hits_,
                                                 snemo::datamodel::particle_track_data & /*ptd_*/)
     {
-      return 0;
-    }
-
-    // Main tracking method
-    int gamma_tracking_driver::_process_algo(const snemo::datamodel::calibrated_calorimeter_hit::collection_type & hits_,
-                                             snemo::datamodel::particle_track_data & ptd_)
-    {
-      DT_LOG_TRACE(get_logging_priority(), "Entering...");
-
-      gt::event an_event;
+      gt::event & an_event = _gt_.grab_event();
       gt::event::calorimeter_collection_type & the_gamma_calos = an_event.grab_calorimeters();
 
       for (snemo::datamodel::calibrated_calorimeter_hit::collection_type::const_iterator
@@ -241,9 +232,18 @@ namespace snemo {
       if (get_logging_priority() >= datatools::logger::PRIO_DEBUG) {
         DT_LOG_DEBUG(get_logging_priority(), "Event dump: " << an_event);
       }
+      _gt_.prepare_process();
+
+      return 0;
+    }
+
+    // Main tracking method
+    int gamma_tracking_driver::_process_algo(const snemo::datamodel::calibrated_calorimeter_hit::collection_type & hits_,
+                                             snemo::datamodel::particle_track_data & ptd_)
+    {
+      DT_LOG_TRACE(get_logging_priority(), "Entering...");
 
       // Running gamma tracking
-      _gt_.prepare_process(an_event);
       _gt_.process();
       gt::gamma_tracking::solution_type gamma_tracks;
       _gt_.get_reflects(gamma_tracks);
@@ -282,9 +282,11 @@ namespace snemo {
           geomtools::blur_spot & spot = hBS.grab();
           spot.set_hit_id(calo_id);
           spot.set_geom_id(found->get().get_geom_id());
+          spot.set_blur_dimension(geomtools::blur_spot::dimension_three);
+          const gt::event::calorimeter_collection_type & the_gamma_calos
+            = _gt_.get_event().get_calorimeters();
           spot.grab_auxiliaries().store(snemo::datamodel::particle_track::vertex_type_key(),
                                         the_gamma_calos.at(calo_id).label);
-          spot.set_blur_dimension(geomtools::blur_spot::dimension_three);
           spot.set_position(the_gamma_calos.at(calo_id).position);
         } // end of gamma hits
       } // end of gammas
