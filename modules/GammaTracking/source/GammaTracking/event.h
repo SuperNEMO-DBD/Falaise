@@ -17,6 +17,7 @@ namespace gt {
 
   public:
 
+    /// Internal stucture holding calorimeter hit parameters
     struct calorimeter_hit
     {
       std::string label;
@@ -31,10 +32,13 @@ namespace gt {
       friend std::ostream & operator<<(std::ostream & out_, const calorimeter_hit & hit_);
     };
 
+    /// Typedef for calorimeter collection type
     typedef std::map<size_t, calorimeter_hit> calorimeter_collection_type;
 
+    /// Constructor
     event();
 
+    /// Destructor
     ~event();
 
     /// Return a non-mutable reference to calorimeters
