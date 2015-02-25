@@ -539,6 +539,7 @@ namespace gt {
     _serie_.clear();
     _proba_.clear();
     _starts_.clear();
+    _event_.reset();
     return;
   }
 

@@ -23,6 +23,12 @@ namespace gt {
     return;
   }
 
+  void event::reset()
+  {
+    _calos_.clear();
+    return;
+  }
+
   bool operator<(const event::calorimeter_hit & lhs_, const event::calorimeter_hit & rhs_)
   {
     return lhs_.time < rhs_.time;

@@ -41,6 +41,9 @@ namespace gt {
     /// Destructor
     ~event();
 
+    /// Reset
+    void reset();
+
     /// Return a non-mutable reference to calorimeters
     const calorimeter_collection_type & get_calorimeters() const;
 

@@ -291,6 +291,9 @@ namespace snemo {
         } // end of gamma hits
       } // end of gammas
 
+      // Reset GT algorithm
+      _gt_.reset();
+
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");
       return 0;
     }
