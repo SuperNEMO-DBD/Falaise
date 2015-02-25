@@ -466,11 +466,11 @@ namespace gt {
     while (l_it1 != _serie_.end()) {
       for (solution_type::iterator l_it2 = _serie_.begin();
            l_it2 != _serie_.end(); ++l_it2) {
-        if ( l_it2->size() == 2
-             && l_it1->size() > first_loop
-             && l_it1->back() == l_it2->front()
-             && !(is_inside(*l_it1, l_it2->back()))
-             && (!_starts_.size() || is_inside(_starts_, (*(l_it1->begin()))))) {
+        if (l_it2->size() == 2
+            && l_it1->size() > first_loop
+            && l_it1->back() == l_it2->front()
+            && !(is_inside(*l_it1, l_it2->back()))
+            && (!_starts_.size() || is_inside(_starts_, (*(l_it1->begin()))))) {
           bool starts_in = false;
 
           if (is_extern()) {
