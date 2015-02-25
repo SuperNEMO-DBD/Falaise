@@ -1,11 +1,11 @@
 
 # - List of test programs:
 set(FalaiseGammaTrackingPlugin_TESTS
-  test_gamma_tracking.cxx
+  # test_gamma_tracking.cxx
   )
 
-# Use C++11
-set(CMAKE_CXX_FLAGS "-std=c++11")
+# # Use C++11
+# set(CMAKE_CXX_FLAGS "-std=c++11")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
