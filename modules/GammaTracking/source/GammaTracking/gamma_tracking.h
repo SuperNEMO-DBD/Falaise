@@ -11,7 +11,7 @@
 #include <datatools/logger.h>
 
 // This plugin
-#include "event.h"
+#include <GammaTracking/event.h>
 
 namespace datatools {
   class properties;

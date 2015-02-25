@@ -1,7 +1,7 @@
 // Ourselves:
-#include "gamma_tracking.h"
+#include <GammaTracking/gamma_tracking.h>
 // This project
-#include "tof_computing.h"
+#include <GammaTracking/tof_computing.h>
 
 // Standard library:
 #include <algorithm>

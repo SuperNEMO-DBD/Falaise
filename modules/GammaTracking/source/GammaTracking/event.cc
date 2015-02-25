@@ -1,5 +1,5 @@
 // Ourselves:
-#include "event.h"
+#include <GammaTracking/event.h>
 
 namespace gt {
 
