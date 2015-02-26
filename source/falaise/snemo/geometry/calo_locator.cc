@@ -267,6 +267,7 @@ namespace snemo {
 
       const bool sides    = mask_ & utils::NEIGHBOUR_SIDE;
       const bool diagonal = mask_ & utils::NEIGHBOUR_DIAG;
+      const bool second   = mask_ & utils::NEIGHBOUR_SECOND;
 
       // prepare neighbour GID :
       geomtools::geom_id gid;
@@ -389,6 +390,25 @@ namespace snemo {
               ids_.push_back (gid);
             }
 
+          /*  C-2C-1 C C+1C+2
+           *  [x][x][x][x][x] R+2
+           *  [x][ ][ ][ ][x] R+1
+           *  [x][ ][.][ ][x] R
+           *  [x][ ][ ][ ][x] R-1
+           *  [x][x][x][x][x] R-2
+           */
+          if (second) {
+            for (int ir = -2; ir <= +2; ir++) {
+              if (row_ + ir > (_back_block_z_.size() - 1)) continue;
+              for (int ic = -2; ic <= +2; ic++) {
+                if (column_ + ic > (_back_block_y_.size() - 1)) continue;
+                if (std::abs(ir) != 2 && std::abs(ic) != 2) continue;
+                gid.set(_column_address_index_, column_ + ic);
+                gid.set(_row_address_index_, row_ + ir);
+                ids_.push_back(gid);
+              }
+            }
+          }
         }
 
       // front:
@@ -496,6 +516,26 @@ namespace snemo {
               gid.set (_row_address_index_, row_ - 1);
               ids_.push_back (gid);
             }
+
+          /*  C-2C-1 C C+1C+2
+           *  [x][x][x][x][x] R+2
+           *  [x][ ][ ][ ][x] R+1
+           *  [x][ ][.][ ][x] R
+           *  [x][ ][ ][ ][x] R-1
+           *  [x][x][x][x][x] R-2
+           */
+          if (second) {
+            for (int ir = -2; ir <= +2; ir++) {
+              if (row_ + ir > (_back_block_z_.size() - 1)) continue;
+              for (int ic = -2; ic <= +2; ic++) {
+                if (column_ + ic > (_back_block_y_.size() - 1)) continue;
+                if (std::abs(ir) != 2 && std::abs(ic) != 2) continue;
+                gid.set(_column_address_index_, column_ + ic);
+                gid.set(_row_address_index_, row_ + ir);
+                ids_.push_back(gid);
+              }
+            }
+          }
         }
 
       return;
