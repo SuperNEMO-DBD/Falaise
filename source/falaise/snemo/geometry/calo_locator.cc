@@ -595,6 +595,30 @@ namespace snemo {
           if (sides) number += 4;
           if (diagonal) number += 4;
         }
+
+      const bool second = mask_ & utils::NEIGHBOUR_SECOND;
+      if (second) {
+        if (side_ == (uint32_t) utils::SIDE_BACK) {
+          for (int ir = -2; ir <= +2; ir++) {
+            if (row_ + ir > (_back_block_z_.size() - 1)) continue;
+            for (int ic = -2; ic <= +2; ic++) {
+              if (column_ + ic > (_back_block_y_.size() - 1)) continue;
+              if (std::abs(ir) != 2 && std::abs(ic) != 2) continue;
+              number++;
+            }
+          }
+        }
+        if (side_ == (uint32_t) utils::SIDE_FRONT) {
+          for (int ir = -2; ir <= +2; ir++) {
+            if (row_ + ir > (_front_block_z_.size() - 1)) continue;
+            for (int ic = -2; ic <= +2; ic++) {
+              if (column_ + ic > (_front_block_y_.size() - 1)) continue;
+              if (std::abs(ir) != 2 && std::abs(ic) != 2) continue;
+              number++;
+            }
+          }
+        }
+      }
       return number;
     }
 
