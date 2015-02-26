@@ -289,6 +289,11 @@ namespace snemo {
 
       const bool sides    = mask_ & utils::NEIGHBOUR_SIDE;
       const bool diagonal = mask_ & utils::NEIGHBOUR_DIAG;
+      const bool second   = mask_ & utils::NEIGHBOUR_SECOND;
+      if (second) {
+        DT_LOG_NOTICE(get_logging_priority(),
+                      "Looking for second order neighbour of 'xcalo' locator is not implemented !");
+      }
 
       // prepare neighbour GID :
       geomtools::geom_id gid;
@@ -515,6 +520,11 @@ namespace snemo {
       bool side     = false;
       const bool sides    = mask_ & utils::NEIGHBOUR_SIDE;
       const bool diagonal = mask_ & utils::NEIGHBOUR_DIAG;
+      const bool second   = mask_ & utils::NEIGHBOUR_SECOND;
+      if (second) {
+        DT_LOG_NOTICE(get_logging_priority(),
+                      "Looking for second order neighbour of 'xcalo' locator is not implemented !");
+      }
       if (side_ == (uint32_t) utils::SIDE_BACK) {
         if ( (column_ == 0) || (column_ == _back_block_x_[wall_].size () - 1) ) {
           if ( (row_ == 0) || (row_ == _back_block_z_[wall_].size () - 1) ) {
