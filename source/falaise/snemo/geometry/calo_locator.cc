@@ -551,7 +551,7 @@ namespace snemo {
       bool side = false;
       const bool sides    = mask_ & utils::NEIGHBOUR_SIDE;
       const bool diagonal = mask_ & utils::NEIGHBOUR_DIAG;
-      if (side_ == 0)
+      if (side_ == (uint32_t) utils::SIDE_BACK)
         {
           if ( (column_ == 0) || (column_ == _back_block_y_.size () - 1) )
             {
@@ -565,7 +565,7 @@ namespace snemo {
                 }
             }
         }
-      if (side_ == 1)
+      if (side_ == (uint32_t) utils::SIDE_FRONT)
         {
           if ( (column_ == 0) || (column_ == _front_block_y_.size () - 1) )
             {
@@ -796,7 +796,7 @@ namespace snemo {
       geomtools::geom_id side_gid;
       side_gid.set_type (_calorimeter_submodule_type_);
       uint32_t side = geomtools::geom_id::INVALID_ADDRESS;
-      for (uint32_t iside= 0; iside < utils::NSIDES; iside++) {
+      for (uint32_t iside = 0; iside < utils::NSIDES; iside++) {
         side_gid.set_address (_module_number_, iside);
         if (_mapping_->validate_id (side_gid)) {
           _submodules_[iside] = true;
