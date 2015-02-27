@@ -254,6 +254,8 @@ namespace snemo {
       _SULTAN_setup_.planes_per_block.at(0) = nlayers;
       _SULTAN_setup_.num_cells_per_plane    = nrows;
       _SULTAN_setup_.cell_distance          = cell_diameter;
+      _SULTAN_setup_.n_layers = 9;
+      _SULTAN_setup_.n_cell_columns = 56;
 
       // Hard-coded values of bfield and chamber size
       _SULTAN_setup_.bfield = _magfield_ / CLHEP::tesla;
