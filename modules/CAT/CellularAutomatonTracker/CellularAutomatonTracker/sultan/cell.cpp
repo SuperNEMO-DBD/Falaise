@@ -168,39 +168,43 @@ namespace SULTAN{
 
     }
 
-    bool cell::is_near_calo()const{
+    bool cell::is_near_calo(int n)const{
       // blocks = -1, 1
       // layers = 0, +-1, ..., +-8
       // rows = -56, -55, ..., 55, 56
+      // n = 8
 
-      return (abs(this->layer())==8) ? true : false;
+      return (abs(this->layer())==n - 1) ? true : false;
     }
 
 
-    bool cell::is_near_outer_calo()const{
+    bool cell::is_near_outer_calo(int n)const{
       // blocks = -1, 1
       // layers = 0, +-1, ..., +-8
       // rows = -56, -55, ..., 55, 56
+      // n = 8
 
-      return (this->layer()==8) ? true : false;
+      return (this->layer()==n - 1) ? true : false;
     }
 
 
-    bool cell::is_near_inner_calo()const{
+    bool cell::is_near_inner_calo(int n)const{
       // blocks = -1, 1
       // layers = 0, +-1, ..., +-8
       // rows = -56, -55, ..., 55, 56
+      // n = 8
 
-      return (this->layer()==-8) ? true : false;
+      return (this->layer()==-(n - 1)) ? true : false;
     }
 
 
-    bool cell::is_near_xcalo()const{
+    bool cell::is_near_xcalo(int n)const{
       // blocks = -1, 1
       // layers = 0, +-1, ..., +-8
       // rows = -56, -55, ..., 55, 56
+      // n = 56
 
-      return (abs(this->iid())==56) ? true : false;
+      return (abs(this->iid())==n) ? true : false;
     }
 
 

@@ -35,6 +35,8 @@ namespace SULTAN {
     level = mybhep::NORMAL;
     m = mybhep::messenger(level);
     cell_distance  = std::numeric_limits<double>::quiet_NaN ();
+    n_layers  = std::numeric_limits<double>::quiet_NaN ();
+    n_cell_columns  = std::numeric_limits<double>::quiet_NaN ();
     xsize = ysize = zsize = std::numeric_limits<double>::quiet_NaN ();
     inner_radius = outer_radius= foil_radius = std::numeric_limits<double>::quiet_NaN ();
     Emin = std::numeric_limits<double>::quiet_NaN ();
@@ -203,6 +205,8 @@ namespace SULTAN {
     m.message("SULTAN::sultan::read_properties: nofflayers",nofflayers,mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties: first event number", first_event_number, mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties: cell_distance",cell_distance,"mm",mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: n_layers",n_layers,mybhep::NORMAL);
+    m.message("SULTAN::sultan::read_properties: n_cell_columns",n_cell_columns,mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties: bfield",bfield,"T",mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties: Emin",Emin,"MeV",mybhep::NORMAL);
     m.message("SULTAN::sultan::read_properties: Emax",Emax,"MeV",mybhep::NORMAL);
@@ -1752,17 +1756,17 @@ namespace SULTAN {
   //*************************************************************
 
     std::string cview;
-    if( c.is_near_calo() ){
+    if( c.is_near_calo(n_layers) ){
       if( c.type() == "SN" ){
         cview="x";
       }else{
-        if( c.is_near_outer_calo() )
+        if( c.is_near_outer_calo(n_layers) )
           cview="outer";
         else
           cview="inner";
       }
     }
-    else if( c.is_near_xcalo() ) cview="y";
+    else if( c.is_near_xcalo(n_cell_columns) ) cview="y";
     else if( c.is_near_gveto() ) cview="z";
     else{
       m.message("SULTAN::sultan::check_if_cell_is_near_calo: problem: cell is not near any calo", mybhep::NORMAL);
@@ -1827,8 +1831,8 @@ namespace SULTAN {
     for(std::vector<topology::node>::const_iterator inode=leftover_cluster_->nodes_.begin(); inode<leftover_cluster_->nodes_.end(); ++inode){
 
       on_foil=inode->c_.is_near_foil();
-      on_calo=inode->c_.is_near_calo();
-      on_xcalo=inode->c_.is_near_xcalo();
+      on_calo=inode->c_.is_near_calo(n_layers);
+      on_xcalo=inode->c_.is_near_xcalo(n_cell_columns);
       //on_gveto=inode->c_.is_near_gveto();
 
       // check if node "inode" can be used as an end point (is it on the foil? on the calo wall? on the xcalo wall? it is always on the gveto!)
@@ -1895,8 +1899,8 @@ namespace SULTAN {
         if( cluster_nodes.size() ){
           topology::cell fc = cluster_nodes[0].c();
           if( fc.is_near_foil() ) std::clog << " near foil ";
-          if( fc.is_near_calo() ) std::clog << " near calo ";
-          if( fc.is_near_xcalo() ) std::clog << " near xcalo ";
+          if( fc.is_near_calo(n_layers) ) std::clog << " near calo ";
+          if( fc.is_near_xcalo(n_cell_columns) ) std::clog << " near xcalo ";
         }
         std::clog <<" " << std::endl;
       }
@@ -2252,13 +2256,13 @@ namespace SULTAN {
         s.set_helix(c.get_helix());
       }
 
-      if( nodes[0].c().is_near_calo() || nodes[0].c().is_near_xcalo() ){
+      if( nodes[0].c().is_near_calo(n_layers) || nodes[0].c().is_near_xcalo(n_cell_columns) ){
 	int icalo = check_if_cell_is_near_calo(nodes[0].c());
 	if( icalo >= 0 )
 	  s.set_calo_id(icalo);
       }
 
-      if( nodes.back().c().is_near_calo() || nodes.back().c().is_near_xcalo() ){
+      if( nodes.back().c().is_near_calo(n_layers) || nodes.back().c().is_near_xcalo(n_cell_columns) ){
 	int icalo = check_if_cell_is_near_calo(nodes.back().c());
 	if( icalo >= 0 )
 	  s.set_calo_id(icalo);
@@ -3055,8 +3059,8 @@ namespace SULTAN {
       bool on_foil, on_calo, on_xcalo;
      //bool on_gveto;
       on_foil=a.c().is_near_foil();
-      on_calo=a.c().is_near_calo();
-      on_xcalo=a.c().is_near_xcalo();
+      on_calo=a.c().is_near_calo(n_layers);
+      on_xcalo=a.c().is_near_xcalo(n_cell_columns);
       //on_gveto=a.c().is_near_gveto();
 
       std::clog << "SULTAN::sultan::get_clusters_from:  get all clusters with endpoints " << a.c().id();
@@ -3065,8 +3069,8 @@ namespace SULTAN {
       if( on_xcalo )  std::clog << "(xcalo)";
 
       on_foil=b.c().is_near_foil();
-      on_calo=b.c().is_near_calo();
-      on_xcalo=b.c().is_near_xcalo();
+      on_calo=b.c().is_near_calo(n_layers);
+      on_xcalo=b.c().is_near_xcalo(n_cell_columns);
       //on_gveto=b.c().is_near_gveto();
 
       std::clog << " - > " << b.c().id();

@@ -105,6 +105,10 @@ namespace SULTAN {
 
     double cell_distance;  // distance between GG cells
 
+    size_t n_layers;  // n layers on each side of the foil (= 9 for NEMO and SuperNEMO)
+
+    size_t n_cell_columns;  // n gg cell columns (= 56 for SuperNEMO)
+
     double bfield; // value of magnetic field
 
     double nsigmas; // n of sigmas for clusterization in helix space

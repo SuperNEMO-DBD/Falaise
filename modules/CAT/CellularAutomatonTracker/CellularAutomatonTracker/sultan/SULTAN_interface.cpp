@@ -61,6 +61,8 @@ namespace SULTAN {
     ncells_between_triplet_min    = 0;
     ncells_between_triplet_range  = 0;
     cell_distance                 = 30.; // mm
+    n_layers                      = 9;
+    n_cell_columns                = 56;
     foil_radius                   = 0.;
 
     // SuperNEMO geometry default parameters :
@@ -151,6 +153,16 @@ namespace SULTAN {
     if (cell_distance <= 0.0)
       {
         _set_error_message ("Invalid 'cell_distance'");
+        return false;
+      }
+    if (n_layers <= 0.0)
+      {
+        _set_error_message ("Invalid 'n_layers'");
+        return false;
+      }
+    if (n_cell_columns <= 0.0)
+      {
+        _set_error_message ("Invalid 'n_cell_columns'");
         return false;
       }
     if (foil_radius < 0.0)
@@ -273,6 +285,8 @@ namespace SULTAN {
     stor_.set_ncells_between_triplet_min (setup_.ncells_between_triplet_min);
     stor_.set_ncells_between_triplet_range (setup_.ncells_between_triplet_range);
     stor_.set_cell_distance (setup_.cell_distance);
+    stor_.set_n_layers (setup_.n_layers);
+    stor_.set_n_cell_columns (setup_.n_cell_columns);
     stor_.set_foil_radius (setup_.foil_radius);
 
     stor_.set_bfield (setup_.bfield);

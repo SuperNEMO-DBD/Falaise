@@ -292,6 +292,16 @@ namespace SULTAN {
       return;
     }
 
+    void set_n_layers(size_t v){
+      n_layers = v;
+      return;
+    }
+
+    void set_n_cell_columns(size_t v){
+      n_cell_columns = v;
+      return;
+    }
+
     void set_SuperNemoChannel(bool v){
       if (v)
         {
@@ -387,6 +397,8 @@ namespace SULTAN {
     double inner_radius, outer_radius, foil_radius; //only for plotting
     double Emin;
     double Emax;
+    size_t n_layers;
+    size_t n_cell_columns;
 
     //limits
     double probmin;
