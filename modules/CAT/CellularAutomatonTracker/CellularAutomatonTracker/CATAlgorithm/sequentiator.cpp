@@ -3478,7 +3478,7 @@ namespace CAT {
     //*************************************************************
 
     topology::plane pl = ch.pl();
-    double chlayer = ch.layer();
+    double calorimeter_layer = ch.layer();
 
     if( pl.view() == "x" ){
 
@@ -3490,8 +3490,21 @@ namespace CAT {
       return (fabs(cell_max_number - c.cell_number()) < 1 + NOffLayers);
     }
     else if( pl.view() == "y" ){
-      m.message("CAT::sequentiator::near:  problem: matching cell to calo on view ", pl.view(), mybhep::VERBOSE);
-      return false;
+
+      topology::experimental_vector distance(c.ep(), pl.face());
+      distance = distance.hor();
+      double size_z = CellDistance + pl.sizes().z().value();
+      double size_x = CellDistance + pl.sizes().x().value();
+
+      if( level >= mybhep::VVERBOSE )
+	std::clog << "CAT::sequentiator::near:  checking if cell " << c.id() << " is near plane: " << pl.center().x().value() << ", " << pl.center().y().value() << ", " << pl.center().z().value() << " on view " << pl.view() << " distance z " << distance.z().value() << " size z " << size_z << " distance x " << distance.x().value() << " size x " << size_x << std::endl;
+
+
+      if( fabs(distance.z().value()) > size_z/2. ) return false;
+      if( fabs(distance.x().value()) > size_x/2. ) return false;
+
+      return true;
+
     }
     else if( pl.view() == "z" ){
 
@@ -3499,9 +3512,9 @@ namespace CAT {
 
       m.message("CAT::sequentiator::near:  checking if cell ", c.id(), " on gap ", g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), mybhep::VVERBOSE);
 
-      if( g <= 0 || fabs(chlayer - c.layer()) > NOffLayers ) return false; // cell is not on a gap or is facing the foil
+      if( g <= 0 || fabs(calorimeter_layer - c.layer()) > NOffLayers ) return false; // cell is not on a gap or is facing the foil
 
-      if( g == 1 || fabs(chlayer - c.layer()) <= NOffLayers ) return true;
+      if( g == 1 || fabs(calorimeter_layer - c.layer()) <= NOffLayers ) return true;
 
       m.message("CAT::sequentiator::near:  problem: can't match to calo on view ", pl.view(), mybhep::NORMAL);
 
@@ -3513,7 +3526,7 @@ namespace CAT {
       int g = gap_number(c);
       m.message("CAT::sequentiator::near:  checking if cell ", c.id(), " layer and gap: ", ln, g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), " on view ", pl.view(), mybhep::VVERBOSE);
       if( ln < 0 && (g == 3 ||
-                     fabs(ln - chlayer) <= NOffLayers )) return true;
+                     fabs(ln - calorimeter_layer) <= NOffLayers )) return true;
       return false;
     }
     else if( pl.view() == "outer" ){
@@ -3521,17 +3534,17 @@ namespace CAT {
       int g = gap_number(c);
       m.message("CAT::sequentiator::near:  checking if cell ", c.id(), " on layer and gap: ", ln, g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), " on view ", pl.view(), mybhep::VVERBOSE);
       if( ln > 0 && (g == 3 ||
-                     fabs(ln - chlayer) <= NOffLayers )) return true;
+                     fabs(ln - calorimeter_layer) <= NOffLayers )) return true;
       return false;
     }
     else if( pl.view() == "top" ||  pl.view() == "bottom" ){
       int ln = c.layer();
       int g = gap_number(c);
       m.message("CAT::sequentiator::near:  checking if cell ", c.id(), " on gap ", g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), " on view ", pl.view(), mybhep::VVERBOSE);
-      if( ln > 0 && chlayer == 3.5 && (g == 1 || fabs(ln - chlayer) <= NOffLayers + 0.5 ) ) return true;
-      if( ln > 0 && chlayer == 5.5 && (g == 2 || fabs(ln - chlayer) <= NOffLayers + 0.5 ) ) return true;
-      if( ln < 0 && chlayer == -3.5 && (g == 1 || fabs(ln - chlayer) <= NOffLayers + 0.5 ) ) return true;
-      if( ln < 0 && chlayer == -5.5 && (g == 2 || fabs(ln - chlayer) <= NOffLayers + 0.5 ) ) return true;
+      if( ln > 0 && calorimeter_layer == 3.5 && (g == 1 || fabs(ln - calorimeter_layer) <= NOffLayers + 0.5 ) ) return true;
+      if( ln > 0 && calorimeter_layer == 5.5 && (g == 2 || fabs(ln - calorimeter_layer) <= NOffLayers + 0.5 ) ) return true;
+      if( ln < 0 && calorimeter_layer == -3.5 && (g == 1 || fabs(ln - calorimeter_layer) <= NOffLayers + 0.5 ) ) return true;
+      if( ln < 0 && calorimeter_layer == -5.5 && (g == 2 || fabs(ln - calorimeter_layer) <= NOffLayers + 0.5 ) ) return true;
       return false;
     }
 
