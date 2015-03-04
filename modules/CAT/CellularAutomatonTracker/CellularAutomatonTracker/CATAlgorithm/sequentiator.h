@@ -86,6 +86,8 @@ namespace CAT {
     void plot_hard_scattering(topology::tracked_data __tracked_data);
     bool good_first_to_be_matched(topology::sequence& seq);
     bool match_gaps(std::vector<topology::calorimeter_hit> & calos);
+    void match_to_calorimeter(std::vector<topology::calorimeter_hit> & calos, topology::sequence *sequence);
+    void match_to_foil(topology::sequence *sequence);
 
 
     //! get clusters
