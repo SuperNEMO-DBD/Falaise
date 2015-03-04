@@ -372,6 +372,10 @@ namespace SULTAN {
     m.message("SULTAN::sultan::assign_helices_to_sequences: assign helices to ", sequences_.size(), " sequences ", mybhep::VERBOSE);
     for(std::vector<topology::sequence>::iterator iseq = sequences_.begin(); iseq != sequences_.end(); ++iseq){
       m.message("SULTAN::sultan::assign_helices_to_sequences: deal with sequence ", iseq - sequences_.begin(), " with ", iseq->nodes().size(), " nodes ", mybhep::VERBOSE);
+      if (level >= mybhep::VVERBOSE)
+	iseq->dump();
+
+
       if( !iseq->nodes_.size() ) continue;
       if( iseq->nodes_.size() < min_ncells_in_cluster ){
 	continue;
@@ -1825,7 +1829,6 @@ namespace SULTAN {
 
     bool on_foil, on_calo, on_xcalo;
     int on_calo_hit;
-    //bool on_gveto;
 
     // loop on all leftover nodes
     for(std::vector<topology::node>::const_iterator inode=leftover_cluster_->nodes_.begin(); inode<leftover_cluster_->nodes_.end(); ++inode){
@@ -1833,18 +1836,20 @@ namespace SULTAN {
       on_foil=inode->c_.is_near_foil();
       on_calo=inode->c_.is_near_calo(n_layers);
       on_xcalo=inode->c_.is_near_xcalo(n_cell_columns);
-      //on_gveto=inode->c_.is_near_gveto();
 
       // check if node "inode" can be used as an end point (is it on the foil? on the calo wall? on the xcalo wall? it is always on the gveto!)
       m.message("SULTAN::sultan::get_clusters_of_cells_to_be_used_as_end_points: cell " , inode->c_.id() , " is: near foil " , on_foil
                 , " near calo " , on_calo
                 , " near xcalo " , on_xcalo , mybhep::VVERBOSE);
 
-      // hit must be near some boundary (except gveto: all cells are close to gveto)
+      // hit must be near some boundary (except gveto: all cells are close to gveto plane)
+      /*
       if( !on_foil &&
           !on_calo &&
-          !on_xcalo )
+          !on_xcalo ){
         continue;
+      }
+      */
 
       // hit on a calo must be near a calo hit
       if( !on_foil ){
