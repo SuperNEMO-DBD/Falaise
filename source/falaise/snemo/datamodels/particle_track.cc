@@ -352,6 +352,7 @@ namespace snemo {
       if (get_charge () == invalid)       out_ << "invalid";
       else if (get_charge () == negative) out_ << "negative";
       else if (get_charge () == positive) out_ << "positive";
+      else if (get_charge () == neutral)  out_ << "neutral";
       out_ << std::endl;
 
       out_ << indent << datatools::i_tree_dumpable::tag
