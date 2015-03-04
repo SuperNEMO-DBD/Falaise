@@ -254,6 +254,7 @@ namespace snemo {
         const snemo::datamodel::calibrated_data * cd_ptr = 0;
         const snemo::datamodel::tracker_clustering_data * tc_ptr = 0;
         const snemo::datamodel::tracker_trajectory_data * tt_ptr = 0;
+        const snemo::datamodel::particle_track_data * ptd_ptr = 0;
 
         if (_event_->has(EH_LABEL)) {
           eh_ptr = &(_event_->get<snemo::datamodel::event_header>(EH_LABEL));
@@ -269,6 +270,9 @@ namespace snemo {
         }
         if (_event_->has(TTD_LABEL)) {
           tt_ptr = &(_event_->get<snemo::datamodel::tracker_trajectory_data>(TTD_LABEL));
+        }
+        if (_event_->has(PTD_LABEL)) {
+          ptd_ptr = &(_event_->get<snemo::datamodel::particle_track_data>(PTD_LABEL));
         }
 
         out_ << indent_
@@ -309,6 +313,13 @@ namespace snemo {
         } else {
           out_ << indent_
                << "No tracker trajectory data." << std::endl;
+        }
+
+        if (ptd_ptr != 0) {
+          ptd_ptr->tree_dump(out_, "Particle track data", indent_);
+        } else {
+          out_ << indent_
+               << "No particle track data." << std::endl;
         }
 
         return;
