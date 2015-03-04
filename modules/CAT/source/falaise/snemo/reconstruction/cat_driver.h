@@ -102,6 +102,7 @@ namespace snemo {
       double            _sigma_z_factor_;    /// Factor for longitudinal error
       double            _magfield_;          /// Enforced magnetic field
       bool              _process_calo_hits_; /// Flag to process associated calorimeter hits
+      bool     _store_result_as_properties_; /// Flag to store CAT result as data properties
 
       /// Calorimeter locators
       const snemo::geometry::calo_locator  * _calo_locator_;

@@ -80,6 +80,9 @@ namespace snemo {
           set_magfield(magfield);
         }
       }
+      if (!datatools::is_valid(_magfield_)) {
+        set_magfield(0.0025 * CLHEP::tesla);
+      }
 
       // Verbosity level
       if (setup_.has_key("CAT.level")) {
@@ -122,7 +125,6 @@ namespace snemo {
         }
       }
 
-
       // 1st event to be processed
       if (setup_.has_key("CAT.first_event")) {
         _CAT_setup_.first_event = setup_.fetch_integer("CAT.first_event");
@@ -141,8 +143,9 @@ namespace snemo {
                      "Invalid Sigma Z factor(" << _sigma_z_factor_ << ") !");
       }
 
-      if (!datatools::is_valid(_magfield_)) {
-        set_magfield(0.0025 * CLHEP::tesla);
+      // Store results within data properties
+      if (setup_.has_key("CAT.store_result_as_properties")) {
+        _store_result_as_properties_ = setup_.fetch_boolean("CAT.store_result_as_properties");
       }
 
       // Get the calorimeter locators from a geometry plugin :
@@ -222,6 +225,7 @@ namespace snemo {
       _sigma_z_factor_ = 1.0;
       datatools::invalidate(_magfield_);
       _process_calo_hits_ = true;
+      _store_result_as_properties_ = true;
       _calo_locator_  = 0;
       _xcalo_locator_ = 0;
       _gveto_locator_ = 0;
@@ -507,169 +511,170 @@ namespace snemo {
             sdm::tracker_cluster::handle_type & cluster_handle
               = clustering_solution.grab_clusters().back();
             cluster_handle.grab().set_cluster_id(clustering_solution.get_clusters().size() - 1);
-            const CAT::topology::helix & seq_helix = isequence->get_helix();
+            if (_store_result_as_properties_) {
 
-            // 2012/06/28 XG : Adding
-            // - tangency points
-            // - helix points
-            // - track tangency vertex
-            // - track helix vertex
-            // from CAT algorithm. Since it is a none generic information, this
-            // info will be added to calibrated data cells as properties.
-            // Be careful of the system coordinate :
-            // xcat -> y_snemo
-            // ycat -> z_snemo
-            // zcat -> x_snemo
-            const CAT::topology::experimental_point & helix_decay_vertex = a_sequence.decay_helix_vertex();
-            const CAT::topology::experimental_point & helix_vertex       = a_sequence.helix_vertex();
+              // 2012/06/28 XG : Adding
+              // - tangency points
+              // - helix points
+              // - track tangency vertex
+              // - track helix vertex
+              // from CAT algorithm. Since it is a none generic information, this
+              // info will be added to calibrated data cells as properties.
+              // Be careful of the system coordinate :
+              // xcat -> y_snemo
+              // ycat -> z_snemo
+              // zcat -> x_snemo
+              const CAT::topology::experimental_point & helix_decay_vertex = a_sequence.decay_helix_vertex();
+              const CAT::topology::experimental_point & helix_vertex       = a_sequence.helix_vertex();
 
-            const CAT::topology::experimental_point & tangent_decay_vertex = a_sequence.decay_tangent_vertex();
-            const CAT::topology::experimental_point & tangent_vertex       = a_sequence.tangent_vertex();
+              const CAT::topology::experimental_point & tangent_decay_vertex = a_sequence.decay_tangent_vertex();
+              const CAT::topology::experimental_point & tangent_vertex       = a_sequence.tangent_vertex();
 
-            const bool                      has_momentum = a_sequence.has_momentum();
-            const CAT::topology::experimental_vector & CAT_momentum = a_sequence.momentum();
+              const bool                      has_momentum = a_sequence.has_momentum();
+              const CAT::topology::experimental_vector & CAT_momentum = a_sequence.momentum();
 
-            const bool   has_charge = a_sequence.has_charge();
-            const double charge     = a_sequence.charge().value();
+              const bool   has_charge = a_sequence.has_charge();
+              const double charge     = a_sequence.charge().value();
 
-            const bool   has_helix_charge = a_sequence.has_helix_charge();
-            const double helix_charge     = a_sequence.helix_charge().value();
+              const bool   has_helix_charge = a_sequence.has_helix_charge();
+              const double helix_charge     = a_sequence.helix_charge().value();
 
-            const bool   has_detailed_charge = a_sequence.has_detailed_charge();
-            const double detailed_charge     = a_sequence.detailed_charge().value();
+              const bool   has_detailed_charge = a_sequence.has_detailed_charge();
+              const double detailed_charge     = a_sequence.detailed_charge().value();
 
-            const bool   has_tangent_length   = a_sequence.has_tangent_length();
-            const double tangent_length       = a_sequence.tangent_length().value();
-            const double tangent_length_error = a_sequence.tangent_length().error();
+              const bool   has_tangent_length   = a_sequence.has_tangent_length();
+              const double tangent_length       = a_sequence.tangent_length().value();
+              const double tangent_length_error = a_sequence.tangent_length().error();
 
-            const bool   has_helix_length   = a_sequence.has_helix_length();
-            const double helix_length       = a_sequence.helix_length().value();
-            const double helix_length_error = a_sequence.helix_length().error();
+              const bool   has_helix_length   = a_sequence.has_helix_length();
+              const double helix_length       = a_sequence.helix_length().value();
+              const double helix_length_error = a_sequence.helix_length().error();
 
-            const double xhv    = helix_vertex.z().value();
-            const double yhv    = helix_vertex.x().value();
-            const double zhv    = helix_vertex.y().value();
-            const double xhverr = helix_vertex.z().error();
-            const double yhverr = helix_vertex.x().error();
-            const double zhverr = helix_vertex.y().error();
-            const bool   hashv  = a_sequence.has_helix_vertex();
+              const double xhv    = helix_vertex.z().value();
+              const double yhv    = helix_vertex.x().value();
+              const double zhv    = helix_vertex.y().value();
+              const double xhverr = helix_vertex.z().error();
+              const double yhverr = helix_vertex.x().error();
+              const double zhverr = helix_vertex.y().error();
+              const bool   hashv  = a_sequence.has_helix_vertex();
 
-            const double xhdv    = helix_decay_vertex.z().value();
-            const double yhdv    = helix_decay_vertex.x().value();
-            const double zhdv    = helix_decay_vertex.y().value();
-            const double xhdverr = helix_decay_vertex.z().error();
-            const double yhdverr = helix_decay_vertex.x().error();
-            const double zhdverr = helix_decay_vertex.y().error();
-            const bool   hashdv  = a_sequence.has_decay_helix_vertex();
+              const double xhdv    = helix_decay_vertex.z().value();
+              const double yhdv    = helix_decay_vertex.x().value();
+              const double zhdv    = helix_decay_vertex.y().value();
+              const double xhdverr = helix_decay_vertex.z().error();
+              const double yhdverr = helix_decay_vertex.x().error();
+              const double zhdverr = helix_decay_vertex.y().error();
+              const bool   hashdv  = a_sequence.has_decay_helix_vertex();
 
-            const double xtv    = tangent_vertex.z().value();
-            const double ytv    = tangent_vertex.x().value();
-            const double ztv    = tangent_vertex.y().value();
-            const double xtverr = tangent_vertex.z().error();
-            const double ytverr = tangent_vertex.x().error();
-            const double ztverr = tangent_vertex.y().error();
-            const bool   hastv  = a_sequence.has_tangent_vertex();
+              const double xtv    = tangent_vertex.z().value();
+              const double ytv    = tangent_vertex.x().value();
+              const double ztv    = tangent_vertex.y().value();
+              const double xtverr = tangent_vertex.z().error();
+              const double ytverr = tangent_vertex.x().error();
+              const double ztverr = tangent_vertex.y().error();
+              const bool   hastv  = a_sequence.has_tangent_vertex();
 
-            const double xtdv    = tangent_decay_vertex.z().value();
-            const double ytdv    = tangent_decay_vertex.x().value();
-            const double ztdv    = tangent_decay_vertex.y().value();
-            const double xtdverr = tangent_decay_vertex.z().error();
-            const double ytdverr = tangent_decay_vertex.x().error();
-            const double ztdverr = tangent_decay_vertex.y().error();
-            const bool   hastdv  = a_sequence.has_decay_tangent_vertex();
+              const double xtdv    = tangent_decay_vertex.z().value();
+              const double ytdv    = tangent_decay_vertex.x().value();
+              const double ztdv    = tangent_decay_vertex.y().value();
+              const double xtdverr = tangent_decay_vertex.z().error();
+              const double ytdverr = tangent_decay_vertex.x().error();
+              const double ztdverr = tangent_decay_vertex.y().error();
+              const bool   hastdv  = a_sequence.has_decay_tangent_vertex();
 
-            const std::vector<double> & chi2s_all   = a_sequence.chi2s_all();
-            const std::vector<double> & probs_all   = a_sequence.probs_all();
-            std::vector<double> chi2s;
-            a_sequence.make_chi2s(chi2s);
-            std::vector<double> probs;
-            a_sequence.make_probs(probs);
-            const std::vector<double> & helix_chi2s = a_sequence.helix_chi2s();
+              const std::vector<double> & chi2s_all   = a_sequence.chi2s_all();
+              const std::vector<double> & probs_all   = a_sequence.probs_all();
+              std::vector<double> chi2s;
+              a_sequence.make_chi2s(chi2s);
+              std::vector<double> probs;
+              a_sequence.make_probs(probs);
+              const std::vector<double> & helix_chi2s = a_sequence.helix_chi2s();
 
-            cluster_handle.grab().grab_auxiliaries().update("CAT_has_momentum", has_momentum);
-            if ( has_momentum ){
-              cluster_handle.grab().grab_auxiliaries().update("CAT_momentum_x", CAT_momentum.z().value());
-              cluster_handle.grab().grab_auxiliaries().update("CAT_momentum_y", CAT_momentum.x().value());
-              cluster_handle.grab().grab_auxiliaries().update("CAT_momentum_z", CAT_momentum.y().value());
+              cluster_handle.grab().grab_auxiliaries().update("CAT_has_momentum", has_momentum);
+              if ( has_momentum ){
+                cluster_handle.grab().grab_auxiliaries().update("CAT_momentum_x", CAT_momentum.z().value());
+                cluster_handle.grab().grab_auxiliaries().update("CAT_momentum_y", CAT_momentum.x().value());
+                cluster_handle.grab().grab_auxiliaries().update("CAT_momentum_z", CAT_momentum.y().value());
+              }
+
+              cluster_handle.grab().grab_auxiliaries().update("CAT_has_charge", has_charge);
+              if ( has_charge ){
+                cluster_handle.grab().grab_auxiliaries().update("CAT_charge", charge);
+              }
+
+              cluster_handle.grab().grab_auxiliaries().update("CAT_has_helix_charge", has_helix_charge);
+              if ( has_helix_charge ){
+                cluster_handle.grab().grab_auxiliaries().update("CAT_helix_charge", helix_charge);
+              }
+
+              cluster_handle.grab().grab_auxiliaries().update("CAT_has_detailed_charge", has_detailed_charge);
+              if ( has_detailed_charge ){
+                cluster_handle.grab().grab_auxiliaries().update("CAT_detailed_charge", detailed_charge);
+              }
+
+              cluster_handle.grab().grab_auxiliaries().update("CAT_has_tangent_length", has_tangent_length);
+              if ( has_tangent_length ){
+                cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_length", tangent_length);
+                cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_length_error", tangent_length_error);
+              }
+
+              cluster_handle.grab().grab_auxiliaries().update("CAT_has_helix_length", has_helix_length);
+              if ( has_helix_length ){
+                cluster_handle.grab().grab_auxiliaries().update("CAT_helix_length", helix_length);
+                cluster_handle.grab().grab_auxiliaries().update("CAT_helix_length_error", helix_length_error);
+              }
+
+              cluster_handle.grab().grab_auxiliaries().update("CAT_has_helix_vertex", hashv);
+              if ( hashv ){
+                cluster_handle.grab().grab_auxiliaries().update("CAT_helix_vertex_type", a_sequence.helix_vertex_type());
+                cluster_handle.grab().grab_auxiliaries().update("CAT_helix_vertex_x", xhv);
+                cluster_handle.grab().grab_auxiliaries().update("CAT_helix_vertex_y", yhv);
+                cluster_handle.grab().grab_auxiliaries().update("CAT_helix_vertex_z", zhv);
+                cluster_handle.grab().grab_auxiliaries().update("CAT_helix_vertex_x_error", xhverr);
+                cluster_handle.grab().grab_auxiliaries().update("CAT_helix_vertex_y_error", yhverr);
+                cluster_handle.grab().grab_auxiliaries().update("CAT_helix_vertex_z_error", zhverr);
+              }
+
+              cluster_handle.grab().grab_auxiliaries().update("CAT_has_helix_decay_vertex", hashdv);
+              if ( hashdv ){
+                cluster_handle.grab().grab_auxiliaries().update("CAT_helix_decay_vertex_type", a_sequence.decay_helix_vertex_type());
+                cluster_handle.grab().grab_auxiliaries().update("CAT_helix_decay_vertex_x", xhdv);
+                cluster_handle.grab().grab_auxiliaries().update("CAT_helix_decay_vertex_y", yhdv);
+                cluster_handle.grab().grab_auxiliaries().update("CAT_helix_decay_vertex_z", zhdv);
+                cluster_handle.grab().grab_auxiliaries().update("CAT_helix_decay_vertex_x_error", xhdverr);
+                cluster_handle.grab().grab_auxiliaries().update("CAT_helix_decay_vertex_y_error", yhdverr);
+                cluster_handle.grab().grab_auxiliaries().update("CAT_helix_decay_vertex_z_error", zhdverr);
+              }
+
+
+              cluster_handle.grab().grab_auxiliaries().update("CAT_has_tangent_vertex", hastv);
+              if ( hastv ){
+                cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_vertex_type", a_sequence.tangent_vertex_type());
+                cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_vertex_x", xtv);
+                cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_vertex_y", ytv);
+                cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_vertex_z", ztv);
+                cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_vertex_x_error", xtverr);
+                cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_vertex_y_error", ytverr);
+                cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_vertex_z_error", ztverr);
+              }
+
+              cluster_handle.grab().grab_auxiliaries().update("CAT_has_tangent_decay_vertex", hastdv);
+              if ( hastdv ){
+                cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_decay_vertex_type", a_sequence.decay_tangent_vertex_type());
+                cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_decay_vertex_x", xtdv);
+                cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_decay_vertex_y", ytdv);
+                cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_decay_vertex_z", ztdv);
+                cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_decay_vertex_x_error", xtdverr);
+                cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_decay_vertex_y_error", ytdverr);
+                cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_decay_vertex_z_error", ztdverr);
+              }
+
+              cluster_handle.grab().grab_auxiliaries().update("CAT_chi2s_all", chi2s_all);
+              cluster_handle.grab().grab_auxiliaries().update("CAT_probs_all", probs_all);
+              cluster_handle.grab().grab_auxiliaries().update("CAT_chi2s", chi2s);
+              cluster_handle.grab().grab_auxiliaries().update("CAT_probs", probs);
+              cluster_handle.grab().grab_auxiliaries().update("CAT_helix_chi2s", helix_chi2s);
             }
-
-            cluster_handle.grab().grab_auxiliaries().update("CAT_has_charge", has_charge);
-            if ( has_charge ){
-              cluster_handle.grab().grab_auxiliaries().update("CAT_charge", charge);
-            }
-
-            cluster_handle.grab().grab_auxiliaries().update("CAT_has_helix_charge", has_helix_charge);
-            if ( has_helix_charge ){
-              cluster_handle.grab().grab_auxiliaries().update("CAT_helix_charge", helix_charge);
-            }
-
-            cluster_handle.grab().grab_auxiliaries().update("CAT_has_detailed_charge", has_detailed_charge);
-            if ( has_detailed_charge ){
-              cluster_handle.grab().grab_auxiliaries().update("CAT_detailed_charge", detailed_charge);
-            }
-
-            cluster_handle.grab().grab_auxiliaries().update("CAT_has_tangent_length", has_tangent_length);
-            if ( has_tangent_length ){
-              cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_length", tangent_length);
-              cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_length_error", tangent_length_error);
-            }
-
-            cluster_handle.grab().grab_auxiliaries().update("CAT_has_helix_length", has_helix_length);
-            if ( has_helix_length ){
-              cluster_handle.grab().grab_auxiliaries().update("CAT_helix_length", helix_length);
-              cluster_handle.grab().grab_auxiliaries().update("CAT_helix_length_error", helix_length_error);
-            }
-
-            cluster_handle.grab().grab_auxiliaries().update("CAT_has_helix_vertex", hashv);
-            if ( hashv ){
-              cluster_handle.grab().grab_auxiliaries().update("CAT_helix_vertex_type", a_sequence.helix_vertex_type());
-              cluster_handle.grab().grab_auxiliaries().update("CAT_helix_vertex_x", xhv);
-              cluster_handle.grab().grab_auxiliaries().update("CAT_helix_vertex_y", yhv);
-              cluster_handle.grab().grab_auxiliaries().update("CAT_helix_vertex_z", zhv);
-              cluster_handle.grab().grab_auxiliaries().update("CAT_helix_vertex_x_error", xhverr);
-              cluster_handle.grab().grab_auxiliaries().update("CAT_helix_vertex_y_error", yhverr);
-              cluster_handle.grab().grab_auxiliaries().update("CAT_helix_vertex_z_error", zhverr);
-            }
-
-            cluster_handle.grab().grab_auxiliaries().update("CAT_has_helix_decay_vertex", hashdv);
-            if ( hashdv ){
-              cluster_handle.grab().grab_auxiliaries().update("CAT_helix_decay_vertex_type", a_sequence.decay_helix_vertex_type());
-              cluster_handle.grab().grab_auxiliaries().update("CAT_helix_decay_vertex_x", xhdv);
-              cluster_handle.grab().grab_auxiliaries().update("CAT_helix_decay_vertex_y", yhdv);
-              cluster_handle.grab().grab_auxiliaries().update("CAT_helix_decay_vertex_z", zhdv);
-              cluster_handle.grab().grab_auxiliaries().update("CAT_helix_decay_vertex_x_error", xhdverr);
-              cluster_handle.grab().grab_auxiliaries().update("CAT_helix_decay_vertex_y_error", yhdverr);
-              cluster_handle.grab().grab_auxiliaries().update("CAT_helix_decay_vertex_z_error", zhdverr);
-            }
-
-
-            cluster_handle.grab().grab_auxiliaries().update("CAT_has_tangent_vertex", hastv);
-            if ( hastv ){
-              cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_vertex_type", a_sequence.tangent_vertex_type());
-              cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_vertex_x", xtv);
-              cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_vertex_y", ytv);
-              cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_vertex_z", ztv);
-              cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_vertex_x_error", xtverr);
-              cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_vertex_y_error", ytverr);
-              cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_vertex_z_error", ztverr);
-            }
-
-            cluster_handle.grab().grab_auxiliaries().update("CAT_has_tangent_decay_vertex", hastdv);
-            if ( hastdv ){
-              cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_decay_vertex_type", a_sequence.decay_tangent_vertex_type());
-              cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_decay_vertex_x", xtdv);
-              cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_decay_vertex_y", ytdv);
-              cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_decay_vertex_z", ztdv);
-              cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_decay_vertex_x_error", xtdverr);
-              cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_decay_vertex_y_error", ytdverr);
-              cluster_handle.grab().grab_auxiliaries().update("CAT_tangent_decay_vertex_z_error", ztdverr);
-            }
-
-            cluster_handle.grab().grab_auxiliaries().update("CAT_chi2s_all", chi2s_all);
-            cluster_handle.grab().grab_auxiliaries().update("CAT_probs_all", probs_all);
-            cluster_handle.grab().grab_auxiliaries().update("CAT_chi2s", chi2s);
-            cluster_handle.grab().grab_auxiliaries().update("CAT_probs", probs);
-            cluster_handle.grab().grab_auxiliaries().update("CAT_helix_chi2s", helix_chi2s);
 
             CAT::topology::experimental_double phi(0.,0.);
             double phi_ref = 0.;
@@ -682,40 +687,43 @@ namespace snemo {
               hits_status[hit_id] = 1;
               DT_LOG_DEBUG(get_logging_priority(), "Add tracker hit with id #" << hit_id);
 
-              const double xt    = a_node.ep().x().value();
-              const double yt    = a_node.ep().y().value();
-              const double zt    = a_node.ep().z().value();
-              const double xterr = a_node.ep().x().error();
-              const double yterr = a_node.ep().y().error();
-              const double zterr = a_node.ep().z().error();
+              if (_store_result_as_properties_) {
+                const double xt    = a_node.ep().x().value();
+                const double yt    = a_node.ep().y().value();
+                const double zt    = a_node.ep().z().value();
+                const double xterr = a_node.ep().x().error();
+                const double yterr = a_node.ep().y().error();
+                const double zterr = a_node.ep().z().error();
 
-              phi_ref = phi.value();
-              phi     = seq_helix.phi_of_point(a_node.c().ep(), phi_ref);
-              CAT::topology::experimental_vector hpos = seq_helix.position(phi);
-              const double hx    = hpos.x().value();
-              const double hy    = hpos.y().value();
-              const double hz    = hpos.z().value();
-              const double hxerr = hpos.x().error();
-              const double hyerr = hpos.y().error();
-              const double hzerr = hpos.z().error();
+                const CAT::topology::helix & seq_helix = isequence->get_helix();
+                phi_ref = phi.value();
+                phi     = seq_helix.phi_of_point(a_node.c().ep(), phi_ref);
+                CAT::topology::experimental_vector hpos = seq_helix.position(phi);
+                const double hx    = hpos.x().value();
+                const double hy    = hpos.y().value();
+                const double hz    = hpos.z().value();
+                const double hxerr = hpos.x().error();
+                const double hyerr = hpos.y().error();
+                const double hzerr = hpos.z().error();
 
-              // Be careful of the system coordinate :
-              // xcat -> y_snemo
-              // ycat -> z_snemo
-              // zcat -> x_snemo
-              sdm::calibrated_tracker_hit & the_last_cell = hits_mapping[hit_id].grab();
-              the_last_cell.grab_auxiliaries().update("CAT_tangency_x",       zt);
-              the_last_cell.grab_auxiliaries().update("CAT_tangency_y",       xt);
-              the_last_cell.grab_auxiliaries().update("CAT_tangency_z",       yt);
-              the_last_cell.grab_auxiliaries().update("CAT_tangency_x_error", zterr);
-              the_last_cell.grab_auxiliaries().update("CAT_tangency_y_error", xterr);
-              the_last_cell.grab_auxiliaries().update("CAT_tangency_z_error", yterr);
-              the_last_cell.grab_auxiliaries().update("CAT_helix_x",          hz);
-              the_last_cell.grab_auxiliaries().update("CAT_helix_y",          hx);
-              the_last_cell.grab_auxiliaries().update("CAT_helix_z",          hy);
-              the_last_cell.grab_auxiliaries().update("CAT_helix_x_error",    hzerr);
-              the_last_cell.grab_auxiliaries().update("CAT_helix_y_error",    hxerr);
-              the_last_cell.grab_auxiliaries().update("CAT_helix_z_error",    hyerr);
+                // Be careful of the system coordinate :
+                // xcat -> y_snemo
+                // ycat -> z_snemo
+                // zcat -> x_snemo
+                sdm::calibrated_tracker_hit & the_last_cell = hits_mapping[hit_id].grab();
+                the_last_cell.grab_auxiliaries().update("CAT_tangency_x",       zt);
+                the_last_cell.grab_auxiliaries().update("CAT_tangency_y",       xt);
+                the_last_cell.grab_auxiliaries().update("CAT_tangency_z",       yt);
+                the_last_cell.grab_auxiliaries().update("CAT_tangency_x_error", zterr);
+                the_last_cell.grab_auxiliaries().update("CAT_tangency_y_error", xterr);
+                the_last_cell.grab_auxiliaries().update("CAT_tangency_z_error", yterr);
+                the_last_cell.grab_auxiliaries().update("CAT_helix_x",          hz);
+                the_last_cell.grab_auxiliaries().update("CAT_helix_y",          hx);
+                the_last_cell.grab_auxiliaries().update("CAT_helix_z",          hy);
+                the_last_cell.grab_auxiliaries().update("CAT_helix_x_error",    hzerr);
+                the_last_cell.grab_auxiliaries().update("CAT_helix_y_error",    hxerr);
+                the_last_cell.grab_auxiliaries().update("CAT_helix_z_error",    hyerr);
+              }
             }
           }
         } /* for sequence */
