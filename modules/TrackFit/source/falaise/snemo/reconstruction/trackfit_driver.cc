@@ -516,12 +516,23 @@ namespace snemo {
         } // end of 'tracker_cluster'
 
         // If no trajectories has been saved then removed it
-        if (a_trajectory_solution.get_trajectories().empty()) {
-          trajectory_.invalidate_solutions();
-        }
+        // 2015-02-04 XG: comment this code since it actually removes all
+        // solutions even the good ones. Bacis failling event is a nice electron
+        // track correctly fitted with a delayed alpha particle which is not
+        // fitted at all. Tracker preclustering proposed 2 cluster solutions and
+        // thus we have 2 trajectory solutions : the first one i.e. the
+        // electrons fits well whereas the second solution i.e. the delayed
+        // alpha does not fit at all and then remove both tracker trajectory
+        // solutions. A better idea will be to remove a given id solution. But I
+        // think that it is not so bad to have empty tracker trajectory solution
+        // meaning that trajectory fit fails.
+        // if (a_trajectory_solution.get_trajectories().empty()) {
+        //   trajectory_.invalidate_solutions();
+        // }
 
       } // end of 'tracker_solution'
 
+      DT_LOG_WARNING(get_logging_priority(), "Trajectory solutions = " << trajectory_.get_solutions().size());
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");
       return 0;
     }
