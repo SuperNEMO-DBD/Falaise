@@ -515,7 +515,7 @@ namespace snemo {
           }
         } // end of 'tracker_cluster'
 
-          // If no trajectories has been saved then removed it
+        // If no trajectories has been saved then removed it
         if (a_trajectory_solution.get_trajectories().empty()) {
           trajectory_.invalidate_solutions();
         }
