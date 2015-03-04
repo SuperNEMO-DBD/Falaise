@@ -197,7 +197,7 @@ namespace snemo {
       return _trajectory_;
     }
 
-    const tracker_trajectory::handle_type & particle_track::get_trajectory_handle () const
+    const tracker_trajectory::handle_type & particle_track::get_trajectory_handle() const
     {
       return _trajectory_;
     }
@@ -234,7 +234,7 @@ namespace snemo {
       return _vertices_;
     }
 
-    const particle_track::vertex_collection_type & particle_track::get_vertices () const
+    const particle_track::vertex_collection_type & particle_track::get_vertices() const
     {
       return _vertices_;
     }
@@ -326,45 +326,38 @@ namespace snemo {
                                    bool inherit_) const
     {
       std::string indent;
-      if (! indent_.empty ())
-        {
-          indent = indent_;
-        }
-      base_hit::tree_dump (out_, title_, indent, true);
+      if (! indent_.empty()) {
+        indent = indent_;
+      }
+      base_hit::tree_dump(out_, title_, indent, true);
 
       out_ << indent << datatools::i_tree_dumpable::tag
-           << "Track ID : " << get_track_id () << std::endl;
+           << "Track ID : " << get_track_id() << std::endl;
 
       out_ << indent << datatools::i_tree_dumpable::tag
            << "Trajectory : ";
-      if (has_trajectory ())
-        {
-          out_ << _trajectory_.get ().get_trajectory_id () ;
-        }
-      else
-        {
-          out_ << "<No>";
-        }
+      if (has_trajectory()) {
+        out_ << _trajectory_.get().get_trajectory_id() ;
+      } else {
+        out_ << "<No>";
+      }
       out_ << std::endl;
 
       out_ << indent << datatools::i_tree_dumpable::tag
            << "Particle charge : ";
-      if (get_charge () == invalid)       out_ << "invalid";
-      else if (get_charge () == negative) out_ << "negative";
-      else if (get_charge () == positive) out_ << "positive";
-      else if (get_charge () == neutral)  out_ << "neutral";
+      if (get_charge() == invalid)       out_ << "invalid";
+      else if (get_charge() == negative) out_ << "negative";
+      else if (get_charge() == positive) out_ << "positive";
+      else if (get_charge() == neutral)  out_ << "neutral";
       out_ << std::endl;
 
       out_ << indent << datatools::i_tree_dumpable::tag
            << "Vertices : ";
-      if (has_vertices())
-        {
-          out_ << _vertices_.size();
-        }
-      else
-        {
-          out_ << "<No>";
-        }
+      if (has_vertices()) {
+        out_ << _vertices_.size();
+      } else {
+        out_ << "<No>";
+      }
       out_ << std::endl;
       for (vertex_collection_type::const_iterator i = _vertices_.begin();
            i != _vertices_.end();
@@ -387,14 +380,11 @@ namespace snemo {
 
       out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
            << "Associated calorimeter hit(s) : ";
-      if (has_associated_calorimeter_hits())
-        {
-          out_ << _associated_calorimeter_hits_.size ();
-        }
-      else
-        {
-          out_ << "<No>";
-        }
+      if (has_associated_calorimeter_hits()) {
+        out_ << _associated_calorimeter_hits_.size();
+      } else {
+        out_ << "<No>";
+      }
       out_ << std::endl;
       for (calibrated_calorimeter_hit::collection_type::const_iterator i = _associated_calorimeter_hits_.begin();
            i != _associated_calorimeter_hits_.end();
