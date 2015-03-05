@@ -532,7 +532,6 @@ namespace snemo {
 
       } // end of 'tracker_solution'
 
-      DT_LOG_WARNING(get_logging_priority(), "Trajectory solutions = " << trajectory_.get_solutions().size());
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");
       return 0;
     }
