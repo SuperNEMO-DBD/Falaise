@@ -33,6 +33,9 @@ namespace snemo {
       /// Return the default string label/name for the 'geometry' service
       static const std::string & default_geometry_service_label();
 
+      /// Return the default string label/name for the 'cuts' service
+      static const std::string & default_cut_service_label();
+
       /// Return the default string label/name for the 'database' service
       static const std::string & default_database_service_label();
 

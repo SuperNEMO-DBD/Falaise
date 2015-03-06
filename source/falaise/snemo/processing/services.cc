@@ -20,6 +20,12 @@ namespace snemo {
       return lbl;
     }
 
+    const std::string & service_info::default_cut_service_label()
+    {
+      static std::string lbl("cuts");
+      return lbl;
+    }
+
     const std::string & service_info::default_database_service_label()
     {
       static std::string lbl("database");
