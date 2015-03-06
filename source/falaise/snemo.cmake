@@ -84,6 +84,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/cuts/tracker_clustering_data_cut.h
   snemo/cuts/particle_track_data_cut.h
 
+  snemo/cuts/particle_track_cut.h
   )
 
 list(APPEND FalaiseLibrary_SOURCES
@@ -139,6 +140,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/cuts/calibrated_data_cut.cc
   snemo/cuts/tracker_clustering_data_cut.cc
   snemo/cuts/particle_track_data_cut.cc
+  snemo/cuts/particle_track_cut.cc
   )
 
 list(APPEND FalaiseLibrary_TESTS
@@ -163,4 +165,5 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/testing/test_snemo_geometry_retrieve_info.cxx
   snemo/testing/test_snemo_geometry_xcalo_locator_1.cxx
   #snemo/testing/test_snemo_simulation_pmt_signal_generator.cxx
+  snemo/testing/test_snemo_cut_particle_track_cut.cxx
   )
