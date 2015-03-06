@@ -87,7 +87,7 @@ namespace snemo {
       /// Getting logging priority
       datatools::logger::priority get_logging_priority() const;
 
-       /// Check the geometry manager
+      /// Check the geometry manager
       bool has_geometry_manager() const;
 
       /// Address the geometry manager
