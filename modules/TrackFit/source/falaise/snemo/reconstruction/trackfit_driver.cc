@@ -26,7 +26,7 @@ namespace snemo {
   namespace reconstruction {
 
     /// SuperNEMO drift time calibration
-    snemo_drift_time_calibration::snemo_drift_time_calibration ()
+    snemo_drift_time_calibration::snemo_drift_time_calibration()
     {
       _gg_regime_.reset(new snemo::processing::geiger_regime);
       // Initialize by using default parameters
@@ -59,7 +59,7 @@ namespace snemo {
       return;
     }
 
-    void snemo_drift_time_calibration::radius_to_drift_time(double  /* radius_ */,
+    void snemo_drift_time_calibration::radius_to_drift_time(double   /* radius_ */,
                                                             double & /* time_ */,
                                                             double & /* sigma_time_ */) const
     {
