@@ -145,8 +145,6 @@ namespace snemo {
       bool signal_handling::process_message(long msg_, long parm1_, long parm2_)
       {
         // Process messages coming from widgets associated with the dialog.
-        const options_manager & options_mgr = options_manager::get_instance ();
-
         DT_LOG_TRACE(options_manager::get_instance().get_logging_priority(),
                      msg_ << " " << parm1_ << " " << parm2_ << " "
                      << GET_MSG (msg_) << " " << GET_SUBMSG (msg_));
