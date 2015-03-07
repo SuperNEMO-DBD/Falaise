@@ -294,7 +294,9 @@ namespace CAT {
 
     clock.stop(" sequentiator: finalize ");
 
-    print_clocks();
+    if( level >= mybhep::NORMAL ){
+      print_clocks();
+    }
 
     return true;
   }
@@ -921,9 +923,9 @@ namespace CAT {
     //*************************************************************
 
     make_new_sequence_after_sultan();
-    
+
     if (late()) return;
-    
+
     return;
   }
 
@@ -1047,7 +1049,7 @@ namespace CAT {
     if( s == 2 ){
       topology::sequence newsequence(local_cluster_->nodes(), level, probmin);
       add_pair(newsequence);
-      
+
       clean_up_sequences();
       return;
     }
@@ -1069,7 +1071,7 @@ namespace CAT {
 	  }
 	NCOPY ++;
       }
-      
+
       clean_up_sequences();
       return;
     }
@@ -1096,7 +1098,7 @@ namespace CAT {
 
     clean_up_sequences();
 
-    
+
     clock.stop(" sequentiator: make new sequence after sultan ");
 
     return;
@@ -1139,7 +1141,7 @@ namespace CAT {
 
     clock.stop(" sequentiator: increase_iterations ");
     return true;
-    
+
   }
 
   //*************************************************************
@@ -1187,7 +1189,7 @@ namespace CAT {
 
     int block_which_is_increasing = sets_of_bl_alternatives.size() - 1;
     int first_augmented_block = sets_of_bl_alternatives.size() - 1;
-      
+
 
     topology::sequence best_seq;
     double min_chi2 = mybhep::default_min;
@@ -2954,7 +2956,7 @@ namespace CAT {
             break;
           continue;
         }
-	if( !conserve_clustering_from_removal_of_cells ) 
+	if( !conserve_clustering_from_removal_of_cells )
 	  // don't to this if you don't want cells to be removed from sequence
 	  reassign_cells_based_on_helix(&(*iseq));
         iseq->calculate_charge();
@@ -3067,12 +3069,12 @@ namespace CAT {
 
 	  if( !after_sultan ){
 	    std::clog << "(";fflush(stdout);
-	    
+
 	    for(vector<topology::cell>::const_iterator ilink=(*inode).links_.begin(); ilink != (*inode).links_.end(); ++ilink){
 	      iccc = sequence.get_link_index_of_cell(inode - sequence.nodes_.begin(), *ilink);
-	      
+
 	      if( iccc < 0 ) continue;  // connection through a gap
-	      
+
 	      if( inode - sequence.nodes_.begin() < 1 ){
 		std::clog << "->" << inode->cc()[iccc].cb().id();fflush(stdout);
 		if( ilink->free() ){
@@ -3095,7 +3097,7 @@ namespace CAT {
 	    }
 
 	    std::clog << " chi2 = " << inode->chi2();fflush(stdout);
-	    
+
 	    std::clog << " )";fflush(stdout);
 	  }
         }
@@ -4420,17 +4422,17 @@ std::clog << "CAT::sequentiator::can_match:  sequence " << s.name() << " can be 
 	  limit_diagonal = sqrt(2.)*factor*CellDistance; // new factor = 1.31
 	}
       double precision = 0.15*limit_side;
-      
+
       if( level >= mybhep::VVERBOSE )
 	std::clog << "CAT::sequentiator::near_level: (c " << c2.id() << " d " << distance.value() << " )"
 		  << std::endl;
-      
+
       if( fabs(distance.value() - limit_side) < precision )
 	return 2;
-      
+
       if( fabs(distance.value() - limit_diagonal) < precision )
 	return 1;
-      
+
       return 0;
     }
 
@@ -4451,10 +4453,10 @@ std::clog << "CAT::sequentiator::can_match:  sequence " << s.name() << " can be 
       helix_pos = seq->get_helix().position(inode->ep());
       distance = helix_pos.distance(inode->ep());
       index = inode - seq->nodes_.begin();
-      
+
       if( level >= mybhep::VVERBOSE )
 	std::clog << "CAT::sequentiator::reassign_cells_based_on_helix: sequence of " << seq->nodes_.size() << " nodes, node " << index << " id " << inode->c().id() << " distance from helix " << distance.value() << " +- " << distance.error() << std::endl;
-      
+
       if( distance.value() > CellDistance/2. &&
 	  near_level(seq->nodes_[index-1].c(), seq->nodes_[index+1].c()) ){
 	if( level >= mybhep::VERBOSE )

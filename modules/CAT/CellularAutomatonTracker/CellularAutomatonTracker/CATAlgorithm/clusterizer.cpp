@@ -277,7 +277,9 @@ namespace CAT {
       }
     clock.stop(" clusterizer: finalize ");
 
-    clock.dump();
+    if( level >= mybhep::NORMAL ){
+      clock.dump();
+    }
 
     _set_defaults ();
     return true;
@@ -1532,7 +1534,7 @@ namespace CAT {
 
       m.message("CAT::clusterizer::clusterize_after_sultan: cluster [", iclu - tracked_data_.clusters_.begin(), "] has ", iclu->nodes_.size(), " cells ", mybhep::VVERBOSE);
 
-      if( level >= mybhep::VVERBOSE ){	
+      if( level >= mybhep::VVERBOSE ){
 	std::clog << "[";
 	for( std::vector<topology::node>::iterator inode = iclu->nodes_.begin(); inode != iclu->nodes_.end(); ++inode )
 	  std::clog << inode->c().id() << " ";
@@ -1559,7 +1561,7 @@ namespace CAT {
 	  cc.push_back(ncc);
 	  links.push_back(nc);
 	}
-	  
+
 	m.message("CAT::clusterizer::clusterize_after_sultan: node [", inode->c().id(), "] has ", cc.size(), " couplets ", mybhep::VVERBOSE);
 
 	inode->set_cc(cc);
@@ -1569,7 +1571,7 @@ namespace CAT {
     }
 
     clusters_ = tracked_data_.clusters_;
-  
+
     setup_clusters();
 
     if( PrintMode )
@@ -1811,17 +1813,17 @@ namespace CAT {
 	  limit_diagonal = sqrt(2.)*factor*CellDistance; // new factor = 1.31
 	}
       double precision = 0.15*limit_side;
-      
+
       if( level >= mybhep::VVERBOSE )
 	std::clog << "CAT::clusterizer::near_level: (c " << c2.id() << " d " << distance.value() << " )"
 		  << std::endl;
-      
+
       if( fabs(distance.value() - limit_side) < precision )
 	return 2;
-      
+
       if( fabs(distance.value() - limit_diagonal) < precision )
 	return 1;
-      
+
       return 0;
     }
 
