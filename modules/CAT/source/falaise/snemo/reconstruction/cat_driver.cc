@@ -69,7 +69,6 @@ namespace snemo {
       _CAT_setup_.FoilRadius = 0.0;
 
       double default_magfield_unit = CLHEP::tesla;
-
       // Forcing magnetic field (a temporary trick)
       if (! datatools::is_valid(_magfield_)) {
         if (setup_.has_key("CAT.magnetic_field")) {
@@ -197,10 +196,10 @@ namespace snemo {
       _CAT_setup_.cell_size              = get_gg_locator().get_cell_diameter();
 
       // Hard-coded values of bfield and chamber size
-      _CAT_setup_.bfield                 = _magfield_ / CLHEP::tesla;
-      _CAT_setup_.xsize                  = 2500. * CLHEP::mm; // this is y in SnWare coordinates
-      _CAT_setup_.ysize                  = 1350. * CLHEP::mm; // this is z in SnWare coordinates
-      _CAT_setup_.zsize                  =  450. * CLHEP::mm; // this is x in SnWare coordinates
+      _CAT_setup_.bfield = _magfield_ / CLHEP::tesla;
+      _CAT_setup_.xsize  = 2500. * CLHEP::mm; // this is y in SnWare coordinates
+      _CAT_setup_.ysize  = 1350. * CLHEP::mm; // this is z in SnWare coordinates
+      _CAT_setup_.zsize  =  450. * CLHEP::mm; // this is x in SnWare coordinates
 
       // Check the validity of the CAT setup data :
       DT_THROW_IF(! _CAT_setup_.check(), std::logic_error,
