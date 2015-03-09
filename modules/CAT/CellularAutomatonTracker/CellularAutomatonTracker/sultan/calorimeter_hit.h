@@ -35,6 +35,8 @@ namespace SULTAN {
 
       size_t id_;
 
+      int user_id_; // use this value to store user id, never inside tracking
+
     public:
 
       // plane
@@ -70,6 +72,10 @@ namespace SULTAN {
       {
         id_ = id;
       }
+      void set_user_id(int id)
+      {
+        user_id_ = id;
+      }
 
       //! set plane
       void set_pl(const plane & pl);
@@ -94,6 +100,7 @@ namespace SULTAN {
 
       //! get id
       size_t id()const;
+      int user_id()const;
 
       //!get layer
       double layer() const;

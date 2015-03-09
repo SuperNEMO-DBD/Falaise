@@ -20,6 +20,7 @@ namespace SULTAN {
         set_print_level(level);
         set_probmin(probmin);
         id_ = default_integer;
+        user_id_ = default_integer;
         layer_ = small_neg;
         return;
       }
@@ -46,6 +47,7 @@ namespace SULTAN {
         e_ = e;
         t_ = t;
         id_ = id;
+	user_id_ = id;
         layer_ = layer;
       }
 
@@ -133,6 +135,11 @@ namespace SULTAN {
     size_t calorimeter_hit::id()const
       {
         return id_;
+      }
+
+    int calorimeter_hit::user_id()const
+      {
+        return user_id_;
       }
 
       //!get layer

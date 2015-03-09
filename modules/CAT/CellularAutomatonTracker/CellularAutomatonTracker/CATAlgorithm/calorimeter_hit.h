@@ -34,6 +34,7 @@ namespace CAT {
       experimental_double t_;
 
       size_t id_;
+      int user_id_; // use this value to store user id, never inside tracking
 
     public:
 
@@ -67,6 +68,10 @@ namespace CAT {
 
       //! set id
       void set_id(size_t id);
+      void set_user_id(int id)
+      {
+        user_id_ = id;
+      }
 
       //! set plane
       void set_pl(const plane & pl);
@@ -91,6 +96,7 @@ namespace CAT {
 
       //! get id
       size_t id()const;
+      int user_id()const;
 
       //!get layer
       double layer() const;

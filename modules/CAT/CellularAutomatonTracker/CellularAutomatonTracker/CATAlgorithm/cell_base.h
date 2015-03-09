@@ -36,6 +36,7 @@ namespace CAT {
 
       // id
       size_t id_;
+      int user_id_; // use this value to store user id, never inside tracking
 
       // characterize fast and delayed cells
       bool fast_;
@@ -76,6 +77,7 @@ namespace CAT {
         //r0_= experimental_double();
         //r_= experimental_double();
         id_ = mybhep::default_integer;
+        user_id_ = mybhep::default_integer;
         layer_ = mybhep::default_integer;
         block_ = mybhep::default_integer;
         iid_ = mybhep::default_integer;
@@ -98,6 +100,7 @@ namespace CAT {
         ep_ = p;
         r0_ = r;
         id_ = id;
+        user_id_ = id;
         layer_ = mybhep::default_integer;
         block_ = mybhep::default_integer;
         iid_ = mybhep::default_integer;
@@ -119,6 +122,7 @@ namespace CAT {
         r0_.set_value(r);
         r0_.set_error(er);
         id_ = id;
+        user_id_ = id;
         layer_ = mybhep::default_integer;
         block_ = mybhep::default_integer;
         iid_ = mybhep::default_integer;
@@ -140,6 +144,7 @@ namespace CAT {
         r0_.set_value(r);
         r0_.set_error(mybhep::small_neg);
         id_ = id;
+        user_id_ = id;
         layer_ = mybhep::default_integer;
         block_ = mybhep::default_integer;
         iid_ = mybhep::default_integer;
@@ -327,6 +332,10 @@ namespace CAT {
       {
         id_ = id;
       }
+      void set_user_id(size_t user_id)
+      {
+        user_id_ = user_id;
+      }
 
       //! set small radius
       void set_small_radius(double small_radius)
@@ -422,6 +431,7 @@ namespace CAT {
 
       //!get id
        size_t id() const {return id_;}
+      const int& user_id() const {return user_id_;}
 
       //!get small_radius
        double small_radius() const {return small_radius_;}

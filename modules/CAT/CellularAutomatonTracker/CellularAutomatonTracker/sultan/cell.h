@@ -48,6 +48,8 @@ namespace SULTAN {
       // N3 or SN
       std::string type_;
 
+      int user_id_; // use this value to store user id, never inside tracking
+
     public:
 
 
@@ -63,6 +65,7 @@ namespace SULTAN {
         set_print_level(mybhep::NORMAL);
         set_probmin(10.);
         id_ = mybhep::default_integer;
+        user_id_ = mybhep::default_integer;
         layer_ = mybhep::default_integer;
         block_ = mybhep::default_integer;
         iid_ = mybhep::default_integer;
@@ -84,6 +87,7 @@ namespace SULTAN {
         ep_ = p;
         r_ = r;
         id_ = id;
+        user_id_ = id;
         layer_ = mybhep::default_integer;
         block_ = mybhep::default_integer;
         iid_ = mybhep::default_integer;
@@ -103,6 +107,7 @@ namespace SULTAN {
         r_.set_value(r);
         r_.set_error(er);
         id_ = id;
+        user_id_ = id;
         layer_ = mybhep::default_integer;
         block_ = mybhep::default_integer;
         iid_ = mybhep::default_integer;
@@ -122,6 +127,7 @@ namespace SULTAN {
         r_.set_value(r);
         r_.set_error(mybhep::small_neg);
         id_ = id;
+        user_id_ = id;
         layer_ = mybhep::default_integer;
         block_ = mybhep::default_integer;
         iid_ = mybhep::default_integer;
@@ -191,6 +197,11 @@ namespace SULTAN {
         id_ = id;
       }
 
+      void set_user_id(size_t user_id)
+      {
+        user_id_ = user_id;
+      }
+
       //! set layer
       void set_layer(size_t layer)
       {
@@ -250,6 +261,7 @@ namespace SULTAN {
 
       //!get id
       const size_t& id() const {return id_;}
+      const int& user_id() const {return user_id_;}
 
       //!get layer
       const int& layer() const {return layer_;}
