@@ -2,7 +2,8 @@
 # - List of test programs:
 set(FalaiseDigitizationPlugin_TESTS
   test_calo_tp.cxx
-  #test_calo_tp_data.cxx
+  test_calo_tp_data.cxx
+  test_calo_crate_tw.cxx
   )
 
 # Use C++11
