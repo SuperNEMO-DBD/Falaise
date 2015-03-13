@@ -552,8 +552,6 @@ namespace snemo {
             sdm::tracker_clustering_solution & tc_sol = h_tc_sol.grab();
             // Give it an unique solution id:
             tc_sol.set_solution_id(clustering_.grab_solutions().size() + idelayed_sol + 1);
-            // Flag it as a delayed clustering solution:
-            tc_sol.grab_auxiliaries().store_flag(sdm::tracker_clustering_data::delayed_key());
             // Record the delayed time-cluster unique Idd solution:
             tc_sol.grab_auxiliaries().store_integer(sdm::tracker_clustering_data::delayed_id_key(), idelayed_clustering);
             sdm::tracker_clustering_solution::copy_one_solution_in_one(delayed_sol, tc_sol);
@@ -562,6 +560,13 @@ namespace snemo {
                                                      sdm::tracker_clustering_data::clusterizer_id_key(),
                                                      delayed_sol.get_auxiliaries().fetch_string(sdm::tracker_clustering_data::clusterizer_id_key())
                                                      );
+            }
+            // Flag it as a delayed clustering solution:
+            tc_sol.grab_auxiliaries().store_flag(sdm::tracker_clustering_data::delayed_key());
+            for (sdm::tracker_clustering_solution::cluster_col_type::iterator
+                   icluster = tc_sol.grab_clusters().begin();
+                 icluster != tc_sol.grab_clusters().end(); ++icluster) {
+              icluster->grab().make_delayed();
             }
             clustering_.grab_solutions().push_back(h_tc_sol);
           }
