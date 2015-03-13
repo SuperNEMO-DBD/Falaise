@@ -23,6 +23,7 @@ namespace snemo {
       _locked_tp_ = false;
       _clocktick_25ns_ = -1;
       _tp_ = 0x0;
+      grab_geom_id().set(RACK_INDEX, 3);
       return;
     }
 
@@ -54,6 +55,7 @@ namespace snemo {
 
     void calo_tp::reset_clocktick_25ns()
     {
+      DT_THROW_IF(is_locked_tp(), std::logic_error, "Clocktick can't be reset, calorimeter TP is locked !) ");
       _clocktick_25ns_ = -1;
       _store &= ~STORE_CLOCKTICK_25NS;
       return;
@@ -75,19 +77,22 @@ namespace snemo {
     //   DT_THROW_IF(is_locked_tp(), std::logic_error, "TP bitset can't be set, calorimeter TP is locked ! ");
     //   _tp_ = tp_;
     //   _store |= STORE_TP;
-    //   return;
+   //   return;
     // }
     
     void calo_tp::reset_tp_bitset()
     {
+      DT_THROW_IF(is_locked_tp(), std::logic_error, "TP bitset can't be reset, calorimeter TP is locked ! ");
       _tp_ = 0x0;
       _store &= ~STORE_TP;
       return;
     }
 
-    void calo_tp::set_htm_info(unsigned int multiplicity_)
+    void calo_tp::set_htm(unsigned int multiplicity_)
     {
       DT_THROW_IF(is_locked_tp(), std::logic_error, "HTM bits can't be set, calorimeter TP is locked ! ");
+      DT_THROW_IF(multiplicity_ > MAX_NUMBER_OF_CHANNELS, std::logic_error, "Multiplicity value ["<< multiplicity_ << "] is not valid ! ");
+
       switch (multiplicity_)
 	{
 	case 0 :	  
@@ -113,17 +118,17 @@ namespace snemo {
       return;
     }
     
-    unsigned int calo_tp::get_htm_info() const
+    unsigned int calo_tp::get_htm_multiplicity() const
     {
-      if(_tp_.test(HTM_BIT0 == 0 && HTM_BIT1 == 0))
-	{      
+      if(_tp_.test(HTM_BIT0) == 0 && _tp_.test(HTM_BIT1) == 0)
+	{           
 	  return 0;
 	}
-      else if(_tp_.test(HTM_BIT0 == 1 && HTM_BIT1 == 0))
+      else if(_tp_.test(HTM_BIT0) == 1 && _tp_.test(HTM_BIT1) == 0)
 	{
 	  return 1;
 	}
-      else if(_tp_.test(HTM_BIT0 == 0 && HTM_BIT1 == 1))
+      else if(_tp_.test(HTM_BIT0) == 0 && _tp_.test(HTM_BIT1) == 1)
 	{
 	  return 2;
 	}
@@ -146,7 +151,7 @@ namespace snemo {
 
     bool calo_tp::is_htm() const
     {
-      return get_htm_info() != 0;
+      return get_htm_multiplicity() != 0;
     }
 
     void calo_tp::set_lto_bit(bool value_)
@@ -213,8 +218,12 @@ namespace snemo {
       return _clocktick_25ns_ >= 0;
     }
 
-    void  calo_tp::reset()
+    void calo_tp::reset()
     {
+      if(is_locked_tp())
+	{
+	  unlock_tp();
+	}
       reset_tp_bitset();
       reset_clocktick_25ns();
       geomtools::base_hit::reset();

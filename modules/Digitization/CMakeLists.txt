@@ -22,7 +22,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source/falaise)
 list(APPEND FalaiseDigitizationPlugin_HEADERS  
   source/falaise/snemo/digitization/calo_tp.h
   source/falaise/snemo/digitization/calo_tp_data.h
-  source/falaise/snemo/digitization/calo_crate_tw.h
+  source/falaise/snemo/digitization/calo_ctw.h
+  source/falaise/snemo/digitization/calo_ctw_data.h
+  source/falaise/snemo/digitization/calo_tp_to_ctw_algo.h
   source/falaise/snemo/digitization/calo_tp.ipp
   source/falaise/snemo/digitization/the_serializable.ipp
   source/falaise/snemo/digitization/the_serializable.h
@@ -33,7 +35,9 @@ list(APPEND FalaiseDigitizationPlugin_SOURCES
   source/falaise/snemo/digitization/calo_tp.cc
   source/falaise/snemo/digitization/the_serializable.cc
   source/falaise/snemo/digitization/calo_tp_data.cc
-  source/falaise/snemo/digitization/calo_crate_tw.cc
+  source/falaise/snemo/digitization/calo_ctw.cc
+  source/falaise/snemo/digitization/calo_ctw_data.cc
+  source/falaise/snemo/digitization/calo_tp_to_ctw_algo.cc
 )
 
 ############################################################################################

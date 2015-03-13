@@ -9,11 +9,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <stdlib.h>
-#include <sstream>
-#include <math.h>
 #include <cmath>
-#include <stdlib.h>
-#include <fstream>
 #include <string>
 #include <vector>
 #include <stdint.h>
@@ -49,7 +45,7 @@ namespace snemo {
 
 			/// Collection of handles of calorimeter trigger primitive
 			typedef std::vector<calo_tp_handle_type> calo_tp_collection_type;
-
+			
 			/// Return the index of the calo TP with minimum clocktick
 			int get_clocktick_min_index() const;
 			
@@ -65,8 +61,12 @@ namespace snemo {
 			/// Return the range between the clocktick min and the clocktick max
 			int get_clocktick_range() const;
 			
-			/// Do a list of calo trigger primitive which are in the same clocktick
-			void get_list_of_tp_per_clocktick(int32_t clocktick_25ns_, calo_tp_collection_type & tps_);
+			/// Get a list of calo trigger primitive which are in the same clocktick
+			void get_list_of_tp_per_clocktick(int32_t clocktick_25ns_, calo_tp_collection_type & my_list_of_tps_per_clocktick_) const;
+			
+			/// Get a list of calo trigger primitive which are in the same clocktick and in the same crate
+			void get_list_of_tp_per_clocktick_per_crate(int32_t clocktick_25ns_, unsigned int crate_number_, calo_tp_collection_type & my_list_of_tps_per_clocktick_per_crate_ ) const;
+
 
 			/// Check the lock status
       bool is_locked_tps() const;

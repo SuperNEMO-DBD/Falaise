@@ -1,4 +1,4 @@
-// calo_tp.cc
+// calo_tp_data.cc
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
@@ -28,7 +28,7 @@ namespace snemo {
       reset();
       return;
     }
-
+    
     int calo_tp_data::get_clocktick_min_index() const
     {
       DT_THROW_IF(_calo_tps_.size() == 0, std::logic_error, " Calorimeter TP collection is empty ! ");
@@ -69,40 +69,57 @@ namespace snemo {
 
     int calo_tp_data::get_clocktick_min() const
     {
+      DT_THROW_IF(_calo_tps_.size() == 0, std::logic_error, " Calorimeter TP collection is empty ! ");
       return _calo_tps_[get_clocktick_min_index()].get().get_clocktick_25ns();
     }
 
     int calo_tp_data::get_clocktick_max() const
     {
+      DT_THROW_IF(_calo_tps_.size() == 0, std::logic_error, " Calorimeter TP collection is empty ! ");
       return _calo_tps_[get_clocktick_max_index()].get().get_clocktick_25ns();
     }
 
-
     int calo_tp_data::get_clocktick_range() const
     {
+      DT_THROW_IF(_calo_tps_.size() == 0, std::logic_error, " Calorimeter TP collection is empty ! ");
       return get_clocktick_max() - get_clocktick_min();
     }
 			
-    void calo_tp_data::get_list_of_tp_per_clocktick(int32_t clocktick_25ns_, calo_tp_collection_type & tps_)
+    void calo_tp_data::get_list_of_tp_per_clocktick(int32_t clocktick_25ns_, calo_tp_collection_type & my_list_of_tps_per_clocktick_) const
     {
       DT_THROW_IF(!is_locked_tps(), std::logic_error, " Calorimeter TP collection is not locked ! ");
       for (int i = 0; i < _calo_tps_.size(); i++)
       	{
       	  if(_calo_tps_[i].get().get_clocktick_25ns() == clocktick_25ns_)
       	    {
-      	      tps_.push_back(_calo_tps_[i]);
+      	      my_list_of_tps_per_clocktick_.push_back(_calo_tps_[i]);
       	    }
       	}
       return;
     }
 
+    void calo_tp_data::get_list_of_tp_per_clocktick_per_crate(int32_t clocktick_25ns_, unsigned int crate_number_, calo_tp_collection_type & my_list_of_tps_per_clocktick_per_crate_ ) const
+    {
+      DT_THROW_IF(!is_locked_tps(), std::logic_error, " Calorimeter TP collection is not locked ! ");
+      for (int i = 0; i < _calo_tps_.size(); i++)
+	{
+	  if(_calo_tps_[i].get().get_clocktick_25ns() == clocktick_25ns_ && _calo_tps_[i].get().get_geom_id().get(calo_tp::CRATE_INDEX) == crate_number_)
+	    {
+	      my_list_of_tps_per_clocktick_per_crate_.push_back(_calo_tps_[i]);
+	    }
+	}
+      return;
+    }
+
     bool calo_tp_data::is_locked_tps() const
     {
+      //DT_THROW_IF(_calo_tps_.size() == 0, std::logic_error, " Calorimeter TP collection is empty ! ");
       return _locked_tps_;
     }
     
     void calo_tp_data::lock_tps()
     {
+      DT_THROW_IF(_calo_tps_.size() == 0, std::logic_error, " Calorimeter TP collection is empty ! ");
       DT_THROW_IF(is_locked_tps(), std::logic_error, " Calorimeter TP collection is already locked ! ");
       _check();
       _locked_tps_ = true;
@@ -111,6 +128,7 @@ namespace snemo {
     
     void calo_tp_data::unlock_tps()
     { 
+      DT_THROW_IF(_calo_tps_.size() == 0, std::logic_error, " Calorimeter TP collection is empty ! ");
       DT_THROW_IF(!is_locked_tps(), std::logic_error, " Calorimeter TP collection is already unlocked ! ");
       _locked_tps_ = false;
       return;
@@ -156,18 +174,15 @@ namespace snemo {
 				  bool inherit_) const
     {
       out_ << indent_ << datatools::i_tree_dumpable::tag
-           << "Lock TPs  : " << _locked_tps_ << std::endl;
+           << "Is locked TPs  : " << _locked_tps_ << std::endl;
 
       out_ << indent_ << datatools::i_tree_dumpable::inherit_tag (inherit_)
 	   << "Calorimeter TPs : " << _calo_tps_.size() << std::endl;
-
-      // for(int i=0;i< _calo_tps_.size();i++)
-      // 	{
-      // 	  _calo_tps_[i].tree_dump(out_,title_,indent_,1);
-      // 	}
       
       return;
     }
+
+    // XXXX vérifie pourquoi i = 1 et pas i =0
 
     void calo_tp_data::_check()
     {
@@ -185,17 +200,6 @@ namespace snemo {
 			  "Duplicate clocktick=" << tp_a.get_clocktick_25ns() 
 			  << " * " 
 			  << "GID=" << tp_b.get_geom_id());
-	      /*	  
-	      if (tp_a.get_clocktick_25ns() == tp_b.get_clocktick_25ns() 
-		  && tp_a.get_geom_id() == tp_b.get_geom_id())
-		{
-		  std::ostringstream message_oss;
-		  message_oss << "Duplicate clocktick=" << tp_a.get_clocktick_25ns() 
-			      << " * " 
-			      << "GID=" << tp_b.get_geom_id();
-		  throw std::logic_error(message_oss.str());
-		}
-	      */
 	    }
 	}
       return;

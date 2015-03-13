@@ -11,7 +11,6 @@
 #include <iostream>
 #include <stdlib.h>
 #include <cmath>
-#include <fstream>
 #include <string>
 #include <vector>
 #include <stdint.h>
@@ -50,6 +49,7 @@ namespace snemo {
 				TP_SPARE      = datatools::bit_mask::bit04  //!< Spare bit mask
       };
 
+			/// Position of each bits in the TP bitset word (5 bits)
 			enum tp_bit_pos {
 				HTM_BIT0  = 0,
 				HTM_BIT1  = 1,
@@ -57,6 +57,16 @@ namespace snemo {
 				XT_BIT    = 3,
 				SPARE_BIT = 4
 			};
+
+			/// Electronic id index coming from a geom id	
+      enum tp_electronic_ID_index {
+				RACK_INDEX  = 0,
+				CRATE_INDEX = 1,
+				BOARD_INDEX = 2
+      };
+
+			/// Maximum number of channels by front-end board (FEB)
+			static const unsigned int MAX_NUMBER_OF_CHANNELS = 16;
       
       /// Default constructor
       calo_tp();
@@ -86,10 +96,10 @@ namespace snemo {
       void reset_tp_bitset();
 			
 			/// Set the high threshold multiplicity (HTM) bits
-			void set_htm_info(unsigned int multiplicity_);
+			void set_htm(unsigned int multiplicity_);
 
 			/// Return the information of the multiplicity for the high threshold
-			unsigned int get_htm_info() const;
+			unsigned int get_htm_multiplicity() const;
 
 			/// Get the high threshold multiplicity (HTM) word (2 bits)
 			std::bitset<2> get_htm_bits() const;

@@ -21,14 +21,14 @@ int main( int /* argc_ */, char ** /* argv_ */ )
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
   try { 
  
-    snemo::digitization::calo_tp my_calo_tp; 
-    my_calo_tp.set_hit_id(3);
-    my_calo_tp.grab_geom_id().set_type(2742);
-    my_calo_tp.grab_geom_id().set_address(0,1,17,9);
-    my_calo_tp.grab_auxiliaries().store("author", "guillaume");
-    my_calo_tp.grab_auxiliaries().store_flag("fake");
-    my_calo_tp.set_clocktick_25ns(32);
-    my_calo_tp.tree_dump(std::clog, "my_calo_TP : ", "INFO : ");
+    // snemo::digitization::calo_tp my_calo_tp; 
+    // my_calo_tp.set_hit_id(3);
+    // my_calo_tp.grab_geom_id().set_type(2742);
+    // my_calo_tp.grab_geom_id().set_address(0,1,17,9);
+    // my_calo_tp.grab_auxiliaries().store("author", "guillaume");
+    // my_calo_tp.grab_auxiliaries().store_flag("fake");
+    // my_calo_tp.set_clocktick_25ns(32);
+    // my_calo_tp.tree_dump(std::clog, "my_calo_TP : ", "INFO : ");
 
     // {
     //   datatools::data_writer writer("test_calo_tp.xml",
@@ -44,12 +44,10 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     my_calo_tp3.grab_auxiliaries().store("author", "guillaume");
     my_calo_tp3.grab_auxiliaries().store_flag("fake");
     my_calo_tp3.set_clocktick_25ns(20);
-    my_calo_tp3.set_htm_info(10);
+    my_calo_tp3.set_htm(5);
     my_calo_tp3.set_xt_bit(1);
     my_calo_tp3.tree_dump(std::clog, "my_calo_TP3 : ", "INFO : ");
 
-    std::clog << " DEBUG : MAIN " << my_calo_tp3.get_tp_bitset() << std::endl;
-   
     // my_calo_tp.reset();
     // my_calo_tp.tree_dump(std::clog, "my_calo_TP : ", "INFO : ");
 

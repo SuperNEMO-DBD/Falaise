@@ -3,7 +3,9 @@
 set(FalaiseDigitizationPlugin_TESTS
   test_calo_tp.cxx
   test_calo_tp_data.cxx
-  test_calo_crate_tw.cxx
+  test_calo_ctw.cxx
+  test_calo_ctw_data.cxx
+  test_calo_tp_to_ctw_algo.cxx
   )
 
 # Use C++11
