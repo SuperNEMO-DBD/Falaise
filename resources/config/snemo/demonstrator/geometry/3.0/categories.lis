@@ -191,6 +191,10 @@ inherits : string   = "calorimeter_optical_module"
 inherits : string   = "calorimeter_optical_module"
 
 
+[category="calorimeter_pmt_glass"      type="1305"]
+inherits : string   = "calorimeter_pmt"
+
+
 [category="calorimeter_curtain"        type="1306"]
 inherits : string   = "calorimeter_optical_module"
 
