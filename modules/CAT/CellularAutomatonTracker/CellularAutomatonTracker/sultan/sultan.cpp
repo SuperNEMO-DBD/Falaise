@@ -399,6 +399,10 @@ namespace SULTAN {
 	std::clog << " " << std::endl;
       }
       topology::experimental_helix b = experimental_legendre_vector->max(&neighbours);
+      if (level >= mybhep::VERBOSE){
+	std::clog << "SULTAN::sultan::assign_helices_to_sequences: sequence " << iseq - sequences_.begin() << " receives the following helix: ";
+	b.dump();
+      }
       iseq->set_helix(b);
       if( SuperNemoChannel )
 	iseq->calculate_momentum(bfield, SuperNemoChannel, 0.);

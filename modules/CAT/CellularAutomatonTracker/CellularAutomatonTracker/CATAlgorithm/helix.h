@@ -232,7 +232,19 @@ namespace CAT {
 
         double one_turn=pitch().value()*2.*M_PI;
         int n_extra_turns = (int)((pos.y().value() - y_ref)/one_turn);
-        pos.set_y(experimental_double(pos.y().value() - n_extra_turns*one_turn, pos.y().error()));
+
+	double newy = pos.y().value() - n_extra_turns*one_turn;
+	double dist = fabs(newy - y_ref);
+	double newyup = newy + one_turn;
+	double distup = fabs(newyup - y_ref);
+	double newydown = newy - one_turn;
+	double distdown = fabs(newydown - y_ref);
+	if( distup < dist && distup < distdown )
+	  newy = newyup;
+	if( distdown < dist && distdown < distup )
+	  newy = newydown;
+
+        pos.set_y(experimental_double(newy, pos.y().error()));
         return pos;
       }
 
@@ -312,6 +324,9 @@ namespace CAT {
 
         if( pl.view() == "x" || pl.view() == "z" || pl.view() == "inner" || pl.view() == "outer" ){
           bool result = get_circle().intersect_plane(pl, ep, _phi);
+	  if( print_level() >= mybhep::VVERBOSE ){
+	    std::clog << " helix intersected point y " << ep->y().value() << " _phi " << _phi.value() << " y_ref " << y_ref << " -> y " << position(*ep,_phi.value(), y_ref).y().value() << std::endl;
+	  }
           ep->set_y(position(*ep,_phi.value(), y_ref).y());
 
           if( std::isnan(ep->x().value())  || std::isnan(ep->y().value()) || std::isnan(ep->z().value()) ) return false;
