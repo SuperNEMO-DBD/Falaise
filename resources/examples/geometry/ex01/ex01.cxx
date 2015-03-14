@@ -31,6 +31,7 @@
 #include <bayeux/bayeux.h>
 // - Bayeux/datatools:
 #include <datatools/logger.h>
+#include <datatools/exception.h>
 #include <datatools/properties.h>
 #include <datatools/utils.h>
 #include <datatools/ioutils.h>
@@ -45,10 +46,21 @@
 // This project:
 #include <falaise/falaise.h>
 
-// An example function:
-void ex01_task0(const geomtools::manager & gmgr_);
 
-// void ex01_task1(const geomtools::manager & gmgr_);
+/// \brief Supported geometry categories for volumes in the virtual geometry:
+enum geometry_category_type {
+  GCAT_INVALID    = 0, //!< Undefined geometry category
+  GCAT_ANODE_WIRE = 1, //!< The drift cell anode wires
+  GCAT_FIELD_WIRE = 2, //!< The drift cell field wires
+  GCAT_DEFAULT    = GCAT_ANODE_WIRE //!< Default value
+};
+
+/// \brief Return a display name associated to a given geometry category type
+std::string display_name(geometry_category_type gcat_);
+
+/// An example function that extract informations from a given geometry category
+/// and print them on the standard output
+void ex01_inspect_category(const geomtools::manager & gmgr_, geometry_category_type gcat_);
 
 int main (int argc_, char ** argv_)
 {
@@ -63,6 +75,7 @@ int main (int argc_, char ** argv_)
     bool        force_mapping            = true;  // Flag to force geometry mapping
     bool        with_excluded_categories = false; // Flag to inhibit some geometry categories
     bool        with_only_categories     = false; // Flag to enable only specific geometry categories
+    geometry_category_type geometry_category = GCAT_INVALID; // Volume category
 
     {
       // Command line arguments parsing:
@@ -86,6 +99,10 @@ int main (int argc_, char ** argv_)
             with_only_categories = true;
           } else if ((option == "-O") || (option == "--without-only-categories")) {
             with_only_categories = false;
+          } else if (option == "--anode-wires") {
+            geometry_category = GCAT_ANODE_WIRE;
+        } else if (option == "--field-wires") {
+            geometry_category = GCAT_FIELD_WIRE;
           } else {
             DT_LOG_WARNING(logging, "Ignoring option '" << option << "'!");
           }
@@ -98,9 +115,15 @@ int main (int argc_, char ** argv_)
       // End of command line arguments parsing.
     }
 
+    // Set default values:
     if (manager_config_file.empty()) {
       manager_config_file = "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf";
     }
+
+    if (geometry_category == GCAT_INVALID) {
+      geometry_category = GCAT_DEFAULT;
+    }
+
     // Resolve the path to the geometry configuration file:
     datatools::fetch_path_with_env(manager_config_file);
     DT_LOG_DEBUG(logging, "Manager config. file : '" << manager_config_file << "'");
@@ -150,14 +173,18 @@ int main (int argc_, char ** argv_)
     }
 
     // Initialize the geometry manager:
+    DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE,
+                  "Initializing the geometry manager.... please wait!");
     the_geom_manager.initialize(manager_config);
     if (logging == datatools::logger::PRIO_DEBUG) {
       the_geom_manager.get_factory().tree_dump(std::clog, "The SuperNEMO geometry model factory");
       the_geom_manager.get_id_mgr().tree_dump(std::clog, "The SuperNEMO geometry ID manager");
     }
 
-    ex01_task0(the_geom_manager);
+    ex01_inspect_category(the_geom_manager, geometry_category);
 
+    DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE,
+                  "We are done. Bye!");
   }
   catch (std::exception & x) {
     DT_LOG_FATAL(datatools::logger::PRIO_FATAL, x.what());
@@ -171,68 +198,93 @@ int main (int argc_, char ** argv_)
   return (error_code);
 }
 
-void ex01_task0(const geomtools::manager & geo_mgr_)
+std::string display_name(geometry_category_type gcat_)
+{
+  switch (gcat_) {
+  case GCAT_ANODE_WIRE:
+    return "anode wire";
+    break;
+  case GCAT_FIELD_WIRE:
+    return "field wire";
+    break;
+  default:
+    DT_THROW_IF(true, std::logic_error, "Insupported geometry category '" << gcat_ << "'!");
+  }
+}
+
+void ex01_inspect_category(const geomtools::manager & geo_mgr_, geometry_category_type gcat_)
 {
   DT_THROW_IF(!geo_mgr_.is_mapping_available(),
               std::logic_error,
               "Mapping is not available!");
 
-  // Instantiate a locator for anode wires;
-  geomtools::smart_id_locator anode_wires_locator(geo_mgr_.get_mapping());
+  // Instantiate a locator for specific volumes;
+  geomtools::smart_id_locator volumes_locator(geo_mgr_.get_mapping());
 
-  // Set the rule to select which anode wires to be considered:
-  std::string anode_wires_selection_rule
-    = "category='drift_cell_anodic_wire' module={0} side={*} layer={*} row={*}";
-
-  // Set the rule to select which field wires to be considered:
-  std::string field_wires_selection_rule
-    = "category='drift_cell_field_wire' module={0} side={*} layer={*} row={*} set={*} wire={*}";
+  // Set the rule to select which volumes to be considered:
+  std::string volumes_selection_rule;
+  switch (gcat_) {
+  case GCAT_ANODE_WIRE:
+    // Select all anode wires in the demonstrator module:
+    volumes_selection_rule = "category='drift_cell_anodic_wire' module={0} side={*} layer={*} row={*}";
+    break;
+  case GCAT_FIELD_WIRE:
+    // Select all field wires in the demonstrator module:
+    volumes_selection_rule = "category='drift_cell_field_wire' module={0} side={*} layer={*} row={*} set={*} wire={*}";
+    break;
+  default:
+    DT_THROW_IF(true, std::logic_error, "Insupported geometry category '" << gcat_ << "'!");
+  }
 
   // Initialize the locator:
-  anode_wires_locator.initialize(anode_wires_selection_rule);
-  // anode_wires_locator.initialize(field_wires_selection_rule);
+  volumes_locator.initialize(volumes_selection_rule);
 
-  // Fetch the list of geometry informations associated to selected anode wires:
-  const std::list<const geomtools::geom_info *> list_of_anode_wires_infos
-    = anode_wires_locator.get_ginfos();
+  // Fetch the list of geometry informations associated to selected volumes:
+  const std::list<const geomtools::geom_info *> list_of_volume_infos
+    = volumes_locator.get_ginfos();
 
-  // Fetch the number of anode wires:
-  unsigned int number_of_anode_wires = list_of_anode_wires_infos.size();
-  std::clog << "Number of anode wires is: " << number_of_anode_wires << std::endl;
+  // Fetch the number of volumes:
+  unsigned int number_of_volumes = list_of_volume_infos.size();
+  std::cout << "Number of selected volumes is: " << number_of_volumes << std::endl;
 
-  // Fetch the geometry information structure associated to the first anode wire:
-  const geomtools::geom_info * first_anode_wire_info = list_of_anode_wires_infos.front();
+  // Fetch the geometry information structure associated to the first volume in the selected list:
+  const geomtools::geom_info * first_volume_info = list_of_volume_infos.front();
 
-  // Fetch the geometry logical volume associated to the first anode wire:
-  const geomtools::logical_volume & first_anode_wire_logical = first_anode_wire_info->get_logical();
+  // Fetch the geometry logical volume associated to the first volume:
+  const geomtools::logical_volume & first_volume_logical = first_volume_info->get_logical();
 
-  // Fetch the geometry solid shape associated to the first anode wire:
-  const geomtools::i_shape_3d & first_anode_wire_solid = first_anode_wire_logical.get_shape();
+  // Fetch the geometry solid shape associated to the first volume:
+  const geomtools::i_shape_3d & first_volume_solid = first_volume_logical.get_shape();
 
   // Check if the shape is a cylinder:
-  DT_THROW_IF(first_anode_wire_solid.get_shape_name() != "cylinder",
-              std::logic_error,
-              "Anode wire solid is not a cylinder!");
+  double first_volume_vol;
+  datatools::invalidate(first_volume_vol);
+  if (first_volume_solid.get_shape_name() == "cylinder") {
+    // Convert the geometry solid shape to a cylinder:
+    const geomtools::cylinder & first_volume_cyl
+      = dynamic_cast<const geomtools::cylinder &>(first_volume_solid);
 
-  // Convert the geometry solid shape to a cylinder:
-  const geomtools::cylinder & first_anode_wire_cyl
-    = dynamic_cast<const geomtools::cylinder &>(first_anode_wire_solid);
+    std::cout << "Volume length: " << first_volume_cyl.get_z() / CLHEP::cm << " cm" << std::endl;
+    std::cout << "Volume diameter: " << first_volume_cyl.get_diameter() / CLHEP::mm << " mm" << std::endl;
+    first_volume_vol = first_volume_cyl.get_volume();
+  } else {
+    DT_THROW_IF(true, std::logic_error,
+                "Volume solid has unsupported solid shape '" << first_volume_solid.get_shape_name() << "'!");
+  }
 
-  std::clog << "Anode wire length: " << first_anode_wire_cyl.get_z() / CLHEP::cm << " cm" << std::endl;
-  std::clog << "Anode wire diameter: " << first_anode_wire_cyl.get_diameter() / CLHEP::mm << " mm" << std::endl;
+  DT_THROW_IF(!datatools::is_valid(first_volume_vol), std::logic_error,
+              "Cannot compute the volume of this shape!");
 
+  std::cout << "Volume: " << first_volume_vol / CLHEP::mm3 << " mm3" << std::endl;
 
-  double first_anode_wire_vol = first_anode_wire_cyl.get_volume();
-  std::clog << "Anode wire volume: " << first_anode_wire_vol / CLHEP::mm3 << " mm3" << std::endl;
-
-  // Fetch the material name associated to the first anode wire:
-  const std::string & material_ref = first_anode_wire_logical.get_material_ref();
-  std::clog << "Anode wire material name: '" << material_ref << "'" << std::endl;
+  // Fetch the material name associated to the first volume:
+  const std::string & material_ref = first_volume_logical.get_material_ref();
+  std::cout << "Volume material reference: '" << material_ref << "'" << std::endl;
 
   // Check if a plugin for the description of materials is available:
   DT_THROW_IF(!geo_mgr_.is_plugin_a<geomtools::materials_plugin>("materials_driver"),
               std::logic_error,
-              "Material pluggin is not available!");
+              "Material plugin is not available!");
 
   // Fetch the materials plugin:
   const geomtools::materials_plugin & materials_driver
@@ -244,25 +296,29 @@ void ex01_task0(const geomtools::manager & geo_mgr_)
   // Check if a plugin for the description of materials is available:
   DT_THROW_IF(!mat_mgr.has_material(material_ref),
               std::logic_error,
-              "Material manager has no material with name '" << material_ref << "'!");
+              "Material manager has no material with reference '" << material_ref << "'!");
+
+  if (mat_mgr.is_alias(material_ref)) {
+    std::cout << "Volume material name: '" << mat_mgr.alias_of(material_ref) << "'" << std::endl;
+  }
 
   // Fetch the dictionary of materials:
   const materials::material_dict_type & materials = mat_mgr.get_materials();
 
-  // Fetch the material associated to the anode wire:
-  const materials::material & first_anode_wire_material
+  // Fetch the material associated to the volume:
+  const materials::material & first_volume_material
     = materials.find(material_ref)->second.get_ref();
 
   // Fetch the density:
-  double first_anode_wire_density = first_anode_wire_material.get_density();
-  std::clog << "Anode wire material density: " << first_anode_wire_density / (CLHEP::g/CLHEP::cm3) << " g/cm3" << std::endl;
+  double first_volume_density = first_volume_material.get_density();
+  std::cout << "Volume material density: " << first_volume_density / (CLHEP::g/CLHEP::cm3) << " g/cm3" << std::endl;
 
-  // Compute the toal mass of anode wires:
-  double total_anode_wire_mass =
-    number_of_anode_wires * first_anode_wire_density * first_anode_wire_vol;
+  // Compute the total mass of the selected volumes:
+  double total_volume_mass =
+    number_of_volumes * first_volume_density * first_volume_vol;
 
-  std::clog << "Total mass for anode wires: "
-            << total_anode_wire_mass / CLHEP::kg << " kg" << std::endl;
+  std::cout << "Total mass for volumes with category '" << display_name(gcat_)<< "' : "
+            << total_volume_mass / CLHEP::kg << " kg" << std::endl;
 
   return;
 }

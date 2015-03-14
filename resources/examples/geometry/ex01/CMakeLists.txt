@@ -15,17 +15,17 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 endif()
 
 # - Bayeux :
-find_package(Bayeux 1.0.0 REQUIRED)
+# find_package(Bayeux 1.0.0 REQUIRED)
 # - Falaise :
 find_package(Falaise 1.0.0 REQUIRED)
-set(_incs ${Falaise_INCLUDE_DIRS} ${Bayeux_INCLUDE_DIRS})
-set(_libs ${Falaise_LIBRARIES} ${Bayeux_LIBRARIES})
+set(_incs ${Falaise_INCLUDE_DIRS}) # ${Bayeux_INCLUDE_DIRS})
+set(_libs ${Falaise_LIBRARIES})# ${Bayeux_LIBRARIES})
 
 include_directories(${PROJECT_SOURCE_DIR} ${_incs})
 
 add_executable(ex01 ex01.cxx)
 
-target_link_libraries(ex01 ${_libs} )
+target_link_libraries(ex01 ${_libs})
 
 install ( FILES
     ${PROJECT_BINARY_DIR}/ex01

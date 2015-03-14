@@ -7,9 +7,13 @@ Introduction
 
  * Description:
 
-   This  example illustrates  how to  use the geometry manager to
-   extract geometry information from the SuperNEMO demonstrator
-   virtual geometry provided by Falaise.
+   This example illustrates how to use the geometry manager to extract
+   geometry  informations  from  the  SuperNEMO  demonstrator  virtual
+   geometry provided by Falaise.
+
+   This use case  allows to fetch, compute and display  the total mass
+   of drift  cell anode or  field wires in the  SuperNEMO demonstrator
+   module.
 
  * Source files :
 
@@ -24,7 +28,7 @@ Introduction
 Quick start
 ===========
 
-1. Build, install and setup the Falaise library
+1. Build, install and setup the Falaise 1.0.0 (or trunk) library
 2. Make a copy of the example directory: ::
 
      shell$ cp -a [Falaise-trunk]/resources/examples/geometry/ex01/ /tmp/falaise_geometry_ex01
@@ -44,7 +48,11 @@ Quick start
 
 4. Run the example: ::
 
-     shell$ ./ex01
+     shell$ ./ex01 --anode-wires
+
+   or : ::
+
+     shell$ ./ex01 --field-wires
 
 5. Clean: ::
 
