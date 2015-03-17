@@ -15,9 +15,6 @@
 #include <stdint.h>
 #include <bitset>
 
-// This project :
-#include <snemo/digitization/calo_ctw.h>
-
 // Third party:
 // - Boost:
 #include <boost/cstdint.hpp>
@@ -25,12 +22,15 @@
 // - Bayeux/datatools :
 #include <bayeux/datatools/handle.h>
 
+// This project :
+#include <snemo/digitization/calo_ctw.h>
+
 namespace snemo {
   
   namespace digitization {		
 
     /// \brief Collection of calorimeter crate trigger words (C-CTW)
-    class calo_ctw_data //: public datatools::i_serializable
+    class calo_ctw_data : public datatools::i_serializable
     {
     public : 
       
@@ -100,13 +100,18 @@ namespace snemo {
       bool _locked_ctws_; //!< CTWs lock flag
       calo_ctw_collection_type _calo_ctws_; //!< Collection of calorimeters crate trigger
 
-      //DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION();
 
     };
 
   } // end of namespace digitization
 
 } // end of namespace snemo
+
+#include <boost/serialization/export.hpp>
+BOOST_CLASS_EXPORT_KEY2(snemo::digitization::calo_ctw_data,
+                        "snemo::digitization::calo_ctw_data")
+
 
 #endif /* FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CALO_CTW_DATA_H */
 

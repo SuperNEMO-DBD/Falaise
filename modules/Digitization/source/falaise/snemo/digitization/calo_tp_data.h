@@ -15,34 +15,25 @@
 #include <stdint.h>
 #include <bitset>
 
-// This project :
-#include <snemo/digitization/calo_tp.h>
-
 // Third party:
 // - Boost:
 #include <boost/cstdint.hpp>
 
 // - Bayeux/datatools :
 #include <bayeux/datatools/handle.h>
-#include <bayeux/datatools/bit_mask.h>
 
-// - Bayeux/geomtools :
-#include <bayeux/geomtools/base_hit.h>
+// This project :
+#include <snemo/digitization/calo_tp.h>
 
 namespace snemo {
   
   namespace digitization {		
 
     /// \brief Collection of calorimeter trigger primitive (calo_tp)
-    class calo_tp_data //: public datatools::i_serializable
+    class calo_tp_data : public datatools::i_serializable // or DATATOOLS_SERIALIZABLE_CLASS
     {
     public : 
-      
-      /// \brief Masks to automatically tag the attributes to be stored
-      enum store_mask_type {
-				STORE_CALO_TPS   = datatools::bit_mask::bit03  //!< Serialization mask for the TP
-      };
-
+ 
       /// Default constructor
       calo_tp_data();
 
@@ -112,13 +103,18 @@ namespace snemo {
 			bool _locked_tps_; //!< TPS lock flag
 			calo_tp_collection_type _calo_tps_; //!< Collection of calorimeters tracker primitive
 
-      //DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION();
 
     };
 
   } // end of namespace digitization
 
 } // end of namespace snemo
+
+#include <boost/serialization/export.hpp>
+BOOST_CLASS_EXPORT_KEY2(snemo::digitization::calo_tp_data,
+                        "snemo::digitization::calo_tp_data")
+
 
 #endif /* FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CALO_TP_DATA_H */
 

@@ -15,7 +15,7 @@ namespace snemo {
   namespace digitization {
 
     // Serial tag for datatools::serialization::i_serializable interface :
-    // DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(calo_tp, "snemo::digitalization::calo_tp_data")
+    DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(calo_tp_data, "snemo::digitalization::calo_tp_data")
 
     calo_tp_data::calo_tp_data()
     {
@@ -135,7 +135,6 @@ namespace snemo {
     {
       DT_THROW_IF(is_locked_tps(), std::logic_error, " Operation prohibited, object is locked ! ");
       _calo_tps_.clear();
-      //_store &= ~STORE_CALO_TPS;
       return ;
     }
 		
@@ -148,7 +147,6 @@ namespace snemo {
       }
       calo_tp_handle_type & last = _calo_tps_.back();
       last.reset(new calo_tp);
-      //_store |= STORE_CALO_TPS;
       return last.grab();
     }
 
@@ -205,3 +203,11 @@ namespace snemo {
   } // end of namespace digitization
 
 } // end of namespace snemo
+
+/* 
+** Local Variables: --
+** mode: c++ --
+** c-file-style: "gnu" --
+** tab-width: 2 --
+** End: --
+*/

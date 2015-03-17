@@ -114,7 +114,6 @@ namespace snemo {
 	  const calo_tp & my_calo_tp = my_list_of_calo_tp_[i].get();
 	  _fill_a_calo_ctw(my_calo_tp, a_calo_ctw_);	  
 	}
-      std::clog << "DEBUG : process_for_a_ctw/clocktick number of TP : " << my_list_of_calo_tp_.size() << std::endl;
       return;
     }
 

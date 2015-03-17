@@ -15,7 +15,7 @@ namespace snemo {
   namespace digitization {
 
     // Serial tag for datatools::serialization::i_serializable interface :
-    // DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(calo_tp, "snemo::digitalization::calo_ctw_data")
+    DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(calo_ctw_data, "snemo::digitalization::calo_ctw_data")
 
     calo_ctw_data::calo_ctw_data()
     {
@@ -193,3 +193,11 @@ namespace snemo {
   } // end of namespace digitization
 
 } // end of namespace snemo
+
+/* 
+** Local Variables: --
+** mode: c++ --
+** c-file-style: "gnu" --
+** tab-width: 2 --
+** End: --
+*/
