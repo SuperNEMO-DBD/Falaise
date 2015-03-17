@@ -90,12 +90,12 @@ int main( int /* argc_ */, char ** /* argv_ */ )
       ctp.tree_dump(std::clog, "CTP : ", "INFO : ");
     }
 
-
     my_calo_tp_data.lock_tps();
 
     snemo::digitization::calo_ctw_data my_calo_ctw_data;
-    snemo::digitization::calo_algo_tp_to_ctw algo;
+    snemo::digitization::calo_tp_to_ctw_algo algo;
     
+    algo.initialize();
     algo.process(my_calo_tp_data, my_calo_ctw_data);
 
     my_calo_ctw_data.tree_dump(std::clog, "my_calo_ctw : ", "INFO : ");

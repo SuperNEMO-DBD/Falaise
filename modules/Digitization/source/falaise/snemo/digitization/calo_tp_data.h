@@ -24,6 +24,10 @@
 
 // - Bayeux/datatools :
 #include <bayeux/datatools/handle.h>
+#include <bayeux/datatools/bit_mask.h>
+
+// - Bayeux/geomtools :
+#include <bayeux/geomtools/base_hit.h>
 
 namespace snemo {
   
@@ -34,6 +38,11 @@ namespace snemo {
     {
     public : 
       
+      /// \brief Masks to automatically tag the attributes to be stored
+      enum store_mask_type {
+				STORE_CALO_TPS   = datatools::bit_mask::bit03  //!< Serialization mask for the TP
+      };
+
       /// Default constructor
       calo_tp_data();
 
@@ -66,7 +75,6 @@ namespace snemo {
 			
 			/// Get a list of calo trigger primitive which are in the same clocktick and in the same crate
 			void get_list_of_tp_per_clocktick_per_crate(int32_t clocktick_25ns_, unsigned int crate_number_, calo_tp_collection_type & my_list_of_tps_per_clocktick_per_crate_ ) const;
-
 
 			/// Check the lock status
       bool is_locked_tps() const;

@@ -35,6 +35,13 @@ namespace snemo {
     class calo_ctw : public geomtools::base_hit
     {
     public : 
+			
+      /// \brief Masks to automatically tag the attributes to be stored
+      enum store_mask_type {
+				STORE_WALL           = datatools::bit_mask::bit03,
+				STORE_CLOCKTICK_25NS = datatools::bit_mask::bit04, //!< Serialization mask for the clocktick
+				STORE_CTW            = datatools::bit_mask::bit05  //!< Serialization mask for the TP
+      };
 
 			/// \brief Type of wall 
     	enum wall_type {
@@ -51,7 +58,7 @@ namespace snemo {
 				TW_XT_PC     = datatools::bit_mask::bit13,  //!< External trigger per crate (XT-PC)
 				TW_CONTROL   = datatools::bit_mask::bit14 | datatools::bit_mask::bit15 | datatools::bit_mask::bit16 | datatools::bit_mask::bit17 //!< Control bits (4 bits)
 			};
-		 		
+			
 			/// Position of each bits in the CTW bitset word (18 bits)
 			enum tw_bit_pos{
 				HTM_PC_BIT0  = 0,
@@ -71,7 +78,7 @@ namespace snemo {
 				CONTROL_BIT0 = 14,
 				CONTROL_BIT1 = 15,
 				CONTROL_BIT2 = 16,
-				CONTROL_BIT3 = 17,
+				CONTROL_BIT3 = 17
 			};
 
 			enum ctw_electronic_ID_index {
@@ -168,7 +175,7 @@ namespace snemo {
 			/// Reset the calorimeter crate TW bitset
 			void reset_tw_bitset();
 
-      /// Check if the internal data ofthe calo crate TW is valid
+      /// Return the internal state of validity of the calo crate TW is valid
       bool is_valid() const;
 
       /// Reset the internal data of the calo crate TW
@@ -192,7 +199,7 @@ namespace snemo {
 			int32_t _clocktick_25ns_; //!< The timestamp of the trigger primitive in main clock units (40 MHz)
 			std::bitset<18> _ctw_; //!< The crate trigger word
 
-      //DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION();
 
     };
 

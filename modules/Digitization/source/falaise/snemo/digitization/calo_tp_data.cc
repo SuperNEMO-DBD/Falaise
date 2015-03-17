@@ -113,13 +113,11 @@ namespace snemo {
 
     bool calo_tp_data::is_locked_tps() const
     {
-      //DT_THROW_IF(_calo_tps_.size() == 0, std::logic_error, " Calorimeter TP collection is empty ! ");
       return _locked_tps_;
     }
     
     void calo_tp_data::lock_tps()
     {
-      DT_THROW_IF(_calo_tps_.size() == 0, std::logic_error, " Calorimeter TP collection is empty ! ");
       DT_THROW_IF(is_locked_tps(), std::logic_error, " Calorimeter TP collection is already locked ! ");
       _check();
       _locked_tps_ = true;
@@ -128,7 +126,6 @@ namespace snemo {
     
     void calo_tp_data::unlock_tps()
     { 
-      DT_THROW_IF(_calo_tps_.size() == 0, std::logic_error, " Calorimeter TP collection is empty ! ");
       DT_THROW_IF(!is_locked_tps(), std::logic_error, " Calorimeter TP collection is already unlocked ! ");
       _locked_tps_ = false;
       return;
@@ -138,6 +135,7 @@ namespace snemo {
     {
       DT_THROW_IF(is_locked_tps(), std::logic_error, " Operation prohibited, object is locked ! ");
       _calo_tps_.clear();
+      //_store &= ~STORE_CALO_TPS;
       return ;
     }
 		
@@ -150,6 +148,7 @@ namespace snemo {
       }
       calo_tp_handle_type & last = _calo_tps_.back();
       last.reset(new calo_tp);
+      //_store |= STORE_CALO_TPS;
       return last.grab();
     }
 
@@ -182,11 +181,9 @@ namespace snemo {
       return;
     }
 
-    // XXXX vérifie pourquoi i = 1 et pas i =0
-
     void calo_tp_data::_check()
     {
-      for (int i = 1; i < _calo_tps_.size() - 1; i++)
+      for (int i = 0; i < _calo_tps_.size() - 1; i++)
 	{
 	  const calo_tp & tp_a = _calo_tps_[i].get();
 

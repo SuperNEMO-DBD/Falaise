@@ -34,6 +34,8 @@ namespace snemo {
 			// knows about the field to be stored/loaded
 			// from the archive.
 
+			ar & boost::serialization::make_nvp ("locked_tp", _locked_tp_);
+ 
 			if (_store & STORE_CLOCKTICK_25NS)
 				{
 					ar & boost::serialization::make_nvp ("clocktick_25ns", _clocktick_25ns_);

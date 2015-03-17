@@ -1,13 +1,13 @@
-// calo_tp_data.ipp
+// calo_ctw.ipp
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 //
 
-#ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CALO_TP_IPP
-#define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CALO_TP_IPP
+#ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CALO_CTW_IPP
+#define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CALO_CTW_IPP
 
 // Ourselves:
-#include <snemo/digitization/calo_tp_data.h>
+#include <snemo/digitization/calo_ctw.h>
 
 // Third party:
 // - Boost:
@@ -23,8 +23,8 @@ namespace snemo {
   namespace digitization {
 
     template<class Archive>
-    void calo_tp::serialize (Archive            & ar,
-			     const unsigned int  version)
+    void calo_ctw::serialize (Archive            & ar,
+			      const unsigned int  version)
     {
       // inherit from the 'base_hit' mother class:
       ar & boost::serialization::make_nvp ("geomtools__base_hit",
@@ -34,11 +34,23 @@ namespace snemo {
       // knows about the field to be stored/loaded
       // from the archive.
 
-      if (_store & STORE_CALO_TPS)
+      ar & boost::serialization::make_nvp ("locked_ctw", _locked_ctw_);
+ 
+      if (_store & STORE_WALL)
 	{
-	  ar & boost::serialization::make_nvp ("calo_tps", _calo_tps_);
+	  ar & boost::serialization::make_nvp ("wall", _wall_);
+	}
+
+      if (_store & STORE_CLOCKTICK_25NS)
+	{
+	  ar & boost::serialization::make_nvp ("clocktick_25ns", _clocktick_25ns_);
 	}
 		
+      if (_store & STORE_CTW)
+	{
+	  ar & boost::serialization::make_nvp ("TP", _ctw_);
+	}
+
       return;
     }
 
@@ -46,12 +58,12 @@ namespace snemo {
 
 } // end of namespace snemo
 
-#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CALO_TP_IPP
+#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CALO_CTW_IPP
 
 /*
 ** Local Variables: --
 ** mode: c++ --
 ** c-file-style: "gnu" --
-    ** tab-width: 2 --
-    ** End: --
-    */
+** tab-width: 2 --
+** End: --
+*/

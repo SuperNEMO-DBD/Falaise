@@ -16,7 +16,7 @@ namespace snemo {
   namespace digitization {
 
     // Serial tag for datatools::serialization::i_serializable interface :
-    //DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(calo_ctw, "snemo::digitalization::calo_ctw")
+    DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(calo_ctw, "snemo::digitalization::calo_ctw")
 
     calo_ctw::calo_ctw()
     {
@@ -35,7 +35,9 @@ namespace snemo {
 
     void calo_ctw::set_wall(wall_type type_)
     {
+      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Wall can't be set, calorimeter crate TW is locked !) ");
       _wall_ = type_;
+      _store |= STORE_WALL;
     }
 
     calo_ctw::wall_type calo_ctw::get_wall() const
@@ -45,28 +47,37 @@ namespace snemo {
 
     bool calo_ctw::is_main_wall() const
     {
-      if (get_wall() == MAIN_WALL ) return true; 
+      if (get_wall() == MAIN_WALL )
+	{
+	  return true; 
+	}
       return false;
     }
 
     bool calo_ctw::is_xg_wall() const
     {
-      if (get_wall() == XG_WALL) return true;
+      if (get_wall() == XG_WALL) 
+	{
+	  return true; 
+	}
       return false;
     }
 
     void calo_ctw::set_main_wall()
     {
+      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Wall can't be set, calorimeter crate TW is locked !) ");
       set_wall(MAIN_WALL);
+      _store |= STORE_WALL;
       return;
     }
 
     void calo_ctw::set_xg_wall()
     {
+      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Wall can't be set, calorimeter crate TW is locked !) ");
       set_wall(XG_WALL);
+      _store |= STORE_WALL;
       return;
     }
-
 
     int32_t calo_ctw::get_clocktick_25ns() const
     {
@@ -141,7 +152,6 @@ namespace snemo {
 	{
 	  return 2;
 	}
-
       return 3;
     }
 
@@ -178,6 +188,7 @@ namespace snemo {
 	      _ctw_.set(i + ZONING_BIT0, 0);	      
 	    }
 	}      
+      _store |= STORE_CTW;
       return;
     }
 
@@ -185,6 +196,7 @@ namespace snemo {
     {
       DT_THROW_IF(is_locked_ctw(), std::logic_error, " Zoning bit can't be set, calorimeter CTW is locked ! ");
       _ctw_.set(BIT_POS_,value_);
+      _store |= STORE_CTW;
       return;
     }
 
@@ -254,7 +266,8 @@ namespace snemo {
 	    {
 	      _ctw_.set(i + CONTROL_BIT0,0);	      
 	    }
-	}      
+	}  
+      _store |= STORE_CTW;
       return;
     }
 
@@ -293,7 +306,10 @@ namespace snemo {
 
     void calo_ctw::reset()
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Calo CTW can't be reset, calorimeter crate TW is locked ! ");
+      if(is_locked_ctw())
+	{
+	  unlock_ctw();
+	}
       reset_tw_bitset();
       reset_clocktick_25ns();
       geomtools::base_hit::reset();
@@ -309,7 +325,7 @@ namespace snemo {
       base_hit::tree_dump (out_, title_, indent_, true);
 
       out_ << indent_ << datatools::i_tree_dumpable::tag
-      << "Wall type  : " << _wall_ << std::endl;
+	   << "Wall type  : " << _wall_ << std::endl;
 
       out_ << indent_ << datatools::i_tree_dumpable::tag
            << "Clock tick (25 ns)  : " << _clocktick_25ns_ << std::endl;

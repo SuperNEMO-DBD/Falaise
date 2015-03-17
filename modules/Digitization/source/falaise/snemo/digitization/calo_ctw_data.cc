@@ -102,13 +102,11 @@ namespace snemo {
 
     bool calo_ctw_data::is_locked_ctws() const
     {
-      //DT_THROW_IF(_calo_ctws_.size() == 0, std::logic_error, " Calorimeter CTW collection is empty ! ");
       return _locked_ctws_;
     }
     
     void calo_ctw_data::lock_ctws()
     {
-      DT_THROW_IF(_calo_ctws_.size() == 0, std::logic_error, " Calorimeter CTW collection is empty ! ");
       DT_THROW_IF(is_locked_ctws(), std::logic_error, " Calorimeter CTW collection is already locked ! ");
       _check();
       _locked_ctws_ = true;
@@ -117,7 +115,6 @@ namespace snemo {
     
     void calo_ctw_data::unlock_ctws()
     { 
-      DT_THROW_IF(_calo_ctws_.size() == 0, std::logic_error, " Calorimeter CTW collection is empty ! ");
       DT_THROW_IF(!is_locked_ctws(), std::logic_error, " Calorimeter CTW collection is already unlocked ! ");
       _locked_ctws_ = false;
       return;
@@ -125,7 +122,6 @@ namespace snemo {
 
     void calo_ctw_data::reset_ctws()
     {
-      DT_THROW_IF(_calo_ctws_.size() == 0, std::logic_error, " Calorimeter CTW collection is empty ! ");
       DT_THROW_IF(is_locked_ctws(), std::logic_error, " Operation prohibited, object is locked ! ");
       _calo_ctws_.clear();
       return ;
@@ -143,21 +139,8 @@ namespace snemo {
       return last.grab();
     }
 
-    void calo_ctw_data::get_calo_ctw(calo_ctw_handle_type & my_calo_ctw_handle_)
-    {     
-      if (my_calo_ctw_handle_.get().get_geom_id().get(calo_ctw::CRATE_INDEX) == 0)
-	{
-	  my_calo_ctw_handle_ = _calo_ctws_[0];
-	}
-      
-      
-      return;
-    }
-    
-
     const calo_ctw_data::calo_ctw_collection_type & calo_ctw_data::get_calo_ctws() const
     {
-      // DT_THROW_IF(_calo_ctws_.size() == 0, std::logic_error, " Calorimeter CTW collection is empty ! ");
       return _calo_ctws_;
     }
 
@@ -188,20 +171,20 @@ namespace snemo {
     void calo_ctw_data::_check()
     {
       DT_THROW_IF(_calo_ctws_.size() == 0, std::logic_error, " Calorimeter CTW collection is empty ! ");
-      for (int i = 1; i < _calo_ctws_.size() - 1; i++)
+      for (int i = 0; i < _calo_ctws_.size() - 1; i++)
 	{
-	  const calo_ctw & tp_a = _calo_ctws_[i].get();
+	  const calo_ctw & ctw_a = _calo_ctws_[i].get();
 
 	  for (int j = i+1; j < _calo_ctws_.size(); j++)
 	    {
-	      const calo_ctw & tp_b = _calo_ctws_[j].get();
+	      const calo_ctw & ctw_b = _calo_ctws_[j].get();
 
-	      DT_THROW_IF(tp_a.get_clocktick_25ns() == tp_b.get_clocktick_25ns() 
-			  && tp_a.get_geom_id() == tp_b.get_geom_id(),
+	      DT_THROW_IF(ctw_a.get_clocktick_25ns() == ctw_b.get_clocktick_25ns() 
+			  && ctw_a.get_geom_id() == ctw_b.get_geom_id(),
 			  std::logic_error,
-			  "Duplicate clocktick=" << tp_a.get_clocktick_25ns() 
+			  "Duplicate clocktick=" << ctw_a.get_clocktick_25ns() 
 			  << " * " 
-			  << "GID=" << tp_b.get_geom_id());
+			  << "GID=" << ctw_b.get_geom_id());
 	    }
 	}
       return;

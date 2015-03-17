@@ -1,6 +1,5 @@
 /// \file falaise/snemo/digitization/the_serializable.h
 
-
 #ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_THE_SERIALIZABLE_H
 #define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_THE_SERIALIZABLE_H
 
@@ -17,6 +16,10 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::digitization::cal
 // #include <snemo/digitization/calo_tp_data.ipp>
 // DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::digitization::calo_tp_data)
 // BOOST_CLASS_EXPORT_IMPLEMENT(snemo::digitization::calo_tp_data)
+
+// This project:
+#include <snemo/digitization/calo_ctw.ipp>
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::digitization::calo_ctw)
 
 #endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_THE_SERIALIZABLE_H
 

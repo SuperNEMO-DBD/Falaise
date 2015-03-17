@@ -79,8 +79,6 @@ namespace snemo {
       /// Add a calorimeter crate trigger word at the end of the collection
       calo_ctw & add();
 
-			void get_calo_ctw(calo_ctw_handle_type & my_calo_ctw_handle_);
-
       /// Return the const collection of calorimeter crate trigger
       const calo_ctw_collection_type & get_calo_ctws() const;
 
@@ -94,7 +92,7 @@ namespace snemo {
 			     bool a_inherit               = false) const;
 
     protected : 
-      /// Check if two calorimeter crate trigger word do not have the same clocktick AND the same geom ID
+      /// Check if two calorimeters crate trigger word do not have the same clocktick AND the same geom ID
       void _check();
 			
     private : 

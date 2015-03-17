@@ -1,3 +1,5 @@
+//test_calo_ctw.cxx
+
 // Standard libraries :
 #include <iostream>
 #include <exception>
@@ -12,7 +14,6 @@
 #include <falaise/falaise.h>
 
 // This project :
-#include <snemo/digitization/calo_tp_data.h>
 #include <snemo/digitization/calo_ctw.h>
 
 int main( int /* argc_ */, char ** /* argv_ */ )
@@ -21,51 +22,39 @@ int main( int /* argc_ */, char ** /* argv_ */ )
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
   try {
-
-    snemo::digitization::calo_ctw my_calo_ctw;
-    my_calo_ctw.grab_geom_id().set_type(42);
-    my_calo_ctw.grab_geom_id().set_address(0,1,4,10);
-    my_calo_ctw.grab_auxiliaries().store("author", "guillaume");
-    my_calo_ctw.grab_auxiliaries().store_flag("fake");
-    my_calo_ctw.set_clocktick_25ns(20);
-    my_calo_ctw.reset_clocktick_25ns();
-    my_calo_ctw.set_clocktick_25ns(50);
-    my_calo_ctw.tree_dump(std::clog, "my_calo_CTW : ", "INFO : ");
-
-    snemo::digitization::calo_tp_data my_calo_tp_data;
-    {
-      snemo::digitization::calo_tp & ctp = my_calo_tp_data.add();
-      ctp.set_hit_id(27);
-      ctp.grab_geom_id().set_type(25);
-      ctp.grab_geom_id().set_address(0,0,0,1);
-      ctp.grab_auxiliaries().store("author", "guillaume");
-      ctp.grab_auxiliaries().store_flag("fake");
-      ctp.set_clocktick_25ns(20);
-      ctp.set_htm(2);
-      ctp.tree_dump(std::clog, "CTP : ", "INFO : ");
-    }
-
-    {
-      snemo::digitization::calo_tp & ctp = my_calo_tp_data.add();
-      ctp.set_hit_id(27);
-      ctp.grab_geom_id().set_type(25);
-      ctp.grab_geom_id().set_address(0,0,0,18);
-      ctp.grab_auxiliaries().store("author", "guillaume");
-      ctp.grab_auxiliaries().store_flag("fake");
-      ctp.set_clocktick_25ns(20);
-      ctp.set_htm(1);
-      ctp.tree_dump(std::clog, "CTP : ", "INFO : ");
-    }
-    my_calo_tp_data.lock_tps();
-
-    std::vector<datatools::handle<snemo::digitization::calo_tp> > my_list_of_calo_tp;
-    my_calo_tp_data.get_list_of_tp_per_clocktick(20, my_list_of_calo_tp);
+    std::clog << "Test program for class 'snemo::digitization::calo_ctw' !" << std::endl;
     
-    std::bitset<10> zoning_word;
-    my_calo_ctw.get_zoning_word(zoning_word);
-    std::clog << "DEBUG : MAIN : " << zoning_word << std::endl;
-
+    snemo::digitization::calo_ctw my_calo_ctw;
+    my_calo_ctw.grab_geom_id().set_type(422);
+    my_calo_ctw.grab_geom_id().set_address(3,0,10); // address of geom id : RACK_INDEX, CRATE_INDEX,BOARD_INDEX. 
+    my_calo_ctw.grab_auxiliaries().store("author", "guillaume");
+    my_calo_ctw.grab_auxiliaries().store_flag("mock");
+    my_calo_ctw.set_wall(snemo::digitization::calo_ctw::MAIN_WALL);
+    my_calo_ctw.set_clocktick_25ns(20);
+    my_calo_ctw.set_htm_pc(5); // Argument is multiplicity per crate
+    std::bitset<10> zoning_word (std::string("0001110100"));
+    my_calo_ctw.set_zoning_word(zoning_word);
+    my_calo_ctw.set_lto_pc_bit(1);
     my_calo_ctw.tree_dump(std::clog, "my_calo_CTW : ", "INFO : ");
+    my_calo_ctw.lock_ctw();
+    
+    std::bitset<10> zoning_word_get;
+    my_calo_ctw.get_zoning_word(zoning_word);
+    std::clog << "Zoning word of this CTW : " << zoning_word << std::endl;
+
+    std::set<int> active_zones; // Active zones for this CTW.
+    std::set<int>::iterator it;
+    std::clog << "Number of active zones : " << my_calo_ctw.compute_active_zones(active_zones) << std::endl;
+    std::clog << "Active zones are :";
+    for (it = active_zones.begin(); it != active_zones.end(); it++)
+      {
+	std::clog << ' ' << *it;
+      }
+    std::clog << std::endl;
+
+
+
+    std::clog << "The end." << std::endl;
   }
 
   catch (std::exception & error) {

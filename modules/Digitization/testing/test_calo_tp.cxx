@@ -1,3 +1,5 @@
+//test_calo_tp.cxx
+
 // Standard libraries :
 #include <iostream>
 #include <exception>
@@ -20,45 +22,33 @@ int main( int /* argc_ */, char ** /* argv_ */ )
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
   try { 
- 
-    // snemo::digitization::calo_tp my_calo_tp; 
-    // my_calo_tp.set_hit_id(3);
-    // my_calo_tp.grab_geom_id().set_type(2742);
-    // my_calo_tp.grab_geom_id().set_address(0,1,17,9);
-    // my_calo_tp.grab_auxiliaries().store("author", "guillaume");
-    // my_calo_tp.grab_auxiliaries().store_flag("fake");
-    // my_calo_tp.set_clocktick_25ns(32);
-    // my_calo_tp.tree_dump(std::clog, "my_calo_TP : ", "INFO : ");
+    std::clog << "Test program for class 'snemo::digitization::calo_tp' !" << std::endl;
 
-    // {
-    //   datatools::data_writer writer("test_calo_tp.xml",
-    // 				    datatools::using_multi_archives);
+    snemo::digitization::calo_tp my_calo_tp; 
+    // Hit_id and geom_id used are mocked id (just choose for the test) because "real id" come from simulated datas.
+    my_calo_tp.set_hit_id(42);
+    my_calo_tp.grab_geom_id().set_type(25);
+    my_calo_tp.grab_geom_id().set_address(3,0,7); // address type(RACK_INDEX, CRATE_INDEX, BOARD_INDEX)
+    my_calo_tp.grab_auxiliaries().store("author", "guillaume"); 
+    my_calo_tp.grab_auxiliaries().store_flag("mock");
+    my_calo_tp.set_clocktick_25ns(20);
+    my_calo_tp.set_htm(3); // Argument is the multiplicity. Here 3 caloFEBs passed the high threshold in the column
+    my_calo_tp.set_xt_bit(1);
+    my_calo_tp.set_lto_bit(1);
+    my_calo_tp.tree_dump(std::clog, "my_calo_tp mock : ", "INFO : ");
+    my_calo_tp.lock_tp();
 
-    //   writer.store(my_calo_tp);
-    // }
-   
-    snemo::digitization::calo_tp my_calo_tp3; 
-    my_calo_tp3.set_hit_id(42);
-    my_calo_tp3.grab_geom_id().set_type(42);
-    my_calo_tp3.grab_geom_id().set_address(0,1,4,10);
-    my_calo_tp3.grab_auxiliaries().store("author", "guillaume");
-    my_calo_tp3.grab_auxiliaries().store_flag("fake");
-    my_calo_tp3.set_clocktick_25ns(20);
-    my_calo_tp3.set_htm(5);
-    my_calo_tp3.set_xt_bit(1);
-    my_calo_tp3.tree_dump(std::clog, "my_calo_TP3 : ", "INFO : ");
+    std::clog << "Htm multiplicity is : " << my_calo_tp.get_htm_multiplicity() << std::endl;
+    std::clog << "Htm bits  bit pos [1][0] : " << my_calo_tp.get_htm_bits() << std::endl;
+    std::clog << "Lto bit   bit pos [2]    : " << my_calo_tp.is_lto() << std::endl;
+    std::clog << "Xt bit    bit pos [3]    : " << my_calo_tp.is_xt() << std::endl;
+    std::clog << "Spare bit bit pos [4]    : " << my_calo_tp.is_spare() << std::endl;
 
-    // my_calo_tp.reset();
-    // my_calo_tp.tree_dump(std::clog, "my_calo_TP : ", "INFO : ");
+    my_calo_tp.unlock_tp();
+    my_calo_tp.reset();
+    my_calo_tp.tree_dump(std::clog, "my_calo_tp reseted : ", "INFO : ");
 
-    // {
-    //   datatools::data_reader reader("test_calo_tp.xml",
-    // 				    datatools::using_multi_archives);
-
-    //   reader.load(my_calo_tp);
-    //   my_calo_tp.tree_dump(std::clog, "my_calo_TP (loaded) : ", "INFO : ");
-    // }
-
+    std::clog << "The end." << std::endl;
   }
 
   catch (std::exception & error) {
