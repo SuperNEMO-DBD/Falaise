@@ -863,8 +863,10 @@ namespace snemo {
                          << a_solution.get_unclustered_hits().size()
                          << " unclustered hit"
                          << (a_solution.get_unclustered_hits().size() > 1 ? "s" : "");
-          if (&a_solution == &(tcd.get_default_solution())) {
-            label_solution << " - default";
+          if (tcd.has_default_solution()) {
+            if (&a_solution == &(tcd.get_default_solution())) {
+              label_solution << " - default";
+            }
           }
 
           TGListTreeItem * item_solution
@@ -1031,8 +1033,10 @@ namespace snemo {
                          << (a_solution.get_trajectories().size() > 1 ? "ies" : "y") << ", "
                          << a_solution.get_unfitted_clusters().size() << " unfitted cluster"
                          << (a_solution.get_unfitted_clusters().size() > 1 ? "s" : "");
-          if (&a_solution == &(ttd.get_default_solution())) {
-            label_solution << " - default";
+          if (ttd.has_default_solution()) {
+            if (&a_solution == &(ttd.get_default_solution())) {
+              label_solution << " - default";
+            }
           }
 
           const bool checked = true;
