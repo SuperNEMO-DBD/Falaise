@@ -94,8 +94,22 @@ int main(int argc_, char **  argv_)
       {
 	my_list_of_gg_tp_per_clocktick_per_crate[i].get().tree_dump(std::clog, "My list of geiger TP per clocktick per crate" , "INFO : ");
       }
-    
     my_geiger_tp_data.tree_dump(std::clog, "my_geiger_TP_data : ", "INFO : ");
+
+    datatools::data_writer writer ("test_geiger_tp_data.xml",
+				   datatools::using_multi_archives);
+    writer.store(my_geiger_tp_data);
+    
+    datatools::data_reader reader("test_geiger_tp_data.xml",
+				  datatools::using_multi_archives);
+
+    snemo::digitization::geiger_tp_data my_geiger_tp_data2;
+    
+    reader.load(my_geiger_tp_data2);
+    my_geiger_tp_data2.tree_dump(std::clog, "my_geiger_tp_data2 from file test_geiger_tp_data.xml : ", "INFO : ");
+
+
+
     std::clog << "The end." << std::endl;
   }
 

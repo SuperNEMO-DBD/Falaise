@@ -44,12 +44,10 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     std::clog << "Xt bit    bit pos [3]    : " << my_calo_tp.is_xt() << std::endl;
     std::clog << "Spare bit bit pos [4]    : " << my_calo_tp.is_spare() << std::endl;
 
-    // Serialization:
     datatools::data_writer writer ("test_calo_tp.xml",
 			       datatools::using_multi_archives);
     writer.store(my_calo_tp);
-    
-    // Deserialization 
+
     datatools::data_reader reader("test_calo_tp.xml",
 				  datatools::using_multi_archives);
 

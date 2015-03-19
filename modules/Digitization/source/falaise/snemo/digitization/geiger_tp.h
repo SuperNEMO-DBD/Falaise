@@ -195,7 +195,7 @@ namespace snemo {
 			int32_t _clocktick_800ns_; //!< The timestamp of the geiger trigger primitive  
 			std::bitset<100> _gg_tp_; //!< The geiger trigger primitive bitset
 
-			//DATATOOLS_SERIALIZATION_DECLARATION();
+			DATATOOLS_SERIALIZATION_DECLARATION();
 
 		};
 

@@ -103,12 +103,10 @@ int main(int argc_, char **  argv_)
     
     my_calo_tp_data.tree_dump(std::clog, "my_calo_TP_data : ", "INFO : ");
 
-    // Serialization:
     datatools::data_writer writer ("test_calo_tp_data.xml",
 				   datatools::using_multi_archives);
     writer.store(my_calo_tp_data);
     
-    // Deserialization
     datatools::data_reader reader("test_calo_tp_data.xml",
 				  datatools::using_multi_archives);
 

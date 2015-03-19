@@ -16,7 +16,7 @@ namespace snemo {
   namespace digitization {
 
     // Serial tag for datatools::serialization::i_serializable interface :
-    //DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(geiger_tp, "snemo::digitalization::geiger_tp")
+   DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(geiger_tp, "snemo::digitalization::geiger_tp")
 
     geiger_tp::geiger_tp()
     {
@@ -94,6 +94,7 @@ namespace snemo {
 	      _gg_tp_.set(i + TP_BEGIN, 0);
 	    }
 	} 
+      _store |= STORE_GG_TP;
       return;
     }
    
@@ -120,6 +121,7 @@ namespace snemo {
 	{
 	  _gg_tp_.set(i + TRM_BIT0, row_tp_bitset[i]);
 	}
+      _store |= STORE_GG_TP;
       return;
     }
 
@@ -140,6 +142,7 @@ namespace snemo {
 	{
 	  _gg_tp_.set(TSM_BIT, 0);
 	}
+      _store |= STORE_GG_TP;
       return;
     }
 
@@ -159,6 +162,7 @@ namespace snemo {
 	{
 	  _gg_tp_.set(TTM_BIT, 0);
 	}
+      _store |= STORE_GG_TP;
       return;
     }
 
@@ -175,6 +179,7 @@ namespace snemo {
       grab_geom_id().set(mapping::BOARD_INDEX, board_id_);
       set_crate_id(crate_id_);
       set_board_id(board_id_);
+      _store |= STORE_GG_TP;
     }
 
    unsigned long geiger_tp::get_board_id() const
@@ -194,6 +199,7 @@ namespace snemo {
 	{
 	  _gg_tp_.set(i + BOARD_ID_BIT0, board_id_bitset[i]);
 	}
+      _store |= STORE_GG_TP;
       return;
     }
 
@@ -214,6 +220,7 @@ namespace snemo {
 	{
 	  _gg_tp_.set(i + CRATE_ID_BIT0, crate_id_bitset[i]);
 	}
+      _store |= STORE_GG_TP;
       return;
     }
 
@@ -261,7 +268,7 @@ namespace snemo {
 
     void geiger_tp::lock_gg_tp()
     {
-      DT_THROW_IF(is_locked_gg_tp(), std::logic_error, "Calorimeter TP is already locked ! ");
+      DT_THROW_IF(is_locked_gg_tp(), std::logic_error, "Geiger TP is already locked ! ");
       _check();
       _locked_gg_tp_ = true;
       return;
@@ -269,7 +276,7 @@ namespace snemo {
     
     void geiger_tp::unlock_gg_tp()
     {
-      DT_THROW_IF(!is_locked_gg_tp(), std::logic_error, "Calorimeter TP is already unlocked ! ");
+      DT_THROW_IF(!is_locked_gg_tp(), std::logic_error, "Geiger TP is already unlocked ! ");
       _locked_gg_tp_ = false;
       return;
     } 

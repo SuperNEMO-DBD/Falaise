@@ -30,7 +30,7 @@ namespace snemo {
   namespace digitization {		
 
     /// \brief Collection of geiger trigger primitive (geiger_tp)
-    class geiger_tp_data //: public datatools::i_serializable // or DATATOOLS_SERIALIZABLE_CLASS
+    class geiger_tp_data : public datatools::i_serializable // or DATATOOLS_SERIALIZABLE_CLASS
 		{
 		public : 
  
@@ -103,7 +103,7 @@ namespace snemo {
 			bool _locked_tps_; //!< TPS lock flag
 			geiger_tp_collection_type _geiger_tps_; //!< Collection of geigerrimeters tracker primitive
 
-			//DATATOOLS_SERIALIZATION_DECLARATION();
+			DATATOOLS_SERIALIZATION_DECLARATION();
 
 		};
 

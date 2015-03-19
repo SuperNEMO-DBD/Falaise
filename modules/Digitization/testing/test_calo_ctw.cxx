@@ -52,12 +52,10 @@ int main( int /* argc_ */, char ** /* argv_ */ )
       }
     std::clog << std::endl;
 
-    // Serialization:
     datatools::data_writer writer ("test_calo_ctw.xml",
 				   datatools::using_multi_archives);
     writer.store(my_calo_ctw);
     
-    // Deserialization 
     datatools::data_reader reader("test_calo_ctw.xml",
 				  datatools::using_multi_archives);
 

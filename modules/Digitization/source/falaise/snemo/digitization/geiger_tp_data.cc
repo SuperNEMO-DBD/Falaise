@@ -15,7 +15,7 @@ namespace snemo {
   namespace digitization {
 
     // Serial tag for datatools::serialization::i_serializable interface :
-    // DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(geiger_tp_data, "snemo::digitalization::geiger_tp_data")
+    DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(geiger_tp_data, "snemo::digitalization::geiger_tp_data")
 
     geiger_tp_data::geiger_tp_data()
     {
@@ -170,6 +170,8 @@ namespace snemo {
 				  const std::string & indent_,
 				  bool inherit_) const
     {
+      out_ << indent_ << title_ << std::endl;
+
       out_ << indent_ << datatools::i_tree_dumpable::tag
            << "Is locked TPs  : " << _locked_tps_ << std::endl;
 
