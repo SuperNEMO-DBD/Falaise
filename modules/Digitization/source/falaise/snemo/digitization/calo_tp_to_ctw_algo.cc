@@ -74,13 +74,13 @@ namespace snemo {
       if (my_calo_tp_.get_htm_multiplicity() != 0)
 	{
 	  unsigned int activated_zone_id = 0;	      
-	  if(my_calo_tp_.get_geom_id().get(calo_tp::BOARD_INDEX) > 9)
+	  if(my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) > 9)
 	    {
-	      activated_zone_id = (my_calo_tp_.get_geom_id().get(calo_tp::BOARD_INDEX) + BOARD_SHIFT_INDEX) / 2;
+	      activated_zone_id = (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) + BOARD_SHIFT_INDEX) / 2;
 	    }
 	  else
 	    {
-	      activated_zone_id = my_calo_tp_.get_geom_id().get(calo_tp::BOARD_INDEX) / 2;
+	      activated_zone_id = my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) / 2;
 	    }	      
 	  my_ctw_.set_zoning_bit(calo_ctw::ZONING_BIT0 + activated_zone_id, 1);	      
 	}          
@@ -110,7 +110,7 @@ namespace snemo {
       for(int i = 0; i < my_list_of_calo_tp_.size(); i++)
 	{
 	  a_calo_ctw_.grab_geom_id().set_type(1000);
-	  a_calo_ctw_.grab_geom_id().set_address(0, my_list_of_calo_tp_[0].get().get_geom_id().get(calo_tp::CRATE_INDEX), 10);
+	  a_calo_ctw_.grab_geom_id().set_address(0, my_list_of_calo_tp_[0].get().get_geom_id().get(mapping::CRATE_INDEX), 10);
 	  const calo_tp & my_calo_tp = my_list_of_calo_tp_[i].get();
 	  _fill_a_calo_ctw(my_calo_tp, a_calo_ctw_);	  
 	}

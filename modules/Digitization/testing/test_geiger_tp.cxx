@@ -26,7 +26,15 @@ int main( int /* argc_ */, char ** /* argv_ */ )
 
     snemo::digitization::geiger_tp my_geiger_tp;
     
-    my_geiger_tp.tree_dump(std::clog, "my_geiger_tp reseted : ", "INFO : ");
+    std::bitset<snemo::digitization::geiger_tp::TP_SIZE> my_tp_bitset(std::string("1111100101000001010100000101010000010101000001010110101"));
+
+    my_geiger_tp.set_gg_tp_bitset(my_tp_bitset);
+    my_geiger_tp.set_clocktick_800ns(5);
+    my_geiger_tp.set_tracker_row_mode(6);
+    my_geiger_tp.set_board_id(12);
+    my_geiger_tp.set_crate_id(2);
+    my_geiger_tp.lock_gg_tp();
+    my_geiger_tp.tree_dump(std::clog, "my_geiger_tp : ", "INFO : ");
 
     std::clog << "The end." << std::endl;
   }

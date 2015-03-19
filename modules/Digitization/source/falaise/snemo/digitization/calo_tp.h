@@ -26,6 +26,9 @@
 // - Bayeux/geomtools :
 #include <bayeux/geomtools/base_hit.h>
 
+// Ourselves :
+#include <snemo/digitization/mapping.h>
+
 namespace snemo {
   
   namespace digitization {
@@ -57,13 +60,6 @@ namespace snemo {
 				XT_BIT    = 3,
 				SPARE_BIT = 4
 			};
-
-			/// Electronic id index coming from a geom id	
-      enum tp_electronic_ID_index {
-				RACK_INDEX  = 0,
-				CRATE_INDEX = 1,
-				BOARD_INDEX = 2
-      };
 
 			/// Maximum number of channels by front-end board (FEB)
 			static const unsigned int MAX_NUMBER_OF_CHANNELS = 16;

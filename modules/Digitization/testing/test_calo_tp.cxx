@@ -44,6 +44,22 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     std::clog << "Xt bit    bit pos [3]    : " << my_calo_tp.is_xt() << std::endl;
     std::clog << "Spare bit bit pos [4]    : " << my_calo_tp.is_spare() << std::endl;
 
+    // Serialization:
+    datatools::data_writer writer ("test_calo_tp.xml",
+			       datatools::using_multi_archives);
+    writer.store(my_calo_tp);
+    
+    // Deserialization 
+    datatools::data_reader reader("test_calo_tp.xml",
+				  datatools::using_multi_archives);
+
+    snemo::digitization::calo_tp my_calo_tp2;
+    
+    reader.load(my_calo_tp2);
+    my_calo_tp2.tree_dump(std::clog, "my_calo_tp2 from file test_calo_tp.xml : ", "INFO : ");
+
+
+    // Reseting
     my_calo_tp.unlock_tp();
     my_calo_tp.reset();
     my_calo_tp.tree_dump(std::clog, "my_calo_tp reseted : ", "INFO : ");

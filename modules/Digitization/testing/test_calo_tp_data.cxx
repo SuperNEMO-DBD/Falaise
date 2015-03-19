@@ -102,6 +102,21 @@ int main(int argc_, char **  argv_)
       }
     
     my_calo_tp_data.tree_dump(std::clog, "my_calo_TP_data : ", "INFO : ");
+
+    // Serialization:
+    datatools::data_writer writer ("test_calo_tp_data.xml",
+				   datatools::using_multi_archives);
+    writer.store(my_calo_tp_data);
+    
+    // Deserialization
+    datatools::data_reader reader("test_calo_tp_data.xml",
+				  datatools::using_multi_archives);
+
+    snemo::digitization::calo_tp_data my_calo_tp_data2;
+    
+    reader.load(my_calo_tp_data2);
+    my_calo_tp_data2.tree_dump(std::clog, "my_calo_tp_data2 from file test_calo_tp_data.xml : ", "INFO : ");
+
     std::clog << "The end." << std::endl;
   }
 

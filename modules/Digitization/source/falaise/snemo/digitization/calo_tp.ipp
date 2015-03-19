@@ -17,7 +17,7 @@
 
 // - Bayeux/geomtools
 #include <geomtools/base_hit.ipp>
-	 
+
 namespace snemo {
   
   namespace digitization {
@@ -45,7 +45,7 @@ namespace snemo {
 				{
 					ar & boost::serialization::make_nvp ("TP", _tp_);
 				}
-
+			
 			return;
 		}
 

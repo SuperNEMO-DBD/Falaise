@@ -103,7 +103,7 @@ namespace snemo {
       DT_THROW_IF(!is_locked_tps(), std::logic_error, " Calorimeter TP collection is not locked ! ");
       for (int i = 0; i < _calo_tps_.size(); i++)
 	{
-	  if(_calo_tps_[i].get().get_clocktick_25ns() == clocktick_25ns_ && _calo_tps_[i].get().get_geom_id().get(calo_tp::CRATE_INDEX) == crate_number_)
+	  if(_calo_tps_[i].get().get_clocktick_25ns() == clocktick_25ns_ && _calo_tps_[i].get().get_geom_id().get(mapping::CRATE_INDEX) == crate_number_)
 	    {
 	      my_list_of_tps_per_clocktick_per_crate_.push_back(_calo_tps_[i]);
 	    }
@@ -170,6 +170,7 @@ namespace snemo {
 				  const std::string & indent_,
 				  bool inherit_) const
     {
+			
       out_ << indent_ << datatools::i_tree_dumpable::tag
            << "Is locked TPs  : " << _locked_tps_ << std::endl;
 

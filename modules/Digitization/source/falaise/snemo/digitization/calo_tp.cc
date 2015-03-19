@@ -23,7 +23,7 @@ namespace snemo {
       _locked_tp_ = false;
       _clocktick_25ns_ = -1;
       _tp_ = 0x0;
-      grab_geom_id().set(RACK_INDEX, 3);
+      grab_geom_id().set(mapping::RACK_INDEX, 3);
       return;
     }
 

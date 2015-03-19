@@ -52,7 +52,19 @@ int main( int /* argc_ */, char ** /* argv_ */ )
       }
     std::clog << std::endl;
 
+    // Serialization:
+    datatools::data_writer writer ("test_calo_ctw.xml",
+				   datatools::using_multi_archives);
+    writer.store(my_calo_ctw);
+    
+    // Deserialization 
+    datatools::data_reader reader("test_calo_ctw.xml",
+				  datatools::using_multi_archives);
 
+    snemo::digitization::calo_ctw my_calo_ctw2;
+    
+    reader.load(my_calo_ctw2);
+    my_calo_ctw2.tree_dump(std::clog, "my_calo_ctw2 from file test_calo_ctw.xml : ", "INFO : ");
 
     std::clog << "The end." << std::endl;
   }
