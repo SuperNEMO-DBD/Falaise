@@ -257,6 +257,8 @@ void ex01_inspect_category(const geomtools::manager & geo_mgr_, geometry_categor
   const geomtools::i_shape_3d & first_volume_solid = first_volume_logical.get_shape();
 
   // Check if the shape is a cylinder:
+  double first_volume_surf;
+  datatools::invalidate(first_volume_surf);
   double first_volume_vol;
   datatools::invalidate(first_volume_vol);
   if (first_volume_solid.get_shape_name() == "cylinder") {
@@ -267,6 +269,7 @@ void ex01_inspect_category(const geomtools::manager & geo_mgr_, geometry_categor
     std::cout << "Volume length: " << first_volume_cyl.get_z() / CLHEP::cm << " cm" << std::endl;
     std::cout << "Volume diameter: " << first_volume_cyl.get_diameter() / CLHEP::mm << " mm" << std::endl;
     first_volume_vol = first_volume_cyl.get_volume();
+    first_volume_surf = first_volume_cyl.get_surface(geomtools::cylinder::FACE_SIDE);
   } else {
     DT_THROW_IF(true, std::logic_error,
                 "Volume solid has unsupported solid shape '" << first_volume_solid.get_shape_name() << "'!");
@@ -275,7 +278,11 @@ void ex01_inspect_category(const geomtools::manager & geo_mgr_, geometry_categor
   DT_THROW_IF(!datatools::is_valid(first_volume_vol), std::logic_error,
               "Cannot compute the volume of this shape!");
 
+  DT_THROW_IF(!datatools::is_valid(first_volume_surf), std::logic_error,
+              "Cannot compute the side surface of this shape!");
+
   std::cout << "Volume: " << first_volume_vol / CLHEP::mm3 << " mm3" << std::endl;
+  std::cout << "Surface: " << first_volume_surf / CLHEP::mm2 << " mm2" << std::endl;
 
   // Fetch the material name associated to the first volume:
   const std::string & material_ref = first_volume_logical.get_material_ref();
@@ -316,9 +323,14 @@ void ex01_inspect_category(const geomtools::manager & geo_mgr_, geometry_categor
   // Compute the total mass of the selected volumes:
   double total_volume_mass =
     number_of_volumes * first_volume_density * first_volume_vol;
+  double total_volume_surf =
+    number_of_volumes * first_volume_surf;
 
-  std::cout << "Total mass for volumes with category '" << display_name(gcat_)<< "' : "
+  std::cout << "Total mass for volumes with category '" << display_name(gcat_) << "' : "
             << total_volume_mass / CLHEP::kg << " kg" << std::endl;
+
+  std::cout << "Total (side) surface for volumes with category '" << display_name(gcat_) << "' : "
+            << total_volume_surf / CLHEP::m2 << " m2" << std::endl;
 
   return;
 }
