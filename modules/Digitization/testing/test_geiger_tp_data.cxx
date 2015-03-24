@@ -31,7 +31,6 @@ int main(int argc_, char **  argv_)
       gg_tp.set_hit_id(12);
       gg_tp.grab_geom_id().set_type(42);
       // gg_tp.grab_geom_id().set_address(3,1,7);
-      gg_tp.set_address(3,1,7);
       gg_tp.grab_auxiliaries().store("author", "guillaume");
       gg_tp.grab_auxiliaries().store_flag("mock");
       gg_tp.set_clocktick_800ns(15);
@@ -41,7 +40,6 @@ int main(int argc_, char **  argv_)
       snemo::digitization::geiger_tp & gg_tp = my_geiger_tp_data.add();
       gg_tp.set_hit_id(17);
       gg_tp.grab_geom_id().set_type(42);
-      gg_tp.set_address(3,1,15);
       gg_tp.grab_auxiliaries().store("author", "guillaume");
       gg_tp.grab_auxiliaries().store_flag("mock");
       gg_tp.set_clocktick_800ns(15);
@@ -51,7 +49,6 @@ int main(int argc_, char **  argv_)
       snemo::digitization::geiger_tp & gg_tp = my_geiger_tp_data.add();
       gg_tp.set_hit_id(17);
       gg_tp.grab_geom_id().set_type(42);
-      gg_tp.set_address(3,1,2);
       gg_tp.grab_auxiliaries().store("author", "guillaume");
       gg_tp.grab_auxiliaries().store_flag("mock");
       gg_tp.set_clocktick_800ns(18);
@@ -61,7 +58,6 @@ int main(int argc_, char **  argv_)
       snemo::digitization::geiger_tp & gg_tp = my_geiger_tp_data.add();
       gg_tp.set_hit_id(17);
       gg_tp.grab_geom_id().set_type(42);
-      gg_tp.set_address(3,0,12);
       gg_tp.grab_auxiliaries().store("author", "guillaume");
       gg_tp.grab_auxiliaries().store_flag("mock");
       gg_tp.set_clocktick_800ns(20);
@@ -71,7 +67,6 @@ int main(int argc_, char **  argv_)
       snemo::digitization::geiger_tp & gg_tp = my_geiger_tp_data.add();
       gg_tp.set_hit_id(17);
       gg_tp.grab_geom_id().set_type(42);
-      gg_tp.set_address(3,0,18);
       gg_tp.grab_auxiliaries().store("author", "guillaume");
       gg_tp.grab_auxiliaries().store_flag("mock");
       gg_tp.set_clocktick_800ns(20);

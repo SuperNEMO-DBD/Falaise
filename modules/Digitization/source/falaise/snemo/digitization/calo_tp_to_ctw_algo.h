@@ -1,4 +1,4 @@
-// calo_algo_tp_to_ctw.h
+// calo_tp_to_ctw_algo.h
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 

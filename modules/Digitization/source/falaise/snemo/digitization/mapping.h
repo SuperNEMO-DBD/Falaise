@@ -19,6 +19,10 @@ namespace snemo {
 	CRATE_INDEX = 1,
 	BOARD_INDEX = 2
       };
+
+			static const int32_t TRACKER_CONTROL_BOARD_TYPE = 42;
+			static const int32_t CALORIMETER_CONTROL_BOARD_TYPE = 666;
+
     };
 	       
   } // end of namespace digitization

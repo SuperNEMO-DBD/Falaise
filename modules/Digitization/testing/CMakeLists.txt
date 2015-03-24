@@ -1,4 +1,3 @@
-
 # - List of test programs:
 set(FalaiseDigitizationPlugin_TESTS
   test_calo_tp.cxx
@@ -8,6 +7,10 @@ set(FalaiseDigitizationPlugin_TESTS
   test_calo_tp_to_ctw_algo.cxx
   test_geiger_tp.cxx
   test_geiger_tp_data.cxx
+  test_geiger_ctw.cxx
+  test_geiger_ctw_data.cxx
+  test_geiger_tp_to_ctw_algo.cxx
+  test_calibrated_data_reading.cxx
   )
 
 # Use C++11

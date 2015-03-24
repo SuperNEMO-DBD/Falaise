@@ -81,12 +81,6 @@ namespace snemo {
 				CONTROL_BIT3 = 17
 			};
 
-			enum ctw_electronic_ID_index {
-				RACK_INDEX  = 0,
-				CRATE_INDEX = 1,
-				BOARD_INDEX = 2
-			};
-
 			/// Maximum number of channels by control board (CB)
 			static const unsigned int MAX_NUMBER_OF_CHANNELS = 20;
 

@@ -1,4 +1,4 @@
-// calo_algo_tp_to_ctw.cc
+// calo_tp_to_ctw_algo.cc
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
@@ -36,7 +36,6 @@ namespace snemo {
     void calo_tp_to_ctw_algo::initialize()
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Calo tp to ctw algo is already initialized ! ")
-
 
       _initialized_ = true;
       return;
@@ -137,7 +136,7 @@ namespace snemo {
 	}
       return;
     }
-
+    
   } // end of namespace digitization
 
 } // end of namespace snemo

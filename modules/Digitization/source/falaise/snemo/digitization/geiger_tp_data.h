@@ -40,10 +40,10 @@ namespace snemo {
 			/// Destructor
 			virtual ~geiger_tp_data();
 
-			/// Handle to a geigerrimeter trigger primitive
+			/// Handle to a geiger trigger primitive
 			typedef datatools::handle<geiger_tp> geiger_tp_handle_type;
 
-			/// Collection of handles of geigerrimeter trigger primitive
+			/// Collection of handles of geiger trigger primitive
 			typedef std::vector<geiger_tp_handle_type> geiger_tp_collection_type;
 			
 			/// Return the index of the geiger TP with minimum clocktick
@@ -79,10 +79,10 @@ namespace snemo {
 			/// Reset the list of tps
 			void reset_tps();
 
-			/// Add a geigerrimeter trigger primitive at the end of the collection
+			/// Add a geiger trigger primitive at the end of the collection
 			geiger_tp & add();
 
-			/// Return the const collection of geigerrimeters trigger primitive
+			/// Return the const collection of geigers trigger primitive
 			const geiger_tp_collection_type & get_geiger_tps() const;
 
 			/// Reset
@@ -101,7 +101,7 @@ namespace snemo {
 		private : 
 
 			bool _locked_tps_; //!< TPS lock flag
-			geiger_tp_collection_type _geiger_tps_; //!< Collection of geigerrimeters tracker primitive
+			geiger_tp_collection_type _geiger_tps_; //!< Collection of geigers tracker primitive
 
 			DATATOOLS_SERIALIZATION_DECLARATION();
 

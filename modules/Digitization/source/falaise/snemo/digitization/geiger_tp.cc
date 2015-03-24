@@ -172,11 +172,8 @@ namespace snemo {
       return;
     }
 
-    void geiger_tp::set_address(unsigned int rack_id_, unsigned int crate_id_, unsigned int board_id_)
+    void geiger_tp::_set_address(unsigned long rack_id_, unsigned long crate_id_, unsigned long board_id_)
     {
-      grab_geom_id().set(mapping::RACK_INDEX, rack_id_);
-      grab_geom_id().set(mapping::CRATE_INDEX, crate_id_);
-      grab_geom_id().set(mapping::BOARD_INDEX, board_id_);
       set_crate_id(crate_id_);
       set_board_id(board_id_);
       _store |= STORE_GG_TP;
@@ -189,7 +186,7 @@ namespace snemo {
       return board_id_word.to_ulong();
     }
 
-    void geiger_tp::set_board_id(unsigned int board_id_)
+    void geiger_tp::set_board_id(unsigned long board_id_)
     {
       DT_THROW_IF(is_locked_gg_tp(), std::logic_error, "Board ID can't be set, geiger TP is locked ! ");  
       DT_THROW_IF(board_id_ > 19, std::range_error, "Unsupported board ID ["<< board_id_ <<"] ! ");
@@ -210,7 +207,7 @@ namespace snemo {
       return crate_id_word.to_ulong();
     }
 
-    void geiger_tp::set_crate_id(unsigned int crate_id_)
+    void geiger_tp::set_crate_id(unsigned long crate_id_)
     {
       DT_THROW_IF(is_locked_gg_tp(), std::logic_error, "Crate ID can't be set, geiger TP is locked ! ");  
       DT_THROW_IF(crate_id_ > 2, std::range_error, "Unsupported crate ID ["<< crate_id_ <<"] ! ");
@@ -318,6 +315,21 @@ namespace snemo {
       DT_THROW_IF(!is_valid(), std::logic_error, "Clocktick is not valid ! ");
     }
 
+    void geiger_tp::initialize(unsigned long rack_id_, unsigned long crate_id_, unsigned long board_id_, bool trigger_mode_ ,bool trigger_side_, unsigned int number_of_rows_, std::bitset<TP_SIZE> & gg_tp_word_)
+    { 
+      set_tracker_trigger_mode(trigger_mode_);
+      set_tracker_row_mode(number_of_rows_);
+      set_tracker_side_mode(trigger_side_);
+      set_gg_tp_bitset(gg_tp_word_);
+      
+      grab_geom_id().set(mapping::RACK_INDEX,  rack_id_);
+      grab_geom_id().set(mapping::CRATE_INDEX, crate_id_);
+      grab_geom_id().set(mapping::BOARD_INDEX, board_id_);
+
+      _set_address(rack_id_, crate_id_, board_id_);
+
+      return ;
+    }
   } // end of namespace digitization
 
 } // end of namespace snemo

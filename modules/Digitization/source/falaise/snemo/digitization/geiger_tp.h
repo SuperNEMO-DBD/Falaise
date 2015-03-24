@@ -90,7 +90,10 @@ namespace snemo {
 
 			/// Destructor
 			virtual ~geiger_tp();
-  
+
+
+			void initialize(unsigned long rack_id_, unsigned long crate_id_, unsigned long board_id_, bool trigger_mode_ ,bool trigger_side_, unsigned int number_of_rows_, std::bitset<TP_SIZE> & gg_tp_word_);
+ 
 			/// Return the timestamp of the geiger trigger primitive
 			int32_t get_clocktick_800ns() const;
 
@@ -136,20 +139,17 @@ namespace snemo {
 			/// Return the const reference to the geiger board address + spare bitset
 			void get_address_bitset(boost::dynamic_bitset<> & gg_address_word_) const;
 
-			/// Set the address id for a geiger tp 
-			void set_address(unsigned int rack_id_, unsigned int crate_id_, unsigned int board_id_);
-
 			/// Get the board ID (ID = 0-19)
 			unsigned long get_board_id() const;
 
 			/// Set the board ID (ID = 0-19)
-			void set_board_id(unsigned int board_id_);
+			void set_board_id(unsigned long board_id_);
 
 			/// Get the crate ID (ID = 0-2)
 			unsigned long get_crate_id() const;
 
 			/// Set the crate ID (ID = 0-2)
-			void set_crate_id(unsigned int crate_id_);
+			void set_crate_id(unsigned long crate_id_);
 
 			/// Return the const reference to the geiger Tracker Trigger ID (TTID) bitset
 			void get_ttid_bitset(boost::dynamic_bitset<> & gg_ttid_word_) const;
@@ -188,6 +188,10 @@ namespace snemo {
 
 			/// Check if a geiger TP is available
 			void _check();
+
+			/// Set the address id for a geiger tp 
+			void _set_address(unsigned long rack_id_, unsigned long crate_id_, unsigned long board_id_);
+
 
 		private : 
 
