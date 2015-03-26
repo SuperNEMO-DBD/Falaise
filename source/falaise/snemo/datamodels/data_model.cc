@@ -42,7 +42,7 @@ namespace snemo {
       return lbl;
     }
 
-    const std::string data_info::UNIFIED_DATA_LABEL    = "UD";
+    const std::string data_info::UNIFIED_DATA_LABEL = "UD";
 
     const std::string & data_info::default_unified_data_label()
     {
