@@ -428,9 +428,8 @@ namespace snemo {
       }// end of helix pattern
 
       // Save new vertex
-      int spot_id = 0;
       for (std::map<std::string, geomtools::vector_3d>::const_iterator
-             it = vertices.begin(); it != vertices.end(); ++it, ++spot_id) {
+             it = vertices.begin(); it != vertices.end(); ++it) {
         // Check vertex side is on the same side as the trajectory
         if ((side == snemo::geometry::utils::SIDE_BACK  && it->second.x() > 0.0) ||
             (side == snemo::geometry::utils::SIDE_FRONT && it->second.x() < 0.0)) {
@@ -439,7 +438,7 @@ namespace snemo {
         snemo::datamodel::particle_track::handle_spot hBS(new geomtools::blur_spot);
         vertices_.push_back(hBS);
         geomtools::blur_spot & spot = hBS.grab();
-        spot.set_hit_id(spot_id);
+        spot.set_hit_id(vertices_.size());
         spot.grab_auxiliaries().update(snemo::datamodel::particle_track::vertex_type_key(),
                                        it->first);
         // Future: determine the GID of the scintillator block or source strip
