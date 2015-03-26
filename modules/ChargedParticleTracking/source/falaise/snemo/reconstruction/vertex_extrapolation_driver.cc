@@ -189,6 +189,9 @@ namespace snemo {
         = {gveto_locator.get_wall_window_z(side, snemo::geometry::gveto_locator::WALL_BOTTOM),
            gveto_locator.get_wall_window_z(side, snemo::geometry::gveto_locator::WALL_TOP)};
 
+      // Check Geiger cell location wrt to vertex extrapolation
+      this->_check_vertices_(trajectory_);
+
       // Look first if trajectory pattern is an helix or not:
       const snemo::datamodel::base_trajectory_pattern & a_track_pattern = trajectory_.get_pattern();
       const std::string & a_pattern_id = a_track_pattern.get_pattern_id();
@@ -285,10 +288,14 @@ namespace snemo {
 
         // Create a mutable line object to set the new position
         geomtools::line_3d * a_mutable_line = const_cast<geomtools::line_3d *>(&a_line);
-        a_mutable_line->set_first(jt1->first);
-        a_mutable_line->set_last(jt2->first);
-        vertices[jt1->second] = jt1->first;
-        vertices[jt2->second] = jt2->first;
+        if (_use_vertices_[jt1->second]) {
+          a_mutable_line->set_first(jt1->first);
+          vertices[jt1->second] = jt1->first;
+        }
+        if (_use_vertices_[jt2->second]) {
+          a_mutable_line->set_last(jt2->first);
+          vertices[jt2->second] = jt2->first;
+        }
       }// end of line pattern
       else if (a_pattern_id == snemo::datamodel::helix_trajectory_pattern::pattern_id()) {
         const snemo::datamodel::helix_trajectory_pattern * ptr_helix
@@ -389,12 +396,12 @@ namespace snemo {
 
           // Keep smallest distance but remove also too long extrapolation
           if (delta1 < delta2) {
-            if (delta1 > min_distances.first || delta1 > 1.0) continue;
+            if (delta1 > min_distances.first) continue;
             new_ts.first = t;
             category_flags.first = category;
             min_distances.first = delta1;
           } else {
-            if (delta2 > min_distances.second || delta2 > 1.0) continue;
+            if (delta2 > min_distances.second) continue;
             new_ts.second = t;
             category_flags.second = category;
             min_distances.second = delta2;
@@ -405,12 +412,18 @@ namespace snemo {
         // Create a mutable helix object to set the new angle
         geomtools::helix_3d * a_mutable_helix = const_cast<geomtools::helix_3d *>(&a_helix);
         if (datatools::is_valid(new_ts.first)) {
-          a_mutable_helix->set_t1(new_ts.first);
-          vertices[category_flags.first] = a_mutable_helix->get_first();
+          const std::string & category = category_flags.first;
+          if (_use_vertices_[category]) {
+            a_mutable_helix->set_t1(new_ts.first);
+            vertices[category] = a_mutable_helix->get_first();
+          }
         }
         if (datatools::is_valid(new_ts.second)) {
-          a_mutable_helix->set_t2(new_ts.second);
-          vertices[category_flags.second] = a_mutable_helix->get_last();
+          const std::string & category = category_flags.second;
+          if (_use_vertices_[category]) {
+            a_mutable_helix->set_t2(new_ts.second);
+            vertices[category] = a_mutable_helix->get_last();
+          }
         }
       }// end of helix pattern
 
@@ -487,6 +500,47 @@ namespace snemo {
       }
 
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");
+      return;
+    }
+
+    void vertex_extrapolation_driver::_check_vertices_(const snemo::datamodel::tracker_trajectory & trajectory_)
+    {
+      if (! trajectory_.has_cluster()) {
+        DT_LOG_TRACE(get_logging_priority(), "No tracker cluster are attached to tracker trajectory !");
+        return;
+      }
+      // Reset values of booleans
+      namespace sdm = snemo::datamodel;
+      _use_vertices_[sdm::particle_track::vertex_on_source_foil_label()] = false;
+      _use_vertices_[sdm::particle_track::vertex_on_main_calorimeter_label()] = false;
+      _use_vertices_[sdm::particle_track::vertex_on_gamma_veto_label()] = false;
+      _use_vertices_[sdm::particle_track::vertex_on_gamma_veto_label()] = false;
+
+      const snemo::datamodel::tracker_cluster & a_cluster = trajectory_.get_cluster();
+      DT_LOG_TRACE(get_logging_priority(), "Cluster #" << a_cluster.get_hit_id());
+      const snemo::datamodel::calibrated_tracker_hit::collection_type & the_hits = a_cluster.get_hits();
+      for (snemo::datamodel::calibrated_tracker_hit::collection_type::const_iterator
+             ihit = the_hits.begin(); ihit != the_hits.end(); ++ihit) {
+        const snemo::datamodel::calibrated_tracker_hit & a_hit = ihit->get();
+        const geomtools::geom_id & a_gid = a_hit.get_geom_id();
+
+        // Extract layer
+        const snemo::geometry::gg_locator & gg_locator = _locator_plugin_->get_gg_locator();
+        const uint32_t layer = gg_locator.extract_layer(a_gid);
+        if (layer <= 1) {
+          // Extrapolate vertex to the foil if the 2 first GG layers are fired
+          DT_LOG_TRACE(get_logging_priority(), "Found Geiger cells in the first two layers !");
+          _use_vertices_[sdm::particle_track::vertex_on_source_foil_label()] = true;
+        }
+        const uint32_t side = gg_locator.extract_side(a_gid);
+        if (layer >= gg_locator.get_number_of_layers(side) - 1) {
+          _use_vertices_[sdm::particle_track::vertex_on_main_calorimeter_label()] = true;
+        }
+        const uint32_t row = gg_locator.extract_row(a_gid);
+        if (row <= 1 || row >= gg_locator.get_number_of_rows(side) - 1) {
+          _use_vertices_[sdm::particle_track::vertex_on_x_calorimeter_label()] = true;
+        }
+      }
       return;
     }
 

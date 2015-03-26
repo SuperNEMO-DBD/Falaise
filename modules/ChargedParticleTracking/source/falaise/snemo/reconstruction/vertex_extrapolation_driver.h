@@ -107,10 +107,12 @@ namespace snemo {
 
     private:
 
-      /// Measure vertex on the calorimeter walls and source foil
-      void _measure_vertices_
-      (const snemo::datamodel::tracker_trajectory               & trajectory_,
-       snemo::datamodel::particle_track::vertex_collection_type & vertices_);
+      /// Check reliability of vertices extrapolation given Geiger cells
+      void _check_vertices_(const snemo::datamodel::tracker_trajectory & trajectory_);
+
+      /// Measure vertices on the calorimeter walls and source foil
+      void _measure_vertices_(const snemo::datamodel::tracker_trajectory & trajectory_,
+                              snemo::datamodel::particle_track::vertex_collection_type & vertices_);
 
     private:
 
@@ -118,6 +120,7 @@ namespace snemo {
       datatools::logger::priority _logging_priority_;           //!< Logging priority
       const geomtools::manager * _geometry_manager_;            //!< The SuperNEMO geometry manager
       const snemo::geometry::locator_plugin * _locator_plugin_; //!< The SuperNEMO locator plugin
+      std::map<std::string, bool> _use_vertices_; //!< Vertices reliability
     };
 
   }  // end of namespace reconstruction
