@@ -155,12 +155,12 @@ namespace snemo {
         return;
       }
 
-      const snemo::datamodel::particle_track::vertex_collection_type & the_vertices
-        = particle_.get_vertices();
-      for (snemo::datamodel::particle_track::vertex_collection_type::const_iterator
+      snemo::datamodel::particle_track::vertex_collection_type & the_vertices
+        = particle_.grab_vertices();
+      for (snemo::datamodel::particle_track::vertex_collection_type::iterator
              ivertex = the_vertices.begin();
            ivertex != the_vertices.end(); ++ivertex) {
-        const geomtools::blur_spot & a_vertex = ivertex->get();
+        geomtools::blur_spot & a_vertex = ivertex->grab();
 
         if (get_logging_priority() >= datatools::logger::PRIO_TRACE) {
           DT_LOG_TRACE(get_logging_priority(), "Vertex:");
@@ -188,8 +188,8 @@ namespace snemo {
               continue;
             }
 
-            // Tolerance must be understood as 'skin' tolerance
-            // so must be multiplied by a factor of 2
+            // Tolerance must be understood as 'skin' tolerance so must be
+            // multiplied by a factor of 2
             const double tolerance = _matching_tolerance_;
             if (the_mapping.check_inside(*ginfo_ptr, a_vertex.get_position(), tolerance, true)) {
               DT_LOG_DEBUG(get_logging_priority(), "Found matching calorimeter with the following geom_id " << a_gid);
@@ -205,6 +205,9 @@ namespace snemo {
             snemo::datamodel::calibrated_calorimeter_hit * mutable_hit
               = const_cast<snemo::datamodel::calibrated_calorimeter_hit *>(&(a_calo_hit));
             mutable_hit->grab_auxiliaries().update_flag("__associated");
+            // Set the geom_id of the corresponding vertex to the calorimeter
+            // hit geom_id
+            a_vertex.set_geom_id(gid);
           }
         }// end of calorimeter hits
 
