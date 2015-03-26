@@ -197,7 +197,8 @@ namespace snemo {
       const std::string & a_pattern_id = a_track_pattern.get_pattern_id();
 
       // Extrapolated vertices:
-      std::map<std::string, geomtools::vector_3d> vertices;
+      typedef std::map<std::string, geomtools::vector_3d> vertex_dict_type;
+      vertex_dict_type vertices;
 
       // Add a property into 'blur_spot' auxiliaries to refer to the hit calo:
       std::string calo_category_flag;
@@ -209,8 +210,8 @@ namespace snemo {
         const geomtools::vector_3d & last  = a_line.get_last();
         const geomtools::vector_3d direction = first - last;
 
-        typedef std::map<geomtools::vector_3d, std::string> vertex_dict_type;
-        vertex_dict_type vtxlist;
+        typedef std::map<geomtools::vector_3d, std::string> vertex_list_type;
+        vertex_list_type vtxlist;
         // Source foil:
         {
           DT_LOG_TRACE(get_logging_priority(), "Looking for vertex on source foil...");
@@ -268,9 +269,9 @@ namespace snemo {
         std::pair<double, double> min_distances;
         datatools::infinity(min_distances.first);
         datatools::infinity(min_distances.second);
-        vertex_dict_type::const_iterator jt1 = vtxlist.begin();
-        vertex_dict_type::const_iterator jt2 = vtxlist.begin();
-        for (vertex_dict_type::const_iterator it = vtxlist.begin();
+        vertex_list_type::const_iterator jt1 = vtxlist.begin();
+        vertex_list_type::const_iterator jt2 = vtxlist.begin();
+        for (vertex_list_type::const_iterator it = vtxlist.begin();
              it != vtxlist.end(); ++it) {
           const double l1 = (first - it->first).mag();
           const double l2 = (last - it->first).mag();
@@ -428,8 +429,7 @@ namespace snemo {
       }// end of helix pattern
 
       // Save new vertex
-      for (std::map<std::string, geomtools::vector_3d>::const_iterator
-             it = vertices.begin(); it != vertices.end(); ++it) {
+      for (vertex_dict_type::const_iterator it = vertices.begin(); it != vertices.end(); ++it) {
         // Check vertex side is on the same side as the trajectory
         if ((side == snemo::geometry::utils::SIDE_BACK  && it->second.x() > 0.0) ||
             (side == snemo::geometry::utils::SIDE_FRONT && it->second.x() < 0.0)) {
