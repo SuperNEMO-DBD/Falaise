@@ -36,7 +36,7 @@
 // Third party:
 // - Boost:
 #include <boost/scoped_ptr.hpp>
-// - Bayuex/dpp :
+// - Bayeux/dpp :
 #include <dpp/base_module.h>
 
 namespace geomtools {
