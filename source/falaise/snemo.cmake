@@ -78,6 +78,8 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/processing/base_tracker_fitter.h
   snemo/processing/services.h
 
+  snemo/processing/base_gamma_builder.h
+
   snemo/cuts/event_header_cut.h
   snemo/cuts/simulated_data_cut.h
   snemo/cuts/calibrated_data_cut.h
@@ -129,6 +131,8 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/processing/base_tracker_clusterizer.cc
   snemo/processing/base_tracker_fitter.cc
   snemo/processing/services.cc
+
+  snemo/processing/base_gamma_builder.cc
 
   snemo/simulation/cosmic_muon_generator.cc
   snemo/simulation/gg_step_hit_processor.cc
