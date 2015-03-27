@@ -27,6 +27,9 @@
 // - Bayeux/geomtools :
 #include <bayeux/geomtools/base_hit.h>
 
+// This project : 
+#include <snemo/digitization/mapping.h>
+
 namespace snemo {
   
   namespace digitization {
@@ -89,6 +92,12 @@ namespace snemo {
 
       /// Destructor
       virtual ~calo_ctw();
+
+			/// Set the header with valid values
+			void set_header(int32_t hit_id_,
+											const geomtools::geom_id & electronic_id_,	 
+											int32_t clocktick_25ns_,
+											wall_type wall_);	
 
 			/// Set the wall type 
 			/// @param type_ The type of wall associated to a ctw

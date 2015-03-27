@@ -85,6 +85,9 @@ namespace snemo {
 			/// Return the const collection of calorimeters trigger primitive
 			const calo_tp_collection_type & get_calo_tps() const;
 
+			/// Return the mutable collection of calorimeters trigger primitive
+			calo_tp_collection_type & grab_calo_tps();
+
       /// Reset
       void reset();
 

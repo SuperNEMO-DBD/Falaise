@@ -38,7 +38,7 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     my_calo_tp.tree_dump(std::clog, "my_calo_tp mock : ", "INFO : ");
     my_calo_tp.lock_tp();
 
-    std::clog << "Htm multiplicity is : " << my_calo_tp.get_htm_multiplicity() << std::endl;
+    std::clog << "Htm multiplicity is        " << my_calo_tp.get_htm_multiplicity() << std::endl;
     std::clog << "Htm bits  bit pos [1][0] : " << my_calo_tp.get_htm_bits() << std::endl;
     std::clog << "Lto bit   bit pos [2]    : " << my_calo_tp.is_lto() << std::endl;
     std::clog << "Xt bit    bit pos [3]    : " << my_calo_tp.is_xt() << std::endl;

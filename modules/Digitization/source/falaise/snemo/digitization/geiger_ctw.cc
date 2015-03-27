@@ -33,15 +33,13 @@ namespace snemo {
     }
 
     void geiger_ctw::set_header(int32_t hit_id_,
-				unsigned long crate_id_,
-				int32_t clocktick_)
+				const geomtools::geom_id & electronic_id_,
+				int32_t clocktick_800ns_)
     {
+      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Geiger CTW is locked !) ");
       set_hit_id(hit_id_);
-      grab_geom_id().set_type(mapping::TRACKER_CONTROL_BOARD_TYPE);
-      grab_geom_id().set(mapping::RACK_INDEX,  5);
-      grab_geom_id().set(mapping::CRATE_INDEX, crate_id_);
-      grab_geom_id().set(mapping::BOARD_INDEX, 10);
-      set_clocktick_800ns(clocktick_);
+      set_geom_id(electronic_id_);
+      set_clocktick_800ns(clocktick_800ns_);
       return;
     }
 
@@ -52,7 +50,7 @@ namespace snemo {
 
     void geiger_ctw::set_clocktick_800ns(int32_t value_)
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Clocktick can't be set, geiger crate TW is locked !) ");
+      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Clocktick can't be set, Geiger CTW is locked !) ");
       if(value_ <= INVALID_CLOCKTICK)
 	{
 	  reset_clocktick_800ns();
@@ -72,7 +70,7 @@ namespace snemo {
 
     void geiger_ctw::reset_clocktick_800ns()
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Clocktick can't be reset, geiger crate TW is locked !) ");
+      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Clocktick can't be reset, Geiger CTW is locked !) ");
       _clocktick_800ns_ = INVALID_CLOCKTICK;
       _store &= ~STORE_CLOCKTICK_800NS;
       return;
@@ -120,7 +118,7 @@ namespace snemo {
 
     void geiger_ctw::lock_ctw()
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Geiger crate TW is already locked ! ");
+      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Geiger CTW is already locked ! ");
       _check();
       _locked_ctw_ = true;
       return;
@@ -128,14 +126,14 @@ namespace snemo {
     
     void geiger_ctw::unlock_ctw()
     {
-      DT_THROW_IF(!is_locked_ctw(), std::logic_error, "Geiger crate TW is already unlocked ! ");
+      DT_THROW_IF(!is_locked_ctw(), std::logic_error, "Geiger CTW is already unlocked ! ");
       _locked_ctw_ = false;
       return;
     } 
 
     void geiger_ctw::reset_tw_bitset()
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Bitset word can't be reset, geiger crate TW is locked ! ");
+      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Bitset word can't be reset, Geiger CTW is locked ! ");
       _gg_ctw_ = 0x0;
       _store &= ~STORE_GG_CTW;
       return;

@@ -59,8 +59,8 @@ namespace snemo {
 
 			/// Preliminary initialization for ctw object
 			void set_header(int32_t hit_id_,
-											unsigned long crate_id_,
-											int32_t clocktick_);
+											const geomtools::geom_id & electronic_id_,
+											int32_t clocktick_800ns_);
 
       /// Return the timestamp of the geiger crate trigger word 
       int32_t get_clocktick_800ns() const;

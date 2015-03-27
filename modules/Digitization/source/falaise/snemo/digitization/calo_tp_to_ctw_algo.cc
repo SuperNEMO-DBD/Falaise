@@ -35,8 +35,7 @@ namespace snemo {
 
     void calo_tp_to_ctw_algo::initialize()
     {
-      DT_THROW_IF(is_initialized(), std::logic_error, "Calo tp to ctw algo is already initialized ! ")
-
+      DT_THROW_IF(is_initialized(), std::logic_error, "Calo tp to ctw algo is already initialized ! ");
       _initialized_ = true;
       return;
     }
@@ -122,7 +121,7 @@ namespace snemo {
 
       for(int32_t i = tp_data_.get_clocktick_min(); i <= tp_data_.get_clocktick_max(); i++)
 	{
-	  for(int j = 0 ; j < 3 ; j++) //crate number
+	  for(int32_t j = 0 ; j <= mapping::MAX_NUMBER_OF_CRATE ; j++) 
 	    {	  
 	      std::vector<datatools::handle<calo_tp> > tp_list_per_clocktick_per_crate;
 	      tp_data_.get_list_of_tp_per_clocktick_per_crate(i,j,tp_list_per_clocktick_per_crate);

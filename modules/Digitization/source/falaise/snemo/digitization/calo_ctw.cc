@@ -33,6 +33,19 @@ namespace snemo {
       return;
     }
 
+    void calo_ctw::set_header(int32_t hit_id_,
+			      const geomtools::geom_id & electronic_id_,
+			      int32_t clocktick_25ns_,
+			      wall_type wall_)
+    {
+      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Calorimeter CTW is locked !) ");
+      set_hit_id(hit_id_);
+      set_geom_id(electronic_id_);
+      set_clocktick_25ns(clocktick_25ns_);
+      set_wall(wall_);
+      return;
+    }	
+
     void calo_ctw::set_wall(wall_type type_)
     {
       DT_THROW_IF(is_locked_ctw(), std::logic_error, "Wall can't be set, calorimeter crate TW is locked !) ");

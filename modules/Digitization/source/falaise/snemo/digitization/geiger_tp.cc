@@ -32,6 +32,34 @@ namespace snemo {
       return;
     }
 
+    void geiger_tp::set_header(int32_t hit_id_,
+			       const geomtools::geom_id & electronic_id_,
+			       int32_t clocktick_800ns_,
+			       bool trigger_mode_,
+			       bool trigger_side_, 
+			       unsigned int number_of_rows_)
+    {    
+      DT_THROW_IF(is_locked_gg_tp(), std::logic_error, "Geiger TP is locked !) ");
+      set_hit_id(hit_id_);
+      set_geom_id(electronic_id_);
+      set_clocktick_800ns(clocktick_800ns_);
+      set_tracker_trigger_mode(trigger_mode_);
+      set_tracker_row_mode(number_of_rows_);
+      set_tracker_side_mode(trigger_side_);
+      _set_address(electronic_id_);
+
+      _store |= STORE_CLOCKTICK_800NS;
+      _store |= STORE_GG_TP;
+      return ;
+    }
+
+    void geiger_tp::set_data(std::bitset<TP_SIZE> & gg_tp_word_)
+    {
+      DT_THROW_IF(is_locked_gg_tp(), std::logic_error, "Geiger TP is locked !) ");
+      set_gg_tp_bitset(gg_tp_word_);
+      return;
+    }
+			     
     int32_t geiger_tp::get_clocktick_800ns() const
     {
       return _clocktick_800ns_;
@@ -172,10 +200,10 @@ namespace snemo {
       return;
     }
 
-    void geiger_tp::_set_address(unsigned long rack_id_, unsigned long crate_id_, unsigned long board_id_)
+    void geiger_tp::_set_address(const geomtools::geom_id & electronic_id_)
     {
-      set_crate_id(crate_id_);
-      set_board_id(board_id_);
+      set_crate_id(electronic_id_.get(mapping::CRATE_INDEX));
+      set_board_id(electronic_id_.get(mapping::BOARD_INDEX));
       _store |= STORE_GG_TP;
     }
 
@@ -233,7 +261,9 @@ namespace snemo {
       return;
     }
 
-    void geiger_tp::extract_bitset_from_to(unsigned int BIT_BEGIN_, unsigned int BIT_END_, boost::dynamic_bitset<> & my_bitset_word_) const
+    void geiger_tp::extract_bitset_from_to(unsigned int BIT_BEGIN_, 
+					   unsigned int BIT_END_, 
+					   boost::dynamic_bitset<> & my_bitset_word_) const
     {
       unsigned int word_size = BIT_END_ - BIT_BEGIN_;     
       for (int i = 0; i < word_size; i++)
@@ -246,7 +276,9 @@ namespace snemo {
       return;
     }
     
-    void geiger_tp::extract_bitset_from_is_length(unsigned int BIT_BEGIN_,  unsigned int word_size_, boost::dynamic_bitset<> & my_bitset_word_) const
+    void geiger_tp::extract_bitset_from_is_length(unsigned int BIT_BEGIN_,  
+						  unsigned int word_size_, 
+						  boost::dynamic_bitset<> & my_bitset_word_) const
     {
       for (int i = 0; i < word_size_; i++)
 	{
@@ -315,21 +347,7 @@ namespace snemo {
       DT_THROW_IF(!is_valid(), std::logic_error, "Clocktick is not valid ! ");
     }
 
-    void geiger_tp::initialize(unsigned long rack_id_, unsigned long crate_id_, unsigned long board_id_, bool trigger_mode_ ,bool trigger_side_, unsigned int number_of_rows_, std::bitset<TP_SIZE> & gg_tp_word_)
-    { 
-      set_tracker_trigger_mode(trigger_mode_);
-      set_tracker_row_mode(number_of_rows_);
-      set_tracker_side_mode(trigger_side_);
-      set_gg_tp_bitset(gg_tp_word_);
-      
-      grab_geom_id().set(mapping::RACK_INDEX,  rack_id_);
-      grab_geom_id().set(mapping::CRATE_INDEX, crate_id_);
-      grab_geom_id().set(mapping::BOARD_INDEX, board_id_);
 
-      _set_address(rack_id_, crate_id_, board_id_);
-
-      return ;
-    }
   } // end of namespace digitization
 
 } // end of namespace snemo

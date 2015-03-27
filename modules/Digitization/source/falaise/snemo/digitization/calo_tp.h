@@ -26,6 +26,7 @@
 // - Bayeux/geomtools :
 #include <bayeux/geomtools/base_hit.h>
 
+
 // Ourselves :
 #include <snemo/digitization/mapping.h>
 
@@ -61,6 +62,9 @@ namespace snemo {
 				SPARE_BIT = 4
 			};
 
+			/// Invalid clocktick value
+			static const int INVALID_CLOCKTICK = -1;
+			
 			/// Maximum number of channels by front-end board (FEB)
 			static const unsigned int MAX_NUMBER_OF_CHANNELS = 16;
       
@@ -69,24 +73,32 @@ namespace snemo {
 
       /// Destructor
       virtual ~calo_tp();
+
+			/// Set the header with valid values
+			void set_header(int32_t hit_id_,
+											const geomtools::geom_id & electronic_id_,
+											int32_t clocktick_25ns_);
+
+			/// Set the data with valid values
+			void set_data(unsigned int htm_multiplicity_,
+										bool lto_bit_,
+										bool xt_bit_,
+										bool spare_bit);																			
   
       /// Return the timestamp of the trigger primitive
       int32_t get_clocktick_25ns() const;
 
       /// Set the timestamp of the trigger primitive
       void set_clocktick_25ns(int32_t value_);
+			
+			/// Check if a clocktick is defined
+			bool has_clocktick_25ns() const;
 
       /// Reset the timestamp of the trigger primitive
       void reset_clocktick_25ns();
 
       /// Return the const reference to the TP bitset
       const std::bitset<5> & get_tp_bitset() const;
-
-      // /// Return the mutable reference to the TP bitset
-      // std::bitset<5> & grab_tp_bitset();
-      
-      // /// Set the TP bitset
-      // void set_tp_bitset(const std::bitset<5> & tp_);
 
       /// Reset the TP bitset
       void reset_tp_bitset();

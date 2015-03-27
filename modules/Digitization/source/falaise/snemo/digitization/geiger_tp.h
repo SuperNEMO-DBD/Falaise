@@ -74,15 +74,15 @@ namespace snemo {
 
 			/// Size of bits word in the Geiger tracker TP bitset word (100 bits)
 			enum gg_tp_size {
-				TP_SIZE           = 55,
-				THWS_SIZE         = 5,
-				TRM_WORD_SIZE     = 3,
-    	  ADDRESS_SIZE      = 10,
-				BOARD_ID_WORD_SIZE   = 5,
-				CRATE_ID_WORD_SIZE   = 2,
-				SPARE_WORD_SIZE   = 3,
-				TTID_SIZE         = 15,
-				CONTROL_SIZE      = 15
+				TP_SIZE            = 55,
+				THWS_SIZE          = 5,
+				TRM_WORD_SIZE      = 3,
+    	  ADDRESS_SIZE       = 10,
+				BOARD_ID_WORD_SIZE = 5,
+				CRATE_ID_WORD_SIZE = 2,
+				SPARE_WORD_SIZE    = 3,
+				TTID_SIZE          = 15,
+				CONTROL_SIZE       = 15
 			};
       
 			/// Default constructor
@@ -91,9 +91,17 @@ namespace snemo {
 			/// Destructor
 			virtual ~geiger_tp();
 
+			/// Set the header with valid values
+			void set_header(int32_t hit_id_,
+											const geomtools::geom_id & electronic_id_,
+											int32_t clocktick_800ns_,
+											bool trigger_mode_ ,
+											bool trigger_side_, 
+											unsigned int number_of_rows_);
 
-			void initialize(unsigned long rack_id_, unsigned long crate_id_, unsigned long board_id_, bool trigger_mode_ ,bool trigger_side_, unsigned int number_of_rows_, std::bitset<TP_SIZE> & gg_tp_word_);
- 
+			/// Set the data with valid values
+			void set_data(std::bitset<TP_SIZE> & gg_tp_word_);
+
 			/// Return the timestamp of the geiger trigger primitive
 			int32_t get_clocktick_800ns() const;
 
@@ -158,10 +166,14 @@ namespace snemo {
 			void get_control_bitset(boost::dynamic_bitset<> & gg_control_word_) const;
 	
 			/// Extract dynamic bitset from bit begin to bit end
-			void extract_bitset_from_to(unsigned int BIT_BEGIN_, unsigned int BIT_END_, boost::dynamic_bitset<> & my_bitset_word_) const;
+			void extract_bitset_from_to(unsigned int BIT_BEGIN_, 
+																	unsigned int BIT_END_, 
+																	boost::dynamic_bitset<> & my_bitset_word_) const;
 
 			/// Extract dynamic bitset from bit begin with a given length
-			void extract_bitset_from_is_length(unsigned int BIT_BEGIN_, unsigned int word_size_, boost::dynamic_bitset<> & my_bitset_word_) const;
+			void extract_bitset_from_is_length(unsigned int BIT_BEGIN_, 
+																				 unsigned int word_size_, 
+																				 boost::dynamic_bitset<> & my_bitset_word_) const;
 
 			/// Check the lock status
 			bool is_locked_gg_tp() const;
@@ -190,7 +202,7 @@ namespace snemo {
 			void _check();
 
 			/// Set the address id for a geiger tp 
-			void _set_address(unsigned long rack_id_, unsigned long crate_id_, unsigned long board_id_);
+			void _set_address(const geomtools::geom_id & electronic_id_);
 
 
 		private : 

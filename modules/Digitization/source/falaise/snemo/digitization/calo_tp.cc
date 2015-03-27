@@ -21,9 +21,8 @@ namespace snemo {
     calo_tp::calo_tp()
     {
       _locked_tp_ = false;
-      _clocktick_25ns_ = -1;
+      _clocktick_25ns_ = INVALID_CLOCKTICK;
       _tp_ = 0x0;
-      grab_geom_id().set(mapping::RACK_INDEX, 3);
       return;
     }
 
@@ -33,6 +32,31 @@ namespace snemo {
       return;
     }
 
+    void calo_tp::set_header(int32_t hit_id_,
+			     const geomtools::geom_id & electronic_id_,
+			     int32_t clocktick_25ns_)
+    {
+      DT_THROW_IF(is_locked_tp(), std::logic_error, "Calorimeter TP is locked !) ");
+      set_hit_id(hit_id_);    
+      set_geom_id(electronic_id_);
+      set_clocktick_25ns(clocktick_25ns_);
+  
+      return;
+    }
+    
+    void calo_tp::set_data(unsigned int htm_multiplicity_,
+			   bool lto_bit_,
+			   bool xt_bit_,
+			   bool spare_bit_)
+    {
+      DT_THROW_IF(is_locked_tp(), std::logic_error, "Calorimeter TP is locked !) ");
+      set_htm(htm_multiplicity_);
+      set_lto_bit(lto_bit_);
+      set_xt_bit(xt_bit_);
+      set_spare_bit(spare_bit_);
+      return;
+    }
+    
     int32_t calo_tp::get_clocktick_25ns() const
     {
       return _clocktick_25ns_;
@@ -41,7 +65,7 @@ namespace snemo {
     void calo_tp::set_clocktick_25ns( int32_t value_ )
     {
       DT_THROW_IF(is_locked_tp(), std::logic_error, "Clocktick can't be set, calorimeter TP is locked !) ");
-      if(value_ <= -1)
+      if(value_ <= INVALID_CLOCKTICK)
 	{
 	  reset_clocktick_25ns();
 	}
@@ -53,10 +77,15 @@ namespace snemo {
       return;
     }
 
+    bool calo_tp::has_clocktick_25ns() const
+    {
+      return _clocktick_25ns_ != INVALID_CLOCKTICK;
+    } 
+
     void calo_tp::reset_clocktick_25ns()
     {
       DT_THROW_IF(is_locked_tp(), std::logic_error, "Clocktick can't be reset, calorimeter TP is locked !) ");
-      _clocktick_25ns_ = -1;
+      _clocktick_25ns_ = INVALID_CLOCKTICK;
       _store &= ~STORE_CLOCKTICK_25NS;
       return;
     }
@@ -65,20 +94,6 @@ namespace snemo {
     {
       return _tp_;
     }
-    
-    // std::bitset<5> & calo_tp::grab_tp_bitset()
-    // {
-    //   _store |= STORE_TP;
-    //    return _tp_;
-    // }
-
-    // void calo_tp::set_tp_bitset(const std::bitset<5> & tp_)
-    // {
-    //   DT_THROW_IF(is_locked_tp(), std::logic_error, "TP bitset can't be set, calorimeter TP is locked ! ");
-    //   _tp_ = tp_;
-    //   _store |= STORE_TP;
-   //   return;
-    // }
     
     void calo_tp::reset_tp_bitset()
     {
@@ -215,7 +230,7 @@ namespace snemo {
 
     bool calo_tp::is_valid() const
     {
-      return _clocktick_25ns_ >= 0;
+      return has_geom_id() && has_hit_id() && has_clocktick_25ns();
     }
 
     void calo_tp::reset()
