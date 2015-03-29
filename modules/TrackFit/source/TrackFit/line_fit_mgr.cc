@@ -883,7 +883,7 @@ namespace TrackFit {
 
   double line_fit_mgr::residual_function(double x_, void * params_)
   {
-    datatools::logger::priority local_priority = datatools::logger::PRIO_WARNING;
+    datatools::logger::priority local_priority = datatools::logger::PRIO_ERROR;
     DT_LOG_TRACE(local_priority, "Entering...");
     const line_fit_residual_function_param * param_ptr =
       static_cast<const line_fit_residual_function_param *>(params_);
