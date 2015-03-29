@@ -18,6 +18,7 @@
 #include <falaise/snemo/processing/services.h>
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/calibrated_data.h>
+#include <falaise/snemo/datamodels/tracker_clustering_data.h>
 #include <falaise/snemo/datamodels/tracker_trajectory_data.h>
 #include <falaise/snemo/datamodels/particle_track_data.h>
 
@@ -114,20 +115,20 @@ namespace snemo {
           _VED_.reset(new snemo::reconstruction::vertex_extrapolation_driver);
           _VED_->set_geometry_manager(get_geometry_manager());
           datatools::properties VED_config;
-          setup_.export_and_rename_starting_with(VED_config, std::string(a_driver_name + "."), "");
+          setup_.export_and_rename_starting_with(VED_config, a_driver_name + ".", "");
           _VED_->initialize(VED_config);
         } else if (a_driver_name == "CCD") {
           // Initialize Charge Computation Driver
           _CCD_.reset(new snemo::reconstruction::charge_computation_driver);
           datatools::properties CCD_config;
-          setup_.export_and_rename_starting_with(CCD_config, std::string(a_driver_name + "."), "");
+          setup_.export_and_rename_starting_with(CCD_config, a_driver_name + ".", "");
           _CCD_->initialize(CCD_config);
         } else if (a_driver_name == "CAD") {
           // Initialize Calorimeter Association Driver
           _CAD_.reset(new snemo::reconstruction::calorimeter_association_driver);
           _CAD_->set_geometry_manager(get_geometry_manager());
           datatools::properties CAD_config;
-          setup_.export_and_rename_starting_with(CAD_config, std::string(a_driver_name + "."), "");
+          setup_.export_and_rename_starting_with(CAD_config, a_driver_name + ".", "");
           _CAD_->initialize(CAD_config);
         } else {
           DT_THROW_IF(true, std::logic_error, "Driver '" << a_driver_name << "' does not exist !");
@@ -257,34 +258,55 @@ namespace snemo {
         return;
       }
 
-      const snemo::datamodel::tracker_trajectory_solution & def_solution
-        = tracker_trajectory_data_.get_default_solution();
-      const snemo::datamodel::tracker_trajectory_solution::trajectory_col_type & trajectories
-        = def_solution.get_trajectories();
-      for (snemo::datamodel::tracker_trajectory_solution::trajectory_col_type::const_iterator
-             itrajectory = trajectories.begin();
-           itrajectory != trajectories.end(); ++itrajectory) {
-        const snemo::datamodel::tracker_trajectory & a_trajectory = itrajectory->get();
+      // Process all solutions : selection is done inside the loop
+      const snemo::datamodel::tracker_trajectory_data::solution_col_type & solutions
+        = tracker_trajectory_data_.get_solutions();
+      for (snemo::datamodel::tracker_trajectory_data::solution_col_type::const_iterator
+             isol = solutions.begin(); isol != solutions.end(); ++isol) {
+        const snemo::datamodel::tracker_trajectory_solution & a_solution = isol->get();
 
-        // Look into properties to find the default
-        // trajectory. Here, default means the one with the best
-        // chi2. This flag is set by the 'fitting' module.
-        if (!a_trajectory.get_auxiliaries().has_flag("default")) continue;
+        bool process_current_trajectory = false;
+        // Check if we are looking for a delayed trajectory
+        if (a_solution.has_clustering_solution()) {
+          const datatools::properties & aux
+            = a_solution.get_clustering_solution().get_auxiliaries();
+          if (aux.has_flag(snemo::datamodel::tracker_clustering_data::delayed_key())) {
+            process_current_trajectory = true;
+          }
+        }
+        // If not delayed, only process default solution
+        if (&a_solution == &(tracker_trajectory_data_.get_default_solution())) {
+          process_current_trajectory = true;
+        }
+        if (!process_current_trajectory) continue;
 
-        // Add a new particle_track
-        snemo::datamodel::particle_track::handle_type hPT(new snemo::datamodel::particle_track);
-        hPT.grab().set_trajectory_handle(*itrajectory);
-        hPT.grab().set_track_id(particle_track_data_.get_number_of_particles());
-        particle_track_data_.add_particle(hPT);
+        const snemo::datamodel::tracker_trajectory_solution::trajectory_col_type & trajectories
+          = a_solution.get_trajectories();
+        for (snemo::datamodel::tracker_trajectory_solution::trajectory_col_type::const_iterator
+               itrajectory = trajectories.begin();
+             itrajectory != trajectories.end(); ++itrajectory) {
+          const snemo::datamodel::tracker_trajectory & a_trajectory = itrajectory->get();
 
-        // Compute particle charge
-        _CCD_->process(a_trajectory, hPT.grab());
+          // Look into properties to find the default
+          // trajectory. Here, default means the one with the best
+          // chi2. This flag is set by the 'fitting' module.
+          if (!a_trajectory.get_auxiliaries().has_flag("default")) continue;
 
-        // Determine track vertices
-        _VED_->process(a_trajectory, hPT.grab());
+          // Add a new particle_track
+          snemo::datamodel::particle_track::handle_type hPT(new snemo::datamodel::particle_track);
+          hPT.grab().set_trajectory_handle(*itrajectory);
+          hPT.grab().set_track_id(particle_track_data_.get_number_of_particles());
+          particle_track_data_.add_particle(hPT);
 
-        // Associate vertices to calorimeter hits
-        _CAD_->process(calibrated_data_.calibrated_calorimeter_hits(), hPT.grab());
+          // Compute particle charge
+          _CCD_->process(a_trajectory, hPT.grab());
+
+          // Determine track vertices
+          _VED_->process(a_trajectory, hPT.grab());
+
+          // Associate vertices to calorimeter hits
+          _CAD_->process(calibrated_data_.calibrated_calorimeter_hits(), hPT.grab());
+        }
       }
 
       // Grab non associated calorimeters :
