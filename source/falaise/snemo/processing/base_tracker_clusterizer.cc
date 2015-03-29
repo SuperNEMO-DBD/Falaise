@@ -551,7 +551,7 @@ namespace snemo {
             sdm::tracker_clustering_solution::handle_type h_tc_sol(new sdm::tracker_clustering_solution);
             sdm::tracker_clustering_solution & tc_sol = h_tc_sol.grab();
             // Give it an unique solution id:
-            tc_sol.set_solution_id(clustering_.grab_solutions().size() + idelayed_sol + 1);
+            tc_sol.set_solution_id(clustering_.grab_solutions().size() + idelayed_sol);
             // Record the delayed time-cluster unique Idd solution:
             tc_sol.grab_auxiliaries().store_integer(sdm::tracker_clustering_data::delayed_id_key(), idelayed_clustering);
             sdm::tracker_clustering_solution::copy_one_solution_in_one(delayed_sol, tc_sol);
