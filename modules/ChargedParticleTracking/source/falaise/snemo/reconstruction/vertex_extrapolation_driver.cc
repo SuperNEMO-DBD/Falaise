@@ -197,7 +197,7 @@ namespace snemo {
       const std::string & a_pattern_id = a_track_pattern.get_pattern_id();
 
       // Extrapolated vertices:
-      typedef std::map<std::string, geomtools::vector_3d> vertex_dict_type;
+      typedef std::vector<std::pair<std::string, geomtools::vector_3d> > vertex_dict_type;
       vertex_dict_type vertices;
 
       // Add a property into 'blur_spot' auxiliaries to refer to the hit calo:
@@ -291,11 +291,11 @@ namespace snemo {
         geomtools::line_3d * a_mutable_line = const_cast<geomtools::line_3d *>(&a_line);
         if (_use_vertices_[jt1->second]) {
           a_mutable_line->set_first(jt1->first);
-          vertices[jt1->second] = jt1->first;
+          vertices.push_back(std::make_pair(jt1->second, jt1->first));
         }
         if (_use_vertices_[jt2->second]) {
           a_mutable_line->set_last(jt2->first);
-          vertices[jt2->second] = jt2->first;
+          vertices.push_back(std::make_pair(jt2->second, jt2->first));
         }
       }// end of line pattern
       else if (a_pattern_id == snemo::datamodel::helix_trajectory_pattern::pattern_id()) {
@@ -391,7 +391,7 @@ namespace snemo {
           const double t = it->first;
           const std::string & category = it->second;
 
-          // Calculate delta t values
+          // Calculate delta t values as well as new lengths
           const double delta1 = std::fabs(t1 - t);
           const double delta2 = std::fabs(t2 - t);
 
@@ -409,21 +409,26 @@ namespace snemo {
           }
         }
 
-        // New angle & calorimeter category
+        // New angle & calorimeter category (if length not too long)
+        const double delta2length = 2 * M_PI * hypot(a_helix.get_radius(),
+                                                     a_helix.get_step()/(2*M_PI));
+        const double length = a_helix.get_length();
         // Create a mutable helix object to set the new angle
         geomtools::helix_3d * a_mutable_helix = const_cast<geomtools::helix_3d *>(&a_helix);
         if (datatools::is_valid(new_ts.first)) {
+          const double new_length = delta2length*fabs(new_ts.first - a_helix.get_t1());
           const std::string & category = category_flags.first;
-          if (_use_vertices_[category]) {
+          if (_use_vertices_[category] && new_length < 0.5*length) {
             a_mutable_helix->set_t1(new_ts.first);
-            vertices[category] = a_mutable_helix->get_first();
+            vertices.push_back(std::make_pair(category, a_mutable_helix->get_first()));
           }
         }
         if (datatools::is_valid(new_ts.second)) {
+          const double new_length = delta2length*fabs(new_ts.second - a_helix.get_t2());
           const std::string & category = category_flags.second;
-          if (_use_vertices_[category]) {
+          if (_use_vertices_[category] && new_length < 0.5*length) {
             a_mutable_helix->set_t2(new_ts.second);
-            vertices[category] = a_mutable_helix->get_last();
+            vertices.push_back(std::make_pair(category, a_mutable_helix->get_last()));
           }
         }
       }// end of helix pattern
