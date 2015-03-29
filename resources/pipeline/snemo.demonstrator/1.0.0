@@ -355,8 +355,8 @@ line.only_guess  : string[4] = "BB" "BT" "TB" "TT"
 # #@description Mode for trusting a fit guess ("counter", "barycenter")
 # line.guess.guess_trust_mode  : string = "counter"
 
-#@description Fit the delayed Geiger cluster (by default, false since this mode is devoted to line fit)
-helix.guess.fit_delay_cluster : boolean = 0
+#@description Fit the delayed Geiger cluster
+line.guess.fit_delayed_clusters : boolean = 1
 
 ######################################
 # Parameters to perform the line fit #
