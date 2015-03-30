@@ -53,7 +53,9 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     my_manager.initialize (manager_config);
 
     snemo::digitization::ID_convertor my_convertor;
-    my_convertor.initialize(my_manager);
+    my_convertor.set_geo_manager(my_manager);
+    my_convertor.set_module_number(0);
+    my_convertor.initialize();
 
     geomtools::geom_id my_geom_ID_from_SD;
     my_geom_ID_from_SD.set_type(1203);

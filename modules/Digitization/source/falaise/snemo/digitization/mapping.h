@@ -18,9 +18,9 @@ namespace snemo {
 				RACK_INDEX  = 0,
 				CRATE_INDEX = 1,
 				BOARD_INDEX = 2
-      };
+      };			
 
-			static const int32_t TRACKER_CONTROL_BOARD_TYPE = 42;
+			static const int32_t TRACKER_CONTROL_BOARD_TYPE = 666;
 			static const int32_t CALORIMETER_CONTROL_BOARD_TYPE = 666;
 
 			static const int32_t CALO_RACK_ID = 3;
@@ -33,6 +33,12 @@ namespace snemo {
 
 			static const int32_t CONTROL_BOARD_ID = 10;
 			static const int32_t TRIGGER_BOARD_ID = 20;
+
+			
+			static const int32_t THREE_WIRES_CRATE_0_LIMIT = 37;
+			static const int32_t THREE_WIRES_CRATE_1_LIMIT = 74;
+			static const int32_t THREE_WIRES_LONELY_ROW = 56;
+
     };
 	       
   } // end of namespace digitization

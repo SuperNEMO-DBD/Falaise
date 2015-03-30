@@ -20,6 +20,7 @@
 // Third party:
 // - Boost:
 #include <boost/cstdint.hpp>
+#include <boost/utility.hpp>
 
 // - Bayeux/datatools :
 #include <datatools/handle.h>
@@ -38,7 +39,7 @@ namespace snemo {
   namespace digitization {		
 
     /// \brief Algorithm processing. Take simulated datas and fill calo trigger primitive data object.
-    class sd_to_calo_tp_algo
+    class sd_to_calo_tp_algo : boost::noncopyable
     {
     public :
 
@@ -50,7 +51,7 @@ namespace snemo {
       
       /// Initializing
       void initialize(int32_t & clocktick_ref_,
-											ID_convertor & my_ID_convertor_);
+											const ID_convertor & my_ID_convertor_);
 
       /// Check if the algorithm is initialized 
       bool is_initialized() const;
@@ -64,10 +65,10 @@ namespace snemo {
 
     protected: 
       
-			// bool _is_existing_same_electronic_id(std::list<geomtools::geom_id> & list_of_existing_electronic_id_,
-			// 																		 const geomtools::geom_id & electronic_id_);
+			// unsigned int _existing_same_electronic_id(const geomtools::geom_id & electronic_id_,
+			// 																					calo_tp_data & my_calo_tp_data_);
 
-      int _process(const mctools::simulated_data & sd_,
+			int _process(const mctools::simulated_data & sd_,
 									 calo_tp_data & my_calo_tp_data_);
 
     private :
@@ -77,8 +78,8 @@ namespace snemo {
       bool _active_xwall_; //!< X-wall activation flag
       bool _active_gveto_; //!< Gamma-veto activation flag
 
-			int32_t _clocktick_ref_;
-			ID_convertor _ID_convertor_;
+			int32_t _clocktick_ref_; //!< Clocktick reference of the algorithm
+			const ID_convertor * _ID_convertor_; //!< Convert geometric ID into electronic ID
 
     };
 

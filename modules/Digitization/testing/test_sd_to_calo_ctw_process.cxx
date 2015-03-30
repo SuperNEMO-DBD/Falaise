@@ -1,4 +1,4 @@
-//test_sd_to_calo_tp_algo.cxx
+//test_sd_to_calo_ctw_process.cxx
 
 // Standard libraries :
 #include <iostream>
@@ -16,6 +16,7 @@
 
 // This project :
 #include <snemo/digitization/sd_to_calo_tp_algo.h>
+#include <snemo/digitization/calo_tp_to_ctw_algo.h>
 
 int main( int /* argc_ */, char ** /* argv_ */ )
 {
@@ -23,7 +24,8 @@ int main( int /* argc_ */, char ** /* argv_ */ )
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
   try {
-    std::clog << "Test program for class 'snemo::digitization::sd_to_calo_tp_algo' !" << std::endl;
+    std::clog << "Test program for class 'snemo::digitization::sd_to_calo_ctw_process' !" << std::endl;
+ 
     std::string manager_config_file;
     
     manager_config_file = "~/data/my_falaise/config/snemo/demonstrator/geometry/3.0/manager.conf";
@@ -61,8 +63,14 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     my_convertor.initialize();
 
     int32_t clocktick_reference = 12;
-    snemo::digitization::sd_to_calo_tp_algo algo;
-    algo.initialize(clocktick_reference, my_convertor);
+    snemo::digitization::sd_to_calo_tp_algo sd_2_calo_tp;
+    sd_2_calo_tp.initialize(clocktick_reference, my_convertor);
+
+    snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw;
+    calo_tp_2_ctw.initialize();
+
+    snemo::digitization::calo_tp_data my_calo_tp_data;
+    snemo::digitization::calo_ctw_data my_calo_ctw_data;
 
     int psd_count = 0;
     while (!reader.is_terminated())
@@ -73,22 +81,26 @@ int main( int /* argc_ */, char ** /* argv_ */ )
 	  {
 	    // Access to the "SD" bank with a stored `mctools::simulated_data' :
 	    const mctools::simulated_data & SD = ER.get<mctools::simulated_data>(SD_bank_label);
-	    snemo::digitization::calo_tp_data my_calo_tp_data;
+
 	    if( SD.has_step_hits("calo"))
 	      {		  
-		algo.process(SD, my_calo_tp_data);
+		sd_2_calo_tp.process(SD, my_calo_tp_data);
 		my_calo_tp_data.tree_dump(std::clog, "Calorimeter TP(s) data : ", "INFO : ");
 	      }
-	  }     
+	  }  
+	    my_calo_tp_data.lock_tps();
+	    calo_tp_2_ctw.process(my_calo_tp_data, my_calo_ctw_data);
+	    my_calo_ctw_data.tree_dump(std::clog, "Calorimeter TP(s) data : ", "INFO : ");
+	    my_calo_tp_data.reset();
+   
 	// CF README.RST pour display graphique avec loader de manager.conf
 	// -> /home/guillaume/data/Bayeux/Bayeux-trunk/source/bxmctools/examples/ex00
 	ER.clear();
-
+	//my_calo_tp_data.lock_tps();
 	psd_count++;
 	std::clog << "DEBUG : psd count " << psd_count << std::endl;
 	DT_LOG_NOTICE(logging, "Simulated data #" << psd_count);
       }
-    
     std::clog << "The end." << std::endl;
   }
 

@@ -1,4 +1,4 @@
-// calo_tp_to_ctw_algo.cc
+// sd_to_calo_tp_algo.cc
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
@@ -12,6 +12,8 @@ namespace snemo {
     sd_to_calo_tp_algo::sd_to_calo_tp_algo()
     {
       _initialized_ = false;
+      _ID_convertor_ = 0;
+      _clocktick_ref_ = -1;
       return;
     }
 
@@ -25,11 +27,11 @@ namespace snemo {
     }
 
     void sd_to_calo_tp_algo::initialize(int32_t & clocktick_ref_,
-					ID_convertor & my_ID_convertor_)
+					const ID_convertor & my_ID_convertor_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Calo tp to ctw algo is already initialized ! ");
       _clocktick_ref_ = clocktick_ref_;
-      _ID_convertor_ = my_ID_convertor_;
+      _ID_convertor_ = & my_ID_convertor_;
       
       _initialized_ = true;
       return;
@@ -44,6 +46,8 @@ namespace snemo {
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Calo tp to ctw algo is not initialized, it can't be reset ! ");
       _initialized_ = false;
+      _ID_convertor_ = 0;
+      _clocktick_ref_ = -1;
       return;
     }
 
@@ -74,23 +78,21 @@ namespace snemo {
       return error_code;
     }
 
-    // bool sd_to_calo_tp_algo::_is_existing_same_electronic_id(calo_tp_data & my_calo_tp_data_,
-    // 							     const geomtools::geom_id & electronic_id_)
+    // unsigned int sd_to_calo_tp_algo::_existing_same_electronic_id(const geomtools::geom_id & electronic_id_,
+    // 								  calo_tp_data & my_calo_tp_data_)
     // {
-    //   bool existing = false;
-    //   2 VVALUES to return , bool and uint (is existing and the index of existing calo tp)
+    //   // 2 VVALUES to return , bool and uint (is existing and the index of existing calo tp)
     //   unsigned int existing_index = 0;
 
     //   for (int i = 0; i < my_calo_tp_data_.get_calo_tps().size(); i++)
     // 	{
     // 	  if (my_calo_tp_data_.get_calo_tps()[i].get().get_geom_id() == electronic_id_)
     // 	    {
-    // 	      existing = true;
     // 	      existing_index = j;
     // 	    }
     // 	}
 
-    //   return existing;
+    //   return existing_index;
     // } 
 
     int sd_to_calo_tp_algo::_process(const mctools::simulated_data & sd_,
@@ -126,17 +128,25 @@ namespace snemo {
 	    
 	    geomtools::geom_id electronic_id;
 	    
-	    electronic_id = _ID_convertor_.convert_GID_to_EID(geom_id);
+	    electronic_id = _ID_convertor_->convert_GID_to_EID(geom_id);
 	    
 	    std::clog << "DEBUG sd_to_calo_tp_algo : hit id = " << calo_hit.get_hit_id() << ": GID = " << calo_hit.get_geom_id() << " EID = " << electronic_id << std::endl;	   
 	    
 	    bool existing = false;
-
 	    unsigned int existing_index = 0;
+
+	    double relative_time = calo_hit.get_time_start() - time_reference ;
+	    int32_t calo_hit_clocktick = _clocktick_ref_;
+
+	    if (relative_time > 25)
+	      {
+		calo_hit_clocktick = static_cast<int32_t>(relative_time) / 25;
+	      }
 
 	    for (int j = 0; j < my_calo_tp_data_.get_calo_tps().size(); j++)
 	      {
-		if (my_calo_tp_data_.get_calo_tps()[j].get().get_geom_id() == electronic_id)
+		if (my_calo_tp_data_.get_calo_tps()[j].get().get_geom_id() == electronic_id
+		    && my_calo_tp_data_.get_calo_tps()[j].get().get_clocktick_25ns() == calo_hit_clocktick )
 		  {
 		    std::clog << "DEBUG : Case 1 EID = EID in calo tp data " <<  std::endl;
 		    existing = true;
@@ -146,18 +156,20 @@ namespace snemo {
 
 	    if (existing == false)
 	      {
-		double relative_time = 50 + calo_hit.get_time_start() - time_reference ;
-		int32_t calo_tp_clocktick = _clocktick_ref_;
-		if (relative_time > 25)
-		  {
-		    calo_tp_clocktick += relative_time / 25;
-		  }
+		std::clog << "DEBUG : Case 2 EID != EID in calo tp data " <<  std::endl;
+		// double relative_time = calo_hit.get_time_start() - time_reference ;
+		// int32_t calo_tp_clocktick = _clocktick_ref_;
+		// if (relative_time > 25)
+		//   {
+		//     calo_hit_clocktick += static_cast<int32_t>(relative_time) / 25;
+		//   }
 		// double random_number = drand48();
-		// double lambda = relative_time / 25;	
+
 		snemo::digitization::calo_tp & ctp = my_calo_tp_data_.add();
-		ctp.set_header(calo_hit.get_hit_id(), electronic_id, calo_tp_clocktick);
+		ctp.set_header(calo_hit.get_hit_id(), electronic_id, calo_hit_clocktick);
 		ctp.set_htm(1);
 		ctp.tree_dump(std::clog, "CTP : ", "INFO : ");
+		//ctp.lock_tp();
 	      }
 	
 	    else 
@@ -167,14 +179,13 @@ namespace snemo {
 		bool old_xt = my_calo_tp_data_.get_calo_tps()[existing_index].get().is_xt();
 		bool old_spare = my_calo_tp_data_.get_calo_tps()[existing_index].get().is_spare();
 
-		my_calo_tp_data_.grab_calo_tps()[existing_index].grab().set_htm(old_htm + 1);
+		my_calo_tp_data_.grab_calo_tps()[existing_index].grab().set_data(old_htm + 1, old_lto, old_xt, old_spare);
 		my_calo_tp_data_.grab_calo_tps()[existing_index].get().tree_dump(std::clog, "CTP : ", "INFO : ");
 		
 		// my_calo_tp_data_.get_calo_tps()[existing_index]
 		// update calo TP (HTM / LTO) 
 		    
-	      }
-	      
+	      }   
 	  }
       }
 
