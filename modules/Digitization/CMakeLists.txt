@@ -20,6 +20,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source/falaise)
 # - Headers:
 
 list(APPEND FalaiseDigitizationPlugin_HEADERS  
+  source/falaise/snemo/digitization/mapping.h
+  source/falaise/snemo/digitization/clock_utils.h
   source/falaise/snemo/digitization/calo_tp.h
   source/falaise/snemo/digitization/calo_tp_data.h
   source/falaise/snemo/digitization/calo_ctw.h

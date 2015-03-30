@@ -1,4 +1,4 @@
-// mapping_tp.h
+// mapping.h
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 //

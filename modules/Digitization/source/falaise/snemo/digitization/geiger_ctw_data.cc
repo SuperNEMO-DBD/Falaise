@@ -1,4 +1,4 @@
-// geiger_ctw_data.cc
+// snemo/digitization/geiger_ctw_data.cc
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
@@ -7,7 +7,6 @@
 
 // Third party:
 // - Bayeux/datatools:
-//#include <datatools/utils.h>
 #include <datatools/exception.h>
 
 namespace snemo {
@@ -19,7 +18,7 @@ namespace snemo {
 
     geiger_ctw_data::geiger_ctw_data()
     {
-      _locked_ctws_ = false;
+      _locked_ = false;
       return;
     }
 
@@ -38,13 +37,13 @@ namespace snemo {
       int32_t clocktick_min = _geiger_ctws_[0].get().get_clocktick_800ns();
       
       for (int i = 1; i < _geiger_ctws_.size(); i++)
-	{
-	  if (_geiger_ctws_[i].get().get_clocktick_800ns() < clocktick_min)
-	    {
-	      clocktick_min = _geiger_ctws_[i].get().get_clocktick_800ns();
-	      index_with_min = i;
-	    }
-	}
+				{
+					if (_geiger_ctws_[i].get().get_clocktick_800ns() < clocktick_min)
+						{
+							clocktick_min = _geiger_ctws_[i].get().get_clocktick_800ns();
+							index_with_min = i;
+						}
+				}
       return index_with_min;
     }
 			
@@ -57,13 +56,13 @@ namespace snemo {
       int32_t clocktick_max = _geiger_ctws_[0].get().get_clocktick_800ns();
       
       for (int i = 1; i < _geiger_ctws_.size(); i++)
-	{
-	  if (_geiger_ctws_[i].get().get_clocktick_800ns() > clocktick_max)
-	    {
-	      clocktick_max = _geiger_ctws_[i].get().get_clocktick_800ns();
-	      index_with_max = i;
-	    }
-	}
+				{
+					if (_geiger_ctws_[i].get().get_clocktick_800ns() > clocktick_max)
+						{
+							clocktick_max = _geiger_ctws_[i].get().get_clocktick_800ns();
+							index_with_max = i;
+						}
+				}
       return index_with_max;
     }
 
@@ -89,7 +88,7 @@ namespace snemo {
     void geiger_ctw_data::get_list_of_geiger_ctw_per_clocktick(int32_t clocktick_800ns_, geiger_ctw_collection_type & ctws_)
     {
       DT_THROW_IF(_geiger_ctws_.size() == 0, std::logic_error, " Geiger CTW collection is empty ! ");
-      DT_THROW_IF(!is_locked_ctws(), std::logic_error, " Geiger CTW collection is not locked ! ");
+      DT_THROW_IF(!is_locked(), std::logic_error, " Geiger CTW collection is not locked ! ");
       for (int i = 0; i < _geiger_ctws_.size(); i++)
       	{
       	  if(_geiger_ctws_[i].get().get_clocktick_800ns() == clocktick_800ns_)
@@ -100,39 +99,39 @@ namespace snemo {
       return;
     }
 
-    bool geiger_ctw_data::is_locked_ctws() const
+    bool geiger_ctw_data::is_locked() const
     {
-      return _locked_ctws_;
+      return _locked_;
     }
     
-    void geiger_ctw_data::lock_ctws()
+    void geiger_ctw_data::lock()
     {
-      DT_THROW_IF(is_locked_ctws(), std::logic_error, " Geiger CTW collection is already locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, " Geiger CTW collection is already locked ! ");
       _check();
-      _locked_ctws_ = true;
+      _locked_ = true;
       return;
     }
     
-    void geiger_ctw_data::unlock_ctws()
+    void geiger_ctw_data::unlock()
     { 
-      DT_THROW_IF(!is_locked_ctws(), std::logic_error, " Geiger CTW collection is already unlocked ! ");
-      _locked_ctws_ = false;
+      DT_THROW_IF(!is_locked(), std::logic_error, " Geiger CTW collection is already unlocked ! ");
+      _locked_ = false;
       return;
     }
 
     void geiger_ctw_data::reset_ctws()
     {
-      DT_THROW_IF(is_locked_ctws(), std::logic_error, " Operation prohibited, object is locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, " Operation prohibited, object is locked ! ");
       _geiger_ctws_.clear();
       return ;
     }
 		
     geiger_ctw & geiger_ctw_data::add()
     {
-      DT_THROW_IF(is_locked_ctws(), std::logic_error, " Operation prohibited, object is locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, " Operation prohibited, object is locked ! ");
       {
-	geiger_ctw_handle_type dummy;
-	_geiger_ctws_.push_back(dummy);
+				geiger_ctw_handle_type dummy;
+				_geiger_ctws_.push_back(dummy);
       }
       geiger_ctw_handle_type & last = _geiger_ctws_.back();
       last.reset(new geiger_ctw);
@@ -146,24 +145,24 @@ namespace snemo {
 
     void geiger_ctw_data::reset()
     {
-      if (is_locked_ctws())
-	{
-	  unlock_ctws();
-	}
+      if (is_locked())
+				{
+					unlock();
+				}
       reset_ctws();
       return;
     }
 
     void geiger_ctw_data::tree_dump (std::ostream & out_,
-				   const std::string & title_,
-				   const std::string & indent_,
-				   bool inherit_) const
+																		 const std::string & title_,
+																		 const std::string & indent_,
+																		 bool inherit_) const
     {
       out_ << indent_ << datatools::i_tree_dumpable::tag
-           << "Lock CTWs  : " << _locked_ctws_ << std::endl;
+           << "Lock CTWs  : " << _locked_ << std::endl;
 
       out_ << indent_ << datatools::i_tree_dumpable::inherit_tag (inherit_)
-	   << "Geiger CTWs : " << _geiger_ctws_.size() << std::endl;
+					 << "Geiger CTWs : " << _geiger_ctws_.size() << std::endl;
 
       return;
     }
@@ -172,21 +171,21 @@ namespace snemo {
     {
       DT_THROW_IF(_geiger_ctws_.size() == 0, std::logic_error, " Geiger CTW collection is empty ! ");
       for (int i = 0; i < _geiger_ctws_.size() - 1; i++)
-	{
-	  const geiger_ctw & ctw_a = _geiger_ctws_[i].get();
+				{
+					const geiger_ctw & ctw_a = _geiger_ctws_[i].get();
 
-	  for (int j = i+1; j < _geiger_ctws_.size(); j++)
-	    {
-	      const geiger_ctw & ctw_b = _geiger_ctws_[j].get();
+					for (int j = i+1; j < _geiger_ctws_.size(); j++)
+						{
+							const geiger_ctw & ctw_b = _geiger_ctws_[j].get();
 
-	      DT_THROW_IF(ctw_a.get_clocktick_800ns() == ctw_b.get_clocktick_800ns() 
-			  && ctw_a.get_geom_id() == ctw_b.get_geom_id(),
-			  std::logic_error,
-			  "Duplicate clocktick=" << ctw_a.get_clocktick_800ns() 
-			  << " * " 
-			  << "GID=" << ctw_b.get_geom_id());
-	    }
-	}
+							DT_THROW_IF(ctw_a.get_clocktick_800ns() == ctw_b.get_clocktick_800ns() 
+													&& ctw_a.get_geom_id() == ctw_b.get_geom_id(),
+													std::logic_error,
+													"Duplicate clocktick=" << ctw_a.get_clocktick_800ns() 
+													<< " * " 
+													<< "GID=" << ctw_b.get_geom_id());
+						}
+				}
       return;
     }
 

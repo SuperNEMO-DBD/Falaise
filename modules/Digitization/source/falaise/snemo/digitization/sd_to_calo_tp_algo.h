@@ -51,6 +51,7 @@ namespace snemo {
       
       /// Initializing
       void initialize(int32_t & clocktick_ref_,
+											int32_t & clocktick_shift_,
 											const ID_convertor & my_ID_convertor_);
 
       /// Check if the algorithm is initialized 
@@ -58,8 +59,14 @@ namespace snemo {
 
       /// Reset the object
       void reset(); 
+			
+			// /// Set the clocktick reference for the algorithm
+			// void set_clocktick_reference(int32_t clocktick_ref_);
+			
+			// /// Set the clocktick shift
+			// void set_clocktick_shift(int32_t clocktick_shift_);
 
-      /// Proces to fill a ctw data object from simulated data
+      /// Process to fill a ctw data object from simulated data
       int process(const mctools::simulated_data & sd_,
 									calo_tp_data & my_calo_tp_data_);
 
@@ -67,6 +74,8 @@ namespace snemo {
       
 			// unsigned int _existing_same_electronic_id(const geomtools::geom_id & electronic_id_,
 			// 																					calo_tp_data & my_calo_tp_data_);
+
+			///  Process to fill a ctw data object from simulated data
 
 			int _process(const mctools::simulated_data & sd_,
 									 calo_tp_data & my_calo_tp_data_);
@@ -79,6 +88,7 @@ namespace snemo {
       bool _active_gveto_; //!< Gamma-veto activation flag
 
 			int32_t _clocktick_ref_; //!< Clocktick reference of the algorithm
+			int32_t _clocktick_shift_; //!< Clocktick shift between [0:25]
 			const ID_convertor * _ID_convertor_; //!< Convert geometric ID into electronic ID
 
     };

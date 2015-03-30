@@ -1,29 +1,19 @@
-// calo_ctw.h
+// snemo/digitization/calo_ctw.h
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
-//
 
 #ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CALO_CTW_H
 #define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CALO_CTW_H
 
 // Standard library :
-#include <stdexcept>
-#include <iostream>
-#include <stdlib.h>
-#include <cmath>
-#include <string>
-#include <vector>
-#include <stdint.h>
 #include <bitset>
 
 // Third party:
 // - Boost:
 #include <boost/cstdint.hpp>
-
 // - Bayeux/datatools :
 #include <bayeux/datatools/bit_mask.h>
 #include <bayeux/datatools/handle.h>
-
 // - Bayeux/geomtools :
 #include <bayeux/geomtools/base_hit.h>
 
@@ -167,13 +157,13 @@ namespace snemo {
 			void set_control_word(std::bitset<4> & control_word_);
  
 			/// Check the lock status
-      bool is_locked_ctw() const;
+      bool is_locked() const;
 
       /// Lock 
-			void lock_ctw();
+			void lock();
 
 			/// Unlock
-			void unlock_ctw();
+			void unlock();
 
 			/// Reset the calorimeter crate TW bitset
 			void reset_tw_bitset();
@@ -197,7 +187,7 @@ namespace snemo {
 
     private : 
 
-			bool _locked_ctw_; //!< CTW lock flag
+			bool _locked_; //!< CTW lock flag
 			wall_type _wall_;  //!< The type of the crate (from main wall or X Wall - Gamma veto)
 			int32_t _clocktick_25ns_; //!< The timestamp of the trigger primitive in main clock units (40 MHz)
 			std::bitset<18> _ctw_; //!< The crate trigger word

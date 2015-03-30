@@ -1,3 +1,5 @@
+// test_geiger_tp_data.cxx
+
 // Standard libraries :
 #include <iostream>
 #include <exception>
@@ -72,7 +74,7 @@ int main(int argc_, char **  argv_)
       gg_tp.set_clocktick_800ns(20);
       gg_tp.tree_dump(std::clog, "GG TP : ", "INFO : ");
     }
-    my_geiger_tp_data.lock_tps();
+    my_geiger_tp_data.lock();
 
     std::clog << "Clocktick min = " << my_geiger_tp_data.get_clocktick_min() << std::endl;
     std::clog << "Clocktick max = " << my_geiger_tp_data.get_clocktick_max() << std::endl;
@@ -90,20 +92,6 @@ int main(int argc_, char **  argv_)
 	my_list_of_gg_tp_per_clocktick_per_crate[i].get().tree_dump(std::clog, "My list of geiger TP per clocktick per crate" , "INFO : ");
       }
     my_geiger_tp_data.tree_dump(std::clog, "my_geiger_TP_data : ", "INFO : ");
-
-    datatools::data_writer writer ("test_geiger_tp_data.xml",
-				   datatools::using_multi_archives);
-    writer.store(my_geiger_tp_data);
-    
-    datatools::data_reader reader("test_geiger_tp_data.xml",
-				  datatools::using_multi_archives);
-
-    snemo::digitization::geiger_tp_data my_geiger_tp_data2;
-    
-    reader.load(my_geiger_tp_data2);
-    my_geiger_tp_data2.tree_dump(std::clog, "my_geiger_tp_data2 from file test_geiger_tp_data.xml : ", "INFO : ");
-
-
 
     std::clog << "The end." << std::endl;
   }

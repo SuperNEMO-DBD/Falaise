@@ -58,18 +58,18 @@ namespace snemo {
       if(my_ctw_.get_htm_pc_info() != 0)
 	{
 	  unsigned int ctw_multiplicity = my_ctw_.get_htm_pc_info();
-	  my_ctw_.set_htm_pc(ctw_multiplicity + my_calo_tp_.get_htm_multiplicity());
+	  my_ctw_.set_htm_pc(ctw_multiplicity + my_calo_tp_.get_htm());
 	}
       else
 	{
-	  my_ctw_.set_htm_pc(my_calo_tp_.get_htm_multiplicity());
+	  my_ctw_.set_htm_pc(my_calo_tp_.get_htm());
 	}
       return;
     }
 
     void calo_tp_to_ctw_algo::set_ctw_zone_bit(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_)
     {     
-      if (my_calo_tp_.get_htm_multiplicity() != 0)
+      if (my_calo_tp_.get_htm() != 0)
 	{
 	  unsigned int activated_zone_id = 0;	      
 	  if(my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) > 9)

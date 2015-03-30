@@ -1,14 +1,12 @@
-// calo_ctw.cc
+// snemo/digitization/calo_ctw.cc
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
-//
 
 // Ourselves:
 #include <snemo/digitization/calo_ctw.h>
 
 // Third party:
 // - Bayeux/datatools:
-//#include <datatools/utils.h>
 #include <datatools/exception.h>
 
 namespace snemo {
@@ -20,7 +18,7 @@ namespace snemo {
 
     calo_ctw::calo_ctw()
     {
-      _locked_ctw_ = false;
+      _locked_ = false;
       _clocktick_25ns_ = -1;
       _ctw_ = 0x0;
       _wall_ = INVALID_WALL;
@@ -38,7 +36,7 @@ namespace snemo {
 			      int32_t clocktick_25ns_,
 			      wall_type wall_)
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Calorimeter CTW is locked !) ");
+      DT_THROW_IF(is_locked(), std::logic_error, "Calorimeter CTW is locked !) ");
       set_hit_id(hit_id_);
       set_geom_id(electronic_id_);
       set_clocktick_25ns(clocktick_25ns_);
@@ -48,7 +46,7 @@ namespace snemo {
 
     void calo_ctw::set_wall(wall_type type_)
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Wall can't be set, calorimeter crate TW is locked !) ");
+      DT_THROW_IF(is_locked(), std::logic_error, "Wall can't be set, calorimeter crate TW is locked !) ");
       _wall_ = type_;
       _store |= STORE_WALL;
     }
@@ -78,7 +76,7 @@ namespace snemo {
 
     void calo_ctw::set_main_wall()
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Wall can't be set, calorimeter crate TW is locked !) ");
+      DT_THROW_IF(is_locked(), std::logic_error, "Wall can't be set, calorimeter crate TW is locked !) ");
       set_wall(MAIN_WALL);
       _store |= STORE_WALL;
       return;
@@ -86,7 +84,7 @@ namespace snemo {
 
     void calo_ctw::set_xg_wall()
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Wall can't be set, calorimeter crate TW is locked !) ");
+      DT_THROW_IF(is_locked(), std::logic_error, "Wall can't be set, calorimeter crate TW is locked !) ");
       set_wall(XG_WALL);
       _store |= STORE_WALL;
       return;
@@ -99,7 +97,7 @@ namespace snemo {
 
     void calo_ctw::set_clocktick_25ns(int32_t value_)
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Clocktick can't be set, calorimeter crate TW is locked !) ");
+      DT_THROW_IF(is_locked(), std::logic_error, "Clocktick can't be set, calorimeter crate TW is locked !) ");
       if(value_ <= -1)
 	{
 	  reset_clocktick_25ns();
@@ -114,7 +112,7 @@ namespace snemo {
 
     void calo_ctw::reset_clocktick_25ns()
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Clocktick can't be reset, calorimeter crate TW is locked !) ");
+      DT_THROW_IF(is_locked(), std::logic_error, "Clocktick can't be reset, calorimeter crate TW is locked !) ");
       _clocktick_25ns_ = -1;
       _store &= ~STORE_CLOCKTICK_25NS;
       return;
@@ -122,7 +120,7 @@ namespace snemo {
 
     void calo_ctw::set_htm_pc(unsigned int multiplicity_)
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, "HTM bits can't be set, calorimeter crate TW is locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, "HTM bits can't be set, calorimeter crate TW is locked ! ");
       DT_THROW_IF(multiplicity_ > MAX_NUMBER_OF_CHANNELS, std::logic_error, "Multiplicity value ["<< multiplicity_ << "] is not valid ! ");
 
       switch (multiplicity_)
@@ -188,8 +186,7 @@ namespace snemo {
 
     void calo_ctw::set_zoning_word(std::bitset<10> & zoning_word_)
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Zoning word can't be set, calorimeter crate TW is locked ! ");
-
+      DT_THROW_IF(is_locked(), std::logic_error, "Zoning word can't be set, calorimeter crate TW is locked ! ");
       for (int i = 0; i < zoning_word_.size(); i++)
 	{
 	  if (zoning_word_.test(i) == true)
@@ -207,7 +204,7 @@ namespace snemo {
 
     void calo_ctw::set_zoning_bit(int BIT_POS_, bool value_)
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, " Zoning bit can't be set, calorimeter CTW is locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, " Zoning bit can't be set, calorimeter CTW is locked ! ");
       _ctw_.set(BIT_POS_,value_);
       _store |= STORE_CTW;
       return;
@@ -229,7 +226,7 @@ namespace snemo {
 
     void calo_ctw::set_lto_pc_bit(bool value_)
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, "LTO bit can't be set, calorimeter crate TW is locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, "LTO bit can't be set, calorimeter crate TW is locked ! ");
       _ctw_.set(LTO_PC_BIT,value_);
       _store |= STORE_CTW;
       return;
@@ -242,7 +239,7 @@ namespace snemo {
 
     void calo_ctw::set_xt_pc_bit(bool value_)
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, " External bit can't be set, calorimeter crate TW is locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, " External bit can't be set, calorimeter crate TW is locked ! ");
       _ctw_.set(XT_PC_BIT,value_);
       _store |= STORE_CTW;
       return;
@@ -268,7 +265,7 @@ namespace snemo {
 
     void calo_ctw::set_control_word(std::bitset<4> & control_word_)
     {    
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Control word can't be set, calorimeter crate TW is locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, "Control word can't be set, calorimeter crate TW is locked ! ");
       for (int i = 0; i < control_word_.size(); i++)
 	{
 	  if (control_word_.test(i) == true)
@@ -284,29 +281,29 @@ namespace snemo {
       return;
     }
 
-    bool calo_ctw::is_locked_ctw() const
+    bool calo_ctw::is_locked() const
     {
-      return _locked_ctw_;
+      return _locked_;
     }
 
-    void calo_ctw::lock_ctw()
+    void calo_ctw::lock()
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Calorimeter crate TW is already locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, "Calorimeter crate TW is already locked ! ");
       _check();
-      _locked_ctw_ = true;
+      _locked_ = true;
       return;
     }
     
-    void calo_ctw::unlock_ctw()
+    void calo_ctw::unlock()
     {
-      DT_THROW_IF(!is_locked_ctw(), std::logic_error, "Calorimeter crate TW is already unlocked ! ");
-      _locked_ctw_ = false;
+      DT_THROW_IF(!is_locked(), std::logic_error, "Calorimeter crate TW is already unlocked ! ");
+      _locked_ = false;
       return;
     } 
 
     void calo_ctw::reset_tw_bitset()
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Bitset word can't be reset, calorimeter crate TW is locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, "Bitset word can't be reset, calorimeter crate TW is locked ! ");
       _ctw_ = 0x0;
       _store &= ~STORE_CTW;
       return;
@@ -319,9 +316,9 @@ namespace snemo {
 
     void calo_ctw::reset()
     {
-      if(is_locked_ctw())
+      if(is_locked())
 	{
-	  unlock_ctw();
+	  unlock();
 	}
       reset_tw_bitset();
       reset_clocktick_25ns();

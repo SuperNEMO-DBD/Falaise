@@ -1,7 +1,6 @@
-// calo_tp.ipp
+// snemo/digitization/calo_tp.ipp
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
-//
 
 #ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CALO_TP_IPP
 #define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CALO_TP_IPP
@@ -14,7 +13,6 @@
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/bitset.hpp>
-
 // - Bayeux/geomtools
 #include <geomtools/base_hit.ipp>
 
@@ -34,7 +32,7 @@ namespace snemo {
 			// knows about the field to be stored/loaded
 			// from the archive.
 
-			ar & boost::serialization::make_nvp ("locked_tp", _locked_tp_);
+			ar & boost::serialization::make_nvp ("locked_tp", _locked_);
  
 			if (_store & STORE_CLOCKTICK_25NS)
 				{

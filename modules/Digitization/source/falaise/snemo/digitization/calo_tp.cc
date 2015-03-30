@@ -1,14 +1,12 @@
-// calo_tp.cc
+// snemo/digitization/calo_tp.cc
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
-//
 
 // Ourselves:
 #include <snemo/digitization/calo_tp.h>
 
 // Third party:
-// - Bayeux/datatools:
-//#include <datatools/utils.h>
+// - Bayeux/datatools: 
 #include <datatools/exception.h>
 
 namespace snemo {
@@ -20,7 +18,7 @@ namespace snemo {
 
     calo_tp::calo_tp()
     {
-      _locked_tp_ = false;
+      _locked_ = false;
       _clocktick_25ns_ = INVALID_CLOCKTICK;
       _tp_ = 0x0;
       return;
@@ -36,21 +34,20 @@ namespace snemo {
 			     const geomtools::geom_id & electronic_id_,
 			     int32_t clocktick_25ns_)
     {
-      DT_THROW_IF(is_locked_tp(), std::logic_error, "Calorimeter TP is locked !) ");
+      DT_THROW_IF(is_locked(), std::logic_error, "Calorimeter TP is locked !) ");
       set_hit_id(hit_id_);    
       set_geom_id(electronic_id_);
       set_clocktick_25ns(clocktick_25ns_);
-  
       return;
     }
     
-    void calo_tp::set_data(unsigned int htm_multiplicity_,
+    void calo_tp::set_data(unsigned int htm_,
 			   bool lto_bit_,
 			   bool xt_bit_,
 			   bool spare_bit_)
     {
-      DT_THROW_IF(is_locked_tp(), std::logic_error, "Calorimeter TP is locked !) ");
-      set_htm(htm_multiplicity_);
+      DT_THROW_IF(is_locked(), std::logic_error, "Calorimeter TP is locked !) ");
+      set_htm(htm_);
       set_lto_bit(lto_bit_);
       set_xt_bit(xt_bit_);
       set_spare_bit(spare_bit_);
@@ -62,9 +59,9 @@ namespace snemo {
       return _clocktick_25ns_;
     }
 
-    void calo_tp::set_clocktick_25ns( int32_t value_ )
+    void calo_tp::set_clocktick_25ns(int32_t value_)
     {
-      DT_THROW_IF(is_locked_tp(), std::logic_error, "Clocktick can't be set, calorimeter TP is locked !) ");
+      DT_THROW_IF(is_locked(), std::logic_error, "Clocktick can't be set, calorimeter TP is locked !) ");
       if(value_ <= INVALID_CLOCKTICK)
 	{
 	  reset_clocktick_25ns();
@@ -84,7 +81,7 @@ namespace snemo {
 
     void calo_tp::reset_clocktick_25ns()
     {
-      DT_THROW_IF(is_locked_tp(), std::logic_error, "Clocktick can't be reset, calorimeter TP is locked !) ");
+      DT_THROW_IF(is_locked(), std::logic_error, "Clocktick can't be reset, calorimeter TP is locked !) ");
       _clocktick_25ns_ = INVALID_CLOCKTICK;
       _store &= ~STORE_CLOCKTICK_25NS;
       return;
@@ -97,7 +94,7 @@ namespace snemo {
     
     void calo_tp::reset_tp_bitset()
     {
-      DT_THROW_IF(is_locked_tp(), std::logic_error, "TP bitset can't be reset, calorimeter TP is locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, "TP bitset can't be reset, calorimeter TP is locked ! ");
       _tp_ = 0x0;
       _store &= ~STORE_TP;
       return;
@@ -105,7 +102,7 @@ namespace snemo {
 
     void calo_tp::set_htm(unsigned int multiplicity_)
     {
-      DT_THROW_IF(is_locked_tp(), std::logic_error, "HTM bits can't be set, calorimeter TP is locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, "HTM bits can't be set, calorimeter TP is locked ! ");
       DT_THROW_IF(multiplicity_ > MAX_NUMBER_OF_CHANNELS, std::logic_error, "Multiplicity value ["<< multiplicity_ << "] is not valid ! ");
 
       switch (multiplicity_)
@@ -133,7 +130,7 @@ namespace snemo {
       return;
     }
     
-    unsigned int calo_tp::get_htm_multiplicity() const
+    unsigned int calo_tp::get_htm() const
     {
       if(_tp_.test(HTM_BIT0) == 0 && _tp_.test(HTM_BIT1) == 0)
 	{           
@@ -166,12 +163,12 @@ namespace snemo {
 
     bool calo_tp::is_htm() const
     {
-      return get_htm_multiplicity() != 0;
+      return get_htm() != 0;
     }
 
     void calo_tp::set_lto_bit(bool value_)
     {
-      DT_THROW_IF(is_locked_tp(), std::logic_error, "LTO bit can't be set, calorimeter TP is locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, "LTO bit can't be set, calorimeter TP is locked ! ");
       _tp_.set(LTO_BIT,value_);
       _store |= STORE_TP;
       return;
@@ -184,7 +181,7 @@ namespace snemo {
 
     void calo_tp::set_xt_bit(bool value_)
     {
-      DT_THROW_IF(is_locked_tp(), std::logic_error, " External bit can't be set, calorimeter TP is locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, " External bit can't be set, calorimeter TP is locked ! ");
       _tp_.set(XT_BIT,value_);
       _store |= STORE_TP;
       return;
@@ -197,7 +194,7 @@ namespace snemo {
 
     void calo_tp::set_spare_bit(bool value_)
     {
-      DT_THROW_IF(is_locked_tp(), std::logic_error, " Spare bit can't be set, calorimeter TP is locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, " Spare bit can't be set, calorimeter TP is locked ! ");
       _tp_.set(SPARE_BIT,value_);
       _store |= STORE_TP;
       return;
@@ -208,23 +205,23 @@ namespace snemo {
       return _tp_.test(SPARE_BIT);
     }
 
-    bool calo_tp::is_locked_tp() const
+    bool calo_tp::is_locked() const
     {
-      return _locked_tp_;
+      return _locked_;
     }
 
-    void calo_tp::lock_tp()
+    void calo_tp::lock()
     {
-      DT_THROW_IF(is_locked_tp(), std::logic_error, "Calorimeter TP is already locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, "Calorimeter TP is already locked ! ");
       _check();
-      _locked_tp_ = true;
+      _locked_ = true;
       return;
     }
     
-    void calo_tp::unlock_tp()
+    void calo_tp::unlock()
     {
-      DT_THROW_IF(!is_locked_tp(), std::logic_error, "Calorimeter TP is already unlocked ! ");
-      _locked_tp_ = false;
+      DT_THROW_IF(!is_locked(), std::logic_error, "Calorimeter TP is already unlocked ! ");
+      _locked_ = false;
       return;
     } 
 
@@ -235,9 +232,9 @@ namespace snemo {
 
     void calo_tp::reset()
     {
-      if(is_locked_tp())
+      if(is_locked())
 	{
-	  unlock_tp();
+	  unlock();
 	}
       reset_tp_bitset();
       reset_clocktick_25ns();

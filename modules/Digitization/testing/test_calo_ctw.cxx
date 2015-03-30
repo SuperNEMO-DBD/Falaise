@@ -1,4 +1,4 @@
-//test_calo_ctw.cxx
+// snemo/digitization/test_calo_ctw.cxx
 
 // Standard libraries :
 #include <iostream>
@@ -36,7 +36,7 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     my_calo_ctw.set_zoning_word(zoning_word);
     my_calo_ctw.set_lto_pc_bit(1);
     my_calo_ctw.tree_dump(std::clog, "my_calo_CTW : ", "INFO : ");
-    my_calo_ctw.lock_ctw();
+    my_calo_ctw.lock();
     
     std::bitset<10> zoning_word_get;
     my_calo_ctw.get_zoning_word(zoning_word);
@@ -51,18 +51,6 @@ int main( int /* argc_ */, char ** /* argv_ */ )
 	std::clog << ' ' << *it;
       }
     std::clog << std::endl;
-
-    datatools::data_writer writer ("test_calo_ctw.xml",
-				   datatools::using_multi_archives);
-    writer.store(my_calo_ctw);
-    
-    datatools::data_reader reader("test_calo_ctw.xml",
-				  datatools::using_multi_archives);
-
-    snemo::digitization::calo_ctw my_calo_ctw2;
-    
-    reader.load(my_calo_ctw2);
-    my_calo_ctw2.tree_dump(std::clog, "my_calo_ctw2 from file test_calo_ctw.xml : ", "INFO : ");
 
     std::clog << "The end." << std::endl;
   }

@@ -1,4 +1,4 @@
-// calo_tp_data.cc
+// snemo/digitization/calo_tp_data.cc
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
@@ -7,7 +7,6 @@
 
 // Third party:
 // - Bayeux/datatools:
-//#include <datatools/utils.h>
 #include <datatools/exception.h>
 
 namespace snemo {
@@ -19,7 +18,7 @@ namespace snemo {
 
     calo_tp_data::calo_tp_data()
     {
-      _locked_tps_ = false;
+      _locked_ = false;
       return;
     }
 
@@ -87,7 +86,7 @@ namespace snemo {
 			
     void calo_tp_data::get_list_of_tp_per_clocktick(int32_t clocktick_25ns_, calo_tp_collection_type & my_list_of_tps_per_clocktick_) const
     {
-      DT_THROW_IF(!is_locked_tps(), std::logic_error, " Calorimeter TP collection is not locked ! ");
+      DT_THROW_IF(!is_locked(), std::logic_error, " Calorimeter TP collection is not locked ! ");
       for (int i = 0; i < _calo_tps_.size(); i++)
       	{
       	  if(_calo_tps_[i].get().get_clocktick_25ns() == clocktick_25ns_)
@@ -100,7 +99,7 @@ namespace snemo {
 
     void calo_tp_data::get_list_of_tp_per_clocktick_per_crate(int32_t clocktick_25ns_, unsigned int crate_number_, calo_tp_collection_type & my_list_of_tps_per_clocktick_per_crate_ ) const
     {
-      DT_THROW_IF(!is_locked_tps(), std::logic_error, " Calorimeter TP collection is not locked ! ");
+      DT_THROW_IF(!is_locked(), std::logic_error, " Calorimeter TP collection is not locked ! ");
       for (int i = 0; i < _calo_tps_.size(); i++)
 				{
 					if(_calo_tps_[i].get().get_clocktick_25ns() == clocktick_25ns_ && _calo_tps_[i].get().get_geom_id().get(mapping::CRATE_INDEX) == crate_number_)
@@ -111,36 +110,36 @@ namespace snemo {
       return;
     }
 
-    bool calo_tp_data::is_locked_tps() const
+    bool calo_tp_data::is_locked() const
     {
-      return _locked_tps_;
+      return _locked_;
     }
     
-    void calo_tp_data::lock_tps()
+    void calo_tp_data::lock()
     {
-      DT_THROW_IF(is_locked_tps(), std::logic_error, " Calorimeter TP collection is already locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, " Calorimeter TP collection is already locked ! ");
       _check();
-      _locked_tps_ = true;
+      _locked_ = true;
       return;
     }
     
-    void calo_tp_data::unlock_tps()
+    void calo_tp_data::unlock()
     { 
-      DT_THROW_IF(!is_locked_tps(), std::logic_error, " Calorimeter TP collection is already unlocked ! ");
-      _locked_tps_ = false;
+      DT_THROW_IF(!is_locked(), std::logic_error, " Calorimeter TP collection is already unlocked ! ");
+      _locked_ = false;
       return;
     }
 
     void calo_tp_data::reset_tps()
     {
-      DT_THROW_IF(is_locked_tps(), std::logic_error, " Operation prohibited, object is locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, " Operation prohibited, object is locked ! ");
       _calo_tps_.clear();
       return ;
     }
 		
     calo_tp & calo_tp_data::add()
     {
-      DT_THROW_IF(is_locked_tps(), std::logic_error, " Operation prohibited, object is locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, " Operation prohibited, object is locked ! ");
       {
 				calo_tp_handle_type dummy;
 				_calo_tps_.push_back(dummy);
@@ -160,13 +159,11 @@ namespace snemo {
       return _calo_tps_;
     }
 
-
-
     void calo_tp_data::reset()
     {
-      if (is_locked_tps())
+      if (is_locked())
 				{
-					unlock_tps();
+					unlock();
 				}
       reset_tps();
       return;
@@ -181,7 +178,7 @@ namespace snemo {
 			out_ << indent_ << title_ << std::endl;
 			
       out_ << indent_ << datatools::i_tree_dumpable::tag
-           << "Is locked TP(s)  : " << _locked_tps_ << std::endl;
+           << "Is locked TP(s)  : " << _locked_ << std::endl;
 
       out_ << indent_ << datatools::i_tree_dumpable::inherit_tag (inherit_)
 					 << "Calorimeter TP(s) : " << _calo_tps_.size() << std::endl;

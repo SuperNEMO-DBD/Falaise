@@ -1,4 +1,4 @@
-// geiger_ctw.h
+// snemo/digitization/geiger_ctw.h
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 //
@@ -7,24 +7,15 @@
 #define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_GEIGER_CTW_H
 
 // Standard library :
-#include <stdexcept>
-#include <iostream>
-#include <stdlib.h>
-#include <cmath>
-#include <string>
-#include <vector>
-#include <stdint.h>
 #include <bitset>
 
 // Third party:
 // - Boost:
 #include <boost/cstdint.hpp>
 #include <boost/dynamic_bitset.hpp>
-
 // - Bayeux/datatools :
 #include <bayeux/datatools/bit_mask.h>
 #include <bayeux/datatools/handle.h>
-
 // - Bayeux/geomtools :
 #include <bayeux/geomtools/base_hit.h>
 
@@ -81,13 +72,13 @@ namespace snemo {
 			void set_100_bits_in_ctw_word(unsigned int block_index_, const std::bitset<100> & my_bitset_);
 
       /// Check the lock status
-      bool is_locked_ctw() const;
+      bool is_locked() const;
 
       /// Lock 
-      void lock_ctw();
+      void lock();
 
       /// Unlock
-      void unlock_ctw();
+      void unlock();
 
       /// Reset the geiger crate TW bitset
       void reset_tw_bitset();
@@ -100,9 +91,9 @@ namespace snemo {
 
       /// Smart print
       virtual void tree_dump(std::ostream      & a_out    = std::clog,
-			     const std::string & a_title  = "",
-			     const std::string & a_indent = "",
-			     bool a_inherit               = false) const;
+														 const std::string & a_title  = "",
+														 const std::string & a_indent = "",
+														 bool a_inherit               = false) const;
 
     protected : 
 			
@@ -111,7 +102,7 @@ namespace snemo {
 
     private : 
 
-      bool _locked_ctw_; //!< CTW lock flag
+      bool _locked_; //!< CTW lock flag
       int32_t _clocktick_800ns_; //!< The timestamp of the trigger primitive in main clock units (40 MHz)
       std::bitset<2000> _gg_ctw_; //!< The crate trigger word
 

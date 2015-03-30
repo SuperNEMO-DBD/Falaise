@@ -93,7 +93,7 @@ int main( int /* argc_ */, char ** /* argv_ */ )
       ctp.set_htm(1);
       ctp.tree_dump(std::clog, "CTP 6 : ", "INFO : ");
     }
-    my_calo_tp_data.lock_tps();
+    my_calo_tp_data.lock();
 
     snemo::digitization::calo_ctw_data my_calo_ctw_data;
     snemo::digitization::calo_tp_to_ctw_algo algo;

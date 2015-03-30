@@ -3,6 +3,9 @@
 // Standard libraries :
 #include <iostream>
 
+// GSL:
+#include <bayeux/mygsl/rng.h>
+
 // - Bayeux/datatools:
 #include <datatools/utils.h>
 #include <datatools/io_factory.h>
@@ -25,7 +28,9 @@ int main( int /* argc_ */, char ** /* argv_ */ )
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
   try {
     std::clog << "Test program for class 'snemo::digitization::sd_to_calo_ctw_process' !" << std::endl;
- 
+    
+    int32_t seed = 314159;
+    
     std::string manager_config_file;
     
     manager_config_file = "~/data/my_falaise/config/snemo/demonstrator/geometry/3.0/manager.conf";
@@ -61,10 +66,14 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     my_convertor.set_geo_manager(my_manager);
     my_convertor.set_module_number(0);
     my_convertor.initialize();
+    
+    mygsl::rng random_generator;
+    random_generator.initialize(seed);
+    int32_t clocktick_reference = random_generator.flat(0, INT32_MAX);
+    int32_t clocktick_shift = random_generator.flat(0, 25);
 
-    int32_t clocktick_reference = 12;
     snemo::digitization::sd_to_calo_tp_algo sd_2_calo_tp;
-    sd_2_calo_tp.initialize(clocktick_reference, my_convertor);
+    sd_2_calo_tp.initialize(clocktick_reference, clocktick_shift, my_convertor);
 
     snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw;
     calo_tp_2_ctw.initialize();
@@ -88,15 +97,15 @@ int main( int /* argc_ */, char ** /* argv_ */ )
 		my_calo_tp_data.tree_dump(std::clog, "Calorimeter TP(s) data : ", "INFO : ");
 	      }
 	  }  
-	    my_calo_tp_data.lock_tps();
+	    my_calo_tp_data.lock();
 	    calo_tp_2_ctw.process(my_calo_tp_data, my_calo_ctw_data);
 	    my_calo_ctw_data.tree_dump(std::clog, "Calorimeter TP(s) data : ", "INFO : ");
 	    my_calo_tp_data.reset();
+	    my_calo_ctw_data.reset();
    
 	// CF README.RST pour display graphique avec loader de manager.conf
 	// -> /home/guillaume/data/Bayeux/Bayeux-trunk/source/bxmctools/examples/ex00
 	ER.clear();
-	//my_calo_tp_data.lock_tps();
 	psd_count++;
 	std::clog << "DEBUG : psd count " << psd_count << std::endl;
 	DT_LOG_NOTICE(logging, "Simulated data #" << psd_count);

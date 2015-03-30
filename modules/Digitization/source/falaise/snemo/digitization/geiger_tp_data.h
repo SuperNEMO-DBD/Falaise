@@ -1,4 +1,4 @@
-// geiger_tp_data.h
+// snemo/digitization/geiger_tp_data.h
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
@@ -6,19 +6,12 @@
 #define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_GEIGER_TP_DATA_H
 
 // Standard library :
-#include <stdexcept>
-#include <iostream>
-#include <stdlib.h>
-#include <cmath>
-#include <string>
 #include <vector>
-#include <stdint.h>
 #include <bitset>
 
 // Third party:
 // - Boost:
 #include <boost/cstdint.hpp>
-
 // - Bayeux/datatools :
 #include <bayeux/datatools/handle.h>
 
@@ -68,13 +61,13 @@ namespace snemo {
 			void get_list_of_gg_tp_per_clocktick_per_crate(int32_t clocktick_800ns_, unsigned int crate_number_, geiger_tp_collection_type & my_list_of_gg_tps_per_clocktick_per_crate_ ) const;
 
 			/// Check the lock status
-			bool is_locked_tps() const;
+			bool is_locked() const;
 
 			/// Lock 
-			void lock_tps();
+			void lock();
 
 			/// Unlock
-			void unlock_tps();
+			void unlock();
 
 			/// Reset the list of tps
 			void reset_tps();
@@ -100,7 +93,7 @@ namespace snemo {
 			
 		private : 
 
-			bool _locked_tps_; //!< TPS lock flag
+			bool _locked_; //!< TPS lock flag
 			geiger_tp_collection_type _geiger_tps_; //!< Collection of geigers tracker primitive
 
 			DATATOOLS_SERIALIZATION_DECLARATION();

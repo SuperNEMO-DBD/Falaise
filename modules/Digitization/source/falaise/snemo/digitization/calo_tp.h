@@ -1,33 +1,22 @@
-// calo_tp.h
+// snemo/digitization/calo_tp.h
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
-//
 
 #ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CALO_TP_H
 #define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CALO_TP_H
 
 // Standard library :
-#include <stdexcept>
-#include <iostream>
-#include <stdlib.h>
-#include <cmath>
-#include <string>
-#include <vector>
-#include <stdint.h>
 #include <bitset>
 
 // Third party:
 // - Boost:
 #include <boost/cstdint.hpp>
-
 // - Bayeux/datatools :
 #include <bayeux/datatools/bit_mask.h>
-
 // - Bayeux/geomtools :
 #include <bayeux/geomtools/base_hit.h>
 
-
-// Ourselves :
+// This project :
 #include <snemo/digitization/mapping.h>
 
 namespace snemo {
@@ -80,7 +69,7 @@ namespace snemo {
 											int32_t clocktick_25ns_);
 
 			/// Set the data with valid values
-			void set_data(unsigned int htm_multiplicity_,
+			void set_data(unsigned int htm_,
 										bool lto_bit_,
 										bool xt_bit_,
 										bool spare_bit);																			
@@ -107,7 +96,7 @@ namespace snemo {
 			void set_htm(unsigned int multiplicity_);
 
 			/// Return the information of the multiplicity for the high threshold
-			unsigned int get_htm_multiplicity() const;
+			unsigned int get_htm() const;
 
 			/// Get the high threshold multiplicity (HTM) word (2 bits)
 			std::bitset<2> get_htm_bits() const;
@@ -134,13 +123,13 @@ namespace snemo {
 			bool is_spare() const;
 
 			/// Check the lock status
-      bool is_locked_tp() const;
+      bool is_locked() const;
 
       /// Lock 
-			void lock_tp();
+			void lock();
 
 			/// Unlock
-			void unlock_tp();
+			void unlock();
 
       /// Check if the internal data of the TP is valid
       bool is_valid() const;
@@ -161,7 +150,7 @@ namespace snemo {
 
     private : 
 
-			bool _locked_tp_; //!< TP lock flag
+			bool _locked_; //!< TP lock flag
       int32_t _clocktick_25ns_; //!< The timestamp of the trigger primitive in main clock units (40 MHz)
       std::bitset<5> _tp_; //!< The trigger primitive bitset
 

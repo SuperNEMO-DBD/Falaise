@@ -1,3 +1,5 @@
+// test_calo_tp_data.cxx
+
 // Standard libraries :
 #include <iostream>
 #include <exception>
@@ -83,7 +85,7 @@ int main(int argc_, char **  argv_)
       ctp.set_lto_bit(1);
       ctp.tree_dump(std::clog, "CTP : ", "INFO : ");
     }
-    my_calo_tp_data.lock_tps();
+    my_calo_tp_data.lock();
 
     std::clog << "Clocktick min = " << my_calo_tp_data.get_clocktick_min() << std::endl;
     std::clog << "Clocktick max = " << my_calo_tp_data.get_clocktick_max() << std::endl;
@@ -102,19 +104,6 @@ int main(int argc_, char **  argv_)
       }
     
     my_calo_tp_data.tree_dump(std::clog, "my_calo_TP_data : ", "INFO : ");
-
-    datatools::data_writer writer ("test_calo_tp_data.xml",
-				   datatools::using_multi_archives);
-    writer.store(my_calo_tp_data);
-    
-    datatools::data_reader reader("test_calo_tp_data.xml",
-				  datatools::using_multi_archives);
-
-    snemo::digitization::calo_tp_data my_calo_tp_data2;
-    
-    reader.load(my_calo_tp_data2);
-    my_calo_tp_data2.tree_dump(std::clog, "my_calo_tp_data2 from file test_calo_tp_data.xml : ", "INFO : ");
-
     std::clog << "The end." << std::endl;
   }
 

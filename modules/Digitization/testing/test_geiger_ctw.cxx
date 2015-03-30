@@ -33,20 +33,7 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     unsigned long board_id = 14;
     std::bitset<100> test_gg_tp_word (std::string ("1111111111111111111111111111111111111111111111111111010110111111111111111111111111111111111111111111"));  
     my_geiger_ctw.tree_dump(std::clog, "my_geiger_CTW : ", "INFO : "); 
-    my_geiger_ctw.lock_ctw();
-
-    // datatools::data_writer writer ("test_geiger_ctw.xml",
-    // 				   datatools::using_multi_archives);
-    // writer.store(my_geiger_ctw);
-    
-    // datatools::data_reader reader("test_geiger_ctw.xml",
-    // 				  datatools::using_multi_archives);
-
-    // snemo::digitization::geiger_ctw my_geiger_ctw2;
-    
-    // reader.load(my_geiger_ctw2);
-    // my_geiger_ctw2.tree_dump(std::clog, "my_geiger_ctw2 from file test_geiger_ctw.xml : ", "INFO : ");
-
+    my_geiger_ctw.lock();
     std::clog << "The end." << std::endl;
   }
 

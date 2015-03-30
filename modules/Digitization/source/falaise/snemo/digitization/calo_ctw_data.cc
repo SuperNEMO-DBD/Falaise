@@ -1,4 +1,4 @@
-// calo_ctw_data.cc
+// snemo/digitization/calo_ctw_data.cc
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
@@ -19,7 +19,7 @@ namespace snemo {
 
     calo_ctw_data::calo_ctw_data()
     {
-      _locked_ctws_ = false;
+      _locked_ = false;
       return;
     }
 
@@ -38,13 +38,13 @@ namespace snemo {
       int32_t clocktick_min = _calo_ctws_[0].get().get_clocktick_25ns();
       
       for (int i = 1; i < _calo_ctws_.size(); i++)
-	{
-	  if (_calo_ctws_[i].get().get_clocktick_25ns() < clocktick_min)
-	    {
-	      clocktick_min = _calo_ctws_[i].get().get_clocktick_25ns();
-	      index_with_min = i;
-	    }
-	}
+				{
+					if (_calo_ctws_[i].get().get_clocktick_25ns() < clocktick_min)
+						{
+							clocktick_min = _calo_ctws_[i].get().get_clocktick_25ns();
+							index_with_min = i;
+						}
+				}
       return index_with_min;
     }
 			
@@ -57,13 +57,13 @@ namespace snemo {
       int32_t clocktick_max = _calo_ctws_[0].get().get_clocktick_25ns();
       
       for (int i = 1; i < _calo_ctws_.size(); i++)
-	{
-	  if (_calo_ctws_[i].get().get_clocktick_25ns() > clocktick_max)
-	    {
-	      clocktick_max = _calo_ctws_[i].get().get_clocktick_25ns();
-	      index_with_max = i;
-	    }
-	}
+				{
+					if (_calo_ctws_[i].get().get_clocktick_25ns() > clocktick_max)
+						{
+							clocktick_max = _calo_ctws_[i].get().get_clocktick_25ns();
+							index_with_max = i;
+						}
+				}
       return index_with_max;
     }
 
@@ -89,7 +89,7 @@ namespace snemo {
     void calo_ctw_data::get_list_of_calo_ctw_per_clocktick(int32_t clocktick_25ns_, calo_ctw_collection_type & ctws_)
     {
       DT_THROW_IF(_calo_ctws_.size() == 0, std::logic_error, " Calorimeter CTW collection is empty ! ");
-      DT_THROW_IF(!is_locked_ctws(), std::logic_error, " Calorimeter CTW collection is not locked ! ");
+      DT_THROW_IF(!is_locked(), std::logic_error, " Calorimeter CTW collection is not locked ! ");
       for (int i = 0; i < _calo_ctws_.size(); i++)
       	{
       	  if(_calo_ctws_[i].get().get_clocktick_25ns() == clocktick_25ns_)
@@ -100,39 +100,39 @@ namespace snemo {
       return;
     }
 
-    bool calo_ctw_data::is_locked_ctws() const
+    bool calo_ctw_data::is_locked() const
     {
-      return _locked_ctws_;
+      return _locked_;
     }
     
-    void calo_ctw_data::lock_ctws()
+    void calo_ctw_data::lock()
     {
-      DT_THROW_IF(is_locked_ctws(), std::logic_error, " Calorimeter CTW collection is already locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, " Calorimeter CTW collection is already locked ! ");
       _check();
-      _locked_ctws_ = true;
+      _locked_ = true;
       return;
     }
     
-    void calo_ctw_data::unlock_ctws()
+    void calo_ctw_data::unlock()
     { 
-      DT_THROW_IF(!is_locked_ctws(), std::logic_error, " Calorimeter CTW collection is already unlocked ! ");
-      _locked_ctws_ = false;
+      DT_THROW_IF(!is_locked(), std::logic_error, " Calorimeter CTW collection is already unlocked ! ");
+      _locked_ = false;
       return;
     }
 
     void calo_ctw_data::reset_ctws()
     {
-      DT_THROW_IF(is_locked_ctws(), std::logic_error, " Operation prohibited, object is locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, " Operation prohibited, object is locked ! ");
       _calo_ctws_.clear();
       return ;
     }
 		
     calo_ctw & calo_ctw_data::add()
     {
-      DT_THROW_IF(is_locked_ctws(), std::logic_error, " Operation prohibited, object is locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, " Operation prohibited, object is locked ! ");
       {
-	calo_ctw_handle_type dummy;
-	_calo_ctws_.push_back(dummy);
+				calo_ctw_handle_type dummy;
+				_calo_ctws_.push_back(dummy);
       }
       calo_ctw_handle_type & last = _calo_ctws_.back();
       last.reset(new calo_ctw);
@@ -146,24 +146,24 @@ namespace snemo {
 
     void calo_ctw_data::reset()
     {
-      if (is_locked_ctws())
-	{
-	  unlock_ctws();
-	}
+      if (is_locked())
+				{
+					unlock();
+				}
       reset_ctws();
       return;
     }
 
     void calo_ctw_data::tree_dump (std::ostream & out_,
-				   const std::string & title_,
-				   const std::string & indent_,
-				   bool inherit_) const
+																	 const std::string & title_,
+																	 const std::string & indent_,
+																	 bool inherit_) const
     {
       out_ << indent_ << datatools::i_tree_dumpable::tag
-           << "Lock CTWs  : " << _locked_ctws_ << std::endl;
+           << "Lock CTWs  : " << _locked_ << std::endl;
 
       out_ << indent_ << datatools::i_tree_dumpable::inherit_tag (inherit_)
-	   << "Calorimeter CTWs : " << _calo_ctws_.size() << std::endl;
+					 << "Calorimeter CTWs : " << _calo_ctws_.size() << std::endl;
 
       return;
     }
@@ -172,21 +172,21 @@ namespace snemo {
     {
       DT_THROW_IF(_calo_ctws_.size() == 0, std::logic_error, " Calorimeter CTW collection is empty ! ");
       for (int i = 0; i < _calo_ctws_.size() - 1; i++)
-	{
-	  const calo_ctw & ctw_a = _calo_ctws_[i].get();
+				{
+					const calo_ctw & ctw_a = _calo_ctws_[i].get();
 
-	  for (int j = i+1; j < _calo_ctws_.size(); j++)
-	    {
-	      const calo_ctw & ctw_b = _calo_ctws_[j].get();
+					for (int j = i+1; j < _calo_ctws_.size(); j++)
+						{
+							const calo_ctw & ctw_b = _calo_ctws_[j].get();
 
-	      DT_THROW_IF(ctw_a.get_clocktick_25ns() == ctw_b.get_clocktick_25ns() 
-			  && ctw_a.get_geom_id() == ctw_b.get_geom_id(),
-			  std::logic_error,
-			  "Duplicate clocktick=" << ctw_a.get_clocktick_25ns() 
-			  << " * " 
-			  << "GID=" << ctw_b.get_geom_id());
-	    }
-	}
+							DT_THROW_IF(ctw_a.get_clocktick_25ns() == ctw_b.get_clocktick_25ns() 
+													&& ctw_a.get_geom_id() == ctw_b.get_geom_id(),
+													std::logic_error,
+													"Duplicate clocktick=" << ctw_a.get_clocktick_25ns() 
+													<< " * " 
+													<< "GID=" << ctw_b.get_geom_id());
+						}
+				}
       return;
     }
 

@@ -1,4 +1,4 @@
-// geiger_ctw.cc
+// snemo/digitization/geiger_ctw.cc
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 //
@@ -20,7 +20,7 @@ namespace snemo {
 
     geiger_ctw::geiger_ctw()
     {
-      _locked_ctw_ = false;
+      _locked_ = false;
       _clocktick_800ns_ = INVALID_CLOCKTICK;
       _gg_ctw_ = 0x0;
       return;
@@ -36,7 +36,7 @@ namespace snemo {
 				const geomtools::geom_id & electronic_id_,
 				int32_t clocktick_800ns_)
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Geiger CTW is locked !) ");
+      DT_THROW_IF(is_locked(), std::logic_error, "Geiger CTW is locked !) ");
       set_hit_id(hit_id_);
       set_geom_id(electronic_id_);
       set_clocktick_800ns(clocktick_800ns_);
@@ -50,7 +50,7 @@ namespace snemo {
 
     void geiger_ctw::set_clocktick_800ns(int32_t value_)
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Clocktick can't be set, Geiger CTW is locked !) ");
+      DT_THROW_IF(is_locked(), std::logic_error, "Clocktick can't be set, Geiger CTW is locked !) ");
       if(value_ <= INVALID_CLOCKTICK)
 	{
 	  reset_clocktick_800ns();
@@ -70,7 +70,7 @@ namespace snemo {
 
     void geiger_ctw::reset_clocktick_800ns()
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Clocktick can't be reset, Geiger CTW is locked !) ");
+      DT_THROW_IF(is_locked(), std::logic_error, "Clocktick can't be reset, Geiger CTW is locked !) ");
       _clocktick_800ns_ = INVALID_CLOCKTICK;
       _store &= ~STORE_CLOCKTICK_800NS;
       return;
@@ -111,29 +111,29 @@ namespace snemo {
       return;
     }
 
-    bool geiger_ctw::is_locked_ctw() const
+    bool geiger_ctw::is_locked() const
     {
-      return _locked_ctw_;
+      return _locked_;
     }
 
-    void geiger_ctw::lock_ctw()
+    void geiger_ctw::lock()
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Geiger CTW is already locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, "Geiger CTW is already locked ! ");
       _check();
-      _locked_ctw_ = true;
+      _locked_ = true;
       return;
     }
     
-    void geiger_ctw::unlock_ctw()
+    void geiger_ctw::unlock()
     {
-      DT_THROW_IF(!is_locked_ctw(), std::logic_error, "Geiger CTW is already unlocked ! ");
-      _locked_ctw_ = false;
+      DT_THROW_IF(!is_locked(), std::logic_error, "Geiger CTW is already unlocked ! ");
+      _locked_ = false;
       return;
     } 
 
     void geiger_ctw::reset_tw_bitset()
     {
-      DT_THROW_IF(is_locked_ctw(), std::logic_error, "Bitset word can't be reset, Geiger CTW is locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, "Bitset word can't be reset, Geiger CTW is locked ! ");
       _gg_ctw_ = 0x0;
       _store &= ~STORE_GG_CTW;
       return;
@@ -146,9 +146,9 @@ namespace snemo {
 
     void geiger_ctw::reset()
     {
-      if(is_locked_ctw())
+      if(is_locked())
 	{
-	  unlock_ctw();
+	  unlock();
 	}
       reset_tw_bitset();
       reset_clocktick_800ns();

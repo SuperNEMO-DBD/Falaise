@@ -1,4 +1,4 @@
-//test_geiger_tp.cxx
+// test_geiger_tp.cxx
 
 // Standard libraries :
 #include <iostream>
@@ -33,21 +33,8 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     my_geiger_tp.set_tracker_row_mode(6);
     my_geiger_tp.set_board_id(12);
     my_geiger_tp.set_crate_id(2);
-    my_geiger_tp.lock_gg_tp();
+    my_geiger_tp.lock();
     my_geiger_tp.tree_dump(std::clog, "my_geiger_tp : ", "INFO : ");
-
-    datatools::data_writer writer ("test_geiger_tp.xml",
-				   datatools::using_multi_archives);
-    writer.store(my_geiger_tp);
-     
-    datatools::data_reader reader("test_geiger_tp.xml",
-    				  datatools::using_multi_archives);
-
-    snemo::digitization::geiger_tp my_geiger_tp2;
-    
-    reader.load(my_geiger_tp2);
-    my_geiger_tp2.tree_dump(std::clog, "my_geiger_tp2 from file test_geiger_tp.xml : ", "INFO : ", false);
-
     std::clog << "The end." << std::endl;
   }
 

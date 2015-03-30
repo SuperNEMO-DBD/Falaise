@@ -1,4 +1,4 @@
-// geiger_ctw_data.h
+// snemo/digitization/geiger_ctw_data.h
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
@@ -6,19 +6,12 @@
 #define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_GEIGER_CTW_DATA_H
 
 // Standard library :
-#include <stdexcept>
-#include <iostream>
-#include <stdlib.h>
-#include <cmath>
-#include <string>
 #include <vector>
-#include <stdint.h>
 #include <bitset>
 
 // Third party:
 // - Boost:
 #include <boost/cstdint.hpp>
-
 // - Bayeux/datatools :
 #include <bayeux/datatools/handle.h>
 
@@ -65,13 +58,13 @@ namespace snemo {
       void get_list_of_geiger_ctw_per_clocktick(int32_t clocktick_25ns_, geiger_ctw_collection_type & ctws_);
 
       /// Check the lock status
-      bool is_locked_ctws() const;
+      bool is_locked() const;
 
       /// Lock 
-      void lock_ctws();
+      void lock();
 
       /// Unlock
-      void unlock_ctws();
+      void unlock();
 
       /// Reset the list of ctws
       void reset_ctws();
@@ -87,9 +80,9 @@ namespace snemo {
 
       /// Smart print
       virtual void tree_dump(std::ostream      & a_out    = std::clog,
-			     const std::string & a_title  = "",
-			     const std::string & a_indent = "",
-			     bool a_inherit               = false) const;
+														 const std::string & a_title  = "",
+														 const std::string & a_indent = "",
+														 bool a_inherit               = false) const;
 
     protected : 
       /// Check if two geigers crate trigger word do not have the same clocktick AND the same geom ID
@@ -97,8 +90,8 @@ namespace snemo {
 			
     private : 
 
-      bool _locked_ctws_; //!< CTWs lock flag
-      geiger_ctw_collection_type _geiger_ctws_; //!< Collection of geigers crate trigger
+      bool _locked_; //!< CTWs lock flag
+      geiger_ctw_collection_type _geiger_ctws_; //!< Collection of geigers crate trigger words
 
       //DATATOOLS_SERIALIZATION_DECLARATION();
 

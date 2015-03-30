@@ -63,7 +63,7 @@ int main( int /* argc_ */, char ** /* argv_ */ )
       my_geiger_ctw.set_clocktick_800ns(35);
       my_geiger_ctw.tree_dump(std::clog, "my_geiger_CTW_data : ", "INFO : ");
     }  
-    my_geiger_ctw_data.lock_ctws();
+    my_geiger_ctw_data.lock();
 
     std::clog << "Clocktick min = " << my_geiger_ctw_data.get_clocktick_min() << std::endl;
     std::clog << "Clocktick max = " << my_geiger_ctw_data.get_clocktick_max() << std::endl;
@@ -82,19 +82,6 @@ int main( int /* argc_ */, char ** /* argv_ */ )
 	my_list_of_gg_ctw_per_clocktick[i].get().tree_dump(std::clog, "My CTW(s) in the list with a clocktick = 20 : ", "INFO : ");
       }
     my_geiger_ctw_data.tree_dump(std::clog, "my_geiger_CTW_data : ", "INFO : ");
-
-    // datatools::data_writer writer ("test_geiger_ctw_data.xml",
-    // 				   datatools::using_multi_archives);
-    // writer.store(my_geiger_ctw_data);
- 
-    // datatools::data_reader reader("test_geiger_ctw_data.xml",
-    // 				  datatools::using_multi_archives);
-
-    // snemo::digitization::geiger_ctw_data my_geiger_ctw_data2;
-    
-    // reader.load(my_geiger_ctw_data2);
-    // my_geiger_ctw_data2.tree_dump(std::clog, "my_geiger_ctw_data2 from file test_geiger_ctw_data.xml : ", "INFO : ");
-
     std::clog << "The end." << std::endl;
   }
 

@@ -1,3 +1,5 @@
+// test_calo_ctw_data.cxx
+
 // Standard libraries :
 #include <iostream>
 #include <exception>
@@ -34,6 +36,7 @@ int main( int /* argc_ */, char ** /* argv_ */ )
       std::bitset<10> zoning_word (std::string("0001110100"));
       my_calo_ctw.set_zoning_word(zoning_word);
       my_calo_ctw.tree_dump(std::clog, "my_calo_CTW_data : ", "INFO : ");
+      my_calo_ctw.lock();
     }  
     {
       snemo::digitization::calo_ctw & my_calo_ctw = my_calo_ctw_data.add();
@@ -46,6 +49,7 @@ int main( int /* argc_ */, char ** /* argv_ */ )
       std::bitset<10> zoning_word (std::string("1010101010"));
       my_calo_ctw.set_zoning_word(zoning_word);
       my_calo_ctw.tree_dump(std::clog, "my_calo_CTW_data : ", "INFO : ");
+      my_calo_ctw.lock();
     }  
     {
       snemo::digitization::calo_ctw & my_calo_ctw = my_calo_ctw_data.add();
@@ -58,6 +62,7 @@ int main( int /* argc_ */, char ** /* argv_ */ )
       std::bitset<10> zoning_word (std::string("0010000100"));
       my_calo_ctw.set_zoning_word(zoning_word);
       my_calo_ctw.tree_dump(std::clog, "my_calo_CTW_data : ", "INFO : ");
+      my_calo_ctw.lock();
     }  
     {
       snemo::digitization::calo_ctw & my_calo_ctw = my_calo_ctw_data.add();
@@ -70,8 +75,9 @@ int main( int /* argc_ */, char ** /* argv_ */ )
       std::bitset<10> zoning_word (std::string("1111110100"));
       my_calo_ctw.set_zoning_word(zoning_word);
       my_calo_ctw.tree_dump(std::clog, "my_calo_CTW_data : ", "INFO : ");
+      my_calo_ctw.lock();
     }  
-    my_calo_ctw_data.lock_ctws();
+    my_calo_ctw_data.lock();
 
     std::clog << "Clocktick min = " << my_calo_ctw_data.get_clocktick_min() << std::endl;
     std::clog << "Clocktick max = " << my_calo_ctw_data.get_clocktick_max() << std::endl;
@@ -80,7 +86,7 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     std::vector<datatools::handle<snemo::digitization::calo_ctw> > my_list_of_ctw_per_clocktick;
 
     // For this example, 20 is the clocktick
-    my_calo_ctw_data.get_list_of_calo_ctw_per_clocktick(20,my_list_of_ctw_per_clocktick);
+    my_calo_ctw_data.get_list_of_calo_ctw_per_clocktick(20, my_list_of_ctw_per_clocktick);
     
 
     std::clog << "Size of my list of calo CTW for a clocktick = 20  : " << my_list_of_ctw_per_clocktick.size() << " calo CTW(s) in the list " << std::endl;
@@ -90,18 +96,6 @@ int main( int /* argc_ */, char ** /* argv_ */ )
 	my_list_of_ctw_per_clocktick[i].get().tree_dump(std::clog, "My CTW(s) in the list with a clocktick = 20 : ", "INFO : ");
       }
     my_calo_ctw_data.tree_dump(std::clog, "my_calo_CTW_data : ", "INFO : ");
-
-    datatools::data_writer writer ("test_calo_ctw_data.xml",
-				   datatools::using_multi_archives);
-    writer.store(my_calo_ctw_data);
- 
-    datatools::data_reader reader("test_calo_ctw_data.xml",
-				  datatools::using_multi_archives);
-
-    snemo::digitization::calo_ctw_data my_calo_ctw_data2;
-    
-    reader.load(my_calo_ctw_data2);
-    my_calo_ctw_data2.tree_dump(std::clog, "my_calo_ctw_data2 from file test_calo_ctw_data.xml : ", "INFO : ");
 
     std::clog << "The end." << std::endl;
   }

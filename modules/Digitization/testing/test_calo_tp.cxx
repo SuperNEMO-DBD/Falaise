@@ -1,4 +1,4 @@
-//test_calo_tp.cxx
+// test_calo_tp.cxx
 
 // Standard libraries :
 #include <iostream>
@@ -36,29 +36,25 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     my_calo_tp.set_xt_bit(1);
     my_calo_tp.set_lto_bit(1);
     my_calo_tp.tree_dump(std::clog, "my_calo_tp mock : ", "INFO : ");
-    my_calo_tp.lock_tp();
+    my_calo_tp.lock();
 
-    std::clog << "Htm multiplicity is        " << my_calo_tp.get_htm_multiplicity() << std::endl;
+    std::clog << "Htm multiplicity is        " << my_calo_tp.get_htm() << std::endl;
     std::clog << "Htm bits  bit pos [1][0] : " << my_calo_tp.get_htm_bits() << std::endl;
     std::clog << "Lto bit   bit pos [2]    : " << my_calo_tp.is_lto() << std::endl;
     std::clog << "Xt bit    bit pos [3]    : " << my_calo_tp.is_xt() << std::endl;
     std::clog << "Spare bit bit pos [4]    : " << my_calo_tp.is_spare() << std::endl;
-
-    datatools::data_writer writer ("test_calo_tp.xml",
-			       datatools::using_multi_archives);
-    writer.store(my_calo_tp);
-
-    datatools::data_reader reader("test_calo_tp.xml",
-				  datatools::using_multi_archives);
-
-    snemo::digitization::calo_tp my_calo_tp2;
     
-    reader.load(my_calo_tp2);
-    my_calo_tp2.tree_dump(std::clog, "my_calo_tp2 from file test_calo_tp.xml : ", "INFO : ");
+    // Test for data_writer & data_reader
+   
+    // datatools::data_writer writer ("test_calo_tp.xml",
+    // 				   datatools::using_multi_archives);
+    // writer.store(my_calo_tp);
 
+    // datatools::data_reader reader("test_calo_tp.xml",
+    // 				  datatools::using_multi_archives);
 
     // Reseting
-    my_calo_tp.unlock_tp();
+    my_calo_tp.unlock();
     my_calo_tp.reset();
     my_calo_tp.tree_dump(std::clog, "my_calo_tp reseted : ", "INFO : ");
 

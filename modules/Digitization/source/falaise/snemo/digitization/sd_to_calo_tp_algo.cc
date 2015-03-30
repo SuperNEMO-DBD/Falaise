@@ -27,10 +27,12 @@ namespace snemo {
     }
 
     void sd_to_calo_tp_algo::initialize(int32_t & clocktick_ref_,
+					int32_t & clocktick_shift_,
 					const ID_convertor & my_ID_convertor_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Calo tp to ctw algo is already initialized ! ");
       _clocktick_ref_ = clocktick_ref_;
+      _clocktick_shift_ = clocktick_shift_;
       _ID_convertor_ = & my_ID_convertor_;
       
       _initialized_ = true;
@@ -51,10 +53,22 @@ namespace snemo {
       return;
     }
 
+    // void sd_to_calo_tp_algo::set_clocktick_reference(int32_t clocktick_ref_)
+    // { 
+    //   _clocktick_ref_ = clocktick_ref_;     
+    //   return;
+    // }
+			
+    // void sd_to_calo_tp_algo::set_clocktick_shift(int32_t clocktick_shift_)
+    // {
+    //   _clocktick_shift_ = clocktick_shift_;
+    //   return;
+    // }
 
     int sd_to_calo_tp_algo::process(const mctools::simulated_data & sd_,
 				    calo_tp_data & my_calo_tp_data_)
     {
+      DT_THROW_IF(!is_initialized(), std::logic_error, "SD to calo TP algorithm is not initialized ! ");
       int error_code = EXIT_SUCCESS;
       datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
       try { 
@@ -174,7 +188,7 @@ namespace snemo {
 	
 	    else 
 	      {
-		unsigned int old_htm = my_calo_tp_data_.get_calo_tps()[existing_index].get().get_htm_multiplicity();
+		unsigned int old_htm = my_calo_tp_data_.get_calo_tps()[existing_index].get().get_htm();
 		bool old_lto = my_calo_tp_data_.get_calo_tps()[existing_index].get().is_lto();
 		bool old_xt = my_calo_tp_data_.get_calo_tps()[existing_index].get().is_xt();
 		bool old_spare = my_calo_tp_data_.get_calo_tps()[existing_index].get().is_spare();

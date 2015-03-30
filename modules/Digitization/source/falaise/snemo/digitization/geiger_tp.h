@@ -1,29 +1,19 @@
-// geiger_tp.h
+// snemo/digitization/geiger_tp.h
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
-//
 
 #ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_GEIGER_TP_H
 #define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_GEIGER_TP_H
 
 // Standard library :
-#include <stdexcept>
-#include <iostream>
-#include <stdlib.h>
-#include <cmath>
-#include <string>
-#include <vector>
-#include <stdint.h>
 #include <bitset>
 
 // Third party:
 // - Boost:
 #include <boost/cstdint.hpp>
 #include <boost/dynamic_bitset.hpp>
-
 // - Bayeux/datatools :
 #include <bayeux/datatools/bit_mask.h>
-
 // - Bayeux/geomtools :
 #include <bayeux/geomtools/base_hit.h>
 
@@ -176,13 +166,13 @@ namespace snemo {
 																				 boost::dynamic_bitset<> & my_bitset_word_) const;
 
 			/// Check the lock status
-			bool is_locked_gg_tp() const;
+			bool is_locked() const;
 
 			/// Lock 
-			void lock_gg_tp();
+			void lock();
 
 			/// Unlock
-			void unlock_gg_tp();
+			void unlock();
 
 			/// Check if the internal data of the geiger TP is valid
 			bool is_valid() const;
@@ -207,7 +197,7 @@ namespace snemo {
 
 		private : 
 
-			bool _locked_gg_tp_; //!< geiger TP lock flag
+			bool _locked_; //!< geiger TP lock flag
 			int32_t _clocktick_800ns_; //!< The timestamp of the geiger trigger primitive  
 			std::bitset<100> _gg_tp_; //!< The geiger trigger primitive bitset
 
