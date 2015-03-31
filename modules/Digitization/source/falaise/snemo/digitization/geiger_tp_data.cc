@@ -154,6 +154,11 @@ namespace snemo {
       return _geiger_tps_;
     }
 
+		geiger_tp_data::geiger_tp_collection_type & geiger_tp_data::grab_geiger_tps()
+    {
+      return _geiger_tps_;
+    }
+
     void geiger_tp_data::reset()
     {
       if (is_locked())

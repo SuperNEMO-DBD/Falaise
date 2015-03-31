@@ -140,7 +140,7 @@ namespace snemo {
     void geiger_tp::set_tracker_row_mode(unsigned int number_of_rows_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Tracker row mode (TRM) can't be set, geiger TP is locked ! ");  
-      DT_THROW_IF(number_of_rows_ >= 7, std::range_error, "Unsupported number of rows ["<< number_of_rows_ <<"] ! ");
+      DT_THROW_IF(number_of_rows_ > 7, std::range_error, "Unsupported number of rows ["<< number_of_rows_ <<"] ! ");
       std::bitset<TRM_WORD_SIZE> row_tp_bitset(number_of_rows_);
       
       for (int i = 0; i < row_tp_bitset.size(); i++)

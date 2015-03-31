@@ -128,7 +128,7 @@ namespace snemo {
       unsigned int crate_id = 666;
       unsigned int board_id = 666;
    
-      if( geom_id_.get_type() == 1203 ){ // Drift cell --> Side [0;1] Layer [0;9] Row [0;112]
+      if( geom_id_.get_type() == 1204 ){ // Drift cell --> Side [0;1] Layer [0;9] Row [0;112]
 	rack_id = mapping::GEIGER_RACK_ID;
 
 	unsigned int row_index = _gg_locator_->extract_row(geom_id_);

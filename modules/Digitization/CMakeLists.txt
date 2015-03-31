@@ -22,46 +22,58 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source/falaise)
 list(APPEND FalaiseDigitizationPlugin_HEADERS  
   source/falaise/snemo/digitization/mapping.h
   source/falaise/snemo/digitization/clock_utils.h
+  source/falaise/snemo/digitization/ID_convertor.h
+
   source/falaise/snemo/digitization/calo_tp.h
   source/falaise/snemo/digitization/calo_tp_data.h
   source/falaise/snemo/digitization/calo_ctw.h
   source/falaise/snemo/digitization/calo_ctw_data.h
   source/falaise/snemo/digitization/calo_tp_to_ctw_algo.h
+  source/falaise/snemo/digitization/calo_tp.ipp
+  source/falaise/snemo/digitization/calo_tp_data.ipp
+  source/falaise/snemo/digitization/calo_ctw.ipp
+  source/falaise/snemo/digitization/calo_ctw_data.ipp
+
+
+
   source/falaise/snemo/digitization/geiger_tp.h 
   source/falaise/snemo/digitization/geiger_tp_data.h 
   source/falaise/snemo/digitization/geiger_ctw.h
   source/falaise/snemo/digitization/geiger_ctw_data.h
   source/falaise/snemo/digitization/geiger_tp_to_ctw_algo.h
-  source/falaise/snemo/digitization/sd_to_calo_tp_algo.h
-  source/falaise/snemo/digitization/ID_convertor.h
-  source/falaise/snemo/digitization/calo_tp.ipp
-  source/falaise/snemo/digitization/calo_tp_data.ipp
-  source/falaise/snemo/digitization/calo_ctw.ipp
-  source/falaise/snemo/digitization/calo_ctw_data.ipp
   source/falaise/snemo/digitization/geiger_tp.ipp
   source/falaise/snemo/digitization/geiger_tp_data.ipp
   source/falaise/snemo/digitization/geiger_ctw.ipp
   source/falaise/snemo/digitization/geiger_ctw_data.ipp
+
+  source/falaise/snemo/digitization/sd_to_calo_tp_algo.h
+  source/falaise/snemo/digitization/sd_to_geiger_tp_algo.h
+
   source/falaise/snemo/digitization/the_serializable.ipp
   source/falaise/snemo/digitization/the_serializable.h
-)
+  )
 
 # - Sources:
 list(APPEND FalaiseDigitizationPlugin_SOURCES  
+  source/falaise/snemo/digitization/ID_convertor.cc
+
   source/falaise/snemo/digitization/calo_tp.cc
-  source/falaise/snemo/digitization/the_serializable.cc
   source/falaise/snemo/digitization/calo_tp_data.cc
   source/falaise/snemo/digitization/calo_ctw.cc
   source/falaise/snemo/digitization/calo_ctw_data.cc
   source/falaise/snemo/digitization/calo_tp_to_ctw_algo.cc
+
   source/falaise/snemo/digitization/geiger_tp.cc 
   source/falaise/snemo/digitization/geiger_tp_data.cc
   source/falaise/snemo/digitization/geiger_ctw.cc
   source/falaise/snemo/digitization/geiger_ctw_data.cc
   source/falaise/snemo/digitization/geiger_tp_to_ctw_algo.cc
+
   source/falaise/snemo/digitization/sd_to_calo_tp_algo.cc
-  source/falaise/snemo/digitization/ID_convertor.cc
-)
+  source/falaise/snemo/digitization/sd_to_geiger_tp_algo.cc
+
+  source/falaise/snemo/digitization/the_serializable.cc
+  )
 
 ############################################################################################
 

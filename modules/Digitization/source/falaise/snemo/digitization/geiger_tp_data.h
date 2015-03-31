@@ -78,6 +78,9 @@ namespace snemo {
 			/// Return the const collection of geigers trigger primitive
 			const geiger_tp_collection_type & get_geiger_tps() const;
 
+			/// Return the mutable collection of geigers trigger primitive			
+			geiger_tp_collection_type & grab_geiger_tps();
+
 			/// Reset
 			void reset();
 

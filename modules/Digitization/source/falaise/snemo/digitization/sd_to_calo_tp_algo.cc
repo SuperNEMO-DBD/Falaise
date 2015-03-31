@@ -197,8 +197,7 @@ namespace snemo {
 		my_calo_tp_data_.grab_calo_tps()[existing_index].get().tree_dump(std::clog, "CTP : ", "INFO : ");
 		
 		// my_calo_tp_data_.get_calo_tps()[existing_index]
-		// update calo TP (HTM / LTO) 
-		    
+		// update calo TP (HTM / LTO) 	    
 	      }   
 	  }
       }

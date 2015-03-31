@@ -7,15 +7,6 @@
 
 // Standard library :
 #include <stdexcept>
-#include <iostream>
-#include <cstdlib>
-#include <sstream>
-#include <cmath>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <stdint.h>
-#include <bitset>
 
 // Third party:
 // - Boost:
