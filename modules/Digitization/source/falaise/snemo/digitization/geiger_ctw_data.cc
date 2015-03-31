@@ -14,7 +14,7 @@ namespace snemo {
   namespace digitization {
 
     // Serial tag for datatools::serialization::i_serializable interface :
-    // DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(geiger_ctw_data, "snemo::digitalization::geiger_ctw_data")
+    DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(geiger_ctw_data, "snemo::digitalization::geiger_ctw_data")
 
     geiger_ctw_data::geiger_ctw_data()
     {

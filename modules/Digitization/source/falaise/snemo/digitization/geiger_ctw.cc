@@ -1,14 +1,12 @@
 // snemo/digitization/geiger_ctw.cc
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
-//
 
 // Ourselves:
 #include <snemo/digitization/geiger_ctw.h>
 
 // Third party:
 // - Bayeux/datatools:
-//#include <datatools/utils.h>
 #include <datatools/exception.h>
 
 namespace snemo {
@@ -16,7 +14,7 @@ namespace snemo {
   namespace digitization {
 
     // Serial tag for datatools::serialization::i_serializable interface :
-    // DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(geiger_ctw, "snemo::digitalization::geiger_ctw")
+    DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(geiger_ctw, "snemo::digitalization::geiger_ctw")
 
     geiger_ctw::geiger_ctw()
     {
@@ -40,6 +38,7 @@ namespace snemo {
       set_hit_id(hit_id_);
       set_geom_id(electronic_id_);
       set_clocktick_800ns(clocktick_800ns_);
+      _store |= STORE_CLOCKTICK_800NS;
       return;
     }
 
@@ -108,6 +107,7 @@ namespace snemo {
 	      _gg_ctw_.set(i + block_index_ * my_bitset_.size(),0);
 	    }	  
 	}
+      _store |= STORE_GG_CTW;
       return;
     }
 

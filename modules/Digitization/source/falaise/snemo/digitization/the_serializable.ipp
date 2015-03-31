@@ -10,6 +10,8 @@
 #include <snemo/digitization/calo_ctw_data.ipp>
 #include <snemo/digitization/geiger_tp.ipp>
 #include <snemo/digitization/geiger_tp_data.ipp>
+#include <snemo/digitization/geiger_ctw.ipp>
+#include <snemo/digitization/geiger_ctw_data.ipp>
 
 #endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_THE_SERIALIZABLE_IPP
 

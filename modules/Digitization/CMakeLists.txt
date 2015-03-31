@@ -40,6 +40,8 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
   source/falaise/snemo/digitization/calo_ctw_data.ipp
   source/falaise/snemo/digitization/geiger_tp.ipp
   source/falaise/snemo/digitization/geiger_tp_data.ipp
+  source/falaise/snemo/digitization/geiger_ctw.ipp
+  source/falaise/snemo/digitization/geiger_ctw_data.ipp
   source/falaise/snemo/digitization/the_serializable.ipp
   source/falaise/snemo/digitization/the_serializable.h
 )

@@ -106,7 +106,7 @@ namespace snemo {
       int32_t _clocktick_800ns_; //!< The timestamp of the trigger primitive in main clock units (40 MHz)
       std::bitset<2000> _gg_ctw_; //!< The crate trigger word
 
-      // DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION();
 
     };
 

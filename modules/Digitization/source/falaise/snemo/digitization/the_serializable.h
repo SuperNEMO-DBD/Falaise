@@ -31,6 +31,12 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::digitization::gei
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::digitization::geiger_tp_data)
 BOOST_CLASS_EXPORT_IMPLEMENT(snemo::digitization::geiger_tp_data)
 
+#include <snemo/digitization/geiger_ctw.ipp>
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::digitization::geiger_ctw)
+
+#include <snemo/digitization/geiger_ctw_data.ipp>
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::digitization::geiger_ctw_data)
+BOOST_CLASS_EXPORT_IMPLEMENT(snemo::digitization::geiger_ctw_data)
 
 #endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_THE_SERIALIZABLE_H
 

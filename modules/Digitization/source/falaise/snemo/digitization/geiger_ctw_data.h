@@ -23,7 +23,7 @@ namespace snemo {
   namespace digitization {		
 
     /// \brief Collection of geiger crate trigger words (C-CTW)
-    class geiger_ctw_data //: public datatools::i_serializable
+    class geiger_ctw_data : public datatools::i_serializable
     {
     public : 
       
@@ -93,7 +93,7 @@ namespace snemo {
       bool _locked_; //!< CTWs lock flag
       geiger_ctw_collection_type _geiger_ctws_; //!< Collection of geigers crate trigger words
 
-      //DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION();
 
     };
 
