@@ -112,6 +112,9 @@ namespace snemo {
 
 			/// Set the geiger trigger primitive bitset (55 bits)
 			void set_gg_tp_bitset(std::bitset<TP_SIZE> & gg_tp_word_);
+			
+			/// Set the active bit when a geiger cell is fired
+			void set_gg_tp_active_bit(int & bit_index_);
 
 			/// Return the const reference to the geiger Tracker HardWare Status (THWS) bitset
 			void get_thws_bitset(boost::dynamic_bitset<> & gg_thws_word_) const;

@@ -146,7 +146,9 @@ namespace snemo {
 	    bool side_mode = 1;
 	    int number_of_rows = 7;
 	      
-	    electronic_id = _ID_convertor_->convert_GID_to_EID(geom_id);
+	    //electronic_id = _ID_convertor_->convert_GID_to_EID(geom_id);
+	    int bit_index = 0;
+	    _ID_convertor_->find_gg_eid_and_tp_bit_index(geom_id, electronic_id, bit_index);
 	    
 	    std::clog << "DEBUG sd_to_geiger_tp_algo : hit id = " << geiger_hit.get_hit_id() << ": GID = " << geiger_hit.get_geom_id() << " EID = " << electronic_id << std::endl;	   
 	    
@@ -156,9 +158,9 @@ namespace snemo {
 	    double relative_time = geiger_hit.get_time_start() - time_reference ;
 	    int32_t geiger_hit_clocktick = _clocktick_ref_;
 
-	    if (relative_time > 25)
+	    if (relative_time > 3)
 	      {
-		geiger_hit_clocktick = static_cast<int32_t>(relative_time) / 25;
+		geiger_hit_clocktick += static_cast<int32_t>(relative_time) / 3;
 	      }
 
 	    for (int j = 0; j < my_geiger_tp_data_.get_geiger_tps().size(); j++)
@@ -182,6 +184,7 @@ namespace snemo {
 				 trigger_mode,
 				 side_mode,
 				 number_of_rows);
+		gg_tp.set_gg_tp_active_bit(bit_index);
 		gg_tp.tree_dump(std::clog, "Geiger TP first creation : ", "INFO : ");
 		//gg_tp.lock_tp();
 	      }
@@ -189,6 +192,7 @@ namespace snemo {
 	    else 
 	      {
 		std::clog << "DEBUG : CASE 2 : already existing geiger TP " << std::endl;
+		my_geiger_tp_data_.grab_geiger_tps()[existing_index].grab().set_gg_tp_active_bit(bit_index);
 		my_geiger_tp_data_.get_geiger_tps()[existing_index].get().tree_dump(std::clog, "Geiger TP Update : ", "INFO : ");
 		// my_geiger_tp_data_.get_geiger_tps()[existing_index]
 		// update geiger TP 	    

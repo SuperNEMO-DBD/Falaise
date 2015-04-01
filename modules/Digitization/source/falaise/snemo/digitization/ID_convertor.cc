@@ -2,15 +2,17 @@
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 //
 
-#include <snemo/digitization/ID_convertor.h>
+// Standard library :
+#include <map>
+
+// This project :
 #include <falaise/snemo/geometry/xcalo_locator.h>
 #include <falaise/snemo/geometry/gveto_locator.h>
 #include <falaise/snemo/geometry/calo_locator.h>
 #include <falaise/snemo/geometry/gg_locator.h>
 
-#include <iostream>
-#include <stdexcept>
-#include <cmath>
+// Ourselves
+#include <snemo/digitization/ID_convertor.h>
 
 namespace snemo {
   
@@ -128,7 +130,7 @@ namespace snemo {
       unsigned int crate_id = 666;
       unsigned int board_id = 666;
    
-      if( geom_id_.get_type() == 1204 ){ // Drift cell --> Side [0;1] Layer [0;9] Row [0;112]
+      if( geom_id_.get_type() == 1204 ){ // Drift cell --> Side [0;1] Layer [0;8] Row [0;112]
 	rack_id = mapping::GEIGER_RACK_ID;
 
 	unsigned int row_index = _gg_locator_->extract_row(geom_id_);
@@ -219,12 +221,49 @@ namespace snemo {
 
     geomtools::geom_id ID_convertor::convert_EID_to_GID(const geomtools::geom_id & geom_id_) const{
 
+    }
 
+    void ID_convertor::find_gg_eid_and_tp_bit_index(const geomtools::geom_id & geom_id_,
+						    geomtools::geom_id & electronic_id_,
+						    int & bit_index_) const
+    {
+      unsigned int side_index = _gg_locator_->extract_side(geom_id_); 
+      unsigned int layer_index = _gg_locator_->extract_layer(geom_id_); 
+      unsigned int row_index = _gg_locator_->extract_row(geom_id_);
+	
+
+      electronic_id_ = convert_GID_to_EID(geom_id_);
+      electronic_id_.set_type(666);
+      electronic_id_.set(mapping::RACK_INDEX, mapping::GEIGER_RACK_ID);
+      
+      unsigned int shift = 0;
+      
+      if (row_index < mapping::THREE_WIRES_LONELY_ROW)
+	{
+	  shift = 2 * side_index + (row_index % 2);
+	  bit_index_ = mapping::GEIGER_LAYER_SIZE * shift + layer_index;
+	}
+
+      else if (row_index == mapping::THREE_WIRES_LONELY_ROW)
+	{
+	  shift = 2 * side_index;
+	  bit_index_ = mapping::GEIGER_LAYER_SIZE * shift + layer_index;
+	}
+
+      else if (row_index > mapping::THREE_WIRES_LONELY_ROW)
+	{
+	  shift = 2 * side_index + (1 -row_index % 2);
+	  bit_index_ = mapping::GEIGER_LAYER_SIZE * shift + layer_index;
+	}
+
+      std::clog << "DEBUG bit index = " << bit_index_ << std::endl;
+
+      return;
     }
 
     void ID_convertor::tree_dump(std::ostream & out_,
 				 const std::string & title_ ,
-				 const std::string & indent_,
+				 const std::string & indent_  ,
 				 bool inherit_){
 
       //   out_<<"["<<_status_a<<":"<< _status_b<<"]";//<<std::endl

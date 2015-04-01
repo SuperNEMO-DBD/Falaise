@@ -123,6 +123,13 @@ namespace snemo {
       _store |= STORE_GG_TP;
       return;
     }
+
+    void geiger_tp::set_gg_tp_active_bit(int & bit_index_)
+    {
+      DT_THROW_IF(is_locked(), std::logic_error, "Tracker row mode (TRM) can't be set, geiger TP is locked ! ");  
+      _gg_tp_.set(bit_index_, 1);
+      return;
+    }
    
     void geiger_tp::get_thws_bitset(boost::dynamic_bitset<> & gg_thws_word_) const
     {

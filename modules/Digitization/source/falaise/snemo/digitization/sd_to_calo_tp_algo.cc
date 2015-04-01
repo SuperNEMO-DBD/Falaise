@@ -154,7 +154,7 @@ namespace snemo {
 
 	    if (relative_time > 25)
 	      {
-		calo_hit_clocktick = static_cast<int32_t>(relative_time) / 25;
+		calo_hit_clocktick += static_cast<int32_t>(relative_time) / 25;
 	      }
 
 	    for (int j = 0; j < my_calo_tp_data_.get_calo_tps().size(); j++)

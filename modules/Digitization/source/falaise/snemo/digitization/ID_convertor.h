@@ -6,17 +6,6 @@
 #define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_ID_CONVERTOR_H 
 
 // Standard library :
-#include <stdexcept>
-#include <iostream>
-#include <stdlib.h>
-#include <sstream>
-#include <iostream>
-#include <math.h>
-#include <cmath>
-#include <stdlib.h>
-#include <fstream>
-#include <string>
-#include <vector>
 
 // Third party:
 // - Boost:
@@ -80,6 +69,9 @@ namespace snemo {
       void convert_EID_to_GID();
       void set_geo_manager(const geomtools::manager & mgr_);
       void set_module_number(int);
+			void find_gg_eid_and_tp_bit_index(const geomtools::geom_id & geom_id_,
+																		 geomtools::geom_id & electronic_id_,
+																		 int & bit_index_) const;
       
       void tree_dump(std::ostream & out_,
 		     const std::string & title_ ,

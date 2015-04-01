@@ -1,7 +1,6 @@
 // mapping.h
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
-//
 
 #ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_MAPPING_TP_H
 #define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_MAPPING_TP_H
@@ -33,11 +32,14 @@ namespace snemo {
 
 			static const int32_t CONTROL_BOARD_ID = 10;
 			static const int32_t TRIGGER_BOARD_ID = 20;
-
 			
 			static const int32_t THREE_WIRES_CRATE_0_LIMIT = 37;
 			static const int32_t THREE_WIRES_CRATE_1_LIMIT = 74;
 			static const int32_t THREE_WIRES_LONELY_ROW = 56;
+
+
+			static const int32_t GEIGER_LAYER_SIZE = 9;
+			static const int32_t GEIGER_ROW_SIZE = 113;
 
     };
 	       
