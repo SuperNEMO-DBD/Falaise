@@ -168,7 +168,7 @@ namespace snemo {
                  i_selection != event_selection_list.end();
                  ++i_selection) {
               const size_t ievent = *i_selection;
-              const size_t total = event_selection_list.size()-1;
+              const size_t total = server.get_number_of_events()-1;
               std::ostringstream label;
               label << "event #" << ievent << "/"
                     << total << " ("
