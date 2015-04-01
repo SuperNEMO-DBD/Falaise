@@ -28,6 +28,43 @@ namespace snemo {
       return;
     }
 
+      
+    double geiger_signal::get_anode_avalanche_time() const
+    {
+      return _anode_avalanche_time_;
+    }
+      
+    void geiger_signal::set_anode_avalanche_time(double & anode_avalanche_time_)
+    {
+      DT_THROW_IF(is_locked(), std::logic_error, "Geiger signal is locked ! ");
+      _anode_avalanche_time_ = anode_avalanche_time_;
+      return;
+    }
+   
+    double geiger_signal::get_plasma_top_time_() const
+    {
+      return _plasma_top_time_;
+    }
+
+    void geiger_signal::set_plasma_top_time_(double & plasma_top_time_)
+    {
+      DT_THROW_IF(is_locked(), std::logic_error, "Geiger signal is locked ! ");
+      _plasma_top_time_ = plasma_top_time_;
+      return;
+    }
+   
+    double geiger_signal::get_plasma_bottom_time_() const
+    {
+      return _plasma_bottom_time_;
+    }
+    
+    void geiger_signal::set_plasma_bottom_time_(double & plasma_bottom_time_)
+    {
+      DT_THROW_IF(is_locked(), std::logic_error, "Geiger signal is locked ! ");
+      _plasma_bottom_time_ = plasma_bottom_time_;
+      return;
+    }
+
     bool geiger_signal::is_locked() const
     {
       return _locked_;

@@ -1,4 +1,4 @@
-// calo_tp_to_ctw_algo.cc
+// snemo/digitization/calo_tp_to_ctw_algo.cc
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 

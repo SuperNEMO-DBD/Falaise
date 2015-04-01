@@ -1,4 +1,4 @@
-// geiger_tp_to_ctw_algo.h
+// snemo/digitization/geiger_tp_to_ctw_algo.h
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
@@ -6,25 +6,13 @@
 #define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_GEIGER_TP_TO_CTW_ALGO_H
 
 // Standard library :
-#include <stdexcept>
-#include <iostream>
-#include <stdlib.h>
-#include <sstream>
-#include <cmath>
-#include <fstream>
-#include <string>
 #include <vector>
-#include <stdint.h>
-#include <bitset>
 
 // This project :
 #include <snemo/digitization/geiger_tp_data.h>
 #include <snemo/digitization/geiger_ctw_data.h>
 
 // Third party:
-// - Boost:
-#include <boost/cstdint.hpp>
-
 // - Bayeux/datatools :
 #include <bayeux/datatools/handle.h>
 
@@ -74,8 +62,6 @@ namespace snemo {
     private :
       
       bool _initialized_; //!< Initialization flag
-     
-
     };
 
   } // end of namespace digitization

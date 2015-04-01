@@ -92,7 +92,7 @@ namespace snemo {
 			/// Set the data with valid values
 			void set_data(std::bitset<TP_SIZE> & gg_tp_word_);
 
-			/// Return the timestamp of the geiger trigger primitive
+			/// Return the const timestamp of the geiger trigger primitive
 			int32_t get_clocktick_800ns() const;
 
 			/// Set the timestamp of the geiger trigger primitive

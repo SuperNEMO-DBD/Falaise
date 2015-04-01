@@ -1,4 +1,4 @@
-// sd_to_calo_tp_algo.h
+// snemo/digitization/sd_to_calo_tp_algo.h
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
@@ -10,7 +10,6 @@
 
 // Third party:
 // - Boost:
-#include <boost/cstdint.hpp>
 #include <boost/utility.hpp>
 
 // - Bayeux/datatools :
@@ -57,7 +56,7 @@ namespace snemo {
 			// /// Set the clocktick shift
 			// void set_clocktick_shift(int32_t clocktick_shift_);
 
-      /// Process to fill a ctw data object from simulated data
+      /// Process to fill a calo tp data object from simulated data
       int process(const mctools::simulated_data & sd_,
 									calo_tp_data & my_calo_tp_data_);
 
@@ -66,8 +65,7 @@ namespace snemo {
 			// unsigned int _existing_same_electronic_id(const geomtools::geom_id & electronic_id_,
 			// 																					calo_tp_data & my_calo_tp_data_);
 
-			///  Process to fill a ctw data object from simulated data
-
+			///  Process to fill a calo tp data object from simulated data
 			int _process(const mctools::simulated_data & sd_,
 									 calo_tp_data & my_calo_tp_data_);
 
@@ -81,7 +79,6 @@ namespace snemo {
 			int32_t _clocktick_ref_; //!< Clocktick reference of the algorithm
 			int32_t _clocktick_shift_; //!< Clocktick shift between [0:25]
 			const ID_convertor * _ID_convertor_; //!< Convert geometric ID into electronic ID
-
     };
 
   } // end of namespace digitization

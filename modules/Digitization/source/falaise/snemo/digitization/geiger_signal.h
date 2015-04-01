@@ -29,7 +29,25 @@ namespace snemo {
 
       /// Destructor
       virtual ~geiger_signal();
-		
+      
+      /// Return the const time of avalanche on the anode
+      double get_anode_avalanche_time() const;
+     
+      // Set the time of avalanche on the anode
+      void set_anode_avalanche_time(double & anode_avalanche_time_);
+
+      /// Return the const time of plasma on top cathode
+      double get_plasma_top_time_() const;
+
+      /// Set the time plasma on top cathode
+      void set_plasma_top_time_(double & plasma_top_time_);
+
+      /// Return the const time of plasma on bottom cathode
+      double get_plasma_bottom_time_() const;
+
+      /// Set the time plasma on bottom cathode
+      void set_plasma_bottom_time_(double & plasma_bottom_time_);
+
       /// Check the lock status
       bool is_locked() const;
 
@@ -60,8 +78,8 @@ namespace snemo {
 
       bool _locked_; //!< geiger signal lock flag
       double _anode_avalanche_time_; //!< Time of the anode avalanche
-      double _plasma_top_time_; //!< Time of the top plasma cathode
-      double _plasma_bottom_time_; //!< Time of the bottom plasma cathode
+      double _plasma_top_time_; //!< Time of plasma on top cathode
+      double _plasma_bottom_time_; //!< Time of plasma on bottom cathode
 
       DATATOOLS_SERIALIZATION_DECLARATION();
 

@@ -1,6 +1,6 @@
-// ID_convertor.h
+// snemo/digitization/ID_convertor.h
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
-//
+// Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
 #ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_ID_CONVERTOR_H
 #define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_ID_CONVERTOR_H 

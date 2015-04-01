@@ -1,4 +1,4 @@
-// calo_tp_to_ctw_algo.h
+// snemo/digitization/calo_tp_to_ctw_algo.h
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
@@ -6,25 +6,13 @@
 #define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CALO_TP_TO_CTW_ALGO_H
 
 // Standard library :
-#include <stdexcept>
-#include <iostream>
-#include <stdlib.h>
-#include <sstream>
-#include <cmath>
-#include <fstream>
-#include <string>
 #include <vector>
-#include <stdint.h>
-#include <bitset>
 
 // This project :
 #include <snemo/digitization/calo_tp_data.h>
 #include <snemo/digitization/calo_ctw_data.h>
 
 // Third party:
-// - Boost:
-#include <boost/cstdint.hpp>
-
 // - Bayeux/datatools :
 #include <bayeux/datatools/handle.h>
 
@@ -77,12 +65,10 @@ namespace snemo {
 			/// Process to fill a ctw from a list of calo tp for a clocktick
 	    void _process_for_a_ctw_for_a_clocktick(const std::vector<datatools::handle<calo_tp> > & my_list_of_calo_tp_,  calo_ctw & a_calo_ctw_);
 			
-
     private :
       
 			bool _initialized_; //!< Initialization flag
      
-
     };
 
   } // end of namespace digitization

@@ -1,4 +1,4 @@
-// sd_to_calo_tp_algo.cc
+// snemo/digitization/sd_to_calo_tp_algo.cc
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
@@ -30,7 +30,7 @@ namespace snemo {
 					int32_t & clocktick_shift_,
 					const ID_convertor & my_ID_convertor_)
     {
-      DT_THROW_IF(is_initialized(), std::logic_error, "Calo tp to ctw algo is already initialized ! ");
+      DT_THROW_IF(is_initialized(), std::logic_error, "SD to calo tp algorithm is already initialized ! ");
       _clocktick_ref_ = clocktick_ref_;
       _clocktick_shift_ = clocktick_shift_;
       _ID_convertor_ = & my_ID_convertor_;
@@ -46,7 +46,7 @@ namespace snemo {
 
     void sd_to_calo_tp_algo::reset()
     {
-      DT_THROW_IF(!is_initialized(), std::logic_error, "Calo tp to ctw algo is not initialized, it can't be reset ! ");
+      DT_THROW_IF(!is_initialized(), std::logic_error, "SD to calo tp algorithm is already initialized ! ");
       _initialized_ = false;
       _ID_convertor_ = 0;
       _clocktick_ref_ = -1;
@@ -74,8 +74,6 @@ namespace snemo {
       try { 
 
 	_process(sd_, my_calo_tp_data_);
-
-
 
       }
 

@@ -1,4 +1,4 @@
-// sd_to_geiger_signal_algo.cc
+// snemo/digitization/sd_to_geiger_signal_algo.cc
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 

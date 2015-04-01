@@ -1,4 +1,4 @@
-// mapping.h
+// snemo/digitization/mapping.h
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
