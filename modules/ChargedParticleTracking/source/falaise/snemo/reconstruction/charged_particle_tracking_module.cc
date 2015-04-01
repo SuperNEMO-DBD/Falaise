@@ -265,20 +265,20 @@ namespace snemo {
              isol = solutions.begin(); isol != solutions.end(); ++isol) {
         const snemo::datamodel::tracker_trajectory_solution & a_solution = isol->get();
 
-        bool process_current_trajectory = false;
+        bool process_current_solution = false;
         // Check if we are looking for a delayed trajectory
         if (a_solution.has_clustering_solution()) {
           const datatools::properties & aux
             = a_solution.get_clustering_solution().get_auxiliaries();
           if (aux.has_flag(snemo::datamodel::tracker_clustering_data::delayed_key())) {
-            process_current_trajectory = true;
+            process_current_solution = true;
           }
         }
         // If not delayed, only process default solution
         if (&a_solution == &(tracker_trajectory_data_.get_default_solution())) {
-          process_current_trajectory = true;
+          process_current_solution = true;
         }
-        if (!process_current_trajectory) continue;
+        if (!process_current_solution) continue;
 
         const snemo::datamodel::tracker_trajectory_solution::trajectory_col_type & trajectories
           = a_solution.get_trajectories();
