@@ -128,6 +128,7 @@ namespace snemo {
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Tracker row mode (TRM) can't be set, geiger TP is locked ! ");  
       _gg_tp_.set(bit_index_, 1);
+
       return;
     }
    

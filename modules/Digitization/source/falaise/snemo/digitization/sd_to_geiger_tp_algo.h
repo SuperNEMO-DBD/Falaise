@@ -73,9 +73,6 @@ namespace snemo {
     private :
       
       bool _initialized_; //!< Initialization flag
-      bool _active_main_wall_; //!< Main wall activation flag
-      bool _active_xwall_; //!< X-wall activation flag
-      bool _active_gveto_; //!< Gamma-veto activation flag
 
       int32_t _clocktick_ref_; //!< Clocktick reference of the algorithm
       int32_t _clocktick_shift_; //!< Clocktick shift between [0:25]
