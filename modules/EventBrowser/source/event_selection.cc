@@ -577,8 +577,8 @@ namespace snemo {
           }
           cuts::i_cut & the_cut = *ptr_cut;
 
-          io::event_record & a_record = _server_->grab_event();
-          the_cut.set_user_data(&a_record);
+          const io::event_record & a_record = _server_->get_event();
+          the_cut.set_user_data(a_record);
           cut_status = the_cut.process();
           the_cut.reset_user_data();
         } catch (std::exception & x) {
