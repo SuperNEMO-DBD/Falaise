@@ -36,6 +36,7 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
 
 
   source/falaise/snemo/digitization/geiger_signal.h
+  source/falaise/snemo/digitization/geiger_signal_data.h 
   source/falaise/snemo/digitization/geiger_tp.h 
   source/falaise/snemo/digitization/geiger_tp_data.h 
   source/falaise/snemo/digitization/geiger_ctw.h
@@ -66,6 +67,7 @@ list(APPEND FalaiseDigitizationPlugin_SOURCES
   source/falaise/snemo/digitization/calo_tp_to_ctw_algo.cc
 
   source/falaise/snemo/digitization/geiger_signal.cc
+  source/falaise/snemo/digitization/geiger_signal_data.cc
   source/falaise/snemo/digitization/geiger_tp.cc 
   source/falaise/snemo/digitization/geiger_tp_data.cc
   source/falaise/snemo/digitization/geiger_ctw.cc

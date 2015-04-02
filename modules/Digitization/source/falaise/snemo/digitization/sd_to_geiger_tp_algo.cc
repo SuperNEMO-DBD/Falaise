@@ -146,7 +146,10 @@ namespace snemo {
 	      
 	    //electronic_id = _ID_convertor_->convert_GID_to_EID(geom_id);
 	    int bit_index = 0;
-	    _ID_convertor_->find_gg_eid_and_tp_bit_index(geom_id, electronic_id, bit_index);
+	    _ID_convertor_->find_gg_eid_and_tp_bit_index(mapping::THREE_WIRES_TRACKER_MODE,
+							 geom_id,
+							 electronic_id,
+							 bit_index);
 	    
 	    std::clog << "DEBUG sd_to_geiger_tp_algo : hit id = " << geiger_hit.get_hit_id() << ": GID = " << geiger_hit.get_geom_id() << " EID = " << electronic_id << std::endl;	   
 	    

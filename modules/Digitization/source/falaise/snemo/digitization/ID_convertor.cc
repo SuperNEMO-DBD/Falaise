@@ -137,17 +137,17 @@ namespace snemo {
 	unsigned int shift = 0;	
 	
 	if(row_index <= mapping::THREE_WIRES_CRATE_0_LIMIT){
-	    crate_id = 0;
-	  }
+	  crate_id = 0;
+	}
 
 	if(row_index > mapping::THREE_WIRES_CRATE_0_LIMIT && row_index  <= mapping::THREE_WIRES_CRATE_1_LIMIT ){
-	    crate_id = 1; shift = 38;
-	    if(row_index > mapping::THREE_WIRES_LONELY_ROW) shift -= 1; // in order to take into account the lonely row at the middle
-	  }
+	  crate_id = 1; shift = 38;
+	  if(row_index > mapping::THREE_WIRES_LONELY_ROW) shift -= 1; // in order to take into account the lonely row at the middle
+	}
 
 	if(row_index > mapping::THREE_WIRES_CRATE_1_LIMIT){
-	    crate_id = 2;shift = 75;
-	  }
+	  crate_id = 2;shift = 75;
+	}
 
 	board_id = (row_index-shift) / 2;
       }
@@ -223,10 +223,13 @@ namespace snemo {
 
     }
 
-    void ID_convertor::find_gg_eid_and_tp_bit_index(const geomtools::geom_id & geom_id_,
+    void ID_convertor::find_gg_eid_and_tp_bit_index(const bool tracker_trigger_mode_,
+						    const geomtools::geom_id & geom_id_,
 						    geomtools::geom_id & electronic_id_,
 						    int & bit_index_) const
     {
+      DT_THROW_IF(tracker_trigger_mode_ == mapping::TWO_WIRES_TRACKER_MODE, std::logic_error, " Two wires mode is not supported yet ! ");
+      
       unsigned int side_index = _gg_locator_->extract_side(geom_id_); 
       unsigned int layer_index = _gg_locator_->extract_layer(geom_id_); 
       unsigned int row_index = _gg_locator_->extract_row(geom_id_);
@@ -271,4 +274,5 @@ namespace snemo {
     }
 
   }// end of namespace digitization
+
 } // end of namespace snemo

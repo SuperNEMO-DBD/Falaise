@@ -50,12 +50,12 @@ namespace snemo {
       boost::scoped_ptr<geometry::xcalo_locator> _xcalo_locator_;
       boost::scoped_ptr<geometry::gveto_locator> _gveto_locator_;
   
-    // protected :
+			// protected :
       
-    //   const geometry::gg_locator & _get_gg_locator() const;
-    //   const geometry::calo_locator & _get_calo_locator() const;
-    //   const geometry::xcalo_locator & _get_xcalo_locator() const;
-    //   const geometry::gveto_locator & _get_gveto_locator() const;
+			//   const geometry::gg_locator & _get_gg_locator() const;
+			//   const geometry::calo_locator & _get_calo_locator() const;
+			//   const geometry::xcalo_locator & _get_xcalo_locator() const;
+			//   const geometry::gveto_locator & _get_gveto_locator() const;
 
     public :
   
@@ -69,14 +69,15 @@ namespace snemo {
       void convert_EID_to_GID();
       void set_geo_manager(const geomtools::manager & mgr_);
       void set_module_number(int);
-			void find_gg_eid_and_tp_bit_index(const geomtools::geom_id & geom_id_,
-																		 geomtools::geom_id & electronic_id_,
-																		 int & bit_index_) const;
+			void find_gg_eid_and_tp_bit_index(const bool tracker_trigger_mode_,
+																				const geomtools::geom_id & geom_id_,
+																				geomtools::geom_id & electronic_id_,
+																				int & bit_index_) const;
       
       void tree_dump(std::ostream & out_,
-		     const std::string & title_ ,
-		     const std::string & indent_,
-		     bool inherit_);
+										 const std::string & title_ ,
+										 const std::string & indent_,
+										 bool inherit_);
     };
 
 

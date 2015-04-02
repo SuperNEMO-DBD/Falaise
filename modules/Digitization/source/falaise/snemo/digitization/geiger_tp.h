@@ -167,7 +167,7 @@ namespace snemo {
 			void extract_bitset_from_is_length(unsigned int BIT_BEGIN_, 
 																				 unsigned int word_size_, 
 																				 boost::dynamic_bitset<> & my_bitset_word_) const;
-
+			
 			/// Check the lock status
 			bool is_locked() const;
 

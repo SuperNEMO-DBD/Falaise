@@ -12,6 +12,7 @@ set(FalaiseDigitizationPlugin_TESTS
   test_geiger_ctw_data.cxx
   test_geiger_tp_to_ctw_algo.cxx
 
+  test_sd_to_geiger_signal_algo.cxx
   test_sd_to_calo_tp_algo.cxx
   test_sd_to_geiger_tp_algo.cxx
   test_sd_to_calo_ctw_process.cxx

@@ -14,11 +14,14 @@ namespace snemo {
   namespace digitization {
 
     // Serial tag for datatools::serialization::i_serializable interface :
-    DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(geiger_signal, "snemo::digitalization::geiger_signal")
+    // DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(geiger_signal, "snemo::digitalization::geiger_signal")
     
     geiger_signal::geiger_signal()
     {
-      _locked_ = false;;
+      _locked_ = false;
+      _anode_avalanche_time_ = -1;
+      _plasma_top_time_ = -1;
+      _plasma_bottom_time_ = -1;
       return;
     }
 
@@ -34,7 +37,7 @@ namespace snemo {
       return _anode_avalanche_time_;
     }
       
-    void geiger_signal::set_anode_avalanche_time(double & anode_avalanche_time_)
+    void geiger_signal::set_anode_avalanche_time(const double & anode_avalanche_time_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Geiger signal is locked ! ");
       _anode_avalanche_time_ = anode_avalanche_time_;
@@ -46,7 +49,7 @@ namespace snemo {
       return _plasma_top_time_;
     }
 
-    void geiger_signal::set_plasma_top_time_(double & plasma_top_time_)
+    void geiger_signal::set_plasma_top_time_(const double & plasma_top_time_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Geiger signal is locked ! ");
       _plasma_top_time_ = plasma_top_time_;
@@ -58,7 +61,7 @@ namespace snemo {
       return _plasma_bottom_time_;
     }
     
-    void geiger_signal::set_plasma_bottom_time_(double & plasma_bottom_time_)
+    void geiger_signal::set_plasma_bottom_time_(const double & plasma_bottom_time_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Geiger signal is locked ! ");
       _plasma_bottom_time_ = plasma_bottom_time_;
@@ -107,8 +110,8 @@ namespace snemo {
     {
       base_hit::tree_dump (out_, title_, indent_, true);
 
-      // out_ << indent_ << datatools::i_tree_dumpable::tag
-      //      << "Clock tick (800 ns)  : " << _clocktick_800ns_ << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+           << "Avalanche anode time =  : " << _anode_avalanche_time_ << std::endl;
 
       return;
     }

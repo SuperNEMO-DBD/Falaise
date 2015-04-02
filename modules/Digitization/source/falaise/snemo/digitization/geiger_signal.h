@@ -34,19 +34,19 @@ namespace snemo {
       double get_anode_avalanche_time() const;
      
       // Set the time of avalanche on the anode
-      void set_anode_avalanche_time(double & anode_avalanche_time_);
+      void set_anode_avalanche_time(const double & anode_avalanche_time_);
 
       /// Return the const time of plasma on top cathode
       double get_plasma_top_time_() const;
 
       /// Set the time plasma on top cathode
-      void set_plasma_top_time_(double & plasma_top_time_);
+      void set_plasma_top_time_(const double & plasma_top_time_);
 
       /// Return the const time of plasma on bottom cathode
       double get_plasma_bottom_time_() const;
 
       /// Set the time plasma on bottom cathode
-      void set_plasma_bottom_time_(double & plasma_bottom_time_);
+      void set_plasma_bottom_time_(const double & plasma_bottom_time_);
 
       /// Check the lock status
       bool is_locked() const;
@@ -65,9 +65,9 @@ namespace snemo {
 
       /// Smart print
       virtual void tree_dump(std::ostream      & a_out    = std::clog,
-			     const std::string & a_title  = "",
-			     const std::string & a_indent = "",
-			     bool a_inherit               = false) const;
+														 const std::string & a_title  = "",
+														 const std::string & a_indent = "",
+														 bool a_inherit               = false) const;
 
     protected : 
 
@@ -77,11 +77,11 @@ namespace snemo {
     private : 
 
       bool _locked_; //!< geiger signal lock flag
-      double _anode_avalanche_time_; //!< Time of the anode avalanche
-      double _plasma_top_time_; //!< Time of plasma on top cathode
+			double _anode_avalanche_time_; //!< Time of the anode avalanche
+			double _plasma_top_time_; //!< Time of plasma on top cathode
       double _plasma_bottom_time_; //!< Time of plasma on bottom cathode
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+			// DATATOOLS_SERIALIZATION_DECLARATION();
 
     };
 

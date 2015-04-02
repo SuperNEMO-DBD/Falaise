@@ -12,11 +12,14 @@
 // - Bayeux/datatools :
 #include <datatools/handle.h>
 #include <datatools/logger.h>
+// - Bayeux/geomtools:
+#include <bayeux/geomtools/geom_id.h>
+#include <bayeux/geomtools/manager.h>
 // - Bayeux/mctools:
 #include <mctools/simulated_data.h>
 
 // This project :
-#include <snemo/digitization/geiger_signal.h>
+#include <snemo/digitization/geiger_signal_data.h>
 
 namespace snemo {
   
@@ -28,7 +31,10 @@ namespace snemo {
     public :
 
       /// Default constructor
-      sd_to_geiger_signal_algo();
+			sd_to_geiger_signal_algo();
+
+			// Constructor by initialisation
+      sd_to_geiger_signal_algo(const geomtools::manager & mgr_);
 
       /// Destructor
       virtual ~sd_to_geiger_signal_algo();
@@ -42,18 +48,25 @@ namespace snemo {
       /// Reset the object
       void reset(); 
 
-      int process(const mctools::simulated_data & sd_);
+			/// Set the geometry manager
+			void set_geo_manager(const geomtools::manager & mgr_ );
+
+      int process(const mctools::simulated_data & sd_,
+									geiger_signal_data & geiger_signal_);
 
     protected: 
       
+			/// Return the drift time with simple approximation
+			const double _anode_drift_time_calculation(const double drift_distance);
+			
       ///  Process to fill a ctw data object from simulated data
-
-      int _process(const mctools::simulated_data & sd_);
+      int _process(const mctools::simulated_data & sd_,
+									 geiger_signal_data & geiger_signal_);
 
     private :
       
       bool _initialized_; //!< Initialization flag
-
+			const geomtools::manager * _geo_manager_; //!< Geometry manager
 
     };
 

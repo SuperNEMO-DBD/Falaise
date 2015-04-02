@@ -7,7 +7,6 @@
 
 // Standard library :
 #include <vector>
-#include <bitset>
 
 // Third party:
 // - Boost:

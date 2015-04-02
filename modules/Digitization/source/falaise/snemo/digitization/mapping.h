@@ -18,7 +18,10 @@ namespace snemo {
 				CRATE_INDEX = 1,
 				BOARD_INDEX = 2
       };			
-
+			
+			static const bool THREE_WIRES_TRACKER_MODE = 0;
+			static const bool TWO_WIRES_TRACKER_MODE = 1;
+			
 			static const int32_t TRACKER_CONTROL_BOARD_TYPE = 666;
 			static const int32_t CALORIMETER_CONTROL_BOARD_TYPE = 666;
 

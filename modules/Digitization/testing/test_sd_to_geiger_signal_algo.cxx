@@ -1,10 +1,7 @@
-//test_sd_to_geiger_tp_algo.cxx
+//test_sd_to_geiger_signal_algo.cxx
 
 // Standard libraries :
 #include <iostream>
-
-// GSL:
-#include <bayeux/mygsl/rng.h>
 
 // - Bayeux/datatools:
 #include <datatools/utils.h>
@@ -18,7 +15,7 @@
 #include <falaise/falaise.h>
 
 // This project :
-#include <snemo/digitization/sd_to_geiger_tp_algo.h>
+#include <snemo/digitization/sd_to_geiger_signal_algo.h>
 
 int main( int /* argc_ */, char ** /* argv_ */ )
 {
@@ -27,10 +24,9 @@ int main( int /* argc_ */, char ** /* argv_ */ )
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
   try {
     std::clog << "Test program for class 'snemo::digitization::sd_to_geiger_tp_algo' !" << std::endl;
-    int32_t seed = 314159;
     std::string manager_config_file;
-    
-    manager_config_file = "~/data/my_falaise/config/snemo/demonstrator/geometry/3.0/manager.conf";
+
+manager_config_file = "~/data/my_falaise/config/snemo/demonstrator/geometry/3.0/manager.conf";
     datatools::fetch_path_with_env (manager_config_file);
     datatools::properties manager_config;
     datatools::properties::read_config (manager_config_file,
@@ -52,26 +48,17 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     dpp::input_module reader;
     datatools::properties reader_config;
     reader_config.store ("logging.priority", "debug");
-    reader_config.store ("max_record_total", 5);
+    reader_config.store ("max_record_total", 1);
     reader_config.store ("files.mode", "single");
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
     reader.tree_dump (std::clog, "Simulated data reader module");
 
     datatools::things ER;
-    snemo::digitization::ID_convertor my_convertor;
-    my_convertor.set_geo_manager(my_manager);
-    my_convertor.set_module_number(0);
-    my_convertor.initialize();
-
-    mygsl::rng random_generator;
-    random_generator.initialize(seed);
-    int32_t clocktick_reference = random_generator.flat(0, INT32_MAX);
-    int32_t clocktick_shift = random_generator.flat(0, 25);
-
-    snemo::digitization::sd_to_geiger_tp_algo sd_2_geiger_tp;
     
-    sd_2_geiger_tp.initialize(clocktick_reference, clocktick_shift, my_convertor);
+    snemo::digitization::sd_to_geiger_signal_algo sd_2_geiger_signal;
+    sd_2_geiger_signal.set_geo_manager(my_manager);
+    sd_2_geiger_signal.initialize();
 
     int psd_count = 0;
     while (!reader.is_terminated())
@@ -82,11 +69,12 @@ int main( int /* argc_ */, char ** /* argv_ */ )
 	  {
 	    // Access to the "SD" bank with a stored `mctools::simulated_data' :
 	    const mctools::simulated_data & SD = ER.get<mctools::simulated_data>(SD_bank_label);
-	    snemo::digitization::geiger_tp_data my_geiger_tp_data;
+
+	    snemo::digitization::geiger_signal_data my_geiger_signal_data;
 	    if( SD.has_step_hits("gg"))
 	      {		  
-		sd_2_geiger_tp.process(SD, my_geiger_tp_data);
-		my_geiger_tp_data.tree_dump(std::clog, "Geiger TP(s) data : ", "INFO : ");
+		sd_2_geiger_signal.process(SD, my_geiger_signal_data);
+		my_geiger_signal_data.tree_dump(std::clog, "Geiger signal data : ", "INFO : ");
 	      }
 	  }     
 	ER.clear();
@@ -95,8 +83,8 @@ int main( int /* argc_ */, char ** /* argv_ */ )
 	std::clog << "DEBUG : psd count " << psd_count << std::endl;
 	DT_LOG_NOTICE(logging, "Simulated data #" << psd_count);
       }
-    
-    std::clog << "The end." << std::endl;
+
+   std::clog << "The end." << std::endl;
   }
 
   catch (std::exception & error) {

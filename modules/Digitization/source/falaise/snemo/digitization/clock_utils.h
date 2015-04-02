@@ -14,7 +14,6 @@ namespace snemo {
     {
       static const int32_t MAIN_CLOCKTICK = 25; //!< Main clocktick, 40 MHz => 25ns.
       static const int32_t TRACKER_CLOCKTICK = 800; //!< Clocktick for tracker, 800ns.
-      //static const int32_t SECOND_TRACKER_CLOCKTICK = 1600;
       
     };
 	       
