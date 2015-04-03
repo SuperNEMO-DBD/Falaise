@@ -18,7 +18,7 @@
 #include <falaise/falaise.h>
 
 // This project :
-#include <snemo/digitization/sd_to_calo_tp_algo.h>
+#include <snemo/digitization/signal_to_calo_tp_algo.h>
 #include <snemo/digitization/calo_tp_to_ctw_algo.h>
 
 int main( int /* argc_ */, char ** /* argv_ */ )

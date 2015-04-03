@@ -3,7 +3,7 @@
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
 // Ourselves:
-#include <snemo/digitization/sd_to_calo_tp_algo.h>
+#include <snemo/digitization/signal_to_calo_tp_algo.h>
 
 namespace snemo {
   
