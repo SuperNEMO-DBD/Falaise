@@ -16,6 +16,7 @@
 
 // This project :
 #include <snemo/digitization/sd_to_geiger_signal_algo.h>
+#include <snemo/digitization/sd_to_calo_signal_algo.h>
 
 int main( int /* argc_ */, char ** /* argv_ */ )
 {
@@ -23,7 +24,7 @@ int main( int /* argc_ */, char ** /* argv_ */ )
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
   try {
-    std::clog << "Test program for class 'snemo::digitization::sd_to_geiger_signal_algo' !" << std::endl;
+    std::clog << "Test program for class 'snemo::digitization::sd_to_signal_algo' !" << std::endl;
     std::string manager_config_file;
 
 manager_config_file = "~/data/my_falaise/config/snemo/demonstrator/geometry/3.0/manager.conf";
@@ -48,7 +49,7 @@ manager_config_file = "~/data/my_falaise/config/snemo/demonstrator/geometry/3.0/
     dpp::input_module reader;
     datatools::properties reader_config;
     reader_config.store ("logging.priority", "debug");
-    reader_config.store ("max_record_total", 1);
+    reader_config.store ("max_record_total", 5);
     reader_config.store ("files.mode", "single");
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
@@ -58,6 +59,9 @@ manager_config_file = "~/data/my_falaise/config/snemo/demonstrator/geometry/3.0/
     
     snemo::digitization::sd_to_geiger_signal_algo sd_2_geiger_signal(my_manager);
     sd_2_geiger_signal.initialize();
+
+    snemo::digitization::sd_to_calo_signal_algo sd_2_calo_signal(my_manager);
+    sd_2_calo_signal.initialize();
 
     int psd_count = 0;
     while (!reader.is_terminated())
@@ -73,8 +77,12 @@ manager_config_file = "~/data/my_falaise/config/snemo/demonstrator/geometry/3.0/
 	    if( SD.has_step_hits("gg"))
 	      {		  
 		sd_2_geiger_signal.process(SD, signal_data);
-		signal_data.tree_dump(std::clog, "Signal data : ", "INFO : ");
 	      }
+	    if( SD.has_step_hits("calo"))
+	      {		  
+		sd_2_calo_signal.process(SD, signal_data);
+	      }
+	    signal_data.tree_dump(std::clog, "Signal data : ", "INFO : ");
 	  }     
 	ER.clear();
 

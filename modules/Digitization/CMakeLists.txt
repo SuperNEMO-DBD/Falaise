@@ -24,6 +24,8 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
   source/falaise/snemo/digitization/clock_utils.h
   source/falaise/snemo/digitization/ID_convertor.h
 
+
+  source/falaise/snemo/digitization/calo_signal.h
   source/falaise/snemo/digitization/calo_tp.h
   source/falaise/snemo/digitization/calo_tp_data.h
   source/falaise/snemo/digitization/calo_ctw.h
@@ -36,7 +38,6 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
 
 
   source/falaise/snemo/digitization/geiger_signal.h
-  source/falaise/snemo/digitization/geiger_signal_data.h 
   source/falaise/snemo/digitization/geiger_tp.h 
   source/falaise/snemo/digitization/geiger_tp_data.h 
   source/falaise/snemo/digitization/geiger_ctw.h
@@ -46,6 +47,8 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
   source/falaise/snemo/digitization/geiger_tp_data.ipp
   source/falaise/snemo/digitization/geiger_ctw.ipp
   source/falaise/snemo/digitization/geiger_ctw_data.ipp
+
+  source/falaise/snemo/digitization/signal_data.h
 
   source/falaise/snemo/digitization/sd_to_calo_signal_algo.h
   source/falaise/snemo/digitization/sd_to_geiger_signal_algo.h
@@ -60,19 +63,22 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
 list(APPEND FalaiseDigitizationPlugin_SOURCES  
   source/falaise/snemo/digitization/ID_convertor.cc
 
+  source/falaise/snemo/digitization/calo_signal.cc
   source/falaise/snemo/digitization/calo_tp.cc
   source/falaise/snemo/digitization/calo_tp_data.cc
   source/falaise/snemo/digitization/calo_ctw.cc
   source/falaise/snemo/digitization/calo_ctw_data.cc
   source/falaise/snemo/digitization/calo_tp_to_ctw_algo.cc
 
+
   source/falaise/snemo/digitization/geiger_signal.cc
-  source/falaise/snemo/digitization/geiger_signal_data.cc
   source/falaise/snemo/digitization/geiger_tp.cc 
   source/falaise/snemo/digitization/geiger_tp_data.cc
   source/falaise/snemo/digitization/geiger_ctw.cc
   source/falaise/snemo/digitization/geiger_ctw_data.cc
   source/falaise/snemo/digitization/geiger_tp_to_ctw_algo.cc
+
+  source/falaise/snemo/digitization/signal_data.cc
 
   source/falaise/snemo/digitization/sd_to_calo_signal_algo.cc
   source/falaise/snemo/digitization/sd_to_geiger_signal_algo.cc

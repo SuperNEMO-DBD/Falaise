@@ -12,9 +12,6 @@
 // - Bayeux/geomtools :
 #include <bayeux/geomtools/base_hit.h>
 
-// This project : 
-#include <snemo/digitization/mapping.h>
-
 namespace snemo {
   
   namespace digitization {
@@ -57,7 +54,7 @@ namespace snemo {
       /// Unlock
       void unlock();
 
-      /// Check if the internal data of the geiger signal is valid
+      /// Check if the internal data of geiger signal is valid
       bool is_valid() const;
 
       /// Reset the internal data of geiger signal
@@ -76,7 +73,7 @@ namespace snemo {
 
     private : 
 
-      bool _locked_; //!< geiger signal lock flag
+      bool _locked_; //!< Geiger signal lock flag
 			double _anode_avalanche_time_; //!< Time of the anode avalanche
 			double _plasma_top_time_; //!< Time of plasma on top cathode
       double _plasma_bottom_time_; //!< Time of plasma on bottom cathode

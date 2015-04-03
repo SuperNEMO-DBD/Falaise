@@ -9,9 +9,6 @@
 #include <stdexcept>
 
 // Third party:
-// - Bayeux/datatools :
-#include <datatools/handle.h>
-#include <datatools/logger.h>
 // - Bayeux/geomtools:
 #include <bayeux/geomtools/geom_id.h>
 #include <bayeux/geomtools/manager.h>
@@ -19,7 +16,7 @@
 #include <mctools/simulated_data.h>
 
 // This project :
-#include <snemo/digitization/geiger_signal_data.h>
+#include <snemo/digitization/signal_data.h>
 
 namespace snemo {
   
@@ -52,16 +49,16 @@ namespace snemo {
 			void set_geo_manager(const geomtools::manager & mgr_ );
 
       int process(const mctools::simulated_data & sd_,
-									geiger_signal_data & geiger_signal_);
+									signal_data & signal_data_);
 
     protected: 
       
 			/// Return the drift time with simple approximation
 			const double _anode_drift_time_calculation(const double drift_distance);
 			
-      ///  Process to fill a ctw data object from simulated data
+      ///  Process to fill a signal data object from simulated data
       int _process(const mctools::simulated_data & sd_,
-									 geiger_signal_data & geiger_signal_);
+									 signal_data & signal_data_);
 
     private :
       

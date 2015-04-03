@@ -2,6 +2,11 @@
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
+// Third party:
+// - Bayeux/datatools :
+#include <datatools/clhep_units.h>
+// - Bayeux/geomtools:
+#include <bayeux/geomtools/geom_id.h>
 // Ourselves:
 #include <snemo/digitization/sd_to_geiger_signal_algo.h>
 
@@ -59,14 +64,14 @@ namespace snemo {
     }
 
     int sd_to_geiger_signal_algo::process(const mctools::simulated_data & sd_,
-					  geiger_signal_data & geiger_signal_)
+					  signal_data & signal_data_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "SD to geiger signal algorithm is not initialized ! ");
       int error_code = EXIT_SUCCESS;
       datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
       try 
 	{ 	
-	  _process(sd_, geiger_signal_);
+	  _process(sd_, signal_data_);
 	}
 
       catch (std::exception & error) {
@@ -87,17 +92,17 @@ namespace snemo {
       // 2,3 cm/us drift close to the anode
       // 1 cm/us drift far away the anode
          
-      return 2.3 * drift_distance_;
+      return drift_distance_ / (2.3 * CLHEP::cm / CLHEP::microsecond) ;
     }
 
     int sd_to_geiger_signal_algo::_process(const mctools::simulated_data & sd_,
-					   geiger_signal_data & geiger_signal_data)
+					   signal_data & signal_data)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "SD to geiger signal algorithm is not initialized ! ");
       int error_code = EXIT_SUCCESS;
       datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
       try { 
-	std::clog << "DEBUG : BEGINING OF PROCESS " << std::endl;
+	std::clog << "DEBUG : BEGINING OF GEIGER PROCESS " << std::endl;
 	std::clog << "**************************************************************" << std::endl;
 	// pickup the ID mapping from the geometry manager:
 	const geomtools::mapping & the_mapping = _geo_manager_->get_mapping();
@@ -107,6 +112,7 @@ namespace snemo {
 	for (size_t ihit = 0; ihit < number_of_hits; ihit++)
 	  {
 	    const mctools::base_step_hit & geiger_hit = sd_.get_step_hit("gg", ihit);
+	    geiger_hit.tree_dump(std::clog);
 	    
 	    // extract the corresponding geom ID:
 	    const geomtools::geom_id & geiger_gid = geiger_hit.get_geom_id();
@@ -139,8 +145,10 @@ namespace snemo {
 
 	    const double anode_time          = ionization_time + expected_drift_time;
 	    
-	    geiger_signal & gg_signal = geiger_signal_data.add();
+	    geiger_signal & gg_signal = signal_data.add_geiger_signal();
 	    gg_signal.set_anode_avalanche_time(anode_time);
+	    gg_signal.set_hit_id(geiger_hit.get_hit_id());
+	    gg_signal.set_geom_id(geiger_gid);
 	    
 	    gg_signal.tree_dump(std::clog, "Geiger signal : ", "INFO : ");
 

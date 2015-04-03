@@ -117,7 +117,7 @@ namespace snemo {
 	unsigned int seed = 314159;
 	std::srand(seed);
 	size_t number_of_hits = sd_.get_number_of_step_hits("gg");
-	std::clog << "DEBUG : BEGINING OF PROCESS " << std::endl;
+	std::clog << "DEBUG : BEGINING OF GEIGER PROCESS " << std::endl;
 	std::clog << "**************************************************************" << std::endl;
 
 	double time_reference = sd_.get_step_hit("gg", 0).get_time_start();

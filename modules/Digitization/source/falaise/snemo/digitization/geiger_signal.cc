@@ -8,6 +8,8 @@
 // Third party:
 // - Bayeux/datatools:
 #include <datatools/exception.h>
+#include <datatools/clhep_units.h>
+#include <datatools/utils.h>
 
 namespace snemo {
   
@@ -19,9 +21,9 @@ namespace snemo {
     geiger_signal::geiger_signal()
     {
       _locked_ = false;
-      _anode_avalanche_time_ = -1;
-      _plasma_top_time_ = -1;
-      _plasma_bottom_time_ = -1;
+      datatools::invalidate(_anode_avalanche_time_);
+      datatools::invalidate(_plasma_top_time_);
+      datatools::invalidate(_plasma_bottom_time_);
       return;
     }
 
@@ -111,7 +113,7 @@ namespace snemo {
       base_hit::tree_dump (out_, title_, indent_, true);
 
       out_ << indent_ << datatools::i_tree_dumpable::tag
-           << "Avalanche anode time =  : " << _anode_avalanche_time_ << std::endl;
+           << "Avalanche anode time =  : " << _anode_avalanche_time_ / CLHEP::microsecond << " us " << std::endl;
 
       return;
     }
