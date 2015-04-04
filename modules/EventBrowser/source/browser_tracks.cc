@@ -19,7 +19,9 @@
  *
  */
 
+// Ourselves:
 #include <falaise/snemo/view/browser_tracks.h>
+// This project
 #include <falaise/snemo/view/browser_icons.h>
 #include <falaise/snemo/view/event_browser.h>
 #include <falaise/snemo/view/options_manager.h>
@@ -30,11 +32,14 @@
 
 #include <falaise/snemo/utils/root_utilities.h>
 
-#include <mctools/utils.h>
-#include <geomtools/base_hit.h>
-#include <falaise/snemo/datamodels/helix_trajectory_pattern.h>
-#include <falaise/snemo/datamodels/line_trajectory_pattern.h>
+// Standard libraries:
+#include <stdexcept>
+#include <iostream>
+#include <sstream>
+#include <cstdlib>
 
+// Third party
+// - ROOT:
 #include <TGFrame.h>
 #include <TGCanvas.h>
 #include <TGListTree.h>
@@ -44,10 +49,13 @@
 #include <TGResourcePool.h>
 #include <TMath.h>
 
-#include <stdexcept>
-#include <iostream>
-#include <sstream>
-#include <cstdlib>
+// - Bayeux/mctools:
+#include <mctools/utils.h>
+// - Bayeux/geomtools:
+#include <geomtools/base_hit.h>
+// - Falaise:
+#include <falaise/snemo/datamodels/helix_trajectory_pattern.h>
+#include <falaise/snemo/datamodels/line_trajectory_pattern.h>
 
 ClassImp(snemo::visualization::view::browser_tracks);
 
@@ -1525,6 +1533,7 @@ namespace snemo {
         else if (icon_type_ == "line")        xpm = (std::string *)&xpm_line;
         else if (icon_type_ == "step")        xpm = (std::string *)&xpm_step;
         else if (icon_type_ == "track")       xpm = (std::string *)&xpm_track;
+        else if (icon_type_ == "flag")        xpm = (std::string *)&xpm_flag;
         else if (icon_type_ == "folder")      xpm = (std::string *)&xpm_folder;
         else if (icon_type_ == "ofolder")     xpm = (std::string *)&xpm_ofolder;
         else return 0;
