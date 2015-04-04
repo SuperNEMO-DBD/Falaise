@@ -418,7 +418,7 @@ namespace snemo {
         if (datatools::is_valid(new_ts.first)) {
           const double new_length = delta2length*fabs(new_ts.first - a_helix.get_t1());
           const std::string & category = category_flags.first;
-          if (_use_vertices_[category] && new_length < 0.5*length) {
+          if (_use_vertices_[category] && new_length < length) {
             a_mutable_helix->set_t1(new_ts.first);
             vertices.push_back(std::make_pair(category, a_mutable_helix->get_first()));
           }
@@ -426,7 +426,7 @@ namespace snemo {
         if (datatools::is_valid(new_ts.second)) {
           const double new_length = delta2length*fabs(new_ts.second - a_helix.get_t2());
           const std::string & category = category_flags.second;
-          if (_use_vertices_[category] && new_length < 0.5*length) {
+          if (_use_vertices_[category] && new_length < length) {
             a_mutable_helix->set_t2(new_ts.second);
             vertices.push_back(std::make_pair(category, a_mutable_helix->get_last()));
           }
