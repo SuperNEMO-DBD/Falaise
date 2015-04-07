@@ -31,10 +31,16 @@ namespace snemo {
       /// Destructor
       virtual ~calo_signal();
       
-      /// Return the const time of avalanche on the anode
+      /// Return the const time with the photomultiplier delay
+      double get_signal_time() const;
+     
+      // Set the time with the photomultiplier delay
+      void set_signal_time(const double & signal_time_);
+
+      /// Return the const energy
       double get_energy() const;
      
-      // Set the time of avalanche on the anode
+      // Set the energy
       void set_energy(const double & energy_);
 
       /// Check the lock status
@@ -54,9 +60,9 @@ namespace snemo {
 
       /// Smart print
       virtual void tree_dump(std::ostream      & a_out    = std::clog,
-			     const std::string & a_title  = "",
-			     const std::string & a_indent = "",
-			     bool a_inherit               = false) const;
+														 const std::string & a_title  = "",
+														 const std::string & a_indent = "",
+														 bool a_inherit               = false) const;
 
     protected : 
 
@@ -66,6 +72,7 @@ namespace snemo {
     private : 
 
       bool _locked_; //!< Calorimeter signal lock flag
+			double _signal_time_;
       double _energy_; //!< Energy 
       
       // DATATOOLS_SERIALIZATION_DECLARATION();

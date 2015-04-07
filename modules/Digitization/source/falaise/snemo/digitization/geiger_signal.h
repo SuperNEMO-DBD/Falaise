@@ -42,8 +42,8 @@ namespace snemo {
       /// Return the const time of plasma on bottom cathode
       double get_plasma_bottom_time_() const;
 
-      /// Set the time plasma on bottom cathode
-      void set_plasma_bottom_time_(const double & plasma_bottom_time_);
+      /// Set the time plasma on bottom cathode 
+     void set_plasma_bottom_time_(const double & plasma_bottom_time_);
 
       /// Check the lock status
       bool is_locked() const;

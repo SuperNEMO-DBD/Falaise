@@ -106,15 +106,17 @@ namespace snemo {
 	    const mctools::base_step_hit & calo_hit = sd_.get_step_hit("calo", ihit);
 	    calo_hit.tree_dump(std::clog);
 	    
+	    double signal_time = calo_hit.get_time_stop();
+	    double energy_deposit = calo_hit.get_energy_deposit();
+	    
 	    // extract the corresponding geom ID:
 	    const geomtools::geom_id & calo_gid = calo_hit.get_geom_id();
 	    
 	    calo_signal & calo_signal = signal_data.add_calo_signal();
 	    calo_signal.set_hit_id(calo_hit.get_hit_id());
 	    calo_signal.set_geom_id(calo_gid);
-	    
-	    calo_signal.tree_dump(std::clog, "Calo signal : ", "INFO : ");
-
+	    calo_signal.set_signal_time(signal_time);
+	    calo_signal.set_energy(energy_deposit);
 
 	  }	  
 	

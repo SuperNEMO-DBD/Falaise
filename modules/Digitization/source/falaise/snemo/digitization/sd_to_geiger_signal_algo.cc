@@ -149,9 +149,6 @@ namespace snemo {
 	    gg_signal.set_anode_avalanche_time(anode_time);
 	    gg_signal.set_hit_id(geiger_hit.get_hit_id());
 	    gg_signal.set_geom_id(geiger_gid);
-	    
-	    gg_signal.tree_dump(std::clog, "Geiger signal : ", "INFO : ");
-
 
 	  }	  
 	

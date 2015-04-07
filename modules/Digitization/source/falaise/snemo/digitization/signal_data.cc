@@ -118,6 +118,24 @@ namespace snemo {
       return;
     }
 
+		bool signal_data::has_geiger_signals()
+		{
+			if (_geiger_signals_.size() != 0)
+				{
+					return 1;
+				}
+			return 0;
+		}
+		
+		bool signal_data::has_calo_signals()
+		{
+			if (_calo_signals_.size() != 0)
+				{
+					return 1;
+				}
+			return 0;
+		}
+
     void signal_data::tree_dump (std::ostream & out_,
 				  const std::string & title_,
 				  const std::string & indent_,

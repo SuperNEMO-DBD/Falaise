@@ -11,6 +11,8 @@
 // Third party:
 // - Bayeux/datatools :
 #include <bayeux/datatools/handle.h>
+// - Bayeux/mctools :
+#include <mctools/base_step_hit.h>
 
 // This project :
 #include <snemo/digitization/geiger_signal.h>
@@ -75,15 +77,21 @@ namespace snemo {
 
       /// Return the mutable collection of geigers trigger primitive			
       calo_signal_collection_type & grab_calo_signals();
+			
+			/// Check if signal data has geiger signals
+			bool has_geiger_signals();
+			
+			/// Check if signal data has calo signals
+			bool has_calo_signals();
 
       /// Reset
       void reset();
 
       /// Smart print
       virtual void tree_dump(std::ostream      & a_out    = std::clog,
-			     const std::string & a_title  = "",
-			     const std::string & a_indent = "",
-			     bool a_inherit               = false) const;
+														 const std::string & a_title  = "",
+														 const std::string & a_indent = "",
+														 bool a_inherit               = false) const;
 
     protected : 
       /// Check if two geiger or two calo signals do not have the same geom ID

@@ -1,4 +1,4 @@
-//test_sd_to_calo_tp_algo.cxx
+//test_signal_to_tp_process.cxx
 
 // Standard libraries :
 #include <iostream>
@@ -18,7 +18,10 @@
 #include <falaise/falaise.h>
 
 // This project :
+#include <snemo/digitization/sd_to_geiger_signal_algo.h>
+#include <snemo/digitization/sd_to_calo_signal_algo.h>
 #include <snemo/digitization/signal_to_calo_tp_algo.h>
+#include <snemo/digitization/signal_to_geiger_tp_algo.h>
 
 int main( int /* argc_ */, char ** /* argv_ */ )
 {
@@ -52,7 +55,7 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     dpp::input_module reader;
     datatools::properties reader_config;
     reader_config.store ("logging.priority", "debug");
-    reader_config.store ("max_record_total", 10);
+    reader_config.store ("max_record_total", 1);
     reader_config.store ("files.mode", "single");
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
@@ -69,8 +72,17 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     int32_t clocktick_reference = random_generator.flat(0, INT32_MAX);
     int32_t clocktick_shift = random_generator.flat(0, 25);
 
-    snemo::digitization::sd_to_calo_tp_algo sd_2_calo_tp;
-    sd_2_calo_tp.initialize(clocktick_reference, clocktick_shift, my_convertor);
+    snemo::digitization::sd_to_geiger_signal_algo sd_2_geiger_signal(my_manager);
+    sd_2_geiger_signal.initialize();
+
+    snemo::digitization::sd_to_calo_signal_algo sd_2_calo_signal(my_manager);
+    sd_2_calo_signal.initialize();
+
+    snemo::digitization::signal_to_geiger_tp_algo signal_2_geiger_tp;
+    signal_2_geiger_tp.initialize(clocktick_reference, clocktick_shift, my_convertor);
+
+    snemo::digitization::signal_to_calo_tp_algo signal_2_calo_tp;
+    signal_2_calo_tp.initialize(clocktick_reference, clocktick_shift, my_convertor);
 
     int psd_count = 0;
     while (!reader.is_terminated())
@@ -81,12 +93,34 @@ int main( int /* argc_ */, char ** /* argv_ */ )
 	  {
 	    // Access to the "SD" bank with a stored `mctools::simulated_data' :
 	    const mctools::simulated_data & SD = ER.get<mctools::simulated_data>(SD_bank_label);
-	    snemo::digitization::calo_tp_data my_calo_tp_data;
+
+	    snemo::digitization::signal_data signal_data;
+	    if( SD.has_step_hits("gg"))
+	      {		  
+		sd_2_geiger_signal.process(SD, signal_data);
+	      }
 	    if( SD.has_step_hits("calo"))
 	      {		  
-		sd_2_calo_tp.process(SD, my_calo_tp_data);
+		sd_2_calo_signal.process(SD, signal_data);
+	      }
+	    signal_data.tree_dump(std::clog, "Signal data : ", "INFO : ");
+
+	    snemo::digitization::geiger_tp_data my_geiger_tp_data;
+	    snemo::digitization::calo_tp_data my_calo_tp_data;
+
+	    // if( signal_data.has_geiger_signals())
+	    //   {		  
+	    // 	signal_2_geiger_tp.process(signal_data, my_geiger_tp_data);
+	    // 	my_geiger_tp_data.tree_dump(std::clog, "Geiger TP(s) data : ", "INFO : ");
+	    //   }
+	    
+
+	    if( signal_data.has_calo_signals())
+	      {
+		signal_2_calo_tp.process(signal_data, my_calo_tp_data);
 		my_calo_tp_data.tree_dump(std::clog, "Calorimeter TP(s) data : ", "INFO : ");
 	      }
+
 	  }     
 	// CF README.RST pour display graphique avec loader de manager.conf
 	// -> /home/guillaume/data/Bayeux/Bayeux-trunk/source/bxmctools/examples/ex00

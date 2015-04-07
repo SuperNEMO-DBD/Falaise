@@ -30,6 +30,17 @@ namespace snemo {
       return;
     }
 
+    double calo_signal::get_signal_time() const
+    {
+      return _signal_time_;
+    }
+    
+    void calo_signal::set_signal_time(const double & signal_time_)
+    {
+      DT_THROW_IF(is_locked(), std::logic_error, "Calo signal is locked ! ");
+      _signal_time_ = signal_time_ + DELAYED_PM_TIME;
+      return;
+    }
    
     double calo_signal::get_energy() const
     {

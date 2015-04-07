@@ -1,19 +1,15 @@
-// snemo/digitization/sd_to_calo_tp_algo.h
+// snemo/digitization/signal_to_calo_tp_algo.h
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
-#ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_SD_TO_CALO_TP_ALGO_H
-#define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_SD_TO_CALO_TP_ALGO_H
+#ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_SIGNAL_TO_CALO_TP_ALGO_H
+#define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_SIGNAL_TO_CALO_TP_ALGO_H
 
 // Standard library :
 #include <stdexcept>
 
 // Third party:
-// - Boost:
-#include <boost/utility.hpp>
-
 // - Bayeux/datatools :
-#include <datatools/handle.h>
 #include <datatools/logger.h>
 // - Bayeux/mctools:
 #include <mctools/simulated_data.h>
@@ -22,6 +18,7 @@
 
 // This project :
 #include <snemo/digitization/calo_tp_data.h>
+#include <snemo/digitization/signal_data.h>
 #include <snemo/digitization/ID_convertor.h>
 
 namespace snemo {
@@ -29,15 +26,15 @@ namespace snemo {
   namespace digitization {		
 
     /// \brief Algorithm processing. Take simulated datas and fill calo trigger primitive data object.
-    class sd_to_calo_tp_algo : boost::noncopyable
+    class signal_to_calo_tp_algo : boost::noncopyable
     {
     public :
 
       /// Default constructor
-      sd_to_calo_tp_algo();
+      signal_to_calo_tp_algo();
 
       /// Destructor
-      virtual ~sd_to_calo_tp_algo();
+      virtual ~signal_to_calo_tp_algo();
       
       /// Initializing
       void initialize(int32_t & clocktick_ref_,
@@ -57,16 +54,16 @@ namespace snemo {
 			// void set_clocktick_shift(int32_t clocktick_shift_);
 
       /// Process to fill a calo tp data object from simulated data
-      int process(const mctools::simulated_data & sd_,
+      int process(const signal_data & signal_data_,
 									calo_tp_data & my_calo_tp_data_);
 
-    protected: 
+    protected:
       
 			// unsigned int _existing_same_electronic_id(const geomtools::geom_id & electronic_id_,
 			// 																					calo_tp_data & my_calo_tp_data_);
 
 			///  Process to fill a calo tp data object from simulated data
-			int _process(const mctools::simulated_data & sd_,
+			int _process(const signal_data & signal_data_,
 									 calo_tp_data & my_calo_tp_data_);
 
     private :
@@ -86,7 +83,7 @@ namespace snemo {
 } // end of namespace snemo
 
 
-#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_SD_TO_CALO_TP_ALGO_H
+#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_SIGNAL_TO_CALO_TP_ALGO_H
 
 /* 
 ** Local Variables: --
