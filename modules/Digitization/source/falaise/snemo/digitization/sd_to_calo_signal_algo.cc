@@ -117,7 +117,6 @@ namespace snemo {
 	    calo_signal.set_geom_id(calo_gid);
 	    calo_signal.set_signal_time(signal_time);
 	    calo_signal.set_energy(energy_deposit);
-
 	  }	  
 	
       }

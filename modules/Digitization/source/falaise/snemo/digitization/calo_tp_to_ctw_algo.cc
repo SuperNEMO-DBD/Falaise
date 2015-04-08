@@ -96,7 +96,10 @@ namespace snemo {
            
     void calo_tp_to_ctw_algo::_fill_a_calo_ctw(const calo_tp & my_calo_tp_, calo_ctw & a_calo_ctw_)
     {  
-      set_ctw_clocktick(my_calo_tp_, a_calo_ctw_);
+      a_calo_ctw_.set_header(my_calo_tp_.get_hit_id(),
+			     my_calo_tp_.get_geom_id(),
+			     my_calo_tp_.get_clocktick_25ns(),
+			     calo_ctw::MAIN_WALL); //1 == wall type undefined for the moment
       set_ctw_htm(my_calo_tp_, a_calo_ctw_);
       set_ctw_zone_bit(my_calo_tp_, a_calo_ctw_);
       set_ctw_lto(my_calo_tp_, a_calo_ctw_);
@@ -107,28 +110,26 @@ namespace snemo {
     {       
       for(int i = 0; i < my_list_of_calo_tp_.size(); i++)
 	{
-	  a_calo_ctw_.grab_geom_id().set_type(1000);
-	  a_calo_ctw_.grab_geom_id().set_address(0, my_list_of_calo_tp_[0].get().get_geom_id().get(mapping::CRATE_INDEX), 10);
 	  const calo_tp & my_calo_tp = my_list_of_calo_tp_[i].get();
 	  _fill_a_calo_ctw(my_calo_tp, a_calo_ctw_);	  
 	}
       return;
     }
 
-    void calo_tp_to_ctw_algo::process(const calo_tp_data & tp_data_,  calo_ctw_data & ctw_data_)
+    void calo_tp_to_ctw_algo::process(const calo_tp_data & calo_tp_data_,  calo_ctw_data & calo_ctw_data_)
     { 
       DT_THROW_IF(!is_initialized(), std::logic_error, "Calo tp to ctw algo is not initialized, it can't process ! ");
 
-      for(int32_t i = tp_data_.get_clocktick_min(); i <= tp_data_.get_clocktick_max(); i++)
+      for(int32_t i = calo_tp_data_.get_clocktick_min(); i <= calo_tp_data_.get_clocktick_max(); i++)
 	{
 	  for(int32_t j = 0 ; j <= mapping::MAX_NUMBER_OF_CRATE ; j++) 
 	    {	  
 	      std::vector<datatools::handle<calo_tp> > tp_list_per_clocktick_per_crate;
-	      tp_data_.get_list_of_tp_per_clocktick_per_crate(i,j,tp_list_per_clocktick_per_crate);
+	      calo_tp_data_.get_list_of_tp_per_clocktick_per_crate(i,j,tp_list_per_clocktick_per_crate);
 	      if(!tp_list_per_clocktick_per_crate.empty())
 		{
-		  calo_ctw & a_ctw_ = ctw_data_.add();
-		  _process_for_a_ctw_for_a_clocktick(tp_list_per_clocktick_per_crate,a_ctw_);
+		  calo_ctw & a_ctw_ = calo_ctw_data_.add();
+		  _process_for_a_ctw_for_a_clocktick(tp_list_per_clocktick_per_crate, a_ctw_);
 		  a_ctw_.tree_dump(std::clog, "a_calo_ctw : ", "INFO : ");
 		}
 	    }

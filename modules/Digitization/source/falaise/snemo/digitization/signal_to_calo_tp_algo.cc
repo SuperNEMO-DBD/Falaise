@@ -188,7 +188,6 @@ namespace snemo {
 	      {
 		std::clog << "DEBUG : CASE 2 : already existing calo TP " << std::endl;
 		my_calo_tp_data_.get_calo_tps()[existing_index].get().tree_dump(std::clog, "Calo TP Update : ", "INFO : ");
-		// my_calo_tp_data_.get_calo_tps()[existing_index]
 		// update calo TP 	    
 	      } 
 	    
