@@ -89,7 +89,7 @@ namespace snemo {
 											bool trigger_side_, 
 											unsigned int number_of_rows_);
 
-			/// Set the data with valid values
+			/// Set the data with values
 			void set_data(std::bitset<TP_SIZE> & gg_tp_word_);
 
 			/// Return the const timestamp of the geiger trigger primitive

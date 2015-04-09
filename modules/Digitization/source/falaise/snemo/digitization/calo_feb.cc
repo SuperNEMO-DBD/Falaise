@@ -32,6 +32,7 @@ namespace snemo {
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Calorimeter FEB is locked !) ");
 
+      
       return;
     }
     
@@ -40,6 +41,27 @@ namespace snemo {
       DT_THROW_IF(is_locked(), std::logic_error, "Calorimeter FEB is locked !) ");
       return;
     }
+
+    void calo_feb::set_all_low_thresholds(double & low_threshold_value_)
+    {
+      for (int i = LOW_THRESHOLD_SAMLONG_0; i <= LOW_THRESHOLD_SAMLONG_7; i++)
+	{
+	  _thresholds_[i] = low_threshold_value_;
+	  std::clog << "DEBUG : low threshold iteration : " << i << std::endl;
+	}
+      return;
+    }
+
+    void calo_feb::set_all_high_thresholds(double & high_threshold_value_)
+    {
+      for (int i = HIGH_THRESHOLD_SAMLONG_0; i <= HIGH_THRESHOLD_SAMLONG_7; i++)
+	{
+	  _thresholds_[i] = high_threshold_value_;
+	  std::clog << "DEBUG : high threshold iteration : " << i << std::endl;
+	}
+      return;
+    }
+
 
     bool calo_feb::is_locked() const
     {
@@ -76,9 +98,9 @@ namespace snemo {
     }
 
     void calo_feb::tree_dump (std::ostream & out_,
-			     const std::string & title_,
-			     const std::string & indent_,
-			     bool inherit_) const
+			      const std::string & title_,
+			      const std::string & indent_,
+			      bool inherit_) const
     {
       // out_ << indent_ << datatools::i_tree_dumpable::tag
       //      << "Clock tick (25 ns)  : " << _clocktick_25ns_ << std::endl;

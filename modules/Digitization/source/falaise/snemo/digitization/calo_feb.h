@@ -25,6 +25,25 @@ namespace snemo {
     {
     public : 
       
+      enum threshold_list {
+      	LOW_THRESHOLD_SAMLONG_0 = 0,
+      	LOW_THRESHOLD_SAMLONG_1 = 1,
+      	LOW_THRESHOLD_SAMLONG_2 = 2,
+      	LOW_THRESHOLD_SAMLONG_3 = 3,
+      	LOW_THRESHOLD_SAMLONG_4 = 4,
+      	LOW_THRESHOLD_SAMLONG_5 = 5,
+      	LOW_THRESHOLD_SAMLONG_6 = 6,
+      	LOW_THRESHOLD_SAMLONG_7 = 7,
+      	HIGH_THRESHOLD_SAMLONG_0 = 8,
+      	HIGH_THRESHOLD_SAMLONG_1 = 9,
+      	HIGH_THRESHOLD_SAMLONG_2 = 10,
+      	HIGH_THRESHOLD_SAMLONG_3 = 11,
+      	HIGH_THRESHOLD_SAMLONG_4 = 12,
+      	HIGH_THRESHOLD_SAMLONG_5 = 13,
+      	HIGH_THRESHOLD_SAMLONG_6 = 14,
+      	HIGH_THRESHOLD_SAMLONG_7 = 15
+      };
+      
       /// Default constructor
       calo_feb();
 
@@ -37,11 +56,11 @@ namespace snemo {
       /// Set the data with valid values
       void set_data();
 
-      /// Initializing
-      void initialize();
+      /// Set the value for all low thresholds in the FEB
+      void set_all_low_thresholds(double & low_threshold_value_);
 
-      /// Check if the algorithm is initialized 
-      bool is_initialized() const;
+      /// Set the value for all high thresholds in the FEB
+      void set_all_high_thresholds(double & high_threshold_value_);
 
       /// Check the lock status
       bool is_locked() const;
@@ -72,7 +91,7 @@ namespace snemo {
     private : 
 
       bool _locked_; //!< TP lock flag
-      bool _initialized_; //!< Initialization flag
+      double _thresholds_[16]; //!< Table for calo feb thresholds (8 low thresholds, 8 high thresholds)
       // DATATOOLS_SERIALIZATION_DECLARATION();
 
     };

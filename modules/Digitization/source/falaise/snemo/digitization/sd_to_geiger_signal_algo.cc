@@ -102,18 +102,20 @@ namespace snemo {
       int error_code = EXIT_SUCCESS;
       datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
       try { 
-	std::clog << "DEBUG : BEGINING OF GEIGER PROCESS " << std::endl;
+	std::clog << "DEBUG : BEGINING OF SD TO GEIGER SIGNAL PROCESS " << std::endl;
 	std::clog << "**************************************************************" << std::endl;
 	// pickup the ID mapping from the geometry manager:
 	const geomtools::mapping & the_mapping = _geo_manager_->get_mapping();
 
 	// Loop on Geiger step hits:
 	const size_t number_of_hits = sd_.get_number_of_step_hits("gg");
+	
+	int32_t geiger_signal_hit_id = 0;
+	
 	for (size_t ihit = 0; ihit < number_of_hits; ihit++)
 	  {
 	    const mctools::base_step_hit & geiger_hit = sd_.get_step_hit("gg", ihit);
-	    geiger_hit.tree_dump(std::clog);
-	    
+
 	    // extract the corresponding geom ID:
 	    const geomtools::geom_id & geiger_gid = geiger_hit.get_geom_id();
 
@@ -146,10 +148,11 @@ namespace snemo {
 	    const double anode_time          = ionization_time + expected_drift_time;
 	    
 	    geiger_signal & gg_signal = signal_data.add_geiger_signal();
-	    gg_signal.set_anode_avalanche_time(anode_time);
-	    gg_signal.set_hit_id(geiger_hit.get_hit_id());
-	    gg_signal.set_geom_id(geiger_gid);
-
+	    gg_signal.set_header(geiger_signal_hit_id,
+				 geiger_gid);
+	    gg_signal.set_data(anode_time);
+	    gg_signal.tree_dump(std::clog, "***** Geiger Signal : *****", "INFO : ");
+	    geiger_signal_hit_id++;
 	  }	  
 	
       }

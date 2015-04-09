@@ -9,6 +9,7 @@
 // - Bayeux/datatools:
 #include <datatools/utils.h>
 #include <datatools/io_factory.h>
+#include <datatools/clhep_units.h>
 // - Bayeux/mctools:
 #include <mctools/simulated_data.h>
 // - Bayeux/dpp:
@@ -69,20 +70,14 @@ int main( int /* argc_ */, char ** /* argv_ */ )
 
     mygsl::rng random_generator;
     random_generator.initialize(seed);
-    int32_t clocktick_reference = random_generator.flat(0, INT32_MAX);
-    int32_t clocktick_shift = random_generator.flat(0, 25);
+    int32_t clocktick_reference_25 = random_generator.uniform_int(25);
+    double clocktick_shift_25 = random_generator.flat(0.0, 25.0 * CLHEP::nanosecond);
 
     snemo::digitization::sd_to_geiger_signal_algo sd_2_geiger_signal(my_manager);
     sd_2_geiger_signal.initialize();
 
     snemo::digitization::sd_to_calo_signal_algo sd_2_calo_signal(my_manager);
     sd_2_calo_signal.initialize();
-
-    snemo::digitization::signal_to_geiger_tp_algo signal_2_geiger_tp;
-    signal_2_geiger_tp.initialize(clocktick_reference, clocktick_shift, my_convertor);
-
-    snemo::digitization::signal_to_calo_tp_algo signal_2_calo_tp;
-    signal_2_calo_tp.initialize(clocktick_reference, clocktick_shift, my_convertor);
 
     int psd_count = 0;
     while (!reader.is_terminated())
@@ -93,6 +88,17 @@ int main( int /* argc_ */, char ** /* argv_ */ )
 	  {
 	    // Access to the "SD" bank with a stored `mctools::simulated_data' :
 	    const mctools::simulated_data & SD = ER.get<mctools::simulated_data>(SD_bank_label);
+
+	    int32_t clocktick_reference_25 = random_generator.uniform_int(25);
+	    double clocktick_shift_25 = random_generator.flat(0.0, 25.0 * CLHEP::nanosecond);
+
+	    snemo::digitization::signal_to_geiger_tp_algo signal_2_geiger_tp;
+	    signal_2_geiger_tp.initialize(my_convertor);
+	    signal_2_geiger_tp.set_clocktick_reference(clocktick_reference_25 * 32);
+	    signal_2_geiger_tp.set_clocktick_shift(clocktick_shift_25);	    
+
+	    snemo::digitization::signal_to_calo_tp_algo signal_2_calo_tp;
+	    signal_2_calo_tp.initialize(clocktick_reference_25, clocktick_shift_25, my_convertor);
 
 	    snemo::digitization::signal_data signal_data;
 	    if( SD.has_step_hits("gg"))
@@ -108,12 +114,11 @@ int main( int /* argc_ */, char ** /* argv_ */ )
 	    snemo::digitization::geiger_tp_data my_geiger_tp_data;
 	    snemo::digitization::calo_tp_data my_calo_tp_data;
 
-	    // if( signal_data.has_geiger_signals())
-	    //   {		  
-	    // 	signal_2_geiger_tp.process(signal_data, my_geiger_tp_data);
-	    // 	my_geiger_tp_data.tree_dump(std::clog, "Geiger TP(s) data : ", "INFO : ");
-	    //   }
-	    
+	    if( signal_data.has_geiger_signals())
+	      {		  
+	    	signal_2_geiger_tp.process(signal_data, my_geiger_tp_data);
+	    	my_geiger_tp_data.tree_dump(std::clog, "Geiger TP(s) data : ", "INFO : ");
+	      }	    
 
 	    if( signal_data.has_calo_signals())
 	      {

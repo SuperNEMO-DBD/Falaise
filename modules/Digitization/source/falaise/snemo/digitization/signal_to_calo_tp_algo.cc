@@ -27,7 +27,8 @@ namespace snemo {
     }
 
     void signal_to_calo_tp_algo::initialize(int32_t & clocktick_ref_,
-					    int32_t & clocktick_shift_,
+					    double
+ & clocktick_shift_,
 					    const ID_convertor & my_ID_convertor_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "SD to calo tp algorithm is already initialized ! ");

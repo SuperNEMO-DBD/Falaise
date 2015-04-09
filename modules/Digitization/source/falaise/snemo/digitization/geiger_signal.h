@@ -27,6 +27,13 @@ namespace snemo {
       /// Destructor
       virtual ~geiger_signal();
       
+			/// Set the header with valid values
+			void set_header(int32_t geiger_signal_hit_id_,
+											const geomtools::geom_id & electronic_id_);
+
+			/// Set the data with values
+			void set_data(const double & anode_avalanche_time_);
+			
       /// Return the const time of avalanche on the anode
       double get_anode_avalanche_time() const;
      
@@ -43,7 +50,7 @@ namespace snemo {
       double get_plasma_bottom_time_() const;
 
       /// Set the time plasma on bottom cathode 
-     void set_plasma_bottom_time_(const double & plasma_bottom_time_);
+			void set_plasma_bottom_time_(const double & plasma_bottom_time_);
 
       /// Check the lock status
       bool is_locked() const;

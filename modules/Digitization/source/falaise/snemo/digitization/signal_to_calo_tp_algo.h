@@ -38,7 +38,7 @@ namespace snemo {
       
       /// Initializing
       void initialize(int32_t & clocktick_ref_,
-											int32_t & clocktick_shift_,
+											double & clocktick_shift_,
 											const ID_convertor & my_ID_convertor_);
 
       /// Check if the algorithm is initialized 

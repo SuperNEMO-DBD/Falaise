@@ -33,7 +33,20 @@ namespace snemo {
       return;
     }
 
-      
+    void geiger_signal::set_header(int32_t geiger_signal_hit_id_,
+		    const geomtools::geom_id & electronic_id_)
+    {
+      set_hit_id(geiger_signal_hit_id_);
+      set_geom_id(electronic_id_);
+      return;
+    }
+			
+    void geiger_signal::set_data(const double & anode_avalanche_time_)
+    {
+      set_anode_avalanche_time(anode_avalanche_time_);
+      return;
+    }
+       
     double geiger_signal::get_anode_avalanche_time() const
     {
       return _anode_avalanche_time_;
