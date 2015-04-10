@@ -335,8 +335,8 @@ namespace snemo {
         c.set_id(ihit++);
         c.set_probmin(_CAT_setup_.probmin);
         c.set_p(gg_hit_position);
-        c.set_r(fast ? rdrift : 0.5 * gg_locator.get_cell_diameter());
-        c.set_er(fast ? rdrift_err : 0.5 * gg_locator.get_cell_diameter());
+        c.set_r(fast ? rdrift : 0.25 * gg_locator.get_cell_diameter());
+        c.set_er(fast ? rdrift_err : 0.25 * gg_locator.get_cell_diameter());
         c.set_layer(layer_id);
         c.set_block(block_id);
         c.set_iid(cell_id);
