@@ -110,20 +110,20 @@ namespace snemo {
            idriver != driver_names.end(); ++idriver) {
         const std::string & a_driver_name = *idriver;
 
-        if (a_driver_name == "VED") {
+        if (a_driver_name == snemo::reconstruction::vertex_extrapolation_driver::get_id()) {
           // Initialize Vertex Extrapolation Driver
           _VED_.reset(new snemo::reconstruction::vertex_extrapolation_driver);
           _VED_->set_geometry_manager(get_geometry_manager());
           datatools::properties VED_config;
           setup_.export_and_rename_starting_with(VED_config, a_driver_name + ".", "");
           _VED_->initialize(VED_config);
-        } else if (a_driver_name == "CCD") {
+        } else if (a_driver_name == snemo::reconstruction::charge_computation_driver::get_id()) {
           // Initialize Charge Computation Driver
           _CCD_.reset(new snemo::reconstruction::charge_computation_driver);
           datatools::properties CCD_config;
           setup_.export_and_rename_starting_with(CCD_config, a_driver_name + ".", "");
           _CCD_->initialize(CCD_config);
-        } else if (a_driver_name == "CAD") {
+        } else if (a_driver_name == snemo::reconstruction::calorimeter_association_driver::get_id()) {
           // Initialize Calorimeter Association Driver
           _CAD_.reset(new snemo::reconstruction::calorimeter_association_driver);
           _CAD_->set_geometry_manager(get_geometry_manager());

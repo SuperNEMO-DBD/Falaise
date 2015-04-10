@@ -20,6 +20,12 @@ namespace snemo {
 
   namespace reconstruction {
 
+    const std::string & calorimeter_association_driver::get_id()
+    {
+      static const std::string s("CAD");
+      return s;
+    }
+
     void calorimeter_association_driver::set_initialized(const bool initialized_)
     {
       _initialized_ = initialized_;

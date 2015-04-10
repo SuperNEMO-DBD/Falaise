@@ -20,6 +20,12 @@ namespace snemo {
 
   namespace reconstruction {
 
+    const std::string & charge_computation_driver::get_id()
+    {
+      static const std::string s("CCD");
+      return s;
+    }
+
     void charge_computation_driver::set_initialized(const bool initialized_)
     {
       _initialized_ = initialized_;

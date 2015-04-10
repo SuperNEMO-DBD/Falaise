@@ -54,6 +54,9 @@ namespace snemo {
     {
     public:
 
+      /// Return driver id
+      static const std::string & get_id();
+
       /// Setting initialization flag
       void set_initialized(const bool initialized_);
 
