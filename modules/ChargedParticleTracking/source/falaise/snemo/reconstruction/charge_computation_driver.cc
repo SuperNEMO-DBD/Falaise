@@ -77,10 +77,9 @@ namespace snemo {
                   "Invalid logging priority level for geometry manager !");
       set_logging_priority(lp);
 
-      if (setup_.has_key ("charge_from_source"))
-        {
-          _charge_from_source_ = setup_.fetch_boolean ("charge_from_source");
-        }
+      if (setup_.has_key ("charge_from_source")) {
+        _charge_from_source_ = setup_.fetch_boolean ("charge_from_source");
+      }
 
       set_initialized (true);
       return;
