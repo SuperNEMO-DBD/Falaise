@@ -212,6 +212,12 @@ namespace CAT{
       bool intersect_bc = cb_.intersect(cc_);
       bool intersect_ca = cc_.intersect(ca_);
 
+      bool is_fast = ca_.fast();
+      if( !is_fast ){
+	phi_limit = std::max(phi_limit, 90.);
+	theta_limit = std::max(theta_limit, 180.);
+        std::clog << appname_ << " cells are slow, reset phi_limit " << phi_limit << " theta_limit " << theta_limit << std::endl;
+      }
 
       if( print_level() > mybhep::VERBOSE ){
         std::clog << appname_ << " angles of tangents " << ca_.id() << " -> " << cb_.id() << " :" << std::endl;
@@ -372,7 +378,7 @@ namespace CAT{
                 std::clog << "    theta_kink " << theta_kink.value()*180/M_PI << " +- " << theta_kink.error()*180/M_PI << std::endl;
               }
 
-              if(  (fabs(phi_kink.value()) <= phi_limit ) && (fabs((newt1.kink_theta(newt2)).value()) <= theta_limit ) )
+              if(  (fabs(phi_kink.value())*180./M_PI <= phi_limit ) && (fabs((newt1.kink_theta(newt2)).value())*180./M_PI <= theta_limit ) )
                 ok = true;
             }
           }
