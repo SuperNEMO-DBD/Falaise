@@ -299,13 +299,13 @@ namespace snemo {
           particle_track_data_.add_particle(hPT);
 
           // Compute particle charge
-          _CCD_->process(a_trajectory, hPT.grab());
+          if (_CCD_) _CCD_->process(a_trajectory, hPT.grab());
 
           // Determine track vertices
-          _VED_->process(a_trajectory, hPT.grab());
+          if (_VED_) _VED_->process(a_trajectory, hPT.grab());
 
           // Associate vertices to calorimeter hits
-          _CAD_->process(calibrated_data_.calibrated_calorimeter_hits(), hPT.grab());
+          if (_CAD_) _CAD_->process(calibrated_data_.calibrated_calorimeter_hits(), hPT.grab());
         }
       }
 

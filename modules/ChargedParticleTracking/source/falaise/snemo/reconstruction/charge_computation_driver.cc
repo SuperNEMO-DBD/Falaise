@@ -58,10 +58,9 @@ namespace snemo {
     /// Destructor
     charge_computation_driver::~charge_computation_driver()
     {
-      if (is_initialized())
-        {
-          reset();
-        }
+      if (is_initialized()) {
+        reset();
+      }
       return;
     }
 
@@ -120,25 +119,21 @@ namespace snemo {
       // Look first if trajectory pattern is an helix or not
       const snemo::datamodel::base_trajectory_pattern & a_track_pattern = trajectory_.get_pattern();
 
-      if (a_track_pattern.get_pattern_id() == snemo::datamodel::line_trajectory_pattern::pattern_id())
-        {
-          DT_LOG_DEBUG(get_logging_priority(), "Trajectory pattern is 'line', no curvature can be extracted");
-          particle_.set_charge(snemo::datamodel::particle_track::undefined);
-          return;
-        }
+      if (a_track_pattern.get_pattern_id() == snemo::datamodel::line_trajectory_pattern::pattern_id()) {
+        DT_LOG_DEBUG(get_logging_priority(), "Trajectory pattern is 'line', no curvature can be extracted");
+        particle_.set_charge(snemo::datamodel::particle_track::undefined);
+        return;
+      }
 
       // Retrieve helix trajectory
       const snemo::datamodel::helix_trajectory_pattern * ptr_helix = 0;
-      if (a_track_pattern.get_pattern_id() == snemo::datamodel::helix_trajectory_pattern::pattern_id())
-        {
-          ptr_helix = dynamic_cast<const snemo::datamodel::helix_trajectory_pattern *>(&a_track_pattern);
-        }
-
-      if (!ptr_helix)
-        {
-          DT_LOG_ERROR(get_logging_priority(), "Tracker trajectory is not an 'helix' !");
-          return;
-        }
+      if (a_track_pattern.get_pattern_id() == snemo::datamodel::helix_trajectory_pattern::pattern_id()) {
+        ptr_helix = dynamic_cast<const snemo::datamodel::helix_trajectory_pattern *>(&a_track_pattern);
+      }
+      if (!ptr_helix) {
+        DT_LOG_ERROR(get_logging_priority(), "Tracker trajectory is not an 'helix' !");
+        return;
+      }
 
       // Retrieve starting and ending point of helix trajectory
       const geomtools::vector_3d first_point = ptr_helix->get_helix().get_first();
@@ -154,7 +149,6 @@ namespace snemo {
       }
 
       DT_LOG_TRACE(get_logging_priority(), "Particle charge is " << (is_negative ? "negative" : "positive"));
-
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");
       return;
     }
