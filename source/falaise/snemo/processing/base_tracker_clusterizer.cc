@@ -375,13 +375,6 @@ namespace snemo {
                                                                           snemo::datamodel::tracker_clustering_data &  clustering_)
     {
       namespace sdm = snemo::datamodel;
-      // std::cerr << "base_tracker_clusterizer::_post_process_collect_unclustered_hits: " << std::endl;
-      // std::set<int> hit_ids;
-      // for (size_t ihit = 0; ihit < gg_hits_.size(); ihit++) {
-      //   int hit_id = gg_hits_.at(ihit).get().get_hit_id();
-      //   hit_ids.insert(hit_id);
-      //   // std::cerr << "  -> insert hit ID : " << hit_id << std::endl;
-      // } // hit loop
 
       for (size_t isol = 0; isol < clustering_.get_solutions().size(); isol++) {
         sdm::tracker_clustering_solution & the_solution =
@@ -478,7 +471,7 @@ namespace snemo {
                                                      prompt_sol.get_auxiliaries().fetch_string(sdm::tracker_clustering_data::clusterizer_id_key())
                                                      );
             }
-            clustering_.grab_solutions().push_back(h_tc_sol);
+            clustering_.add_solution(h_tc_sol);
           }
         } else if (_prompt_time_clusters_.size() == 2) {
           // We merge the two clusterings in as many as solutions are needed to take into
@@ -507,15 +500,11 @@ namespace snemo {
                                                      prompt_sol0.get_auxiliaries().fetch_string(sdm::tracker_clustering_data::clusterizer_id_key())
                                                      );
             }
-            clustering_.grab_solutions().push_back(h_tc_sol);
+            clustering_.add_solution(h_tc_sol);
           }
 
         } else {
           DT_THROW_IF(true, std::logic_error, "Cannot handle case with more than 2 prompt input clusters!");
-        }
-        // If only one solution has been set, then set it as the default one.
-        if (clustering_.get_solutions().size() == 1) {
-          clustering_.set_default_solution(0);
         }
       }
 
@@ -568,7 +557,36 @@ namespace snemo {
                  icluster != tc_sol.grab_clusters().end(); ++icluster) {
               icluster->grab().make_delayed();
             }
-            clustering_.grab_solutions().push_back(h_tc_sol);
+            clustering_.add_solution(h_tc_sol);
+          }
+        }
+      }
+
+      const bool merge_prompt_delayed_solutions = true;
+      if (merge_prompt_delayed_solutions) {
+        sdm::tracker_clustering_data::solution_col_type & the_solutions = clustering_.grab_solutions();
+        for (sdm::tracker_clustering_data::solution_col_type::iterator
+               isol = the_solutions.begin(); isol != the_solutions.end(); ++isol) {
+          sdm::tracker_clustering_solution & sol_prompt = isol->grab();
+          datatools::properties & aux_prompt = sol_prompt.grab_auxiliaries();
+          if (! aux_prompt.has_flag(sdm::tracker_clustering_data::prompt_key())) continue;
+          for (sdm::tracker_clustering_data::solution_col_type::iterator
+                 jsol = boost::next(isol); jsol != the_solutions.end(); ++jsol) {
+            sdm::tracker_clustering_solution & sol_delayed = jsol->grab();
+            datatools::properties & aux_delayed = sol_delayed.grab_auxiliaries();
+            if (! aux_delayed.has_flag(sdm::tracker_clustering_data::delayed_key())) continue;
+            aux_prompt.unset_flag(sdm::tracker_clustering_data::prompt_key());
+            // aux_delayed.unset_flag(sdm::tracker_clustering_data::delayed_key());
+            sdm::tracker_clustering_solution::copy_one_solution_in_one(sol_delayed, sol_prompt);
+          }
+        }
+        // Delete all delayed solutions
+        for (sdm::tracker_clustering_data::solution_col_type::iterator
+               isol = the_solutions.begin(); isol != the_solutions.end();/*++isol*/) {
+          if (isol->get().get_auxiliaries().has_flag(sdm::tracker_clustering_data::delayed_key())) {
+            isol = the_solutions.erase(isol);
+          } else {
+            ++isol;
           }
         }
       }
