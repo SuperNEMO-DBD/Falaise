@@ -912,7 +912,12 @@ namespace snemo {
             // Add subitem:
             std::ostringstream label_cluster;
             label_cluster << "Cluster #" << a_cluster.get_cluster_id() << " "
-                          << "(" << a_cluster.get_hits().size() << " hits)";
+                          << "(" << a_cluster.get_hits().size() << " hits) ";
+            if (a_cluster.is_prompt()) {
+              label_cluster << "- prompt";
+            } else {
+              label_cluster << "- delayed";
+            }
 
             TGListTreeItem * item_cluster
               = _tracks_list_box_->AddItem(item_solution,
