@@ -258,55 +258,34 @@ namespace snemo {
         return;
       }
 
-      // Process all solutions : selection is done inside the loop
-      const snemo::datamodel::tracker_trajectory_data::solution_col_type & solutions
-        = tracker_trajectory_data_.get_solutions();
-      for (snemo::datamodel::tracker_trajectory_data::solution_col_type::const_iterator
-             isol = solutions.begin(); isol != solutions.end(); ++isol) {
-        const snemo::datamodel::tracker_trajectory_solution & a_solution = isol->get();
+      const snemo::datamodel::tracker_trajectory_solution & a_solution
+        = tracker_trajectory_data_.get_default_solution();
+      const snemo::datamodel::tracker_trajectory_solution::trajectory_col_type & trajectories
+        = a_solution.get_trajectories();
+      for (snemo::datamodel::tracker_trajectory_solution::trajectory_col_type::const_iterator
+             itrajectory = trajectories.begin();
+           itrajectory != trajectories.end(); ++itrajectory) {
+        const snemo::datamodel::tracker_trajectory & a_trajectory = itrajectory->get();
 
-        bool process_current_solution = false;
-        // Check if we are looking for a delayed trajectory
-        if (a_solution.has_clustering_solution()) {
-          const datatools::properties & aux
-            = a_solution.get_clustering_solution().get_auxiliaries();
-          if (aux.has_flag(snemo::datamodel::tracker_clustering_data::delayed_key())) {
-            process_current_solution = true;
-          }
-        }
-        // If not delayed, only process default solution
-        if (&a_solution == &(tracker_trajectory_data_.get_default_solution())) {
-          process_current_solution = true;
-        }
-        if (!process_current_solution) continue;
+        // Look into properties to find the default
+        // trajectory. Here, default means the one with the best
+        // chi2. This flag is set by the 'fitting' module.
+        if (! a_trajectory.get_auxiliaries().has_flag("default")) continue;
 
-        const snemo::datamodel::tracker_trajectory_solution::trajectory_col_type & trajectories
-          = a_solution.get_trajectories();
-        for (snemo::datamodel::tracker_trajectory_solution::trajectory_col_type::const_iterator
-               itrajectory = trajectories.begin();
-             itrajectory != trajectories.end(); ++itrajectory) {
-          const snemo::datamodel::tracker_trajectory & a_trajectory = itrajectory->get();
+        // Add a new particle_track
+        snemo::datamodel::particle_track::handle_type hPT(new snemo::datamodel::particle_track);
+        hPT.grab().set_trajectory_handle(*itrajectory);
+        hPT.grab().set_track_id(particle_track_data_.get_number_of_particles());
+        particle_track_data_.add_particle(hPT);
 
-          // Look into properties to find the default
-          // trajectory. Here, default means the one with the best
-          // chi2. This flag is set by the 'fitting' module.
-          if (!a_trajectory.get_auxiliaries().has_flag("default")) continue;
+        // Compute particle charge
+        if (_CCD_) _CCD_->process(a_trajectory, hPT.grab());
 
-          // Add a new particle_track
-          snemo::datamodel::particle_track::handle_type hPT(new snemo::datamodel::particle_track);
-          hPT.grab().set_trajectory_handle(*itrajectory);
-          hPT.grab().set_track_id(particle_track_data_.get_number_of_particles());
-          particle_track_data_.add_particle(hPT);
+        // Determine track vertices
+        if (_VED_) _VED_->process(a_trajectory, hPT.grab());
 
-          // Compute particle charge
-          if (_CCD_) _CCD_->process(a_trajectory, hPT.grab());
-
-          // Determine track vertices
-          if (_VED_) _VED_->process(a_trajectory, hPT.grab());
-
-          // Associate vertices to calorimeter hits
-          if (_CAD_) _CAD_->process(calibrated_data_.calibrated_calorimeter_hits(), hPT.grab());
-        }
+        // Associate vertices to calorimeter hits
+        if (_CAD_) _CAD_->process(calibrated_data_.calibrated_calorimeter_hits(), hPT.grab());
       }
 
       // Grab non associated calorimeters :
