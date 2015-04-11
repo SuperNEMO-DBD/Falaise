@@ -216,7 +216,9 @@ namespace CAT{
       if( !is_fast ){
 	phi_limit = std::max(phi_limit, 90.);
 	theta_limit = std::max(theta_limit, 180.);
-        std::clog << appname_ << " cells are slow, reset phi_limit " << phi_limit << " theta_limit " << theta_limit << std::endl;
+        if( print_level() > mybhep::VERBOSE ){
+          std::clog << appname_ << " cells are slow, reset phi_limit " << phi_limit << " theta_limit " << theta_limit << std::endl;
+        }
       }
 
       if( print_level() > mybhep::VERBOSE ){
@@ -688,15 +690,15 @@ namespace CAT{
 
 	  use_theta_kink = !(ca_.unknown_vertical() || cb_.unknown_vertical() || cc_.unknown_vertical());
 	  if( !use_theta_kink ) ndof --;
-	  
+
 	  chi2 = newt1.chi2(newt2, use_theta_kink, &chi2_just_phi);
-	  
+
 	  // also useul to check just the phi value (adding the theta information reduces the strength of the phi test)
 	  prob_just_phi = probof(chi2_just_phi,1);
-	  
+
 	  if( shall_include_separation )
 	    chi2 += square(local_separation.value()/local_separation.error());
-	  
+
 	  if( !is_rejected ){
 	    chi2s_.push_back(chi2);
 	    local_prob = probof(chi2, ndof);
@@ -718,7 +720,7 @@ namespace CAT{
         }
 
       }
-      
+
 
       if( print_level() > mybhep::VERBOSE ){
 	std::clog << the_joints.size() << " joints have been produced for triplet and " << the_rejected_joints.size() << " rejected,  now keeping 1 or 2 " << std::endl;
