@@ -124,14 +124,14 @@ namespace snemo {
       return;
     }
 
-    void geiger_tp::set_gg_tp_active_bit(int & bit_index_)
+    void geiger_tp::set_gg_tp_active_bit(const int & bit_index_)
     {
-      DT_THROW_IF(is_locked(), std::logic_error, "Tracker row mode (TRM) can't be set, geiger TP is locked ! ");  
+      DT_THROW_IF(is_locked(), std::logic_error, "Tracker row mode (TRM) can't be set, geiger TP is locked ! ");
       _gg_tp_.set(bit_index_, 1);
-
+      
       return;
     }
-   
+     
     void geiger_tp::get_thws_bitset(boost::dynamic_bitset<> & gg_thws_word_) const
     {
       extract_bitset_from_is_length(THWS_BEGIN, THWS_SIZE, gg_thws_word_);
