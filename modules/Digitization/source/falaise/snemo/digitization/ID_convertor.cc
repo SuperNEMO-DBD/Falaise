@@ -259,8 +259,6 @@ namespace snemo {
 	  bit_index_ = mapping::GEIGER_LAYER_SIZE * shift + layer_index;
 	}
 
-      std::clog << "DEBUG bit index = " << bit_index_ << std::endl;
-
       return;
     }
 

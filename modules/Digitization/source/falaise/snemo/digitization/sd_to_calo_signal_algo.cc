@@ -101,10 +101,11 @@ namespace snemo {
 
 	// Loop on Calo step hits:
 	const size_t number_of_hits = sd_.get_number_of_step_hits("calo");
+
+	int32_t calo_signal_hit_id = 0;
 	for (size_t ihit = 0; ihit < number_of_hits; ihit++)
 	  {
 	    const mctools::base_step_hit & calo_hit = sd_.get_step_hit("calo", ihit);
-	    calo_hit.tree_dump(std::clog);
 	    
 	    double signal_time = calo_hit.get_time_stop();
 	    double energy_deposit = calo_hit.get_energy_deposit();
@@ -116,7 +117,10 @@ namespace snemo {
 	    calo_signal.set_hit_id(calo_hit.get_hit_id());
 	    calo_signal.set_geom_id(calo_gid);
 	    calo_signal.set_signal_time(signal_time);
-	    calo_signal.set_energy(energy_deposit);
+	    calo_signal.set_amplitude(energy_deposit); // Wanring : Energy has to be converted into amplitude ! 
+	    calo_signal.grab_auxiliaries().store("hit.id", calo_signal_hit_id);
+	    calo_signal.tree_dump(std::clog, "***** Calo Signal : *****", "INFO : ");
+	    calo_signal_hit_id++;
 	  }	  
 	
       }

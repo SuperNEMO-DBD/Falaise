@@ -34,7 +34,7 @@ namespace snemo {
     }
 
     void geiger_signal::set_header(int32_t geiger_signal_hit_id_,
-		    const geomtools::geom_id & electronic_id_)
+				   const geomtools::geom_id & electronic_id_)
     {
       set_hit_id(geiger_signal_hit_id_);
       set_geom_id(electronic_id_);

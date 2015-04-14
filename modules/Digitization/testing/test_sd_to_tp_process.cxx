@@ -19,6 +19,7 @@
 #include <falaise/falaise.h>
 
 // This project :
+#include <snemo/digitization/clock_utils.h>
 #include <snemo/digitization/sd_to_geiger_signal_algo.h>
 #include <snemo/digitization/sd_to_calo_signal_algo.h>
 #include <snemo/digitization/signal_to_calo_tp_algo.h>
@@ -32,6 +33,9 @@ int main( int /* argc_ */, char ** /* argv_ */ )
   try {
     std::clog << "Test program for class 'snemo::digitization::sd_to_calo_tp_algo' !" << std::endl;
     int32_t seed = 314159;
+    mygsl::rng random_generator;
+    random_generator.initialize(seed);
+
     std::string manager_config_file;
     
     manager_config_file = "~/data/my_falaise/config/snemo/demonstrator/geometry/3.0/manager.conf";
@@ -68,17 +72,15 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     my_convertor.set_module_number(0);
     my_convertor.initialize();
 
-    mygsl::rng random_generator;
-    random_generator.initialize(seed);
-    int32_t clocktick_reference_25 = random_generator.uniform_int(25);
-    double clocktick_shift_25 = random_generator.flat(0.0, 25.0 * CLHEP::nanosecond);
-
     snemo::digitization::sd_to_geiger_signal_algo sd_2_geiger_signal(my_manager);
     sd_2_geiger_signal.initialize();
 
     snemo::digitization::sd_to_calo_signal_algo sd_2_calo_signal(my_manager);
     sd_2_calo_signal.initialize();
 
+    snemo::digitization::clock_utils my_clock_manager;
+    my_clock_manager.initialize();
+    
     int psd_count = 0;
     while (!reader.is_terminated())
       {
@@ -88,17 +90,22 @@ int main( int /* argc_ */, char ** /* argv_ */ )
 	  {
 	    // Access to the "SD" bank with a stored `mctools::simulated_data' :
 	    const mctools::simulated_data & SD = ER.get<mctools::simulated_data>(SD_bank_label);
+	    
+	    my_clock_manager.compute_clockticks_ref(random_generator);
+	    int32_t clocktick_25_reference  = my_clock_manager.get_clocktick_25_ref();
+	    double  clocktick_25_shift      = my_clock_manager.get_clocktick_25_shift();
+	    int32_t clocktick_800_reference = my_clock_manager.get_clocktick_800_ref();
+	    double  clocktick_800_shift     = my_clock_manager.get_clocktick_800_shift();
 
-	    int32_t clocktick_reference_25 = random_generator.uniform_int(25);
-	    double clocktick_shift_25 = random_generator.flat(0.0, 25.0 * CLHEP::nanosecond);
+	    snemo::digitization::signal_to_calo_tp_algo signal_2_calo_tp;
+	    signal_2_calo_tp.initialize(my_convertor);
+	    signal_2_calo_tp.set_clocktick_reference(clocktick_25_reference);
+	    signal_2_calo_tp.set_clocktick_shift(clocktick_25_shift);
 
 	    snemo::digitization::signal_to_geiger_tp_algo signal_2_geiger_tp;
 	    signal_2_geiger_tp.initialize(my_convertor);
-	    signal_2_geiger_tp.set_clocktick_reference(clocktick_reference_25 * 32);
-	    signal_2_geiger_tp.set_clocktick_shift(clocktick_shift_25);	    
-
-	    snemo::digitization::signal_to_calo_tp_algo signal_2_calo_tp;
-	    signal_2_calo_tp.initialize(clocktick_reference_25, clocktick_shift_25, my_convertor);
+	    signal_2_geiger_tp.set_clocktick_reference(clocktick_800_reference);
+	    signal_2_geiger_tp.set_clocktick_shift(clocktick_800_shift);	    
 
 	    snemo::digitization::signal_data signal_data;
 	    if( SD.has_step_hits("gg"))
@@ -126,6 +133,10 @@ int main( int /* argc_ */, char ** /* argv_ */ )
 		my_calo_tp_data.tree_dump(std::clog, "Calorimeter TP(s) data : ", "INFO : ");
 	      }
 
+	    std::clog << "DEBUG : clock25ref    = " << clocktick_25_reference << std::endl; 
+	    std::clog << "DEBUG : clock25shift  = " << clocktick_25_shift << std::endl; 
+	    std::clog << "DEBUG : clock800ref   = " << clocktick_800_reference << std::endl; 
+	    std::clog << "DEBUG : clock800shift = " << clocktick_800_shift << std::endl;
 	  }     
 	// CF README.RST pour display graphique avec loader de manager.conf
 	// -> /home/guillaume/data/Bayeux/Bayeux-trunk/source/bxmctools/examples/ex00

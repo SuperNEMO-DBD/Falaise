@@ -2,6 +2,9 @@
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
+// This project :
+#include <snemo/digitization/clock_utils.h>
+
 // Ourselves:
 #include <snemo/digitization/signal_to_calo_tp_algo.h>
 
@@ -13,7 +16,8 @@ namespace snemo {
     {
       _initialized_ = false;
       _ID_convertor_ = 0;
-      _clocktick_ref_ = -1;
+      _clocktick_ref_ = clock_utils::INVALID_CLOCKTICK;
+      datatools::invalidate(_clocktick_shift_);
       return;
     }
 
@@ -26,16 +30,10 @@ namespace snemo {
       return;
     }
 
-    void signal_to_calo_tp_algo::initialize(int32_t & clocktick_ref_,
-					    double
- & clocktick_shift_,
-					    const ID_convertor & my_ID_convertor_)
+    void signal_to_calo_tp_algo::initialize(const ID_convertor & my_ID_convertor_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "SD to calo tp algorithm is already initialized ! ");
-      _clocktick_ref_ = clocktick_ref_;
-      _clocktick_shift_ = clocktick_shift_;
-      _ID_convertor_ = & my_ID_convertor_;
-      
+      _ID_convertor_ = & my_ID_convertor_;  
       _initialized_ = true;
       return;
     }
@@ -50,21 +48,22 @@ namespace snemo {
       DT_THROW_IF(!is_initialized(), std::logic_error, "SD to calo tp algorithm is not initialized, it can't be reset ! ");
       _initialized_ = false;
       _ID_convertor_ = 0;
-      _clocktick_ref_ = -1;
+      _clocktick_ref_ = clock_utils::INVALID_CLOCKTICK;
+      datatools::invalidate(_clocktick_shift_);
       return;
     }
 
-    // void signal_to_calo_tp_algo::set_clocktick_reference(int32_t clocktick_ref_)
-    // { 
-    //   _clocktick_ref_ = clocktick_ref_;     
-    //   return;
-    // }
+    void signal_to_calo_tp_algo::set_clocktick_reference(int32_t clocktick_ref_)
+    { 
+      _clocktick_ref_ = clocktick_ref_;     
+      return;
+    }
 			
-    // void signal_to_calo_tp_algo::set_clocktick_shift(int32_t clocktick_shift_)
-    // {
-    //   _clocktick_shift_ = clocktick_shift_;
-    //   return;
-    // }
+    void signal_to_calo_tp_algo::set_clocktick_shift(double clocktick_shift_)
+    {
+      _clocktick_shift_ = clocktick_shift_;
+      return;
+    }
 
     int signal_to_calo_tp_algo::process(const signal_data & signal_data_,
 					calo_tp_data & my_calo_tp_data_)

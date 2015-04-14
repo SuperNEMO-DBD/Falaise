@@ -20,7 +20,7 @@ namespace snemo {
     calo_signal::calo_signal()
     {
       _locked_ = false;
-      datatools::invalidate(_energy_);
+      datatools::invalidate(_amplitude_);
       return;
     }
 
@@ -42,15 +42,15 @@ namespace snemo {
       return;
     }
    
-    double calo_signal::get_energy() const
+    double calo_signal::get_amplitude() const
     {
-      return _energy_;
+      return _amplitude_;
     }
     
-    void calo_signal::set_energy(const double & energy_)
+    void calo_signal::set_amplitude(const double & amplitude_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Calo signal is locked ! ");
-      _energy_ = energy_;
+      _amplitude_ = amplitude_;
       return;
     }
 
@@ -97,7 +97,7 @@ namespace snemo {
       base_hit::tree_dump (out_, title_, indent_, true);
 
       out_ << indent_ << datatools::i_tree_dumpable::tag
-           << "Energy =  : " << _energy_ * CLHEP::megaelectronvolt << " MeV " << std::endl;
+           << "Amplitude =  : " << _amplitude_ * CLHEP::megaelectronvolt << " MeV " << std::endl;
 
       return;
     }

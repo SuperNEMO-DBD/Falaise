@@ -37,9 +37,7 @@ namespace snemo {
       virtual ~signal_to_calo_tp_algo();
       
       /// Initializing
-      void initialize(int32_t & clocktick_ref_,
-											double & clocktick_shift_,
-											const ID_convertor & my_ID_convertor_);
+      void initialize(const ID_convertor & my_ID_convertor_);
 
       /// Check if the algorithm is initialized 
       bool is_initialized() const;
@@ -47,11 +45,11 @@ namespace snemo {
       /// Reset the object
       void reset(); 
 			
-			// /// Set the clocktick reference for the algorithm
-			// void set_clocktick_reference(int32_t clocktick_ref_);
+		  /// Set the clocktick reference for the algorithm
+			void set_clocktick_reference(int32_t clocktick_ref_);
 			
-			// /// Set the clocktick shift
-			// void set_clocktick_shift(int32_t clocktick_shift_);
+		  /// Set the clocktick shift
+			void set_clocktick_shift(double clocktick_shift_);
 
       /// Process to fill a calo tp data object from simulated data
       int process(const signal_data & signal_data_,
@@ -73,8 +71,8 @@ namespace snemo {
       bool _active_xwall_; //!< X-wall activation flag
       bool _active_gveto_; //!< Gamma-veto activation flag
 
-			int32_t _clocktick_ref_; //!< Clocktick reference of the algorithm
-			int32_t _clocktick_shift_; //!< Clocktick shift between [0:25]
+			int32_t _clocktick_ref_;   //!< Clocktick reference of the algorithm
+			double  _clocktick_shift_; //!< Clocktick shift between [0:25]
 			const ID_convertor * _ID_convertor_; //!< Convert geometric ID into electronic ID
     };
 

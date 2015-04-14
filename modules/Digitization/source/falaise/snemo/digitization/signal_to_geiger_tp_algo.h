@@ -40,6 +40,7 @@ namespace snemo {
      
 				const geiger_signal * signal_ref;
 				geomtools::geom_id    feb_id;
+				datatools::properties auxiliaries;
 				int32_t               clocktick_800;
 				double                shift_800;
 				int                   bit_index;
@@ -68,7 +69,7 @@ namespace snemo {
       void set_clocktick_reference(int32_t clocktick_ref_);
 			
       /// Set the clocktick shift
-      void set_clocktick_shift(int32_t clocktick_shift_);
+      void set_clocktick_shift(double clocktick_shift_);
 			
       /// Process to fill a geiger tp data object from simulated data
       int process(const signal_data & signal_data_,
@@ -93,9 +94,9 @@ namespace snemo {
 
     private :
       
-      bool _initialized_; //!< Initialization flag
-      int32_t _clocktick_ref_; //!< Clocktick reference of the algorithm
-      int32_t _clocktick_shift_; //!< Clocktick shift between [0:25]
+      bool    _initialized_;     //!< Initialization flag
+      int32_t _clocktick_ref_;   //!< Clocktick reference of the algorithm
+      double  _clocktick_shift_; //!< Clocktick shift between [0:800]
       const ID_convertor * _ID_convertor_; //!< Convert geometric ID into electronic ID
 			unsigned int _active_bits_counter_[TP_SIZE];
     };

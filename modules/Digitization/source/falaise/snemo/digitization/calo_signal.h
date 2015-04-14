@@ -38,10 +38,10 @@ namespace snemo {
       void set_signal_time(const double & signal_time_);
 
       /// Return the const energy
-      double get_energy() const;
+      double get_amplitude() const;
      
       // Set the energy
-      void set_energy(const double & energy_);
+      void set_amplitude(const double & energy_);
 
       /// Check the lock status
       bool is_locked() const;
@@ -73,7 +73,7 @@ namespace snemo {
 
       bool _locked_; //!< Calorimeter signal lock flag
 			double _signal_time_;
-      double _energy_; //!< Energy 
+      double _amplitude_; //!< Amplitude 
       
       // DATATOOLS_SERIALIZATION_DECLARATION();
       

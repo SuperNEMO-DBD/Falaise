@@ -151,7 +151,8 @@ namespace snemo {
 	    gg_signal.set_header(geiger_signal_hit_id,
 				 geiger_gid);
 	    gg_signal.set_data(anode_time);
-	    gg_signal.tree_dump(std::clog, "***** Geiger Signal : *****", "INFO : ");
+	    gg_signal.grab_auxiliaries().store("hit.id", geiger_signal_hit_id);
+	    // gg_signal.tree_dump(std::clog, "***** Geiger Signal : *****", "INFO : ");
 	    geiger_signal_hit_id++;
 	  }	  
 	

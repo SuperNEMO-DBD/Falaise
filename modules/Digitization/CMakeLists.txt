@@ -61,7 +61,8 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
   )
 
 # - Sources:
-list(APPEND FalaiseDigitizationPlugin_SOURCES  
+list(APPEND FalaiseDigitizationPlugin_SOURCES 
+  source/falaise/snemo/digitization/clock_utils.cc
   source/falaise/snemo/digitization/ID_convertor.cc
 
   source/falaise/snemo/digitization/calo_signal.cc
