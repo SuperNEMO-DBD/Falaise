@@ -409,31 +409,40 @@ namespace snemo {
           hide_option(SHOW_TRACKER_TRAJECTORIES);
         }
 
-        // Disable entry (even hide) without data bank
-        if (!server_.get_event().has(io::SD_LABEL)) {
+        disable_option(DUMP_INTO_WINDOW);
+
+        if (! server_.is_initialized()) {
           disable_option(SHOW_MC_VERTEX);
           disable_option(SHOW_MC_HITS);
           disable_option(SHOW_MC_TRACKS);
-        }
-
-        if (!server_.get_event().has(io::CD_LABEL)) {
           disable_option(SHOW_CALIBRATED_HITS);
           disable_option(SHOW_CALIBRATED_INFO);
-        }
-
-        if (!server_.get_event().has(io::TCD_LABEL)) {
           disable_option(SHOW_TRACKER_CLUSTERED_HITS);
-        }
-
-        if (!server_.get_event().has(io::TTD_LABEL)) {
-          disable_option(SHOW_TRACKER_TRAJECTORIES);
-        }
-
-        if (!server_.get_event().has(io::PTD_LABEL)) {
           disable_option(SHOW_PARTICLE_TRACKS);
-        }
+        } else {
+          if (!server_.get_event().has(io::SD_LABEL)) {
+            disable_option(SHOW_MC_VERTEX);
+            disable_option(SHOW_MC_HITS);
+            disable_option(SHOW_MC_TRACKS);
+          }
 
-        disable_option(DUMP_INTO_WINDOW);
+          if (!server_.get_event().has(io::CD_LABEL)) {
+            disable_option(SHOW_CALIBRATED_HITS);
+            disable_option(SHOW_CALIBRATED_INFO);
+          }
+
+          if (!server_.get_event().has(io::TCD_LABEL)) {
+            disable_option(SHOW_TRACKER_CLUSTERED_HITS);
+          }
+
+          if (!server_.get_event().has(io::TTD_LABEL)) {
+            disable_option(SHOW_TRACKER_TRAJECTORIES);
+          }
+
+          if (!server_.get_event().has(io::PTD_LABEL)) {
+            disable_option(SHOW_PARTICLE_TRACKS);
+          }
+        }
         return;
       }
 
