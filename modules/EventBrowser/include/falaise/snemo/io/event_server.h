@@ -178,9 +178,9 @@ namespace snemo {
 
         /// Smart printing
         void tree_dump(std::ostream      & out_    = std::clog,
-                        const std::string & title_  = "",
-                        const std::string & indent_ = "",
-                        bool inherit_               = false) const;
+                       const std::string & title_  = "",
+                       const std::string & indent_ = "",
+                       bool inherit_               = false) const;
 
         /// Default dump
         void dump() const;
