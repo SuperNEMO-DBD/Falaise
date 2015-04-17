@@ -94,7 +94,7 @@ namespace snemo {
 
     void geiger_ctw::set_100_bits_in_ctw_word(unsigned int block_index_, const std::bitset<100> & my_bitset_)
     {
-      DT_THROW_IF(block_index_ > 19, std::logic_error, "Block index out of range (should be [0;19])  ! ");
+      DT_THROW_IF(block_index_ > mapping::MAX_NUMBER_OF_FEB_BY_CRATE, std::logic_error, "Block index out of range (should be [0;19])  ! ");
       
       for (int i = 0; i < my_bitset_.size(); i++)
 	{
@@ -170,7 +170,7 @@ namespace snemo {
            << "CTW ("<< _gg_ctw_.size() << " bits) : " << std::endl;
 
       std::bitset<100> my_bitset;
-       for (int i = 0; i < 20; i++)
+      for (int i = 0; i < mapping::MAX_NUMBER_OF_FEB_BY_CRATE; i++)
 	 {
 	   get_100_bits_in_ctw_word(i, my_bitset);
 	   out_ << indent_ << datatools::i_tree_dumpable::inherit_tag (inherit_)

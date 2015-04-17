@@ -45,9 +45,6 @@ namespace snemo {
       /// Return the position of the 100 bitset word in the 2000 bitset word
       unsigned int board_to_index_mapping(uint32_t board_id_);
 
-      // /// Set the clocktick for one ctw
-      // void set_ctw_clocktick(int32_t a_clocktick_, geiger_ctw & a_geiger_ctw_);
-
       /// General proces to fill a ctw data object from a list of geiger tp
       void process(const geiger_tp_data & tp_data_,  geiger_ctw_data & ctw_data_);
 

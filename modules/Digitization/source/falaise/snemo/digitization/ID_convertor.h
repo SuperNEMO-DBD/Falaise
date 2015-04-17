@@ -18,7 +18,7 @@
 // - Bayeux/datatools :
 #include <bayeux/datatools/logger.h>
 
-// Ourselves:
+// This project :
 #include <snemo/digitization/mapping.h>
 
 namespace snemo {

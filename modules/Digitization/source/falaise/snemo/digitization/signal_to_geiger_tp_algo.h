@@ -21,6 +21,7 @@
 #include <snemo/digitization/geiger_tp_data.h>
 #include <snemo/digitization/signal_data.h>
 #include <snemo/digitization/ID_convertor.h>
+#include <snemo/digitization/mapping.h>
 
 namespace snemo {
   
@@ -49,7 +50,7 @@ namespace snemo {
 			typedef std::vector<signal_to_tp_working_data> working_data_collection_type;
 			
 			static const unsigned int TP_SIZE = 55;
-			
+
       /// Default constructor
       signal_to_geiger_tp_algo();
 
@@ -70,26 +71,32 @@ namespace snemo {
 			
       /// Set the clocktick shift
       void set_clocktick_shift(double clocktick_shift_);
-			
+
+			/// Add a geiger tp from a working data
+			void add_geiger_tp(const signal_to_tp_working_data & my_wd_data_, int32_t signal_clocktick_, int32_t hit_id_, geiger_tp_data & my_geiger_tp_data_);
+
+			/// Update a geiger tp
+			void update_gg_tp(const signal_to_tp_working_data & my_wd_data_, geiger_tp & my_geiger_tp_);
+
       /// Process to fill a geiger tp data object from simulated data
-      int process(const signal_data & signal_data_,
+      void process(const signal_data & signal_data_,
 									geiger_tp_data & my_geiger_tp_data_);
 
     protected: 
 
 			/// Prepare the working data collection (sort by clocktick)
-			int _prepare_working_data(const signal_data & signal_data_,
+			void _prepare_working_data(const signal_data & signal_data_,
 															 working_data_collection_type & wd_collection_);
 
 			/// Sort working data by clocktick
 			void _sort_working_data(working_data_collection_type & wd_collection_);
 
 			/// Create geiger tp from working data collection
-			int _geiger_tp_process(const working_data_collection_type & wd_collection_,
+			void _geiger_tp_process(const working_data_collection_type & wd_collection_,
 														geiger_tp_data & my_geiger_tp_data_);
 
       ///  Process to fill a geiger tp data object from signal data
-      int _process(const signal_data & signal_data_,
+      void _process(const signal_data & signal_data_,
 									 geiger_tp_data & my_geiger_tp_data_);
 
     private :
@@ -98,7 +105,7 @@ namespace snemo {
       int32_t _clocktick_ref_;   //!< Clocktick reference of the algorithm
       double  _clocktick_shift_; //!< Clocktick shift between [0:800]
       const ID_convertor * _ID_convertor_; //!< Convert geometric ID into electronic ID
-			unsigned int _active_bits_counter_[TP_SIZE];
+			bool _activated_bits_[TP_SIZE];
     };
 
   } // end of namespace digitization

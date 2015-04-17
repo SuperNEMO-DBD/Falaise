@@ -31,7 +31,7 @@ int main( int /* argc_ */, char ** /* argv_ */ )
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
   try {
-    std::clog << "Test program for class 'snemo::digitization::sd_to_calo_tp_algo' !" << std::endl;
+    std::clog << "Test program for class 'snemo::digitization::sd_to_tp_process' !" << std::endl;
     int32_t seed = 314159;
     mygsl::rng random_generator;
     random_generator.initialize(seed);
@@ -72,12 +72,6 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     my_convertor.set_module_number(0);
     my_convertor.initialize();
 
-    snemo::digitization::sd_to_geiger_signal_algo sd_2_geiger_signal(my_manager);
-    sd_2_geiger_signal.initialize();
-
-    snemo::digitization::sd_to_calo_signal_algo sd_2_calo_signal(my_manager);
-    sd_2_calo_signal.initialize();
-
     snemo::digitization::clock_utils my_clock_manager;
     my_clock_manager.initialize();
     
@@ -91,6 +85,12 @@ int main( int /* argc_ */, char ** /* argv_ */ )
 	    // Access to the "SD" bank with a stored `mctools::simulated_data' :
 	    const mctools::simulated_data & SD = ER.get<mctools::simulated_data>(SD_bank_label);
 	    
+	    snemo::digitization::sd_to_geiger_signal_algo sd_2_geiger_signal(my_manager);
+	    sd_2_geiger_signal.initialize();
+
+	    snemo::digitization::sd_to_calo_signal_algo sd_2_calo_signal(my_manager);
+	    sd_2_calo_signal.initialize();
+
 	    my_clock_manager.compute_clockticks_ref(random_generator);
 	    int32_t clocktick_25_reference  = my_clock_manager.get_clocktick_25_ref();
 	    double  clocktick_25_shift      = my_clock_manager.get_clocktick_25_shift();

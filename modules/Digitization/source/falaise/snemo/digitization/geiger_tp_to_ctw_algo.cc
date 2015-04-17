@@ -53,23 +53,13 @@ namespace snemo {
       return board_id_;   
     }    
 
-    // void geiger_tp_to_ctw_algo::set_ctw_clocktick(int32_t a_clocktick_, geiger_ctw & a_geiger_ctw_)
-    // {
-    //   if (!a_geiger_ctw_.has_clocktick_800ns())
-    // 	{
-    // 	  a_geiger_ctw_.set_clocktick_800ns(a_clocktick_);
-    // 	}
-      
-    //   DT_THROW_IF (a_geiger_ctw_.get_clocktick_800ns() !=  a_clocktick_, std::logic_error, "Unmatching Geiger TP clocktick 800 ns ! ");
-    //   return;
-    // }
-
     void geiger_tp_to_ctw_algo::_fill_a_geiger_ctw(const geiger_tp & my_geiger_tp_, geiger_ctw & a_geiger_ctw_)
     {  
       a_geiger_ctw_.set_header(my_geiger_tp_.get_hit_id(),
 			       my_geiger_tp_.get_geom_id(),
 			       my_geiger_tp_.get_clocktick_800ns());
       unsigned int block_index = my_geiger_tp_.get_geom_id().get(mapping::BOARD_INDEX);
+      std::clog << "DEBUG : block index = " << block_index << std::endl;
       a_geiger_ctw_.set_100_bits_in_ctw_word(block_index, my_geiger_tp_.get_gg_bitset());
       return;    
     }
@@ -96,7 +86,6 @@ namespace snemo {
       	      geiger_tp_data_.get_list_of_gg_tp_per_clocktick_per_crate(i, j, geiger_tp_list_per_clocktick_per_crate);
       	      if(!geiger_tp_list_per_clocktick_per_crate.empty())
       		{
-		  std::clog << "DEBUG : GEIGER TP TO CTW ALGO AFTER ADD " << std::endl;
       		  geiger_ctw & a_geiger_ctw_ = geiger_ctw_data_.add();
       		  _process_for_a_ctw_for_a_clocktick(geiger_tp_list_per_clocktick_per_crate, a_geiger_ctw_);
       		  a_geiger_ctw_.tree_dump(std::clog, "a_geiger_ctw : ", "INFO : ");

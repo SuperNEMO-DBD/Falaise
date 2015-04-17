@@ -8,6 +8,7 @@
 
 // Ourselves:
 #include <snemo/digitization/signal_to_geiger_tp_algo.h>
+#include <snemo/digitization/geiger_tp_data.h>
 
 namespace snemo {
   
@@ -52,7 +53,11 @@ namespace snemo {
     void signal_to_geiger_tp_algo::initialize(const ID_convertor & my_ID_convertor_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "SD to geiger tp algorithm is already initialized ! ");
-      _ID_convertor_ = & my_ID_convertor_;    
+      _ID_convertor_ = & my_ID_convertor_;
+      for (int i = 0; i < TP_SIZE; i++)
+	{
+	  _activated_bits_[i] = 0;
+	}
       _initialized_ = true;
       return;
     }
@@ -82,90 +87,89 @@ namespace snemo {
       _clocktick_shift_ = clocktick_shift_;
       return;
     }
-    
-    // void signal_to_geiger_tp_algo::retrieve_gg_bitset(unsigned int active_bits_counter[])
-    // {
-    //   for (int i = 0; i < active_bits_counter
-    //   return ;
-    // } 
 
-    int signal_to_geiger_tp_algo::_prepare_working_data(const signal_data & signal_data_,
-							working_data_collection_type & wd_collection_)
+    void signal_to_geiger_tp_algo::add_geiger_tp(const signal_to_tp_working_data & my_wd_data_, int32_t signal_clocktick_, int32_t hit_id_, geiger_tp_data & my_geiger_tp_data_)
+    {
+      snemo::digitization::geiger_tp & gg_tp = my_geiger_tp_data_.add();
+      gg_tp.set_header(hit_id_,
+		       my_wd_data_.feb_id,
+		       signal_clocktick_,
+		       mapping::THREE_WIRES_TRACKER_MODE,
+		       mapping::SIDE_MODE,
+		       mapping::NUMBER_OF_CONNECTED_ROWS);
+      gg_tp.set_gg_tp_active_bit(my_wd_data_.bit_index);
+      gg_tp.set_auxiliaries(my_wd_data_.auxiliaries);
+      _activated_bits_[my_wd_data_.bit_index] = 1;
+      gg_tp.tree_dump(std::clog, "***** Geiger TP creation : *****", "INFO : "); 
+
+      return;
+    }
+
+    void signal_to_geiger_tp_algo::update_gg_tp(const signal_to_tp_working_data & my_wd_data_, geiger_tp & my_geiger_tp_)
+    {
+      my_geiger_tp_.set_gg_tp_active_bit(my_wd_data_.bit_index);
+      _activated_bits_[my_wd_data_.bit_index] = 1;
+      my_geiger_tp_.tree_dump(std::clog, "***** Geiger TP Update : *****", "INFO : ");
+      return;
+    }
+
+    void signal_to_geiger_tp_algo::_prepare_working_data(const signal_data & signal_data_,
+							 working_data_collection_type & wd_collection_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "SD to geiger TP algorithm is not initialized ! ");
-      int error_code = EXIT_SUCCESS;
-      datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
-      try { 
-	unsigned int seed = 314159;
-	std::srand(seed);
-	size_t number_of_hits = signal_data_.get_geiger_signals().size(); //_number_of_step_hits("gg");
-	std::clog << "DEBUG : BEGINING OF GEIGER PROCESS " << std::endl;
-	std::clog << "**************************************************************" << std::endl;
+      unsigned int seed = 314159;
+      std::srand(seed);
+      size_t number_of_hits = signal_data_.get_geiger_signals().size(); //_number_of_step_hits("gg");
+      std::clog << "DEBUG : BEGINING OF GEIGER PROCESS " << std::endl;
+      std::clog << "**************************************************************" << std::endl;
 
-	double time_reference = signal_data_.get_geiger_signals()[0].get().get_anode_avalanche_time();
+      double time_reference = signal_data_.get_geiger_signals()[0].get().get_anode_avalanche_time();
 	
-	for (int i = 0; i < number_of_hits; i++)
-	  {
-	    if (signal_data_.get_geiger_signals()[i].get().get_anode_avalanche_time() < time_reference)
-	      {
-		time_reference = signal_data_.get_geiger_signals()[i].get().get_anode_avalanche_time();
-	      }
-	  }
-	std::clog << "DEBUG : TIME REFERENCE = " << time_reference << std::endl;
+      for (int i = 0; i < number_of_hits; i++)
+	{
+	  if (signal_data_.get_geiger_signals()[i].get().get_anode_avalanche_time() < time_reference)
+	    {
+	      time_reference = signal_data_.get_geiger_signals()[i].get().get_anode_avalanche_time();
+	    }
+	}
+      std::clog << "DEBUG : TIME REFERENCE = " << time_reference << std::endl;
 	
-	for (int i = 0; i < number_of_hits; i++)
-	  {	 	    
-	    const geiger_signal & a_geiger_signal    = signal_data_.get_geiger_signals()[i].get();
-	    const geomtools::geom_id & geom_id       = a_geiger_signal.get_geom_id();
-	    const datatools::properties & properties = a_geiger_signal.get_auxiliaries();
-	    
-	    geomtools::geom_id electronic_id;
+      for (int i = 0; i < number_of_hits; i++)
+	{	 	    
+	  const geiger_signal & a_geiger_signal    = signal_data_.get_geiger_signals()[i].get();
+	  const geomtools::geom_id & geom_id       = a_geiger_signal.get_geom_id();
+	  const datatools::properties & properties = a_geiger_signal.get_auxiliaries();
+	  geomtools::geom_id electronic_id;
 
-	    int bit_index = 0;
-	    
-	    _ID_convertor_->find_gg_eid_and_tp_bit_index(mapping::THREE_WIRES_TRACKER_MODE,
-							 geom_id,
-							 electronic_id,
-							 bit_index);
-	    bool         existing = false;
-	    unsigned int existing_index = 0;
+	  int bit_index = 0;
+	  _ID_convertor_->find_gg_eid_and_tp_bit_index(mapping::THREE_WIRES_TRACKER_MODE,
+						       geom_id,
+						       electronic_id,
+						       bit_index);
+	  bool         existing = false;
+	  unsigned int existing_index = 0;
+	  double relative_time = a_geiger_signal.get_anode_avalanche_time() + _clocktick_shift_ - time_reference ;
+	  int32_t a_geiger_signal_clocktick = _clocktick_ref_;
 
-	    double relative_time = a_geiger_signal.get_anode_avalanche_time() + _clocktick_shift_ - time_reference ;
-	    int32_t a_geiger_signal_clocktick = _clocktick_ref_;
+	  if (relative_time > 800)
+	    {
+	      a_geiger_signal_clocktick += static_cast<int32_t>(relative_time) / 800;
+	    }
+	  std::clog << "DEBUG : anode time                = " << a_geiger_signal.get_anode_avalanche_time() << " ns" << std::endl;
+	  std::clog << "DEBUG : shift                     = " << _clocktick_shift_ << " ns" <<  std::endl;
+	  std::clog << "DEBUG : anode time + shift        = " << a_geiger_signal.get_anode_avalanche_time() + _clocktick_shift_ << " ns" <<  std::endl;
+	  std::clog << "DEBUG : a_geiger_signal_clocktick = " << a_geiger_signal_clocktick << std::endl;
+	  properties.dump(std::clog);
+	  signal_to_tp_working_data a_working_data;
+	  a_working_data.signal_ref    =& a_geiger_signal;
+	  a_working_data.feb_id        = electronic_id;
+	  a_working_data.auxiliaries   = properties;
+	  a_working_data.clocktick_800 = a_geiger_signal_clocktick;
+	  a_working_data.bit_index     = bit_index;	      
+	  wd_collection_.push_back(a_working_data);	
+	}
 
-	    if (relative_time > 800)
-	      {
-		a_geiger_signal_clocktick += static_cast<int32_t>(relative_time) / 800;
-	      }
-	    std::clog  << "DEBUG : ANODE TIME = " << a_geiger_signal.get_anode_avalanche_time() << ' ' 
-		       << "shift = " << _clocktick_shift_ << ' '
-		       << " anode time + shift = " << a_geiger_signal.get_anode_avalanche_time() + _clocktick_shift_ << ' '
-		       << "a_geiger_signal_clocktick = " << a_geiger_signal_clocktick << std::endl;
-	    properties.dump(std::clog);
-
-	    signal_to_tp_working_data a_working_data;
-	    a_working_data.signal_ref    =& a_geiger_signal;
-	    a_working_data.feb_id        = electronic_id;
-	    a_working_data.auxiliaries   = properties;
-	    a_working_data.clocktick_800 = a_geiger_signal_clocktick;
-	    a_working_data.bit_index     = bit_index;
-	      
-	    wd_collection_.push_back(a_working_data);	
-	  }
-
-      }
-
-      catch (std::exception & error) {
-	DT_LOG_FATAL(logging, error.what());
-	error_code = EXIT_FAILURE;
-      }
-      
-      catch (...) {
-	DT_LOG_FATAL(logging, "Unexpected error!");
-	error_code = EXIT_FAILURE;
-      }
-
-      return error_code;
+      return ;
     }
 
     void signal_to_geiger_tp_algo::_sort_working_data(working_data_collection_type & wd_collection_)
@@ -174,138 +178,84 @@ namespace snemo {
       return;
     }
 
-    int signal_to_geiger_tp_algo::_geiger_tp_process(const working_data_collection_type & wd_collection_,
-						     geiger_tp_data & my_geiger_tp_data_)
+    void signal_to_geiger_tp_algo::_geiger_tp_process(const working_data_collection_type & wd_collection_,
+						      geiger_tp_data & my_geiger_tp_data_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "SD to geiger TP algorithm is not initialized ! ");
-      int error_code = EXIT_SUCCESS;
-      datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
-      try { 
+      int32_t geiger_tp_hit_id = 0;
+      std::clog << "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ Process Begin //////////////////////////////////////" << std::endl;
+      for (int i = 0; i < wd_collection_.size(); i++)
+	{
+	  int32_t signal_clocktick  = wd_collection_[i].clocktick_800;	    
+	  int existing_index = -1;
+	  bool existing_eid  = false;
+	  
+	  for (int j = 0; j < 10; j++)
+	    { 
+	      bool existing_ct = false;
+	      std::vector<datatools::handle<geiger_tp> > my_list_of_gg_tp_per_eid;
 
-	int32_t geiger_tp_hit_id = 0;
+	      my_geiger_tp_data_.get_list_of_gg_tp_per_eid(wd_collection_[i].feb_id , my_list_of_gg_tp_per_eid);
 
-	for (int i = 0; i < wd_collection_.size(); i++)
-	  {	    	    
-	    const bool trigger_mode = 0;
-	    const bool side_mode = 1;
-	    const int  number_of_rows = 7;
-	    bool existing = false;
-	    unsigned int existing_index = 0;
+	      if (my_list_of_gg_tp_per_eid.empty())
+		{
+		  existing_eid = false;
+		  existing_index = -1;
+		}
+	      else
+		{
+		  existing_eid = true;
+		  int iterator_list = 0;
+		  while (existing_ct == false && iterator_list < my_list_of_gg_tp_per_eid.size())
+		    {
+		      if (signal_clocktick == my_list_of_gg_tp_per_eid[iterator_list].get().get_clocktick_800ns())
+			{
+			  existing_ct = true;
+			  existing_index = iterator_list;
+			}
+		      iterator_list++;
+		    } //end of while existing_ct == false
+		}
+	      // Eid is existing, clocktick is existing, gg tp update
+	      if (existing_eid == true && existing_ct == true)
+	      	{
+		  update_gg_tp(wd_collection_[i], my_list_of_gg_tp_per_eid[existing_index].grab());
+	      	}
 
-	    for (int j = 0; j < my_geiger_tp_data_.get_geiger_tps().size(); j++)
-	      {	
-		if (my_geiger_tp_data_.get_geiger_tps()[j].get().get_geom_id() == wd_collection_[i].feb_id
-		    && my_geiger_tp_data_.get_geiger_tps()[j].get().get_clocktick_800ns() == wd_collection_[i].clocktick_800)
-		  {
-		    existing = true;
-		    existing_index = j;
-		  }
-	      } 
-	      
-	    if (existing == false)
-	      {
-		std::clog << "DEBUG : CASE 1 : none existing geiger TP " << std::endl;
+	      // Eid is not existing or clocktick is different, geiger TP first creation
+	      else
+		{
+		  add_geiger_tp(wd_collection_[i],
+				signal_clocktick,
+				geiger_tp_hit_id, 
+				my_geiger_tp_data_);
+		}
+	      std::clog << "DEBUG : existing bool EID = " << existing_eid << " existing bool CT " << existing_ct << std::endl;
+	      signal_clocktick++;
+	    } // end of for (j < 10)
 
-		snemo::digitization::geiger_tp & gg_tp = my_geiger_tp_data_.add();
-		gg_tp.set_header(geiger_tp_hit_id,
-				 wd_collection_[i].feb_id,
-				 wd_collection_[i].clocktick_800,
-				 trigger_mode,
-				 side_mode,
-				 number_of_rows);
-		gg_tp.set_gg_tp_active_bit(wd_collection_[i].bit_index);
-		_active_bits_counter_[wd_collection_[i].bit_index] = 10;
-		gg_tp.set_auxiliaries(wd_collection_[i].auxiliaries);
-		gg_tp.tree_dump(std::clog, "***** Geiger TP first creation : *****", "INFO : ");
-		geiger_tp_hit_id++;
-	      }
-	
-	    else 
-	      {
-		// for (int k = 0; k < TP_SIZE; k++)
-		//   {
-		//     if (_active_bits_counter_[k] != 0)
-		//       {
-	
-		//       }		    
-		//   }
-		
-		
-		
-		std::clog << "DEBUG : CASE 2 : already existing geiger TP " << std::endl;
-		my_geiger_tp_data_.grab_geiger_tps()[existing_index].grab().set_gg_tp_active_bit(wd_collection_[i].bit_index);
-		my_geiger_tp_data_.get_geiger_tps()[existing_index].get().tree_dump(std::clog, "***** Geiger TP Update : *****", "INFO : "); 
-	      } 
-
-	  }
-      }
-
-      catch (std::exception & error) {
-	DT_LOG_FATAL(logging, error.what());
-	error_code = EXIT_FAILURE;
-      }
+	} //end of for (i < wd_size)
       
-      catch (...) {
-	DT_LOG_FATAL(logging, "Unexpected error!");
-	error_code = EXIT_FAILURE;
-      }
-
-      return error_code;
-
+      return;
     }
     
-    
-
-    int signal_to_geiger_tp_algo::process(const signal_data & signal_data_,
-					  geiger_tp_data & my_geiger_tp_data_)
-    {
-      DT_THROW_IF(!is_initialized(), std::logic_error, "SD to geiger TP algorithm is not initialized ! ");
-      int error_code = EXIT_SUCCESS;
-      datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
-      try { 
-
-	_process(signal_data_, my_geiger_tp_data_);
-
-      }
-
-      catch (std::exception & error) {
-	DT_LOG_FATAL(logging, error.what());
-	error_code = EXIT_FAILURE;
-      }
-      
-      catch (...) {
-	DT_LOG_FATAL(logging, "Unexpected error!");
-	error_code = EXIT_FAILURE;
-      }
-
-      return error_code;
-    }
-
-
-    int signal_to_geiger_tp_algo::_process(const signal_data & signal_data_,
+    void signal_to_geiger_tp_algo::process(const signal_data & signal_data_,
 					   geiger_tp_data & my_geiger_tp_data_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "SD to geiger TP algorithm is not initialized ! ");
-      int error_code = EXIT_SUCCESS;
-      datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
-      try { 
-	working_data_collection_type my_wd_collection;
-	_prepare_working_data(signal_data_, my_wd_collection);
-	_sort_working_data(my_wd_collection);
-	_geiger_tp_process(my_wd_collection, my_geiger_tp_data_);
-      }
+      _process(signal_data_, my_geiger_tp_data_);
+      return;
+    }
 
-      catch (std::exception & error) {
-	DT_LOG_FATAL(logging, error.what());
-	error_code = EXIT_FAILURE;
-      }
-      
-      catch (...) {
-	DT_LOG_FATAL(logging, "Unexpected error!");
-	error_code = EXIT_FAILURE;
-      }
-
-      return error_code;
+    void signal_to_geiger_tp_algo::_process(const signal_data & signal_data_,
+					    geiger_tp_data & my_geiger_tp_data_)
+    {
+      DT_THROW_IF(!is_initialized(), std::logic_error, "SD to geiger TP algorithm is not initialized ! ");
+      working_data_collection_type my_wd_collection;
+      _prepare_working_data(signal_data_, my_wd_collection);
+      _sort_working_data(my_wd_collection);
+      _geiger_tp_process(my_wd_collection, my_geiger_tp_data_);
+      return;
     }
 
   } // end of namespace digitization

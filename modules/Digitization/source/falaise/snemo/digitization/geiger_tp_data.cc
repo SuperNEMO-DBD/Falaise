@@ -86,7 +86,6 @@ namespace snemo {
 			
     void geiger_tp_data::get_list_of_gg_tp_per_clocktick(int32_t clocktick_800ns_, geiger_tp_collection_type & my_list_of_gg_tps_per_clocktick_) const
     {
-      DT_THROW_IF(!is_locked(), std::logic_error, " Geiger TP collection is not locked ! ");
       for (int i = 0; i < _geiger_tps_.size(); i++)
       	{
       	  if(_geiger_tps_[i].get().get_clocktick_800ns() == clocktick_800ns_)
@@ -97,18 +96,30 @@ namespace snemo {
       return;
     }
 
-    void geiger_tp_data::get_list_of_gg_tp_per_clocktick_per_crate(int32_t clocktick_800ns_, unsigned int crate_number_, geiger_tp_collection_type & my_list_of_gg_tps_per_clocktick_per_crate_ ) const
+    void geiger_tp_data::get_list_of_gg_tp_per_clocktick_per_crate(int32_t clocktick_800ns_, unsigned int crate_number_, geiger_tp_collection_type & my_list_of_gg_tps_per_clocktick_per_crate_) const
     {
-      DT_THROW_IF(!is_locked(), std::logic_error, " Geiger TP collection is not locked ! ");
       for (int i = 0; i < _geiger_tps_.size(); i++)
-	{
-	  if(_geiger_tps_[i].get().get_clocktick_800ns() == clocktick_800ns_ && _geiger_tps_[i].get().get_geom_id().get(mapping::CRATE_INDEX) == crate_number_)
-	    {
-	      my_list_of_gg_tps_per_clocktick_per_crate_.push_back(_geiger_tps_[i]);
-	    }
-	}
+				{
+					if(_geiger_tps_[i].get().get_clocktick_800ns() == clocktick_800ns_ && _geiger_tps_[i].get().get_geom_id().get(mapping::CRATE_INDEX) == crate_number_)
+						{
+							my_list_of_gg_tps_per_clocktick_per_crate_.push_back(_geiger_tps_[i]);
+						}
+				}
       return;
     }
+
+		void geiger_tp_data::get_list_of_gg_tp_per_eid(const geomtools::geom_id & electronic_id_, geiger_tp_collection_type & my_list_of_gg_tps_per_eid_) const
+		{
+      for (int i = 0; i < _geiger_tps_.size(); i++)
+				{
+					if(_geiger_tps_[i].get().get_geom_id() == electronic_id_)
+						{
+							my_list_of_gg_tps_per_eid_.push_back(_geiger_tps_[i]);
+						}
+
+				}
+			return;
+		}
 
     bool geiger_tp_data::is_locked() const
     {
@@ -188,21 +199,21 @@ namespace snemo {
     void geiger_tp_data::_check()
     {
       for (int i = 0; i < _geiger_tps_.size() - 1; i++)
-	{
-	  const geiger_tp & tp_a = _geiger_tps_[i].get();
+				{
+					const geiger_tp & tp_a = _geiger_tps_[i].get();
 
-	  for (int j = i+1; j < _geiger_tps_.size(); j++)
-	    {
-	      const geiger_tp & tp_b = _geiger_tps_[j].get();
+					for (int j = i+1; j < _geiger_tps_.size(); j++)
+						{
+							const geiger_tp & tp_b = _geiger_tps_[j].get();
 
-	      DT_THROW_IF(tp_a.get_clocktick_800ns() == tp_b.get_clocktick_800ns() 
-			  && tp_a.get_geom_id() == tp_b.get_geom_id(),
-			  std::logic_error,
-			  "Duplicate clocktick=" << tp_a.get_clocktick_800ns() 
-			  << " * " 
-			  << "GID=" << tp_b.get_geom_id());
-	    }
-	}
+							DT_THROW_IF(tp_a.get_clocktick_800ns() == tp_b.get_clocktick_800ns() 
+													&& tp_a.get_geom_id() == tp_b.get_geom_id(),
+													std::logic_error,
+													"Duplicate clocktick=" << tp_a.get_clocktick_800ns() 
+													<< " * " 
+													<< "GID=" << tp_b.get_geom_id());
+						}
+				}
       return;
     }
 

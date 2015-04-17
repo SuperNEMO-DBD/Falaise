@@ -86,7 +86,6 @@ namespace snemo {
 			
     void calo_tp_data::get_list_of_tp_per_clocktick(int32_t clocktick_25ns_, calo_tp_collection_type & my_list_of_tps_per_clocktick_) const
     {
-      DT_THROW_IF(!is_locked(), std::logic_error, " Calorimeter TP collection is not locked ! ");
       for (int i = 0; i < _calo_tps_.size(); i++)
       	{
       	  if(_calo_tps_[i].get().get_clocktick_25ns() == clocktick_25ns_)
@@ -99,7 +98,6 @@ namespace snemo {
 
     void calo_tp_data::get_list_of_tp_per_clocktick_per_crate(int32_t clocktick_25ns_, unsigned int crate_number_, calo_tp_collection_type & my_list_of_tps_per_clocktick_per_crate_ ) const
     {
-      DT_THROW_IF(!is_locked(), std::logic_error, " Calorimeter TP collection is not locked ! ");
       for (int i = 0; i < _calo_tps_.size(); i++)
 				{
 					if(_calo_tps_[i].get().get_clocktick_25ns() == clocktick_25ns_ && _calo_tps_[i].get().get_geom_id().get(mapping::CRATE_INDEX) == crate_number_)

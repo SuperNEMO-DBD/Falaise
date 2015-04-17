@@ -52,7 +52,7 @@ namespace snemo {
 			void set_clocktick_shift(double clocktick_shift_);
 
       /// Process to fill a calo tp data object from simulated data
-      int process(const signal_data & signal_data_,
+			void process(const signal_data & signal_data_,
 									calo_tp_data & my_calo_tp_data_);
 
     protected:
@@ -61,7 +61,7 @@ namespace snemo {
 			// 																					calo_tp_data & my_calo_tp_data_);
 
 			///  Process to fill a calo tp data object from simulated data
-			int _process(const signal_data & signal_data_,
+			void _process(const signal_data & signal_data_,
 									 calo_tp_data & my_calo_tp_data_);
 
     private :

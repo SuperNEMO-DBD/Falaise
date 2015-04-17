@@ -13,6 +13,8 @@
 #include <boost/cstdint.hpp>
 // - Bayeux/datatools :
 #include <bayeux/datatools/handle.h>
+// - Bayeux/geomtools:
+#include <bayeux/geomtools/geom_id.h>
 
 // This project :
 #include <snemo/digitization/geiger_tp.h>
@@ -58,6 +60,9 @@ namespace snemo {
 			
 			/// Get a list of geiger trigger primitive which are in the same clocktick and in the same crate
 			void get_list_of_gg_tp_per_clocktick_per_crate(int32_t clocktick_800ns_, unsigned int crate_number_, geiger_tp_collection_type & my_list_of_gg_tps_per_clocktick_per_crate_ ) const;
+
+			/// Get a list of geiger trigger primitive which are in the same electronic ID
+			void get_list_of_gg_tp_per_eid(const geomtools::geom_id & electronic_id_, geiger_tp_collection_type & my_list_of_gg_tps_per_eid_) const;
 
 			/// Check the lock status
 			bool is_locked() const;

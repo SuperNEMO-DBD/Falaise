@@ -40,7 +40,7 @@ namespace snemo {
 			static const int32_t INVALID_CLOCKTICK = -1;
 
       /// Maximum number of channels by control board (CB)
-      static const unsigned int MAX_NUMBER_OF_CHANNELS = 20;
+      static const unsigned int MAX_NUMBER_OF_FEB = 19;
 
       /// Default constructor
       geiger_ctw();
@@ -104,7 +104,7 @@ namespace snemo {
 
       bool _locked_; //!< CTW lock flag
       int32_t _clocktick_800ns_; //!< The timestamp of the trigger primitive in main clock units (40 MHz)
-      std::bitset<2000> _gg_ctw_; //!< The crate trigger word
+      std::bitset<1900> _gg_ctw_; //!< The crate trigger word
 
       DATATOOLS_SERIALIZATION_DECLARATION();
 
