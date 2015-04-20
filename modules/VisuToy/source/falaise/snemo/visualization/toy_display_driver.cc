@@ -23,6 +23,7 @@
 // - Bayeux/geomtools:
 #include <geomtools/manager.h>
 #include <geomtools/box.h>
+#include <geomtools/rectangle.h>
 #include <geomtools/gnuplot_draw.h>
 #include <geomtools/gnuplot_i.h>
 #include <geomtools/color.h>
@@ -857,15 +858,13 @@ namespace snemo {
             if (count == 0) {
               out_ << "# 'SD.scin_hit' @ index " << index << ": " << std::endl;
             }
-            if (shape.has_user_draw()) {
-              void * user_draw_void_function = shape.get_user_draw();
-              geomtools::gnuplot_draw::draw_user_function_type user_draw_function
-                = reinterpret_cast<geomtools::gnuplot_draw::draw_user_function_type>(user_draw_void_function);
-              (*user_draw_function)(out_,
-                                    world_plcmt.get_translation(),
-                                    world_plcmt.get_rotation(),
-                                    shape,
-                                    0);
+            if (shape.has_wires_drawer()) {
+              const geomtools::i_wires_3d_rendering & a_drawer = shape.get_wires_drawer();
+              geomtools::wires_type wires;
+              a_drawer.generate_wires(wires,
+                                      world_plcmt.get_translation(),
+                                      world_plcmt.get_rotation());
+              geomtools::save_wires(out_, wires);
               out_ << "# test 1 " << std::endl;
               //std::cerr << "********* DEVEL: " << "user_draw_void_function for shape at = " << sb_gid << std::endl;
             } else {
@@ -1320,10 +1319,11 @@ namespace snemo {
                   geomtools::vector_3d pos = drift_cell_world_plcmt.get_translation();
                   pos.setZ(CTH.get_z());
                   const double rmax = 22. * CLHEP::mm;
+                  geomtools::rectangle rect(2*rmax, 2*rmax);
                   geomtools::gnuplot_draw::draw_rectangle(out_,
                                                           pos,
                                                           drift_cell_world_plcmt.get_rotation(),
-                                                          2 * rmax, 2 * rmax);
+                                                          rect);
                 }
                 ++hit_count;
               }
@@ -1380,15 +1380,13 @@ namespace snemo {
               if (hit_count == 0) {
                 out_ << "# '" << hit_category << "' hits @ index " << index << ": " << std::endl;
               }
-              if (scin_block_shape.has_user_draw()) {
-                void * user_draw_void_function = scin_block_shape.get_user_draw();
-                geomtools::gnuplot_draw::draw_user_function_type user_draw_function
-                  = reinterpret_cast<geomtools::gnuplot_draw::draw_user_function_type>(user_draw_void_function);
-                (*user_draw_function)(out_,
-                                      scin_block_world_plcmt.get_translation(),
-                                      scin_block_world_plcmt.get_rotation(),
-                                      scin_block_shape,
-                                      0);
+              if (scin_block_shape.has_wires_drawer()) {
+                const geomtools::i_wires_3d_rendering & a_drawer = scin_block_shape.get_wires_drawer();
+                geomtools::wires_type wires;
+                a_drawer.generate_wires(wires,
+                                        scin_block_world_plcmt.get_translation(),
+                                        scin_block_world_plcmt.get_rotation());
+                geomtools::save_wires(out_, wires);
               } else {
                 // DT_LOG_WARNING(logging_priority, "Cannot draw calorimeter block @ GID = '"
                 //                 <<  scin_block_gid << "' !");
@@ -1398,15 +1396,13 @@ namespace snemo {
                 const geomtools::placement & scin_block_world_plcmt2 = scin_block_ginfo2->get_world_placement();
                 const geomtools::logical_volume & scin_block_log2 = scin_block_ginfo2->get_logical();
                 const geomtools::i_shape_3d & scin_block_shape2 = scin_block_log2.get_shape();
-                if (scin_block_shape2.has_user_draw()) {
-                  void * user_draw_void_function2 = scin_block_shape2.get_user_draw();
-                  geomtools::gnuplot_draw::draw_user_function_type user_draw_function2
-                    = reinterpret_cast<geomtools::gnuplot_draw::draw_user_function_type>(user_draw_void_function2);
-                  (*user_draw_function2)(out_,
-                                         scin_block_world_plcmt2.get_translation(),
-                                         scin_block_world_plcmt2.get_rotation(),
-                                         scin_block_shape2,
-                                         0);
+                if (scin_block_shape2.has_wires_drawer()) {
+                  const geomtools::i_wires_3d_rendering & a_drawer = scin_block_shape2.get_wires_drawer();
+                  geomtools::wires_type wires;
+                  a_drawer.generate_wires(wires,
+                                          scin_block_world_plcmt2.get_translation(),
+                                          scin_block_world_plcmt2.get_rotation());
+                  geomtools::save_wires(out_, wires);
                 } else {
                   geomtools::gnuplot_draw::draw(out_, scin_block_world_plcmt2, scin_block_shape2);
                 }
@@ -1450,15 +1446,13 @@ namespace snemo {
               if (hit_count == 0) {
                 out_ << "# '" << hit_category << "' hits @ index " << index << ": " << std::endl;
               }
-              if (scin_block_shape.has_user_draw()) {
-                void * user_draw_void_function = scin_block_shape.get_user_draw();
-                geomtools::gnuplot_draw::draw_user_function_type user_draw_function
-                  = reinterpret_cast<geomtools::gnuplot_draw::draw_user_function_type>(user_draw_void_function);
-                (*user_draw_function)(out_,
-                                      scin_block_world_plcmt.get_translation(),
-                                      scin_block_world_plcmt.get_rotation(),
-                                      scin_block_shape,
-                                      0);
+              if (scin_block_shape.has_wires_drawer()) {
+                const geomtools::i_wires_3d_rendering & a_drawer = scin_block_shape.get_wires_drawer();
+                geomtools::wires_type wires;
+                a_drawer.generate_wires(wires,
+                                        scin_block_world_plcmt.get_translation(),
+                                        scin_block_world_plcmt.get_rotation());
+                geomtools::save_wires(out_, wires);
               } else {
                 // DT_LOG_WARNING(logging_priority, "Cannot draw muon trigger block @ GID = '"
                 //                 <<  scin_block_gid << "' !");
