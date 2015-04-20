@@ -79,15 +79,23 @@ namespace snemo {
                               bool inherit_               = false) const;
 
       /// \brief  Special Gnuplot wires 3D rendering
-      struct wires_drawer : public geomtools::i_wires_drawer
+      struct wires_drawer : public geomtools::i_wires_drawer<calo_tapered_scin_box_model>
       {
+        //! \brief Rendering options
+        enum wires_rendering_option_type {
+          WR_CTSBM_NO_SCIN_BLOCK = (WR_BASE_LAST << 1), //!< Do not render the scintillator block faces
+          WR_CTSBM_NO_EXTRUSION  = (WR_BASE_LAST << 2)  //!< Do not render the extrusion
+        };
+
+        //! Constructor
         wires_drawer(const calo_tapered_scin_box_model & model_);
+
+        //! Destructor
         virtual ~wires_drawer();
-        virtual void generate_wires(std::ostream & out_,
-                                    const geomtools::vector_3d & position_,
-                                    const geomtools::rotation_3d & rotation_);
-      private:
-        const calo_tapered_scin_box_model * _model_; //!< Handle to the model
+
+        //! Generate a list of polylines representing the contour of the shape (for display clients)
+        virtual void generate_wires_self(geomtools::wires_type & wires_,
+                                         uint32_t options_ = 0) const;
       };
 
     protected:
