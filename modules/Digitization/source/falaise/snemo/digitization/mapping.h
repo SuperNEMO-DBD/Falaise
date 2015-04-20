@@ -39,6 +39,12 @@ namespace snemo {
 			static const int32_t CONTROL_BOARD_ID = 10;
 			static const int32_t TRIGGER_BOARD_ID = 20;
 			
+			/// Row limit to take accountthere is no FEB ID 10 for every crate
+			static const int32_t BOARD_ID_SHIFT_CRATE_0_LIMIT = 19;
+			static const int32_t BOARD_ID_SHIFT_CRATE_2_LIMIT = 94;
+			/// Shift to take account there is no FEB ID 10 (place of the Control Board)
+			static const int32_t NO_FEB_10_SHIFT              = 2;
+
 			static const int32_t THREE_WIRES_CRATE_0_LIMIT = 37;
 			static const int32_t THREE_WIRES_CRATE_1_LIMIT = 74;
 			static const int32_t THREE_WIRES_LONELY_ROW    = 56;

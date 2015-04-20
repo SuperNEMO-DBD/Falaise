@@ -134,22 +134,49 @@ namespace snemo {
 	rack_id = mapping::GEIGER_RACK_ID;
 
 	unsigned int row_index = _gg_locator_->extract_row(geom_id_);
-	unsigned int shift = 0;	
+	unsigned int shift = 0;
+	unsigned int row_shift = 0;
 	
-	if(row_index <= mapping::THREE_WIRES_CRATE_0_LIMIT){
-	  crate_id = 0;
-	}
+	if (row_index <= mapping::BOARD_ID_SHIFT_CRATE_0_LIMIT)
+	  {
+	    crate_id = 0;
+	  }
+	
+	if (row_index > mapping::BOARD_ID_SHIFT_CRATE_0_LIMIT && row_index <= mapping::THREE_WIRES_CRATE_0_LIMIT)
+	  {
+	    crate_id = 0;
+	    row_shift = mapping::NO_FEB_10_SHIFT;
+	  }
 
-	if(row_index > mapping::THREE_WIRES_CRATE_0_LIMIT && row_index  <= mapping::THREE_WIRES_CRATE_1_LIMIT ){
-	  crate_id = 1; shift = 38;
-	  if(row_index > mapping::THREE_WIRES_LONELY_ROW) shift -= 1; // in order to take into account the lonely row at the middle
-	}
+	if (row_index > mapping::THREE_WIRES_CRATE_0_LIMIT && row_index  <= mapping::THREE_WIRES_LONELY_ROW )
+	  {
+	    crate_id = 1; 
+	    shift = 38;
+	  }
 
-	if(row_index > mapping::THREE_WIRES_CRATE_1_LIMIT){
-	  crate_id = 2;shift = 75;
-	}
+	if (row_index > mapping::THREE_WIRES_LONELY_ROW && row_index  <= mapping::THREE_WIRES_CRATE_1_LIMIT )
+	  {
+	    crate_id = 1; 
+	    shift = 38;
+	    shift -= 1; // in order to take into account the lonely row at the middle
+	    row_shift = mapping::NO_FEB_10_SHIFT;
+	  }
 
-	board_id = (row_index-shift) / 2;
+	if (row_index > mapping::THREE_WIRES_CRATE_1_LIMIT && row_index <= mapping::BOARD_ID_SHIFT_CRATE_2_LIMIT)
+	  {
+	  crate_id = 2;
+	  shift = 75;	  
+	  }
+
+	if (row_index > mapping::BOARD_ID_SHIFT_CRATE_2_LIMIT)
+	  {
+	  crate_id = 2;
+	  shift = 75;
+	  row_shift = mapping::NO_FEB_10_SHIFT;
+	  }
+
+	board_id = (row_index + row_shift -shift) / 2;
+
       }
 
       if( geom_id_.get_type() == 1302 ){ // MCALO -- Side [0;1] Column [0;19] (Row[0;12] )type --> 1301
