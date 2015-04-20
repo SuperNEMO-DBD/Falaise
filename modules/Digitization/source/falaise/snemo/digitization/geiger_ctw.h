@@ -70,7 +70,13 @@ namespace snemo {
 
 			/// Set the corresponding 100 bitset from tp for a block index in the ctw bitset
 			void set_100_bits_in_ctw_word(unsigned int block_index_, const std::bitset<100> & my_bitset_);
+			
+			void set_full_hardware_status(const std::bitset <5> & gg_tp_hardware_status_);
 
+			void set_full_crate_id(const std::bitset<2> & gg_tp_crate_id_);
+
+			void set_full_board_id();
+	
       /// Check the lock status
       bool is_locked() const;
 

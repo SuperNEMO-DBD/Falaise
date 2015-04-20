@@ -38,6 +38,7 @@ namespace snemo {
       set_hit_id(hit_id_);
       set_geom_id(electronic_id_);
       set_clocktick_800ns(clocktick_800ns_);
+      set_full_board_id();
       _store |= STORE_CLOCKTICK_800NS;
       return;
     }
@@ -108,6 +109,56 @@ namespace snemo {
 	    }	  
 	}
       _store |= STORE_GG_CTW;
+      return;
+    }
+
+    void geiger_ctw::set_full_hardware_status(const std::bitset<5> & gg_tp_hardware_status_)
+    {
+      for (int i = 55; i <= 1900; i += 100)
+	{
+	  for (int j = 0; j < gg_tp_hardware_status_.size(); j ++)
+	    {
+	      if (gg_tp_hardware_status_.test(j) == true)
+		{
+		  _gg_ctw_.set(i + j, 1);
+		}
+	    }
+	}
+      return;
+    }
+
+    void geiger_ctw::set_full_crate_id(const std::bitset<2> & gg_tp_crate_id_)
+    {
+      for (int i = 65; i <= 1900; i += 100)
+	{
+	  for (int j = 0; j < gg_tp_crate_id_.size(); j ++)
+	    {
+	      if (gg_tp_crate_id_.test(j) == true)
+		{
+		  _gg_ctw_.set(i + j, 1);
+		}
+	    }
+	}
+      return;
+    }
+    
+    void geiger_ctw::set_full_board_id()
+    {
+      unsigned long board_id = 0;
+      for (int i = 60; i <= 1900; i += 100)
+	{
+	  if (board_id == 10) board_id += 1;
+	  std::bitset<5> board_id_bitset (board_id);
+	  for (int j = 0; j < board_id_bitset.size(); j++)
+	    {
+	      if (board_id_bitset.test(j) == true)
+		{
+		  _gg_ctw_.set(i + j, 1);
+		}
+	    }
+	  board_id ++;
+	}
+      
       return;
     }
 

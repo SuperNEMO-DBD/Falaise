@@ -59,8 +59,13 @@ namespace snemo {
 			       my_geiger_tp_.get_geom_id(),
 			       my_geiger_tp_.get_clocktick_800ns());
       unsigned int block_index = my_geiger_tp_.get_geom_id().get(mapping::BOARD_INDEX);
-      std::clog << "DEBUG : block index = " << block_index << std::endl;
+      std::bitset<5> hardware_status = 0x0;
+      std::bitset<2> crate_id = 0x0;
+      my_geiger_tp_.get_hardware_status_bitset(hardware_status);
+      my_geiger_tp_.get_crate_id(crate_id);
       a_geiger_ctw_.set_100_bits_in_ctw_word(block_index, my_geiger_tp_.get_gg_bitset());
+      a_geiger_ctw_.set_full_hardware_status(hardware_status);
+      a_geiger_ctw_.set_full_crate_id(crate_id);
       return;    
     }
     

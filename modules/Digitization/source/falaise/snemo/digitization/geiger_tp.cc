@@ -131,10 +131,22 @@ namespace snemo {
       
       return;
     }
-     
-    void geiger_tp::get_thws_bitset(boost::dynamic_bitset<> & gg_thws_word_) const
-    {
-      extract_bitset_from_is_length(THWS_BEGIN, THWS_SIZE, gg_thws_word_);
+    
+    // void geiger_tp::get_thws_bitset(boost::dynamic_bitset<> & gg_thws_word_) const
+    // {
+    //   extract_bitset_from_is_length(THWS_BEGIN, THWS_SIZE, gg_thws_word_);
+    //   return;
+    // }
+
+    void geiger_tp::get_hardware_status_bitset(std::bitset<THWS_SIZE> & gg_hardware_status_) const
+    {   
+	for (int i = 0; i < THWS_SIZE; i++)
+	  {
+	    if (_gg_tp_.test(i + THWS_BEGIN) == 1)
+	      {
+		gg_hardware_status_.set(i, 1);
+	      }
+	  }
       return;
     }
 
@@ -234,11 +246,16 @@ namespace snemo {
       return;
     }
 
-    unsigned long geiger_tp::get_crate_id() const
+    void geiger_tp::get_crate_id(std::bitset<CRATE_ID_WORD_SIZE> & crate_id_) const
     {
-      boost::dynamic_bitset<> crate_id_word;
-      extract_bitset_from_is_length(CRATE_ID_BIT0, CRATE_ID_WORD_SIZE, crate_id_word);
-      return crate_id_word.to_ulong();
+      for (int i = CRATE_ID_BIT0; i <= CRATE_ID_BIT1; i++)
+	{
+	  if(_gg_tp_.test(i) == true)
+	    {
+	      crate_id_.set(i - CRATE_ID_BIT0, 1);
+	    }
+	}
+      return;
     }
 
     void geiger_tp::set_crate_id(unsigned long crate_id_)

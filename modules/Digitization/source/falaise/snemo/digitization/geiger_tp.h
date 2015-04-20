@@ -117,8 +117,11 @@ namespace snemo {
 			void set_gg_tp_active_bit(const int & bit_index_);
 
 			/// Return the const reference to the geiger Tracker HardWare Status (THWS) bitset
-			void get_thws_bitset(boost::dynamic_bitset<> & gg_thws_word_) const;
-
+			// void get_thws_bitset(boost::dynamic_bitset<> & gg_thws_word_) const;
+			
+			/// Return the const reference to the geiger Tracker HardWare Status (THWS) bitset
+			void get_hardware_status_bitset(std::bitset<THWS_SIZE> & gg_hardware_status_) const;
+			
 			/// Get the tracker row mode (return the number of connected Geiger rows to the FEB (up to 7 rows))
 			unsigned long get_tracker_row_mode() const;
 			                   
@@ -147,7 +150,7 @@ namespace snemo {
 			void set_board_id(unsigned long board_id_);
 
 			/// Get the crate ID (ID = 0-2)
-			unsigned long get_crate_id() const;
+			void get_crate_id(std::bitset<CRATE_ID_WORD_SIZE> & crate_id_) const;
 
 			/// Set the crate ID (ID = 0-2)
 			void set_crate_id(unsigned long crate_id_);
