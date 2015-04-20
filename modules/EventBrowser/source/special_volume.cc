@@ -58,9 +58,9 @@ namespace snemo {
 
       void special_volume::_construct(const geomtools::i_shape_3d & shape_3d_)
       {
-        _objects_ = utils::root_utilities::gnuplot_to_root_draw(get_placement().get_translation(),
-                                                                get_placement().get_rotation(),
-                                                                shape_3d_);
+        _objects_ = utils::root_utilities::wires_to_root_draw(get_placement().get_translation(),
+                                                              get_placement().get_rotation(),
+                                                              shape_3d_);
         return;
       }
 

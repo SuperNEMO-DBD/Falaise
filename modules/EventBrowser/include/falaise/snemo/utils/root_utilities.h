@@ -31,8 +31,8 @@
  *
  */
 
-#ifndef __root_utilities_h
-#define __root_utilities_h 1
+#ifndef FALAISE_SNEMO_VISUALIZATION_UTILS_ROOT_UTILITIES_H
+#define FALAISE_SNEMO_VISUALIZATION_UTILS_ROOT_UTILITIES_H 1
 
 #include <string>
 
@@ -126,10 +126,10 @@ namespace snemo {
         /// Generate unique geometry model name
         static std::string get_unique_geo_name();
 
-        /// Convert 'gnuplot_user_draw' function into a set of ROOT TPolyLine
-        static TObjArray * gnuplot_to_root_draw(const geomtools::vector_3d   & position_,
-                                                const geomtools::rotation_3d & rotation_,
-                                                const geomtools::i_shape_3d  & shape_);
+        /// Convert 'i_wires_3d_rendering' function into a set of ROOT TPolyLine
+        static TObjArray * wires_to_root_draw(const geomtools::vector_3d   & position_,
+                                              const geomtools::rotation_3d & rotation_,
+                                              const geomtools::i_shape_3d  & shape_);
       };
 
     } // end of namespace utils
@@ -138,7 +138,7 @@ namespace snemo {
 
 } // end of namespace snemo
 
-#endif // __root_utilities_h
+#endif // FALAISE_SNEMO_VISUALIZATION_UTILS_ROOT_UTILITIES_H
 
 // end of root_utilities.h
 /*

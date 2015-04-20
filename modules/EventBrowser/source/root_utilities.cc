@@ -476,44 +476,34 @@ namespace snemo {
         return oss.str();
       }
 
-      TObjArray * root_utilities::gnuplot_to_root_draw(const geomtools::vector_3d   & position_,
-                                                       const geomtools::rotation_3d & rotation_,
-                                                       const geomtools::i_shape_3d  & shape_)
+      TObjArray * root_utilities::wires_to_root_draw(const geomtools::vector_3d   & position_,
+                                                     const geomtools::rotation_3d & rotation_,
+                                                     const geomtools::i_shape_3d  & shape_)
       {
         TObjArray * obj_array = 0;
-
-        if (shape_.has_user_draw()) {
+        if (shape_.has_wires_drawer()) {
           obj_array = new TObjArray(100);
 
-          // Retrieve stream from gnuplot points
-          void * user_draw = shape_.get_user_draw();
-          geomtools::gnuplot_draw::draw_user_function_type user_draw_f
-            = reinterpret_cast<geomtools::gnuplot_draw::draw_user_function_type>(user_draw);
-          std::ostringstream oss;
-          (*user_draw_f) (oss, position_, rotation_, shape_, 0);
+          // Retrieve wires drawer
+          const geomtools::i_wires_3d_rendering & a_drawer = shape_.get_wires_drawer();
+          geomtools::wires_type wires;
+          a_drawer.generate_wires(wires, position_, rotation_);
 
-          // Parse informations and fill ROOT polylines
-          std::istringstream iss1(oss.str());
-          std::string line;
-          size_t iline = 0, ipoint = 0;
-
-          TPolyLine3D * pl = 0;
-          while (getline(iss1, line)) {
-            if (iline == 0 || line.empty()) {
-              pl = new TPolyLine3D;
-              obj_array->Add(pl);
-              ipoint = 0;
-            } else {
-              std::istringstream iss2(line);
-              double x,y,z;
-              iss2 >> x >> y >> z;
-              pl->SetPoint(ipoint++, x, y, z);
+          for (geomtools::wires_type::const_iterator i = wires.begin();
+               i != wires.end(); ++i) {
+            TPolyLine3D * pl3D = new TPolyLine3D;
+            obj_array->Add(pl3D);
+            const geomtools::polyline_type & pl = *i;
+            size_t k = 0;
+            for (geomtools::polyline_type::const_iterator j = pl.begin();
+                 j != pl.end(); ++j) {
+              const geomtools::vector_3d & v3d = *j;
+              pl3D->SetPoint(k++, v3d.x(), v3d.y(), v3d.z());
             }
-            iline++;
           }
         } else {
           DT_LOG_WARNING(view::options_manager::get_instance().get_logging_priority(),
-                         "No 'gnuplot_draw_user' has been defined !");
+                         "No 'i_wires_3d_rendering' has been defined !");
         }
 
         return obj_array;
