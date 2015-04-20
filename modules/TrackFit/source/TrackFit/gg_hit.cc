@@ -308,8 +308,10 @@ namespace TrackFit {
       geomtools::vector_3d pos(the_hit.get_x(),
                                the_hit.get_y(),
                                the_hit.get_z());
-      geomtools::rotation  rot;
-      geomtools::gnuplot_draw::draw_circle(out_, pos, rot, the_hit.get_r() - the_hit.get_sigma_r());
+      geomtools::rotation rot;
+      if (the_hit.get_r() - the_hit.get_sigma_r() > 0.0) {
+        geomtools::gnuplot_draw::draw_circle(out_, pos, rot, the_hit.get_r() - the_hit.get_sigma_r());
+      }
       geomtools::gnuplot_draw::draw_circle(out_, pos, rot, the_hit.get_r() + the_hit.get_sigma_r());
 
     }

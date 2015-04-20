@@ -21,6 +21,7 @@
 #include <geomtools/gnuplot_draw.h>
 #include <geomtools/placement.h>
 #include <geomtools/helix_3d.h>
+#include <geomtools/rectangle.h>
 
 // This project:
 #include <TrackFit/gg_hit.h>
@@ -467,7 +468,8 @@ geomtools::helix_3d generate_helix_geiger_hits (mygsl::rng & random_,
     geomtools::vector_3d pos (xi, yi, zi);
     geomtools::rotation  rot;
     geomtools::gnuplot_draw::draw_circle (ftmp.out (), pos, rot, drift_radius);
-    geomtools::gnuplot_draw::draw_rectangle (ftmp.out (), pos, rot, point_sz, point_sz);
+    geomtools::rectangle rect(point_sz, point_sz);
+    geomtools::gnuplot_draw::draw_rectangle (ftmp.out (), pos, rot, rect);
   }
   h3d.set_angle2 (angle);
 
@@ -484,8 +486,9 @@ geomtools::helix_3d generate_helix_geiger_hits (mygsl::rng & random_,
   double delta_theta = 1. * CLHEP::degree;
   h3d.make_vertex_collection (hpl, delta_theta / CLHEP::radian);
   ftmp.out () << std::endl;
-  geomtools::gnuplot_draw::draw_rectangle (ftmp.out (), h3d.get_center (), rot, point_sz, point_sz);
-  geomtools::gnuplot_draw::draw_polyline (ftmp.out (), pos, rot, hpl, false);
+  geomtools::rectangle rect(point_sz, point_sz);
+  geomtools::gnuplot_draw::draw_rectangle (ftmp.out (), h3d.get_center (), rot, rect);
+  geomtools::gnuplot_draw::basic_draw_polyline (ftmp.out (), hpl);
 
 
   geomtools::vector_3d mid

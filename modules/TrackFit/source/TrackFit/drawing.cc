@@ -10,6 +10,7 @@
 #include <geomtools/clhep.h>
 #include <geomtools/gnuplot_draw.h>
 #include <geomtools/placement.h>
+#include <geomtools/line_3d.h>
 
 namespace TrackFit {
 
@@ -53,16 +54,18 @@ namespace TrackFit {
     p1.set(hit_.get_x(), hit_.get_y(), hit_.get_z() - hit_.get_sigma_z());
     p2.set(hit_.get_x(), hit_.get_y(), hit_.get_z() + hit_.get_sigma_z());
 
-    geomtools::gnuplot_draw::draw_segment(out_,
-                                          p_.get_translation(),
-                                          p_.get_rotation(),
-                                          p1,
-                                          p2);
+    geomtools::line_3d line(p1, p2);
+    geomtools::gnuplot_draw::draw_line(out_,
+                                       p_.get_translation(),
+                                       p_.get_rotation(),
+                                       line);
 
-    geomtools::gnuplot_draw::draw_circle(out_,
-                                         p_.get_translation() + p0,
-                                         p_.get_rotation(),
-                                         hit_.get_r() - hit_.get_sigma_r());
+    if (hit_.get_r() - hit_.get_sigma_r() > 0.0) {
+      geomtools::gnuplot_draw::draw_circle(out_,
+                                           p_.get_translation() + p0,
+                                           p_.get_rotation(),
+                                           hit_.get_r() - hit_.get_sigma_r());
+    }
 
     geomtools::gnuplot_draw::draw_circle(out_,
                                          p_.get_translation() + p0,
@@ -75,7 +78,7 @@ namespace TrackFit {
                      const geomtools::placement & p_,
                      const gg_hits_col & hits_) const
   {
-    for(gg_hits_col::const_iterator i = hits_.begin();
+    for (gg_hits_col::const_iterator i = hits_.begin();
         i != hits_.end();
         i++) {
       const gg_hit & hit = *i;

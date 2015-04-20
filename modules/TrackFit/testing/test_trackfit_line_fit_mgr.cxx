@@ -302,9 +302,7 @@ int main (int argc_, char ** argv_)
     geomtools::vector_3d pos;
     geomtools::rotation  rot;
     ftmp.out() << "# Best track segment: " << std::endl;
-    geomtools::gnuplot_draw::draw_segment(ftmp.out(), pos, rot,
-                                           best_track.get_first(),
-                                           best_track.get_last());
+    geomtools::gnuplot_draw::draw_line(ftmp.out(), pos, rot, best_track);
     ftmp.out() << std::endl << std::endl;
 
     if (draw) {
@@ -434,7 +432,8 @@ geomtools::line_3d generate_aligned_geiger_hits ( mygsl::rng & random_,
     geomtools::vector_3d pos;
     geomtools::rotation  rot;
     if (ftmp_) {
-      geomtools::gnuplot_draw::draw_segment(ftmp_->out(), pos, rot, start, stop);
+      geomtools::line_3d line(start, stop);
+      geomtools::gnuplot_draw::draw_line(ftmp_->out(), pos, rot, line);
       Gnuplot g1("lines");
       std::ostringstream title_oss;
       title_oss << "test_line_fit_mgr";

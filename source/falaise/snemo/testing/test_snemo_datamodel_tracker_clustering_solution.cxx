@@ -16,6 +16,8 @@
 #include <geomtools/gnuplot_draw.h>
 #include <geomtools/gnuplot_i.h>
 #include <geomtools/geom_id.h>
+#include <geomtools/rectangle.h>
+#include <geomtools/line_3d.h>
 
 // This project:
 #include <falaise/snemo/datamodels/tracker_cluster.h>
@@ -66,9 +68,8 @@ void draw_gg_hit(std::ostream & out_,
   hit_segp.setZ(zdrift_err);
   geomtools::vector_3d hit_segm;
   hit_segm.setZ(-zdrift_err);
-  geomtools::gnuplot_draw::draw_segment(out_,
-                                        hit_pos, hit_rot,
-                                        hit_segp, hit_segm);
+  geomtools::line_3d line(hit_segp, hit_segm);
+  geomtools::gnuplot_draw::draw_line(out_, hit_pos, hit_rot, line);
   return;
 }
 
@@ -83,9 +84,8 @@ void draw_gg_cluster_item(std::ostream & out_,
   hit_pos.setZ(hit_pos.x() + zdrift);
   double width = 42 * CLHEP::mm;
   if(enlarged_) width += 2 * CLHEP::mm;
-  geomtools::gnuplot_draw::draw_rectangle(out_,
-                                          hit_pos, hit_rot,
-                                          width, width);
+  geomtools::rectangle rect(width, width);
+  geomtools::gnuplot_draw::draw_rectangle(out_, hit_pos, hit_rot, rect);
   return;
 }
 

@@ -15,17 +15,17 @@
 #include <datatools/ioutils.h>
 #include <datatools/utils.h>
 #include <datatools/logger.h>
+#include <datatools/temporary_files.h>
 // - Bayeux/mygsl:
 #include <mygsl/mean.h>
 // - Bayeux/geomtools:
 #include <geomtools/clhep.h>
 #include <geomtools/utils.h>
 #include <geomtools/helix_3d.h>
-
+#include <geomtools/rectangle.h>
 #include <geomtools/gnuplot_draw.h>
 #include <geomtools/gnuplot_i.h>
 #include <geomtools/gnuplot_drawer.h>
-#include <datatools/temporary_files.h>
 
 // This project:
 #include <TrackFit/fit_utils.h>
@@ -1946,7 +1946,8 @@ namespace TrackFit {
         const geomtools::vector_3d pos(xi, yi, zi);
         geomtools::rotation rot;
         geomtools::gnuplot_draw::draw_circle(ftmp0.out(), pos, rot, ri);
-        geomtools::gnuplot_draw::draw_rectangle(ftmp0.out(), pos, rot, point_sz, point_sz);
+        geomtools::rectangle rect(point_sz, point_sz);
+        geomtools::gnuplot_draw::draw_rectangle(ftmp0.out(), pos, rot, rect);
         //geomtools::gnuplot_draw::draw_circle(ftmp0.out(), pos, rot, 0.1 * CLHEP::mm);
       }
 
@@ -1960,9 +1961,10 @@ namespace TrackFit {
       ftmp0.out() << std::endl;
       ftmp0.out() << std::endl;
       // DRAW GUESSED H1, H2, H3:
-      geomtools::gnuplot_draw::draw_rectangle(ftmp0.out(), H1, rot, point_sz, point_sz);
-      geomtools::gnuplot_draw::draw_rectangle(ftmp0.out(), H2, rot, point_sz, point_sz);
-      geomtools::gnuplot_draw::draw_rectangle(ftmp0.out(), H3, rot, point_sz, point_sz);
+      geomtools::rectangle rect(point_sz, point_sz);
+      geomtools::gnuplot_draw::draw_rectangle(ftmp0.out(), H1, rot, rect);
+      geomtools::gnuplot_draw::draw_rectangle(ftmp0.out(), H2, rot, rect);
+      geomtools::gnuplot_draw::draw_rectangle(ftmp0.out(), H3, rot, rect);
       geomtools::gnuplot_draw::basic_draw_point(ftmp0.out(), H1, true);
       geomtools::gnuplot_draw::basic_draw_point(ftmp0.out(), H3, true);
       geomtools::gnuplot_draw::basic_draw_point(ftmp0.out(), H2, true);
@@ -1977,7 +1979,7 @@ namespace TrackFit {
       ftmp0.out() << std::endl;
       ftmp0.out() << std::endl;
       // DRAW GUESSES RADIUS SEGMENT:
-      geomtools::gnuplot_draw::draw_rectangle(ftmp0.out(), Oh, rot, point_sz, point_sz);
+      geomtools::gnuplot_draw::draw_rectangle(ftmp0.out(), Oh, rot, rect);
       geomtools::gnuplot_draw::basic_draw_point(ftmp0.out(), Oh, true);
       geomtools::gnuplot_draw::basic_draw_point(ftmp0.out(), H3, true);
       ftmp0.out() << std::endl;
@@ -2002,9 +2004,10 @@ namespace TrackFit {
       geomtools::gnuplot_draw::basic_draw_point(ftmp0.out(), O123, true);
       geomtools::gnuplot_draw::basic_draw_point(ftmp0.out(), p3, true);
       ftmp0.out() << std::endl;
-      geomtools::gnuplot_draw::draw_rectangle(ftmp0.out(), O123, rot, point_sz, point_sz);
-      geomtools::gnuplot_draw::draw_rectangle(ftmp0.out(), P13, rot, 2*point_sz, 2*point_sz);
-      geomtools::gnuplot_draw::draw_rectangle(ftmp0.out(), P23, rot, 2*point_sz, 2*point_sz);
+      geomtools::gnuplot_draw::draw_rectangle(ftmp0.out(), O123, rot, rect);
+      geomtools::rectangle rect2(2*point_sz, 2*point_sz);
+      geomtools::gnuplot_draw::draw_rectangle(ftmp0.out(), P13, rot, rect2);
+      geomtools::gnuplot_draw::draw_rectangle(ftmp0.out(), P23, rot, rect2);
       geomtools::gnuplot_draw::basic_draw_point(ftmp0.out(), P13, true);
       geomtools::gnuplot_draw::basic_draw_point(ftmp0.out(), P13 + gw1 * 5 * CLHEP::cm, true);
       ftmp0.out() << std::endl;

@@ -375,9 +375,9 @@ void display_event(const snemo::geometry::gg_locator & ggloc_,
           const geomtools::line_3d & segment = line_pattern.get_segment();
           geomtools::vector_3d dummy_pos(0, 0, 0);
           CC.set_color_code(geomtools::color::COLOR_BLUE);
-          geomtools::gnuplot_draw::draw_segment(tmp_file.out(),
-                                                dummy_pos, identity,
-                                               segment);
+          geomtools::gnuplot_draw::draw_line(tmp_file.out(),
+                                             dummy_pos, identity,
+                                             segment);
 
         } else if (traj_pattern_id == sdm::helix_trajectory_pattern::pattern_id()) {
           const sdm::helix_trajectory_pattern & helix_pattern

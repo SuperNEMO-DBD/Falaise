@@ -20,6 +20,7 @@
 #include <geomtools/clhep.h>
 #include <geomtools/placement.h>
 #include <geomtools/line_3d.h>
+#include <geomtools/rectangle.h>
 #include <geomtools/gnuplot_draw.h>
 #include <geomtools/gnuplot_i.h>
 #include <geomtools/gnuplot_drawer.h>
@@ -1336,8 +1337,9 @@ namespace TrackFit {
       const geomtools::vector_3d Oi(i->get_x(), i->get_y(), i->get_z());
       const geomtools::vector_3d OdOi = Od - Oi;
       if (draw) {
+        geomtools::rectangle rect(point_sz, point_sz);
         geomtools::rotation rot;
-        geomtools::gnuplot_draw::draw_rectangle(f1, Oi, rot, point_sz, point_sz);
+        geomtools::gnuplot_draw::draw_rectangle(f1, Oi, rot, rect);
       }
       const geomtools::vector_2d Oi_2d(i->get_x(), i->get_y());
       const geomtools::vector_2d Od_2d(0.0, sol_.y0);
@@ -1367,14 +1369,15 @@ namespace TrackFit {
       f1 << "# dmax_pos=" << dmax_pos << std::endl;
       geomtools::rotation rot;
       geomtools::vector_3d pos;
-      geomtools::gnuplot_draw::draw_segment(f1, pos, rot, first, last);
+      geomtools::gnuplot_draw::basic_draw_segment(f1, first, last);
       f1 << std::endl;
-      geomtools::gnuplot_draw::draw_rectangle(f1, first, rot, point_sz, point_sz);
-      geomtools::gnuplot_draw::draw_rectangle(f1, last, rot, point_sz, point_sz);
-      geomtools::gnuplot_draw::draw_rectangle(f1, Od, rot, point_sz, point_sz);
+      geomtools::rectangle rect(point_sz, point_sz);
+      geomtools::gnuplot_draw::draw_rectangle(f1, first, rot, rect);
+      geomtools::gnuplot_draw::draw_rectangle(f1, last, rot, rect);
+      geomtools::gnuplot_draw::draw_rectangle(f1, Od, rot, rect);
       f1 << std::endl;
-      geomtools::gnuplot_draw::draw_rectangle(f1, Ofirst, rot, point_sz, point_sz);
-      geomtools::gnuplot_draw::draw_rectangle(f1, Olast, rot, point_sz, point_sz);
+      geomtools::gnuplot_draw::draw_rectangle(f1, Ofirst, rot, rect);
+      geomtools::gnuplot_draw::draw_rectangle(f1, Olast, rot, rect);
     }
     line_.set_first(pl_.child_to_mother(first));
     line_.set_last(pl_.child_to_mother(last));
