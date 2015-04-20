@@ -106,9 +106,9 @@ namespace snemo {
       }
 
       void special_volume::tree_dump(std::ostream      & out_,
-                                      const std::string & title_,
-                                      const std::string & indent_,
-                                      bool inherit_) const
+                                     const std::string & title_,
+                                     const std::string & indent_,
+                                     bool inherit_) const
       {
         std::string indent;
         if(! indent_.empty()) indent = indent_;
