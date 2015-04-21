@@ -2,14 +2,11 @@
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
+// - Bayeux/datatools:
+#include <datatools/exception.h>
+
 // Ourselves
 #include <snemo/digitization/clock_utils.h>
-
-// - Boost:
-#include <boost/cstdint.hpp>
-
-// GSL:
-#include <bayeux/mygsl/rng.h>
 
 namespace snemo {
   

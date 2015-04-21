@@ -1,7 +1,6 @@
 // snemo/digitization/geiger_ctw.h
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
-//
 
 #ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_GEIGER_CTW_H
 #define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_GEIGER_CTW_H
@@ -21,6 +20,7 @@
 
 // This project : 
 #include <snemo/digitization/mapping.h>
+#include <snemo/digitization/geiger_tp_constants.h>
 
 namespace snemo {
   
@@ -35,11 +35,12 @@ namespace snemo {
       enum store_mask_type {
 				STORE_CLOCKTICK_800NS   = datatools::bit_mask::bit04, //!< Serialization mask for the clocktick
 				STORE_GG_CTW            = datatools::bit_mask::bit05  //!< Serialization mask for the TP
-      };	
-      
-			static const int32_t INVALID_CLOCKTICK = -1;
-
-      /// Maximum number of channels by control board (CB)
+      };
+			
+			/// 
+			static const unsigned int CTW_BITSET_FULL_SIZE = 1900;
+			
+      /// Maximum number of FEB by control board (CB)
       static const unsigned int MAX_NUMBER_OF_FEB = 19;
 
       /// Default constructor
@@ -66,16 +67,23 @@ namespace snemo {
       void reset_clocktick_800ns();
 
 			/// Get the corresponding 100 bitset from tp for a block index in the ctw bitset
-			void get_100_bits_in_ctw_word(unsigned int block_index_, std::bitset<100> & my_bitset_) const;
+			void get_100_bits_in_ctw_word(unsigned int block_index_, std::bitset<GEIGER_TP_CONSTANTS_TP_FULL_SIZE> & my_bitset_) const;
 
 			/// Set the corresponding 100 bitset from tp for a block index in the ctw bitset
-			void set_100_bits_in_ctw_word(unsigned int block_index_, const std::bitset<100> & my_bitset_);
+			void set_100_bits_in_ctw_word(unsigned int block_index_, const std::bitset<GEIGER_TP_CONSTANTS_TP_FULL_SIZE> & my_bitset_);
 			
-			void set_full_hardware_status(const std::bitset <5> & gg_tp_hardware_status_);
+			/// Set hardware status for all geiger tp word in the ctw even if there are empty
+			void set_full_hardware_status(const std::bitset<GEIGER_TP_CONSTANTS_HARDWARE_STATUS_SIZE> & gg_tp_hardware_status_);
 
-			void set_full_crate_id(const std::bitset<2> & gg_tp_crate_id_);
+		protected : 
 
-			void set_full_board_id();
+			/// Set full board id for all geiger tp word in the ctw even if there are empty
+			void _set_full_board_id();
+
+		public :
+
+			/// Set crate id for all geiger tp word in the ctw even if there are empty
+			void set_full_crate_id(const std::bitset<GEIGER_TP_CONSTANTS_CRATE_ID_WORD_SIZE> & gg_tp_crate_id_);
 	
       /// Check the lock status
       bool is_locked() const;
@@ -110,7 +118,7 @@ namespace snemo {
 
       bool _locked_; //!< CTW lock flag
       int32_t _clocktick_800ns_; //!< The timestamp of the trigger primitive in main clock units (40 MHz)
-      std::bitset<1900> _gg_ctw_; //!< The crate trigger word
+      std::bitset<CTW_BITSET_FULL_SIZE> _gg_ctw_; //!< The crate trigger word
 
       DATATOOLS_SERIALIZATION_DECLARATION();
 

@@ -45,7 +45,7 @@ namespace snemo {
       /// Return the position of the 100 bitset word in the 2000 bitset word
       unsigned int board_to_index_mapping(uint32_t board_id_);
 
-      /// General proces to fill a ctw data object from a list of geiger tp
+      /// General process to fill a ctw data object from a list of geiger tp
       void process(const geiger_tp_data & tp_data_,  geiger_ctw_data & ctw_data_);
 
     protected :

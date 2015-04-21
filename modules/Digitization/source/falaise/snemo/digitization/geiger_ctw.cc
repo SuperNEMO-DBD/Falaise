@@ -9,6 +9,10 @@
 // - Bayeux/datatools:
 #include <datatools/exception.h>
 
+// This project : 
+#include <snemo/digitization/geiger_tp.h>
+#include <snemo/digitization/clock_utils.h>
+
 namespace snemo {
   
   namespace digitization {
@@ -19,7 +23,7 @@ namespace snemo {
     geiger_ctw::geiger_ctw()
     {
       _locked_ = false;
-      _clocktick_800ns_ = INVALID_CLOCKTICK;
+      _clocktick_800ns_ = clock_utils::INVALID_CLOCKTICK;
       _gg_ctw_ = 0x0;
       return;
     }
@@ -38,7 +42,7 @@ namespace snemo {
       set_hit_id(hit_id_);
       set_geom_id(electronic_id_);
       set_clocktick_800ns(clocktick_800ns_);
-      set_full_board_id();
+      _set_full_board_id();
       _store |= STORE_CLOCKTICK_800NS;
       return;
     }
@@ -51,7 +55,7 @@ namespace snemo {
     void geiger_ctw::set_clocktick_800ns(int32_t value_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Clocktick can't be set, Geiger CTW is locked !) ");
-      if(value_ <= INVALID_CLOCKTICK)
+      if(value_ <= clock_utils::INVALID_CLOCKTICK)
 	{
 	  reset_clocktick_800ns();
 	}
@@ -65,18 +69,18 @@ namespace snemo {
 
     bool geiger_ctw::has_clocktick_800ns() const
     {
-      return _clocktick_800ns_ != INVALID_CLOCKTICK;
+      return _clocktick_800ns_ != clock_utils::INVALID_CLOCKTICK;
     }
 
     void geiger_ctw::reset_clocktick_800ns()
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Clocktick can't be reset, Geiger CTW is locked !) ");
-      _clocktick_800ns_ = INVALID_CLOCKTICK;
+      _clocktick_800ns_ = clock_utils::INVALID_CLOCKTICK;
       _store &= ~STORE_CLOCKTICK_800NS;
       return;
     }
 
-    void geiger_ctw::get_100_bits_in_ctw_word(unsigned int block_index_, std::bitset<100> & my_bitset_) const
+    void geiger_ctw::get_100_bits_in_ctw_word(unsigned int block_index_, std::bitset<GEIGER_TP_CONSTANTS_TP_FULL_SIZE> & my_bitset_) const
     {
       my_bitset_ = 0x0;
       for (int i = 0; i < my_bitset_.size(); i++)
@@ -93,7 +97,7 @@ namespace snemo {
       return;
     }
 
-    void geiger_ctw::set_100_bits_in_ctw_word(unsigned int block_index_, const std::bitset<100> & my_bitset_)
+    void geiger_ctw::set_100_bits_in_ctw_word(unsigned int block_index_, const std::bitset<GEIGER_TP_CONSTANTS_TP_FULL_SIZE> & my_bitset_)
     {
       DT_THROW_IF(block_index_ > mapping::MAX_NUMBER_OF_FEB_BY_CRATE, std::logic_error, "Block index out of range (should be [0;19])  ! ");
       
@@ -112,9 +116,9 @@ namespace snemo {
       return;
     }
 
-    void geiger_ctw::set_full_hardware_status(const std::bitset<5> & gg_tp_hardware_status_)
+    void geiger_ctw::set_full_hardware_status(const std::bitset<GEIGER_TP_CONSTANTS_HARDWARE_STATUS_SIZE> & gg_tp_hardware_status_)
     {
-      for (int i = 55; i <= 1900; i += 100)
+      for (int i = geiger_tp::THWS_BEGIN; i <= CTW_BITSET_FULL_SIZE; i += GEIGER_TP_CONSTANTS_TP_FULL_SIZE)
 	{
 	  for (int j = 0; j < gg_tp_hardware_status_.size(); j ++)
 	    {
@@ -127,28 +131,13 @@ namespace snemo {
       return;
     }
 
-    void geiger_ctw::set_full_crate_id(const std::bitset<2> & gg_tp_crate_id_)
-    {
-      for (int i = 65; i <= 1900; i += 100)
-	{
-	  for (int j = 0; j < gg_tp_crate_id_.size(); j ++)
-	    {
-	      if (gg_tp_crate_id_.test(j) == true)
-		{
-		  _gg_ctw_.set(i + j, 1);
-		}
-	    }
-	}
-      return;
-    }
-    
-    void geiger_ctw::set_full_board_id()
+   void geiger_ctw::_set_full_board_id()
     {
       unsigned long board_id = 0;
-      for (int i = 60; i <= 1900; i += 100)
+      for (int i = geiger_tp::BOARD_ID_BIT0; i <= CTW_BITSET_FULL_SIZE; i += GEIGER_TP_CONSTANTS_TP_FULL_SIZE)
 	{
 	  if (board_id == 10) board_id += 1;
-	  std::bitset<5> board_id_bitset (board_id);
+	  std::bitset<geiger_tp::BOARD_ID_WORD_SIZE> board_id_bitset(board_id);
 	  for (int j = 0; j < board_id_bitset.size(); j++)
 	    {
 	      if (board_id_bitset.test(j) == true)
@@ -159,6 +148,21 @@ namespace snemo {
 	  board_id ++;
 	}
       
+      return;
+    }
+
+    void geiger_ctw::set_full_crate_id(const std::bitset<GEIGER_TP_CONSTANTS_CRATE_ID_WORD_SIZE> & gg_tp_crate_id_)
+    {
+      for (int i = geiger_tp::CRATE_ID_BIT0; i <= CTW_BITSET_FULL_SIZE; i += GEIGER_TP_CONSTANTS_TP_FULL_SIZE)
+	{
+	  for (int j = 0; j < gg_tp_crate_id_.size(); j ++)
+	    {
+	      if (gg_tp_crate_id_.test(j) == true)
+		{
+		  _gg_ctw_.set(i + j, 1);
+		}
+	    }
+	}
       return;
     }
 
@@ -192,7 +196,7 @@ namespace snemo {
 
     bool geiger_ctw::is_valid() const
     {
-      return _clocktick_800ns_ != INVALID_CLOCKTICK;
+      return _clocktick_800ns_ != clock_utils::INVALID_CLOCKTICK;
     }
 
     void geiger_ctw::reset()

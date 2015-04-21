@@ -5,10 +5,6 @@
 // Ourselves:
 #include <snemo/digitization/geiger_tp_to_ctw_algo.h>
 
-// Third party:
-// - Bayeux/datatools:
-#include <datatools/exception.h>
-
 namespace snemo {
   
   namespace digitization {

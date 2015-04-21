@@ -7,12 +7,12 @@
 
 // - Bayeux/datatools:
 #include <datatools/clhep_units.h>
+
 // - Bayeux/GSL:
 #include <mygsl/rng.h>
 
 // - Boost:
 #include <boost/cstdint.hpp>
-
 
 namespace snemo {
   

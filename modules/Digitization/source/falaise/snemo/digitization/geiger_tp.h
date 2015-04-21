@@ -72,7 +72,8 @@ namespace snemo {
 				CRATE_ID_WORD_SIZE = 2,
 				SPARE_WORD_SIZE    = 3,
 				TTID_SIZE          = 15,
-				CONTROL_SIZE       = 15
+				CONTROL_SIZE       = 15,
+				FULL_SIZE          = 100
 			};
       
 			/// Default constructor
