@@ -16,7 +16,8 @@ namespace snemo {
       enum tp_electronic_ID_index {
 				RACK_INDEX  = 0,
 				CRATE_INDEX = 1,
-				BOARD_INDEX = 2
+				BOARD_INDEX = 2,
+				CHANNEL_INDEX = 3
       };			
 			
 			static const bool THREE_WIRES_TRACKER_MODE = 0;

@@ -137,6 +137,7 @@ namespace snemo {
       for (int i = geiger_tp::BOARD_ID_BIT0; i <= CTW_BITSET_FULL_SIZE; i += GEIGER_TP_CONSTANTS_TP_FULL_SIZE)
 	{
 	  if (board_id == 10) board_id += 1;
+	  std::clog << "DEBUG : board id = " << board_id << std::endl;
 	  std::bitset<geiger_tp::BOARD_ID_WORD_SIZE> board_id_bitset(board_id);
 	  for (int j = 0; j < board_id_bitset.size(); j++)
 	    {

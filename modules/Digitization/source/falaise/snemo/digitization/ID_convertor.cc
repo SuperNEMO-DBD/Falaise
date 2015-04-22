@@ -21,7 +21,7 @@ namespace snemo {
     ID_convertor::ID_convertor(){
       _logging_ = datatools::logger::PRIO_FATAL;
       _initialized_ = false;
-      _module_number_ = -1;
+      _module_number_ = -1; // Replace to  mapping::INVALID_MODULE_NUMBER
       _geo_manager_ = 0;
     }
     
@@ -104,7 +104,9 @@ namespace snemo {
     
     void ID_convertor::set_geo_manager(const geomtools::manager & mgr_ ){
       DT_LOG_DEBUG(_logging_, "Set geometry manager ");
+      //      std::clog << "DEBUG : Before fill _geo_manager_ in ID convertor " << std::endl;
       _geo_manager_ = & mgr_;
+      //      std::clog << "DEBUG : After fill _geo_manager_ in ID convertor " << std::endl;
     }
 
     void ID_convertor::set_module_number(int module_number_)
@@ -113,8 +115,9 @@ namespace snemo {
       return;
     }
 
-    geomtools::geom_id ID_convertor::convert_GID_to_EID(const geomtools::geom_id & geom_id_) const{
-      DT_LOG_DEBUG(_logging_, "Convert geometry ID to electronic ID ");
+    geomtools::geom_id ID_convertor::convert_GID_to_EID(const geomtools::geom_id & geom_id_) const
+    {
+      //      DT_LOG_DEBUG(_logging_, "Convert geometry ID to electronic ID ");
       DT_THROW_IF(!geom_id_.is_valid (), std::logic_error,
                   "Geom ID to convert is not valid !");
    
@@ -129,10 +132,11 @@ namespace snemo {
       unsigned int rack_id  = 666;
       unsigned int crate_id = 666;
       unsigned int board_id = 666;
-   
+      unsigned int channel_id = 666;
       if( geom_id_.get_type() == 1204 ){ // Drift cell --> Side [0;1] Layer [0;8] Row [0;112]
 	rack_id = mapping::GEIGER_RACK_ID;
-
+	unsigned int side_index = _gg_locator_->extract_side(geom_id_);
+	unsigned int layer_index = _gg_locator_->extract_layer(geom_id_);
 	unsigned int row_index = _gg_locator_->extract_row(geom_id_);
 	unsigned int shift = 0;
 	unsigned int row_shift = 0;
@@ -177,6 +181,23 @@ namespace snemo {
 
 	board_id = (row_index + row_shift -shift) / 2;
 
+	if (row_index < mapping::THREE_WIRES_LONELY_ROW)
+	  {
+	    shift = 2 * side_index + (row_index % 2);
+	    channel_id = mapping::GEIGER_LAYER_SIZE * shift + layer_index;
+	  }
+
+	else if (row_index == mapping::THREE_WIRES_LONELY_ROW)
+	  {
+	    shift = 2 * side_index;
+	    channel_id = mapping::GEIGER_LAYER_SIZE * shift + layer_index;
+	  }
+
+	else if (row_index > mapping::THREE_WIRES_LONELY_ROW)
+	  {
+	    shift = 2 * side_index + (1 - (row_index % 2));
+	    channel_id = mapping::GEIGER_LAYER_SIZE * shift + layer_index;
+	  }
       }
 
       if( geom_id_.get_type() == 1302 ){ // MCALO -- Side [0;1] Column [0;19] (Row[0;12] )type --> 1301
@@ -184,6 +205,7 @@ namespace snemo {
      
 	unsigned int module_index_ = _calo_locator_->extract_module(geom_id_);
 	unsigned int column_index_ = _calo_locator_->extract_column(geom_id_);
+	unsigned int row_index_ = _calo_locator_->extract_row(geom_id_);
 	unsigned int side_index_ = _calo_locator_->extract_side(geom_id_);
      
 	if(side_index_ == 0)crate_id = 0;
@@ -191,8 +213,12 @@ namespace snemo {
      
 	if (column_index_ < 10)board_id = column_index_;
 	else if (column_index_ >= 10)board_id = column_index_+1;
+	
+	channel_id = row_index_;
       }
    
+
+      
       if( geom_id_.get_type() == 1232 ){//XCALO  -- Side [0;1 ] Wall [0;1] Column [0;1] (Row[0;15])  type --> 1231
 	rack_id = mapping::CALO_RACK_ID;
 	crate_id = mapping::XWALL_GVETO_CRATE_ID;
@@ -240,7 +266,7 @@ namespace snemo {
 	}
       }
    
-      electronic_id.set_address(rack_id,crate_id,board_id);   
+      electronic_id.set_address(rack_id,crate_id,board_id,channel_id);   
   
       return  electronic_id;
     }
@@ -282,7 +308,7 @@ namespace snemo {
 
       else if (row_index > mapping::THREE_WIRES_LONELY_ROW)
 	{
-	  shift = 2 * side_index + (1 -row_index % 2);
+	  shift = 2 * side_index + (1 - (row_index % 2));
 	  bit_index_ = mapping::GEIGER_LAYER_SIZE * shift + layer_index;
 	}
 

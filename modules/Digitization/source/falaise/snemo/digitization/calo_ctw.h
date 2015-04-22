@@ -74,8 +74,8 @@ namespace snemo {
 				CONTROL_BIT3 = 17
 			};
 
-			/// Maximum number of channels by control board (CB)
-			static const unsigned int MAX_NUMBER_OF_CHANNELS = 20;
+			/// Maximum number of FEB by control board (CB)
+			static const unsigned int MAX_NUMBER_OF_FEB = 20;
 
       /// Default constructor
       calo_ctw();

@@ -9,6 +9,9 @@
 // - Bayeux/datatools:
 #include <datatools/exception.h>
 
+// This project :
+#include <snemo/digitization/clock_utils.h>
+
 namespace snemo {
   
   namespace digitization {
@@ -19,7 +22,7 @@ namespace snemo {
     calo_ctw::calo_ctw()
     {
       _locked_ = false;
-      _clocktick_25ns_ = -1;
+      _clocktick_25ns_ = clock_utils::INVALID_CLOCKTICK;
       _ctw_ = 0x0;
       _wall_ = INVALID_WALL;
       return;
@@ -98,7 +101,7 @@ namespace snemo {
     void calo_ctw::set_clocktick_25ns(int32_t value_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Clocktick can't be set, calorimeter crate TW is locked !) ");
-      if(value_ <= -1)
+      if(value_ <= clock_utils::INVALID_CLOCKTICK)
 	{
 	  reset_clocktick_25ns();
 	}
@@ -113,7 +116,7 @@ namespace snemo {
     void calo_ctw::reset_clocktick_25ns()
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Clocktick can't be reset, calorimeter crate TW is locked !) ");
-      _clocktick_25ns_ = -1;
+      _clocktick_25ns_ = clock_utils::INVALID_CLOCKTICK;
       _store &= ~STORE_CLOCKTICK_25NS;
       return;
     }
@@ -121,7 +124,7 @@ namespace snemo {
     void calo_ctw::set_htm_pc(unsigned int multiplicity_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, "HTM bits can't be set, calorimeter crate TW is locked ! ");
-      DT_THROW_IF(multiplicity_ > MAX_NUMBER_OF_CHANNELS, std::logic_error, "Multiplicity value ["<< multiplicity_ << "] is not valid ! ");
+      DT_THROW_IF(multiplicity_ > MAX_NUMBER_OF_FEB, std::logic_error, "Multiplicity value ["<< multiplicity_ << "] is not valid ! ");
 
       switch (multiplicity_)
 	{
