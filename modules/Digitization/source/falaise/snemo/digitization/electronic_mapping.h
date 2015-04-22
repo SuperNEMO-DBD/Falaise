@@ -39,8 +39,9 @@ namespace snemo {
       virtual ~electronic_mapping();
 
       /// Initializing
-      void initialize(std::string type);
       void initialize();
+			void initialize(std::string type);
+			void initialize(std::string type1, std::string type2);
 
       /// Check if the object is initialized 
       bool is_initialized();
@@ -60,19 +61,14 @@ namespace snemo {
       
       bool _initialized_; //!< Initialization flag
 			datatools::logger::priority _logging_;
-			ID_convertor _ID_convertor;
+			ID_convertor _ID_convertor_;
       const geomtools::manager * _geo_manager_;
       int _module_number_;
 
-			ID_bimap _geiger_id_bimap;
-			ID_bimap _xcalo_id_bimap;
-			ID_bimap _mcalo_id_bimap;
-			ID_bimap _gveto_id_bimap;
-
-
-
-
-
+			ID_bimap _geiger_id_bimap_;
+			ID_bimap _xcalo_id_bimap_;
+			ID_bimap _mcalo_id_bimap_;
+			ID_bimap _gveto_id_bimap_;
     };
 	       
   } // end of namespace digitization
