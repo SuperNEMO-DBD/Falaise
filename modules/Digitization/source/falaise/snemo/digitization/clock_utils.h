@@ -66,10 +66,10 @@ namespace snemo {
 			void _randomize_clockticks_shift(mygsl::rng & prng_);
 		private :
 			
-			bool    _initialized_; //!< Initialization flag
-			int32_t _clocktick_25_ref_; //!< Clocktick 25 ns reference
-			int32_t _clocktick_800_ref_; //!< Clocktick 800 ns reference
-			double  _clocktick_25_shift_; //!< Clocktick 25 ns shift
+			bool    _initialized_;         //!< Initialization flag
+			int32_t _clocktick_25_ref_;    //!< Clocktick 25 ns reference
+			int32_t _clocktick_800_ref_;   //!< Clocktick 800 ns reference
+			double  _clocktick_25_shift_;  //!< Clocktick 25 ns shift
 			double  _clocktick_800_shift_; //!< Clocktick 800 ns shift
 		};
 	       

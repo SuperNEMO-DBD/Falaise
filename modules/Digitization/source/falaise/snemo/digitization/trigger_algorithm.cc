@@ -5,13 +5,25 @@
 // Ourselves:
 #include <snemo/digitization/trigger_algorithm.h>
 
+// Third party:
+// - Boost:
+#include <boost/bimap.hpp>
+
 namespace snemo {
   
   namespace digitization {
 
+    struct PriorityLookup {
+      typedef boost::bimap<
+	geomtools::geom_id,
+	geomtools::geom_id
+	> LookupTable;
+  };
+
     trigger_algorithm::trigger_algorithm()
     {
       _initialized_ = false;
+      _ID_convertor_ = 0;
       return;
     }
 
@@ -41,9 +53,16 @@ namespace snemo {
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Trigger algorithm is not initialized, it can't be reset ! ");
       _initialized_ = false;
+      _ID_convertor_ = 0;
       return;
     }
-    
+
+    void trigger_algorithm::convert()
+    {
+
+
+      return;
+    }
    
     void trigger_algorithm::process()
     { 

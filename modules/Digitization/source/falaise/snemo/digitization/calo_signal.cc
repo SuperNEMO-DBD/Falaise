@@ -29,6 +29,22 @@ namespace snemo {
       reset();
       return;
     }
+    
+    void calo_signal::set_header(int32_t calo_signal_hit_id_,
+				  const geomtools::geom_id & electronic_id_)
+    {
+      set_hit_id(calo_signal_hit_id_);
+      set_geom_id(electronic_id_);
+      return;
+    }
+
+    void calo_signal::set_data(const double & signal_time_,
+			       const double & amplitude_)
+    {
+      set_signal_time(signal_time_);
+      set_amplitude(amplitude_);
+      return;
+    }
 
     double calo_signal::get_signal_time() const
     {
@@ -97,7 +113,7 @@ namespace snemo {
       base_hit::tree_dump (out_, title_, indent_, true);
 
       out_ << indent_ << datatools::i_tree_dumpable::tag
-           << "Amplitude =  : " << _amplitude_ * CLHEP::megaelectronvolt << " MeV " << std::endl;
+           << "Amplitude =  : " << _amplitude_  << " mV " << std::endl;
 
       return;
     }

@@ -9,6 +9,9 @@
 // - Bayeux/datatools: 
 #include <datatools/exception.h>
 
+// This project :
+#include <snemo/digitization/clock_utils.h>
+
 namespace snemo {
   
   namespace digitization {
@@ -19,7 +22,7 @@ namespace snemo {
     calo_tp::calo_tp()
     {
       _locked_ = false;
-      _clocktick_25ns_ = INVALID_CLOCKTICK;
+      _clocktick_25ns_ = clock_utils::INVALID_CLOCKTICK;
       _tp_ = 0x0;
       return;
     }
@@ -62,7 +65,7 @@ namespace snemo {
     void calo_tp::set_clocktick_25ns(int32_t value_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Clocktick can't be set, calorimeter TP is locked !) ");
-      if(value_ <= INVALID_CLOCKTICK)
+      if(value_ <= clock_utils::INVALID_CLOCKTICK)
 	{
 	  reset_clocktick_25ns();
 	}
@@ -76,18 +79,18 @@ namespace snemo {
 
     bool calo_tp::has_clocktick_25ns() const
     {
-      return _clocktick_25ns_ != INVALID_CLOCKTICK;
+      return _clocktick_25ns_ != clock_utils::INVALID_CLOCKTICK;
     } 
 
     void calo_tp::reset_clocktick_25ns()
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Clocktick can't be reset, calorimeter TP is locked !) ");
-      _clocktick_25ns_ = INVALID_CLOCKTICK;
+      _clocktick_25ns_ = clock_utils::INVALID_CLOCKTICK;
       _store &= ~STORE_CLOCKTICK_25NS;
       return;
     }
 
-    const std::bitset<5> & calo_tp::get_tp_bitset() const
+    const std::bitset<calo_tp::FULL_SIZE> & calo_tp::get_tp_bitset() const
     {
       return _tp_;
     }
@@ -147,9 +150,9 @@ namespace snemo {
       return 3;
     }
 
-    std::bitset<2> calo_tp::get_htm_bits() const
+    std::bitset<calo_tp::HTM_SIZE> calo_tp::get_htm_bits() const
     {
-      std::bitset<2> htm_word = 0x0;
+      std::bitset<HTM_SIZE> htm_word = 0x0;
       if(_tp_.test(HTM_BIT0) == true)
 	{
 	  htm_word.set(HTM_BIT0, 1);

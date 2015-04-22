@@ -50,13 +50,16 @@ namespace snemo {
 				XT_BIT    = 3,
 				SPARE_BIT = 4
 			};
-
-			/// Invalid clocktick value
-			static const int INVALID_CLOCKTICK = -1;
 			
-			/// Maximum number of channels by front-end board (FEB)
+      /// Maximum number of channels by front-end board (FEB)
 			static const unsigned int MAX_NUMBER_OF_CHANNELS = 16;
-      
+			
+			/// Full size for the calorimter TP bitset
+			static const unsigned int FULL_SIZE = 5;
+			
+			/// Size of htm bitset for calorimeter TP
+			static const unsigned int HTM_SIZE  = 2;
+
       /// Default constructor
       calo_tp();
 
@@ -87,7 +90,7 @@ namespace snemo {
       void reset_clocktick_25ns();
 
       /// Return the const reference to the TP bitset
-      const std::bitset<5> & get_tp_bitset() const;
+      const std::bitset<FULL_SIZE> & get_tp_bitset() const;
 
       /// Reset the TP bitset
       void reset_tp_bitset();
@@ -99,7 +102,7 @@ namespace snemo {
 			unsigned int get_htm() const;
 
 			/// Get the high threshold multiplicity (HTM) word (2 bits)
-			std::bitset<2> get_htm_bits() const;
+			std::bitset<HTM_SIZE> get_htm_bits() const;
 			
 			/// Check if the htm bits are set 
 			bool is_htm() const;
@@ -150,9 +153,9 @@ namespace snemo {
 
     private : 
 
-			bool _locked_; //!< TP lock flag
+			bool _locked_;            //!< TP lock flag
       int32_t _clocktick_25ns_; //!< The timestamp of the trigger primitive in main clock units (40 MHz)
-      std::bitset<5> _tp_; //!< The trigger primitive bitset
+      std::bitset<FULL_SIZE> _tp_;      //!< The trigger primitive bitset
 
       DATATOOLS_SERIALIZATION_DECLARATION();
 

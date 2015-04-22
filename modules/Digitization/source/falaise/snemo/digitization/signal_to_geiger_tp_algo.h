@@ -105,7 +105,7 @@ namespace snemo {
       int32_t _clocktick_ref_;   //!< Clocktick reference of the algorithm
       double  _clocktick_shift_; //!< Clocktick shift between [0:800]
       const ID_convertor * _ID_convertor_; //!< Convert geometric ID into electronic ID
-			bool _activated_bits_[TP_SIZE];
+			bool _activated_bits_[TP_SIZE];      //!< Table of booleans to see which bits were activated
     };
 
   } // end of namespace digitization

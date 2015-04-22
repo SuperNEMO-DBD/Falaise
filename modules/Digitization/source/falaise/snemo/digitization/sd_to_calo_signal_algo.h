@@ -48,14 +48,17 @@ namespace snemo {
       /// Set the geometry manager
       void set_geo_manager(const geomtools::manager & mgr_ );
 
-      int process(const mctools::simulated_data & sd_,
-		  signal_data & signal_data_);
+      void process(const mctools::simulated_data & sd_,
+									 signal_data & signal_data_);
 
     protected: 
 			
       ///  Process to fill a signal data object from simulated data
-      int _process(const mctools::simulated_data & sd_,
-		   signal_data & signal_data_);
+			void _process(const mctools::simulated_data & sd_,
+										signal_data & signal_data_);
+
+			double _convert_energy_to_amplitude(const double energy_);
+
 
     private :
       
