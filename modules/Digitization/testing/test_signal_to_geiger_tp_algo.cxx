@@ -24,6 +24,7 @@
 #include <snemo/digitization/sd_to_calo_signal_algo.h>
 #include <snemo/digitization/signal_to_calo_tp_algo.h>
 #include <snemo/digitization/signal_to_geiger_tp_algo.h>
+#include <snemo/digitization/electronic_mapping.h>
 
 int main( int /* argc_ */, char ** /* argv_ */ )
 {
@@ -76,13 +77,13 @@ int main( int /* argc_ */, char ** /* argv_ */ )
 
     datatools::things ER;
 
-    snemo::digitization::ID_convertor my_convertor;
-    my_convertor.set_geo_manager(my_manager);
-    my_convertor.set_module_number(0);
-    my_convertor.initialize();
+    snemo::digitization::electronic_mapping my_e_mapping;
+    my_e_mapping.set_geo_manager(my_manager);
+    my_e_mapping.set_module_number(0);
+    my_e_mapping.initialize("geiger");
 
     snemo::digitization::signal_to_geiger_tp_algo signal_2_geiger_tp;
-    signal_2_geiger_tp.initialize(my_convertor);
+    signal_2_geiger_tp.initialize(my_e_mapping);
     signal_2_geiger_tp.set_clocktick_reference(clocktick_800_reference);
     signal_2_geiger_tp.set_clocktick_shift(clocktick_800_shift);
 

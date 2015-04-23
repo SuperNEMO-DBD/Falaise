@@ -12,7 +12,7 @@
 // This project :
 #include <snemo/digitization/geiger_ctw_data.h>
 #include <snemo/digitization/calo_ctw_data.h>
-#include <snemo/digitization/ID_convertor.h>
+#include <snemo/digitization/electronic_mapping.h>
 
 namespace snemo {
   
@@ -48,7 +48,7 @@ namespace snemo {
       
       bool _initialized_; //!< Initialization flag
       bool _geiger_matrix_[2][9][113]; //!< Geiger cells matrix [side][layer][row]
-			const ID_convertor * _ID_convertor_; //!< Convert geometric ID into electronic ID
+			electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
     };
 
   } // end of namespace digitization

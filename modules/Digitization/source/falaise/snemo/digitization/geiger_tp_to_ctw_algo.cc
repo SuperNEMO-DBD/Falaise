@@ -51,10 +51,19 @@ namespace snemo {
 
     void geiger_tp_to_ctw_algo::_fill_a_geiger_ctw(const geiger_tp & my_geiger_tp_, geiger_ctw & a_geiger_ctw_)
     {  
+      geomtools::geom_id temporary_feb_id;
+      temporary_feb_id.set_type(my_geiger_tp_.get_geom_id().get_type());
+      temporary_feb_id.set_depth(mapping::BOARD_DEPTH);
+      my_geiger_tp_.get_geom_id().extract_to(temporary_feb_id);
+      temporary_feb_id.set(mapping::BOARD_INDEX, mapping::CONTROL_BOARD_ID);
+
       a_geiger_ctw_.set_header(my_geiger_tp_.get_hit_id(),
-			       my_geiger_tp_.get_geom_id(),
+			       temporary_feb_id,
 			       my_geiger_tp_.get_clocktick_800ns());
       unsigned int block_index = my_geiger_tp_.get_geom_id().get(mapping::BOARD_INDEX);
+      if (block_index >  mapping::CONTROL_BOARD_ID) block_index -= 1;
+      std::clog << "DEBUG : gg tp geom id = " << my_geiger_tp_.get_geom_id() << std::endl;
+      std::clog << "DEBUG : block index in tp to ctw algo = " << block_index << std::endl;
       std::bitset<5> hardware_status = 0x0;
       std::bitset<2> crate_id = 0x0;
       my_geiger_tp_.get_hardware_status_bitset(hardware_status);

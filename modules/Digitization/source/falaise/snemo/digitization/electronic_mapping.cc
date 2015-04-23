@@ -41,12 +41,12 @@ namespace snemo {
     {
       _ID_convertor_.initialize();
 
-      if (type == mapping::GEIGER_TYPE)
+      if (type == mapping::geiger_type())
 	{
 	  init_geiger();
 	}
 
-      if (type == mapping::MAIN_CALO_TYPE)
+      if (type == mapping::main_calo_type())
 	{
 	  init_mcalo();
 	}
@@ -60,8 +60,9 @@ namespace snemo {
       // _initialized = true;
     }    
     
-    geomtools::geom_id electronic_mapping::convert_GID_to_EID(const geomtools::geom_id & geom_id_)
+    geomtools::geom_id electronic_mapping::convert_GID_to_EID(const bool tracker_trigger_mode_, const geomtools::geom_id & geom_id_)
     {
+      DT_THROW_IF(tracker_trigger_mode_ != mapping::THREE_WIRES_TRACKER_MODE, std::logic_error, " Give a correct traker trigger mode (Two wires mode is not supported yet) ! ");
       DT_THROW_IF(!is_initialized(), std::logic_error, "Electronic mapping is not initialized ! ");
       geomtools::geom_id electronic_id;
       ID_bimap::left_const_iterator left_iter ;
@@ -102,11 +103,11 @@ namespace snemo {
       return electronic_id;
     }
 
-  geomtools::geom_id electronic_mapping::convert_EID_to_GID(const geomtools::geom_id & elec_id_)
+  geomtools::geom_id electronic_mapping::convert_EID_to_GID(const bool tracker_trigger_mode_, const geomtools::geom_id & elec_id_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Electronic mapping is not initialized ! ");
       DT_THROW_IF(elec_id_.get_type() != mapping::FEB_CATEGORY_TYPE, std::logic_error, "elect_id incorrect type ! ");
-	    
+      DT_THROW_IF(tracker_trigger_mode_ != mapping::THREE_WIRES_TRACKER_MODE, std::logic_error, " Give a correct traker trigger mode (Two wires mode is not supported yet) ! ");
       geomtools::geom_id geom_id;
       ID_bimap::right_const_iterator right_iter ;
      

@@ -19,7 +19,7 @@
 // This project :
 #include <snemo/digitization/calo_tp_data.h>
 #include <snemo/digitization/signal_data.h>
-#include <snemo/digitization/ID_convertor.h>
+#include <snemo/digitization/electronic_mapping.h>
 
 namespace snemo {
   
@@ -37,7 +37,7 @@ namespace snemo {
       virtual ~signal_to_calo_tp_algo();
       
       /// Initializing
-      void initialize(const ID_convertor & my_ID_convertor_);
+      void initialize(electronic_mapping & _electronic_mapping_);
 
       /// Check if the algorithm is initialized 
       bool is_initialized() const;
@@ -53,7 +53,7 @@ namespace snemo {
 
       /// Process to fill a calo tp data object from simulated data
 			void process(const signal_data & signal_data_,
-									calo_tp_data & my_calo_tp_data_);
+									 calo_tp_data & my_calo_tp_data_);
 
     protected:
       
@@ -62,7 +62,7 @@ namespace snemo {
 
 			///  Process to fill a calo tp data object from simulated data
 			void _process(const signal_data & signal_data_,
-									 calo_tp_data & my_calo_tp_data_);
+										calo_tp_data & my_calo_tp_data_);
 
     private :
       
@@ -73,7 +73,7 @@ namespace snemo {
 
 			int32_t _clocktick_ref_;   //!< Clocktick reference of the algorithm
 			double  _clocktick_shift_; //!< Clocktick shift between [0:25]
-			const ID_convertor * _ID_convertor_; //!< Convert geometric ID into electronic ID
+			electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
     };
 
   } // end of namespace digitization

@@ -177,6 +177,8 @@ namespace snemo {
 	  }
 
 	board_id = (row_index + row_shift -shift) / 2;
+	std::clog << "DEBUG : geom id in ID CONVERTOR class " << geom_id_ << std::endl;
+	std::clog << "DEBUG : board id in ID CONVERTOR class " << board_id << std::endl;
 
 	if (row_index < mapping::THREE_WIRES_LONELY_ROW)
 	  {
@@ -269,45 +271,6 @@ namespace snemo {
 
     geomtools::geom_id ID_convertor::convert_EID_to_GID(const geomtools::geom_id & geom_id_) const{
 
-    }
-
-    void ID_convertor::find_gg_eid_and_tp_bit_index(const bool tracker_trigger_mode_,
-						    const geomtools::geom_id & geom_id_,
-						    geomtools::geom_id & electronic_id_,
-						    int & bit_index_) const
-    {
-      DT_THROW_IF(tracker_trigger_mode_ == mapping::TWO_WIRES_TRACKER_MODE, std::logic_error, " Two wires mode is not supported yet ! ");
-      
-      unsigned int side_index = _gg_locator_->extract_side(geom_id_); 
-      unsigned int layer_index = _gg_locator_->extract_layer(geom_id_); 
-      unsigned int row_index = _gg_locator_->extract_row(geom_id_);
-	
-
-      electronic_id_ = convert_GID_to_EID(geom_id_);
-      electronic_id_.set_type(666);
-      electronic_id_.set(mapping::RACK_INDEX, mapping::GEIGER_RACK_ID);
-      
-      unsigned int shift = 0;
-      
-      if (row_index < mapping::THREE_WIRES_LONELY_ROW)
-	{
-	  shift = 2 * side_index + (row_index % 2);
-	  bit_index_ = mapping::GEIGER_LAYER_SIZE * shift + layer_index;
-	}
-
-      else if (row_index == mapping::THREE_WIRES_LONELY_ROW)
-	{
-	  shift = 2 * side_index;
-	  bit_index_ = mapping::GEIGER_LAYER_SIZE * shift + layer_index;
-	}
-
-      else if (row_index > mapping::THREE_WIRES_LONELY_ROW)
-	{
-	  shift = 2 * side_index + (1 - (row_index % 2));
-	  bit_index_ = mapping::GEIGER_LAYER_SIZE * shift + layer_index;
-	}
-
-      return;
     }
 
     void ID_convertor::tree_dump(std::ostream & out_,

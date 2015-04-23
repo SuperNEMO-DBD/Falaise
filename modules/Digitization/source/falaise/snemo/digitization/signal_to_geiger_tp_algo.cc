@@ -35,7 +35,7 @@ namespace snemo {
     signal_to_geiger_tp_algo::signal_to_geiger_tp_algo()
     {
       _initialized_   = false;
-      _ID_convertor_  = 0;
+      _electronic_mapping_  = 0;
       _clocktick_ref_ = clock_utils::INVALID_CLOCKTICK;
       datatools::invalidate(_clocktick_shift_);
       return;
@@ -50,10 +50,10 @@ namespace snemo {
       return;
     }
 
-    void signal_to_geiger_tp_algo::initialize(const ID_convertor & my_ID_convertor_)
+    void signal_to_geiger_tp_algo::initialize(electronic_mapping & my_electronic_mapping_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "SD to geiger tp algorithm is already initialized ! ");
-      _ID_convertor_ = & my_ID_convertor_;
+      _electronic_mapping_ = & my_electronic_mapping_;
       for (int i = 0; i < TP_SIZE; i++)
 	{
 	  _activated_bits_[i] = 0;
@@ -71,7 +71,7 @@ namespace snemo {
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "SD to geiger tp algorithm is not initialized, it can't be reset ! ");
       _initialized_ = false;
-      _ID_convertor_ = 0;
+      _electronic_mapping_ = 0;
       _clocktick_ref_ = -1;
       return;
     }
@@ -91,15 +91,20 @@ namespace snemo {
     void signal_to_geiger_tp_algo::add_geiger_tp(const signal_to_tp_working_data & my_wd_data_, int32_t signal_clocktick_, int32_t hit_id_, geiger_tp_data & my_geiger_tp_data_)
     {
       snemo::digitization::geiger_tp & gg_tp = my_geiger_tp_data_.add();
+      geomtools::geom_id temporary_feb_id;
+      temporary_feb_id.set_type(my_wd_data_.feb_id.get_type());
+      temporary_feb_id.set_depth(mapping::BOARD_DEPTH);
+      my_wd_data_.feb_id.extract_to(temporary_feb_id);
+      std::clog << "DEBUG : temporary feb id = " << temporary_feb_id << std::endl;
       gg_tp.set_header(hit_id_,
-		       my_wd_data_.feb_id,
+		       temporary_feb_id,
 		       signal_clocktick_,
 		       mapping::THREE_WIRES_TRACKER_MODE,
 		       mapping::SIDE_MODE,
 		       mapping::NUMBER_OF_CONNECTED_ROWS);
-      gg_tp.set_gg_tp_active_bit(my_wd_data_.bit_index);
+      gg_tp.set_gg_tp_active_bit(my_wd_data_.feb_id.get(mapping::CHANNEL_INDEX));
       gg_tp.set_auxiliaries(my_wd_data_.auxiliaries);
-      _activated_bits_[my_wd_data_.bit_index] = 1;
+      _activated_bits_[my_wd_data_.feb_id.get(mapping::CHANNEL_INDEX)] = 1;
       gg_tp.tree_dump(std::clog, "***** Geiger TP creation : *****", "INFO : "); 
 
       return;
@@ -107,8 +112,9 @@ namespace snemo {
 
     void signal_to_geiger_tp_algo::update_gg_tp(const signal_to_tp_working_data & my_wd_data_, geiger_tp & my_geiger_tp_)
     {
-      my_geiger_tp_.set_gg_tp_active_bit(my_wd_data_.bit_index);
-      _activated_bits_[my_wd_data_.bit_index] = 1;
+      my_geiger_tp_.set_gg_tp_active_bit(my_wd_data_.feb_id.get(mapping::CHANNEL_INDEX));
+      std::clog << "DEBUG : channel index (bit index ) = " << my_wd_data_.feb_id.get(mapping::CHANNEL_INDEX) << std::endl;
+      _activated_bits_[my_wd_data_.feb_id.get(mapping::CHANNEL_INDEX)] = 1;
       my_geiger_tp_.tree_dump(std::clog, "***** Geiger TP Update : *****", "INFO : ");
       return;
     }
@@ -141,11 +147,8 @@ namespace snemo {
 	  const datatools::properties & properties = a_geiger_signal.get_auxiliaries();
 	  geomtools::geom_id electronic_id;
 
-	  int bit_index = 0;
-	  _ID_convertor_->find_gg_eid_and_tp_bit_index(mapping::THREE_WIRES_TRACKER_MODE,
-						       geom_id,
-						       electronic_id,
-						       bit_index);
+	  electronic_id = _electronic_mapping_->convert_GID_to_EID(mapping::THREE_WIRES_TRACKER_MODE, geom_id);
+
 	  bool         existing = false;
 	  unsigned int existing_index = 0;
 	  double relative_time = a_geiger_signal.get_anode_avalanche_time() + _clocktick_shift_ - time_reference ;
@@ -164,8 +167,7 @@ namespace snemo {
 	  a_working_data.signal_ref    =& a_geiger_signal;
 	  a_working_data.feb_id        = electronic_id;
 	  a_working_data.auxiliaries   = properties;
-	  a_working_data.clocktick_800 = a_geiger_signal_clocktick;
-	  a_working_data.bit_index     = bit_index;	      
+	  a_working_data.clocktick_800 = a_geiger_signal_clocktick;	      
 	  wd_collection_.push_back(a_working_data);	
 	}
 

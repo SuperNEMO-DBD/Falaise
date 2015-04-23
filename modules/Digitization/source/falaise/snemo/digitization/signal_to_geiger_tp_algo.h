@@ -20,7 +20,7 @@
 // This project :
 #include <snemo/digitization/geiger_tp_data.h>
 #include <snemo/digitization/signal_data.h>
-#include <snemo/digitization/ID_convertor.h>
+#include <snemo/digitization/electronic_mapping.h>
 #include <snemo/digitization/mapping.h>
 
 namespace snemo {
@@ -44,7 +44,6 @@ namespace snemo {
 				datatools::properties auxiliaries;
 				int32_t               clocktick_800;
 				double                shift_800;
-				int                   bit_index;
 			}; 
 			
 			typedef std::vector<signal_to_tp_working_data> working_data_collection_type;
@@ -58,7 +57,7 @@ namespace snemo {
       virtual ~signal_to_geiger_tp_algo();
       
       /// Initializing
-      void initialize(const ID_convertor & my_ID_convertor_);
+      void initialize(electronic_mapping & my_electronic_mapping_);
 
       /// Check if the algorithm is initialized 
       bool is_initialized() const;
@@ -80,32 +79,32 @@ namespace snemo {
 
       /// Process to fill a geiger tp data object from simulated data
       void process(const signal_data & signal_data_,
-									geiger_tp_data & my_geiger_tp_data_);
+									 geiger_tp_data & my_geiger_tp_data_);
 
     protected: 
 
 			/// Prepare the working data collection (sort by clocktick)
 			void _prepare_working_data(const signal_data & signal_data_,
-															 working_data_collection_type & wd_collection_);
+																 working_data_collection_type & wd_collection_);
 
 			/// Sort working data by clocktick
 			void _sort_working_data(working_data_collection_type & wd_collection_);
 
 			/// Create geiger tp from working data collection
 			void _geiger_tp_process(const working_data_collection_type & wd_collection_,
-														geiger_tp_data & my_geiger_tp_data_);
+															geiger_tp_data & my_geiger_tp_data_);
 
       ///  Process to fill a geiger tp data object from signal data
       void _process(const signal_data & signal_data_,
-									 geiger_tp_data & my_geiger_tp_data_);
+										geiger_tp_data & my_geiger_tp_data_);
 
     private :
       
       bool    _initialized_;     //!< Initialization flag
       int32_t _clocktick_ref_;   //!< Clocktick reference of the algorithm
       double  _clocktick_shift_; //!< Clocktick shift between [0:800]
-      const ID_convertor * _ID_convertor_; //!< Convert geometric ID into electronic ID
-			bool _activated_bits_[TP_SIZE];      //!< Table of booleans to see which bits were activated
+			electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID    // WHy no const possible ?
+			bool _activated_bits_[TP_SIZE];            //!< Table of booleans to see which bits were activated
     };
 
   } // end of namespace digitization

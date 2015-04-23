@@ -100,7 +100,7 @@ namespace snemo {
     void geiger_ctw::set_100_bits_in_ctw_word(unsigned int block_index_, const std::bitset<GEIGER_TP_CONSTANTS_TP_FULL_SIZE> & my_bitset_)
     {
       DT_THROW_IF(block_index_ > mapping::MAX_NUMBER_OF_FEB_BY_CRATE, std::logic_error, "Block index out of range (should be [0;19])  ! ");
-      
+      std::clog << "DEBUG : block index = " << block_index_ << std::endl;
       for (int i = 0; i < my_bitset_.size(); i++)
 	{
 	  if (my_bitset_.test(i) == true)
@@ -137,13 +137,14 @@ namespace snemo {
       for (int i = geiger_tp::BOARD_ID_BIT0; i <= CTW_BITSET_FULL_SIZE; i += GEIGER_TP_CONSTANTS_TP_FULL_SIZE)
 	{
 	  if (board_id == 10) board_id += 1;
-	  std::clog << "DEBUG : board id = " << board_id << std::endl;
+	  std::clog << "DEBUG : board id (in ggctw class) = " << board_id << std::endl;
 	  std::bitset<geiger_tp::BOARD_ID_WORD_SIZE> board_id_bitset(board_id);
 	  for (int j = 0; j < board_id_bitset.size(); j++)
 	    {
 	      if (board_id_bitset.test(j) == true)
 		{
 		  _gg_ctw_.set(i + j, 1);
+		  std::clog << "DEBUG : i + j =  " << i + j << "  bitset in gg ctw class = " << board_id_bitset << std::endl;
 		}
 	    }
 	  board_id ++;

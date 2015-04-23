@@ -110,9 +110,14 @@ namespace snemo {
 
 		void geiger_tp_data::get_list_of_gg_tp_per_eid(const geomtools::geom_id & electronic_id_, geiger_tp_collection_type & my_list_of_gg_tps_per_eid_) const
 		{
+			geomtools::geom_id temporary_feb_id;
+      temporary_feb_id.set_type(electronic_id_.get_type());
+      temporary_feb_id.set_depth(mapping::BOARD_DEPTH);
+      electronic_id_.extract_to(temporary_feb_id);
+
       for (int i = 0; i < _geiger_tps_.size(); i++)
 				{
-					if(_geiger_tps_[i].get().get_geom_id() == electronic_id_)
+					if(_geiger_tps_[i].get().get_geom_id() == temporary_feb_id)
 						{
 							my_list_of_gg_tps_per_eid_.push_back(_geiger_tps_[i]);
 						}

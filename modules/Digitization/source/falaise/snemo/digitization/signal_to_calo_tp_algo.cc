@@ -15,7 +15,7 @@ namespace snemo {
     signal_to_calo_tp_algo::signal_to_calo_tp_algo()
     {
       _initialized_ = false;
-      _ID_convertor_ = 0;
+      _electronic_mapping_ = 0;
       _clocktick_ref_ = clock_utils::INVALID_CLOCKTICK;
       datatools::invalidate(_clocktick_shift_);
       return;
@@ -30,10 +30,10 @@ namespace snemo {
       return;
     }
 
-    void signal_to_calo_tp_algo::initialize(const ID_convertor & my_ID_convertor_)
+    void signal_to_calo_tp_algo::initialize(electronic_mapping & my_electronic_mapping_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "SD to calo tp algorithm is already initialized ! ");
-      _ID_convertor_ = & my_ID_convertor_;  
+      _electronic_mapping_ = & my_electronic_mapping_;  
       _initialized_ = true;
       return;
     }
@@ -47,7 +47,7 @@ namespace snemo {
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "SD to calo tp algorithm is not initialized, it can't be reset ! ");
       _initialized_ = false;
-      _ID_convertor_ = 0;
+      _electronic_mapping_ = 0;
       _clocktick_ref_ = clock_utils::INVALID_CLOCKTICK;
       datatools::invalidate(_clocktick_shift_);
       return;
@@ -107,13 +107,8 @@ namespace snemo {
 	  bool side_mode = 1;
 	  int number_of_rows = 7;
 	      
-	  //electronic_id = _ID_convertor_->convert_GID_to_EID(geom_id);
-	  int bit_index = 0;
-	  _ID_convertor_->find_gg_eid_and_tp_bit_index(mapping::THREE_WIRES_TRACKER_MODE,
-						       geom_id,
-						       electronic_id,
-						       bit_index);
-	    	    
+	  electronic_id = _electronic_mapping_->convert_GID_to_EID(mapping::THREE_WIRES_TRACKER_MODE, geom_id);
+
 	  bool existing = false;
 	  unsigned int existing_index = 0;
 

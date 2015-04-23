@@ -67,10 +67,10 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     reader.tree_dump (std::clog, "Simulated data reader module");
 
     datatools::things ER;
-    snemo::digitization::ID_convertor my_convertor;
-    my_convertor.set_geo_manager(my_manager);
-    my_convertor.set_module_number(0);
-    my_convertor.initialize();
+    snemo::digitization::electronic_mapping my_e_mapping;
+    my_e_mapping.set_geo_manager(my_manager);
+    my_e_mapping.set_module_number(0);
+    my_e_mapping.initialize();
 
     snemo::digitization::clock_utils my_clock_manager;
     my_clock_manager.initialize();
@@ -98,12 +98,12 @@ int main( int /* argc_ */, char ** /* argv_ */ )
 	    double  clocktick_800_shift     = my_clock_manager.get_clocktick_800_shift();
 
 	    snemo::digitization::signal_to_calo_tp_algo signal_2_calo_tp;
-	    signal_2_calo_tp.initialize(my_convertor);
+	    signal_2_calo_tp.initialize(my_e_mapping);
 	    signal_2_calo_tp.set_clocktick_reference(clocktick_25_reference);
 	    signal_2_calo_tp.set_clocktick_shift(clocktick_25_shift);
 
 	    snemo::digitization::signal_to_geiger_tp_algo signal_2_geiger_tp;
-	    signal_2_geiger_tp.initialize(my_convertor);
+	    signal_2_geiger_tp.initialize(my_e_mapping);
 	    signal_2_geiger_tp.set_clocktick_reference(clocktick_800_reference);
 	    signal_2_geiger_tp.set_clocktick_shift(clocktick_800_shift);	    
 

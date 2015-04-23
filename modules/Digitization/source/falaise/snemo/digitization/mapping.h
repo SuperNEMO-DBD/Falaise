@@ -33,13 +33,32 @@ namespace snemo {
 				XWALL_ROW_INDEX = 4
 			};
 			
+			enum tp_electronic_ID_depth {
+				RACK_DEPTH    = 1,
+				CRATE_DEPTH   = 2,
+				BOARD_DEPTH   = 3,
+				CHANNEL_DEPTH = 4
+			};
+
+			enum tp_tracker_wire_mode {
+				// INVALID_WIRES_TRACKER_MODE = -1,
+				// THREE_WIRES_TRACKER_MODE   = 0,
+				// TWO_WIRES_TRACKER_MODE     = 1
+			};
+
+			enum tp_tracker_side_mode {
+				INVALID_TRACKER_SIDE_MODE = -1,
+				TRACKER_ONE_SIDE_MODE  = 0,
+				TRACKER_TWO_SIDES_MODE = 1			
+			};
+			
 			static const int INVALID_MODULE_NUMBER = -1;
 			static const int DEMONSTRATOR_MODULE_NUMBER = 0;
 			
-			static const std::string GEIGER_TYPE;
-			static const std::string MAIN_CALO_TYPE;
-			static const std::string X_WALL_TYPE;
-			static const std::string GVETO_TYPE;
+			static const std::string  & geiger_type();
+			static const std::string  & main_calo_type();
+			static const std::string  & x_wall_type();
+			static const std::string  & gveto_type();
 			
 			static const int GEIGER_CATEGORY_TYPE             = 1204;
 			static const int CALO_MAIN_WALL_CATEGORY_TYPE     = 1302;
@@ -66,8 +85,8 @@ namespace snemo {
 			static const uint32_t MAX_NUMBER_OF_GEIGER_ROW = 113;
 			static const uint32_t MAX_NUMBER_OF_CALO_ROW = 13;
 
-			static const int32_t MAX_NUMBER_OF_CRATE  = 2;
-			static const int32_t MAX_NUMBER_OF_FEB_BY_CRATE = 19;
+			static const uint32_t MAX_NUMBER_OF_CRATE  = 2;
+			static const uint32_t MAX_NUMBER_OF_FEB_BY_CRATE = 19;
 			static const int32_t XWALL_GVETO_CRATE_ID = 2;
 			static const int32_t TRIGGER_CRATE_ID     = 2;
 
