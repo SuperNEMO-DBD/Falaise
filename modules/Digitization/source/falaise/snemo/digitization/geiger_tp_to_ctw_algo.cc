@@ -62,8 +62,6 @@ namespace snemo {
 			       my_geiger_tp_.get_clocktick_800ns());
       unsigned int block_index = my_geiger_tp_.get_geom_id().get(mapping::BOARD_INDEX);
       if (block_index >  mapping::CONTROL_BOARD_ID) block_index -= 1;
-      std::clog << "DEBUG : gg tp geom id = " << my_geiger_tp_.get_geom_id() << std::endl;
-      std::clog << "DEBUG : block index in tp to ctw algo = " << block_index << std::endl;
       std::bitset<5> hardware_status = 0x0;
       std::bitset<2> crate_id = 0x0;
       my_geiger_tp_.get_hardware_status_bitset(hardware_status);

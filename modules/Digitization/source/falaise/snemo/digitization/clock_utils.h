@@ -22,10 +22,11 @@ namespace snemo {
 		{
 		public :
 			
-			static const int32_t NUMBER_OF_25_CLOCK_IN_800 = 32; //!< Number of 25 time clock in 800
-			static const int32_t MAIN_CLOCKTICK = 25; //!< Main clocktick, 40 MHz => 25ns.
-			static const int32_t TRACKER_CLOCKTICK = 800; //!< Clocktick for tracker, 800ns.
-			static const int32_t INVALID_CLOCKTICK = -1; //!< Invalid value for clocktick
+			static const int32_t NUMBER_OF_25_CLOCK_IN_800 = 32;     //!< Number of 25 time clock in 800
+			static const int32_t MAIN_CLOCKTICK = 25;                //!< Main clocktick, 40 MHz => 25ns.
+			static const int32_t TRACKER_CLOCKTICK = 800;            //!< Clocktick for tracker, 800ns.
+			static const int32_t INVALID_CLOCKTICK = -1;             //!< Invalid value for clocktick
+			static const int32_t ACTIVATED_GEIGER_CELLS_NUMBER = 10; //!< Number of clocktick 800 where a geiger cell is activated
       
 			/// Default constructor
 			clock_utils();

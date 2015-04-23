@@ -80,9 +80,9 @@ namespace snemo {
       return;
     }
 
-    void geiger_ctw::get_100_bits_in_ctw_word(unsigned int block_index_, std::bitset<GEIGER_TP_CONSTANTS_TP_FULL_SIZE> & my_bitset_) const
+    void geiger_ctw::get_100_bits_in_ctw_word(unsigned int block_index_, std::bitset<geiger::tp::FULL_SIZE> & my_bitset_) const
     {
-      my_bitset_ = 0x0;
+      DT_THROW_IF(block_index_ > mapping::MAX_NUMBER_OF_FEB_BY_CRATE, std::logic_error, "Block index out of range (should be [0;19])  ! ");
       for (int i = 0; i < my_bitset_.size(); i++)
 	{
 	  if (_gg_ctw_.test(i + block_index_ * my_bitset_.size()) == true)
@@ -97,10 +97,9 @@ namespace snemo {
       return;
     }
 
-    void geiger_ctw::set_100_bits_in_ctw_word(unsigned int block_index_, const std::bitset<GEIGER_TP_CONSTANTS_TP_FULL_SIZE> & my_bitset_)
+    void geiger_ctw::set_100_bits_in_ctw_word(unsigned int block_index_, const std::bitset<geiger::tp::FULL_SIZE> & my_bitset_)
     {
       DT_THROW_IF(block_index_ > mapping::MAX_NUMBER_OF_FEB_BY_CRATE, std::logic_error, "Block index out of range (should be [0;19])  ! ");
-      std::clog << "DEBUG : block index = " << block_index_ << std::endl;
       for (int i = 0; i < my_bitset_.size(); i++)
 	{
 	  if (my_bitset_.test(i) == true)
@@ -116,9 +115,9 @@ namespace snemo {
       return;
     }
 
-    void geiger_ctw::set_full_hardware_status(const std::bitset<GEIGER_TP_CONSTANTS_HARDWARE_STATUS_SIZE> & gg_tp_hardware_status_)
+    void geiger_ctw::set_full_hardware_status(const std::bitset<geiger::tp::THWS_SIZE> & gg_tp_hardware_status_)
     {
-      for (int i = geiger_tp::THWS_BEGIN; i <= CTW_BITSET_FULL_SIZE; i += GEIGER_TP_CONSTANTS_TP_FULL_SIZE)
+      for (int i = geiger::tp::THWS_BEGIN; i <= CTW_BITSET_FULL_SIZE; i += geiger::tp::FULL_SIZE)
 	{
 	  for (int j = 0; j < gg_tp_hardware_status_.size(); j ++)
 	    {
@@ -134,17 +133,15 @@ namespace snemo {
    void geiger_ctw::_set_full_board_id()
     {
       unsigned long board_id = 0;
-      for (int i = geiger_tp::BOARD_ID_BIT0; i <= CTW_BITSET_FULL_SIZE; i += GEIGER_TP_CONSTANTS_TP_FULL_SIZE)
+      for (int i = geiger::tp::BOARD_ID_BIT0; i <= CTW_BITSET_FULL_SIZE; i += geiger::tp::FULL_SIZE)
 	{
 	  if (board_id == 10) board_id += 1;
-	  std::clog << "DEBUG : board id (in ggctw class) = " << board_id << std::endl;
-	  std::bitset<geiger_tp::BOARD_ID_WORD_SIZE> board_id_bitset(board_id);
+	  std::bitset<geiger::tp::BOARD_ID_WORD_SIZE> board_id_bitset(board_id);
 	  for (int j = 0; j < board_id_bitset.size(); j++)
 	    {
 	      if (board_id_bitset.test(j) == true)
 		{
 		  _gg_ctw_.set(i + j, 1);
-		  std::clog << "DEBUG : i + j =  " << i + j << "  bitset in gg ctw class = " << board_id_bitset << std::endl;
 		}
 	    }
 	  board_id ++;
@@ -153,9 +150,9 @@ namespace snemo {
       return;
     }
 
-    void geiger_ctw::set_full_crate_id(const std::bitset<GEIGER_TP_CONSTANTS_CRATE_ID_WORD_SIZE> & gg_tp_crate_id_)
+    void geiger_ctw::set_full_crate_id(const std::bitset<geiger::tp::CRATE_ID_WORD_SIZE> & gg_tp_crate_id_)
     {
-      for (int i = geiger_tp::CRATE_ID_BIT0; i <= CTW_BITSET_FULL_SIZE; i += GEIGER_TP_CONSTANTS_TP_FULL_SIZE)
+      for (int i = geiger::tp::CRATE_ID_BIT0; i <= CTW_BITSET_FULL_SIZE; i += geiger::tp::FULL_SIZE)
 	{
 	  for (int j = 0; j < gg_tp_crate_id_.size(); j ++)
 	    {

@@ -107,7 +107,7 @@ namespace snemo {
 	  bool side_mode = 1;
 	  int number_of_rows = 7;
 	      
-	  electronic_id = _electronic_mapping_->convert_GID_to_EID(mapping::THREE_WIRES_TRACKER_MODE, geom_id);
+	  _electronic_mapping_->convert_GID_to_EID(mapping::THREE_WIRES_TRACKER_MODE, geom_id, electronic_id);
 
 	  bool existing = false;
 	  unsigned int existing_index = 0;

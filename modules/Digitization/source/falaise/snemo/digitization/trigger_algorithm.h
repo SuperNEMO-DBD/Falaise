@@ -13,6 +13,7 @@
 #include <snemo/digitization/geiger_ctw_data.h>
 #include <snemo/digitization/calo_ctw_data.h>
 #include <snemo/digitization/electronic_mapping.h>
+#include <snemo/digitization/mapping.h>
 
 namespace snemo {
   
@@ -29,26 +30,27 @@ namespace snemo {
       /// Destructor
       virtual ~trigger_algorithm();
 
+     /// Initializing
+      void initialize(const electronic_mapping & my_electronic_mapping_);
+
       /// Check if the algorithm is initialized 
       bool is_initialized() const;
 
-      /// Initializing
-      void initialize(); 
-
       /// Reset the object
       void reset(); 
-			
-			/// Convert geom ID into electronic ID and store GID and corresponding EID
-			void convert();
+
+			uint32_t get_board_id(const std::bitset<geiger::tp::FULL_SIZE> & my_bitset_) const;
+
+			void build_hit_cells_gids_from_ctw(const geiger_ctw & my_geiger_ctw_, std::vector<geomtools::geom_id> & hit_cells_gids_) const;
 
       /// General process
-      void process();
+      void process(const geiger_ctw_data & geiger_ctw_data_);
 	
     private :
       
       bool _initialized_; //!< Initialization flag
-      bool _geiger_matrix_[2][9][113]; //!< Geiger cells matrix [side][layer][row]
-			electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
+      bool _geiger_matrix_[mapping::MAX_NUMBER_OF_SIDE][mapping::GEIGER_LAYER_SIZE][mapping::GEIGER_ROW_SIZE]; //!< Geiger cells matrix
+			const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
     };
 
   } // end of namespace digitization

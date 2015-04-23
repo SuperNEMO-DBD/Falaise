@@ -85,10 +85,10 @@ namespace snemo {
       return get_clocktick_max() - get_clocktick_min();
     }
 			
-    void geiger_ctw_data::get_list_of_geiger_ctw_per_clocktick(int32_t clocktick_800ns_, geiger_ctw_collection_type & ctws_)
+    void geiger_ctw_data::get_list_of_geiger_ctw_per_clocktick(int32_t clocktick_800ns_, geiger_ctw_collection_type & ctws_) const
     {
       DT_THROW_IF(_geiger_ctws_.size() == 0, std::logic_error, " Geiger CTW collection is empty ! ");
-      DT_THROW_IF(!is_locked(), std::logic_error, " Geiger CTW collection is not locked ! ");
+      //DT_THROW_IF(!is_locked(), std::logic_error, " Geiger CTW collection is not locked ! ");
       for (int i = 0; i < _geiger_ctws_.size(); i++)
       	{
       	  if(_geiger_ctws_[i].get().get_clocktick_800ns() == clocktick_800ns_)

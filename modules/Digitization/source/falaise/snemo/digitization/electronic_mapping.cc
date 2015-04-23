@@ -59,12 +59,25 @@ namespace snemo {
       // _ID_convertor_.initialize()
       // _initialized = true;
     }    
+
+    void electronic_mapping::convert_GID_to_EID(const bool tracker_trigger_mode_, 
+						const geomtools::geom_id & geom_id_, 
+						geomtools::geom_id & electronic_id_) const
+    {
+      const_cast<electronic_mapping *> (this) -> _convert_GID_to_EID(tracker_trigger_mode_,
+								     geom_id_, 
+								     electronic_id_);
+      
+      return;
+    }
     
-    geomtools::geom_id electronic_mapping::convert_GID_to_EID(const bool tracker_trigger_mode_, const geomtools::geom_id & geom_id_)
+    void electronic_mapping::_convert_GID_to_EID(const bool tracker_trigger_mode_, 
+						 const geomtools::geom_id & geom_id_, 
+						 geomtools::geom_id & electronic_id_)
     {
       DT_THROW_IF(tracker_trigger_mode_ != mapping::THREE_WIRES_TRACKER_MODE, std::logic_error, " Give a correct traker trigger mode (Two wires mode is not supported yet) ! ");
       DT_THROW_IF(!is_initialized(), std::logic_error, "Electronic mapping is not initialized ! ");
-      geomtools::geom_id electronic_id;
+      electronic_id_.reset();
       ID_bimap::left_const_iterator left_iter ;
   	    
       switch (geom_id_.get_type())
@@ -73,13 +86,13 @@ namespace snemo {
 	  left_iter = _geiger_id_bimap_.left.find(geom_id_);
 	  if (left_iter != _geiger_id_bimap_.left.end() )
 	    {
-	    electronic_id = left_iter->second;
+	    electronic_id_ = left_iter->second;
 	    }
 	  else
 	    {
-	    electronic_id = _ID_convertor_.convert_GID_to_EID(geom_id_);	
-	    std::clog << "DEBUG : insert unknown electronic ID = " << electronic_id << std::endl;
-	    _geiger_id_bimap_.insert( ID_doublet(geom_id_ ,electronic_id) );
+	    electronic_id_ = _ID_convertor_.convert_GID_to_EID(geom_id_);	
+	    std::clog << "DEBUG : insert unknown electronic ID = " << electronic_id_ << std::endl;
+	    _geiger_id_bimap_.insert( ID_doublet(geom_id_ ,electronic_id_) );
 	    }
 	  break;
 
@@ -87,28 +100,42 @@ namespace snemo {
 	  left_iter = _mcalo_id_bimap_.left.find(geom_id_);
 	  if (left_iter != _mcalo_id_bimap_.left.end() )
 	    {
-	    electronic_id = left_iter->second;
+	    electronic_id_ = left_iter->second;
 	  }
 	  else
 	    {
-	    electronic_id = _ID_convertor_.convert_GID_to_EID(geom_id_);	
-	    std::clog << "DEBUG : insert unknown electronic ID = " << electronic_id << std::endl;
-	    _mcalo_id_bimap_.insert( ID_doublet(geom_id_ ,electronic_id) );
+	    electronic_id_ = _ID_convertor_.convert_GID_to_EID(geom_id_);	
+	    std::clog << "DEBUG : insert unknown electronic ID = " << electronic_id_ << std::endl;
+	    _mcalo_id_bimap_.insert( ID_doublet(geom_id_ ,electronic_id_) );
 	    }
 	  break;
 
 	default :
 	  break;
 	}  
-      return electronic_id;
+      return ;
     }
 
-  geomtools::geom_id electronic_mapping::convert_EID_to_GID(const bool tracker_trigger_mode_, const geomtools::geom_id & elec_id_)
+    void electronic_mapping::convert_EID_to_GID(const bool tracker_trigger_mode_, 
+						const geomtools::geom_id & electronic_id_,
+						geomtools::geom_id & geom_id_) const
+    {
+      const_cast<electronic_mapping *> (this) -> _convert_EID_to_GID(tracker_trigger_mode_,
+								     electronic_id_,
+								     geom_id_);
+      
+      return;
+    }
+
+
+    void electronic_mapping::_convert_EID_to_GID(const bool tracker_trigger_mode_, 
+						 const geomtools::geom_id & elec_id_, 
+						 geomtools::geom_id & geom_id_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Electronic mapping is not initialized ! ");
       DT_THROW_IF(elec_id_.get_type() != mapping::FEB_CATEGORY_TYPE, std::logic_error, "elect_id incorrect type ! ");
       DT_THROW_IF(tracker_trigger_mode_ != mapping::THREE_WIRES_TRACKER_MODE, std::logic_error, " Give a correct traker trigger mode (Two wires mode is not supported yet) ! ");
-      geomtools::geom_id geom_id;
+      geom_id_.reset();
       ID_bimap::right_const_iterator right_iter ;
      
       switch (elec_id_.get(mapping::RACK_INDEX))
@@ -117,7 +144,7 @@ namespace snemo {
 	  right_iter = _geiger_id_bimap_.right.find(elec_id_);
 	  if (right_iter != _geiger_id_bimap_.right.end() )
 	    {
-	      geom_id = right_iter->second;
+	      geom_id_ = right_iter->second;
 	    }
 	  else
 	    {
@@ -129,7 +156,7 @@ namespace snemo {
 	  right_iter = _mcalo_id_bimap_.right.find(elec_id_);
 	  if (right_iter != _mcalo_id_bimap_.right.end() )
 	    {
-	      geom_id = right_iter->second;
+	      geom_id_ = right_iter->second;
 	    }
 	  else
 	    {
@@ -141,7 +168,7 @@ namespace snemo {
 	  break;
 	}
       
-      return geom_id;
+      return;
     }
 
     void electronic_mapping::init_geiger()

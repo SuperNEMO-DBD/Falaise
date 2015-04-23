@@ -19,6 +19,7 @@
 
 // This project : 
 #include <snemo/digitization/mapping.h>
+#include <snemo/digitization/geiger_tp_constants.h>
 
 namespace snemo {
   
@@ -33,47 +34,6 @@ namespace snemo {
 			enum store_mask_type {
 				STORE_CLOCKTICK_800NS   = datatools::bit_mask::bit03, //!< Serialization mask for the clocktick
 				STORE_GG_TP             = datatools::bit_mask::bit04  //!< Serialization mask for the TP
-			};
-
-			/// Position of bits in the Geiger tracker TP bitset word (100 bits)
-			enum gg_tp_bit_pos {
-				TP_BEGIN          = 0,   //!< Trigger primitive beginning
-				TP_END            = 54,  //!< Trigger primitive ending
-				THWS_BEGIN        = 55,  //!< Tracker hardware status beginning
-				TRM_BIT0          = 55,  //!< Tracker row mode (bit 0)
-				TRM_BIT1          = 56,  //!< Tracker row mode (bit 1)
-				TRM_BIT2          = 57,  //!< Tracker row mode (bit 2)
-				TSM_BIT           = 58,  //!< Tracker side mode bit
-				TTM_BIT           = 59,  //!< Tracker trigger mode bit (0 is 3-wires mode; 1 is 2-wires mode)
-				THWS_END          = 59,  //!< Tracker hardware status ending
-				ADDRESS_BEGIN     = 60,  //!< Board address beginning (board ID [5 bits] , crate ID [2 bits] + Spare [3 bits])
-				BOARD_ID_BIT0     = 60,  //!< Board ID (bit 0) 
-				BOARD_ID_BIT1     = 61,  //!< Board ID (bit 1)
-				BOARD_ID_BIT2     = 62,  //!< Board ID (bit 2)
-				BOARD_ID_BIT3     = 63,  //!< Board ID (bit 3)
-				BOARD_ID_BIT4     = 64,  //!< Board ID (bit 4)
-				CRATE_ID_BIT0     = 65,  //!< Crate ID (bit 0)
-				CRATE_ID_BIT1     = 66,  //!< Crate ID (bit 1)
-				ADDRESS_END       = 69,  //!< Board address ending
-				TTID_BEGIN        = 70,  //!< Tracker trigger ID beginning
-				TTID_END          = 84,  //!< Tracker trigger ID ending
-				CONTROL_BEGIN     = 85,  //!< Control beginning
-				CONTROL_END       = 99   //!< Control ending
-
-			}; 
-
-			/// Size of bits word in the Geiger tracker TP bitset word (100 bits)
-			enum gg_tp_size {
-				TP_SIZE            = 55,
-				THWS_SIZE          = 5,
-				TRM_WORD_SIZE      = 3,
-    	  ADDRESS_SIZE       = 10,
-				BOARD_ID_WORD_SIZE = 5,
-				CRATE_ID_WORD_SIZE = 2,
-				SPARE_WORD_SIZE    = 3,
-				TTID_SIZE          = 15,
-				CONTROL_SIZE       = 15,
-				FULL_SIZE          = 100
 			};
       
 			/// Default constructor
@@ -91,7 +51,7 @@ namespace snemo {
 											unsigned int number_of_rows_);
 
 			/// Set the data with values
-			void set_data(std::bitset<TP_SIZE> & gg_tp_word_);
+			void set_data(std::bitset<geiger::tp::TP_SIZE> & gg_tp_word_);
 
 			/// Return the const timestamp of the geiger trigger primitive
 			int32_t get_clocktick_800ns() const;
@@ -103,7 +63,7 @@ namespace snemo {
 			void reset_clocktick_800ns();
 
 			/// Return the const reference to the full geiger bitset
-			const std::bitset<100> & get_gg_bitset() const;
+			const std::bitset<geiger::tp::FULL_SIZE> & get_gg_bitset() const;
 
 			/// Reset the full geiger bitset bitset
 			void reset_gg_bitset();
@@ -112,7 +72,7 @@ namespace snemo {
 			void get_gg_tp_bitset(boost::dynamic_bitset<> & gg_tp_word_) const;
 
 			/// Set the geiger trigger primitive bitset (55 bits)
-			void set_gg_tp_bitset(std::bitset<TP_SIZE> & gg_tp_word_);
+			void set_gg_tp_bitset(std::bitset<geiger::tp::TP_SIZE> & gg_tp_word_);
 			
 			/// Set the active bit when a geiger cell is fired
 			void set_gg_tp_active_bit(const int & bit_index_);
@@ -121,7 +81,7 @@ namespace snemo {
 			// void get_thws_bitset(boost::dynamic_bitset<> & gg_thws_word_) const;
 			
 			/// Return the const reference to the geiger Tracker HardWare Status (THWS) bitset
-			void get_hardware_status_bitset(std::bitset<THWS_SIZE> & gg_hardware_status_) const;
+			void get_hardware_status_bitset(std::bitset<geiger::tp::THWS_SIZE> & gg_hardware_status_) const;
 			
 			/// Get the tracker row mode (return the number of connected Geiger rows to the FEB (up to 7 rows))
 			unsigned long get_tracker_row_mode() const;
@@ -151,7 +111,7 @@ namespace snemo {
 			void set_board_id(unsigned long board_id_);
 
 			/// Get the crate ID (ID = 0-2)
-			void get_crate_id(std::bitset<CRATE_ID_WORD_SIZE> & crate_id_) const;
+			void get_crate_id(std::bitset<geiger::tp::CRATE_ID_WORD_SIZE> & crate_id_) const;
 
 			/// Set the crate ID (ID = 0-2)
 			void set_crate_id(unsigned long crate_id_);
@@ -206,7 +166,7 @@ namespace snemo {
 
 			bool _locked_; //!< geiger TP lock flag
 			int32_t _clocktick_800ns_; //!< The timestamp of the geiger trigger primitive  
-			std::bitset<100> _gg_tp_; //!< The geiger trigger primitive bitset
+			std::bitset<geiger::tp::FULL_SIZE> _gg_tp_; //!< The geiger trigger primitive bitset
 
 			DATATOOLS_SERIALIZATION_DECLARATION();
 

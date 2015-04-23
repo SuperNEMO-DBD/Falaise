@@ -177,8 +177,6 @@ namespace snemo {
 	  }
 
 	board_id = (row_index + row_shift -shift) / 2;
-	std::clog << "DEBUG : geom id in ID CONVERTOR class " << geom_id_ << std::endl;
-	std::clog << "DEBUG : board id in ID CONVERTOR class " << board_id << std::endl;
 
 	if (row_index < mapping::THREE_WIRES_LONELY_ROW)
 	  {

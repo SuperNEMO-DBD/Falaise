@@ -81,46 +81,26 @@ int main( int  argc_ , char ** argv_  )
     geomtools::geom_id EID5;
 
     
-    EID1 = my_e_mapping.convert_GID_to_EID(snemo::digitization::mapping::THREE_WIRES_TRACKER_MODE, GID1);
+    my_e_mapping.convert_GID_to_EID(snemo::digitization::mapping::THREE_WIRES_TRACKER_MODE, GID1, EID1);
     std::cout <<"GID1 : "<<  GID1;
     std::cout <<" ---> EID1 : "<<  EID1<<std::endl;
 
-    EID2 = my_e_mapping.convert_GID_to_EID(snemo::digitization::mapping::THREE_WIRES_TRACKER_MODE, GID2);
+    my_e_mapping.convert_GID_to_EID(snemo::digitization::mapping::THREE_WIRES_TRACKER_MODE, GID2, EID2);
     std::cout <<"GID2 : "<<  GID2;
     std::cout <<" ---> EID2 : "<<  EID2<<std::endl;
 
-    EID3 = my_e_mapping.convert_GID_to_EID(snemo::digitization::mapping::THREE_WIRES_TRACKER_MODE, GID3);
+    my_e_mapping.convert_GID_to_EID(snemo::digitization::mapping::THREE_WIRES_TRACKER_MODE, GID3, EID3);
     std::cout <<"GID3 : "<<  GID3;
     std::cout <<" ---> EID3 : "<<  EID3<<std::endl;
 
-    EID4 = my_e_mapping.convert_GID_to_EID(snemo::digitization::mapping::THREE_WIRES_TRACKER_MODE, GID4);
+    my_e_mapping.convert_GID_to_EID(snemo::digitization::mapping::THREE_WIRES_TRACKER_MODE, GID4, EID4);
     std::cout <<"GID4 : "<<  GID4;
     std::cout <<" ---> EID4 : "<<  EID4<<std::endl;
     
-    EID5 = my_e_mapping.convert_GID_to_EID(snemo::digitization::mapping::THREE_WIRES_TRACKER_MODE, GID5);
+    my_e_mapping.convert_GID_to_EID(snemo::digitization::mapping::THREE_WIRES_TRACKER_MODE, GID5, EID5);
     std::cout <<"GID5 : "<<  GID5;
     std::cout <<" ---> EID5 : "<<  EID5<<std::endl;
 
-
-    // geomtools::geom_id EID42(666,5,1,12,7);
-    // geomtools::geom_id GID42;
-    
-    // GID42 = my_e_mapping.convert_EID_to_GID(snemo::digitization::mapping::THREE_WIRES_TRACKER_MODE, EID42);
-
-    // std::cout <<"GID42 : "<<  GID42;
-    // std::cout <<" ---> EID42 : "<<  EID42<<std::endl;
-
-
-    // geomtools::geom_id GID_CALO(1302, 0, 0, 12, 5);
-    // geomtools::geom_id EID_CALO;
-    // EID_CALO = my_e_mapping.convert_GID_to_EID(snemo::digitization::mapping::THREE_WIRES_TRACKER_MODE, GID_CALO);
-    // std::cout <<"GID_CALO : "<<  GID_CALO;
-    // std::cout <<" ---> EID_CALO : "<<  EID_CALO<<std::endl;
-
-
-    // GID_CALO = my_e_mapping.convert_EID_to_GID(snemo::digitization::mapping::THREE_WIRES_TRACKER_MODE, EID_CALO);
-    // std::cout <<"EID_CALO : "<<  EID_CALO;
-    // std::cout <<" --->  GID_CALO : "<<  GID_CALO<<std::endl;
   }
     catch (std::exception & error) {
       DT_LOG_FATAL(logging, error.what());

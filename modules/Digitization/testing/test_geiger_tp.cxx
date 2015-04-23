@@ -26,7 +26,7 @@ int main( int /* argc_ */, char ** /* argv_ */ )
 
     snemo::digitization::geiger_tp my_geiger_tp;
     
-    std::bitset<snemo::digitization::geiger_tp::TP_SIZE> my_tp_bitset(std::string("1111100101000001010100000101010000010101000001010110101"));
+    std::bitset<snemo::digitization::geiger::tp::TP_SIZE> my_tp_bitset(std::string("1111100101000001010100000101010000010101000001010110101"));
 
     my_geiger_tp.set_gg_tp_bitset(my_tp_bitset);
     my_geiger_tp.set_clocktick_800ns(5);

@@ -52,10 +52,15 @@ namespace snemo {
 			void init_geiger();
 			void init_mcalo();
 
-			geomtools::geom_id convert_GID_to_EID(const bool tracker_trigger_mode_, const geomtools::geom_id & geom_id_);
-			geomtools::geom_id convert_EID_to_GID(const bool tracker_trigger_mode_, const geomtools::geom_id & geom_id_);
+			void convert_GID_to_EID(const bool tracker_trigger_mode_, const geomtools::geom_id & geom_id_, geomtools::geom_id & electronic_id_) const;
+			void convert_EID_to_GID(const bool tracker_trigger_mode_, const geomtools::geom_id & electronic_id_, geomtools::geom_id & geom_id_) const;
 			void set_geo_manager(const geomtools::manager & mgr_);
 			void set_module_number(int);
+
+		protected : 
+			
+			void _convert_GID_to_EID(const bool tracker_trigger_mode_, const geomtools::geom_id & geom_id_, geomtools::geom_id & electronic_id_);
+			void _convert_EID_to_GID(const bool tracker_trigger_mode_, const geomtools::geom_id & electronic_id_, geomtools::geom_id & geom_id_);
 			
     private :
       

@@ -95,7 +95,6 @@ namespace snemo {
       temporary_feb_id.set_type(my_wd_data_.feb_id.get_type());
       temporary_feb_id.set_depth(mapping::BOARD_DEPTH);
       my_wd_data_.feb_id.extract_to(temporary_feb_id);
-      std::clog << "DEBUG : temporary feb id = " << temporary_feb_id << std::endl;
       gg_tp.set_header(hit_id_,
 		       temporary_feb_id,
 		       signal_clocktick_,
@@ -113,7 +112,6 @@ namespace snemo {
     void signal_to_geiger_tp_algo::update_gg_tp(const signal_to_tp_working_data & my_wd_data_, geiger_tp & my_geiger_tp_)
     {
       my_geiger_tp_.set_gg_tp_active_bit(my_wd_data_.feb_id.get(mapping::CHANNEL_INDEX));
-      std::clog << "DEBUG : channel index (bit index ) = " << my_wd_data_.feb_id.get(mapping::CHANNEL_INDEX) << std::endl;
       _activated_bits_[my_wd_data_.feb_id.get(mapping::CHANNEL_INDEX)] = 1;
       my_geiger_tp_.tree_dump(std::clog, "***** Geiger TP Update : *****", "INFO : ");
       return;
@@ -147,7 +145,7 @@ namespace snemo {
 	  const datatools::properties & properties = a_geiger_signal.get_auxiliaries();
 	  geomtools::geom_id electronic_id;
 
-	  electronic_id = _electronic_mapping_->convert_GID_to_EID(mapping::THREE_WIRES_TRACKER_MODE, geom_id);
+	  _electronic_mapping_->convert_GID_to_EID(mapping::THREE_WIRES_TRACKER_MODE, geom_id, electronic_id);
 
 	  bool         existing = false;
 	  unsigned int existing_index = 0;
@@ -192,7 +190,7 @@ namespace snemo {
 	  int existing_index = -1;
 	  bool existing_eid  = false;
 	  
-	  for (int j = 0; j < 10; j++)
+	  for (int j = 0; j < clock_utils::ACTIVATED_GEIGER_CELLS_NUMBER; j++)
 	    { 
 	      bool existing_ct = false;
 	      std::vector<datatools::handle<geiger_tp> > my_list_of_gg_tp_per_eid;
@@ -232,7 +230,6 @@ namespace snemo {
 				geiger_tp_hit_id, 
 				my_geiger_tp_data_);
 		}
-	      std::clog << "DEBUG : existing bool EID = " << existing_eid << " existing bool CT " << existing_ct << std::endl;
 	      signal_clocktick++;
 	    } // end of for (j < 10)
 
