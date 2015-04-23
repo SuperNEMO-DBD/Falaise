@@ -200,10 +200,10 @@ namespace snemo {
       for(int side = 0; side < mapping::MAX_NUMBER_OF_SIDE; side++)
 	{
 	  GID.set(mapping::SIDE_INDEX, side);
-	  for(int column = 0; column < mapping::MAX_NUMBER_OF_CALO_ROW; column++)
+	  for(int column = 0; column < mapping::MAX_NUMBER_OF_MAIN_CALO_COLUMN; column++)
 	    {
 	      GID.set(mapping::COLUMN_INDEX, column);
-	      for(int row = 0; row < mapping::MAX_NUMBER_OF_CALO_ROW; row++)
+	      for(int row = 0; row < mapping::MAX_NUMBER_OF_MAIN_CALO_ROW; row++)
 		{
 		  GID.set(mapping::ROW_INDEX, row);
 		  EID = _ID_convertor_.convert_GID_to_EID(GID);
@@ -212,6 +212,52 @@ namespace snemo {
 	    } // end of column loop
 	} // end of side loop  
       return ;
+    }
+    
+    void electronic_mapping::init_x_wall()
+    {
+      geomtools::geom_id GID(mapping::CALORIMETER_X_WALL_CATEGORY_TYPE, 0, 0, 0, 0);
+      geomtools::geom_id EID;
+      for(int side = 0; side < mapping::MAX_NUMBER_OF_SIDE; side++)
+	{
+	  GID.set(mapping::SIDE_INDEX, side);
+	  for (int wall = 0; wall < mapping::MAX_NUMBER_OF_WALLS; wall ++)
+	    {
+	      GID.set(mapping::WALL_INDEX, wall);
+	      for(int column = 0; column < mapping::MAX_NUMBER_OF_X_CALO_COLUMNS; column++)
+		{
+		  GID.set(mapping::COLUMN_INDEX, column);
+		  for(int row = 0; row < mapping::MAX_NUMBER_OF_X_CALO_ROWS; row++)
+		    {
+		      GID.set(mapping::ROW_INDEX, row);
+		      EID = _ID_convertor_.convert_GID_to_EID(GID);
+		      _mcalo_id_bimap_.insert( ID_doublet(GID , EID) ) ;
+		    } // end of row loop
+		} // end of column loop
+	    } // end of wall loop
+	} // end of side loop  
+      return;
+    }
+
+    void electronic_mapping::init_gveto()
+    {
+      geomtools::geom_id GID(mapping::CALORIMETER_GVETO_CATEGORY_TYPE, 0, 0, 0, 0);
+      geomtools::geom_id EID;
+      for(int side = 0; side < mapping::MAX_NUMBER_OF_SIDE; side++)
+	{
+	  GID.set(mapping::SIDE_INDEX, side);
+	  for (int wall = 0; wall < mapping::MAX_NUMBER_OF_WALLS; wall ++)
+	    {
+	      GID.set(mapping::WALL_INDEX, wall);
+	      for(int column = 0; column < mapping::MAX_NUMBER_OF_GVETO_COLUMNS; column++)
+		{
+		  GID.set(mapping::ROW_INDEX, column);
+		  EID = _ID_convertor_.convert_GID_to_EID(GID);
+		  _mcalo_id_bimap_.insert(ID_doublet(GID, EID));
+		} // end of column loop
+	    } // end of wall loop
+	} // end of side loop  
+      return;
     }
 
     void electronic_mapping::set_geo_manager(const geomtools::manager & mgr_ )

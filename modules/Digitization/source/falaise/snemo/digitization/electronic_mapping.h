@@ -51,6 +51,8 @@ namespace snemo {
 
 			void init_geiger();
 			void init_mcalo();
+			void init_x_wall();
+			void init_gveto();
 
 			void convert_GID_to_EID(const bool tracker_trigger_mode_, const geomtools::geom_id & geom_id_, geomtools::geom_id & electronic_id_) const;
 			void convert_EID_to_GID(const bool tracker_trigger_mode_, const geomtools::geom_id & electronic_id_, geomtools::geom_id & geom_id_) const;

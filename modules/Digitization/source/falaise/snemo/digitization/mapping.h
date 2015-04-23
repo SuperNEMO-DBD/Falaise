@@ -80,10 +80,18 @@ namespace snemo {
 			static const int32_t GEIGER_RACK_ID  = 5;
 
 			static const uint32_t MAX_NUMBER_OF_SIDE = 2;
+			static const uint32_t MAX_NUMBER_OF_WALLS = 2;
+
 			static const uint32_t MAX_NUMBER_OF_LAYER = 9;
-			static const uint32_t MAX_NUMBER_OF_COLUMN = 20;
+			static const uint32_t MAX_NUMBER_OF_MAIN_CALO_COLUMN = 20;
+			static const uint32_t MAX_NUMBER_OF_MAIN_CALO_ROW = 13;
+
+			static const uint32_t MAX_NUMBER_OF_X_CALO_COLUMNS = 2;
+			static const uint32_t MAX_NUMBER_OF_X_CALO_ROWS = 16;
+
+			static const uint32_t MAX_NUMBER_OF_GVETO_COLUMNS = 16;
+
 			static const uint32_t MAX_NUMBER_OF_GEIGER_ROW = 113;
-			static const uint32_t MAX_NUMBER_OF_CALO_ROW = 13;
 
 			static const uint32_t MAX_NUMBER_OF_CRATE  = 2;
 			static const uint32_t MAX_NUMBER_OF_FEB_BY_CRATE = 19;
