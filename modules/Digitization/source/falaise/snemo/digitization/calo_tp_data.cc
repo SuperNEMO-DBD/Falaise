@@ -30,8 +30,10 @@ namespace snemo {
     
     int calo_tp_data::get_clocktick_min_index() const
     {
-      DT_THROW_IF(_calo_tps_.size() == 0, std::logic_error, " Calorimeter TP collection is empty ! ");
-
+			if(_calo_tps_.size() == 0)
+				{
+					return 0;
+				}
       int index_with_min = 0;
 
       int32_t clocktick_min = _calo_tps_[0].get().get_clocktick_25ns();
@@ -49,8 +51,10 @@ namespace snemo {
 			
     int calo_tp_data::get_clocktick_max_index() const
     {
-      DT_THROW_IF(_calo_tps_.size() == 0, std::logic_error, " Calorimeter TP collection is empty ! ");
-
+			if(_calo_tps_.size() == 0)
+				{
+					return 0;
+				}
       int index_with_max = 0;
 
       int32_t clocktick_max = _calo_tps_[0].get().get_clocktick_25ns();
@@ -68,24 +72,37 @@ namespace snemo {
 
     int calo_tp_data::get_clocktick_min() const
     {
-      DT_THROW_IF(_calo_tps_.size() == 0, std::logic_error, " Calorimeter TP collection is empty ! ");
+			if(_calo_tps_.size() == 0)
+				{
+					return 0;
+				}
       return _calo_tps_[get_clocktick_min_index()].get().get_clocktick_25ns();
     }
 
     int calo_tp_data::get_clocktick_max() const
     {
-      DT_THROW_IF(_calo_tps_.size() == 0, std::logic_error, " Calorimeter TP collection is empty ! ");
+			if(_calo_tps_.size() == 0)
+				{
+					return 0;
+				}
       return _calo_tps_[get_clocktick_max_index()].get().get_clocktick_25ns();
     }
 
     int calo_tp_data::get_clocktick_range() const
     {
-      DT_THROW_IF(_calo_tps_.size() == 0, std::logic_error, " Calorimeter TP collection is empty ! ");
+			if(_calo_tps_.size() == 0)
+				{
+					return 0;
+				}
       return get_clocktick_max() - get_clocktick_min();
     }
 			
     void calo_tp_data::get_list_of_tp_per_clocktick(int32_t clocktick_25ns_, calo_tp_collection_type & my_list_of_tps_per_clocktick_) const
     {
+			if(_calo_tps_.size() == 0)
+				{
+					return;
+				}
       for (int i = 0; i < _calo_tps_.size(); i++)
       	{
       	  if(_calo_tps_[i].get().get_clocktick_25ns() == clocktick_25ns_)
@@ -98,6 +115,10 @@ namespace snemo {
 
     void calo_tp_data::get_list_of_tp_per_clocktick_per_crate(int32_t clocktick_25ns_, unsigned int crate_number_, calo_tp_collection_type & my_list_of_tps_per_clocktick_per_crate_ ) const
     {
+			if(_calo_tps_.size() == 0)
+				{
+					return;
+				}
       for (int i = 0; i < _calo_tps_.size(); i++)
 				{
 					if(_calo_tps_[i].get().get_clocktick_25ns() == clocktick_25ns_ && _calo_tps_[i].get().get_geom_id().get(mapping::CRATE_INDEX) == crate_number_)

@@ -20,8 +20,18 @@ namespace snemo {
     trigger_algorithm::trigger_algorithm()
     {
       _initialized_ = false;
-     _electronic_mapping_ = 0;
-     return;
+      _electronic_mapping_ = 0;
+      for (int i = 0; i < mapping::MAX_NUMBER_OF_SIDE; i ++)
+	{
+	  for (int j = 0; j < mapping::GEIGER_LAYER_SIZE; j ++)
+	    {
+	      for (int k = 0; k < mapping::GEIGER_ROW_SIZE; k ++)
+		{
+		  _geiger_matrix_[i][j][k] = 0;
+		}
+	    }
+	}
+      return;
     }
 
     trigger_algorithm::~trigger_algorithm()
@@ -92,39 +102,104 @@ namespace snemo {
 		  temporary_electronic_id.set(mapping::RACK_INDEX, ctw_rack);
 		  temporary_electronic_id.set(mapping::CRATE_INDEX, ctw_crate);
 		  temporary_electronic_id.set(mapping::BOARD_INDEX, board_id);
-		  temporary_electronic_id.set(mapping::CHANNEL_INDEX, channel_id);
-		  std::clog << "DEBUG : temporary EID = " << temporary_electronic_id << std::endl;
-
+		  temporary_electronic_id.set(mapping::CHANNEL_INDEX, channel_id);  
 		  {
 		    geomtools::geom_id dummy;
 		    hit_cells_gids_.push_back(dummy);
 		  }
-
 		  geomtools::geom_id & hit_cell_gid = hit_cells_gids_.back();
 		  _electronic_mapping_->convert_EID_to_GID(mapping::THREE_WIRES_TRACKER_MODE, temporary_electronic_id, hit_cell_gid);
-		  std::clog << "DEBUG : hit_cell_gid  = " << hit_cell_gid << std::endl;
 		}	 
 	    } // end of TP loop
 	} // end of max number of FEB loop
       
       return;
     }
-   
+
+    void trigger_algorithm::fill_matrix(const std::vector<geomtools::geom_id> & hit_cells_gids_)
+    {
+      for (int i = 0; i < hit_cells_gids_.size(); i++)
+	{
+	  int side = hit_cells_gids_[i].get(mapping::SIDE_INDEX);
+	  int layer = hit_cells_gids_[i].get(mapping::LAYER_INDEX);
+	  int row = hit_cells_gids_[i].get(mapping::ROW_INDEX);
+	  _geiger_matrix_[side][layer][row] = 1;
+	}    
+      return;
+    }
+
+    void trigger_algorithm::display_matrix() const
+    { 
+      for (int i = 0; i < mapping::MAX_NUMBER_OF_SIDE; i++)
+	{
+	  for (int j = 0; j < mapping::GEIGER_LAYER_SIZE; j++)
+	    {
+	      for (int k = 0; k < mapping::GEIGER_ROW_SIZE; k++)
+		{
+		  if (_geiger_matrix_[i][j][k] && k == 0 )
+		    {
+		      std::clog << "|*";
+		    }
+		  if(_geiger_matrix_[i][j][k])
+		    {
+		      std::clog << "*";
+		    }
+		  if(!_geiger_matrix_[i][j][k] && k == 0)
+		    {
+		      std::clog << "|o";
+		    }
+		  if(!_geiger_matrix_[i][j][k])
+		    {
+		      std::clog << "o";
+		    }
+		  if (k == 112)
+		    {
+		      std::clog << "|" << std::endl;
+		    }
+		} // end of row loop
+	      if (j == 8 && i == 0)
+		{
+		  std::clog << "|------------------------------------------------------------------------------------------------------------------|" << std::endl;;
+		}	      
+	    } // end of layer loop
+
+	} // end of side loop
+      return;
+    }
+    
+    void trigger_algorithm::reset_matrix()
+    {
+      for (int i = 0; i < mapping::MAX_NUMBER_OF_SIDE; i ++)
+	{
+	  for (int j = 0; j < mapping::GEIGER_LAYER_SIZE; j ++)
+	    {
+	      for (int k = 0; k < mapping::GEIGER_ROW_SIZE; k ++)
+		{
+		  _geiger_matrix_[i][j][k] = 0;
+		}
+	    }
+	}
+      return;
+    } 
+    
     void trigger_algorithm::process(const geiger_ctw_data & geiger_ctw_data_)
     { 
       DT_THROW_IF(!is_initialized(), std::logic_error, "Trigger algorithm is not initialized, it can't process ! ");
-      std::vector<geomtools::geom_id> hit_cells_gids;
       for(int32_t i = geiger_ctw_data_.get_clocktick_min(); i <= geiger_ctw_data_.get_clocktick_max(); i++)
 	{
 	  std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick;
 	  geiger_ctw_data_.get_list_of_geiger_ctw_per_clocktick(i, geiger_ctw_list_per_clocktick);
-	  std::clog << "DEBUG : size of list = " << geiger_ctw_list_per_clocktick.size() << std::endl;
 	  for (int j = 0; j < geiger_ctw_list_per_clocktick.size(); j++)
 	    {
-	      build_hit_cells_gids_from_ctw(geiger_ctw_list_per_clocktick[j].get(), hit_cells_gids);  
+	      std::vector<geomtools::geom_id> hit_cells_gids;
+	      build_hit_cells_gids_from_ctw(geiger_ctw_list_per_clocktick[j].get(), hit_cells_gids);
+	      fill_matrix(hit_cells_gids);   
 	    }
-	}
-      std::clog << "DEBUG : vector size = " << hit_cells_gids.size() << std::endl;    
+	  std::clog << std::endl;
+	  std::clog << "Geiger cells matrix for clocktick = " << i << " : " << std::endl;
+	  display_matrix();
+	  reset_matrix();
+	} 
       return;
     }
 

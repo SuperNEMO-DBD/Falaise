@@ -43,6 +43,12 @@ namespace snemo {
 
 			void build_hit_cells_gids_from_ctw(const geiger_ctw & my_geiger_ctw_, std::vector<geomtools::geom_id> & hit_cells_gids_) const;
 
+			void fill_matrix(const std::vector<geomtools::geom_id> & hit_cells_gids_);
+
+			void display_matrix() const;
+			
+			void reset_matrix();
+
       /// General process
       void process(const geiger_ctw_data & geiger_ctw_data_);
 	
