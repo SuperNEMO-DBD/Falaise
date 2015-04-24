@@ -16,6 +16,7 @@
 #include <snemo/digitization/calo_tp.h>
 #include <snemo/digitization/geiger_tp.h>
 #include <snemo/digitization/ID_convertor.h>
+#include <snemo/digitization/mapping.h>
 
 
 int main( int /* argc_ */, char ** /* argv_ */ )

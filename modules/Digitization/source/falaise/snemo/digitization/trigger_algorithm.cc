@@ -21,16 +21,24 @@ namespace snemo {
     {
       _initialized_ = false;
       _electronic_mapping_ = 0;
-      for (int i = 0; i < mapping::MAX_NUMBER_OF_SIDE; i ++)
+      bool * vbool = static_cast<bool* > (&_geiger_matrix_[0][0][0]);
+      static const size_t nmax = mapping::MAX_NUMBER_OF_SIDE * mapping::GEIGER_LAYER_SIZE * mapping::GEIGER_ROW_SIZE;
+
+      for (int i = 0; i < nmax ; i ++)
 	{
-	  for (int j = 0; j < mapping::GEIGER_LAYER_SIZE; j ++)
-	    {
-	      for (int k = 0; k < mapping::GEIGER_ROW_SIZE; k ++)
-		{
-		  _geiger_matrix_[i][j][k] = 0;
-		}
-	    }
+	  vbool[i] = false;
 	}
+
+      // for (int i = 0; i < mapping::MAX_NUMBER_OF_SIDE; i ++)
+      // 	{
+      // 	  for (int j = 0; j < mapping::GEIGER_LAYER_SIZE; j ++)
+      // 	    {
+      // 	      for (int k = 0; k < mapping::GEIGER_ROW_SIZE; k ++)
+      // 		{
+      // 		  _geiger_matrix_[i][j][k] = false;
+      // 		}
+      // 	    }
+      // 	}
       return;
     }
 

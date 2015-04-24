@@ -19,12 +19,13 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source/falaise)
 
 # - Headers:
 
-list(APPEND FalaiseDigitizationPlugin_HEADERS  
-  source/falaise/snemo/digitization/mapping.h
+list(APPEND FalaiseDigitizationPlugin_HEADERS
+  
   source/falaise/snemo/digitization/electronic_mapping.h
   source/falaise/snemo/digitization/clock_utils.h
   source/falaise/snemo/digitization/ID_convertor.h
-  
+  source/falaise/snemo/digitization/mapping.h
+
   source/falaise/snemo/digitization/calo_signal.h
   source/falaise/snemo/digitization/calo_feb.h
   source/falaise/snemo/digitization/calo_tp.h
@@ -62,35 +63,34 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
 
 # - Sources:
 list(APPEND FalaiseDigitizationPlugin_SOURCES 
-  source/falaise/snemo/digitization/mapping.cc
-  source/falaise/snemo/digitization/electronic_mapping.cc
-  source/falaise/snemo/digitization/clock_utils.cc
-  source/falaise/snemo/digitization/ID_convertor.cc
 
-  source/falaise/snemo/digitization/calo_signal.cc
-  source/falaise/snemo/digitization/calo_feb.cc
-  source/falaise/snemo/digitization/calo_tp.cc
-  source/falaise/snemo/digitization/calo_tp_data.cc
-  source/falaise/snemo/digitization/calo_ctw.cc
-  source/falaise/snemo/digitization/calo_ctw_data.cc
-  source/falaise/snemo/digitization/calo_tp_to_ctw_algo.cc
-
-
-  source/falaise/snemo/digitization/geiger_signal.cc
-  source/falaise/snemo/digitization/geiger_tp.cc 
-  source/falaise/snemo/digitization/geiger_tp_data.cc
-  source/falaise/snemo/digitization/geiger_ctw.cc
-  source/falaise/snemo/digitization/geiger_ctw_data.cc
-  source/falaise/snemo/digitization/geiger_tp_to_ctw_algo.cc
+  source/falaise/snemo/digitization/trigger_algorithm.cc
+  source/falaise/snemo/digitization/signal_to_calo_tp_algo.cc
+  source/falaise/snemo/digitization/signal_to_geiger_tp_algo.cc
+  source/falaise/snemo/digitization/sd_to_geiger_signal_algo.cc
+  source/falaise/snemo/digitization/sd_to_calo_signal_algo.cc
 
   source/falaise/snemo/digitization/signal_data.cc
 
-  source/falaise/snemo/digitization/sd_to_calo_signal_algo.cc
-  source/falaise/snemo/digitization/sd_to_geiger_signal_algo.cc
-  source/falaise/snemo/digitization/signal_to_geiger_tp_algo.cc
-  source/falaise/snemo/digitization/signal_to_calo_tp_algo.cc
- source/falaise/snemo/digitization/trigger_algorithm.cc
+  source/falaise/snemo/digitization/calo_tp_to_ctw_algo.cc
+  source/falaise/snemo/digitization/calo_ctw_data.cc
+  source/falaise/snemo/digitization/calo_ctw.cc
+  source/falaise/snemo/digitization/calo_tp_data.cc
+  source/falaise/snemo/digitization/calo_tp.cc
+  source/falaise/snemo/digitization/calo_feb.cc
+  source/falaise/snemo/digitization/calo_signal.cc
 
+  source/falaise/snemo/digitization/geiger_tp_to_ctw_algo.cc
+  source/falaise/snemo/digitization/geiger_ctw_data.cc
+  source/falaise/snemo/digitization/geiger_ctw.cc
+  source/falaise/snemo/digitization/geiger_tp_data.cc
+  source/falaise/snemo/digitization/geiger_tp.cc 
+  source/falaise/snemo/digitization/geiger_signal.cc
+
+  source/falaise/snemo/digitization/electronic_mapping.cc
+  source/falaise/snemo/digitization/clock_utils.cc
+  source/falaise/snemo/digitization/ID_convertor.cc
+  source/falaise/snemo/digitization/mapping.cc
   source/falaise/snemo/digitization/the_serializable.cc
   )
 

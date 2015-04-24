@@ -2,8 +2,8 @@
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
-#ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_MAPPING_TP_H
-#define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_MAPPING_TP_H
+#ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_MAPPING_H
+#define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_MAPPING_H
 
 // Boost : 
 #include <boost/cstdint.hpp>
@@ -60,17 +60,17 @@ namespace snemo {
 			static const std::string  & x_wall_type();
 			static const std::string  & gveto_type();
 			
-			static const int GEIGER_CATEGORY_TYPE             = 1204;
-			static const int CALO_MAIN_WALL_CATEGORY_TYPE     = 1302;
-			static const int CALORIMETER_X_WALL_CATEGORY_TYPE = 1232;
-			static const int CALORIMETER_GVETO_CATEGORY_TYPE  = 1251;
+			static const int32_t GEIGER_CATEGORY_TYPE             = 1204;
+			static const int32_t CALO_MAIN_WALL_CATEGORY_TYPE     = 1302;
+			static const int32_t CALORIMETER_X_WALL_CATEGORY_TYPE = 1232;
+			static const int32_t CALORIMETER_GVETO_CATEGORY_TYPE  = 1251;
 
-			static const int FEB_CATEGORY_TYPE = 666; 
+			static const int32_t FEB_CATEGORY_TYPE = 666; 
 
 			static const bool THREE_WIRES_TRACKER_MODE = 0;
 			static const bool TWO_WIRES_TRACKER_MODE   = 1;
 			static const bool SIDE_MODE = 1;
-			static const int  NUMBER_OF_CONNECTED_ROWS = 7;
+			static const int32_t  NUMBER_OF_CONNECTED_ROWS = 7;
 			
 			static const int32_t TRACKER_CONTROL_BOARD_TYPE     = 666;
 			static const int32_t CALORIMETER_CONTROL_BOARD_TYPE = 666;
@@ -122,7 +122,7 @@ namespace snemo {
 
 } // end of namespace snemo
 
-#endif /* FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_MAPPING_TP_H */
+#endif /* FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_MAPPING_H */
 
 /* 
 ** Local Variables: --

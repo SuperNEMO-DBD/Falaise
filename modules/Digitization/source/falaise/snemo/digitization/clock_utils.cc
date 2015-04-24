@@ -12,6 +12,13 @@ namespace snemo {
   
   namespace digitization {
 
+
+    const int32_t clock_utils::NUMBER_OF_25_CLOCK_IN_800;
+    const int32_t clock_utils::MAIN_CLOCKTICK;
+    const int32_t clock_utils::TRACKER_CLOCKTICK;
+    const int32_t clock_utils::INVALID_CLOCKTICK;
+    const int32_t clock_utils::ACTIVATED_GEIGER_CELLS_NUMBER;
+
     clock_utils::clock_utils()
     {
       _initialized_ = false;

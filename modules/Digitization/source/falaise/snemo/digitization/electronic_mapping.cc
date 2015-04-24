@@ -3,7 +3,10 @@
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
 // Standard library :
-#include<string>
+#include <string>
+
+// - Boost:
+#include <boost/scoped_ptr.hpp>
 
 // - Bayeux/datatools:
 #include <datatools/exception.h>
@@ -15,10 +18,26 @@ namespace snemo {
   
   namespace digitization {
 
+    const std::set<int32_t> & electronic_mapping::supported_types()
+    {
+      static boost::scoped_ptr<std::set<int32_t> > _types;
+      if (!_types) {
+	_types.reset(new std::set<int32_t>);
+	_types->insert(mapping::GEIGER_CATEGORY_TYPE);
+	_types->insert(mapping::CALO_MAIN_WALL_CATEGORY_TYPE);
+	_types->insert(mapping::CALORIMETER_X_WALL_CATEGORY_TYPE);
+	_types->insert(mapping::CALORIMETER_GVETO_CATEGORY_TYPE);
+      }
+      return *_types;
+    }
+
     electronic_mapping::electronic_mapping()
     {
       _initialized_ = false;
       _geo_manager_ = 0;
+      _geo_manager_status_ = false;
+      _module_number_ = mapping::INVALID_MODULE_NUMBER;
+      _module_number_status_ = false;
     }
 
     electronic_mapping::~electronic_mapping()
@@ -30,36 +49,59 @@ namespace snemo {
       return;
     }
 
+    void electronic_mapping::add_preconstructed_type(int type_)
+    {
+      DT_THROW_IF(supported_types().count(type_) == 0, std::logic_error, "Type ["<< type_ << "] is not supported ! ");
+      _pre_constructed_types_.insert(type_);
+      return;
+    }
+
+    void electronic_mapping::set_geo_manager(const geomtools::manager & mgr_ )
+    {
+      _geo_manager_ = & mgr_;
+      _geo_manager_status_ = true;
+      _ID_convertor_.set_geo_manager(mgr_);
+    }
+    
+    bool electronic_mapping::geo_manager_is_set() const
+    {
+      return _geo_manager_status_;
+    }
+
+    void electronic_mapping::set_module_number(int module_number_)
+    {
+      _module_number_ = module_number_;
+      _module_number_status_ = true;
+      _ID_convertor_.set_module_number(module_number_);
+      return;
+    }
+
+    bool electronic_mapping::module_number_is_set() const
+    {
+      return _module_number_status_;
+    }
+
+
     void electronic_mapping::initialize()
     {
-      _initialized_ = true;
-      _ID_convertor_.initialize();
+      DT_THROW_IF(!geo_manager_is_set() && !module_number_is_set(), std::logic_error, "Geo manager or module number is not set ! ");
+      _initialize();
       return;
-
     }
-    void electronic_mapping::initialize(std::string type)
+
+    bool electronic_mapping::is_initialized() const
     {
-      _ID_convertor_.initialize();
-
-      if (type == mapping::geiger_type())
-	{
-	  init_geiger();
-	}
-
-      if (type == mapping::main_calo_type())
-	{
-	  init_mcalo();
-	}
-      _initialized_ = true;
+      return _initialized_;
+    }
+    
+    void electronic_mapping::reset()
+    {
+      DT_THROW_IF(!is_initialized(), std::logic_error, "Electronic mapping is not initialized, it can't be reset ! ");
+      _geo_manager_ = 0;
+      _initialized_ = false;
       return;
     }
     
-    void electronic_mapping::initialize(std::string type1, std::string type2)
-    {
-      // _ID_convertor_.initialize()
-      // _initialized = true;
-    }    
-
     void electronic_mapping::convert_GID_to_EID(const bool tracker_trigger_mode_, 
 						const geomtools::geom_id & geom_id_, 
 						geomtools::geom_id & electronic_id_) const
@@ -67,53 +109,7 @@ namespace snemo {
       const_cast<electronic_mapping *> (this) -> _convert_GID_to_EID(tracker_trigger_mode_,
 								     geom_id_, 
 								     electronic_id_);
-      
       return;
-    }
-    
-    void electronic_mapping::_convert_GID_to_EID(const bool tracker_trigger_mode_, 
-						 const geomtools::geom_id & geom_id_, 
-						 geomtools::geom_id & electronic_id_)
-    {
-      DT_THROW_IF(tracker_trigger_mode_ != mapping::THREE_WIRES_TRACKER_MODE, std::logic_error, " Give a correct traker trigger mode (Two wires mode is not supported yet) ! ");
-      DT_THROW_IF(!is_initialized(), std::logic_error, "Electronic mapping is not initialized ! ");
-      electronic_id_.reset();
-      ID_bimap::left_const_iterator left_iter ;
-  	    
-      switch (geom_id_.get_type())
-	{
-	case mapping::GEIGER_CATEGORY_TYPE :
-	  left_iter = _geiger_id_bimap_.left.find(geom_id_);
-	  if (left_iter != _geiger_id_bimap_.left.end() )
-	    {
-	    electronic_id_ = left_iter->second;
-	    }
-	  else
-	    {
-	    electronic_id_ = _ID_convertor_.convert_GID_to_EID(geom_id_);	
-	    std::clog << "DEBUG : insert unknown electronic ID = " << electronic_id_ << std::endl;
-	    _geiger_id_bimap_.insert( ID_doublet(geom_id_ ,electronic_id_) );
-	    }
-	  break;
-
-	case mapping::CALO_MAIN_WALL_CATEGORY_TYPE : 
-	  left_iter = _mcalo_id_bimap_.left.find(geom_id_);
-	  if (left_iter != _mcalo_id_bimap_.left.end() )
-	    {
-	    electronic_id_ = left_iter->second;
-	  }
-	  else
-	    {
-	    electronic_id_ = _ID_convertor_.convert_GID_to_EID(geom_id_);	
-	    std::clog << "DEBUG : insert unknown electronic ID = " << electronic_id_ << std::endl;
-	    _mcalo_id_bimap_.insert( ID_doublet(geom_id_ ,electronic_id_) );
-	    }
-	  break;
-
-	default :
-	  break;
-	}  
-      return ;
     }
 
     void electronic_mapping::convert_EID_to_GID(const bool tracker_trigger_mode_, 
@@ -123,10 +119,106 @@ namespace snemo {
       const_cast<electronic_mapping *> (this) -> _convert_EID_to_GID(tracker_trigger_mode_,
 								     electronic_id_,
 								     geom_id_);
-      
       return;
     }
 
+
+    void electronic_mapping::_initialize()
+    {
+      _initialized_ = true;
+      _ID_convertor_.initialize();
+      return;
+    }
+
+
+    void electronic_mapping::_init_geiger()
+    {
+      geomtools::geom_id GID(mapping::GEIGER_CATEGORY_TYPE, 0, 0, 0, 0);
+      geomtools::geom_id EID;
+      
+      for(int side = 0; side < mapping::MAX_NUMBER_OF_SIDE; side++)
+	{
+	  GID.set(mapping::SIDE_INDEX, side);
+	  for(int layer = 0; layer < mapping::MAX_NUMBER_OF_LAYER; layer++)
+	    {
+	      GID.set(mapping::LAYER_INDEX, layer);
+	      for(int row = 0; row < mapping::MAX_NUMBER_OF_GEIGER_ROW; row++)
+		{
+		  GID.set(mapping::ROW_INDEX, row);
+		  EID = _ID_convertor_.convert_GID_to_EID(GID);
+		  _geiger_id_bimap_.insert( ID_doublet(GID , EID) ) ;
+		} // end of row loop
+	    } // end of layer loop
+	} // end of side loop
+      return ;
+    }
+
+    void electronic_mapping::_init_mcalo()
+    {
+      geomtools::geom_id GID(mapping::CALO_MAIN_WALL_CATEGORY_TYPE, 0, 0, 0, 0);
+      geomtools::geom_id EID;
+      for(int side = 0; side < mapping::MAX_NUMBER_OF_SIDE; side++)
+	{
+	  GID.set(mapping::SIDE_INDEX, side);
+	  for(int column = 0; column < mapping::MAX_NUMBER_OF_MAIN_CALO_COLUMN; column++)
+	    {
+	      GID.set(mapping::COLUMN_INDEX, column);
+	      for(int row = 0; row < mapping::MAX_NUMBER_OF_MAIN_CALO_ROW; row++)
+		{
+		  GID.set(mapping::ROW_INDEX, row);
+		  EID = _ID_convertor_.convert_GID_to_EID(GID);
+		  _mcalo_id_bimap_.insert( ID_doublet(GID , EID) ) ;
+		} // end of row loop
+	    } // end of column loop
+	} // end of side loop  
+      return ;
+    }
+    
+    void electronic_mapping::_init_x_wall()
+    {
+      geomtools::geom_id GID(mapping::CALORIMETER_X_WALL_CATEGORY_TYPE, 0, 0, 0, 0);
+      geomtools::geom_id EID;
+      for(int side = 0; side < mapping::MAX_NUMBER_OF_SIDE; side++)
+	{
+	  GID.set(mapping::SIDE_INDEX, side);
+	  for (int wall = 0; wall < mapping::MAX_NUMBER_OF_WALLS; wall ++)
+	    {
+	      GID.set(mapping::WALL_INDEX, wall);
+	      for(int column = 0; column < mapping::MAX_NUMBER_OF_X_CALO_COLUMNS; column++)
+		{
+		  GID.set(mapping::COLUMN_INDEX, column);
+		  for(int row = 0; row < mapping::MAX_NUMBER_OF_X_CALO_ROWS; row++)
+		    {
+		      GID.set(mapping::ROW_INDEX, row);
+		      EID = _ID_convertor_.convert_GID_to_EID(GID);
+		      _mcalo_id_bimap_.insert( ID_doublet(GID , EID) ) ;
+		    } // end of row loop
+		} // end of column loop
+	    } // end of wall loop
+	} // end of side loop  
+      return;
+    }
+
+    void electronic_mapping::_init_gveto()
+    {
+      geomtools::geom_id GID(mapping::CALORIMETER_GVETO_CATEGORY_TYPE, 0, 0, 0, 0);
+      geomtools::geom_id EID;
+      for(int side = 0; side < mapping::MAX_NUMBER_OF_SIDE; side++)
+	{
+	  GID.set(mapping::SIDE_INDEX, side);
+	  for (int wall = 0; wall < mapping::MAX_NUMBER_OF_WALLS; wall ++)
+	    {
+	      GID.set(mapping::WALL_INDEX, wall);
+	      for(int column = 0; column < mapping::MAX_NUMBER_OF_GVETO_COLUMNS; column++)
+		{
+		  GID.set(mapping::ROW_INDEX, column);
+		  EID = _ID_convertor_.convert_GID_to_EID(GID);
+		  _mcalo_id_bimap_.insert(ID_doublet(GID, EID));
+		} // end of column loop
+	    } // end of wall loop
+	} // end of side loop  
+      return;
+    }
 
     void electronic_mapping::_convert_EID_to_GID(const bool tracker_trigger_mode_, 
 						 const geomtools::geom_id & elec_id_, 
@@ -166,125 +258,81 @@ namespace snemo {
 
 	default :
 	  break;
-	}
-      
+	}    
       return;
     }
 
-    void electronic_mapping::init_geiger()
+    void electronic_mapping::_convert_GID_to_EID(const bool tracker_trigger_mode_, 
+						 const geomtools::geom_id & geom_id_, 
+						 geomtools::geom_id & electronic_id_)
     {
-      geomtools::geom_id GID(mapping::GEIGER_CATEGORY_TYPE, 0, 0, 0, 0);
-      geomtools::geom_id EID;
-      
-      for(int side = 0; side < mapping::MAX_NUMBER_OF_SIDE; side++)
+      DT_THROW_IF(tracker_trigger_mode_ != mapping::THREE_WIRES_TRACKER_MODE, std::logic_error, " Give a correct traker trigger mode (Two wires mode is not supported yet) ! ");
+      DT_THROW_IF(!is_initialized(), std::logic_error, "Electronic mapping is not initialized ! ");
+      electronic_id_.reset();
+      ID_bimap::left_const_iterator left_iter ;
+  	    
+      switch (geom_id_.get_type())
 	{
-	  GID.set(mapping::SIDE_INDEX, side);
-	  for(int layer = 0; layer < mapping::MAX_NUMBER_OF_LAYER; layer++)
+	case mapping::GEIGER_CATEGORY_TYPE :
+	  left_iter = _geiger_id_bimap_.left.find(geom_id_);
+	  if (left_iter != _geiger_id_bimap_.left.end() )
 	    {
-	      GID.set(mapping::LAYER_INDEX, layer);
-	      for(int row = 0; row < mapping::MAX_NUMBER_OF_GEIGER_ROW; row++)
-		{
-		  GID.set(mapping::ROW_INDEX, row);
-		  EID = _ID_convertor_.convert_GID_to_EID(GID);
-		  _geiger_id_bimap_.insert( ID_doublet(GID , EID) ) ;
-		} // end of row loop
-	    } // end of layer loop
-	} // end of side loop
+	      electronic_id_ = left_iter->second;
+	    }
+	  else
+	    {
+	      electronic_id_ = _ID_convertor_.convert_GID_to_EID(geom_id_);	
+	      std::clog << "DEBUG : insert unknown electronic ID = " << electronic_id_ << std::endl;
+	      _geiger_id_bimap_.insert( ID_doublet(geom_id_ ,electronic_id_) );
+	    }
+	  break;
+
+	case mapping::CALO_MAIN_WALL_CATEGORY_TYPE : 
+	  left_iter = _mcalo_id_bimap_.left.find(geom_id_);
+	  if (left_iter != _mcalo_id_bimap_.left.end() )
+	    {
+	      electronic_id_ = left_iter->second;
+	    }
+	  else
+	    {
+	      electronic_id_ = _ID_convertor_.convert_GID_to_EID(geom_id_);	
+	      std::clog << "DEBUG : insert unknown electronic ID = " << electronic_id_ << std::endl;
+	      _mcalo_id_bimap_.insert( ID_doublet(geom_id_ ,electronic_id_) );
+	    }
+	  break;
+
+	case mapping::CALORIMETER_X_WALL_CATEGORY_TYPE :
+	  left_iter = _xcalo_id_bimap_.left.find(geom_id_);
+	  if (left_iter != _xcalo_id_bimap_.left.end() )
+	    {
+	      electronic_id_ = left_iter->second;
+	    }
+	  else
+	    {
+	      electronic_id_ = _ID_convertor_.convert_GID_to_EID(geom_id_);	
+	      std::clog << "DEBUG : insert unknown electronic ID = " << electronic_id_ << std::endl;
+	      _xcalo_id_bimap_.insert( ID_doublet(geom_id_ ,electronic_id_) );
+	    }
+	  break;
+
+	case mapping::CALORIMETER_GVETO_CATEGORY_TYPE :
+	  left_iter = _gveto_id_bimap_.left.find(geom_id_);
+	  if (left_iter != _gveto_id_bimap_.left.end() )
+	    {
+	      electronic_id_ = left_iter->second;
+	    }
+	  else
+	    {
+	      electronic_id_ = _ID_convertor_.convert_GID_to_EID(geom_id_);	
+	      std::clog << "DEBUG : insert unknown electronic ID = " << electronic_id_ << std::endl;
+	      _gveto_id_bimap_.insert( ID_doublet(geom_id_ ,electronic_id_) );
+	    }
+	  break; 
+
+	default :
+	  break;
+	}  
       return ;
-    }
-
-    void electronic_mapping::init_mcalo()
-    {
-      geomtools::geom_id GID(mapping::CALO_MAIN_WALL_CATEGORY_TYPE, 0, 0, 0, 0);
-      geomtools::geom_id EID;
-      for(int side = 0; side < mapping::MAX_NUMBER_OF_SIDE; side++)
-	{
-	  GID.set(mapping::SIDE_INDEX, side);
-	  for(int column = 0; column < mapping::MAX_NUMBER_OF_MAIN_CALO_COLUMN; column++)
-	    {
-	      GID.set(mapping::COLUMN_INDEX, column);
-	      for(int row = 0; row < mapping::MAX_NUMBER_OF_MAIN_CALO_ROW; row++)
-		{
-		  GID.set(mapping::ROW_INDEX, row);
-		  EID = _ID_convertor_.convert_GID_to_EID(GID);
-		  _mcalo_id_bimap_.insert( ID_doublet(GID , EID) ) ;
-		} // end of row loop
-	    } // end of column loop
-	} // end of side loop  
-      return ;
-    }
-    
-    void electronic_mapping::init_x_wall()
-    {
-      geomtools::geom_id GID(mapping::CALORIMETER_X_WALL_CATEGORY_TYPE, 0, 0, 0, 0);
-      geomtools::geom_id EID;
-      for(int side = 0; side < mapping::MAX_NUMBER_OF_SIDE; side++)
-	{
-	  GID.set(mapping::SIDE_INDEX, side);
-	  for (int wall = 0; wall < mapping::MAX_NUMBER_OF_WALLS; wall ++)
-	    {
-	      GID.set(mapping::WALL_INDEX, wall);
-	      for(int column = 0; column < mapping::MAX_NUMBER_OF_X_CALO_COLUMNS; column++)
-		{
-		  GID.set(mapping::COLUMN_INDEX, column);
-		  for(int row = 0; row < mapping::MAX_NUMBER_OF_X_CALO_ROWS; row++)
-		    {
-		      GID.set(mapping::ROW_INDEX, row);
-		      EID = _ID_convertor_.convert_GID_to_EID(GID);
-		      _mcalo_id_bimap_.insert( ID_doublet(GID , EID) ) ;
-		    } // end of row loop
-		} // end of column loop
-	    } // end of wall loop
-	} // end of side loop  
-      return;
-    }
-
-    void electronic_mapping::init_gveto()
-    {
-      geomtools::geom_id GID(mapping::CALORIMETER_GVETO_CATEGORY_TYPE, 0, 0, 0, 0);
-      geomtools::geom_id EID;
-      for(int side = 0; side < mapping::MAX_NUMBER_OF_SIDE; side++)
-	{
-	  GID.set(mapping::SIDE_INDEX, side);
-	  for (int wall = 0; wall < mapping::MAX_NUMBER_OF_WALLS; wall ++)
-	    {
-	      GID.set(mapping::WALL_INDEX, wall);
-	      for(int column = 0; column < mapping::MAX_NUMBER_OF_GVETO_COLUMNS; column++)
-		{
-		  GID.set(mapping::ROW_INDEX, column);
-		  EID = _ID_convertor_.convert_GID_to_EID(GID);
-		  _mcalo_id_bimap_.insert(ID_doublet(GID, EID));
-		} // end of column loop
-	    } // end of wall loop
-	} // end of side loop  
-      return;
-    }
-
-    void electronic_mapping::set_geo_manager(const geomtools::manager & mgr_ )
-    {
-      _geo_manager_ = & mgr_;
-      _ID_convertor_.set_geo_manager(mgr_);
-    }
-    
-    void electronic_mapping::set_module_number(int module_number_)
-    {
-      _module_number_ = module_number_;
-      _ID_convertor_.set_module_number(module_number_);
-      return;
-    }
-
-
-    bool electronic_mapping::is_initialized()
-    {
-      return _initialized_;
-    }
-    
-    void electronic_mapping::reset()
-    {
-      DT_THROW_IF(!is_initialized(), std::logic_error, "Electronic mapping is not initialized, it can't be reset ! ");
-      _geo_manager_ = 0;
-      _initialized_ = false;
-      return;
     }
 	       
   } // end of namespace digitization

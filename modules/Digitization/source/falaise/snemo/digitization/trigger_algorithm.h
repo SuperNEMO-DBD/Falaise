@@ -7,7 +7,6 @@
 
 // Standard library :
 #include <string>
-#include <list>
 
 // This project :
 #include <snemo/digitization/geiger_ctw_data.h>
@@ -30,6 +29,8 @@ namespace snemo {
       /// Destructor
       virtual ~trigger_algorithm();
 
+			//set electronic_mapping(const electronic_mapping & my_electronic_mapping_)
+
      /// Initializing
       void initialize(const electronic_mapping & my_electronic_mapping_);
 
@@ -39,10 +40,13 @@ namespace snemo {
       /// Reset the object
       void reset(); 
 
+			/// Return the board id from the bitset of 100 bits
 			uint32_t get_board_id(const std::bitset<geiger::tp::FULL_SIZE> & my_bitset_) const;
 
+			
 			void build_hit_cells_gids_from_ctw(const geiger_ctw & my_geiger_ctw_, std::vector<geomtools::geom_id> & hit_cells_gids_) const;
 
+			
 			void fill_matrix(const std::vector<geomtools::geom_id> & hit_cells_gids_);
 
 			void display_matrix() const;
