@@ -41,6 +41,7 @@ namespace snemo {
 			       unsigned int number_of_rows_)
     {    
       DT_THROW_IF(is_locked(), std::logic_error, "Geiger TP is locked !) ");
+      DT_THROW_IF((electronic_id_.get(mapping::BOARD_INDEX) == 10), std::logic_error, "FEB ID 10 is dedicated to control board ! ");
       set_hit_id(hit_id_);
       set_geom_id(electronic_id_);
       set_clocktick_800ns(clocktick_800ns_);

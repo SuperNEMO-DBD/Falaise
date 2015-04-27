@@ -120,7 +120,6 @@ namespace snemo {
 		}	 
 	    } // end of TP loop
 	} // end of max number of FEB loop
-      
       return;
     }
 
@@ -128,9 +127,9 @@ namespace snemo {
     {
       for (int i = 0; i < hit_cells_gids_.size(); i++)
 	{
-	  int side = hit_cells_gids_[i].get(mapping::SIDE_INDEX);
+	  int side  = hit_cells_gids_[i].get(mapping::SIDE_INDEX);
 	  int layer = hit_cells_gids_[i].get(mapping::LAYER_INDEX);
-	  int row = hit_cells_gids_[i].get(mapping::ROW_INDEX);
+	  int row   = hit_cells_gids_[i].get(mapping::ROW_INDEX);
 	  _geiger_matrix_[side][layer][row] = 1;
 	}    
       return;
@@ -138,40 +137,70 @@ namespace snemo {
 
     void trigger_algorithm::display_matrix() const
     { 
+
       for (int i = 0; i < mapping::MAX_NUMBER_OF_SIDE; i++)
 	{
-	  for (int j = 0; j < mapping::GEIGER_LAYER_SIZE; j++)
+	  
+	  if (i == 0)
 	    {
-	      for (int k = 0; k < mapping::GEIGER_ROW_SIZE; k++)
+	      for (int j = mapping::GEIGER_LAYER_SIZE - 1; j >= 0; j--) // Value GEIGER_LAYER_SIZE = 9
 		{
-		  if (_geiger_matrix_[i][j][k] && k == 0 )
+		  for (int k = 0; k < mapping::GEIGER_ROW_SIZE; k++)
 		    {
-		      std::clog << "|*";
-		    }
-		  if(_geiger_matrix_[i][j][k])
+		      if( k == 0 )        std::clog<<"|";
+		  
+		      if (_geiger_matrix_[i][j][k] ) std::clog << "*";
+		  
+		      if(!_geiger_matrix_[i][j][k])  std::clog << "o";	  
+
+		      if( k == 112)     std::clog<<"|";
+		      // if (k == 56)
+		      //   {
+		      
+		      //   }
+
+		    } // end of row loop
+		  std::clog<<std::endl;	
+		  if (j == 0 && i == 0)
 		    {
-		      std::clog << "*";
+		      std::clog << "|-----------------------------------------------------------------------------------------------------------------|" << std::endl;;
 		    }
-		  if(!_geiger_matrix_[i][j][k] && k == 0)
-		    {
-		      std::clog << "|o";
-		    }
-		  if(!_geiger_matrix_[i][j][k])
-		    {
-		      std::clog << "o";
-		    }
-		  if (k == 112)
-		    {
-		      std::clog << "|" << std::endl;
-		    }
-		} // end of row loop
-	      if (j == 8 && i == 0)
+		} // end of layer loop
+	    } // end of if == 0
+
+	  if (i == 1)
+	    {  
+	      for (int j = 0; j < mapping::GEIGER_LAYER_SIZE; j++)
 		{
-		  std::clog << "|------------------------------------------------------------------------------------------------------------------|" << std::endl;;
-		}	      
-	    } // end of layer loop
+		  for (int k = 0; k < mapping::GEIGER_ROW_SIZE; k++)
+		    {
+		      if( k == 0 )        std::clog<<"|";
+		  
+		      if (_geiger_matrix_[i][j][k] ) std::clog << "*";
+		  
+		      if(!_geiger_matrix_[i][j][k])  std::clog << "o";
+		  
+
+		      if( k == 112)     std::clog<<"|";
+		      // if (k == 56)
+		      //   {
+		      
+		      //   }
+
+		    } // end of row loop
+		  std::clog<<std::endl;	      
+		} // end of layer loop
+	    } // end of if i==1
 
 	} // end of side loop
+
+      
+
+      std::clog << "|-0-1-2-3-4-5-6-7-8-9-1-2-3-4-5-6-7-8-9-0-1-2-3-4-5-6-7-89-1-2-3-4-5-6-7-8-9-0-1-2-3-4-5-6-7-8-9-1-2-3-4-5-6-7-8-9|" << std::endl;
+      std::clog << "|                                     |                                     |                                     |" << std::endl;
+      std::clog << "|---------------Crate-0---------------|--------------Crate-1----------------|---------------Crate-2---------------|" << std::endl;
+      std::clog << "|                                     |                                     |                                     |" << std::endl;
+
       return;
     }
     
@@ -204,7 +233,6 @@ namespace snemo {
 	      fill_matrix(hit_cells_gids);   
 	    }
 	  std::clog << std::endl;
-	  std::clog << "Geiger cells matrix for clocktick = " << i << " : " << std::endl;
 	  display_matrix();
 	  reset_matrix();
 	} 

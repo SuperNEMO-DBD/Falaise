@@ -127,6 +127,12 @@ namespace snemo {
     {
       _initialized_ = true;
       _ID_convertor_.initialize();
+      for (std::set<int32_t>::iterator it = _pre_constructed_types_.begin(); it != _pre_constructed_types_.end(); it++)
+	{
+	  if (*it == mapping::GEIGER_CATEGORY_TYPE) _init_geiger();
+	  else if (*it == mapping::CALO_MAIN_WALL_CATEGORY_TYPE) _init_mcalo();	    
+	}
+        
       return;
     }
 
