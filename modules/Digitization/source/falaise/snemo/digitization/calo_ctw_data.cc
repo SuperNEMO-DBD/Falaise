@@ -159,6 +159,9 @@ namespace snemo {
 																	 const std::string & indent_,
 																	 bool inherit_) const
     {
+
+			out_ << indent_ << title_ << std::endl;
+
       out_ << indent_ << datatools::i_tree_dumpable::tag
            << "Lock CTWs  : " << _locked_ << std::endl;
 

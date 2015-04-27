@@ -104,7 +104,7 @@ namespace snemo {
       gg_tp.set_gg_tp_active_bit(my_wd_data_.feb_id.get(mapping::CHANNEL_INDEX));
       gg_tp.set_auxiliaries(my_wd_data_.auxiliaries);
       _activated_bits_[my_wd_data_.feb_id.get(mapping::CHANNEL_INDEX)] = 1;
-      gg_tp.tree_dump(std::clog, "***** Geiger TP creation : *****", "INFO : "); 
+      // gg_tp.tree_dump(std::clog, "***** Geiger TP creation : *****", "INFO : "); 
 
       return;
     }
@@ -113,7 +113,7 @@ namespace snemo {
     {
       my_geiger_tp_.set_gg_tp_active_bit(my_wd_data_.feb_id.get(mapping::CHANNEL_INDEX));
       _activated_bits_[my_wd_data_.feb_id.get(mapping::CHANNEL_INDEX)] = 1;
-      my_geiger_tp_.tree_dump(std::clog, "***** Geiger TP Update : *****", "INFO : ");
+      // my_geiger_tp_.tree_dump(std::clog, "***** Geiger TP Update : *****", "INFO : ");
       return;
     }
 
@@ -136,8 +136,6 @@ namespace snemo {
 	      time_reference = signal_data_.get_geiger_signals()[i].get().get_anode_avalanche_time();
 	    }
 	}
-      std::clog << "DEBUG : TIME REFERENCE = " << time_reference << std::endl;
-	
       for (int i = 0; i < number_of_hits; i++)
 	{	 	    
 	  const geiger_signal & a_geiger_signal    = signal_data_.get_geiger_signals()[i].get();
@@ -156,11 +154,7 @@ namespace snemo {
 	    {
 	      a_geiger_signal_clocktick += static_cast<int32_t>(relative_time) / 800;
 	    }
-	  std::clog << "DEBUG : anode time                = " << a_geiger_signal.get_anode_avalanche_time() << " ns" << std::endl;
-	  std::clog << "DEBUG : shift                     = " << _clocktick_shift_ << " ns" <<  std::endl;
-	  std::clog << "DEBUG : anode time + shift        = " << a_geiger_signal.get_anode_avalanche_time() + _clocktick_shift_ << " ns" <<  std::endl;
-	  std::clog << "DEBUG : a_geiger_signal_clocktick = " << a_geiger_signal_clocktick << std::endl;
-	  properties.dump(std::clog);
+	  //properties.dump(std::clog);
 	  signal_to_tp_working_data a_working_data;
 	  a_working_data.signal_ref    =& a_geiger_signal;
 	  a_working_data.feb_id        = electronic_id;

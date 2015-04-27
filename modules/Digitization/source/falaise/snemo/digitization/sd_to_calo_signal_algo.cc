@@ -99,7 +99,7 @@ namespace snemo {
 	  calo_signal.set_header(calo_signal_hit_id, calo_gid);
 	  calo_signal.set_data(signal_time, amplitude); 
 	  calo_signal.grab_auxiliaries().store("hit.id", calo_hit.get_hit_id());
-	  calo_signal.tree_dump(std::clog, "***** Calo Signal : *****", "INFO : ");
+	  //calo_signal.tree_dump(std::clog, "***** Calo Signal : *****", "INFO : ");
 	  calo_signal_hit_id++;
 	}	  
       return ;

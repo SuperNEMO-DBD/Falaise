@@ -145,6 +145,7 @@ namespace snemo {
 	    {
 	      for (int j = mapping::GEIGER_LAYER_SIZE - 1; j >= 0; j--) // Value GEIGER_LAYER_SIZE = 9
 		{
+		  std::clog << j << ' ';
 		  for (int k = 0; k < mapping::GEIGER_ROW_SIZE; k++)
 		    {
 		      if( k == 0 )        std::clog<<"|";
@@ -154,16 +155,12 @@ namespace snemo {
 		      if(!_geiger_matrix_[i][j][k])  std::clog << "o";	  
 
 		      if( k == 112)     std::clog<<"|";
-		      // if (k == 56)
-		      //   {
-		      
-		      //   }
 
 		    } // end of row loop
 		  std::clog<<std::endl;	
-		  if (j == 0 && i == 0)
+		  if (j == 0)
 		    {
-		      std::clog << "|-----------------------------------------------------------------------------------------------------------------|" << std::endl;;
+		      std::clog << "  |-----------------------------------------------------------------------------------------------------------------|" << std::endl;;
 		    }
 		} // end of layer loop
 	    } // end of if == 0
@@ -172,6 +169,7 @@ namespace snemo {
 	    {  
 	      for (int j = 0; j < mapping::GEIGER_LAYER_SIZE; j++)
 		{
+		  std::clog << j << ' ' ;
 		  for (int k = 0; k < mapping::GEIGER_ROW_SIZE; k++)
 		    {
 		      if( k == 0 )        std::clog<<"|";
@@ -182,10 +180,6 @@ namespace snemo {
 		  
 
 		      if( k == 112)     std::clog<<"|";
-		      // if (k == 56)
-		      //   {
-		      
-		      //   }
 
 		    } // end of row loop
 		  std::clog<<std::endl;	      
@@ -196,10 +190,10 @@ namespace snemo {
 
       
 
-      std::clog << "|-0-1-2-3-4-5-6-7-8-9-1-2-3-4-5-6-7-8-9-0-1-2-3-4-5-6-7-89-1-2-3-4-5-6-7-8-9-0-1-2-3-4-5-6-7-8-9-1-2-3-4-5-6-7-8-9|" << std::endl;
-      std::clog << "|                                     |                                     |                                     |" << std::endl;
-      std::clog << "|---------------Crate-0---------------|--------------Crate-1----------------|---------------Crate-2---------------|" << std::endl;
-      std::clog << "|                                     |                                     |                                     |" << std::endl;
+      std::clog << "  |-0-1-2-3-4-5-6-7-8-9-1-2-3-4-5-6-7-8-9-0-1-2-3-4-5-6-7-89-1-2-3-4-5-6-7-8-9-0-1-2-3-4-5-6-7-8-9-1-2-3-4-5-6-7-8-9| Board IDs " << std::endl;
+      std::clog << "  |                                     |                                    |                                      |" << std::endl;
+      std::clog << "  |---------------Crate-0---------------|--------------Crate-1---------------|---------------Crate-2----------------|" << std::endl;
+      std::clog << "  |                                     |                                    |                                      |" << std::endl;
 
       return;
     }

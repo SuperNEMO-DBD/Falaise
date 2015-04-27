@@ -84,7 +84,6 @@ namespace snemo {
       std::clog << "**************************************************************" << std::endl;
 
       double time_reference = signal_data_.get_calo_signals()[0].get().get_signal_time();
-      std::clog << "DEBUG : TIME REFERENCE = " << time_reference << std::endl;
       for (int i = 0; i < number_of_hits; i++)
 	{
 	  if (signal_data_.get_calo_signals()[i].get().get_signal_time() < time_reference)
@@ -92,12 +91,11 @@ namespace snemo {
 	      time_reference = signal_data_.get_calo_signals()[0].get().get_signal_time();
 	    }
 	}
-      std::clog << "DEBUG : TIME REFERENCE = " << time_reference << std::endl;
 
       for (int i = 0; i < number_of_hits; i++)
 	{	 	    
 	  const calo_signal & a_calo_signal = signal_data_.get_calo_signals()[i].get();
-	  a_calo_signal.tree_dump(std::clog);
+	  //a_calo_signal.tree_dump(std::clog);
 	   
 	  const geomtools::geom_id & geom_id = a_calo_signal.get_geom_id();
 	    
@@ -132,20 +130,17 @@ namespace snemo {
 
 	  if (existing == false)
 	    {
-	      std::clog << "DEBUG : CASE 1 : none existing calo TP " << std::endl;
-
 	      snemo::digitization::calo_tp & calo_tp = my_calo_tp_data_.add();
 	      calo_tp.set_header(a_calo_signal.get_hit_id(),
 				 electronic_id,
 				 a_calo_signal_clocktick);
-	      calo_tp.tree_dump(std::clog, "Calo TP first creation : ", "INFO : ");
+	      //calo_tp.tree_dump(std::clog, "Calo TP first creation : ", "INFO : ");
 	      //calo_tp.lock_tp();
 	    }
 	
 	  else 
 	    {
-	      std::clog << "DEBUG : CASE 2 : already existing calo TP " << std::endl;
-	      my_calo_tp_data_.get_calo_tps()[existing_index].get().tree_dump(std::clog, "Calo TP Update : ", "INFO : ");
+	      //my_calo_tp_data_.get_calo_tps()[existing_index].get().tree_dump(std::clog, "Calo TP Update : ", "INFO : ");
 	      // update calo TP 	    
 	    }
 	}

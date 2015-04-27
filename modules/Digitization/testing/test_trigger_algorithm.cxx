@@ -70,7 +70,7 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     datatools::things ER;
     snemo::digitization::electronic_mapping my_e_mapping;
     my_e_mapping.set_geo_manager(my_manager);
-    my_e_mapping.set_module_number(0);
+    my_e_mapping.set_module_number(snemo::digitization::mapping::DEMONSTRATOR_MODULE_NUMBER);
     my_e_mapping.initialize();
 
     snemo::digitization::clock_utils my_clock_manager;
@@ -117,7 +117,6 @@ int main( int /* argc_ */, char ** /* argv_ */ )
 	      {		  
 		sd_2_calo_signal.process(SD, signal_data);
 	      }
-	    signal_data.tree_dump(std::clog, "Signal data : ", "INFO : ");
 
 	    snemo::digitization::geiger_tp_data my_geiger_tp_data;
 	    snemo::digitization::calo_tp_data my_calo_tp_data;
@@ -148,11 +147,6 @@ int main( int /* argc_ */, char ** /* argv_ */ )
 
 	    calo_tp_2_ctw.process(my_calo_tp_data, my_calo_ctw_data);
 	    my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
-
-	    std::clog << "DEBUG : clock25ref    = " << clocktick_25_reference << std::endl; 
-	    std::clog << "DEBUG : clock25shift  = " << clocktick_25_shift << std::endl; 
-	    std::clog << "DEBUG : clock800ref   = " << clocktick_800_reference << std::endl; 
-	    std::clog << "DEBUG : clock800shift = " << clocktick_800_shift << std::endl;
 
 	    snemo::digitization::trigger_algorithm my_trigger_algo;
 	    my_trigger_algo.initialize(my_e_mapping);

@@ -246,7 +246,6 @@ namespace snemo {
 	    }
 	  else
 	    {
-	      std::clog << "DEBUG : unknown electronic ID = " << elec_id_ << std::endl;
 	    }
 	  break;
 
@@ -258,7 +257,6 @@ namespace snemo {
 	    }
 	  else
 	    {
-	      std::clog << "DEBUG : unknown electronic ID = " << elec_id_ << std::endl;
 	    }
 	  break;
 
@@ -287,8 +285,7 @@ namespace snemo {
 	    }
 	  else
 	    {
-	      electronic_id_ = _ID_convertor_.convert_GID_to_EID(geom_id_);	
-	      std::clog << "DEBUG : insert unknown electronic ID = " << electronic_id_ << std::endl;
+	      electronic_id_ = _ID_convertor_.convert_GID_to_EID(geom_id_);
 	      _geiger_id_bimap_.insert( ID_doublet(geom_id_ ,electronic_id_) );
 	    }
 	  break;
@@ -301,8 +298,7 @@ namespace snemo {
 	    }
 	  else
 	    {
-	      electronic_id_ = _ID_convertor_.convert_GID_to_EID(geom_id_);	
-	      std::clog << "DEBUG : insert unknown electronic ID = " << electronic_id_ << std::endl;
+	      electronic_id_ = _ID_convertor_.convert_GID_to_EID(geom_id_);
 	      _mcalo_id_bimap_.insert( ID_doublet(geom_id_ ,electronic_id_) );
 	    }
 	  break;
@@ -315,8 +311,7 @@ namespace snemo {
 	    }
 	  else
 	    {
-	      electronic_id_ = _ID_convertor_.convert_GID_to_EID(geom_id_);	
-	      std::clog << "DEBUG : insert unknown electronic ID = " << electronic_id_ << std::endl;
+	      electronic_id_ = _ID_convertor_.convert_GID_to_EID(geom_id_);
 	      _xcalo_id_bimap_.insert( ID_doublet(geom_id_ ,electronic_id_) );
 	    }
 	  break;
@@ -329,8 +324,7 @@ namespace snemo {
 	    }
 	  else
 	    {
-	      electronic_id_ = _ID_convertor_.convert_GID_to_EID(geom_id_);	
-	      std::clog << "DEBUG : insert unknown electronic ID = " << electronic_id_ << std::endl;
+	      electronic_id_ = _ID_convertor_.convert_GID_to_EID(geom_id_);
 	      _gveto_id_bimap_.insert( ID_doublet(geom_id_ ,electronic_id_) );
 	    }
 	  break; 
