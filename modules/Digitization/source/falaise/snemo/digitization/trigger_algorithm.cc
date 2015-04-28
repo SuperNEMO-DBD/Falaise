@@ -29,16 +29,6 @@ namespace snemo {
 	  vbool[i] = false;
 	}
 
-      // for (int i = 0; i < mapping::MAX_NUMBER_OF_SIDE; i ++)
-      // 	{
-      // 	  for (int j = 0; j < mapping::GEIGER_LAYER_SIZE; j ++)
-      // 	    {
-      // 	      for (int k = 0; k < mapping::GEIGER_ROW_SIZE; k ++)
-      // 		{
-      // 		  _geiger_matrix_[i][j][k] = false;
-      // 		}
-      // 	    }
-      // 	}
       return;
     }
 
@@ -119,7 +109,9 @@ namespace snemo {
 		  _electronic_mapping_->convert_EID_to_GID(mapping::THREE_WIRES_TRACKER_MODE, temporary_electronic_id, hit_cell_gid);
 		}	 
 	    } // end of TP loop
+
 	} // end of max number of FEB loop
+
       return;
     }
 
@@ -137,10 +129,10 @@ namespace snemo {
 
     void trigger_algorithm::display_matrix() const
     { 
+      std::clog << "  |-Zone-0-|---Zone-1--|---Zone-2--|---Zone-3--|---Zone-4--|--Zone-5--|---Zone-6--|---Zone-7--|--Zone-8---|--Zone-9-| Board IDs " << std::endl;
 
       for (int i = 0; i < mapping::MAX_NUMBER_OF_SIDE; i++)
 	{
-	  
 	  if (i == 0)
 	    {
 	      for (int j = mapping::GEIGER_LAYER_SIZE - 1; j >= 0; j--) // Value GEIGER_LAYER_SIZE = 9
@@ -158,11 +150,14 @@ namespace snemo {
 
 		    } // end of row loop
 		  std::clog<<std::endl;	
+
 		  if (j == 0)
 		    {
 		      std::clog << "  |-----------------------------------------------------------------------------------------------------------------|" << std::endl;;
 		    }
+
 		} // end of layer loop
+
 	    } // end of if == 0
 
 	  if (i == 1)
@@ -176,19 +171,18 @@ namespace snemo {
 		  
 		      if (_geiger_matrix_[i][j][k] ) std::clog << "*";
 		  
-		      if(!_geiger_matrix_[i][j][k])  std::clog << "o";
-		  
+		      if(!_geiger_matrix_[i][j][k])  std::clog << "o";	  
 
 		      if( k == 112)     std::clog<<"|";
 
 		    } // end of row loop
-		  std::clog<<std::endl;	      
+		  std::clog<<std::endl;	    
+  
 		} // end of layer loop
+
 	    } // end of if i==1
 
 	} // end of side loop
-
-      
 
       std::clog << "  |-0-1-2-3-4-5-6-7-8-9-1-2-3-4-5-6-7-8-9-0-1-2-3-4-5-6-7-89-1-2-3-4-5-6-7-8-9-0-1-2-3-4-5-6-7-8-9-1-2-3-4-5-6-7-8-9| Board IDs " << std::endl;
       std::clog << "  |                                     |                                    |                                      |" << std::endl;
@@ -212,6 +206,16 @@ namespace snemo {
 	}
       return;
     } 
+
+    
+    void trigger_algorithm::sub_zone_builder(int32_t side_, int32_t sub_zone_index_)
+    {
+      DT_THROW_IF((side_ > 1) || (side_ < 0), std::logic_error, "Value of side ["<< side_ <<"] is not valid ! ");
+      if (sub_zone_index_ == 0 || sub_zone_index_ == 9) 
+	{}//bool vertical_tab[
+
+
+    }
     
     void trigger_algorithm::process(const geiger_ctw_data & geiger_ctw_data_)
     { 
