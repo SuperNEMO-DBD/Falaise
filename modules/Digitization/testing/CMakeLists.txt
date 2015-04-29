@@ -19,8 +19,8 @@ set(FalaiseDigitizationPlugin_TESTS
   test_sd_to_ctw_process.cxx
   
   test_signal_to_geiger_tp_algo.cxx
-  test_trigger_algorithm.cxx
-  test_trigger_algorithm2.cxx
+  test_tracker_trigger_algorithm.cxx
+  test_tracker_trigger_algorithm2.cxx
 
   test_simulated_data_reading.cxx
   test_ID_convertor.cxx

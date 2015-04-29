@@ -25,7 +25,7 @@
 #include <snemo/digitization/signal_to_geiger_tp_algo.h>
 #include <snemo/digitization/geiger_tp_to_ctw_algo.h>
 #include <snemo/digitization/calo_tp_to_ctw_algo.h>
-#include <snemo/digitization/trigger_algorithm.h>
+#include <snemo/digitization/tracker_trigger_algorithm.h>
 
 int main( int /* argc_ */, char ** /* argv_ */ )
 {
@@ -33,7 +33,7 @@ int main( int /* argc_ */, char ** /* argv_ */ )
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
   try {
-    std::clog << "Test program for class 'snemo::digitization::trigger_algorithm' !" << std::endl;
+    std::clog << "Test program for class 'snemo::digitization::tracker_trigger_algorithm2' !" << std::endl;
     int32_t seed = 314159;
     mygsl::rng random_generator;
     random_generator.initialize(seed);
@@ -148,9 +148,9 @@ int main( int /* argc_ */, char ** /* argv_ */ )
 	    calo_tp_2_ctw.process(my_calo_tp_data, my_calo_ctw_data);
 	    my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
 
-	    snemo::digitization::trigger_algorithm my_trigger_algo;
-	    my_trigger_algo.initialize(my_e_mapping);
-	    my_trigger_algo.process(my_geiger_ctw_data);
+	    snemo::digitization::tracker_trigger_algorithm my_tracker_algo;
+	    my_tracker_algo.initialize(my_e_mapping);
+	    my_tracker_algo.process(my_geiger_ctw_data);
 	    
 	  }     
 	// CF README.RST pour display graphique avec loader de manager.conf

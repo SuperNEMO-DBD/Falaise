@@ -1,9 +1,9 @@
-// snemo/digitization/trigger_algorithm.h
+// snemo/digitization/tracker_trigger_algorithm.h
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
-#ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_TRIGGER_ALGORITHM_H
-#define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_TRIGGER_ALGORITHM_H
+#ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_TRACKER_TRIGGER_ALGORITHM_H
+#define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_TRACKER_TRIGGER_ALGORITHM_H
 
 // Standard library :
 #include <string>
@@ -19,7 +19,7 @@ namespace snemo {
   namespace digitization {		
 
     /// \brief Trigger algorithm general process
-    class trigger_algorithm
+    class tracker_trigger_algorithm
     {
 		
 			enum zone_id_limits{
@@ -90,10 +90,10 @@ namespace snemo {
     public : 
 
       /// Default constructor
-      trigger_algorithm();
+			tracker_trigger_algorithm();
 
       /// Destructor
-      virtual ~trigger_algorithm();
+      virtual ~tracker_trigger_algorithm();
 
 			/// Initializing
       void initialize(const electronic_mapping & my_electronic_mapping_);
@@ -136,7 +136,7 @@ namespace snemo {
 
 } // end of namespace snemo
 
-#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_TRIGGER_ALGORITHM_H
+#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_TRACKER_TRIGGER_ALGORITHM_H
 
 /* 
 ** Local Variables: --

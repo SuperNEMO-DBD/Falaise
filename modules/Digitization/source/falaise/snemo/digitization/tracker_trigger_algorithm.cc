@@ -1,4 +1,4 @@
-// snemo/digitization/trigger_algorithm.cc
+// snemo/digitization/tracker_trigger_algorithm.cc
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
@@ -9,7 +9,7 @@
 #include <bayeux/datatools/handle.h>
 
 // Ourselves:
-#include <snemo/digitization/trigger_algorithm.h>
+#include <snemo/digitization/tracker_trigger_algorithm.h>
 #include <snemo/digitization/geiger_tp_constants.h>
 
 namespace snemo {
@@ -17,7 +17,7 @@ namespace snemo {
   namespace digitization {
 
 
-    trigger_algorithm::trigger_algorithm()
+    tracker_trigger_algorithm::tracker_trigger_algorithm()
     {
       _initialized_ = false;
       _electronic_mapping_ = 0;
@@ -32,7 +32,7 @@ namespace snemo {
       return;
     }
 
-    trigger_algorithm::~trigger_algorithm()
+    tracker_trigger_algorithm::~tracker_trigger_algorithm()
     {   
       if (is_initialized())
 	{
@@ -41,7 +41,7 @@ namespace snemo {
       return;
     }
 
-    void trigger_algorithm::initialize(const electronic_mapping & my_electronic_mapping_)
+    void tracker_trigger_algorithm::initialize(const electronic_mapping & my_electronic_mapping_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Trigger algorithm is already initialized ! ");
       _electronic_mapping_ = & my_electronic_mapping_;
@@ -49,11 +49,11 @@ namespace snemo {
       return;
     }
 
-    bool trigger_algorithm::is_initialized() const
+    bool tracker_trigger_algorithm::is_initialized() const
     {
       return _initialized_;
     }
-    void trigger_algorithm::reset()
+    void tracker_trigger_algorithm::reset()
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Trigger algorithm is not initialized, it can't be reset ! ");
       _initialized_ = false;
@@ -61,7 +61,7 @@ namespace snemo {
       return;
     }
 
-    uint32_t trigger_algorithm::get_board_id(const std::bitset<geiger::tp::FULL_SIZE> & my_bitset_) const
+    uint32_t tracker_trigger_algorithm::get_board_id(const std::bitset<geiger::tp::FULL_SIZE> & my_bitset_) const
     {
       std::bitset<geiger::tp::BOARD_ID_WORD_SIZE> temporary_board_bitset;
       for (int i = geiger::tp::BOARD_ID_BIT0; i <= geiger::tp::BOARD_ID_BIT4; i++)
@@ -79,7 +79,7 @@ namespace snemo {
       return temporary_board_id;
     }
 
-    void trigger_algorithm::build_hit_cells_gids_from_ctw(const geiger_ctw & my_geiger_ctw_, std::vector<geomtools::geom_id> & hit_cells_gids_) const
+    void tracker_trigger_algorithm::build_hit_cells_gids_from_ctw(const geiger_ctw & my_geiger_ctw_, std::vector<geomtools::geom_id> & hit_cells_gids_) const
     {
       for (int i = 0; i < mapping::MAX_NUMBER_OF_FEB_BY_CRATE; i++)
 	{
@@ -115,7 +115,7 @@ namespace snemo {
       return;
     }
 
-    void trigger_algorithm::fill_matrix(const std::vector<geomtools::geom_id> & hit_cells_gids_)
+    void tracker_trigger_algorithm::fill_matrix(const std::vector<geomtools::geom_id> & hit_cells_gids_)
     {
       for (int i = 0; i < hit_cells_gids_.size(); i++)
 	{
@@ -127,7 +127,7 @@ namespace snemo {
       return;
     }
 
-    void trigger_algorithm::display_matrix() const
+    void tracker_trigger_algorithm::display_matrix() const
     { 
       std::clog << "  |-Zone-0-|---Zone-1--|---Zone-2--|---Zone-3--|---Zone-4--|--Zone-5--|---Zone-6--|---Zone-7--|--Zone-8---|--Zone-9-| Board IDs " << std::endl;
 
@@ -192,7 +192,7 @@ namespace snemo {
       return;
     }
     
-    void trigger_algorithm::reset_matrix()
+    void tracker_trigger_algorithm::reset_matrix()
     {
       for (int i = 0; i < mapping::MAX_NUMBER_OF_SIDE; i ++)
 	{
@@ -208,7 +208,7 @@ namespace snemo {
     } 
 
     
-    void trigger_algorithm::sub_zone_builder(int32_t side_, int32_t sub_zone_index_)
+    void tracker_trigger_algorithm::sub_zone_builder(int32_t side_, int32_t sub_zone_index_)
     {
       DT_THROW_IF((side_ > 1) || (side_ < 0), std::logic_error, "Value of side ["<< side_ <<"] is not valid ! ");
       if (sub_zone_index_ == 0 || sub_zone_index_ == 9) 
@@ -217,7 +217,7 @@ namespace snemo {
 
     }
     
-    void trigger_algorithm::process(const geiger_ctw_data & geiger_ctw_data_)
+    void tracker_trigger_algorithm::process(const geiger_ctw_data & geiger_ctw_data_)
     { 
       DT_THROW_IF(!is_initialized(), std::logic_error, "Trigger algorithm is not initialized, it can't process ! ");
       for(int32_t i = geiger_ctw_data_.get_clocktick_min(); i <= geiger_ctw_data_.get_clocktick_max(); i++)

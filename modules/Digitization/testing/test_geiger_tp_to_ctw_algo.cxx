@@ -15,7 +15,6 @@
 
 // This project :
 #include <snemo/digitization/geiger_tp_to_ctw_algo.h>
-#include <snemo/digitization/trigger_algorithm.h>
 
 int main( int /* argc_ */, char ** /* argv_ */ )
 {
