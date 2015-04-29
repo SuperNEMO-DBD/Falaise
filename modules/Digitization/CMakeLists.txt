@@ -55,7 +55,7 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
   source/falaise/snemo/digitization/sd_to_geiger_signal_algo.h
   source/falaise/snemo/digitization/signal_to_geiger_tp_algo.h
   source/falaise/snemo/digitization/signal_to_calo_tp_algo.h
-  source/falaise/snemo/digitization/trigger_algorithm.h
+  source/falaise/snemo/digitization/tracker_trigger_algorithm.h
 
   source/falaise/snemo/digitization/the_serializable.ipp
   source/falaise/snemo/digitization/the_serializable.h
@@ -64,7 +64,7 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
 # - Sources:
 list(APPEND FalaiseDigitizationPlugin_SOURCES 
 
-  source/falaise/snemo/digitization/trigger_algorithm.cc
+  source/falaise/snemo/digitization/tracker_trigger_algorithm.cc
   source/falaise/snemo/digitization/signal_to_calo_tp_algo.cc
   source/falaise/snemo/digitization/signal_to_geiger_tp_algo.cc
   source/falaise/snemo/digitization/sd_to_geiger_signal_algo.cc
