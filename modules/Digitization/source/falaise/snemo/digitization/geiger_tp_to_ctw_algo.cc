@@ -88,7 +88,7 @@ namespace snemo {
 
       for(int32_t i = geiger_tp_data_.get_clocktick_min(); i <= geiger_tp_data_.get_clocktick_max(); i++)
       	{
-      	  for(int j = 0 ; j <= mapping::MAX_NUMBER_OF_CRATE ; j++) 
+      	  for(int j = 0 ; j <= mapping::NUMBER_OF_CRATES ; j++) 
       	    {	  
       	      std::vector<datatools::handle<geiger_tp> > geiger_tp_list_per_clocktick_per_crate;
       	      geiger_tp_data_.get_list_of_gg_tp_per_clocktick_per_crate(i, j, geiger_tp_list_per_clocktick_per_crate);

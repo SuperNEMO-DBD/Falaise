@@ -142,13 +142,13 @@ namespace snemo {
       geomtools::geom_id GID(mapping::GEIGER_CATEGORY_TYPE, 0, 0, 0, 0);
       geomtools::geom_id EID;
       
-      for(int side = 0; side < mapping::MAX_NUMBER_OF_SIDE; side++)
+      for(int side = 0; side < mapping::NUMBER_OF_SIDES; side++)
 	{
 	  GID.set(mapping::SIDE_INDEX, side);
-	  for(int layer = 0; layer < mapping::MAX_NUMBER_OF_LAYER; layer++)
+	  for(int layer = 0; layer < mapping::NUMBER_OF_LAYERS; layer++)
 	    {
 	      GID.set(mapping::LAYER_INDEX, layer);
-	      for(int row = 0; row < mapping::MAX_NUMBER_OF_GEIGER_ROW; row++)
+	      for(int row = 0; row < mapping::NUMBER_OF_GEIGER_ROWS; row++)
 		{
 		  GID.set(mapping::ROW_INDEX, row);
 		  EID = _ID_convertor_.convert_GID_to_EID(GID);
@@ -163,13 +163,13 @@ namespace snemo {
     {
       geomtools::geom_id GID(mapping::CALO_MAIN_WALL_CATEGORY_TYPE, 0, 0, 0, 0);
       geomtools::geom_id EID;
-      for(int side = 0; side < mapping::MAX_NUMBER_OF_SIDE; side++)
+      for(int side = 0; side < mapping::NUMBER_OF_SIDES; side++)
 	{
 	  GID.set(mapping::SIDE_INDEX, side);
-	  for(int column = 0; column < mapping::MAX_NUMBER_OF_MAIN_CALO_COLUMN; column++)
+	  for(int column = 0; column < mapping::NUMBER_OF_MAIN_CALO_COLUMNS; column++)
 	    {
 	      GID.set(mapping::COLUMN_INDEX, column);
-	      for(int row = 0; row < mapping::MAX_NUMBER_OF_MAIN_CALO_ROW; row++)
+	      for(int row = 0; row < mapping::NUMBER_OF_MAIN_CALO_ROWS; row++)
 		{
 		  GID.set(mapping::ROW_INDEX, row);
 		  EID = _ID_convertor_.convert_GID_to_EID(GID);
@@ -184,16 +184,16 @@ namespace snemo {
     {
       geomtools::geom_id GID(mapping::CALORIMETER_X_WALL_CATEGORY_TYPE, 0, 0, 0, 0);
       geomtools::geom_id EID;
-      for(int side = 0; side < mapping::MAX_NUMBER_OF_SIDE; side++)
+      for(int side = 0; side < mapping::NUMBER_OF_SIDES; side++)
 	{
 	  GID.set(mapping::SIDE_INDEX, side);
-	  for (int wall = 0; wall < mapping::MAX_NUMBER_OF_WALLS; wall ++)
+	  for (int wall = 0; wall < mapping::NUMBER_OF_WALLS; wall ++)
 	    {
 	      GID.set(mapping::WALL_INDEX, wall);
-	      for(int column = 0; column < mapping::MAX_NUMBER_OF_X_CALO_COLUMNS; column++)
+	      for(int column = 0; column < mapping::NUMBER_OF_X_CALO_COLUMNS; column++)
 		{
 		  GID.set(mapping::COLUMN_INDEX, column);
-		  for(int row = 0; row < mapping::MAX_NUMBER_OF_X_CALO_ROWS; row++)
+		  for(int row = 0; row < mapping::NUMBER_OF_X_CALO_ROWS; row++)
 		    {
 		      GID.set(mapping::ROW_INDEX, row);
 		      EID = _ID_convertor_.convert_GID_to_EID(GID);
@@ -209,13 +209,13 @@ namespace snemo {
     {
       geomtools::geom_id GID(mapping::CALORIMETER_GVETO_CATEGORY_TYPE, 0, 0, 0, 0);
       geomtools::geom_id EID;
-      for(int side = 0; side < mapping::MAX_NUMBER_OF_SIDE; side++)
+      for(int side = 0; side < mapping::NUMBER_OF_SIDES; side++)
 	{
 	  GID.set(mapping::SIDE_INDEX, side);
-	  for (int wall = 0; wall < mapping::MAX_NUMBER_OF_WALLS; wall ++)
+	  for (int wall = 0; wall < mapping::NUMBER_OF_WALLS; wall ++)
 	    {
 	      GID.set(mapping::WALL_INDEX, wall);
-	      for(int column = 0; column < mapping::MAX_NUMBER_OF_GVETO_COLUMNS; column++)
+	      for(int column = 0; column < mapping::NUMBER_OF_GVETO_COLUMNS; column++)
 		{
 		  GID.set(mapping::ROW_INDEX, column);
 		  EID = _ID_convertor_.convert_GID_to_EID(GID);

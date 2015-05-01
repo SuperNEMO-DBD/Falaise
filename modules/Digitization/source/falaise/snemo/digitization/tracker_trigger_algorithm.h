@@ -7,6 +7,7 @@
 
 // Standard library :
 #include <string>
+#include <bitset>
 
 // This project :
 #include <snemo/digitization/geiger_ctw_data.h>
@@ -22,71 +23,75 @@ namespace snemo {
     class tracker_trigger_algorithm
     {
 		
-			enum zone_id_limits{
-				GEIGER_ZONE_ID_0_BEGIN = 0,
-				GEIGER_ZONE_ID_0_END   = 8,
-				GEIGER_ZONE_ID_1_BEGIN = 9,
-				GEIGER_ZONE_ID_1_END   = 20,
-				GEIGER_ZONE_ID_2_BEGIN = 21,
-				GEIGER_ZONE_ID_2_END   = 32,
-				GEIGER_ZONE_ID_3_BEGIN = 33,
-				GEIGER_ZONE_ID_3_END   = 44,
-				GEIGER_ZONE_ID_4_BEGIN = 45,
-				GEIGER_ZONE_ID_4_END   = 56,
-				GEIGER_ZONE_ID_5_BEGIN = 57,
-				GEIGER_ZONE_ID_5_END   = 67,
-				GEIGER_ZONE_ID_6_BEGIN = 68,
-				GEIGER_ZONE_ID_6_END   = 79,
-				GEIGER_ZONE_ID_7_BEGIN = 80,
-				GEIGER_ZONE_ID_7_END   = 91,
-				GEIGER_ZONE_ID_8_BEGIN = 92,
-				GEIGER_ZONE_ID_8_END   = 103,
-				GEIGER_ZONE_ID_9_BEGIN = 104,
-				GEIGER_ZONE_ID_9_END   = 112
+			struct zone_threshold_info {
+				static const int32_t INNER_LAYER_THRESHOLD = 2;
+				static const int32_t OUTER_LAYER_THRESHOLD = 2;
+				static const int32_t LEFT_NROWS_THRESHOLD  = 2;
+				static const int32_t RIGHT_NROWS_THRESHOLD = 2;
+			};		
+
+			enum tracker_zoning_row_id_limits{
+				ZONE_0_BEGIN = 0,
+				ZONE_0_END   = 8,
+				ZONE_1_BEGIN = 9,
+				ZONE_1_END   = 20,
+			  ZONE_2_BEGIN = 21,
+			  ZONE_2_END   = 32,
+			  ZONE_3_BEGIN = 33,
+			  ZONE_3_END   = 44,
+			  ZONE_4_BEGIN = 45,
+			  ZONE_4_END   = 56,
+			  ZONE_5_BEGIN = 57,
+				ZONE_5_END   = 67,
+				ZONE_6_BEGIN = 68,
+				ZONE_6_END   = 79,
+				ZONE_7_BEGIN = 80,
+				ZONE_7_END   = 91,
+				ZONE_8_BEGIN = 92,
+			  ZONE_8_END   = 103,
+				ZONE_9_BEGIN = 104,
+			  ZONE_9_END   = 112
 			};
 
-			enum zone_id_size {
-				GEIGER_HORIZONTAL_SIDE_SIZE = 5,
-				GEIGER_HORIZONTAL_SIZE      = 6,
-				GEIGER_VERTICAL_SIZE        = 5,
-				GEIGER_ZONE_ID_0_SIZE       = 9,
-				GEIGER_ZONE_ID_1_SIZE       = 12,
-				GEIGER_ZONE_ID_2_SIZE       = 12,
-				GEIGER_ZONE_ID_3_SIZE       = 12,
-				GEIGER_ZONE_ID_4_SIZE       = 12,
-				GEIGER_ZONE_ID_5_SIZE       = 11,
-				GEIGER_ZONE_ID_6_SIZE       = 12,
-				GEIGER_ZONE_ID_7_SIZE       = 12,
-				GEIGER_ZONE_ID_8_SIZE       = 12,
-				GEIGER_ZONE_ID_9_SIZE       = 9
+			enum tracker_zoning_id_size {
+				HORIZONTAL_SIDED_ZONE_SIZE  = 5,
+				HORIZONTAL_SIZE             = 6,
+				VERTICAL_SIZE               = 5,
+			  ZONE_ID_0_SIZE              = 9,
+			  ZONE_ID_1_SIZE              = 12,
+			  ZONE_ID_2_SIZE              = 12,
+			  ZONE_ID_3_SIZE              = 12,
+			  ZONE_ID_4_SIZE              = 12,
+				ZONE_ID_5_SIZE              = 11,
+				ZONE_ID_6_SIZE              = 12,
+			  ZONE_ID_7_SIZE              = 12,
+			  ZONE_ID_8_SIZE              = 12,
+				ZONE_ID_9_SIZE              = 9
 			};
 			
-			enum zone_id_index {
-				GEIGER_ZONE_0_INDEX = 0,
-				GEIGER_ZONE_1_INDEX = 1,
-				GEIGER_ZONE_2_INDEX = 2,
-				GEIGER_ZONE_3_INDEX = 3,
-				GEIGER_ZONE_4_INDEX = 4,
-				GEIGER_ZONE_5_INDEX = 5,
-				GEIGER_ZONE_6_INDEX = 6,
-				GEIGER_ZONE_7_INDEX = 7,
-				GEIGER_ZONE_8_INDEX = 8,
-				GEIGER_ZONE_9_INDEX = 9
+			enum tracker_zoning_id_index {
+				ZONE_0_INDEX = 0,
+				ZONE_1_INDEX = 1,
+			  ZONE_2_INDEX = 2,
+				ZONE_3_INDEX = 3,
+				ZONE_4_INDEX = 4,
+				ZONE_5_INDEX = 5,
+				ZONE_6_INDEX = 6,
+				ZONE_7_INDEX = 7,
+				ZONE_8_INDEX = 8,
+				ZONE_9_INDEX = 9
 			};
 
-			enum subzone_size {
-				GEIGER_SUB_ZONE_HORIZONTAL_SIZE      = 6,
-				GEIGER_SUB_ZONE_HORIZONTAL_SIDE_SIZE = 5,
-				GEIGER_SUB_ZONE_VERTICAL_SIZE        = 5		
+			enum tracker_subzone_index {
+			  SUB_ZONE_0_INDEX = 0,
+			  SUB_ZONE_1_INDEX = 1,
+			  SUB_ZONE_2_INDEX = 2,
+				SUB_ZONE_3_INDEX = 3
 			};
-
-			enum subzone_index {
-				GEIGER_SUB_ZONE_0_INDEX = 0,
-				GEIGER_SUB_ZONE_1_INDEX = 1,
-				GEIGER_SUB_ZONE_2_INDEX = 2,
-				GEIGER_SUB_ZONE_3_INDEX = 3
-			};
-
+			
+			/// Size of a bitset for one zone
+			static const int32_t ZONING_BITSET_SIZE = 8;
+			
     public : 
 
       /// Default constructor
@@ -119,8 +124,13 @@ namespace snemo {
 			/// Reset the geiger cells matrix
 			void reset_matrix();
 			
-			/// Build the sub-zone of a more generic zone
-			void sub_zone_builder(int32_t side_, int32_t sub_zone_index_);
+			/// For a given side and zone index, give the row index begin and end
+			void fetch_zone_limits(int32_t side_, int32_t zone_index_, int32_t & row_index_begin_, int32_t & row_index_end_);
+
+			/// For a given side and row index, give the zone index
+			void fetch_zone_index(int32_t side_, int32_t row_index_, int32_t & zone_index_);
+
+			void build_trigger_level_one_bitsets(); 
 
       /// General process
       void process(const geiger_ctw_data & geiger_ctw_data_);
@@ -128,7 +138,9 @@ namespace snemo {
     private :
       
       bool _initialized_; //!< Initialization flag
-      bool _geiger_matrix_[mapping::MAX_NUMBER_OF_SIDE][mapping::GEIGER_LAYER_SIZE][mapping::GEIGER_ROW_SIZE]; //!< Geiger cells matrix
+      bool _geiger_matrix_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_LAYERS][mapping::NUMBER_OF_GEIGER_ROWS]; //!< Geiger cells matrix
+			std::bitset<ZONING_BITSET_SIZE> _tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES]; //!< Table of 2x10 containing 8 bits bitset representing the tracker zoning (side = {0-1}, zones = {0-9})
+			zone_threshold_info _zone_threshold_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES]; //!< Table of 2x10 containing a struct fixing the thresholds in zones
 			const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
     };
 

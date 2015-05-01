@@ -79,22 +79,23 @@ namespace snemo {
 			static const int32_t TRIGGER_RACK_ID = 3;
 			static const int32_t GEIGER_RACK_ID  = 5;
 
-			static const uint32_t MAX_NUMBER_OF_SIDE = 2;
-			static const uint32_t MAX_NUMBER_OF_WALLS = 2;
+			static const uint32_t NUMBER_OF_SIDES = 2;
+			static const uint32_t NUMBER_OF_WALLS = 2;
 
-			static const uint32_t MAX_NUMBER_OF_LAYER = 9;
-			static const uint32_t MAX_NUMBER_OF_MAIN_CALO_COLUMN = 20;
-			static const uint32_t MAX_NUMBER_OF_MAIN_CALO_ROW = 13;
+			static const uint32_t NUMBER_OF_LAYERS = 9;
+			static const uint32_t NUMBER_OF_MAIN_CALO_COLUMNS = 20;
+			static const uint32_t NUMBER_OF_MAIN_CALO_ROWS = 13;
 
-			static const uint32_t MAX_NUMBER_OF_X_CALO_COLUMNS = 2;
-			static const uint32_t MAX_NUMBER_OF_X_CALO_ROWS = 16;
+			static const uint32_t NUMBER_OF_X_CALO_COLUMNS = 2;
+			static const uint32_t NUMBER_OF_X_CALO_ROWS = 16;
 
-			static const uint32_t MAX_NUMBER_OF_GVETO_COLUMNS = 16;
+			static const uint32_t NUMBER_OF_GVETO_COLUMNS = 16;
+			static const uint32_t NUMBER_OF_GEIGER_ROWS = 113;
+			static const int32_t  NUMBER_OF_TRACKER_TRIGGER_ZONES = 10;
+			static const int32_t  NUMBER_OF_SUB_TRACKER_TRIGGER_ZONES = 4;
 
-			static const uint32_t MAX_NUMBER_OF_GEIGER_ROW = 113;
-
-			static const uint32_t MAX_NUMBER_OF_CRATE  = 2;
-			static const uint32_t MAX_NUMBER_OF_FEB_BY_CRATE = 19;
+			static const uint32_t NUMBER_OF_CRATES  = 2;
+			static const uint32_t NUMBER_OF_FEBS_BY_CRATE = 19;
 			static const int32_t XWALL_GVETO_CRATE_ID = 2;
 			static const int32_t TRIGGER_CRATE_ID     = 2;
 
@@ -113,8 +114,8 @@ namespace snemo {
 			static const int32_t THREE_WIRES_CRATE_1_LIMIT     = 74;
 			static const int32_t THREE_WIRES_CRATE_2_BEGINNING = 75;
 
-			static const int32_t GEIGER_LAYER_SIZE = 9;
-			static const int32_t GEIGER_ROW_SIZE   = 113;
+			static const int32_t GEIGER_LAYERS_SIZE = 9;
+			static const int32_t GEIGER_ROWS_SIZE   = 113;
 
     };
 	       

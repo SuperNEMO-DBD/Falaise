@@ -239,7 +239,7 @@ namespace snemo {
     void geiger_tp::set_board_id(unsigned long board_id_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Board ID can't be set, geiger TP is locked ! ");  
-      DT_THROW_IF(board_id_ > mapping::MAX_NUMBER_OF_FEB_BY_CRATE, std::range_error, "Unsupported board ID ["<< board_id_ <<"] ! ");
+      DT_THROW_IF(board_id_ > mapping::NUMBER_OF_FEBS_BY_CRATE, std::range_error, "Unsupported board ID ["<< board_id_ <<"] ! ");
       std::bitset<geiger::tp::BOARD_ID_WORD_SIZE> board_id_bitset(board_id_);
       
       for (int i = 0; i < board_id_bitset.size(); i++)
@@ -265,7 +265,7 @@ namespace snemo {
     void geiger_tp::set_crate_id(unsigned long crate_id_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Crate ID can't be set, geiger TP is locked ! ");  
-      DT_THROW_IF(crate_id_ > mapping::MAX_NUMBER_OF_CRATE, std::range_error, "Unsupported crate ID ["<< crate_id_ <<"] ! ");
+      DT_THROW_IF(crate_id_ > mapping::NUMBER_OF_CRATES, std::range_error, "Unsupported crate ID ["<< crate_id_ <<"] ! ");
       std::bitset<geiger::tp::CRATE_ID_WORD_SIZE> crate_id_bitset(crate_id_);
       
       for (int i = 0; i < crate_id_bitset.size(); i++)

@@ -122,7 +122,7 @@ namespace snemo {
 
       for(int32_t i = calo_tp_data_.get_clocktick_min(); i <= calo_tp_data_.get_clocktick_max(); i++)
 	{
-	  for(int32_t j = 0 ; j <= mapping::MAX_NUMBER_OF_CRATE ; j++) 
+	  for(int32_t j = 0 ; j <= mapping::NUMBER_OF_CRATES ; j++) 
 	    {	  
 	      std::vector<datatools::handle<calo_tp> > tp_list_per_clocktick_per_crate;
 	      calo_tp_data_.get_list_of_tp_per_clocktick_per_crate(i,j,tp_list_per_clocktick_per_crate);

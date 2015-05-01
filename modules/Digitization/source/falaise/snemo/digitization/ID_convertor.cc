@@ -181,19 +181,19 @@ namespace snemo {
 	if (row_index < mapping::THREE_WIRES_LONELY_ROW)
 	  {
 	    shift = 2 * side_index + (row_index % 2);
-	    channel_id = mapping::GEIGER_LAYER_SIZE * shift + layer_index;
+	    channel_id = mapping::GEIGER_LAYERS_SIZE * shift + layer_index;
 	  }
 
 	else if (row_index == mapping::THREE_WIRES_LONELY_ROW)
 	  {
 	    shift = 2 * side_index;
-	    channel_id = mapping::GEIGER_LAYER_SIZE * shift + layer_index;
+	    channel_id = mapping::GEIGER_LAYERS_SIZE * shift + layer_index;
 	  }
 
 	else if (row_index > mapping::THREE_WIRES_LONELY_ROW)
 	  {
 	    shift = 2 * side_index + (1 - (row_index % 2));
-	    channel_id = mapping::GEIGER_LAYER_SIZE * shift + layer_index;
+	    channel_id = mapping::GEIGER_LAYERS_SIZE * shift + layer_index;
 	  }
       }
 

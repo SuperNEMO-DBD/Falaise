@@ -31,17 +31,19 @@ namespace snemo {
     const int32_t  mapping::CALO_RACK_ID;
     const int32_t  mapping::TRIGGER_RACK_ID;
     const int32_t  mapping::GEIGER_RACK_ID;
-    const uint32_t mapping::MAX_NUMBER_OF_SIDE;
-    const uint32_t mapping::MAX_NUMBER_OF_WALLS;
-    const uint32_t mapping::MAX_NUMBER_OF_LAYER;
-    const uint32_t mapping::MAX_NUMBER_OF_MAIN_CALO_COLUMN;
-    const uint32_t mapping::MAX_NUMBER_OF_MAIN_CALO_ROW;
-    const uint32_t mapping::MAX_NUMBER_OF_X_CALO_COLUMNS;
-    const uint32_t mapping::MAX_NUMBER_OF_X_CALO_ROWS;
-    const uint32_t mapping::MAX_NUMBER_OF_GVETO_COLUMNS;
-    const uint32_t mapping::MAX_NUMBER_OF_GEIGER_ROW;
-    const uint32_t mapping::MAX_NUMBER_OF_CRATE;
-    const uint32_t mapping::MAX_NUMBER_OF_FEB_BY_CRATE;
+    const uint32_t mapping::NUMBER_OF_SIDES;
+    const uint32_t mapping::NUMBER_OF_WALLS;
+    const uint32_t mapping::NUMBER_OF_LAYERS;
+    const uint32_t mapping::NUMBER_OF_MAIN_CALO_COLUMNS;
+    const uint32_t mapping::NUMBER_OF_MAIN_CALO_ROWS;
+    const uint32_t mapping::NUMBER_OF_X_CALO_COLUMNS;
+    const uint32_t mapping::NUMBER_OF_X_CALO_ROWS;
+    const uint32_t mapping::NUMBER_OF_GVETO_COLUMNS;
+    const uint32_t mapping::NUMBER_OF_GEIGER_ROWS;
+    const int32_t  mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES;
+    const int32_t  mapping::NUMBER_OF_SUB_TRACKER_TRIGGER_ZONES;
+    const uint32_t mapping::NUMBER_OF_CRATES;
+    const uint32_t mapping::NUMBER_OF_FEBS_BY_CRATE;
     const int32_t  mapping::XWALL_GVETO_CRATE_ID;
     const int32_t  mapping::TRIGGER_CRATE_ID;
     const int32_t  mapping::CONTROL_BOARD_ID;
@@ -54,8 +56,8 @@ namespace snemo {
     const int32_t  mapping::THREE_WIRES_LONELY_ROW;
     const int32_t  mapping::THREE_WIRES_CRATE_1_LIMIT;
     const int32_t  mapping::THREE_WIRES_CRATE_2_BEGINNING;
-    const int32_t  mapping::GEIGER_LAYER_SIZE;
-    const int32_t  mapping::GEIGER_ROW_SIZE;
+    const int32_t  mapping::GEIGER_LAYERS_SIZE;
+    const int32_t  mapping::GEIGER_ROWS_SIZE;
 
     const std::string & mapping::geiger_type()
     {
