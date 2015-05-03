@@ -5,6 +5,9 @@
 // Standard library : 
 #include <vector>
 
+// Boost : 
+#include <boost/dynamic_bitset.hpp>
+
 // - Bayeux/datatools :
 #include <bayeux/datatools/handle.h>
 
@@ -26,7 +29,7 @@ namespace snemo {
       static const size_t nmax = mapping::NUMBER_OF_SIDES * mapping::GEIGER_LAYERS_SIZE * mapping::GEIGER_ROWS_SIZE;
 
       for (int i = 0; i < nmax ; i ++)
-	{
+	{ 
 	  vbool[i] = false;
 	}
 
@@ -219,52 +222,52 @@ namespace snemo {
 	    {
 	    case 0 :
 	      row_index_begin_ = ZONE_0_BEGIN;
-	      row_index_end_ = ZONE_0_END;
+	      row_index_end_   = ZONE_0_END;
 	      break;
 	      
 	    case 1:
 	      row_index_begin_ = ZONE_1_BEGIN;
-	      row_index_end_ = ZONE_1_END;
+	      row_index_end_   = ZONE_1_END;
 	      break;
 
 	    case 2 :
 	      row_index_begin_ = ZONE_2_BEGIN;
-	      row_index_end_ = ZONE_2_END;
+	      row_index_end_   = ZONE_2_END;
 	      break;
 	      
 	    case 3:
 	      row_index_begin_ = ZONE_3_BEGIN;
-	      row_index_end_ = ZONE_3_END;
+	      row_index_end_   = ZONE_3_END;
 	      break;
 
 	    case 4 :
 	      row_index_begin_ = ZONE_4_BEGIN;
-	      row_index_end_ = ZONE_4_END;
+	      row_index_end_   = ZONE_4_END;
 	      break;
 	      
 	    case 5:
 	      row_index_begin_ = ZONE_5_BEGIN;
-	      row_index_end_ = ZONE_5_END;
+	      row_index_end_   = ZONE_5_END;
 	      break;
 
 	    case 6 :
 	      row_index_begin_ = ZONE_6_BEGIN;
-	      row_index_end_ = ZONE_6_END;
+	      row_index_end_   = ZONE_6_END;
 	      break;
 	      
 	    case 7:
 	      row_index_begin_ = ZONE_7_BEGIN;
-	      row_index_end_ = ZONE_7_END;
+	      row_index_end_   = ZONE_7_END;
 	      break;
 
 	    case 8 :
 	      row_index_begin_ = ZONE_8_BEGIN;
-	      row_index_end_ = ZONE_8_END;
+	      row_index_end_   = ZONE_8_END;
 	      break;
 	      
 	    case 9:
 	      row_index_begin_ = ZONE_9_BEGIN;
-	      row_index_end_ = ZONE_9_END;
+	      row_index_end_   = ZONE_9_END;
 	      break;	      
 
 	    default :
@@ -300,131 +303,176 @@ namespace snemo {
 
       return;
     }
-    
+
+    void tracker_trigger_algorithm::fetch_subzone_limits(int32_t side_, int32_t subzone_index_, int32_t & subzone_row_index_begin_, int32_t & subzone_row_index_end_, int32_t & subzone_layer_index_begin_)
+    {
+      if (side_ == 0)
+	{
+	  int32_t zone_index = subzone_index_ / 4;
+	  int32_t zone_row_index_begin = -1;
+	  int32_t zone_row_index_end = -1;
+	  int32_t zone_size = -1;
+	  
+	  fetch_zone_limits(side_, 
+			    zone_index, 
+			    zone_row_index_begin, 
+			    zone_row_index_end);
+	  
+	  zone_size = zone_row_index_end - zone_row_index_begin + 1; // +1 to take in order that rows begin at index 0
+	  
+	  switch (subzone_index_ % 4)
+	    {
+	    case 0 : 
+	      subzone_row_index_begin_   = zone_row_index_begin;
+	      subzone_row_index_end_     = zone_row_index_end - (zone_size / 2) ;
+	      subzone_layer_index_begin_ = 0;
+	      break;
+
+	    case 1 : 
+	      subzone_row_index_begin_   = zone_row_index_begin;
+	      subzone_row_index_end_     = zone_row_index_end - (zone_size / 2);
+	      subzone_layer_index_begin_ = 4;
+	      break;
+
+	    case 2 : 
+	      subzone_row_index_begin_   = zone_row_index_begin + (zone_size / 2);
+	      subzone_row_index_end_     = zone_row_index_end;
+	      subzone_layer_index_begin_ = 0;
+	      break;
+
+	    case 3 : 
+	      subzone_row_index_begin_   = zone_row_index_begin + (zone_size / 2);
+	      subzone_row_index_end_     = zone_row_index_end;
+	      subzone_layer_index_begin_ = 4;
+	      break;
+
+	    default :
+	      break;
+	    }
+
+	} // end of if 
+
+      return;
+    }
+      
     void tracker_trigger_algorithm::build_trigger_level_one_bitsets()
     {
       int32_t side = 0;
-      if (side == 0)
+
+      for (int i = 0; i < mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES_PER_SIDE; i ++)
 	{
-	  for (int izone = 0; izone < mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES; izone++)
-	    {  
-	      int32_t zone_row_index_begin = -1;
-	      int32_t zone_row_index_end   = -1;
-	      fetch_zone_limits(side, izone, zone_row_index_begin, zone_row_index_end);
-	      const int32_t zone_size = zone_row_index_end - zone_row_index_begin + 1; // +1 to take in account the shift of the row 0
+	  const int32_t zone_index  = i / 4;
+	  const int32_t subzone     = i % 4;
+	  
+	  fetch_subzone_limits(side,
+			       subzone,
+			       _sub_zone_location_info_[side][i].row_begin,
+			       _sub_zone_location_info_[side][i].row_end,
+			       _sub_zone_location_info_[side][i].layer_begin);
+	  
+	  const int32_t row_begin   = _sub_zone_location_info_[side][i].row_begin;
+	  const int32_t row_end     = _sub_zone_location_info_[side][i].row_end;
+	  const int32_t layer_begin = _sub_zone_location_info_[side][i].layer_begin;
+	  const int32_t layer_end   = _sub_zone_location_info_[side][i].layer_begin + 5; // const to add same shift for all zones
+	  
+	  std::clog << "DEBUG : zone index = " << zone_index 
+		    << " subzone = "           << subzone
+		    << " row begin = "         << row_begin
+		    << " row end = "           << row_end
+		    << " layer begin = "       << layer_begin
+		    << " layer end = "         << layer_end 
+		    << std::endl;  
 
-	      const int32_t LAYER_BITSET_SIZE = 5;
-	      const int32_t ROW_BITSET_SIZE   = 6;
-	      const int32_t ROW_BITSET_SIDE_SIZE = 5;
+	  const int32_t subzone_row_size   = row_end - row_begin + 1;	  
+	  const int32_t subzone_layer_size = layer_end - layer_begin;
 
-	      std::bitset<LAYER_BITSET_SIZE> layer_bitset_sub_zone_0 = 0x0;
-	      std::bitset<LAYER_BITSET_SIZE> layer_bitset_sub_zone_1 = 0x0;
-	      std::bitset<LAYER_BITSET_SIZE> layer_bitset_sub_zone_2 = 0x0;
-	      std::bitset<LAYER_BITSET_SIZE> layer_bitset_sub_zone_3 = 0x0;
-	      // if (izone == 0 || izone == 9)
-	      // 	{
-	      std::bitset<ROW_BITSET_SIDE_SIZE> row_bitset_sub_zone_0 = 0x0;
-	      std::bitset<ROW_BITSET_SIDE_SIZE> row_bitset_sub_zone_1 = 0x0;
-	      std::bitset<ROW_BITSET_SIDE_SIZE> row_bitset_sub_zone_2 = 0x0;
-	      std::bitset<ROW_BITSET_SIDE_SIZE> row_bitset_sub_zone_3 = 0x0;
-	      // 	}
-	      // if (izone == 5)
-	      // 	{
-		  
-	      // 	}
+	  boost::dynamic_bitset<> subzone_row_bitset(subzone_row_size);
+	  boost::dynamic_bitset<> subzone_layer_bitset(subzone_layer_size);
 
-	      // else 
-	      // 	{
-	      // std::bitset<ROW_BITSET_SIZE> row_bitset_sub_zone_0 = 0x0;
-	      // std::bitset<ROW_BITSET_SIZE> row_bitset_sub_zone_1 = 0x0;
-	      // std::bitset<ROW_BITSET_SIZE> row_bitset_sub_zone_2 = 0x0;
-	      // std::bitset<ROW_BITSET_SIZE> row_bitset_sub_zone_3 = 0x0;
-	      // 	}
+	  for (int jrow = row_begin; jrow <= row_end; jrow++)
+	    {
+	      for (int klayer = layer_begin; klayer < layer_end; klayer++)
+		{
+		  if (_geiger_matrix_[side][klayer][jrow])
+		    {
+		      subzone_row_bitset.set(jrow - row_begin, 1);
+		    }
+		}
+	    }
+	  
+	  for (int klayer = layer_begin; klayer < layer_end; klayer++)
+	    {
+	      for (int jrow = row_begin; jrow <= row_end; jrow++)
+		{
+		  if (_geiger_matrix_[side][klayer][jrow])
+		    {
+		      subzone_layer_bitset.set(klayer - layer_begin, 1);
+		    }
+		}
+	    }
+
+	  std::clog << "DEBUG : subzone_row_bitset = " << subzone_row_bitset << std::endl;
+	  std::clog << "DEBUG : subzone_layer_bitset = " << subzone_layer_bitset << std::endl;
+	  const int32_t row_multiplicity = subzone_row_bitset.count();
+	  const int32_t layer_multiplicity =subzone_layer_bitset.count();
+
+	  switch (subzone)
+	    {
+	    case 0 : 
+	      // Subzone 0 :
+	      if (layer_multiplicity >= zone_threshold_info::INNER_LAYER_THRESHOLD)
+		{
+		  _tracker_trigger_info_[side][zone_index].set(SUBZONE_0_LAYER_INDEX, 1);
+		}
+	      if (row_multiplicity >= zone_threshold_info::LEFT_NROWS_THRESHOLD)
+		{
+		  _tracker_trigger_info_[side][zone_index].set(SUBZONE_0_ROW_INDEX, 1);
+		}
+	      break;
+
+	    case 1 : 
+	      // Subzone 1 :
+	      if (layer_multiplicity >= zone_threshold_info::OUTER_LAYER_THRESHOLD)
+		{
+		  _tracker_trigger_info_[side][zone_index].set(SUBZONE_1_LAYER_INDEX, 1);
+		}
+	      if (row_multiplicity >= zone_threshold_info::LEFT_NROWS_THRESHOLD)
+		{
+		  _tracker_trigger_info_[side][zone_index].set(SUBZONE_1_ROW_INDEX, 1);
+		}
+	      break;
+
+	    case 2 : 
+	      // Subzone 2 :
+	      if (layer_multiplicity >= zone_threshold_info::INNER_LAYER_THRESHOLD)
+		{
+		  _tracker_trigger_info_[side][zone_index].set(SUBZONE_2_LAYER_INDEX, 1);
+		}
+	      if (row_multiplicity >= zone_threshold_info::RIGHT_NROWS_THRESHOLD)
+		{
+		  _tracker_trigger_info_[side][zone_index].set(SUBZONE_2_ROW_INDEX, 1);
+		}
+	      break;
+
+	    case 3 : 
+	      // Subzone 3 :
+	      if (layer_multiplicity >= zone_threshold_info::OUTER_LAYER_THRESHOLD)
+		{
+		  _tracker_trigger_info_[side][zone_index].set(SUBZONE_3_LAYER_INDEX, 1);
+		}
+	      if (row_multiplicity >= zone_threshold_info::RIGHT_NROWS_THRESHOLD)
+		{
+		  _tracker_trigger_info_[side][zone_index].set(SUBZONE_3_ROW_INDEX, 1);
+		}
+	      break;
+
+	    default :
+	      break;
 	      
-	      // for (int jrow = zone_row_index_begin; jrow <= zone_row_index_end; jrow++)
-	      // 	{
-	      // 	  for (int klayer = 0; klayer < mapping::NUMBER_OF_LAYERS; klayer++)
-	      // 	    {
-	      // 	      if (_geiger_matrix_[side][klayer][jrow])
-	      // 		{
-	      // 		  int32_t row_sub_zone = -1;
-	      // 		  if (zone_size == 12 || zone_size == 11)
-	      // 		    {
-	      // 		      row_sub_zone = jrow - zone_row_index_begin;
-	      // 		      std::clog << "DEBUG : klayer = " << klayer << " row sub zone = " << row_sub_zone << std::endl;
-	      // 		    }
-	      // 		  int32_t layer_bit_index = klayer + 1; // +1 to take in account layer 0
-	      // 		  int32_t row_sub_zone   = row_sub_zone + 1; // +1 to take in account row 0
-	      // 		  std::clog << "DEBUG : layer bit index = " << layer_bit_index << " row bit index = " << row_sub_zone <<std::endl;
+	    }
 
-	      // 		  if (klayer >= 0 && klayer <= 3 && row_sub_zone >= 0 && row_sub_zone <= 5)
-	      // 		    {
-	      // 		      std::clog << "DEBUG : Subzone 0 " << std::endl;
-	      // 		      // Subzone 0
-	      // 		      row_bitset_sub_zone_0.set(row_sub_zone, 1);
-	      // 		      layer_bitset_sub_zone_0.set(layer_bit_index, 1);
-	      // 		    }
-	      // 		  if (klayer >= 5 && klayer <= 8 && row_sub_zone >= 0 && row_sub_zone <= 5 )
-	      // 		    {
-	      // 		      std::clog << "DEBUG : Subzone 1 " << std::endl;
-	      // 		      // Subzone 1
-	      // 		      row_bitset_sub_zone_1.set(row_sub_zone, 1);
-	      // 		      layer_bitset_sub_zone_1.set(layer_bit_index - LAYER_BITSET_SIZE, 1);
-	      // 		    }
-	      // 		  if (klayer >= 0 && klayer <= 3 && row_sub_zone >= 6 && row_sub_zone <= 11  )
-	      // 		    {
-	      // 		      std::clog << "DEBUG : Subzone 2 " << std::endl;
-	      // 		      // Subzone 2
-	      // 		      row_bitset_sub_zone_2.set(row_sub_zone - ROW_BITSET_SIZE, 1);
-	      // 		      layer_bitset_sub_zone_2.set(layer_bit_index, 1);
-	      // 		    }
-	      // 		  if (klayer >= 5 && klayer <= 8 && row_sub_zone >= 6 && row_sub_zone <= 11)
-	      // 		    {
-	      // 		      std::clog << "DEBUG : Subzone 3 " << std::endl;
-	      // 		      // Subzone 3
-	      // 		      row_bitset_sub_zone_3.set(row_sub_zone - ROW_BITSET_SIZE , 1);
-	      // 		      layer_bitset_sub_zone_3.set(layer_bit_index - LAYER_BITSET_SIZE, 1);
-	      // 		    } 
-	      // 		  if (klayer == 4 && row_sub_zone >= 0 && row_sub_zone <= 5 )
-	      // 		    {
-	      // 		      std::clog << "DEBUG : Subzone 0 and Subzone 1 " << std::endl;
-	      // 		      // Subzone 0 & 1
-	      // 		      row_bitset_sub_zone_0.set(row_sub_zone, 1);
-	      // 		      std::clog << "DEBUG 1" << std::endl;
-	      // 		      layer_bitset_sub_zone_0.set(layer_bit_index, 1);
-	      // 		      std::clog << "DEBUG 2" << std::endl;
-	      // 		      row_bitset_sub_zone_1.set(row_sub_zone, 1);
-	      // 		      std::clog << "DEBUG 3" << std::endl;
-	      // 		      layer_bitset_sub_zone_1.set(layer_bit_index - LAYER_BITSET_SIZE, 1);
-	      // 		      std::clog << "DEBUG 4" << std::endl;
-	      // 		    }
-	      // 		  if (klayer == 4 && row_sub_zone >= 6 && row_sub_zone <= 11)
-	      // 		    {
-	      // 		      std::clog << "DEBUG : Subzone 2 and Subzone 3 " << std::endl;
-	      // 		      // Subzone 2 & 3
-	      // 		      row_bitset_sub_zone_2.set(row_sub_zone - ROW_BITSET_SIZE, 1);
-	      // 		      layer_bitset_sub_zone_2.set(layer_bit_index, 1);
-	      // 		      row_bitset_sub_zone_3.set(row_sub_zone - ROW_BITSET_SIZE , 1);
-	      // 		      layer_bitset_sub_zone_3.set(layer_bit_index - LAYER_BITSET_SIZE, 1);
-	      // 		    }
-	      // 		}
-	      // 	      else
-	      // 		{
-	      // 		}
-	      // 	    }
-	      // 	}
-	      // std::clog << "DEBUG : Zone index = " << izone
-	      // 		<< " Row sub zone 0 bitset = " << row_bitset_sub_zone_0
-	      // 		<< " Layer sub zone 0 bitset = " << layer_bitset_sub_zone_0
-	      // 		<< " Row sub zone 1 bitset = " << row_bitset_sub_zone_1
-	      // 		<< " Layer sub zone 1 bitset = " << layer_bitset_sub_zone_1
-	      // 		<< " Row sub zone 2 bitset = " << row_bitset_sub_zone_2
-	      // 		<< " Layer sub zone 2 bitset = " << layer_bitset_sub_zone_2
-	      // 		<< " Row sub zone 3 bitset = " << row_bitset_sub_zone_3
-	      // 		<< " Layer sub zone 3 bitset = " << layer_bitset_sub_zone_3
-	      // 		<< std::endl << std::endl;
-	    } // end of izone
-	} // end of if
+	  std::clog << std::endl;
+	}
 
       return;
     }

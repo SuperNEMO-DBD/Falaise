@@ -28,7 +28,13 @@ namespace snemo {
 				static const int32_t OUTER_LAYER_THRESHOLD = 2;
 				static const int32_t LEFT_NROWS_THRESHOLD  = 2;
 				static const int32_t RIGHT_NROWS_THRESHOLD = 2;
-			};		
+			};
+
+			struct sub_zone_location_info {
+				int32_t row_begin;
+				int32_t row_end;
+				int32_t layer_begin;		
+			};
 
 			enum tracker_zoning_row_id_limits{
 				ZONE_0_BEGIN = 0,
@@ -83,10 +89,21 @@ namespace snemo {
 			};
 
 			enum tracker_subzone_index {
-			  SUB_ZONE_0_INDEX = 0,
-			  SUB_ZONE_1_INDEX = 1,
-			  SUB_ZONE_2_INDEX = 2,
-				SUB_ZONE_3_INDEX = 3
+			  SUBZONE_0_INDEX = 0,
+			  SUBZONE_1_INDEX = 1,
+			  SUBZONE_2_INDEX = 2,
+				SUBZONE_3_INDEX = 3
+			};
+
+			enum _tracker_trigger_info_bitset_index {
+				SUBZONE_0_LAYER_INDEX = 0,
+				SUBZONE_0_ROW_INDEX   = 1,
+				SUBZONE_1_LAYER_INDEX = 2,
+				SUBZONE_1_ROW_INDEX   = 3,
+				SUBZONE_2_LAYER_INDEX = 4,
+				SUBZONE_2_ROW_INDEX   = 5,
+				SUBZONE_3_LAYER_INDEX = 6,
+				SUBZONE_3_ROW_INDEX   = 7	
 			};
 			
 			/// Size of a bitset for one zone
@@ -130,10 +147,15 @@ namespace snemo {
 			/// For a given side and row index, give the zone index
 			void fetch_zone_index(int32_t side_, int32_t row_index_, int32_t & zone_index_);
 
+
+			void fetch_subzone_limits(int32_t side_, int32_t subzone_index_, int32_t & subzone_row_index_begin_, int32_t & subzone_row_index_end_, int32_t & subzone_layer_index_begin_);
+
+
 			void build_trigger_level_one_bitsets(); 
 
       /// General process
       void process(const geiger_ctw_data & geiger_ctw_data_);
+
 	
     private :
       
@@ -141,6 +163,8 @@ namespace snemo {
       bool _geiger_matrix_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_LAYERS][mapping::NUMBER_OF_GEIGER_ROWS]; //!< Geiger cells matrix
 			std::bitset<ZONING_BITSET_SIZE> _tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES]; //!< Table of 2x10 containing 8 bits bitset representing the tracker zoning (side = {0-1}, zones = {0-9})
 			zone_threshold_info _zone_threshold_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES]; //!< Table of 2x10 containing a struct fixing the thresholds in zones
+			sub_zone_location_info _sub_zone_location_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES_PER_SIDE]; //!< Table of 2x40 (10 zones subdivided in 4 subzones on 2 sides)
+
 			const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
     };
 
