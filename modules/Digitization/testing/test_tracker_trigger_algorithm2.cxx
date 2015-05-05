@@ -30,7 +30,7 @@
 #include <snemo/digitization/tracker_trigger_algorithm.h>
 
 
-int main( int /* argc_ */, char ** /* argv_ */ )
+int main( int  argc_ , char **  argv_ )
 {
   FALAISE_INIT();
   int error_code = EXIT_SUCCESS;

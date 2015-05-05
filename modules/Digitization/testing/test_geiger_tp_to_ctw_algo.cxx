@@ -16,7 +16,7 @@
 // This project :
 #include <snemo/digitization/geiger_tp_to_ctw_algo.h>
 
-int main( int /* argc_ */, char ** /* argv_ */ )
+int main( int  argc_ , char **argv_ )
 {
   FALAISE_INIT();
   int error_code = EXIT_SUCCESS;

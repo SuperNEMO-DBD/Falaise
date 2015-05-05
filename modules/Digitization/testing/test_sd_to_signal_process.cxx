@@ -18,11 +18,27 @@
 #include <snemo/digitization/sd_to_geiger_signal_algo.h>
 #include <snemo/digitization/sd_to_calo_signal_algo.h>
 
-int main( int /* argc_ */, char ** /* argv_ */ )
+int main( int  argc_ , char **  argv_ )
 {
   FALAISE_INIT();
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
+  
+  int iarg = 1;
+  bool is_input_file = false;
+  std::string input_filename;
+  while (iarg < argc_) {
+    std::string arg = argv_[iarg];
+    if (arg == "-i" || arg == "--input") {
+      is_input_file = true;
+      input_filename=argv_[++iarg];
+    } else if (arg == "-f" || arg == "--filename") {
+      input_filename=argv_[++iarg];
+    }
+    iarg++;
+  }
+
+
   try {
     std::clog << "Test program for class 'snemo::digitization::sd_to_signal_algo' !" << std::endl;
     std::string manager_config_file;
@@ -43,8 +59,13 @@ manager_config_file = "@falaise:config/snemo/demonstrator/geometry/3.0/manager.c
 
     std::string pipeline_simulated_data_filename;
     std::string SD_bank_label = "SD";
+    
+    if(is_input_file){
+      pipeline_simulated_data_filename = input_filename;
+    }else{
+      pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
+    }
 
-    pipeline_simulated_data_filename = "/home/guillaume/data/my_falaise/outputs/Se82_0nubb-source_strips_bulk_SD.brio";
     
     dpp::input_module reader;
     datatools::properties reader_config;
