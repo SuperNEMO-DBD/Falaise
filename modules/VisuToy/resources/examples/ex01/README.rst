@@ -25,7 +25,7 @@ Usage
       $ bxgeomtools_inspector \
           --datatools::logging "warning" \
           --load-dll Falaise@${FALAISE_INSTALL_DIR}/lib/x86_64-linux-gnu \
-          --datatools::resource_path "falaise@${FALAISE_INSTALL_DIR}/share/Falaise-1.0.0/resources" \
+          --datatools::resource-path "falaise@${FALAISE_INSTALL_DIR}/share/Falaise-1.0.0/resources" \
           --manager-config "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf"
 
   3. Generate a set of simulated events: ::
