@@ -63,7 +63,7 @@ Usage
       $ mkdir -p ${SNEMOTCMC_WORK_DIR}
       $ LD_LIBRARY_PATH=$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH} \
         bxg4_production \
-         --datatools::resource_path "falaise@$(pwd)/BuildProducts/share/Falaise-1.0.0/resources" \
+         --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-1.0.0/resources" \
          --load-dll Falaise       \
          --interactive            \
          --g4-visu \
@@ -85,7 +85,7 @@ Usage
       $ mkdir -p ${SNEMOTCMC_WORK_DIR}
       $ LD_LIBRARY_PATH=$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH} \
         bxg4_production \
-         --datatools::resource_path "falaise@$(pwd)/BuildProducts/share/Falaise-1.0.0/resources" \
+         --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-1.0.0/resources" \
          --load-dll Falaise       \
          --batch                  \
          --using-time-statistics  \

@@ -36,7 +36,7 @@ List the name of the available particle generators
 From the Falaise source directory: ::
 
    $ bxgenbb_inspector \
-      --datatools::resource_path "falaise@$(pwd)/resources" \
+      --datatools::resource-path "falaise@$(pwd)/resources" \
       --configuration "@falaise:config/snemo/tracker_commissioning/simulation/primary_events/1.0/manager.conf" \
       --action "list"
    List of particle generators:
@@ -58,7 +58,7 @@ Preliminary method (considering the Falaise build directory): ::
    $ cd {Falaise build directory}
    $ LD_LIBRARY_PATH=$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH} \
      bxgenbb_inspector \
-      --datatools::resource_path "falaise@$(pwd)/BuildProducts/share/Falaise-1.0.0/resources" \
+      --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-1.0.0/resources" \
       --load-dll "Falaise" \
       --configuration "@falaise:config/snemo/tracker_commissioning/simulation/primary_events/1.0/manager.conf" \
       --action "shoot"  \

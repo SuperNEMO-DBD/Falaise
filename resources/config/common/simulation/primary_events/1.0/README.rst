@@ -42,7 +42,7 @@ From the ``primary_events/1.0`` directory: ::
 From the Falaise source directory: ::
 
    $ bxgenbb_inspector \
-      --datatools::resource_path "falaise@$(pwd)/resources" \
+      --datatools::resource-path "falaise@$(pwd)/resources" \
       --configuration "@falaise:config/common/simulation/primary_events/1.0/manager.conf" \
       --action "list" --list-print-mode "raw"
 
@@ -53,7 +53,7 @@ Generate 1000 primary events from the ``Bi214_Po214`` generator:
   From the Falaise source directory: ::
 
    $ bxgenbb_inspector \
-      --datatools::resource_path "falaise@$(pwd)/resources" \
+      --datatools::resource-path "falaise@$(pwd)/resources" \
       --configuration "@falaise:config/common/simulation/primary_events/1.0/manager.conf" \
       --action "shoot"  \
       --generator "Bi214_Po214" \

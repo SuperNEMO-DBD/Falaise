@@ -50,7 +50,7 @@ From  Falaise build  directory (this  is preliminary),  run: ::
           bxgenvtx_production \
            --logging "warning" \
            --load-dll Falaise \
-           --datatools::resource_path "falaise@$(pwd)/BuildProducts/share/Falaise-1.0.0/resources" \
+           --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-1.0.0/resources" \
            --geometry-manager "@falaise:config/snemo/tracker_commissioning/geometry/1.0/manager.conf" \
            --vertex-generator-manager "@falaise:config/snemo/tracker_commissioning/simulation/vertexes/1.0/manager.conf" \
            --list
@@ -71,7 +71,7 @@ Run from the Falaise build directory (preliminary): ::
           bxgenvtx_production \
            --logging "warning" \
            --load-dll Falaise \
-           --datatools::resource_path "falaise@$(pwd)/BuildProducts/share/Falaise-1.0.0/resources" \
+           --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-1.0.0/resources" \
            --geometry-manager         "@falaise:config/snemo/tracker_commissioning/geometry/1.0/manager.conf" \
            --vertex-generator-manager "@falaise:config/snemo/tracker_commissioning/simulation/vertexes/1.0/manager.conf" \
            --shoot \

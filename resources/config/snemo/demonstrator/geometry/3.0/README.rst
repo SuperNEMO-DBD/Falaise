@@ -89,13 +89,13 @@ Check the geometry:
       $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
         bxgeomtools_inspector \
           --datatools::logging "warning" \
-          --datatools::resource_path "falaise@$(pwd)/BuildProducts/share/Falaise-1.0.0/resources" \
+          --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-1.0.0/resources" \
           --load-dll Falaise \
           --manager-config "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf"
 
      where:
 
-       * ``--datatools::resource_path "falaise@$(pwd)/resources"``
+       * ``--datatools::resource-path "falaise@$(pwd)/resources"``
          registers  the   Falaise  resource  base  directory   in  the
          datatools' kernel for automated search for configuration file
          paths,

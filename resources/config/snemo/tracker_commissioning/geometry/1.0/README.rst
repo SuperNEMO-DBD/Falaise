@@ -62,12 +62,12 @@ Check the geometry:
       $ cd {Falaise source directory}
       $ bxgeomtools_inspector \
           --datatools::logging "trace" \
-          --datatools::resource_path "falaise@$(pwd)/resources" \
+          --datatools::resource-path "falaise@$(pwd)/resources" \
           --manager-config "@falaise:config/geometry/snemo/tracker_commissioning/1.0/manager.conf"
 
      where:
 
-       * ``--datatools::resource_path "falaise@$(pwd)/resources"``
+       * ``--datatools::resource-path "falaise@$(pwd)/resources"``
          registers  the   Falaise  resource  base  directory   in  the
          datatools' kernel for automated search for configuration file
          paths,

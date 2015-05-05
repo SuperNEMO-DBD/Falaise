@@ -38,7 +38,7 @@ List the available vertex generators
           bxgenvtx_production \
            --logging "warning" \
            --load-dll Falaise \
-           --datatools::resource_path "falaise@$(pwd)/BuildProducts/share/Falaise-1.0.0/resources" \
+           --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-1.0.0/resources" \
            --geometry-manager "@falaise:config/bipo3/geometry/2.0/manager.conf" \
            --vertex-generator-manager "@falaise:config/bipo3/simulation/vertexes/1.0/manager.conf" \
            --list
@@ -61,7 +61,7 @@ From the Falaise build directory, run: ::
           bxgenvtx_production \
            --logging "warning" \
            --load-dll Falaise \
-           --datatools::resource_path "falaise@$(pwd)/BuildProducts/share/Falaise-1.0.0/resources" \
+           --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-1.0.0/resources" \
            --geometry-manager "@falaise:config/bipo3/geometry/2.0/manager.conf" \
            --vertex-generator-manager "@falaise:config/bipo3/simulation/vertexes/1.0/manager.conf" \
            --shoot \
