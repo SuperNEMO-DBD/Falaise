@@ -28,7 +28,7 @@ int main( int /* argc_ */, char ** /* argv_ */ )
 
     std::string manager_config_file;
     
-    manager_config_file = "~/data/my_falaise/config/snemo/demonstrator/geometry/3.0/manager.conf";
+    manager_config_file = "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf";
     datatools::fetch_path_with_env (manager_config_file);
     
     datatools::properties manager_config;
@@ -59,7 +59,7 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     my_convertor.initialize();
 
     geomtools::geom_id my_geom_ID_from_SD;
-    my_geom_ID_from_SD.set_type(1203);
+    my_geom_ID_from_SD.set_type(1204);
     my_geom_ID_from_SD.set_address(0,1,7,112);
 
    geomtools::geom_id my_electronic_ID;
@@ -75,7 +75,7 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     my_geom_ID_from_SD.reset();    
     my_electronic_ID.reset();
    
-    my_geom_ID_from_SD.set_type(1301);
+    my_geom_ID_from_SD.set_type(1302);
     my_geom_ID_from_SD.set_address(0,0,4,11);
     std::clog << "DEBUG : MAIN : geom_ID " << my_geom_ID_from_SD << std::endl;
     my_electronic_ID =  my_convertor.convert_GID_to_EID(my_geom_ID_from_SD);
