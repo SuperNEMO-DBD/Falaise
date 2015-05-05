@@ -17,7 +17,7 @@ set(FalaiseDigitizationPlugin_TESTS
   test_sd_to_signal_process.cxx
   test_sd_to_tp_process.cxx
   test_sd_to_ctw_process.cxx
-  
+
   test_signal_to_geiger_tp_algo.cxx
   test_tracker_trigger_algorithm.cxx
   test_tracker_trigger_algorithm2.cxx
@@ -31,6 +31,9 @@ set(FalaiseDigitizationPlugin_TESTS
 #set(CMAKE_CXX_FLAGS "-std=c++11")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+set(_FalaiseDigitizationPlugin_TEST_ENVIRONMENT
+  "FALAISE_DIGITIZATION_TESTING_DIR=${CMAKE_CURRENT_SOURCE_DIR}"
+  )
 
 foreach(_testsource ${FalaiseDigitizationPlugin_TESTS})
   get_filename_component(_testname ${_testsource} NAME_WE)
@@ -41,10 +44,11 @@ foreach(_testsource ${FalaiseDigitizationPlugin_TESTS})
   if(APPLE)
     set_target_properties(${_testname} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
   endif()
+
   add_test(NAME ${_testname} COMMAND ${_testname})
-  # set_property(TEST ${_testname}
-  #   APPEND PROPERTY ENVIRONMENT ${_trackfit_TEST_ENVIRONMENT}
-  #   )
+  set_property(TEST ${_testname}
+    APPEND PROPERTY ENVIRONMENT ${_FalaiseDigitizationPlugin_TEST_ENVIRONMENT}
+    )
   # - For now, dump them into the testing output directory
   # set_target_properties(${_testname}
   #   PROPERTIES
