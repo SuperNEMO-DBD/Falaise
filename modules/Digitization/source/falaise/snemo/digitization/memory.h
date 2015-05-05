@@ -8,10 +8,19 @@
 // Standard library :
 #include <map>
 #include <bitset>
+#include <string>
 
 namespace snemo {
   
   namespace digitization {
+
+		template<unsigned int Size>
+		struct bitset_compare {
+			bool operator()(const std::bitset<Size> & bs1_, const std::bitset<Size> & bs2_) const
+			{
+				return bs1_.to_ulong() < bs2_.to_ulong();
+			}
+		};
 
 		/// \brief Template memory class
 		template <unsigned int AddressSize, unsigned int DataSize>
@@ -26,19 +35,23 @@ namespace snemo {
 			memory(const std::bitset<DataSize> & default_data_);
 
 			void push (const std::bitset<AddressSize> & address_bitset_,
-								 std::bitset<DataSize> & data_bitset_);
+								 const std::bitset<DataSize> & data_bitset_);
   
 			void fetch (const std::bitset<AddressSize> & address_bitset_,
 									std::bitset<DataSize> & data_bitset_);
   
 			const std::bitset<DataSize> & fetch (const std::bitset<AddressSize> & address_bitset_);
 
+			void reset();
+
 			void load_from_file(const std::string & filename_);
 
 			void load_from_file(const std::string & filename_, std::string & description_);
   
 		private :
-			std::map<std::bitset<AddressSize>, std::bitset<DataSize> > _memory_;
+
+			typedef std::map<std::bitset<AddressSize>, std::bitset<DataSize>, bitset_compare<AddressSize> > memory_dict_type;
+			memory_dict_type _memory_;
 			std::bitset<DataSize> _default_data_;
 
 		};

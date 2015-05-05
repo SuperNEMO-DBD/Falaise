@@ -1,4 +1,4 @@
-//test_signal_to_tp_process.cxx
+//test_bimap.cxx
 
 // Standard libraries :
 #include <iostream>
