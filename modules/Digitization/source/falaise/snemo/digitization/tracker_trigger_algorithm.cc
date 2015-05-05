@@ -14,12 +14,13 @@
 // Ourselves:
 #include <snemo/digitization/tracker_trigger_algorithm.h>
 #include <snemo/digitization/geiger_tp_constants.h>
+#include <snemo/digitization/memory.h>
 
 namespace snemo {
   
   namespace digitization {
 
-    const int32_t tracker_trigger_algorithm::ZONING_BITSET_SIZE;
+    const int32_t tracker_trigger_algorithm::LEVEL_ONE_ZONING_BITSET_SIZE;
 
     tracker_trigger_algorithm::tracker_trigger_algorithm()
     {
@@ -47,7 +48,7 @@ namespace snemo {
 
     void tracker_trigger_algorithm::initialize(const electronic_mapping & my_electronic_mapping_)
     {
-      DT_THROW_IF(is_initialized(), std::logic_error, "Trigger algorithm is already initialized ! ");
+      DT_THROW_IF(is_initialized(), std::logic_error, "Tracker trigger algorithm is already initialized ! ");
       _electronic_mapping_ = & my_electronic_mapping_;
       _initialized_ = true;
       return;
@@ -59,7 +60,7 @@ namespace snemo {
     }
     void tracker_trigger_algorithm::reset()
     {
-      DT_THROW_IF(!is_initialized(), std::logic_error, "Trigger algorithm is not initialized, it can't be reset ! ");
+      DT_THROW_IF(!is_initialized(), std::logic_error, "Tracker trigger algorithm is not initialized, it can't be reset ! ");
       _initialized_ = false;
       _electronic_mapping_ = 0;
       return;
@@ -133,7 +134,7 @@ namespace snemo {
 
     void tracker_trigger_algorithm::display_matrix() const
     { 
-      std::clog << "  |-Zone-0-|---Zone-1--|---Zone-2--|---Zone-3--|---Zone-4--|--Zone-5--|---Zone-6--|---Zone-7--|--Zone-8---|--Zone-9-| Board IDs " << std::endl;
+      std::clog << "  |-Zone-0-|---Zone-1--|---Zone-2--|---Zone-3--|---Zone-4--|--Zone-5--|---Zone-6--|---Zone-7--|--Zone-8---|--Zone-9-|" << std::endl;
 
       for (int i = 0; i < mapping::NUMBER_OF_SIDES; i++)
 	{
@@ -189,9 +190,12 @@ namespace snemo {
 	} // end of side loop
 
       std::clog << "  |-0-1-2-3-4-5-6-7-8-9-1-2-3-4-5-6-7-8-9-0-1-2-3-4-5-6-7-89-1-2-3-4-5-6-7-8-9-0-1-2-3-4-5-6-7-8-9-1-2-3-4-5-6-7-8-9| Board IDs " << std::endl;
+
+      std::clog << "  |-Zone-0-|---Zone-1--|---Zone-2--|---Zone-3--|---Zone-4--|--Zone-5--|---Zone-6--|---Zone-7--|--Zone-8---|--Zone-9-|" << std::endl;
       std::clog << "  |                                     |                                    |                                      |" << std::endl;
       std::clog << "  |---------------Crate-0---------------|--------------Crate-1---------------|---------------Crate-2----------------|" << std::endl;
       std::clog << "  |                                     |                                    |                                      |" << std::endl;
+      std::clog << std::endl;
 
       return;
     }
@@ -216,63 +220,60 @@ namespace snemo {
       DT_THROW_IF((side_ > 1) || (side_ < 0), std::logic_error, "Value of side ["<< side_ <<"] is not valid ! ");
       DT_THROW_IF(zone_index_ > ZONE_9_INDEX, std::logic_error, "Value of zone index [" << zone_index_ << "] is not valid ! ");
 
-      if (side_ == 0)
+      switch (zone_index_)
 	{
-	  switch (zone_index_)
-	    {
-	    case 0 :
-	      row_index_begin_ = ZONE_0_BEGIN;
-	      row_index_end_   = ZONE_0_END;
-	      break;
+	case 0 :
+	  row_index_begin_ = ZONE_0_BEGIN;
+	  row_index_end_   = ZONE_0_END;
+	  break;
 	      
-	    case 1:
-	      row_index_begin_ = ZONE_1_BEGIN;
-	      row_index_end_   = ZONE_1_END;
-	      break;
+	case 1:
+	  row_index_begin_ = ZONE_1_BEGIN;
+	  row_index_end_   = ZONE_1_END;
+	  break;
 
-	    case 2 :
-	      row_index_begin_ = ZONE_2_BEGIN;
-	      row_index_end_   = ZONE_2_END;
-	      break;
+	case 2 :
+	  row_index_begin_ = ZONE_2_BEGIN;
+	  row_index_end_   = ZONE_2_END;
+	  break;
 	      
-	    case 3:
-	      row_index_begin_ = ZONE_3_BEGIN;
-	      row_index_end_   = ZONE_3_END;
-	      break;
+	case 3:
+	  row_index_begin_ = ZONE_3_BEGIN;
+	  row_index_end_   = ZONE_3_END;
+	  break;
 
-	    case 4 :
-	      row_index_begin_ = ZONE_4_BEGIN;
-	      row_index_end_   = ZONE_4_END;
-	      break;
+	case 4 :
+	  row_index_begin_ = ZONE_4_BEGIN;
+	  row_index_end_   = ZONE_4_END;
+	  break;
 	      
-	    case 5:
-	      row_index_begin_ = ZONE_5_BEGIN;
-	      row_index_end_   = ZONE_5_END;
-	      break;
+	case 5:
+	  row_index_begin_ = ZONE_5_BEGIN;
+	  row_index_end_   = ZONE_5_END;
+	  break;
 
-	    case 6 :
-	      row_index_begin_ = ZONE_6_BEGIN;
-	      row_index_end_   = ZONE_6_END;
-	      break;
+	case 6 :
+	  row_index_begin_ = ZONE_6_BEGIN;
+	  row_index_end_   = ZONE_6_END;
+	  break;
 	      
-	    case 7:
-	      row_index_begin_ = ZONE_7_BEGIN;
-	      row_index_end_   = ZONE_7_END;
-	      break;
+	case 7:
+	  row_index_begin_ = ZONE_7_BEGIN;
+	  row_index_end_   = ZONE_7_END;
+	  break;
 
-	    case 8 :
-	      row_index_begin_ = ZONE_8_BEGIN;
-	      row_index_end_   = ZONE_8_END;
-	      break;
+	case 8 :
+	  row_index_begin_ = ZONE_8_BEGIN;
+	  row_index_end_   = ZONE_8_END;
+	  break;
 	      
-	    case 9:
-	      row_index_begin_ = ZONE_9_BEGIN;
-	      row_index_end_   = ZONE_9_END;
-	      break;	      
+	case 9:
+	  row_index_begin_ = ZONE_9_BEGIN;
+	  row_index_end_   = ZONE_9_END;
+	  break;	      
 
-	    default :
-	      break;
-	    }
+	default :
+	  break;
 	}
       return;
     }
@@ -281,24 +282,19 @@ namespace snemo {
     {
       DT_THROW_IF((side_ > 1) || (side_ < 0), std::logic_error, "Value of side ["<< side_ <<"] is not valid ! ");
       DT_THROW_IF((row_index_ >= mapping::NUMBER_OF_GEIGER_ROWS) || (row_index_ < 0), std::logic_error, "Value of row index [" << row_index_ << "] is not valid ! ");
+
       for (int i = 0; i < mapping::NUMBER_OF_SIDES; i++)
 	{
-	  if (i == 0)
-	    {
-	      if (row_index_ >= 0 && row_index_ <= ZONE_0_END) zone_index_ = ZONE_0_INDEX;
-	      else if (row_index_ >= ZONE_1_BEGIN && row_index_ <= ZONE_1_END) zone_index_ = ZONE_1_INDEX;
-	      else if (row_index_ >= ZONE_2_BEGIN && row_index_ <= ZONE_2_END) zone_index_ = ZONE_2_INDEX;
-	      else if (row_index_ >= ZONE_3_BEGIN && row_index_ <= ZONE_3_END) zone_index_ = ZONE_3_INDEX;
-	      else if (row_index_ >= ZONE_4_BEGIN && row_index_ <= ZONE_4_END) zone_index_ = ZONE_4_INDEX;
-	      else if (row_index_ >= ZONE_5_BEGIN && row_index_ <= ZONE_5_END) zone_index_ = ZONE_5_INDEX;
-	      else if (row_index_ >= ZONE_6_BEGIN && row_index_ <= ZONE_6_END) zone_index_ = ZONE_6_INDEX;
-	      else if (row_index_ >= ZONE_7_BEGIN && row_index_ <= ZONE_7_END) zone_index_ = ZONE_7_INDEX;
-	      else if (row_index_ >= ZONE_8_BEGIN && row_index_ <= ZONE_8_END) zone_index_ = ZONE_8_INDEX;
-	      else if (row_index_ >= ZONE_9_BEGIN && row_index_ <= ZONE_9_END) zone_index_ = ZONE_9_INDEX;
-	    }
-	  else 
-	    {
-	    }
+	  if (row_index_ >= 0 && row_index_ <= ZONE_0_END) zone_index_ = ZONE_0_INDEX;
+	  else if (row_index_ >= ZONE_1_BEGIN && row_index_ <= ZONE_1_END) zone_index_ = ZONE_1_INDEX;
+	  else if (row_index_ >= ZONE_2_BEGIN && row_index_ <= ZONE_2_END) zone_index_ = ZONE_2_INDEX;
+	  else if (row_index_ >= ZONE_3_BEGIN && row_index_ <= ZONE_3_END) zone_index_ = ZONE_3_INDEX;
+	  else if (row_index_ >= ZONE_4_BEGIN && row_index_ <= ZONE_4_END) zone_index_ = ZONE_4_INDEX;
+	  else if (row_index_ >= ZONE_5_BEGIN && row_index_ <= ZONE_5_END) zone_index_ = ZONE_5_INDEX;
+	  else if (row_index_ >= ZONE_6_BEGIN && row_index_ <= ZONE_6_END) zone_index_ = ZONE_6_INDEX;
+	  else if (row_index_ >= ZONE_7_BEGIN && row_index_ <= ZONE_7_END) zone_index_ = ZONE_7_INDEX;
+	  else if (row_index_ >= ZONE_8_BEGIN && row_index_ <= ZONE_8_END) zone_index_ = ZONE_8_INDEX;
+	  else if (row_index_ >= ZONE_9_BEGIN && row_index_ <= ZONE_9_END) zone_index_ = ZONE_9_INDEX;
 	}
 
       return;
@@ -306,180 +302,236 @@ namespace snemo {
 
     void tracker_trigger_algorithm::fetch_subzone_limits(int32_t side_, int32_t subzone_index_, int32_t & subzone_row_index_begin_, int32_t & subzone_row_index_end_, int32_t & subzone_layer_index_begin_)
     {
-      if (side_ == 0)
+      int32_t zone_index = subzone_index_ / 4;
+      int32_t zone_row_index_begin = -1;
+      int32_t zone_row_index_end = -1;
+      int32_t zone_size = -1;
+	  
+      fetch_zone_limits(side_, 
+			zone_index, 
+			zone_row_index_begin, 
+			zone_row_index_end);
+	  
+      zone_size = zone_row_index_end - zone_row_index_begin + 1; // +1 to take in order that rows begin at index 0
+	 
+      switch (subzone_index_ % 4)
 	{
-	  int32_t zone_index = subzone_index_ / 4;
-	  int32_t zone_row_index_begin = -1;
-	  int32_t zone_row_index_end = -1;
-	  int32_t zone_size = -1;
-	  
-	  fetch_zone_limits(side_, 
-			    zone_index, 
-			    zone_row_index_begin, 
-			    zone_row_index_end);
-	  
-	  zone_size = zone_row_index_end - zone_row_index_begin + 1; // +1 to take in order that rows begin at index 0
-	  
-	  switch (subzone_index_ % 4)
-	    {
-	    case 0 : 
-	      subzone_row_index_begin_   = zone_row_index_begin;
-	      subzone_row_index_end_     = zone_row_index_end - (zone_size / 2) ;
-	      subzone_layer_index_begin_ = 0;
-	      break;
+	case 0 : 
+	  subzone_row_index_begin_   = zone_row_index_begin;
+	  subzone_row_index_end_     = zone_row_index_end - (zone_size / 2) ;
+	  subzone_layer_index_begin_ = 0;
+	  break;
 
-	    case 1 : 
-	      subzone_row_index_begin_   = zone_row_index_begin;
-	      subzone_row_index_end_     = zone_row_index_end - (zone_size / 2);
-	      subzone_layer_index_begin_ = 4;
-	      break;
+	case 1 : 
+	  subzone_row_index_begin_   = zone_row_index_begin;
+	  subzone_row_index_end_     = zone_row_index_end - (zone_size / 2);
+	  subzone_layer_index_begin_ = 4;
+	  break;
 
-	    case 2 : 
-	      subzone_row_index_begin_   = zone_row_index_begin + (zone_size / 2);
-	      subzone_row_index_end_     = zone_row_index_end;
-	      subzone_layer_index_begin_ = 0;
-	      break;
+	case 2 : 
+	  subzone_row_index_begin_   = zone_row_index_begin + (zone_size / 2);
+	  subzone_row_index_end_     = zone_row_index_end;
+	  subzone_layer_index_begin_ = 0;
+	  break;
 
-	    case 3 : 
-	      subzone_row_index_begin_   = zone_row_index_begin + (zone_size / 2);
-	      subzone_row_index_end_     = zone_row_index_end;
-	      subzone_layer_index_begin_ = 4;
-	      break;
+	case 3 : 
+	  subzone_row_index_begin_   = zone_row_index_begin + (zone_size / 2);
+	  subzone_row_index_end_     = zone_row_index_end;
+	  subzone_layer_index_begin_ = 4;
+	  break;
 
-	    default :
-	      break;
-	    }
-
-	} // end of if 
+	default :
+	  break;
+	}
 
       return;
     }
       
     void tracker_trigger_algorithm::build_trigger_level_one_bitsets()
     {
-      int32_t side = 0;
-
-      for (int i = 0; i < mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES_PER_SIDE; i ++)
+      for (int32_t side = 0; side < mapping::NUMBER_OF_SIDES; side ++)
 	{
-	  const int32_t zone_index  = i / 4;
-	  const int32_t subzone     = i % 4;
-	  
-	  fetch_subzone_limits(side,
-			       subzone,
-			       _sub_zone_location_info_[side][i].row_begin,
-			       _sub_zone_location_info_[side][i].row_end,
-			       _sub_zone_location_info_[side][i].layer_begin);
-	  
-	  const int32_t row_begin   = _sub_zone_location_info_[side][i].row_begin;
-	  const int32_t row_end     = _sub_zone_location_info_[side][i].row_end;
-	  const int32_t layer_begin = _sub_zone_location_info_[side][i].layer_begin;
-	  const int32_t layer_end   = _sub_zone_location_info_[side][i].layer_begin + 5; // const to add same shift for all zones
-	  
-	  std::clog << "DEBUG : zone index = " << zone_index 
-		    << " subzone = "           << subzone
-		    << " row begin = "         << row_begin
-		    << " row end = "           << row_end
-		    << " layer begin = "       << layer_begin
-		    << " layer end = "         << layer_end 
-		    << std::endl;  
-
-	  const int32_t subzone_row_size   = row_end - row_begin + 1;	  
-	  const int32_t subzone_layer_size = layer_end - layer_begin;
-
-	  boost::dynamic_bitset<> subzone_row_bitset(subzone_row_size);
-	  boost::dynamic_bitset<> subzone_layer_bitset(subzone_layer_size);
-
-	  for (int jrow = row_begin; jrow <= row_end; jrow++)
+	  for (int i = 0; i < mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES_PER_SIDE; i ++)
 	    {
-	      for (int klayer = layer_begin; klayer < layer_end; klayer++)
-		{
-		  if (_geiger_matrix_[side][klayer][jrow])
-		    {
-		      subzone_row_bitset.set(jrow - row_begin, 1);
-		    }
-		}
-	    }
+	      const int32_t zone_index  = i / 4;
+	      const int32_t subzone     = i % 4;
 	  
-	  for (int klayer = layer_begin; klayer < layer_end; klayer++)
-	    {
+	      fetch_subzone_limits(side,
+				   i,
+				   _sub_zone_location_info_[side][i].row_begin,
+				   _sub_zone_location_info_[side][i].row_end,
+				   _sub_zone_location_info_[side][i].layer_begin);
+	  
+	      const int32_t row_begin   = _sub_zone_location_info_[side][i].row_begin;
+	      const int32_t row_end     = _sub_zone_location_info_[side][i].row_end;
+	      const int32_t layer_begin = _sub_zone_location_info_[side][i].layer_begin;
+	      const int32_t layer_end   = _sub_zone_location_info_[side][i].layer_begin + 5; // const to add same shift for all zones
+	  
+	      // std::clog << "DEBUG : side= "  << side
+	      // 		<< " zone index = "  << zone_index 
+	      // 		<< " subzone = "     << subzone
+	      // 		<< " row begin = "   << row_begin
+	      // 		<< " row end = "     << row_end
+	      // 		<< " layer begin = " << layer_begin
+	      // 		<< " layer end = "   << layer_end 
+	      // 		<< std::endl;  
+
+	      const int32_t subzone_row_size   = row_end - row_begin + 1;	  
+	      const int32_t subzone_layer_size = layer_end - layer_begin;
+
+	      boost::dynamic_bitset<> subzone_row_bitset(subzone_row_size);
+	      boost::dynamic_bitset<> subzone_layer_bitset(subzone_layer_size);
+
 	      for (int jrow = row_begin; jrow <= row_end; jrow++)
 		{
-		  if (_geiger_matrix_[side][klayer][jrow])
+		  for (int klayer = layer_begin; klayer < layer_end; klayer++)
 		    {
-		      subzone_layer_bitset.set(klayer - layer_begin, 1);
+		      if (_geiger_matrix_[side][klayer][jrow])
+			{ 
+			  subzone_row_bitset.set(jrow - row_begin, 1);
+			} // end of if
+		    } // end of klayer
+		} // end of jrow
+	  
+	      for (int klayer = layer_begin; klayer < layer_end; klayer++)
+		{
+		  for (int jrow = row_begin; jrow <= row_end; jrow++)
+		    {
+		      if (_geiger_matrix_[side][klayer][jrow])
+			{
+			  subzone_layer_bitset.set(klayer - layer_begin, 1);
+			} // end of if
+		    } // end of jrow
+		} // end of klayer
+
+	      const int32_t row_multiplicity = subzone_row_bitset.count();
+	      const int32_t layer_multiplicity = subzone_layer_bitset.count();
+
+	      switch (subzone)
+		{
+		case 0 : 
+		  // Subzone 0 :
+		  if (layer_multiplicity >= zone_threshold_info::INNER_LAYER_THRESHOLD)
+		    {
+		      _level_one_tracker_trigger_info_[side][zone_index].set(SUBZONE_0_LAYER_INDEX, 1);
 		    }
+		  else
+		    {
+		      _level_one_tracker_trigger_info_[side][zone_index].set(SUBZONE_0_LAYER_INDEX, 0);
+		    }
+		  if (row_multiplicity >= zone_threshold_info::LEFT_NROWS_THRESHOLD)
+		    {
+		      _level_one_tracker_trigger_info_[side][zone_index].set(SUBZONE_0_ROW_INDEX, 1);
+		    }
+		  else
+		    {
+		      _level_one_tracker_trigger_info_[side][zone_index].set(SUBZONE_0_ROW_INDEX, 0);
+		    }
+		  break;
+
+		case 1 : 
+		  // Subzone 1 :
+		  if (layer_multiplicity >= zone_threshold_info::OUTER_LAYER_THRESHOLD)
+		    {
+		      _level_one_tracker_trigger_info_[side][zone_index].set(SUBZONE_1_LAYER_INDEX, 1);
+		    }
+		  else
+		    {
+		      _level_one_tracker_trigger_info_[side][zone_index].set(SUBZONE_1_LAYER_INDEX, 0);
+		    }
+		  if (row_multiplicity >= zone_threshold_info::LEFT_NROWS_THRESHOLD)
+		    {
+		      _level_one_tracker_trigger_info_[side][zone_index].set(SUBZONE_1_ROW_INDEX, 1);
+		    }
+		  else
+		    {
+		      _level_one_tracker_trigger_info_[side][zone_index].set(SUBZONE_1_ROW_INDEX, 0);			      
+		    }
+		  break;
+
+		case 2 : 
+		  // Subzone 2 :
+		  if (layer_multiplicity >= zone_threshold_info::INNER_LAYER_THRESHOLD)
+		    {
+		      _level_one_tracker_trigger_info_[side][zone_index].set(SUBZONE_2_LAYER_INDEX, 1);
+		    }
+		  else
+		    {
+		      _level_one_tracker_trigger_info_[side][zone_index].set(SUBZONE_2_LAYER_INDEX, 0);
+		    }
+		  if (row_multiplicity >= zone_threshold_info::RIGHT_NROWS_THRESHOLD)
+		    {
+		      _level_one_tracker_trigger_info_[side][zone_index].set(SUBZONE_2_ROW_INDEX, 1);
+		    }
+		  else
+		    {
+		      _level_one_tracker_trigger_info_[side][zone_index].set(SUBZONE_2_ROW_INDEX, 0);
+		    }
+		  break;
+
+		case 3 : 
+		  // Subzone 3 :
+		  if (layer_multiplicity >= zone_threshold_info::OUTER_LAYER_THRESHOLD)
+		    {
+		      _level_one_tracker_trigger_info_[side][zone_index].set(SUBZONE_3_LAYER_INDEX, 1);
+		    }
+		  else
+		    {
+		      _level_one_tracker_trigger_info_[side][zone_index].set(SUBZONE_3_LAYER_INDEX, 0);
+		    }
+		  if (row_multiplicity >= zone_threshold_info::RIGHT_NROWS_THRESHOLD)
+		    {
+		      _level_one_tracker_trigger_info_[side][zone_index].set(SUBZONE_3_ROW_INDEX, 1);
+		    }
+		  else
+		    {
+		      _level_one_tracker_trigger_info_[side][zone_index].set(SUBZONE_3_ROW_INDEX, 0);
+		    }
+		  break;
+
+		default :
+		  break;      
 		}
 	    }
+	}
+      return;
+    }
 
-	  std::clog << "DEBUG : subzone_row_bitset = " << subzone_row_bitset << std::endl;
-	  std::clog << "DEBUG : subzone_layer_bitset = " << subzone_layer_bitset << std::endl;
-	  const int32_t row_multiplicity = subzone_row_bitset.count();
-	  const int32_t layer_multiplicity =subzone_layer_bitset.count();
+    void tracker_trigger_algorithm::build_trigger_level_one_to_level_two()
+    {
+      const int32_t intermediate_level_one_bitset_size = 4;
+      std::bitset<intermediate_level_one_bitset_size> intermediate_level_one_tracker_trigger_info[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES];
 
-	  switch (subzone)
+      for (int side = 0; side < mapping::NUMBER_OF_SIDES; side++)
+	{
+	  std::clog << "Side = " << side << " | ";
+	  for (int i = 0; i < mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES; i++)
 	    {
-	    case 0 : 
-	      // Subzone 0 :
-	      if (layer_multiplicity >= zone_threshold_info::INNER_LAYER_THRESHOLD)
+	      for (int j = 0; j < 8; j += 2)
 		{
-		  _tracker_trigger_info_[side][zone_index].set(SUBZONE_0_LAYER_INDEX, 1);
+		  if ( _level_one_tracker_trigger_info_[side][i].test(j) == true || _level_one_tracker_trigger_info_[side][i].test(j+1) == true)
+		    {
+		      intermediate_level_one_tracker_trigger_info[side][i].set(j/2, 1);
+		    }
+		  else 
+		    {
+		      intermediate_level_one_tracker_trigger_info[side][i].set(j/2, 0);
+		    } 
 		}
-	      if (row_multiplicity >= zone_threshold_info::LEFT_NROWS_THRESHOLD)
-		{
-		  _tracker_trigger_info_[side][zone_index].set(SUBZONE_0_ROW_INDEX, 1);
-		}
-	      break;
-
-	    case 1 : 
-	      // Subzone 1 :
-	      if (layer_multiplicity >= zone_threshold_info::OUTER_LAYER_THRESHOLD)
-		{
-		  _tracker_trigger_info_[side][zone_index].set(SUBZONE_1_LAYER_INDEX, 1);
-		}
-	      if (row_multiplicity >= zone_threshold_info::LEFT_NROWS_THRESHOLD)
-		{
-		  _tracker_trigger_info_[side][zone_index].set(SUBZONE_1_ROW_INDEX, 1);
-		}
-	      break;
-
-	    case 2 : 
-	      // Subzone 2 :
-	      if (layer_multiplicity >= zone_threshold_info::INNER_LAYER_THRESHOLD)
-		{
-		  _tracker_trigger_info_[side][zone_index].set(SUBZONE_2_LAYER_INDEX, 1);
-		}
-	      if (row_multiplicity >= zone_threshold_info::RIGHT_NROWS_THRESHOLD)
-		{
-		  _tracker_trigger_info_[side][zone_index].set(SUBZONE_2_ROW_INDEX, 1);
-		}
-	      break;
-
-	    case 3 : 
-	      // Subzone 3 :
-	      if (layer_multiplicity >= zone_threshold_info::OUTER_LAYER_THRESHOLD)
-		{
-		  _tracker_trigger_info_[side][zone_index].set(SUBZONE_3_LAYER_INDEX, 1);
-		}
-	      if (row_multiplicity >= zone_threshold_info::RIGHT_NROWS_THRESHOLD)
-		{
-		  _tracker_trigger_info_[side][zone_index].set(SUBZONE_3_ROW_INDEX, 1);
-		}
-	      break;
-
-	    default :
-	      break;
-	      
+	      std::clog << "[" << intermediate_level_one_tracker_trigger_info[side][i] << "] ";
 	    }
-
 	  std::clog << std::endl;
 	}
+
+      memory<4,2> lvl1_to_lvl2_mem;
+
 
       return;
     }
     
     void tracker_trigger_algorithm::process(const geiger_ctw_data & geiger_ctw_data_)
     { 
-      DT_THROW_IF(!is_initialized(), std::logic_error, "Trigger algorithm is not initialized, it can't process ! ");
+      DT_THROW_IF(!is_initialized(), std::logic_error, "Tracker trigger algorithm is not initialized, it can't process ! ");
       for(int32_t i = geiger_ctw_data_.get_clocktick_min(); i <= geiger_ctw_data_.get_clocktick_max(); i++)
 	{
 	  std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick;
@@ -493,7 +545,18 @@ namespace snemo {
 	  
 	  build_trigger_level_one_bitsets();
 
-	  std::clog << std::endl;
+	  for (int side = 0; side < mapping::NUMBER_OF_SIDES; side++)
+	    {
+	      std::clog << "Side = " << side << " | ";
+	      for (int i = 0; i < mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES; i++)
+		{
+		  std::clog << "[" << _level_one_tracker_trigger_info_[side][i] << "]; ";
+		}
+	      std::clog << std::endl;
+	    }
+
+	  build_trigger_level_one_to_level_two();
+
 	  display_matrix();
 	  reset_matrix();
 	} 

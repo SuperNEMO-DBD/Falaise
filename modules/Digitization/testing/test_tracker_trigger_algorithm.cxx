@@ -33,14 +33,14 @@ int main( int /* argc_ */, char ** /* argv_ */ )
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
   try {
-    std::clog << "Test program for class 'snemo::digitization::tracker_trigger_algorithm2' !" << std::endl;
+    std::clog << "Test program for class 'snemo::digitization::tracker_trigger_algorithm' !" << std::endl;
     int32_t seed = 314159;
     mygsl::rng random_generator;
     random_generator.initialize(seed);
     
     std::string manager_config_file;
     
-    manager_config_file = "~/data/my_falaise/config/snemo/demonstrator/geometry/3.0/manager.conf";
+    manager_config_file = "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf";
     datatools::fetch_path_with_env (manager_config_file);
     datatools::properties manager_config;
     datatools::properties::read_config (manager_config_file,
@@ -56,7 +56,7 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     std::string pipeline_simulated_data_filename;
     std::string SD_bank_label = "SD";
 
-    pipeline_simulated_data_filename = "/home/guillaume/data/my_falaise/outputs/Se82_0nubb-source_strips_bulk_SD.brio";
+    pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
     
     dpp::input_module reader;
     datatools::properties reader_config;

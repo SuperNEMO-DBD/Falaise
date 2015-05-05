@@ -107,8 +107,8 @@ namespace snemo {
 			};
 			
 			/// Size of a bitset for one zone
-			static const int32_t ZONING_BITSET_SIZE = 8;
-			
+			static const int32_t LEVEL_ONE_ZONING_BITSET_SIZE = 8;
+
     public : 
 
       /// Default constructor
@@ -147,22 +147,26 @@ namespace snemo {
 			/// For a given side and row index, give the zone index
 			void fetch_zone_index(int32_t side_, int32_t row_index_, int32_t & zone_index_);
 
-
+			/// For a given subzone indx, give the subzone row begin, row end and layer begin
 			void fetch_subzone_limits(int32_t side_, int32_t subzone_index_, int32_t & subzone_row_index_begin_, int32_t & subzone_row_index_end_, int32_t & subzone_layer_index_begin_);
 
-
+			/// Build the level one trigger primitive bitsets
 			void build_trigger_level_one_bitsets(); 
 
+			/// Build the level two trigger primitive bitsets
+			void build_trigger_level_one_to_level_two();
+			
       /// General process
       void process(const geiger_ctw_data & geiger_ctw_data_);
-
 	
     private :
       
       bool _initialized_; //!< Initialization flag
       bool _geiger_matrix_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_LAYERS][mapping::NUMBER_OF_GEIGER_ROWS]; //!< Geiger cells matrix
-			std::bitset<ZONING_BITSET_SIZE> _tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES]; //!< Table of 2x10 containing 8 bits bitset representing the tracker zoning (side = {0-1}, zones = {0-9})
+			std::bitset<LEVEL_ONE_ZONING_BITSET_SIZE> _level_one_tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES]; //!< Table of 2x10 containing 8 bits bitset representing the level one tracker trigger zoning (side = {0-1}, zones = {0-9})
+
 			zone_threshold_info _zone_threshold_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES]; //!< Table of 2x10 containing a struct fixing the thresholds in zones
+
 			sub_zone_location_info _sub_zone_location_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES_PER_SIDE]; //!< Table of 2x40 (10 zones subdivided in 4 subzones on 2 sides)
 
 			const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
