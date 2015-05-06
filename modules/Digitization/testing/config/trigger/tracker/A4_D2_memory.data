@@ -1,7 +1,7 @@
 # Memory Address 4 Data 2 (A4D2)
 #@address_size = 4
 #@data_size = 2
-#@description = Ceci est une mémoire A4D2
+#@description = This is a A4D2 memory
 #@registered_value = VOID : 00
 #@registered_value = FULL_TRACK : 01
 #@registered_value = PRE_TRACK : 11

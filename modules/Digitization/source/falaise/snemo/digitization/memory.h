@@ -14,6 +14,7 @@ namespace snemo {
   
   namespace digitization {
 
+		/// Comparison operator between two bitsets
 		template<unsigned int Size>
 		struct bitset_compare {
 			bool operator()(const std::bitset<Size> & bs1_, const std::bitset<Size> & bs2_) const
@@ -33,26 +34,38 @@ namespace snemo {
 		
 			/// Constructor
 			memory(const std::bitset<DataSize> & default_data_);
-
-			void push (const std::bitset<AddressSize> & address_bitset_,
-								 const std::bitset<DataSize> & data_bitset_);
+			
+			/// Add a couple of address bitset & data bitset into the memory map
+			void push(const std::bitset<AddressSize> & address_bitset_,
+								const std::bitset<DataSize> & data_bitset_);
   
-			void fetch (const std::bitset<AddressSize> & address_bitset_,
-									std::bitset<DataSize> & data_bitset_);
+			/// Fetch the data bitset corresponding to an address bitset
+			void fetch(const std::bitset<AddressSize> & address_bitset_,
+								 std::bitset<DataSize> & data_bitset_);
   
-			const std::bitset<DataSize> & fetch (const std::bitset<AddressSize> & address_bitset_);
+			/// Return the data bitset corresponding to an address bitset
+			const std::bitset<DataSize> & fetch(const std::bitset<AddressSize> & address_bitset_);
 
-			void reset();
+			/// Display the key and value of the memory map
+			void memory_map_display();
 
+			/// Store the memory map into a file
+			void store_to_file(const std::string & filename_, const std::string & description_ = "");
+
+			/// Load from a file a memory and store it in the memory map
 			void load_from_file(const std::string & filename_);
 
+			/// Load from a file a memory and store it in the memory map with description
 			void load_from_file(const std::string & filename_, std::string & description_);
+
+			/// Reset
+			void reset();
   
 		private :
 
 			typedef std::map<std::bitset<AddressSize>, std::bitset<DataSize>, bitset_compare<AddressSize> > memory_dict_type;
-			memory_dict_type _memory_;
-			std::bitset<DataSize> _default_data_;
+			memory_dict_type _memory_; //!< Memory map of bitset, key = address bitset, value = data bitset
+			std::bitset<DataSize> _default_data_; //!< Default bitset data
 
 		};
 

@@ -37,16 +37,16 @@ namespace snemo {
 		}
 
 		template<unsigned int AddressSize, unsigned int DataSize>
-		void memory<AddressSize, DataSize>::push (const std::bitset<AddressSize> & address_bitset_,
-																							const std::bitset<DataSize> & data_bitset_)
+		void memory<AddressSize, DataSize>::push(const std::bitset<AddressSize> & address_bitset_,
+																						 const std::bitset<DataSize> & data_bitset_)
 		{
 			_memory_[address_bitset_] = data_bitset_;
 			return;
 		}
   
 		template<unsigned int AddressSize, unsigned int DataSize>
-		void memory<AddressSize, DataSize>::fetch (const std::bitset<AddressSize> & address_bitset_,
-																							 std::bitset<DataSize> & data_bitset_)
+		void memory<AddressSize, DataSize>::fetch(const std::bitset<AddressSize> & address_bitset_,
+																							std::bitset<DataSize> & data_bitset_)
 		{
 			if (_memory_.find(address_bitset_) == _memory_.end())
 				{
@@ -60,7 +60,7 @@ namespace snemo {
 		}
 
 		template<unsigned int AddressSize, unsigned int DataSize>
-		const std::bitset<DataSize> & memory<AddressSize, DataSize>::fetch (const std::bitset<AddressSize> & address_bitset_)
+		const std::bitset<DataSize> & memory<AddressSize, DataSize>::fetch(const std::bitset<AddressSize> & address_bitset_)
 		{	
 			if (_memory_.find(address_bitset_) == _memory_.end())
 				{
@@ -71,20 +71,51 @@ namespace snemo {
 					return _memory_[address_bitset_];
 				}
 		}
-  
+
+
+		template<unsigned int AddressSize, unsigned int DataSize>
+		void memory<AddressSize, DataSize>::memory_map_display()
+		{
+			typename memory_dict_type::const_iterator itmem;
+			std::clog << "DEBUG : Memory map contains :" << std::endl;
+			for (itmem = _memory_.begin(); itmem!=_memory_.end(); itmem++)
+				{
+					std::clog << itmem->first << " => " << itmem->second << std::endl;
+				}
+			return;
+		}
+
+		template<unsigned int AddressSize, unsigned int DataSize>
+		void memory<AddressSize, DataSize>::store_to_file(const std::string & filename_, const std::string & description_)
+		{
+			std::ofstream file(filename_.c_str());
+			if (file)
+				{
+					if (!description_.empty())
+						{
+							file << "#@description = " << description_ << std::endl;
+						}
+				  file << "#@address_size = " << AddressSize << std::endl;
+					file << "#@data_size = "    << DataSize << std::endl;
+					file << "#@default_data = " << _default_data_ << std::endl;
+					typename memory_dict_type::const_iterator itmem;
+					for (itmem = _memory_.begin(); itmem!=_memory_.end(); itmem++)
+						{
+              if (itmem->second != _default_data_)
+								{
+									file << itmem-> first << ' ' << itmem->second << std::endl;
+								}
+						} 
+					file.close();
+				}
+		}
+
 		template<unsigned int AddressSize, unsigned int DataSize>
 		void memory<AddressSize, DataSize>::load_from_file(const std::string & filename_)
 		{
 			std::string dummy_description;
 			load_from_file(filename_, dummy_description);
 			return;
-		}	
-
-		template<unsigned int AddressSize, unsigned int DataSize>
-		void memory<AddressSize, DataSize>::reset()
-		{
-			_memory_.clear();
-			_default_data_ = 0;
 		}	
 
 		template<unsigned int AddressSize, unsigned int DataSize>
@@ -108,7 +139,6 @@ namespace snemo {
 				{
 					std::string line;
 					std::getline(fin, line);
-				  std::clog << "Line='" << line << "'" << std::endl;
 					{
 						std::istringstream tmp_iss(line);
 						std::string word;
@@ -218,22 +248,6 @@ namespace snemo {
 				  push(address_bitset, data_bitset);
 
 				} // end of while
-			
-			std::clog << "DEBUG : address size = " << address_size << " data size = " << data_size << " description = " << description << std::endl;
-			std::clog << "DEBUG : default data = " << _default_data_ << std::endl;
-			std::clog << "DEBUG : registered map contains :" << std::endl;
-			for (it=registered_values.begin(); it!=registered_values.end(); it++)
-				{
-					std::clog << it->first << " => " << it->second << std::endl;
-				}
-
-			typename memory_dict_type::const_iterator itmem;
-			std::clog << "DEBUG : Memory map contains :" << std::endl;
-			for (itmem = _memory_.begin(); itmem!=_memory_.end(); itmem++)
-			{
-					std::clog << itmem->first << " => " << itmem->second << std::endl;
-			}
-
 					
 			if (!description.empty())
 				{
@@ -242,6 +256,12 @@ namespace snemo {
 			return;
 		}
 		
+		template<unsigned int AddressSize, unsigned int DataSize>
+		void memory<AddressSize, DataSize>::reset()
+		{
+			_memory_.clear();
+			_default_data_ = 0;
+		}	
 
   } // end of namespace digitization
 

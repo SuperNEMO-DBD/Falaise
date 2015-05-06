@@ -26,10 +26,21 @@ int main( int  argc_ , char ** argv_  )
     std::string memory_file;
     memory_file = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A4_D2_memory.data";
     datatools::fetch_path_with_env(memory_file);
-    //memory_file = "/home/guillaume/data/Falaise/Falaise-trunk/modules/Digitization/testing/config/trigger/tracker/A4_D2_memory.data";
-    
+    std::string tmp_file;
+    tmp_file = "/tmp/test.txt";
     snemo::digitization::memory<4,2> my_A4_D2_mem;
     my_A4_D2_mem.load_from_file(memory_file);
+
+    snemo::digitization::memory<4,2> my_A4_D2_mem_test;
+    std::bitset<4> address_bitset;
+    std::bitset<2> data_bitset = 01;
+    for (int i = 0; i < 16; i++)
+      {
+	address_bitset = i;
+	my_A4_D2_mem_test.push(address_bitset, data_bitset);
+      }
+    my_A4_D2_mem_test. memory_map_display();
+    my_A4_D2_mem_test.store_to_file(tmp_file, "This the A4D2 memory test");
 
 
   }
