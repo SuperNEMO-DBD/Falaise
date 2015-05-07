@@ -23,12 +23,13 @@ namespace snemo {
 			}
 		};
 
-		/// \brief Template memory class
 		template <unsigned int AddressSize, unsigned int DataSize>
+
+		/// \brief Template memory class
 		class memory
 		{
 		public :
-			
+
 			/// Default constructor
 			memory();
 		
@@ -57,12 +58,12 @@ namespace snemo {
 
 			/// Load from a file a memory and store it in the memory map with description
 			void load_from_file(const std::string & filename_, std::string & description_);
-
+			
 			/// Reset
 			void reset();
   
 		private :
-
+			
 			typedef std::map<std::bitset<AddressSize>, std::bitset<DataSize>, bitset_compare<AddressSize> > memory_dict_type;
 			memory_dict_type _memory_; //!< Memory map of bitset, key = address bitset, value = data bitset
 			std::bitset<DataSize> _default_data_; //!< Default bitset data

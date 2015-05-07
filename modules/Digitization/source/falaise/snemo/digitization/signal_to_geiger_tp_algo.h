@@ -72,10 +72,14 @@ namespace snemo {
       void set_clocktick_shift(double clocktick_shift_);
 
 			/// Add a geiger tp from a working data
-			void add_geiger_tp(const signal_to_tp_working_data & my_wd_data_, int32_t signal_clocktick_, int32_t hit_id_, geiger_tp_data & my_geiger_tp_data_);
+			void add_geiger_tp(const signal_to_tp_working_data & my_wd_data_,
+												 int32_t signal_clocktick_,
+												 int32_t hit_id_,
+												 geiger_tp_data & my_geiger_tp_data_);
 
 			/// Update a geiger tp
-			void update_gg_tp(const signal_to_tp_working_data & my_wd_data_, geiger_tp & my_geiger_tp_);
+			void update_gg_tp(const signal_to_tp_working_data & my_wd_data_,
+												geiger_tp & my_geiger_tp_);
 
       /// Process to fill a geiger tp data object from simulated data
       void process(const signal_data & signal_data_,

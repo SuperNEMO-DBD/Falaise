@@ -14,10 +14,11 @@
 
 // This project :
 #include <snemo/digitization/memory.h>
+#include <snemo/digitization/tracker_trigger_mem_maker.h>
 
 int main( int  argc_ , char ** argv_  )
 {
- FALAISE_INIT();
+  FALAISE_INIT();
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
   try {
@@ -39,27 +40,33 @@ int main( int  argc_ , char ** argv_  )
 	address_bitset = i;
 	my_A4_D2_mem_test.push(address_bitset, data_bitset);
       }
-    my_A4_D2_mem_test. memory_map_display();
-    my_A4_D2_mem_test.store_to_file(tmp_file, "This the A4D2 memory test");
-
-
-  }
-    catch (std::exception & error) {
-      DT_LOG_FATAL(logging, error.what());
-      error_code = EXIT_FAILURE;
-    }
+    // my_A4_D2_mem_test.memory_map_display();
+    // my_A4_D2_mem_test.store_to_file(tmp_file, "This the A4D2 memory test");
     
-    catch (...) {
-      DT_LOG_FATAL(logging, "Unexpected error!");
-      error_code = EXIT_FAILURE;
-    }
+    unsigned int min_multiplicity = 2;
+    unsigned int max_gap = 1;
+    snemo::digitization::tracker_trigger_mem_maker my_memory_maker;
+    my_memory_maker.configure(snemo::digitization::tracker_trigger_mem_maker::MEM_LVL0_LVL1,
+			      snemo::digitization::tracker_trigger_mem_maker::MEM_SIZE_6X1,
+			      snemo::digitization::tracker_trigger_mem_maker::MEM_LVL0_LVL1_ALGO_MAX_GAP);
+    my_memory_maker.set_max_gap(max_gap);
+    my_memory_maker.initialize();
+    my_memory_maker.store(tmp_file);
+  }
+  catch (std::exception & error) {
+    DT_LOG_FATAL(logging, error.what());
+    error_code = EXIT_FAILURE;
+  }
+    
+  catch (...) {
+    DT_LOG_FATAL(logging, "Unexpected error!");
+    error_code = EXIT_FAILURE;
+  }
     
   FALAISE_FINI();
   return error_code;
   
-  }
-
-
+}
 
 
 

@@ -255,12 +255,13 @@ namespace snemo {
 				}
 			return;
 		}
-		
+
 		template<unsigned int AddressSize, unsigned int DataSize>
 		void memory<AddressSize, DataSize>::reset()
 		{
 			_memory_.clear();
 			_default_data_ = 0;
+			return;
 		}	
 
   } // end of namespace digitization

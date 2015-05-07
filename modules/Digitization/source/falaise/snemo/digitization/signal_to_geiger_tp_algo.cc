@@ -88,7 +88,10 @@ namespace snemo {
       return;
     }
 
-    void signal_to_geiger_tp_algo::add_geiger_tp(const signal_to_tp_working_data & my_wd_data_, int32_t signal_clocktick_, int32_t hit_id_, geiger_tp_data & my_geiger_tp_data_)
+    void signal_to_geiger_tp_algo::add_geiger_tp(const signal_to_tp_working_data & my_wd_data_,
+						 int32_t signal_clocktick_,
+						 int32_t hit_id_,
+						 geiger_tp_data & my_geiger_tp_data_)
     {
       snemo::digitization::geiger_tp & gg_tp = my_geiger_tp_data_.add();
       geomtools::geom_id temporary_feb_id;
@@ -109,7 +112,8 @@ namespace snemo {
       return;
     }
 
-    void signal_to_geiger_tp_algo::update_gg_tp(const signal_to_tp_working_data & my_wd_data_, geiger_tp & my_geiger_tp_)
+    void signal_to_geiger_tp_algo::update_gg_tp(const signal_to_tp_working_data & my_wd_data_,
+						geiger_tp & my_geiger_tp_)
     {
       my_geiger_tp_.set_gg_tp_active_bit(my_wd_data_.feb_id.get(mapping::CHANNEL_INDEX));
       _activated_bits_[my_wd_data_.feb_id.get(mapping::CHANNEL_INDEX)] = 1;
