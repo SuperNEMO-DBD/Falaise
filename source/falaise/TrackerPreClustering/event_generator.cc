@@ -66,7 +66,7 @@ namespace TrackerPreClustering {
 
   bool event_generator::is_initialized()
   {
-    return _generator_;
+    return _generator_.get() != 0;
   }
 
   void event_generator::initialize()
