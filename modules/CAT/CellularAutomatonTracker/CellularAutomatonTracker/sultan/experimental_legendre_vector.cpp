@@ -144,11 +144,11 @@ namespace SULTAN {
 
         for(std::vector<experimental_helix>::const_iterator ip = helices_.begin(); ip != helices_.end(); ++ip){
 
-          if( isnan(ip->x0().error()) ||
-              isnan(ip->y0().error()) ||
-              isnan(ip->z0().error()) ||
-              isnan(ip->R().error()) ||
-              isnan(ip->H().error()) ) continue;
+          if( std::isnan(ip->x0().error()) ||
+              std::isnan(ip->y0().error()) ||
+              std::isnan(ip->z0().error()) ||
+              std::isnan(ip->R().error()) ||
+              std::isnan(ip->H().error()) ) continue;
 
           weight = gauss(bestx0 - ip->x0().value(), ip->x0().error())*gauss(besty0 - ip->y0().value(), ip->y0().error())*gauss(bestz0 - ip->z0().value(), ip->z0().error())*gauss(bestR - ip->R().value(), ip->R().error())*gauss(bestH - ip->H().value(), ip->H().error());
 

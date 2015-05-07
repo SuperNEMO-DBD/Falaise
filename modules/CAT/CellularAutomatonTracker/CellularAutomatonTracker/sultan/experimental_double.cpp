@@ -293,13 +293,13 @@ namespace SULTAN {
 
     bool experimental_double::experimental_isnan()const{
 
-      return isnan(this->value()) || isnan(this->error());
+      return std::isnan(this->value()) || std::isnan(this->error());
 
     }
 
     bool experimental_double::experimental_isinf()const{
 
-      return isinf(this->value()) || isinf(this->error());
+      return std::isinf(this->value()) || std::isinf(this->error());
 
     }
 

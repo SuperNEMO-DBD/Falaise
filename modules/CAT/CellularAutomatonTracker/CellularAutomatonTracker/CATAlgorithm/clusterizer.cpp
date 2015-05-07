@@ -712,11 +712,11 @@ namespace CAT {
       tdown = mybhep::float_from_string(btime);
       tdelay = mybhep::float_from_string(atime);
 
-      if( isnan(tup) || isinf(tup) )
+      if( std::isnan(tup) || std::isinf(tup) )
         tup = -1.;
-      if( isnan(tdown) || isinf(tdown) )
+      if( std::isnan(tdown) || std::isinf(tdown) )
         tdown = -1.;
-      if( isnan(tdelay) || isinf(tdelay) )
+      if( std::isnan(tdelay) || std::isinf(tdelay) )
         tdelay = -1.;
 
 
@@ -759,7 +759,7 @@ namespace CAT {
 
       erry = GetYError((double)cellpos[1], tup, tdown, dir);
 
-      if( isnan( erry ) || isinf(erry) )
+      if( std::isnan( erry ) || std::isinf(erry) )
         erry = -1.;
 
       if( !h->find_property("ERRY") )
@@ -817,7 +817,7 @@ namespace CAT {
         m.message("CAT::clusterizer::GenerateWires: rad=",
                   rad,
                   mybhep::NORMAL);
-        if (isnan (GG_CELL_pitch))
+        if (std::isnan (GG_CELL_pitch))
           {
             GG_CELL_pitch = rad*cos(theta);
           }
@@ -1714,7 +1714,7 @@ namespace CAT {
 
     double radius = mybhep::double_from_string(h->fetch_property("DIST"));
     double tdelay = mybhep::double_from_string(h->fetch_property("ATIME"));
-    if( isnan(tdelay) || isinf(tdelay) )
+    if( std::isnan(tdelay) || std::isinf(tdelay) )
       tdelay = -1.;
 
     if( radius != 0. && tdelay == 0. ) // fast hit

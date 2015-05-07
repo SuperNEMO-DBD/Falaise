@@ -342,7 +342,7 @@ namespace CAT{
           ep->z().value() == small_neg )
         return false;
 
-      if( isnan(ep->x().value())  || isnan(ep->y().value()) || isnan(ep->z().value()) ) return false;
+      if( std::isnan(ep->x().value())  || std::isnan(ep->y().value()) || std::isnan(ep->z().value()) ) return false;
 
       // vector from center of plane face to extrapolated point
       experimental_vector dist = experimental_vector(pl.face(), *ep).hor();
@@ -437,7 +437,7 @@ namespace CAT{
         return false;
       }
 
-      if( isnan(ep->x().value())  || isnan(ep->y().value()) || isnan(ep->z().value()) ) return false;
+      if( std::isnan(ep->x().value())  || std::isnan(ep->y().value()) || std::isnan(ep->z().value()) ) return false;
 
       if( print_level() >= mybhep::VVERBOSE ){
         clog << " track: "; dump();
@@ -537,7 +537,7 @@ namespace CAT{
 
       experimental_double _radius = experimental_sqrt(experimental_square(Xc - epa.x()) + experimental_square(Zc - epa.z()));
 
-      if( isnan(_radius.value()) )
+      if( std::isnan(_radius.value()) )
         _radius.set_value(small_neg);
 
       experimental_double dist = epc.distance(epa);

@@ -212,7 +212,7 @@ namespace SULTAN{
 
 
       // the centers of the three cells are aligned
-      if( fabs(detA) < 0.001 || isnan(detA) ){
+      if( fabs(detA) < 0.001 || std::isnan(detA) ){
 
         // phi angle of the line on which the cells lie; exact
         double theta = atan2(-A21,-A11);
@@ -377,15 +377,15 @@ namespace SULTAN{
 
                   count_all_helices++;
 
-		  if( helix.x0().experimental_isnan() || 
-		      helix.y0().experimental_isnan() || 
-		      helix.z0().experimental_isnan() || 
-		      helix.R().experimental_isnan() || 
-		      helix.H().experimental_isnan() || 
-		      helix.x0().experimental_isinf() || 
-		      helix.y0().experimental_isinf() || 
-		      helix.z0().experimental_isinf() || 
-		      helix.R().experimental_isinf() || 
+		  if( helix.x0().experimental_isnan() ||
+		      helix.y0().experimental_isnan() ||
+		      helix.z0().experimental_isnan() ||
+		      helix.R().experimental_isnan() ||
+		      helix.H().experimental_isnan() ||
+		      helix.x0().experimental_isinf() ||
+		      helix.y0().experimental_isinf() ||
+		      helix.z0().experimental_isinf() ||
+		      helix.R().experimental_isinf() ||
 		      helix.H().experimental_isinf() ){
 		    if( print_level() >= mybhep::NORMAL ){
 		      std::clog << " problem: det " << detA << " helix is nan or inf "; helix.dump(); std::clog << " " << std::endl;
@@ -573,15 +573,15 @@ namespace SULTAN{
 
                   count_all_helices++;
 
-		  if( helix.x0().experimental_isnan() || 
-		      helix.y0().experimental_isnan() || 
-		      helix.z0().experimental_isnan() || 
-		      helix.R().experimental_isnan() || 
-		      helix.H().experimental_isnan() || 
-		      helix.x0().experimental_isinf() || 
-		      helix.y0().experimental_isinf() || 
-		      helix.z0().experimental_isinf() || 
-		      helix.R().experimental_isinf() || 
+		  if( helix.x0().experimental_isnan() ||
+		      helix.y0().experimental_isnan() ||
+		      helix.z0().experimental_isnan() ||
+		      helix.R().experimental_isnan() ||
+		      helix.H().experimental_isnan() ||
+		      helix.x0().experimental_isinf() ||
+		      helix.y0().experimental_isinf() ||
+		      helix.z0().experimental_isinf() ||
+		      helix.R().experimental_isinf() ||
 		      helix.H().experimental_isinf() ){
 		    if( print_level() >= mybhep::NORMAL ){
 		      std::clog << " problem: det " << detA << " helix is nan or inf "; helix.dump(); std::clog << " " << std::endl;
