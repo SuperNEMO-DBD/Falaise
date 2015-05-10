@@ -33,68 +33,24 @@
 
 // Standard library:
 #include <string>
-#include <list>
-#include <map>
-#include <vector>
-
-// Third party:
-// - Boost:
-#include <boost/scoped_ptr.hpp>
-
-// - Bayeux/datatools:
-#include <datatools/logger.h>
-#include <datatools/properties.h>
 
 // This project:
-#include <falaise/snemo/datamodels/calibrated_calorimeter_hit.h>
+#include <falaise/snemo/processing/base_gamma_builder.h>
 
 // Gamma_Tracking library
 #include <GammaTracking/gamma_tracking.h>
 
-namespace geomtools {
-  class manager;
-}
-
 namespace snemo {
-
-  namespace datamodel {
-    class particle_track_data;
-  }
-
-  namespace geometry {
-    class locator_plugin;
-  }
 
   namespace reconstruction {
 
     /// Driver for the gamma tracking algorithms
-    class gamma_tracking_driver
+    class gamma_tracking_driver : public ::snemo::processing::base_gamma_builder
     {
     public:
 
-
+      /// Dedicated algorithm id
       static const std::string & gamma_tracking_id();
-
-      /// Initialization flag
-      void set_initialized(const bool initialized_);
-
-      /// Getting initialization flag
-      bool is_initialized() const;
-
-      /// Setting logging priority
-      void set_logging_priority(const datatools::logger::priority priority_);
-
-      /// Getting logging priority
-      datatools::logger::priority get_logging_priority() const;
-
-      /// Check the geometry manager
-      bool has_geometry_manager() const;
-
-      /// Address the geometry manager
-      void set_geometry_manager(const geomtools::manager & gmgr_);
-
-      /// Return a non-mutable reference to the geometry manager
-      const geomtools::manager & get_geometry_manager() const;
 
       /// Constructor
       gamma_tracking_driver();
@@ -108,9 +64,8 @@ namespace snemo {
       /// Reset the clusterizer
       virtual void reset();
 
-      /// Main tracker trajectory driver
-      int process(const snemo::datamodel::calibrated_calorimeter_hit::collection_type & hits_,
-                  snemo::datamodel::particle_track_data & ptd_);
+      /// OCD support:
+      static void init_ocd(datatools::object_configuration_description & ocd_);
 
     protected:
 
@@ -118,23 +73,14 @@ namespace snemo {
       void _set_defaults();
 
       /// Prepare cluster for processing
-      virtual int _prepare_process(const snemo::datamodel::calibrated_calorimeter_hit::collection_type & hits_,
-                                   snemo::datamodel::particle_track_data & ptd_);
+      virtual int _prepare_process(snemo::datamodel::particle_track_data & ptd_);
 
       /// Main tracking method
-      virtual int _process_algo(const snemo::datamodel::calibrated_calorimeter_hit::collection_type & hits_,
-                                snemo::datamodel::particle_track_data & ptd_);
-
-      /// Post-processing operation
-      virtual int _post_process(snemo::datamodel::particle_track_data & ptd_);
+      virtual int _process_algo(snemo::datamodel::particle_track_data & ptd_);
 
     private:
 
-      bool _initialized_;                                       //!< Initialize flag
-      datatools::logger::priority _logging_priority_;           //!< Logging priority
-      const geomtools::manager * _geometry_manager_;            //!< The SuperNEMO geometry manager
-      const snemo::geometry::locator_plugin * _locator_plugin_; //!< The SuperNEMO locator plugin
-      gt::gamma_tracking _gt_;                                  //!< The Gamma Tracking algorithm
+      gt::gamma_tracking _gt_; //!< The Gamma Tracking algorithm
     };
 
   }  // end of namespace reconstruction

@@ -34,23 +34,14 @@
 #define FALAISE_GAMMA_TRACKING_PLUGIN_SNEMO_RECONSTRUCTION_GAMMA_TRACKING_MODULE_H 1
 
 // Third party:
-// - Boost:
-#include <boost/scoped_ptr.hpp>
-// - Bayuex/dpp :
+// - Bayeux/dpp :
 #include <dpp/base_module.h>
-
-// This project:
-#include <falaise/snemo/datamodels/calibrated_calorimeter_hit.h>
 
 namespace geomtools {
   class manager;
 }
 
 namespace snemo {
-
-  namespace datamodel {
-    class particle_track_data;
-  }
 
   namespace reconstruction {
 
@@ -88,22 +79,19 @@ namespace snemo {
     protected:
 
       /// Special method to process and generate trajectory data
-      void _process(const snemo::datamodel::calibrated_calorimeter_hit::collection_type & hits_,
-                    snemo::datamodel::particle_track_data & track_data_);
+      void _process(datatools::things & data_);
 
       /// Give default values to specific class members.
-      void _set_defaults ();
+      void _set_defaults();
 
     private:
 
       const geomtools::manager * _geometry_manager_; //!< The geometry manager
-      std::string _CD_label_;                        //!< The label of the input/output  data bank
       std::string _PTD_label_;                       //!< The label of the input/output  data bank
-
       boost::scoped_ptr< ::snemo::reconstruction::gamma_tracking_driver> _driver_; //!< Handle to the embedded fitter algorithm with dynamic memory auto-deletion
 
       // Macro to automate the registration of the module :
-      DPP_MODULE_REGISTRATION_INTERFACE (gamma_tracking_module);
+      DPP_MODULE_REGISTRATION_INTERFACE(gamma_tracking_module);
     };
 
   } // end of namespace reconstruction

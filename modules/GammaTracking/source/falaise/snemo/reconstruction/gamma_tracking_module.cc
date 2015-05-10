@@ -16,7 +16,6 @@
 
 // This project:
 #include <falaise/snemo/datamodels/data_model.h>
-#include <falaise/snemo/datamodels/calibrated_data.h>
 #include <falaise/snemo/datamodels/particle_track_data.h>
 #include <falaise/snemo/processing/services.h>
 
@@ -52,7 +51,6 @@ namespace snemo {
     void gamma_tracking_module::_set_defaults()
     {
       _geometry_manager_ = 0;
-      _CD_label_ = snemo::datamodel::data_info::default_calibrated_data_label();
       _PTD_label_ = snemo::datamodel::data_info::default_tracker_clustering_data_label();
       _driver_.reset();
       return;
@@ -68,10 +66,6 @@ namespace snemo {
                    "Module '" << get_name() << "' is already initialized ! ");
 
       dpp::base_module::_common_initialize(setup_);
-
-      if (setup_.has_key("CD_label")) {
-        _CD_label_ = setup_.fetch_string("CD_label");
-      }
 
       if (setup_.has_key("PTD_label")) {
         _PTD_label_ = setup_.fetch_string("PTD_label");
@@ -145,27 +139,16 @@ namespace snemo {
       DT_THROW_IF (! is_initialized(), std::logic_error,
                    "Module '" << get_name() << "' is not initialized !");
 
-      const snemo::datamodel::calibrated_calorimeter_hit::collection_type * the_calos = 0;
+      // Main processing method :
+      _process(data_record_);
 
-      /*************************
-       * Check calibrated data *
-       *************************/
+      return dpp::base_module::PROCESS_SUCCESS;
+    }
 
-      // Check if some 'calibrated_data' are available in the data model:
-      if (data_record_.has(_CD_label_)) {
-        // Get the 'calibrated_data' entry from the data model :
-        const snemo::datamodel::calibrated_data & the_calibrated_data
-          = data_record_.get<snemo::datamodel::calibrated_data>(_CD_label_);
-        the_calos = &the_calibrated_data.calibrated_calorimeter_hits();
-        // DT_THROW_IF(abort_at_missing_input, std::logic_error,
-        //             "Missing calibrated data to be processed !");
-        // // leave the data unchanged.
-        // return dpp::base_module::PROCESS_ERROR;
-      }
+    void gamma_tracking_module::_process(datatools::things & data_record_)
+    {
+      DT_LOG_TRACE(get_logging_priority(), "Entering...");
 
-      /*********************************
-       * Check particle track data     *
-       *********************************/
       snemo::datamodel::particle_track_data * ptr_particle_track_data = 0;
       if (! data_record_.has(_PTD_label_)) {
         ptr_particle_track_data
@@ -173,33 +156,11 @@ namespace snemo {
       } else {
         ptr_particle_track_data
           = &(data_record_.grab<snemo::datamodel::particle_track_data>(_PTD_label_));
-        the_calos = &ptr_particle_track_data->get_non_associated_calorimeters();
       }
-      snemo::datamodel::particle_track_data & the_particle_track_data = *ptr_particle_track_data;
-
-      /********************
-       * Process the data *
-       ********************/
-
-      // Sanity check
-      if (! the_calos) {
-        DT_LOG_WARNING(get_logging_priority(), "No calorimeter hits to be processed !");
-        return dpp::base_module::PROCESS_ERROR;
-      }
-
-      // Main processing method :
-      _process(*the_calos, the_particle_track_data);
-
-      return dpp::base_module::PROCESS_SUCCESS;
-    }
-
-    void gamma_tracking_module::_process(const snemo::datamodel::calibrated_calorimeter_hit::collection_type & hits_,
-                                         snemo::datamodel::particle_track_data  & track_data_)
-    {
-      DT_LOG_TRACE(get_logging_priority(), "Entering...");
+      snemo::datamodel::particle_track_data & ptd = *ptr_particle_track_data;
 
       // process the fitter driver :
-      _driver_.get()->process(hits_, track_data_);
+      _driver_.get()->process(ptd);
 
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");
       return;
