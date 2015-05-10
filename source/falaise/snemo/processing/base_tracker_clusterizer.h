@@ -124,7 +124,7 @@ namespace snemo {
 
       /// OCD support
       static void ocd_support(datatools::object_configuration_description &,
-                               const std::string & prefix_ = "");
+                              const std::string & prefix_ = "");
 
     protected :
 
