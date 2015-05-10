@@ -111,15 +111,15 @@ namespace snemo {
       /// Reset the tracker trajectory fitter
       virtual void reset() = 0;
 
-      // /// Smart print
-      // void tree_dump(std::ostream & out_ = std::clog,
-      //                 const std::string & title_ = "",
-      //                 const std::string & indent_ = "",
-      //                 bool inherit_ = false) const;
+      /// Smart print
+      void tree_dump(std::ostream & out_ = std::clog,
+                      const std::string & title_ = "",
+                      const std::string & indent_ = "",
+                      bool inherit_ = false) const;
 
-      // /// OCD support
-      // static void ocd_support(datatools::object_configuration_description &,
-      //                         const std::string & prefix_ = "");
+      /// OCD support
+      static void ocd_support(datatools::object_configuration_description &,
+                              const std::string & prefix_ = "");
 
     protected :
 
@@ -135,8 +135,14 @@ namespace snemo {
       /// Set the initialization flag
       void _set_initialized(bool);
 
-      /// Specific fitting algorithm
+      /// Prepare data for processing
+      virtual int _prepare_process(snemo::datamodel::particle_track_data & ptd_);
+
+      /// Specific algorithm
       virtual int _process_algo(snemo::datamodel::particle_track_data & ptd_) = 0;
+
+      /// Post processing
+      virtual int _post_process(snemo::datamodel::particle_track_data & ptd_);
 
     protected:
 
@@ -144,10 +150,13 @@ namespace snemo {
 
     private:
 
-      bool                                 _initialized_;            //!< Initialization status
-      std::string                          _id_;                     //!< Identifier of the gamma builder algorithm
-      const geomtools::manager *           _geometry_manager_;       //!< The SuperNEMO geometry manager
+      bool                                 _initialized_;       //!< Initialization status
+      std::string                          _id_;                //!< Identifier of the gamma builder algorithm
+      const geomtools::manager *           _geometry_manager_;  //!< The SuperNEMO geometry manager
       const snemo::geometry::locator_plugin * _locator_plugin_; //!< The SuperNEMO locator plugin
+
+      bool _add_foil_vertex_extrapolation_;         //!< Flag to enable foil vertex extrapolation
+      double _add_foil_vertex_minimal_probability_; //!< Minimal TOF internal probability to accept foilvertex extrapolation
     };
 
   }  // end of namespace processing
