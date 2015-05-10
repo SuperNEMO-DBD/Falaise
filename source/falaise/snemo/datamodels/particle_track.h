@@ -50,19 +50,19 @@ namespace snemo {
       };
 
       /// Check a particle charge type
-      static bool particle_is(const particle_track &, charge_type);
+      static bool particle_has(const particle_track &, charge_type);
 
       /// Check a particle is electron
-      static bool particle_is_electron(const particle_track &);
+      static bool particle_has_negative_charge(const particle_track &);
 
       /// Check a particle is positron
-      static bool particle_is_positron(const particle_track &);
+      static bool particle_has_positive_charge(const particle_track &);
 
       /// Check a particle is alpha
-      static bool particle_is_alpha(const particle_track &);
+      static bool particle_has_undefined_charge(const particle_track &);
 
       /// Check a particle is gamma
-      static bool particle_is_gamma(const particle_track &);
+      static bool particle_has_neutral_charge(const particle_track &);
 
       /// Vertex flags
       enum vertex_type {

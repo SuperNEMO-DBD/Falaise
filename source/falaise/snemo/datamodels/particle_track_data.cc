@@ -74,16 +74,19 @@ namespace snemo {
       for (particle_collection_type::const_iterator i = get_particles().begin();
            i != get_particles().end(); ++i) {
         const particle_track::handle_type & a_particle = *i;
-        const bool is_electron = (flags_ & particle_track::NEGATIVE)
-          && particle_track::particle_is_electron(a_particle.get());
-        const bool is_positron = (flags_ & particle_track::POSITIVE)
-          && particle_track::particle_is_positron(a_particle.get());
-        const bool is_alpha = (flags_ & particle_track::UNDEFINED)
-          && particle_track::particle_is_alpha(a_particle.get());
-        const bool is_gamma = (flags_ & particle_track::NEUTRAL)
-          && particle_track::particle_is_gamma(a_particle.get());
+        const bool has_negative_charge = (flags_ & particle_track::NEGATIVE)
+          && particle_track::particle_has_negative_charge(a_particle.get());
+        const bool has_positive_charge = (flags_ & particle_track::POSITIVE)
+          && particle_track::particle_has_positive_charge(a_particle.get());
+        const bool has_undefined_charge = (flags_ & particle_track::UNDEFINED)
+          && particle_track::particle_has_undefined_charge(a_particle.get());
+        const bool has_neutral_charge = (flags_ & particle_track::NEUTRAL)
+          && particle_track::particle_has_neutral_charge(a_particle.get());
 
-        if (is_electron || is_positron || is_alpha || is_gamma) {
+        if (has_negative_charge  ||
+            has_positive_charge  ||
+            has_undefined_charge ||
+            has_neutral_charge) {
           particles_.push_back(a_particle);
           ipart++;
         }
