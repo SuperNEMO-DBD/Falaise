@@ -332,7 +332,7 @@ namespace snemo {
     }
 
     calo_tapered_scin_box_model::wires_drawer::wires_drawer(const calo_tapered_scin_box_model & model_)
-      : i_wires_drawer(model_)
+      : geomtools::i_wires_drawer<calo_tapered_scin_box_model>(model_)
     {
       return;
     }
