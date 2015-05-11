@@ -14,6 +14,11 @@
 #include <snemo/digitization/calo_ctw_data.h>
 #include <snemo/digitization/electronic_mapping.h>
 #include <snemo/digitization/mapping.h>
+#include <snemo/digitization/tracker_trigger_mem_maker.h>
+
+namespace datatools {
+	class properties;
+}
 
 namespace snemo {
   
@@ -22,14 +27,6 @@ namespace snemo {
     /// \brief Trigger algorithm general process
     class tracker_trigger_algorithm
     {
-		
-			struct zone_threshold_info {
-				static const int32_t INNER_LAYER_THRESHOLD = 2;
-				static const int32_t OUTER_LAYER_THRESHOLD = 2;
-				static const int32_t LEFT_NROWS_THRESHOLD  = 2;
-				static const int32_t RIGHT_NROWS_THRESHOLD = 2;
-			};
-
 			struct sub_zone_location_info {
 				int32_t row_begin;
 				int32_t row_end;
@@ -106,8 +103,17 @@ namespace snemo {
 				SUBZONE_3_ROW_INDEX   = 7	
 			};
 			
-			/// Size of a bitset for one zone
+			/// Level one zoning size of a bitset for one zone
 			static const int32_t LEVEL_ONE_ZONING_BITSET_SIZE = 8;
+			
+			/// Level two zoning size of a bitset for one zone
+			static const int32_t LEVEL_TWO_ZONING_BITSET_SIZE = 2;
+	
+			/// Size of the subzone layer projection bitset
+			static const int32_t LEVEL_ONE_SUBZONE_LAYER_SIZE = 5;
+
+			/// Size of the subzone row projection bitset
+			static const int32_t LEVEL_ONE_SUBZONE_ROW_SIZE   = 6;
 
     public : 
 
@@ -117,8 +123,14 @@ namespace snemo {
       /// Destructor
       virtual ~tracker_trigger_algorithm();
 
+			/// Set the electronic mapping object
+      void set_electronic_mapping(const electronic_mapping & my_electronic_mapping_);
+
 			/// Initializing
-      void initialize(const electronic_mapping & my_electronic_mapping_);
+      void initialize();
+
+			/// Initializing
+      void initialize(const datatools::properties & config_);
 
       /// Check if the algorithm is initialized 
       bool is_initialized() const;
@@ -130,7 +142,8 @@ namespace snemo {
 			uint32_t get_board_id(const std::bitset<geiger::tp::FULL_SIZE> & my_bitset_) const;
 
 			/// Convert the electronic ID of active geiger cells into geometric ID
-			void build_hit_cells_gids_from_ctw(const geiger_ctw & my_geiger_ctw_, std::vector<geomtools::geom_id> & hit_cells_gids_) const;
+			void build_hit_cells_gids_from_ctw(const geiger_ctw & my_geiger_ctw_,
+																				 std::vector<geomtools::geom_id> & hit_cells_gids_) const;
 
 			/// Fill the geiger cells matrix
 			void fill_matrix(const std::vector<geomtools::geom_id> & hit_cells_gids_);
@@ -141,14 +154,49 @@ namespace snemo {
 			/// Reset the geiger cells matrix
 			void reset_matrix();
 			
+			/// Fill an A6D1 level 0 to level 1 memory for a given subzone
+			void fill_mem_lvl0_to_lvl1_row(const std::string & filename_,
+																		 int32_t side_,
+																		 int32_t zone_,
+																		 int32_t subzone_);
+
+			/// Fill an A6D1 level 0 to level 1 memory for all subzones
+			void fill_mem_lvl0_to_lvl1_row_all(const std::string & filename_);
+
+			/// Fill an A5D1 level 0 to level 1 memory for a given subzone
+			void fill_mem_lvl0_to_lvl1_layer(const std::string & filename_,
+																			 int32_t side_,
+																			 int32_t zone_,
+																			 int32_t subzone_);
+
+			/// Fill an A6D1 level 0 to level 1 memory for all subzones
+			void fill_mem_lvl0_to_lvl1_layer_all(const std::string & filename_);
+
+			/// Fill an A4D2 level 1 to level 2 memory for a given zone
+			void fill_mem_lvl1_to_lvl2(const std::string & filename_,
+																 int32_t side_,
+																 int32_t zone_);
+
+			/// Fill an A4D2 level 1 to level 2 memory for all zones
+			void fill_mem_lvl1_to_lvl2_all(const std::string & filename_);
+
 			/// For a given side and zone index, give the row index begin and end
-			void fetch_zone_limits(int32_t side_, int32_t zone_index_, int32_t & row_index_begin_, int32_t & row_index_end_);
+			void fetch_zone_limits(int32_t side_,
+														 int32_t zone_index_,
+														 int32_t & row_index_begin_,
+														 int32_t & row_index_end_);
 
 			/// For a given side and row index, give the zone index
-			void fetch_zone_index(int32_t side_, int32_t row_index_, int32_t & zone_index_);
+			void fetch_zone_index(int32_t side_,
+														int32_t row_index_,
+														int32_t & zone_index_);
 
 			/// For a given subzone indx, give the subzone row begin, row end and layer begin
-			void fetch_subzone_limits(int32_t side_, int32_t subzone_index_, int32_t & subzone_row_index_begin_, int32_t & subzone_row_index_end_, int32_t & subzone_layer_index_begin_);
+			void fetch_subzone_limits(int32_t side_,
+																int32_t subzone_index_,
+																int32_t & subzone_row_index_begin_,
+																int32_t & subzone_row_index_end_,
+																int32_t & subzone_layer_index_begin_);
 
 			/// Build the level one trigger primitive bitsets
 			void build_trigger_level_one_bitsets(); 
@@ -164,13 +212,18 @@ namespace snemo {
       bool _initialized_; //!< Initialization flag
       bool _geiger_matrix_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_LAYERS][mapping::NUMBER_OF_GEIGER_ROWS]; //!< Geiger cells matrix
 			std::bitset<LEVEL_ONE_ZONING_BITSET_SIZE> _level_one_tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES]; //!< Table of 2x10 containing 8 bits bitset representing the level one tracker trigger zoning (side = {0-1}, zones = {0-9})
-
-			zone_threshold_info _zone_threshold_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES]; //!< Table of 2x10 containing a struct fixing the thresholds in zones
+			
+			std::bitset<LEVEL_TWO_ZONING_BITSET_SIZE> _level_two_tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES]; //!< Table of 2x10 containing 2 bits bitset representing if there is a track / pretrack or nothing in one zone
 
 			sub_zone_location_info _sub_zone_location_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES_PER_SIDE]; //!< Table of 2x40 (10 zones subdivided in 4 subzones on 2 sides)
 
 			const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
-    };
+			
+			memory<6,1> _mem_lvl0_to_lvl1_row_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES][mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES];
+			memory<5,1> _mem_lvl0_to_lvl1_layer_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES][mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES];
+			memory<4,2> _mem_lvl1_to_lvl2_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES];
+			
+		};
 
   } // end of namespace digitization
 

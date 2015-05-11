@@ -58,7 +58,7 @@ int main( int  argc_ , char **argv_  )
     std::string manager_config_file;
     
     manager_config_file = "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf";
-    datatools::fetch_path_with_env (manager_config_file);
+    datatools::fetch_path_with_env(manager_config_file);
     datatools::properties manager_config;
     datatools::properties::read_config (manager_config_file,
 					manager_config);
@@ -79,18 +79,28 @@ int main( int  argc_ , char **argv_  )
     }else{
       pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
     }
-    
+    datatools::fetch_path_with_env(pipeline_simulated_data_filename);
+
     
     dpp::input_module reader;
     datatools::properties reader_config;
     reader_config.store ("logging.priority", "debug");
-    reader_config.store ("max_record_total", 3);
+    reader_config.store ("max_record_total", 4);
     reader_config.store ("files.mode", "single");
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
     reader.tree_dump (std::clog, "Simulated data reader module");
 
     datatools::things ER;
+
+    // Loading memory from external files
+    std::string memory_mult_layer   = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A5_D1_default_min_mult_memory.data";
+    std::string memory_mult_row     = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A6_D1_default_min_mult_memory.data";
+    std::string memory_lvl1_to_lvl2 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A4_D2_default_memory.data";
+    datatools::fetch_path_with_env(memory_mult_layer);
+    datatools::fetch_path_with_env(memory_mult_row);
+    datatools::fetch_path_with_env(memory_lvl1_to_lvl2);
+
     snemo::digitization::electronic_mapping my_e_mapping;
     my_e_mapping.set_geo_manager(my_manager);
     my_e_mapping.set_module_number(snemo::digitization::mapping::DEMONSTRATOR_MODULE_NUMBER);
@@ -172,7 +182,12 @@ int main( int  argc_ , char **argv_  )
 	    my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
 
 	    snemo::digitization::tracker_trigger_algorithm my_tracker_algo;
-	    my_tracker_algo.initialize(my_e_mapping);
+	    my_tracker_algo.set_electronic_mapping(my_e_mapping);
+	    my_tracker_algo.initialize();
+
+	    my_tracker_algo.fill_mem_lvl0_to_lvl1_layer_all(memory_mult_layer);
+	    my_tracker_algo.fill_mem_lvl0_to_lvl1_row_all(memory_mult_row);
+	    my_tracker_algo.fill_mem_lvl1_to_lvl2_all(memory_lvl1_to_lvl2);
 	    my_tracker_algo.process(my_geiger_ctw_data);
 	    
 	  }     

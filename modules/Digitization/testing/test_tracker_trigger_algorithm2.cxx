@@ -65,95 +65,6 @@ int main( int  argc_ , char **  argv_ )
 
  
     snemo::digitization::geiger_tp_data my_geiger_tp_data;
-    // Creation of few geiger tps
-
-
-    // for (int i = 0; i < 20; i++)
-    //   {
-    // 	{
-    // 	  snemo::digitization::geiger_tp & gg_tp = my_geiger_tp_data.add();
-    // 	  geomtools::geom_id gg_electronic_id;
-    // 	  gg_electronic_id.set_type(666);
-    // 	  gg_electronic_id.set(snemo::digitization::mapping::RACK_INDEX, snemo::digitization::mapping::GEIGER_RACK_ID);
-    // 	  gg_electronic_id.set(snemo::digitization::mapping::CRATE_INDEX, 0);
-    // 	  gg_electronic_id.set(snemo::digitization::mapping::BOARD_INDEX, i);
-    // 	  std::bitset<snemo::digitization::geiger::tp::TP_SIZE> gg_tp_word(std::string("0000000000000000000000000000000000010000000000000000001"));
-    // 	  gg_tp.set_header(27 + i, // hit id 
-    // 			   gg_electronic_id,
-    // 			   20, // clocktickk
-    // 			   snemo::digitization::mapping::THREE_WIRES_TRACKER_MODE,
-    // 			   snemo::digitization::mapping::SIDE_MODE,
-    // 			   snemo::digitization::mapping::NUMBER_OF_CONNECTED_ROWS);
-    // 	  gg_tp.set_data(gg_tp_word);
-    // 	  gg_tp.grab_auxiliaries().store("author", "guillaume");
-    // 	  gg_tp.grab_auxiliaries().store_flag("fake");
-    // 	  gg_tp.tree_dump(std::clog, "GG_TP 1 : ", "INFO : ");
-    // 	}
-    //   } //end of loop i
-    // for (int i = 0; i < 20; i++)
-    //   {
-    // 	{
-    // 	  snemo::digitization::geiger_tp & gg_tp = my_geiger_tp_data.add();
-    // 	  geomtools::geom_id gg_electronic_id;
-    // 	  gg_electronic_id.set_type(666);
-    // 	  gg_electronic_id.set(snemo::digitization::mapping::RACK_INDEX, snemo::digitization::mapping::GEIGER_RACK_ID);
-    // 	  gg_electronic_id.set(snemo::digitization::mapping::CRATE_INDEX, 1);
-    // 	  gg_electronic_id.set(snemo::digitization::mapping::BOARD_INDEX, i);
-    // 	  std::bitset<snemo::digitization::geiger::tp::TP_SIZE> gg_tp_word(std::string("0000000000000000000000000000010000000000000000000010000"));
-    // 	  gg_tp.set_header(27 + i, // hit id 
-    // 			   gg_electronic_id,
-    // 			   20, // clocktickk
-    // 			   snemo::digitization::mapping::THREE_WIRES_TRACKER_MODE,
-    // 			   snemo::digitization::mapping::SIDE_MODE,
-    // 			   snemo::digitization::mapping::NUMBER_OF_CONNECTED_ROWS);
-    // 	  gg_tp.set_data(gg_tp_word);
-    // 	  gg_tp.grab_auxiliaries().store("author", "guillaume");
-    // 	  gg_tp.grab_auxiliaries().store_flag("fake");
-    // 	  gg_tp.tree_dump(std::clog, "GG_TP 1 : ", "INFO : ");
-    // 	}
-    //   } //end of loop i
-    
-
-
-
-    // {
-    //   snemo::digitization::geiger_tp & gg_tp = my_geiger_tp_data.add();
-    //   geomtools::geom_id gg_electronic_id;
-    //   gg_electronic_id.set_type(666);
-    //   gg_electronic_id.set(snemo::digitization::mapping::RACK_INDEX, snemo::digitization::mapping::GEIGER_RACK_ID);
-    //   gg_electronic_id.set(snemo::digitization::mapping::CRATE_INDEX, 0);
-    //   gg_electronic_id.set(snemo::digitization::mapping::BOARD_INDEX, 1);
-    //   std::bitset<snemo::digitization::geiger::tp::TP_SIZE> gg_tp_word(std::string("0000000000000000000111111111111111111111111111111111111"));
-    //   gg_tp.set_header(27, // hit id 
-    // 		       gg_electronic_id,
-    // 		       20, // clocktickk
-    // 		       snemo::digitization::mapping::THREE_WIRES_TRACKER_MODE,
-    // 		       snemo::digitization::mapping::SIDE_MODE,
-    // 		       snemo::digitization::mapping::NUMBER_OF_CONNECTED_ROWS);
-    //   gg_tp.set_data(gg_tp_word);
-    //   gg_tp.grab_auxiliaries().store("author", "guillaume");
-    //   gg_tp.grab_auxiliaries().store_flag("fake");
-    //   gg_tp.tree_dump(std::clog, "GG_TP 1 : ", "INFO : ");
-    // }
-    // {
-    //   snemo::digitization::geiger_tp & gg_tp = my_geiger_tp_data.add();
-    //   geomtools::geom_id gg_electronic_id;
-    //   gg_electronic_id.set_type(666);
-    //   gg_electronic_id.set(snemo::digitization::mapping::RACK_INDEX, snemo::digitization::mapping::GEIGER_RACK_ID);
-    //   gg_electronic_id.set(snemo::digitization::mapping::CRATE_INDEX, 0);
-    //   gg_electronic_id.set(snemo::digitization::mapping::BOARD_INDEX, 2);
-    //   std::bitset<snemo::digitization::geiger::tp::TP_SIZE> gg_tp_word(std::string("0000000000000000000000000011000000011000000111000000111"));
-    //   gg_tp.set_header(27, // hit id 
-    // 		       gg_electronic_id,
-    // 		       20, // clocktickk
-    // 		       snemo::digitization::mapping::THREE_WIRES_TRACKER_MODE,
-    // 		       snemo::digitization::mapping::SIDE_MODE,
-    // 		       snemo::digitization::mapping::NUMBER_OF_CONNECTED_ROWS);
-    //   gg_tp.set_data(gg_tp_word);
-    //   gg_tp.grab_auxiliaries().store("author", "guillaume");
-    //   gg_tp.grab_auxiliaries().store_flag("fake");
-    //   gg_tp.tree_dump(std::clog, "GG_TP 1 : ", "INFO : ");
-    // }
     {
       snemo::digitization::geiger_tp & gg_tp = my_geiger_tp_data.add();
       geomtools::geom_id gg_electronic_id;
@@ -201,7 +112,8 @@ int main( int  argc_ , char **  argv_ )
     my_geiger_ctw_data.tree_dump(std::clog, "Geiger CTW(s) data : ", "INFO : ");
 
     snemo::digitization::tracker_trigger_algorithm my_tracker_algo;
-    my_tracker_algo.initialize(my_e_mapping);
+    my_tracker_algo.set_electronic_mapping(my_e_mapping);
+    my_tracker_algo.initialize();
     my_tracker_algo.process(my_geiger_ctw_data);
     
     std::clog << "The end." << std::endl;

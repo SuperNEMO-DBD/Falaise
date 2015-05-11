@@ -20,7 +20,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source/falaise)
 # - Headers:
 
 list(APPEND FalaiseDigitizationPlugin_HEADERS
-  
+
   source/falaise/snemo/digitization/electronic_mapping.h
   source/falaise/snemo/digitization/clock_utils.h
   source/falaise/snemo/digitization/ID_convertor.h
@@ -123,3 +123,5 @@ if(FalaiseDigitizationPlugin_ENABLE_TESTING)
   enable_testing()
   add_subdirectory(testing)
 endif()
+ 
+add_subdirectory(programs)

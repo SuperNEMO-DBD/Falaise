@@ -397,20 +397,26 @@ namespace snemo {
       return;
     }
 
-    void tracker_trigger_mem_maker::store(const std::string & output_file_) const
+    void tracker_trigger_mem_maker::store(const std::string & output_file_,
+					  const std::string & description_) const
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Object is not initialized, store can't be done ! ");
+      std::string description;
+      if (!description_.empty())
+	{
+	  description = description_;
+	}
       if (_mem_A4D2_.get() != 0)
 	{
-      	  _mem_A4D2_->store_to_file(output_file_);
+      	  _mem_A4D2_->store_to_file(output_file_, description);
 	}
      if (_mem_A5D1_.get() != 0)
 	{
-      	  _mem_A5D1_->store_to_file(output_file_);
+      	  _mem_A5D1_->store_to_file(output_file_, description);
 	}
      if (_mem_A6D1_.get() != 0)
 	{
-      	  _mem_A6D1_->store_to_file(output_file_);
+      	  _mem_A6D1_->store_to_file(output_file_, description);
 	}
       return;
     }

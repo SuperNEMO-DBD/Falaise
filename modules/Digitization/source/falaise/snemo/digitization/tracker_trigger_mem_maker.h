@@ -68,46 +68,56 @@ namespace snemo {
 										 const mem_size_type & memory_size_type_,
 										 const mem_build_algo_type & memory_algo_type_);
 			
+			/// Set the minimum multiplicity if it's the algorithm type set
 			void set_min_multiplicity(const unsigned int & min_multiplicity_);
 			
+			/// Set the maximum gap if it's the algorithm type set
 			void set_max_gap(const unsigned int & max_gap_);
 
       /// Store the built map in a file
-      void store(const std::string & output_file_) const;
+      void store(const std::string & output_file_,
+								 const std::string & description_) const;
       
     protected :
       
       /// Build algorithm in function of the configuration
       void _build();
 
+			/// Build the tracker trigger level 0 to level 1 in function of the configuration
       void _build_lvl0_lvl1_memory();
 
+			/// Build the tracker trigger level 0 to level 1 in function of the configuration for an A5D1 memory
 			void _build_lvl0_lvl1_5X1_memory();
 
-			/// Build the tracker trigger level 0 to level 1 memory with a min multiplicity
+			/// Build the tracker trigger level 0 to level 1 memory with a minimum multiplicity for an A5D1 memory
 			void _build_lvl0_lvl1_5X1_min_multiplicity_memory();
 
+			/// Build the tracker trigger level 0 to level 1 memory with a maximum gap between two layers for an A5D1 memory
 			void _build_lvl0_lvl1_5X1_max_gap_memory();
 
+			/// Build the tracker trigger level 0 to level 1 in function of the configuration for an A6D1 memory
 			void _build_lvl0_lvl1_6X1_memory();
 
-			void _build_lvl0_lvl1_6X1_min_multiplicity_memory();
-			
+			/// Build the tracker trigger level 0 to level 1 memory with a minimum multiplicity
+			void _build_lvl0_lvl1_6X1_min_multiplicity_memory();	
+
+			/// Build the tracker trigger level 0 to level 1 memory with a maximum gap between two rows
 			void _build_lvl0_lvl1_6X1_max_gap_memory();
 
+			/// Build the tracker trigger level 1 to level 2 in function of the configuration
       void _build_lvl1_lvl2_memory();
 
-      /// Build the tracker trigger level 1 to level 2 memory with multiplicity algo type
+      /// Build the tracker trigger level 1 to level 2 memory for an A4D2 memory
       void _build_lvl1_lvl2_4X2_memory();
 
     private : 
       // Configuration :
-      bool                _initialized_;   //!< Initialized flag
-      mem_type            _mem_type_;      //!< Type of memory
-      mem_size_type       _mem_size_type_; //!< Size of the built memory
-      mem_build_algo_type _mem_algo_type_; //!< Algorithm type to build memory
-      unsigned int        _min_multiplicity_;
-			unsigned int        _max_gap_;
+      bool                _initialized_;     //!< Initialized flag
+      mem_type            _mem_type_;        //!< Type of memory
+      mem_size_type       _mem_size_type_;   //!< Size of the built memory
+      mem_build_algo_type _mem_algo_type_;   //!< Algorithm type to build memory
+      unsigned int        _min_multiplicity_;//!< Minimum of multiplicity
+			unsigned int        _max_gap_;         //!< Maximum of gap between 2 rows or 2 layers
 
       // Working data :
       boost::scoped_ptr<memory<4,2> > _mem_A4D2_; //!< Pointer to an A4D2 memory
