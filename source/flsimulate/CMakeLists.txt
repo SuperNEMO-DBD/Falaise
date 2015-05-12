@@ -24,7 +24,7 @@
 # Configure application
 # - Bit hacky for now
 find_package(Boost REQUIRED program_options filesystem system)
-include_directories(${Boost_INCLUDE_DIRS})
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 
 find_package(Geant4 REQUIRED)
 
