@@ -41,6 +41,7 @@ namespace snemo {
     const uint32_t mapping::NUMBER_OF_GVETO_COLUMNS;
     const uint32_t mapping::NUMBER_OF_GEIGER_ROWS;
     const int32_t  mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES;
+    const int32_t  mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES;
     const int32_t  mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES;
     const int32_t  mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES_PER_SIDE;
     const uint32_t mapping::NUMBER_OF_CRATES;

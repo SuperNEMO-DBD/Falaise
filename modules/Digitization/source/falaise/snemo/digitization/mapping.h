@@ -92,6 +92,7 @@ namespace snemo {
 			static const uint32_t NUMBER_OF_GVETO_COLUMNS = 16;
 			static const uint32_t NUMBER_OF_GEIGER_ROWS = 113;
 			static const int32_t  NUMBER_OF_TRACKER_TRIGGER_ZONES = 10;
+			static const int32_t  NUMBER_OF_TRACKER_TRIGGER_INTERZONES = 9;
 			static const int32_t  NUMBER_OF_TRACKER_TRIGGER_SUBZONES = 4;
 			static const int32_t  NUMBER_OF_TRACKER_TRIGGER_SUBZONES_PER_SIDE = 40;
 
