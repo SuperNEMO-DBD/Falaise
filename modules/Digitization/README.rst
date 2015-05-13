@@ -17,13 +17,8 @@ UML diagram of the process : (can change)
 -----------------------------------------
 
 ::
-
-SD : Simulated Data
-GG : Geiger		         
-TP : Trigger Primitive
-CTW : Crate Trigger Word
-                      
-                                                                                                Calo_TP_data                                    
+                    
+                                                                                                Calo_TP_data
                                                                                           |----------------------|                               Calo_CTW_data
                                         |------------------|                              | |------------------| |                            |----------------|
                                         |   Calo signal    |                              | |     Calo TP      | |                            | |------------| |      (not implemented yet)
@@ -51,7 +46,10 @@ CTW : Crate Trigger Word
                                         |------------------|                              | |------------------| |
                                                                                           |----------------------|
                                                                                                Geiger_TP_data
-
+SD : Simulated Data
+GG : Geiger		         
+TP : Trigger Primitive
+CTW : Crate Trigger Word
 
 
 To run the examples, you have to export the environment variable $FALAISE_DIGITIZATION_TESTING_DIR and give the path to the testing directory of the Digitization module. 
