@@ -1,15 +1,23 @@
+======================================
 Falaise Digitization plugin
 ======================================
+:Authors: F.mauger   <mauger@lpccaen.in2p3.fr>, G.Oliviéro <goliviero@lpccaen.in2p3.fr>, Y.Lemière  <lemiere@lpccaen.in2p3.fr>
+:Date:    05/2015
+
 
 This plugin for Falaise implements the trigger digitization for the SuperNEMO experiment.
 
-Goals of the plugin : 
+Goals of the plugin :
+---------------------
 - Modelized with an high fidelity the electronic response and all the process from Simulated Data to the trigger board.
 - Design the trigger cleverness to make a decision if there are some interesting events or nothing.
-- Design the strategy for data readout.
+- Design the strategy for data readout. (not implemented yet)
 
 UML diagram of the process : (can change)
+-----------------------------------------
+
 ::
+
 SD : Simulated Data
 GG : Geiger		         
 TP : Trigger Primitive
@@ -49,8 +57,4 @@ CTW : Crate Trigger Word
 To run the examples, you have to export the environment variable $FALAISE_DIGITIZATION_TESTING_DIR and give the path to the testing directory of the Digitization module. 
 (ex : export FALAISE_DIGITIZATION_TESTING_DIR=~/data/Falaise/Falaise-trunk/modules/Digitization/testing)
 
-Authors : 
 
-F.mauger   <mauger@lpccaen.in2p3.fr>
-G.Oliviéro <goliviero@lpccaen.in2p3.fr>
-Y.Lemière  <lemiere@lpccaen.in2p3.fr>
