@@ -145,21 +145,19 @@ namespace snemo {
         return id;
       }
 
-      std::map<std::string, style_manager::volume_properties> &
-      style_manager::grab_volumes_properties()
+      style_manager::volume_properties_dict_type & style_manager::grab_volumes_properties()
       {
         return _volumes_properties_;
       }
 
-      const std::map<std::string, style_manager::volume_properties> &
-      style_manager::get_volumes_properties() const
+      const style_manager::volume_properties_dict_type & style_manager::get_volumes_properties() const
       {
         return _volumes_properties_;
       }
 
       bool style_manager::has_volume_properties(const std::string & volume_name_) const
       {
-        std::map<std::string, volume_properties>::const_iterator found
+        volume_properties_dict_type::const_iterator found
           = _volumes_properties_.find(volume_name_);
         if (found == _volumes_properties_.end())
           return false;
@@ -196,12 +194,12 @@ namespace snemo {
         return volume_visibility;
       }
 
-      std::map<std::string, style_manager::particle_properties> & style_manager::grab_particles_properties()
+      style_manager::particle_properties_dict_type & style_manager::grab_particles_properties()
       {
         return _particles_properties_;
       }
 
-      const std::map<std::string, style_manager::particle_properties> & style_manager::get_particles_properties() const
+      const style_manager::particle_properties_dict_type & style_manager::get_particles_properties() const
       {
         return _particles_properties_;
       }
@@ -224,7 +222,7 @@ namespace snemo {
 
       bool style_manager::has_particle_properties(const std::string & particle_name_) const
       {
-        std::map<std::string, particle_properties>::const_iterator found
+        particle_properties_dict_type::const_iterator found
           = _particles_properties_.find(particle_name_);
         if (found == _particles_properties_.end())
           return false;
@@ -676,7 +674,7 @@ namespace snemo {
         oss << "volume_category_list : string[" << _volumes_properties_.size() << "] = ";
         fout << oss.str() << "\\" << std::endl;
         size_t n_characters = 0;
-        for (std::map<std::string, volume_properties>::iterator
+        for (volume_properties_dict_type::iterator
                it_volume = _volumes_properties_.begin();
              it_volume != _volumes_properties_.end(); ++it_volume) {
           for (size_t i_space = 0; i_space < oss.str().size(); ++i_space)
@@ -694,7 +692,7 @@ namespace snemo {
 
         fout << std::endl;
         fout << "#@description Volume visibility (visible/invisible/disable)" << std::endl;
-        for (std::map<std::string, volume_properties>::const_iterator
+        for (volume_properties_dict_type::const_iterator
                it_volume = _volumes_properties_.begin();
              it_volume != _volumes_properties_.end(); ++it_volume) {
           fout << it_volume->first << ".visibility";
@@ -719,7 +717,7 @@ namespace snemo {
 
         fout << std::endl;
         fout << "#@description Volume color" << std::endl;
-        for (std::map<std::string, volume_properties>::const_iterator
+        for (volume_properties_dict_type::const_iterator
                it_volume = _volumes_properties_.begin();
              it_volume != _volumes_properties_.end(); ++it_volume) {
           fout << it_volume->first << ".color";
@@ -733,7 +731,7 @@ namespace snemo {
         fout << std::endl;
         fout << "#@description Volume transparency (0-100 range)" << std::endl;
         fout << "#note: this is disabled if OpenGL is not used" << std::endl;
-        for (std::map<std::string, volume_properties>::const_iterator
+        for (volume_properties_dict_type::const_iterator
                it_volume = _volumes_properties_.begin();
              it_volume != _volumes_properties_.end(); ++it_volume) {
           fout << it_volume->first << ".transparency";
@@ -748,13 +746,13 @@ namespace snemo {
         fout << std::endl;
         fout << "#@description MC particle color" << std::endl;
         n_characters = 0;
-        for (std::map<std::string, particle_properties>::const_iterator
+        for (particle_properties_dict_type::const_iterator
                it_particle = _particles_properties_.begin();
              it_particle != _particles_properties_.end(); ++it_particle) {
           n_characters = std::max(n_characters, it_particle->first.size());
         }
 
-        for (std::map<std::string, particle_properties>::const_iterator
+        for (particle_properties_dict_type::const_iterator
                it_particle = _particles_properties_.begin();
              it_particle != _particles_properties_.end(); ++it_particle) {
           fout << it_particle->first << ".color";
@@ -829,14 +827,14 @@ namespace snemo {
                << "volume" << (_volumes_properties_.size() > 1 ? "s" : "")
                << std::endl;
 
-          for (std::map<std::string, volume_properties>::const_iterator
+          for (volume_properties_dict_type::const_iterator
                  i = _volumes_properties_.begin();
                i != _volumes_properties_.end(); ++i) {
             std::ostringstream oss;
             oss << indent << datatools::i_tree_dumpable::skip_tag;
             out_ << oss.str();
 
-            std::map<std::string, volume_properties>::const_iterator j = i;
+            volume_properties_dict_type::const_iterator j = i;
             if (++j == _volumes_properties_.end()) {
               out_ << datatools::i_tree_dumpable::last_tag;
               oss << datatools::i_tree_dumpable::last_skip_tag
@@ -883,14 +881,14 @@ namespace snemo {
                << "particle" << (_particles_properties_.size() > 1 ? "s" : "")
                << std::endl;
 
-          for (std::map<std::string, particle_properties>::const_iterator
+          for (particle_properties_dict_type::const_iterator
                  i = _particles_properties_.begin();
                i != _particles_properties_.end(); ++i) {
             std::ostringstream oss;
             oss << indent << datatools::i_tree_dumpable::skip_tag;
             out_ << oss.str();
 
-            std::map<std::string, particle_properties>::const_iterator j = i;
+            particle_properties_dict_type::const_iterator j = i;
             if (++j == _particles_properties_.end()) {
               out_ << datatools::i_tree_dumpable::last_tag;
               oss << datatools::i_tree_dumpable::last_skip_tag

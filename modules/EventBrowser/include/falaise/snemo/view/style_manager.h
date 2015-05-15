@@ -125,11 +125,14 @@ namespace snemo {
         /// Return color id from color palette
         size_t get_color(const size_t id_) const;
 
+        /// Typedef referecing volume properties
+        typedef std::map<std::string, volume_properties> volume_properties_dict_type;
+
         /// Get a mutable reference to volume properties
-        std::map<std::string, volume_properties> & grab_volumes_properties();
+        volume_properties_dict_type & grab_volumes_properties();
 
         /// Get a non-mutable reference to volume properties
-        const std::map<std::string, volume_properties> & get_volumes_properties() const;
+        const volume_properties_dict_type & get_volumes_properties() const;
 
         /// Check volume properties availability for a given volume name
         bool has_volume_properties(const std::string & volume_name_) const;
@@ -143,11 +146,14 @@ namespace snemo {
         /// Get volume visibility for a given volume name
         detector::visibility_type get_volume_visibility(const std::string & volume_name_) const;
 
+        /// Typedef referecing particle properties
+        typedef std::map<std::string, particle_properties> particle_properties_dict_type;
+
         /// Get a mutable reference to particle properties
-        std::map<std::string, particle_properties> & grab_particles_properties();
+        particle_properties_dict_type & grab_particles_properties();
 
         /// Get a non-mutable reference to particle properties
-        const std::map<std::string, particle_properties> & get_particles_properties() const;
+        const particle_properties_dict_type & get_particles_properties() const;
 
         /// Add particle properties to a given particle
         bool add_particle_properties(const std::string & particle_name_);
@@ -252,14 +258,14 @@ namespace snemo {
         size_t _default_volume_color_;
         size_t _default_volume_transparency_;
         detector::visibility_type _default_volume_visibility_;
-        std::map<std::string, volume_properties> _volumes_properties_;
+        volume_properties_dict_type _volumes_properties_;
 
         // MC stuff
         size_t _mc_line_style_;
         size_t _mc_line_width_;
         size_t _undefined_particle_color_;
-        std::map<std::string, particle_properties> _particles_properties_;
-        std::map<std::string, std::string>         _particle_name_dict_;
+        particle_properties_dict_type _particles_properties_;
+        std::map<std::string, std::string> _particle_name_dict_;
 
         // Calibrated stuff
         size_t _calibrated_data_color_;
