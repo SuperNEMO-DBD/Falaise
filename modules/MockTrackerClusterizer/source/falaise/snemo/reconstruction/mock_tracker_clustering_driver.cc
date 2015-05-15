@@ -235,10 +235,10 @@ namespace snemo {
           .set_mandatory(false)
           .set_long_description("Value ``0`` disables this test.")
           .set_default_value_integer(2)
-          .add_example("Use the default value::                \n"
-                       "                                       \n"
+          .add_example("Use the default value::              \n"
+                       "                                     \n"
                        "  MTC.max_row_distance : integer = 2 \n"
-                       "                                       \n"
+                       "                                     \n"
                        )
           ;
       }
@@ -254,10 +254,10 @@ namespace snemo {
           .set_mandatory(false)
           .set_long_description("Value ``0`` disables this test.")
           .set_default_value_integer(0)
-          .add_example("Use the default value::                \n"
-                       "                                       \n"
-                       "  MTC.max_sum_distance : integer = 3   \n"
-                       "                                       \n"
+          .add_example("Use the default value::              \n"
+                       "                                     \n"
+                       "  MTC.max_sum_distance : integer = 3 \n"
+                       "                                     \n"
                        )
           ;
       }
