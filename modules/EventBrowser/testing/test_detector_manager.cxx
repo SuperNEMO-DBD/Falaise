@@ -1,21 +1,21 @@
-// -*- mode: c++ ; -*-
 // test_detector_manager.cxx
 
+// Standard library:
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <exception>
 
+// This project:
 #include <falaise/falaise.h>
 #include <falaise/resource.h>
 #include <falaise/snemo/detector/detector_manager.h>
 
-using namespace snemo::visualization::detector;
-using namespace std;
-
 int main()
 {
+  using namespace snemo::visualization::detector;
+  using namespace std;
   FALAISE_INIT();
   int error_code = EXIT_FAILURE;
   try {
@@ -35,7 +35,9 @@ int main()
     {
       const std::string detector_config_file = falaise::get_resource_dir(true) +
         "/config/snemo/tracker_commissioning/geometry/1.0/manager.conf";
-      my_detector_manager.reset();
+      if (my_detector_manager.is_initialized()) {
+        my_detector_manager.reset();
+      }
       my_detector_manager.initialize(detector_config_file);
       my_detector_manager.construct();
       my_detector_manager.dump();
