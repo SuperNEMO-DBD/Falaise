@@ -11,6 +11,8 @@ set(FalaiseEventBrowserPlugin_TESTS
   test_style_manager.cxx
   )
 
+set(_FalaiseEventBrowserPlugin_TEST_ENVIRONMENT
+  "FALAISE_RESOURCE_DIR=${CMAKE_SOURCE_DIR}/resources")
 foreach(_testsource ${FalaiseEventBrowserPlugin_TESTS})
   get_filename_component(_testname ${_testsource} NAME_WE)
   set(_testname "falaiseeventbrowserplugin-${_testname}")
@@ -21,9 +23,9 @@ foreach(_testsource ${FalaiseEventBrowserPlugin_TESTS})
     set_target_properties(${_testname} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
   endif()
   add_test(NAME ${_testname} COMMAND ${_testname})
-  # set_property(TEST ${_testname}
-  #   APPEND PROPERTY ENVIRONMENT ${_trackfit_TEST_ENVIRONMENT}
-  #   )
+  set_property(TEST ${_testname}
+    APPEND PROPERTY ENVIRONMENT ${_FalaiseEventBrowserPlugin_TEST_ENVIRONMENT}
+    )
   # - For now, dump them into the testing output directory
   set_target_properties(${_testname}
     PROPERTIES

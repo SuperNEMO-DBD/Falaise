@@ -19,28 +19,31 @@
  *
  */
 
+// Standard library:
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
 
+// - Third party
+// - ROOT:
 #include <TStyle.h>
 #include <TROOT.h>
 #include <TSystem.h>
 #include <TEnv.h>
-
+// - boost:
 #include <boost/filesystem.hpp>
-
+// - Bayeux/datatools:
+#include <bayeux/datatools/utils.h>
+#include <bayeux/datatools/multi_properties.h>
+// - Falaise
 #include <falaise/resource.h>
 
+// This project:
 #include <falaise/snemo/event_browser_config.h>
 #include <falaise/snemo/view/style_manager.h>
 #include <falaise/snemo/view/options_manager.h>
-
 #include <falaise/snemo/utils/root_utilities.h>
-
-#include <datatools/utils.h>
-#include <datatools/multi_properties.h>
 
 namespace snemo {
 
@@ -224,8 +227,7 @@ namespace snemo {
       {
         particle_properties_dict_type::const_iterator found
           = _particles_properties_.find(particle_name_);
-        if (found == _particles_properties_.end())
-          return false;
+        if (found == _particles_properties_.end()) return false;
         return true;
       }
 
@@ -487,7 +489,6 @@ namespace snemo {
                 = config_.fetch_string(volume_visibility);
 
               detector::visibility_type visibility = detector::VISIBLE;
-
               if ( visibility_mode == "visible" ) {
                 visibility = detector::VISIBLE;
               } else if ( visibility_mode == "invisible") {
