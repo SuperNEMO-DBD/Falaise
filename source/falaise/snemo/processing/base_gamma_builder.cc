@@ -396,7 +396,7 @@ namespace snemo {
 
     // static
     void base_gamma_builder::ocd_support(datatools::object_configuration_description & ocd_,
-                                          const std::string & prefix_)
+                                         const std::string & prefix_)
     {
       datatools::logger::declare_ocd_logging_configuration(ocd_, "fatal", prefix_ + "BGB.");
 
@@ -429,7 +429,7 @@ namespace snemo {
                                 )
           .set_from("snemo::processing::base_gamma_builder")
           .set_traits(datatools::TYPE_BOOLEAN)
-          .set_default_value_real(true)
+          .set_default_value_boolean(true)
           .set_mandatory(false)
           .add_example("Set the default value::                           \n"
                        "                                                  \n"
