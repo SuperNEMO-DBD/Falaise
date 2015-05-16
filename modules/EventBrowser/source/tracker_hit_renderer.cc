@@ -19,6 +19,22 @@
  *
  */
 
+// Third party:
+// - ROOT:
+#include <TObjArray.h>
+#include <TPolyLine3D.h>
+#include <TPolyMarker3D.h>
+#include <TMarker3DBox.h>
+#include <TColor.h>
+#include <TRotation.h>
+#include <TMath.h>
+
+// - Falaise:
+#include <falaise/snemo/datamodels/helix_trajectory_pattern.h>
+#include <falaise/snemo/datamodels/line_trajectory_pattern.h>
+#include <falaise/snemo/processing/geiger_regime.h>
+
+// This project:
 #include <falaise/snemo/view/tracker_hit_renderer.h>
 #include <falaise/snemo/view/browser_tracks.h>
 #include <falaise/snemo/view/options_manager.h>
@@ -29,19 +45,6 @@
 
 #include <falaise/snemo/io/event_server.h>
 
-#include <falaise/snemo/datamodels/helix_trajectory_pattern.h>
-#include <falaise/snemo/datamodels/line_trajectory_pattern.h>
-
-#include <geomtools/id_mgr.h>
-
-#include <TObjArray.h>
-#include <TPolyLine3D.h>
-#include <TPolyMarker3D.h>
-#include <TMarker3DBox.h>
-#include <TColor.h>
-#include <TRotation.h>
-#include <TMath.h>
-
 namespace snemo {
 
   namespace visualization {
@@ -49,8 +52,7 @@ namespace snemo {
     namespace view {
 
       // ctor:
-      tracker_hit_renderer::tracker_hit_renderer() :
-        base_renderer()
+      tracker_hit_renderer::tracker_hit_renderer() : base_renderer()
       {
         return;
       }
@@ -437,6 +439,36 @@ namespace snemo {
             if (prop.has_flag(browser_tracks::HIGHLIGHT_FLAG)) line_width = 3;
             //prop.update(browser_tracks::HIGHLIGHT_FLAG, false);
             track->SetLineWidth(line_width);
+
+            // For delayed tracks such as alpha track, show the recalibrated
+            // tracker hit
+            if (traj_properties.has_key("t0") &&
+                options_manager::get_instance().get_option_flag(SHOW_RECALIBRATED_TRACKER_HITS)) {
+              const double t0 = traj_properties.fetch_real("t0");
+              snemo::processing::geiger_regime a_gg_regime;
+              datatools::properties dummy_config;
+              a_gg_regime.initialize(dummy_config);
+              if (a_trajectory.has_cluster()) {
+                const snemo::datamodel::tracker_cluster & a_cluster = a_trajectory.get_cluster();
+                // Get tracker hits stored in the current tracker cluster:
+                const snemo::datamodel::calibrated_tracker_hit::collection_type & hits = a_cluster.get_hits();
+
+                for (snemo::datamodel::calibrated_tracker_hit::collection_type::const_iterator
+                       igg = hits.begin(); igg != hits.end(); ++igg) {
+                  snemo::datamodel::calibrated_tracker_hit a_gg_hit_copy = igg->get();
+                  // Recalibrate drift radius given fitted t0
+                  double new_r = datatools::invalid_real();
+                  double new_sigma_r = datatools::invalid_real();
+                  const double new_anode_time = a_gg_hit_copy.get_delayed_time() - t0;
+                  a_gg_regime.calibrate_drift_radius_from_drift_time(new_anode_time,
+                                                                     new_r, new_sigma_r);
+                  a_gg_hit_copy.set_r(new_r);
+                  a_gg_hit_copy.set_sigma_r(new_sigma_r);
+                  a_gg_hit_copy.set_delayed(false);
+                  make_calibrated_geiger_hit(a_gg_hit_copy, _objects, true);
+                }
+              }
+            }
 
           } // end of trajectory loop
         } // end of solution loop

@@ -108,6 +108,7 @@ namespace snemo {
         _options_dictionnary_[SHOW_TRACKER_CLUSTERED_BOX]    = false;
         _options_dictionnary_[SHOW_TRACKER_CLUSTERED_CIRCLE] = true;
         _options_dictionnary_[SHOW_TRACKER_TRAJECTORIES]     = true;
+        _options_dictionnary_[SHOW_RECALIBRATED_TRACKER_HITS]= true;
         _options_dictionnary_[SHOW_PARTICLE_TRACKS]          = true;
         _options_dictionnary_[DUMP_INTO_TOOLTIP]             = true;
         _options_dictionnary_[DUMP_INTO_TERMINAL]            = false;

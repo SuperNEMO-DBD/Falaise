@@ -301,7 +301,10 @@ namespace snemo {
         cluster_submenu->AddEntry("Show tracker hit as circle", SHOW_TRACKER_CLUSTERED_CIRCLE);
         cluster_submenu->UpdateDictionnary(_popup_dict_);
         menu_options->AddPopup("Show tracker clustered hits", cluster_submenu, SHOW_TRACKER_CLUSTERED_HITS);
-        menu_options->AddEntry("Show tracker trajectories", SHOW_TRACKER_TRAJECTORIES);
+        TGPopupMenuPlus * trajectory_submenu = new TGPopupMenuPlus(gClient->GetRoot());
+        trajectory_submenu->AddEntry("Show recalibrated tracker hits (only for delayed tracks)", SHOW_RECALIBRATED_TRACKER_HITS);
+        trajectory_submenu->UpdateDictionnary(_popup_dict_);
+        menu_options->AddPopup("Show tracker trajectories", trajectory_submenu, SHOW_TRACKER_TRAJECTORIES);
         menu_options->AddSeparator();
 
         menu_options->AddEntry("Show particle tracks", SHOW_PARTICLE_TRACKS);
