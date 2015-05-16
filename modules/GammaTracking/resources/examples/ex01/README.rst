@@ -39,14 +39,15 @@ Usage
 
   4. Run the reconstruction pipeline:
 
-      * Browse the manual for the charged particle tracking module (to be done): ::
+      * Browse the manual for the gamma tracking module (to be done): ::
 
           $ bxocd_manual \
             --load-dll Falaise@${FALAISE_INSTALL_DIR}/lib/x86_64-linux-gnu \
             --load-dll Falaise_ChargedParticleTracking@${FALAISE_INSTALL_DIR}/lib/x86_64-linux-gnu/Falaise/modules \
-            --action show snemo::reconstruction::charged_particle_tracking_module > falaise_cpt.rst
-          $ pandoc -w html falaise_cpt.rst -o falaise_cpt.html
-	  $ xdg-open falaise_cpt.html &
+            --load-dll Falaise_GammaTracking@${FALAISE_INSTALL_DIR}/lib/x86_64-linux-gnu/Falaise/modules \
+            --action show snemo::reconstruction::gamma_tracking_module > falaise_gt.rst
+          $ pandoc -w html falaise_gt.rst -o falaise_gt.html
+	  $ xdg-open falaise_gt.html &
 
 
       * Run the reconstruction pipeline: ::
