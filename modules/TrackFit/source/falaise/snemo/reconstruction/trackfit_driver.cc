@@ -500,10 +500,8 @@ namespace snemo {
             h_trajectory.grab().grab_auxiliaries().store_integer("ndof", a_fit_solution.ndof);
             h_trajectory.grab().grab_auxiliaries().store_string("guess",
                                                                 a_fit_solution.auxiliaries.fetch_string("guess"));
-            if (a_fit_solution.t0 > 0.0) {
-              h_trajectory.grab().grab_auxiliaries().store_flag("delayed");
-              h_trajectory.grab().grab_auxiliaries().store_real("t0",
-                                                                a_fit_solution.t0 / CLHEP::ns);
+            if (a_fit_solution.t0 > 0.0*CLHEP::ns) {
+              h_trajectory.grab().grab_auxiliaries().store_real("t0", a_fit_solution.t0);
             }
 
             // compute the trajectory segment in the g.r.f(lab) frame:

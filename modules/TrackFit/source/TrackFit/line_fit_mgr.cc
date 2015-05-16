@@ -44,11 +44,11 @@ namespace TrackFit {
 
   void line_fit_params::reset()
   {
-    y0    = std::numeric_limits<double>::quiet_NaN();
-    z0    = std::numeric_limits<double>::quiet_NaN();
-    phi   = std::numeric_limits<double>::quiet_NaN();
-    theta = std::numeric_limits<double>::quiet_NaN();
-    t0    = std::numeric_limits<double>::quiet_NaN();
+    y0    = datatools::invalid_real();
+    z0    = datatools::invalid_real();
+    phi   = datatools::invalid_real();
+    theta = datatools::invalid_real();
+    t0    = datatools::invalid_real();
     return;
   }
 
@@ -130,11 +130,11 @@ namespace TrackFit {
   {
     line_fit_params::reset();
     ok        = false;
-    err_t0    = std::numeric_limits<double>::quiet_NaN();
-    err_y0    = std::numeric_limits<double>::quiet_NaN();
-    err_z0    = std::numeric_limits<double>::quiet_NaN();
-    err_phi   = std::numeric_limits<double>::quiet_NaN();
-    err_theta = std::numeric_limits<double>::quiet_NaN();
+    err_t0    = datatools::invalid_real();
+    err_y0    = datatools::invalid_real();
+    err_z0    = datatools::invalid_real();
+    err_phi   = datatools::invalid_real();
+    err_theta = datatools::invalid_real();
     chi       = std::numeric_limits<double>::infinity();
     ndof      = 0;
     niter     = 0;
@@ -363,7 +363,7 @@ namespace TrackFit {
 
   unsigned int line_fit_mgr::constants::min_number_of_hits()
   {
-    static unsigned int minimal_nbr_hits = 4;
+    static unsigned int minimal_nbr_hits = 3;
     return minimal_nbr_hits;
   }
 
