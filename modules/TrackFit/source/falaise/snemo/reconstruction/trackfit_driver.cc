@@ -416,12 +416,14 @@ namespace snemo {
           std::list<TrackFit::helix_fit_solution> helix_solutions;
           if (use_helix_fit()) this->do_helix_fit(gg_hits, helix_solutions);
 
+          bool helix_fit_succeed = false;
           for (std::list<TrackFit::helix_fit_solution>::const_iterator
                  ihs = helix_solutions.begin();
                ihs != helix_solutions.end(); ++ihs) {
             const TrackFit::helix_fit_solution & a_fit_solution = *ihs;
 
             if (!a_fit_solution.ok) continue;
+            helix_fit_succeed = true;
 
             // Create new 'tracker_trajectory' handle:
             snemo::datamodel::tracker_trajectory::handle_type
@@ -467,12 +469,14 @@ namespace snemo {
           std::list<TrackFit::line_fit_solution> line_solutions;
           if (use_line_fit()) this->do_line_fit(gg_hits, line_solutions);
 
+          bool line_fit_succeed = false;
           for (std::list<TrackFit::line_fit_solution>::const_iterator
                  ils = line_solutions.begin();
                ils != line_solutions.end(); ++ils) {
             const TrackFit::line_fit_solution & a_fit_solution = *ils;
 
             if (!a_fit_solution.ok) continue;
+            line_fit_succeed = true;
 
             // Create new 'tracker_trajectory' handle:
             snemo::datamodel::tracker_trajectory::handle_type
@@ -510,6 +514,13 @@ namespace snemo {
                                                      a_fit_solution,
                                                      this->get_working_referential(),
                                                      l3d);
+          }
+
+          if (! helix_fit_succeed && ! line_fit_succeed) {
+            DT_LOG_DEBUG(get_logging_priority(), "Helix/Line fits both fail !");
+            snemo::datamodel::tracker_trajectory_solution::cluster_col_type & cct
+              = a_trajectory_solution.grab_unfitted_clusters();
+            cct.push_back(*icluster);
           }
         } // end of 'tracker_cluster'
 
