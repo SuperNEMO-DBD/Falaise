@@ -86,10 +86,10 @@ namespace snemo {
       return get_clocktick_max() - get_clocktick_min();
     }
 			
-    void calo_ctw_data::get_list_of_calo_ctw_per_clocktick(int32_t clocktick_25ns_, calo_ctw_collection_type & ctws_)
+    void calo_ctw_data::get_list_of_calo_ctw_per_clocktick(int32_t clocktick_25ns_, calo_ctw_collection_type & ctws_) const
     {
       DT_THROW_IF(_calo_ctws_.size() == 0, std::logic_error, " Calorimeter CTW collection is empty ! ");
-      DT_THROW_IF(!is_locked(), std::logic_error, " Calorimeter CTW collection is not locked ! ");
+      // DT_THROW_IF(!is_locked(), std::logic_error, " Calorimeter CTW collection is not locked ! ");
       for (int i = 0; i < _calo_ctws_.size(); i++)
       	{
       	  if(_calo_ctws_[i].get().get_clocktick_25ns() == clocktick_25ns_)

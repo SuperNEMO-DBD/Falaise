@@ -202,15 +202,16 @@ namespace snemo {
      
 	unsigned int module_index_ = _calo_locator_-> extract_module(geom_id_);
 	unsigned int column_index_ = _calo_locator_-> extract_column(geom_id_);
-	unsigned int row_index_ = _calo_locator_-> extract_row(geom_id_);
-	unsigned int side_index_ = _calo_locator_-> extract_side(geom_id_);
+	unsigned int row_index_    = _calo_locator_-> extract_row(geom_id_);
+	unsigned int side_index_   = _calo_locator_-> extract_side(geom_id_);
      
 	if(side_index_ == 0) crate_id = 0;
 	else if(side_index_ == 1) crate_id = 1;
-     
+
+	int32_t shift_no_feb_10_index = 1;
+
 	if (column_index_ < mapping::CONTROL_BOARD_ID) board_id = column_index_;
-	else if (column_index_ >= mapping::CONTROL_BOARD_ID) board_id = column_index_+1;
-	
+	else if (column_index_ >= mapping::CONTROL_BOARD_ID) board_id = column_index_ + shift_no_feb_10_index;
 	channel_id = row_index_;
       }
       

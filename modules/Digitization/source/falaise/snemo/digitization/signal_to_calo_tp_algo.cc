@@ -80,7 +80,7 @@ namespace snemo {
       unsigned int seed = 314159;
       std::srand(seed);
       size_t number_of_hits = signal_data_.get_calo_signals().size(); //_number_of_step_hits("gg");
-      std::clog << "DEBUG : BEGINING OF CALO PROCESS " << std::endl;
+      std::clog << "DEBUG : BEGINING OF SIGNAL TO CALO TP PROCESS " << std::endl;
       std::clog << "**************************************************************" << std::endl;
 
       double time_reference = signal_data_.get_calo_signals()[0].get().get_signal_time();
@@ -94,23 +94,20 @@ namespace snemo {
 
       for (int i = 0; i < number_of_hits; i++)
 	{	 	    
-	  const calo_signal & a_calo_signal = signal_data_.get_calo_signals()[i].get();
-	  //a_calo_signal.tree_dump(std::clog);
-	   
+	  const calo_signal & a_calo_signal  = signal_data_.get_calo_signals()[i].get();
 	  const geomtools::geom_id & geom_id = a_calo_signal.get_geom_id();
-	    
+	  const double calo_hit_amplitude    = a_calo_signal.get_amplitude();
+ 
 	  geomtools::geom_id electronic_id;
-	    
-	  bool trigger_mode = 0;
-	  bool side_mode = 1;
-	  int number_of_rows = 7;
-	      
 	  _electronic_mapping_->convert_GID_to_EID(mapping::THREE_WIRES_TRACKER_MODE, geom_id, electronic_id);
+
+	  bool calo_xt_bit    = 0; // These bits have to be checked
+	  bool calo_spare_bit = 0;
 
 	  bool existing = false;
 	  unsigned int existing_index = 0;
 
-	  double relative_time = a_calo_signal.get_signal_time() - time_reference ;
+	  double relative_time            = a_calo_signal.get_signal_time() - time_reference ;
 	  int32_t a_calo_signal_clocktick = _clocktick_ref_;
 
 	  if (relative_time > 3)
@@ -134,14 +131,19 @@ namespace snemo {
 	      calo_tp.set_header(a_calo_signal.get_hit_id(),
 				 electronic_id,
 				 a_calo_signal_clocktick);
-	      //calo_tp.tree_dump(std::clog, "Calo TP first creation : ", "INFO : ");
-	      //calo_tp.lock_tp();
+	      calo_tp.set_data(calo_hit_amplitude,
+			       calo_xt_bit,
+			       calo_spare_bit);   
+	      calo_tp.tree_dump(std::clog, "Calo TP first creation : ", "INFO : ");
 	    }
 	
 	  else 
 	    {
-	      //my_calo_tp_data_.get_calo_tps()[existing_index].get().tree_dump(std::clog, "Calo TP Update : ", "INFO : ");
-	      // update calo TP 	    
+	      snemo::digitization::calo_tp & existing_calo_tp = my_calo_tp_data_.grab_calo_tps()[existing_index].grab();
+	      existing_calo_tp.update_data(calo_hit_amplitude,
+					   calo_xt_bit,
+					   calo_spare_bit);
+	      existing_calo_tp.tree_dump(std::clog, "Calo TP Update : ", "INFO : ");
 	    }
 	}
       return;

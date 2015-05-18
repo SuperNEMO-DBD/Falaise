@@ -54,7 +54,7 @@ namespace snemo {
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "SD to geiger tp algorithm is already initialized ! ");
       _electronic_mapping_ = & my_electronic_mapping_;
-      for (int i = 0; i < TP_SIZE; i++)
+      for (int i = 0; i < geiger::tp::TP_SIZE; i++)
 	{
 	  _activated_bits_[i] = 0;
 	}

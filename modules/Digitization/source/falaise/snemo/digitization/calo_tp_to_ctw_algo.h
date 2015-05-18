@@ -48,8 +48,11 @@ namespace snemo {
 			/// Set the ctw high threshold multiplicity for a given clocktick
 			void set_ctw_htm(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_);
 
-			/// Set the ctw zone bit for a given clocktick 
-      void set_ctw_zone_bit(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_);
+			/// Set the ctw zone bit for a given clocktick when the high threshold is passed
+      void set_ctw_zone_bit_htm(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_);
+
+			/// Set the ctw zone bit for a given clocktick when the low threshold or the high threshold is passed
+			void set_ctw_zone_bit_htm_or_lto(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_);
 
 			/// Set the ctw low threshold only for a given clocktick 
 			void set_ctw_lto(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_);

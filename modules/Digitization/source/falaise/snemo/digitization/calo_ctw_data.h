@@ -55,7 +55,7 @@ namespace snemo {
       int get_clocktick_range() const;
 					
       /// Do a list of calorimeter crate trigger word which are in the same clocktick
-      void get_list_of_calo_ctw_per_clocktick(int32_t clocktick_25ns_, calo_ctw_collection_type & ctws_);
+      void get_list_of_calo_ctw_per_clocktick(int32_t clocktick_25ns_, calo_ctw_collection_type & ctws_) const;
 
       /// Check the lock status
       bool is_locked() const;

@@ -18,34 +18,35 @@ UML diagram of the process : (can change)
 
 ::
                     
-                                                                                                Calo_TP_data
-                                                                                          |----------------------|                               Calo_CTW_data
-                                        |------------------|                              | |------------------| |                            |----------------|
-                                        |   Calo signal    |                              | |     Calo TP      | |                            | |------------| |      (not implemented yet)
-                                        |   Calo signal    |   |**********************|   | |     Calo TP      | |   |********************|   | |  Calo CTW  | |   |***************************|
-          |**********************|   /->|   Calo signal    |-->| signal_2_calo_TP_algo|-->| |     Calo TP      | |-->| calo_TP_2_calo_CTW |-->| |  Calo CTW  | |-->|   Calo_trigger_algorithm  |
-       /->| SD_2_calo_signal_algo|  /   |   Calo signal    |   |**********************|   | |     Calo TP      | |   |********************|   | |------------| |   |***************************|
-      /   |**********************| /    |   Calo signal    |                              | |     Calo TP      | |                            |----------------|                                \ 
-     /                 |          /     |------------------|                              | |------------------| |                                                                               \
-    /                  v         /                                                        |----------------------|                                                                                \         
-   |-----|          |-------------|                                                                                                                                                                \    (not implemented yet)
-   | SD  |          | Signal Data |                                                                                                                                                              |******************|
-   |-----|          |-------------|                                                       |----------------------|                                                                               | Trigger_decision |
-    \                    ^     \        |------------------|                              | |------------------| |                                                                               |******************|
-     \                   |      \       |  Geiger signal   |                              | |    Geiger TP     | |                                                                                 /
-      \                  |       \      |  Geiger signal   |                              | |    Geiger TP     | |                            |----------------|                                  /
-       \                 |        \     |  Geiger signal   |                              | |    Geiger TP     | |                            | |------------| |                                 /
-        \   |********************| \    |  Geiger signal   |                              | |    Geiger TP     | |                            | | Geiger CTW | |                                /
-         \->| SD_2_GG_sinal_algo |  \   |  Geiger signal   |   |**********************|   | |    Geiger TP     | |   |********************|   | | Geiger CTW | |   |***************************|
-            |********************|   \->|  Geiger signal   |-->|  signal_2_GG_TP_algo |-->| |    Geiger TP     | |-->|  GG_TP_2_calo_CTW  |-->| | Geiger CTW | |-->| Tracker_trigger_algorithm |
-                                        |  Geiger signal   |   |**********************|   | |    Geiger TP     | |   |********************|   | | Geiger CTW | |   |***************************|
-                                        |  Geiger signal   |                              | |    Geiger TP     | |                            | | Geiger CTW | |
-                                        |  Geiger signal   |                              | |    Geiger TP     | |                            | |------------| |
-                                        |  Geiger signal   |                              | |    Geiger TP     | |                            |----------------|
-                                        |  Geiger signal   |                              | |    Geiger TP     | |                              Geiger_CTW_data
-                                        |------------------|                              | |------------------| |
-                                                                                          |----------------------|
-                                                                                               Geiger_TP_data
+                                                                                                 Calo_TP_data
+                                                                                           |----------------------|                                Calo_CTW_data
+                                        |------------------|                               | |------------------| |                             |----------------|
+                                        |   Calo signal    |                               | |     Calo TP      | |                             | |------------| |      (not implemented yet)
+                                        |   Calo signal    |   |***********************|   | |     Calo TP      | |   |*********************|   | |  Calo CTW  | |   |***************************|
+          |***********************|  /->|   Calo signal    |-->| signal_to_calo_TP_algo|-->| |     Calo TP      | |-->| calo_TP_to_calo_CTW |-->| |  Calo CTW  | |-->|   Calo_trigger_algorithm  |
+       /->| SD_to_calo_signal_algo| /   |   Calo signal    |   |***********************|   | |     Calo TP      | |   |*********************|   | |------------| |   |***************************|
+      /   |***********************|/    |   Calo signal    |                               | |     Calo TP      | |                             |----------------|                                \ 
+     /                 |          /     |------------------|                               | |------------------| |                                                                                \
+    /                  v         /                                                         |----------------------|                                                                                 \         
+   |-----|          |-------------|                                                                                                                                                                  \    (not implemented yet)
+   | SD  |          | Signal Data |                                                                                                                                                               |******************|
+   |-----|          |-------------|                                                        |----------------------|                                                                               | Trigger_decision |
+    \                    ^     \        |------------------|                               | |------------------| |                                                                               |******************|
+     \                   |      \       |  Geiger signal   |                               | |    Geiger TP     | |                                                                                  /
+      \                  |       \      |  Geiger signal   |                               | |    Geiger TP     | |                             |----------------|                                  /
+       \                 |        \     |  Geiger signal   |                               | |    Geiger TP     | |                             | |------------| |                                 /
+        \   |********************| \    |  Geiger signal   |                               | |    Geiger TP     | |                             | | Geiger CTW | |                                /
+         \->| SD_to_GG_sinal_algo|  \   |  Geiger signal   |   |***********************|   | |    Geiger TP     | |   |*********************|   | | Geiger CTW | |   |***************************|
+            |********************|   \->|  Geiger signal   |-->|  signal_to_GG_TP_algo |-->| |    Geiger TP     | |-->|  GG_TP_to_calo_CTW  |-->| | Geiger CTW | |-->| Tracker_trigger_algorithm |
+                                        |  Geiger signal   |   |***********************|   | |    Geiger TP     | |   |*********************|   | | Geiger CTW | |   |***************************|
+                                        |  Geiger signal   |                               | |    Geiger TP     | |                             | | Geiger CTW | |
+                                        |  Geiger signal   |                               | |    Geiger TP     | |                             | |------------| |
+                                        |  Geiger signal   |                               | |    Geiger TP     | |                             |----------------|
+                                        |  Geiger signal   |                               | |    Geiger TP     | |                               Geiger_CTW_data
+                                        |------------------|                               | |------------------| |
+                                                                                           |----------------------|
+                                                                                                Geiger_TP_data
+
 SD : Simulated Data
 GG : Geiger		         
 TP : Trigger Primitive

@@ -130,7 +130,7 @@ namespace snemo {
 
     void geiger_tp::set_gg_tp_active_bit(const int & bit_index_)
     {
-      DT_THROW_IF(is_locked(), std::logic_error, "Tracker row mode (TRM) can't be set, geiger TP is locked ! ");
+      DT_THROW_IF(is_locked(), std::logic_error, "Tp active bit can't be set, geiger TP is locked ! ");
       _gg_tp_.set(bit_index_, 1);
       
       return;

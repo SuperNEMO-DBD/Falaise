@@ -24,11 +24,13 @@ namespace snemo {
     const int32_t tracker_trigger_algorithm::LEVEL_TWO_ZONING_BITSET_SIZE;
     const int32_t tracker_trigger_algorithm::LEVEL_ONE_SUBZONE_LAYER_SIZE;
     const int32_t tracker_trigger_algorithm::LEVEL_ONE_SUBZONE_ROW_SIZE;
+    const int32_t tracker_trigger_algorithm::TRACKER_TRIGGER_FINAL_RESPONSE_SIZE;
 
     tracker_trigger_algorithm::tracker_trigger_algorithm()
     {
       _initialized_ = false;
       _electronic_mapping_ = 0;
+      _tracker_trigger_final_response_ = 0;
       bool * vbool = static_cast<bool* > (&_geiger_matrix_[0][0][0]);
       static const size_t nmax = mapping::NUMBER_OF_SIDES * mapping::GEIGER_LAYERS_SIZE * mapping::GEIGER_ROWS_SIZE;
       for (int i = 0; i < nmax ; i ++)
@@ -92,17 +94,18 @@ namespace snemo {
     {
       return _initialized_;
     }
+
     void tracker_trigger_algorithm::reset()
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Tracker trigger algorithm is not initialized, it can't be reset ! ");
       _initialized_ = false;
       _electronic_mapping_ = 0;
-      reset_tables();
+      reset_trigger_info();
       reset_matrix();
       return;
     }
     
-    void tracker_trigger_algorithm::reset_tables()
+    void tracker_trigger_algorithm::reset_trigger_info()
     {
       for (int i = 0; i < mapping::NUMBER_OF_SIDES; i++)
 	{
@@ -117,6 +120,7 @@ namespace snemo {
 		}
 	    }
 	}
+      _tracker_trigger_final_response_ = 0;
       return;
     }
 
@@ -204,7 +208,7 @@ namespace snemo {
 		  
 		      if (_geiger_matrix_[i][j][k] ) std::clog << "*";
 		  
-		      if(!_geiger_matrix_[i][j][k])  std::clog << "o";	  
+		      if(!_geiger_matrix_[i][j][k])  std::clog << ".";	  
 
 		      if( k == 112)     std::clog<<"|";
 
@@ -213,7 +217,7 @@ namespace snemo {
 
 		  if (j == 0)
 		    {
-		      std::clog << "  |-----------------------------------------------------------------------------------------------------------------|" << std::endl;;
+		      std::clog << "  |_________________________________________________________________________________________________________________|" << std::endl;;
 		    }
 
 		} // end of layer loop
@@ -231,7 +235,7 @@ namespace snemo {
 		  
 		      if (_geiger_matrix_[i][j][k] ) std::clog << "*";
 		  
-		      if(!_geiger_matrix_[i][j][k])  std::clog << "o";	  
+		      if(!_geiger_matrix_[i][j][k])  std::clog << ".";	  
 
 		      if( k == 112)     std::clog<<"|";
 
@@ -307,6 +311,8 @@ namespace snemo {
 	  std::clog << std::endl;
 	} // end of iside
       
+      std::clog << "Tracker trigger final response : " << std::endl;
+      std::clog << "Final response = [" << _tracker_trigger_final_response_ << "]" <<  std::endl;
       return;
     }
    
@@ -666,7 +672,7 @@ namespace snemo {
 
 	      // Filling level two zone bitset
 	      std::bitset<intermediate_level_one_bitset_size> intermediate_zone_bitset_address = intermediate_level_one_tracker_trigger_info[iside][izone];
-	      std::bitset<2> zone_bitset_data;
+	      std::bitset<LEVEL_TWO_ZONING_BITSET_SIZE> zone_bitset_data;
 	      _mem_lvl1_to_lvl2_[iside][izone].fetch(intermediate_zone_bitset_address, zone_bitset_data);
 	      if (zone_bitset_data.test(0) == true) // Test index 0 of the bitset
 		{
@@ -681,7 +687,7 @@ namespace snemo {
 	      if (izone < mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES)
 		{
 		  std::bitset<intermediate_level_one_bitset_size> intermediate_interzone_bitset_address = intermediate_level_one_prime_tracker_trigger_info[iside][izone];
-		  std::bitset<2> interzone_bitset_data;
+		  std::bitset<LEVEL_TWO_ZONING_BITSET_SIZE> interzone_bitset_data;
 		  _mem_lvl1_to_lvl2_[iside][izone].fetch(intermediate_interzone_bitset_address, interzone_bitset_data);
 		  if (interzone_bitset_data.test(0) == true) // Test index 0 of the bitset
 		    {
@@ -691,35 +697,82 @@ namespace snemo {
 		    {
 		      _level_two_prime_tracker_trigger_info_[iside][izone].set(1, 1); // Set index 1 of the bitset
 		    }
-		} //end of if
+		} //end of if	      
 	    } // end of izone
 	} // end of iside
 
       return;
     }
     
+    void tracker_trigger_algorithm::build_trigger_tracker_final_response()
+    {
+      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+	{
+	  for (int izone = 0; izone < mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES; izone++)
+	    {
+	      // Test if there is a full track (01) in the interzone and set zoning bitset if there is
+	      if (_level_two_prime_tracker_trigger_info_[iside][izone].test(0)    == true     // test bit index 0 
+	      	  && _level_two_prime_tracker_trigger_info_[iside][izone].test(1) == false    // test bit index 1
+		  && izone < mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES) 
+	      	{
+		  std::clog << "DEBUG : iside = " << iside << "izone = " << izone << std::endl;
+		  _level_two_tracker_trigger_info_[iside][izone].set(0,1);
+		  _level_two_tracker_trigger_info_[iside][izone].set(1,0);
+		  _level_two_tracker_trigger_info_[iside][izone+1].set(0,1);
+		  _level_two_tracker_trigger_info_[iside][izone+1].set(1,0);
+	      	}
+	    } // end of izone	  
+	} // end of iside
+      
+      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+	{
+	  for (int izone = 0; izone < mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES; izone++)
+	    {
+	      if (_level_two_tracker_trigger_info_[iside][izone].test(0) == true
+		  && _level_two_tracker_trigger_info_[iside][izone].test(1) == false)
+		{
+		  _tracker_trigger_final_response_.set(0,1);
+		  _tracker_trigger_final_response_.set(1,0);
+		}
+	      
+	      else if (_tracker_trigger_final_response_ == 0 
+		       && _level_two_tracker_trigger_info_[iside][izone].test(0) == true
+		       && _level_two_tracker_trigger_info_[iside][izone].test(1) == true)
+		{
+		  _tracker_trigger_final_response_.set(0,1);
+		  _tracker_trigger_final_response_.set(1,1);
+		}
+	      
+	      
+	    } // end of izone	  
+	} // end of iside
+      
+      return;
+    }
+
     void tracker_trigger_algorithm::process(const geiger_ctw_data & geiger_ctw_data_)
     { 
       DT_THROW_IF(!is_initialized(), std::logic_error, "Tracker trigger algorithm is not initialized, it can't process ! ");
-      for(int32_t i = geiger_ctw_data_.get_clocktick_min(); i <= geiger_ctw_data_.get_clocktick_max(); i++)
+      for(int32_t iclocktick = geiger_ctw_data_.get_clocktick_min(); iclocktick <= geiger_ctw_data_.get_clocktick_max(); iclocktick++)
 	{
 	  std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick;
-	  geiger_ctw_data_.get_list_of_geiger_ctw_per_clocktick(i, geiger_ctw_list_per_clocktick);
-	  for (int j = 0; j < geiger_ctw_list_per_clocktick.size(); j++)
+	  geiger_ctw_data_.get_list_of_geiger_ctw_per_clocktick(iclocktick, geiger_ctw_list_per_clocktick);
+	  for (int isize = 0; isize < geiger_ctw_list_per_clocktick.size(); isize++)
 	    {
 	      std::vector<geomtools::geom_id> hit_cells_gids;
-	      build_hit_cells_gids_from_ctw(geiger_ctw_list_per_clocktick[j].get(), hit_cells_gids);
+	      build_hit_cells_gids_from_ctw(geiger_ctw_list_per_clocktick[isize].get(), hit_cells_gids);
 	      fill_matrix(hit_cells_gids);   
-	    }
+	    } // end of isize
 	  
 	  build_trigger_level_one_bitsets();
 	  build_trigger_level_one_to_level_two();
+	  build_trigger_tracker_final_response();
 	  display_tracker_trigger_info();
 
 	  display_matrix();
 	  reset_matrix();
-	  reset_tables();
-	} 
+	  reset_trigger_info();
+	} // end of iclocktick
       return;
     }
 

@@ -75,7 +75,11 @@ namespace snemo {
 					  signal_data & signal_data)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "SD to calo signal algorithm is not initialized ! ");
-      std::clog << "DEBUG : BEGINING OF CALO PROCESS " << std::endl;
+      std::clog << "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ Process Begin //////////////////////////////////////" << std::endl;
+      sd_.tree_dump(std::clog, "***** Simulated Data : *****", "INFO : ");
+
+
+      std::clog << "DEBUG : BEGINING OF SD TO CALO SIGNAL PROCESS " << std::endl;
       std::clog << "**************************************************************" << std::endl;
       // pickup the ID mapping from the geometry manager:
       const geomtools::mapping & the_mapping = _geo_manager_->get_mapping();
@@ -88,9 +92,9 @@ namespace snemo {
 	{
 	  const mctools::base_step_hit & calo_hit = sd_.get_step_hit("calo", ihit);
 	    
-	  const double signal_time = calo_hit.get_time_stop();
+	  const double signal_time    = calo_hit.get_time_stop();
 	  const double energy_deposit = calo_hit.get_energy_deposit();
-	  const double amplitude = _convert_energy_to_amplitude(energy_deposit);
+	  const double amplitude      = _convert_energy_to_amplitude(energy_deposit);
 	    
 	  // extract the corresponding geom ID:
 	  const geomtools::geom_id & calo_gid = calo_hit.get_geom_id();
@@ -99,7 +103,7 @@ namespace snemo {
 	  calo_signal.set_header(calo_signal_hit_id, calo_gid);
 	  calo_signal.set_data(signal_time, amplitude); 
 	  calo_signal.grab_auxiliaries().store("hit.id", calo_hit.get_hit_id());
-	  //calo_signal.tree_dump(std::clog, "***** Calo Signal : *****", "INFO : ");
+	  calo_signal.tree_dump(std::clog, "***** Calo Signal : *****", "INFO : ");
 	  calo_signal_hit_id++;
 	}	  
       return ;
@@ -108,7 +112,7 @@ namespace snemo {
     double sd_to_calo_signal_algo::_convert_energy_to_amplitude(const double energy_)
     {
       // 1 MeV is equivalent to 300 mV
-      return energy_ * 0.3; // maybe units problem for the moment
+      return energy_ * 300; // maybe units problem for the moment
     }
 
   } // end of namespace digitization

@@ -22,6 +22,7 @@
 #include <snemo/digitization/signal_data.h>
 #include <snemo/digitization/electronic_mapping.h>
 #include <snemo/digitization/mapping.h>
+#include <snemo/digitization/geiger_tp_constants.h>
 
 namespace snemo {
   
@@ -48,8 +49,6 @@ namespace snemo {
 			
 			typedef std::vector<signal_to_tp_working_data> working_data_collection_type;
 			
-			static const unsigned int TP_SIZE = 55;
-
       /// Default constructor
       signal_to_geiger_tp_algo();
 
@@ -108,7 +107,7 @@ namespace snemo {
       int32_t _clocktick_ref_;   //!< Clocktick reference of the algorithm
       double  _clocktick_shift_; //!< Clocktick shift between [0:800]
 			electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID    // WHy no const possible ?
-			bool _activated_bits_[TP_SIZE];            //!< Table of booleans to see which bits were activated
+			bool _activated_bits_[geiger::tp::TP_SIZE];            //!< Table of booleans to see which bits were activated
     };
 
   } // end of namespace digitization

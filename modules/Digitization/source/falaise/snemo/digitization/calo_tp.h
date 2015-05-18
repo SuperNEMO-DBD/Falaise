@@ -59,6 +59,12 @@ namespace snemo {
 			
 			/// Size of htm bitset for calorimeter TP
 			static const unsigned int HTM_SIZE  = 2;
+			
+			/// Value of the low threshold to set bits
+			static const unsigned int LOW_THRESHOLD = 10; // (mV units problem maybe)
+
+			/// Value of the low threshold to set bits
+			static const unsigned int HIGH_THRESHOLD = 20; // (mV units problem maybe)
 
       /// Default constructor
       calo_tp();
@@ -72,16 +78,20 @@ namespace snemo {
 											int32_t clocktick_25ns_);
 
 			/// Set the data with valid values
-			void set_data(unsigned int htm_,
-										bool lto_bit_,
-										bool xt_bit_,
-										bool spare_bit);																			
+			void set_data(const double amplitude,
+										const bool xt_bit_,
+										const bool spare_bit);
+			
+			/// Update data when a second calo hit is in the same calo TP
+			void update_data(const double amplitude,
+											 const bool xt_bit_,
+											 const bool spare_bit);
   
       /// Return the timestamp of the trigger primitive
       int32_t get_clocktick_25ns() const;
 
       /// Set the timestamp of the trigger primitive
-      void set_clocktick_25ns(int32_t value_);
+      void set_clocktick_25ns(const int32_t value_);
 			
 			/// Check if a clocktick is defined
 			bool has_clocktick_25ns() const;
@@ -96,7 +106,7 @@ namespace snemo {
       void reset_tp_bitset();
 			
 			/// Set the high threshold multiplicity (HTM) bits
-			void set_htm(unsigned int multiplicity_);
+			void set_htm(const unsigned int multiplicity_);
 
 			/// Return the information of the multiplicity for the high threshold
 			unsigned int get_htm() const;
@@ -108,19 +118,19 @@ namespace snemo {
 			bool is_htm() const;
 
 			/// Set the low threshold only (LTO) bit
-			void set_lto_bit(bool value_);
+			void set_lto_bit(const bool value_);
 
 			/// Check if the LTO bit is set
 			bool is_lto() const;
 
 			/// Set the external trigger (XT) bit
-			void set_xt_bit(bool value_);
+			void set_xt_bit(const bool value_);
 
 			/// Check if the XT bit is set
 			bool is_xt() const;
 
 			/// Set the spare bit
-			void set_spare_bit(bool value_);
+			void set_spare_bit(const bool value_);
 
 			/// Check if the spare bit is set
 			bool is_spare() const;
@@ -153,9 +163,9 @@ namespace snemo {
 
     private : 
 
-			bool _locked_;            //!< TP lock flag
-      int32_t _clocktick_25ns_; //!< The timestamp of the trigger primitive in main clock units (40 MHz)
-      std::bitset<FULL_SIZE> _tp_;      //!< The trigger primitive bitset
+			bool _locked_;               //!< TP lock flag
+      int32_t _clocktick_25ns_;    //!< The timestamp of the trigger primitive in main clock units (40 MHz)
+      std::bitset<FULL_SIZE> _tp_; //!< The trigger primitive bitset
 
       DATATOOLS_SERIALIZATION_DECLARATION();
 

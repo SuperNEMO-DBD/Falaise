@@ -19,6 +19,13 @@ namespace snemo {
     // Serial tag for datatools::serialization::i_serializable interface :
     DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(calo_tp, "snemo::digitalization::calo_tp")
 
+    const unsigned int calo_tp::MAX_NUMBER_OF_CHANNELS;
+    const unsigned int calo_tp::FULL_SIZE;
+    const unsigned int calo_tp::HTM_SIZE;
+    const unsigned int calo_tp::LOW_THRESHOLD;
+    const unsigned int calo_tp::HIGH_THRESHOLD;
+
+
     calo_tp::calo_tp()
     {
       _locked_ = false;
@@ -44,16 +51,47 @@ namespace snemo {
       return;
     }
     
-    void calo_tp::set_data(unsigned int htm_,
-			   bool lto_bit_,
-			   bool xt_bit_,
-			   bool spare_bit_)
+    void calo_tp::set_data(const double amplitude_,
+			   const bool xt_bit_,
+			   const bool spare_bit_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Calorimeter TP is locked !) ");
-      set_htm(htm_);
-      set_lto_bit(lto_bit_);
+      if (amplitude_ > HIGH_THRESHOLD)
+	{
+	  unsigned int multiplicity = 1;
+	  set_htm(multiplicity);
+	}
+      else if (amplitude_ >= LOW_THRESHOLD && amplitude_ <= HIGH_THRESHOLD)
+	{
+	  set_lto_bit(1);
+	}
+      else
+	{
+	  unsigned int multiplicity = 0;
+	  set_htm(multiplicity);
+	  set_lto_bit(0);  
+	}
       set_xt_bit(xt_bit_);
       set_spare_bit(spare_bit_);
+      return;
+    }
+
+    void calo_tp::update_data(const double amplitude_,	
+			      const bool xt_bit_,
+			      const bool spare_bit_)
+    {
+      DT_THROW_IF(is_locked(), std::logic_error, "Calorimeter TP is locked !) ");
+      unsigned int existing_multiplicity = get_htm();
+      if (amplitude_ > HIGH_THRESHOLD)
+	{
+	  existing_multiplicity += 1;
+	  set_htm(existing_multiplicity);
+	}
+      else if (amplitude_ >= LOW_THRESHOLD && amplitude_ <= HIGH_THRESHOLD)
+	{
+	  set_lto_bit(1);
+	}
+
       return;
     }
     
@@ -62,7 +100,7 @@ namespace snemo {
       return _clocktick_25ns_;
     }
 
-    void calo_tp::set_clocktick_25ns(int32_t value_)
+    void calo_tp::set_clocktick_25ns(const int32_t value_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Clocktick can't be set, calorimeter TP is locked !) ");
       if(value_ <= clock_utils::INVALID_CLOCKTICK)
@@ -71,8 +109,8 @@ namespace snemo {
 	}
       else
 	{
-      _clocktick_25ns_ = value_;
-      _store |= STORE_CLOCKTICK_25NS;
+	  _clocktick_25ns_ = value_;
+	  _store |= STORE_CLOCKTICK_25NS;
 	}
       return;
     }
@@ -103,7 +141,7 @@ namespace snemo {
       return;
     }
 
-    void calo_tp::set_htm(unsigned int multiplicity_)
+    void calo_tp::set_htm(const unsigned int multiplicity_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, "HTM bits can't be set, calorimeter TP is locked ! ");
       DT_THROW_IF(multiplicity_ > MAX_NUMBER_OF_CHANNELS, std::logic_error, "Multiplicity value ["<< multiplicity_ << "] is not valid ! ");
@@ -169,7 +207,7 @@ namespace snemo {
       return get_htm() != 0;
     }
 
-    void calo_tp::set_lto_bit(bool value_)
+    void calo_tp::set_lto_bit(const bool value_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, "LTO bit can't be set, calorimeter TP is locked ! ");
       _tp_.set(LTO_BIT,value_);
@@ -182,7 +220,7 @@ namespace snemo {
       return _tp_.test(LTO_BIT);
     }
 
-    void calo_tp::set_xt_bit(bool value_)
+    void calo_tp::set_xt_bit(const bool value_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, " External bit can't be set, calorimeter TP is locked ! ");
       _tp_.set(XT_BIT,value_);
@@ -195,7 +233,7 @@ namespace snemo {
       return _tp_.test(XT_BIT);
     }
 
-    void calo_tp::set_spare_bit(bool value_)
+    void calo_tp::set_spare_bit(const bool value_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, " Spare bit can't be set, calorimeter TP is locked ! ");
       _tp_.set(SPARE_BIT,value_);

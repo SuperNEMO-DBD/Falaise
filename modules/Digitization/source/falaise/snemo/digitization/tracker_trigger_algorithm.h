@@ -11,7 +11,6 @@
 
 // This project :
 #include <snemo/digitization/geiger_ctw_data.h>
-#include <snemo/digitization/calo_ctw_data.h>
 #include <snemo/digitization/electronic_mapping.h>
 #include <snemo/digitization/mapping.h>
 #include <snemo/digitization/tracker_trigger_mem_maker.h>
@@ -114,6 +113,8 @@ namespace snemo {
 
 			/// Size of the subzone row projection bitset
 			static const int32_t LEVEL_ONE_SUBZONE_ROW_SIZE   = 6;
+			
+			static const int32_t TRACKER_TRIGGER_FINAL_RESPONSE_SIZE = 2;
 
     public : 
 
@@ -139,7 +140,7 @@ namespace snemo {
       void reset(); 
 
 			/// Reset private tables
-			void reset_tables();
+			void reset_trigger_info();
 
 			/// Return the board id from the bitset of 100 bits
 			uint32_t get_board_id(const std::bitset<geiger::tp::FULL_SIZE> & my_bitset_) const;
@@ -210,12 +211,19 @@ namespace snemo {
 			/// Build the level two trigger primitive bitsets
 			void build_trigger_level_one_to_level_two();
 			
+			/// Build the final response of the tracker trigger (if there is a track, a pretrack or nothing)
+			void build_trigger_tracker_final_response();
+
       /// General process
       void process(const geiger_ctw_data & geiger_ctw_data_);
 	
     private :
-      
-      bool _initialized_; //!< Initialization flag
+			
+      // Configuration : 
+      bool _initialized_; //!< Initialization
+			const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID flag
+
+			// Data :
       bool _geiger_matrix_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_LAYERS][mapping::NUMBER_OF_GEIGER_ROWS]; //!< Geiger cells matrix
 			std::bitset<LEVEL_ONE_ZONING_BITSET_SIZE> _level_one_tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES]; //!< Table of 2x10 containing 8 bits bitset representing the level one tracker trigger zoning (side = {0-1}, zones = {0-9})
 			
@@ -225,9 +233,10 @@ namespace snemo {
 			
 			std::bitset<LEVEL_TWO_ZONING_BITSET_SIZE> _level_two_prime_tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES]; //!< Table of 2x9 containing 2 bits bitset representing if there is a track / pretrack or nothing in one interzone
 
+			std::bitset<TRACKER_TRIGGER_FINAL_RESPONSE_SIZE> _tracker_trigger_final_response_;
+			
 			sub_zone_location_info _sub_zone_location_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES_PER_SIDE]; //!< Table of 2x40 (10 zones subdivided in 4 subzones on 2 sides)
 
-			const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
 			
 			memory<6,1> _mem_lvl0_to_lvl1_row_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES][mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES];
 			memory<5,1> _mem_lvl0_to_lvl1_layer_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES][mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES];

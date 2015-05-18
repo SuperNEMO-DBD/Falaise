@@ -1,4 +1,4 @@
-//test_tracker_trigger_algorithm.cxx
+//test_calo_trigger_algorithm.cxx
 // Standard libraries :
 #include <iostream>
 
@@ -19,10 +19,10 @@
 
 // This project :
 #include <snemo/digitization/clock_utils.h>
-#include <snemo/digitization/sd_to_geiger_signal_algo.h>
-#include <snemo/digitization/signal_to_geiger_tp_algo.h>
-#include <snemo/digitization/geiger_tp_to_ctw_algo.h>
-#include <snemo/digitization/tracker_trigger_algorithm.h>
+#include <snemo/digitization/sd_to_calo_signal_algo.h>
+#include <snemo/digitization/signal_to_calo_tp_algo.h>
+#include <snemo/digitization/calo_tp_to_ctw_algo.h>
+#include <snemo/digitization/calo_trigger_algorithm.h>
 
 int main( int  argc_ , char **argv_  )
 {
@@ -70,11 +70,11 @@ int main( int  argc_ , char **argv_  )
     std::string pipeline_simulated_data_filename;
     std::string SD_bank_label = "SD";
 
-
     if(is_input_file){
       pipeline_simulated_data_filename = input_filename;
     }else{
       pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
+      //pipeline_simulated_data_filename = "/home/guillaume/data/my_falaise/outputs/Se82_0nubb-source_strips_bulk_SD.brio";
     }
     datatools::fetch_path_with_env(pipeline_simulated_data_filename);
 
@@ -82,7 +82,7 @@ int main( int  argc_ , char **argv_  )
     dpp::input_module reader;
     datatools::properties reader_config;
     reader_config.store ("logging.priority", "debug");
-    reader_config.store ("max_record_total", 4);
+    reader_config.store ("max_record_total", 50);
     reader_config.store ("files.mode", "single");
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
@@ -91,12 +91,8 @@ int main( int  argc_ , char **argv_  )
     datatools::things ER;
 
     // Loading memory from external files
-    std::string memory_mult_layer   = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A5_D1_default_min_mult_memory.data";
-    std::string memory_mult_row     = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A6_D1_default_min_mult_memory.data";
-    std::string memory_lvl1_to_lvl2 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A4_D2_default_memory.data";
-    datatools::fetch_path_with_env(memory_mult_layer);
-    datatools::fetch_path_with_env(memory_mult_row);
-    datatools::fetch_path_with_env(memory_lvl1_to_lvl2);
+    // std::string memory_mult_layer   = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A5_D1_default_min_mult_memory.data";
+    // datatools::fetch_path_with_env(memory_lvl1_to_lvl2);
 
     snemo::digitization::electronic_mapping my_e_mapping;
     my_e_mapping.set_geo_manager(my_manager);
@@ -115,9 +111,9 @@ int main( int  argc_ , char **argv_  )
 	  {
 	    // Access to the "SD" bank with a stored `mctools::simulated_data' :
 	    const mctools::simulated_data & SD = ER.get<mctools::simulated_data>(SD_bank_label);
-	    
-	    snemo::digitization::sd_to_geiger_signal_algo sd_2_geiger_signal(my_manager);
-	    sd_2_geiger_signal.initialize();
+
+	    snemo::digitization::sd_to_calo_signal_algo sd_2_calo_signal(my_manager);
+	    sd_2_calo_signal.initialize();
 
 	    my_clock_manager.compute_clockticks_ref(random_generator);
 	    int32_t clocktick_25_reference  = my_clock_manager.get_clocktick_25_ref();
@@ -125,44 +121,41 @@ int main( int  argc_ , char **argv_  )
 	    int32_t clocktick_800_reference = my_clock_manager.get_clocktick_800_ref();
 	    double  clocktick_800_shift     = my_clock_manager.get_clocktick_800_shift();
 
-	    snemo::digitization::signal_to_geiger_tp_algo signal_2_geiger_tp;
-	    signal_2_geiger_tp.initialize(my_e_mapping);
-	    signal_2_geiger_tp.set_clocktick_reference(clocktick_800_reference);
-	    signal_2_geiger_tp.set_clocktick_shift(clocktick_800_shift);	    
+	    snemo::digitization::signal_to_calo_tp_algo signal_2_calo_tp;
+	    signal_2_calo_tp.initialize(my_e_mapping);
+	    signal_2_calo_tp.set_clocktick_reference(clocktick_25_reference);
+	    signal_2_calo_tp.set_clocktick_shift(clocktick_25_shift);	    
 
 	    snemo::digitization::signal_data signal_data;
-	    if( SD.has_step_hits("gg"))
+	    if( SD.has_step_hits("calo"))
 	      {		  
-		sd_2_geiger_signal.process(SD, signal_data);
+		sd_2_calo_signal.process(SD, signal_data);
 	      }
 
-	    snemo::digitization::geiger_tp_data my_geiger_tp_data;
+	    snemo::digitization::calo_tp_data my_calo_tp_data;
 
-	    if( signal_data.has_geiger_signals())
-	      {		  
-	    	signal_2_geiger_tp.process(signal_data, my_geiger_tp_data);
-	    	my_geiger_tp_data.tree_dump(std::clog, "Geiger TP(s) data : ", "INFO : ");
-	      }	    
+	    if( signal_data.has_calo_signals())
+	      {
+		signal_2_calo_tp.process(signal_data, my_calo_tp_data);
+		my_calo_tp_data.tree_dump(std::clog, "Calorimeter TP(s) data : ", "INFO : ");
+	      }
 	    
-	    snemo::digitization::geiger_ctw_data my_geiger_ctw_data;
+	    snemo::digitization::calo_ctw_data my_calo_ctw_data;
+	  
+	    snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw;
+	    calo_tp_2_ctw.initialize();
+
+	    calo_tp_2_ctw.process(my_calo_tp_data, my_calo_ctw_data);
+	    my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
+
+	    snemo::digitization::calo_trigger_algorithm my_calo_algo;
+	    my_calo_algo.set_electronic_mapping(my_e_mapping);
+	    my_calo_algo.initialize();
+
+	    my_calo_algo.process(my_calo_ctw_data);
 	    
-	    snemo::digitization::geiger_tp_to_ctw_algo geiger_tp_2_ctw;
-	    geiger_tp_2_ctw.initialize();
-
-
-	    geiger_tp_2_ctw.process(my_geiger_tp_data, my_geiger_ctw_data);
-	    my_geiger_ctw_data.tree_dump(std::clog, "Geiger CTW(s) data : ", "INFO : ");
-
-	    snemo::digitization::tracker_trigger_algorithm my_tracker_algo;
-	    my_tracker_algo.set_electronic_mapping(my_e_mapping);
-	    my_tracker_algo.initialize();
-
-	    my_tracker_algo.fill_mem_lvl0_to_lvl1_layer_all(memory_mult_layer);
-	    my_tracker_algo.fill_mem_lvl0_to_lvl1_row_all(memory_mult_row);
-	    my_tracker_algo.fill_mem_lvl1_to_lvl2_all(memory_lvl1_to_lvl2);
-	    my_tracker_algo.process(my_geiger_ctw_data);
 	    
-	  }     
+	  }
 	ER.clear();
 
 	psd_count++;
