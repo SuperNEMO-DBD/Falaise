@@ -12,18 +12,18 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_deriv.h>
 // - Bayeux/datatools:
-#include <datatools/ioutils.h>
-#include <datatools/utils.h>
-#include <datatools/temporary_files.h>
-#include <datatools/logger.h>
+#include <bayeux/datatools/ioutils.h>
+#include <bayeux/datatools/utils.h>
+#include <bayeux/datatools/temporary_files.h>
+#include <bayeux/datatools/logger.h>
 // - Bayeux/geomtools:
-#include <geomtools/clhep.h>
-#include <geomtools/placement.h>
-#include <geomtools/line_3d.h>
-#include <geomtools/rectangle.h>
-#include <geomtools/gnuplot_draw.h>
-#include <geomtools/gnuplot_i.h>
-#include <geomtools/gnuplot_drawer.h>
+#include <bayeux/geomtools/clhep.h>
+#include <bayeux/geomtools/placement.h>
+#include <bayeux/geomtools/line_3d.h>
+#include <bayeux/geomtools/rectangle.h>
+#include <bayeux/geomtools/gnuplot_draw.h>
+#include <bayeux/geomtools/gnuplot_i.h>
+#include <bayeux/geomtools/gnuplot_drawer.h>
 
 // This project:
 #include <TrackFit/fit_utils.h>
@@ -218,7 +218,7 @@ namespace TrackFit {
       double Uix     = xi;
       double Uiy     = yi - y0;
       double lambda  =(Uix * ex + Uiy * ey) /(ex * ex + ey * ey);
-      geomtools::vector_2d OOd (0.0, y0);
+      geomtools::vector_2d OOd(0.0, y0);
       geomtools::vector_2d OdPi(lambda * ex, lambda * ey);
       geomtools::vector_2d OdOi(Uix, Uiy);
       geomtools::vector_2d OiPi = OdPi - OdOi;
@@ -471,7 +471,7 @@ namespace TrackFit {
 
   void line_fit_mgr::set_hits(const gg_hits_col & hits_)
   {
-    DT_THROW_IF (is_initialized(), std::logic_error, "Object is now locked ! Operation is not allowed !");
+    DT_THROW_IF(is_initialized(), std::logic_error, "Object is now locked ! Operation is not allowed !");
     _hits_ = &hits_;
     return;
   }
@@ -483,7 +483,7 @@ namespace TrackFit {
 
   void line_fit_mgr::set_calibration(const i_drift_time_calibration & calibration_)
   {
-    DT_THROW_IF (is_initialized(), std::logic_error, "Object is now locked ! Operation is not allowed !");
+    DT_THROW_IF(is_initialized(), std::logic_error, "Object is now locked ! Operation is not allowed !");
     _calibration_ = &calibration_;
     return;
   }
@@ -512,13 +512,13 @@ namespace TrackFit {
   void line_fit_mgr::init(const datatools::properties & config_)
   {
     DT_LOG_DEBUG(get_logging_priority(), "Entering...");
-    DT_THROW_IF (is_initialized(), std::logic_error, "Already initialized !");
+    DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
 
-    DT_THROW_IF (_hits_ == 0, std::logic_error, "No hits !");
+    DT_THROW_IF(_hits_ == 0, std::logic_error, "No hits !");
 
     const size_t nhits = _hits_->size();
-    DT_THROW_IF (nhits < line_fit_mgr::constants::min_number_of_hits(),
-                 std::logic_error, "Not enough hits !");
+    DT_THROW_IF(nhits < line_fit_mgr::constants::min_number_of_hits(),
+                std::logic_error, "Not enough hits !");
     DT_LOG_DEBUG(get_logging_priority(), "nhits=" << nhits);
 
     // parse config options:
@@ -546,7 +546,7 @@ namespace TrackFit {
       _using_drift_time_ = true;
     }
 
-    DT_THROW_IF (_using_drift_time_ && ! has_calibration(), std::logic_error, "Missing drift time calibration !");
+    DT_THROW_IF(_using_drift_time_ && ! has_calibration(), std::logic_error, "Missing drift time calibration !");
 
     // Loop over gg hits to find if the cluster is delayed or not : if
     // yes then the '_fit_start_time_' & '_using_drift_time' are
@@ -599,7 +599,7 @@ namespace TrackFit {
     DT_LOG_DEBUG(get_logging_priority(), "Initializing 'solver'...");
     const gsl_multifit_fdfsolver_type * T = gsl_multifit_fdfsolver_lmder;
     _fit_mf_fdf_solver_ = gsl_multifit_fdfsolver_alloc(T, _fit_npoints_, _fit_npars_);
-    DT_THROW_IF (_fit_mf_fdf_solver_ == 0, std::logic_error, "Cannot create solver !");
+    DT_THROW_IF(_fit_mf_fdf_solver_ == 0, std::logic_error, "Cannot create solver !");
     const std::string fdsolver_name = gsl_multifit_fdfsolver_name(_fit_mf_fdf_solver_);
     DT_LOG_DEBUG(get_logging_priority(), "Solver name is '" << fdsolver_name << "'");
 
@@ -619,7 +619,7 @@ namespace TrackFit {
 
   void line_fit_mgr::reset()
   {
-    DT_THROW_IF (! is_initialized(), std::logic_error, "Not initialized !");
+    DT_THROW_IF(! is_initialized(), std::logic_error, "Not initialized !");
 
     if (_fit_mf_fdf_solver_ != 0) {
       const std::string fdsolver_name = gsl_multifit_fdfsolver_name(_fit_mf_fdf_solver_);
@@ -723,7 +723,7 @@ namespace TrackFit {
   void line_fit_mgr::fit()
   {
     DT_LOG_DEBUG(get_logging_priority(), "Starting fit...");
-    DT_THROW_IF (! is_initialized(), std::logic_error, "Fit manager is not initialized !");
+    DT_THROW_IF(! is_initialized(), std::logic_error, "Fit manager is not initialized !");
 
     do {
       DT_LOG_DEBUG(get_logging_priority(), "Fit loop #" << _fit_iter_);
@@ -808,7 +808,7 @@ namespace TrackFit {
     hits_ref_.reserve(hits_.size());
 
     const size_t minimum_number_of_hits = line_fit_mgr::constants::min_number_of_hits();
-    if (hits_.size () < minimum_number_of_hits) {
+    if (hits_.size() < minimum_number_of_hits) {
       DT_LOG_WARNING(local_priority,
                      "Not enough hits(" << hits_.size() << " < min==" << minimum_number_of_hits << ")!");
       return;
@@ -888,22 +888,22 @@ namespace TrackFit {
     DT_LOG_TRACE(local_priority, "Entering...");
     const line_fit_residual_function_param * param_ptr =
       static_cast<const line_fit_residual_function_param *>(params_);
-    DT_THROW_IF (param_ptr == 0, std::logic_error, "Invalid cast !");
+    DT_THROW_IF(param_ptr == 0, std::logic_error, "Invalid cast !");
 
     const line_fit_residual_function_param & param = *param_ptr;
 
     // calibration
-    DT_THROW_IF (param.using_drift_time && param.dtc == 0,
-                 std::logic_error,
-                 "Drift time should be recomputed by some drift-time calibration algo !");
+    DT_THROW_IF(param.using_drift_time && param.dtc == 0,
+                std::logic_error,
+                "Drift time should be recomputed by some drift-time calibration algo !");
     const i_drift_time_calibration * dtc = param.dtc;
     const bool using_first      = param.using_first;
     const bool using_last       = param.using_last;
     const bool using_drift_time = param.using_drift_time;
     const bool fit_start_time = param.fit_start_time;
-    DT_THROW_IF (!fit_start_time && param.mode == line_fit_params::PARAM_INDEX_T0,
-                 std::logic_error,
-                 "Looking for 't0' parameter while fitting start time is disabled !");
+    DT_THROW_IF(!fit_start_time && param.mode == line_fit_params::PARAM_INDEX_T0,
+                std::logic_error,
+                "Looking for 't0' parameter while fitting start time is disabled !");
 
     // parameters from the line:
     double y0    = param.y0;
@@ -1048,7 +1048,7 @@ namespace TrackFit {
     } else if (residual_type == line_fit_residual_function_param::RESIDUAL_BETA) {
       Ri  = beta_i / sigma_zi;
     } else {
-      DT_THROW_IF (true, std::logic_error, "Invalid residual type !");
+      DT_THROW_IF(true, std::logic_error, "Invalid residual type !");
     }
     DT_LOG_TRACE(local_priority, "Exiting.");
     return Ri;
@@ -1061,10 +1061,10 @@ namespace TrackFit {
   {
     // check hit index validity:
     const gg_hits_col * hits = this->_hits_;
-    DT_THROW_IF (hit_index_ >= hits->size(), std::logic_error, "Invalid hit index !");
+    DT_THROW_IF(hit_index_ >= hits->size(), std::logic_error, "Invalid hit index !");
     line_fit_residual_function_param param;
     param.using_first      = is_using_first();
-    param.using_last       = is_using_last ();
+    param.using_last       = is_using_last();
     param.using_drift_time = is_using_drift_time();
     param.fit_start_time   = is_fitting_start_time();
 
@@ -1078,7 +1078,7 @@ namespace TrackFit {
         param.t0 = gsl_vector_get(_fit_mf_fdf_solver_->x, line_fit_params::PARAM_INDEX_T0);
       }
     } else {
-      DT_THROW_IF (! _solution_.ok, std::logic_error, "No available solution !");
+      DT_THROW_IF(! _solution_.ok, std::logic_error, "No available solution !");
       param.z0    = _solution_.z0;
       param.y0    = _solution_.y0;
       param.phi   = _solution_.phi;
@@ -1094,7 +1094,7 @@ namespace TrackFit {
         break;
       }
     }
-    DT_THROW_IF (it_hit == hits->end(), std::logic_error, "Broken list of hits !");
+    DT_THROW_IF(it_hit == hits->end(), std::logic_error, "Broken list of hits !");
 
     param.dtc           = this->_calibration_;
     param.last          = it_hit->is_last();
@@ -1362,7 +1362,7 @@ namespace TrackFit {
     geomtools::vector_3d first = Od - dmax_n * dir;
     geomtools::vector_3d last  = Od + dmax_p * dir;
     geomtools::vector_3d Ofirst(i_neg->get_x(), i_neg->get_y(), i_neg->get_z());
-    geomtools::vector_3d Olast (i_pos->get_x(), i_pos->get_y(), i_pos->get_z());
+    geomtools::vector_3d Olast(i_pos->get_x(), i_pos->get_y(), i_pos->get_z());
     if (draw) {
       f1 << std::endl;
       f1 << "# dmax_neg=" << dmax_neg << std::endl;
@@ -1453,7 +1453,7 @@ namespace TrackFit {
         } else if (gtm == "barycenter") {
           _guess_trust_mode_ = fit_utils::GUESS_TRUST_MODE_BARYCENTER;
         } else {
-          DT_THROW_IF (true, std::logic_error, "Invalid guess trust mode '" << gtm << "' !");
+          DT_THROW_IF(true, std::logic_error, "Invalid guess trust mode '" << gtm << "' !");
         }
       }
     }
@@ -1471,7 +1471,7 @@ namespace TrackFit {
     DT_LOG_TRACE(_logging_priority_, "guess_mode = " << guess_mode_label(guess_mode));
 
     const size_t minimum_number_of_hits = line_fit_mgr::constants::min_number_of_hits();
-    if (hits_.size () < minimum_number_of_hits) {
+    if (hits_.size() < minimum_number_of_hits) {
       DT_LOG_WARNING(_logging_priority_,
                      "Not enough hits(" << hits_.size() << " < min==" << minimum_number_of_hits << ")!");
       return false;
