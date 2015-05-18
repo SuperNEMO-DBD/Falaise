@@ -55,6 +55,11 @@ namespace snemo {
       return _mode_ & MODE_HAS_CHARGE;
     }
 
+    bool particle_track_cut::is_mode_has_delayed_cluster() const
+    {
+      return _mode_ & MODE_HAS_DELAYED_CLUSTER;
+    }
+
     particle_track_cut::particle_track_cut(datatools::logger::priority logger_priority_)
       : cuts::i_cut(logger_priority_)
     {
@@ -98,7 +103,10 @@ namespace snemo {
         if (configuration_.has_flag("mode.has_vertex")) {
           _mode_ |= MODE_HAS_VERTEX;
         }
-        DT_THROW_IF(_mode_ == MODE_UNDEFINED, std::logic_error,
+         if (configuration_.has_flag("mode.has_delayed_cluster")) {
+          _mode_ |= MODE_HAS_DELAYED_CLUSTER;
+        }
+       DT_THROW_IF(_mode_ == MODE_UNDEFINED, std::logic_error,
                     "Missing at least a 'mode.XXX' property !");
 
         // mode HAS_CHARGE:
@@ -157,8 +165,13 @@ namespace snemo {
                       _vertex_type_ != "xcalo" &&
                       _vertex_type_ != "gveto",
                       std::logic_error, "Invalid vertex type label !");
-         } // end if is_mode_has_vertex
-      }
+        } // end if is_mode_has_vertex
+
+        // mode HAS_DELAYED_CLUSTER:
+        if (is_mode_has_delayed_cluster()) {
+          DT_LOG_DEBUG(get_logging_priority(), "Using HAS_DELAYED_CLUSTER mode...");
+        } // end if is_mode_has_delayed_cluster
+     }
 
       this->i_cut::_set_initialized(true);
       return;
@@ -259,11 +272,37 @@ namespace snemo {
         }
       }// end mode HAS_VERTEX_ON_FOIL
 
+      // Check if particle track has a delayed cluster :
+      bool check_delayed_cluster = true;
+      if (is_mode_has_delayed_cluster()) {
+        DT_LOG_DEBUG(get_logging_priority(), "Running HAS_DELAYED_CLUSTER mode...");
+        if (! a_particle.has_trajectory()) {
+          DT_LOG_TRACE(get_logging_priority(), "No trajectory associated to particle track !");
+          check_delayed_cluster = false;
+        } else {
+          const snemo::datamodel::tracker_trajectory & a_trajectory = a_particle.get_trajectory();
+          if (! a_trajectory.has_cluster()) {
+            DT_LOG_TRACE(get_logging_priority(), "Tracker trajectory has no associated cluster !");
+            check_delayed_cluster = false;
+          } else {
+            const snemo::datamodel::tracker_cluster & a_cluster = a_trajectory.get_cluster();
+            if (a_cluster.is_prompt()) {
+              DT_LOG_TRACE(get_logging_priority(), "Tracker cluster is not delayed !");
+              check_delayed_cluster = false;
+            }
+          }
+        }
+        if (check_delayed_cluster) {
+          DT_LOG_TRACE(get_logging_priority(), "Particle track has delayed cluster !");
+        }
+      }// end mode HAS_DELAYED_CLUSTER
+
       cut_returned = cuts::SELECTION_REJECTED;
       if (check_charge                  &&
           check_calorimeter_association &&
           check_range_calorimeter_hits  &&
-          check_vertex) {
+          check_vertex                  &&
+          check_delayed_cluster) {
           cut_returned = cuts::SELECTION_ACCEPTED;
         }
       return cut_returned;

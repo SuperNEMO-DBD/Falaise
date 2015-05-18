@@ -57,7 +57,8 @@ namespace snemo {
         MODE_HAS_CHARGE                        = datatools::bit_mask::bit01,
         MODE_HAS_ASSOCIATED_CALORIMETER_HITS   = datatools::bit_mask::bit02,
         MODE_RANGE_ASSOCIATED_CALORIMETER_HITS = datatools::bit_mask::bit03,
-        MODE_HAS_VERTEX                        = datatools::bit_mask::bit04
+        MODE_HAS_VERTEX                        = datatools::bit_mask::bit04,
+        MODE_HAS_DELAYED_CLUSTER               = datatools::bit_mask::bit05
       };
 
       /// Return the cut mode
@@ -72,8 +73,11 @@ namespace snemo {
       /// Check mode HAS_VERTEX
       bool is_mode_has_vertex() const;
 
-      /// Check mode CHARGE
+      /// Check mode HAS_CHARGE
       bool is_mode_has_charge() const;
+
+      /// Check mode HAS_DELAYED_CLUSTER
+      bool is_mode_has_delayed_cluster() const;
 
       /// Constructor
       particle_track_cut(datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
