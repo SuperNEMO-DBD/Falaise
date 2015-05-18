@@ -459,7 +459,10 @@ namespace snemo {
                   // Recalibrate drift radius given fitted t0
                   double new_r = datatools::invalid_real();
                   double new_sigma_r = datatools::invalid_real();
-                  const double new_anode_time = a_gg_hit_copy.get_delayed_time() - t0;
+                  double new_anode_time = a_gg_hit_copy.get_delayed_time() - t0;
+                  if (new_anode_time < 0.0*CLHEP::ns) {
+                    new_anode_time = 0.0*CLHEP::ns;
+                  }
                   a_gg_regime.calibrate_drift_radius_from_drift_time(new_anode_time,
                                                                      new_r, new_sigma_r);
                   a_gg_hit_copy.set_r(new_r);
