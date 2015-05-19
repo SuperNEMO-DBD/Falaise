@@ -330,7 +330,7 @@ namespace snemo {
           }
         } // end of source foil search
 
-          // Calorimeter walls
+        // Calorimeter walls
         {
           DT_LOG_TRACE(get_logging_priority(), "Looking for vertex on main wall...");
           for (size_t iside = 0; iside < snemo::geometry::utils::NSIDES; ++iside) {
@@ -422,7 +422,7 @@ namespace snemo {
         // Create a mutable helix object to set the new angle
         geomtools::helix_3d * a_mutable_helix = const_cast<geomtools::helix_3d *>(&a_helix);
         if (datatools::is_valid(new_ts.first)) {
-          const double new_length = delta2length*fabs(new_ts.first - a_helix.get_t1());
+          const double new_length = delta2length*std::abs(new_ts.first - a_helix.get_t1());
           const std::string & category = category_flags.first;
           if (_use_vertices_[category] && new_length < length) {
             a_mutable_helix->set_t1(new_ts.first);
@@ -430,7 +430,7 @@ namespace snemo {
           }
         }
         if (datatools::is_valid(new_ts.second)) {
-          const double new_length = delta2length*fabs(new_ts.second - a_helix.get_t2());
+          const double new_length = delta2length*std::abs(new_ts.second - a_helix.get_t2());
           const std::string & category = category_flags.second;
           if (_use_vertices_[category] && new_length < length) {
             a_mutable_helix->set_t2(new_ts.second);
@@ -521,10 +521,10 @@ namespace snemo {
       }
       // Reset values of booleans
       namespace sdm = snemo::datamodel;
-      _use_vertices_[sdm::particle_track::vertex_on_source_foil_label()] = false;
+      _use_vertices_[sdm::particle_track::vertex_on_source_foil_label()]      = false;
       _use_vertices_[sdm::particle_track::vertex_on_main_calorimeter_label()] = false;
-      _use_vertices_[sdm::particle_track::vertex_on_gamma_veto_label()] = false;
-      _use_vertices_[sdm::particle_track::vertex_on_gamma_veto_label()] = false;
+      _use_vertices_[sdm::particle_track::vertex_on_x_calorimeter_label()]    = false;
+      _use_vertices_[sdm::particle_track::vertex_on_gamma_veto_label()]       = false;
 
       const snemo::datamodel::tracker_cluster & a_cluster = trajectory_.get_cluster();
       DT_LOG_TRACE(get_logging_priority(), "Cluster #" << a_cluster.get_hit_id());
@@ -539,7 +539,7 @@ namespace snemo {
         const uint32_t layer = gg_locator.extract_layer(a_gid);
         if (layer <= 1) {
           // Extrapolate vertex to the foil if the 2 first GG layers are fired
-          DT_LOG_TRACE(get_logging_priority(), "Found Geiger cells in the first two layers !");
+          DT_LOG_TRACE(get_logging_priority(), "Foil vertex: found Geiger cells in the first two layers !");
           _use_vertices_[sdm::particle_track::vertex_on_source_foil_label()] = true;
         }
         const uint32_t side = gg_locator.extract_side(a_gid);
@@ -548,6 +548,7 @@ namespace snemo {
         }
         const uint32_t row = gg_locator.extract_row(a_gid);
         if (row <= 1 || row >= gg_locator.get_number_of_rows(side) - 1) {
+          DT_LOG_TRACE(get_logging_priority(), "Xcalo vertex: found Geiger cells in the closest rows !");
           _use_vertices_[sdm::particle_track::vertex_on_x_calorimeter_label()] = true;
         }
       }
