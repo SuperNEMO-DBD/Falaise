@@ -84,28 +84,55 @@ namespace snemo {
       // pickup the ID mapping from the geometry manager:
       const geomtools::mapping & the_mapping = _geo_manager_->get_mapping();
 
-      // Loop on Calo step hits:
-      const size_t number_of_hits = sd_.get_number_of_step_hits("calo");
-
       int32_t calo_signal_hit_id = 0;
-      for (size_t ihit = 0; ihit < number_of_hits; ihit++)
+      if (sd_.has_step_hits("calo"))
 	{
-	  const mctools::base_step_hit & calo_hit = sd_.get_step_hit("calo", ihit);
+	  // Loop on Main calo step hits:
+	  const size_t number_of_main_calo_hits = sd_.get_number_of_step_hits("calo");
+	  for (size_t ihit = 0; ihit < number_of_main_calo_hits; ihit++)
+	    {
+	      const mctools::base_step_hit & main_calo_hit = sd_.get_step_hit("calo", ihit);
 	    
-	  const double signal_time    = calo_hit.get_time_stop();
-	  const double energy_deposit = calo_hit.get_energy_deposit();
-	  const double amplitude      = _convert_energy_to_amplitude(energy_deposit);
+	      const double signal_time    = main_calo_hit.get_time_stop();
+	      const double energy_deposit = main_calo_hit.get_energy_deposit();
+	      const double amplitude      = _convert_energy_to_amplitude(energy_deposit);
 	    
-	  // extract the corresponding geom ID:
-	  const geomtools::geom_id & calo_gid = calo_hit.get_geom_id();
+	      // extract the corresponding geom ID:
+	      const geomtools::geom_id & calo_gid = main_calo_hit.get_geom_id();
 	    
-	  calo_signal & calo_signal = signal_data.add_calo_signal();
-	  calo_signal.set_header(calo_signal_hit_id, calo_gid);
-	  calo_signal.set_data(signal_time, amplitude); 
-	  calo_signal.grab_auxiliaries().store("hit.id", calo_hit.get_hit_id());
-	  calo_signal.tree_dump(std::clog, "***** Calo Signal : *****", "INFO : ");
-	  calo_signal_hit_id++;
-	}	  
+	      calo_signal & calo_signal = signal_data.add_calo_signal();
+	      calo_signal.set_header(calo_signal_hit_id, calo_gid);
+	      calo_signal.set_data(signal_time, amplitude); 
+	      calo_signal.grab_auxiliaries().store("hit.id", main_calo_hit.get_hit_id());
+	      calo_signal.tree_dump(std::clog, "***** Main calo Signal : *****", "INFO : ");
+	      calo_signal_hit_id++;
+	    }
+	} // end of if	  
+      
+      if (sd_.has_step_hits("xcalo"))
+	{
+	  // Loop on X Wall calo step hits :
+	  const size_t number_of_hits = sd_.get_number_of_step_hits("xcalo");
+	  for (size_t ihit = 0; ihit < number_of_hits; ihit++)
+	    {
+	      const mctools::base_step_hit & xwall_calo_hit = sd_.get_step_hit("xcalo", ihit);
+	    
+	      const double signal_time    = xwall_calo_hit.get_time_stop();
+	      const double energy_deposit = xwall_calo_hit.get_energy_deposit();
+	      const double amplitude      = _convert_energy_to_amplitude(energy_deposit);
+	    
+	      // extract the corresponding geom ID:
+	      const geomtools::geom_id & calo_gid = xwall_calo_hit.get_geom_id();
+	    
+	      calo_signal & calo_signal = signal_data.add_calo_signal();
+	      calo_signal.set_header(calo_signal_hit_id, calo_gid);
+	      calo_signal.set_data(signal_time, amplitude); 
+	      calo_signal.grab_auxiliaries().store("hit.id", xwall_calo_hit.get_hit_id());
+	      calo_signal.tree_dump(std::clog, "***** XWall calo Signal : *****", "INFO : ");
+	      calo_signal_hit_id++;
+	    }
+	} //end of if
+
       return ;
     }
 

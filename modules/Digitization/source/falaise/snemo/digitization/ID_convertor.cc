@@ -197,7 +197,7 @@ namespace snemo {
 	  }
       }
 
-      if( geom_id_.get_type() == mapping::CALO_MAIN_WALL_CATEGORY_TYPE ){ // MCALO -- Side [0;1] Column [0;19] (Row[0;12] )type --> 1301
+      if( geom_id_.get_type() == mapping::CALO_MAIN_WALL_CATEGORY_TYPE ){ // MCALO -- Side [0;1] Column [0;19] (Row[0;12] )type --> 1302
 	rack_id = mapping::CALO_RACK_ID;
      
 	unsigned int module_index_ = _calo_locator_-> extract_module(geom_id_);
@@ -215,13 +215,14 @@ namespace snemo {
 	channel_id = row_index_;
       }
       
-      if( geom_id_.get_type() == mapping::CALORIMETER_X_WALL_CATEGORY_TYPE ){//XCALO  -- Side [0;1 ] Wall [0;1] Column [0;1] (Row[0;15])  type --> 1231
+      if( geom_id_.get_type() == mapping::CALORIMETER_X_WALL_CATEGORY_TYPE ){//XCALO  -- Side [0;1 ] Wall [0;1] Column [0;1] (Row[0;15])  type --> 1232
 	rack_id  = mapping::CALO_RACK_ID;
 	crate_id = mapping::XWALL_GVETO_CRATE_ID;
 
 	unsigned int column_index_ = _xcalo_locator_->extract_column(geom_id_);
 	unsigned int wall_index_   = _xcalo_locator_->extract_wall(geom_id_);
 	unsigned int side_index_   = _xcalo_locator_->extract_side(geom_id_);
+	unsigned int row_index_    = _xcalo_locator_->extract_row(geom_id_);
       
 	if ( side_index_ == 0){
 	  if ( wall_index_ == 0){
@@ -243,6 +244,7 @@ namespace snemo {
 	    if ( column_index_ == 1) board_id = 11;
 	  }
 	} //end of side == 1     
+	channel_id = row_index_;
       }
 
 
@@ -250,8 +252,10 @@ namespace snemo {
 	rack_id = mapping::CALO_RACK_ID;
 	crate_id = mapping::XWALL_GVETO_CRATE_ID;
 
-	unsigned int wall_index_ = _gveto_locator_->extract_wall(geom_id_);
-	unsigned int side_index_ = _gveto_locator_->extract_side(geom_id_);
+	unsigned int wall_index_   = _gveto_locator_->extract_wall(geom_id_);
+	unsigned int side_index_   = _gveto_locator_->extract_side(geom_id_);
+	unsigned int column_index_ = _gveto_locator_->extract_column(geom_id_);
+
 	if ( side_index_ == 0){
 	  if ( wall_index_ == 0)board_id = 4;
 	  if ( wall_index_ == 1)board_id = 5;
@@ -260,6 +264,7 @@ namespace snemo {
 	  if ( wall_index_ == 0)board_id = 16;
 	  if ( wall_index_ == 1)board_id = 15;
 	}
+	channel_id = column_index_;
       }
    
       electronic_id.set_address(rack_id,crate_id,board_id,channel_id);   

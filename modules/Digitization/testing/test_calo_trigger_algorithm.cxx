@@ -73,8 +73,8 @@ int main( int  argc_ , char **argv_  )
     if(is_input_file){
       pipeline_simulated_data_filename = input_filename;
     }else{
-      pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
-      //pipeline_simulated_data_filename = "/home/guillaume/data/my_falaise/outputs/Se82_0nubb-source_strips_bulk_SD.brio";
+      //pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
+      pipeline_simulated_data_filename = "/home/guillaume/data/my_falaise/outputs/Se82_0nubb-source_strips_bulk_SD.brio";
     }
     datatools::fetch_path_with_env(pipeline_simulated_data_filename);
 
@@ -82,7 +82,7 @@ int main( int  argc_ , char **argv_  )
     dpp::input_module reader;
     datatools::properties reader_config;
     reader_config.store ("logging.priority", "debug");
-    reader_config.store ("max_record_total", 50);
+    reader_config.store ("max_record_total", 30);
     reader_config.store ("files.mode", "single");
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
@@ -111,7 +111,6 @@ int main( int  argc_ , char **argv_  )
 	  {
 	    // Access to the "SD" bank with a stored `mctools::simulated_data' :
 	    const mctools::simulated_data & SD = ER.get<mctools::simulated_data>(SD_bank_label);
-
 	    snemo::digitization::sd_to_calo_signal_algo sd_2_calo_signal(my_manager);
 	    sd_2_calo_signal.initialize();
 
@@ -124,36 +123,32 @@ int main( int  argc_ , char **argv_  )
 	    snemo::digitization::signal_to_calo_tp_algo signal_2_calo_tp;
 	    signal_2_calo_tp.initialize(my_e_mapping);
 	    signal_2_calo_tp.set_clocktick_reference(clocktick_25_reference);
-	    signal_2_calo_tp.set_clocktick_shift(clocktick_25_shift);	    
-
+	    signal_2_calo_tp.set_clocktick_shift(clocktick_25_shift);	 
 	    snemo::digitization::signal_data signal_data;
-	    if( SD.has_step_hits("calo"))
-	      {		  
-		sd_2_calo_signal.process(SD, signal_data);
-	      }
-
-	    snemo::digitization::calo_tp_data my_calo_tp_data;
-
-	    if( signal_data.has_calo_signals())
+	    if (SD.has_step_hits("calo") || SD.has_step_hits("xcalo"))
 	      {
-		signal_2_calo_tp.process(signal_data, my_calo_tp_data);
-		my_calo_tp_data.tree_dump(std::clog, "Calorimeter TP(s) data : ", "INFO : ");
-	      }
+		sd_2_calo_signal.process(SD, signal_data);
+	      
+		snemo::digitization::calo_tp_data my_calo_tp_data;
+
+		if( signal_data.has_calo_signals())
+		  {
+		    signal_2_calo_tp.process(signal_data, my_calo_tp_data);
+		    my_calo_tp_data.tree_dump(std::clog, "Calorimeter TP(s) data : ", "INFO : ");
+		  }
 	    
-	    snemo::digitization::calo_ctw_data my_calo_ctw_data;
-	  
-	    snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw;
-	    calo_tp_2_ctw.initialize();
+		snemo::digitization::calo_ctw_data my_calo_ctw_data;
+		snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw;
+		calo_tp_2_ctw.initialize();
 
-	    calo_tp_2_ctw.process(my_calo_tp_data, my_calo_ctw_data);
-	    my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
+		calo_tp_2_ctw.process(my_calo_tp_data, my_calo_ctw_data);
+		my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
+		snemo::digitization::calo_trigger_algorithm my_calo_algo;
+		my_calo_algo.set_electronic_mapping(my_e_mapping);
+		my_calo_algo.initialize();
 
-	    snemo::digitization::calo_trigger_algorithm my_calo_algo;
-	    my_calo_algo.set_electronic_mapping(my_e_mapping);
-	    my_calo_algo.initialize();
-
-	    my_calo_algo.process(my_calo_ctw_data);
-	    
+	 	my_calo_algo.process(my_calo_ctw_data);
+	      } // end of if has "calo" || "xcalo" step hits
 	    
 	  }
 	ER.clear();

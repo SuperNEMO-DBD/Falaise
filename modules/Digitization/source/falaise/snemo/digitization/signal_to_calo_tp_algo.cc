@@ -98,8 +98,13 @@ namespace snemo {
 	  const geomtools::geom_id & geom_id = a_calo_signal.get_geom_id();
 	  const double calo_hit_amplitude    = a_calo_signal.get_amplitude();
  
+	  geomtools::geom_id temporary_electronic_id;
+	  _electronic_mapping_->convert_GID_to_EID(mapping::THREE_WIRES_TRACKER_MODE, geom_id, temporary_electronic_id);
+	  uint32_t electronic_type = temporary_electronic_id.get_type();
 	  geomtools::geom_id electronic_id;
-	  _electronic_mapping_->convert_GID_to_EID(mapping::THREE_WIRES_TRACKER_MODE, geom_id, electronic_id);
+	  electronic_id.set_depth(mapping::BOARD_DEPTH);
+	  electronic_id.set_type(electronic_type);
+	  temporary_electronic_id.extract_to(electronic_id);
 
 	  bool calo_xt_bit    = 0; // These bits have to be checked
 	  bool calo_spare_bit = 0;

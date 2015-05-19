@@ -48,6 +48,9 @@ namespace snemo {
 			}; 
 			
 			typedef std::vector<signal_to_tp_working_data> working_data_collection_type;
+
+			/// Shift from the reading of the ASIC. All channels are locked during the trigger reading.
+			static const unsigned int TRIGGER_READING_CLOCKTICK_SHIFT = 1;
 			
       /// Default constructor
       signal_to_geiger_tp_algo();

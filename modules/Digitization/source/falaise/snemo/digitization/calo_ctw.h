@@ -53,7 +53,7 @@ namespace snemo {
 			};
 			
 			/// Position of each bits in the CTW bitset word (18 bits)
-			enum tw_bit_pos{
+			enum tw_bit_pos {
 				HTM_PC_BIT0  = 0,
 				HTM_PC_BIT1  = 1,
 				ZONING_BIT0  = 2,
@@ -72,6 +72,14 @@ namespace snemo {
 				CONTROL_BIT1 = 15,
 				CONTROL_BIT2 = 16,
 				CONTROL_BIT3 = 17
+			};
+			
+			enum tw_bitset_size {
+				HTM_BITSET_SIZE     = 2,
+				ZONING_BITSET_SIZE  = 10,
+				LTO_BITSET_SIZE     = 1,
+				XT_BITSET_SIZE      = 1,
+				CONTROL_BITSET_SIZE = 4
 			};
 
 			/// Maximum number of FEB by control board (CB)
@@ -127,13 +135,13 @@ namespace snemo {
 			bool is_htm() const;
 
 			/// Return the complete zoning word
-			void get_zoning_word(std::bitset<10> & zoning_word_) const;
+			void get_zoning_word(std::bitset<ZONING_BITSET_SIZE> & zoning_word_) const;
 
 			/// Set the zoning word 
-			void set_zoning_word(std::bitset<10> & zoning_word_);
+			void set_zoning_word(std::bitset<ZONING_BITSET_SIZE> & zoning_word_);
 
 			/// Set one bit of the zoning word
-			void set_zoning_bit(int BIT_POS_, bool value_);
+			void set_zoning_bit(int bit_pos_, bool value_);
 
 			/// Compute active zones in a std::set and return the number of active zones
 			unsigned int compute_active_zones(std::set<int> & active_zones_) const;
@@ -151,10 +159,10 @@ namespace snemo {
 			bool is_xt() const;
 
 			/// Return the complete control word
-			void get_control_word(std::bitset<4> & control_word_) const;
+			void get_control_word(std::bitset<CONTROL_BITSET_SIZE> & control_word_) const;
 
 			/// Set the complete control word
-			void set_control_word(std::bitset<4> & control_word_);
+			void set_control_word(std::bitset<CONTROL_BITSET_SIZE> & control_word_);
  
 			/// Check the lock status
       bool is_locked() const;
@@ -187,10 +195,10 @@ namespace snemo {
 
     private : 
 
-			bool _locked_; //!< CTW lock flag
-			wall_type _wall_;  //!< The type of the crate (from main wall or X Wall - Gamma veto)
+			bool _locked_;            //!< CTW lock flag
+			wall_type _wall_;         //!< The type of the crate (from main wall or X Wall - Gamma veto)
 			int32_t _clocktick_25ns_; //!< The timestamp of the trigger primitive in main clock units (40 MHz)
-			std::bitset<18> _ctw_; //!< The crate trigger word
+			std::bitset<18> _ctw_;    //!< The crate trigger word
 
       DATATOOLS_SERIALIZATION_DECLARATION();
 

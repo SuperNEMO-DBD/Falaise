@@ -20,10 +20,10 @@ namespace snemo {
   
   namespace digitization {
 
-    const int32_t tracker_trigger_algorithm::LEVEL_ONE_ZONING_BITSET_SIZE;
-    const int32_t tracker_trigger_algorithm::LEVEL_TWO_ZONING_BITSET_SIZE;
-    const int32_t tracker_trigger_algorithm::LEVEL_ONE_SUBZONE_LAYER_SIZE;
-    const int32_t tracker_trigger_algorithm::LEVEL_ONE_SUBZONE_ROW_SIZE;
+    const int32_t tracker_trigger_algorithm::GEIGER_LEVEL_ONE_ZONING_BITSET_SIZE;
+    const int32_t tracker_trigger_algorithm::GEIGER_LEVEL_TWO_ZONING_BITSET_SIZE;
+    const int32_t tracker_trigger_algorithm::GEIGER_LEVEL_ONE_SUBZONE_LAYER_SIZE;
+    const int32_t tracker_trigger_algorithm::GEIGER_LEVEL_ONE_SUBZONE_ROW_SIZE;
     const int32_t tracker_trigger_algorithm::TRACKER_TRIGGER_FINAL_RESPONSE_SIZE;
 
     tracker_trigger_algorithm::tracker_trigger_algorithm()
@@ -546,10 +546,10 @@ namespace snemo {
 	      const int32_t row_begin   = _sub_zone_location_info_[iside][i].row_begin;
 	      const int32_t row_end     = _sub_zone_location_info_[iside][i].row_end;
 	      const int32_t layer_begin = _sub_zone_location_info_[iside][i].layer_begin;
-	      const int32_t layer_end   = _sub_zone_location_info_[iside][i].layer_begin + LEVEL_ONE_SUBZONE_LAYER_SIZE; // const to add same shift for all zones
+	      const int32_t layer_end   = _sub_zone_location_info_[iside][i].layer_begin + GEIGER_LEVEL_ONE_SUBZONE_LAYER_SIZE;
 
-	      std::bitset<LEVEL_ONE_SUBZONE_ROW_SIZE>   subzone_row_bitset;
-	      std::bitset<LEVEL_ONE_SUBZONE_LAYER_SIZE> subzone_layer_bitset;
+	      std::bitset<GEIGER_LEVEL_ONE_SUBZONE_ROW_SIZE>   subzone_row_bitset;
+	      std::bitset<GEIGER_LEVEL_ONE_SUBZONE_LAYER_SIZE> subzone_layer_bitset;
 
 	      for (int jrow = row_begin; jrow <= row_end; jrow++)
 		{
@@ -573,11 +573,11 @@ namespace snemo {
 		    } // end of jrow
 		} // end of klayer
 
-	      std::bitset<LEVEL_ONE_SUBZONE_ROW_SIZE> subzone_row_bitset_address = subzone_row_bitset;
+	      std::bitset<GEIGER_LEVEL_ONE_SUBZONE_ROW_SIZE> subzone_row_bitset_address = subzone_row_bitset;
 	      std::bitset<1> subzone_row_bitset_data;
 	      _mem_lvl0_to_lvl1_row_[iside][zone_index][subzone].fetch(subzone_row_bitset_address, subzone_row_bitset_data);
 	      
-	      std::bitset<LEVEL_ONE_SUBZONE_LAYER_SIZE> subzone_layer_bitset_address = subzone_layer_bitset;
+	      std::bitset<GEIGER_LEVEL_ONE_SUBZONE_LAYER_SIZE> subzone_layer_bitset_address = subzone_layer_bitset;
 	      std::bitset<1> subzone_layer_bitset_data;
 	      _mem_lvl0_to_lvl1_layer_[iside][zone_index][subzone].fetch(subzone_layer_bitset_address, subzone_layer_bitset_data);
 	      
@@ -645,7 +645,7 @@ namespace snemo {
 	{
 	  for (int izone = 0; izone < mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES; izone++)
 	    {
-	      for (int jindex = 0; jindex < LEVEL_ONE_ZONING_BITSET_SIZE; jindex += 2)
+	      for (int jindex = 0; jindex < GEIGER_LEVEL_ONE_ZONING_BITSET_SIZE; jindex += 2)
 		{
 		  // Filling intermediate level one zone bitset
 		  if ( _level_one_tracker_trigger_info_[iside][izone].test(jindex) == true || _level_one_tracker_trigger_info_[iside][izone].test(jindex+1) == true)
@@ -672,7 +672,7 @@ namespace snemo {
 
 	      // Filling level two zone bitset
 	      std::bitset<intermediate_level_one_bitset_size> intermediate_zone_bitset_address = intermediate_level_one_tracker_trigger_info[iside][izone];
-	      std::bitset<LEVEL_TWO_ZONING_BITSET_SIZE> zone_bitset_data;
+	      std::bitset<GEIGER_LEVEL_TWO_ZONING_BITSET_SIZE> zone_bitset_data;
 	      _mem_lvl1_to_lvl2_[iside][izone].fetch(intermediate_zone_bitset_address, zone_bitset_data);
 	      if (zone_bitset_data.test(0) == true) // Test index 0 of the bitset
 		{
@@ -687,7 +687,7 @@ namespace snemo {
 	      if (izone < mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES)
 		{
 		  std::bitset<intermediate_level_one_bitset_size> intermediate_interzone_bitset_address = intermediate_level_one_prime_tracker_trigger_info[iside][izone];
-		  std::bitset<LEVEL_TWO_ZONING_BITSET_SIZE> interzone_bitset_data;
+		  std::bitset<GEIGER_LEVEL_TWO_ZONING_BITSET_SIZE> interzone_bitset_data;
 		  _mem_lvl1_to_lvl2_[iside][izone].fetch(intermediate_interzone_bitset_address, interzone_bitset_data);
 		  if (interzone_bitset_data.test(0) == true) // Test index 0 of the bitset
 		    {
@@ -714,8 +714,7 @@ namespace snemo {
 	      if (_level_two_prime_tracker_trigger_info_[iside][izone].test(0)    == true     // test bit index 0 
 	      	  && _level_two_prime_tracker_trigger_info_[iside][izone].test(1) == false    // test bit index 1
 		  && izone < mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES) 
-	      	{
-		  std::clog << "DEBUG : iside = " << iside << "izone = " << izone << std::endl;
+	      	{	
 		  _level_two_tracker_trigger_info_[iside][izone].set(0,1);
 		  _level_two_tracker_trigger_info_[iside][izone].set(1,0);
 		  _level_two_tracker_trigger_info_[iside][izone+1].set(0,1);
@@ -750,9 +749,8 @@ namespace snemo {
       return;
     }
 
-    void tracker_trigger_algorithm::process(const geiger_ctw_data & geiger_ctw_data_)
+    void tracker_trigger_algorithm::_process(const geiger_ctw_data & geiger_ctw_data_)
     { 
-      DT_THROW_IF(!is_initialized(), std::logic_error, "Tracker trigger algorithm is not initialized, it can't process ! ");
       for(int32_t iclocktick = geiger_ctw_data_.get_clocktick_min(); iclocktick <= geiger_ctw_data_.get_clocktick_max(); iclocktick++)
 	{
 	  std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick;
@@ -776,6 +774,12 @@ namespace snemo {
       return;
     }
 
+    void tracker_trigger_algorithm::process(const geiger_ctw_data & geiger_ctw_data_)
+    {
+      DT_THROW_IF(!is_initialized(), std::logic_error, "Tracker trigger algorithm is not initialized, it can't process ! ");
+      _process(geiger_ctw_data_);
+      return;
+    }
 
   } // end of namespace digitization
 

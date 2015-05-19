@@ -13,7 +13,9 @@
 namespace snemo {
   
   namespace digitization {
- 
+
+    const unsigned int signal_to_geiger_tp_algo::TRIGGER_READING_CLOCKTICK_SHIFT;
+
     signal_to_geiger_tp_algo::signal_to_tp_working_data::signal_to_tp_working_data()
     {
       reset();
@@ -152,15 +154,15 @@ namespace snemo {
 	  bool         existing = false;
 	  unsigned int existing_index = 0;
 	  double relative_time = a_geiger_signal.get_anode_avalanche_time() + _clocktick_shift_ - time_reference ;
-	  int32_t a_geiger_signal_clocktick = _clocktick_ref_;
+	  int32_t a_geiger_signal_clocktick = _clocktick_ref_ + TRIGGER_READING_CLOCKTICK_SHIFT;
 
 	  if (relative_time > 800)
 	    {
 	      a_geiger_signal_clocktick += static_cast<int32_t>(relative_time) / 800;
 	    }
-	  //properties.dump(std::clog);
+	  
 	  signal_to_tp_working_data a_working_data;
-	  a_working_data.signal_ref    =& a_geiger_signal;
+	  a_working_data.signal_ref    = & a_geiger_signal;
 	  a_working_data.feb_id        = electronic_id;
 	  a_working_data.auxiliaries   = properties;
 	  a_working_data.clocktick_800 = a_geiger_signal_clocktick;	      

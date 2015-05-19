@@ -40,6 +40,12 @@ namespace snemo {
 				CHANNEL_DEPTH = 4
 			};
 
+			enum calo_rack {
+				MAIN_CALO_SIDE_0_RACK = 0,
+				MAIN_CALO_SIDE_1_RACK = 1,
+				XWALL_CALO_RACK       = 2
+			};
+			
 			enum tp_tracker_wire_mode {
 				// INVALID_WIRES_TRACKER_MODE = -1,
 				// THREE_WIRES_TRACKER_MODE   = 0,
@@ -90,6 +96,8 @@ namespace snemo {
 			static const uint32_t NUMBER_OF_X_CALO_ROWS = 16;
 
 			static const uint32_t NUMBER_OF_GVETO_COLUMNS = 16;
+			static const int32_t  NUMBER_OF_CALO_TRIGGER_ZONES = 10;
+
 			static const uint32_t NUMBER_OF_GEIGER_ROWS = 113;
 			static const int32_t  NUMBER_OF_TRACKER_TRIGGER_ZONES = 10;
 			static const int32_t  NUMBER_OF_TRACKER_TRIGGER_INTERZONES = 9;

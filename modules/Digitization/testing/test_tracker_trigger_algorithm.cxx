@@ -134,33 +134,34 @@ int main( int  argc_ , char **argv_  )
 	    if( SD.has_step_hits("gg"))
 	      {		  
 		sd_2_geiger_signal.process(SD, signal_data);
-	      }
+	      
 
-	    snemo::digitization::geiger_tp_data my_geiger_tp_data;
+		snemo::digitization::geiger_tp_data my_geiger_tp_data;
 
-	    if( signal_data.has_geiger_signals())
-	      {		  
-	    	signal_2_geiger_tp.process(signal_data, my_geiger_tp_data);
-	    	my_geiger_tp_data.tree_dump(std::clog, "Geiger TP(s) data : ", "INFO : ");
-	      }	    
+		if( signal_data.has_geiger_signals())
+		  {		  
+		    signal_2_geiger_tp.process(signal_data, my_geiger_tp_data);
+		    my_geiger_tp_data.tree_dump(std::clog, "Geiger TP(s) data : ", "INFO : ");
+		  }	    
 	    
-	    snemo::digitization::geiger_ctw_data my_geiger_ctw_data;
+		snemo::digitization::geiger_ctw_data my_geiger_ctw_data;
 	    
-	    snemo::digitization::geiger_tp_to_ctw_algo geiger_tp_2_ctw;
-	    geiger_tp_2_ctw.initialize();
+		snemo::digitization::geiger_tp_to_ctw_algo geiger_tp_2_ctw;
+		geiger_tp_2_ctw.initialize();
 
 
-	    geiger_tp_2_ctw.process(my_geiger_tp_data, my_geiger_ctw_data);
-	    my_geiger_ctw_data.tree_dump(std::clog, "Geiger CTW(s) data : ", "INFO : ");
+		geiger_tp_2_ctw.process(my_geiger_tp_data, my_geiger_ctw_data);
+		my_geiger_ctw_data.tree_dump(std::clog, "Geiger CTW(s) data : ", "INFO : ");
 
-	    snemo::digitization::tracker_trigger_algorithm my_tracker_algo;
-	    my_tracker_algo.set_electronic_mapping(my_e_mapping);
-	    my_tracker_algo.initialize();
+		snemo::digitization::tracker_trigger_algorithm my_tracker_algo;
+		my_tracker_algo.set_electronic_mapping(my_e_mapping);
+		my_tracker_algo.initialize();
 
-	    my_tracker_algo.fill_mem_lvl0_to_lvl1_layer_all(memory_mult_layer);
-	    my_tracker_algo.fill_mem_lvl0_to_lvl1_row_all(memory_mult_row);
-	    my_tracker_algo.fill_mem_lvl1_to_lvl2_all(memory_lvl1_to_lvl2);
-	    my_tracker_algo.process(my_geiger_ctw_data);
+		my_tracker_algo.fill_mem_lvl0_to_lvl1_layer_all(memory_mult_layer);
+		my_tracker_algo.fill_mem_lvl0_to_lvl1_row_all(memory_mult_row);
+		my_tracker_algo.fill_mem_lvl1_to_lvl2_all(memory_lvl1_to_lvl2);
+		my_tracker_algo.process(my_geiger_ctw_data);
+	      } // end of if has "gg" step hits
 	    
 	  }     
 	ER.clear();
