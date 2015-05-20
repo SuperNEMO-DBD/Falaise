@@ -74,7 +74,8 @@ int main( int  argc_ , char **argv_  )
     if(is_input_file){
       pipeline_simulated_data_filename = input_filename;
     }else{
-      pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
+      //pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
+      pipeline_simulated_data_filename = "/home/guillaume/data/my_falaise/outputs/Se82_0nubb-source_strips_bulk_SD.brio";
     }
     datatools::fetch_path_with_env(pipeline_simulated_data_filename);
 
@@ -82,7 +83,7 @@ int main( int  argc_ , char **argv_  )
     dpp::input_module reader;
     datatools::properties reader_config;
     reader_config.store ("logging.priority", "debug");
-    reader_config.store ("max_record_total", 4);
+    reader_config.store ("max_record_total", 30);
     reader_config.store ("files.mode", "single");
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
@@ -134,7 +135,6 @@ int main( int  argc_ , char **argv_  )
 	    if( SD.has_step_hits("gg"))
 	      {		  
 		sd_2_geiger_signal.process(SD, signal_data);
-	      
 
 		snemo::digitization::geiger_tp_data my_geiger_tp_data;
 
@@ -149,7 +149,6 @@ int main( int  argc_ , char **argv_  )
 		snemo::digitization::geiger_tp_to_ctw_algo geiger_tp_2_ctw;
 		geiger_tp_2_ctw.initialize();
 
-
 		geiger_tp_2_ctw.process(my_geiger_tp_data, my_geiger_ctw_data);
 		my_geiger_ctw_data.tree_dump(std::clog, "Geiger CTW(s) data : ", "INFO : ");
 
@@ -161,7 +160,7 @@ int main( int  argc_ , char **argv_  )
 		my_tracker_algo.fill_mem_lvl0_to_lvl1_row_all(memory_mult_row);
 		my_tracker_algo.fill_mem_lvl1_to_lvl2_all(memory_lvl1_to_lvl2);
 		my_tracker_algo.process(my_geiger_ctw_data);
-	      } // end of if has "gg" step hits
+	      } // end of if has "gg" step hits	    
 	    
 	  }     
 	ER.clear();

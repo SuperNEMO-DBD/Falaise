@@ -80,7 +80,7 @@ namespace snemo {
 	    {
 	      activated_zone_id = my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) / 2;
 	    }	      
-	  my_ctw_.set_zoning_bit(calo_ctw::ZONING_BIT0 + activated_zone_id, 1);	      
+	  my_ctw_.set_zoning_bit(calo::ctw::ZONING_BIT0 + activated_zone_id, 1);	      
 	}          
       return ;
     }
@@ -99,7 +99,7 @@ void calo_tp_to_ctw_algo::set_ctw_zone_bit_htm_or_lto(const calo_tp & my_calo_tp
 	    {
 	      activated_zone_id = my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) / 2;
 	    }	      
-	  my_ctw_.set_zoning_bit(calo_ctw::ZONING_BIT0 + activated_zone_id, 1);	      
+	  my_ctw_.set_zoning_bit(calo::ctw::ZONING_BIT0 + activated_zone_id, 1);	      
 	}          
       return ;
     }

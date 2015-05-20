@@ -9,6 +9,10 @@
 #include <string>
 #include <bitset>
 
+// Boost :
+#include <boost/circular_buffer.hpp>
+#include <boost/scoped_ptr.hpp>
+
 // This project :
 #include <snemo/digitization/calo_ctw_data.h>
 #include <snemo/digitization/electronic_mapping.h>
@@ -26,7 +30,9 @@ namespace snemo {
     class calo_trigger_algorithm
     {
     public : 
-
+			
+			struct calo_trigger_gate;
+			
 			enum calo_zoning_id_index {
 				ZONE_0_INDEX = 0,
 				ZONE_1_INDEX = 1,
@@ -64,7 +70,10 @@ namespace snemo {
 			};
 
 			/// Level one zoning size of a bitset for a zone
-			static const int32_t CALO_LEVEL_ONE_ZONING_BITSET_SIZE = 2;
+			static const int32_t CALO_LEVEL_ONE_MULT_BITSET_SIZE = 2;
+
+			/// Size of the zoning bitset for a side of the calorimeter
+			static const int32_t CALO_ZONING_PER_SIDE_BITSET_SIZE = 10;
 
       /// Default constructor
       calo_trigger_algorithm();
@@ -89,6 +98,9 @@ namespace snemo {
 
       /// Reset private tables
       void reset_trigger_info();
+
+			/// Display the level one calo trigger info (bitsets)
+			void display_calo_trigger_info();
     
 			/// Build the level one calo trigger primitive bitsets
 			void build_calo_level_one_bitsets(const calo_ctw & my_calo_ctw_);
@@ -103,15 +115,17 @@ namespace snemo {
 
     private :
      
+			typedef boost::circular_buffer<calo_trigger_gate> buffer_type;
       // Configuration :
       bool _initialized_; //!< Initialization flag
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
 
       // Data :
-			std::bitset<CALO_LEVEL_ONE_ZONING_BITSET_SIZE> _level_one_calo_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_CALO_TRIGGER_ZONES]; //!< Table of 2x10 containing 2 bits bitset representing the level one caloe trigger info
+			bool _level_one_calo_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_CALO_TRIGGER_ZONES]; //!< Table of 2x10 containing 2 bits bitset representing the level one calo trigger info
 			
-			
+			std::bitset<CALO_LEVEL_ONE_MULT_BITSET_SIZE> _total_calo_multiplicity_; //!< Total multiplicity of calo who passed the HT
 
+			boost::scoped_ptr<buffer_type> _calo_gate_circular_buffer_;
       
     };
 
@@ -119,7 +133,7 @@ namespace snemo {
 
 } // end of namespace snemo
 
-#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_TRACKER_TRIGGER_ALGORITHM_H
+#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CALO_TRIGGER_ALGORITHM_H
 
 /* 
 ** Local Variables: --

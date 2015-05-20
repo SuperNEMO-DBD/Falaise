@@ -21,7 +21,7 @@ UML diagram of the process : (can change)
                                                                                                  Calo_TP_data
                                                                                            |----------------------|                                Calo_CTW_data
                                         |------------------|                               | |------------------| |                             |----------------|
-                                        |   Calo signal    |                               | |     Calo TP      | |                             | |------------| |      (not implemented yet)
+                                        |   Calo signal    |                               | |     Calo TP      | |                             | |------------| |      
                                         |   Calo signal    |   |***********************|   | |     Calo TP      | |   |*********************|   | |  Calo CTW  | |   |***************************|
           |***********************|  /->|   Calo signal    |-->| signal_to_calo_TP_algo|-->| |     Calo TP      | |-->| calo_TP_to_calo_CTW |-->| |  Calo CTW  | |-->|   Calo_trigger_algorithm  |
        /->| SD_to_calo_signal_algo| /   |   Calo signal    |   |***********************|   | |     Calo TP      | |   |*********************|   | |------------| |   |***************************|

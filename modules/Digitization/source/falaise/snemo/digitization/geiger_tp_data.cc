@@ -157,8 +157,8 @@ namespace snemo {
     {
       DT_THROW_IF(is_locked(), std::logic_error, " Operation prohibited, object is locked ! ");
       {
-	geiger_tp_handle_type dummy;
-	_geiger_tps_.push_back(dummy);
+				geiger_tp_handle_type dummy;
+				_geiger_tps_.push_back(dummy);
       }
       geiger_tp_handle_type & last = _geiger_tps_.back();
       last.reset(new geiger_tp);
@@ -178,9 +178,9 @@ namespace snemo {
     void geiger_tp_data::reset()
     {
       if (is_locked())
-	{
-	  unlock();
-	}
+				{
+					unlock();
+				}
       reset_tps();
       return;
     }

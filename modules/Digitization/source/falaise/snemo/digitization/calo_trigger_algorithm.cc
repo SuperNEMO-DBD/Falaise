@@ -5,12 +5,22 @@
 // Ourselves:
 #include <snemo/digitization/calo_trigger_algorithm.h>
 #include <snemo/digitization/calo_ctw.h>
+#include <snemo/digitization/calo_ctw_constants.h>
 
 namespace snemo {
   
   namespace digitization {
-
- calo_trigger_algorithm::calo_trigger_algorithm()
+    
+    struct calo_trigger_algorithm::calo_trigger_gate
+    {
+      std::bitset<CALO_ZONING_PER_SIDE_BITSET_SIZE> calo_zoning_word[mapping::NUMBER_OF_SIDES];
+      std::bitset<CALO_LEVEL_ONE_MULT_BITSET_SIZE> total_calo_multiplicity;
+    };
+    
+    const int32_t calo_trigger_algorithm::CALO_LEVEL_ONE_MULT_BITSET_SIZE;
+    const int32_t calo_trigger_algorithm::CALO_ZONING_PER_SIDE_BITSET_SIZE;
+    
+    calo_trigger_algorithm::calo_trigger_algorithm()
     {
       _initialized_ = false;
       _electronic_mapping_ = 0;
@@ -65,39 +75,120 @@ namespace snemo {
     
     void calo_trigger_algorithm::reset_trigger_info()
     {
+      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+	{
+	  for (int izones = 0; izones < mapping::NUMBER_OF_CALO_TRIGGER_ZONES; izones++)
+	    {
+	      _level_one_calo_trigger_info_[iside][izones] = false;
+	    }
+	}
+      _total_calo_multiplicity_ = 0;
       return;
     }
 
+    void calo_trigger_algorithm::display_calo_trigger_info()
+    {
+      std::clog << "Level One calo trigger info display : " << std::endl;
+      std::clog << "Total multiplicity = " << _total_calo_multiplicity_ << std::endl << std::endl;
+      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+	{
+	  if (iside == 1)
+	    {
+	      std::clog << "   |                                                                                                                 |" << std::endl;
+	      if (_level_one_calo_trigger_info_[iside][0] == true) std::clog << "[*]|";
+	      else std::clog << "[ ]|";
+	      std::clog << "                                                                                                                 ";
+	      if (_level_one_calo_trigger_info_[iside][9] == true) std::clog << "|[*]" << std::endl;
+	      else std::clog << "|[ ]" << std::endl;
+	    }
+	  std::clog << "   |";
+	  for (int izone = 0; izone < mapping::NUMBER_OF_CALO_TRIGGER_ZONES; izone++)
+	    {
+	      if (izone == 0 || izone == 9) 
+		{
+		  if (_level_one_calo_trigger_info_[iside][izone] == true) std::clog << "[*******]";
+		  else std::clog  << "[       ]";
+		}
+	      else if (izone == 5) 
+		{
+		  if (_level_one_calo_trigger_info_[iside][izone] == true) std::clog  << "[*********]";
+		  else std::clog  << "[         ]";
+		}
+	      else 
+		{
+		  if (_level_one_calo_trigger_info_[iside][izone] == true) std::clog  << "[**********]";
+		  else std::clog << "[          ]";
+		}
+	    } // end of izone
+	  std::clog << "|" << std::endl;
+	  if (iside == 0)
+	    {
+	      if (_level_one_calo_trigger_info_[iside][0] == true) std::clog << "[*]|";
+	      else std::clog << "[ ]|";
+	      std::clog << "                                                                                                                 ";
+	      if (_level_one_calo_trigger_info_[iside][9] == true) std::clog << "|[*]" << std::endl;
+	      else std::clog << "|[ ]" << std::endl;
+	      std::clog << "   |                                                                                                                 |" << std::endl;
+	      std::clog << "   |_________________________________________________________________________________________________________________|" << std::endl;
+	    }
+
+	} // end of iside
+      std::clog << std::endl;
+      return;
+    }
+ 
     void calo_trigger_algorithm::build_calo_level_one_bitsets(const calo_ctw & my_calo_ctw_)
     {
       uint32_t crate_index = my_calo_ctw_.get_geom_id().get(mapping::CRATE_INDEX);
-      uint32_t side;
-      std::bitset<calo_ctw::ZONING_BITSET_SIZE> ctw_zoning_bitset_word;
+      std::bitset<calo::ctw::ZONING_BITSET_SIZE> ctw_zoning_bitset_word;
       my_calo_ctw_.get_zoning_word(ctw_zoning_bitset_word);
+      unsigned long calo_ctw_multiplicity  = my_calo_ctw_.get_htm_pc_info();
       
-      if (crate_index == mapping::MAIN_CALO_SIDE_0_RACK)
+      if (crate_index == mapping::MAIN_CALO_SIDE_0_CRATE || crate_index == mapping::MAIN_CALO_SIDE_1_CRATE)
 	{
-	  side = 0;
 	  for (int izone = 0; izone < mapping::NUMBER_OF_CALO_TRIGGER_ZONES; izone++)
 	    {
 	      if (ctw_zoning_bitset_word.test(izone) == true)
 		{
-		  // _level_one_calo_trigger_info_[side][izone].set(izone, 1);
+		  _level_one_calo_trigger_info_[crate_index][izone] = true;
 		}
 	    }
-	  
-	  
 	}
 
-      else if (crate_index == mapping::MAIN_CALO_SIDE_1_RACK)
+      else if (crate_index == mapping::XWALL_CALO_CRATE)
 	{
-	  side = 1;
-
-	}
-
-      else if (crate_index == mapping::XWALL_CALO_RACK)
-	{
-
+	  for (int izone = calo::ctw::ZONING_XWALL_BIT0; izone < mapping::NUMBER_OF_XWALL_CALO_TRIGGER_ZONES; izone++)
+	    {
+	      switch (izone)
+		{
+		case calo::ctw::ZONING_XWALL_BIT0 :
+		  if (ctw_zoning_bitset_word.test(izone) == true)
+		    {
+		      _level_one_calo_trigger_info_[0][0] = true;
+		    }
+		  break;
+		case calo::ctw::ZONING_XWALL_BIT1 :
+		  if (ctw_zoning_bitset_word.test(izone) == true)
+		    {
+		      _level_one_calo_trigger_info_[0][9] = true;
+		    }
+		  break;
+		case calo::ctw::ZONING_XWALL_BIT2 :
+		  if (ctw_zoning_bitset_word.test(izone) == true)
+		    {
+		      _level_one_calo_trigger_info_[1][9] = true;
+		    }
+		  break;
+		case calo::ctw::ZONING_XWALL_BIT3 :
+		  if (ctw_zoning_bitset_word.test(izone) == true)
+		    {
+		      _level_one_calo_trigger_info_[1][0] = true;
+		    }
+		  break;
+		default :
+		  break;
+		}
+	    }
 	}
 
       else
@@ -105,6 +196,18 @@ namespace snemo {
 	  DT_THROW(std::logic_error, "Crate index '"<< crate_index << "' is not defined, check your value ! ");
 	}
 
+      if (_total_calo_multiplicity_ != 0)
+	{
+	  unsigned long new_multiplicity  = _total_calo_multiplicity_.to_ulong() + calo_ctw_multiplicity; 
+	  std::bitset<CALO_LEVEL_ONE_MULT_BITSET_SIZE> temporary_calo_ctw_multiplicity_bitset(new_multiplicity);
+	  _total_calo_multiplicity_ = temporary_calo_ctw_multiplicity_bitset;
+	}
+
+      else
+	{
+	  std::bitset<CALO_LEVEL_ONE_MULT_BITSET_SIZE> temporary_calo_ctw_multiplicity_bitset(calo_ctw_multiplicity);
+	  _total_calo_multiplicity_ = temporary_calo_ctw_multiplicity_bitset;
+	}
       return;
     }
 
@@ -121,11 +224,13 @@ namespace snemo {
 	{
 	  std::vector<datatools::handle<calo_ctw> > calo_ctw_list_per_clocktick;
 	  calo_ctw_data_.get_list_of_calo_ctw_per_clocktick(iclocktick, calo_ctw_list_per_clocktick);
-	  for (int isize = 0; isize < calo_ctw_list_per_clocktick.size(); isize ++)
+	  for (int isize = 0; isize < calo_ctw_list_per_clocktick.size(); isize++)
 	    {
 	      build_calo_level_one_bitsets(calo_ctw_list_per_clocktick[isize].get());	      
- 
 	    } // end of isize 
+	  std::clog <<"*************************** Clocktick = " << iclocktick << "***************************" << std::endl << std::endl;;
+	  display_calo_trigger_info();
+	  reset_trigger_info();
 	} // end of iclocktick
       return;
     }

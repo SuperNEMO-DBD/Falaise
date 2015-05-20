@@ -19,6 +19,7 @@
 
 // This project : 
 #include <snemo/digitization/mapping.h>
+#include <snemo/digitization/calo_ctw_constants.h>
 
 namespace snemo {
   
@@ -51,40 +52,7 @@ namespace snemo {
 				TW_XT_PC     = datatools::bit_mask::bit13,  //!< External trigger per crate (XT-PC)
 				TW_CONTROL   = datatools::bit_mask::bit14 | datatools::bit_mask::bit15 | datatools::bit_mask::bit16 | datatools::bit_mask::bit17 //!< Control bits (4 bits)
 			};
-			
-			/// Position of each bits in the CTW bitset word (18 bits)
-			enum tw_bit_pos {
-				HTM_PC_BIT0  = 0,
-				HTM_PC_BIT1  = 1,
-				ZONING_BIT0  = 2,
-				ZONING_BIT1  = 3,
-				ZONING_BIT2  = 4,
-				ZONING_BIT3  = 5,
-				ZONING_BIT4  = 6,
-				ZONING_BIT5  = 7,
-				ZONING_BIT6  = 8,
-				ZONING_BIT7  = 9,
-				ZONING_BIT8  = 10,
-				ZONING_BIT9  = 11,
-				LTO_PC_BIT   = 12,
-				XT_PC_BIT    = 13,
-				CONTROL_BIT0 = 14,
-				CONTROL_BIT1 = 15,
-				CONTROL_BIT2 = 16,
-				CONTROL_BIT3 = 17
-			};
-			
-			enum tw_bitset_size {
-				HTM_BITSET_SIZE     = 2,
-				ZONING_BITSET_SIZE  = 10,
-				LTO_BITSET_SIZE     = 1,
-				XT_BITSET_SIZE      = 1,
-				CONTROL_BITSET_SIZE = 4
-			};
-
-			/// Maximum number of FEB by control board (CB)
-			static const unsigned int MAX_NUMBER_OF_FEB = 20;
-
+ 
       /// Default constructor
       calo_ctw();
 
@@ -135,10 +103,10 @@ namespace snemo {
 			bool is_htm() const;
 
 			/// Return the complete zoning word
-			void get_zoning_word(std::bitset<ZONING_BITSET_SIZE> & zoning_word_) const;
+			void get_zoning_word(std::bitset<calo::ctw::ZONING_BITSET_SIZE> & zoning_word_) const;
 
 			/// Set the zoning word 
-			void set_zoning_word(std::bitset<ZONING_BITSET_SIZE> & zoning_word_);
+			void set_zoning_word(std::bitset<calo::ctw::ZONING_BITSET_SIZE> & zoning_word_);
 
 			/// Set one bit of the zoning word
 			void set_zoning_bit(int bit_pos_, bool value_);
@@ -159,10 +127,10 @@ namespace snemo {
 			bool is_xt() const;
 
 			/// Return the complete control word
-			void get_control_word(std::bitset<CONTROL_BITSET_SIZE> & control_word_) const;
+			void get_control_word(std::bitset<calo::ctw::CONTROL_BITSET_SIZE> & control_word_) const;
 
 			/// Set the complete control word
-			void set_control_word(std::bitset<CONTROL_BITSET_SIZE> & control_word_);
+			void set_control_word(std::bitset<calo::ctw::CONTROL_BITSET_SIZE> & control_word_);
  
 			/// Check the lock status
       bool is_locked() const;
@@ -198,7 +166,7 @@ namespace snemo {
 			bool _locked_;            //!< CTW lock flag
 			wall_type _wall_;         //!< The type of the crate (from main wall or X Wall - Gamma veto)
 			int32_t _clocktick_25ns_; //!< The timestamp of the trigger primitive in main clock units (40 MHz)
-			std::bitset<18> _ctw_;    //!< The crate trigger word
+			std::bitset<calo::ctw::FULL_BITSET_SIZE> _ctw_;    //!< The crate trigger word
 
       DATATOOLS_SERIALIZATION_DECLARATION();
 

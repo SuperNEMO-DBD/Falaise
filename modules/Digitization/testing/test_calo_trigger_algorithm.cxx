@@ -47,7 +47,7 @@ int main( int  argc_ , char **argv_  )
   
 
   try {
-    std::clog << "Test program for class 'snemo::digitization::tracker_trigger_algorithm' !" << std::endl;
+    std::clog << "Test program for class 'snemo::digitization::calo_trigger_algorithm' !" << std::endl;
     int32_t seed = 314159;
     mygsl::rng random_generator;
     random_generator.initialize(seed);

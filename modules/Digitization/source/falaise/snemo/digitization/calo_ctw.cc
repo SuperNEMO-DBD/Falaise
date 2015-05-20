@@ -124,28 +124,28 @@ namespace snemo {
     void calo_ctw::set_htm_pc(unsigned int multiplicity_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, "HTM bits can't be set, calorimeter crate TW is locked ! ");
-      DT_THROW_IF(multiplicity_ > MAX_NUMBER_OF_FEB, std::logic_error, "Multiplicity value ["<< multiplicity_ << "] is not valid ! ");
+      DT_THROW_IF(multiplicity_ > mapping::NUMBER_OF_FEBS_BY_CRATE, std::logic_error, "Multiplicity value ["<< multiplicity_ << "] is not valid ! ");
 
       switch (multiplicity_)
 	{
 	case 0 :	  
-	  _ctw_.set(HTM_PC_BIT0, 0);
-	  _ctw_.set(HTM_PC_BIT1, 0);
+	  _ctw_.set(calo::ctw::HTM_PC_BIT0, 0);
+	  _ctw_.set(calo::ctw::HTM_PC_BIT1, 0);
 	  break;
 	  
 	case 1 :
-	  _ctw_.set(HTM_PC_BIT0, 1);
-	  _ctw_.set(HTM_PC_BIT1, 0);
+	  _ctw_.set(calo::ctw::HTM_PC_BIT0, 1);
+	  _ctw_.set(calo::ctw::HTM_PC_BIT1, 0);
 	  break;
 	  
 	case 2 :
-	  _ctw_.set(HTM_PC_BIT0, 0);
-	  _ctw_.set(HTM_PC_BIT1, 1);
+	  _ctw_.set(calo::ctw::HTM_PC_BIT0, 0);
+	  _ctw_.set(calo::ctw::HTM_PC_BIT1, 1);
 	  break;
 	  
 	default :
-	  _ctw_.set(HTM_PC_BIT0, 1);
-	  _ctw_.set(HTM_PC_BIT1, 1); 
+	  _ctw_.set(calo::ctw::HTM_PC_BIT0, 1);
+	  _ctw_.set(calo::ctw::HTM_PC_BIT1, 1); 
 	  break;
 	}
       _store |= STORE_CTW;
@@ -154,15 +154,15 @@ namespace snemo {
     
     unsigned int calo_ctw::get_htm_pc_info() const
     {
-      if(_ctw_.test(HTM_PC_BIT0) == 0 && _ctw_.test(HTM_PC_BIT1) == 0)
+      if(_ctw_.test(calo::ctw::HTM_PC_BIT0) == 0 && _ctw_.test(calo::ctw::HTM_PC_BIT1) == 0)
 	{      
 	  return 0;
 	}
-      else if(_ctw_.test(HTM_PC_BIT0) == 1 && _ctw_.test(HTM_PC_BIT1) == 0)
+      else if(_ctw_.test(calo::ctw::HTM_PC_BIT0) == 1 && _ctw_.test(calo::ctw::HTM_PC_BIT1) == 0)
 	{
 	  return 1;
 	}
-      else if(_ctw_.test(HTM_PC_BIT0) == 0 && _ctw_.test(HTM_PC_BIT1) == 1)
+      else if(_ctw_.test(calo::ctw::HTM_PC_BIT0) == 0 && _ctw_.test(calo::ctw::HTM_PC_BIT1) == 1)
 	{
 	  return 2;
 	}
@@ -174,31 +174,31 @@ namespace snemo {
       return get_htm_pc_info() != 0;
     }
     
-    void calo_ctw::get_zoning_word(std::bitset<ZONING_BITSET_SIZE> & zoning_word_) const
+    void calo_ctw::get_zoning_word(std::bitset<calo::ctw::ZONING_BITSET_SIZE> & zoning_word_) const
     {
       zoning_word_ = 0x0;
-      for (int i = ZONING_BIT0; i <= ZONING_BIT9; i++)
+      for (int i = calo::ctw::ZONING_BIT0; i <= calo::ctw::ZONING_BIT9; i++)
 	{
 	  if(_ctw_.test(i) == true)
 	    {
-	      zoning_word_.set(i-ZONING_BIT0,1);
+	      zoning_word_.set(i-calo::ctw::ZONING_BIT0,1);
 	    }
 	}
       return ;
     }
 
-    void calo_ctw::set_zoning_word(std::bitset<ZONING_BITSET_SIZE> & zoning_word_)
+    void calo_ctw::set_zoning_word(std::bitset<calo::ctw::ZONING_BITSET_SIZE> & zoning_word_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Zoning word can't be set, calorimeter crate TW is locked ! ");
       for (int i = 0; i < zoning_word_.size(); i++)
 	{
 	  if (zoning_word_.test(i) == true)
 	    {
-	      _ctw_.set(i + ZONING_BIT0, 1);
+	      _ctw_.set(i + calo::ctw::ZONING_BIT0, 1);
 	    }
 	  else 
 	    {
-	      _ctw_.set(i + ZONING_BIT0, 0);	      
+	      _ctw_.set(i + calo::ctw::ZONING_BIT0, 0);	      
 	    }
 	}      
       _store |= STORE_CTW;
@@ -216,11 +216,11 @@ namespace snemo {
     unsigned int calo_ctw::compute_active_zones(std::set<int> & active_zones_ ) const
     {
       unsigned int active_zone_counts = 0;
-      for (int i = ZONING_BIT0 ; i <= ZONING_BIT9 ; i++)
+      for (int i = calo::ctw::ZONING_BIT0 ; i <= calo::ctw::ZONING_BIT9 ; i++)
 	{
 	  if(_ctw_.test(i) == true)
 	    {
-	      active_zones_.insert(i-ZONING_BIT0); 
+	      active_zones_.insert(i - calo::ctw::ZONING_BIT0); 
 	      active_zone_counts++;
 	    }
 	}
@@ -230,54 +230,54 @@ namespace snemo {
     void calo_ctw::set_lto_pc_bit(bool value_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, "LTO bit can't be set, calorimeter crate TW is locked ! ");
-      _ctw_.set(LTO_PC_BIT,value_);
+      _ctw_.set(calo::ctw::LTO_PC_BIT,value_);
       _store |= STORE_CTW;
       return;
     }
     
     bool calo_ctw::is_lto() const
     {
-      return _ctw_.test(LTO_PC_BIT);
+      return _ctw_.test(calo::ctw::LTO_PC_BIT);
     }
 
     void calo_ctw::set_xt_pc_bit(bool value_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, " External bit can't be set, calorimeter crate TW is locked ! ");
-      _ctw_.set(XT_PC_BIT,value_);
+      _ctw_.set(calo::ctw::XT_PC_BIT,value_);
       _store |= STORE_CTW;
       return;
     }
     
     bool calo_ctw::is_xt() const
     {
-      return _ctw_.test(XT_PC_BIT);
+      return _ctw_.test(calo::ctw::XT_PC_BIT);
     }
 
-    void calo_ctw::get_control_word(std::bitset<CONTROL_BITSET_SIZE> & control_word_) const
+    void calo_ctw::get_control_word(std::bitset<calo::ctw::CONTROL_BITSET_SIZE> & control_word_) const
     {
       control_word_ = 0x0;
-      for (int i = CONTROL_BIT0; i <= CONTROL_BIT3; i++)
+      for (int i = calo::ctw::CONTROL_BIT0; i <= calo::ctw::CONTROL_BIT3; i++)
 	{
 	  if(_ctw_.test(i))
 	    {
-	      control_word_.set(i-CONTROL_BIT0,1);
+	      control_word_.set(i - calo::ctw::CONTROL_BIT0,1);
 	    }
 	}
       return ;
     }
 
-    void calo_ctw::set_control_word(std::bitset<CONTROL_BITSET_SIZE> & control_word_)
+    void calo_ctw::set_control_word(std::bitset<calo::ctw::CONTROL_BITSET_SIZE> & control_word_)
     {    
       DT_THROW_IF(is_locked(), std::logic_error, "Control word can't be set, calorimeter crate TW is locked ! ");
       for (int i = 0; i < control_word_.size(); i++)
 	{
 	  if (control_word_.test(i) == true)
 	    {
-	      _ctw_.set(i + CONTROL_BIT0,1);
+	      _ctw_.set(i + calo::ctw::CONTROL_BIT0,1);
 	    }
 	  else 
 	    {
-	      _ctw_.set(i + CONTROL_BIT0,0);	      
+	      _ctw_.set(i + calo::ctw::CONTROL_BIT0,0);	      
 	    }
 	}  
       _store |= STORE_CTW;

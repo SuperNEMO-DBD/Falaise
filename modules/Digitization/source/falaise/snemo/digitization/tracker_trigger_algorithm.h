@@ -219,6 +219,9 @@ namespace snemo {
       void process(const geiger_ctw_data & geiger_ctw_data_);
 			
 		protected :
+			
+			/// Process for a clocktick
+			void _process_for_a_clocktick(const std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick_);
 
 			/// Protected general process
 			void _process(const geiger_ctw_data & geiger_ctw_data_);
