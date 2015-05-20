@@ -415,6 +415,23 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::charged_particle_tracking
       ;
   }
 
+  {
+    // Description of the 'drivers' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("drivers")
+      .set_terse_description("The list of drivers id to be used")
+      .set_traits(datatools::TYPE_STRING,
+                  datatools::configuration_property_description::ARRAY)
+      .set_mandatory(false)
+      .add_example("Use Vertex Extrapolation Driver only:: \n"
+                   "                                       \n"
+                   "  drivers : string[1] = \"TOFD\"       \n"
+                   "                                       \n"
+                   )
+      ;
+  }
+
   // Invoke specific OCD support from the driver class:
   ::snemo::reconstruction::vertex_extrapolation_driver::init_ocd(ocd_);
   ::snemo::reconstruction::charge_computation_driver::init_ocd(ocd_);
@@ -428,6 +445,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::charged_particle_tracking
                                "  TTD_label                    : string = \"TTD\"                     \n"
                                "  PTD_label                    : string = \"PTD\"                     \n"
                                "  Geo_label                    : string = \"geometry\"                \n"
+                               "  drivers                      : string[3] = \"VED\" \"CCD\" \"CAD\"  \n"
                                "  VED.logging.priority         : string = \"fatal\"                   \n"
                                "  VED.use_linear_extrapolation : boolean = 0                          \n"
                                "  CCD.logging_priority         : string = \"fatal\"                   \n"

@@ -190,7 +190,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::charge_computation_driver
   ocd_.set_class_name("snemo::reconstruction::charge_computation_driver");
   ocd_.set_class_description("A driver class for electric charge computation algorithm");
   ocd_.set_class_library("Falaise_ChargedParticleTracking");
-  ocd_.set_class_documentation("This drivers determines the electric charge of the particle track. \n"
+  ocd_.set_class_documentation("This driver determines the electric charge of the particle track. \n"
                                );
 
   // Invoke specific OCD support :
