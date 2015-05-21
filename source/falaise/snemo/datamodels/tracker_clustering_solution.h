@@ -141,6 +141,9 @@ namespace snemo {
       // /// Return a non mutable reference on the container of delayed clusters
       // const cluster_col_type & get_delayed_clusters() const;
 
+      /// Check if there is some unclustered hits
+      bool has_unclustered_hits() const;
+
       /// Return a mutable reference on the container of handles on unclustered calibrated tracker hits
       hit_collection_type & grab_unclustered_hits();
 

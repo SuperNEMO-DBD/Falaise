@@ -46,6 +46,11 @@ namespace snemo {
       return _auxiliaries_;
     }
 
+    bool tracker_clustering_solution::has_unclustered_hits() const
+    {
+      return ! _unclustered_hits_.empty();
+    }
+
     tracker_clustering_solution::hit_collection_type &
     tracker_clustering_solution::grab_unclustered_hits()
     {
