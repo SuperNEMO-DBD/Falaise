@@ -75,6 +75,11 @@ namespace snemo {
       return;
     }
 
+    bool tracker_trajectory_solution::has_unfitted_clusters() const
+    {
+      return ! _unfitted_clusters_.empty();
+    }
+
     tracker_trajectory_solution::cluster_col_type & tracker_trajectory_solution::grab_unfitted_clusters()
     {
       return _unfitted_clusters_;
@@ -99,6 +104,11 @@ namespace snemo {
     const datatools::properties & tracker_trajectory_solution::get_auxiliaries() const
     {
       return _auxiliaries_;
+    }
+
+    bool tracker_trajectory_solution::has_trajectories() const
+    {
+      return ! _trajectories_.empty();
     }
 
     tracker_trajectory_solution::trajectory_col_type & tracker_trajectory_solution::grab_trajectories()

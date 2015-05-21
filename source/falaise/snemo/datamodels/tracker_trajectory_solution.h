@@ -102,6 +102,9 @@ namespace snemo {
       /// Return a non mutable reference on the container of auxiliary properties
       const datatools::properties & get_auxiliaries() const;
 
+      /// Check if there is trajectories
+      bool has_trajectories() const;
+
       /// Return a mutable reference on the container of trajectories
       trajectory_col_type & grab_trajectories();
 
@@ -110,6 +113,9 @@ namespace snemo {
 
       /// Reset the trajectories
       void invalidate_trajectories();
+
+      /// Check if there is unfitted clusters
+      bool has_unfitted_clusters() const;
 
       /// Return a mutable reference on the container of handles on unfitted clusters
       cluster_col_type & grab_unfitted_clusters();
