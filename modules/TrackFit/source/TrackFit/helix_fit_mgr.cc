@@ -1734,7 +1734,7 @@ namespace TrackFit {
           if (computed_guess_trust[i] == fit_utils::INVALID_HYPOTHESIS) message << "invalid";
           if (computed_guess_trust[i] == fit_utils::BOTTOM_HYPOTHESIS)  message << "bottom";
           if (computed_guess_trust[i] == fit_utils::TOP_HYPOTHESIS)     message << "top";
-          DT_LOG_TRACE(_logging_priority_, message);
+          DT_LOG_TRACE(_logging_priority_, message.str());
         }
       }
     }
