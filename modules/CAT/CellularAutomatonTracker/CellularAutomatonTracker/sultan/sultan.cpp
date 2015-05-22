@@ -35,8 +35,8 @@ namespace SULTAN {
     level = mybhep::NORMAL;
     m = mybhep::messenger(level);
     cell_distance  = std::numeric_limits<double>::quiet_NaN ();
-    n_layers  = std::numeric_limits<double>::quiet_NaN ();
-    n_cell_columns  = std::numeric_limits<double>::quiet_NaN ();
+    n_layers  = std::numeric_limits<size_t>::quiet_NaN ();
+    n_cell_columns  = std::numeric_limits<size_t>::quiet_NaN ();
     xsize = ysize = zsize = std::numeric_limits<double>::quiet_NaN ();
     inner_radius = outer_radius= foil_radius = std::numeric_limits<double>::quiet_NaN ();
     Emin = std::numeric_limits<double>::quiet_NaN ();
@@ -166,7 +166,7 @@ namespace SULTAN {
             planes_per_block.at (2) = 3;
           }
       }
-    
+
 
     if(SuperNemoChannel)
       {
@@ -252,11 +252,11 @@ namespace SULTAN {
     for(std::vector<topology::cluster>::iterator iclu = made_clusters_.begin(); iclu != made_clusters_.end(); ++iclu){
       *leftover_cluster_ = *iclu;
       if( leftover_cluster_->nodes_.size() < min_ncells_in_cluster ){
-	
+
 	for(std::vector<topology::node>::iterator inode=iclu->nodes_.begin(); inode!=iclu->nodes_.end(); ++inode){
 	  inode->set_ep(inode->c().ep());
 	}
-	
+
 	continue;
       }
       experimental_legendre_vector->reset();
@@ -268,7 +268,7 @@ namespace SULTAN {
 	for(std::vector<topology::node>::iterator inode=iclu->nodes_.begin(); inode!=iclu->nodes_.end(); ++inode){
 	  inode->set_ep(inode->c().ep());
 	}
-	
+
 	continue;
       }
       for(std::vector<topology::experimental_helix>::const_iterator hh = the_helices.begin(); hh!=the_helices.end(); ++hh){
@@ -295,7 +295,7 @@ namespace SULTAN {
 
     if( use_clocks )
       clock.stop(" sultan: assign_helices_to_clusters ");
-   
+
 
     return;
   }
@@ -412,7 +412,7 @@ namespace SULTAN {
 
     if( use_clocks )
       clock.stop(" sultan: assign_helices_to_sequences ");
-   
+
 
     return;
   }
@@ -874,8 +874,10 @@ namespace SULTAN {
     topology::experimental_helix best_helix;
 
     std::vector<topology::node> assigned_nodes_best;
-    double distance12, distance23, distance13;
-    int block1, block2, block3;
+    double distance12 = std::numeric_limits<double>::infinity();
+    double distance23 = std::numeric_limits<double>::infinity();
+    double distance13 = std::numeric_limits<double>::infinity();
+    int block1 = -1, block2 = -1, block3 = -1;
     double dmin1, dmin2;
     size_t min_triplet_layer;
 
@@ -933,9 +935,9 @@ namespace SULTAN {
 	    dmin2 = std::min( distance12,  distance23 );
 	    if( dmin1 == dmin2 )
 	      dmin2 = std::min( distance13,  distance23 );
-	    
+
 	    m.message(" (triplet " , inode->c().id() , ", " , jnode->c().id() , ", " , knode->c().id() , ") dmin1 " , dmin1, " dmin2 ", dmin2 , mybhep::VVERBOSE);
-	    
+
 	    if( dmin1 < dist_limit_inf || dmin1 > dist_limit_sup ) continue;
 	    if( dmin2 < dist_limit_inf || dmin2 > dist_limit_sup ) continue;
 	  }else{
