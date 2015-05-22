@@ -97,9 +97,9 @@ namespace mybhep{
   std::string reader_txt::get_record()
   {
     std::string record;
-    bool test;
-    test = getline(is_, record);
-    Assert(test>0, __FILE__,__LINE__,
+    // bool test;
+    // test = getline(is_, record);
+    Assert(!getline(is_, record), __FILE__,__LINE__,
 	   internal_logic("event in file"+fileName_+
 			  " is corrupted: Probably gone over end-of-file"));
     return record;
