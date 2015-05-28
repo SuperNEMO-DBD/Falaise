@@ -11,19 +11,34 @@ namespace snemo {
   
   namespace digitization {
     
-    struct calo_trigger_algorithm::calo_trigger_gate
+    struct calo_trigger_algorithm::_calo_trigger_gate_info_
     {
       std::bitset<CALO_ZONING_PER_SIDE_BITSET_SIZE> calo_zoning_word[mapping::NUMBER_OF_SIDES];
       std::bitset<CALO_LEVEL_ONE_MULT_BITSET_SIZE> total_calo_multiplicity;
+      std::bitset<CALO_ZONING_GVETO_BITSET_SIZE> gveto_zoning_word;
+      std::bitset<CALO_INFO_BITSET_SIZE> info_bitset; 
+
+      _calo_trigger_gate_info_()
+      {
+        calo_zoning_word[0].reset();
+        calo_zoning_word[1].reset();
+        total_calo_multiplicity.reset();
+        gveto_zoning_word.reset();
+	info_bitset.reset();
+      }
+
     };
-    
+   
     const int32_t calo_trigger_algorithm::CALO_LEVEL_ONE_MULT_BITSET_SIZE;
     const int32_t calo_trigger_algorithm::CALO_ZONING_PER_SIDE_BITSET_SIZE;
+    const int32_t calo_trigger_algorithm::CALO_ZONING_GVETO_BITSET_SIZE;
+    const int32_t calo_trigger_algorithm::CALO_INFO_BITSET_SIZE;
     
     calo_trigger_algorithm::calo_trigger_algorithm()
     {
       _initialized_ = false;
       _electronic_mapping_ = 0;
+      _calo_circular_buffer_depth_ = -1;
       return;
     }
 
@@ -54,7 +69,7 @@ namespace snemo {
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized ! ");
       DT_THROW_IF(_electronic_mapping_ == 0, std::logic_error, "Missing electronic mapping ! " );
-
+      DT_THROW_IF(_calo_circular_buffer_depth_ <= 0, std::logic_error, "Calo circular buffer depth value [" << _calo_circular_buffer_depth_ << "] is missing ! ");
       _initialized_ = true;
       return;
     }
@@ -69,7 +84,10 @@ namespace snemo {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Calo trigger algorithm is not initialized, it can't be reset ! ");
       _initialized_ = false;
       _electronic_mapping_ = 0;
+      _calo_circular_buffer_depth_ = -1;
       reset_trigger_info();
+      _calo_gate_circular_buffer_.reset();
+     
       return;
     }
     
@@ -131,14 +149,14 @@ namespace snemo {
 	      std::clog << "   |                                                                                                                 |" << std::endl;
 	      std::clog << "   |_________________________________________________________________________________________________________________|" << std::endl;
 	    }
-
+	  
 	} // end of iside
       std::clog << std::endl;
       return;
     }
- 
+    
     void calo_trigger_algorithm::build_calo_level_one_bitsets(const calo_ctw & my_calo_ctw_)
-    {
+    {  
       uint32_t crate_index = my_calo_ctw_.get_geom_id().get(mapping::CRATE_INDEX);
       std::bitset<calo::ctw::ZONING_BITSET_SIZE> ctw_zoning_bitset_word;
       my_calo_ctw_.get_zoning_word(ctw_zoning_bitset_word);
@@ -205,9 +223,42 @@ namespace snemo {
 
       else
 	{
-	  std::bitset<CALO_LEVEL_ONE_MULT_BITSET_SIZE> temporary_calo_ctw_multiplicity_bitset(calo_ctw_multiplicity);
+          std::bitset<CALO_LEVEL_ONE_MULT_BITSET_SIZE> temporary_calo_ctw_multiplicity_bitset(calo_ctw_multiplicity);
 	  _total_calo_multiplicity_ = temporary_calo_ctw_multiplicity_bitset;
 	}
+      return;
+    }
+    
+    void calo_trigger_algorithm::set_calo_circular_buffer_depth(unsigned int & calo_circular_buffer_depth_)
+    {
+      DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized, calo circular buffer depth can't be set ! ");
+      _calo_circular_buffer_depth_ = calo_circular_buffer_depth_;
+      std::clog << "DEBUG *********** IN SET  :_calo_circular_buffer_depth_ = " <<  _calo_circular_buffer_depth_ << std::endl;
+      return;
+    }
+    
+    void calo_trigger_algorithm::build_calo_trigger_gate_info()
+    {
+      std::clog << "debug :_calo_circular_buffer_depth_ = " <<  _calo_circular_buffer_depth_ << std::endl;
+      _calo_gate_circular_buffer_.reset(new buffer_type(_calo_circular_buffer_depth_));
+      _calo_trigger_gate_info_ my_struct;
+   
+      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+	{
+	  for (int izones = 0; izones < mapping::NUMBER_OF_CALO_TRIGGER_ZONES; izones++)
+	    {
+	      if (_level_one_calo_trigger_info_[iside][izones] == true)
+		{
+		  my_struct.calo_zoning_word[iside].set(izones, 1);
+		}
+	    } // end of izones
+	  std::clog << "DEBUG : test bitset struct = " << my_struct.calo_zoning_word[iside] << std::endl;
+	} // end of iside
+      
+      my_struct.total_calo_multiplicity = _total_calo_multiplicity_;
+      
+	
+      _calo_gate_circular_buffer_->push_back(my_struct);
       return;
     }
 
@@ -224,11 +275,13 @@ namespace snemo {
 	{
 	  std::vector<datatools::handle<calo_ctw> > calo_ctw_list_per_clocktick;
 	  calo_ctw_data_.get_list_of_calo_ctw_per_clocktick(iclocktick, calo_ctw_list_per_clocktick);
+
 	  for (int isize = 0; isize < calo_ctw_list_per_clocktick.size(); isize++)
 	    {
 	      build_calo_level_one_bitsets(calo_ctw_list_per_clocktick[isize].get());	      
 	    } // end of isize 
-	  std::clog <<"*************************** Clocktick = " << iclocktick << "***************************" << std::endl << std::endl;;
+	  std::clog <<"*************************** Clocktick = " << iclocktick << "***************************" << std::endl << std::endl;
+	  build_calo_trigger_gate_info();
 	  display_calo_trigger_info();
 	  reset_trigger_info();
 	} // end of iclocktick

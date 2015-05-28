@@ -145,6 +145,8 @@ int main( int  argc_ , char **argv_  )
 		my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
 		snemo::digitization::calo_trigger_algorithm my_calo_algo;
 		my_calo_algo.set_electronic_mapping(my_e_mapping);
+		unsigned int calo_circular_buffer_depth = 4;
+		my_calo_algo.set_calo_circular_buffer_depth(calo_circular_buffer_depth);
 		my_calo_algo.initialize();
 
 	 	my_calo_algo.process(my_calo_ctw_data);

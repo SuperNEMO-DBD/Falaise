@@ -31,8 +31,6 @@ namespace snemo {
     {
     public : 
 			
-			struct calo_trigger_gate;
-			
 			enum calo_zoning_id_index {
 				ZONE_0_INDEX = 0,
 				ZONE_1_INDEX = 1,
@@ -74,6 +72,12 @@ namespace snemo {
 
 			/// Size of the zoning bitset for a side of the calorimeter
 			static const int32_t CALO_ZONING_PER_SIDE_BITSET_SIZE = 10;
+			
+			/// Size of the zoning bitset for gamma veto
+			static const int32_t CALO_ZONING_GVETO_BITSET_SIZE = 4;
+
+			/// Size of the information bitset containing LT bit, XT bit and spare bits (up to 4)
+			static const int32_t CALO_INFO_BITSET_SIZE = 6;
 
       /// Default constructor
       calo_trigger_algorithm();
@@ -102,8 +106,13 @@ namespace snemo {
 			/// Display the level one calo trigger info (bitsets)
 			void display_calo_trigger_info();
     
+
 			/// Build the level one calo trigger primitive bitsets
 			void build_calo_level_one_bitsets(const calo_ctw & my_calo_ctw_);
+
+
+			void set_calo_circular_buffer_depth(unsigned int & calo_circular_buffer_depth_);
+			void build_calo_trigger_gate_info();
 			
       /// General process
       void process(const calo_ctw_data & calo_ctw_data_);
@@ -114,13 +123,17 @@ namespace snemo {
 			void _process(const calo_ctw_data & calo_ctw_data_);
 
     private :
-     
-			typedef boost::circular_buffer<calo_trigger_gate> buffer_type;
+
+			struct _calo_trigger_gate_info_; // Intermediate struct for level zero to level one trigger info
+
+			typedef boost::circular_buffer<_calo_trigger_gate_info_> buffer_type;
       // Configuration :
       bool _initialized_; //!< Initialization flag
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
+			unsigned int _calo_circular_buffer_depth_;
 
-      // Data :
+      // Data :		
+     
 			bool _level_one_calo_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_CALO_TRIGGER_ZONES]; //!< Table of 2x10 containing 2 bits bitset representing the level one calo trigger info
 			
 			std::bitset<CALO_LEVEL_ONE_MULT_BITSET_SIZE> _total_calo_multiplicity_; //!< Total multiplicity of calo who passed the HT
