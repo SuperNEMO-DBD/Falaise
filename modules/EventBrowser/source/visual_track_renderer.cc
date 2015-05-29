@@ -350,14 +350,14 @@ namespace snemo {
             // Prepare ROOT polyline:
             TPolyLine3D * track = 0;
             if (a_pattern.get_pattern_id() == snemo::datamodel::helix_trajectory_pattern::pattern_id()) {
-              const snemo::datamodel::helix_trajectory_pattern * a_helix_pattern
-                = dynamic_cast<const snemo::datamodel::helix_trajectory_pattern *>(&a_pattern);
-              const geomtools::helix_3d & a_helix = a_helix_pattern->get_helix();
+              const snemo::datamodel::helix_trajectory_pattern & a_helix_pattern
+                = dynamic_cast<const snemo::datamodel::helix_trajectory_pattern &>(a_pattern);
+              const geomtools::helix_3d & a_helix = a_helix_pattern.get_helix();
               track = base_renderer::make_helix_track(a_helix);
             } else if (a_pattern.get_pattern_id() == snemo::datamodel::line_trajectory_pattern::pattern_id()) {
-              const snemo::datamodel::line_trajectory_pattern * a_line_pattern
-                = dynamic_cast<const snemo::datamodel::line_trajectory_pattern *>(&a_pattern);
-              const geomtools::line_3d & a_line = a_line_pattern->get_segment();
+              const snemo::datamodel::line_trajectory_pattern & a_line_pattern
+                = dynamic_cast<const snemo::datamodel::line_trajectory_pattern &>(a_pattern);
+              const geomtools::line_3d & a_line = a_line_pattern.get_segment();
               track = base_renderer::make_line_track(a_line);
             } else {
               DT_LOG_WARNING(options_manager::get_instance().get_logging_priority(),
