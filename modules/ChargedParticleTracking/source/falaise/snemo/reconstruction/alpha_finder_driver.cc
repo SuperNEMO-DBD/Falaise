@@ -659,7 +659,7 @@ namespace snemo {
           .set_explicit_unit(true)
           .set_unit_label("length")
           .set_unit_symbol("cm")
-          .set_default_value_real(21.)
+          .set_default_value_real(30.)
           .add_example("Set the default value::                                          \n"
                        "                                                                 \n"
                        "  AFD.minimal_cluster_z_search_distance : real as length = 30 cm \n"
