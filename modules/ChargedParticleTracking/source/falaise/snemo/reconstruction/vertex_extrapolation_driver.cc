@@ -209,9 +209,9 @@ namespace snemo {
       // Add a property into 'blur_spot' auxiliaries to refer to the hit calo:
       std::string calo_category_flag;
       if (a_pattern_id == snemo::datamodel::line_trajectory_pattern::pattern_id()) {
-        const snemo::datamodel::line_trajectory_pattern * ptr_line
-          = dynamic_cast<const snemo::datamodel::line_trajectory_pattern *>(&a_track_pattern);
-        const geomtools::line_3d & a_line = ptr_line->get_segment();
+        const snemo::datamodel::line_trajectory_pattern & ltp
+          = dynamic_cast<const snemo::datamodel::line_trajectory_pattern &>(a_track_pattern);
+        const geomtools::line_3d & a_line = ltp.get_segment();
         const geomtools::vector_3d & first = a_line.get_first();
         const geomtools::vector_3d & last  = a_line.get_last();
         const geomtools::vector_3d direction = first - last;
@@ -298,16 +298,22 @@ namespace snemo {
         if (_use_vertices_[jt1->second]) {
           a_mutable_line->set_first(jt1->first);
           vertices.push_back(std::make_pair(jt1->second, jt1->first));
+        } else {
+          vertices.push_back(std::make_pair(snemo::datamodel::particle_track::vertex_on_wire_label(),
+                                            a_line.get_first()));
         }
         if (_use_vertices_[jt2->second]) {
           a_mutable_line->set_last(jt2->first);
           vertices.push_back(std::make_pair(jt2->second, jt2->first));
+        } else {
+          vertices.push_back(std::make_pair(snemo::datamodel::particle_track::vertex_on_wire_label(),
+                                            a_line.get_last()));
         }
       }// end of line pattern
       else if (a_pattern_id == snemo::datamodel::helix_trajectory_pattern::pattern_id()) {
-        const snemo::datamodel::helix_trajectory_pattern * ptr_helix
-          = dynamic_cast<const snemo::datamodel::helix_trajectory_pattern *>(&a_track_pattern);
-        const geomtools::helix_3d & a_helix = ptr_helix->get_helix();
+        const snemo::datamodel::helix_trajectory_pattern & htp
+          = dynamic_cast<const snemo::datamodel::helix_trajectory_pattern &>(a_track_pattern);
+        const geomtools::helix_3d & a_helix = htp.get_helix();
 
         // Extract helix parameters
         const geomtools::vector_3d & hcenter = a_helix.get_center();
@@ -427,6 +433,9 @@ namespace snemo {
           if (_use_vertices_[category] && new_length < length) {
             a_mutable_helix->set_t1(new_ts.first);
             vertices.push_back(std::make_pair(category, a_mutable_helix->get_first()));
+          } else {
+            vertices.push_back(std::make_pair(snemo::datamodel::particle_track::vertex_on_wire_label(),
+                                              a_helix.get_first()));
           }
         }
         if (datatools::is_valid(new_ts.second)) {
@@ -435,6 +444,9 @@ namespace snemo {
           if (_use_vertices_[category] && new_length < length) {
             a_mutable_helix->set_t2(new_ts.second);
             vertices.push_back(std::make_pair(category, a_mutable_helix->get_last()));
+          } else {
+            vertices.push_back(std::make_pair(snemo::datamodel::particle_track::vertex_on_wire_label(),
+                                              a_helix.get_last()));
           }
         }
       }// end of helix pattern
