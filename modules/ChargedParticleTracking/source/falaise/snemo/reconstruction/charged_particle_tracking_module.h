@@ -58,6 +58,7 @@ namespace snemo {
     class vertex_extrapolation_driver;
     class charge_computation_driver;
     class calorimeter_association_driver;
+    class alpha_finder_driver;
 
     /// \brief Charged particle tracking module
     class charged_particle_tracking_module : public dpp::base_module
@@ -112,6 +113,9 @@ namespace snemo {
 
       /// Calorimeter Association Driver :
       boost::scoped_ptr<snemo::reconstruction::calorimeter_association_driver> _CAD_;
+
+      /// Alpha Finder Driver :
+      boost::scoped_ptr<snemo::reconstruction::alpha_finder_driver> _AFD_;
 
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(charged_particle_tracking_module);

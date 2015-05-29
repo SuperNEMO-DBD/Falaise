@@ -25,6 +25,7 @@ list(APPEND FalaiseChargedParticleTrackingPlugin_HEADERS
   source/falaise/snemo/reconstruction/charge_computation_driver.h
   source/falaise/snemo/reconstruction/vertex_extrapolation_driver.h
   source/falaise/snemo/reconstruction/calorimeter_association_driver.h
+  source/falaise/snemo/reconstruction/alpha_finder_driver.h
   source/falaise/snemo/reconstruction/charged_particle_tracking_module.h)
 
 # - Sources:
@@ -32,6 +33,7 @@ list(APPEND FalaiseChargedParticleTrackingPlugin_SOURCES
   source/falaise/snemo/reconstruction/charge_computation_driver.cc
   source/falaise/snemo/reconstruction/vertex_extrapolation_driver.cc
   source/falaise/snemo/reconstruction/calorimeter_association_driver.cc
+  source/falaise/snemo/reconstruction/alpha_finder_driver.cc
   source/falaise/snemo/reconstruction/charged_particle_tracking_module.cc)
 
 ############################################################################################

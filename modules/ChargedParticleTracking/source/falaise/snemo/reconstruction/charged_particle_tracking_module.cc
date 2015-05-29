@@ -26,6 +26,7 @@
 #include <snemo/reconstruction/vertex_extrapolation_driver.h>
 #include <snemo/reconstruction/charge_computation_driver.h>
 #include <snemo/reconstruction/calorimeter_association_driver.h>
+#include <snemo/reconstruction/alpha_finder_driver.h>
 
 namespace snemo {
 
@@ -130,6 +131,13 @@ namespace snemo {
           datatools::properties CAD_config;
           setup_.export_and_rename_starting_with(CAD_config, a_driver_name + ".", "");
           _CAD_->initialize(CAD_config);
+        } else if (a_driver_name == snemo::reconstruction::alpha_finder_driver::get_id()) {
+          // Initialize Alpha Finder Driver
+          _AFD_.reset(new snemo::reconstruction::alpha_finder_driver);
+          _AFD_->set_geometry_manager(get_geometry_manager());
+          datatools::properties AFD_config;
+          setup_.export_and_rename_starting_with(AFD_config, a_driver_name + ".", "");
+          _AFD_->initialize(AFD_config);
         } else {
           DT_THROW_IF(true, std::logic_error, "Driver '" << a_driver_name << "' does not exist !");
         }
@@ -303,6 +311,9 @@ namespace snemo {
         particle_track_data_.grab_non_associated_calorimeters().push_back(*ihit);
         ihit = std::find_if(++ihit, chits.end(), pred_via_handle);
       }
+
+      // Alpha finder
+      if (_AFD_) _AFD_->process(tracker_trajectory_data_, particle_track_data_);
 
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");
       return;
