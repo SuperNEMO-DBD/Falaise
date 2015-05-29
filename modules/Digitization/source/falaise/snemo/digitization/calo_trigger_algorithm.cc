@@ -10,25 +10,7 @@
 namespace snemo {
   
   namespace digitization {
-    
-    struct calo_trigger_algorithm::_calo_trigger_gate_info_
-    {
-      std::bitset<CALO_ZONING_PER_SIDE_BITSET_SIZE> calo_zoning_word[mapping::NUMBER_OF_SIDES];
-      std::bitset<CALO_LEVEL_ONE_MULT_BITSET_SIZE> total_calo_multiplicity;
-      std::bitset<CALO_ZONING_GVETO_BITSET_SIZE> gveto_zoning_word;
-      std::bitset<CALO_INFO_BITSET_SIZE> info_bitset; 
-
-      _calo_trigger_gate_info_()
-      {
-        calo_zoning_word[0].reset();
-        calo_zoning_word[1].reset();
-        total_calo_multiplicity.reset();
-        gveto_zoning_word.reset();
-	info_bitset.reset();
-      }
-
-    };
-   
+     
     const int32_t calo_trigger_algorithm::CALO_LEVEL_ONE_MULT_BITSET_SIZE;
     const int32_t calo_trigger_algorithm::CALO_ZONING_PER_SIDE_BITSET_SIZE;
     const int32_t calo_trigger_algorithm::CALO_ZONING_GVETO_BITSET_SIZE;
@@ -55,6 +37,13 @@ namespace snemo {
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized, electronic mapping can't be set ! ");
       _electronic_mapping_ = & my_electronic_mapping_;
+      return;
+    }
+    
+    void calo_trigger_algorithm::set_calo_circular_buffer_depth(unsigned int & calo_circular_buffer_depth_)
+    {
+      DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized, calo circular buffer depth can't be set ! ");
+      _calo_circular_buffer_depth_ = calo_circular_buffer_depth_;
       return;
     }
 
@@ -87,7 +76,6 @@ namespace snemo {
       _calo_circular_buffer_depth_ = -1;
       reset_trigger_info();
       _calo_gate_circular_buffer_.reset();
-     
       return;
     }
     
@@ -157,50 +145,42 @@ namespace snemo {
     
     void calo_trigger_algorithm::build_calo_level_one_bitsets(const calo_ctw & my_calo_ctw_)
     {  
-      uint32_t crate_index = my_calo_ctw_.get_geom_id().get(mapping::CRATE_INDEX);
+      uint32_t crate_index = my_calo_ctw_.get_geom_id().get(mapping::CRATE_INDEX);  
+      DT_THROW_IF(crate_index < 0 || crate_index > 2, std::logic_error, "Crate index '"<< crate_index << "' is not defined, check your value ! ");
+      
       std::bitset<calo::ctw::ZONING_BITSET_SIZE> ctw_zoning_bitset_word;
       my_calo_ctw_.get_zoning_word(ctw_zoning_bitset_word);
-      unsigned long calo_ctw_multiplicity  = my_calo_ctw_.get_htm_pc_info();
-      
-      if (crate_index == mapping::MAIN_CALO_SIDE_0_CRATE || crate_index == mapping::MAIN_CALO_SIDE_1_CRATE)
-	{
-	  for (int izone = 0; izone < mapping::NUMBER_OF_CALO_TRIGGER_ZONES; izone++)
-	    {
-	      if (ctw_zoning_bitset_word.test(izone) == true)
-		{
-		  _level_one_calo_trigger_info_[crate_index][izone] = true;
-		}
-	    }
-	}
 
-      else if (crate_index == mapping::XWALL_CALO_CRATE)
+      unsigned long calo_ctw_multiplicity  = my_calo_ctw_.get_htm_pc_info();
+      if (crate_index == mapping::XWALL_CALO_CRATE)
 	{
-	  for (int izone = calo::ctw::ZONING_XWALL_BIT0; izone < mapping::NUMBER_OF_XWALL_CALO_TRIGGER_ZONES; izone++)
+	  for (int izone = calo::ctw::ZONING_XWALL_BIT0; izone < (calo::ctw::ZONING_XWALL_BIT0 + mapping::NUMBER_OF_XWALL_CALO_TRIGGER_ZONES); izone++)
 	    {
 	      switch (izone)
 		{
 		case calo::ctw::ZONING_XWALL_BIT0 :
-		  if (ctw_zoning_bitset_word.test(izone) == true)
-		    {
+		  if (ctw_zoning_bitset_word.test(izone - calo::ctw::ZONING_XWALL_BIT0) == true)
+		    {		      
 		      _level_one_calo_trigger_info_[0][0] = true;
 		    }
 		  break;
 		case calo::ctw::ZONING_XWALL_BIT1 :
-		  if (ctw_zoning_bitset_word.test(izone) == true)
+		  if (ctw_zoning_bitset_word.test(izone - calo::ctw::ZONING_XWALL_BIT0) == true)
 		    {
 		      _level_one_calo_trigger_info_[0][9] = true;
 		    }
 		  break;
 		case calo::ctw::ZONING_XWALL_BIT2 :
-		  if (ctw_zoning_bitset_word.test(izone) == true)
+		  if (ctw_zoning_bitset_word.test(izone - calo::ctw::ZONING_XWALL_BIT0) == true)
 		    {
-		      _level_one_calo_trigger_info_[1][9] = true;
+		      _level_one_calo_trigger_info_[1][0] = true;
 		    }
 		  break;
 		case calo::ctw::ZONING_XWALL_BIT3 :
-		  if (ctw_zoning_bitset_word.test(izone) == true)
+		  if (ctw_zoning_bitset_word.test(izone - calo::ctw::ZONING_XWALL_BIT0) == true)
 		    {
-		      _level_one_calo_trigger_info_[1][0] = true;
+		      
+		      _level_one_calo_trigger_info_[1][9] = true;
 		    }
 		  break;
 		default :
@@ -209,10 +189,28 @@ namespace snemo {
 	    }
 	}
 
-      else
+      else // (crate_index == mapping::MAIN_CALO_SIDE_0_CRATE || crate_index == mapping::MAIN_CALO_SIDE_1_CRATE)
 	{
-	  DT_THROW(std::logic_error, "Crate index '"<< crate_index << "' is not defined, check your value ! ");
+	  for (int izone = 0; izone < mapping::NUMBER_OF_CALO_TRIGGER_ZONES; izone++)
+	    {
+	      if (ctw_zoning_bitset_word.test(izone) == true)
+	  	{
+	  	  _level_one_calo_trigger_info_[crate_index][izone] = true;
+	  	}
+	    }  
 	}
+      
+      if (my_calo_ctw_.is_lto()) _calo_other_info_bitset_.set(LT_INFO_BIT, 1);
+      if (my_calo_ctw_.is_xt()) _calo_other_info_bitset_.set(XT_INFO_BIT, 1);
+      std::bitset<calo::ctw::CONTROL_BITSET_SIZE> calo_control_word;
+      my_calo_ctw_.get_control_word(calo_control_word);
+      for (int i = 0; i < calo::ctw::CONTROL_BITSET_SIZE; i++)
+      	{
+      	  if (calo_control_word.test(i) == true)
+      	    {
+      	      _calo_other_info_bitset_.set(i+CONTROL_INFO_BIT_0);
+      	    }
+      	}
 
       if (_total_calo_multiplicity_ != 0)
 	{
@@ -225,42 +223,19 @@ namespace snemo {
 	{
           std::bitset<CALO_LEVEL_ONE_MULT_BITSET_SIZE> temporary_calo_ctw_multiplicity_bitset(calo_ctw_multiplicity);
 	  _total_calo_multiplicity_ = temporary_calo_ctw_multiplicity_bitset;
-	}
+	}	
+
       return;
     }
     
-    void calo_trigger_algorithm::set_calo_circular_buffer_depth(unsigned int & calo_circular_buffer_depth_)
+    void calo_trigger_algorithm::build_output_data_structure()
     {
-      DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized, calo circular buffer depth can't be set ! ");
-      _calo_circular_buffer_depth_ = calo_circular_buffer_depth_;
-      std::clog << "DEBUG *********** IN SET  :_calo_circular_buffer_depth_ = " <<  _calo_circular_buffer_depth_ << std::endl;
-      return;
-    }
-    
-    void calo_trigger_algorithm::build_calo_trigger_gate_info()
-    {
-      std::clog << "debug :_calo_circular_buffer_depth_ = " <<  _calo_circular_buffer_depth_ << std::endl;
       _calo_gate_circular_buffer_.reset(new buffer_type(_calo_circular_buffer_depth_));
-      _calo_trigger_gate_info_ my_struct;
-   
-      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
-	{
-	  for (int izones = 0; izones < mapping::NUMBER_OF_CALO_TRIGGER_ZONES; izones++)
-	    {
-	      if (_level_one_calo_trigger_info_[iside][izones] == true)
-		{
-		  my_struct.calo_zoning_word[iside].set(izones, 1);
-		}
-	    } // end of izones
-	  std::clog << "DEBUG : test bitset struct = " << my_struct.calo_zoning_word[iside] << std::endl;
-	} // end of iside
-      
-      my_struct.total_calo_multiplicity = _total_calo_multiplicity_;
-      
-	
+      output_data my_struct;
+
       _calo_gate_circular_buffer_->push_back(my_struct);
-      return;
     }
+    
 
     void calo_trigger_algorithm::process(const calo_ctw_data & calo_ctw_data_)
     {
@@ -271,6 +246,7 @@ namespace snemo {
 
     void calo_trigger_algorithm::_process(const calo_ctw_data & calo_ctw_data_)
     { 
+      reset_trigger_info();
       for(int32_t iclocktick = calo_ctw_data_.get_clocktick_min(); iclocktick <= calo_ctw_data_.get_clocktick_max(); iclocktick++)
 	{
 	  std::vector<datatools::handle<calo_ctw> > calo_ctw_list_per_clocktick;
@@ -278,10 +254,9 @@ namespace snemo {
 
 	  for (int isize = 0; isize < calo_ctw_list_per_clocktick.size(); isize++)
 	    {
-	      build_calo_level_one_bitsets(calo_ctw_list_per_clocktick[isize].get());	      
+	      build_calo_level_one_bitsets(calo_ctw_list_per_clocktick[isize].get());
 	    } // end of isize 
 	  std::clog <<"*************************** Clocktick = " << iclocktick << "***************************" << std::endl << std::endl;
-	  build_calo_trigger_gate_info();
 	  display_calo_trigger_info();
 	  reset_trigger_info();
 	} // end of iclocktick

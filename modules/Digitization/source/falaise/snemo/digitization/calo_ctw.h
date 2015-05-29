@@ -37,13 +37,6 @@ namespace snemo {
 				STORE_CTW            = datatools::bit_mask::bit05  //!< Serialization mask for the TP
       };
 
-			/// \brief Type of wall 
-    	enum wall_type {
-				INVALID_WALL = 0, //!< Undefined value
-				MAIN_WALL    = 1, //!< Calorimeter main wall
-				XG_WALL      = 2	//!< Calorimeter gamma-veto and X-wall
-			};
-
       /// \brief Masks to select specific bits in the calo crate trigger word
       enum tw_mask_type {
 				TW_HTM_PC    = datatools::bit_mask::bit00 | datatools::bit_mask::bit01,  //!< High threshold multiplicity per crate (HTM-PC)
@@ -62,27 +55,7 @@ namespace snemo {
 			/// Set the header with valid values
 			void set_header(int32_t hit_id_,
 											const geomtools::geom_id & electronic_id_,	 
-											int32_t clocktick_25ns_,
-											wall_type wall_);	
-
-			/// Set the wall type 
-			/// @param type_ The type of wall associated to a ctw
-			void set_wall(wall_type type_);
-
-			/// Return the wall type
-			wall_type get_wall() const;
-
-			/// Check if the ctw come from main wall
-			bool is_main_wall() const;
-
-			/// Check if the ctw come from X-wall or gamma-veto
-			bool is_xg_wall() const;
-
-			/// Set the wall type as main wall
-			void set_main_wall();
-
-			/// Set the wall type as Gamma-veto / X-wall
-			void set_xg_wall();
+											int32_t clocktick_25ns_);
 
 		  /// Return the timestamp of the calo crate trigger word 
 			int32_t get_clocktick_25ns() const;
@@ -132,6 +105,12 @@ namespace snemo {
 			/// Set the complete control word
 			void set_control_word(std::bitset<calo::ctw::CONTROL_BITSET_SIZE> & control_word_);
  
+			/// Return the complete ctw word
+			void get_full_word(std::bitset<calo::ctw::FULL_BITSET_SIZE> & full_word_) const;
+
+			/// Set the complete ctw word
+			void set_full_word(std::bitset<calo::ctw::FULL_BITSET_SIZE> & control_word_);
+			
 			/// Check the lock status
       bool is_locked() const;
 
@@ -164,7 +143,6 @@ namespace snemo {
     private : 
 
 			bool _locked_;            //!< CTW lock flag
-			wall_type _wall_;         //!< The type of the crate (from main wall or X Wall - Gamma veto)
 			int32_t _clocktick_25ns_; //!< The timestamp of the trigger primitive in main clock units (40 MHz)
 			std::bitset<calo::ctw::FULL_BITSET_SIZE> _ctw_;    //!< The crate trigger word
 

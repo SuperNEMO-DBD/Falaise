@@ -105,7 +105,7 @@ namespace snemo {
 			static const uint32_t NUMBER_OF_TRACKER_TRIGGER_SUBZONES = 4;
 			static const uint32_t NUMBER_OF_TRACKER_TRIGGER_SUBZONES_PER_SIDE = 40;
 
-			static const uint32_t NUMBER_OF_CRATES  = 2;
+			static const uint32_t NUMBER_OF_CRATES  = 3;
 			static const uint32_t NUMBER_OF_FEBS_BY_CRATE = 19;
 			static const uint32_t XWALL_GVETO_CRATE_ID = 2;
 			static const uint32_t TRIGGER_CRATE_ID     = 2;

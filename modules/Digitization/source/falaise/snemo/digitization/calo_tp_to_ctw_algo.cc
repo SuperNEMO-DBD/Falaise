@@ -69,38 +69,89 @@ namespace snemo {
 
     void calo_tp_to_ctw_algo::set_ctw_zone_bit_htm(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_)
     {
+      unsigned int activated_zone_id = 0;	  
       if (my_calo_tp_.get_htm() != 0)
 	{
-	  unsigned int activated_zone_id = 0;	      
-	  if(my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) > 9)
+	  if (my_calo_tp_.get_geom_id().get(mapping::CRATE_INDEX) == 2 )
 	    {
-	      activated_zone_id = (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) + BOARD_SHIFT_INDEX) / 2;
+	      if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 6 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 7)
+	  	{
+	  	  activated_zone_id = 0;
+	  	}
+	      if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 8 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 9)
+	  	{
+	  	  activated_zone_id = 1;
+	  	}
+	      if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 11 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 12)
+	  	{
+	  	  activated_zone_id = 3;
+	  	}
+	      if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 13 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 14)
+	  	{
+	  	  activated_zone_id = 2;
+	  	}
 	    }
-	  else
+	  
+	  else 
 	    {
-	      activated_zone_id = my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) / 2;
-	    }	      
+	      if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) > 9)
+		{
+		  activated_zone_id = (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX)  + BOARD_SHIFT_INDEX) / 2;
+		}
+	      else
+		{
+		  activated_zone_id = my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) / 2;
+		}
+	    }
+	  
 	  my_ctw_.set_zoning_bit(calo::ctw::ZONING_BIT0 + activated_zone_id, 1);	      
-	}          
+	}         
       return ;
     }
 
     
-void calo_tp_to_ctw_algo::set_ctw_zone_bit_htm_or_lto(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_)
+    void calo_tp_to_ctw_algo::set_ctw_zone_bit_htm_or_lto(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_)
     {
       if (my_calo_tp_.get_htm() != 0 || my_calo_tp_.is_lto() != 0)
 	{
-	  unsigned int activated_zone_id = 0;	      
-	  if(my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) > 9)
+	  unsigned int activated_zone_id = 0;	  
+	  if (my_calo_tp_.get_htm() != 0)
 	    {
-	      activated_zone_id = (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) + BOARD_SHIFT_INDEX) / 2;
-	    }
-	  else
-	    {
-	      activated_zone_id = my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) / 2;
-	    }	      
-	  my_ctw_.set_zoning_bit(calo::ctw::ZONING_BIT0 + activated_zone_id, 1);	      
-	}          
+	      if (my_calo_tp_.get_geom_id().get(mapping::CRATE_INDEX) == 2 )
+		{
+		  if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 6 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 7)
+		    {
+		      activated_zone_id = 0;
+		    }
+		  if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 8 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 9)
+		    {
+		      activated_zone_id = 1;
+		    }
+		  if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 11 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 12)
+		    {
+		      activated_zone_id = 3;
+		    }
+		  if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 13 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 14)
+		    {
+		      activated_zone_id = 2;
+		    }
+		}
+	  
+	      else 
+		{
+		  if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) > 9)
+		    {
+		      activated_zone_id = (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX)  + BOARD_SHIFT_INDEX) / 2;
+		    }
+		  else
+		    {
+		      activated_zone_id = my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) / 2;
+		    }
+		}
+	  
+	      my_ctw_.set_zoning_bit(calo::ctw::ZONING_BIT0 + activated_zone_id, 1);	      
+	    }  
+	}
       return ;
     }
 
@@ -120,11 +171,9 @@ void calo_tp_to_ctw_algo::set_ctw_zone_bit_htm_or_lto(const calo_tp & my_calo_tp
       temporary_feb_id.set_depth(mapping::BOARD_DEPTH);
       my_calo_tp_.get_geom_id().extract_to(temporary_feb_id);
       temporary_feb_id.set(mapping::BOARD_INDEX, mapping::CONTROL_BOARD_ID);
-      
       a_calo_ctw_.set_header(my_calo_tp_.get_hit_id(),
 			     temporary_feb_id,
-			     my_calo_tp_.get_clocktick_25ns(),
-			     calo_ctw::MAIN_WALL); //1 == wall type undefined for the moment
+			     my_calo_tp_.get_clocktick_25ns());
       set_ctw_htm(my_calo_tp_, a_calo_ctw_);
       set_ctw_zone_bit_htm(my_calo_tp_, a_calo_ctw_);
       set_ctw_lto(my_calo_tp_, a_calo_ctw_);
@@ -148,11 +197,12 @@ void calo_tp_to_ctw_algo::set_ctw_zone_bit_htm_or_lto(const calo_tp & my_calo_tp
       std::clog << "**************************************************************" << std::endl;
       for(int32_t i = calo_tp_data_.get_clocktick_min(); i <= calo_tp_data_.get_clocktick_max(); i++)
 	{
-	  for(int32_t j = 0 ; j <= mapping::NUMBER_OF_CRATES ; j++) 
+	  for(int32_t j = 0 ; j < mapping::NUMBER_OF_CRATES ; j++) 
 	    {	  
 	      std::vector<datatools::handle<calo_tp> > tp_list_per_clocktick_per_crate;
 	      calo_tp_data_.get_list_of_tp_per_clocktick_per_crate(i,j,tp_list_per_clocktick_per_crate);
-	      if(!tp_list_per_clocktick_per_crate.empty())
+	      
+	      if (!tp_list_per_clocktick_per_crate.empty())
 		{
 		  calo_ctw & a_ctw_ = calo_ctw_data_.add();
 		  _process_for_a_ctw_for_a_clocktick(tp_list_per_clocktick_per_crate, a_ctw_);

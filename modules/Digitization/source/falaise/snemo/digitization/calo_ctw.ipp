@@ -29,11 +29,6 @@ namespace snemo {
 																					 boost::serialization::base_object<geomtools::base_hit>(*this));
 
       ar & boost::serialization::make_nvp ("locked_ctw", _locked_);
- 
-      if (_store & STORE_WALL)
-				{
-					ar & boost::serialization::make_nvp ("wall", _wall_);
-				}
 
       if (_store & STORE_CLOCKTICK_25NS)
 				{

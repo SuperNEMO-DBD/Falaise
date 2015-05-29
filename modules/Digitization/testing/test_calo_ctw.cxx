@@ -29,7 +29,6 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     my_calo_ctw.grab_geom_id().set_address(3,0,10); // address of geom id : RACK_INDEX, CRATE_INDEX,BOARD_INDEX. 
     my_calo_ctw.grab_auxiliaries().store("author", "guillaume");
     my_calo_ctw.grab_auxiliaries().store_flag("mock");
-    my_calo_ctw.set_wall(snemo::digitization::calo_ctw::MAIN_WALL);
     my_calo_ctw.set_clocktick_25ns(20);
     my_calo_ctw.set_htm_pc(5); // Argument is multiplicity per crate
     std::bitset<10> zoning_word (std::string("0001110100"));

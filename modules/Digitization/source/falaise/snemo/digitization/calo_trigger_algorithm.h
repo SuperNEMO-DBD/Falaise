@@ -30,6 +30,27 @@ namespace snemo {
     class calo_trigger_algorithm
     {
     public : 
+
+			/// Level one zoning size of a bitset for a zone
+			static const int32_t CALO_LEVEL_ONE_MULT_BITSET_SIZE = 2;
+
+			/// Size of the zoning bitset for a side of the calorimeter
+			static const int32_t CALO_ZONING_PER_SIDE_BITSET_SIZE = 10;
+			
+			/// Size of the zoning bitset for gamma veto
+			static const int32_t CALO_ZONING_GVETO_BITSET_SIZE = 6;
+
+			/// Size of the information bitset containing LT bit, XT bit and spare bits (up to 4)
+			static const int32_t CALO_INFO_BITSET_SIZE = 6;
+
+			struct output_data
+			{
+				uint32_t clocktick_25ns;
+				std::bitset<CALO_ZONING_PER_SIDE_BITSET_SIZE> calo_zoning_word[mapping::NUMBER_OF_SIDES];
+				std::bitset<CALO_LEVEL_ONE_MULT_BITSET_SIZE> total_calo_multiplicity;
+				std::bitset<CALO_ZONING_GVETO_BITSET_SIZE> gveto_zoning_word;
+				std::bitset<CALO_INFO_BITSET_SIZE> info_bitset; 
+			};
 			
 			enum calo_zoning_id_index {
 				ZONE_0_INDEX = 0,
@@ -66,18 +87,24 @@ namespace snemo {
 				ZONE_9_BEGIN = 18,
 			  ZONE_9_END   = 19
 			};
-
-			/// Level one zoning size of a bitset for a zone
-			static const int32_t CALO_LEVEL_ONE_MULT_BITSET_SIZE = 2;
-
-			/// Size of the zoning bitset for a side of the calorimeter
-			static const int32_t CALO_ZONING_PER_SIDE_BITSET_SIZE = 10;
 			
-			/// Size of the zoning bitset for gamma veto
-			static const int32_t CALO_ZONING_GVETO_BITSET_SIZE = 4;
+			enum calo_gveto_bitset_pos{
+				GVETO_BIT_0 = 6,
+				GVETO_BIT_1 = 7,
+				GVETO_BIT_2 = 8,
+				GVETO_BIT_3 = 9,
+				GVETO_BIT_4 = 10,
+				GVETO_BIT_5 = 11
+			};
 
-			/// Size of the information bitset containing LT bit, XT bit and spare bits (up to 4)
-			static const int32_t CALO_INFO_BITSET_SIZE = 6;
+			enum calo_info_bitset_pos{
+				LT_INFO_BIT        = 0,
+				XT_INFO_BIT        = 1,
+				CONTROL_INFO_BIT_0 = 2,
+				CONTROL_INFO_BIT_1 = 3,
+				CONTROL_INFO_BIT_2 = 4,
+				CONTROL_INFO_BIT_3 = 5
+			};
 
       /// Default constructor
       calo_trigger_algorithm();
@@ -87,6 +114,9 @@ namespace snemo {
 
       /// Set the electronic mapping object
       void set_electronic_mapping(const electronic_mapping & my_electronic_mapping_);
+
+			/// Set the calo circular buffer depth
+			void set_calo_circular_buffer_depth(unsigned int & calo_circular_buffer_depth_);
 
       /// Initializing
       void initialize();
@@ -106,15 +136,12 @@ namespace snemo {
 			/// Display the level one calo trigger info (bitsets)
 			void display_calo_trigger_info();
     
-
 			/// Build the level one calo trigger primitive bitsets
 			void build_calo_level_one_bitsets(const calo_ctw & my_calo_ctw_);
 
-
-			void set_calo_circular_buffer_depth(unsigned int & calo_circular_buffer_depth_);
-			void build_calo_trigger_gate_info();
+			void build_output_data_structure();
 			
-      /// General process
+			/// General process
       void process(const calo_ctw_data & calo_ctw_data_);
 
 		protected :
@@ -124,9 +151,7 @@ namespace snemo {
 
     private :
 
-			struct _calo_trigger_gate_info_; // Intermediate struct for level zero to level one trigger info
-
-			typedef boost::circular_buffer<_calo_trigger_gate_info_> buffer_type;
+			typedef boost::circular_buffer<output_data> buffer_type;
       // Configuration :
       bool _initialized_; //!< Initialization flag
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
@@ -137,8 +162,12 @@ namespace snemo {
 			bool _level_one_calo_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_CALO_TRIGGER_ZONES]; //!< Table of 2x10 containing 2 bits bitset representing the level one calo trigger info
 			
 			std::bitset<CALO_LEVEL_ONE_MULT_BITSET_SIZE> _total_calo_multiplicity_; //!< Total multiplicity of calo who passed the HT
+			
+			std::bitset<CALO_ZONING_GVETO_BITSET_SIZE> _calo_gveto_info_bitset_; //!< Bitset of 4 bits containing the gamma-veto zoning information
+			
+			std::bitset<CALO_INFO_BITSET_SIZE> _calo_other_info_bitset_; //!< Bitset of 6 bits containing the other bits of all ctw (control, XT, LT)
 
-			boost::scoped_ptr<buffer_type> _calo_gate_circular_buffer_;
+			boost::scoped_ptr<buffer_type> _calo_gate_circular_buffer_; //!< Scoped pointer to a circular buffer containing output data structure
       
     };
 
