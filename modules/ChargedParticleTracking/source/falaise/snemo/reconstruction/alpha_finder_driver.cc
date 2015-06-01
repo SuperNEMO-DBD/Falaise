@@ -149,17 +149,17 @@ namespace snemo {
       }
 
       // Minimal distance in XY coordinate between Geiger hits
-      if (setup_.has_key("minimal_cluster_xy_distance")) {
-        _minimal_cluster_xy_search_distance_ = setup_.fetch_real("minimal_cluster_xy_distance");
-        if (! setup_.has_explicit_unit("minimal_cluster_xy_distance")) {
+      if (setup_.has_key("minimal_cluster_xy_search_distance")) {
+        _minimal_cluster_xy_search_distance_ = setup_.fetch_real("minimal_cluster_xy_search_distance");
+        if (! setup_.has_explicit_unit("minimal_cluster_xy_search_distance")) {
           _minimal_cluster_xy_search_distance_ *= CLHEP::cm;
         }
       }
 
       // Minimal distance in Z coordinate between Geiger hits
-      if (setup_.has_key("minimal_cluster_z_distance")) {
-        _minimal_cluster_z_search_distance_ = setup_.fetch_real("minimal_cluster_z_distance");
-        if (! setup_.has_explicit_unit("minimal_cluster_z_distance")) {
+      if (setup_.has_key("minimal_cluster_z_search_distance")) {
+        _minimal_cluster_z_search_distance_ = setup_.fetch_real("minimal_cluster_z_search_distance");
+        if (! setup_.has_explicit_unit("minimal_cluster_z_search_distance")) {
           _minimal_cluster_z_search_distance_ *= CLHEP::cm;
         }
       }
