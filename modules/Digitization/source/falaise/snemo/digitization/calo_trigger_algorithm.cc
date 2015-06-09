@@ -228,10 +228,10 @@ namespace snemo {
       return;
     }
     
-    void calo_trigger_algorithm::build_output_data_structure()
+    void calo_trigger_algorithm::build_calo_trigger_record_structure()
     {
       _calo_gate_circular_buffer_.reset(new buffer_type(_calo_circular_buffer_depth_));
-      output_data my_struct;
+      calo_trigger_record my_struct;
 
       _calo_gate_circular_buffer_->push_back(my_struct);
     }

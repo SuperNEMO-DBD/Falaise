@@ -146,6 +146,12 @@ namespace snemo {
 			/// Return the board id from the bitset of 100 bits
 			uint32_t get_board_id(const std::bitset<geiger::tp::FULL_SIZE> & my_bitset_) const;
 
+			/// Return the finale response for tracker trigger decision
+			std::bitset<TRACKER_TRIGGER_FINAL_RESPONSE_SIZE> get_tracker_best_final_response() const;
+
+			/// Get the finale response for tracker trigger decision
+			void get_tracker_best_final_response(std::bitset<TRACKER_TRIGGER_FINAL_RESPONSE_SIZE> & final_response_) const;
+			
 			/// Convert the electronic ID of active geiger cells into geometric ID
 			void build_hit_cells_gids_from_ctw(const geiger_ctw & my_geiger_ctw_,
 																				 std::vector<geomtools::geom_id> & hit_cells_gids_) const;
@@ -214,6 +220,8 @@ namespace snemo {
 			
 			/// Build the final response of the tracker trigger (if there is a track, a pretrack or nothing)
 			void build_trigger_tracker_final_response();
+			
+			void fill_best_tracker_response_for_the_event();
 
       /// General process
       void process(const geiger_ctw_data & geiger_ctw_data_);
@@ -225,7 +233,7 @@ namespace snemo {
 
 			/// Protected general process
 			void _process(const geiger_ctw_data & geiger_ctw_data_);
-	
+			
     private :
 			
       // Configuration : 
@@ -239,7 +247,9 @@ namespace snemo {
 			std::bitset<GEIGER_LEVEL_ONE_ZONING_BITSET_SIZE> _level_one_prime_tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES]; //!< Table of 2x10 containing 8 bits bitset representing the level one tracker trigger for the interzones	 
 			std::bitset<GEIGER_LEVEL_TWO_ZONING_BITSET_SIZE> _level_two_tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES]; //!< Table of 2x10 containing 2 bits bitset representing if there is a track / pretrack or nothing in one zone	
 			std::bitset<GEIGER_LEVEL_TWO_ZONING_BITSET_SIZE> _level_two_prime_tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES]; //!< Table of 2x9 containing 2 bits bitset representing if there is a track / pretrack or nothing in one interzone
-			std::bitset<TRACKER_TRIGGER_FINAL_RESPONSE_SIZE> _tracker_trigger_final_response_; //!< Finale response of the tracker trigger
+			std::bitset<TRACKER_TRIGGER_FINAL_RESPONSE_SIZE> _tracker_trigger_final_response_; //!< Final response of the tracker trigger for a clocktick
+			std::bitset<TRACKER_TRIGGER_FINAL_RESPONSE_SIZE> _best_tracker_trigger_final_response_; //!< Best final response of the tracker trigger for one total event
+			
 			
 			sub_zone_location_info _sub_zone_location_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES_PER_SIDE]; //!< Table of 2x40 (10 zones subdivided in 4 subzones on 2 sides)
 			

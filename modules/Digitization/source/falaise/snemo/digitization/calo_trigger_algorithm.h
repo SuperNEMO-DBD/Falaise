@@ -38,12 +38,12 @@ namespace snemo {
 			static const int32_t CALO_ZONING_PER_SIDE_BITSET_SIZE = 10;
 			
 			/// Size of the zoning bitset for gamma veto
-			static const int32_t CALO_ZONING_GVETO_BITSET_SIZE = 6;
+			static const int32_t CALO_ZONING_GVETO_BITSET_SIZE = 4;
 
 			/// Size of the information bitset containing LT bit, XT bit and spare bits (up to 4)
 			static const int32_t CALO_INFO_BITSET_SIZE = 6;
 
-			struct output_data
+			struct calo_trigger_record
 			{
 				uint32_t clocktick_25ns;
 				std::bitset<CALO_ZONING_PER_SIDE_BITSET_SIZE> calo_zoning_word[mapping::NUMBER_OF_SIDES];
@@ -139,7 +139,7 @@ namespace snemo {
 			/// Build the level one calo trigger primitive bitsets
 			void build_calo_level_one_bitsets(const calo_ctw & my_calo_ctw_);
 
-			void build_output_data_structure();
+			void build_calo_trigger_record_structure();
 			
 			/// General process
       void process(const calo_ctw_data & calo_ctw_data_);
@@ -151,7 +151,7 @@ namespace snemo {
 
     private :
 
-			typedef boost::circular_buffer<output_data> buffer_type;
+			typedef boost::circular_buffer<calo_trigger_record> buffer_type;
       // Configuration :
       bool _initialized_; //!< Initialization flag
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID

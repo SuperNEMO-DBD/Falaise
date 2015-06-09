@@ -127,11 +127,9 @@ namespace snemo {
 							 working_data_collection_type & wd_collection_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "SD to geiger TP algorithm is not initialized ! ");
-      unsigned int seed = 314159;
-      std::srand(seed);
       size_t number_of_hits = signal_data_.get_geiger_signals().size(); //_number_of_step_hits("gg");
-      std::clog << "DEBUG : BEGINING OF GEIGER PROCESS " << std::endl;
-      std::clog << "**************************************************************" << std::endl;
+      //std::clog << "DEBUG : BEGINING OF GEIGER PROCESS " << std::endl;
+      //std::clog << "**************************************************************" << std::endl;
 
       double time_reference = signal_data_.get_geiger_signals()[0].get().get_anode_avalanche_time();
 	
@@ -151,8 +149,6 @@ namespace snemo {
 
 	  _electronic_mapping_->convert_GID_to_EID(mapping::THREE_WIRES_TRACKER_MODE, geom_id, electronic_id);
 
-	  bool         existing = false;
-	  unsigned int existing_index = 0;
 	  double relative_time = a_geiger_signal.get_anode_avalanche_time() + _clocktick_shift_ - time_reference ;
 	  int32_t a_geiger_signal_clocktick = _clocktick_ref_ + TRIGGER_READING_CLOCKTICK_SHIFT;
 
@@ -183,7 +179,7 @@ namespace snemo {
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "SD to geiger TP algorithm is not initialized ! ");
       int32_t geiger_tp_hit_id = 0;
-      std::clog << "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ Process Begin //////////////////////////////////////" << std::endl;
+      // std::clog << "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ Process Begin //////////////////////////////////////" << std::endl;
       for (int i = 0; i < wd_collection_.size(); i++)
 	{
 	  int32_t signal_clocktick  = wd_collection_[i].clocktick_800;	    

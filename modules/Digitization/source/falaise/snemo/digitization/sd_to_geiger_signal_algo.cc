@@ -102,8 +102,8 @@ namespace snemo {
       int error_code = EXIT_SUCCESS;
       datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
       try { 
-	std::clog << "DEBUG : BEGINING OF SD TO GEIGER SIGNAL PROCESS " << std::endl;
-	std::clog << "**************************************************************" << std::endl;
+	//std::clog << "DEBUG : BEGINING OF SD TO GEIGER SIGNAL PROCESS " << std::endl;
+	//std::clog << "**************************************************************" << std::endl;
 	// pickup the ID mapping from the geometry manager:
 	const geomtools::mapping & the_mapping = _geo_manager_->get_mapping();
 

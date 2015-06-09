@@ -4,6 +4,7 @@
 
 // Standard library : 
 #include <vector>
+#include <fstream>
 
 // Boost : 
 #include <boost/dynamic_bitset.hpp>
@@ -142,6 +143,18 @@ namespace snemo {
       return temporary_board_id;
     }
 
+    std::bitset<tracker_trigger_algorithm::TRACKER_TRIGGER_FINAL_RESPONSE_SIZE> tracker_trigger_algorithm::get_tracker_best_final_response() const 
+    {
+      return _best_tracker_trigger_final_response_;
+    }
+
+    void tracker_trigger_algorithm::get_tracker_best_final_response(std::bitset<TRACKER_TRIGGER_FINAL_RESPONSE_SIZE> & final_response_) const 
+    {
+      DT_THROW_IF(!is_initialized(), std::logic_error, "Tracker trigger algorithm is not initialized ! ");
+      final_response_ = _best_tracker_trigger_final_response_;
+      return;
+    }
+   
     void tracker_trigger_algorithm::build_hit_cells_gids_from_ctw(const geiger_ctw & my_geiger_ctw_, 
 								  std::vector<geomtools::geom_id> & hit_cells_gids_) const
     {
@@ -386,7 +399,7 @@ namespace snemo {
  	} // end of iside
       return;
     }
-
+   
     void tracker_trigger_algorithm::fetch_zone_limits(int32_t side_,
 						      int32_t zone_index_,
 						      int32_t & row_index_begin_,
@@ -742,6 +755,26 @@ namespace snemo {
       return;
     }
 
+    void tracker_trigger_algorithm::fill_best_tracker_response_for_the_event()
+    {
+      if (_best_tracker_trigger_final_response_.test(0) == false
+	  && _best_tracker_trigger_final_response_.test(1) == false) 
+	{
+	  _best_tracker_trigger_final_response_ = _tracker_trigger_final_response_;
+	}
+      else if (_best_tracker_trigger_final_response_.test(0) == true
+	       && _best_tracker_trigger_final_response_.test(1) == true)
+	{
+	  if (_tracker_trigger_final_response_.test(0) == true && _tracker_trigger_final_response_.test(1) == false)
+	    {
+	      _best_tracker_trigger_final_response_ = _tracker_trigger_final_response_;
+	    }
+	}
+      else {}
+      return;  
+    }
+
+
     void tracker_trigger_algorithm::_process_for_a_clocktick(const std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick_)
     {
       reset_matrix();
@@ -756,8 +789,8 @@ namespace snemo {
       build_trigger_level_one_bitsets();
       build_trigger_level_one_to_level_two();
       build_trigger_tracker_final_response();
-      display_tracker_trigger_info();
-      display_matrix();
+      //display_tracker_trigger_info();
+      //display_matrix();
 
       return;
     }
@@ -768,8 +801,10 @@ namespace snemo {
 	{
 	  std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick;
 	  geiger_ctw_data_.get_list_of_geiger_ctw_per_clocktick(iclocktick, geiger_ctw_list_per_clocktick);
-	  _process_for_a_clocktick(geiger_ctw_list_per_clocktick);	  
+	  _process_for_a_clocktick(geiger_ctw_list_per_clocktick);
+	  fill_best_tracker_response_for_the_event();
 	} // end of iclocktick
+	
       return;
     }
 

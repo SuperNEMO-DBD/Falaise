@@ -1,4 +1,4 @@
-#@description = Default A6D1 memory for a minimum multiplicity : 2 for the projection on layers. 
+#@description = Default A5D1 memory for a maximum gap : 3 for the projection on rows. 
 #@address_size = 6
 #@data_size = 1
 #@default_data = 0
@@ -13,7 +13,6 @@
 001101 1
 001110 1
 001111 1
-010001 1
 010010 1
 010011 1
 010100 1
@@ -28,8 +27,6 @@
 011101 1
 011110 1
 011111 1
-100001 1
-100010 1
 100011 1
 100100 1
 100101 1

@@ -30,7 +30,7 @@ namespace snemo {
     
     int geiger_tp_data::get_clocktick_min_index() const
     {
-      DT_THROW_IF(_geiger_tps_.size() == 0, std::logic_error, " Geiger TP collection is empty ! ");
+      //DT_THROW_IF(_geiger_tps_.size() == 0, std::logic_error, " Geiger TP collection is empty ! ");
 
       int index_with_min = 0;
 
@@ -49,7 +49,7 @@ namespace snemo {
 			
     int geiger_tp_data::get_clocktick_max_index() const
     {
-      DT_THROW_IF(_geiger_tps_.size() == 0, std::logic_error, " Geiger TP collection is empty ! ");
+      //DT_THROW_IF(_geiger_tps_.size() == 0, std::logic_error, " Geiger TP collection is empty ! ");
 
       int index_with_max = 0;
 
@@ -68,19 +68,19 @@ namespace snemo {
 
     int geiger_tp_data::get_clocktick_min() const
     {
-      DT_THROW_IF(_geiger_tps_.size() == 0, std::logic_error, " Geiger TP collection is empty ! ");
+      //DT_THROW_IF(_geiger_tps_.size() == 0, std::logic_error, " Geiger TP collection is empty ! ");
       return _geiger_tps_[get_clocktick_min_index()].get().get_clocktick_800ns();
     }
 
     int geiger_tp_data::get_clocktick_max() const
     {
-      DT_THROW_IF(_geiger_tps_.size() == 0, std::logic_error, " Geiger TP collection is empty ! ");
+			// DT_THROW_IF(_geiger_tps_.size() == 0, std::logic_error, " Geiger TP collection is empty ! ");
       return _geiger_tps_[get_clocktick_max_index()].get().get_clocktick_800ns();
     }
 
     int geiger_tp_data::get_clocktick_range() const
     {
-      DT_THROW_IF(_geiger_tps_.size() == 0, std::logic_error, " Geiger TP collection is empty ! ");
+      //DT_THROW_IF(_geiger_tps_.size() == 0, std::logic_error, " Geiger TP collection is empty ! ");
       return get_clocktick_max() - get_clocktick_min();
     }
 			

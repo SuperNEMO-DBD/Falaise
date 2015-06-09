@@ -266,7 +266,7 @@ namespace snemo {
 	  std::bitset<6> my_address_bitset;
 	  std::bitset<1> my_data_bitset;
 	  my_address_bitset = i;
-	  if (my_address_bitset.count() <= _min_multiplicity_)
+	  if (my_address_bitset.count() < _min_multiplicity_)
 	    {
 	      my_data_bitset = 0;
 	    }
