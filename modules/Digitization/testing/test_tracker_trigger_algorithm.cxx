@@ -27,7 +27,7 @@
 #include <snemo/digitization/geiger_tp_to_ctw_algo.h>
 #include <snemo/digitization/tracker_trigger_algorithm.h>
 
-int main( int  argc_ , char **argv_  )
+int main(int  argc_ , char ** argv_)
 {
   FALAISE_INIT();
   int error_code = EXIT_SUCCESS;
@@ -36,20 +36,74 @@ int main( int  argc_ , char **argv_  )
 
   // Parsing arguments
   int iarg = 1;
-  bool is_input_file = false;
+  bool is_input_file   = false;
+  bool is_event_number = false;
+  bool is_mult         = false;
+  bool is_gap          = false;
+  bool is_output_file  = false;
+  bool is_help         = false;
+
   std::string input_filename;
+  int arg_event_number      = -1;
+  int arg_min_mult          = -1;
+  int arg_max_gap           = -1;
+  int arg_output_run_number = -1;
   while (iarg < argc_) {
     std::string arg = argv_[iarg];
-    if (arg == "-i" || arg == "--input") {
-      is_input_file = true;
-      input_filename=argv_[++iarg];
-    } else if (arg == "-f" || arg == "--filename") {
-      input_filename=argv_[++iarg];
-    }
+    if (arg == "-i" || arg == "--input")
+      {
+	is_input_file  = true;
+	input_filename = argv_[++iarg];
+      } 
+    else if (arg == "-n" || arg == "--number")
+      {
+	// number of simulated events
+        is_event_number = true;
+	arg_event_number    = atoi(argv_[++iarg]);
+      }
+    
+    else if (arg =="-h" || arg == "--help")
+      {
+	is_help = true;
+      }
+    
+    else if (arg == "-m" || arg == "--mult")
+      {
+	// calculation option = mult
+	is_mult  = true;
+	arg_min_mult = atoi(argv_[++iarg]);
+      }
+
+    else if (arg == "-g" || arg == "--gap")
+      {
+	// calculation option = gap
+	is_gap  = true;
+	arg_max_gap = atoi(argv_[++iarg]);
+      }
+    
+    else if (arg == "-o" || arg == "--output-run")
+      {
+	is_output_file = true;
+	arg_output_run_number = atoi(argv_[++iarg]);	
+      }   
     iarg++;
   }
   // Configuration for each argument
   
+  if (is_help) 
+    {
+      std::cerr << std::endl << "Usage :" << std::endl << std::endl
+		<< "BuildProducts/bin/falaisedigitizationplugin-test_tracker_trigger_algorithm [OPTIONS] [ARGUMENTS]" << std::endl << std::endl
+		<< "Allowed options: " << std::endl
+		<< "-h [ --help ]           produce help message" << std::endl
+		<< "-i [ --input ]          set an input file" << std::endl
+		<< "-o [ --output-run ]     set the output run number for output files (ex : -o 10 ::  output -> tracker_trigger_algorithm_10.brio" << std::endl
+		<< "-n [ --number ]         set the number of events" << std::endl
+		<< "-m [ --mult ]           set a minimum multiplicity for trigger subzone calculation" << std::endl
+		<< "-g [ --gap ]            set a maximum gap for trigger subzone calculation" << std::endl << std::endl;
+
+      return 0;
+	}
 
   // Process
   try {
@@ -81,18 +135,52 @@ int main( int  argc_ , char **argv_  )
     std::string TDD_bank_label = "TDD";
 
     // Default input file :
-    if(is_input_file){
-      pipeline_simulated_data_filename = input_filename;
-    }else{
-      pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
-    }
+    if (is_input_file) pipeline_simulated_data_filename = input_filename;
+    else              pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio"; 
     datatools::fetch_path_with_env(pipeline_simulated_data_filename);
+    
+    // Number of events :
+    int event_number = -1;
+    if (is_event_number)  event_number = arg_event_number;
+    else                 event_number = 10;
+    
+    // Set output name files :
+    std::string output_tracker_decision_00;
+    std::string output_tracker_decision_01;
+    std::string output_tracker_decision_11;
+    if (is_output_file)
+      {
+	std::ostringstream oss0;
+	oss0 << "${FALAISE_DIGITIZATION_TESTING_DIR}/trigger_analysis/tracker_outputs/tracker_trigger_decision_"<< arg_output_run_number <<"_00.brio";
+	output_tracker_decision_00 = oss0.str();
+	datatools::fetch_path_with_env(output_tracker_decision_00);
+
+	std::ostringstream oss1;
+	oss1 << "${FALAISE_DIGITIZATION_TESTING_DIR}/trigger_analysis/tracker_outputs/tracker_trigger_decision_"<< arg_output_run_number <<"_01.brio";
+	output_tracker_decision_01 = oss1.str();
+	datatools::fetch_path_with_env(output_tracker_decision_01);
+
+	std::ostringstream oss2;
+	oss2 << "${FALAISE_DIGITIZATION_TESTING_DIR}/trigger_analysis/tracker_outputs/tracker_trigger_decision_"<< arg_output_run_number <<"_11.brio";
+	output_tracker_decision_11 = oss2.str();
+	datatools::fetch_path_with_env(output_tracker_decision_11);
+      }
+    else
+      {
+	// Default testing :
+	output_tracker_decision_00 = "${FALAISE_DIGITIZATION_TESTING_DIR}/trigger_analysis/tracker_outputs/test_tracker_decision_00_Se82_0nubb-source_strips_bulk_SD.brio";
+	datatools::fetch_path_with_env(output_tracker_decision_00);
+	output_tracker_decision_01 = "${FALAISE_DIGITIZATION_TESTING_DIR}/trigger_analysis/tracker_outputs/test_tracker_decision_01_Se82_0nubb-source_strips_bulk_SD.brio";
+	datatools::fetch_path_with_env(output_tracker_decision_01);
+	output_tracker_decision_11 = "${FALAISE_DIGITIZATION_TESTING_DIR}/trigger_analysis/tracker_outputs/test_tracker_decision_11_Se82_0nubb-source_strips_bulk_SD.brio";
+	datatools::fetch_path_with_env(output_tracker_decision_11);
+      }
 
     // Event reader :
     dpp::input_module reader;
     datatools::properties reader_config;
     reader_config.store ("logging.priority", "debug");
-    reader_config.store ("max_record_total", 1000000);
+    reader_config.store ("max_record_total", event_number);
     reader_config.store ("files.mode", "single");
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
@@ -101,13 +189,7 @@ int main( int  argc_ , char **argv_  )
     // Event record :
     datatools::things ER;
 
-    // Testing :
-    std::string tracker_decision_00 = "${FALAISE_DIGITIZATION_TESTING_DIR}/trigger_analysis/tracker_outputs/test_tracker_decision_00_Se82_0nubb-source_strips_bulk_SD.brio";
-    datatools::fetch_path_with_env(tracker_decision_00);
-    std::string tracker_decision_01 = "${FALAISE_DIGITIZATION_TESTING_DIR}/trigger_analysis/tracker_outputs/test_tracker_decision_01_Se82_0nubb-source_strips_bulk_SD.brio";
-    datatools::fetch_path_with_env(tracker_decision_01);
-    std::string tracker_decision_11 = "${FALAISE_DIGITIZATION_TESTING_DIR}/trigger_analysis/tracker_outputs/test_tracker_decision_11_Se82_0nubb-source_strips_bulk_SD.brio";
-    datatools::fetch_path_with_env(tracker_decision_11);
+
     
     // Production :
     // std::string tracker_decision_00 = "${FALAISE_DIGITIZATION_TESTING_DIR}/trigger_analysis/tracker_outputs/tracker_decision_00_Se82_0nubb_100K-source_strips_bulk_SD.brio";
@@ -119,15 +201,15 @@ int main( int  argc_ , char **argv_  )
     
     // Writers for files : 
     dpp::output_module writer_decision_00;
-    writer_decision_00.set_single_output_file(tracker_decision_00);
+    writer_decision_00.set_single_output_file(output_tracker_decision_00);
     writer_decision_00.initialize_simple();
    
     dpp::output_module writer_decision_01;
-    writer_decision_01.set_single_output_file(tracker_decision_01);
+    writer_decision_01.set_single_output_file(output_tracker_decision_01);
     writer_decision_01.initialize_simple();
 
     dpp::output_module writer_decision_11;
-    writer_decision_11.set_single_output_file(tracker_decision_11);
+    writer_decision_11.set_single_output_file(output_tracker_decision_11);
     writer_decision_11.initialize_simple();
 
     // Loading memory from external files
@@ -178,6 +260,9 @@ int main( int  argc_ , char **argv_  )
 	    // Access to the "SD" bank with a stored `mctools::simulated_data' :
 	    const mctools::simulated_data & SD = ER.get<mctools::simulated_data>(SD_bank_label);
 	    
+	    // Default value for the tracker trigger decision
+	    std::bitset<2> best_tracker_trigger_decision (std::string("00"));
+
 	    //SD.tree_dump(std::clog, "my_SD", "SD :");
 	    if(SD.has_step_hits("gg"))
 	      {
@@ -228,57 +313,62 @@ int main( int  argc_ , char **argv_  )
 		    my_tracker_algo.process(my_geiger_ctw_data);
 		    
 		    // Extract the best response (among all clockticks geiger cells are active) for the event :
-		    std::bitset<2> best_tracker_trigger_decision;
 		    best_tracker_trigger_decision = my_tracker_algo.get_tracker_best_final_response();		    
-		    unsigned long tracker_trigger_decision_per_event = best_tracker_trigger_decision.to_ulong();
-		    // Convert the bitset response [11] (3 in int) to 2 for histogram :
-		    if (tracker_trigger_decision_per_event == 3)
-		      {
-			tracker_trigger_decision_per_event = 2;
-		      }
-		    
-		    // Filling the best final decision histogram :
-		    best_final_decision_histogram.fill((double)tracker_trigger_decision_per_event, weight);
 
-		    // Store the trigger tracker decision into the trigger decision data "TDD" bank
-		    TDD.store_real("tracker_decision", (double)tracker_trigger_decision_per_event, "Tracker trigger decision for an event");
-
-		    // Writing in the good files :
-		    if ((int)tracker_trigger_decision_per_event == 0)
-		      {
-			writer_decision_00.process(ER);
-			decision_00_count++;
-		      }
-		    else if ((int)tracker_trigger_decision_per_event == 1)
-		      {
-			writer_decision_01.process(ER);
-		        decision_01_count++;
-		      }
-		    else if ((int)tracker_trigger_decision_per_event == 2)
-		      {
-			writer_decision_11.process(ER);
-			decision_11_count++;
-		      }
-		    else 
-		      {
-			DT_THROW(std::logic_error, "Tracker trigger decision value [" << tracker_trigger_decision_per_event << "] is not defined ! ");
-		      }
 	           
 		  } // end of if has geiger signals data
-	      } // end of if has "gg" step hits	    
-	  }
+	      } // end of if has "gg" step hits	 
+
+	    unsigned long tracker_trigger_decision_per_event = best_tracker_trigger_decision.to_ulong();
+	    // Convert the bitset response [11] (3 in int) to 2 for histogram :
+	    if (tracker_trigger_decision_per_event == 3)
+	      {
+		tracker_trigger_decision_per_event = 2;
+	      }
+   
+	    // Filling the best final decision histogram :
+	    best_final_decision_histogram.fill((double)tracker_trigger_decision_per_event, weight);
+
+	    // Store the trigger tracker decision into the trigger decision data "TDD" bank
+	    TDD.store_real("tracker_decision", (double)tracker_trigger_decision_per_event, "Tracker trigger decision for an event");
+
+	    // Writing in the good files :
+	    if ((int)tracker_trigger_decision_per_event == 0)
+	      {
+		writer_decision_00.process(ER);
+		decision_00_count++;
+	      }
+	    else if ((int)tracker_trigger_decision_per_event == 1)
+	      {
+		writer_decision_01.process(ER);
+		decision_01_count++;
+	      }
+	    else if ((int)tracker_trigger_decision_per_event == 2)
+	      {
+		writer_decision_11.process(ER);
+		decision_11_count++;
+	      }
+	    else 
+	      {
+		DT_THROW(std::logic_error, "Tracker trigger decision value [" << tracker_trigger_decision_per_event << "] is not defined ! ");
+	      }
+	  } // end of if has bank label 
 	ER.clear();
 
 	psd_count++;
 	//std::clog << "DEBUG : psd count " << psd_count << std::endl;
 	std::clog << "\r" << "DEBUG : psd count " << psd_count << std::flush;
 	DT_LOG_NOTICE(logging, "Simulated data #" << psd_count);
+
       } // end of while
 
     best_final_decision_histogram.print(ofhist);
     ofhist.close();
     
-    std::clog << "DEBUG :[00] count = #" << decision_00_count << "    [01] count = #" << decision_01_count << "    [11] count = #" << decision_11_count << std::endl;
+    std::clog << std::endl;
+    std::clog << "DEBUG : [00] count = #" << decision_00_count << std::endl;
+    std::clog << "DEBUG : [01] count = #" << decision_01_count << std::endl;
+    std::clog << "DEBUG : [11] count = #" << decision_11_count << std::endl;
     std::clog << "The end." << std::endl;
   }
   catch (std::exception & error) {
