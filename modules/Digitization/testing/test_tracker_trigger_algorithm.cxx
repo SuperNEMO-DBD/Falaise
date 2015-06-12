@@ -40,24 +40,39 @@ int main(int  argc_ , char ** argv_)
   bool is_event_number = false;
   bool is_mult         = false;
   bool is_gap          = false;
-  bool is_output_file  = false;
+  bool is_output_path  = false;
+  bool is_run_number   = false;
   bool is_help         = false;
 
   std::string input_filename;
-  int arg_event_number      = -1;
-  int arg_min_mult          = -1;
-  int arg_max_gap           = -1;
-  int arg_output_run_number = -1;
+  std::string output_path;
+  int arg_event_number  = -1;
+  int arg_min_mult      = -1;
+  int arg_max_gap       = -1;
+  int arg_run_number    = -1;
+
   while (iarg < argc_) {
     std::string arg = argv_[iarg];
     if (arg == "-i" || arg == "--input")
       {
 	is_input_file  = true;
 	input_filename = argv_[++iarg];
-      } 
+      }
+
+    else if (arg == "-op" || arg == "--output-path")
+      {
+	is_output_path = true;
+	output_path = argv_[++iarg];	
+      }
+    
+    else if (arg == "-rn" || arg == "--run-number")
+      {
+	is_run_number = true;
+	arg_run_number = atoi(argv_[++iarg]);	
+      }
+
     else if (arg == "-n" || arg == "--number")
       {
-	// number of simulated events
         is_event_number = true;
 	arg_event_number    = atoi(argv_[++iarg]);
       }
@@ -69,23 +84,15 @@ int main(int  argc_ , char ** argv_)
     
     else if (arg == "-m" || arg == "--mult")
       {
-	// calculation option = mult
 	is_mult  = true;
 	arg_min_mult = atoi(argv_[++iarg]);
       }
 
     else if (arg == "-g" || arg == "--gap")
       {
-	// calculation option = gap
 	is_gap  = true;
 	arg_max_gap = atoi(argv_[++iarg]);
       }
-    
-    else if (arg == "-o" || arg == "--output-run")
-      {
-	is_output_file = true;
-	arg_output_run_number = atoi(argv_[++iarg]);	
-      }   
     iarg++;
   }
   // Configuration for each argument
@@ -93,17 +100,29 @@ int main(int  argc_ , char ** argv_)
   if (is_help) 
     {
       std::cerr << std::endl << "Usage :" << std::endl << std::endl
-		<< "BuildProducts/bin/falaisedigitizationplugin-test_tracker_trigger_algorithm [OPTIONS] [ARGUMENTS]" << std::endl << std::endl
+		<< "$ BuildProducts/bin/falaisedigitizationplugin-test_tracker_trigger_algorithm [OPTIONS] [ARGUMENTS]" << std::endl << std::endl
 		<< "Allowed options: " << std::endl
-		<< "-h [ --help ]           produce help message" << std::endl
-		<< "-i [ --input ]          set an input file" << std::endl
-		<< "-o [ --output-run ]     set the output run number for output files (ex : -o 10 ::  output -> tracker_trigger_algorithm_10.brio" << std::endl
-		<< "-n [ --number ]         set the number of events" << std::endl
-		<< "-m [ --mult ]           set a minimum multiplicity for trigger subzone calculation" << std::endl
-		<< "-g [ --gap ]            set a maximum gap for trigger subzone calculation" << std::endl << std::endl;
-
+		<< "-h  [ --help ]           produce help message" << std::endl
+		<< "-i  [ --input ]          set an input file" << std::endl
+		<< "-op [ --output-path ]    set the path for output files" << std::endl
+		<< "-rn [ --run-number ]     set the output run number for output files (ex : -rn 10 ::  output -> tracker_trigger_algorithm_10.brio)" << std::endl
+		<< "-n  [ --number ]         set the number of events" << std::endl
+		<< "-m  [ --mult ]           set a minimum multiplicity for trigger subzone calculation" << std::endl
+		<< "-g  [ --gap ]            set a maximum gap for trigger subzone calculation" << std::endl 
+		<< "Example : " << std::endl << std::endl
+		<< "$ BuildProducts/bin/falaisedigitizationplugin-test_tracker_trigger_algorithm --input ${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio" 
+		<< " --output-path ${FALAISE_DIGITIZATION_TESTING_DIR}/output_default/"
+		<< " --run-number 4242"
+		<< " --number 5"
+		<< " --gap 2" << std::endl << std::endl
+		<< "If no options are set, programs have default values :" << std::endl << std::endl
+		<< "input file           = ${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio" << std::endl
+		<< "ouput path files     = ${FALAISE_DIGITIZATION_TESTING_DIR}/output_default/" << std::endl
+		<< "run number           = 999" << std::endl
+		<< "number of events     = 10" << std::endl
+		<< "Calcul option = mult = 2" << std::endl << std::endl;
       return 0;
-	}
+    }
 
   // Process
   try {
@@ -135,6 +154,7 @@ int main(int  argc_ , char ** argv_)
     std::string TDD_bank_label = "TDD";
 
     // Default input file :
+    datatools::fetch_path_with_env(input_filename);
     if (is_input_file) pipeline_simulated_data_filename = input_filename;
     else              pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio"; 
     datatools::fetch_path_with_env(pipeline_simulated_data_filename);
@@ -143,37 +163,121 @@ int main(int  argc_ , char ** argv_)
     int event_number = -1;
     if (is_event_number)  event_number = arg_event_number;
     else                 event_number = 10;
-    
+  
     // Set output name files :
     std::string output_tracker_decision_00;
     std::string output_tracker_decision_01;
     std::string output_tracker_decision_11;
-    if (is_output_file)
+
+    // Set output histo name : 
+    std::string output_tracker_histo_0;
+
+    // Set output path and name for files :
+    if (is_output_path && is_run_number)
       {
 	std::ostringstream oss0;
-	oss0 << "${FALAISE_DIGITIZATION_TESTING_DIR}/trigger_analysis/tracker_outputs/tracker_trigger_decision_"<< arg_output_run_number <<"_00.brio";
+	oss0 << output_path <<"tracker_trigger_decision_"<< arg_run_number <<"_00.brio";
 	output_tracker_decision_00 = oss0.str();
 	datatools::fetch_path_with_env(output_tracker_decision_00);
-
+        
 	std::ostringstream oss1;
-	oss1 << "${FALAISE_DIGITIZATION_TESTING_DIR}/trigger_analysis/tracker_outputs/tracker_trigger_decision_"<< arg_output_run_number <<"_01.brio";
+	oss1 <<  output_path << "tracker_trigger_decision_" << arg_run_number <<"_01.brio";
 	output_tracker_decision_01 = oss1.str();
 	datatools::fetch_path_with_env(output_tracker_decision_01);
 
 	std::ostringstream oss2;
-	oss2 << "${FALAISE_DIGITIZATION_TESTING_DIR}/trigger_analysis/tracker_outputs/tracker_trigger_decision_"<< arg_output_run_number <<"_11.brio";
-	output_tracker_decision_11 = oss2.str();
+	oss2 << "tracker_trigger_decision_"<< arg_run_number <<"_11.brio";
+	output_tracker_decision_11 = output_path + oss2.str();
 	datatools::fetch_path_with_env(output_tracker_decision_11);
+
+	std::ostringstream oss3;
+	oss3 << "tracker_trigger_histo_" << arg_run_number << "_0.hist";
+	output_tracker_histo_0 = output_path + oss3.str();
+	datatools::fetch_path_with_env(output_tracker_histo_0);
       }
     else
       {
 	// Default testing :
-	output_tracker_decision_00 = "${FALAISE_DIGITIZATION_TESTING_DIR}/trigger_analysis/tracker_outputs/test_tracker_decision_00_Se82_0nubb-source_strips_bulk_SD.brio";
+	std::string default_path = "${FALAISE_DIGITIZATION_TESTING_DIR}/output_default/";
+	std::string default_run_number   = "999";
+
+	output_tracker_decision_00 = default_path + "tracker_trigger_decision_" + default_run_number + "_00.brio";
 	datatools::fetch_path_with_env(output_tracker_decision_00);
-	output_tracker_decision_01 = "${FALAISE_DIGITIZATION_TESTING_DIR}/trigger_analysis/tracker_outputs/test_tracker_decision_01_Se82_0nubb-source_strips_bulk_SD.brio";
+	output_tracker_decision_01 = default_path + "tracker_trigger_decision_" + default_run_number + "_01.brio";
 	datatools::fetch_path_with_env(output_tracker_decision_01);
-	output_tracker_decision_11 = "${FALAISE_DIGITIZATION_TESTING_DIR}/trigger_analysis/tracker_outputs/test_tracker_decision_11_Se82_0nubb-source_strips_bulk_SD.brio";
+	output_tracker_decision_11 = default_path + "tracker_trigger_decision_" + default_run_number + "_11.brio";
 	datatools::fetch_path_with_env(output_tracker_decision_11);
+        output_tracker_histo_0 = default_path + "tracker_trigger_histo_" + default_run_number + "_0.hist";
+	datatools::fetch_path_with_env(output_tracker_histo_0);
+      }
+
+    // Histogram parameters :
+    double weight = 1;
+    std::ofstream ofhist(output_tracker_histo_0.c_str());
+    mygsl::histogram best_final_decision_histogram(3, 0, 3);
+
+    // Loading memory from external files
+    std::string memory_layer;
+    std::string memory_row;
+    std::string memory_lvl1_to_lvl2 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A4_D2_default_memory.data";
+    datatools::fetch_path_with_env(memory_lvl1_to_lvl2);
+
+    if (is_mult && !is_gap)
+      {
+	if (arg_min_mult == 2)
+	  {
+	    memory_layer = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A5_D1_default_min_mult_memory.data";
+	    datatools::fetch_path_with_env(memory_layer);
+	    memory_row   = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A6_D1_default_min_mult_memory.data";
+	    datatools::fetch_path_with_env(memory_row);
+	  }
+	else if (arg_min_mult == 3)
+	  {
+	    memory_layer = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A5_D1_min_mult_3_memory.data";
+	    datatools::fetch_path_with_env(memory_layer);
+	    memory_row   = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A6_D1_min_mult_3_memory.data";
+	    datatools::fetch_path_with_env(memory_row);
+	  }
+	else if (arg_min_mult == 4)
+	  {
+	    memory_layer = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A5_D1_min_mult_4_memory.data";
+	    datatools::fetch_path_with_env(memory_layer);
+	    memory_row   = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A6_D1_min_mult_4_memory.data";
+	    datatools::fetch_path_with_env(memory_row);
+	  }
+      }
+
+    else if (is_gap && !is_mult)
+      {
+	if (arg_max_gap == 1)
+	  {
+	    memory_layer = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A5_D1_default_max_gap_memory.data";
+	    datatools::fetch_path_with_env(memory_layer);
+	    memory_row   = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A6_D1_default_max_gap_memory.data";
+	    datatools::fetch_path_with_env(memory_row);
+	  }
+	else if (arg_max_gap == 2)
+	  {
+	    memory_layer = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A5_D1_max_gap_2_memory.data";
+	    datatools::fetch_path_with_env(memory_layer);
+	    memory_row   = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A6_D1_max_gap_2_memory.data";
+	    datatools::fetch_path_with_env(memory_row);
+	  }
+	else if (arg_max_gap == 3)
+	  {
+	    memory_layer = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A5_D1_max_gap_3_memory.data";
+	    datatools::fetch_path_with_env(memory_layer);
+	    memory_row   = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A6_D1_max_gap_3_memory.data";
+	    datatools::fetch_path_with_env(memory_row);
+	  }
+      }
+    else
+      {
+	// Default data if no options :
+        memory_layer   = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A5_D1_default_min_mult_memory.data";
+	datatools::fetch_path_with_env(memory_layer);
+        memory_row     = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A6_D1_default_min_mult_memory.data";
+	datatools::fetch_path_with_env(memory_row);
       }
 
     // Event reader :
@@ -188,16 +292,6 @@ int main(int  argc_ , char ** argv_)
 
     // Event record :
     datatools::things ER;
-
-
-    
-    // Production :
-    // std::string tracker_decision_00 = "${FALAISE_DIGITIZATION_TESTING_DIR}/trigger_analysis/tracker_outputs/tracker_decision_00_Se82_0nubb_100K-source_strips_bulk_SD.brio";
-    // datatools::fetch_path_with_env(tracker_decision_00);
-    // std::string tracker_decision_01 = "${FALAISE_DIGITIZATION_TESTING_DIR}/trigger_analysis/tracker_outputs/tracker_decision_01_Se82_0nubb_100K-source_strips_bulk_SD.brio";
-    // datatools::fetch_path_with_env(tracker_decision_01);
-    // std::string tracker_decision_11 = "${FALAISE_DIGITIZATION_TESTING_DIR}/trigger_analysis/tracker_outputs/tracker_decision_11_Se82_0nubb_100K-source_strips_bulk_SD.brio";
-    // datatools::fetch_path_with_env(tracker_decision_11);
     
     // Writers for files : 
     dpp::output_module writer_decision_00;
@@ -212,14 +306,6 @@ int main(int  argc_ , char ** argv_)
     writer_decision_11.set_single_output_file(output_tracker_decision_11);
     writer_decision_11.initialize_simple();
 
-    // Loading memory from external files
-    std::string memory_mult_layer   = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A5_D1_default_min_mult_memory.data";
-    std::string memory_mult_row     = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A6_D1_default_min_mult_memory.data";
-    std::string memory_lvl1_to_lvl2 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A4_D2_default_memory.data";
-    datatools::fetch_path_with_env(memory_mult_layer);
-    datatools::fetch_path_with_env(memory_mult_row);
-    datatools::fetch_path_with_env(memory_lvl1_to_lvl2);
-
     // Electronic mapping :
     snemo::digitization::electronic_mapping my_e_mapping;
     my_e_mapping.set_geo_manager(my_manager);
@@ -230,19 +316,6 @@ int main(int  argc_ , char ** argv_)
     snemo::digitization::clock_utils my_clock_manager;
     my_clock_manager.initialize();    
     
-    // Output histogram :
-    double weight = 1;
-
-    // Testing :
-    std::string best_final_decision_hist = "${FALAISE_DIGITIZATION_TESTING_DIR}/trigger_analysis/tracker_histogram/test_best_final_decision_events_default_min_mult.hist";
-
-    // Production :
-    // std::string best_final_decision_hist = "${FALAISE_DIGITIZATION_TESTING_DIR}/trigger_analysis/tracker_histogram/best_final_decision_100K_default_min_mult.hist";
-
-    datatools::fetch_path_with_env(best_final_decision_hist);
-    std::ofstream ofhist(best_final_decision_hist.c_str());
-    mygsl::histogram best_final_decision_histogram(3, 0, 3);
-
     // Internal counter
     int psd_count = 0;         // Event counter
     int decision_00_count = 0; // Tracker decision 00 counter 
@@ -307,8 +380,8 @@ int main(int  argc_ , char ** argv_)
 		    snemo::digitization::tracker_trigger_algorithm my_tracker_algo;
 		    my_tracker_algo.set_electronic_mapping(my_e_mapping);
 		    my_tracker_algo.initialize();
-		    my_tracker_algo.fill_mem_lvl0_to_lvl1_layer_all(memory_mult_layer);
-		    my_tracker_algo.fill_mem_lvl0_to_lvl1_row_all(memory_mult_row);
+		    my_tracker_algo.fill_mem_lvl0_to_lvl1_layer_all(memory_layer);
+		    my_tracker_algo.fill_mem_lvl0_to_lvl1_row_all(memory_row);
 		    my_tracker_algo.fill_mem_lvl1_to_lvl2_all(memory_lvl1_to_lvl2);
 		    my_tracker_algo.process(my_geiger_ctw_data);
 		    
