@@ -22,6 +22,8 @@ set(FalaiseDigitizationPlugin_TESTS
   test_tracker_trigger_algorithm.cxx
   test_calo_trigger_algorithm.cxx
 
+  test_trigger_analysis_gen_histo.cxx
+
   test_simulated_data_reading.cxx
   test_ID_convertor.cxx
   test_bimap.cxx

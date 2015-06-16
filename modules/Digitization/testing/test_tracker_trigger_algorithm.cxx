@@ -316,7 +316,7 @@ int main(int  argc_ , char ** argv_)
     snemo::digitization::clock_utils my_clock_manager;
     my_clock_manager.initialize();    
     
-    // Internal counter
+    // Internal counters
     int psd_count = 0;         // Event counter
     int decision_00_count = 0; // Tracker decision 00 counter 
     int decision_01_count = 0; // Tracker decision 01 counter 
