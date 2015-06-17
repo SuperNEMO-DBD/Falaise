@@ -524,6 +524,22 @@ namespace snemo {
       a_line->grab_segment().set_last(last_vertex);
       a_short_alpha.set_trajectory_handle(htrajectory);
 
+      // Set a alpha delayed time based on Geiger delayed times and store as
+      // properties of line trajectory (like it is done so far in trackfit)
+      double delay_time;
+      datatools::plus_infinity(delay_time);
+      {
+        for (snemo::datamodel::calibrated_tracker_hit::collection_type::const_iterator
+               ihit = hits_.begin(); ihit != hits_.end(); ++ihit) {
+          const snemo::datamodel::calibrated_tracker_hit & a_hit = ihit->get();
+          delay_time = std::min(delay_time, a_hit.get_delayed_time());
+        }
+      }
+      // Here we should spread the time since we do not know where exactly the
+      // alpha passes through the cell.
+      a_trajectory.grab_auxiliaries().store_real("t0", delay_time);
+
+
       // Determine vertices origin : previous process should have determine a
       // 'first' vertex associated to the prompt track and a 'last' vertex
       // associated to the center of a Geiger cells. The latter will be set to a
