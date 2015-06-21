@@ -51,19 +51,19 @@ Files:
 
 Check the geometry:
 
-  1. First make sure the Bayeux software is installed and setup: ::
+  1. First make sure the Bayeux software is installed and setup::
 
       $ which bxquery
       $ bxquery --version
       ...
 
-  2. Then run: ::
+  2. Then run::
 
       $ cd {Falaise source directory}
       $ bxgeomtools_inspector \
           --datatools::logging "trace" \
           --datatools::resource-path "falaise@$(pwd)/resources" \
-          --manager-config "@falaise:config/geometry/snemo/tracker_commissioning/1.0/manager.conf"
+          --manager-config "@falaise:config/snemo/tracker_commissioning/geometry/1.0/manager.conf"
 
      where:
 
