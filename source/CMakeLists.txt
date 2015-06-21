@@ -41,6 +41,9 @@ add_subdirectory(flsimulate)
 # - Reconstruction
 add_subdirectory(flreconstruct)
 
+# - Utilities
+add_subdirectory(flquery)
+
 #-----------------------------------------------------------------------
 # Manual
 #

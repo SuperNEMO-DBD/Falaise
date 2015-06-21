@@ -1,0 +1,208 @@
+#!/usr/bin/env bash
+#
+# Utility script used to locate resources and files installed within
+# the Falaise library.
+# This implementation does not support a relocatable binary distribution
+# of Falaise.
+#
+# Copyright 2014-2015 François Mauger <mauger@lpccaen.in2p3.fr>
+#
+# This file is part of Falaise.
+#
+# Falaise is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Falaise is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Falaise.  If not, see <http://www.gnu.org/licenses/>.
+
+# Description: an utility  script to fetch informations about the
+# current Falaise installation. This should be very useful when used
+# from some client scripts (i.e. wrapper/launcher scripts for a
+# batch system on a computin farm).
+# Note: this is a not relocatable version.
+# TODO: DocDB Ids: NemoDocDB-doc-2978-v5
+
+prefix_dir="@CMAKE_INSTALL_PREFIX@"
+version_str="@Falaise_VERSION@"
+lib_dir="${prefix_dir}/@CMAKE_INSTALL_LIBDIR@"
+bin_dir="${prefix_dir}/@CMAKE_INSTALL_BINDIR@"
+inc_dir="${prefix_dir}/@CMAKE_INSTALL_INCLUDEDIR@"
+data_dir="${prefix_dir}/@CMAKE_INSTALL_DATADIR@/Falaise-@Falaise_VERSION@"
+doc_dir="${data_dir}/Documentation"
+resource_dir="${data_dir}/resources"
+plugin_dir="${lib_dir}/@Falaise_PLUGINLIBDIR@"
+cmake_dir="${prefix_dir}/@CMAKE_INSTALL_CMAKEDIR@/@Falaise_PLUGINLIBDIR@"
+APPNAME="flquery"
+
+# List of plugins (experimental):
+plugins="$(find ${plugin_dir} -name lib*.* -exec basename \{\} \; | cut -d. -f1 | sed -e 's/^lib//g')"
+
+function print_usage()
+{
+
+cat<<EOF
+
+flquery - Utility script to fetch informations about Falaise installation.
+
+Options:
+  -h [ --help ]          Print help.
+
+  --version              Print version.
+
+  --prefix               Print installation prefix directory.
+
+  --libdir               Print library directory.
+
+  --plugindir            Print the plugin directory.
+
+  --bindir               Print binary directory.
+
+  --incdir               Print include base directory.
+
+  --datadir              Print data base directory.
+
+  --docdir               Print documentation base directory.
+
+  --resourcedir          Print resource base directory.
+
+  --plugins              Print the list of shipped plugins/modules.
+
+  --help-browse-api      Browse the Falaise API (HTML format).
+
+  --help-ocd             Print help about OCD requests.
+
+EOF
+
+    return
+}
+
+###  --skel-plugin [path]   Generate the skeleton directory of a Falaise plugin.
+function flskel_plugin()
+{
+    echo "error: ${APPNAME}: flskel_plugin: Not implemented yet !" >&2
+    return 1
+}
+
+function flhelp_browse_api()
+{
+    browser=$(which xdg-open)
+    if [ -z "${browser}" ]; then
+	browser=$(which firefox)
+    fi
+    if [ -n "${browser}" ]; then
+	${browser} ${doc_dir}/API/html/index.html &
+    else
+	echo "error: ${APPNAME}: flhelp_browse_api: Could not find a browser !" >&2
+	return 1
+    fi
+    return 0
+}
+
+function flhelp_ocd()
+{
+    cat<<EOF
+OCD support within Falaise
+==========================
+
+Some useful OCD operations:
+
+ * List the classes with OCD support from various Falaise plugins::
+
+    bxocd_manual \\
+     --load-dll Falaise@\$(flquery --libdir) \\
+     --load-dll Falaise_MockTrackerClusterizer@\$(flquery --plugindir) \\
+     --load-dll Falaise_CAT@\$(flquery --plugindir) \\
+     --load-dll TrackFit@\$(flquery --plugindir) \\
+     --load-dll Falaise_TrackFit@\$(flquery --plugindir) \\
+     --load-dll Falaise_ChargedParticleTracking@\$(flquery --plugindir) \\
+     --action list | grep ^snemo::
+
+
+ * Generate the OCD documentation for a specific module from a Falaise plugin::
+
+    bxocd_manual \\
+     --load-dll Falaise@\$(flquery --libdir) \\
+     --load-dll Falaise_CAT@\$(flquery --plugindir) \\
+     --action show snemo::reconstruction::cat_tracker_clustering_module > cat.rst
+    pandoc -w html cat.rst -o cat.html
+    xdg-open cat.html &
+
+
+ * Generate a skeleton configuration file for a specific module from a Falaise plugin::
+
+    bxocd_manual \\
+     --load-dll Falaise@\$(flquery --libdir) \\
+     --load-dll Falaise_CAT@\$(flquery --plugindir) \\
+     --action skeleton snemo::reconstruction::cat_tracker_clustering_module \\
+     --output-file cat.conf
+
+EOF
+   return 0
+}
+
+while [ -n "$?" ]; do
+      token="$1"
+      if [ "${token:0:1}" = "-" ]; then
+	  option="${token}"
+	  if [ "${option}" = "--help" -o "${option}" = "-h" ]; then
+	      print_usage
+	      exit 0
+	  elif [ "${option}" = "--version" ]; then
+	      echo ${version_str}
+	      exit 0
+	  elif [ "${option}" = "--prefix" ]; then
+	      echo ${prefix_dir}
+	      exit 0
+	  elif [ "${option}" = "--libdir" ]; then
+	      echo ${lib_dir}
+	      exit 0
+	  elif [ "${option}" = "--bindir" ]; then
+	      echo ${bin_dir}
+	      exit 0
+	  elif [ "${option}" = "--incdir" ]; then
+	      echo ${inc_dir}
+	      exit 0
+	  elif [ "${option}" = "--datadir" ]; then
+	      echo ${data_dir}
+	      exit 0
+	  elif [ "${option}" = "--docdir" ]; then
+	      echo ${doc_dir}
+	      exit 0
+	  elif [ "${option}" = "--plugindir" ]; then
+	      echo ${plugin_dir}
+	      exit 0
+	  elif [ "${option}" = "--resourcedir" ]; then
+	      echo ${resource_dir}
+	      exit 0
+	  elif [ "${option}" = "--plugins" ]; then
+	      for plugin in ${plugins} ; do
+		  echo ${plugin}
+	      done
+	      exit 0
+	  elif [ "${option}" = "--help-ocd" ]; then
+	      flhelp_ocd
+	      exit 0
+	  elif [ "${option}" = "--help-browse-api" ]; then
+	      flhelp_browse_api
+	      exit 0
+	  else
+	      echo "error: ${APPNAME}: Invalid option '${option}' !" >&2
+	      print_usage
+	      exit 1
+	  fi
+      else
+	  echo "error: ${APPNAME}: Invalid argument '${token}' !" >&2
+	  print_usage
+	  exit 1
+      fi
+      shift 1
+done
+
+exit 0
