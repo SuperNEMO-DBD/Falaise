@@ -22,8 +22,12 @@
 #  013 ----+-> |   |   |   |   |   |   |   | <-+-- 13
 #          +---+---+---+---+---+---+---+---+---+
 #          :   :   :   :   :   :   :   :   :   :
+#          :   :   :   :   :   :   :   :   :   :
 #   Calo   : : : : : : : : : : : : : : : : : : : Source
 #          :   :   :   :   :   :   :   :   :   : -----> x
+#          :   :   :   :   :   :   :   :   :   :
+#          :   :   :   :   :   :   :   :   :   :
+#          :   :   :   :   :   :   :   :   :   :
 #          +---+---+---+---+---+---+---+---+---+
 #  013 ----+-> |   |   |   |   |   |   |   | <-+-- 13
 #          +---+---+---+---+---+---+---+---+---+
@@ -116,10 +120,10 @@ material.ref             : string  = "tracking_gas"
 #########################
 
 #@description Hidden visibility flag
-visibility.hidden        : boolean = 0
+visibility.hidden           : boolean = 0
 
 #@description Hidden envelope visibility flag
-visibility.hidden_envelope : boolean = 1
+visibility.hidden_envelope  : boolean = 0
 
 #@description Hidden daughter volumes visibility flag
 visibility.daughters.hidden : boolean = 0
@@ -201,7 +205,7 @@ material.ref : string = "std::aluminium"
 visibility.hidden           : boolean = 0
 
 #@description Hidden envelope visibility flag
-visibility.hidden_envelope   : boolean = 0
+visibility.hidden_envelope  : boolean = 0
 
 #@description Hidden daughter volumes visibility flag
 visibility.daughters.hidden : boolean = 0
@@ -258,7 +262,7 @@ mapping.daughter_id.C0_volume : string = "[tracker_volume]"
 visibility.hidden           : boolean = 0
 
 #@description Hidden envelope visibility flag
-visibility.hidden_envelope   : boolean = 0
+visibility.hidden_envelope  : boolean = 0
 
 #@description Hidden daughter volumes visibility flag
 visibility.daughters.hidden : boolean = 0
@@ -300,7 +304,7 @@ stacked.number_of_items : integer = 3
 stacked.model_0   : string = "C0_closing_plate.model"
 
 #@description The geometry model of the second stacked volume
-stacked.model_1   : string =     "C0_submodule.model"
+stacked.model_1   : string = "C0_submodule.model"
 
 #@description The geometry model of the third stacked volume
 stacked.model_2   : string = "C0_closing_plate.model"
