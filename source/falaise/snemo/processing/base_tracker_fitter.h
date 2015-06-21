@@ -131,7 +131,7 @@ namespace snemo {
 
       /// Specific fitting algorithm
       virtual int _process_algo(const snemo::datamodel::tracker_clustering_data & clustering_,
-                                 snemo::datamodel::tracker_trajectory_data & trajectory_) = 0;
+                                snemo::datamodel::tracker_trajectory_data & trajectory_) = 0;
 
       /// Post-processing operation
       virtual int _post_process(snemo::datamodel::tracker_trajectory_data & trajectory_);
