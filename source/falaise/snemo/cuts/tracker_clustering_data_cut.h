@@ -64,51 +64,51 @@ namespace snemo {
       };
 
       /// Set the 'Tracker clustering' bank label/name
-      void set_TCD_label (const std::string & TCD_label_);
+      void set_TCD_label(const std::string & TCD_label_);
 
       /// Return the 'Tracker clustering' bank label/name
-      const std::string & get_TCD_label () const;
+      const std::string & get_TCD_label() const;
 
       /// Return the cut mode
-      uint32_t get_mode () const;
+      uint32_t get_mode() const;
 
       /// Check mode FLAG:
-      bool is_mode_flag () const;
+      bool is_mode_flag() const;
 
       /// Check mode HAS_CLUSTER:
-      bool is_mode_has_cluster () const;
+      bool is_mode_has_cluster() const;
 
       /// Check mode RANGE_CLUSTER:
-      bool is_mode_range_cluster () const;
+      bool is_mode_range_cluster() const;
 
       /// Check mode HAS_UNCLUSTERED_HITS:
-      bool is_mode_has_unclustered_hits () const;
+      bool is_mode_has_unclustered_hits() const;
 
       /// Check mode RANGE_UNCLUSTERED_HITS:
-      bool is_mode_range_unclustered_hits () const;
+      bool is_mode_range_unclustered_hits() const;
 
-      void set_flag_name (const std::string & flag_name_);
+      void set_flag_name(const std::string & flag_name_);
 
-      const std::string & get_flag_name () const;
+      const std::string & get_flag_name() const;
 
       /// Constructor
-      tracker_clustering_data_cut (datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
+      tracker_clustering_data_cut(datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
 
       /// Destructor
-      virtual ~tracker_clustering_data_cut ();
+      virtual ~tracker_clustering_data_cut();
 
       /// Initilization
-      virtual void initialize (const datatools::properties & configuration_,
+      virtual void initialize(const datatools::properties & configuration_,
                                datatools::service_manager & service_manager_,
                                cuts::cut_handle_dict_type & cut_dict_);
 
       /// Reset
-      virtual void reset ();
+      virtual void reset();
 
     protected:
 
       /// Default values
-      void _set_defaults ();
+      void _set_defaults();
 
       /// Selection
       virtual int _accept();
@@ -128,9 +128,15 @@ namespace snemo {
 
     };
 
-  }  // end of namespace cut
+  } // end of namespace cut
 
-}  // end of namespace snemo
+} // end of namespace snemo
+
+// OCD support::
+#include <datatools/ocd_macros.h>
+
+// @arg snemo::cut::tracker_clustering_data_cut the name the registered class in the OCD system
+DOCD_CLASS_DECLARATION(snemo::cut::tracker_clustering_data_cut)
 
 #endif // FALAISE_SNEMO_CUT_TRACKER_CLUSTERING_DATA_CUT_H
 

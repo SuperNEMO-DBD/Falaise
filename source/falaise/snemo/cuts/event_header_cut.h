@@ -1,9 +1,9 @@
 /// \file falaise/snemo/cuts/event_header_cut.h
 /* Author(s)     : Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date : 2011-09-18
- * Last modified : 2014-01-30
+ * Last modified : 2015-06-20
  *
- * Copyright (C) 2011-2014 Francois Mauger <mauger@lpccaen.in2p3.fr>
+ * Copyright (C) 2011-2015 Francois Mauger <mauger@lpccaen.in2p3.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@
 #include <boost/cstdint.hpp>
 // - Bayeux/datatools:
 #include <datatools/event_id.h>
+#include <datatools/object_configuration_description.h>
 // - Bayeux/cuts:
 #include <cuts/i_cut.h>
 
@@ -151,6 +152,12 @@ namespace snemo {
     }  // end of namespace cut
 
 }  // end of namespace snemo
+
+// OCD support::
+#include <datatools/ocd_macros.h>
+
+// @arg snemo::cut::event_header_cut the name the registered class in the OCD system
+DOCD_CLASS_DECLARATION(snemo::cut::event_header_cut)
 
 #endif // FALAISE_SNEMO_CUT_EVENT_HEADER_CUT_H
 

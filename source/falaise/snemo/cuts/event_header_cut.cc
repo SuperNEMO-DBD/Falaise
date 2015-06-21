@@ -472,6 +472,233 @@ namespace snemo {
 
 }  // end of namespace snemo
 
+// OCD support:
+
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::cut::event_header_cut, ocd_)
+{
+  ocd_.set_class_name("snemo::cut::event_header_cut");
+  ocd_.set_class_description("Cut based on criteria applied to the event header bank stored in the event record");
+  ocd_.set_class_library("falaise");
+  // ocd_.set_class_documentation("");
+
+  {
+    // Description of the 'EH_label' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("EH_label")
+      .set_terse_description("The name of the Event Header bank")
+      .set_traits(datatools::TYPE_STRING)
+      .set_default_value_string("EH")
+      .add_example("Set the default value::                          \n"
+                   "                                                 \n"
+                   "  EH_label : string = \"EH\"                     \n"
+                   "                                                 \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'mode.flag' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("mode.flag")
+      .set_terse_description("Mode with a special request flag")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .add_example("Activate the requested flag mode::               \n"
+                   "                                                 \n"
+                   "  mode.flag : boolean = true                     \n"
+                   "                                                 \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'mode.run_number' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("mode.run_number")
+      .set_terse_description("Mode requesting some specific run numbers")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .add_example("Activate the requested run number selection mode:: \n"
+                   "                                                 \n"
+                   "  mode.run_number : boolean = true               \n"
+                   "                                                 \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'mode.event_number' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("mode.event_number")
+      .set_terse_description("Mode requesting some specific event numbers")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .add_example("Activate the requested event number selection mode:: \n"
+                   "                                                     \n"
+                   "  mode.event_number : boolean = true                 \n"
+                   "                                                     \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'mode.list_of_event_ids' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("mode.list_of_event_ids")
+      .set_terse_description("Mode requesting a specific list of event identifiers")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .add_example("Activate the requested list of event IDs selection mode:: \n"
+                   "                                                          \n"
+                   "  mode.list_of_event_ids : boolean = true                 \n"
+                   "                                                          \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'flag.name' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("flag.name")
+      .set_terse_description("Name of the requested flag")
+      .set_triggered_by_flag("mode.flag")
+      .set_traits(datatools::TYPE_STRING)
+      .add_example("Set a specific requested flag name::                      \n"
+                   "                                                          \n"
+                   "  flag.name : string = \"high_energy\"                    \n"
+                   "                                                          \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'run_number.min' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("run_number.min")
+      .set_terse_description("Minimum run number")
+      .set_triggered_by_flag("mode.run_number")
+      .set_traits(datatools::TYPE_INTEGER)
+      .add_example("Set a specific minimum run number::                       \n"
+                   "                                                          \n"
+                   "  run_number.min : integer = 25                           \n"
+                   "                                                          \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'run_number.max' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("run_number.max")
+      .set_terse_description("Maximum run number")
+      .set_triggered_by_flag("mode.run_number")
+      .set_traits(datatools::TYPE_INTEGER)
+      .add_example("Set a specific maximum run number:: \n"
+                   "                                                          \n"
+                   "  run_number.max : integer = 34                           \n"
+                   "                                                          \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'event_number.min' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("event_number.min")
+      .set_terse_description("Minimum event number")
+      .set_traits(datatools::TYPE_INTEGER)
+      .set_triggered_by_flag("mode.event_number")
+      .add_example("Set a specific minimum event number:: \n"
+                   "                                                          \n"
+                   "  event_number.min : integer = 0                          \n"
+                   "                                                          \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'event_number.max' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("event_number.max")
+      .set_terse_description("Maximum event number")
+      .set_traits(datatools::TYPE_INTEGER)
+      .set_triggered_by_flag("mode.event_number")
+      .add_example("Set a specific maximum event number:: \n"
+                   "                                                          \n"
+                   "  event_number.max : integer = 1000                       \n"
+                   "                                                          \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'list_of_event_ids.ids' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("list_of_event_ids.ids")
+      .set_terse_description("Explicit list of event IDs")
+      .set_triggered_by_flag("mode.list_of_event_ids")
+      .set_traits(datatools::TYPE_STRING,
+                  datatools::configuration_property_description::ARRAY)
+      .add_example("Set a specific list of event IDs:: \n"
+                   "                                                          \n"
+                   "  list_of_event_ids.ids : string[5] = \\                  \n"
+                   "     \"234_0\" \\                                         \n"
+                   "     \"234_1\" \\                                         \n"
+                   "     \"234_5\" \\                                         \n"
+                   "     \"241_2\" \\                                         \n"
+                   "     \"241_3\"                                            \n"
+                   "                                                          \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'list_of_event_ids.file' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("list_of_event_ids.file")
+      .set_terse_description("Set the name of the file containing an explicit list of event IDs")
+      .set_triggered_by_flag("mode.list_of_event_ids")
+      .set_traits(datatools::TYPE_STRING)
+      .add_example("Set a specific file of event IDs:: \n"
+                   "                                                          \n"
+                   "  list_of_event_ids.file : string = \"my_list.lis\"       \n"
+                   "                                                          \n"
+                   )
+      ;
+  }
+
+  // Additional configuration hints :
+  ocd_.set_configuration_hints("Here is a full configuration example in the     \n"
+                               "``datatools::properties`` ASCII format::        \n"
+                               "                                                \n"
+                               "   EH_label : string = \"EH\"                   \n"
+                               "   mode.flag : boolean = false                  \n"
+                               "   # flag.name : string = \"high_energy\"       \n"
+                               "   mode.run_number : boolean = false            \n"
+                               "   # run_number.min : integer = 0               \n"
+                               "   # run_number.max : integer = 1000            \n"
+                               "   mode.event_number : boolean = true           \n"
+                               "   event_number.min : integer = 0               \n"
+                               "   event_number.max : integer = 100000          \n"
+                               "   mode.list_of_event_ids : boolean = false     \n"
+                               "   # list_of_event_ids.ids : string[5] = \\     \n"
+                               "   #  \"234_0\" \\                              \n"
+                               "   #  \"234_1\" \\                              \n"
+                               "   #  \"234_5\" \\                              \n"
+                               "   #  \"241_2\" \\                              \n"
+                               "   #  \"241_3\"                                 \n"
+                               "   # list_of_event_ids.file: string as path = \\\n"
+                               "   #    \"my_selection.lis\"                    \n"
+                               "                                                \n"
+                               );
+
+  ocd_.set_validation_support(true);
+  ocd_.lock();
+  return;
+}
+DOCD_CLASS_IMPLEMENT_LOAD_END() // Closing macro for implementation
+
+// Registration macro for class 'snemo::cut::event_header_cut' :
+DOCD_CLASS_SYSTEM_REGISTRATION(snemo::cut::event_header_cut, "snemo::cut::event_header_cut")
+
+
+
 /*
 ** Local Variables: --
 ** mode: c++ --

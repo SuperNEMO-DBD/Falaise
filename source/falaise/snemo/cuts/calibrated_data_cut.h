@@ -135,9 +135,15 @@ namespace snemo {
 
     };
 
-  }  // end of namespace cut
+  } // end of namespace cut
 
-}  // end of namespace snemo
+} // end of namespace snemo
+
+// OCD support::
+#include <datatools/ocd_macros.h>
+
+// @arg snemo::cut::calibrated_data_cut the name the registered class in the OCD system
+DOCD_CLASS_DECLARATION(snemo::cut::calibrated_data_cut)
 
 #endif // FALAISE_SNEMO_CUT_CALIBRATED_DATA_CUT_H
 

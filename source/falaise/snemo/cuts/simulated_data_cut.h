@@ -1,9 +1,9 @@
 /** \file falaise/snemo/cuts/simulated_data_cut.h
  * Author(s)     : Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date : 2011-09-18
- * Last modified : 2014-01-30
+ * Last modified : 2015-06-20
  *
- * Copyright (C) 2011-2014 Francois Mauger <mauger@lpccaen.in2p3.fr>
+ * Copyright (C) 2011-2015 Francois Mauger <mauger@lpccaen.in2p3.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,50 +67,50 @@ namespace snemo {
       };
 
       /// Set the SD bank key
-      void set_SD_label (const std::string & SD_label_);
+      void set_SD_label(const std::string & SD_label_);
 
       /// Return the SD bank key
-      const std::string & get_SD_label () const;
+      const std::string & get_SD_label() const;
 
       /// Return the cut mode
-      uint32_t get_mode () const;
+      uint32_t get_mode() const;
 
       /// Check mode MODE_FLAG:
-      bool is_mode_flag () const;
+      bool is_mode_flag() const;
 
       /// Check mode MODE_HAS_HIT_CATEGORY:
-      bool is_mode_has_hit_category () const;
+      bool is_mode_has_hit_category() const;
 
       /// Check mode MODE_RANGE_HIT_CATEGORY:
-      bool is_mode_range_hit_category () const;
+      bool is_mode_range_hit_category() const;
 
       /// Check mode MODE_HAS_HIT_PROPERTY:
-      bool is_mode_has_hit_property () const;
+      bool is_mode_has_hit_property() const;
 
       /// Set the name of cut mode MODE_FLAG
-      void set_flag_name (const std::string & flag_name_);
+      void set_flag_name(const std::string & flag_name_);
 
       /// Return the name of cut mode MODE_FLAG
-      const std::string & get_flag_name () const;
+      const std::string & get_flag_name() const;
 
       /// Constructor
       simulated_data_cut(datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
 
       /// Destructor
-      virtual ~simulated_data_cut ();
+      virtual ~simulated_data_cut();
 
       /// Initilization
-      virtual void initialize (const datatools::properties & configuration_,
+      virtual void initialize(const datatools::properties & configuration_,
                                datatools::service_manager & service_manager_,
                                cuts::cut_handle_dict_type & cut_dict_);
 
       /// Reset
-      virtual void reset ();
+      virtual void reset();
 
     protected:
 
       /// Default values
-      void _set_defaults ();
+      void _set_defaults();
 
       /// Selection
       virtual int _accept();
@@ -134,13 +134,18 @@ namespace snemo {
       CUT_REGISTRATION_INTERFACE(simulated_data_cut);
     };
 
-  }  // end of namespace cut
+  } // end of namespace cut
 
-}  // end of namespace snemo
+} // end of namespace snemo
+
+// OCD support::
+#include <datatools/ocd_macros.h>
+
+// @arg snemo::cut::simulated_data_cut the name the registered class in the OCD system
+DOCD_CLASS_DECLARATION(snemo::cut::simulated_data_cut)
 
 #endif // FALAISE_SNEMO_CUT_SIMULATED_DATA_CUT_H
 
-// end of simulated_data_cut.h
 /*
 ** Local Variables: --
 ** mode: c++ --

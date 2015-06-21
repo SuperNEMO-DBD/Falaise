@@ -361,9 +361,252 @@ namespace snemo {
       return cut_returned;
     }
 
-  }  // end of namespace cut
+  } // end of namespace cut
 
-}  // end of namespace snemo
+} // end of namespace snemo
+
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::cut::simulated_data_cut, ocd_)
+{
+  ocd_.set_class_name("snemo::cut::simulated_data_cut");
+  ocd_.set_class_description("Cut based on criteria applied to the simulated data bank stored in the event record");
+  ocd_.set_class_library("falaise");
+  // ocd_.set_class_documentation("");
+
+  {
+    // Description of the 'SD_label' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("SD_label")
+      .set_terse_description("The name of the Simulated Data bank")
+      .set_traits(datatools::TYPE_STRING)
+      .set_default_value_string("SD")
+      .add_example("Set the default value::                          \n"
+                   "                                                 \n"
+                   "  SD_label : string = \"SD\"                     \n"
+                   "                                                 \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'mode.flag' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("mode.flag")
+      .set_terse_description("Mode with a special request flag")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .add_example("Activate the requested flag mode::               \n"
+                   "                                                 \n"
+                   "  mode.flag : boolean = true                     \n"
+                   "                                                 \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'mode.has_hit_category' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("mode.has_hit_category")
+      .set_terse_description("Mode with a special requested hit category")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .add_example("Activate the requested hit category mode::       \n"
+                   "                                                 \n"
+                   "  mode.has_hit_category : boolean = true         \n"
+                   "                                                 \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'mode.range_hit_category' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("mode.range_hit_category")
+      .set_terse_description("Mode with a special requested hit category to be ranged")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .add_example("Activate the requested ranged hit category mode::\n"
+                   "                                                 \n"
+                   "  mode.range_hit_category : boolean = true       \n"
+                   "                                                 \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'mode.has_hit_property' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("mode.has_hit_property")
+      .set_terse_description("Mode with a special requested hit property")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .add_example("Activate the requested hit property mode::       \n"
+                   "                                                 \n"
+                   "  mode.has_hit_property : boolean = true         \n"
+                   "                                                 \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'flag.name' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("flag.name")
+      .set_terse_description("Name of the requested flag")
+      .set_triggered_by_flag("mode.flag")
+      .set_traits(datatools::TYPE_STRING)
+      .add_example("Set a specific requested flag name::                      \n"
+                   "                                                          \n"
+                   "  flag.name : string = \"high_energy\"                    \n"
+                   "                                                          \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'has_hit_category.category' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("has_hit_category.category")
+      .set_terse_description("Name of the requested hit category")
+      .set_triggered_by_flag("mode.has_hit_category")
+      .set_traits(datatools::TYPE_STRING)
+      .add_example("Set a specific hit category::                             \n"
+                   "                                                          \n"
+                   "  has_hit_category.category : string = \"calo\"           \n"
+                   "                                                          \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'range_hit_category.category' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("range_hit_category.category")
+      .set_terse_description("Name of the requested ranged hit category")
+      .set_triggered_by_flag("mode.range_hit_category")
+      .set_traits(datatools::TYPE_STRING)
+      .add_example("Set a specific hit category to be ranged::                \n"
+                   "                                                          \n"
+                   "  range_hit_category.category : string = \"gg\"           \n"
+                   "                                                          \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'range_hit_category.min' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("range_hit_category.min")
+      .set_terse_description("Minimum number of hits of the requested ranged hit category")
+      .set_triggered_by_flag("mode.range_hit_category")
+      .set_traits(datatools::TYPE_INTEGER)
+      .add_example("Set a specific minimum number of hits::                   \n"
+                   "                                                          \n"
+                   "  range_hit_category.min : integer = 3                    \n"
+                   "                                                          \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'range_hit_category.max' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("range_hit_category.max")
+      .set_terse_description("Maximum number of hits of the requested ranged hit category")
+      .set_triggered_by_flag("mode.range_hit_category")
+      .set_traits(datatools::TYPE_INTEGER)
+      .add_example("Set a specific maximum number of hits::                   \n"
+                   "                                                          \n"
+                   "  range_hit_category.max : integer = 20                   \n"
+                   "                                                          \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'has_hit_property.category' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("has_hit_property.category")
+      .set_terse_description("Name of the hit category to search for a specific property")
+      .set_triggered_by_flag("mode.has_hit_property")
+      .set_traits(datatools::TYPE_STRING)
+      .add_example("Set a specific hit category to be investigated::          \n"
+                   "                                                          \n"
+                   "  has_hit_property.category : string = \"gg\"             \n"
+                   "                                                          \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'has_hit_property.keys' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("has_hit_property.keys")
+      .set_terse_description("Names of property keys to be tested in a specific hit category")
+      .set_triggered_by_flag("mode.has_hit_property")
+      .set_traits(datatools::TYPE_STRING,
+                  datatools::configuration_property_description::ARRAY)
+      .add_example("Set the lists of keys to be tested::                      \n"
+                   "                                                          \n"
+                   "  has_hit_property.keys : string[2] = \\                  \n"
+                   "     \"noisy\" \\                                         \n"
+                   "     \"bad\"                                              \n"
+                   "                                                          \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'has_hit_property.${has_hit_property.keys}.values' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("has_hit_property.${has_hit_property.keys}.values")
+      .set_traits(datatools::TYPE_STRING,
+                  datatools::configuration_property_description::ARRAY)
+      .add_example("Set the lists of values to be associated to tested keys::   \n"
+                   "                                                            \n"
+                   "  has_hit_property.keys : string[2] = \\                    \n"
+                   "     \"creator_process\" \\                                 \n"
+                   "     \"g4_volume\"                                          \n"
+                   "  has_hit_property.creator_process.values : string[2] = \\  \n"
+                   "     \"brems\" \\                                           \n"
+                   "     \"compton\"                                            \n"
+                   "  has_hit_property.g4_volume.values : string[2] = \\        \n"
+                   "     \"drift_cell_core.log\" \\                             \n"
+                   "     \"tracker_chamber.log\"                                \n"
+                   "                                                            \n"
+                   )
+      ;
+  }
+
+  // Additional configuration hints :
+  ocd_.set_configuration_hints("Here is a full configuration example in the     \n"
+                               "``datatools::properties`` ASCII format::        \n"
+                               "                                                \n"
+                               "   SD_label : string = \"SD\"                   \n"
+                               "   mode.flag : boolean = false                  \n"
+                               "   # flag.name : string = \"high_energy\"       \n"
+                               "   mode.has_hit_category : boolean = false      \n"
+                               "   # has_hit_category.category : string = \"gg\"\n"
+                               "   mode.range_hit_category : boolean = true     \n"
+                               "   range_hit_category.category : string = \"gg\"\n"
+                               "   range_hit_category.min : integer = 5         \n"
+                               "   range_hit_category.max : integer = 20        \n"
+                               "   mode.has_hit_property : boolean = true       \n"
+                               "   has_hit_property.category : string = \"gg\"  \n"
+                               "   has_hit_property.logic : string = \"or\"     \n"
+                               "   has_hit_property.keys : string[2] = \\                   \n"
+                               "     \"creator_process\" \\                                 \n"
+                               "     \"g4_volume\"                                          \n"
+                               "   has_hit_property.creator_process.values : string[1] = \\ \n"
+                               "         \"brems\"                                          \n"
+                               "   has_hit_property.g4_volume.values : string[2] = \\       \n"
+                               "         \"tracking_chamber.log\"  \"drift_cell.log\"       \n"
+                               "                                                            \n"
+                               );
+
+  ocd_.set_validation_support(true);
+  ocd_.lock();
+  return;
+}
+DOCD_CLASS_IMPLEMENT_LOAD_END() // Closing macro for implementation
+
+// Registration macro for class 'snemo::cut::simulated_data_cut' :
+DOCD_CLASS_SYSTEM_REGISTRATION(snemo::cut::simulated_data_cut, "snemo::cut::simulated_data_cut")
 
 /*
 ** Local Variables: --

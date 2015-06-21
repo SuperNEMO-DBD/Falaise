@@ -379,6 +379,41 @@ namespace snemo {
 
 }  // end of namespace snemo
 
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::cut::tracker_clustering_data_cut, ocd_)
+{
+  ocd_.set_class_name("snemo::cut::tracker_clustering_data_cut_cut");
+  ocd_.set_class_description("Cut based on criteria applied to the Tracker Clustering data bank stored in the event record");
+  ocd_.set_class_library("falaise");
+  // ocd_.set_class_documentation("");
+
+  // Additional configuration hints :
+  ocd_.set_configuration_hints("Here is a full configuration example in the           \n"
+                               "``datatools::properties`` ASCII format::              \n"
+                               "                                                      \n"
+                               "                                                      \n"
+                               "   TCD_label : string = \"TCD\"                       \n"
+                               "   mode.flag : boolean = false                        \n"
+                               "   # flag.name : string = \"test2\"                   \n"
+                               "   mode.has_cluster : boolean = false                 \n"
+                               "   mode.range_cluster : boolean = true                \n"
+                               "   range_cluster.min : integer = 1                    \n"
+                               "   range_cluster.max : integer = 2                    \n"
+                               "   mode.has_unclustered_hits : boolean = true         \n"
+                               "   mode.range_unclustered_hits : boolean = true       \n"
+                               "   range_unclustered_hits.min : integer = 0           \n"
+                               "   range_unclustered_hits.max : integer = 3           \n"
+                               "                                                      \n"
+                               );
+
+  ocd_.set_validation_support(false);
+  ocd_.lock();
+  return;
+}
+DOCD_CLASS_IMPLEMENT_LOAD_END() // Closing macro for implementation
+
+// Registration macro for class 'snemo::cut::tracker_clustering_data_cut' :
+DOCD_CLASS_SYSTEM_REGISTRATION(snemo::cut::tracker_clustering_data_cut, "snemo::cut::tracker_clustering_data_cut")
+
 /*
 ** Local Variables: --
 ** mode: c++ --
