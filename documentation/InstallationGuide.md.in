@@ -10,7 +10,7 @@ as fast as possible. It therefore adopts a specific layout of where
 working copies of sources, builds of these sources and installs of the
 builds. You do not have to follow this layout, but we recommend it
 as a fast and convenient way to organise things. We welcome
-constructive comments,criticisms and suggestions for improvement, and
+constructive comments, criticisms and suggestions for improvement, and
 these should be directed to the SuperNEMO Software Working Group.
 
 
@@ -545,7 +545,7 @@ SuperNEMO/
 |-- installs
 ~~~~~
 
-To checkout the trunk of Falaise, we use the same proceedure as for
+To checkout the trunk of Falaise, we use the same procedure as for
 checking out a release and just change the path slightly:
 
 ~~~~~
@@ -609,5 +609,3 @@ be guaranteed but you are welcome to try it and report any issues you
 find. Contributing to Falaise requires familiarity with Subversion, CMake,
 the C++ language and modern software development practices.
 An introduction to these topics is in preparation in a [dedicated topic](@ref developingfalaise).
-
-
