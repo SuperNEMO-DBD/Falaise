@@ -835,5 +835,3 @@ DOCD_CLASS_IMPLEMENT_LOAD_END() // Closing macro for implementation
 
 // Registration macro for class 'snemo::processing::geiger_regime' :
 DOCD_CLASS_SYSTEM_REGISTRATION(snemo::processing::geiger_regime,"snemo::processing::geiger_regime")
-
-// end of falaise/snemo/processing/geiger_regime.cc
