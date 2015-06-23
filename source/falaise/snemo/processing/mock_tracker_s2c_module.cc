@@ -556,7 +556,6 @@ namespace snemo {
 
       // current module geometry ID and information:
       int module_number = geomtools::geom_id::INVALID_ADDRESS;
-      geomtools::geom_id module_gid;
       const geomtools::geom_info * module_ginfo = 0;
       const geomtools::placement * module_placement = 0;
 
