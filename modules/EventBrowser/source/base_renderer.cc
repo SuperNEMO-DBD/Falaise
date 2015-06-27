@@ -178,19 +178,29 @@ namespace snemo {
         return;
       }
 
-      TPolyMarker3D * base_renderer::make_polymarker(const geomtools::vector_3d & point_)
+      TPolyMarker3D * base_renderer::make_polymarker(const geomtools::vector_3d & point_,
+                                                     const bool convert_)
       {
         TPolyMarker3D * marker = new TPolyMarker3D;
-        marker->SetPoint(0, point_.x(), point_.y(), point_.z());
+        geomtools::vector_3d new_point = point_;
+        if (convert_) {
+          detector::detector_manager::get_instance().compute_world_coordinates(point_, new_point);
+        }
+        marker->SetPoint(0, new_point.x(), new_point.y(), new_point.z());
         return marker;
       }
 
-      TPolyLine3D * base_renderer::make_polyline(const std::vector<geomtools::vector_3d> & points_)
+      TPolyLine3D * base_renderer::make_polyline(const std::vector<geomtools::vector_3d> & points_,
+                                                 const bool convert_)
       {
         TPolyLine3D * polyline = new TPolyLine3D;
-        for (size_t i =0; i < points_.size(); ++i) {
+        for (size_t i = 0; i < points_.size(); ++i) {
           const geomtools::vector_3d & a_point = points_[i];
-          polyline->SetPoint(i, a_point.x(), a_point.y(), a_point.z());
+          geomtools::vector_3d new_point = a_point;
+          if (convert_) {
+            detector::detector_manager::get_instance().compute_world_coordinates(a_point, new_point);
+          }
+          polyline->SetPoint(i, new_point.x(), new_point.y(), new_point.z());
         }
         return polyline;
       }
@@ -200,7 +210,7 @@ namespace snemo {
         std::vector<geomtools::vector_3d> points;
         points.push_back(line_.get_first());
         points.push_back(line_.get_last());
-        return make_polyline(points);
+        return make_polyline(points, true);
       }
 
       TPolyLine3D * base_renderer::make_helix_track(const geomtools::helix_3d & helix_)
@@ -228,7 +238,7 @@ namespace snemo {
           }
         } while (true);
 
-        return make_polyline(points);
+        return make_polyline(points, true);
       }
 
     } // end of namespace view

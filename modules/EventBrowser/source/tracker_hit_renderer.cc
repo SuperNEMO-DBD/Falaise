@@ -29,6 +29,9 @@
 #include <TRotation.h>
 #include <TMath.h>
 
+// - Bayeux/geomtools:
+#include <bayeux/geomtools/manager.h>
+
 // - Falaise:
 #include <falaise/snemo/datamodels/helix_trajectory_pattern.h>
 #include <falaise/snemo/datamodels/line_trajectory_pattern.h>
@@ -115,11 +118,11 @@ namespace snemo {
                             a_step.get_position_stop().y(),
                             a_step.get_position_stop().z());
 
-          const unsigned int time_percent
-            = (unsigned int)((TColor::GetNumberOfColors() - 1)
-                             * (a_step.get_time_start() - hit_start_time)
-                             / (hit_stop_time - hit_start_time));
-          const unsigned int color = geiger_with_gradient ?
+          const size_t time_percent
+            = (size_t)((TColor::GetNumberOfColors() - 1)
+                       * (a_step.get_time_start() - hit_start_time)
+                       / (hit_stop_time - hit_start_time));
+          const size_t color = geiger_with_gradient ?
             TColor::GetColorPalette(time_percent) : kSpring;
           gg_path->SetLineColor(color);
 
@@ -142,10 +145,8 @@ namespace snemo {
             TRotation dr;
             int cell_axis = 'z';
 
-            const detector::detector_manager & detector_mgr
-              = detector::detector_manager::get_instance();
+            const detector::detector_manager & detector_mgr = detector::detector_manager::get_instance();
             const std::string & setup_label = detector_mgr.get_setup_label_name();
-
             if (setup_label == "snemo::tracker_commissioning") {
               cell_axis = 'x';
             }
@@ -483,64 +484,66 @@ namespace snemo {
                                                             TObjArray * objects_,
                                                             const bool show_cluster)
       {
+        // Compute the position of the anode impact in the drift cell coordinates reference frame:
+        const detector::detector_manager & detector_mgr = detector::detector_manager::get_instance();
+
+        geomtools::vector_3d cell_module_pos(hit_.get_x(), hit_.get_y(), hit_.get_z());
+        geomtools::vector_3d cell_world_pos;
+        detector_mgr.compute_world_coordinates(cell_module_pos, cell_world_pos);
+
         // Get (x, y) position of triggered cell
-        const double x_cell = hit_.get_x();
-        const double y_cell = hit_.get_y();
+        const double x = cell_world_pos.x();
+        const double y = cell_world_pos.y();
 
         // Add error in z coordinate
-        const double z = hit_.get_z();
+        const double z = cell_world_pos.z();
         const double sigma_z = hit_.get_sigma_z();
 
-        const options_manager & options_mgr = options_manager::get_instance();
-
+        // Get hit auxiliaries
         const datatools::properties & aux = hit_.get_auxiliaries();
 
         // Retrieve line width from properties if 'hit' is highlighted:
         size_t line_width = style_manager::get_instance().get_mc_line_width();
         if (aux.has_flag(browser_tracks::HIGHLIGHT_FLAG)) line_width = 3;
 
-        TPolyLine3D * gg_dz = new TPolyLine3D;
-        objects_->Add(gg_dz);
-
         int color = style_manager::get_instance().get_calibrated_data_color();
         if (show_cluster && aux.has_key(browser_tracks::COLOR_FLAG)) {
           std::string hex_str;
           aux.fetch(browser_tracks::COLOR_FLAG, hex_str);
+          const options_manager & options_mgr = options_manager::get_instance();
           if (options_mgr.get_option_flag(SHOW_TRACKER_CLUSTERED_HITS) &&
               options_mgr.get_option_flag(SHOW_TRACKER_CLUSTERED_CIRCLE))
             color = TColor::GetColor(hex_str.c_str());
         }
+        TPolyLine3D * gg_dz = new TPolyLine3D;
+        objects_->Add(gg_dz);
         gg_dz->SetLineColor(color);
         gg_dz->SetLineWidth(line_width);
 
         int cell_axis = 'z';
-
-        const detector::detector_manager & detector_mgr = detector::detector_manager::get_instance();
         const std::string & setup_label = detector_mgr.get_setup_label_name();
-
         if (setup_label == "snemo::tracker_commissioning") {
           cell_axis = 'x';
         }
-
         DT_THROW_IF(cell_axis != 'z' && cell_axis != 'x', std::logic_error,
                     "Unsupported cell axis !");
 
         if (cell_axis == 'z') {
-          gg_dz->SetPoint(0, x_cell, y_cell, z - sigma_z);
-          gg_dz->SetPoint(1, x_cell, y_cell, z + sigma_z);
+          gg_dz->SetPoint(0, x, y, z - sigma_z);
+          gg_dz->SetPoint(1, x, y, z + sigma_z);
         } else if (cell_axis == 'x') {
-          // gg_dz->SetPoint(0, x_cell, y_cell, z - sigma_z);
-          // gg_dz->SetPoint(1, x_cell, y_cell, z + sigma_z);
+          gg_dz->SetPoint(0, x - sigma_z, y, z);
+          gg_dz->SetPoint(1, x + sigma_z, y, z);
         }
 
         if (hit_.is_delayed()) {
           const double r = 22.0 / CLHEP::mm;//hit_.get_r();
           std::vector<geomtools::vector_3d> points;
-          points.push_back(geomtools::vector_3d(x_cell+r, y_cell+r, z));
-          points.push_back(geomtools::vector_3d(x_cell+r, y_cell-r, z));
-          points.push_back(geomtools::vector_3d(x_cell-r, y_cell-r, z));
-          points.push_back(geomtools::vector_3d(x_cell-r, y_cell+r, z));
-          points.push_back(geomtools::vector_3d(x_cell+r, y_cell+r, z));
+          points.push_back(geomtools::vector_3d(x+r, y+r, z));
+          points.push_back(geomtools::vector_3d(x+r, y-r, z));
+          points.push_back(geomtools::vector_3d(x-r, y-r, z));
+          points.push_back(geomtools::vector_3d(x-r, y+r, z));
+          points.push_back(geomtools::vector_3d(x+r, y+r, z));
 
           TPolyLine3D * gg_drift_square = base_renderer::make_polyline(points);
           objects_->Add(gg_drift_square);
@@ -572,15 +575,27 @@ namespace snemo {
             for (size_t i_point = 0; i_point <= n_point; ++i_point) {
               r_min *= dr;
               r_max *= dr;
-              rmins.push_back(geomtools::vector_3d(r_min.x() + x_cell,
-                                                   r_min.y() + y_cell,
+              rmins.push_back(geomtools::vector_3d(r_min.x() + x,
+                                                   r_min.y() + y,
                                                    r_min.z()));
-              rmaxs.push_back(geomtools::vector_3d(r_max.x() + x_cell,
-                                                   r_max.y() + y_cell,
+              rmaxs.push_back(geomtools::vector_3d(r_max.x() + x,
+                                                   r_max.y() + y,
                                                    r_max.z()));
             }
-          } else if(cell_axis == 'x') {
-            // XXX
+          } else if (cell_axis == 'x') {
+            TVector3 r_min(x, r - sigma_r, 0);
+            TVector3 r_max(x, r + sigma_r, 0);
+
+            for (size_t i_point = 0; i_point <= n_point; ++i_point) {
+              r_min *= dr;
+              r_max *= dr;
+              rmins.push_back(geomtools::vector_3d(r_min.x(),
+                                                   r_min.y() + y,
+                                                   r_min.z() + z));
+              rmaxs.push_back(geomtools::vector_3d(r_max.x(),
+                                                   r_max.y() + y,
+                                                   r_max.z() + z));
+            }
           }
           TPolyLine3D * gg_drift_min = base_renderer::make_polyline(rmins);
           objects_->Add(gg_drift_min);

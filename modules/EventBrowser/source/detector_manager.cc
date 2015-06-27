@@ -19,6 +19,7 @@
  *
  */
 
+// This project:
 #include <falaise/snemo/detector/detector_manager.h>
 #include <falaise/snemo/detector/i_root_volume.h>
 
@@ -35,15 +36,19 @@
 
 #include <falaise/snemo/utils/root_utilities.h>
 
-#include <geomtools/box.h>
-#include <geomtools/manager.h>
-#include <geomtools/smart_id_locator.h>
+// - Bayeux/geomtools:
+#include <bayeux/geomtools/box.h>
+#include <bayeux/geomtools/manager.h>
+#include <bayeux/geomtools/smart_id_locator.h>
 
+// - Falaise:
 #include <falaise/resource.h>
 
+// Standard libraries:
 #include <string>
 #include <sstream>
 
+// ROOT
 #include <TError.h>
 #include <TGeoManager.h>
 #include <TGeoMatrix.h>
@@ -183,7 +188,9 @@ namespace snemo {
       // dtor:
       detector_manager::~detector_manager()
       {
-        this->reset();
+        if (is_initialized()) {
+          this->reset();
+        }
         return;
       }
 
@@ -345,6 +352,19 @@ namespace snemo {
       void detector_manager::dump() const
       {
         this->tree_dump(std::clog, "snemo::visualization::detector::detector_manager");
+        return;
+      }
+
+      void detector_manager::compute_world_coordinates(const geomtools::vector_3d & mother_pos_,
+                                                       geomtools::vector_3d & world_pos_) const
+      {
+        if (! _module_placement_) {
+          DT_LOG_WARNING(view::options_manager::get_instance().get_logging_priority(),
+                         "No 'module' placement setup !");
+          world_pos_ = mother_pos_;
+        } else {
+          _module_placement_->child_to_mother(mother_pos_, world_pos_);
+        }
         return;
       }
 
@@ -545,6 +565,11 @@ namespace snemo {
                iptr_ginfo != geom_info_list.end(); ++iptr_ginfo) {
             const geomtools::geom_info & ginfo = **iptr_ginfo;
             this->_set_volume_(ginfo);
+
+            // Save 'module' placement for later coordinates conversio
+            if (volume_category_name =="module") {
+              _module_placement_ = &(ginfo.get_world_placement());
+            }
           } // end of geo_info
         } // end of enabled categories
         return;
@@ -573,6 +598,8 @@ namespace snemo {
           if (only_categories_.empty()) {
             switch (_setup_label_) {
             case SNEMO:
+            case SNEMO_DEMONSTRATOR:
+            case TRACKER_COMMISSIONING:
               only_categories_.push_back("module");
               volumes["module"]._visibility_ = VISIBLE;
               break;

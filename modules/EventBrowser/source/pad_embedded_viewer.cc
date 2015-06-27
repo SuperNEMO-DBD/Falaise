@@ -618,8 +618,7 @@ namespace snemo {
           if (detector_mgr.get_setup_label() == detector::detector_manager::SNEMO ||
               detector_mgr.get_setup_label() == detector::detector_manager::SNEMO_DEMONSTRATOR) {
             // Hard coded but specific code to SuperNEMO
-            if (_view_type_ != SIDE_VIEW &&
-                _zoom_index_ <= 2) {
+            if (_view_type_ != SIDE_VIEW && _zoom_index_ <= 2) {
               const double xshift = 0.15;
               if (xpad > 0.0) {
                 itext->SetTextAlign(12);

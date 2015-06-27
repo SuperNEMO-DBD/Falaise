@@ -1,6 +1,6 @@
 // -*- mode: c++ ; -*-
 /* detector_manager.h
- * Author (s) :     Xavier Garrido <<garrido@lal.in2p3.fr>>
+ * Author(s) :    Xavier Garrido <<garrido@lal.in2p3.fr>>
  * Creation date: 2010-06-30
  * Last modified: 2011-02-19
  *
@@ -32,25 +32,28 @@
 #ifndef FALAISE_SNEMO_VISUALIZATION_DETECTOR_DETECTOR_MANAGER_H
 #define FALAISE_SNEMO_VISUALIZATION_DETECTOR_DETECTOR_MANAGER_H 1
 
+// Standard libraries:
 #include <map>
 #include <vector>
 #include <string>
 
-// Interfaces
+// - Bayeux/datatools:
+#include <bayeux/datatools/i_tree_dump.h>
+// - Bayeux/geomtools:
+#include <bayeux/geomtools/clhep.h>
+
+// This project:
 #include <falaise/snemo/utils/singleton.h>
-#include <datatools/i_tree_dump.h>
-
-namespace geomtools {
-  class i_shape_3d;
-  class geom_id;
-  class geom_info;
-}
-
-class TGeoVolume;
 
 namespace geomtools {
   class manager;
+  class i_shape_3d;
+  class geom_id;
+  class geom_info;
+  class placement;
 }
+
+class TGeoVolume;
 
 namespace snemo {
 
@@ -81,6 +84,10 @@ namespace snemo {
 
         /// Volume dictionnary
         typedef std::map<geomtools::geom_id, i_volume*> volume_dict_type;
+
+        /// Compute world coordinates
+        void compute_world_coordinates(const geomtools::vector_3d & mother_pos_,
+                                       geomtools::vector_3d & world_pos_) const;
 
         /// Return initialization status
         bool is_initialized() const;
@@ -208,6 +215,8 @@ namespace snemo {
 
         std::string          _geo_manager_config_file_;      //!< Geometry manager configuration file
         geomtools::manager * _geo_manager_;                  //!< Geometry manager
+
+        const geomtools::placement * _module_placement_;     //!< Module placement
 
         TGeoVolume        * _world_volume_;                  //!< ROOT world volume
         double              _world_length_;                  //!< World length

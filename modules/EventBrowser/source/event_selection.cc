@@ -760,7 +760,7 @@ namespace snemo {
         // Event header cut
         cuts_prop.store_string("EH_label", io::EH_LABEL);
         _cut_manager_->load_cut(event_selection::EH_CUT_LABEL,
-                                "snemo::core::cut::event_header_cut",
+                                "snemo::cut::event_header_cut",
                                 cuts_prop);
 
         return;

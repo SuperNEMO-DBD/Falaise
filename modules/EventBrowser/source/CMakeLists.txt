@@ -1,4 +1,4 @@
-# - CMakeLists.txt for FalaiseEventBrowserPlugin/source subdir
+# - CMakeLists.txt for FalaiseEventBrowserPlugin/src subdir
 
 #-----------------------------------------------------------------------
 # function list_prepend(<list> <value>)
@@ -195,4 +195,4 @@ target_link_libraries(Falaise_EventBrowser
 # Install it:
 install(TARGETS Falaise_EventBrowser DESTINATION ${CMAKE_INSTALL_LIBDIR}/Falaise/modules)
 
-# - end of CMakeLists.txt for EventBrowser/source subdir
+# - end of CMakeLists.txt for EventBrowser/src subdir
