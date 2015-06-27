@@ -1,9 +1,7 @@
 set(Falaise_RESOURCES
 ${PROJECT_SOURCE_DIR}/resources/examples/geometry/ex01/ex01.cxx
 ${PROJECT_SOURCE_DIR}/resources/examples/geometry/ex01/README.rst
-${PROJECT_SOURCE_DIR}/resources/examples/geometry/ex01/ex01
 ${PROJECT_SOURCE_DIR}/resources/config/README.rst
-${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/geometry/1.0/mapping_pool.txt
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/geometry/1.0/manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/geometry/1.0/geometry_service.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/geometry/1.0/README.rst
@@ -37,11 +35,6 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/officia
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/official-1.0.0.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/1.0/mock_calorimeter_s2c.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/README.rst
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/variants/registries/magnetic_field.conf
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/variants/registries/source_strips.conf
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/variants/models/magnetic_field.def
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/variants/models/source_strips.def
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/variants/variance.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/categories.lis
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/geometry_service.conf
@@ -119,7 +112,6 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/plugins/l
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/plugins/magnetic_field_manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/plugins/materials_plugin.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/plugins/magnetic_fields.def
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/test.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/1.0/processes/particles.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/1.0/processes/em.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/1.0/manager.conf
