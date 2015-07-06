@@ -9,10 +9,14 @@
 
 // Third party:
 // - Bayeux/datatools:
-#include <datatools/properties.h>
-#include <datatools/things.h>
+#include <bayeux/datatools/properties.h>
+#include <bayeux/datatools/things.h>
 // - Bayeux/mctools:
-#include <mctools/simulated_data.h>
+#include <bayeux/mctools/simulated_data.h>
+
+// This project :
+#include <falaise/snemo/datamodels/data_model.h>
+
 
 namespace snemo {
 
@@ -111,9 +115,11 @@ namespace snemo {
       this->i_cut::_common_initialize(configuration_);
 
       if (_SD_label_.empty()) {
-        DT_THROW_IF(! configuration_.has_key("SD_label"), std::logic_error,
-                    "Missing 'SD_label' property !");
-        set_SD_label(configuration_.fetch_string("SD_label"));
+        if (configuration_.has_key("SD_label")) {
+          set_SD_label(configuration_.fetch_string("SD_label"));
+        } else {
+          set_SD_label(snemo::datamodel::data_info::default_simulated_data_label());
+        }
       }
 
       if (_mode_ == MODE_UNDEFINED) {
@@ -372,13 +378,15 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::cut::simulated_data_cut, ocd_)
   ocd_.set_class_library("falaise");
   // ocd_.set_class_documentation("");
 
+  cuts::i_cut::common_ocd(ocd_);
+
   {
     // Description of the 'SD_label' configuration property :
     datatools::configuration_property_description & cpd = ocd_.add_property_info();
     cpd.set_name_pattern("SD_label")
       .set_terse_description("The name of the Simulated Data bank")
       .set_traits(datatools::TYPE_STRING)
-      .set_default_value_string("SD")
+      .set_default_value_string(snemo::datamodel::data_info::default_simulated_data_label())
       .add_example("Set the default value::                          \n"
                    "                                                 \n"
                    "  SD_label : string = \"SD\"                     \n"
