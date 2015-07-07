@@ -9,10 +9,11 @@
 
 // Third party:
 // - Bayeux/datatools:
-#include <datatools/properties.h>
-#include <datatools/things.h>
+#include <bayeux/datatools/properties.h>
+#include <bayeux/datatools/things.h>
 
 // SuperNEMO data models :
+#include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/particle_track_data.h>
 
 namespace snemo {
@@ -24,10 +25,11 @@ namespace snemo {
 
     void particle_track_data_cut::_set_defaults()
     {
-      _PTD_label_              = "";
-      _mode_                   = MODE_UNDEFINED;
-      _particles_range_min_    = -1;
-      _particles_range_max_    = -1;
+      _PTD_label_           = "";
+      _mode_                = MODE_UNDEFINED;
+      _flag_name_           = "";
+      _particles_range_min_ = -1;
+      _particles_range_max_ = -1;
       _non_associated_calorimeter_hits_range_min_ = -1;
       _non_associated_calorimeter_hits_range_max_ = -1;
       return;
@@ -49,6 +51,11 @@ namespace snemo {
       return _mode_;
     }
 
+    bool particle_track_data_cut::is_mode_flag() const
+    {
+      return _mode_ & MODE_FLAG;
+    }
+
     bool particle_track_data_cut::is_mode_has_non_associated_calorimeter_hits() const
     {
       return _mode_ & MODE_HAS_NON_ASSOCIATED_CALORIMETER_HITS;
@@ -67,6 +74,17 @@ namespace snemo {
     bool particle_track_data_cut::is_mode_range_particles() const
     {
       return _mode_ & MODE_RANGE_PARTICLES;
+    }
+
+    void particle_track_data_cut::set_flag_name(const std::string & flag_name_)
+    {
+      _flag_name_ = flag_name_;
+      return;
+    }
+
+    const std::string & particle_track_data_cut::get_flag_name() const
+    {
+      return _flag_name_;
     }
 
     particle_track_data_cut::particle_track_data_cut(datatools::logger::priority logger_priority_)
@@ -100,12 +118,18 @@ namespace snemo {
       this->i_cut::_common_initialize(configuration_);
 
       if (_PTD_label_.empty()) {
-        DT_THROW_IF(! configuration_.has_key("PTD_label"), std::logic_error,
-                    "Missing 'PTD_label' property !");
-        set_PTD_label(configuration_.fetch_string("PTD_label"));
+        if (configuration_.has_key("PTD_label")) {
+          set_PTD_label(configuration_.fetch_string("PTD_label"));
+        } else {
+          set_PTD_label(snemo::datamodel::data_info::default_particle_track_data_label());
+        }
       }
 
       if (_mode_ == MODE_UNDEFINED) {
+        if (configuration_.has_flag("mode.flag")) {
+          _mode_ |= MODE_FLAG;
+        }
+
         if (configuration_.has_flag("mode.has_non_associated_calorimeter_hits")) {
           _mode_ |= MODE_HAS_NON_ASSOCIATED_CALORIMETER_HITS;
         }
@@ -124,6 +148,15 @@ namespace snemo {
 
         DT_THROW_IF(_mode_ == MODE_UNDEFINED, std::logic_error,
                     "Missing at least a 'mode.XXX' property !");
+
+        // mode FLAG:
+        if (is_mode_flag()) {
+          DT_LOG_DEBUG(get_logging_priority(), "Using FLAG mode...");
+          DT_THROW_IF(! configuration_.has_key("flag.name"),
+                      std::logic_error,
+                      "Missing 'flag.name' property !");
+          set_flag_name(configuration_.fetch_string("flag.name"));
+        } // end if is_mode_flag
 
         // mode HAS_NON_ASSOCIATED_CALORIMETERS:
         if (is_mode_has_non_associated_calorimeter_hits()) {
@@ -210,6 +243,16 @@ namespace snemo {
       const snemo::datamodel::particle_track_data & PTD
         = ER.get<snemo::datamodel::particle_track_data>(_PTD_label_);
 
+      // Check if the tracker clustering data has a property flag with a specific name :
+      bool check_flag = true;
+      if (is_mode_flag()) {
+        DT_LOG_DEBUG(get_logging_priority(), "Running FLAG mode...");
+        const bool check = PTD.get_auxiliaries().has_flag(_flag_name_);
+        if (! check) {
+          check_flag = false;
+        }
+      }
+
       // Check if event have an non associated calorimeter hit :
       bool check_non_associated_calorimeter_hits = true;
       if (is_mode_has_non_associated_calorimeter_hits()) {
@@ -250,7 +293,7 @@ namespace snemo {
       bool check_has_particles = true;
       if (is_mode_has_particles()) {
         DT_LOG_DEBUG(get_logging_priority(), "Running HAS_PARTICLES mode...");
-        if (!PTD.has_particles()) {
+        if (! PTD.has_particles()) {
           check_has_particles = false;
         }
       }
@@ -259,7 +302,7 @@ namespace snemo {
       bool check_range_particles = true;
       if (is_mode_range_particles()) {
         DT_LOG_DEBUG(get_logging_priority(), "Running RANGE_PARTICLES mode...");
-        if (!PTD.has_particles()) {
+        if (! PTD.has_particles()) {
           DT_LOG_DEBUG(get_logging_priority(), "Particle track data has no particle");
           return cuts::SELECTION_INAPPLICABLE;
         }
@@ -285,7 +328,8 @@ namespace snemo {
       }
 
       cut_returned = cuts::SELECTION_REJECTED;
-      if (check_non_associated_calorimeter_hits       &&
+      if (check_flag                                  &&
+          check_non_associated_calorimeter_hits       &&
           check_range_non_associated_calorimeter_hits &&
           check_has_particles                         &&
           check_range_particles) {
@@ -298,6 +342,187 @@ namespace snemo {
   }  // end of namespace cut
 
 }  // end of namespace snemo
+
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::cut::particle_track_data_cut, ocd_)
+{
+  ocd_.set_class_name("snemo::cut::particle_track_data_cut_cut");
+  ocd_.set_class_description("Cut based on criteria applied to the Particle Track data bank stored in the event record");
+  ocd_.set_class_library("falaise");
+  // ocd_.set_class_documentation("");
+
+  cuts::i_cut::common_ocd(ocd_);
+
+  {
+    // Description of the 'PTD_label' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("PTD_label")
+      .set_terse_description("The name of the Particle Track Data bank")
+      .set_traits(datatools::TYPE_STRING)
+      .set_default_value_string(snemo::datamodel::data_info::default_particle_track_data_label())
+      .add_example("Set the default value::        \n"
+                   "                               \n"
+                   "  PTD_label : string = \"PTD\" \n"
+                   "                               \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'mode.flag' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("mode.flag")
+      .set_terse_description("Mode with a special request flag")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .add_example("Activate the mode::          \n"
+                   "                             \n"
+                   "  mode.flag : boolean = true \n"
+                   "                             \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'mode.has_non_associated_calorimeter_hits' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("mode.has_non_associated_calorimeter_hits")
+      .set_terse_description("Mode requiring the presence of non associated calorimeter hits")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .add_example("Activate the mode::                                         \n"
+                   "                                                            \n"
+                   "  mode.has_non_associated_calorimeter_hits : boolean = true \n"
+                   "                                                            \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'mode.range_non_associated_calorimeter_hits' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("mode.range_non_associated_calorimeter_hits")
+      .set_terse_description("Mode with a special requested range of non associated calorimeter hits")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .add_example("Activate the mode::                                           \n"
+                   "                                                              \n"
+                   "  mode.range_non_associated_calorimeter_hits : boolean = true \n"
+                   "                                                              \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'mode.has_particles' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("mode.has_particles")
+      .set_terse_description("Mode requiring the presence of particle tracks")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .add_example("Activate the mode::                   \n"
+                   "                                      \n"
+                   "  mode.has_particles : boolean = true \n"
+                   "                                      \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'mode.range_particles' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("mode.range_particles")
+      .set_terse_description("Mode with a special requested range of particle tracks")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .add_example("Activate the mode::                     \n"
+                   "                                        \n"
+                   "  mode.range_particles : boolean = true \n"
+                   "                                        \n"
+                   )
+      ;
+  }
+
+
+  {
+    // Description of the 'range_non_associated_calorimeter_hits.min' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("range_non_associated_calorimeter_hits.min")
+      .set_terse_description("Minimum number of non associated calorimeter hits")
+      .set_triggered_by_flag("mode.range_non_associated_calorimeter_hits")
+      .set_traits(datatools::TYPE_INTEGER)
+      .add_example("Set a specific minimum number of non associated calorimeter hits:: \n"
+                   "                                                                   \n"
+                   "  range_non_associated_calorimeter_hits.min : integer = 3          \n"
+                   "                                                                   \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'range_non_associated_calorimeter_hits.max' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("range_non_associated_calorimeter_hits.max")
+      .set_terse_description("Maximum number of non associated calorimeter hits")
+      .set_triggered_by_flag("mode.range_non_associated_calorimeter_hits")
+      .set_traits(datatools::TYPE_INTEGER)
+      .add_example("Set a specific maximum number of non associated calorimeter hits:: \n"
+                   "                                                                   \n"
+                   "  range_non_associated_calorimeter_hits.max : integer = 20         \n"
+                   "                                                                   \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'range_particles.min' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("range_particles.min")
+      .set_terse_description("Minimum number of particle tracks")
+      .set_triggered_by_flag("mode.range_particles")
+      .set_traits(datatools::TYPE_INTEGER)
+      .add_example("Set a specific minimum number of particle tracks:: \n"
+                   "                                                   \n"
+                   "  range_particles.min : integer = 3                \n"
+                   "                                                   \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'range_particles.max' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("range_particles.max")
+      .set_terse_description("Maximum number of particle tracks")
+      .set_triggered_by_flag("mode.range_particles")
+      .set_traits(datatools::TYPE_INTEGER)
+      .add_example("Set a specific maximum number of particle tracks:: \n"
+                   "                                                   \n"
+                   "  range_particles.max : integer = 20               \n"
+                   "                                                   \n"
+                   )
+      ;
+  }
+
+
+  // Additional configuration hints :
+  ocd_.set_configuration_hints("Here is a full configuration example in the                   \n"
+                               "``datatools::properties`` ASCII format::                      \n"
+                               "                                                              \n"
+                               "                                                              \n"
+                               "   PTD_label : string = \"PTD\"                               \n"
+                               "   mode.flag : boolean = false                                \n"
+                               "   # flag.name : string = \"test2\"                           \n"
+                               "   mode.has_non_associated_calorimeter_hits : boolean = false \n"
+                               "   mode.has_particles : boolean = true                        \n"
+                               "   mode.range_particles : boolean = true                      \n"
+                               "   range_particles.min : integer = 0                          \n"
+                               "   range_particles.max : integer = 3                          \n"
+                               "                                                              \n"
+                               );
+
+  ocd_.set_validation_support(false);
+  ocd_.lock();
+  return;
+}
+DOCD_CLASS_IMPLEMENT_LOAD_END() // Closing macro for implementation
+
+// Registration macro for class 'snemo::cut::particle_track_data_cut' :
+DOCD_CLASS_SYSTEM_REGISTRATION(snemo::cut::particle_track_data_cut, "snemo::cut::particle_track_data_cut")
 
 /*
 ** Local Variables: --

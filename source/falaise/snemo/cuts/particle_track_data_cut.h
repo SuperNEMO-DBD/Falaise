@@ -54,6 +54,7 @@ namespace snemo {
       /// Mode of the cut
       enum mode_type {
         MODE_UNDEFINED                             = 0,
+        MODE_FLAG                                  = datatools::bit_mask::bit00,
         MODE_HAS_NON_ASSOCIATED_CALORIMETER_HITS   = datatools::bit_mask::bit01,
         MODE_RANGE_NON_ASSOCIATED_CALORIMETER_HITS = datatools::bit_mask::bit02,
         MODE_HAS_PARTICLES                         = datatools::bit_mask::bit03,
@@ -69,6 +70,9 @@ namespace snemo {
       /// Return the cut mode
       uint32_t get_mode() const;
 
+      /// Check mode FLAG:
+      bool is_mode_flag() const;
+
       /// Check mode HAS_NON_ASSOCIATED_CALORIMETER_HITS
       bool is_mode_has_non_associated_calorimeter_hits() const;
 
@@ -80,6 +84,12 @@ namespace snemo {
 
       /// Check mode RANGE_PARTICLES
       bool is_mode_range_particles() const;
+
+      /// Set flag property name
+      void set_flag_name(const std::string & flag_name_);
+
+      /// Return flag property name
+      const std::string & get_flag_name() const;
 
       /// Constructor
       particle_track_data_cut(datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
@@ -107,6 +117,7 @@ namespace snemo {
 
       std::string _PTD_label_;                         //!< Name of the "Particle track data" bank
       uint32_t    _mode_;                              //!< Mode of the cut
+      std::string _flag_name_;                         //!< Name of the boolean property in the particle track data
       int _particles_range_min_;                       //!< Minimal number of particles for range_particles mode
       int _particles_range_max_;                       //!< Maximal number of particles for range_particles mode
       int _non_associated_calorimeter_hits_range_min_; //!< Minimal number of ass. calo for range_non_associated_calorimeter_hits mode
@@ -119,6 +130,12 @@ namespace snemo {
   }  // end of namespace cut
 
 }  // end of namespace snemo
+
+// OCD support::
+#include <datatools/ocd_macros.h>
+
+// @arg snemo::cut::particle_track_data_cut the name the registered class in the OCD system
+DOCD_CLASS_DECLARATION(snemo::cut::particle_track_data_cut)
 
 #endif // FALAISE_SNEMO_CUT_PARTICLE_TRACK_DATA_CUT_H
 
