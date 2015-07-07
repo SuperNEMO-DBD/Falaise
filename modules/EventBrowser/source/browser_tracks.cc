@@ -351,16 +351,18 @@ namespace snemo {
 
         // Add a folder relative to primary event info.
         if (options_mgr.get_option_flag(SHOW_MC_VERTEX)) {
+          mctools::simulated_data::primary_event_type & pevent = sd.grab_primary_event();
+          const std::string & a_label = pevent.get_label();
           TGListTreeItem * item_primary_event
             = _tracks_list_box_->AddItem(item_simulated_data,
-                                         "Primary particles",
+                                         std::string("Primary particles" +
+                                                     (!a_label.empty() ? " - " + a_label : "")).c_str(),
                                          _get_colored_icon_("ofolder"),
                                          _get_colored_icon_("folder"));
           _tracks_list_box_->OpenItem(item_primary_event);
           item_primary_event->SetCheckBox(false);
           item_primary_event->SetUserData((void*)(intptr_t)++icheck_id);
 
-          mctools::simulated_data::primary_event_type & pevent = sd.grab_primary_event();
           genbb::primary_event::particles_col_type & particles = pevent.grab_particles();
 
           for (genbb::primary_event::particles_col_type::iterator ip = particles.begin();
@@ -539,17 +541,18 @@ namespace snemo {
             item_mc_calorimeter->SetCheckBox(false);
             item_mc_calorimeter->SetUserData((void*)(intptr_t)++icheck_id);
 
-            std::list<std::string> calo_list;
-            calo_list.push_back("calo");
-            calo_list.push_back("gveto");
-            calo_list.push_back("xcalo");
-            calo_list.push_back("scin.hit");
-            calo_list.push_back("trig");
+            // Retrieve all category names except private category such as '__visual.tracks'
+            std::vector<std::string> calo_categories;
+            sd.get_step_hits_categories(calo_categories, mctools::simulated_data::HIT_CATEGORY_TYPE_PUBLIC);
 
             size_t ihit = 0;
-            for (std::list<std::string>::const_iterator iname = calo_list.begin();
-                 iname != calo_list.end(); ++iname) {
+            for (std::vector<std::string>::const_iterator iname = calo_categories.begin();
+                 iname != calo_categories.end(); ++iname) {
               const std::string & a_calo_name = *iname;
+
+              // 2015/07/07 XG: Remove Geiger energy deposit since it is treated
+              // in a particular way
+              if (a_calo_name == "gg") continue;
 
               if (!sd.has_step_hits(a_calo_name)) continue;
 
@@ -594,13 +597,12 @@ namespace snemo {
                 }
                 item_hit->SetTipText(tip_text.str().c_str());
               }
-
-              // Update item text following the number of hits found
-              std::ostringstream oss;
-              oss << item_mc_calorimeter->GetText();
-              ihit == 0 ? oss << " - no hits" : oss << " - " << ihit << " hits";
-              item_mc_calorimeter->SetText(oss.str().c_str());
             }
+            // Update item text following the number of hits found
+            std::ostringstream oss;
+            oss << item_mc_calorimeter->GetText();
+            ihit == 0 ? oss << " - no hits" : oss << " - " << ihit << " hits";
+            item_mc_calorimeter->SetText(oss.str().c_str());
           }// end of SHOW_MC_CALORIMETER_HITS
 
           if (options_mgr.get_option_flag(SHOW_MC_TRACKER_HITS)) {
