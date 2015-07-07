@@ -84,9 +84,9 @@ namespace snemo {
           const geomtools::vector_3d & pstart = a_hit.get_position_start();
           const geomtools::vector_3d & pstop  = a_hit.get_position_stop();
 
-          const double dx = std::abs (0.5 * (pstart.x() - pstop.x()));
-          const double dy = std::abs (0.5 * (pstart.y() - pstop.y()));
-          const double dz = std::abs (0.5 * (pstart.z() - pstop.z()));
+          const double dx = std::abs(0.5 * (pstart.x() - pstop.x()));
+          const double dy = std::abs(0.5 * (pstart.y() - pstop.y()));
+          const double dz = std::abs(0.5 * (pstart.z() - pstop.z()));
 
           const geomtools::vector_3d pos = 0.5 * (pstart + pstop);
 
