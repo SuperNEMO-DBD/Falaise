@@ -274,26 +274,23 @@ namespace snemo {
       // Get event record
       const datatools::things & ER = get_user_data<datatools::things>();
 
-      if (! ER.has(_CD_label_))
-        {
-          DT_LOG_DEBUG(get_logging_priority(), "Event record has no '" << _CD_label_ << "' bank !");
-          return cut_returned;
-        }
+      if (! ER.has(_CD_label_)) {
+        DT_LOG_DEBUG(get_logging_priority(), "Event record has no '" << _CD_label_ << "' bank !");
+        return cut_returned;
+      }
 
       // Get calibrated data bank
       const snemo::datamodel::calibrated_data & CD = ER.get<snemo::datamodel::calibrated_data>(_CD_label_);
 
       // Check if the calibrated data has a property flag with a specific name :
       bool check_flag = true;
-      if (is_mode_flag())
-        {
-          DT_LOG_DEBUG(get_logging_priority(), "Running FLAG mode...");
-          const bool check = CD.get_properties().has_flag(_flag_name_);
-          if (! check)
-            {
-              check_flag = false;
-            }
+      if (is_mode_flag()) {
+        DT_LOG_DEBUG(get_logging_priority(), "Running FLAG mode...");
+        const bool check = CD.get_properties().has_flag(_flag_name_);
+        if (! check) {
+          check_flag = false;
         }
+      }
 
       // Check if the calibrated data has some specific calibrated hits :
       bool check_has_hit_category = true;
