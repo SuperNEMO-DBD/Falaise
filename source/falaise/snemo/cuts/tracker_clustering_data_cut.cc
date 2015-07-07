@@ -414,6 +414,34 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::cut::tracker_clustering_data_cut, ocd_)
   }
 
   {
+    // Description of the 'mode.has_unclustered_hits' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("mode.has_unclustered_hits")
+      .set_terse_description("Mode requiring the presence of unclustered hits")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .add_example("Activate the mode::                          \n"
+                   "                                             \n"
+                   "  mode.has_unclustered_hits : boolean = true \n"
+                   "                                             \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'mode.range_unclustered_hits' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("mode.range_unclustered_hits")
+      .set_terse_description("Mode with a special requested range of unclustered hits")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .add_example("Activate the mode::                            \n"
+                   "                                               \n"
+                   "  mode.range_unclustered_hits : boolean = true \n"
+                   "                                               \n"
+                   )
+      ;
+  }
+
+  {
     // Description of the 'range_cluster.min' configuration property :
     datatools::configuration_property_description & cpd = ocd_.add_property_info();
     cpd.set_name_pattern("range_cluster.min")
@@ -439,34 +467,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::cut::tracker_clustering_data_cut, ocd_)
                    "                                            \n"
                    "  range_cluster.max : integer = 20          \n"
                    "                                            \n"
-                   )
-      ;
-  }
-
-  {
-    // Description of the 'mode.has_unclustered_hits' configuration property :
-    datatools::configuration_property_description & cpd = ocd_.add_property_info();
-    cpd.set_name_pattern("mode.has_unclustered_hits")
-      .set_terse_description("Mode requiring the presence of unclustered hits")
-      .set_traits(datatools::TYPE_BOOLEAN)
-      .add_example("Activate the mode::                          \n"
-                   "                                             \n"
-                   "  mode.has_unclustered_hits : boolean = true \n"
-                   "                                             \n"
-                   )
-      ;
-  }
-
-  {
-    // Description of the 'mode.range_unclustered_hits' configuration property :
-    datatools::configuration_property_description & cpd = ocd_.add_property_info();
-    cpd.set_name_pattern("mode.range_unclustered_hits")
-      .set_terse_description("Mode with a special requested range of unclustered hits")
-      .set_traits(datatools::TYPE_BOOLEAN)
-      .add_example("Activate the mode::                            \n"
-                   "                                               \n"
-                   "  mode.range_unclustered_hits : boolean = true \n"
-                   "                                               \n"
                    )
       ;
   }

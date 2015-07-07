@@ -87,8 +87,10 @@ namespace snemo {
       /// Check mode RANGE_UNCLUSTERED_HITS:
       bool is_mode_range_unclustered_hits() const;
 
+      /// Set flag property name
       void set_flag_name(const std::string & flag_name_);
 
+      /// Return flag property name
       const std::string & get_flag_name() const;
 
       /// Constructor
