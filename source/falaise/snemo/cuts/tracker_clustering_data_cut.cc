@@ -349,7 +349,7 @@ namespace snemo {
 
 DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::cut::tracker_clustering_data_cut, ocd_)
 {
-  ocd_.set_class_name("snemo::cut::tracker_clustering_data_cut_cut");
+  ocd_.set_class_name("snemo::cut::tracker_clustering_data_cut");
   ocd_.set_class_description("Cut based on criteria applied to the Tracker Clustering data bank stored in the event record");
   ocd_.set_class_library("falaise");
   // ocd_.set_class_documentation("");
