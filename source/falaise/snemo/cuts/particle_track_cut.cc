@@ -262,9 +262,10 @@ namespace snemo {
 
         const snemo::datamodel::calibrated_calorimeter_hit::collection_type & the_calorimeters
           = a_particle.get_associated_calorimeter_hits();
-        size_t ncalorimeters = the_calorimeters.size();
+        size_t ncalorimeters = 0;
         if (_calorimeter_hits_range_category_.empty()) {
           // Count every calorimeter hits
+          ncalorimeters = the_calorimeters.size();
           DT_LOG_DEBUG(get_logging_priority(),
                        "Number of associated calorimeters = " << ncalorimeters << " (min = "
                        << _calorimeter_hits_range_min_ << " , max = " << _calorimeter_hits_range_max_ << ")");
