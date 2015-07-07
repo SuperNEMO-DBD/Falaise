@@ -26,6 +26,7 @@ namespace snemo {
     {
       _mode_ = MODE_UNDEFINED;
       _flag_name_ = "";
+      _calorimeter_hits_range_category_ = "";
       _calorimeter_hits_range_min_ = -1;
       _calorimeter_hits_range_max_ = -1;
       return;
@@ -148,6 +149,13 @@ namespace snemo {
         // mode PARTICLE_RANGE_ASSOCIATED_CALORIMETERS:
         if (is_mode_range_associated_calorimeter_hits()) {
           DT_LOG_DEBUG(get_logging_priority(), "Using RANGE_ASSOCIATED_CALORIMETER_HITS mode...");
+          if (configuration_.has_key("range_associated_calorimeter_hits.category")) {
+            _calorimeter_hits_range_category_ = configuration_.fetch_string("range_associated_calorimeter_hits.category");
+            DT_THROW_IF(_calorimeter_hits_range_category_ != "calo"  &&
+                        _calorimeter_hits_range_category_ != "xcalo" &&
+                        _calorimeter_hits_range_category_ != "gveto",
+                        std::logic_error, "Invalid calorimeter category label !");
+          }
           size_t count = 0;
           if (configuration_.has_key("range_associated_calorimeter_hits.min")) {
             const int nmin = configuration_.fetch_integer("range_associated_calorimeter_hits.min");
@@ -238,7 +246,7 @@ namespace snemo {
       bool check_calorimeter_association = true;
       if (is_mode_has_associated_calorimeter_hits()) {
         DT_LOG_DEBUG(get_logging_priority(), "Running HAS_ASSOCIATED_CALORIMETER_HITS mode...");
-        if (!a_particle.has_associated_calorimeter_hits()) {
+        if (! a_particle.has_associated_calorimeter_hits()) {
           DT_LOG_DEBUG(get_logging_priority(), "A particle has no associated calorimeter hit!");
           check_calorimeter_association = false;
         }
@@ -247,17 +255,32 @@ namespace snemo {
       bool check_range_calorimeter_hits = true;
       if (is_mode_range_associated_calorimeter_hits()) {
         DT_LOG_DEBUG(get_logging_priority(), "Running RANGE_ASSOCIATED_CALORIMETER_HITS mode...");
-        if (!a_particle.has_associated_calorimeter_hits()) {
+        if (! a_particle.has_associated_calorimeter_hits()) {
           DT_LOG_DEBUG(get_logging_priority(), "A particle has no associated calorimeter hits !");
           return cuts::SELECTION_INAPPLICABLE;
         }
 
         const snemo::datamodel::calibrated_calorimeter_hit::collection_type & the_calorimeters
           = a_particle.get_associated_calorimeter_hits();
-        const size_t ncalorimeters = the_calorimeters.size();
-        DT_LOG_DEBUG(get_logging_priority(),
-                     "Number of associated calorimeters = " << ncalorimeters << " (min = "
-                     << _calorimeter_hits_range_min_ << " , max = " << _calorimeter_hits_range_max_ << ")");
+        size_t ncalorimeters = the_calorimeters.size();
+        if (_calorimeter_hits_range_category_.empty()) {
+          // Count every calorimeter hits
+          DT_LOG_DEBUG(get_logging_priority(),
+                       "Number of associated calorimeters = " << ncalorimeters << " (min = "
+                       << _calorimeter_hits_range_min_ << " , max = " << _calorimeter_hits_range_max_ << ")");
+        } else {
+          // Look for special calorimeter category
+          for (snemo::datamodel::calibrated_calorimeter_hit::collection_type::const_iterator
+                 icalo = the_calorimeters.begin();
+               icalo != the_calorimeters.end(); ++icalo) {
+            const snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit = icalo->get();
+            const datatools::properties & aux = a_calo_hit.get_auxiliaries();
+            if (aux.has_key("category") &&
+                aux.fetch_string("category") == _calorimeter_hits_range_category_) {
+              ncalorimeters++;
+            }
+          }
+        }
         bool check = true;
         if (_calorimeter_hits_range_min_ >= 0 && ncalorimeters < (size_t)_calorimeter_hits_range_min_) {
           check = false;
@@ -407,6 +430,34 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::cut::particle_track_cut, ocd_)
   }
 
   {
+    // Description of the 'mode.has_associated_calorimeter_hits' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("mode.has_associated_calorimeter_hits")
+      .set_terse_description("Mode with a special request for associated calorimeter hits")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .add_example("Activate the requested associated calorimeter hits mode:: \n"
+                   "                                                          \n"
+                   "  mode.has_associated_calorimeter_hits : boolean = true   \n"
+                   "                                                          \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'mode.range_associated_calorimeter_hits' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("mode.range_associated_calorimeter_hits")
+      .set_terse_description("Mode with a special requested ranged calorimeter hit category")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .add_example("Activate the mode::                                       \n"
+                   "                                                          \n"
+                   "  mode.range_associated_calorimeter_hits : boolean = true \n"
+                   "                                                          \n"
+                   )
+      ;
+  }
+
+  {
     // Description of the 'flag.name' configuration property :
     datatools::configuration_property_description & cpd = ocd_.add_property_info();
     cpd.set_name_pattern("flag.name")
@@ -458,7 +509,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::cut::particle_track_cut, ocd_)
                             " * ``calo``  \n"
                             " * ``xcalo`` \n"
                             " * ``gveto`` \n"
-"                                         \n"
+                            "             \n"
                             )
       .add_example("Set a specific vertex type to be selected:: \n"
                    "                                            \n"
@@ -468,29 +519,74 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::cut::particle_track_cut, ocd_)
       ;
   }
 
+  {
+    // Description of the 'range_associated_calorimeter_hits.category' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("range_associated_calorimeter_hits.category")
+      .set_terse_description("Category of the requested calorimeter hits")
+      .set_triggered_by_flag("mode.range_associated_calorimeter_hits")
+      .set_traits(datatools::TYPE_STRING)
+      .set_long_description("Supported values are: \n"
+                            "             \n"
+                            " * ``calo``  \n"
+                            " * ``xcalo`` \n"
+                            " * ``gveto`` \n"
+                            "             \n"
+                            "In case no value is set, all associated calorimeter hits are taken into account\n"
+                            )
+      .add_example("Set a specific calorimeter category to be selected::              \n"
+                   "                                                                  \n"
+                   "  range_associated_calorimeter_hits.category : string = \"gveto\" \n"
+                   "                                                                  \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'range_associated_calorimeter_hits.min' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("range_associated_calorimeter_hits.min")
+      .set_terse_description("Minimum number of hits of the requested ranged hit category")
+      .set_triggered_by_flag("mode.range_associated_calorimeter_hits")
+      .set_traits(datatools::TYPE_INTEGER)
+      .add_example("Set a specific minimum number of hits::               \n"
+                   "                                                      \n"
+                   "  range_associated_calorimeter_hits.min : integer = 1 \n"
+                   "                                                      \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'range_associated_calorimeter_hits.max' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("range_associated_calorimeter_hits.max")
+      .set_terse_description("Maximum number of hits of the requested ranged hit category")
+      .set_triggered_by_flag("mode.range_associated_calorimeter_hits")
+      .set_traits(datatools::TYPE_INTEGER)
+      .add_example("Set a specific maximum number of hits::               \n"
+                   "                                                      \n"
+                   "  range_associated_calorimeter_hits.max : integer = 2 \n"
+                   "                                                      \n"
+                   )
+      ;
+  }
+
   // Additional configuration hints :
-  ocd_.set_configuration_hints("Here is a full configuration example in the     \n"
-                               "``datatools::properties`` ASCII format::        \n"
-                               "                                                \n"
-                               "   mode.flag : boolean = false                  \n"
-                               "   # flag.name : string = \"high_energy\"       \n"
-                               "   mode.has_hit_category : boolean = false      \n"
-                               "   # has_hit_category.category : string = \"gg\"\n"
-                               "   mode.range_hit_category : boolean = true     \n"
-                               "   range_hit_category.category : string = \"gg\"\n"
-                               "   range_hit_category.min : integer = 5         \n"
-                               "   range_hit_category.max : integer = 20        \n"
-                               "   mode.has_hit_property : boolean = true       \n"
-                               "   has_hit_property.category : string = \"gg\"  \n"
-                               "   has_hit_property.logic : string = \"or\"     \n"
-                               "   has_hit_property.keys : string[2] = \\                   \n"
-                               "     \"creator_process\" \\                                 \n"
-                               "     \"g4_volume\"                                          \n"
-                               "   has_hit_property.creator_process.values : string[1] = \\ \n"
-                               "         \"brems\"                                          \n"
-                               "   has_hit_property.g4_volume.values : string[2] = \\       \n"
-                               "         \"tracking_chamber.log\"  \"drift_cell.log\"       \n"
-                               "                                                            \n"
+  ocd_.set_configuration_hints("Here is a full configuration example in the                        \n"
+                               "``datatools::properties`` ASCII format::                           \n"
+                               "                                                                   \n"
+                               "   mode.flag : boolean = false                                     \n"
+                               "   # flag.name : string = \"high_energy\"                          \n"
+                               "   mode.has_charge : boolean = true                                \n"
+                               "   has_charge.type : string = \"positive\"                         \n"
+                               "   mode.has_vertex : boolean = true                                \n"
+                               "   has_vertex.type : string = \"wire\"                             \n"
+                               "   mode.range_associated_calorimeter_hits : boolean = true         \n"
+                               "   range_associated_calorimeter_hits.category : string = \"xcalo\" \n"
+                               "   range_associated_calorimeter_hits.min : integer = 1             \n"
+                               "   range_associated_calorimeter_hits.max : integer = 2             \n"
+                               "                                                                   \n"
                                );
 
   ocd_.set_validation_support(true);

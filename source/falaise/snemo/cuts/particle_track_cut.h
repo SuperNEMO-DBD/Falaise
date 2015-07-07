@@ -111,8 +111,10 @@ namespace snemo {
       std::string _flag_name_;          //!< Name of the boolean property in the particle track
       std::string _charge_type_;        //!< Name of the charge type
       std::string _vertex_type_;        //!< Name of the vertex type
-      int _calorimeter_hits_range_min_; //!< Minimal number of ass. calo
-      int _calorimeter_hits_range_max_; //!< Maximal number of ass. calo
+
+      std::string _calorimeter_hits_range_category_; //!< Calorimeter category
+      int _calorimeter_hits_range_min_; //!< Minimal number of associated calorimeter
+      int _calorimeter_hits_range_max_; //!< Maximal number of associated calorimeter
 
       // Macro to automate the registration of the cut :
       CUT_REGISTRATION_INTERFACE(particle_track_cut);
