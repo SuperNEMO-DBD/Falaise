@@ -54,6 +54,7 @@ namespace snemo {
       /// Mode of the cut
       enum mode_type {
         MODE_UNDEFINED                         = 0,
+        MODE_FLAG                              = datatools::bit_mask::bit00,
         MODE_HAS_CHARGE                        = datatools::bit_mask::bit01,
         MODE_HAS_ASSOCIATED_CALORIMETER_HITS   = datatools::bit_mask::bit02,
         MODE_RANGE_ASSOCIATED_CALORIMETER_HITS = datatools::bit_mask::bit03,
@@ -63,6 +64,9 @@ namespace snemo {
 
       /// Return the cut mode
       uint32_t get_mode() const;
+
+      /// Check mode FLAG
+      bool is_mode_flag () const;
 
       /// Check mode HAS_ASSOCIATED_CALORIMETER_HITS
       bool is_mode_has_associated_calorimeter_hits() const;
@@ -104,10 +108,11 @@ namespace snemo {
     private:
 
       uint32_t    _mode_;               //!< Mode of the cut
+      std::string _flag_name_;          //!< Name of the boolean property in the particle track
       std::string _charge_type_;        //!< Name of the charge type
       std::string _vertex_type_;        //!< Name of the vertex type
-      int _calorimeter_hits_range_min_; //!< Minimal number of ass. calo for particle_range_associated_calorimeter_hits mode
-      int _calorimeter_hits_range_max_; //!< Maximal number of ass. calo for particle_range_associated_calorimeter_hits mode
+      int _calorimeter_hits_range_min_; //!< Minimal number of ass. calo
+      int _calorimeter_hits_range_max_; //!< Maximal number of ass. calo
 
       // Macro to automate the registration of the cut :
       CUT_REGISTRATION_INTERFACE(particle_track_cut);
@@ -116,6 +121,12 @@ namespace snemo {
   }  // end of namespace cut
 
 }  // end of namespace snemo
+
+// OCD support::
+#include <datatools/ocd_macros.h>
+
+// @arg snemo::cut::particle_track_cut the name the registered class in the OCD system
+DOCD_CLASS_DECLARATION(snemo::cut::particle_track_cut)
 
 #endif // FALAISE_SNEMO_CUT_PARTICLE_TRACK_CUT_H
 

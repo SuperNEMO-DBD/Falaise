@@ -25,6 +25,7 @@ namespace snemo {
     void particle_track_cut::_set_defaults()
     {
       _mode_ = MODE_UNDEFINED;
+      _flag_name_ = "";
       _calorimeter_hits_range_min_ = -1;
       _calorimeter_hits_range_max_ = -1;
       return;
@@ -33,6 +34,11 @@ namespace snemo {
     uint32_t particle_track_cut::get_mode() const
     {
       return _mode_;
+    }
+
+    bool particle_track_cut::is_mode_flag() const
+    {
+      return _mode_ & MODE_FLAG;
     }
 
     bool particle_track_cut::is_mode_has_associated_calorimeter_hits() const
@@ -91,6 +97,9 @@ namespace snemo {
       this->i_cut::_common_initialize(configuration_);
 
       if (_mode_ == MODE_UNDEFINED) {
+        if (configuration_.has_flag("mode.flag")) {
+          _mode_ |= MODE_FLAG;
+        }
         if (configuration_.has_flag("mode.has_charge")) {
           _mode_ |= MODE_HAS_CHARGE;
         }
@@ -103,11 +112,20 @@ namespace snemo {
         if (configuration_.has_flag("mode.has_vertex")) {
           _mode_ |= MODE_HAS_VERTEX;
         }
-         if (configuration_.has_flag("mode.has_delayed_cluster")) {
+        if (configuration_.has_flag("mode.has_delayed_cluster")) {
           _mode_ |= MODE_HAS_DELAYED_CLUSTER;
         }
-       DT_THROW_IF(_mode_ == MODE_UNDEFINED, std::logic_error,
+        DT_THROW_IF(_mode_ == MODE_UNDEFINED, std::logic_error,
                     "Missing at least a 'mode.XXX' property !");
+
+        // mode FLAG:
+        if (is_mode_flag()) {
+          DT_LOG_DEBUG(get_logging_priority(), "Using FLAG mode...");
+          DT_THROW_IF(! configuration_.has_key("flag.name"),
+                      std::logic_error,
+                      "Missing 'flag.name' property !");
+          _flag_name_ = configuration_.fetch_string("flag.name");
+        } // end if is_mode_flag
 
         // mode HAS_CHARGE:
         if (is_mode_has_charge()) {
@@ -185,6 +203,16 @@ namespace snemo {
 
       // Get particle track
       const snemo::datamodel::particle_track & a_particle = get_user_data<snemo::datamodel::particle_track>();
+
+      // Check if the calibrated data has a property flag with a specific name :
+      bool check_flag = true;
+      if (is_mode_flag()) {
+        DT_LOG_DEBUG(get_logging_priority(), "Running FLAG mode...");
+        const bool check = a_particle.get_auxiliaries().has_flag(_flag_name_);
+        if (! check) {
+          check_flag = false;
+        }
+      }
 
       // Check the charge of the particle track :
       bool check_charge = true;
@@ -265,7 +293,7 @@ namespace snemo {
               break;
             }
           }
-          if (!has_vertex) {
+          if (! has_vertex) {
             DT_LOG_DEBUG(get_logging_priority(), "A particle has no vertex on the '" << _vertex_type_ << "' !");
             check_vertex = false;
           }
@@ -298,7 +326,8 @@ namespace snemo {
       }// end mode HAS_DELAYED_CLUSTER
 
       cut_returned = cuts::SELECTION_REJECTED;
-      if (check_charge                  &&
+      if (check_flag                    &&
+          check_charge                  &&
           check_calorimeter_association &&
           check_range_calorimeter_hits  &&
           check_vertex                  &&
@@ -311,6 +340,167 @@ namespace snemo {
   }  // end of namespace cut
 
 }  // end of namespace snemo
+
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::cut::particle_track_cut, ocd_)
+{
+  ocd_.set_class_name("snemo::cut::particle_track_cut");
+  ocd_.set_class_description("Cut based on criteria applied to a particle track object stored in the particle track data bank");
+  ocd_.set_class_library("falaise");
+  // ocd_.set_class_documentation("");
+
+  cuts::i_cut::common_ocd(ocd_);
+
+  {
+    // Description of the 'mode.flag' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("mode.flag")
+      .set_terse_description("Mode with a special request flag")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .add_example("Activate the requested flag mode::               \n"
+                   "                                                 \n"
+                   "  mode.flag : boolean = true                     \n"
+                   "                                                 \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'mode.has_charge' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("mode.has_charge")
+      .set_terse_description("Mode with a special requested charge")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .add_example("Activate the requested charge mode:: \n"
+                   "                                     \n"
+                   "  mode.has_charge : boolean = true   \n"
+                   "                                     \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'mode.has_vertex' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("mode.has_vertex")
+      .set_terse_description("Mode with a special requested vertex")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .add_example("Activate the requested vertex mode:: \n"
+                   "                                     \n"
+                   "  mode.has_vertex : boolean = true   \n"
+                   "                                     \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'mode.has_delayed_cluster' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("mode.has_delayed_cluster")
+      .set_terse_description("Mode with a special request for delayed cluster")
+      .set_traits(datatools::TYPE_BOOLEAN)
+      .add_example("Activate the requested delayed cluster mode:: \n"
+                   "                                              \n"
+                   "  mode.has_delayed_cluster : boolean = true   \n"
+                   "                                              \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'flag.name' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("flag.name")
+      .set_terse_description("Name of the requested flag")
+      .set_triggered_by_flag("mode.flag")
+      .set_traits(datatools::TYPE_STRING)
+      .add_example("Set a specific requested flag name::                      \n"
+                   "                                                          \n"
+                   "  flag.name : string = \"high_energy\"                    \n"
+                   "                                                          \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'has_charge.type' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("has_charge.type")
+      .set_terse_description("Type of the requested charge")
+      .set_triggered_by_flag("mode.has_charge")
+      .set_traits(datatools::TYPE_STRING)
+      .set_long_description("Supported values are: \n"
+                            "                      \n"
+                            " * ``negative``       \n"
+                            " * ``positive``       \n"
+                            " * ``undefined``      \n"
+                            " * ``neutral``        \n"
+                            "                      \n"
+                            )
+      .add_example("Set a specific charge type to be selected:: \n"
+                   "                                            \n"
+                   "  has_charge.type : string = \"positive\"   \n"
+                   "                                            \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'has_vertex.type' configuration property :
+    datatools::configuration_property_description & cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("has_vertex.type")
+      .set_terse_description("Type of the requested vertex")
+      .set_triggered_by_flag("mode.has_vertex")
+      .set_traits(datatools::TYPE_STRING)
+      .set_long_description("Supported values are: \n"
+                            "             \n"
+                            " * ``wire``  \n"
+                            " * ``foil``  \n"
+                            " * ``calo``  \n"
+                            " * ``xcalo`` \n"
+                            " * ``gveto`` \n"
+"                                         \n"
+                            )
+      .add_example("Set a specific vertex type to be selected:: \n"
+                   "                                            \n"
+                   "  has_vertex.type : string = \"gveto\"      \n"
+                   "                                            \n"
+                   )
+      ;
+  }
+
+  // Additional configuration hints :
+  ocd_.set_configuration_hints("Here is a full configuration example in the     \n"
+                               "``datatools::properties`` ASCII format::        \n"
+                               "                                                \n"
+                               "   mode.flag : boolean = false                  \n"
+                               "   # flag.name : string = \"high_energy\"       \n"
+                               "   mode.has_hit_category : boolean = false      \n"
+                               "   # has_hit_category.category : string = \"gg\"\n"
+                               "   mode.range_hit_category : boolean = true     \n"
+                               "   range_hit_category.category : string = \"gg\"\n"
+                               "   range_hit_category.min : integer = 5         \n"
+                               "   range_hit_category.max : integer = 20        \n"
+                               "   mode.has_hit_property : boolean = true       \n"
+                               "   has_hit_property.category : string = \"gg\"  \n"
+                               "   has_hit_property.logic : string = \"or\"     \n"
+                               "   has_hit_property.keys : string[2] = \\                   \n"
+                               "     \"creator_process\" \\                                 \n"
+                               "     \"g4_volume\"                                          \n"
+                               "   has_hit_property.creator_process.values : string[1] = \\ \n"
+                               "         \"brems\"                                          \n"
+                               "   has_hit_property.g4_volume.values : string[2] = \\       \n"
+                               "         \"tracking_chamber.log\"  \"drift_cell.log\"       \n"
+                               "                                                            \n"
+                               );
+
+  ocd_.set_validation_support(true);
+  ocd_.lock();
+  return;
+}
+DOCD_CLASS_IMPLEMENT_LOAD_END() // Closing macro for implementation
+
+// Registration macro for class 'snemo::cut::simulated_data_cut' :
+DOCD_CLASS_SYSTEM_REGISTRATION(snemo::cut::particle_track_cut, "snemo::cut::particle_track_cut")
 
 /*
 ** Local Variables: --
