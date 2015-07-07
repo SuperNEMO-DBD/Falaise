@@ -156,7 +156,7 @@ namespace snemo {
         const io::event_record & event = _server_->get_event();
         const mctools::simulated_data & sim_data = event.get<mctools::simulated_data>(io::SD_LABEL);
 
-        if (!sim_data.has_vertex()) {
+        if (! sim_data.has_vertex()) {
           DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
                              "Simulated data has no vertex");
           return;
@@ -180,17 +180,22 @@ namespace snemo {
 
       void default_draw_manager::_add_simulated_hits_()
       {
-        const options_manager & options_mgr = options_manager::get_instance();
-        if (options_mgr.get_option_flag(SHOW_MC_CALORIMETER_HITS)) {
-          const std::string & setup_label_name
-            = detector::detector_manager::get_instance().get_setup_label_name();
-          if (setup_label_name == "snemo::tracker_commissioning") {
-            _calorimeter_hit_renderer_.push_simulated_hits("trig");
-          } else {
-            _calorimeter_hit_renderer_.push_simulated_hits("scin.hit");
-            _calorimeter_hit_renderer_.push_simulated_hits("calo");
-            _calorimeter_hit_renderer_.push_simulated_hits("gveto");
-            _calorimeter_hit_renderer_.push_simulated_hits("xcalo");
+        // 2015/07/07 XG: Here we assume that simulated step hit other than
+        // visual tracks are calorimeter step hit. For dedicated setup such as
+        // SuperNEMO, this method is overloaded for its own purpose making
+        // distinction between calorimeter hits and Geiger hits
+        const io::event_record & event = _server_->get_event();
+        const mctools::simulated_data & sim_data = event.get<mctools::simulated_data>(io::SD_LABEL);
+
+        // Retrieve all category names except private category such as '__visual.tracks'
+        std::vector<std::string> categories;
+        sim_data.get_step_hits_categories(categories, mctools::simulated_data::HIT_CATEGORY_TYPE_PUBLIC);
+
+        for (size_t i = 0; i < categories.size(); i++) {
+          const std::string & a_category = categories[i];
+          const options_manager & options_mgr = options_manager::get_instance();
+          if (options_mgr.get_option_flag(SHOW_MC_CALORIMETER_HITS)) {
+            _calorimeter_hit_renderer_.push_simulated_hits(a_category);
           }
         }
 
