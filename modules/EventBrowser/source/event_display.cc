@@ -363,9 +363,11 @@ namespace snemo {
           options_mgr.set_option_flag(SHOW_MC_VERTEX, true);
           break;
         case SHOW_ALL_MC_TRACKS:
+          options_mgr.set_option_flag(SHOW_MC_VERTEX, true);
           options_mgr.set_option_flag(SHOW_MC_TRACKS, true);
           break;
         case SHOW_ALL_MC_HITS:
+          options_mgr.set_option_flag(SHOW_MC_VERTEX,           true);
           options_mgr.set_option_flag(SHOW_MC_HITS,             true);
           options_mgr.set_option_flag(SHOW_MC_CALORIMETER_HITS, true);
           options_mgr.set_option_flag(SHOW_MC_TRACKER_HITS,     true);
@@ -373,6 +375,7 @@ namespace snemo {
           options_mgr.set_option_flag(SHOW_GG_TIME_GRADIENT,    true);
           break;
         case SHOW_ALL_MC_TRACKS_AND_HITS:
+          options_mgr.set_option_flag(SHOW_MC_VERTEX,           true);
           options_mgr.set_option_flag(SHOW_MC_TRACKS,           true);
           options_mgr.set_option_flag(SHOW_MC_HITS,             true);
           options_mgr.set_option_flag(SHOW_MC_CALORIMETER_HITS, true);
