@@ -56,13 +56,13 @@ namespace snemo {
       typedef std::vector<handle_type> collection_type;
 
       /// Name of the property to store optional anode time
-      static const std::string ANODE_TIME_KEY;
+      static const std::string & anode_time_key();
 
       /// Name of the property to store optional bottom cathode time
-      static const std::string BOTTOM_CATHODE_TIME_KEY;
+      static const std::string & bottom_cathode_time_key();
 
       /// Name of the property to store optional top cathode time
-      static const std::string TOP_CATHODE_TIME_KEY;
+      static const std::string & top_cathode_time_key();
 
       /// Return the hit ID
       int32_t get_id() const;

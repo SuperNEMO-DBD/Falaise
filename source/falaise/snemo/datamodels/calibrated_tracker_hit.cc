@@ -16,9 +16,23 @@ namespace snemo {
     DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(calibrated_tracker_hit,
                                                       "snemo::datamodel::calibrated_tracker_hit")
 
-    const std::string calibrated_tracker_hit::ANODE_TIME_KEY          = "anode_time";
-    const std::string calibrated_tracker_hit::BOTTOM_CATHODE_TIME_KEY = "bottom_cathode_time";
-    const std::string calibrated_tracker_hit::TOP_CATHODE_TIME_KEY    = "top_cathode_time";
+    const std::string & calibrated_tracker_hit::anode_time_key()
+    {
+      static const std::string key("anode_time");
+      return key;
+    }
+
+    const std::string & calibrated_tracker_hit::bottom_cathode_time_key()
+    {
+      static const std::string key("bottom_cathode_time");
+      return key;
+    }
+
+    const std::string & calibrated_tracker_hit::top_cathode_time_key()
+    {
+      static const std::string key("top_cathode_time");
+      return key;
+    }
 
     bool calibrated_tracker_hit::get_trait_bit(uint32_t mask_) const
     {
@@ -153,9 +167,9 @@ namespace snemo {
     bool calibrated_tracker_hit::has_anode_time () const
     {
       bool ok = false;
-      if (get_auxiliaries ().has_key (ANODE_TIME_KEY))
+      if (get_auxiliaries ().has_key (anode_time_key()))
         {
-          if (get_auxiliaries ().is_real (ANODE_TIME_KEY))
+          if (get_auxiliaries ().is_real (anode_time_key()))
             {
               ok = true;
             }
@@ -165,7 +179,7 @@ namespace snemo {
 
     void calibrated_tracker_hit::set_anode_time (double anode_time_)
     {
-      grab_auxiliaries ().update (ANODE_TIME_KEY, anode_time_);
+      grab_auxiliaries ().update (anode_time_key(), anode_time_);
       return;
     }
 
@@ -173,11 +187,11 @@ namespace snemo {
     {
       double anode_time;
       datatools::invalidate (anode_time);
-      if (get_auxiliaries ().has_key ("anode_time"))
+      if (get_auxiliaries ().has_key (anode_time_key()))
         {
-          if (get_auxiliaries ().is_real ("anode_time"))
+          if (get_auxiliaries ().is_real (anode_time_key()))
             {
-              anode_time = get_auxiliaries ().fetch_real ("anode_time");
+              anode_time = get_auxiliaries ().fetch_real (anode_time_key());
             }
         }
       return anode_time;
