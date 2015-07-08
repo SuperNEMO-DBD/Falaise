@@ -242,6 +242,9 @@ namespace snemo {
       // Main processing method :
       this->_process(the_calibrated_data, the_tracker_trajectory_data, the_particle_track_data);
 
+      // Post-processing method:
+      this->_post_process(the_calibrated_data, the_particle_track_data);
+
       return dpp::base_module::PROCESS_SUCCESS;
     }
 
@@ -296,8 +299,18 @@ namespace snemo {
         if (_CAD_) _CAD_->process(calibrated_data_.calibrated_calorimeter_hits(), hPT.grab());
       }
 
+      // Alpha finder
+      if (_AFD_) _AFD_->process(tracker_trajectory_data_, particle_track_data_);
+
+      DT_LOG_TRACE(get_logging_priority(), "Exiting.");
+      return;
+    }
+
+    void charged_particle_tracking_module::_post_process(const snemo::datamodel::calibrated_data & calibrated_data_,
+                                                         snemo::datamodel::particle_track_data & particle_track_data_)
+    {
       // Grab non associated calorimeters :
-      geomtools::base_hit::has_flag_predicate asso_pred("__associated");
+      geomtools::base_hit::has_flag_predicate asso_pred(calorimeter_association_driver::associated_flag());
       geomtools::base_hit::negates_predicate not_asso_pred(asso_pred);
       // Wrapper predicates :
       datatools::mother_to_daughter_predicate<geomtools::base_hit,
@@ -312,10 +325,6 @@ namespace snemo {
         ihit = std::find_if(++ihit, chits.end(), pred_via_handle);
       }
 
-      // Alpha finder
-      if (_AFD_) _AFD_->process(tracker_trajectory_data_, particle_track_data_);
-
-      DT_LOG_TRACE(get_logging_priority(), "Exiting.");
       return;
     }
 
@@ -330,13 +339,15 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::charged_particle_tracking
   ocd_.set_class_name("snemo::reconstruction::charged_particle_tracking_module");
   ocd_.set_class_description("A module that performs the physical interpretation of tracker trajectory");
   ocd_.set_class_library("Falaise_ChargedParticleTracking");
-  ocd_.set_class_documentation("This module uses some dedicated drivers to reconstruct physical quantities   \n"
-                               "such as electric charge or track vertices.                                   \n"
-                               "It uses 3 dedicated drivers to perform reconstruction steps:                 \n"
-                               " 1) Charge Computation Driver determines the electric charge of the track    \n"
-                               " 2) Vertex Extrapolation Driver builds the list of vertices such as          \n"
-                               "    foil vertex or calorimeter wall vertices                                 \n"
-                               " 3) Calorimeter Association Driver associates a track with a calorimeter hit \n");
+  ocd_.set_class_documentation("This module uses some dedicated drivers to reconstruct physical quantities        \n"
+                               "such as electric charge or track vertices.                                        \n"
+                               "It uses 3 dedicated drivers to perform reconstruction steps:                      \n"
+                               " 1) Charge Computation Driver determines the electric charge of the track         \n"
+                               " 2) Vertex Extrapolation Driver builds the list of vertices such as               \n"
+                               "    foil vertex or calorimeter wall vertices                                      \n"
+                               " 3) Calorimeter Association Driver associates a track with a calorimeter hit      \n"
+                               " 4) Alpha Finder Driver looks for short alpha track with only 1 or 2 tracker hits \n"
+                               );
 
   // Invoke OCD support from parent class :
   dpp::base_module::common_ocd(ocd_);
@@ -350,8 +361,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::charged_particle_tracking
       .set_traits(datatools::TYPE_STRING)
       .set_mandatory(false)
       .set_long_description("This is the name of the bank to be used  \n"
-                            "as the source of input calorimeter hits. \n"
-                            )
+                            "as the source of input calorimeter hits. \n")
       .set_default_value_string(snemo::datamodel::data_info::default_calibrated_data_label())
       .add_example("Use an alternative name for the \n"
                    "'calibrated data' bank::        \n"
@@ -371,8 +381,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::charged_particle_tracking
       .set_traits(datatools::TYPE_STRING)
       .set_mandatory(false)
       .set_long_description("This is the name of the bank to be used      \n"
-                            "as the source of input tracker trajectories. \n"
-                            )
+                            "as the source of input tracker trajectories. \n")
       .set_default_value_string(snemo::datamodel::data_info::default_tracker_trajectory_data_label())
       .add_example("Use an alternative name for the  \n"
                    "'tracker trajectory data' bank:: \n"
@@ -392,16 +401,13 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::charged_particle_tracking
       .set_traits(datatools::TYPE_STRING)
       .set_mandatory(false)
       .set_long_description("This is the name of the bank to be used as \n"
-                            "the sink of output particle tracks.        \n"
-                            )
+                            "the sink of output particle tracks.        \n")
       .set_default_value_string(snemo::datamodel::data_info::default_particle_track_data_label())
       .add_example("Use an alternative name for the \n"
                    "'particle track data' bank::    \n"
                    "                                \n"
                    "  PTD_label : string = \"PTD2\" \n"
-                   "                                \n"
-                   )
-      ;
+                   "                                \n");
   }
 
   {
@@ -415,15 +421,12 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::charged_particle_tracking
       .set_long_description("This is the name of the service to be used as the \n"
                             "geometry service.                                 \n"
                             "This property is only used if no geometry manager \n"
-                            "as been provided to the module.                   \n"
-                            )
+                            "as been provided to the module.                   \n")
       .set_default_value_string(snemo::processing::service_info::default_geometry_service_label())
       .add_example("Use an alternative name for the geometry service:: \n"
                    "                                                   \n"
                    "  Geo_label : string = \"geometry2\"               \n"
-                   "                                                   \n"
-                   )
-      ;
+                   "                                                   \n");
   }
 
   {
@@ -434,13 +437,19 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::charged_particle_tracking
       .set_terse_description("The list of drivers id to be used")
       .set_traits(datatools::TYPE_STRING,
                   datatools::configuration_property_description::ARRAY)
+      .set_long_description("Supported values are:                         \n"
+                            "                                              \n"
+                            " * ``CCD`` for Charge Computation Driver      \n"
+                            " * ``VED`` for Vertex Extrapolation Driver    \n"
+                            " * ``CAD`` for Calorimeter Association Driver \n"
+                            " * ``AFD`` for Alpha Finder Driver            \n"
+                            "                                              \n"
+                            )
       .set_mandatory(false)
       .add_example("Use Vertex Extrapolation Driver only:: \n"
                    "                                       \n"
-                   "  drivers : string[1] = \"TOFD\"       \n"
-                   "                                       \n"
-                   )
-      ;
+                   "  drivers : string[1] = \"VED\"        \n"
+                   "                                       \n");
   }
 
   // Invoke specific OCD support from the driver class:

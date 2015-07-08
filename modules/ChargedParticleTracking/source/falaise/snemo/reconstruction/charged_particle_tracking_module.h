@@ -95,6 +95,10 @@ namespace snemo {
                     const snemo::datamodel::tracker_trajectory_data & tracker_trajectory_data_,
                     snemo::datamodel::particle_track_data           & particle_track_data_);
 
+      /// Post-processing of particle track data
+      void _post_process(const snemo::datamodel::calibrated_data & calibrated_data_,
+                         snemo::datamodel::particle_track_data   & particle_track_data_);
+
       /// Give default values to specific class members.
       void _set_defaults();
 
