@@ -54,6 +54,9 @@ namespace snemo {
     {
     public:
 
+      /// Name of the property to store calorimeter association flag
+      static const std::string & associated_flag();
+
       /// Return driver id
       static const std::string & get_id();
 

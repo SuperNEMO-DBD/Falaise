@@ -20,6 +20,12 @@ namespace snemo {
 
   namespace reconstruction {
 
+    const std::string & calorimeter_association_driver::associated_flag()
+    {
+      static const std::string s("__associated");
+      return s;
+    }
+
     const std::string & calorimeter_association_driver::get_id()
     {
       static const std::string s("CAD");
@@ -210,7 +216,7 @@ namespace snemo {
             // Add a private property
             snemo::datamodel::calibrated_calorimeter_hit * mutable_hit
               = const_cast<snemo::datamodel::calibrated_calorimeter_hit *>(&(a_calo_hit));
-            mutable_hit->grab_auxiliaries().update_flag("__associated");
+            mutable_hit->grab_auxiliaries().update_flag(calorimeter_association_driver::associated_flag());
             // Set the geom_id of the corresponding vertex to the calorimeter
             // hit geom_id
             a_vertex.set_geom_id(gid);
