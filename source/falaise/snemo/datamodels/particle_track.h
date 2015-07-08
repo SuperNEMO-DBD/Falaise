@@ -156,7 +156,7 @@ namespace snemo {
       bool has_trajectory() const;
 
       /// Detach the trajectory
-      void detach_trajectory ();
+      void detach_trajectory();
 
       /// Attach a trajectory by handle
       void set_trajectory_handle(const tracker_trajectory::handle_type & trajectory_handle_);
