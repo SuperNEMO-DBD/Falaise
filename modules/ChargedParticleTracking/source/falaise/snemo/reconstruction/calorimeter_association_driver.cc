@@ -15,6 +15,10 @@
 
 // This project (Falaise):
 #include <falaise/snemo/datamodels/particle_track.h>
+#include <falaise/snemo/geometry/locator_plugin.h>
+#include <falaise/snemo/geometry/calo_locator.h>
+#include <falaise/snemo/geometry/xcalo_locator.h>
+#include <falaise/snemo/geometry/gveto_locator.h>
 
 namespace snemo {
 
@@ -24,6 +28,11 @@ namespace snemo {
     {
       static const std::string s("__associated");
       return s;
+    }
+
+    bool calorimeter_association_driver::is_calo_associated(const snemo::datamodel::calibrated_calorimeter_hit & hit_)
+    {
+      return hit_.get_auxiliaries().has_flag(calorimeter_association_driver::associated_flag());
     }
 
     const std::string & calorimeter_association_driver::get_id()
@@ -82,10 +91,9 @@ namespace snemo {
     /// Destructor
     calorimeter_association_driver::~calorimeter_association_driver()
     {
-      if (is_initialized())
-        {
-          reset();
-        }
+      if (is_initialized()) {
+        reset();
+      }
       return;
     }
 
@@ -117,6 +125,32 @@ namespace snemo {
         _use_last_geiger_cell_ = setup_.fetch_boolean("use_last_geiger_cell");
       }
 
+      // Get geometry locator plugin
+      const geomtools::manager & geo_mgr = get_geometry_manager();
+      std::string locator_plugin_name;
+      if (setup_.has_key("locator_plugin_name")) {
+        locator_plugin_name = setup_.fetch_string("locator_plugin_name");
+      } else {
+        // If no locator plugin name is set, then search for the first one
+        const geomtools::manager::plugins_dict_type & plugins = geo_mgr.get_plugins();
+        for (geomtools::manager::plugins_dict_type::const_iterator ip = plugins.begin();
+             ip != plugins.end();
+             ip++) {
+          const std::string & plugin_name = ip->first;
+          if (geo_mgr.is_plugin_a<snemo::geometry::locator_plugin>(plugin_name)) {
+            DT_LOG_DEBUG(get_logging_priority(), "Find locator plugin with name = " << plugin_name);
+            locator_plugin_name = plugin_name;
+            break;
+          }
+        }
+      }
+      // Access to a given plugin by name and type :
+      DT_THROW_IF(! geo_mgr.has_plugin(locator_plugin_name) ||
+                  ! geo_mgr.is_plugin_a<snemo::geometry::locator_plugin>(locator_plugin_name),
+                  std::logic_error,
+                  "Found no locator plugin named '" << locator_plugin_name << "'");
+      _locator_plugin_ = &geo_mgr.get_plugin<snemo::geometry::locator_plugin>(locator_plugin_name);
+
       set_initialized(true);
       return;
     }
@@ -132,6 +166,9 @@ namespace snemo {
     {
       _initialized_          = false;
       _logging_priority_     = datatools::logger::PRIO_WARNING;
+
+      _geometry_manager_ = 0;
+      _locator_plugin_ = 0;
 
       _matching_tolerance_   = 50 * CLHEP::mm;
       _use_last_geiger_cell_ = false;
@@ -167,31 +204,85 @@ namespace snemo {
         return;
       }
 
+      // When considering calorimeter hits, there might be some of them that are
+      // neighbors. To avoid double count of same calorimeter due to tolerance
+      // matching in calorimeter association driver, we first compute the list
+      // of neighborhood calorimeter hits and if a vertex matches two of them,
+      // we only keep the closest non-associated one.
+      //
+      //                     |-------
+      //                     |      |
+      //   particle track 1  |      |
+      //  -------------------+      | Here particle track 1 is associated to 2
+      //                     |------- calorimeter hits but one is shared with the
+      //                     |------- particle 2 : we removed the block already associated
+      //                     |      |
+      //   particle track 2  |      |
+      //  -------------------+      |
+      //                     |-------
+      //
+      // Set the calorimeter locators :
+      const snemo::geometry::calo_locator  & calo_locator  = _locator_plugin_->get_calo_locator();
+      const snemo::geometry::xcalo_locator & xcalo_locator = _locator_plugin_->get_xcalo_locator();
+      const snemo::geometry::gveto_locator & gveto_locator = _locator_plugin_->get_gveto_locator();
+      // Get a list of neighbouring calorimeter hits
+      std::set<geomtools::geom_id> list_of_neighbours;
+      for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::const_iterator
+             icalo = calorimeter_hits_.begin(); icalo != calorimeter_hits_.end();
+           ++icalo) {
+        const snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit = icalo->get();
+        const geomtools::geom_id & a_current_gid = a_calo_hit.get_geom_id();
+
+        std::vector<geomtools::geom_id> neighbour_ids;
+        if (calo_locator.is_calo_block_in_current_module(a_current_gid)) {
+          calo_locator.get_neighbours_ids(a_current_gid, neighbour_ids);
+        } else if (xcalo_locator.is_calo_block_in_current_module(a_current_gid)) {
+          xcalo_locator.get_neighbours_ids(a_current_gid, neighbour_ids);
+        } else if (gveto_locator.is_calo_block_in_current_module(a_current_gid)) {
+          gveto_locator.get_neighbours_ids(a_current_gid, neighbour_ids);
+        }
+        for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::const_iterator
+               jcalo = boost::next(icalo); jcalo != calorimeter_hits_.end();
+             ++jcalo) {
+          const snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit = jcalo->get();
+          const geomtools::geom_id & a_gid = a_calo_hit.get_geom_id();
+
+          if (std::find(neighbour_ids.begin(), neighbour_ids.end(), a_gid) != neighbour_ids.end()) {
+            list_of_neighbours.insert(a_gid);
+            list_of_neighbours.insert(a_current_gid);
+          }
+        }
+      }
+      for (std::set<geomtools::geom_id>::const_iterator i = list_of_neighbours.begin();
+           i != list_of_neighbours.end(); ++i) {
+        DT_LOG_TRACE(get_logging_priority(), "Neighbours @ " << *i);
+      }
+
+      // Loop over reconstructed vertices
       snemo::datamodel::particle_track::vertex_collection_type & the_vertices
         = particle_.grab_vertices();
       for (snemo::datamodel::particle_track::vertex_collection_type::iterator
              ivertex = the_vertices.begin();
            ivertex != the_vertices.end(); ++ivertex) {
         geomtools::blur_spot & a_vertex = ivertex->grab();
-
         if (get_logging_priority() >= datatools::logger::PRIO_TRACE) {
           DT_LOG_TRACE(get_logging_priority(), "Vertex:");
           a_vertex.tree_dump(std::clog);
         }
 
         // Look for matching calorimeters
+        typedef std::map<double, snemo::datamodel::calibrated_calorimeter_hit::handle_type> calo_collection_type;
+        calo_collection_type calo_collection;
         for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::const_iterator
-               icalo = calorimeter_hits_.begin();
-             icalo != calorimeter_hits_.end(); ++icalo) {
+               icalo = calorimeter_hits_.begin(); icalo != calorimeter_hits_.end();
+             ++icalo) {
           const snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit = icalo->get();
-          const geomtools::geom_id & gid = a_calo_hit.get_geom_id();
+          const geomtools::geom_id & a_current_gid = a_calo_hit.get_geom_id();
 
-          bool has_associated_calorimeter = false;
-
-          // Getting geometry mapping
+          // Getting geometry mapping for parted block
           const geomtools::mapping & the_mapping = get_geometry_manager().get_mapping();
           std::vector<geomtools::geom_id> gids;
-          the_mapping.compute_matching_geom_id(gid, gids);
+          the_mapping.compute_matching_geom_id(a_current_gid, gids);
           for (size_t i = 0; i < gids.size(); ++i) {
             const geomtools::geom_id & a_gid = gids.at(i);
             const geomtools::geom_info * ginfo_ptr = the_mapping.get_geom_info_ptr(a_gid);
@@ -205,22 +296,22 @@ namespace snemo {
             const double tolerance = _matching_tolerance_;
             if (the_mapping.check_inside(*ginfo_ptr, a_vertex.get_position(), tolerance, true)) {
               DT_LOG_DEBUG(get_logging_priority(), "Found matching calorimeter with the following geom_id " << a_gid);
-              has_associated_calorimeter = true;
+              // Compute distance to calorimeter center
+              geomtools::vector_3d calo_position;
+              if (calo_locator.is_calo_block_in_current_module(a_gid)) {
+                calo_locator.get_block_position(a_gid, calo_position);
+              } else if (xcalo_locator.is_calo_block_in_current_module(a_current_gid)) {
+                xcalo_locator.get_block_position(a_gid, calo_position);
+              } else if (gveto_locator.is_calo_block_in_current_module(a_current_gid)) {
+                gveto_locator.get_block_position(a_gid, calo_position);
+              }
+              const double distance = (calo_position - a_vertex.get_position()).mag();
+              calo_collection.insert(std::make_pair(distance, *icalo));
             } else {
               // Try in a different way
               DT_LOG_DEBUG(get_logging_priority(), "No matching calorimeter !");
             }
-          }// end of calorimeter gids
-          if (has_associated_calorimeter) {
-            particle_.grab_associated_calorimeter_hits().push_back(*icalo);
-            // Add a private property
-            snemo::datamodel::calibrated_calorimeter_hit * mutable_hit
-              = const_cast<snemo::datamodel::calibrated_calorimeter_hit *>(&(a_calo_hit));
-            mutable_hit->grab_auxiliaries().update_flag(calorimeter_association_driver::associated_flag());
-            // Set the geom_id of the corresponding vertex to the calorimeter
-            // hit geom_id
-            a_vertex.set_geom_id(gid);
-          }
+          } // end of calorimeter gids
         }// end of calorimeter hits
 
         // 2012-06-15 XG: If no triggered calorimeter has been
@@ -228,7 +319,32 @@ namespace snemo {
         // calorimeter by using the 'calo_locator' and finding
         // the corresponding calorimeter block. To be
         // continued...
+        if (calo_collection.empty()) continue;
 
+        bool keep_only_first = false;
+        if (calo_collection.size() > 1) {
+          DT_LOG_WARNING(datatools::logger::PRIO_WARNING, "Number of associated calorimeter = " << calo_collection.size());
+        }
+        for (calo_collection_type::const_iterator i = calo_collection.begin();
+             i != calo_collection.end(); ++i) {
+          const snemo::datamodel::calibrated_calorimeter_hit & a_calo = i->second.get();
+          const geomtools::geom_id & a_gid = a_calo.get_geom_id();
+          // Check association and belonging to neighbours
+          if (std::find(list_of_neighbours.begin(), list_of_neighbours.end(), a_gid)
+              != list_of_neighbours.end() && ! is_calo_associated(a_calo)) {
+            keep_only_first = true;
+          }
+          particle_.grab_associated_calorimeter_hits().push_back(i->second);
+          // Add a private property
+          snemo::datamodel::calibrated_calorimeter_hit * mutable_hit
+            = const_cast<snemo::datamodel::calibrated_calorimeter_hit *>(&(a_calo));
+          mutable_hit->grab_auxiliaries().update_flag(calorimeter_association_driver::associated_flag());
+          // Set the geom_id of the corresponding vertex to the calorimeter
+          // hit geom_id
+          a_vertex.set_geom_id(a_gid);
+          // Only keep the closest one
+          if (keep_only_first) break;
+        } // end of calorimeter collection
       }// end of vertices
 
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");

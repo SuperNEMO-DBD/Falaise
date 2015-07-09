@@ -1,9 +1,9 @@
 // \file falaise/snemo/reconstruction/calorimeter_association_driver.h
 /* Author(s)     : Xavier Garrido <garrido@lal.in2p3.fr>
  * Creation date : 2012-11-13
- * Last modified : 2014-06-05
+ * Last modified : 2015-07-08
  *
- * Copyright (C) 2012-2014 Xavier Garrido <garrido@lal.in2p3.fr>
+ * Copyright (C) 2012-2015 Xavier Garrido <garrido@lal.in2p3.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,10 @@ namespace snemo {
     class particle_track;
   }
 
+  namespace geometry {
+    class locator_plugin;
+  }
+
   namespace reconstruction {
 
     /// \brief Driver for associating particle track with calorimeter hit
@@ -56,6 +60,9 @@ namespace snemo {
 
       /// Name of the property to store calorimeter association flag
       static const std::string & associated_flag();
+
+      /// Static function that return associated flag status
+      static bool is_calo_associated(const snemo::datamodel::calibrated_calorimeter_hit & hit_);
 
       /// Return driver id
       static const std::string & get_id();
@@ -113,11 +120,12 @@ namespace snemo {
 
     private:
 
-      bool _initialized_;                             //<! Initialize flag
-      datatools::logger::priority _logging_priority_; //<! Logging flag
-      const geomtools::manager * _geometry_manager_;  //<! The SuperNEMO geometry manager
-      double _matching_tolerance_;                    //<! Matching distance between vertex and calorimeter
-      bool _use_last_geiger_cell_;                    //<! Use only last geiger cells to find matching calo
+      bool _initialized_;                                       //<! Initialize flag
+      datatools::logger::priority _logging_priority_;           //<! Logging flag
+      const geomtools::manager * _geometry_manager_;            //<! The SuperNEMO geometry manager
+      const snemo::geometry::locator_plugin * _locator_plugin_; //!< The SuperNEMO locator plugin
+      double _matching_tolerance_;                              //<! Matching distance between vertex and calorimeter
+      bool _use_last_geiger_cell_;                              //<! Use only last geiger cells to find matching calo
     };
 
   }  // end of namespace reconstruction
