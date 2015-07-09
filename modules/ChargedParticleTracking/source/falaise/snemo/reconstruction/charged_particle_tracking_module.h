@@ -105,9 +105,10 @@ namespace snemo {
     private:
 
       const geomtools::manager * _geometry_manager_; //!< The geometry manager
-      std::string _CD_label_;                        //!< The label of the calibrated data bank
-      std::string _TTD_label_;                       //!< The label of the tracker trajectory data bank
-      std::string _PTD_label_;                       //!< The label of the particle track data bank
+
+      std::string _CD_label_;  //!< The label of the calibrated data bank
+      std::string _TTD_label_; //!< The label of the tracker trajectory data bank
+      std::string _PTD_label_; //!< The label of the particle track data bank
 
       /// Vertex Extrapolation Driver :
       boost::scoped_ptr<snemo::reconstruction::vertex_extrapolation_driver> _VED_;
