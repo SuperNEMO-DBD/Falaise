@@ -320,11 +320,9 @@ namespace snemo {
         // the corresponding calorimeter block. To be
         // continued...
         if (calo_collection.empty()) continue;
+        DT_LOG_TRACE(get_logging_priority(), "Number of associated calorimeter = " << calo_collection.size());
 
         bool keep_only_first = false;
-        if (calo_collection.size() > 1) {
-          DT_LOG_WARNING(datatools::logger::PRIO_WARNING, "Number of associated calorimeter = " << calo_collection.size());
-        }
         for (calo_collection_type::const_iterator i = calo_collection.begin();
              i != calo_collection.end(); ++i) {
           const snemo::datamodel::calibrated_calorimeter_hit & a_calo = i->second.get();
