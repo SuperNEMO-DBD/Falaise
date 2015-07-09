@@ -23,10 +23,10 @@
 #include <falaise/snemo/datamodels/particle_track_data.h>
 
 // This plugin (ChargedParticleTracking):
-#include <snemo/reconstruction/vertex_extrapolation_driver.h>
-#include <snemo/reconstruction/charge_computation_driver.h>
-#include <snemo/reconstruction/calorimeter_association_driver.h>
-#include <snemo/reconstruction/alpha_finder_driver.h>
+#include <falaise/snemo/reconstruction/vertex_extrapolation_driver.h>
+#include <falaise/snemo/reconstruction/charge_computation_driver.h>
+#include <falaise/snemo/reconstruction/calorimeter_association_driver.h>
+#include <falaise/snemo/reconstruction/alpha_finder_driver.h>
 
 namespace snemo {
 
