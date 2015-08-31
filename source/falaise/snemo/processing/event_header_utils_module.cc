@@ -198,7 +198,7 @@ namespace snemo {
 
         if (_add_header_use_genbb_label_) {
           const std::string label = the_simulated_data.get_primary_event().get_label();
-          the_event_header.grab_properties().update("event.genbb_label", label);
+          the_event_header.grab_properties().update(mctools::event_utils::EVENT_GENBB_LABEL, label);
         }
       }
 
