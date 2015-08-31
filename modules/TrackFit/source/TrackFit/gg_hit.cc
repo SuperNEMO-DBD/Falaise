@@ -30,13 +30,13 @@ namespace TrackFit {
 
   const std::string & gg_hit::last_flag()
   {
-    static std::string flag = "last_hit";
+    static std::string flag("last_hit");
     return flag;
   }
 
   const std::string & gg_hit::first_flag()
   {
-    static std::string flag = "first_hit";
+    static std::string flag("first_hit");
     return flag;
   }
 

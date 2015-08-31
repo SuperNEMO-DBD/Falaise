@@ -54,10 +54,10 @@ namespace TrackFit {
     /// Return the label for the boolean property associated to delayed geiger hit
     static const std::string & delayed_flag();
 
-    /// Return the label of the 'last flag' boolean property(for a hit)
+    /// Return the label of the 'last flag' boolean property (for a hit)
     static const std::string & last_flag();
 
-    /// Return the label of the 'first flag' boolean property(for a hit)
+    /// Return the label of the 'first flag' boolean property (for a hit)
     static const std::string & first_flag();
 
     /// Return the hit Id

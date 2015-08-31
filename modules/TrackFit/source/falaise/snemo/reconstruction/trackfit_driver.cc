@@ -324,7 +324,7 @@ namespace snemo {
     {
       DT_LOG_TRACE(get_logging_priority(), "Entering...");
 
-      // Retrieve geiger cell diameter from gg_locator(to be used
+      // Retrieve geiger cell diameter from gg_locator (to be used
       // by trackfit algorithm)
       const double gg_cell_diameter = get_gg_locator().get_cell_diameter() / CLHEP::mm;
       DT_LOG_DEBUG(get_logging_priority(), "Geiger cell diameter = "
@@ -395,11 +395,7 @@ namespace snemo {
             // 2012-06-05 XG: if particle is delayed then set the
             // delayed time in order to recalibrate it and thus extract
             // the drift distance. Everything is done inside the fitting
-            // procedure using a dedicated time calibrator.  Fitting
-            // delayed track is not that easy since the t0 is not
-            // another parameter of the fit !  Such fitting will need a
-            // dedicated program where the t0 varies from one bounded
-            // values.
+            // procedure using a dedicated time calibrator.
             //
             // 2012-11-03 XG: Flag the delayed hit to fit also the start
             // time
@@ -523,22 +519,6 @@ namespace snemo {
             cct.push_back(*icluster);
           }
         } // end of 'tracker_cluster'
-
-        // If no trajectories has been saved then removed it
-        // 2015-02-04 XG: comment this code since it actually removes all
-        // solutions even the good ones. Bacis failling event is a nice electron
-        // track correctly fitted with a delayed alpha particle which is not
-        // fitted at all. Tracker preclustering proposed 2 cluster solutions and
-        // thus we have 2 trajectory solutions : the first one i.e. the
-        // electrons fits well whereas the second solution i.e. the delayed
-        // alpha does not fit at all and then remove both tracker trajectory
-        // solutions. A better idea will be to remove a given id solution. But I
-        // think that it is not so bad to have empty tracker trajectory solution
-        // meaning that trajectory fit fails.
-        // if (a_trajectory_solution.get_trajectories().empty()) {
-        //   trajectory_.invalidate_solutions();
-        // }
-
       } // end of 'tracker_solution'
 
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");
