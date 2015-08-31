@@ -131,7 +131,6 @@ namespace snemo {
                                                    const datatools::properties & property_)
       {
         unsigned int color = 0;
-
         if (property_.is_vector(key_)) {
           // RGB case
           if (property_.size(key_) != 3) {
@@ -153,7 +152,6 @@ namespace snemo {
           DT_LOG_ERROR(view::options_manager::get_instance().get_logging_priority(),
                        "Format of color not supported");
         }
-
         return color;
       }
 
