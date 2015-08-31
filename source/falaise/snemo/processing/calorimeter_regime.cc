@@ -22,14 +22,14 @@ namespace snemo {
     // static
     const double & calorimeter_regime::default_energy_resolution()
     {
-      static double _r(0.08);
+      static double _r(8. * CLHEP::perCent);
       return _r;
     }
 
     // static
     const double & calorimeter_regime::default_low_energy_threshold()
     {
-      static double _th(20. * CLHEP::keV);
+      static double _th(50. * CLHEP::keV);
       return _th;
     }
 
@@ -69,16 +69,17 @@ namespace snemo {
       // Energy resolution
       {
         const std::string key_name = "energy.resolution";
-
         if (config_.has_key(key_name)) {
           _resolution_ = config_.fetch_real(key_name);
+          if (! config_.has_explicit_unit(key_name)){
+            _resolution_ *= CLHEP::perCent;
+          }
         }
       }
 
       // Trigger thresholds
       {
         const std::string key_name = "energy.high_threshold";
-
         if (config_.has_key(key_name)) {
           _high_threshold_ = config_.fetch_real(key_name);
           if (! config_.has_explicit_unit(key_name)){
@@ -89,7 +90,6 @@ namespace snemo {
 
       {
         const std::string key_name = "energy.low_threshold";
-
         if (config_.has_key(key_name)) {
           _low_threshold_ = config_.fetch_real(key_name);
           if (! config_.has_explicit_unit(key_name)){
@@ -101,7 +101,6 @@ namespace snemo {
       // Alpha quenching fit parameters
       {
         const std::string key_name = "alpha_quenching_parameters";
-
         if (config_.has_key(key_name)) {
           _alpha_quenching_0_ = config_.fetch_real_vector(key_name,0);
           _alpha_quenching_1_ = config_.fetch_real_vector(key_name,1);
@@ -267,7 +266,7 @@ namespace snemo {
       out_ << indent << datatools::i_tree_dumpable::tag
            << "Initialized          : " << is_initialized() << std::endl;
       out_ << indent << datatools::i_tree_dumpable::tag
-           << "Energy resolution     = " << _resolution_ << std::endl;
+           << "Energy resolution     = " << _resolution_ / CLHEP::perCent << " %"  << std::endl;
       out_ << indent << datatools::i_tree_dumpable::tag
            << "Low energy threshold  = " << _low_threshold_ / CLHEP::keV << " keV" << std::endl;
       out_ << indent << datatools::i_tree_dumpable::tag
@@ -313,12 +312,14 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::calorimeter_regime,ocd_)
     cpd.set_name_pattern("energy.resolution")
       .set_terse_description("The optical line energy resolution for electrons at 1 MeV")
       .set_traits(datatools::TYPE_REAL)
-      .set_long_description("Dimensionless value. \n")
+      .set_explicit_unit(true)
+      .set_unit_label("fraction")
+      .set_unit_symbol("%")
       .set_explicit_unit(false)
-      .set_default_value_real(snemo::processing::calorimeter_regime::default_energy_resolution())
+      .set_default_value_real(snemo::processing::calorimeter_regime::default_energy_resolution(), "%")
       .add_example("Set the default value::                          \n"
                    "                                                 \n"
-                   "  energy.resolution : real = 0.08                \n"
+                   "  energy.resolution : real as fraction = 8 %     \n"
                    "                                                 \n"
                    )
       ;
@@ -334,7 +335,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::calorimeter_regime,ocd_)
       .set_explicit_unit(true)
       .set_unit_label("energy")
       .set_unit_symbol("keV")
-      .set_default_value_real(snemo::processing::calorimeter_regime::default_low_energy_threshold())
+      .set_default_value_real(snemo::processing::calorimeter_regime::default_low_energy_threshold(), "keV")
       .add_example("Set the default value::                          \n"
                    "                                                 \n"
                    "  energy.low_threshold : real as energy = 50 keV \n"
@@ -353,7 +354,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::calorimeter_regime,ocd_)
       .set_explicit_unit(true)
       .set_unit_label("energy")
       .set_unit_symbol("keV")
-      .set_default_value_real(snemo::processing::calorimeter_regime::default_high_energy_threshold())
+      .set_default_value_real(snemo::processing::calorimeter_regime::default_high_energy_threshold(), "keV")
       .add_example("Set the default value::                            \n"
                    "                                                   \n"
                    "  energy.high_threshold : real as energy = 150 keV \n"
@@ -372,7 +373,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::calorimeter_regime,ocd_)
       .set_explicit_unit(true)
       .set_unit_label("time")
       .set_unit_symbol("ns")
-      .set_default_value_real(snemo::processing::calorimeter_regime::default_scintillator_relaxation_time())
+      .set_default_value_real(snemo::processing::calorimeter_regime::default_scintillator_relaxation_time(), "ns")
       .add_example("Set the default value::                                \n"
                    "                                                       \n"
                    "  scintillator_relaxation_time : real as time = 6.0 ns \n"
@@ -406,7 +407,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::calorimeter_regime,ocd_)
   ocd_.set_configuration_hints("Here is a full configuration example in the      \n"
                                "``datatools::properties`` ASCII format::         \n"
                                "                                                 \n"
-                               "  energy.resolution     : real = 0.08                    \n"
+                               "  energy.resolution     : real as fraction = 8 %         \n"
                                "  energy.low_threshold  : real as energy = 50 keV        \n"
                                "  energy.high_threshold : real as energy = 150 keV       \n"
                                "  scintillator_relaxation_time : real as time = 6.0 ns   \n"
