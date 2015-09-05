@@ -131,7 +131,11 @@ namespace snemo {
       {
         _geo_volume->SetLineColor(_highlight_color);
         _geo_volume->SetLineWidth(3);
-        _geo_volume->SetVisibility(_visibility);
+        // 2015/09/05 XG: Set the visibility of highlighted volume always to
+        // true. To remove them from the view then disable the corresponding
+        // data bank.
+        // _geo_volume->SetVisibility(_visibility);
+        _geo_volume->SetVisibility(true);
         return;
       }
 
