@@ -22,6 +22,7 @@ set(_falaise_PLUGINS
   TrackFit
   ChargedParticleTracking
   GammaTracking
+  GammaClustering
   VisuToy
   EventBrowser
 )
