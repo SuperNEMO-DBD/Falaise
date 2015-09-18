@@ -1526,8 +1526,8 @@ namespace TrackFit {
     DT_LOG_TRACE(_logging_priority_, "Max cell radius: " << hit1.get_rmax() / CLHEP::mm << " mm");
     DT_LOG_TRACE(_logging_priority_, "Hits 1 & 2: ");
     if (_logging_priority_ >= datatools::logger::PRIO_TRACE) {
-      hit1.tree_dump(std::clog, "Hit 1:", "DEVEL: ");
-      hit2.tree_dump(std::clog, "Hit 2:", "DEVEL: ");
+      hit1.tree_dump(std::clog, "Hit 1:", "[trace]: ");
+      hit2.tree_dump(std::clog, "Hit 2:", "[trace]: ");
     }
     geomtools::vector_3d phit1(hit1.get_x(), hit1.get_y(), hit1.get_z());
     geomtools::vector_3d phit2(hit2.get_x(), hit2.get_y(), hit2.get_z());

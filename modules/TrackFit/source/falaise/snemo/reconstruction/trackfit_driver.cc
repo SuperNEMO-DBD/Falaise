@@ -341,7 +341,7 @@ namespace snemo {
         const snemo::datamodel::tracker_clustering_solution & a_cluster_solution = isolution->get();
         DT_LOG_DEBUG(get_logging_priority(), "Tracker solution: ");
         if (get_logging_priority() >= datatools::logger::PRIO_DEBUG) {
-          a_cluster_solution.tree_dump(std::clog);
+          a_cluster_solution.tree_dump(std::clog, "", "[debug]: ");
         }
 
         // Create a new 'tracker_trajectory_solution':
@@ -363,7 +363,7 @@ namespace snemo {
           const snemo::datamodel::tracker_cluster & a_cluster = icluster->get();
           DT_LOG_DEBUG(get_logging_priority(), "Tracker cluster: ");
           if (get_logging_priority() >= datatools::logger::PRIO_DEBUG) {
-            a_cluster.tree_dump(std::clog);
+            a_cluster.tree_dump(std::clog, "", "[debug]: ");
           }
 
           // Get tracker hits stored in the current tracker cluster:

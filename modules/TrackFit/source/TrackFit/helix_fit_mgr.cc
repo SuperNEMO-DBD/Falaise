@@ -1465,8 +1465,8 @@ namespace TrackFit {
 
     DT_LOG_TRACE(_logging_priority_, "Hits 1 & 2: ");
     if (_logging_priority_ >= datatools::logger::PRIO_TRACE) {
-      iter_hit_1->tree_dump(std::clog);
-      iter_hit_2->tree_dump(std::clog);
+      iter_hit_1->tree_dump(std::clog, "", "[trace]: ");
+      iter_hit_2->tree_dump(std::clog, "", "[trace]: ");
     }
 
     const gg_hit & hit_1 = *iter_hit_1;
@@ -1600,7 +1600,7 @@ namespace TrackFit {
     }
     DT_LOG_TRACE(_logging_priority_, "Medium hit:");
     if (_logging_priority_ >= datatools::logger::PRIO_TRACE) {
-      iter_hit_far->tree_dump(std::clog);
+      iter_hit_far->tree_dump(std::clog, "", "[trace]: ");
     }
 
     const gg_hit & hit_3 = *iter_hit_far;
@@ -2077,7 +2077,7 @@ namespace TrackFit {
     DT_LOG_TRACE(_logging_priority_, "Guess.z0:  " << guess_.z0 / CLHEP::mm << " mm");
     DT_LOG_TRACE(_logging_priority_, "Guess:");
     if (_logging_priority_ >= datatools::logger::PRIO_TRACE){
-      h3d.tree_dump(std::clog);
+      h3d.tree_dump(std::clog, "", "[trace]: ");
     }
 
     return true;
