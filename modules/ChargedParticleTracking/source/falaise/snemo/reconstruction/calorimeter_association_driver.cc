@@ -267,7 +267,7 @@ namespace snemo {
         geomtools::blur_spot & a_vertex = ivertex->grab();
         if (get_logging_priority() >= datatools::logger::PRIO_TRACE) {
           DT_LOG_TRACE(get_logging_priority(), "Vertex:");
-          a_vertex.tree_dump(std::clog);
+          a_vertex.tree_dump(std::clog, "", "[trace]: ");
         }
 
         // Look for matching calorimeters

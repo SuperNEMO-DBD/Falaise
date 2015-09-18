@@ -518,7 +518,7 @@ namespace snemo {
         //
         if (get_logging_priority() >= datatools::logger::PRIO_TRACE) {
           DT_LOG_TRACE(get_logging_priority(), "Vertex:");
-          spot.tree_dump(std::clog);
+          spot.tree_dump(std::clog, "", "[trace]: ");
         }
       }
 
