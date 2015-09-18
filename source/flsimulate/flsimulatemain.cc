@@ -197,7 +197,7 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
   }
 
   if (params.logLevel == datatools::logger::PRIO_INFORMATION) {
-    params.simulationManagerParams.print(std::clog);
+    params.simulationManagerParams.tree_dump(std::clog, "", "[information]: ");
   }
 
   // Handle any non-bound options
