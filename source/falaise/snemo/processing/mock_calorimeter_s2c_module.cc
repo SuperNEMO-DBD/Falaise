@@ -161,7 +161,7 @@ namespace snemo {
         a_regime.initialize(per_category_setup);
         if (get_logging_priority() >= datatools::logger::PRIO_DEBUG) {
           DT_LOG_DEBUG(get_logging_priority(), "Calorimeter '" << the_category << "' parameters:");
-          a_regime.tree_dump();
+          a_regime.tree_dump(std::clog, "", "[debug]: ");
         }
       }
 

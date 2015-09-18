@@ -257,7 +257,7 @@ namespace snemo {
         _solid_.set_stackable_data(sd_ptr);
         DT_LOG_TRACE(get_logging_priority(), "Stackable data:");
         if (get_logging_priority() >= datatools::logger::PRIO_TRACE) {
-          sd_ptr->tree_dump();
+          sd_ptr->tree_dump(std::clog, "", "[trace]: ");
         }
       }
 
@@ -272,7 +272,7 @@ namespace snemo {
 
       DT_LOG_TRACE(get_logging_priority(), "Dumping '" << get_name() << "':");
       if(get_logging_priority() >= datatools::logger::PRIO_TRACE) {
-        this->tree_dump();
+        this->tree_dump(std::clog, "", "[trace]: ");
       }
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");
       return;
