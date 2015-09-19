@@ -180,11 +180,11 @@ namespace snemo {
       }
       if (get_logging_priority() >= datatools::logger::PRIO_DEBUG) {
         DT_LOG_DEBUG(get_logging_priority(), "Calo locator :");
-        _calo_locator_->dump(std::clog);
+        _calo_locator_->tree_dump(std::clog, "", "[debug]: ");
         DT_LOG_DEBUG(get_logging_priority(), "X-calo locator :");
-        _xcalo_locator_->dump(std::clog);
+        _xcalo_locator_->tree_dump(std::clog, "", "[debug]: ");
         DT_LOG_DEBUG(get_logging_priority(), "G-veto locator :");
-        _gveto_locator_->dump(std::clog);
+        _gveto_locator_->tree_dump(std::clog, "", "[debug]: ");
       }
 
       // Geometry description :
