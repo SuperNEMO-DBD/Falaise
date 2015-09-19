@@ -261,7 +261,7 @@ namespace snemo {
         tc_mu_trigger_block_locator.initialize(tc_mu_trigger_block_type);
         DT_LOG_DEBUG(logging_priority, "mu_trigger blocks locator is initialized.");
         if (logging_priority >= datatools::logger::PRIO_DEBUG) {
-          tc_mu_trigger_block_locator.dump(std::clog);
+          tc_mu_trigger_block_locator.tree_dump(std::clog, "", "[debug]: ");
         }
       }
 
