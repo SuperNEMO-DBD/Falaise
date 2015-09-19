@@ -874,56 +874,72 @@ namespace snemo {
 
     void gveto_locator::dump(std::ostream & out_) const
     {
-      out_ << std::endl << "snemo::geometry:gveto_locator::dump: " << std::endl;
-      const std::string tag = "|-- ";
-      const std::string ltag = "`-- ";
-      if(! _initialized_) {
-        out_ << ltag << "Initialized               = " << _initialized_ << std::endl;
+      gveto_locator::tree_dump(out_, "snemo::geometry:gveto_locator::dump: ");
+      return;
+    }
+
+    void gveto_locator::tree_dump(std::ostream & out_,
+                                  const std::string & title_,
+                                  const std::string & indent_,
+                                  bool inherit_) const
+    {
+      const std::string tag = datatools::i_tree_dumpable::tags::item();
+      std::string indent;
+      if (! indent_.empty()) {
+        indent = indent_;
+      }
+      if (! title_.empty()) {
+        out_ << indent << title_ << std::endl;
+      }
+      if (! is_initialized ()) {
+        out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
+             << "Initialized        = " << _initialized_ << std::endl;
         return;
       }
-      out_ << tag << "Logging priority threshold = "
+      out_ << indent << tag << "Initialized                = " << _initialized_ << std::endl;
+      out_ << indent << tag << "Logging priority threshold = "
            << datatools::logger::get_priority_label(get_logging_priority()) << std::endl;
-      out_ << tag << "Module number              = " << _module_number_ << std::endl;
-      out_ << tag << "Manager @                  = " << & get_geo_manager() << std::endl;
-      out_ << tag << "Mapping @                  = " << _mapping_ << std::endl;
-      out_ << tag << "ID manager @               = " << _id_manager_ << std::endl;
-      out_ << tag << "Module type                = " << _module_type_ << std::endl;
-      out_ << tag << "Tracker submodule type     = " << _tracker_submodule_type_ << std::endl;
-      out_ << tag << "Calorimeter block type     = " << _block_type_ << std::endl;
-      out_ << tag << "Calorimeter wrapper type   = " << _wrapper_type_ << std::endl;
-      out_ << tag << "Block partitioned          = " << _block_partitioned_ << std::endl;
+      out_ << indent << tag << "Module number              = " << _module_number_ << std::endl;
+      out_ << indent << tag << "Manager @                  = " << & get_geo_manager() << std::endl;
+      out_ << indent << tag << "Mapping @                  = " << _mapping_ << std::endl;
+      out_ << indent << tag << "ID manager @               = " << _id_manager_ << std::endl;
+      out_ << indent << tag << "Module type                = " << _module_type_ << std::endl;
+      out_ << indent << tag << "Tracker submodule type     = " << _tracker_submodule_type_ << std::endl;
+      out_ << indent << tag << "Calorimeter block type     = " << _block_type_ << std::endl;
+      out_ << indent << tag << "Calorimeter wrapper type   = " << _wrapper_type_ << std::endl;
+      out_ << indent << tag << "Block partitioned          = " << _block_partitioned_ << std::endl;
       if(is_block_partitioned())
-        out_ << tag << "Block part                 = " << _block_part_ << std::endl;
-      out_ << tag << "Module ginfo @             = " << _module_ginfo_ << std::endl;
-      out_ << tag << "Module placement : " << std::endl;
+        out_ << indent << tag << "Block part                 = " << _block_part_ << std::endl;
+      out_ << indent << tag << "Module ginfo @             = " << _module_ginfo_ << std::endl;
+      out_ << indent << tag << "Module placement : " << std::endl;
       if(_module_world_placement_ != 0) {
         _module_world_placement_->tree_dump(out_, "", "|   ");
       }
-      out_ << tag << "Module box : " << std::endl;
+      out_ << indent << tag << "Module box : " << std::endl;
       if(_module_box_ != 0) {
         _module_box_->tree_dump(out_, "", "|   ");
       }
-      out_ << tag << "Block shape : " << _block_shape_->get_shape_name() << std::endl;
-      out_ << tag << "Composite block shape = " << _composite_block_shape_ << std::endl;
-      out_ << tag << "Block box : " << std::endl;
+      out_ << indent << tag << "Block shape : " << _block_shape_->get_shape_name() << std::endl;
+      out_ << indent << tag << "Composite block shape = " << _composite_block_shape_ << std::endl;
+      out_ << indent << tag << "Block box : " << std::endl;
       if(_block_box_ != 0) {
         _block_box_->tree_dump(out_, "", "|   ");
       }
       for(unsigned int i = 0; i < NWALLS_PER_SIDE; ++i)  {
         const std::string wall_name =(i ==(unsigned int)WALL_TOP) ? "top wall" : "bottom wall";
-        out_ << tag << "Back block X-pos on " << wall_name << " ["
+        out_ << indent << tag << "Back block X-pos on " << wall_name << " ["
              << _back_block_x_[i].size() << "] = ";
         for(size_t j = 0; j < _back_block_x_[i].size(); j++) {
           out_ << _back_block_x_[i][j] / CLHEP::mm << " ";
         }
         out_ << "(mm)" << std::endl;
-        out_ << tag << "Front block X-pos on " << wall_name << " ["
+        out_ << indent << tag << "Front block X-pos on " << wall_name << " ["
              << _front_block_x_[i].size() << "] = ";
         for(unsigned int j = 0; j < _front_block_x_[i].size(); j++) {
           out_ << _front_block_x_[i][j] / CLHEP::mm << " ";
         }
         out_ << "(mm)" << std::endl;
-        out_ << tag << "Back block Y-pos on " << wall_name << " ["
+        out_ << indent << tag << "Back block Y-pos on " << wall_name << " ["
              << _back_block_y_[i].size() << "] = ";
         for(unsigned int j = 0; j < _back_block_y_[i].size(); j++) {
           if((j < 4) ||(j > _back_block_y_[i].size() - 4)) {
@@ -933,7 +949,7 @@ namespace snemo {
           }
         }
         out_ << "(mm)" << std::endl;
-        out_ << tag << "Front block Y-pos on " << wall_name << " ["
+        out_ << indent << tag << "Front block Y-pos on " << wall_name << " ["
              << _front_block_y_[i].size() << "] = ";
         for(size_t j = 0; j < _front_block_y_[i].size(); j++) {
           if((j < 4) ||(j > _front_block_y_[i].size() - 4)) {
@@ -943,27 +959,27 @@ namespace snemo {
           }
         }
         out_ << "(mm)" << std::endl;
-        out_ << tag << "Back block Z-pos on " << wall_name << "  = "
+        out_ << indent << tag << "Back block Z-pos on " << wall_name << "  = "
              << _block_z_[utils::SIDE_BACK][i] / CLHEP::mm << "(mm) \n";
-        out_ << tag << "Front block Z-pos on " << wall_name << " = "
+        out_ << indent << tag << "Front block Z-pos on " << wall_name << " = "
              << _block_z_[utils::SIDE_FRONT][i] / CLHEP::mm << "(mm) \n";
-        out_ << tag << "Back block window Z-pos on " << wall_name << " = "
+        out_ << indent << tag << "Back block window Z-pos on " << wall_name << " = "
              << _block_window_z_[utils::SIDE_BACK][i] / CLHEP::mm << "(mm) \n";
-        out_ << tag << "Front block window Z-pos on " << wall_name << " = "
+        out_ << indent << tag << "Front block window Z-pos on " << wall_name << " = "
              << _block_window_z_[utils::SIDE_FRONT][i] / CLHEP::mm << "(mm) \n";
       }
 
-      out_ << tag << "Block width              = " << _block_width_ / CLHEP::mm  << "(mm)" << std::endl;
-      out_ << tag << "Block height             = " << _block_height_ / CLHEP::mm  << "(mm)" << std::endl;
-      out_ << tag << "Block thickness          = " << _block_thickness_ / CLHEP::mm  << "(mm)" << std::endl;
-      out_ << tag << "Module address GID index = " << _module_address_index_ << std::endl;
-      out_ << tag << "Side address GID index   = " << _side_address_index_ << std::endl;
-      out_ << tag << "Wall address GID index   = " << _wall_address_index_ << std::endl;
-      out_ << tag << "Column address GID index = " << _column_address_index_ << std::endl;
+      out_ << indent << tag << "Block width              = " << _block_width_ / CLHEP::mm  << "(mm)" << std::endl;
+      out_ << indent << tag << "Block height             = " << _block_height_ / CLHEP::mm  << "(mm)" << std::endl;
+      out_ << indent << tag << "Block thickness          = " << _block_thickness_ / CLHEP::mm  << "(mm)" << std::endl;
+      out_ << indent << tag << "Module address GID index = " << _module_address_index_ << std::endl;
+      out_ << indent << tag << "Side address GID index   = " << _side_address_index_ << std::endl;
+      out_ << indent << tag << "Wall address GID index   = " << _wall_address_index_ << std::endl;
+      out_ << indent << tag << "Column address GID index = " << _column_address_index_ << std::endl;
       if(is_block_partitioned()) {
-        out_ << tag << "Part address GID index   = " << _part_address_index_ << std::endl;
+        out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
+             << "Part address GID index   = " << _part_address_index_ << std::endl;
       }
-      out_ << ltag << "End" << std::endl;
       return;
     }
 

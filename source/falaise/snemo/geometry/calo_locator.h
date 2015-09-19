@@ -1,9 +1,9 @@
 /// \file falaise/snemo/geometry/calo_locator.h
 /* Author(s)     :     Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date : 2011-05-05
- * Last modified : 2014-01-28
+ * Last modified : 2015-09-19
  *
- * Copyright (C) 2011-2014 Francois Mauger <mauger@lpccaen.in2p3.fr>
+ * Copyright (C) 2011-2015 Francois Mauger <mauger@lpccaen.in2p3.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,8 @@
 // Third party:
 // - Boost :
 #include <boost/cstdint.hpp>
+// - Bayeux/datatools:
+#include <datatools/i_tree_dump.h>
 // - Bayeux/geomtools:
 #include <geomtools/i_locator.h>
 
@@ -58,7 +60,8 @@ namespace snemo {
   namespace geometry {
 
     /// \brief Fast locator class for SuperNEMO main calorimeter scintillator block volumes
-    class calo_locator : public geomtools::base_locator
+    class calo_locator : public geomtools::base_locator,
+                         public datatools::i_tree_dumpable
     {
     public:
 
@@ -149,8 +152,6 @@ namespace snemo {
       /**! check if block is partitioned in the current setup.
        */
       bool is_block_partitioned() const;
-
-      void dump(std::ostream & out_ = std::clog) const;
 
       /**! @return the width of a calorimeter block.
        */
@@ -313,6 +314,15 @@ namespace snemo {
       bool is_calo_block(const geomtools::geom_id & gid_) const;
 
       bool is_calo_block_in_current_module(const geomtools::geom_id & gid_) const;
+
+      /// Smart print
+      virtual void tree_dump(std::ostream &      out_ = std::clog,
+                             const std::string & title_  = "",
+                             const std::string & indent_ = "",
+                             bool                inherit_ = false) const;
+
+      /// Dump
+      void dump(std::ostream & out_) const;
 
     protected:
 

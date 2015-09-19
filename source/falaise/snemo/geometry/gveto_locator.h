@@ -1,9 +1,9 @@
-/// \file falaise/snemo/geometry/gveto_locator.h */
+/// \file falaise/snemo/geometry/gveto_locator.h
 /* Author(s)     : Xavier Garrido <garrido@lal.in2p3.fr>
  * Creation date : 2012-06-12
- * Last modified : 2014-01-28
+ * Last modified : 2015-09-19
  *
- * Copyright (C) 2011-2014 Francois Mauger <mauger@lpccaen.in2p3.fr>
+ * Copyright (C) 2011-2015 Francois Mauger <mauger@lpccaen.in2p3.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,8 @@ namespace snemo {
   namespace geometry {
 
     /// \brief Fast locator class for SuperNEMO gamma-veto scintillator block volumes
-    class gveto_locator : public geomtools::base_locator
+    class gveto_locator : public geomtools::base_locator,
+                          public datatools::i_tree_dumpable
     {
     public:
 
@@ -72,233 +73,240 @@ namespace snemo {
           WALL_TOP     = 1   //!< Top wall
         };
 
-      virtual bool is_initialized () const;
+      virtual bool is_initialized() const;
 
       /// Constructor
-      gveto_locator ();
+      gveto_locator();
 
       /// Constructor:
-      gveto_locator (const ::geomtools::manager & mgr_,
-                     uint32_t module_number_);
+      gveto_locator(const ::geomtools::manager & mgr_,
+                    uint32_t module_number_);
 
       /// Destructor
-      virtual ~gveto_locator ();
+      virtual ~gveto_locator();
 
-      virtual void initialize (const datatools::properties & config_);
+      virtual void initialize(const datatools::properties & config_);
 
-      virtual void reset ();
+      virtual void reset();
 
-      void initialize ();
+      void initialize();
 
-      bool has_submodule (uint32_t side_) const;
+      bool has_submodule(uint32_t side_) const;
 
-      bool id_is_valid (uint32_t side_, uint32_t wall_, uint32_t column_) const;
+      bool id_is_valid(uint32_t side_, uint32_t wall_, uint32_t column_) const;
 
       // Interfaces from geomtools::i_locator :
-      virtual bool find_geom_id (const geomtools::vector_3d & world_position_,
-                                 int type_,
-                                 geomtools::geom_id & gid_,
-                                 double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE) const;
+      virtual bool find_geom_id(const geomtools::vector_3d & world_position_,
+                                int type_,
+                                geomtools::geom_id & gid_,
+                                double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE) const;
 
-      bool find_block_geom_id (const geomtools::vector_3d & world_position_,
-                               geomtools::geom_id & gid_,
-                               double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE) const;
+      bool find_block_geom_id(const geomtools::vector_3d & world_position_,
+                              geomtools::geom_id & gid_,
+                              double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE) const;
     protected:
 
       /**
        */
-      bool find_block_geom_id_ (const geomtools::vector_3d & in_module_position_,
-                                geomtools::geom_id & gid_,
-                                double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE);
+      bool find_block_geom_id_(const geomtools::vector_3d & in_module_position_,
+                               geomtools::geom_id & gid_,
+                               double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE);
 
-      void _set_defaults_ ();
+      void _set_defaults_();
 
     public:
       /**! @return the number of the module (>=0).
        */
-      uint32_t get_module_number () const;
+      uint32_t get_module_number() const;
 
       /**! set the number of the module for this locator.
        */
-      void set_module_number (uint32_t module_number_);
+      void set_module_number(uint32_t module_number_);
 
       /**! check if block is partitioned in the current setup.
        */
-      bool is_block_partitioned () const;
-
-      void dump (std::ostream & out_ = std::clog) const;
+      bool is_block_partitioned() const;
 
       /**! @return the width of a calorimeter block.
        */
-      double get_block_width () const;
+      double get_block_width() const;
 
       /**! @return the height of a calorimeter block.
        */
-      double get_block_height () const;
+      double get_block_height() const;
 
       /**! @return the thickness of a block.
        */
-      double get_block_thickness () const;
+      double get_block_thickness() const;
 
       /**! @return the number of sides on the calorimeter.
        */
-      size_t get_number_of_sides () const;
+      size_t get_number_of_sides() const;
 
       /**! @return the number of walls on the calorimeter.
        */
-      size_t get_number_of_walls () const;
+      size_t get_number_of_walls() const;
 
       /**! @return the number of columns in one side and one wall of the calorimeter.
        */
-      size_t get_number_of_columns (uint32_t side_, uint32_t wall_) const;
+      size_t get_number_of_columns(uint32_t side_, uint32_t wall_) const;
 
       /**! @return the Z-position of a wall for specific side and wall (in module coordinate system).
        */
-      double get_wall_z (uint32_t side_, uint32_t wall_) const;
+      double get_wall_z(uint32_t side_, uint32_t wall_) const;
 
       /**! @return the Z-position of the entrance window of a wall for specific side and wall (in module coordinate system).
        */
-      double get_wall_window_z (uint32_t side_, uint32_t wall_) const;
+      double get_wall_window_z(uint32_t side_, uint32_t wall_) const;
 
       /**! @return the X-position of a block for specific side, wall and column (in module coordinate system).
        */
-      double get_column_x (uint32_t side_, uint32_t wall_, uint32_t column_) const;
+      double get_column_x(uint32_t side_, uint32_t wall_, uint32_t column_) const;
 
       /**! @return the Y-position of a block for specific side, wall and column (in module coordinate system).
        */
-      double get_column_y (uint32_t side_, uint32_t wall_, uint32_t column_) const;
+      double get_column_y(uint32_t side_, uint32_t wall_, uint32_t column_) const;
 
       /**! Compute the position of a block
        *   for specific side, wall and column (in module coordinate system).
        */
-      void compute_block_position (uint32_t side_,
-                                   uint32_t wall_,
-                                   uint32_t column_,
-                                   geomtools::vector_3d & module_position_) const;
+      void compute_block_position(uint32_t side_,
+                                  uint32_t wall_,
+                                  uint32_t column_,
+                                  geomtools::vector_3d & module_position_) const;
 
       /**! Compute the position of the center of the entrance window of a block
        *   for specific side and column (in module coordinate system).
        */
-      void compute_block_window_position (uint32_t side_,
-                                          uint32_t wall_,
-                                          uint32_t column_,
-                                          geomtools::vector_3d & module_position_) const;
+      void compute_block_window_position(uint32_t side_,
+                                         uint32_t wall_,
+                                         uint32_t column_,
+                                         geomtools::vector_3d & module_position_) const;
 
       /**! @return the position of a block for specific side, wall and column (in module coordinate system).
        */
-      geomtools::vector_3d get_block_position (uint32_t side_, uint32_t wall_, uint32_t column_) const;
+      geomtools::vector_3d get_block_position(uint32_t side_, uint32_t wall_, uint32_t column_) const;
 
       /**! @return the position of the center of the entrance window of a block
        *   for specific side, wall and column (in module coordinate system).
        */
-      geomtools::vector_3d get_block_window_position (uint32_t side_, uint32_t wall_, uint32_t column_) const;
+      geomtools::vector_3d get_block_window_position(uint32_t side_, uint32_t wall_, uint32_t column_) const;
 
       /** Tranform a world coordinate system position to the corresponding module coordinate system position.
        */
-      void transform_world_to_module (const geomtools::vector_3d & world_position_,
-                                      geomtools::vector_3d & module_position_) const;
+      void transform_world_to_module(const geomtools::vector_3d & world_position_,
+                                     geomtools::vector_3d & module_position_) const;
 
       /** Tranform a module coordinate system position to the corresponding world coordinate system position.
        */
-      void transform_module_to_world (const geomtools::vector_3d & module_position_,
-                                      geomtools::vector_3d & world_position_) const;
+      void transform_module_to_world(const geomtools::vector_3d & module_position_,
+                                     geomtools::vector_3d & world_position_) const;
 
 
       /** Check if a world coordinate system position is in the module virtual volume (its bounding envelope).
        */
-      bool is_world_position_in_module (const geomtools::vector_3d & world_position_,
-                                        double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE) const;
+      bool is_world_position_in_module(const geomtools::vector_3d & world_position_,
+                                       double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE) const;
 
 
       /** Check if a module coordinate system position is in the module virtual volume (its bounding envelope).
        */
-      bool is_in_module (const geomtools::vector_3d & module_position_,
-                         double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE) const;
+      bool is_in_module(const geomtools::vector_3d & module_position_,
+                        double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE) const;
 
 
       /** Check if a module coordinate system position is in a specific block virtual volume (its bounding envelope).
        */
-      bool is_in_block (const geomtools::vector_3d & module_position_,
-                        uint32_t side_,
-                        uint32_t wall_,
-                        uint32_t column_,
-                        double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE) const;
+      bool is_in_block(const geomtools::vector_3d & module_position_,
+                       uint32_t side_,
+                       uint32_t wall_,
+                       uint32_t column_,
+                       double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE) const;
 
 
       /** Check if a world coordinate system position is in a specific block virtual volume (its bounding envelope).
        */
-      bool is_world_position_in_block (const geomtools::vector_3d & world_position_,
-                                       uint32_t side_,
-                                       uint32_t wall_,
-                                       uint32_t column_,
-                                       double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE) const;
+      bool is_world_position_in_block(const geomtools::vector_3d & world_position_,
+                                      uint32_t side_,
+                                      uint32_t wall_,
+                                      uint32_t column_,
+                                      double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE) const;
 
       /** Given a block at specific side, wall and column, returns the number of neighbouring blocks.
        */
-      size_t get_number_of_neighbours (uint32_t side_,
-                                       uint32_t wall_,
-                                       uint32_t column_,
-                                       uint8_t mask_ = utils::NEIGHBOUR_FIRST) const;
+      size_t get_number_of_neighbours(uint32_t side_,
+                                      uint32_t wall_,
+                                      uint32_t column_,
+                                      uint8_t mask_ = utils::NEIGHBOUR_FIRST) const;
 
       /** Given a block with a specific geometry ID, returns the number of neighbouring blocks.
        */
-      size_t get_number_of_neighbours (const geomtools::geom_id & gid_,
-                                       uint8_t mask_ = utils::NEIGHBOUR_FIRST) const;
+      size_t get_number_of_neighbours(const geomtools::geom_id & gid_,
+                                      uint8_t mask_ = utils::NEIGHBOUR_FIRST) const;
 
       /** Given a block at specific side, wall and column, compute the array of geometry IDs for associated neighbouring blocks.
        */
-      void get_neighbours_ids (uint32_t side_,
-                               uint32_t wall_,
-                               uint32_t column_,
-                               std::vector<geomtools::geom_id> & ids_,
-                               uint8_t mask_ = utils::NEIGHBOUR_FIRST) const;
+      void get_neighbours_ids(uint32_t side_,
+                              uint32_t wall_,
+                              uint32_t column_,
+                              std::vector<geomtools::geom_id> & ids_,
+                              uint8_t mask_ = utils::NEIGHBOUR_FIRST) const;
 
       /** Given a block with a specific geometry IDs, compute the array of geometry IDs for associated neighbouring blocks.
        */
-      void get_neighbours_ids (const geomtools::geom_id & gid_,
-                               std::vector<geomtools::geom_id> & ids_,
-                               uint8_t mask_ = utils::NEIGHBOUR_FIRST) const;
+      void get_neighbours_ids(const geomtools::geom_id & gid_,
+                              std::vector<geomtools::geom_id> & ids_,
+                              uint8_t mask_ = utils::NEIGHBOUR_FIRST) const;
 
       /** Given a block with a specific geometry IDs, compute its position in the module coordinate system.
        */
-      void get_block_position (const geomtools::geom_id & gid_,
-                               geomtools::vector_3d & position_) const;
+      void get_block_position(const geomtools::geom_id & gid_,
+                              geomtools::vector_3d & position_) const;
 
 
       /** Given a block with a specific side, wall and column, compute its position in the module coordinate system.
        */
-      void get_block_position (uint32_t side_,
-                               uint32_t wall_,
-                               uint32_t column_,
-                               geomtools::vector_3d & position_) const;
+      void get_block_position(uint32_t side_,
+                              uint32_t wall_,
+                              uint32_t column_,
+                              geomtools::vector_3d & position_) const;
 
-      int get_module_address_index () const;
+      int get_module_address_index() const;
 
-      int get_side_address_index () const;
+      int get_side_address_index() const;
 
-      int get_wall_address_index () const;
+      int get_wall_address_index() const;
 
-      int get_column_address_index () const;
+      int get_column_address_index() const;
 
-      int get_part_address_index () const;
+      int get_part_address_index() const;
 
-      uint32_t extract_module (const geomtools::geom_id & gid_) const;
+      uint32_t extract_module(const geomtools::geom_id & gid_) const;
 
-      uint32_t extract_side (const geomtools::geom_id & gid_) const;
+      uint32_t extract_side(const geomtools::geom_id & gid_) const;
 
-      uint32_t extract_wall (const geomtools::geom_id & gid_) const;
+      uint32_t extract_wall(const geomtools::geom_id & gid_) const;
 
-      uint32_t extract_column (const geomtools::geom_id & gid_) const;
+      uint32_t extract_column(const geomtools::geom_id & gid_) const;
 
-      uint32_t extract_part (const geomtools::geom_id & gid_) const;
+      uint32_t extract_part(const geomtools::geom_id & gid_) const;
 
-      bool is_calo_block (const geomtools::geom_id & gid_) const;
+      bool is_calo_block(const geomtools::geom_id & gid_) const;
 
-      bool is_calo_block_in_current_module (const geomtools::geom_id & gid_) const;
+      bool is_calo_block_in_current_module(const geomtools::geom_id & gid_) const;
+
+      /// Smart print
+      virtual void tree_dump(std::ostream &      out_ = std::clog,
+                             const std::string & title_  = "",
+                             const std::string & indent_ = "",
+                             bool                inherit_ = false) const;
+
+      /// Dump
+      void dump(std::ostream & out_) const;
 
     protected:
 
-      void _construct ();
+      void _construct();
 
     private:
 
