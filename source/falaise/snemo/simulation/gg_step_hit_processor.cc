@@ -205,9 +205,9 @@ namespace snemo {
         DT_LOG_TRACE(get_logging_priority(), "mapping_category = " << _mapping_category_);
         DT_LOG_TRACE(get_logging_priority(), "gg_cell_type     = " << _gg_cell_type_);
         DT_LOG_TRACE(get_logging_priority(), "Module locator:");
-        _module_locator_.dump(std::cerr);
+        _module_locator_.tree_dump(std::clog, "", "[trace]: ");
         DT_LOG_TRACE(get_logging_priority(), "Geiger locator:");
-        _gg_cell_locator_.dump(std::cerr);
+        _gg_cell_locator_.tree_dump(std::clog, "", "[trace]: ");
       }
       // if (_geom_manager->get_setup_label().find("snemo::") != std::string::npos) {
       // if (_geom_manager->get_setup_label().substr(0, 7) == "snemo::") {
