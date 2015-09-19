@@ -111,7 +111,7 @@ namespace snemo {
       }
       if (get_logging_priority() >= datatools::logger::PRIO_DEBUG) {
         DT_LOG_DEBUG(get_logging_priority(), "Geiger locator :");
-        _gg_locator_->dump(std::clog);
+        _gg_locator_->tree_dump(std::clog, "", "[debug]: ");
       }
 
       // Default value for the TrackerPreClustering :
