@@ -884,6 +884,7 @@ namespace snemo {
                                   bool inherit_) const
     {
       const std::string tag = datatools::i_tree_dumpable::tags::item();
+      const std::string stag = datatools::i_tree_dumpable::tags::skip_item();
       std::string indent;
       if (! indent_.empty()) {
         indent = indent_;
@@ -891,7 +892,7 @@ namespace snemo {
       if (! title_.empty()) {
         out_ << indent << title_ << std::endl;
       }
-      if (! is_initialized ()) {
+      if (! is_initialized()) {
         out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
              << "Initialized        = " << _initialized_ << std::endl;
         return;
@@ -913,36 +914,36 @@ namespace snemo {
       out_ << indent << tag << "Module ginfo @             = " << _module_ginfo_ << std::endl;
       out_ << indent << tag << "Module placement : " << std::endl;
       if(_module_world_placement_ != 0) {
-        _module_world_placement_->tree_dump(out_, "", "|   ");
+        _module_world_placement_->tree_dump(out_, "", indent + stag);
       }
       out_ << indent << tag << "Module box : " << std::endl;
       if(_module_box_ != 0) {
-        _module_box_->tree_dump(out_, "", "|   ");
+        _module_box_->tree_dump(out_, "", indent + stag);
       }
       out_ << indent << tag << "Block shape : " << _block_shape_->get_shape_name() << std::endl;
       out_ << indent << tag << "Composite block shape = " << _composite_block_shape_ << std::endl;
       out_ << indent << tag << "Block box : " << std::endl;
       if(_block_box_ != 0) {
-        _block_box_->tree_dump(out_, "", "|   ");
+        _block_box_->tree_dump(out_, "", indent + stag);
       }
-      for(unsigned int i = 0; i < NWALLS_PER_SIDE; ++i)  {
+      for (size_t i = 0; i < NWALLS_PER_SIDE; ++i)  {
         const std::string wall_name =(i ==(unsigned int)WALL_TOP) ? "top wall" : "bottom wall";
         out_ << indent << tag << "Back block X-pos on " << wall_name << " ["
              << _back_block_x_[i].size() << "] = ";
-        for(size_t j = 0; j < _back_block_x_[i].size(); j++) {
+        for (size_t j = 0; j < _back_block_x_[i].size(); j++) {
           out_ << _back_block_x_[i][j] / CLHEP::mm << " ";
         }
         out_ << "(mm)" << std::endl;
         out_ << indent << tag << "Front block X-pos on " << wall_name << " ["
              << _front_block_x_[i].size() << "] = ";
-        for(unsigned int j = 0; j < _front_block_x_[i].size(); j++) {
+        for (size_t j = 0; j < _front_block_x_[i].size(); j++) {
           out_ << _front_block_x_[i][j] / CLHEP::mm << " ";
         }
         out_ << "(mm)" << std::endl;
         out_ << indent << tag << "Back block Y-pos on " << wall_name << " ["
              << _back_block_y_[i].size() << "] = ";
-        for(unsigned int j = 0; j < _back_block_y_[i].size(); j++) {
-          if((j < 4) ||(j > _back_block_y_[i].size() - 4)) {
+        for (size_t j = 0; j < _back_block_y_[i].size(); j++) {
+          if ((j < 4) ||(j > _back_block_y_[i].size() - 4)) {
             out_ << _back_block_y_[i][j] / CLHEP::mm << " ";
           } else if(j == 4) {
             out_ << " ... ";
@@ -951,10 +952,10 @@ namespace snemo {
         out_ << "(mm)" << std::endl;
         out_ << indent << tag << "Front block Y-pos on " << wall_name << " ["
              << _front_block_y_[i].size() << "] = ";
-        for(size_t j = 0; j < _front_block_y_[i].size(); j++) {
-          if((j < 4) ||(j > _front_block_y_[i].size() - 4)) {
+        for (size_t j = 0; j < _front_block_y_[i].size(); j++) {
+          if ((j < 4) ||(j > _front_block_y_[i].size() - 4)) {
             out_ << _front_block_y_[i][j] / CLHEP::mm << " ";
-          } else if(j == 4) {
+          } else if (j == 4) {
             out_ << " ... ";
           }
         }
@@ -976,7 +977,7 @@ namespace snemo {
       out_ << indent << tag << "Side address GID index   = " << _side_address_index_ << std::endl;
       out_ << indent << tag << "Wall address GID index   = " << _wall_address_index_ << std::endl;
       out_ << indent << tag << "Column address GID index = " << _column_address_index_ << std::endl;
-      if(is_block_partitioned()) {
+      if (is_block_partitioned()) {
         out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
              << "Part address GID index   = " << _part_address_index_ << std::endl;
       }
@@ -1108,8 +1109,8 @@ namespace snemo {
 
       geomtools::geom_id & gid  = gid_;
       gid.reset();
-      uint32_t side_number  (geomtools::geom_id::INVALID_ADDRESS);
-      uint32_t wall_number  (geomtools::geom_id::INVALID_ADDRESS);
+      uint32_t side_number(geomtools::geom_id::INVALID_ADDRESS);
+      uint32_t wall_number(geomtools::geom_id::INVALID_ADDRESS);
       uint32_t column_number(geomtools::geom_id::INVALID_ADDRESS);
       const double x = in_module_position_.x();
       const double xlim = 1000 * CLHEP::m;
