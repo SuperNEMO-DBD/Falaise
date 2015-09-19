@@ -686,16 +686,14 @@ namespace snemo {
             DT_LOG_INFORMATION(get_logging_priority(),
                                "Solution in working frame has been found after "
                                << the_solution.niter << " iterations:");
-            the_solution.print(std::clog);
-
-            //hfm.draw_solution(cout);
+            the_solution.tree_dump(std::clog, "", "[information]: ");
 
             DT_LOG_INFORMATION(get_logging_priority(), "Fit residuals:");
             for (size_t i = 0; i < gg_hits_.size(); ++i) {
               if (i == gg_hits_.size() - 1) {
-                std::clog << datatools::i_tree_dumpable::last_tag;
+                std::clog << "[information]: " << datatools::i_tree_dumpable::last_tag;
               } else {
-                std::clog << datatools::i_tree_dumpable::tag;
+                std::clog << "[information]: " << datatools::i_tree_dumpable::tag;
               }
               std::clog << "Hit #" << std::setw(2) << i << " : ";
               double alpha_residual, beta_residual;
@@ -748,14 +746,14 @@ namespace snemo {
             DT_LOG_INFORMATION(get_logging_priority(),
                                "Solution in working frame has been found after "
                                << the_solution.niter << " iterations:");
-            the_solution.print(std::clog);
+            the_solution.tree_dump(std::clog, "", "[information]: ");
 
             DT_LOG_INFORMATION(get_logging_priority(), "Fit residuals:");
             for (size_t i = 0; i < gg_hits_.size(); ++i) {
               if (i == gg_hits_.size() - 1) {
-                std::clog << datatools::i_tree_dumpable::last_tag;
+                std::clog << "[information]: " << datatools::i_tree_dumpable::last_tag;
               } else {
-                std::clog << datatools::i_tree_dumpable::tag;
+                std::clog << "[information]: " << datatools::i_tree_dumpable::tag;
               }
               std::clog << "Hit #" << std::setw(2) << i << " : ";
               double alpha_residual, beta_residual;

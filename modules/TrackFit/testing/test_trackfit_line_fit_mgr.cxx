@@ -268,14 +268,14 @@ int main (int argc_, char ** argv_)
     for (std::list<TrackFit::line_fit_solution>::const_iterator i = solutions.begin();
          i != solutions.end();
          i++) {
-      i->print(std::clog);
+      i->tree_dump();
       if ((min_chi < 0.0) || (i->chi < min_chi)) {
         min_chi = i->chi;
         best_solution = *i;
       }
     }
     std::clog << "NOTICE: Best solution: " << std::endl;
-    best_solution.print(std::clog);
+    best_solution.tree_dump();
     if (best_solution.probability_q() < 0.2) {
       std::clog << "NOTICE: The probability is poor !" << std::endl;
     } else {

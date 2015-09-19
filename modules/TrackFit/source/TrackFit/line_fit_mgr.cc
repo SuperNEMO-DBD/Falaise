@@ -91,25 +91,30 @@ namespace TrackFit {
     return;
   }
 
-  void line_fit_solution::print(std::ostream & out_) const
+  void line_fit_solution::tree_dump(std::ostream & out_,
+                                    const std::string & title_,
+                                    const std::string & indent_,
+                                    bool /*inherit_*/) const
   {
-    out_ << "Solution found:" << std::endl
-         << "|-- ok      = " << ok << std::endl
-         << "|-- y0      = " << y0 / CLHEP::mm
-         << " +/- " << err_y0 / CLHEP::mm << " mm" << std::endl
-         << "|-- z0      = " << z0 / CLHEP::mm
-         << " +/- " << err_z0 / CLHEP::mm << " mm" << std::endl
-         << "|-- phi     = " << phi / CLHEP::degree
-         << " +/- " << err_phi / CLHEP::degree << " deg" << std::endl
-         << "|-- theta   = " << theta / CLHEP::degree
-         << " +/- " << err_theta / CLHEP::degree << " deg" << std::endl
-         << "|-- t0      = " << t0 / CLHEP::ns
-         << " +/- " << err_t0 / CLHEP::ns << " ns" << std::endl
-         << "|-- chi     = " << chi << std::endl
-         << "|-- ndof    = " << ndof << std::endl
-         << "|-- niter   = " << niter << std::endl
-         << "|-- prob(P) = " << probability_p() << std::endl
-         << "`-- prob(Q) = " << probability_q() << std::endl
+    std::string indent;
+    if (! indent_.empty()) {
+      indent = indent_;
+    }
+    if (! title_.empty()) {
+      out_ << indent << title_ << std::endl;
+    }
+    out_ << indent << "Solution found:" << std::endl
+         << indent << "|-- ok      = " << ok << std::endl
+         << indent << "|-- y0      = " << y0 / CLHEP::mm << " +/- " << err_y0 / CLHEP::mm << " mm" << std::endl
+         << indent << "|-- z0      = " << z0 / CLHEP::mm << " +/- " << err_z0 / CLHEP::mm << " mm" << std::endl
+         << indent << "|-- phi     = " << phi / CLHEP::degree << " +/- " << err_phi / CLHEP::degree << " deg" << std::endl
+         << indent << "|-- theta   = " << theta / CLHEP::degree << " +/- " << err_theta / CLHEP::degree << " deg" << std::endl
+         << indent << "|-- t0      = " << t0 / CLHEP::ns << " +/- " << err_t0 / CLHEP::ns << " ns" << std::endl
+         << indent << "|-- chi     = " << chi << std::endl
+         << indent << "|-- ndof    = " << ndof << std::endl
+         << indent << "|-- niter   = " << niter << std::endl
+         << indent << "|-- prob(P) = " << probability_p() << std::endl
+         << indent << "`-- prob(Q) = " << probability_q() << std::endl
          << std::endl;
     return;
   }

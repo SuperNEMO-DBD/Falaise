@@ -81,20 +81,27 @@ namespace TrackFit {
     return;
   }
 
-  void helix_fit_params::dump(std::ostream      & out_,
-                              const std::string & title_,
-                              const std::string & indent_) const
+  void helix_fit_params::tree_dump(std::ostream      & out_,
+                                   const std::string & title_,
+                                   const std::string & indent_,
+                                   bool /*inherit_*/) const
   {
-    out_ << indent_ << title_ << std::endl;
-    out_ << indent_ << "|-- quality    = " << quality << std::endl
-         << indent_ << "|-- x0         = " << x0 << std::endl
-         << indent_ << "|-- y0         = " << y0 << std::endl
-         << indent_ << "|-- z0         = " << z0 << std::endl
-         << indent_ << "|-- r          = " << r  << std::endl
-         << indent_ << "|-- step       = " << step << std::endl
-         << indent_ << "`-- has_angles = " << has_angles << std::endl
-         << indent_ << "    |-- theta1 = " << angle_1 << std::endl
-         << indent_ << "    `-- theta2 = " << angle_2 << std::endl;
+    std::string indent;
+    if (! indent_.empty()) {
+      indent = indent_;
+    }
+    if (! title_.empty()) {
+      out_ << indent << title_ << std::endl;
+    }
+    out_ << indent << "|-- quality    = " << quality << std::endl
+         << indent << "|-- x0         = " << x0 << std::endl
+         << indent << "|-- y0         = " << y0 << std::endl
+         << indent << "|-- z0         = " << z0 << std::endl
+         << indent << "|-- r          = " << r  << std::endl
+         << indent << "|-- step       = " << step << std::endl
+         << indent << "`-- has_angles = " << has_angles << std::endl
+         << indent << "    |-- theta1 = " << angle_1 << std::endl
+         << indent << "    `-- theta2 = " << angle_2 << std::endl;
     return;
   }
 
@@ -129,23 +136,32 @@ namespace TrackFit {
     return;
   }
 
-  void helix_fit_solution::print(std::ostream & out_) const
+  void helix_fit_solution::tree_dump(std::ostream & out_,
+                                     const std::string & title_,
+                                     const std::string & indent_,
+                                     bool /*inherit_*/) const
   {
-    out_ << "Solution found:" << std::endl
-         << "|-- ok      = " << ok << std::endl
-         << "|-- quality = " << quality << std::endl
-         << "|-- x0      = " << x0 << " +/- " << err_x0 << std::endl
-         << "|-- y0      = " << y0 << " +/- " << err_y0 << std::endl
-         << "|-- z0      = " << z0 << " +/- " << err_z0 << std::endl
-         << "|-- r       = " << r  << " +/- " << err_r << std::endl
-         << "|-- step    = " << step << " +/- " << err_step << std::endl
-         << "|-- start_time = " << start_time << std::endl
-         << "|-- chi     = " << chi << std::endl
-         << "|-- ndof    = " << ndof << std::endl
-         << "|-- niter   = " << niter << std::endl
-         << "|-- prob(P) = " << probability_p() << std::endl
-         << "`-- prob(Q) = " << probability_q()
-         << std::endl;
+    std::string indent;
+    if (! indent_.empty()) {
+      indent = indent_;
+    }
+    if (! title_.empty()) {
+      out_ << indent << title_ << std::endl;
+    }
+    out_ << indent << "Solution found:" << std::endl
+         << indent << "|-- ok      = " << ok << std::endl
+         << indent << "|-- quality = " << quality << std::endl
+         << indent << "|-- x0      = " << x0 << " +/- " << err_x0 << std::endl
+         << indent << "|-- y0      = " << y0 << " +/- " << err_y0 << std::endl
+         << indent << "|-- z0      = " << z0 << " +/- " << err_z0 << std::endl
+         << indent << "|-- r       = " << r  << " +/- " << err_r << std::endl
+         << indent << "|-- step    = " << step << " +/- " << err_step << std::endl
+         << indent << "|-- start_time = " << start_time << std::endl
+         << indent << "|-- chi     = " << chi << std::endl
+         << indent << "|-- ndof    = " << ndof << std::endl
+         << indent << "|-- niter   = " << niter << std::endl
+         << indent << "|-- prob(P) = " << probability_p() << std::endl
+         << indent << "`-- prob(Q) = " << probability_q() << std::endl;
     return;
   }
 
@@ -304,7 +320,7 @@ namespace TrackFit {
 
     DT_LOG_TRACE(local_priority, "Computed guess");
     if (local_priority >= datatools::logger::PRIO_TRACE)
-      traj_.dump(std::clog);
+      traj_.tree_dump(std::clog, "", "[trace]: ");
     return;
   }
 

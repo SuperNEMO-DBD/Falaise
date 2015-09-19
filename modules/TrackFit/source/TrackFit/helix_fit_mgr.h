@@ -88,9 +88,10 @@ namespace TrackFit {
     void reset();
 
     /// Smart print
-    void dump(std::ostream      & out_,
-              const std::string & title_ = "",
-              const std::string & indent_ = "") const;
+    void tree_dump(std::ostream      & out_,
+                   const std::string & title_ = "",
+                   const std::string & indent_ = "",
+                   bool inherit_ = false) const;
 
     // Attributes:
     int    quality;    /// Quality flag of the initial guess
@@ -139,7 +140,10 @@ namespace TrackFit {
     /// Compute Q-probability
     double probability_q() const;
     /// Basic print of the solution
-    void print(std::ostream &) const;
+    void tree_dump(std::ostream      & out_ = std::clog,
+                   const std::string & title_ = "",
+                   const std::string & indent_ = "",
+                   bool inherit_ = false) const;
 
     // Attributes:
     bool   ok;        /// Status if the solution

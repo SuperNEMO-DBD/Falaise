@@ -296,7 +296,7 @@ int main(int argc_, char ** argv_)
       }
     }
     std::clog << "NOTICE: Best solution: " << std::endl;
-    best_solution.print (std::clog);
+    best_solution.tree_dump (std::clog);
     if (best_solution.probability_q () < 0.2) {
       std::clog << "NOTICE: The probability is poor !" << std::endl;
     } else {
