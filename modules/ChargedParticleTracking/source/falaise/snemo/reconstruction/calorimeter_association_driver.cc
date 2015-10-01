@@ -270,6 +270,11 @@ namespace snemo {
           a_vertex.tree_dump(std::clog, "", "[trace]: ");
         }
 
+        // Do not take care of vertex other than the ones on calorimeters
+        if (! snemo::datamodel::particle_track::vertex_is_on_main_calorimeter(a_vertex) &&
+            ! snemo::datamodel::particle_track::vertex_is_on_x_calorimeter(a_vertex) &&
+            ! snemo::datamodel::particle_track::vertex_is_on_gamma_veto(a_vertex)) continue;
+
         // Look for matching calorimeters
         typedef std::map<double, snemo::datamodel::calibrated_calorimeter_hit::handle_type> calo_collection_type;
         calo_collection_type calo_collection;
