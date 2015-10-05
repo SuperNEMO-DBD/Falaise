@@ -343,8 +343,7 @@ namespace snemo {
           }
 
           // Show attached fit
-          if (a_particle.has_trajectory() &&
-              !options_manager::get_instance().get_option_flag(SHOW_TRACKER_TRAJECTORIES)) {
+          if (a_particle.has_trajectory()) {
             const snemo::datamodel::tracker_trajectory & a_trajectory = a_particle.get_trajectory();
             const snemo::datamodel::base_trajectory_pattern & a_pattern = a_trajectory.get_pattern();
             // Prepare ROOT polyline:
