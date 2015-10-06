@@ -60,6 +60,7 @@ namespace snemo {
       _VED_.reset();
       _CCD_.reset();
       _CAD_.reset();
+      _AFD_.reset();
       return;
     }
 
