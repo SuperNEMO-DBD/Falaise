@@ -78,7 +78,7 @@ Download Falaise/trunk source files: ::
 
 Configure Falaise:
 
-  1. Make sure Bayeux is setup on your system. If you follow the Bayeux installation report
+  1. Make sure Cadfael and Bayeux are setup on your system. If you follow the Bayeux installation report
      available from the Bayeux wiki page (https://nemo.lpc-caen.in2p3.fr/wiki/Software/Bayeux)
      you just have to invoke: ::
 
