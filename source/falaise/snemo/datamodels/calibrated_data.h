@@ -49,67 +49,67 @@ namespace snemo {
     public:
 
       /// Handle to a calibrated tracker hit
-      typedef datatools::handle<calibrated_tracker_hit>     tracker_hit_handle_type;
+      typedef datatools::handle<calibrated_tracker_hit> tracker_hit_handle_type;
 
       /// Handle to a calibrated calorimeter hit
       typedef datatools::handle<calibrated_calorimeter_hit> calorimeter_hit_handle_type;
 
       /// Collection of handles on calibrated tracker hits
-      typedef std::vector<tracker_hit_handle_type>     tracker_hit_collection_type;
+      typedef std::vector<tracker_hit_handle_type> tracker_hit_collection_type;
 
       /// Collection of handles on calibrated calorimeter hits
       typedef std::vector<calorimeter_hit_handle_type> calorimeter_hit_collection_type;
 
       /// Check if there are some hits
-      bool has_data () const;
+      bool has_data() const;
 
       /// Check if there are some calibrated calorimeter hits
-      bool has_calibrated_calorimeter_hits () const;
+      bool has_calibrated_calorimeter_hits() const;
 
       /// Reset the collection of calorimeter hits
-      void reset_calibrated_calorimeter_hits ();
+      void reset_calibrated_calorimeter_hits();
 
       /// Return the const collection of calorimeter hits
-      const calorimeter_hit_collection_type & calibrated_calorimeter_hits () const;
+      const calorimeter_hit_collection_type & calibrated_calorimeter_hits() const;
 
       /// Return the mutable collection of calorimeter hits
-      calorimeter_hit_collection_type & calibrated_calorimeter_hits ();
+      calorimeter_hit_collection_type & calibrated_calorimeter_hits();
 
       /// Check if there are some calibrated tracker hits
-      bool has_calibrated_tracker_hits () const;
+      bool has_calibrated_tracker_hits() const;
 
       /// Reset the collection of tracker hits
-      void reset_calibrated_tracker_hits ();
+      void reset_calibrated_tracker_hits();
 
       /// Return the const collection of tracker hits
-      const tracker_hit_collection_type & calibrated_tracker_hits () const;
+      const tracker_hit_collection_type & calibrated_tracker_hits() const;
 
       /// Return the mutable collection of tracker hits
-      tracker_hit_collection_type & calibrated_tracker_hits ();
+      tracker_hit_collection_type & calibrated_tracker_hits();
 
       /// Return the const container of properties
-      const datatools::properties & get_properties () const;
+      const datatools::properties & get_properties() const;
 
       /// Return the mutable container of properties
-      datatools::properties & grab_properties ();
+      datatools::properties & grab_properties();
 
       /// Reset
-      void reset ();
+      void reset();
 
       /// Constructor
-      calibrated_data ();
+      calibrated_data();
 
       /// Destructor
-      virtual ~calibrated_data ();
+      virtual ~calibrated_data();
 
       /// Clear attributes
-      virtual void clear ();
+      virtual void clear();
 
       /// Smart print
-      virtual void tree_dump (std::ostream & a_out         = std::clog,
-                              const std::string & a_title  = "",
-                              const std::string & a_indent = "",
-                              bool a_inherit          = false) const;
+      virtual void tree_dump(std::ostream & a_out         = std::clog,
+                             const std::string & a_title  = "",
+                             const std::string & a_indent = "",
+                             bool a_inherit          = false) const;
 
     private:
 
