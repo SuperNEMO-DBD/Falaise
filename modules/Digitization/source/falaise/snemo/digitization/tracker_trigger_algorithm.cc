@@ -789,8 +789,8 @@ namespace snemo {
       build_trigger_level_one_bitsets();
       build_trigger_level_one_to_level_two();
       build_trigger_tracker_final_response();
-      //display_tracker_trigger_info();
-      //display_matrix();
+      display_tracker_trigger_info();
+      display_matrix();
 
       return;
     }

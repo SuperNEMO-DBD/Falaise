@@ -51,6 +51,13 @@ namespace snemo {
 				std::bitset<CALO_ZONING_GVETO_BITSET_SIZE> gveto_zoning_word;
 				std::bitset<CALO_INFO_BITSET_SIZE> info_bitset; 
 			};
+
+			struct calo_trigger_decision_record
+			{
+				bool back_to_back_coinc;
+				bool same_side_coinc;
+				bool trigger_decision;
+			};
 			
 			enum calo_zoning_id_index {
 				ZONE_0_INDEX = 0,
@@ -119,7 +126,7 @@ namespace snemo {
 			void set_calo_circular_buffer_depth(unsigned int & calo_circular_buffer_depth_);
 
       /// Initializing
-      void initialize();
+      void initialize_simple();
 
       /// Initializing
       void initialize(const datatools::properties & config_);
@@ -139,12 +146,19 @@ namespace snemo {
 			/// Build the level one calo trigger primitive bitsets
 			void build_calo_level_one_bitsets(const calo_ctw & my_calo_ctw_);
 
-			void build_calo_trigger_record_structure();
+			/// Build intermediate working data structure
+			void build_calo_trigger_record_structure(calo_trigger_record & my_calo_trigger_record);   
+
+			/// Build summary calo trigger structure
+			void build_calo_trigger_record_summary_structure(calo_trigger_record & my_calo_trigger_record_summary);
 			
 			/// General process
       void process(const calo_ctw_data & calo_ctw_data_);
 
 		protected :
+
+			/// Display the level one calo trigger info and internal working data (bitsets)
+			void _display_calo_trigger_info(calo_trigger_record & my_calo_trigger_record);
 
 			/// Protected general process
 			void _process(const calo_ctw_data & calo_ctw_data_);
@@ -156,19 +170,20 @@ namespace snemo {
       bool _initialized_; //!< Initialization flag
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
 			unsigned int _calo_circular_buffer_depth_;
+      unsigned int _total_calo_multipicity_threshold_;
 
-      // Data :		
-     
+      // Data :	 
 			bool _level_one_calo_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_CALO_TRIGGER_ZONES]; //!< Table of 2x10 containing 2 bits bitset representing the level one calo trigger info
 			
-			std::bitset<CALO_LEVEL_ONE_MULT_BITSET_SIZE> _total_calo_multiplicity_; //!< Total multiplicity of calo who passed the HT
+			std::bitset<CALO_LEVEL_ONE_MULT_BITSET_SIZE> _total_calo_multiplicity_for_a_clocktick_; //!< Total multiplicity of calo who passed the HT for a clocktick
 			
 			std::bitset<CALO_ZONING_GVETO_BITSET_SIZE> _calo_gveto_info_bitset_; //!< Bitset of 4 bits containing the gamma-veto zoning information
 			
 			std::bitset<CALO_INFO_BITSET_SIZE> _calo_other_info_bitset_; //!< Bitset of 6 bits containing the other bits of all ctw (control, XT, LT)
 
 			boost::scoped_ptr<buffer_type> _calo_gate_circular_buffer_; //!< Scoped pointer to a circular buffer containing output data structure
-      
+
+      calo_trigger_record _calo_record_level_1_; //!< Record of calo_gate_circular_buffer
     };
 
   } // end of namespace digitization

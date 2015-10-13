@@ -47,7 +47,7 @@ namespace snemo {
       return;
     }
 
-    void calo_trigger_algorithm::initialize()
+    void calo_trigger_algorithm::initialize_simple()
     {
       datatools::properties dummy_config;
       initialize(dummy_config);
@@ -58,6 +58,8 @@ namespace snemo {
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized ! ");
       DT_THROW_IF(_electronic_mapping_ == 0, std::logic_error, "Missing electronic mapping ! " );
+
+      
       DT_THROW_IF(_calo_circular_buffer_depth_ <= 0, std::logic_error, "Calo circular buffer depth value [" << _calo_circular_buffer_depth_ << "] is missing ! ");
       _initialized_ = true;
       return;
@@ -88,14 +90,28 @@ namespace snemo {
 	      _level_one_calo_trigger_info_[iside][izones] = false;
 	    }
 	}
-      _total_calo_multiplicity_ = 0;
+      _total_calo_multiplicity_for_a_clocktick_ = 0;
       return;
     }
 
     void calo_trigger_algorithm::display_calo_trigger_info()
     {
       std::clog << "Level One calo trigger info display : " << std::endl;
-      std::clog << "Total multiplicity = " << _total_calo_multiplicity_ << std::endl << std::endl;
+
+      std::clog << _calo_other_info_bitset_ << ' ';
+      std::clog << _calo_gveto_info_bitset_ << ' ';
+      
+      for (int iside = mapping::NUMBER_OF_SIDES-1; iside >= 0; iside--)
+	{
+	  for (int izone = mapping::NUMBER_OF_CALO_TRIGGER_ZONES-1; izone >= 0 ; izone--)
+	    {
+	      std::clog << _level_one_calo_trigger_info_[iside][izone];
+	    }
+	  std::clog << ' ';
+	}
+      std::clog << _total_calo_multiplicity_for_a_clocktick_ << std::endl << std::endl;
+      
+
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 	{
 	  if (iside == 1)
@@ -140,6 +156,30 @@ namespace snemo {
 	  
 	} // end of iside
       std::clog << std::endl;
+      return;
+    }
+
+    void calo_trigger_algorithm::_display_calo_trigger_info(calo_trigger_record & my_calo_trigger_record)
+    {
+      // int k = 0;
+      // for (boost::circular_buffer<calo_trigger_record>::iterator it =_calo_gate_circular_buffer_->begin() ; it != _calo_gate_circular_buffer_->end(); it++)
+      // 	{
+      // 	  const calo_trigger_record & ctrec = *it;
+      // 	  if (k > 3) k = 0;
+      // 	  std::clog << "Circular Buffer : " << k << std::endl;
+      // 	  std::clog << ctrec.clocktick_25ns << std::endl;
+      // 	  std::clog << ctrec.info_bitset << ' ';
+      // 	  std::clog << ctrec.gveto_zoning_word << ' ';      
+      // 	  for (int iside = mapping::NUMBER_OF_SIDES-1; iside >= 0; iside--)
+      // 	    {
+      // 	      std::clog << ctrec.calo_zoning_word[iside];
+      // 	      std::clog << ' ';
+      // 	    }
+      // 	  std::clog << ctrec.total_calo_multiplicity << std::endl;
+      // 	  k++;
+      // 	}
+
+      display_calo_trigger_info();
       return;
     }
     
@@ -212,30 +252,79 @@ namespace snemo {
       	    }
       	}
 
-      if (_total_calo_multiplicity_ != 0)
+      if (_total_calo_multiplicity_for_a_clocktick_ != 0)
 	{
-	  unsigned long new_multiplicity  = _total_calo_multiplicity_.to_ulong() + calo_ctw_multiplicity; 
+	  unsigned long new_multiplicity  = _total_calo_multiplicity_for_a_clocktick_.to_ulong() + calo_ctw_multiplicity; 
 	  std::bitset<CALO_LEVEL_ONE_MULT_BITSET_SIZE> temporary_calo_ctw_multiplicity_bitset(new_multiplicity);
-	  _total_calo_multiplicity_ = temporary_calo_ctw_multiplicity_bitset;
+	  _total_calo_multiplicity_for_a_clocktick_ = temporary_calo_ctw_multiplicity_bitset;
 	}
 
       else
 	{
           std::bitset<CALO_LEVEL_ONE_MULT_BITSET_SIZE> temporary_calo_ctw_multiplicity_bitset(calo_ctw_multiplicity);
-	  _total_calo_multiplicity_ = temporary_calo_ctw_multiplicity_bitset;
+	  _total_calo_multiplicity_for_a_clocktick_ = temporary_calo_ctw_multiplicity_bitset;
 	}	
 
       return;
     }
-    
-    void calo_trigger_algorithm::build_calo_trigger_record_structure()
-    {
-      _calo_gate_circular_buffer_.reset(new buffer_type(_calo_circular_buffer_depth_));
-      calo_trigger_record my_struct;
 
-      _calo_gate_circular_buffer_->push_back(my_struct);
+    void calo_trigger_algorithm::build_calo_trigger_record_structure(calo_trigger_record & my_calo_trigger_record)
+    {
+      my_calo_trigger_record.total_calo_multiplicity = _total_calo_multiplicity_for_a_clocktick_;
+      my_calo_trigger_record.gveto_zoning_word = _calo_gveto_info_bitset_;
+      my_calo_trigger_record.info_bitset = _calo_other_info_bitset_;
+      
+      for (int iside = mapping::NUMBER_OF_SIDES-1; iside >= 0; iside--)
+	{
+	  for (int izone = mapping::NUMBER_OF_CALO_TRIGGER_ZONES-1; izone >= 0 ; izone--)
+	    {
+	      if (_level_one_calo_trigger_info_[iside][izone] == true)
+		{
+		  my_calo_trigger_record.calo_zoning_word[iside].set(izone, 1);
+		}
+	      else
+		{
+		  my_calo_trigger_record.calo_zoning_word[iside].set(izone, 0);
+		}
+	    }
+	}
+      _calo_gate_circular_buffer_->push_back(my_calo_trigger_record); 
     }
     
+    void calo_trigger_algorithm::build_calo_trigger_record_summary_structure(calo_trigger_record & my_calo_trigger_record_summary)
+    {
+      std::clog << "Begining of summary method " << std::endl;
+      int k = 0;
+      for (boost::circular_buffer<calo_trigger_record>::iterator it =_calo_gate_circular_buffer_->begin() ; it != _calo_gate_circular_buffer_->end(); it++)
+ 	{	 
+ 	  const calo_trigger_record & ctrec = *it;
+ 	  my_calo_trigger_record_summary.clocktick_25ns = ctrec.clocktick_25ns;
+ 	  if (my_calo_trigger_record_summary.total_calo_multiplicity.to_ulong() != 0)
+ 	    {
+	      if (my_calo_trigger_record_summary.total_calo_multiplicity == 3) my_calo_trigger_record_summary.total_calo_multiplicity = 3;
+	      else my_calo_trigger_record_summary.total_calo_multiplicity = my_calo_trigger_record_summary.total_calo_multiplicity.to_ulong() + ctrec.total_calo_multiplicity.to_ulong();
+ 	    }
+ 	  else
+ 	    {
+ 	      my_calo_trigger_record_summary.total_calo_multiplicity = ctrec.total_calo_multiplicity;
+ 	    }
+ 	  std::clog << "my_calo_trigger_record_summary = " << my_calo_trigger_record_summary.total_calo_multiplicity << std::endl;
+	  
+
+	  if (k > 3) k = 0;
+ 	  std::clog << "Circular Buffer : " << k << std::endl;
+ 	  std::clog << ctrec.clocktick_25ns << std::endl;
+ 	  std::clog << ctrec.info_bitset << ' ';
+ 	  std::clog << ctrec.gveto_zoning_word << ' ';      
+ 	  for (int iside = mapping::NUMBER_OF_SIDES-1; iside >= 0; iside--)
+ 	    {
+ 	      std::clog << ctrec.calo_zoning_word[iside];
+ 	      std::clog << ' ';
+ 	    }
+ 	  std::clog << ctrec.total_calo_multiplicity << std::endl << std::endl;
+	  k++;
+ 	}
+    } 
 
     void calo_trigger_algorithm::process(const calo_ctw_data & calo_ctw_data_)
     {
@@ -247,17 +336,28 @@ namespace snemo {
     void calo_trigger_algorithm::_process(const calo_ctw_data & calo_ctw_data_)
     { 
       reset_trigger_info();
+      _calo_gate_circular_buffer_.reset(new buffer_type(_calo_circular_buffer_depth_));
+
       for(int32_t iclocktick = calo_ctw_data_.get_clocktick_min(); iclocktick <= calo_ctw_data_.get_clocktick_max(); iclocktick++)
 	{
 	  std::vector<datatools::handle<calo_ctw> > calo_ctw_list_per_clocktick;
 	  calo_ctw_data_.get_list_of_calo_ctw_per_clocktick(iclocktick, calo_ctw_list_per_clocktick);
+	  
 
 	  for (int isize = 0; isize < calo_ctw_list_per_clocktick.size(); isize++)
 	    {
 	      build_calo_level_one_bitsets(calo_ctw_list_per_clocktick[isize].get());
 	    } // end of isize 
 	  std::clog <<"*************************** Clocktick = " << iclocktick << "***************************" << std::endl << std::endl;
-	  display_calo_trigger_info();
+
+	  calo_trigger_record my_calo_trigger_record;
+	  calo_trigger_record my_calo_trigger_record_summary;
+	  my_calo_trigger_record.clocktick_25ns = iclocktick;
+
+	  build_calo_trigger_record_structure(my_calo_trigger_record);
+	  _display_calo_trigger_info(my_calo_trigger_record);	  
+	  build_calo_trigger_record_summary_structure(my_calo_trigger_record_summary);
+
 	  reset_trigger_info();
 	} // end of iclocktick
       return;

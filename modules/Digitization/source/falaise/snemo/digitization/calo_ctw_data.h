@@ -75,6 +75,7 @@ namespace snemo {
       /// Return the const collection of calorimeter crate trigger
       const calo_ctw_collection_type & get_calo_ctws() const;
 
+			
       /// Reset
       void reset();
 
