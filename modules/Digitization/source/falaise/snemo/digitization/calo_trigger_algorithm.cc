@@ -21,6 +21,9 @@ namespace snemo {
       _initialized_ = false;
       _electronic_mapping_ = 0;
       _calo_circular_buffer_depth_ = -1;
+      _back_to_back_coinc_ = 0;
+      _same_side_coinc_ = 0;
+      _calo_trigger_decision_ = 0;
       return;
     }
 
@@ -46,6 +49,49 @@ namespace snemo {
       _calo_circular_buffer_depth_ = calo_circular_buffer_depth_;
       return;
     }
+    
+    void calo_trigger_algorithm::set_back_to_back_coinc()
+    {
+      DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized, boolean back to back coinc can't be set ! ");      
+      DT_THROW_IF(is_same_side_coinc(), std::logic_error, "Back to back coinc can't be set because same side coinc is set ! ");
+      _back_to_back_coinc_ = true;
+      return;
+    }    
+
+    bool calo_trigger_algorithm::is_back_to_back_coinc() const
+    {
+      return _back_to_back_coinc_;
+    }
+
+    void calo_trigger_algorithm::set_same_side_coinc()
+    {
+      DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized, boolean same side coinc can't be set ! ");
+      DT_THROW_IF(is_back_to_back_coinc(), std::logic_error, "Same side coinc can't be set because back to back coinc is set ! ");
+      _same_side_coinc_ = true;
+      return;
+    }     
+
+    bool calo_trigger_algorithm::is_same_side_coinc() const
+    {
+      return _same_side_coinc_;
+    }
+
+    void calo_trigger_algorithm::set_calo_threshold_coinc(unsigned int & calo_threshold_)
+    {
+      DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized, calo threshold can't be set ! ");
+      _calo_threshold_ = calo_threshold_;
+      return;
+    }
+
+    const unsigned int calo_trigger_algorithm::get_calo_threshold_coinc() const
+    {
+      return _calo_threshold_;
+    }
+
+    const bool calo_trigger_algorithm::get_calo_trigger_decision() const
+    {
+      return _calo_trigger_decision_;
+    }
 
     void calo_trigger_algorithm::initialize_simple()
     {
@@ -58,8 +104,6 @@ namespace snemo {
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized ! ");
       DT_THROW_IF(_electronic_mapping_ == 0, std::logic_error, "Missing electronic mapping ! " );
-
-      
       DT_THROW_IF(_calo_circular_buffer_depth_ <= 0, std::logic_error, "Calo circular buffer depth value [" << _calo_circular_buffer_depth_ << "] is missing ! ");
       _initialized_ = true;
       return;
@@ -75,6 +119,9 @@ namespace snemo {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Calo trigger algorithm is not initialized, it can't be reset ! ");
       _initialized_ = false;
       _electronic_mapping_ = 0;
+      _back_to_back_coinc_ = 0;
+      _same_side_coinc_ = 0;
+      _calo_trigger_decision_ = 0;
       _calo_circular_buffer_depth_ = -1;
       reset_trigger_info();
       _calo_gate_circular_buffer_.reset();
@@ -173,7 +220,9 @@ namespace snemo {
       	}
       std::clog << my_calo_trigger_record_summary_.total_calo_multiplicity << std::endl << std::endl;	 	
       std::clog << "*************** end of summary bitset ***********" << std::endl << std::endl;
-      
+
+      if (_back_to_back_coinc_ == true) _back_to_back_decision_algorithm(my_calo_trigger_record_summary_);
+      if (_same_side_coinc_ == true) _same_side_decision_algorithm(my_calo_trigger_record_summary_);
 
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
       	{
@@ -257,8 +306,7 @@ namespace snemo {
 		  break;
 		case calo::ctw::ZONING_XWALL_BIT3 :
 		  if (ctw_zoning_bitset_word.test(izone - calo::ctw::ZONING_XWALL_BIT0) == true)
-		    {
-		      
+		    {		      
 		      _level_one_calo_trigger_info_[1][9] = true;
 		    }
 		  break;
@@ -305,9 +353,15 @@ namespace snemo {
 	}	
 
       return;
+    }    
+
+    void calo_trigger_algorithm::_set_calo_trigger_decision()
+    {
+      _calo_trigger_decision_ = true;
+      return;
     }
 
-    void calo_trigger_algorithm::build_calo_trigger_record_structure(calo_trigger_record & my_calo_trigger_record_)
+    void calo_trigger_algorithm::_build_calo_trigger_record_structure(calo_trigger_record & my_calo_trigger_record_)
     {
       my_calo_trigger_record_.total_calo_multiplicity = _total_calo_multiplicity_for_a_clocktick_;
       my_calo_trigger_record_.gveto_zoning_word = _calo_gveto_info_bitset_;
@@ -330,7 +384,7 @@ namespace snemo {
       _calo_gate_circular_buffer_->push_back(my_calo_trigger_record_); 
     }
     
-    void calo_trigger_algorithm::build_calo_trigger_record_summary_structure(calo_trigger_record & my_calo_trigger_record_summary_)
+    void calo_trigger_algorithm::_build_calo_trigger_record_summary_structure(calo_trigger_record & my_calo_trigger_record_summary_)
     {
       for (boost::circular_buffer<calo_trigger_record>::iterator it =_calo_gate_circular_buffer_->begin() ; it != _calo_gate_circular_buffer_->end(); it++)
  	{
@@ -359,7 +413,70 @@ namespace snemo {
 		}
 	    }
  	}
-    } 
+    }
+
+    void calo_trigger_algorithm::_back_to_back_decision_algorithm(calo_trigger_record & my_calo_trigger_record_summary_)
+    {
+      DT_THROW_IF(!_back_to_back_coinc_, std::logic_error, "Boolean back to back coincidence is not activated, it can't compute the decision ! ");
+      bool zoning_word_0_any = my_calo_trigger_record_summary_.calo_zoning_word[SIDE_0_INDEX].any();
+      bool zoning_word_1_any = my_calo_trigger_record_summary_.calo_zoning_word[SIDE_1_INDEX].any();
+      unsigned int multiplicity = my_calo_trigger_record_summary_.total_calo_multiplicity.to_ulong();
+     
+      std::clog << "Back to back decision : " << zoning_word_0_any << ' ' <<  zoning_word_1_any << ' ' << multiplicity << std::endl;      
+      
+      if (multiplicity > 1 && zoning_word_0_any == true && zoning_word_1_any == true)
+	{
+	  _set_calo_trigger_decision();
+	  _calo_decision_record_level_1_ = my_calo_trigger_record_summary_;
+
+	  std::clog << "Calo decision level 1 : " << _calo_decision_record_level_1_.clocktick_25ns << ' ';
+	  std::clog << _calo_decision_record_level_1_.info_bitset << ' ';
+	  std::clog << _calo_decision_record_level_1_.gveto_zoning_word << ' ';      
+	  for (int iside = mapping::NUMBER_OF_SIDES-1; iside >= 0; iside--)
+	    {
+	      std::clog << _calo_decision_record_level_1_.calo_zoning_word[iside];
+	      std::clog << ' ';
+	    }
+	  std::clog << _calo_decision_record_level_1_.total_calo_multiplicity << std::endl << std::endl;
+	}
+      return;
+    }
+
+    void calo_trigger_algorithm::_same_side_decision_algorithm(calo_trigger_record & my_calo_trigger_record_summary_)
+    {
+      DT_THROW_IF(!_same_side_coinc_, std::logic_error, "Boolean same side coincidence is not activated, it can't compute the decision ! ");
+      
+      int pm_side_0 = my_calo_trigger_record_summary_.calo_zoning_word[SIDE_0_INDEX].count();
+      int pm_side_1 = my_calo_trigger_record_summary_.calo_zoning_word[SIDE_1_INDEX].count();
+      unsigned int multiplicity = my_calo_trigger_record_summary_.total_calo_multiplicity.to_ulong();
+     
+      std::clog << "Same side decision : " << pm_side_0 << ' ' <<  pm_side_1 << ' ' << multiplicity << std::endl;      
+      
+      if (multiplicity > 1 && (pm_side_0 > 1 || pm_side_1 > 1))
+	{
+	  _set_calo_trigger_decision();
+	  _calo_decision_record_level_1_ = my_calo_trigger_record_summary_;
+
+	  std::clog << "Calo decision level 1 : " << _calo_decision_record_level_1_.clocktick_25ns << ' ';
+	  std::clog << _calo_decision_record_level_1_.info_bitset << ' ';
+	  std::clog << _calo_decision_record_level_1_.gveto_zoning_word << ' ';      
+	  for (int iside = mapping::NUMBER_OF_SIDES-1; iside >= 0; iside--)
+	    {
+	      std::clog << _calo_decision_record_level_1_.calo_zoning_word[iside];
+	      std::clog << ' ';
+	    }
+	  std::clog << _calo_decision_record_level_1_.total_calo_multiplicity << std::endl << std::endl;
+	}
+      return;
+    }
+
+    void calo_trigger_algorithm::_threshold_decision_algorithm(calo_trigger_record & my_calo_trigger_record_summary_)
+    {
+      DT_THROW_IF(_calo_threshold_ != 0, std::logic_error, "Calo threshold is not set, it can't compute the decision ! ");
+      
+      
+      return;
+    }
 
     void calo_trigger_algorithm::process(const calo_ctw_data & calo_ctw_data_)
     {
@@ -389,9 +506,11 @@ namespace snemo {
 	  calo_trigger_record my_calo_trigger_record_summary;
 	  my_calo_trigger_record.clocktick_25ns = iclocktick;
 
-	  build_calo_trigger_record_structure(my_calo_trigger_record); 
-	  build_calo_trigger_record_summary_structure(my_calo_trigger_record_summary);
-	  _display_calo_trigger_summary(my_calo_trigger_record_summary);	 
+	  _build_calo_trigger_record_structure(my_calo_trigger_record); 
+	  _build_calo_trigger_record_summary_structure(my_calo_trigger_record_summary);
+	  _display_calo_trigger_summary(my_calo_trigger_record_summary);
+
+	  
 
 	  reset_trigger_info();
 	} // end of iclocktick

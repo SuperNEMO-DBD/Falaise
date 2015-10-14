@@ -50,13 +50,22 @@ namespace snemo {
 				std::bitset<CALO_LEVEL_ONE_MULT_BITSET_SIZE> total_calo_multiplicity;
 				std::bitset<CALO_ZONING_GVETO_BITSET_SIZE> gveto_zoning_word;
 				std::bitset<CALO_INFO_BITSET_SIZE> info_bitset; 
+
+				calo_trigger_record & operator=(const calo_trigger_record & a)
+				{
+					clocktick_25ns = a.clocktick_25ns;
+					calo_zoning_word[SIDE_0_INDEX] = a.calo_zoning_word[SIDE_0_INDEX];
+					calo_zoning_word[SIDE_1_INDEX] = a.calo_zoning_word[SIDE_1_INDEX];
+					total_calo_multiplicity = a.total_calo_multiplicity;
+					gveto_zoning_word = a.gveto_zoning_word; 
+					info_bitset = a.info_bitset;
+					return *this;
+				}
 			};
 
-			struct calo_trigger_decision_record
-			{
-				bool back_to_back_coinc;
-				bool same_side_coinc;
-				bool trigger_decision;
+			enum calo_side_id_index {
+				SIDE_0_INDEX = 0,
+				SIDE_1_INDEX = 1
 			};
 			
 			enum calo_zoning_id_index {
@@ -123,6 +132,27 @@ namespace snemo {
 			/// Set the calo circular buffer depth
 			void set_calo_circular_buffer_depth(unsigned int & calo_circular_buffer_depth_);
 
+			/// Set the boolean for back to back coincidence
+			void set_back_to_back_coinc();
+
+			/// Check if back to back coinc is set 
+			bool is_back_to_back_coinc() const;
+
+			/// Set the boolean for same side coincidence
+			void set_same_side_coinc();
+
+			/// Check if same side coinc is set 
+			bool is_same_side_coinc() const;
+			
+			/// Set the threshold of multiplicity for coincidences
+			void set_calo_threshold_coinc(unsigned int & calo_threshold_);
+
+			/// Get the calo threshold for coincidences
+			const	unsigned int get_calo_threshold_coinc() const;
+                         
+			/// Get the final calo trigger decision
+			const bool get_calo_trigger_decision() const;
+																 																	
       /// Initializing
       void initialize_simple();
 
@@ -143,32 +173,48 @@ namespace snemo {
     
 			/// Build the level one calo trigger primitive bitsets
 			void build_calo_level_one_bitsets(const calo_ctw & my_calo_ctw_);
-
-			/// Build intermediate working data structure
-			void build_calo_trigger_record_structure(calo_trigger_record & my_calo_trigger_record_);   
-
-			/// Build summary calo trigger structure
-			void build_calo_trigger_record_summary_structure(calo_trigger_record & my_calo_trigger_record_summary_);
-			
+	
 			/// General process
       void process(const calo_ctw_data & calo_ctw_data_);
 
 		protected :
-
+		 
 			/// Display the level one calo trigger info and internal working data (bitsets)
 			void _display_calo_trigger_summary(calo_trigger_record & my_calo_trigger_record_summary_);
 
+			/// Turn the boolean when the decision is taken
+			void _set_calo_trigger_decision();
+
+			/// Build intermediate working data structure
+			void _build_calo_trigger_record_structure(calo_trigger_record & my_calo_trigger_record_);   
+
+			/// Build summary calo trigger structure
+			void _build_calo_trigger_record_summary_structure(calo_trigger_record & my_calo_trigger_record_summary_);
+			
+			/// Decision when back to back boolean is activated
+			void _back_to_back_decision_algorithm(calo_trigger_record & my_calo_trigger_record_summary_);
+
+			/// Decision when same side boolean is activated
+			void _same_side_decision_algorithm(calo_trigger_record & my_calo_trigger_record_summary_);
+
+			/// Decision when the threshold is set
+			void _threshold_decision_algorithm(calo_trigger_record & my_calo_trigger_record_summary_);
+			
 			/// Protected general process
 			void _process(const calo_ctw_data & calo_ctw_data_);
 
     private :
 
 			typedef boost::circular_buffer<calo_trigger_record> buffer_type;
+
       // Configuration :
       bool _initialized_; //!< Initialization flag
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
+			bool _back_to_back_coinc_;
+			bool _same_side_coinc_;
+			unsigned int _calo_threshold_;
+			bool _calo_trigger_decision_;
 			unsigned int _calo_circular_buffer_depth_;
-      unsigned int _total_calo_multipicity_threshold_;
 
       // Data :	 
 			bool _level_one_calo_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_CALO_TRIGGER_ZONES]; //!< Table of 2x10 containing 2 bits bitset representing the level one calo trigger info
@@ -181,7 +227,7 @@ namespace snemo {
 
 			boost::scoped_ptr<buffer_type> _calo_gate_circular_buffer_; //!< Scoped pointer to a circular buffer containing output data structure
 
-      calo_trigger_record _calo_record_level_1_; //!< Record of calo_gate_circular_buffer
+      calo_trigger_record _calo_decision_record_level_1_; //!< Record of calorimeter decision level 1
     };
 
   } // end of namespace digitization

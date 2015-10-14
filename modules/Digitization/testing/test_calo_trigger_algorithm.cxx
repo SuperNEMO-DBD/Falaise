@@ -146,8 +146,9 @@ int main( int  argc_ , char **argv_  )
 		my_calo_algo.set_electronic_mapping(my_e_mapping);
 		unsigned int calo_circular_buffer_depth = 4;
 		my_calo_algo.set_calo_circular_buffer_depth(calo_circular_buffer_depth);
+		my_calo_algo.set_back_to_back_coinc();
 		my_calo_algo.initialize_simple();
-
+		
 		// // Modification of my_calo_ctw_data for a test.
 		// {
 		//   snemo::digitization::calo_ctw & my_calo_ctw = my_calo_ctw_data.add();
