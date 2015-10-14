@@ -96,12 +96,10 @@ namespace snemo {
 			};
 			
 			enum calo_gveto_bitset_pos{
-				GVETO_BIT_0 = 6,
-				GVETO_BIT_1 = 7,
-				GVETO_BIT_2 = 8,
-				GVETO_BIT_3 = 9,
-				GVETO_BIT_4 = 10,
-				GVETO_BIT_5 = 11
+				GVETO_BIT_0 = 0,
+				GVETO_BIT_1 = 1,
+				GVETO_BIT_2 = 2,
+				GVETO_BIT_3 = 3
 			};
 
 			enum calo_info_bitset_pos{
@@ -147,10 +145,10 @@ namespace snemo {
 			void build_calo_level_one_bitsets(const calo_ctw & my_calo_ctw_);
 
 			/// Build intermediate working data structure
-			void build_calo_trigger_record_structure(calo_trigger_record & my_calo_trigger_record);   
+			void build_calo_trigger_record_structure(calo_trigger_record & my_calo_trigger_record_);   
 
 			/// Build summary calo trigger structure
-			void build_calo_trigger_record_summary_structure(calo_trigger_record & my_calo_trigger_record_summary);
+			void build_calo_trigger_record_summary_structure(calo_trigger_record & my_calo_trigger_record_summary_);
 			
 			/// General process
       void process(const calo_ctw_data & calo_ctw_data_);
@@ -158,7 +156,7 @@ namespace snemo {
 		protected :
 
 			/// Display the level one calo trigger info and internal working data (bitsets)
-			void _display_calo_trigger_info(calo_trigger_record & my_calo_trigger_record);
+			void _display_calo_trigger_summary(calo_trigger_record & my_calo_trigger_record_summary_);
 
 			/// Protected general process
 			void _process(const calo_ctw_data & calo_ctw_data_);

@@ -90,6 +90,8 @@ namespace snemo {
 	      _level_one_calo_trigger_info_[iside][izones] = false;
 	    }
 	}
+      _calo_gveto_info_bitset_.reset();
+      _calo_other_info_bitset_.reset();
       _total_calo_multiplicity_for_a_clocktick_ = 0;
       return;
     }
@@ -159,27 +161,64 @@ namespace snemo {
       return;
     }
 
-    void calo_trigger_algorithm::_display_calo_trigger_info(calo_trigger_record & my_calo_trigger_record)
-    {
-      // int k = 0;
-      // for (boost::circular_buffer<calo_trigger_record>::iterator it =_calo_gate_circular_buffer_->begin() ; it != _calo_gate_circular_buffer_->end(); it++)
-      // 	{
-      // 	  const calo_trigger_record & ctrec = *it;
-      // 	  if (k > 3) k = 0;
-      // 	  std::clog << "Circular Buffer : " << k << std::endl;
-      // 	  std::clog << ctrec.clocktick_25ns << std::endl;
-      // 	  std::clog << ctrec.info_bitset << ' ';
-      // 	  std::clog << ctrec.gveto_zoning_word << ' ';      
-      // 	  for (int iside = mapping::NUMBER_OF_SIDES-1; iside >= 0; iside--)
-      // 	    {
-      // 	      std::clog << ctrec.calo_zoning_word[iside];
-      // 	      std::clog << ' ';
-      // 	    }
-      // 	  std::clog << ctrec.total_calo_multiplicity << std::endl;
-      // 	  k++;
-      // 	}
+    void calo_trigger_algorithm::_display_calo_trigger_summary(calo_trigger_record & my_calo_trigger_record_summary_)
+    {	 
+      std::clog << "Summary : " << my_calo_trigger_record_summary_.clocktick_25ns << ' ';
+      std::clog << my_calo_trigger_record_summary_.info_bitset << ' ';
+      std::clog << my_calo_trigger_record_summary_.gveto_zoning_word << ' ';      
+      for (int iside = mapping::NUMBER_OF_SIDES-1; iside >= 0; iside--)
+      	{
+      	  std::clog << my_calo_trigger_record_summary_.calo_zoning_word[iside];
+      	  std::clog << ' ';
+      	}
+      std::clog << my_calo_trigger_record_summary_.total_calo_multiplicity << std::endl << std::endl;	 	
+      std::clog << "*************** end of summary bitset ***********" << std::endl << std::endl;
+      
 
-      display_calo_trigger_info();
+      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+      	{
+      	  if (iside == 1)
+      	    {
+      	      std::clog << "   |                                                                                                                 |" << std::endl;
+      	      if (my_calo_trigger_record_summary_.calo_zoning_word[iside].test(ZONE_0_INDEX) == true) std::clog << "[*]|";
+      	      else std::clog << "[ ]|";
+      	      std::clog << "                                                                                                                 ";
+      	      if (my_calo_trigger_record_summary_.calo_zoning_word[iside].test(ZONE_9_INDEX) == true) std::clog << "|[*]" << std::endl;
+      	      else std::clog << "|[ ]" << std::endl;
+      	    }
+      	  std::clog << "   |";
+      	  for (int izone = 0; izone < mapping::NUMBER_OF_CALO_TRIGGER_ZONES; izone++)
+      	    {
+      	      if (izone == 0 || izone == 9) 
+      		{
+      		  if (my_calo_trigger_record_summary_.calo_zoning_word[iside].test(izone) == true) std::clog << "[*******]";
+      		  else std::clog  << "[       ]";
+      		}
+      	      else if (izone == 5) 
+      		{
+      		  if (my_calo_trigger_record_summary_.calo_zoning_word[iside].test(izone) == true) std::clog  << "[*********]";
+      		  else std::clog  << "[         ]";
+      		}
+      	      else 
+      		{
+      		  if (my_calo_trigger_record_summary_.calo_zoning_word[iside].test(izone) == true) std::clog  << "[**********]";
+      		  else std::clog << "[          ]";
+      		}
+      	    } // end of izone
+      	  std::clog << "|" << std::endl;
+      	  if (iside == 0)
+      	    {
+      	      if (my_calo_trigger_record_summary_.calo_zoning_word[iside].test(ZONE_0_INDEX) == true) std::clog << "[*]|";
+      	      else std::clog << "[ ]|";
+      	      std::clog << "                                                                                                                 ";
+      	      if (my_calo_trigger_record_summary_.calo_zoning_word[iside].test(ZONE_9_INDEX) == true) std::clog << "|[*]" << std::endl;
+      	      else std::clog << "|[ ]" << std::endl;
+      	      std::clog << "   |                                                                                                                 |" << std::endl;
+      	      std::clog << "   |_________________________________________________________________________________________________________________|" << std::endl;
+      	    }	  
+      	} // end of iside
+      std::clog << std::endl;
+
       return;
     }
     
@@ -268,11 +307,11 @@ namespace snemo {
       return;
     }
 
-    void calo_trigger_algorithm::build_calo_trigger_record_structure(calo_trigger_record & my_calo_trigger_record)
+    void calo_trigger_algorithm::build_calo_trigger_record_structure(calo_trigger_record & my_calo_trigger_record_)
     {
-      my_calo_trigger_record.total_calo_multiplicity = _total_calo_multiplicity_for_a_clocktick_;
-      my_calo_trigger_record.gveto_zoning_word = _calo_gveto_info_bitset_;
-      my_calo_trigger_record.info_bitset = _calo_other_info_bitset_;
+      my_calo_trigger_record_.total_calo_multiplicity = _total_calo_multiplicity_for_a_clocktick_;
+      my_calo_trigger_record_.gveto_zoning_word = _calo_gveto_info_bitset_;
+      my_calo_trigger_record_.info_bitset = _calo_other_info_bitset_;
       
       for (int iside = mapping::NUMBER_OF_SIDES-1; iside >= 0; iside--)
 	{
@@ -280,49 +319,45 @@ namespace snemo {
 	    {
 	      if (_level_one_calo_trigger_info_[iside][izone] == true)
 		{
-		  my_calo_trigger_record.calo_zoning_word[iside].set(izone, 1);
+		  my_calo_trigger_record_.calo_zoning_word[iside].set(izone, 1);
 		}
 	      else
 		{
-		  my_calo_trigger_record.calo_zoning_word[iside].set(izone, 0);
+		  my_calo_trigger_record_.calo_zoning_word[iside].set(izone, 0);
 		}
 	    }
 	}
-      _calo_gate_circular_buffer_->push_back(my_calo_trigger_record); 
+      _calo_gate_circular_buffer_->push_back(my_calo_trigger_record_); 
     }
     
-    void calo_trigger_algorithm::build_calo_trigger_record_summary_structure(calo_trigger_record & my_calo_trigger_record_summary)
+    void calo_trigger_algorithm::build_calo_trigger_record_summary_structure(calo_trigger_record & my_calo_trigger_record_summary_)
     {
-      std::clog << "Begining of summary method " << std::endl;
-      int k = 0;
       for (boost::circular_buffer<calo_trigger_record>::iterator it =_calo_gate_circular_buffer_->begin() ; it != _calo_gate_circular_buffer_->end(); it++)
- 	{	 
- 	  const calo_trigger_record & ctrec = *it;
- 	  my_calo_trigger_record_summary.clocktick_25ns = ctrec.clocktick_25ns;
- 	  if (my_calo_trigger_record_summary.total_calo_multiplicity.to_ulong() != 0)
+ 	{
+	  const calo_trigger_record & ctrec = *it; 
+
+ 	  my_calo_trigger_record_summary_.clocktick_25ns = ctrec.clocktick_25ns;
+ 	  if (my_calo_trigger_record_summary_.total_calo_multiplicity.to_ulong() != 0)
  	    {
-	      if (my_calo_trigger_record_summary.total_calo_multiplicity == 3) my_calo_trigger_record_summary.total_calo_multiplicity = 3;
-	      else my_calo_trigger_record_summary.total_calo_multiplicity = my_calo_trigger_record_summary.total_calo_multiplicity.to_ulong() + ctrec.total_calo_multiplicity.to_ulong();
+	      if (my_calo_trigger_record_summary_.total_calo_multiplicity == 3) my_calo_trigger_record_summary_.total_calo_multiplicity = 3;
+	      else my_calo_trigger_record_summary_.total_calo_multiplicity = my_calo_trigger_record_summary_.total_calo_multiplicity.to_ulong() + ctrec.total_calo_multiplicity.to_ulong();
  	    }
  	  else
  	    {
- 	      my_calo_trigger_record_summary.total_calo_multiplicity = ctrec.total_calo_multiplicity;
+ 	      my_calo_trigger_record_summary_.total_calo_multiplicity = ctrec.total_calo_multiplicity;
  	    }
- 	  std::clog << "my_calo_trigger_record_summary = " << my_calo_trigger_record_summary.total_calo_multiplicity << std::endl;
 	  
+	  for (int i = 0; i < mapping::NUMBER_OF_SIDES; i++)
+	    {
+	      for (int j = 0; j < CALO_ZONING_PER_SIDE_BITSET_SIZE; j++)
+		{
+		  if (ctrec.calo_zoning_word[i].test(j) == true) my_calo_trigger_record_summary_.calo_zoning_word[i].set(j, 1);
+		  if (j < CALO_INFO_BITSET_SIZE && ctrec.info_bitset.test(j) == true) my_calo_trigger_record_summary_.info_bitset.set(j, 1);   
 
-	  if (k > 3) k = 0;
- 	  std::clog << "Circular Buffer : " << k << std::endl;
- 	  std::clog << ctrec.clocktick_25ns << std::endl;
- 	  std::clog << ctrec.info_bitset << ' ';
- 	  std::clog << ctrec.gveto_zoning_word << ' ';      
- 	  for (int iside = mapping::NUMBER_OF_SIDES-1; iside >= 0; iside--)
- 	    {
- 	      std::clog << ctrec.calo_zoning_word[iside];
- 	      std::clog << ' ';
- 	    }
- 	  std::clog << ctrec.total_calo_multiplicity << std::endl << std::endl;
-	  k++;
+		  if (j < CALO_ZONING_GVETO_BITSET_SIZE && ctrec.gveto_zoning_word.test(j) == true) my_calo_trigger_record_summary_.gveto_zoning_word.set(j, 1);	  
+		  
+		}
+	    }
  	}
     } 
 
@@ -354,9 +389,9 @@ namespace snemo {
 	  calo_trigger_record my_calo_trigger_record_summary;
 	  my_calo_trigger_record.clocktick_25ns = iclocktick;
 
-	  build_calo_trigger_record_structure(my_calo_trigger_record);
-	  _display_calo_trigger_info(my_calo_trigger_record);	  
+	  build_calo_trigger_record_structure(my_calo_trigger_record); 
 	  build_calo_trigger_record_summary_structure(my_calo_trigger_record_summary);
+	  _display_calo_trigger_summary(my_calo_trigger_record_summary);	 
 
 	  reset_trigger_info();
 	} // end of iclocktick

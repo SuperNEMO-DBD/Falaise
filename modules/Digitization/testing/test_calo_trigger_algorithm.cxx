@@ -82,7 +82,7 @@ int main( int  argc_ , char **argv_  )
     dpp::input_module reader;
     datatools::properties reader_config;
     reader_config.store ("logging.priority", "debug");
-    reader_config.store ("max_record_total", 1);
+    reader_config.store ("max_record_total", 10);
     reader_config.store ("files.mode", "single");
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
@@ -148,67 +148,22 @@ int main( int  argc_ , char **argv_  )
 		my_calo_algo.set_calo_circular_buffer_depth(calo_circular_buffer_depth);
 		my_calo_algo.initialize_simple();
 
-		// Modification of my_calo_ctw_data for a test.
-		{
-		  snemo::digitization::calo_ctw & my_calo_ctw = my_calo_ctw_data.add();
-		  my_calo_ctw.grab_geom_id().set_type(42);
-		  my_calo_ctw.grab_geom_id().set_address(3,0,10);
-		  my_calo_ctw.grab_auxiliaries().store("author", "guillaume");
-		  my_calo_ctw.grab_auxiliaries().store_flag("mock");
-		  my_calo_ctw.set_clocktick_25ns(2105694860);
-		  my_calo_ctw.set_htm_pc(1);
-		  std::bitset<10> zoning_word (std::string("0000000001"));
-		  my_calo_ctw.set_zoning_word(zoning_word);
-		  my_calo_ctw.tree_dump(std::clog, "my_calo_CTW_data : ", "INFO : ");
-		}
-		{
-		  snemo::digitization::calo_ctw & my_calo_ctw = my_calo_ctw_data.add();
-		  my_calo_ctw.grab_geom_id().set_type(42);
-		  my_calo_ctw.grab_geom_id().set_address(3,0,10);
-		  my_calo_ctw.grab_auxiliaries().store("author", "guillaume");
-		  my_calo_ctw.grab_auxiliaries().store_flag("mock");
-		  my_calo_ctw.set_clocktick_25ns(2105694861);
-		  my_calo_ctw.set_htm_pc(1);
-		  std::bitset<10> zoning_word (std::string("0000000010"));
-		  my_calo_ctw.set_zoning_word(zoning_word);
-		  my_calo_ctw.tree_dump(std::clog, "my_calo_CTW_data : ", "INFO : ");
-		}
-		{
-		  snemo::digitization::calo_ctw & my_calo_ctw = my_calo_ctw_data.add();
-		  my_calo_ctw.grab_geom_id().set_type(42);
-		  my_calo_ctw.grab_geom_id().set_address(3,0,10);
-		  my_calo_ctw.grab_auxiliaries().store("author", "guillaume");
-		  my_calo_ctw.grab_auxiliaries().store_flag("mock");
-		  my_calo_ctw.set_clocktick_25ns(2105694862);
-		  my_calo_ctw.set_htm_pc(1);
-		  std::bitset<10> zoning_word (std::string("0000000100"));
-		  my_calo_ctw.set_zoning_word(zoning_word);
-		  my_calo_ctw.tree_dump(std::clog, "my_calo_CTW_data : ", "INFO : ");
-		}
-		{
-		  snemo::digitization::calo_ctw & my_calo_ctw = my_calo_ctw_data.add();
-		  my_calo_ctw.grab_geom_id().set_type(42);
-		  my_calo_ctw.grab_geom_id().set_address(3,0,10);
-		  my_calo_ctw.grab_auxiliaries().store("author", "guillaume");
-		  my_calo_ctw.grab_auxiliaries().store_flag("mock");
-		  my_calo_ctw.set_clocktick_25ns(2105694863);
-		  my_calo_ctw.set_htm_pc(1);
-		  std::bitset<10> zoning_word (std::string("0000001000"));
-		  my_calo_ctw.set_zoning_word(zoning_word);
-		  my_calo_ctw.tree_dump(std::clog, "my_calo_CTW_data : ", "INFO : ");
-		}	
-		{
-		  snemo::digitization::calo_ctw & my_calo_ctw = my_calo_ctw_data.add();
-		  my_calo_ctw.grab_geom_id().set_type(42);
-		  my_calo_ctw.grab_geom_id().set_address(3,0,10);
-		  my_calo_ctw.grab_auxiliaries().store("author", "guillaume");
-		  my_calo_ctw.grab_auxiliaries().store_flag("mock");
-		  my_calo_ctw.set_clocktick_25ns(2105694864);
-		  my_calo_ctw.set_htm_pc(1);
-		  std::bitset<10> zoning_word (std::string("0000010000"));
-		  my_calo_ctw.set_zoning_word(zoning_word);
-		  my_calo_ctw.tree_dump(std::clog, "my_calo_CTW_data : ", "INFO : ");
-		}
+		// // Modification of my_calo_ctw_data for a test.
+		// {
+		//   snemo::digitization::calo_ctw & my_calo_ctw = my_calo_ctw_data.add();
+		//   my_calo_ctw.grab_geom_id().set_type(42);
+		//   my_calo_ctw.grab_geom_id().set_address(3,0,10);
+		//   my_calo_ctw.grab_auxiliaries().store("author", "guillaume");
+		//   my_calo_ctw.grab_auxiliaries().store_flag("mock");
+		//   my_calo_ctw.set_clocktick_25ns(2105694861);
+		//   my_calo_ctw.set_htm_pc(1);
+		//   my_calo_ctw.set_lto_pc_bit(1);
+		//   std::bitset<4> control_word(std::string("1100"));
+		//   my_calo_ctw.set_control_word(control_word);
+		//   std::bitset<10> zoning_word (std::string("0000000010"));
+		//   my_calo_ctw.set_zoning_word(zoning_word);
+		//   my_calo_ctw.tree_dump(std::clog, "my_calo_CTW_data : ", "INFO : ");
+		// }
 		
 		my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
 
