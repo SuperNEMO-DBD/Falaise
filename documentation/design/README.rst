@@ -10,6 +10,7 @@ README
 List of code review minutes:
 
  * particle track review (2015-10-08)
+ * event topology review (2015-10-09/16)
 
 
 Build a HTML display from a RST file:

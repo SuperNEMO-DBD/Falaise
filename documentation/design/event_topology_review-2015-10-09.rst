@@ -16,7 +16,7 @@ Review of the ``snemo::datamodel`` event topology class design
 Introduction
 ============
 
-Meeting 2015-10-09: discussion about the design of the *evet topology* data models.
+Meeting 2015-10-09/16: discussion about the design of the *event topology* data models.
 
 Purpose:
 
@@ -76,16 +76,171 @@ Refactorying of the ``snemo::datamodel::base_topology_pattern`` class
     {
     public:
 
-       virtual std::string pattern_id() const = 0;
+       // virtual std::string pattern_id() const = 0;
 
-       virtual void build_particle_tracks_dictionary(std::map<std::string, particle_track::handle_type> & tracks_) const = 0;
+       // Constness of particle_track::handle_type...
+       // virtual void build_particle_tracks_dictionary(std::map<std::string, particle_track::handle_type> & tracks_) const = 0;
 
-       virtual void build_measurement_dictionary(std::map<std::string, const base_measurement *> & meas_) const = 0;
+       // virtual void build_measurement_dictionary(std::map<std::string, const base_measurement *> & meas_) const = 0;
+
+    };
+
+  }
+}
+
+namespace snemo {
+
+  namespace reconstruction {
+
+    struct measurement_driver_col_type {
+       tof_driver               * TOFD;
+       delta_vertices_driver    * DVD;
+       angle_measurement_driver * AMD;
+    };
+
+-------------------------------------------
+#include <datatools/factory_macros.h>
+
+Dans base_topology_builder.h
+
+namespace snemo {
+
+  namespace reconstruction {
+
+    class base_topology_builder
+    {
+      void set_measurement_driver(measurement_driver_col_type &);
+      virtual datatools::handle<base_topology_pattern> create_pattern() = 0;
+      virtual void build(const snemo::datamodel::particle_track_data & source_, base_topology_pattern & target_) = 0;
+
+    private:
+
+     // working external driver:
+     measurement_driver_col_type * _drivers_;
+
+     // Factory stuff :
+     DATATOOLS_FACTORY_SYSTEM_REGISTER_INTERFACE(base_topology_builder);
+
+    };
+  }
+}
+
+/** Interface macro for automated registration of a cut class in the global register */
+#define FL_SNEMO_RECONSTRUCTION_TOPOLOGY_BUILDER_REGISTRATION_INTERFACE(BuilderType)           \
+  public:                                       \
+  virtual std::string get_type_id() const; \
+  private:                                                                \
+  DATATOOLS_FACTORY_SYSTEM_AUTO_REGISTRATION_INTERFACE(::snemo::reconstruction::base_topology_builder, BuilderType); \
+  /**/
+
+/** Implementation macro for automated registration of a cut class in the global register */
+#define FL_SNEMO_RECONSTRUCTION_TOPOLOGY_BUILDER_REGISTRATION_IMPLEMENT(BuilderType,BuilderID)               \
+  std::string T::get_type_id() const { return BuilderID; } \
+  DATATOOLS_FACTORY_SYSTEM_AUTO_REGISTRATION_IMPLEMENTATION(::snemo::reconstruction::base_topology_builder, T, BuilderID); \
+
+  /**/
+
+Dans base_topology_builder.cc
+
+namespace snemo {
+
+  namespace reconstruction {
+
+    DATATOOLS_FACTORY_SYSTEM_REGISTER_IMPLEMENTATION(base_topology_builder, "snemo::reconstruction::base_topology_builder/__system__");
+
+  }
+}
+
+
+
+
+Dans topology_1e_builder.h
+
+
+    class topology_1e_builder : public base_topology_builder
+    {
+    public:
+       virtual datatools::handle<base_topology_pattern> create_pattern()
+       {
+         datatools::handle<base_topology_pattern> h(new topology_1e_pattern);
+	 return h;
+       };
+       virtual void build(const snemo::datamodel::particle_track_data & source_, base_topology_pattern & target_) = 0;
+    private:
+
+
+      FL_SNEMO_RECONSTRUCTION_TOPOLOGY_BUILDER_REGISTRATION_INTERFACE(topology_1e_builder);
+
+    };
+
+
+Dans topology_1e_builder.cc
+
+      FL_SNEMO_RECONSTRUCTION_TOPOLOGY_BUILDER_REGISTRATION_IMPLEMENT(topology_1e_builder, "snemo::reconstruction::topology_1e_builder");
+
+Dans topology_2e_builder.h
+
+    class topology_2e_builder : public base_topology_builder
+    {
+    public:
+      virtual datatools::handle<base_topology_pattern> create_pattern()
+      {
+        datatools::handle<base_topology_pattern> h(new topology_2e_pattern);
+        return h;
+      };
+      virtual void build(const snemo::datamodel::particle_track_data & source_, base_topology_pattern & target_) = 0;
+    private:
+
+       FL_SNEMO_RECONSTRUCTION_TOPOLOGY_BUILDER_REGISTRATION_INTERFACE(topology_2e_builder);
 
     };
 
   }
 
+}
+
+Dans topology_1e_builder.cc
+
+      FL_SNEMO_RECONSTRUCTION_TOPOLOGY_BUILDER_REGISTRATION_IMPLEMENT(topology_2e_builder, "snemo::reconstruction::topology_2e_builder")
+
+
+  supported_classifications : string[2] = "1e" "2e"
+
+
+  initialize(...)
+  {
+   map<classification, builder> class2build_dict = { { "1e", "snemo::datamodel::topology_1e_builder"} ,
+     {} ...  }
+ if (
+    class2build_dict["1e"]   = "snemo::datamodel::topology_1e_builder";
+    class2build_dict["1e?g"] = "snemo::datamodel::topology_1eNg_builder";
+    class2build_dict["2e"]   = "snemo::datamodel::topology_2e_builder";
+    class2build_dict["2e?g"] = "snemo::datamodel::topology_2eNg_builder";
+  }
+
+}
+
+topology_driver::_process_algo(...)
+{
+
+  const std::string a_classification = topology_driver::_build_classification_(ptd_);
+   // regex machinery...
+   std::string builder_class_id = class2build_dict[a_classification];
+   ...
+   FB = qc(builder_class_id);
+   base_topology_builder * new_builder = FB();
+
+   base_topology_pattern * new_pattern = new_builder->create_pattern();
+
+   snemo::datamodel::topology_data::handle_pattern h_pattern;
+   h_pattern.reset(FP);
+   td_.set_pattern_handle(h_pattern);
+
+   snemo::datamodel::topology_data::handle_pattern h_pattern;
+   h_pattern.reset(FP);
+   td_.set_pattern_handle(h_pattern);
+
+   FB->build(ptd_,
 }
 
 Refactorying of the ``snemo::datamodel::topology_2e_pattern`` class
@@ -139,6 +294,7 @@ host a pair of electron (e- or e+) particle tracks (by handle):
 
        electron_pair_type & grab_pair_2e();
 
+       const TOF_measurement & get_tof_2e() const;
        ...
 
      private:
