@@ -53,7 +53,7 @@ namespace snemo {
 				std::bitset<INFO_BITSET_SIZE> info_bitset;
 			};
 			
-			struct trigger_summary_record:public trigger_record
+			struct trigger_summary_record : public trigger_record
 			{
 				bool back_to_back_coinc;
 				bool single_side_coinc;
@@ -163,6 +163,9 @@ namespace snemo {
       /// Reset private tables
       void reset_trigger_info();
 
+			/// Get the level 1 finale decision structure
+			const trigger_summary_record get_calo_level_1_finale_decision() const;
+    
 			/// Display the level one calo trigger info (bitsets)
 			void display_trigger_info();
     
@@ -220,6 +223,8 @@ namespace snemo {
 			std::bitset<INFO_BITSET_SIZE> _other_info_bitset_; //!< Bitset of 6 bits containing the other bits of all ctw (control, XT, LT)
 
 			boost::scoped_ptr<buffer_type> _gate_circular_buffer_; //!< Scoped pointer to a circular buffer containing output data structure
+
+			trigger_summary_record _calo_level_1_finale_decision_;
 
     };
 

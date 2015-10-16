@@ -133,6 +133,11 @@ namespace snemo {
       return;
     }
 
+    const calo_trigger_algorithm::trigger_summary_record calo_trigger_algorithm::get_calo_level_1_finale_decision() const
+    {
+      return _calo_level_1_finale_decision_;
+    }
+
     void calo_trigger_algorithm::display_trigger_info()
     {
       std::clog << "Level One calo trigger info display : " << std::endl;
@@ -204,6 +209,7 @@ namespace snemo {
       if (_activated_single_side_coinc_ == true) _compute_single_side_decision(my_trigger_summary_record_);
       if (_threshold_total_multiplicity_ != 0) _compute_threshold_total_multiplicity_decision(my_trigger_summary_record_);
       _compute_trigger_finale_decision(my_trigger_summary_record_);
+      if (my_trigger_summary_record_.trigger_finale_decision == true) _calo_level_1_finale_decision_ = my_trigger_summary_record_;
       
       std::clog << "Summary : " << my_trigger_summary_record_.clocktick_25ns << ' ';
       std::clog << my_trigger_summary_record_.info_bitset << ' ';
@@ -216,6 +222,19 @@ namespace snemo {
       std::clog << my_trigger_summary_record_.total_multiplicity << std::endl;
       std::clog << "b2b bit : " << my_trigger_summary_record_.back_to_back_coinc << " || ss bit : " << my_trigger_summary_record_.single_side_coinc << " || HT bit : " << my_trigger_summary_record_.threshold_total_multiplicity << " || Fin bit : " << my_trigger_summary_record_.trigger_finale_decision << std::endl << std::endl;
       
+
+
+      std::clog << "Finale decision : " << _calo_level_1_finale_decision_.clocktick_25ns << ' ';
+      std::clog << _calo_level_1_finale_decision_.info_bitset << ' ';
+      std::clog << _calo_level_1_finale_decision_.gveto_zoning_word << ' ';      
+      for (int iside = mapping::NUMBER_OF_SIDES-1; iside >= 0; iside--)
+      	{
+      	  std::clog << _calo_level_1_finale_decision_.zoning_word[iside];
+      	  std::clog << ' ';
+      	}
+      std::clog << _calo_level_1_finale_decision_.total_multiplicity << std::endl;
+      std::clog << _calo_level_1_finale_decision_.back_to_back_coinc << _calo_level_1_finale_decision_.single_side_coinc << _calo_level_1_finale_decision_.threshold_total_multiplicity << _calo_level_1_finale_decision_.trigger_finale_decision << std::endl << std::endl;
+
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
       	{
       	  if (iside == 1)

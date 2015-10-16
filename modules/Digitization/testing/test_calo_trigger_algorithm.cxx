@@ -146,10 +146,10 @@ int main( int  argc_ , char **argv_  )
 		my_calo_algo.set_electronic_mapping(my_e_mapping);
 		unsigned int calo_circular_buffer_depth = 4;
 		my_calo_algo.set_circular_buffer_depth(calo_circular_buffer_depth);
-		//my_calo_algo.set_back_to_back_coinc();
-		//my_calo_algo.set_same_side_coinc();
-		unsigned int calo_threshold = 2;
-		my_calo_algo.set_threshold_total_multiplicity_coinc(calo_threshold);
+		// my_calo_algo.set_back_to_back_coinc();
+		my_calo_algo.set_single_side_coinc();
+		// unsigned int calo_threshold = 2;
+		// my_calo_algo.set_threshold_total_multiplicity_coinc(calo_threshold);
 		my_calo_algo.initialize_simple();
 		
 		// // Modification of my_calo_ctw_data for a test.

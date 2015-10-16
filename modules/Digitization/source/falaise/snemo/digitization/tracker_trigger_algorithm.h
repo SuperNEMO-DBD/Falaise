@@ -221,6 +221,7 @@ namespace snemo {
 			/// Build the final response of the tracker trigger (if there is a track, a pretrack or nothing)
 			void build_trigger_tracker_final_response();
 			
+			/// Compute the best response for one event
 			void fill_best_tracker_response_for_the_event();
 
       /// General process

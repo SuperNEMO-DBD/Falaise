@@ -1,7 +1,7 @@
 ======================================
 Falaise Digitization plugin
 ======================================
-:Authors: F.mauger   <mauger@lpccaen.in2p3.fr>, G.Oliviéro <goliviero@lpccaen.in2p3.fr>, Y.Lemière  <lemiere@lpccaen.in2p3.fr>
+:Authors: F.Mauger   <mauger@lpccaen.in2p3.fr>, G.Oliviéro <goliviero@lpccaen.in2p3.fr>, Y.Lemière  <lemiere@lpccaen.in2p3.fr>
 :Date:    05/2015
 
 
