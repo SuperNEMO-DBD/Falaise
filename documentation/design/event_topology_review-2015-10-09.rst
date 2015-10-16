@@ -224,23 +224,23 @@ topology_driver::_process_algo(...)
 {
 
   const std::string a_classification = topology_driver::_build_classification_(ptd_);
-   // regex machinery...
-   std::string builder_class_id = class2build_dict[a_classification];
-   ...
-   FB = qc(builder_class_id);
-   base_topology_builder * new_builder = FB();
+  // regex machinery...
+  std::string builder_class_id = get_builder_class_id_from_classification(a_classification);
 
-   base_topology_pattern * new_pattern = new_builder->create_pattern();
+  const base_topology_builder::factory_register_type & FB = DATATOOLS_FACTORY_GET_SYSTEM_REGISTER(base_topology_builder_cut)
+  DT_THROW_IF(! FB.has(builder_class_id), std::logic_error,
+              "Topology builder class id '" << builder_class_id << "' is not available from the system builder factory register !");
+  const base_topology_builder::factory_register_type::factory_type & the_factory
+      = FB.get(builder_class_id);
+  base_topology_builder * new_builder = the_factory();
+  base_topology_pattern * new_pattern = new_builder->create_pattern();
 
    snemo::datamodel::topology_data::handle_pattern h_pattern;
    h_pattern.reset(FP);
    td_.set_pattern_handle(h_pattern);
 
-   snemo::datamodel::topology_data::handle_pattern h_pattern;
-   h_pattern.reset(FP);
-   td_.set_pattern_handle(h_pattern);
 
-   FB->build(ptd_,
+   new_builder->build(ptd_,...
 }
 
 Refactorying of the ``snemo::datamodel::topology_2e_pattern`` class
