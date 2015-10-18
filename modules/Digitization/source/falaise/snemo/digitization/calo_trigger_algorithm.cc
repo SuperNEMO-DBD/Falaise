@@ -20,8 +20,9 @@ namespace snemo {
       _initialized_ = false;
       _electronic_mapping_ = 0;
       _circular_buffer_depth_ = -1;
-      _activated_back_to_back_coinc_ = 0;
-      _activated_single_side_coinc_ = 0;
+      _activated_threshold_ = false;
+      _inhibit_back_to_back_coinc_ = false;
+      _inhibit_single_side_coinc_ = false;
       return;
     }
 
@@ -48,35 +49,41 @@ namespace snemo {
       return;
     }
     
-    void calo_trigger_algorithm::set_back_to_back_coinc()
+    void calo_trigger_algorithm::inhibit_back_to_back_coinc()
     {
-      DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized, boolean back to back coinc can't be set ! ");      
-      _activated_back_to_back_coinc_ = true;
+      DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized, boolean back to back coinc can't be inhibited ! ");      
+      _inhibit_back_to_back_coinc_ = true;
       return;
     }    
 
-    bool calo_trigger_algorithm::is_activated_back_to_back_coinc() const
+    bool calo_trigger_algorithm::is_inhibited_back_to_back_coinc() const
     {
-      return _activated_back_to_back_coinc_;
+      return _inhibit_back_to_back_coinc_;
     }
 
-    void calo_trigger_algorithm::set_single_side_coinc()
+    void calo_trigger_algorithm::inhibit_single_side_coinc()
     {
-      DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized, boolean single side coinc can't be set ! ");
-      _activated_single_side_coinc_ = true;
+      DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized, boolean single side coinc can't be inhibited ! ");
+      _inhibit_single_side_coinc_ = true;
       return;
     }     
 
-    bool calo_trigger_algorithm::is_activated_single_side_coinc() const
+    bool calo_trigger_algorithm::is_inhibited_single_side_coinc() const
     {
-      return _activated_single_side_coinc_;
+      return _inhibit_single_side_coinc_;
     }
 
-    void calo_trigger_algorithm::set_threshold_total_multiplicity_coinc(unsigned int & threshold_)
+    void calo_trigger_algorithm::set_threshold_total_multiplicity(unsigned int & threshold_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized, calo threshold can't be set ! ");
       _threshold_total_multiplicity_ = threshold_;
+      _activated_threshold_ = true;
       return;
+    }
+
+    bool calo_trigger_algorithm::is_activated_threshold_total_multiplicity() const
+    {
+      return _activated_threshold_;
     }
 
     const std::bitset<calo::ctw::HTM_BITSET_SIZE> calo_trigger_algorithm::get_threshold_total_multiplicity_coinc() const
@@ -96,10 +103,11 @@ namespace snemo {
       DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized ! ");
       DT_THROW_IF(_electronic_mapping_ == 0, std::logic_error, "Missing electronic mapping ! " );
       DT_THROW_IF(_circular_buffer_depth_ <= 0, std::logic_error, "Calo circular buffer depth value [" << _circular_buffer_depth_ << "] is missing ! ");
+      DT_THROW_IF(!_activated_threshold_, std::logic_error, " Threshold total multiplicity is not set ! ");
       _initialized_ = true;
       return;
     }
-
+    
     bool calo_trigger_algorithm::is_initialized() const
     {
       return _initialized_;
@@ -110,8 +118,9 @@ namespace snemo {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Calo trigger algorithm is not initialized, it can't be reset ! ");
       _initialized_ = false;
       _electronic_mapping_ = 0;
-      _activated_back_to_back_coinc_ = 0;
-      _activated_single_side_coinc_ = 0;
+      _activated_threshold_ = false;
+      _inhibit_back_to_back_coinc_ = false;
+      _inhibit_single_side_coinc_ = false;
       _circular_buffer_depth_ = -1;
       reset_trigger_info();
       _gate_circular_buffer_.reset();
@@ -204,79 +213,73 @@ namespace snemo {
     }
 
     void calo_trigger_algorithm::_display_trigger_summary(trigger_summary_record & my_trigger_summary_record_)
-    {	 
-      if (_activated_back_to_back_coinc_ == true) _compute_back_to_back_decision(my_trigger_summary_record_);
-      if (_activated_single_side_coinc_ == true) _compute_single_side_decision(my_trigger_summary_record_);
-      if (_threshold_total_multiplicity_ != 0) _compute_threshold_total_multiplicity_decision(my_trigger_summary_record_);
-      _compute_trigger_finale_decision(my_trigger_summary_record_);
-      if (my_trigger_summary_record_.trigger_finale_decision == true) _calo_level_1_finale_decision_ = my_trigger_summary_record_;
+    {
       
       std::clog << "Summary : " << my_trigger_summary_record_.clocktick_25ns << ' ';
       std::clog << my_trigger_summary_record_.info_bitset << ' ';
       std::clog << my_trigger_summary_record_.gveto_zoning_word << ' ';      
       for (int iside = mapping::NUMBER_OF_SIDES-1; iside >= 0; iside--)
-      	{
-      	  std::clog << my_trigger_summary_record_.zoning_word[iside];
-      	  std::clog << ' ';
-      	}
+	{
+	  std::clog << my_trigger_summary_record_.zoning_word[iside];
+	  std::clog << ' ';
+	}
       std::clog << my_trigger_summary_record_.total_multiplicity << std::endl;
-      std::clog << "b2b bit : " << my_trigger_summary_record_.back_to_back_coinc << " || ss bit : " << my_trigger_summary_record_.single_side_coinc << " || HT bit : " << my_trigger_summary_record_.threshold_total_multiplicity << " || Fin bit : " << my_trigger_summary_record_.trigger_finale_decision << std::endl << std::endl;
+      std::clog << "SS bit : " << my_trigger_summary_record_.single_side_coinc << " || HT bit : " << my_trigger_summary_record_.threshold_total_multiplicity << " || Fin bit : " << my_trigger_summary_record_.trigger_finale_decision << std::endl << std::endl;
+
       
-
-
       std::clog << "Finale decision : " << _calo_level_1_finale_decision_.clocktick_25ns << ' ';
       std::clog << _calo_level_1_finale_decision_.info_bitset << ' ';
-      std::clog << _calo_level_1_finale_decision_.gveto_zoning_word << ' ';      
+      std::clog << _calo_level_1_finale_decision_.gveto_zoning_word << ' ';
       for (int iside = mapping::NUMBER_OF_SIDES-1; iside >= 0; iside--)
-      	{
-      	  std::clog << _calo_level_1_finale_decision_.zoning_word[iside];
-      	  std::clog << ' ';
-      	}
+	{
+	  std::clog << _calo_level_1_finale_decision_.zoning_word[iside];
+	  std::clog << ' ';
+	}
       std::clog << _calo_level_1_finale_decision_.total_multiplicity << std::endl;
-      std::clog << _calo_level_1_finale_decision_.back_to_back_coinc << _calo_level_1_finale_decision_.single_side_coinc << _calo_level_1_finale_decision_.threshold_total_multiplicity << _calo_level_1_finale_decision_.trigger_finale_decision << std::endl << std::endl;
+      std::clog << _calo_level_1_finale_decision_.single_side_coinc << _calo_level_1_finale_decision_.threshold_total_multiplicity << _calo_level_1_finale_decision_.trigger_finale_decision << std::endl << std::endl;
 
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
-      	{
-      	  if (iside == 1)
-      	    {
-      	      std::clog << "   |                                                                                                                 |" << std::endl;
-      	      if (my_trigger_summary_record_.zoning_word[iside].test(ZONE_0_INDEX) == true) std::clog << "[*]|";
-      	      else std::clog << "[ ]|";
-      	      std::clog << "                                                                                                                 ";
-      	      if (my_trigger_summary_record_.zoning_word[iside].test(ZONE_9_INDEX) == true) std::clog << "|[*]" << std::endl;
-      	      else std::clog << "|[ ]" << std::endl;
-      	    }
-      	  std::clog << "   |";
-      	  for (int izone = 0; izone < mapping::NUMBER_OF_CALO_TRIGGER_ZONES; izone++)
-      	    {
-      	      if (izone == 0 || izone == 9) 
-      		{
-      		  if (my_trigger_summary_record_.zoning_word[iside].test(izone) == true) std::clog << "[*******]";
-      		  else std::clog  << "[       ]";
-      		}
-      	      else if (izone == 5) 
-      		{
-      		  if (my_trigger_summary_record_.zoning_word[iside].test(izone) == true) std::clog  << "[*********]";
-      		  else std::clog  << "[         ]";
-      		}
-      	      else 
-      		{
-      		  if (my_trigger_summary_record_.zoning_word[iside].test(izone) == true) std::clog  << "[**********]";
-      		  else std::clog << "[          ]";
-      		}
-      	    } // end of izone
-      	  std::clog << "|" << std::endl;
-      	  if (iside == 0)
-      	    {
-      	      if (my_trigger_summary_record_.zoning_word[iside].test(ZONE_0_INDEX) == true) std::clog << "[*]|";
-      	      else std::clog << "[ ]|";
-      	      std::clog << "                                                                                                                 ";
-      	      if (my_trigger_summary_record_.zoning_word[iside].test(ZONE_9_INDEX) == true) std::clog << "|[*]" << std::endl;
-      	      else std::clog << "|[ ]" << std::endl;
-      	      std::clog << "   |                                                                                                                 |" << std::endl;
-      	      std::clog << "   |_________________________________________________________________________________________________________________|" << std::endl;
-      	    }	  
-      	} // end of iside
+	{
+	  if (iside == 1)
+	    {
+	      std::clog << "   |                                                                                                                 |" << std::endl;
+	      if (my_trigger_summary_record_.zoning_word[iside].test(ZONE_0_INDEX) == true) std::clog << "[*]|";
+	      else std::clog << "[ ]|";
+	      std::clog << "                                                                                                                 ";
+	      if (my_trigger_summary_record_.zoning_word[iside].test(ZONE_9_INDEX) == true) std::clog << "|[*]" << std::endl;
+	      else std::clog << "|[ ]" << std::endl;
+	    }
+	  std::clog << "   |";
+	  for (int izone = 0; izone < mapping::NUMBER_OF_CALO_TRIGGER_ZONES; izone++)
+	    {
+	      if (izone == 0 || izone == 9) 
+		{
+		  if (my_trigger_summary_record_.zoning_word[iside].test(izone) == true) std::clog << "[*******]";
+		  else std::clog  << "[       ]";
+		}
+	      else if (izone == 5) 
+		{
+		  if (my_trigger_summary_record_.zoning_word[iside].test(izone) == true) std::clog  << "[*********]";
+		  else std::clog  << "[         ]";
+		}
+	      else 
+		{
+		  if (my_trigger_summary_record_.zoning_word[iside].test(izone) == true) std::clog  << "[**********]";
+		  else std::clog << "[          ]";
+		}
+	    } // end of izone
+	  std::clog << "|" << std::endl;
+	  if (iside == 0)
+	    {
+	      if (my_trigger_summary_record_.zoning_word[iside].test(ZONE_0_INDEX) == true) std::clog << "[*]|";
+	      else std::clog << "[ ]|";
+	      std::clog << "                                                                                                                 ";
+	      if (my_trigger_summary_record_.zoning_word[iside].test(ZONE_9_INDEX) == true) std::clog << "|[*]" << std::endl;
+	      else std::clog << "|[ ]" << std::endl;
+	      std::clog << "   |                                                                                                                 |" << std::endl;
+	      std::clog << "   |_________________________________________________________________________________________________________________|" << std::endl;
+	    }	  
+	} // end of iside
       std::clog << std::endl;
 
       return;
@@ -327,14 +330,14 @@ namespace snemo {
 	    }
 	}
 
-      else // (crate_index == mapping::MAIN_CALO_SIDE_0_CRATE || crate_index == mapping::MAIN_CALO_SIDE_1_CRATE)
+      else
 	{
 	  for (int izone = 0; izone < mapping::NUMBER_OF_CALO_TRIGGER_ZONES; izone++)
 	    {
 	      if (ctw_zoning_bitset_word.test(izone) == true)
-	  	{
-	  	  _level_one_trigger_info_[crate_index][izone] = true;
-	  	}
+		{
+		  _level_one_trigger_info_[crate_index][izone] = true;
+		}
 	    }  
 	}
       
@@ -343,12 +346,12 @@ namespace snemo {
       std::bitset<calo::ctw::CONTROL_BITSET_SIZE> control_word;
       my_calo_ctw_.get_control_word(control_word);
       for (int i = 0; i < calo::ctw::CONTROL_BITSET_SIZE; i++)
-      	{
-      	  if (control_word.test(i) == true)
-      	    {
-      	      _other_info_bitset_.set(i+CONTROL_INFO_BIT_0);
-      	    }
-      	}
+	{
+	  if (control_word.test(i) == true)
+	    {
+	      _other_info_bitset_.set(i+CONTROL_INFO_BIT_0);
+	    }
+	}
 
       if (_total_multiplicity_for_a_clocktick_ != 0)
 	{
@@ -359,7 +362,7 @@ namespace snemo {
 
       else
 	{
-          std::bitset<calo::ctw::HTM_BITSET_SIZE> temporary_ctw_multiplicity_bitset(ctw_multiplicity);
+	  std::bitset<calo::ctw::HTM_BITSET_SIZE> temporary_ctw_multiplicity_bitset(ctw_multiplicity);
 	  _total_multiplicity_for_a_clocktick_ = temporary_ctw_multiplicity_bitset;
 	}	
 
@@ -392,19 +395,19 @@ namespace snemo {
     void calo_trigger_algorithm::_build_trigger_record_summary_structure(trigger_summary_record & my_trigger_summary_record_)
     {
       for (boost::circular_buffer<trigger_record>::iterator it =_gate_circular_buffer_->begin() ; it != _gate_circular_buffer_->end(); it++)
- 	{
+	{
 	  const trigger_record & ctrec = *it; 
 
- 	  my_trigger_summary_record_.clocktick_25ns = ctrec.clocktick_25ns;
- 	  if (my_trigger_summary_record_.total_multiplicity.to_ulong() != 0)
- 	    {
+	  my_trigger_summary_record_.clocktick_25ns = ctrec.clocktick_25ns;
+	  if (my_trigger_summary_record_.total_multiplicity.to_ulong() != 0)
+	    {
 	      if (my_trigger_summary_record_.total_multiplicity == 3) my_trigger_summary_record_.total_multiplicity = 3;
 	      else my_trigger_summary_record_.total_multiplicity = my_trigger_summary_record_.total_multiplicity.to_ulong() + ctrec.total_multiplicity.to_ulong();
- 	    }
- 	  else
- 	    {
- 	      my_trigger_summary_record_.total_multiplicity = ctrec.total_multiplicity;
- 	    }
+	    }
+	  else
+	    {
+	      my_trigger_summary_record_.total_multiplicity = ctrec.total_multiplicity;
+	    }
 	  
 	  for (int i = 0; i < mapping::NUMBER_OF_SIDES; i++)
 	    {
@@ -413,69 +416,30 @@ namespace snemo {
 		  if (ctrec.zoning_word[i].test(j) == true) my_trigger_summary_record_.zoning_word[i].set(j, 1);
 		  if (j < INFO_BITSET_SIZE && ctrec.info_bitset.test(j) == true) my_trigger_summary_record_.info_bitset.set(j, 1);   
 
-		  if (j < ZONING_GVETO_BITSET_SIZE && ctrec.gveto_zoning_word.test(j) == true) my_trigger_summary_record_.gveto_zoning_word.set(j, 1);	  
-		  
+		  if (j < ZONING_GVETO_BITSET_SIZE && ctrec.gveto_zoning_word.test(j) == true) my_trigger_summary_record_.gveto_zoning_word.set(j, 1);	   
 		}
 	    }
- 	}
-    }
-
-    void calo_trigger_algorithm::_compute_back_to_back_decision(trigger_summary_record & my_trigger_summary_record_)
-    {
-      DT_THROW_IF(!is_activated_back_to_back_coinc(), std::logic_error, "Boolean back to back coincidence is not activated, it can't compute the decision ! ");
-      bool zoning_word_0_any = my_trigger_summary_record_.zoning_word[SIDE_0_INDEX].any();
-      bool zoning_word_1_any = my_trigger_summary_record_.zoning_word[SIDE_1_INDEX].any();
-      unsigned int multiplicity = my_trigger_summary_record_.total_multiplicity.to_ulong();
-     
-      std::clog << "Back to back decision : " << zoning_word_0_any << ' ' <<  zoning_word_1_any << ' ' << multiplicity << std::endl;      
-      
-      if (zoning_word_0_any == true && zoning_word_1_any == true)
-	{
-	  my_trigger_summary_record_.back_to_back_coinc = true;
-	}
-      return;
-    }
-
-    void calo_trigger_algorithm::_compute_single_side_decision(trigger_summary_record & my_trigger_summary_record_)
-    {
-      DT_THROW_IF(!is_activated_single_side_coinc(), std::logic_error, "Boolean single side coincidence is not activated, it can't compute the decision ! ");
-      
-      int pm_side_0 = my_trigger_summary_record_.zoning_word[SIDE_0_INDEX].count();
-      int pm_side_1 = my_trigger_summary_record_.zoning_word[SIDE_1_INDEX].count();
-      unsigned int multiplicity = my_trigger_summary_record_.total_multiplicity.to_ulong();
-     
-      std::clog << "Single side decision : " << pm_side_0 << ' ' <<  pm_side_1 << ' ' << multiplicity << std::endl;      
-      
-      if (pm_side_0 > 1 || pm_side_1 > 1)
-	{
-	  my_trigger_summary_record_.single_side_coinc = true;
-	}
-      return;
-    }
-
-    void calo_trigger_algorithm::_compute_threshold_total_multiplicity_decision(trigger_summary_record & my_trigger_summary_record_)
-    {
-      DT_THROW_IF(_threshold_total_multiplicity_ == 0, std::logic_error, "Calo threshold is not set, it can't compute the decision ! ");
-      
-      unsigned int multiplicity = my_trigger_summary_record_.total_multiplicity.to_ulong();
-      
-      if (multiplicity >= _threshold_total_multiplicity_.to_ulong())
-	{
-	  my_trigger_summary_record_.threshold_total_multiplicity = true;
 	}
       
-      return;
+      if (is_inhibited_single_side_coinc()) my_trigger_summary_record_.single_side_coinc = true;
+      else my_trigger_summary_record_.single_side_coinc = false;
+
+      //unsigned long summary_multiplicity = my_trigger_summary_record_.total_multiplicity.to_ulong();
+
+      if (my_trigger_summary_record_.total_multiplicity.to_ulong() >= _threshold_total_multiplicity_.to_ulong())   my_trigger_summary_record_.threshold_total_multiplicity = true;
+      else my_trigger_summary_record_.threshold_total_multiplicity = false;
+      
     }
 
     void calo_trigger_algorithm::_compute_trigger_finale_decision(trigger_summary_record & my_trigger_summary_record_)
     {
-
-      if (my_trigger_summary_record_.back_to_back_coinc == true || 
-	  my_trigger_summary_record_.single_side_coinc == true || 
-	  my_trigger_summary_record_.threshold_total_multiplicity == true )
-	{
-	  my_trigger_summary_record_.trigger_finale_decision = true;
-	}
+      if ((_activated_threshold_ && my_trigger_summary_record_.threshold_total_multiplicity)
+      	  && !(is_inhibited_single_side_coinc() && my_trigger_summary_record_.single_side_coinc == true)
+      	  && !(is_inhibited_back_to_back_coinc() && my_trigger_summary_record_.single_side_coinc == false))
+      	{
+      	  my_trigger_summary_record_.trigger_finale_decision = true;
+      	  _calo_level_1_finale_decision_ = my_trigger_summary_record_;
+      	}	 
 
       return;      
     }
@@ -506,14 +470,16 @@ namespace snemo {
 	  trigger_record my_trigger_record;
 	  trigger_summary_record my_trigger_summary_record;
 	  my_trigger_record.clocktick_25ns = iclocktick;
-
 	  _build_trigger_record_structure(my_trigger_record); 
 	  _build_trigger_record_summary_structure(my_trigger_summary_record);
+	  _compute_trigger_finale_decision(my_trigger_summary_record);
 	  _display_trigger_summary(my_trigger_summary_record);
 
 	  reset_trigger_info();
 	} // end of iclocktick
       return;
     }
+
   } // end of namespace digitization
+
 } // end of namespace snemo

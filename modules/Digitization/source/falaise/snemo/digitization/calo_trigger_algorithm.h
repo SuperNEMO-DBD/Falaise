@@ -55,10 +55,10 @@ namespace snemo {
 			
 			struct trigger_summary_record : public trigger_record
 			{
-				bool back_to_back_coinc;
 				bool single_side_coinc;
 				bool threshold_total_multiplicity;
 				bool trigger_finale_decision;
+
 			};
 
 			enum side_id_index {
@@ -131,19 +131,22 @@ namespace snemo {
 			void set_circular_buffer_depth(unsigned int & circular_buffer_depth_);
 
 			/// Set the boolean for back to back coincidence
-			void set_back_to_back_coinc();
+			void inhibit_back_to_back_coinc();
 
 			/// Check if back to back coinc is set 
-			bool is_activated_back_to_back_coinc() const;
+			bool is_inhibited_back_to_back_coinc() const;
 
 			/// Set the boolean for single side coincidence
-			void set_single_side_coinc();
+			void inhibit_single_side_coinc();
 
 			/// Check if single side coinc is set 
-			bool is_activated_single_side_coinc() const;
+			bool is_inhibited_single_side_coinc() const;
 			
 			/// Set the threshold of multiplicity for coincidences
-			void set_threshold_total_multiplicity_coinc(unsigned int & threshold_);
+			void set_threshold_total_multiplicity(unsigned int & threshold_);
+
+			/// Check if total multiplicity threshold is set
+			bool is_activated_threshold_total_multiplicity() const;
 
 			/// Get the calo threshold for coincidences
 			const	std::bitset<calo::ctw::HTM_BITSET_SIZE> get_threshold_total_multiplicity_coinc() const;
@@ -185,17 +188,8 @@ namespace snemo {
 
 			/// Build summary calo trigger structure
 			void _build_trigger_record_summary_structure(trigger_summary_record & my_trigger_summary_record_);
-			
-			/// Decision when back to back boolean is activated
-			void _compute_back_to_back_decision(trigger_summary_record & my_trigger_summary_record_);
 
-			/// Decision when single side boolean is activated
-			void _compute_single_side_decision(trigger_summary_record & my_trigger_summary_record_);
-
-			/// Decision when the threshold is set
-			void _compute_threshold_total_multiplicity_decision(trigger_summary_record & my_trigger_summary_record_);
-			
-			/// Compute finale decision
+			/// Compute the trigger finale decision
 			void _compute_trigger_finale_decision(trigger_summary_record & my_trigger_summary_record_);
 
 			/// Protected general process
@@ -208,9 +202,10 @@ namespace snemo {
       // Configuration :
       bool _initialized_; //!< Initialization flag
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
-			bool _activated_back_to_back_coinc_;
-			bool _activated_single_side_coinc_;
+			bool _inhibit_back_to_back_coinc_;
+			bool _inhibit_single_side_coinc_;
 			std::bitset<calo::ctw::HTM_BITSET_SIZE> _threshold_total_multiplicity_;
+			bool _activated_threshold_;
 			unsigned int _circular_buffer_depth_;
 
       // Data :	 
@@ -223,8 +218,8 @@ namespace snemo {
 			std::bitset<INFO_BITSET_SIZE> _other_info_bitset_; //!< Bitset of 6 bits containing the other bits of all ctw (control, XT, LT)
 
 			boost::scoped_ptr<buffer_type> _gate_circular_buffer_; //!< Scoped pointer to a circular buffer containing output data structure
-
-			trigger_summary_record _calo_level_1_finale_decision_;
+ 
+			trigger_summary_record _calo_level_1_finale_decision_; //!< Finale decision for level 1 calorimeter
 
     };
 
