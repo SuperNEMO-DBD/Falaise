@@ -130,145 +130,148 @@ namespace snemo {
       unsigned int crate_id = 666;
       unsigned int board_id = 666;
       unsigned int channel_id = 666;
-      if( geom_id_.get_type() == mapping::GEIGER_CATEGORY_TYPE){ // Drift cell --> Side [0;1] Layer [0;8] Row [0;112]
-	rack_id = mapping::GEIGER_RACK_ID;
-	unsigned int side_index = _gg_locator_->extract_side(geom_id_);
-	unsigned int layer_index = _gg_locator_->extract_layer(geom_id_);
-	unsigned int row_index = _gg_locator_->extract_row(geom_id_);
-	unsigned int shift = 0;
-	unsigned int row_shift = 0;
+
+      if( geom_id_.get_type() == mapping::GEIGER_CATEGORY_TYPE)
+	{ // Drift cell --> Side [0;1] Layer [0;8] Row [0;112]
+	  rack_id = mapping::GEIGER_RACK_ID;
+	  unsigned int side_index = _gg_locator_->extract_side(geom_id_);
+	  unsigned int layer_index = _gg_locator_->extract_layer(geom_id_);
+	  unsigned int row_index = _gg_locator_->extract_row(geom_id_);
+	  unsigned int shift = 0;
+	  unsigned int row_shift = 0;
 	
-	if (row_index <= mapping::BOARD_ID_SHIFT_CRATE_0_LIMIT)
-	  {
-	    crate_id = 0;
-	  }
+	  if (row_index <= mapping::BOARD_ID_SHIFT_CRATE_0_LIMIT)
+	    {
+	      crate_id = 0;
+	    }
 	
-	if (row_index > mapping::BOARD_ID_SHIFT_CRATE_0_LIMIT && row_index <= mapping::THREE_WIRES_CRATE_0_LIMIT)
-	  {
-	    crate_id = 0;
-	    row_shift = mapping::NO_FEB_NUMBER_10_SHIFT;
-	  }
+	  if (row_index > mapping::BOARD_ID_SHIFT_CRATE_0_LIMIT && row_index <= mapping::THREE_WIRES_CRATE_0_LIMIT)
+	    {
+	      crate_id = 0;
+	      row_shift = mapping::NO_FEB_NUMBER_10_SHIFT;
+	    }
 
-	if (row_index > mapping::THREE_WIRES_CRATE_0_LIMIT && row_index  <= mapping::THREE_WIRES_LONELY_ROW )
-	  {
-	    crate_id = 1; 
-	    shift = mapping::THREE_WIRES_CRATE_1_BEGINNING;
-	  }
+	  if (row_index > mapping::THREE_WIRES_CRATE_0_LIMIT && row_index  <= mapping::THREE_WIRES_LONELY_ROW )
+	    {
+	      crate_id = 1; 
+	      shift = mapping::THREE_WIRES_CRATE_1_BEGINNING;
+	    }
 
-	if (row_index > mapping::THREE_WIRES_LONELY_ROW && row_index  <= mapping::THREE_WIRES_CRATE_1_LIMIT )
-	  {
-	    crate_id = 1; 
-	    shift = mapping::THREE_WIRES_CRATE_1_BEGINNING;
-	    shift -= 1; // in order to take into account the lonely row at the middle
-	    row_shift = mapping::NO_FEB_NUMBER_10_SHIFT;
-	  }
+	  if (row_index > mapping::THREE_WIRES_LONELY_ROW && row_index  <= mapping::THREE_WIRES_CRATE_1_LIMIT )
+	    {
+	      crate_id = 1; 
+	      shift = mapping::THREE_WIRES_CRATE_1_BEGINNING;
+	      shift -= 1; // in order to take into account the lonely row at the middle
+	      row_shift = mapping::NO_FEB_NUMBER_10_SHIFT;
+	    }
 
-	if (row_index > mapping::THREE_WIRES_CRATE_1_LIMIT && row_index <= mapping::BOARD_ID_SHIFT_CRATE_2_LIMIT)
-	  {
-	  crate_id = 2;
-	  shift = mapping::THREE_WIRES_CRATE_2_BEGINNING;	  
-	  }
+	  if (row_index > mapping::THREE_WIRES_CRATE_1_LIMIT && row_index <= mapping::BOARD_ID_SHIFT_CRATE_2_LIMIT)
+	    {
+	      crate_id = 2;
+	      shift = mapping::THREE_WIRES_CRATE_2_BEGINNING;	  
+	    }
 
-	if (row_index > mapping::BOARD_ID_SHIFT_CRATE_2_LIMIT)
-	  {
-	  crate_id = 2;
-	  shift = mapping::THREE_WIRES_CRATE_2_BEGINNING;
-	  row_shift = mapping::NO_FEB_NUMBER_10_SHIFT;
-	  }
+	  if (row_index > mapping::BOARD_ID_SHIFT_CRATE_2_LIMIT)
+	    {
+	      crate_id = 2;
+	      shift = mapping::THREE_WIRES_CRATE_2_BEGINNING;
+	      row_shift = mapping::NO_FEB_NUMBER_10_SHIFT;
+	    }
 
-	board_id = (row_index + row_shift -shift) / 2;
+	  board_id = (row_index + row_shift -shift) / 2;
 
-	if (row_index < mapping::THREE_WIRES_LONELY_ROW)
-	  {
-	    shift = 2 * side_index + (row_index % 2);
-	    channel_id = mapping::GEIGER_LAYERS_SIZE * shift + layer_index;
-	  }
+	  if (row_index < mapping::THREE_WIRES_LONELY_ROW)
+	    {
+	      shift = 2 * side_index + (row_index % 2);
+	      channel_id = mapping::GEIGER_LAYERS_SIZE * shift + layer_index;
+	    }
 
-	else if (row_index == mapping::THREE_WIRES_LONELY_ROW)
-	  {
-	    shift = 2 * side_index;
-	    channel_id = mapping::GEIGER_LAYERS_SIZE * shift + layer_index;
-	  }
+	  else if (row_index == mapping::THREE_WIRES_LONELY_ROW)
+	    {
+	      shift = 2 * side_index;
+	      channel_id = mapping::GEIGER_LAYERS_SIZE * shift + layer_index;
+	    }
 
-	else if (row_index > mapping::THREE_WIRES_LONELY_ROW)
-	  {
-	    shift = 2 * side_index + (1 - (row_index % 2));
-	    channel_id = mapping::GEIGER_LAYERS_SIZE * shift + layer_index;
-	  }
-      }
+	  else if (row_index > mapping::THREE_WIRES_LONELY_ROW)
+	    {
+	      shift = 2 * side_index + (1 - (row_index % 2));
+	      channel_id = mapping::GEIGER_LAYERS_SIZE * shift + layer_index;
+	    }
+	} // End of Geiger Category type
 
-      if( geom_id_.get_type() == mapping::CALO_MAIN_WALL_CATEGORY_TYPE ){ // MCALO -- Side [0;1] Column [0;19] (Row[0;12] )type --> 1302
-	rack_id = mapping::CALO_RACK_ID;
+      if( geom_id_.get_type() == mapping::CALO_MAIN_WALL_CATEGORY_TYPE )
+	{ // MCALO -- Side [0;1] Column [0;19] (Row[0;12] )type --> 1302
+	  rack_id = mapping::CALO_RACK_ID;
      
-	unsigned int module_index_ = _calo_locator_-> extract_module(geom_id_);
-	unsigned int column_index_ = _calo_locator_-> extract_column(geom_id_);
-	unsigned int row_index_    = _calo_locator_-> extract_row(geom_id_);
-	unsigned int side_index_   = _calo_locator_-> extract_side(geom_id_);
+	  unsigned int module_index_ = _calo_locator_-> extract_module(geom_id_);
+	  unsigned int column_index_ = _calo_locator_-> extract_column(geom_id_);
+	  unsigned int row_index_    = _calo_locator_-> extract_row(geom_id_);
+	  unsigned int side_index_   = _calo_locator_-> extract_side(geom_id_);
      
-	if(side_index_ == 0) crate_id = 0;
-	else if(side_index_ == 1) crate_id = 1;
+	  if(side_index_ == 0) crate_id = 0;
+	  else if(side_index_ == 1) crate_id = 1;
 
-	int32_t shift_no_feb_10_index = 1;
+	  int32_t shift_no_feb_10_index = 1;
 
-	if (column_index_ < mapping::CONTROL_BOARD_ID) board_id = column_index_;
-	else if (column_index_ >= mapping::CONTROL_BOARD_ID) board_id = column_index_ + shift_no_feb_10_index;
-	channel_id = row_index_;
-      }
+	  if (column_index_ < mapping::CONTROL_BOARD_ID) board_id = column_index_;
+	  else if (column_index_ >= mapping::CONTROL_BOARD_ID) board_id = column_index_ + shift_no_feb_10_index;
+	  channel_id = row_index_;
+	} // End of Calo Main Wall Category type
       
-      if( geom_id_.get_type() == mapping::CALORIMETER_X_WALL_CATEGORY_TYPE ){//XCALO  -- Side [0;1 ] Wall [0;1] Column [0;1] (Row[0;15])  type --> 1232
-	rack_id  = mapping::CALO_RACK_ID;
-	crate_id = mapping::XWALL_GVETO_CRATE_ID;
-
-	unsigned int column_index_ = _xcalo_locator_->extract_column(geom_id_);
-	unsigned int wall_index_   = _xcalo_locator_->extract_wall(geom_id_);
-	unsigned int side_index_   = _xcalo_locator_->extract_side(geom_id_);
-	unsigned int row_index_    = _xcalo_locator_->extract_row(geom_id_);
+      if( geom_id_.get_type() == mapping::CALORIMETER_X_WALL_CATEGORY_TYPE )
+	{//XCALO  -- Side [0;1 ] Wall [0;1] Column [0;1] (Row[0;15])  type --> 1232
+	  rack_id  = mapping::CALO_RACK_ID;
+	  crate_id = mapping::XWALL_GVETO_CRATE_ID;
+	  
+	  unsigned int column_index_ = _xcalo_locator_->extract_column(geom_id_);
+	  unsigned int wall_index_   = _xcalo_locator_->extract_wall(geom_id_);
+	  unsigned int side_index_   = _xcalo_locator_->extract_side(geom_id_);
+	  unsigned int row_index_    = _xcalo_locator_->extract_row(geom_id_);
       
-	if ( side_index_ == 0){
-	  if ( wall_index_ == 0){
-	    if ( column_index_ == 0) board_id = 6;
-	    if ( column_index_ == 1) board_id = 7;
-	  }
-	  if ( wall_index_ == 1){
-	    if ( column_index_ == 0) board_id = 8;
-	    if ( column_index_ == 1) board_id = 9;
-	  }
-	} //end of side == 0 
-	if ( side_index_ == 1){
-	  if ( wall_index_ == 0){
-	    if ( column_index_ == 0) board_id = 14;
-	    if ( column_index_ == 1) board_id = 13;
-	  }
-	  if ( wall_index_ == 1){
-	    if ( column_index_ == 0) board_id = 12;
-	    if ( column_index_ == 1) board_id = 11;
-	  }
-	} //end of side == 1     
-	channel_id = row_index_;
-      }
+	  if ( side_index_ == 0){
+	    if ( wall_index_ == 0){
+	      if ( column_index_ == 0) board_id = 6;
+	      if ( column_index_ == 1) board_id = 7;
+	    }
+	    if ( wall_index_ == 1){
+	      if ( column_index_ == 0) board_id = 8;
+	      if ( column_index_ == 1) board_id = 9;
+	    }
+	  } //end of side == 0 
+	  if ( side_index_ == 1){
+	    if ( wall_index_ == 0){
+	      if ( column_index_ == 0) board_id = 14;
+	      if ( column_index_ == 1) board_id = 13;
+	    }
+	    if ( wall_index_ == 1){
+	      if ( column_index_ == 0) board_id = 12;
+	      if ( column_index_ == 1) board_id = 11;
+	    }
+	  } //end of side == 1     
+	  channel_id = row_index_;
+	} // End of X-Wall Category type
 
 
-      if( geom_id_.get_type() == mapping::CALORIMETER_GVETO_CATEGORY_TYPE){//GVETO -- Side [0;1 ] Wall [0;1] (Column [0;15])type --> 1251
-	rack_id = mapping::CALO_RACK_ID;
-	crate_id = mapping::XWALL_GVETO_CRATE_ID;
+      if( geom_id_.get_type() == mapping::CALORIMETER_GVETO_CATEGORY_TYPE)
+	{//GVETO -- Side [0;1 ] Wall [0;1] (Column [0;15])type --> 1251
+	  rack_id = mapping::CALO_RACK_ID;
+	  crate_id = mapping::XWALL_GVETO_CRATE_ID;
 
-	unsigned int wall_index_   = _gveto_locator_->extract_wall(geom_id_);
-	unsigned int side_index_   = _gveto_locator_->extract_side(geom_id_);
-	unsigned int column_index_ = _gveto_locator_->extract_column(geom_id_);
+	  unsigned int side_index_   = _gveto_locator_->extract_side(geom_id_);
+	  unsigned int wall_index_   = _gveto_locator_->extract_wall(geom_id_);
+	  unsigned int column_index_ = _gveto_locator_->extract_column(geom_id_);
 
-	if ( side_index_ == 0){
-	  if ( wall_index_ == 0)board_id = 4;
-	  if ( wall_index_ == 1)board_id = 5;
-	}
-	if ( side_index_ == 1){
-	  if ( wall_index_ == 0)board_id = 16;
-	  if ( wall_index_ == 1)board_id = 15;
-	}
-	channel_id = column_index_;
-      }
-   
+	  if ( side_index_ == 0){
+	    if ( wall_index_ == 0)board_id = 4;
+	    if ( wall_index_ == 1)board_id = 5;
+	  }
+	  if ( side_index_ == 1){
+	    if ( wall_index_ == 0)board_id = 16;
+	    if ( wall_index_ == 1)board_id = 15;
+	  }
+	  channel_id = column_index_;
+	} // End of G-Veto Category type  
       electronic_id.set_address(rack_id,crate_id,board_id,channel_id);   
-  
       return  electronic_id;
     }
 

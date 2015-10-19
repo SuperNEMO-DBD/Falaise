@@ -79,7 +79,7 @@ namespace snemo {
       DT_THROW_IF(!is_initialized(), std::logic_error, "SD to calo TP algorithm is not initialized ! ");
       unsigned int seed = 314159;
       std::srand(seed);
-      size_t number_of_hits = signal_data_.get_calo_signals().size(); //_number_of_step_hits("gg");
+      size_t number_of_hits = signal_data_.get_calo_signals().size();
       std::clog << "DEBUG : BEGINING OF SIGNAL TO CALO TP PROCESS " << std::endl;
       std::clog << "**************************************************************" << std::endl;
 
@@ -99,8 +99,10 @@ namespace snemo {
 	  const double calo_hit_amplitude    = a_calo_signal.get_amplitude();
  
 	  geomtools::geom_id temporary_electronic_id;
-	  _electronic_mapping_->convert_GID_to_EID(mapping::THREE_WIRES_TRACKER_MODE, geom_id, temporary_electronic_id);
-	  uint32_t electronic_type = temporary_electronic_id.get_type();
+	  _electronic_mapping_->convert_GID_to_EID(mapping::THREE_WIRES_TRACKER_MODE, 
+						   geom_id,
+						   temporary_electronic_id);
+          uint32_t electronic_type = temporary_electronic_id.get_type();
 	  geomtools::geom_id electronic_id;
 	  electronic_id.set_depth(mapping::BOARD_DEPTH);
 	  electronic_id.set_type(electronic_type);

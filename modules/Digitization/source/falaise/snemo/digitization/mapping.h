@@ -43,7 +43,7 @@ namespace snemo {
 			enum calo_crate {
 				MAIN_CALO_SIDE_0_CRATE = 0,
 				MAIN_CALO_SIDE_1_CRATE = 1,
-				XWALL_CALO_CRATE       = 2
+				XWALL_GVETO_CALO_CRATE = 2
 			};
 			
 			enum tp_tracker_wire_mode {
@@ -69,7 +69,7 @@ namespace snemo {
 			static const uint32_t GEIGER_CATEGORY_TYPE             = 1204;
 			static const uint32_t CALO_MAIN_WALL_CATEGORY_TYPE     = 1302;
 			static const uint32_t CALORIMETER_X_WALL_CATEGORY_TYPE = 1232;
-			static const uint32_t CALORIMETER_GVETO_CATEGORY_TYPE  = 1251;
+			static const uint32_t CALORIMETER_GVETO_CATEGORY_TYPE  = 1252;
 
 			static const uint32_t FEB_CATEGORY_TYPE = 666; 
 

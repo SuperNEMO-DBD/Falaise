@@ -131,10 +131,33 @@ namespace snemo {
 	      calo_signal.tree_dump(std::clog, "***** XWall calo Signal : *****", "INFO : ");
 	      calo_signal_hit_id++;
 	    }
-	} //end of if
+	}
+      
+      if (sd_.has_step_hits("gveto"))
+	{
+	  // Loop on GVeto calo step hits :
+	  const size_t number_of_hits = sd_.get_number_of_step_hits("gveto");	 
+	  for (size_t ihit = 0; ihit < number_of_hits; ihit++)
+	    {
+	      const mctools::base_step_hit & gveto_calo_hit = sd_.get_step_hit("gveto", ihit);
+	    
+	      const double signal_time    = gveto_calo_hit.get_time_stop();
+	      const double energy_deposit = gveto_calo_hit.get_energy_deposit();
+	      const double amplitude      = _convert_energy_to_amplitude(energy_deposit);
 
-      return ;
-    }
+	      // extract the corresponding geom ID:
+	      const geomtools::geom_id & calo_gid = gveto_calo_hit.get_geom_id();
+	      calo_signal & calo_signal = signal_data.add_calo_signal();
+	      calo_signal.set_header(calo_signal_hit_id, calo_gid);
+	      calo_signal.set_data(signal_time, amplitude); 
+	      calo_signal.grab_auxiliaries().store("hit.id", gveto_calo_hit.get_hit_id());
+	      calo_signal.tree_dump(std::clog, "***** GVeto calo Signal : *****", "INFO : ");
+	      calo_signal_hit_id++;
+	    }
+	}
+
+    return ;
+  }
 
     double sd_to_calo_signal_algo::_convert_energy_to_amplitude(const double energy_)
     {

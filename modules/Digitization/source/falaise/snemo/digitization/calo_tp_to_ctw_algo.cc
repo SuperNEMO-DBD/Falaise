@@ -74,22 +74,22 @@ namespace snemo {
 	{
 	  if (my_calo_tp_.get_geom_id().get(mapping::CRATE_INDEX) == 2 )
 	    {
-	      if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 6 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 7)
-	  	{
-	  	  activated_zone_id = 0;
-	  	}
-	      if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 8 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 9)
-	  	{
-	  	  activated_zone_id = 1;
-	  	}
-	      if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 11 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 12)
-	  	{
-	  	  activated_zone_id = 3;
-	  	}
-	      if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 13 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 14)
-	  	{
-	  	  activated_zone_id = 2;
-	  	}
+	      // if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 6 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 7)
+	      // 	{
+	      // 	  activated_zone_id = 0;
+	      // 	}
+	      // if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 8 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 9)
+	      // 	{
+	      // 	  activated_zone_id = 1;
+	      // 	}
+	      // if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 11 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 12)
+	      // 	{
+	      // 	  activated_zone_id = 3;
+	      // 	}
+	      // if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 13 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 14)
+	      // 	{
+	      // 	  activated_zone_id = 2;
+	      // 	}
 	    }
 	  
 	  else 
@@ -119,22 +119,22 @@ namespace snemo {
 	    {
 	      if (my_calo_tp_.get_geom_id().get(mapping::CRATE_INDEX) == 2 )
 		{
-		  if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 6 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 7)
-		    {
-		      activated_zone_id = 0;
-		    }
-		  if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 8 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 9)
-		    {
-		      activated_zone_id = 1;
-		    }
-		  if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 11 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 12)
-		    {
-		      activated_zone_id = 3;
-		    }
-		  if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 13 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 14)
-		    {
-		      activated_zone_id = 2;
-		    }
+		  // if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 6 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 7)
+		  //   {
+		  //     activated_zone_id = 0;
+		  //   }
+		  // if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 8 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 9)
+		  //   {
+		  //     activated_zone_id = 1;
+		  //   }
+		  // if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 11 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 12)
+		  //   {
+		  //     activated_zone_id = 3;
+		  //   }
+		  // if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 13 || my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) == 14)
+		  //   {
+		  //     activated_zone_id = 2;
+		  //   }
 		}
 	  
 	      else 

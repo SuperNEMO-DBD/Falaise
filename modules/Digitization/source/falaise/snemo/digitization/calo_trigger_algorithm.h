@@ -58,9 +58,8 @@ namespace snemo {
 				bool single_side_coinc;
 				bool threshold_total_multiplicity;
 				bool trigger_finale_decision;
-
 			};
-
+			
 			enum side_id_index {
 				SIDE_0_INDEX = 0,
 				SIDE_1_INDEX = 1
@@ -130,13 +129,13 @@ namespace snemo {
 			/// Set the calo circular buffer depth
 			void set_circular_buffer_depth(unsigned int & circular_buffer_depth_);
 
-			/// Set the boolean for back to back coincidence
-			void inhibit_back_to_back_coinc();
+			/// Set the boolean for inhibited back to back coincidence
+			void inhibit_both_side_coinc();
 
 			/// Check if back to back coinc is set 
-			bool is_inhibited_back_to_back_coinc() const;
+			bool is_inhibited_both_side_coinc() const;
 
-			/// Set the boolean for single side coincidence
+			/// Set the boolean for inhibited single side coincidence
 			void inhibit_single_side_coinc();
 
 			/// Check if single side coinc is set 
@@ -202,7 +201,7 @@ namespace snemo {
       // Configuration :
       bool _initialized_; //!< Initialization flag
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
-			bool _inhibit_back_to_back_coinc_;
+			bool _inhibit_both_side_coinc_;
 			bool _inhibit_single_side_coinc_;
 			std::bitset<calo::ctw::HTM_BITSET_SIZE> _threshold_total_multiplicity_;
 			bool _activated_threshold_;

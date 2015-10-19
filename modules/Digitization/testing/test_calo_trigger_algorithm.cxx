@@ -73,8 +73,8 @@ int main( int  argc_ , char **argv_  )
     if(is_input_file){
       pipeline_simulated_data_filename = input_filename;
     }else{
-      pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
-      //pipeline_simulated_data_filename = "/home/guillaume/data/my_falaise/outputs/Se82_0nubb-source_strips_bulk_SD.brio";
+      //pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
+      pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Se82_0nubb_500000-source_strips_bulk_SD.brio";
     }
     datatools::fetch_path_with_env(pipeline_simulated_data_filename);
 
@@ -82,7 +82,7 @@ int main( int  argc_ , char **argv_  )
     dpp::input_module reader;
     datatools::properties reader_config;
     reader_config.store ("logging.priority", "debug");
-    reader_config.store ("max_record_total", 10);
+    reader_config.store ("max_record_total", 100);
     reader_config.store ("files.mode", "single");
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
@@ -125,7 +125,9 @@ int main( int  argc_ , char **argv_  )
 	    signal_2_calo_tp.set_clocktick_reference(clocktick_25_reference);
 	    signal_2_calo_tp.set_clocktick_shift(clocktick_25_shift);	 
 	    snemo::digitization::signal_data signal_data;
-	    if (SD.has_step_hits("calo") || SD.has_step_hits("xcalo"))
+
+	    //	    if (SD.has_step_hits("calo") || SD.has_step_hits("xcalo") || SD.has_step_hits("gveto"))
+	    if(SD.has_step_hits("gveto"))
 	      {
 		sd_2_calo_signal.process(SD, signal_data);
 	      
@@ -146,10 +148,10 @@ int main( int  argc_ , char **argv_  )
 		my_calo_algo.set_electronic_mapping(my_e_mapping);
 		unsigned int calo_circular_buffer_depth = 4;
 		my_calo_algo.set_circular_buffer_depth(calo_circular_buffer_depth);
-		// my_calo_algo.set_back_to_back_coinc();
-		my_calo_algo.set_single_side_coinc();
-		// unsigned int calo_threshold = 2;
-		// my_calo_algo.set_threshold_total_multiplicity_coinc(calo_threshold);
+		// my_calo_algo.inhibit_both_side_coinc();
+	        // my_calo_algo.inhibit_single_side_coinc();
+		unsigned int calo_threshold = 1;
+		my_calo_algo.set_threshold_total_multiplicity(calo_threshold);
 		my_calo_algo.initialize_simple();
 		
 		// // Modification of my_calo_ctw_data for a test.
