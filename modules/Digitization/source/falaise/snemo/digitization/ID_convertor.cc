@@ -253,7 +253,7 @@ namespace snemo {
 
 
       if( geom_id_.get_type() == mapping::CALORIMETER_GVETO_CATEGORY_TYPE)
-	{//GVETO -- Side [0;1 ] Wall [0;1] (Column [0;15])type --> 1251
+	{//GVETO -- Side [0;1 ] Wall [0;1] (Column [0;15])type --> 1252
 	  rack_id = mapping::CALO_RACK_ID;
 	  crate_id = mapping::XWALL_GVETO_CRATE_ID;
 

@@ -13,56 +13,72 @@ namespace snemo {
  
       namespace ctw {
 	
-	/// Position of each bits in the CTW bitset word (18 bits)
-	enum bit_pos {
-	  BEGIN_BIT      = 0,
-	  HTM_PC_BIT0    = 0,
-	  HTM_PC_BIT1    = 1,
-	  ZONING_BIT0    = 2,
-	  ZONING_BIT1    = 3,
-	  ZONING_BIT2    = 4,
-	  ZONING_BIT3    = 5,
-	  ZONING_BIT4    = 6,
-	  ZONING_BIT5    = 7,
-	  ZONING_BIT6    = 8,
-	  ZONING_BIT7    = 9,
-	  ZONING_BIT8    = 10,
-	  ZONING_BIT9    = 11,
-	  LTO_PC_BIT     = 12,
-	  XT_PC_BIT      = 13,
-	  CONTROL_BIT0   = 14,
-	  CONTROL_BIT1   = 15,
-	  CONTROL_BIT2   = 16,
-	  CONTROL_BIT3   = 17,
-	  END_BIT        = 17    
-	};
+        enum layout {
+					LAYOUT_UNDEFINED   = 0,
+					LAYOUT_MAIN_WALL   = 1,
+					LAYOUT_XWALL_GVETO = 2					
+				};
 
-	/// Size of each bitset in the CTW bitset word
-	enum bitset_size {
-	  FULL_BITSET_SIZE    = 18,
-	  HTM_BITSET_SIZE     = 2,
-	  ZONING_BITSET_SIZE  = 10,
-	  LTO_BITSET_SIZE     = 1,
-	  XT_BITSET_SIZE      = 1,
-	  CONTROL_BITSET_SIZE = 4
-	};
+				/// Position of each bits in the CTW bitset word (18 bits)			
+				enum bit_pos_main_wall {
+					BEGIN_BIT           = 0,
+					HTM_MAIN_WALL_BIT0  = 0,
+					HTM_MAIN_WALL_BIT1  = 1,
+					W_ZW_BIT0           = 2,
+					W_ZW_BIT1           = 3,
+					W_ZW_BIT2           = 4,
+					W_ZW_BIT3           = 5,
+					W_ZW_BIT4           = 6,
+					W_ZW_BIT5           = 7,
+					W_ZW_BIT6           = 8,
+					W_ZW_BIT7           = 9,
+					W_ZW_BIT8           = 10,
+					W_ZW_BIT9           = 11,
+					LTO_MAIN_WALL_BIT   = 12
+				};
+
+				enum ctw_bit_pos_xwall_gveto {
+					HTM_GVETO_BIT0       = 0,
+					HTM_GVETO_BIT1       = 1,
+					X_ZW_BIT0            = 2,
+					X_ZW_BIT1            = 3,
+					X_ZW_BIT2            = 4,
+					X_ZW_BIT3            = 5,
+					HTM_XWALL_SIDE0_BIT0 = 6,
+					HTM_XWALL_SIDE0_BIT1 = 7,
+					HTM_XWALL_SIDE1_BIT0 = 8,
+					HTM_XWALL_SIDE1_BIT1 = 9,
+					LTO_XWALL_SIDE0_BIT   = 10,
+					LTO_XWALL_SIDE1_BIT   = 11,
+					LTO_GVETO_BIT         = 12
+				};
+
+				enum xt_control_bit_pos {
+					XT_PC_BIT            = 13,
+					CONTROL_BIT0         = 14,
+					CONTROL_BIT1         = 15,
+					CONTROL_BIT2         = 16,
+					CONTROL_BIT3         = 17,
+					END_BIT              = 17
+				};
+				
+				/// Size of each bitset in the CTW bitset word
+				enum bitset_size {
+					FULL_BITSET_SIZE         = 18,
+					HTM_BITSET_SIZE          = 2,
+					MAIN_ZONING_BITSET_SIZE  = 10,
+					XWALL_ZONING_BITSET_SIZE = 4,
+					LTO_BITSET_SIZE          = 1,
+					XT_BITSET_SIZE           = 1,
+					CONTROL_BITSET_SIZE      = 4
+				};
 	
-	enum xwall_bit_pos {
-	  ZONING_XWALL_BIT0 = 2,
-	  ZONING_XWALL_BIT1 = 3,
-	  ZONING_XWALL_BIT2 = 4,
-	  ZONING_XWALL_BIT3 = 5
-	};
-	  
-	enum gveto_bit_pos {
-	  ZONING_GVETO_BIT0 = 6,
-	  ZONING_GVETO_BIT1 = 7,
-		ZONING_GVETO_BIT2 = 8,
-	  ZONING_GVETO_BIT3 = 9,
-		ZONING_GVETO_BIT4 = 10,
-	  ZONING_GVETO_BIT5 = 11
-	};
-	  
+				enum xwall_bit_pos {
+					ZONING_XWALL_BIT0 = 2,
+					ZONING_XWALL_BIT1 = 3,
+					ZONING_XWALL_BIT2 = 4,
+					ZONING_XWALL_BIT3 = 5
+				};	  
 	
       } // end of namespace ctw
 

@@ -171,6 +171,7 @@ namespace snemo {
       temporary_feb_id.set_depth(mapping::BOARD_DEPTH);
       my_calo_tp_.get_geom_id().extract_to(temporary_feb_id);
       temporary_feb_id.set(mapping::BOARD_INDEX, mapping::CONTROL_BOARD_ID);
+
       a_calo_ctw_.set_header(my_calo_tp_.get_hit_id(),
 			     temporary_feb_id,
 			     my_calo_tp_.get_clocktick_25ns());

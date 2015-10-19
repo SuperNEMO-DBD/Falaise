@@ -51,6 +51,12 @@ namespace snemo {
 
       /// Destructor
       virtual ~calo_ctw();
+		 
+			/// Set the layout of the ctw
+			void set_layout(calo::ctw::layout layout_);
+
+			/// Return the layout of the ctw
+			calo::ctw::layout get_layout() const;
 
 			/// Set the header with valid values
 			void set_header(int32_t hit_id_,
@@ -66,32 +72,83 @@ namespace snemo {
 			/// Reset the timestamp of the calo crate trigger word 
 			void reset_clocktick_25ns();
 
-			/// Set the high threshold multiplicity (HTM) bits
-			void set_htm_pc(unsigned int multiplicity_);
+			/// Set the high threshold multiplicity (HTM) bits for main wall
+			void set_htm_main_wall(unsigned int multiplicity_);
 
-			/// Return the information of the multiplicity for the high threshold
-			unsigned int get_htm_pc_info() const;
+			/// Return the information of the HTM for main wall
+			unsigned int get_htm_main_wall_info() const;
 
-			/// Check if the htm bits are set
-			bool is_htm() const;
+			/// Check if the htm bits for main wall are set
+			bool is_htm_main_wall() const;
 
-			/// Return the complete zoning word
-			void get_zoning_word(std::bitset<calo::ctw::ZONING_BITSET_SIZE> & zoning_word_) const;
+			/// Set the high threshold multiplicity (HTM) bits for gamma veto
+			void set_htm_gveto(unsigned int multiplicity_);
 
-			/// Set the zoning word 
-			void set_zoning_word(std::bitset<calo::ctw::ZONING_BITSET_SIZE> & zoning_word_);
+			/// Return the information of the HTM for gamma veto
+			unsigned int get_htm_gveto_info() const;
 
+			/// Check if the htm bits for gamma veto are set
+			bool is_htm_gveto() const;
+
+			/// Set the high threshold multiplicity (HTM) bits for xwall side 0
+			void set_htm_xwall_side_0(unsigned int multiplicity_);
+
+			/// Return the information of the HTM for xwall side 0
+			unsigned int get_htm_xwall_side_0_info() const;
+
+			/// Check if the htm bits for xwall side 0 are set
+			bool is_htm_xwall_side_0() const;
+
+			/// Set the high threshold multiplicity (HTM) bits for xwall side 1
+			void set_htm_xwall_side_1(unsigned int multiplicity_);
+
+			/// Return the information of the HTM for xwall side 1
+			unsigned int get_htm_xwall_side_1_info() const;
+
+			/// Check if the htm bits for xwall side 0 are set
+			bool is_htm_xwall_side_1() const;
+
+			/// Return the main zoning word for ctw 0 & 1
+			void get_main_zoning_word(std::bitset<calo::ctw::MAIN_ZONING_BITSET_SIZE> & main_zoning_word_) const;
+
+			/// Set the main zoning word for ctw 0 & 1
+			void set_main_zoning_word(std::bitset<calo::ctw::MAIN_ZONING_BITSET_SIZE> & main_zoning_word_);
+
+			/// Return the xwall zoning word for ctw 2
+			void get_xwall_zoning_word(std::bitset<calo::ctw::XWALL_ZONING_BITSET_SIZE> & xwall_zoning_word_) const;
+			
+			/// Set the xwall zoning word for ctw 2
+			void set_xwall_zoning_word(std::bitset<calo::ctw::XWALL_ZONING_BITSET_SIZE> & xwall_zoning_word_);
+	  
 			/// Set one bit of the zoning word
 			void set_zoning_bit(int bit_pos_, bool value_);
 
 			/// Compute active zones in a std::set and return the number of active zones
 			unsigned int compute_active_zones(std::set<int> & active_zones_) const;
 
-			/// Set the low threshold only (LTO) bit per crate
-			void set_lto_pc_bit(bool value_);
+			/// Set the low threshold only (LTO) bit for main wall
+			void set_lto_main_wall_bit(bool value_);
 
-			/// Check if the LTO bit is set
-			bool is_lto() const;
+			/// Check if the LTO bit for main wall is set
+			bool is_lto_main_wall() const;
+
+			/// Set the low threshold only (LTO) bit for xwall side 0
+			void set_lto_xwall_side_0_bit(bool value_);
+
+			/// Check if the LTO bit for xwall side 0 is set
+			bool is_lto_xwall_side_0() const;
+
+			/// Set the low threshold only (LTO) bit for xwall side 1
+			void set_lto_xwall_side_1_bit(bool value_);
+
+			/// Check if the LTO bit for xwall side 1 is set
+			bool is_lto_xwall_side_1() const;
+
+			/// Set the low threshold only (LTO) bit for gamma veto
+			void set_lto_gveto_bit(bool value_);
+
+			/// Check if the LTO bit for gamma veto is set
+			bool is_lto_gveto() const;
 
 			/// Set the external trigger (XT) bit
 			void set_xt_pc_bit(bool value_);
@@ -143,6 +200,7 @@ namespace snemo {
     private : 
 
 			bool _locked_;            //!< CTW lock flag
+			calo::ctw::layout _layout_;
 			int32_t _clocktick_25ns_; //!< The timestamp of the trigger primitive in main clock units (40 MHz)
 			std::bitset<calo::ctw::FULL_BITSET_SIZE> _ctw_;    //!< The crate trigger word
 
