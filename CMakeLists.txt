@@ -135,7 +135,7 @@ option(Falaise_USE_SYSTEM_BAYEUX "Use system-installed Bayeux" OFF)
 mark_as_advanced(Falaise_USE_SYSTEM_BAYEUX)
 
 if(Falaise_USE_SYSTEM_BAYEUX)
-  find_package(Bayeux 1.0.0 REQUIRED)
+  find_package(Bayeux 2.0.0 REQUIRED)
   if(NOT Bayeux_MCTOOLS_GEANT4_FOUND)
     message(FATAL_ERROR "
   Bayeux found, but it does not supply the MCTools/Geant4 module
