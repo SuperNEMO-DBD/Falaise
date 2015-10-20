@@ -48,7 +48,6 @@ namespace snemo {
     const uint32_t mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES_PER_SIDE;
     const uint32_t mapping::NUMBER_OF_CRATES;
     const uint32_t mapping::NUMBER_OF_FEBS_BY_CRATE;
-    const uint32_t mapping::XWALL_GVETO_CRATE_ID;
     const uint32_t mapping::TRIGGER_CRATE_ID;
     const uint32_t mapping::CONTROL_BOARD_ID;
     const uint32_t mapping::TRIGGER_BOARD_ID ;

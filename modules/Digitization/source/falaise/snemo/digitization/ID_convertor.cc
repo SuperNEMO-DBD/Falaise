@@ -221,7 +221,7 @@ namespace snemo {
       if( geom_id_.get_type() == mapping::CALORIMETER_X_WALL_CATEGORY_TYPE )
 	{//XCALO  -- Side [0;1 ] Wall [0;1] Column [0;1] (Row[0;15])  type --> 1232
 	  rack_id  = mapping::CALO_RACK_ID;
-	  crate_id = mapping::XWALL_GVETO_CRATE_ID;
+	  crate_id = mapping::XWALL_GVETO_CALO_CRATE;
 	  
 	  unsigned int column_index_ = _xcalo_locator_->extract_column(geom_id_);
 	  unsigned int wall_index_   = _xcalo_locator_->extract_wall(geom_id_);
@@ -255,7 +255,7 @@ namespace snemo {
       if( geom_id_.get_type() == mapping::CALORIMETER_GVETO_CATEGORY_TYPE)
 	{//GVETO -- Side [0;1 ] Wall [0;1] (Column [0;15])type --> 1252
 	  rack_id = mapping::CALO_RACK_ID;
-	  crate_id = mapping::XWALL_GVETO_CRATE_ID;
+	  crate_id = mapping::XWALL_GVETO_CALO_CRATE;
 
 	  unsigned int side_index_   = _gveto_locator_->extract_side(geom_id_);
 	  unsigned int wall_index_   = _gveto_locator_->extract_wall(geom_id_);

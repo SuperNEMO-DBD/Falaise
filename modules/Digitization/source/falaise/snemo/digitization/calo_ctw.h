@@ -51,17 +51,17 @@ namespace snemo {
 
       /// Destructor
       virtual ~calo_ctw();
-		 
-			/// Set the layout of the ctw
-			void set_layout(calo::ctw::layout layout_);
-
-			/// Return the layout of the ctw
-			calo::ctw::layout get_layout() const;
 
 			/// Set the header with valid values
 			void set_header(int32_t hit_id_,
 											const geomtools::geom_id & electronic_id_,	 
 											int32_t clocktick_25ns_);
+
+			/// Check if the ctw is main wall
+			bool is_main_wall() const;
+			
+			/// Return the layout of the ctw
+			calo::ctw::layout get_layout() const;
 
 		  /// Return the timestamp of the calo crate trigger word 
 			int32_t get_clocktick_25ns() const;

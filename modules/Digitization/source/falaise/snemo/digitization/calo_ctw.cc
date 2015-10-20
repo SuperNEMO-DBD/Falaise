@@ -43,7 +43,7 @@ namespace snemo {
       set_geom_id(electronic_id_);
       set_clocktick_25ns(clocktick_25ns_);
 
-      unsigned int crate_id = electronic_id.get(mapping::CRATE_DEPTH);
+      unsigned int crate_id = electronic_id_.get(mapping::CRATE_DEPTH);
       if (crate_id == mapping::MAIN_CALO_SIDE_0_CRATE || crate_id == mapping::MAIN_CALO_SIDE_1_CRATE) 
 	{
 	  _layout_ = calo::ctw::LAYOUT_MAIN_WALL;
@@ -57,8 +57,19 @@ namespace snemo {
 	  _layout_ = calo::ctw::LAYOUT_UNDEFINED;
 	}
       return;
-    }	
+    }
+    
+    bool calo_ctw::is_main_wall() const
+    {
+      if (_layout_ == calo::ctw::LAYOUT_MAIN_WALL) return true;
+      else return false;
+    }
 
+    calo::ctw::layout calo_ctw::get_layout() const
+    {
+      return _layout_;
+    }
+    
     int32_t calo_ctw::get_clocktick_25ns() const
     {
       return _clocktick_25ns_;

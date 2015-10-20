@@ -297,8 +297,8 @@ namespace snemo {
       uint32_t crate_index = my_calo_ctw_.get_geom_id().get(mapping::CRATE_INDEX);  
       DT_THROW_IF(crate_index < 0 || crate_index > 2, std::logic_error, "Crate index '"<< crate_index << "' is not defined, check your value ! ");
       
-      std::bitset<calo::ctw::ZONING_BITSET_SIZE> ctw_zoning_bitset_word;
-      my_calo_ctw_.get_zoning_word(ctw_zoning_bitset_word);
+      std::bitset<calo::ctw::MAIN_ZONING_BITSET_SIZE> ctw_zoning_bitset_word;
+      my_calo_ctw_.get_main_zoning_word(ctw_zoning_bitset_word);
 
       unsigned long ctw_multiplicity  = my_calo_ctw_.get_htm_pc_info();
       if (crate_index == mapping::XWALL_GVETO_CALO_CRATE)

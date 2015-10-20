@@ -24,12 +24,19 @@ namespace snemo {
     class calo_tp_to_ctw_algo
     {
     public : 
+			
+			enum mode_type {
+				MODE_UNDEFINED   = -1,
+				MODE_MAIN_WALL   =  0,
+				MODE_XWALL_GVETO =  1							
+			};
+			
 			/// Shift for board index because there is 10FEB/1CB/10FEB in one crate
       static const unsigned int BOARD_SHIFT_INDEX = -1;
 
       /// Default constructor
       calo_tp_to_ctw_algo();
-
+			
       /// Destructor
       virtual ~calo_tp_to_ctw_algo();
 
@@ -42,17 +49,29 @@ namespace snemo {
 			/// Reset the object
       void reset(); 
 
+			/// Set the crate number of the algorithm
+			void set_crate_number(int crate_number_);
+			
+			/// Return the crate number of the algorithm
+			int get_crate_number() const;
+
+			/// Return the mode for algorithm process
+			snemo::digitization::calo_tp_to_ctw_algo::mode_type get_mode() const;
+
+			/// Check if ctw is main wall
+			bool is_main_wall() const;
+
+			/// Check if ctw is xwall gveto
+			bool is_xwall_gveto() const;
+		
+			/// Set the ctw high threshold multiplicity for a given clocktick
+			void set_ctw_htm(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_);
+	
 			/// Set the clocktick for one ctw
 			void set_ctw_clocktick(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_);
 
-			/// Set the ctw high threshold multiplicity for a given clocktick
-			void set_ctw_htm(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_);
-
 			/// Set the ctw zone bit for a given clocktick when the high threshold is passed
       void set_ctw_zone_bit_htm(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_);
-
-			/// Set the ctw zone bit for a given clocktick when the low threshold or the high threshold is passed
-			void set_ctw_zone_bit_htm_or_lto(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_);
 
 			/// Set the ctw low threshold only for a given clocktick 
 			void set_ctw_lto(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_);
@@ -62,17 +81,32 @@ namespace snemo {
 
 		protected :
 
-			/// Fill a calo ctw from a calo tp
-			void _fill_a_calo_ctw(const calo_tp & my_calo_tp_, calo_ctw & a_calo_ctw_);
+			/// Set the mode for algorithm process
+			void _set_mode(mode_type mode_);
 
-			/// Process to fill a ctw from a list of calo tp for a clocktick
-	    void _process_for_a_ctw_for_a_clocktick(const std::vector<datatools::handle<calo_tp> > & my_list_of_calo_tp_,  calo_ctw & a_calo_ctw_);
+			/// Fill a main wall calo ctw from a main calo tp
+			void _fill_a_main_wall_ctw(const calo_tp & my_calo_tp_, calo_ctw & a_calo_ctw_);
+
+			/// Fill a xwall gveto calo ctw from a xwall or gveto calo tp
+			void _fill_a_xwall_gveto_ctw(const calo_tp & my_calo_tp_, calo_ctw & a_calo_ctw_);
 			
+			/// Process for a ctw for a clocktick for main wall
+			void _process_for_a_ctw_for_a_clocktick_for_main_wall(const std::vector<datatools::handle<calo_tp> > & my_list_of_calo_tp_,  calo_ctw & a_calo_ctw_);
+
+			/// Process for a ctw for a clocktick for xwall gveto wall
+			void _process_for_a_ctw_for_a_clocktick_for_xwall_gveto(const std::vector<datatools::handle<calo_tp> > & my_list_of_calo_tp_,  calo_ctw & a_calo_ctw_);
+
     private :
       
+			// Management :
 			bool _initialized_; //!< Initialization flag
-     
-    };
+
+			// Configuration :
+			int _crate_number_; //!< The crate number
+			
+			// Working data : 
+			mode_type _mode_; //!< Mode type for ctw 
+		};
 
   } // end of namespace digitization
 

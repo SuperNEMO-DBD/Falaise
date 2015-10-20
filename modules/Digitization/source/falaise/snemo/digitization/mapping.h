@@ -107,7 +107,6 @@ namespace snemo {
 
 			static const uint32_t NUMBER_OF_CRATES  = 3;
 			static const uint32_t NUMBER_OF_FEBS_BY_CRATE = 19;
-			static const uint32_t XWALL_GVETO_CRATE_ID = 2;
 			static const uint32_t TRIGGER_CRATE_ID     = 2;
 
 			static const uint32_t CONTROL_BOARD_ID = 10;
@@ -127,7 +126,8 @@ namespace snemo {
 
 			static const uint32_t GEIGER_LAYERS_SIZE = 9;
 			static const uint32_t GEIGER_ROWS_SIZE   = 113;
-
+			
+			static const uint32_t CONTROL_BOARD_DEVICE_TYPE = 2200;
     };
 	       
   } // end of namespace digitization
