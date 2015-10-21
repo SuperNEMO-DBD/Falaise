@@ -140,10 +140,20 @@ int main( int  argc_ , char **argv_  )
 		  }
 	    
 		snemo::digitization::calo_ctw_data my_calo_ctw_data;
-		snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw;
-		calo_tp_2_ctw.initialize();
+		snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw_0;
+		calo_tp_2_ctw_0.set_crate_number(snemo::digitization::mapping::MAIN_CALO_SIDE_1_CRATE);
+		calo_tp_2_ctw_0.initialize();
+		snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw_1;
+		calo_tp_2_ctw_1.set_crate_number(snemo::digitization::mapping::MAIN_CALO_SIDE_1_CRATE);
+		calo_tp_2_ctw_1.initialize();
+		snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw_2;
+		calo_tp_2_ctw_2.set_crate_number(snemo::digitization::mapping::XWALL_GVETO_CALO_CRATE);
+		calo_tp_2_ctw_2.initialize();
 
-		calo_tp_2_ctw.process(my_calo_tp_data, my_calo_ctw_data);
+		calo_tp_2_ctw_0.process(my_calo_tp_data, my_calo_ctw_data);
+		calo_tp_2_ctw_1.process(my_calo_tp_data, my_calo_ctw_data);
+		calo_tp_2_ctw_2.process(my_calo_tp_data, my_calo_ctw_data);
+
 		snemo::digitization::calo_trigger_algorithm my_calo_algo;
 		my_calo_algo.set_electronic_mapping(my_e_mapping);
 		unsigned int calo_circular_buffer_depth = 4;

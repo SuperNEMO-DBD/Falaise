@@ -173,7 +173,8 @@ int main(int  argc_ , char ** argv_)
     mygsl::histogram mean_number_of_geiger_cell(230, 0, 230);
 
     std::ofstream ofhist_2(output_tracker_histo_2.c_str());
-    mygsl::histogram_2d x_y_position_hist(88, -440, 440, 520, -2600, 2600);
+    //mygsl::histogram_2d x_y_position_hist(88, -440, 440, 520, -2600, 2600);
+    mygsl::histogram_2d x_y_position_hist(19, -9, 9, 113, 0, 112);
 
     std::ofstream ofhist_3(output_tracker_histo_3.c_str());
     mygsl::histogram_2d y_z_position_hist(520, -2600, 2600, 320, -1600, 1600);
@@ -213,6 +214,7 @@ int main(int  argc_ , char ** argv_)
 		for (int i = 0; i < number_of_step_hits; i++)
 		  {
 		    const mctools::base_step_hit & base_step_hit = SD.get_step_hit("gg", i);
+	
 		    geomtools::vector_3d anode_position_start (0,0,0);
 		    const geomtools::vector_3d & anode_position_stop = base_step_hit.get_position_stop();
 		    
@@ -220,7 +222,12 @@ int main(int  argc_ , char ** argv_)
 		    double y = anode_position_stop.getY();
 		    double z = anode_position_stop.getZ();
 
-		    x_y_position_hist.fill(x, y, weight);
+		    if(base_step_hit.get_geom_id().get(1) == 0)x_y_position_hist.fill((int)-base_step_hit.get_geom_id().get(2), (int)base_step_hit.get_geom_id().get(3), weight);
+		    if(base_step_hit.get_geom_id().get(1) == 1)x_y_position_hist.fill((int)base_step_hit.get_geom_id().get(2), (int)base_step_hit.get_geom_id().get(3), weight);
+
+
+
+		    // x_y_position_hist.fill(x, y, weight);
 		    y_z_position_hist.fill(y, z, weight);
 
 		    //std::clog << "DEBUG : X = " << x << " Y = " << y << " Z = " << z << std::endl;

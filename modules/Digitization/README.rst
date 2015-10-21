@@ -28,7 +28,7 @@ UML diagram of the process : (can change)
       /   |***********************|/    |   Calo signal    |                               | |     Calo TP      | |                             |----------------|                                \ 
      /                 |          /     |------------------|                               | |------------------| |                                                                                \
     /                  v         /                                                         |----------------------|                                                                                 \         
-   |-----|          |-------------|                                                                                                                                                                  \    (not implemented yet)
+   |-----|          |-------------|                                                                                                                                                                  \   
    | SD  |          | Signal Data |                                                                                                                                                               |******************|
    |-----|          |-------------|                                                        |----------------------|                                                                               | Trigger_decision |
     \                    ^     \        |------------------|                               | |------------------| |                                                                               |******************|
@@ -55,5 +55,3 @@ CTW : Crate Trigger Word
 
 To run the examples, you have to export the environment variable $FALAISE_DIGITIZATION_TESTING_DIR and give the path to the testing directory of the Digitization module. 
 (ex : export FALAISE_DIGITIZATION_TESTING_DIR=~/data/Falaise/Falaise-trunk/modules/Digitization/testing)
-
-

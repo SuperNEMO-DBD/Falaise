@@ -41,16 +41,20 @@ namespace snemo {
 			/// Size of the zoning bitset for gamma veto
 			static const int32_t ZONING_GVETO_BITSET_SIZE = 4;
 
-			/// Size of the information bitset containing LT bit, XT bit and spare bits (up to 4)
-			static const int32_t INFO_BITSET_SIZE = 6;
+			/// Size of the information bitset containing XT bit and spare bits (up to 4)
+			static const int32_t XT_INFO_BITSET_SIZE = 3;
 
 			struct trigger_record
 			{
 				uint32_t clocktick_25ns;
 				std::bitset<ZONING_PER_SIDE_BITSET_SIZE> zoning_word[mapping::NUMBER_OF_SIDES];
-				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity;
-				std::bitset<ZONING_GVETO_BITSET_SIZE> gveto_zoning_word;
-				std::bitset<INFO_BITSET_SIZE> info_bitset;
+				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_0;
+				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_1;
+				bool LTO_side_0;
+				bool LTO_side_1;
+				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_gveto;
+				bool LTO_gveto;
+				std::bitset<XT_INFO_BITSET_SIZE> xt_info_bitset;
 			};
 			
 			struct trigger_summary_record : public trigger_record
@@ -100,21 +104,13 @@ namespace snemo {
 				ZONE_9_BEGIN = 18,
 			  ZONE_9_END   = 19
 			};
-			
-			enum gveto_bitset_pos{
-				GVETO_BIT_0 = 0,
-				GVETO_BIT_1 = 1,
-				GVETO_BIT_2 = 2,
-				GVETO_BIT_3 = 3
-			};
 
 			enum info_bitset_pos{
-				LT_INFO_BIT        = 0,
-				XT_INFO_BIT        = 1,
-				CONTROL_INFO_BIT_0 = 2,
-				CONTROL_INFO_BIT_1 = 3,
-				CONTROL_INFO_BIT_2 = 4,
-				CONTROL_INFO_BIT_3 = 5
+				XT_INFO_BIT        = 0,
+				CONTROL_INFO_BIT_0 = 1,
+				CONTROL_INFO_BIT_1 = 2,
+				CONTROL_INFO_BIT_2 = 3,
+				CONTROL_INFO_BIT_3 = 4
 			};
 
       /// Default constructor
@@ -168,22 +164,16 @@ namespace snemo {
 			/// Get the level 1 finale decision structure
 			const trigger_summary_record get_calo_level_1_finale_decision() const;
     
-			/// Display the level one calo trigger info (bitsets)
-			void display_trigger_info();
-    
-			/// Build the level one calo trigger primitive bitsets
-			void build_level_one_bitsets(const calo_ctw & my_calo_ctw_);
-	
 			/// General process
       void process(const calo_ctw_data & calo_ctw_data_);
 
 		protected :
 		 
-			/// Display the level one calo trigger info and internal working data (bitsets)
-			void _display_trigger_summary(trigger_summary_record & my_trigger_summary_record_);
+			/// Build the trigger record structure for a clocktick
+			void _build_trigger_record_per_clocktick(const calo_ctw & my_calo_ctw_);
 
 			/// Build intermediate working data structure
-			void _build_trigger_record_structure(trigger_record & my_trigger_record_);   
+			void _build_trigger_record_structure();   
 
 			/// Build summary calo trigger structure
 			void _build_trigger_record_summary_structure(trigger_summary_record & my_trigger_summary_record_);
@@ -193,6 +183,12 @@ namespace snemo {
 
 			/// Protected general process
 			void _process(const calo_ctw_data & calo_ctw_data_);
+
+			/// Display the level one calo trigger info (bitsets)
+			void _display_trigger_info_for_a_clocktick();
+	
+			/// Display the level one calo trigger info and internal working data (bitsets)
+			void _display_trigger_summary(trigger_summary_record & my_trigger_summary_record_);
 
     private :
 
@@ -208,13 +204,8 @@ namespace snemo {
 			unsigned int _circular_buffer_depth_;
 
       // Data :	 
-			bool _level_one_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_CALO_TRIGGER_ZONES]; //!< Table of 2x10 containing 2 bits bitset representing the level one calo trigger info
-			
-			std::bitset<calo::ctw::HTM_BITSET_SIZE> _total_multiplicity_for_a_clocktick_; //!< Total multiplicity of calo who passed the HT for a clocktick
-			
-			std::bitset<ZONING_GVETO_BITSET_SIZE> _gveto_info_bitset_; //!< Bitset of 4 bits containing the gamma-veto zoning information
-			
-			std::bitset<INFO_BITSET_SIZE> _other_info_bitset_; //!< Bitset of 6 bits containing the other bits of all ctw (control, XT, LT)
+
+			trigger_record _trigger_record_per_clocktick_; //!< Trigger record structure for built for each clocktick
 
 			boost::scoped_ptr<buffer_type> _gate_circular_buffer_; //!< Scoped pointer to a circular buffer containing output data structure
  

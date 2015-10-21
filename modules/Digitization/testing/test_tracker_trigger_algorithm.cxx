@@ -191,7 +191,7 @@ int main(int  argc_ , char ** argv_)
 	datatools::fetch_path_with_env(output_tracker_decision_11);
 
 	std::ostringstream oss3;
-	oss3 << "tracker_trigger_histo_" << arg_run_number << "_0.hist";
+	oss3 << "tracker_trigger_" << arg_run_number << "_decision.hist";
 	output_tracker_histo_0 = output_path + oss3.str();
 	datatools::fetch_path_with_env(output_tracker_histo_0);
       }
@@ -207,7 +207,7 @@ int main(int  argc_ , char ** argv_)
 	datatools::fetch_path_with_env(output_tracker_decision_01);
 	output_tracker_decision_11 = default_path + "tracker_trigger_decision_" + default_run_number + "_11.brio";
 	datatools::fetch_path_with_env(output_tracker_decision_11);
-        output_tracker_histo_0 = default_path + "tracker_trigger_histo_" + default_run_number + "_0.hist";
+        output_tracker_histo_0 = default_path + "tracker_trigger_histo_" + default_run_number + "_decision.hist";
 	datatools::fetch_path_with_env(output_tracker_histo_0);
       }
 
@@ -325,7 +325,7 @@ int main(int  argc_ , char ** argv_)
     while (!reader.is_terminated())
       {
 	reader.process(ER);
-	datatools::properties & TDD = ER.add<datatools::properties>(TDD_bank_label);
+	//datatools::properties & TDD = ER.add<datatools::properties>(TDD_bank_label);
 
 	// A plain `mctools::simulated_data' object is stored here :
 	if (ER.has(SD_bank_label) && ER.is_a<mctools::simulated_data>(SD_bank_label)) 
@@ -403,7 +403,7 @@ int main(int  argc_ , char ** argv_)
 	    best_final_decision_histogram.fill((double)tracker_trigger_decision_per_event, weight);
 
 	    // Store the trigger tracker decision into the trigger decision data "TDD" bank
-	    TDD.store_real("tracker_decision", (double)tracker_trigger_decision_per_event, "Tracker trigger decision for an event");
+	    //TDD.store_real("tracker_decision", (double)tracker_trigger_decision_per_event, "Tracker trigger decision for an event");
 
 	    // Writing in the good files :
 	    if ((int)tracker_trigger_decision_per_event == 0)
@@ -430,7 +430,7 @@ int main(int  argc_ , char ** argv_)
 
 	psd_count++;
 	//std::clog << "DEBUG : psd count " << psd_count << std::endl;
-	std::clog << "\r" << "DEBUG : psd count " << psd_count << std::flush;
+	//std::clog << "\r" << "DEBUG : psd count " << psd_count << std::flush;
 	DT_LOG_NOTICE(logging, "Simulated data #" << psd_count);
 
       } // end of while
