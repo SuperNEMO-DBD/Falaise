@@ -58,7 +58,7 @@ endif()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Falaise_CXX_FLAGS}")
 
 # - Versioning
-set(Falaise_VERSION_MAJOR 1)
+set(Falaise_VERSION_MAJOR 2)
 set(Falaise_VERSION_MINOR 0)
 set(Falaise_VERSION_PATCH 0)
 set(Falaise_VERSION "${Falaise_VERSION_MAJOR}.${Falaise_VERSION_MINOR}.${Falaise_VERSION_PATCH}")
