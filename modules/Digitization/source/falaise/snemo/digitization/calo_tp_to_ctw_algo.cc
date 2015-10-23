@@ -39,8 +39,8 @@ namespace snemo {
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Calo tp to ctw algo is already initialized ! ");
       DT_THROW_IF(_crate_number_ == -1, std::logic_error, "Crate number is not defined ! ");
-      if (_crate_number_ == 0 || _crate_number_ == 1) _set_mode (MODE_MAIN_WALL);
-      if (_crate_number_ == 2) _set_mode (MODE_XWALL_GVETO);
+      if (_crate_number_ == 0 || _crate_number_ == 1) _set_mode(MODE_MAIN_WALL);
+      if (_crate_number_ == 2) _set_mode(MODE_XWALL_GVETO);
       _initialized_ = true;
       return;
     }
@@ -54,9 +54,9 @@ namespace snemo {
       return;
     }
     
-    void calo_tp_to_ctw_algo::set_crate_number(int crate_number_)
+    void calo_tp_to_ctw_algo::set_crate_number(unsigned int crate_number_)
     {
-      DT_THROW_IF((_crate_number_ < 0 || _crate_number_ >= mapping::NUMBER_OF_CRATES), std::logic_error, "Crate number can't be set because crate number[" << _crate_number_ << "] is not valid ! ");
+      DT_THROW_IF(((crate_number_ < 0) || (crate_number_ >= mapping::NUMBER_OF_CRATES)), std::logic_error, "Crate number can't be set because crate number [" << _crate_number_ << "] is not valid ! ");
 
       _crate_number_ = crate_number_;
 
@@ -158,41 +158,47 @@ namespace snemo {
 
       if (my_ctw_.is_main_wall()) // Mode == Main Wall
 	{
-	  if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) > 9)
+	  if (my_calo_tp_.is_htm())
 	    {
-	      activated_zone_id = (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX)  + BOARD_SHIFT_INDEX) / 2;
+	      if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) > 9)
+		{
+		  activated_zone_id = (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) + BOARD_SHIFT_INDEX) / 2;
+		}
+	      else
+		{
+		  activated_zone_id = my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) / 2;
+		}
+	      my_ctw_.set_zoning_bit(calo::ctw::W_ZW_BIT0 + activated_zone_id, true);
 	    }
-	  else
-	    {
-	      activated_zone_id = my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) / 2;
-	    }
-
-	 my_ctw_.set_zoning_bit(calo::ctw::W_ZW_BIT0 + activated_zone_id, true);
 	}
 
       if (!my_ctw_.is_main_wall()) // Mode == XWall Gveto
 	{
-	  unsigned int board_id = my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX);
-	  if (board_id == 6 || board_id == 7)
+	  if (my_calo_tp_.is_htm())
 	    {
-	      activated_zone_id = 0;
-	    }	 
-	  if (board_id == 8 || board_id == 9)
-	    {
-	      activated_zone_id = 1;
-	    }
+	      unsigned int board_id = my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX);
+	  
+	      if (board_id == 6 || board_id == 7)
+		{
+		  activated_zone_id = 0;
+		}	 
+	      if (board_id == 8 || board_id == 9)
+		{
+		  activated_zone_id = 1;
+		}
 	  	  
-	  if (board_id == 11 || board_id == 12)
-	    {
-	      activated_zone_id = 3;
-	    }
+	      if (board_id == 11 || board_id == 12)
+		{
+		  activated_zone_id = 3;
+		}
 	  	 
-	  if (board_id == 13 || board_id == 14)
-	    {
-	      activated_zone_id = 2;
-	    }
+	      if (board_id == 13 || board_id == 14)
+		{
+		  activated_zone_id = 2;
+		}
 
-	  my_ctw_.set_zoning_bit(calo::ctw::ZONING_XWALL_BIT0 + activated_zone_id, true);
+	      my_ctw_.set_zoning_bit(calo::ctw::ZONING_XWALL_BIT0 + activated_zone_id, true);
+	    }
 	}
           
       return ;

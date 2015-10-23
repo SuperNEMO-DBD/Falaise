@@ -43,7 +43,8 @@ namespace snemo {
       set_geom_id(electronic_id_);
       set_clocktick_25ns(clocktick_25ns_);
 
-      unsigned int crate_id = electronic_id_.get(mapping::CRATE_DEPTH);
+      unsigned int crate_id = electronic_id_.get(mapping::CRATE_INDEX);
+      std::clog << "Crate ID = " << crate_id << std::endl;
       if (crate_id == mapping::MAIN_CALO_SIDE_0_CRATE || crate_id == mapping::MAIN_CALO_SIDE_1_CRATE) 
 	{
 	  _layout_ = calo::ctw::LAYOUT_MAIN_WALL;
@@ -199,7 +200,13 @@ namespace snemo {
 	  return 2;
 	}
       return 3;
-    } 
+    }
+    
+    bool calo_ctw::is_htm_gveto() const
+    {
+      return get_htm_gveto_info() != 0;
+    }
+
 
     void calo_ctw::set_htm_xwall_side_0(unsigned int multiplicity_)
     {
@@ -316,7 +323,7 @@ namespace snemo {
 	{
 	  if(_ctw_.test(i) == true)
 	    {
-	      zoning_word_.set(i-calo::ctw::W_ZW_BIT0,1);
+	      zoning_word_.set(i-calo::ctw::W_ZW_BIT0, true);
 	    }
 	}
       return ;
@@ -331,11 +338,44 @@ namespace snemo {
 	{
 	  if (zoning_word_.test(i) == true)
 	    {
-	      _ctw_.set(i + calo::ctw::W_ZW_BIT0, 1);
+	      _ctw_.set(i + calo::ctw::W_ZW_BIT0, true);
 	    }
 	  else 
 	    {
-	      _ctw_.set(i + calo::ctw::W_ZW_BIT0, 0);	      
+	      _ctw_.set(i + calo::ctw::W_ZW_BIT0, false);	      
+	    }
+	}      
+      _store |= STORE_CTW;
+      return;
+    }
+
+    void calo_ctw::get_xwall_zoning_word(std::bitset<calo::ctw::XWALL_ZONING_BITSET_SIZE> & xwall_zoning_word_) const
+    {
+      xwall_zoning_word_ = 0x0;
+      for (int i = calo::ctw::X_ZW_BIT0; i <= calo::ctw::X_ZW_BIT3; i++)
+	{
+	  if(_ctw_.test(i) == true)
+	    {
+	      xwall_zoning_word_.set(i-calo::ctw::X_ZW_BIT0, true);
+	    }
+	}
+      return;
+    }
+			
+    void calo_ctw::set_xwall_zoning_word(std::bitset<calo::ctw::XWALL_ZONING_BITSET_SIZE> & xwall_zoning_word_)
+    {
+      DT_THROW_IF(is_locked(), std::logic_error, "Zoning word can't be set, calorimeter crate TW is locked ! ");
+      DT_THROW_IF(_layout_ == calo::ctw::LAYOUT_UNDEFINED || _layout_ == calo::ctw::LAYOUT_MAIN_WALL, std::logic_error, "Layout value [" << _layout_ << "] is not valid ! ");
+
+      for (int i = 0; i < xwall_zoning_word_.size(); i++)
+	{
+	  if (xwall_zoning_word_.test(i) == true)
+	    {
+	      _ctw_.set(i + calo::ctw::X_ZW_BIT0, true);
+	    }
+	  else 
+	    {
+	      _ctw_.set(i + calo::ctw::X_ZW_BIT0, false);	      
 	    }
 	}      
       _store |= STORE_CTW;
@@ -346,7 +386,7 @@ namespace snemo {
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Zoning bit can't be set, calorimeter CTW is locked ! ");
       DT_THROW_IF(_layout_ == calo::ctw::LAYOUT_UNDEFINED, std::logic_error, "Layout value [" << _layout_ << "] is not valid ! ");
-      DT_THROW_IF(_layout_ == calo::ctw::LAYOUT_XWALL_GVETO && (bit_pos_ < calo::ctw::X_ZW_BIT0 && bit_pos_ > calo::ctw::X_ZW_BIT3), std::logic_error, " Bit position for crate number 2 is not defined ! ");
+      DT_THROW_IF(bit_pos_ < calo::ctw::X_ZW_BIT0 && bit_pos_ > calo::ctw::X_ZW_BIT3, std::logic_error, " Bit position for crate number 2 is not defined ! ");
 
       _ctw_.set(bit_pos_,value_);
       _store |= STORE_CTW;

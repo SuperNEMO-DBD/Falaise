@@ -17,6 +17,7 @@
 
 // This project :
 #include <snemo/digitization/calo_ctw.h>
+#include <snemo/digitization/calo_ctw_constants.h>
 
 namespace snemo {
   

@@ -46,6 +46,9 @@ namespace snemo {
 
 			struct trigger_record
 			{
+				trigger_record();
+				void reset();
+			  void display();
 				uint32_t clocktick_25ns;
 				std::bitset<ZONING_PER_SIDE_BITSET_SIZE> zoning_word[mapping::NUMBER_OF_SIDES];
 				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_0;
@@ -59,6 +62,10 @@ namespace snemo {
 			
 			struct trigger_summary_record : public trigger_record
 			{
+				trigger_summary_record();
+				void reset();
+				void reset_summary_boolean_only();
+				void display();
 				bool single_side_coinc;
 				bool threshold_total_multiplicity;
 				bool trigger_finale_decision;
@@ -158,11 +165,17 @@ namespace snemo {
       /// Reset the object
       void reset(); 
 
-      /// Reset private tables
+      /// Reset trigger info structures
       void reset_trigger_info();
 
+			/// Reset trigger record structure for a clocktick
+			void reset_trigger_record_per_clocktick();
+
+			/// Get the level 1 finale decision bool
+			const bool get_calo_level_1_finale_decision() const;
+
 			/// Get the level 1 finale decision structure
-			const trigger_summary_record get_calo_level_1_finale_decision() const;
+			const calo_trigger_algorithm::trigger_summary_record get_calo_level_1_finale_decision_structure() const;
     
 			/// General process
       void process(const calo_ctw_data & calo_ctw_data_);
@@ -171,9 +184,6 @@ namespace snemo {
 		 
 			/// Build the trigger record structure for a clocktick
 			void _build_trigger_record_per_clocktick(const calo_ctw & my_calo_ctw_);
-
-			/// Build intermediate working data structure
-			void _build_trigger_record_structure();   
 
 			/// Build summary calo trigger structure
 			void _build_trigger_record_summary_structure(trigger_summary_record & my_trigger_summary_record_);

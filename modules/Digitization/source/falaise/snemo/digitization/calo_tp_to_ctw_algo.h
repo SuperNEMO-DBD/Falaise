@@ -50,7 +50,7 @@ namespace snemo {
       void reset(); 
 
 			/// Set the crate number of the algorithm
-			void set_crate_number(int crate_number_);
+			void set_crate_number(unsigned int crate_number_);
 			
 			/// Return the crate number of the algorithm
 			int get_crate_number() const;

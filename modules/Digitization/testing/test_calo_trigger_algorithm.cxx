@@ -23,6 +23,7 @@
 #include <snemo/digitization/signal_to_calo_tp_algo.h>
 #include <snemo/digitization/calo_tp_to_ctw_algo.h>
 #include <snemo/digitization/calo_trigger_algorithm.h>
+#include <snemo/digitization/mapping.h>
 
 int main( int  argc_ , char **argv_  )
 {
@@ -126,8 +127,7 @@ int main( int  argc_ , char **argv_  )
 	    signal_2_calo_tp.set_clocktick_shift(clocktick_25_shift);	 
 	    snemo::digitization::signal_data signal_data;
 
-	    //	    if (SD.has_step_hits("calo") || SD.has_step_hits("xcalo") || SD.has_step_hits("gveto"))
-	    if(SD.has_step_hits("gveto"))
+	    if (SD.has_step_hits("calo") || SD.has_step_hits("xcalo") || SD.has_step_hits("gveto"))
 	      {
 		sd_2_calo_signal.process(SD, signal_data);
 	      
@@ -141,7 +141,7 @@ int main( int  argc_ , char **argv_  )
 	    
 		snemo::digitization::calo_ctw_data my_calo_ctw_data;
 		snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw_0;
-		calo_tp_2_ctw_0.set_crate_number(snemo::digitization::mapping::MAIN_CALO_SIDE_1_CRATE);
+		calo_tp_2_ctw_0.set_crate_number(snemo::digitization::mapping::MAIN_CALO_SIDE_0_CRATE);
 		calo_tp_2_ctw_0.initialize();
 		snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw_1;
 		calo_tp_2_ctw_1.set_crate_number(snemo::digitization::mapping::MAIN_CALO_SIDE_1_CRATE);
@@ -169,6 +169,7 @@ int main( int  argc_ , char **argv_  )
 		//   snemo::digitization::calo_ctw & my_calo_ctw = my_calo_ctw_data.add();
 		//   my_calo_ctw.grab_geom_id().set_type(42);
 		//   my_calo_ctw.grab_geom_id().set_address(3,0,10);
+
 		//   my_calo_ctw.grab_auxiliaries().store("author", "guillaume");
 		//   my_calo_ctw.grab_auxiliaries().store_flag("mock");
 		//   my_calo_ctw.set_clocktick_25ns(2105694861);
