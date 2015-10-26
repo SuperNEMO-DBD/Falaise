@@ -56,7 +56,7 @@ namespace snemo {
 					
       /// Do a list of geiger crate trigger word which are in the same clocktick
       void get_list_of_geiger_ctw_per_clocktick(int32_t clocktick_25ns_, geiger_ctw_collection_type & ctws_) const;
-
+			
       /// Check the lock status
       bool is_locked() const;
 
@@ -74,6 +74,9 @@ namespace snemo {
 
       /// Return the const collection of geiger crate trigger
       const geiger_ctw_collection_type & get_geiger_ctws() const;
+
+      /// Return the collection of geiger crate trigger
+      geiger_ctw_collection_type & grab_geiger_ctws() ;
 
       /// Reset
       void reset();

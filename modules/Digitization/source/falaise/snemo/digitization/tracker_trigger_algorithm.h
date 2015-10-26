@@ -114,9 +114,6 @@ namespace snemo {
 			/// Size of the subzone row projection bitset
 			static const int32_t GEIGER_LEVEL_ONE_SUBZONE_ROW_SIZE   = 6;
 			
-			/// Size ot the final response of the trigger
-			static const int32_t TRACKER_TRIGGER_FINAL_RESPONSE_SIZE = 2;
-
     public : 
 
       /// Default constructor
@@ -145,12 +142,6 @@ namespace snemo {
 
 			/// Return the board id from the bitset of 100 bits
 			uint32_t get_board_id(const std::bitset<geiger::tp::FULL_SIZE> & my_bitset_) const;
-
-			/// Return the finale response for tracker trigger decision
-			std::bitset<TRACKER_TRIGGER_FINAL_RESPONSE_SIZE> get_tracker_best_final_response() const;
-
-			/// Get the finale response for tracker trigger decision
-			void get_tracker_best_final_response(std::bitset<TRACKER_TRIGGER_FINAL_RESPONSE_SIZE> & final_response_) const;
 			
 			/// Convert the electronic ID of active geiger cells into geometric ID
 			void build_hit_cells_gids_from_ctw(const geiger_ctw & my_geiger_ctw_,
@@ -165,8 +156,11 @@ namespace snemo {
 			/// Reset the geiger cells matrix
 			void reset_matrix();
 			
-			/// Display the level one and level two tracker trigger info (bitsets)
-		  void display_tracker_trigger_info() const;
+			/// Display the intermediate level one and level two tracker trigger info (bitsets)
+		  void display_intermediate_tracker_trigger_info() const;
+
+			/// Display the finale tracker trigger info (bits per zone and finale decision)
+			void display_finale_tracker_trigger_info() const;
 
 			/// Fill an A6D1 level 0 to level 1 memory for a given subzone
 			void fill_mem_lvl0_to_lvl1_row(const std::string & filename_,
@@ -218,11 +212,12 @@ namespace snemo {
 			/// Build the level two tracker trigger primitive bitsets
 			void build_trigger_level_one_to_level_two();
 			
-			/// Build the final response of the tracker trigger (if there is a track, a pretrack or nothing)
-			void build_trigger_tracker_final_response();
+			/// Merbe the interzones responses with zones. If full track in interzone, replaces the decision in zones
+			void merge_interzones_with_zones();
 			
-			/// Compute the best response for one event
-			void fill_best_tracker_response_for_the_event();
+			/// Compute the finale decision for tracker trigger (level one and prelevel one
+			void compute_tracker_level_one_finale_decision();
+
 
       /// General process
       void process(const geiger_ctw_data & geiger_ctw_data_);
@@ -248,10 +243,10 @@ namespace snemo {
 			std::bitset<GEIGER_LEVEL_ONE_ZONING_BITSET_SIZE> _level_one_prime_tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES]; //!< Table of 2x10 containing 8 bits bitset representing the level one tracker trigger for the interzones	 
 			std::bitset<GEIGER_LEVEL_TWO_ZONING_BITSET_SIZE> _level_two_tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES]; //!< Table of 2x10 containing 2 bits bitset representing if there is a track / pretrack or nothing in one zone	
 			std::bitset<GEIGER_LEVEL_TWO_ZONING_BITSET_SIZE> _level_two_prime_tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES]; //!< Table of 2x9 containing 2 bits bitset representing if there is a track / pretrack or nothing in one interzone
-			std::bitset<TRACKER_TRIGGER_FINAL_RESPONSE_SIZE> _tracker_trigger_final_response_; //!< Final response of the tracker trigger for a clocktick
-			std::bitset<TRACKER_TRIGGER_FINAL_RESPONSE_SIZE> _best_tracker_trigger_final_response_; //!< Best final response of the tracker trigger for one total event
-			
-			
+
+			bool _prelevel_one_finale_decision_; //!< Prelevel one finale decision, activate if calo coincidences is needed
+			bool _level_one_finale_decision_; //!< Level one finale decision if a fulltrack is somewhere in the chamber
+
 			sub_zone_location_info _sub_zone_location_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES_PER_SIDE]; //!< Table of 2x40 (10 zones subdivided in 4 subzones on 2 sides)
 			
 			memory<6,1> _mem_lvl0_to_lvl1_row_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES][mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES]; //!< A6D1 memory for level 0 to level 1 row projection depending of algorithm uses (multiplicity or gap)

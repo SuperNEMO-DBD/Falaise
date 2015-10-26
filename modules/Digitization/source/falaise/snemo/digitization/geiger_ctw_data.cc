@@ -78,7 +78,6 @@ namespace snemo {
       return _geiger_ctws_[get_clocktick_max_index()].get().get_clocktick_800ns();
     }
 
-
     int geiger_ctw_data::get_clocktick_range() const
     {
       DT_THROW_IF(_geiger_ctws_.size() == 0, std::logic_error, " Geiger CTW collection is empty ! ");
@@ -142,7 +141,12 @@ namespace snemo {
     {
       return _geiger_ctws_;
     }
-
+		
+		geiger_ctw_data::geiger_ctw_collection_type & geiger_ctw_data::grab_geiger_ctws()
+		{
+			return _geiger_ctws_;
+		}
+		
     void geiger_ctw_data::reset()
     {
       if (is_locked())

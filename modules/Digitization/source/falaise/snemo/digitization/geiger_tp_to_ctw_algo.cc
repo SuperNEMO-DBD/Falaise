@@ -85,21 +85,21 @@ namespace snemo {
     void geiger_tp_to_ctw_algo::process(const geiger_tp_data & geiger_tp_data_,  geiger_ctw_data & geiger_ctw_data_)
     { 
       DT_THROW_IF(!is_initialized(), std::logic_error, "Geiger tp to ctw algo is not initialized, it can't process ! ");
-
       for(int32_t i = geiger_tp_data_.get_clocktick_min(); i <= geiger_tp_data_.get_clocktick_max(); i++)
       	{
       	  for(int j = 0 ; j <= mapping::NUMBER_OF_CRATES ; j++) 
-      	    {	  
+      	    { 
       	      std::vector<datatools::handle<geiger_tp> > geiger_tp_list_per_clocktick_per_crate;
       	      geiger_tp_data_.get_list_of_gg_tp_per_clocktick_per_crate(i, j, geiger_tp_list_per_clocktick_per_crate);
       	      if(!geiger_tp_list_per_clocktick_per_crate.empty())
       		{
       		  geiger_ctw & a_geiger_ctw_ = geiger_ctw_data_.add();
       		  _process_for_a_ctw_for_a_clocktick(geiger_tp_list_per_clocktick_per_crate, a_geiger_ctw_);
-      		  //a_geiger_ctw_.tree_dump(std::clog, "a_geiger_ctw : ", "INFO : ");
+		  //a_geiger_ctw_.tree_dump(std::clog, "a_geiger_ctw : ", "INFO : ");
       		}
       	    }
       	}
+
       return;
     }
 
