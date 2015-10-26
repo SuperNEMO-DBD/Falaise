@@ -44,16 +44,16 @@ namespace snemo {
 			void reset();
 
 			/// Get the clocktick 25ns reference
-			int32_t get_clocktick_25_ref();
+			const int32_t get_clocktick_25_ref();
 
 			/// Get the clocktick 800ns reference
-			int32_t get_clocktick_800_ref();
+			const int32_t get_clocktick_800_ref();
 
 			/// Get the clocktick 25ns shift
-			double get_clocktick_25_shift();
+			const double get_clocktick_25_shift();
 
 			/// Get the clocktick 800ns shift
-			double get_clocktick_800_shift();
+			const double get_clocktick_800_shift();
 
 			/// Compute clockticks reference
 			void compute_clockticks_ref(mygsl::rng & prng_);

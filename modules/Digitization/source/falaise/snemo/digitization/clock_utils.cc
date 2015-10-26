@@ -51,22 +51,22 @@ namespace snemo {
       return;
     }
 
-    int32_t clock_utils::get_clocktick_25_ref()
+    const int32_t clock_utils::get_clocktick_25_ref()
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Clock utils is not initialized ! ");
       return _clocktick_25_ref_;
     }
-    int32_t clock_utils::get_clocktick_800_ref()
+    const int32_t clock_utils::get_clocktick_800_ref() 
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Clock utils is not initialized ! ");
       return _clocktick_800_ref_;
     }
-    double clock_utils::get_clocktick_25_shift()
+    const double clock_utils::get_clocktick_25_shift()
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Clock utils is not initialized ! ");
       return _clocktick_25_shift_;
     }
-    double clock_utils::get_clocktick_800_shift()
+    const double clock_utils::get_clocktick_800_shift()
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Clock utils is not initialized ! ");
       return _clocktick_800_shift_;
