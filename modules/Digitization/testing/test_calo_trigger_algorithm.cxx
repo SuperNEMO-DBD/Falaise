@@ -117,75 +117,83 @@ int main( int  argc_ , char **argv_  )
 
 	    my_clock_manager.compute_clockticks_ref(random_generator);
 	    int32_t clocktick_25_reference  = my_clock_manager.get_clocktick_25_ref();
-	    double  clocktick_25_shift      = my_clock_manager.get_clocktick_25_shift();
+	    double  clocktick_25_shift      = my_clock_manager.get_shift_25();
 	    int32_t clocktick_800_reference = my_clock_manager.get_clocktick_800_ref();
-	    double  clocktick_800_shift     = my_clock_manager.get_clocktick_800_shift();
+	    double  clocktick_800_shift     = my_clock_manager.get_shift_800();
 
-	    snemo::digitization::signal_to_calo_tp_algo signal_2_calo_tp;
-	    signal_2_calo_tp.initialize(my_e_mapping);
-	    signal_2_calo_tp.set_clocktick_reference(clocktick_25_reference);
-	    signal_2_calo_tp.set_clocktick_shift(clocktick_25_shift);	 
+	 
 	    snemo::digitization::signal_data signal_data;
 
 	    if (SD.has_step_hits("calo") || SD.has_step_hits("xcalo") || SD.has_step_hits("gveto"))
 	      {
 		sd_2_calo_signal.process(SD, signal_data);
-	      
-		snemo::digitization::calo_tp_data my_calo_tp_data;
 
 		if( signal_data.has_calo_signals())
 		  {
+		    snemo::digitization::signal_to_calo_tp_algo signal_2_calo_tp;
+		    signal_2_calo_tp.initialize(my_e_mapping);
+		    signal_2_calo_tp.set_clocktick_reference(clocktick_25_reference);
+		    signal_2_calo_tp.set_clocktick_shift(clocktick_25_shift);
+
+		    snemo::digitization::calo_tp_data my_calo_tp_data;
+
 		    signal_2_calo_tp.process(signal_data, my_calo_tp_data);
+
 		    my_calo_tp_data.tree_dump(std::clog, "Calorimeter TP(s) data : ", "INFO : ");
-		  }
-	    
-		snemo::digitization::calo_ctw_data my_calo_ctw_data;
-		snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw_0;
-		calo_tp_2_ctw_0.set_crate_number(snemo::digitization::mapping::MAIN_CALO_SIDE_0_CRATE);
-		calo_tp_2_ctw_0.initialize();
-		snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw_1;
-		calo_tp_2_ctw_1.set_crate_number(snemo::digitization::mapping::MAIN_CALO_SIDE_1_CRATE);
-		calo_tp_2_ctw_1.initialize();
-		snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw_2;
-		calo_tp_2_ctw_2.set_crate_number(snemo::digitization::mapping::XWALL_GVETO_CALO_CRATE);
-		calo_tp_2_ctw_2.initialize();
+		  
+		    snemo::digitization::calo_ctw_data my_calo_ctw_data;
+		    snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw_0;
+		    calo_tp_2_ctw_0.set_crate_number(snemo::digitization::mapping::MAIN_CALO_SIDE_0_CRATE);
+		    calo_tp_2_ctw_0.initialize();
+		    snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw_1;
+		    calo_tp_2_ctw_1.set_crate_number(snemo::digitization::mapping::MAIN_CALO_SIDE_1_CRATE);
+		    calo_tp_2_ctw_1.initialize();
+		    snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw_2;
+		    calo_tp_2_ctw_2.set_crate_number(snemo::digitization::mapping::XWALL_GVETO_CALO_CRATE);
+		    calo_tp_2_ctw_2.initialize();
 
-		calo_tp_2_ctw_0.process(my_calo_tp_data, my_calo_ctw_data);
-		calo_tp_2_ctw_1.process(my_calo_tp_data, my_calo_ctw_data);
-		calo_tp_2_ctw_2.process(my_calo_tp_data, my_calo_ctw_data);
+		    calo_tp_2_ctw_0.process(my_calo_tp_data, my_calo_ctw_data);
+		    calo_tp_2_ctw_1.process(my_calo_tp_data, my_calo_ctw_data);
+		    calo_tp_2_ctw_2.process(my_calo_tp_data, my_calo_ctw_data);
 
-		snemo::digitization::calo_trigger_algorithm my_calo_algo;
-		my_calo_algo.set_electronic_mapping(my_e_mapping);
-		unsigned int calo_circular_buffer_depth = 4;
-		my_calo_algo.set_circular_buffer_depth(calo_circular_buffer_depth);
-		// my_calo_algo.inhibit_both_side_coinc();
-	        // my_calo_algo.inhibit_single_side_coinc();
-		unsigned int calo_threshold = 1;
-		my_calo_algo.set_threshold_total_multiplicity(calo_threshold);
-		my_calo_algo.initialize_simple();
+		    snemo::digitization::calo_trigger_algorithm my_calo_algo;
+		    my_calo_algo.set_electronic_mapping(my_e_mapping);
+		    unsigned int calo_circular_buffer_depth = 4;
+		    my_calo_algo.set_circular_buffer_depth(calo_circular_buffer_depth);
+		    // my_calo_algo.inhibit_both_side_coinc();
+		    // my_calo_algo.inhibit_single_side_coinc();
+		    unsigned int calo_threshold = 1;
+		    my_calo_algo.set_threshold_total_multiplicity(calo_threshold);
+		    my_calo_algo.initialize_simple();
 		
-		// // Modification of my_calo_ctw_data for a test.
-		// {
-		//   snemo::digitization::calo_ctw & my_calo_ctw = my_calo_ctw_data.add();
-		//   my_calo_ctw.grab_geom_id().set_type(42);
-		//   my_calo_ctw.grab_geom_id().set_address(3,0,10);
+		    // // Modification of my_calo_ctw_data for a test.
+		    // {
+		    //   snemo::digitization::calo_ctw & my_calo_ctw = my_calo_ctw_data.add();
+		    //   my_calo_ctw.grab_geom_id().set_type(42);
+		    //   my_calo_ctw.grab_geom_id().set_address(3,0,10);
 
-		//   my_calo_ctw.grab_auxiliaries().store("author", "guillaume");
-		//   my_calo_ctw.grab_auxiliaries().store_flag("mock");
-		//   my_calo_ctw.set_clocktick_25ns(2105694861);
-		//   my_calo_ctw.set_htm_pc(1);
-		//   my_calo_ctw.set_lto_pc_bit(1);
-		//   std::bitset<4> control_word(std::string("1100"));
-		//   my_calo_ctw.set_control_word(control_word);
-		//   std::bitset<10> zoning_word (std::string("0000000010"));
-		//   my_calo_ctw.set_zoning_word(zoning_word);
-		//   my_calo_ctw.tree_dump(std::clog, "my_calo_CTW_data : ", "INFO : ");
-		// }
+		    //   my_calo_ctw.grab_auxiliaries().store("author", "guillaume");
+		    //   my_calo_ctw.grab_auxiliaries().store_flag("mock");
+		    //   my_calo_ctw.set_clocktick_25ns(2105694861);
+		    //   my_calo_ctw.set_htm_pc(1);
+		    //   my_calo_ctw.set_lto_pc_bit(1);
+		    //   std::bitset<4> control_word(std::string("1100"));
+		    //   my_calo_ctw.set_control_word(control_word);
+		    //   std::bitset<10> zoning_word (std::string("0000000010"));
+		    //   my_calo_ctw.set_zoning_word(zoning_word);
+		    //   my_calo_ctw.tree_dump(std::clog, "my_calo_CTW_data : ", "INFO : ");
+		    // }
 		
-		my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
-
-		my_calo_algo.process(my_calo_ctw_data);
-	      } // end of if has "calo" || "xcalo" step hits
+		    my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
+		
+		    snemo::digitization::calo_trigger_algorithm::trigger_summary_record calo_level_one_finale_decision;
+		
+		    my_calo_algo.process(my_calo_ctw_data);
+		    calo_level_one_finale_decision = my_calo_algo.get_calo_level_1_finale_decision_structure();
+		
+		  } // end of if has calo signal
+		
+	      } // end of if has "calo" || "xcalo" || "gveto" step hits
 	    
 	  }
 	ER.clear();

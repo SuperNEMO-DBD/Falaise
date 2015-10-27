@@ -352,10 +352,16 @@ int main(int  argc_ , char ** argv_)
 		    // Random clocktick references and shifts 
 		    my_clock_manager.compute_clockticks_ref(random_generator);
 		    int32_t clocktick_25_reference  = my_clock_manager.get_clocktick_25_ref();
-		    double  clocktick_25_shift      = my_clock_manager.get_clocktick_25_shift();
+		    double  clocktick_25_shift      = my_clock_manager.get_shift_25();
 		    int32_t clocktick_800_reference = my_clock_manager.get_clocktick_800_ref();
-		    double  clocktick_800_shift     = my_clock_manager.get_clocktick_800_shift();
-
+		    double  clocktick_800_shift     = my_clock_manager.get_shift_800();
+		    
+		    std::clog << "CT 25 Ref : " << clocktick_25_reference
+			      << " CT 25 shift : " << clocktick_25_shift << std::endl;
+		    
+		    std::clog << " CT 800 Ref : " << clocktick_800_reference
+			      << " CT 800 shift : " << clocktick_800_shift << std::endl;
+		    
 		    // Creation of a geiger TP data object to store geiger TP :
 		    snemo::digitization::geiger_tp_data my_geiger_tp_data;
 
@@ -374,9 +380,9 @@ int main(int  argc_ , char ** argv_)
 		    snemo::digitization::geiger_tp_to_ctw_algo geiger_tp_2_ctw;
 		    geiger_tp_2_ctw.initialize();
 		    geiger_tp_2_ctw.process(my_geiger_tp_data, my_geiger_ctw_data);
-		    //my_geiger_ctw_data.tree_dump(std::clog, "Geiger CTW(s) data : ", "INFO : ");
+		    my_geiger_ctw_data.tree_dump(std::clog, "Geiger CTW(s) data : ", "INFO : ");
 		    
-		    // Initializin and processing tracker trigger algorithm to make a decision :
+		    // Initializing and processing tracker trigger algorithm to make a decision :
 		    snemo::digitization::tracker_trigger_algorithm my_tracker_algo;
 		    my_tracker_algo.set_electronic_mapping(my_e_mapping);
 		    my_tracker_algo.initialize();
@@ -384,11 +390,7 @@ int main(int  argc_ , char ** argv_)
 		    my_tracker_algo.fill_mem_lvl0_to_lvl1_row_all(memory_row);
 		    my_tracker_algo.fill_mem_lvl1_to_lvl2_all(memory_lvl1_to_lvl2);
 		    my_tracker_algo.process(my_geiger_ctw_data);
-		    
-		    // Extract the best response (among all clockticks geiger cells are active) for the event :
-		    best_tracker_trigger_decision = my_tracker_algo.get_tracker_best_final_response();		    
-
-	           
+			           
 		  } // end of if has geiger signals data
 	      } // end of if has "gg" step hits	 
 
@@ -435,13 +437,18 @@ int main(int  argc_ , char ** argv_)
 
       } // end of while
 
+    // ************************************************************************************** \\
+    // Histrogram not working, because best finale decision has been deleted from the process \\
+    // Changes incoming for outputs                                                           \\
+    // ************************************************************************************** \\
+
     best_final_decision_histogram.print(ofhist);
     ofhist.close();
     
     std::clog << std::endl;
-    std::clog << "DEBUG : [00] count = #" << decision_00_count << std::endl;
-    std::clog << "DEBUG : [01] count = #" << decision_01_count << std::endl;
-    std::clog << "DEBUG : [11] count = #" << decision_11_count << std::endl;
+    // std::clog << "DEBUG : [00] count = #" << decision_00_count << std::endl;
+    // std::clog << "DEBUG : [01] count = #" << decision_01_count << std::endl;
+    // std::clog << "DEBUG : [11] count = #" << decision_11_count << std::endl;
     std::clog << "The end." << std::endl;
   }
   catch (std::exception & error) {

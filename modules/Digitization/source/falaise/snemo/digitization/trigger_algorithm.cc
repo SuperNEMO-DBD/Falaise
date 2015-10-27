@@ -61,14 +61,14 @@ namespace snemo {
       return;
     }
 
-    void trigger_algorithm::process()
+    void trigger_algorithm::process(const calo_trigger_algorithm::trigger_summary_record & trigger_sumary_record_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Trigger algorithm is not initialized, it can't process ! ");
       
       return;
     }
 
-    void trigger_algorithm::_process()
+    void trigger_algorithm::_process(const calo_trigger_algorithm::trigger_summary_record & trigger_sumary_record_)
     {
       return;
     }
