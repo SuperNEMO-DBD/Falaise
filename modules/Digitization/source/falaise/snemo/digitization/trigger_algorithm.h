@@ -50,12 +50,12 @@ namespace snemo {
       void reset(); 
 			
       /// General process
-      void process(const calo_trigger_algorithm::trigger_summary_record & trigger_sumary_record_);
+      void process(const calo_trigger_algorithm::calo_summary_record & calo_sumary_record_);
 
     protected :
 
       /// Protected general process
-      void _process(const calo_trigger_algorithm::trigger_summary_record & trigger_sumary_record_);
+      void _process(const calo_trigger_algorithm::calo_summary_record & calo_sumary_record_);
 
     private :
      

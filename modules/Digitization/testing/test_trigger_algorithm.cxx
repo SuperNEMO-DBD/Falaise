@@ -212,11 +212,6 @@ int main( int  argc_ , char **argv_  )
 		double  clocktick_25_shift      = my_clock_manager.get_shift_25();
 		int32_t clocktick_800_reference = my_clock_manager.get_clocktick_800_ref();
 		double  clocktick_800_shift     = my_clock_manager.get_shift_800();
-		std::clog << "CT 25 Ref : " << clocktick_25_reference
-			  << " CT 25 shift : " << clocktick_25_shift << std::endl;
-		    
-		std::clog << "CT 800 Ref : " << clocktick_800_reference
-			  << " CT 800 shift : " << clocktick_800_shift << std::endl;
 
 		// Creation of a signal data object to store calo & geiger signals :
 		snemo::digitization::signal_data signal_data;	
@@ -267,12 +262,14 @@ int main( int  argc_ , char **argv_  )
 		    unsigned int calo_threshold = 1;
 		    my_calo_algo.set_threshold_total_multiplicity(calo_threshold);
 		    my_calo_algo.initialize_simple();
-		
+
+		    my_clock_manager.tree_dump(std::clog, "Clock utils : ", "INFO : ");
+		    
 		    // Calo trigger algorithm
 		    my_calo_algo.process(my_calo_ctw_data);
 
 		    // Finale structure (published ?)
-		    snemo::digitization::calo_trigger_algorithm::trigger_summary_record calo_level_one_finale_decision = my_calo_algo.get_calo_level_1_finale_decision_structure();
+		    snemo::digitization::calo_trigger_algorithm::calo_summary_record calo_level_one_finale_decision = my_calo_algo.get_calo_level_1_finale_decision_structure();
 
 		  } // end of if has calo signal
 

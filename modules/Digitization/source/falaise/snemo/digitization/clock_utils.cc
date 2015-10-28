@@ -22,6 +22,11 @@ namespace snemo {
     const int32_t clock_utils::TRIGGER_CLOCKTICK;
     const int32_t clock_utils::INVALID_CLOCKTICK;
     const int32_t clock_utils::ACTIVATED_GEIGER_CELLS_NUMBER;
+    const int32_t clock_utils::CALO_FEB_SHIFT_CLOCKTICK_NUMBER;
+    const int32_t clock_utils::CALO_CB_SHIFT_CLOCKTICK_NUMBER;
+
+    const int32_t clock_utils::TRACKER_FEB_SHIFT_CLOCKTICK_NUMBER;
+    const int32_t clock_utils::TRACKER_CB_SHIFT_CLOCKTICK_NUMBER;
 
     clock_utils::clock_utils()
     {
@@ -62,7 +67,7 @@ namespace snemo {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Clock utils is not initialized ! ");
       return _clocktick_ref_;
     }
-    const int32_t clock_utils::get_shift_1600()
+    const double clock_utils::get_shift_1600()
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Clock utils is not initialized ! ");
       return _shift_1600_;
@@ -88,11 +93,37 @@ namespace snemo {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Clock utils is not initialized ! ");
       return _shift_800_;
     }
+    
+    void clock_utils::tree_dump (std::ostream & out_,
+				 const std::string & title_,
+				 const std::string & indent_,
+				 bool inherit_) const
+    { 
+
+      out_ << indent_ << title_ << std::endl;
+
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+	   << "Shift [0;1600] : " << _shift_1600_ << std::endl;
+      
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+	   << "CT Ref 25 : " << _clocktick_25_ref_ << std::endl;
+
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+	   << "Shift 25 : " << _shift_25_ << std::endl;
+  
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+	   << "CT Ref 800 : " << _clocktick_800_ref_ << std::endl;
+
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+	   << "Shift 800 : " << _shift_800_ << std::endl;
+
+      return;
+    }
 			
     void clock_utils::compute_clockticks_ref(mygsl::rng & prng_)
     {
-      DT_THROW_IF(!is_initialized(), std::logic_error, "Clock utils is not initialized ! ");
-      _randomize_shift(prng_);
+    DT_THROW_IF(!is_initialized(), std::logic_error, "Clock utils is not initialized ! ");
+    _randomize_shift(prng_);
       _clocktick_25_ref_ = _shift_1600_ / MAIN_CLOCKTICK;
       _shift_25_ = std::fmod(_shift_1600_, MAIN_CLOCKTICK);      
       _clocktick_800_ref_ = _shift_1600_ / TRACKER_CLOCKTICK;

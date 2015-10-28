@@ -11,6 +11,7 @@
 // This project :
 #include <snemo/digitization/calo_tp_data.h>
 #include <snemo/digitization/calo_ctw_data.h>
+#include <snemo/digitization/clock_utils.h>
 
 // Third party:
 // - Bayeux/datatools :
@@ -67,9 +68,6 @@ namespace snemo {
 			/// Set the ctw high threshold multiplicity for a given clocktick
 			void set_ctw_htm(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_);
 	
-			/// Set the clocktick for one ctw
-			void set_ctw_clocktick(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_);
-
 			/// Set the ctw zone bit for a given clocktick when the high threshold is passed
       void set_ctw_zone_bit_htm(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_);
 

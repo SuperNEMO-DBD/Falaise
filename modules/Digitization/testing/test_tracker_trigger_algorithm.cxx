@@ -389,8 +389,11 @@ int main(int  argc_ , char ** argv_)
 		    my_tracker_algo.fill_mem_lvl0_to_lvl1_layer_all(memory_layer);
 		    my_tracker_algo.fill_mem_lvl0_to_lvl1_row_all(memory_row);
 		    my_tracker_algo.fill_mem_lvl1_to_lvl2_all(memory_lvl1_to_lvl2);
-		    my_tracker_algo.process(my_geiger_ctw_data);
-			           
+		    snemo::digitization::tracker_trigger_algorithm::tracker_record tracker_level_one_finale_decison;
+
+		    my_tracker_algo.process(my_geiger_ctw_data);			    
+		    tracker_level_one_finale_decison = my_tracker_algo.get_tracker_level_1_finale_decision_structure();
+
 		  } // end of if has geiger signals data
 	      } // end of if has "gg" step hits	 
 

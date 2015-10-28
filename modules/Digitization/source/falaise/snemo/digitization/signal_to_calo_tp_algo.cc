@@ -77,8 +77,7 @@ namespace snemo {
 					  calo_tp_data & my_calo_tp_data_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "SD to calo TP algorithm is not initialized ! ");
-      unsigned int seed = 314159;
-      std::srand(seed);
+
       size_t number_of_hits = signal_data_.get_calo_signals().size();
       std::clog << "DEBUG : BEGINING OF SIGNAL TO CALO TP PROCESS " << std::endl;
       std::clog << "**************************************************************" << std::endl;
@@ -115,7 +114,7 @@ namespace snemo {
 	  unsigned int existing_index = 0;
 
 	  double relative_time            = a_calo_signal.get_signal_time() - time_reference ;
-	  int32_t a_calo_signal_clocktick = _clocktick_ref_;
+	  int32_t a_calo_signal_clocktick = _clocktick_ref_ + clock_utils::CALO_FEB_SHIFT_CLOCKTICK_NUMBER;
 
 	  if (relative_time > 3)
 	    {

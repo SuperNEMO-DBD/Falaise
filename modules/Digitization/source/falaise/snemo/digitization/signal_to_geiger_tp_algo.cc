@@ -14,8 +14,6 @@ namespace snemo {
   
   namespace digitization {
 
-    const unsigned int signal_to_geiger_tp_algo::TRIGGER_READING_CLOCKTICK_SHIFT;
-
     signal_to_geiger_tp_algo::signal_to_tp_working_data::signal_to_tp_working_data()
     {
       reset();
@@ -150,7 +148,8 @@ namespace snemo {
 	  _electronic_mapping_->convert_GID_to_EID(mapping::THREE_WIRES_TRACKER_MODE, geom_id, electronic_id);
 
 	  double relative_time = a_geiger_signal.get_anode_avalanche_time() + _clocktick_shift_ - time_reference ;
-	  int32_t a_geiger_signal_clocktick = _clocktick_ref_ + TRIGGER_READING_CLOCKTICK_SHIFT;
+
+	  int32_t a_geiger_signal_clocktick = _clocktick_ref_ + clock_utils::TRACKER_FEB_SHIFT_CLOCKTICK_NUMBER;
 
 	  if (relative_time > 800)
 	    {

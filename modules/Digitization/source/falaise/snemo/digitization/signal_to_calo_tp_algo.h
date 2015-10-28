@@ -20,9 +20,10 @@
 #include <snemo/digitization/calo_tp_data.h>
 #include <snemo/digitization/signal_data.h>
 #include <snemo/digitization/electronic_mapping.h>
+#include <snemo/digitization/clock_utils.h>
 
 namespace snemo {
-  
+	
   namespace digitization {		
 
     /// \brief Algorithm processing. Take simulated datas and fill calo trigger primitive data object.

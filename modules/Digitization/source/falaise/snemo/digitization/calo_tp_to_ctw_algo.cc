@@ -147,11 +147,6 @@ namespace snemo {
       return;
     }
     
-    void calo_tp_to_ctw_algo::set_ctw_clocktick(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_)
-    {
-      my_ctw_.set_clocktick_25ns(my_calo_tp_.get_clocktick_25ns());
-      return;
-    }
     void calo_tp_to_ctw_algo::set_ctw_zone_bit_htm(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_)
     {
       unsigned int activated_zone_id = 0;
@@ -247,9 +242,11 @@ namespace snemo {
       my_calo_tp_.get_geom_id().extract_to(temporary_feb_id);
       temporary_feb_id.set(mapping::BOARD_INDEX, mapping::CONTROL_BOARD_ID);
 
+      int32_t clocktick_with_internal_shift = my_calo_tp_.get_clocktick_25ns() + clock_utils::CALO_CB_SHIFT_CLOCKTICK_NUMBER;
+      
       a_calo_ctw_.set_header(my_calo_tp_.get_hit_id(),
 			     temporary_feb_id,
-			     my_calo_tp_.get_clocktick_25ns());
+			     clocktick_with_internal_shift);
 
       set_ctw_htm(my_calo_tp_, a_calo_ctw_);
       set_ctw_zone_bit_htm(my_calo_tp_, a_calo_ctw_);
@@ -266,9 +263,11 @@ namespace snemo {
       my_calo_tp_.get_geom_id().extract_to(temporary_feb_id);
       temporary_feb_id.set(mapping::BOARD_INDEX, mapping::CONTROL_BOARD_ID);
 
+      int32_t clocktick_with_internal_shift = my_calo_tp_.get_clocktick_25ns() + clock_utils::CALO_CB_SHIFT_CLOCKTICK_NUMBER;
+
       a_calo_ctw_.set_header(my_calo_tp_.get_hit_id(),
 			     temporary_feb_id,
-			     my_calo_tp_.get_clocktick_25ns());
+			     clocktick_with_internal_shift);
       set_ctw_htm(my_calo_tp_, a_calo_ctw_);
       set_ctw_zone_bit_htm(my_calo_tp_, a_calo_ctw_);
       set_ctw_lto(my_calo_tp_, a_calo_ctw_);

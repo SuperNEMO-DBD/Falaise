@@ -185,10 +185,9 @@ int main( int  argc_ , char **argv_  )
 		    // }
 		
 		    my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
-		
-		    snemo::digitization::calo_trigger_algorithm::trigger_summary_record calo_level_one_finale_decision;
-		
 		    my_calo_algo.process(my_calo_ctw_data);
+
+		    snemo::digitization::calo_trigger_algorithm::calo_summary_record calo_level_one_finale_decision;
 		    calo_level_one_finale_decision = my_calo_algo.get_calo_level_1_finale_decision_structure();
 		
 		  } // end of if has calo signal

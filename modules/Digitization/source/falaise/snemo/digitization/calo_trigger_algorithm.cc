@@ -16,7 +16,7 @@ namespace snemo {
     const int32_t calo_trigger_algorithm::XT_INFO_BITSET_SIZE;
 
     
-    calo_trigger_algorithm::trigger_record::trigger_record()
+    calo_trigger_algorithm::calo_record::calo_record()
     {
       clocktick_25ns = -1;
       LTO_side_0 = false;
@@ -25,7 +25,7 @@ namespace snemo {
       return;
     }
         
-    void calo_trigger_algorithm::trigger_record::reset()
+    void calo_trigger_algorithm::calo_record::reset()
     {
       clocktick_25ns = -1;
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
@@ -43,9 +43,9 @@ namespace snemo {
       return;
     }
 
-    void calo_trigger_algorithm::trigger_record::display()
+    void calo_trigger_algorithm::calo_record::display()
     {      
-      std::clog << "Trigger info record : " << std::endl; 
+      std::clog << "Calo Trigger info record : " << std::endl; 
       std::clog << "CLOCKTICK |XTS|L|HG|L|L|H1|H0| ZONING S1| ZONING S0 " << std::endl; 
       std::clog << clocktick_25ns << ' ';
       std::clog << xt_info_bitset << ' ';
@@ -68,37 +68,37 @@ namespace snemo {
       return;
     }
     
-    calo_trigger_algorithm::trigger_summary_record::trigger_summary_record()
+    calo_trigger_algorithm::calo_summary_record::calo_summary_record()
     {
       single_side_coinc = false;
       threshold_total_multiplicity = false;
-      trigger_finale_decision = false;
+      calo_finale_decision = false;
       return; 
     }
 
-   void calo_trigger_algorithm::trigger_summary_record::reset()
+   void calo_trigger_algorithm::calo_summary_record::reset()
    {
-     trigger_record::reset();
+     calo_record::reset();
      single_side_coinc = false;
      threshold_total_multiplicity = false;
-     trigger_finale_decision = false;
+     calo_finale_decision = false;
      return;
    }
     
-    void calo_trigger_algorithm::trigger_summary_record::reset_summary_boolean_only()
+    void calo_trigger_algorithm::calo_summary_record::reset_summary_boolean_only()
     {
       single_side_coinc = false;
       threshold_total_multiplicity = false;
-      trigger_finale_decision = false;
+      calo_finale_decision = false;
       return;
     }
 
-    void calo_trigger_algorithm::trigger_summary_record::display()
+    void calo_trigger_algorithm::calo_summary_record::display()
     {
-      trigger_record::display();
+      calo_record::display();
       std::clog << "Single Side coinc : "      << single_side_coinc << std::endl;
       std::clog << "Threshold total mult : "   << threshold_total_multiplicity << std::endl;
-      std::clog << "Trigger final decision : " << trigger_finale_decision  << std::endl;
+      std::clog << "Trigger final decision : " << calo_finale_decision  << std::endl;
       std::clog << std::endl;
       return;
     }
@@ -210,47 +210,48 @@ namespace snemo {
       _inhibit_both_side_coinc_ = false;
       _inhibit_single_side_coinc_ = false;
       _circular_buffer_depth_ = -1;
-      reset_trigger_info();
+      _calo_level_1_finale_decision_.reset();
+      reset_calo_info();
       _gate_circular_buffer_.reset();
       return;
     }
     
-    void calo_trigger_algorithm::reset_trigger_info()
+    void calo_trigger_algorithm::reset_calo_info()
     {
-      _trigger_record_per_clocktick_.reset();
+      _calo_record_per_clocktick_.reset();
       _calo_level_1_finale_decision_.reset();
       return;
     }
 
-    void calo_trigger_algorithm::reset_trigger_record_per_clocktick()
+    void calo_trigger_algorithm::reset_calo_record_per_clocktick()
     {
-      _trigger_record_per_clocktick_.reset();
+      _calo_record_per_clocktick_.reset();
       return;
     }    
 
     const bool calo_trigger_algorithm::get_calo_level_1_finale_decision() const
     {
-      return _calo_level_1_finale_decision_.trigger_finale_decision;
+      return _calo_level_1_finale_decision_.calo_finale_decision;
     }
     
-    const calo_trigger_algorithm::trigger_summary_record calo_trigger_algorithm::get_calo_level_1_finale_decision_structure() const
+    const calo_trigger_algorithm::calo_summary_record calo_trigger_algorithm::get_calo_level_1_finale_decision_structure() const
     {
       return _calo_level_1_finale_decision_;
     }
 
-    void calo_trigger_algorithm::_display_trigger_info_for_a_clocktick()
+    void calo_trigger_algorithm::_display_calo_info_for_a_clocktick()
     {
-      _trigger_record_per_clocktick_.display();
+      _calo_record_per_clocktick_.display();
 
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
       	{
       	  if (iside == 1)
       	    {
       	      std::clog << " |                                                                                                                 |" << std::endl;
-      	      if (_trigger_record_per_clocktick_.zoning_word[iside][0] == true) std::clog << "   |";
+      	      if (_calo_record_per_clocktick_.zoning_word[iside][0] == true) std::clog << "   |";
       	      else std::clog << " |";
       	      std::clog << "                                                                                                                 ";
-      	      if (_trigger_record_per_clocktick_.zoning_word[iside][9] == true) std::clog << "| Side 1" << std::endl;
+      	      if (_calo_record_per_clocktick_.zoning_word[iside][9] == true) std::clog << "| Side 1" << std::endl;
       	      else std::clog << "| Side 1" << std::endl;
       	    }
 	  if (iside == 0) std::clog << "    Zone0                                                                                                   Zone9 " << std::endl;
@@ -259,17 +260,17 @@ namespace snemo {
       	    {
       	      if (izone == 0 || izone == 9) 
       		{
-      		  if (_trigger_record_per_clocktick_.zoning_word[iside][izone] == true) std::clog << "[*******]";
+      		  if (_calo_record_per_clocktick_.zoning_word[iside][izone] == true) std::clog << "[*******]";
       		  else std::clog  << "[       ]";
       		}
       	      else if (izone == 5) 
       		{
-      		  if (_trigger_record_per_clocktick_.zoning_word[iside][izone] == true) std::clog  << "[*********]";
+      		  if (_calo_record_per_clocktick_.zoning_word[iside][izone] == true) std::clog  << "[*********]";
       		  else std::clog  << "[         ]";
       		}
       	      else 
       		{
-      		  if (_trigger_record_per_clocktick_.zoning_word[iside][izone] == true) std::clog  << "[**********]";
+      		  if (_calo_record_per_clocktick_.zoning_word[iside][izone] == true) std::clog  << "[**********]";
       		  else std::clog << "[          ]";
       		}
       	    } // end of izone
@@ -277,10 +278,10 @@ namespace snemo {
 	  if (iside == 1) std::clog << "    Zone0                                                                                                   Zone9 " << std::endl;
       	  if (iside == 0)
       	    {
-      	      if (_trigger_record_per_clocktick_.zoning_word[iside][0] == true) std::clog << " |";
+      	      if (_calo_record_per_clocktick_.zoning_word[iside][0] == true) std::clog << " |";
       	      else std::clog << " |";
       	      std::clog << "                                                                                                                 ";
-      	      if (_trigger_record_per_clocktick_.zoning_word[iside][9] == true) std::clog << "| Side 0" << std::endl;
+      	      if (_calo_record_per_clocktick_.zoning_word[iside][9] == true) std::clog << "| Side 0" << std::endl;
       	      else std::clog << "| Side 0" << std::endl;
       	      std::clog << " |                                                                                                                 |" << std::endl;
       	      std::clog << " |-----------------------------------------------------------------------------------------------------------------| Source foil" << std::endl;
@@ -290,19 +291,19 @@ namespace snemo {
       return;
     }
 
-    void calo_trigger_algorithm::_display_trigger_summary(trigger_summary_record & my_trigger_summary_record_)
+    void calo_trigger_algorithm::_display_calo_summary(calo_summary_record & my_calo_summary_record_)
     {
-      my_trigger_summary_record_.display(); 
+      my_calo_summary_record_.display(); 
 
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
       	{
       	  if (iside == 1)
       	    {
       	      std::clog << " |                                                                                                                 |" << std::endl;
-      	      if (my_trigger_summary_record_.zoning_word[iside][0] == true) std::clog << " |";
+      	      if (my_calo_summary_record_.zoning_word[iside][0] == true) std::clog << " |";
       	      else std::clog << " |";
       	      std::clog << "                                                                                                                 ";
-      	      if (my_trigger_summary_record_.zoning_word[iside][9] == true) std::clog << "| Side 1" << std::endl;
+      	      if (my_calo_summary_record_.zoning_word[iside][9] == true) std::clog << "| Side 1" << std::endl;
       	      else std::clog << "| Side 1" << std::endl;
       	    }
 	  if (iside == 0) std::clog << "    Zone0                                                                                                   Zone9 " << std::endl;
@@ -311,17 +312,17 @@ namespace snemo {
       	    {
       	      if (izone == 0 || izone == 9) 
       		{
-      		  if (my_trigger_summary_record_.zoning_word[iside][izone] == true) std::clog << "[*******]";
+      		  if (my_calo_summary_record_.zoning_word[iside][izone] == true) std::clog << "[*******]";
       		  else std::clog  << "[       ]";
       		}
       	      else if (izone == 5) 
       		{
-      		  if (my_trigger_summary_record_.zoning_word[iside][izone] == true) std::clog  << "[*********]";
+      		  if (my_calo_summary_record_.zoning_word[iside][izone] == true) std::clog  << "[*********]";
       		  else std::clog  << "[         ]";
       		}
       	      else 
       		{
-      		  if (my_trigger_summary_record_.zoning_word[iside][izone] == true) std::clog  << "[**********]";
+      		  if (my_calo_summary_record_.zoning_word[iside][izone] == true) std::clog  << "[**********]";
       		  else std::clog << "[          ]";
       		}
       	    } // end of izone
@@ -329,10 +330,10 @@ namespace snemo {
 	  if (iside == 1) std::clog << "    Zone0                                                                                                   Zone9 " << std::endl;
       	  if (iside == 0)
       	    {
-      	      if (my_trigger_summary_record_.zoning_word[iside][0] == true) std::clog << " |";
+      	      if (my_calo_summary_record_.zoning_word[iside][0] == true) std::clog << " |";
       	      else std::clog << " |";
       	      std::clog << "                                                                                                                 ";
-      	      if (my_trigger_summary_record_.zoning_word[iside][9] == true) std::clog << "| Side 0" << std::endl;
+      	      if (my_calo_summary_record_.zoning_word[iside][9] == true) std::clog << "| Side 0" << std::endl;
       	      else std::clog << "| Side 0" << std::endl;
       	      std::clog << " |                                                                                                                 |" << std::endl;
       	      std::clog << " |-----------------------------------------------------------------------------------------------------------------| Source foil" << std::endl;
@@ -343,12 +344,12 @@ namespace snemo {
       return;
     }
     
-    void calo_trigger_algorithm::_build_trigger_record_per_clocktick(const calo_ctw & my_calo_ctw_)
+    void calo_trigger_algorithm::_build_calo_record_per_clocktick(const calo_ctw & my_calo_ctw_)
     {  
       uint32_t crate_index = my_calo_ctw_.get_geom_id().get(mapping::CRATE_INDEX);  
       DT_THROW_IF(crate_index < mapping::MAIN_CALO_SIDE_0_CRATE || crate_index > mapping::XWALL_GVETO_CALO_CRATE, std::logic_error, "Crate index '"<< crate_index << "' is not defined, check your value ! ");
       
-      _trigger_record_per_clocktick_.clocktick_25ns = my_calo_ctw_.get_clocktick_25ns();      
+      _calo_record_per_clocktick_.clocktick_25ns = my_calo_ctw_.get_clocktick_25ns();      
 
       // Fill structure if crate is number 2
       if (!my_calo_ctw_.is_main_wall())
@@ -361,21 +362,21 @@ namespace snemo {
 	  // -- Fill xwall side 0 multipliciy
 	  if (multiplicity_side_0 != 0)
 	    {
-	      _trigger_record_per_clocktick_.total_multiplicity_side_0 = _trigger_record_per_clocktick_.total_multiplicity_side_0.to_ulong() + multiplicity_side_0;
+	      _calo_record_per_clocktick_.total_multiplicity_side_0 = _calo_record_per_clocktick_.total_multiplicity_side_0.to_ulong() + multiplicity_side_0;
 	    }
 
 	  // -- Fill xwall side 1 multiplicity
 	  if (multiplicity_side_1 != 0)
 	    {
-	      _trigger_record_per_clocktick_.total_multiplicity_side_1 = _trigger_record_per_clocktick_.total_multiplicity_side_1.to_ulong() + multiplicity_side_1;
+	      _calo_record_per_clocktick_.total_multiplicity_side_1 = _calo_record_per_clocktick_.total_multiplicity_side_1.to_ulong() + multiplicity_side_1;
 	    }
 	  
 	  // -- Fill gamma veto multiplicity
 	  if (my_calo_ctw_.get_htm_gveto_info() != 0)
 	    {
-	      _trigger_record_per_clocktick_.total_multiplicity_gveto = my_calo_ctw_.get_htm_gveto_info();
+	      _calo_record_per_clocktick_.total_multiplicity_gveto = my_calo_ctw_.get_htm_gveto_info();
 	    }
-	  else _trigger_record_per_clocktick_.total_multiplicity_gveto = 0;
+	  else _calo_record_per_clocktick_.total_multiplicity_gveto = 0;
 	  
 	  // Fill xwall zone corresponding of xwall zoning word :     
 
@@ -389,25 +390,25 @@ namespace snemo {
 		case calo::ctw::ZONING_XWALL_BIT0 :
 		  if (xwall_zoning_bitset.test(izone - calo::ctw::ZONING_XWALL_BIT0) == true)
 		    {		      
-		      _trigger_record_per_clocktick_.zoning_word[SIDE_0_INDEX].set(ZONE_0_INDEX, true);
+		      _calo_record_per_clocktick_.zoning_word[SIDE_0_INDEX].set(ZONE_0_INDEX, true);
 		    }
 		  break;
 		case calo::ctw::ZONING_XWALL_BIT1 :
 		  if (xwall_zoning_bitset.test(izone - calo::ctw::ZONING_XWALL_BIT0) == true)
 		    {
-		      _trigger_record_per_clocktick_.zoning_word[SIDE_0_INDEX].set(ZONE_9_INDEX, true);
+		      _calo_record_per_clocktick_.zoning_word[SIDE_0_INDEX].set(ZONE_9_INDEX, true);
 		    }
 		  break;
 		case calo::ctw::ZONING_XWALL_BIT2 :
 		  if (xwall_zoning_bitset.test(izone - calo::ctw::ZONING_XWALL_BIT0) == true)
 		    {
-		      _trigger_record_per_clocktick_.zoning_word[SIDE_1_INDEX].set(ZONE_0_INDEX, true);
+		      _calo_record_per_clocktick_.zoning_word[SIDE_1_INDEX].set(ZONE_0_INDEX, true);
 		    }
 		  break;
 		case calo::ctw::ZONING_XWALL_BIT3 :
 		  if (xwall_zoning_bitset.test(izone - calo::ctw::ZONING_XWALL_BIT0) == true)
 		    {	
-		      _trigger_record_per_clocktick_.zoning_word[SIDE_1_INDEX].set(ZONE_9_INDEX, true);
+		      _calo_record_per_clocktick_.zoning_word[SIDE_1_INDEX].set(ZONE_9_INDEX, true);
 		    }
 		  break;
 		default :
@@ -417,9 +418,9 @@ namespace snemo {
 
 	  // Fill LTO boolean for each side of xwall and gamma veto
 
-	  if (my_calo_ctw_.is_lto_xwall_side_0()) _trigger_record_per_clocktick_.LTO_side_0 = true;
-	  if (my_calo_ctw_.is_lto_xwall_side_1()) _trigger_record_per_clocktick_.LTO_side_1 = true;
-	  if (my_calo_ctw_.is_lto_gveto()) _trigger_record_per_clocktick_.LTO_gveto = true;
+	  if (my_calo_ctw_.is_lto_xwall_side_0()) _calo_record_per_clocktick_.LTO_side_0 = true;
+	  if (my_calo_ctw_.is_lto_xwall_side_1()) _calo_record_per_clocktick_.LTO_side_1 = true;
+	  if (my_calo_ctw_.is_lto_gveto()) _calo_record_per_clocktick_.LTO_gveto = true;
 	}
 
       // Fill structure if crate is number 0 or 1
@@ -430,12 +431,12 @@ namespace snemo {
 
 	  if (crate_index == mapping::MAIN_CALO_SIDE_0_CRATE && main_multiplicity != 0)
 	    {
-	      _trigger_record_per_clocktick_.total_multiplicity_side_0 = _trigger_record_per_clocktick_.total_multiplicity_side_0.to_ulong() + main_multiplicity;
+	      _calo_record_per_clocktick_.total_multiplicity_side_0 = _calo_record_per_clocktick_.total_multiplicity_side_0.to_ulong() + main_multiplicity;
 	    }
 
 	  if (crate_index == mapping::MAIN_CALO_SIDE_1_CRATE && main_multiplicity != 0)
 	    {
-	      _trigger_record_per_clocktick_.total_multiplicity_side_1 = _trigger_record_per_clocktick_.total_multiplicity_side_1.to_ulong() + main_multiplicity;
+	      _calo_record_per_clocktick_.total_multiplicity_side_1 = _calo_record_per_clocktick_.total_multiplicity_side_1.to_ulong() + main_multiplicity;
 	    }
 
 	  // Fill zone main wall bitset :
@@ -445,92 +446,92 @@ namespace snemo {
 
 	  for (int izone = 0; izone < mapping::NUMBER_OF_CALO_TRIGGER_ZONES; izone++)
 	    {
-	      if (main_zoning_bitset.test(izone) == true) _trigger_record_per_clocktick_.zoning_word[crate_index].set(izone,true);
+	      if (main_zoning_bitset.test(izone) == true) _calo_record_per_clocktick_.zoning_word[crate_index].set(izone,true);
 	    }
 	  
 	  // Fill LTO boolean for each side
-	  if (crate_index == mapping::MAIN_CALO_SIDE_0_CRATE && my_calo_ctw_.is_lto_main_wall()) _trigger_record_per_clocktick_.LTO_side_0 = true;
-	  if (crate_index == mapping::MAIN_CALO_SIDE_1_CRATE && my_calo_ctw_.is_lto_main_wall()) _trigger_record_per_clocktick_.LTO_side_1 = true;
+	  if (crate_index == mapping::MAIN_CALO_SIDE_0_CRATE && my_calo_ctw_.is_lto_main_wall()) _calo_record_per_clocktick_.LTO_side_0 = true;
+	  if (crate_index == mapping::MAIN_CALO_SIDE_1_CRATE && my_calo_ctw_.is_lto_main_wall()) _calo_record_per_clocktick_.LTO_side_1 = true;
 	}
 
       return;
     }    
     
-    void calo_trigger_algorithm::_build_trigger_record_summary_structure(trigger_summary_record & my_trigger_summary_record_)
+    void calo_trigger_algorithm::_build_calo_record_summary_structure(calo_summary_record & my_calo_summary_record_)
     {
-      for (boost::circular_buffer<trigger_record>::iterator it =_gate_circular_buffer_->begin() ; it != _gate_circular_buffer_->end(); it++)
+      for (boost::circular_buffer<calo_record>::iterator it =_gate_circular_buffer_->begin() ; it != _gate_circular_buffer_->end(); it++)
       	{
-      	  const trigger_record & ctrec = *it; 
+      	  const calo_record & ctrec = *it; 
 
 	  // Total mult side 0 :
 
-      	  if (my_trigger_summary_record_.total_multiplicity_side_0 != 0)
+      	  if (my_calo_summary_record_.total_multiplicity_side_0 != 0)
       	    {
-      	      if (my_trigger_summary_record_.total_multiplicity_side_0 == 3) my_trigger_summary_record_.total_multiplicity_side_0 = 3;
-      	      else my_trigger_summary_record_.total_multiplicity_side_0 = my_trigger_summary_record_.total_multiplicity_side_0.to_ulong() + ctrec.total_multiplicity_side_0.to_ulong();
+      	      if (my_calo_summary_record_.total_multiplicity_side_0 == 3) my_calo_summary_record_.total_multiplicity_side_0 = 3;
+      	      else my_calo_summary_record_.total_multiplicity_side_0 = my_calo_summary_record_.total_multiplicity_side_0.to_ulong() + ctrec.total_multiplicity_side_0.to_ulong();
       	    }
       	  else
       	    {
-      	      my_trigger_summary_record_.total_multiplicity_side_0 = ctrec.total_multiplicity_side_0;
+      	      my_calo_summary_record_.total_multiplicity_side_0 = ctrec.total_multiplicity_side_0;
       	    }
 
 	  // Total mult side 1 :
 
-      	  if (my_trigger_summary_record_.total_multiplicity_side_1 != 0)
+      	  if (my_calo_summary_record_.total_multiplicity_side_1 != 0)
       	    {
-      	      if (my_trigger_summary_record_.total_multiplicity_side_1 == 3) my_trigger_summary_record_.total_multiplicity_side_1 = 3;
-      	      else my_trigger_summary_record_.total_multiplicity_side_1 = my_trigger_summary_record_.total_multiplicity_side_1.to_ulong() + ctrec.total_multiplicity_side_1.to_ulong();
+      	      if (my_calo_summary_record_.total_multiplicity_side_1 == 3) my_calo_summary_record_.total_multiplicity_side_1 = 3;
+      	      else my_calo_summary_record_.total_multiplicity_side_1 = my_calo_summary_record_.total_multiplicity_side_1.to_ulong() + ctrec.total_multiplicity_side_1.to_ulong();
       	    }
       	  else
       	    {
-      	      my_trigger_summary_record_.total_multiplicity_side_1 = ctrec.total_multiplicity_side_1;
+      	      my_calo_summary_record_.total_multiplicity_side_1 = ctrec.total_multiplicity_side_1;
       	    }
 	  
 	  // Total mult gveto :
-	  if (my_trigger_summary_record_.total_multiplicity_gveto != 0)
+	  if (my_calo_summary_record_.total_multiplicity_gveto != 0)
 	    {
-	      my_trigger_summary_record_.total_multiplicity_gveto = my_trigger_summary_record_.total_multiplicity_gveto.to_ulong() + ctrec.total_multiplicity_gveto.to_ulong();
+	      my_calo_summary_record_.total_multiplicity_gveto = my_calo_summary_record_.total_multiplicity_gveto.to_ulong() + ctrec.total_multiplicity_gveto.to_ulong();
 	    }
 	  else
 	    {
-	      my_trigger_summary_record_.total_multiplicity_gveto = ctrec.total_multiplicity_gveto;
+	      my_calo_summary_record_.total_multiplicity_gveto = ctrec.total_multiplicity_gveto;
 	    }
 	  
 	  // LTO bits :
 	  
-	  if (my_trigger_summary_record_.LTO_side_0 == false) my_trigger_summary_record_.LTO_side_0 = ctrec.LTO_side_0;
-	  if (my_trigger_summary_record_.LTO_side_1 == false) my_trigger_summary_record_.LTO_side_1 = ctrec.LTO_side_1;
-	  if (my_trigger_summary_record_.LTO_gveto == false) my_trigger_summary_record_.LTO_gveto = ctrec.LTO_gveto;
+	  if (my_calo_summary_record_.LTO_side_0 == false) my_calo_summary_record_.LTO_side_0 = ctrec.LTO_side_0;
+	  if (my_calo_summary_record_.LTO_side_1 == false) my_calo_summary_record_.LTO_side_1 = ctrec.LTO_side_1;
+	  if (my_calo_summary_record_.LTO_gveto == false) my_calo_summary_record_.LTO_gveto = ctrec.LTO_gveto;
 	  // Zoning word :
 
       	  for (int i = 0; i < mapping::NUMBER_OF_SIDES; i++)
       	    {
       	      for (int j = 0; j < ZONING_PER_SIDE_BITSET_SIZE; j++)
       		{
-      		  if (ctrec.zoning_word[i].test(j) == true) my_trigger_summary_record_.zoning_word[i].set(j, true);
-      		  if (j < XT_INFO_BITSET_SIZE && ctrec.xt_info_bitset.test(j) == true) my_trigger_summary_record_.xt_info_bitset.set(j, true);   
+      		  if (ctrec.zoning_word[i].test(j) == true) my_calo_summary_record_.zoning_word[i].set(j, true);
+      		  if (j < XT_INFO_BITSET_SIZE && ctrec.xt_info_bitset.test(j) == true) my_calo_summary_record_.xt_info_bitset.set(j, true);   
       		}
       	    }	  
       	}
 
-      bool side_0_activated = my_trigger_summary_record_.zoning_word[SIDE_0_INDEX].any();
-      bool side_1_activated = my_trigger_summary_record_.zoning_word[SIDE_1_INDEX].any();
+      bool side_0_activated = my_calo_summary_record_.zoning_word[SIDE_0_INDEX].any();
+      bool side_1_activated = my_calo_summary_record_.zoning_word[SIDE_1_INDEX].any();
       
-      if ((side_0_activated && !side_1_activated) || (!side_0_activated && side_1_activated)) my_trigger_summary_record_.single_side_coinc = true;
-      else my_trigger_summary_record_.single_side_coinc = false;
+      if ((side_0_activated && !side_1_activated) || (!side_0_activated && side_1_activated)) my_calo_summary_record_.single_side_coinc = true;
+      else my_calo_summary_record_.single_side_coinc = false;
 
-      if ((my_trigger_summary_record_.total_multiplicity_side_0.to_ulong() + my_trigger_summary_record_.total_multiplicity_side_1.to_ulong()) >= _threshold_total_multiplicity_.to_ulong())   my_trigger_summary_record_.threshold_total_multiplicity = true;
-      else my_trigger_summary_record_.threshold_total_multiplicity = false;
+      if ((my_calo_summary_record_.total_multiplicity_side_0.to_ulong() + my_calo_summary_record_.total_multiplicity_side_1.to_ulong()) >= _threshold_total_multiplicity_.to_ulong())   my_calo_summary_record_.threshold_total_multiplicity = true;
+      else my_calo_summary_record_.threshold_total_multiplicity = false;
     }
 
-    void calo_trigger_algorithm::_compute_trigger_finale_decision(trigger_summary_record & my_trigger_summary_record_)
+    void calo_trigger_algorithm::_compute_calo_finale_decision(calo_summary_record & my_calo_summary_record_)
     {
-      if ((_activated_threshold_ && my_trigger_summary_record_.threshold_total_multiplicity)
-      	  && !(is_inhibited_single_side_coinc() && my_trigger_summary_record_.single_side_coinc)
-      	  && !(is_inhibited_both_side_coinc() && !my_trigger_summary_record_.single_side_coinc))
+      if ((_activated_threshold_ && my_calo_summary_record_.threshold_total_multiplicity)
+      	  && !(is_inhibited_single_side_coinc() && my_calo_summary_record_.single_side_coinc)
+      	  && !(is_inhibited_both_side_coinc() && !my_calo_summary_record_.single_side_coinc))
       	{
-      	  my_trigger_summary_record_.trigger_finale_decision = true;
-      	  _calo_level_1_finale_decision_ = my_trigger_summary_record_;
+      	  my_calo_summary_record_.calo_finale_decision = true;
+      	  _calo_level_1_finale_decision_ = my_calo_summary_record_;
       	}	 
 
       return;      
@@ -545,7 +546,7 @@ namespace snemo {
 
     void calo_trigger_algorithm::_process(const calo_ctw_data & calo_ctw_data_)
     { 
-      reset_trigger_info();
+      reset_calo_info();
       _gate_circular_buffer_.reset(new buffer_type(_circular_buffer_depth_));
 
       for(int32_t iclocktick = calo_ctw_data_.get_clocktick_min(); iclocktick <= calo_ctw_data_.get_clocktick_max(); iclocktick++)
@@ -555,19 +556,19 @@ namespace snemo {
 	  
 	  for (int isize = 0; isize < ctw_list_per_clocktick.size(); isize++)
 	    {
-	      _build_trigger_record_per_clocktick(ctw_list_per_clocktick[isize].get());
+	      _build_calo_record_per_clocktick(ctw_list_per_clocktick[isize].get());
 	    } // end of isize 
-	  _gate_circular_buffer_->push_back(_trigger_record_per_clocktick_);
-	  std::clog <<"*************************** Clocktick = " << iclocktick << "***************************" << std::endl << std::endl;
-	  //_display_trigger_info_for_a_clocktick();
-	  trigger_summary_record my_trigger_summary_record;
-	  my_trigger_summary_record.clocktick_25ns = iclocktick;
-	  _build_trigger_record_summary_structure(my_trigger_summary_record);
-	  _compute_trigger_finale_decision(my_trigger_summary_record);
+	  _gate_circular_buffer_->push_back(_calo_record_per_clocktick_);
+	  std::clog <<"*************************** Clocktick 25 = " << iclocktick << "***************************" << std::endl << std::endl;
+	  //_display_calo_info_for_a_clocktick();
+	  calo_summary_record my_calo_summary_record;
+	  my_calo_summary_record.clocktick_25ns = iclocktick;
+	  _build_calo_record_summary_structure(my_calo_summary_record);
+	  _compute_calo_finale_decision(my_calo_summary_record);
 	  
-	  if (get_calo_level_1_finale_decision()) _display_trigger_summary(_calo_level_1_finale_decision_);
+	  if (get_calo_level_1_finale_decision()) _display_calo_summary(_calo_level_1_finale_decision_);
 	  
-	  reset_trigger_record_per_clocktick();
+	  reset_calo_record_per_clocktick();
 	} // end of iclocktick
       return;
     }

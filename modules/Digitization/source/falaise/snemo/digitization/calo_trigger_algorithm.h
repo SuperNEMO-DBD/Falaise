@@ -44,9 +44,9 @@ namespace snemo {
 			/// Size of the information bitset containing XT bit and spare bits (up to 4)
 			static const int32_t XT_INFO_BITSET_SIZE = 3;
 
-			struct trigger_record
+			struct calo_record
 			{
-				trigger_record();
+				calo_record();
 				void reset();
 			  void display();
 				uint32_t clocktick_25ns;
@@ -60,15 +60,15 @@ namespace snemo {
 				std::bitset<XT_INFO_BITSET_SIZE> xt_info_bitset;
 			};
 			
-			struct trigger_summary_record : public trigger_record
+			struct calo_summary_record : public calo_record
 			{
-				trigger_summary_record();
+				calo_summary_record();
 				void reset();
 				void reset_summary_boolean_only();
 				void display();
 				bool single_side_coinc;
 				bool threshold_total_multiplicity;
-				bool trigger_finale_decision;
+				bool calo_finale_decision;
 			};
 			
 			enum side_id_index {
@@ -166,16 +166,16 @@ namespace snemo {
       void reset(); 
 
       /// Reset trigger info structures
-      void reset_trigger_info();
+      void reset_calo_info();
 
 			/// Reset trigger record structure for a clocktick
-			void reset_trigger_record_per_clocktick();
+			void reset_calo_record_per_clocktick();
 
 			/// Get the level 1 finale decision bool
 			const bool get_calo_level_1_finale_decision() const;
 
 			/// Get the level 1 finale decision structure
-			const calo_trigger_algorithm::trigger_summary_record get_calo_level_1_finale_decision_structure() const;
+			const calo_trigger_algorithm::calo_summary_record get_calo_level_1_finale_decision_structure() const;
     
 			/// General process
       void process(const calo_ctw_data & calo_ctw_data_);
@@ -183,26 +183,26 @@ namespace snemo {
 		protected :
 		 
 			/// Build the trigger record structure for a clocktick
-			void _build_trigger_record_per_clocktick(const calo_ctw & my_calo_ctw_);
+			void _build_calo_record_per_clocktick(const calo_ctw & my_calo_ctw_);
 
 			/// Build summary calo trigger structure
-			void _build_trigger_record_summary_structure(trigger_summary_record & my_trigger_summary_record_);
+			void _build_calo_record_summary_structure(calo_summary_record & my_calo_summary_record_);
 
 			/// Compute the trigger finale decision
-			void _compute_trigger_finale_decision(trigger_summary_record & my_trigger_summary_record_);
+			void _compute_calo_finale_decision(calo_summary_record & my_calo_summary_record_);
 
 			/// Protected general process
 			void _process(const calo_ctw_data & calo_ctw_data_);
 
 			/// Display the level one calo trigger info (bitsets)
-			void _display_trigger_info_for_a_clocktick();
+			void _display_calo_info_for_a_clocktick();
 	
 			/// Display the level one calo trigger info and internal working data (bitsets)
-			void _display_trigger_summary(trigger_summary_record & my_trigger_summary_record_);
+			void _display_calo_summary(calo_summary_record & my_calo_summary_record_);
 
     private :
 
-			typedef boost::circular_buffer<trigger_record> buffer_type;
+			typedef boost::circular_buffer<calo_record> buffer_type;
 
       // Configuration :
       bool _initialized_; //!< Initialization flag
@@ -215,11 +215,11 @@ namespace snemo {
 
       // Data :	 
 
-			trigger_record _trigger_record_per_clocktick_; //!< Trigger record structure for built for each clocktick
+			calo_record _calo_record_per_clocktick_; //!< Trigger record structure for built for each clocktick
 
 			boost::scoped_ptr<buffer_type> _gate_circular_buffer_; //!< Scoped pointer to a circular buffer containing output data structure
  
-			trigger_summary_record _calo_level_1_finale_decision_; //!< Finale decision for level 1 calorimeter
+			calo_summary_record _calo_level_1_finale_decision_; //!< Structure representing the finale decision for level 1 calorimeter
 
     };
 

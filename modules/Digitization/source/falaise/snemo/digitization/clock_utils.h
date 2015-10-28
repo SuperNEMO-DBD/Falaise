@@ -7,6 +7,7 @@
 
 // - Bayeux/datatools:
 #include <datatools/clhep_units.h>
+#include <datatools/i_tree_dump.h>
 
 // - Bayeux/GSL:
 #include <mygsl/rng.h>
@@ -15,8 +16,8 @@
 #include <boost/cstdint.hpp>
 
 namespace snemo {
-  
-  namespace digitization {
+	
+	namespace digitization {
 		
 		class clock_utils 
 		{
@@ -28,7 +29,14 @@ namespace snemo {
 			static const int32_t TRIGGER_CLOCKTICK = 1600;           //!< Clocktick for trigger, 1600ns.
 			static const int32_t INVALID_CLOCKTICK = -1;             //!< Invalid value for clocktick
 			static const int32_t ACTIVATED_GEIGER_CELLS_NUMBER = 10; //!< Number of clocktick 800 where a geiger cell is activated
-      
+
+			static const int32_t CALO_FEB_SHIFT_CLOCKTICK_NUMBER = 6; //!< Number of clocktick which shift the internal clocktick in a caloFEB
+			static const int32_t CALO_CB_SHIFT_CLOCKTICK_NUMBER = 7;  //!< Number of clocktick which shift the internal clocktick in a caloCB
+
+			// To define with Thierry ? : 
+			static const int32_t TRACKER_FEB_SHIFT_CLOCKTICK_NUMBER = 1; //!< Number of clocktick which shift the internal clocktick in a trackerFEB
+			static const int32_t TRACKER_CB_SHIFT_CLOCKTICK_NUMBER = 0;  //!< Number of clocktick which shift the internal clocktick in a trackerCB
+
 			/// Default constructor
 			clock_utils();
 
@@ -48,7 +56,7 @@ namespace snemo {
 			const int32_t get_clocktick_ref();
 
 			/// Get the shift between 0 and 1600 ns
-			const int32_t get_shift_1600();
+			const double get_shift_1600();
 
 			/// Get the clocktick 25ns reference
 			const int32_t get_clocktick_25_ref();
@@ -59,16 +67,22 @@ namespace snemo {
 			/// Get the clocktick 25ns shift
 			const double get_shift_25();
 
-			/// Get the clocktick 800ns shift
-			const double get_shift_800();
+      /// Get the clocktick 800ns shift
+      const double get_shift_800();
 
+      /// Display clockticks ref and shifts
+      void tree_dump (std::ostream & out_ = std::clog,
+											const std::string & title_  = "",
+											const std::string & indent_ = "",
+											bool inherit_               = false) const;
+			
 			/// Compute clockticks reference
 			void compute_clockticks_ref(mygsl::rng & prng_);
 
 		protected :
-			
 			/// Clocktick shift uniform randomize for 25 and 800ns clockticks
 			void _randomize_shift(mygsl::rng & prng_);
+			
 		private :
 			
 			bool    _initialized_;       //!< Initialization flag

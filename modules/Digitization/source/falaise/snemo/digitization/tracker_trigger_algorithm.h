@@ -25,14 +25,42 @@ namespace snemo {
 
     /// \brief Trigger algorithm general process
     class tracker_trigger_algorithm
-    {
+    {				
+    public : 
+			
+			/// Level one zoning size of a bitset for a zone
+			static const int32_t GEIGER_LEVEL_ONE_ZONING_BITSET_SIZE = 8;
+			
+			/// Level two zoning size of a bitset for a zone
+			static const int32_t GEIGER_LEVEL_TWO_ZONING_BITSET_SIZE = 2;
+			
+			/// Final bitset size for geiger zoning
+			static const int32_t GEIGER_ZONING_FINAL_BITSET_SIZE = 2;
+	
+			/// Size of the subzone layer projection bitset
+			static const int32_t GEIGER_LEVEL_ONE_SUBZONE_LAYER_SIZE = 5;
+
+			/// Size of the subzone row projection bitset
+			static const int32_t GEIGER_LEVEL_ONE_SUBZONE_ROW_SIZE   = 6;
+
+			struct tracker_record
+			{
+				tracker_record();
+				void reset();
+				void display();
+				uint32_t clocktick_1600ns;
+				bool prelevel_one_finale_decision; //!< Prelevel one finale decision, activate if calo coincidences is needed
+				bool level_one_finale_decision; //!< Level one finale decision if a fulltrack is somewhere in the chamber
+				std::bitset<GEIGER_ZONING_FINAL_BITSET_SIZE> final_tracker_trigger_info[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES];
+			};
+			
 			struct sub_zone_location_info {
 				int32_t row_begin;
 				int32_t row_end;
 				int32_t layer_begin;		
 			};
 
-			enum tracker_zoning_row_id_limits{
+			enum tracker_zoning_row_id_limits {
 				ZONE_0_BEGIN = 0,
 				ZONE_0_END   = 8,
 				ZONE_1_BEGIN = 9,
@@ -101,20 +129,6 @@ namespace snemo {
 				SUBZONE_3_LAYER_INDEX = 6,
 				SUBZONE_3_ROW_INDEX   = 7	
 			};
-			
-			/// Level one zoning size of a bitset for a zone
-			static const int32_t GEIGER_LEVEL_ONE_ZONING_BITSET_SIZE = 8;
-			
-			/// Level two zoning size of a bitset for a zone
-			static const int32_t GEIGER_LEVEL_TWO_ZONING_BITSET_SIZE = 2;
-	
-			/// Size of the subzone layer projection bitset
-			static const int32_t GEIGER_LEVEL_ONE_SUBZONE_LAYER_SIZE = 5;
-
-			/// Size of the subzone row projection bitset
-			static const int32_t GEIGER_LEVEL_ONE_SUBZONE_ROW_SIZE   = 6;
-			
-    public : 
 
       /// Default constructor
 			tracker_trigger_algorithm();
@@ -139,6 +153,9 @@ namespace snemo {
 
 			/// Reset private tables
 			void reset_trigger_info();
+
+			/// Get the level 1 finale decision structure
+			const tracker_trigger_algorithm::tracker_record get_tracker_level_1_finale_decision_structure() const;
 
 			/// Return the board id from the bitset of 100 bits
 			uint32_t get_board_id(const std::bitset<geiger::tp::FULL_SIZE> & my_bitset_) const;
@@ -211,13 +228,9 @@ namespace snemo {
 
 			/// Build the level two tracker trigger primitive bitsets
 			void build_trigger_level_one_to_level_two();
-			
-			/// Merbe the interzones responses with zones. If full track in interzone, replaces the decision in zones
-			void merge_interzones_with_zones();
-			
-			/// Compute the finale decision for tracker trigger (level one and prelevel one
-			void compute_tracker_level_one_finale_decision();
 
+			/// Build the level 1 finale structure for the tracker
+			void build_tracker_record();
 
       /// General process
       void process(const geiger_ctw_data & geiger_ctw_data_);
@@ -244,15 +257,13 @@ namespace snemo {
 			std::bitset<GEIGER_LEVEL_TWO_ZONING_BITSET_SIZE> _level_two_tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES]; //!< Table of 2x10 containing 2 bits bitset representing if there is a track / pretrack or nothing in one zone	
 			std::bitset<GEIGER_LEVEL_TWO_ZONING_BITSET_SIZE> _level_two_prime_tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES]; //!< Table of 2x9 containing 2 bits bitset representing if there is a track / pretrack or nothing in one interzone
 
-			bool _prelevel_one_finale_decision_; //!< Prelevel one finale decision, activate if calo coincidences is needed
-			bool _level_one_finale_decision_; //!< Level one finale decision if a fulltrack is somewhere in the chamber
-
 			sub_zone_location_info _sub_zone_location_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES_PER_SIDE]; //!< Table of 2x40 (10 zones subdivided in 4 subzones on 2 sides)
 			
 			memory<6,1> _mem_lvl0_to_lvl1_row_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES][mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES]; //!< A6D1 memory for level 0 to level 1 row projection depending of algorithm uses (multiplicity or gap)
 			memory<5,1> _mem_lvl0_to_lvl1_layer_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES][mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES]; //!< A6D1 memory for level 0 to level 1 layer projection depending of algorithm uses (multiplicity or gap)
 			memory<4,2> _mem_lvl1_to_lvl2_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES]; //!< A4D2 memory for level 1 to level 2 (4 bits --> 2 bits)
 			
+			tracker_record _tracker_level_1_finale_decision_; //!< Structure representing the finale decision for level 1 tracker
 		};
 
   } // end of namespace digitization
