@@ -65,6 +65,9 @@ namespace snemo {
 
       // Data :
       
+			//tracker_trigger_algorithm::tracker_trigger_algorithm _tracker_algo_; //!< Tracker trigger algorithm @ 1600ns
+			//calo_trigger_algorithm::calo_trigger_algorithm    _calo_algo_;    //!<  Calo trigger algorithm @ 25ns
+			
     };
 
   } // end of namespace digitization

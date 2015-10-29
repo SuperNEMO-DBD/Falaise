@@ -219,8 +219,8 @@ int main(int  argc_ , char ** argv_)
     // Loading memory from external files
     std::string memory_layer;
     std::string memory_row;
-    std::string memory_lvl1_to_lvl2 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A4_D2_default_memory.data";
-    datatools::fetch_path_with_env(memory_lvl1_to_lvl2);
+    std::string memory_a4_d2 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A4_D2_default_memory.data";
+    datatools::fetch_path_with_env(memory_a4_d2);
 
     if (is_mult && !is_gap)
       {
@@ -386,9 +386,9 @@ int main(int  argc_ , char ** argv_)
 		    snemo::digitization::tracker_trigger_algorithm my_tracker_algo;
 		    my_tracker_algo.set_electronic_mapping(my_e_mapping);
 		    my_tracker_algo.initialize();
-		    my_tracker_algo.fill_mem_lvl0_to_lvl1_layer_all(memory_layer);
-		    my_tracker_algo.fill_mem_lvl0_to_lvl1_row_all(memory_row);
-		    my_tracker_algo.fill_mem_lvl1_to_lvl2_all(memory_lvl1_to_lvl2);
+		    my_tracker_algo.fill_all_layer_memory(memory_layer);
+		    my_tracker_algo.fill_all_row_memory(memory_row);
+		    my_tracker_algo.fill_all_a4_d2_memory(memory_a4_d2);
 		    snemo::digitization::tracker_trigger_algorithm::tracker_record tracker_level_one_finale_decison;
 
 		    my_tracker_algo.process(my_geiger_ctw_data);			    

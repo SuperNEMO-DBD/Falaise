@@ -37,11 +37,14 @@ namespace snemo {
 			/// Final bitset size for geiger zoning
 			static const int32_t GEIGER_ZONING_FINAL_BITSET_SIZE = 2;
 	
-			/// Size of the subzone layer projection bitset
-			static const int32_t GEIGER_LEVEL_ONE_SUBZONE_LAYER_SIZE = 5;
+			/// Final bitset size for geiger zoning
+			static const int32_t GEIGER_FINAL_DECISION_BITSET_SIZE = 2;
 
-			/// Size of the subzone row projection bitset
-			static const int32_t GEIGER_LEVEL_ONE_SUBZONE_ROW_SIZE   = 6;
+			 /// Size of the subzone layer projection bitset
+			 static const int32_t GEIGER_LEVEL_ONE_SUBZONE_LAYER_SIZE = 5;
+
+			 /// Size of the subzone row projection bitset
+			 static const int32_t GEIGER_LEVEL_ONE_SUBZONE_ROW_SIZE   = 6;
 
 			struct tracker_record
 			{
@@ -49,8 +52,7 @@ namespace snemo {
 				void reset();
 				void display();
 				uint32_t clocktick_1600ns;
-				bool prelevel_one_finale_decision; //!< Prelevel one finale decision, activate if calo coincidences is needed
-				bool level_one_finale_decision; //!< Level one finale decision if a fulltrack is somewhere in the chamber
+				std::bitset<GEIGER_FINAL_DECISION_BITSET_SIZE> level_one_finale_decision; //!< Finale decision bitset [00] VOID; [01] LONG_TRACK; [11] SHORT_TRACK, [10] UNUSED
 				std::bitset<GEIGER_ZONING_FINAL_BITSET_SIZE> final_tracker_trigger_info[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES];
 			};
 			
@@ -180,30 +182,30 @@ namespace snemo {
 			void display_finale_tracker_trigger_info() const;
 
 			/// Fill an A6D1 level 0 to level 1 memory for a given subzone
-			void fill_mem_lvl0_to_lvl1_row(const std::string & filename_,
-																		 int32_t side_,
-																		 int32_t zone_,
-																		 int32_t subzone_);
-
-			/// Fill an A6D1 level 0 to level 1 memory for all subzones
-			void fill_mem_lvl0_to_lvl1_row_all(const std::string & filename_);
-
-			/// Fill an A5D1 level 0 to level 1 memory for a given subzone
-			void fill_mem_lvl0_to_lvl1_layer(const std::string & filename_,
+			void fill_row_memory_per_subzone(const std::string & filename_,
 																			 int32_t side_,
 																			 int32_t zone_,
 																			 int32_t subzone_);
 
 			/// Fill an A6D1 level 0 to level 1 memory for all subzones
-			void fill_mem_lvl0_to_lvl1_layer_all(const std::string & filename_);
+			void fill_all_row_memory(const std::string & filename_);
+
+			/// Fill an A5D1 level 0 to level 1 memory for a given subzone
+			void fill_layer_memory_per_subzone(const std::string & filename_,
+																				 int32_t side_,
+																				 int32_t zone_,
+																				 int32_t subzone_);
+
+			/// Fill an A6D1 level 0 to level 1 memory for all subzones
+			void fill_all_layer_memory(const std::string & filename_);
 
 			/// Fill an A4D2 level 1 to level 2 memory for a given zone
-			void fill_mem_lvl1_to_lvl2(const std::string & filename_,
-																 int32_t side_,
-																 int32_t zone_);
+			void fill_a4_d2_memory_per_zone(const std::string & filename_,
+																			int32_t side_,
+																			int32_t zone_);
 
 			/// Fill an A4D2 level 1 to level 2 memory for all zones
-			void fill_mem_lvl1_to_lvl2_all(const std::string & filename_);
+			void fill_all_a4_d2_memory(const std::string & filename_);
 
 			/// For a given side and zone index, give the row index begin and end
 			void fetch_zone_limits(int32_t side_,

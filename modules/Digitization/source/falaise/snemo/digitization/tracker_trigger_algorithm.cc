@@ -26,13 +26,12 @@ namespace snemo {
     const int32_t tracker_trigger_algorithm::GEIGER_LEVEL_ONE_SUBZONE_LAYER_SIZE;
     const int32_t tracker_trigger_algorithm::GEIGER_LEVEL_ONE_SUBZONE_ROW_SIZE;
     const int32_t tracker_trigger_algorithm::GEIGER_ZONING_FINAL_BITSET_SIZE;
-    
+    const int32_t tracker_trigger_algorithm::GEIGER_FINAL_DECISION_BITSET_SIZE;
     
     tracker_trigger_algorithm::tracker_record::tracker_record()
     {
       clocktick_1600ns = -1;
-      prelevel_one_finale_decision = false;
-      level_one_finale_decision = false;
+      level_one_finale_decision.reset();
       return;
     }
     
@@ -46,8 +45,7 @@ namespace snemo {
 	      final_tracker_trigger_info[iside][jzone].reset();
 	    }
 	}
-      prelevel_one_finale_decision = false;
-      level_one_finale_decision = false;
+      level_one_finale_decision.reset();
       return;
     }
     
@@ -55,7 +53,7 @@ namespace snemo {
     {
       std::clog << "Tracker Trigger info record : " << std::endl; 
       std::clog << "Clocktick 1600    : " << clocktick_1600ns << std::endl;;  
-      std::clog << "         | VOID = 00 | PRE TRACK = 11 | FULL TRACK = 01" << std::endl;
+      std::clog << "         | VOID = 00 | SHORT TRACK = 11 | LONG TRACK = 01" << std::endl;
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 	{
 	  std::clog << "Side = " << iside << " | ";
@@ -65,9 +63,8 @@ namespace snemo {
 	    } // end of izone
 	  std::clog << std::endl;
 	}
-      std::clog << "Pre level one bit : [" << prelevel_one_finale_decision << "]" <<  std::endl;
-      std::clog << "Level one bit     : [" << level_one_finale_decision << "]" <<  std::endl << std::endl;
-
+      std::clog << "Level one decision : [" << level_one_finale_decision << "]" <<  std::endl;
+      
       return;
     }
 
@@ -115,19 +112,19 @@ namespace snemo {
       if (config_.has_key("memory.lvl0_to_lvl1.row.default")) {
 	std::string mem_def_filename = config_.fetch_string("memory.lvl0_to_lvl1.row.default");
 	datatools::fetch_path_with_env(mem_def_filename);
-	fill_mem_lvl0_to_lvl1_row_all(mem_def_filename);
+	fill_all_row_memory(mem_def_filename);
       }
       
       if (config_.has_key("memory.lvl0_to_lvl1.layer.default")) {
 	std::string mem_def_filename = config_.fetch_string("memory.lvl0_to_lvl1.layer.default");
 	datatools::fetch_path_with_env(mem_def_filename);
-	fill_mem_lvl0_to_lvl1_layer_all(mem_def_filename);
+	fill_all_layer_memory(mem_def_filename);
       }
 
       if (config_.has_key("memory.lvl1_to_lvl2.default")) {
 	std::string mem_def_filename = config_.fetch_string("memory.lvl1_to_lvl2.default");
 	datatools::fetch_path_with_env(mem_def_filename);
-	fill_mem_lvl1_to_lvl2_all(mem_def_filename);
+	fill_all_a4_d2_memory(mem_def_filename);
       }
 
       _initialized_ = true;
@@ -342,7 +339,7 @@ namespace snemo {
 	} // end of iside
 
       std::clog << "Level Two tracker trigger info display : " << std::endl;
-      std::clog << "         | VOID = 00 | PRE TRACK = 11 | FULL TRACK = 01" << std::endl;
+      std::clog << "         | VOID = 00 | SHORT TRACK = 11 | LONG TRACK = 01" << std::endl;
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 	{
 	  std::clog << "Side = " << iside << " | ";
@@ -362,17 +359,17 @@ namespace snemo {
       return;
     }
    
-    void tracker_trigger_algorithm::fill_mem_lvl0_to_lvl1_row(const std::string & filename_,
-							      int32_t side_,
-							      int32_t zone_,
-							      int32_t subzone_)
+    void tracker_trigger_algorithm::fill_row_memory_per_subzone(const std::string & filename_,
+								int32_t side_,
+								int32_t zone_,
+								int32_t subzone_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Tracker trigger algorithm is not initialized ! ");
       _mem_lvl0_to_lvl1_row_[side_][zone_][subzone_].load_from_file(filename_); 
       return;
     }
 
-    void tracker_trigger_algorithm::fill_mem_lvl0_to_lvl1_row_all(const std::string & filename_)
+    void tracker_trigger_algorithm::fill_all_row_memory(const std::string & filename_)
     {
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 	{
@@ -380,24 +377,24 @@ namespace snemo {
 	    {
 	      for (int isubzone = 0; isubzone < 4; isubzone++)
 		{
-		  fill_mem_lvl0_to_lvl1_row(filename_, iside, izone, isubzone);
+		  fill_row_memory_per_subzone(filename_, iside, izone, isubzone);
 		} // end of isubzone
 	    } // end of izone
  	} // end of iside
       return;
     }
  
-    void tracker_trigger_algorithm::fill_mem_lvl0_to_lvl1_layer(const std::string & filename_,
-								int32_t side_,
-								int32_t zone_,
-								int32_t subzone_)
+    void tracker_trigger_algorithm::fill_layer_memory_per_subzone(const std::string & filename_,
+								  int32_t side_,
+								  int32_t zone_,
+								  int32_t subzone_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Tracker trigger algorithm is not initialized ! ");
       _mem_lvl0_to_lvl1_layer_[side_][zone_][subzone_].load_from_file(filename_); 
       return;
     }
 
-    void tracker_trigger_algorithm::fill_mem_lvl0_to_lvl1_layer_all(const std::string & filename_)
+    void tracker_trigger_algorithm::fill_all_layer_memory(const std::string & filename_)
     {
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 	{
@@ -405,29 +402,29 @@ namespace snemo {
 	    {
 	      for (int isubzone = 0; isubzone < mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES; isubzone++)
 		{
-		  fill_mem_lvl0_to_lvl1_layer(filename_, iside, izone, isubzone);
+		  fill_layer_memory_per_subzone(filename_, iside, izone, isubzone);
 		} // end of isubzone
 	    } // end of izone
  	} // end of iside
       return;
     }
 
-    void tracker_trigger_algorithm::fill_mem_lvl1_to_lvl2(const std::string & filename_,
-							  int32_t side_,
-							  int32_t zone_)
+    void tracker_trigger_algorithm::fill_a4_d2_memory_per_zone(const std::string & filename_,
+							       int32_t side_,
+							       int32_t zone_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Tracker trigger algorithm is not initialized ! ");
       _mem_lvl1_to_lvl2_[side_][zone_].load_from_file(filename_); 
       return;
     }
 
-    void tracker_trigger_algorithm::fill_mem_lvl1_to_lvl2_all(const std::string & filename_)
+    void tracker_trigger_algorithm::fill_all_a4_d2_memory(const std::string & filename_)
     {
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 	{
 	  for (int izone = 0; izone < mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES; izone++)
 	    {
-	      fill_mem_lvl1_to_lvl2(filename_, iside, izone);
+	      fill_a4_d2_memory_per_zone(filename_, iside, izone);
 	    } // end of izone
  	} // end of iside
       return;
@@ -789,16 +786,18 @@ namespace snemo {
 	     if (_tracker_level_1_finale_decision_.final_tracker_trigger_info[iside][izone].test(0) == true
 		 &&_tracker_level_1_finale_decision_.final_tracker_trigger_info[iside][izone].test(1) == false)
 	       {
-		 _tracker_level_1_finale_decision_.level_one_finale_decision = true;
-		 _tracker_level_1_finale_decision_.prelevel_one_finale_decision = false;
+		 _tracker_level_1_finale_decision_.level_one_finale_decision.set(0, true);
+		 _tracker_level_1_finale_decision_.level_one_finale_decision.set(1, false);
 	       }
 	      
-	     else if (_tracker_level_1_finale_decision_.level_one_finale_decision == false
+	     else if (_tracker_level_1_finale_decision_.level_one_finale_decision != 1
 		      && _tracker_level_1_finale_decision_.final_tracker_trigger_info[iside][izone].test(0) == true
 		      && _tracker_level_1_finale_decision_.final_tracker_trigger_info[iside][izone].test(1) == true)
 	       {
-		 _tracker_level_1_finale_decision_.prelevel_one_finale_decision = true;
+		 _tracker_level_1_finale_decision_.level_one_finale_decision.set(0, true);
+		 _tracker_level_1_finale_decision_.level_one_finale_decision.set(1, true);
 	       }
+	     
 	   } // end of izone	  
        } // end of iside
 

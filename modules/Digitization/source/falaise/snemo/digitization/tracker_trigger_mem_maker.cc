@@ -365,9 +365,9 @@ namespace snemo {
     void tracker_trigger_mem_maker::_build_lvl1_lvl2_4X2_memory()
     {
 
-      static const std::string VOID       = "00";
-      static const std::string PRE_TRACK  = "11";
-      static const std::string FULL_TRACK = "01";
+      static const std::string VOID        = "00";
+      static const std::string SHORT_TRACK = "11";
+      static const std::string LONG_TRACK  = "01";
 
       if (_mem_A4D2_.get() == 0)
 	{
@@ -385,11 +385,11 @@ namespace snemo {
 	    }
 	  else if (my_address_bitset.count() == 1)
 	    {  
-	      my_data_bitset = std::bitset<2> (PRE_TRACK);
+	      my_data_bitset = std::bitset<2> (SHORT_TRACK);
 	    }
 	  else
 	    {
-	      my_data_bitset = std::bitset<2> (FULL_TRACK);
+	      my_data_bitset = std::bitset<2> (LONG_TRACK);
 	    }
 	  _mem_A4D2_->push(i, my_data_bitset);
 	}
