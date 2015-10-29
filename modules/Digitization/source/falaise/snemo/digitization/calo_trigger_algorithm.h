@@ -75,7 +75,7 @@ namespace snemo {
 				SIDE_0_INDEX = 0,
 				SIDE_1_INDEX = 1
 			};
-			
+		
 			enum zoning_id_index {
 				ZONE_0_INDEX = 0,
 				ZONE_1_INDEX = 1,
@@ -172,11 +172,14 @@ namespace snemo {
 			void reset_calo_record_per_clocktick();
 
 			/// Get the level 1 finale decision bool
-			const bool get_calo_level_1_finale_decision() const;
+			const bool get_calo_level_1_finale_decision() const; 
 
 			/// Get the level 1 finale decision structure
 			const calo_trigger_algorithm::calo_summary_record get_calo_level_1_finale_decision_structure() const;
     
+			/// Get the vector of calo summary record
+			const std::vector<calo_summary_record> get_calo_records_vector() const;
+			
 			/// General process
       void process(const calo_ctw_data & calo_ctw_data_);
 
@@ -220,6 +223,9 @@ namespace snemo {
 			boost::scoped_ptr<buffer_type> _gate_circular_buffer_; //!< Scoped pointer to a circular buffer containing output data structure
  
 			calo_summary_record _calo_level_1_finale_decision_; //!< Structure representing the finale decision for level 1 calorimeter
+			
+			std::vector<calo_summary_record> _calo_records_; //!< Collection of calo summary record (vector)
+
 
     };
 

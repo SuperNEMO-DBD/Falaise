@@ -46,7 +46,7 @@ namespace snemo {
     void calo_trigger_algorithm::calo_record::display()
     {      
       std::clog << "Calo Trigger info record : " << std::endl; 
-      std::clog << "CLOCKTICK |XTS|L|HG|L|L|H1|H0| ZONING S1| ZONING S0 " << std::endl; 
+      std::clog << "CT |XTS|L|HG|L|L|H1|H0| ZONING S1| ZONING S0 " << std::endl; 
       std::clog << clocktick_25ns << ' ';
       std::clog << xt_info_bitset << ' ';
       std::clog << LTO_gveto << ' ';
@@ -237,6 +237,11 @@ namespace snemo {
     const calo_trigger_algorithm::calo_summary_record calo_trigger_algorithm::get_calo_level_1_finale_decision_structure() const
     {
       return _calo_level_1_finale_decision_;
+    }
+
+    const std::vector<calo_trigger_algorithm::calo_summary_record> calo_trigger_algorithm::get_calo_records_vector() const
+    {
+      return _calo_records_;
     }
 
     void calo_trigger_algorithm::_display_calo_info_for_a_clocktick()
@@ -532,7 +537,11 @@ namespace snemo {
       	{
       	  my_calo_summary_record_.calo_finale_decision = true;
       	  _calo_level_1_finale_decision_ = my_calo_summary_record_;
-      	}	 
+      	}
+      else
+	{
+	  _calo_level_1_finale_decision_.clocktick_25ns = my_calo_summary_record_.clocktick_25ns;
+	}
 
       return;      
     }
@@ -549,7 +558,7 @@ namespace snemo {
       reset_calo_info();
       _gate_circular_buffer_.reset(new buffer_type(_circular_buffer_depth_));
 
-      for(int32_t iclocktick = calo_ctw_data_.get_clocktick_min(); iclocktick <= calo_ctw_data_.get_clocktick_max(); iclocktick++)
+      for(int32_t iclocktick = calo_ctw_data_.get_clocktick_min(); iclocktick <= calo_ctw_data_.get_clocktick_max() + _circular_buffer_depth_ - 1 ; iclocktick++)
 	{
 	  std::vector<datatools::handle<calo_ctw> > ctw_list_per_clocktick;
 	  calo_ctw_data_.get_list_of_calo_ctw_per_clocktick(iclocktick, ctw_list_per_clocktick);
@@ -565,10 +574,14 @@ namespace snemo {
 	  my_calo_summary_record.clocktick_25ns = iclocktick;
 	  _build_calo_record_summary_structure(my_calo_summary_record);
 	  _compute_calo_finale_decision(my_calo_summary_record);
+	  _display_calo_summary(_calo_level_1_finale_decision_);
+
+	  _calo_records_.push_back(_calo_level_1_finale_decision_);
+	  std::clog << "Size of calo records : " <<_calo_records_.size() << std::endl;
+	  //if (get_calo_level_1_finale_decision()) _display_calo_summary(_calo_level_1_finale_decision_);
 	  
-	  if (get_calo_level_1_finale_decision()) _display_calo_summary(_calo_level_1_finale_decision_);
-	  
-	  reset_calo_record_per_clocktick();
+	  //reset_calo_record_per_clocktick();
+	  reset_calo_info();
 	} // end of iclocktick
       return;
     }
