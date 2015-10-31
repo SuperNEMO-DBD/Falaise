@@ -163,6 +163,8 @@ namespace snemo {
       /// Reset the clusterizer
       virtual void reset();
 
+    protected:
+
       /// Main clustering method
       virtual int _process_algo(const snemo::datamodel::tracker_clustering_data & clustering_,
                                 snemo::datamodel::tracker_trajectory_data       & trajectory_);
