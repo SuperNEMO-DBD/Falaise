@@ -176,7 +176,7 @@ namespace snemo {
       }
       if (!datatools::is_valid(_cluster_time_width_)) {
         _cluster_time_width_ = 100 * CLHEP::ns;
-      }
+       }
 
       // 2012-09-17 FM : support reference to the MC true hit ID
       if (setup_.has_flag("store_mc_hit_id")) {
@@ -285,8 +285,7 @@ namespace snemo {
       }
 
       // Main processing method :
-      _process(the_simulated_data,
-               the_calibrated_data.calibrated_calorimeter_hits());
+      _process(the_simulated_data, the_calibrated_data.calibrated_calorimeter_hits());
 
       return dpp::base_module::PROCESS_SUCCESS;
     }
@@ -298,8 +297,8 @@ namespace snemo {
     }
 
     //
-    // Here collect the 'calorileter' raw hits from the simulation data source
-    // and build the final list of 'calorimeter' hits.
+    // Here collect the 'calorimeter' raw hits from the simulation data source
+    // and build the final list of calibrated 'calorimeter' hits.
     //
     //
 
@@ -393,27 +392,22 @@ namespace snemo {
             // Grab auxiliaries :
             datatools::properties & cc_prop = some_calibrated_calorimeter_hit.grab_auxiliaries();
 
+            // 2012-07-26 FM : support reference to the MC true hit ID
+            if (_store_mc_hit_id_ && true_calo_hit_id > geomtools::base_hit::INVALID_HIT_ID) {
+              cc_prop.update(mctools::hit_utils::HIT_MC_HIT_ID_KEY, true_calo_hit_id);
+            }
+
             // Check time between clusters
             const double delta_time = step_hit_time_start - some_calibrated_calorimeter_hit.get_time();
             // cluster arriving too late : do not care of it
             if (delta_time > _cluster_time_width_) {
-              if (! cc_prop.has_key("pile_up")) {
-                cc_prop.store_flag("pile_up");
-              }
+              cc_prop.update_flag("pile_up");
               continue;
-            }
-
-            // 2012-07-26 FM : support reference to the MC true hit ID
-            if (_store_mc_hit_id_ && true_calo_hit_id > geomtools::base_hit::INVALID_HIT_ID) {
-              cc_prop.update(mctools::hit_utils::HIT_MC_HIT_ID_KEY,
-                             true_calo_hit_id);
             }
 
             // Cluster coming before : it becomes the new one
             if (delta_time < -_cluster_time_width_) {
-              if (! cc_prop.has_key("pile_up")) {
-                cc_prop.store_flag("pile_up");
-              }
+              cc_prop.update_flag("pile_up");
               some_calibrated_calorimeter_hit.set_time(step_hit_time_start);
               some_calibrated_calorimeter_hit.set_energy(step_hit_energy_deposit);
               continue;
