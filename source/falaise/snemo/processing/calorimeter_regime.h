@@ -76,8 +76,7 @@ namespace snemo {
       double quench_alpha_energy(const double energy_) const;
 
       /// Randomize the measured time value given the true time and energy
-      double randomize_time(mygsl::rng & ran_,
-                             const double time_, const double energy_) const;
+      double randomize_time(mygsl::rng & ran_, const double time_, const double energy_) const;
 
       /// Return the error on time
       double get_sigma_time(const double energy_) const;
@@ -99,6 +98,9 @@ namespace snemo {
                               const std::string & a_title  = "",
                               const std::string & a_indent = "",
                               bool a_inherit               = false) const;
+    private:
+
+      void _init_defaults_();
 
     private:
 
@@ -111,10 +113,6 @@ namespace snemo {
       double      _alpha_quenching_2_; //!< Parameter 2 for alpha quenching
       double      _scintillator_relaxation_time_; //!< Scintillator relaxation time
       std::string _category_; //!< The category of the optical modules associated to this calorimeter regime
-
-    private:
-
-      void _init_defaults_();
     };
 
   } // end of namespace processing
