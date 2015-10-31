@@ -81,9 +81,6 @@ namespace snemo {
       /// Reset the internals
       void reset();
 
-      /// Check if the object has a valid internal structure
-      bool is_valid() const;
-
       /// Return a mutable reference on the container of auxiliary properties
       const datatools::properties & get_auxiliaries() const;
 
