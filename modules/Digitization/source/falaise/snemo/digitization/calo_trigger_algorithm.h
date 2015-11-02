@@ -129,8 +129,11 @@ namespace snemo {
       /// Set the electronic mapping object
       void set_electronic_mapping(const electronic_mapping & my_electronic_mapping_);
 
+			/// Check if circular buffer depth is set
+			bool has_circular_buffer_depth() const;
+
 			/// Set the calo circular buffer depth
-			void set_circular_buffer_depth(unsigned int & circular_buffer_depth_);
+			void set_circular_buffer_depth(unsigned int circular_buffer_depth_);
 
 			/// Set the boolean for inhibited back to back coincidence
 			void inhibit_both_side_coinc();
@@ -144,8 +147,11 @@ namespace snemo {
 			/// Check if single side coinc is set 
 			bool is_inhibited_single_side_coinc() const;
 			
-			/// Set the threshold of multiplicity for coincidences
-			void set_threshold_total_multiplicity(unsigned int & threshold_);
+			/// Set the total multiplicity threshold
+			void set_threshold_total_multiplicity(unsigned int threshold_);
+	
+			/// Check if the total multiplicity threshold is set 
+			bool has_threshold_total_multiplicity() const;
 
 			/// Check if total multiplicity threshold is set
 			bool is_activated_threshold_total_multiplicity() const;
@@ -163,7 +169,7 @@ namespace snemo {
       bool is_initialized() const;
 
       /// Reset the object
-      void reset(); 
+      void reset();
 
       /// Reset trigger info structures
       void reset_calo_info();
@@ -225,7 +231,6 @@ namespace snemo {
 			calo_summary_record _calo_level_1_finale_decision_; //!< Structure representing the finale decision for level 1 calorimeter
 			
 			std::vector<calo_summary_record> _calo_records_; //!< Collection of calo summary record (vector)
-
 
     };
 

@@ -24,12 +24,10 @@
 #include <snemo/digitization/sd_to_calo_signal_algo.h>
 #include <snemo/digitization/signal_to_calo_tp_algo.h>
 #include <snemo/digitization/calo_tp_to_ctw_algo.h>
-#include <snemo/digitization/calo_trigger_algorithm.h>
 
 #include <snemo/digitization/sd_to_geiger_signal_algo.h>
 #include <snemo/digitization/signal_to_geiger_tp_algo.h>
 #include <snemo/digitization/geiger_tp_to_ctw_algo.h>
-#include <snemo/digitization/tracker_trigger_algorithm.h>
 
 #include <snemo/digitization/trigger_algorithm.h>
 
@@ -170,6 +168,10 @@ int main( int  argc_ , char **argv_  )
 	datatools::fetch_path_with_env(memory_row);
       }
 
+    
+	datatools::fetch_path_with_env(memory_layer);
+ 	datatools::fetch_path_with_env(memory_row);
+
     // Event reader :
     dpp::input_module reader;
     datatools::properties reader_config;
@@ -191,8 +193,59 @@ int main( int  argc_ , char **argv_  )
 
     // Clock manager :
     snemo::digitization::clock_utils my_clock_manager;
-    my_clock_manager.initialize();
+    my_clock_manager.initialize();		
+  
+    // Initializing SD to calo signal algo :
+    snemo::digitization::sd_to_calo_signal_algo sd_2_calo_signal(my_manager);
+    sd_2_calo_signal.initialize();
+
+    // Initializing SD to geiger signal algo :
+    snemo::digitization::sd_to_geiger_signal_algo sd_2_geiger_signal(my_manager);
+    sd_2_geiger_signal.initialize();
+
+    // Initializing signal to calo tp algo :
+    snemo::digitization::signal_to_calo_tp_algo signal_2_calo_tp;
+    signal_2_calo_tp.initialize(my_e_mapping);
+
+    // Initializing signal to geiger tp algo :
+    snemo::digitization::signal_to_geiger_tp_algo signal_2_geiger_tp;
+    signal_2_geiger_tp.initialize(my_e_mapping);
+		  
+    // Initializing calo tp to calo ctw algorithms for each crate :
+    snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw_0;
+    calo_tp_2_ctw_0.set_crate_number(snemo::digitization::mapping::MAIN_CALO_SIDE_0_CRATE);
+    calo_tp_2_ctw_0.initialize();
+    snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw_1;
+    calo_tp_2_ctw_1.set_crate_number(snemo::digitization::mapping::MAIN_CALO_SIDE_1_CRATE);
+    calo_tp_2_ctw_1.initialize();
+    snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw_2;
+    calo_tp_2_ctw_2.set_crate_number(snemo::digitization::mapping::XWALL_GVETO_CALO_CRATE);
+    calo_tp_2_ctw_2.initialize();
+
+    // Initializing geiger tp to geiger ctw :
+    snemo::digitization::geiger_tp_to_ctw_algo geiger_tp_2_ctw;
+    geiger_tp_2_ctw.initialize();
+
+    // Properties to configure trigger algorithm :
+    datatools::properties trigger_config;
+    int calo_circular_buffer_depth = 4;
+    int calo_threshold = 1;
+    bool inhibit_both_side_coinc = false;
+    bool inhibit_single_side_coinc = false;    
     
+    trigger_config.store("calo.circular_buffer_depth", calo_circular_buffer_depth);
+    trigger_config.store("calo.threshold", calo_threshold);
+    trigger_config.store("calo.inhibit_both_side",  inhibit_both_side_coinc);
+    trigger_config.store("calo.inhibit_single_side",  inhibit_single_side_coinc);
+    trigger_config.store("tracker.memory_layer_file", memory_layer);
+    trigger_config.store("tracker.memory_row_file",   memory_row);
+    trigger_config.store("tracker.memory_a4_d2_file", memory_a4_d2);
+
+    // Creation and initialization of trigger algorithm :
+    snemo::digitization::trigger_algorithm my_trigger_algo;
+    my_trigger_algo.set_electronic_mapping(my_e_mapping);
+    my_trigger_algo.initialize(trigger_config);
+
     // Internal counters
     int psd_count = 0;         // Event counter
     while (!reader.is_terminated())
@@ -204,128 +257,80 @@ int main( int  argc_ , char **argv_  )
 	    // Access to the "SD" bank with a stored `mctools::simulated_data' :
 	    const mctools::simulated_data & SD = ER.get<mctools::simulated_data>(SD_bank_label);
 
+	    my_clock_manager.compute_clockticks_ref(random_generator);
+	    int32_t clocktick_25_reference  = my_clock_manager.get_clocktick_25_ref();
+	    double  clocktick_25_shift      = my_clock_manager.get_shift_25();
+	    int32_t clocktick_800_reference = my_clock_manager.get_clocktick_800_ref();
+	    double  clocktick_800_shift     = my_clock_manager.get_shift_800();
+
 	    if (SD.has_step_hits("calo") || SD.has_step_hits("xcalo") || SD.has_step_hits("gveto") || SD.has_step_hits("gg"))
 	      {
-		my_clock_manager.compute_clockticks_ref(random_generator);
-		int32_t clocktick_25_reference  = my_clock_manager.get_clocktick_25_ref();
-		double  clocktick_25_shift      = my_clock_manager.get_shift_25();
-		int32_t clocktick_800_reference = my_clock_manager.get_clocktick_800_ref();
-		double  clocktick_800_shift     = my_clock_manager.get_shift_800();
-
 		// Creation of a signal data object to store calo & geiger signals :
 		snemo::digitization::signal_data signal_data;	
 		
-		// Initializing and processing SD to Calo signal :
-		snemo::digitization::sd_to_calo_signal_algo sd_2_calo_signal(my_manager);
-		sd_2_calo_signal.initialize();
-		
-		// Processing Calo signal
+		// Processing Calo signal :
 		sd_2_calo_signal.process(SD, signal_data);
 
+		// Processing Geiger signal :
+		sd_2_geiger_signal.process(SD, signal_data);
 
-		// Creation of outputs structure for calo and tracker
-		snemo::digitization::tracker_trigger_algorithm::tracker_record tracker_level_one_finale_decison;
-		snemo::digitization::calo_trigger_algorithm::calo_summary_record calo_level_one_finale_decision;
+		// Creation of calo ctw data :
+		snemo::digitization::calo_ctw_data my_calo_ctw_data;
 
-		snemo::digitization::trigger_algorithm my_trigger_algo;
+		// Creation of geiger ctw data :
+		snemo::digitization::geiger_ctw_data my_geiger_ctw_data;
 
-		// Calo signal to calo TP
+		my_clock_manager.tree_dump(std::clog, "Clock utils : ", "INFO : ");
+
+		// Calo signal to calo TP :
 		if( signal_data.has_calo_signals())
 		  {
-		    snemo::digitization::signal_to_calo_tp_algo signal_2_calo_tp;
-		    signal_2_calo_tp.initialize(my_e_mapping);
-		    signal_2_calo_tp.set_clocktick_reference(clocktick_25_reference);
-		    signal_2_calo_tp.set_clocktick_shift(clocktick_25_shift);	 
 		    snemo::digitization::calo_tp_data my_calo_tp_data;
-
-		    // Signal to calo TP process
+		    // Set calo clockticks :
+		    signal_2_calo_tp.set_clocktick_reference(clocktick_25_reference);
+		    signal_2_calo_tp.set_clocktick_shift(clocktick_25_shift);
+		    // Signal to calo TP process :
 		    signal_2_calo_tp.process(signal_data, my_calo_tp_data);
 		    my_calo_tp_data.tree_dump(std::clog, "Calorimeter TP(s) data : ", "INFO : ");
-		  
-		    snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw_0;
-		    calo_tp_2_ctw_0.set_crate_number(snemo::digitization::mapping::MAIN_CALO_SIDE_0_CRATE);
-		    calo_tp_2_ctw_0.initialize();
-		    snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw_1;
-		    calo_tp_2_ctw_1.set_crate_number(snemo::digitization::mapping::MAIN_CALO_SIDE_1_CRATE);
-		    calo_tp_2_ctw_1.initialize();
-		    snemo::digitization::calo_tp_to_ctw_algo calo_tp_2_ctw_2;
-		    calo_tp_2_ctw_2.set_crate_number(snemo::digitization::mapping::XWALL_GVETO_CALO_CRATE);
-		    calo_tp_2_ctw_2.initialize();
-		    snemo::digitization::calo_ctw_data my_calo_ctw_data;
 
-		    // Calo TP to geiger CTW process
+		    // Calo TP to geiger CTW process :
 		    calo_tp_2_ctw_0.process(my_calo_tp_data, my_calo_ctw_data);
 		    calo_tp_2_ctw_1.process(my_calo_tp_data, my_calo_ctw_data);
 		    calo_tp_2_ctw_2.process(my_calo_tp_data, my_calo_ctw_data);
 		    my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
 
-		    snemo::digitization::calo_trigger_algorithm my_calo_algo;
-		    my_calo_algo.set_electronic_mapping(my_e_mapping);
-		    unsigned int calo_circular_buffer_depth = 4;
-		    my_calo_algo.set_circular_buffer_depth(calo_circular_buffer_depth);
-		    // my_calo_algo.inhibit_both_side_coinc();
-		    // my_calo_algo.inhibit_single_side_coinc();
-		    unsigned int calo_threshold = 1;
-		    my_calo_algo.set_threshold_total_multiplicity(calo_threshold);
-		    my_calo_algo.initialize_simple();
-
-		    my_clock_manager.tree_dump(std::clog, "Clock utils : ", "INFO : ");
-		    
-		    // Calo trigger algorithm
-		    my_calo_algo.process(my_calo_ctw_data);
-
-		    // Finale structure (published ?)
-		    calo_level_one_finale_decision = my_calo_algo.get_calo_level_1_finale_decision_structure();
-
 		  } // end of if has calo signal
 
-		// Initializing and processing SD to Geiger signal :
-		snemo::digitization::sd_to_geiger_signal_algo sd_2_geiger_signal(my_manager);
-		sd_2_geiger_signal.initialize();
-
-		// Processing Geiger signal
-		sd_2_geiger_signal.process(SD, signal_data);
-
 		if( signal_data.has_geiger_signals())
-		  {
-		    // Initializing and processing Geiger signal to Geiger TP :
-		    snemo::digitization::signal_to_geiger_tp_algo signal_2_geiger_tp;
-		    signal_2_geiger_tp.initialize(my_e_mapping);
-		    signal_2_geiger_tp.set_clocktick_reference(clocktick_800_reference);
-		    signal_2_geiger_tp.set_clocktick_shift(clocktick_800_shift);		    
+		  {	    
 		    snemo::digitization::geiger_tp_data my_geiger_tp_data;
-	    
+		    // Set geiger clockticks :
+		    signal_2_geiger_tp.set_clocktick_reference(clocktick_800_reference);
+		    signal_2_geiger_tp.set_clocktick_shift(clocktick_800_shift); 
 		    // Signal to geiger TP process
 		    signal_2_geiger_tp.process(signal_data, my_geiger_tp_data);
-
-		    // Initializing and processing Geiger TP to Geiger CTW :
-		    snemo::digitization::geiger_tp_to_ctw_algo geiger_tp_2_ctw;
-		    geiger_tp_2_ctw.initialize();
-		    snemo::digitization::geiger_ctw_data my_geiger_ctw_data;
 
 		    // Geiger TP to geiger CTW process
 		    geiger_tp_2_ctw.process(my_geiger_tp_data, my_geiger_ctw_data);
 		    my_geiger_ctw_data.tree_dump(std::clog, "Geiger CTW(s) data : ", "INFO : ");
-
-		    // Initializing and processing tracker trigger algorithm to make a decision :
-		    snemo::digitization::tracker_trigger_algorithm my_tracker_algo;
-		    my_tracker_algo.set_electronic_mapping(my_e_mapping);
-		    my_tracker_algo.initialize();
-		    my_tracker_algo.fill_all_layer_memory(memory_layer);
-		    my_tracker_algo.fill_all_row_memory(memory_row);
-		    my_tracker_algo.fill_all_a4_d2_memory(memory_a4_d2);
-		    // Tracker trigger algorithm
-
-		    my_tracker_algo.process(my_geiger_ctw_data);			    
-		    tracker_level_one_finale_decison = my_tracker_algo.get_tracker_level_1_finale_decision_structure();
 		    
 		  } // end of if has geiger signal
+
+		// Creation of outputs collection structures for calo and tracker
+		std::vector<snemo::digitization::calo_trigger_algorithm::calo_summary_record> calo_collection_records;
+		std::vector<snemo::digitization::tracker_trigger_algorithm::tracker_record> tracker_collection_records;
 		
-		std::clog << "********* Display of Finale structures *********" << std::endl;
+		// Trigger process
+		my_trigger_algo.process(my_geiger_ctw_data,
+					my_calo_ctw_data);
+		  
+		// Finale structures :
+		calo_collection_records = my_trigger_algo.get_calo_records_vector();
+		tracker_collection_records = my_trigger_algo.get_tracker_records_vector();
 
-		calo_level_one_finale_decision.display();
-		tracker_level_one_finale_decison.display();
-
+		std::clog << "********* Size of Finale structures *********" << std::endl;
+		std::clog << "Calo collection size    : " << calo_collection_records.size() << std::endl;
+		std::clog << "Tracker collection size : " << tracker_collection_records.size() << std::endl;
 		
 	      } // end of if has "calo" || "xcalo" || "gveto" || "gg" step hits
 	    

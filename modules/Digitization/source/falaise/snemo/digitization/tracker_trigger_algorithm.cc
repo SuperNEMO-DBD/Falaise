@@ -161,6 +161,7 @@ namespace snemo {
 		}
 	    }
 	}
+      _tracker_level_1_finale_decision_.reset();
       return;
     }
 
@@ -570,6 +571,11 @@ namespace snemo {
 
       return;
     }
+
+    const std::vector<tracker_trigger_algorithm::tracker_record> tracker_trigger_algorithm::get_tracker_records_vector() const
+    {
+      return _tracker_records_;
+    }
       
     void tracker_trigger_algorithm::build_trigger_level_one_bitsets()
     {
@@ -819,8 +825,6 @@ namespace snemo {
       build_trigger_level_one_bitsets();
       build_trigger_level_one_to_level_two();
       build_tracker_record();
-      
-      _tracker_level_1_finale_decision_.display();
       display_matrix();
 	
       return;
@@ -836,8 +840,11 @@ namespace snemo {
 	  std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick;
 	  geiger_ctw_data_.get_list_of_geiger_ctw_per_clocktick(iclocktick_800, geiger_ctw_list_per_clocktick);
 	  std::clog <<"*************************** Clocktick 800 = " << iclocktick_800  << " |  Clocktick 1600 = " << iclocktick_800 / 2.<< "***************************" << std::endl << std::endl;
-	  _tracker_level_1_finale_decision_.clocktick_1600ns = iclocktick_800 / 2;
 	  _process_for_a_clocktick(geiger_ctw_list_per_clocktick);
+	  _tracker_level_1_finale_decision_.clocktick_1600ns = iclocktick_800 / 2;
+	  _tracker_level_1_finale_decision_.display();
+	  _tracker_records_.push_back(_tracker_level_1_finale_decision_);
+	  std::clog << "Size of tracker records = " << _tracker_records_.size() << std::endl;
 	} // end of iclocktick
       return;
     }

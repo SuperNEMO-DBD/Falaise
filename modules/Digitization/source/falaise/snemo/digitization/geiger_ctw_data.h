@@ -76,7 +76,10 @@ namespace snemo {
       const geiger_ctw_collection_type & get_geiger_ctws() const;
 
       /// Return the collection of geiger crate trigger
-      geiger_ctw_collection_type & grab_geiger_ctws() ;
+      geiger_ctw_collection_type & grab_geiger_ctws();
+			
+			/// Check if geiger ctw data has ctw(s)
+			bool has_geiger_ctw() const;
 
       /// Reset
       void reset();

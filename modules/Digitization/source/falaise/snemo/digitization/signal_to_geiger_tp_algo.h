@@ -103,10 +103,13 @@ namespace snemo {
 
     private :
       
+			// Configuration :
       bool    _initialized_;     //!< Initialization flag
       int32_t _clocktick_ref_;   //!< Clocktick reference of the algorithm
       double  _clocktick_shift_; //!< Clocktick shift between [0:800]
-			electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID    // WHy no const possible ?
+			electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
+
+			// Data :
 			bool _activated_bits_[geiger::tp::TP_SIZE];            //!< Table of booleans to see which bits were activated
     };
 

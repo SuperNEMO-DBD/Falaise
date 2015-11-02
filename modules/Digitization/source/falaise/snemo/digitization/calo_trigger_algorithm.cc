@@ -107,8 +107,10 @@ namespace snemo {
     {
       _initialized_ = false;
       _electronic_mapping_ = 0;
-      _circular_buffer_depth_ = -1;
+
+      _circular_buffer_depth_ = 0;
       _activated_threshold_ = false;
+      _threshold_total_multiplicity_.reset();
       _inhibit_both_side_coinc_ = false;
       _inhibit_single_side_coinc_ = false;
       return;
@@ -129,8 +131,13 @@ namespace snemo {
       _electronic_mapping_ = & my_electronic_mapping_;
       return;
     }
-    
-    void calo_trigger_algorithm::set_circular_buffer_depth(unsigned int & circular_buffer_depth_)
+ 
+    bool calo_trigger_algorithm::has_circular_buffer_depth() const
+    {
+      return _circular_buffer_depth_ != 0;
+    }
+   
+    void calo_trigger_algorithm::set_circular_buffer_depth(unsigned int circular_buffer_depth_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized, calo circular buffer depth can't be set ! ");
       _circular_buffer_depth_ = circular_buffer_depth_;
@@ -161,11 +168,17 @@ namespace snemo {
       return _inhibit_single_side_coinc_;
     }
 
-    void calo_trigger_algorithm::set_threshold_total_multiplicity(unsigned int & threshold_)
+    bool calo_trigger_algorithm::has_threshold_total_multiplicity() const
+    {
+      return _threshold_total_multiplicity_.to_ulong() > 0;
+    }
+
+    void calo_trigger_algorithm::set_threshold_total_multiplicity(unsigned int threshold_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized, calo threshold can't be set ! ");
+      DT_THROW_IF(threshold_ > 3, std::range_error, "Invalid total multiplicity threshold ! ");
       _threshold_total_multiplicity_ = threshold_;
-      _activated_threshold_ = true;
+      _activated_threshold_ = (threshold_ > 0);
       return;
     }
 
@@ -189,9 +202,25 @@ namespace snemo {
     void calo_trigger_algorithm::initialize(const datatools::properties & config_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized ! ");
-      DT_THROW_IF(_electronic_mapping_ == 0, std::logic_error, "Missing electronic mapping ! " );
-      DT_THROW_IF(_circular_buffer_depth_ <= 0, std::logic_error, "Calo circular buffer depth value [" << _circular_buffer_depth_ << "] is missing ! ");
-      DT_THROW_IF(!_activated_threshold_, std::logic_error, " Threshold total multiplicity is not set ! ");
+
+      if (! has_circular_buffer_depth()) {
+	if (config_.has_key("circular_buffer_depth")) {
+	  int circular_buffer_depth = config_.fetch_integer("circular_buffer_depth");
+	  DT_THROW_IF(circular_buffer_depth <= 0, std::domain_error, "Invalid negative circular buffer depth!");
+	  set_circular_buffer_depth((unsigned int) circular_buffer_depth);
+	}
+      }
+
+      if (! has_threshold_total_multiplicity()) {
+	if (config_.has_key("total_multiplicity_threshold")) {
+	  int threshold_total_multiplicity = config_.fetch_integer("total_multiplicity_threshold");
+	  DT_THROW_IF(threshold_total_multiplicity <= 0, std::domain_error, "Invalid negative total multiplicity threshold!");
+	  set_threshold_total_multiplicity((unsigned int) threshold_total_multiplicity);
+	}
+      }
+ 
+      // Checks:
+
       _initialized_ = true;
       return;
     }
@@ -209,7 +238,7 @@ namespace snemo {
       _activated_threshold_ = false;
       _inhibit_both_side_coinc_ = false;
       _inhibit_single_side_coinc_ = false;
-      _circular_buffer_depth_ = -1;
+      _circular_buffer_depth_ = 0;
       _calo_level_1_finale_decision_.reset();
       reset_calo_info();
       _gate_circular_buffer_.reset();

@@ -40,11 +40,11 @@ namespace snemo {
 			/// Final bitset size for geiger zoning
 			static const int32_t GEIGER_FINAL_DECISION_BITSET_SIZE = 2;
 
-			 /// Size of the subzone layer projection bitset
-			 static const int32_t GEIGER_LEVEL_ONE_SUBZONE_LAYER_SIZE = 5;
+			/// Size of the subzone layer projection bitset
+			static const int32_t GEIGER_LEVEL_ONE_SUBZONE_LAYER_SIZE = 5;
 
-			 /// Size of the subzone row projection bitset
-			 static const int32_t GEIGER_LEVEL_ONE_SUBZONE_ROW_SIZE   = 6;
+			/// Size of the subzone row projection bitset
+			static const int32_t GEIGER_LEVEL_ONE_SUBZONE_ROW_SIZE   = 6;
 
 			struct tracker_record
 			{
@@ -52,7 +52,7 @@ namespace snemo {
 				void reset();
 				void display();
 				uint32_t clocktick_1600ns;
-				std::bitset<GEIGER_FINAL_DECISION_BITSET_SIZE> level_one_finale_decision; //!< Finale decision bitset [00] VOID; [01] LONG_TRACK; [11] SHORT_TRACK, [10] UNUSED
+				std::bitset<GEIGER_FINAL_DECISION_BITSET_SIZE> level_one_finale_decision;
 				std::bitset<GEIGER_ZONING_FINAL_BITSET_SIZE> final_tracker_trigger_info[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES];
 			};
 			
@@ -234,6 +234,9 @@ namespace snemo {
 			/// Build the level 1 finale structure for the tracker
 			void build_tracker_record();
 
+			/// Get the vector of calo summary record
+			const std::vector<tracker_record> get_tracker_records_vector() const;
+
       /// General process
       void process(const geiger_ctw_data & geiger_ctw_data_);
 			
@@ -266,6 +269,9 @@ namespace snemo {
 			memory<4,2> _mem_lvl1_to_lvl2_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES]; //!< A4D2 memory for level 1 to level 2 (4 bits --> 2 bits)
 			
 			tracker_record _tracker_level_1_finale_decision_; //!< Structure representing the finale decision for level 1 tracker
+
+			std::vector<tracker_record> _tracker_records_; //!< Collection of tracker record (vector)
+			
 		};
 
   } // end of namespace digitization

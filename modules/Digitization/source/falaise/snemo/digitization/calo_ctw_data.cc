@@ -143,7 +143,13 @@ namespace snemo {
     {
       return _calo_ctws_;
     }
-
+	 
+		bool calo_ctw_data::has_calo_ctw() const
+		{
+			if (_calo_ctws_.empty() == true) return false;
+			else return true;			
+		}
+		
     void calo_ctw_data::reset()
     {
       if (is_locked())

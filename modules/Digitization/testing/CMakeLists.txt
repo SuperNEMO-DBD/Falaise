@@ -21,6 +21,7 @@ set(FalaiseDigitizationPlugin_TESTS
   test_signal_to_geiger_tp_algo.cxx
   test_tracker_trigger_algorithm.cxx
   test_calo_trigger_algorithm.cxx
+  test_both_calo_tracker_algorithm.cxx
   test_trigger_algorithm.cxx
 
   test_trigger_analysis_gen_histo.cxx

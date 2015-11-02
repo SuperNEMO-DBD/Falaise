@@ -146,6 +146,12 @@ namespace snemo {
 		{
 			return _geiger_ctws_;
 		}
+
+		bool geiger_ctw_data::has_geiger_ctw() const
+		{
+			if (_geiger_ctws_.empty() == true) return false;
+			else return true;
+		}
 		
     void geiger_ctw_data::reset()
     {

@@ -10,6 +10,8 @@
 #include <bitset>
 
 // This project :
+#include <snemo/digitization/calo_ctw_data.h>
+#include <snemo/digitization/geiger_ctw_data.h>
 #include <snemo/digitization/calo_trigger_algorithm.h>
 #include <snemo/digitization/tracker_trigger_algorithm.h>
 #include <snemo/digitization/electronic_mapping.h>
@@ -49,24 +51,44 @@ namespace snemo {
       /// Reset the object
       void reset(); 
 			
+			/// Get the vector of calo summary record
+			const std::vector<tracker_trigger_algorithm::tracker_record> get_tracker_records_vector() const;
+			
+			/// Get the vector of calo summary record
+			const std::vector<calo_trigger_algorithm::calo_summary_record> get_calo_records_vector() const;
+			
       /// General process
-      void process(const calo_trigger_algorithm::calo_summary_record & calo_sumary_record_);
+      void process(const geiger_ctw_data & geiger_ctw_data_,
+									 const calo_ctw_data & calo_ctw_data_);
 
     protected :
-
+			
+			/// Process calo algorithm
+			void _process_calo_algo(const calo_ctw_data & calo_ctw_data_);
+			
+			/// Process tracker algorithm
+			void _process_tracker_algo(const geiger_ctw_data & geiger_ctw_data_);
+			
+			/// Process coincidence module algorithm			
+			void _process_coinc_algo(std::vector<tracker_trigger_algorithm::tracker_record> tracker_records_,
+															 std::vector<calo_trigger_algorithm::calo_summary_record> calo_records_);
+			
       /// Protected general process
-      void _process(const calo_trigger_algorithm::calo_summary_record & calo_sumary_record_);
-
+      void _process(const geiger_ctw_data & geiger_ctw_data_,
+										const calo_ctw_data & calo_ctw_data_);
     private :
      
       // Configuration :
       bool _initialized_; //!< Initialization flag
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
 
-      // Data :
-      
-			//tracker_trigger_algorithm::tracker_trigger_algorithm _tracker_algo_; //!< Tracker trigger algorithm @ 1600ns
-			//calo_trigger_algorithm::calo_trigger_algorithm    _calo_algo_;    //!<  Calo trigger algorithm @ 25ns
+		  tracker_trigger_algorithm _tracker_algo_; //!< Tracker trigger algorithm @ 1600ns
+		  calo_trigger_algorithm    _calo_algo_;    //!<  Calo trigger algorithm @ 25ns
+			
+			// Data :
+			
+			std::vector<tracker_trigger_algorithm::tracker_record> _tracker_records_; //!< Collection of tracker record (vector)
+			std::vector<calo_trigger_algorithm::calo_summary_record> _calo_records_; //!< Collection of calo summary record (vector)
 			
     };
 
