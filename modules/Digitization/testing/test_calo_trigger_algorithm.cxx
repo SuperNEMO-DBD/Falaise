@@ -163,7 +163,7 @@ int main( int  argc_ , char **argv_  )
 		    // my_calo_algo.inhibit_both_side_coinc();
 		    // my_calo_algo.inhibit_single_side_coinc();
 		    unsigned int calo_threshold = 1;
-		    my_calo_algo.set_threshold_total_multiplicity(calo_threshold);
+		    my_calo_algo.set_total_multiplicity_threshold(calo_threshold);
 		    my_calo_algo.initialize_simple();
 		
 		    // // Modification of my_calo_ctw_data for a test.

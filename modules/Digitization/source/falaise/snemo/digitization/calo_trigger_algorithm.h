@@ -67,7 +67,7 @@ namespace snemo {
 				void reset_summary_boolean_only();
 				void display();
 				bool single_side_coinc;
-				bool threshold_total_multiplicity;
+				bool total_multiplicity_threshold;
 				bool calo_finale_decision;
 			};
 			
@@ -148,16 +148,16 @@ namespace snemo {
 			bool is_inhibited_single_side_coinc() const;
 			
 			/// Set the total multiplicity threshold
-			void set_threshold_total_multiplicity(unsigned int threshold_);
+			void set_total_multiplicity_threshold(unsigned int threshold_);
 	
 			/// Check if the total multiplicity threshold is set 
-			bool has_threshold_total_multiplicity() const;
+			bool has_total_multiplicity_threshold() const;
 
 			/// Check if total multiplicity threshold is set
-			bool is_activated_threshold_total_multiplicity() const;
+			bool is_activated_total_multiplicity_threshold() const;
 
 			/// Get the calo threshold for coincidences
-			const	std::bitset<calo::ctw::HTM_BITSET_SIZE> get_threshold_total_multiplicity_coinc() const;
+			const	std::bitset<calo::ctw::HTM_BITSET_SIZE> get_total_multiplicity_threshold_coinc() const;
          													 																	
       /// Initializing
       void initialize_simple();
@@ -218,7 +218,7 @@ namespace snemo {
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
 			bool _inhibit_both_side_coinc_;
 			bool _inhibit_single_side_coinc_;
-			std::bitset<calo::ctw::HTM_BITSET_SIZE> _threshold_total_multiplicity_;
+			std::bitset<calo::ctw::HTM_BITSET_SIZE> _total_multiplicity_threshold_;
 			bool _activated_threshold_;
 			unsigned int _circular_buffer_depth_;
 

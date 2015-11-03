@@ -109,20 +109,20 @@ namespace snemo {
       DT_THROW_IF(is_initialized(), std::logic_error, "Tracker trigger algorithm is already initialized ! ");
       DT_THROW_IF(_electronic_mapping_ == 0, std::logic_error, "Missing electronic mapping ! " );
 
-      if (config_.has_key("memory.lvl0_to_lvl1.row.default")) {
-	std::string mem_def_filename = config_.fetch_string("memory.lvl0_to_lvl1.row.default");
+      if (config_.has_key("memory_row_file")) {
+	std::string mem_def_filename = config_.fetch_string("memory_row_file");
 	datatools::fetch_path_with_env(mem_def_filename);
 	fill_all_row_memory(mem_def_filename);
       }
       
-      if (config_.has_key("memory.lvl0_to_lvl1.layer.default")) {
-	std::string mem_def_filename = config_.fetch_string("memory.lvl0_to_lvl1.layer.default");
+      if (config_.has_key("memory_layer_file")) {
+	std::string mem_def_filename = config_.fetch_string("memory_layer_file");
 	datatools::fetch_path_with_env(mem_def_filename);
 	fill_all_layer_memory(mem_def_filename);
       }
 
-      if (config_.has_key("memory.lvl1_to_lvl2.default")) {
-	std::string mem_def_filename = config_.fetch_string("memory.lvl1_to_lvl2.default");
+      if (config_.has_key("memory_a4_d2_file")) {
+	std::string mem_def_filename = config_.fetch_string("memory_a4_d2_file");
 	datatools::fetch_path_with_env(mem_def_filename);
 	fill_all_a4_d2_memory(mem_def_filename);
       }
@@ -365,7 +365,7 @@ namespace snemo {
 								int32_t zone_,
 								int32_t subzone_)
     {
-      DT_THROW_IF(!is_initialized(), std::logic_error, "Tracker trigger algorithm is not initialized ! ");
+      DT_THROW_IF(is_initialized(), std::logic_error, "Tracker trigger algorithm is already initialized ! ");
       _mem_lvl0_to_lvl1_row_[side_][zone_][subzone_].load_from_file(filename_); 
       return;
     }
@@ -376,7 +376,7 @@ namespace snemo {
 	{
 	  for (int izone = 0; izone < mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES; izone++)
 	    {
-	      for (int isubzone = 0; isubzone < 4; isubzone++)
+	      for (int isubzone = 0; isubzone < mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES; isubzone++)
 		{
 		  fill_row_memory_per_subzone(filename_, iside, izone, isubzone);
 		} // end of isubzone
@@ -390,7 +390,7 @@ namespace snemo {
 								  int32_t zone_,
 								  int32_t subzone_)
     {
-      DT_THROW_IF(!is_initialized(), std::logic_error, "Tracker trigger algorithm is not initialized ! ");
+      DT_THROW_IF(is_initialized(), std::logic_error, "Tracker trigger algorithm is already initialized ! ");
       _mem_lvl0_to_lvl1_layer_[side_][zone_][subzone_].load_from_file(filename_); 
       return;
     }
@@ -414,7 +414,7 @@ namespace snemo {
 							       int32_t side_,
 							       int32_t zone_)
     {
-      DT_THROW_IF(!is_initialized(), std::logic_error, "Tracker trigger algorithm is not initialized ! ");
+      DT_THROW_IF(is_initialized(), std::logic_error, "Tracker trigger algorithm is already initialized ! ");
       _mem_lvl1_to_lvl2_[side_][zone_].load_from_file(filename_); 
       return;
     }

@@ -64,10 +64,12 @@ namespace snemo {
     protected :
 			
 			/// Process calo algorithm
-			void _process_calo_algo(const calo_ctw_data & calo_ctw_data_);
+			void _process_calo_algo(const calo_ctw_data & calo_ctw_data_,
+															std::vector<calo_trigger_algorithm::calo_summary_record> calo_records_);
 			
 			/// Process tracker algorithm
-			void _process_tracker_algo(const geiger_ctw_data & geiger_ctw_data_);
+			void _process_tracker_algo(const geiger_ctw_data & geiger_ctw_data_,
+																 std::vector<tracker_trigger_algorithm::tracker_record> tracker_records_);
 			
 			/// Process coincidence module algorithm			
 			void _process_coinc_algo(std::vector<tracker_trigger_algorithm::tracker_record> tracker_records_,

@@ -71,7 +71,7 @@ namespace snemo {
     calo_trigger_algorithm::calo_summary_record::calo_summary_record()
     {
       single_side_coinc = false;
-      threshold_total_multiplicity = false;
+      total_multiplicity_threshold = false;
       calo_finale_decision = false;
       return; 
     }
@@ -80,7 +80,7 @@ namespace snemo {
    {
      calo_record::reset();
      single_side_coinc = false;
-     threshold_total_multiplicity = false;
+     total_multiplicity_threshold = false;
      calo_finale_decision = false;
      return;
    }
@@ -88,7 +88,7 @@ namespace snemo {
     void calo_trigger_algorithm::calo_summary_record::reset_summary_boolean_only()
     {
       single_side_coinc = false;
-      threshold_total_multiplicity = false;
+      total_multiplicity_threshold = false;
       calo_finale_decision = false;
       return;
     }
@@ -97,7 +97,7 @@ namespace snemo {
     {
       calo_record::display();
       std::clog << "Single Side coinc : "      << single_side_coinc << std::endl;
-      std::clog << "Threshold total mult : "   << threshold_total_multiplicity << std::endl;
+      std::clog << "Threshold total mult : "   << total_multiplicity_threshold << std::endl;
       std::clog << "Trigger final decision : " << calo_finale_decision  << std::endl;
       std::clog << std::endl;
       return;
@@ -110,7 +110,7 @@ namespace snemo {
 
       _circular_buffer_depth_ = 0;
       _activated_threshold_ = false;
-      _threshold_total_multiplicity_.reset();
+      _total_multiplicity_threshold_.reset();
       _inhibit_both_side_coinc_ = false;
       _inhibit_single_side_coinc_ = false;
       return;
@@ -168,28 +168,28 @@ namespace snemo {
       return _inhibit_single_side_coinc_;
     }
 
-    bool calo_trigger_algorithm::has_threshold_total_multiplicity() const
+    bool calo_trigger_algorithm::has_total_multiplicity_threshold() const
     {
-      return _threshold_total_multiplicity_.to_ulong() > 0;
+      return _total_multiplicity_threshold_.to_ulong() > 0;
     }
 
-    void calo_trigger_algorithm::set_threshold_total_multiplicity(unsigned int threshold_)
+    void calo_trigger_algorithm::set_total_multiplicity_threshold(unsigned int threshold_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized, calo threshold can't be set ! ");
       DT_THROW_IF(threshold_ > 3, std::range_error, "Invalid total multiplicity threshold ! ");
-      _threshold_total_multiplicity_ = threshold_;
+      _total_multiplicity_threshold_ = threshold_;
       _activated_threshold_ = (threshold_ > 0);
       return;
     }
 
-    bool calo_trigger_algorithm::is_activated_threshold_total_multiplicity() const
+    bool calo_trigger_algorithm::is_activated_total_multiplicity_threshold() const
     {
       return _activated_threshold_;
     }
 
-    const std::bitset<calo::ctw::HTM_BITSET_SIZE> calo_trigger_algorithm::get_threshold_total_multiplicity_coinc() const
+    const std::bitset<calo::ctw::HTM_BITSET_SIZE> calo_trigger_algorithm::get_total_multiplicity_threshold_coinc() const
     {
-      return _threshold_total_multiplicity_;
+      return _total_multiplicity_threshold_;
     }
 
     void calo_trigger_algorithm::initialize_simple()
@@ -211,11 +211,11 @@ namespace snemo {
 	}
       }
 
-      if (! has_threshold_total_multiplicity()) {
+      if (! has_total_multiplicity_threshold()) {
 	if (config_.has_key("total_multiplicity_threshold")) {
-	  int threshold_total_multiplicity = config_.fetch_integer("total_multiplicity_threshold");
-	  DT_THROW_IF(threshold_total_multiplicity <= 0, std::domain_error, "Invalid negative total multiplicity threshold!");
-	  set_threshold_total_multiplicity((unsigned int) threshold_total_multiplicity);
+	  int total_multiplicity_threshold = config_.fetch_integer("total_multiplicity_threshold");
+	  DT_THROW_IF(total_multiplicity_threshold <= 0, std::domain_error, "Invalid negative total multiplicity threshold!");
+	  set_total_multiplicity_threshold((unsigned int) total_multiplicity_threshold);
 	}
       }
  
@@ -554,13 +554,13 @@ namespace snemo {
       if ((side_0_activated && !side_1_activated) || (!side_0_activated && side_1_activated)) my_calo_summary_record_.single_side_coinc = true;
       else my_calo_summary_record_.single_side_coinc = false;
 
-      if ((my_calo_summary_record_.total_multiplicity_side_0.to_ulong() + my_calo_summary_record_.total_multiplicity_side_1.to_ulong()) >= _threshold_total_multiplicity_.to_ulong())   my_calo_summary_record_.threshold_total_multiplicity = true;
-      else my_calo_summary_record_.threshold_total_multiplicity = false;
+      if ((my_calo_summary_record_.total_multiplicity_side_0.to_ulong() + my_calo_summary_record_.total_multiplicity_side_1.to_ulong()) >= _total_multiplicity_threshold_.to_ulong())   my_calo_summary_record_.total_multiplicity_threshold = true;
+      else my_calo_summary_record_.total_multiplicity_threshold = false;
     }
 
     void calo_trigger_algorithm::_compute_calo_finale_decision(calo_summary_record & my_calo_summary_record_)
     {
-      if ((_activated_threshold_ && my_calo_summary_record_.threshold_total_multiplicity)
+      if ((_activated_threshold_ && my_calo_summary_record_.total_multiplicity_threshold)
       	  && !(is_inhibited_single_side_coinc() && my_calo_summary_record_.single_side_coinc)
       	  && !(is_inhibited_both_side_coinc() && !my_calo_summary_record_.single_side_coinc))
       	{
@@ -607,7 +607,6 @@ namespace snemo {
 
 	  _calo_records_.push_back(_calo_level_1_finale_decision_);
 	  std::clog << "Size of calo records : " <<_calo_records_.size() << std::endl;
-	  //if (get_calo_level_1_finale_decision()) _display_calo_summary(_calo_level_1_finale_decision_);
 	  
 	  //reset_calo_record_per_clocktick();
 	  reset_calo_info();

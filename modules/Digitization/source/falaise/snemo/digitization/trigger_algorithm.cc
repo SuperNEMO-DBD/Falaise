@@ -90,13 +90,15 @@ namespace snemo {
       return;
     }   
 
-    void trigger_algorithm::_process_calo_algo(const calo_ctw_data & calo_ctw_data_)
+    void trigger_algorithm::_process_calo_algo(const calo_ctw_data & calo_ctw_data_,
+					       std::vector<calo_trigger_algorithm::calo_summary_record> calo_records_)
     {
       _calo_algo_.process(calo_ctw_data_);
       return;
     }
 
-    void trigger_algorithm::_process_tracker_algo(const geiger_ctw_data & geiger_ctw_data_)
+    void trigger_algorithm::_process_tracker_algo(const geiger_ctw_data & geiger_ctw_data_,
+						  std::vector<tracker_trigger_algorithm::tracker_record> tracker_records_)
     {
       _tracker_algo_.process(geiger_ctw_data_);
       return;
@@ -113,12 +115,12 @@ namespace snemo {
     {
       if (calo_ctw_data_.has_calo_ctw())
 	{
-	  _process_calo_algo(calo_ctw_data_);
+	  _process_calo_algo(calo_ctw_data_, _calo_records_);
 	}
 
       if (geiger_ctw_data_.has_geiger_ctw())
 	{
-	  _process_tracker_algo(geiger_ctw_data_);
+	  _process_tracker_algo(geiger_ctw_data_, _tracker_records_);
 	}
        return;
     }
