@@ -14,6 +14,7 @@
 #include <snemo/digitization/geiger_ctw_data.h>
 #include <snemo/digitization/calo_trigger_algorithm.h>
 #include <snemo/digitization/tracker_trigger_algorithm.h>
+#include <snemo/digitization/coincidence_trigger_algorithm.h>
 #include <snemo/digitization/electronic_mapping.h>
 #include <snemo/digitization/mapping.h>
 
@@ -51,6 +52,9 @@ namespace snemo {
       /// Reset the object
       void reset(); 
 			
+			/// Clear the record vectors
+			void clear_records();
+
 			/// Get the vector of calo summary record
 			const std::vector<tracker_trigger_algorithm::tracker_record> get_tracker_records_vector() const;
 			
@@ -58,39 +62,38 @@ namespace snemo {
 			const std::vector<calo_trigger_algorithm::calo_summary_record> get_calo_records_vector() const;
 			
       /// General process
-      void process(const geiger_ctw_data & geiger_ctw_data_,
-									 const calo_ctw_data & calo_ctw_data_);
+      void process(const calo_ctw_data & calo_ctw_data_,
+									 const geiger_ctw_data & geiger_ctw_data_);
 
     protected :
 			
 			/// Process calo algorithm
-			void _process_calo_algo(const calo_ctw_data & calo_ctw_data_,
-															std::vector<calo_trigger_algorithm::calo_summary_record> calo_records_);
+			void _process_calo_algo(const calo_ctw_data & calo_ctw_data_);
 			
 			/// Process tracker algorithm
-			void _process_tracker_algo(const geiger_ctw_data & geiger_ctw_data_,
-																 std::vector<tracker_trigger_algorithm::tracker_record> tracker_records_);
+			void _process_tracker_algo(const geiger_ctw_data & geiger_ctw_data_);
 			
 			/// Process coincidence module algorithm			
-			void _process_coinc_algo(std::vector<tracker_trigger_algorithm::tracker_record> tracker_records_,
-															 std::vector<calo_trigger_algorithm::calo_summary_record> calo_records_);
+			void _process_coinc_algo();
 			
       /// Protected general process
-      void _process(const geiger_ctw_data & geiger_ctw_data_,
-										const calo_ctw_data & calo_ctw_data_);
+      void _process(const calo_ctw_data & calo_ctw_data_,
+										const geiger_ctw_data & geiger_ctw_data_);
+
     private :
      
       // Configuration :
       bool _initialized_; //!< Initialization flag
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
 
-		  tracker_trigger_algorithm _tracker_algo_; //!< Tracker trigger algorithm @ 1600ns
-		  calo_trigger_algorithm    _calo_algo_;    //!<  Calo trigger algorithm @ 25ns
+		  tracker_trigger_algorithm   _tracker_algo_; //!< Tracker trigger algorithm @ 1600ns
+		  calo_trigger_algorithm         _calo_algo_; //!< Calo trigger algorithm @ 25ns
+			coincidence_trigger_algorithm _coinc_algo_; //!< Coincidence trigger algorithm for matching calo and tracker trigger
 			
 			// Data :
-			
-			std::vector<tracker_trigger_algorithm::tracker_record> _tracker_records_; //!< Collection of tracker record (vector)
 			std::vector<calo_trigger_algorithm::calo_summary_record> _calo_records_; //!< Collection of calo summary record (vector)
+			std::vector<tracker_trigger_algorithm::tracker_record> _tracker_records_; //!< Collection of tracker record (vector)
+			
 			
     };
 

@@ -57,6 +57,7 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
   source/falaise/snemo/digitization/signal_to_calo_tp_algo.h
   source/falaise/snemo/digitization/tracker_trigger_algorithm.h
   source/falaise/snemo/digitization/calo_trigger_algorithm.h
+  source/falaise/snemo/digitization/coincidence_trigger_algorithm.h
   source/falaise/snemo/digitization/trigger_algorithm.h
 
   source/falaise/snemo/digitization/memory.h
@@ -71,6 +72,7 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
 list(APPEND FalaiseDigitizationPlugin_SOURCES 
   source/falaise/snemo/digitization/tracker_trigger_mem_maker.cc
   source/falaise/snemo/digitization/trigger_algorithm.cc
+  source/falaise/snemo/digitization/coincidence_trigger_algorithm.cc
   source/falaise/snemo/digitization/tracker_trigger_algorithm.cc
   source/falaise/snemo/digitization/calo_trigger_algorithm.cc
   source/falaise/snemo/digitization/signal_to_calo_tp_algo.cc

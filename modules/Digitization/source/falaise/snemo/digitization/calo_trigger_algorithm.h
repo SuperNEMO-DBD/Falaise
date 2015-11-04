@@ -181,13 +181,11 @@ namespace snemo {
 			const bool get_calo_level_1_finale_decision() const; 
 
 			/// Get the level 1 finale decision structure
-			const calo_trigger_algorithm::calo_summary_record get_calo_level_1_finale_decision_structure() const;
-    
-			/// Get the vector of calo summary record
-			const std::vector<calo_summary_record> get_calo_records_vector() const;
+			const calo_trigger_algorithm::calo_summary_record get_calo_level_1_finale_decision_structure() const;  
 			
 			/// General process
-      void process(const calo_ctw_data & calo_ctw_data_);
+      void process(const calo_ctw_data & calo_ctw_data_,
+									 std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_);
 
 		protected :
 		 
@@ -201,7 +199,8 @@ namespace snemo {
 			void _compute_calo_finale_decision(calo_summary_record & my_calo_summary_record_);
 
 			/// Protected general process
-			void _process(const calo_ctw_data & calo_ctw_data_);
+			void _process(const calo_ctw_data & calo_ctw_data_,
+										std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_);
 
 			/// Display the level one calo trigger info (bitsets)
 			void _display_calo_info_for_a_clocktick();

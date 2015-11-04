@@ -234,11 +234,9 @@ namespace snemo {
 			/// Build the level 1 finale structure for the tracker
 			void build_tracker_record();
 
-			/// Get the vector of calo summary record
-			const std::vector<tracker_record> get_tracker_records_vector() const;
-
       /// General process
-      void process(const geiger_ctw_data & geiger_ctw_data_);
+      void process(const geiger_ctw_data & geiger_ctw_data_,
+									 std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_);
 			
 		protected :
 			
@@ -246,7 +244,8 @@ namespace snemo {
 			void _process_for_a_clocktick(const std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick_);
 
 			/// Protected general process
-			void _process(const geiger_ctw_data & geiger_ctw_data_);
+			void _process(const geiger_ctw_data & geiger_ctw_data_,
+										std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_);
 			
     private :
 			
@@ -269,8 +268,6 @@ namespace snemo {
 			memory<4,2> _mem_lvl1_to_lvl2_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES]; //!< A4D2 memory for level 1 to level 2 (4 bits --> 2 bits)
 			
 			tracker_record _tracker_level_1_finale_decision_; //!< Structure representing the finale decision for level 1 tracker
-
-			std::vector<tracker_record> _tracker_records_; //!< Collection of tracker record (vector)
 			
 		};
 

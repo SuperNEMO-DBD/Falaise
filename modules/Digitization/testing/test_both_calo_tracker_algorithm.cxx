@@ -174,7 +174,7 @@ int main( int  argc_ , char **argv_  )
     dpp::input_module reader;
     datatools::properties reader_config;
     reader_config.store ("logging.priority", "debug");
-    reader_config.store ("max_record_total", 10);
+    reader_config.store ("max_record_total", 2);
     reader_config.store ("files.mode", "single");
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
@@ -274,7 +274,7 @@ int main( int  argc_ , char **argv_  )
 		    my_clock_manager.tree_dump(std::clog, "Clock utils : ", "INFO : ");
 		    
 		    // Calo trigger algorithm
-		    my_calo_algo.process(my_calo_ctw_data);
+		    my_calo_algo.process(my_calo_ctw_data, calo_collection_records);
 
 		  } // end of if has calo signal
 
@@ -309,20 +309,16 @@ int main( int  argc_ , char **argv_  )
 		    // Initializing and processing tracker trigger algorithm to make a decision :
 		
 		    my_tracker_algo.set_electronic_mapping(my_e_mapping);
-		    my_tracker_algo.initialize();
 		    my_tracker_algo.fill_all_layer_memory(memory_layer);
 		    my_tracker_algo.fill_all_row_memory(memory_row);
 		    my_tracker_algo.fill_all_a4_d2_memory(memory_a4_d2);
-		    // Tracker trigger algorithm
+		    my_tracker_algo.initialize();
 
-		    my_tracker_algo.process(my_geiger_ctw_data);
+		    // Tracker trigger algorithm
+		    my_tracker_algo.process(my_geiger_ctw_data, tracker_collection_records);
 		    
 		  } // end of if has geiger signal
-		
-		// Finale structures :
-		calo_collection_records = my_calo_algo.get_calo_records_vector();
-		tracker_collection_records = my_tracker_algo.get_tracker_records_vector();
-
+	       
 		std::clog << "********* Size of Finale structures *********" << std::endl;
 		std::clog << "Calo collection size    : " << calo_collection_records.size() << std::endl;
 		std::clog << "Tracker collection size : " << tracker_collection_records.size() << std::endl;

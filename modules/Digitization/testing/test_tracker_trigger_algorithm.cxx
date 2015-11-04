@@ -347,6 +347,7 @@ int main(int  argc_ , char ** argv_)
 		sd_2_geiger_signal.initialize();
 		sd_2_geiger_signal.process(SD, signal_data);
 
+		std::vector<snemo::digitization::tracker_trigger_algorithm::tracker_record> tracker_collection_records;
 		if( signal_data.has_geiger_signals())
 		  {
 		    // Random clocktick references and shifts 
@@ -385,13 +386,13 @@ int main(int  argc_ , char ** argv_)
 		    // Initializing and processing tracker trigger algorithm to make a decision :
 		    snemo::digitization::tracker_trigger_algorithm my_tracker_algo;
 		    my_tracker_algo.set_electronic_mapping(my_e_mapping);
-		    my_tracker_algo.initialize();
 		    my_tracker_algo.fill_all_layer_memory(memory_layer);
 		    my_tracker_algo.fill_all_row_memory(memory_row);
 		    my_tracker_algo.fill_all_a4_d2_memory(memory_a4_d2);
+		    my_tracker_algo.initialize();
 		    snemo::digitization::tracker_trigger_algorithm::tracker_record tracker_level_one_finale_decison;
 
-		    my_tracker_algo.process(my_geiger_ctw_data);			    
+		    my_tracker_algo.process(my_geiger_ctw_data, tracker_collection_records);			    
 		    tracker_level_one_finale_decison = my_tracker_algo.get_tracker_level_1_finale_decision_structure();
 
 		  } // end of if has geiger signals data

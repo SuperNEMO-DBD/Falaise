@@ -571,11 +571,6 @@ namespace snemo {
 
       return;
     }
-
-    const std::vector<tracker_trigger_algorithm::tracker_record> tracker_trigger_algorithm::get_tracker_records_vector() const
-    {
-      return _tracker_records_;
-    }
       
     void tracker_trigger_algorithm::build_trigger_level_one_bitsets()
     {
@@ -824,13 +819,12 @@ namespace snemo {
 	  
       build_trigger_level_one_bitsets();
       build_trigger_level_one_to_level_two();
-      build_tracker_record();
-      display_matrix();
-	
+      build_tracker_record();	
       return;
     }
     
-    void tracker_trigger_algorithm::_process(const geiger_ctw_data & geiger_ctw_data_)
+    void tracker_trigger_algorithm::_process(const geiger_ctw_data & geiger_ctw_data_,
+					     std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_)
     { 
       // Just even clockticks are processing (to take in account CB to TB serdes limitation
       int32_t iclocktick_800 = geiger_ctw_data_.get_clocktick_min();
@@ -839,20 +833,27 @@ namespace snemo {
 	{
 	  std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick;
 	  geiger_ctw_data_.get_list_of_geiger_ctw_per_clocktick(iclocktick_800, geiger_ctw_list_per_clocktick);
+	  std::clog << std::endl;
+	  std::clog << "-----------------------------------------------------------------------------------------------------------------------" << std::endl;
 	  std::clog <<"*************************** Clocktick 800 = " << iclocktick_800  << " |  Clocktick 1600 = " << iclocktick_800 / 2.<< "***************************" << std::endl << std::endl;
 	  _process_for_a_clocktick(geiger_ctw_list_per_clocktick);
+	  // Set structure clocktick :
 	  _tracker_level_1_finale_decision_.clocktick_1600ns = iclocktick_800 / 2;
+	  // Display : Structure, then matrix
 	  _tracker_level_1_finale_decision_.display();
-	  _tracker_records_.push_back(_tracker_level_1_finale_decision_);
-	  std::clog << "Size of tracker records = " << _tracker_records_.size() << std::endl;
+	  display_matrix();
+	  // Push back the structure in the vector for tracker records
+	  tracker_records_.push_back(_tracker_level_1_finale_decision_);
+	  std::clog << "Size of tracker records = " << tracker_records_.size() << std::endl;
 	} // end of iclocktick
       return;
     }
 
-    void tracker_trigger_algorithm::process(const geiger_ctw_data & geiger_ctw_data_)
+    void tracker_trigger_algorithm::process(const geiger_ctw_data & geiger_ctw_data_,
+					    std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Tracker trigger algorithm is not initialized, it can't process ! ");
-      _process(geiger_ctw_data_);
+      _process(geiger_ctw_data_, tracker_records_);
       return;
     }
 

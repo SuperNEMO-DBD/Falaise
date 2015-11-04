@@ -123,6 +123,7 @@ int main( int  argc_ , char **argv_  )
 
 	 
 	    snemo::digitization::signal_data signal_data;
+	    std::vector<snemo::digitization::calo_trigger_algorithm::calo_summary_record> calo_collection_records;
 
 	    if (SD.has_step_hits("calo") || SD.has_step_hits("xcalo") || SD.has_step_hits("gveto"))
 	      {
@@ -185,7 +186,7 @@ int main( int  argc_ , char **argv_  )
 		    // }
 		
 		    my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
-		    my_calo_algo.process(my_calo_ctw_data);
+		    my_calo_algo.process(my_calo_ctw_data, calo_collection_records);
 
 		    snemo::digitization::calo_trigger_algorithm::calo_summary_record calo_level_one_finale_decision;
 		    calo_level_one_finale_decision = my_calo_algo.get_calo_level_1_finale_decision_structure();

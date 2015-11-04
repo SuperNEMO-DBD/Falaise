@@ -268,11 +268,6 @@ namespace snemo {
       return _calo_level_1_finale_decision_;
     }
 
-    const std::vector<calo_trigger_algorithm::calo_summary_record> calo_trigger_algorithm::get_calo_records_vector() const
-    {
-      return _calo_records_;
-    }
-
     void calo_trigger_algorithm::_display_calo_info_for_a_clocktick()
     {
       _calo_record_per_clocktick_.display();
@@ -533,9 +528,10 @@ namespace snemo {
 	  
 	  // LTO bits :
 	  
-	  if (my_calo_summary_record_.LTO_side_0 == false) my_calo_summary_record_.LTO_side_0 = ctrec.LTO_side_0;
-	  if (my_calo_summary_record_.LTO_side_1 == false) my_calo_summary_record_.LTO_side_1 = ctrec.LTO_side_1;
-	  if (my_calo_summary_record_.LTO_gveto == false) my_calo_summary_record_.LTO_gveto = ctrec.LTO_gveto;
+	  if (ctrec.LTO_side_0 == true) my_calo_summary_record_.LTO_side_0 = true;
+	  if (ctrec.LTO_side_1 == true) my_calo_summary_record_.LTO_side_1 = true;
+	  if (ctrec.LTO_gveto == true) my_calo_summary_record_.LTO_gveto   = true;
+	  
 	  // Zoning word :
 
       	  for (int i = 0; i < mapping::NUMBER_OF_SIDES; i++)
@@ -575,14 +571,16 @@ namespace snemo {
       return;      
     }
 
-    void calo_trigger_algorithm::process(const calo_ctw_data & calo_ctw_data_)
+    void calo_trigger_algorithm::process(const calo_ctw_data & calo_ctw_data_,
+					 std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Calo trigger algorithm is not initialized, it can't process ! ");
-      _process(calo_ctw_data_);
+      _process(calo_ctw_data_, calo_records_);
       return;
     }
 
-    void calo_trigger_algorithm::_process(const calo_ctw_data & calo_ctw_data_)
+    void calo_trigger_algorithm::_process(const calo_ctw_data & calo_ctw_data_,
+					  std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_)
     { 
       reset_calo_info();
       _gate_circular_buffer_.reset(new buffer_type(_circular_buffer_depth_));
@@ -595,7 +593,7 @@ namespace snemo {
 	  for (int isize = 0; isize < ctw_list_per_clocktick.size(); isize++)
 	    {
 	      _build_calo_record_per_clocktick(ctw_list_per_clocktick[isize].get());
-	    } // end of isize 
+	    } // end of isize
 	  _gate_circular_buffer_->push_back(_calo_record_per_clocktick_);
 	  std::clog <<"*************************** Clocktick 25 = " << iclocktick << "***************************" << std::endl << std::endl;
 	  //_display_calo_info_for_a_clocktick();
@@ -605,8 +603,8 @@ namespace snemo {
 	  _compute_calo_finale_decision(my_calo_summary_record);
 	  _display_calo_summary(_calo_level_1_finale_decision_);
 
-	  _calo_records_.push_back(_calo_level_1_finale_decision_);
-	  std::clog << "Size of calo records : " <<_calo_records_.size() << std::endl;
+	  calo_records_.push_back(_calo_level_1_finale_decision_);
+	  std::clog << "Size of calo records : " << calo_records_.size() << std::endl;
 	  
 	  //reset_calo_record_per_clocktick();
 	  reset_calo_info();

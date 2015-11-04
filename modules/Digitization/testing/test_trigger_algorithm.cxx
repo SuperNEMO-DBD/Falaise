@@ -176,7 +176,7 @@ int main( int  argc_ , char **argv_  )
     dpp::input_module reader;
     datatools::properties reader_config;
     reader_config.store ("logging.priority", "debug");
-    reader_config.store ("max_record_total", 2);
+    reader_config.store ("max_record_total", 8);
     reader_config.store ("files.mode", "single");
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
@@ -321,8 +321,8 @@ int main( int  argc_ , char **argv_  )
 		std::vector<snemo::digitization::tracker_trigger_algorithm::tracker_record> tracker_collection_records;
 		
 		// Trigger process
-		my_trigger_algo.process(my_geiger_ctw_data,
-					my_calo_ctw_data);
+		my_trigger_algo.process(my_calo_ctw_data,
+					my_geiger_ctw_data);
 		  
 		// Finale structures :
 		calo_collection_records = my_trigger_algo.get_calo_records_vector();
