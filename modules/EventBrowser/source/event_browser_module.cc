@@ -81,7 +81,7 @@ namespace snemo {
                       std::logic_error,
                       "Module '" << get_name() << "' has no '" << geo_label << "' service !");
           // Fetch a reference to the geometry service :
-          geomtools::geometry_service & Geo
+          const geomtools::geometry_service & Geo
             = service_manager_.get<geomtools::geometry_service>(geo_label);
           // Request for a reference to the geometry manager and installation
           // in the simulation manager :
