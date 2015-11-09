@@ -315,7 +315,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::calorimeter_regime,ocd_)
       .set_explicit_unit(true)
       .set_unit_label("fraction")
       .set_unit_symbol("%")
-      .set_explicit_unit(false)
       .set_default_value_real(snemo::processing::calorimeter_regime::default_energy_resolution(), "%")
       .add_example("Set the default value::                          \n"
                    "                                                 \n"

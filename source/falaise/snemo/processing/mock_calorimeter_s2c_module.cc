@@ -121,7 +121,7 @@ namespace snemo {
                     ! service_manager_.is_a<geomtools::geometry_service>(_Geo_label_),
                     std::logic_error,
                     "Module '" << get_name() << "' has no '" << _Geo_label_ << "' service !");
-        geomtools::geometry_service & Geo = service_manager_.get<geomtools::geometry_service>(_Geo_label_);
+        const geomtools::geometry_service & Geo = service_manager_.get<geomtools::geometry_service>(_Geo_label_);
         set_geom_manager(Geo.get_geom_manager());
       }
       DT_THROW_IF(_geom_manager_ == 0, std::logic_error, "Missing geometry manager !");
