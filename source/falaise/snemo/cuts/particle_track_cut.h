@@ -66,7 +66,7 @@ namespace snemo {
       uint32_t get_mode() const;
 
       /// Check mode FLAG
-      bool is_mode_flag () const;
+      bool is_mode_flag() const;
 
       /// Check mode HAS_ASSOCIATED_CALORIMETER_HITS
       bool is_mode_has_associated_calorimeter_hits() const;
