@@ -93,8 +93,7 @@ namespace snemo {
 			// Data :
 			std::vector<calo_trigger_algorithm::calo_summary_record> _calo_records_; //!< Collection of calo summary record (vector)
 			std::vector<tracker_trigger_algorithm::tracker_record> _tracker_records_; //!< Collection of tracker record (vector)
-			
-			
+						
     };
 
   } // end of namespace digitization

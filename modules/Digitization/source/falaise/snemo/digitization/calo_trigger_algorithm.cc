@@ -18,7 +18,7 @@ namespace snemo {
     
     calo_trigger_algorithm::calo_record::calo_record()
     {
-      clocktick_25ns = -1;
+      clocktick_25ns = 0;
       LTO_side_0 = false;
       LTO_side_1 = false;
       LTO_gveto  = false;
@@ -27,7 +27,7 @@ namespace snemo {
         
     void calo_trigger_algorithm::calo_record::reset()
     {
-      clocktick_25ns = -1;
+      clocktick_25ns = 0;
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 	{
 	  zoning_word[iside].reset();

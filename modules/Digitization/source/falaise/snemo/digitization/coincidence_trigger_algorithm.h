@@ -29,6 +29,12 @@ namespace snemo {
 		{
 		
 		public :
+			
+			struct coincidence_calo_record : public calo_trigger_algorithm::calo_summary_record
+			{
+				coincidence_calo_record();
+				uint32_t clocktick_1600ns;
+			};
 		
 			/// Default constructor
 			coincidence_trigger_algorithm();
@@ -51,6 +57,9 @@ namespace snemo {
 			/// Reset the object
 			void reset();
 			
+			/// Preparing coincidence calo records structure
+			void preparing_calo_coincidence(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_);
+			
 			/// General process
 			void process(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_,
 									 const std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_);
@@ -66,7 +75,7 @@ namespace snemo {
       // Configuration :
       bool _initialized_; //!< Initialization flag
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
-
+			std::vector<coincidence_trigger_algorithm::coincidence_calo_record> _coincidence_calo_records_; //!< Vector of coincidence calo records 
 		};
 			
 	} // end of namespace digitization

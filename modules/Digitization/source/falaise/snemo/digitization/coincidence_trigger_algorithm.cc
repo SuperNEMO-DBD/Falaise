@@ -9,6 +9,12 @@ namespace snemo {
   
   namespace digitization {
 
+    coincidence_trigger_algorithm::coincidence_calo_record::coincidence_calo_record()
+    {
+      clocktick_1600ns = 0;
+      return;
+    }
+
     coincidence_trigger_algorithm::coincidence_trigger_algorithm()
     {
       _initialized_ = false;
@@ -63,6 +69,14 @@ namespace snemo {
       return;
     }
 
+    void coincidence_trigger_algorithm::preparing_calo_coincidence(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_)
+    {
+      std::clog << "size of vector : " << calo_records_.size() << std::endl;
+      coincidence_calo_record my_coinc_calo_record;
+      
+      return;
+    }
+    
     void coincidence_trigger_algorithm::process(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_,
 						const std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_)
     {
@@ -78,6 +92,6 @@ namespace snemo {
       return;
     }
 
-      } // end of namespace digitization
+  } // end of namespace digitization
 
 } // end of namespace snemo
