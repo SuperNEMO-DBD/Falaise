@@ -122,8 +122,8 @@ namespace snemo {
 			
     void clock_utils::compute_clockticks_ref(mygsl::rng & prng_)
     {
-    DT_THROW_IF(!is_initialized(), std::logic_error, "Clock utils is not initialized ! ");
-    _randomize_shift(prng_);
+      DT_THROW_IF(!is_initialized(), std::logic_error, "Clock utils is not initialized ! ");
+      _randomize_shift(prng_);
       _clocktick_25_ref_ = _shift_1600_ / MAIN_CLOCKTICK;
       _shift_25_ = std::fmod(_shift_1600_, MAIN_CLOCKTICK);      
       _clocktick_800_ref_ = _shift_1600_ / TRACKER_CLOCKTICK;

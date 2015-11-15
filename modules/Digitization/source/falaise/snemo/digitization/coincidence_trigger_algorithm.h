@@ -30,9 +30,11 @@ namespace snemo {
 		
 		public :
 			
-			struct coincidence_calo_record : public calo_trigger_algorithm::calo_summary_record
+			struct coincidence_calo_record
 			{
 				coincidence_calo_record();
+				void compute_clocktick_1600ns();
+				calo_trigger_algorithm::calo_summary_record calo_summary_record;
 				uint32_t clocktick_1600ns;
 			};
 		
@@ -57,14 +59,17 @@ namespace snemo {
 			/// Reset the object
 			void reset();
 			
-			/// Preparing coincidence calo records structure
-			void preparing_calo_coincidence(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_);
-			
+			/// Reset internal datas
+			void reset_data();
+
 			/// General process
 			void process(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_,
 									 const std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_);
 			
 		protected :
+			
+			/// Preparing coincidence calo records structure
+			void _preparing_calo_coincidence(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_);
 			
 			/// Process calo records and tracker records
 			void _process(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_,
