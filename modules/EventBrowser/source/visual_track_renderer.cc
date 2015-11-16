@@ -322,20 +322,18 @@ namespace snemo {
               const snemo::datamodel::calibrated_calorimeter_hit & a_calo = icalo->get();
               const geomtools::geom_id & a_calo_gid = a_calo.get_geom_id();
               this->highlight_geom_id(a_calo_gid, color);
-              if (!options_manager::get_instance().get_option_flag(SHOW_CALIBRATED_INFO)) {
-                const double energy  = a_calo.get_energy()       / CLHEP::MeV;
-                const double sigma_e = a_calo.get_sigma_energy() / CLHEP::MeV;
-                const double time    = a_calo.get_time()         / CLHEP::ns;
-                const double sigma_t = a_calo.get_sigma_time()   / CLHEP::ns;
+              const double energy  = a_calo.get_energy()       / CLHEP::MeV;
+              const double sigma_e = a_calo.get_sigma_energy() / CLHEP::MeV;
+              const double time    = a_calo.get_time()         / CLHEP::ns;
+              const double sigma_t = a_calo.get_sigma_time()   / CLHEP::ns;
 
-                // Save z position inside text and then parse it
-                std::ostringstream text_to_parse;
-                text_to_parse.precision(2);
-                text_to_parse << std::fixed << "#splitline"
-                              << "{E = " << energy << " #pm " << sigma_e << " MeV}"
-                              << "{t  = " << time   << " #pm " << sigma_t << " ns}";
-                this->highlight_geom_id(a_calo_gid, color, text_to_parse.str());
-              }
+              // Save z position inside text and then parse it
+              std::ostringstream text_to_parse;
+              text_to_parse.precision(2);
+              text_to_parse << std::fixed << "#splitline"
+                            << "{E = " << energy << " #pm " << sigma_e << " MeV}"
+                            << "{t  = " << time   << " #pm " << sigma_t << " ns}";
+              this->highlight_geom_id(a_calo_gid, color, text_to_parse.str());
             }// end of calorimeter list
           } else {
             DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
