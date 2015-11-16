@@ -56,6 +56,8 @@ namespace snemo {
 			   const bool spare_bit_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Calorimeter TP is locked !) ");
+      // To check :
+      //DT_THROW_IF(amplitude < LOW_THRESHOLD, std::logic_error, "Amplitude value is under LOW threshold, no calo TP has to be created ! "
       if (amplitude_ > HIGH_THRESHOLD)
 	{
 	  unsigned int multiplicity = 1;
@@ -66,11 +68,11 @@ namespace snemo {
 	  set_lto_bit(1);
 	}
       else
-	{
-	  unsigned int multiplicity = 0;
-	  set_htm(multiplicity);
-	  set_lto_bit(0);  
-	}
+      	{
+      	  unsigned int multiplicity = 0;
+      	  set_htm(multiplicity);
+      	  set_lto_bit(0);  
+      	}
       set_xt_bit(xt_bit_);
       set_spare_bit(spare_bit_);
       return;

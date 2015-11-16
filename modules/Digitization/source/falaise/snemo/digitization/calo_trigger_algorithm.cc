@@ -143,7 +143,12 @@ namespace snemo {
       _circular_buffer_depth_ = circular_buffer_depth_;
       return;
     }
-    
+
+    const unsigned int calo_trigger_algorithm::get_circular_buffer_depth() const
+    {
+      return _circular_buffer_depth_;
+    }
+
     void calo_trigger_algorithm::inhibit_both_side_coinc()
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized, boolean back to back coinc can't be inhibited ! ");      

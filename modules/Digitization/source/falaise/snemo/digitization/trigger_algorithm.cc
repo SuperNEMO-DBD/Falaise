@@ -57,7 +57,7 @@ namespace snemo {
 
       datatools::properties coinc_config;
       config_.export_and_rename_starting_with(coinc_config, "coincidence.", "");
-      _coinc_algo_.initialize(calo_config);
+      _coinc_algo_.initialize(coinc_config);
             
       _initialized_ = true;
       return;

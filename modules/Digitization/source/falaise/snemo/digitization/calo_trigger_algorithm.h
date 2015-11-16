@@ -132,8 +132,11 @@ namespace snemo {
 			/// Check if circular buffer depth is set
 			bool has_circular_buffer_depth() const;
 
-			/// Set the calo circular buffer depth
+			/// Set calo circular buffer depth
 			void set_circular_buffer_depth(unsigned int circular_buffer_depth_);
+
+			/// Return calo circular buffer depth value
+			const	unsigned int get_circular_buffer_depth() const;
 
 			/// Set the boolean for inhibited back to back coincidence
 			void inhibit_both_side_coinc();
