@@ -27,54 +27,54 @@ namespace snemo {
 
     namespace detector {
 
-      volume_model::volume_model () :
-        _composite (false),
-        _color (0),
-        _highlight_color (0),
-        _transparency (0),
-        _visibility (false)
+      volume_model::volume_model() :
+        _composite(false),
+        _color(0),
+        _highlight_color(0),
+        _transparency(0),
+        _visibility(false)
       {
         return;
       }
 
-      volume_model::~volume_model ()
+      volume_model::~volume_model()
       {
         return;
       }
 
-      const std::string & volume_model::get_name () const
+      const std::string & volume_model::get_name() const
       {
         return _name;
       }
 
-      const std::string & volume_model::get_category () const
+      const std::string & volume_model::get_category() const
       {
         return _category;
       }
 
-      const std::string & volume_model::get_type () const
+      const std::string & volume_model::get_type() const
       {
         return _type;
       }
 
-      const geomtools::placement & volume_model::get_placement () const
+      const geomtools::placement & volume_model::get_placement() const
       {
         return _placement;
       }
 
-      bool volume_model::is_composite () const
+      bool volume_model::is_composite() const
       {
         return _composite;
       }
 
       // ctor:
-      i_volume::i_volume ()
+      i_volume::i_volume()
       {
         return;
       }
 
       // dtor:
-      i_volume::~i_volume ()
+      i_volume::~i_volume()
       {
         return;
       }

@@ -168,12 +168,12 @@ namespace snemo {
             = dynamic_cast<detector::i_root_volume *>(detector_mgr.grab_volume(gid_list.front()));
           utils::root_utilities::TLatex3D * new_text_obj = new utils::root_utilities::TLatex3D;
           _text_objects->Add(new_text_obj);
-          new_text_obj->SetTextColor(color_);
           const geomtools::vector_3d & position = volume_hit->get_placement().get_translation();
           new_text_obj->SetX(position.x());
           new_text_obj->SetY(position.y());
           new_text_obj->SetZ(position.z());
           new_text_obj->SetText(text_);
+          new_text_obj->SetTextColor(color_);
         }
         return;
       }
