@@ -33,7 +33,7 @@ namespace snemo {
 			struct coincidence_calo_record
 			{
 				coincidence_calo_record();
-				void fetch_active_zones();
+				void active_next_zone();
 				uint32_t clocktick_1600ns;
 				std::bitset<calo_trigger_algorithm::ZONING_PER_SIDE_BITSET_SIZE> zoning_word[mapping::NUMBER_OF_SIDES];
 				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_0;
@@ -47,7 +47,10 @@ namespace snemo {
 				bool total_multiplicity_threshold;
 				bool calo_finale_decision;
 			};
-		
+			
+			static const uint32_t SHIFT_COMPUTING_CLOCKTICK_1600NS = 1;
+			static const uint32_t SIZE_OF_RESERVED_COINCIDENCE_CALO_RECORDS = 5;
+
 			/// Default constructor
 			coincidence_trigger_algorithm();
 
@@ -100,6 +103,7 @@ namespace snemo {
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
 			unsigned int _calorimeter_gate_size_;
 			std::vector<coincidence_trigger_algorithm::coincidence_calo_record> _coincidence_calo_records_; //!< Vector of coincidence calo records 
+			bool _coincidence_decision_;
 			
 		};
 			
