@@ -58,7 +58,7 @@ namespace snemo {
 
       for (int iside = mapping::NUMBER_OF_SIDES-1; iside >= 0; iside--)
       	{
-      	  for (int izone = mapping::NUMBER_OF_CALO_TRIGGER_ZONES-1; izone >= 0 ; izone--)
+      	  for (int izone = mapping::NUMBER_OF_TRIGGER_ZONES-1; izone >= 0 ; izone--)
       	    {
       	      std::clog << zoning_word[iside][izone];
       	    }
@@ -290,7 +290,7 @@ namespace snemo {
       	    }
 	  if (iside == 0) std::clog << "    Zone0                                                                                                   Zone9 " << std::endl;
       	  std::clog << " |";
-      	  for (int izone = 0; izone < mapping::NUMBER_OF_CALO_TRIGGER_ZONES; izone++)
+      	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
       	    {
       	      if (izone == 0 || izone == 9) 
       		{
@@ -342,7 +342,7 @@ namespace snemo {
       	    }
 	  if (iside == 0) std::clog << "    Zone0                                                                                                   Zone9 " << std::endl;
       	  std::clog << " |";
-      	  for (int izone = 0; izone < mapping::NUMBER_OF_CALO_TRIGGER_ZONES; izone++)
+      	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
       	    {
       	      if (izone == 0 || izone == 9) 
       		{
@@ -478,7 +478,7 @@ namespace snemo {
 	  std::bitset<calo::ctw::MAIN_ZONING_BITSET_SIZE> main_zoning_bitset;
 	  my_calo_ctw_.get_main_zoning_word(main_zoning_bitset);
 
-	  for (int izone = 0; izone < mapping::NUMBER_OF_CALO_TRIGGER_ZONES; izone++)
+	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
 	    {
 	      if (main_zoning_bitset.test(izone) == true) _calo_record_per_clocktick_.zoning_word[crate_index].set(izone,true);
 	    }
@@ -600,16 +600,16 @@ namespace snemo {
 	      _build_calo_record_per_clocktick(ctw_list_per_clocktick[isize].get());
 	    } // end of isize
 	  _gate_circular_buffer_->push_back(_calo_record_per_clocktick_);
-	  std::clog <<"*************************** Clocktick 25 = " << iclocktick << "***************************" << std::endl << std::endl;
-	  //_display_calo_info_for_a_clocktick();
+	  // std::clog <<"*************************** Clocktick 25 = " << iclocktick << "***************************" << std::endl << std::endl;
+	  // _display_calo_info_for_a_clocktick();
 	  calo_summary_record my_calo_summary_record;
 	  my_calo_summary_record.clocktick_25ns = iclocktick;
 	  _build_calo_record_summary_structure(my_calo_summary_record);
 	  _compute_calo_finale_decision(my_calo_summary_record);
-	  _display_calo_summary(_calo_level_1_finale_decision_);
+	  // _display_calo_summary(_calo_level_1_finale_decision_);
 
 	  calo_records_.push_back(_calo_level_1_finale_decision_);
-	  std::clog << "Size of calo records : " << calo_records_.size() << std::endl;
+	  // std::clog << "Size of calo records : " << calo_records_.size() << std::endl;
 	  
 	  //reset_calo_record_per_clocktick();
 	  reset_calo_info();

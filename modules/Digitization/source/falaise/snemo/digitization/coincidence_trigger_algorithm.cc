@@ -34,13 +34,121 @@ namespace snemo {
       return;
     }
 
+    coincidence_trigger_algorithm::coincidence_output::coincidence_output()
+    {
+      clocktick_1600ns = -1;
+      zoning_word[0].reset();
+      zoning_word[1].reset();
+      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+	{
+	  for (int jlayer = 0; jlayer < mapping::GEIGER_LAYERS_SIZE; jlayer ++)
+	    {
+	      for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow ++)
+		{
+		  geiger_matrix[iside][jlayer][krow] = 0;
+		} // end of krow
+	    } // end of jlayer
+	} // end of iside
+	       
+      coincidence_finale_decision = false;
+    }
+
+    void coincidence_trigger_algorithm::coincidence_output::display()
+    {
+      std::clog << "*************************** Clocktick 1600 = " << clocktick_1600ns << " ***************************" << std::endl << std::endl;
+      std::clog << "Coincidence zoning word : " << std::endl;
+      std::clog << "ZW [0] : " << zoning_word[0] << std::endl;
+      std::clog << "ZW [1] : " << zoning_word[1] << std::endl;
+     
+      std::clog << "   |-Zone-0-|---Zone-1--|---Zone-2--|---Zone-3--|---Zone-4--|--Zone-5--|---Zone-6--|---Zone-7--|--Zone-8---|--Zone-9-|" << std::endl << std::endl;;
+      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+      	{
+      	  if (iside == 1)
+	    {  
+	      for (int jlayer = 0; jlayer < mapping::GEIGER_LAYERS_SIZE; jlayer++)
+		{
+		  std::clog << jlayer << ' ' ;
+		  for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
+		    {
+		      if( krow == 0 )        std::clog<<"|";
+		  
+		      if (geiger_matrix[iside][jlayer][krow] ) std::clog << "*";
+		  
+		      if(!geiger_matrix[iside][jlayer][krow])  std::clog << ".";	  
+
+		      if( krow == 112)     std::clog<<"|";
+
+		    } // end of krow
+		  if (jlayer == 5) std::clog << "  Side [" << iside << "]";
+		  std::clog<<std::endl;	    
+  
+		} // end of jlayer
+
+	    } // end of if iside==1
+
+      	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
+      	    {
+	      if (izone == 0) std::clog << "   ";
+	      if (izone == 0 || izone == 9) 
+      		{
+      		  if (zoning_word[iside][izone] == true) std::clog << "[*******]";
+      		  else std::clog  << "[       ]";
+      		}
+      	      else if (izone == 5) 
+      		{
+      		  if (zoning_word[iside][izone] == true) std::clog  << "[*********]";
+      		  else std::clog  << "[         ]";
+      		}
+      	      else 
+      		{
+      		  if (zoning_word[iside][izone] == true) std::clog  << "[**********]";
+      		  else std::clog << "[          ]";
+      		}
+	      if (iside == 0 && izone == 9) std::clog << std::endl;
+	    }
+
+	  if (iside == 0)
+	    {
+	      for (int jlayer = mapping::GEIGER_LAYERS_SIZE - 1; jlayer >= 0; jlayer--) // Value GEIGER_LAYER_SIZE = 9
+		{
+		  std::clog << jlayer << ' ';
+		  for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
+		    {
+		      if( krow == 0 )        std::clog<<"|";
+		  
+		      if (geiger_matrix[iside][jlayer][krow] ) std::clog << "*";
+		  
+		      if(!geiger_matrix[iside][jlayer][krow])  std::clog << ".";	  
+
+		      if( krow == 112)     std::clog<<"|";
+
+		    } // end of row loop
+		  if (jlayer == 5) std::clog << "  Side [" << iside << "]";
+		  std::clog<<std::endl;	
+
+		  if (jlayer == 0)
+		    {
+		      std::clog << "  |_________________________________________________________________________________________________________________|" << std::endl;
+		    }
+
+		} // end of layer loop
+
+	    } // end of if == 0
+
+	} // end of iside
+      std::clog << std::endl << std::endl;;
+      std::clog << "   |-Zone-0-|---Zone-1--|---Zone-2--|---Zone-3--|---Zone-4--|--Zone-5--|---Zone-6--|---Zone-7--|--Zone-8---|--Zone-9-|" << std::endl;
+      std::clog << std::endl << std::endl;
+
+      return;
+    }
+
     coincidence_trigger_algorithm::coincidence_trigger_algorithm()
     {
       _initialized_ = false;
       _electronic_mapping_ = 0;
       _calorimeter_gate_size_ = 0;
       _coincidence_calo_records_.reserve(SIZE_OF_RESERVED_COINCIDENCE_CALO_RECORDS);
-      _coincidence_decision_ = false;
       return;
     }
 
@@ -110,7 +218,6 @@ namespace snemo {
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Coincidence trigger algorithm is not initialized, it can't process ! ");
       _coincidence_calo_records_.clear();
-      _coincidence_decision_ = false;
       return;
     }
 
@@ -190,16 +297,19 @@ namespace snemo {
     }
          
     void coincidence_trigger_algorithm::process(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_,
-						const std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_)
+						const std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_,
+						std::vector<coincidence_trigger_algorithm::coincidence_output> & coincidence_records_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Coincidence trigger algorithm is not initialized, it can't process ! ");
       _process(calo_records_,
-	       tracker_records_);
+	       tracker_records_,
+	       coincidence_records_);
       return;
     }
 
     void coincidence_trigger_algorithm::_process(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_,
-						 const std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_)
+						 const std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_,
+						 std::vector<coincidence_trigger_algorithm::coincidence_output> & coincidence_records_)
     {
       reset_data();
       _preparing_calo_coincidence(calo_records_);
@@ -216,27 +326,49 @@ namespace snemo {
 
 	      if (a_calo_record.clocktick_1600ns == a_tracker_record.clocktick_1600ns)
 		{
-		  std::clog << "Egalité" << std::endl;
-		  std::clog << "Clocktick calo     : " << a_calo_record.clocktick_1600ns << std::endl;
-		  std::clog << "Clocktick tracker  : " << a_tracker_record.clocktick_1600ns << std::endl;
-		  std::clog << "Calo record : ZW 0 : " << a_calo_record.zoning_word[0] << std::endl;
-		  std::clog << "Calo record : ZW 1 : " << a_calo_record.zoning_word[1] << std::endl;
-		  
+		  coincidence_output a_coincidence_output;
+		  a_coincidence_output.clocktick_1600ns = a_calo_record.clocktick_1600ns;
 		  for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 		    {
-		      for (int izone = 0; izone < mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES; izone++)
+		      for (int jlayer = 0; jlayer < mapping::GEIGER_LAYERS_SIZE; jlayer ++)
 			{
-			  if (a_tracker_record.final_tracker_trigger_info[iside][izone] != 0 
-			      && (a_calo_record.zoning_word[iside].test(izone) != 0 || a_calo_record.zoning_word[iside].test(izone+1) != 0))
+			  for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow ++)
 			    {
-			      std::clog << "Iside = " << iside << "   izone = " << izone << std::endl;
-			    }
-			}
-		    }
-		}
-	    }
-	}
-      
+			      a_coincidence_output.geiger_matrix[iside][jlayer][krow] = a_tracker_record.geiger_matrix[iside][jlayer][krow];
+			    } // end of krow
+			} // end of jlayer
+		    } // end of iside
+
+		  for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+		    {
+		      for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
+			{
+			  if (a_tracker_record.final_tracker_trigger_info[iside][izone] != 0)
+			    {
+			      a_coincidence_output.coincidence_finale_decision = true;
+
+			      if (a_calo_record.zoning_word[iside].test(izone) != 0) 
+				{
+				  a_coincidence_output.zoning_word[iside].set(izone, true);
+				}
+			      if (izone < mapping::NUMBER_OF_TRIGGER_ZONES - 1 && a_calo_record.zoning_word[iside].test(izone+1) != 0)
+				{
+				  a_coincidence_output.zoning_word[iside].set(izone + 1, true);
+				}
+			      
+				
+			    } //end of tracker_record[side][zone] != 0
+			} // end of izone
+		    } // end of iside
+
+
+		  a_coincidence_output.display();
+		  coincidence_records_.push_back(a_coincidence_output);
+
+		  		  
+		} // end of clocktick egality
+	    } // end of it_tracker
+	} // end of it_calo
       return;
     }
 

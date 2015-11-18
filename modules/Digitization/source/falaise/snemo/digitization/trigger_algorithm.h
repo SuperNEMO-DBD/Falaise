@@ -91,9 +91,9 @@ namespace snemo {
 			coincidence_trigger_algorithm _coinc_algo_; //!< Coincidence trigger algorithm for matching calo and tracker trigger
 			
 			// Data :
-			std::vector<calo_trigger_algorithm::calo_summary_record> _calo_records_; //!< Collection of calo summary record (vector)
-			std::vector<tracker_trigger_algorithm::tracker_record> _tracker_records_; //!< Collection of tracker record (vector)
-						
+			std::vector<calo_trigger_algorithm::calo_summary_record> _calo_records_; //!< Collection of calo summary record
+			std::vector<tracker_trigger_algorithm::tracker_record> _tracker_records_; //!< Collection of tracker record
+			std::vector<coincidence_trigger_algorithm::coincidence_output> _coincidence_records_; //!< Collection of coincidence record
     };
 
   } // end of namespace digitization

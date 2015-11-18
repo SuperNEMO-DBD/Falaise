@@ -48,6 +48,16 @@ namespace snemo {
 				bool calo_finale_decision;
 			};
 			
+			struct coincidence_output
+			{
+				coincidence_output();
+				void display();
+				uint32_t clocktick_1600ns;
+				std::bitset<mapping::NUMBER_OF_TRIGGER_ZONES> zoning_word[mapping::NUMBER_OF_SIDES];				
+				bool coincidence_finale_decision;
+				bool geiger_matrix[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_LAYERS][mapping::NUMBER_OF_GEIGER_ROWS];
+			};
+			
 			static const uint32_t SHIFT_COMPUTING_CLOCKTICK_1600NS = 1;
 			static const uint32_t SIZE_OF_RESERVED_COINCIDENCE_CALO_RECORDS = 5;
 
@@ -83,7 +93,8 @@ namespace snemo {
 
 			/// General process
 			void process(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_,
-									 const std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_);
+									 const std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_,
+									 std::vector<coincidence_trigger_algorithm::coincidence_output> & coincidence_records_);
 			
 		protected :
 			
@@ -94,16 +105,16 @@ namespace snemo {
 						
 			/// Process calo records and tracker records
 			void _process(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_,
-										const std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_);
+										const std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_,
+										std::vector<coincidence_trigger_algorithm::coincidence_output> & coincidence_records_);
 			
 		private :
 
       // Configuration :
       bool _initialized_; //!< Initialization flag
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
-			unsigned int _calorimeter_gate_size_;
-			std::vector<coincidence_trigger_algorithm::coincidence_calo_record> _coincidence_calo_records_; //!< Vector of coincidence calo records 
-			bool _coincidence_decision_;
+			unsigned int _calorimeter_gate_size_; //!< Size of calorimeter gate for extension of calo records during X CT 1600ns
+			std::vector<coincidence_trigger_algorithm::coincidence_calo_record> _coincidence_calo_records_; //!< Vector of coincidence calo record
 			
 		};
 			

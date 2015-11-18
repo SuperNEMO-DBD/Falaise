@@ -81,6 +81,7 @@ namespace snemo {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Calo trigger algorithm is not initialized, it can't be reset ! ");
       _tracker_records_.clear();
       _calo_records_.clear();
+      _coincidence_records_.clear();
     }
     
     const std::vector<tracker_trigger_algorithm::tracker_record>trigger_algorithm::get_tracker_records_vector() const
@@ -117,7 +118,8 @@ namespace snemo {
     void trigger_algorithm::_process_coinc_algo()
     {
       _coinc_algo_.process(_calo_records_,
-			   _tracker_records_);
+			   _tracker_records_,
+			   _coincidence_records_);
       return;
     }
     

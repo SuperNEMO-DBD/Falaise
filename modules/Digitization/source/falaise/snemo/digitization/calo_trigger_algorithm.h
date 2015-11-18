@@ -231,10 +231,7 @@ namespace snemo {
 			boost::scoped_ptr<buffer_type> _gate_circular_buffer_; //!< Scoped pointer to a circular buffer containing output data structure
  
 			calo_summary_record _calo_level_1_finale_decision_; //!< Structure representing the finale decision for level 1 calorimeter
-			
-			std::vector<calo_summary_record> _calo_records_; //!< Collection of calo summary record (vector)
-
-    };
+		};
 
   } // end of namespace digitization
 
