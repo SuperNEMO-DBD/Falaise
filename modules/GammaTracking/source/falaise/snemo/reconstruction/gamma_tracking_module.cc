@@ -51,7 +51,7 @@ namespace snemo {
     void gamma_tracking_module::_set_defaults()
     {
       _geometry_manager_ = 0;
-      _PTD_label_ = snemo::datamodel::data_info::default_tracker_clustering_data_label();
+      _PTD_label_ = snemo::datamodel::data_info::default_particle_track_data_label();
       _driver_.reset();
       return;
     }
