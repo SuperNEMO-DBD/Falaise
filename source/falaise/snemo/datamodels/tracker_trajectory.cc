@@ -1,7 +1,7 @@
 // falaise/snemo/datamodels/tracker_trajectory.cc
 
 // Ourselves:
-#include <falaise/snemo/datamodels/tracker_trajectory.ipp>
+#include <falaise/snemo/datamodels/tracker_trajectory.h>
 
 // This project:
 #include <falaise/snemo/datamodels/base_trajectory_pattern.h>
