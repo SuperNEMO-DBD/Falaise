@@ -58,13 +58,13 @@ namespace snemo {
 			static const unsigned int FULL_SIZE = 5;
 			
 			/// Size of htm bitset for calorimeter TP
-			static const unsigned int HTM_SIZE  = 2;
-			
-			/// Value of the low threshold to set bits
-			static const unsigned int LOW_THRESHOLD = 10; // (mV units problem maybe)
+			static const unsigned int HTM_SIZE  = 2;			
 
 			/// Value of the low threshold to set bits
-			static const unsigned int HIGH_THRESHOLD = 20; // (mV units problem maybe)
+			static const double LOW_THRESHOLD = 10.0; // (mV units problem maybe)
+
+			/// Value of the low threshold to set bits
+			static const double HIGH_THRESHOLD = 20.0; // (mV units problem maybe)
 
       /// Default constructor
       calo_tp();

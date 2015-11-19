@@ -924,8 +924,8 @@ namespace snemo {
 	  _process_for_a_clocktick(geiger_ctw_list_per_clocktick);
 	  // Set structure clocktick :
 	  _tracker_level_1_finale_decision_.clocktick_1600ns = iclocktick_800 / 2;
-	  // _tracker_level_1_finale_decision_.display();
-	  // display_matrix();
+	  _tracker_level_1_finale_decision_.display();
+	  //display_matrix();
 	  // Push back the structure in the vector for tracker records
 	  tracker_records_.push_back(_tracker_level_1_finale_decision_);
 	} // end of iclocktick

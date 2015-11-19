@@ -97,59 +97,62 @@ namespace snemo {
 	  const geomtools::geom_id & geom_id = a_calo_signal.get_geom_id();
 	  const double calo_hit_amplitude    = a_calo_signal.get_amplitude();
  
-	  geomtools::geom_id temporary_electronic_id;
-	  _electronic_mapping_->convert_GID_to_EID(mapping::THREE_WIRES_TRACKER_MODE, 
-						   geom_id,
-						   temporary_electronic_id);
-          uint32_t electronic_type = temporary_electronic_id.get_type();
-	  geomtools::geom_id electronic_id;
-	  electronic_id.set_depth(mapping::BOARD_DEPTH);
-	  electronic_id.set_type(electronic_type);
-	  temporary_electronic_id.extract_to(electronic_id);
-
-	  bool calo_xt_bit    = 0; // These bits have to be checked
-	  bool calo_spare_bit = 0;
-
-	  bool existing = false;
-	  unsigned int existing_index = 0;
-
-	  double relative_time            = a_calo_signal.get_signal_time() - time_reference ;
-	  int32_t a_calo_signal_clocktick = _clocktick_ref_ + clock_utils::CALO_FEB_SHIFT_CLOCKTICK_NUMBER;
-
-	  if (relative_time > 3)
+	  if (calo_hit_amplitude >= calo_tp::LOW_THRESHOLD)
 	    {
-	      a_calo_signal_clocktick += static_cast<int32_t>(relative_time) / 3;
-	    }
+	      geomtools::geom_id temporary_electronic_id;
+	      _electronic_mapping_->convert_GID_to_EID(mapping::THREE_WIRES_TRACKER_MODE, 
+						       geom_id,
+						       temporary_electronic_id);
+	      uint32_t electronic_type = temporary_electronic_id.get_type();
+	      geomtools::geom_id electronic_id;
+	      electronic_id.set_depth(mapping::BOARD_DEPTH);
+	      electronic_id.set_type(electronic_type);
+	      temporary_electronic_id.extract_to(electronic_id);
+	      
+	      bool calo_xt_bit    = 0; // These bits have to be checked
+	      bool calo_spare_bit = 0;
+	      
+	      bool existing = false;
+	      unsigned int existing_index = 0;
+	  
+	      double relative_time            = a_calo_signal.get_signal_time() - time_reference ;
+	      int32_t a_calo_signal_clocktick = _clocktick_ref_ + clock_utils::CALO_FEB_SHIFT_CLOCKTICK_NUMBER;
 
-	  for (int j = 0; j < my_calo_tp_data_.get_calo_tps().size(); j++)
-	    {
-	      if (my_calo_tp_data_.get_calo_tps()[j].get().get_geom_id() == electronic_id
-		  && my_calo_tp_data_.get_calo_tps()[j].get().get_clocktick_25ns() == a_calo_signal_clocktick )
+	      if (relative_time > 3)
 		{
-		  existing = true;
-		  existing_index = j;
+		  a_calo_signal_clocktick += static_cast<int32_t>(relative_time) / 3;
 		}
-	    }
 
-	  if (existing == false)
-	    {
-	      snemo::digitization::calo_tp & calo_tp = my_calo_tp_data_.add();
-	      calo_tp.set_header(a_calo_signal.get_hit_id(),
-				 electronic_id,
-				 a_calo_signal_clocktick);
-	      calo_tp.set_data(calo_hit_amplitude,
-			       calo_xt_bit,
-			       calo_spare_bit);   
-	      calo_tp.tree_dump(std::clog, "Calo TP first creation : ", "INFO : ");
-	    }
+	      for (int j = 0; j < my_calo_tp_data_.get_calo_tps().size(); j++)
+		{
+		  if (my_calo_tp_data_.get_calo_tps()[j].get().get_geom_id() == electronic_id
+		      && my_calo_tp_data_.get_calo_tps()[j].get().get_clocktick_25ns() == a_calo_signal_clocktick )
+		    {
+		      existing = true;
+		      existing_index = j;
+		    }
+		}
+
+	      if (existing == false)
+		{
+		  snemo::digitization::calo_tp & calo_tp = my_calo_tp_data_.add();
+		  calo_tp.set_header(a_calo_signal.get_hit_id(),
+				     electronic_id,
+				     a_calo_signal_clocktick);
+		  calo_tp.set_data(calo_hit_amplitude,
+				   calo_xt_bit,
+				   calo_spare_bit);   
+		  calo_tp.tree_dump(std::clog, "Calo TP first creation : ", "INFO : ");
+		}
 	
-	  else 
-	    {
-	      snemo::digitization::calo_tp & existing_calo_tp = my_calo_tp_data_.grab_calo_tps()[existing_index].grab();
-	      existing_calo_tp.update_data(calo_hit_amplitude,
-					   calo_xt_bit,
-					   calo_spare_bit);
-	      existing_calo_tp.tree_dump(std::clog, "Calo TP Update : ", "INFO : ");
+	      else 
+		{
+		  snemo::digitization::calo_tp & existing_calo_tp = my_calo_tp_data_.grab_calo_tps()[existing_index].grab();
+		  existing_calo_tp.update_data(calo_hit_amplitude,
+					       calo_xt_bit,
+					       calo_spare_bit);
+		  existing_calo_tp.tree_dump(std::clog, "Calo TP Update : ", "INFO : ");
+		}
 	    }
 	}
       return;

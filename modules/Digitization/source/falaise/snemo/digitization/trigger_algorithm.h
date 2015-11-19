@@ -17,6 +17,7 @@
 #include <snemo/digitization/coincidence_trigger_algorithm.h>
 #include <snemo/digitization/electronic_mapping.h>
 #include <snemo/digitization/mapping.h>
+#include <snemo/digitization/trigger_display_manager.h>
 
 namespace datatools {
   class properties;
@@ -29,8 +30,11 @@ namespace snemo {
     /// \brief Full trigger algorithm for the process. The trigger decision is taken here.
     class trigger_algorithm
     {
-    public : 
-
+		public : 
+			
+			/// Trigger display manager is a friend because it can access to members for display
+			friend class trigger_display_manager;
+			
       /// Default constructor
       trigger_algorithm();
 

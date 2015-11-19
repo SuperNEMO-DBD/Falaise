@@ -1,4 +1,4 @@
-// snemo/digitization/trigger_algorithm.cc
+// snemo/digitization/coincidence_trigger_algorithm.cc
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
@@ -362,7 +362,7 @@ namespace snemo {
 		    } // end of iside
 
 
-		  a_coincidence_output.display();
+		  // a_coincidence_output.display();
 		  coincidence_records_.push_back(a_coincidence_output);
 
 		  		  

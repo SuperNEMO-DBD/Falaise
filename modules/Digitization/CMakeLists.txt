@@ -60,6 +60,7 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
   source/falaise/snemo/digitization/coincidence_trigger_algorithm.h
   source/falaise/snemo/digitization/trigger_algorithm.h
 
+  source/falaise/snemo/digitization/trigger_display_manager.h
   source/falaise/snemo/digitization/memory.h
   source/falaise/snemo/digitization/memory-inl.h
   source/falaise/snemo/digitization/tracker_trigger_mem_maker.h
@@ -97,6 +98,7 @@ list(APPEND FalaiseDigitizationPlugin_SOURCES
   source/falaise/snemo/digitization/geiger_tp.cc 
   source/falaise/snemo/digitization/geiger_signal.cc
 
+  source/falaise/snemo/digitization/trigger_display_manager.cc
   source/falaise/snemo/digitization/electronic_mapping.cc
   source/falaise/snemo/digitization/clock_utils.cc
   source/falaise/snemo/digitization/ID_convertor.cc

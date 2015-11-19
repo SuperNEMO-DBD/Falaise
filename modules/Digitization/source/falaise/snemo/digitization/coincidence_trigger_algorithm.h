@@ -16,6 +16,7 @@
 #include <snemo/digitization/tracker_trigger_algorithm.h>
 #include <snemo/digitization/electronic_mapping.h>
 #include <snemo/digitization/mapping.h>
+#include <snemo/digitization/trigger_display_manager.h>
 
 namespace datatools {
   class properties;
@@ -29,7 +30,10 @@ namespace snemo {
 		{
 		
 		public :
-			
+						
+			/// Trigger display manager is a friend because it can access to members for display
+		  friend class trigger_display_manager;
+
 			struct coincidence_calo_record
 			{
 				coincidence_calo_record();

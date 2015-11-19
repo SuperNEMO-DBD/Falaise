@@ -14,6 +14,7 @@
 #include <snemo/digitization/electronic_mapping.h>
 #include <snemo/digitization/mapping.h>
 #include <snemo/digitization/tracker_trigger_mem_maker.h>
+#include <snemo/digitization/trigger_display_manager.h>
 
 namespace datatools {
 	class properties;
@@ -28,6 +29,9 @@ namespace snemo {
     {				
     public : 
 			
+			/// Trigger display manager is a friend because it can access to members for display
+		 	friend class trigger_display_manager;
+
 			/// Level one zoning size of a bitset for a zone
 			static const int32_t GEIGER_LEVEL_ONE_ZONING_BITSET_SIZE = 8;
 			

@@ -22,10 +22,8 @@ namespace snemo {
     const unsigned int calo_tp::MAX_NUMBER_OF_CHANNELS;
     const unsigned int calo_tp::FULL_SIZE;
     const unsigned int calo_tp::HTM_SIZE;
-    const unsigned int calo_tp::LOW_THRESHOLD;
-    const unsigned int calo_tp::HIGH_THRESHOLD;
-
-
+    const double       calo_tp::LOW_THRESHOLD;
+    const double       calo_tp::HIGH_THRESHOLD;
     calo_tp::calo_tp()
     {
       _locked_ = false;
@@ -57,24 +55,19 @@ namespace snemo {
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Calorimeter TP is locked !) ");
       // To check :
-      //DT_THROW_IF(amplitude < LOW_THRESHOLD, std::logic_error, "Amplitude value is under LOW threshold, no calo TP has to be created ! "
       if (amplitude_ > HIGH_THRESHOLD)
 	{
 	  unsigned int multiplicity = 1;
 	  set_htm(multiplicity);
+	  set_xt_bit(xt_bit_);
+	  set_spare_bit(spare_bit_);
 	}
       else if (amplitude_ >= LOW_THRESHOLD && amplitude_ <= HIGH_THRESHOLD)
 	{
-	  set_lto_bit(1);
+	  set_lto_bit(true);
+	  set_xt_bit(xt_bit_);
+	  set_spare_bit(spare_bit_);
 	}
-      else
-      	{
-      	  unsigned int multiplicity = 0;
-      	  set_htm(multiplicity);
-      	  set_lto_bit(0);  
-      	}
-      set_xt_bit(xt_bit_);
-      set_spare_bit(spare_bit_);
       return;
     }
 

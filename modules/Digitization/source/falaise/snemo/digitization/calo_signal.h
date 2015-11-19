@@ -82,7 +82,7 @@ namespace snemo {
 
       bool _locked_; //!< Calorimeter signal lock flag
 			double _signal_time_; //!< Calorimeter signal time
-      double _amplitude_; //!< Amplitude 
+      double _amplitude_;   //!< Amplitude 
       
       // DATATOOLS_SERIALIZATION_DECLARATION();
       
