@@ -94,6 +94,9 @@ namespace snemo {
 			
 			/// Reset internal datas
 			void reset_data();
+			
+			/// Get the finale coincidence trigger decision
+ 			const bool get_coincidence_decision() const;
 
 			/// General process
 			void process(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_,
@@ -119,6 +122,7 @@ namespace snemo {
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
 			unsigned int _calorimeter_gate_size_; //!< Size of calorimeter gate for extension of calo records during X CT 1600ns
 			std::vector<coincidence_trigger_algorithm::coincidence_calo_record> _coincidence_calo_records_; //!< Vector of coincidence calo record
+			bool _coincidence_decision_; //!< Decision for coincidence trigger algorihtm
 			
 		};
 			

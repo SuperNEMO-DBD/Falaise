@@ -234,6 +234,7 @@ int main( int  argc_ , char **argv_  )
     bool inhibit_both_side_coinc = false;
     bool inhibit_single_side_coinc = false;    
     int calorimeter_gate_size = 4;
+    bool activate_coincidence = false;
     
     trigger_config.store("calo.circular_buffer_depth", calo_circular_buffer_depth);
     trigger_config.store("calo.total_multiplicity_threshold", calo_threshold);
@@ -243,10 +244,19 @@ int main( int  argc_ , char **argv_  )
     trigger_config.store("tracker.memory_row_file",   memory_row);
     trigger_config.store("tracker.memory_a4_d2_file", memory_a4_d2);
     trigger_config.store("coincidence.calorimeter_gate_size", calorimeter_gate_size);
+    trigger_config.store("activate_coincidence", activate_coincidence);
+
+    // Creation of trigger display manager :
+    snemo::digitization::trigger_display_manager my_trigger_display;
+    datatools::properties trigger_display_config;
+    bool calo_25ns = true;
+    trigger_display_config.store("calo_25ns", calo_25ns);
+    my_trigger_display.initialize(trigger_display_config);
 
     // Creation and initialization of trigger algorithm :
     snemo::digitization::trigger_algorithm my_trigger_algo;
     my_trigger_algo.set_electronic_mapping(my_e_mapping);
+    my_trigger_algo.set_trigger_display_manager(my_trigger_display);
     my_trigger_algo.initialize(trigger_config);
 
     // Internal counters

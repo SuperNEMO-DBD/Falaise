@@ -13,6 +13,8 @@ namespace snemo {
     {
       _initialized_ = false;
       _electronic_mapping_ = 0;
+      _trigger_display_manager_ = 0;
+      _activate_coincidence_ = false;
       return;
     }
 
@@ -33,6 +35,17 @@ namespace snemo {
       _calo_algo_.set_electronic_mapping(my_electronic_mapping_);
       _coinc_algo_.set_electronic_mapping(my_electronic_mapping_);
       return;
+    }  
+
+    void trigger_algorithm::set_trigger_display_manager(const trigger_display_manager & my_trigger_display_manager_)
+    {
+      _trigger_display_manager_ = & my_trigger_display_manager_;
+      return;
+    }
+    
+    bool trigger_algorithm::is_activated_coincidence() const
+    {
+      return _activate_coincidence_;
     }
 
     void trigger_algorithm::initialize()
@@ -58,7 +71,14 @@ namespace snemo {
       datatools::properties coinc_config;
       config_.export_and_rename_starting_with(coinc_config, "coincidence.", "");
       _coinc_algo_.initialize(coinc_config);
-            
+       
+      if (!is_activated_coincidence()) {
+	if(config_.has_key("activate_coincidence")) {
+	  bool activate_coincidence_config =  config_.fetch_boolean("activate_coincidence");
+	  _activate_coincidence_ = activate_coincidence_config;
+	}
+      }
+      
       _initialized_ = true;
       return;
     }
@@ -73,6 +93,8 @@ namespace snemo {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Calo trigger algorithm is not initialized, it can't be reset ! ");
       _initialized_ = false;
       _electronic_mapping_ = 0;
+      _trigger_display_manager_ = 0;
+      _activate_coincidence_ = false;
       return;
     }  
     
@@ -137,8 +159,23 @@ namespace snemo {
 	  _process_tracker_algo(geiger_ctw_data_);
 	}
       
-      _process_coinc_algo();
+      if (is_activated_coincidence())
+	{
+	  _process_coinc_algo();
+	}
+      bool calo_decision = _calo_algo_.get_calo_decision();
+      bool tracker_decision = _tracker_algo_.get_tracker_decision();
+      bool coincidence_decision = _coinc_algo_.get_coincidence_decision();
       
+      // To improve depending of trigger configuration
+      if (calo_decision && tracker_decision) _finale_trigger_decision_ = true;
+      else if (_activate_coincidence_ && coincidence_decision) _finale_trigger_decision_ = true;
+      
+      std::clog << "Calo decision    : " << calo_decision << std::endl;
+      std::clog << "Tracker decision : " << tracker_decision << std::endl;
+      std::clog << "Coinc decision   : " << coincidence_decision << std::endl;
+      std::clog << "Trigger decision : " << _finale_trigger_decision_ << std::endl;
+
       return;
     }
 

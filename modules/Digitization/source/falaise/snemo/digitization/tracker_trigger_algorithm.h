@@ -171,6 +171,9 @@ namespace snemo {
 			void build_hit_cells_gids_from_ctw(const geiger_ctw & my_geiger_ctw_,
 																				 std::vector<geomtools::geom_id> & hit_cells_gids_) const;
 
+			/// Return the tracker decision
+			const	bool get_tracker_decision() const;
+
 			/// Fill the geiger cells matrix
 			void fill_matrix(const std::vector<geomtools::geom_id> & hit_cells_gids_);
 
@@ -273,7 +276,7 @@ namespace snemo {
 			memory<4,2> _mem_lvl1_to_lvl2_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRIGGER_ZONES]; //!< A4D2 memory for level 1 to level 2 (4 bits --> 2 bits)
 			
 			tracker_record _tracker_level_1_finale_decision_; //!< Structure representing the finale decision for level 1 tracker
-			
+			bool _tracker_finale_decision_; //!< Finale tracker decision
 		};
 
   } // end of namespace digitization

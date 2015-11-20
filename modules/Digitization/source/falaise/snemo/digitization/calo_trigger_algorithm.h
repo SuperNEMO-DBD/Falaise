@@ -185,7 +185,7 @@ namespace snemo {
 			void reset_calo_record_per_clocktick();
 
 			/// Get the level 1 finale decision bool
-			const bool get_calo_level_1_finale_decision() const; 
+			const bool get_calo_decision() const; 
 
 			/// Get the level 1 finale decision structure
 			const calo_trigger_algorithm::calo_summary_record get_calo_level_1_finale_decision_structure() const;  
@@ -235,6 +235,9 @@ namespace snemo {
 			boost::scoped_ptr<buffer_type> _gate_circular_buffer_; //!< Scoped pointer to a circular buffer containing output data structure
  
 			calo_summary_record _calo_level_1_finale_decision_; //!< Structure representing the finale decision for level 1 calorimeter
+			
+			bool _calo_finale_decision_; //!< Calo finale decision for an event
+			
 		};
 
   } // end of namespace digitization

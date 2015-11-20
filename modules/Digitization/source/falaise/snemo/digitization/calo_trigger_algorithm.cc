@@ -107,12 +107,12 @@ namespace snemo {
     {
       _initialized_ = false;
       _electronic_mapping_ = 0;
-
       _circular_buffer_depth_ = 0;
       _activated_threshold_ = false;
       _total_multiplicity_threshold_.reset();
       _inhibit_both_side_coinc_ = false;
       _inhibit_single_side_coinc_ = false;
+      _calo_finale_decision_ = false;
       return;
     }
 
@@ -245,6 +245,7 @@ namespace snemo {
       _inhibit_single_side_coinc_ = false;
       _circular_buffer_depth_ = 0;
       _calo_level_1_finale_decision_.reset();
+      _calo_finale_decision_ = false;
       reset_calo_info();
       _gate_circular_buffer_.reset();
       return;
@@ -263,9 +264,9 @@ namespace snemo {
       return;
     }    
 
-    const bool calo_trigger_algorithm::get_calo_level_1_finale_decision() const
+    const bool calo_trigger_algorithm::get_calo_decision() const
     {
-      return _calo_level_1_finale_decision_.calo_finale_decision;
+      return _calo_finale_decision_;
     }
     
     const calo_trigger_algorithm::calo_summary_record calo_trigger_algorithm::get_calo_level_1_finale_decision_structure() const
@@ -607,11 +608,10 @@ namespace snemo {
 	  _build_calo_record_summary_structure(my_calo_summary_record);
 	  _compute_calo_finale_decision(my_calo_summary_record);
 	  _display_calo_summary(_calo_level_1_finale_decision_);
-
+	  if (_calo_level_1_finale_decision_.calo_finale_decision) _calo_finale_decision_ = true;
 	  calo_records_.push_back(_calo_level_1_finale_decision_);
 	  // std::clog << "Size of calo records : " << calo_records_.size() << std::endl;
 	  
-	  //reset_calo_record_per_clocktick();
 	  reset_calo_info();
 	} // end of iclocktick
       return;

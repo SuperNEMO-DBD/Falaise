@@ -149,6 +149,7 @@ namespace snemo {
       _electronic_mapping_ = 0;
       _calorimeter_gate_size_ = 0;
       _coincidence_calo_records_.reserve(SIZE_OF_RESERVED_COINCIDENCE_CALO_RECORDS);
+      _coincidence_decision_ = false;
       return;
     }
 
@@ -209,16 +210,23 @@ namespace snemo {
     void coincidence_trigger_algorithm::reset()
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Coincidence trigger algorithm is not initialized, it can't be reset ! ");
-      _initialized_ = false;
       _electronic_mapping_ = 0;
+      reset_data();
+      _initialized_ = false;
       return;
     }
     
     void coincidence_trigger_algorithm::reset_data()
     {
-      DT_THROW_IF(!is_initialized(), std::logic_error, "Coincidence trigger algorithm is not initialized, it can't process ! ");
+      DT_THROW_IF(!is_initialized(), std::logic_error, "Coincidence trigger algorithm is not initialized, it can't be reset ! ");
       _coincidence_calo_records_.clear();
+      _coincidence_decision_ = false;
       return;
+    }
+
+    const bool coincidence_trigger_algorithm::get_coincidence_decision() const
+    {
+      return _coincidence_decision_;
     }
 
     void coincidence_trigger_algorithm::_preparing_calo_coincidence(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_)
@@ -253,6 +261,7 @@ namespace snemo {
 	      coincidence_calo_record.calo_finale_decision = a_ctrec.calo_finale_decision;
 	      _coincidence_calo_records_.push_back(coincidence_calo_record);
 	      decision_already_true = true;
+	      _coincidence_decision_ = true;
 	    }
 	  
 	  if (decision_already_true == true && 

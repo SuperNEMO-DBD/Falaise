@@ -151,6 +151,7 @@ namespace snemo {
 	{ 
 	  vbool[i] = false;
 	}
+      _tracker_finale_decision_ = false;
       return;
     }
 
@@ -216,6 +217,7 @@ namespace snemo {
       _electronic_mapping_ = 0;
       reset_trigger_info();
       reset_matrix();
+      _tracker_finale_decision_ = false;
       return;
     }
     
@@ -297,6 +299,12 @@ namespace snemo {
 
       return;
     }
+
+    const bool tracker_trigger_algorithm::get_tracker_decision() const
+    {
+      return _tracker_finale_decision_;
+    }
+
 
     void tracker_trigger_algorithm::fill_matrix(const std::vector<geomtools::geom_id> & hit_cells_gids_)
     {
@@ -927,6 +935,7 @@ namespace snemo {
 	  _tracker_level_1_finale_decision_.display();
 	  //display_matrix();
 	  // Push back the structure in the vector for tracker records
+	  if (_tracker_level_1_finale_decision_.level_one_finale_decision != 0) _tracker_finale_decision_ = true;
 	  tracker_records_.push_back(_tracker_level_1_finale_decision_);
 	} // end of iclocktick
       return;

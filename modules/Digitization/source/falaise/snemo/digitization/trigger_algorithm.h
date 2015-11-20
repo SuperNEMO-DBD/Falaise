@@ -44,6 +44,12 @@ namespace snemo {
       /// Set the electronic mapping object
       void set_electronic_mapping(const electronic_mapping & my_electronic_mapping_);
 
+      /// Set the trigger display manager object
+      void set_trigger_display_manager(const trigger_display_manager & my_trigger_display_manager_);
+
+      /// Check if the coincidence config is activated 
+			bool is_activated_coincidence() const;
+
       /// Initializing
       void initialize();
 
@@ -89,7 +95,9 @@ namespace snemo {
       // Configuration :
       bool _initialized_; //!< Initialization flag
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
-
+			const trigger_display_manager * _trigger_display_manager_; //!< Pointer to a trigger display manager
+			
+			bool _activate_coincidence_; //!< Boolean activating coincidence
 		  tracker_trigger_algorithm   _tracker_algo_; //!< Tracker trigger algorithm @ 1600ns
 		  calo_trigger_algorithm         _calo_algo_; //!< Calo trigger algorithm @ 25ns
 			coincidence_trigger_algorithm _coinc_algo_; //!< Coincidence trigger algorithm for matching calo and tracker trigger
@@ -98,6 +106,9 @@ namespace snemo {
 			std::vector<calo_trigger_algorithm::calo_summary_record> _calo_records_; //!< Collection of calo summary record
 			std::vector<tracker_trigger_algorithm::tracker_record> _tracker_records_; //!< Collection of tracker record
 			std::vector<coincidence_trigger_algorithm::coincidence_output> _coincidence_records_; //!< Collection of coincidence record
+			
+			bool _finale_trigger_decision_; //!< The finale decision for the trigger
+			
     };
 
   } // end of namespace digitization

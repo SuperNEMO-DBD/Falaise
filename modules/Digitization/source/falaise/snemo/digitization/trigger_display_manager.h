@@ -44,11 +44,34 @@ namespace snemo {
       /// Reset the object
       void reset();
 
+			const bool is_calo_25ns() const;
+			const bool is_calo_1600ns() const;
+			const bool is_tracker_1600ns() const;
+			const bool is_coinc_1600ns() const;
+			const bool is_decision_trigger() const;
+
+			
+			void display_calo_trigger_25ns() const;
+
+			void display_calo_trigger_1600ns() const;
+			
+			void display_tracker_trigger_1600ns() const;
+
+			void display_coincidence_trigger_1600ns() const;
+
+			void display_decision_trigger() const;			
+			
+
     private :
       
       // Configuration : 
-      bool _initialized_; //!< Initialization
-      
+      bool _initialized_;      //!< Initialization
+      bool _calo_25ns_;        //!< Configuration to display calo@25ns
+      bool _calo_1600ns_;      //!< Configuration to display calo@1600ns
+      bool _tracker_1600ns_;   //!< Configuration to display tracker@1600ns
+      bool _coinc_1600ns_;     //!< Configuration to display coinc@1600ns
+			bool _decision_trigger_; //!< Configuration to display the moment when the trigger decision is true
+
     };
 					
   } // end of namespace digitization
