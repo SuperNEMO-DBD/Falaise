@@ -234,7 +234,7 @@ int main( int  argc_ , char **argv_  )
     bool inhibit_both_side_coinc = false;
     bool inhibit_single_side_coinc = false;    
     int calorimeter_gate_size = 4;
-    bool activate_coincidence = false;
+    bool activate_coincidence = true;
     
     trigger_config.store("calo.circular_buffer_depth", calo_circular_buffer_depth);
     trigger_config.store("calo.total_multiplicity_threshold", calo_threshold);
@@ -250,7 +250,10 @@ int main( int  argc_ , char **argv_  )
     snemo::digitization::trigger_display_manager my_trigger_display;
     datatools::properties trigger_display_config;
     bool calo_25ns = true;
+    bool calo_1600ns = true;
+    bool tracker_1600ns = true;
     trigger_display_config.store("calo_25ns", calo_25ns);
+    trigger_display_config.store("tracker_1600ns", tracker_1600ns);
     my_trigger_display.initialize(trigger_display_config);
 
     // Creation and initialization of trigger algorithm :
@@ -331,7 +334,7 @@ int main( int  argc_ , char **argv_  )
 
 		// Creation of outputs collection structures for calo and tracker
 		std::vector<snemo::digitization::calo_trigger_algorithm::calo_summary_record> calo_collection_records;
-		std::vector<snemo::digitization::tracker_trigger_algorithm::tracker_record> tracker_collection_records;
+		std::vector<snemo::digitization::tracker_trigger_algorithm::tracker_record>   tracker_collection_records;
 		
 		// Trigger process
 		my_trigger_algo.process(my_calo_ctw_data,
@@ -340,7 +343,9 @@ int main( int  argc_ , char **argv_  )
 		// Finale structures :
 		calo_collection_records = my_trigger_algo.get_calo_records_vector();
 		tracker_collection_records = my_trigger_algo.get_tracker_records_vector();
-
+		//my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
+		//my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
+		my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
 		std::clog << "********* Size of Finale structures for one event *********" << std::endl;
 		std::clog << "Calo collection size    : " << calo_collection_records.size() << std::endl;
 		std::clog << "Tracker collection size : " << tracker_collection_records.size() << std::endl;

@@ -127,13 +127,15 @@ namespace snemo {
 
     void trigger_algorithm::_process_calo_algo(const calo_ctw_data & calo_ctw_data_)
     {
-      _calo_algo_.process(calo_ctw_data_, _calo_records_);
+      _calo_algo_.process(calo_ctw_data_,
+			  _calo_records_);
       return;
     }
 
     void trigger_algorithm::_process_tracker_algo(const geiger_ctw_data & geiger_ctw_data_)
     {
-      _tracker_algo_.process(geiger_ctw_data_, _tracker_records_);
+      _tracker_algo_.process(geiger_ctw_data_,
+			     _tracker_records_);
       return;
     }
     

@@ -20,12 +20,17 @@ namespace snemo {
   
   namespace digitization {
     
+		class trigger_algorithm;
+		
     /// \brief 
     /// bla bla bla
     class trigger_display_manager
     {
     public :
-
+			
+			static const uint8_t NUMBER_OF_HORIZONTAL_CHAR = 117;
+			static const uint8_t NUMBER_OF_VERTICAL_CHAR = 23;
+			
       /// Default constructor
       trigger_display_manager();
 
@@ -50,17 +55,25 @@ namespace snemo {
 			const bool is_coinc_1600ns() const;
 			const bool is_decision_trigger() const;
 
-			
-			void display_calo_trigger_25ns() const;
+			void display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_, int vector_position_25ns_) const;
 
-			void display_calo_trigger_1600ns() const;
+			void display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_) const; 
+
+			void display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int vector_position_1600ns_) const;
+
+			void display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_) const;
 			
-			void display_tracker_trigger_1600ns() const;
+			void display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int vector_position_1600ns_) const;
+
+			void display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_) const;
 
 			void display_coincidence_trigger_1600ns() const;
 
 			void display_decision_trigger() const;			
 			
+			void fill_matrix();
+		 
+			void display_matrix();
 
     private :
       
@@ -72,6 +85,9 @@ namespace snemo {
       bool _coinc_1600ns_;     //!< Configuration to display coinc@1600ns
 			bool _decision_trigger_; //!< Configuration to display the moment when the trigger decision is true
 
+			// Data :
+			char _char_matrix_[NUMBER_OF_VERTICAL_CHAR][NUMBER_OF_HORIZONTAL_CHAR];
+			
     };
 					
   } // end of namespace digitization

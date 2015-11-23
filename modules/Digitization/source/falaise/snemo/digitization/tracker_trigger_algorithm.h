@@ -30,7 +30,7 @@ namespace snemo {
     public : 
 			
 			/// Trigger display manager is a friend because it can access to members for display
-		 	friend class trigger_display_manager;
+		 	//friend class trigger_display_manager;
 
 			/// Level one zoning size of a bitset for a zone
 			static const int32_t GEIGER_LEVEL_ONE_ZONING_BITSET_SIZE = 8;

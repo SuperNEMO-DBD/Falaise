@@ -44,7 +44,7 @@ namespace snemo {
       /// Set the electronic mapping object
       void set_electronic_mapping(const electronic_mapping & my_electronic_mapping_);
 
-      /// Set the trigger display manager object
+      // /// Set the trigger display manager object
       void set_trigger_display_manager(const trigger_display_manager & my_trigger_display_manager_);
 
       /// Check if the coincidence config is activated 

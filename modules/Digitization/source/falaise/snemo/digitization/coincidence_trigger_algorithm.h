@@ -32,7 +32,7 @@ namespace snemo {
 		public :
 						
 			/// Trigger display manager is a friend because it can access to members for display
-		  friend class trigger_display_manager;
+			friend class trigger_display_manager;
 
 			struct coincidence_calo_record
 			{
@@ -105,7 +105,7 @@ namespace snemo {
 			
 		protected :
 			
-			/// Preparing coincidence calo records structure
+		/// Preparing coincidence calo records structure
 			void _preparing_calo_coincidence(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_);
 			/// Compute clocktick 1600ns for calo records
 			void _compute_clocktick_1600ns(const uint32_t clocktick_25ns_, uint32_t & clocktick_1600ns_);

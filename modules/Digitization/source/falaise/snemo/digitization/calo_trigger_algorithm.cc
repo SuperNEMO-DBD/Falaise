@@ -602,12 +602,11 @@ namespace snemo {
 	    } // end of isize
 	  _gate_circular_buffer_->push_back(_calo_record_per_clocktick_);
 	  // std::clog <<"*************************** Clocktick 25 = " << iclocktick << "***************************" << std::endl << std::endl;
-	  // _display_calo_info_for_a_clocktick();
+	  
 	  calo_summary_record my_calo_summary_record;
 	  my_calo_summary_record.clocktick_25ns = iclocktick;
 	  _build_calo_record_summary_structure(my_calo_summary_record);
 	  _compute_calo_finale_decision(my_calo_summary_record);
-	  _display_calo_summary(_calo_level_1_finale_decision_);
 	  if (_calo_level_1_finale_decision_.calo_finale_decision) _calo_finale_decision_ = true;
 	  calo_records_.push_back(_calo_level_1_finale_decision_);
 	  // std::clog << "Size of calo records : " << calo_records_.size() << std::endl;
