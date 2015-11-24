@@ -610,7 +610,7 @@ namespace snemo {
 	  if (_calo_level_1_finale_decision_.calo_finale_decision) _calo_finale_decision_ = true;
 	  calo_records_.push_back(_calo_level_1_finale_decision_);
 	  // std::clog << "Size of calo records : " << calo_records_.size() << std::endl;
-	  
+	  // _display_calo_summary(_calo_level_1_finale_decision_); 
 	  reset_calo_info();
 	} // end of iclocktick
       return;

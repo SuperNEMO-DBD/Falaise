@@ -46,16 +46,6 @@ namespace snemo {
 	    }
 	}
       level_one_finale_decision.reset();
-      for (int i = 0; i < mapping::NUMBER_OF_SIDES; i ++)
-	{
-	  for (int j = 0; j < mapping::GEIGER_LAYERS_SIZE; j ++)
-	    {
-	      for (int k = 0; k < mapping::GEIGER_ROWS_SIZE; k ++)
-		{
-		  geiger_matrix[i][j][k] = 0;
-		}
-	    }
-	}
       return;
     }
     
@@ -74,73 +64,24 @@ namespace snemo {
 	  std::clog << std::endl;
 	}
       std::clog << "Level one decision : [" << level_one_finale_decision << "]" <<  std::endl;
-      
-      std::clog << "  |-Zone-0-|---Zone-1--|---Zone-2--|---Zone-3--|---Zone-4--|--Zone-5--|---Zone-6--|---Zone-7--|--Zone-8---|--Zone-9-|" << std::endl;
 
-      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
-	{
-	  if (iside == 0)
-	    {
-	      for (int jlayer = mapping::GEIGER_LAYERS_SIZE - 1; jlayer >= 0; jlayer--) // Value GEIGER_LAYER_SIZE = 9
-		{
-		  std::clog << jlayer << ' ';
-		  for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
-		    {
-		      if( krow == 0 )        std::clog<<"|";
-		  
-		      if (geiger_matrix[iside][jlayer][krow] ) std::clog << "*";
-		  
-		      if(!geiger_matrix[iside][jlayer][krow])  std::clog << ".";	  
-
-		      if( krow == 112)     std::clog<<"|";
-
-		    } // end of row loop
-		  std::clog<<std::endl;	
-
-		  if (jlayer == 0)
-		    {
-		      std::clog << "  |_________________________________________________________________________________________________________________|" << std::endl;
-		    }
-
-		} // end of layer loop
-
-	    } // end of if == 0
-
-	  if (iside == 1)
-	    {  
-	      for (int jlayer = 0; jlayer < mapping::GEIGER_LAYERS_SIZE; jlayer++)
-		{
-		  std::clog << jlayer << ' ' ;
-		  for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
-		    {
-		      if( krow == 0 )        std::clog<<"|";
-		  
-		      if (geiger_matrix[iside][jlayer][krow] ) std::clog << "*";
-		  
-		      if(!geiger_matrix[iside][jlayer][krow])  std::clog << ".";	  
-
-		      if( krow == 112)     std::clog<<"|";
-
-		    } // end of krow
-		  std::clog<<std::endl;	    
-  
-		} // end of jlayer
-
-	    } // end of if iside==1
-
-	} // end of iside
-
-      std::clog << "  |-0-1-2-3-4-5-6-7-8-9-1-2-3-4-5-6-7-8-9-0-1-2-3-4-5-6-7-89-1-2-3-4-5-6-7-8-9-0-1-2-3-4-5-6-7-8-9-1-2-3-4-5-6-7-8-9| Board IDs " << std::endl;
-
-      std::clog << "  |-Zone-0-|---Zone-1--|---Zone-2--|---Zone-3--|---Zone-4--|--Zone-5--|---Zone-6--|---Zone-7--|--Zone-8---|--Zone-9-|" << std::endl;
-      std::clog << "  |                                     |                                    |                                      |" << std::endl;
-      std::clog << "  |---------------Crate-0---------------|--------------Crate-1---------------|---------------Crate-2----------------|" << std::endl;
-      std::clog << "  |                                     |                                    |                                      |" << std::endl;
-      std::clog << std::endl;
-      
       return;
     }
-
+    
+    tracker_trigger_algorithm::geiger_matrix::geiger_matrix()
+    {
+      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+	{
+	  for (int jlayer = 0; jlayer < mapping::GEIGER_LAYERS_SIZE; jlayer++)
+	    {
+	      for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
+		{	
+		  matrix[iside][jlayer][krow] = false;
+		} // end of krow
+	    } // end of jlayer
+	} // end of iside
+    }
+    
     tracker_trigger_algorithm::tracker_trigger_algorithm()
     {
       _initialized_ = false;
@@ -148,9 +89,9 @@ namespace snemo {
       bool * vbool = static_cast<bool* > (&_geiger_matrix_[0][0][0]);
       static const size_t nmax = mapping::NUMBER_OF_SIDES * mapping::GEIGER_LAYERS_SIZE * mapping::GEIGER_ROWS_SIZE;
       for (int i = 0; i < nmax ; i ++)
-	{ 
-	  vbool[i] = false;
-	}
+      	{ 
+      	  vbool[i] = false;
+      	}
       _tracker_finale_decision_ = false;
       return;
     }
@@ -834,18 +775,6 @@ namespace snemo {
     
     void tracker_trigger_algorithm::build_tracker_record()
     {
-      
-      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
-	{
-	  for (int jlayer = 0; jlayer < mapping::GEIGER_LAYERS_SIZE; jlayer++)
-	    {
-	      for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
-		{
-		  _tracker_level_1_finale_decision_.geiger_matrix[iside][jlayer][krow] = _geiger_matrix_[iside][jlayer][krow];
-		}
-	    }
-	}
-      
       // Merging level two and level two prime :
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 	{
@@ -909,7 +838,19 @@ namespace snemo {
 	  build_hit_cells_gids_from_ctw(geiger_ctw_list_per_clocktick_[isize].get(), hit_cells_gids);
 	  fill_matrix(hit_cells_gids);   
 	} // end of isize
-	  
+      geiger_matrix a_geiger_matrix;
+      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+	{
+	  for (int jlayer = 0; jlayer < mapping::GEIGER_LAYERS_SIZE; jlayer++)
+	    {
+	      for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
+		{
+		  a_geiger_matrix.matrix[iside][jlayer][krow] = _geiger_matrix_[iside][jlayer][krow];	
+		} // end of krow
+	    } // end of jlayer
+	} // end of iside
+      
+      _geiger_matrix_records_.push_back(a_geiger_matrix);
       build_trigger_level_one_bitsets();
       build_trigger_level_one_to_level_two();
       build_tracker_record();	
@@ -919,6 +860,7 @@ namespace snemo {
     void tracker_trigger_algorithm::_process(const geiger_ctw_data & geiger_ctw_data_,
 					     std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_)
     { 
+      _geiger_matrix_records_.clear();
       // Just even clockticks are processing (to take in account CB to TB serdes limitation
       int32_t iclocktick_800 = geiger_ctw_data_.get_clocktick_min();
       if (iclocktick_800 % 2 == 1) iclocktick_800 += 1;
@@ -933,7 +875,6 @@ namespace snemo {
 	  // Set structure clocktick :
 	  _tracker_level_1_finale_decision_.clocktick_1600ns = iclocktick_800 / 2;
 	  //_tracker_level_1_finale_decision_.display();
-	  //display_matrix();
 	  // Push back the structure in the vector for tracker records
 	  if (_tracker_level_1_finale_decision_.level_one_finale_decision != 0) _tracker_finale_decision_ = true;
 	  tracker_records_.push_back(_tracker_level_1_finale_decision_);

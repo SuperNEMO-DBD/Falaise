@@ -29,7 +29,7 @@ namespace snemo {
     public :
 			
 			static const uint8_t NUMBER_OF_HORIZONTAL_CHAR = 117;
-			static const uint8_t NUMBER_OF_VERTICAL_CHAR = 23;
+			static const uint8_t NUMBER_OF_VERTICAL_CHAR = 21;
 			
       /// Default constructor
       trigger_display_manager();
@@ -55,24 +55,28 @@ namespace snemo {
 			const bool is_coinc_1600ns() const;
 			const bool is_decision_trigger() const;
 
-			void display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_, int vector_position_25ns_) const;
+			void display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_, int vector_position_25ns_);
 
-			void display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_) const; 
+			void display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_); 
 
-			void display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int vector_position_1600ns_) const;
+			void display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int vector_position_1600ns_);
 
-			void display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_) const;
+			void display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_);
 			
-			void display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int vector_position_1600ns_) const;
+			void display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int vector_position_1600ns_);
 
-			void display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_) const;
+			void display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_);
 
-			void display_coincidence_trigger_1600ns() const;
+			void display_coincidence_trigger_1600ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_1600ns);
+
+			void display_coincidence_trigger_1600ns(trigger_algorithm & a_trigger_algo_);
 
 			void display_decision_trigger() const;			
 			
-			void fill_matrix();
+			void fill_matrix_pattern();
 		 
+			void reset_matrix_pattern();
+			
 			void display_matrix();
 
     private :

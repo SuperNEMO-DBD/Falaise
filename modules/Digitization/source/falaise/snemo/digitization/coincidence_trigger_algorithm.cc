@@ -38,18 +38,7 @@ namespace snemo {
     {
       clocktick_1600ns = -1;
       zoning_word[0].reset();
-      zoning_word[1].reset();
-      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
-	{
-	  for (int jlayer = 0; jlayer < mapping::GEIGER_LAYERS_SIZE; jlayer ++)
-	    {
-	      for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow ++)
-		{
-		  geiger_matrix[iside][jlayer][krow] = 0;
-		} // end of krow
-	    } // end of jlayer
-	} // end of iside
-	       
+      zoning_word[1].reset();	       
       coincidence_finale_decision = false;
     }
 
@@ -60,86 +49,6 @@ namespace snemo {
       std::clog << "ZW [0] : " << zoning_word[0] << std::endl;
       std::clog << "ZW [1] : " << zoning_word[1] << std::endl;
      
-      std::clog << "   |-Zone-0-|---Zone-1--|---Zone-2--|---Zone-3--|---Zone-4--|--Zone-5--|---Zone-6--|---Zone-7--|--Zone-8---|--Zone-9-|" << std::endl << std::endl;;
-      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
-      	{
-      	  if (iside == 1)
-	    {  
-	      for (int jlayer = 0; jlayer < mapping::GEIGER_LAYERS_SIZE; jlayer++)
-		{
-		  std::clog << jlayer << ' ' ;
-		  for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
-		    {
-		      if( krow == 0 )        std::clog<<"|";
-		  
-		      if (geiger_matrix[iside][jlayer][krow] ) std::clog << "*";
-		  
-		      if(!geiger_matrix[iside][jlayer][krow])  std::clog << ".";	  
-
-		      if( krow == 112)     std::clog<<"|";
-
-		    } // end of krow
-		  if (jlayer == 5) std::clog << "  Side [" << iside << "]";
-		  std::clog<<std::endl;	    
-  
-		} // end of jlayer
-
-	    } // end of if iside==1
-
-      	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
-      	    {
-	      if (izone == 0) std::clog << "   ";
-	      if (izone == 0 || izone == 9) 
-      		{
-      		  if (zoning_word[iside][izone] == true) std::clog << "[*******]";
-      		  else std::clog  << "[       ]";
-      		}
-      	      else if (izone == 5) 
-      		{
-      		  if (zoning_word[iside][izone] == true) std::clog  << "[*********]";
-      		  else std::clog  << "[         ]";
-      		}
-      	      else 
-      		{
-      		  if (zoning_word[iside][izone] == true) std::clog  << "[**********]";
-      		  else std::clog << "[          ]";
-      		}
-	      if (iside == 0 && izone == 9) std::clog << std::endl;
-	    }
-
-	  if (iside == 0)
-	    {
-	      for (int jlayer = mapping::GEIGER_LAYERS_SIZE - 1; jlayer >= 0; jlayer--) // Value GEIGER_LAYER_SIZE = 9
-		{
-		  std::clog << jlayer << ' ';
-		  for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
-		    {
-		      if( krow == 0 )        std::clog<<"|";
-		  
-		      if (geiger_matrix[iside][jlayer][krow] ) std::clog << "*";
-		  
-		      if(!geiger_matrix[iside][jlayer][krow])  std::clog << ".";	  
-
-		      if( krow == 112)     std::clog<<"|";
-
-		    } // end of row loop
-		  if (jlayer == 5) std::clog << "  Side [" << iside << "]";
-		  std::clog<<std::endl;	
-
-		  if (jlayer == 0)
-		    {
-		      std::clog << "  |_________________________________________________________________________________________________________________|" << std::endl;
-		    }
-
-		} // end of layer loop
-
-	    } // end of if == 0
-
-	} // end of iside
-      std::clog << std::endl << std::endl;;
-      std::clog << "   |-Zone-0-|---Zone-1--|---Zone-2--|---Zone-3--|---Zone-4--|--Zone-5--|---Zone-6--|---Zone-7--|--Zone-8---|--Zone-9-|" << std::endl;
-      std::clog << std::endl << std::endl;
-
       return;
     }
 
@@ -264,18 +173,18 @@ namespace snemo {
 	      _coincidence_decision_ = true;
 	    }
 	  
-	  if (decision_already_true == true && 
-	      a_ctrec_clocktick_1600ns == _coincidence_calo_records_[coincidence_calo_record_position].clocktick_1600ns &&
-	      a_ctrec.clocktick_25ns <= clocktick_25ns_decision + 3) // 3 == calo circular buffer depth
+	  if (decision_already_true == true  
+	      && a_ctrec_clocktick_1600ns == _coincidence_calo_records_[coincidence_calo_record_position].clocktick_1600ns
+	      && a_ctrec.clocktick_25ns <= clocktick_25ns_decision + 3) // 3 == calo circular buffer depth
 	    {
 	      _coincidence_calo_records_[coincidence_calo_record_position].zoning_word[0] = a_ctrec.zoning_word[0];
 	      _coincidence_calo_records_[coincidence_calo_record_position].zoning_word[1] = a_ctrec.zoning_word[1];
-	      _coincidence_calo_records_[coincidence_calo_record_position].active_next_zone(); 
+	      // _coincidence_calo_records_[coincidence_calo_record_position].active_next_zone(); 
 	    }
 	  
-	  else if (decision_already_true == true && 
-		   a_ctrec_clocktick_1600ns != _coincidence_calo_records_[coincidence_calo_record_position].clocktick_1600ns &&
-		   a_ctrec.clocktick_25ns <= clocktick_25ns_decision + 3) // 3 == calo circular buffer depth
+	  else if (decision_already_true == true
+		   && a_ctrec_clocktick_1600ns != _coincidence_calo_records_[coincidence_calo_record_position].clocktick_1600ns
+		   && a_ctrec.clocktick_25ns <= clocktick_25ns_decision + 3) // 3 == calo circular buffer depth
 	    {
 	      coincidence_trigger_algorithm::coincidence_calo_record coincidence_calo_record_next_clocktick;
 	      coincidence_calo_record_next_clocktick = coincidence_calo_record;
@@ -328,6 +237,7 @@ namespace snemo {
       for (it_calo; it_calo != _coincidence_calo_records_.end(); it_calo++)
 	{
 	  coincidence_calo_record a_calo_record = *it_calo;
+	  a_calo_record.active_next_zone();
 	  std::vector<tracker_trigger_algorithm::tracker_record>::const_iterator it_tracker = tracker_records_.begin();
 	  for (it_tracker; it_tracker != tracker_records_.end(); it_tracker++)
 	    {
@@ -337,16 +247,6 @@ namespace snemo {
 		{
 		  coincidence_output a_coincidence_output;
 		  a_coincidence_output.clocktick_1600ns = a_calo_record.clocktick_1600ns;
-		  for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
-		    {
-		      for (int jlayer = 0; jlayer < mapping::GEIGER_LAYERS_SIZE; jlayer ++)
-			{
-			  for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow ++)
-			    {
-			      a_coincidence_output.geiger_matrix[iside][jlayer][krow] = a_tracker_record.geiger_matrix[iside][jlayer][krow];
-			    } // end of krow
-			} // end of jlayer
-		    } // end of iside
 
 		  for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 		    {
@@ -355,7 +255,7 @@ namespace snemo {
 			  if (a_tracker_record.final_tracker_trigger_info[iside][izone] != 0)
 			    {
 			      a_coincidence_output.coincidence_finale_decision = true;
-
+			     
 			      if (a_calo_record.zoning_word[iside].test(izone) != 0) 
 				{
 				  a_coincidence_output.zoning_word[iside].set(izone, true);
@@ -370,11 +270,8 @@ namespace snemo {
 			} // end of izone
 		    } // end of iside
 
-
-		  // a_coincidence_output.display();
 		  coincidence_records_.push_back(a_coincidence_output);
-
-		  		  
+		  
 		} // end of clocktick egality
 	    } // end of it_tracker
 	} // end of it_calo

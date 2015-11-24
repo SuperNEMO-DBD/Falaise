@@ -177,7 +177,7 @@ int main( int  argc_ , char **argv_  )
     dpp::input_module reader;
     datatools::properties reader_config;
     reader_config.store ("logging.priority", "debug");
-    reader_config.store ("max_record_total", 15);
+    reader_config.store ("max_record_total", 10);
     reader_config.store ("files.mode", "single");
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
@@ -252,8 +252,11 @@ int main( int  argc_ , char **argv_  )
     bool calo_25ns = true;
     bool calo_1600ns = true;
     bool tracker_1600ns = true;
+    bool coinc_1600ns = true;
     trigger_display_config.store("calo_25ns", calo_25ns);
+    trigger_display_config.store("calo_1600ns", calo_1600ns);
     trigger_display_config.store("tracker_1600ns", tracker_1600ns);
+    trigger_display_config.store("coinc_1600ns", coinc_1600ns);
     my_trigger_display.initialize(trigger_display_config);
 
     // Creation and initialization of trigger algorithm :
@@ -343,9 +346,13 @@ int main( int  argc_ , char **argv_  )
 		// Finale structures :
 		calo_collection_records = my_trigger_algo.get_calo_records_vector();
 		tracker_collection_records = my_trigger_algo.get_tracker_records_vector();
-		//my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
-		//my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
+		// my_trigger_display.fill_matrix_pattern();
+		// my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
+		// my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
 		my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
+		// my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
+		// my_trigger_display.display_matrix();
+		my_trigger_display.reset_matrix_pattern();
 		std::clog << "********* Size of Finale structures for one event *********" << std::endl;
 		std::clog << "Calo collection size    : " << calo_collection_records.size() << std::endl;
 		std::clog << "Tracker collection size : " << tracker_collection_records.size() << std::endl;

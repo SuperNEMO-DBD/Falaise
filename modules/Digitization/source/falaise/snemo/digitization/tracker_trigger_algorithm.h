@@ -30,7 +30,7 @@ namespace snemo {
     public : 
 			
 			/// Trigger display manager is a friend because it can access to members for display
-		 	//friend class trigger_display_manager;
+		 	friend class trigger_display_manager;
 
 			/// Level one zoning size of a bitset for a zone
 			static const int32_t GEIGER_LEVEL_ONE_ZONING_BITSET_SIZE = 8;
@@ -58,7 +58,12 @@ namespace snemo {
 				uint32_t clocktick_1600ns;
 				std::bitset<GEIGER_FINAL_DECISION_BITSET_SIZE> level_one_finale_decision;
 				std::bitset<GEIGER_ZONING_FINAL_BITSET_SIZE> final_tracker_trigger_info[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRIGGER_ZONES];
-				bool geiger_matrix[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_LAYERS][mapping::NUMBER_OF_GEIGER_ROWS];
+			};
+
+			struct geiger_matrix
+			{
+				geiger_matrix();
+				bool matrix[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_LAYERS][mapping::NUMBER_OF_GEIGER_ROWS];
 			};
 			
 			struct sub_zone_location_info {
@@ -262,8 +267,10 @@ namespace snemo {
 			const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID flag
 
 			// Data :
+			// Maybe use boost::multiarray instead of C-type array
       bool _geiger_matrix_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_LAYERS][mapping::NUMBER_OF_GEIGER_ROWS]; //!< Geiger cells matrix
-
+			std::vector<geiger_matrix> _geiger_matrix_records_; //!< Vector of Geiger matrix for each clocktick
+			
 			std::bitset<GEIGER_LEVEL_ONE_ZONING_BITSET_SIZE> _level_one_tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRIGGER_ZONES]; //!< Table of 2x10 containing 8 bits bitset representing the level one tracker trigger zoning (side = {0-1}, zones = {0-9})			
 			std::bitset<GEIGER_LEVEL_ONE_ZONING_BITSET_SIZE> _level_one_prime_tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES]; //!< Table of 2x10 containing 8 bits bitset representing the level one tracker trigger for the interzones	 
 			std::bitset<GEIGER_LEVEL_TWO_ZONING_BITSET_SIZE> _level_two_tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRIGGER_ZONES]; //!< Table of 2x10 containing 2 bits bitset representing if there is a track / pretrack or nothing in one zone	

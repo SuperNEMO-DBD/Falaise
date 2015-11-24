@@ -52,14 +52,13 @@ namespace snemo {
 				bool calo_finale_decision;
 			};
 			
-			struct coincidence_output
+			struct coincidence_output // to check, not enough informations (just calo zoning word if coincidence is true)
 			{
 				coincidence_output();
 				void display();
 				uint32_t clocktick_1600ns;
 				std::bitset<mapping::NUMBER_OF_TRIGGER_ZONES> zoning_word[mapping::NUMBER_OF_SIDES];				
 				bool coincidence_finale_decision;
-				bool geiger_matrix[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_LAYERS][mapping::NUMBER_OF_GEIGER_ROWS];
 			};
 			
 			static const uint32_t SHIFT_COMPUTING_CLOCKTICK_1600NS = 1;

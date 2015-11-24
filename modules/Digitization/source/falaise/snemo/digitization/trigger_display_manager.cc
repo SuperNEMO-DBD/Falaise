@@ -85,7 +85,7 @@ namespace snemo {
 	  _decision_trigger_ = decision_trigger_config;
 	}
       }
-      
+      fill_matrix_pattern();
       _initialized_ = true;
       return;
     }
@@ -132,7 +132,7 @@ namespace snemo {
       return _decision_trigger_;
     }
     
-    void trigger_display_manager::display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_, int vector_position_25ns_) const
+    void trigger_display_manager::display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_, int vector_position_25ns_)
     {
       DT_THROW_IF(!is_calo_25ns(), std::logic_error, "Boolean calo 25ns is not activated, it can't display ! ");
       std::clog << "***********************************************************************************************************************************" << std::endl;
@@ -161,57 +161,108 @@ namespace snemo {
 		<< "  |  Trigger final decision : " << a_trigger_algo_._calo_records_[vector_position_25ns_].calo_finale_decision  << std::endl;
       
       std::clog << std::endl;
-
+         
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
-      	{
-      	  if (iside == 1)
-      	    {
-      	      std::clog << " |                                                                                                                 |" << std::endl;
-      	      if (a_trigger_algo_._calo_records_[vector_position_25ns_].zoning_word[iside][0] == true) std::clog << "   |";
-      	      else std::clog << " |";
-      	      std::clog << "                                                                                                                 ";
-      	      if (a_trigger_algo_._calo_records_[vector_position_25ns_].zoning_word[iside][9] == true) std::clog << "| Side 1" << std::endl;
-      	      else std::clog << "| Side 1" << std::endl;
-      	    }
-      	  if (iside == 0) std::clog << "    Zone0                                                                                                   Zone9 " << std::endl;
-      	  std::clog << " |";
-      	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
+       	{  
+     	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
       	    {
       	      if (izone == 0 || izone == 9) 
       		{
-      		  if (a_trigger_algo_._calo_records_[vector_position_25ns_].zoning_word[iside][izone] == true) std::clog << "[*******]";
-      		  else std::clog  << "[       ]";
-      		}
-      	      else if (izone == 5) 
+      		  if (a_trigger_algo_._calo_records_[vector_position_25ns_].zoning_word[iside][izone] == true)
+		    {
+		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+			{ 
+			  if      (iside == 0 && izone == 0 && j > 3 && j < 11) _char_matrix_[0][j] = '*';
+			  else if (iside == 1 && izone == 0 && j > 3 && j < 11) _char_matrix_[20][j] = '*';
+			  else if (iside == 0 && izone == 9 && j > 107 && j < 115) _char_matrix_[0][j] = '*';
+			  else if (iside == 1 && izone == 9 && j > 107 && j < 115) _char_matrix_[20][j] = '*';
+			}
+		    }
+		  else 
+		    {
+		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+			{ 
+			  if      (iside == 0 && izone == 0 && j > 3 && j < 11) _char_matrix_[0][j] = ' ';
+			  else if (iside == 1 && izone == 0 && j > 3 && j < 11) _char_matrix_[20][j] = ' ';
+			  else if (iside == 0 && izone == 9 && j > 107 && j < 115) _char_matrix_[0][j] = ' ';
+			  else if (iside == 1 && izone == 9 && j > 107 && j < 115) _char_matrix_[20][j] = ' ';
+			}
+		    }
+		} //end of if izone
+
+	      else if (izone == 5) 
       		{
-      		  if (a_trigger_algo_._calo_records_[vector_position_25ns_].zoning_word[iside][izone] == true) std::clog  << "[*********]";
-      		  else std::clog  << "[         ]";
-      		}
-      	      else 
-      		{
-      		  if (a_trigger_algo_._calo_records_[vector_position_25ns_].zoning_word[iside][izone] == true) std::clog  << "[**********]";
-      		  else std::clog << "[          ]";
-      		}
-      	    } // end of izone
-      	  std::clog << "|" << std::endl;
-      	  if (iside == 1) std::clog << "    Zone0                                                                                                   Zone9 " << std::endl;
-      	  if (iside == 0)
-      	    {
-      	      if (a_trigger_algo_._calo_records_[vector_position_25ns_].zoning_word[iside][0] == true) std::clog << " |";
-      	      else std::clog << " |";
-      	      std::clog << "                                                                                                                 ";
-      	      if (a_trigger_algo_._calo_records_[vector_position_25ns_].zoning_word[iside][9] == true) std::clog << "| Side 0" << std::endl;
-      	      else std::clog << "| Side 0" << std::endl;
-      	      std::clog << " |                                                                                                                 |" << std::endl;
-      	      std::clog << " |-----------------------------------------------------------------------------------------------------------------| Source foil" << std::endl;
-      	    }	  
-      	} // end of iside 
-      std::clog << "***********************************************************************************************************************************" << std::endl;
+      		  if (a_trigger_algo_._calo_records_[vector_position_25ns_].zoning_word[iside][izone] == true)
+		    {
+		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+			{ 
+			  if      (iside == 0 && j > 60 && j < 70) _char_matrix_[0][j] = '*';
+			  else if (iside == 1 && j > 60 && j < 70) _char_matrix_[20][j] = '*';
+			}
+		    }
+		  else
+		    {
+		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+			{ 
+			  if      (iside == 0 && j > 60 && j < 70) _char_matrix_[0][j] = ' ';
+			  else if (iside == 1 && j > 60 && j < 70) _char_matrix_[20][j] = ' ';
+			}
+		    }
+		} // end of else if izone == 5
+	      
+	      else
+		{
+		  if (a_trigger_algo_._calo_records_[vector_position_25ns_].zoning_word[iside][izone] == true) 
+		    {
+		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+			{ 
+			  if      (iside == 0 && izone == 1 && j > 12 && j < 23) _char_matrix_[0][j]   = '*';
+			  else if (iside == 1 && izone == 1 && j > 12 && j < 23) _char_matrix_[20][j]  = '*';
+			  else if (iside == 0 && izone == 2 && j > 24 && j < 35) _char_matrix_[0][j]   = '*';
+			  else if (iside == 1 && izone == 2 && j > 24 && j < 35) _char_matrix_[20][j]  = '*';
+			  else if (iside == 0 && izone == 3 && j > 36 && j < 47) _char_matrix_[0][j]   = '*';
+			  else if (iside == 1 && izone == 3 && j > 36 && j < 47) _char_matrix_[20][j]  = '*';	  
+			  else if (iside == 0 && izone == 4 && j > 48 && j < 59) _char_matrix_[0][j]   = '*';
+			  else if (iside == 1 && izone == 4 && j > 48 && j < 59) _char_matrix_[20][j]  = '*';
+			  else if (iside == 0 && izone == 6 && j > 71 && j < 82) _char_matrix_[0][j]   = '*';
+			  else if (iside == 1 && izone == 6 && j > 71 && j < 82) _char_matrix_[20][j]  = '*'; 
+			  else if (iside == 0 && izone == 7 && j > 83 && j < 94) _char_matrix_[0][j]   = '*';
+			  else if (iside == 1 && izone == 7 && j > 83 && j < 94) _char_matrix_[20][j]  = '*';
+			  else if (iside == 0 && izone == 8 && j > 95 && j < 106) _char_matrix_[0][j]  = '*';
+			  else if (iside == 1 && izone == 8 && j > 95 && j < 106) _char_matrix_[20][j] = '*';		
+			}
+		    }
+		  else 
+		    {
+		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+			{ 
+			  if      (iside == 0 && izone == 1 && j > 12 && j < 23) _char_matrix_[0][j]   = ' ';
+			  else if (iside == 1 && izone == 1 && j > 12 && j < 23) _char_matrix_[20][j]  = ' ';
+			  else if (iside == 0 && izone == 2 && j > 24 && j < 35) _char_matrix_[0][j]   = ' ';
+			  else if (iside == 1 && izone == 2 && j > 24 && j < 35) _char_matrix_[20][j]  = ' ';
+			  else if (iside == 0 && izone == 3 && j > 36 && j < 47) _char_matrix_[0][j]   = ' ';
+			  else if (iside == 1 && izone == 3 && j > 36 && j < 47) _char_matrix_[20][j]  = ' ';	  
+			  else if (iside == 0 && izone == 4 && j > 48 && j < 59) _char_matrix_[0][j]   = ' ';
+			  else if (iside == 1 && izone == 4 && j > 48 && j < 59) _char_matrix_[20][j]  = ' ';
+			  else if (iside == 0 && izone == 6 && j > 71 && j < 82) _char_matrix_[0][j]   = ' ';
+			  else if (iside == 1 && izone == 6 && j > 71 && j < 82) _char_matrix_[20][j]  = ' '; 
+			  else if (iside == 0 && izone == 7 && j > 83 && j < 94) _char_matrix_[0][j]   = ' ';
+			  else if (iside == 1 && izone == 7 && j > 83 && j < 94) _char_matrix_[20][j]  = ' ';
+			  else if (iside == 0 && izone == 8 && j > 95 && j < 106) _char_matrix_[0][j]  = ' ';
+			  else if (iside == 1 && izone == 8 && j > 95 && j < 106) _char_matrix_[20][j] = ' ';
+			}
+		    }
+		} // end of else izone
+	    } // end of izone
+	} // end of iside
+      
+      display_matrix();
       std::clog << std::endl << std::endl;
+
       return;
     }
 
-    void trigger_display_manager::display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_) const
+    void trigger_display_manager::display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_)
     {
       for (int ipos = 0; ipos < a_trigger_algo_._calo_records_.size(); ipos++)
 	{
@@ -220,7 +271,7 @@ namespace snemo {
       return;	  
   }
 
-    void trigger_display_manager::display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int vector_position_1600ns_) const
+    void trigger_display_manager::display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int vector_position_1600ns_)
     {
       DT_THROW_IF(!is_calo_1600ns(), std::logic_error, "Boolean calo 1600ns is not activated, it can't display ! ");
       std::clog << "***********************************************************************************************************************************" << std::endl;
@@ -249,57 +300,108 @@ namespace snemo {
 		<< "  |  Trigger final decision : " << a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].calo_finale_decision  << std::endl;
       
       std::clog << std::endl;
-
+     
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
-      	{
-      	  if (iside == 1)
-      	    {
-      	      std::clog << " |                                                                                                                 |" << std::endl;
-      	      if (a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].zoning_word[iside][0] == true) std::clog << "   |";
-      	      else std::clog << " |";
-      	      std::clog << "                                                                                                                 ";
-      	      if (a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].zoning_word[iside][9] == true) std::clog << "| Side 1" << std::endl;
-      	      else std::clog << "| Side 1" << std::endl;
-      	    }
-      	  if (iside == 0) std::clog << "    Zone0                                                                                                   Zone9 " << std::endl;
-      	  std::clog << " |";
-      	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
+       	{  
+     	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
       	    {
       	      if (izone == 0 || izone == 9) 
       		{
-      		  if (a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].zoning_word[iside][izone] == true) std::clog << "[*******]";
-      		  else std::clog  << "[       ]";
-      		}
-      	      else if (izone == 5) 
+      		  if (a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].zoning_word[iside][izone] == true)
+		    {
+		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+			{ 
+			  if      (iside == 0 && izone == 0 && j > 3 && j < 11) _char_matrix_[0][j] = '*';
+			  else if (iside == 1 && izone == 0 && j > 3 && j < 11) _char_matrix_[20][j] = '*';
+			  else if (iside == 0 && izone == 9 && j > 107 && j < 115) _char_matrix_[0][j] = '*';
+			  else if (iside == 1 && izone == 9 && j > 107 && j < 115) _char_matrix_[20][j] = '*';
+			}
+		    }
+		  else 
+		    {
+		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+			{ 
+			  if      (iside == 0 && izone == 0 && j > 3 && j < 11) _char_matrix_[0][j] = ' ';
+			  else if (iside == 1 && izone == 0 && j > 3 && j < 11) _char_matrix_[20][j] = ' ';
+			  else if (iside == 0 && izone == 9 && j > 107 && j < 115) _char_matrix_[0][j] = ' ';
+			  else if (iside == 1 && izone == 9 && j > 107 && j < 115) _char_matrix_[20][j] = ' ';
+			}
+		    }
+		} //end of if izone
+
+	      else if (izone == 5) 
       		{
-      		  if (a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].zoning_word[iside][izone] == true) std::clog  << "[*********]";
-      		  else std::clog  << "[         ]";
-      		}
-      	      else 
-      		{
-      		  if (a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].zoning_word[iside][izone] == true) std::clog  << "[**********]";
-      		  else std::clog << "[          ]";
-      		}
-      	    } // end of izone
-      	  std::clog << "|" << std::endl;
-      	  if (iside == 1) std::clog << "    Zone0                                                                                                   Zone9 " << std::endl;
-      	  if (iside == 0)
-      	    {
-      	      if (a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].zoning_word[iside][0] == true) std::clog << " |";
-      	      else std::clog << " |";
-      	      std::clog << "                                                                                                                 ";
-      	      if (a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].zoning_word[iside][9] == true) std::clog << "| Side 0" << std::endl;
-      	      else std::clog << "| Side 0" << std::endl;
-      	      std::clog << " |                                                                                                                 |" << std::endl;
-      	      std::clog << " |-----------------------------------------------------------------------------------------------------------------| Source foil" << std::endl;
-      	    }	  
-      	} // end of iside 
-      std::clog << "***********************************************************************************************************************************" << std::endl;
-      std::clog << std::endl << std::endl;
+      		  if (a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].zoning_word[iside][izone] == true)
+		    {
+		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+			{ 
+			  if      (iside == 0 && j > 60 && j < 70) _char_matrix_[0][j] = '*';
+			  else if (iside == 1 && j > 60 && j < 70) _char_matrix_[20][j] = '*';
+			}
+		    }
+		  else
+		    {
+		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+			{ 
+			  if      (iside == 0 && j > 60 && j < 70) _char_matrix_[0][j] = ' ';
+			  else if (iside == 1 && j > 60 && j < 70) _char_matrix_[20][j] = ' ';
+			}
+		    }
+		} // end of else if izone == 5
+	      
+	      else
+		{
+		  if (a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].zoning_word[iside][izone] == true) 
+		    {
+		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+			{ 
+			  if      (iside == 0 && izone == 1 && j > 12 && j < 23) _char_matrix_[0][j]   = '*';
+			  else if (iside == 1 && izone == 1 && j > 12 && j < 23) _char_matrix_[20][j]  = '*';
+			  else if (iside == 0 && izone == 2 && j > 24 && j < 35) _char_matrix_[0][j]   = '*';
+			  else if (iside == 1 && izone == 2 && j > 24 && j < 35) _char_matrix_[20][j]  = '*';
+			  else if (iside == 0 && izone == 3 && j > 36 && j < 47) _char_matrix_[0][j]   = '*';
+			  else if (iside == 1 && izone == 3 && j > 36 && j < 47) _char_matrix_[20][j]  = '*';	  
+			  else if (iside == 0 && izone == 4 && j > 48 && j < 59) _char_matrix_[0][j]   = '*';
+			  else if (iside == 1 && izone == 4 && j > 48 && j < 59) _char_matrix_[20][j]  = '*';
+			  else if (iside == 0 && izone == 6 && j > 71 && j < 82) _char_matrix_[0][j]   = '*';
+			  else if (iside == 1 && izone == 6 && j > 71 && j < 82) _char_matrix_[20][j]  = '*'; 
+			  else if (iside == 0 && izone == 7 && j > 83 && j < 94) _char_matrix_[0][j]   = '*';
+			  else if (iside == 1 && izone == 7 && j > 83 && j < 94) _char_matrix_[20][j]  = '*';
+			  else if (iside == 0 && izone == 8 && j > 95 && j < 106) _char_matrix_[0][j]  = '*';
+			  else if (iside == 1 && izone == 8 && j > 95 && j < 106) _char_matrix_[20][j] = '*';
+		
+			}
+		    }
+		  else 
+		    {
+		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+			{ 
+			  if      (iside == 0 && izone == 1 && j > 12 && j < 23) _char_matrix_[0][j]   = ' ';
+			  else if (iside == 1 && izone == 1 && j > 12 && j < 23) _char_matrix_[20][j]  = ' ';
+			  else if (iside == 0 && izone == 2 && j > 24 && j < 35) _char_matrix_[0][j]   = ' ';
+			  else if (iside == 1 && izone == 2 && j > 24 && j < 35) _char_matrix_[20][j]  = ' ';
+			  else if (iside == 0 && izone == 3 && j > 36 && j < 47) _char_matrix_[0][j]   = ' ';
+			  else if (iside == 1 && izone == 3 && j > 36 && j < 47) _char_matrix_[20][j]  = ' ';	  
+			  else if (iside == 0 && izone == 4 && j > 48 && j < 59) _char_matrix_[0][j]   = ' ';
+			  else if (iside == 1 && izone == 4 && j > 48 && j < 59) _char_matrix_[20][j]  = ' ';
+			  else if (iside == 0 && izone == 6 && j > 71 && j < 82) _char_matrix_[0][j]   = ' ';
+			  else if (iside == 1 && izone == 6 && j > 71 && j < 82) _char_matrix_[20][j]  = ' '; 
+			  else if (iside == 0 && izone == 7 && j > 83 && j < 94) _char_matrix_[0][j]   = ' ';
+			  else if (iside == 1 && izone == 7 && j > 83 && j < 94) _char_matrix_[20][j]  = ' ';
+			  else if (iside == 0 && izone == 8 && j > 95 && j < 106) _char_matrix_[0][j]  = ' ';
+			  else if (iside == 1 && izone == 8 && j > 95 && j < 106) _char_matrix_[20][j] = ' ';
+			}
+		    }
+		} // end of else izone
+	    } // end of izone
+	} // end of iside
+      
+      // display_matrix();
+      std::clog << std::endl;
       return;
     }
 
-    void trigger_display_manager::display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_) const
+    void trigger_display_manager::display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_)
     {
       for (int ipos = 0; ipos < a_trigger_algo_._coinc_algo_._coincidence_calo_records_.size(); ipos++)
 	{
@@ -308,7 +410,7 @@ namespace snemo {
       return;
     }
 			
-    void trigger_display_manager::display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int vector_position_1600ns_) const
+    void trigger_display_manager::display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int vector_position_1600ns_)
     {
       DT_THROW_IF(!is_tracker_1600ns(), std::logic_error, "Boolean tracker 1600ns is not activated, it can't display ! ");
       
@@ -320,79 +422,40 @@ namespace snemo {
 	  std::clog << "Side = " << iside << " | ";
 	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
 	    {
-	  std::clog << "[" << a_trigger_algo_._tracker_records_[vector_position_1600ns_].final_tracker_trigger_info[iside][izone] << "] ";
+	      std::clog << "[" << a_trigger_algo_._tracker_records_[vector_position_1600ns_].final_tracker_trigger_info[iside][izone] << "] ";
 	    } // end of izone
 	  std::clog << std::endl;
 	}
-      std::clog << "Level one decision : [" << a_trigger_algo_._tracker_records_[vector_position_1600ns_].level_one_finale_decision << "]" <<  std::endl;
-      
-      std::clog << "  |-Zone-0-|---Zone-1--|---Zone-2--|---Zone-3--|---Zone-4--|--Zone-5--|---Zone-6--|---Zone-7--|--Zone-8---|--Zone-9-|" << std::endl;
+      std::clog << "Level one decision : [" << a_trigger_algo_._tracker_records_[vector_position_1600ns_].level_one_finale_decision << "]" <<  std::endl << std::endl;
 
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 	{
-	  if (iside == 0)
+	  int layer = 0;
+	  for (int jlayer = mapping::GEIGER_LAYERS_SIZE - 1; jlayer >= 0; jlayer--) // Value GEIGER_LAYER_SIZE = 9
 	    {
-	      for (int jlayer = mapping::GEIGER_LAYERS_SIZE - 1; jlayer >= 0; jlayer--) // Value GEIGER_LAYER_SIZE = 9
+	      for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
 		{
-		  std::clog << jlayer << ' ';
-		  for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
+		  if (a_trigger_algo_._tracker_algo_._geiger_matrix_records_[vector_position_1600ns_].matrix[iside][jlayer][krow] 
+		      && iside == 0)
 		    {
-		      if( krow == 0 )        std::clog<<"|";
-		  
-		      if (a_trigger_algo_._tracker_records_[vector_position_1600ns_].geiger_matrix[iside][jlayer][krow] ) std::clog << "*";
-		  
-		      if(!a_trigger_algo_._tracker_records_[vector_position_1600ns_].geiger_matrix[iside][jlayer][krow])  std::clog << ".";	  
-
-		      if( krow == 112)     std::clog<<"|";
-
-		    } // end of row loop
-		  std::clog<<std::endl;	
-
-		  if (jlayer == 0)
-		    {
-		      std::clog << "  |_________________________________________________________________________________________________________________|" << std::endl;
+		      _char_matrix_[layer+1][krow+3] = '*';
 		    }
-
-		} // end of layer loop
-
-	    } // end of if == 0
-
-	  if (iside == 1)
-	    {  
-	      for (int jlayer = 0; jlayer < mapping::GEIGER_LAYERS_SIZE; jlayer++)
-		{
-		  std::clog << jlayer << ' ' ;
-		  for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
+		  else if (a_trigger_algo_._tracker_algo_._geiger_matrix_records_[vector_position_1600ns_].matrix[iside][jlayer][krow] 
+			   && iside == 1) 
 		    {
-		      if( krow == 0 )        std::clog<<"|";
-		  
-		      if (a_trigger_algo_._tracker_records_[vector_position_1600ns_].geiger_matrix[iside][jlayer][krow] ) std::clog << "*";
-		  
-		      if(!a_trigger_algo_._tracker_records_[vector_position_1600ns_].geiger_matrix[iside][jlayer][krow])  std::clog << ".";	  
-
-		      if( krow == 112)     std::clog<<"|";
-
-		    } // end of krow
-		  std::clog<<std::endl;	    
-  
-		} // end of jlayer
-
-	    } // end of if iside==1
-
-	} // end of iside
-
-      std::clog << "  |-0-1-2-3-4-5-6-7-8-9-1-2-3-4-5-6-7-8-9-0-1-2-3-4-5-6-7-89-1-2-3-4-5-6-7-8-9-0-1-2-3-4-5-6-7-8-9-1-2-3-4-5-6-7-8-9| Board IDs " << std::endl;
-
-      std::clog << "  |-Zone-0-|---Zone-1--|---Zone-2--|---Zone-3--|---Zone-4--|--Zone-5--|---Zone-6--|---Zone-7--|--Zone-8---|--Zone-9-|" << std::endl;
-      std::clog << "  |                                     |                                    |                                      |" << std::endl;
-      std::clog << "  |---------------Crate-0---------------|--------------Crate-1---------------|---------------Crate-2----------------|" << std::endl;
-      std::clog << "  |                                     |                                    |                                      |" << std::endl;
-      std::clog << std::endl;
+		      _char_matrix_[jlayer+11][krow+3] = '*';
+		    }
+		} // end of krow
+	      layer++;
+	    } // end of jlayer	
+	} // end of iside 
       
+      display_matrix();
+
       return;
     }
 
-    void trigger_display_manager::display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_) const
+    void trigger_display_manager::display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_)
     {
       for (int ipos = 0; ipos < a_trigger_algo_._tracker_records_.size(); ipos++)
 	{
@@ -401,30 +464,72 @@ namespace snemo {
       return;
     }
 
-    void trigger_display_manager::display_coincidence_trigger_1600ns() const
+  			
+    void trigger_display_manager::display_coincidence_trigger_1600ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_1600ns)
     {
       DT_THROW_IF(!is_coinc_1600ns(), std::logic_error, "Boolean coinc 1600ns is not activated, it can't display ! ");
       return;
     }
-
+    
+    void trigger_display_manager::display_coincidence_trigger_1600ns(trigger_algorithm & a_trigger_algo_)
+    {
+      
+      return;
+    }
     void trigger_display_manager::display_decision_trigger() const			
     {
       DT_THROW_IF(!is_decision_trigger(), std::logic_error, "Boolean decision trigger is not activated, it can't display ! ");
       return;
     }
     
-    void trigger_display_manager::fill_matrix()
+    void trigger_display_manager::fill_matrix_pattern()
     {
       for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
 	{
-	  _char_matrix_[11][j] = '_';
+	  if (j == 0) _char_matrix_[10][j] = ' ';
+	  else _char_matrix_[10][j] = '_';
 	}
+      
+      for (int i = 0; i < NUMBER_OF_VERTICAL_CHAR; i++)
+	{
+	  for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+	    { 
+	      if (i == 0 || i == 20) 
+		{
+		  if (j == 0 || j == 1) _char_matrix_[i][j] = ' ';
+		  else if (j == 2 || j == 116) _char_matrix_[i][j] = '|';
+		  else if (j == 3 || j == 12 || j == 24 || j == 36 || j == 48 || j == 60 || j == 71 || j == 83 || j == 95 || j == 107) _char_matrix_[i][j] = '[';
+		  else if (j == 11 || j == 23 || j == 35 || j == 47 || j == 59 || j == 70 || j == 82 || j == 94 || j == 106 || j == 115) _char_matrix_[i][j] = ']';
+		  else _char_matrix_[i][j] = ' ';
+		}
+
+	      else 
+		{
+		  if (j == 0 || j == 1) _char_matrix_[i][j] = ' ';
+		  else if (j == 2 || j == 116) _char_matrix_[i][j] = '|';
+		}
+	    }
+	}
+      for (int i = 1; i < NUMBER_OF_VERTICAL_CHAR - 1; i++)
+	{
+	  for (int j = 3; j < NUMBER_OF_HORIZONTAL_CHAR - 1; j++)
+	    {
+	      if (i == 10) {}
+	      else _char_matrix_[i][j] = '.';
+	    }
+	}
+      return;
+    }    
+
+    void trigger_display_manager::reset_matrix_pattern()
+    {
+      fill_matrix_pattern();
       return;
     }
     
     void trigger_display_manager::display_matrix()
     {
-      fill_matrix();
+      std::clog << "     Zone0      Zone1       Zone2       Zone3       Zone4      Zone5       Zone6       Zone7      Zone 8     Zone9 " << std::endl;
       for (int i = 0; i < NUMBER_OF_VERTICAL_CHAR; i++)
 	{
 	  for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
@@ -433,6 +538,7 @@ namespace snemo {
 	    }
 	  std::clog << std::endl;
 	}
+      std::clog << "     Zone0      Zone1       Zone2       Zone3       Zone4      Zone5       Zone6       Zone7      Zone 8     Zone9 " << std::endl;
       std::clog << std::endl;
     }
     
