@@ -12,6 +12,7 @@
 #include <snemo/digitization/electronic_mapping.h>
 #include <snemo/digitization/mapping.h>
 
+
 namespace datatools {
   class properties;
 }
@@ -19,16 +20,24 @@ namespace datatools {
 namespace snemo {
   
   namespace digitization {
-    
-		class trigger_algorithm;
-		
-    /// \brief 
-    /// bla bla bla
+
+		class trigger_algorithm;	
+	
+    /// \brief This is the trigger display manager
+    /// It can display : 
+		/// - Calorimeter zones each 25ns or 1600ns
+		/// - Geiger matrix each 1600ns
+		/// - Coincidences between calorimeter zones and Geiger matrix each 1600ns
+		// /// - Coincidence when the trigger decision is true for the first time
+
     class trigger_display_manager
     {
     public :
 			
+			/// Number of horizontal characters for display
 			static const uint8_t NUMBER_OF_HORIZONTAL_CHAR = 117;
+
+			/// Number of vertical characters for display
 			static const uint8_t NUMBER_OF_VERTICAL_CHAR = 21;
 			
       /// Default constructor
@@ -48,35 +57,71 @@ namespace snemo {
       
       /// Reset the object
       void reset();
-
+			
+			/// Check if the calorimeter 25ns config is activated 
 			const bool is_calo_25ns() const;
+
+			/// Check if the calorimeter 1600ns config is activated 
 			const bool is_calo_1600ns() const;
+
+			/// Check if the tracker 1600ns config is activated 
 			const bool is_tracker_1600ns() const;
+
+			/// Check if the coincidence 1600ns config is activated 
 			const bool is_coinc_1600ns() const;
+
+			/// Check if the decision trigger config is activated 
 			const bool is_decision_trigger() const;
 
-			void display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_, int vector_position_25ns_);
+			/// Fill calorimeter zones for 25ns
+			void fill_calo_trigger_matrix_25ns(std::bitset<10> zoning_word_[mapping::NUMBER_OF_SIDES]);
+			
+			/// Fill calorimeter zones for 1600ns
+			void fill_calo_trigger_matrix_1600ns(std::bitset<10> zoning_word_[mapping::NUMBER_OF_SIDES]);
+						
+			/// Fill tracker matrix for 1600ns
+			void fill_tracker_trigger_matrix_1600ns(bool geiger_matrix_[mapping::NUMBER_OF_SIDES][mapping::GEIGER_LAYERS_SIZE][mapping::GEIGER_ROWS_SIZE]);
+			
+			/// Display calorimeter zones each 25ns for a given clocktick
+			void display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_25ns_);
 
+			/// Display calorimeter zones each 25ns for all available clocktick
 			void display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_); 
 
-			void display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int vector_position_1600ns_);
+			/// Display calorimeter zones each 1600 for a given clocktick
+			void display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_1600ns_);
 
+			/// Display calorimeter zones each 1600ns for all available clocktick 
 			void display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_);
 			
-			void display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int vector_position_1600ns_);
+			/// Display tracker matrix each 1600 for a given clocktick
+			void display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_1600ns_);
 
+			/// Display tracker matrix each 1600 for all available clocktick
 			void display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_);
 
-			void display_coincidence_trigger_1600ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_1600ns);
+			/// Display calorimeter zones and tracker matrix each 1600 for a given clocktick
+			void display_coincidence_trigger_1600ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_1600ns_);
 
+			/// Display calorimeter zones and tracker matrix each 1600 for all available clocktick
 			void display_coincidence_trigger_1600ns(trigger_algorithm & a_trigger_algo_);
-
-			void display_decision_trigger() const;			
 			
+			/// Display calorimeter zones and tracker matrix each 1600 for the clocktick decision
+			void display_decision_trigger();			
+			
+			/// Fill display matrix with the initial pattern 
 			void fill_matrix_pattern();
 		 
+			/// Reset matrix with the constructed pattern
 			void reset_matrix_pattern();
 			
+			/// Reset calorimeter zones display
+			void reset_calo_display();
+
+			/// Reset tracker matrix display
+			void reset_tracker_display();
+						
+			/// Display the total matrix
 			void display_matrix();
 
     private :
@@ -90,8 +135,7 @@ namespace snemo {
 			bool _decision_trigger_; //!< Configuration to display the moment when the trigger decision is true
 
 			// Data :
-			char _char_matrix_[NUMBER_OF_VERTICAL_CHAR][NUMBER_OF_HORIZONTAL_CHAR];
-			
+			char _char_matrix_[NUMBER_OF_VERTICAL_CHAR][NUMBER_OF_HORIZONTAL_CHAR]; //!< Matrix of characters representing calorimeter zones and geiger matrix			
     };
 					
   } // end of namespace digitization

@@ -63,6 +63,7 @@ namespace snemo {
 			struct geiger_matrix
 			{
 				geiger_matrix();
+				uint32_t clocktick_1600ns;				
 				bool matrix[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_LAYERS][mapping::NUMBER_OF_GEIGER_ROWS];
 			};
 			

@@ -80,6 +80,7 @@ namespace snemo {
 		} // end of krow
 	    } // end of jlayer
 	} // end of iside
+      clocktick_1600ns = -1;
     }
     
     tracker_trigger_algorithm::tracker_trigger_algorithm()
@@ -849,7 +850,7 @@ namespace snemo {
 		} // end of krow
 	    } // end of jlayer
 	} // end of iside
-      
+      a_geiger_matrix.clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2;
       _geiger_matrix_records_.push_back(a_geiger_matrix);
       build_trigger_level_one_bitsets();
       build_trigger_level_one_to_level_two();
@@ -868,14 +869,9 @@ namespace snemo {
 	{
 	  std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick;
 	  geiger_ctw_data_.get_list_of_geiger_ctw_per_clocktick(iclocktick_800, geiger_ctw_list_per_clocktick);
-	  // std::clog << std::endl;
-	  // std::clog << "-----------------------------------------------------------------------------------------------------------------------" << std::endl;
-	  // std::clog <<"*************************** Clocktick 800 = " << iclocktick_800  << " |  Clocktick 1600 = " << iclocktick_800 / 2.<< "***************************" << std::endl << std::endl;
 	  _process_for_a_clocktick(geiger_ctw_list_per_clocktick);
-	  // Set structure clocktick :
 	  _tracker_level_1_finale_decision_.clocktick_1600ns = iclocktick_800 / 2;
-	  //_tracker_level_1_finale_decision_.display();
-	  // Push back the structure in the vector for tracker records
+
 	  if (_tracker_level_1_finale_decision_.level_one_finale_decision != 0) _tracker_finale_decision_ = true;
 	  tracker_records_.push_back(_tracker_level_1_finale_decision_);
 	} // end of iclocktick

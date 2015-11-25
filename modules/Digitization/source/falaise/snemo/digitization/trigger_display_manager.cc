@@ -2,6 +2,8 @@
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
+
+
 // Ourselves:
 #include <snemo/digitization/trigger_display_manager.h>
 #include <snemo/digitization/trigger_algorithm.h>
@@ -131,183 +133,114 @@ namespace snemo {
     {
       return _decision_trigger_;
     }
-    
-    void trigger_display_manager::display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_, int vector_position_25ns_)
+
+    void trigger_display_manager::fill_calo_trigger_matrix_25ns(std::bitset<10> zoning_word_[mapping::NUMBER_OF_SIDES])
     {
-      DT_THROW_IF(!is_calo_25ns(), std::logic_error, "Boolean calo 25ns is not activated, it can't display ! ");
-      std::clog << "***********************************************************************************************************************************" << std::endl;
-      std::clog <<  "******************** Display calorimeter trigger info @ 25 ns ********************" << std::endl;
-      std::clog << "******************** Clocktick 25 ns = " <<  a_trigger_algo_._calo_records_[vector_position_25ns_].clocktick_25ns  << " ******************** " << std::endl; 
-      std::clog << "CT |XTS|L|HG|L|L|H1|H0| ZONING S1| ZONING S0 " << std::endl; 
-      std::clog << a_trigger_algo_._calo_records_[vector_position_25ns_].clocktick_25ns << ' ';
-      std::clog << a_trigger_algo_._calo_records_[vector_position_25ns_].xt_info_bitset << ' ';
-      std::clog << a_trigger_algo_._calo_records_[vector_position_25ns_].LTO_gveto << ' ';
-      std::clog << a_trigger_algo_._calo_records_[vector_position_25ns_].total_multiplicity_gveto << ' ';
-      std::clog << a_trigger_algo_._calo_records_[vector_position_25ns_].LTO_side_1 << ' ';
-      std::clog << a_trigger_algo_._calo_records_[vector_position_25ns_].LTO_side_0 << ' ';
-      std::clog << a_trigger_algo_._calo_records_[vector_position_25ns_].total_multiplicity_side_1 << ' ';
-      std::clog << a_trigger_algo_._calo_records_[vector_position_25ns_].total_multiplicity_side_0 << ' ';
-      for (int iside = mapping::NUMBER_OF_SIDES-1; iside >= 0; iside--)
-      	{
-      	  for (int izone = mapping::NUMBER_OF_TRIGGER_ZONES-1; izone >= 0 ; izone--)
-      	    {
-      	      std::clog << a_trigger_algo_._calo_records_[vector_position_25ns_].zoning_word[iside][izone];
-      	    }
-      	  std::clog << ' ';
-      	}      
-      std::clog << std::endl;
-      std::clog << "Single Side coinc : " << a_trigger_algo_._calo_records_[vector_position_25ns_].single_side_coinc 
-		<< "  |  Threshold total mult : "   << a_trigger_algo_._calo_records_[vector_position_25ns_].total_multiplicity_threshold 
-		<< "  |  Trigger final decision : " << a_trigger_algo_._calo_records_[vector_position_25ns_].calo_finale_decision  << std::endl;
-      
-      std::clog << std::endl;
-         
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
        	{  
-     	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
+      	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
       	    {
       	      if (izone == 0 || izone == 9) 
       		{
-      		  if (a_trigger_algo_._calo_records_[vector_position_25ns_].zoning_word[iside][izone] == true)
-		    {
-		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
-			{ 
-			  if      (iside == 0 && izone == 0 && j > 3 && j < 11) _char_matrix_[0][j] = '*';
-			  else if (iside == 1 && izone == 0 && j > 3 && j < 11) _char_matrix_[20][j] = '*';
-			  else if (iside == 0 && izone == 9 && j > 107 && j < 115) _char_matrix_[0][j] = '*';
-			  else if (iside == 1 && izone == 9 && j > 107 && j < 115) _char_matrix_[20][j] = '*';
-			}
-		    }
-		  else 
-		    {
-		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
-			{ 
-			  if      (iside == 0 && izone == 0 && j > 3 && j < 11) _char_matrix_[0][j] = ' ';
-			  else if (iside == 1 && izone == 0 && j > 3 && j < 11) _char_matrix_[20][j] = ' ';
-			  else if (iside == 0 && izone == 9 && j > 107 && j < 115) _char_matrix_[0][j] = ' ';
-			  else if (iside == 1 && izone == 9 && j > 107 && j < 115) _char_matrix_[20][j] = ' ';
-			}
-		    }
-		} //end of if izone
+      		  if (zoning_word_[iside][izone] == true)
+      		    {
+      		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+      			{ 
+      			  if      (iside == 0 && izone == 0 && j > 3 && j < 11) _char_matrix_[0][j] = '*';
+      			  else if (iside == 1 && izone == 0 && j > 3 && j < 11) _char_matrix_[20][j] = '*';
+      			  else if (iside == 0 && izone == 9 && j > 107 && j < 115) _char_matrix_[0][j] = '*';
+      			  else if (iside == 1 && izone == 9 && j > 107 && j < 115) _char_matrix_[20][j] = '*';
+      			}
+      		    }
+      		  else 
+      		    {
+      		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+      			{ 
+      			  if      (iside == 0 && izone == 0 && j > 3 && j < 11) _char_matrix_[0][j] = ' ';
+      			  else if (iside == 1 && izone == 0 && j > 3 && j < 11) _char_matrix_[20][j] = ' ';
+      			  else if (iside == 0 && izone == 9 && j > 107 && j < 115) _char_matrix_[0][j] = ' ';
+      			  else if (iside == 1 && izone == 9 && j > 107 && j < 115) _char_matrix_[20][j] = ' ';
+      			}
+      		    }
+      		} //end of if izone
 
-	      else if (izone == 5) 
+      	      else if (izone == 5) 
       		{
-      		  if (a_trigger_algo_._calo_records_[vector_position_25ns_].zoning_word[iside][izone] == true)
-		    {
-		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
-			{ 
-			  if      (iside == 0 && j > 60 && j < 70) _char_matrix_[0][j] = '*';
-			  else if (iside == 1 && j > 60 && j < 70) _char_matrix_[20][j] = '*';
-			}
-		    }
-		  else
-		    {
-		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
-			{ 
-			  if      (iside == 0 && j > 60 && j < 70) _char_matrix_[0][j] = ' ';
-			  else if (iside == 1 && j > 60 && j < 70) _char_matrix_[20][j] = ' ';
-			}
-		    }
-		} // end of else if izone == 5
+      		  if (zoning_word_[iside][izone] == true)
+      		    {
+      		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+      			{ 
+      			  if      (iside == 0 && j > 60 && j < 70) _char_matrix_[0][j] = '*';
+      			  else if (iside == 1 && j > 60 && j < 70) _char_matrix_[20][j] = '*';
+      			}
+      		    }
+      		  else
+      		    {
+      		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+      			{ 
+      			  if      (iside == 0 && j > 60 && j < 70) _char_matrix_[0][j] = ' ';
+      			  else if (iside == 1 && j > 60 && j < 70) _char_matrix_[20][j] = ' ';
+      			}
+      		    }
+      		} // end of else if izone == 5
 	      
-	      else
-		{
-		  if (a_trigger_algo_._calo_records_[vector_position_25ns_].zoning_word[iside][izone] == true) 
-		    {
-		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
-			{ 
-			  if      (iside == 0 && izone == 1 && j > 12 && j < 23) _char_matrix_[0][j]   = '*';
-			  else if (iside == 1 && izone == 1 && j > 12 && j < 23) _char_matrix_[20][j]  = '*';
-			  else if (iside == 0 && izone == 2 && j > 24 && j < 35) _char_matrix_[0][j]   = '*';
-			  else if (iside == 1 && izone == 2 && j > 24 && j < 35) _char_matrix_[20][j]  = '*';
-			  else if (iside == 0 && izone == 3 && j > 36 && j < 47) _char_matrix_[0][j]   = '*';
-			  else if (iside == 1 && izone == 3 && j > 36 && j < 47) _char_matrix_[20][j]  = '*';	  
-			  else if (iside == 0 && izone == 4 && j > 48 && j < 59) _char_matrix_[0][j]   = '*';
-			  else if (iside == 1 && izone == 4 && j > 48 && j < 59) _char_matrix_[20][j]  = '*';
-			  else if (iside == 0 && izone == 6 && j > 71 && j < 82) _char_matrix_[0][j]   = '*';
-			  else if (iside == 1 && izone == 6 && j > 71 && j < 82) _char_matrix_[20][j]  = '*'; 
-			  else if (iside == 0 && izone == 7 && j > 83 && j < 94) _char_matrix_[0][j]   = '*';
-			  else if (iside == 1 && izone == 7 && j > 83 && j < 94) _char_matrix_[20][j]  = '*';
-			  else if (iside == 0 && izone == 8 && j > 95 && j < 106) _char_matrix_[0][j]  = '*';
-			  else if (iside == 1 && izone == 8 && j > 95 && j < 106) _char_matrix_[20][j] = '*';		
-			}
-		    }
-		  else 
-		    {
-		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
-			{ 
-			  if      (iside == 0 && izone == 1 && j > 12 && j < 23) _char_matrix_[0][j]   = ' ';
-			  else if (iside == 1 && izone == 1 && j > 12 && j < 23) _char_matrix_[20][j]  = ' ';
-			  else if (iside == 0 && izone == 2 && j > 24 && j < 35) _char_matrix_[0][j]   = ' ';
-			  else if (iside == 1 && izone == 2 && j > 24 && j < 35) _char_matrix_[20][j]  = ' ';
-			  else if (iside == 0 && izone == 3 && j > 36 && j < 47) _char_matrix_[0][j]   = ' ';
-			  else if (iside == 1 && izone == 3 && j > 36 && j < 47) _char_matrix_[20][j]  = ' ';	  
-			  else if (iside == 0 && izone == 4 && j > 48 && j < 59) _char_matrix_[0][j]   = ' ';
-			  else if (iside == 1 && izone == 4 && j > 48 && j < 59) _char_matrix_[20][j]  = ' ';
-			  else if (iside == 0 && izone == 6 && j > 71 && j < 82) _char_matrix_[0][j]   = ' ';
-			  else if (iside == 1 && izone == 6 && j > 71 && j < 82) _char_matrix_[20][j]  = ' '; 
-			  else if (iside == 0 && izone == 7 && j > 83 && j < 94) _char_matrix_[0][j]   = ' ';
-			  else if (iside == 1 && izone == 7 && j > 83 && j < 94) _char_matrix_[20][j]  = ' ';
-			  else if (iside == 0 && izone == 8 && j > 95 && j < 106) _char_matrix_[0][j]  = ' ';
-			  else if (iside == 1 && izone == 8 && j > 95 && j < 106) _char_matrix_[20][j] = ' ';
-			}
-		    }
-		} // end of else izone
-	    } // end of izone
-	} // end of iside
-      
-      display_matrix();
-      std::clog << std::endl << std::endl;
-
+      	      else
+      		{
+      		  if (zoning_word_[iside][izone] == true) 
+      		    {
+      		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+      			{ 
+      			  if      (iside == 0 && izone == 1 && j > 12 && j < 23) _char_matrix_[0][j]   = '*';
+      			  else if (iside == 1 && izone == 1 && j > 12 && j < 23) _char_matrix_[20][j]  = '*';
+      			  else if (iside == 0 && izone == 2 && j > 24 && j < 35) _char_matrix_[0][j]   = '*';
+      			  else if (iside == 1 && izone == 2 && j > 24 && j < 35) _char_matrix_[20][j]  = '*';
+      			  else if (iside == 0 && izone == 3 && j > 36 && j < 47) _char_matrix_[0][j]   = '*';
+      			  else if (iside == 1 && izone == 3 && j > 36 && j < 47) _char_matrix_[20][j]  = '*';	  
+      			  else if (iside == 0 && izone == 4 && j > 48 && j < 59) _char_matrix_[0][j]   = '*';
+      			  else if (iside == 1 && izone == 4 && j > 48 && j < 59) _char_matrix_[20][j]  = '*';
+      			  else if (iside == 0 && izone == 6 && j > 71 && j < 82) _char_matrix_[0][j]   = '*';
+      			  else if (iside == 1 && izone == 6 && j > 71 && j < 82) _char_matrix_[20][j]  = '*'; 
+      			  else if (iside == 0 && izone == 7 && j > 83 && j < 94) _char_matrix_[0][j]   = '*';
+      			  else if (iside == 1 && izone == 7 && j > 83 && j < 94) _char_matrix_[20][j]  = '*';
+      			  else if (iside == 0 && izone == 8 && j > 95 && j < 106) _char_matrix_[0][j]  = '*';
+      			  else if (iside == 1 && izone == 8 && j > 95 && j < 106) _char_matrix_[20][j] = '*';		
+      			}
+      		    }
+      		  else 
+      		    {
+      		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+      			{ 
+      			  if      (iside == 0 && izone == 1 && j > 12 && j < 23) _char_matrix_[0][j]   = ' ';
+      			  else if (iside == 1 && izone == 1 && j > 12 && j < 23) _char_matrix_[20][j]  = ' ';
+      			  else if (iside == 0 && izone == 2 && j > 24 && j < 35) _char_matrix_[0][j]   = ' ';
+      			  else if (iside == 1 && izone == 2 && j > 24 && j < 35) _char_matrix_[20][j]  = ' ';
+      			  else if (iside == 0 && izone == 3 && j > 36 && j < 47) _char_matrix_[0][j]   = ' ';
+      			  else if (iside == 1 && izone == 3 && j > 36 && j < 47) _char_matrix_[20][j]  = ' ';	  
+      			  else if (iside == 0 && izone == 4 && j > 48 && j < 59) _char_matrix_[0][j]   = ' ';
+      			  else if (iside == 1 && izone == 4 && j > 48 && j < 59) _char_matrix_[20][j]  = ' ';
+      			  else if (iside == 0 && izone == 6 && j > 71 && j < 82) _char_matrix_[0][j]   = ' ';
+      			  else if (iside == 1 && izone == 6 && j > 71 && j < 82) _char_matrix_[20][j]  = ' '; 
+      			  else if (iside == 0 && izone == 7 && j > 83 && j < 94) _char_matrix_[0][j]   = ' ';
+      			  else if (iside == 1 && izone == 7 && j > 83 && j < 94) _char_matrix_[20][j]  = ' ';
+      			  else if (iside == 0 && izone == 8 && j > 95 && j < 106) _char_matrix_[0][j]  = ' ';
+      			  else if (iside == 1 && izone == 8 && j > 95 && j < 106) _char_matrix_[20][j] = ' ';
+      			}
+      		    }
+      		} // end of else izone
+      	    } // end of izone
+      	} // end of iside
       return;
     }
-
-    void trigger_display_manager::display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_)
+    
+    void trigger_display_manager::fill_calo_trigger_matrix_1600ns(std::bitset<10> zoning_word_[mapping::NUMBER_OF_SIDES])
     {
-      for (int ipos = 0; ipos < a_trigger_algo_._calo_records_.size(); ipos++)
-	{
-	  display_calo_trigger_25ns(a_trigger_algo_, ipos);
-	}
-      return;	  
-  }
-
-    void trigger_display_manager::display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int vector_position_1600ns_)
-    {
-      DT_THROW_IF(!is_calo_1600ns(), std::logic_error, "Boolean calo 1600ns is not activated, it can't display ! ");
-      std::clog << "***********************************************************************************************************************************" << std::endl;
-      std::clog <<  "******************** Display calorimeter trigger info @ 1600 ns ********************" << std::endl;
-      std::clog << "******************** Clocktick 1600 ns = " <<  a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].clocktick_1600ns  << " ******************** " << std::endl; 
-      std::clog << "CT |XTS|L|HG|L|L|H1|H0| ZONING S1| ZONING S0 " << std::endl; 
-      std::clog << a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].clocktick_1600ns << ' ';
-      std::clog << a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].xt_info_bitset << ' ';
-      std::clog << a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].LTO_gveto << ' ';
-      std::clog << a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].total_multiplicity_gveto << ' ';
-      std::clog << a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].LTO_side_1 << ' ';
-      std::clog << a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].LTO_side_0 << ' ';
-      std::clog << a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].total_multiplicity_side_1 << ' ';
-      std::clog << a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].total_multiplicity_side_0 << ' ';
-      for (int iside = mapping::NUMBER_OF_SIDES-1; iside >= 0; iside--)
-      	{
-      	  for (int izone = mapping::NUMBER_OF_TRIGGER_ZONES-1; izone >= 0 ; izone--)
-      	    {
-      	      std::clog << a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].zoning_word[iside][izone];
-      	    }
-      	  std::clog << ' ';
-      	}      
-      std::clog << std::endl;
-      std::clog << "Single Side coinc : " << a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].single_side_coinc 
-		<< "  |  Threshold total mult : "   << a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].total_multiplicity_threshold 
-		<< "  |  Trigger final decision : " << a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].calo_finale_decision  << std::endl;
-      
-      std::clog << std::endl;
-     
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
        	{  
      	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
       	    {
       	      if (izone == 0 || izone == 9) 
       		{
-      		  if (a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].zoning_word[iside][izone] == true)
+      		  if (zoning_word_[iside][izone] == true)
 		    {
 		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
 			{ 
@@ -331,7 +264,7 @@ namespace snemo {
 
 	      else if (izone == 5) 
       		{
-      		  if (a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].zoning_word[iside][izone] == true)
+      		  if (zoning_word_[iside][izone] == true)
 		    {
 		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
 			{ 
@@ -351,7 +284,7 @@ namespace snemo {
 	      
 	      else
 		{
-		  if (a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_position_1600ns_].zoning_word[iside][izone] == true) 
+		  if (zoning_word_[iside][izone] == true) 
 		    {
 		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
 			{ 
@@ -395,88 +328,338 @@ namespace snemo {
 		} // end of else izone
 	    } // end of izone
 	} // end of iside
+       
+      return;
+    }
+    
+    
+    void trigger_display_manager::fill_tracker_trigger_matrix_1600ns(bool geiger_matrix_[mapping::NUMBER_OF_SIDES][mapping::GEIGER_LAYERS_SIZE][mapping::GEIGER_ROWS_SIZE])
+    {
+      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+      	{
+      	  int layer = 0;
+      	  for (int jlayer = mapping::GEIGER_LAYERS_SIZE - 1; jlayer >= 0; jlayer--) // Value GEIGER_LAYER_SIZE = 9
+      	    {
+      	      for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
+      		{
+      		  if (geiger_matrix_[iside][jlayer][krow] 
+      		      && iside == 0)
+      		    {
+      		      _char_matrix_[layer+1][krow+3] = '*';
+      		    }
+      		  else if (geiger_matrix_[iside][jlayer][krow] 
+      			   && iside == 1) 
+      		    {
+      		      _char_matrix_[jlayer+11][krow+3] = '*';
+      		    }
+      		} // end of krow
+      	      layer++;
+      	    } // end of jlayer	
+      	} // end of iside 
+      return;
+    }
+    
+    void trigger_display_manager::display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_25ns_)
+    {
+      DT_THROW_IF(!is_calo_25ns(), std::logic_error, "Boolean calo 25ns is not activated, it can't display ! ");
       
-      // display_matrix();
+      calo_trigger_algorithm::calo_summary_record a_calo_summary_record;
+      for (int i = 0; i < a_trigger_algo_._calo_records_.size(); i++)
+	{
+	  if (clocktick_25ns_ == a_trigger_algo_._calo_records_[i].clocktick_25ns) a_calo_summary_record = a_trigger_algo_._calo_records_[i];
+	}
+
+      std::clog << "************************************************************************************" << std::endl;
+      std::clog << "********************* Display Calorimeter trigger info @ 25 ns *********************" << std::endl;
+      std::clog << "********************* Clocktick 25 ns = " <<  a_calo_summary_record.clocktick_25ns << " ********************* " << std::endl << std::endl; 
+      std::clog << "CT |XTS|L|HG|L|L|H1|H0| ZONING S1| ZONING S0 " << std::endl; 
+      std::clog << a_calo_summary_record.clocktick_25ns << ' ';
+      std::clog << a_calo_summary_record.xt_info_bitset << ' ';
+      std::clog << a_calo_summary_record.LTO_gveto << ' ';
+      std::clog << a_calo_summary_record.total_multiplicity_gveto << ' ';
+      std::clog << a_calo_summary_record.LTO_side_1 << ' ';
+      std::clog << a_calo_summary_record.LTO_side_0 << ' ';
+      std::clog << a_calo_summary_record.total_multiplicity_side_1 << ' ';
+      std::clog << a_calo_summary_record.total_multiplicity_side_0 << ' ';
+      for (int iside = mapping::NUMBER_OF_SIDES-1; iside >= 0; iside--)
+      	{
+      	  for (int izone = mapping::NUMBER_OF_TRIGGER_ZONES-1; izone >= 0 ; izone--)
+      	    {
+      	      std::clog << a_calo_summary_record.zoning_word[iside][izone];
+      	    }
+      	  std::clog << ' ';
+      	}      
+      std::clog << std::endl;
+      std::clog << "Single Side coinc : " << a_calo_summary_record.single_side_coinc 
+      		<< "  |  Threshold total mult : "   << a_calo_summary_record.total_multiplicity_threshold 
+      		<< "  |  Trigger final decision : " << a_calo_summary_record.calo_finale_decision  << std::endl;
+      
+      std::clog << std::endl;
+      
+      std::bitset<10> zoning_word[mapping::NUMBER_OF_SIDES];
+      for (int i = 0; i < mapping::NUMBER_OF_SIDES; i++)
+	{
+	  zoning_word[i] = a_calo_summary_record.zoning_word[i];
+	}
+      fill_calo_trigger_matrix_25ns(zoning_word);
+      display_matrix();
+      std::clog << std::endl << std::endl;
+
+      return;
+    }
+
+    void trigger_display_manager::display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_)
+    {
+      int vector_size = a_trigger_algo_._calo_records_.size();
+      if (vector_size == 0) {}
+      else{
+	uint32_t clocktick_25ns_begin = a_trigger_algo_._calo_records_[0].clocktick_25ns;
+	uint32_t clocktick_25ns_end = a_trigger_algo_._calo_records_[vector_size - 1].clocktick_25ns;
+      
+	for (uint32_t iclocktick = clocktick_25ns_begin; iclocktick <= clocktick_25ns_end; iclocktick++)
+	  {
+	    reset_calo_display();	  
+	    display_calo_trigger_25ns(a_trigger_algo_, iclocktick);
+	  }
+      }
+      return;	  
+    }
+
+    void trigger_display_manager::display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_1600ns_)
+    {
+      DT_THROW_IF(!is_calo_1600ns(), std::logic_error, "Boolean calo 1600ns is not activated, it can't display ! ");
+
+      coincidence_trigger_algorithm::coincidence_calo_record a_coinc_calo_record;
+      for (int i = 0; i < a_trigger_algo_._coinc_algo_._coincidence_calo_records_.size(); i++)
+	{
+	  if (clocktick_1600ns_ == a_trigger_algo_._coinc_algo_._coincidence_calo_records_[i].clocktick_1600ns) a_coinc_calo_record = a_trigger_algo_._coinc_algo_._coincidence_calo_records_[i];
+	}
+      
+      std::clog << "************************************************************************************" << std::endl;
+      std::clog << "******************** Display Calorimeter trigger info @ 1600 ns ********************" << std::endl;
+      std::clog << "******************** Clocktick 1600 ns = " << clocktick_1600ns_ << " ******************** " << std::endl << std::endl; 
+      std::clog << "CT |XTS|L|HG|L|L|H1|H0| ZONING S1| ZONING S0 " << std::endl; 
+      std::clog << a_coinc_calo_record.clocktick_1600ns << ' ';
+      std::clog << a_coinc_calo_record.xt_info_bitset << ' ';
+      std::clog << a_coinc_calo_record.LTO_gveto << ' ';
+      std::clog << a_coinc_calo_record.total_multiplicity_gveto << ' ';
+      std::clog << a_coinc_calo_record.LTO_side_1 << ' ';
+      std::clog << a_coinc_calo_record.LTO_side_0 << ' ';
+      std::clog << a_coinc_calo_record.total_multiplicity_side_1 << ' ';
+      std::clog << a_coinc_calo_record.total_multiplicity_side_0 << ' ';
+      for (int iside = mapping::NUMBER_OF_SIDES-1; iside >= 0; iside--)
+      	{
+      	  for (int izone = mapping::NUMBER_OF_TRIGGER_ZONES-1; izone >= 0 ; izone--)
+      	    {
+      	      std::clog << a_coinc_calo_record.zoning_word[iside][izone];
+      	    }
+      	  std::clog << ' ';
+      	}      
+      std::clog << std::endl;
+      std::clog << "Single Side coinc : " << a_coinc_calo_record.single_side_coinc 
+		<< "  |  Threshold total mult : "   << a_coinc_calo_record.total_multiplicity_threshold 
+		<< "  |  Trigger final decision : " << a_coinc_calo_record.calo_finale_decision  << std::endl;
+      
+      std::clog << std::endl;
+
+      std::bitset<10> zoning_word[mapping::NUMBER_OF_SIDES];
+      for (int i = 0; i < mapping::NUMBER_OF_SIDES; i++)
+	{
+	  zoning_word[i] = a_coinc_calo_record.zoning_word[i];
+	}
+      fill_calo_trigger_matrix_1600ns(zoning_word);
+      display_matrix();
       std::clog << std::endl;
       return;
     }
 
     void trigger_display_manager::display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_)
     {
-      for (int ipos = 0; ipos < a_trigger_algo_._coinc_algo_._coincidence_calo_records_.size(); ipos++)
-	{
-	  display_calo_trigger_1600ns(a_trigger_algo_, ipos);
-	} 
+      int vector_size = a_trigger_algo_._coinc_algo_._coincidence_calo_records_.size();
+      if (vector_size == 0) {}
+      else{
+
+	uint32_t clocktick_1600ns_begin = a_trigger_algo_._coinc_algo_._coincidence_calo_records_[0].clocktick_1600ns;
+	uint32_t clocktick_1600ns_end = a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_size - 1].clocktick_1600ns;
+
+	for (uint32_t iclocktick = clocktick_1600ns_begin; iclocktick <= clocktick_1600ns_end; iclocktick++)
+	  {	 
+	    display_calo_trigger_1600ns(a_trigger_algo_, iclocktick); 
+	    reset_calo_display();
+	  } 
+      }
       return;
     }
 			
-    void trigger_display_manager::display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int vector_position_1600ns_)
+    void trigger_display_manager::display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_1600ns_)
     {
       DT_THROW_IF(!is_tracker_1600ns(), std::logic_error, "Boolean tracker 1600ns is not activated, it can't display ! ");
-      
-      std::clog << "Tracker Trigger info record : " << std::endl; 
-      std::clog << "Clocktick 1600    : " << a_trigger_algo_._tracker_records_[vector_position_1600ns_].clocktick_1600ns << std::endl;
+
+      tracker_trigger_algorithm::tracker_record a_tracker_record;
+      tracker_trigger_algorithm::geiger_matrix  a_geiger_matrix;
+      for (int i = 0; i < a_trigger_algo_._tracker_records_.size(); i++)
+	{
+	  if (clocktick_1600ns_ == a_trigger_algo_._tracker_records_[i].clocktick_1600ns
+	      && clocktick_1600ns_ == a_trigger_algo_._tracker_algo_._geiger_matrix_records_[i].clocktick_1600ns)
+	    {
+	      a_tracker_record = a_trigger_algo_._tracker_records_[i];
+	      a_geiger_matrix  = a_trigger_algo_._tracker_algo_._geiger_matrix_records_[i];
+	    } 
+	}
+      std::clog << "********************************************************************************" << std::endl;
+      std::clog << "******************** Display Tracker trigger info @ 1600 ns ********************" << std::endl;
+      std::clog << "******************** Clocktick 1600 ns = " << clocktick_1600ns_ << " ******************** " << std::endl << std::endl; 
       std::clog << "         | VOID = 00 | SHORT TRACK = 11 | LONG TRACK = 01" << std::endl;
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
-	{
-	  std::clog << "Side = " << iside << " | ";
-	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
-	    {
-	      std::clog << "[" << a_trigger_algo_._tracker_records_[vector_position_1600ns_].final_tracker_trigger_info[iside][izone] << "] ";
-	    } // end of izone
-	  std::clog << std::endl;
-	}
-      std::clog << "Level one decision : [" << a_trigger_algo_._tracker_records_[vector_position_1600ns_].level_one_finale_decision << "]" <<  std::endl << std::endl;
+      	{
+      	  std::clog << "Side = " << iside << " | ";
+      	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
+      	    {
+      	      std::clog << "[" << a_tracker_record.final_tracker_trigger_info[iside][izone] << "] ";
+      	    } // end of izone
+      	  std::clog << std::endl;
+      	}
+      std::clog << "Tracker level one decision : [" << a_tracker_record.level_one_finale_decision << "]" <<  std::endl << std::endl;
 
+      bool geiger_matrix[mapping::NUMBER_OF_SIDES][mapping::GEIGER_LAYERS_SIZE][mapping::GEIGER_ROWS_SIZE];
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
-	{
-	  int layer = 0;
-	  for (int jlayer = mapping::GEIGER_LAYERS_SIZE - 1; jlayer >= 0; jlayer--) // Value GEIGER_LAYER_SIZE = 9
-	    {
-	      for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
-		{
-		  if (a_trigger_algo_._tracker_algo_._geiger_matrix_records_[vector_position_1600ns_].matrix[iside][jlayer][krow] 
-		      && iside == 0)
-		    {
-		      _char_matrix_[layer+1][krow+3] = '*';
-		    }
-		  else if (a_trigger_algo_._tracker_algo_._geiger_matrix_records_[vector_position_1600ns_].matrix[iside][jlayer][krow] 
-			   && iside == 1) 
-		    {
-		      _char_matrix_[jlayer+11][krow+3] = '*';
-		    }
+      	{
+      	  for (int jlayer = mapping::GEIGER_LAYERS_SIZE - 1; jlayer >= 0; jlayer--)
+      	    {
+      	      for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
+      		{
+		  geiger_matrix[iside][jlayer][krow] = a_geiger_matrix.matrix[iside][jlayer][krow];
 		} // end of krow
-	      layer++;
 	    } // end of jlayer	
 	} // end of iside 
-      
+      fill_tracker_trigger_matrix_1600ns(geiger_matrix);      
       display_matrix();
-
       return;
     }
-
+    
     void trigger_display_manager::display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_)
     {
-      for (int ipos = 0; ipos < a_trigger_algo_._tracker_records_.size(); ipos++)
-	{
-	  display_tracker_trigger_1600ns(a_trigger_algo_, ipos);
-	} 
+      int vector_size = a_trigger_algo_._tracker_records_.size();
+      if (vector_size == 0) {}
+      else{
+	uint32_t clocktick_1600ns_begin = a_trigger_algo_._tracker_records_[0].clocktick_1600ns;
+	uint32_t clocktick_1600ns_end = a_trigger_algo_._tracker_records_[vector_size - 1].clocktick_1600ns;
+
+	for (uint32_t iclocktick = clocktick_1600ns_begin; iclocktick <= clocktick_1600ns_end; iclocktick++)
+	  {
+	    display_tracker_trigger_1600ns(a_trigger_algo_, iclocktick);
+	    reset_tracker_display();
+	  }
+      }
+
       return;
     }
 
   			
-    void trigger_display_manager::display_coincidence_trigger_1600ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_1600ns)
+    void trigger_display_manager::display_coincidence_trigger_1600ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_1600ns_)
     {
       DT_THROW_IF(!is_coinc_1600ns(), std::logic_error, "Boolean coinc 1600ns is not activated, it can't display ! ");
+      
+      coincidence_trigger_algorithm::coincidence_calo_record a_coinc_calo_record;
+      for (int i = 0; i < a_trigger_algo_._coinc_algo_._coincidence_calo_records_.size(); i++)
+	{
+	  if (clocktick_1600ns_ == a_trigger_algo_._coinc_algo_._coincidence_calo_records_[i].clocktick_1600ns) a_coinc_calo_record = a_trigger_algo_._coinc_algo_._coincidence_calo_records_[i];
+	}
+      
+      tracker_trigger_algorithm::tracker_record a_tracker_record;
+      tracker_trigger_algorithm::geiger_matrix  a_geiger_matrix;
+      for (int i = 0; i < a_trigger_algo_._tracker_records_.size(); i++)
+	{
+	  if (clocktick_1600ns_ == a_trigger_algo_._tracker_records_[i].clocktick_1600ns
+	      && clocktick_1600ns_ == a_trigger_algo_._tracker_algo_._geiger_matrix_records_[i].clocktick_1600ns)
+	    {
+	      a_tracker_record = a_trigger_algo_._tracker_records_[i];
+	      a_geiger_matrix  = a_trigger_algo_._tracker_algo_._geiger_matrix_records_[i];
+	    } 
+	}
+      
+      std::clog << "************************************************************************************" << std::endl;
+      std::clog << "******************** Display Coincidence trigger info @ 1600 ns ********************" << std::endl;
+      std::clog << "******************** Clocktick 1600 ns = " <<  clocktick_1600ns_  << " ******************** " << std::endl << std::endl; 
+      std::clog << "CT |XTS|L|HG|L|L|H1|H0| ZONING S1| ZONING S0 " << std::endl; 
+      std::clog << a_coinc_calo_record.clocktick_1600ns << ' ';
+      std::clog << a_coinc_calo_record.xt_info_bitset << ' ';
+      std::clog << a_coinc_calo_record.LTO_gveto << ' ';
+      std::clog << a_coinc_calo_record.total_multiplicity_gveto << ' ';
+      std::clog << a_coinc_calo_record.LTO_side_1 << ' ';
+      std::clog << a_coinc_calo_record.LTO_side_0 << ' ';
+      std::clog << a_coinc_calo_record.total_multiplicity_side_1 << ' ';
+      std::clog << a_coinc_calo_record.total_multiplicity_side_0 << ' ';
+      for (int iside = mapping::NUMBER_OF_SIDES-1; iside >= 0; iside--)
+      	{
+      	  for (int izone = mapping::NUMBER_OF_TRIGGER_ZONES-1; izone >= 0 ; izone--)
+      	    {
+      	      std::clog << a_coinc_calo_record.zoning_word[iside][izone];
+      	    }
+      	  std::clog << ' ';
+      	}      
+      std::clog << std::endl;
+      std::clog << "Single Side coinc : " << a_coinc_calo_record.single_side_coinc 
+		<< "  |  Threshold total mult : "   << a_coinc_calo_record.total_multiplicity_threshold 
+		<< "  |  Trigger final decision : " << a_coinc_calo_record.calo_finale_decision  << std::endl;
+      
+      std::clog << std::endl;
+      std::clog << "         | VOID = 00 | SHORT TRACK = 11 | LONG TRACK = 01" << std::endl;
+      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+      	{
+      	  std::clog << "Side = " << iside << " | ";
+      	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
+      	    {
+      	      std::clog << "[" << a_tracker_record.final_tracker_trigger_info[iside][izone] << "] ";
+      	    } // end of izone
+      	  std::clog << std::endl;
+      	}
+      std::clog << "Tracker level one decision : [" << a_tracker_record.level_one_finale_decision << "]" <<  std::endl << std::endl;
+      
+      
+      std::bitset<10> zoning_word[mapping::NUMBER_OF_SIDES];
+      for (int i = 0; i < mapping::NUMBER_OF_SIDES; i++)
+	{
+	  zoning_word[i] = a_coinc_calo_record.zoning_word[i];
+	}
+      
+      bool geiger_matrix[mapping::NUMBER_OF_SIDES][mapping::GEIGER_LAYERS_SIZE][mapping::GEIGER_ROWS_SIZE];
+      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+      	{
+      	  for (int jlayer = mapping::GEIGER_LAYERS_SIZE - 1; jlayer >= 0; jlayer--)
+      	    {
+      	      for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
+      		{
+		  geiger_matrix[iside][jlayer][krow] = a_geiger_matrix.matrix[iside][jlayer][krow];
+		} // end of krow
+	    } // end of jlayer	
+	} // end of iside 
+
+      fill_calo_trigger_matrix_1600ns(zoning_word);
+      fill_tracker_trigger_matrix_1600ns(geiger_matrix);      
+      display_matrix();
+      
       return;
     }
     
     void trigger_display_manager::display_coincidence_trigger_1600ns(trigger_algorithm & a_trigger_algo_)
     {
+      int vector_size = a_trigger_algo_._coincidence_records_.size();
+      if (vector_size == 0) {}
+      else{
+	uint32_t clocktick_1600ns_begin = a_trigger_algo_._coincidence_records_[0].clocktick_1600ns;
+	uint32_t clocktick_1600ns_end   = a_trigger_algo_._coincidence_records_[vector_size - 1].clocktick_1600ns;
       
+	for (uint32_t iclocktick = clocktick_1600ns_begin; iclocktick <= clocktick_1600ns_end; iclocktick++)
+	  {
+	    display_coincidence_trigger_1600ns(a_trigger_algo_, iclocktick);
+	  }
+      }
+
       return;
     }
-    void trigger_display_manager::display_decision_trigger() const			
+
+    void trigger_display_manager::display_decision_trigger()			
     {
       DT_THROW_IF(!is_decision_trigger(), std::logic_error, "Boolean decision trigger is not activated, it can't display ! ");
       return;
@@ -519,11 +702,49 @@ namespace snemo {
 	    }
 	}
       return;
-    }    
+    }
 
     void trigger_display_manager::reset_matrix_pattern()
     {
       fill_matrix_pattern();
+      return;
+    }
+    
+    void trigger_display_manager::reset_calo_display()
+    {
+      for (int i = 0; i < NUMBER_OF_VERTICAL_CHAR; i++)
+	{
+	  for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+	    { 
+	      if (i == 0 || i == 20) 
+		{
+		  if (j == 0 || j == 1) _char_matrix_[i][j] = ' ';
+		  else if (j == 2 || j == 116) _char_matrix_[i][j] = '|';
+		  else if (j == 3 || j == 12 || j == 24 || j == 36 || j == 48 || j == 60 || j == 71 || j == 83 || j == 95 || j == 107) _char_matrix_[i][j] = '[';
+		  else if (j == 11 || j == 23 || j == 35 || j == 47 || j == 59 || j == 70 || j == 82 || j == 94 || j == 106 || j == 115) _char_matrix_[i][j] = ']';
+		  else _char_matrix_[i][j] = ' ';
+		}
+
+	      else 
+		{
+		  if (j == 0 || j == 1) _char_matrix_[i][j] = ' ';
+		  else if (j == 2 || j == 116) _char_matrix_[i][j] = '|';
+		}
+	    }
+	}
+      return;
+    }    
+    
+    void trigger_display_manager::reset_tracker_display()
+    {
+      for (int i = 1; i < NUMBER_OF_VERTICAL_CHAR - 1; i++)
+	{
+	  for (int j = 3; j < NUMBER_OF_HORIZONTAL_CHAR - 1; j++)
+	    {
+	      if (i == 10) {}
+	      else _char_matrix_[i][j] = '.';
+	    }
+	}
       return;
     }
     
