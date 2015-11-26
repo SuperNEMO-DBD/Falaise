@@ -27,7 +27,7 @@ namespace snemo {
         
     void calo_trigger_algorithm::calo_record::reset()
     {
-      clocktick_25ns = 0;
+      clocktick_25ns = -1;
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 	{
 	  zoning_word[iside].reset();
@@ -246,15 +246,8 @@ namespace snemo {
       _circular_buffer_depth_ = 0;
       _calo_level_1_finale_decision_.reset();
       _calo_finale_decision_ = false;
-      reset_calo_info();
-      _gate_circular_buffer_.reset();
-      return;
-    }
-    
-    void calo_trigger_algorithm::reset_calo_info()
-    {
       _calo_record_per_clocktick_.reset();
-      _calo_level_1_finale_decision_.reset();
+      _gate_circular_buffer_.reset();
       return;
     }
 
@@ -393,7 +386,6 @@ namespace snemo {
 	  unsigned int multiplicity_side_1 = my_calo_ctw_.get_htm_xwall_side_1_info();
  
 	  // Fill total HTM :
-	  
 	  // -- Fill xwall side 0 multipliciy
 	  if (multiplicity_side_0 != 0)
 	    {
@@ -403,7 +395,9 @@ namespace snemo {
 	  // -- Fill xwall side 1 multiplicity
 	  if (multiplicity_side_1 != 0)
 	    {
+	      std::clog << "Side 1 : mult before = " << _calo_record_per_clocktick_.total_multiplicity_side_1 << std::endl;
 	      _calo_record_per_clocktick_.total_multiplicity_side_1 = _calo_record_per_clocktick_.total_multiplicity_side_1.to_ulong() + multiplicity_side_1;
+	      std::clog << "Side 1 : mult after = " << _calo_record_per_clocktick_.total_multiplicity_side_1 << std::endl;
 	    }
 	  
 	  // -- Fill gamma veto multiplicity
@@ -494,17 +488,39 @@ namespace snemo {
     
     void calo_trigger_algorithm::_build_calo_record_summary_structure(calo_summary_record & my_calo_summary_record_)
     {
+      unsigned int multiplicity_last_clocktick_side_0 = 0;
+      unsigned int multiplicity_last_clocktick_side_1 = 0;
+      unsigned int multiplicity_last_clocktick_gveto  = 0;
+
       for (boost::circular_buffer<calo_record>::iterator it =_gate_circular_buffer_->begin() ; it != _gate_circular_buffer_->end(); it++)
-      	{
-      	  const calo_record & ctrec = *it; 
+	{
+	  multiplicity_last_clocktick_side_0 = my_calo_summary_record_.total_multiplicity_side_0.to_ulong();
+	  multiplicity_last_clocktick_side_1 = my_calo_summary_record_.total_multiplicity_side_1.to_ulong();
+	  multiplicity_last_clocktick_gveto  = my_calo_summary_record_.total_multiplicity_gveto.to_ulong();
+	}
+      std::clog << "Last CT S0 : " << multiplicity_last_clocktick_side_0 << std::endl;
+      std::clog << "Last CT S1 : " << multiplicity_last_clocktick_side_1 << std::endl;
+      std::clog << "Last CT GV : " << multiplicity_last_clocktick_gveto << std::endl;
+      
 
+      for (boost::circular_buffer<calo_record>::iterator it =_gate_circular_buffer_->begin() ; it != _gate_circular_buffer_->end(); it++)
+	{
+	  calo_record & ctrec = *it;
 	  // Total mult side 0 :
-
-      	  if (my_calo_summary_record_.total_multiplicity_side_0 != 0)
+	  std::clog << "CT ctrec : " << ctrec.clocktick_25ns << std::endl;
+      	  if (multiplicity_last_clocktick_side_0 != 0)
       	    {
-      	      if (my_calo_summary_record_.total_multiplicity_side_0 == 3) my_calo_summary_record_.total_multiplicity_side_0 = 3;
-      	      else my_calo_summary_record_.total_multiplicity_side_0 = my_calo_summary_record_.total_multiplicity_side_0.to_ulong() + ctrec.total_multiplicity_side_0.to_ulong();
-      	    }
+      	      if (multiplicity_last_clocktick_side_0 == 3) my_calo_summary_record_.total_multiplicity_side_0 = 3;
+      	      else if (ctrec.total_multiplicity_side_0 != 0
+		       && ctrec.clocktick_25ns == my_calo_summary_record_.clocktick_25ns - 1)
+		{
+		  std::clog << "Before computing : calo summary record tot mult side 0 = " << my_calo_summary_record_.total_multiplicity_side_0 << std::endl; 
+		  std::clog << "Before computing : ct rec tot mult side 0 = " << ctrec.total_multiplicity_side_0 << std::endl;
+		  my_calo_summary_record_.total_multiplicity_side_0 = multiplicity_last_clocktick_side_0 + ctrec.total_multiplicity_side_0.to_ulong();
+		  std::clog << "After computing : calo summary record tot mult side 0 = " << my_calo_summary_record_.total_multiplicity_side_0 << std::endl;
+		}
+	      else {}
+	    }
       	  else
       	    {
       	      my_calo_summary_record_.total_multiplicity_side_0 = ctrec.total_multiplicity_side_0;
@@ -512,10 +528,10 @@ namespace snemo {
 
 	  // Total mult side 1 :
 
-      	  if (my_calo_summary_record_.total_multiplicity_side_1 != 0)
+      	  if (multiplicity_last_clocktick_side_1 != 0)
       	    {
-      	      if (my_calo_summary_record_.total_multiplicity_side_1 == 3) my_calo_summary_record_.total_multiplicity_side_1 = 3;
-      	      else my_calo_summary_record_.total_multiplicity_side_1 = my_calo_summary_record_.total_multiplicity_side_1.to_ulong() + ctrec.total_multiplicity_side_1.to_ulong();
+      	      if (multiplicity_last_clocktick_side_1 == 3) my_calo_summary_record_.total_multiplicity_side_1 = 3;
+      	      else my_calo_summary_record_.total_multiplicity_side_1 = multiplicity_last_clocktick_side_1 + ctrec.total_multiplicity_side_1.to_ulong();
       	    }
       	  else
       	    {
@@ -523,9 +539,9 @@ namespace snemo {
       	    }
 	  
 	  // Total mult gveto :
-	  if (my_calo_summary_record_.total_multiplicity_gveto != 0)
+	  if (multiplicity_last_clocktick_gveto != 0)
 	    {
-	      my_calo_summary_record_.total_multiplicity_gveto = my_calo_summary_record_.total_multiplicity_gveto.to_ulong() + ctrec.total_multiplicity_gveto.to_ulong();
+	      my_calo_summary_record_.total_multiplicity_gveto = multiplicity_last_clocktick_gveto + ctrec.total_multiplicity_gveto.to_ulong();
 	    }
 	  else
 	    {
@@ -571,6 +587,7 @@ namespace snemo {
       	}
       else
 	{
+	  _calo_level_1_finale_decision_.reset();
 	  _calo_level_1_finale_decision_.clocktick_25ns = my_calo_summary_record_.clocktick_25ns;
 	}
 
@@ -588,9 +605,11 @@ namespace snemo {
     void calo_trigger_algorithm::_process(const calo_ctw_data & calo_ctw_data_,
 					  std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_)
     { 
-      reset_calo_info();
+      _calo_record_per_clocktick_.reset();
+      _calo_level_1_finale_decision_.reset();
       _gate_circular_buffer_.reset(new buffer_type(_circular_buffer_depth_));
-
+     
+      calo_summary_record my_calo_summary_record;
       for(int32_t iclocktick = calo_ctw_data_.get_clocktick_min(); iclocktick <= calo_ctw_data_.get_clocktick_max() + _circular_buffer_depth_ - 1 ; iclocktick++)
 	{
 	  std::vector<datatools::handle<calo_ctw> > ctw_list_per_clocktick;
@@ -601,17 +620,13 @@ namespace snemo {
 	      _build_calo_record_per_clocktick(ctw_list_per_clocktick[isize].get());
 	    } // end of isize
 	  _gate_circular_buffer_->push_back(_calo_record_per_clocktick_);
-	  // std::clog <<"*************************** Clocktick 25 = " << iclocktick << "***************************" << std::endl << std::endl;
-	  
-	  calo_summary_record my_calo_summary_record;
 	  my_calo_summary_record.clocktick_25ns = iclocktick;
 	  _build_calo_record_summary_structure(my_calo_summary_record);
 	  _compute_calo_finale_decision(my_calo_summary_record);
 	  if (_calo_level_1_finale_decision_.calo_finale_decision) _calo_finale_decision_ = true;
 	  calo_records_.push_back(_calo_level_1_finale_decision_);
-	  // std::clog << "Size of calo records : " << calo_records_.size() << std::endl;
-	  // _display_calo_summary(_calo_level_1_finale_decision_); 
-	  reset_calo_info();
+	  _display_calo_summary(_calo_level_1_finale_decision_); 
+	  _calo_record_per_clocktick_.reset();
 	} // end of iclocktick
       return;
     }

@@ -157,14 +157,14 @@ namespace snemo {
 	}
       
       if (geiger_ctw_data_.has_geiger_ctw())
-	{
-	  _process_tracker_algo(geiger_ctw_data_);
-	}
+      	{
+      	  _process_tracker_algo(geiger_ctw_data_);
+      	}
       
       if (is_activated_coincidence())
 	{
 	  _process_coinc_algo();
-	}
+	}      
       bool calo_decision = _calo_algo_.get_calo_decision();
       bool tracker_decision = _tracker_algo_.get_tracker_decision();
       bool coincidence_decision = _coinc_algo_.get_coincidence_decision();

@@ -506,34 +506,39 @@ namespace snemo {
 	      a_geiger_matrix  = a_trigger_algo_._tracker_algo_._geiger_matrix_records_[i];
 	    } 
 	}
-      std::clog << "********************************************************************************" << std::endl;
-      std::clog << "******************** Display Tracker trigger info @ 1600 ns ********************" << std::endl;
-      std::clog << "******************** Clocktick 1600 ns = " << clocktick_1600ns_ << " ******************** " << std::endl << std::endl; 
-      std::clog << "         | VOID = 00 | SHORT TRACK = 11 | LONG TRACK = 01" << std::endl;
-      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
-      	{
-      	  std::clog << "Side = " << iside << " | ";
-      	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
-      	    {
-      	      std::clog << "[" << a_tracker_record.final_tracker_trigger_info[iside][izone] << "] ";
-      	    } // end of izone
-      	  std::clog << std::endl;
-      	}
-      std::clog << "Tracker level one decision : [" << a_tracker_record.level_one_finale_decision << "]" <<  std::endl << std::endl;
+      // check if matrix is not empty
+      if (a_geiger_matrix.is_empty()) {}
+      else
+	{
+	  std::clog << "********************************************************************************" << std::endl;
+	  std::clog << "******************** Display Tracker trigger info @ 1600 ns ********************" << std::endl;
+	  std::clog << "******************** Clocktick 1600 ns = " << clocktick_1600ns_ << " ******************** " << std::endl << std::endl; 
+	  std::clog << "         | VOID = 00 | SHORT TRACK = 11 | LONG TRACK = 01" << std::endl;
+	  for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+	    {
+	      std::clog << "Side = " << iside << " | ";
+	      for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
+		{
+		  std::clog << "[" << a_tracker_record.final_tracker_trigger_info[iside][izone] << "] ";
+		} // end of izone
+	      std::clog << std::endl;
+	    }
+	  std::clog << "Tracker level one decision : [" << a_tracker_record.level_one_finale_decision << "]" <<  std::endl << std::endl;
 
-      bool geiger_matrix[mapping::NUMBER_OF_SIDES][mapping::GEIGER_LAYERS_SIZE][mapping::GEIGER_ROWS_SIZE];
-      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
-      	{
-      	  for (int jlayer = mapping::GEIGER_LAYERS_SIZE - 1; jlayer >= 0; jlayer--)
-      	    {
-      	      for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
-      		{
-		  geiger_matrix[iside][jlayer][krow] = a_geiger_matrix.matrix[iside][jlayer][krow];
-		} // end of krow
-	    } // end of jlayer	
-	} // end of iside 
-      fill_tracker_trigger_matrix_1600ns(geiger_matrix);      
-      display_matrix();
+	  bool geiger_matrix[mapping::NUMBER_OF_SIDES][mapping::GEIGER_LAYERS_SIZE][mapping::GEIGER_ROWS_SIZE];
+	  for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+	    {
+	      for (int jlayer = mapping::GEIGER_LAYERS_SIZE - 1; jlayer >= 0; jlayer--)
+		{
+		  for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
+		    {
+		      geiger_matrix[iside][jlayer][krow] = a_geiger_matrix.matrix[iside][jlayer][krow];
+		    } // end of krow
+		} // end of jlayer	
+	    } // end of iside 
+	  fill_tracker_trigger_matrix_1600ns(geiger_matrix);
+	  display_matrix();
+	}
       return;
     }
     

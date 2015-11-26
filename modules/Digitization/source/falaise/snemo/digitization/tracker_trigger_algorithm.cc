@@ -83,6 +83,22 @@ namespace snemo {
       clocktick_1600ns = -1;
     }
     
+    bool tracker_trigger_algorithm::geiger_matrix::is_empty()
+    {
+      bool empty = true;
+      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+	{
+	  for (int jlayer = 0; jlayer < mapping::GEIGER_LAYERS_SIZE; jlayer++)
+	    {
+	      for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
+		{	
+		  if(matrix[iside][jlayer][krow] == true) empty = false;
+		} // end of krow
+	    } // end of jlayer
+	} // end of iside
+      return empty;
+    }
+    
     tracker_trigger_algorithm::tracker_trigger_algorithm()
     {
       _initialized_ = false;
@@ -869,11 +885,17 @@ namespace snemo {
 	{
 	  std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick;
 	  geiger_ctw_data_.get_list_of_geiger_ctw_per_clocktick(iclocktick_800, geiger_ctw_list_per_clocktick);
-	  _process_for_a_clocktick(geiger_ctw_list_per_clocktick);
-	  _tracker_level_1_finale_decision_.clocktick_1600ns = iclocktick_800 / 2;
-
-	  if (_tracker_level_1_finale_decision_.level_one_finale_decision != 0) _tracker_finale_decision_ = true;
-	  tracker_records_.push_back(_tracker_level_1_finale_decision_);
+	  if (geiger_ctw_list_per_clocktick.size() != 0) // Warning here with BiPo214 events
+	    // we have to do a step to a non null geiger ctw list ? 
+	    // ex : electron event : CTend = 14    alpha event : CTbegin = 150, we don't have to do process for 14 to 150 
+	    {
+	      _process_for_a_clocktick(geiger_ctw_list_per_clocktick);
+	      
+	      _tracker_level_1_finale_decision_.clocktick_1600ns = iclocktick_800 / 2;
+	      
+	      if (_tracker_level_1_finale_decision_.level_one_finale_decision != 0) _tracker_finale_decision_ = true;
+	      tracker_records_.push_back(_tracker_level_1_finale_decision_);
+	    } // end of if ctw list != 0
 	} // end of iclocktick
       return;
     }

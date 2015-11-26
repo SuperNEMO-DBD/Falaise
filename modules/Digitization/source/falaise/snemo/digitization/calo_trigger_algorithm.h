@@ -178,9 +178,6 @@ namespace snemo {
       /// Reset the object
       void reset();
 
-      /// Reset trigger info structures
-      void reset_calo_info();
-
 			/// Reset trigger record structure for a clocktick
 			void reset_calo_record_per_clocktick();
 
