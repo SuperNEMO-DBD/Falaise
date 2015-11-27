@@ -172,33 +172,38 @@ namespace snemo {
 	  if (my_calo_tp_.is_htm())
 	    {
 	      unsigned int board_id = my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX);
-	  
-	      if (board_id == 6 || board_id == 7)
+	      std::clog << "calo TP to CTW : board_id = " << board_id << std::endl;
+	      if (board_id == 4 || board_id == 5 || board_id == 15 || board_id == 16)
 		{
-		  activated_zone_id = 0;
-		}	 
-	      if (board_id == 8 || board_id == 9)
-		{
-		  activated_zone_id = 1;
 		}
+	      else
+		{
+		  if (board_id == 6 || board_id == 7)
+		    {
+		      activated_zone_id = 0;
+		    }	 
+		  else if (board_id == 8 || board_id == 9)
+		    {
+		      activated_zone_id = 1;
+		    }
 	  	  
-	      if (board_id == 11 || board_id == 12)
-		{
-		  activated_zone_id = 3;
-		}
-	  	 
-	      if (board_id == 13 || board_id == 14)
-		{
-		  activated_zone_id = 2;
-		}
-
-	      my_ctw_.set_zoning_bit(calo::ctw::ZONING_XWALL_BIT0 + activated_zone_id, true);
-	    }
-	}
-          
+		  else if (board_id == 11 || board_id == 12)
+		    {
+		      activated_zone_id = 3;
+		    }
+		  
+		  else if (board_id == 13 || board_id == 14)
+		    {
+		      activated_zone_id = 2;
+		    }
+		  my_ctw_.set_zoning_bit(calo::ctw::ZONING_XWALL_BIT0 + activated_zone_id, true);
+		} // end of else
+	    } // end of if is htm
+	} // end of if is main wall
+      
       return ;
-     }
-
+    }
+    
     void calo_tp_to_ctw_algo::set_ctw_lto(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_)
     {    
       if (my_ctw_.is_main_wall()) // Mode == Main Wall
