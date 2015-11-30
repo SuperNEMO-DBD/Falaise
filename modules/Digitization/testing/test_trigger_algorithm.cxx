@@ -99,9 +99,9 @@ int main( int  argc_ , char **argv_  )
     if(is_input_file){
       pipeline_simulated_data_filename = input_filename;
     }else{
-      //pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
-      // pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Se82_0nubb_500000-source_strips_bulk_SD.brio";
-      pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Bi214_Po214_500000-source_strips_bulk_SD.brio";
+      // pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
+      pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Se82_0nubb_500000-source_strips_bulk_SD.brio";
+      // pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Bi214_Po214_500000-source_strips_bulk_SD.brio";
     }
     datatools::fetch_path_with_env(pipeline_simulated_data_filename);
 
@@ -347,7 +347,7 @@ int main( int  argc_ , char **argv_  )
 		calo_collection_records = my_trigger_algo.get_calo_records_vector();
 		tracker_collection_records = my_trigger_algo.get_tracker_records_vector();
 		
-		//my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
+		my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
 		//my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
 		//my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
 		

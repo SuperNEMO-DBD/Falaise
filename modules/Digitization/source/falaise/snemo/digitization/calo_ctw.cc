@@ -44,7 +44,6 @@ namespace snemo {
       set_clocktick_25ns(clocktick_25ns_);
 
       unsigned int crate_id = electronic_id_.get(mapping::CRATE_INDEX);
-      std::clog << "Crate ID = " << crate_id << std::endl;
       if (crate_id == mapping::MAIN_CALO_SIDE_0_CRATE || crate_id == mapping::MAIN_CALO_SIDE_1_CRATE) 
 	{
 	  _layout_ = calo::ctw::LAYOUT_MAIN_WALL;

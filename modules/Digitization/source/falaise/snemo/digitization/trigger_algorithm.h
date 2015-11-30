@@ -45,7 +45,7 @@ namespace snemo {
       void set_electronic_mapping(const electronic_mapping & my_electronic_mapping_);
 
       // /// Set the trigger display manager object
-      void set_trigger_display_manager(const trigger_display_manager & my_trigger_display_manager_);
+      // void set_trigger_display_manager(const trigger_display_manager & my_trigger_display_manager_);
 
       /// Check if the coincidence config is activated 
 			bool is_activated_coincidence() const;
@@ -95,9 +95,8 @@ namespace snemo {
       // Configuration :
       bool _initialized_; //!< Initialization flag
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
-			const trigger_display_manager * _trigger_display_manager_; //!< Pointer to a trigger display manager
 			
-			bool _activate_coincidence_; //!< Boolean activating coincidence
+			bool                _activate_coincidence_; //!< Boolean activating coincidence
 		  tracker_trigger_algorithm   _tracker_algo_; //!< Tracker trigger algorithm @ 1600ns
 		  calo_trigger_algorithm         _calo_algo_; //!< Calo trigger algorithm @ 25ns
 			coincidence_trigger_algorithm _coinc_algo_; //!< Coincidence trigger algorithm for matching calo and tracker trigger

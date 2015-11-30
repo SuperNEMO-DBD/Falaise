@@ -13,7 +13,6 @@ namespace snemo {
     {
       _initialized_ = false;
       _electronic_mapping_ = 0;
-      _trigger_display_manager_ = 0;
       _activate_coincidence_ = false;
       return;
     }
@@ -37,11 +36,11 @@ namespace snemo {
       return;
     }  
 
-    void trigger_algorithm::set_trigger_display_manager(const trigger_display_manager & my_trigger_display_manager_)
-    {
-      _trigger_display_manager_ = & my_trigger_display_manager_;
-      return;
-    }
+    // void trigger_algorithm::set_trigger_display_manager(const trigger_display_manager & my_trigger_display_manager_)
+    // {
+    //   _trigger_display_manager_ = & my_trigger_display_manager_;
+    //   return;
+    // }
     
     bool trigger_algorithm::is_activated_coincidence() const
     {
@@ -93,7 +92,6 @@ namespace snemo {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Calo trigger algorithm is not initialized, it can't be reset ! ");
       _initialized_ = false;
       _electronic_mapping_ = 0;
-      _trigger_display_manager_ = 0;
       _activate_coincidence_ = false;
       return;
     }  
@@ -164,7 +162,8 @@ namespace snemo {
       if (is_activated_coincidence())
 	{
 	  _process_coinc_algo();
-	}      
+	}    
+      
       bool calo_decision = _calo_algo_.get_calo_decision();
       bool tracker_decision = _tracker_algo_.get_tracker_decision();
       bool coincidence_decision = _coinc_algo_.get_coincidence_decision();

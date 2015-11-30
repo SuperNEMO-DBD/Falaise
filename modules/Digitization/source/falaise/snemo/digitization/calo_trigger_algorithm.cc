@@ -530,8 +530,6 @@ namespace snemo {
       	    }
       	} // end of for iterator
       
-      std::clog << "Actual CT = " << my_calo_summary_record_.clocktick_25ns << std::endl;
-      
       // Total mult side 0 :
       my_calo_summary_record_.total_multiplicity_side_0 = multiplicity_sum_circ_buff_side_0;
 
@@ -605,7 +603,6 @@ namespace snemo {
 	  for (int isize = 0; isize < ctw_list_per_clocktick.size(); isize++)
 	    {
 	      _build_calo_record_per_clocktick(ctw_list_per_clocktick[isize].get());
-	      std::clog << "ctw list per CT : " << ctw_list_per_clocktick.size() << std::endl;
 	    } // end of isize
 	  _gate_circular_buffer_->push_back(_calo_record_per_clocktick_);
 	  
@@ -617,7 +614,6 @@ namespace snemo {
 
 	  if (_calo_level_1_finale_decision_.calo_finale_decision) _calo_finale_decision_ = true;
 	  calo_records_.push_back(_calo_level_1_finale_decision_);
-	  _display_calo_summary(_calo_level_1_finale_decision_); 
 
 	  _calo_record_per_clocktick_.reset();
 	} // end of iclocktick
