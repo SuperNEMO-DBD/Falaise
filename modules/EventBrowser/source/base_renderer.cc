@@ -32,6 +32,7 @@
 #include <falaise/snemo/utils/root_utilities.h>
 
 #include <geomtools/id_mgr.h>
+#include <geomtools/i_wires_3d_rendering.h>
 #include <geomtools/helix_3d.h>
 #include <geomtools/line_3d.h>
 
@@ -190,55 +191,30 @@ namespace snemo {
         return marker;
       }
 
-      TPolyLine3D * base_renderer::make_polyline(const std::vector<geomtools::vector_3d> & points_,
+      TPolyLine3D * base_renderer::make_polyline(const geomtools::polyline_type & polyline_,
                                                  const bool convert_)
       {
         TPolyLine3D * polyline = new TPolyLine3D;
-        for (size_t i = 0; i < points_.size(); ++i) {
-          const geomtools::vector_3d & a_point = points_[i];
+        size_t idx = 0;
+        for (geomtools::polyline_type::const_iterator i = polyline_.begin();
+             i != polyline_.end(); ++i) {
+          const geomtools::vector_3d & a_point = *i;
           geomtools::vector_3d new_point = a_point;
           if (convert_) {
             detector::detector_manager::get_instance().compute_world_coordinates(a_point, new_point);
           }
-          polyline->SetPoint(i, new_point.x(), new_point.y(), new_point.z());
+          polyline->SetPoint(idx++, new_point.x(), new_point.y(), new_point.z());
         }
         return polyline;
       }
 
-      TPolyLine3D * base_renderer::make_line_track(const geomtools::line_3d & line_)
+      TPolyLine3D * base_renderer::make_track(const geomtools::i_wires_3d_rendering & iw3dr_,
+                                              const bool convert_)
       {
-        std::vector<geomtools::vector_3d> points;
-        points.push_back(line_.get_first());
-        points.push_back(line_.get_last());
-        return make_polyline(points, true);
-      }
-
-      TPolyLine3D * base_renderer::make_helix_track(const geomtools::helix_3d & helix_)
-      {
-        // From print_xyz method of geomtools::helix_3d class:
-        double delta_t = 1. / 360.; // default
-        const double step_angle = 0.01;
-        if (step_angle > 0.0) delta_t = geomtools::helix_3d::angle_to_t(step_angle);
-
-        double t_skip = 0.0;
-        double t_min = helix_.get_t1() - t_skip;
-        double t_max = helix_.get_t2() + t_skip;
-        double t = t_min;
-        bool stop = false;
-        std::vector<geomtools::vector_3d> points;
-        do {
-          const geomtools::vector_3d & v = helix_.get_point(t);
-          points.push_back(v);
-
-          if (stop) break;
-          t += delta_t;
-          if (t > t_max) {
-            t = t_max;
-            stop = true;
-          }
-        } while (true);
-
-        return make_polyline(points, true);
+        geomtools::wires_type wires;
+        iw3dr_.generate_wires_self(wires);
+        DT_THROW_IF(wires.size() > 1, std::logic_error, "Track must be defined by only one polyline !");
+        return make_polyline(wires.back(), convert_);
       }
 
     } // end of namespace view

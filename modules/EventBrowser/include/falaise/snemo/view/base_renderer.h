@@ -40,12 +40,13 @@
 
 // Bayeux
 // - geomtools
-#include <geomtools/clhep.h>
+#include <geomtools/utils.h>
 
 namespace geomtools {
   class geom_id;
   class helix_3d;
   class line_3d;
+  class i_wires_3d_rendering;
 }
 
 class TObjArray;
@@ -115,15 +116,12 @@ namespace snemo {
                                                const bool convert_ = false);
 
         /// Build a polyline from a set of 3D points
-        static TPolyLine3D * make_polyline(const std::vector<geomtools::vector_3d> & points_,
+        static TPolyLine3D * make_polyline(const geomtools::polyline_type & polyline_,
                                            const bool convert_ = false);
 
-        /// Build a polyline from an helix track
-        static TPolyLine3D * make_helix_track(const geomtools::helix_3d & helix_);
-
-        /// Build a polyline from a line track
-        static TPolyLine3D * make_line_track(const geomtools::line_3d & line_);
-
+        /// Build a polyline from an track
+        static TPolyLine3D * make_track(const geomtools::i_wires_3d_rendering & wires_,
+                                        const bool convert_ = false);
 
       protected:
         bool _initialized;                       //!< Initialization flag

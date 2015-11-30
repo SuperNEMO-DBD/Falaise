@@ -151,7 +151,7 @@ namespace snemo {
               mark2->SetMarkerColor(kRed);
               mark2->SetMarkerStyle(kCircle);
             }
-            std::vector<geomtools::vector_3d> points;
+            geomtools::polyline_type points;
             points.push_back(a_hit.get_position_start());
             points.push_back(a_hit.get_position_stop());
             TPolyLine3D * mc_path = base_renderer::make_polyline(points);
@@ -296,7 +296,7 @@ namespace snemo {
 
             // Gamma tracks
             if (a_particle.get_charge() == snemo::datamodel::particle_track::neutral) {
-              std::vector<geomtools::vector_3d> vtces;
+              geomtools::polyline_type vtces;
               for (snemo::datamodel::particle_track::vertex_collection_type::const_iterator
                      ivtx = vtx.begin(); ivtx != vtx.end(); ++ivtx) {
                 vtces.push_back(ivtx->get().get_position());
@@ -344,23 +344,9 @@ namespace snemo {
           if (a_particle.has_trajectory()) {
             const snemo::datamodel::tracker_trajectory & a_trajectory = a_particle.get_trajectory();
             const snemo::datamodel::base_trajectory_pattern & a_pattern = a_trajectory.get_pattern();
-            // Prepare ROOT polyline:
-            TPolyLine3D * track = 0;
-            if (a_pattern.get_pattern_id() == snemo::datamodel::helix_trajectory_pattern::pattern_id()) {
-              const snemo::datamodel::helix_trajectory_pattern & a_helix_pattern
-                = dynamic_cast<const snemo::datamodel::helix_trajectory_pattern &>(a_pattern);
-              const geomtools::helix_3d & a_helix = a_helix_pattern.get_helix();
-              track = base_renderer::make_helix_track(a_helix);
-            } else if (a_pattern.get_pattern_id() == snemo::datamodel::line_trajectory_pattern::pattern_id()) {
-              const snemo::datamodel::line_trajectory_pattern & a_line_pattern
-                = dynamic_cast<const snemo::datamodel::line_trajectory_pattern &>(a_pattern);
-              const geomtools::line_3d & a_line = a_line_pattern.get_segment();
-              track = base_renderer::make_line_track(a_line);
-            } else {
-              DT_LOG_WARNING(options_manager::get_instance().get_logging_priority(),
-                             "The pattern of the trajectory can not be determined!");
-              continue;
-            }
+            const geomtools::i_wires_3d_rendering & iw3dr
+              = dynamic_cast<const geomtools::i_wires_3d_rendering &>(a_pattern.get_shape());
+            TPolyLine3D * track = base_renderer::make_track(iw3dr);
             _objects->Add(track);
             track->SetLineColor(color);
           }
