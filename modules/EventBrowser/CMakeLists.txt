@@ -24,10 +24,11 @@ find_package(Boost 1.47 QUIET COMPONENTS ${Boost_COMPONENTS} NO_MODULE)
 find_package(Boost 1.47 REQUIRED ${Boost_COMPONENTS})
 
 # - ROOT
-# find_package(ROOT 5.34.00 REQUIRED Gui Geom GeomPainter Physics)
-set(ROOT_COMPONENTS Gui Geom GeomPainter Physics Graf3d)
-find_package(ROOT 5.34.00 QUIET COMPONENTS ${ROOT_COMPONENTS} NO_MODULE)
-find_package(ROOT 5.34.00 REQUIRED ${ROOT_COMPONENTS})
+set(ROOT_COMPONENTS MathCore Gui Geom GeomPainter Graf Physics Graf3d)
+set(CMAKE_MODULE_PATH_PREROOT ${CMAKE_MODULE_PATH})
+find_package(ROOT 5.34.00 REQUIRED ${ROOT_COMPONENTS} NO_MODULE)
+include(RootNewMacros)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH_PREROOT})
 
 #-----------------------------------------------------------------------
 # Include directories for all subdirectories

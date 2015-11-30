@@ -115,17 +115,23 @@ set(FalaiseEventBrowserPlugin_DICT_HEADERS
   include/falaise/snemo/view/progress_bar.h
   )
 list_prepend(FalaiseEventBrowserPlugin_DICT_HEADERS "${PROJECT_SOURCE_DIR}/")
-root_generate_dictionary("${FalaiseEventBrowserPlugin_DICT_HEADERS}"
-  "${PROJECT_SOURCE_DIR}/include/falaise/snemo/view/event_browser_linkdef.h"
-  "${PROJECT_BINARY_DIR}/event_browser_dict.cc"
-  "${PROJECT_SOURCE_DIR}/include"
+#root_generate_dictionary("${FalaiseEventBrowserPlugin_DICT_HEADERS}"
+#  "${PROJECT_SOURCE_DIR}/include/falaise/snemo/view/event_browser_linkdef.h"
+#  "${PROJECT_BINARY_DIR}/event_browser_dict.cc"
+#  "${PROJECT_SOURCE_DIR}/include"
+#  )
+root_generate_dictionary(event_browser_dict
+  "${FalaiseEventBrowserPlugin_DICT_HEADERS}"
+  LINKDEF "${PROJECT_SOURCE_DIR}/include/falaise/snemo/view/event_browser_linkdef.h"
   )
+
+
 
 #-----------------------------------------------------------------------
 # SOURCE FILES
 # Pretty basic!
 set(FalaiseEventBrowserPlugin_SOURCES
-  ${PROJECT_BINARY_DIR}/event_browser_dict.cc
+  ${CMAKE_CURRENT_BINARY_DIR}/event_browser_dict.cxx
   i_volume.cc
   i_root_volume.cc
   box_volume.cc
