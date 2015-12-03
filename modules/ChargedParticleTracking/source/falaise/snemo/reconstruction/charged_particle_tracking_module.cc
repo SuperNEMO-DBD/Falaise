@@ -328,6 +328,55 @@ namespace snemo {
         }
       }
 
+      // 2015/12/02 XG: Also look if the non associated calorimeters are
+      // isolated i.e. without Geiger cells in front or not: tag them
+      // consequently
+      {
+        const snemo::datamodel::calibrated_data::tracker_hit_collection_type & thits
+          = calibrated_data_.calibrated_tracker_hits();
+        snemo::datamodel::calibrated_data::calorimeter_hit_collection_type & chits
+          = particle_track_data_.grab_non_associated_calorimeters();
+        for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::iterator
+               chit = chits.begin(); chit != chits.end(); ++chit) {
+          snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit = chit->grab();
+          bool has_gg_in_front = false;
+
+          // Getting geometry mapping for parted block
+          const geomtools::mapping & the_mapping = get_geometry_manager().get_mapping();
+          std::vector<geomtools::geom_id> gids;
+          the_mapping.compute_matching_geom_id(a_calo_hit.get_geom_id(), gids);
+          for (size_t i = 0; i < gids.size(); ++i) {
+            const geomtools::geom_id & a_gid = gids.at(i);
+            const geomtools::geom_info * ginfo_ptr = the_mapping.get_geom_info_ptr(a_gid);
+            if (! ginfo_ptr) {
+              DT_LOG_WARNING(get_logging_priority(), "Unmapped geom id " << a_gid << "!");
+              continue;
+            }
+            // Loop over all calibrated geiger hits to find one close enough
+            for (snemo::datamodel::calibrated_data::tracker_hit_collection_type::const_iterator
+                   thit = thits.begin(); thit != thits.end(); ++thit) {
+              const snemo::datamodel::calibrated_tracker_hit & a_tracker_hit = thit->get();
+              if (! a_tracker_hit.has_xy()) continue;
+              DT_LOG_TRACE(get_logging_priority(), "Geiger cell has xy position");
+              const geomtools::vector_3d cell_pos(a_tracker_hit.get_x(),
+                                                  a_tracker_hit.get_y(),
+                                                  a_tracker_hit.get_z());
+              // Tolerance must be understood as 'skin' tolerance so must be
+              // multiplied by a factor of 2
+              const double tolerance = 100 * CLHEP::mm;
+              if (the_mapping.check_inside(*ginfo_ptr, cell_pos, tolerance, true)) {
+                DT_LOG_TRACE(get_logging_priority(), "Found Geiger cell in front of calorimeter block");
+                has_gg_in_front = true;
+                break;
+              }
+            } // end of tracker hits
+            if (has_gg_in_front) break;
+          } // end of calorimeter geom ids
+          if (! has_gg_in_front) {
+            a_calo_hit.grab_auxiliaries().update_flag("__isolated");
+          }
+        } // end of calorimeter hits
+      }
       return;
     }
 
