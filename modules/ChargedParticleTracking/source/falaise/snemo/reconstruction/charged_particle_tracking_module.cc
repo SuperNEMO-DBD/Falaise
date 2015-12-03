@@ -257,7 +257,7 @@ namespace snemo {
       DT_LOG_TRACE(get_logging_priority(), "Entering...");
 
       // Process trajectories using external resource:
-      if (!tracker_trajectory_data_.has_default_solution()) {
+      if (! tracker_trajectory_data_.has_default_solution()) {
         DT_LOG_DEBUG(get_logging_priority(),
                      "No default trajectory solution has been found");
         // Fill non associated calorimeter hits
@@ -311,19 +311,21 @@ namespace snemo {
                                                          snemo::datamodel::particle_track_data & particle_track_data_)
     {
       // Grab non associated calorimeters :
-      geomtools::base_hit::has_flag_predicate asso_pred(calorimeter_association_driver::associated_flag());
-      geomtools::base_hit::negates_predicate not_asso_pred(asso_pred);
-      // Wrapper predicates :
-      datatools::mother_to_daughter_predicate<geomtools::base_hit,
-                                              snemo::datamodel::calibrated_calorimeter_hit> pred_M2D(not_asso_pred);
-      datatools::handle_predicate<snemo::datamodel::calibrated_calorimeter_hit> pred_via_handle(pred_M2D);
-      const snemo::datamodel::calibrated_data::calorimeter_hit_collection_type & chits
-        = calibrated_data_.calibrated_calorimeter_hits();
-      snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::const_iterator ihit
-        = std::find_if(chits.begin(), chits.end(), pred_via_handle);
-      while (ihit != chits.end()) {
-        particle_track_data_.grab_non_associated_calorimeters().push_back(*ihit);
-        ihit = std::find_if(++ihit, chits.end(), pred_via_handle);
+      if (! particle_track_data_.has_non_associated_calorimeters()) {
+        geomtools::base_hit::has_flag_predicate asso_pred(calorimeter_association_driver::associated_flag());
+        geomtools::base_hit::negates_predicate not_asso_pred(asso_pred);
+        // Wrapper predicates :
+        datatools::mother_to_daughter_predicate<geomtools::base_hit,
+                                                snemo::datamodel::calibrated_calorimeter_hit> pred_M2D(not_asso_pred);
+        datatools::handle_predicate<snemo::datamodel::calibrated_calorimeter_hit> pred_via_handle(pred_M2D);
+        const snemo::datamodel::calibrated_data::calorimeter_hit_collection_type & chits
+          = calibrated_data_.calibrated_calorimeter_hits();
+        snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::const_iterator ihit
+          = std::find_if(chits.begin(), chits.end(), pred_via_handle);
+        while (ihit != chits.end()) {
+          particle_track_data_.grab_non_associated_calorimeters().push_back(*ihit);
+          ihit = std::find_if(++ihit, chits.end(), pred_via_handle);
+        }
       }
 
       return;
