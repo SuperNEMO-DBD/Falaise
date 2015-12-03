@@ -223,8 +223,8 @@ namespace snemo {
         {
           DT_LOG_TRACE(get_logging_priority(), "Looking for vertex on source foil...");
           const double x = 0.0 * CLHEP::mm;
-          const double y = direction.y()/direction.x() *(x - first.x()) + first.y();
-          const double z = direction.z()/direction.y() *(y - first.y()) + first.z();
+          const double y = direction.y()/direction.x()*(x - first.x()) + first.y();
+          const double z = direction.z()/direction.y()*(y - first.y()) + first.z();
 
           // Extrapolated vertex:
           const geomtools::vector_3d a_vertex(x, y, z);
@@ -236,8 +236,8 @@ namespace snemo {
           DT_LOG_TRACE(get_logging_priority(), "Looking for vertex on main wall...");
           for (size_t iside = 0; iside < snemo::geometry::utils::NSIDES; ++iside) {
             const double x = xcalo_bd[iside];
-            const double y = direction.y()/direction.x() *(x - first.x()) + first.y();
-            const double z = direction.z()/direction.y() *(y - first.y()) + first.z();
+            const double y = direction.y()/direction.x()*(x - first.x()) + first.y();
+            const double z = direction.z()/direction.y()*(y - first.y()) + first.z();
 
             // Extrapolated vertex
             const geomtools::vector_3d a_vertex(x, y, z);
@@ -250,8 +250,8 @@ namespace snemo {
           DT_LOG_TRACE(get_logging_priority(), "Looking for vertex on X-wall...");
           for (size_t iwall = 0; iwall < snemo::geometry::xcalo_locator::NWALLS_PER_SIDE; ++iwall) {
             const double y = ycalo_bd[iwall];
-            const double z = direction.z()/direction.y() *(y - first.y()) + first.z();
-            const double x = direction.x()/direction.y() *(y - first.y()) + first.x();
+            const double z = direction.z()/direction.y()*(y - first.y()) + first.z();
+            const double x = direction.x()/direction.y()*(y - first.y()) + first.x();
 
             // Extrapolate vertex
             const geomtools::vector_3d a_vertex(x, y, z);
@@ -264,8 +264,8 @@ namespace snemo {
           DT_LOG_TRACE(get_logging_priority(), "Looking for vertex on gamma veto...");
           for (size_t iwall = 0; iwall < snemo::geometry::gveto_locator::NWALLS_PER_SIDE; ++iwall) {
             const double z = zcalo_bd[iwall];
-            const double y = direction.y()/direction.z() *(z - first.z()) + first.y();
-            const double x = direction.x()/direction.y() *(y - first.y()) + first.x();
+            const double y = direction.y()/direction.z()*(z - first.z()) + first.y();
+            const double x = direction.x()/direction.y()*(y - first.y()) + first.x();
 
             // Extrapolate vertex
             const geomtools::vector_3d a_vertex(x, y, z);
@@ -550,8 +550,8 @@ namespace snemo {
         // Extract layer
         const snemo::geometry::gg_locator & gg_locator = _locator_plugin_->get_gg_locator();
         const uint32_t layer = gg_locator.extract_layer(a_gid);
-        if (layer <= 1) {
-          // Extrapolate vertex to the foil if the 2 first GG layers are fired
+        if (layer < 1) {
+          // Extrapolate vertex to the foil if the first GG layers are fired
           DT_LOG_TRACE(get_logging_priority(), "Foil vertex: found Geiger cells in the first two layers !");
           _use_vertices_[sdm::particle_track::vertex_on_source_foil_label()] = true;
         }
