@@ -125,6 +125,8 @@ namespace snemo {
              icalo = cch.begin(); icalo != cch.end(); ++icalo) {
         const snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit = icalo->get();
 
+        if (! a_calo_hit.get_auxiliaries().has_flag("__isolated")) continue;
+
         const geomtools::geom_id & a_gid = a_calo_hit.get_geom_id();
         // If already clustered then skip it
         if (std::find(registered_calos.begin(), registered_calos.end(), a_gid)
