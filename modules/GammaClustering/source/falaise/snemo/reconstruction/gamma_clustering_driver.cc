@@ -169,10 +169,6 @@ namespace snemo {
       // cluster_collection_type the_reconstructed_gammas = the_reconstructed_clusters;
 
       // Set new particles within 'particle track data' container
-      if (ptd_.has_non_associated_calorimeters()) {
-        DT_LOG_DEBUG(get_logging_priority(), "Removing non-associated calorimeters");
-        ptd_.reset_non_associated_calorimeters();
-      }
       for (size_t i = 0; i < the_reconstructed_gammas.size(); ++i) {
         DT_LOG_TRACE(get_logging_priority(), "Adding a new clustered gamma");
         snemo::datamodel::particle_track::handle_type hPT(new snemo::datamodel::particle_track);
@@ -202,14 +198,12 @@ namespace snemo {
           std::string label;
           if (calo_locator.is_calo_block_in_current_module(a_gid)) {
             calo_locator.get_block_position(a_gid, position);
-            double offset = 45.5 * CLHEP::mm;
+            const double offset = 45.5 * CLHEP::mm;
             if (calo_locator.extract_side(a_gid) == snemo::geometry::utils::SIDE_BACK) {
               position.setX(position.x()-offset);
-            }
-            else {
+            } else {
               position.setX(position.x()+offset);
             }
-
             label = snemo::datamodel::particle_track::vertex_on_main_calorimeter_label();
           } else if (xcalo_locator.is_calo_block_in_current_module(a_gid)) {
             xcalo_locator.get_block_position(a_gid, position);
