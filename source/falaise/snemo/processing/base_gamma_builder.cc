@@ -82,7 +82,7 @@ namespace snemo {
       //Logging priority
       datatools::logger::priority lp = datatools::logger::extract_logging_configuration(bgb_setup);
       DT_THROW_IF(lp == datatools::logger::PRIO_UNDEFINED, std::logic_error,
-                  "Invalid logging priority level for geometry manager !");
+                  "Invalid logging priority level for base gamma builder !");
       set_logging_priority(lp);
 
       // Get geometry locator plugin

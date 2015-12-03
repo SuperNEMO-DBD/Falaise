@@ -67,16 +67,20 @@ namespace snemo {
 
       /* Parse configuration parameters */
 
+      // Extract the setup of the base tracker fitter :
+      datatools::properties btf_setup;
+      setup_.export_and_rename_starting_with(btf_setup, "BTF.", "");
+
       // Logging priority:
-      datatools::logger::priority lp = datatools::logger::extract_logging_configuration(setup_);
+      datatools::logger::priority lp = datatools::logger::extract_logging_configuration(btf_setup);
       DT_THROW_IF (lp == datatools::logger::PRIO_UNDEFINED,
                    std::logic_error,
-                   "Invalid logging priority level for geometry manager !");
+                   "Invalid logging priority level for base tracker fitter !");
       set_logging_priority(lp);
 
       // Maximum number of fit to be saved :
-      if (setup_.has_key("maximum_number_of_fits")) {
-        _maximum_number_of_fits_ = setup_.fetch_integer("maximum_number_of_fits");
+      if (btf_setup.has_key("maximum_number_of_fits")) {
+        _maximum_number_of_fits_ = btf_setup.fetch_integer("maximum_number_of_fits");
       }
 
       /* initialization stuff */
@@ -90,8 +94,8 @@ namespace snemo {
       // Get the Geiger cell locator from geometry plugins :
       const geomtools::manager & geo_mgr = get_geometry_manager();
       std::string locator_plugin_name;
-      if (setup_.has_key("locator_plugin_name")) {
-        locator_plugin_name = setup_.fetch_string("locator_plugin_name");
+      if (btf_setup.has_key("locator_plugin_name")) {
+        locator_plugin_name = btf_setup.fetch_string("locator_plugin_name");
       }
       // If no locator plugin name is set, then search for the first one
       if (locator_plugin_name.empty()) {
@@ -381,34 +385,34 @@ namespace snemo {
                                           const std::string & prefix_)
     {
 
-      datatools::logger::declare_ocd_logging_configuration(ocd_, "fatal", prefix_);
+      datatools::logger::declare_ocd_logging_configuration(ocd_, "fatal", prefix_ + "BTF.");
+
+      {
+        // Description of the 'locator_plugin_name' configuration property :
+        datatools::configuration_property_description & cpd = ocd_.add_property_info();
+        cpd.set_name_pattern("BTF.locator_plugin_name")
+          .set_terse_description("The name of the geometry Geiger locator plugin to be used")
+          .set_traits(datatools::TYPE_STRING)
+          .set_long_description("Special value: an empty string means automatic search   \n")
+          .add_example("Set the default value::                         \n"
+                       "                                                \n"
+                       "  BTF.locator_plugin_name : string = \"gg_loc\" \n"
+                       "                                                \n"
+                       )
+          ;
+      }
 
       {
         // Description of the 'maximum_number_of_fits' configuration property :
         datatools::configuration_property_description & cpd = ocd_.add_property_info();
-        cpd.set_name_pattern("maximum_number_of_fits")
+        cpd.set_name_pattern("BTF.maximum_number_of_fits")
           .set_terse_description("The maximum number of fitting solutions to be addressed by the algorithm")
           .set_traits(datatools::TYPE_INTEGER)
           .set_long_description("Special value: ``0`` means no limit     \n")
           .set_default_value_integer(0)
           .add_example("Set the default value::                          \n"
                        "                                                 \n"
-                       "  maximum_number_of_fits : integer = 0           \n"
-                       "                                                 \n"
-                       )
-          ;
-      }
-
-      {
-        // Description of the 'locator_plugin_name' configuration property :
-        datatools::configuration_property_description & cpd = ocd_.add_property_info();
-        cpd.set_name_pattern("locator_plugin_name")
-          .set_terse_description("The name of the geometry Geiger locator plugin to be used")
-          .set_traits(datatools::TYPE_STRING)
-          .set_long_description("Special value: an empty string means automatic search   \n")
-          .add_example("Set the default value::                          \n"
-                       "                                                 \n"
-                       "  locator_plugin_name : string = \"gg_loc\"      \n"
+                       "  BTF.maximum_number_of_fits : integer = 0       \n"
                        "                                                 \n"
                        )
           ;

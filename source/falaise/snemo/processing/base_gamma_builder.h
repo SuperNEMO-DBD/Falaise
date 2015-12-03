@@ -113,9 +113,9 @@ namespace snemo {
 
       /// Smart print
       void tree_dump(std::ostream & out_ = std::clog,
-                      const std::string & title_ = "",
-                      const std::string & indent_ = "",
-                      bool inherit_ = false) const;
+                     const std::string & title_ = "",
+                     const std::string & indent_ = "",
+                     bool inherit_ = false) const;
 
       /// OCD support
       static void ocd_support(datatools::object_configuration_description &,
