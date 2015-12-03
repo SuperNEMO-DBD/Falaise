@@ -61,9 +61,6 @@ namespace snemo {
       /// Name of the property to store calorimeter association flag
       static const std::string & associated_flag();
 
-      /// Static function that return associated flag status
-      static bool is_calo_associated(const snemo::datamodel::calibrated_calorimeter_hit & hit_);
-
       /// Return driver id
       static const std::string & get_id();
 
