@@ -257,8 +257,20 @@ namespace snemo {
     int base_gamma_builder::_post_process(snemo::datamodel::particle_track_data & ptd_)
     {
       if (ptd_.has_non_associated_calorimeters()) {
-        DT_LOG_DEBUG(get_logging_priority(), "Removing non-associated calorimeters");
-        ptd_.reset_non_associated_calorimeters();
+        // 2015/12/04 XG: Remove only isolated calorimeter hit (the one without
+        // any tracker cell in front of)
+        // ptd_.reset_non_associated_calorimeters();
+        snemo::datamodel::calibrated_calorimeter_hit::collection_type & chits
+          = ptd_.grab_non_associated_calorimeters();
+        for (snemo::datamodel::calibrated_calorimeter_hit::collection_type::iterator
+               ihit = chits.begin(); ihit != chits.end();/*++ihit*/) {
+          const snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit = ihit->get();
+          if (a_calo_hit.get_auxiliaries().has_flag("__isolated")) {
+            ihit = chits.erase(ihit);
+          } else {
+            ++ihit;
+          }
+        }
       }
 
       snemo::datamodel::particle_track_data::particle_collection_type charged_particles;
