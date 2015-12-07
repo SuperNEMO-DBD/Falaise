@@ -347,11 +347,11 @@ int main( int  argc_ , char **argv_  )
 		calo_collection_records = my_trigger_algo.get_calo_records_vector();
 		tracker_collection_records = my_trigger_algo.get_tracker_records_vector();
 		
-		my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
+		//my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
 		//my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
 		//my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
 		
-		//my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
+		my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
 		my_trigger_display.reset_matrix_pattern();
 
 		std::clog << "********* Size of Finale structures for one event *********" << std::endl;

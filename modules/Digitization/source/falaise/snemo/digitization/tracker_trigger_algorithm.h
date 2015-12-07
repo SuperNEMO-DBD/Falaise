@@ -32,23 +32,30 @@ namespace snemo {
 			/// Trigger display manager is a friend because it can access to members for display
 		 	friend class trigger_display_manager;
 
-			/// Level one zoning size of a bitset for a zone
-			static const int32_t GEIGER_LEVEL_ONE_ZONING_BITSET_SIZE = 8;
-			
-			/// Level two zoning size of a bitset for a zone
-			static const int32_t GEIGER_LEVEL_TWO_ZONING_BITSET_SIZE = 2;
-			
-			/// Final bitset size for geiger zoning
-			static const int32_t GEIGER_ZONING_FINAL_BITSET_SIZE = 2;
-	
-			/// Final bitset size for geiger zoning
-			static const int32_t GEIGER_FINAL_DECISION_BITSET_SIZE = 2;
+			/// Number of layers near source can be activated for vertex localization
+			static const int32_t NUMBER_OF_NEAR_SOURCE_LAYERS = 3;
 
 			/// Size of the subzone layer projection bitset
-			static const int32_t GEIGER_LEVEL_ONE_SUBZONE_LAYER_SIZE = 5;
+			static const int32_t SUBZONE_PROJECTION_LAYER_SIZE = 5;
 
 			/// Size of the subzone row projection bitset
-			static const int32_t GEIGER_LEVEL_ONE_SUBZONE_ROW_SIZE   = 6;
+			static const int32_t SUBZONE_PROJECTION_ROW_SIZE = 6;
+
+			/// Size of the bitset for one zone after projections on subzones and near source bits
+			static const int32_t TOTAL_ZONE_AFTER_PROJECTIONS_BITSET_SIZE = 10;
+			
+			/// Size of the bitset for one interzone after projections on subzones only
+			static const int32_t TOTAL_INTERZONE_AFTER_PROJECTIONS_BITSET_SIZE = 8;
+			
+			/// Final bitset size for a zone : 2 bits for near source localization and 2 bits for pattern
+			static const int32_t FINAL_ZONE_BITSET_SIZE = 4;
+			
+			/// Final bitset size for an interzone : 2 bits for pattern only
+			static const int32_t FINAL_INTERZONE_BITSET_SIZE = 2;
+
+			/// Final bitset size for the finale decision in the full tracker
+			static const int32_t FINALE_DECISION_BITSET_SIZE = 2;
+
 
 			struct tracker_record
 			{
@@ -56,8 +63,8 @@ namespace snemo {
 				void reset();
 				void display();
 				uint32_t clocktick_1600ns;
-				std::bitset<GEIGER_FINAL_DECISION_BITSET_SIZE> level_one_finale_decision;
-				std::bitset<GEIGER_ZONING_FINAL_BITSET_SIZE> final_tracker_trigger_info[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRIGGER_ZONES];
+				std::bitset<FINALE_DECISION_BITSET_SIZE> finale_decision;
+				std::bitset<FINAL_ZONE_BITSET_SIZE> final_tracker_trigger_info[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRIGGER_ZONES];
 			};
 
 			struct geiger_matrix
@@ -133,15 +140,24 @@ namespace snemo {
 				SUBZONE_3_INDEX = 3
 			};
 
-			enum _tracker_trigger_info_bitset_index {
-				SUBZONE_0_LAYER_INDEX = 0,
-				SUBZONE_0_ROW_INDEX   = 1,
-				SUBZONE_1_LAYER_INDEX = 2,
-				SUBZONE_1_ROW_INDEX   = 3,
-				SUBZONE_2_LAYER_INDEX = 4,
-				SUBZONE_2_ROW_INDEX   = 5,
-				SUBZONE_3_LAYER_INDEX = 6,
-				SUBZONE_3_ROW_INDEX   = 7	
+			enum zone_after_projections_bitset_index {
+				SUBZONE_0_LAYER_INDEX   = 0,
+				SUBZONE_0_ROW_INDEX     = 1,
+				SUBZONE_1_LAYER_INDEX   = 2,
+				SUBZONE_1_ROW_INDEX     = 3,
+				SUBZONE_2_LAYER_INDEX   = 4,
+				SUBZONE_2_ROW_INDEX     = 5,
+				SUBZONE_3_LAYER_INDEX   = 6,
+				SUBZONE_3_ROW_INDEX     = 7,
+			  RIGHT_NEAR_SOURCE_AP_INDEX = 8,
+				LEFT_NEAR_SOURCE_AP_INDEX  = 9
+			};			
+			
+			enum final_zone_bitset_index {
+				PATTERN_BIT_0_FINAL_INDEX     = 0,
+				PATTERN_BIT_1_FINAL_INDEX     = 1,
+			  RIGHT_NEAR_SOURCE_FINAL_INDEX = 2,
+				LEFT_NEAR_SOURCE_FINAL_INDEX  = 3
 			};
 
       /// Default constructor
@@ -168,8 +184,8 @@ namespace snemo {
 			/// Reset private tables
 			void reset_trigger_info();
 
-			/// Get the level 1 finale decision structure
-			const tracker_trigger_algorithm::tracker_record get_tracker_level_1_finale_decision_structure() const;
+			/// Get the tracker record finale decision structure
+			const tracker_trigger_algorithm::tracker_record get_tracker_record_finale_decision_structure() const;
 
 			/// Return the board id from the bitset of 100 bits
 			uint32_t get_board_id(const std::bitset<geiger::tp::FULL_SIZE> & my_bitset_) const;
@@ -190,7 +206,7 @@ namespace snemo {
 			/// Reset the geiger cells matrix
 			void reset_matrix();
 			
-			/// Display the intermediate level one and level two tracker trigger info (bitsets)
+			/// Display the intermediate tracker trigger info
 		  void display_intermediate_tracker_trigger_info() const;
 
 			/// Display the finale tracker trigger info (bits per zone and finale decision)
@@ -241,10 +257,10 @@ namespace snemo {
 																int32_t & subzone_layer_index_begin_);
 
 			/// Build the level one tracker trigger primitive bitsets
-			void build_trigger_level_one_bitsets(); 
+			void build_zone_tracker_trigger_after_projections(); 
 
 			/// Build the level two tracker trigger primitive bitsets
-			void build_trigger_level_one_to_level_two();
+			void build_zone_tracker_trigger_info();
 
 			/// Build the level 1 finale structure for the tracker
 			void build_tracker_record();
@@ -267,25 +283,27 @@ namespace snemo {
       // Configuration : 
       bool _initialized_; //!< Initialization
 			const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID flag
+			sub_zone_location_info _sub_zone_location_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES_PER_SIDE]; //!< Table of 2x40 (10 zones subdivided in 4 subzones on 2 sides)
 
+			memory<6,1> _mem_projection_row_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRIGGER_ZONES][mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES]; //!< A6D1 memory for projection in rows depending of algorithm uses (multiplicity or gap)
+			memory<5,1> _mem_projection_layer_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRIGGER_ZONES][mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES]; //!< A6D1 memory for projection in layers depending of algorithm uses (multiplicity or gap)
+			memory<4,2> _mem_pattern_for_a_zone_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRIGGER_ZONES]; //!< A4D2 memory pattern
+			
 			// Data :
 			// Maybe use boost::multiarray instead of C-type array
       bool _geiger_matrix_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_LAYERS][mapping::NUMBER_OF_GEIGER_ROWS]; //!< Geiger cells matrix
 			std::vector<geiger_matrix> _geiger_matrix_records_; //!< Vector of Geiger matrix for each clocktick
 			
-			std::bitset<GEIGER_LEVEL_ONE_ZONING_BITSET_SIZE> _level_one_tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRIGGER_ZONES]; //!< Table of 2x10 containing 8 bits bitset representing the level one tracker trigger zoning (side = {0-1}, zones = {0-9})			
-			std::bitset<GEIGER_LEVEL_ONE_ZONING_BITSET_SIZE> _level_one_prime_tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES]; //!< Table of 2x10 containing 8 bits bitset representing the level one tracker trigger for the interzones	 
-			std::bitset<GEIGER_LEVEL_TWO_ZONING_BITSET_SIZE> _level_two_tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRIGGER_ZONES]; //!< Table of 2x10 containing 2 bits bitset representing if there is a track / pretrack or nothing in one zone	
-			std::bitset<GEIGER_LEVEL_TWO_ZONING_BITSET_SIZE> _level_two_prime_tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES]; //!< Table of 2x9 containing 2 bits bitset representing if there is a track / pretrack or nothing in one interzone
+			std::bitset<TOTAL_ZONE_AFTER_PROJECTIONS_BITSET_SIZE> _zone_tracker_trigger_info_after_projections_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRIGGER_ZONES]; //!< Table of 2x10 containing 10 bits bitset representing the state of all zones after projections on layers and rows
 
-			sub_zone_location_info _sub_zone_location_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES_PER_SIDE]; //!< Table of 2x40 (10 zones subdivided in 4 subzones on 2 sides)
+			std::bitset<TOTAL_INTERZONE_AFTER_PROJECTIONS_BITSET_SIZE> _interzone_tracker_trigger_info_after_projections_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES];  //!< Table of 2x9 containing 8 bits bitset representing the state of all interzones after projections on layers and rows
+
+			std::bitset<FINAL_ZONE_BITSET_SIZE> _zone_tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRIGGER_ZONES]; //!< Table of 2x10 containing 4 bits bitset representing if there is a track / pretrack or nothing in one zone	and the location if a cells in 3 first layers is activated
 			
-			memory<6,1> _mem_lvl0_to_lvl1_row_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRIGGER_ZONES][mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES]; //!< A6D1 memory for level 0 to level 1 row projection depending of algorithm uses (multiplicity or gap)
-			memory<5,1> _mem_lvl0_to_lvl1_layer_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRIGGER_ZONES][mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES]; //!< A6D1 memory for level 0 to level 1 layer projection depending of algorithm uses (multiplicity or gap)
-			memory<4,2> _mem_lvl1_to_lvl2_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRIGGER_ZONES]; //!< A4D2 memory for level 1 to level 2 (4 bits --> 2 bits)
+			std::bitset<FINAL_INTERZONE_BITSET_SIZE> _interzone_tracker_trigger_info_[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES]; //!< Table of 2x9 containing 2 bits bitset representing if there is a track / pretrack or nothing in one interzone
 			
-			tracker_record _tracker_level_1_finale_decision_; //!< Structure representing the finale decision for level 1 tracker
-			bool _tracker_finale_decision_; //!< Finale tracker decision
+			tracker_record _tracker_record_finale_decision_; //!< Tracker record structure for a clocktick
+			bool _tracker_finale_decision_; //!< Finale tracker decision boolean
 		};
 
   } // end of namespace digitization

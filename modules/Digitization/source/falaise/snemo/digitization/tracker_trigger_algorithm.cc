@@ -21,17 +21,19 @@ namespace snemo {
   
   namespace digitization {
 
-    const int32_t tracker_trigger_algorithm::GEIGER_LEVEL_ONE_ZONING_BITSET_SIZE;
-    const int32_t tracker_trigger_algorithm::GEIGER_LEVEL_TWO_ZONING_BITSET_SIZE;
-    const int32_t tracker_trigger_algorithm::GEIGER_LEVEL_ONE_SUBZONE_LAYER_SIZE;
-    const int32_t tracker_trigger_algorithm::GEIGER_LEVEL_ONE_SUBZONE_ROW_SIZE;
-    const int32_t tracker_trigger_algorithm::GEIGER_ZONING_FINAL_BITSET_SIZE;
-    const int32_t tracker_trigger_algorithm::GEIGER_FINAL_DECISION_BITSET_SIZE;
+    const int32_t tracker_trigger_algorithm::NUMBER_OF_NEAR_SOURCE_LAYERS;
+    const int32_t tracker_trigger_algorithm::SUBZONE_PROJECTION_LAYER_SIZE;
+    const int32_t tracker_trigger_algorithm::SUBZONE_PROJECTION_ROW_SIZE;
+    const int32_t tracker_trigger_algorithm::TOTAL_ZONE_AFTER_PROJECTIONS_BITSET_SIZE;
+    const int32_t tracker_trigger_algorithm::TOTAL_INTERZONE_AFTER_PROJECTIONS_BITSET_SIZE;
+    const int32_t tracker_trigger_algorithm::FINAL_ZONE_BITSET_SIZE;
+    const int32_t tracker_trigger_algorithm::FINAL_INTERZONE_BITSET_SIZE;    
+    const int32_t tracker_trigger_algorithm::FINALE_DECISION_BITSET_SIZE;
     
     tracker_trigger_algorithm::tracker_record::tracker_record()
     {
       clocktick_1600ns = -1;
-      level_one_finale_decision.reset();
+      finale_decision.reset();
       return;
     }
     
@@ -45,7 +47,7 @@ namespace snemo {
 	      final_tracker_trigger_info[iside][jzone].reset();
 	    }
 	}
-      level_one_finale_decision.reset();
+      finale_decision.reset();
       return;
     }
     
@@ -63,7 +65,7 @@ namespace snemo {
 	    } // end of izone
 	  std::clog << std::endl;
 	}
-      std::clog << "Level one decision : [" << level_one_finale_decision << "]" <<  std::endl;
+      std::clog << "Level one decision : [" << finale_decision << "]" <<  std::endl;
 
       return;
     }
@@ -185,22 +187,22 @@ namespace snemo {
 	{
 	  for (int j = 0; j < mapping::NUMBER_OF_TRIGGER_ZONES; j++)
 	    {
-	      _level_one_tracker_trigger_info_[i][j] = 0;
-	      _level_two_tracker_trigger_info_[i][j] = 0;
+	      _zone_tracker_trigger_info_after_projections_[i][j].reset();
+	      _zone_tracker_trigger_info_[i][j].reset();
 	      if (j < mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES)
 		{
-		  _level_one_prime_tracker_trigger_info_[i][j] = 0;
-		  _level_two_prime_tracker_trigger_info_[i][j] = 0;
+		  _interzone_tracker_trigger_info_after_projections_[i][j].reset();
+		  _interzone_tracker_trigger_info_[i][j].reset();
 		}
 	    }
 	}
-      _tracker_level_1_finale_decision_.reset();
+      _tracker_record_finale_decision_.reset();
       return;
     }
 
-    const tracker_trigger_algorithm::tracker_record tracker_trigger_algorithm::get_tracker_level_1_finale_decision_structure() const
+    const tracker_trigger_algorithm::tracker_record tracker_trigger_algorithm::get_tracker_record_finale_decision_structure() const
     {
-      return _tracker_level_1_finale_decision_;
+      return _tracker_record_finale_decision_;
     }
 
     uint32_t tracker_trigger_algorithm::get_board_id(const std::bitset<geiger::tp::FULL_SIZE> & my_bitset_) const
@@ -210,7 +212,7 @@ namespace snemo {
 	{
 	  if (my_bitset_.test(i) == true)
 	    {
-	      temporary_board_bitset.set(i - geiger::tp::BOARD_ID_BIT0, 1);
+	      temporary_board_bitset.set(i - geiger::tp::BOARD_ID_BIT0, true);
 	    }
 	  else
 	    {
@@ -361,37 +363,37 @@ namespace snemo {
 
     void tracker_trigger_algorithm::display_intermediate_tracker_trigger_info() const
     {
-      std::clog << "Level One tracker trigger info display : " << std::endl;
+      std::clog << "After projections tracker trigger info display : " << std::endl;
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 	{
 	  std::clog << "Side = " << iside << " | ";
 	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
 	    {
-	      std::clog << "[" << _level_one_tracker_trigger_info_[iside][izone] << "] ";
+	      std::clog << "[" << _zone_tracker_trigger_info_after_projections_[iside][izone] << "] ";
 	    } // end of izone
 	  std::clog << std::endl;
 	  std::clog << "                 ";
 	  for (int iinterzone = 0; iinterzone < mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES; iinterzone++)
 	    {
-	      std::clog << "[" << _level_one_prime_tracker_trigger_info_[iside][iinterzone] << "] ";
+	      std::clog << "[" << _interzone_tracker_trigger_info_after_projections_[iside][iinterzone] << "] ";
 	    } // end of iinterzone
 	  std::clog << std::endl;
 	} // end of iside
 
-      std::clog << "Level Two tracker trigger info display : " << std::endl;
+      std::clog << "Zone and interzones tracker trigger info display : " << std::endl;
       std::clog << "         | VOID = 00 | SHORT TRACK = 11 | LONG TRACK = 01" << std::endl;
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 	{
 	  std::clog << "Side = " << iside << " | ";
 	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
 	    {
-	      std::clog << "[" << _level_two_tracker_trigger_info_[iside][izone] << "] ";
+	      std::clog << "[" << _zone_tracker_trigger_info_[iside][izone] << "] ";
 	    } // end of izone
 	  std::clog << std::endl;
 	  std::clog << "              ";
 	  for (int iinterzone = 0; iinterzone < mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES; iinterzone++)
 	    {
-	      std::clog << "[" << _level_two_prime_tracker_trigger_info_[iside][iinterzone] << "] ";
+	      std::clog << "[" << _interzone_tracker_trigger_info_[iside][iinterzone] << "] ";
 	    } // end of iinterzone
 	  std::clog << std::endl;
 	} // end of iside
@@ -405,7 +407,7 @@ namespace snemo {
 								int32_t subzone_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Tracker trigger algorithm is already initialized ! ");
-      _mem_lvl0_to_lvl1_row_[side_][zone_][subzone_].load_from_file(filename_); 
+      _mem_projection_row_[side_][zone_][subzone_].load_from_file(filename_); 
       return;
     }
 
@@ -430,7 +432,7 @@ namespace snemo {
 								  int32_t subzone_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Tracker trigger algorithm is already initialized ! ");
-      _mem_lvl0_to_lvl1_layer_[side_][zone_][subzone_].load_from_file(filename_); 
+      _mem_projection_layer_[side_][zone_][subzone_].load_from_file(filename_); 
       return;
     }
 
@@ -454,7 +456,7 @@ namespace snemo {
 							       int32_t zone_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Tracker trigger algorithm is already initialized ! ");
-      _mem_lvl1_to_lvl2_[side_][zone_].load_from_file(filename_); 
+      _mem_pattern_for_a_zone_[side_][zone_].load_from_file(filename_); 
       return;
     }
 
@@ -611,7 +613,7 @@ namespace snemo {
       return;
     }
       
-    void tracker_trigger_algorithm::build_trigger_level_one_bitsets()
+    void tracker_trigger_algorithm::build_zone_tracker_trigger_after_projections()
     {
       for (int32_t iside = 0; iside < mapping::NUMBER_OF_SIDES; iside ++)
 	{
@@ -629,10 +631,10 @@ namespace snemo {
 	      const int32_t row_begin   = _sub_zone_location_info_[iside][i].row_begin;
 	      const int32_t row_end     = _sub_zone_location_info_[iside][i].row_end;
 	      const int32_t layer_begin = _sub_zone_location_info_[iside][i].layer_begin;
-	      const int32_t layer_end   = _sub_zone_location_info_[iside][i].layer_begin + GEIGER_LEVEL_ONE_SUBZONE_LAYER_SIZE;
+	      const int32_t layer_end   = _sub_zone_location_info_[iside][i].layer_begin + SUBZONE_PROJECTION_LAYER_SIZE;
 
-	      std::bitset<GEIGER_LEVEL_ONE_SUBZONE_ROW_SIZE>   subzone_row_bitset;
-	      std::bitset<GEIGER_LEVEL_ONE_SUBZONE_LAYER_SIZE> subzone_layer_bitset;
+	      std::bitset<SUBZONE_PROJECTION_ROW_SIZE>   subzone_row_bitset;
+	      std::bitset<SUBZONE_PROJECTION_LAYER_SIZE> subzone_layer_bitset;
 
 	      for (int jrow = row_begin; jrow <= row_end; jrow++)
 		{
@@ -640,7 +642,7 @@ namespace snemo {
 		    {
 		      if (_geiger_matrix_[iside][klayer][jrow])
 			{ 
-			  subzone_row_bitset.set(jrow - row_begin, 1);
+			  subzone_row_bitset.set(jrow - row_begin, true);
 			} // end of if
 		    } // end of klayer
 		} // end of jrow
@@ -651,18 +653,18 @@ namespace snemo {
 		    {
 		      if (_geiger_matrix_[iside][klayer][jrow])
 			{
-			  subzone_layer_bitset.set(klayer - layer_begin, 1);
+			  subzone_layer_bitset.set(klayer - layer_begin, true);
 			} // end of if
 		    } // end of jrow
 		} // end of klayer
 
-	      std::bitset<GEIGER_LEVEL_ONE_SUBZONE_ROW_SIZE> subzone_row_bitset_address = subzone_row_bitset;
+	      std::bitset<SUBZONE_PROJECTION_ROW_SIZE> subzone_row_bitset_address = subzone_row_bitset;
 	      std::bitset<1> subzone_row_bitset_data;
-	      _mem_lvl0_to_lvl1_row_[iside][zone_index][subzone].fetch(subzone_row_bitset_address, subzone_row_bitset_data);
+	      _mem_projection_row_[iside][zone_index][subzone].fetch(subzone_row_bitset_address, subzone_row_bitset_data);
 	      
-	      std::bitset<GEIGER_LEVEL_ONE_SUBZONE_LAYER_SIZE> subzone_layer_bitset_address = subzone_layer_bitset;
+	      std::bitset<SUBZONE_PROJECTION_LAYER_SIZE> subzone_layer_bitset_address = subzone_layer_bitset;
 	      std::bitset<1> subzone_layer_bitset_data;
-	      _mem_lvl0_to_lvl1_layer_[iside][zone_index][subzone].fetch(subzone_layer_bitset_address, subzone_layer_bitset_data);
+	      _mem_projection_layer_[iside][zone_index][subzone].fetch(subzone_layer_bitset_address, subzone_layer_bitset_data);
 	      
 	      int32_t layer_bit_index = -1;
 	      int32_t row_bit_index = -1;
@@ -688,14 +690,37 @@ namespace snemo {
 		default :
 		  break;
 		};
+	      
+	      if (subzone == SUBZONE_0_INDEX)
+		{
+		  std::bitset<NUMBER_OF_NEAR_SOURCE_LAYERS> near_source_layer_bitset;
+		  for (int i = 0; i < NUMBER_OF_NEAR_SOURCE_LAYERS; i++)
+		    {
+		      if (subzone_layer_bitset_address.test(i) == true) near_source_layer_bitset.set(i, true);
+		      else near_source_layer_bitset.set(i, false);
+		    }
+		  if (near_source_layer_bitset.any()) _zone_tracker_trigger_info_after_projections_[iside][zone_index].set(LEFT_NEAR_SOURCE_AP_INDEX, true);
+		}
+     
+	      if (subzone == SUBZONE_2_INDEX)
+		{
+		  std::bitset<NUMBER_OF_NEAR_SOURCE_LAYERS> near_source_layer_bitset;
+		  for (int i = 0; i < NUMBER_OF_NEAR_SOURCE_LAYERS; i++)
+		    {
+		      if (subzone_layer_bitset_address.test(i) == true) near_source_layer_bitset.set(i, true);
+		      else near_source_layer_bitset.set(i, false);
+		    }
+		  if (near_source_layer_bitset.any()) _zone_tracker_trigger_info_after_projections_[iside][zone_index].set(RIGHT_NEAR_SOURCE_AP_INDEX, true);
+		}
+
 
 	      if (subzone_layer_bitset_data.test(0) == true)
 		{
-		  _level_one_tracker_trigger_info_[iside][zone_index].set(layer_bit_index, 1);
+		  _zone_tracker_trigger_info_after_projections_[iside][zone_index].set(layer_bit_index, true);
 		}
 	      if (subzone_row_bitset_data.test(0) == true)
 		{
-		  _level_one_tracker_trigger_info_[iside][zone_index].set(row_bit_index,1);
+		  _zone_tracker_trigger_info_after_projections_[iside][zone_index].set(row_bit_index, true);
 		}
 
 	    } // end of isubzones
@@ -703,87 +728,97 @@ namespace snemo {
       return;
     }
 
-    void tracker_trigger_algorithm::build_trigger_level_one_to_level_two()
+    void tracker_trigger_algorithm::build_zone_tracker_trigger_info()
     {
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 	{ 
 	  for (int izone = 0; izone < mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES; izone++)
 	    {
-	      if (_level_one_tracker_trigger_info_[iside][izone].test(SUBZONE_2_LAYER_INDEX) == true)  
-		_level_one_prime_tracker_trigger_info_[iside][izone].set(SUBZONE_0_LAYER_INDEX, 1);
-	      if (_level_one_tracker_trigger_info_[iside][izone].test(SUBZONE_2_ROW_INDEX)   == true) 
-		_level_one_prime_tracker_trigger_info_[iside][izone].set(SUBZONE_0_ROW_INDEX, 1);
-	      if (_level_one_tracker_trigger_info_[iside][izone].test(SUBZONE_3_LAYER_INDEX) == true)  
-		_level_one_prime_tracker_trigger_info_[iside][izone].set(SUBZONE_1_LAYER_INDEX, 1);
-	      if (_level_one_tracker_trigger_info_[iside][izone].test(SUBZONE_3_ROW_INDEX)   == true)  
-		_level_one_prime_tracker_trigger_info_[iside][izone].set(SUBZONE_1_ROW_INDEX, 1);
+	      if (_zone_tracker_trigger_info_after_projections_[iside][izone].test(SUBZONE_2_LAYER_INDEX) == true)  
+		_interzone_tracker_trigger_info_after_projections_[iside][izone].set(SUBZONE_0_LAYER_INDEX, true);
+	      if (_zone_tracker_trigger_info_after_projections_[iside][izone].test(SUBZONE_2_ROW_INDEX)   == true) 
+		_interzone_tracker_trigger_info_after_projections_[iside][izone].set(SUBZONE_0_ROW_INDEX, true);
+	      if (_zone_tracker_trigger_info_after_projections_[iside][izone].test(SUBZONE_3_LAYER_INDEX) == true)  
+		_interzone_tracker_trigger_info_after_projections_[iside][izone].set(SUBZONE_1_LAYER_INDEX, true);
+	      if (_zone_tracker_trigger_info_after_projections_[iside][izone].test(SUBZONE_3_ROW_INDEX)   == true)  
+		_interzone_tracker_trigger_info_after_projections_[iside][izone].set(SUBZONE_1_ROW_INDEX, true);
 
-	      if (_level_one_tracker_trigger_info_[iside][izone+1].test(SUBZONE_0_LAYER_INDEX) == true) 
-		_level_one_prime_tracker_trigger_info_[iside][izone].set(SUBZONE_2_LAYER_INDEX, 1);
-	      if (_level_one_tracker_trigger_info_[iside][izone+1].test(SUBZONE_0_ROW_INDEX)   == true)
-		_level_one_prime_tracker_trigger_info_[iside][izone].set(SUBZONE_2_ROW_INDEX, 1);
-	      if (_level_one_tracker_trigger_info_[iside][izone+1].test(SUBZONE_1_LAYER_INDEX) == true) 
-		_level_one_prime_tracker_trigger_info_[iside][izone].set(SUBZONE_3_LAYER_INDEX, 1);
-	      if (_level_one_tracker_trigger_info_[iside][izone+1].test(SUBZONE_1_ROW_INDEX)   == true) 
-		_level_one_prime_tracker_trigger_info_[iside][izone].set(SUBZONE_3_ROW_INDEX, 1);
+	      if (_zone_tracker_trigger_info_after_projections_[iside][izone+1].test(SUBZONE_0_LAYER_INDEX) == true) 
+		_interzone_tracker_trigger_info_after_projections_[iside][izone].set(SUBZONE_2_LAYER_INDEX, true);
+	      if (_zone_tracker_trigger_info_after_projections_[iside][izone+1].test(SUBZONE_0_ROW_INDEX)   == true)
+		_interzone_tracker_trigger_info_after_projections_[iside][izone].set(SUBZONE_2_ROW_INDEX, true);
+	      if (_zone_tracker_trigger_info_after_projections_[iside][izone+1].test(SUBZONE_1_LAYER_INDEX) == true) 
+		_interzone_tracker_trigger_info_after_projections_[iside][izone].set(SUBZONE_3_LAYER_INDEX, true);
+	      if (_zone_tracker_trigger_info_after_projections_[iside][izone+1].test(SUBZONE_1_ROW_INDEX)   == true) 
+		_interzone_tracker_trigger_info_after_projections_[iside][izone].set(SUBZONE_3_ROW_INDEX, true);
 	    } // end of izone
 	} // end of iside
+			
+      // Intermediate bitset size for a zone from 8 bits after projections and near source bits
+      const int32_t INTERMEDIATE_ZONE_PATTERN_BITSET_SIZE = 4;
+      // Intermediate bitset size for an interzone from 8 bits after projections only
+      const int32_t INTERMEDIATE_PATTERN_DATA_BITSET_SIZE = 2;
 
-      const int32_t intermediate_level_one_bitset_size = 4;
-      std::bitset<intermediate_level_one_bitset_size> intermediate_level_one_tracker_trigger_info[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRIGGER_ZONES];
-      std::bitset<intermediate_level_one_bitset_size> intermediate_level_one_prime_tracker_trigger_info[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES];
+      std::bitset<INTERMEDIATE_ZONE_PATTERN_BITSET_SIZE> intermediate_zone_pattern_tracker_trigger_info[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRIGGER_ZONES];
+      std::bitset<INTERMEDIATE_ZONE_PATTERN_BITSET_SIZE> intermediate_interzone_pattern_tracker_trigger_info[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES];
 
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 	{
 	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
 	    {
-	      for (int jindex = 0; jindex < GEIGER_LEVEL_ONE_ZONING_BITSET_SIZE; jindex += 2)
+	      for (int jindex = 0; jindex <=  SUBZONE_3_ROW_INDEX; jindex += 2)
 		{
+		  
 		  // Filling intermediate level one zone bitset
-		  if ( _level_one_tracker_trigger_info_[iside][izone].test(jindex) == true || _level_one_tracker_trigger_info_[iside][izone].test(jindex+1) == true)
+		  if ( _zone_tracker_trigger_info_after_projections_[iside][izone].test(jindex) == true || _zone_tracker_trigger_info_after_projections_[iside][izone].test(jindex+1) == true)
 		    {
-		      intermediate_level_one_tracker_trigger_info[iside][izone].set(jindex/2, 1);
+		      intermediate_zone_pattern_tracker_trigger_info[iside][izone].set(jindex/2, true);
 		    }
 
 		  // Filling intermediate level one interzone bitset
 		  if (izone < mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES)
 		    {
-		      if (_level_one_prime_tracker_trigger_info_[iside][izone].test(jindex) == true || _level_one_prime_tracker_trigger_info_[iside][izone].test(jindex) == true)
+		      if (_interzone_tracker_trigger_info_after_projections_[iside][izone].test(jindex) == true || _interzone_tracker_trigger_info_after_projections_[iside][izone].test(jindex) == true)
 			{
-			  intermediate_level_one_prime_tracker_trigger_info[iside][izone].set(jindex/2, 1);
+			  intermediate_interzone_pattern_tracker_trigger_info[iside][izone].set(jindex/2, true);
 			}
 		    } // end of if
 		} // end of jindex
 
 	      // Filling level two zone bitset
-	      std::bitset<intermediate_level_one_bitset_size> intermediate_zone_bitset_address = intermediate_level_one_tracker_trigger_info[iside][izone];
-	      std::bitset<GEIGER_LEVEL_TWO_ZONING_BITSET_SIZE> zone_bitset_data;
-	      _mem_lvl1_to_lvl2_[iside][izone].fetch(intermediate_zone_bitset_address, zone_bitset_data);
+	      std::bitset<INTERMEDIATE_ZONE_PATTERN_BITSET_SIZE> intermediate_zone_bitset_address = intermediate_zone_pattern_tracker_trigger_info[iside][izone];
+	      std::bitset<INTERMEDIATE_PATTERN_DATA_BITSET_SIZE> zone_bitset_data;
+	      _mem_pattern_for_a_zone_[iside][izone].fetch(intermediate_zone_bitset_address, zone_bitset_data);
 	      if (zone_bitset_data.test(0) == true) // Test index 0 of the bitset
 		{
-		  _level_two_tracker_trigger_info_[iside][izone].set(0, 1); // Set index 0 of the bitset
+		  _zone_tracker_trigger_info_[iside][izone].set(PATTERN_BIT_0_FINAL_INDEX, true); // Set index 0 of the bitset
 		}
 
 	      if (zone_bitset_data.test(1) == true) // Test index 1 of the bitset
 		{
-		  _level_two_tracker_trigger_info_[iside][izone].set(1, 1); // Set index 1 of the bitset
+		  _zone_tracker_trigger_info_[iside][izone].set(PATTERN_BIT_1_FINAL_INDEX, true); // Set index 1 of the bitset
 		}
 
 	      // Filling level two interzone bitset
 	      if (izone < mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES)
 		{
-		  std::bitset<intermediate_level_one_bitset_size> intermediate_interzone_bitset_address = intermediate_level_one_prime_tracker_trigger_info[iside][izone];
-		  std::bitset<GEIGER_LEVEL_TWO_ZONING_BITSET_SIZE> interzone_bitset_data;
-		  _mem_lvl1_to_lvl2_[iside][izone].fetch(intermediate_interzone_bitset_address, interzone_bitset_data);
+		  std::bitset<INTERMEDIATE_ZONE_PATTERN_BITSET_SIZE> intermediate_interzone_bitset_address = intermediate_interzone_pattern_tracker_trigger_info[iside][izone];
+		  std::bitset<INTERMEDIATE_PATTERN_DATA_BITSET_SIZE> interzone_bitset_data;
+		  _mem_pattern_for_a_zone_[iside][izone].fetch(intermediate_interzone_bitset_address, interzone_bitset_data);
 		  if (interzone_bitset_data.test(0) == true) // Test index 0 of the bitset
 		    {
-		      _level_two_prime_tracker_trigger_info_[iside][izone].set(0, 1); // Set index 0 of the bitset
+		      _interzone_tracker_trigger_info_[iside][izone].set(PATTERN_BIT_0_FINAL_INDEX, true); // Set index 0 of the bitset
 		    }
 		  if (interzone_bitset_data.test(1) == true) // Test index 1 of the bitset
 		    {
-		      _level_two_prime_tracker_trigger_info_[iside][izone].set(1, 1); // Set index 1 of the bitset
+		      _interzone_tracker_trigger_info_[iside][izone].set(PATTERN_BIT_1_FINAL_INDEX, true); // Set index 1 of the bitset
 		    }
-		} //end of if	      
+		} //end of if
+	      
+	      if (_zone_tracker_trigger_info_after_projections_[iside][izone].test(RIGHT_NEAR_SOURCE_AP_INDEX) == true) _zone_tracker_trigger_info_[iside][izone].set(RIGHT_NEAR_SOURCE_FINAL_INDEX,true);
+	      
+	      if (_zone_tracker_trigger_info_after_projections_[iside][izone].test(LEFT_NEAR_SOURCE_AP_INDEX) == true) _zone_tracker_trigger_info_[iside][izone].set(LEFT_NEAR_SOURCE_FINAL_INDEX,true);
+	      
 	    } // end of izone
 	} // end of iside
 
@@ -797,7 +832,7 @@ namespace snemo {
 	{
 	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
 	    {
-	      _tracker_level_1_finale_decision_.final_tracker_trigger_info[iside][izone] = _level_two_tracker_trigger_info_[iside][izone];
+	      _tracker_record_finale_decision_.final_tracker_trigger_info[iside][izone] = _zone_tracker_trigger_info_[iside][izone];
 	    }
 	}
      
@@ -806,14 +841,14 @@ namespace snemo {
 	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
 	    {
 	      // Test if there is a full track (01) in the interzone and set zoning bitset if there is
-	      if (_level_two_prime_tracker_trigger_info_[iside][izone].test(0)    == true     // test bit index 0 
-	      	  && _level_two_prime_tracker_trigger_info_[iside][izone].test(1) == false    // test bit index 1
+	      if (_interzone_tracker_trigger_info_[iside][izone].test(0)    == true     // test bit index 0 
+	      	  && _interzone_tracker_trigger_info_[iside][izone].test(1) == false    // test bit index 1
 		  && izone < mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES) 
 	      	{	
-		  _tracker_level_1_finale_decision_.final_tracker_trigger_info[iside][izone].set(0,1);
-		  _tracker_level_1_finale_decision_.final_tracker_trigger_info[iside][izone].set(1,0);
-		  _tracker_level_1_finale_decision_.final_tracker_trigger_info[iside][izone+1].set(0,1);
-		  _tracker_level_1_finale_decision_.final_tracker_trigger_info[iside][izone+1].set(1,0);
+		  _tracker_record_finale_decision_.final_tracker_trigger_info[iside][izone].set(0,1);
+		  _tracker_record_finale_decision_.final_tracker_trigger_info[iside][izone].set(1,0);
+		  _tracker_record_finale_decision_.final_tracker_trigger_info[iside][izone+1].set(0,1);
+		  _tracker_record_finale_decision_.final_tracker_trigger_info[iside][izone+1].set(1,0);
 	      	}
 	    } // end of izone	  
 	} // end of iside
@@ -823,19 +858,19 @@ namespace snemo {
 	{
 	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
 	    {
-	      if (_tracker_level_1_finale_decision_.final_tracker_trigger_info[iside][izone].test(0) == true
-		  &&_tracker_level_1_finale_decision_.final_tracker_trigger_info[iside][izone].test(1) == false)
+	      if (_tracker_record_finale_decision_.final_tracker_trigger_info[iside][izone].test(0) == true
+		  &&_tracker_record_finale_decision_.final_tracker_trigger_info[iside][izone].test(1) == false)
 		{
-		  _tracker_level_1_finale_decision_.level_one_finale_decision.set(0, true);
-		  _tracker_level_1_finale_decision_.level_one_finale_decision.set(1, false);
+		  _tracker_record_finale_decision_.finale_decision.set(0, true);
+		  _tracker_record_finale_decision_.finale_decision.set(1, false);
 		}
 	      
-	      else if (_tracker_level_1_finale_decision_.level_one_finale_decision != 1
-		       && _tracker_level_1_finale_decision_.final_tracker_trigger_info[iside][izone].test(0) == true
-		       && _tracker_level_1_finale_decision_.final_tracker_trigger_info[iside][izone].test(1) == true)
+	      else if (_tracker_record_finale_decision_.finale_decision != 1
+		       && _tracker_record_finale_decision_.final_tracker_trigger_info[iside][izone].test(0) == true
+		       && _tracker_record_finale_decision_.final_tracker_trigger_info[iside][izone].test(1) == true)
 		{
-		  _tracker_level_1_finale_decision_.level_one_finale_decision.set(0, true);
-		  _tracker_level_1_finale_decision_.level_one_finale_decision.set(1, true);
+		  _tracker_record_finale_decision_.finale_decision.set(0, true);
+		  _tracker_record_finale_decision_.finale_decision.set(1, true);
 		}
 	     
 	    } // end of izone	  
@@ -868,8 +903,10 @@ namespace snemo {
 	} // end of iside
       a_geiger_matrix.clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2;
       _geiger_matrix_records_.push_back(a_geiger_matrix);
-      build_trigger_level_one_bitsets();
-      build_trigger_level_one_to_level_two();
+
+      _tracker_record_finale_decision_.clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2;
+      build_zone_tracker_trigger_after_projections();
+      build_zone_tracker_trigger_info();
       build_tracker_record();	
       return;
     }
@@ -886,15 +923,12 @@ namespace snemo {
 	  std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick;
 	  geiger_ctw_data_.get_list_of_geiger_ctw_per_clocktick(iclocktick_800, geiger_ctw_list_per_clocktick);
 	  if (geiger_ctw_list_per_clocktick.size() != 0) // Warning here with BiPo214 events
-	    // we have to do a step to a non null geiger ctw list ? 
-	    // ex : electron event : CTend = 14    alpha event : CTbegin = 150, we don't have to do process for 14 to 150 
 	    {
 	      _process_for_a_clocktick(geiger_ctw_list_per_clocktick);
+	      //_tracker_record_finale_decision_.clocktick_1600ns = iclocktick_800 / 2;
+	      if (_tracker_record_finale_decision_.finale_decision != 0) _tracker_finale_decision_ = true;
 	      
-	      _tracker_level_1_finale_decision_.clocktick_1600ns = iclocktick_800 / 2;
-	      
-	      if (_tracker_level_1_finale_decision_.level_one_finale_decision != 0) _tracker_finale_decision_ = true;
-	      tracker_records_.push_back(_tracker_level_1_finale_decision_);
+	      tracker_records_.push_back(_tracker_record_finale_decision_);
 	    } // end of if ctw list != 0
 	} // end of iclocktick
       return;

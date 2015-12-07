@@ -252,7 +252,11 @@ namespace snemo {
 		    {
 		      for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
 			{
-			  if (a_tracker_record.final_tracker_trigger_info[iside][izone] != 0)
+			  std::bitset<2> tracker_record_final_pattern_for_a_zone = 0;
+			  if (a_tracker_record.final_tracker_trigger_info[iside][izone].test(0) == true) tracker_record_final_pattern_for_a_zone.set(0, true); 
+			  if (a_tracker_record.final_tracker_trigger_info[iside][izone].test(1) == true) tracker_record_final_pattern_for_a_zone.set(1, true);
+			  
+			  if (tracker_record_final_pattern_for_a_zone != 0)
 			    {
 			      a_coincidence_output.coincidence_finale_decision = true;
 			     

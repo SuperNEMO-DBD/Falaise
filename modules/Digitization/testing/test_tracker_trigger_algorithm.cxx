@@ -25,7 +25,7 @@
 #include <snemo/digitization/sd_to_geiger_signal_algo.h>
 #include <snemo/digitization/signal_to_geiger_tp_algo.h>
 #include <snemo/digitization/geiger_tp_to_ctw_algo.h>
-#include <snemo/digitization/tracker_trigger_algorithm_test_near_source.h>
+#include <snemo/digitization/tracker_trigger_algorithm.h>
 
 int main(int  argc_ , char ** argv_)
 {
@@ -126,7 +126,7 @@ int main(int  argc_ , char ** argv_)
 
   // Process
   try {
-    std::clog << "Test program for class 'snemo::digitization::tracker_trigger_algorithm_test_near_source' !" << std::endl;
+    std::clog << "Test program for class 'snemo::digitization::tracker_trigger_algorithm' !" << std::endl;
     // Random generator and seed
     int32_t seed = 314159;
     mygsl::rng random_generator;
@@ -347,7 +347,7 @@ int main(int  argc_ , char ** argv_)
 		sd_2_geiger_signal.initialize();
 		sd_2_geiger_signal.process(SD, signal_data);
 
-		std::vector<snemo::digitization::tracker_trigger_algorithm_test_near_source::tracker_record> tracker_collection_records;
+		std::vector<snemo::digitization::tracker_trigger_algorithm::tracker_record> tracker_collection_records;
 		if( signal_data.has_geiger_signals())
 		  {
 		    // Random clocktick references and shifts 
@@ -384,16 +384,16 @@ int main(int  argc_ , char ** argv_)
 		    my_geiger_ctw_data.tree_dump(std::clog, "Geiger CTW(s) data : ", "INFO : ");
 		    
 		    // Initializing and processing tracker trigger algorithm to make a decision :
-		    snemo::digitization::tracker_trigger_algorithm_test_near_source my_tracker_algo;
+		    snemo::digitization::tracker_trigger_algorithm my_tracker_algo;
 		    my_tracker_algo.set_electronic_mapping(my_e_mapping);
 		    my_tracker_algo.fill_all_layer_memory(memory_layer);
 		    my_tracker_algo.fill_all_row_memory(memory_row);
 		    my_tracker_algo.fill_all_a4_d2_memory(memory_a4_d2);
 		    my_tracker_algo.initialize();
-		    snemo::digitization::tracker_trigger_algorithm_test_near_source::tracker_record tracker_level_one_finale_decison;
+		    snemo::digitization::tracker_trigger_algorithm::tracker_record tracker_level_one_finale_decison;
 
 		    my_tracker_algo.process(my_geiger_ctw_data, tracker_collection_records);			    
-		    tracker_level_one_finale_decison = my_tracker_algo.get_tracker_level_1_finale_decision_structure();
+		    tracker_level_one_finale_decison = my_tracker_algo.get_tracker_record_finale_decision_structure();
 
 		  } // end of if has geiger signals data
 	      } // end of if has "gg" step hits	 

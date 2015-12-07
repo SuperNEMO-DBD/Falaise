@@ -523,7 +523,7 @@ namespace snemo {
 		} // end of izone
 	      std::clog << std::endl;
 	    }
-	  std::clog << "Tracker level one decision : [" << a_tracker_record.level_one_finale_decision << "]" <<  std::endl << std::endl;
+	  std::clog << "Tracker level one decision : [" << a_tracker_record.finale_decision << "]" <<  std::endl << std::endl;
 
 	  bool geiger_matrix[mapping::NUMBER_OF_SIDES][mapping::GEIGER_LAYERS_SIZE][mapping::GEIGER_ROWS_SIZE];
 	  for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
@@ -619,7 +619,7 @@ namespace snemo {
       	    } // end of izone
       	  std::clog << std::endl;
       	}
-      std::clog << "Tracker level one decision : [" << a_tracker_record.level_one_finale_decision << "]" <<  std::endl << std::endl;
+      std::clog << "Tracker level one decision : [" << a_tracker_record.finale_decision << "]" <<  std::endl << std::endl;
       
       
       std::bitset<10> zoning_word[mapping::NUMBER_OF_SIDES];
