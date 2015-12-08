@@ -138,7 +138,7 @@ DOCD_CLASS_DECLARATION(snemo::reconstruction::charged_particle_tracking_module)
 
 #endif // FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_CHARGED_PARTICLE_TRACKING_MODULE_H
 
-// end of snemo/reconstruction/basic_particle_tracking_module.h
+// end of snemo/reconstruction/charged_particle_tracking_module.h
 /*
 ** Local Variables: --
 ** mode: c++ --
