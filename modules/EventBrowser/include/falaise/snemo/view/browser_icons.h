@@ -35,7 +35,7 @@
 #include <string>
 
 /* XPM */
-std::string xpm_vertex[]={
+const char * xpm_vertex[]={
   "16 16 2 1",
   ". c None",
   "# c #303030",
@@ -56,7 +56,7 @@ std::string xpm_vertex[]={
   "................",
   "................"};
 
-std::string xpm_calorimeter[]={
+const char * xpm_calorimeter[]={
   "16 16 2 1",
   ". c None",
   "# c #303030",
@@ -77,7 +77,7 @@ std::string xpm_calorimeter[]={
   "................",
   "................"};
 
-std::string xpm_geiger[]={
+const char * xpm_geiger[]={
   "16 16 2 1",
   ". c None",
   "# c #303030",
@@ -98,7 +98,7 @@ std::string xpm_geiger[]={
   ".##...##........",
   "...###.........."};
 
-std::string xpm_cluster[]={
+const char * xpm_cluster[]={
   "16 16 2 1",
   ". c None",
   "# c #303030",
@@ -119,7 +119,7 @@ std::string xpm_cluster[]={
   "#..#............",
   "####............"};
 
-std::string xpm_helix[]={
+const char * xpm_helix[]={
   "16 16 2 1",
   ". c None",
   "# c #303030",
@@ -140,7 +140,7 @@ std::string xpm_helix[]={
   "................",
   "................"};
 
-std::string xpm_line[]={
+const char * xpm_line[]={
   "16 16 2 1",
   ". c None",
   "# c #303030",
@@ -161,7 +161,7 @@ std::string xpm_line[]={
   "................",
   "................"};
 
-std::string xpm_step[]={
+const char * xpm_step[]={
   "16 16 2 1",
   ". c None",
   "# c #303030",
@@ -182,7 +182,7 @@ std::string xpm_step[]={
   "................",
   "................"};
 
-std::string xpm_track[]={
+const char * xpm_track[]={
   "16 16 2 1",
   ". c None",
   "# c #303030",
@@ -203,7 +203,7 @@ std::string xpm_track[]={
   "................",
   "................"};
 
-std::string xpm_flag[] = {
+const char * xpm_flag[] = {
   "16 16 2 1",
   ". c None",
   "# c #303030",
@@ -224,7 +224,7 @@ std::string xpm_flag[] = {
   "................",
   "................"};
 
-std::string xpm_folder[] = {
+const char * xpm_folder[] = {
   "16 16 3 1",
   "  c None s None",
   ". c #cfcfcf",
@@ -246,7 +246,7 @@ std::string xpm_folder[] = {
   "                ",
   "                "};
 
-std::string xpm_ofolder[] = {
+const char * xpm_ofolder[] = {
   "16 16 3 1",
   "  c None s None",
   ". c #cfcfcf",

@@ -1531,18 +1531,18 @@ namespace snemo {
         if (found != _icons_.end()) return found->second;
 
         // Otherwise create new entry:
-        std::string * xpm = 0;
-        if (icon_type_ == "vertex")           xpm = (std::string *)&xpm_vertex;
-        else if (icon_type_ == "calorimeter") xpm = (std::string *)&xpm_calorimeter;
-        else if (icon_type_ == "geiger")      xpm = (std::string *)&xpm_geiger;
-        else if (icon_type_ == "cluster")     xpm = (std::string *)&xpm_cluster;
-        else if (icon_type_ == "helix")       xpm = (std::string *)&xpm_helix;
-        else if (icon_type_ == "line")        xpm = (std::string *)&xpm_line;
-        else if (icon_type_ == "step")        xpm = (std::string *)&xpm_step;
-        else if (icon_type_ == "track")       xpm = (std::string *)&xpm_track;
-        else if (icon_type_ == "flag")        xpm = (std::string *)&xpm_flag;
-        else if (icon_type_ == "folder")      xpm = (std::string *)&xpm_folder;
-        else if (icon_type_ == "ofolder")     xpm = (std::string *)&xpm_ofolder;
+        const char ** xpm = 0;
+        if (icon_type_ == "vertex")           xpm = xpm_vertex;
+        else if (icon_type_ == "calorimeter") xpm = xpm_calorimeter;
+        else if (icon_type_ == "geiger")      xpm = xpm_geiger;
+        else if (icon_type_ == "cluster")     xpm = xpm_cluster;
+        else if (icon_type_ == "helix")       xpm = xpm_helix;
+        else if (icon_type_ == "line")        xpm = xpm_line;
+        else if (icon_type_ == "step")        xpm = xpm_step;
+        else if (icon_type_ == "track")       xpm = xpm_track;
+        else if (icon_type_ == "flag")        xpm = xpm_flag;
+        else if (icon_type_ == "folder")      xpm = xpm_folder;
+        else if (icon_type_ == "ofolder")     xpm = xpm_ofolder;
         else return 0;
 
         // Change color:
@@ -1550,18 +1550,20 @@ namespace snemo {
           std::string color = "#303030";
           if (!hex_color_.empty()) color = hex_color_;
           if (reverse_color_) {
-            xpm[1] = ". c " + color;
+            const std::string bg = ". c " + color;
+            xpm[1] = bg.c_str();
             xpm[2] = "# c None";
           } else {
+            const std::string fg = "# c " + color;
             xpm[1] = ". c None";
-            xpm[2] = "# c " + color;
+            xpm[2] = fg.c_str();
           }
         }
 
         // Create a picture from the XPM data:
         TGPicturePool * picpool = gClient->GetResourcePool()->GetPicturePool();
         const TGPicture * iconpic = picpool->GetPicture(icon_name.c_str(),
-                                                        (char **)xpm);
+                                                        const_cast<char**>(xpm));
 
         // Add new picture to dictionnary:
         _icons_[icon_name] = iconpic;
