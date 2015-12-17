@@ -1,4 +1,4 @@
-/// \file snemo/reconstruction/charged_particle_tracking_module.h
+/// \file falaise/snemo/reconstruction/charged_particle_tracking_module.h
 /* Author(s)     : Mathieu Bongrand <bongrand@lal.in2p3.fr>
  *                 Xavier Garrido <garrido@lal.in2p3.fr>
  * Creation date : 2012-04-20
