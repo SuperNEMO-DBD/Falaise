@@ -170,8 +170,8 @@ int main( int  argc_ , char **argv_  )
       }
 
     
-	datatools::fetch_path_with_env(memory_layer);
- 	datatools::fetch_path_with_env(memory_row);
+    datatools::fetch_path_with_env(memory_layer);
+    datatools::fetch_path_with_env(memory_row);
 
     // Event reader :
     dpp::input_module reader;

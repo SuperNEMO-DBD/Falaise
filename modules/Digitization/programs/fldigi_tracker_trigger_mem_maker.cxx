@@ -22,6 +22,7 @@ int main( int  argc_ , char ** argv_  )
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
   try {
+    std::clog << "TEST : testng progrem tracker " << std::endl;
     std::string production_file;
     production_file = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A6_D1_max_gap_4_memory.data";
     datatools::fetch_path_with_env(production_file);
