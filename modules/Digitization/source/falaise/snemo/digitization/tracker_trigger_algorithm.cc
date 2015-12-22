@@ -230,9 +230,15 @@ namespace snemo {
 	{
 	  std::bitset<geiger::tp::FULL_SIZE> my_bitset;
 	  my_geiger_ctw_.get_100_bits_in_ctw_word(i, my_bitset);
+
+	  // my_geiger_ctw doit changer de taille ! Taille différente, bloc pu de 100 bits
+	  std::bitset<geiger::tp::TP_SIZE> my_tp_bitset;
+	  my_geiger_ctw_.get_55_bits_in_ctw_word(i, my_tp_bitset);
+	  std::clog << "Tp bitset = " << my_bitset << std::endl;
+	  	  
 	  for (int32_t j = geiger::tp::TP_BEGIN; j <= geiger::tp::TP_THREE_WIRES_END; j++)
 	    {
-	      if (my_bitset.test(j))
+	      if (my_bitset.test(j)) // my_tp_bitset : problem here of vector size ?!?
 		{
 		  uint32_t ctw_type  = my_geiger_ctw_.get_geom_id().get_type();
 		  uint32_t ctw_rack  = my_geiger_ctw_.get_geom_id().get(mapping::RACK_INDEX);
@@ -268,12 +274,16 @@ namespace snemo {
 
     void tracker_trigger_algorithm::fill_matrix(const std::vector<geomtools::geom_id> & hit_cells_gids_)
     {
+      std::clog << "DEBUG : -3" << std::endl;
+      std::clog << "hit_cells_gids_" << hit_cells_gids_.size() << std::endl;
+      std::clog << "last GID = " << hit_cells_gids_[hit_cells_gids_.size()-1] << std::endl;
       for (int i = 0; i < hit_cells_gids_.size(); i++)
 	{
 	  int side  = hit_cells_gids_[i].get(mapping::SIDE_INDEX);
 	  int layer = hit_cells_gids_[i].get(mapping::LAYER_INDEX);
 	  int row   = hit_cells_gids_[i].get(mapping::ROW_INDEX);
-	  _geiger_matrix_[side][layer][row] = 1;
+	   _geiger_matrix_[side][layer][row] = 1;
+	  std::clog << "DEBUG : -4" << std::endl;
 	}    
       return;
     }
@@ -888,8 +898,12 @@ namespace snemo {
 	{
 	  std::vector<geomtools::geom_id> hit_cells_gids;
 	  build_hit_cells_gids_from_ctw(geiger_ctw_list_per_clocktick_[isize].get(), hit_cells_gids);
+	  std::clog << "size hit cells gids = " << hit_cells_gids.size() << std::endl;
+	  std::clog << "DEBUG : -2" << std::endl;
 	  fill_matrix(hit_cells_gids);   
+	  std::clog << "DEBUG : -1" << std::endl;
 	} // end of isize
+      std::clog << "DEBUG : 0" << std::endl;
       geiger_matrix a_geiger_matrix;
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 	{
@@ -903,11 +917,14 @@ namespace snemo {
 	} // end of iside
       a_geiger_matrix.clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2;
       _geiger_matrix_records_.push_back(a_geiger_matrix);
-
+      std::clog << "DEBUG : 1" << std::endl;
       _tracker_record_finale_decision_.clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2;
+      std::clog << "DEBUG : 2" << std::endl;
       build_zone_tracker_trigger_after_projections();
       build_zone_tracker_trigger_info();
+      std::clog << "DEBUG : 3" << std::endl;
       build_tracker_record();	
+      std::clog << "DEBUG : 4" << std::endl;
       return;
     }
     
@@ -925,12 +942,15 @@ namespace snemo {
 	  if (geiger_ctw_list_per_clocktick.size() != 0) // Warning here with BiPo214 events
 	    {
 	      _process_for_a_clocktick(geiger_ctw_list_per_clocktick);
+	      std::clog << "DEBUG : 5" << std::endl;
 	      //_tracker_record_finale_decision_.clocktick_1600ns = iclocktick_800 / 2;
 	      if (_tracker_record_finale_decision_.finale_decision != 0) _tracker_finale_decision_ = true;
 	      
 	      tracker_records_.push_back(_tracker_record_finale_decision_);
 	    } // end of if ctw list != 0
+	  std::clog << "DEBUG : 6" << std::endl;
 	} // end of iclocktick
+      std::clog << "DEBUG : 7" << std::endl;
       return;
     }
 

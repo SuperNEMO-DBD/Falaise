@@ -114,6 +114,41 @@ namespace snemo {
       _store |= STORE_GG_CTW;
       return;
     }
+    
+    void geiger_ctw::get_55_bits_in_ctw_word(unsigned int block_index_, std::bitset<geiger::tp::TP_SIZE> & my_bitset_) const
+    {
+      DT_THROW_IF(block_index_ > mapping::NUMBER_OF_FEBS_BY_CRATE, std::logic_error, "Block index out of range (should be [0;19])  ! ");
+      for (int i = 0; i < my_bitset_.size(); i++)
+	{
+	  if (_gg_ctw_.test(i + block_index_ * my_bitset_.size()) == true)
+	    {
+	      my_bitset_.set(i, 1);
+	    }
+	  else
+	    {
+	      my_bitset_.set(i, 0);
+	    }	  
+	}     
+      return;
+    }
+
+    void geiger_ctw::set_55_bits_in_ctw_word(unsigned int block_index_, const std::bitset<geiger::tp::TP_SIZE> & my_bitset_)
+    {
+      DT_THROW_IF(block_index_ > mapping::NUMBER_OF_FEBS_BY_CRATE, std::logic_error, "Block index out of range (should be [0;19])  ! ");
+      for (int i = 0; i < my_bitset_.size(); i++)
+	{
+	  if (my_bitset_.test(i) == true)
+	    {
+	      _gg_ctw_.set(i + block_index_ * my_bitset_.size(),1);
+	    }
+	  else 
+	    {
+	      _gg_ctw_.set(i + block_index_ * my_bitset_.size(),0);
+	    }	  
+	}
+      _store |= STORE_GG_CTW;
+      return;
+    }
 
     void geiger_ctw::set_full_hardware_status(const std::bitset<geiger::tp::THWS_SIZE> & gg_tp_hardware_status_)
     {

@@ -69,6 +69,12 @@ namespace snemo {
 			/// Set the corresponding 100 bitset from tp for a block index in the ctw bitset
 			void set_100_bits_in_ctw_word(unsigned int block_index_, const std::bitset<geiger::tp::FULL_SIZE> & my_bitset_);
 			
+			/// Get the corresponding 55 bitset from tp for a block index in the ctw bitset
+			void get_55_bits_in_ctw_word(unsigned int block_index_, std::bitset<geiger::tp::TP_SIZE> & my_bitset_) const;
+
+			/// Set the corresponding 55 bitset from tp for a block index in the ctw bitset
+			void set_55_bits_in_ctw_word(unsigned int block_index_, const std::bitset<geiger::tp::TP_SIZE> & my_bitset_);
+
 			/// Set hardware status for all geiger tp word in the ctw even if there are empty
 			void set_full_hardware_status(const std::bitset<geiger::tp::THWS_SIZE> & gg_tp_hardware_status_);
 
