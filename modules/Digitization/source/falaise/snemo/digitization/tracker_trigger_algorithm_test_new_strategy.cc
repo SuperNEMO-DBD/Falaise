@@ -13,7 +13,7 @@
 #include <bayeux/datatools/handle.h>
 
 // Ourselves:
-#include <snemo/digitization/tracker_trigger_algorithm.h>
+#include <snemo/digitization/tracker_trigger_algorithm_test_new_strategy.h>
 #include <snemo/digitization/geiger_tp_constants.h>
 #include <snemo/digitization/memory.h>
 
@@ -21,23 +21,23 @@ namespace snemo {
   
   namespace digitization {
 
-    const int32_t tracker_trigger_algorithm::NUMBER_OF_NEAR_SOURCE_LAYERS;
-    const int32_t tracker_trigger_algorithm::SUBZONE_PROJECTION_LAYER_SIZE;
-    const int32_t tracker_trigger_algorithm::SUBZONE_PROJECTION_ROW_SIZE;
-    const int32_t tracker_trigger_algorithm::TOTAL_ZONE_AFTER_PROJECTIONS_BITSET_SIZE;
-    const int32_t tracker_trigger_algorithm::TOTAL_INTERZONE_AFTER_PROJECTIONS_BITSET_SIZE;
-    const int32_t tracker_trigger_algorithm::FINAL_ZONE_BITSET_SIZE;
-    const int32_t tracker_trigger_algorithm::FINAL_INTERZONE_BITSET_SIZE;    
-    const int32_t tracker_trigger_algorithm::FINALE_DECISION_BITSET_SIZE;
+    const int32_t tracker_trigger_algorithm_test_new_strategy::NUMBER_OF_NEAR_SOURCE_LAYERS;
+    const int32_t tracker_trigger_algorithm_test_new_strategy::SUBZONE_PROJECTION_LAYER_SIZE;
+    const int32_t tracker_trigger_algorithm_test_new_strategy::SUBZONE_PROJECTION_ROW_SIZE;
+    const int32_t tracker_trigger_algorithm_test_new_strategy::TOTAL_ZONE_AFTER_PROJECTIONS_BITSET_SIZE;
+    const int32_t tracker_trigger_algorithm_test_new_strategy::TOTAL_INTERZONE_AFTER_PROJECTIONS_BITSET_SIZE;
+    const int32_t tracker_trigger_algorithm_test_new_strategy::FINAL_ZONE_BITSET_SIZE;
+    const int32_t tracker_trigger_algorithm_test_new_strategy::FINAL_INTERZONE_BITSET_SIZE;    
+    const int32_t tracker_trigger_algorithm_test_new_strategy::FINALE_DECISION_BITSET_SIZE;
     
-    tracker_trigger_algorithm::tracker_record::tracker_record()
+    tracker_trigger_algorithm_test_new_strategy::tracker_record::tracker_record()
     {
       clocktick_1600ns = -1;
       finale_decision.reset();
       return;
     }
     
-    void tracker_trigger_algorithm::tracker_record::reset()
+    void tracker_trigger_algorithm_test_new_strategy::tracker_record::reset()
     {
       clocktick_1600ns = -1;
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
@@ -51,7 +51,7 @@ namespace snemo {
       return;
     }
     
-    void tracker_trigger_algorithm::tracker_record::display()
+    void tracker_trigger_algorithm_test_new_strategy::tracker_record::display()
     {
       std::clog << "Tracker Trigger info record : " << std::endl; 
       std::clog << "Clocktick 1600    : " << clocktick_1600ns << std::endl;;  
@@ -70,7 +70,7 @@ namespace snemo {
       return;
     }
     
-    tracker_trigger_algorithm::geiger_matrix::geiger_matrix()
+    tracker_trigger_algorithm_test_new_strategy::geiger_matrix::geiger_matrix()
     {
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 	{
@@ -85,7 +85,7 @@ namespace snemo {
       clocktick_1600ns = -1;
     }
     
-    bool tracker_trigger_algorithm::geiger_matrix::is_empty()
+    bool tracker_trigger_algorithm_test_new_strategy::geiger_matrix::is_empty()
     {
       bool empty = true;
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
@@ -101,7 +101,7 @@ namespace snemo {
       return empty;
     }
     
-    tracker_trigger_algorithm::tracker_trigger_algorithm()
+    tracker_trigger_algorithm_test_new_strategy::tracker_trigger_algorithm_test_new_strategy()
     {
       _initialized_ = false;
       _electronic_mapping_ = 0;
@@ -115,7 +115,7 @@ namespace snemo {
       return;
     }
 
-    tracker_trigger_algorithm::~tracker_trigger_algorithm()
+    tracker_trigger_algorithm_test_new_strategy::~tracker_trigger_algorithm_test_new_strategy()
     {   
       if (is_initialized())
 	{
@@ -124,21 +124,21 @@ namespace snemo {
       return;
     }
 
-    void tracker_trigger_algorithm::set_electronic_mapping(const electronic_mapping & my_electronic_mapping_)
+    void tracker_trigger_algorithm_test_new_strategy::set_electronic_mapping(const electronic_mapping & my_electronic_mapping_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Tracker trigger algorithm is already initialized, electronic mapping can't be set ! ");
       _electronic_mapping_ = & my_electronic_mapping_;
       return;
     }
 
-    void tracker_trigger_algorithm::initialize()
+    void tracker_trigger_algorithm_test_new_strategy::initialize()
     {
       datatools::properties dummy_config;
       initialize(dummy_config);
       return;
     }
 
-    void tracker_trigger_algorithm::initialize(const datatools::properties & config_)
+    void tracker_trigger_algorithm_test_new_strategy::initialize(const datatools::properties & config_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Tracker trigger algorithm is already initialized ! ");
       DT_THROW_IF(_electronic_mapping_ == 0, std::logic_error, "Missing electronic mapping ! " );
@@ -165,12 +165,12 @@ namespace snemo {
       return;
     }
 
-    bool tracker_trigger_algorithm::is_initialized() const
+    bool tracker_trigger_algorithm_test_new_strategy::is_initialized() const
     {
       return _initialized_;
     }
 
-    void tracker_trigger_algorithm::reset()
+    void tracker_trigger_algorithm_test_new_strategy::reset()
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Tracker trigger algorithm is not initialized, it can't be reset ! ");
       _initialized_ = false;
@@ -181,7 +181,7 @@ namespace snemo {
       return;
     }
     
-    void tracker_trigger_algorithm::reset_trigger_info()
+    void tracker_trigger_algorithm_test_new_strategy::reset_trigger_info()
     {
       for (int i = 0; i < mapping::NUMBER_OF_SIDES; i++)
 	{
@@ -200,12 +200,12 @@ namespace snemo {
       return;
     }
 
-    const tracker_trigger_algorithm::tracker_record tracker_trigger_algorithm::get_tracker_record_finale_decision_structure() const
+    const tracker_trigger_algorithm_test_new_strategy::tracker_record tracker_trigger_algorithm_test_new_strategy::get_tracker_record_finale_decision_structure() const
     {
       return _tracker_record_finale_decision_;
     }
 
-    uint32_t tracker_trigger_algorithm::get_board_id(const std::bitset<geiger::tp::FULL_SIZE> & my_bitset_) const
+    uint32_t tracker_trigger_algorithm_test_new_strategy::get_board_id(const std::bitset<geiger::tp::FULL_SIZE> & my_bitset_) const
     {
       std::bitset<geiger::tp::BOARD_ID_WORD_SIZE> temporary_board_bitset;
       for (int i = geiger::tp::BOARD_ID_BIT0; i <= geiger::tp::BOARD_ID_BIT4; i++)
@@ -223,7 +223,7 @@ namespace snemo {
       return temporary_board_id;
     }
 
-    void tracker_trigger_algorithm::build_hit_cells_gids_from_ctw(const geiger_ctw & my_geiger_ctw_, 
+    void tracker_trigger_algorithm_test_new_strategy::build_hit_cells_gids_from_ctw(const geiger_ctw & my_geiger_ctw_, 
 								  std::vector<geomtools::geom_id> & hit_cells_gids_) const
     {
       for (int i = 0; i < mapping::NUMBER_OF_FEBS_BY_CRATE; i++)
@@ -264,13 +264,13 @@ namespace snemo {
       return;
     }
 
-    const bool tracker_trigger_algorithm::get_tracker_decision() const
+    const bool tracker_trigger_algorithm_test_new_strategy::get_tracker_decision() const
     {
       return _tracker_finale_decision_;
     }
 
 
-    void tracker_trigger_algorithm::fill_matrix(const std::vector<geomtools::geom_id> & hit_cells_gids_)
+    void tracker_trigger_algorithm_test_new_strategy::fill_matrix(const std::vector<geomtools::geom_id> & hit_cells_gids_)
     {
       for (int i = 0; i < hit_cells_gids_.size(); i++)
 	{
@@ -282,7 +282,7 @@ namespace snemo {
       return;
     }
 
-    void tracker_trigger_algorithm::display_matrix() const
+    void tracker_trigger_algorithm_test_new_strategy::display_matrix() const
     {
       std::clog << "  |-Zone-0-|---Zone-1--|---Zone-2--|---Zone-3--|---Zone-4--|--Zone-5--|---Zone-6--|---Zone-7--|--Zone-8---|--Zone-9-|" << std::endl;
 
@@ -350,7 +350,7 @@ namespace snemo {
       return;
     }
     
-    void tracker_trigger_algorithm::reset_matrix()
+    void tracker_trigger_algorithm_test_new_strategy::reset_matrix()
     {
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 	{
@@ -365,7 +365,7 @@ namespace snemo {
       return;
     }
 
-    void tracker_trigger_algorithm::display_intermediate_tracker_trigger_info() const
+    void tracker_trigger_algorithm_test_new_strategy::display_intermediate_tracker_trigger_info() const
     {
       std::clog << "After projections tracker trigger info display : " << std::endl;
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
@@ -405,7 +405,7 @@ namespace snemo {
       return;
     }
    
-    void tracker_trigger_algorithm::fill_row_memory_per_subzone(const std::string & filename_,
+    void tracker_trigger_algorithm_test_new_strategy::fill_row_memory_per_subzone(const std::string & filename_,
 								int32_t side_,
 								int32_t zone_,
 								int32_t subzone_)
@@ -415,7 +415,7 @@ namespace snemo {
       return;
     }
 
-    void tracker_trigger_algorithm::fill_all_row_memory(const std::string & filename_)
+    void tracker_trigger_algorithm_test_new_strategy::fill_all_row_memory(const std::string & filename_)
     {
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 	{
@@ -430,7 +430,7 @@ namespace snemo {
       return;
     }
  
-    void tracker_trigger_algorithm::fill_layer_memory_per_subzone(const std::string & filename_,
+    void tracker_trigger_algorithm_test_new_strategy::fill_layer_memory_per_subzone(const std::string & filename_,
 								  int32_t side_,
 								  int32_t zone_,
 								  int32_t subzone_)
@@ -440,7 +440,7 @@ namespace snemo {
       return;
     }
 
-    void tracker_trigger_algorithm::fill_all_layer_memory(const std::string & filename_)
+    void tracker_trigger_algorithm_test_new_strategy::fill_all_layer_memory(const std::string & filename_)
     {
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 	{
@@ -455,7 +455,7 @@ namespace snemo {
       return;
     }
 
-    void tracker_trigger_algorithm::fill_a4_d2_memory_per_zone(const std::string & filename_,
+    void tracker_trigger_algorithm_test_new_strategy::fill_a4_d2_memory_per_zone(const std::string & filename_,
 							       int32_t side_,
 							       int32_t zone_)
     {
@@ -464,7 +464,7 @@ namespace snemo {
       return;
     }
 
-    void tracker_trigger_algorithm::fill_all_a4_d2_memory(const std::string & filename_)
+    void tracker_trigger_algorithm_test_new_strategy::fill_all_a4_d2_memory(const std::string & filename_)
     {
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 	{
@@ -476,7 +476,7 @@ namespace snemo {
       return;
     }
    
-    void tracker_trigger_algorithm::fetch_zone_limits(int32_t side_,
+    void tracker_trigger_algorithm_test_new_strategy::fetch_zone_limits(int32_t side_,
 						      int32_t zone_index_,
 						      int32_t & row_index_begin_,
 						      int32_t & row_index_end_)
@@ -542,7 +542,7 @@ namespace snemo {
       return;
     }
 
-    void tracker_trigger_algorithm::fetch_zone_index(int32_t side_,
+    void tracker_trigger_algorithm_test_new_strategy::fetch_zone_index(int32_t side_,
 						     int32_t row_index_,
 						     int32_t & zone_index_)
     {
@@ -566,7 +566,7 @@ namespace snemo {
       return;
     }
 
-    void tracker_trigger_algorithm::fetch_subzone_limits(int32_t side_,
+    void tracker_trigger_algorithm_test_new_strategy::fetch_subzone_limits(int32_t side_,
 							 int32_t subzone_index_,
 							 int32_t & subzone_row_index_begin_,
 							 int32_t & subzone_row_index_end_,
@@ -617,7 +617,7 @@ namespace snemo {
       return;
     }
       
-    void tracker_trigger_algorithm::build_zone_tracker_trigger_after_projections()
+    void tracker_trigger_algorithm_test_new_strategy::build_zone_tracker_trigger_after_projections()
     {
       for (int32_t iside = 0; iside < mapping::NUMBER_OF_SIDES; iside ++)
 	{
@@ -732,7 +732,7 @@ namespace snemo {
       return;
     }
 
-    void tracker_trigger_algorithm::build_zone_tracker_trigger_info()
+    void tracker_trigger_algorithm_test_new_strategy::build_zone_tracker_trigger_info()
     {
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
 	{ 
@@ -829,7 +829,7 @@ namespace snemo {
       return;
     }
     
-    void tracker_trigger_algorithm::build_tracker_record()
+    void tracker_trigger_algorithm_test_new_strategy::build_tracker_record()
     {
       // Merging level two and level two prime :
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
@@ -884,7 +884,7 @@ namespace snemo {
       return;
     }
     
-    void tracker_trigger_algorithm::_process_for_a_clocktick(const std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick_)
+    void tracker_trigger_algorithm_test_new_strategy::_process_for_a_clocktick(const std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick_)
     {
       reset_matrix();
       reset_trigger_info();
@@ -914,8 +914,8 @@ namespace snemo {
       return;
     }
     
-    void tracker_trigger_algorithm::_process(const geiger_ctw_data & geiger_ctw_data_,
-					     std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_)
+    void tracker_trigger_algorithm_test_new_strategy::_process(const geiger_ctw_data & geiger_ctw_data_,
+					     std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record> & tracker_records_)
     { 
       _geiger_matrix_records_.clear();
       // Just even clockticks are processing (to take in account CB to TB serdes limitation
@@ -936,8 +936,8 @@ namespace snemo {
       return;
     }
 
-    void tracker_trigger_algorithm::process(const geiger_ctw_data & geiger_ctw_data_,
-					    std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_)
+    void tracker_trigger_algorithm_test_new_strategy::process(const geiger_ctw_data & geiger_ctw_data_,
+							      std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record> & tracker_records_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Tracker trigger algorithm is not initialized, it can't process ! ");
       _process(geiger_ctw_data_, tracker_records_);

@@ -120,7 +120,7 @@ namespace snemo {
       DT_THROW_IF(block_index_ > mapping::NUMBER_OF_FEBS_BY_CRATE, std::logic_error, "Block index out of range (should be [0;19])  ! ");
       for (int i = 0; i < my_bitset_.size(); i++)
 	{
-	  if (_gg_ctw_.test(i + block_index_ * my_bitset_.size()) == true)
+	  if (_gg_ctw_.test(i + block_index_ * geiger::tp::FULL_SIZE) == true)
 	    {
 	      my_bitset_.set(i, 1);
 	    }

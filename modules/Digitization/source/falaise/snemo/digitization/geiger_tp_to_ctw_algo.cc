@@ -70,6 +70,7 @@ namespace snemo {
       std::bitset<2> crate_id = 0x0;
       my_geiger_tp_.get_hardware_status_bitset(hardware_status);
       my_geiger_tp_.get_crate_id(crate_id);
+      // Probablement à changer du gg tp vers le gg ctw plus tard (timer & définition du gg ctw)
       a_geiger_ctw_.set_100_bits_in_ctw_word(block_index, my_geiger_tp_.get_gg_bitset());
       a_geiger_ctw_.set_full_hardware_status(hardware_status);
       a_geiger_ctw_.set_full_crate_id(crate_id);

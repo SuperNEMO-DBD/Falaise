@@ -64,9 +64,10 @@ int main(int  argc_ , char ** argv_)
     if(is_input_file){
       pipeline_simulated_data_filename = input_filename;
     }else{
+      pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
       // pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Bi214_Po214_500000-source_strips_bulk_SD.brio";
       //pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Se82_0nubb_500000-source_strips_bulk_SD.brio";
-      pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Bi214_Po214_500000-field_wire_surface_SD.brio";
+      //pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Bi214_Po214_500000-field_wire_surface_SD.brio";
     }
     datatools::fetch_path_with_env(pipeline_simulated_data_filename);
 
@@ -74,22 +75,30 @@ int main(int  argc_ , char ** argv_)
     dpp::input_module reader;
     datatools::properties reader_config;
     reader_config.store ("logging.priority", "debug");
-    reader_config.store ("max_record_total", 10000);
+    reader_config.store ("max_record_total", 5);
     reader_config.store ("files.mode", "single");
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
     reader.tree_dump (std::clog, "Simulated data reader module");
 
-    TFile* root_file = new TFile("validation.root", "recreate");
+    // Peut-etre nom a changé : char* (non string, fetch_path_with_env pas utilisable)
+    TFile* root_file = new TFile("~/software/Falaise/Falaise-trunk/modules/Digitization/programs/validation.root", "recreate");
     TTree* tree = new TTree("TrackerTree", "Alpha track analysis");
     Int_t number_of_gg_cells = 0;
     Int_t number_of_delayed_gg_cells = 0;
     Int_t number_of_not_delayed_gg_cells = 0;
-    
+    Double_t time_start = 0;
+    Int_t hit_id = 0; 
+    Int_t event_id = 0;
+
     tree->Branch("number_of_gg_cells", &number_of_gg_cells, "number_of_gg_cells/I");
     tree->Branch("number_of_delayed_gg_cells", &number_of_delayed_gg_cells, "number_of_delayed_gg_cells/I");
     tree->Branch("number_of_not_delayed_gg_cells", &number_of_not_delayed_gg_cells, "number_of_not_delayed_gg_cells/I");
+    tree->Branch("time_start", &time_start, "time_start/D");
+    tree->Branch("hit_id", &hit_id, "hit_id/I");
+    tree->Branch("event_id", &event_id, "event_id/I");
 
+    // Branch a 3d vector geomtools ? 
 
     // Event record :
     datatools::things ER;
@@ -97,6 +106,7 @@ int main(int  argc_ , char ** argv_)
     int psd_count = 0;         // Event counter
     while (!reader.is_terminated())
       {
+	event_id = psd_count;
 	reader.process(ER);
 	// A plain `mctools::simulated_data' object is stored here :
 	if (ER.has(SD_bank_label) && ER.is_a<mctools::simulated_data>(SD_bank_label)) 
@@ -106,34 +116,42 @@ int main(int  argc_ , char ** argv_)
 	  
 	    if (SD.has_step_hits("gg"))
 	      {
+		SD.tree_dump(std::clog, "Simulated Data : ", "INFO : ");
 		mctools::simulated_data::hit_handle_collection_type BSHC = SD.get_step_hits("gg");
-		//std::clog << "BSCH step hits # = " << BSHC.size() << std::endl;
+		std::clog << "BSCH step hits # = " << BSHC.size() << std::endl;
 		number_of_gg_cells =  BSHC.size();
+		int count = 0;
 		for (mctools::simulated_data::hit_handle_collection_type::const_iterator i = BSHC.begin();
 		     i != BSHC.end();
 		     i++) 
 		  {
 		    const mctools::base_step_hit & BSH = i->get();
-		    
-		    std::string particle_name = BSH.get_particle_name();
-		    double time_start = BSH.get_time_start();
-		    if (time_start > 10) number_of_delayed_gg_cells++;
+		    //BSH.tree_dump(std::clog, "A Geiger Base Step Hit : ", "INFO : ");
+		    // std::string particle_name = BSH.get_particle_name();
+		    time_start = BSH.get_time_start();
+		    hit_id = count;
+		    if (time_start > 10) number_of_delayed_gg_cells++; // time in ns
 		    else{
 		      number_of_not_delayed_gg_cells++;
 		     }
-
+		    std::clog << " Count (aka hit id ) = " << count << std::endl;
+		    count++;
+		    tree->Fill();
 		  }
-		//	SD.tree_dump(std::clog, "Geiger hits : ", "INFO : ");
 		//std::clog << "Number of delayed alpha cells = " << delayed_alpha_cells << std::endl;
 	      }
 	  }
-	tree->Fill();
+	//tree->Fill();
+
 	number_of_delayed_gg_cells = 0;
 	number_of_gg_cells = 0;
 	number_of_not_delayed_gg_cells = 0;
+	time_start = 0;
+	hit_id = 0; 
+
 	ER.clear();
-	
 	psd_count++;
+
 	//std::clog << "DEBUG : psd count " << psd_count << std::endl;
 	DT_LOG_NOTICE(logging, "Simulated data #" << psd_count);
       }
