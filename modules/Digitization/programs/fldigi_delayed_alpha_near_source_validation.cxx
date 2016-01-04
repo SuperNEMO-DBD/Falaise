@@ -1,4 +1,4 @@
-//test_tracker_trigger_algorithm.cxx
+//fldigi_delayed_alpha_near_source_validation.cxx
 // Standard libraries :
 #include <iostream>
 #include <fstream>
@@ -75,30 +75,60 @@ int main(int  argc_ , char ** argv_)
     dpp::input_module reader;
     datatools::properties reader_config;
     reader_config.store ("logging.priority", "debug");
-    reader_config.store ("max_record_total", 5);
+    reader_config.store ("max_record_total", 1);
     reader_config.store ("files.mode", "single");
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
     reader.tree_dump (std::clog, "Simulated data reader module");
 
-    // Peut-etre nom a changé : char* (non string, fetch_path_with_env pas utilisable)
-    TFile* root_file = new TFile("~/software/Falaise/Falaise-trunk/modules/Digitization/programs/validation.root", "recreate");
+    std::string root_filename = "${FALAISE_DIGITIZATION_DIR}/programs/validation.root";
+    datatools::fetch_path_with_env(root_filename);
+    TFile* root_file = new TFile(root_filename.c_str(), "RECREATE");
     TTree* tree = new TTree("TrackerTree", "Alpha track analysis");
     Int_t number_of_gg_cells = 0;
     Int_t number_of_delayed_gg_cells = 0;
     Int_t number_of_not_delayed_gg_cells = 0;
-    Double_t time_start = 0;
-    Int_t hit_id = 0; 
-    Int_t event_id = 0;
+    std::vector<double> vect_time_start;
+    std::vector<Double_t> vect_x_start;
+    std::vector<Double_t> vect_y_start;
+    std::vector<Double_t> vect_z_start;
+    std::vector<Double_t> vect_x_stop;
+    std::vector<Double_t> vect_y_stop;
+    std::vector<Double_t> vect_z_stop;
+    std::vector<Double_t> vect_px_start;
+    std::vector<Double_t> vect_py_start;
+    std::vector<Double_t> vect_pz_start;
+    std::vector<double> * ptr_time_start = & vect_time_start;
+    std::vector<Double_t> * ptr_x_start = & vect_x_start;
+    std::vector<Double_t> * ptr_y_start = & vect_y_start;
+    std::vector<Double_t> * ptr_z_start = & vect_z_start;
+    std::vector<Double_t> * ptr_x_stop = & vect_x_stop;
+    std::vector<Double_t> * ptr_y_stop = & vect_y_stop;
+    std::vector<Double_t> * ptr_z_stop = & vect_z_stop;
+    std::vector<Double_t> * ptr_px_start = & vect_px_start;
+    std::vector<Double_t> * ptr_py_start = & vect_py_start;
+    std::vector<Double_t> * ptr_pz_start = & vect_pz_start;
 
+    std::vector<Int_t> vect_hit_id;
+    std::vector<Int_t> * ptr_hit_id = & vect_hit_id;
+  
+    Int_t event_id    = 0;
+
+    tree->Branch("event_id_vector", &event_id, "event_id/I");
     tree->Branch("number_of_gg_cells", &number_of_gg_cells, "number_of_gg_cells/I");
     tree->Branch("number_of_delayed_gg_cells", &number_of_delayed_gg_cells, "number_of_delayed_gg_cells/I");
-    tree->Branch("number_of_not_delayed_gg_cells", &number_of_not_delayed_gg_cells, "number_of_not_delayed_gg_cells/I");
-    tree->Branch("time_start", &time_start, "time_start/D");
-    tree->Branch("hit_id", &hit_id, "hit_id/I");
-    tree->Branch("event_id", &event_id, "event_id/I");
-
-    // Branch a 3d vector geomtools ? 
+    tree->Branch("number_ of_not_delayed_gg_cells", &number_of_not_delayed_gg_cells, "number_of_not_delayed_gg_cells/I");
+    tree->Branch("hit_id_vector",     &ptr_hit_id, "hit_id/I");
+    tree->Branch("time_start_vector", &vect_time_start);//, "time_start/D");
+    tree->Branch("x_start_vector",    &ptr_x_start, "x_start/D");
+    tree->Branch("y_start_vector",    &ptr_y_start, "y_start/D");
+    tree->Branch("z_start_vector",    &ptr_z_start, "z_start/D");
+    tree->Branch("x_stop_vector",     &ptr_x_stop, "x_stop/D");
+    tree->Branch("y_stop_vector",     &ptr_y_stop, "y_stop/D");
+    tree->Branch("z_stop_vector",     &ptr_z_stop, "z_stop/D");
+    tree->Branch("px_start_vector",   &ptr_px_start, "px_start/D");
+    tree->Branch("py_start_vector",   &ptr_py_start, "py_start/D");
+    tree->Branch("pz_start_vector",   &ptr_pz_start, "pz_start/D");
 
     // Event record :
     datatools::things ER;
@@ -113,7 +143,20 @@ int main(int  argc_ , char ** argv_)
 	  {
 	    // Access to the "SD" bank with a stored `mctools::simulated_data' :
 	    const mctools::simulated_data & SD = ER.get<mctools::simulated_data>(SD_bank_label);
-	  
+	    ptr_hit_id->clear();
+	    //ptr_time_start->clear();
+	    ptr_x_start-> clear();
+	    ptr_y_start->clear();
+	    ptr_z_start->clear();
+	    ptr_x_stop->clear();
+	    ptr_y_stop->clear();
+	    ptr_z_stop->clear();
+	    ptr_px_start->clear();
+	    ptr_py_start->clear();
+	    ptr_pz_start->clear();
+
+	    vect_time_start.clear();
+
 	    if (SD.has_step_hits("gg"))
 	      {
 		SD.tree_dump(std::clog, "Simulated Data : ", "INFO : ");
@@ -126,28 +169,55 @@ int main(int  argc_ , char ** argv_)
 		     i++) 
 		  {
 		    const mctools::base_step_hit & BSH = i->get();
-		    //BSH.tree_dump(std::clog, "A Geiger Base Step Hit : ", "INFO : ");
+		    BSH.tree_dump(std::clog, "A Geiger Base Step Hit : ", "INFO : ");
 		    // std::string particle_name = BSH.get_particle_name();
-		    time_start = BSH.get_time_start();
-		    hit_id = count;
+
+		    Int_t hit_id = count;
+		    ptr_hit_id->push_back(hit_id);
+
+		    double time_start = BSH.get_time_start();
+		    //ptr_time_start->push_back(time_start);
+		    vect_time_start.push_back(time_start);
+
+		    geomtools::vector_3d position_start_vector = BSH.get_position_start();
+		    geomtools::vector_3d position_stop_vector  = BSH.get_position_stop();
+		    geomtools::vector_3d momentum_start_vector = BSH.get_momentum_start();
+		    Double_t x_start = position_start_vector.getX();
+		    Double_t y_start = position_start_vector.getY();
+		    Double_t z_start = position_start_vector.getZ();
+		    Double_t x_stop  = position_stop_vector.getX();
+		    Double_t y_stop  = position_stop_vector.getY();
+		    Double_t z_stop  = position_stop_vector.getZ();
+		    Double_t px_start = momentum_start_vector.getX();
+		    Double_t py_start = momentum_start_vector.getY();
+		    Double_t pz_start = momentum_start_vector.getZ();
+
+		    ptr_x_start->push_back(x_start);
+		    ptr_y_start->push_back(y_start);
+		    ptr_z_start->push_back(z_start);
+		    ptr_x_stop->push_back(x_stop);
+		    ptr_y_stop->push_back(y_stop);
+		    ptr_z_stop->push_back(z_stop);
+		    ptr_px_start->push_back(px_start);
+		    ptr_py_start->push_back(py_start);
+		    ptr_pz_start->push_back(pz_start);
+
+
 		    if (time_start > 10) number_of_delayed_gg_cells++; // time in ns
 		    else{
 		      number_of_not_delayed_gg_cells++;
 		     }
 		    std::clog << " Count (aka hit id ) = " << count << std::endl;
 		    count++;
-		    tree->Fill();
 		  }
-		//std::clog << "Number of delayed alpha cells = " << delayed_alpha_cells << std::endl;
+		std::clog << "Vect time start size = " << vect_time_start.size() << std::endl;
+		tree->Fill();
 	      }
 	  }
-	//tree->Fill();
 
 	number_of_delayed_gg_cells = 0;
 	number_of_gg_cells = 0;
 	number_of_not_delayed_gg_cells = 0;
-	time_start = 0;
-	hit_id = 0; 
 
 	ER.clear();
 	psd_count++;
@@ -161,10 +231,7 @@ int main(int  argc_ , char ** argv_)
     root_file->Close();
 
     std::clog << "The end." << std::endl;
-
-
-  
-}
+  }
   
   
   catch (std::exception & error) {
