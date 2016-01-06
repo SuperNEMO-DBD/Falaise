@@ -9,21 +9,16 @@
 
 // This project:
 #include "memory.h"
-#include "build_mem2.h"
+#include "build_mem3.h"
 
 int main(void)
 {
   DT_LOG_NOTICE(datatools::logger::PRIO_ALWAYS, "Hello, SuperNEMO!");
 
-  snemo::trigger::mem2_type mem2;
-  snemo::trigger::mem2_builder m2b;
-  m2b.mode = snemo::trigger::mem2_builder::MODE_PATTERN;
-  m2b.build(mem2);
-  mem2.store_to_file("config/mem2_pat.conf");
-
-  m2b.mode = snemo::trigger::mem2_builder::MODE_MULT;
-  m2b.build(mem2);
-  mem2.store_to_file("config/mem2_mult.conf");
+  snemo::trigger::mem3_type mem3;
+  snemo::trigger::mem3_builder m3b;
+  m3b.build(mem3);
+  mem3.store_to_file("config/mem3.conf");
 
   DT_LOG_NOTICE(datatools::logger::PRIO_ALWAYS, "Bye bye!");
   return 0;

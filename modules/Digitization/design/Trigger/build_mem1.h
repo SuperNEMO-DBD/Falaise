@@ -104,4 +104,4 @@ namespace snemo {
   }
 }
 
-#endif // SNEMO_TRIGGER_ZONE_H
+#endif // SNEMO_TRIGGER_BUILD_MEM1_H
