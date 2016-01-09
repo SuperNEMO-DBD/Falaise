@@ -27,8 +27,8 @@ int main(int  argc_ , char ** argv_)
   try {  
     std::clog << "Little test program for analysis of alpha delayed number of geiger cells hit !" << std::endl;
     
-    std::string input_filename = "${FALAISE_DIGITIZATION_DIR}/programs/validation.root";
-    std::string output_filename = "${FALAISE_DIGITIZATION_DIR}/programs/analysis.root";
+    std::string input_filename = "${FALAISE_DIGITIZATION_DIR}/programs/root_files/validation.root";
+    std::string output_filename = "${FALAISE_DIGITIZATION_DIR}/programs/root_files/analysis.root";
     datatools::fetch_path_with_env(input_filename);
     datatools::fetch_path_with_env(output_filename);
 
@@ -86,11 +86,13 @@ int main(int  argc_ , char ** argv_)
     
     const int geiger_threshold = 2; // number of geiger cells threshold     
 
+    bool debug = false;
+    
     for( int i = 0 ; i < n_entry; i++ )
       {
     	input_delayed_cells_tree->GetEntry(i) ;
      
-    	std::clog << "Event ID  = " << event_id << std::endl;
+    	if (debug) std::clog << "Event ID  = " << event_id << std::endl;
 	size_t vector_size = vect_number_of_gg_cells->size();
 	for (size_t j = 0; j < vector_size; j++)
 	  {

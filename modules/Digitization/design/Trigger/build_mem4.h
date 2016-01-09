@@ -37,7 +37,7 @@ namespace snemo {
       std::size_t szA_BIT_RIGHT;
       std::size_t szA_BIT_LEFT;
 
-      std::size_t data_BIT_H;
+      std::size_t data_BIT_MIDDLE;
       std::size_t data_BIT_RIGHT;
       std::size_t data_BIT_LEFT;
     };
@@ -53,9 +53,9 @@ namespace snemo {
       szA_BIT_RIGHT  = 6;
       szA_BIT_LEFT   = 7;  
 
-      data_BIT_H     = 0;
-      data_BIT_RIGHT = 1;
-      data_BIT_LEFT  = 2;
+      data_BIT_MIDDLE = 0;
+      data_BIT_RIGHT  = 1;
+      data_BIT_LEFT   = 2;
       return;
     }
 
@@ -96,13 +96,13 @@ namespace snemo {
 	  else if (addr_str.substr(6,2) == "11") szD_clsf = WIDE_HTRACK;
 
 	  // Fill H bit:
-	  if (address.any()) data.set(data_BIT_H);
+	  if (address.any()) data.set(data_BIT_MIDDLE);
 	  
 
 	  if (!debug) std::clog << address << ' ' << szA_clsf << ' ' << szB_clsf << ' ' << szC_clsf << ' ' << szD_clsf << std::endl;
 	  
 	  // Fill L & R bit:
-	  if (data.test(data_BIT_H))
+	  if (data.test(data_BIT_MIDDLE))
 	    {
 	      if (szB_clsf == WIDE_HTRACK || szC_clsf == WIDE_HTRACK)
 		{

@@ -76,13 +76,13 @@ int main(int  argc_ , char ** argv_)
     dpp::input_module reader;
     datatools::properties reader_config;
     reader_config.store ("logging.priority", "debug");
-    reader_config.store ("max_record_total", 10000);
+    reader_config.store ("max_record_total", 100000);
     reader_config.store ("files.mode", "single");
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
     reader.tree_dump (std::clog, "Simulated data reader module");
 
-    std::string root_filename = "${FALAISE_DIGITIZATION_DIR}/programs/validation.root";
+    std::string root_filename = "${FALAISE_DIGITIZATION_DIR}/programs/root_files/validation.root";
     datatools::fetch_path_with_env(root_filename);
     TFile* root_file = new TFile(root_filename.c_str(), "RECREATE");
 
@@ -143,6 +143,8 @@ int main(int  argc_ , char ** argv_)
     
     static const Int_t MAXIMUM_DELAYED_TIME = 50;
     
+    bool debug = false;
+
     // Event record :
     datatools::things ER;
     //std::ofstream file(producted_file.c_str());
@@ -175,16 +177,16 @@ int main(int  argc_ , char ** argv_)
 	    for (Int_t delayed_time_shift = 10; delayed_time_shift <= MAXIMUM_DELAYED_TIME; delayed_time_shift+= 10) // Time for delayed gg cells (in ns)
 	      {	 
  
-		std::clog << "Delayed time shift = " << delayed_time_shift << std::endl;
+		if (debug) std::clog << "Delayed time shift = " << delayed_time_shift << std::endl;
 		Int_t number_of_gg_cells = 0;
 		Int_t number_of_delayed_gg_cells = 0;
 		Int_t number_of_not_delayed_gg_cells = 0;
 
 		if (SD.has_step_hits("gg"))
 		  {
-		    //SD.tree_dump(std::clog, "Simulated Data : ", "INFO : ");
+		    if (debug) SD.tree_dump(std::clog, "Simulated Data : ", "INFO : ");
 		    mctools::simulated_data::hit_handle_collection_type BSHC = SD.get_step_hits("gg");
-		    //std::clog << "BSCH step hits # = " << BSHC.size() << std::endl;
+		    if (debug) std::clog << "BSCH step hits # = " << BSHC.size() << std::endl;
 		    number_of_gg_cells =  BSHC.size();
 		    int count = 0;
 		    for (mctools::simulated_data::hit_handle_collection_type::const_iterator i = BSHC.begin();
@@ -192,7 +194,7 @@ int main(int  argc_ , char ** argv_)
 			 i++) 
 		      {
 			const mctools::base_step_hit & BSH = i->get();
-			//BSH.tree_dump(std::clog, "A Geiger Base Step Hit : ", "INFO : ");
+			if (debug) BSH.tree_dump(std::clog, "A Geiger Base Step Hit : ", "INFO : ");
 			// std::string particle_name = BSH.get_particle_name();
 
 			Int_t hit_id = count;
@@ -232,7 +234,7 @@ int main(int  argc_ , char ** argv_)
 			count++;
 		      }
 		  }
-		std::clog << "GG Cells #" << number_of_gg_cells << " Delayed GG Cells #" << number_of_delayed_gg_cells << " Not Delayed GG Cells #" << number_of_not_delayed_gg_cells << std::endl;
+		if (debug) std::clog << "GG Cells #" << number_of_gg_cells << " Delayed GG Cells #" << number_of_delayed_gg_cells << " Not Delayed GG Cells #" << number_of_not_delayed_gg_cells << std::endl;
 		ptr_delayed_time_shift->push_back(delayed_time_shift);
 		ptr_number_of_gg_cells->push_back(number_of_gg_cells);
 	        ptr_number_of_delayed_gg_cells->push_back(number_of_delayed_gg_cells);
