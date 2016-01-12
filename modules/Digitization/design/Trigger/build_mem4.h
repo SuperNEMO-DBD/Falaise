@@ -37,9 +37,16 @@ namespace snemo {
       std::size_t szA_BIT_RIGHT;
       std::size_t szA_BIT_LEFT;
 
-      std::size_t data_BIT_MIDDLE;
-      std::size_t data_BIT_RIGHT;
-      std::size_t data_BIT_LEFT;
+      std::size_t ADDR_szD_BIT_LEFT;
+      std::size_t ADDR_szC_BIT_RIGHT;
+      std::size_t ADDR_szC_BIT_LEFT;
+      std::size_t ADDR_szB_BIT_RIGHT;
+      std::size_t ADDR_szB_BIT_LEFT;
+      std::size_t ADDR_szA_BIT_RIGHT; 
+
+      std::size_t DATA_BIT_MIDDLE;
+      std::size_t DATA_BIT_RIGHT;
+      std::size_t DATA_BIT_LEFT;
     };
     
     mem4_builder::mem4_builder()
@@ -51,17 +58,27 @@ namespace snemo {
       szB_BIT_RIGHT  = 4;
       szB_BIT_LEFT   = 5;
       szA_BIT_RIGHT  = 6;
-      szA_BIT_LEFT   = 7;  
+      szA_BIT_LEFT   = 7; 
+ 
+      ADDR_szD_BIT_LEFT   = 0;
+      ADDR_szC_BIT_RIGHT  = 1;
+      ADDR_szC_BIT_LEFT   = 2;
+      ADDR_szB_BIT_RIGHT  = 3;
+      ADDR_szB_BIT_LEFT   = 4;
+      ADDR_szA_BIT_RIGHT  = 5;  
 
-      data_BIT_MIDDLE = 0;
-      data_BIT_RIGHT  = 1;
-      data_BIT_LEFT   = 2;
+      DATA_BIT_RIGHT  = 0;
+      DATA_BIT_MIDDLE = 1;
+      DATA_BIT_LEFT   = 2;
       return;
     }
 
-    //                  L R L R L R L R 
-    // bitset address : 7 6 5 4 3 2 1 0
-    //   Sliding Zone : A A B B C C D D   
+    //                   R L R L R L 
+    // bitset address :  5 4 3 2 1 0
+    //   Sliding Zone :  A B B C C D   
+    // A6 D3 memory   :
+    //                    L M R 
+    //    bitset data :   2 1 0
 
     void mem4_builder::build(mem4_type & mem4_) const
     {
@@ -75,74 +92,53 @@ namespace snemo {
 	  classification_type szB_clsf = NO_HTRACK;
 	  classification_type szC_clsf = NO_HTRACK;
 	  classification_type szD_clsf = NO_HTRACK;
-
-	  std::string addr_str = address.to_string();
- 
-	  // Fetch each sliding zone horizontal classification:
-	  if      (addr_str.substr(0,2) == "01") szA_clsf = NARROW_RIGHT_HTRACK;
-	  else if (addr_str.substr(0,2) == "10") szA_clsf = NARROW_LEFT_HTRACK;
-	  else if (addr_str.substr(0,2) == "11") szA_clsf = WIDE_HTRACK;
-
-	  if      (addr_str.substr(2,2) == "01") szB_clsf = NARROW_RIGHT_HTRACK;
-	  else if (addr_str.substr(2,2) == "10") szB_clsf = NARROW_LEFT_HTRACK;
-	  else if (addr_str.substr(2,2) == "11") szB_clsf = WIDE_HTRACK;
-
-	  if      (addr_str.substr(4,2) == "01") szC_clsf = NARROW_RIGHT_HTRACK;
-	  else if (addr_str.substr(4,2) == "10") szC_clsf = NARROW_LEFT_HTRACK;
-	  else if (addr_str.substr(4,2) == "11") szC_clsf = WIDE_HTRACK;
-
-	  if      (addr_str.substr(6,2) == "01") szD_clsf = NARROW_RIGHT_HTRACK;
-	  else if (addr_str.substr(6,2) == "10") szD_clsf = NARROW_LEFT_HTRACK;
-	  else if (addr_str.substr(6,2) == "11") szD_clsf = WIDE_HTRACK;
-
-	  // Fill H bit:
-	  if (address.any()) data.set(data_BIT_MIDDLE);
 	  
+	  std::string addr_str = address.to_string();  
 
-	  if (!debug) std::clog << address << ' ' << szA_clsf << ' ' << szB_clsf << ' ' << szC_clsf << ' ' << szD_clsf << std::endl;
+	  if (address.test(ADDR_szA_BIT_RIGHT) || address.test(ADDR_szB_BIT_LEFT)) data.set(DATA_BIT_LEFT);
+	  if (address.test(ADDR_szB_BIT_RIGHT) || address.test(ADDR_szC_BIT_LEFT)) data.set(DATA_BIT_MIDDLE);
+	  if (address.test(ADDR_szC_BIT_RIGHT) || address.test(ADDR_szD_BIT_LEFT)) data.set(DATA_BIT_RIGHT);
+
+	  // // Fetch each sliding zone horizontal classification:
+	  // if      (addr_str.substr(0,2) == "01") szA_clsf = NARROW_RIGHT_HTRACK;
+	  // else if (addr_str.substr(0,2) == "10") szA_clsf = NARROW_LEFT_HTRACK;
+	  // else if (addr_str.substr(0,2) == "11") szA_clsf = WIDE_HTRACK;
+
+	  // if      (addr_str.substr(2,2) == "01") szB_clsf = NARROW_RIGHT_HTRACK;
+	  // else if (addr_str.substr(2,2) == "10") szB_clsf = NARROW_LEFT_HTRACK;
+	  // else if (addr_str.substr(2,2) == "11") szB_clsf = WIDE_HTRACK;
+
+	  // if      (addr_str.substr(4,2) == "01") szC_clsf = NARROW_RIGHT_HTRACK;
+	  // else if (addr_str.substr(4,2) == "10") szC_clsf = NARROW_LEFT_HTRACK;
+	  // else if (addr_str.substr(4,2) == "11") szC_clsf = WIDE_HTRACK;
+
+	  // if      (addr_str.substr(6,2) == "01") szD_clsf = NARROW_RIGHT_HTRACK;
+	  // else if (addr_str.substr(6,2) == "10") szD_clsf = NARROW_LEFT_HTRACK;
+	  // else if (addr_str.substr(6,2) == "11") szD_clsf = WIDE_HTRACK;
 	  
-	  // Fill L & R bit:
-	  if (data.test(data_BIT_MIDDLE))
-	    {
-	      if (szB_clsf == WIDE_HTRACK || szC_clsf == WIDE_HTRACK)
-		{
-		  data.set(data_BIT_LEFT);
-		  data.set(data_BIT_RIGHT);
-		}
+	  // // Fill LMR bits :
+	  // if (szD_clsf == NARROW_LEFT_HTRACK || szD_clsf == WIDE_HTRACK
+	  //     || szC_clsf == NARROW_RIGHT_HTRACK || szC_clsf == WIDE_HTRACK)
+	  //   {
+	  //     data.set(DATA_BIT_RIGHT);
+	  //   }
+	  
+	  // if (szB_clsf == NARROW_LEFT_HTRACK || szB_clsf == WIDE_HTRACK
+	  //     || szA_clsf == NARROW_RIGHT_HTRACK || szA_clsf == WIDE_HTRACK)
+	  //   {
+	  //     data.set(DATA_BIT_LEFT);
+	  //   }
 
-	      if (szA_clsf != NO_HTRACK) data.set(data_BIT_LEFT);
-	      if (szD_clsf != NO_HTRACK) data.set(data_BIT_RIGHT);
-	      
-	      if (szB_clsf == NARROW_LEFT_HTRACK && szC_clsf != NO_HTRACK) 
-		{
-		  data.set(data_BIT_LEFT);
-		  data.set(data_BIT_RIGHT);
-		}	     
-
-	      if (szC_clsf == NARROW_RIGHT_HTRACK && szB_clsf != NO_HTRACK) 
-		{
-		  data.set(data_BIT_LEFT);
-		  data.set(data_BIT_RIGHT);
-		}
-
-	      if (szB_clsf != NO_HTRACK && szB_clsf != WIDE_HTRACK && szC_clsf == NO_HTRACK)
-		{
-		  data.set(data_BIT_LEFT);
-		}   
-	      
-	      if (szC_clsf != NO_HTRACK && szC_clsf != WIDE_HTRACK && szB_clsf == NO_HTRACK)
-		{
-		  data.set(data_BIT_RIGHT);
-		}
-
-	    }
+	  // if (szB_clsf == NARROW_LEFT_HTRACK || szB_clsf == WIDE_HTRACK
+	  //     || szC_clsf == NARROW_LEFT_HTRACK || szC_clsf == WIDE_HTRACK)
+	  //   {
+	  //     data.set(DATA_BIT_MIDDLE);
+	  //   }
 	  mem4_.push(address, data);
 	  std::string data_str = data.to_string();
-	  if (data_str == "111") std::clog << address << " => " << data << std::endl;
-
 	}
 
-	if (!debug) mem4_.memory_map_display();
+	if (debug) mem4_.memory_map_display();
 
       return;
     }
