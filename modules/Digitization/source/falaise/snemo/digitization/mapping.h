@@ -99,6 +99,7 @@ namespace snemo {
 			static const uint32_t NUMBER_OF_XWALL_CALO_TRIGGER_ZONES = 4;
 
 			static const uint32_t NUMBER_OF_GEIGER_ROWS = 113;
+
 			static const uint32_t NUMBER_OF_TRACKER_TRIGGER_INTERZONES = 9;
 			static const uint32_t NUMBER_OF_TRACKER_TRIGGER_SUBZONES = 4;
 			static const uint32_t NUMBER_OF_TRACKER_TRIGGER_SUBZONES_PER_SIDE = 40;
