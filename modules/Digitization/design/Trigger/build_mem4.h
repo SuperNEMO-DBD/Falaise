@@ -77,7 +77,7 @@ namespace snemo {
     // bitset address :  5 4 3 2 1 0
     //   Sliding Zone :  A B B C C D   
     // A6 D3 memory   :
-    //                    L M R 
+    //                    L M R
     //    bitset data :   2 1 0
 
     void mem4_builder::build(mem4_type & mem4_) const

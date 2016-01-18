@@ -41,9 +41,9 @@ int main(void)
   snemo::trigger::szone::print_layout(std::clog);
 
   snemo::trigger::mem1_type mem1;
-  mem1.load_from_file("mem1.conf");
+  mem1.load_from_file("config/mem1.conf");
   snemo::trigger::mem2_type mem2;
-  mem2.load_from_file("mem2.conf");
+  mem2.load_from_file("config/mem2_pat.conf");
 
   snemo::trigger::event e;
   e.print_cells(std::clog);

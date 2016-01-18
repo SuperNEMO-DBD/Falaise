@@ -64,9 +64,9 @@ namespace snemo {
 	  mem5_type::data_type data = 0x0;
 
 	  // Vertical address:
-	  //                   O I O I O I O I             L R
-	  // vertical bitset : 7 6 5 4 3 2 1 0 ---> data : 1 0
-	  //   Sliding Zone  : A A B B C C D D            AB CD
+	  //                   O I O I O I O I             L M  R
+	  // vertical bitset : 7 6 5 4 3 2 1 0 ---> data : 2 1  0
+	  //   Sliding Zone  : A A B B C C D D             A BC D
  
 	  if ((address.test(szA_BIT_INNER) ||
 	       address.test(szA_BIT_OUTER) ||
@@ -109,41 +109,35 @@ namespace snemo {
       for (unsigned long addr = 0; addr < mem5_.get_number_of_addresses(); addr++) 
 	{
 	  mem5_type::address_type address = addr;
-	  mem5_type::data_type data = 0x3;
+	  // Reverse logic, data is set to 111
+	  mem5_type::data_type data = 0x7;
 
 	  // Vertical address:
-	  //                   O I O I O I O I             L R
-	  // vertical bitset : 7 6 5 4 3 2 1 0 ---> data : 1 0
-	  //   Sliding Zone  : A A B B C C D D            AB CD
+	  //                   O I O I O I O I             L M  R
+	  // vertical bitset : 7 6 5 4 3 2 1 0 ---> data : 2 1  0
+	  //   Sliding Zone  : A A B B C C D D             A BC D
  
-	  if ((address.test(szA_BIT_INNER) ||
-	       address.test(szA_BIT_OUTER) ||
-	       address.test(szB_BIT_INNER) ||
-	       address.test(szB_BIT_OUTER))) 
+	  // We only see when data is not left, not middle or not right
+
+	  if (!(address.test(szA_BIT_INNER) ||
+		address.test(szA_BIT_OUTER)))
 	    {
-	      data.set(data_BIT_LEFT);
-	    }
-	     
-	  if ((address.test(szC_BIT_INNER) ||
-	       address.test(szC_BIT_OUTER) ||
-	       address.test(szD_BIT_INNER) ||
-	       address.test(szD_BIT_OUTER)))
-	    {
-	      data.set(data_BIT_RIGHT);
-	    }
-	  
-	  if ((address.test(szB_BIT_INNER) ||
-	       address.test(szB_BIT_OUTER) ||
-	       address.test(szC_BIT_INNER) ||
-	       address.test(szC_BIT_OUTER)) 
-	      && (!address.test(szA_BIT_INNER) &&
-		  !address.test(szA_BIT_OUTER) &&    
-		  !address.test(szD_BIT_INNER) &&
-		  !address.test(szD_BIT_OUTER)))
-	    {
-	      data.set(data_BIT_MIDDLE);
+	      data.set(data_BIT_LEFT, false);
 	    }
 
+	  if (!(address.test(szD_BIT_INNER) ||
+	      address.test(szD_BIT_OUTER)))
+	    {
+	      data.set(data_BIT_RIGHT, false);
+	    }
+	  
+	  if (!(address.test(szB_BIT_INNER) ||
+		address.test(szB_BIT_OUTER) ||
+		address.test(szC_BIT_INNER) ||
+		address.test(szC_BIT_OUTER)))
+	    {
+	      data.set(data_BIT_MIDDLE,false);
+	    }
 	  std::string data_str = data.to_string();
 	  mem5_.push(address, data);
 	}
