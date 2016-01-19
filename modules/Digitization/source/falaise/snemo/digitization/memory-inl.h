@@ -24,6 +24,12 @@ namespace snemo {
   
   namespace digitization {
 		
+    template<unsigned int AddressSize, unsigned int DataSize>
+    std::size_t memory<AddressSize, DataSize>::get_number_of_addresses() const
+    {
+      return 0x1 << AddressSize;
+    }
+		
 		template<unsigned int AddressSize, unsigned int DataSize>
 		memory<AddressSize, DataSize>::memory()
 		{

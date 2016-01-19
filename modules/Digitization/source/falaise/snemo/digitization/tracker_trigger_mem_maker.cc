@@ -46,8 +46,7 @@ namespace snemo {
       _mem_size_type_ = MEM_SIZE_UNDEFINED;
       _mem_algo_type_ = MEM_ALGO_UNDEFINED;
       return;
-    }
-    
+    }    
  
     void tracker_trigger_mem_maker::configure(const mem_type & memory_type_, 
 					      const mem_size_type & memory_size_type_, 

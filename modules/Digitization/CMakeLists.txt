@@ -26,6 +26,9 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
   source/falaise/snemo/digitization/ID_convertor.h
   source/falaise/snemo/digitization/mapping.h
   source/falaise/snemo/digitization/trigger_display_manager.h
+  source/falaise/snemo/digitization/tracker_info.h
+  source/falaise/snemo/digitization/tracker_zone.h
+  source/falaise/snemo/digitization/tracker_sliding_zone.h
 
   source/falaise/snemo/digitization/calo_signal.h
   source/falaise/snemo/digitization/calo_feb.h
@@ -65,6 +68,7 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
   source/falaise/snemo/digitization/memory.h
   source/falaise/snemo/digitization/memory-inl.h
   source/falaise/snemo/digitization/tracker_trigger_mem_maker.h
+  source/falaise/snemo/digitization/tracker_trigger_mem_maker_new_strategy.h
 
   source/falaise/snemo/digitization/the_serializable.ipp
   source/falaise/snemo/digitization/the_serializable.h
@@ -73,6 +77,7 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
 # - Sources:
 list(APPEND FalaiseDigitizationPlugin_SOURCES 
   source/falaise/snemo/digitization/tracker_trigger_mem_maker.cc
+  source/falaise/snemo/digitization/tracker_trigger_mem_maker_new_strategy.cc
   source/falaise/snemo/digitization/trigger_algorithm.cc
   source/falaise/snemo/digitization/tracker_trigger_algorithm.cc
   source/falaise/snemo/digitization/tracker_trigger_algorithm_test_new_strategy.cc
@@ -100,6 +105,9 @@ list(APPEND FalaiseDigitizationPlugin_SOURCES
   source/falaise/snemo/digitization/geiger_tp.cc 
   source/falaise/snemo/digitization/geiger_signal.cc
 
+  source/falaise/snemo/digitization/tracker_sliding_zone.cc
+  source/falaise/snemo/digitization/tracker_zone.cc
+  source/falaise/snemo/digitization/tracker_info.cc
   source/falaise/snemo/digitization/trigger_display_manager.cc
   source/falaise/snemo/digitization/electronic_mapping.cc
   source/falaise/snemo/digitization/clock_utils.cc

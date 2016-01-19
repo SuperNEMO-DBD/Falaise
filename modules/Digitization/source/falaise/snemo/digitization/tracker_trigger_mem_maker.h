@@ -1,4 +1,4 @@
-// snemo/digitization/memory.h
+// snemo/digitization/tracker_trigger_mem_maker.h
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 

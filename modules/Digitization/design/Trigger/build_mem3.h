@@ -59,7 +59,8 @@ namespace snemo {
     
     //                  O I O I O I O I
     // bitset address : 7 6 5 4 3 2 1 0
-    //   Sliding Zone : A A B B C C D D     
+    //   Sliding Zone : A A B B C C D D
+
     void mem3_builder::build(mem3_type & mem3_) const
     {
       for (unsigned long addr = 0; addr < mem3_.get_number_of_addresses(); addr++) 
