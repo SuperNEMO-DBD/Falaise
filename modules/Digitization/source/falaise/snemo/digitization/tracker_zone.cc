@@ -22,7 +22,7 @@ namespace snemo {
     {
       for (int ilayer = 0; ilayer < snemo::digitization::tracker_info::NLAYERS; ilayer++) {
 	for (int irow = 0; irow < snemo::digitization::tracker_info::ZONE_WIDTH; irow++) {
-	  _cells_[ilayer][irow] = false;
+	  cells[ilayer][irow] = false;
 	}
       }
       return;

@@ -357,31 +357,136 @@ namespace snemo {
 	} // end of iside
       return;
     }
+    
+    
+    void tracker_trigger_algorithm_test_new_strategy::reset_zones_informations()
+    {
+      for (int iside = 0; iside < tracker_info::NSIDES; iside++)
+	{
+	  for (int iszone = 0; iszone < tracker_info::NSLZONES; iszone++) 
+	    {
+	      _sliding_zones_[iside][iszone].reset();
+	    }
+	  for (int izone = 0; izone < tracker_info::NZONES; izone++) 
+	    {
+	      _zones_[iside][izone].reset();
+	    }
+	}
 
+      return;
+    }
+
+    void tracker_trigger_algorithm_test_new_strategy::build_sliding_zone(tracker_sliding_zone & szone_, int side_, int szone_id_)
+    {
+      _sliding_zones_[side_][szone_id_].side = side_;
+      _sliding_zones_[side_][szone_id_].szone_id = szone_id_;
+
+      int stop_row = tracker_sliding_zone::stop_row(szone_id_);
+      int start_row = tracker_sliding_zone::start_row(szone_id_);  
+      for (int ilayer = 0; ilayer < tracker_info::NLAYERS; ilayer++) 
+	{
+	  for (int irow = start_row; irow <= stop_row; irow++) 
+	    {
+	      _sliding_zones_[side_][szone_id_].cells[ilayer][irow - start_row] = _geiger_matrix_[side_][ilayer][irow];
+	    }
+	}
+      _sliding_zones_[side_][szone_id_].compute_lr_proj();
+      
+      return;
+    }	
+
+    void tracker_trigger_algorithm_test_new_strategy::build_sliding_zones(tracker_trigger_mem_maker_new_strategy::mem1_type & mem1_,
+									  tracker_trigger_mem_maker_new_strategy::mem2_type & mem2_)
+    {
+      for (int iside = 0; iside < tracker_info::NSIDES; iside++) {
+	for (int iszone = 0; iszone < tracker_info::NSLZONES; iszone ++) {
+	  build_sliding_zone(_sliding_zones_[iside][iszone], iside, iszone);
+	  _sliding_zones_[iside][iszone].build_pattern(mem1_, mem2_);
+	  _sliding_zones_[iside][iszone].print(std::clog);
+	}
+      }
+      return;
+    }	
+
+    void tracker_trigger_algorithm_test_new_strategy::build_zones()
+    {
+      for (int iside = 0; iside < tracker_info::NSIDES; iside++) 
+	{
+	  for (int izone = 0; izone < tracker_info::NZONES; izone++) 
+	    {
+	      for (int ilayer = 0; ilayer < tracker_info::NLAYERS; ilayer++) 
+		{
+		  for (int irow = tracker_zone::start_row(izone);
+		       irow <= tracker_zone::stop_row(izone);
+		       irow++) 
+		    {
+		      _zones_[iside][izone].cells[ilayer][irow - tracker_zone::start_row(izone)] = _geiger_matrix_[iside][ilayer][irow];
+		    }
+		}
+	    }
+	}
+      return;
+    }
+
+    void tracker_trigger_algorithm_test_new_strategy::print_zones(std::ostream & out_) const
+      {
+        out_ << "Zones: \n";
+        for (int ilayer = tracker_info::NLAYERS - 1; ilayer >= 0; ilayer--) {
+          for (int izone = 0; izone < tracker_info::NZONES; izone++) {
+            for (int irow = 0; irow < tracker_zone::width(izone); irow++) {
+              out_ << (_zones_[0][izone].cells[ilayer][irow] ? 'o' : '.');
+            }
+            out_ << ' ';
+          }
+          out_ << '\n';
+        }
+        for (int irow = 0; irow < tracker_info::NROWS + tracker_info::NZONES - 1; irow++) {
+          out_ << '=';
+        }
+        out_ << '\n';
+        for (int ilayer = 0; ilayer < tracker_info::NLAYERS; ilayer++) {
+          for (int izone = 0; izone < tracker_info::NZONES; izone++) {
+            for (int irow = 0; irow < tracker_zone::width(izone); irow++) {
+              out_ << (_zones_[1][izone].cells[ilayer][irow] ? 'o' : '.');
+            }
+            out_ << ' ';
+          }
+          out_ << '\n';
+        }
+        out_ << '\n';
+
+        return;
+      }
+    
     void tracker_trigger_algorithm_test_new_strategy::_process_for_a_clocktick(const std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick_)
     {
-      // reset_matrix();
-      // reset_trigger_info();
-      // for (int isize = 0; isize < geiger_ctw_list_per_clocktick_.size(); isize++)
-      // 	{
-      // 	  std::vector<geomtools::geom_id> hit_cells_gids;
-      // 	  build_hit_cells_gids_from_ctw(geiger_ctw_list_per_clocktick_[isize].get(), hit_cells_gids);
-      // 	  fill_matrix(hit_cells_gids);   
-      // 	} // end of isize
-      // geiger_matrix a_geiger_matrix;
-      // for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
-      // 	{
-      // 	  for (int jlayer = 0; jlayer < mapping::GEIGER_LAYERS_SIZE; jlayer++)
-      // 	    {
-      // 	      for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
-      // 		{
-      // 		  a_geiger_matrix.matrix[iside][jlayer][krow] = _geiger_matrix_[iside][jlayer][krow];	
-      // 		} // end of krow
-      // 	    } // end of jlayer
-      // 	} // end of iside
-      // a_geiger_matrix.clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2;
-      // _geiger_matrix_records_.push_back(a_geiger_matrix);
-      // _tracker_record_finale_decision_.clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2;
+      reset_matrix();
+      reset_zones_informations();
+      for (int isize = 0; isize < geiger_ctw_list_per_clocktick_.size(); isize++)
+       	{
+       	  std::vector<geomtools::geom_id> hit_cells_gids;
+       	  build_hit_cells_gids_from_ctw(geiger_ctw_list_per_clocktick_[isize].get(), hit_cells_gids);
+       	  fill_matrix(hit_cells_gids);   
+	  display_matrix();
+       	} // end of isize
+      geiger_matrix a_geiger_matrix;
+      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+      	{
+      	  for (int jlayer = 0; jlayer < mapping::GEIGER_LAYERS_SIZE; jlayer++)
+      	    {
+      	      for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
+      		{
+      		  a_geiger_matrix.matrix[iside][jlayer][krow] = _geiger_matrix_[iside][jlayer][krow];	
+      		} // end of krow
+      	    } // end of jlayer
+      	} // end of iside
+      a_geiger_matrix.clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2;
+      _geiger_matrix_records_.push_back(a_geiger_matrix);
+      _tracker_record_finale_decision_.clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2;
+      
+      build_zones();
+      print_zones(std::clog);
+      build_sliding_zones(_sliding_zone_vertical_memory_, _sliding_zone_horizontal_memory_);
       // build_zone_tracker_trigger_after_projections();
       // build_zone_tracker_trigger_info();
       // build_tracker_record();
@@ -392,22 +497,21 @@ namespace snemo {
     void tracker_trigger_algorithm_test_new_strategy::_process(const geiger_ctw_data & geiger_ctw_data_,
 							       std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record> & tracker_records_)
     { 
-      // _geiger_matrix_records_.clear();
-      // // Just even clockticks are processing (to take in account CB to TB serdes limitation
-      // int32_t iclocktick_800 = geiger_ctw_data_.get_clocktick_min();
-      // if (iclocktick_800 % 2 == 1) iclocktick_800 += 1;
-      // for(iclocktick_800; iclocktick_800 <= geiger_ctw_data_.get_clocktick_max(); iclocktick_800 +=2)
-      // 	{
-      // 	  std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick;
-      // 	  geiger_ctw_data_.get_list_of_geiger_ctw_per_clocktick(iclocktick_800, geiger_ctw_list_per_clocktick);
-      // 	  if (geiger_ctw_list_per_clocktick.size() != 0)
-      // 	    {
-      // 	      _process_for_a_clocktick(geiger_ctw_list_per_clocktick);
-      // 	      if (_tracker_record_finale_decision_.finale_decision != 0) _tracker_finale_decision_ = true;
-	      
-      // 	      tracker_records_.push_back(_tracker_record_finale_decision_);
-      // 	    } // end of if ctw list != 0
-      // 	} // end of iclocktick
+      _geiger_matrix_records_.clear();
+      // Just even clockticks are processing (to take in account CB to TB serdes limitation
+      int32_t iclocktick_800 = geiger_ctw_data_.get_clocktick_min();
+      if (iclocktick_800 % 2 == 1) iclocktick_800 += 1;
+      for (iclocktick_800; iclocktick_800 <= geiger_ctw_data_.get_clocktick_max(); iclocktick_800 +=2)
+       	{
+       	  std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick;
+      	  geiger_ctw_data_.get_list_of_geiger_ctw_per_clocktick(iclocktick_800, geiger_ctw_list_per_clocktick);
+       	  if (geiger_ctw_list_per_clocktick.size() != 0)
+      	    {
+      	      _process_for_a_clocktick(geiger_ctw_list_per_clocktick);
+      	      if (_tracker_record_finale_decision_.finale_decision) _tracker_finale_decision_ = true;
+	      tracker_records_.push_back(_tracker_record_finale_decision_);
+      	    } // end of if ctw list != 0
+       	} // end of iclocktick
       return;
     }
 

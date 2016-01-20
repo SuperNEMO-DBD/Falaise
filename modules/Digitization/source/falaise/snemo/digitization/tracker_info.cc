@@ -25,6 +25,7 @@ namespace snemo {
     const std::size_t tracker_info::IO_PATTERN_SIZE;
     const std::size_t tracker_info::LMR_PATTERN_SIZE;
     const std::size_t tracker_info::NSZ_PATTERN_SIZE;
+    const std::size_t tracker_info::DATA_FULL_BITSET_SIZE;
     
   } // end of namespace digitization
 

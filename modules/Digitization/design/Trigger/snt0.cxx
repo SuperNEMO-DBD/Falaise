@@ -52,6 +52,10 @@ int main(void)
   e.build_zones();
   e.print_zones(std::clog);
   e.build_szones(mem1, mem2);
+  e.szones[1][0].print(std::clog);
+  e.szones[1][1].print(std::clog);
+  e.szones[1][2].print(std::clog);
+  e.szones[1][3].print(std::clog);
   e.szones[1][4].print(std::clog);
 
   DT_LOG_NOTICE(datatools::logger::PRIO_ALWAYS, "Bye bye!");

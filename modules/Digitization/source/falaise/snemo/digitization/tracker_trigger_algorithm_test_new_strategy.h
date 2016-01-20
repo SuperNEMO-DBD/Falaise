@@ -32,7 +32,7 @@ namespace snemo {
     {
 		public : 
 			/// Trigger display manager is a friend because it can access to members for display
-		 	//friend class trigger_display_manager;
+		 	friend class trigger_display_manager;
 
 			struct tracker_record
 			{
@@ -42,6 +42,8 @@ namespace snemo {
 				uint32_t clocktick_1600ns;
 				//std::bitset<FINALE_DECISION_BITSET_SIZE> finale_decision;
 				//std::bitset<FINAL_ZONE_BITSET_SIZE> final_tracker_trigger_info[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRIGGER_ZONES];
+				bool finale_decision;
+				std::bitset<tracker_info::DATA_FULL_BITSET_SIZE> final_data_per_zone[tracker_info::NSIDES][tracker_info::NZONES];
 			};
 
 			struct geiger_matrix
@@ -110,6 +112,21 @@ namespace snemo {
 			/// Reset the geiger cells matrix
 			void reset_matrix();
 
+			/// Reset bitsets in zone and sliding zone
+			void reset_zones_informations();
+
+			/// Build one sliding zone information for a clocktick
+			void build_sliding_zone(tracker_sliding_zone & szone_, int side_, int szone_id_);
+
+			/// Build all sliding zones with memories mem1 and mem2 for projections
+			void build_sliding_zones(tracker_trigger_mem_maker_new_strategy::mem1_type & mem1_, 
+															 tracker_trigger_mem_maker_new_strategy::mem2_type & mem2_);
+
+			/// Build all zones responses for a clocktick
+			void build_zones();
+			
+			void print_zones(std::ostream & out_) const;
+			
 			/// General process
       void process(const geiger_ctw_data & geiger_ctw_data_,
 									 std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record> & tracker_records_);
@@ -137,6 +154,8 @@ namespace snemo {
 
 			// Data :
 			bool _geiger_matrix_[tracker_info::NSIDES][tracker_info::NLAYERS][tracker_info::NROWS];
+			std::vector<geiger_matrix> _geiger_matrix_records_; //!< Vector of Geiger matrix for each clocktick
+
 			tracker_zone _zones_[tracker_info::NSIDES][tracker_info::NZONES];
 			tracker_sliding_zone _sliding_zones_[tracker_info::NSIDES][tracker_info::NSLZONES];
 

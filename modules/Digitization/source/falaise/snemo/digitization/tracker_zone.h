@@ -33,14 +33,14 @@ namespace snemo {
 
       static void print_layout(std::ostream & out_);
 
-      bool _cells_[snemo::digitization::tracker_info::NLAYERS][snemo::digitization::tracker_info::ZONE_WIDTH];
+      bool cells[snemo::digitization::tracker_info::NLAYERS][snemo::digitization::tracker_info::ZONE_WIDTH];
 		
       //
       
       // [7 bits] of information per zone after total computing
-      std::bitset<snemo::digitization::tracker_info::IO_PATTERN_SIZE>  _data_in_out_pattern_;
-      std::bitset<snemo::digitization::tracker_info::LMR_PATTERN_SIZE> _data_left_mid_right_pattern_;
-      std::bitset<snemo::digitization::tracker_info::NSZ_PATTERN_SIZE> _data_near_source_;
+      std::bitset<snemo::digitization::tracker_info::IO_PATTERN_SIZE>  data_in_out_pattern;
+      std::bitset<snemo::digitization::tracker_info::LMR_PATTERN_SIZE> data_left_mid_right_pattern;
+      std::bitset<snemo::digitization::tracker_info::NSZ_PATTERN_SIZE> data_near_source;
     };
 	
   } // end of namespace digitization

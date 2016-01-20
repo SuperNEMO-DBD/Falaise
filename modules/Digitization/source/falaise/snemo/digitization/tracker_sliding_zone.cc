@@ -22,18 +22,18 @@ namespace snemo {
 
     void tracker_sliding_zone::reset()
     {
-      _side_ = -1;
-      _szone_id_ = -1;
+      side = -1;
+      szone_id = -1;
       for (int ilayer = 0; ilayer < tracker_info::NLAYERS; ilayer++) {
 	for (int irow = 0; irow < snemo::digitization::tracker_info::SLZONE_WIDTH; irow++) {
-	  _cells_[ilayer][irow] = false;
+	  cells[ilayer][irow] = false;
 	}
       }
-      _addr_layer_proj_.reset();
-      _addr_row_proj_.reset();
-      _data_layer_proj_.reset();
-      _data_row_proj_.reset();
-      _data_near_source_.reset();
+      addr_layer_proj.reset();
+      addr_row_proj.reset();
+      data_layer_proj.reset();
+      data_row_proj.reset();
+      data_near_source.reset();
 
       return;
     }
@@ -61,37 +61,35 @@ namespace snemo {
 
     void tracker_sliding_zone::compute_lr_proj()
     {
-      _data_near_source_.reset();
-      _data_layer_proj_.reset();
-      _data_row_proj_.reset();
+      data_near_source.reset();
       
       for (int ilayer = 0; ilayer < tracker_info::NLAYERS; ilayer++) 
 	{
-	  _addr_layer_proj_.set(ilayer, false);
+	  addr_layer_proj.set(ilayer, false);
 
-	  for (int irow = 0; irow < width(_szone_id_); irow++)
+	  for (int irow = 0; irow < width(szone_id); irow++)
 	    {
-	      if (_cells_[ilayer][irow]) 
+	      if (cells[ilayer][irow]) 
 		{
-		  _addr_layer_proj_.set(ilayer, true);
+		  addr_layer_proj.set(ilayer, true);
 		  if (ilayer < tracker_info::NUMBER_OF_LAYERS_HIT_FOR_NEAR_SOURCE_BIT) 
 		    {
-		      if (irow < tracker_info::LEFT_RIGHT_ROW_SEPARATION_FOR_NEAR_SOURCE_BIT) _data_near_source_.set(DATA_NEAR_SOURCE_BIT_LEFT, true);
-		      else _data_near_source_.set(DATA_NEAR_SOURCE_BIT_RIGHT, true);
+		      if (irow < tracker_info::LEFT_RIGHT_ROW_SEPARATION_FOR_NEAR_SOURCE_BIT) data_near_source.set(DATA_NEAR_SOURCE_BIT_RIGHT, true);
+		      else data_near_source.set(DATA_NEAR_SOURCE_BIT_LEFT, true);
 		    }
 		  break;
 		}
 	    }
 	}
 
-      for (int irow = 0; irow < width(_szone_id_); irow++) 
+      for (int irow = 0; irow < width(szone_id); irow++) 
 	{
-	  _addr_row_proj_.set(irow, false);
+	  addr_row_proj.set(irow, false);
 	  for (int ilayer = 0; ilayer < tracker_info::NLAYERS; ilayer++) 
 	    {
-	      if (_cells_[ilayer][irow]) 
+	      if (cells[ilayer][irow]) 
 		{
-		  _addr_row_proj_.set(irow, true);
+		  addr_row_proj.set(irow, true);
 		  break;
 		}
 	    }
@@ -101,39 +99,30 @@ namespace snemo {
 
     void tracker_sliding_zone::build_pattern(tracker_trigger_mem_maker_new_strategy::mem1_type & mem1_, tracker_trigger_mem_maker_new_strategy::mem2_type & mem2_)
     {
-      // A refaire après recode les mémoires
-
-      // // Pattern [ 3 2 1 0 ] for a sliding zone
-      // //           O I L R
-      // {
-      // 	// Vertical/layer pattern:
-      // 	mem1_type::address_type vaddress;
-        
+      // Pattern data : 
+      // layer proj :[ 1 0 ]   |  row proj [ 1 0 ] for a sliding zone
+      //               O I                   L R
+      
+      // Vertical/layer pattern:
+      tracker_trigger_mem_maker_new_strategy::mem1_type::address_type vaddress;
+      vaddress = addr_layer_proj;
 	
+      tracker_trigger_mem_maker_new_strategy::mem1_type::data_type vdata;
+      mem1_.fetch(vaddress, vdata);
+      data_layer_proj = vdata;
 
-      // 	for (int i = 0; i < tracker_info::NLAYERS; i++) {
-	  
-      // 	  vaddress[i] = lproj[i];
-      // 	}
-      // 	mem1_type::data_type vpattern;
-      // 	mem1_.fetch(vaddress, vpattern);
-      // 	for (int i = 0; i < vpattern.size(); i++) {
-      // 	  pattern[2 + i] = vpattern.test(i);
-      // 	}
-      // }
-      // {
-      // 	// Horizontal/row pattern:
-      // 	mem2_type::address_type vaddress;
-      // 	for (int i = 0; i < SZONE_WIDTH; i++) {
-      // 	  vaddress[i] = rproj[i];
-      // 	}
-      // 	mem2_type::data_type vpattern;
-      // 	mem2_.fetch(vaddress, vpattern);
-      // 	for (int i = 0; i < vpattern.size(); i++) {
-      // 	  pattern[i] = vpattern.test(i);
-      // 	}
-      // }
-      // return;
+      // Horizontal/row pattern:
+      tracker_trigger_mem_maker_new_strategy::mem2_type::address_type haddress;
+      haddress = addr_row_proj;
+
+      tracker_trigger_mem_maker_new_strategy::mem2_type::data_type hdata;
+      mem2_.fetch(haddress, hdata);
+      data_row_proj = hdata;
+      
+      //std::clog << "vaddress = " << vaddress << " vdata = " << data_layer_proj << std::endl;
+      // std::clog << "haddress = " << haddress << " hdata = " << data_row_proj << std::endl;
+
+      return;
     }
 
     void tracker_sliding_zone::print_layout(std::ostream & out_)
@@ -150,47 +139,49 @@ namespace snemo {
 
     void tracker_sliding_zone::print(std::ostream & out_) const
     {
-      out_ << "Sliding zone (" << _side_ << ',' << _szone_id_ << ") : \n";
-      if (_side_ == 0) {
+      out_ << "Sliding zone (" << side << ',' << szone_id << ") : \n";
+      if (side == 0) {
 	out_ << "    " << "  ";
-	for (int irow = 0; irow < width(_szone_id_); irow++) {
+	for (int irow = 0; irow < width(szone_id); irow++) {
 	  out_ << irow << ' ';
 	}
 	out_ << '\n';
 	for (int ilayer = tracker_info::NLAYERS - 1; ilayer >= 0; ilayer--) {
 	  out_ << ilayer << " = " << "  ";
-	  for (int irow = 0; irow < width(_szone_id_); irow++) {
-	    out_ << (_cells_[ilayer][irow] ? 'o' : '.') << ' ';
+	  for (int irow = 0; irow < width(szone_id); irow++) {
+	    out_ << (cells[ilayer][irow] ? 'o' : '.') << ' ';
 	  }
-	  out_ << ' ' << '[' << _addr_layer_proj_.test(ilayer) << ']' << '\n';
+	  out_ << ' ' << '[' << addr_layer_proj.test(ilayer) << ']' << '\n';
 	}
 	out_ << "    " << "[ ";
-	for (int irow = 0; irow < width(_szone_id_); irow++) {
-	  out_ << _addr_row_proj_.test(irow) << ' ';
+	for (int irow = 0; irow < width(szone_id); irow++) {
+	  out_ << addr_row_proj.test(irow) << ' ';
 	}
 	out_ << ']' << '\n';
       }
-      if (_side_ == 1) {
+      if (side == 1) {
 	out_ << "    " << "[ ";
-	for (int irow = 0; irow < width(_szone_id_); irow++) {
-	  out_ << _addr_row_proj_.test(irow) << ' ';
+	for (int irow = 0; irow < width(szone_id); irow++) {
+	  out_ << addr_row_proj.test(irow) << ' ';
 	}
 	out_ << ']' << '\n';
 	for (int ilayer = 0; ilayer < tracker_info::NLAYERS; ilayer++) {
 	  out_ << ilayer << " = " << "  ";
-	  for (int irow = 0; irow < width(_szone_id_); irow++) {
-	    out_ << (_cells_[ilayer][irow] ? 'o' : '.') << ' ';
+	  for (int irow = 0; irow < width(szone_id); irow++) {
+	    out_ << (cells[ilayer][irow] ? 'o' : '.') << ' ';
 	  }
-	  out_ << ' ' << '[' << _addr_layer_proj_.test(ilayer) << ']' << '\n';
+	  out_ << ' ' << '[' << addr_layer_proj.test(ilayer) << ']' << '\n';
 	}
 	out_ << "    " << "  ";
-	for (int irow = 0; irow < width(_szone_id_); irow++) {
+	for (int irow = 0; irow < width(szone_id); irow++) {
 	  out_ << irow << ' ';
 	}
 	out_ << '\n';
       }
-      out_ << "NSZ[L] = " << '[' << _data_near_source_.test(0) << ']' << "  NSZ[R] = " << '[' << _data_near_source_.test(1) << ']' << '\n';
-      out_ << ']' << '\n';
+      out_ << "IO = " << '[' << data_layer_proj << ']' << "  LR = " << '[' << data_row_proj << ']' << '\n';
+      out_ << "NSZ[L] = " << '[' << data_near_source.test(0) << ']' << "  NSZ[R] = " << '[' << data_near_source.test(1) << ']' << '\n';
+      out_ << '\n';
+
       return;
     }
 
