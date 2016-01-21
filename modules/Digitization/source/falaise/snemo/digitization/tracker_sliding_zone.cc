@@ -31,11 +31,21 @@ namespace snemo {
       }
       addr_layer_proj.reset();
       addr_row_proj.reset();
-      data_layer_proj.reset();
-      data_row_proj.reset();
+      data_IO_proj.reset();
+      data_LR_proj.reset();
       data_near_source.reset();
 
       return;
+    }      
+
+    int tracker_sliding_zone::stop_row(int i_) 
+    {
+      int sr = 4 + (i_ - 1) * 4;
+      if (i_ == 0) sr = 0;
+      if (i_ == 1) sr = 4;
+      if (i_ == 2) sr = 8;
+      if (i_ > 16) sr--;
+      return std::min((int) tracker_info::NROWS - 1, sr);
     }
 
     int tracker_sliding_zone::start_row(int i_) 
@@ -43,19 +53,14 @@ namespace snemo {
       return stop_row(i_) - width(i_) + 1;
     }
 
-    int tracker_sliding_zone::stop_row(int i_) 
-    {
-      int sr = 4 + i_ * 4;
-      if (i_ > 15) sr--;
-      return std::min((int) tracker_info::NROWS - 1, sr);
-    }
-
     // Width of sliding zone = 8 except for sliding zone close to the begining or end of tracker
     int tracker_sliding_zone::width(int i_) 
     {
       int nr = snemo::digitization::tracker_info::SLZONE_WIDTH;
-      if (i_ == 0) nr = 5;
-      if (i_ == (int) tracker_info::NSLZONES - 1) nr = 5;
+
+      if (i_ == 0 || i_ == (int) tracker_info::NSLZONES - 1) nr = 1;
+      if (i_ == 1 || i_ == (int) tracker_info::NSLZONES - 2) nr = 5;
+
       return nr;
     }
 
@@ -109,7 +114,7 @@ namespace snemo {
 	
       tracker_trigger_mem_maker_new_strategy::mem1_type::data_type vdata;
       mem1_.fetch(vaddress, vdata);
-      data_layer_proj = vdata;
+      data_IO_proj = vdata;
 
       // Horizontal/row pattern:
       tracker_trigger_mem_maker_new_strategy::mem2_type::address_type haddress;
@@ -117,10 +122,10 @@ namespace snemo {
 
       tracker_trigger_mem_maker_new_strategy::mem2_type::data_type hdata;
       mem2_.fetch(haddress, hdata);
-      data_row_proj = hdata;
+      data_LR_proj = hdata;
       
-      //std::clog << "vaddress = " << vaddress << " vdata = " << data_layer_proj << std::endl;
-      // std::clog << "haddress = " << haddress << " hdata = " << data_row_proj << std::endl;
+      //std::clog << "vaddress = " << vaddress << " vdata = " << data_IO_proj << std::endl;
+      // std::clog << "haddress = " << haddress << " hdata = " << data_LR_proj << std::endl;
 
       return;
     }
@@ -178,7 +183,7 @@ namespace snemo {
 	}
 	out_ << '\n';
       }
-      out_ << "IO = " << '[' << data_layer_proj << ']' << "  LR = " << '[' << data_row_proj << ']' << '\n';
+      out_ << "IO = " << '[' << data_IO_proj << ']' << "  LR = " << '[' << data_LR_proj << ']' << '\n';
       out_ << "NSZ[L] = " << '[' << data_near_source.test(0) << ']' << "  NSZ[R] = " << '[' << data_near_source.test(1) << ']' << '\n';
       out_ << '\n';
 

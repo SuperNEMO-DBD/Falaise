@@ -122,6 +122,10 @@ namespace snemo {
 			void build_sliding_zones(tracker_trigger_mem_maker_new_strategy::mem1_type & mem1_, 
 															 tracker_trigger_mem_maker_new_strategy::mem2_type & mem2_);
 
+			
+			
+			void build_zone(tracker_zone & zone_, int side_, int zone_id_);
+
 			/// Build all zones responses for a clocktick
 			void build_zones();
 			

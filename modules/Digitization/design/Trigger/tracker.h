@@ -10,7 +10,7 @@ namespace snemo {
       static const std::size_t NLAYERS = 9;
       static const std::size_t NROWS   = 113;
       static const std::size_t NZONES  = 10;
-      static const std::size_t NSZONES = 29;
+      static const std::size_t NSZONES = 31;
     };
 
   }

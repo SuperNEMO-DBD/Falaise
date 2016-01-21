@@ -10,7 +10,7 @@
 
 // Boost : 
 #include <boost/cstdint.hpp>
-
+ 
 // Ourselves : 
 #include <snemo/digitization/tracker_info.h>
 #include <snemo/digitization/tracker_trigger_mem_maker_new_strategy.h>
@@ -41,11 +41,11 @@ namespace snemo {
 				ROW_PROJ_BIT_6 = 6,
 				ROW_PROJ_BIT_7 = 7,
 
-				DATA_LAYER_PROJ_BIT_INNER = 0,
-				DATA_LAYER_PROJ_BIT_OUTER = 1,
+				DATA_IO_PROJ_BIT_INNER = 0,
+				DATA_IO_PROJ_BIT_OUTER = 1,
 
-				DATA_ROW_PROJ_BIT_RIGHT = 0,
-				DATA_ROW_PROJ_BIT_LEFT = 1,
+				DATA_LR_PROJ_BIT_RIGHT = 0,
+				DATA_LR_PROJ_BIT_LEFT = 1,
 
 				DATA_NEAR_SOURCE_BIT_RIGHT = 0,
 				DATA_NEAR_SOURCE_BIT_LEFT = 1
@@ -77,9 +77,9 @@ namespace snemo {
       std::bitset<snemo::digitization::tracker_info::SLZONE_LAYER_PROJ> addr_layer_proj;
       std::bitset<snemo::digitization::tracker_info::SLZONE_ROW_PROJ>   addr_row_proj;
 
-      std::bitset<snemo::digitization::tracker_info::SLZONE_DATA_LAYER_PROJ> data_layer_proj;
-      std::bitset<snemo::digitization::tracker_info::SLZONE_DATA_ROW_PROJ>   data_row_proj;
-      std::bitset<snemo::digitization::tracker_info::NSZ_PATTERN_SIZE>       data_near_source;
+      std::bitset<snemo::digitization::tracker_info::SLZONE_DATA_IO_PROJ> data_IO_proj;
+      std::bitset<snemo::digitization::tracker_info::SLZONE_DATA_LR_PROJ>   data_LR_proj;
+      std::bitset<snemo::digitization::tracker_info::DATA_NSZ_PATTERN_SIZE>  data_near_source;
        
     };
 	

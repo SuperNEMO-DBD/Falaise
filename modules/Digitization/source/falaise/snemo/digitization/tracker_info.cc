@@ -20,11 +20,14 @@ namespace snemo {
     const std::size_t tracker_info::SLZONE_WIDTH;
     const std::size_t tracker_info::SLZONE_LAYER_PROJ; 
     const std::size_t tracker_info::SLZONE_ROW_PROJ;
-    const std::size_t tracker_info::SLZONE_DATA_LAYER_PROJ; 
-    const std::size_t tracker_info::SLZONE_DATA_ROW_PROJ;
-    const std::size_t tracker_info::IO_PATTERN_SIZE;
-    const std::size_t tracker_info::LMR_PATTERN_SIZE;
-    const std::size_t tracker_info::NSZ_PATTERN_SIZE;
+    const std::size_t tracker_info::SLZONE_DATA_IO_PROJ; 
+    const std::size_t tracker_info::SLZONE_DATA_LR_PROJ;    
+    const std::size_t tracker_info::ZONE_ADDR_IO_PATTERN_SIZE;
+    const std::size_t tracker_info::ZONE_ADDR_LMR_PATTERN_SIZE;
+    const std::size_t tracker_info::ZONE_ADDR_LMR_WIO_PATTERN_SIZE;
+    const std::size_t tracker_info::DATA_IO_PATTERN_SIZE;
+    const std::size_t tracker_info::DATA_LMR_PATTERN_SIZE;
+    const std::size_t tracker_info::DATA_NSZ_PATTERN_SIZE;
     const std::size_t tracker_info::DATA_FULL_BITSET_SIZE;
     
   } // end of namespace digitization

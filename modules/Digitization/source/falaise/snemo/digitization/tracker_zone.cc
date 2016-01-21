@@ -20,11 +20,21 @@ namespace snemo {
 
     void tracker_zone::reset()
     {
+      side = -1;
+      zone_id = -1;
       for (int ilayer = 0; ilayer < snemo::digitization::tracker_info::NLAYERS; ilayer++) {
 	for (int irow = 0; irow < snemo::digitization::tracker_info::ZONE_WIDTH; irow++) {
 	  cells[ilayer][irow] = false;
 	}
       }
+
+      addr_in_out_pattern.reset();
+      addr_left_mid_right_pattern.reset();
+      addr_left_mid_right_with_in_out_pattern.reset();
+      data_in_out_pattern.reset();
+      data_left_mid_right_pattern.reset();
+      data_near_source.reset();
+
       return;
     }
 
@@ -47,6 +57,42 @@ namespace snemo {
       return stop_row(i_) - start_row(i_) + 1;
     }
 
+    void compute_io_pattern()
+    {
+      
+      
+      
+      return;
+    }		
+    void compute_lmr_pattern()
+    {
+      
+      
+      
+      return;
+    }
+    void compute_lmr_wio_pattern()
+    {
+      
+      
+      
+      return;
+    }
+
+    void tracker_zone::build_in_out_pattern(tracker_trigger_mem_maker_new_strategy::mem3_type & mem3_)
+    {
+      
+      
+      
+      return;
+    }
+
+    void tracker_zone::build_left_mid_right_pattern(tracker_trigger_mem_maker_new_strategy::mem4_type & mem4_,
+				      tracker_trigger_mem_maker_new_strategy::mem5_type & mem5)
+    {
+      
+      return;
+    }
 
     void tracker_zone::print_layout(std::ostream & out_)
     {

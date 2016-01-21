@@ -67,20 +67,29 @@ namespace snemo {
     {
       static const std::size_t SZWIDTH = 8;
 
-      static int stop_row(int i_) {
-	int sr = 4 + i_ * 4;
-	if (i_ > 15) sr--;
+      static int stop_row(int i_) 
+      {
+	//	int sr = 4 + i_ * 4;
+	int sr = 4 + (i_ - 1) * 4;
+	if (i_ == 0) sr = 0;
+	if (i_ == 1) sr = 4;
+	if (i_ == 2) sr = 8;
+	if (i_ > 16) sr--;
 	return std::min((int) tracker::NROWS - 1, sr);
       }
 
-      static int start_row(int i_) {
-	return stop_row(i_) - width(i_) + 1;
+      static int start_row(int i_) 
+      {
+	int start_row = stop_row(i_) - width(i_) + 1;
+	//if (i_ == 0) start_row = 0;
+	return start_row;
       }
-
-      static int width(int i_) {
+      
+      static int width(int i_) 
+      {
 	int nr = 8;
-	if (i_ == 0) nr = 5;
-	if (i_ == (int) tracker::NSZONES - 1) nr = 5;
+	if (i_ == 0 || i_ == (int) tracker::NSZONES - 1) nr = 1;
+	if (i_ == 1 || i_ == (int) tracker::NSZONES - 2) nr = 5;
 	return nr;
       }
 

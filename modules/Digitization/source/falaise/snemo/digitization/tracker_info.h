@@ -30,12 +30,16 @@ namespace snemo {
       static const std::size_t SLZONE_WIDTH = 8;
       static const std::size_t SLZONE_LAYER_PROJ = 9; 
       static const std::size_t SLZONE_ROW_PROJ   = 8;
-      static const std::size_t SLZONE_DATA_LAYER_PROJ = 2; 
-      static const std::size_t SLZONE_DATA_ROW_PROJ   = 2;
+      static const std::size_t SLZONE_DATA_IO_PROJ = 2; 
+      static const std::size_t SLZONE_DATA_LR_PROJ   = 2;
 
-      static const std::size_t IO_PATTERN_SIZE = 2;
-      static const std::size_t LMR_PATTERN_SIZE = 3;
-      static const std::size_t NSZ_PATTERN_SIZE = 2;
+      static const std::size_t ZONE_ADDR_IO_PATTERN_SIZE = 8;
+      static const std::size_t ZONE_ADDR_LMR_PATTERN_SIZE = 6;
+      static const std::size_t ZONE_ADDR_LMR_WIO_PATTERN_SIZE = 8;
+
+      static const std::size_t DATA_IO_PATTERN_SIZE = 2;
+      static const std::size_t DATA_LMR_PATTERN_SIZE = 3;
+      static const std::size_t DATA_NSZ_PATTERN_SIZE = 2;
 			static const std::size_t DATA_FULL_BITSET_SIZE = 7;
     };
 	
