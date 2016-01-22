@@ -63,19 +63,19 @@ namespace snemo {
 			/// Set the electronic mapping object
       void set_electronic_mapping(const electronic_mapping & my_electronic_mapping_);
 
-			/// Fill memory 1
+			/// Fill memory 1 for all zones
 			void fill_mem1_all(const std::string & filename_);
 
-			/// Fill memory 2
+			/// Fill memory 2 for all zones
 			void fill_mem2_all(const std::string & filename_);
 
-			/// Fill memory 3
+			/// Fill memory 3 for all zones
 			void fill_mem3_all(const std::string & filename_);
 
-			/// Fill memory 4
+			/// Fill memory 4 for all zones
 			void fill_mem4_all(const std::string & filename_);
 
-			/// Fill memory 5
+			/// Fill memory 5 for all zones
 			void fill_mem5_all(const std::string & filename_);
 
 			/// Initializing
@@ -127,8 +127,15 @@ namespace snemo {
 			void build_zone(tracker_zone & zone_, int side_, int zone_id_);
 
 			/// Build all zones responses for a clocktick
-			void build_zones();
-			
+			void build_zones();    
+
+			void build_in_out_pattern(tracker_zone & zone_, 
+																tracker_trigger_mem_maker_new_strategy::mem3_type & mem3_);
+
+			void build_left_mid_right_pattern(tracker_zone & zone_,
+																				tracker_trigger_mem_maker_new_strategy::mem4_type & mem4_,
+																				tracker_trigger_mem_maker_new_strategy::mem5_type & mem5_);
+
 			void print_zones(std::ostream & out_) const;
 			
 			/// General process

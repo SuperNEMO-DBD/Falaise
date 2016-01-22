@@ -423,14 +423,37 @@ namespace snemo {
 	      _zones_[side_][zone_id_].cells[ilayer][irow - start_row] = _geiger_matrix_[side_][ilayer][irow];
 	    }
 	}
-            
 
-      std::bitset<2> SZA_IO = _sliding_zones_[side_][zone_id_ * 3].data_IO_proj;
-      std::bitset<2> SZB_IO = _sliding_zones_[side_][zone_id_ * 3 + 1].data_IO_proj;
-      std::bitset<2> SZC_IO = _sliding_zones_[side_][zone_id_ * 3 + 2].data_IO_proj;
-      std::bitset<2> SZD_IO = _sliding_zones_[side_][zone_id_ * 3 + 2].data_IO_proj;
       
-      std::bitset<8> ZONE_ADDR_IO = 0x0;
+      return;
+    }
+    
+    void tracker_trigger_algorithm_test_new_strategy::build_zones()
+    {
+      for (int iside = 0; iside < tracker_info::NSIDES; iside++) 
+	{
+	  for (int izone = 0; izone < tracker_info::NZONES; izone++) 
+	    {
+	      build_zone(_zones_[iside][izone], iside, izone);
+	      build_in_out_pattern(_zones_[iside][izone], _zone_vertical_memory_);
+	      build_left_mid_right_pattern(_zones_[iside][izone], _zone_horizontal_memory_, _zone_vertical_for_horizontal_memory_);
+	    }
+	}
+      return;
+    }    
+    
+    void tracker_trigger_algorithm_test_new_strategy::build_in_out_pattern(tracker_zone & zone_,
+									   tracker_trigger_mem_maker_new_strategy::mem3_type & mem3_)
+    {
+      int side = zone_.side;
+      int zone_id = zone_.zone_id;
+      
+      std::bitset<tracker_info::SLZONE_DATA_IO_PROJ> SZA_IO = _sliding_zones_[side][zone_id * 3].data_IO_proj;
+      std::bitset<tracker_info::SLZONE_DATA_IO_PROJ> SZB_IO = _sliding_zones_[side][zone_id * 3 + 1].data_IO_proj;
+      std::bitset<tracker_info::SLZONE_DATA_IO_PROJ> SZC_IO = _sliding_zones_[side][zone_id * 3 + 2].data_IO_proj;
+      std::bitset<tracker_info::SLZONE_DATA_IO_PROJ> SZD_IO = _sliding_zones_[side][zone_id * 3 + 2].data_IO_proj;
+      
+      std::bitset<tracker_info::ZONE_ADDR_IO_PATTERN_SIZE> ZONE_ADDR_IO = 0x0;
 
       if (SZD_IO.test(0)) ZONE_ADDR_IO.set(0, true);
       if (SZD_IO.test(1)) ZONE_ADDR_IO.set(1, true);
@@ -441,32 +464,74 @@ namespace snemo {
       if (SZA_IO.test(0)) ZONE_ADDR_IO.set(6, true);
       if (SZA_IO.test(1)) ZONE_ADDR_IO.set(7, true);
       
+      mem3_.fetch(ZONE_ADDR_IO, zone_.data_in_out_pattern);
       
-      std::clog << "SZA_IO = " << SZA_IO << ' '
-		<< "SZB_IO = " << SZB_IO << ' '
-		<< "SZC_IO = " << SZC_IO << ' '
-		<< "SZD_IO = " << SZD_IO << ' '
-		<< "ZONE ADDR IO = " << ZONE_ADDR_IO << "     "
-		<< "zone_id = " << zone_id_ << ' '
-		<< "SLZA = " << zone_id_ * 3 << ' ' << std::endl;
-      
-
-
-
       return;
     }
-
-    void tracker_trigger_algorithm_test_new_strategy::build_zones()
+		
+    void tracker_trigger_algorithm_test_new_strategy::build_left_mid_right_pattern(tracker_zone & zone_,
+										   tracker_trigger_mem_maker_new_strategy::mem4_type & mem4_,
+										   tracker_trigger_mem_maker_new_strategy::mem5_type & mem5_)
     {
-      for (int iside = 0; iside < tracker_info::NSIDES; iside++) 
+      int side = zone_.side;
+      int zone_id = zone_.zone_id;
+      
+      std::bitset<tracker_info::SLZONE_DATA_LR_PROJ> SZA_LR = _sliding_zones_[side][zone_id * 3].data_LR_proj;
+      std::bitset<tracker_info::SLZONE_DATA_LR_PROJ> SZB_LR = _sliding_zones_[side][zone_id * 3 + 1].data_LR_proj;
+      std::bitset<tracker_info::SLZONE_DATA_LR_PROJ> SZC_LR = _sliding_zones_[side][zone_id * 3 + 2].data_LR_proj;
+      std::bitset<tracker_info::SLZONE_DATA_LR_PROJ> SZD_LR = _sliding_zones_[side][zone_id * 3 + 3].data_LR_proj;
+      
+      std::bitset<tracker_info::ZONE_ADDR_LMR_PATTERN_SIZE+2> ZONE_ADDR_LR = 0x0;
+
+      ZONE_ADDR_LR[0] = SZD_LR[0];
+      ZONE_ADDR_LR[1] = SZD_LR[1];
+      ZONE_ADDR_LR[2] = SZC_LR[0];
+      ZONE_ADDR_LR[3] = SZC_LR[1];
+      ZONE_ADDR_LR[4] = SZB_LR[0];
+      ZONE_ADDR_LR[5] = SZB_LR[1];
+      ZONE_ADDR_LR[6] = SZA_LR[0];
+      ZONE_ADDR_LR[7] = SZA_LR[1];
+
+      std::bitset<tracker_info::ZONE_ADDR_LMR_PATTERN_SIZE> ZONE_ADDR_LR_REDUCTED = 0x0;
+      for (int i = 0; i < ZONE_ADDR_LR_REDUCTED.size(); i++)
 	{
-	  for (int izone = 0; izone < tracker_info::NZONES; izone++) 
-	    {
-	      build_zone(_zones_[iside][izone], iside, izone);
-	    }
+	  ZONE_ADDR_LR_REDUCTED[i] = ZONE_ADDR_LR[i+1];
+	}
+
+      if (ZONE_ADDR_LR_REDUCTED != 0)
+	{	  	  
+	  mem4_.fetch(ZONE_ADDR_LR_REDUCTED, zone_.data_left_mid_right_pattern);
+
+	  // std::clog << "SIDE = " << side 
+	  // 	    << " ZONE = " << zone_id 
+	  // 	    << " ZONE_ADDR_LR = " << ZONE_ADDR_LR 
+	  // 	    << " ZONE_ADDR_LR_REDUCTED = " << ZONE_ADDR_LR_REDUCTED 
+	  // 	    << " data = " << zone_.data_left_mid_right_pattern << std::endl;
+	}
+
+      else
+	{
+	  std::bitset<tracker_info::SLZONE_DATA_IO_PROJ> SZA_IO = _sliding_zones_[side][zone_id * 3].data_IO_proj;
+	  std::bitset<tracker_info::SLZONE_DATA_IO_PROJ> SZB_IO = _sliding_zones_[side][zone_id * 3 + 1].data_IO_proj;
+	  std::bitset<tracker_info::SLZONE_DATA_IO_PROJ> SZC_IO = _sliding_zones_[side][zone_id * 3 + 2].data_IO_proj;
+	  std::bitset<tracker_info::SLZONE_DATA_IO_PROJ> SZD_IO = _sliding_zones_[side][zone_id * 3 + 2].data_IO_proj;
+	  
+	  std::bitset<tracker_info::ZONE_ADDR_LMR_WIO_PATTERN_SIZE> ZONE_ADDR_IO = 0x0;
+	  
+	  ZONE_ADDR_IO[0] = SZD_IO[0];
+	  ZONE_ADDR_IO[1] = SZD_IO[1];
+	  ZONE_ADDR_IO[2] = SZC_IO[0];
+	  ZONE_ADDR_IO[3] = SZC_IO[1];
+	  ZONE_ADDR_IO[4] = SZB_IO[0];
+	  ZONE_ADDR_IO[5] = SZB_IO[1];
+	  ZONE_ADDR_IO[6] = SZA_IO[0];
+	  ZONE_ADDR_IO[7] = SZA_IO[1];
+	  	  
+	  mem5_.fetch(ZONE_ADDR_IO, zone_.data_left_mid_right_pattern);
 	}
       return;
     }
+
 
 
     void tracker_trigger_algorithm_test_new_strategy::print_zones(std::ostream & out_) const
@@ -525,7 +590,6 @@ namespace snemo {
       _geiger_matrix_records_.push_back(a_geiger_matrix);
       _tracker_record_finale_decision_.clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2;
       
-   
       build_sliding_zones(_sliding_zone_vertical_memory_, _sliding_zone_horizontal_memory_);  
       build_zones();
       print_zones(std::clog);

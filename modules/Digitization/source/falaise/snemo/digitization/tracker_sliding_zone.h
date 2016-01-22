@@ -77,9 +77,9 @@ namespace snemo {
       std::bitset<snemo::digitization::tracker_info::SLZONE_LAYER_PROJ> addr_layer_proj;
       std::bitset<snemo::digitization::tracker_info::SLZONE_ROW_PROJ>   addr_row_proj;
 
-      std::bitset<snemo::digitization::tracker_info::SLZONE_DATA_IO_PROJ> data_IO_proj;
+      std::bitset<snemo::digitization::tracker_info::SLZONE_DATA_IO_PROJ>   data_IO_proj;
       std::bitset<snemo::digitization::tracker_info::SLZONE_DATA_LR_PROJ>   data_LR_proj;
-      std::bitset<snemo::digitization::tracker_info::DATA_NSZ_PATTERN_SIZE>  data_near_source;
+      std::bitset<snemo::digitization::tracker_info::DATA_NSZ_PATTERN_SIZE> data_near_source;
        
     };
 	

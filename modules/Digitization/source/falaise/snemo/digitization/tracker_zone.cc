@@ -57,43 +57,6 @@ namespace snemo {
       return stop_row(i_) - start_row(i_) + 1;
     }
 
-    void compute_io_pattern()
-    {
-      
-      
-      
-      return;
-    }		
-    void compute_lmr_pattern()
-    {
-      
-      
-      
-      return;
-    }
-    void compute_lmr_wio_pattern()
-    {
-      
-      
-      
-      return;
-    }
-
-    void tracker_zone::build_in_out_pattern(tracker_trigger_mem_maker_new_strategy::mem3_type & mem3_)
-    {
-      
-      
-      
-      return;
-    }
-
-    void tracker_zone::build_left_mid_right_pattern(tracker_trigger_mem_maker_new_strategy::mem4_type & mem4_,
-				      tracker_trigger_mem_maker_new_strategy::mem5_type & mem5)
-    {
-      
-      return;
-    }
-
     void tracker_zone::print_layout(std::ostream & out_)
     {
       out_ << "Zone layout: " << '\n';
