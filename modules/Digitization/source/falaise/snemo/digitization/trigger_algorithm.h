@@ -13,17 +13,17 @@
 #include <snemo/digitization/calo_ctw_data.h>
 #include <snemo/digitization/geiger_ctw_data.h>
 #include <snemo/digitization/calo_trigger_algorithm.h>
-#include <snemo/digitization/tracker_trigger_algorithm.h>
-#include <snemo/digitization/coincidence_trigger_algorithm.h>
+#include <snemo/digitization/tracker_trigger_algorithm_test_new_strategy.h>
+#include <snemo/digitization/coincidence_trigger_algorithm_new_strategy.h>
 #include <snemo/digitization/electronic_mapping.h>
 #include <snemo/digitization/mapping.h>
 #include <snemo/digitization/trigger_display_manager.h>
 
 namespace datatools {
   class properties;
-}
+}    
 
-namespace snemo {
+namespace snemo { 
   
   namespace digitization {
 
@@ -66,7 +66,7 @@ namespace snemo {
 			void clear_records();
 
 			/// Get the vector of calo summary record
-			const std::vector<tracker_trigger_algorithm::tracker_record> get_tracker_records_vector() const;
+			const std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record> get_tracker_records_vector() const;
 			
 			/// Get the vector of calo summary record
 			const std::vector<calo_trigger_algorithm::calo_summary_record> get_calo_records_vector() const;
@@ -97,14 +97,14 @@ namespace snemo {
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
 			
 			bool                _activate_coincidence_; //!< Boolean activating coincidence
-		  tracker_trigger_algorithm   _tracker_algo_; //!< Tracker trigger algorithm @ 1600ns
+		  tracker_trigger_algorithm_test_new_strategy   _tracker_algo_; //!< Tracker trigger algorithm @ 1600ns
 		  calo_trigger_algorithm         _calo_algo_; //!< Calo trigger algorithm @ 25ns
-			coincidence_trigger_algorithm _coinc_algo_; //!< Coincidence trigger algorithm for matching calo and tracker trigger
+			coincidence_trigger_algorithm_new_strategy _coinc_algo_; //!< Coincidence trigger algorithm for matching calo and tracker trigger
 			
 			// Data :
 			std::vector<calo_trigger_algorithm::calo_summary_record> _calo_records_; //!< Collection of calo summary record
-			std::vector<tracker_trigger_algorithm::tracker_record> _tracker_records_; //!< Collection of tracker record
-			std::vector<coincidence_trigger_algorithm::coincidence_output> _coincidence_records_; //!< Collection of coincidence record
+			std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record> _tracker_records_; //!< Collection of tracker record
+			std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_output> _coincidence_records_; //!< Collection of coincidence record
 			
 			bool _finale_trigger_decision_; //!< The finale decision for the trigger
 			

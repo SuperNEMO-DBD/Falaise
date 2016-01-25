@@ -24,19 +24,39 @@ namespace snemo {
     tracker_trigger_algorithm_test_new_strategy::tracker_record::tracker_record()
     {
       clocktick_1600ns = -1;
-      //finale_decision.reset();
+      tracker_record::reset();
       return;
     }
 
     void tracker_trigger_algorithm_test_new_strategy::tracker_record::reset()
     {
       clocktick_1600ns = -1;
+      for (int iside = 0; iside < tracker_info::NSIDES; iside++) 
+	{
+	  for (int izone = 0; izone < tracker_info::NZONES; izone++) 
+	    {
+	      finale_data_per_zone[iside][izone].reset();
+	    }
+	}
+      finale_decision = false;
       return;
     }
 
     void tracker_trigger_algorithm_test_new_strategy::tracker_record::display()
     {
+      std::clog << "Tracker Trigger info record : " << std::endl; 
+      std::clog << "Clocktick 1600    : " << clocktick_1600ns << std::endl;;  
 
+      for (int iside = 0; iside < tracker_info::NSIDES; iside++)
+	{
+	  std::clog << "Side = " << iside << " | ";
+	  for (int izone = 0; izone < tracker_info::NZONES; izone++)
+	    {
+	      std::clog << "[" << finale_data_per_zone[iside][izone] << "] ";
+	    } // end of izone
+	  std::clog << std::endl;
+	}
+      std::clog << "Level one tracker decision : [" << finale_decision << "]" <<  std::endl;
       return;
     }
 
@@ -424,7 +444,6 @@ namespace snemo {
 	    }
 	}
 
-      
       return;
     }
     
@@ -437,6 +456,7 @@ namespace snemo {
 	      build_zone(_zones_[iside][izone], iside, izone);
 	      build_in_out_pattern(_zones_[iside][izone], _zone_vertical_memory_);
 	      build_left_mid_right_pattern(_zones_[iside][izone], _zone_horizontal_memory_, _zone_vertical_for_horizontal_memory_);
+	      build_near_source_pattern(_zones_[iside][izone]);
 	    }
 	}
       return;
@@ -505,7 +525,7 @@ namespace snemo {
 	  // std::clog << "SIDE = " << side 
 	  // 	    << " ZONE = " << zone_id 
 	  // 	    << " ZONE_ADDR_LR = " << ZONE_ADDR_LR 
-	  // 	    << " ZONE_ADDR_LR_REDUCTED = " << ZONE_ADDR_LR_REDUCTED 
+ 	  // 	    << " ZONE_ADDR_LR_REDUCTED = " << ZONE_ADDR_LR_REDUCTED 
 	  // 	    << " data = " << zone_.data_left_mid_right_pattern << std::endl;
 	}
 
@@ -532,7 +552,78 @@ namespace snemo {
       return;
     }
 
+    void tracker_trigger_algorithm_test_new_strategy::build_near_source_pattern(tracker_zone & zone_)
+    {     
+      int side = zone_.side;
+      int zone_id = zone_.zone_id;
+      int zone_width = tracker_zone::width(zone_id);
+      int zone_middle = zone_width / 2.;
 
+      zone_.data_near_source = 0x0;
+      
+      for (int ilayer = 0; ilayer < tracker_info::NLAYERS; ilayer++) 
+	{
+	  for (int irow = 0; irow < zone_width; irow++)
+	    {
+	      if (zone_.cells[ilayer][irow]) 
+		{
+		  if (ilayer <= tracker_info::NUMBER_OF_LAYERS_HIT_FOR_NEAR_SOURCE_BIT) 
+		    {
+		      if (zone_middle % 2 == 1)
+			{
+			  if (irow <= zone_middle) zone_.data_near_source.set(tracker_zone::DATA_NEAR_SOURCE_BIT_LEFT, true);
+			  if (irow >= zone_middle) zone_.data_near_source.set(tracker_zone::DATA_NEAR_SOURCE_BIT_RIGHT, true);
+			}
+		      else 
+			{
+			  if (irow < zone_middle) zone_.data_near_source.set(tracker_zone::DATA_NEAR_SOURCE_BIT_LEFT, true);
+			  else zone_.data_near_source.set(tracker_zone::DATA_NEAR_SOURCE_BIT_RIGHT, true);
+			}
+		    }
+		}
+	    }
+	}
+      // std::clog << "SIDE = " << side 
+      // 		<< " ZONE = " << zone_id 
+      // 		<< " ZONE WIDTH = " << zone_width
+      // 		<< " DATA = " << zone_.data_near_source << std::endl;
+	
+      
+      return;
+    }
+    
+    void tracker_trigger_algorithm_test_new_strategy::build_tracker_record()
+    {
+      for (int iside = 0; iside < tracker_info::NSIDES; iside++) 
+	{
+	  for (int izone = 0; izone < tracker_info::NZONES; izone++) 
+	    {
+	      _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_INNER]   = _zones_[iside][izone].data_in_out_pattern[0];
+	      _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_OUTER]   = _zones_[iside][izone].data_in_out_pattern[1];
+	      _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_RIGHT]   = _zones_[iside][izone].data_left_mid_right_pattern[0];
+	      _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_MIDDLE]  = _zones_[iside][izone].data_left_mid_right_pattern[1];
+	      _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_LEFT]    = _zones_[iside][izone].data_left_mid_right_pattern[2];
+	      _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_NSZ_RIGHT] = _zones_[iside][izone].data_near_source[0];
+	      _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_NSZ_LEFT]  = _zones_[iside][izone].data_near_source[1];
+	    }
+	}
+      
+      std::bitset<5> finale_pattern_per_zone = 0x0;
+      for (int iside = 0; iside < tracker_info::NSIDES; iside++) 
+	{
+	  for (int izone = 0; izone < tracker_info::NZONES; izone++) 
+	    {
+	      for (int i = 0; i < finale_pattern_per_zone.size(); i++)
+		{
+		  finale_pattern_per_zone[i] = _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][i];
+		}
+	      
+	      if (finale_pattern_per_zone.any()) _tracker_record_finale_decision_.finale_decision = true;
+	    }
+	}
+	      
+      return;
+    }
 
     void tracker_trigger_algorithm_test_new_strategy::print_zones(std::ostream & out_) const
     {
@@ -573,8 +664,7 @@ namespace snemo {
        	  std::vector<geomtools::geom_id> hit_cells_gids;
        	  build_hit_cells_gids_from_ctw(geiger_ctw_list_per_clocktick_[isize].get(), hit_cells_gids);
        	  fill_matrix(hit_cells_gids);   
-	  display_matrix();
-       	} // end of isize
+	} // end of isize
       geiger_matrix a_geiger_matrix;
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
       	{
@@ -591,10 +681,12 @@ namespace snemo {
       _tracker_record_finale_decision_.clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2;
       
       build_sliding_zones(_sliding_zone_vertical_memory_, _sliding_zone_horizontal_memory_);  
-      build_zones();
+      build_zones();      
+      build_tracker_record();      
+
+      _tracker_record_finale_decision_.display();
+      display_matrix();
       print_zones(std::clog);
-      
-      
       return;
     }
     

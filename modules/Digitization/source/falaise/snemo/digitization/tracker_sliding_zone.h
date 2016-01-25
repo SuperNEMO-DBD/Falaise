@@ -45,10 +45,7 @@ namespace snemo {
 				DATA_IO_PROJ_BIT_OUTER = 1,
 
 				DATA_LR_PROJ_BIT_RIGHT = 0,
-				DATA_LR_PROJ_BIT_LEFT = 1,
-
-				DATA_NEAR_SOURCE_BIT_RIGHT = 0,
-				DATA_NEAR_SOURCE_BIT_LEFT = 1
+				DATA_LR_PROJ_BIT_LEFT = 1
       };
       
       
@@ -79,7 +76,6 @@ namespace snemo {
 
       std::bitset<snemo::digitization::tracker_info::SLZONE_DATA_IO_PROJ>   data_IO_proj;
       std::bitset<snemo::digitization::tracker_info::SLZONE_DATA_LR_PROJ>   data_LR_proj;
-      std::bitset<snemo::digitization::tracker_info::DATA_NSZ_PATTERN_SIZE> data_near_source;
        
     };
 	

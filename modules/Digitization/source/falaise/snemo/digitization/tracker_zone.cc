@@ -56,7 +56,7 @@ namespace snemo {
     {
       return stop_row(i_) - start_row(i_) + 1;
     }
-
+   
     void tracker_zone::print_layout(std::ostream & out_)
     {
       out_ << "Zone layout: " << '\n';

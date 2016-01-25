@@ -26,7 +26,7 @@ namespace snemo {
       static const std::size_t NROWS   = 113;
       static const std::size_t NZONES  = 10;
       static const std::size_t ZONE_WIDTH = 12;
-      static const std::size_t NSLZONES = 29;
+      static const std::size_t NSLZONES = 31;
       static const std::size_t SLZONE_WIDTH = 8;
       static const std::size_t SLZONE_LAYER_PROJ = 9; 
       static const std::size_t SLZONE_ROW_PROJ   = 8;

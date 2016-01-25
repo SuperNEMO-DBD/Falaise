@@ -21,6 +21,11 @@ namespace snemo {
 
     struct tracker_zone
     {
+			enum bit_index {
+				DATA_NEAR_SOURCE_BIT_RIGHT = 0,
+				DATA_NEAR_SOURCE_BIT_LEFT  = 1				
+			};
+
 			tracker_zone();
 
       void reset();

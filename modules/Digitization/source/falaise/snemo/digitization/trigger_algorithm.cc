@@ -104,7 +104,7 @@ namespace snemo {
       _coincidence_records_.clear();
     }
     
-    const std::vector<tracker_trigger_algorithm::tracker_record>trigger_algorithm::get_tracker_records_vector() const
+    const std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record>trigger_algorithm::get_tracker_records_vector() const
     {
       return _tracker_records_;
     }    

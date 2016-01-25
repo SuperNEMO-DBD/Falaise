@@ -33,7 +33,6 @@ namespace snemo {
       addr_row_proj.reset();
       data_IO_proj.reset();
       data_LR_proj.reset();
-      data_near_source.reset();
 
       return;
     }      
@@ -65,9 +64,7 @@ namespace snemo {
     }
 
     void tracker_sliding_zone::compute_lr_proj()
-    {
-      data_near_source.reset();
-      
+    {      
       for (int ilayer = 0; ilayer < tracker_info::NLAYERS; ilayer++) 
 	{
 	  addr_layer_proj.set(ilayer, false);
@@ -77,12 +74,7 @@ namespace snemo {
 	      if (cells[ilayer][irow]) 
 		{
 		  addr_layer_proj.set(ilayer, true);
-		  if (ilayer < tracker_info::NUMBER_OF_LAYERS_HIT_FOR_NEAR_SOURCE_BIT) 
-		    {
-		      if (irow < tracker_info::LEFT_RIGHT_ROW_SEPARATION_FOR_NEAR_SOURCE_BIT) data_near_source.set(DATA_NEAR_SOURCE_BIT_RIGHT, true);
-		      else data_near_source.set(DATA_NEAR_SOURCE_BIT_LEFT, true);
-		    }
-		  break;
+ 		  break;
 		}
 	    }
 	}
@@ -184,7 +176,6 @@ namespace snemo {
 	out_ << '\n';
       }
       out_ << "IO = " << '[' << data_IO_proj << ']' << "  LR = " << '[' << data_LR_proj << ']' << '\n';
-      out_ << "NSZ[L] = " << '[' << data_near_source.test(0) << ']' << "  NSZ[R] = " << '[' << data_near_source.test(1) << ']' << '\n';
       out_ << '\n';
 
       return;

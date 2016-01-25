@@ -36,14 +36,22 @@ namespace snemo {
 
 			struct tracker_record
 			{
+				enum bit_index{
+					FINALE_DATA_BIT_INNER   = 0,
+					FINALE_DATA_BIT_OUTER   = 1,
+					FINALE_DATA_BIT_RIGHT   = 2,
+					FINALE_DATA_BIT_MIDDLE  = 3,
+					FINALE_DATA_BIT_LEFT    = 4,
+					FINALE_DATA_BIT_NSZ_RIGHT = 5,
+					FINALE_DATA_BIT_NSZ_LEFT  = 6
+				};
+				
 				tracker_record();
 				void reset();
 				void display();
 				uint32_t clocktick_1600ns;
-				//std::bitset<FINALE_DECISION_BITSET_SIZE> finale_decision;
-				//std::bitset<FINAL_ZONE_BITSET_SIZE> final_tracker_trigger_info[mapping::NUMBER_OF_SIDES][mapping::NUMBER_OF_TRIGGER_ZONES];
+				std::bitset<tracker_info::DATA_FULL_BITSET_SIZE> finale_data_per_zone[tracker_info::NSIDES][tracker_info::NZONES];
 				bool finale_decision;
-				std::bitset<tracker_info::DATA_FULL_BITSET_SIZE> final_data_per_zone[tracker_info::NSIDES][tracker_info::NZONES];
 			};
 
 			struct geiger_matrix
@@ -93,9 +101,6 @@ namespace snemo {
 			/// Return the board id from the bitset of 100 bits
 			uint32_t get_board_id(const std::bitset<geiger::tp::FULL_SIZE> & my_bitset_) const;
 			
-
-
-
 			/// Convert the electronic ID of active geiger cells into geometric ID
 			void build_hit_cells_gids_from_ctw(const geiger_ctw & my_geiger_ctw_,
 																				 std::vector<geomtools::geom_id> & hit_cells_gids_) const;
@@ -123,19 +128,28 @@ namespace snemo {
 															 tracker_trigger_mem_maker_new_strategy::mem2_type & mem2_);
 
 			
-			
+			/// Build one zone information for a clocktick
 			void build_zone(tracker_zone & zone_, int side_, int zone_id_);
 
 			/// Build all zones responses for a clocktick
 			void build_zones();    
 
+			/// Build the vertical information for a zone
 			void build_in_out_pattern(tracker_zone & zone_, 
 																tracker_trigger_mem_maker_new_strategy::mem3_type & mem3_);
 
+			/// Build the horizeontal information for a zone
 			void build_left_mid_right_pattern(tracker_zone & zone_,
 																				tracker_trigger_mem_maker_new_strategy::mem4_type & mem4_,
 																				tracker_trigger_mem_maker_new_strategy::mem5_type & mem5_);
 
+			/// Build near source information for a zone
+			void build_near_source_pattern(tracker_zone & zone_);
+
+			/// Build tracker record for each clocktick
+			void build_tracker_record();
+
+			/// Print all tracker with zones boundaries
 			void print_zones(std::ostream & out_) const;
 			
 			/// General process

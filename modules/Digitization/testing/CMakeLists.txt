@@ -24,6 +24,7 @@ set(FalaiseDigitizationPlugin_TESTS
   test_calo_trigger_algorithm.cxx
   test_both_calo_tracker_algorithm.cxx
   test_trigger_algorithm.cxx
+  test_trigger_algorithm_new_strategy.cxx
 
   test_trigger_analysis_gen_histo.cxx
 
