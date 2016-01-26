@@ -36,12 +36,6 @@ namespace snemo {
       return;
     }  
 
-    // void trigger_algorithm::set_trigger_display_manager(const trigger_display_manager & my_trigger_display_manager_)
-    // {
-    //   _trigger_display_manager_ = & my_trigger_display_manager_;
-    //   return;
-    // }
-    
     bool trigger_algorithm::is_activated_coincidence() const
     {
       return _activate_coincidence_;
@@ -113,6 +107,11 @@ namespace snemo {
     {
       return _calo_records_;
     }
+
+	const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_output> trigger_algorithm::get_coincidence_records_vector() const
+	{
+	  return _coincidence_records_;
+	}			
 
     void trigger_algorithm::process(const calo_ctw_data & calo_ctw_data_,
 				    const geiger_ctw_data & geiger_ctw_data_)

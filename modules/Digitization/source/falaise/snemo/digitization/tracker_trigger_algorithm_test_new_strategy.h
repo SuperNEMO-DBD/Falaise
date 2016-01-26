@@ -51,6 +51,10 @@ namespace snemo {
 				void display();
 				uint32_t clocktick_1600ns;
 				std::bitset<tracker_info::DATA_FULL_BITSET_SIZE> finale_data_per_zone[tracker_info::NSIDES][tracker_info::NZONES];
+				// Ajout zoning word tracker [S0] [S1]
+				// 2 tracker zoning : - mode LMR "normal" delayed (3 plans min)       -> Tracker / Tracker + calo
+				//                    - mode Near source (1 cellule min dans 4 plans) -> Tracker / tracker
+				// Fill dans tracker trigger algorithm
 				bool finale_decision;
 			};
 

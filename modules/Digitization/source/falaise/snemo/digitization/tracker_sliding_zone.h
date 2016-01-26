@@ -67,8 +67,8 @@ namespace snemo {
 
       void print(std::ostream & out_) const;
 
-      int side = -1;
-      int szone_id = -1;
+      int side;
+      int szone_id;
       bool cells[snemo::digitization::tracker_info::NLAYERS][snemo::digitization::tracker_info::SLZONE_WIDTH];
       
       std::bitset<snemo::digitization::tracker_info::SLZONE_LAYER_PROJ> addr_layer_proj;

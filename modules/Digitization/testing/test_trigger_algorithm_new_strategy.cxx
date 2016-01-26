@@ -41,8 +41,6 @@ int main( int  argc_ , char **argv_  )
   int iarg = 1;
   bool is_input_file   = false;
   bool is_event_number = false;
-  bool is_mult         = false;
-  bool is_gap          = false;
   bool is_output_path  = false;
   bool is_run_number   = false;
   bool is_help         = false;
@@ -50,8 +48,6 @@ int main( int  argc_ , char **argv_  )
   std::string input_filename;
   std::string output_path;
   int arg_event_number  = -1;
-  int arg_min_mult      = -1;
-  int arg_max_gap       = -1;
   int arg_run_number    = -1;
 ;
 
@@ -100,84 +96,16 @@ int main( int  argc_ , char **argv_  )
       pipeline_simulated_data_filename = input_filename;
     }else{
       // pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
-      pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Se82_0nubb_500000-source_strips_bulk_SD.brio";
-      // pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Bi214_Po214_500000-source_strips_bulk_SD.brio";
+      //pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Se82_0nubb_500000-source_strips_bulk_SD.brio";
+       pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Bi214_Po214_500000-source_strips_bulk_SD.brio";
     }
     datatools::fetch_path_with_env(pipeline_simulated_data_filename);
-
-    // Loading memory from external files
-    std::string memory_layer;
-    std::string memory_row;
-    std::string memory_a4_d2 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A4_D2_default_memory.data";
-    datatools::fetch_path_with_env(memory_a4_d2);
-
-    if (is_mult && !is_gap)
-      {
-	if (arg_min_mult == 2)
-	  {
-	    memory_layer = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A5_D1_default_min_mult_memory.data";
-	    datatools::fetch_path_with_env(memory_layer);
-	    memory_row   = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A6_D1_default_min_mult_memory.data";
-	    datatools::fetch_path_with_env(memory_row);
-	  }
-	else if (arg_min_mult == 3)
-	  {
-	    memory_layer = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A5_D1_min_mult_3_memory.data";
-	    datatools::fetch_path_with_env(memory_layer);
-	    memory_row   = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A6_D1_min_mult_3_memory.data";
-	    datatools::fetch_path_with_env(memory_row);
-	  }
-	else if (arg_min_mult == 4)
-	  {
-	    memory_layer = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A5_D1_min_mult_4_memory.data";
-	    datatools::fetch_path_with_env(memory_layer);
-	    memory_row   = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A6_D1_min_mult_4_memory.data";
-	    datatools::fetch_path_with_env(memory_row);
-	  }
-      }
-
-    else if (is_gap && !is_mult)
-      {
-	if (arg_max_gap == 1)
-	  {
-	    memory_layer = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A5_D1_default_max_gap_memory.data";
-	    datatools::fetch_path_with_env(memory_layer);
-	    memory_row   = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A6_D1_default_max_gap_memory.data";
-	    datatools::fetch_path_with_env(memory_row);
-	  }
-	else if (arg_max_gap == 2)
-	  {
-	    memory_layer = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A5_D1_max_gap_2_memory.data";
-	    datatools::fetch_path_with_env(memory_layer);
-	    memory_row   = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A6_D1_max_gap_2_memory.data";
-	    datatools::fetch_path_with_env(memory_row);
-	  }
-	else if (arg_max_gap == 3)
-	  {
-	    memory_layer = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A5_D1_max_gap_3_memory.data";
-	    datatools::fetch_path_with_env(memory_layer);
-	    memory_row   = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A6_D1_max_gap_3_memory.data";
-	    datatools::fetch_path_with_env(memory_row);
-	  }
-      }
-    else
-      {
-	// Default data if no options :
-        memory_layer   = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A5_D1_default_min_mult_memory.data";
-	datatools::fetch_path_with_env(memory_layer);
-        memory_row     = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/A6_D1_default_min_mult_memory.data";
-	datatools::fetch_path_with_env(memory_row);
-      }
-
-    
-    datatools::fetch_path_with_env(memory_layer);
-    datatools::fetch_path_with_env(memory_row);
 
     // Event reader :
     dpp::input_module reader;
     datatools::properties reader_config;
     reader_config.store ("logging.priority", "debug");
-    reader_config.store ("max_record_total", 10);
+    reader_config.store ("max_record_total", 5);
     reader_config.store ("files.mode", "single");
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
@@ -227,6 +155,19 @@ int main( int  argc_ , char **argv_  )
     snemo::digitization::geiger_tp_to_ctw_algo geiger_tp_2_ctw;
     geiger_tp_2_ctw.initialize();
 
+   // Loading memory from external files
+    std::string mem1 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem1.conf";
+    std::string mem2 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem2.conf";
+    std::string mem3 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem3.conf";
+    std::string mem4 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem4.conf";
+    std::string mem5 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem5.conf";
+
+    datatools::fetch_path_with_env(mem1);
+    datatools::fetch_path_with_env(mem2);
+    datatools::fetch_path_with_env(mem3);
+    datatools::fetch_path_with_env(mem4);
+    datatools::fetch_path_with_env(mem5);
+
     // Properties to configure trigger algorithm :
     datatools::properties trigger_config;
     int calo_circular_buffer_depth = 4;
@@ -240,24 +181,26 @@ int main( int  argc_ , char **argv_  )
     trigger_config.store("calo.total_multiplicity_threshold", calo_threshold);
     trigger_config.store("calo.inhibit_both_side",  inhibit_both_side_coinc);
     trigger_config.store("calo.inhibit_single_side",  inhibit_single_side_coinc);
-    trigger_config.store("tracker.memory_layer_file", memory_layer);
-    trigger_config.store("tracker.memory_row_file",   memory_row);
-    trigger_config.store("tracker.memory_a4_d2_file", memory_a4_d2);
+    trigger_config.store("tracker.mem1_file", mem1);
+    trigger_config.store("tracker.mem2_file", mem2); 
+    trigger_config.store("tracker.mem3_file", mem3);
+    trigger_config.store("tracker.mem4_file", mem4);
+    trigger_config.store("tracker.mem5_file", mem5);
     trigger_config.store("coincidence.calorimeter_gate_size", calorimeter_gate_size);
     trigger_config.store("activate_coincidence", activate_coincidence);
 
     // Creation of trigger display manager :
     snemo::digitization::trigger_display_manager my_trigger_display;
-    // datatools::properties trigger_display_config;
-    // bool calo_25ns = true;
-    // bool calo_1600ns = true;
-    // bool tracker_1600ns = true;
-    // bool coinc_1600ns = true;
-    // trigger_display_config.store("calo_25ns", calo_25ns);
-    // trigger_display_config.store("calo_1600ns", calo_1600ns);
-    // trigger_display_config.store("tracker_1600ns", tracker_1600ns);
-    // trigger_display_config.store("coinc_1600ns", coinc_1600ns);
-    // my_trigger_display.initialize(trigger_display_config);
+    datatools::properties trigger_display_config;
+    bool calo_25ns = true;
+    bool calo_1600ns = true;
+    bool tracker_1600ns = true;
+    bool coinc_1600ns = true;
+    trigger_display_config.store("calo_25ns", calo_25ns);
+    trigger_display_config.store("calo_1600ns", calo_1600ns);
+    trigger_display_config.store("tracker_1600ns", tracker_1600ns);
+    trigger_display_config.store("coinc_1600ns", coinc_1600ns);
+    my_trigger_display.initialize(trigger_display_config);
     
     // Creation and initialization of trigger algorithm :
     snemo::digitization::trigger_algorithm my_trigger_algo;
@@ -347,12 +290,13 @@ int main( int  argc_ , char **argv_  )
 		calo_collection_records = my_trigger_algo.get_calo_records_vector();
 		tracker_collection_records = my_trigger_algo.get_tracker_records_vector();
 		
-		//my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
-		//my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
+		//		my_trigger_display.display_calo_trigger_25ns(my_trigger_algo, 1500);
+		//my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo, 1500);
 		//my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
+		//		my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo, 1500);
 		
-		// my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
-		//my_trigger_display.reset_matrix_pattern();
+		my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
+		my_trigger_display.reset_matrix_pattern();
 
 		std::clog << "********* Size of Finale structures for one event *********" << std::endl;
 		std::clog << "Calo collection size    : " << calo_collection_records.size() << std::endl;

@@ -16,7 +16,7 @@
 #include <snemo/digitization/tracker_trigger_algorithm_test_new_strategy.h>
 #include <snemo/digitization/electronic_mapping.h>
 #include <snemo/digitization/mapping.h>
-//#include <snemo/digitization/trigger_display_manager.h>
+#include <snemo/digitization/trigger_display_manager.h>
 
 namespace datatools {
   class properties;
@@ -37,6 +37,7 @@ namespace snemo {
 			struct coincidence_calo_record
 			{
 				coincidence_calo_record();
+				void reset();
 				void active_next_zone();
 				uint32_t clocktick_1600ns;
 				std::bitset<calo_trigger_algorithm::ZONING_PER_SIDE_BITSET_SIZE> zoning_word[mapping::NUMBER_OF_SIDES];
@@ -55,6 +56,7 @@ namespace snemo {
 			struct coincidence_output // to check, not enough informations (just calo zoning word if coincidence is true)
 			{
 				coincidence_output();
+				void reset();
 				void display();
 				uint32_t clocktick_1600ns;
 				std::bitset<mapping::NUMBER_OF_TRIGGER_ZONES> zoning_word[mapping::NUMBER_OF_SIDES];				
@@ -104,7 +106,7 @@ namespace snemo {
 			
 		protected :
 			
-		/// Preparing coincidence calo records structure
+			/// Preparing coincidence calo records structure
 			void _preparing_calo_coincidence(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_);
 			/// Compute clocktick 1600ns for calo records
 			void _compute_clocktick_1600ns(const uint32_t clocktick_25ns_, uint32_t & clocktick_1600ns_);

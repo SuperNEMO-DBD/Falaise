@@ -142,7 +142,8 @@ int main(int  argc_ , char ** argv_)
 	// pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Se82_0nubb_500000-source_strips_bulk_SD.brio";
 	//pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Bi214_Po214_500000-source_strips_bulk_SD.brio";
 	//pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio"; 
-	pipeline_simulated_data_filename = "/home/goliviero/software/my_falaise/outputs/Bi214_Po214_10000-source_strips_external_surface_SD.brio";
+	pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Se82_0nubb_500000-source_strips_bulk_SD.brio";
+	//pipeline_simulated_data_filename = "/home/goliviero/software/my_falaise/outputs/Bi214_Po214_10000-source_strips_external_surface_SD.brio";
       }
     datatools::fetch_path_with_env(pipeline_simulated_data_filename);
     

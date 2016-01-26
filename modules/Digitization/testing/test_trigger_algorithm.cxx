@@ -1,33 +1,39 @@
-// // test_trigger_algorithm.cxx
-// // Standard libraries :
-// #include <iostream>
+// test_trigger_algorithm.cxx
+// Standard libraries :
+#include <iostream>
 
-// // GSL:
-// #include <bayeux/mygsl/rng.h>
+// GSL:
+#include <bayeux/mygsl/rng.h>
 
-// // - Bayeux/datatools:
-// #include <datatools/utils.h>
-// #include <datatools/io_factory.h>
-// #include <datatools/clhep_units.h>
-// // - Bayeux/mctools:
-// #include <mctools/simulated_data.h>
-// // - Bayeux/dpp:
-// #include <dpp/input_module.h>
+// - Bayeux/datatools:
+#include <datatools/utils.h>
+#include <datatools/io_factory.h>
+#include <datatools/clhep_units.h>
+// - Bayeux/mctools:
+#include <mctools/simulated_data.h>
+// - Bayeux/dpp:
+#include <dpp/input_module.h>
 
-// // Falaise:
-// #include <falaise/falaise.h>
+// Falaise:
+#include <falaise/falaise.h>
 
-// // This project :
-// #include <snemo/digitization/clock_utils.h>
-// #include <snemo/digitization/mapping.h>
+// This project :
+#include <snemo/digitization/clock_utils.h>
+#include <snemo/digitization/mapping.h>
 
-// #include <snemo/digitization/sd_to_calo_signal_algo.h>
-// #include <snemo/digitization/signal_to_calo_tp_algo.h>
-// #include <snemo/digitization/calo_tp_to_ctw_algo.h>
+#include <snemo/digitization/sd_to_calo_signal_algo.h>
+#include <snemo/digitization/signal_to_calo_tp_algo.h>
+#include <snemo/digitization/calo_tp_to_ctw_algo.h>
 
-// #include <snemo/digitization/sd_to_geiger_signal_algo.h>
-// #include <snemo/digitization/signal_to_geiger_tp_algo.h>
-// #include <snemo/digitization/geiger_tp_to_ctw_algo.h>
+#include <snemo/digitization/sd_to_geiger_signal_algo.h>
+#include <snemo/digitization/signal_to_geiger_tp_algo.h>
+#include <snemo/digitization/geiger_tp_to_ctw_algo.h>
+
+int main( int  argc_ , char **argv_  )
+{
+  return 0;
+}
+
 
 // #include <snemo/digitization/trigger_algorithm.h>
 

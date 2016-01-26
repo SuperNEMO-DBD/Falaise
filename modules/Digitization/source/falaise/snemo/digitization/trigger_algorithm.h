@@ -30,7 +30,7 @@ namespace snemo {
     /// \brief Full trigger algorithm for the process. The trigger decision is taken here.
     class trigger_algorithm
     {
-		public : 
+ 		public : 
 			
 			/// Trigger display manager is a friend because it can access to members for display
 			friend class trigger_display_manager;
@@ -43,9 +43,6 @@ namespace snemo {
 
       /// Set the electronic mapping object
       void set_electronic_mapping(const electronic_mapping & my_electronic_mapping_);
-
-      // /// Set the trigger display manager object
-      // void set_trigger_display_manager(const trigger_display_manager & my_trigger_display_manager_);
 
       /// Check if the coincidence config is activated 
 			bool is_activated_coincidence() const;
@@ -65,11 +62,14 @@ namespace snemo {
 			/// Clear the record vectors
 			void clear_records();
 
-			/// Get the vector of calo summary record
+			/// Get the vector of tracker record
 			const std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record> get_tracker_records_vector() const;
 			
 			/// Get the vector of calo summary record
 			const std::vector<calo_trigger_algorithm::calo_summary_record> get_calo_records_vector() const;
+
+			/// Get the vector of coincidence record
+			const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_output> get_coincidence_records_vector() const;
 			
       /// General process
       void process(const calo_ctw_data & calo_ctw_data_,
@@ -96,10 +96,10 @@ namespace snemo {
       bool _initialized_; //!< Initialization flag
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
 			
-			bool                _activate_coincidence_; //!< Boolean activating coincidence
-		  tracker_trigger_algorithm_test_new_strategy   _tracker_algo_; //!< Tracker trigger algorithm @ 1600ns
-		  calo_trigger_algorithm         _calo_algo_; //!< Calo trigger algorithm @ 25ns
-			coincidence_trigger_algorithm_new_strategy _coinc_algo_; //!< Coincidence trigger algorithm for matching calo and tracker trigger
+			bool _activate_coincidence_; //!< Boolean activating coincidence
+		  tracker_trigger_algorithm_test_new_strategy _tracker_algo_; //!< Tracker trigger algorithm @ 1600ns
+		  calo_trigger_algorithm                      _calo_algo_; //!< Calo trigger algorithm @ 25ns
+			coincidence_trigger_algorithm_new_strategy  _coinc_algo_; //!< Coincidence trigger algorithm for matching calo and tracker trigger
 			
 			// Data :
 			std::vector<calo_trigger_algorithm::calo_summary_record> _calo_records_; //!< Collection of calo summary record
