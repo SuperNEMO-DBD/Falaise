@@ -18,17 +18,14 @@ namespace snemo {
     
     calo_trigger_algorithm::calo_record::calo_record()
     {
-      clocktick_25ns = 0;
-      LTO_side_0 = false;
-      LTO_side_1 = false;
-      LTO_gveto  = false;
+      calo_record::reset();
       return;
     }
         
     void calo_trigger_algorithm::calo_record::reset()
     {
       clocktick_25ns = -1;
-      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+      for (int iside = 0; iside < trigger_info::NSIDES; iside++)
 	{
 	  zoning_word[iside].reset();
 	  zoning_word[iside].reset();
@@ -56,23 +53,21 @@ namespace snemo {
       std::clog << total_multiplicity_side_1 << ' ';
       std::clog << total_multiplicity_side_0 << ' ';
 
-      for (int iside = mapping::NUMBER_OF_SIDES-1; iside >= 0; iside--)
+      for (int iside = trigger_info::NSIDES-1; iside >= 0; iside--)
       	{
-      	  for (int izone = mapping::NUMBER_OF_TRIGGER_ZONES-1; izone >= 0 ; izone--)
+      	  for (int izone = trigger_info::NZONES-1; izone >= 0 ; izone--)
       	    {
       	      std::clog << zoning_word[iside][izone];
       	    }
       	  std::clog << ' ';
       	}
-      std::clog << std::endl << std::endl;;
+      std::clog << std::endl << std::endl;
       return;
     }
     
     calo_trigger_algorithm::calo_summary_record::calo_summary_record()
     {
-      single_side_coinc = false;
-      total_multiplicity_threshold = false;
-      calo_finale_decision = false;
+      calo_summary_record::reset();
       return; 
     }
 
@@ -271,7 +266,7 @@ namespace snemo {
     {
       _calo_record_per_clocktick_.display();
 
-      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+      for (int iside = 0; iside < trigger_info::NSIDES; iside++)
       	{
       	  if (iside == 1)
       	    {
@@ -284,7 +279,7 @@ namespace snemo {
       	    }
 	  if (iside == 0) std::clog << "    Zone0                                                                                                   Zone9 " << std::endl;
       	  std::clog << " |";
-      	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
+      	  for (int izone = 0; izone < trigger_info::NZONES; izone++)
       	    {
       	      if (izone == 0 || izone == 9) 
       		{
@@ -323,7 +318,7 @@ namespace snemo {
     {
       my_calo_summary_record_.display(); 
 
-      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+      for (int iside = 0; iside < trigger_info::NSIDES; iside++)
       	{
       	  if (iside == 1)
       	    {
@@ -336,7 +331,7 @@ namespace snemo {
       	    }
 	  if (iside == 0) std::clog << "    Zone0                                                                                                   Zone9 " << std::endl;
       	  std::clog << " |";
-      	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
+      	  for (int izone = 0; izone < trigger_info::NZONES; izone++)
       	    {
       	      if (izone == 0 || izone == 9) 
       		{
@@ -473,7 +468,7 @@ namespace snemo {
 	  std::bitset<calo::ctw::MAIN_ZONING_BITSET_SIZE> main_zoning_bitset;
 	  my_calo_ctw_.get_main_zoning_word(main_zoning_bitset);
 
-	  for (int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
+	  for (int izone = 0; izone < trigger_info::NZONES; izone++)
 	    {
 	      if (main_zoning_bitset.test(izone) == true) _calo_record_per_clocktick_.zoning_word[crate_index].set(izone,true);
 	    }
@@ -513,7 +508,7 @@ namespace snemo {
 	  if (ctrec.LTO_gveto == true)  lto_sum_circ_buff_gveto  = true;
 	  
 	  // Zoning word : 
-	  for (int i = 0; i < mapping::NUMBER_OF_SIDES; i++)
+	  for (int i = 0; i < trigger_info::NSIDES; i++)
       	    {
       	      for (int j = 0; j < ZONING_PER_SIDE_BITSET_SIZE; j++)
       		{

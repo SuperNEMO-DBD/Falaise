@@ -19,6 +19,7 @@
 #include <snemo/digitization/electronic_mapping.h>
 #include <snemo/digitization/mapping.h>
 #include <snemo/digitization/trigger_display_manager.h>
+#include <snemo/digitization/trigger_info.h>
 
 namespace datatools {
   class properties;
@@ -54,7 +55,7 @@ namespace snemo {
 				void reset();
 			  void display();
 				uint32_t clocktick_25ns;
-				std::bitset<ZONING_PER_SIDE_BITSET_SIZE> zoning_word[mapping::NUMBER_OF_SIDES];
+				std::bitset<trigger_info::NZONES> zoning_word[trigger_info::NSIDES];
 				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_0;
 				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_1;
 				bool LTO_side_0;

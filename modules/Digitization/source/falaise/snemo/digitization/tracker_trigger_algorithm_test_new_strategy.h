@@ -15,7 +15,7 @@
 #include <snemo/digitization/mapping.h>
 #include <snemo/digitization/tracker_trigger_mem_maker_new_strategy.h>
 #include <snemo/digitization/trigger_display_manager.h>
-#include <snemo/digitization/tracker_info.h>
+#include <snemo/digitization/trigger_info.h>
 #include <snemo/digitization/tracker_zone.h>
 #include <snemo/digitization/tracker_sliding_zone.h>
 
@@ -50,7 +50,8 @@ namespace snemo {
 				void reset();
 				void display();
 				uint32_t clocktick_1600ns;
-				std::bitset<tracker_info::DATA_FULL_BITSET_SIZE> finale_data_per_zone[tracker_info::NSIDES][tracker_info::NZONES];
+				std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
+				//std::bitset<
 				// Ajout zoning word tracker [S0] [S1]
 				// 2 tracker zoning : - mode LMR "normal" delayed (3 plans min)       -> Tracker / Tracker + calo
 				//                    - mode Near source (1 cellule min dans 4 plans) -> Tracker / tracker
@@ -63,7 +64,7 @@ namespace snemo {
 				geiger_matrix();
 				bool is_empty();
 				uint32_t clocktick_1600ns;				
-				bool matrix[tracker_info::NSIDES][tracker_info::NLAYERS][tracker_info::NROWS];
+				bool matrix[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS];
 			};
 
 			/// Default constructor
@@ -182,11 +183,11 @@ namespace snemo {
 			tracker_trigger_mem_maker_new_strategy::mem5_type _zone_vertical_for_horizontal_memory_;
 
 			// Data :
-			bool _geiger_matrix_[tracker_info::NSIDES][tracker_info::NLAYERS][tracker_info::NROWS];
+			bool _geiger_matrix_[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS];
 			std::vector<geiger_matrix> _geiger_matrix_records_; //!< Vector of Geiger matrix for each clocktick
 
-			tracker_zone _zones_[tracker_info::NSIDES][tracker_info::NZONES];
-			tracker_sliding_zone _sliding_zones_[tracker_info::NSIDES][tracker_info::NSLZONES];
+			tracker_zone _zones_[trigger_info::NSIDES][trigger_info::NZONES];
+			tracker_sliding_zone _sliding_zones_[trigger_info::NSIDES][trigger_info::NSLZONES];
 
 			tracker_record _tracker_record_finale_decision_; //!< Tracker record structure for a clocktick
 			bool _tracker_finale_decision_; //!< Finale tracker decision boolean

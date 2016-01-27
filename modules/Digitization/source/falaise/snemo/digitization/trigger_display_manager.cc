@@ -132,11 +132,11 @@ namespace snemo {
       return _decision_trigger_;
     }
 
-    void trigger_display_manager::fill_calo_trigger_matrix_25ns(std::bitset<10> zoning_word_[tracker_info::NSIDES])
-    {
-      for (int iside = 0; iside < tracker_info::NSIDES; iside++)
+    void trigger_display_manager::fill_calo_trigger_matrix_25ns(std::bitset<10> zoning_word_[trigger_info::NSIDES])
+    {      
+      for (int iside = 0; iside < trigger_info::NSIDES; iside++)
        	{  
-      	  for (int izone = 0; izone < tracker_info::NZONES; izone++)
+      	  for (int izone = 0; izone < trigger_info::NZONES; izone++)
       	    {
       	      if (izone == 0 || izone == 9) 
       		{
@@ -230,11 +230,11 @@ namespace snemo {
       return;
     }
     
-    void trigger_display_manager::fill_calo_trigger_matrix_1600ns(std::bitset<10> zoning_word_[tracker_info::NSIDES])
+    void trigger_display_manager::fill_calo_trigger_matrix_1600ns(std::bitset<10> zoning_word_[trigger_info::NSIDES])
     {
-      for (int iside = 0; iside < tracker_info::NSIDES; iside++)
+      for (int iside = 0; iside < trigger_info::NSIDES; iside++)
        	{  
-     	  for (int izone = 0; izone < tracker_info::NZONES; izone++)
+     	  for (int izone = 0; izone < trigger_info::NZONES; izone++)
       	    {
       	      if (izone == 0 || izone == 9) 
       		{
@@ -331,14 +331,15 @@ namespace snemo {
     }
     
     
-    void trigger_display_manager::fill_tracker_trigger_matrix_1600ns(bool geiger_matrix_[tracker_info::NSIDES][tracker_info::NLAYERS][tracker_info::NROWS])
+    void trigger_display_manager::fill_tracker_trigger_matrix_1600ns(bool geiger_matrix_[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS])
     {
-      for (int iside = 0; iside < tracker_info::NSIDES; iside++)
+   
+      for (int iside = 0; iside < trigger_info::NSIDES; iside++)
       	{
       	  int layer = 0;
-      	  for (int jlayer = tracker_info::NLAYERS - 1; jlayer >= 0; jlayer--) // Value GEIGER_LAYER_SIZE = 9
+      	  for (int jlayer = trigger_info::NLAYERS - 1; jlayer >= 0; jlayer--) // Value GEIGER_LAYER_SIZE = 9
       	    {
-      	      for (int krow = 0; krow < tracker_info::NROWS; krow++)
+      	      for (int krow = 0; krow < trigger_info::NROWS; krow++)
       		{
       		  if (geiger_matrix_[iside][jlayer][krow] 
       		      && iside == 0)
@@ -357,6 +358,14 @@ namespace snemo {
       return;
     }
     
+    void trigger_display_manager::fill_coincidence_trigger_matrix_1600ns(std::bitset<10> zoning_word_[trigger_info::NSIDES], bool geiger_matrix_[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS])
+    {
+      reset_matrix_pattern();
+      fill_calo_trigger_matrix_1600ns(zoning_word_);
+      fill_tracker_trigger_matrix_1600ns(geiger_matrix_);
+      return;
+    }
+    
     void trigger_display_manager::display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_25ns_)
     {
       DT_THROW_IF(!is_calo_25ns(), std::logic_error, "Boolean calo 25ns is not activated, it can't display ! ");
@@ -369,7 +378,7 @@ namespace snemo {
 
       std::clog << "************************************************************************************" << std::endl;
       std::clog << "********************* Display Calorimeter trigger info @ 25 ns *********************" << std::endl;
-      std::clog << "********************* Clocktick 25 ns = " <<  a_calo_summary_record.clocktick_25ns << " ********************* " << std::endl << std::endl; 
+      std::clog << "********************* Clocktick 25 ns = " <<  clocktick_25ns_ << " ********************* " << std::endl << std::endl; 
       std::clog << "CT |XTS|L|HG|L|L|H1|H0| ZONING S1| ZONING S0 " << std::endl; 
       std::clog << a_calo_summary_record.clocktick_25ns << ' ';
       std::clog << a_calo_summary_record.xt_info_bitset << ' ';
@@ -379,9 +388,9 @@ namespace snemo {
       std::clog << a_calo_summary_record.LTO_side_0 << ' ';
       std::clog << a_calo_summary_record.total_multiplicity_side_1 << ' ';
       std::clog << a_calo_summary_record.total_multiplicity_side_0 << ' ';
-      for (int iside = tracker_info::NSIDES-1; iside >= 0; iside--)
+      for (int iside = trigger_info::NSIDES-1; iside >= 0; iside--)
       	{
-      	  for (int izone = tracker_info::NZONES-1; izone >= 0 ; izone--)
+      	  for (int izone = trigger_info::NZONES-1; izone >= 0 ; izone--)
       	    {
       	      std::clog << a_calo_summary_record.zoning_word[iside][izone];
       	    }
@@ -394,8 +403,8 @@ namespace snemo {
       
       std::clog << std::endl;
       
-      std::bitset<10> zoning_word[tracker_info::NSIDES] = 0x0;
-      for (int i = 0; i < tracker_info::NSIDES; i++)
+      std::bitset<10> zoning_word[trigger_info::NSIDES] = 0x0;
+      for (int i = 0; i < trigger_info::NSIDES; i++)
     	{
     	  zoning_word[i] = a_calo_summary_record.zoning_word[i];
     	}
@@ -445,9 +454,9 @@ namespace snemo {
       std::clog << a_coinc_calo_record.LTO_side_0 << ' ';
       std::clog << a_coinc_calo_record.total_multiplicity_side_1 << ' ';
       std::clog << a_coinc_calo_record.total_multiplicity_side_0 << ' ';
-      for (int iside = tracker_info::NSIDES-1; iside >= 0; iside--)
+      for (int iside = trigger_info::NSIDES-1; iside >= 0; iside--)
       	{
-      	  for (int izone = tracker_info::NZONES-1; izone >= 0 ; izone--)
+      	  for (int izone = trigger_info::NZONES-1; izone >= 0 ; izone--)
       	    {
       	      std::clog << a_coinc_calo_record.zoning_word[iside][izone];
       	    }
@@ -460,8 +469,8 @@ namespace snemo {
       
       std::clog << std::endl;
 
-      std::bitset<10> zoning_word[tracker_info::NSIDES];
-      for (int i = 0; i < tracker_info::NSIDES; i++)
+      std::bitset<10> zoning_word[trigger_info::NSIDES];
+      for (int i = 0; i < trigger_info::NSIDES; i++)
     	{
     	  zoning_word[i] = a_coinc_calo_record.zoning_word[i];
     	}
@@ -511,35 +520,43 @@ namespace snemo {
 	  std::clog << "********************************************************************************" << std::endl;
     	  std::clog << "******************** Display Tracker trigger info @ 1600 ns ********************" << std::endl;
     	  std::clog << "******************** Clocktick 1600 ns = " << clocktick_1600ns_ << " ******************** " << std::endl << std::endl; 
-	
+	  std::clog << "Bitset : [NSZL NSZR L M R O I] " << std::endl;
+	  for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+	    {
+	      std::clog << "Side = " << iside << " | ";
+	      for (int izone = 0; izone < trigger_info::NZONES; izone++)
+		{
+		  std::clog << "[" << a_tracker_record.finale_data_per_zone[iside][izone] << "] ";
+		} // end of izone
+	      std::clog << std::endl;
+	    }
+	  std::clog << "Tracker level one decision : [" << a_tracker_record.finale_decision << "]" <<  std::endl << std::endl;
 	  display_matrix();
-	
 	}
-
 
       else
     	{
     	  std::clog << "********************************************************************************" << std::endl;
     	  std::clog << "******************** Display Tracker trigger info @ 1600 ns ********************" << std::endl;
     	  std::clog << "******************** Clocktick 1600 ns = " << clocktick_1600ns_ << " ******************** " << std::endl << std::endl; 
-    	  std::clog << "         | VOID = 00 | SHORT TRACK = 11 | LONG TRACK = 01" << std::endl;
-    	  for (int iside = 0; iside < tracker_info::NSIDES; iside++)
-    	    {
-    	      std::clog << "Side = " << iside << " | ";
-    	      for (int izone = 0; izone < tracker_info::NZONES; izone++)
-    		{
-    		  std::clog << "[" << a_tracker_record.finale_data_per_zone[iside][izone] << "] ";
-    		} // end of izone
-    	      std::clog << std::endl;
-    	    }
-    	  std::clog << "Tracker level one decision : [" << a_tracker_record.finale_decision << "]" <<  std::endl << std::endl;
+	  std::clog << "Bitset : [NSZL NSZR L M R O I] " << std::endl;
+	  for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+	    {
+	      std::clog << "Side = " << iside << " | ";
+	      for (int izone = 0; izone < trigger_info::NZONES; izone++)
+		{
+		  std::clog << "[" << a_tracker_record.finale_data_per_zone[iside][izone] << "] ";
+		} // end of izone
+	      std::clog << std::endl;
+	    }
+	  std::clog << "Tracker level one decision : [" << a_tracker_record.finale_decision << "]" <<  std::endl << std::endl;
 
-    	  bool geiger_matrix[tracker_info::NSIDES][tracker_info::NLAYERS][tracker_info::NROWS];
-    	  for (int iside = 0; iside < tracker_info::NSIDES; iside++)
+    	  bool geiger_matrix[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS];
+    	  for (int iside = 0; iside < trigger_info::NSIDES; iside++)
     	    {
-    	      for (int jlayer = tracker_info::NLAYERS - 1; jlayer >= 0; jlayer--)
+    	      for (int jlayer = trigger_info::NLAYERS - 1; jlayer >= 0; jlayer--)
     		{
-    		  for (int krow = 0; krow < tracker_info::NROWS; krow++)
+    		  for (int krow = 0; krow < trigger_info::NROWS; krow++)
     		    {
     		      geiger_matrix[iside][jlayer][krow] = a_geiger_matrix.matrix[iside][jlayer][krow];
     		    } // end of krow
@@ -582,7 +599,6 @@ namespace snemo {
       
       tracker_trigger_algorithm_test_new_strategy::tracker_record a_tracker_record;
       tracker_trigger_algorithm_test_new_strategy::geiger_matrix  a_geiger_matrix;
-      coincidence_trigger_algorithm_new_strategy::coincidence_output a_coincidence_record;
 
       for (int i = 0; i < a_trigger_algo_._tracker_records_.size(); i++)
     	{
@@ -591,9 +607,15 @@ namespace snemo {
     	    {
     	      a_tracker_record = a_trigger_algo_._tracker_records_[i];
     	      a_geiger_matrix  = a_trigger_algo_._tracker_algo_._geiger_matrix_records_[i];
-	      a_coincidence_record = a_trigger_algo_._coincidence_records_[i];
+
     	    }
     	}
+
+      coincidence_trigger_algorithm_new_strategy::coincidence_output a_coincidence_record;
+      for (int i = 0; i < a_trigger_algo_._coincidence_records_.size(); i++)
+    	{
+	  if (clocktick_1600ns_ == a_trigger_algo_._coincidence_records_[i].clocktick_1600ns) a_coincidence_record = a_trigger_algo_._coincidence_records_[i];
+	}
       
       std::clog << "************************************************************************************" << std::endl;
       std::clog << "******************** Display Coincidence trigger info @ 1600 ns ********************" << std::endl;
@@ -607,9 +629,9 @@ namespace snemo {
       std::clog << a_coinc_calo_record.LTO_side_0 << ' ';
       std::clog << a_coinc_calo_record.total_multiplicity_side_1 << ' ';
       std::clog << a_coinc_calo_record.total_multiplicity_side_0 << ' ';
-      for (int iside = tracker_info::NSIDES-1; iside >= 0; iside--)
+      for (int iside = trigger_info::NSIDES-1; iside >= 0; iside--)
       	{
-      	  for (int izone = tracker_info::NZONES-1; izone >= 0 ; izone--)
+      	  for (int izone = trigger_info::NZONES-1; izone >= 0 ; izone--)
       	    {
       	      std::clog << a_coinc_calo_record.zoning_word[iside][izone];
       	    }
@@ -622,10 +644,10 @@ namespace snemo {
       
       std::clog << std::endl;
       std::clog << "Bitset : [NSZL NSZR L M R O I] " << std::endl;
-      for (int iside = 0; iside < tracker_info::NSIDES; iside++)
+      for (int iside = 0; iside < trigger_info::NSIDES; iside++)
       	{
       	  std::clog << "Side = " << iside << " | ";
-      	  for (int izone = 0; izone < tracker_info::NZONES; izone++)
+      	  for (int izone = 0; izone < trigger_info::NZONES; izone++)
       	    {
       	      std::clog << "[" << a_tracker_record.finale_data_per_zone[iside][izone] << "] ";
       	    } // end of izone
@@ -633,31 +655,32 @@ namespace snemo {
       	}
       std::clog << "Tracker level one decision : [" << a_tracker_record.finale_decision << "]" <<  std::endl << std::endl;
       
+      std::clog << "Coincidence Clocktick : [" << a_coincidence_record.clocktick_1600ns << "]" << std::endl;
       std::clog << "Coincidence zoning : S0 [" << a_coincidence_record.zoning_word[0] << "]" << std::endl;
       std::clog << "                     S1 [" << a_coincidence_record.zoning_word[1] << "]" << std::endl;
       
       std::clog << "Coincidence decision  : [" << a_coincidence_record.coincidence_finale_decision << "]" <<  std::endl << std::endl;
       
-      std::bitset<10> zoning_word[tracker_info::NSIDES];
-      for (int i = 0; i < tracker_info::NSIDES; i++)
+      std::bitset<10> zoning_word[trigger_info::NSIDES];
+      for (int i = 0; i < trigger_info::NSIDES; i++)
     	{
     	  zoning_word[i] = a_coinc_calo_record.zoning_word[i];
     	}
       
-      bool geiger_matrix[tracker_info::NSIDES][tracker_info::NLAYERS][tracker_info::NROWS];
-      for (int iside = 0; iside < tracker_info::NSIDES; iside++)
+      bool geiger_matrix[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS];
+      for (int iside = 0; iside < trigger_info::NSIDES; iside++)
       	{
-      	  for (int jlayer = tracker_info::NLAYERS - 1; jlayer >= 0; jlayer--)
+      	  for (int jlayer = trigger_info::NLAYERS - 1; jlayer >= 0; jlayer--)
       	    {
-      	      for (int krow = 0; krow < tracker_info::NROWS; krow++)
+      	      for (int krow = 0; krow < trigger_info::NROWS; krow++)
       		{
     		  geiger_matrix[iside][jlayer][krow] = a_geiger_matrix.matrix[iside][jlayer][krow];
     		} // end of krow
     	    } // end of jlayer	
     	} // end of iside 
-
-      fill_calo_trigger_matrix_1600ns(zoning_word);
-      fill_tracker_trigger_matrix_1600ns(geiger_matrix);      
+      fill_coincidence_trigger_matrix_1600ns(zoning_word, geiger_matrix);
+      //      fill_calo_trigger_matrix_1600ns(zoning_word);
+      // fill_tracker_trigger_matrix_1600ns(geiger_matrix);      
       display_matrix();
       
       return;

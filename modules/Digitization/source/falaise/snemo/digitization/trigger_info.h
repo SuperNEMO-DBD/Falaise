@@ -1,9 +1,9 @@
-// snemo/digitization/tracker_info.h
+// snemo/digitization/trigger_info.h
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
-#ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_TRACKER_INFO_H
-#define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_TRACKER_INFO_H
+#ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_TRIGGER_INFO_H
+#define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_TRIGGER_INFO_H
 
 // Boost : 
 #include <boost/cstdint.hpp>
@@ -15,7 +15,7 @@ namespace snemo {
   
   namespace digitization {
 
-    class tracker_info 
+    class trigger_info 
     {
     public :
 
@@ -47,7 +47,7 @@ namespace snemo {
 	
 } // end of namespace snemo
 
-#endif /* FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_TRACKER_INFO_H */
+#endif /* FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_TRIGGER_INFO_H */
 
 	/* 
 	** Local Variables: --

@@ -22,8 +22,8 @@ namespace snemo {
     {
       side = -1;
       zone_id = -1;
-      for (int ilayer = 0; ilayer < snemo::digitization::tracker_info::NLAYERS; ilayer++) {
-	for (int irow = 0; irow < snemo::digitization::tracker_info::ZONE_WIDTH; irow++) {
+      for (int ilayer = 0; ilayer < snemo::digitization::trigger_info::NLAYERS; ilayer++) {
+	for (int irow = 0; irow < snemo::digitization::trigger_info::ZONE_WIDTH; irow++) {
 	  cells[ilayer][irow] = false;
 	}
       }
@@ -40,14 +40,14 @@ namespace snemo {
 
     int tracker_zone::start_row(int i_)
     {
-      static const int start_row[snemo::digitization::tracker_info::NZONES]
+      static const int start_row[snemo::digitization::trigger_info::NZONES]
 	= {0, 9, 21, 33, 45, 57, 68, 80, 92, 104};
       return start_row[i_];
     }
     
     int tracker_zone::stop_row(int i_)
     {
-      static const int stop_row[snemo::digitization::tracker_info::NZONES]
+      static const int stop_row[snemo::digitization::trigger_info::NZONES]
 	= {8, 20, 32, 44, 56, 67, 79, 91, 103, 112};
       return stop_row[i_];
     }
@@ -61,7 +61,7 @@ namespace snemo {
     {
       out_ << "Zone layout: " << '\n';
       out_ << "#Zone   Rows    #\n";
-      for (int izone = 0; izone < snemo::digitization::tracker_info::NZONES; izone++) {
+      for (int izone = 0; izone < snemo::digitization::trigger_info::NZONES; izone++) {
 	out_ << izone << " " << start_row(izone) << "-" << stop_row(izone)
 	     << ' ' << "#" << width(izone) << '\n';
       }

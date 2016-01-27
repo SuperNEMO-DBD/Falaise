@@ -11,6 +11,7 @@
 // This project :
 #include <snemo/digitization/electronic_mapping.h>
 #include <snemo/digitization/mapping.h>
+#include <snemo/digitization/trigger_info.h>
 
 
 namespace datatools {
@@ -74,14 +75,16 @@ namespace snemo {
 			const bool is_decision_trigger() const;
 
 			/// Fill calorimeter zones for 25ns
-			void fill_calo_trigger_matrix_25ns(std::bitset<10> zoning_word_[mapping::NUMBER_OF_SIDES]);
+			void fill_calo_trigger_matrix_25ns(std::bitset<10> zoning_word_[trigger_info::NSIDES]);
 			
 			/// Fill calorimeter zones for 1600ns
-			void fill_calo_trigger_matrix_1600ns(std::bitset<10> zoning_word_[mapping::NUMBER_OF_SIDES]);
+			void fill_calo_trigger_matrix_1600ns(std::bitset<10> zoning_word_[trigger_info::NSIDES]);
 						
 			/// Fill tracker matrix for 1600ns
-			void fill_tracker_trigger_matrix_1600ns(bool geiger_matrix_[mapping::NUMBER_OF_SIDES][mapping::GEIGER_LAYERS_SIZE][mapping::GEIGER_ROWS_SIZE]);
-			
+			void fill_tracker_trigger_matrix_1600ns(bool geiger_matrix_[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS]);
+			// Fill matrix for coincidences for 1600ns
+			void fill_coincidence_trigger_matrix_1600ns(std::bitset<10> zoning_word_[trigger_info::NSIDES], bool geiger_matrix_[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS]);
+
 			/// Display calorimeter zones each 25ns for a given clocktick
 			void display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_25ns_);
 

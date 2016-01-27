@@ -80,7 +80,7 @@ int main(int  argc_ , char ** argv_)
 
     iarg++;
   }
-  // Configuration for each argument
+  // Output for help
   
   if (is_help) 
     {

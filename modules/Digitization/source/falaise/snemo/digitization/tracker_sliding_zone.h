@@ -12,7 +12,7 @@
 #include <boost/cstdint.hpp>
  
 // Ourselves : 
-#include <snemo/digitization/tracker_info.h>
+#include <snemo/digitization/trigger_info.h>
 #include <snemo/digitization/tracker_trigger_mem_maker_new_strategy.h>
 
 namespace snemo {
@@ -69,13 +69,13 @@ namespace snemo {
 
       int side;
       int szone_id;
-      bool cells[snemo::digitization::tracker_info::NLAYERS][snemo::digitization::tracker_info::SLZONE_WIDTH];
+      bool cells[snemo::digitization::trigger_info::NLAYERS][snemo::digitization::trigger_info::SLZONE_WIDTH];
       
-      std::bitset<snemo::digitization::tracker_info::SLZONE_LAYER_PROJ> addr_layer_proj;
-      std::bitset<snemo::digitization::tracker_info::SLZONE_ROW_PROJ>   addr_row_proj;
+      std::bitset<snemo::digitization::trigger_info::SLZONE_LAYER_PROJ> addr_layer_proj;
+      std::bitset<snemo::digitization::trigger_info::SLZONE_ROW_PROJ>   addr_row_proj;
 
-      std::bitset<snemo::digitization::tracker_info::SLZONE_DATA_IO_PROJ>   data_IO_proj;
-      std::bitset<snemo::digitization::tracker_info::SLZONE_DATA_LR_PROJ>   data_LR_proj;
+      std::bitset<snemo::digitization::trigger_info::SLZONE_DATA_IO_PROJ>   data_IO_proj;
+      std::bitset<snemo::digitization::trigger_info::SLZONE_DATA_LR_PROJ>   data_LR_proj;
        
     };
 	

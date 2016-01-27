@@ -258,8 +258,6 @@ namespace snemo {
       for (it_calo; it_calo != _coincidence_calo_records_.end(); it_calo++)
 	{
 	  coincidence_calo_record a_calo_record = *it_calo;
-	  // Why active next zone ?
-	  a_calo_record.active_next_zone();
 	  std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record>::const_iterator it_tracker = tracker_records_.begin();
 	  for (it_tracker; it_tracker != tracker_records_.end(); it_tracker++)
 	    {

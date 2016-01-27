@@ -53,15 +53,42 @@ int main( int  argc_ , char **argv_  )
 
   while (iarg < argc_) {
     std::string arg = argv_[iarg];
-    if (arg == "-i" || arg == "--input") {
-      is_input_file = true;
-      input_filename=argv_[++iarg];
-    } else if (arg == "-f" || arg == "--filename") {
-      input_filename=argv_[++iarg];
-    }
+    if (arg == "-i" || arg == "--input") 
+      {
+	is_input_file = true;
+	input_filename=argv_[++iarg];
+      } 
+    
+    else if (arg == "-n" || arg == "--number")
+      {
+        is_event_number = true;
+	arg_event_number    = atoi(argv_[++iarg]);
+      }
+
+    else if (arg =="-h" || arg == "--help")
+      {
+	is_help = true;
+      }
+
     iarg++;
   }
-  
+
+  if (is_help) 
+    {
+      std::cerr << std::endl << "Usage :" << std::endl << std::endl
+		<< "$ BuildProducts/bin/falaisedigitizationplugin-test_trigger_algorithm_new_strategy [OPTIONS] [ARGUMENTS]" << std::endl << std::endl
+		<< "Allowed options: " << std::endl
+		<< "-h  [ --help ]           produce help message" << std::endl
+		<< "-i  [ --input ]          set an input file" << std::endl
+		<< "-n  [ --number ]         set the number of events" << std::endl
+		<< "Example : " << std::endl << std::endl
+		<< "$ BuildProducts/bin/falaisedigitizationplugin-test_trigger_algorithm_new_strategy --input ${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio" 
+		<< " --number 5" << std::endl << std::endl
+		<< "If no options are set, programs have default values :" << std::endl << std::endl
+		<< "input file           = ${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio" << std::endl
+		<< "number of events     = 10" << std::endl << std::endl;
+      return 0;
+    }
 
   try {
     std::clog << "Test program for class 'snemo::digitization::trigger_algorithm' !" << std::endl;
@@ -96,16 +123,22 @@ int main( int  argc_ , char **argv_  )
       pipeline_simulated_data_filename = input_filename;
     }else{
       // pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
-      //pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Se82_0nubb_500000-source_strips_bulk_SD.brio";
-       pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Bi214_Po214_500000-source_strips_bulk_SD.brio";
+      // pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Se82_0nubb_500000-source_strips_bulk_SD.brio";
+      // pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Bi214_Po214_500000-source_strips_bulk_SD.brio";
+      pipeline_simulated_data_filename= "/home/goliviero/software/my_falaise/outputs/Bi214_Po214_10000-source_strips_external_surface_SD.brio";
     }
     datatools::fetch_path_with_env(pipeline_simulated_data_filename);
+
+    // Number of events :
+    int event_number = -1;
+    if (is_event_number)  event_number = arg_event_number;
+    else                 event_number = 10;
 
     // Event reader :
     dpp::input_module reader;
     datatools::properties reader_config;
     reader_config.store ("logging.priority", "debug");
-    reader_config.store ("max_record_total", 5);
+    reader_config.store ("max_record_total", event_number);
     reader_config.store ("files.mode", "single");
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
@@ -282,6 +315,9 @@ int main( int  argc_ , char **argv_  )
 		std::vector<snemo::digitization::calo_trigger_algorithm::calo_summary_record> calo_collection_records;
 		std::vector<snemo::digitization::tracker_trigger_algorithm_test_new_strategy::tracker_record>   tracker_collection_records;
 		
+		// Reseting trigger display
+		my_trigger_display.reset_matrix_pattern();
+		
 		// Trigger process
 		my_trigger_algo.process(my_calo_ctw_data,
 					my_geiger_ctw_data);
@@ -290,13 +326,15 @@ int main( int  argc_ , char **argv_  )
 		calo_collection_records = my_trigger_algo.get_calo_records_vector();
 		tracker_collection_records = my_trigger_algo.get_tracker_records_vector();
 		
-		//		my_trigger_display.display_calo_trigger_25ns(my_trigger_algo, 1500);
-		//my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo, 1500);
-		//my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
-		//		my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo, 1500);
-		
+		my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
+		my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
+		my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
 		my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
-		my_trigger_display.reset_matrix_pattern();
+		
+		// for (int iclocktick = 0; iclocktick <= 10; iclocktick++)
+		//   {
+		//     my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo, iclocktick);
+		//   }
 
 		std::clog << "********* Size of Finale structures for one event *********" << std::endl;
 		std::clog << "Calo collection size    : " << calo_collection_records.size() << std::endl;
