@@ -530,6 +530,28 @@ namespace snemo {
 		} // end of izone
 	      std::clog << std::endl;
 	    }
+    
+	  for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+	    {
+	      std::clog << "ZW pattern     : S" << iside << " : [";
+	      for (int ibit = 0; ibit < a_tracker_record.zoning_word_pattern[0].size(); ibit++)
+		{
+		  std::clog << a_tracker_record.zoning_word_pattern[iside][ibit];
+		}
+	      std::clog << "] ";
+	    }     
+	  std::clog << std::endl;
+	  for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+	    {
+	      std::clog << "ZW near source : S" << iside << " : [";
+	      for (int ibit = 0; ibit < a_tracker_record.zoning_word_near_source[0].size(); ibit++)
+		{
+		  std::clog << a_tracker_record.zoning_word_near_source[iside][ibit];
+		}
+	      std::clog << "] ";
+	    }
+	  std::clog << std::endl;
+
 	  std::clog << "Tracker level one decision : [" << a_tracker_record.finale_decision << "]" <<  std::endl << std::endl;
 	  display_matrix();
 	}
@@ -549,6 +571,28 @@ namespace snemo {
 		} // end of izone
 	      std::clog << std::endl;
 	    }
+    
+	  for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+	    {
+	      std::clog << "ZW pattern     : S" << iside << " : [";
+	      for (int ibit = 0; ibit < a_tracker_record.zoning_word_pattern[0].size(); ibit++)
+		{
+		  std::clog << a_tracker_record.zoning_word_pattern[iside][ibit];
+		}
+	      std::clog << "] ";
+	    }     
+	  std::clog << std::endl;
+	  for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+	    {
+	      std::clog << "ZW near source : S" << iside << " : [";
+	      for (int ibit = 0; ibit < a_tracker_record.zoning_word_near_source[0].size(); ibit++)
+		{
+		  std::clog << a_tracker_record.zoning_word_near_source[iside][ibit];
+		}
+	      std::clog << "] ";
+	    }
+	  std::clog << std::endl;
+
 	  std::clog << "Tracker level one decision : [" << a_tracker_record.finale_decision << "]" <<  std::endl << std::endl;
 
     	  bool geiger_matrix[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS];
@@ -653,6 +697,28 @@ namespace snemo {
       	    } // end of izone
       	  std::clog << std::endl;
       	}
+
+      for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+	{
+	  std::clog << "ZW pattern     : S" << iside << " : [";
+	  for (int ibit = 0; ibit < a_tracker_record.zoning_word_pattern[0].size(); ibit++)
+	    {
+	      std::clog << a_tracker_record.zoning_word_pattern[iside][ibit];
+	    }
+	  std::clog << "] ";
+	}     
+      std::clog << std::endl;
+      for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+	{
+	  std::clog << "ZW near source : S" << iside << " : [";
+	  for (int ibit = 0; ibit < a_tracker_record.zoning_word_near_source[0].size(); ibit++)
+	    {
+	      std::clog << a_tracker_record.zoning_word_near_source[iside][ibit];
+	    }
+	  std::clog << "] ";
+	}
+      std::clog << std::endl;
+
       std::clog << "Tracker level one decision : [" << a_tracker_record.finale_decision << "]" <<  std::endl << std::endl;
       
       std::clog << "Coincidence Clocktick : [" << a_coincidence_record.clocktick_1600ns << "]" << std::endl;

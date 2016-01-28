@@ -37,6 +37,8 @@ namespace snemo {
 	    {
 	      finale_data_per_zone[iside][izone].reset();
 	    }
+	  zoning_word_pattern[iside].reset();
+	  zoning_word_near_source[iside].reset();
 	}
       finale_decision = false;
       return;
@@ -56,7 +58,28 @@ namespace snemo {
 	    } // end of izone
 	  std::clog << std::endl;
 	}
-      std::clog << "Level one tracker decision : [" << finale_decision << "]" <<  std::endl;
+      
+      for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+	{
+	  std::clog << "ZW pattern     : S" << iside << " : [";
+	  for (int ibit = 0; ibit < zoning_word_pattern[0].size(); ibit++)
+	    {
+	      std::clog << zoning_word_pattern[iside][ibit];
+	    }
+	  std::clog << "] ";
+	}     
+      std::clog << std::endl;
+      for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+	{
+	  std::clog << "ZW near source : S" << iside << " : [";
+	  for (int ibit = 0; ibit < zoning_word_near_source[0].size(); ibit++)
+	    {
+	      std::clog << zoning_word_near_source[iside][ibit];
+	    }
+	  std::clog << "] ";
+	}
+      std::clog << std::endl;
+      std::clog << "Level one tracker decision : [" << finale_decision << "]" <<  std::endl << std::endl;
       return;
     }
 
@@ -608,6 +631,29 @@ namespace snemo {
 	    }
 	}
       
+      // Build tracker zoning words 
+      // - mode LMR "normal" delayed (pattern) -> Tracker / Tracker + calo
+      // - mode Near source (1 cell min in the first 4 layers) -> Tracker / tracker
+
+      for (int iside = 0; iside < trigger_info::NSIDES; iside++) 
+	{
+	  for (int izone = 0; izone < trigger_info::NZONES; izone++) 
+	    {
+	      std::bitset<3> hpattern_for_a_zone = 0x0;
+	      std::bitset<2> near_source_for_a_zone = 0x0;
+	      	  
+	      hpattern_for_a_zone[0]    = _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_RIGHT];     // RIGHT
+	      hpattern_for_a_zone[1]    = _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_MIDDLE];    // MIDDLE
+	      hpattern_for_a_zone[2]    = _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_LEFT];      // LEFT
+	      near_source_for_a_zone[0] = _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_NSZ_RIGHT]; // NSRIGHT
+	      near_source_for_a_zone[1] = _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_NSZ_LEFT ]; // NSRIGHT
+	      
+	      if (hpattern_for_a_zone.any()) _tracker_record_finale_decision_.zoning_word_pattern[iside].set(izone);
+	      if (near_source_for_a_zone.any()) _tracker_record_finale_decision_.zoning_word_near_source[iside].set(izone);
+	    }
+	}
+      
+      	      
       std::bitset<5> finale_pattern_per_zone = 0x0;
       for (int iside = 0; iside < trigger_info::NSIDES; iside++) 
 	{
