@@ -2,9 +2,6 @@
 // Standard libraries :
 #include <iostream>
 
-// GSL:
-#include <bayeux/mygsl/rng.h>
-
 // - Bayeux/datatools:
 #include <datatools/utils.h>
 #include <datatools/io_factory.h>
@@ -16,6 +13,13 @@
 
 // Falaise:
 #include <falaise/falaise.h>
+
+// Third part : 
+// GSL:
+#include <bayeux/mygsl/rng.h>
+// Root : 
+#include "TFile.h"
+#include "TTree.h"
 
 // This project :
 #include <snemo/digitization/clock_utils.h>
@@ -91,6 +95,8 @@ int main( int  argc_ , char **argv_  )
     }
 
   try {
+    // boolean for debugging (display etc)
+    bool debug = false;
     std::clog << "Test program for class 'snemo::digitization::trigger_algorithm' !" << std::endl;
     int32_t seed = 314159;
     mygsl::rng random_generator;
@@ -124,8 +130,9 @@ int main( int  argc_ , char **argv_  )
     }else{
       // pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
       // pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Se82_0nubb_500000-source_strips_bulk_SD.brio";
+      pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Se82_2nubb_500000-source_strips_bulk_SD.brio";
       // pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Bi214_Po214_500000-source_strips_bulk_SD.brio";
-      pipeline_simulated_data_filename= "/home/goliviero/software/my_falaise/outputs/Bi214_Po214_10000-source_strips_external_surface_SD.brio";
+      // pipeline_simulated_data_filename= "/home/goliviero/software/my_falaise/outputs/Bi214_Po214_10000-source_strips_surface_SD.brio";
     }
     datatools::fetch_path_with_env(pipeline_simulated_data_filename);
 
@@ -142,10 +149,25 @@ int main( int  argc_ , char **argv_  )
     reader_config.store ("files.mode", "single");
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
-    reader.tree_dump (std::clog, "Simulated data reader module");
+    if (debug) reader.tree_dump(std::clog, "Simulated data reader module");
 
     // Event record :
     datatools::things ER;
+
+    // ROOT file : 
+    std::string root_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/validation/trigger_decision.root";
+    datatools::fetch_path_with_env(root_filename);
+    TFile* root_file = new TFile(root_filename.c_str(), "RECREATE");
+
+    TTree* trigger_decision_tree = new TTree("TriggerDecision", "Trigger decision histograms");
+
+    // Variables definitions :
+    Int_t event_id    = 0;
+    Bool_t trigger_decision_root = false;
+
+    // Branch definitions : 
+    trigger_decision_tree->Branch("event_id", &event_id, "evend_id/I");
+    trigger_decision_tree->Branch("trigger_decision_root", &trigger_decision_root, "trigger_decision/O");
 
     // Electronic mapping :
     snemo::digitization::electronic_mapping my_e_mapping;
@@ -203,11 +225,11 @@ int main( int  argc_ , char **argv_  )
 
     // Properties to configure trigger algorithm :
     datatools::properties trigger_config;
-    int calo_circular_buffer_depth = 4;
-    int calo_threshold = 1;
+    int  calo_circular_buffer_depth = 4;
+    int  calo_threshold = 1;
     bool inhibit_both_side_coinc = false;
     bool inhibit_single_side_coinc = false;    
-    int calorimeter_gate_size = 4;
+    int  calorimeter_gate_size = 4;
     bool activate_coincidence = true;
     
     trigger_config.store("calo.circular_buffer_depth", calo_circular_buffer_depth);
@@ -225,10 +247,10 @@ int main( int  argc_ , char **argv_  )
     // Creation of trigger display manager :
     snemo::digitization::trigger_display_manager my_trigger_display;
     datatools::properties trigger_display_config;
-    bool calo_25ns = true;
-    bool calo_1600ns = true;
+    bool calo_25ns      = true;
+    bool calo_1600ns    = true;
     bool tracker_1600ns = true;
-    bool coinc_1600ns = true;
+    bool coinc_1600ns   = true;
     trigger_display_config.store("calo_25ns", calo_25ns);
     trigger_display_config.store("calo_1600ns", calo_1600ns);
     trigger_display_config.store("tracker_1600ns", tracker_1600ns);
@@ -243,8 +265,10 @@ int main( int  argc_ , char **argv_  )
 
     // Internal counters
     int psd_count = 0;         // Event counter
+
     while (!reader.is_terminated())
       {
+	event_id = psd_count;
 	reader.process(ER);
 	// A plain `mctools::simulated_data' object is stored here :
 	if (ER.has(SD_bank_label) && ER.is_a<mctools::simulated_data>(SD_bank_label)) 
@@ -275,7 +299,7 @@ int main( int  argc_ , char **argv_  )
 		// Creation of geiger ctw data :
 		snemo::digitization::geiger_ctw_data my_geiger_ctw_data;
 
-		my_clock_manager.tree_dump(std::clog, "Clock utils : ", "INFO : ");
+		if (debug) my_clock_manager.tree_dump(std::clog, "Clock utils : ", "INFO : ");
 
 		// Calo signal to calo TP :
 		if( signal_data.has_calo_signals())
@@ -286,13 +310,13 @@ int main( int  argc_ , char **argv_  )
 		    signal_2_calo_tp.set_clocktick_shift(clocktick_25_shift);
 		    // Signal to calo TP process :
 		    signal_2_calo_tp.process(signal_data, my_calo_tp_data);
-		    my_calo_tp_data.tree_dump(std::clog, "Calorimeter TP(s) data : ", "INFO : ");
+		    if (debug) my_calo_tp_data.tree_dump(std::clog, "Calorimeter TP(s) data : ", "INFO : ");
 
 		    // Calo TP to geiger CTW process :
 		    calo_tp_2_ctw_0.process(my_calo_tp_data, my_calo_ctw_data);
 		    calo_tp_2_ctw_1.process(my_calo_tp_data, my_calo_ctw_data);
 		    calo_tp_2_ctw_2.process(my_calo_tp_data, my_calo_ctw_data);
-		    my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
+		    if (debug) my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
 
 		  } // end of if has calo signal
 
@@ -307,7 +331,7 @@ int main( int  argc_ , char **argv_  )
 
 		    // Geiger TP to geiger CTW process
 		    geiger_tp_2_ctw.process(my_geiger_tp_data, my_geiger_ctw_data);
-		    my_geiger_ctw_data.tree_dump(std::clog, "Geiger CTW(s) data : ", "INFO : ");
+		   if (debug) my_geiger_ctw_data.tree_dump(std::clog, "Geiger CTW(s) data : ", "INFO : ");
 		    
 		  } // end of if has geiger signal
 
@@ -326,10 +350,10 @@ int main( int  argc_ , char **argv_  )
 		calo_collection_records = my_trigger_algo.get_calo_records_vector();
 		tracker_collection_records = my_trigger_algo.get_tracker_records_vector();
 		
-		my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
-		my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
-		my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
-		my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
+		// if (debug) my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
+		//if (debug) my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
+		//if (debug) my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
+		if (debug) my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
 		
 		// for (int iclocktick = 0; iclocktick <= 10; iclocktick++)
 		//   {
@@ -342,14 +366,26 @@ int main( int  argc_ , char **argv_  )
 		
 	      } // end of if has "calo" || "xcalo" || "gveto" || "gg" step hits
 	    
-	  }
+	    bool trigger_finale_decision = false;
+	    trigger_finale_decision = my_trigger_algo.get_finale_decision();
+	    trigger_decision_root = trigger_finale_decision;
+	    std::clog << "trigger_finale_decision [" << trigger_finale_decision << "]" << std::endl;
+	    
+	    my_trigger_algo.clear_records();
+	      
+	  } //end of if has bank label "SD"
+	
+	trigger_decision_tree->Fill();
+	
 	ER.clear();
-
 	psd_count++;
 	std::clog << "DEBUG : psd count " << psd_count << std::endl;
 	DT_LOG_NOTICE(logging, "Simulated data #" << psd_count);
       }
     
+    root_file->Write();
+    root_file->Close(); 
+     
     std::clog << "The end." << std::endl;
   }
   catch (std::exception & error) {

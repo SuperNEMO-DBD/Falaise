@@ -142,7 +142,7 @@ namespace snemo {
 		  calo_tp.set_data(calo_hit_amplitude,
 				   calo_xt_bit,
 				   calo_spare_bit);   
-		  calo_tp.tree_dump(std::clog, "Calo TP first creation : ", "INFO : ");
+		  // calo_tp.tree_dump(std::clog, "Calo TP first creation : ", "INFO : ");
 		}
 	
 	      else 
@@ -151,7 +151,7 @@ namespace snemo {
 		  existing_calo_tp.update_data(calo_hit_amplitude,
 					       calo_xt_bit,
 					       calo_spare_bit);
-		  existing_calo_tp.tree_dump(std::clog, "Calo TP Update : ", "INFO : ");
+		  // existing_calo_tp.tree_dump(std::clog, "Calo TP Update : ", "INFO : ");
 		}
 	    }
 	}

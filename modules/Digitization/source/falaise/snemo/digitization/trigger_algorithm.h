@@ -71,6 +71,9 @@ namespace snemo {
 			/// Get the vector of coincidence record
 			const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_output> get_coincidence_records_vector() const;
 			
+			/// Get the finale trigger decision
+			const bool get_finale_decision() const;
+					
       /// General process
       void process(const calo_ctw_data & calo_ctw_data_,
 									 const geiger_ctw_data & geiger_ctw_data_);

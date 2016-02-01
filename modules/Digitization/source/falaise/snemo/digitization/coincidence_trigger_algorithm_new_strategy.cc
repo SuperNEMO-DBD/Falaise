@@ -163,6 +163,7 @@ namespace snemo {
     {     
       std::vector<calo_trigger_algorithm::calo_summary_record>::const_iterator it = calo_records_.begin();
       bool decision_already_true = false;
+      bool calo_coinc_decision = false;
       coincidence_trigger_algorithm_new_strategy::coincidence_calo_record coincidence_calo_record;
       unsigned int clocktick_25ns_decision;
       unsigned int coincidence_calo_record_position = 0;
@@ -191,7 +192,7 @@ namespace snemo {
 	      coincidence_calo_record.calo_finale_decision = a_ctrec.calo_finale_decision;
 	      _coincidence_calo_records_.push_back(coincidence_calo_record);
 	      decision_already_true = true;
-	      _coincidence_decision_ = true;
+	      calo_coinc_decision = true;
 	    }
 	  
 	  if (decision_already_true == true  
@@ -281,34 +282,33 @@ namespace snemo {
 			  hpattern_for_a_zone[0] = a_tracker_record.finale_data_per_zone[iside][izone][2];
 			  hpattern_for_a_zone[1] = a_tracker_record.finale_data_per_zone[iside][izone][3];
 			  hpattern_for_a_zone[2] = a_tracker_record.finale_data_per_zone[iside][izone][4];
-			  
 			  if (hpattern_for_a_zone.any())
 			    {
 			      if (hpattern_for_a_zone.test(mid) && a_calo_record.zoning_word[iside].test(izone) != 0)
 				{
 				  a_coincidence_output.zoning_word[iside].set(izone, true);
 				  a_coincidence_output.coincidence_finale_decision = true;
+				  _coincidence_decision_ = true;
 				}
 
 			      if ((hpattern_for_a_zone.test(right) && a_calo_record.zoning_word[iside].test(izone) != 0) ||
-				  (hpattern_for_a_zone.test(right) && a_calo_record.zoning_word[iside].test(izone+1) != 0))
+				  (izone+1 < 10 && hpattern_for_a_zone.test(right) && a_calo_record.zoning_word[iside].test(izone+1) != 0))
 				{	  
 				  a_coincidence_output.zoning_word[iside].set(izone, true);
 				  a_coincidence_output.coincidence_finale_decision = true;
+				  _coincidence_decision_ = true;
 				}
 			      if ((hpattern_for_a_zone.test(left) && a_calo_record.zoning_word[iside].test(izone) != 0) ||
-				  (hpattern_for_a_zone.test(left) && a_calo_record.zoning_word[iside].test(izone-1) != 0))
+				  (izone-1 > 0 && hpattern_for_a_zone.test(left) && a_calo_record.zoning_word[iside].test(izone-1) != 0))
 				{		 
 				  a_coincidence_output.zoning_word[iside].set(izone, true);
 				  a_coincidence_output.coincidence_finale_decision = true;
+				  _coincidence_decision_ = true;
 				}			      
 			    }
-			  
 			} // end of izone
 		    } // end of iside
-	      
 		  coincidence_records_.push_back(a_coincidence_output);
-		  
 		} // end of clocktick egality
 	    } // end of it_tracker
 	} // end of it_calo

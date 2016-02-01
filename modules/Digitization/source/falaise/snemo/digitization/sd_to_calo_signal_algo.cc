@@ -76,7 +76,7 @@ namespace snemo {
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "SD to calo signal algorithm is not initialized ! ");
       std::clog << "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ Process Begin //////////////////////////////////////" << std::endl;
-      sd_.tree_dump(std::clog, "***** Simulated Data : *****", "INFO : ");
+      //sd_.tree_dump(std::clog, "***** Simulated Data : *****", "INFO : ");
 
 
       std::clog << "DEBUG : BEGINING OF SD TO CALO SIGNAL PROCESS " << std::endl;
@@ -104,7 +104,7 @@ namespace snemo {
 	      calo_signal.set_header(calo_signal_hit_id, calo_gid);
 	      calo_signal.set_data(signal_time, amplitude); 
 	      calo_signal.grab_auxiliaries().store("hit.id", main_calo_hit.get_hit_id());
-	      calo_signal.tree_dump(std::clog, "***** Main calo Signal : *****", "INFO : ");
+	      //calo_signal.tree_dump(std::clog, "***** Main calo Signal : *****", "INFO : ");
 	      calo_signal_hit_id++;
 	    }
 	} // end of if	  
@@ -128,7 +128,7 @@ namespace snemo {
 	      calo_signal.set_header(calo_signal_hit_id, calo_gid);
 	      calo_signal.set_data(signal_time, amplitude); 
 	      calo_signal.grab_auxiliaries().store("hit.id", xwall_calo_hit.get_hit_id());
-	      calo_signal.tree_dump(std::clog, "***** XWall calo Signal : *****", "INFO : ");
+	      //calo_signal.tree_dump(std::clog, "***** XWall calo Signal : *****", "INFO : ");
 	      calo_signal_hit_id++;
 	    }
 	}
@@ -151,7 +151,7 @@ namespace snemo {
 	      calo_signal.set_header(calo_signal_hit_id, calo_gid);
 	      calo_signal.set_data(signal_time, amplitude); 
 	      calo_signal.grab_auxiliaries().store("hit.id", gveto_calo_hit.get_hit_id());
-	      calo_signal.tree_dump(std::clog, "***** GVeto calo Signal : *****", "INFO : ");
+	      //calo_signal.tree_dump(std::clog, "***** GVeto calo Signal : *****", "INFO : ");
 	      calo_signal_hit_id++;
 	    }
 	}

@@ -415,7 +415,7 @@ namespace snemo {
 	      _zones_[iside][izone].reset();
 	    }
 	}
-
+      _tracker_record_finale_decision_.reset();
       return;
     }
 
@@ -664,10 +664,12 @@ namespace snemo {
 		  finale_pattern_per_zone[i] = _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][i];
 		}
 	      
-	      if (finale_pattern_per_zone.any()) _tracker_record_finale_decision_.finale_decision = true;
+	      if (finale_pattern_per_zone.any())
+		{
+		  _tracker_record_finale_decision_.finale_decision = true;
+		} 
 	    }
 	}
-	      
       return;
     }
 
@@ -740,6 +742,7 @@ namespace snemo {
 							       std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record> & tracker_records_)
     { 
       _geiger_matrix_records_.clear();
+      _tracker_finale_decision_ = false;
       // Just even clockticks are processing (to take in account CB to TB serdes limitation
       int32_t iclocktick_800 = geiger_ctw_data_.get_clocktick_min();
       if (iclocktick_800 % 2 == 1) iclocktick_800 += 1;

@@ -172,7 +172,6 @@ namespace snemo {
 	  if (my_calo_tp_.is_htm())
 	    {
 	      unsigned int board_id = my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX);
-	      std::clog << "calo TP to CTW : board_id = " << board_id << std::endl;
 	      if (board_id == 4 || board_id == 5 || board_id == 15 || board_id == 16)
 		{
 		}
@@ -321,7 +320,7 @@ namespace snemo {
 		{
 		  calo_ctw & a_ctw_ = calo_ctw_data_.add();
 		  _process_for_a_ctw_for_a_clocktick_for_main_wall(tp_list_per_clocktick_per_crate, a_ctw_);
-		  a_ctw_.tree_dump(std::clog, "a_calo_ctw : ", "INFO : ");
+		  // a_ctw_.tree_dump(std::clog, "a_calo_ctw : ", "INFO : ");
 		}
 	    }
 	  
@@ -334,7 +333,7 @@ namespace snemo {
 		{
 		  calo_ctw & a_ctw_ = calo_ctw_data_.add();
 		  _process_for_a_ctw_for_a_clocktick_for_xwall_gveto(tp_list_per_clocktick_per_crate, a_ctw_);
-		  a_ctw_.tree_dump(std::clog, "a_calo_ctw : ", "INFO : ");
+		  // a_ctw_.tree_dump(std::clog, "a_calo_ctw : ", "INFO : ");
 		}
 	    }
 	}

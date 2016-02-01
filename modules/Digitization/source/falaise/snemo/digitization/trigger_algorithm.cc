@@ -14,6 +14,7 @@ namespace snemo {
       _initialized_ = false;
       _electronic_mapping_ = 0;
       _activate_coincidence_ = false;
+      _finale_trigger_decision_ = false;
       return;
     }
 
@@ -96,6 +97,7 @@ namespace snemo {
       _tracker_records_.clear();
       _calo_records_.clear();
       _coincidence_records_.clear();
+      _finale_trigger_decision_ = false;
     }
     
     const std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record>trigger_algorithm::get_tracker_records_vector() const
@@ -108,11 +110,16 @@ namespace snemo {
       return _calo_records_;
     }
 
-	const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_output> trigger_algorithm::get_coincidence_records_vector() const
-	{
-	  return _coincidence_records_;
-	}			
-
+    const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_output> trigger_algorithm::get_coincidence_records_vector() const
+    {
+      return _coincidence_records_;
+    }			
+    
+    const bool trigger_algorithm::get_finale_decision() const
+    {
+      return _finale_trigger_decision_;
+    }	  
+        
     void trigger_algorithm::process(const calo_ctw_data & calo_ctw_data_,
 				    const geiger_ctw_data & geiger_ctw_data_)
     {
@@ -163,14 +170,36 @@ namespace snemo {
 	  _process_coinc_algo();
 	}    
       
-      bool calo_decision = _calo_algo_.get_calo_decision();
-      bool tracker_decision = _tracker_algo_.get_tracker_decision();
-      bool coincidence_decision = _coinc_algo_.get_coincidence_decision();
-      
+      bool calo_decision = false;
+      calo_decision = _calo_algo_.get_calo_decision();
+      bool tracker_decision = false;
+      tracker_decision = _tracker_algo_.get_tracker_decision();
+      bool coincidence_decision = false;
+      coincidence_decision = _coinc_algo_.get_coincidence_decision();
+
+      std::clog << "Before    : " << std::endl;
+      std::clog << "Calo decision    : " << calo_decision << std::endl;
+      std::clog << "Tracker decision : " << tracker_decision << std::endl;
+      std::clog << "Coinc decision   : " << coincidence_decision << std::endl;
+      std::clog << "Trigger decision : " << _finale_trigger_decision_ << std::endl;
+
+
+
       // To improve depending of trigger configuration
-      if (calo_decision && tracker_decision) _finale_trigger_decision_ = true;
-      else if (_activate_coincidence_ && coincidence_decision) _finale_trigger_decision_ = true;
+
+      if (_activate_coincidence_)
+	{
+	  if (coincidence_decision == true) _finale_trigger_decision_ = true;
+	}
+ 
+      else _finale_trigger_decision_ = false;
       
+      
+      //      if (coincidence_decision && _activate_coincidence_) _finale_trigger_decision_ = true;
+      //else if (!_activate_coincidence_ && calo_decision && tracker_decision) _finale_trigger_decision_ = true;
+ 
+
+      std::clog << "After    : " << std::endl;
       std::clog << "Calo decision    : " << calo_decision << std::endl;
       std::clog << "Tracker decision : " << tracker_decision << std::endl;
       std::clog << "Coinc decision   : " << coincidence_decision << std::endl;

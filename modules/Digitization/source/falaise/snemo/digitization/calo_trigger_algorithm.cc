@@ -588,7 +588,7 @@ namespace snemo {
       _calo_record_per_clocktick_.reset();
       _calo_level_1_finale_decision_.reset();
       _gate_circular_buffer_.reset(new buffer_type(_circular_buffer_depth_));
-     
+      _calo_finale_decision_ = false;
       
       for(int32_t iclocktick = calo_ctw_data_.get_clocktick_min(); iclocktick <= calo_ctw_data_.get_clocktick_max() + _circular_buffer_depth_ - 1 ; iclocktick++)
 	{
