@@ -342,16 +342,14 @@ namespace snemo {
       return true;
     }
 
-    void gg_step_hit_processor::process(
-                                        const ::mctools::base_step_hit_processor::step_hit_ptr_collection_type & the_base_step_hits,
+    void gg_step_hit_processor::process(const ::mctools::base_step_hit_processor::step_hit_ptr_collection_type & the_base_step_hits,
                                         ::mctools::simulated_data::hit_collection_type & the_plain_gg_hits)
     {
       _process(the_base_step_hits, (mctools::simulated_data::hit_handle_collection_type *) 0, &the_plain_gg_hits);
       return;
     }
 
-    void gg_step_hit_processor::process(
-                                        const ::mctools::base_step_hit_processor::step_hit_ptr_collection_type & the_base_step_hits,
+    void gg_step_hit_processor::process(const ::mctools::base_step_hit_processor::step_hit_ptr_collection_type & the_base_step_hits,
                                         ::mctools::simulated_data::hit_handle_collection_type & the_gg_hits)
     {
       _process(the_base_step_hits, &the_gg_hits, (mctools::simulated_data::hit_collection_type *) 0);
