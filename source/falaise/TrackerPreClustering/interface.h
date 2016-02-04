@@ -65,12 +65,12 @@ namespace TrackerPreClustering {
     bool check() const;
 
     // Attributes:
-    datatools::logger::priority logging; /// Logging flag
-    double cell_size; /// The dimension of a cell
-    double delayed_hit_cluster_time; /// Delayed hit cluster time
-    bool   processing_prompt_hits; /// Flag for processing of prompt hits
-    bool   processing_delayed_hits; /// Flag for processing of delayed hits
-    bool   split_chamber; /// Flag to split the chamber
+    datatools::logger::priority logging; //!< Logging flag
+    double cell_size;                    //!< The dimension of a cell
+    double delayed_hit_cluster_time;     //!< Delayed hit cluster time
+    bool   processing_prompt_hits;       //!< Flag for processing of prompt hits
+    bool   processing_delayed_hits;      //!< Flag for processing of delayed hits
+    bool   split_chamber;                //!< Flag to split the chamber
 
   protected:
 
@@ -102,11 +102,11 @@ namespace TrackerPreClustering {
     bool check() const;
 
     // Attributes:
-    hit_collection_type hits; /// Collection of Geiger hits
+    hit_collection_type hits; //!< Collection of Geiger hits
 
   protected:
 
-    std::string _last_error_message; /// The last error message at check
+    std::string _last_error_message; //!< The last error message at check
 
   };
 
@@ -129,9 +129,9 @@ namespace TrackerPreClustering {
     void dump(std::ostream & out_) const;
 
     // Attributes:
-    hit_collection_type     ignored_hits;     /// Collection of ignored hits
-    cluster_collection_type prompt_clusters;  /// Collection of prompt clusters
-    cluster_collection_type delayed_clusters; /// Collection of delayed clusters
+    hit_collection_type     ignored_hits;     //!< Collection of ignored hits
+    cluster_collection_type prompt_clusters;  //!< Collection of prompt clusters
+    cluster_collection_type delayed_clusters; //!< Collection of delayed clusters
 
    };
 

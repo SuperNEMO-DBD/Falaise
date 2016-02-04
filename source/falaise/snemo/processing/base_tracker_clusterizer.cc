@@ -63,8 +63,12 @@ namespace snemo {
       DT_THROW_IF(_geometry_manager_ == 0, std::logic_error, "Missing geometry manager !");
       DT_THROW_IF(!_geometry_manager_->is_initialized(), std::logic_error, "Geometry manager is not initialized !");
 
+      // Extract the setup of the base tracker fitter :
+      datatools::properties btc_setup;
+      setup_.export_and_rename_starting_with(btc_setup, "BTC.", "");
+
       // Logging priority:
-      datatools::logger::priority lp = datatools::logger::extract_logging_configuration(setup_);
+      datatools::logger::priority lp = datatools::logger::extract_logging_configuration(btc_setup);
       DT_THROW_IF(lp == datatools::logger::PRIO_UNDEFINED,
                   std::logic_error,
                   "Invalid logging priority level for geometry manager !");
@@ -82,8 +86,8 @@ namespace snemo {
 
       // Locator plugin:
       std::string locator_plugin_name;
-      if (setup_.has_key("locator_plugin_name")) {
-        locator_plugin_name = setup_.fetch_string("locator_plugin_name");
+      if (btc_setup.has_key("locator_plugin_name")) {
+        locator_plugin_name = btc_setup.fetch_string("locator_plugin_name");
       }
 
       // If no locator plugin name is set, then search for the first one
@@ -112,6 +116,13 @@ namespace snemo {
       if (get_logging_priority() >= datatools::logger::PRIO_DEBUG) {
         DT_LOG_DEBUG(get_logging_priority(), "Geiger locator :");
         _gg_locator_->tree_dump(std::clog, "", "[debug]: ");
+      }
+
+      // Cell geom_id mask
+      if (btc_setup.has_key("cell_id_mask_rules")) {
+        const std::string cell_id_mask_rules = btc_setup.fetch_string("cell_id_mask_rules");
+        _cell_id_selector_.set_id_mgr(get_geometry_manager().get_id_mgr());
+        _cell_id_selector_.initialize(cell_id_mask_rules);
       }
 
       // Default value for the TrackerPreClustering :
@@ -171,6 +182,7 @@ namespace snemo {
       _clear_working_arrays();
       _tpc_setup_data_.reset();
       _pc_.reset();
+      _cell_id_selector_.reset();
 
       // Reset configuration params:
       _set_defaults();
@@ -289,13 +301,19 @@ namespace snemo {
       // Input data
       TrackerPreClustering::input_data<hit_type> idata;
       idata.hits.reserve(gg_hits.size());
-      std::map<const hit_type *, hit_handle_type > pre_cluster_mapping;
+      std::map<const hit_type *, hit_handle_type> pre_cluster_mapping;
 
       // Fill the TrackerPreClustering input data model :
       BOOST_FOREACH(const snemo::datamodel::calibrated_data::tracker_hit_handle_type & gg_handle,
                     gg_hits) {
         if (! gg_handle.has_data()) continue;
         const snemo::datamodel::calibrated_tracker_hit & sncore_gg_hit = gg_handle.get();
+        const geomtools::geom_id & gid = sncore_gg_hit.get_geom_id();
+        // Drift cell selector
+        if (_cell_id_selector_.is_initialized() && ! _cell_id_selector_.match(gid)) {
+          DT_LOG_TRACE(get_logging_priority(), "Drift cell with geom id '" << gid << "' excluded!");
+          continue;
+        }
         idata.hits.push_back(&sncore_gg_hit);
         // Mapping between both data models :
         pre_cluster_mapping[&sncore_gg_hit] = gg_handle;
@@ -466,8 +484,7 @@ namespace snemo {
             const sdm::tracker_clustering_solution & prompt_sol = prompt_cd.get_solution(isol);
             sdm::tracker_clustering_solution::copy_one_solution_in_one(prompt_sol, tc_sol);
             if (prompt_sol.get_auxiliaries().has_key(sdm::tracker_clustering_data::clusterizer_id_key())) {
-              tc_sol.grab_auxiliaries().store_string(
-                                                     sdm::tracker_clustering_data::clusterizer_id_key(),
+              tc_sol.grab_auxiliaries().store_string(sdm::tracker_clustering_data::clusterizer_id_key(),
                                                      prompt_sol.get_auxiliaries().fetch_string(sdm::tracker_clustering_data::clusterizer_id_key())
                                                      );
             }
@@ -495,8 +512,7 @@ namespace snemo {
             const sdm::tracker_clustering_solution & prompt_sol1 = prompt_cd1.get_solution(isol1);
             sdm::tracker_clustering_solution::merge_two_solutions_in_ones(prompt_sol0, prompt_sol1, tc_sol);
             if (prompt_sol0.get_auxiliaries().has_key(sdm::tracker_clustering_data::clusterizer_id_key())) {
-              tc_sol.grab_auxiliaries().store_string(
-                                                     sdm::tracker_clustering_data::clusterizer_id_key(),
+              tc_sol.grab_auxiliaries().store_string(sdm::tracker_clustering_data::clusterizer_id_key(),
                                                      prompt_sol0.get_auxiliaries().fetch_string(sdm::tracker_clustering_data::clusterizer_id_key())
                                                      );
             }
@@ -600,13 +616,12 @@ namespace snemo {
                                                const std::string & prefix_)
     {
 
-      // Prefix "TC" stands for "Tracker Clustering" :
-      datatools::logger::declare_ocd_logging_configuration(ocd_, "fatal", prefix_ + "TC.");
+      datatools::logger::declare_ocd_logging_configuration(ocd_, "fatal", prefix_ + "BTC.");
 
       {
         // Description of the 'locator_plugin_name' configuration property :
         datatools::configuration_property_description & cpd = ocd_.add_property_info();
-        cpd.set_name_pattern("TC.locator_plugin_name")
+        cpd.set_name_pattern("BTC.locator_plugin_name")
           .set_terse_description("The name of the geometry Geiger locator plugin to be used")
           .set_from("snemo::processing::base_tracker_clusterizer")
           .set_traits(datatools::TYPE_STRING)

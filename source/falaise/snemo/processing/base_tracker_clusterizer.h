@@ -36,6 +36,8 @@
 // - Bayeux/datatools:
 #include <datatools/logger.h>
 #include <datatools/object_configuration_description.h>
+// - Bayeux/geomtools:
+#include <geomtools/id_selector.h>
 
 // Falaise:
 #include <snemo/datamodels/calibrated_data.h>
@@ -171,17 +173,18 @@ namespace snemo {
 
     private:
 
-      bool                                  _initialized_;           /// Initialization status
-      std::string                           _id_;                    /// Identifier of the clusterizer algorithm
-      const geomtools::manager *            _geometry_manager_;      /// The SuperNEMO geometry manager
-      const snemo::geometry::gg_locator *   _gg_locator_;            /// Locator dedicated to the SuperNEMO tracking chamber
-      TrackerPreClustering::setup_data      _tpc_setup_data_;        /// The configuration data for the time-clustering algorithm
-      TrackerPreClustering::pre_clusterizer _pc_;                    /// The time-clustering algorithm
+      bool                                  _initialized_;           //!< Initialization status
+      std::string                           _id_;                    //!< Identifier of the clusterizer algorithm
+      const geomtools::manager *            _geometry_manager_;      //!< The SuperNEMO geometry manager
+      const snemo::geometry::gg_locator *   _gg_locator_;            //!< Locator dedicated to the SuperNEMO tracking chamber
+      geomtools::id_selector                _cell_id_selector_;      //!< A selector of GIDs
+      TrackerPreClustering::setup_data      _tpc_setup_data_;        //!< The configuration data for the time-clustering algorithm
+      TrackerPreClustering::pre_clusterizer _pc_;                    //!< The time-clustering algorithm
 
       // Internal work space:
-      hit_collection_type                   _ignored_hits_;          /// Hits that are not used as input for any clustering algorithm
-      std::vector<hit_collection_type>      _prompt_time_clusters_;  /// Collection of pre-clusters of only delayed hits
-      std::vector<hit_collection_type>      _delayed_time_clusters_; /// Collection of pre-clusters of only delayed hits
+      hit_collection_type                   _ignored_hits_;          //!< Hits that are not used as input for any clustering algorithm
+      std::vector<hit_collection_type>      _prompt_time_clusters_;  //!< Collection of pre-clusters of only delayed hits
+      std::vector<hit_collection_type>      _delayed_time_clusters_; //!< Collection of pre-clusters of only delayed hits
 
     };
 
