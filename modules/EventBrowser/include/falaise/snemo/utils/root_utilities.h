@@ -34,15 +34,21 @@
 #ifndef FALAISE_SNEMO_VISUALIZATION_UTILS_ROOT_UTILITIES_H
 #define FALAISE_SNEMO_VISUALIZATION_UTILS_ROOT_UTILITIES_H 1
 
+// Standard libraries:
 #include <string>
 
+// Third party
+// - ROOT:
 #include <TLatex.h>
+// - Bayeux/datatools:
+#include <datatools/utils.h>
+// - Bayeux/geomtools:
+#include <geomtools/clhep.h>
 
+// Forward declaration
 namespace datatools {
   class properties;
 }
-
-#include <geomtools/clhep.h>
 
 namespace geomtools {
   class i_shape_3d;
@@ -115,6 +121,18 @@ namespace snemo {
 
         /// Write RGB color into stream
         static void write_rgb_color(std::ostream & out_, const unsigned int color_);
+
+        /// Update output stream with an adapted time information
+        static void get_prettified_time(std::ostream & out_,
+                                        const double time_,
+                                        const double sigma_ = datatools::invalid_real(),
+                                        const bool latex_ = false);
+
+        /// Update output stream with an adapted energy information
+        static void get_prettified_energy(std::ostream & out_,
+                                          const double energy_,
+                                          const double sigma_ = datatools::invalid_real(),
+                                          const bool latex_ = false);
 
         /// Utility to emulate 'Save as' panel
         static bool save_view_as(TCanvas* canvas_ = 0,

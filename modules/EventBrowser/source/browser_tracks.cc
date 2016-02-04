@@ -370,10 +370,11 @@ namespace snemo {
             std::ostringstream label;
             label.precision(3);
             label.setf(std::ios::fixed, std::ios::floatfield);
-            label << ip->get_particle_label() << " particle: "
-                  << "E = " << ip->get_kinetic_energy() / CLHEP::MeV << " MeV, "
-                  << "t = " << ip->get_time() / CLHEP::ns << " ns - "
-                  << "(px, py, pz) = " << ip->get_momentum() / CLHEP::MeV << " MeV, "
+            label << ip->get_particle_label() << " particle: E = ";
+            utils::root_utilities::get_prettified_energy(label, ip->get_kinetic_energy());
+            label << ", t = ";
+            utils::root_utilities::get_prettified_time(label, ip->get_time());
+            label << " - (px, py, pz) = " << ip->get_momentum() / CLHEP::MeV << " MeV, "
                   << "(x, y, z) = ";
             if (sd.has_vertex()) {
               label << sd.get_vertex() / CLHEP:: mm << " mm";
@@ -479,8 +480,8 @@ namespace snemo {
                   label_hit << "Step #" << a_step.get_hit_id() << " - "
                             << "particle " << a_step.get_particle_name();
                   if (a_step.get_energy_deposit() > 0.0) {
-                    label_hit << " / energy deposit = "
-                              << a_step.get_energy_deposit() / CLHEP::keV << " keV";
+                    label_hit << " / energy deposit = ";
+                    utils::root_utilities::get_prettified_energy(label_hit, a_step.get_energy_deposit());
                   }
                   TGListTreeItem * item_hit
                     = _tracks_list_box_->AddItem(item, label_hit.str().c_str());
@@ -576,9 +577,9 @@ namespace snemo {
                 label_hit.setf(std::ios::fixed, std::ios::floatfield);
                 label_hit << a_calo_name
                           << " hit #" << a_step.get_hit_id() << " - "
-                          << "Energy deposit = "
-                          << a_step.get_energy_deposit() / CLHEP::keV << " keV - "
-                          << "geom_id = " << a_step.get_geom_id();
+                          << "Energy deposit = ";
+                utils::root_utilities::get_prettified_energy(label_hit, a_step.get_energy_deposit());
+                label_hit << " - geom_id = " << a_step.get_geom_id();
 
                 TGListTreeItem * item_hit
                   = _tracks_list_box_->AddItem(item_mc_calorimeter,
@@ -731,11 +732,10 @@ namespace snemo {
             label_hit.setf(std::ios::fixed, std::ios::floatfield);
             if (a_hit.get_auxiliaries().has_key("category"))
               label_hit << a_hit.get_auxiliaries().fetch_string("category") << " ";
-            label_hit << "hit #" << a_hit.get_hit_id() << " - "
-                      << "E = " << a_hit.get_energy() / CLHEP::keV << " +/- "
-                      << a_hit.get_sigma_energy()     / CLHEP::keV << " keV - "
-                      << "t = " << a_hit.get_time()   / CLHEP::ns  << " +/- "
-                      << a_hit.get_sigma_time()       / CLHEP::ns  << " ns";
+            label_hit << "hit #" << a_hit.get_hit_id() << " - E = ";
+            utils::root_utilities::get_prettified_energy(label_hit, a_hit.get_energy(), a_hit.get_sigma_energy());
+            label_hit << " - t = ";
+            utils::root_utilities::get_prettified_time(label_hit, a_hit.get_time(), a_hit.get_sigma_time());
 
             TGListTreeItem * item_hit
               = _tracks_list_box_->AddItem(item_calorimeter,
@@ -1116,8 +1116,8 @@ namespace snemo {
             }
             if (properties.has_key("t0")) {
               const double t0 = properties.fetch_real("t0");
-              label_trajectory << std::setprecision(0) << std::fixed
-                               << ", t0 = " << t0 / CLHEP::ns << " ns";
+              label_trajectory << std::setprecision(0) << std::fixed << ", t0 = ";
+              utils::root_utilities::get_prettified_time(label_trajectory, t0);
             }
             if (properties.has_key("guess")) {
               label_trajectory << " (" << properties.fetch_string("guess") << " guess)";
@@ -1263,11 +1263,10 @@ namespace snemo {
             label_hit << "Unassociated ";
             if (a_hit.get_auxiliaries().has_key("category"))
               label_hit << a_hit.get_auxiliaries().fetch_string("category") << " block ";
-            label_hit << "hit #" << a_hit.get_hit_id() << " - "
-                      << "E = " << a_hit.get_energy() / CLHEP::keV << " +/- "
-                      << a_hit.get_sigma_energy()     / CLHEP::keV << " keV - "
-                      << "t = " << a_hit.get_time()   / CLHEP::ns  << " +/- "
-                      << a_hit.get_sigma_time()       / CLHEP::ns  << " ns";
+            label_hit << "hit #" << a_hit.get_hit_id() << " - E = ";
+            utils::root_utilities::get_prettified_energy(label_hit, a_hit.get_energy(), a_hit.get_sigma_energy());
+            label_hit << " - t = ";
+            utils::root_utilities::get_prettified_time(label_hit, a_hit.get_time(), a_hit.get_sigma_time());
 
             TGListTreeItem * item_hit
               = _tracks_list_box_->AddItem(item_particle_track_data,
@@ -1408,11 +1407,10 @@ namespace snemo {
               label_hit.setf(std::ios::fixed, std::ios::floatfield);
               if (a_hit.get_auxiliaries().has_key("category"))
                 label_hit << a_hit.get_auxiliaries().fetch_string("category") << " ";
-              label_hit << "hit #" << a_hit.get_hit_id() << " - "
-                        << "E = " << a_hit.get_energy() / CLHEP::keV << " +/- "
-                        << a_hit.get_sigma_energy()     / CLHEP::keV << " keV - "
-                        << "t = " << a_hit.get_time()   / CLHEP::ns  << " +/- "
-                        << a_hit.get_sigma_time()       / CLHEP::ns  << " ns";
+              label_hit << "hit #" << a_hit.get_hit_id() << " - E = ";
+              utils::root_utilities::get_prettified_energy(label_hit, a_hit.get_energy(), a_hit.get_sigma_energy());
+              label_hit << " - t = ";
+              utils::root_utilities::get_prettified_time(label_hit, a_hit.get_time(), a_hit.get_sigma_time());
 
               TGListTreeItem * item_hit
                 = _tracks_list_box_->AddItem(item_particle,

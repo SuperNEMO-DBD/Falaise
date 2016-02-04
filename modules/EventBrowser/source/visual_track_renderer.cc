@@ -29,6 +29,8 @@
 
 #include <falaise/snemo/io/event_server.h>
 
+#include <falaise/snemo/utils/root_utilities.h>
+
 #include <falaise/snemo/datamodels/helix_trajectory_pattern.h>
 #include <falaise/snemo/datamodels/line_trajectory_pattern.h>
 
@@ -322,18 +324,20 @@ namespace snemo {
               const snemo::datamodel::calibrated_calorimeter_hit & a_calo = icalo->get();
               const geomtools::geom_id & a_calo_gid = a_calo.get_geom_id();
               this->highlight_geom_id(a_calo_gid, color);
-              const double energy  = a_calo.get_energy()       / CLHEP::MeV;
-              const double sigma_e = a_calo.get_sigma_energy() / CLHEP::MeV;
-              const double time    = a_calo.get_time()         / CLHEP::ns;
-              const double sigma_t = a_calo.get_sigma_time()   / CLHEP::ns;
+              const double energy  = a_calo.get_energy();
+              const double sigma_e = a_calo.get_sigma_energy();
+              const double time    = a_calo.get_time();
+              const double sigma_t = a_calo.get_sigma_time();
 
               // Save z position inside text and then parse it
-              std::ostringstream text_to_parse;
-              text_to_parse.precision(2);
-              text_to_parse << std::fixed << "#splitline"
-                            << "{E = " << energy << " #pm " << sigma_e << " MeV}"
-                            << "{t  = " << time   << " #pm " << sigma_t << " ns}";
-              this->highlight_geom_id(a_calo_gid, color, text_to_parse.str());
+              std::ostringstream oss;
+              oss.precision(2);
+              oss << std::fixed << "#splitline{E = ";
+              utils::root_utilities::get_prettified_energy(oss, energy, sigma_e, true);
+              oss << "}{t  = ";
+              utils::root_utilities::get_prettified_time(oss, time, sigma_t, true);
+              oss << "}";
+              this->highlight_geom_id(a_calo_gid, color, oss.str());
             }// end of calorimeter list
           } else {
             DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
