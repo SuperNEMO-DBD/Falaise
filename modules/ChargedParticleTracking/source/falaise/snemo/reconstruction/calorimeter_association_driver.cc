@@ -116,10 +116,6 @@ namespace snemo {
         }
       }
 
-      if (setup_.has_key("use_last_geiger_cell")) {
-        _use_last_geiger_cell_ = setup_.fetch_boolean("use_last_geiger_cell");
-      }
-
       // Get geometry locator plugin
       const geomtools::manager & geo_mgr = get_geometry_manager();
       std::string locator_plugin_name;
@@ -165,8 +161,7 @@ namespace snemo {
       _geometry_manager_ = 0;
       _locator_plugin_ = 0;
 
-      _matching_tolerance_   = 50 * CLHEP::mm;
-      _use_last_geiger_cell_ = false;
+      _matching_tolerance_ = 50 * CLHEP::mm;
       return;
     }
 
@@ -176,11 +171,6 @@ namespace snemo {
     {
       DT_LOG_TRACE(get_logging_priority(), "Entering...");
       DT_THROW_IF(! is_initialized(), std::logic_error, "Driver is not initialized !");
-
-      if (_use_last_geiger_cell_) {
-        DT_LOG_WARNING(get_logging_priority(), "Association mode using Geiger cell is not implemented yet !");
-        return;
-      }
 
       this->_measure_matching_calorimeters_(calorimeter_hits_, particle_);
 
