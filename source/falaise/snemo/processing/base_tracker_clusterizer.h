@@ -183,7 +183,7 @@ namespace snemo {
 
       // Internal work space:
       hit_collection_type                   _ignored_hits_;          //!< Hits that are not used as input for any clustering algorithm
-      std::vector<hit_collection_type>      _prompt_time_clusters_;  //!< Collection of pre-clusters of only delayed hits
+      std::vector<hit_collection_type>      _prompt_time_clusters_;  //!< Collection of pre-clusters of only prompt hits
       std::vector<hit_collection_type>      _delayed_time_clusters_; //!< Collection of pre-clusters of only delayed hits
 
     };
