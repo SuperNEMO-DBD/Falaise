@@ -118,7 +118,13 @@ namespace snemo {
     const bool trigger_algorithm::get_finale_decision() const
     {
       return _finale_trigger_decision_;
-    }	  
+    }
+    
+    void _build_previous_prompt_event_record()
+    {
+   
+      return;
+    }   
         
     void trigger_algorithm::process(const calo_ctw_data & calo_ctw_data_,
 				    const geiger_ctw_data & geiger_ctw_data_)

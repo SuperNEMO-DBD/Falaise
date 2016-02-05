@@ -1,0 +1,73 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{a4wide}
+\usepackage{verbatim}
+\usepackage[T1]{fontenc}
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
+\usepackage{color}
+%\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{epic}
+\usepackage{eepic}
+\usepackage{eepicemu}
+\usepackage{array}
+\usepackage{moreverb}
+\usepackage{fancyvrb}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumerate}
+\usepackage{todonotes}
+\usepackage{hyperref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\BBZN}{$\beta\beta{}0\nu$}
+\newcommand{\BBZNM}{$\beta\beta{}0\nu\chi$}
+\newcommand{\BB}{$\beta\beta$}
+\newcommand{\BBDN}{$\beta\beta{}2\nu$}
+\newcommand{\SE}{$^{82}$Se}
+\newcommand{\TL}{$^{208}$Tl}
+\newcommand{\BIQ}{$^{214}$Bi}
+\newcommand{\BID}{$^{212}$Bi}
+\newcommand{\POQ}{$^{214}$Po}
+\newcommand{\POD}{$^{212}$Po}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\begin{center}
+ \Large{Trigger decision efficiencies for raw trigger decision and decision with physical criterias}
+\end{center}
+
+Raw trigger decision are decisions when calorimeter and tracker are associated (time and space coincidences) for a prompt event. Delayed events are not take into account in this efficiency.
+For the tracker the criteria used to determined if there is a track is a multiplicity of 3 in layer or row projection in one sliding zone.
+
+\section{Raw trigger decision}
+\begin{table}[!h]
+ \begin{center}
+  \begin{tabular}{|c||c|c|}
+    \hline
+    Physical process   & Vertex generator      & Trigger efficiency (\%)  \\
+    \hline
+    \SE(\BBZN)         & source strips bulk    & 94,0 \\
+    \SE(\BBDN)         & source strips bulk    & 78,1 \\
+    \TL                & source strips bulk    & 60,7 \\
+    \TL                & source strips surface & 63,6 \\
+    \BIQ-\POQ          & source strips bulk    & 57,8 \\
+    \BIQ-\POQ          & source strips surface & 60,6 \\
+    \BIQ-\POQ          & field wire bulk       & 56,2 \\
+    \BIQ-\POQ          & field wire surface    & 58,6 \\
+    \hline
+  \end{tabular}
+  \end{center}
+  \caption{Trigger efficiency for several physical process and different localisation of the vertexes.}
+\label{efficacite_trigger}
+\end{table}
+
+\section{Trigger decision with physical selection (2 calorimeters with, at least, 12 cells hit)}
+  
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

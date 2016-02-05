@@ -146,3 +146,4 @@ if(FalaiseDigitizationPlugin_ENABLE_TESTING)
 endif()
  
 add_subdirectory(programs)
+add_subdirectory(validation)

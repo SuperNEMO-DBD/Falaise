@@ -38,7 +38,6 @@ namespace snemo {
 			{
 				coincidence_calo_record();
 				void reset();
-				void active_next_zone();
 				uint32_t clocktick_1600ns;
 				std::bitset<calo_trigger_algorithm::ZONING_PER_SIDE_BITSET_SIZE> zoning_word[mapping::NUMBER_OF_SIDES];
 				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_0;
@@ -61,6 +60,25 @@ namespace snemo {
 				uint32_t clocktick_1600ns;
 				std::bitset<mapping::NUMBER_OF_TRIGGER_ZONES> zoning_word[mapping::NUMBER_OF_SIDES];				
 				bool coincidence_finale_decision;
+			};
+			
+			/// Prompt event structure with calo and tracker informations (total = 173 [bits]). Useful for searching delayed alpha pattern.
+			struct previous_event_output
+			{
+				previous_event_output();
+				void reset();
+				void display();
+				std::bitset<calo_trigger_algorithm::ZONING_PER_SIDE_BITSET_SIZE> zoning_word[mapping::NUMBER_OF_SIDES];
+				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_0;
+				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_1;
+				bool LTO_side_0;
+				bool LTO_side_1;
+				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_gveto;
+				bool LTO_gveto;
+				std::bitset<calo_trigger_algorithm::XT_INFO_BITSET_SIZE> xt_info_bitset;
+				bool single_side_coinc;
+				bool total_multiplicity_threshold;
+				std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
 			};
 			
 			static const uint32_t SHIFT_COMPUTING_CLOCKTICK_1600NS = 1;
@@ -108,9 +126,14 @@ namespace snemo {
 			
 			/// Preparing coincidence calo records structure
 			void _preparing_calo_coincidence(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_);
+			
 			/// Compute clocktick 1600ns for calo records
 			void _compute_clocktick_1600ns(const uint32_t clocktick_25ns_, uint32_t & clocktick_1600ns_);
-						
+			
+			/// Build the previous prompt event for searching delayed alpha coincidences 
+			void _build_previous_prompt_event_record(coincidence_calo_record & a_calo_record_,
+																							 tracker_trigger_algorithm_test_new_strategy::tracker_record & a_tracker_record_);
+
 			/// Process calo records and tracker records
 			void _process(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_,
 										const std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record> & tracker_records_,
@@ -123,6 +146,7 @@ namespace snemo {
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
 			unsigned int _calorimeter_gate_size_; //!< Size of calorimeter gate for extension of calo records during X CT 1600ns
 			std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record> _coincidence_calo_records_; //!< Vector of coincidence calo record
+			previous_event_output _previous_event_record_; //!< Previous prompt event record
 			bool _coincidence_decision_; //!< Decision for coincidence trigger algorihtm
 			
 		};

@@ -1,4 +1,4 @@
-// test_trigger_algorithm.cxx
+// trigger_algorithm_efficiency_validation.cxx
 // Standard libraries :
 #include <iostream>
 
@@ -45,12 +45,12 @@ int main( int  argc_ , char **argv_  )
   int iarg = 1;
   bool is_input_file   = false;
   bool is_event_number = false;
-  bool is_output_path  = false;
+  bool is_output_file  = false;
   bool is_run_number   = false;
   bool is_help         = false;
 
   std::string input_filename;
-  std::string output_path;
+  std::string output_filename;
   int arg_event_number  = -1;
   int arg_run_number    = -1;
 ;
@@ -62,6 +62,12 @@ int main( int  argc_ , char **argv_  )
 	is_input_file = true;
 	input_filename=argv_[++iarg];
       } 
+
+    else if (arg == "-o" || arg == "--output")
+      {
+	is_output_file = true;
+	output_filename = argv_[++iarg];	
+      }
     
     else if (arg == "-n" || arg == "--number")
       {
@@ -80,16 +86,18 @@ int main( int  argc_ , char **argv_  )
   if (is_help) 
     {
       std::cerr << std::endl << "Usage :" << std::endl << std::endl
-		<< "$ BuildProducts/bin/falaisedigitizationplugin-test_trigger_algorithm_new_strategy [OPTIONS] [ARGUMENTS]" << std::endl << std::endl
+		<< "$ BuildProducts/bin/falaisedigitizationplugin-trigger_algorithm_efficiency_validation [OPTIONS] [ARGUMENTS]" << std::endl << std::endl
 		<< "Allowed options: " << std::endl
 		<< "-h  [ --help ]           produce help message" << std::endl
 		<< "-i  [ --input ]          set an input file" << std::endl
+		<< "-o  [ --output ]         set a root output file" << std::endl
 		<< "-n  [ --number ]         set the number of events" << std::endl
 		<< "Example : " << std::endl << std::endl
-		<< "$ BuildProducts/bin/falaisedigitizationplugin-test_trigger_algorithm_new_strategy --input ${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio" 
+		<< "$ BuildProducts/bin/falaisedigitizationplugin-trigger_algorithm_efficiency_validation --input ${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio -o se82_0nu_trigger_decision.root" 
 		<< " --number 5" << std::endl << std::endl
 		<< "If no options are set, programs have default values :" << std::endl << std::endl
 		<< "input file           = ${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio" << std::endl
+		<< "output file          = ${FALAISE_DIGITIZATION_DIR}/validation/root_file/trigger_decision.root" << std::endl
 		<< "number of events     = 10" << std::endl << std::endl;
       return 0;
     }
@@ -97,7 +105,7 @@ int main( int  argc_ , char **argv_  )
   try {
     // boolean for debugging (display etc)
     bool debug = false;
-    std::clog << "Test program for class 'snemo::digitization::trigger_algorithm' !" << std::endl;
+    std::clog << "Test program for class 'snemo::digitization::trigger_algorithm_efficiency_validation' !" << std::endl;
     int32_t seed = 314159;
     mygsl::rng random_generator;
     random_generator.initialize(seed);
@@ -136,6 +144,7 @@ int main( int  argc_ , char **argv_  )
     }
     datatools::fetch_path_with_env(pipeline_simulated_data_filename);
 
+    
     // Number of events :
     int event_number = -1;
     if (is_event_number)  event_number = arg_event_number;
@@ -154,8 +163,14 @@ int main( int  argc_ , char **argv_  )
     // Event record :
     datatools::things ER;
 
-    // ROOT file : 
-    std::string root_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/output_default/trigger_decision.root";
+    // Output ROOT file : 
+    datatools::fetch_path_with_env(output_filename);
+    std::string root_filename;
+    if (is_output_file){
+      root_filename = "${FALAISE_DIGITIZATION_DIR}/validation/root_files/" + output_filename;}
+    else{      
+      root_filename = "${FALAISE_DIGITIZATION_DIR}/validation/root_files/trigger_decision.root";
+      }
     datatools::fetch_path_with_env(root_filename);
     TFile* root_file = new TFile(root_filename.c_str(), "RECREATE");
 
@@ -163,11 +178,13 @@ int main( int  argc_ , char **argv_  )
 
     // Variables definitions :
     Int_t event_id    = 0;
-    Bool_t trigger_decision_root = false;
+    Bool_t raw_trigger_decision_root = false;
+    Bool_t physical_trigger_decision_root = false;
 
     // Branch definitions : 
     trigger_decision_tree->Branch("event_id", &event_id, "evend_id/I");
-    trigger_decision_tree->Branch("trigger_decision_root", &trigger_decision_root, "trigger_decision/O");
+    trigger_decision_tree->Branch("raw_trigger_decision_root", &raw_trigger_decision_root, "raw_trigger_decision_root/O");
+    trigger_decision_tree->Branch("physical_trigger_decision_root", &physical_trigger_decision_root, "physical_trigger_decision_root/O");
 
     // Electronic mapping :
     snemo::digitization::electronic_mapping my_e_mapping;
@@ -368,7 +385,7 @@ int main( int  argc_ , char **argv_  )
 	    
 	    bool trigger_finale_decision = false;
 	    trigger_finale_decision = my_trigger_algo.get_finale_decision();
-	    trigger_decision_root = trigger_finale_decision;
+	    raw_trigger_decision_root = trigger_finale_decision;
 	    std::clog << "trigger_finale_decision [" << trigger_finale_decision << "]" << std::endl;
 	    
 	    my_trigger_algo.clear_records();

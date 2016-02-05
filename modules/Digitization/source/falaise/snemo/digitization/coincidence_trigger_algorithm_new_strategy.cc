@@ -35,24 +35,11 @@ namespace snemo {
       calo_finale_decision = false;
       return;
     }
-    void coincidence_trigger_algorithm_new_strategy::coincidence_calo_record::active_next_zone()
-    {
-      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
-	{
-	  for (int izone = calo_trigger_algorithm::ZONING_PER_SIDE_BITSET_SIZE - 1; izone >= 0 ; izone --)
-	    {
-	      if (zoning_word[iside].test(izone) == true)
-		{
-		  if (izone < 9) zoning_word[iside].set(izone + 1, true);
-		}
-	    }
-	}
-      return;
-    }
 
     coincidence_trigger_algorithm_new_strategy::coincidence_output::coincidence_output()
     {
       coincidence_output::reset();
+      return;
     }
 
     void coincidence_trigger_algorithm_new_strategy::coincidence_output::reset()
@@ -70,6 +57,41 @@ namespace snemo {
       std::clog << "Coincidence zoning word : " << std::endl;
       std::clog << "ZW [0] : " << zoning_word[0] << std::endl;
       std::clog << "ZW [1] : " << zoning_word[1] << std::endl;
+      return;
+    }
+    
+    coincidence_trigger_algorithm_new_strategy::previous_event_output::previous_event_output()
+    {
+      previous_event_output::reset();
+      return;
+    }
+    
+    void coincidence_trigger_algorithm_new_strategy::previous_event_output::reset()
+    {
+      zoning_word[0].reset();
+      zoning_word[1].reset();
+      total_multiplicity_side_0.reset();
+      total_multiplicity_side_1.reset();
+      LTO_side_0 = false;
+      LTO_side_1 = false;
+      total_multiplicity_gveto.reset();
+      LTO_gveto = false;
+      xt_info_bitset.reset();
+      single_side_coinc = false;
+      total_multiplicity_threshold = false;
+      for (int iside = 0; iside < trigger_info::NSIDES; iside++) 
+	{
+	  for (int izone = 0; izone < trigger_info::NZONES; izone++) 
+	    {
+	      finale_data_per_zone[iside][izone].reset();
+	    }
+	}
+      return;
+    }
+    
+    void coincidence_trigger_algorithm_new_strategy::previous_event_output::display()
+    {
+      //todo
       return;
     }
 
@@ -201,7 +223,6 @@ namespace snemo {
 	    {
 	      _coincidence_calo_records_[coincidence_calo_record_position].zoning_word[0] = a_ctrec.zoning_word[0];
 	      _coincidence_calo_records_[coincidence_calo_record_position].zoning_word[1] = a_ctrec.zoning_word[1];
-	      // _coincidence_calo_records_[coincidence_calo_record_position].active_next_zone(); 
 	    }
 	  
 	  else if (decision_already_true == true
@@ -236,6 +257,14 @@ namespace snemo {
       return;
     }
          
+    void coincidence_trigger_algorithm_new_strategy::_build_previous_prompt_event_record(coincidence_calo_record & a_calo_record_,
+											 tracker_trigger_algorithm_test_new_strategy::tracker_record & a_tracker_record_)
+    {
+      
+
+      return;
+    }
+    
     void coincidence_trigger_algorithm_new_strategy::process(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_,
 							     const std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record> & tracker_records_,
 							     std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_output> & coincidence_records_)
@@ -308,6 +337,7 @@ namespace snemo {
 			    }
 			} // end of izone
 		    } // end of iside
+		  _build_previous_prompt_event_record(a_calo_record, a_tracker_record);
 		  coincidence_records_.push_back(a_coincidence_output);
 		} // end of clocktick egality
 	    } // end of it_tracker

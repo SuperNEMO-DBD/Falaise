@@ -89,6 +89,9 @@ namespace snemo {
 			/// Process coincidence module algorithm			
 			void _process_coinc_algo();
 			
+			/// Build the previous prompt event for searching delayed alpha coincidences 
+			void _build_previous_prompt_event_record();
+			
       /// Protected general process
       void _process(const calo_ctw_data & calo_ctw_data_,
 										const geiger_ctw_data & geiger_ctw_data_);
@@ -108,6 +111,7 @@ namespace snemo {
 			std::vector<calo_trigger_algorithm::calo_summary_record> _calo_records_; //!< Collection of calo summary record
 			std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record> _tracker_records_; //!< Collection of tracker record
 			std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_output> _coincidence_records_; //!< Collection of coincidence record
+			std::vector<coincidence_trigger_algorithm_new_strategy::previous_event_output> _previous_prompt_event_records_; //!< Collection (if needed) of previous event output 
 			
 			bool _finale_trigger_decision_; //!< The finale decision for the trigger
 			
