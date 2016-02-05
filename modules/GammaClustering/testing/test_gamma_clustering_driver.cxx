@@ -16,11 +16,9 @@
 #include <falaise/snemo/datamodels/particle_track_data.h>
 #include <falaise/snemo/reconstruction/gamma_clustering_driver.h>
 
-void generate_ptd(snemo::datamodel::particle_track_data & ptd_)
+void generate_hits(snemo::datamodel::calibrated_data::calorimeter_hit_collection_type & hits_)
 {
   namespace sdm = snemo::datamodel;
-  sdm::calibrated_calorimeter_hit::collection_type & the_calos
-    = ptd_.grab_non_associated_calorimeters();
 
   // Fake cluster
   {
@@ -30,7 +28,7 @@ void generate_ptd(snemo::datamodel::particle_track_data & ptd_)
     gid.set_any(4);
     hCCH.grab().set_geom_id(gid);
     hCCH.grab().set_time(0.0*CLHEP::ns);
-    the_calos.push_back(hCCH);
+    hits_.push_back(hCCH);
   }
   {
     datatools::handle<sdm::calibrated_calorimeter_hit> hCCH;
@@ -40,7 +38,7 @@ void generate_ptd(snemo::datamodel::particle_track_data & ptd_)
     hCCH.grab().set_geom_id(gid);
     hCCH.grab().set_time(1.0*CLHEP::ns);
     hCCH.grab().set_sigma_time(0.5*CLHEP::ns);
-    the_calos.push_back(hCCH);
+    hits_.push_back(hCCH);
   }
   // Add another calorimeter hit internally in time
   {
@@ -51,7 +49,7 @@ void generate_ptd(snemo::datamodel::particle_track_data & ptd_)
     hCCH.grab().set_geom_id(gid);
     hCCH.grab().set_time(2.0*CLHEP::ns);
     hCCH.grab().set_sigma_time(0.5*CLHEP::ns);
-    the_calos.push_back(hCCH);
+    hits_.push_back(hCCH);
   }
   // Finally, create a random time calorimeter hits
   {
@@ -62,7 +60,7 @@ void generate_ptd(snemo::datamodel::particle_track_data & ptd_)
     hCCH.grab().set_geom_id(gid);
     hCCH.grab().set_time(5.0*CLHEP::ns);
     hCCH.grab().set_sigma_time(0.5*CLHEP::ns);
-    the_calos.push_back(hCCH);
+    hits_.push_back(hCCH);
   }
   return;
 }
@@ -89,31 +87,35 @@ int main()
 
     std::clog << "Use GC driver with default configuration" << std::endl;
     {
+      // Fake calorimeter hits :
+      sdm::calibrated_data::calorimeter_hit_collection_type hits;
+      generate_hits(hits);
       // Particle track data bank :
       sdm::particle_track_data PTD;
-      generate_ptd(PTD);
-      PTD.tree_dump();
       srt::gamma_clustering_driver GCD;
       GCD.set_geometry_manager(geo_mgr);
       datatools::properties GCD_config;
       GCD_config.store("BGB.logging.priority", "debug");
       GCD.initialize(GCD_config);
-      GCD.process(PTD);
+      GCD.process(hits, PTD);
+      PTD.tree_dump();
     }
 
     std::clog << "Use GC driver only in 'cluster' mode" << std::endl;
     {
+      // Fake calorimeter hits :
+      sdm::calibrated_data::calorimeter_hit_collection_type hits;
+      generate_hits(hits);
       // Particle track data bank :
       sdm::particle_track_data PTD;
-      generate_ptd(PTD);
-      PTD.tree_dump();
       srt::gamma_clustering_driver GCD;
       GCD.set_geometry_manager(geo_mgr);
       datatools::properties GCD_config;
       GCD_config.store("BGB.logging.priority", "debug");
       GCD_config.store_with_explicit_unit("GC.minimal_internal_probability", 100*CLHEP::perCent);
       GCD.initialize(GCD_config);
-      GCD.process(PTD);
+      GCD.process(hits, PTD);
+      PTD.tree_dump();
     }
 
   } catch (std::exception & x) {

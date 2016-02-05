@@ -128,10 +128,18 @@ namespace snemo {
       return;
     }
 
+    void base_gamma_builder::_clear_working_arrays()
+    {
+      _ignored_hits_.clear();
+      _used_hits_.clear();
+      return;
+    }
+
     void base_gamma_builder::_reset()
     {
       _set_initialized(false);
       this->base_gamma_builder::_set_defaults();
+      this->base_gamma_builder::_clear_working_arrays();
       return;
     }
 
@@ -221,26 +229,27 @@ namespace snemo {
     }
 
 
-    int base_gamma_builder::process(snemo::datamodel::particle_track_data & ptd_)
+    int base_gamma_builder::process(const base_gamma_builder::hit_collection_type & calo_hits_,
+                                    snemo::datamodel::particle_track_data & ptd_)
     {
       int status = 0;
-      DT_THROW_IF (! is_initialized(), std::logic_error, "Gamma builder '" << _id_ << "' is not initialized !");
+      DT_THROW_IF(! is_initialized(), std::logic_error, "Gamma builder '" << _id_ << "' is not initialized !");
 
-      status = _prepare_process(ptd_);
+      status = _prepare_process(calo_hits_, ptd_);
       if (status != 0) {
         DT_LOG_ERROR(get_logging_priority(),
                      "Pre-processing '" << get_id() << "' has failed !");
         return status;
       }
 
-      status = _process_algo(ptd_);
+      status = _process_algo(_used_hits_, ptd_);
       if (status != 0) {
         DT_LOG_ERROR(get_logging_priority(),
                      "Processing of '" << get_id() << "' algorithm has failed !");
         return status;
       }
 
-      status = _post_process(ptd_);
+      status = _post_process(calo_hits_, ptd_);
       if (status != 0) {
         DT_LOG_ERROR(get_logging_priority(),
                      "Post-processing of '" << get_id() << "' algorithm has failed !");
@@ -249,29 +258,35 @@ namespace snemo {
       return status;
     }
 
-    int base_gamma_builder::_prepare_process(snemo::datamodel::particle_track_data & /*ptd_*/)
+    int base_gamma_builder::_prepare_process(const base_gamma_builder::hit_collection_type & calo_hits_,
+                                             snemo::datamodel::particle_track_data & /*ptd_*/)
     {
+      this->base_gamma_builder::_clear_working_arrays();
+      _used_hits_.reserve(calo_hits_.size());
+      _ignored_hits_.reserve(calo_hits_.size());
+      for (snemo::datamodel::calibrated_calorimeter_hit::collection_type::const_iterator
+             ihit = calo_hits_.begin(); ihit != calo_hits_.end(); ++ihit) {
+        const snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit = ihit->get();
+        const datatools::properties & the_auxiliaries = a_calo_hit.get_auxiliaries();
+        if (the_auxiliaries.has_flag("__isolated")) {
+          _used_hits_.push_back(*ihit);
+        } else {
+          _ignored_hits_.push_back(*ihit);
+        }
+      }
+      DT_LOG_DEBUG(get_logging_priority(), "Number of calorimeter hits used: " << _used_hits_.size()
+                   << " (" << _ignored_hits_.size() << " skipped)");
       return 0;
     }
 
-    int base_gamma_builder::_post_process(snemo::datamodel::particle_track_data & ptd_)
+    int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_type & /*calo_hits_*/,
+                                          snemo::datamodel::particle_track_data & ptd_)
     {
-      if (ptd_.has_non_associated_calorimeters()) {
-        // 2015/12/04 XG: Remove only isolated calorimeter hit (the one without
-        // any tracker cell in front of)
-        // ptd_.reset_non_associated_calorimeters();
-        snemo::datamodel::calibrated_calorimeter_hit::collection_type & chits
-          = ptd_.grab_non_associated_calorimeters();
-        for (snemo::datamodel::calibrated_calorimeter_hit::collection_type::iterator
-               ihit = chits.begin(); ihit != chits.end();/*++ihit*/) {
-          const snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit = ihit->get();
-          if (a_calo_hit.get_auxiliaries().has_flag("__isolated")) {
-            ihit = chits.erase(ihit);
-          } else {
-            ++ihit;
-          }
-        }
-      }
+      // Add the ignored hits to the list of non associated calorimeters
+      // ptd_.reset_non_associated_calorimeters();
+      snemo::datamodel::calibrated_calorimeter_hit::collection_type & calos
+        = ptd_.grab_non_associated_calorimeters();
+      calos.assign(_ignored_hits_.begin(), _ignored_hits_.end());
 
       snemo::datamodel::particle_track_data::particle_collection_type charged_particles;
       ptd_.fetch_particles(charged_particles,
@@ -360,8 +375,7 @@ namespace snemo {
             // const double gamma_energy       = a_calo_hit.get_energy();
             // const double gamma_sigma_energy = a_calo_hit.get_sigma_energy();
 
-            // Compute theoritical time for the gamma in case it comes from the
-            // foil vertex
+            // Compute theoritical time for the gamma in case it comes from the foil vertex
             const double gamma_track_length = (a_foil_vertex - a_spot.get_position()).mag();
             const double gamma_time_th = gamma_track_length / CLHEP::c_light;
 

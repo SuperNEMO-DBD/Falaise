@@ -160,7 +160,7 @@ namespace snemo {
       snemo::datamodel::particle_track_data & ptd = *ptr_particle_track_data;
 
       // process the fitter driver :
-      _driver_.get()->process(ptd);
+      _driver_.get()->process(ptd.get_non_associated_calorimeters(), ptd);
 
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");
       return;

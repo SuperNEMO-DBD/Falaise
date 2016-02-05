@@ -37,6 +37,9 @@
 #include <datatools/logger.h>
 #include <datatools/object_configuration_description.h>
 
+// Falaise:
+#include <snemo/datamodels/calibrated_data.h>
+
 // Forward declaration :
 namespace datatools {
   class properties;
@@ -65,6 +68,9 @@ namespace snemo {
     class base_gamma_builder
     {
     public:
+
+      /// Typedef to calibrated calorimeter hits
+      typedef snemo::datamodel::calibrated_data::calorimeter_hit_collection_type  hit_collection_type;
 
       /// Set logging priority level
       void set_logging_priority(datatools::logger::priority logging_priority_);
@@ -103,7 +109,8 @@ namespace snemo {
       virtual ~base_gamma_builder();
 
       /// Main tracker trajectory driver
-      int process(snemo::datamodel::particle_track_data & ptd_);
+      int process(const base_gamma_builder::hit_collection_type & calo_hits_,
+                  snemo::datamodel::particle_track_data & ptd_);
 
       /// Initialize the tracker trajectory fitter through configuration properties
       virtual void initialize(const datatools::properties & setup_) = 0;
@@ -135,14 +142,20 @@ namespace snemo {
       /// Set the initialization flag
       void _set_initialized(bool);
 
+      /// Clear working arrays
+      void _clear_working_arrays();
+
       /// Prepare data for processing
-      virtual int _prepare_process(snemo::datamodel::particle_track_data & ptd_);
+      virtual int _prepare_process(const base_gamma_builder::hit_collection_type & calo_hits_,
+                                   snemo::datamodel::particle_track_data & ptd_);
 
       /// Specific algorithm
-      virtual int _process_algo(snemo::datamodel::particle_track_data & ptd_) = 0;
+      virtual int _process_algo(const base_gamma_builder::hit_collection_type & calo_hits_,
+                                snemo::datamodel::particle_track_data & ptd_) = 0;
 
       /// Post processing
-      virtual int _post_process(snemo::datamodel::particle_track_data & ptd_);
+      virtual int _post_process(const base_gamma_builder::hit_collection_type & calo_hits_,
+                                snemo::datamodel::particle_track_data & ptd_);
 
     protected:
 
@@ -154,6 +167,9 @@ namespace snemo {
       std::string                          _id_;                //!< Identifier of the gamma builder algorithm
       const geomtools::manager *           _geometry_manager_;  //!< The SuperNEMO geometry manager
       const snemo::geometry::locator_plugin * _locator_plugin_; //!< The SuperNEMO locator plugin
+
+      hit_collection_type _used_hits_;    //!< Hits that are used as input for any gamma algorithm
+      hit_collection_type _ignored_hits_; //!< Hits that are not used as input for any gamma algorithm
 
       bool _add_foil_vertex_extrapolation_;         //!< Flag to enable foil vertex extrapolation
       double _add_foil_vertex_minimal_probability_; //!< Minimal TOF internal probability to accept foilvertex extrapolation

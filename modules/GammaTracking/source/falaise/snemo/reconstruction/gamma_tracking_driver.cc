@@ -79,17 +79,16 @@ namespace snemo {
       return;
     }
 
-    int gamma_tracking_driver::_prepare_process(snemo::datamodel::particle_track_data & ptd_)
+    int gamma_tracking_driver::_prepare_process(const base_gamma_builder::hit_collection_type & calo_hits_,
+                                                snemo::datamodel::particle_track_data & ptd_)
     {
-      base_gamma_builder::_prepare_process(ptd_);
+      base_gamma_builder::_prepare_process(calo_hits_, ptd_);
 
       gt::event & an_event = _gt_.grab_event();
       gt::event::calorimeter_collection_type & the_gamma_calos = an_event.grab_calorimeters();
 
-      const snemo::datamodel::calibrated_calorimeter_hit::collection_type & cch
-        = ptd_.get_non_associated_calorimeters();
       for (snemo::datamodel::calibrated_calorimeter_hit::collection_type::const_iterator
-             icalo = cch.begin(); icalo != cch.end(); ++icalo) {
+             icalo = calo_hits_.begin(); icalo != calo_hits_.end(); ++icalo) {
         const snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit = icalo->get();
         {
           gt::event::calorimeter_hit dummy_hit;
@@ -130,7 +129,8 @@ namespace snemo {
     }
 
     // Main tracking method
-    int gamma_tracking_driver::_process_algo(snemo::datamodel::particle_track_data & ptd_)
+    int gamma_tracking_driver::_process_algo(const base_gamma_builder::hit_collection_type & /*calo_hits_*/,
+                                             snemo::datamodel::particle_track_data & ptd_)
     {
       DT_LOG_TRACE(get_logging_priority(), "Entering...");
 

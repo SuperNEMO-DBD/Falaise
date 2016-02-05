@@ -109,12 +109,10 @@ namespace snemo {
       return;
     }
 
-    int gamma_clustering_driver::_process_algo(snemo::datamodel::particle_track_data & ptd_)
+    int gamma_clustering_driver::_process_algo(const base_gamma_builder::hit_collection_type & calo_hits_,
+                                               snemo::datamodel::particle_track_data & ptd_)
     {
       DT_LOG_TRACE(get_logging_priority(), "Entering...");
-
-      const snemo::datamodel::calibrated_calorimeter_hit::collection_type & cch
-        = ptd_.get_non_associated_calorimeters();
 
       // Registered calorimeter hits (to be skipped)
       gid_list_type registered_calos;
@@ -122,10 +120,8 @@ namespace snemo {
       // Getting gamma clusters
       cluster_collection_type the_reconstructed_clusters;
       for (snemo::datamodel::calibrated_calorimeter_hit::collection_type::const_iterator
-             icalo = cch.begin(); icalo != cch.end(); ++icalo) {
+             icalo = calo_hits_.begin(); icalo != calo_hits_.end(); ++icalo) {
         const snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit = icalo->get();
-
-        if (! a_calo_hit.get_auxiliaries().has_flag("__isolated")) continue;
 
         const geomtools::geom_id & a_gid = a_calo_hit.get_geom_id();
         // If already clustered then skip it
@@ -145,7 +141,7 @@ namespace snemo {
         a_cluster.insert(std::make_pair(a_calo_hit.get_time(), *icalo));
 
         // Get geometrical neighbours given the current geom id
-        _get_geometrical_neighbours(a_calo_hit, cch, a_cluster, registered_calos);
+        _get_geometrical_neighbours(a_calo_hit, calo_hits_, a_cluster, registered_calos);
 
         // Ensure all calorimeter hits within a cluster are in time
         _get_time_neighbours(a_cluster, the_reconstructed_clusters);

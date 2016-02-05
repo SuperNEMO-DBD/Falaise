@@ -73,10 +73,12 @@ namespace snemo {
       void _set_defaults();
 
       /// Prepare cluster for processing
-      virtual int _prepare_process(snemo::datamodel::particle_track_data & ptd_);
+      virtual int _prepare_process(const base_gamma_builder::hit_collection_type & calo_hits_,
+                                   snemo::datamodel::particle_track_data & ptd_);
 
       /// Main tracking method
-      virtual int _process_algo(snemo::datamodel::particle_track_data & ptd_);
+      virtual int _process_algo(const base_gamma_builder::hit_collection_type & calo_hits_,
+                                snemo::datamodel::particle_track_data & ptd_);
 
     private:
 
