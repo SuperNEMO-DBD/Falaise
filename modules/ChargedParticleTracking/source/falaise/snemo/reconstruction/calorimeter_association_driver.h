@@ -53,13 +53,30 @@ namespace snemo {
 
   namespace reconstruction {
 
+    /// \brief Calorimeter utilities to be stored within calorimeter hit auxiliaries
+    struct calorimeter_utils {
+
+      /// Name of the property to store calorimeter association flag
+      static const std::string & associated_flag();
+
+      /// Name of the property to store calorimeter vicinity flag
+      static const std::string & neighbor_flag();
+
+      /// Name of the property to store calorimeter isolation flag
+      static const std::string & isolated_flag();
+
+      /// Tag a calorimeter with a given flag
+      static void flag_as(const snemo::datamodel::calibrated_calorimeter_hit & hit_, const std::string & flag_);
+
+      /// Check if a calorimeter has a given flag
+      static bool has_flag(const snemo::datamodel::calibrated_calorimeter_hit & hit_, const std::string & flag_);
+
+    };
+
     /// \brief Driver for associating particle track with calorimeter hit
     class calorimeter_association_driver
     {
     public:
-
-      /// Name of the property to store calorimeter association flag
-      static const std::string & associated_flag();
 
       /// Return driver id
       static const std::string & get_id();
@@ -122,7 +139,6 @@ namespace snemo {
       const geomtools::manager * _geometry_manager_;            //<! The SuperNEMO geometry manager
       const snemo::geometry::locator_plugin * _locator_plugin_; //!< The SuperNEMO locator plugin
       double _matching_tolerance_;                              //<! Matching distance between vertex and calorimeter
-      bool _use_last_geiger_cell_;                              //<! Use only last geiger cells to find matching calo
     };
 
   }  // end of namespace reconstruction

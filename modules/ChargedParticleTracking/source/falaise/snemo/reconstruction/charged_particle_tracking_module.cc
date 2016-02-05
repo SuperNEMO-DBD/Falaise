@@ -312,7 +312,7 @@ namespace snemo {
     {
       // Grab non associated calorimeters :
       if (! particle_track_data_.has_non_associated_calorimeters()) {
-        geomtools::base_hit::has_flag_predicate asso_pred(calorimeter_association_driver::associated_flag());
+        geomtools::base_hit::has_flag_predicate asso_pred(calorimeter_utils::associated_flag());
         geomtools::base_hit::negates_predicate not_asso_pred(asso_pred);
         // Wrapper predicates :
         datatools::mother_to_daughter_predicate<geomtools::base_hit,
@@ -373,7 +373,7 @@ namespace snemo {
             if (has_gg_in_front) break;
           } // end of calorimeter geom ids
           if (! has_gg_in_front) {
-            a_calo_hit.grab_auxiliaries().update_flag("__isolated");
+            calorimeter_utils::flag_as(a_calo_hit, calorimeter_utils::isolated_flag());
           }
         } // end of calorimeter hits
       }

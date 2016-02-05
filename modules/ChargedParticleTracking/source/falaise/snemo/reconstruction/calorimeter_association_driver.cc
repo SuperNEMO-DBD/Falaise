@@ -24,10 +24,34 @@ namespace snemo {
 
   namespace reconstruction {
 
-    const std::string & calorimeter_association_driver::associated_flag()
+    const std::string & calorimeter_utils::associated_flag()
     {
       static const std::string s("__associated");
       return s;
+    }
+
+    const std::string & calorimeter_utils::isolated_flag()
+    {
+      static const std::string s("__isolated");
+      return s;
+    }
+
+    const std::string & calorimeter_utils::neighbor_flag()
+    {
+      static const std::string s("__neighbour");
+      return s;
+    }
+
+    void calorimeter_utils::flag_as(const snemo::datamodel::calibrated_calorimeter_hit & hit_, const std::string & flag_)
+    {
+      snemo::datamodel::calibrated_calorimeter_hit & mutable_hit = const_cast<snemo::datamodel::calibrated_calorimeter_hit&>(hit_);
+      mutable_hit.grab_auxiliaries().update_flag(flag_);
+      return;
+    }
+
+    bool calorimeter_utils::has_flag(const snemo::datamodel::calibrated_calorimeter_hit & hit_, const std::string & flag_)
+    {
+      return hit_.get_auxiliaries().has_flag(flag_);
     }
 
     const std::string & calorimeter_association_driver::get_id()
@@ -215,8 +239,8 @@ namespace snemo {
       for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::const_iterator
              icalo = calorimeter_hits_.begin(); icalo != calorimeter_hits_.end();
            ++icalo) {
-        const snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit = icalo->get();
-        const geomtools::geom_id & a_current_gid = a_calo_hit.get_geom_id();
+        const snemo::datamodel::calibrated_calorimeter_hit & i_calo_hit = icalo->get();
+        const geomtools::geom_id & a_current_gid = i_calo_hit.get_geom_id();
 
         std::vector<geomtools::geom_id> neighbour_ids;
         if (calo_locator.is_calo_block_in_current_module(a_current_gid)) {
@@ -229,16 +253,19 @@ namespace snemo {
         for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::const_iterator
                jcalo = boost::next(icalo); jcalo != calorimeter_hits_.end();
              ++jcalo) {
-          const snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit = jcalo->get();
-          const geomtools::geom_id & a_gid = a_calo_hit.get_geom_id();
+          const snemo::datamodel::calibrated_calorimeter_hit & j_calo_hit = jcalo->get();
+          const geomtools::geom_id & a_gid = j_calo_hit.get_geom_id();
 
           if (std::find(neighbour_ids.begin(), neighbour_ids.end(), a_gid) != neighbour_ids.end()) {
             list_of_neighbours.insert(a_gid);
             list_of_neighbours.insert(a_current_gid);
+            calorimeter_utils::flag_as(i_calo_hit, calorimeter_utils::neighbor_flag());
+            calorimeter_utils::flag_as(j_calo_hit, calorimeter_utils::neighbor_flag());
           }
         }
       }
       if (get_logging_priority() >= datatools::logger::PRIO_TRACE) {
+        DT_LOG_TRACE(get_logging_priority(), "Number of neighbours " << list_of_neighbours.size());
         for (std::set<geomtools::geom_id>::const_iterator i = list_of_neighbours.begin();
              i != list_of_neighbours.end(); ++i) {
           DT_LOG_TRACE(get_logging_priority(), "Neighbours @ " << *i);
@@ -290,6 +317,7 @@ namespace snemo {
               DT_LOG_DEBUG(get_logging_priority(), "Found matching calorimeter with the following geom_id " << a_gid);
               // Compute distance to calorimeter center
               geomtools::vector_3d calo_position;
+              geomtools::invalidate(calo_position);
               if (calo_locator.is_calo_block_in_current_module(a_gid)) {
                 calo_locator.get_block_position(a_gid, calo_position);
               } else if (xcalo_locator.is_calo_block_in_current_module(a_current_gid)) {
@@ -318,17 +346,15 @@ namespace snemo {
         for (calo_collection_type::const_iterator i = calo_collection.begin();
              i != calo_collection.end(); ++i) {
           const snemo::datamodel::calibrated_calorimeter_hit & a_calo = i->second.get();
-          const datatools::properties & a_prop = a_calo.get_auxiliaries();
           const geomtools::geom_id & a_gid = a_calo.get_geom_id();
           // Check association and belonging to neighbours
           if (std::find(list_of_neighbours.begin(), list_of_neighbours.end(), a_gid) != list_of_neighbours.end() &&
-              ! a_prop.has_flag(calorimeter_association_driver::associated_flag())) {
+              ! calorimeter_utils::has_flag(a_calo, calorimeter_utils::associated_flag())) {
             keep_only_first = true;
           }
           particle_.grab_associated_calorimeter_hits().push_back(i->second);
           // Add a private property
-          datatools::properties & mutable_prop = const_cast<datatools::properties &>(a_prop);
-          mutable_prop.update_flag(calorimeter_association_driver::associated_flag());
+          calorimeter_utils::flag_as(a_calo, calorimeter_utils::associated_flag());
           // Set the geom_id of the corresponding vertex to the calorimeter
           // hit geom_id
           a_vertex.set_geom_id(a_gid);
