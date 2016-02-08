@@ -53,7 +53,7 @@ namespace snemo {
 			{
 				calo_record();
 				void reset();
-			  void display();
+			  const void display() const;
 				uint32_t clocktick_25ns;
 				std::bitset<trigger_info::NZONES> zoning_word[trigger_info::NSIDES];
 				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_0;
@@ -70,7 +70,7 @@ namespace snemo {
 				calo_summary_record();
 				void reset();
 				void reset_summary_boolean_only();
-				void display();
+				const void display() const;
 				bool single_side_coinc;
 				bool total_multiplicity_threshold;
 				bool calo_finale_decision;

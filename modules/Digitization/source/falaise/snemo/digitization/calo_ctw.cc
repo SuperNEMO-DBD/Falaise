@@ -418,7 +418,8 @@ namespace snemo {
     
     bool calo_ctw::is_lto_main_wall() const
     {
-      return _ctw_.test(calo::ctw::LTO_MAIN_WALL_BIT);
+      if (_ctw_.test(calo::ctw::LTO_MAIN_WALL_BIT) == true) return true;
+      else return false;
     }
 
 
@@ -433,7 +434,8 @@ namespace snemo {
     
     bool calo_ctw::is_lto_xwall_side_0() const
     {
-      return _ctw_.test(calo::ctw::LTO_XWALL_SIDE0_BIT);
+      if (_ctw_.test(calo::ctw::LTO_XWALL_SIDE0_BIT) == true) return true;
+      else return false;
     }
 
     void calo_ctw::set_lto_xwall_side_1_bit(bool value_)
@@ -447,7 +449,8 @@ namespace snemo {
     
     bool calo_ctw::is_lto_xwall_side_1() const
     {
-      return _ctw_.test(calo::ctw::LTO_XWALL_SIDE1_BIT);
+      if (_ctw_.test(calo::ctw::LTO_XWALL_SIDE1_BIT) == true) return true;
+      else return false;
     }
 
     void calo_ctw::set_lto_gveto_bit(bool value_)

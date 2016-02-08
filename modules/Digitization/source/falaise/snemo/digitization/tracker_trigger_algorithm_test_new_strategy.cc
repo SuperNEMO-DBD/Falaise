@@ -720,7 +720,7 @@ namespace snemo {
       	    {
       	      for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
       		{
-      		  a_geiger_matrix.matrix[iside][jlayer][krow] = _geiger_matrix_[iside][jlayer][krow];	
+      		  a_geiger_matrix.matrix[iside][jlayer][krow] = _geiger_matrix_[iside][jlayer][krow];
       		} // end of krow
       	    } // end of jlayer
       	} // end of iside

@@ -176,6 +176,11 @@ namespace snemo {
       return;
     }
 
+    const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record> coincidence_trigger_algorithm_new_strategy::get_coincidence_calo_records_vector() const
+    {
+      return _coincidence_calo_records_;
+    }
+
     const bool coincidence_trigger_algorithm_new_strategy::get_coincidence_decision() const
     {
       return _coincidence_decision_;
@@ -187,15 +192,18 @@ namespace snemo {
       bool decision_already_true = false;
       bool calo_coinc_decision = false;
       coincidence_trigger_algorithm_new_strategy::coincidence_calo_record coincidence_calo_record;
-      unsigned int clocktick_25ns_decision;
+      unsigned int clocktick_25ns_decision = 0;
       unsigned int coincidence_calo_record_position = 0;
+      unsigned int max_mult_side_0 = 0;
+      unsigned int max_mult_side_1 = 0;
+      unsigned int max_mult_gveto  = 0;
+      
       for (it; it != calo_records_.end(); it++)
       	{
 	  const calo_trigger_algorithm::calo_summary_record a_ctrec= *it;
-	  unsigned int a_ctrec_clocktick_1600ns;
+	  unsigned int a_ctrec_clocktick_1600ns = 0;
 	  _compute_clocktick_1600ns(a_ctrec.clocktick_25ns, a_ctrec_clocktick_1600ns);
 	  a_ctrec_clocktick_1600ns += SHIFT_COMPUTING_CLOCKTICK_1600NS;
-	  
 	  if (a_ctrec.calo_finale_decision == true && decision_already_true == false)
 	    {
 	      clocktick_25ns_decision = a_ctrec.clocktick_25ns;
@@ -215,6 +223,9 @@ namespace snemo {
 	      _coincidence_calo_records_.push_back(coincidence_calo_record);
 	      decision_already_true = true;
 	      calo_coinc_decision = true;
+	      max_mult_side_0 = a_ctrec.total_multiplicity_side_0.to_ulong();
+	      max_mult_side_1 = a_ctrec.total_multiplicity_side_1.to_ulong();
+	      max_mult_gveto  = a_ctrec.total_multiplicity_gveto.to_ulong();
 	    }
 	  
 	  if (decision_already_true == true  
@@ -223,6 +234,17 @@ namespace snemo {
 	    {
 	      _coincidence_calo_records_[coincidence_calo_record_position].zoning_word[0] = a_ctrec.zoning_word[0];
 	      _coincidence_calo_records_[coincidence_calo_record_position].zoning_word[1] = a_ctrec.zoning_word[1];
+	      if (a_ctrec.total_multiplicity_side_0.to_ulong() > max_mult_side_0) max_mult_side_0 = a_ctrec.total_multiplicity_side_0.to_ulong();
+	      if (a_ctrec.total_multiplicity_side_1.to_ulong() > max_mult_side_1) max_mult_side_1 = a_ctrec.total_multiplicity_side_1.to_ulong();
+	      if (a_ctrec.total_multiplicity_gveto.to_ulong()  > max_mult_gveto)  max_mult_gveto = a_ctrec.total_multiplicity_gveto.to_ulong();
+	      _coincidence_calo_records_[coincidence_calo_record_position].total_multiplicity_side_0 = max_mult_side_0;
+	      _coincidence_calo_records_[coincidence_calo_record_position].total_multiplicity_side_1 = max_mult_side_1;
+	      _coincidence_calo_records_[coincidence_calo_record_position].total_multiplicity_gveto = max_mult_gveto;
+	      
+
+	      // if (a_ctrec.total_multiplicity_side_0.to_ulong() > coincidence_calo_record.total_multiplicity_side_0.to_ulong()) coincidence_calo_record.total_multiplicity_side_0 = a_ctrec.total_multiplicity_side_0;
+	      // if (a_ctrec.total_multiplicity_side_1.to_ulong() > coincidence_calo_record.total_multiplicity_side_1.to_ulong()) coincidence_calo_record.total_multiplicity_side_1 = a_ctrec.total_multiplicity_side_1;
+	      // _coincidence_calo_records_[coincidence_calo_record_position].total_multiplicity_side_0.to_ulong() = _coincidence_calo_records_[coincidence_calo_record_position].total_multiplicity_side_0.to_ulong() + a_ctrec.total_multiplicity_side_0.to_ulong(); 
 	    }
 	  
 	  else if (decision_already_true == true
@@ -231,6 +253,10 @@ namespace snemo {
 	    {
 	      coincidence_trigger_algorithm_new_strategy::coincidence_calo_record coincidence_calo_record_next_clocktick;
 	      coincidence_calo_record_next_clocktick = coincidence_calo_record;
+	      coincidence_calo_record_next_clocktick.total_multiplicity_side_0 = max_mult_side_0;
+	      coincidence_calo_record_next_clocktick.total_multiplicity_side_1 = max_mult_side_1;
+	      coincidence_calo_record_next_clocktick.total_multiplicity_gveto  = max_mult_gveto;
+
 	      coincidence_calo_record_next_clocktick.clocktick_1600ns = coincidence_calo_record.clocktick_1600ns + 1;
 	      _coincidence_calo_records_.push_back(coincidence_calo_record_next_clocktick);
 	      coincidence_calo_record_position++;
@@ -284,7 +310,7 @@ namespace snemo {
       _preparing_calo_coincidence(calo_records_);
      
       std::vector<coincidence_calo_record>::const_iterator it_calo = _coincidence_calo_records_.begin();
-      std::clog << "Size of coincidence calo records : " << _coincidence_calo_records_.size() << std::endl;
+      //      std::clog << "Size of coincidence calo records : " << _coincidence_calo_records_.size() << std::endl;
       for (it_calo; it_calo != _coincidence_calo_records_.end(); it_calo++)
 	{
 	  coincidence_calo_record a_calo_record = *it_calo;

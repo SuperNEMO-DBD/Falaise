@@ -58,7 +58,7 @@ namespace snemo {
 
       /// Reset the object
       void reset(); 
-			
+	
 			/// Clear the record vectors
 			void clear_records();
 
@@ -69,8 +69,11 @@ namespace snemo {
 			const std::vector<calo_trigger_algorithm::calo_summary_record> get_calo_records_vector() const;
 
 			/// Get the vector of coincidence record
-			const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_output> get_coincidence_records_vector() const;
+			const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record> get_coincidence_calo_records_vector() const;
 			
+			/// Get the vector of coincidence record
+			const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_output> get_coincidence_records_vector() const;
+ 			
 			/// Get the finale trigger decision
 			const bool get_finale_decision() const;
 					

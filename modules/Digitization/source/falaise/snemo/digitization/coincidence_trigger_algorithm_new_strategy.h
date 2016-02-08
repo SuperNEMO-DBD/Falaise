@@ -113,7 +113,10 @@ namespace snemo {
 			
 			/// Reset internal datas
 			void reset_data();
-			
+
+			/// Get the vector of coincidence record
+			const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record> get_coincidence_calo_records_vector() const;
+
 			/// Get the finale coincidence trigger decision
  			const bool get_coincidence_decision() const;
 

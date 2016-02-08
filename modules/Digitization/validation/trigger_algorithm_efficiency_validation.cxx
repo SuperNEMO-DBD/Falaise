@@ -136,9 +136,9 @@ int main( int  argc_ , char **argv_  )
     if(is_input_file){
       pipeline_simulated_data_filename = input_filename;
     }else{
-      // pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
+      pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
       // pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Se82_0nubb_500000-source_strips_bulk_SD.brio";
-      pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Se82_2nubb_500000-source_strips_bulk_SD.brio";
+      //pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Se82_2nubb_500000-source_strips_bulk_SD.brio";
       // pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Bi214_Po214_500000-source_strips_bulk_SD.brio";
       // pipeline_simulated_data_filename= "/home/goliviero/software/my_falaise/outputs/Bi214_Po214_10000-source_strips_surface_SD.brio";
     }
@@ -178,11 +178,13 @@ int main( int  argc_ , char **argv_  )
 
     // Variables definitions :
     Int_t event_id    = 0;
+    Bool_t physical_event_of_interest = false; 
     Bool_t raw_trigger_decision_root = false;
     Bool_t physical_trigger_decision_root = false;
 
     // Branch definitions : 
     trigger_decision_tree->Branch("event_id", &event_id, "evend_id/I");
+    trigger_decision_tree->Branch("physical_event_of_interest", &physical_event_of_interest, "physical_event_of_interest/O");
     trigger_decision_tree->Branch("raw_trigger_decision_root", &raw_trigger_decision_root, "raw_trigger_decision_root/O");
     trigger_decision_tree->Branch("physical_trigger_decision_root", &physical_trigger_decision_root, "physical_trigger_decision_root/O");
 
@@ -282,7 +284,7 @@ int main( int  argc_ , char **argv_  )
 
     // Internal counters
     int psd_count = 0;         // Event counter
-
+    
     while (!reader.is_terminated())
       {
 	event_id = psd_count;
@@ -319,7 +321,7 @@ int main( int  argc_ , char **argv_  )
 		if (debug) my_clock_manager.tree_dump(std::clog, "Clock utils : ", "INFO : ");
 
 		// Calo signal to calo TP :
-		if( signal_data.has_calo_signals())
+		if (signal_data.has_calo_signals())
 		  {
 		    snemo::digitization::calo_tp_data my_calo_tp_data;
 		    // Set calo clockticks :
@@ -337,7 +339,7 @@ int main( int  argc_ , char **argv_  )
 
 		  } // end of if has calo signal
 
-		if( signal_data.has_geiger_signals())
+		if (signal_data.has_geiger_signals())
 		  {	    
 		    snemo::digitization::geiger_tp_data my_geiger_tp_data;
 		    // Set geiger clockticks :
@@ -348,7 +350,7 @@ int main( int  argc_ , char **argv_  )
 
 		    // Geiger TP to geiger CTW process
 		    geiger_tp_2_ctw.process(my_geiger_tp_data, my_geiger_ctw_data);
-		   if (debug) my_geiger_ctw_data.tree_dump(std::clog, "Geiger CTW(s) data : ", "INFO : ");
+		    if (debug) my_geiger_ctw_data.tree_dump(std::clog, "Geiger CTW(s) data : ", "INFO : ");
 		    
 		  } // end of if has geiger signal
 
@@ -367,27 +369,65 @@ int main( int  argc_ , char **argv_  )
 		calo_collection_records = my_trigger_algo.get_calo_records_vector();
 		tracker_collection_records = my_trigger_algo.get_tracker_records_vector();
 		
-		// if (debug) my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
-		//if (debug) my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
-		//if (debug) my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
-		if (debug) my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
+		//if (debug) my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
+	        if (debug) my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
+		// if (debug) my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
+	        // if (debug) my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
 		
 		// for (int iclocktick = 0; iclocktick <= 10; iclocktick++)
 		//   {
 		//     my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo, iclocktick);
 		//   }
 
+		
 		std::clog << "********* Size of Finale structures for one event *********" << std::endl;
 		std::clog << "Calo collection size    : " << calo_collection_records.size() << std::endl;
 		std::clog << "Tracker collection size : " << tracker_collection_records.size() << std::endl;
 		
 	      } // end of if has "calo" || "xcalo" || "gveto" || "gg" step hits
 	    
+	    std::vector<snemo::digitization::coincidence_trigger_algorithm_new_strategy::coincidence_calo_record> coincidence_collection_calo_records = my_trigger_algo.get_coincidence_calo_records_vector();
+	 
+
 	    bool trigger_finale_decision = false;
 	    trigger_finale_decision = my_trigger_algo.get_finale_decision();
-	    raw_trigger_decision_root = trigger_finale_decision;
 	    std::clog << "trigger_finale_decision [" << trigger_finale_decision << "]" << std::endl;
+
+	    raw_trigger_decision_root = trigger_finale_decision;
+  	    
+	    std::size_t number_of_gg_cells = 0;
+	    if (SD.has_step_hits("gg")) number_of_gg_cells = SD.get_number_of_step_hits("gg");
+	    else number_of_gg_cells = 0;
+
+	    std::size_t number_of_calo_main_wall = 0;
+	    std::size_t number_of_calo_gveto     = 0;
+	    std::size_t total_number_of_calo     = 0;
 	    
+	    if (coincidence_collection_calo_records.size() != 0)
+	      {
+		number_of_calo_main_wall = coincidence_collection_calo_records[2].total_multiplicity_side_0.to_ulong() + coincidence_collection_calo_records[2].total_multiplicity_side_1.to_ulong();
+		number_of_calo_gveto = coincidence_collection_calo_records[2].total_multiplicity_gveto.to_ulong();
+		total_number_of_calo = number_of_calo_main_wall + number_of_calo_gveto;
+	      }
+	    std::clog << "Nmbr of gg cells = " << number_of_gg_cells << " Nmbr of calo main = " << number_of_calo_main_wall << " Nmbr of calo gveto " << number_of_calo_gveto << " Nmbr of calo total = " <<  total_number_of_calo << std::endl;
+	    
+	    if (number_of_gg_cells >= 4 && total_number_of_calo >= 2 && number_of_calo_main_wall > 0 && trigger_finale_decision) 
+	      {
+		physical_trigger_decision_root = true;
+		physical_event_of_interest = true;
+	      }
+	    else if (number_of_gg_cells >= 4 && total_number_of_calo >= 2 && number_of_calo_main_wall > 0 && trigger_finale_decision)
+	      {
+		physical_trigger_decision_root = false;
+		physical_event_of_interest = true;
+		std::cout << "psd count = " << psd_count << std::endl;
+	      }
+	    else
+	      {
+		physical_trigger_decision_root = false;
+		physical_event_of_interest = false;
+	      }
+
 	    my_trigger_algo.clear_records();
 	      
 	  } //end of if has bank label "SD"
@@ -398,7 +438,7 @@ int main( int  argc_ , char **argv_  )
 	psd_count++;
 	std::clog << "DEBUG : psd count " << psd_count << std::endl;
 	DT_LOG_NOTICE(logging, "Simulated data #" << psd_count);
-      }
+      } // end of reader is terminated
     
     root_file->Write();
     root_file->Close(); 

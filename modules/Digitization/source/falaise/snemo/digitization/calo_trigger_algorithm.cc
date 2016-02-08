@@ -40,7 +40,7 @@ namespace snemo {
       return;
     }
 
-    void calo_trigger_algorithm::calo_record::display()
+    const void calo_trigger_algorithm::calo_record::display() const
     {      
       std::clog << "Calo Trigger info record : " << std::endl; 
       std::clog << "CT |XTS|L|HG|L|L|H1|H0| ZONING S1| ZONING S0 " << std::endl; 
@@ -88,7 +88,7 @@ namespace snemo {
       return;
     }
 
-    void calo_trigger_algorithm::calo_summary_record::display()
+    const void calo_trigger_algorithm::calo_summary_record::display() const
     {
       calo_record::display();
       std::clog << "Single Side coinc : "      << single_side_coinc << std::endl;
@@ -472,12 +472,12 @@ namespace snemo {
 	    {
 	      if (main_zoning_bitset.test(izone) == true) _calo_record_per_clocktick_.zoning_word[crate_index].set(izone,true);
 	    }
-	  
+	  	  
 	  // Fill LTO boolean for each side
 	  if (crate_index == mapping::MAIN_CALO_SIDE_0_CRATE && my_calo_ctw_.is_lto_main_wall()) _calo_record_per_clocktick_.LTO_side_0 = true;
 	  if (crate_index == mapping::MAIN_CALO_SIDE_1_CRATE && my_calo_ctw_.is_lto_main_wall()) _calo_record_per_clocktick_.LTO_side_1 = true;
 	}
-
+      
       return;
     }    
     
@@ -567,8 +567,9 @@ namespace snemo {
       	}
       else
 	{
-	  _calo_level_1_finale_decision_.reset();
-	  _calo_level_1_finale_decision_.clocktick_25ns = my_calo_summary_record_.clocktick_25ns;
+      	  _calo_level_1_finale_decision_ = my_calo_summary_record_;
+	  //	  _calo_level_1_finale_decision_.reset();
+	  // _calo_level_1_finale_decision_.clocktick_25ns = my_calo_summary_record_.clocktick_25ns;
 	}
 
       return;      
@@ -606,10 +607,8 @@ namespace snemo {
 	  my_calo_summary_record.clocktick_25ns = iclocktick;
 	  _build_calo_record_summary_structure(my_calo_summary_record);
 	  _compute_calo_finale_decision(my_calo_summary_record);
-
 	  if (_calo_level_1_finale_decision_.calo_finale_decision) _calo_finale_decision_ = true;
 	  calo_records_.push_back(_calo_level_1_finale_decision_);
-
 	  _calo_record_per_clocktick_.reset();
 	} // end of iclocktick
       return;

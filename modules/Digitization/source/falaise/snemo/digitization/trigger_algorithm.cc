@@ -108,13 +108,18 @@ namespace snemo {
     const std::vector<calo_trigger_algorithm::calo_summary_record> trigger_algorithm::get_calo_records_vector() const  
     {
       return _calo_records_;
+    }	
+
+    const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record> trigger_algorithm::get_coincidence_calo_records_vector() const
+    {
+      return _coinc_algo_.get_coincidence_calo_records_vector();
     }
 
     const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_output> trigger_algorithm::get_coincidence_records_vector() const
     {
       return _coincidence_records_;
-    }			
-    
+    }
+        
     const bool trigger_algorithm::get_finale_decision() const
     {
       return _finale_trigger_decision_;
@@ -183,14 +188,6 @@ namespace snemo {
       bool coincidence_decision = false;
       coincidence_decision = _coinc_algo_.get_coincidence_decision();
 
-      std::clog << "Before    : " << std::endl;
-      std::clog << "Calo decision    : " << calo_decision << std::endl;
-      std::clog << "Tracker decision : " << tracker_decision << std::endl;
-      std::clog << "Coinc decision   : " << coincidence_decision << std::endl;
-      std::clog << "Trigger decision : " << _finale_trigger_decision_ << std::endl;
-
-
-
       // To improve depending of trigger configuration
 
       if (_activate_coincidence_)
@@ -200,16 +197,8 @@ namespace snemo {
  
       else _finale_trigger_decision_ = false;
       
-      
       //      if (coincidence_decision && _activate_coincidence_) _finale_trigger_decision_ = true;
       //else if (!_activate_coincidence_ && calo_decision && tracker_decision) _finale_trigger_decision_ = true;
- 
-
-      std::clog << "After    : " << std::endl;
-      std::clog << "Calo decision    : " << calo_decision << std::endl;
-      std::clog << "Tracker decision : " << tracker_decision << std::endl;
-      std::clog << "Coinc decision   : " << coincidence_decision << std::endl;
-      std::clog << "Trigger decision : " << _finale_trigger_decision_ << std::endl;
 
       return;
     }
