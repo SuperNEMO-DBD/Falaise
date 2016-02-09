@@ -370,7 +370,7 @@ int main( int  argc_ , char **argv_  )
 		tracker_collection_records = my_trigger_algo.get_tracker_records_vector();
 		
 		//if (debug) my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
-	        if (debug) my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
+	        //if (debug) my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
 		// if (debug) my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
 	        // if (debug) my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
 		
@@ -411,16 +411,22 @@ int main( int  argc_ , char **argv_  )
 	      }
 	    std::clog << "Nmbr of gg cells = " << number_of_gg_cells << " Nmbr of calo main = " << number_of_calo_main_wall << " Nmbr of calo gveto " << number_of_calo_gveto << " Nmbr of calo total = " <<  total_number_of_calo << std::endl;
 	    
-	    if (number_of_gg_cells >= 4 && total_number_of_calo >= 2 && number_of_calo_main_wall > 0 && trigger_finale_decision) 
+	    // Background condition : if (number_of_gg_cells >= 4 && total_number_of_calo >= 2 && number_of_calo_main_wall > 0 && trigger_finale_decision) 
+
+	    if (number_of_gg_cells >= 10 && number_of_calo_main_wall >= 2 && trigger_finale_decision) 
 	      {
 		physical_trigger_decision_root = true;
 		physical_event_of_interest = true;
 	      }
-	    else if (number_of_gg_cells >= 4 && total_number_of_calo >= 2 && number_of_calo_main_wall > 0 && trigger_finale_decision)
+	    else if (number_of_gg_cells >= 10 && number_of_calo_main_wall >= 2 && !trigger_finale_decision)
 	      {
 		physical_trigger_decision_root = false;
 		physical_event_of_interest = true;
 		std::cout << "psd count = " << psd_count << std::endl;
+		// my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
+		// my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
+		// my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
+		my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
 	      }
 	    else
 	      {

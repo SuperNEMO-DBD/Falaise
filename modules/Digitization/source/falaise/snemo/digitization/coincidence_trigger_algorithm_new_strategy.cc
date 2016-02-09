@@ -240,11 +240,6 @@ namespace snemo {
 	      _coincidence_calo_records_[coincidence_calo_record_position].total_multiplicity_side_0 = max_mult_side_0;
 	      _coincidence_calo_records_[coincidence_calo_record_position].total_multiplicity_side_1 = max_mult_side_1;
 	      _coincidence_calo_records_[coincidence_calo_record_position].total_multiplicity_gveto = max_mult_gveto;
-	      
-
-	      // if (a_ctrec.total_multiplicity_side_0.to_ulong() > coincidence_calo_record.total_multiplicity_side_0.to_ulong()) coincidence_calo_record.total_multiplicity_side_0 = a_ctrec.total_multiplicity_side_0;
-	      // if (a_ctrec.total_multiplicity_side_1.to_ulong() > coincidence_calo_record.total_multiplicity_side_1.to_ulong()) coincidence_calo_record.total_multiplicity_side_1 = a_ctrec.total_multiplicity_side_1;
-	      // _coincidence_calo_records_[coincidence_calo_record_position].total_multiplicity_side_0.to_ulong() = _coincidence_calo_records_[coincidence_calo_record_position].total_multiplicity_side_0.to_ulong() + a_ctrec.total_multiplicity_side_0.to_ulong(); 
 	    }
 	  
 	  else if (decision_already_true == true
@@ -353,8 +348,9 @@ namespace snemo {
 				  a_coincidence_output.coincidence_finale_decision = true;
 				  _coincidence_decision_ = true;
 				}
+			      
 			      if ((hpattern_for_a_zone.test(left) && a_calo_record.zoning_word[iside].test(izone) != 0) ||
-				  (izone-1 > 0 && hpattern_for_a_zone.test(left) && a_calo_record.zoning_word[iside].test(izone-1) != 0))
+				  (izone-1 > -1 && hpattern_for_a_zone.test(left) && a_calo_record.zoning_word[iside].test(izone-1) != 0))
 				{		 
 				  a_coincidence_output.zoning_word[iside].set(izone, true);
 				  a_coincidence_output.coincidence_finale_decision = true;
