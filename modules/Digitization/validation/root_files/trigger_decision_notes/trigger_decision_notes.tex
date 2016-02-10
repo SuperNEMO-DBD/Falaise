@@ -42,7 +42,7 @@
 \end{center}
 
 Raw trigger decision are decisions when calorimeter and tracker are associated (time and space coincidences) for a prompt event. Delayed events are not take into account in this efficiency.
-For the tracker the criteria used to determined if there is a track is a multiplicity of 3 in layer or row projection in one sliding zone.
+For the tracker the criteria used to determined if there is a track is a multiplicity of 3 in layer or row projection in one sliding zone. All efficiencies are for 100000 events for each physical process.
 
 \section{Prompt raw trigger decision}
 \begin{table}[!h]
@@ -51,14 +51,17 @@ For the tracker the criteria used to determined if there is a track is a multipl
     \hline
     Physical process   & Vertex generator      & Trigger efficiency (\%)  \\
     \hline
-    \SE(\BBZN)         & source strips bulk    & 94,1 \\
-    \SE(\BBDN)         & source strips bulk    & 78,2 \\
-    \TL                & source strips bulk    & 61,5 \\
-    \TL                & source strips surface & 64,5 \\
-    \BIQ-\POQ          & source strips bulk    & 58,1 \\
-    \BIQ-\POQ          & source strips surface & 61,1 \\
-    \BIQ-\POQ          & field wire bulk       & 56,7 \\
-    \BIQ-\POQ          & field wire surface    & 59,1 \\
+    \SE(\BBZN)         & source strips bulk    & 94,3 \\
+    \SE(\BBDN)         & source strips bulk    & 78,4 \\
+    \TL                & source strips bulk    & 61,9 \\
+    \TL                & source strips surface & 64,9 \\
+    \TL                & calo wrapper surface  & 38,8 \\
+    \BIQ-\POQ          & source strips bulk    & 58,4 \\
+    \BIQ-\POQ          & source strips surface & 61,4 \\
+    \BIQ-\POQ          & field wire bulk       & 57,0 \\
+    \BIQ-\POQ          & field wire surface    & 59,5 \\
+    \BIQ-\POQ          & calo wrapper surface  & 41,3 \\
+    \BID-\POD          & calo wrapper surface  & 27,0 \\
     \hline
   \end{tabular}
   \end{center}
@@ -70,14 +73,14 @@ For the tracker the criteria used to determined if there is a track is a multipl
 For \SE{} \BBZN{} and \BBDN{} the criterias for a physical selection are : 
 \begin{itemize}
  \item 2 PMTs hits
- \item >= 10 Geiger cells fired
+ \item >= 10 Geiger cells fired with a time < 50 ns
 \end{itemize}
 The channel of physical selection is $2e$.\\
 
 For backgrounds (\BIQ, \TL{} and \BID), the criterias for a physical selection are :
 \begin{itemize}
  \item 2 PMTs hits (at least one in main wall or x-wall)
- \item >= Geiger cells fired
+ \item >= 4 Geiger cells fired with a time < 50 ns
 \end{itemize}
 The channel of physical selection is $1e1\gamma$.
 
@@ -85,16 +88,21 @@ The channel of physical selection is $1e1\gamma$.
  \begin{center}
   \begin{tabular}{|c||c|c|c|}
     \hline
-    Physical process   & Vertex generator      & Physical events of interest (\%) & Trigger efficiency (\%)  \\
+    Physical process   & Vertex generator      & Physical events        &  EOI Trigger      \\
+	               &                       & of interest (EOI) (\%) &  efficiency (\%)  \\
     \hline
-    \SE(\BBZN)         & source strips bulk    & 63,1                             & 99,94                    \\
-    \SE(\BBDN)         & source strips bulk    & 27,4                             & 99,94                    \\
-    \TL                & source strips bulk    & 55,2                             & 100                      \\
-    \TL                & source strips surface & 57,7                             & 100                      \\
-    \BIQ-\POQ          & source strips bulk    & 37,0                             & 100                      \\
-    \BIQ-\POQ          & source strips surface & 39,3                             & 100                      \\
-    \BIQ-\POQ          & field wire bulk       & 37,1                             & 100                      \\
-    \BIQ-\POQ          & field wire surface    & 39,1                             & 100                      \\
+    \SE(\BBZN)         & source strips bulk    & 63,2                   & 99,96   \\
+    \SE(\BBDN)         & source strips bulk    & 27,4                   & 99,94   \\
+    \TL                & source strips bulk    & 62,9                   & 88,17   \\
+    \TL                & source strips surface & 68,2                   & 85,03   \\
+    \TL                & calo wrapper surface  & 37,2                   & 93,20   \\
+    \BIQ-\POQ          & source strips bulk    & 42,3                   & 87,58   \\
+    \BIQ-\POQ          & source strips surface & 46,1                   & 83,71   \\
+    \BIQ-\POQ          & field wire bulk       & 41,5                   & 88,04   \\
+    \BIQ-\POQ          & field wire surface    & 43,9                   & 86,37   \\
+    \BIQ-\POQ          & calo wrapper surface  & 29,4                   & 95,24   \\
+    \BID-\POD          & calo wrapper surface  & 10,1                   & 98,35   \\
+    
     \hline
   \end{tabular}
   \end{center}

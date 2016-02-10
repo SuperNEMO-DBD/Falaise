@@ -39,7 +39,7 @@ namespace snemo {
 				coincidence_calo_record();
 				void reset();
 				uint32_t clocktick_1600ns;
-				std::bitset<calo_trigger_algorithm::ZONING_PER_SIDE_BITSET_SIZE> zoning_word[mapping::NUMBER_OF_SIDES];
+				std::bitset<trigger_info::NZONES> zoning_word[mapping::NUMBER_OF_SIDES];
 				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_0;
 				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_1;
 				bool LTO_side_0;
@@ -67,8 +67,8 @@ namespace snemo {
 			{
 				previous_event_output();
 				void reset();
-				void display();
-				std::bitset<calo_trigger_algorithm::ZONING_PER_SIDE_BITSET_SIZE> zoning_word[mapping::NUMBER_OF_SIDES];
+				const void display() const;
+				std::bitset<trigger_info::NZONES> calo_zoning_word[mapping::NUMBER_OF_SIDES];
 				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_0;
 				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_1;
 				bool LTO_side_0;
@@ -78,7 +78,7 @@ namespace snemo {
 				std::bitset<calo_trigger_algorithm::XT_INFO_BITSET_SIZE> xt_info_bitset;
 				bool single_side_coinc;
 				bool total_multiplicity_threshold;
-				std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
+				std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> tracker_finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
 			};
 			
 			static const uint32_t SHIFT_COMPUTING_CLOCKTICK_1600NS = 1;

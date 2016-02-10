@@ -395,9 +395,31 @@ int main( int  argc_ , char **argv_  )
 
 	    raw_trigger_decision_root = trigger_finale_decision;
   	    
-	    std::size_t number_of_gg_cells = 0;
-	    if (SD.has_step_hits("gg")) number_of_gg_cells = SD.get_number_of_step_hits("gg");
-	    else number_of_gg_cells = 0;
+	    std::size_t total_number_of_gg_cells = 0;
+	    std::size_t number_of_prompt_gg_cells = 0; // < time (50 ns)
+	    std::size_t number_of_delayed_gg_cells = 0;
+	    
+	    if (SD.has_step_hits("gg"))
+	      {
+		// Loop on Geiger step hits:
+		const std::size_t number_of_hits = SD.get_number_of_step_hits("gg");
+		
+		for (std::size_t ihit = 0; ihit < number_of_hits; ihit++)
+		  {
+		    const mctools::base_step_hit & geiger_hit = SD.get_step_hit("gg", ihit);
+		    
+		    // the time of the ion/electron pair creation:
+		    const double ionization_time = geiger_hit.get_time_start();
+		    if (ionization_time < 50) number_of_prompt_gg_cells++;
+		    else number_of_delayed_gg_cells++;
+		  }
+		total_number_of_gg_cells = SD.get_number_of_step_hits("gg");
+	      }
+	    else {
+	      total_number_of_gg_cells = 0;
+	      number_of_prompt_gg_cells = 0;
+	      number_of_delayed_gg_cells = 0;
+		}
 
 	    std::size_t number_of_calo_main_wall = 0;
 	    std::size_t number_of_calo_gveto     = 0;
@@ -409,16 +431,21 @@ int main( int  argc_ , char **argv_  )
 		number_of_calo_gveto = coincidence_collection_calo_records[2].total_multiplicity_gveto.to_ulong();
 		total_number_of_calo = number_of_calo_main_wall + number_of_calo_gveto;
 	      }
-	    std::clog << "Nmbr of gg cells = " << number_of_gg_cells << " Nmbr of calo main = " << number_of_calo_main_wall << " Nmbr of calo gveto " << number_of_calo_gveto << " Nmbr of calo total = " <<  total_number_of_calo << std::endl;
+	    std::clog << " Total nmbr of gg cells = " << total_number_of_gg_cells  << std::endl;
+	    std::clog << " Nmbr of prompt gg cells = " << number_of_prompt_gg_cells << std::endl; 
+	    std::clog << " Nmbr of calo main = " << number_of_calo_main_wall  << std::endl;
+	    std::clog << " Nmbr of calo gveto " << number_of_calo_gveto  << std::endl;
+	    std::clog << " Nmbr of calo total = " <<  total_number_of_calo << std::endl;
 	    
-	    // Background condition : if (number_of_gg_cells >= 4 && total_number_of_calo >= 2 && number_of_calo_main_wall > 0 && trigger_finale_decision) 
-
-	    if (number_of_gg_cells >= 10 && number_of_calo_main_wall >= 2 && trigger_finale_decision) 
+	    // Background condition : if (number_of_gg_cells >= 4 && total_number_of_calo >= 2 && number_of_calo_main_wall > 0 && trigger_finale_decision)
+	    // Se82 condition :  if (number_of_gg_cells >= 10 && number_of_calo_main_wall >= 2 && trigger_finale_decision)
+	    
+	    if (number_of_prompt_gg_cells >= 4 && total_number_of_calo >= 2 && number_of_calo_main_wall > 0 && trigger_finale_decision)
 	      {
 		physical_trigger_decision_root = true;
 		physical_event_of_interest = true;
 	      }
-	    else if (number_of_gg_cells >= 10 && number_of_calo_main_wall >= 2 && !trigger_finale_decision)
+	    else if (number_of_prompt_gg_cells >= 4 && total_number_of_calo >= 2 && number_of_calo_main_wall > 0 && !trigger_finale_decision)
 	      {
 		physical_trigger_decision_root = false;
 		physical_event_of_interest = true;
@@ -426,7 +453,7 @@ int main( int  argc_ , char **argv_  )
 		// my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
 		// my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
 		// my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
-		my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
+		// my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
 	      }
 	    else
 	      {
