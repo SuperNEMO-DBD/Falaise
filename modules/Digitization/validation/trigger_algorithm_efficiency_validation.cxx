@@ -104,7 +104,7 @@ int main( int  argc_ , char **argv_  )
 
   try {
     // boolean for debugging (display etc)
-    bool debug = false;
+    bool debug = true;
     std::clog << "Test program for class 'snemo::digitization::trigger_algorithm_efficiency_validation' !" << std::endl;
     int32_t seed = 314159;
     mygsl::rng random_generator;
@@ -372,7 +372,7 @@ int main( int  argc_ , char **argv_  )
 		//if (debug) my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
 	        //if (debug) my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
 		// if (debug) my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
-	        // if (debug) my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
+	        if (debug) my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
 		
 		// for (int iclocktick = 0; iclocktick <= 10; iclocktick++)
 		//   {
@@ -453,7 +453,7 @@ int main( int  argc_ , char **argv_  )
 		// my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
 		// my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
 		// my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
-		// my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
+		//my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
 	      }
 	    else
 	      {

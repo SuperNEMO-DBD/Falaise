@@ -133,10 +133,18 @@ namespace snemo {
 			/// Compute clocktick 1600ns for calo records
 			void _compute_clocktick_1600ns(const uint32_t clocktick_25ns_, uint32_t & clocktick_1600ns_);
 			
+			
+			void _process_spatial_prompt_coincidence(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_,
+																							 const std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record> & tracker_records_,
+																							 std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_output> & coincidence_records_);
+			
 			/// Build the previous prompt event for searching delayed alpha coincidences 
 			void _build_previous_prompt_event_record(coincidence_calo_record & a_calo_record_,
 																							 tracker_trigger_algorithm_test_new_strategy::tracker_record & a_tracker_record_);
 
+			void _process_delayed_event_coincidence(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_,
+																							const std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record> & tracker_records_);
+			
 			/// Process calo records and tracker records
 			void _process(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_,
 										const std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record> & tracker_records_,

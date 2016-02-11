@@ -41,6 +41,8 @@ namespace snemo {
       static const std::size_t DATA_LMR_PATTERN_SIZE = 3;
       static const std::size_t DATA_NSZ_PATTERN_SIZE = 2;
 			static const std::size_t DATA_FULL_BITSET_SIZE = 7;
+
+			static const std::size_t NUMBER_OF_CLOCKTICK_1600_TO_BUILD_PROMPT_EVENT = 7;
     };
 	
 	} // end of namespace digitization
