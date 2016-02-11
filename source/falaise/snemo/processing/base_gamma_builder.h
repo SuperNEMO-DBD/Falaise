@@ -173,6 +173,9 @@ namespace snemo {
 
       bool _add_foil_vertex_extrapolation_;         //!< Flag to enable foil vertex extrapolation
       double _add_foil_vertex_minimal_probability_; //!< Minimal TOF internal probability to accept foilvertex extrapolation
+
+      bool _select_calorimeter_hits_; //!< Flag to select calorimeter hits based on auxiliaries tags
+      std::vector<std::string> _select_calorimeter_hits_tags_; //!< List of auxiliaries tags to select calorimeter hits
     };
 
   }  // end of namespace processing

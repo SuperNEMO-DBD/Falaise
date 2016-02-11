@@ -111,6 +111,17 @@ namespace snemo {
                   "Found no locator plugin named '" << locator_plugin_name << "'");
       _locator_plugin_ = &geo_mgr.get_plugin<snemo::geometry::locator_plugin>(locator_plugin_name);
 
+      // Select calorimeter hits based on associated tags
+      if (bgb_setup.has_key("select_calorimeter_hits")) {
+        _select_calorimeter_hits_ = bgb_setup.fetch_boolean("select_calorimeter_hits");
+      }
+
+      if (_select_calorimeter_hits_) {
+        DT_THROW_IF(! bgb_setup.has_key("select_calorimeter_hits.tags"), std::logic_error,
+                    "Missing 'select_calorimeter_hits.tags' field!");
+        bgb_setup.fetch("select_calorimeter_hits.tags", _select_calorimeter_hits_tags_);
+      }
+
       // Extrapolation on the source foil given charged particle
       if (bgb_setup.has_key("add_foil_vertex_extrapolation")) {
         _add_foil_vertex_extrapolation_ = bgb_setup.fetch_boolean("add_foil_vertex_extrapolation");
@@ -169,6 +180,8 @@ namespace snemo {
       _locator_plugin_ = 0;
       _add_foil_vertex_extrapolation_ = true;
       _add_foil_vertex_minimal_probability_ = 1.0 * CLHEP::perCent;
+      _select_calorimeter_hits_ = false;
+      _select_calorimeter_hits_tags_.clear();
       return;
     }
 
@@ -223,6 +236,19 @@ namespace snemo {
         out_ << indent << datatools::i_tree_dumpable::skip_tag << datatools::i_tree_dumpable::last_tag
              << "Minimal TOF probability : " << _add_foil_vertex_minimal_probability_/CLHEP::perCent << "%" << std::endl;
       }
+      out_ << indent << datatools::i_tree_dumpable::tag
+           << "Selection of calorimeter hits : " << _select_calorimeter_hits_ << std::endl;
+      if (_select_calorimeter_hits_) {
+        for (size_t i = 0; i < _select_calorimeter_hits_tags_.size(); i++) {
+          out_ << indent << datatools::i_tree_dumpable::skip_tag;
+          if (i+1 == _select_calorimeter_hits_tags_.size()) {
+            out_ << datatools::i_tree_dumpable::last_tag;
+          } else {
+            out_ << datatools::i_tree_dumpable::tag;
+          }
+          out_ << "tag[" << i << "] = " << _select_calorimeter_hits_tags_[i] << std::endl;
+        }
+      }
       out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
            << "End." << std::endl;
       return;
@@ -267,8 +293,19 @@ namespace snemo {
       for (snemo::datamodel::calibrated_calorimeter_hit::collection_type::const_iterator
              ihit = calo_hits_.begin(); ihit != calo_hits_.end(); ++ihit) {
         const snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit = ihit->get();
-        const datatools::properties & the_auxiliaries = a_calo_hit.get_auxiliaries();
-        if (the_auxiliaries.has_flag("__isolated")) {
+        bool use_hit = false;
+        if (_select_calorimeter_hits_) {
+          const datatools::properties & the_auxiliaries = a_calo_hit.get_auxiliaries();
+          for (size_t i = 0; i < _select_calorimeter_hits_tags_.size(); i++) {
+            if (the_auxiliaries.has_flag(_select_calorimeter_hits_tags_[i])) {
+              use_hit = true;
+              break;
+            }
+          }
+        } else {
+          use_hit = true;
+        }
+        if (use_hit) {
           _used_hits_.push_back(*ihit);
         } else {
           _ignored_hits_.push_back(*ihit);
