@@ -128,10 +128,10 @@ namespace snemo {
       }
 
       if (_add_foil_vertex_extrapolation_) {
-        if (bgb_setup.has_key("add_foil_vertex_minimal_probability")) {
+        if (bgb_setup.has_key("add_foil_vertex_minimal.probability")) {
           _add_foil_vertex_minimal_probability_
-            = bgb_setup.fetch_real("add_foil_vertex_minimal_probability");
-          if (! bgb_setup.has_explicit_unit("add_foil_vertex_minimal_probability")) {
+            = bgb_setup.fetch_real("add_foil_vertex_minimal.probability");
+          if (! bgb_setup.has_explicit_unit("add_foil_vertex_minimal.probability")) {
             _add_foil_vertex_minimal_probability_ *= CLHEP::perCent;
           }
         }
@@ -492,10 +492,10 @@ namespace snemo {
           .set_traits(datatools::TYPE_BOOLEAN)
           .set_default_value_boolean(true)
           .set_mandatory(false)
-          .add_example("Set the default value::                           \n"
-                       "                                                  \n"
-                       "  BGB.add_foil_vertex_extrapolation : boolean = 1 \n"
-                       "                                                  \n"
+          .add_example("Set the default value::                              \n"
+                       "                                                     \n"
+                       "  BGB.add_foil_vertex_extrapolation : boolean = true \n"
+                       "                                                     \n"
                        )
           ;
       }
@@ -503,16 +503,56 @@ namespace snemo {
       {
         // Description of the 'BGB.add_foil_vertex_minimal_probability' configuration property :
         datatools::configuration_property_description & cpd = ocd_.add_property_info();
-        cpd.set_name_pattern("BGB.add_foil_vertex_minimal_probability")
+        cpd.set_name_pattern("BGB.add_foil_vertex_minimal.probability")
           .set_terse_description("Set the minimal internal TOF probability")
           .set_from("snemo::processing::base_gamma_builder")
+          .set_triggered_by_flag("BGB.add_foil_vertex_extrapolation")
           .set_traits(datatools::TYPE_REAL)
           .set_default_value_real(1 * CLHEP::perCent, "%")
           .set_mandatory(false)
           .add_example("Set the default value::                                           \n"
                        "                                                                  \n"
-                       "  BGB.add_foil_vertex_minimal_probability : real as fraction = 1% \n"
+                       "  BGB.add_foil_vertex_minimal.probability : real as fraction = 1% \n"
                        "                                                                  \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'BGB.select_calorimeter_hits' configuration property :
+        datatools::configuration_property_description & cpd = ocd_.add_property_info();
+        cpd.set_name_pattern("BGB.select_calorimeter_hits")
+          .set_terse_description("Allow the pre-selection of calorimeter hits")
+          .set_long_description("The calorimeter hits can be pre-selected before sending them  \n"
+                                "to the gamma tracking/clustering algorithm based on a list of \n"
+                                "tags given by the used                                        \n"
+                                )
+          .set_from("snemo::processing::base_gamma_builder")
+          .set_traits(datatools::TYPE_BOOLEAN)
+          .set_default_value_boolean(false)
+          .set_mandatory(false)
+          .add_example("Activate the selection::                       \n"
+                       "                                               \n"
+                       "  BGB.select_calorimeter_hits : boolean = true \n"
+                       "                                               \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'BGB.select_calorimeter_hits.tags' configuration property :
+        datatools::configuration_property_description & cpd = ocd_.add_property_info();
+        cpd.set_name_pattern("BGB.select_calorimeter_hits.tags")
+          .set_terse_description("Set the list of tags for calorimeter selection")
+          .set_triggered_by_flag("BGB.select_calorimeter_hits.tags")
+          .set_from("snemo::processing::base_gamma_builder")
+          .set_traits(datatools::TYPE_STRING,
+                      datatools::configuration_property_description::ARRAY)
+          .set_mandatory(false)
+          .add_example("Set values::                                                    \n"
+                       "                                                                \n"
+                       "  BGB.select_calorimeter_hits.tags : string[1] = \"__isolated\" \n"
+                       "                                                                \n"
                        )
           ;
       }
