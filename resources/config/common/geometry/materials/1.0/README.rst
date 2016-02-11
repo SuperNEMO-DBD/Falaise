@@ -27,3 +27,6 @@ Files:
  * ``elements.def`` : list of elements,
  * ``materials.def`` : list of materials,
  * ``materials_aliases.def`` : list of material aliases.
+
+   * Fix: move ``PFTE`` to ``PTFE``
+   * Fix: make ``snemo::PTFE`` alias for ``std::ptfe``

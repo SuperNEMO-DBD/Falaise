@@ -80,10 +80,10 @@ material : string = "std::water"
 #@description The name of the referenced material
 material : string = "std::water"
 
-[name="PFTE" type="alias"]
-#@config The alias for the PFTE material
+[name="PTFE" type="alias"]
+#@config The alias for the PTFE material
 #@description The name of the referenced material
-material : string = "std::mylar"
+material : string = "std::ptfe"
 
 [name="glass" type="alias"]
 #@config The alias for the Pyrex (Borosilicate) material
