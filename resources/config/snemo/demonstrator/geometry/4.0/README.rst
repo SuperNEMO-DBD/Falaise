@@ -83,14 +83,14 @@ Check the geometry:
           --datatools::logging "warning" \
           --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-1.0.0/resources" \
           --load-dll Falaise \
-          --manager-config "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf"
+          --manager-config "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf"
 
      where:
 
        * ``--datatools::resource-path "falaise@$(pwd)/resources"``
          registers  the   Falaise  resource  base  directory   in  the
-         datatools' kernel for automated search for configuration file
+         datatools kernel for automated search for configuration file
          paths,
        * ``--manager-config
-         "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf"``
+         "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf"``
          indicates the main configuration file of the geometry manager.
