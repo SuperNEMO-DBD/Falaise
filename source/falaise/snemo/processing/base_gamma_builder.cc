@@ -544,7 +544,7 @@ namespace snemo {
         datatools::configuration_property_description & cpd = ocd_.add_property_info();
         cpd.set_name_pattern("BGB.select_calorimeter_hits.tags")
           .set_terse_description("Set the list of tags for calorimeter selection")
-          .set_triggered_by_flag("BGB.select_calorimeter_hits.tags")
+          .set_triggered_by_flag("BGB.select_calorimeter_hits")
           .set_from("snemo::processing::base_gamma_builder")
           .set_traits(datatools::TYPE_STRING,
                       datatools::configuration_property_description::ARRAY)
