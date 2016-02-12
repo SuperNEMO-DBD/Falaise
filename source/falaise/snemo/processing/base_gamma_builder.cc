@@ -128,10 +128,10 @@ namespace snemo {
       }
 
       if (_add_foil_vertex_extrapolation_) {
-        if (bgb_setup.has_key("add_foil_vertex_minimal.probability")) {
+        if (bgb_setup.has_key("add_foil_vertex_extrapolation.minimal_probability")) {
           _add_foil_vertex_minimal_probability_
-            = bgb_setup.fetch_real("add_foil_vertex_minimal.probability");
-          if (! bgb_setup.has_explicit_unit("add_foil_vertex_minimal.probability")) {
+            = bgb_setup.fetch_real("add_foil_vertex_extrapolation.minimal_probability");
+          if (! bgb_setup.has_explicit_unit("add_foil_vertex_extrapolation.minimal_probability")) {
             _add_foil_vertex_minimal_probability_ *= CLHEP::perCent;
           }
         }
@@ -503,7 +503,7 @@ namespace snemo {
       {
         // Description of the 'BGB.add_foil_vertex_minimal_probability' configuration property :
         datatools::configuration_property_description & cpd = ocd_.add_property_info();
-        cpd.set_name_pattern("BGB.add_foil_vertex_minimal.probability")
+        cpd.set_name_pattern("BGB.add_foil_vertex_extrapolation.minimal_probability")
           .set_terse_description("Set the minimal internal TOF probability")
           .set_from("snemo::processing::base_gamma_builder")
           .set_triggered_by_flag("BGB.add_foil_vertex_extrapolation")
@@ -512,7 +512,7 @@ namespace snemo {
           .set_mandatory(false)
           .add_example("Set the default value::                                           \n"
                        "                                                                  \n"
-                       "  BGB.add_foil_vertex_minimal.probability : real as fraction = 1% \n"
+                       "  BGB.add_foil_vertex_extrapolation.minimal_probability : real as fraction = 1% \n"
                        "                                                                  \n"
                        )
           ;
