@@ -1,7 +1,6 @@
 set(Falaise_RESOURCES
 ${PROJECT_SOURCE_DIR}/resources/examples/geometry/ex01/ex01.cxx
 ${PROJECT_SOURCE_DIR}/resources/examples/geometry/ex01/README.rst
-${PROJECT_SOURCE_DIR}/resources/examples/geometry/ex01/ex01
 ${PROJECT_SOURCE_DIR}/resources/config/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/geometry/1.0/manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/geometry/1.0/geometry_service.conf
