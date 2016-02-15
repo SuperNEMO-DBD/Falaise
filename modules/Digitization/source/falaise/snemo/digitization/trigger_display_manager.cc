@@ -655,7 +655,7 @@ namespace snemo {
     	    }
     	}
 
-      coincidence_trigger_algorithm_new_strategy::coincidence_output a_coincidence_record;
+      coincidence_trigger_algorithm_new_strategy::coincidence_event_record a_coincidence_record;
       for (int i = 0; i < a_trigger_algo_._coincidence_records_.size(); i++)
     	{
 	  if (clocktick_1600ns_ == a_trigger_algo_._coincidence_records_[i].clocktick_1600ns) a_coincidence_record = a_trigger_algo_._coincidence_records_[i];
@@ -725,7 +725,7 @@ namespace snemo {
       std::cout << "Coincidence zoning : S0 [" << a_coincidence_record.zoning_word[0] << "]" << std::endl;
       std::cout << "                     S1 [" << a_coincidence_record.zoning_word[1] << "]" << std::endl;
       
-      std::cout << "Coincidence decision  : [" << a_coincidence_record.coincidence_finale_decision << "]" <<  std::endl << std::endl;
+      std::cout << "Coincidence decision  : [" << a_coincidence_record.decision << "]" <<  std::endl << std::endl;
       
       std::bitset<10> zoning_word[trigger_info::NSIDES];
       for (int i = 0; i < trigger_info::NSIDES; i++)

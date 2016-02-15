@@ -72,7 +72,7 @@ namespace snemo {
 			const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record> get_coincidence_calo_records_vector() const;
 			
 			/// Get the vector of coincidence record
-			const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_output> get_coincidence_records_vector() const;
+			const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_event_record> get_coincidence_records_vector() const;
  			
 			/// Get the finale trigger decision
 			const bool get_finale_decision() const;
@@ -113,8 +113,8 @@ namespace snemo {
 			// Data :
 			std::vector<calo_trigger_algorithm::calo_summary_record> _calo_records_; //!< Collection of calo summary record
 			std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record> _tracker_records_; //!< Collection of tracker record
-			std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_output> _coincidence_records_; //!< Collection of coincidence record
-			std::vector<coincidence_trigger_algorithm_new_strategy::previous_event_output> _previous_prompt_event_records_; //!< Collection (if needed) of previous event output 
+			std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_event_record> _coincidence_records_; //!< Collection of coincidence record
+			std::vector<coincidence_trigger_algorithm_new_strategy::previous_event_record> _previous_prompt_event_records_; //!< Collection (if needed) of previous event output 
 			
 			bool _finale_trigger_decision_; //!< The finale decision for the trigger
 			

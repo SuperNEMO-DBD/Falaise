@@ -115,7 +115,7 @@ namespace snemo {
       return _coinc_algo_.get_coincidence_calo_records_vector();
     }
 
-    const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_output> trigger_algorithm::get_coincidence_records_vector() const
+    const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_event_record> trigger_algorithm::get_coincidence_records_vector() const
     {
       return _coincidence_records_;
     }
