@@ -465,7 +465,7 @@ namespace snemo {
       std::cout << std::endl;
       std::cout << "Single Side coinc : " << a_coinc_calo_record.single_side_coinc 
     		<< "  |  Threshold total mult : "   << a_coinc_calo_record.total_multiplicity_threshold 
-    		<< "  |  Trigger final decision : " << a_coinc_calo_record.calo_finale_decision  << std::endl;
+    		<< "  |  Trigger final decision : " << a_coinc_calo_record.decision  << std::endl;
       
       std::cout << std::endl;
 
@@ -684,7 +684,7 @@ namespace snemo {
       std::cout << std::endl;
       std::cout << "Single Side coinc : " << a_coinc_calo_record.single_side_coinc 
     		<< "  |  Threshold total mult : "   << a_coinc_calo_record.total_multiplicity_threshold 
-    		<< "  |  Trigger final decision : " << a_coinc_calo_record.calo_finale_decision  << std::endl;
+    		<< "  |  Trigger final decision : " << a_coinc_calo_record.decision  << std::endl;
       
       std::cout << std::endl;
       std::cout << "Bitset : [NSZL NSZR L M R O I] " << std::endl;
