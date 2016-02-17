@@ -8,6 +8,11 @@
 // Standard library :
 #include <string>
 #include <bitset>
+#include <utility>
+
+// Thirs part : 
+// Boost :
+#include <boost/scoped_ptr.hpp>
 
 // This project :
 #include <snemo/digitization/calo_ctw_data.h>
@@ -159,6 +164,7 @@ namespace snemo {
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
 			unsigned int _calorimeter_gate_size_; //!< Size of calorimeter gate for extension of calo records during X CT 1600ns
 			std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record> _coincidence_calo_records_; //!< Vector of coincidence calo tracker record and delayed coincidence record
+			std::vector<std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record,tracker_trigger_algorithm_test_new_strategy::tracker_record> > _pair_records_;
 			previous_event_record _previous_event_record_; //!< Previous prompt event record
 			bool _coincidence_decision_; //!< Decision for coincidence trigger algorihtm
 			
