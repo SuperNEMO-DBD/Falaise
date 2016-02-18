@@ -590,7 +590,7 @@ namespace snemo {
 	    {
 	      if (zone_.cells[ilayer][irow]) 
 		{
-		  if (ilayer <= trigger_info::NUMBER_OF_LAYERS_HIT_FOR_NEAR_SOURCE_BIT) 
+		  if (ilayer < trigger_info::NUMBER_OF_LAYERS_HIT_FOR_NEAR_SOURCE_BIT) 
 		    {
 		      if (zone_middle % 2 == 1)
 			{

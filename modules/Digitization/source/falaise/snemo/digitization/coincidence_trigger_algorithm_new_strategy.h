@@ -43,8 +43,7 @@ namespace snemo {
 			{
 				coincidence_base_record();
 				void reset();
-				const void display() const;
-				std::bitset<mapping::NUMBER_OF_TRIGGER_ZONES> zoning_word[mapping::NUMBER_OF_SIDES];			
+				const void display() const;			
 				std::bitset<trigger_info::NZONES> calo_zoning_word[mapping::NUMBER_OF_SIDES];
 				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_0;
 				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_1;
@@ -72,8 +71,16 @@ namespace snemo {
 				void reset();
 				const void display() const;
 				uint32_t clocktick_1600ns;
+				std::bitset<trigger_info::NZONES> zoning_word[mapping::NUMBER_OF_SIDES];
 				std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> tracker_finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
-				bool is_delayed;
+				enum trigger_mode{
+					INVALID = 0,
+					CARACO  = 1,
+					APE     = 2,
+					DAVE    = 3					
+				};
+				trigger_mode trigger_mode;
+
 			};
 			
 			/// Prompt event structure with calo and tracker informations (total = 173 [bits]). Useful for searching delayed alpha pattern.
@@ -82,8 +89,10 @@ namespace snemo {
 				previous_event_record();
 				void reset();
 				const void display() const;
+				uint32_t previous_clocktick_1600ns;
 				uint32_t counter_1600ns;
 				bool load_bit; // Bit to know if an event can erase the previous event structure
+				std::bitset<trigger_info::NZONES> zoning_word[mapping::NUMBER_OF_SIDES];
 				std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> tracker_finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
 			};
 
@@ -140,16 +149,14 @@ namespace snemo {
 			void _compute_clocktick_1600ns(const uint32_t clocktick_25ns_, uint32_t & clocktick_1600ns_);
 			
 			/// CAlo tRAcker COincidence (CARACO) process for spatial coincidence between calorimeter and tracker each 1600ns
-			void _process_calo_tracker_coincidence(coincidence_trigger_algorithm_new_strategy::coincidence_calo_record & a_calo_record_,
-																						 tracker_trigger_algorithm_test_new_strategy::tracker_record & a_tracker_record_,
+			void _process_calo_tracker_coincidence(const std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record, tracker_trigger_algorithm_test_new_strategy::tracker_record> a_pair_for_a_clocktick_,
 																						 coincidence_trigger_algorithm_new_strategy::coincidence_event_record & a_coincidence_record_);
 			
 			/// Build the previous event record based on CARACO process for searching delayed alpha coincidences 
 			void _build_previous_event_record(coincidence_trigger_algorithm_new_strategy::coincidence_event_record & a_coincidence_record_);
 
 			/// Alpha delayed Pattern Event (APE) process for delayed
-			void _process_delayed_coincidence(coincidence_trigger_algorithm_new_strategy::coincidence_calo_record & a_calo_record_,
-																				tracker_trigger_algorithm_test_new_strategy::tracker_record & a_tracker_record_,
+			void _process_delayed_coincidence(const std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record, tracker_trigger_algorithm_test_new_strategy::tracker_record> a_pair_for_a_clocktick_,
 																				coincidence_trigger_algorithm_new_strategy::coincidence_event_record & a_delayed_record_);
 			
 			/// Process calo records and tracker records
