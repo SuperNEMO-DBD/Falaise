@@ -60,7 +60,7 @@ int main( int  argc_ , char **argv_  )
     if (arg == "-i" || arg == "--input") 
       {
 	is_input_file = true;
-	input_filename=argv_[++iarg];
+	input_filename = argv_[++iarg];
       } 
 
     else if (arg == "-o" || arg == "--output")

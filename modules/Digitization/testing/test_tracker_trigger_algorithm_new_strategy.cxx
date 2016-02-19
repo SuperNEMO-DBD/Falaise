@@ -118,15 +118,15 @@ int main(int  argc_ , char ** argv_)
     manager_config_file = "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf";
     datatools::fetch_path_with_env(manager_config_file);
     datatools::properties manager_config;
-    datatools::properties::read_config (manager_config_file,
+    datatools::properties::read_config(manager_config_file,
 					manager_config);
     geomtools::manager my_manager;
-    manager_config.update ("build_mapping", true);
-    if (manager_config.has_key ("mapping.excluded_categories"))
+    manager_config.update("build_mapping", true);
+    if (manager_config.has_key("mapping.excluded_categories"))
       {
-	manager_config.erase ("mapping.excluded_categories");
+	manager_config.erase("mapping.excluded_categories");
       }
-    my_manager.initialize (manager_config);
+    my_manager.initialize(manager_config);
 
     std::string pipeline_simulated_data_filename;
     // Simulated Data "SD" bank label :
