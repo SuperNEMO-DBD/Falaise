@@ -75,12 +75,7 @@ namespace snemo {
 					  signal_data & signal_data)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "SD to calo signal algorithm is not initialized ! ");
-      std::clog << "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ Process Begin //////////////////////////////////////" << std::endl;
-      //sd_.tree_dump(std::clog, "***** Simulated Data : *****", "INFO : ");
-
-
-      std::clog << "DEBUG : BEGINING OF SD TO CALO SIGNAL PROCESS " << std::endl;
-      std::clog << "**************************************************************" << std::endl;
+      
       // pickup the ID mapping from the geometry manager:
       const geomtools::mapping & the_mapping = _geo_manager_->get_mapping();
 

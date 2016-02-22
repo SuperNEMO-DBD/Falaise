@@ -83,7 +83,7 @@ namespace snemo {
 
 			};
 			
-			/// Prompt event structure with calo and tracker informations (total = 173 [bits]). Useful for searching delayed alpha pattern.
+			/// Previous event structure who pass the caraco trigger, store trigger informations (total = 173 [bits]). Useful for searching delayed alpha pattern.
 			struct previous_event_record : public coincidence_base_record
 			{
 				previous_event_record();
@@ -132,8 +132,11 @@ namespace snemo {
 			/// Get the vector of coincidence record
 			const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record> get_coincidence_calo_records_vector() const;
 
-			/// Get the finale coincidence trigger decision
- 			const bool get_coincidence_decision() const;
+			/// Get the finale caraco trigger decision
+ 			const bool get_caraco_decision() const;
+			
+			/// Get the finale delayed (ape or dave) trigger decision
+ 			const bool get_delayed_coincidence_decision() const;
 
 			/// General process
 			void process(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_,
@@ -173,7 +176,8 @@ namespace snemo {
 			std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record> _coincidence_calo_records_; //!< Vector of coincidence calo tracker record and delayed coincidence record
 			std::vector<std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record,tracker_trigger_algorithm_test_new_strategy::tracker_record> > _pair_records_;
 			previous_event_record _previous_event_record_; //!< Previous prompt event record
-			bool _coincidence_decision_; //!< Decision for coincidence trigger algorihtm
+			bool _caraco_decision_; //!< Decision for caraco trigger algorihtm
+			bool _delayed_coincidence_decision_; //!< Decision for delayed (APE or DAVE) trigger algorithm
 			
 		};
 			

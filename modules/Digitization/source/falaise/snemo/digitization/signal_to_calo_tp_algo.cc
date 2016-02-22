@@ -79,9 +79,6 @@ namespace snemo {
       DT_THROW_IF(!is_initialized(), std::logic_error, "SD to calo TP algorithm is not initialized ! ");
 
       size_t number_of_hits = signal_data_.get_calo_signals().size();
-      std::clog << "DEBUG : BEGINING OF SIGNAL TO CALO TP PROCESS " << std::endl;
-      std::clog << "**************************************************************" << std::endl;
-
       double time_reference = signal_data_.get_calo_signals()[0].get().get_signal_time();
       for (int i = 0; i < number_of_hits; i++)
 	{

@@ -10,6 +10,7 @@
 #include <mctools/simulated_data.h>
 // - Bayeux/dpp:
 #include <dpp/input_module.h>
+#include <dpp/output_module.h>
 
 // Falaise:
 #include <falaise/falaise.h>
@@ -97,7 +98,7 @@ int main( int  argc_ , char **argv_  )
 		<< " --number 5" << std::endl << std::endl
 		<< "If no options are set, programs have default values :" << std::endl << std::endl
 		<< "input file           = ${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio" << std::endl
-		<< "output file          = ${FALAISE_DIGITIZATION_DIR}/validation/root_file/trigger_decision.root" << std::endl
+		<< "output file          = ${FALAISE_DIGITIZATION_TESTING_DIR}/output_default/trigger_efficiency_trigger_decision.root" << std::endl
 		<< "number of events     = 10" << std::endl << std::endl;
       return 0;
     }
@@ -137,10 +138,8 @@ int main( int  argc_ , char **argv_  )
       pipeline_simulated_data_filename = input_filename;
     }else{
       pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
-      // pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Se82_0nubb_500000-source_strips_bulk_SD.brio";
-      //pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Se82_2nubb_500000-source_strips_bulk_SD.brio";
-      // pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Bi214_Po214_500000-source_strips_bulk_SD.brio";
-      // pipeline_simulated_data_filename= "/home/goliviero/software/my_falaise/outputs/Bi214_Po214_10000-source_strips_surface_SD.brio";
+      // pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/raw_simulated_data_brio/Se82_0nubb_500000-source_strips_bulk_SD.brio";
+      // pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/raw_simulated_data_brio/Bi214_Po214_500000-source_strips_bulk_SD.brio";
     }
     datatools::fetch_path_with_env(pipeline_simulated_data_filename);
 
@@ -160,17 +159,23 @@ int main( int  argc_ , char **argv_  )
     reader.initialize_standalone (reader_config);
     if (debug) reader.tree_dump(std::clog, "Simulated data reader module");
 
+    datatools::fetch_path_with_env(output_filename);
+    if (is_output_file) output_filename = output_filename;
+    else output_filename = "default";
+
+    // Event writer : 
+    dpp::output_module writer;
+    datatools::properties writer_config;
+    writer_config.store ("logging.priority", "debug");
+    writer_config.store ("files.mode", "single");
+    writer_config.store ("files.single.filename", "${DATA_NEMO_PERSO_DIR}/trigger/trigger_validation/" + output_filename + ".brio");
+    writer.initialize_standalone (writer_config);
+
     // Event record :
     datatools::things ER;
 
     // Output ROOT file : 
-    datatools::fetch_path_with_env(output_filename);
-    std::string root_filename;
-    if (is_output_file){
-      root_filename = "${FALAISE_DIGITIZATION_DIR}/validation/root_files/" + output_filename;}
-    else{      
-      root_filename = "${FALAISE_DIGITIZATION_DIR}/validation/root_files/trigger_decision.root";
-      }
+    std::string root_filename = "${DATA_NEMO_PERSO_DIR}/trigger/trigger_validation/" + output_filename + ".root";
     datatools::fetch_path_with_env(root_filename);
     TFile* root_file = new TFile(root_filename.c_str(), "RECREATE");
 
@@ -390,8 +395,11 @@ int main( int  argc_ , char **argv_  )
 	 
 
 	    bool trigger_finale_decision = false;
+	    bool delayed_trigger_finale_decision = false;
 	    trigger_finale_decision = my_trigger_algo.get_finale_decision();
-	    std::clog << "trigger_finale_decision [" << trigger_finale_decision << "]" << std::endl;
+	    delayed_trigger_finale_decision = my_trigger_algo.get_delayed_finale_decision();
+	    std::clog << "trigger_finale_decision         [" << trigger_finale_decision << "]" << std::endl;
+	    std::clog << "delayed trigger_finale_decision [" << delayed_trigger_finale_decision << "]" << std::endl;
 
 	    raw_trigger_decision_root = trigger_finale_decision;
   	    
@@ -440,27 +448,51 @@ int main( int  argc_ , char **argv_  )
 	    // Background condition : if (number_of_gg_cells >= 4 && total_number_of_calo >= 2 && number_of_calo_main_wall > 0 && trigger_finale_decision)
 	    // Se82 condition :  if (number_of_gg_cells >= 10 && number_of_calo_main_wall >= 2 && trigger_finale_decision)
 	    
-	    if (number_of_prompt_gg_cells >= 4 && total_number_of_calo >= 2 && number_of_calo_main_wall > 0 && trigger_finale_decision)
+	    // Delayed condition : 
+	    
+	    if (delayed_trigger_finale_decision && number_of_delayed_gg_cells != 0)
 	      {
+		std::clog << "TFD OK, nmbr of gg delayed OK" << std::endl;
 		physical_trigger_decision_root = true;
 		physical_event_of_interest = true;
 	      }
-	    else if (number_of_prompt_gg_cells >= 4 && total_number_of_calo >= 2 && number_of_calo_main_wall > 0 && !trigger_finale_decision)
+	    else if (!delayed_trigger_finale_decision && number_of_delayed_gg_cells != 0)
 	      {
-		physical_trigger_decision_root = false;
-		physical_event_of_interest = true;
-		std::cout << "psd count = " << psd_count << std::endl;
-		// my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
-		// my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
-		// my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
-		//my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
+		std::clog << "TFD !OK, nmbr of gg delayed OK" << std::endl;
+	    	physical_trigger_decision_root = false;
+	    	physical_event_of_interest = true;
 	      }
 	    else
-	      {
+	      {	    
+		std::clog << "TFD !OK, nmbr of gg delayed !OK" << std::endl;
 		physical_trigger_decision_root = false;
 		physical_event_of_interest = false;
 	      }
 
+	    // if (number_of_prompt_gg_cells >= 4 && total_number_of_calo >= 2 && number_of_calo_main_wall > 0 && trigger_finale_decision)
+	    //   {
+	    // 	physical_trigger_decision_root = true;
+	    // 	physical_event_of_interest = true;
+	    //   }
+	    // else if (number_of_prompt_gg_cells >= 4 && total_number_of_calo >= 2 && number_of_calo_main_wall > 0 && !trigger_finale_decision)
+	    //   {
+	    // 	physical_trigger_decision_root = false;
+	    // 	physical_event_of_interest = true;
+	    // 	std::cout << "psd count = " << psd_count << std::endl;
+	    // 	// my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
+	    // 	// my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
+	    // 	// my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
+	    // 	//my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
+	    //   }
+	    // else
+	    //   {
+	    // 	physical_trigger_decision_root = false;
+	    // 	physical_event_of_interest = false;
+	    //   }
+
+	    
+	    
+	    
 	    my_trigger_algo.clear_records();
 	      
 	  } //end of if has bank label "SD"

@@ -75,7 +75,10 @@ namespace snemo {
 			const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_event_record> get_coincidence_records_vector() const;
  			
 			/// Get the finale trigger decision
-			const bool get_finale_decision() const;
+			const bool get_finale_decision() const;	
+
+			/// Get the finale trigger decision
+			const bool get_delayed_finale_decision() const;
 					
       /// General process
       void process(const calo_ctw_data & calo_ctw_data_,
@@ -91,9 +94,6 @@ namespace snemo {
 			
 			/// Process coincidence module algorithm			
 			void _process_coinc_algo();
-			
-			/// Build the previous prompt event for searching delayed alpha coincidences 
-			void _build_previous_prompt_event_record();
 			
       /// Protected general process
       void _process(const calo_ctw_data & calo_ctw_data_,
@@ -117,6 +117,7 @@ namespace snemo {
 			std::vector<coincidence_trigger_algorithm_new_strategy::previous_event_record> _previous_prompt_event_records_; //!< Collection (if needed) of previous event output 
 			
 			bool _finale_trigger_decision_; //!< The finale decision for the trigger
+			bool _delayed_finale_trigger_decision_; //!< The finale decision for the trigger
 			
     };
 

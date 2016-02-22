@@ -64,11 +64,7 @@ int main(int  argc_ , char ** argv_)
     if(is_input_file){
       pipeline_simulated_data_filename = input_filename;
     }else{
-      //pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
-      // pipeline_simulated_data_filename = "/home/guillaume/software/my_falaise/outputs/Bi214_Po214_100000-field_wire_surface.brio";
-      // pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Bi214_Po214_500000-source_strips_bulk_SD.brio";
-      //pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Se82_0nubb_500000-source_strips_bulk_SD.brio";
-      pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Bi214_Po214_100000-field_wire_surface_SD.brio";
+      pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
     }
     datatools::fetch_path_with_env(pipeline_simulated_data_filename);
 
@@ -76,13 +72,13 @@ int main(int  argc_ , char ** argv_)
     dpp::input_module reader;
     datatools::properties reader_config;
     reader_config.store ("logging.priority", "debug");
-    reader_config.store ("max_record_total", 100000);
+    reader_config.store ("max_record_total", 10);
     reader_config.store ("files.mode", "single");
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
     reader.tree_dump (std::clog, "Simulated data reader module");
 
-    std::string root_filename = "${FALAISE_DIGITIZATION_DIR}/programs/root_files/validation.root";
+    std::string root_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/output_default/fldigi_delayed_alpha_validation.root";
     datatools::fetch_path_with_env(root_filename);
     TFile* root_file = new TFile(root_filename.c_str(), "RECREATE");
 

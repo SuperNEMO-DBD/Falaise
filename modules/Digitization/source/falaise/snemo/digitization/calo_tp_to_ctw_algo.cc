@@ -307,8 +307,6 @@ namespace snemo {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Calo tp to ctw algo is not initialized, it can't process ! ");
       DT_THROW_IF(_mode_ == MODE_UNDEFINED, std::logic_error, "Mode type is not defined, check your crate number ! ");
 
-      std::clog << "DEBUG : BEGINING OF CALO TP TO CTW PROCESS " << std::endl;
-      std::clog << "**************************************************************" << std::endl;
       for(int32_t i = calo_tp_data_.get_clocktick_min(); i <= calo_tp_data_.get_clocktick_max(); i++)
 	{
 	  if (_mode_ == MODE_MAIN_WALL)

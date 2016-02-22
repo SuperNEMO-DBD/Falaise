@@ -98,6 +98,7 @@ namespace snemo {
       _calo_records_.clear();
       _coincidence_records_.clear();
       _finale_trigger_decision_ = false;
+      _delayed_finale_trigger_decision_ = false;
     }
     
     const std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record>trigger_algorithm::get_tracker_records_vector() const
@@ -123,13 +124,12 @@ namespace snemo {
     const bool trigger_algorithm::get_finale_decision() const
     {
       return _finale_trigger_decision_;
-    }
-    
-    void _build_previous_prompt_event_record()
-    {
-   
-      return;
     }   
+
+    const bool trigger_algorithm::get_delayed_finale_decision() const
+    {
+      return _delayed_finale_trigger_decision_;
+    }
         
     void trigger_algorithm::process(const calo_ctw_data & calo_ctw_data_,
 				    const geiger_ctw_data & geiger_ctw_data_)
@@ -185,14 +185,17 @@ namespace snemo {
       calo_decision = _calo_algo_.get_calo_decision();
       bool tracker_decision = false;
       tracker_decision = _tracker_algo_.get_tracker_decision();
-      bool coincidence_decision = false;
-      coincidence_decision = _coinc_algo_.get_coincidence_decision();
+      bool caraco_decision = false;
+      caraco_decision = _coinc_algo_.get_caraco_decision();
+      bool delayed_coincidence_decision = false;
+      delayed_coincidence_decision = _coinc_algo_.get_delayed_coincidence_decision();
 
       // To improve depending of trigger configuration
 
       if (_activate_coincidence_)
 	{
-	  if (coincidence_decision == true) _finale_trigger_decision_ = true;
+	  if (caraco_decision == true) _finale_trigger_decision_ = true;
+	  if (delayed_coincidence_decision == true) _delayed_finale_trigger_decision_ = true;
 	}
  
       else _finale_trigger_decision_ = false;

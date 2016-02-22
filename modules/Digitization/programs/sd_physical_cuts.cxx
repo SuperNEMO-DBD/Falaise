@@ -113,7 +113,7 @@ int main(int  argc_ , char ** argv_)
     else
       {
 	pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
-	//pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/Bi214_Po214_100000-field_wire_surface_SD.brio";
+	//pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/raw_simulated_data_brio/Bi214_Po214_100000-field_wire_surface_SD.brio";
       }
     datatools::fetch_path_with_env(pipeline_simulated_data_filename);
 
@@ -140,13 +140,13 @@ int main(int  argc_ , char ** argv_)
     datatools::properties writer_config;
     writer_config.store ("logging.priority", "debug");
     writer_config.store ("files.mode", "single");
-    writer_config.store ("files.single.filename", "${DATA_NEMO_PERSO_DIR}/trigger/simulated_data_brio/SD_cuted/" + output_filename + ".brio");
+    writer_config.store ("files.single.filename", "${DATA_NEMO_PERSO_DIR}/trigger/cuted_simulated_data_brio/" + output_filename + ".brio");
     writer.initialize_standalone (writer_config);
     
     // Event record :
     datatools::things ER;
     
-    std::string root_filename = "${FALAISE_DIGITIZATION_DIR}/programs/root_files/" + output_filename + ".root";
+    std::string root_filename = "${DATA_NEMO_PERSO_DIR}/trigger/root_files_cuted_simulated_data/" + output_filename + ".root";
     datatools::fetch_path_with_env(root_filename);
     TFile* root_file = new TFile(root_filename.c_str(), "RECREATE");
     TTree* cuts_tree = new TTree("CutsTree", "SD_cuts");
@@ -177,6 +177,7 @@ int main(int  argc_ , char ** argv_)
 	pm_hits = 0;
 
 	std::size_t number_of_gg_cells = 0;
+	std::size_t number_of_delayed_gg_cells = 0;
 	std::size_t number_of_calo = 0;
 	std::size_t number_of_main_wall_calo = 0; 
 	std::size_t number_of_x_wall_calo = 0; 
@@ -195,15 +196,26 @@ int main(int  argc_ , char ** argv_)
 	      {
 		mctools::simulated_data::hit_handle_collection_type BSHC = SD.get_step_hits("gg");
 		std::set<geomtools::geom_id> gg_cells_gid_set;
+		std::set<geomtools::geom_id> delayed_gg_cells_gid_set;
 		for (mctools::simulated_data::hit_handle_collection_type::const_iterator i = BSHC.begin();
 		     i != BSHC.end();
 		     i++) 
 		  {
 		    const mctools::base_step_hit & BSH = i->get();
 		    const geomtools::geom_id & a_gg_gid = BSH.get_geom_id();
-		    gg_cells_gid_set.insert(a_gg_gid);
+		    const double time_start = BSH.get_time_start();
+		    
+		    gg_cells_gid_set.insert(a_gg_gid);	 
+		    if (time_start > 50) 
+		      {
+			delayed_gg_cells_gid_set.insert(a_gg_gid);
+		      }
 		  }
+
 		number_of_gg_cells = gg_cells_gid_set.size();
+		number_of_delayed_gg_cells = delayed_gg_cells_gid_set.size();
+
+		//std::clog << "GG cells size = " << number_of_gg_cells << " Delayed gg cells = " << number_of_delayed_gg_cells << std::endl;
 	      }
 	    
 	    if (SD.has_step_hits("calo"))
@@ -256,8 +268,8 @@ int main(int  argc_ , char ** argv_)
 	    // std::clog << "Nmbr of calo = " << number_of_calo << " Nmbr of gg cells = " << number_of_gg_cells << std::endl;
 	    
 	  } // end of if has bank label 
-    
-	if (number_of_calo >= 1 && number_of_gg_cells >= 3)
+	
+	if (number_of_calo >= 1 && number_of_gg_cells >= 3 && number_of_delayed_gg_cells >= 1)
 	  {	
 	    writer.process(ER);
 	    gg_cells_hits = number_of_gg_cells;

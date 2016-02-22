@@ -27,8 +27,8 @@ int main(int  argc_ , char ** argv_)
   try {  
     std::clog << "Little test program for analysis of alpha delayed number of geiger cells hit !" << std::endl;
     
-    std::string input_filename = "${FALAISE_DIGITIZATION_DIR}/programs/root_files/validation.root";
-    std::string output_filename = "${FALAISE_DIGITIZATION_DIR}/programs/root_files/analysis.root";
+    std::string input_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/output_default/fldigi_delayed_alpha_validation.root";
+    std::string output_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/output_default/fldigi_delayed_alpha_analysis.root";
     datatools::fetch_path_with_env(input_filename);
     datatools::fetch_path_with_env(output_filename);
 
@@ -130,34 +130,3 @@ int main(int  argc_ , char ** argv_)
   FALAISE_FINI();
   return error_code;
 }
-
-
-// for ggcells tree :
-// double px_tot = 0;
-// double py_tot = 0;
-// double pz_tot = 0;
-// double p_tot = 0;
-// for (int j = 0; j < vect_time_start->size(); j++)
-//   {
-//     Int_t hit_id      = vect_hit_id->at(j); 
-//     Double_t time_start = vect_time_start->at(j);
-//     Double_t x_start  = vect_x_start->at(j);
-//     Double_t y_start  = vect_y_start->at(j);
-//     Double_t z_start  = vect_z_start->at(j);
-//     Double_t x_stop   = vect_x_stop->at(j);
-//     Double_t y_stop   = vect_y_stop->at(j);
-//     Double_t z_stop   = vect_z_stop->at(j);
-//     Double_t px_start = vect_px_start->at(j);
-//     Double_t py_start = vect_py_start->at(j);
-//     Double_t pz_start = vect_pz_start->at(j);
-
-//     // std::clog << "Hit id = " << hit_id << std::endl;
-//     // std::clog << "Time start = " << time_start << std::endl;
-//     // std::clog << "XYZ start = " << x_start << " , " <<  y_start << " , " << z_start << std::endl;
-//     // std::clog << "XYZ stop = " << x_stop << " , " <<  y_stop << " , " << z_stop << std::endl;
-//     // std::clog << "PxPyPz start = " << px_start << " , " <<  py_start << " , " << pz_start << std::endl << std::endl;
-//     px_tot += px_start ;
-//     py_tot += py_start;
-//     pz_tot += pz_start;
-//   }
-// p_tot = std::sqrt(std::pow(px_tot, 2) + std::pow(py_tot, 2) + std::pow(pz_tot, 2));
