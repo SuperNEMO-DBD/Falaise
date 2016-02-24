@@ -185,7 +185,6 @@ namespace snemo {
 		geiger_signal_hit_id++;
 	      }
 	  }	  
-	
       }
 
       catch (std::exception & error) {
@@ -200,8 +199,6 @@ namespace snemo {
 
       return error_code;
     }
-
-
 
   } // end of namespace digitization
 

@@ -763,7 +763,6 @@ namespace snemo {
 	      if (_previous_event_record_.counter_1600ns <= 620)
 
 		{	      	  
-		  std::clog << "Previous event counter = " << _previous_event_record_.counter_1600ns << std::endl;
 		  coincidence_event_record a_delayed_event_record;
 	      	  _process_delayed_coincidence(a_pair, a_delayed_event_record); // Compare calo record & tracker record with previous event
 	      	  if (a_delayed_event_record.decision) 

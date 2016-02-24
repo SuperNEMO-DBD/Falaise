@@ -111,10 +111,13 @@ namespace snemo {
 				   bool inherit_) const
     {
       base_hit::tree_dump (out_, title_, indent_, true);
-
+      
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+           << "Signal time =  : " << _signal_time_  << " ns " << std::endl;
+      
       out_ << indent_ << datatools::i_tree_dumpable::tag
            << "Amplitude =  : " << _amplitude_  << " mV " << std::endl;
-
+      
       return;
     }
     

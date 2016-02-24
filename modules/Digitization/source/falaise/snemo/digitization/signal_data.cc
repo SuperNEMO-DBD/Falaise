@@ -63,12 +63,12 @@ namespace snemo {
     }
 
 		
-   geiger_signal & signal_data::add_geiger_signal()
+		geiger_signal & signal_data::add_geiger_signal()
     {
       DT_THROW_IF(is_locked(), std::logic_error, " Operation prohibited, object is locked ! ");
       {
-	geiger_signal_handle_type dummy;
-	_geiger_signals_.push_back(dummy);
+				geiger_signal_handle_type dummy;
+				_geiger_signals_.push_back(dummy);
       }
       geiger_signal_handle_type & last = _geiger_signals_.back();
       last.reset(new geiger_signal);
@@ -79,8 +79,8 @@ namespace snemo {
     {
       DT_THROW_IF(is_locked(), std::logic_error, " Operation prohibited, object is locked ! ");
       {
-	calo_signal_handle_type dummy;
-	_calo_signals_.push_back(dummy);
+				calo_signal_handle_type dummy;
+				_calo_signals_.push_back(dummy);
       }
       calo_signal_handle_type & last = _calo_signals_.back();
       last.reset(new calo_signal);
@@ -107,17 +107,47 @@ namespace snemo {
       return _calo_signals_;
     }
 
-    void signal_data::reset()
-    {
-      if (is_locked())
-	{
-	  unlock();
-	}
-      reset_geiger_signals();
-      reset_calo_signals();
-      return;
-    }
-
+		const std::size_t signal_data::get_number_of_geiger_signals() const
+		{
+			return _geiger_signals_.size();
+		}
+		
+		const std::size_t signal_data::get_number_of_prompt_geiger_signals(double time_limit_) const
+		{
+			std::size_t number_of_prompt_gg_signal = 0;
+			std::vector<datatools::handle<geiger_signal> >::const_iterator it_signal = _geiger_signals_.begin();
+			for (it_signal; it_signal != _geiger_signals_.end(); it_signal++)
+				{
+					geiger_signal_handle_type a_gg_signal_handle = *it_signal;
+					geiger_signal a_gg_signal = a_gg_signal_handle.get();
+					
+					if (a_gg_signal.get_anode_avalanche_time() < time_limit_)
+						{
+							number_of_prompt_gg_signal++;
+						}
+				}
+			
+			return number_of_prompt_gg_signal;
+		}
+		
+		const std::size_t signal_data::get_number_of_delayed_geiger_signals(double time_limit_) const
+		{
+			std::size_t number_of_delayed_gg_signal = 0;
+			std::vector<datatools::handle<geiger_signal> >::const_iterator it_signal = _geiger_signals_.begin();
+			for (it_signal; it_signal != _geiger_signals_.end(); it_signal++)
+				{
+					geiger_signal_handle_type a_gg_signal_handle = *it_signal;
+					geiger_signal a_gg_signal = a_gg_signal_handle.get();
+					
+					if (a_gg_signal.get_anode_avalanche_time() > time_limit_)
+						{
+							number_of_delayed_gg_signal++;
+						}
+				}
+			return number_of_delayed_gg_signal;
+		}
+		
+		
 		bool signal_data::has_geiger_signals()
 		{
 			if (_geiger_signals_.size() != 0)
@@ -136,10 +166,20 @@ namespace snemo {
 			return 0;
 		}
 
+    void signal_data::reset()
+    {
+      if (is_locked())
+				{
+					unlock();
+				}
+      reset_geiger_signals();
+      reset_calo_signals();
+      return;
+    }
     void signal_data::tree_dump (std::ostream & out_,
-				  const std::string & title_,
-				  const std::string & indent_,
-				  bool inherit_) const
+																 const std::string & title_,
+																 const std::string & indent_,
+																 bool inherit_) const
     {
       out_ << indent_ << title_ << std::endl;
 
@@ -147,10 +187,10 @@ namespace snemo {
            << "Is locked signals  : " << _locked_ << std::endl;
 
       out_ << indent_ << datatools::i_tree_dumpable::inherit_tag (inherit_)
-	   << "Geiger signals : " << _geiger_signals_.size() << std::endl;
+					 << "Geiger signals : " << _geiger_signals_.size() << std::endl;
 
-     out_ << indent_ << datatools::i_tree_dumpable::inherit_tag (inherit_)
-	  << "Calo signals : " << _calo_signals_.size() << std::endl;
+			out_ << indent_ << datatools::i_tree_dumpable::inherit_tag (inherit_)
+					 << "Calo signals : " << _calo_signals_.size() << std::endl;
 
       
       return;
@@ -159,32 +199,32 @@ namespace snemo {
     void signal_data::_check()
     {
       for (int i = 0; i < _geiger_signals_.size() - 1; i++)
-	{
-	  const geiger_signal & geiger_signal_a = _geiger_signals_[i].get();
+				{
+					const geiger_signal & geiger_signal_a = _geiger_signals_[i].get();
 
-	  for (int j = i+1; j < _geiger_signals_.size(); j++)
-	    {
-	      const geiger_signal & geiger_signal_b = _geiger_signals_[j].get();
+					for (int j = i+1; j < _geiger_signals_.size(); j++)
+						{
+							const geiger_signal & geiger_signal_b = _geiger_signals_[j].get();
 
-	      DT_THROW_IF(geiger_signal_a.get_geom_id() == geiger_signal_b.get_geom_id(),
-			  std::logic_error,
-			  "GID=" << geiger_signal_b.get_geom_id());
-	    }
-	}
+							DT_THROW_IF(geiger_signal_a.get_geom_id() == geiger_signal_b.get_geom_id(),
+													std::logic_error,
+													"GID=" << geiger_signal_b.get_geom_id());
+						}
+				}
 
       for (int i = 0; i < _calo_signals_.size() - 1; i++)
-	{
-	  const calo_signal & calo_signal_a = _calo_signals_[i].get();
+				{
+					const calo_signal & calo_signal_a = _calo_signals_[i].get();
 
-	  for (int j = i+1; j < _calo_signals_.size(); j++)
-	    {
-	      const calo_signal & calo_signal_b = _calo_signals_[j].get();
+					for (int j = i+1; j < _calo_signals_.size(); j++)
+						{
+							const calo_signal & calo_signal_b = _calo_signals_[j].get();
 
-	      DT_THROW_IF(calo_signal_a.get_geom_id() == calo_signal_b.get_geom_id(),
-			  std::logic_error,
-			  "GID=" << calo_signal_b.get_geom_id());
-	    }
-	}
+							DT_THROW_IF(calo_signal_a.get_geom_id() == calo_signal_b.get_geom_id(),
+													std::logic_error,
+													"GID=" << calo_signal_b.get_geom_id());
+						}
+				}
 
       return;
     }
