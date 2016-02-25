@@ -105,7 +105,7 @@ int main( int  argc_ , char **argv_  )
 
   try {
     // boolean for debugging (display etc)
-    bool debug = true;
+    bool debug = false;
     std::clog << "Test program for class 'snemo::digitization::trigger_algorithm_efficiency_validation' !" << std::endl;
     int32_t seed = 314159;
     mygsl::rng random_generator;
@@ -163,14 +163,63 @@ int main( int  argc_ , char **argv_  )
     if (is_output_path) output_path = output_path;
     else output_path = "${FALAISE_DIGITIZATION_TESTING_DIR}/output_default/";
     datatools::fetch_path_with_env(output_path);
+    
+    // Name of SD output files (FT : Fake Trigger & RT: Real Trigger) :
+
+    std::string sd_file_FT_0 = output_path + "sd_file_1" + ".brio";
+    std::string sd_file_FT_1 = output_path + "sd_file_2" + ".brio";
+    std::string sd_file_prompt_RT_0 = output_path + "sd_file_3" + ".brio";
+    std::string sd_file_prompt_RT_1 = output_path + "sd_file_4" + ".brio";
+    std::string sd_file_delayed_RT_0 = output_path + "sd_file_5" + ".brio";
+    std::string sd_file_delayed_RT_1 = output_path + "sd_file_6" + ".brio";
+    
+    // Event writer : 
+    dpp::output_module writer_1;
+    datatools::properties writer_config_1;
+    writer_config_1.store ("logging.priority", "debug");
+    writer_config_1.store ("files.mode", "single");   
+    writer_config_1.store ("files.single.filename", sd_file_FT_0);
+    writer_1.initialize_standalone(writer_config_1); 
 
     // Event writer : 
-    dpp::output_module writer;
-    datatools::properties writer_config;
-    writer_config.store ("logging.priority", "debug");
-    writer_config.store ("files.mode", "single");
-    writer_config.store ("files.single.filename",output_path + "sd_cuts.brio"); // to rename
-    writer.initialize_standalone (writer_config);
+    dpp::output_module writer_2;
+    datatools::properties writer_config_2;
+    writer_config_2.store ("logging.priority", "debug");
+    writer_config_2.store ("files.mode", "single");   
+    writer_config_2.store ("files.single.filename", sd_file_FT_1);
+    writer_2.initialize_standalone(writer_config_2); 
+ 
+    // Event writer : 
+    dpp::output_module writer_3;
+    datatools::properties writer_config_3;
+    writer_config_3.store ("logging.priority", "debug");
+    writer_config_3.store ("files.mode", "single");   
+    writer_config_3.store ("files.single.filename", sd_file_prompt_RT_0);
+    writer_3.initialize_standalone(writer_config_3); 
+
+    // Event writer : 
+    dpp::output_module writer_4;
+    datatools::properties writer_config_4;
+    writer_config_4.store ("logging.priority", "debug");
+    writer_config_4.store ("files.mode", "single");   
+    writer_config_4.store ("files.single.filename", sd_file_prompt_RT_1);
+    writer_4.initialize_standalone(writer_config_4);   
+
+    // Event writer : 
+    dpp::output_module writer_5;
+    datatools::properties writer_config_5;
+    writer_config_5.store ("logging.priority", "debug");
+    writer_config_5.store ("files.mode", "single");   
+    writer_config_5.store ("files.single.filename", sd_file_delayed_RT_0);
+    writer_5.initialize_standalone(writer_config_5); 
+
+    // Event writer : 
+    dpp::output_module writer_6;
+    datatools::properties writer_config_6;
+    writer_config_6.store ("logging.priority", "debug");
+    writer_config_6.store ("files.mode", "single");   
+    writer_config_6.store ("files.single.filename", sd_file_delayed_RT_1);
+    writer_6.initialize_standalone(writer_config_6); 
 
     // Event record :
     datatools::things ER;
@@ -190,10 +239,6 @@ int main( int  argc_ , char **argv_  )
     Bool_t fake_trigger_delayed_decision = false;
     Bool_t prompt_trigger_decision_to_fake_trigger = false;
     Bool_t delayed_trigger_decision_to_fake_trigger = false;
-    Bool_t prompt_physical_event_of_interest = false; 
-    Bool_t delayed_physical_event_of_interest = false; 
-    Bool_t prompt_trigger_decision_to_eoi = false;
-    Bool_t delayed_trigger_decision_to_eoi = false;
     Int_t total_number_of_calo = 0;
     Int_t total_number_of_main_calo = 0;
     Int_t total_number_of_gveto = 0;
@@ -209,10 +254,6 @@ int main( int  argc_ , char **argv_  )
     trigger_decision_tree->Branch("fake_trigger_delayed_decision", &fake_trigger_delayed_decision, "fake_trigger_delayed_decision/O");
     trigger_decision_tree->Branch("prompt_trigger_decision_to_fake_trigger", &prompt_trigger_decision_to_fake_trigger, "prompt_trigger_decision_to_fake_trigger/O");
     trigger_decision_tree->Branch("delayed_trigger_decision_to_fake_trigger", &delayed_trigger_decision_to_fake_trigger, "delayed_trigger_decision_to_fake_trigger/O");
-    trigger_decision_tree->Branch("prompt_physical_event_of_interest", &prompt_physical_event_of_interest, "prompt_physical_event_of_interest/O");
-    trigger_decision_tree->Branch("delayed_physical_event_of_interest", &delayed_physical_event_of_interest, "delayed_physical_event_of_interest/O");
-    trigger_decision_tree->Branch("prompt_trigger_decision_to_eoi", &prompt_trigger_decision_to_eoi, "prompt_trigger_decision_to_eoi/O");
-    trigger_decision_tree->Branch("delayed_trigger_decision_to_eoi", &delayed_trigger_decision_to_eoi, "delayed_trigger_decision_to_eoi/O");
     trigger_decision_tree->Branch("total_number_of_calo", &total_number_of_calo, "total_number_of_calo/I");
     trigger_decision_tree->Branch("total_number_of_main_calo", &total_number_of_main_calo, "total_number_of_main_calo/I");
     trigger_decision_tree->Branch("total_number_of_gveto", &total_number_of_gveto, "total_number_of_gveto/I");
@@ -326,10 +367,6 @@ int main( int  argc_ , char **argv_  )
 	fake_trigger_delayed_decision = false;
 	prompt_trigger_decision_to_fake_trigger = false;
 	delayed_trigger_decision_to_fake_trigger = false;
-	prompt_physical_event_of_interest = false; 
-	delayed_physical_event_of_interest = false;
-	prompt_trigger_decision_to_eoi = false;
-	delayed_trigger_decision_to_eoi = false;
 	total_number_of_calo = 0;
 	total_number_of_main_calo = 0;
 	total_number_of_gveto = 0;
@@ -364,10 +401,10 @@ int main( int  argc_ , char **argv_  )
 		for(int i = 0; i < signal_data.get_calo_signals().size(); i++)
 		  {
 		    const snemo::digitization::calo_signal a_calo_signal = signal_data.get_calo_signals()[i].get();
-		    a_calo_signal.tree_dump(std::clog, "A Calo signal", "INFO : ");
+		    if (debug) a_calo_signal.tree_dump(std::clog, "A Calo signal", "INFO : ");
 		  }
 		
-		signal_data.tree_dump(std::clog, "*** Signal Data ***", "INFO : ");
+		if (debug) signal_data.tree_dump(std::clog, "*** Signal Data ***", "INFO : ");
 		
 		// Creation of calo ctw data :
 		snemo::digitization::calo_ctw_data my_calo_ctw_data;
@@ -436,7 +473,7 @@ int main( int  argc_ , char **argv_  )
 		//if (debug) my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
 	        //if (debug) my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
 		//if (debug) my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
-	        if (debug) my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
+	        //if (debug) my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
 		
 		// for (int iclocktick = 0; iclocktick <= 10; iclocktick++)
 		//   {
@@ -444,9 +481,9 @@ int main( int  argc_ , char **argv_  )
 		//   }
 
 		
-		std::clog << "********* Size of Finale structures for one event *********" << std::endl;
-		std::clog << "Calo collection size    : " << calo_collection_records.size() << std::endl;
-		std::clog << "Tracker collection size : " << tracker_collection_records.size() << std::endl;
+		if (debug) std::clog << "********* Size of Finale structures for one event *********" << std::endl;
+		if (debug) std::clog << "Calo collection size    : " << calo_collection_records.size() << std::endl;
+		if (debug) std::clog << "Tracker collection size : " << tracker_collection_records.size() << std::endl;
 		
 	      } // end of if has "calo" || "xcalo" || "gveto" || "gg" step hits
 	    
@@ -455,8 +492,10 @@ int main( int  argc_ , char **argv_  )
 	    raw_trigger_prompt_decision = my_trigger_algo.get_finale_decision();
 	    raw_trigger_delayed_decision = my_trigger_algo.get_delayed_finale_decision();
 
-	    std::clog << "trigger_finale_decision         [" << raw_trigger_prompt_decision << "]" << std::endl;
-	    std::clog << "delayed trigger_finale_decision [" << raw_trigger_delayed_decision << "]" << std::endl;
+	    if (debug) std::clog << "trigger_finale_decision         [" << raw_trigger_prompt_decision << "]" << std::endl;
+	    if (debug) std::clog << "delayed trigger_finale_decision [" << raw_trigger_delayed_decision << "]" << std::endl;
+	    
+	    if (!raw_trigger_prompt_decision && raw_trigger_delayed_decision) std::cout <<  " ******************************* ANORMAL *******************" << std::endl;
 	    
 	    if (coincidence_collection_calo_records.size() != 0)
 	      {
@@ -464,47 +503,38 @@ int main( int  argc_ , char **argv_  )
 		total_number_of_gveto     = coincidence_collection_calo_records[2].total_multiplicity_gveto.to_ulong();
 		total_number_of_calo      = total_number_of_main_calo + total_number_of_gveto;
 	      }
-	    std::clog << "********************************************************************" << std::endl;	    
-	    std::clog << "Total calo             = " << total_number_of_calo             << std::endl;
-	    std::clog << "Total main calo        = " << total_number_of_main_calo        << std::endl;
-	    std::clog << "Total gveto calo       = " << total_number_of_gveto            << std::endl;
-	    std::clog << "Total GG cells         = " << total_number_of_gg_cells         << std::endl;
-	    std::clog << "Total prompt GG cells  = " << total_number_of_prompt_gg_cells  << std::endl;
-	    std::clog << "Total delayed GG cells = " << total_number_of_delayed_gg_cells << std::endl;
-	    std::clog << "********************************************************************" << std::endl;
+	    if (debug) std::clog << "********************************************************************" << std::endl;	    
+	    if (debug) std::clog << "Total calo             = " << total_number_of_calo             << std::endl;
+	    if (debug) std::clog << "Total main calo        = " << total_number_of_main_calo        << std::endl;
+	    if (debug) std::clog << "Total gveto calo       = " << total_number_of_gveto            << std::endl;
+	    if (debug) std::clog << "Total GG cells         = " << total_number_of_gg_cells         << std::endl;
+	    if (debug) std::clog << "Total prompt GG cells  = " << total_number_of_prompt_gg_cells  << std::endl;
+	    if (debug) std::clog << "Total delayed GG cells = " << total_number_of_delayed_gg_cells << std::endl;
+	    if (debug) std::clog << "********************************************************************" << std::endl;
 	    
 
 	    // Fake trigger prompt : 1 PM / 3 prompt cells
-
 	    if (total_number_of_calo >= 1 && total_number_of_prompt_gg_cells >= 3)
 	      {
 		fake_trigger_prompt_decision = true;
 		prompt_trigger_decision_to_fake_trigger = my_trigger_algo.get_finale_decision();
 	      }
+
 	    // Fake trigger delayed : 1 delayed cells and a fake prompt event
 	    if (fake_trigger_prompt_decision && total_number_of_delayed_gg_cells >= 1)
 	      {
 		fake_trigger_delayed_decision = true;
 		delayed_trigger_decision_to_fake_trigger = my_trigger_algo.get_delayed_finale_decision();
 	      }	
+	    
+	    // Write in several SD files depending of the trigger decision
+	    if(!fake_trigger_prompt_decision) writer_1.process(ER);
+	    else writer_2.process(ER);
+	    if (fake_trigger_prompt_decision && !prompt_trigger_decision_to_fake_trigger) writer_3.process(ER);
+	    else if (fake_trigger_prompt_decision && prompt_trigger_decision_to_fake_trigger) writer_4.process(ER);
+	    if (fake_trigger_prompt_decision && !delayed_trigger_decision_to_fake_trigger) writer_5.process(ER);
+	    else if (fake_trigger_prompt_decision && delayed_trigger_decision_to_fake_trigger) writer_6.process(ER);
 
-	    // Physical event of interest (EOI) : 
-	    // Background condition : if (number_of_gg_cells >= 4 && total_number_of_calo >= 2 && number_of_calo_main_wall > 0 && trigger_finale_decision)
-	    // Sources (Se82, Ca48 ...) condition :  if (number_of_gg_cells >= 10 && number_of_calo_main_wall >= 2 && trigger_finale_decision)
-	    
-	    // To change function of SD if it's backgrounds or not
-	    if (total_number_of_prompt_gg_cells >= 10 && total_number_of_main_calo >= 2)
-	      {
-		prompt_physical_event_of_interest = true;
-		prompt_trigger_decision_to_eoi = my_trigger_algo.get_finale_decision();		
-	      }
-	    
-	    if (total_number_of_delayed_gg_cells >= 1 && prompt_physical_event_of_interest)
-	      {
-		delayed_physical_event_of_interest = true;
-		delayed_trigger_decision_to_eoi = my_trigger_algo.get_delayed_finale_decision();	
-	      }
-	    
 	    my_trigger_algo.clear_records();
 	      
 	  } //end of if has bank label "SD"
@@ -513,7 +543,7 @@ int main( int  argc_ , char **argv_  )
 	
 	ER.clear();
 	psd_count++;
-	std::clog << "DEBUG : psd count " << psd_count << std::endl;
+	if (debug) std::clog << "DEBUG : psd count " << psd_count << std::endl;
 	DT_LOG_NOTICE(logging, "Simulated data #" << psd_count);
       } // end of reader is terminated
     

@@ -390,9 +390,7 @@ namespace snemo {
 	  // -- Fill xwall side 1 multiplicity
 	  if (multiplicity_side_1 != 0)
 	    {
-	      std::clog << "Side 1 : mult before = " << _calo_record_per_clocktick_.total_multiplicity_side_1 << std::endl;
 	      _calo_record_per_clocktick_.total_multiplicity_side_1 = _calo_record_per_clocktick_.total_multiplicity_side_1.to_ulong() + multiplicity_side_1;
-	      std::clog << "Side 1 : mult after = " << _calo_record_per_clocktick_.total_multiplicity_side_1 << std::endl;
 	    }
 	  
 	  // -- Fill gamma veto multiplicity

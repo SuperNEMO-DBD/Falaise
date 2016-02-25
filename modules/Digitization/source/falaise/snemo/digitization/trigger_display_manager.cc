@@ -396,12 +396,12 @@ namespace snemo {
       	    }
       	  std::clog << ' ';
       	}      
-      std::cout << std::endl;
-      std::cout << "Single Side coinc : " << a_calo_summary_record.single_side_coinc 
+      std::clog << std::endl;
+      std::clog << "Single Side coinc : " << a_calo_summary_record.single_side_coinc 
       		<< "  |  Threshold total mult : "   << a_calo_summary_record.total_multiplicity_threshold 
       		<< "  |  Trigger final decision : " << a_calo_summary_record.calo_finale_decision  << std::endl;
       
-      std::cout << std::endl;
+      std::clog << std::endl;
       
       std::bitset<10> zoning_word[trigger_info::NSIDES] = 0x0;
       for (int i = 0; i < trigger_info::NSIDES; i++)
@@ -410,7 +410,7 @@ namespace snemo {
     	}
       fill_calo_trigger_matrix_25ns(zoning_word);
       display_matrix();
-      std::cout << std::endl << std::endl;
+      std::clog << std::endl << std::endl;
 
       return;
     }
@@ -442,32 +442,32 @@ namespace snemo {
     	  if (clocktick_1600ns_ == a_trigger_algo_._coinc_algo_._coincidence_calo_records_[i].clocktick_1600ns) a_coinc_calo_record = a_trigger_algo_._coinc_algo_._coincidence_calo_records_[i];
     	}
       
-      std::cout << "************************************************************************************" << std::endl;
-      std::cout << "******************** Display Calorimeter trigger info @ 1600 ns ********************" << std::endl;
-      std::cout << "******************** Clocktick 1600 ns = " << clocktick_1600ns_ << " ******************** " << std::endl << std::endl; 
-      std::cout << "CT |XTS|L|HG|L|L|H1|H0| ZONING S1| ZONING S0 " << std::endl; 
-      std::cout << a_coinc_calo_record.clocktick_1600ns << ' ';
-      std::cout << a_coinc_calo_record.xt_info_bitset << ' ';
-      std::cout << a_coinc_calo_record.LTO_gveto << ' ';
-      std::cout << a_coinc_calo_record.total_multiplicity_gveto << ' ';
-      std::cout << a_coinc_calo_record.LTO_side_1 << ' ';
-      std::cout << a_coinc_calo_record.LTO_side_0 << ' ';
-      std::cout << a_coinc_calo_record.total_multiplicity_side_1 << ' ';
-      std::cout << a_coinc_calo_record.total_multiplicity_side_0 << ' ';
+      std::clog << "************************************************************************************" << std::endl;
+      std::clog << "******************** Display Calorimeter trigger info @ 1600 ns ********************" << std::endl;
+      std::clog << "******************** Clocktick 1600 ns = " << clocktick_1600ns_ << " ******************** " << std::endl << std::endl; 
+      std::clog << "CT |XTS|L|HG|L|L|H1|H0| ZONING S1| ZONING S0 " << std::endl; 
+      std::clog << a_coinc_calo_record.clocktick_1600ns << ' ';
+      std::clog << a_coinc_calo_record.xt_info_bitset << ' ';
+      std::clog << a_coinc_calo_record.LTO_gveto << ' ';
+      std::clog << a_coinc_calo_record.total_multiplicity_gveto << ' ';
+      std::clog << a_coinc_calo_record.LTO_side_1 << ' ';
+      std::clog << a_coinc_calo_record.LTO_side_0 << ' ';
+      std::clog << a_coinc_calo_record.total_multiplicity_side_1 << ' ';
+      std::clog << a_coinc_calo_record.total_multiplicity_side_0 << ' ';
       for (int iside = trigger_info::NSIDES-1; iside >= 0; iside--)
       	{
       	  for (int izone = trigger_info::NZONES-1; izone >= 0 ; izone--)
       	    {
-      	      std::cout << a_coinc_calo_record.calo_zoning_word[iside][izone];
+      	      std::clog << a_coinc_calo_record.calo_zoning_word[iside][izone];
       	    }
-      	  std::cout << ' ';
+      	  std::clog << ' ';
       	}      
-      std::cout << std::endl;
-      std::cout << "Single Side coinc : " << a_coinc_calo_record.single_side_coinc 
+      std::clog << std::endl;
+      std::clog << "Single Side coinc : " << a_coinc_calo_record.single_side_coinc 
     		<< "  |  Threshold total mult : "   << a_coinc_calo_record.total_multiplicity_threshold 
     		<< "  |  Trigger final decision : " << a_coinc_calo_record.decision  << std::endl;
       
-      std::cout << std::endl;
+      std::clog << std::endl;
 
       std::bitset<10> zoning_word[trigger_info::NSIDES];
       for (int i = 0; i < trigger_info::NSIDES; i++)
@@ -476,7 +476,7 @@ namespace snemo {
     	}
       fill_calo_trigger_matrix_1600ns(zoning_word);
       display_matrix();
-      std::cout << std::endl;
+      std::clog << std::endl;
       return;
     }
 
@@ -515,85 +515,85 @@ namespace snemo {
     	}
       // check if matrix is not empty
 
-      if (a_geiger_matrix.is_empty()) 
-	{    	  
-	  std::cout << "********************************************************************************" << std::endl;
-    	  std::cout << "******************** Display Tracker trigger info @ 1600 ns ********************" << std::endl;
-    	  std::cout << "******************** Clocktick 1600 ns = " << clocktick_1600ns_ << " ******************** " << std::endl << std::endl; 
-	  std::cout << "Bitset : [NSZL NSZR L M R O I] " << std::endl;
-	  for (int iside = 0; iside < trigger_info::NSIDES; iside++)
-	    {
-	      std::cout << "Side = " << iside << " | ";
-	      for (int izone = 0; izone < trigger_info::NZONES; izone++)
-		{
-		  std::cout << "[" << a_tracker_record.finale_data_per_zone[iside][izone] << "] ";
-		} // end of izone
-	      std::cout << std::endl;
-	    }
+      if (a_geiger_matrix.is_empty()) {}
+	// {    	  
+	//   std::clog << "********************************************************************************" << std::endl;
+    	//   std::clog << "******************** Display Tracker trigger info @ 1600 ns ********************" << std::endl;
+    	//   std::clog << "******************** Clocktick 1600 ns = " << clocktick_1600ns_ << " ******************** " << std::endl << std::endl; 
+	//   std::clog << "Bitset : [NSZL NSZR L M R O I] " << std::endl;
+	//   for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+	//     {
+	//       std::clog << "Side = " << iside << " | ";
+	//       for (int izone = 0; izone < trigger_info::NZONES; izone++)
+	// 	{
+	// 	  std::clog << "[" << a_tracker_record.finale_data_per_zone[iside][izone] << "] ";
+	// 	} // end of izone
+	//       std::clog << std::endl;
+	//     }
     
-	  for (int iside = 0; iside < trigger_info::NSIDES; iside++)
-	    {
-	      std::cout << "ZW pattern     : S" << iside << " : [";
-	      for (int ibit = 0; ibit < a_tracker_record.zoning_word_pattern[0].size(); ibit++)
-		{
-		  std::cout << a_tracker_record.zoning_word_pattern[iside][ibit];
-		}
-	      std::cout << "] ";
-	    }     
-	  std::cout << std::endl;
-	  for (int iside = 0; iside < trigger_info::NSIDES; iside++)
-	    {
-	      std::cout << "ZW near source : S" << iside << " : [";
-	      for (int ibit = 0; ibit < a_tracker_record.zoning_word_near_source[0].size(); ibit++)
-		{
-		  std::cout << a_tracker_record.zoning_word_near_source[iside][ibit];
-		}
-	      std::cout << "] ";
-	    }
-	  std::cout << std::endl;
+	//   for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+	//     {
+	//       std::clog << "ZW pattern     : S" << iside << " : [";
+	//       for (int ibit = 0; ibit < a_tracker_record.zoning_word_pattern[0].size(); ibit++)
+	// 	{
+	// 	  std::clog << a_tracker_record.zoning_word_pattern[iside][ibit];
+	// 	}
+	//       std::clog << "] ";
+	//     }     
+	//   std::clog << std::endl;
+	//   for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+	//     {
+	//       std::clog << "ZW near source : S" << iside << " : [";
+	//       for (int ibit = 0; ibit < a_tracker_record.zoning_word_near_source[0].size(); ibit++)
+	// 	{
+	// 	  std::clog << a_tracker_record.zoning_word_near_source[iside][ibit];
+	// 	}
+	//       std::clog << "] ";
+	//     }
+	//   std::clog << std::endl;
 
-	  std::cout << "Tracker level one decision : [" << a_tracker_record.finale_decision << "]" <<  std::endl << std::endl;
-	  display_matrix();
-	}
+	//   std::clog << "Tracker level one decision : [" << a_tracker_record.finale_decision << "]" <<  std::endl << std::endl;
+	//   display_matrix();
+	// }
 
       else
     	{
-    	  std::cout << "********************************************************************************" << std::endl;
-    	  std::cout << "******************** Display Tracker trigger info @ 1600 ns ********************" << std::endl;
-    	  std::cout << "******************** Clocktick 1600 ns = " << clocktick_1600ns_ << " ******************** " << std::endl << std::endl; 
-	  std::cout << "Bitset : [NSZL NSZR L M R O I] " << std::endl;
+    	  std::clog << "********************************************************************************" << std::endl;
+    	  std::clog << "******************** Display Tracker trigger info @ 1600 ns ********************" << std::endl;
+    	  std::clog << "******************** Clocktick 1600 ns = " << clocktick_1600ns_ << " ******************** " << std::endl << std::endl; 
+	  std::clog << "Bitset : [NSZL NSZR L M R O I] " << std::endl;
 	  for (int iside = 0; iside < trigger_info::NSIDES; iside++)
 	    {
-	      std::cout << "Side = " << iside << " | ";
+	      std::clog << "Side = " << iside << " | ";
 	      for (int izone = 0; izone < trigger_info::NZONES; izone++)
 		{
-		  std::cout << "[" << a_tracker_record.finale_data_per_zone[iside][izone] << "] ";
+		  std::clog << "[" << a_tracker_record.finale_data_per_zone[iside][izone] << "] ";
 		} // end of izone
-	      std::cout << std::endl;
+	      std::clog << std::endl;
 	    }
     
 	  for (int iside = 0; iside < trigger_info::NSIDES; iside++)
 	    {
-	      std::cout << "ZW pattern     : S" << iside << " : [";
+	      std::clog << "ZW pattern     : S" << iside << " : [";
 	      for (int ibit = 0; ibit < a_tracker_record.zoning_word_pattern[0].size(); ibit++)
 		{
-		  std::cout << a_tracker_record.zoning_word_pattern[iside][ibit];
+		  std::clog << a_tracker_record.zoning_word_pattern[iside][ibit];
 		}
-	      std::cout << "] ";
+	      std::clog << "] ";
 	    }     
-	  std::cout << std::endl;
+	  std::clog << std::endl;
 	  for (int iside = 0; iside < trigger_info::NSIDES; iside++)
 	    {
-	      std::cout << "ZW near source : S" << iside << " : [";
+	      std::clog << "ZW near source : S" << iside << " : [";
 	      for (int ibit = 0; ibit < a_tracker_record.zoning_word_near_source[0].size(); ibit++)
 		{
-		  std::cout << a_tracker_record.zoning_word_near_source[iside][ibit];
+		  std::clog << a_tracker_record.zoning_word_near_source[iside][ibit];
 		}
-	      std::cout << "] ";
+	      std::clog << "] ";
 	    }
-	  std::cout << std::endl;
+	  std::clog << std::endl;
 
-	  std::cout << "Tracker level one decision : [" << a_tracker_record.finale_decision << "]" <<  std::endl << std::endl;
+	  std::clog << "Tracker level one decision : [" << a_tracker_record.finale_decision << "]" <<  std::endl << std::endl;
 
     	  bool geiger_matrix[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS];
     	  for (int iside = 0; iside < trigger_info::NSIDES; iside++)
@@ -651,71 +651,71 @@ namespace snemo {
     	    }
     	}
       
-      std::cout << "************************************************************************************" << std::endl;
-      std::cout << "******************** Display Coincidence trigger info @ 1600 ns ********************" << std::endl;
-      std::cout << "******************** Clocktick 1600 ns = " <<  clocktick_1600ns_  << " ******************** " << std::endl << std::endl; 
-      std::cout << "CT |XTS|L|HG|L|L|H1|H0| ZONING S1| ZONING S0 " << std::endl; 
-      std::cout << a_coincidence_record.clocktick_1600ns << ' ';
-      std::cout << a_coincidence_record.xt_info_bitset << ' ';
-      std::cout << a_coincidence_record.LTO_gveto << ' ';
-      std::cout << a_coincidence_record.total_multiplicity_gveto << ' ';
-      std::cout << a_coincidence_record.LTO_side_1 << ' ';
-      std::cout << a_coincidence_record.LTO_side_0 << ' ';
-      std::cout << a_coincidence_record.total_multiplicity_side_1 << ' ';
-      std::cout << a_coincidence_record.total_multiplicity_side_0 << ' ';
+      std::clog << "************************************************************************************" << std::endl;
+      std::clog << "******************** Display Coincidence trigger info @ 1600 ns ********************" << std::endl;
+      std::clog << "******************** Clocktick 1600 ns = " <<  clocktick_1600ns_  << " ******************** " << std::endl << std::endl; 
+      std::clog << "CT |XTS|L|HG|L|L|H1|H0| ZONING S1| ZONING S0 " << std::endl; 
+      std::clog << a_coincidence_record.clocktick_1600ns << ' ';
+      std::clog << a_coincidence_record.xt_info_bitset << ' ';
+      std::clog << a_coincidence_record.LTO_gveto << ' ';
+      std::clog << a_coincidence_record.total_multiplicity_gveto << ' ';
+      std::clog << a_coincidence_record.LTO_side_1 << ' ';
+      std::clog << a_coincidence_record.LTO_side_0 << ' ';
+      std::clog << a_coincidence_record.total_multiplicity_side_1 << ' ';
+      std::clog << a_coincidence_record.total_multiplicity_side_0 << ' ';
       for (int iside = trigger_info::NSIDES-1; iside >= 0; iside--)
       	{
       	  for (int izone = trigger_info::NZONES-1; izone >= 0 ; izone--)
       	    {
-      	      std::cout << a_coincidence_record.calo_zoning_word[iside][izone];
+      	      std::clog << a_coincidence_record.calo_zoning_word[iside][izone];
       	    }
-      	  std::cout << ' ';
+      	  std::clog << ' ';
       	}      
-      std::cout << std::endl;
-      std::cout << "Single Side coinc : " << a_coincidence_record.single_side_coinc 
+      std::clog << std::endl;
+      std::clog << "Single Side coinc : " << a_coincidence_record.single_side_coinc 
     		<< "  |  Threshold total mult : "   << a_coincidence_record.total_multiplicity_threshold 
     		<< "  |  Trigger final decision : " << a_coincidence_record.decision  << std::endl;
       
-      std::cout << std::endl;
-      std::cout << "Bitset : [NSZL NSZR L M R O I] " << std::endl;
+      std::clog << std::endl;
+      std::clog << "Bitset : [NSZL NSZR L M R O I] " << std::endl;
       for (int iside = 0; iside < trigger_info::NSIDES; iside++)
       	{
-      	  std::cout << "Side = " << iside << " | ";
+      	  std::clog << "Side = " << iside << " | ";
       	  for (int izone = 0; izone < trigger_info::NZONES; izone++)
       	    {
-      	      std::cout << "[" << a_coincidence_record.tracker_finale_data_per_zone[iside][izone] << "] ";
+      	      std::clog << "[" << a_coincidence_record.tracker_finale_data_per_zone[iside][izone] << "] ";
       	    } // end of izone
-      	  std::cout << std::endl;
+      	  std::clog << std::endl;
       	}
 
       // To check if this information is propaged or no :
       // for (int iside = 0; iside < trigger_info::NSIDES; iside++)
       // 	{
-      // 	  std::cout << "ZW pattern     : S" << iside << " : [";
+      // 	  std::clog << "ZW pattern     : S" << iside << " : [";
       // 	  for (int ibit = 0; ibit < a_coincidence_record.zoning_word_pattern[0].size(); ibit++)
       // 	    {
-      // 	      std::cout << a_coincidence_record.zoning_word_pattern[iside][ibit];
+      // 	      std::clog << a_coincidence_record.zoning_word_pattern[iside][ibit];
       // 	    }
-      // 	  std::cout << "] ";
+      // 	  std::clog << "] ";
       // 	}     
-      // std::cout << std::endl;
+      // std::clog << std::endl;
       // for (int iside = 0; iside < trigger_info::NSIDES; iside++)
       // 	{
-      // 	  std::cout << "ZW near source : S" << iside << " : [";
+      // 	  std::clog << "ZW near source : S" << iside << " : [";
       // 	  for (int ibit = 0; ibit < a_coincidence_record.zoning_word_near_source[0].size(); ibit++)
       // 	    {
-      // 	      std::cout << a_coincidence_record.zoning_word_near_source[iside][ibit];
+      // 	      std::clog << a_coincidence_record.zoning_word_near_source[iside][ibit];
       // 	    }
-      // 	  std::cout << "] ";
+      // 	  std::clog << "] ";
       // 	}
-      std::cout << std::endl;
+      std::clog << std::endl;
       
-      std::cout << "Coincidence Clocktick : [" << a_coincidence_record.clocktick_1600ns << "]" << std::endl;
-      std::cout << "Coincidence zoning : S0 [" << a_coincidence_record.zoning_word[0] << "]" << std::endl;
-      std::cout << "                     S1 [" << a_coincidence_record.zoning_word[1] << "]" << std::endl;
+      std::clog << "Coincidence Clocktick : [" << a_coincidence_record.clocktick_1600ns << "]" << std::endl;
+      std::clog << "Coincidence zoning : S0 [" << a_coincidence_record.zoning_word[0] << "]" << std::endl;
+      std::clog << "                     S1 [" << a_coincidence_record.zoning_word[1] << "]" << std::endl;
       
-      std::cout << "Coincidence trigger mode : [" << a_coincidence_record.trigger_mode << "]" << std::endl;
-      std::cout << "Coincidence event record decision  : [" << a_coincidence_record.decision << "]" <<  std::endl << std::endl;
+      std::clog << "Coincidence trigger mode : [" << a_coincidence_record.trigger_mode << "]" << std::endl;
+      std::clog << "Coincidence event record decision  : [" << a_coincidence_record.decision << "]" <<  std::endl << std::endl;
       
       std::bitset<10> zoning_word[trigger_info::NSIDES];
       for (int i = 0; i < trigger_info::NSIDES; i++)
@@ -859,17 +859,17 @@ namespace snemo {
     
     void trigger_display_manager::display_matrix()
     {
-      std::cout << "     Zone0      Zone1       Zone2       Zone3       Zone4      Zone5       Zone6       Zone7      Zone 8     Zone9 " << std::endl;
+      std::clog << "     Zone0      Zone1       Zone2       Zone3       Zone4      Zone5       Zone6       Zone7      Zone 8     Zone9 " << std::endl;
       for (int i = 0; i < NUMBER_OF_VERTICAL_CHAR; i++)
     	{
     	  for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
     	    {
-    	      std::cout << _char_matrix_[i][j];
+    	      std::clog << _char_matrix_[i][j];
     	    }
-    	  std::cout << std::endl;
+    	  std::clog << std::endl;
     	}
-      std::cout << "     Zone0      Zone1       Zone2       Zone3       Zone4      Zone5       Zone6       Zone7      Zone 8     Zone9 " << std::endl;
-      std::cout << std::endl;
+      std::clog << "     Zone0      Zone1       Zone2       Zone3       Zone4      Zone5       Zone6       Zone7      Zone 8     Zone9 " << std::endl;
+      std::clog << std::endl;
        }
     
   } // end of namespace digitization
