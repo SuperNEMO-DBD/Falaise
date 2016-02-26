@@ -180,7 +180,7 @@ namespace snemo {
 	{
 	  _process_coinc_algo();
 	}    
-      
+            
       bool calo_decision = false;
       calo_decision = _calo_algo_.get_calo_decision();
       bool tracker_decision = false;

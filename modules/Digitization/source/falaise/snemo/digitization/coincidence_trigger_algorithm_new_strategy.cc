@@ -375,6 +375,65 @@ namespace snemo {
       return;
     }
 
+    void coincidence_trigger_algorithm_new_strategy::_creating_pair_per_clocktick(const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record> & coinc_calo_records_,
+										  const std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record> & tracker_records_)
+    {
+      std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record,tracker_trigger_algorithm_test_new_strategy::tracker_record> pair_for_a_clocktick;
+      
+      if (coinc_calo_records_.size() != 0 || tracker_records_.size() != 0)
+	{
+	  std::vector<coincidence_calo_record>::const_iterator it_calo = coinc_calo_records_.begin();
+	  for (it_calo; it_calo != _coincidence_calo_records_.end(); it_calo++)
+	    {
+	      coincidence_calo_record a_coinc_calo_record = *it_calo;
+	      pair_for_a_clocktick.first = a_coinc_calo_record;
+	      _pair_records_.push_back(pair_for_a_clocktick);
+	    } 
+	  std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record>::const_iterator it_tracker = tracker_records_.begin();
+	  // Update of the pair if calo CT = tracker CT
+	  for (it_tracker; it_tracker != tracker_records_.end(); it_tracker++)
+	    {
+	      tracker_trigger_algorithm_test_new_strategy::tracker_record a_tracker_record = *it_tracker;
+	      for (int i = 0; i < _pair_records_.size(); i++)
+		{
+		  std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record,tracker_trigger_algorithm_test_new_strategy::tracker_record> a_pair = _pair_records_[i]; 
+		  coincidence_calo_record a_coinc_calo_record = a_pair.first;
+		  if (a_tracker_record.clocktick_1600ns == a_coinc_calo_record.clocktick_1600ns)
+		    {
+		      a_pair.second = a_tracker_record;
+		      _pair_records_[i] = a_pair;
+		    }
+		  else 
+		    {
+		      a_pair.second.clocktick_1600ns = a_coinc_calo_record.clocktick_1600ns;
+		    }
+		}
+	    }
+	}
+
+      uint32_t last_clocktick = -1;
+      // Create a new pair if there is only tracker for example :
+      if (_pair_records_.size() != 0)
+	{
+	  std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record, tracker_trigger_algorithm_test_new_strategy::tracker_record> last_pair = _pair_records_.back();
+	  last_clocktick = last_pair.first.clocktick_1600ns;
+	}
+      
+      std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record>::const_iterator it_tracker =  tracker_records_.begin();
+      for (it_tracker; it_tracker != tracker_records_.end(); it_tracker++)
+	{
+	  tracker_trigger_algorithm_test_new_strategy::tracker_record a_tracker_record = *it_tracker;
+	  if (last_clocktick == -1 || a_tracker_record.clocktick_1600ns > last_clocktick)
+	    {
+	      std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record,tracker_trigger_algorithm_test_new_strategy::tracker_record> a_new_pair;	 
+	      a_new_pair.second = a_tracker_record;
+	      a_new_pair.first.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
+	      _pair_records_.push_back(a_new_pair);
+	    }
+	}
+      return;
+    }
+
     void coincidence_trigger_algorithm_new_strategy::_process_calo_tracker_coincidence(const std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record, tracker_trigger_algorithm_test_new_strategy::tracker_record> a_pair_for_a_clocktick_,
 										       coincidence_trigger_algorithm_new_strategy::coincidence_event_record & a_coincidence_record_)
 
@@ -689,56 +748,8 @@ namespace snemo {
     {
       reset_data();
       _preparing_calo_coincidence(calo_records_);
-      
-      std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record,tracker_trigger_algorithm_test_new_strategy::tracker_record> pair_for_a_clocktick;
-
-      std::vector<coincidence_calo_record>::const_iterator it_calo = _coincidence_calo_records_.begin();
-      for (it_calo; it_calo != _coincidence_calo_records_.end(); it_calo++)
-	{
-	  coincidence_calo_record a_coinc_calo_record = *it_calo;
-	  pair_for_a_clocktick.first = a_coinc_calo_record;
-	  _pair_records_.push_back(pair_for_a_clocktick);
-	}            
-      std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record>::const_iterator it_tracker = tracker_records_.begin();
-      // Update of the pair if calo CT = tracker CT
-      for (it_tracker; it_tracker != tracker_records_.end(); it_tracker++)
-      	{
-	  tracker_trigger_algorithm_test_new_strategy::tracker_record a_tracker_record = *it_tracker;
-	  for (int i = 0; i < _pair_records_.size(); i++)
-	    {
-	      std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record,tracker_trigger_algorithm_test_new_strategy::tracker_record> a_pair = _pair_records_[i]; 
-	      coincidence_calo_record a_coinc_calo_record = a_pair.first;
-	      if (a_tracker_record.clocktick_1600ns == a_coinc_calo_record.clocktick_1600ns)
-      	  	{
-		  a_pair.second = a_tracker_record;
-		  _pair_records_[i] = a_pair;
-		}
-	      else 
-		{
-		  a_pair.second.clocktick_1600ns = a_coinc_calo_record.clocktick_1600ns;
-		}
-	    }
-	} 
-
-      // Create a new pair if there is only tracker for example :
-      it_tracker = tracker_records_.begin();
-      std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record,tracker_trigger_algorithm_test_new_strategy::tracker_record> last_pair_in_vector = _pair_records_.back();
-      for (it_tracker; it_tracker != tracker_records_.end(); it_tracker++)
-      	{
-	  tracker_trigger_algorithm_test_new_strategy::tracker_record a_tracker_record = *it_tracker;
-	  uint32_t last_clocktick = -1;
-	  if (last_pair_in_vector.second.clocktick_1600ns != -1) last_clocktick = last_pair_in_vector.second.clocktick_1600ns;
-	  else if(last_pair_in_vector.first.clocktick_1600ns != -1)  last_clocktick = last_pair_in_vector.second.clocktick_1600ns;
-
-	  if (last_clocktick != -1 && a_tracker_record.clocktick_1600ns > last_clocktick)
-	    {
-	      std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record,tracker_trigger_algorithm_test_new_strategy::tracker_record> a_new_pair;
-	      a_new_pair.second = a_tracker_record;
-	      a_new_pair.first.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
-	      _pair_records_.push_back(a_new_pair);
-	    }
-	}
-
+      _creating_pair_per_clocktick(_coincidence_calo_records_, tracker_records_);
+     
       std::vector<std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record,tracker_trigger_algorithm_test_new_strategy::tracker_record> >::iterator it_pair = _pair_records_.begin();
 
       for (it_pair; it_pair != _pair_records_.end(); it_pair++)
@@ -761,7 +772,6 @@ namespace snemo {
 	      _previous_event_record_.counter_1600ns = 625 - (a_pair.first.clocktick_1600ns - _previous_event_record_.previous_clocktick_1600ns);
 	      
 	      if (_previous_event_record_.counter_1600ns <= 620)
-
 		{	      	  
 		  coincidence_event_record a_delayed_event_record;
 	      	  _process_delayed_coincidence(a_pair, a_delayed_event_record); // Compare calo record & tracker record with previous event

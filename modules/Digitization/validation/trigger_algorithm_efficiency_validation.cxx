@@ -452,7 +452,6 @@ int main( int  argc_ , char **argv_  )
 		    total_number_of_gg_cells = signal_data.get_number_of_geiger_signals();
 		    total_number_of_prompt_gg_cells = signal_data.get_number_of_prompt_geiger_signals(time_limit);
 		    total_number_of_delayed_gg_cells = signal_data.get_number_of_delayed_geiger_signals(time_limit);
-
 		  } // end of if has geiger signal
 
 		// Creation of outputs collection structures for calo and tracker
@@ -461,11 +460,11 @@ int main( int  argc_ , char **argv_  )
 		
 		// Reseting trigger display
 		my_trigger_display.reset_matrix_pattern();
-		
+
 		// Trigger process
 		my_trigger_algo.process(my_calo_ctw_data,
 					my_geiger_ctw_data);
-		  
+		
 		// Finale structures :
 		calo_collection_records = my_trigger_algo.get_calo_records_vector();
 		tracker_collection_records = my_trigger_algo.get_tracker_records_vector();
@@ -474,11 +473,6 @@ int main( int  argc_ , char **argv_  )
 	        //if (debug) my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
 		//if (debug) my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
 	        //if (debug) my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
-		
-		// for (int iclocktick = 0; iclocktick <= 10; iclocktick++)
-		//   {
-		//     my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo, iclocktick);
-		//   }
 
 		
 		if (debug) std::clog << "********* Size of Finale structures for one event *********" << std::endl;
@@ -495,7 +489,10 @@ int main( int  argc_ , char **argv_  )
 	    if (debug) std::clog << "trigger_finale_decision         [" << raw_trigger_prompt_decision << "]" << std::endl;
 	    if (debug) std::clog << "delayed trigger_finale_decision [" << raw_trigger_delayed_decision << "]" << std::endl;
 	    
-	    if (!raw_trigger_prompt_decision && raw_trigger_delayed_decision) std::cout <<  " ******************************* ANORMAL *******************" << std::endl;
+	    if (!raw_trigger_prompt_decision && raw_trigger_delayed_decision) {
+	      std::cout << "psd count = " << psd_count << std::endl;
+	      std::cout <<  " ******************************* ANORMAL *******************" << std::endl;
+	    }
 	    
 	    if (coincidence_collection_calo_records.size() != 0)
 	      {
@@ -532,8 +529,8 @@ int main( int  argc_ , char **argv_  )
 	    else writer_2.process(ER);
 	    if (fake_trigger_prompt_decision && !prompt_trigger_decision_to_fake_trigger) writer_3.process(ER);
 	    else if (fake_trigger_prompt_decision && prompt_trigger_decision_to_fake_trigger) writer_4.process(ER);
-	    if (fake_trigger_prompt_decision && !delayed_trigger_decision_to_fake_trigger) writer_5.process(ER);
-	    else if (fake_trigger_prompt_decision && delayed_trigger_decision_to_fake_trigger) writer_6.process(ER);
+	    if (fake_trigger_prompt_decision && prompt_trigger_decision_to_fake_trigger && !delayed_trigger_decision_to_fake_trigger) writer_5.process(ER);
+	    else if (fake_trigger_prompt_decision && prompt_trigger_decision_to_fake_trigger && delayed_trigger_decision_to_fake_trigger) writer_6.process(ER);
 
 	    my_trigger_algo.clear_records();
 	      

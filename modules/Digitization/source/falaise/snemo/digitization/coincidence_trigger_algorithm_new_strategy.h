@@ -151,6 +151,10 @@ namespace snemo {
 			/// Compute clocktick 1600ns for calo records
 			void _compute_clocktick_1600ns(const uint32_t clocktick_25ns_, uint32_t & clocktick_1600ns_);
 			
+			/// Creating a per of calo record and tracker record for each clocktick
+			void _creating_pair_per_clocktick(const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record> & coinc_calo_records_,
+																				const std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record> & tracker_records_);
+			
 			/// CAlo tRAcker COincidence (CARACO) process for spatial coincidence between calorimeter and tracker each 1600ns
 			void _process_calo_tracker_coincidence(const std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record, tracker_trigger_algorithm_test_new_strategy::tracker_record> a_pair_for_a_clocktick_,
 																						 coincidence_trigger_algorithm_new_strategy::coincidence_event_record & a_coincidence_record_);
@@ -174,7 +178,7 @@ namespace snemo {
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
 			unsigned int _calorimeter_gate_size_; //!< Size of calorimeter gate for extension of calo records during X CT 1600ns
 			std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record> _coincidence_calo_records_; //!< Vector of coincidence calo tracker record and delayed coincidence record
-			std::vector<std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record,tracker_trigger_algorithm_test_new_strategy::tracker_record> > _pair_records_;
+			std::vector<std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record, tracker_trigger_algorithm_test_new_strategy::tracker_record> > _pair_records_;
 			previous_event_record _previous_event_record_; //!< Previous prompt event record
 			bool _caraco_decision_; //!< Decision for caraco trigger algorihtm
 			bool _delayed_coincidence_decision_; //!< Decision for delayed (APE or DAVE) trigger algorithm

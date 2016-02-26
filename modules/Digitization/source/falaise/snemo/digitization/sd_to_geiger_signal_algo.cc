@@ -127,13 +127,13 @@ namespace snemo {
 			const double other_gg_hit_time = other_geiger_hit.get_time_start();
 			if (gg_hit_time > other_gg_hit_time) 
 			  {
-			    bool already_hit = true;
-			    geiger_hit.grab_auxiliaries().store("already_hit", already_hit);
+			    bool geiger_already_hit = true;
+			    if (!geiger_hit.get_auxiliaries().has_flag("geiger_already_hit")) geiger_hit.grab_auxiliaries().store("geiger_already_hit", geiger_already_hit);
 			  }
 			else 
 			  {
-			    bool already_hit = true;
-			    other_geiger_hit.grab_auxiliaries().store("already_hit", already_hit);
+			    bool geiger_already_hit = true;
+			    if (!other_geiger_hit.get_auxiliaries().has_flag("geiger_already_hit")) other_geiger_hit.grab_auxiliaries().store("geiger_already_hit", geiger_already_hit);
 			  }
 		      }
 		  }
@@ -145,7 +145,7 @@ namespace snemo {
 	      {
 		const mctools::base_step_hit & geiger_hit = flaged_sd.get_step_hit("gg", ihit);
 	    
-		if (geiger_hit.get_auxiliaries().has_flag("already_hit")) {}
+		if (geiger_hit.get_auxiliaries().has_flag("geiger_already_hit") || geiger_hit.get_auxiliaries().has_flag("other_geiger_already_hit")) {}
 		else
 		  {
 		    // extract the corresponding geom ID:

@@ -114,16 +114,16 @@ namespace snemo {
 		else 
 		  {
 		    int signal_data_size = signal_data.get_calo_signals().size();
-		    bool already_hit = false;
+		    bool calo_already_hit = false;
 		    
 		    std::set<geomtools::geom_id>::iterator it_set = set_of_hit_gid.begin();
 		    for (it_set; it_set != set_of_hit_gid.end(); it_set++)
 		      {
 			geomtools::geom_id a_gid = *it_set;
-			if (calo_gid == a_gid) already_hit = true;
+			if (calo_gid == a_gid) calo_already_hit = true;
 		      }
 		    
-		    if (already_hit) // update calo signal
+		    if (calo_already_hit) // update calo signal
 		      {
 			int hit_calo_signal_position = -1;
 			for (int jsig = 0; jsig < signal_data_size; jsig++)
@@ -180,16 +180,16 @@ namespace snemo {
 		else 
 		  {
 		    int signal_data_size = signal_data.get_calo_signals().size();
-		    bool already_hit = false;
+		    bool calo_already_hit = false;
 		    
 		    std::set<geomtools::geom_id>::iterator it_set = set_of_hit_gid.begin();
 		    for (it_set; it_set != set_of_hit_gid.end(); it_set++)
 		      {
 			geomtools::geom_id a_gid = *it_set;
-			if (calo_gid == a_gid) already_hit = true;
+			if (calo_gid == a_gid) calo_already_hit = true;
 		      }
 		    
-		    if (already_hit) // update calo signal
+		    if (calo_already_hit) // update calo signal
 		      {
 			int hit_calo_signal_position = -1;
 			for (int jsig = 0; jsig < signal_data_size; jsig++)
@@ -246,16 +246,16 @@ namespace snemo {
 		else 
 		  {
 		    int signal_data_size = signal_data.get_calo_signals().size();
-		    bool already_hit = false;
+		    bool calo_already_hit = false;
 		    
 		    std::set<geomtools::geom_id>::iterator it_set = set_of_hit_gid.begin();
 		    for (it_set; it_set != set_of_hit_gid.end(); it_set++)
 		      {
 			geomtools::geom_id a_gid = *it_set;
-			if (calo_gid == a_gid) already_hit = true;
+			if (calo_gid == a_gid) calo_already_hit = true;
 		      }
 		    
-		    if (already_hit) // update calo signal
+		    if (calo_already_hit) // update calo signal
 		      {
 			int hit_calo_signal_position = -1;
 			for (int jsig = 0; jsig < signal_data_size; jsig++)
