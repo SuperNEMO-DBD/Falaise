@@ -107,7 +107,6 @@ namespace snemo {
 
 	if (sd_.has_step_hits("gg"))
 	  {
-	    
 	    // Loop on Geiger step hits:
 	    const size_t number_of_hits = sd_.get_number_of_step_hits("gg");
 	

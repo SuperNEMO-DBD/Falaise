@@ -84,7 +84,7 @@ namespace snemo {
 
     void trigger_algorithm::reset()
     {
-      DT_THROW_IF(!is_initialized(), std::logic_error, "Calo trigger algorithm is not initialized, it can't be reset ! ");
+      DT_THROW_IF(!is_initialized(), std::logic_error, "Trigger algorithm is not initialized, it can't be reset ! ");
       _initialized_ = false;
       _electronic_mapping_ = 0;
       _activate_coincidence_ = false;
@@ -93,7 +93,7 @@ namespace snemo {
     
     void trigger_algorithm::clear_records()
     {
-      DT_THROW_IF(!is_initialized(), std::logic_error, "Calo trigger algorithm is not initialized, it can't be reset ! ");
+      DT_THROW_IF(!is_initialized(), std::logic_error, "Trigger algorithm is not initialized, it can't be reset ! ");
       _tracker_records_.clear();
       _calo_records_.clear();
       _coincidence_records_.clear();

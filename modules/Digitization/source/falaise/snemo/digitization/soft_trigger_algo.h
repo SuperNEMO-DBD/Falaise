@@ -32,17 +32,12 @@
  *
  */
 
+// Third party :
+// - Bayeux/mctools:
+#include <mctools/simulated_data.h>
 
 #ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_SOFT_TRIGGER_ALGO_H
 #define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_SOFT_TRIGGER_ALGO_H
-
-// Standard library :
-#include <string>
-#include <bitset>
-
-namespace datatools {
-  class properties;
-}
 
 namespace snemo { 
   
@@ -50,56 +45,47 @@ namespace snemo {
 
     /// \brief Soft trigger algorithm class to cut SD files.
     class soft_trigger_algo
-    {        
+    { 
+		public : 
+
+      /// Default constructor :
+      soft_trigger_algo();
+
+      /// Destructor
+      virtual ~soft_trigger_algo();
+      
       /// Getting initialization flag
       bool is_initialized() const;
-      
-      /// Setting logging priority
-      void set_logging_priority(const datatools::logger::priority priority_);
-
-      /// Getting logging priority
-      datatools::logger::priority get_logging_priority() const;
-
-      /// Check the geometry manager
-      bool has_geometry_manager() const;
-
-      /// Address the geometry manager
-      void set_geometry_manager(const geomtools::manager & gmgr_);
-      
+     
       /// Initialize the driver through configuration properties
-      void initialize(const datatools::properties & setup_);
+      void initialize();
       
       /// Reset
       void reset();
       
+      /// Get the boolean status to know if we keep a SD or not
+      bool get_status_for_a_SD();
+      
        /// Data record processing
-      void process(datatools::things & data_record_);
+      bool process(const mctools::simulated_data & SD_);
       
    protected:
 
       /// Soft trigger algo process
-      void _process(datatools::things & data_record_);
+      bool _process(const mctools::simulated_data & SD_);
 
     private :
      
       // Configuration :
-      bool _initialized_;                               //!< Initialization flag
-      datatools::logger::priority _logging_priority_;  //!< Logging priority
-      const geomtools::manager * _geometry_manager_;   //!< The SuperNEMO geometry manager
-
+      bool _initialized_;     //!< Initialization flag
+      bool _status_for_a_SD_; //!< Flag to know if the soft trigger is passed or not.
     };
 
   } // end of namespace digitization
 
 } // end of namespace snemo
-
-
-
-
-
-
     
-#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_TRIGGER_ALGORITHM_H
+#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_SOFT_TRIGGER_ALGO_H
 
 /* 
 ** Local Variables: --
