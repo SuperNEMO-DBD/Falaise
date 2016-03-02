@@ -82,7 +82,7 @@ namespace snemo {
       std::string _SD_label_; //!< The label of the simulated data bank
 
       /// Fake Trigger Algo :
-      boost::scoped_ptr<snemo::digitization::fake_trigger_algo> _STA_;
+      boost::scoped_ptr<snemo::digitization::fake_trigger_algo> _algo_;
 
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(fake_trigger_module);

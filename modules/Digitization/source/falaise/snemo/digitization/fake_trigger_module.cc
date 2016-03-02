@@ -40,9 +40,7 @@ namespace snemo {
 
     void fake_trigger_module::_set_defaults()
     {
-      _SD_label_ =  snemo::datamodel::data_info::default_simulated_data_label();
-
-      _STA_.reset();
+      _SD_label_ = snemo::datamodel::data_info::default_simulated_data_label();
       return;
     }
     
@@ -59,7 +57,8 @@ namespace snemo {
         _SD_label_ = setup_.fetch_string("SD_label");
       }
       // Algo :
-
+      _algo_.reset(new snemo::digitization::fake_trigger_algo);
+      _algo_->initialize();
       // Tag the module as initialized :
       _set_initialized(true);
     }    
@@ -71,6 +70,12 @@ namespace snemo {
                   "Module '" << get_name() << "' is not initialized !");
 
       _set_initialized(false);
+      if (_algo_.get() != 0) {
+	if (_algo_->is_initialized()) {
+	  _algo_->reset();
+	}
+	_algo_.reset();
+      }
       _set_defaults();
       return;
     }
@@ -99,16 +104,14 @@ namespace snemo {
        ********************/
 
       // Main processing method :
-      this->_process(the_simulated_data);
-
-      return dpp::base_module::PROCESS_SUCCESS;
+      return this->_process(the_simulated_data);
     }
     
     dpp::base_module::process_status fake_trigger_module::_process(const mctools::simulated_data & SD_)
     {
       DT_LOG_TRACE(get_logging_priority(), "Entering...");
-      bool result_for_a_SD = _STA_->process(SD_);
-      if (!result_for_a_SD) return dpp::base_module::PROCESS_ERROR;
+      bool result_for_a_SD = _algo_->process(SD_);
+      if (!result_for_a_SD) return dpp::base_module::PROCESS_STOP;
       else return dpp::base_module::PROCESS_SUCCESS;
     }
 
@@ -152,7 +155,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::digitization::fake_trigger_module, ocd_)
 
   ocd_.set_validation_support(true);
   ocd_.lock();
-
 
   return;
 }
