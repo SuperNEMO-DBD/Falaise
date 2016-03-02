@@ -1,19 +1,19 @@
-/// \file falaise/snemo/digitization/soft_trigger_algo.cc
+/// \file falaise/snemo/digitization/fake_trigger_algo.cc
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
 // Ourselves:
-#include <falaise/snemo/digitization/soft_trigger_algo.h>
+#include <falaise/snemo/digitization/fake_trigger_algo.h>
 
 namespace snemo {
   
   namespace digitization {
     
-    soft_trigger_algo::soft_trigger_algo()
+    fake_trigger_algo::fake_trigger_algo()
     {
       return;
     }
   
-    soft_trigger_algo::~soft_trigger_algo()
+    fake_trigger_algo::~fake_trigger_algo()
     {   
       if (is_initialized())
 	{
@@ -22,34 +22,34 @@ namespace snemo {
       return;
     }
 
-    bool soft_trigger_algo::is_initialized() const
+    bool fake_trigger_algo::is_initialized() const
     {
       return _initialized_;
     }
          
-    void soft_trigger_algo::initialize()
+    void fake_trigger_algo::initialize()
     {
       
       _initialized_ = true;
       return;
     }
     
-    void soft_trigger_algo::reset()
+    void fake_trigger_algo::reset()
     {
-      DT_THROW_IF(!is_initialized(), std::logic_error, "Soft trigger algo is not initialized, it can't be reset ! ");
+      DT_THROW_IF(!is_initialized(), std::logic_error, "Fake trigger algo is not initialized, it can't be reset ! ");
       _initialized_ = false;
       return;
     }
             
-    bool soft_trigger_algo::process(const mctools::simulated_data & SD_)
+    bool fake_trigger_algo::process(const mctools::simulated_data & SD_)
     {
-      DT_THROW_IF(!is_initialized(), std::logic_error, "Soft trigger algo is not initialized, it can't process ! ");
+      DT_THROW_IF(!is_initialized(), std::logic_error, "Fake trigger algo is not initialized, it can't process ! ");
       bool process_response = false;
       process_response = _process(SD_);
       return process_response;
     }
     
-    bool soft_trigger_algo::_process(const mctools::simulated_data & SD_)
+    bool fake_trigger_algo::_process(const mctools::simulated_data & SD_)
     {
       std::size_t number_of_calorimeters = 0;
       std::size_t number_of_geiger_cells = 0;

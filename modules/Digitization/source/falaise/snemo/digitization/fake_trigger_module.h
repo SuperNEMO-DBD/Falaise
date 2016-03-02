@@ -1,4 +1,4 @@
-/// \file falaise/snemo/digitization/soft_trigger_module.h
+/// \file falaise/snemo/digitization/fake_trigger_module.h
 /* Author(s)     : Guillaume Oliviero <goliviero@lpccaen.in2p3.fr>
  *                 Francois Mauger <mauger@lpccaen.in2p3.fr>
  *                 Yves Lemiere <lemiere@lpccaen.in2p3.fr>
@@ -24,9 +24,9 @@
  *
  * Description:
  *
- * A module which goal is to process 'soft_trigger_algo' to cut SD files
+ * A module which goal is to process 'fake_trigger_algo' to cut SD files
  * from a datatools::things coming from flsimulate
- * The physical selection for a soft trigger is configurable but the 
+ * The physical selection for a fake trigger is configurable but the 
  * default configuration is 1 PMT hit and 3 Geiger cells hits.
  *
  * History:
@@ -39,25 +39,25 @@
 // - Bayeux/mctools:
 #include <mctools/simulated_data.h>
 
-#ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_SOFT_TRIGGER_MODULE_H
-#define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_SOFT_TRIGGER_MODULE_H
+#ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_FAKE_TRIGGER_MODULE_H
+#define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_FAKE_TRIGGER_MODULE_H
 
 namespace snemo { 
   
   namespace digitization {
 
-    class soft_trigger_algo;
+    class fake_trigger_algo;
     
-    /// \brief Soft trigger algorithm class to cut SD files.
-    class soft_trigger_module :  public dpp::base_module
+    /// \brief Fake trigger algorithm class to cut SD files.
+    class fake_trigger_module :  public dpp::base_module
     {
     public :
 
       /// Constructor
-      soft_trigger_module(datatools::logger::priority = datatools::logger::PRIO_FATAL);
+      fake_trigger_module(datatools::logger::priority = datatools::logger::PRIO_FATAL);
 
       /// Destructor
-      virtual ~soft_trigger_module();
+      virtual ~fake_trigger_module();
 
       /// Initialization
       virtual void initialize(const datatools::properties  & setup_,
@@ -81,11 +81,11 @@ namespace snemo {
       
       std::string _SD_label_; //!< The label of the simulated data bank
 
-      /// Soft Trigger Algo :
-      boost::scoped_ptr<snemo::digitization::soft_trigger_algo> _STA_;
+      /// Fake Trigger Algo :
+      boost::scoped_ptr<snemo::digitization::fake_trigger_algo> _STA_;
 
       // Macro to automate the registration of the module :
-      DPP_MODULE_REGISTRATION_INTERFACE(soft_trigger_module);
+      DPP_MODULE_REGISTRATION_INTERFACE(fake_trigger_module);
     };
   } // end of namespace digitization
 
@@ -94,9 +94,9 @@ namespace snemo {
 #include <datatools/ocd_macros.h>
 
 // Declare the OCD interface of the module
-DOCD_CLASS_DECLARATION(snemo::digitization::soft_trigger_module)
+DOCD_CLASS_DECLARATION(snemo::digitization::fake_trigger_module)
 
-#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_SOFT_TRIGGER_MODULE_H
+#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_FAKE_TRIGGER_MODULE_H
 
 /* 
 ** Local Variables: --

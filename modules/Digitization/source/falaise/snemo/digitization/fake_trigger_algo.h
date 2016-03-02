@@ -1,4 +1,4 @@
-/// \file falaise/snemo/digitization/soft_trigger_algo.h
+/// \file falaise/snemo/digitization/fake_trigger_algo.h
 /* Author(s)     : Guillaume Oliviero <goliviero@lpccaen.in2p3.fr>
  *                 Francois Mauger <mauger@lpccaen.in2p3.fr>
  *                 Yves Lemiere <lemiere@lpccaen.in2p3.fr>
@@ -24,8 +24,8 @@
  *
  * Description:
  *
- * An algorithm class that implements a soft trigger to cut SD files.  
- * The physical selection for a soft trigger is configurable but the 
+ * An algorithm class that implements a fake trigger to cut SD files.  
+ * The physical selection for a fake trigger is configurable but the 
  * default configuration is 1 PMT hit and 3 Geiger cells hits.
  *
  * History:
@@ -36,23 +36,23 @@
 // - Bayeux/mctools:
 #include <mctools/simulated_data.h>
 
-#ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_SOFT_TRIGGER_ALGO_H
-#define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_SOFT_TRIGGER_ALGO_H
+#ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_FAKE_TRIGGER_ALGO_H
+#define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_FAKE_TRIGGER_ALGO_H
 
 namespace snemo { 
   
   namespace digitization {
 
-    /// \brief Soft trigger algorithm class to cut SD files.
-    class soft_trigger_algo
+    /// \brief Fake trigger algorithm class to cut SD files.
+    class fake_trigger_algo
     { 
 		public : 
 
       /// Default constructor :
-      soft_trigger_algo();
+      fake_trigger_algo();
 
       /// Destructor
-      virtual ~soft_trigger_algo();
+      virtual ~fake_trigger_algo();
       
       /// Getting initialization flag
       bool is_initialized() const;
@@ -71,21 +71,21 @@ namespace snemo {
       
    protected:
 
-      /// Soft trigger algo process
+      /// Fake trigger algo process
       bool _process(const mctools::simulated_data & SD_);
 
     private :
      
       // Configuration :
       bool _initialized_;     //!< Initialization flag
-      bool _status_for_a_SD_; //!< Flag to know if the soft trigger is passed or not.
+      bool _status_for_a_SD_; //!< Flag to know if the fake trigger is passed or not.
     };
 
   } // end of namespace digitization
 
 } // end of namespace snemo
     
-#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_SOFT_TRIGGER_ALGO_H
+#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_FAKE_TRIGGER_ALGO_H
 
 /* 
 ** Local Variables: --
