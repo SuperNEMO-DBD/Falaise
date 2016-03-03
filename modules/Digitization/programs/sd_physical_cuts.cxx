@@ -26,6 +26,14 @@
 #include "TFile.h"
 #include "TTree.h"
 
+/*
+  PHYSICALLY NOT WORKING : problems on geiger cells number !!!! Take care
+  Process can be launched but the computing for geiger cells number is false
+  If You want a Fake trigger, use the fake trigger cut / module
+
+  -> sd_physical_cuts : maybe to delete !!
+ */
+
 int main(int  argc_ , char ** argv_)
 {
   FALAISE_INIT();

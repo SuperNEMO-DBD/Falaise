@@ -112,9 +112,7 @@ namespace snemo {
       bool result_for_a_SD = _algo_->process(SD);
       if (!result_for_a_SD) cut_returned = cuts::SELECTION_REJECTED;
       else cut_returned = cuts::SELECTION_ACCEPTED;
-      
-      std::clog << "DEBUG : Cut returned value [" << cut_returned << "]" << std::endl;
-
+            
       return cut_returned;
     }
 

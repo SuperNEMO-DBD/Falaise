@@ -58,7 +58,6 @@ namespace snemo {
 	{
 	  // Loop on main calo step hits:
 	  const size_t number_of_main_calo_hits = SD_.get_number_of_step_hits("calo");
-	  std::clog << "Nmbr of main calo hits = " << number_of_main_calo_hits << std::endl;
 	  //std::map<geomtools::geom_id, double> map_of_gid_and_energy;
 	  std::set<geomtools::geom_id> set_of_gid;
 	  
@@ -81,14 +80,12 @@ namespace snemo {
 		}
 	    }
 	  number_of_calorimeters += set_of_gid.size();
-	  std::clog << "Total Calo nmbr (after main add) = " << number_of_calorimeters << std::endl;
 	}
    
       if (SD_.has_step_hits("xcalo"))
 	{
 	  // Loop on xcalo step hits:
 	  const size_t number_of_xwall_calo_hits = SD_.get_number_of_step_hits("xcalo");
-	  std::clog << "Nmbr of xwall calo hits = " << number_of_xwall_calo_hits << std::endl;
 	  
 	  std::set<geomtools::geom_id> set_of_gid;
 	  
@@ -110,14 +107,12 @@ namespace snemo {
 		}
 	    }
 	  number_of_calorimeters += set_of_gid.size();
-	  std::clog << "Total Calo nmbr (after xwall add) = " << number_of_calorimeters << std::endl;
 	}
      
       if (SD_.has_step_hits("gveto"))
 	{
 	  // Loop on gveto calo step hits:
 	  const size_t number_of_gveto_calo_hits = SD_.get_number_of_step_hits("gveto");
-	  std::clog << "Nmbr of gveto hits = " << number_of_gveto_calo_hits << std::endl;
 	  
 	  std::set<geomtools::geom_id> set_of_gid;
 	  
@@ -139,9 +134,7 @@ namespace snemo {
 		}
 	    }
 	  number_of_calorimeters += set_of_gid.size();
-	  std::clog << "Total Calo nmbr (after gveto add) = " << number_of_calorimeters << std::endl;
 	}	    
-      std::clog << "Total Calo nmbr = " << number_of_calorimeters << std::endl;
       
       if (SD_.has_step_hits("gg"))
 	{
@@ -165,7 +158,6 @@ namespace snemo {
 	    }
 	  number_of_geiger_cells = set_of_gg_gid.size();	  
 	}
-      std::clog << "Total Geiger cells  = " << number_of_geiger_cells << std::endl;
       
       if (number_of_calorimeters >= 1 && number_of_geiger_cells >= 3) _status_for_a_SD_ = true;
       else _status_for_a_SD_ = false;
