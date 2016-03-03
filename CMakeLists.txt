@@ -137,7 +137,7 @@ endif()
 option(FALAISE_WITH_DEVELOPER_TOOLS "Build/install developer tools" ON)
 mark_as_advanced(FALAISE_WITH_DEVELOPER_TOOLS)
 
-option(FALAISE_USE_SYSTEM_BAYEUX "Use system-installed Bayeux" OFF)
+option(FALAISE_USE_SYSTEM_BAYEUX "Use system-installed Bayeux" ON)
 mark_as_advanced(FALAISE_USE_SYSTEM_BAYEUX)
 
 if(FALAISE_USE_SYSTEM_BAYEUX)
@@ -148,6 +148,7 @@ if(FALAISE_USE_SYSTEM_BAYEUX)
   "  )
   endif()
 else()
+  message(FATAL_ERROR "Embedded Bayeux is not supported anymore! Please use system Bayeux!")
   # - Configure internal build
   set(BAYEUX_EMBEDDED 1)
   set(BAYEUX_BUILDPRODUCT_DIR ${FALAISE_BUILDPRODUCT_DIR})
@@ -159,7 +160,7 @@ else()
   set(BAYEUX_WITH_DEVELOPER_TOOLS ${FALAISE_BUILD_DEVELOPER_TOOLS})
 
   # - Build
-  add_subdirectory(utilities/flbayeux)
+  # add_subdirectory(utilities/flbayeux)
 
   # - Set up so that Falaise will use the internal build
   # Hacked temporarily so we can use this technique on CMake < 2.8.11
@@ -239,7 +240,7 @@ install(FILES
 #-----------------------------------------------------------------------
 # - Plugins/modules installation - Must come last because they must find
 # Falaise
-### add_subdirectory(modules)
+# add_subdirectory(modules)
 
 # # - Online software
 # option(FALAISE_ONLINE_EXPERIMENT "Built the experiment on-line software" ON)
