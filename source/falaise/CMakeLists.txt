@@ -108,7 +108,7 @@ endif()
 #
 # - NB assumes each test .cxx file generates a single executable
 # - We also output the executables to a dedicated directory
-set(_falaise_TEST_ENVIRONMENT "FALAISE_RESOURCE_DIR=${Falaise_DATAROOTDIR}/resources")
+set(_falaise_TEST_ENVIRONMENT "FALAISE_RESOURCE_DIR=${FALAISE_DATAROOTDIR}/resources")
 if(FALAISE_ENABLE_TESTING)
   foreach(_testsource ${FalaiseLibrary_TESTS})
     get_filename_component(_testname "${_testsource}" NAME_WE)
