@@ -9,11 +9,12 @@ project(FalaiseChargedParticleTrackingPlugin)
 
 # Ensure our code can see the Falaise headers
 #include_directories(${Falaise_INCLUDE_DIRS})
-include_directories(${Falaise_BUILDPRODUCT_DIR}/include)
-include_directories(${Falaise_BUILDPRODUCT_DIR}/include/falaise)
+include_directories(${FALAISE_BUILDPRODUCT_DIR}/include)
+include_directories(${FALAISE_BUILDPRODUCT_DIR}/include/falaise)
 include_directories(${Bayeux_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source)
+# include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../TrackFit/source)
 
 
 ############################################################################################
@@ -43,7 +44,11 @@ add_library(Falaise_ChargedParticleTracking SHARED
   ${FalaiseChargedParticleTrackingPlugin_HEADERS}
   ${FalaiseChargedParticleTrackingPlugin_SOURCES})
 
-target_link_libraries(Falaise_ChargedParticleTracking Falaise)
+target_link_libraries(Falaise_ChargedParticleTracking
+  Falaise
+  # Falaise_TrackFit
+  # TrackFit
+  )
 
 # Apple linker requires dynamic lookup of symbols, so we
 # add link flags on this platform

@@ -15,8 +15,8 @@ endif()
 
 # - List of plugins:
 set(_falaise_PLUGINS
-  things2root
-  # Digitization
+  # things2root
+  # # Digitization
   CAT
   MockTrackerClusterizer
   TrackFit
