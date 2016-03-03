@@ -50,7 +50,7 @@ if(APPLE)
 endif()
 
 # Install it:
-install(TARGETS TrackFit DESTINATION ${CMAKE_INSTALL_LIBDIR}/${Falaise_PLUGINLIBDIR})
+install(TARGETS TrackFit DESTINATION ${CMAKE_INSTALL_LIBDIR}/${FALAISE_PLUGINLIBDIR})
 
 
 ############################################################################################
