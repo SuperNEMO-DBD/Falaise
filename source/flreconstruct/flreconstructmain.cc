@@ -40,6 +40,7 @@
 // - Bayeux
 #include "bayeux/version.h"
 #include "bayeux/datatools/logger.h"
+#include "bayeux/datatools/exception.h"
 #include "bayeux/datatools/library_loader.h"
 #include "bayeux/datatools/service_manager.h"
 #include "bayeux/dpp/module_manager.h"
@@ -452,28 +453,25 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
 
     // Feed through pipeline
     dpp::base_module::process_status pStatus = pipeline_->process(workItem);
-    // TO DO:
-    // Here the meaning of STOP, ERROR and FATAL (from dpp::base_module::process_status)
-    // needs to be clarified.
-    // Should be :
-    // if(pStatus == dpp::base_module::PROCESS_STOP) break;
-    // else if(pStatus == dpp::base_module::PROCESS_ERROR_STOP) break;
-    // else if(pStatus == dpp::base_module::PROCESS_ERROR) continue;
+    DT_THROW_IF(pStatus == dpp::base_module::PROCESS_INVALID, std::logic_error,
+                "Bug!!! Module '" << pipeline_->get_name() << "' did not return a valid processing status!");
 
-    // FATAL means actual processing has failed on current item
-    if(pStatus == dpp::base_module::PROCESS_FATAL) continue;
+    // FATAL, ERROR and ERROR_STOP status triggers the abortion of the processing loop.
+    // This is a very conservative approach, but it is compatible with the default behaviour of the
+    // bxdpp_processing executable.
+    if(pStatus == dpp::base_module::PROCESS_FATAL) break;
+    if(pStatus == dpp::base_module::PROCESS_ERROR) break;
+    if(pStatus == dpp::base_module::PROCESS_ERROR_STOP) break;
 
-    // INVALID means something very badly wrong, so need to exit whole
-    // event loop.
-    // Should be :
-    // if(pStatus == dpp::base_module::PROCESS_FATAL) break;
-    if(pStatus == dpp::base_module::PROCESS_INVALID) break;
+    // STOP means the current event should not be processed anymore nor saved
+    // but the loop can continue with other items
+    if(pStatus == dpp::base_module::PROCESS_STOP) continue;
 
     // Write item
     if(recOutput) {
       pStatus = recOutput->process(workItem);
       if(pStatus != dpp::base_module::PROCESS_OK) {
-        DT_LOG_FATAL(clArgs.logLevel,"Failed to read data record from input source");
+        DT_LOG_FATAL(clArgs.logLevel,"Failed to write data record to output sink");
         break;
       }
     }
