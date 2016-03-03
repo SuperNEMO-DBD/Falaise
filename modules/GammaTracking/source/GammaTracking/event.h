@@ -5,6 +5,7 @@
 #include <iostream>
 #include <list>
 #include <string>
+#include <map>
 
 // Third party:
 // - Bayeux/geomtools:
