@@ -25,7 +25,7 @@ namespace snemo {
   namespace datamodel {
 
     /// \brief The data structure that hosts information about the raw trigger informations
-    class raw_trigger_infos : DATATOOLS_SERIALIZABLE_CLASS,
+    class raw_trigger_infos : public datatools::i_serializable,
                               public datatools::i_tree_dumpable
     {
     public:

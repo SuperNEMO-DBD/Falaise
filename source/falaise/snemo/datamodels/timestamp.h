@@ -28,7 +28,7 @@ namespace snemo {
 
   namespace datamodel {
 
-    class timestamp : DATATOOLS_SERIALIZABLE_CLASS
+    class timestamp : public datatools::i_serializable
     {
     public:
 

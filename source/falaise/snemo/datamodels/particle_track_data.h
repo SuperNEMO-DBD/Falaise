@@ -35,7 +35,7 @@ namespace snemo {
 
     /// \brief SuperNEMO particle track model
     //  To be done...
-    class particle_track_data : DATATOOLS_SERIALIZABLE_CLASS,
+    class particle_track_data : public datatools::i_serializable,
                                 public datatools::i_tree_dumpable,
                                 public datatools::i_clear
     {

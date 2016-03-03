@@ -29,7 +29,7 @@ namespace snemo {
   namespace datamodel {
 
     /// SuperNEMO Tracker trajectory data model
-    class tracker_trajectory_data : DATATOOLS_SERIALIZABLE_CLASS,
+    class tracker_trajectory_data : public datatools::i_serializable,
                                     public datatools::i_tree_dumpable,
                                     public datatools::i_clear
     {

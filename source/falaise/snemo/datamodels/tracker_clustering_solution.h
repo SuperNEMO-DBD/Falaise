@@ -85,7 +85,7 @@ namespace snemo {
      * +------------------------+
      *
      */
-    class tracker_clustering_solution : DATATOOLS_SERIALIZABLE_CLASS
+    class tracker_clustering_solution : public datatools::i_serializable
     {
 
     public:

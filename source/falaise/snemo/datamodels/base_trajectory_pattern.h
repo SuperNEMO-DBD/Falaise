@@ -23,7 +23,7 @@ namespace snemo {
   namespace datamodel {
 
     /// \brief The base class of fitted trajectory pattern
-    class base_trajectory_pattern : DATATOOLS_SERIALIZABLE_CLASS
+    class base_trajectory_pattern : public datatools::i_serializable
     {
     public:
 

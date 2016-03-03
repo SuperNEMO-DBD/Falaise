@@ -36,7 +36,7 @@ namespace snemo {
   namespace datamodel {
 
     /// \brief A event header class to be embedded as a bank in a 'datatools::things' event record.
-    class event_header : DATATOOLS_SERIALIZABLE_CLASS,
+    class event_header : public datatools::i_serializable,
                          public datatools::i_clear,
                          public datatools::i_tree_dumpable
     {
