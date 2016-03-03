@@ -46,7 +46,7 @@ set(FalaiseLibrary_SOURCES
   ${CMAKE_CURRENT_BINARY_DIR}/plugin.cc
   )
 
-set(FalaiseLibrary_TESTS )
+set(FalaiseLibrary_TESTS)
 
 # - Declare headers, sources and test programs specific
 #   to various setups (snemo, bipo3...)
@@ -57,7 +57,7 @@ include(TrackerPreClustering.cmake)
 # - Publish headers
 foreach(_hdrin ${FalaiseLibrary_HEADERS})
   string(REGEX REPLACE "\\.in$" "" _hdrout "${_hdrin}")
-  configure_file(${_hdrin} ${Falaise_BUILDPRODUCT_DIR}/include/falaise/${_hdrout} @ONLY)
+  configure_file(${_hdrin} ${FALAISE_BUILDPRODUCT_DIR}/include/falaise/${_hdrout} @ONLY)
 endforeach()
 
 
@@ -93,11 +93,11 @@ install(TARGETS Falaise
   )
 
 # - Install public headers (preliminary)
-install(DIRECTORY ${Falaise_BUILDPRODUCT_DIR}/include/
+install(DIRECTORY ${FALAISE_BUILDPRODUCT_DIR}/include/
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
   )
 
-if(Falaise_ENABLE_TESTING)
+if(FALAISE_ENABLE_TESTING)
   list(APPEND FalaiseLibrary_TESTS
     testing/test_falaise.cxx
     )
@@ -109,7 +109,7 @@ endif()
 # - NB assumes each test .cxx file generates a single executable
 # - We also output the executables to a dedicated directory
 set(_falaise_TEST_ENVIRONMENT "FALAISE_RESOURCE_DIR=${Falaise_DATAROOTDIR}/resources")
-if(Falaise_ENABLE_TESTING)
+if(FALAISE_ENABLE_TESTING)
   foreach(_testsource ${FalaiseLibrary_TESTS})
     get_filename_component(_testname "${_testsource}" NAME_WE)
     set(_testname "falaise-${_testname}")

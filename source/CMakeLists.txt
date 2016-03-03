@@ -24,8 +24,8 @@
 #-----------------------------------------------------------------------
 # Core configuration
 #
-include_directories(${Falaise_BUILDPRODUCT_DIR}/include)
-include_directories(${Falaise_BUILDPRODUCT_DIR}/include/falaise)
+include_directories(${FALAISE_BUILDPRODUCT_DIR}/include)
+include_directories(${FALAISE_BUILDPRODUCT_DIR}/include/falaise)
 include_directories(${Bayeux_INCLUDE_DIRS})
 
 #-----------------------------------------------------------------------
@@ -48,14 +48,14 @@ add_subdirectory(flquery)
 # Manual
 #
 if(Pandoc_FOUND)
-  set(Falaise_MANPAGE_IN  ${CMAKE_CURRENT_SOURCE_DIR}/Falaise.1.md)
-  set(Falaise_MANPAGE_OUT ${Falaise_BUILDPRODUCT_DIR}/share/man/man1/Falaise.1)
+  set(FALAISE_MANPAGE_IN  ${CMAKE_CURRENT_SOURCE_DIR}/Falaise.1.md)
+  set(FALAISE_MANPAGE_OUT ${FALAISE_BUILDPRODUCT_DIR}/share/man/man1/Falaise.1)
 
-  add_custom_command(OUTPUT ${Falaise_MANPAGE_OUT}
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${Falaise_BUILDPRODUCT_DIR}/share/man/man1
-    COMMAND ${Pandoc_EXECUTABLE} -s -w man ${Falaise_MANPAGE_IN} -o ${Falaise_MANPAGE_OUT}
+  add_custom_command(OUTPUT ${FALAISE_MANPAGE_OUT}
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${FALAISE_BUILDPRODUCT_DIR}/share/man/man1
+    COMMAND ${Pandoc_EXECUTABLE} -s -w man ${FALAISE_MANPAGE_IN} -o ${FALAISE_MANPAGE_OUT}
     COMMENT "Generating Falaise.1 man page"
-    DEPENDS ${Falaise_MANPAGE_IN}
+    DEPENDS ${FALAISE_MANPAGE_IN}
     )
-  add_custom_target(falaise_man ALL DEPENDS ${Falaise_MANPAGE_OUT})
+  add_custom_target(falaise_man ALL DEPENDS ${FALAISE_MANPAGE_OUT})
 endif()

@@ -1,5 +1,4 @@
 # - Top level CMake script for Falaise
-#
 
 #-----------------------------------------------------------------------
 # Copyright 2012,2013 Ben Morgan <bmorgan.warwick@gmail.com>
@@ -38,28 +37,36 @@ endif()
 #-----------------------------------------------------------------------
 # CMake/project requirements and configuration
 #
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
 project(Falaise)
 
 # - Enforce all warnings, but ensure other flags are retained
 # Note that the added flags *won't* show up in the cache.
 # TODO : better way to do this with the "Make Override" system?
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  set(Falaise_CXX_FLAGS "-W -Wall")
+  # Developers may need to mute warnings in order to track easily
+  # error and warning messages mixed up in the output stream with
+  # multi-threaded build. So we make this compiler flag an option,
+  # activated by default for a production build:
+  option(FALAISE_FORCE_CXX_ALL_WARNINGS "Force all C++ compiler warnings" ON)
+  if (FALAISE_FORCE_CXX_ALL_WARNINGS)
+    set(FALAISE_CXX_FLAGS "-W -Wall")
+    ### set(FALAISE_CXX_FLAGS "-W -Wall -Woverloaded-virtual")
+  endif()
 
   # On clang, need larger template depth
   if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    set(Falaise_CXX_FLAGS "${Falaise_CXX_FLAGS} -ftemplate-depth=512")
+    set(FALAISE_CXX_FLAGS "${FALAISE_CXX_FLAGS} -ftemplate-depth=512")
   endif()
 elseif(CMAKE_CXX_COMPILER MATCHES "icpc.*|icc.*")
   # Needs more testing
-  set(Falaise_CXX_FLAGS "-w2")
+  set(FALAISE_CXX_FLAGS "-w2")
 endif()
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Falaise_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FALAISE_CXX_FLAGS}")
 
 # - Versioning
 set(Falaise_VERSION_MAJOR 2)
-set(Falaise_VERSION_MINOR 0)
+set(Falaise_VERSION_MINOR 1)
 set(Falaise_VERSION_PATCH 0)
 set(Falaise_VERSION "${Falaise_VERSION_MAJOR}.${Falaise_VERSION_MINOR}.${Falaise_VERSION_PATCH}")
 
@@ -80,40 +87,39 @@ endforeach()
 set(CMAKE_INSTALL_CMAKEDIR ${CMAKE_INSTALL_LIBDIR}/cmake)
 set(CMAKE_INSTALL_FULL_CMAKEDIR ${CMAKE_INSTALL_FULL_LIBDIR}/cmake)
 
-
 # - Configure output paths for products to give inplace build that roughly
 #   matches install layout.
-set(Falaise_BUILDPRODUCT_DIR "${PROJECT_BINARY_DIR}/BuildProducts")
-set(Falaise_DATAROOTDIR ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/Falaise-${Falaise_VERSION})
-file(RELATIVE_PATH Falaise_BINDIR_TO_RESOURCEDIR "${CMAKE_INSTALL_FULL_BINDIR}"  "${CMAKE_INSTALL_FULL_DATAROOTDIR}/Falaise-${Falaise_VERSION}")
-file(RELATIVE_PATH Falaise_CMAKEDIR_TO_INCLUDEDIR "${CMAKE_INSTALL_FULL_CMAKEDIR}/Falaise-${Falaise_VERSION}"  "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
+set(FALAISE_BUILDPRODUCT_DIR "${PROJECT_BINARY_DIR}/BuildProducts")
+set(FALAISE_DATAROOTDIR ${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/Falaise-${Falaise_VERSION})
+file(RELATIVE_PATH FALAISE_BINDIR_TO_RESOURCEDIR "${CMAKE_INSTALL_FULL_BINDIR}"  "${CMAKE_INSTALL_FULL_DATAROOTDIR}/Falaise-${Falaise_VERSION}")
+file(RELATIVE_PATH FALAISE_CMAKEDIR_TO_INCLUDEDIR "${CMAKE_INSTALL_FULL_CMAKEDIR}/Falaise-${Falaise_VERSION}"  "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_BINDIR}")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_BINDIR}")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_LIBDIR}")
 
 #-----------------------------------------------------------------------
 # Configure plugin/module related stuff
 #
-set(Falaise_PLUGINLIBDIR "Falaise/modules")
-file(RELATIVE_PATH Falaise_BINDIR_TO_PLUGINLIBDIR
+set(FALAISE_PLUGINLIBDIR "Falaise/modules")
+file(RELATIVE_PATH FALAISE_BINDIR_TO_PLUGINLIBDIR
   "${CMAKE_INSTALL_FULL_BINDIR}"
-  "${CMAKE_INSTALL_FULL_LIBDIR}/${Falaise_PLUGINLIBDIR}" )
+  "${CMAKE_INSTALL_FULL_LIBDIR}/${FALAISE_PLUGINLIBDIR}" )
 
 #-----------------------------------------------------------------------
 # Configure testing if required
 #
-option(Falaise_ENABLE_TESTING "Build unit testing system for Falaise" OFF)
-if(Falaise_ENABLE_TESTING)
+option(FALAISE_ENABLE_TESTING "Build unit testing system for Falaise" OFF)
+if(FALAISE_ENABLE_TESTING)
   enable_testing()
 endif()
 
 #-----------------------------------------------------------------------
 # Configure documentation generation, if required
 #
-set(Falaise_DOCEXPORT_DIR "${PROJECT_BINARY_DIR}/documentation")
-option(Falaise_BUILD_DOCS "Build documentation for Falaise" ON)
-if(Falaise_BUILD_DOCS)
+set(FALAISE_DOCEXPORT_DIR "${PROJECT_BINARY_DIR}/documentation")
+option(FALAISE_WITH_DOCS "Build documentation for Falaise" ON)
+if(FALAISE_WITH_DOCS)
   # - For main HTML docs
   find_package(Doxygen 1.8 REQUIRED)
   # - For man pages, pandoc for now
@@ -128,14 +134,14 @@ endif()
 #-----------------------------------------------------------------------
 # Configure/Build utilities as needed
 #
-option(Falaise_BUILD_DEVELOPER_TOOLS "Build tools for developing Falaise" ON)
-mark_as_advanced(Falaise_BUILD_DEVELOPER_TOOLS)
+option(FALAISE_WITH_DEVELOPER_TOOLS "Build/install developer tools" ON)
+mark_as_advanced(FALAISE_WITH_DEVELOPER_TOOLS)
 
-option(Falaise_USE_SYSTEM_BAYEUX "Use system-installed Bayeux" OFF)
-mark_as_advanced(Falaise_USE_SYSTEM_BAYEUX)
+option(FALAISE_USE_SYSTEM_BAYEUX "Use system-installed Bayeux" OFF)
+mark_as_advanced(FALAISE_USE_SYSTEM_BAYEUX)
 
-if(Falaise_USE_SYSTEM_BAYEUX)
-  find_package(Bayeux 2.0.0 REQUIRED)
+if(FALAISE_USE_SYSTEM_BAYEUX)
+  find_package(Bayeux 2.1.0 REQUIRED)
   if(NOT Bayeux_MCTOOLS_GEANT4_FOUND)
     message(FATAL_ERROR "
   Bayeux found, but it does not supply the MCTools/Geant4 module
@@ -143,14 +149,14 @@ if(Falaise_USE_SYSTEM_BAYEUX)
   endif()
 else()
   # - Configure internal build
-  set(Bayeux_EMBEDDED 1)
-  set(Bayeux_BUILDPRODUCT_DIR ${Falaise_BUILDPRODUCT_DIR})
-  set(Bayeux_ENABLE_TESTING ${Falaise_ENABLE_TESTING})
-  set(Bayeux_BUILD_DOCS ${Falaise_BUILD_DOCS})
-  set(Bayeux_WITH_GEANT4 ON)
+  set(BAYEUX_EMBEDDED 1)
+  set(BAYEUX_BUILDPRODUCT_DIR ${FALAISE_BUILDPRODUCT_DIR})
+  set(BAYEUX_ENABLE_TESTING ${FALAISE_ENABLE_TESTING})
+  set(BAYEUX_WITH_DOCS ${FALAISE_BUILD_DOCS})
+  set(BAYEUX_WITH_GEANT4_MODULE ON)
 
   # - Option to build Bayeux's developer tools
-  set(Bayeux_BUILD_TOOLS ${Falaise_BUILD_DEVELOPER_TOOLS})
+  set(BAYEUX_WITH_DEVELOPER_TOOLS ${FALAISE_BUILD_DEVELOPER_TOOLS})
 
   # - Build
   add_subdirectory(utilities/flbayeux)
@@ -158,8 +164,8 @@ else()
   # - Set up so that Falaise will use the internal build
   # Hacked temporarily so we can use this technique on CMake < 2.8.11
   # that doesn't allow duplicate imported targets.
-  set(Bayeux_TARGETS_LOADED 1)
-  include(${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Bayeux-2.0.0/BayeuxConfig.cmake)
+  set(BAYEUX_TARGETS_LOADED 1)
+  include(${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Bayeux-2.1.0/BayeuxConfig.cmake)
 endif()
 
 
@@ -168,7 +174,7 @@ endif()
 #
 add_subdirectory(source)
 
-if(Falaise_BUILD_DOCS)
+if(FALAISE_WITH_DOCS)
   add_subdirectory(documentation)
 endif()
 
@@ -179,7 +185,7 @@ add_subdirectory(resources)
 
 #-----------------------------------------------------------------------
 # - Install published resources and documentation
-install(DIRECTORY ${Falaise_DATAROOTDIR}
+install(DIRECTORY ${FALAISE_DATAROOTDIR}
   DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}
   )
 
@@ -187,18 +193,18 @@ install(DIRECTORY ${Falaise_DATAROOTDIR}
 # - CMake Support files
 # - Config (build and install trees *at present*)
 configure_file(${PROJECT_SOURCE_DIR}/cmake/FalaiseConfig.cmake.in
-  ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseConfig.cmake
+  ${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseConfig.cmake
   @ONLY
   )
 
 # - Versioning (build and install trees)
 configure_file(${PROJECT_SOURCE_DIR}/cmake/FalaiseConfigVersion.cmake.in
-  ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseConfigVersion.cmake
+  ${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseConfigVersion.cmake
   @ONLY
   )
 
 # - Targets (build tree)
-if(Falaise_USE_SYSTEM_BAYEUX)
+if(FALAISE_USE_SYSTEM_BAYEUX)
   set(_fbfile cmake/FalaiseBayeux-system.cmake.in)
 else()
   list(APPEND Falaise_ADDON_TARGETS Bayeux)
@@ -206,15 +212,15 @@ else()
   set(_fbfile cmake/FalaiseBayeux-builtin.cmake.in)
 endif()
 
-configure_file(${_fbfile} ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseBayeux.cmake @ONLY)
+configure_file(${_fbfile} ${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseBayeux.cmake @ONLY)
 
-export(TARGETS Falaise ${Falaise_ADDON_TARGETS} FILE ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseTargets.cmake)
+export(TARGETS Falaise ${Falaise_ADDON_TARGETS} FILE ${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseTargets.cmake)
 
 # - Targets (install tree)
 install(EXPORT FalaiseTargets DESTINATION ${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION})
 
-if(Falaise_USE_SYSTEM_BAYEUX)
-  set(_fbinstallfile ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseBayeux.cmake)
+if(FALAISE_USE_SYSTEM_BAYEUX)
+  set(_fbinstallfile ${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseBayeux.cmake)
 else()
   set(Bayeux_TARGETS_PRESENT )
   configure_file(${_fbfile} InstallTreeFiles/FalaiseBayeux.cmake @ONLY)
@@ -223,8 +229,8 @@ endif()
 
 # - Installation of, well, install tree files
 install(FILES
-    ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseConfigVersion.cmake
-    ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseConfig.cmake
+    ${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseConfigVersion.cmake
+    ${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseConfig.cmake
     ${_fbinstallfile}
   DESTINATION
     ${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}
@@ -233,8 +239,14 @@ install(FILES
 #-----------------------------------------------------------------------
 # - Plugins/modules installation - Must come last because they must find
 # Falaise
-add_subdirectory(modules)
+### add_subdirectory(modules)
 
+# # - Online software
+# option(FALAISE_ONLINE_EXPERIMENT "Built the experiment on-line software" ON)
+
+# if (FALAISE_ONLINE_EXPERIMENT)
+#   add_subdirectory(source/flexperiment)
+# endif()
 
 #-----------------------------------------------------------------------
 # Package Sources and Binaries

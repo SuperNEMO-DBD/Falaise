@@ -19,11 +19,11 @@
 # along with Falaise.  If not, see <http://www.gnu.org/licenses/>.
 #-----------------------------------------------------------------------
 
-if (Falaise_BUILD_DEVELOPER_TOOLS)
+if (FALAISE_BUILD_DEVELOPER_TOOLS)
   # - Generate application configuration file
-  configure_file(flquery.in ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_BINDIR}/flquery @ONLY)
+  configure_file(flquery.in ${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_BINDIR}/flquery @ONLY)
 
-  install(FILES ${Falaise_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_BINDIR}/flquery
+  install(FILES ${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_BINDIR}/flquery
     DESTINATION ${CMAKE_INSTALL_BINDIR}
     PERMISSIONS
     OWNER_READ OWNER_EXECUTE
