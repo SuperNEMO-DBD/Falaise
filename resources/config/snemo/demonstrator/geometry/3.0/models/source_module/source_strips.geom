@@ -1,6 +1,5 @@
 # -*- mode: conf-unix; -*-
 
-#
 # Basic geometry:
 #  - Based on :
 #  -  DocDB #???? - 2012-04-18 (Marek Proga)
@@ -29,7 +28,7 @@ visibility.color   : string  = "cyan"
 [name="source_internal_support_strip.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "mm"
-x                  : real    = 0.1   # mm
+x                  : real as length = 0.1 mm
 y                  : real    = 135.5 # mm
 z                  : real    = 325.0 # mm
 material.ref       : string  = "std::mylar"
@@ -43,8 +42,8 @@ shape_type         : string  = "box"
 length_unit        : string  = "mm"
 y                  : real    = 125.0  # mm
 z                  : real    = 2700.0 # mm
-x                  : real    = @variant(source_strips:thickness|0.167 mm)
-material.ref       : string  = "bb_source_material"
+x                  : real as length = @variant(dbd_source:thickness|167 um)
+material.ref       : string  = @variant(dbd_source:material|"bb_source_material")
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -55,8 +54,8 @@ shape_type         : string  = "box"
 length_unit        : string  = "mm"
 y                  : real    = 135.5  # mm
 z                  : real    = 2700.0 # mm
-x                  : real    = @variant(source_strips:thickness|0.167 mm)
-material.ref       : string  = "bb_source_material"
+x                  : real as length = @variant(dbd_source:thickness|167 um)
+material.ref       : string  = @variant(dbd_source:material|"bb_source_material")
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -125,5 +124,6 @@ z                  : real    = 3350.0  # mm
 material.ref       : string  = "tracking_gas"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "grey"
+
 
 # end of file
