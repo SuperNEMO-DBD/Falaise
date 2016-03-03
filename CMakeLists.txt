@@ -157,7 +157,7 @@ else()
   set(BAYEUX_WITH_GEANT4_MODULE ON)
 
   # - Option to build Bayeux's developer tools
-  set(BAYEUX_WITH_DEVELOPER_TOOLS ${FALAISE_BUILD_DEVELOPER_TOOLS})
+  set(BAYEUX_WITH_DEVELOPER_TOOLS ${FALAISE_WITH_DEVELOPER_TOOLS})
 
   # - Build
   # add_subdirectory(utilities/flbayeux)
