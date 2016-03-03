@@ -8,7 +8,7 @@ extension system.
 Getting Started
 ===============
 If you're reading this online and don't yet have Falaise installed, an
-[Installation Guide](@ref installationguide) is available. Note that
+[Installation Guide](@ref flinstallguide) is available. Note that
 at present Falaise is only supported on POSIX platforms, and even here
 not all variants are guaranteed to work!
 
@@ -35,5 +35,3 @@ User Guides
 Documents detailing the use and design of Falaise may be found on
 under the Related Pages tab if you are reading the HTML documentation,
 or in the following sections in the printed manual.
-
-

@@ -1,9 +1,9 @@
-Installing Falaise from Source {#installationguide}
+Installing Falaise from Source {#flinstallguide}
 ==============================
 
 \tableofcontents
 
-Introduction {#intro}
+Introduction {#flinstall_intro}
 ============
 This walkthrough is intended to get you up and running with Falaise
 as fast as possible. It therefore adopts a specific layout of where
@@ -14,7 +14,7 @@ constructive comments, criticisms and suggestions for improvement, and
 these should be directed to the SuperNEMO Software Working Group.
 
 
-Preparing Your System for Installation {#preparation}
+Preparing Your System for Installation {#flinstallguide_preparation}
 ======================================
 To install the Falaise stack, you first need the following:
 
@@ -52,7 +52,7 @@ highlight where problems may occur with missing software, and how to
 report and resolve these issues.
 
 
-Getting Falaise {#getting}
+Getting Falaise {#flinstallguide_getting}
 ===============
 Falaise is developed using the Subversion repository hosted by
 [LPC Caen](https://nemo.lpc-caen.in2p3.fr). Whilst you need a full account
@@ -71,10 +71,10 @@ SuperNEMO/
 where the `SuperNEMO` directory can be located where you wish, though it
 must be on a filesystem with the required free space.
 
-Setting Up a Falaise Workspace {#installation_workspace}
+Setting Up a Falaise Workspace {#flinstallguide_installation_workspace}
 ------------------------------
 If you already have a workspace setup, then you can skip to the
-[following section](@ref installation_checkout). Otherwise
+[following section](@ref flinstallguide_installation_checkout). Otherwise
 to create it, open a terminal, and choose a directory for your
 SuperNEMO workspace. For clarity in this guide, because absolute paths are
 needed in certain cases, we will use the dummy directory `/Users/ben`, but
@@ -198,7 +198,7 @@ Falaise-1.0.0-alpha2
 Tags are always named using the standard `MAJOR.MINOR.PATCH` convention
 with an optional additional `-STATUSN` flag to indicate development lines.
 
-Checking out Cadfael and Falaise {#installation_checkout}
+Checking out Cadfael and Falaise {#flinstallguide_installation_checkout}
 --------------------------------
 With the workspace in place, we can checkout the required development
 lines of Cadfael and Falaise. The version of Falaise to which this
@@ -220,7 +220,7 @@ The basic source code working copy is now in place. For more details on
 using Subversion, we recommend the [Subversion Red Bean Guide](http://svnbook.red-bean.com/).
 
 
-Installing the Cadfael SDK {#cadfael}
+Installing the Cadfael SDK {#flinstallguide_cadfael}
 ==========================
 Falaise uses several third party libraries to implement its functionality,
 specifically
@@ -240,7 +240,7 @@ If you have an existing install of Cadfael that meets the version
 requirements above, you do not need to reinstall it. Otherwise, you
 should follow the following guide.
 
-Bootstrapping Cadfael {#cadfael_bootstrap}
+Bootstrapping Cadfael {#flinstallguide_cadfael_bootstrap}
 ---------------------
 Cadfael uses the [CMake](http://www.cmake.org) tool for driving the
 configure, build and install of the above libraries. For convenience,
@@ -329,7 +329,7 @@ infrequent, this "one-shot" installation is generally the easiest way to
 manage the SDK.
 
 
-Building and Installing Falaise {#buildinstall}
+Building and Installing Falaise {#flinstallguide_buildinstall}
 ===============================
 Falaise uses the [CMake](http://www.cmake.org) tool for driving the
 configure, build and install of its core library and applications.
@@ -463,7 +463,7 @@ installs/falaise-@Falaise_VERSION@
     `-- Falaise-@Falaise_VERSION@
 ~~~~~
 
-Using Falaise {#using}
+Using Falaise {#flinstallguide_using}
 =============
 With an install in place, you do not need any further setup to use
 the applications. The `flsimulate` and `flreconstruct` apps may be run
@@ -507,7 +507,7 @@ The front page provides guidance on the layout of the documentation, with
 links to the detailed guides on using `flsimulate` and `flreconstruct`.
 
 
-Troubleshooting {#trouble}
+Troubleshooting {#flinstallguide_trouble}
 ===============
 Whilst this walkthrough guide should cover most uses cases, we cannot
 guarantee that problems will not be encountered. If you do experience
@@ -520,7 +520,7 @@ Please attach as much information as possible (operating system and version,
 compiler and version, CMake version etc) to assist in diagnosing the
 issue.
 
-Developing Falaise {#developing}
+Developing Falaise {#flinstallguide_developing}
 ==================
 Development of Falaise falls into two main categories
 

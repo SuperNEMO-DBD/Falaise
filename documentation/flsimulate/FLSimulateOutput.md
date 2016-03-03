@@ -3,8 +3,8 @@ FLSimulate Output {#flsimulateoutput}
 
 \tableofcontents
 
-Introduction {#flsimulateoutput_introduction}
-============
+Introduction to the FLSimulate Output {#flsimulateoutput_introduction}
+=====================================
 
 The current official simulation application defines
 an output data model to represent the detector response

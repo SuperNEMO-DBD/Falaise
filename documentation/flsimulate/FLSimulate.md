@@ -1,10 +1,11 @@
+================================
 Using The FLSimulate Application {#usingflsimulate}
 ================================
 
 \tableofcontents
 
-Introduction {#intro}
-============
+Introduction to FLSimulate {#usingflsimulate_intro}
+==========================
 FLSimulate's task is to simulate the generation and passage of particles
 through the SuperNEMO detectors (BiPo3 and SuperNEMO), recording the
 detector response and writing this to an output file. Its simulation
@@ -22,7 +23,7 @@ detector. Note however that these interfaces are not complete yet.
 Please contact the Software Working Group if you have any questions or
 feature requests.
 
-Using FLSimulate on the Command Line {#usingfls}
+Using FLSimulate on the Command Line {#usingflsimulate_commandline}
 ====================================
 FLSimulate is implemented as a simple command line application just
 like the familiar UNIX commands like `ls`. In the following, we will
@@ -88,7 +89,7 @@ Note that at present the validity of the experiment and
 event/vertex generator combinations are not checked. You may therefore
 need to set all of these by hand to obtain a valid set for simulation.
 Preliminary lists of valid vertex and event generators for each
-experiment are [tabulated below](@ref fls_generator_table).
+experiment are [tabulated below](@ref usingflsimulate_generator_table).
 
 For example, to simulate 100 events in the Tracker Commissioning experiment
 and write them to a file named `example.brio` in the current working
@@ -102,7 +103,7 @@ $
 
 The resultant file can be examined with the `flreconstruct` application.
 
-Available Experiments {#fls_experiments}
+Available Experiments {#usingflsimulate_experiments}
 =====================
 The currently available experiment names in `flsimulate` that can be passed
 to the `--experiment` argument are:
@@ -115,7 +116,7 @@ The above spellings must be used, but the interface is case insensitive.
 For example, "demo" would result in a failure, but any of "Demonstrator",
 "demonstrator", "DEMONSTRATOR" or "dEmOnStRaToR" would work.
 
-Available Vertex/Event Generators {#fls_generator_table}
+Available Vertex/Event Generators {#usingflsimulate_generator_table}
 =================================
 The architecture of `flsimulate` separates the specification of where
 events are generated (geometry) from the specification of how the events
@@ -231,7 +232,7 @@ Event Generators
 | gamma.50keV | Gamma with monokinetic energy @ 50 keV [miscellaneous] | yes | yes | yes |
 | muon.cosmic.sea_level.toy | Parameters for the "cosmic muon generator" mode [cosmic] | no | no | yes |
 
-Available output profiles {#fls_output_profiles}
+Available output profiles {#usingflsimulate_output_profiles}
 =========================
 
 By default FLSimulate produces collections of truth MC hits and stored them in the output

@@ -3,8 +3,8 @@ Writing FLReconstruct Modules {#writingflreconstructmodules}
 
 \tableofcontents
 
-Introduction {#introduction}
-============
+Introduction to the writing of FLReconstruct modules {#introduction}
+========================================================================
 
 If you have just started using Falaise or the FLReconstruct application,
 we strongly recommend that you familiarize yourself with the basic usage
@@ -215,8 +215,9 @@ $ cmake -DBayeux_DIR=/where/BayeuxConfig/is ../MyModule
 
 Here, the `Bayeux_DIR` argument should be the directory which holds the
 file `BayeuxConfig.cmake`. This file is installed by Bayeux, and will
-be located in the directory `<prefix>/lib/cmake/Bayeux-1.0.0`, where
-`<prefix>` is the root directory of your Falaise/Bayeux installation.
+be located in the directory `<prefix>/lib/cmake/Bayeux-<bxversion>`, where
+`<prefix>` is the root directory of your Falaise/Bayeux installation and <bxversion>
+is the current Bayeux version.
 The argument `../MyModule` points CMake to the directory holding the
 `CMakeLists.txt` file for the project we want to build, in this case our
 custom module.
