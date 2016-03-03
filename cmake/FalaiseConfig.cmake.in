@@ -33,7 +33,7 @@ get_filename_component(__falaise_config_dir "${CMAKE_CURRENT_LIST_FILE}" PATH)
 
 #-----------------------------------------------------------------------
 # Use expansion variable to locate include dire from where we are
-get_filename_component(Falaise_INCLUDE_DIR "${__falaise_config_dir}/@Falaise_CMAKEDIR_TO_INCLUDEDIR@" ABSOLUTE CACHE)
+get_filename_component(Falaise_INCLUDE_DIR "${__falaise_config_dir}/@FALAISE_CMAKEDIR_TO_INCLUDEDIR@" ABSOLUTE CACHE)
 mark_as_advanced(Falaise_INCLUDE_DIR)
 
 set(Falaise_INCLUDE_DIRS "${Falaise_INCLUDE_DIR}" "${Falaise_INCLUDE_DIR}/falaise")
