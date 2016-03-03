@@ -1,4 +1,4 @@
-/// \file falaise/snemo/digitization/fake_trigger_module.h
+/// \file falaise/snemo/digitization/fake_trigger_cut.h
 /* Author(s)     : Guillaume Oliviero <goliviero@lpccaen.in2p3.fr>
  *                 Francois Mauger <mauger@lpccaen.in2p3.fr>
  *                 Yves Lemiere <lemiere@lpccaen.in2p3.fr>
@@ -28,80 +28,95 @@
  * from a datatools::things coming from flsimulate
  * The physical selection for a fake trigger is configurable but the 
  * default configuration is 1 PMT hit and 3 Geiger cells hits.
+ * Both answer can be save in two different files
  *
  * History:
  *
  */
 
-#ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_FAKE_TRIGGER_MODULE_H
-#define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_FAKE_TRIGGER_MODULE_H
+#ifndef FALAISE_SNEMO_DIGITIZATION_FAKE_TRIGGER_CUT_H
+#define FALAISE_SNEMO_DIGITIZATION_FAKE_TRIGGER_CUT_H 1
 
-// Third party :
-// - Bayeux/dpp:
-#include <dpp/base_module.h>
-// - Bayeux/mctools:
-#include <mctools/simulated_data.h>
+// Standard library:
+#include <string>
 
-namespace snemo { 
-  
-  namespace digitization {
+// Third party:
+// - Boost:
+#include <boost/cstdint.hpp>
+// - Bayeux/cuts:
+#include <cuts/i_cut.h>
 
-    class fake_trigger_algo;
-    
-    /// \brief Fake trigger algorithm class to cut SD files.
-    class fake_trigger_module :  public dpp::base_module
+// This plugin (fake_trigger_module) :
+#include <falaise/snemo/digitization/fake_trigger_algo.h>
+
+
+namespace datatools {
+  class service_manager;
+  class properties;
+}
+
+namespace snemo {
+
+  namespace cut {
+
+    class fake_trigger_cut : public cuts::i_cut
     {
-    public :
+    public:
+
+      /// Set the SD bank key
+      void set_SD_label(const std::string & SD_label_);
+
+      /// Return the SD bank key
+      const std::string & get_SD_label() const;
 
       /// Constructor
-      fake_trigger_module(datatools::logger::priority = datatools::logger::PRIO_FATAL);
+      fake_trigger_cut(datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
 
       /// Destructor
-      virtual ~fake_trigger_module();
+      virtual ~fake_trigger_cut();
 
-      /// Initialization
-      virtual void initialize(const datatools::properties  & setup_,
-                              datatools::service_manager   & service_manager_,
-                              dpp::module_handle_dict_type & module_dict_);
+      /// Initilization
+      virtual void initialize(const datatools::properties & configuration_,
+			      datatools::service_manager & service_manager_,
+			      cuts::cut_handle_dict_type & cut_dict_);
+
       /// Reset
       virtual void reset();
 
-      /// Data record processing
-      virtual process_status process(datatools::things & data_);
+    protected:
 
-    protected : 
-      
-      /// Measure particle track physical parameters such as charge, vertices
-      process_status _process(const mctools::simulated_data & SD_);
-      
-      /// Give default values to specific class members.
+      /// Default values
       void _set_defaults();
-      
-    private :
-      
-      std::string _SD_label_; //!< The label of the simulated data bank
+
+      /// Selection
+      virtual int _accept();
+
+    private:
+
+      std::string _SD_label_; //!< Name of the "Simulated data" bank
 
       /// Fake Trigger Algo :
       boost::scoped_ptr<snemo::digitization::fake_trigger_algo> _algo_;
 
-      // Macro to automate the registration of the module :
-      DPP_MODULE_REGISTRATION_INTERFACE(fake_trigger_module);
+      // Macro to automate the registration of the cut :
+      CUT_REGISTRATION_INTERFACE(fake_trigger_cut);
     };
-  } // end of namespace digitization
+
+  } // end of namespace cut
 
 } // end of namespace snemo
 
+// OCD support::
 #include <datatools/ocd_macros.h>
 
-// Declare the OCD interface of the module
-DOCD_CLASS_DECLARATION(snemo::digitization::fake_trigger_module)
+// @arg snemo::cut::fake_trigger_cut the name the registered class in the OCD system
+DOCD_CLASS_DECLARATION(snemo::cut::fake_trigger_cut)
 
-#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_FAKE_TRIGGER_MODULE_H
+#endif // FALAISE_SNEMO_DIGITIZATION_FAKE_TRIGGER_CUT_H
 
-/* 
+/*
 ** Local Variables: --
 ** mode: c++ --
 ** c-file-style: "gnu" --
-** tab-width: 2 --
 ** End: --
 */

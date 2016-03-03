@@ -1,2 +1,5 @@
+#@key_label   "name"                                           
+#@meta_label  "type"                                           
+
 #################################################################
 [name="digicut" type="snemo::digitization::fake_trigger_cut"]
