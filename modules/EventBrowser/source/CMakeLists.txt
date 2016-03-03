@@ -119,7 +119,7 @@ list_prepend(FalaiseEventBrowserPlugin_DICT_HEADERS "${PROJECT_SOURCE_DIR}/")
 
 set(_event_browser_root_dict "")
 # - Generate ROOT headers
-if(BAYEUX_USE_LEGACY_ROOT)
+if(FALAISE_USE_LEGACY_ROOT)
   root_generate_dictionary("${FalaiseEventBrowserPlugin_DICT_HEADERS}"
     "${PROJECT_SOURCE_DIR}/include/falaise/snemo/view/event_browser_linkdef.h"
     "${PROJECT_BINARY_DIR}/event_browser_dict.cc"
