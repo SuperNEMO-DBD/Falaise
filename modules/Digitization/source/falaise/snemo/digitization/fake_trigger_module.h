@@ -54,7 +54,7 @@ namespace snemo {
     public :
 
       /// Constructor
-      fake_trigger_module(datatools::logger::priority = datatools::logger::PRIO_FATAL);
+      fake_trigger_module(datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
 
       /// Destructor
       virtual ~fake_trigger_module();

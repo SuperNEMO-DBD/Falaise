@@ -20,15 +20,27 @@
 
 namespace snemo {
 
-  namespace cut {
+  namespace digitization {
 
     // Registration instantiation macro :
-    CUT_REGISTRATION_IMPLEMENT(fake_trigger_cut, "snemo::cut::fake_trigger_cut");
+    CUT_REGISTRATION_IMPLEMENT(fake_trigger_cut, "snemo::digitization::fake_trigger_cut");
+
+    fake_trigger_cut::fake_trigger_cut(datatools::logger::priority logger_priority_)
+      : cuts::i_cut(logger_priority_)
+    {
+      _set_defaults();
+      return;
+    }
+
+    fake_trigger_cut::~fake_trigger_cut()
+    {
+      if (is_initialized()) fake_trigger_cut::reset();
+      return;
+    }
 
     void fake_trigger_cut::_set_defaults()
     {
-      _SD_label_ = "";
-      return;
+      _SD_label_ = snemo::datamodel::data_info::default_simulated_data_label();
     }
 
     void fake_trigger_cut::set_SD_label(const std::string & SD_label_)
@@ -42,24 +54,19 @@ namespace snemo {
       return _SD_label_;
     }
 
-    fake_trigger_cut::fake_trigger_cut(datatools::logger::priority logger_priority_)
-      : cuts::i_cut(logger_priority_)
-    {
-      _set_defaults();
-      return;
-    }
-
-    fake_trigger_cut::~fake_trigger_cut()
-    {
-      if (is_initialized()) this->fake_trigger_cut::reset();
-      return;
-    }
-
     void fake_trigger_cut::reset()
     {
+      DT_THROW_IF(! is_initialized(),
+                  std::logic_error,
+                  "Cut '" << get_name() << "' is not initialized !");
+      _set_initialized(false);
+      if (_algo_.get() != 0) {
+	if (_algo_->is_initialized()) {
+	  _algo_->reset();
+	}
+	_algo_.reset();
+      }
       _set_defaults();
-      this->i_cut::_reset();
-      this->i_cut::_set_initialized(false);
       return;
     }
 
@@ -70,7 +77,7 @@ namespace snemo {
       DT_THROW_IF(is_initialized(), std::logic_error,
                   "Cut '" << get_name() << "' is already initialized ! ");
 
-      this->i_cut::_common_initialize(configuration_);
+      i_cut::_common_initialize(configuration_);
 
       if (_SD_label_.empty()) {
         if (configuration_.has_key("SD_label")) {
@@ -79,11 +86,13 @@ namespace snemo {
           set_SD_label(snemo::datamodel::data_info::default_simulated_data_label());
         }
       }
-      
-      this->i_cut::_set_initialized(true);
+      // Algo :
+      _algo_.reset(new snemo::digitization::fake_trigger_algo);
+      _algo_->initialize();
+      // Tag the cut as initialized :
+      _set_initialized(true);
       return;
     }
-
 
     int fake_trigger_cut::_accept()
     {
@@ -99,25 +108,48 @@ namespace snemo {
 
       // Get simulated data bank
       const mctools::simulated_data & SD = ER.get<mctools::simulated_data>(_SD_label_);
-      // cut_returned = cuts::SELECTION_REJECTED;
-      // cut_returned = cuts::SELECTION_ACCEPTED;
-      }
+
+      bool result_for_a_SD = _algo_->process(SD);
+      if (!result_for_a_SD) cut_returned = cuts::SELECTION_REJECTED;
+      else cut_returned = cuts::SELECTION_ACCEPTED;
+      
+      std::clog << "DEBUG : Cut returned value [" << cut_returned << "]" << std::endl;
 
       return cut_returned;
     }
 
-  } // end of namespace cut
+  } // end of namespace digitization
 
 } // end of namespace snemo
 
-DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::cut::fake_trigger_cut, ocd_)
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::digitization::fake_trigger_cut, ocd_)
 {
-  ocd_.set_class_name("snemo::cut::fake_trigger_cut");
+  ocd_.set_class_name("snemo::digitization::fake_trigger_cut");
   ocd_.set_class_description("Cut based on criteria applied to the simulated data bank stored in the event record");
   ocd_.set_class_library("falaise");
-  // ocd_.set_class_documentation("");
+  ocd_.set_class_documentation("");
 
   cuts::i_cut::common_ocd(ocd_);
+
+  {
+    // Description of the 'SD_label' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("SD_label")
+      .set_terse_description("The label/name of the 'simulated data' bank")
+      .set_traits(datatools::TYPE_STRING)
+      .set_mandatory(false)
+      .set_long_description("This is the name of the bank to be used  \n"
+                            "after a simulation. \n")
+      .set_default_value_string(snemo::datamodel::data_info::default_simulated_data_label())
+      .add_example("Use an alternative name for the \n"
+                   "'simulated data' bank::        \n"
+                   "                                \n"
+                   "  SD_label : string = \"SD2\"   \n"
+                   "                                \n"
+                   )
+      ;
+  }
 
   ocd_.set_validation_support(true);
   ocd_.lock();
@@ -125,8 +157,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::cut::fake_trigger_cut, ocd_)
 }
 DOCD_CLASS_IMPLEMENT_LOAD_END() // Closing macro for implementation
 
-// Registration macro for class 'snemo::cut::fake_trigger_cut' :
-DOCD_CLASS_SYSTEM_REGISTRATION(snemo::cut::fake_trigger_cut, "snemo::cut::fake_trigger_cut")
+// Registration macro for class 'snemo::digitization::fake_trigger_cut' :
+DOCD_CLASS_SYSTEM_REGISTRATION(snemo::digitization::fake_trigger_cut, "snemo::digitization::fake_trigger_cut")
 
 /*
 ** Local Variables: --

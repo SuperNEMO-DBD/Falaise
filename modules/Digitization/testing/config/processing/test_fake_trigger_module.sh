@@ -22,3 +22,11 @@ echo "Stopped." >&2
 exit 0
 
 # end
+
+#modules.conf
+##################################################################
+#[name="faketrig" type="snemo::digitization::fake_trigger_module"]
+#@config A processor that simulate a fake trigger to make a selection on a simulated data
+
+#@description The name of the simulated data bank
+#SD_label : string = "SD"

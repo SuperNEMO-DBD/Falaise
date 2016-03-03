@@ -97,7 +97,7 @@ namespace snemo {
 	  return dpp::base_module::PROCESS_ERROR;
 	}
       // Get the 'simulated_data' entry from the data model :
-      const  mctools::simulated_data & the_simulated_data = data_record_.get<mctools::simulated_data>(_SD_label_);
+      const mctools::simulated_data & the_simulated_data = data_record_.get<mctools::simulated_data>(_SD_label_);
       
       /********************
        * Process the data *
@@ -126,15 +126,15 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::digitization::fake_trigger_module, ocd_)
   ocd_.set_class_name("snemo::digitization::fake_trigger_module");
   ocd_.set_class_description("A module that performs a selection on simulated data based on the number of PMT and GG cells hit");
   ocd_.set_class_library("Falaise_FakeTrigger");
-  ocd_.set_class_documentation(" 3) Calorimeter Association Driver associates a track with a calorimeter hit      \n"
-                               " 4) Alpha Finder Driver looks for short alpha track with only 1 or 2 tracker hits \n"
+  ocd_.set_class_documentation(" \n"
+			       " \n"
                                );
 
   // Invoke OCD support from parent class :
   dpp::base_module::common_ocd(ocd_);
 
   {
-    // Description of the 'CD_label' configuration property :
+    // Description of the 'SD_label' configuration property :
     datatools::configuration_property_description & cpd
       = ocd_.add_property_info();
     cpd.set_name_pattern("SD_label")

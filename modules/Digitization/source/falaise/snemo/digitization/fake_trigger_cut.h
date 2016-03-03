@@ -24,8 +24,8 @@
  *
  * Description:
  *
- * A module which goal is to process 'fake_trigger_algo' to cut SD files
- * from a datatools::things coming from flsimulate
+ * Fake trigger cut : A cut which goal is to process 'fake_trigger_algo' 
+ * to cut SD files from a datatools::things coming from flsimulate
  * The physical selection for a fake trigger is configurable but the 
  * default configuration is 1 PMT hit and 3 Geiger cells hits.
  * Both answer can be save in two different files
@@ -46,9 +46,8 @@
 // - Bayeux/cuts:
 #include <cuts/i_cut.h>
 
-// This plugin (fake_trigger_module) :
+// This plugin (fake_trigger_cut) :
 #include <falaise/snemo/digitization/fake_trigger_algo.h>
-
 
 namespace datatools {
   class service_manager;
@@ -57,23 +56,23 @@ namespace datatools {
 
 namespace snemo {
 
-  namespace cut {
+  namespace digitization {
 
     class fake_trigger_cut : public cuts::i_cut
     {
     public:
-
-      /// Set the SD bank key
-      void set_SD_label(const std::string & SD_label_);
-
-      /// Return the SD bank key
-      const std::string & get_SD_label() const;
 
       /// Constructor
       fake_trigger_cut(datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
 
       /// Destructor
       virtual ~fake_trigger_cut();
+
+      /// Set the SD bank key
+      void set_SD_label(const std::string & SD_label_);
+
+      /// Return the SD bank key
+      const std::string & get_SD_label() const;
 
       /// Initilization
       virtual void initialize(const datatools::properties & configuration_,
@@ -93,7 +92,7 @@ namespace snemo {
 
     private:
 
-      std::string _SD_label_; //!< Name of the "Simulated data" bank
+      std::string _SD_label_; //!< The label of the simulated data bank
 
       /// Fake Trigger Algo :
       boost::scoped_ptr<snemo::digitization::fake_trigger_algo> _algo_;
@@ -109,8 +108,8 @@ namespace snemo {
 // OCD support::
 #include <datatools/ocd_macros.h>
 
-// @arg snemo::cut::fake_trigger_cut the name the registered class in the OCD system
-DOCD_CLASS_DECLARATION(snemo::cut::fake_trigger_cut)
+// @arg snemo::digitization::fake_trigger_cut the name the registered class in the OCD system
+DOCD_CLASS_DECLARATION(snemo::digitization::fake_trigger_cut)
 
 #endif // FALAISE_SNEMO_DIGITIZATION_FAKE_TRIGGER_CUT_H
 
