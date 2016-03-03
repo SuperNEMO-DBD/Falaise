@@ -10,7 +10,7 @@ set(testing_SOURCES
   #utilities.cc
   )
 
-set(_cat_TEST_ENVIRONMENT "FALAISE_RESOURCE_DIR=${Falaise_DATAROOTDIR}/resources")
+set(_cat_TEST_ENVIRONMENT "FALAISE_RESOURCE_DIR=${FALAISE_DATAROOTDIR}/resources")
 
 if(FalaiseVisuToyPlugin_ENABLE_TESTING)
   foreach(_testsource ${FalaiseVisuToyPlugin_TESTS})
