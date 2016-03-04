@@ -15,11 +15,11 @@
 namespace FLSimulate {
 //! Return relative path from application directory to root of resource dir
 std::string relativePathToResourceDir() {
-  return "@Falaise_BINDIR_TO_RESOURCEDIR@";
+  return "@FALAISE_BINDIR_TO_RESOURCEDIR@";
 }
-//! Return relative path from application directory to root of plugin/module DLL dir
+  //! Return relative path from application directory to root of plugin/module DLL dir
 std::string relativePathToPluginLibDir() {
-  return "@Falaise_BINDIR_TO_PLUGINLIBDIR@";
+  return "@FALAISE_BINDIR_TO_PLUGINLIBDIR@";
 }
 } // namespace FLSimulate
 #endif // FLSIMULATECONFIG_HH
