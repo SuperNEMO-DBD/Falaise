@@ -15,6 +15,7 @@ namespace snemo {
       _electronic_mapping_ = 0;
       _activate_coincidence_ = false;
       _finale_trigger_decision_ = false;
+      _delayed_finale_trigger_decision_ = false;
       return;
     }
 
@@ -88,7 +89,16 @@ namespace snemo {
       _initialized_ = false;
       _electronic_mapping_ = 0;
       _activate_coincidence_ = false;
+      _tracker_algo_.reset();
+      _calo_algo_.reset();
+      _coinc_algo_.reset();
+      _tracker_records_.clear();
+      _calo_records_.clear();
+      _coincidence_records_.clear();
+      _finale_trigger_decision_ = false;
+      _delayed_finale_trigger_decision_ = false;
       return;
+
     }  
     
     void trigger_algorithm::clear_records()

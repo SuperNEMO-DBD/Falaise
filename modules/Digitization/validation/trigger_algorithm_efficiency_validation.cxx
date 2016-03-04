@@ -105,7 +105,7 @@ int main( int  argc_ , char **argv_  )
 
   try {
     // boolean for debugging (display etc)
-    bool debug = false;
+    bool debug = true;
     std::clog << "Test program for class 'snemo::digitization::trigger_algorithm_efficiency_validation' !" << std::endl;
     int32_t seed = 314159;
     mygsl::rng random_generator;
@@ -404,6 +404,27 @@ int main( int  argc_ , char **argv_  )
 		    calo_tp_2_ctw_2.process(my_calo_tp_data, my_calo_ctw_data);
 		    if (debug) my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
 
+		    if (psd_count == 15933)
+		      {	  	    
+			 std::clog << "Total calo             = " << total_number_of_calo             << std::endl;
+			 std::clog << "Total main calo        = " << total_number_of_main_calo        << std::endl;
+			 std::clog << "Total gveto calo       = " << total_number_of_gveto            << std::endl;
+			 my_calo_tp_data.tree_dump(std::clog, "Calorimeter TP(s) data : ", "INFO : ");
+			 for (int i = 0; i < my_calo_tp_data.get_calo_tps().size(); i++)
+			   {
+			     const snemo::digitization::calo_tp a_calo_tp = my_calo_tp_data.get_calo_tps()[i].get();
+			     a_calo_tp.tree_dump(std::clog, "A Calo TP", "INFO : ");
+			   }
+			 my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
+			 for (int i = 0; i < my_calo_ctw_data.get_calo_ctws().size(); i++)
+			   {
+			     const snemo::digitization::calo_ctw a_calo_ctw = my_calo_ctw_data.get_calo_ctws()[i].get();
+			     a_calo_ctw.tree_dump(std::clog, "A Calo CTW", "INFO : ");
+			   }
+		      }
+
+
+
 		  } // end of if has calo signal
 
 		if (signal_data.has_geiger_signals())
@@ -435,16 +456,28 @@ int main( int  argc_ , char **argv_  )
 
 		// Trigger process
 		my_trigger_algo.process(my_calo_ctw_data,
-					my_geiger_ctw_data);
+					my_geiger_ctw_data);	   
+
+		// if (my_trigger_algo.get_delayed_finale_decision() == true)
+		//   { 
+		//     my_clock_manager.tree_dump(std::clog, "Clock utils : ", "INFO : ");
+		//     signal_data.tree_dump(std::clog, "*** Signal Data ***", "INFO : ");
+		//     for(int i = 0; i < signal_data.get_calo_signals().size(); i++)
+		//       {
+		// 	const snemo::digitization::calo_signal a_calo_signal = signal_data.get_calo_signals()[i].get();
+		// 	a_calo_signal.tree_dump(std::clog, "A Calo signal", "INFO : ");
+		//       }
+		//   }
+	      
 		
 		// Finale structures :
 		calo_collection_records = my_trigger_algo.get_calo_records_vector();
 		tracker_collection_records = my_trigger_algo.get_tracker_records_vector();
 		
-		//if (debug) my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
-	        //if (debug) my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
-		//if (debug) my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
-	        //if (debug) my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
+		if (debug) my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
+	        if (debug) my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
+		if (debug) my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
+		if (debug) my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
 
 		
 		if (debug) std::clog << "********* Size of Finale structures for one event *********" << std::endl;
@@ -457,6 +490,9 @@ int main( int  argc_ , char **argv_  )
 
 	    raw_trigger_prompt_decision = my_trigger_algo.get_finale_decision();
 	    raw_trigger_delayed_decision = my_trigger_algo.get_delayed_finale_decision();
+
+
+
 
 	    if (debug) std::clog << "trigger_finale_decision         [" << raw_trigger_prompt_decision << "]" << std::endl;
 	    if (debug) std::clog << "delayed trigger_finale_decision [" << raw_trigger_delayed_decision << "]" << std::endl;
