@@ -371,7 +371,7 @@ namespace snemo {
     {  
       uint32_t crate_index = my_calo_ctw_.get_geom_id().get(mapping::CRATE_INDEX);  
       DT_THROW_IF(crate_index < mapping::MAIN_CALO_SIDE_0_CRATE || crate_index > mapping::XWALL_GVETO_CALO_CRATE, std::logic_error, "Crate index '"<< crate_index << "' is not defined, check your value ! ");
-      
+      my_calo_ctw_.tree_dump(std::clog, " MY CALO CTW : ", "DEBUG : calo_trigger_algorithm ");
       _calo_record_per_clocktick_.clocktick_25ns = my_calo_ctw_.get_clocktick_25ns();      
 
       // Fill structure if crate is number 2

@@ -105,7 +105,7 @@ int main( int  argc_ , char **argv_  )
 
   try {
     // boolean for debugging (display etc)
-    bool debug = true;
+    bool debug = false;
     std::clog << "Test program for class 'snemo::digitization::trigger_algorithm_efficiency_validation' !" << std::endl;
     int32_t seed = 314159;
     mygsl::rng random_generator;
