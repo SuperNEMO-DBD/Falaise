@@ -58,7 +58,6 @@ namespace snemo {
 	{
 	  // Loop on main calo step hits:
 	  const size_t number_of_main_calo_hits = SD_.get_number_of_step_hits("calo");
-	  //std::map<geomtools::geom_id, double> map_of_gid_and_energy;
 	  std::set<geomtools::geom_id> set_of_gid;
 	  
 	  for (size_t ihit = 0; ihit < number_of_main_calo_hits; ihit++)
@@ -76,7 +75,6 @@ namespace snemo {
 	      else 
 		{
 		  // Already hit :
-		  // map_of_gid_and_energy[calo_gid] +=  energy_deposit;
 		}
 	    }
 	  number_of_calorimeters += set_of_gid.size();

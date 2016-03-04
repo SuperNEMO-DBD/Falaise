@@ -138,12 +138,9 @@ int main( int  argc_ , char **argv_  )
       pipeline_simulated_data_filename = input_filename;
     }else{
       pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
-      // pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/raw_simulated_data_brio/Se82_0nubb_500000-source_strips_bulk_SD.brio";
-      // pipeline_simulated_data_filename = "${DATA_NEMO_PERSO_DIR}/raw_simulated_data_brio/Bi214_Po214_500000-source_strips_bulk_SD.brio";
     }
     datatools::fetch_path_with_env(pipeline_simulated_data_filename);
 
-    
     // Number of events :
     int event_number = -1;
     if (is_event_number)  event_number = arg_event_number;
@@ -165,20 +162,18 @@ int main( int  argc_ , char **argv_  )
     datatools::fetch_path_with_env(output_path);
     
     // Name of SD output files (FT : Fake Trigger & RT: Real Trigger) :
-
-    std::string sd_file_FT_0 = output_path + "sd_file_1" + ".brio";
-    std::string sd_file_FT_1 = output_path + "sd_file_2" + ".brio";
-    std::string sd_file_prompt_RT_0 = output_path + "sd_file_3" + ".brio";
-    std::string sd_file_prompt_RT_1 = output_path + "sd_file_4" + ".brio";
-    std::string sd_file_delayed_RT_0 = output_path + "sd_file_5" + ".brio";
-    std::string sd_file_delayed_RT_1 = output_path + "sd_file_6" + ".brio";
+    std::string SD_prompt_real_trigger_no   = output_path + "sd_file_1" + ".brio";
+    std::string SD_prompt_real_trigger_yes  = output_path + "sd_file_2" + ".brio";
+    std::string SD_delayed_real_trigger_no  = output_path + "sd_file_3" + ".brio";
+    std::string SD_delayed_real_trigger_yes = output_path + "sd_file_4" + ".brio";
+    
     
     // Event writer : 
     dpp::output_module writer_1;
     datatools::properties writer_config_1;
     writer_config_1.store ("logging.priority", "debug");
     writer_config_1.store ("files.mode", "single");   
-    writer_config_1.store ("files.single.filename", sd_file_FT_0);
+    writer_config_1.store ("files.single.filename", SD_prompt_real_trigger_no);
     writer_1.initialize_standalone(writer_config_1); 
 
     // Event writer : 
@@ -186,7 +181,7 @@ int main( int  argc_ , char **argv_  )
     datatools::properties writer_config_2;
     writer_config_2.store ("logging.priority", "debug");
     writer_config_2.store ("files.mode", "single");   
-    writer_config_2.store ("files.single.filename", sd_file_FT_1);
+    writer_config_2.store ("files.single.filename", SD_prompt_real_trigger_yes);
     writer_2.initialize_standalone(writer_config_2); 
  
     // Event writer : 
@@ -194,7 +189,7 @@ int main( int  argc_ , char **argv_  )
     datatools::properties writer_config_3;
     writer_config_3.store ("logging.priority", "debug");
     writer_config_3.store ("files.mode", "single");   
-    writer_config_3.store ("files.single.filename", sd_file_prompt_RT_0);
+    writer_config_3.store ("files.single.filename", SD_delayed_real_trigger_no);
     writer_3.initialize_standalone(writer_config_3); 
 
     // Event writer : 
@@ -202,24 +197,8 @@ int main( int  argc_ , char **argv_  )
     datatools::properties writer_config_4;
     writer_config_4.store ("logging.priority", "debug");
     writer_config_4.store ("files.mode", "single");   
-    writer_config_4.store ("files.single.filename", sd_file_prompt_RT_1);
-    writer_4.initialize_standalone(writer_config_4);   
-
-    // Event writer : 
-    dpp::output_module writer_5;
-    datatools::properties writer_config_5;
-    writer_config_5.store ("logging.priority", "debug");
-    writer_config_5.store ("files.mode", "single");   
-    writer_config_5.store ("files.single.filename", sd_file_delayed_RT_0);
-    writer_5.initialize_standalone(writer_config_5); 
-
-    // Event writer : 
-    dpp::output_module writer_6;
-    datatools::properties writer_config_6;
-    writer_config_6.store ("logging.priority", "debug");
-    writer_config_6.store ("files.mode", "single");   
-    writer_config_6.store ("files.single.filename", sd_file_delayed_RT_1);
-    writer_6.initialize_standalone(writer_config_6); 
+    writer_config_4.store ("files.single.filename", SD_delayed_real_trigger_yes);
+    writer_4.initialize_standalone(writer_config_4);    
 
     // Event record :
     datatools::things ER;
@@ -235,10 +214,6 @@ int main( int  argc_ , char **argv_  )
     Int_t event_id    = 0;
     Bool_t raw_trigger_prompt_decision = false;
     Bool_t raw_trigger_delayed_decision = false;
-    Bool_t fake_trigger_prompt_decision = false;
-    Bool_t fake_trigger_delayed_decision = false;
-    Bool_t prompt_trigger_decision_to_fake_trigger = false;
-    Bool_t delayed_trigger_decision_to_fake_trigger = false;
     Int_t total_number_of_calo = 0;
     Int_t total_number_of_main_calo = 0;
     Int_t total_number_of_gveto = 0;
@@ -250,10 +225,6 @@ int main( int  argc_ , char **argv_  )
     trigger_decision_tree->Branch("event_id", &event_id, "evend_id/I");
     trigger_decision_tree->Branch("raw_trigger_prompt_decision", &raw_trigger_prompt_decision, "raw_trigger_prompt_decision/O");
     trigger_decision_tree->Branch("raw_trigger_delayed_decision", &raw_trigger_delayed_decision, "raw_trigger_delayed_decision/O");
-    trigger_decision_tree->Branch("fake_trigger_prompt_decision", &fake_trigger_prompt_decision, "fake_trigger_prompt_decision/O");
-    trigger_decision_tree->Branch("fake_trigger_delayed_decision", &fake_trigger_delayed_decision, "fake_trigger_delayed_decision/O");
-    trigger_decision_tree->Branch("prompt_trigger_decision_to_fake_trigger", &prompt_trigger_decision_to_fake_trigger, "prompt_trigger_decision_to_fake_trigger/O");
-    trigger_decision_tree->Branch("delayed_trigger_decision_to_fake_trigger", &delayed_trigger_decision_to_fake_trigger, "delayed_trigger_decision_to_fake_trigger/O");
     trigger_decision_tree->Branch("total_number_of_calo", &total_number_of_calo, "total_number_of_calo/I");
     trigger_decision_tree->Branch("total_number_of_main_calo", &total_number_of_main_calo, "total_number_of_main_calo/I");
     trigger_decision_tree->Branch("total_number_of_gveto", &total_number_of_gveto, "total_number_of_gveto/I");
@@ -363,10 +334,6 @@ int main( int  argc_ , char **argv_  )
 	event_id = psd_count;
 	raw_trigger_prompt_decision = false;
 	raw_trigger_delayed_decision = false;
-	fake_trigger_prompt_decision = false;
-	fake_trigger_delayed_decision = false;
-	prompt_trigger_decision_to_fake_trigger = false;
-	delayed_trigger_decision_to_fake_trigger = false;
 	total_number_of_calo = 0;
 	total_number_of_main_calo = 0;
 	total_number_of_gveto = 0;
@@ -423,6 +390,11 @@ int main( int  argc_ , char **argv_  )
 		    signal_2_calo_tp.set_clocktick_shift(clocktick_25_shift);
 		    // Signal to calo TP process :
 		    signal_2_calo_tp.process(signal_data, my_calo_tp_data);
+		    
+		    total_number_of_main_calo = signal_data.get_number_of_main_calo_signals() + signal_data.get_number_of_xcalo_signals();
+		    total_number_of_gveto     = signal_data.get_number_of_gveto_signals();
+		    total_number_of_calo      = total_number_of_main_calo + total_number_of_gveto;
+
 		    if (debug) my_calo_tp_data.tree_dump(std::clog, "Calorimeter TP(s) data : ", "INFO : ");
 		    snemo::digitization::calo_tp_data::calo_tp_collection_type calo_tps = my_calo_tp_data.get_calo_tps();
 
@@ -488,18 +460,7 @@ int main( int  argc_ , char **argv_  )
 
 	    if (debug) std::clog << "trigger_finale_decision         [" << raw_trigger_prompt_decision << "]" << std::endl;
 	    if (debug) std::clog << "delayed trigger_finale_decision [" << raw_trigger_delayed_decision << "]" << std::endl;
-	    
-	    if (!raw_trigger_prompt_decision && raw_trigger_delayed_decision) {
-	      std::cout << "psd count = " << psd_count << std::endl;
-	      std::cout <<  " ******************************* ANORMAL *******************" << std::endl;
-	    }
-	    
-	    if (coincidence_collection_calo_records.size() != 0)
-	      {
-		total_number_of_main_calo = coincidence_collection_calo_records[2].total_multiplicity_side_0.to_ulong() + coincidence_collection_calo_records[2].total_multiplicity_side_1.to_ulong();
-		total_number_of_gveto     = coincidence_collection_calo_records[2].total_multiplicity_gveto.to_ulong();
-		total_number_of_calo      = total_number_of_main_calo + total_number_of_gveto;
-	      }
+
 	    if (debug) std::clog << "********************************************************************" << std::endl;	    
 	    if (debug) std::clog << "Total calo             = " << total_number_of_calo             << std::endl;
 	    if (debug) std::clog << "Total main calo        = " << total_number_of_main_calo        << std::endl;
@@ -508,29 +469,19 @@ int main( int  argc_ , char **argv_  )
 	    if (debug) std::clog << "Total prompt GG cells  = " << total_number_of_prompt_gg_cells  << std::endl;
 	    if (debug) std::clog << "Total delayed GG cells = " << total_number_of_delayed_gg_cells << std::endl;
 	    if (debug) std::clog << "********************************************************************" << std::endl;
-	    
 
-	    // Fake trigger prompt : 1 PM / 3 prompt cells
-	    if (total_number_of_calo >= 1 && total_number_of_prompt_gg_cells >= 3)
-	      {
-		fake_trigger_prompt_decision = true;
-		prompt_trigger_decision_to_fake_trigger = my_trigger_algo.get_finale_decision();
-	      }
-
-	    // Fake trigger delayed : 1 delayed cells and a fake prompt event
-	    if (fake_trigger_prompt_decision && total_number_of_delayed_gg_cells >= 1)
-	      {
-		fake_trigger_delayed_decision = true;
-		delayed_trigger_decision_to_fake_trigger = my_trigger_algo.get_delayed_finale_decision();
-	      }	
-	    
 	    // Write in several SD files depending of the trigger decision
-	    if(!fake_trigger_prompt_decision) writer_1.process(ER);
+
+	    if(!raw_trigger_prompt_decision) writer_1.process(ER);
 	    else writer_2.process(ER);
-	    if (fake_trigger_prompt_decision && !prompt_trigger_decision_to_fake_trigger) writer_3.process(ER);
-	    else if (fake_trigger_prompt_decision && prompt_trigger_decision_to_fake_trigger) writer_4.process(ER);
-	    if (fake_trigger_prompt_decision && prompt_trigger_decision_to_fake_trigger && !delayed_trigger_decision_to_fake_trigger) writer_5.process(ER);
-	    else if (fake_trigger_prompt_decision && prompt_trigger_decision_to_fake_trigger && delayed_trigger_decision_to_fake_trigger) writer_6.process(ER);
+	    
+	    if (!raw_trigger_prompt_decision && raw_trigger_delayed_decision) {
+	      std::cout << "psd count = " << psd_count << std::endl;
+	      std::cout <<  " ******************************* ANORMAL DELAYED BUT NOT PROMPT *******************" << std::endl;
+	    }
+
+	    if (raw_trigger_prompt_decision && !raw_trigger_delayed_decision) writer_3.process(ER);
+	    else if (raw_trigger_prompt_decision && raw_trigger_delayed_decision) writer_4.process(ER);
 
 	    my_trigger_algo.clear_records();
 	      

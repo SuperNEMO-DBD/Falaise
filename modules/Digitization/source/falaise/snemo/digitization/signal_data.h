@@ -71,12 +71,6 @@ namespace snemo {
 
       /// Return the mutable collection of geigers trigger primitive			
       geiger_signal_collection_type & grab_geiger_signals();
-
-      /// Return the const collection of geigers trigger primitive
-      const calo_signal_collection_type & get_calo_signals() const;
-
-      /// Return the mutable collection of geigers trigger primitive			
-      calo_signal_collection_type & grab_calo_signals();
 			
 			/// Return the total number of geiger signals
 			const std::size_t get_number_of_geiger_signals() const;
@@ -86,6 +80,24 @@ namespace snemo {
 
 			/// Return the number of delayed (> time_limit_) geiger signals 
 			const std::size_t get_number_of_delayed_geiger_signals(double time_limit_) const;
+
+      /// Return the const collection of geigers trigger primitive
+      const calo_signal_collection_type & get_calo_signals() const;
+
+      /// Return the mutable collection of geigers trigger primitive			
+      calo_signal_collection_type & grab_calo_signals();
+
+			/// Return the total number of calo signals
+			const std::size_t get_number_of_calo_signals() const;
+
+			/// Return the total number of main calo signals
+			const std::size_t get_number_of_main_calo_signals() const;
+
+			/// Return the total number of xcalo signals
+			const std::size_t get_number_of_xcalo_signals() const;
+
+			/// Return the total number of gveto signals
+			const std::size_t get_number_of_gveto_signals() const;
 			
 			/// Check if signal data has geiger signals
 			bool has_geiger_signals();

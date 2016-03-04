@@ -9,6 +9,9 @@
 // - Bayeux/datatools:
 #include <datatools/exception.h>
 
+// This project :
+#include <snemo/digitization/mapping.h>
+
 namespace snemo {
   
   namespace digitization {
@@ -96,17 +99,7 @@ namespace snemo {
     {
       return _geiger_signals_;
     }
-
-    const signal_data::calo_signal_collection_type & signal_data::get_calo_signals() const
-    {
-      return _calo_signals_;
-    }
-
-    signal_data::calo_signal_collection_type & signal_data::grab_calo_signals()
-    {
-      return _calo_signals_;
-    }
-
+		
 		const std::size_t signal_data::get_number_of_geiger_signals() const
 		{
 			return _geiger_signals_.size();
@@ -146,7 +139,79 @@ namespace snemo {
 				}
 			return number_of_delayed_gg_signal;
 		}
+
+    const signal_data::calo_signal_collection_type & signal_data::get_calo_signals() const
+    {
+      return _calo_signals_;
+    }
+
+    signal_data::calo_signal_collection_type & signal_data::grab_calo_signals()
+    {
+      return _calo_signals_;
+    }
+
+		const std::size_t signal_data::get_number_of_calo_signals() const
+		{
+			return _calo_signals_.size();
+		}
 		
+		const std::size_t signal_data::get_number_of_main_calo_signals() const
+		{
+			std::size_t number_of_main_calo_signal = 0;
+			std::vector<datatools::handle<calo_signal> >::const_iterator it_signal = _calo_signals_.begin();
+			for (it_signal; it_signal != _calo_signals_.end(); it_signal++)
+				{
+					calo_signal_handle_type a_calo_signal_handle = *it_signal;
+					calo_signal a_calo_signal = a_calo_signal_handle.get();
+					
+					const geomtools::geom_id a_calo_gid = a_calo_signal.get_geom_id();
+					if(a_calo_gid.get_type() == mapping::CALO_MAIN_WALL_CATEGORY_TYPE)
+						{
+							number_of_main_calo_signal++;
+						}
+				}
+			
+			return number_of_main_calo_signal;
+		}
+
+		const std::size_t signal_data::get_number_of_xcalo_signals() const
+		{
+			std::size_t number_of_xcalo_signal = 0;
+			std::vector<datatools::handle<calo_signal> >::const_iterator it_signal = _calo_signals_.begin();
+			for (it_signal; it_signal != _calo_signals_.end(); it_signal++)
+				{
+					calo_signal_handle_type a_calo_signal_handle = *it_signal;
+					calo_signal a_calo_signal = a_calo_signal_handle.get();
+					
+					const geomtools::geom_id a_calo_gid = a_calo_signal.get_geom_id();
+					if(a_calo_gid.get_type() == mapping::CALORIMETER_X_WALL_CATEGORY_TYPE)
+						{
+							number_of_xcalo_signal++;
+						}
+				}
+			
+			return number_of_xcalo_signal;
+		}
+
+
+		const std::size_t signal_data::get_number_of_gveto_signals() const
+		{
+			std::size_t number_of_gveto_signal = 0;
+			std::vector<datatools::handle<calo_signal> >::const_iterator it_signal = _calo_signals_.begin();
+			for (it_signal; it_signal != _calo_signals_.end(); it_signal++)
+				{
+					calo_signal_handle_type a_calo_signal_handle = *it_signal;
+					calo_signal a_calo_signal = a_calo_signal_handle.get();
+					
+					const geomtools::geom_id a_calo_gid = a_calo_signal.get_geom_id();
+					if(a_calo_gid.get_type() == mapping::CALORIMETER_GVETO_CATEGORY_TYPE)
+						{
+							number_of_gveto_signal++;
+						}
+				}
+			
+			return number_of_gveto_signal;
+		}
 		
 		bool signal_data::has_geiger_signals()
 		{
