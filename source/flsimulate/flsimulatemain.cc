@@ -356,9 +356,6 @@ int main(int argc, char *argv[]) {
   // - Needed, but nasty
   FALAISE_INIT();
 
-  // - Initialize the resource paths
-  FLSimulate::initResources();
-
   // - Do the simulation.
   // Ideally, exceptions SHOULD NOT propagate out of this  - the error
   // code should be enough.
