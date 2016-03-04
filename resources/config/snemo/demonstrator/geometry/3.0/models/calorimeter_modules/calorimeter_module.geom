@@ -91,7 +91,7 @@ x                 : real   =   1.0   # mm
 y                 : real   = 256.0   # mm
 z                 : real   =  31.0   # mm
 length_unit       : string = "mm"
-material.ref      : string = "std::pfte"
+material.ref      : string = "std::ptfe"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
@@ -143,7 +143,7 @@ x                 : real   = 256.0   # mm
 y                 : real   =   1.0   # mm
 z                 : real   =  31.0   # mm
 length_unit       : string = "mm"
-material.ref      : string = "std::pfte"
+material.ref      : string = "std::ptfe"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
@@ -240,7 +240,7 @@ x                 : real   =   1.0   # mm
 y                 : real   = 240.0   # mm
 z                 : real   = 163.0   # mm
 length_unit       : string = "mm"
-material.ref      : string = "std::pfte"
+material.ref      : string = "std::ptfe"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
@@ -292,7 +292,7 @@ x                 : real   = 240.0   # mm
 y                 : real   =   1.0   # mm
 z                 : real   = 163.0   # mm
 length_unit       : string = "mm"
-material.ref      : string = "std::pfte"
+material.ref      : string = "std::ptfe"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
@@ -332,7 +332,7 @@ y                 : real    = 240.0   # mm
 z                 : real    =   1.0   # mm
 r_hole            : real    = 110.0   # mm
 length_unit       : string  = "mm"
-material.ref      : string  = "std::pfte"
+material.ref      : string  = "std::ptfe"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
