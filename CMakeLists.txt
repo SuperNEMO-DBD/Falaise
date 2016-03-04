@@ -240,7 +240,7 @@ install(FILES
 #-----------------------------------------------------------------------
 # - Plugins/modules installation - Must come last because they must find
 # Falaise
-# add_subdirectory(modules)
+add_subdirectory(modules)
 
 # # - Online software
 # option(FALAISE_ONLINE_EXPERIMENT "Built the experiment on-line software" ON)
