@@ -371,9 +371,8 @@ namespace snemo {
     {  
       uint32_t crate_index = my_calo_ctw_.get_geom_id().get(mapping::CRATE_INDEX);  
       DT_THROW_IF(crate_index < mapping::MAIN_CALO_SIDE_0_CRATE || crate_index > mapping::XWALL_GVETO_CALO_CRATE, std::logic_error, "Crate index '"<< crate_index << "' is not defined, check your value ! ");
-      my_calo_ctw_.tree_dump(std::clog, " MY CALO CTW : ", "DEBUG : calo_trigger_algorithm ");
       _calo_record_per_clocktick_.clocktick_25ns = my_calo_ctw_.get_clocktick_25ns();      
-
+      
       // Fill structure if crate is number 2
       if (!my_calo_ctw_.is_main_wall())
 	{
@@ -384,13 +383,15 @@ namespace snemo {
 	  // -- Fill xwall side 0 multipliciy
 	  if (multiplicity_side_0 != 0)
 	    {
-	      _calo_record_per_clocktick_.total_multiplicity_side_0 = _calo_record_per_clocktick_.total_multiplicity_side_0.to_ulong() + multiplicity_side_0;
+	      if (_calo_record_per_clocktick_.total_multiplicity_side_0 == 3) {}
+	      else _calo_record_per_clocktick_.total_multiplicity_side_0 = _calo_record_per_clocktick_.total_multiplicity_side_0.to_ulong() + multiplicity_side_0;
 	    }
 
 	  // -- Fill xwall side 1 multiplicity
 	  if (multiplicity_side_1 != 0)
 	    {
-	      _calo_record_per_clocktick_.total_multiplicity_side_1 = _calo_record_per_clocktick_.total_multiplicity_side_1.to_ulong() + multiplicity_side_1;
+	      if (_calo_record_per_clocktick_.total_multiplicity_side_1 == 3) {}
+	      else _calo_record_per_clocktick_.total_multiplicity_side_1 = _calo_record_per_clocktick_.total_multiplicity_side_1.to_ulong() + multiplicity_side_1;
 	    }
 	  
 	  // -- Fill gamma veto multiplicity
@@ -398,10 +399,10 @@ namespace snemo {
 	    {
 	      _calo_record_per_clocktick_.total_multiplicity_gveto = my_calo_ctw_.get_htm_gveto_info();
 	    }
+
 	  else _calo_record_per_clocktick_.total_multiplicity_gveto = 0;
 	  
-	  // Fill xwall zone corresponding of xwall zoning word :     
-
+	  // -- Fill xwall zone corresponding of xwall zoning word :     
 	  std::bitset<calo::ctw::XWALL_ZONING_BITSET_SIZE> xwall_zoning_bitset;
 	  my_calo_ctw_.get_xwall_zoning_word(xwall_zoning_bitset);
 
@@ -439,7 +440,6 @@ namespace snemo {
 	    }
 
 	  // Fill LTO boolean for each side of xwall and gamma veto
-
 	  if (my_calo_ctw_.is_lto_xwall_side_0()) _calo_record_per_clocktick_.LTO_side_0 = true;
 	  if (my_calo_ctw_.is_lto_xwall_side_1()) _calo_record_per_clocktick_.LTO_side_1 = true;
 	  if (my_calo_ctw_.is_lto_gveto()) _calo_record_per_clocktick_.LTO_gveto = true;
@@ -453,16 +453,17 @@ namespace snemo {
 
 	  if (crate_index == mapping::MAIN_CALO_SIDE_0_CRATE && main_multiplicity != 0)
 	    {
-	      _calo_record_per_clocktick_.total_multiplicity_side_0 = _calo_record_per_clocktick_.total_multiplicity_side_0.to_ulong() + main_multiplicity;
+	      if (_calo_record_per_clocktick_.total_multiplicity_side_0 == 3) {}
+	      else _calo_record_per_clocktick_.total_multiplicity_side_0 = _calo_record_per_clocktick_.total_multiplicity_side_0.to_ulong() + main_multiplicity;
 	    }
 
 	  if (crate_index == mapping::MAIN_CALO_SIDE_1_CRATE && main_multiplicity != 0)
 	    {
-	      _calo_record_per_clocktick_.total_multiplicity_side_1 = _calo_record_per_clocktick_.total_multiplicity_side_1.to_ulong() + main_multiplicity;
+	      if (_calo_record_per_clocktick_.total_multiplicity_side_1 == 3) {}
+	      else _calo_record_per_clocktick_.total_multiplicity_side_1 = _calo_record_per_clocktick_.total_multiplicity_side_1.to_ulong() + main_multiplicity;
 	    }
 
 	  // Fill zone main wall bitset :
-
 	  std::bitset<calo::ctw::MAIN_ZONING_BITSET_SIZE> main_zoning_bitset;
 	  my_calo_ctw_.get_main_zoning_word(main_zoning_bitset);
 
@@ -524,13 +525,16 @@ namespace snemo {
       	} // end of for iterator
       
       // Total mult side 0 :
-      my_calo_summary_record_.total_multiplicity_side_0 = multiplicity_sum_circ_buff_side_0;
+      if (multiplicity_sum_circ_buff_side_0 >= 3)  my_calo_summary_record_.total_multiplicity_side_0 = 3;
+      else my_calo_summary_record_.total_multiplicity_side_0 = multiplicity_sum_circ_buff_side_0;
 
       // Total mult side 1 :
-      my_calo_summary_record_.total_multiplicity_side_1 = multiplicity_sum_circ_buff_side_1;
+      if (multiplicity_sum_circ_buff_side_1 >= 3) my_calo_summary_record_.total_multiplicity_side_1 = 3;
+      else my_calo_summary_record_.total_multiplicity_side_1 = multiplicity_sum_circ_buff_side_1;
 	  
       // Total mult gveto :
-      my_calo_summary_record_.total_multiplicity_gveto = multiplicity_sum_circ_buff_gveto;
+      if (multiplicity_sum_circ_buff_gveto >= 3) my_calo_summary_record_.total_multiplicity_gveto = 3;
+      else my_calo_summary_record_.total_multiplicity_gveto = multiplicity_sum_circ_buff_gveto;
 	  
       // Zoning words :
       my_calo_summary_record_.zoning_word[0] = zoning_word_sum_side_0;
@@ -594,12 +598,16 @@ namespace snemo {
 	  std::vector<datatools::handle<calo_ctw> > ctw_list_per_clocktick;
 	  calo_ctw_data_.get_list_of_calo_ctw_per_clocktick(iclocktick, ctw_list_per_clocktick);
 	  
-	  for (int isize = 0; isize < ctw_list_per_clocktick.size(); isize++)
-	    {
-	      _build_calo_record_per_clocktick(ctw_list_per_clocktick[isize].get());
-	    } // end of isize
+	  if (ctw_list_per_clocktick.size() == 0) _calo_record_per_clocktick_.clocktick_25ns = iclocktick;
+	  else
+	    {	  
+	      for (int isize = 0; isize < ctw_list_per_clocktick.size(); isize++)
+		{
+		  _build_calo_record_per_clocktick(ctw_list_per_clocktick[isize].get());
+		} // end of isize
+	    }
 	  _gate_circular_buffer_->push_back(_calo_record_per_clocktick_);
-	  
+
 	  // Fill calo summary record for each clocktick (based on previous calo records) : 
 	  calo_summary_record my_calo_summary_record;
 	  my_calo_summary_record.clocktick_25ns = iclocktick;
@@ -609,6 +617,7 @@ namespace snemo {
 	  calo_records_.push_back(_calo_level_1_finale_decision_);
 	  _calo_record_per_clocktick_.reset();
 	} // end of iclocktick
+
       return;
     }
 

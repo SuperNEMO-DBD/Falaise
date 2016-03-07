@@ -771,7 +771,9 @@ namespace snemo {
 	    {
 	      _previous_event_record_.counter_1600ns = 625 - (a_pair.first.clocktick_1600ns - _previous_event_record_.previous_clocktick_1600ns);
 	      
-	      if (_previous_event_record_.counter_1600ns <= 620)
+	      // 7/03 : TO CHECK. We have to be sure that the end of the prompt track will not be compared with the begining of this same track
+	      // Dead time for trigger process = 5 * 1600 microsecond (fix for the moment... To be check with Thierry )
+	      if (_previous_event_record_.counter_1600ns < 620) 
 		{	      	  
 		  coincidence_event_record a_delayed_event_record;
 	      	  _process_delayed_coincidence(a_pair, a_delayed_event_record); // Compare calo record & tracker record with previous event
@@ -781,9 +783,9 @@ namespace snemo {
 	      	    }
 		}
 	    }
+
 	} // end of it_pair
-      
-      // std::clog << "Coinc record size = " << coincidence_records_.size() << std::endl;
+
       return;
     }
     
