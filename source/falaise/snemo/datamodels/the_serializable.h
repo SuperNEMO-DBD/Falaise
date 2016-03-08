@@ -6,7 +6,15 @@
 
 // Third party:
 // - Boost:
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-local-typedef"
+#endif
 #include <boost/serialization/export.hpp>
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+
 // - Bayeux/datatools:
 #include <datatools/archives_instantiation.h>
 

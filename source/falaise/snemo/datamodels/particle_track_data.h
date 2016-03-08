@@ -121,7 +121,7 @@ namespace snemo {
       calibrated_calorimeter_hit::collection_type _non_associated_calorimeters_;  //!< Collection of calorimeter hit handles
       datatools::properties _auxiliaries_;                                        //!< Auxiliary properties
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

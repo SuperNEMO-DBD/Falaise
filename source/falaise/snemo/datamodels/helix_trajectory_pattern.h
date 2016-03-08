@@ -50,7 +50,7 @@ namespace snemo {
 
       geomtools::helix_3d _helix_; //!< The helix embedded model
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

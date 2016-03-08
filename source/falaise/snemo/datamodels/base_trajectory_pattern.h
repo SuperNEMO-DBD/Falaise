@@ -51,7 +51,7 @@ namespace snemo {
 
       std::string _pattern_id_; //!< The pattern identifier
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

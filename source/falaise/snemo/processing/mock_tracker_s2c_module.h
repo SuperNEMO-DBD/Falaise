@@ -128,7 +128,7 @@ namespace snemo {
       bool          _store_mc_truth_track_ids_;        //!< The flag to reference the MC engine track and parent track IDs associated to this calibrated Geiger hit
 
       // Macro to automate the registration of the module :
-      DPP_MODULE_REGISTRATION_INTERFACE(mock_tracker_s2c_module);
+      DPP_MODULE_REGISTRATION_INTERFACE(mock_tracker_s2c_module)
 
     };
 

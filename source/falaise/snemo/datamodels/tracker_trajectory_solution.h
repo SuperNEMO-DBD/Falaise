@@ -143,7 +143,7 @@ namespace snemo {
       cluster_col_type                _unfitted_clusters_;   //!< Collection of handles on unfitted clusters
       datatools::properties           _auxiliaries_;         //!< List of auxiliary properties
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

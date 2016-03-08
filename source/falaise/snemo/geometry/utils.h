@@ -56,7 +56,7 @@ namespace snemo {
         DIRECTION_LEFT    = 2, //!< Left direction (Y-)
         DIRECTION_RIGHT   = 3, //!< Right direction (Y+)
         DIRECTION_BOTTOM  = 4, //!< Bottom direction (Z-)
-        DIRECTION_TOP     = 5, //!< Top direction (Z+)
+        DIRECTION_TOP     = 5 //!< Top direction (Z+)
       };
 
       /// \brief Side identifier constants (X axis in the SuperNEMO reference frame)
@@ -91,7 +91,7 @@ namespace snemo {
         NEIGHBOUR_SIDE = 0x1,   /// S : nearest neighbours (side)
         NEIGHBOUR_DIAG = 0x2,   /// D : nearest diagonal
         NEIGHBOUR_FIRST = NEIGHBOUR_SIDE | NEIGHBOUR_DIAG, /// S or D
-        NEIGHBOUR_SECOND = 0x4, /// s : second ranked neighbours
+        NEIGHBOUR_SECOND = 0x4 /// s : second ranked neighbours
       };
 
     };

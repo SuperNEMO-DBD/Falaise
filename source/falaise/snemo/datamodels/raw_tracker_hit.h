@@ -211,7 +211,7 @@ namespace snemo {
       uint16_t _cathode_t5_;           //!< Cathode signal time t5
       uint16_t _cathode_t6_;           //!< Cathode signal time t6 (only in NEMO-3 mode)
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

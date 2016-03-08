@@ -117,7 +117,7 @@ namespace snemo {
       tracker_hit_collection_type     _calibrated_tracker_hits_;     //!< Collection of calibrated tracker hits
       datatools::properties           _properties_;                  //!< Auxiliary properties
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

@@ -217,7 +217,7 @@ namespace snemo {
       tracker_clustering_solution::handle_type _default_solution_; //!< Handle to the default/best solution
       datatools::properties        _auxiliaries_;                  //!< Auxiliary properties
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

@@ -130,7 +130,7 @@ namespace snemo {
       boost::scoped_ptr<wires_drawer> _drawer_;
 
       // registration interface :
-      GEOMTOOLS_MODEL_REGISTRATION_INTERFACE(calo_tapered_scin_box_model);
+      GEOMTOOLS_MODEL_REGISTRATION_INTERFACE(calo_tapered_scin_box_model)
     };
 
   } // end of namespace geometry

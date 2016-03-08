@@ -824,15 +824,15 @@ namespace snemo {
       vcx[utils::SIDE_BACK][WALL_RIGHT]  = &_back_block_x_[WALL_RIGHT];
       vcx[utils::SIDE_FRONT][WALL_LEFT]  = &_front_block_x_[WALL_LEFT];
       vcx[utils::SIDE_FRONT][WALL_RIGHT] = &_front_block_x_[WALL_RIGHT];
-      for (size_t side = 0; side < utils::NSIDES; side++) {
+      for (size_t local_side = 0; local_side < utils::NSIDES; ++local_side) {
         for (size_t wall = 0; wall < NWALLS_PER_SIDE; wall++) {
           size_t i_column = 0;
-          vcx[side][wall]->reserve(2);
+          vcx[local_side][wall]->reserve(2);
           while (true)  {
             geomtools::geom_id a_block_gid;
             a_block_gid.set_type(_block_type_);
             a_block_gid.set(_module_address_index_, _module_number_);
-            a_block_gid.set(_side_address_index_,   side);
+            a_block_gid.set(_side_address_index_,   local_side);
             a_block_gid.set(_wall_address_index_,   wall);
             a_block_gid.set(_column_address_index_, i_column);
             a_block_gid.set(_row_address_index_,    0);
@@ -847,18 +847,18 @@ namespace snemo {
             geomtools::placement a_block_module_placement;
             _module_world_placement_->relocate(a_block_world_placement, a_block_module_placement);
             const double x = a_block_module_placement.get_translation().x();
-            vcx[side][wall]->push_back(x);
+            vcx[local_side][wall]->push_back(x);
             if (i_column == 0) {
               const double y = a_block_module_placement.get_translation().y();
-              _block_y_[side][wall] = y;
+              _block_y_[local_side][wall] = y;
 
-              geomtools::geom_id a_block_window_gid(_wrapper_type_, _module_number_, side, wall, i_column, 0);
+              geomtools::geom_id a_block_window_gid(_wrapper_type_, _module_number_, local_side, wall, i_column, 0);
               const geomtools::geom_info & a_block_window_ginfo = _mapping_->get_geom_info(a_block_window_gid);
               const geomtools::placement & a_block_window_world_placement = a_block_window_ginfo.get_world_placement();
               geomtools::placement a_block_window_module_placement;
               _module_world_placement_->relocate(a_block_window_world_placement, a_block_window_module_placement);
               const double y2 = a_block_window_module_placement.get_translation().y();
-              _block_window_y_[side][wall] = y2;
+              _block_window_y_[local_side][wall] = y2;
             }
             i_column++;
           }

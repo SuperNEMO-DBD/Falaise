@@ -125,7 +125,7 @@ namespace snemo {
       bool                        _store_mc_hit_id_;     //!< The flag to reference MC true hit
 
       // Macro to automate the registration of the module :
-      DPP_MODULE_REGISTRATION_INTERFACE(mock_calorimeter_s2c_module);
+      DPP_MODULE_REGISTRATION_INTERFACE(mock_calorimeter_s2c_module)
 
     };
 

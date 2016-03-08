@@ -89,7 +89,7 @@ namespace snemo {
       raw_tracker_hit_col     _raw_tracker_hits_;     //!< Collection of raw tracker hits
       datatools::properties   _auxiliaries_;          //!< Auxiliary properties
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

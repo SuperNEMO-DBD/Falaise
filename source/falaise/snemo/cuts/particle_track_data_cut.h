@@ -124,7 +124,7 @@ namespace snemo {
       int _non_associated_calorimeter_hits_range_max_; //!< Maximal number of ass. calo for range_non_associated_calorimeter_hits mode
 
       // Macro to automate the registration of the cut :
-      CUT_REGISTRATION_INTERFACE(particle_track_data_cut);
+      CUT_REGISTRATION_INTERFACE(particle_track_data_cut)
     };
 
   }  // end of namespace cut

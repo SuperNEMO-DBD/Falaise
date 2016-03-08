@@ -116,7 +116,7 @@ namespace snemo {
       snemo::datamodel::timestamp _timestamp_;  //!< Reference time of the event
       datatools::properties       _properties_; //!< Dictionary of properties
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

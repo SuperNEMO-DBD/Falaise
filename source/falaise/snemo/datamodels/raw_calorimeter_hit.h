@@ -266,7 +266,7 @@ namespace snemo {
       uint16_t _aux_underflow_tot_;     //!< Underflow signal time-over-threshold
       uint16_t _aux_time_cfd_interp_;   //!< CFD interpolation
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

@@ -93,7 +93,7 @@ namespace snemo {
 
       calibrated_tracker_hit::collection_type _hits_; //!< Collection of Geiger hit handles
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

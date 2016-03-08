@@ -75,7 +75,7 @@ namespace snemo {
                                                   //!< starting with this prefix
 
       // Macro to automate the registration of the module :
-      DPP_MODULE_REGISTRATION_INTERFACE(event_header_utils_module);
+      DPP_MODULE_REGISTRATION_INTERFACE(event_header_utils_module)
 
     };
 

@@ -36,15 +36,29 @@
 
 // Third party:
 // - Boost:
+
+// This is for current crappy Boost 1.55 (and can\'t forward declare their f'ing
+// typedef. Needs review for later versions
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wshadow"
+#pragma clang diagnostic ignored "-Wunused-local-typedef"
+#endif
+#include <boost/random/mersenne_twister.hpp>
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+
+
+
+
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
-#include <boost/random/mersenne_twister.hpp>
 
 // This project:
 #include <TrackerPreClustering/gg_hit.h>
 
 namespace TrackerPreClustering {
-
   /// \brief Generator of mock events (collections of Geiger hits)
   class event_generator
   {
@@ -104,8 +118,6 @@ namespace TrackerPreClustering {
     boost::scoped_ptr<boost::random::mt19937> _generator_; /// Embedded PRNG
     std::vector<boost::shared_ptr<gg_hit> > _hits_gc_; /// Internal collection of Geiger hits
     std::map<int, bool> _gids_; /// Internal dictionnary of prompt/delayed status
-
-
   };
 
 } // end of namespace TrackerPreClustering

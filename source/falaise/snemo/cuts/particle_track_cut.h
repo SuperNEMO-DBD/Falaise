@@ -117,7 +117,7 @@ namespace snemo {
       int _calorimeter_hits_range_max_; //!< Maximal number of associated calorimeter
 
       // Macro to automate the registration of the cut :
-      CUT_REGISTRATION_INTERFACE(particle_track_cut);
+      CUT_REGISTRATION_INTERFACE(particle_track_cut)
     };
 
   }  // end of namespace cut

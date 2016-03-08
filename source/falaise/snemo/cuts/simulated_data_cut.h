@@ -131,7 +131,7 @@ namespace snemo {
       property_values_dict_type _hit_property_values_; //!< Values of the 'step_hit' property to look for
 
       // Macro to automate the registration of the cut :
-      CUT_REGISTRATION_INTERFACE(simulated_data_cut);
+      CUT_REGISTRATION_INTERFACE(simulated_data_cut)
     };
 
   } // end of namespace cut

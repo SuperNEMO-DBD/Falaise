@@ -89,7 +89,7 @@ namespace snemo {
         double _time_;         //!< Time associated to the hit
         double _sigma_time_;   //!< Error on the time associated to the hit
 
-        DATATOOLS_SERIALIZATION_DECLARATION();
+        DATATOOLS_SERIALIZATION_DECLARATION()
 
       };
 

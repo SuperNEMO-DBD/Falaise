@@ -217,7 +217,7 @@ namespace snemo {
       // Non persistent information :
       hit_belonging_col_type       _hit_belonging_;    //!< List of clusters for each clustered hits
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

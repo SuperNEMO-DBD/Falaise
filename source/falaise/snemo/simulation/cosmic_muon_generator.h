@@ -64,13 +64,13 @@ namespace snemo {
       enum mode_type {
         MODE_INVALID     = -1,
         MODE_SEA_LEVEL   = 0,
-        MODE_UNDERGROUND = 1,
+        MODE_UNDERGROUND = 1
       };
 
       enum sea_level_mode_type {
         SEA_LEVEL_INVALID = -1,
         SEA_LEVEL_TOY     = 0,
-        SEA_LEVEL_PDG     = 1,
+        SEA_LEVEL_PDG     = 1
       };
 
       struct sea_level_toy_setup {
@@ -154,7 +154,7 @@ namespace snemo {
       unsigned long _seed_;   //!< Local PRNG's seed
       mygsl::rng    _random_; //!< Local PRNG
 
-      GENBB_PG_REGISTRATION_INTERFACE(cosmic_muon_generator);
+      GENBB_PG_REGISTRATION_INTERFACE(cosmic_muon_generator)
 
     };
 

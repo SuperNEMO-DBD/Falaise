@@ -145,7 +145,7 @@ namespace snemo {
       std::set<datatools::event_id> _list_of_events_ids_;
 
       // Macro to automate the registration of the cut :
-      CUT_REGISTRATION_INTERFACE(event_header_cut);
+      CUT_REGISTRATION_INTERFACE(event_header_cut)
 
     };
 

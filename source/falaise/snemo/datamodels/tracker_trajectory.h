@@ -136,7 +136,7 @@ namespace snemo {
       orphans_collection_type _orphans_; ///< Collection of orphan Geiger hit handles
       handle_pattern          _pattern_; ///< Handle to a trajectory fitted pattern
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

@@ -17,7 +17,6 @@ namespace TrackerPreClustering {
                                       uint32_t mode_) const
   {
     typedef Hit hit_type;
-    typedef std::vector<const hit_type *> hit_collection_type;
 
     BOOST_FOREACH (const hit_type * hitref,
                    hits_) {
@@ -50,7 +49,6 @@ namespace TrackerPreClustering {
                                       uint32_t mode_) const
   {
     typedef Hit hit_type;
-    typedef std::vector<const hit_type *> hit_collection_type;
 
     BOOST_FOREACH (const hit_type * hitref,
                    cluster_) {
