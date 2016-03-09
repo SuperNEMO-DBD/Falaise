@@ -205,6 +205,12 @@ target_link_libraries(Falaise_EventBrowser
   ${ROOT_LIBRARIES}
   Falaise)
 
+if(APPLE)
+  set_target_properties(Falaise_EventBrowser
+    PROPERTIES LINK_FLAGS "-undefined dynamic_lookup"
+    )
+endif()
+
 # Install it:
 install(TARGETS Falaise_EventBrowser DESTINATION ${CMAKE_INSTALL_LIBDIR}/Falaise/modules)
 

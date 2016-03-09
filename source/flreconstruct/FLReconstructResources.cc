@@ -177,20 +177,6 @@ void doFixupResourcePaths() {
       }
     }
   }
-
-  // Fix up Bayeux's modules resource dir:
-  if (falaise::bayeux_embedded()) {
-    boost::filesystem::path bx_res_path = FLReconstruct::getResourceDir() + "/../Bayeux-2.0.0/resources";
-
-    boost::filesystem::path gt_res_path = bx_res_path / "geomtools";
-    setenv("GEOMTOOLS_RESOURCE_DIR", gt_res_path.c_str(), 1);
-
-    boost::filesystem::path mat_res_path = bx_res_path / "materials";
-    setenv("MATERIALS_RESOURCE_DIR", mat_res_path.c_str(), 1);
-
-    boost::filesystem::path gbb_res_path = bx_res_path / "genbb_help";
-    setenv("GENBB_HELP_RESOURCE_DIR", gbb_res_path.c_str(), 1);
-  }
 }
 
 std::string getApplicationDir() {

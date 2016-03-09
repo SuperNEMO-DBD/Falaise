@@ -247,38 +247,20 @@ endif()
 option(FALAISE_WITH_DEVELOPER_TOOLS "Build/install developer tools" ON)
 mark_as_advanced(FALAISE_WITH_DEVELOPER_TOOLS)
 
-option(FALAISE_USE_SYSTEM_BAYEUX "Use system-installed Bayeux" ON)
-mark_as_advanced(FALAISE_USE_SYSTEM_BAYEUX)
 
-if(FALAISE_USE_SYSTEM_BAYEUX)
-  find_package(Bayeux 2.1.0 REQUIRED)
-  if(NOT Bayeux_MCTOOLS_GEANT4_FOUND)
-    message(FATAL_ERROR "
-  Bayeux found, but it does not supply the MCTools/Geant4 module
-  "  )
-  endif()
-else()
-  message(FATAL_ERROR "Embedded Bayeux is not supported anymore! Please use system Bayeux!")
-  # - Configure internal build
-  set(BAYEUX_EMBEDDED 1)
-  set(BAYEUX_BUILDPRODUCT_DIR ${FALAISE_BUILDPRODUCT_DIR})
-  set(BAYEUX_ENABLE_TESTING ${FALAISE_ENABLE_TESTING})
-  set(BAYEUX_WITH_DOCS ${FALAISE_WITH_DOCS})
-  set(BAYEUX_WITH_GEANT4_MODULE ON)
+#-----------------------------------------------------------------------
+# Bayeux is the main external dependency, and we know it will additionally
+# search for and provide compatible versions of:
+#
+# - Boost
+# - GSL
+# - ROOT
+# - Geant4
 
-  # - Option to build Bayeux's developer tools
-  set(BAYEUX_WITH_DEVELOPER_TOOLS ${FALAISE_WITH_DEVELOPER_TOOLS})
-
-  # - Build
-  # add_subdirectory(utilities/flbayeux)
-
-  # - Set up so that Falaise will use the internal build
-  # Hacked temporarily so we can use this technique on CMake < 2.8.11
-  # that doesn't allow duplicate imported targets.
-  set(BAYEUX_TARGETS_LOADED 1)
-  include(${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Bayeux-2.1.0/BayeuxConfig.cmake)
+find_package(Bayeux 2.1.0 REQUIRED)
+if(NOT Bayeux_MCTOOLS_GEANT4_FOUND)
+  message(FATAL_ERROR "Bayeux found, but it does not supply the MCTools/Geant4 module")
 endif()
-
 
 #-----------------------------------------------------------------------
 # Build the subdirectories as required
@@ -315,31 +297,18 @@ configure_file(${PROJECT_SOURCE_DIR}/cmake/FalaiseConfigVersion.cmake.in
   )
 
 # - Targets (build tree)
-if(FALAISE_USE_SYSTEM_BAYEUX)
-  set(_fbfile cmake/FalaiseBayeux-system.cmake.in)
-else()
-  list(APPEND Falaise_ADDON_TARGETS Bayeux)
-  set(Bayeux_TARGETS_PRESENT 1)
-  set(_fbfile cmake/FalaiseBayeux-builtin.cmake.in)
-endif()
-
+set(_fbfile cmake/FalaiseBayeux-system.cmake.in)
 configure_file(${_fbfile} ${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseBayeux.cmake @ONLY)
 
 export(TARGETS Falaise ${Falaise_ADDON_TARGETS} FILE ${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseTargets.cmake)
 
 # - Targets (install tree)
 install(EXPORT FalaiseTargets DESTINATION ${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION})
-
-if(FALAISE_USE_SYSTEM_BAYEUX)
-  set(_fbinstallfile ${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseBayeux.cmake)
-else()
-  set(Bayeux_TARGETS_PRESENT )
-  configure_file(${_fbfile} InstallTreeFiles/FalaiseBayeux.cmake @ONLY)
-  set(_fbinstallfile ${PROJECT_BINARY_DIR}/InstallTreeFiles/FalaiseBayeux.cmake)
-endif()
+set(_fbinstallfile ${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseBayeux.cmake)
 
 # - Installation of, well, install tree files
-install(FILES
+install(
+  FILES
     ${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseConfigVersion.cmake
     ${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseConfig.cmake
     ${_fbinstallfile}

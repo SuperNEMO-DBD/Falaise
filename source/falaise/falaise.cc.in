@@ -38,7 +38,6 @@
 #include "falaise/resource.h"
 #include "falaise/plugin.h"
 
-#cmakedefine01 Bayeux_EMBEDDED
 
 namespace {
 
@@ -123,35 +122,8 @@ namespace falaise {
 
   bool bayeux_embedded()
   {
-#if Bayeux_EMBEDDED == 1
-    return true;
-#else
     return false;
-#endif
   }
-
-//   void bayeux_resource_dir(std::string & bx_resource_dir_, bool & bx_system_)
-//   {
-// #if Bayeux_EMBEDDED == 1
-//     // Determine Bayeux's resource path relatively to Falaise resource path
-//     // whatever mode we use: build mode or completed installation:
-//     // DT_LOG_TRACE(datatools::logger::PRIO_TRACE,
-//                   "Guessing embedded Bayeux resource directory relatively to Falaise resource directory...");
-//     bx_resource_dir_ = FLSimulate::getResourceDir() + "/../Bayeux-1.0.0/resources";
-//     bx_system_ = false;
-// #else
-//     // Here we use the installed Bayeux's resource path:
-//     std::string bx_res_path = "@bayeux:";
-//     bx_system_ = true;
-//     if (datatools::fetch_path_with_env(bx_res_path)){
-//       // DT_LOG_TRACE(datatools::logger::PRIO_TRACE, "Using system Bayeux resource installation directory...");
-//       bx_resource_dir_ = bx_res_path;
-//     } else {
-//       DT_THROW_IF(true, std::runtime_error, "Cannot determine the system Bayeux's resource installation directory!");
-//     }
-// #endif
-//     return;
-//   }
 
   void initialize(int argc_, char * argv_[])
   {
