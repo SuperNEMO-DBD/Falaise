@@ -53,6 +53,8 @@ namespace snemo {
 				std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
 				std::bitset<trigger_info::NZONES> zoning_word_pattern[trigger_info::NSIDES];
 				std::bitset<trigger_info::NZONES> zoning_word_near_source[trigger_info::NSIDES];
+				// ajout de choses (cf calo record -> symétrie)
+				bool single_side_coinc;
 				bool finale_decision;
 			};
 

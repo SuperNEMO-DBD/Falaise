@@ -64,20 +64,20 @@ int main(int  argc_ , char ** argv_)
     input_delayed_cells_tree->SetBranchAddress("number_of_delayed_gg_cells", &vect_number_of_delayed_gg_cells);
     input_delayed_cells_tree->SetBranchAddress("number_of_not_delayed_gg_cells", &vect_number_of_not_delayed_gg_cells);  
     input_delayed_cells_tree->SetBranchAddress("delayed_time_shift", &vect_delayed_time_shift);
-    input_gg_cells_tree->SetBranchAddress("event_id",        &event_id);
-    input_gg_cells_tree->SetBranchAddress("hit_id_vector",   &vect_hit_id);
+    input_gg_cells_tree->SetBranchAddress("event_id",          &event_id);
+    input_gg_cells_tree->SetBranchAddress("hit_id_vector",     &vect_hit_id);
     input_gg_cells_tree->SetBranchAddress("time_start_vector", &vect_time_start);
-    input_gg_cells_tree->SetBranchAddress("x_start_vector",  &vect_x_start);
-    input_gg_cells_tree->SetBranchAddress("y_start_vector",  &vect_y_start);
-    input_gg_cells_tree->SetBranchAddress("z_start_vector",  &vect_z_start);
-    input_gg_cells_tree->SetBranchAddress("x_stop_vector",   &vect_x_stop);
-    input_gg_cells_tree->SetBranchAddress("y_stop_vector",   &vect_y_stop);
-    input_gg_cells_tree->SetBranchAddress("z_stop_vector",   &vect_z_stop);
-    input_gg_cells_tree->SetBranchAddress("px_start_vector", &vect_px_start);
-    input_gg_cells_tree->SetBranchAddress("py_start_vector", &vect_py_start);
-    input_gg_cells_tree->SetBranchAddress("pz_start_vector", &vect_pz_start);
+    input_gg_cells_tree->SetBranchAddress("x_start_vector",    &vect_x_start);
+    input_gg_cells_tree->SetBranchAddress("y_start_vector",    &vect_y_start);
+    input_gg_cells_tree->SetBranchAddress("z_start_vector",    &vect_z_start);
+    input_gg_cells_tree->SetBranchAddress("x_stop_vector",     &vect_x_stop);
+    input_gg_cells_tree->SetBranchAddress("y_stop_vector",     &vect_y_stop);
+    input_gg_cells_tree->SetBranchAddress("z_stop_vector",     &vect_z_stop);
+    input_gg_cells_tree->SetBranchAddress("px_start_vector",   &vect_px_start);
+    input_gg_cells_tree->SetBranchAddress("py_start_vector",   &vect_py_start);
+    input_gg_cells_tree->SetBranchAddress("pz_start_vector",   &vect_pz_start);
 
-    TH2F * histo_delayed_geiger_cells_delayed_time = new TH2F( "Delayed Geiger Cells" , "Delayed GG cells" , 60 , 0. , 60., 20, 0., 20.) ;
+    TH2F * histo_delayed_geiger_cells_delayed_time = new TH2F( "Delayed Geiger Cells" , "Delayed GG cells" , 60 , 0. , 60., 20, 0., 20.);
 
     // Begining of the analysis
     std::clog << "Number of Entries in TTree = " <<  input_delayed_cells_tree->GetEntries() << std::endl; 

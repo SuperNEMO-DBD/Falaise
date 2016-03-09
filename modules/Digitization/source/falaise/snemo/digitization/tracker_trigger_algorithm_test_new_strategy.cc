@@ -23,7 +23,6 @@ namespace snemo {
 
     tracker_trigger_algorithm_test_new_strategy::tracker_record::tracker_record()
     {
-      clocktick_1600ns = -1;
       tracker_record::reset();
       return;
     }
@@ -40,6 +39,7 @@ namespace snemo {
 	  zoning_word_pattern[iside].reset();
 	  zoning_word_near_source[iside].reset();
 	}
+      single_side_coinc = false;
       finale_decision = false;
       return;
     }

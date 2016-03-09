@@ -5,8 +5,8 @@ APP_NAME="test_fake_trigger_cut.sh"
 echo "Starting..." >&2
 PROCESSING_DIR="${FALAISE_DIGITIZATION_TESTING_DIR}/config/processing"
 
-INPUT_DIR="/data/nemo/group/Private/goliviero//raw_simulated_data_brio"
-OUTPUT_DIR="/data/nemo/group/Private/goliviero//fake_trigger_simulated_data_brio"
+INPUT_DIR="/data/nemo/group/Private/goliviero//raw_simulated_data_brio/without_bfield"
+OUTPUT_DIR="/data/nemo/group/Private/goliviero//fake_trigger_simulated_data_brio/without_bfield"
 
 input_module_file="modules.conf"
 input_module_mgr_file="module_manager.conf"
@@ -25,7 +25,7 @@ do
     output_ft_yes_data=`echo "$base_name"  |  sed 's/SD/FT_YES/g'`
     output_ft_no_data=`echo "$base_name"  |  sed 's/SD/FT_NO/g'`
     echo "$APP_NAME : INFO : " $output_ft_no_data $output_ft_yes_data
-    log_file="${base_dir_name}.log"
+    log_file=$OUTPUT_DIR/logger.log
     
 
     mkdir -p $OUTPUT_DIR/$base_dir_name
@@ -38,10 +38,6 @@ do
 	echo "$APP_NAME : INFO : $dir_name created"
     fi
 
-
-    echo "$APP_NAME : INFO : $input_sd_data copying ..."
-    
-    #cp $input_sd_data $OUTPUT_DIR/$base_dir_name/.
     if [ $? -ne 0 ];
     then 
 	echo "$APP_NAME : ERROR : Can not move $input_sd_data file"
@@ -61,14 +57,14 @@ do
 
     echo "$APP_NAME : COMMAND processing  "
     bxdpp_processing  \
-	-c "${OUTPUT_DIR}/$base_dir_name/module_manager.conf" \
-	--load-dll "Falaise_Digitization@${FALAISE_BUILD_DIR}/BuildProducts/lib/x86_64-linux-gnu/Falaise/modules" \
-	-P "fatal" \
-	-i "${input_sd_data}" \
-	--modulo 1 \
-	-m "faketriggercut" \
-	-M 100000 \
-	--preserve-existing-files &
+    	-c "${OUTPUT_DIR}/$base_dir_name/module_manager.conf" \
+    	--load-dll "Falaise_Digitization@${FALAISE_BUILD_DIR}/BuildProducts/lib/x86_64-linux-gnu/Falaise/modules" \
+    	-P "fatal" \
+    	-i "${input_sd_data}" \
+    	--modulo 1 \
+    	-m "faketriggercut" \
+    	-M 100000 \
+    	--preserve-existing-files >> ${log_file} 2>&1 &
 
     #>> $OUTPUT_DIR//$base_dir_name/$log_file 
     
