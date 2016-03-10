@@ -1,0 +1,26 @@
+# -*- mode: conf-unix; -*-
+# List of multi-properties (datatools::multi_properties):
+
+#@description A standard list of elements (based on natural isotopic abundances)
+#@key_label   "name"
+#@meta_label  "type"
+
+[name="snemo::selenium-82" type="element"]
+#@config The 82 Selenium enriched element
+z               : integer   = 34
+isotope.names   : string[1] = "Se-82"
+isotope.weights : real[1]   =   1.0
+
+[name="snemo::calcium-48" type="element"]
+#@config The 48 Calcium enriched element
+z               : integer   = 20
+isotope.names   : string[1] = "Ca-48"
+isotope.weights : real[1]   =   1.0
+
+[name="snemo::neodymium-150" type="element"]
+#@config The 150 Neodymium enriched element (NEMO3 composition)
+z               : integer   = 60
+isotope.names   : string[7] = "Nd-150" "Nd-148" "Nd-146" "Nd-145" "Nd-144" "Nd-143" "Nd-142"
+isotope.weights : real[7]   =  0.9096   0.0219   0.0209   0.0092   0.0192   0.0081   0.0111
+
+# end

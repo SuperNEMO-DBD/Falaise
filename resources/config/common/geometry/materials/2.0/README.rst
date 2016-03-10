@@ -2,8 +2,8 @@
 Materials definition for SuperNEMO virtual geometry setup (common resources)
 ============================================================================
 
-:Authors: François Mauger
-:Date:    2013-10-18
+:Authors: François Mauger, Yves Lemière
+:Date:    2016-03-10
 
 .. contents::
    :depth: 3
@@ -18,10 +18,11 @@ isotopes/elements  and materials  used  by  various SuperNEMO  virtual
 geometry setups.
 
  * Setup label is : ``common::geometry::materials``
- * Setup version is : ``1.0``
+ * Setup version is : ``2.0``
 
-These definition of materials and aliases is obsolete and should not be
-used anymore.
+The definition of elements and materials in this configuration depends
+on  the  definitions  in  the ``basic/1.0``  setup  published  in  the
+``materials`` module from Bayeux version >=2.1 .
 
 
 Files:
@@ -31,6 +32,3 @@ Files:
  * ``elements.def`` : list of elements,
  * ``materials.def`` : list of materials,
  * ``materials_aliases.def`` : list of material aliases.
-
-   * Fix: move ``PFTE`` to ``PTFE``
-   * Fix: make ``snemo::PTFE`` alias for ``std::ptfe``
