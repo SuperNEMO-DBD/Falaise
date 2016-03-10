@@ -21,7 +21,7 @@ namespace snemo {
   namespace cut {
 
     // Registration instantiation macro :
-    CUT_REGISTRATION_IMPLEMENT(event_header_cut, "snemo::cut::event_header_cut");
+    CUT_REGISTRATION_IMPLEMENT(event_header_cut, "snemo::cut::event_header_cut")
 
     void event_header_cut::_set_defaults ()
     {

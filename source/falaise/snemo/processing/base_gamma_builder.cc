@@ -361,10 +361,10 @@ namespace snemo {
         const double particle_track_length = a_shape.get_length();
         DT_LOG_DEBUG(get_logging_priority(), "Track length = " << particle_track_length / CLHEP::mm << " mm");
 
-        snemo::datamodel::particle_track::vertex_collection_type vertices;
-        a_particle.fetch_vertices(vertices, snemo::datamodel::particle_track::VERTEX_ON_SOURCE_FOIL);
-        if (vertices.empty()) continue;
-        const geomtools::vector_3d & a_foil_vertex = vertices.front().get().get_position();
+        snemo::datamodel::particle_track::vertex_collection_type the_vertices;
+        a_particle.fetch_vertices(the_vertices, snemo::datamodel::particle_track::VERTEX_ON_SOURCE_FOIL);
+        if (the_vertices.empty()) continue;
+        const geomtools::vector_3d & a_foil_vertex = the_vertices.front().get().get_position();
 
         // Given charged particle then process gammas
         snemo::datamodel::particle_track_data::particle_collection_type gamma_particles;
@@ -376,21 +376,21 @@ namespace snemo {
           snemo::datamodel::particle_track & a_gamma = igamma->grab();
 
           // snemo::datamodel::particle_track::vertex_collection_type & vertices = a_gamma.grab_vertices();
-          snemo::datamodel::particle_track::vertex_collection_type vertices;
-          a_gamma.fetch_vertices(vertices,
+          snemo::datamodel::particle_track::vertex_collection_type the_vertices_2;
+          a_gamma.fetch_vertices(the_vertices_2,
                                  snemo::datamodel::particle_track::VERTEX_ON_MAIN_CALORIMETER  |
                                  snemo::datamodel::particle_track::VERTEX_ON_X_CALORIMETER     |
                                  snemo::datamodel::particle_track::VERTEX_ON_GAMMA_VETO);
-          if (vertices.empty()) {
+          if (the_vertices_2.empty()) {
             DT_LOG_DEBUG(get_logging_priority(), "Gamma track has no vertices associated !");
             continue;
           }
 
           for (snemo::datamodel::particle_track::vertex_collection_type::iterator
-                 ivtx = vertices.begin();
-               ivtx != vertices.end(); ++ivtx) {
+                 ivtx = the_vertices_2.begin();
+               ivtx != the_vertices_2.end(); ++ivtx) {
             const geomtools::blur_spot & a_spot = ivtx->get();
-            // Get associated calorimeter
+            // Get associated calorimeter:
             if (! a_gamma.has_associated_calorimeter_hits()) {
               DT_LOG_DEBUG(get_logging_priority(), "Gamma track is not associated to any calorimeter block !");
               continue;
@@ -406,11 +406,11 @@ namespace snemo {
             DT_THROW_IF(found == hits.end(), std::logic_error,
                         "Calibrated calorimeter hit with id " << a_spot.get_geom_id()
                         << " can not be found");
-            const snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit = found->get();
-            const double gamma_time         = a_calo_hit.get_time();
-            const double gamma_sigma_time   = a_calo_hit.get_sigma_time();
-            // const double gamma_energy       = a_calo_hit.get_energy();
-            // const double gamma_sigma_energy = a_calo_hit.get_sigma_energy();
+            const snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit_2 = found->get();
+            const double gamma_time         = a_calo_hit_2.get_time();
+            const double gamma_sigma_time   = a_calo_hit_2.get_sigma_time();
+            // const double gamma_energy       = a_calo_hit_2.get_energy();
+            // const double gamma_sigma_energy = a_calo_hit_2.get_sigma_energy();
 
             // Compute theoritical time for the gamma in case it comes from the foil vertex
             const double gamma_track_length = (a_foil_vertex - a_spot.get_position()).mag();

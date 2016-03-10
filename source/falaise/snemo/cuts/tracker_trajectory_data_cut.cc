@@ -21,7 +21,7 @@ namespace snemo {
   namespace cut {
 
     // Registration instantiation macro :
-    CUT_REGISTRATION_IMPLEMENT(tracker_trajectory_data_cut, "snemo::cut::tracker_trajectory_data_cut");
+    CUT_REGISTRATION_IMPLEMENT(tracker_trajectory_data_cut, "snemo::cut::tracker_trajectory_data_cut")
 
     void tracker_trajectory_data_cut::_set_defaults()
     {

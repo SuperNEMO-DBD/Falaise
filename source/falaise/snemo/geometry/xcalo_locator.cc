@@ -870,15 +870,15 @@ namespace snemo {
       vrz[utils::SIDE_BACK][WALL_RIGHT]  = &_back_block_z_[WALL_RIGHT];
       vrz[utils::SIDE_FRONT][WALL_LEFT]  = &_front_block_z_[WALL_LEFT];
       vrz[utils::SIDE_FRONT][WALL_RIGHT] = &_front_block_z_[WALL_RIGHT];
-      for (size_t side = 0; side < utils::NSIDES; side++) {
+      for (size_t iside = 0; iside < utils::NSIDES; iside++) {
         for (size_t wall = 0; wall < NWALLS_PER_SIDE; wall++) {
           size_t i_row = 0;
-          vrz[side][wall]->reserve(16);
+          vrz[iside][wall]->reserve(16);
           while (true) {
             geomtools::geom_id a_block_gid;
             a_block_gid.set_type(_block_type_);
             a_block_gid.set(_module_address_index_, _module_number_);
-            a_block_gid.set(_side_address_index_,   side);
+            a_block_gid.set(_side_address_index_,   iside);
             a_block_gid.set(_wall_address_index_,   wall);
             a_block_gid.set(_column_address_index_, 0);
             a_block_gid.set(_row_address_index_,    i_row);
@@ -893,7 +893,7 @@ namespace snemo {
             geomtools::placement a_block_module_placement;
             _module_world_placement_->relocate(a_block_world_placement, a_block_module_placement);
             const double z = a_block_module_placement.get_translation().z();
-            vrz[side][wall]->push_back(z);
+            vrz[iside][wall]->push_back(z);
             i_row++;
           }
         }
@@ -1021,7 +1021,7 @@ namespace snemo {
                                   const std::string & indent_,
                                   bool inherit_) const
     {
-      const std::string tag = datatools::i_tree_dumpable::tags::item();
+      const std::string itag = datatools::i_tree_dumpable::tags::item();
       const std::string stag = datatools::i_tree_dumpable::tags::skip_item();
       std::string indent;
       if (! indent_.empty()) {
@@ -1035,58 +1035,58 @@ namespace snemo {
              << "Initialized        = " << _initialized_ << std::endl;
         return;
       }
-      out_ << indent << tag << "Initialized                = " << _initialized_ << std::endl;
-      out_ << indent << tag << "Logging priority threshold = "
+      out_ << indent << itag << "Initialized                = " << _initialized_ << std::endl;
+      out_ << indent << itag << "Logging priority threshold = "
            << datatools::logger::get_priority_label(get_logging_priority()) << std::endl;
-      out_ << indent << tag << "Module number              = " << _module_number_ << std::endl;
-      out_ << indent << tag << "Manager @                  = " << & get_geo_manager() << std::endl;
-      out_ << indent << tag << "Mapping @                  = " << _mapping_ << std::endl;
-      out_ << indent << tag << "ID manager @               = " << _id_manager_ << std::endl;
-      out_ << indent << tag << "Module type                = " << _module_type_ << std::endl;
-      out_ << indent << tag << "Tracker submodule type     = " << _tracker_submodule_type_ << std::endl;
-      out_ << indent << tag << "Calorimeter block type     = " << _block_type_ << std::endl;
-      out_ << indent << tag << "Calorimeter wrapper type   = " << _wrapper_type_ << std::endl;
-      out_ << indent << tag << "Block partitioned          = " << _block_partitioned_ << std::endl;
+      out_ << indent << itag << "Module number              = " << _module_number_ << std::endl;
+      out_ << indent << itag << "Manager @                  = " << & get_geo_manager() << std::endl;
+      out_ << indent << itag << "Mapping @                  = " << _mapping_ << std::endl;
+      out_ << indent << itag << "ID manager @               = " << _id_manager_ << std::endl;
+      out_ << indent << itag << "Module type                = " << _module_type_ << std::endl;
+      out_ << indent << itag << "Tracker submodule type     = " << _tracker_submodule_type_ << std::endl;
+      out_ << indent << itag << "Calorimeter block type     = " << _block_type_ << std::endl;
+      out_ << indent << itag << "Calorimeter wrapper type   = " << _wrapper_type_ << std::endl;
+      out_ << indent << itag << "Block partitioned          = " << _block_partitioned_ << std::endl;
       if (is_block_partitioned())
-        out_ << indent << tag << "Block part                 = " << _block_part_ << std::endl;
-      out_ << indent << tag << "Module ginfo @             = " << _module_ginfo_ << std::endl;
-      out_ << indent << tag << "Module placement : " << std::endl;
+        out_ << indent << itag << "Block part                 = " << _block_part_ << std::endl;
+      out_ << indent << itag << "Module ginfo @             = " << _module_ginfo_ << std::endl;
+      out_ << indent << itag << "Module placement : " << std::endl;
       if (_module_world_placement_ != 0) {
         _module_world_placement_->tree_dump(out_, "", indent + stag);
       }
-      out_ << indent << tag << "Module box : " << std::endl;
+      out_ << indent << itag << "Module box : " << std::endl;
       if (_module_box_ != 0) {
         _module_box_->tree_dump(out_, "", indent + stag);
       }
-      out_ << indent << tag << "Block shape : " << _block_shape_->get_shape_name() << std::endl;
-      out_ << indent << tag << "Composite block shape = " << _composite_block_shape_ << std::endl;
-      out_ << indent << tag << "Block box : " << std::endl;
+      out_ << indent << itag << "Block shape : " << _block_shape_->get_shape_name() << std::endl;
+      out_ << indent << itag << "Composite block shape = " << _composite_block_shape_ << std::endl;
+      out_ << indent << itag << "Block box : " << std::endl;
       if (_block_box_ != 0) {
         _block_box_->tree_dump(out_, "", indent + stag);
       }
       for (size_t i = 0; i < NWALLS_PER_SIDE; ++i) {
         const std::string wall_name = (i == (uint32_t) WALL_LEFT) ? "left wall" : "right wall";
-        out_ << indent << tag << "Back block X-pos on " << wall_name << " ["
+        out_ << indent << itag << "Back block X-pos on " << wall_name << " ["
              << _back_block_x_[i].size() << "] = ";
         for (size_t j = 0; j < _back_block_x_[i].size(); j++) {
           out_ << _back_block_x_[i][j] / CLHEP::mm << " ";
         }
         out_ << " (mm)" << std::endl;
-        out_ << indent << tag << "Front block X-pos on " << wall_name << " ["
+        out_ << indent << itag << "Front block X-pos on " << wall_name << " ["
              << _front_block_x_[i].size() << "] = ";
         for (size_t j = 0; j < _front_block_x_[i].size(); j++) {
           out_ << _front_block_x_[i][j] / CLHEP::mm << " ";
         }
         out_ << " (mm)" << std::endl;
-        out_ << indent << tag << "Back block Y-pos on " << wall_name << "  = "
+        out_ << indent << itag << "Back block Y-pos on " << wall_name << "  = "
              << _block_y_[utils::SIDE_BACK][i] / CLHEP::mm << " (mm) \n";
-        out_ << indent << tag << "Front block Y-pos on " << wall_name << " = "
+        out_ << indent << itag << "Front block Y-pos on " << wall_name << " = "
              << _block_y_[utils::SIDE_FRONT][i] / CLHEP::mm << " (mm) \n";
-        out_ << indent << tag << "Back block window Y-pos on " << wall_name << " = "
+        out_ << indent << itag << "Back block window Y-pos on " << wall_name << " = "
              << _block_window_y_[utils::SIDE_BACK][i] / CLHEP::mm << " (mm) \n";
-        out_ << indent << tag << "Front block window Y-pos on " << wall_name << " = "
+        out_ << indent << itag << "Front block window Y-pos on " << wall_name << " = "
              << _block_window_y_[utils::SIDE_FRONT][i] / CLHEP::mm << " (mm) \n";
-        out_ << indent << tag << "Back block Z-pos on " << wall_name << " ["
+        out_ << indent << itag << "Back block Z-pos on " << wall_name << " ["
              << _back_block_z_[i].size() << "] = ";
         for (size_t j = 0; j < _back_block_z_[i].size(); j++) {
           if ((j < 4) || (j > _back_block_z_[i].size() - 4)) {
@@ -1096,7 +1096,7 @@ namespace snemo {
           }
         }
         out_ << " (mm)" << std::endl;
-        out_ << indent << tag << "Front block Z-pos on " << wall_name << " ["
+        out_ << indent << itag << "Front block Z-pos on " << wall_name << " ["
              << _front_block_z_[i].size() << "] = ";
         for (size_t j = 0; j < _front_block_z_[i].size(); j++) {
           if ((j < 4) || (j > _front_block_z_[i].size() - 4)) {
@@ -1108,14 +1108,14 @@ namespace snemo {
         out_ << " (mm)" << std::endl;
       }
 
-      out_ << indent << tag << "Block width              = " << _block_width_ / CLHEP::mm  << " (mm)" << std::endl;
-      out_ << indent << tag << "Block height             = " << _block_height_ / CLHEP::mm  << " (mm)" << std::endl;
-      out_ << indent << tag << "Block thickness          = " << _block_thickness_ / CLHEP::mm  << " (mm)" << std::endl;
-      out_ << indent << tag << "Module address GID index = " << _module_address_index_ << std::endl;
-      out_ << indent << tag << "Side address GID index   = " << _side_address_index_ << std::endl;
-      out_ << indent << tag << "Wall address GID index   = " << _wall_address_index_ << std::endl;
-      out_ << indent << tag << "Column address GID index = " << _column_address_index_ << std::endl;
-      out_ << indent << tag << "Row address GID index    = " << _row_address_index_ << std::endl;
+      out_ << indent << itag << "Block width              = " << _block_width_ / CLHEP::mm  << " (mm)" << std::endl;
+      out_ << indent << itag << "Block height             = " << _block_height_ / CLHEP::mm  << " (mm)" << std::endl;
+      out_ << indent << itag << "Block thickness          = " << _block_thickness_ / CLHEP::mm  << " (mm)" << std::endl;
+      out_ << indent << itag << "Module address GID index = " << _module_address_index_ << std::endl;
+      out_ << indent << itag << "Side address GID index   = " << _side_address_index_ << std::endl;
+      out_ << indent << itag << "Wall address GID index   = " << _wall_address_index_ << std::endl;
+      out_ << indent << itag << "Column address GID index = " << _column_address_index_ << std::endl;
+      out_ << indent << itag << "Row address GID index    = " << _row_address_index_ << std::endl;
       if (is_block_partitioned()) {
         out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
              << "Part address GID index   = " << _part_address_index_ << std::endl;
@@ -1246,9 +1246,9 @@ namespace snemo {
     {
       DT_LOG_TRACE(get_logging_priority(), "Entering...");
 
-      double tolerance = tolerance_;
-      if (tolerance == GEOMTOOLS_PROPER_TOLERANCE) {
-        tolerance = _block_box_->get_tolerance();
+      double the_tolerance = tolerance_;
+      if (the_tolerance == GEOMTOOLS_PROPER_TOLERANCE) {
+        the_tolerance = _block_box_->get_tolerance();
       }
 
       geomtools::geom_id & gid  = gid_;
@@ -1286,7 +1286,7 @@ namespace snemo {
           wall_number = WALL_LEFT;
           DT_LOG_TRACE(get_logging_priority(), "wall_number = " << wall_number);
           const double delta_y = std::abs(y -_block_y_[side_number][wall_number]) - 0.5 * get_block_thickness();
-          if (delta_y > tolerance) {
+          if (delta_y > the_tolerance) {
             gid.invalidate();
             return false;
           }
@@ -1301,7 +1301,7 @@ namespace snemo {
           wall_number = WALL_RIGHT;
           DT_LOG_TRACE(get_logging_priority(), "wall_number = " << wall_number);
           const double delta_y = std::abs(y -_block_y_[side_number][wall_number]) - 0.5 * get_block_thickness();
-          if (delta_y > tolerance) {
+          if (delta_y > the_tolerance) {
             gid.invalidate();
             return false;
           }
@@ -1350,8 +1350,8 @@ namespace snemo {
           // 2012-05-31 FM : we check if the 'world' position is in the volume:
           geomtools::vector_3d world_position;
           transform_module_to_world(in_module_position_, world_position);
-          double tolerance = 1.e-7 * CLHEP::mm;
-          if (_mapping_->check_inside(*ginfo_ptr, world_position, tolerance)) {
+          double the_tolerance2 = 1.e-7 * CLHEP::mm;
+          if (_mapping_->check_inside(*ginfo_ptr, world_position, the_tolerance2)) {
             DT_LOG_TRACE(get_logging_priority(), "INSIDE " << gid);
             return true;
           }

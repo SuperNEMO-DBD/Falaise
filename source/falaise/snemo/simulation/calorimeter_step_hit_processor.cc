@@ -14,7 +14,7 @@ namespace snemo {
   namespace simulation {
 
     MCTOOLS_STEP_HIT_PROCESSOR_REGISTRATION_IMPLEMENT(calorimeter_step_hit_processor,
-                                                      "snemo::simulation::calorimeter_step_hit_processor");
+                                                      "snemo::simulation::calorimeter_step_hit_processor")
 
     bool calorimeter_step_hit_processor::locate_calorimeter_block(const geomtools::vector_3d & position_,
                                                                   geomtools::geom_id & gid_) const

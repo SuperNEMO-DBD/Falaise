@@ -37,7 +37,7 @@ namespace snemo {
       enum store_mask_type
         {
           STORE_REF_TIME = 0x8,
-          STORE_TIMES    = 0x10,
+          STORE_TIMES    = 0x10
         };
 
       bool is_ref_time_missing () const;

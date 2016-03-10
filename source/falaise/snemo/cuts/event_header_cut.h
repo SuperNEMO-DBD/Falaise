@@ -67,7 +67,7 @@ namespace snemo {
         MODE_FLAG         = 0x1,
         MODE_RUN_NUMBER   = 0x2,
         MODE_EVENT_NUMBER = 0x4,
-        MODE_LIST_OF_EVENT_IDS = 0x8,
+        MODE_LIST_OF_EVENT_IDS = 0x8
       };
 
       /// Set the 'Event header' bank label/name

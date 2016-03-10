@@ -22,7 +22,7 @@ namespace snemo {
   namespace simulation {
 
     MCTOOLS_STEP_HIT_PROCESSOR_REGISTRATION_IMPLEMENT(gg_step_hit_processor,
-                                                      "snemo::simulation::gg_step_hit_processor");
+                                                      "snemo::simulation::gg_step_hit_processor")
 
     bool gg_step_hit_processor::accept_external_rng() const
     {

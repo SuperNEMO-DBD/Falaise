@@ -30,7 +30,7 @@ namespace snemo {
 
     // Registration instantiation macro :
     DPP_MODULE_REGISTRATION_IMPLEMENT(mock_calorimeter_s2c_module,
-                                      "snemo::processing::mock_calorimeter_s2c_module");
+                                      "snemo::processing::mock_calorimeter_s2c_module")
 
     void mock_calorimeter_s2c_module::set_geom_manager(const geomtools::manager & gmgr_)
     {

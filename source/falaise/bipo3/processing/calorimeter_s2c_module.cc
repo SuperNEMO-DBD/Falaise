@@ -25,7 +25,7 @@ namespace bipo3 {
 
     // Registration instantiation macro :
     DPP_MODULE_REGISTRATION_IMPLEMENT(calorimeter_s2c_module,
-                                      "bipo3::processing::calorimeter_s2c_module");
+                                      "bipo3::processing::calorimeter_s2c_module")
 
     void calorimeter_s2c_module::compute_classification(const std::string & particle_name_,
                                                         std::string       & classification_)

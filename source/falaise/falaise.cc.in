@@ -29,7 +29,26 @@
 // Tests
 // - datatools
 #include <bayeux/datatools/exception.h>
+
+// Mute some specific "shadow" warnings in Boost <=1.55:
+#if defined (__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wshadow"
+#endif
+#if defined (__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wshadow"
+#endif
+
 #include <bayeux/datatools/kernel.h>
+
+#if defined (__GNUC__)
+#pragma GCC diagnostic pop
+#endif
+#if defined (__clang__)
+#pragma clang diagnostic pop
+#endif
+
 #include <bayeux/datatools/library_info.h>
 
 // Ourselves

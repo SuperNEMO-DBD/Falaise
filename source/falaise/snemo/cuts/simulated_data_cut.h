@@ -63,7 +63,7 @@ namespace snemo {
         MODE_FLAG               = datatools::bit_mask::bit00,
         MODE_HAS_HIT_CATEGORY   = datatools::bit_mask::bit01, // simulated_data::has_step_hits
         MODE_RANGE_HIT_CATEGORY = datatools::bit_mask::bit02, // simulated_data::get_number_of_step_hits
-        MODE_HAS_HIT_PROPERTY   = datatools::bit_mask::bit03, //
+        MODE_HAS_HIT_PROPERTY   = datatools::bit_mask::bit03  //
       };
 
       /// Set the SD bank key

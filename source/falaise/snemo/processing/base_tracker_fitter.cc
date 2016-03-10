@@ -115,10 +115,10 @@ namespace snemo {
       if (geo_mgr.has_plugin(locator_plugin_name)
           && geo_mgr.is_plugin_a<snemo::geometry::locator_plugin>(locator_plugin_name)) {
         DT_LOG_NOTICE(get_logging_priority(), "Found locator plugin named '" << locator_plugin_name << "'");
-        const snemo::geometry::locator_plugin & lp
+        const snemo::geometry::locator_plugin & locplug
           = geo_mgr.get_plugin<snemo::geometry::locator_plugin>(locator_plugin_name);
         // Set the Geiger cell locator :
-        _gg_locator_ = &(lp.get_gg_locator());
+        _gg_locator_ = &(locplug.get_gg_locator());
       }
       DT_THROW_IF (_gg_locator_ == 0,  std::logic_error,
                    "Cannot find Geiger locator !");

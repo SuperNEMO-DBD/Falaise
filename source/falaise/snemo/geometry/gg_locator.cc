@@ -915,7 +915,7 @@ namespace snemo {
                                const std::string & indent_,
                                bool inherit_) const
     {
-      const std::string tag = datatools::i_tree_dumpable::tags::item();
+      const std::string itag = datatools::i_tree_dumpable::tags::item();
       const std::string stag = datatools::i_tree_dumpable::tags::skip_item();
       std::string indent;
       if (! indent_.empty()) {
@@ -929,35 +929,35 @@ namespace snemo {
              << "Initialized        = " << _initialized_ << std::endl;
         return;
       }
-      out_ << indent << tag << "Initialized                = " << _initialized_ << std::endl;
-      out_ << indent << tag << "Logging priority threshold = "
+      out_ << indent << itag << "Initialized                = " << _initialized_ << std::endl;
+      out_ << indent << itag << "Logging priority threshold = "
            << datatools::logger::get_priority_label(get_logging_priority()) << std::endl;
-      out_ << indent << tag << "Module number              = " << _module_number_ << std::endl;
-      out_ << indent << tag << "Manager @                  = " << & get_geo_manager() << std::endl;
-      out_ << indent << tag << "Mapping @                  = " << _mapping_ << std::endl;
-      out_ << indent << tag << "ID manager @               = " << _id_manager_ << std::endl;
-      out_ << indent << tag << "Module type                = " << _module_type_ << std::endl;
-      out_ << indent << tag << "Tracker volume type        = " << _tracker_volume_type_ << std::endl;
-      out_ << indent << tag << "Tracker layer type         = " << _tracker_layer_type_ << std::endl;
-      out_ << indent << tag << "Cell type                  = " << _cell_type_ << std::endl;
-      out_ << indent << tag << "Module placement    : " << std::endl;
+      out_ << indent << itag << "Module number              = " << _module_number_ << std::endl;
+      out_ << indent << itag << "Manager @                  = " << & get_geo_manager() << std::endl;
+      out_ << indent << itag << "Mapping @                  = " << _mapping_ << std::endl;
+      out_ << indent << itag << "ID manager @               = " << _id_manager_ << std::endl;
+      out_ << indent << itag << "Module type                = " << _module_type_ << std::endl;
+      out_ << indent << itag << "Tracker volume type        = " << _tracker_volume_type_ << std::endl;
+      out_ << indent << itag << "Tracker layer type         = " << _tracker_layer_type_ << std::endl;
+      out_ << indent << itag << "Cell type                  = " << _cell_type_ << std::endl;
+      out_ << indent << itag << "Module placement    : " << std::endl;
       if (_module_world_placement_ != 0) {
         _module_world_placement_->tree_dump(out_, "", indent + stag);
       }
-      out_ << indent << tag << "Module box : " << std::endl;
+      out_ << indent << itag << "Module box : " << std::endl;
       if (_module_box_ != 0) {
         _module_box_->tree_dump(out_, "", indent + stag);
       }
-      out_ << indent << tag << "Cell box : " << std::endl;
+      out_ << indent << itag << "Cell box : " << std::endl;
       if (_cell_box_ != 0) {
         _cell_box_->tree_dump(out_, "", indent + stag);
       }
-      out_ << indent << tag << "Back layer X-pos [" << _back_cell_x_.size() << "] = ";
+      out_ << indent << itag << "Back layer X-pos [" << _back_cell_x_.size() << "] = ";
       for (size_t i = 0; i < _back_cell_x_.size(); i++) {
         out_ << _back_cell_x_[i] / CLHEP::mm << " ";
       }
       out_ << " (mm)" << std::endl;
-      out_ << indent << tag << "Back cell Y-pos [" << _back_cell_y_.size() << "] = ";
+      out_ << indent << itag << "Back cell Y-pos [" << _back_cell_y_.size() << "] = ";
       for (size_t i = 0; i < _back_cell_y_.size(); i++) {
         if ((i < 4) || (i > _back_cell_y_.size() - 4)) {
           out_ << _back_cell_y_[i] / CLHEP::mm << " ";
@@ -966,12 +966,12 @@ namespace snemo {
         }
       }
       out_ << " (mm)" << std::endl;
-      out_ << indent << tag << "Front layer X-pos [" << _front_cell_x_.size() << "] =  ";
+      out_ << indent << itag << "Front layer X-pos [" << _front_cell_x_.size() << "] =  ";
       for (size_t i = 0; i < _front_cell_x_.size(); i++) {
         out_ << _front_cell_x_[i] / CLHEP::mm << " ";
       }
       out_ << " (mm)" << std::endl;
-      out_ << indent << tag << "Front cell Y-pos [" << _front_cell_y_.size() << "] = ";
+      out_ << indent << itag << "Front cell Y-pos [" << _front_cell_y_.size() << "] = ";
       for (size_t i = 0; i < _front_cell_y_.size(); i++) {
         if ((i < 4) || (i > _back_cell_y_.size() - 4)) {
           out_ << _front_cell_y_[i] / CLHEP::mm << " ";
@@ -982,13 +982,13 @@ namespace snemo {
       }
       out_ << " (mm)" << std::endl;
 
-      out_ << indent << tag << "Anode wire length   = " << _anode_wire_length_ / CLHEP::mm  << " (mm)" << std::endl;
-      out_ << indent << tag << "Anode wire diameter = " << _anode_wire_diameter_ / CLHEP::mm  << " (mm)" << std::endl;
-      out_ << indent << tag << "Field wire length   = " << _field_wire_length_ / CLHEP::mm  << " (mm)" << std::endl;
-      out_ << indent << tag << "Field wire diameter = " << _field_wire_diameter_ / CLHEP::mm  << " (mm)" << std::endl;
-      out_ << indent << tag << "Module address GID index = " << _module_address_index_ << std::endl;
-      out_ << indent << tag << "Side address GID index   = " << _side_address_index_ << std::endl;
-      out_ << indent << tag << "Layer address GID index  = " << _layer_address_index_ << std::endl;
+      out_ << indent << itag << "Anode wire length   = " << _anode_wire_length_ / CLHEP::mm  << " (mm)" << std::endl;
+      out_ << indent << itag << "Anode wire diameter = " << _anode_wire_diameter_ / CLHEP::mm  << " (mm)" << std::endl;
+      out_ << indent << itag << "Field wire length   = " << _field_wire_length_ / CLHEP::mm  << " (mm)" << std::endl;
+      out_ << indent << itag << "Field wire diameter = " << _field_wire_diameter_ / CLHEP::mm  << " (mm)" << std::endl;
+      out_ << indent << itag << "Module address GID index = " << _module_address_index_ << std::endl;
+      out_ << indent << itag << "Side address GID index   = " << _side_address_index_ << std::endl;
+      out_ << indent << itag << "Layer address GID index  = " << _layer_address_index_ << std::endl;
       out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
            << "Row address GID index    = " << _row_address_index_ << std::endl;
       return;

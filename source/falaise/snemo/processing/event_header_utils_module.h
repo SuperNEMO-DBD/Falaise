@@ -33,7 +33,7 @@ namespace snemo {
       /// Processing mode
       enum mode_type {
         MODE_INVALID    = 0,
-        MODE_ADD_HEADER = 0x1,
+        MODE_ADD_HEADER = 0x1
       };
 
       /// Constructor

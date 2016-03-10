@@ -29,7 +29,7 @@ namespace snemo {
 
     // Registration instantiation macro :
     DPP_MODULE_REGISTRATION_IMPLEMENT(mock_tracker_s2c_module,
-                                      "snemo::processing::mock_tracker_s2c_module");
+                                      "snemo::processing::mock_tracker_s2c_module")
 
     double mock_tracker_s2c_module::get_peripheral_drift_time_threshold() const
     {
@@ -664,8 +664,8 @@ namespace snemo {
           the_calibrated_tracker_hit.set_top_cathode_missing(true);
         } else {
           missing_cathodes = 0;
-          const double plasma_propagation_speed = _geiger_.get_cell_length() /(t1 + t2);
-          const double mean_z = 0.5 *_geiger_.get_cell_length() - t2 * plasma_propagation_speed;
+          const double plasma_propagation_speed_2 = _geiger_.get_cell_length() /(t1 + t2);
+          const double mean_z = 0.5 *_geiger_.get_cell_length() - t2 * plasma_propagation_speed_2;
           sigma_z = _geiger_.get_sigma_z(mean_z, missing_cathodes);
           z       = _geiger_.randomize_z(_get_random(), mean_z, sigma_z);
         }
