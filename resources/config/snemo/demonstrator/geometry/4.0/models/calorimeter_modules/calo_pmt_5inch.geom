@@ -6,8 +6,8 @@
 #################################################
 
 
-###############################################################################
-[name="calo.PMT_HAMAMATSU_R6594.dynodes" type="geomtools::simple_shaped_model"]
+#####################################################################################
+[name="calo.PMT_HAMAMATSU_R6594.dynodes.model" type="geomtools::simple_shaped_model"]
 #@config Simplified PMT dynodes
 shape_type  : string = "tube"
 outer_r     : real as length = 15.0 mm
@@ -20,8 +20,8 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "orange"
 
 
-############################################################################
-[name="calo.PMT_HAMAMATSU_R6594.base" type="geomtools::simple_shaped_model"]
+##################################################################################
+[name="calo.PMT_HAMAMATSU_R6594.base.model" type="geomtools::simple_shaped_model"]
 #@config Simplified PMT base
 shape_type  : string = "cylinder"
 r           : real as length = 25.5 mm
@@ -33,8 +33,8 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "orange"
 
 
-#######################################################################
-[name="calo.PMT_HAMAMATSU_R6594" type="geomtools::simple_shaped_model"]
+#############################################################################
+[name="calo.PMT_HAMAMATSU_R6594.model" type="geomtools::simple_shaped_model"]
 
 #@config The configuration parameters for the PMT glass bulb and its contents
 
@@ -93,7 +93,7 @@ internal_item.filled.labels            : string[1] = "dynodes"
 internal_item.filled.placement.dynodes : string  = "0 0 -30 (mm)"
 
 #@description The model of the "dynodes" daughter volume
-internal_item.filled.model.dynodes     : string  = "calo.PMT_HAMAMATSU_R6594.dynodes"
+internal_item.filled.model.dynodes     : string  = "calo.PMT_HAMAMATSU_R6594.dynodes.model"
 
 
 # end of calo_pmt_5inch.geom

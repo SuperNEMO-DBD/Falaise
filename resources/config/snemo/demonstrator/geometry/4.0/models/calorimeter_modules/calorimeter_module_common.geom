@@ -2,6 +2,10 @@
 # calorimeter_module_common.geom
 
 #################################################################################
+# References:
+# SuperNEMO Calorimeter demonstrator - Scintillator
+# 8" Hamamatsu R5912 [A-233-4563]
+# 5" Hamamatsu R6594 [A-233-4562]
 [name="calorimeter_scin_block_front.model" type="geomtools::simple_shaped_model"]
 shape_type        : string  = "box"
 x                 : real as length = 256.0 mm
@@ -25,13 +29,12 @@ material.ref      : string  = "std::nylon"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "magenta"
 
+#####################################################################################################
 [name="calorimeter_scin_block_front_wrapper_front_stock.model" type="geomtools::simple_shaped_model"]
 shape_type        : string  = "box"
 x                 : real as length = 259.0 mm
 y                 : real as length = 259.0 mm
-z                 : real as length = 0.968 mm
-### FM+MB 2016-01-12: TO BE CHANGED in next release:
-### z             : real    =   0.96XXX mm
+z                 : real as length = 963.0 um
 material.ref      : string  = "tracking_gas"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "cyan"
@@ -40,10 +43,10 @@ visibility.color  : string  = "cyan"
 ########################################################################################################
 [name="calorimeter_scin_block_front_wrapper_front_wrapping.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
-x                 : real as length   = 258.0 mm
-y                 : real as length   = 258.0 mm
+x                 : real as length   = 256.0 mm
+y                 : real as length   = 256.0 mm
 z                 : real as length   =  12.0 um
-material.ref      : string = "std::mylar"
+material.ref      : string  = "std::mylar"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
@@ -85,7 +88,7 @@ shape_type        : string = "box"
 x                 : real as length   =   1.0 mm
 y                 : real as length   = 256.0 mm
 z                 : real as length   =  31.0 mm
-material.ref      : string = "std::ptfe"
+material.ref      : string  = "std::ptfe"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
@@ -124,7 +127,7 @@ shape_type        : string = "box"
 x                 : real as length   = 256.0 mm
 y                 : real as length   =  12.0 um
 z                 : real as length   =  31.0 mm
-material.ref      : string = "std::mylar"
+material.ref      : string  = "std::mylar"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
@@ -135,7 +138,7 @@ shape_type        : string = "box"
 x                 : real as length   = 256.0 mm
 y                 : real as length   =   1.0 mm
 z                 : real as length   =  31.0 mm
-material.ref      : string = "std::ptfe"
+material.ref      : string  = "std::ptfe"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
@@ -200,8 +203,8 @@ mapping.daughter_id.scin_block : string = "[calorimeter_block:part=1]"
 ########################################################################################################
 [name="calorimeter_scin_block_back_wrapper_side_x_external.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
-x                 : real as length   =   2.0 um
-y                 : real as length   = 240.0 mm
+x                 : real as length   =  12.0 um
+y                 : real as length   = 236.0 mm
 z                 : real as length   = 163.0 mm
 material.ref      : string  = "std::mylar"
 visibility.hidden : boolean = 0
@@ -212,7 +215,7 @@ visibility.color  : string  = "green"
 [name="calorimeter_scin_block_back_wrapper_side_x_internal.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real as length   =   1.0 mm
-y                 : real as length   = 240.0 mm
+y                 : real as length   = 236.0 mm
 z                 : real as length   = 163.0 mm
 material.ref      : string  = "std::ptfe"
 visibility.hidden : boolean = 0
@@ -250,10 +253,10 @@ visibility.color          : string  = "grey"
 ########################################################################################################
 [name="calorimeter_scin_block_back_wrapper_side_y_external.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
-x                 : real as length   = 240.0 mm
+x                 : real as length   = 236.0 mm
 y                 : real as length   =  12.0 um
 z                 : real as length   = 163.0 mm
-material.ref      : string = "std::mylar"
+material.ref      : string  = "std::mylar"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
@@ -261,10 +264,10 @@ visibility.color  : string  = "green"
 ########################################################################################################
 [name="calorimeter_scin_block_back_wrapper_side_y_internal.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
-x                 : real as length   = 240.0 mm
+x                 : real as length   = 236.0 mm
 y                 : real as length   =   1.0 mm
 z                 : real as length   = 163.0 mm
-material.ref      : string = "std::ptfe"
+material.ref      : string  = "std::ptfe"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
@@ -298,23 +301,12 @@ visibility.color          : string  = "grey"
 
 
 ################################################################################################
-[name="calorimeter_module_internal_support_plate.model" type="geomtools::plate_with_hole_model"]
-x                 : real as length    = 240.0 mm
-y                 : real as length    = 240.0 mm
-z                 : real as length    =   3.0 mm
-r_hole            : real as length    = 111.0 mm
-material.ref      : string  = "std::iron"
-visibility.hidden : boolean = 0
-visibility.color  : string  = "red"
-
-
-################################################################################################
 [name="calorimeter_module_vertical_shielding_plate.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
 x                 : real as length   =   3.0 mm
-y                 : real as length   = 251   mm
-z                 : real as length   = 466.0 mm
-material.ref      : string = "std::iron"
+y                 : real as length   = 249.0 mm
+z                 : real as length   = 420.0 mm
+material.ref      : string  = "std::iron"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "red"
 
@@ -322,10 +314,10 @@ visibility.color  : string  = "red"
 ##################################################################################################
 [name="calorimeter_module_horizontal_shielding_plate.model" type="geomtools::simple_shaped_model"]
 shape_type        : string = "box"
-x                 : real as length  = 245   mm
+x                 : real as length  = 243.0 mm
 y                 : real as length  =   3.0 mm
-z                 : real as length  = 466.0 mm
-material.ref      : string = "std::iron"
+z                 : real as length  = 420.0 mm
+material.ref      : string  = "std::iron"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "red"
 
@@ -335,20 +327,31 @@ visibility.color  : string  = "red"
 shape_type        : string = "box"
 x                 : real as length   =   3.0 mm
 y                 : real as length   = 230.0 mm
-z                 : real as length   = 420.0 mm
-material.ref      : string = "std::plexiglass"
+z                 : real as length   = 400.0 mm
+material.ref      : string  = "std::plexiglass"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "blue"
 
 
-##########################################################################################
-[name="calorimeter_module_closing_back_plate.model" type="geomtools::simple_shaped_model"]
-shape_type        : string = "box"
-x                 : real as length   = 245.0 mm
-y                 : real as length   = 245.0 mm
+############################################################################################
+[name="calorimeter_module_closing_back_plate.model" type="geomtools::plate_with_hole_model"]
+x                 : real as length   = 243.0 mm
+y                 : real as length   = 243.0 mm
 z                 : real as length   =   6.0 mm
-material.ref      : string = "std::plexiglass"
+r_hole            : real as length   = 100.0 mm
+material.ref      : string  = "std::pmma"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "blue"
+
+
+#########################################################################################
+[name="calorimeter_module_closing_back_door.model" type="geomtools::simple_shaped_model"]
+shape_type        : string = "cylinder"
+z                 : real as length =   6.0 mm
+r                 : real as length = 110.0 mm
+material.ref      : string  = "std::pmma"
+visibility.hidden : boolean = 0
+visibility.color  : string  = "blue"
+
 
 # end of calorimeter_module_common.geom

@@ -79,10 +79,10 @@ internal_item.placement.back_block  : string  = "0 0 136.5 (mm)"
 internal_item.model.back_block      : string  = "calorimeter_scin_block_5inch_back.model"
 
 internal_item.placement.pmt         : string  = "0 0 3 (mm)"
-internal_item.model.pmt             : string  = "calo.PMT_HAMAMATSU_R6594"
+internal_item.model.pmt             : string  = "calo.PMT_HAMAMATSU_R6594.model"
 
 internal_item.placement.pmt_base    : string  = "0 0 -127 (mm)"
-internal_item.model.pmt_base        : string  = "calo.PMT_HAMAMATSU_R6594.base"
+internal_item.model.pmt_base        : string  = "calo.PMT_HAMAMATSU_R6594.base.model"
 
 internal_item.placement.back_block_wrapping_back   : string  = "0 0 54 (mm)"
 internal_item.model.back_block_wrapping_back       : string  = "calorimeter_scin_block_5inch_back_wrapper_back.model"

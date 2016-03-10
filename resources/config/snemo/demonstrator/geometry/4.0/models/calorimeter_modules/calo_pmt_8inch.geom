@@ -6,14 +6,14 @@
 #################################################
 
 
-###############################################################################
-[name="calo.PMT_HAMAMATSU_R5912.dynodes" type="geomtools::simple_shaped_model"]
+#####################################################################################
+[name="calo.PMT_HAMAMATSU_R5912.dynodes.model" type="geomtools::simple_shaped_model"]
 #@config Simplified dynodes
 
-shape_type  : string = "tube"
-outer_r     : real as length = 20.0 mm
-inner_r     : real as length = 19.5 mm
-z           : real as length = 100 mm
+shape_type : string = "tube"
+outer_r    : real as length = 20.0 mm
+inner_r    : real as length = 19.5 mm
+z          : real as length = 100 mm
 
 material.ref      : string = "std::copper"
 
@@ -21,13 +21,13 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "orange"
 
 
-############################################################################
-[name="calo.PMT_HAMAMATSU_R5912.base" type="geomtools::simple_shaped_model"]
+##################################################################################
+[name="calo.PMT_HAMAMATSU_R5912.base.model" type="geomtools::simple_shaped_model"]
 #@config Simplified base
 
 shape_type  : string = "cylinder"
 r           : real as length = 27.5 mm
-z           : real as length = 60.0 mm
+z           : real as length =  3.0 mm
 
 material.ref      : string = "std::delrin"
 
@@ -35,8 +35,8 @@ visibility.hidden : boolean = 0
 visibility.color  : string  = "orange"
 
 
-#######################################################################
-[name="calo.PMT_HAMAMATSU_R5912" type="geomtools::simple_shaped_model"]
+#############################################################################
+[name="calo.PMT_HAMAMATSU_R5912.model" type="geomtools::simple_shaped_model"]
 #@config The configuration parameters for the PMT's bulb and its contents
 
 #@description The default implicit length unit
@@ -72,7 +72,7 @@ material.filled.ref : string = "vacuum"
 #########################
 
 #@description The visibility hidden flag for the display
-visibility.hidden           : boolean = 1
+visibility.hidden           : boolean = 0
 
 #@description The visibility hidden flag for the envelope
 visibility.hidden_envelop   : boolean = 0
@@ -94,7 +94,7 @@ internal_item.filled.labels            : string[1] = "dynodes"
 internal_item.filled.placement.dynodes : string  = "0 0 -50 (mm)"
 
 #@description The model of the "dynodes" daughter volume
-internal_item.filled.model.dynodes     : string  = "calo.PMT_HAMAMATSU_R5912.dynodes"
+internal_item.filled.model.dynodes     : string  = "calo.PMT_HAMAMATSU_R5912.dynodes.model"
 
 #################
 # Mapping rules #
