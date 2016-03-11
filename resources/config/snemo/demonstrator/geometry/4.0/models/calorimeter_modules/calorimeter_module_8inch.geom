@@ -5,7 +5,6 @@
 # References:
 # SuperNEMO Calorimeter demonstrator - Scintillator
 # 8" Hamamatsu R5912 [A-233-4563]
-# 5" Hamamatsu R6594 [A-233-4562]
 #
 #               z
 #       +---------------+
@@ -26,14 +25,19 @@
 # re = sqrt(rs^2-a^2) = 108.148 = 108.15
 #
 [name="calorimeter_scin_block_8inch_back.model" type="geomtools::spherical_extrusion_box_model"]
-x                 : real as length = 236.0 mm
-y                 : real as length = 236.0 mm
-z                 : real as length = 163.0 mm
-r_sphere          : real as length = 120.0 mm
-r_extrusion       : real as length = 108.15 mm
-bottom            : boolean = 1
-material.ref      : string  = "ENVINET_PS_scintillator"
-visibility.hidden : boolean = 0
+
+#@config Back part of the 8" PMT scintillator block
+
+x           : real as length = 236.0 mm
+y           : real as length = 236.0 mm
+z           : real as length = 163.0 mm
+r_sphere    : real as length = 120.0 mm
+r_extrusion : real as length = 108.15 mm
+bottom      : boolean = true
+
+material.ref : string  = "ENVINET_PS_scintillator"
+
+visibility.hidden : boolean = false
 visibility.color  : string  = "blue"
 
 # Sensitive detector category:
@@ -42,43 +46,51 @@ sensitive.category : string = "calorimeter_SD"
 
 #####################################################################################################
 [name="calorimeter_scin_block_8inch_back_wrapper_back.model" type="geomtools::plate_with_hole_model"]
-x                 : real as length = 236.0 mm
-y                 : real as length = 236.0 mm
-z                 : real as length =   1.0 mm
-r_hole            : real as length = 102.0 mm
-material.ref      : string  = "std::ptfe"
-visibility.hidden : boolean = 0
+
+x      : real as length = 236.0 mm
+y      : real as length = 236.0 mm
+z      : real as length =   1.0 mm
+r_hole : real as length = 102.0 mm
+
+material.ref : string  = "basic::ptfe"
+
+visibility.hidden : boolean = false
 visibility.color  : string  = "green"
 
 
 ######################################################################################################
 [name="calorimeter_module_internal_support_plate_8inch.model" type="geomtools::plate_with_hole_model"]
-x                 : real as length = 242.0 mm
-y                 : real as length = 242.0 mm
-z                 : real as length =   3.0 mm
-r_hole            : real as length = 113.0 mm
-material.ref      : string  = "std::iron"
-visibility.hidden : boolean = 0
+
+x       : real as length = 242.0 mm
+y       : real as length = 242.0 mm
+z       : real as length =   3.0 mm
+r_hole  : real as length = 113.0 mm
+
+material.ref : string  = "basic::iron"
+
+visibility.hidden : boolean = false
 visibility.color  : string  = "red"
 
 
 #############################################################################
 [name="calorimeter_module_8inch.model" type="geomtools::simple_shaped_model"]
-shape_type        : string = "box"
-x                 : real as length = 259.0 mm
-y                 : real as length = 259.0 mm
-z                 : real as length = 500.0 mm
-material.ref      : string = "lab_air"
-visibility.hidden           : boolean = 0
-visibility.hidden_envelop   : boolean = 1
-visibility.daughters.hidden : boolean = 0
+
+shape_type : string = "box"
+x          : real as length = 259.0 mm
+y          : real as length = 259.0 mm
+z          : real as length = 500.0 mm
+
+material.ref : string = "lab_air"
+
+visibility.hidden           : boolean = false
+visibility.hidden_envelop   : boolean = true
+visibility.daughters.hidden : boolean = false
 visibility.color            : string  = "grey"
 
 internal_item.labels : string[19] = \
    "front_block" \
    "back_block"  \
    "pmt"         \
-   "pmt_base"    \
    "back_block_wrapping_back"   \
    "back_block_wrapping_left"   \
    "back_block_wrapping_right"  \
@@ -95,6 +107,9 @@ internal_item.labels : string[19] = \
    "closing_back_plate"   \
    "closing_back_door"   \
    "internal_support_plate"
+
+# PMT base is not set for now:
+#  "pmt_base"
 
 internal_item.placement.front_block : string  = "0 0 234 (mm)"
 internal_item.model.front_block     : string  = "calorimeter_wrapped_scin_block_front.model"
@@ -150,8 +165,8 @@ internal_item.model.spacer_plate_bottom            : string  = "calorimeter_modu
 internal_item.placement.closing_back_plate         : string  = "0 0 -204 (mm)"
 internal_item.model.closing_back_plate             : string  = "calorimeter_module_closing_back_plate.model"
 
-internal_item.placement.closing_back_door         : string  = "0 0 -210 (mm)"
-internal_item.model.closing_back_door             : string  = "calorimeter_module_closing_back_door.model"
+internal_item.placement.closing_back_door          : string  = "0 0 -210 (mm)"
+internal_item.model.closing_back_door              : string  = "calorimeter_module_closing_back_door.model"
 
 internal_item.placement.internal_support_plate     : string  = "0 0 +51.5 (mm)"
 internal_item.model.internal_support_plate         : string  = "calorimeter_module_internal_support_plate_8inch.model"
@@ -162,10 +177,12 @@ mapping.daughter_id.pmt        : string = "[calorimeter_pmt]"
 
 #####################################################################################
 [name="calorimeter_module_8inch_rotated.model" type="geomtools::rotated_boxed_model"]
-material.ref              : string = "lab_air"
-rotated.axis              : string = "y"
-rotated.special_angle     : string = "90"
-rotated.model             : string = "calorimeter_module_8inch.model"
+
+rotated.axis          : string = "y"
+rotated.special_angle : string = "90"
+rotated.model         : string = "calorimeter_module_8inch.model"
+
+material.ref : string = "lab_air"
 
 
 # end of calorimeter_module_8inch.geom

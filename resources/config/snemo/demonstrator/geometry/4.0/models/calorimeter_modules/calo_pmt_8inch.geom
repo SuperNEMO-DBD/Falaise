@@ -8,6 +8,7 @@
 
 #####################################################################################
 [name="calo.PMT_HAMAMATSU_R5912.dynodes.model" type="geomtools::simple_shaped_model"]
+
 #@config Simplified dynodes
 
 shape_type : string = "tube"
@@ -15,28 +16,31 @@ outer_r    : real as length = 20.0 mm
 inner_r    : real as length = 19.5 mm
 z          : real as length = 100 mm
 
-material.ref      : string = "std::copper"
+#@description The material name
+material.ref      : string = "basic::copper"
 
-visibility.hidden : boolean = 0
+visibility.hidden : boolean = false
 visibility.color  : string  = "orange"
 
 
 ##################################################################################
 [name="calo.PMT_HAMAMATSU_R5912.base.model" type="geomtools::simple_shaped_model"]
+
 #@config Simplified base
 
-shape_type  : string = "cylinder"
-r           : real as length = 27.5 mm
-z           : real as length =  3.0 mm
+shape_type : string = "cylinder"
+r          : real as length = 27.5 mm
+z          : real as length =  3.0 mm
 
-material.ref      : string = "std::delrin"
+material.ref : string = "basic::delrin"
 
-visibility.hidden : boolean = 0
+visibility.hidden : boolean = false
 visibility.color  : string  = "orange"
 
 
 #############################################################################
 [name="calo.PMT_HAMAMATSU_R5912.model" type="geomtools::simple_shaped_model"]
+
 #@config The configuration parameters for the PMT's bulb and its contents
 
 #@description The default implicit length unit
@@ -62,7 +66,7 @@ filled_label : string = "bulb"
 #######################
 
 #@description The material name
-material.ref        : string = "glass"
+material.ref : string = "glass"
 
 #@description The inner material name
 material.filled.ref : string = "vacuum"
@@ -72,34 +76,35 @@ material.filled.ref : string = "vacuum"
 #########################
 
 #@description The visibility hidden flag for the display
-visibility.hidden           : boolean = 0
+visibility.hidden           : boolean = false
 
 #@description The visibility hidden flag for the envelope
-visibility.hidden_envelop   : boolean = 0
+visibility.hidden_envelop   : boolean =false0
 
 #@description The recommended color for the display
 visibility.color            : string  = "cyan"
 
 #@description The visibility hidden flag for the daughters volumes
-visibility.daughters.hidden : boolean = 1
+visibility.daughters.hidden : boolean = true
 
 ###########################
 # Internal/daughter items #
 ###########################
 
-#@description The list of daughter volumes by labels
-internal_item.filled.labels            : string[1] = "dynodes"
+# #@description The list of daughter volumes by labels
+# internal_item.filled.labels            : string[1] = "dynodes"
 
-#@description The placement of the "dynodes" daughter volume
-internal_item.filled.placement.dynodes : string  = "0 0 -50 (mm)"
+# #@description The placement of the "dynodes" daughter volume
+# internal_item.filled.placement.dynodes : string  = "0 0 -50 (mm)"
 
-#@description The model of the "dynodes" daughter volume
-internal_item.filled.model.dynodes     : string  = "calo.PMT_HAMAMATSU_R5912.dynodes.model"
+# #@description The model of the "dynodes" daughter volume
+# internal_item.filled.model.dynodes     : string  = "calo.PMT_HAMAMATSU_R5912.dynodes.model"
 
 #################
 # Mapping rules #
 #################
 
 mapping.filled.daughter_id.bulb : string = "[calorimeter_pmt_glass]"
+
 
 # end of calo_pmt_8inch.geom

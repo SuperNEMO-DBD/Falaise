@@ -5,6 +5,8 @@ This version of the SuperNEMO demonstrator geometry
 implements the main calorimeter walls with bottom
 and top rows of optical modules with 5" PMTs (PMT6594MOD).
 
+ * TODO: ``calorimeter_module_5inch.geom`` and ``calorimeter_module_8inch.geom`` must be re-checked
+   for positioning support plate, closing door and spacers...
 
  * ``calorimeter_module_11x8inch_column.model`` : replicated along the Z axis::
 
@@ -55,7 +57,7 @@ and top rows of optical modules with 5" PMTs (PMT6594MOD).
   7  |   |  :
      +---+  :
   6  |   |  : "calorimeter_module_11x8inch_column.model"
-     +---+  : "middle_om"
+     +---+  : "middle_oms"
   5  |   |  :
      +---+  :
   4  |   |  :

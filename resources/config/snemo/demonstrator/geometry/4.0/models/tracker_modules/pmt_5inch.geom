@@ -1,35 +1,35 @@
 # -*- mode: conf-unix; -*-
-# calo_pmt_5inch.geom
+# pmt_5inch.geom
 
 #################################################
 ### PMT HAMAMATSU R6594 (5")                  ###
 #################################################
 
 
-#####################################################################################
-[name="calo.PMT_HAMAMATSU_R6594.dynodes.model" type="geomtools::simple_shaped_model"]
+##########################################################################
+[name="PMT_HAMAMATSU_R6594.dynodes" type="geomtools::simple_shaped_model"]
 
-#@config Simplified PMT dynodes
+#@config Simplified 5" PMT dynodes
 
 shape_type : string = "tube"
 outer_r    : real as length = 15.0 mm
 inner_r    : real as length = 14.5 mm
 z          : real as length = 80.0 mm
 
-material.ref : string  = "basic::copper"
+material.ref      : string = "basic::copper"
 
 visibility.hidden : boolean = false
 visibility.color  : string  = "orange"
 
 
-##################################################################################
-[name="calo.PMT_HAMAMATSU_R6594.base.model" type="geomtools::simple_shaped_model"]
+#######################################################################
+[name="PMT_HAMAMATSU_R6594.base" type="geomtools::simple_shaped_model"]
 
-#@config Simplified PMT base
+#@config Simplified 5" PMT base
 
-shape_type  : string = "cylinder"
-r           : real as length = 25.5 mm
-z           : real as length = 30.0 mm
+shape_type : string = "cylinder"
+r          : real as length = 25.5 mm
+z          : real as length = 30.0 mm
 
 material.ref      : string = "basic::delrin"
 
@@ -37,8 +37,8 @@ visibility.hidden : boolean = false
 visibility.color  : string  = "orange"
 
 
-#############################################################################
-[name="calo.PMT_HAMAMATSU_R6594.model" type="geomtools::simple_shaped_model"]
+##################################################################
+[name="PMT_HAMAMATSU_R6594" type="geomtools::simple_shaped_model"]
 
 #@config The configuration parameters for the PMT glass bulb and its contents
 
@@ -62,7 +62,7 @@ filled_label : string = "bulb"
 
 #######################
 # Material parameters #
-#######################<
+#######################
 
 #@description The material name
 material.ref        : string = "glass"
@@ -86,9 +86,9 @@ visibility.color            : string  = "cyan"
 #@description The visibility hidden flag for the daughters volumes
 visibility.daughters.hidden : boolean = true
 
-# ###########################
-# # Internal/daughter items #
-# ###########################
+###########################
+# Internal/daughter items #
+###########################
 
 # #@description The list of daughter volumes by labels
 # internal_item.filled.labels            : string[1] = "dynodes"
@@ -97,7 +97,7 @@ visibility.daughters.hidden : boolean = true
 # internal_item.filled.placement.dynodes : string  = "0 0 -30 (mm)"
 
 # #@description The model of the "dynodes" daughter volume
-# internal_item.filled.model.dynodes     : string  = "calo.PMT_HAMAMATSU_R6594.dynodes.model"
+# internal_item.filled.model.dynodes     : string  = "PMT_HAMAMATSU_R6594.dynodes"
 
 
-# end of calo_pmt_5inch.geom
+# end of pmt_5inch.geom
