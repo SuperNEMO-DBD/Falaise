@@ -63,6 +63,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/geometry/gg_locator.h
   snemo/geometry/gveto_locator.h
   snemo/geometry/locator_plugin.h
+  snemo/geometry/mapped_magnetic_field.h
 
   snemo/simulation/cosmic_muon_generator.h
   snemo/simulation/gg_step_hit_processor.h
@@ -123,6 +124,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/geometry/gveto_locator.cc
   snemo/geometry/locator_plugin.cc
   snemo/geometry/utils.cc
+  snemo/geometry/mapped_magnetic_field.cc
 
   snemo/processing/event_header_utils_module.cc
   snemo/processing/calorimeter_regime.cc
@@ -170,6 +172,7 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/testing/test_snemo_geometry_gveto_locator_1.cxx
   snemo/testing/test_snemo_geometry_retrieve_info.cxx
   snemo/testing/test_snemo_geometry_xcalo_locator_1.cxx
+  snemo/testing/test_snemo_geometry_mapped_magnetic_field.cxx
   #snemo/testing/test_snemo_simulation_pmt_signal_generator.cxx
   snemo/testing/test_snemo_cut_particle_track_cut.cxx
   )
