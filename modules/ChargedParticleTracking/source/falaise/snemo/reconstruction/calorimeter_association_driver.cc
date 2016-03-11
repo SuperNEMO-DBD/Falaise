@@ -334,32 +334,27 @@ namespace snemo {
           } // end of calorimeter gids
         }// end of calorimeter hits
 
-        // 2012-06-15 XG: If no triggered calorimeter has been
-        // associated to track, one may try to find one silent
-        // calorimeter by using the 'calo_locator' and finding
-        // the corresponding calorimeter block. To be
+        // 2012-06-15 XG: If no triggered calorimeter has been associated to
+        // track, one may try to find one silent calorimeter by using the
+        // 'calo_locator' and finding the corresponding calorimeter block. To be
         // continued...
         if (calo_collection.empty()) continue;
         DT_LOG_TRACE(get_logging_priority(), "Number of associated calorimeter = " << calo_collection.size());
 
-        bool keep_only_first = false;
         for (calo_collection_type::const_iterator i = calo_collection.begin();
              i != calo_collection.end(); ++i) {
           const snemo::datamodel::calibrated_calorimeter_hit & a_calo = i->second.get();
           const geomtools::geom_id & a_gid = a_calo.get_geom_id();
           // Check association and belonging to neighbours
           if (std::find(list_of_neighbours.begin(), list_of_neighbours.end(), a_gid) != list_of_neighbours.end() &&
-              ! calorimeter_utils::has_flag(a_calo, calorimeter_utils::associated_flag())) {
-            keep_only_first = true;
+              calorimeter_utils::has_flag(a_calo, calorimeter_utils::associated_flag())) {
+            continue;
           }
           particle_.grab_associated_calorimeter_hits().push_back(i->second);
           // Add a private property
           calorimeter_utils::flag_as(a_calo, calorimeter_utils::associated_flag());
-          // Set the geom_id of the corresponding vertex to the calorimeter
-          // hit geom_id
+          // Set the geom_id of the corresponding vertex to the calorimeter hit geom_id
           a_vertex.set_geom_id(a_gid);
-          // Only keep the closest one
-          if (keep_only_first) break;
         } // end of calorimeter collection
       }// end of vertices
 
