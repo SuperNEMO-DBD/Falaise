@@ -1,0 +1,201 @@
+# -*- mode: conf-unix -*-
+# magnetic_field.def
+# Description of variants for the definition of the magnetic field (format: datatools::multi_properties)
+
+#@description The definitions for variant parameters related to the magnetic field
+#@key_label  "name"
+#@meta_label "type"
+
+# Tree of variants:
+#
+# magnetic_field.VM
+# +-- active : on_off_mag_field.PM
+#     +-- if_mag_field (true)
+#         +-- mag_field_desc.VM
+#            +-- type : mag_field_type.PM
+#                +-- is_mapped_field (MappedField)
+#                |   +-- mapped_mag_field.VM
+#                +-- is_uniform_vertical_field (UniformVerticalField)
+#                    +-- uniform_vertical_mag_field.VM
+#                        +-- intensity : mag_field_intensity.PM
+#
+
+
+################################################
+[name="mag_field_intensity.PM" type="parameter"]
+
+#@config A parameter model describing the amplitude of the magnetic field
+
+#@description The display name of this variant
+display_name        : string = "Source foil thickness"
+
+#@description A short description of the variant
+terse_description   : string = "The thickness of the source foil"
+
+#@description The type of the parameter
+type                : string = "real"
+
+#@description The unit label
+real.unit_label     : string = "magnetic_flux_density"
+
+#@description The preferred unit
+real.preferred_unit : string = "gauss"
+
+#@description The mutability of the parameter
+mutability          : string = "variable"
+
+#@description The mutability mode of the parameter
+variable.mode       : string = "interval"
+
+#@description The domain of supported values
+real.domain         : string = "[0.1 gauss, 100 gauss]"
+
+#@description The default value
+real.default        : real as length = 25 gauss
+
+
+#####################################################
+[name="uniform_vertical_mag_field.VM" type="variant"]
+
+#@config A variant model describing the parameters for the uniform vertical magnetic field
+
+#@description The display name of this variant
+display_name       : string = "Uniform vertical magnetic field"
+
+#@description A short description of the variant
+terse_description  : string = "The configuration parameters for the uniform vertical magnetic field"
+
+#@description The list of variant parameters
+parameters : string[1] = "intensity"
+
+parameters.intensity.model       : string = "mag_field_intensity.PM"
+parameters.intensity.description : string = "The intensity of the magnetic field"
+
+
+###########################################
+[name="mapped_mag_field.VM" type="variant"]
+
+#@config A variant model describing the parameters for the mapped magnetic field
+
+#@description The display name of this variant
+display_name       : string = "Mapped magnetic field"
+
+#@description A short description of the variant
+terse_description  : string = "The configuration parameters for the mapped magnetic field"
+
+# #@description The list of variant parameters
+# parameters : string[1] = "intensity"
+
+# parameters.intensity.model       : string = "mag_field_intensity.PM"
+# parameters.intensity.description : string = "The intensity of the magnetic field"
+
+
+###########################################
+[name="mag_field_type.PM" type="parameter"]
+
+#@config A parameter describing the type of magnetic field
+
+#@description The display name of this parameter
+display_name              : string = "Type of magnetic field"
+
+#@description A short description of the parameter
+terse_description         : string = "The type of magnetic field"
+
+#@description The type of the parameter
+type                      : string = "string"
+
+#@description The mutability of the parameter
+mutability                : string = "variable"
+
+#@description The mutability mode of the parameter
+variable.mode             : string = "enumeration"
+
+#@description The number of supported values
+string.enumerated.size    : integer = 2
+
+# The list of supported values:
+string.enumerated_0.value : string = "UniformVerticalField"
+string.enumerated_1.value : string = "MappedField"
+
+#@description The default value
+string.default            : string = "UniformVerticalField"
+
+#@description The list of variants
+variants : string[2] = "is_uniform_vertical_field" "is_mapped_field"
+
+variants.is_uniform_vertical_field.model       : string = "uniform_vertical_mag_field.VM"
+variants.is_uniform_vertical_field.description : string = "Set of parameters for the uniform vertical magnetic field"
+
+variants.is_mapped_field.model                 : string = "mapped_mag_field.VM"
+variants.is_mapped_field.description           : string = "Set of parameters for the mapped magnetic field"
+
+string.enumerated_0.variant : string = "is_uniform_vertical_field"
+
+
+#########################################
+[name="mag_field_desc.VM" type="variant"]
+
+#@config A variant model describing the active magnetic field
+
+#@description The display name of this variant
+display_name       : string = "Description of the magnetic field"
+
+#@description A short description of the variant
+terse_description  : string = "The description of the magnetic field"
+
+#@description The list of variant parameters
+parameters : string[1] = "type"
+
+parameters.type.model       : string = "mag_field_type.PM"
+parameters.type.description : string = "The type of the magnetic field"
+
+
+#############################################
+[name="on_off_mag_field.PM" type="parameter"]
+
+#@config A parameter model describing the activation of the magnetic field
+
+#@description The display name of this variant
+display_name        : string = "Magnetic field activation"
+
+#@description A short description of the variant
+terse_description   : string = "The activation of the magnetic field "
+
+#@description The type of the parameter
+type                : string = "boolean"
+
+#@description The mutability of the parameter
+mutability          : string = "variable"
+
+#@description The default value
+boolean.default     : boolean = true
+
+#@description List of variants
+variants : string [1] : "if_mag_field"
+
+variants.if_mag_field.model       : string = "mag_field_desc.VM"
+variants.if_mag_field.description : string = "Set of parameters for activated magnetic field"
+
+#@description
+boolean.true.variant : string = "if_mag_field"
+
+
+#########################################
+[name="magnetic_field.VM" type="variant"]
+
+#@config A variant model describing the parameters for the magnetic field
+
+#@description The display name of this variant
+display_name       : string = "Source strips"
+
+#@description A short description of the variant
+terse_description  : string = "The configuration parameters for the magnetic field"
+
+#@description The list of variant parameters
+parameters : string[1] = "active"
+
+parameters.active.model       : string = "on_off_mag_field.PM"
+parameters.active.description : string = "The activation flag for the magnetic field"
+
+
+# end of magnetic_field.def
