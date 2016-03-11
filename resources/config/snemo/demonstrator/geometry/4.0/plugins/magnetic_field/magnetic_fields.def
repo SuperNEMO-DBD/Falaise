@@ -1,5 +1,5 @@
 # -*- mode: conf-unix; -*-
-# plugin.conf
+# magnetic_fields.conf
 # Definition of EM fields (format: datatools::multi_properties):
 
 #@description Definition parameters for some magnetic fields usable in the SuperNEMO setup
@@ -16,7 +16,7 @@
 magnetic_field.unit        : string  = "gauss"
 
 #@description Coordinates of the static magnetic field (Bx, By, Bz)
-magnetic_field.coordinates : real[3] in gauss = 0.0 0.0 @variant(magnetic_field:|25.0)
+magnetic_field.coordinates : real[3] in gauss = 0.0 0.0 @variant(magnetic_field|25.0)
 
 
 ##########################################################
@@ -79,4 +79,4 @@ magnetic_field.unit        : string  = "gauss"
 magnetic_field.coordinates : real[3] = 0.0 0.0 40.0
 
 
-# End of plugin.conf
+# End of magnetic_fields.conf.conf

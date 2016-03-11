@@ -18,10 +18,13 @@ the full SuperNEMO demonstrator module.
  * Setup label is : ``snemo::demonstrator``
  * Setup version is : ``4.0``
 
-This version mainly  update the geometry to take into  account the use
-of 5" PMTs for bottom/top rows of the calorimeter main walls.  Most of
-the geometry models from the ``snemo::demonstrator`` version 3.0 setup
-are reused.
+This version updates  the geometry to take into account  the use of 5"
+PMTs for bottom/top  rows of the calorimeter main walls.   Most of the
+geometry models have been defined from the original version 3.0 of the
+``snemo::demonstrator`` setup..
+
+This  setup  uses  the  new  ``basic/1.0``  materials  resource  files
+published in Bayeux >= 2.1
 
 Files:
 
