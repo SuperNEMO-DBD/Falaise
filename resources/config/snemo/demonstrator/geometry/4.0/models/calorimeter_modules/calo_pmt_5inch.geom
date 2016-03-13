@@ -40,7 +40,7 @@ visibility.color  : string  = "orange"
 #############################################################################
 [name="calo.PMT_HAMAMATSU_R6594.model" type="geomtools::simple_shaped_model"]
 
-#@config The configuration parameters for the PMT glass bulb and its contents
+#@config The configuration parameters for the PMT's bulb and its contents
 
 #@description The default implicit length unit
 length_unit : string = "mm"
@@ -98,6 +98,12 @@ visibility.daughters.hidden : boolean = true
 
 # #@description The model of the "dynodes" daughter volume
 # internal_item.filled.model.dynodes     : string  = "calo.PMT_HAMAMATSU_R6594.dynodes.model"
+
+#################
+# Mapping rules #
+#################
+
+mapping.filled.daughter_id.bulb : string = "[calorimeter_pmt_glass]"
 
 
 # end of calo_pmt_5inch.geom

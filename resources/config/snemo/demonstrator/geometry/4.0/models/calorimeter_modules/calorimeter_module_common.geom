@@ -28,7 +28,7 @@ sensitive.category : string = "calorimeter_SD"
 #############################################################################################
 [name="calorimeter_scin_block_front_gas_curtain.model" type="geomtools::simple_shaped_model"]
 
-shape_type  string  = "box"
+shape_type : string  = "box"
 x          : real as length = 259.0 mm
 y          : real as length = 259.0 mm
 z          : real as length =  25.0 um

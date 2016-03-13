@@ -162,11 +162,11 @@ internal_item.model.spacer_plate_top              : string  = "calorimeter_modul
 internal_item.placement.spacer_plate_bottom       : string  = "0 +128.0 0 (mm) / z 90 (degree)"
 internal_item.model.spacer_plate_bottom           : string  = "calorimeter_module_spacer_plate.model"
 
-internal_item.placement.closing_back_plate        : string  = "0 0 -247 (mm)"
-internal_item.model.closing_back_plate            : string  = "calorimeter_module_closing_back_plate.model"
+# internal_item.placement.closing_back_plate        : string  = "0 0 -247 (mm)"
+# internal_item.model.closing_back_plate            : string  = "calorimeter_module_closing_back_plate.model"
 
-internal_item.placement.closing_back_plate         : string  = "0 0 -204 (mm)"
-internal_item.model.closing_back_plate             : string  = "calorimeter_module_closing_back_plate.model"
+internal_item.placement.closing_back_plate        : string  = "0 0 -204 (mm)"
+internal_item.model.closing_back_plate            : string  = "calorimeter_module_closing_back_plate.model"
 
 internal_item.placement.closing_back_door         : string  = "0 0 -210 (mm)"
 internal_item.model.closing_back_door             : string  = "calorimeter_module_closing_back_door.model"

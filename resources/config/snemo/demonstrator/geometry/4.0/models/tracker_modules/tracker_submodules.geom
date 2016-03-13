@@ -24,7 +24,7 @@ surrounded.right_label  : string = "frame_right"
 surrounded.top_label    : string = "frame_top"
 surrounded.bottom_label : string = "frame_bottom"
 
-material.ref            : string = "tracking_gas"
+material.ref : string = "tracking_gas"
 
 # Daughters mapping informations:
 mapping.daughter_id.tracking_chamber : string = "[tracker_volume]"
@@ -61,7 +61,7 @@ surrounded.right_label  : string = "frame_right"
 surrounded.top_label    : string = "frame_top"
 surrounded.bottom_label : string = "frame_bottom"
 
-material.ref            : string  = "tracking_gas"
+material.ref : string = "tracking_gas"
 
 # Daughters mapping informations:
 mapping.daughter_id.tracking_chamber : string = "[tracker_volume]"

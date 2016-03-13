@@ -76,10 +76,10 @@ material.filled.ref : string = "vacuum"
 #########################
 
 #@description The visibility hidden flag for the display
-visibility.hidden           : boolean = false
+visibility.hidden           : boolean = true
 
 #@description The visibility hidden flag for the envelope
-visibility.hidden_envelop   : boolean =false0
+visibility.hidden_envelop   : boolean = false
 
 #@description The recommended color for the display
 visibility.color            : string  = "cyan"

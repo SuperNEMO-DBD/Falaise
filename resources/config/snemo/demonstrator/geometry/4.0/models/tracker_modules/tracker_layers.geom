@@ -45,7 +45,7 @@ visibility.hidden_envelop   : boolean = true
 visibility.daughters.hidden : boolean = false
 visibility.color            : string = "cyan"
 
-# --> Daughters mapping informations:
+# Daughters mapping informations:
 mapping.daughter_id.cells : string = "[drift_cell:row+1]"
 
 
@@ -89,10 +89,11 @@ visibility.hidden_envelop   : boolean = true
 visibility.daughters.hidden : boolean = false
 visibility.color            : string = "cyan"
 
-# --> Daughters mapping informations:
+# Daughters mapping informations:
 mapping.daughter_id.first_drift_cell : string = "[drift_cell:row=0]"
 
 
+####################################################################
 # Packed neighbouring cells (but the first one) within
 # the first tracker layer in a block of layers:
 #
@@ -136,10 +137,11 @@ visibility.hidden_envelop   : boolean = true
 visibility.daughters.hidden : boolean = false
 visibility.color            : string = "cyan"
 
-# --> Daughters mapping informations:
+# Daughters mapping informations:
 mapping.daughter_id.cells : string = "[drift_cell:row+1]"
 
 
+####################################################################
 # The first tracker layer stacks the first cell and a pack of many successive cells :
 #
 #   . . .
@@ -165,7 +167,6 @@ mapping.daughter_id.cells : string = "[drift_cell:row+1]"
 #
 ####################################################################
 [name="tracker_layer_closing.model" type="geomtools::stacked_model"]
-material.ref             : string = "tracking_gas"
 
 stacked.axis             : string = "y"
 stacked.number_of_items  : integer = 2
@@ -174,12 +175,14 @@ stacked.label_0          : string = "first_drift_cell"
 stacked.model_1          : string = "tracker_layer_base_closing.model"
 stacked.label_1          : string = "other_drift_cells"
 
+material.ref             : string = "tracking_gas"
+
 visibility.hidden           : boolean = false
 visibility.hidden_envelop   : boolean = false
 visibility.daughters.hidden : boolean = false
 visibility.color            : string = "cyan"
 
-# --> Daughters mapping informations:
+# Daughters mapping informations:
 mapping.daughter_id.first_drift_cell : string = "[drift_cell:row=0]"
 
 

@@ -24,7 +24,8 @@ geometry models have been defined from the original version 3.0 of the
 ``snemo::demonstrator`` setup..
 
 This  setup  uses  the  new  ``basic/1.0``  materials  resource  files
-published in Bayeux >= 2.1
+published in Bayeux >= 2.1. The ``std::XXXX`` materials are considered
+obsolete and not used anymore.
 
 Files:
 
@@ -57,14 +58,15 @@ Files:
  * ``plugins/``  : the  directory  that contains  files that  describe
    geometry plugins.
 
-   * ``materials_plugin.conf`` : definitions of materials,
-   * ``locators_plugin.conf`` : locators,
-   * ``magnetic_field_plugin.conf`` : support for magnetic field,
+   * ``materials/plugin.conf`` : definitions of materials,
+   * ``locators/plugin.conf`` : locators,
+   * ``magnetic_field/`` : support for magnetic field,
 
-     * ``magnetic_field_manager.conf`` : field manager,
+     * ``plugin.conf`` : plugin configuration,
+     * ``manager.conf`` : field manager,
      * ``magnetic_fields.def`` : definitions of fields,
 
-   * ``mapping_plugins.conf`` : mapping.
+   * ``mapping/plugins.conf`` : mapping.
 
  * ``variants/``  : the  directory  that contains  files that  describe
    geometry variants.
@@ -89,7 +91,7 @@ Check the geometry:
   2. Build Falaise from a build directory of your choice.
   3. Then from Falaise build directory, run: ::
 
-      $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib/x86_64-linux-gnu:${LD_LIBRARY_PATH}" \
+      $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
         bxgeomtools_inspector \
           --datatools::logging "warning" \
           --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-2.1.0/resources" \

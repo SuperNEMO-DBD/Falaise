@@ -32,12 +32,12 @@
 
 #@config The tracking volume of the front tracker submodule
 
-x                           : real    =  405.0 mm
-y                           : real    = 5008.0 mm
-z                           : real    = 3030.0 mm
+x : real as length =  405.0 mm
+y : real as length = 5008.0 mm
+z : real as length = 3030.0 mm
 
-stacked.axis             : string  = "x"
-stacked.number_of_items  : integer = 11
+stacked.axis            : string  = "x"
+stacked.number_of_items : integer = 11
 
 stacked.model_0    : string  = "tracker_gap_source.model"
 stacked.label_0    : string  = "source_gap"
@@ -72,7 +72,7 @@ stacked.label_9    : string  = "layer_8"
 stacked.model_10   : string  = "tracker_gap_calo.model"
 stacked.label_10   : string  = "calo_gap"
 
-material.ref                : string  = "tracking_gas"
+material.ref : string = "tracking_gas"
 
 visibility.hidden           : boolean = false
 visibility.hidden_envelop   : boolean = false
@@ -121,9 +121,9 @@ mapping.daughter_id.layer_8 : string = "[tracker_layer:layer=8]"
 
 #@config The tracking volume of the back tracker submodule
 
-x                           : real    =  405.0 mm
-y                           : real    = 5008.0 mm
-z                           : real    = 3030.0 mm
+x : real as length =  405.0 mm
+y : real as length = 5008.0 mm
+z : real as length = 3030.0 mm
 
 stacked.axis                : string  = "x"
 stacked.number_of_items     : integer = 11
@@ -177,22 +177,23 @@ mapping.daughter_id.layer_4 : string = "[tracker_layer:layer=4]"
 mapping.daughter_id.layer_5 : string = "[tracker_layer:layer=5]"
 mapping.daughter_id.layer_6 : string = "[tracker_layer:layer=6]"
 mapping.daughter_id.layer_7 : string = "[tracker_layer:layer=7]"
-mapping.daughter_
-id.layer_8 : string = "[tracker_layer:layer=8]"
+mapping.daughter_id.layer_8 : string = "[tracker_layer:layer=8]"
 
-##############################################################################
-# Top/bottom gap:
+
+##########################################################################
 [name="tracker_chamber_ender.model" type="geomtools::simple_shaped_model"]
 
-shape_type          : string = "box"
-x                   : real    =  405. mm
-y                   : real    = 4998. mm
-z                   : real    =   34. mm
+#@config Top/bottom gap
 
-material.ref        : string  = "tracking_gas"
+shape_type : string = "box"
+x : real as length =  405. mm
+y : real as length= 4998. mm
+z : real as length =   34. mm
 
-visibility.hidden   : boolean = false
-visibility.color    : string  = "cyan"
+material.ref : string  = "tracking_gas"
+
+visibility.hidden : boolean = false
+visibility.color  : string  = "cyan"
 
 
 ####################################################################
@@ -209,10 +210,10 @@ stacked.label_1         : string  = "tracking_volume"
 stacked.model_2         : string  = "tracker_chamber_ender.model"
 stacked.label_2         : string  = "top_gas_gap"
 
-material.ref            : string  = "tracking_gas"
+material.ref : string  = "tracking_gas"
 
-visibility.hidden       : boolean = false
-visibility.color        : string  = "cyan"
+visibility.hidden : boolean = false
+visibility.color  : string  = "cyan"
 
 
 ###################################################################
@@ -229,10 +230,10 @@ stacked.label_1         : string  = "tracking_volume"
 stacked.model_2         : string  = "tracker_chamber_ender.model"
 stacked.label_2         : string  = "top_gas_gap"
 
-material.ref            : string  = "tracking_gas"
+material.ref : string  = "tracking_gas"
 
-visibility.hidden       : boolean = false
-visibility.color        : string  = "cyan"
+visibility.hidden : boolean = false
+visibility.color  : string  = "cyan"
 
 
 # end of tracker_volumes.geom
