@@ -147,13 +147,10 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/tr
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/tracker_modules/tracker_submodules.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/tracker_modules/gveto.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/tracker_modules/README.rst
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/tracker_modules/aaa.txt
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/tracker_modules/gveto_module.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/tracker_modules/tracker_layers.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/tracker_modules/xwall_module.geom
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/plugins/magnetic_field/data/csv_map_0/bintd.pyc
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/plugins/magnetic_field/data/csv_map_0/bintd.py
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/plugins/magnetic_field/data/csv_map_0/bmdat.pyc
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/plugins/magnetic_field/data/csv_map_0/bmdat.py
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/plugins/magnetic_field/data/csv_map_0/MapSmoothPlusDetail.csv
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/plugins/magnetic_field/data/csv_map_0/bintd-readme.txt
