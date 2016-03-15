@@ -45,6 +45,7 @@
 
 #if defined (__GNUC__)
 #pragma GCC diagnostic pop
+#undef BOOST_SYSTEM_NO_DEPRECATED
 #endif
 #if defined (__clang__)
 #pragma clang diagnostic pop
