@@ -103,7 +103,7 @@ namespace snemo {
 
 
       // Macro to automate the registration of the module :
-      DPP_MODULE_REGISTRATION_INTERFACE (trackfit_tracker_fitting_module);
+      DPP_MODULE_REGISTRATION_INTERFACE (trackfit_tracker_fitting_module)
     };
 
   } // end of namespace reconstruction

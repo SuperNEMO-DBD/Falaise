@@ -29,7 +29,7 @@ namespace snemo {
 
     // Registration instantiation macro :
     DPP_MODULE_REGISTRATION_IMPLEMENT(trackfit_tracker_fitting_module,
-                                      "snemo::reconstruction::trackfit_tracker_fitting_module");
+                                      "snemo::reconstruction::trackfit_tracker_fitting_module")
 
     const geomtools::manager & trackfit_tracker_fitting_module::get_geometry_manager() const
     {
