@@ -24,11 +24,13 @@
 
 // Third party:
 // - Boost
+#define BOOST_SYSTEM_NO_DEPRECATED 1
 #include <boost/filesystem.hpp>
+#undef BOOST_SYSTEM_NO_DEPRECATED
 // - Bayeux/brio
-#include <brio/reader.h>
+#include <bayeux/brio/reader.h>
 // - Bayeux/dpp
-#include <dpp/brio_common.h>
+#include <bayeux/dpp/brio_common.h>
 
 // This project:
 #include <falaise/snemo/io/data_model.h>

@@ -46,7 +46,7 @@
 // - Falaise
 #include <falaise/resource.h>
 
-ClassImp(snemo::visualization::view::event_selection);
+ClassImp(snemo::visualization::view::event_selection)
 
 namespace snemo {
 

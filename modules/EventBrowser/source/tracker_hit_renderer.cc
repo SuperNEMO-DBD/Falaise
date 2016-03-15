@@ -280,9 +280,9 @@ namespace snemo {
               datatools::properties & gg_properties = mutable_hit->grab_auxiliaries();
 
               // Store current color to be used by calibrated_tracker_hit renderer:
-              const long pixel = TColor::Number2Pixel(cluster_color);
-              const std::string hex_str = TColor::PixelAsHexString(pixel);
-              gg_properties.update(browser_tracks::COLOR_FLAG, hex_str);
+              const long ppixel = TColor::Number2Pixel(cluster_color);
+              const std::string hhex_str = TColor::PixelAsHexString(ppixel);
+              gg_properties.update(browser_tracks::COLOR_FLAG, hhex_str);
 
               const options_manager & options_mgr = options_manager::get_instance();
               if (options_mgr.get_option_flag(SHOW_TRACKER_CLUSTERED_BOX)) {

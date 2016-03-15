@@ -12,7 +12,9 @@
 #ifndef FALAISE_SNEMO_VISUALIZATION_VIEW_EVENT_BROWSER_CTRL_H
 #define FALAISE_SNEMO_VISUALIZATION_VIEW_EVENT_BROWSER_CTRL_H 1
 
+#define BOOST_SYSTEM_NO_DEPRECATED 1
 #include <boost/thread/thread.hpp>
+#undef BOOST_SYSTEM_NO_DEPRECATED
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition.hpp>
 

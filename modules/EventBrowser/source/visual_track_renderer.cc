@@ -283,11 +283,12 @@ namespace snemo {
                    ivtx = vtx.begin(); ivtx != vtx.end(); ++ivtx) {
               const geomtools::blur_spot & a_vertex = ivtx->get();
               const geomtools::vector_3d & a_position = a_vertex.get_position();
-
-              TPolyMarker3D * mark = base_renderer::make_polymarker(a_position);
-              _objects->Add(mark);
-              mark->SetMarkerColor(color);
-              mark->SetMarkerStyle(kPlus);
+              {
+                TPolyMarker3D * mark = base_renderer::make_polymarker(a_position);
+                _objects->Add(mark);
+                mark->SetMarkerColor(color);
+                mark->SetMarkerStyle(kPlus);
+              }
               if (a_vertex.get_auxiliaries().has_flag(browser_tracks::HIGHLIGHT_FLAG)) {
                 TPolyMarker3D * mark = base_renderer::make_polymarker(a_position);
                 _objects->Add(mark);

@@ -42,7 +42,7 @@
 #include <TApplication.h>
 #include <TSystem.h>
 
-ClassImp(snemo::visualization::view::event_browser);
+ClassImp(snemo::visualization::view::event_browser)
 
 namespace snemo {
 

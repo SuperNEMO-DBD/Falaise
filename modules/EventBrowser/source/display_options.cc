@@ -54,7 +54,7 @@
 // - Falaise
 #include <falaise/resource.h>
 
-ClassImp (snemo::visualization::view::display_options);
+ClassImp (snemo::visualization::view::display_options)
 
 namespace snemo {
 

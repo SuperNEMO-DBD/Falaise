@@ -31,7 +31,7 @@ namespace snemo {
 
       // Registration instantiation macro :
       DPP_MODULE_REGISTRATION_IMPLEMENT(event_browser_module,
-                                        "snemo::visualization::view::event_browser_module");
+                                        "snemo::visualization::view::event_browser_module")
 
       void event_browser_module::set_geometry_manager(const geomtools::manager & geometry_manager_)
       {

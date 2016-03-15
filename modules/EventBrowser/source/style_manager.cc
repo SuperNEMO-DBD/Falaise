@@ -32,7 +32,9 @@
 #include <TSystem.h>
 #include <TEnv.h>
 // - boost:
+#define BOOST_SYSTEM_NO_DEPRECATED 1
 #include <boost/filesystem.hpp>
+#undef BOOST_SYSTEM_NO_DEPRECATED
 // - Bayeux/datatools:
 #include <bayeux/datatools/utils.h>
 #include <bayeux/datatools/multi_properties.h>

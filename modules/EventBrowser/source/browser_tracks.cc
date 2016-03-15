@@ -57,7 +57,7 @@
 #include <falaise/snemo/datamodels/helix_trajectory_pattern.h>
 #include <falaise/snemo/datamodels/line_trajectory_pattern.h>
 
-ClassImp(snemo::visualization::view::browser_tracks);
+ClassImp(snemo::visualization::view::browser_tracks)
 
 namespace snemo {
 
@@ -851,13 +851,15 @@ namespace snemo {
         //        _tracks_list_box_->SetCheckBox(item_tracker_cluster);
         _tracks_list_box_->OpenItem(item_tracker_cluster);
 
-        std::ostringstream tip_text;
-        if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
-          tcd.tree_dump(tip_text);
-        } else {
-          tip_text << "Double click to expand tracker clustering data";
+        {
+          std::ostringstream tip_text;
+          if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
+            tcd.tree_dump(tip_text);
+          } else {
+            tip_text << "Double click to expand tracker clustering data";
+          }
+          item_tracker_cluster->SetTipText(tip_text.str().c_str());
         }
-        item_tracker_cluster->SetTipText(tip_text.str().c_str());
 
         snemo::datamodel::tracker_clustering_data::solution_col_type & cluster_solutions
           = tcd.grab_solutions();
@@ -887,12 +889,12 @@ namespace snemo {
           _tracks_list_box_->OpenItem(item_solution);
           item_solution->SetUserData((void*)(intptr_t)++icheck_id);
           item_solution->SetCheckBox(true);
-
-          // Set tooltip text
-          std::ostringstream tip_text;
-          a_solution.tree_dump(tip_text);
-          item_solution->SetTipText(tip_text.str().c_str());
-
+          {
+            // Set tooltip text
+            std::ostringstream tip_text;
+            a_solution.tree_dump(tip_text);
+            item_solution->SetTipText(tip_text.str().c_str());
+          }
           // Get solution auxiliaries:
           datatools::properties & a_auxiliaries = a_solution.grab_auxiliaries();
 
@@ -926,17 +928,17 @@ namespace snemo {
                                            label_cluster.str().c_str());
             item_cluster->SetUserData((void*)(intptr_t)++icheck_id);
             item_cluster->SetCheckBox(true);
-
-            // Set tooltip text
-            std::ostringstream tip_text;
-            a_cluster.tree_dump(tip_text);
-            item_cluster->SetTipText(tip_text.str().c_str());
-
+            {
+              // Set tooltip text
+              std::ostringstream tip_text;
+              a_cluster.tree_dump(tip_text);
+              item_cluster->SetTipText(tip_text.str().c_str());
+            }
             // Get cluster auxiliaries:
-            datatools::properties & a_auxiliaries = a_cluster.grab_auxiliaries();
+            datatools::properties & aa_auxiliaries = a_cluster.grab_auxiliaries();
 
-            if (a_auxiliaries.has_key(browser_tracks::CHECKED_FLAG))
-              item_cluster->CheckItem(a_auxiliaries.has_flag(browser_tracks::CHECKED_FLAG));
+            if (aa_auxiliaries.has_key(browser_tracks::CHECKED_FLAG))
+              item_cluster->CheckItem(aa_auxiliaries.has_flag(browser_tracks::CHECKED_FLAG));
 
             // Update base hit dictionnary:
             _base_hit_dictionnary_[icheck_id] = &(a_cluster);
@@ -944,8 +946,8 @@ namespace snemo {
             // If color is available, add a color box close to the
             // item (obsolete since xpm icon can be colorized):
             std::string hex_str;
-            if (a_auxiliaries.has_key(browser_tracks::COLOR_FLAG)) {
-              a_auxiliaries.fetch(browser_tracks::COLOR_FLAG, hex_str);
+            if (aa_auxiliaries.has_key(browser_tracks::COLOR_FLAG)) {
+              aa_auxiliaries.fetch(browser_tracks::COLOR_FLAG, hex_str);
               //const size_t color = TColor::GetColor(hex_str.c_str());
               //item_cluster->SetColor(color);
             }
@@ -1054,12 +1056,11 @@ namespace snemo {
             }
           }
 
-          const bool checked = true;
           TGListTreeItemStdPlus * item_solution = new TGListTreeItemStdPlus(label_solution.str().c_str(),
                                                                             this,
                                                                             _get_colored_icon_("ofolder"),
                                                                             _get_colored_icon_("folder"),
-                                                                            checked);
+                                                                            /*check=*/true);
           _tracks_list_box_->AddItem(item_tracker_trajectory, item_solution);
           // TGListTreeItem * item_solution
           //   = _tracks_list_box_->AddItem(item_tracker_trajectory,
@@ -1133,12 +1134,11 @@ namespace snemo {
                 snemo::datamodel::helix_trajectory_pattern::pattern_id()) {
               // First time instantiate it
               if (!item_helix_solution) {
-                const bool checked = true;
                 item_helix_solution = new TGListTreeItemStdPlus("Helix trajectories",
                                                                 this,
                                                                 _get_colored_icon_("ofolder"),
                                                                 _get_colored_icon_("folder"),
-                                                                checked);
+                                                                /*check=*/true);
                 _tracks_list_box_->AddItem(item_solution,
                                            item_helix_solution);
                 // _tracks_list_box_->OpenItem(item_helix_solution);
@@ -1238,15 +1238,15 @@ namespace snemo {
         item_particle_track_data->SetCheckBox(false);
         item_particle_track_data->SetUserData((void*)(intptr_t)++icheck_id);
         _tracks_list_box_->OpenItem(item_particle_track_data);
-
-        std::ostringstream tip_text;
-        if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
-          ptd.tree_dump(tip_text);
-        } else {
-          tip_text << "Double click to expand particle track data";
+        {
+          std::ostringstream tip_text;
+          if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
+            ptd.tree_dump(tip_text);
+          } else {
+            tip_text << "Double click to expand particle track data";
+          }
+          item_particle_track_data->SetTipText(tip_text.str().c_str());
         }
-        item_particle_track_data->SetTipText(tip_text.str().c_str());
-
         // Add unassociated calorimeter hits info
         if (ptd.has_non_associated_calorimeters()) {
           snemo::datamodel::calibrated_data::calorimeter_hit_collection_type & cc_collection
@@ -1276,14 +1276,16 @@ namespace snemo {
             item_hit->SetPictures(_get_colored_icon_("calorimeter", "", true),
                                   _get_colored_icon_("calorimeter"));
 
-            std::ostringstream tip_text;
-            if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
-              a_hit.tree_dump(tip_text);
-            } else {
-              tip_text << "Double click to highlight calorimeter hit "
-                       << "and to dump info on terminal";
+            {
+              std::ostringstream tip_text;
+              if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
+                a_hit.tree_dump(tip_text);
+              } else {
+                tip_text << "Double click to highlight calorimeter hit "
+                         << "and to dump info on terminal";
+              }
+              item_hit->SetTipText(tip_text.str().c_str());
             }
-            item_hit->SetTipText(tip_text.str().c_str());
           }
         }
 
@@ -1330,12 +1332,12 @@ namespace snemo {
           item_particle->SetUserData((void*)(intptr_t)-(++icheck_id));
           item_particle->SetCheckBox(true);
           item_particle->SetOpen(true);
-
-          // Set tooltip text
-          std::ostringstream tip_text;
-          a_particle.tree_dump(tip_text);
-          item_particle->SetTipText(tip_text.str().c_str());
-
+          {
+            // Set tooltip text
+            std::ostringstream tip_text;
+            a_particle.tree_dump(tip_text);
+            item_particle->SetTipText(tip_text.str().c_str());
+          }
           if (a_auxiliaries.has_key(browser_tracks::CHECKED_FLAG))
             item_particle->CheckItem(a_auxiliaries.has_flag(browser_tracks::CHECKED_FLAG));
 
@@ -1380,15 +1382,16 @@ namespace snemo {
               item_vertex->SetUserData((void*)(intptr_t)-(++icheck_id));
               // Update properties dictionnary:
               _properties_dictionnary_[-icheck_id] = &(a_vertex.grab_auxiliaries());
-
-              std::ostringstream tip_text;
-              if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
-                a_vertex.tree_dump(tip_text);
-              } else {
-                tip_text << "Double click to highlight vertex position "
-                         << "and to dump info on terminal";
+              {
+                std::ostringstream tip_text;
+                if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
+                  a_vertex.tree_dump(tip_text);
+                } else {
+                  tip_text << "Double click to highlight vertex position "
+                           << "and to dump info on terminal";
+                }
+                item_vertex->SetTipText(tip_text.str().c_str());
               }
-              item_vertex->SetTipText(tip_text.str().c_str());
             }// end of vertex list
           }// end of vertex check
 

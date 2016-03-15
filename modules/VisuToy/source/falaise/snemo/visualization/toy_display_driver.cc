@@ -11,7 +11,7 @@
 
 // Third party:
 // - Boost:
-#define BOOST_SYSTEM_NO_DEPRECATED
+#define BOOST_SYSTEM_NO_DEPRECATED 1
 #include <boost/filesystem.hpp>
 #undef BOOST_SYSTEM_NO_DEPRECATED
 #include <boost/algorithm/string.hpp>

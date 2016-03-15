@@ -29,7 +29,7 @@
 
 #include <iostream>
 
-ClassImp (snemo::visualization::view::progress_bar);
+ClassImp (snemo::visualization::view::progress_bar)
 
 namespace snemo {
 
