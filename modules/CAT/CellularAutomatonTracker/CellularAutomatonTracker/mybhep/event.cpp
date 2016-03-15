@@ -26,7 +26,6 @@
 
 
 namespace mybhep{
-  using namespace std;
 
   event::event() :
     event_number_(0)
@@ -81,31 +80,32 @@ namespace mybhep{
       digi_particles_.push_back(p);
   }
 
-    bool event::filter(ptype type,
-                       std::string property_name,
-                       std::string property_value,vector<particle*>& pft)
-    {
-      std::vector<particle*> prt;
+  bool event::filter(ptype type,
+                     std::string property_name,
+                     std::string property_value,
+                     std::vector<particle*>& pft)
+  {
+    std::vector<particle*> prt;
 
-      if (type == TRUTH)
-        prt = true_particles();
-      else
-        prt = digi_particles();
+    if (type == TRUTH)
+      prt = true_particles();
+    else
+      prt = digi_particles();
 
-      bool found = false;
+    bool found = false;
 
-      for(size_t ip=0; ip < prt.size(); ip++)
-        {
-          particle* p = prt[ip];
-          if (p->find_property(property_name))
-            if (p->fetch_property(property_name)==property_value)
-              {
-                pft.push_back(p);
-                found = true;
-              }
-        }
+    for(size_t ip=0; ip < prt.size(); ip++)
+      {
+        particle* p = prt[ip];
+        if (p->find_property(property_name))
+          if (p->fetch_property(property_name)==property_value)
+            {
+              pft.push_back(p);
+              found = true;
+            }
+      }
     return found;
-    }
+  }
 
   void event::clear()
   {
@@ -162,11 +162,11 @@ namespace mybhep{
         // loop over all particles of this generation
         for(size_t jp=0; jp < dau.size(); jp++)
           {
-            particle* p= dau[jp];
+            particle* a_particle = dau[jp];
             dau0.clear();
 
             // for each particle find descendats
-            bool test2 = find_daugthers(p,type,dau0);
+            bool test2 = find_daugthers(a_particle,type,dau0);
 
             // store all of them in dau1 which holds all
             // particles of a given generation
@@ -190,19 +190,19 @@ namespace mybhep{
     std::vector<particle*> prt;
 
     if (type == TRUTH)
-    prt = true_particles();
+      prt = true_particles();
     else
-    prt = digi_particles();
+      prt = digi_particles();
 
     for(size_t ip=0; ip < prt.size(); ip++)
-    {
-      particle* p = prt[ip];
-      if (pr == p)
-        {
-          found = true;
-          break;
-        }
-    }
+      {
+        particle* p = prt[ip];
+        if (pr == p)
+          {
+            found = true;
+            break;
+          }
+      }
     return found;
   }
 
@@ -320,66 +320,65 @@ namespace mybhep{
       }
   }
 
-  ostream& operator << (ostream& s, const event& ip) {
-    s << endl;
+  std::ostream& operator << (std::ostream& out, const event& ip) {
+    out << std::endl;
 
-    s << " event number= " << ip.event_number()
-      << endl;
+    out << " event number= " << ip.event_number()
+        << std::endl;
 
-    s << " event vertex (cm)= " << ip.vertex()/cm
-      << endl;
+    out << " event vertex (cm)= " << ip.vertex()/cm
+        << std::endl;
 
-    s << " List of properties "
-      << "-----------------------------" << endl;
+    out << " List of properties "
+        << "-----------------------------" << std::endl;
 
-    typedef map<string, string>::const_iterator I;
+    typedef std::map<std::string, std::string>::const_iterator I;
     for(I i=ip.properties_map().begin(); i !=ip.properties_map().end(); ++i)
       {
-        clog << " property name = " << i->first << "   "
-             << " property value = " << i->second
-             << endl;
+        out << " property name = " << i->first << "   "
+            << " property value = " << i->second
+            << std::endl;
       }
 
-    s << " Event has " << ip.true_particles().size() << " true particles"
-      << endl;
-    s << " Event has " << ip.digi_particles().size() << " digi particles"
-      << endl;
-    s << " Event has " << ip.sparticles().size() << " super particles"
-      << endl;
+    out << " Event has " << ip.true_particles().size() << " true particles"
+        << std::endl;
+    out << " Event has " << ip.digi_particles().size() << " digi particles"
+        << std::endl;
+    out << " Event has " << ip.sparticles().size() << " super particles"
+        << std::endl;
 
 
-    s << " List of TRUTH particles in the event"
-      << "------------------------------------"
-      << endl;
+    out << " List of TRUTH particles in the event"
+        << "------------------------------------"
+        << std::endl;
 
     for(size_t i=0; i< ip.true_particles().size(); i++){
 
       particle& p = *ip.true_particles()[i];
-      s << p << endl;
+      out << p << std::endl;
     }
 
-    s << " List of DIGI particles in the event"
-      << "------------------------------------"
-      << endl;
+    out << " List of DIGI particles in the event"
+        << "------------------------------------"
+        << std::endl;
 
     for(size_t i=0; i< ip.digi_particles().size(); i++){
 
       particle& p = *ip.digi_particles()[i];
-      s << p << endl;
+      out << p << std::endl;
     }
 
-    s << " List of super particles in the event"
-      << "------------------------------------"
-      << endl;
+    out << " List of super particles in the event"
+        << "------------------------------------"
+        << std::endl;
 
     for(size_t i=0; i< ip.sparticles().size(); i++){
 
       sparticle& p = *ip.sparticles()[i];
-      s << p << endl;
+      out << p << std::endl;
     }
 
-    return s;
+    return out;
   }
 
 }
-

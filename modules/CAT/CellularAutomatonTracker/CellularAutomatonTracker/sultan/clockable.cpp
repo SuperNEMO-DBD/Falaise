@@ -32,7 +32,7 @@ namespace SULTAN {
                         const std::string & /* a_indent */,
                         bool /* a_inherit */) const
   {
-    a_out << "SULTAN::clockable::dump: time of '" << name_ << "' : " << time_ << " ms (" << time_/max*100. << " \%)" << std::endl;
+    a_out << "SULTAN::clockable::dump: time of '" << name_ << "' : " << time_ << " ms (" << time_/max*100. << " %)" << std::endl;
     return;
   }
 

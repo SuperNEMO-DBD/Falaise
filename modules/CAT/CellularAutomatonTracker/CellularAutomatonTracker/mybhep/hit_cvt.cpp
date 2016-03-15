@@ -125,11 +125,11 @@ void  hit_cvt::restore( std::string def )
     for(size_t i=0; i < ndata; ++i)
       {
 
-        std::string name;
-        std::string value;
+        std::string a_name;
+        std::string a_value;
 
-        istr >> name >> value;
-        nhit_->add_data(name,value);
+        istr >> a_name >> a_value;
+        nhit_->add_data(a_name,a_value);
       }
 
     istr >> imother_;

@@ -17,7 +17,7 @@ namespace CAT{
     }
 
     //!Default destructor
-    cell_triplet::~cell_triplet(){};
+    cell_triplet::~cell_triplet(){}
 
     //! constructor
     cell_triplet::cell_triplet(cell_couplet &/*cca*/, cell_couplet &/*ccb*/){

@@ -138,7 +138,7 @@ namespace CAT {
   }
 
   //*************************************************************
-  bool sequentiator::initialize( const mybhep::sstore & store, const mybhep::gstore & /*gs*/ , mybhep::EventManager2 *eman) {
+  bool sequentiator::initialize( const mybhep::sstore & store, const mybhep::gstore & /*gs*/ , mybhep::EventManager2 *emanager) {
     //*************************************************************
 
     m.message("CAT::sequentiator::initialize: Beginning algorithm sequentiator",mybhep::VERBOSE); fflush(stdout);
@@ -147,7 +147,7 @@ namespace CAT {
 
     //----------- read dst param -------------//
 
-    readDstProper(store, eman);
+    readDstProper(store, emanager);
 
     //------- end of read pram -----------//
 
@@ -285,7 +285,7 @@ namespace CAT {
     m.message("CAT::sequentiator::finalize: Ending algorithm sequentiator",mybhep::NORMAL); fflush(stdout);
 
     m.message("CAT::sequentiator::finalize: Initial events: ", InitialEvents, mybhep::NORMAL);
-    m.message("CAT::sequentiator::finalize: Skipped events: ", SkippedEvents, "(", 100.*SkippedEvents/InitialEvents, "\%)", mybhep::NORMAL);
+    m.message("CAT::sequentiator::finalize: Skipped events: ", SkippedEvents, "(", 100.*SkippedEvents/InitialEvents, "%)", mybhep::NORMAL);
 
     clock.start(" sequentiator: finalize ");
 

@@ -20,42 +20,40 @@
 
 namespace mybhep{
 
-  using namespace std;
-
-  material::material(const string& name, double density, double rad_length,
+  material::material(const std::string& name, double density, double rad_length,
 		     double inter_length)
     : name_(name), density_(density), rad_len_(rad_length),
       nuc_ilen_(inter_length)
   {
   }
 
-  material::material(const material& m)
+  material::material(const material& mcopy)
   {
-    name_ = m.name();
-    density_ =m.density();
-    rad_len_ =m.rad_length();
-    nuc_ilen_ =m.inter_length();
+    name_ = mcopy.name();
+    density_ =mcopy.density();
+    rad_len_ =mcopy.rad_length();
+    nuc_ilen_ =mcopy.inter_length();
   }
-    //! asignment
-  const material& material::operator=(const material& m)
+  //! asignment
+  const material& material::operator=(const material& mcopy)
   {
-    name_ = m.name();
-    density_ =m.density();
-    rad_len_ =m.rad_length();
-    nuc_ilen_ =m.inter_length();
+    name_ = mcopy.name();
+    density_ =mcopy.density();
+    rad_len_ =mcopy.rad_length();
+    nuc_ilen_ =mcopy.inter_length();
     return *this;
   }
   // visual output
-  ostream& operator << (ostream& s, const material& m) {
-    s << endl;
+  std::ostream& operator << (std::ostream& out, const material& the_material) {
+    out << std::endl;
 
-    s << " material name= " << m.name() << " "
-      << " material density (g/cm3) = " << m.density()/(g/cm3) << " "
-      << " radiation length (cm) = " << m.rad_length()/cm << " "
-      << " interation length (g/cm2) = " << m.inter_length()/(g/cm2)
-      << endl;
+    out << " material name= " << the_material.name() << " "
+        << " material density (g/cm3) = " << the_material.density()/(g/cm3) << " "
+        << " radiation length (cm) = " << the_material.rad_length()/cm << " "
+        << " interation length (g/cm2) = " << the_material.inter_length()/(g/cm2)
+        << std::endl;
 
-    return s;
+    return out;
   }
 
 }

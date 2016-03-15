@@ -45,11 +45,11 @@ namespace mybhep{
 
   }
 
-    //! destructor
-    sparticle::~sparticle()
-    {
-      delete sp_;
-    }
+  //! destructor
+  sparticle::~sparticle()
+  {
+    delete sp_;
+  }
 
   // set seed (inside) particle
   void sparticle::set_seed_particle(const particle& p)
@@ -87,24 +87,24 @@ namespace mybhep{
     q_.push_back(q);
   }
 
-  std::ostream& operator << (std::ostream& s, const sparticle& ip) {
-    s << std::endl;
+  std::ostream& operator << (std::ostream& out, const sparticle& ip) {
+    out << std::endl;
 
-    s  << " sparticle info: particle = " << ip.seed_particle() << " "
-       << std::endl;
+    out << " sparticle info: particle = " << ip.seed_particle() << " "
+        << std::endl;
 
-    s << " List of suparticles "
-      << "-----------------------------" << std::endl;
+    out << " List of suparticles "
+        << "-----------------------------" << std::endl;
 
     for(size_t i=0; i< ip.subparticles().size(); i++){
 
       const particle& p = *ip.subparticles()[i];
-      s << p << std::endl;
+      out << p << std::endl;
     }
 
-    s << " List of matching quantities "
-      << print_vector(ip.quality()) << std::endl;
+    out << " List of matching quantities "
+        << print_vector(ip.quality()) << std::endl;
 
-    return s;
+    return out;
   }
 }

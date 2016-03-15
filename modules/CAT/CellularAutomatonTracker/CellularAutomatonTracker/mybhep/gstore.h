@@ -203,27 +203,27 @@ namespace mybhep{
     bool empty(){ return (size()==0); }
 
 
-    virtual void info(std::ostream& s = std::clog) const{
+    virtual void info(std::ostream& out = std::clog) const{
 
       if (level_ > MUTE){
         std::ostringstream ostr;
 
-        s << std::endl
-          << "double Data in store:\n"
-          << dstore_ << "\n"
-          << "int Data in store:\n"
-          << istore_ << "\n"
-          << "std::string Data in store:\n"
-          << sstore_ << "\n"
-          << "double std::vectors in store " << "\n"
-          << vstore_ << "\n"
-          << "integer std::vectors in store " << "\n"
-          << ivstore_ << "\n"
-          << "std::string std::vector in store " << "\n"
-          << svstore_ << "\n"
-          << "real matrices in store " << "\n"
-          << std::endl;}
-      else{;}
+        out << std::endl
+            << "double Data in store:\n"
+            << dstore_ << "\n"
+            << "int Data in store:\n"
+            << istore_ << "\n"
+            << "std::string Data in store:\n"
+            << sstore_ << "\n"
+            << "double std::vectors in store " << "\n"
+            << vstore_ << "\n"
+            << "integer std::vectors in store " << "\n"
+            << ivstore_ << "\n"
+            << "std::string std::vector in store " << "\n"
+            << svstore_ << "\n"
+            << "real matrices in store " << "\n"
+            << std::endl;
+      }
 
     }//end of info
 

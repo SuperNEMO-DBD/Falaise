@@ -393,6 +393,6 @@ namespace CAT{
       return true;
     }
 
-  };
+  }
 
 }

@@ -202,7 +202,7 @@ namespace CAT {
     m.message("\n Ending algorithm Sultan \n ",mybhep::NORMAL);
 
     m.message("Initial events: ", InitialEvents, mybhep::NORMAL);
-    m.message("Skipped events: ", SkippedEvents, "(", 100.*SkippedEvents/InitialEvents, "\%)", mybhep::NORMAL);
+    m.message("Skipped events: ", SkippedEvents, "(", 100.*SkippedEvents/InitialEvents, "%)", mybhep::NORMAL);
 
     clock.stop(" Sultan: finalize ");
 

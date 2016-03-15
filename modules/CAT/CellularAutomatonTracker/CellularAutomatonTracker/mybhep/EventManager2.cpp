@@ -146,15 +146,15 @@ bool EventManager2::checkNewProperties(mybhep::sstore newstore){
 }
 
 //*******************************************************************
-void EventManager2::getDstProperties(mybhep::sstore store){
+void EventManager2::getDstProperties(mybhep::sstore storage){
 //*******************************************************************
 
 
-  for (size_t ikey=0;ikey< store.size(); ikey++ ){
+  for (size_t ikey=0;ikey< storage.size(); ikey++ ){
 
-    std::string key = store.names()[ikey];
+    std::string key = storage.names()[ikey];
 
-    add_dst_property(key,store.fetch(key));
+    add_dst_property(key,storage.fetch(key));
 
   }
 }
@@ -229,15 +229,15 @@ bool EventManager2::add_run_property(std::string name, std::string value){
 }
 
 //*******************************************************************
-bool EventManager2::add_run_properties(mybhep::sstore store,std::string str){
+bool EventManager2::add_run_properties(mybhep::sstore storage,std::string str){
 //*******************************************************************
 
   bool ok=true,ok2;
 
-  for (size_t ikey=0;ikey< store.size(); ikey++ ){
+  for (size_t ikey=0;ikey< storage.size(); ikey++ ){
 
-    std::string key = store.names()[ikey];
-    std::string value = store.fetch(key);
+    std::string key = storage.names()[ikey];
+    std::string value = storage.fetch(key);
 
     ok2 = add_run_property(str+key,value);
 
@@ -249,71 +249,71 @@ bool EventManager2::add_run_properties(mybhep::sstore store,std::string str){
 }
 
 //*******************************************************************
-bool EventManager2::add_run_properties(mybhep::gstore store,std::string str){
+bool EventManager2::add_run_properties(mybhep::gstore storage,std::string str){
 //*******************************************************************
 
    bool ok=true,ok2;
 
-  for (size_t i=0; i< store.names_istore().size();i++){
+  for (size_t i=0; i< storage.names_istore().size();i++){
 
-    std::string key = store.names_istore()[i];
+    std::string key = storage.names_istore()[i];
 
-    std::string value = mybhep::to_string(store.fetch_istore(key));
-
-    ok2 = add_run_property(str+key,value);
-
-    ok = (ok && ok2);
-  }
-
-  for (size_t i=0; i< store.names_dstore().size();i++){
-
-    std::string key = store.names_dstore()[i];
-
-    std::string value = mybhep::to_string(store.fetch_dstore(key));
+    std::string value = mybhep::to_string(storage.fetch_istore(key));
 
     ok2 = add_run_property(str+key,value);
 
     ok = (ok && ok2);
   }
 
-  for (size_t i=0; i< store.names_sstore().size();i++){
+  for (size_t i=0; i< storage.names_dstore().size();i++){
 
-    std::string key = store.names_sstore()[i];
+    std::string key = storage.names_dstore()[i];
 
-    std::string value = store.fetch_sstore(key);
-
-    ok2 = add_run_property(str+key,value);
-
-    ok = (ok && ok2);
-  }
-
-  for (size_t i=0; i< store.names_ivstore().size();i++){
-
-    std::string key = store.names_ivstore()[i];
-
-    std::string value = mybhep::vector_to_string(store.fetch_ivstore(key));
+    std::string value = mybhep::to_string(storage.fetch_dstore(key));
 
     ok2 = add_run_property(str+key,value);
 
     ok = (ok && ok2);
   }
 
-  for (size_t i=0; i< store.names_vstore().size();i++){
+  for (size_t i=0; i< storage.names_sstore().size();i++){
 
-    std::string key = store.names_vstore()[i];
+    std::string key = storage.names_sstore()[i];
 
-    std::string value = mybhep::vector_to_string(store.fetch_vstore(key));
+    std::string value = storage.fetch_sstore(key);
 
     ok2 = add_run_property(str+key,value);
 
     ok = (ok && ok2);
   }
 
-  for (size_t i=0; i< store.names_svstore().size();i++){
+  for (size_t i=0; i< storage.names_ivstore().size();i++){
 
-    std::string key = store.names_svstore()[i];
+    std::string key = storage.names_ivstore()[i];
 
-    std::string value = mybhep::vector_to_string(store.fetch_svstore(key));
+    std::string value = mybhep::vector_to_string(storage.fetch_ivstore(key));
+
+    ok2 = add_run_property(str+key,value);
+
+    ok = (ok && ok2);
+  }
+
+  for (size_t i=0; i< storage.names_vstore().size();i++){
+
+    std::string key = storage.names_vstore()[i];
+
+    std::string value = mybhep::vector_to_string(storage.fetch_vstore(key));
+
+    ok2 = add_run_property(str+key,value);
+
+    ok = (ok && ok2);
+  }
+
+  for (size_t i=0; i< storage.names_svstore().size();i++){
+
+    std::string key = storage.names_svstore()[i];
+
+    std::string value = mybhep::vector_to_string(storage.fetch_svstore(key));
 
     ok2 = add_run_property(str+key,value);
 

@@ -57,9 +57,9 @@ namespace mybhep{
     //! propagate interface (restore)
     virtual void complete_restore() = 0;
 
-    void strip(std::string& s, size_t size)
+    void strip(std::string& str, size_t size)
     {
-      s.erase(0,size);
+      str.erase(0,size);
     }
 
 

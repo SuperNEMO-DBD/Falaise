@@ -226,8 +226,7 @@ namespace CAT{
       if( print_level() >= mybhep::VVERBOSE ){
         std::clog << " average y " << average(ys).value() << " average phi " << average(phis).value() << " 1/p " << one_over_pi << " -y0/p " << min_ce_over_pi << " center y " << ce << " pitch " << pi << " " << std::endl;
 
-        double phi_ref = 0.;
-        experimental_double phi(0.,0.);
+        phi_ref = 0.;
 
         for(std::vector<experimental_point>::iterator ip=ps.begin(); ip!=ps.end(); ++ip){
           phi_ref = phi.value();

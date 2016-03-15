@@ -367,8 +367,8 @@ void EventManager::readParam(){
 	nofiles = odst_files.size();
         // check number of files: must be 1 or nifiles
         if (nifiles != nofiles && nofiles!=1){
-            std::string ms ="Wrong number of output files!";
-            m.message(ms,mybhep::MUTE);
+            std::string a_ms ="Wrong number of output files!";
+            m.message(a_ms,mybhep::MUTE);
             exit(1);}
     }
     else{ //no output files defined. Generate default ones.

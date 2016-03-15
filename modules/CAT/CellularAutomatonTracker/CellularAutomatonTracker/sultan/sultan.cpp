@@ -116,7 +116,7 @@ namespace SULTAN {
     m.message("\nSULTAN:sultan::finalize: Ending algorithm sultan \n ",mybhep::NORMAL); fflush(stdout);
 
     m.message("SULTAN:sultan::finalize: Input events: ", event_number, mybhep::NORMAL);
-    m.message("SULTAN:sultan::finalize: Skipped events: ", skipped_events, "(", 100.*skipped_events/event_number, "\%)", mybhep::NORMAL);
+    m.message("SULTAN:sultan::finalize: Skipped events: ", skipped_events, "(", 100.*skipped_events/event_number, "%)", mybhep::NORMAL);
     //if( use_clocks ){
     double sequentiation_time = clock.read(" sultan: sequentiate ");
     m.message("SULTAN:sultan::finalize: sequentiation time =: ", sequentiation_time, " ms = " , sequentiation_time/event_number, " ms/event ", mybhep::NORMAL);

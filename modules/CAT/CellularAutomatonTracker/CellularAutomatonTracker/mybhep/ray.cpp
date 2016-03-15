@@ -21,8 +21,6 @@
 
 namespace mybhep{
 
-  using namespace std;
-
   ray::ray(std::string view)
   {
     view_ = to_upper(view);
@@ -101,15 +99,15 @@ namespace mybhep{
     p3_ = new mybhep::Vector3D(px,py,pz);
   }
 
-  ostream& operator << (ostream& s, const ray& r) {
-    s << endl;
+  std::ostream& operator << (std::ostream& out, const ray& r) {
+    out << std::endl;
 
-    s << " ray: view = " << r.view() << " "
-      << " ray: x = " << r.x() << " "
-      << " ray: p =  " << r.p3()
-      << " ray: edep =  " << r.edep()
-      << endl;
+    out << " ray: view = " << r.view() << " "
+        << " ray: x = " << r.x() << " "
+        << " ray: p =  " << r.p3()
+        << " ray: edep =  " << r.edep()
+        << std::endl;
 
-    return s;
+    return out;
   }
 }

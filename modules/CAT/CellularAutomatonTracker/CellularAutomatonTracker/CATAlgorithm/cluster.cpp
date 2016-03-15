@@ -13,7 +13,7 @@ namespace CAT{
     }
 
     //!Default destructor
-    cluster::~cluster(){};
+    cluster::~cluster(){}
 
     //! constructor from std::vector of nodes
     cluster::cluster(const std::vector<node> &nodes, mybhep::prlevel level, double probmin){
@@ -163,7 +163,7 @@ namespace CAT{
 
       if( i == 1 ){
         if( print_level() >= mybhep::VERBOSE ){
-          std::clog << " CAT::cluster::start_ambiguity: node " << nodes_[i].c().id() << " of index " << i 
+          std::clog << " CAT::cluster::start_ambiguity: node " << nodes_[i].c().id() << " of index " << i
 		    << " and " << joints.size() << " joints starts ambigous piece " << std::endl;
         }
 	return true; // second node
@@ -189,7 +189,7 @@ namespace CAT{
 
       if( prev_joints.size() == 1 ){
         if( print_level() >= mybhep::VERBOSE ){
-          std::clog << " CAT::cluster::start_ambiguity: node " << nodes_[i].c().id() << " of index " << i 
+          std::clog << " CAT::cluster::start_ambiguity: node " << nodes_[i].c().id() << " of index " << i
 		    << " and " << joints.size() << " joints starts ambigous piece after node " << nodes_[i-1].c().id() << " of " << prev_joints.size() << " joints " << std::endl;
         }
 	return true; // prev node has 1 joint
@@ -235,7 +235,7 @@ namespace CAT{
 
       if( i == nodes_.size() - 2 ){
         if( print_level() >= mybhep::VERBOSE ){
-          std::clog << " CAT::cluster::end_ambiguity: node " << nodes_[i].c().id() << " of index " << i 
+          std::clog << " CAT::cluster::end_ambiguity: node " << nodes_[i].c().id() << " of index " << i
 		    << " and " << joints.size() << " joints ends ambigous piece " << std::endl;
         }
 	return true; // last-but-one node
@@ -252,7 +252,7 @@ namespace CAT{
 
       if( next_joints.size() == 1 ){
         if( print_level() >= mybhep::VERBOSE ){
-          std::clog << " CAT::cluster::end_ambiguity: node " << nodes_[i].c().id() << " of index " << i 
+          std::clog << " CAT::cluster::end_ambiguity: node " << nodes_[i].c().id() << " of index " << i
 		    << " and " << joints.size() << " joints ends ambigous piece before node " << nodes_[i+1].c().id() << " of " << next_joints.size() << " joints " << std::endl;
         }
 	return true; // next node has 1 joint
@@ -268,7 +268,6 @@ namespace CAT{
 
       std::vector<long int> joint_indexes;
       std::vector<long int> best_joint_indexes;
-      long int io_value;
       std::vector<node>::iterator first_node, last_node;
 
       for(first_node = nodes_.begin()+1; first_node != nodes_.end()-1; ++first_node){
@@ -309,7 +308,7 @@ namespace CAT{
 	    }
 	  }
 	}
-      
+
 
 	std::vector<topology::broken_line> bls = solve_ambiguities_with_ends(first_node - nodes_.begin(), last_node - nodes_.begin());
 	sets_of_bl_alternatives->push_back(bls);
@@ -321,7 +320,7 @@ namespace CAT{
 	  std::clog << ") has given rise to " << bls.size() << " broken lines " << std::endl;
         }
 
-      
+
 #if 0
 	////////////////////////////////////////////////////////////
 	/// assign possible choices for joints in ambiguous piece
@@ -332,23 +331,23 @@ namespace CAT{
         if( print_level() >= mybhep::VERBOSE ){
           std::clog << " CAT::cluster::solve_ambiguities: nnodes " << nnodes << " noptions " << noptions  << std::endl;
         }
-	
+
 
 	double maxprob = mybhep::default_max;
 	// example: nnodes = 3, noptions = 8
 	for(long long int io=0; io<noptions; io++){ // example: io = 0, 1, 2, 3, 4, 5, 6, 7
 
 	  joint_indexes.clear();
-	  
+
 	  for(size_t in=0; in<nnodes; in++){
 
-	    io_value = (io/(size_t)(pow(2,in)))%2; 
+	    io_value = (io/(size_t)(pow(2,in)))%2;
 	    // example: in = 0, io_value = 0, 1, 2, 3, 4, 5, 6, 7
 	    //          in = 1, io_value = 0, 0, 1, 1, 2, 2, 3, 4
 	    //          in = 2, io_value = 0, 0, 0, 0, 1, 1, 1, 1
 
 	    joint_indexes.push_back( io_value );
-	    
+
 	  }
 
 	  if( print_level() >= mybhep::VERBOSE ){
@@ -415,7 +414,7 @@ namespace CAT{
 
 	}
 #endif
-      
+
 
       }
 
@@ -439,7 +438,7 @@ namespace CAT{
 	  if( print_level() >= mybhep::VERBOSE ){
 	    std::clog << " CAT::cluster::solve_ambiguities_with_ends: cannot solve ambiguity: gap - A - N | (should be decided by matching) " <<  std::endl;
 	  }
-	  
+
 	  for( size_t joint_index = 0; joint_index <= 1; ++joint_index){
 	    topology::broken_line bl;
 	    bl.set_ifirst(ifirst);
@@ -468,7 +467,7 @@ namespace CAT{
 	  }
 	  return bls;
 	}
-	
+
 	if( print_level() >= mybhep::VERBOSE ){
 	  std::clog << " CAT::cluster::solve_ambiguities_with_ends: cannot solve ambiguity: gap - A - b ... with b singular (should be decided by matching) " <<  std::endl;
 	}
@@ -483,8 +482,8 @@ namespace CAT{
 	return bls;
 
       }
-      
-      
+
+
       ////////////////////////////////////////////////////////////
       // ... if first ambiguous node is second node:   0 - A
       if( first_ambiguous_is_second ){
@@ -505,7 +504,7 @@ namespace CAT{
 	  }
 	  return bls;
 	}
-	
+
 	if( !last_ambiguous_is_last_but_one ){ // node after last ambiguous is not the last: 0 - A - b - ...
 	  if( print_level() >= mybhep::VERBOSE ){
 	    std::clog << " CAT::cluster::solve_ambiguities_with_ends: cannot solve ambiguity: | 0 - A - b ... (should be decided by matching) " <<  std::endl;
@@ -522,7 +521,7 @@ namespace CAT{
 	  }
 	  return bls;
 	}
-	
+
 	// 0 - A - N
 	if( print_level() >= mybhep::VERBOSE ){
 	  std::clog << " CAT::cluster::solve_ambiguities_with_ends: cannot solve ambiguity: | 0 - A - N | (should be decided by matching)" <<  std::endl;
@@ -541,8 +540,8 @@ namespace CAT{
 	}
 	return bls;
       }
-      
-      
+
+
       if( last_ambiguous_is_last_but_one ){
 	if( print_level() >= mybhep::VERBOSE ){
 	  std::clog << " CAT::cluster::solve_ambiguities_with_ends: cannot solve ambiguity: | ... a - A - N (should be decided by matching) " <<  std::endl;
@@ -601,7 +600,7 @@ namespace CAT{
       bls.push_back(best_bl);
       return bls;
 
-      
+
     }
 
 
@@ -618,7 +617,7 @@ namespace CAT{
 	  if( print_level() >= mybhep::VERBOSE ){
 	    std::clog << " CAT::cluster::solve_ambiguities_with_ends: cannot solve ambiguity: gap - A - B - N | (should be decided by matching)" <<  std::endl;
 	  }
-	  
+
 	  for( size_t joint_index_A = 0; joint_index_A <= 1; ++joint_index_A){
 	    for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 	      topology::broken_line bl;
@@ -634,7 +633,7 @@ namespace CAT{
 	    }
 	  }
 	  return bls;
-	  
+
 	}
 
 	if( last_ambiguous_is_begore_gap ){ // gap - A - B - gap
@@ -655,7 +654,7 @@ namespace CAT{
 	  }
 	  return bls;
 	}
-	
+
 	// gap - A - B - c - ...
 	if( print_level() >= mybhep::VERBOSE ){
 	  std::clog << " CAT::cluster::solve_ambiguities_with_ends: gap - A - B - c ... with c singular : optimize B = " << nodes_[ilast].c().id() <<  std::endl;
@@ -686,12 +685,12 @@ namespace CAT{
 	}
 	return bls;
       }
-      
-      
+
+
       ////////////////////////////////////////////////////////////
       // ... if first ambiguous node is second node:   0 - A - B
       if( first_ambiguous_is_second ){
-	
+
 	if( last_ambiguous_is_begore_gap ){ // 0 - A - B - gap
 	  if( print_level() >= mybhep::VERBOSE ){
 	    std::clog << " CAT::cluster::solve_ambiguities_with_ends: cannot solve ambiguity: | 0 - A - B - gap (should be decided by matching) " <<  std::endl;
@@ -712,7 +711,7 @@ namespace CAT{
 	  }
 	  return bls;
 	}
-	
+
 	if( last_ambiguous_is_last_but_one ){ // node after last ambiguous is the last: 0 - A - B - N
 	  if( print_level() >= mybhep::VERBOSE ){
 	    std::clog << " CAT::cluster::solve_ambiguities_with_ends: cannot solve ambiguity: | 0 - A - B - N | (should be decided by matching) " <<  std::endl;
@@ -735,7 +734,7 @@ namespace CAT{
 	  }
 	  return bls;
 	}
-	
+
 	// 0 - A - B - c - ...
 	if( print_level() >= mybhep::VERBOSE ){
 	  std::clog << " CAT::cluster::solve_ambiguities_with_ends: 0 - A - B - c optimize B = " << nodes_[ilast].c().id() <<  std::endl;
@@ -768,8 +767,8 @@ namespace CAT{
 	  bls.push_back(best_bl);
 	}
 	return bls;
-      }      
-      
+      }
+
 
 
       if( last_ambiguous_is_last_but_one ){ // a - A - B - N
@@ -884,7 +883,7 @@ namespace CAT{
       ////////////////////////////////////////////////////////////
       // ... if first ambiguous node is right after a gap:   gap - A - B - C
       if( first_ambiguous_is_after_gap ){
-	  
+
 	if( last_ambiguous_is_last_but_one ){ // node after last ambiguous is the last:  gap - A - B - C - N
 	  if( print_level() >= mybhep::VERBOSE ){
 	    std::clog << " CAT::cluster::solve_ambiguities_with_ends: configuration: gap - A - B - C - N |  optimize B = " << nodes_[ifirst+1].c().id() <<  std::endl;
@@ -956,7 +955,7 @@ namespace CAT{
 	  }
 	  return bls;
 	}
-	  
+
 
 	// gap - A - B - C - d ...
 	if( print_level() >= mybhep::VERBOSE ){
@@ -995,8 +994,8 @@ namespace CAT{
 	}
 	return bls;
       }
-      
-      
+
+
       ////////////////////////////////////////////////////////////
       // ... if first ambiguous node is second node:   0 - A - B - C
       if( first_ambiguous_is_second ){
@@ -1037,7 +1036,7 @@ namespace CAT{
 	  }
 	  return bls;
 	}
-	
+
 
 	if( last_ambiguous_is_last_but_one ){ // node after last ambiguous is the last: 0 - A - B - C - N
 	  if( print_level() >= mybhep::VERBOSE ){
@@ -1081,7 +1080,7 @@ namespace CAT{
 
 	}
 
-	
+
 	// 0 - A - B - C - d - ...
 	if( print_level() >= mybhep::VERBOSE ){
 	  std::clog << " CAT::cluster::solve_ambiguities_with_ends: 0 - A - B - C - d ... with d singular; optimize B = " << nodes_[ifirst+1].c().id() << ", C " << nodes_[ilast].c().id() << std::endl;
@@ -1125,7 +1124,7 @@ namespace CAT{
       }
 
 
-      
+
       // ... a - A - B - C
       if( last_ambiguous_is_begore_gap ){ // .. - a - A - B - C - gap
 
@@ -1209,10 +1208,10 @@ namespace CAT{
 	  bls.push_back(best_bl);
 	}
 	return bls;
-	
+
       }
 
-	
+
       // ... a - A - B - C - d - ...
       if( print_level() >= mybhep::VERBOSE ){
 	std::clog << " CAT::cluster::solve_ambiguities_with_ends: ... a - A - B - C - d ... ; optimize A = " << nodes_[ifirst].c().id() << " , B = " << nodes_[ifirst+1].c().id() << ", C = " << nodes_[ilast].c().id() <<  std::endl;
@@ -1267,7 +1266,7 @@ namespace CAT{
       ////////////////////////////////////////////////////////////
       // ... if first ambiguous node is right after a gap:   gap - A - B - C - D
       if( first_ambiguous_is_after_gap ){
-	  
+
 	if( last_ambiguous_is_last_but_one ){ // node after last ambiguous is the last:  gap - A - B - C - D - N
 	  if( print_level() >= mybhep::VERBOSE ){
 	    std::clog << " CAT::cluster::solve_ambiguities_with_ends: configuration: gap - A - B - C - D - N |  optimize B = " << nodes_[ifirst+1].c().id() << " , C = " << nodes_[ilast-1].c().id() <<  std::endl;
@@ -1353,7 +1352,7 @@ namespace CAT{
 	  }
 	  return bls;
 	}
-	  
+
 
 	// gap - A - B - C - D - e ...
 	if( print_level() >= mybhep::VERBOSE ){
@@ -1399,8 +1398,8 @@ namespace CAT{
 	}
 	return bls;
       }
-      
-      
+
+
       ////////////////////////////////////////////////////////////
       // ... if first ambiguous node is second node:   0 - A - B - C - D
       if( first_ambiguous_is_second ){
@@ -1448,7 +1447,7 @@ namespace CAT{
 	  }
 	  return bls;
 	}
-	
+
 
 	if( last_ambiguous_is_last_but_one ){ // node after last ambiguous is the last: 0 - A - B - C - D - N
 	  if( print_level() >= mybhep::VERBOSE ){
@@ -1496,10 +1495,10 @@ namespace CAT{
 	    }
 	  }
 	  return bls;
-	  
+
 	}
 
-	
+
 	// 0 - A - B - C - D - e - ...
 	if( print_level() >= mybhep::VERBOSE ){
 	  std::clog << " CAT::cluster::solve_ambiguities_with_ends: 0 - A - B - C - D - e ... with d singular; optimize B = " << nodes_[ifirst+1].c().id() << ", C = " << nodes_[ilast-1].c().id() << ", D = " << nodes_[ilast].c().id() <<  std::endl;
@@ -1550,7 +1549,7 @@ namespace CAT{
       }
 
 
-      
+
       // ... a - A - B - C - D
       if( last_ambiguous_is_begore_gap ){ // .. - a - A - B - C - D - gap
 
@@ -1648,10 +1647,10 @@ namespace CAT{
 	  bls.push_back(best_bl);
 	}
 	return bls;
-	
+
       }
 
-	
+
       // ... a - A - B - C - D - e - ...
       if( print_level() >= mybhep::VERBOSE ){
 	std::clog << " CAT::cluster::solve_ambiguities_with_ends: ... a - A - B - C - D - e ... ; optimize A = " << nodes_[ifirst].c().id() << " , B = " << nodes_[ifirst+1].c().id() << " , C = " << nodes_[ilast-1].c().id() << ", D = " << nodes_[ilast].c().id() <<  std::endl;
@@ -1712,7 +1711,7 @@ namespace CAT{
       ////////////////////////////////////////////////////////////
       // ... if first ambiguous node is right after a gap:   gap - A - B - C - D
       if( first_ambiguous_is_after_gap ){
-	  
+
 	if( print_level() >= mybhep::VERBOSE ){
 	  std::clog << " CAT::cluster::solve_ambiguities_with_ends__more_than_4_nodes: configuration: gap - A - B - C - D |  optimize B = " << nodes_[ifirst+1].c().id() <<  std::endl;
 	}
@@ -1755,10 +1754,10 @@ namespace CAT{
 	    for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
 	      for( size_t joint_index_D = 0; joint_index_D <= 1; ++joint_index_D){
 		eps = ACD[joint_index_A][joint_index_C][joint_index_D].eps();
-		std::clog << " iteration [" << joint_index_A << ", " << joint_index_C << ", " << joint_index_D << "] = (" 
-			  << eps[0].x().value() << ", " << eps[0].z().value() << "), (" 
-			  << eps[1].x().value() << ", " << eps[1].z().value() << "), (" 
-			  << eps[2].x().value() << ", " << eps[2].z().value() << "), (" 
+		std::clog << " iteration [" << joint_index_A << ", " << joint_index_C << ", " << joint_index_D << "] = ("
+			  << eps[0].x().value() << ", " << eps[0].z().value() << "), ("
+			  << eps[1].x().value() << ", " << eps[1].z().value() << "), ("
+			  << eps[2].x().value() << ", " << eps[2].z().value() << "), ("
 			  << eps[3].x().value() << ", " << eps[3].z().value() << ")" << std::endl;
 	      }
 	    }
@@ -1817,11 +1816,11 @@ namespace CAT{
 	    for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
 	      for( size_t joint_index_D = 0; joint_index_D <= 1; ++joint_index_D){
 		eps = ACD[joint_index_A][joint_index_C][joint_index_D].eps();
-		std::clog << " iteration [" << joint_index_A << ", " << joint_index_C << ", " << joint_index_D << "] = (" 
-			  << eps[0].x().value() << ", " << eps[0].z().value() << "), (" 
-			  << eps[1].x().value() << ", " << eps[1].z().value() << "), (" 
-			  << eps[2].x().value() << ", " << eps[2].z().value() << "), (" 
-			  << eps[3].x().value() << ", " << eps[3].z().value() << "), (" 
+		std::clog << " iteration [" << joint_index_A << ", " << joint_index_C << ", " << joint_index_D << "] = ("
+			  << eps[0].x().value() << ", " << eps[0].z().value() << "), ("
+			  << eps[1].x().value() << ", " << eps[1].z().value() << "), ("
+			  << eps[2].x().value() << ", " << eps[2].z().value() << "), ("
+			  << eps[3].x().value() << ", " << eps[3].z().value() << "), ("
 			  << eps[4].x().value() << ", " << eps[4].z().value() << ")" << std::endl;
 	      }
 	    }
@@ -1830,13 +1829,13 @@ namespace CAT{
 
 	return;
       }
-      
+
 
       // ... a - A - B - C - D
       if( print_level() >= mybhep::VERBOSE ){
 	std::clog << " CAT::cluster::solve_ambiguities_with_ends__more_than_4_nodes: ... - a - A - B - C - D ; optimize B = " << nodes_[ifirst+1].c().id() <<  std::endl;
       }
-      
+
       topology::experimental_point pa = nodes_[ifirst-1].ccc()[0].joints()[0].epb();
       for( size_t joint_index_A = 0; joint_index_A <= 1; ++joint_index_A){
 	for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
@@ -1878,16 +1877,16 @@ namespace CAT{
 	  for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
 	    for( size_t joint_index_D = 0; joint_index_D <= 1; ++joint_index_D){
 	      eps = ACD[joint_index_A][joint_index_C][joint_index_D].eps();
-	      std::clog << " iteration [" << joint_index_A << ", " << joint_index_C << ", " << joint_index_D << "] = (" 
-			<< eps[0].x().value() << ", " << eps[0].z().value() << "), (" 
-			<< eps[1].x().value() << ", " << eps[1].z().value() << "), (" 
-			<< eps[2].x().value() << ", " << eps[2].z().value() << "), (" 
+	      std::clog << " iteration [" << joint_index_A << ", " << joint_index_C << ", " << joint_index_D << "] = ("
+			<< eps[0].x().value() << ", " << eps[0].z().value() << "), ("
+			<< eps[1].x().value() << ", " << eps[1].z().value() << "), ("
+			<< eps[2].x().value() << ", " << eps[2].z().value() << "), ("
 			<< eps[3].x().value() << ", " << eps[3].z().value() << ")" << std::endl;
 	    }
 	  }
 	}
       }
-      
+
       return;
 
     }
@@ -1901,7 +1900,7 @@ namespace CAT{
       if( print_level() >= mybhep::VERBOSE ){
 	std::clog << " CAT::cluster::solve_ambiguities_with_ends__more_than_4_nodes: ... - AN - A - B - C - D ; optimize B = " << nodes_[ifirst+1].c().id() <<  std::endl;
       }
-      
+
       for( size_t joint_index_AN = 0; joint_index_AN <= 1; ++joint_index_AN){
 	topology::experimental_point ante = nodes_[ifirst-1].ccc()[0].joints()[joint_index_AN].epb();
 
@@ -1948,10 +1947,10 @@ namespace CAT{
 	    for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
 	      for( size_t joint_index_D = 0; joint_index_D <= 1; ++joint_index_D){
 		eps = aACD[joint_index_AN][joint_index_A][joint_index_C][joint_index_D].eps();
-		std::clog << " iteration [" << joint_index_AN << ", " << joint_index_A << ", " << joint_index_C << ", " << joint_index_D << "] = (" 
-			  << eps[0].x().value() << ", " << eps[0].z().value() << "), (" 
-			  << eps[1].x().value() << ", " << eps[1].z().value() << "), (" 
-			  << eps[2].x().value() << ", " << eps[2].z().value() << "), (" 
+		std::clog << " iteration [" << joint_index_AN << ", " << joint_index_A << ", " << joint_index_C << ", " << joint_index_D << "] = ("
+			  << eps[0].x().value() << ", " << eps[0].z().value() << "), ("
+			  << eps[1].x().value() << ", " << eps[1].z().value() << "), ("
+			  << eps[2].x().value() << ", " << eps[2].z().value() << "), ("
 			  << eps[3].x().value() << ", " << eps[3].z().value() << ")" << std::endl;
 	      }
 	    }
@@ -1974,15 +1973,14 @@ namespace CAT{
 	for( size_t b = 0; b <= 1; ++b)
 	  for( size_t c = 0; c <= 1; ++c)
 	    old_ACD[a][b][c] = ACD[a][b][c];
-      
+
       for( size_t joint_index_AN = 0; joint_index_AN <= 1; ++joint_index_AN){
 	for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
 	  for( size_t joint_index_D = 0; joint_index_D <= 1; ++joint_index_D){
-	    
-	    topology::broken_line best_bl, best_bl1, best_bl2;
-	    size_t bestA, bestB;
+
+	    size_t bestA = 0, bestB = 0;
 	    double min_chi2 = mybhep::default_min;
-	    
+
 	    for( size_t joint_index_A = 0; joint_index_A <= 1; ++joint_index_A){
 	      for( size_t joint_index_B = 0; joint_index_B <= 1; ++joint_index_B){
 		topology::broken_line bl1 = old_ACD[joint_index_AN][joint_index_A][joint_index_B];
@@ -1997,11 +1995,11 @@ namespace CAT{
 		}
 	      }
 	    }
-	    
+
 	    // AN A B  +   A B C D -->  AN C D
-	    best_bl1 = old_ACD[joint_index_AN][bestA][bestB];
-	    best_bl2 = aACD[bestA][bestB][joint_index_C][joint_index_D];
-	    best_bl = best_bl1;
+	    topology::broken_line best_bl1 = old_ACD[joint_index_AN][bestA][bestB];
+	    topology::broken_line best_bl2 = aACD[bestA][bestB][joint_index_C][joint_index_D];
+	    topology::broken_line best_bl = best_bl1;
 	    best_bl.set_ilast(best_bl2.ilast());
 	    best_bl.eps_.push_back(best_bl2.eps_[1]);
 	    best_bl.eps_.push_back(best_bl2.eps_[2]);
@@ -2037,7 +2035,7 @@ namespace CAT{
     std::vector<topology::broken_line> cluster::finish__more_than_4_nodes(topology::broken_line ACD[2][2][2], size_t ifirst, size_t ipivot, size_t n_residuals){
 
       size_t ilast = ipivot + n_residuals ;
-      
+
       if( print_level() >= mybhep::VERBOSE ){
 	std::clog << " CAT::cluster::finish__more_than_4_nodes: ifirst " << nodes_[ifirst].c().id() << " ipivot " << nodes_[ipivot].c().id() << " ilast " << nodes_[ilast].c().id() << " n_residuals " << n_residuals << " npoints " << ACD[0][0][0].eps().size() << std::endl;
       }
@@ -2086,7 +2084,7 @@ namespace CAT{
 	    double min_chi2 = mybhep::default_min;
 	    for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
 	      for( size_t joint_index_D = 0; joint_index_D <= 1; ++joint_index_D){
-	    
+
 		topology::broken_line bl1 = ACD[joint_index_AN][joint_index_C][joint_index_D];
 		bl1.eps_.push_back(pZ);
 		bl1.calculate_chi2();
@@ -2122,14 +2120,14 @@ namespace CAT{
 	  for( size_t joint_index_Z = 0; joint_index_Z <= 1; ++joint_index_Z){
 	    topology::experimental_point pZ = nodes_[ilast].ccc()[0].joints()[joint_index_Z].epb();
 	    topology::broken_line best_bl;
-	    
+
 	    double min_chi2 = mybhep::default_min;
 	    for( size_t joint_index_Y = 0; joint_index_Y <= 1; ++joint_index_Y){
 	      topology::experimental_point pY = nodes_[ilast-1].ccc()[0].joints()[joint_index_Y].epb();
-	      
+
 	      for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
 		for( size_t joint_index_D = 0; joint_index_D <= 1; ++joint_index_D){
-		  
+
 		  topology::broken_line bl1 = ACD[joint_index_AN][joint_index_C][joint_index_D];
 		  bl1.eps_.push_back(pY);
 		  bl1.eps_.push_back(pZ);
@@ -2172,10 +2170,10 @@ namespace CAT{
 	      topology::experimental_point pX = nodes_[ilast-2].ccc()[0].joints()[joint_index_X].epb();
 	      for( size_t joint_index_Y = 0; joint_index_Y <= 1; ++joint_index_Y){
 		topology::experimental_point pY = nodes_[ilast-1].ccc()[0].joints()[joint_index_Y].epb();
-	      
+
 		for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
 		  for( size_t joint_index_D = 0; joint_index_D <= 1; ++joint_index_D){
-		    
+
 		    topology::broken_line bl1 = ACD[joint_index_AN][joint_index_C][joint_index_D];
 		    bl1.eps_.push_back(pX);
 		    bl1.eps_.push_back(pY);
@@ -2221,10 +2219,10 @@ namespace CAT{
 	      topology::experimental_point pX = nodes_[ilast-2].ccc()[0].joints()[joint_index_X].epb();
 	      for( size_t joint_index_Y = 0; joint_index_Y <= 1; ++joint_index_Y){
 		topology::experimental_point pY = nodes_[ilast-1].ccc()[0].joints()[joint_index_Y].epb();
-		
+
 		for( size_t joint_index_C = 0; joint_index_C <= 1; ++joint_index_C){
 		  for( size_t joint_index_D = 0; joint_index_D <= 1; ++joint_index_D){
-		    
+
 		    topology::broken_line bl1 = ACD[joint_index_AN][joint_index_C][joint_index_D];
 		    bl1.eps_.push_back(pW);
 		    bl1.eps_.push_back(pX);
@@ -2263,14 +2261,14 @@ namespace CAT{
     }
 
     std::vector<topology::broken_line> cluster::solve_ambiguities_with_ends(size_t ifirst, size_t ilast){
-      
+
       ////////////////////////////////////////////////////////////
       /// solve ambiguities
       ////////////////////////////////////////////////////////////
 
       std::vector<topology::broken_line> bls;
 
-      
+
       if( ifirst < 1 || ifirst + 2 > nodes_.size() ){
 	if( print_level() >= mybhep::NORMAL ){
 	  std::clog << " CAT::cluster::solve_ambiguities_with_ends: problem: first ambiguous node " << ifirst << " size " << nodes_.size() << std::endl;
@@ -2286,7 +2284,7 @@ namespace CAT{
       }
 
       size_t n_ambiguous_nodes = ilast - ifirst + 1;
- 
+
       //// first ambiguous node can be:
       ///  - right after gap
       ///  - 2nd node
@@ -2314,7 +2312,7 @@ namespace CAT{
       // 1 ambiguous node
       ////////////////////////////////////////////////////////////
       if( n_ambiguous_nodes == 1 ){
-	
+
 	bls = solve_ambiguities_with_ends__1_node(ifirst, ilast, first_ambiguous_is_after_gap, first_ambiguous_is_second, last_ambiguous_is_begore_gap, last_ambiguous_is_last_but_one);
 	// gap - A - N|        :  2 solutions (pA, pN)
 	// gap - A - gap       :  2 solutions (pA)
@@ -2352,7 +2350,7 @@ namespace CAT{
 	return bls;
 
       }
-      
+
 
 
       ////////////////////////////////////////////////////////////
@@ -2376,7 +2374,7 @@ namespace CAT{
 
       }
 
-     
+
       ////////////////////////////////////////////////////////////
       // 4 ambiguous nodes
       ////////////////////////////////////////////////////////////
@@ -2398,7 +2396,7 @@ namespace CAT{
 
       }
 
-     
+
       ////////////////////////////////////////////////////////////
       // more than 4 ambiguous node
       ////////////////////////////////////////////////////////////

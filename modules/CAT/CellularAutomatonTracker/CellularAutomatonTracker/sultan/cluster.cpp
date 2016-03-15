@@ -12,7 +12,7 @@ namespace SULTAN{
     }
 
     //!Default destructor
-    cluster::~cluster(){};
+    cluster::~cluster(){}
 
     //! constructor from std::vector of nodes
     cluster::cluster(const std::vector<node> &nodes, mybhep::prlevel level, double probmin){
@@ -158,7 +158,7 @@ namespace SULTAN{
     }
 
     bool cluster::contains(const cluster & s)const{
-      
+
       const std::vector<node> & nodes = s.nodes();
       for(std::vector<node>::const_iterator inode = nodes.begin(); inode != nodes.end(); ++inode ){
         if( !this->has_cell(inode->c() ) )
@@ -178,25 +178,25 @@ namespace SULTAN{
 
       if( print_level() >= mybhep::VVERBOSE ){
 	std::clog << " SULTAN::cluster::get_cluster_with_first_last: first " << first << " last " << last << std::endl; fflush(stdout);
-      }      
+      }
 
       std::vector<topology::node> the_nodes;
       if( first < last ){ // A ... (F ... L) ... B
 	the_nodes.insert(the_nodes.end(), nodes_.begin() + first, nodes_.begin() + last);
       }else if( first == last ){ // there is only one piece A ... )F( ... B
 	the_nodes.insert(the_nodes.end(), nodes_.begin() + first, nodes_.end());
-	the_nodes.insert(the_nodes.end(), nodes_.begin(), nodes_.begin() + first); 
+	the_nodes.insert(the_nodes.end(), nodes_.begin(), nodes_.begin() + first);
      }else{ // A ... L) ... (F ... B
 	the_nodes.insert(the_nodes.end(), nodes_.begin() + first, nodes_.end());
 	the_nodes.insert(the_nodes.end(), nodes_.begin(), nodes_.begin() + last);
       }
-      
+
       topology::cluster c;
       c.set_nodes(the_nodes);
 
       if( print_level() >= mybhep::VVERBOSE ){
 	std::clog << " SULTAN::cluster::get_cluster_with_first_last: picked " << the_nodes.size() << " nodes " << std::endl;
-      }      
+      }
 
       return c;
     }
@@ -209,12 +209,12 @@ namespace SULTAN{
 
       topology::cluster c = get_cluster_with_first_last(first,last);
       remove_nodes(c.nodes());
-      
+
       return c;
-      
+
     }
 
-    
+
     size_t cluster::get_next_index(size_t index){
       // get index of following cell
 
@@ -263,7 +263,7 @@ namespace SULTAN{
 	longest_piece_last = first_cell_of_piece_.front();
 
       c = get_cluster_with_first_last(longest_piece_first, longest_piece_last);
-	
+
       if( print_level() >= mybhep::VERBOSE ){
 	std::clog << "SULTAN::cluster::longest_piece:  longest piece from "<< nodes_[longest_piece_first].c().id() << " to "<< nodes_[longest_piece_last].c().id() << " with length "<< *ml << " (" ;
 	for(std::vector<topology::node>::const_iterator inode=c.nodes_.begin(); inode!=c.nodes_.end(); ++inode)
@@ -303,7 +303,7 @@ namespace SULTAN{
 	  std::clog << inode->c().id() << " ";
 	std::clog << ") " << std::endl;
       }
-      
+
       //////////////////////////////////////
       //  get first cells of each piece  ///
       //////////////////////////////////////
@@ -313,22 +313,22 @@ namespace SULTAN{
       else{ // loop over cells
 	size_t next_index;
 	for(std::vector<topology::node>::const_iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode){
-	  
+
 	  // get index of following cell
 	  next_index = get_next_index(inode - nodes_.begin());
-	  
+
 	  if( inode->c().near_level(nodes_.at(next_index).c(), nofflayers, cell_distance ) == 0 ){
 	    if( print_level() >= mybhep::VVERBOSE ){
 	      std::clog << "SULTAN::cluster::break_into_continous_pieces:  cells " << inode->c().id() << " and " << nodes_.at(next_index).c().id() << " are far " << std::endl;
 	    }
 	    first_cell_of_piece_.push_back(next_index);
 	  }
-	  
+
 	}
       }
-      
+
       if( !first_cell_of_piece_.size() ){ // there are >1 nodes but no breaks
-	first_cell_of_piece_.push_back(0);      
+	first_cell_of_piece_.push_back(0);
       }
 
 
@@ -387,7 +387,7 @@ namespace SULTAN{
 	}
 	return;
       }
-      
+
 
       if( endpoints == 0 ){ // calculate self line
 
@@ -422,7 +422,7 @@ namespace SULTAN{
 	    dist2 = pow(inode->c().ep().x().value() - n.c().ep().x().value(),2) + pow(inode->c().ep().y().value() - n.c().ep().y().value(),2);
 	    if( dist2 > dist2max ) dist2max = dist2;
 	  }
-	  
+
 	  for(std::vector<topology::node>::iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode){
 	    dist2 = pow(inode->c().ep().x().value() - n.c().ep().x().value(),2) + pow(inode->c().ep().y().value() - n.c().ep().y().value(),2);
 	    angle = dist2/dist2max;
@@ -464,26 +464,26 @@ namespace SULTAN{
     }
 
     size_t cluster::max_length_of_piece(){
-      
+
       if( !length_of_piece_.size() ){
         if( print_level() >= mybhep::NORMAL ){
           std::clog << "SULTAN::cluster::max_length_of_piece: problem: requested logenst piece whene pieces size is " << length_of_piece_.size() << std::endl;
 	}
 	return 0;
       }
-      
+
       if( first_cell_of_piece_.size() != length_of_piece_.size() ){
         if( print_level() >= mybhep::NORMAL ){
           std::clog << "SULTAN::cluster::max_length_of_piece: problem: requested logenst piece whene pieces size is " << length_of_piece_.size() << " and first cell of pieces size " << first_cell_of_piece_.size() << std::endl;
 	}
 	return 0;
       }
-      
+
       // get longest piece
       std::vector<size_t>::const_iterator ml = max_element(length_of_piece_.begin(), length_of_piece_.end());
-      
+
       return *ml;
-      
+
     }
 
 
@@ -580,10 +580,10 @@ namespace SULTAN{
       for(std::vector<topology::node>::const_iterator inode=nodes_.begin(); inode!=nodes_.end(); ++inode){
 #if 1
 	local_R1 = experimental_sqrt(experimental_square(helix_.x0() - inode->c().ep().x()) +
-				     experimental_square(helix_.y0() - inode->c().ep().y()) 
+				     experimental_square(helix_.y0() - inode->c().ep().y())
 				     ) + inode->c().r();
 	local_R2 = experimental_fabs(experimental_sqrt(experimental_square(helix_.x0() - inode->c().ep().x()) +
-						       experimental_square(helix_.y0() - inode->c().ep().y()) 
+						       experimental_square(helix_.y0() - inode->c().ep().y())
 						       ) - inode->c().r());
 	if( fabs(local_R1.value() - helix_.R().value() ) < fabs(local_R2.value() - helix_.R().value() ) )
 	  local_R = local_R1;

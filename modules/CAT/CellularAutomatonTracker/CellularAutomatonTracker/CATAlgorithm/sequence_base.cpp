@@ -1106,22 +1106,22 @@ namespace CAT {
             continue;
           }
 
-          std::vector<cell>::iterator ilink = newsequence.nodes_[i].links_.begin();
-          while( ilink != newsequence.nodes_[i].links_.end() ){
-            if( ilink - newsequence.nodes_[i].links_.begin() >= (int) newsequence.nodes_[i].links_.size() ){
+          std::vector<cell>::iterator itlink = newsequence.nodes_[i].links_.begin();
+          while( itlink != newsequence.nodes_[i].links_.end() ){
+            if( itlink - newsequence.nodes_[i].links_.begin() >= (int) newsequence.nodes_[i].links_.size() ){
               break;
             }
 
-            if( i < lfn  || (i == lfn && (size_t)(ilink - newsequence.nodes_[i].links_.begin()) < link ) ){
-                ilink->set_free( false);
-                ilink->set_begun( true);
+            if( i < lfn  || (i == lfn && (size_t)(itlink - newsequence.nodes_[i].links_.begin()) < link ) ){
+                itlink->set_free( false);
+                itlink->set_begun( true);
               }
-            if( i == lfn && (size_t)(ilink - newsequence.nodes_[i].links_.begin()) > link ){
+            if( i == lfn && (size_t)(itlink - newsequence.nodes_[i].links_.begin()) > link ){
               if( print_level() >= mybhep::VVERBOSE )
-                std::clog << " removing from node " << newsequence.nodes_[i].c().id()  << "  link " << ilink - newsequence.nodes_[i].links_.begin() << " id " << ilink->id() << " larger than link " << link << " from copied sequence " << std::endl;
-                newsequence.nodes_[i].remove_link(ilink - newsequence.nodes_[i].links_.begin());
+                std::clog << " removing from node " << newsequence.nodes_[i].c().id()  << "  link " << itlink - newsequence.nodes_[i].links_.begin() << " id " << itlink->id() << " larger than link " << link << " from copied sequence " << std::endl;
+                newsequence.nodes_[i].remove_link(itlink - newsequence.nodes_[i].links_.begin());
             }
-            ++ilink;
+            ++itlink;
             continue;
           }
         }
@@ -1237,8 +1237,8 @@ namespace CAT {
 
       if( print_level() >= mybhep::VVERBOSE ){
         std::clog << " possible links: ";
-        for(std::vector<cell>::iterator ilink=nodes_[s-1].links_.begin(); ilink != nodes_[s-1].links_.end(); ++ilink){
-          std::clog << " " << ilink->id();
+        for(std::vector<cell>::iterator itlink=nodes_[s-1].links_.begin(); itlink != nodes_[s-1].links_.end(); ++itlink){
+          std::clog << " " << itlink->id();
         }
         std::clog << " " << std::endl;
       }
@@ -1668,7 +1668,7 @@ namespace CAT {
     }
 
 
-    void sequence::circle_order(double Ratio){
+    void sequence::circle_order(double /*Ratio*/){
 
       std::vector<size_t> original_ids;
       for(std::vector<node>::iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode)
@@ -1684,7 +1684,7 @@ namespace CAT {
       std::sort(nodes_.begin(),nodes_.end(),topology::node::circle_order);
 
       if( print_level() >= mybhep::VERBOSE ){
-	std::clog << " sequence after circle reordering: "; 
+	std::clog << " sequence after circle reordering: ";
 	for(std::vector<node>::const_iterator inode = nodes_.begin(); inode != nodes_.end(); ++inode)
 	  std::clog << inode->c().id() << " ";
 	std::clog << " " << std::endl;
@@ -1695,7 +1695,7 @@ namespace CAT {
 	if( inode->c().id() != original_ids[index] ){
 
 	  topology::cell c = inode->c();
-	  
+
 	  std::vector<topology::cell_couplet> cc;
 	  std::vector<topology::cell> links;
 	  if( index > 0 ){
@@ -1709,7 +1709,7 @@ namespace CAT {
 	    cc.push_back(ncc);
 	    links.push_back(nc);
 	  }
-	  
+
 	  inode->set_cc(cc);
 	  inode->set_links(links);
 
@@ -1745,13 +1745,13 @@ namespace CAT {
 	  angle = helix_.phi_of_point(inode->c().ep()).value();
 	else
 	  angle = helix_.phi_of_point(inode->c().ep(), angle).value();
-	
+
 	if( print_level() >= mybhep::VVERBOSE ){
 	  std::clog << " node " << inode->c().id() << " has circle phi " << angle << std::endl;
 	}
 	inode->set_circle_phi(angle);
       }
-      
+
       this->circle_order(Ratio);
 
     }
@@ -1961,10 +1961,10 @@ namespace CAT {
 	  if( print_level() >= mybhep::VVERBOSE ){
 	    std::clog << " so reject helix " << std::endl;
 	  }
-	  
+
 	  good_fit = false;
 	}
-      
+
 #endif
 
       }
@@ -2055,14 +2055,14 @@ namespace CAT {
 
       std::vector<experimental_double> angles;
       for(size_t i=0; i<nodes().size()-2; i++){
-        experimental_vector vi(nodes_[i].ep(), nodes_[i+1].ep());
-        experimental_vector vf(nodes_[i+1].ep(), nodes_[i+2].ep());
+        experimental_vector a_vi(nodes_[i].ep(), nodes_[i+1].ep());
+        experimental_vector a_vf(nodes_[i+1].ep(), nodes_[i+2].ep());
 
-        double phi1 = vi.phi().value();
-        double phi2 = vf.phi().value();
+        phi1 = a_vi.phi().value();
+        phi2 = a_vf.phi().value();
         mybhep::fix_angles(&phi1, &phi2);
 
-        experimental_double deltaphi = vf.phi() - vi.phi();
+        deltaphi = vf.phi() - vi.phi();
         deltaphi.set_value(phi2 - phi1);
 
         if( deltaphi.value() ){
@@ -3042,7 +3042,7 @@ namespace CAT {
           return experimental_vector();
         }
       }
-      
+
       if( SuperNEMO ){
 	dist_first = fabs(p_first.z().value() - ref_value);
 	dist_last = fabs(p_last.z().value() - ref_value);
@@ -3076,7 +3076,7 @@ namespace CAT {
       experimental_point p_first = nodes_[0].ep();
       experimental_point p_last = nodes_[s-1].ep();
       double dist_first, dist_last;
-      
+
       if( SuperNEMO ){
 	dist_first = fabs(p_first.z().value() - ref_value);
 	dist_last = fabs(p_last.z().value() - ref_value);

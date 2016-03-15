@@ -20,16 +20,14 @@
 
 namespace mybhep{
 
-  using namespace std;
-
   particle_definition::particle_definition(std::string name, int pdg,
-					   double m, double q, double l)
+					   double mass, double charge, double lifetime)
   {
     name_ = name;
     pdg_ = pdg;
-    mass_ = m;
-    charge_ = q;
-    lifetime_ =l;
+    mass_ = mass;
+    charge_ = charge;
+    lifetime_ = lifetime;
   }
 
   particle_definition::particle_definition(int code, idcode scheme)
@@ -138,7 +136,7 @@ namespace mybhep{
 
   void particle_definition::set_particle_name(std::string name)
   {
-      name_ = name;
+    name_ = name;
 
     if(name == "gamma"){
       pdg_ = 22;
@@ -267,11 +265,11 @@ namespace mybhep{
   double particle_definition::mass() const {
     return mass_; }
 
-  void particle_definition::set_parameters(double m, double q, double l)
+  void particle_definition::set_parameters(double mass, double charge, double lifetime)
   {
-    mass_ = m;
-    charge_ = q;
-    lifetime_ =l;
+    mass_ = mass;
+    charge_ = charge;
+    lifetime_ = lifetime;
   }
 
   void particle_definition::set_charge(double q)
@@ -313,17 +311,17 @@ namespace mybhep{
   }
 
 
-  ostream& operator << (ostream& s, const particle_definition& p) {
-    s << endl;
+  std::ostream& operator << (std::ostream& out, const particle_definition& p) {
+    out << std::endl;
 
-    s << " particle name= " << p.name() << " "
-      << " particle mass= (MeV)" << p.mass()/MeV << " "
-      << " particle charge= " << p.charge() << " "
-      << " particle lifetime (mus) = " << p.life_time()/microsecond << " "
-      << " particle pdg= " << p.pdg()
-      << " particle geant3= " << p.geant3()
-      << endl;
+    out << " particle name= " << p.name() << " "
+        << " particle mass= (MeV)" << p.mass()/MeV << " "
+        << " particle charge= " << p.charge() << " "
+        << " particle lifetime (mus) = " << p.life_time()/microsecond << " "
+        << " particle pdg= " << p.pdg()
+        << " particle geant3= " << p.geant3()
+        << std::endl;
 
-    return s;
+    return out;
   }
 }

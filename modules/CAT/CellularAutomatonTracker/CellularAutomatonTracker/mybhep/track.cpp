@@ -25,8 +25,6 @@
 
 namespace mybhep{
 
-  using namespace std;
-
   // constructor
   track::track(const particle& mother, material* mate,std::string view)
   {
@@ -101,14 +99,14 @@ namespace mybhep{
   }
 
 
-  ostream& operator << (ostream& s, const track& ih) {
-    s << endl;
-    s  << " track info: material = " << ih.mate() << " "
+  std::ostream& operator << (std::ostream& out, const track& ih) {
+    out << std::endl;
+    out << " track info: material = " << ih.mate() << " "
        << " track_length (cm) = " << ih.track_length()/cm
        << " track_view = " << ih.view()
-       << endl;
+       << std::endl;
 
-    s << " x (cm)     y (cm)      z (cm)       p (MeV) " << endl;
+    out << " x (cm)     y (cm)      z (cm)       p (MeV) " << std::endl;
 
     for(size_t i=0; i< ih.rays().size(); i++){
 
@@ -116,12 +114,12 @@ namespace mybhep{
       const mybhep::Point3D& x = r.x();
       double p = r.p3().mag();
 
-      s << std::setw(6) << x[0]/cm <<"   "
-	<< std::setw(6) << x[1]/cm <<"   "
-	<< std::setw(6) << x[2]/cm <<"   "
-	<< std::setw(6) << p
-	<<endl;
+      out << std::setw(6) << x[0]/cm <<"   "
+          << std::setw(6) << x[1]/cm <<"   "
+          << std::setw(6) << x[2]/cm <<"   "
+          << std::setw(6) << p
+          << std::endl;
     }
-      return s;
+    return out;
   }
 }

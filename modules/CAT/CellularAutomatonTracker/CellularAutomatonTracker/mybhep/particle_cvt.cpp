@@ -351,10 +351,10 @@ void  particle_cvt::restore( std::string def )
     for(size_t i=0; i < ndata; ++i)
       {
 
-        std::string name;
-        std::string value;
-        istr >> name >> value;
-        nparticle_->add_property(name,value);
+        std::string a_name;
+        std::string a_value;
+        istr >> a_name >> a_value;
+        nparticle_->add_property(a_name,a_value);
       }
 
 
@@ -408,7 +408,7 @@ void  particle_cvt::restore( std::string def )
 
         idets_.push_back(det_name);
 
-        for(size_t hit = 0; hit < nhits; hit++)
+        for(size_t ihit = 0; ihit < nhits; ihit++)
           {
             int jhit;
             istr >> jhit;
@@ -467,7 +467,7 @@ void  particle_cvt::restore( std::string def )
 
         nhits = number_of_hits(def);
 
-        for(size_t hit = 0; hit < nhits; hit++)
+        for(size_t ihit = 0; ihit < nhits; ihit++)
           {
             // create a hit converter
             // invoke restore method
@@ -478,7 +478,7 @@ void  particle_cvt::restore( std::string def )
             csvc.add_converter(tcv);
 
             strip(def,hit_label_.size());
-            if (hit<nhits-1) strip(def,def.find(hit_label_));
+            if (ihit<nhits-1) strip(def,def.find(hit_label_));
 
           }
       }

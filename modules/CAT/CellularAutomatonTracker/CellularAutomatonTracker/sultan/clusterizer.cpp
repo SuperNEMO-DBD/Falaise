@@ -115,7 +115,7 @@ namespace SULTAN {
     m.message("SULTAN::clusterizer::finalize: Ending algorithm clusterizer",mybhep::NORMAL);
 
     m.message("SULTAN::clusterizer::finalize: Initial events: ", initial_events, mybhep::NORMAL);
-    m.message("SULTAN::clusterizer::finalize: Skipped events: ", skipped_events, "(", 100.*skipped_events/initial_events, "\%)", mybhep::NORMAL);
+    m.message("SULTAN::clusterizer::finalize: Skipped events: ", skipped_events, "(", 100.*skipped_events/initial_events, "%)", mybhep::NORMAL);
 
     clock.stop(" clusterizer: finalize ");
 

@@ -140,10 +140,10 @@ namespace mybhep{
 
     for(size_t i=0; i < ndata; ++i)
       {
-        std::string name;
-        std::string value;
-        istr >> name >> value;
-        nparticle_->add_property(name,value);
+        std::string a_name;
+        std::string a_value;
+        istr >> a_name >> a_value;
+        nparticle_->add_property(a_name,a_value);
       }
 
 

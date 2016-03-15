@@ -66,7 +66,7 @@ namespace SULTAN{
     }
 
 
-    size_t cell::near_level( const topology::cell & cell, double nofflayers, double cell_distance )const{
+    size_t cell::near_level( const topology::cell & the_cell, double nofflayers, double cell_distance )const{
 
       // returns 0 for far-away cell
       // 1 for cells separated by nofflayers
@@ -87,18 +87,18 @@ namespace SULTAN{
 	const int hit1_side  = this->block();  // -1, 1
 	const int hit1_layer = abs(this->layer()); // 0, 1, ..., 8
 	const int hit1_row   = this->iid();  // -56, -55, ..., 55, 56
-	
-	const int hit2_side  = cell.block();
-	const int hit2_layer = abs(cell.layer());
-	const int hit2_row   = cell.iid();
-	
+
+	const int hit2_side  = the_cell.block();
+	const int hit2_layer = abs(the_cell.layer());
+	const int hit2_row   = the_cell.iid();
+
 	// Do not cross the foil
 	if (hit1_side != hit2_side) return 0;
-	
+
 	// Check neighboring
 	const unsigned int layer_distance = abs (hit1_layer - hit2_layer); // 1 --> side-by-side
 	const unsigned int row_distance = abs (hit1_row - hit2_row);
-	
+
 	if (layer_distance == 0 && row_distance == 0){
 	  if( print_level() >= mybhep::NORMAL ){
 	    std::clog << " problem: sultan asking near level of cells with identical position (" << hit1_side << ", " << hit1_layer << ", " << hit1_row << ") (" << hit2_side << ", " << hit2_layer << ", " << hit2_row << ")" << std::endl;
@@ -116,7 +116,7 @@ namespace SULTAN{
       // also, return 2 for cells sitting on the same gap
 
       const int hit1_layer = this->layer(); // 0, +-1, ..., +-8
-      const int hit2_layer = cell.layer();
+      const int hit2_layer = the_cell.layer();
 
       if( hit1_layer*hit2_layer < 0 ) return 0; // opposite side of foil
       if( abs(hit1_layer) == 3 &&
@@ -136,8 +136,8 @@ namespace SULTAN{
       if( abs(hit1_layer) == 6 &&
 	  abs(hit2_layer) == 6 ) return 2;
 
-      topology::experimental_double distance = topology::experimental_vector(this->ep(),cell.ep()).hor().length();
-      
+      topology::experimental_double distance = topology::experimental_vector(this->ep(),the_cell.ep()).hor().length();
+
       double limit_side = cell_distance;
       double limit_diagonal = sqrt(2.)*cell_distance;
       double precision = 0.15*limit_side;

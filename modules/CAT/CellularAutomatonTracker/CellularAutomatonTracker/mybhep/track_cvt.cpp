@@ -137,7 +137,6 @@ void  track_cvt::restore( std::string def )
 
         // read x,y,z of ray and set to particle
         double x,y,z,px,py,pz;
-        std::string view;
         double ed;
 
         istr >> view;

@@ -168,7 +168,7 @@ namespace SULTAN{
 
       return left.cb().id() == right.cb().id();
 
-    };
+    }
 
 
   }

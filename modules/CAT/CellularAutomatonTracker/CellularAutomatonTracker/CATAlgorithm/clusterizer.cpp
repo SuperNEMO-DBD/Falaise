@@ -269,7 +269,7 @@ namespace CAT {
     m.message("CAT::clusterizer::finalize: Ending algorithm clusterizer...",mybhep::NORMAL);
 
     m.message("CAT::clusterizer::finalize: Initial events: ", InitialEvents, mybhep::NORMAL);
-    m.message("CAT::clusterizer::finalize: Skipped events: ", SkippedEvents, "(", 100.*SkippedEvents/InitialEvents, "\%)", mybhep::NORMAL);
+    m.message("CAT::clusterizer::finalize: Skipped events: ", SkippedEvents, "(", 100.*SkippedEvents/InitialEvents, "%)", mybhep::NORMAL);
 
     if( PrintMode )
       {

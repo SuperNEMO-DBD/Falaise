@@ -15,7 +15,7 @@ namespace SULTAN{
     }
 
     //!Default destructor
-    cell_triplet::~cell_triplet(){};
+    cell_triplet::~cell_triplet(){}
 
     //! constructor
     cell_triplet::cell_triplet(const cell &ca, const cell &cb, const cell &cc, prlevel level, double probmin){

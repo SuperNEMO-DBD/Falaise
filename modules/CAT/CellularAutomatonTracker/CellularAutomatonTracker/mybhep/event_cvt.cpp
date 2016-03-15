@@ -108,7 +108,7 @@ namespace mybhep{
     for(I i=dmap.begin(); i !=dmap.end(); ++i)
       {
 
-        std::string tmp2 = to_string(i->first)+ " " +
+        std::string tmp3 = to_string(i->first)+ " " +
           to_string(i->second);
         to_string(tmp,tmp2);
       }
@@ -201,14 +201,14 @@ namespace mybhep{
 
 
   // restore event
-  void event_cvt::restore(std::string s)
+  void event_cvt::restore(std::string str)
   {
 
 
 // #ifndef HAVE_SSTREAM
 //     istrstream istr (s.c_str());
 // #else
-    std::istringstream istr(s.c_str());
+    std::istringstream istr(str);
 // #endif
 
     // get converter service
@@ -241,10 +241,10 @@ namespace mybhep{
     for(size_t i=0; i < nprop; ++i)
       {
 
-        std::string name;
-        std::string value;
-        istr >> name >> value;
-        nevent_->add_property(name,value);
+        std::string a_name;
+        std::string a_value;
+        istr >> a_name >> a_value;
+        nevent_->add_property(a_name,a_value);
       }
 
     size_t true_size, digi_size, spar_size;
@@ -253,11 +253,11 @@ namespace mybhep{
     // restore particle index for true
     for(size_t ipar =0; ipar < true_size; ipar++)
       {
-        int indx;
+        int a_indx;
 
         //particle index
-        istr >> indx ;
-        particles_true_.push_back(indx);
+        istr >> a_indx ;
+        particles_true_.push_back(a_indx);
       }
 
 
@@ -266,11 +266,11 @@ namespace mybhep{
     // restore particle index for digi
     for(size_t ipar =0; ipar < digi_size; ipar++)
       {
-        int indx;
+        int a_indx;
 
         //particle index
-        istr >> indx ;
-        particles_digi_.push_back(indx);
+        istr >> a_indx ;
+        particles_digi_.push_back(a_indx);
       }
 
 
@@ -279,11 +279,11 @@ namespace mybhep{
     // restore particle index for spar
     for(size_t ipar =0; ipar < spar_size; ipar++)
       {
-        int indx;
+        int a_indx;
 
         //particle index
-        istr >> indx ;
-        particles_spar_.push_back(indx);
+        istr >> a_indx ;
+        particles_spar_.push_back(a_indx);
       }
 
 
@@ -291,7 +291,7 @@ namespace mybhep{
     //Read information about particle
 
 
-    strip(s,s.find(particle_label_));
+    strip(str,str.find(particle_label_));
 
 
     for(size_t ipar =0; ipar < true_size; ipar++)
@@ -301,12 +301,12 @@ namespace mybhep{
         // invoke restore method
         // register to converter service
 
-        particle_cvt*  pcv = new particle_cvt(s);
+        particle_cvt*  pcv = new particle_cvt(str);
 
         csvc.add_converter(pcv);
 
-        strip(s,particle_label_.size());
-        strip(s,s.find(particle_label_));
+        strip(str,particle_label_.size());
+        strip(str,str.find(particle_label_));
       }
 
 
@@ -317,16 +317,16 @@ namespace mybhep{
         // invoke restore method
         // register to converter service
 
-        particle_cvt*  pcv = new particle_cvt(s);
+        particle_cvt*  pcv = new particle_cvt(str);
         csvc.add_converter(pcv);
 
         if(ipar < digi_size-1)
           {
-            strip(s,particle_label_.size());
-            strip(s,s.find(particle_label_));
+            strip(str,particle_label_.size());
+            strip(str,str.find(particle_label_));
           }
       }
-        strip(s,s.find(sparticle_label_));
+        strip(str,str.find(sparticle_label_));
 
     for(size_t ipar =0; ipar < spar_size; ipar++)
       {
@@ -335,11 +335,11 @@ namespace mybhep{
         // invoke restore method
         // register to converter service
 
-        sparticle_cvt*  pcv = new sparticle_cvt(s);
+        sparticle_cvt*  pcv = new sparticle_cvt(str);
         csvc.add_converter(pcv);
 
-        strip(s,sparticle_label_.size());
-        strip(s,s.find(sparticle_label_));
+        strip(str,sparticle_label_.size());
+        strip(str,str.find(sparticle_label_));
       }
   }
 

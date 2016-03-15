@@ -580,7 +580,7 @@ void cell_couplet::dump (std::ostream & a_out,
 
       return left.cb().id() == right.cb().id();
 
-    };
+    }
 
     //! are the two circles tangent or intersecting?
     bool cell_couplet::intersecting()const{

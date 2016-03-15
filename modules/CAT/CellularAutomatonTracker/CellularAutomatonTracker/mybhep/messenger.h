@@ -22,7 +22,7 @@
 
 #include <string>
 #include <mybhep/utilities.h>
-#include<iostream> 
+#include<iostream>
 #include<fstream>
 
 namespace mybhep{
@@ -56,10 +56,10 @@ namespace mybhep{
  * only messages flagged as MUTE will print
   *\ingroup base
  */
-        inline void message (const std::string & message, prlevel clevel) const
+        inline void message (const std::string & the_message, prlevel clevel) const
             {
                 if (clevel <= level_)
-                    std::clog << message << std::endl;
+                    std::clog << the_message << std::endl;
             }
         ///Sends a message followed by variable d
 /** The specified print level must be equal or smaller than the print level
@@ -67,10 +67,10 @@ namespace mybhep{
   *\ingroup base
  */
         template <class T> inline
-        void message(const std::string & message, const T& d, prlevel clevel) const
+        void message(const std::string & the_message, const T& d, prlevel clevel) const
             {
                 if (clevel <= level_)
-                    std::clog << message << " " << d << std::endl;
+                    std::clog << the_message << " " << d << std::endl;
             }
 
 ///Sends a message followed by variable d1 and d2
@@ -79,11 +79,11 @@ namespace mybhep{
   *\ingroup base
  */
         template <class A, class B> inline
-        void message(const std::string & message, const A& d1,
+        void message(const std::string & the_message, const A& d1,
                      const B& d2, prlevel clevel) const
             {
                 if (clevel <= level_)
-                    std::clog << message << " " << d1 << " " << d2 << std::endl;
+                    std::clog << the_message << " " << d1 << " " << d2 << std::endl;
             }
 ///Sends a message followed by variable d1 d2 and d3
 /** The specified print level must be equal or smaller than the print level
@@ -91,13 +91,13 @@ namespace mybhep{
   *\ingroup base
  */
         template <class A, class B, class C> inline
-        void message(const std::string & message, const A& d1,
+        void message(const std::string & the_message, const A& d1,
                      const B& d2,
                      const C& d3,
                      prlevel clevel) const
             {
                 if (clevel <= level_)
-                    std::clog << message << " " << d1 << " " << d2
+                    std::clog << the_message << " " << d1 << " " << d2
                          << " " << d3 << std::endl;
             }
 ///Sends a message followed by variable d1 d2, d3 and d4
@@ -106,7 +106,7 @@ namespace mybhep{
   *\ingroup base
  */
         template <class A, class B, class C, class D> inline
-        void message(const std::string & message,
+        void message(const std::string & the_message,
                      const A& d1,
                      const B& d2,
                      const C& d3,
@@ -114,7 +114,7 @@ namespace mybhep{
                      prlevel clevel) const
             {
                 if (clevel <= level_)
-                    std::clog << message << " " << d1 << " " << d2
+                    std::clog << the_message << " " << d1 << " " << d2
                          << " " << d3 << " " << d4
                          << std::endl;
             }
@@ -124,7 +124,7 @@ namespace mybhep{
  *\ingroup base
  */
         template <class A, class B, class C, class D, class E> inline
-        void message(const std::string & message,
+        void message(const std::string & the_message,
                      const A& d1,
                      const B& d2,
                      const C& d3,
@@ -133,7 +133,7 @@ namespace mybhep{
                      prlevel clevel) const
             {
                 if (clevel <= level_)
-                    std::clog << message << " " << d1 << " " << d2
+                    std::clog << the_message << " " << d1 << " " << d2
                          << " " << d3 << " " << d4
                          << " " << d5
                          << std::endl;
@@ -145,7 +145,7 @@ namespace mybhep{
   *\ingroup base
  */
         template <class A, class B, class C, class D, class E, class F> inline
-        void message(const std::string & message,
+        void message(const std::string & the_message,
                      const A& d1,
                      const B& d2,
                      const C& d3,
@@ -155,7 +155,7 @@ namespace mybhep{
                      prlevel clevel) const
             {
                 if (clevel <= level_)
-                    std::clog << message << " " << d1 << " " << d2
+                    std::clog << the_message << " " << d1 << " " << d2
                          << " " << d3 << " " << d4
                          << " " << d5
                          << " " << d6
@@ -168,7 +168,7 @@ namespace mybhep{
  */
         template <class A, class B, class C, class D, class E, class F,
                   class G> inline
-        void message(const std::string & message,
+        void message(const std::string & the_message,
                      const A& d1,
                      const B& d2,
                      const C& d3,
@@ -179,7 +179,7 @@ namespace mybhep{
                      prlevel clevel) const
             {
                 if (clevel <= level_)
-                    std::clog << message << " " << d1 << " " << d2
+                    std::clog << the_message << " " << d1 << " " << d2
                          << " " << d3 << " " << d4
                          << " " << d5
                          << " " << d6
@@ -193,7 +193,7 @@ namespace mybhep{
  */
         template <class A, class B, class C, class D, class E, class F,
                   class G, class H> inline
-        void message(const std::string & message,
+        void message(const std::string & the_message,
                      const A& d1,
                      const B& d2,
                      const C& d3,
@@ -205,7 +205,7 @@ namespace mybhep{
                      prlevel clevel) const
             {
                 if (clevel <= level_)
-                    std::clog << message << " " << d1 << " " << d2
+                    std::clog << the_message << " " << d1 << " " << d2
                          << " " << d3 << " " << d4
                          << " " << d5
                          << " " << d6
@@ -220,7 +220,7 @@ namespace mybhep{
  */
         template <class A, class B, class C, class D, class E, class F,
                   class G, class H, class I> inline
-        void message(const std::string & message,
+        void message(const std::string & the_message,
                      const A& d1,
                      const B& d2,
                      const C& d3,
@@ -233,7 +233,7 @@ namespace mybhep{
                      prlevel clevel) const
             {
                 if (clevel <= level_)
-                    std::clog << message << " " << d1 << " " << d2
+                    std::clog << the_message << " " << d1 << " " << d2
                          << " " << d3 << " " << d4
                          << " " << d5
                          << " " << d6
@@ -249,7 +249,7 @@ namespace mybhep{
  */
         template <class A, class B, class C, class D, class E, class F,
                   class G, class H, class I, class J> inline
-        void message(const std::string & message,
+        void message(const std::string & the_message,
                      const A& d1,
                      const B& d2,
                      const C& d3,
@@ -263,7 +263,7 @@ namespace mybhep{
                      prlevel clevel) const
             {
                 if (clevel <= level_)
-                    std::clog << message << " " << d1 << " " << d2
+                    std::clog << the_message << " " << d1 << " " << d2
                          << " " << d3 << " " << d4
                          << " " << d5
                          << " " << d6

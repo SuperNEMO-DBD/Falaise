@@ -22,8 +22,6 @@
 #include <iomanip>
 namespace mybhep{
 
-  using namespace std;
-
   // constructor
   hit::hit(const particle& mother, std::string detector):
     detector_(detector)
@@ -65,29 +63,29 @@ namespace mybhep{
   }
 
   // visual output
-  ostream& operator << (ostream& s, const hit& ih) {
-    s << endl;
+  std::ostream& operator << (std::ostream& out, const hit& ih) {
+    out << std::endl;
 
-    s  << " hit info: detector = " << ih.detector() << " "
-       << endl;
+    out  << " hit info: detector = " << ih.detector() << " "
+         << std::endl;
 
-    s << " x (cm)    y (cm)    z (cm)    " << endl;
+    out << " x (cm)    y (cm)    z (cm)    " << std::endl;
 
-    s << std::setw(6) << ih.x()[0]/cm <<"     "
-      << std::setw(6) << ih.x()[1]/cm <<"     "
-      << std::setw(6) << ih.x()[2]/cm <<endl;
+    out << std::setw(6) << ih.x()[0]/cm <<"     "
+        << std::setw(6) << ih.x()[1]/cm <<"     "
+        << std::setw(6) << ih.x()[2]/cm <<std::endl;
 
-    s  << " data info = " << endl;
+    out << " data info = " << std::endl;
 
-    typedef map<string, string>::const_iterator I;
+    typedef std::map<std::string, std::string>::const_iterator I;
     for(I i=ih.data_map().begin(); i !=ih.data_map().end(); ++i)
       {
 
-        s << " data name = " << i->first
-          << " data value = " << i->second
-          <<endl;
+        out << " data name = " << i->first
+            << " data value = " << i->second
+            <<std::endl;
       }
 
-    return s;
+    return out;
   }
 }
