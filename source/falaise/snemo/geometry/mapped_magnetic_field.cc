@@ -30,7 +30,13 @@
 
 // Third party:
 // - Boost:
+#if defined (__GNUC__)
+#define BOOST_SYSTEM_NO_DEPRECATED 1
+#endif
 #include <boost/filesystem.hpp>
+#if defined (__GNUC__)
+#undef BOOST_SYSTEM_NO_DEPRECATED
+#endif
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 // - Bayeux/datatools:
@@ -368,7 +374,7 @@ namespace snemo {
         // Read map:
         csv_map_0_type::vvvvd & bb = bmap;
         bb.reserve(3);
-        for (int ax = 0; ax < 3; ax++) {
+        for (size_t ax = 0; ax < 3; ax++) {
           if (ax == 0) {
             DT_LOG_TRACE(logging, "Loading Bx table...");
           } else if (ax == 1) {
@@ -382,7 +388,7 @@ namespace snemo {
           }
           csv_map_0_type::vvvd & bxyz = bb.back();
           bxyz.reserve(nz);
-          for (int iz = 0; iz < nz; iz++) {
+          for (size_t iz = 0; iz < nz; iz++) {
             DT_LOG_TRACE(logging, "  Scanning iz=" << iz);
             {
               csv_map_0_type::vvd dummy;
@@ -390,7 +396,7 @@ namespace snemo {
             }
             csv_map_0_type::vvd & bxy = bxyz.back();
             bxy.reserve(ny);
-            for (int iy = 0; iy < ny; iy++) {
+            for (size_t iy = 0; iy < ny; iy++) {
               DT_LOG_TRACE(logging, "    Scanning iy=" << iy);
               std::string bmap_line;
               safe_getline(fin, bmap_line);
@@ -413,7 +419,7 @@ namespace snemo {
               }
               csv_map_0_type::vd & xdata = bxy.back();
               xdata.reserve(btokens.size() - 3);
-              for (int ix = 3; ix < btokens.size(); ix++) {
+              for (size_t ix = 3; ix < btokens.size(); ix++) {
                 xdata.push_back(boost::lexical_cast<int>(btokens[ix]));
               }
             }
@@ -445,9 +451,9 @@ namespace snemo {
       DT_LOG_DEBUG(logging, "  fx=[" << fx << "] fy=[" << fy << "] fz=[" << fz << "]");
       DT_LOG_DEBUG(logging, "  gx=[" << gx << "] gy=[" << gy << "] gz=[" << gz << "]");
       const vvvvd & bb = bmap;
-      if (ixl >= 0 && ixl < (nx - 1)
-          && iyl >= 0 && iyl < (ny - 1)
-          && izl >= 0 && izl < (nz - 1) ) {
+      if (ixl >= 0 && ixl < (int)(nx - 1)
+          && iyl >= 0 && iyl < (int)(ny - 1)
+          && izl >= 0 && izl < (int)(nz - 1) ) {
         DT_LOG_DEBUG(logging, "TEST...");
         for (int ax = 0; ax < 3; ax++) {
           const vvvd & b3d = bb[ax];
