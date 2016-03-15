@@ -11,7 +11,9 @@
 
 // Third party:
 // - Boost:
+#define BOOST_SYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
+#undef BOOST_SYSTEM_NO_DEPRECATED
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/classification.hpp>
 // - GSL:
@@ -386,7 +388,7 @@ namespace snemo {
     }
 
     toy_display_driver::toy_display_driver(geomtools::manager & geom_manager_,
-                                           int module_number_,
+                                           int module_nbr_,
                                            datatools::logger::priority priority_)
     {
       initialized_ = false;
@@ -396,7 +398,7 @@ namespace snemo {
       _set_defaults();
       logging_priority = priority_;
       set_geom_manager(geom_manager_);
-      set_module_number(module_number_);
+      set_module_number(module_nbr_);
       initialize();
       return;
     }
@@ -1193,18 +1195,18 @@ namespace snemo {
 
                 // draw circles tangential to the track:
                 {
-                  const geomtools::geom_id & drift_cell_gid = CTH.get_geom_id();
-                  const geomtools::geom_info & drift_cell_ginfo = drift_cell_locator.get_geom_info(drift_cell_gid);
-                  const geomtools::placement & drift_cell_world_plcmt = drift_cell_ginfo.get_world_placement();
-                  geomtools::vector_3d pos = drift_cell_world_plcmt.get_translation();
+                  const geomtools::geom_id & a_drift_cell_gid = CTH.get_geom_id();
+                  const geomtools::geom_info & a_drift_cell_ginfo = drift_cell_locator.get_geom_info(a_drift_cell_gid);
+                  const geomtools::placement & a_drift_cell_world_plcmt = a_drift_cell_ginfo.get_world_placement();
+                  geomtools::vector_3d pos = a_drift_cell_world_plcmt.get_translation();
                   pos.setZ(CTH.get_z());
                   geomtools::gnuplot_draw::draw_circle(out_,
                                                        pos,
-                                                       drift_cell_world_plcmt.get_rotation(),
+                                                       a_drift_cell_world_plcmt.get_rotation(),
                                                        CTH.get_r() - CTH.get_sigma_r());
                   geomtools::gnuplot_draw::draw_circle(out_,
                                                        pos,
-                                                       drift_cell_world_plcmt.get_rotation(),
+                                                       a_drift_cell_world_plcmt.get_rotation(),
                                                        CTH.get_r() + CTH.get_sigma_r());
                 }
                 ++hit_count;
@@ -1255,15 +1257,15 @@ namespace snemo {
 
                 // draw a circle:
                 {
-                  const geomtools::geom_id & drift_cell_gid = CTH.get_geom_id();
-                  const geomtools::geom_info & drift_cell_ginfo = drift_cell_locator.get_geom_info(drift_cell_gid);
-                  const geomtools::placement & drift_cell_world_plcmt = drift_cell_ginfo.get_world_placement();
-                  geomtools::vector_3d pos = drift_cell_world_plcmt.get_translation();
+                  const geomtools::geom_id & a_drift_cell_gid = CTH.get_geom_id();
+                  const geomtools::geom_info & a_drift_cell_ginfo = drift_cell_locator.get_geom_info(a_drift_cell_gid);
+                  const geomtools::placement & a_drift_cell_world_plcmt = a_drift_cell_ginfo.get_world_placement();
+                  geomtools::vector_3d pos = a_drift_cell_world_plcmt.get_translation();
                   pos.setZ(CTH.get_z());
                   const double rmax = 22. * CLHEP::mm;
                   geomtools::gnuplot_draw::draw_circle(out_,
                                                        pos,
-                                                       drift_cell_world_plcmt.get_rotation(),
+                                                       a_drift_cell_world_plcmt.get_rotation(),
                                                        rmax);
                 }
                 ++hit_count;
@@ -1313,16 +1315,16 @@ namespace snemo {
 
                 // draw a square:
                 {
-                  const geomtools::geom_id & drift_cell_gid = CTH.get_geom_id();
-                  const geomtools::geom_info & drift_cell_ginfo = drift_cell_locator.get_geom_info(drift_cell_gid);
-                  const geomtools::placement & drift_cell_world_plcmt = drift_cell_ginfo.get_world_placement();
-                  geomtools::vector_3d pos = drift_cell_world_plcmt.get_translation();
+                  const geomtools::geom_id & a_drift_cell_gid = CTH.get_geom_id();
+                  const geomtools::geom_info & a_drift_cell_ginfo = drift_cell_locator.get_geom_info(a_drift_cell_gid);
+                  const geomtools::placement & a_drift_cell_world_plcmt = a_drift_cell_ginfo.get_world_placement();
+                  geomtools::vector_3d pos = a_drift_cell_world_plcmt.get_translation();
                   pos.setZ(CTH.get_z());
                   const double rmax = 22. * CLHEP::mm;
                   geomtools::rectangle rect(2*rmax, 2*rmax);
                   geomtools::gnuplot_draw::draw_rectangle(out_,
                                                           pos,
-                                                          drift_cell_world_plcmt.get_rotation(),
+                                                          a_drift_cell_world_plcmt.get_rotation(),
                                                           rect);
                 }
                 ++hit_count;
@@ -2432,10 +2434,10 @@ namespace snemo {
             } else if (arg == "--") {
               zoom_factor_2d *= 10.0;
             } else {
-              std::istringstream iss(arg);
+              std::istringstream a_iss(arg);
               double zf;
-              iss >> zf;
-              if (! iss) {
+              a_iss >> zf;
+              if (! a_iss) {
                 std::cerr << "Invalid format for zoom factor '" << arg << "' for command '" << cmd << "' !" << std::endl;
               } else {
                 if (zf <= 0.0) {

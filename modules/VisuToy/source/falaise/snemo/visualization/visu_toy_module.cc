@@ -26,7 +26,7 @@ namespace snemo {
 
     // Registration instantiation macro :
     DPP_MODULE_REGISTRATION_IMPLEMENT(visu_toy_module,
-                                      "snemo::visualization::visu_toy_module");
+                                      "snemo::visualization::visu_toy_module")
 
 
     const geomtools::manager & visu_toy_module::get_geometry_manager() const
