@@ -29,7 +29,7 @@ namespace snemo {
 
     // Registration instantiation macro :
     DPP_MODULE_REGISTRATION_IMPLEMENT(mock_tracker_clustering_module,
-                                      "snemo::reconstruction::mock_tracker_clustering_module");
+                                      "snemo::reconstruction::mock_tracker_clustering_module")
 
 
     void mock_tracker_clustering_module::set_cd_label(const std::string & cdl_)
