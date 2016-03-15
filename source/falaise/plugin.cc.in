@@ -36,6 +36,10 @@
 #if defined (__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wshadow"
+// 2016-03-15 XG: the next line does not seem to work
+//#pragma GCC diagnostic ignored "-Wunused-variable"
+// 2016-03-15 XG: from http://stackoverflow.com/questions/1814548/boostsystem-category-defined-but-not-used
+#define BOOST_SYSTEM_NO_DEPRECATED 1
 #endif
 
 #include <boost/filesystem.hpp>
