@@ -280,9 +280,9 @@ namespace snemo {
 
       for (gid_list_type::const_iterator ineighbour = the_neighbours.begin();
            ineighbour != the_neighbours.end(); ++ineighbour) {
-        const geomtools::geom_id & a_gid = *ineighbour;
-        DT_LOG_TRACE(get_logging_priority(), "Neighbour geom_id " << a_gid);
-        if (std::find(registered_calos_.begin(), registered_calos_.end(), a_gid)
+        const geomtools::geom_id & aa_gid = *ineighbour;
+        DT_LOG_TRACE(get_logging_priority(), "Neighbour geom_id " << aa_gid);
+        if (std::find(registered_calos_.begin(), registered_calos_.end(), aa_gid)
             != registered_calos_.end()) {
           continue;
         }

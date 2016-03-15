@@ -34,7 +34,7 @@ namespace snemo {
 
     // Registration instantiation macro
     DPP_MODULE_REGISTRATION_IMPLEMENT(charged_particle_tracking_module,
-                                      "snemo::reconstruction::charged_particle_tracking_module");
+                                      "snemo::reconstruction::charged_particle_tracking_module")
 
     const geomtools::manager & charged_particle_tracking_module::get_geometry_manager() const
     {

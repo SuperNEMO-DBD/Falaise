@@ -28,7 +28,7 @@ namespace snemo {
 
     // Registration instantiation macro :
     DPP_MODULE_REGISTRATION_IMPLEMENT(gamma_tracking_module,
-                                      "snemo::reconstruction::gamma_tracking_module");
+                                      "snemo::reconstruction::gamma_tracking_module")
 
     const geomtools::manager & gamma_tracking_module::get_geometry_manager() const
     {

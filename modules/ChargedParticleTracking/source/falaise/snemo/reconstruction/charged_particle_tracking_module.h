@@ -123,7 +123,7 @@ namespace snemo {
       boost::scoped_ptr<snemo::reconstruction::alpha_finder_driver> _AFD_;
 
       // Macro to automate the registration of the module :
-      DPP_MODULE_REGISTRATION_INTERFACE(charged_particle_tracking_module);
+      DPP_MODULE_REGISTRATION_INTERFACE(charged_particle_tracking_module)
 
     };
 

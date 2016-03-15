@@ -32,7 +32,7 @@ namespace snemo {
 
     // Registration instantiation macro :
     DPP_MODULE_REGISTRATION_IMPLEMENT(gamma_clustering_module,
-                                      "snemo::reconstruction::gamma_clustering_module");
+                                      "snemo::reconstruction::gamma_clustering_module")
 
     const geomtools::manager & gamma_clustering_module::get_geometry_manager() const
     {
