@@ -29,7 +29,7 @@ namespace snemo {
 
     // Registration instantiation macro :
     DPP_MODULE_REGISTRATION_IMPLEMENT(sultan_tracker_clustering_module,
-                                      "snemo::reconstruction::sultan_tracker_clustering_module");
+                                      "snemo::reconstruction::sultan_tracker_clustering_module")
 
     void sultan_tracker_clustering_module::set_cd_label(const std::string & cdl_)
     {

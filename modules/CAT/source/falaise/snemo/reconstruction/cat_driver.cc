@@ -260,7 +260,7 @@ namespace snemo {
       if (_CAT_input_.cells.capacity() < gg_hits_.size()){
         _CAT_input_.cells.reserve(gg_hits_.size());
       }
-      int ihit = 0;
+      size_t ihit = 0;
 
       // Hit accounting :
       std::map<int, sdm::calibrated_data::tracker_hit_handle_type> hits_mapping;
@@ -361,7 +361,7 @@ namespace snemo {
           _CAT_input_.calo_cells.reserve(calo_hits_.size());
         }
         _CAT_output_.tracked_data.reset();
-        int ihit = 0;
+        size_t jhit = 0;
 
         // CALO hit loop :
         BOOST_FOREACH(const sdm::calibrated_data::calorimeter_hit_handle_type & calo_handle,
@@ -435,7 +435,7 @@ namespace snemo {
           c.set_t(time);
           c.set_probmin(_CAT_setup_.probmin);
           c.set_layer(column);
-          c.set_id(ihit++);
+          c.set_id(jhit++);
 
           // Store mapping info between both data models :
           calo_hits_mapping[c.id()] = calo_handle;

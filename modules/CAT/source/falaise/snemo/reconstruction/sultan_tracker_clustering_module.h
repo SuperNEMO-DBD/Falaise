@@ -115,7 +115,7 @@ namespace snemo {
       boost::scoped_ptr< ::snemo::processing::base_tracker_clusterizer> _driver_; //!< Handle to the embedded clustering algorithm with dynamic memory auto-deletion
 
       // Macro to automate the registration of the module :
-      DPP_MODULE_REGISTRATION_INTERFACE(sultan_tracker_clustering_module);
+      DPP_MODULE_REGISTRATION_INTERFACE(sultan_tracker_clustering_module)
 
     };
 
