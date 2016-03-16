@@ -146,10 +146,10 @@ namespace SULTAN{
       if( print_level() >= mybhep::VVERBOSE )
         std::clog << " (c " << this->id() << " d " << distance.value() << " )";
 
-      if( fabs(distance.value() - limit_side) < precision )
+      if( std::abs(distance.value() - limit_side) < precision )
         return 3;
 
-      if( fabs(distance.value() - limit_diagonal) < precision )
+      if( std::abs(distance.value() - limit_diagonal) < precision )
         return 2;
 
       if( distance.value() < limit_diagonal*(1. + nofflayers) )

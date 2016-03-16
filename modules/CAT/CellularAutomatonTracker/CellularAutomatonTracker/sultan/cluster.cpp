@@ -518,7 +518,7 @@ namespace SULTAN{
 	if( local_x0s.size() ){
 	  local_x0 = local_x0s[0];
 	  for(size_t j=1; j<local_x0s.size(); j++)
-	    if( fabs(local_x0s[j] - helix_.x0().value() ) < fabs( local_x0 - helix_.x0().value() ) )
+	    if( std::abs(local_x0s[j] - helix_.x0().value() ) < std::abs( local_x0 - helix_.x0().value() ) )
 	      local_x0 = local_x0s[j];
 	  x0s.push_back(local_x0);
 	}
@@ -553,7 +553,7 @@ namespace SULTAN{
 	if( local_y0s.size() ){
 	  local_y0 = local_y0s[0];
 	  for(size_t j=1; j<local_y0s.size(); j++)
-	    if( fabs(local_y0s[j] - helix_.y0().value() ) < fabs( local_y0 - helix_.y0().value() ) )
+	    if( std::abs(local_y0s[j] - helix_.y0().value() ) < std::abs( local_y0 - helix_.y0().value() ) )
 	      local_y0 = local_y0s[j];
 	  y0s.push_back(local_y0);
 	}
@@ -585,7 +585,7 @@ namespace SULTAN{
 	local_R2 = experimental_fabs(experimental_sqrt(experimental_square(helix_.x0() - inode->c().ep().x()) +
 						       experimental_square(helix_.y0() - inode->c().ep().y())
 						       ) - inode->c().r());
-	if( fabs(local_R1.value() - helix_.R().value() ) < fabs(local_R2.value() - helix_.R().value() ) )
+	if( std::abs(local_R1.value() - helix_.R().value() ) < std::abs(local_R2.value() - helix_.R().value() ) )
 	  local_R = local_R1;
 	else
 	  local_R = local_R2;

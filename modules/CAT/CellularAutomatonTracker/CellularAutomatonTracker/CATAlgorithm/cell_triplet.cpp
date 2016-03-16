@@ -270,7 +270,7 @@ namespace CAT{
           // keep only the connections that don't invert foward sense
           psc3 = a.kink_phi(d).value()*180./M_PI;
 
-          if( fabs(psc3) < 60. ){
+          if( std::abs(psc3) < 60. ){
             if( print_level() > mybhep::VERBOSE ){
               std::clog << " rejected because direction is reversed: psc = " << psc3 << std::endl;
             }
@@ -289,7 +289,7 @@ namespace CAT{
             b = b0.hor();
             psc = a.kink_phi(b).value()*180./M_PI;
 
-            if( fabs(psc - 90.) < 30. ||  fabs(psc + 90.) < 30.  ||  fabs(psc - 270.) < 30.  ){ // connection along the intersection
+            if( std::abs(psc - 90.) < 30. ||  std::abs(psc + 90.) < 30.  ||  std::abs(psc - 270.) < 30.  ){ // connection along the intersection
               /*
               if( print_level() > mybhep::VERBOSE ){
                 std::clog << " no separation: connect along intersection AB ";
@@ -300,7 +300,7 @@ namespace CAT{
               c0 = ccb().forward_axis();
               c = c0.hor();
               psc2 = b.kink_phi(c).value()*180./M_PI;
-              if( fabs(psc2) < 60. ){
+              if( std::abs(psc2) < 60. ){
                 if( print_level() > mybhep::VERBOSE ){
                   std::clog << " rejected because first 2 cells intersect and the ordering is wrong: psc = " << psc2 << std::endl;
                 }
@@ -313,7 +313,7 @@ namespace CAT{
             b0 = ccb().forward_axis();
             b = b0.hor();
             psc = d.kink_phi(b).value()*180./M_PI;
-            if( fabs(psc - 90.) < 30. ||  fabs(psc + 90.) < 30.  ||  fabs(psc - 270.) < 30.  ){ // connection along the intersection
+            if( std::abs(psc - 90.) < 30. ||  std::abs(psc + 90.) < 30.  ||  std::abs(psc - 270.) < 30.  ){ // connection along the intersection
               /*
               if( print_level() > mybhep::VERBOSE ){
                 std::clog << " no separation: connect along intersection BC ";
@@ -324,7 +324,7 @@ namespace CAT{
               c0 = cca().forward_axis();
               c = c0.hor();
               psc2 = b.kink_phi(c).value()*180./M_PI;
-              if( fabs(psc2) < 60. ){
+              if( std::abs(psc2) < 60. ){
                 if( print_level() > mybhep::VERBOSE ){
                   std::clog << " rejected because last 2 cells intersect and the ordering is wrong: psc = " << psc2 << std::endl;
                 }
@@ -368,7 +368,7 @@ namespace CAT{
           ok = false;
 
           if( !use_ownerror ){
-            if( fabs(local_separation.value()) <= separation_limit ){
+            if( std::abs(local_separation.value()) <= separation_limit ){
 
               theta_kink = newt1.kink_theta(newt2);
               if( print_level() > mybhep::VERBOSE ){
@@ -380,7 +380,7 @@ namespace CAT{
                 std::clog << "    theta_kink " << theta_kink.value()*180/M_PI << " +- " << theta_kink.error()*180/M_PI << std::endl;
               }
 
-              if(  (fabs(phi_kink.value())*180./M_PI <= phi_limit ) && (fabs((newt1.kink_theta(newt2)).value())*180./M_PI <= theta_limit ) )
+              if(  (std::abs(phi_kink.value())*180./M_PI <= phi_limit ) && (std::abs((newt1.kink_theta(newt2)).value())*180./M_PI <= theta_limit ) )
                 ok = true;
             }
           }
@@ -399,7 +399,7 @@ namespace CAT{
             chi2s_.push_back(chi2);
             local_prob = probof(chi2, ndof);
             probs_.push_back(local_prob);
-            if( local_prob > probmin() && prob_just_phi > probmin() && fabs(phi_kink.value())*180./M_PI <= phi_limit )
+            if( local_prob > probmin() && prob_just_phi > probmin() && std::abs(phi_kink.value())*180./M_PI <= phi_limit )
               ok = true;
 
             if( print_level() > mybhep::VERBOSE ){
@@ -605,7 +605,7 @@ namespace CAT{
           // keep only the connections that don't invert foward sense
           psc3 = a.kink_phi(d).value()*180./M_PI;
 
-          if( fabs(psc3) < 60. ){
+          if( std::abs(psc3) < 60. ){
             if( print_level() > mybhep::VERBOSE ){
               std::clog << " rejected because direction is reversed: psc = " << psc3 << std::endl;
             }
@@ -623,13 +623,13 @@ namespace CAT{
             b = b0.hor();
             psc = a.kink_phi(b).value()*180./M_PI;
 
-            if( fabs(psc - 90.) < 30. ||  fabs(psc + 90.) < 30.  ||  fabs(psc - 270.) < 30.  ){ // connection along the intersection
+            if( std::abs(psc - 90.) < 30. ||  std::abs(psc + 90.) < 30.  ||  std::abs(psc - 270.) < 30.  ){ // connection along the intersection
 
               // keep only the connection with consistent ordering of cells
               c0 = ccb().forward_axis();
               c = c0.hor();
               psc2 = b.kink_phi(c).value()*180./M_PI;
-              if( fabs(psc2) < 60. ){
+              if( std::abs(psc2) < 60. ){
                 if( print_level() > mybhep::VERBOSE ){
                   std::clog << " rejected because first 2 cells intersect and the ordering is wrong: psc = " << psc2 << std::endl;
                 }
@@ -642,11 +642,11 @@ namespace CAT{
             b0 = ccb().forward_axis();
             b = b0.hor();
             psc = d.kink_phi(b).value()*180./M_PI;
-            if( fabs(psc - 90.) < 30. ||  fabs(psc + 90.) < 30.  ||  fabs(psc - 270.) < 30.  ){ // connection along the intersection
+            if( std::abs(psc - 90.) < 30. ||  std::abs(psc + 90.) < 30.  ||  std::abs(psc - 270.) < 30.  ){ // connection along the intersection
               c0 = cca().forward_axis();
               c = c0.hor();
               psc2 = b.kink_phi(c).value()*180./M_PI;
-              if( fabs(psc2) < 60. ){
+              if( std::abs(psc2) < 60. ){
                 if( print_level() > mybhep::VERBOSE ){
                   std::clog << " rejected because last 2 cells intersect and the ordering is wrong: psc = " << psc2 << std::endl;
                 }

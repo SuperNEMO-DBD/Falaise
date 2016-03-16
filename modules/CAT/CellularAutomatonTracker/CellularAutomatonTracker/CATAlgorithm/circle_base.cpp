@@ -349,12 +349,12 @@ namespace CAT{
         std::clog << " extrapolated point: (" << ep->x().value() << ", " << ep->y().value() << ", " << ep->z().value() << "), circle distance from extrapolation to plane face: " << dist.x().value() << ", " << dist.y().value() << ", " << dist.z().value() << " plane sizes: " << pl.sizes().x().value() << " " << pl.sizes().y().value() << " " << pl.sizes().z().value() << std::endl;
       }
       if( pl.view() == "x" ){
-        if( fabs(dist.z().value()) > pl.sizes().z().value()/2. )
+        if( std::abs(dist.z().value()) > pl.sizes().z().value()/2. )
           return false;
         return true;
       }
       if( pl.view() == "z" ){
-        if( fabs(dist.x().value()) > pl.sizes().x().value()/2. )
+        if( std::abs(dist.x().value()) > pl.sizes().x().value()/2. )
           return false;
         return true;
       }
@@ -416,11 +416,11 @@ namespace CAT{
       double initial_phi2 = _phi.value();
       double phi1 = phi_of_point(p1).value();
       fix_angles(&phi1, &initial_phi1);
-      double dphi1 = fabs(phi1 - initial_phi1);
+      double dphi1 = std::abs(phi1 - initial_phi1);
       experimental_point p2=(middle - transverse_axis*h).point_from_vector();
       double phi2 = phi_of_point(p2, phi1).value();
       fix_angles(&phi2, &initial_phi2);
-      double dphi2 = fabs(phi2 - initial_phi2);
+      double dphi2 = std::abs(phi2 - initial_phi2);
 
       // pick closest to initial point of extrapolation
       if( dphi1 < dphi2 )

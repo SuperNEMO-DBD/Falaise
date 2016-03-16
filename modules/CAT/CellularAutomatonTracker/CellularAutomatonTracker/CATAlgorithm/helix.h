@@ -234,11 +234,11 @@ namespace CAT {
         int n_extra_turns = (int)((pos.y().value() - y_ref)/one_turn);
 
 	double newy = pos.y().value() - n_extra_turns*one_turn;
-	double dist = fabs(newy - y_ref);
+	double dist = std::abs(newy - y_ref);
 	double newyup = newy + one_turn;
-	double distup = fabs(newyup - y_ref);
+	double distup = std::abs(newyup - y_ref);
 	double newydown = newy - one_turn;
-	double distdown = fabs(newydown - y_ref);
+	double distdown = std::abs(newydown - y_ref);
 	if( distup < dist && distup < distdown )
 	  newy = newyup;
 	if( distdown < dist && distdown < distup )
@@ -349,9 +349,9 @@ namespace CAT {
             std::clog << " helix distance from extrapolation to plane face: " << dist.x().value() << ", " << dist.y().value() << ", " << dist.z().value() << " plane sizes: " << pl.sizes().x().value() << " " << pl.sizes().y().value() << " " << pl.sizes().z().value() << std::endl;
           }
 
-          if( fabs(dist.x().value()) > pl.sizes().x().value()/2. )
+          if( std::abs(dist.x().value()) > pl.sizes().x().value()/2. )
             return false;
-          if( fabs(dist.z().value()) > pl.sizes().z().value()/2. )
+          if( std::abs(dist.z().value()) > pl.sizes().z().value()/2. )
             return false;
 
           ep->set_y(pl.face().y());

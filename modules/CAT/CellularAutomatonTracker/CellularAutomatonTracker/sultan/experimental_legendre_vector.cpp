@@ -42,15 +42,15 @@ namespace SULTAN {
       for(std::vector<experimental_helix>::const_iterator ip = helices_.begin(); ip != helices_.end(); ++ip){
         if( !a.different_cells(*ip) ) continue;
         dx = a.x0() - ip->x0();
-        if( fabs(dx.value()) > get_nsigmas()*dx.error() ) continue;
+        if( std::abs(dx.value()) > get_nsigmas()*dx.error() ) continue;
         dy = a.y0() - ip->y0();
-        if( fabs(dy.value()) > get_nsigmas()*dy.error() ) continue;
+        if( std::abs(dy.value()) > get_nsigmas()*dy.error() ) continue;
         dz = a.z0() - ip->z0();
-        if( fabs(dz.value()) > get_nsigmas()*dz.error() ) continue;
+        if( std::abs(dz.value()) > get_nsigmas()*dz.error() ) continue;
         dR = a.R() - ip->R();
-        if( fabs(dR.value()) > get_nsigmas()*dR.error() ) continue;
+        if( std::abs(dR.value()) > get_nsigmas()*dR.error() ) continue;
         dH = a.H() - ip->H();
-        if( fabs(dH.value()) > get_nsigmas()*dH.error() ) continue;
+        if( std::abs(dH.value()) > get_nsigmas()*dH.error() ) continue;
         neighbours->push_back(*ip);
       }
       return;
@@ -63,15 +63,15 @@ namespace SULTAN {
       for(std::vector<experimental_helix>::const_iterator ip = helices_.begin(); ip != helices_.end(); ++ip){
         if( !a.different_cells(*ip) ) continue;
         dx = a.x0() - ip->x0();
-        if( fabs(dx.value()) > get_nsigmas()*dx.error() ) continue;
+        if( std::abs(dx.value()) > get_nsigmas()*dx.error() ) continue;
         dy = a.y0() - ip->y0();
-        if( fabs(dy.value()) > get_nsigmas()*dy.error() ) continue;
+        if( std::abs(dy.value()) > get_nsigmas()*dy.error() ) continue;
         dz = a.z0() - ip->z0();
-        if( fabs(dz.value()) > get_nsigmas()*dz.error() ) continue;
+        if( std::abs(dz.value()) > get_nsigmas()*dz.error() ) continue;
         dR = a.R() - ip->R();
-        if( fabs(dR.value()) > get_nsigmas()*dR.error() ) continue;
+        if( std::abs(dR.value()) > get_nsigmas()*dR.error() ) continue;
         dH = a.H() - ip->H();
-        if( fabs(dH.value()) > get_nsigmas()*dH.error() ) continue;
+        if( std::abs(dH.value()) > get_nsigmas()*dH.error() ) continue;
         a.add_ids(ip->ids());
       }
       *nids = a.ids().size();
@@ -85,19 +85,19 @@ namespace SULTAN {
       for(std::vector<experimental_helix>::const_iterator ip = helices_.begin(); ip != helices_.end(); ++ip){
         if( !a.different_cells(*ip) ) continue;
 
-        dx = fabs(a.x0().value() - ip->x0().value());
+        dx = std::abs(a.x0().value() - ip->x0().value());
         if( dx > get_nsigmas()*x0dist_ ) continue;
 
-        dy = fabs(a.y0().value() - ip->y0().value());
+        dy = std::abs(a.y0().value() - ip->y0().value());
         if( dy > get_nsigmas()*y0dist_ ) continue;
 
-        dz = fabs(a.z0().value() - ip->z0().value());
+        dz = std::abs(a.z0().value() - ip->z0().value());
         if( dz > get_nsigmas()*z0dist_ ) continue;
 
-        dR = fabs(a.R().value() - ip->R().value());
+        dR = std::abs(a.R().value() - ip->R().value());
         if( dR > get_nsigmas()*Rdist_ ) continue;
 
-        dH = fabs(a.H().value() - ip->H().value());
+        dH = std::abs(a.H().value() - ip->H().value());
         if( dH > get_nsigmas()*Hdist_ ) continue;
 
         a.add_ids(ip->ids());
@@ -712,11 +712,11 @@ namespace SULTAN {
 
           if( !ip->different_cells(*jp) ) continue;
 
-          double dx0 = fabs(ip->x0().value() - jp->x0().value());
-          double dy0 = fabs(ip->y0().value() - jp->y0().value());
-          double dz0 = fabs(ip->z0().value() - jp->z0().value());
-          double dR = fabs(ip->R().value() - jp->R().value());
-          double dH = fabs(ip->H().value() - jp->H().value());
+          double dx0 = std::abs(ip->x0().value() - jp->x0().value());
+          double dy0 = std::abs(ip->y0().value() - jp->y0().value());
+          double dz0 = std::abs(ip->z0().value() - jp->z0().value());
+          double dR = std::abs(ip->R().value() - jp->R().value());
+          double dH = std::abs(ip->H().value() - jp->H().value());
 
           if( print_level() >= mybhep::VERBOSE ){
             std::clog << " dx0 " << dx0 << " dy0 " << dy0 << " dz0 " << dz0 << " dR " << dR << " dH " << dH << std::endl;

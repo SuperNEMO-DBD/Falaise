@@ -638,10 +638,10 @@ namespace SULTAN {
         }
 
         if( dr.is_zero__optimist( nsigma_r) && dh.is_zero__optimist( nsigma_z) ){
-          if( fabs(dr.value()) < drmin && fabs(dh.value()) < dhmin ){
+          if( std::abs(dr.value()) < drmin && std::abs(dh.value()) < dhmin ){
             active = true;
-            drmin = fabs(dr.value());
-            dhmin = fabs(dh.value());
+            drmin = std::abs(dr.value());
+            dhmin = std::abs(dh.value());
             best_helix_index = ihel - helices->begin();
           }
         }

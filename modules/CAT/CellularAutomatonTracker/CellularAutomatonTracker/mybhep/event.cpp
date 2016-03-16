@@ -233,7 +233,7 @@ namespace mybhep{
         //clog << " eras mother memory now" << endl;
 
         const particle& cpm = pr->mother();
-        if (&cpm != NULL)
+        if (cpm.has_mother())
           erase_mother_memory(cpm,pr,type);
 
         //      clog << " erase event memory now" << endl;

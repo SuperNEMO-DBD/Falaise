@@ -3394,9 +3394,9 @@ namespace CAT {
     //*************************************************************
 
     if( SuperNemo )
-      return fabs(ep.z().value());
+      return std::abs(ep.z().value());
 
-    return fabs(ep.radius().value() - FoilRadius);
+    return std::abs(ep.radius().value() - FoilRadius);
 
   }
 
@@ -3499,9 +3499,9 @@ namespace CAT {
       m.message("CAT::sequentiator::near: matching cell ", c.id(), " with cell number ", c.cell_number(), " to calo on view ", pl.view(), " max cell number ", cell_max_number, " plane norm x ", pl.norm().x().value(), mybhep::VVERBOSE);
 
       if( pl.norm().x().value() > 0. )
-        return (fabs(cell_max_number + c.cell_number()) < 1 + NOffLayers);
+        return (std::abs(cell_max_number + c.cell_number()) < 1 + NOffLayers);
 
-      return (fabs(cell_max_number - c.cell_number()) < 1 + NOffLayers);
+      return (std::abs(cell_max_number - c.cell_number()) < 1 + NOffLayers);
     }
     else if( pl.view() == "y" ){
 
@@ -3514,8 +3514,8 @@ namespace CAT {
 	std::clog << "CAT::sequentiator::near:  checking if cell " << c.id() << " is near plane: " << pl.center().x().value() << ", " << pl.center().y().value() << ", " << pl.center().z().value() << " on view " << pl.view() << " distance z " << distance.z().value() << " size z " << size_z << " distance x " << distance.x().value() << " size x " << size_x << std::endl;
 
 
-      if( fabs(distance.z().value()) > size_z/2. ) return false;
-      if( fabs(distance.x().value()) > size_x/2. ) return false;
+      if( std::abs(distance.z().value()) > size_z/2. ) return false;
+      if( std::abs(distance.x().value()) > size_x/2. ) return false;
 
       return true;
 
@@ -3526,9 +3526,9 @@ namespace CAT {
 
       m.message("CAT::sequentiator::near:  checking if cell ", c.id(), " on gap ", g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), mybhep::VVERBOSE);
 
-      if( g <= 0 || fabs(calorimeter_layer - c.layer()) > NOffLayers ) return false; // cell is not on a gap or is facing the foil
+      if( g <= 0 || std::abs(calorimeter_layer - c.layer()) > NOffLayers ) return false; // cell is not on a gap or is facing the foil
 
-      if( g == 1 || fabs(calorimeter_layer - c.layer()) <= NOffLayers ) return true;
+      if( g == 1 || std::abs(calorimeter_layer - c.layer()) <= NOffLayers ) return true;
 
       m.message("CAT::sequentiator::near:  problem: can't match to calo on view ", pl.view(), mybhep::NORMAL);
 
@@ -3540,7 +3540,7 @@ namespace CAT {
       int g = gap_number(c);
       m.message("CAT::sequentiator::near:  checking if cell ", c.id(), " layer and gap: ", ln, g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), " on view ", pl.view(), mybhep::VVERBOSE);
       if( ln < 0 && (g == 3 ||
-                     fabs(ln - calorimeter_layer) <= NOffLayers )) return true;
+                     std::abs(ln - calorimeter_layer) <= NOffLayers )) return true;
       return false;
     }
     else if( pl.view() == "outer" ){
@@ -3548,17 +3548,17 @@ namespace CAT {
       int g = gap_number(c);
       m.message("CAT::sequentiator::near:  checking if cell ", c.id(), " on layer and gap: ", ln, g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), " on view ", pl.view(), mybhep::VVERBOSE);
       if( ln > 0 && (g == 3 ||
-                     fabs(ln - calorimeter_layer) <= NOffLayers )) return true;
+                     std::abs(ln - calorimeter_layer) <= NOffLayers )) return true;
       return false;
     }
     else if( pl.view() == "top" ||  pl.view() == "bottom" ){
       int ln = c.layer();
       int g = gap_number(c);
       m.message("CAT::sequentiator::near:  checking if cell ", c.id(), " on gap ", g, " is near plane: ", pl.center().x().value(), pl.center().y().value(), pl.center().z().value(), " on view ", pl.view(), mybhep::VVERBOSE);
-      if( ln > 0 && calorimeter_layer == 3.5 && (g == 1 || fabs(ln - calorimeter_layer) <= NOffLayers + 0.5 ) ) return true;
-      if( ln > 0 && calorimeter_layer == 5.5 && (g == 2 || fabs(ln - calorimeter_layer) <= NOffLayers + 0.5 ) ) return true;
-      if( ln < 0 && calorimeter_layer == -3.5 && (g == 1 || fabs(ln - calorimeter_layer) <= NOffLayers + 0.5 ) ) return true;
-      if( ln < 0 && calorimeter_layer == -5.5 && (g == 2 || fabs(ln - calorimeter_layer) <= NOffLayers + 0.5 ) ) return true;
+      if( ln > 0 && calorimeter_layer == 3.5 && (g == 1 || std::abs(ln - calorimeter_layer) <= NOffLayers + 0.5 ) ) return true;
+      if( ln > 0 && calorimeter_layer == 5.5 && (g == 2 || std::abs(ln - calorimeter_layer) <= NOffLayers + 0.5 ) ) return true;
+      if( ln < 0 && calorimeter_layer == -3.5 && (g == 1 || std::abs(ln - calorimeter_layer) <= NOffLayers + 0.5 ) ) return true;
+      if( ln < 0 && calorimeter_layer == -5.5 && (g == 2 || std::abs(ln - calorimeter_layer) <= NOffLayers + 0.5 ) ) return true;
       return false;
     }
 
@@ -4427,10 +4427,10 @@ std::clog << "CAT::sequentiator::can_match:  sequence " << s.name() << " can be 
 	std::clog << "CAT::sequentiator::near_level: (c " << c2.id() << " d " << distance.value() << " )"
 		  << std::endl;
 
-      if( fabs(distance.value() - limit_side) < precision )
+      if( std::abs(distance.value() - limit_side) < precision )
 	return 2;
 
-      if( fabs(distance.value() - limit_diagonal) < precision )
+      if( std::abs(distance.value() - limit_diagonal) < precision )
 	return 1;
 
       return 0;

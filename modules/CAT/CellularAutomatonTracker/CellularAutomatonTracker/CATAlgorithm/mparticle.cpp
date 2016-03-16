@@ -51,11 +51,11 @@ namespace mybhep
   ostream& operator << (ostream& out, const mparticle& ip) {
     out << std::endl;
 
-    if (&ip.mirror() != NULL)
+    if (ip.mirror() != NULL)
       {
-        out << " mirror of particle is " << ip.mirror().name() << std::endl;
-        out << " with 3  momentum (MeV) =" << ip.mirror().p3()/MeV << std::endl;
-        out << " and energy (MeV)= " << ip.mirror().e()/MeV << std::endl;
+        out << " mirror of particle is " << ip.mirror()->name() << std::endl;
+        out << " with 3  momentum (MeV) =" << ip.mirror()->p3()/MeV << std::endl;
+        out << " and energy (MeV)= " << ip.mirror()->e()/MeV << std::endl;
         out << " view = " << ip.view()
             << " matches xz = " << ip.xz()
             << " matches yz = " << ip.yz()

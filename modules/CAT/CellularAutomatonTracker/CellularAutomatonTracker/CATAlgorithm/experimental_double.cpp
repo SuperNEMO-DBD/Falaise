@@ -133,7 +133,7 @@ namespace CAT {
     {
       experimental_double& p1= *this;
       double val = p1.value()*a;
-      double err = p1.error()*fabs(a);
+      double err = p1.error()*std::abs(a);
 
       p1.set_value(val);
       p1.set_error(err);
@@ -167,7 +167,7 @@ namespace CAT {
       }
 
       double val = p1.value()/a;
-      double err = p1.error()/fabs(a);
+      double err = p1.error()/std::abs(a);
       p1.set_value(val);
       p1.set_error(err);
       return p1;
@@ -180,7 +180,7 @@ namespace CAT {
     {
       experimental_double v;
       v.set_value(sin(v1.value()));
-      v.set_error(fabs(cos(v1.value()))*v1.error());
+      v.set_error(std::abs(cos(v1.value()))*v1.error());
       return v;
     }
 
@@ -189,7 +189,7 @@ namespace CAT {
     {
       experimental_double v;
       v.set_value(cos(v1.value()));
-      v.set_error(fabs(sin(v1.value()))*v1.error());
+      v.set_error(std::abs(sin(v1.value()))*v1.error());
       return v;
     }
 
@@ -235,12 +235,12 @@ namespace CAT {
       else{
 
 #if 0
-        if( fabs(v1.error()) > fabs(v1.value()) ){
+        if( std::abs(v1.error()) > std::abs(v1.value()) ){
           // large error propagation for the arctan !
           // when "y" has large error, standard error propagation under-estimates the error
           double r1 = atan2(v1.value() - v1.error(), v2.value());
           double r2 = atan2(v1.value() + v1.error(), v2.value());
-          v.set_error(fabs(r1 - r2)/2.);
+          v.set_error(std::abs(r1 - r2)/2.);
           return v;
         }
 #endif
@@ -258,7 +258,7 @@ namespace CAT {
     {
       experimental_double v;
       v.set_value(mybhep::square(v1.value()));
-      v.set_error(2*fabs(v1.value())*v1.error());
+      v.set_error(2*std::abs(v1.value())*v1.error());
       return v;
     }
 
@@ -280,11 +280,11 @@ namespace CAT {
       return v;
     }
 
-    // fabs(v)
+    // std::abs(v)
     experimental_double experimental_fabs (const experimental_double& v1)
     {
       experimental_double v;
-      v.set_value(fabs(v1.value()));
+      v.set_value(std::abs(v1.value()));
       v.set_error(v1.error());
       return v;
     }

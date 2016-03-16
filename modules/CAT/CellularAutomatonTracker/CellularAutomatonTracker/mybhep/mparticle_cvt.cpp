@@ -86,8 +86,8 @@ namespace mybhep{
 
 
     // indexes of objects in class
-    if (&particle_->mirror() != NULL)
-      to_string(tmp,(long int) &particle_->mirror());
+    if (particle_->mirror() != NULL)
+      to_string(tmp,(long int) particle_->mirror());
     else
       to_string(tmp,-1);
 

@@ -132,7 +132,7 @@ namespace SULTAN {
     {
       experimental_double& p1= *this;
       double val = p1.value()*a;
-      double err = p1.error()*fabs(a);
+      double err = p1.error()*std::abs(a);
 
       p1.set_value(val);
       p1.set_error(err);
@@ -166,7 +166,7 @@ namespace SULTAN {
       }
 
       double val = p1.value()/a;
-      double err = p1.error()/fabs(a);
+      double err = p1.error()/std::abs(a);
       p1.set_value(val);
       p1.set_error(err);
       return p1;
@@ -277,7 +277,7 @@ namespace SULTAN {
       //
 
       experimental_double delta = *this - a;
-      if( fabs(delta.value()) > nsigmas*delta.error() ) return false;
+      if( std::abs(delta.value()) > nsigmas*delta.error() ) return false;
       return true;
 
     }
@@ -310,7 +310,7 @@ namespace SULTAN {
     {
       experimental_double v;
       v.set_value(sin(v1.value()));
-      v.set_error(fabs(cos(v1.value()))*v1.error());
+      v.set_error(std::abs(cos(v1.value()))*v1.error());
       return v;
     }
 
@@ -319,7 +319,7 @@ namespace SULTAN {
     {
       experimental_double v;
       v.set_value(cos(v1.value()));
-      v.set_error(fabs(sin(v1.value()))*v1.error());
+      v.set_error(std::abs(sin(v1.value()))*v1.error());
       return v;
     }
 
@@ -377,7 +377,7 @@ namespace SULTAN {
     {
       experimental_double v;
       v.set_value(std::pow(v1.value(),2));
-      v.set_error(2*fabs(v1.value())*v1.error());
+      v.set_error(2*std::abs(v1.value())*v1.error());
       return v;
     }
 
@@ -399,11 +399,11 @@ namespace SULTAN {
       return v;
     }
 
-    // fabs(v)
+    // std::abs(v)
     experimental_double experimental_fabs (const experimental_double& v1)
     {
       experimental_double v;
-      v.set_value(fabs(v1.value()));
+      v.set_value(std::abs(v1.value()));
       v.set_error(v1.error());
       return v;
     }

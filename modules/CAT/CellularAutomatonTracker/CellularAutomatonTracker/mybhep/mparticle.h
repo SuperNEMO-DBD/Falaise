@@ -96,8 +96,8 @@ namespace mybhep{
       mirror_ = &p;
     }
     //! get mirror
-    const particle&  mirror() const {return *mirror_ ;}
-    particle&  mirror()  {return *mirror_ ;}
+    const particle*  mirror() const {return mirror_ ;}
+    particle*  mirror()  {return mirror_ ;}
 
     //! set view
     void set_view(std::string view) {view_ = view;}

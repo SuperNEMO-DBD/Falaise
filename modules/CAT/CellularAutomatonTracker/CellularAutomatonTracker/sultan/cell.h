@@ -349,10 +349,10 @@ namespace SULTAN {
 
 
         // layer
-        if(fabs(this->layer()) < fabs(c.layer())){
+        if(std::abs(this->layer()) < std::abs(c.layer())){
           return false;
         }
-        if(fabs(this->layer()) > fabs(c.layer()))
+        if(std::abs(this->layer()) > std::abs(c.layer()))
           return true;
 
         // iid
@@ -380,10 +380,10 @@ namespace SULTAN {
         }
 
         // layer
-        if(fabs(c1.layer()) < fabs(c.layer())){
+        if(std::abs(c1.layer()) < std::abs(c.layer())){
           return false;
         }
-        if(fabs(c1.layer()) > fabs(c.layer()))
+        if(std::abs(c1.layer()) > std::abs(c.layer()))
           return true;
 
         // iid

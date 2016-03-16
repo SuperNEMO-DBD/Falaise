@@ -27,7 +27,7 @@ namespace CAT {
       double dx = parm[0] - x[0];
       double dy = parm[1] - x[1];
       double p = -dx/dy;
-      double R = fabs(p*dx - dy)/sqrt(1+pow(p,2));
+      double R = std::abs(p*dx - dy)/sqrt(1+pow(p,2));
       return R;
 
     }

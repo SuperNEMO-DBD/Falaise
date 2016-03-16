@@ -22,7 +22,7 @@ namespace CAT{
 
         double expression = 0.;
         for (size_t i=0;i<xi_.size(); i++) {
-          expression += fabs(pow(xi_[i].value() - xc,2) + pow(yi_[i].value() - yc,2) - pow(rad,2));
+          expression += std::abs(pow(xi_[i].value() - xc,2) + pow(yi_[i].value() - yc,2) - pow(rad,2));
           /*
           std::clog << " point " << i << " x " << xi_[i].value() << " par " << xc << " diff " << xi_[i].value() - xc
                     << " y " << yi_[i].value() << " par " << yc << " diff " << yi_[i].value() - yc
@@ -307,7 +307,7 @@ namespace CAT{
         //      CircleRegression cl;
         ROOT::Math::Functor f(&(*this),&CAT::topology::CircleRegression::expression_to_be_minimized,3);
         double variable[3] = {c_.center().x().value(), c_.center().z().value(), c_.radius().value()};
-        double step[3] = {fabs(variable[0])/100.,fabs(variable[1])/100.,fabs(variable[2])/100.};
+        double step[3] = {std::abs(variable[0])/100.,std::abs(variable[1])/100.,std::abs(variable[2])/100.};
 
 
         double initial_value=expression_to_be_minimized(variable);

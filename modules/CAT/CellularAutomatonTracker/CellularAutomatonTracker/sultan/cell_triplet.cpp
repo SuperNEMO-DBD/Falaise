@@ -212,7 +212,7 @@ namespace SULTAN{
 
 
       // the centers of the three cells are aligned
-      if( fabs(detA) < 0.001 || std::isnan(detA) ){
+      if( std::abs(detA) < 0.001 || std::isnan(detA) ){
 
         // phi angle of the line on which the cells lie; exact
         double theta = atan2(-A21,-A11);
@@ -319,7 +319,7 @@ namespace SULTAN{
                   if( ii == 0 ) the_sign = sign[0][i];
                   else if( ii == 1 ) the_sign = sign[1][j];
                   else the_sign = sign[2][k];
-                  check[ii] = fabs(sqrt(pow(X0 - x[ii],2) + pow(Y0 - y[ii],2)) - (R + the_sign*r[ii].value()));
+                  check[ii] = std::abs(sqrt(pow(X0 - x[ii],2) + pow(Y0 - y[ii],2)) - (R + the_sign*r[ii].value()));
                   if( print_level() > mybhep::VERBOSE ){
                     std::clog << "  circle " << ii << " check " << check[ii] << std::endl;
                   }
@@ -515,7 +515,7 @@ namespace SULTAN{
                   if( ii == 0 ) the_sign = sign[0][i];
                   else if( ii == 1 ) the_sign = sign[1][j];
                   else the_sign = sign[2][k];
-                  check[ii] = fabs(sqrt(pow(X0 - x[ii],2) + pow(Y0 - y[ii],2)) - (R + the_sign*r[ii].value()));
+                  check[ii] = std::abs(sqrt(pow(X0 - x[ii],2) + pow(Y0 - y[ii],2)) - (R + the_sign*r[ii].value()));
 
                   if( print_level() > mybhep::VERBOSE ){
                     std::clog << "  circle " << ii << " check " << check[ii] << std::endl;

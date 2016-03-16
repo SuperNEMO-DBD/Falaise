@@ -414,10 +414,10 @@ namespace CAT {
       double precision = 0.15*limit_side;
 
 
-      if( fabs(distance.value() - limit_side) < precision )
+      if( std::abs(distance.value() - limit_side) < precision )
         return 3;
 
-      if( fabs(distance.value() - limit_diagonal) < precision )
+      if( std::abs(distance.value() - limit_diagonal) < precision )
         return 2;
 
       if( distance.value() < limit_diagonal*(1. + nofflayers()) )

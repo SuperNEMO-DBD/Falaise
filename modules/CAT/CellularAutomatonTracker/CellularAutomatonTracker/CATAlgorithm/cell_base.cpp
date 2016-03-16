@@ -102,8 +102,8 @@ namespace topology{
       maxr = max(r1,r2);
     }
 
-    double errx = max(fabs( epb.x().value() - epa.x().value() ), (epb+epa).x().error());
-    double errz = max(fabs( epb.z().value() - epa.z().value() ), (epb+epa).z().error());
+    double errx = max(std::abs( epb.x().value() - epa.x().value() ), (epb+epa).x().error());
+    double errz = max(std::abs( epb.z().value() - epa.z().value() ), (epb+epa).z().error());
 
     experimental_point p = build_from_cell(x, z, cos_ave_phi, sign, replace_r, maxr);
     p.set_ex(errx);
@@ -147,7 +147,7 @@ namespace topology{
     double re_initial_phi2 = initial_phi2.value();
     fix_angles(&re_initial_phi1, &re_initial_phi2);
 
-    if( fabs(re_initial_phi1 - re_initial_phi2) > M_PI/2. ) return false;
+    if( std::abs(re_initial_phi1 - re_initial_phi2) > M_PI/2. ) return false;
 
     return true;
 

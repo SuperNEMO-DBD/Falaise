@@ -67,7 +67,7 @@ namespace CAT {
       double dx = this->ep().x().value() - X0;
       double dy = this->ep().y().value() - Y0;
       double p = -dx/dy;
-      double R = fabs(p*dx - dy)/sqrt(1+pow(p,2));
+      double R = std::abs(p*dx - dy)/sqrt(1+pow(p,2));
       return R;
 
     }

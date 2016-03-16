@@ -1,9 +1,9 @@
 //#############################################################################
 //
 // HistogramFunctions.cpp - these functions are useful for working with ROOT
-//                          histograms.  For example, dividing two histograms 
+//                          histograms.  For example, dividing two histograms
 //                          and assigning binomial errors, or averaging over
-//                          a dimension to reduce the dimensionality by 1. 
+//                          a dimension to reduce the dimensionality by 1.
 //
 //
 // D. Schmitz  October 28, 2005
@@ -16,7 +16,7 @@
 //=============================================================================
 // divide3D( )
 //
-// note that -99 is the flag for a 0 denominator. we need to distinguish this 
+// note that -99 is the flag for a 0 denominator. we need to distinguish this
 // case from the 0 / 4 case, for example.
 // errors are binomial errors!!
 //=============================================================================
@@ -31,7 +31,7 @@ TH3F* Divide3D( TH3F *num, TH3F *den ){
     y_bins[i] = num->GetYaxis()->GetBinLowEdge(i+1);
   for( int i = 0; i <= num->GetNbinsZ(); i++ )
     z_bins[i] = num->GetZaxis()->GetBinLowEdge(i+1);
-    
+
   TH3F *result = new TH3F( "result", "result", num->GetNbinsX(), x_bins, num->GetNbinsY(), y_bins, num->GetNbinsZ(), z_bins );
 
   for( int i = 1; i <= num->GetNbinsX(); i++ )
@@ -43,7 +43,7 @@ TH3F* Divide3D( TH3F *num, TH3F *den ){
 	if(  den->GetBinContent(i,j,k) != 0 )
 	{
 	  result->SetBinContent(i,j,k, num->GetBinContent(i,j,k)/den->GetBinContent(i,j,k) );
-	  double error = sqrt( fabs((num->GetBinContent(i,j,k) * ( 1.0 - num->GetBinContent(i,j,k) / den->GetBinContent(i,j,k) )))) / den->GetBinContent(i,j,k);
+	  double error = sqrt( std::abs((num->GetBinContent(i,j,k) * ( 1.0 - num->GetBinContent(i,j,k) / den->GetBinContent(i,j,k) )))) / den->GetBinContent(i,j,k);
 	  result->SetBinError(i,j,k,error);
 	}
 	else
@@ -54,7 +54,7 @@ TH3F* Divide3D( TH3F *num, TH3F *den ){
       }
     }
   }
-			   
+
   return result;
 
 }
@@ -63,7 +63,7 @@ TH3F* Divide3D( TH3F *num, TH3F *den ){
 //=============================================================================
 // divide2D( )
 //
-// note that -99 is the flag for a 0 denominator. we need to distinguish this 
+// note that -99 is the flag for a 0 denominator. we need to distinguish this
 // case from the 0 / 4 case, for example.
 // errors are binomial errors!!
 //=============================================================================
@@ -75,7 +75,7 @@ TH2F* Divide2D( TH2F *num, TH2F *den ){
     x_bins[i] = num->GetXaxis()->GetBinLowEdge(i+1);
   for( int i = 0; i <= num->GetNbinsY(); i++ )
     y_bins[i] = num->GetYaxis()->GetBinLowEdge(i+1);
-    
+
   TH2F *result = new TH2F( "result", "result", num->GetNbinsX(), x_bins, num->GetNbinsY(), y_bins );
 
   for( int i = 1; i <= num->GetNbinsX(); i++ )
@@ -85,7 +85,7 @@ TH2F* Divide2D( TH2F *num, TH2F *den ){
       if(  den->GetBinContent(i,j) != 0 )
       {
 	result->SetBinContent(i,j, num->GetBinContent(i,j)/den->GetBinContent(i,j) );
-	double error = sqrt( fabs((num->GetBinContent(i,j) * ( 1.0 - num->GetBinContent(i,j) / den->GetBinContent(i,j) )))) / den->GetBinContent(i,j);
+	double error = sqrt( std::abs((num->GetBinContent(i,j) * ( 1.0 - num->GetBinContent(i,j) / den->GetBinContent(i,j) )))) / den->GetBinContent(i,j);
 	result->SetBinError(i,j,error);
 
       }
@@ -96,7 +96,7 @@ TH2F* Divide2D( TH2F *num, TH2F *den ){
       }
     }
   }
-  
+
   return result;
 
 }
@@ -105,7 +105,7 @@ TH2F* Divide2D( TH2F *num, TH2F *den ){
 //=============================================================================
 // divide1D( )
 //
-// note that -99 is the flag for a 0 denominator. we need to distinguish this 
+// note that -99 is the flag for a 0 denominator. we need to distinguish this
 // case from the 0 / 4 case, for example.
 // errors are binomial errors!!
 //=============================================================================
@@ -114,7 +114,7 @@ TH1F* Divide1D( TH1F *num, TH1F *den ){
   double* x_bins = new double[num->GetNbinsX()+1];
   for( int i = 0; i <= num->GetNbinsX(); i++ )
     x_bins[i] = num->GetXaxis()->GetBinLowEdge(i+1);
-    
+
   TH1F *result = new TH1F( "result", "result", num->GetNbinsX(), x_bins );
 
   for( int i = 1; i <= num->GetNbinsX(); i++ )
@@ -122,9 +122,9 @@ TH1F* Divide1D( TH1F *num, TH1F *den ){
     if(  den->GetBinContent(i) != 0 )
     {
       result->SetBinContent(i, num->GetBinContent(i)/den->GetBinContent(i) );
-      double error = sqrt( fabs((num->GetBinContent(i) * ( 1.0 - num->GetBinContent(i) / den->GetBinContent(i) )))) / den->GetBinContent(i);
+      double error = sqrt( std::abs((num->GetBinContent(i) * ( 1.0 - num->GetBinContent(i) / den->GetBinContent(i) )))) / den->GetBinContent(i);
       result->SetBinError(i,error);
-  
+
     }
     else
     {
@@ -133,7 +133,7 @@ TH1F* Divide1D( TH1F *num, TH1F *den ){
       //      result->SetBinError(i,1);
     }
   }
-  
+
   return result;
 
 }
@@ -163,7 +163,7 @@ TH2F* Average3D_to_2D( TH3F *object, char *axis1, char *axis2 ){
   sprintf( axes, "%s%s%s", axis1, axis2, axis3 );
 
   if( 0 == strcmp(axes,"123") )
-  { 
+  {
     xbins = object->GetNbinsX();
     x_bins = new double[xbins+1];
     for( int i = 0; i <= xbins; i++ )
@@ -178,7 +178,7 @@ TH2F* Average3D_to_2D( TH3F *object, char *axis1, char *axis2 ){
       z_bins[i] = object->GetZaxis()->GetBinLowEdge(i+1);
   }
   else if( 0 == strcmp(axes,"132") )
-  { 
+  {
     xbins = object->GetNbinsX();
     x_bins = new double[xbins+1];
     for( int i = 0; i <= xbins; i++ )
@@ -208,7 +208,7 @@ TH2F* Average3D_to_2D( TH3F *object, char *axis1, char *axis2 ){
       z_bins[i] = object->GetZaxis()->GetBinLowEdge(i+1);
   }
   else if( 0 == strcmp(axes,"231") )
-  { 
+  {
     xbins = object->GetNbinsY();
     x_bins = new double[xbins+1];
     for( int i = 0; i <= xbins; i++ )
@@ -238,7 +238,7 @@ TH2F* Average3D_to_2D( TH3F *object, char *axis1, char *axis2 ){
       z_bins[i] = object->GetYaxis()->GetBinLowEdge(i+1);
   }
   else if( 0 == strcmp(axes,"321") )
-  { 
+  {
     xbins = object->GetNbinsZ();
     x_bins = new double[xbins+1];
     for( int i = 0; i <= xbins; i++ )
@@ -312,7 +312,7 @@ TH2F* Average3D_to_2D( TH3F *object, char *axis1, char *axis2 ){
 	result->SetBinContent(i,j,sum/(double)count);
 	double error = sqrt( errorSum2 ) / count;
 	result->SetBinError(i,j, error );
-	//cout << i << ", " << j << " = " << sum << " / " << count << " = " 
+	//cout << i << ", " << j << " = " << sum << " / " << count << " = "
 	//<< result->GetBinContent(i,j) << " +- " << error << endl;
       }
       else
@@ -396,7 +396,7 @@ TH1F* Average2D_to_1D( TH2F* object, char *axis1 ){
       result->SetBinContent(i,sum/(double)count);
       double error = sqrt( errorSum2 ) / count;
       result->SetBinError(i,error );
-      //cout << i << " = " << sum << " / " << count << " = " 
+      //cout << i << " = " << sum << " / " << count << " = "
       //<< result->GetBinContent(i) << " +- " << error << endl;
     }
     else
@@ -407,7 +407,7 @@ TH1F* Average2D_to_1D( TH2F* object, char *axis1 ){
   }
 
   return result;
-    
+
 }
 
 
@@ -464,7 +464,7 @@ TH1F* Integrate2D_to_1D( TH2F* object, char *axis1, double mult, char *option ){
 	{
 	  if( strcmp( option, "omega" ) == 0 )
 	  {
-	    sum += object->GetBinContent(i,j) * 
+	    sum += object->GetBinContent(i,j) *
 	      (cos(object->GetYaxis()->GetBinLowEdge(j)) - cos(object->GetYaxis()->GetBinUpEdge(j))) * mult;
 	    count++;
 	    errorSum2 += pow(object->GetBinError(i,j),2) *
@@ -491,7 +491,7 @@ TH1F* Integrate2D_to_1D( TH2F* object, char *axis1, double mult, char *option ){
       result->SetBinContent(i,sum);
       double error = sqrt( errorSum2 );
       result->SetBinError(i,error );
-      //cout << i << " = " << sum << " / " << count << " = " 
+      //cout << i << " = " << sum << " / " << count << " = "
       //<< result->GetBinContent(i) << " +- " << error << endl;
     }
     else
@@ -502,7 +502,7 @@ TH1F* Integrate2D_to_1D( TH2F* object, char *axis1, double mult, char *option ){
   }
 
   return result;
-    
+
 }
 
 
@@ -519,21 +519,21 @@ double Integrate2D( TH2F* object, double mult, char *option ){
     {
       if( strcmp( option, "omega" ) == 0 )
       {
-	sum += object->GetBinContent(i,j) * 
+	sum += object->GetBinContent(i,j) *
 	       object->GetXaxis()->GetBinWidth(i) *
 	       (cos(object->GetYaxis()->GetBinLowEdge(j)) - cos(object->GetYaxis()->GetBinUpEdge(j))) * mult;
       }
       else
       {
-	sum += object->GetBinContent(i,j) * 
-	       object->GetXaxis()->GetBinWidth(i) * 
+	sum += object->GetBinContent(i,j) *
+	       object->GetXaxis()->GetBinWidth(i) *
 	       object->GetYaxis()->GetBinWidth(j) * mult;
       }
     }
   }
 
   return sum;
-    
+
 }
 
 
@@ -550,7 +550,7 @@ TH2F* Convert_to_pth( TH3F* object ){
   double* th_vector;
   // even number of bins with 0 a bin edge
   if( 2*(object->GetNbinsY()/2) == object->GetNbinsY()/2 )
-  {    
+  {
     th_bins = object->GetNbinsY()/2;
     th_vector = new double[object->GetNbinsY()/2+1];
     int j;
@@ -594,17 +594,17 @@ TH2F* Convert_to_pth( TH3F* object ){
       }
     }
   }
- 
+
   return result;
 
 }
 
-  
+
 
 
 
 //#############################################################################
 //
-// END 
+// END
 //
 //#############################################################################

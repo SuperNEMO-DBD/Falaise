@@ -148,10 +148,10 @@ namespace SULTAN {
       experimental_point p_first = nodes_[0].ep();
       experimental_point p_last = nodes_[s-1].ep();
       double dist_first, dist_last;
-      
+
       if( SuperNEMO ){
-	dist_first = fabs(p_first.x().value() - ref_value);
-	dist_last = fabs(p_last.x().value() - ref_value);
+	dist_first = std::abs(p_first.x().value() - ref_value);
+	dist_last = std::abs(p_last.x().value() - ref_value);
 	experimental_vector foil_normal(1.,0.,0.,0.,0.,0.);
 	double sign = 1.;
 	if( dist_first < dist_last ){
@@ -170,8 +170,8 @@ namespace SULTAN {
 	return helix_dir*sign;
       }
 
-      dist_first = fabs(p_first.radius().value() - ref_value);
-      dist_last = fabs(p_last.radius().value() - ref_value);
+      dist_first = std::abs(p_first.radius().value() - ref_value);
+      dist_last = std::abs(p_last.radius().value() - ref_value);
       experimental_point origin(0.,0.,0.,0.,0.,0.);
       double sign = 1.;
       if( dist_first < dist_last ){

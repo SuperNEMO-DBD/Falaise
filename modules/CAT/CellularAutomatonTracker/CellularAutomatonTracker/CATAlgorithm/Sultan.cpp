@@ -1543,7 +1543,7 @@ namespace CAT {
 
       for(size_t j=0; j<(size_t)planes_per_block[i]; j++){
 
-        if( pos > fabs(block_pos[2]) ){
+        if( pos > std::abs(block_pos[2]) ){
           found = true;
           break;
         }
@@ -1645,7 +1645,7 @@ namespace CAT {
 
           topology::experimental_vector mysizes(local_calo_X, calo_Y, calo_Z,
                                                 0., 0., 0.);
-          double offset = fabs((norm * mysizes).value())/2.;
+          double offset = std::abs((norm * mysizes).value())/2.;
           center = (topology::experimental_vector(center) - norm * offset).point_from_vector();
         }
         else if( planeid==2 || planeid ==3){  // bottom and top, for Nemo3

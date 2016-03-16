@@ -215,39 +215,39 @@ namespace SULTAN {
 
       if( view() == "x" ){
 
-        if( fabs(dist.x().value()) > dist.x().error() )
+        if( std::abs(dist.x().value()) > dist.x().error() )
           return false;
 
-        if( fabs(dist.y().value()) > sizes().y().value()/2. + dist.y().error() )
+        if( std::abs(dist.y().value()) > sizes().y().value()/2. + dist.y().error() )
           return false;
 
-        if( fabs(dist.z().value()) > sizes().z().value()/2. + dist.z().error() )
+        if( std::abs(dist.z().value()) > sizes().z().value()/2. + dist.z().error() )
           return false;
 
         return true;
       }
       else if( view() == "y" ){
 
-        if( fabs(dist.y().value()) > dist.y().error() )
+        if( std::abs(dist.y().value()) > dist.y().error() )
           return false;
 
-        if( fabs(dist.x().value()) > sizes().x().value()/2. + dist.x().error() )
+        if( std::abs(dist.x().value()) > sizes().x().value()/2. + dist.x().error() )
           return false;
 
-        if( fabs(dist.z().value()) > sizes().z().value()/2. + dist.z().error() )
+        if( std::abs(dist.z().value()) > sizes().z().value()/2. + dist.z().error() )
           return false;
 
         return true;
       }
 
       else if( view() == "z" ){
-        if( fabs(dist.z().value()) > dist.z().error() )
+        if( std::abs(dist.z().value()) > dist.z().error() )
           return false;
 
-        if( fabs(dist.x().value()) > sizes().x().value()/2. + dist.x().error() )
+        if( std::abs(dist.x().value()) > sizes().x().value()/2. + dist.x().error() )
           return false;
 
-        if( fabs(dist.y().value()) > sizes().y().value()/2. + dist.y().error() )
+        if( std::abs(dist.y().value()) > sizes().y().value()/2. + dist.y().error() )
           return false;
 
         return true;
@@ -266,15 +266,15 @@ namespace SULTAN {
                     << std::endl;
         }
 
-        if( fabs(dist_norm.value()) > fabs( dist_norm.error()))
+        if( std::abs(dist_norm.value()) > std::abs( dist_norm.error()))
           return false;
 
-        //if( fabs(dist_transv.value()) > sizes().z().value()/2. + dist_transv.error())
-        if( fabs(dist_transv.value()) > sizes().z().value()/2.)
+        //if( std::abs(dist_transv.value()) > sizes().z().value()/2. + dist_transv.error())
+        if( std::abs(dist_transv.value()) > sizes().z().value()/2.)
           return false;
 
-        //if( fabs(dist_vert.value()) > sizes().y().value()/2. + dist_vert.error())
-        if( fabs(dist_vert.value()) > sizes().y().value()/2.)
+        //if( std::abs(dist_vert.value()) > sizes().y().value()/2. + dist_vert.error())
+        if( std::abs(dist_vert.value()) > sizes().y().value()/2.)
           return false;
 
         return true;

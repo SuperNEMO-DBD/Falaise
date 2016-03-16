@@ -1551,22 +1551,22 @@ void EventDisplay::execute(size_t ievent, CAT::topology::tracked_data & __CAT_tr
 
 
   if( PlotTrueTracks ){
-    
+
     if( PlotTopView )
       event_display_xz("true", __CAT_tracked_data, __SULTAN_tracked_data);
     if( PlotSideView )
       event_display_yz("true", __CAT_tracked_data, __SULTAN_tracked_data);
-    
+
   }
-  
-  
+
+
   if( PlotNemoTracks ){
-    
+
     if( PlotTopView )
       event_display_xz("nemo", __CAT_tracked_data, __SULTAN_tracked_data);
     if( PlotSideView )
       event_display_yz("nemo", __CAT_tracked_data, __SULTAN_tracked_data);
-    
+
   }
 
   if( CAT_sc.size() == 0 ){
@@ -1887,7 +1887,7 @@ void EventDisplay::draw_sine_yz( double y0, double z0, double radius, double pit
   double* zc = (double*)malloc(sizeof(double)*100);
 
 
-  if( fabs(phi1 - phi2) > M_PI){
+  if( std::abs(phi1 - phi2) > M_PI){
     if( phi2 > phi1 )
       phi2 -= 2.*M_PI;
     else
@@ -2164,11 +2164,11 @@ void EventDisplay::draw_calos_yz( std::vector<CAT::topology::calorimeter_hit> ca
 	else if( 0 == strcmp(view.c_str(),"outer") )
 	  offset = local_calo_x/2.;  // outer
 
-        zcal[0] = h.pl().center().z().value() + offset*sin(theta) - local_calo_x/2.*fabs(sin(theta)) - local_calo_z/2.*fabs(cos(theta));
-        zcal[1] = h.pl().center().z().value() + offset*sin(theta) + local_calo_x/2.*fabs(sin(theta)) + local_calo_z/2.*fabs(cos(theta));
-        zcal[2] = h.pl().center().z().value() + offset*sin(theta) + local_calo_x/2.*fabs(sin(theta)) + local_calo_z/2.*fabs(cos(theta));
-        zcal[3] = h.pl().center().z().value() + offset*sin(theta) - local_calo_x/2.*fabs(sin(theta)) - local_calo_z/2.*fabs(cos(theta));
-        zcal[4] = h.pl().center().z().value() + offset*sin(theta) - local_calo_x/2.*fabs(sin(theta)) - local_calo_z/2.*fabs(cos(theta));
+        zcal[0] = h.pl().center().z().value() + offset*sin(theta) - local_calo_x/2.*std::abs(sin(theta)) - local_calo_z/2.*std::abs(cos(theta));
+        zcal[1] = h.pl().center().z().value() + offset*sin(theta) + local_calo_x/2.*std::abs(sin(theta)) + local_calo_z/2.*std::abs(cos(theta));
+        zcal[2] = h.pl().center().z().value() + offset*sin(theta) + local_calo_x/2.*std::abs(sin(theta)) + local_calo_z/2.*std::abs(cos(theta));
+        zcal[3] = h.pl().center().z().value() + offset*sin(theta) - local_calo_x/2.*std::abs(sin(theta)) - local_calo_z/2.*std::abs(cos(theta));
+        zcal[4] = h.pl().center().z().value() + offset*sin(theta) - local_calo_x/2.*std::abs(sin(theta)) - local_calo_z/2.*std::abs(cos(theta));
 
 
       }
@@ -2657,7 +2657,7 @@ void EventDisplay::draw_cats_xz(std::string mode, std::vector<CAT::topology::seq
         bool do_vertex = false;
 
         if( s.has_helix_vertex() &&
-            ! (fabs(s.helix_vertex().x().value()) < 0.1 && fabs(s.helix_vertex().z().value() < 0.1 )) )
+            ! (std::abs(s.helix_vertex().x().value()) < 0.1 && std::abs(s.helix_vertex().z().value() < 0.1 )) )
 
           do_vertex = true;
 
@@ -2777,7 +2777,7 @@ void EventDisplay::draw_sultan_xz(){
 
 
     }
-  
+
   return;
 
 }
@@ -3067,7 +3067,7 @@ void EventDisplay::draw_cats_yz(std::string mode, std::vector<CAT::topology::seq
         bool do_vertex = false;
 
         if( s.has_helix_vertex() &&
-            ! (fabs(s.helix_vertex().x().value()) < 0.1 && fabs(s.helix_vertex().z().value() < 0.1 )) )
+            ! (std::abs(s.helix_vertex().x().value()) < 0.1 && std::abs(s.helix_vertex().z().value() < 0.1 )) )
 
           do_vertex = true;
 
@@ -3188,8 +3188,8 @@ void EventDisplay::print_cells(void){
 double EventDisplay::get_z_ndc(double z){
 
   double factor = 0.1;
-  double zmin = Zmin - factor*fabs(Zmin);
-  double zmax = Zmax + factor*fabs(Zmin);
+  double zmin = Zmin - factor*std::abs(Zmin);
+  double zmax = Zmax + factor*std::abs(Zmin);
 
   return (z - zmin)/(zmax - zmin);
 
@@ -3199,8 +3199,8 @@ double EventDisplay::get_z_ndc(double z){
 double EventDisplay::get_y_ndc(double y){
 
   double factor = 0.1;
-  double ymin = Ymin - factor*fabs(Ymin);
-  double ymax = Ymax + factor*fabs(Ymin);
+  double ymin = Ymin - factor*std::abs(Ymin);
+  double ymax = Ymax + factor*std::abs(Ymin);
 
   return (y - ymin)/(ymax - ymin);
 
@@ -3210,8 +3210,8 @@ double EventDisplay::get_y_ndc(double y){
 double EventDisplay::get_x_ndc(double x){
 
   double factor = 0.1;
-  double xmin = Xmin - factor*fabs(Xmin);
-  double xmax = Xmax + factor*fabs(Xmin);
+  double xmin = Xmin - factor*std::abs(Xmin);
+  double xmax = Xmax + factor*std::abs(Xmin);
 
   return (x - xmin)/(xmax - xmin);
 

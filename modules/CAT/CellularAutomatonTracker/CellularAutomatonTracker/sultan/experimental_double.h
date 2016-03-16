@@ -18,7 +18,7 @@ namespace SULTAN {
       double v_; /// Value
       double e_; /// Error
 
-    public:   
+    public:
 
       bool is_valid () const;
 
@@ -26,7 +26,7 @@ namespace SULTAN {
 
       bool is_error_valid () const;
 
-      //!Default constructor     
+      //!Default constructor
       experimental_double();
 
       //!Default destructor
@@ -60,26 +60,26 @@ namespace SULTAN {
       const double& error() const;
 
       // Operators
-      //! operador += 
+      //! operador +=
       experimental_double& operator += (const experimental_double& p2);
 
-      //! operador -= 
+      //! operador -=
       experimental_double& operator -= (const experimental_double& p2);
 
-      //! operador *= 
+      //! operador *=
       experimental_double& operator *= (experimental_double a);
 
-      //! operador *= 
+      //! operador *=
       experimental_double& operator *= (double a);
 
-      //! operador /= 
+      //! operador /=
       experimental_double& operator /= (experimental_double a);
 
-      //! operador /= 
+      //! operador /=
       experimental_double& operator /= (double a);
 
       bool is_less_than__optimist(const experimental_double a, double nsigma)const;
-    
+
       bool is_more_than__optimist(const experimental_double a, double nsigma)const;
 
       bool is_equal_to__optimist(const experimental_double a, double nsigma)const;
@@ -91,46 +91,46 @@ namespace SULTAN {
       bool experimental_isinf()const;
 
     };
- 
+
 
     // Operations with experimental_points
     // -v
-    // sin(v) 
+    // sin(v)
     experimental_double experimental_sin (const experimental_double& v1);
- 
-    // cos(v) 
+
+    // cos(v)
     experimental_double experimental_cos (const experimental_double& v1);
-  
-    // tan(v) 
+
+    // tan(v)
     experimental_double experimental_tan (const experimental_double& v1);
-  
-    // asin(v) 
+
+    // asin(v)
     experimental_double experimental_asin (const experimental_double& v1);
-  
-    // acos(v) 
+
+    // acos(v)
     experimental_double experimental_acos (const experimental_double& v1);
-  
-    // atan(v) 
+
+    // atan(v)
     experimental_double experimental_atan2 (const experimental_double& v1, const experimental_double& v2);
-  
-    // square(v) 
+
+    // square(v)
     experimental_double experimental_square (const experimental_double& v1);
-  
-    // sqrt(v) 
+
+    // sqrt(v)
     experimental_double experimental_sqrt (const experimental_double& v1);
-  
-    // cube(v) 
+
+    // cube(v)
     experimental_double experimental_cube (const experimental_double& v1);
-  
-    // fabs(v) 
+
+    // std::abs(v)
     experimental_double experimental_fabs (const experimental_double& v1);
-  
-    // min(v1, v2) 
+
+    // min(v1, v2)
     experimental_double experimental_min (const experimental_double& v1, const experimental_double& v2);
-  
-    // min(v1, v2) 
+
+    // min(v1, v2)
     experimental_double experimental_max (const experimental_double& v1, const experimental_double& v2);
-  
+
     experimental_double operator - (const experimental_double& v1);
 
     // v1+v2

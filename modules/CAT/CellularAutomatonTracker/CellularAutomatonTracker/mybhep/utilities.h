@@ -301,7 +301,7 @@ namespace mybhep{
 
 
   inline void fix_angles(double *a1, double *a2){
-    if( fabs(*a1 - *a2) > acos(-1.) )
+    if( std::abs(*a1 - *a2) > acos(-1.) )
       {
 	if( *a1 < *a2 )
 	  *a1 = *a1 + 2.*acos(-1.);
@@ -324,9 +324,3 @@ namespace mybhep{
 
 }
 #endif
-
-
-
-
-
-
