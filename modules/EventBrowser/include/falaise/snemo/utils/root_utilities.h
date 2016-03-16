@@ -79,6 +79,7 @@ namespace snemo {
           void SetY(const double y_) { _y_ = y_; }
           void SetZ(const double z_) { _z_ = z_; }
 
+          using TText::SetText;
           void SetText(const std::string & text_);
           std::string GetText() const { return _text_; }
 
