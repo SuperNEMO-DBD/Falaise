@@ -136,6 +136,21 @@ namespace snemo {
           }
         }
       }
+
+      // Search for gamma from e+/e- annihilation
+      if (bgb_setup.has_key("add_gamma_from_annihilation")) {
+        _add_gamma_from_annihilation_ = bgb_setup.fetch_boolean("add_gamma_from_annihilation");
+      }
+
+      if (_add_gamma_from_annihilation_) {
+        if (bgb_setup.has_key("add_gamma_from_annihilation.minimal_probability")) {
+          _add_gamma_from_annihilation_minimal_probability_
+            = bgb_setup.fetch_real("add_gamma_from_annihilation.minimal_probability");
+          if (! bgb_setup.has_explicit_unit("add_gamma_from_annihilation.minimal_probability")) {
+            _add_gamma_from_annihilation_minimal_probability_ *= CLHEP::perCent;
+          }
+        }
+      }
       return;
     }
 
@@ -180,6 +195,8 @@ namespace snemo {
       _locator_plugin_ = 0;
       _add_foil_vertex_extrapolation_ = true;
       _add_foil_vertex_minimal_probability_ = 1.0 * CLHEP::perCent;
+      _add_gamma_from_annihilation_ = false;
+      _add_gamma_from_annihilation_minimal_probability_ = 1.0 * CLHEP::perCent;
       _select_calorimeter_hits_ = false;
       _select_calorimeter_hits_tags_.clear();
       return;
@@ -235,6 +252,12 @@ namespace snemo {
       if (_add_foil_vertex_extrapolation_) {
         out_ << indent << datatools::i_tree_dumpable::skip_tag << datatools::i_tree_dumpable::last_tag
              << "Minimal TOF probability : " << _add_foil_vertex_minimal_probability_/CLHEP::perCent << "%" << std::endl;
+      }
+      out_ << indent << datatools::i_tree_dumpable::tag
+           << "Search for gamma from e+/e- annihilation : " << _add_gamma_from_annihilation_ << std::endl;
+      if (_add_gamma_from_annihilation_) {
+        out_ << indent << datatools::i_tree_dumpable::skip_tag << datatools::i_tree_dumpable::last_tag
+             << "Minimal TOF probability : " << _add_gamma_from_annihilation_minimal_probability_/CLHEP::perCent << "%" << std::endl;
       }
       out_ << indent << datatools::i_tree_dumpable::tag
            << "Selection of calorimeter hits : " << _select_calorimeter_hits_ << std::endl;
@@ -325,6 +348,14 @@ namespace snemo {
         = ptd_.grab_non_associated_calorimeters();
       calos.assign(_ignored_hits_.begin(), _ignored_hits_.end());
 
+      // Given charged particle then process gammas
+      snemo::datamodel::particle_track_data::particle_collection_type gamma_particles;
+      ptd_.fetch_particles(gamma_particles, snemo::datamodel::particle_track::NEUTRAL);
+      if (gamma_particles.empty()) {
+        DT_LOG_DEBUG(get_logging_priority(), "No gamma particles have been found !");
+        return 0;
+      }
+
       snemo::datamodel::particle_track_data::particle_collection_type charged_particles;
       ptd_.fetch_particles(charged_particles,
                            snemo::datamodel::particle_track::NEGATIVE |
@@ -335,43 +366,16 @@ namespace snemo {
         return 0;
       }
 
-      // Perform extrapolation to the source foil given charged particles
-      if (! _add_foil_vertex_extrapolation_) return 0;
-
       for (snemo::datamodel::particle_track_data::particle_collection_type::const_iterator
-             iparticle = charged_particles.begin();
-           iparticle != charged_particles.end();
+             iparticle = charged_particles.begin(); iparticle != charged_particles.end();
            ++iparticle) {
         const snemo::datamodel::particle_track & a_particle = iparticle->get();
 
+        // No calorimeter associated, no TOF computation
         if (! a_particle.has_associated_calorimeter_hits()) continue;
-        const snemo::datamodel::calibrated_calorimeter_hit::collection_type &
-          the_calorimeters = a_particle.get_associated_calorimeter_hits();
-        // Only take care of the first associated calorimeter
-        const snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit = the_calorimeters.front().get();
-        const double particle_time         = a_calo_hit.get_time();
-        const double particle_sigma_time   = a_calo_hit.get_sigma_time();
-        const double particle_energy       = a_calo_hit.get_energy();
-        const double particle_sigma_energy = a_calo_hit.get_sigma_energy();
 
-        // Get track length
-        const snemo::datamodel::base_trajectory_pattern & a_track_pattern
-          = a_particle.get_trajectory().get_pattern();
-        const geomtools::i_shape_1d & a_shape = a_track_pattern.get_shape();
-        const double particle_track_length = a_shape.get_length();
-        DT_LOG_DEBUG(get_logging_priority(), "Track length = " << particle_track_length / CLHEP::mm << " mm");
-
-        snemo::datamodel::particle_track::vertex_collection_type the_vertices;
-        a_particle.fetch_vertices(the_vertices, snemo::datamodel::particle_track::VERTEX_ON_SOURCE_FOIL);
-        if (the_vertices.empty()) continue;
-        const geomtools::vector_3d & a_foil_vertex = the_vertices.front().get().get_position();
-
-        // Given charged particle then process gammas
-        snemo::datamodel::particle_track_data::particle_collection_type gamma_particles;
-        ptd_.fetch_particles(gamma_particles, snemo::datamodel::particle_track::NEUTRAL);
         for (snemo::datamodel::particle_track_data::particle_collection_type::iterator
-               igamma = gamma_particles.begin();
-             igamma != gamma_particles.end();
+               igamma = gamma_particles.begin(); igamma != gamma_particles.end();
              ++igamma) {
           snemo::datamodel::particle_track & a_gamma = igamma->grab();
 
@@ -412,38 +416,116 @@ namespace snemo {
             // const double gamma_energy       = a_calo_hit_2.get_energy();
             // const double gamma_sigma_energy = a_calo_hit_2.get_sigma_energy();
 
-            // Compute theoritical time for the gamma in case it comes from the foil vertex
-            const double gamma_track_length = (a_foil_vertex - a_spot.get_position()).mag();
-            const double gamma_time_th = gamma_track_length / CLHEP::c_light;
+            // Perform extrapolation to the source foil given charged particles
+            // and favor it wrt the search of gamma from e+/e- annihilation
+            if (_add_foil_vertex_extrapolation_) {
+              // Get track length
+              const snemo::datamodel::base_trajectory_pattern & a_track_pattern
+                = a_particle.get_trajectory().get_pattern();
+              const geomtools::i_shape_1d & a_shape = a_track_pattern.get_shape();
+              const double particle_track_length = a_shape.get_length();
+              DT_LOG_DEBUG(get_logging_priority(), "Track length = " << particle_track_length / CLHEP::mm << " mm");
 
-            // Assume particle are electron/positron
-            const double particle_mass = CLHEP::electron_mass_c2;
-            const double beta = std::sqrt(particle_energy*(particle_energy + 2.*particle_mass))
-              / (particle_energy+particle_mass);
-            const double particle_time_th = particle_track_length / CLHEP::c_light / beta;
-            const double sigma_particle_time_th = particle_time_th * std::pow(particle_mass, 2)
-              /(particle_energy*(particle_energy+particle_mass)*(particle_energy+2*particle_mass))*particle_sigma_energy;
+              snemo::datamodel::particle_track::vertex_collection_type vertices;
+              a_particle.fetch_vertices(vertices, snemo::datamodel::particle_track::VERTEX_ON_SOURCE_FOIL);
+              if (vertices.empty()) continue;
+              const geomtools::vector_3d & a_foil_vertex = vertices.front().get().get_position();
 
-            const double dt_int = particle_time - gamma_time - (particle_time_th - gamma_time_th);
-            const double sigma = std::pow(particle_sigma_time, 2)
-              + std::pow(gamma_sigma_time, 2) + std::pow(sigma_particle_time_th, 2);
-            const double chi2_int = std::pow(dt_int, 2)/sigma;
-            const double int_prob = gsl_cdf_chisq_Q(chi2_int, 1)*100.*CLHEP::perCent;
-            const double int_prob_limit = _add_foil_vertex_minimal_probability_;
-            if (int_prob > int_prob_limit) {
-              DT_LOG_DEBUG(get_logging_priority(),
-                           "Adding foil vertex (with internal probability = " << int_prob << ")");
+              // Compute theoritical time for the gamma in case it comes from the foil vertex
+              const double gamma_track_length = (a_foil_vertex - a_spot.get_position()).mag();
+              const double gamma_time_th = gamma_track_length / CLHEP::c_light;
 
-              snemo::datamodel::particle_track::handle_spot hBSv(new geomtools::blur_spot);
-              // a_gamma.grab_vertices().push_back(hBSv);
-              a_gamma.grab_vertices().insert(a_gamma.grab_vertices().begin(),hBSv);
-              geomtools::blur_spot & spot_v = hBSv.grab();
-              spot_v.set_hit_id(0);
-              spot_v.grab_auxiliaries().store(snemo::datamodel::particle_track::vertex_type_key(),
-                                              snemo::datamodel::particle_track::vertex_on_source_foil_label());
-              spot_v.set_blur_dimension(geomtools::blur_spot::dimension_three);
-              spot_v.set_position(a_foil_vertex);
-              break;
+              // Assume particle are electron/positron
+              const snemo::datamodel::calibrated_calorimeter_hit::collection_type &
+                the_calorimeters = a_particle.get_associated_calorimeter_hits();
+              // Only take care of the first associated calorimeter
+              const snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit = the_calorimeters.front().get();
+              const double particle_time         = a_calo_hit.get_time();
+              const double particle_sigma_time   = a_calo_hit.get_sigma_time();
+              const double particle_energy       = a_calo_hit.get_energy();
+              const double particle_sigma_energy = a_calo_hit.get_sigma_energy();
+              const double particle_mass = CLHEP::electron_mass_c2;
+              const double beta = std::sqrt(particle_energy*(particle_energy + 2.*particle_mass))
+                / (particle_energy+particle_mass);
+              const double particle_time_th = particle_track_length / CLHEP::c_light / beta;
+              const double sigma_particle_time_th = particle_time_th * std::pow(particle_mass, 2)
+                /(particle_energy*(particle_energy+particle_mass)*(particle_energy+2*particle_mass))*particle_sigma_energy;
+
+              const double dt_int = particle_time - gamma_time - (particle_time_th - gamma_time_th);
+              const double sigma = std::pow(particle_sigma_time, 2)
+                + std::pow(gamma_sigma_time, 2) + std::pow(sigma_particle_time_th, 2);
+              const double chi2_int = std::pow(dt_int, 2)/sigma;
+              const double int_prob = gsl_cdf_chisq_Q(chi2_int, 1)*100.*CLHEP::perCent;
+              const double int_prob_limit = _add_foil_vertex_minimal_probability_;
+              if (int_prob > int_prob_limit) {
+                DT_LOG_DEBUG(get_logging_priority(),
+                             "Adding foil vertex (with internal probability = " << int_prob << ")");
+
+                snemo::datamodel::particle_track::handle_spot hBSv(new geomtools::blur_spot);
+                // a_gamma.grab_vertices().push_back(hBSv);
+                a_gamma.grab_vertices().insert(a_gamma.grab_vertices().begin(), hBSv);
+                geomtools::blur_spot & spot_v = hBSv.grab();
+                spot_v.set_hit_id(0);
+                spot_v.grab_auxiliaries().store(snemo::datamodel::particle_track::vertex_type_key(),
+                                                snemo::datamodel::particle_track::vertex_on_source_foil_label());
+                spot_v.set_blur_dimension(geomtools::blur_spot::dimension_three);
+                spot_v.set_position(a_foil_vertex);
+                break;
+              }
+            }
+            // Perform the search for gamma from e+/e- annihilation
+            if (_add_gamma_from_annihilation_) {
+              // Get calorimeter hit position associated to charged particle
+              const snemo::datamodel::calibrated_calorimeter_hit::collection_type &
+                the_calorimeters = a_particle.get_associated_calorimeter_hits();
+              // Only take care of the first associated calorimeter
+              const snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit = the_calorimeters.front().get();
+              const double particle_time       = a_calo_hit.get_time();
+              const double particle_sigma_time = a_calo_hit.get_sigma_time();
+              // Get block position and label
+              geomtools::vector_3d a_block_position;
+              std::string a_label;
+              const geomtools::geom_id & a_gid = a_calo_hit.get_geom_id();
+              if (get_calo_locator().is_calo_block_in_current_module(a_gid)) {
+                get_calo_locator().get_block_position(a_gid, a_block_position);
+                a_label = snemo::datamodel::particle_track::vertex_on_main_calorimeter_label();
+              } else if (get_xcalo_locator().is_calo_block_in_current_module(a_gid)) {
+                get_xcalo_locator().get_block_position(a_gid, a_block_position);
+                a_label = snemo::datamodel::particle_track::vertex_on_x_calorimeter_label();
+              } else if (get_gveto_locator().is_calo_block_in_current_module(a_gid)) {
+                get_gveto_locator().get_block_position(a_gid, a_block_position);
+                a_label = snemo::datamodel::particle_track::vertex_on_gamma_veto_label();
+              } else {
+                DT_THROW_IF(true, std::logic_error,
+                            "Current geom id '" << a_gid << "' does not match any scintillator block !");
+              }
+
+              const double track_length = (a_block_position - a_spot.get_position()).mag();
+              const double dt_exp = std::abs(particle_time - gamma_time);
+              const double dt_th = track_length / CLHEP::c_light;
+              const double dt_int = dt_exp - dt_th;
+              const double sigma = std::pow(particle_sigma_time, 2) + std::pow(gamma_sigma_time, 2);
+              const double chi2_int = std::pow(dt_int, 2)/sigma;
+              const double int_prob = gsl_cdf_chisq_Q(chi2_int, 1)*100.*CLHEP::perCent;
+              const double int_prob_limit = _add_gamma_from_annihilation_minimal_probability_;
+              if (int_prob > int_prob_limit) {
+                DT_LOG_DEBUG(get_logging_priority(),
+                             "Found gamma from annihilation (with internal probability = " << int_prob << ")");
+                // Do not add the calorimeter hit from the charged particle to
+                // the list of calorimeter hits of the gamma particle
+                // snemo::datamodel::calibrated_calorimeter_hit::collection_type & hits = a_gamma.grab_associated_calorimeter_hits();
+                // hits.insert(hits.begin(), the_calorimeters.front());
+                snemo::datamodel::particle_track::handle_spot hBSv(new geomtools::blur_spot);
+                a_gamma.grab_vertices().insert(a_gamma.grab_vertices().begin(), hBSv);
+                geomtools::blur_spot & spot_v = hBSv.grab();
+                spot_v.set_hit_id(a_calo_hit.get_hit_id());
+                spot_v.set_geom_id(a_calo_hit.get_geom_id());
+                spot_v.grab_auxiliaries().store(snemo::datamodel::particle_track::vertex_type_key(), a_label);
+                spot_v.set_blur_dimension(geomtools::blur_spot::dimension_three);
+                spot_v.set_position(a_block_position);
+                a_gamma.grab_auxiliaries().update_flag("__gamma_from_annihilation");
+                break;
+              }
             }
           }
         }
@@ -501,7 +583,7 @@ namespace snemo {
       }
 
       {
-        // Description of the 'BGB.add_foil_vertex_minimal_probability' configuration property :
+        // Description of the 'BGB.add_foil_vertex.minimal_probability' configuration property :
         datatools::configuration_property_description & cpd = ocd_.add_property_info();
         cpd.set_name_pattern("BGB.add_foil_vertex_extrapolation.minimal_probability")
           .set_terse_description("Set the minimal internal TOF probability")
@@ -514,6 +596,46 @@ namespace snemo {
                        "                                                                  \n"
                        "  BGB.add_foil_vertex_extrapolation.minimal_probability : real as fraction = 1% \n"
                        "                                                                  \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'BGB.add_gamma_from_annihilation' configuration property :
+        datatools::configuration_property_description & cpd = ocd_.add_property_info();
+        cpd.set_name_pattern("BGB.add_gamma_from_annihilation")
+          .set_terse_description("Allow the search and the tagging of gamma from e+/e- annihilation")
+          .set_long_description("Given the presence of charged particles, a Time-Of-Flight computation       \n"
+                                "is done to check if gamma comes from an e+/e- annihilation.                 \n"
+                                "The TOF calculation is performed on calorimeter hit of the charged particle \n"
+                                "and the first calorimeter hits associated to gamma.                         \n"
+                                )
+          .set_from("snemo::processing::base_gamma_builder")
+          .set_traits(datatools::TYPE_BOOLEAN)
+          .set_default_value_boolean(true)
+          .set_mandatory(false)
+          .add_example("Set the default value::                            \n"
+                       "                                                   \n"
+                       "  BGB.add_gamma_from_annihilation : boolean = true \n"
+                       "                                                   \n"
+                       )
+          ;
+      }
+
+      {
+        // Description of the 'BGB.add_gamma_from_annihilation.minimal_probability' configuration property :
+        datatools::configuration_property_description & cpd = ocd_.add_property_info();
+        cpd.set_name_pattern("BGB.add_gamma_from_annihilation.minimal_probability")
+          .set_terse_description("Set the minimal TOF probability for gamma from e+/e- annihilation")
+          .set_from("snemo::processing::base_gamma_builder")
+          .set_triggered_by_flag("BGB.add_gamma_from_annihilation")
+          .set_traits(datatools::TYPE_REAL)
+          .set_default_value_real(1 * CLHEP::perCent, "%")
+          .set_mandatory(false)
+          .add_example("Set the default value::                                                       \n"
+                       "                                                                              \n"
+                       "  BGB.add_gamma_from_annihilation.minimal_probability : real as fraction = 1% \n"
+                       "                                                                              \n"
                        )
           ;
       }

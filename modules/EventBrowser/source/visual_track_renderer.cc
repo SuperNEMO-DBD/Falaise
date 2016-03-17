@@ -307,7 +307,11 @@ namespace snemo {
               TPolyLine3D * track = base_renderer::make_polyline(vtces);
               _objects->Add(track);
               track->SetLineColor(color);
-              track->SetLineStyle(kDashed);
+              if (a_particle.get_auxiliaries().has_flag("__gamma_from_annihilation")) {
+                track->SetLineStyle(kDashDotted);
+              } else {
+                track->SetLineStyle(kDashed);
+              }
               // track->SetLineWidth(line_width);
             }
 

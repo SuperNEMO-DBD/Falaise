@@ -172,7 +172,10 @@ namespace snemo {
       hit_collection_type _ignored_hits_; //!< Hits that are not used as input for any gamma algorithm
 
       bool _add_foil_vertex_extrapolation_;         //!< Flag to enable foil vertex extrapolation
-      double _add_foil_vertex_minimal_probability_; //!< Minimal TOF internal probability to accept foilvertex extrapolation
+      double _add_foil_vertex_minimal_probability_; //!< Minimal TOF internal probability to accept foil vertex extrapolation
+
+      bool _add_gamma_from_annihilation_;                       //!< Flag to enable tagging of gamma from e+/e- annihilation
+      double _add_gamma_from_annihilation_minimal_probability_; //!< Minimal TOF probability to tag gamma from annihilation
 
       bool _select_calorimeter_hits_; //!< Flag to select calorimeter hits based on auxiliaries tags
       std::vector<std::string> _select_calorimeter_hits_tags_; //!< List of auxiliaries tags to select calorimeter hits
