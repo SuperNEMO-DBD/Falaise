@@ -134,6 +134,16 @@ else()
   set(_event_browser_root_dict ${CMAKE_CURRENT_BINARY_DIR}/event_browser_dict.cxx)
 endif()
 
+# ROOT dictionaries will refine accessor keywords for reflection purposes
+# This is expected, but Clang will warn on ROOT5, so disable it.
+# Done as a compile flag because we cant edit the code directly.
+if(CMAKE_CXX_COMPILER_ID MATCHES "(Apple)+Clang")
+  set_property(SOURCE ${_event_browser_root_dict}
+    PROPERTY COMPILE_FLAGS "-Wno-keyword-macro"
+    )
+endif()
+
+
 #-----------------------------------------------------------------------
 # SOURCE FILES
 # Pretty basic!
