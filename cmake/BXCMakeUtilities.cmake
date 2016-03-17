@@ -103,7 +103,7 @@ endmacro()
     enum_option(CXX_STANDARD
                 VALUES    "c++11" "c++14" "c++17"
                 TYPE      STRING
-                DOCSTRING "Choose the C++ Standard"
+                DOC       "Choose the C++ Standard"
                 DEFAULT   "c++14"
                 )
 
@@ -116,7 +116,7 @@ endmacro()
     enum_option(CXX_STANDARD
                 VALUES    "c++11" "c++14" "c++17"
                 TYPE      STRING
-                DOCSTRING "Choose the C++ Standard"
+                DOC       "Choose the C++ Standard"
                 DEFAULT   "c++14"
                 CASE_INSENSITIVE
                 )

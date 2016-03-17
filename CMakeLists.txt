@@ -136,7 +136,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 enum_option(FALAISE_CXX_STANDARD
   VALUES "98" "11" "14"
   TYPE   STRING
-  DOCSTRING "Choose C++ Standard to compile against"
+  DOC    "Choose C++ Standard to compile against"
   )
 
 # - Default is 98, add an arbitrary feature here so that appropriate
