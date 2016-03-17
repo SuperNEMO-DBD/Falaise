@@ -2552,14 +2552,14 @@ namespace CAT {
 
 
       // connection must be between neighboring layers
-      if( std::abs(layer_distance) > 1 + NOffLayers){
+      if( static_cast<size_t>(std::abs(layer_distance)) > 1 + NOffLayers){
         if( print_level() >= mybhep::VVERBOSE )
           std::clog << " ... forbidden, because layers are far away by " << layer_distance << " planes " << std::endl;
         return false;
       }
 
       // connection in the same block must be between neighbouring cell numbers
-    if( block_distance == 0 && std::abs(cell_number_distance) > 1 + NOffLayers){
+    if( block_distance == 0 && static_cast<size_t>(std::abs(cell_number_distance)) > 1 + NOffLayers){
         if( print_level() >= mybhep::VVERBOSE )
           std::clog << " ... forbidden, because block is the same and cell numbers are far away by " << cell_number_distance << " cells " << std::endl;
         return false;
@@ -2951,7 +2951,7 @@ namespace CAT {
 
 
       // connection must be between neighboring layers
-      if( std::abs(layer_distance) > 1 + NOffLayers){
+      if( static_cast<size_t>(std::abs(layer_distance)) > 1 + NOffLayers){
         if( print_level() >= mybhep::VVERBOSE )
           std::clog << " ... forbidden, because layers are far away by " << layer_distance << " planes " << std::endl;
         return false;
@@ -2959,7 +2959,7 @@ namespace CAT {
 
 
       // connection in the same block must be between neighbouring cell numbers
-      if( !acrossGAP && std::abs(cell_number_distance) > 1 + NOffLayers){
+      if( !acrossGAP && static_cast<size_t>(std::abs(cell_number_distance)) > 1 + NOffLayers){
         if( print_level() >= mybhep::VVERBOSE )
           std::clog << " ... forbidden, because block is the same and cell numbers are far away by " << cell_number_distance << " cells " << std::endl;
         return false;
