@@ -51,7 +51,7 @@ variable.mode       : string = "interval"
 real.domain         : string = "[0.1 gauss, 100 gauss]"
 
 #@description The default value
-real.default        : real as length = 25 gauss
+real.default        : real as magnetic_flux_density = 25 gauss
 
 
 #####################################################
