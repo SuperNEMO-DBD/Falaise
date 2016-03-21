@@ -37,13 +37,28 @@ To install the Falaise stack, you first need the following:
       * GCC 4.7 or higher, Clang 3.3 or higher
       * This is purely for the best forward compatibility, it is not a requirement.
     * On OS X systems, you should install Xcode from the App Store, and ensure the Command Line Tools are installed
-  * BZip2 Library and Headers
-  * zlib Library and Headers
-  * readline Library and Headers
 
 We recommend that the Required Software are installed via the relevant
 package manager (e.g. yum, apt on Linux, Homebrew or MacPorts on Mac OS X)
 for your system, unless the version requirement listed is not met.
+
+In addition to the build tools listed above, Falaise uses several third party
+libraries to implement its functionality,
+specifically
+
+- [Bayeux C++ Libraries]() 2.1.0 and higher.
+- [Boost C++ Libraries](http://www.boost.org) 1.55.0 and higher
+- [CAMP C++ Reflection Library](https://github.com/tegesoft/camp) 0.7.1 and higher
+- [CLHEP C++ HEP Library](http://proj-clhep.web.cern.ch/proj-clhep/) 2.1.3.1 and higher
+- [GNU Scientific Library](http://www.gnu.org/software/gsl/) 1.15 and higher
+- [ROOT C++ HEP Toolkit](http://root.cern.ch) 5.34.30 and higher
+- [Geant4 C++ Toolkit for Detector Simulations](http://geant4.cern.ch) 9.6.4 and higher
+
+You can reuse existing installations of these libraries to build Falaise provided
+they meet the listed version requirements. For the easiest and most robust
+installation, we recommend using the [Linuxbrew](https://github.com/Linuxbrew/linuxbrew)
+based `Cadfael` package manager, which can be installed following the guide
+on its [dedicated project page](https://github.com/SuperNEMO-DBD/cadfaelbrew).
 
 We expect the Falaise stack to compile and run on most modern BSD or Linux
 based systems provided the listed Required Software is installed. Note
@@ -141,19 +156,13 @@ Checked out revision 13809.
 The revision number you see will vary depending on the current state of development.
 If you now list the contents of the `lpc-caen.svn` directory
 it will be empty apart from a `.svn` directory. We now checkout the parts
-we need, specifically the `Cadfael` Software Development Kit (SDK) and
-the `Falaise` project.
+we need, specifically the `Falaise` project.
 
 ~~~~~
 $ pwd
 /Users/ben/SuperNEMO
 $ cd lpc-caen.svn
-$ svn up --set-depth immediates Cadfael Falaise
-A    Cadfael
-A    Cadfael/trunk
-A    Cadfael/branches
-A    Cadfael/tags
-Updated to revision 13851.
+$ svn up --set-depth immediates Falaise
 A    Falaise
 A    Falaise/trunk
 A    Falaise/branches
@@ -170,16 +179,9 @@ An `ls` of the above directories will show that, again, they are empty.
 However, if you use Subversion's list command, e.g.
 
 ~~~~~
-$ svn ls Cadfael/trunk
+$ svn ls Falaise/trunk
 CMakeLists.txt
-CadfaelVersion.txt
-License.txt
-NEWS.rst
-README.rst
-cmake/
-docs/
-ports/
-testing/
+...
 ~~~~~
 
 you will get a listing of the contents in the upstream repository.
@@ -191,15 +193,15 @@ current tags of Falaise by doing
 ~~~~~
 $ svn ls Falaise/tags
 Falaise-1.0.0
-Falaise-1.0.0-alpha1
-Falaise-1.0.0-alpha2
+Falaise-2.0.0
+Falaise-2.1.0
 ~~~~~
 
 Tags are always named using the standard `MAJOR.MINOR.PATCH` convention
 with an optional additional `-STATUSN` flag to indicate development lines.
 
-Checking out Cadfael and Falaise {#flinstallguide_installation_checkout}
---------------------------------
+Checking out Falaise {#flinstallguide_installation_checkout}
+--------------------
 With the workspace in place, we can checkout the required development
 lines of Cadfael and Falaise. The version of Falaise to which this
 documentation refers is @Falaise_VERSION@, and this requires Cadfael
@@ -220,113 +222,6 @@ The basic source code working copy is now in place. For more details on
 using Subversion, we recommend the [Subversion Red Bean Guide](http://svnbook.red-bean.com/).
 
 
-Installing the Cadfael SDK {#flinstallguide_cadfael}
-==========================
-Falaise uses several third party libraries to implement its functionality,
-specifically
-
-- [Boost C++ Libraries](http://www.boost.org) 1.48.0 and higher
-- [CAMP C++ Reflection Library](https://github.com/tegesoft/camp) 0.7.1 and higher
-- [CLHEP C++ HEP Library](http://proj-clhep.web.cern.ch/proj-clhep/) 2.1.3.1 and higher
-- [GNU Scientific Library](http://www.gnu.org/software/gsl/) 1.15 and higher
-- [ROOT C++ HEP Toolkit](http://root.cern.ch) 5.34.18 and higher
-- [Geant4 C++ Toolkit for Detector Simulations](http://geant4.cern.ch) 9.6.1 and higher
-
-You can reuse existing installations of these libraries to build Falaise,
-but for the easiest and most robust installation, we recommend using the
-`Cadfael` Software Development Kit. This bundles the configuration, build
-and installation of these libraries into a single easy to use toolchain.
-If you have an existing install of Cadfael that meets the version
-requirements above, you do not need to reinstall it. Otherwise, you
-should follow the following guide.
-
-Bootstrapping Cadfael {#flinstallguide_cadfael_bootstrap}
----------------------
-Cadfael uses the [CMake](http://www.cmake.org) tool for driving the
-configure, build and install of the above libraries. For convenience,
-a simple bootstrapping script, `cadfael-bootstrap` is provided to automate
-this process. If you require more control over the configuration, you
-should consult the `README.rst` file in the `Cadfael/tags/Cadfael-@Cadfael_VERSION@` directory.
-
-All SuperNEMO software requires builds and installs to be in separate
-directories from source code. This is enforced because builds can generate
-many local files which could by accident get committed back to the central
-repository. It also allows you quicker switch between builds, or to cleanly
-delete a build if anything goes wrong without risk of deleting any sources.
-
-To bootstrap an install of Cadfael, go into your workspace and run the
-bootstrapping script as follows:
-
-~~~~~
-$ cd /Users/ben/SuperNEMO
-$ ./lpc-caen.svn/Cadfael/tags/Cadfael-@Cadfael_VERSION@/cadfael-bootstrap -DCMAKE_INSTALL_PREFIX=$(pwd)/installs/Cadfael \
--DCADFAEL_BUILD_PREFIX=$(pwd)/builds/Cadfael
-~~~~~
-
-This will create a build directory under the `builds` area and install
-Cadfael into a dedicated root under `installs`. Note that both
-`CMAKE_INSTALL_PREFIX` and `CADFAEL_BUILD_PREFIX` must be absolute paths,
-hence the use of the shell `$(pwd)`. Note that the bootstrapping script
- assumes you have a `cmake` executable in `/usr/bin`. If that is not the
-case, you can run the script using your install of cmake directly:
-
-~~~~~
-$ cd /Users/ben/SuperNEMO
-$ /path/to/your/cmake -P ./lpc-caen.svn/Cadfael/tags/Cadfael-@Cadfael_VERSION@/cadfael-bootstrap \
--DCMAKE_INSTALL_PREFIX=$(pwd)/installs/Cadfael \
--DCADFAEL_BUILD_PREFIX=$(pwd)/builds/Cadfael
-~~~~~
-
-Cadfael will maximally parallelize the builds for speed, but it may take
-up to an hour or two on older machines with fewer cores. It should
-generally complete in well under an hour on quad core and better systems.
-If bootstrapping completes successfully the `installs/Cadfael` directory
-will be populated with a POSIX style layout of the third party software
-required for SuperNEMO.
-
-~~~~~
-installs/Cadfael/
-|-- bin
-|-- etc
-|   |-- cmake
-|   |-- daemons
-|   |-- html
-|   |-- plugins
-|   |-- proof
-|   `-- vmc
-|-- include
-|   |-- CLHEP
-|   |-- Geant4
-|   |-- boost
-|   |-- camp
-|   |-- camp-xml
-|   |-- gsl
-|   |-- root
-|   `-- xercesc
-|-- lib
-|   |-- CLHEP-2.1.3.1
-|   |-- Geant4-9.6.1
-|   |-- cmake
-|   |-- pkgconfig
-|   `-- root
-`-- share
-    |-- Geant4-9.6.1
-    |-- aclocal
-    |-- camp
-    |-- doc
-    |-- emacs
-    |-- info
-    |-- man
-    `-- root
-~~~~~
-
-You do not require any environment setup to use the applications, though
-you may, at your preference, prepend the `installs/Cadfael/bin`
-path to your UNIX `PATH`. Once you have installed Cadfael successfully,
-you can safely remove the build directory created by the bootstrapping to
-save disk space. As Cadfael updates are expected to be relatively
-infrequent, this "one-shot" installation is generally the easiest way to
-manage the SDK.
 
 
 Building and Installing Falaise {#flinstallguide_buildinstall}
