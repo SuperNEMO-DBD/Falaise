@@ -48,13 +48,13 @@ int main( int  argc_ , char **argv_  )
   bool is_event_number = false;
   bool is_output_path  = false;
   bool is_run_number   = false;
+  bool is_display      = false;
   bool is_help         = false;
 
   std::string input_filename;
   std::string output_path;
   int arg_event_number  = -1;
   int arg_run_number    = -1;
-;
 
   while (iarg < argc_) {
     std::string arg = argv_[iarg];
@@ -76,6 +76,11 @@ int main( int  argc_ , char **argv_  )
 	arg_event_number    = atoi(argv_[++iarg]);
       }
 
+    else if (arg == "-d" || arg == "--display")
+      {
+	is_display = true;
+      }
+    
     else if (arg =="-h" || arg == "--help")
       {
 	is_help = true;
@@ -106,6 +111,9 @@ int main( int  argc_ , char **argv_  )
   try {
     // boolean for debugging (display etc)
     bool debug = false;
+
+    if (is_display) debug = true;
+
     std::clog << "Test program for class 'snemo::digitization::trigger_algorithm_efficiency_validation' !" << std::endl;
     int32_t seed = 314159;
     mygsl::rng random_generator;

@@ -70,27 +70,19 @@ namespace snemo {
 	  // Default VVOID pattern:
 	  mem3_type::data_type data = VVOID;
 
-	  if (address.test(szB_BIT_INNER) || address.test(szC_BIT_INNER)) data.set(data_BIT_INNER);
-	  if (address.test(szB_BIT_OUTER) || address.test(szC_BIT_OUTER)) data.set(data_BIT_OUTER);
-	  
-	  if (data != VFULL) 
-	    {
-	      if (address.test(szD_BIT_OUTER) && !data.test(data_BIT_OUTER)) data.set(data_BIT_OUTER);
-	      if (address.test(szD_BIT_INNER) && !data.test(data_BIT_INNER)) data.set(data_BIT_INNER);
+	  if (address.test(szB_BIT_INNER) || address.test(szC_BIT_INNER) || address.test(szD_BIT_INNER) || address.test(szA_BIT_INNER)) data.set(data_BIT_INNER);
+	  if (address.test(szB_BIT_OUTER) || address.test(szC_BIT_OUTER) || address.test(szD_BIT_OUTER) || address.test(szA_BIT_OUTER)) data.set(data_BIT_OUTER);
 
-	      if (address.test(szA_BIT_INNER) && !data.test(data_BIT_INNER)) data.set(data_BIT_INNER);
-	      if (address.test(szA_BIT_OUTER) && !data.test(data_BIT_OUTER)) data.set(data_BIT_OUTER);
+	  if (address.to_string() == "10000001") {
+	    data.set(data_BIT_INNER);
+	    data.set(data_BIT_OUTER, 0);
+	  }
 
-	      if (address.to_string() == "10000001") {
-		data.set(data_BIT_INNER);
-		data.set(data_BIT_OUTER, 0);
-	      }
-
-	      if (address.to_string() == "01000010") {
-		data.set(data_BIT_INNER);
-		data.set(data_BIT_OUTER, 0);
-	      }
-	    }
+	  if (address.to_string() == "01000010") {
+	    data.set(data_BIT_INNER);
+	    data.set(data_BIT_OUTER, 0);
+	  }
+	  // }
 	  mem3_.push(address, data);
 	}
 	if (debug) mem3_.memory_map_display();

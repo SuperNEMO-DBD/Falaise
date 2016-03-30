@@ -297,44 +297,20 @@ namespace snemo {
 	  // Default VVOID pattern:
 	  mem3_type::data_type data = NO_VTRACK;
 
-	  if (address.test(szB_BIT_INNER) || address.test(szC_BIT_INNER)) data.set(data_BIT_INNER);
-	  if (debug) std::clog << "DEBUG : 0 " << std::endl;
-	  if (address.test(szB_BIT_OUTER) || address.test(szC_BIT_OUTER)) data.set(data_BIT_OUTER);
-	  if (debug) std::clog << "DEBUG : 1 " << std::endl;
+	  if (address.test(szB_BIT_INNER) || address.test(szC_BIT_INNER) || address.test(szD_BIT_INNER) || address.test(szA_BIT_INNER)) data.set(data_BIT_INNER);
+	  if (address.test(szB_BIT_OUTER) || address.test(szC_BIT_OUTER) || address.test(szD_BIT_OUTER) || address.test(szA_BIT_OUTER)) data.set(data_BIT_OUTER);
 
-	  if (data != FULL_VTRACK) 
-	    {
-	      if (debug) std::clog << "DEBUG : 2" << std::endl;
-	      if (address.test(szD_BIT_OUTER) && !data.test(data_BIT_OUTER)) data.set(data_BIT_OUTER);
-	      if (address.test(szD_BIT_INNER) && !data.test(data_BIT_INNER)) data.set(data_BIT_INNER);
+	  if (address.to_string() == "10000001") {
+	    data.set(data_BIT_INNER);
+	    data.set(data_BIT_OUTER, 0);
+	  }
 
-	      if (address.test(szA_BIT_INNER) && !data.test(data_BIT_INNER)) data.set(data_BIT_INNER);
-	      if (address.test(szA_BIT_OUTER) && !data.test(data_BIT_OUTER)) data.set(data_BIT_OUTER);
-	      if (debug) std::clog << "DEBUG : 4 " << std::endl;
-	      if (address.to_string() == "10000001") {
-		data.set(data_BIT_INNER);
-		data.set(data_BIT_OUTER, 0);
-	      }
-	      if (debug) std::clog << "DEBUG : 5 " << std::endl;
-	      if (address.to_string() == "01000010") {
-
-		if (debug) std::clog << "DEBUG : 6 " << std::endl;
-		data.set(data_BIT_INNER);
-
-		if (debug) std::clog << "DEBUG : 7 " << std::endl;
-		data.set(data_BIT_OUTER, 0);
-
-		if (debug) std::clog << "DEBUG : 8 " << std::endl;
-	      }
-	    }
-	  
-	  if (debug) std::clog << "DEBUG : 9 " << std::endl;
-	  if (debug) std::clog << "DEBUG : address = " << address << " data = " << data <<  std::endl;
-
+	  if (address.to_string() == "01000010") {
+	    data.set(data_BIT_INNER);
+	    data.set(data_BIT_OUTER, 0);
+	  }
 	  _mem3_->push(address, data);
-	  if (debug) std::clog << "DEBUG : 10 " << std::endl;
-	}
-      
+        }   
       return;
     }
 

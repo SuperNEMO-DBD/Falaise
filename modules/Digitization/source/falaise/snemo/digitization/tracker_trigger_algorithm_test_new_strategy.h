@@ -51,10 +51,10 @@ namespace snemo {
 				void display();
 				uint32_t clocktick_1600ns;
 				std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
-				std::bitset<trigger_info::NZONES> zoning_word_pattern[trigger_info::NSIDES];
-				std::bitset<trigger_info::NZONES> zoning_word_near_source[trigger_info::NSIDES];
+				std::bitset<trigger_info::NZONES> zoning_word_pattern[trigger_info::NSIDES]; // not fill atm
+				std::bitset<trigger_info::NZONES> zoning_word_near_source[trigger_info::NSIDES]; // not fill atm
 				// ajout de choses (cf calo record -> symétrie)
-				bool single_side_coinc;
+				bool single_side_coinc; // not fill atm
 				bool finale_decision;
 			};
 

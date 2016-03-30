@@ -187,24 +187,20 @@ int main(int  argc_ , char ** argv_)
     std::ofstream file(output_file.c_str(), std::ios::out | std::ios::trunc);
     if(file) 
       {
-	file << "Trigger algorithm efficiency analysis : " << std::endl << std::endl;
-	file << "Entry file  : " << input_file << std::endl;
-	file << "Output path : " << output_path << std::endl << std::endl;
-	file << "Number of Entries in TTree            = " << n_entry << " in file trigger_validation.root" << std::endl; 
-	file << "Fake Trigger efficiency               = " << fake_trigger_efficiency << "%" << std::endl;
-     	file << "% of prompt triggered event to total  = " << percentage_of_prompt_triggered_event_to_total << "%" << std::endl;  
-	file << "% of prompt triggered event to FT     = " << percentage_of_prompt_triggered_event_to_FT << "%" <<  std::endl;
-	file << "% of delayed triggered event to total = " << percentage_of_delayed_triggered_event_to_total << "%" <<  std::endl;
-	file << "% of delayed triggered event to FT    = " << percentage_of_delayed_triggered_event_to_FT << "%" <<  std::endl;
-
-	file << "Number of prompt event triggered      = " << nbr_of_prompt_triggered_event << std::endl;
-	file << "Number of delayed event triggered     = " << nbr_of_delayed_triggered_event << std::endl;
-	file << "Mean number of calo                   = " << mean_number_of_calo << std::endl;
-	file << "Mean number of main calo              = " << mean_number_of_main_calo << std::endl;
-	file << "Mean number of gveto                  = " << mean_number_of_gveto << std::endl;
-	file << "Mean number of gg cells               = " << mean_number_of_gg_cells << std::endl;
-	file << "Mean number of prompt gg cells        = " << mean_number_of_prompt_gg_cells << std::endl;
-	file << "Mean number of delayed gg cells       = " << mean_number_of_delayed_gg_cells << std::endl;
+	file << "& Output path = " << output_path << std::endl;
+	file << "Number of Entries in TTree = " << n_entry << std::endl; 
+	file << "& Fake Trigger efficiency = " << fake_trigger_efficiency << std::endl;
+     	file << "& % of prompt triggered event to total = " << percentage_of_prompt_triggered_event_to_total  << std::endl;  
+	file << "& % of prompt triggered event to FT = " << percentage_of_prompt_triggered_event_to_FT <<  std::endl;
+	file << "& % of delayed triggered event to total = " << percentage_of_delayed_triggered_event_to_total << std::endl;
+	file << "Number of prompt event triggered = " << nbr_of_prompt_triggered_event << std::endl;
+	file << "Number of delayed event triggered = " << nbr_of_delayed_triggered_event << std::endl;
+	file << "& Mean number of calo = " << mean_number_of_calo << std::endl;
+	file << "& Mean number of main calo = " << mean_number_of_main_calo << std::endl;
+	file << "& Mean number of gveto = " << mean_number_of_gveto << std::endl;
+	file << "Mean number of gg cells = " << mean_number_of_gg_cells << std::endl;
+	file << "& Mean number of prompt gg cells = " << mean_number_of_prompt_gg_cells << std::endl;
+	file << "& Mean number of delayed gg cells = " << mean_number_of_delayed_gg_cells << std::endl;
 	file.close(); 
       }
     else

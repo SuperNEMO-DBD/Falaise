@@ -21,9 +21,9 @@ int main(void)
   m2b.build(mem2);
   mem2.store_to_file("config/mem2_pat.conf");
 
-  m2b.mode = snemo::trigger::mem2_builder::MODE_MULT;
-  m2b.build(mem2);
-  mem2.store_to_file("config/mem2_mult.conf");
+  // m2b.mode = snemo::trigger::mem2_builder::MODE_MULT;
+  // m2b.build(mem2);
+  // mem2.store_to_file("config/mem2_mult.conf");
 
   DT_LOG_NOTICE(datatools::logger::PRIO_ALWAYS, "Bye bye!");
   return 0;

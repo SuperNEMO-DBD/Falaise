@@ -445,7 +445,6 @@ namespace snemo {
 	for (int iszone = 0; iszone < trigger_info::NSLZONES; iszone ++) {
 	  build_sliding_zone(_sliding_zones_[iside][iszone], iside, iszone);
 	  _sliding_zones_[iside][iszone].build_pattern(mem1_, mem2_);
-	  //	  _sliding_zones_[iside][iszone].print(std::clog);
 	}
       }
       return;
@@ -544,12 +543,6 @@ namespace snemo {
       if (ZONE_ADDR_LR_REDUCTED != 0)
 	{	  	  
 	  mem4_.fetch(ZONE_ADDR_LR_REDUCTED, zone_.data_left_mid_right_pattern);
-
-	  // std::clog << "SIDE = " << side 
-	  // 	    << " ZONE = " << zone_id 
-	  // 	    << " ZONE_ADDR_LR = " << ZONE_ADDR_LR 
- 	  // 	    << " ZONE_ADDR_LR_REDUCTED = " << ZONE_ADDR_LR_REDUCTED 
-	  // 	    << " data = " << zone_.data_left_mid_right_pattern << std::endl;
 	}
 
       else
@@ -606,11 +599,6 @@ namespace snemo {
 		}
 	    }
 	}
-      // std::clog << "SIDE = " << side 
-      // 		<< " ZONE = " << zone_id 
-      // 		<< " ZONE WIDTH = " << zone_width
-      // 		<< " DATA = " << zone_.data_near_source << std::endl;
-	
       
       return;
     }
@@ -645,15 +633,14 @@ namespace snemo {
 	      hpattern_for_a_zone[0]    = _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_RIGHT];     // RIGHT
 	      hpattern_for_a_zone[1]    = _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_MIDDLE];    // MIDDLE
 	      hpattern_for_a_zone[2]    = _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_LEFT];      // LEFT
-	      near_source_for_a_zone[0] = _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_NSZ_RIGHT]; // NSRIGHT
-	      near_source_for_a_zone[1] = _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_NSZ_LEFT ]; // NSRIGHT
+	      near_source_for_a_zone[0] = _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_NSZ_RIGHT]; // NSZRIGHT
+	      near_source_for_a_zone[1] = _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_NSZ_LEFT ]; // NSZLEFT
 	      
 	      if (hpattern_for_a_zone.any()) _tracker_record_finale_decision_.zoning_word_pattern[iside].set(izone);
 	      if (near_source_for_a_zone.any()) _tracker_record_finale_decision_.zoning_word_near_source[iside].set(izone);
 	    }
 	}
       
-      	      
       std::bitset<5> finale_pattern_per_zone = 0x0;
       for (int iside = 0; iside < trigger_info::NSIDES; iside++) 
 	{
@@ -743,7 +730,7 @@ namespace snemo {
     { 
       _geiger_matrix_records_.clear();
       _tracker_finale_decision_ = false;
-      // Just even clockticks are processing (to take in account CB to TB serdes limitation
+      // Just even clockticks are processing (to take in account CB to TB serdes limitation)
       int32_t iclocktick_800 = geiger_ctw_data_.get_clocktick_min();
       if (iclocktick_800 % 2 == 1) iclocktick_800 += 1;
       for (iclocktick_800; iclocktick_800 <= geiger_ctw_data_.get_clocktick_max(); iclocktick_800 +=2)

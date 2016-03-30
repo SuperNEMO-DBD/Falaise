@@ -237,6 +237,8 @@ namespace snemo {
         mem2_type::data_type data = clsf;
         mem2_.push(address, data);
       }
+      mem2_.memory_map_display();
+
       return;
     }
 
