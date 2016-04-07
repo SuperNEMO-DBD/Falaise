@@ -445,6 +445,7 @@ namespace snemo {
 	for (int iszone = 0; iszone < trigger_info::NSLZONES; iszone ++) {
 	  build_sliding_zone(_sliding_zones_[iside][iszone], iside, iszone);
 	  _sliding_zones_[iside][iszone].build_pattern(mem1_, mem2_);
+	  //_sliding_zones_[iside][iszone].print(std::clog);
 	}
       }
       return;

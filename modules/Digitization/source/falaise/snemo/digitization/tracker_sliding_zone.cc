@@ -117,7 +117,7 @@ namespace snemo {
       data_LR_proj = hdata;
       
       //std::clog << "vaddress = " << vaddress << " vdata = " << data_IO_proj << std::endl;
-      // std::clog << "haddress = " << haddress << " hdata = " << data_LR_proj << std::endl;
+      std::clog << "haddress = " << haddress << " hdata = " << data_LR_proj << std::endl;
 
       return;
     }

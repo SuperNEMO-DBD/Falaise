@@ -91,7 +91,9 @@ namespace snemo {
     {
       // 2,3 cm/us drift close to the anode
       // 1 cm/us drift far away the anode
-         
+      
+      // to see if we use geiger_regime ... mock_tracker_s2c l.419
+
       return drift_distance_ / (2.3 * CLHEP::cm / CLHEP::microsecond) ;
     }
 

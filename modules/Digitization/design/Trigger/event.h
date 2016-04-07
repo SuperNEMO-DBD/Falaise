@@ -26,11 +26,11 @@ namespace snemo {
         int track_side = track_side_distribution(g_);
         track_side = 1;
         // std::uniform_int_distribution<int> start_row_distribution(0, (int) tracker::NROWS - 1);
-        std::uniform_int_distribution<int> start_row_distribution(0, (int) 10);
+        std::uniform_int_distribution<int> start_row_distribution(40, (int) 80);
         int start_row = start_row_distribution(g_);
         std::uniform_int_distribution<int> start_layer_distribution(0, (int) tracker::NLAYERS - 1);
         int start_layer = start_layer_distribution(g_);
-        std::poisson_distribution<int> track_length_distribution(5.0);
+        std::poisson_distribution<int> track_length_distribution(7.0);
         int track_length = 1 + track_length_distribution(g_);
         std::cerr << "event::randomize_track:  -> track side        = " << track_side << std::endl;
         std::cerr << "event::randomize_track:  -> track start row   = " << start_row << std::endl;
