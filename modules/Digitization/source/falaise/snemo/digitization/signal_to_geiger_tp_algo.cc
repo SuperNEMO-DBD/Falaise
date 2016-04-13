@@ -2,6 +2,8 @@
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
+// Standard library :
+#include <math.h> 
 
 // This project :
 #include <snemo/digitization/clock_utils.h>
@@ -126,15 +128,16 @@ namespace snemo {
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "SD to geiger TP algorithm is not initialized ! ");
       size_t number_of_hits = signal_data_.get_geiger_signals().size();      
-      double time_reference = signal_data_.get_geiger_signals()[0].get().get_anode_avalanche_time();
-	
+      double first_geiger_time_reference = signal_data_.get_geiger_signals()[0].get().get_anode_avalanche_time();
+      
       for (int i = 0; i < number_of_hits; i++)
 	{
-	  if (signal_data_.get_geiger_signals()[i].get().get_anode_avalanche_time() < time_reference)
+	  if (signal_data_.get_geiger_signals()[i].get().get_anode_avalanche_time() < first_geiger_time_reference)
 	    {
-	      time_reference = signal_data_.get_geiger_signals()[i].get().get_anode_avalanche_time();
+	      first_geiger_time_reference = signal_data_.get_geiger_signals()[i].get().get_anode_avalanche_time();
 	    }
 	}
+      
       for (int i = 0; i < number_of_hits; i++)
 	{	 	    
 	  const geiger_signal & a_geiger_signal    = signal_data_.get_geiger_signals()[i].get();
@@ -144,10 +147,9 @@ namespace snemo {
 
 	  _electronic_mapping_->convert_GID_to_EID(mapping::THREE_WIRES_TRACKER_MODE, geom_id, electronic_id);
 
-	  double relative_time = a_geiger_signal.get_anode_avalanche_time() + _clocktick_shift_ - time_reference ;
-
-	  int32_t a_geiger_signal_clocktick = _clocktick_ref_ + clock_utils::TRACKER_FEB_SHIFT_CLOCKTICK_NUMBER;
-
+	  double relative_time = a_geiger_signal.get_anode_avalanche_time() - first_geiger_time_reference ;
+	  int32_t a_geiger_signal_clocktick = std::floor(first_geiger_time_reference/800) +  _clocktick_ref_ + clock_utils::TRACKER_FEB_SHIFT_CLOCKTICK_NUMBER;
+	  
 	  if (relative_time > 800)
 	    {
 	      a_geiger_signal_clocktick += static_cast<int32_t>(relative_time) / 800;

@@ -115,9 +115,6 @@ namespace snemo {
       tracker_trigger_mem_maker_new_strategy::mem2_type::data_type hdata;
       mem2_.fetch(haddress, hdata);
       data_LR_proj = hdata;
-      
-      //std::clog << "vaddress = " << vaddress << " vdata = " << data_IO_proj << std::endl;
-      std::clog << "haddress = " << haddress << " hdata = " << data_LR_proj << std::endl;
 
       return;
     }

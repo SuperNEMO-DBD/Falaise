@@ -170,10 +170,10 @@ int main( int  argc_ , char **argv_  )
     datatools::fetch_path_with_env(output_path);
     
     // Name of SD output files (FT : Fake Trigger & RT: Real Trigger) :
-    std::string SD_prompt_real_trigger_no   = output_path + "SD_prompt_RT_no" + ".brio";
-    std::string SD_prompt_real_trigger_yes  = output_path + "SD_prompt_RT_yes" + ".brio";
-    std::string SD_delayed_real_trigger_no  = output_path + "SD_delayed_RT_no" + ".brio";
-    std::string SD_delayed_real_trigger_yes = output_path + "SD_delayed_RT_yes" + ".brio";
+    std::string SD_prompt_real_trigger_no   = output_path + "prompt_DT_no" + ".brio";
+    std::string SD_prompt_real_trigger_yes  = output_path + "prompt_DT_yes" + ".brio";
+    std::string SD_delayed_real_trigger_no  = output_path + "delayed_DT_no" + ".brio";
+    std::string SD_delayed_real_trigger_yes = output_path + "delayed_DT_yes" + ".brio";
     
     
     // Event writer : 
@@ -361,7 +361,7 @@ int main( int  argc_ , char **argv_  )
 	    double  clocktick_25_shift      = my_clock_manager.get_shift_25();
 	    int32_t clocktick_800_reference = my_clock_manager.get_clocktick_800_ref();
 	    double  clocktick_800_shift     = my_clock_manager.get_shift_800();
-
+	    
 	    if (SD.has_step_hits("calo") || SD.has_step_hits("xcalo") || SD.has_step_hits("gveto") || SD.has_step_hits("gg"))
 	      {
 		// Creation of a signal data object to store calo & geiger signals :
@@ -443,52 +443,6 @@ int main( int  argc_ , char **argv_  )
 		// Finale structures :
 		calo_collection_records = my_trigger_algo.get_calo_records_vector();
 		tracker_collection_records = my_trigger_algo.get_tracker_records_vector();
-		
-		// if (my_trigger_algo.get_delayed_finale_decision())
-		//   {    
-		//     std::clog << "**************************************************************************************" << std::endl;
-		//     std::clog << "**************************************************************************************" << std::endl;
-		//     std::clog << "**************************************************************************************" << std::endl;
-		//     std::clog << "PSD count = " << psd_count << std::endl;
-		//     std::clog << "**************************************************************************************" << std::endl;
-		//     std::clog << "**************************************************************************************" << std::endl;
-		//     std::clog << "**************************************************************************************" << std::endl;
-		//     my_clock_manager.tree_dump(std::clog, "Clock utils : ", "INFO : ");
-		//     if (signal_data.get_calo_signals().size())
-		//       {
-		// 	for(int i = 0; i < signal_data.get_calo_signals().size(); i++)
-		// 	  {
-		// 	    const snemo::digitization::calo_signal a_calo_signal = signal_data.get_calo_signals()[i].get();
-		// 	    a_calo_signal.tree_dump(std::clog, "A Calo signal", "INFO : ");
-		// 	  }
-		//       }
-		//     my_calo_tp_data.tree_dump(std::clog, "Calorimeter TP(s) data : ", "INFO : ");
-
-		//     if (my_calo_tp_data.get_calo_tps().size() != 0)
-		//       {
-		// 	for (int i = 0; i < my_calo_tp_data.get_calo_tps().size(); i++)
-		// 	  {
-		// 	    snemo::digitization::calo_tp a_calo_tp = my_calo_tp_data.get_calo_tps()[i].get();
-		// 	    a_calo_tp.tree_dump(std::clog, "A Calo TP", "INFO : ");
-		// 	  }
-		//       }
-		//     my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
-		    
-		//     if  (my_calo_ctw_data.get_calo_ctws().size() != 0)
-		//       {
-		// 	for (int i = 0; i < my_calo_ctw_data.get_calo_ctws().size(); i++)
-		// 	  {
-		// 	    snemo::digitization::calo_ctw a_calo_ctw = my_calo_ctw_data.get_calo_ctws()[i].get();
-		// 	    a_calo_ctw.tree_dump(std::clog, "A Calo CTW", "INFO : ");
-		// 	  }
-		//       }
-		    
-		//     my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
-		//     my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
-		//     my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
-		//     my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
-		//   }
-
 
 		if (debug) my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
 	        if (debug) my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
@@ -523,11 +477,6 @@ int main( int  argc_ , char **argv_  )
 
 	    if(!raw_trigger_prompt_decision) writer_1.process(ER);
 	    else writer_2.process(ER);
-	    
-	    if (!raw_trigger_prompt_decision && raw_trigger_delayed_decision) {
-	      std::cout << "psd count = " << psd_count << std::endl;
-	      std::cout <<  " ******************************* ANORMAL DELAYED BUT NOT PROMPT *******************" << std::endl;
-	    }
 
 	    if (raw_trigger_prompt_decision && !raw_trigger_delayed_decision) writer_3.process(ER);
 	    else if (raw_trigger_prompt_decision && raw_trigger_delayed_decision) writer_4.process(ER);

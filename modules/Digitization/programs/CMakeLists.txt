@@ -4,6 +4,7 @@ set(FalaiseDigitizationPlugin_PROGRAMS
   fldigi_tracker_trigger_mem_maker_new_strategy.cxx
   fldigi_delayed_alpha_near_source_validation.cxx
   fldigi_delayed_alpha_near_source_analysis.cxx
+  fldigi_delayed_alpha_validation.cxx
   sd_physical_cuts.cxx
   )
 

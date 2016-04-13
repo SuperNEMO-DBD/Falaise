@@ -92,6 +92,7 @@ namespace snemo {
     {
       for (unsigned long addr = 0; addr < mem2_.get_number_of_addresses(); addr++) {
         mem2_type::address_type address = addr;
+
         // Default NO_TRACK pattern:
         classification_type clsf = NO_HTRACK;
         std::size_t full_count = 0;
@@ -183,6 +184,13 @@ namespace snemo {
           clsf = WIDE_HTRACK;
         }
         mem2_type::data_type data = clsf;
+	
+	// Just in case of display left / right :
+	// std::string reversed_address = address.to_string();
+	// std::reverse(reversed_address.begin(), reversed_address.end());	
+	// std::bitset<8> reversed_bitset (reversed_address);
+	//
+
         mem2_.push(address, data);
       }
       return;
@@ -237,8 +245,6 @@ namespace snemo {
         mem2_type::data_type data = clsf;
         mem2_.push(address, data);
       }
-      mem2_.memory_map_display();
-
       return;
     }
 

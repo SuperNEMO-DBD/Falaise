@@ -773,7 +773,7 @@ namespace snemo {
 	      
 	      // 7/03 : TO CHECK. We have to be sure that the end of the prompt track will not be compared with the begining of this same track
 	      // Dead time for trigger process = 5 * 1600 microsecond (fix for the moment... To be check with Thierry )
-	      if (_previous_event_record_.counter_1600ns < 620) 
+	      if (_previous_event_record_.counter_1600ns < 621) 
 		{	      	  
 		  coincidence_event_record a_delayed_event_record;
 	      	  _process_delayed_coincidence(a_pair, a_delayed_event_record); // Compare calo record & tracker record with previous event
