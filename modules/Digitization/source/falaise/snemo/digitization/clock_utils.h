@@ -5,6 +5,9 @@
 #ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CLOCK_UTILS_TP_H
 #define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CLOCK_UTILS_TP_H
 
+// Standard Library :
+#include <math.h>
+
 // - Bayeux/datatools:
 #include <datatools/clhep_units.h>
 #include <datatools/i_tree_dump.h>
