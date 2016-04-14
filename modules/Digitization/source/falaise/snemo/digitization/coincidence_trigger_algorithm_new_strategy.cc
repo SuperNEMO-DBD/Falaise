@@ -147,7 +147,6 @@ namespace snemo {
       coincidence_base_record::reset();
       previous_clocktick_1600ns = -1;
       counter_1600ns = 0;
-      load_bit = true;
       for (int iside = 0; iside < trigger_info::NSIDES; iside++) 
 	{
 	  for (int izone = 0; izone < trigger_info::NZONES; izone++) 
@@ -519,7 +518,6 @@ namespace snemo {
 
       _previous_event_record_.previous_clocktick_1600ns = a_coincidence_record_.clocktick_1600ns;
       _previous_event_record_.counter_1600ns = 625;
-      _previous_event_record_.load_bit = false; // Can't erase this structure (but it is possible to update the structure)
 
       if (a_coincidence_record_.total_multiplicity_side_0.to_ulong() > max_mult_side_0) _previous_event_record_.total_multiplicity_side_0 = a_coincidence_record_.total_multiplicity_side_0;
       if (a_coincidence_record_.total_multiplicity_side_1.to_ulong() > max_mult_side_1) _previous_event_record_.total_multiplicity_side_1 = a_coincidence_record_.total_multiplicity_side_1;

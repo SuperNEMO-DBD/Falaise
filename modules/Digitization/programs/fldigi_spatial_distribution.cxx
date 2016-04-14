@@ -26,6 +26,8 @@
 // Root : 
 #include "TFile.h"
 #include "TTree.h"
+#include "TH1F.h"
+#include "TH2F.h"
 
 int main(int  argc_ , char ** argv_)
 {
@@ -91,6 +93,7 @@ int main(int  argc_ , char ** argv_)
     std::clog << "Little test program for analysis of alpha delayed number of geiger cells hit !" << std::endl;
 
     bool debug = false;
+    bool verbosity = false;
     
     // Manager.conf
     std::string manager_config_file;
@@ -145,30 +148,17 @@ int main(int  argc_ , char ** argv_)
     datatools::things ER;
 
     int psd_count = 0;         // Event counter
-    std::string five_or_more_gg_cells_delayed = output_path + "five_or_more_gg_cells_delayed.brio";
-    std::string zero_gg_cells_delayed = output_path + "zero_gg_cells_delayed.brio";
-    // Event writer : 
-    dpp::output_module writer_1;
-    datatools::properties writer_config_1;
-    writer_config_1.store ("logging.priority", "debug");
-    writer_config_1.store ("files.mode", "single");   
-    writer_config_1.store ("files.single.filename", five_or_more_gg_cells_delayed);
-    writer_1.initialize_standalone(writer_config_1); 
+    std::string output_filename = output_path + "spatial_distribution.root";
+    datatools::fetch_path_with_env(output_filename);
+    std::string geiger_cells_spatial_distribution = output_path + "geiger_cells_spatial_distribution.root";
+    std::string vertex_spatial_distribution = output_path + "vertex_spatial_distribution.root";
 
-    dpp::output_module writer_2;
-    datatools::properties writer_config_2;
-    writer_config_2.store ("logging.priority", "debug");
-    writer_config_2.store ("files.mode", "single");   
-    writer_config_2.store ("files.single.filename", zero_gg_cells_delayed);
-    writer_2.initialize_standalone(writer_config_2); 
-
-
-    int no_delayed_geiger_cells_count = 0;
-    int one_delayed_geiger_cells_count = 0;
-    int two_delayed_geiger_cells_count = 0;
-    int three_delayed_geiger_cells_count = 0;
-    int four_delayed_geiger_cells_count = 0;
-    int five_or_more_delayed_geiger_cells_count = 0;
+    TFile * output_file = new TFile(output_filename.c_str(), "RECREATE");
+    
+    TH2F * vertex_distribution_TH2F = new TH2F(TString::Format("Vertex distribution"),
+					  TString::Format("Vertex distribution"),
+					  114, -0.5 , 114 - 0.5,
+					  18, -0.5 , 18 - 0.5);
     
     while (!reader.is_terminated())
       {
@@ -179,6 +169,16 @@ int main(int  argc_ , char ** argv_)
 	    // Access to the "SD" bank with a stored `mctools::simulated_data' :
 	    const mctools::simulated_data & SD = ER.get<mctools::simulated_data>(SD_bank_label); 
  
+	    const geomtools::vector_3d event_vertex = SD.get_vertex();
+	    double x_vertex = event_vertex.x();
+	    double y_vertex = event_vertex.y();
+	    double z_vertex = event_vertex.z();
+	    
+	    if(verbosity) std::clog << "Event #" << psd_count << std::endl;
+	    if(verbosity) std::clog << "X = " << x_vertex << std::endl;
+	    if(verbosity) std::clog << "Y = " << y_vertex << std::endl;
+	    if(verbosity) std::clog << "Z = " << z_vertex << std::endl;
+	    
 	    int number_of_gg_cells = 0;
 	    int number_of_delayed_gg_cells = 0;
 	    int number_of_not_delayed_gg_cells = 0;
@@ -214,12 +214,12 @@ int main(int  argc_ , char ** argv_)
 			  }
 		      }
 		  }
-
-		//if (debug) SD.tree_dump(std::clog, "Simulated Data : ", "INFO : ");
+		
 		mctools::simulated_data::hit_handle_collection_type BSHC = flaged_sd.get_step_hits("gg");
-		if (debug) std::clog << "BSCH step hits # = " << BSHC.size() << std::endl;
+	        // if (verbosity) std::clog << "BSCH step hits # = " << BSHC.size() << std::endl;
 		number_of_gg_cells =  BSHC.size();
 		int count = 0;
+	       
 		for (mctools::simulated_data::hit_handle_collection_type::const_iterator i = BSHC.begin();
 		     i != BSHC.end();
 		     i++) 
@@ -231,69 +231,52 @@ int main(int  argc_ , char ** argv_)
 		      {
 			// extract the corresponding geom ID:
 			const geomtools::geom_id & geiger_gid = BSH.get_geom_id();
-
-			//if (debug) BSH.tree_dump(std::clog, "A Geiger Base Step Hit : ", "INFO : ");
-
+			
+			const geomtools::vector_3d cell_position = BSH.get_position_stop();
+			double cell_position_x = cell_position.x();
+			double cell_position_y = cell_position.y();
+			double cell_position_z = cell_position.z();
+			 
+			if(verbosity) std::clog << "GID cell : " << geiger_gid << std::endl;
+			int side  = geiger_gid.get(1);
+			int layer = geiger_gid.get(2);
+			int row   = geiger_gid.get(3);
+			  
+			if(verbosity) std::clog << "side = " << side << " layer = " << layer << " row = " << row << std::endl;
+			  
+			int X_histo = row;
+			int Y_histo = 0;
+			
+			if (side == 0)
+			  {
+			    Y_histo = 9 + layer;
+			  }
+			else if (side == 1)
+			  {
+			    Y_histo = 8 - layer;
+			  }
+			
+			if(verbosity) std::clog << "X_HISTO = " << X_histo << " Y_HISTO = " << Y_histo << std::endl << std::endl;
 			int hit_id = count;
+			vertex_distribution_TH2F->Fill(X_histo, Y_histo);
 			double time_start = BSH.get_time_start();
-			geomtools::vector_3d position_start_vector = BSH.get_position_start();
-			geomtools::vector_3d position_stop_vector  = BSH.get_position_stop();
-			geomtools::vector_3d momentum_start_vector = BSH.get_momentum_start();
 
 			if (time_start > MAXIMUM_DELAYED_TIME) number_of_delayed_gg_cells++; // time in ns
 			else number_of_not_delayed_gg_cells++;
 			count++;
 		      }
-		  }
-		//if (debug) std::clog << "GG Cells #" << number_of_gg_cells << " Delayed GG Cells #" << number_of_delayed_gg_cells << " Not Delayed GG Cells #" << number_of_not_delayed_gg_cells << std::endl;	
-	      }
-
-	    if (number_of_delayed_gg_cells == 0)
-	      {
-		no_delayed_geiger_cells_count++;
-		writer_2.process(ER);
-	      }
-	    
-	    else if (number_of_delayed_gg_cells == 1)
-	      {
-		one_delayed_geiger_cells_count++;
-	      } 
-   
-	    else if (number_of_delayed_gg_cells == 2)
-	      {
-		two_delayed_geiger_cells_count++;
-	      }
-
-	    else if (number_of_delayed_gg_cells == 3)
-	      {
-		three_delayed_geiger_cells_count++;
-	      }
-
-	    else if (number_of_delayed_gg_cells == 4)
-	      {
-		four_delayed_geiger_cells_count++;
-	      }
-
-	    else
-	      {
-		five_or_more_delayed_geiger_cells_count++;
-		writer_1.process(ER);
+		  }	
 	      }
 	  }
-
 	ER.clear();
 	psd_count++;	
 	if (debug) std::clog << "DEBUG : psd count " << psd_count << std::endl;
 	DT_LOG_NOTICE(logging, "Simulated data #" << psd_count);
       }
-
-    std::clog << "0 delayed GG cells : " << no_delayed_geiger_cells_count << std::endl;
-    std::clog << "1 delayed GG cells : " << one_delayed_geiger_cells_count << std::endl;
-    std::clog << "2 delayed GG cells : " << two_delayed_geiger_cells_count << std::endl;
-    std::clog << "3 delayed GG cells : " << three_delayed_geiger_cells_count << std::endl;
-    std::clog << "4 delayed GG cells : " << four_delayed_geiger_cells_count << std::endl;
-    std::clog << "5+ delayed GG cells : " << five_or_more_delayed_geiger_cells_count << std::endl; 
-
+    output_file->cd();
+    vertex_distribution_TH2F->Write();
+    output_file->Write();
+    output_file->Close();
     std::clog << "The end." << std::endl;
   }
 

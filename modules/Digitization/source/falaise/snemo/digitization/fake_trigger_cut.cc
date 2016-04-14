@@ -17,7 +17,6 @@
 // This project :
 #include <falaise/snemo/datamodels/data_model.h>
 
-
 namespace snemo {
 
   namespace digitization {

@@ -91,7 +91,6 @@ namespace snemo {
 				const void display() const;
 				uint32_t previous_clocktick_1600ns;
 				uint32_t counter_1600ns;
-				bool load_bit; // Bit to know if an event can erase the previous event structure
 				std::bitset<trigger_info::NZONES> zoning_word[mapping::NUMBER_OF_SIDES];
 				std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> tracker_finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
 			};
