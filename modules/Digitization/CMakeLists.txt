@@ -6,9 +6,9 @@ cmake_minimum_required(VERSION 2.8)
 project(FalaiseDigitizationPlugin)
 
 # Ensure our code can see the Falaise headers
-#include_directories(${Falaise_INCLUDE_DIRS})
-include_directories(${Falaise_BUILDPRODUCT_DIR}/include)
-include_directories(${Falaise_BUILDPRODUCT_DIR}/include/falaise)
+#include_directories(${FALAISE_INCLUDE_DIRS})
+include_directories(${FALAISE_BUILDPRODUCT_DIR}/include)
+include_directories(${FALAISE_BUILDPRODUCT_DIR}/include/falaise)
 include_directories(${Bayeux_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source)
@@ -19,7 +19,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source/falaise)
 
 # - Headers:
 
-list(APPEND FalaiseDigitizationPlugin_HEADERS
+list(APPEND FalaiseDigitizationPlugin_HEADERS 
 
   source/falaise/snemo/digitization/electronic_mapping.h
   source/falaise/snemo/digitization/clock_utils.h
