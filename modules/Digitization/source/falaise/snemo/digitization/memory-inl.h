@@ -8,6 +8,7 @@
 // Standard library:
 #include <sstream>
 #include <fstream>
+#include <vector>
 
 // Third party :
 // Boost :
