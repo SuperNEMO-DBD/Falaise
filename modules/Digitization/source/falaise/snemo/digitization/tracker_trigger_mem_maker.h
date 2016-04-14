@@ -5,6 +5,10 @@
 #ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_TRACKER_TRIGGER_MEM_MAKER_H
 #define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_TRACKER_TRIGGER_MEM_MAKER_H
 
+// Third part :
+// - Boost :
+#include <boost/scoped_ptr.hpp>
+
 #include <snemo/digitization/memory.h>
 
 namespace snemo {
