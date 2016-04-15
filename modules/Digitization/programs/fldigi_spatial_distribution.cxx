@@ -24,10 +24,18 @@
 
 // Third part : 
 // Root : 
-#include "TFile.h"
-#include "TTree.h"
-#include "TH1F.h"
-#include "TH2F.h"
+#include "TApplication.h"
+#include <TROOT.h>
+#include <TFile.h>
+#include <TTree.h>
+#include <TCanvas.h>
+#include <TH1F.h>
+#include <TH2F.h>
+#include <TImage.h>
+#include <TSystem.h>
+#include <TPDF.h>
+#include <TLegend.h>
+#include <TStyle.h>
 
 int main(int  argc_ , char ** argv_)
 {
@@ -40,6 +48,8 @@ int main(int  argc_ , char ** argv_)
   bool is_input_file   = false;
   bool is_output_path  = false;
   bool is_event_number = false;
+  bool is_verbose      = false;
+  bool is_print        = false;
   bool is_help         = false;
 
   std::string input_filename;
@@ -67,6 +77,16 @@ int main(int  argc_ , char ** argv_)
 	arg_event_number    = atoi(argv_[++iarg]);
       }
 
+    else if (arg == "-v" || arg == "--verbosity")
+      {
+	is_verbose = true;
+      }
+    
+    else if (arg == "-p" || arg == "--print")
+      {
+	is_print = true;
+      }
+    
     else if (arg =="-h" || arg == "--help")
       {
 	is_help = true;
@@ -93,8 +113,10 @@ int main(int  argc_ , char ** argv_)
     std::clog << "Little test program for analysis of alpha delayed number of geiger cells hit !" << std::endl;
 
     bool debug = false;
+
     bool verbosity = false;
-    
+    if (is_verbose) verbosity = true;
+        
     // Manager.conf
     std::string manager_config_file;
     manager_config_file = "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf";
@@ -150,16 +172,22 @@ int main(int  argc_ , char ** argv_)
     int psd_count = 0;         // Event counter
     std::string output_filename = output_path + "spatial_distribution.root";
     datatools::fetch_path_with_env(output_filename);
-    std::string geiger_cells_spatial_distribution = output_path + "geiger_cells_spatial_distribution.root";
-    std::string vertex_spatial_distribution = output_path + "vertex_spatial_distribution.root";
 
     TFile * output_file = new TFile(output_filename.c_str(), "RECREATE");
     
-    TH2F * vertex_distribution_TH2F = new TH2F(TString::Format("Vertex distribution"),
-					  TString::Format("Vertex distribution"),
-					  114, -0.5 , 114 - 0.5,
-					  18, -0.5 , 18 - 0.5);
+    TH2F * geiger_cells_distribution_TH2F = new TH2F("Prompt Geiger cells spatial distribution",
+						     "Prompt Geiger cells spatial distribution",
+						     115, -1.5 , 114 - 0.5,
+						     28, -5.5 , 23 - 0.5);
+
+    TH2F * vertex_distribution_TH2F = new TH2F("Vertex spatial distribution TH2F",
+					       "Vertex spatial distribution; x_vertex_position; y_vertex_position",
+					       104, -2600.5 , 2600 - 0.5,
+					       5, -5.5 , 5.5);
     
+    TH1F * vertex_distribution_TH1F = new TH1F("Vertex spatial distribution TH1F",
+					       "Vertex spatial distribution; y_vertex_position; count",
+					       52, -2600.5 , 2600 - 0.5);
     while (!reader.is_terminated())
       {
 	reader.process(ER);
@@ -179,6 +207,9 @@ int main(int  argc_ , char ** argv_)
 	    if(verbosity) std::clog << "Y = " << y_vertex << std::endl;
 	    if(verbosity) std::clog << "Z = " << z_vertex << std::endl;
 	    
+	    vertex_distribution_TH2F->Fill(y_vertex, x_vertex);
+	    vertex_distribution_TH1F->Fill(y_vertex);
+
 	    int number_of_gg_cells = 0;
 	    int number_of_delayed_gg_cells = 0;
 	    int number_of_not_delayed_gg_cells = 0;
@@ -258,7 +289,7 @@ int main(int  argc_ , char ** argv_)
 			
 			if(verbosity) std::clog << "X_HISTO = " << X_histo << " Y_HISTO = " << Y_histo << std::endl << std::endl;
 			int hit_id = count;
-			vertex_distribution_TH2F->Fill(X_histo, Y_histo);
+			geiger_cells_distribution_TH2F->Fill(X_histo, Y_histo);
 			double time_start = BSH.get_time_start();
 
 			if (time_start > MAXIMUM_DELAYED_TIME) number_of_delayed_gg_cells++; // time in ns
@@ -274,9 +305,40 @@ int main(int  argc_ , char ** argv_)
 	DT_LOG_NOTICE(logging, "Simulated data #" << psd_count);
       }
     output_file->cd();
+    vertex_distribution_TH1F->Write();
     vertex_distribution_TH2F->Write();
+    geiger_cells_distribution_TH2F->Write();
     output_file->Write();
     output_file->Close();
+ 
+    std::string string_buffer = "";
+    
+    if (is_print) {
+      // Library problem :
+
+      // TCanvas * c = new TCanvas("c","l",960,800);
+      // c->Divide(2,1);
+      
+      //TVirtualPad* pad = c->cd(1);
+      // gStyle->SetOptStat(0);
+      // pad->SetPad(0.0,0.0,0.2,1.0);
+      // vertex_distribution_TH2F->Draw("colz");
+      // pad = c->cd(2);
+      // pad->SetPad(0.2,0.0,1.0,1.0);
+      // vertex_distribution_TH1F->Draw();
+      // string_buffer = output_path + "vertex_distribution.pdf";
+      // c->Print(string_buffer.c_str());
+      // gSystem->ProcessEvents();
+      // TImage * img = TImage::Create();
+      // img->FromPad(c);
+      // string_buffer = output_path + "vertex_distribution.png";
+      // img->WriteImage(string_buffer.c_str());
+    }
+
+    
+    
+
+    
     std::clog << "The end." << std::endl;
   }
 
