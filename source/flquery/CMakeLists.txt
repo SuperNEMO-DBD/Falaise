@@ -1,7 +1,7 @@
 # - CMake build script for Falaise flquery utility
 
 #-----------------------------------------------------------------------
-# Copyright 2014-2015 François Mauger <mauger@lpccaen.in2p3.fr>
+# Copyright 2014-2016 François Mauger <mauger@lpccaen.in2p3.fr>
 #
 # This file is part of Falaise.
 #
@@ -19,7 +19,7 @@
 # along with Falaise.  If not, see <http://www.gnu.org/licenses/>.
 #-----------------------------------------------------------------------
 
-if (FALAISE_BUILD_DEVELOPER_TOOLS)
+if (FALAISE_WITH_DEVELOPER_TOOLS)
   # - Generate application configuration file
   configure_file(flquery.in ${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_BINDIR}/flquery @ONLY)
 
