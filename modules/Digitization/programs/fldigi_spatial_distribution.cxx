@@ -24,13 +24,14 @@
 
 // Third part : 
 // Root : 
-#include "TApplication.h"
 #include <TROOT.h>
 #include <TFile.h>
 #include <TTree.h>
-#include <TCanvas.h>
 #include <TH1F.h>
 #include <TH2F.h>
+#include <TApplication.h>
+#include <TCanvas.h>
+#include <TVirtualPad.h>
 #include <TImage.h>
 #include <TSystem.h>
 #include <TPDF.h>
@@ -181,13 +182,13 @@ int main(int  argc_ , char ** argv_)
 						     28, -5.5 , 23 - 0.5);
 
     TH2F * vertex_distribution_TH2F = new TH2F("Vertex spatial distribution TH2F",
-					       "Vertex spatial distribution; x_vertex_position; y_vertex_position",
+					       "; x_vertex_position; y_vertex_position",
 					       104, -2600.5 , 2600 - 0.5,
 					       5, -5.5 , 5.5);
     
     TH1F * vertex_distribution_TH1F = new TH1F("Vertex spatial distribution TH1F",
 					       "Vertex spatial distribution; y_vertex_position; count",
-					       52, -2600.5 , 2600 - 0.5);
+					       104, -2600.5 , 2600 - 0.5);
     while (!reader.is_terminated())
       {
 	reader.process(ER);
@@ -309,36 +310,52 @@ int main(int  argc_ , char ** argv_)
     vertex_distribution_TH2F->Write();
     geiger_cells_distribution_TH2F->Write();
     output_file->Write();
-    output_file->Close();
  
     std::string string_buffer = "";
     
     if (is_print) {
-      // Library problem :
-
-      // TCanvas * c = new TCanvas("c","l",960,800);
-      // c->Divide(2,1);
+      TCanvas * c = new TCanvas("c","l",960,800);
+      gStyle->SetOptStat(0);
+      vertex_distribution_TH2F->Draw("colz");
+      string_buffer = output_path + "vertex_distribution_th2f.pdf";
+      c->Print(string_buffer.c_str());
+      gSystem->ProcessEvents();
+      TImage * img = TImage::Create();
+      img->FromPad(c);
+      string_buffer = output_path + "vertex_distribution_th2f.png";
+      img->WriteImage(string_buffer.c_str());
       
-      //TVirtualPad* pad = c->cd(1);
-      // gStyle->SetOptStat(0);
-      // pad->SetPad(0.0,0.0,0.2,1.0);
-      // vertex_distribution_TH2F->Draw("colz");
-      // pad = c->cd(2);
-      // pad->SetPad(0.2,0.0,1.0,1.0);
-      // vertex_distribution_TH1F->Draw();
-      // string_buffer = output_path + "vertex_distribution.pdf";
-      // c->Print(string_buffer.c_str());
-      // gSystem->ProcessEvents();
-      // TImage * img = TImage::Create();
-      // img->FromPad(c);
-      // string_buffer = output_path + "vertex_distribution.png";
-      // img->WriteImage(string_buffer.c_str());
+      c = new TCanvas("c","l",960,800);
+      gStyle->SetOptStat(1);
+      vertex_distribution_TH1F->Draw();
+      string_buffer = output_path + "vertex_distribution_th1f.pdf";
+      c->Print(string_buffer.c_str());
+      gSystem->ProcessEvents();
+      TImage * img2 = TImage::Create();
+      img2->FromPad(c);
+      string_buffer = output_path + "vertex_distribution_th1f.png";
+      img2->WriteImage(string_buffer.c_str());
+
+      c = new TCanvas("c","l",960,800);
+      gStyle->SetOptStat(0);
+      geiger_cells_distribution_TH2F->Draw("colz");
+      string_buffer = output_path + "geiger_cells_distribution.pdf";
+      c->Print(string_buffer.c_str());
+      gSystem->ProcessEvents();
+      TImage * img3 = TImage::Create();
+      img3->FromPad(c);
+      string_buffer = output_path + "geiger_cells_distribution.png";
+      img3->WriteImage(string_buffer.c_str());
+      
+      delete c;
     }
+   
+    delete vertex_distribution_TH1F;
+    delete vertex_distribution_TH2F;
+    delete geiger_cells_distribution_TH2F;
+    output_file->Close();
+    delete output_file;
 
-    
-    
-
-    
     std::clog << "The end." << std::endl;
   }
 
