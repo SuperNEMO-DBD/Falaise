@@ -20,8 +20,8 @@ set(FalaiseEventBrowserPlugin_VERSION_PATCH 0)
 #
 # - Boost
 set(Boost_COMPONENTS thread program_options)
-find_package(Boost 1.47 QUIET COMPONENTS ${Boost_COMPONENTS} NO_MODULE)
-find_package(Boost 1.47 REQUIRED ${Boost_COMPONENTS})
+find_package(Boost 1.55 QUIET COMPONENTS ${Boost_COMPONENTS} NO_MODULE)
+find_package(Boost 1.55 REQUIRED ${Boost_COMPONENTS})
 
 # - ROOT
 if(NOT FALAISE_USE_LEGACY_ROOT)
