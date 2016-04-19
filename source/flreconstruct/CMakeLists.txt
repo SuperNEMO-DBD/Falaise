@@ -23,7 +23,7 @@
 #-----------------------------------------------------------------------
 # Configure application
 # - Bit hacky for now
-find_package(Boost REQUIRED program_options)
+find_package(Boost 1.55 REQUIRED program_options)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 include_directories(BEFORE ${Bayeux_INCLUDE_DIRS})
 include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
@@ -87,4 +87,3 @@ install(TARGETS flreconstruct
 # Build Tests
 #
 add_subdirectory(CommissioningIO)
-
