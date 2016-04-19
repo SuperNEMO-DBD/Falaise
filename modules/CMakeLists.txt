@@ -9,9 +9,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_
 # - To allow modules to be developed independently, point
 # them to the current Bayeux/Falaise
 set(Falaise_DIR "${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}")
-if(NOT FALAISE_USE_SYSTEM_BAYEUX)
-  set(Bayeux_DIR "${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Bayeux-2.0.0")
-endif()
 
 # - List of plugins:
 set(_falaise_PLUGINS
