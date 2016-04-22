@@ -38,6 +38,8 @@ int main(int  argc_ , char ** argv_)
   bool is_input_file   = false;
   bool is_output_path  = false;
   bool is_event_number = false;
+  bool is_verbose      = false;
+  bool is_print        = false;
   bool is_help         = false;
 
   std::string input_filename;
@@ -64,6 +66,16 @@ int main(int  argc_ , char ** argv_)
         is_event_number = true;
 	arg_event_number    = atoi(argv_[++iarg]);
       }
+    
+    else if (arg == "-v" || arg == "--verbosity")
+      {
+	is_verbose = true;
+      }
+    
+    else if (arg == "-p" || arg == "--print")
+      {
+	is_print = true;
+      }
 
     else if (arg =="-h" || arg == "--help")
       {
@@ -78,11 +90,14 @@ int main(int  argc_ , char ** argv_)
       std::cerr << std::endl << "Usage :" << std::endl << std::endl
 		<< "$ BuildProducts/bin/fldigi_delayed_alpha_validation [OPTIONS] [ARGUMENTS]" << std::endl << std::endl
 		<< "Allowed options: " << std::endl
-		<< "-h  [ --help ]           produce help message" << std::endl
-		<< "-i  [ --input ]          set an input file" << std::endl
-		<< "-n  [ --number ]         set the number of events" << std::endl
+		<< "-h  [ --help ]        produce help message" << std::endl
+		<< "-i  [ --input ]       set an input file" << std::endl
+		<< "-op [ --output_path ] set the output path for producted files" << std::endl
+		<< "-n  [ --number ]      set the number of events" << std::endl
+		<< "-v  [ --verbosity]    add verbosity level" << std::endl
+		<< "-p  [ --print ]       print files in PDF/PNG" << std::endl
 		<< "Example : " << std::endl << std::endl
-		<< "$ BuildProducts/bin/fldigi_delayed_alpha_validation -n 1000 -i ${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio -op ${FALAISE_DIGITIZATION_TESTING_DIR}/output_default" << std::endl << std::endl;
+		<< "$ BuildProducts/bin/fldigi_delayed_alpha_validation -n 1000 -i ${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio -op ${FALAISE_DIGITIZATION_TESTING_DIR}/output_default -v -p" << std::endl << std::endl;
       return 0;
     }
   
@@ -90,8 +105,6 @@ int main(int  argc_ , char ** argv_)
   try {
     std::clog << "Little test program for analysis of alpha delayed number of geiger cells hit !" << std::endl;
 
-    bool debug = false;
-    
     // Manager.conf
     std::string manager_config_file;
     manager_config_file = "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf";
@@ -117,6 +130,7 @@ int main(int  argc_ , char ** argv_)
       pipeline_simulated_data_filename = input_filename;
     }else{
       pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
+      input_filename = pipeline_simulated_data_filename;
     }
     datatools::fetch_path_with_env(pipeline_simulated_data_filename);
 
@@ -138,15 +152,40 @@ int main(int  argc_ , char ** argv_)
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
     reader.tree_dump (std::clog, "Simulated data reader module");
-      
-    static const int MAXIMUM_DELAYED_TIME = 8000; // in nanosecond, linked with the digi trigger and geiger drift
+    
+    std::string run_number = input_filename;
+    std::size_t found = 0;
+    found = run_number.find("run");
+    if (found != std::string::npos)
+      {
+	run_number.erase(0, found);
+	found = run_number.find_first_of("/");
+	run_number.erase(found, run_number.size());
+      }
+    else
+      {
+	run_number = "";
+      }
+    
+    std::string delayed_DT = input_filename;
+    found = delayed_DT.find("delayed");
+    if (found != std::string::npos)
+      {
+	delayed_DT.erase(0, found);
+	delayed_DT = "_" + delayed_DT;
+      }
+    else 
+      {
+	found = delayed_DT.find_last_of("/");
+	delayed_DT.erase(0, found);
+	found = delayed_DT.find(".brio");
+	delayed_DT.erase(found, delayed_DT.size());
+      }
+    std::string output_filename = output_path + run_number + delayed_DT + ".log";
 
-    // Event record :
-    datatools::things ER;
+    std::string five_or_more_gg_cells_delayed = output_path + "five_or_more_gg_cells_delayed" + delayed_DT;
+    std::string zero_gg_cells_delayed = output_path + "zero_gg_cells_delayed" + delayed_DT;
 
-    int psd_count = 0;         // Event counter
-    std::string five_or_more_gg_cells_delayed = output_path + "five_or_more_gg_cells_delayed.brio";
-    std::string zero_gg_cells_delayed = output_path + "zero_gg_cells_delayed.brio";
     // Event writer : 
     dpp::output_module writer_1;
     datatools::properties writer_config_1;
@@ -161,6 +200,13 @@ int main(int  argc_ , char ** argv_)
     writer_config_2.store ("files.mode", "single");   
     writer_config_2.store ("files.single.filename", zero_gg_cells_delayed);
     writer_2.initialize_standalone(writer_config_2); 
+
+    static const int MAXIMUM_DELAYED_TIME = 8000; // in nanosecond, linked with the digi trigger and geiger drift
+
+    // Event record :
+    datatools::things ER;
+
+    int psd_count = 0;         // Event counter
 
 
     int no_delayed_geiger_cells_count = 0;
@@ -215,9 +261,9 @@ int main(int  argc_ , char ** argv_)
 		      }
 		  }
 
-		//if (debug) SD.tree_dump(std::clog, "Simulated Data : ", "INFO : ");
+		//if (is_verbose) SD.tree_dump(std::clog, "Simulated Data : ", "INFO : ");
 		mctools::simulated_data::hit_handle_collection_type BSHC = flaged_sd.get_step_hits("gg");
-		if (debug) std::clog << "BSCH step hits # = " << BSHC.size() << std::endl;
+		if (is_verbose) std::clog << "BSCH step hits # = " << BSHC.size() << std::endl;
 		number_of_gg_cells =  BSHC.size();
 		int count = 0;
 		for (mctools::simulated_data::hit_handle_collection_type::const_iterator i = BSHC.begin();
@@ -232,7 +278,7 @@ int main(int  argc_ , char ** argv_)
 			// extract the corresponding geom ID:
 			const geomtools::geom_id & geiger_gid = BSH.get_geom_id();
 
-			//if (debug) BSH.tree_dump(std::clog, "A Geiger Base Step Hit : ", "INFO : ");
+			//if (is_verbose) BSH.tree_dump(std::clog, "A Geiger Base Step Hit : ", "INFO : ");
 
 			int hit_id = count;
 			double time_start = BSH.get_time_start();
@@ -245,7 +291,7 @@ int main(int  argc_ , char ** argv_)
 			count++;
 		      }
 		  }
-		//if (debug) std::clog << "GG Cells #" << number_of_gg_cells << " Delayed GG Cells #" << number_of_delayed_gg_cells << " Not Delayed GG Cells #" << number_of_not_delayed_gg_cells << std::endl;	
+		//if (is_verbose) std::clog << "GG Cells #" << number_of_gg_cells << " Delayed GG Cells #" << number_of_delayed_gg_cells << " Not Delayed GG Cells #" << number_of_not_delayed_gg_cells << std::endl;	
 	      }
 
 	    if (number_of_delayed_gg_cells == 0)
@@ -283,17 +329,30 @@ int main(int  argc_ , char ** argv_)
 
 	ER.clear();
 	psd_count++;	
-	if (debug) std::clog << "DEBUG : psd count " << psd_count << std::endl;
+	if (is_verbose) std::clog << "DEBUG : psd count " << psd_count << std::endl;
 	DT_LOG_NOTICE(logging, "Simulated data #" << psd_count);
       }
+    
+    std::ofstream file(output_filename.c_str(), std::ios::out | std::ios::trunc);
+    if (file) 
+      {
+	file << "Input file  = " << input_filename << std::endl;
+	file << "Output path = " << output_filename << std::endl;
+	file << "Number of events    = " << psd_count << std::endl;
+	file << "No delayed GG cells = " << no_delayed_geiger_cells_count << std::endl;
+	file << "1 delayed GG cells  = " << one_delayed_geiger_cells_count << std::endl;
+	file << "2 delayed GG cells  = " << two_delayed_geiger_cells_count << std::endl;
+	file << "3 delayed GG cells  = " << three_delayed_geiger_cells_count << std::endl;
+	file << "4 delayed GG cells  = " << four_delayed_geiger_cells_count << std::endl;
+	file << "5+ delayed GG cells = " << five_or_more_delayed_geiger_cells_count << std::endl;
 
-    std::clog << "0 delayed GG cells : " << no_delayed_geiger_cells_count << std::endl;
-    std::clog << "1 delayed GG cells : " << one_delayed_geiger_cells_count << std::endl;
-    std::clog << "2 delayed GG cells : " << two_delayed_geiger_cells_count << std::endl;
-    std::clog << "3 delayed GG cells : " << three_delayed_geiger_cells_count << std::endl;
-    std::clog << "4 delayed GG cells : " << four_delayed_geiger_cells_count << std::endl;
-    std::clog << "5+ delayed GG cells : " << five_or_more_delayed_geiger_cells_count << std::endl; 
-
+	file.close(); 
+      }
+    else
+      {
+	std::cerr << "Erreur à l'ouverture !" << std::endl;
+      }
+    
     std::clog << "The end." << std::endl;
   }
 

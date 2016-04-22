@@ -101,17 +101,20 @@ int main(int  argc_ , char ** argv_)
       std::cerr << std::endl << "Usage :" << std::endl << std::endl
 		<< "$ BuildProducts/bin/fldigi_delayed_alpha_validation [OPTIONS] [ARGUMENTS]" << std::endl << std::endl
 		<< "Allowed options: " << std::endl
-		<< "-h  [ --help ]           produce help message" << std::endl
-		<< "-i  [ --input ]          set an input file" << std::endl
-		<< "-n  [ --number ]         set the number of events" << std::endl
+		<< "-h  [ --help ]        produce help message" << std::endl
+		<< "-i  [ --input ]       set an input file" << std::endl
+		<< "-op [ --output_path ] set the output path for producted files" << std::endl
+		<< "-n  [ --number ]      set the number of events" << std::endl
+		<< "-v  [ --verbosity]    add verbosity level" << std::endl
+		<< "-p  [ --print ]       print files in PDF/PNG" << std::endl
 		<< "Example : " << std::endl << std::endl
-		<< "$ BuildProducts/bin/fldigi_delayed_alpha_validation -n 1000 -i ${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio -op ${FALAISE_DIGITIZATION_TESTING_DIR}/output_default" << std::endl << std::endl;
+		<< "$ BuildProducts/bin/fldigi_spatial_distribution -n 1000 -i ${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio -op ${FALAISE_DIGITIZATION_TESTING_DIR}/output_default -p -v" << std::endl << std::endl;
       return 0;
     }
   
   // Process
   try {
-    std::clog << "Little test program for analysis of alpha delayed number of geiger cells hit !" << std::endl;
+    std::clog << "Little test program for analysis of spatial distribution of geiger cells hit and vertex !" << std::endl;
 
     bool debug = false;
 
@@ -143,6 +146,7 @@ int main(int  argc_ , char ** argv_)
       pipeline_simulated_data_filename = input_filename;
     }else{
       pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
+      input_filename = pipeline_simulated_data_filename;
     }
     datatools::fetch_path_with_env(pipeline_simulated_data_filename);
 
@@ -173,21 +177,29 @@ int main(int  argc_ , char ** argv_)
     int psd_count = 0;         // Event counter
     std::string output_filename = output_path + "spatial_distribution.root";
     datatools::fetch_path_with_env(output_filename);
-
+    
+    std::string run_number = input_filename;
+    std::size_t found = run_number.find("run");
+    if (found != std::string::npos)
+      {
+	run_number.erase(0, found);
+	found = run_number.find_first_of("/");
+	run_number.erase(found, run_number.size());
+      }
     TFile * output_file = new TFile(output_filename.c_str(), "RECREATE");
     
     TH2F * geiger_cells_distribution_TH2F = new TH2F("Prompt Geiger cells spatial distribution",
-						     "Prompt Geiger cells spatial distribution",
+						     Form("%s : Prompt Geiger cells spatial distribution", run_number.c_str()) ,
 						     115, -1.5 , 114 - 0.5,
 						     28, -5.5 , 23 - 0.5);
 
     TH2F * vertex_distribution_TH2F = new TH2F("Vertex spatial distribution TH2F",
-					       "; x_vertex_position; y_vertex_position",
-					       104, -2600.5 , 2600 - 0.5,
-					       5, -5.5 , 5.5);
+					       Form("%s : Vertex spatial distribution; x_vertex_position; y_vertex_position", run_number.c_str()),
+					       104, -2700.5 , 2700 - 0.5,
+					       120, -600 , 600);
     
     TH1F * vertex_distribution_TH1F = new TH1F("Vertex spatial distribution TH1F",
-					       "Vertex spatial distribution; y_vertex_position; count",
+					       Form("%s : Vertex spatial distribution; y_vertex_position; count", run_number.c_str()),
 					       104, -2600.5 , 2600 - 0.5);
     while (!reader.is_terminated())
       {
