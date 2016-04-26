@@ -1,0 +1,32 @@
+# -*- mode: conf-unix; -*-
+# @falaise:config/snemo/demonstrator/simulation/vertexes/4.0/generators/source_calibration_vg.lis
+# List of multi-properties (datatools::multi_properties):
+
+#@description A list of vertex generators
+#@key_label   "name"
+#@meta_label  "type"
+
+
+##############################################################################
+# Generate vertex from the bulk of the source calibration spots (all tracks) #
+##############################################################################
+[name="source_calibration_spot" type="genvtx::cylinder_model_vg"]
+
+#@config Vertex generation from the bulk volume of the source calibration spot
+
+#@description Logging priority
+logging.priority  : string = "warning"
+
+#@description Geometry version requirement (not working with version lower than 4.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=4)"
+
+#@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string  = "category='source_calibration_spot' module={*} track={*} position={*}"
+
+### origin : string  = "category='source_calibration_spot' module={*} track=[2;3] position={*}"
+
+#@description The mode used for vertex generator from the underlying cylinder model
+mode   : string  = "bulk"
+
+
+# end of @falaise:config/snemo/demonstrator/simulation/vertexes/4.0/generators/source_calibration_vg.lis
