@@ -1,5 +1,5 @@
 # -*- mode: conf-unix; -*-
-# material_aliases.def
+# @falaise:config/common/geometry/materials/2.0/material_aliases.def
 # List of material aliases (format: datatools::multi_properties):
 
 #@description A sample list of materials aliases
@@ -12,13 +12,6 @@
 #@config The alias for standard vacuum
 #@description The name of the referenced material
 material : string = "basic::vacuum"
-
-
-##################################
-[name="tracking_gas" type="alias"]
-#@config The alias for tracking gas
-#@description The name of the referenced material
-material : string = "snemo::nemo3_tracking_gas"
 
 
 ############################
@@ -77,13 +70,6 @@ material : string = "basic::iron"
 material : string = "basic::inox"
 
 
-#############################
-[name="lab_air" type="alias"]
-#@config The alias for the air gas in the lab
-#@description The name of the referenced material
-material : string = "snemo::lab_air"
-
-
 ##################################
 [name="nitrogen" type="alias"]
 #@config The alias for the nitrogen gas
@@ -91,25 +77,19 @@ material : string = "snemo::lab_air"
 material : string = "snemo::nitrogen"
 
 
-########################################
-[name="bb_source_material" type="alias"]
-#@config The alias for the source
-#@description The name of the referenced material
-material : string = "snemo::se82_source_material"
-
-
 #########################
 [name="RTV" type="alias"]
+# room temperature vulcanization silicone
 #@config The alias for the RTV material
 #@description The name of the referenced material
 material : string = "basic::water"
 
 
-##################################
+#########################
 [name="SBR" type="alias"]
 #@config The alias for the SBR material
 #@description The name of the referenced material
-material : string = "basic::water"
+material : string = "snemo::styrene-butadiene-rubber"
 
 
 ##########################
@@ -126,4 +106,18 @@ material : string = "basic::polytetrafluoroethylene"
 material : string = "basic::pyrex"
 
 
-# end of material_aliases.def
+#############################
+[name="lab_air" type="alias"]
+#@config The alias for the air gas in the lab
+#@description The name of the referenced material
+material : string = "snemo::air::lsm"
+
+
+##################################
+[name="tracking_gas" type="alias"]
+#@config The alias for tracking gas
+#@description The name of the referenced material
+material : string = "snemo::tracking_gas::nemo3"
+
+
+# end of @falaise:config/common/geometry/materials/2.0/material_aliases.def
