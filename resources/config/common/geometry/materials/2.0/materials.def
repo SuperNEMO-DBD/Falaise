@@ -100,8 +100,8 @@ composition.names           : string[5] = "Helium" "Hydrogen" "Carbon" "Oxygen" 
 composition.fraction_mass   : real[5]   =  1.      0.28176    0.09392  0.04696  0.01015
 
 
-##################################################
-[name="snemo::snova_tracking_gas" type="material"]
+###################################################
+[name="snemo::tracking_gas::snova" type="material"]
 #@config Gas in the SuperNEMO tracking chamber
 density          : real   = 2.25E-4
 density.unit     : string = "g/cm3"
@@ -181,8 +181,8 @@ density          : real   = 3.0
 density.unit     : string = "g/cm3"
 state            : string = "solid"
 composition.mode            : string    = "fraction_mass"
-composition.names           : string[4] = "snemo::neodymium-150" "Oxygen" "Carbon" "Hydrogen"
-composition.fraction_mass   : real[4]   =  0.79274                0.15632  0.04362  0.00732
+composition.names           : string[4] = "snemo::neodymium-150::nemo3" "Oxygen" "Carbon" "Hydrogen"
+composition.fraction_mass   : real[4]   =  0.79274                       0.15632  0.04362  0.00732
 
 
 ###################################
@@ -214,7 +214,7 @@ density          : real   = 2.372
 density.unit     : string = "g/cm3"
 state            : string = "solid"
 composition.mode            : string    = "fraction_mass"
-composition.names           : string[2] = "snemo::selenium-82"  "basics::PVA"
+composition.names           : string[2] = "snemo::selenium-82"  "basic::polyvinylalcohol"
 composition.fraction_mass   : real[2]   =  0.90                  0.10
 
 
@@ -225,7 +225,7 @@ density          : real   = 2.372
 density.unit     : string = "g/cm3"
 state            : string = "solid"
 composition.mode            : string    = "fraction_mass"
-composition.names           : string[2] = "snemo::selenium-82::97percent"  "basics::PVA"
+composition.names           : string[2] = "snemo::selenium-82::97percent"  "basic::polyvinylalcohol"
 composition.fraction_mass   : real[2]   =  0.90                             0.10
 
 
@@ -236,12 +236,12 @@ composition.fraction_mass   : real[2]   =  0.90                             0.10
 # density.unit     : string = "g/cm3"
 # state            : string = "solid"
 # composition.mode            : string    = "fraction_mass"
-# composition.names           : string[2] = "snemo::highly_enriched_selenium-82"  "basics::PVA"
+# composition.names           : string[2] = "snemo::highly_enriched_selenium-82"  "basic::polyvinylalcohol"
 # composition.fraction_mass   : real[2]   =       0.9275                              0.0725
 
 
-#######################################################
-[name="snemo::styrene-butadiene-rubber" type="element"]
+########################################################
+[name="snemo::styrene-butadiene-rubber" type="material"]
 #@config styrene-butadiene-rubber (SBR, approximated)
 density          : real   = 0.94
 density.unit     : string = "g/cm3"
@@ -255,5 +255,6 @@ composition.number_of_atoms : integer[2] =     12        10
 # [name="snemo::room_temperature_vulcanization_silicone" type="element"]
 # room temperature vulcanization silicone (RTV, type 1)
 # composition/density: unknown.
+
 
 # end of @falaise:config/common/geometry/materials/2.0/materials.def
