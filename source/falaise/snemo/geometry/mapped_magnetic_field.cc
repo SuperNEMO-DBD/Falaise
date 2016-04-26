@@ -247,7 +247,7 @@ namespace snemo {
                     "Missing 'map_file' configuration property!");
         const std::string & mf_str = config_.fetch_string("map_file");
         DT_THROW_IF(mf_str.empty(), std::logic_error,
-                    "Empty map filen ame!");
+                    "Empty map file name!");
         set_map_filename(mf_str);
       }
 
@@ -532,6 +532,7 @@ namespace snemo {
         magnetic_field_[1] = b[0] * mag_field_unit;
         magnetic_field_[2] = b[1] * mag_field_unit;
       } else {
+        // Position is out of interpolation domain:
         DT_LOG_DEBUG(logging, "B-field interpolation failed!");
       }
       return status;
