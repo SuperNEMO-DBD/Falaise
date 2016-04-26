@@ -1,5 +1,5 @@
 # -*- mode: conf-unix; -*-
-# tracker_layers.geom
+# @falaise:config/snemo/demonstrator/geometry/4.0/models/tracker_module/tracker_layers.geom
 
 
 # Packed neighbouring cells (but the first one) within
@@ -218,4 +218,4 @@ visibility.hidden : boolean = false
 visibility.color  : string = "cyan"
 
 
-# end of tracker_layers.geom
+# end of @falaise:config/snemo/demonstrator/geometry/4.0/models/tracker_module/tracker_layers.geom

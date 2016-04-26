@@ -1,17 +1,17 @@
 # -*- mode: conf-unix; -*-
-# module_0.geom
+# @falaise:config/snemo/demonstrator/geometry/4.0/models/module_0.geom
 
 #########################
 # Badic module geometry #
 #########################
 
 ################################################################
-# The SuperNEMO demonstrator module is built from a assembly
+# The SuperNEMO demonstrator module is built from an assembly
 # of 5 submodules:
 #
 #                         ^ y
 #                         :
-#                         :
+#                         : right
 #                         :
 #                        +-+
 #         +----+         |:|         +----+
@@ -21,7 +21,7 @@
 #         |    ||       ||:||       ||    |
 #         |    ||       ||:||       ||    |
 #         |    ||       ||:||       ||    |
-#         |    ||       ||:||       ||    |  stacking axis
+#         |    ||       ||:||       ||    |     stacking axis
 # --------|----||-------||z||-------||----|-------> x
 #  back   |    ||       ||:||       ||    | front
 #         |    ||       ||:||       ||    |
@@ -34,17 +34,22 @@
 #          calo          +-+          calo
 #                       source
 #                         :
+#                         : left
 #                         :
-#                         :
-#
 #
 ###########################################################
 [name="module_basic.model" type="geomtools::stacked_model"]
 
 #@config Simplified demonstrator module
 
-# Stacking parameters:
+# stacked.number_of_items : integer = 1
+# stacked.model_0   : string = "source_submodule.model"
+# stacked.label_0   : string = "source_submodule"
+
+#@description Stacking axis
 stacked.axis            : string = "x"
+
+#@description Number of stacking volumes
 stacked.number_of_items : integer = 5
 
 # Stacked models:
@@ -78,4 +83,4 @@ mapping.daughter_id.tracker_front_submodule     : string  = "[tracker_submodule:
 mapping.daughter_id.calorimeter_front_submodule : string  = "[calorimeter_submodule: side=1]"
 
 
-# end of module_0.geom
+# end of @falaise:config/snemo/demonstrator/geometry/4.0/models/module_0.geom

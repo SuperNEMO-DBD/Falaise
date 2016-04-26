@@ -1,5 +1,5 @@
 # -*- mode: conf-unix; -*-
-# xwall.geom
+# @falaise:config/snemo/demonstrator/geometry/4.0/models/tracker_module/xwall.geom
 
 
 #########################################################################
@@ -474,4 +474,4 @@ visibility.hidden : boolean = false
 visibility.color  : string = "grey"
 
 
-# end of xwall.geom
+# end of @falaise:config/snemo/demonstrator/geometry/4.0/models/tracker_module/xwall.geom

@@ -1,5 +1,5 @@
 # -*- mode: conf-unix; -*-
-# tracker_volumes.geom
+# @falaise:config/snemo/demonstrator/geometry/4.0/models/tracker_module/tracker_volumes.geom
 
 
 ###################################################################
@@ -236,4 +236,4 @@ visibility.hidden : boolean = false
 visibility.color  : string  = "cyan"
 
 
-# end of tracker_volumes.geom
+# end of @falaise:config/snemo/demonstrator/geometry/4.0/models/tracker_module/tracker_volumes.geom

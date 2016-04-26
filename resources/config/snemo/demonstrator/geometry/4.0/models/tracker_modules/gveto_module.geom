@@ -1,5 +1,5 @@
 # -*- mode: conf-unix; -*-
-# gveto_module.geom
+# @falaise:config/snemo/demonstrator/geometry/4.0/models/tracker_module/gveto_module.geom
 #
 # DocDB 2079
 #
@@ -384,4 +384,4 @@ stacked.label_1   : string = "gveto_module_inner"
 material.ref : string = "tracking_gas"
 
 
-# end of gveto_module.geom
+# end of @falaise:config/snemo/demonstrator/geometry/4.0/models/tracker_module/gveto_module.geom

@@ -1,5 +1,5 @@
 # -*- mode: conf-unix; -*-
-# source_foil_support.geom
+# @falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/source_foil_support.geom
 
 #############################################
 # Approximation of the total mass of Delrin #
@@ -10,54 +10,55 @@
 ############################################################################
 [name="source_foil_top_gas_gap.model" type="geomtools::simple_shaped_model"]
 
-shape_type         : string  = "box"
-x                  : real as length =   58.0 mm
-y                  : real as length = 5000.0 mm
-z                  : real as length =   20.5 mm
+shape_type        : string  = "box"
+x                 : real as length =   58.0 mm
+y                 : real as length = 5000.0 mm
+z                 : real as length =   20.5 mm
 
-material.ref       : string  = "tracking_gas"
+material.ref      : string  = "tracking_gas"
 
-visibility.hidden  : boolean = false
+visibility.hidden : boolean = false
 
 
 ############################################################################
 [name="source_foil_top_support.model" type="geomtools::simple_shaped_model"]
 
-shape_type         : string  = "box"
-x                  : real as length =   58.0 mm
-y                  : real as length = 5000.0 mm
-z                  : real as length =    9.5 mm
+shape_type        : string  = "box"
+x                 : real as length =   58.0 mm
+y                 : real as length = 5000.0 mm
+z                 : real as length =    9.5 mm
 
-material.ref       : string  = "basic::delrin"
+material.ref      : string  = "basic::delrin"
 
-visibility.hidden  : boolean = false
-visibility.color   : string  = "green"
+visibility.hidden : boolean = false
+visibility.color  : string  = "green"
 
 
 ###############################################################################
 [name="source_foil_bottom_support.model" type="geomtools::simple_shaped_model"]
 
-shape_type         : string  = "box"
-x                  : real as length =   58.0 mm
-y                  : real as length = 5000.0 mm
-z                  : real as length =   12.0 mm
+shape_type        : string  = "box"
+x                 : real as length =   58.0 mm
+y                 : real as length = 5000.0 mm
+z                 : real as length =   12.0 mm
 
-material.ref       : string  = "basic::delrin"
+material.ref      : string  = "basic::delrin"
 
-visibility.hidden  : boolean = false
-visibility.color   : string  = "green"
+visibility.hidden : boolean = false
+visibility.color  : string  = "green"
 
 
 ###############################################################################
 [name="source_foil_bottom_gas_gap.model" type="geomtools::simple_shaped_model"]
 
-shape_type         : string  = "box"
-x                  : real as length =   58.0 mm
-y                  : real as length = 5000.0 mm
-z                  : real as length =   18.0 mm
+shape_type        : string  = "box"
+x                 : real as length =   58.0 mm
+y                 : real as length = 5000.0 mm
+z                 : real as length =   18.0 mm
 
-material.ref       : string  = "tracking_gas"
+material.ref      : string  = "tracking_gas"
 
-visibility.hidden  : boolean = false
+visibility.hidden : boolean = false
 
-# end of source_foil_support.geom
+
+# end of @falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/source_foil_support.geom

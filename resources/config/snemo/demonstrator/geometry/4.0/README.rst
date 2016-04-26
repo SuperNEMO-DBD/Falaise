@@ -3,7 +3,7 @@ SuperNEMO virtual geometry setup
 ================================
 
 :Authors: François Mauger, Xavier Garrido
-:Date:    2016-02-12
+:Date:    2016-04-26
 
 .. contents::
    :depth: 3
@@ -18,14 +18,26 @@ the full SuperNEMO demonstrator module.
  * Setup label is : ``snemo::demonstrator``
  * Setup version is : ``4.0``
 
-This version updates  the geometry to take into account  the use of 5"
+This version supports variant parameters.
+
+The geometry now takes into account  the use of 5"
 PMTs for bottom/top  rows of the calorimeter main walls.   Most of the
 geometry models have been defined from the original version 3.0 of the
-``snemo::demonstrator`` setup..
+``snemo::demonstrator`` setup.
+
+The beta-beta source layout has been reviewed. Source strips are now made
+of pads with new source material defined. The source module frame has been
+made more realistic. Calibration source (Bi207) can now be inserted
+at standard position from the 6 calibration tracks.
+
+Magnetic field can be enabled/disabled. Also when enable, we can choose
+between uniform vertical B-field of mapped field (using Steve Snow's work).
 
 This  setup  uses  the  new  ``basic/1.0``  materials  resource  files
 published in Bayeux >= 2.1. The ``std::XXXX`` materials are considered
-obsolete and not used anymore.
+obsolete and must not be used anymore.
+
+It uses the common definition of materials 2.0 from Falaise.
 
 Files:
 
@@ -46,19 +58,10 @@ Files:
    building  of  *geometry  models* (ala  Geant4/GDML  logical  volume
    factories)
 
-   * ``geom_models.lis`` : the list of geometry model definition file
-   * ``calorimeter_modules/calo_pmt_5inch.geom``:
-   * ``calorimeter_modules/calo_pmt_8inch.geom``:
-   * ``calorimeter_modules/calorimeter_module_common.geom`` :
-   * ``calorimeter_modules/calorimeter_module_5inch.geom`` :
-   * ``calorimeter_modules/calorimeter_module_8inch.geom`` :
-   * ``calorimeter_modules/calorimeter_submodules.geom``:
-   * ``calorimeter_modules/calorimeter_walls.geom``:
-
  * ``plugins/``  : the  directory  that contains  files that  describe
    geometry plugins.
 
-   * ``materials/plugin.conf`` : definitions of materials,
+   * ``materials/plugin.conf`` : definitions of specific materials, aliases,
    * ``locators/plugin.conf`` : locators,
    * ``magnetic_field/`` : support for magnetic field,
 
@@ -96,6 +99,8 @@ Check the geometry:
           --datatools::logging "warning" \
           --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-2.1.0/resources" \
           --load-dll Falaise \
+          --datatools::variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/variance.conf" \
+          --datatools::variant-qt-gui \
           --manager-config "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf"
 
      where:
@@ -107,3 +112,6 @@ Check the geometry:
        * ``--manager-config
          "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf"``
          indicates the main configuration file of the geometry manager.
+       * ``--datatools::variant-config`` loads the main configuration file for variant support.
+       * ``--datatools::variant-qt-gui`` launched the GUI at start to select/change variant
+	 configuration parameters (only available if Bayeux was compiled with Qt GUI support).

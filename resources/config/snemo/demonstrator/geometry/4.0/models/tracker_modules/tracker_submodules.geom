@@ -1,5 +1,5 @@
 # -*- mode: conf-unix; -*-
-# tracker_submodules.geom
+# @falaise:config/snemo/demonstrator/geometry/4.0/models/tracker_module/tracker_submodules.geom
 
 
 ###############################################################################
@@ -76,4 +76,4 @@ visibility.hidden_envelop   : boolean = false
 visibility.daughters.hidden : boolean = false
 
 
-# end of tracker_submodules.geom
+# end of @falaise:config/snemo/demonstrator/geometry/4.0/models/tracker_module/tracker_submodules.geom

@@ -60,15 +60,32 @@ inherits : string   = "source_strip_path"
 
 
 ############################################
-[category="calibration_path"    type="1103"]
-extends : string    = "source_submodule"
-by      : string[1] = "path"
+[category="source_strip_film"   type="1120"]
+extends : string    = "source_strip"
+by      : string[1] = "film"
 
 
 ############################################
-[category="calibration_source"  type="1110"]
-extends : string    = "calibration_path"
+[category="source_pad"          type="1130"]
+extends : string    = "source_strip"
+by      : string[1] = "pad"
+
+
+####################################################
+[category="source_calibration_track"    type="1103"]
+extends : string    = "source_submodule"
+by      : string[1] = "track"
+
+
+####################################################
+[category="source_calibration_carrier"  type="1110"]
+extends : string    = "source_calibration_track"
 by      : string[1] = "position"
+
+
+####################################################
+[category="source_calibration_spot"     type="1112"]
+inherits : string   = "source_calibration_carrier"
 
 
 #####################

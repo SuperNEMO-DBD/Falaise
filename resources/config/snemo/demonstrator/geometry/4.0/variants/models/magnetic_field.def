@@ -1,5 +1,5 @@
 # -*- mode: conf-unix -*-
-# magnetic_field.def
+#  @falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/variants/models/magnetic_field.def
 # Description of variants for the definition of the magnetic field (format: datatools::multi_properties)
 
 #@description The definitions for variant parameters related to the magnetic field
@@ -10,27 +10,27 @@
 #
 # magnetic_field.VM
 # +-- active : on_off_mag_field.PM
-#     +-- if_mag_field (true)
+#     +-- if_active (true)
 #         +-- mag_field_desc.VM
 #            +-- type : mag_field_type.PM
-#                +-- is_mapped_field (MappedField)
+#                +-- is_mapped (MappedField)
 #                |   +-- mapped_mag_field.VM
-#                +-- is_uniform_vertical_field (UniformVerticalField)
-#                    +-- uniform_vertical_mag_field.VM
+#                +-- is_uniform_vertical (UniformVerticalField)
+#                    +-- uniform_vertical_mag.VM
 #                        +-- intensity : mag_field_intensity.PM
 #
 
 
-################################################
-[name="mag_field_intensity.PM" type="parameter"]
+#####################################################
+[name="magnetic_field.intensity.PM" type="parameter"]
 
 #@config A parameter model describing the amplitude of the magnetic field
 
 #@description The display name of this variant
-display_name        : string = "Source foil thickness"
+display_name        : string = "Magnetic field intensity"
 
 #@description A short description of the variant
-terse_description   : string = "The thickness of the source foil"
+terse_description   : string = "The intensity of the magnetic field"
 
 #@description The type of the parameter
 type                : string = "real"
@@ -54,8 +54,8 @@ real.domain         : string = "[0.1 gauss, 100 gauss]"
 real.default        : real as magnetic_flux_density = 25 gauss
 
 
-#####################################################
-[name="uniform_vertical_mag_field.VM" type="variant"]
+##########################################################
+[name="magnetic_field.uniform_vertical.VM" type="variant"]
 
 #@config A variant model describing the parameters for the uniform vertical magnetic field
 
@@ -68,12 +68,42 @@ terse_description  : string = "The configuration parameters for the uniform vert
 #@description The list of variant parameters
 parameters : string[1] = "intensity"
 
-parameters.intensity.model       : string = "mag_field_intensity.PM"
+parameters.intensity.model       : string = "magnetic_field.intensity.PM"
 parameters.intensity.description : string = "The intensity of the magnetic field"
 
 
-###########################################
-[name="mapped_mag_field.VM" type="variant"]
+########################################################
+[name="magnetic_field.mapping_file.PM" type="parameter"]
+
+#@config A parameter model describing the mapping file of the mapped magnetic field
+
+#@description The display name of this variant
+display_name        : string = "Magnetic field mapping file"
+
+#@description A short description of the variant
+terse_description   : string = "The  mapping file of the magnetic field"
+
+#@description The type of the parameter
+type                : string = "string"
+
+#@description The mutability of the parameter
+mutability          : string = "variable"
+
+#@description The mutability mode of the parameter
+variable.mode       : string = "enumeration"
+
+#@description The number of supported values
+string.enumerated.size    : integer = 1
+
+# The list of supported values:
+string.enumerated_0.value : string = "@falaise:config/snemo/demonstrator/geometry/4.0/plugins/magnetic_field/data/csv_map_0/MapSmoothPlusDetail.csv"
+
+#@description The default value
+string.default            : string = "@falaise:config/snemo/demonstrator/geometry/4.0/plugins/magnetic_field/data/csv_map_0/MapSmoothPlusDetail.csv"
+
+
+################################################
+[name="magnetic_field.mapped.VM" type="variant"]
 
 #@config A variant model describing the parameters for the mapped magnetic field
 
@@ -84,14 +114,14 @@ display_name       : string = "Mapped magnetic field"
 terse_description  : string = "The configuration parameters for the mapped magnetic field"
 
 # #@description The list of variant parameters
-# parameters : string[1] = "intensity"
+# parameters : string[1] = "map_file"
 
-# parameters.intensity.model       : string = "mag_field_intensity.PM"
-# parameters.intensity.description : string = "The intensity of the magnetic field"
+# parameters.map_file.model       : string = "magnetic_field.mapping_file.PM"
+# parameters.map_file.description : string = "The mapping file of the mapped magnetic field"
 
 
-###########################################
-[name="mag_field_type.PM" type="parameter"]
+################################################
+[name="magnetic_field.type.PM" type="parameter"]
 
 #@config A parameter describing the type of magnetic field
 
@@ -114,26 +144,27 @@ variable.mode             : string = "enumeration"
 string.enumerated.size    : integer = 2
 
 # The list of supported values:
-string.enumerated_0.value : string = "UniformVerticalField"
-string.enumerated_1.value : string = "MappedField"
+string.enumerated_0.value : string = "UniformVertical"
+string.enumerated_1.value : string = "Mapped"
 
 #@description The default value
-string.default            : string = "UniformVerticalField"
+string.default            : string = "UniformVertical"
 
 #@description The list of variants
-variants : string[2] = "is_uniform_vertical_field" "is_mapped_field"
+variants : string[2] = "is_uniform_vertical" "is_mapped"
 
-variants.is_uniform_vertical_field.model       : string = "uniform_vertical_mag_field.VM"
-variants.is_uniform_vertical_field.description : string = "Set of parameters for the uniform vertical magnetic field"
+variants.is_uniform_vertical.model       : string = "magnetic_field.uniform_vertical.VM"
+variants.is_uniform_vertical.description : string = "Set of parameters for the uniform vertical magnetic field"
 
-variants.is_mapped_field.model                 : string = "mapped_mag_field.VM"
-variants.is_mapped_field.description           : string = "Set of parameters for the mapped magnetic field"
+variants.is_mapped.model                 : string = "magnetic_field.mapped.VM"
+variants.is_mapped.description           : string = "Set of parameters for the mapped magnetic field"
 
-string.enumerated_0.variant : string = "is_uniform_vertical_field"
+string.enumerated_0.variant : string = "is_uniform_vertical"
+string.enumerated_1.variant : string = "is_mapped"
 
 
-#########################################
-[name="mag_field_desc.VM" type="variant"]
+##############################################
+[name="magnetic_field.desc.VM" type="variant"]
 
 #@config A variant model describing the active magnetic field
 
@@ -146,12 +177,12 @@ terse_description  : string = "The description of the magnetic field"
 #@description The list of variant parameters
 parameters : string[1] = "type"
 
-parameters.type.model       : string = "mag_field_type.PM"
+parameters.type.model       : string = "magnetic_field.type.PM"
 parameters.type.description : string = "The type of the magnetic field"
 
 
-#############################################
-[name="on_off_mag_field.PM" type="parameter"]
+##################################################
+[name="magnetic_field.on_off.PM" type="parameter"]
 
 #@config A parameter model describing the activation of the magnetic field
 
@@ -171,13 +202,16 @@ mutability          : string = "variable"
 boolean.default     : boolean = true
 
 #@description List of variants
-variants : string [1] : "if_mag_field"
+variants : string [1] = "if_active"
 
-variants.if_mag_field.model       : string = "mag_field_desc.VM"
-variants.if_mag_field.description : string = "Set of parameters for activated magnetic field"
+#@description The variant model associated to the "if_active" variant
+variants.if_active.model       : string = "magnetic_field.desc.VM"
 
-#@description
-boolean.true.variant : string = "if_mag_field"
+#@description The description of the "if_active" variant
+variants.if_active.description : string = "Set of parameters for activated magnetic field"
+
+#@description Variant associated to the magnetic field activation
+boolean.true.variant : string = "if_active"
 
 
 #########################################
@@ -194,8 +228,8 @@ terse_description  : string = "The configuration parameters for the magnetic fie
 #@description The list of variant parameters
 parameters : string[1] = "active"
 
-parameters.active.model       : string = "on_off_mag_field.PM"
-parameters.active.description : string = "The activation flag for the magnetic field"
+parameters.active.model       : string = "magnetic_field.on_off.PM"
+parameters.active.description : string = "The activation flag of the magnetic field"
 
 
-# end of magnetic_field.def
+# end of @falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/variants/models/magnetic_field.def

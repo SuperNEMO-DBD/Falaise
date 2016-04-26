@@ -1,5 +1,5 @@
 # -*- mode: conf-unix; -*-
-# setup.geom
+# @falaise:config/snemo/demonstrator/geometry/4.0/models/setup.geom
 
 
 #####################
@@ -23,15 +23,40 @@ visibility.envelop_hidden   : boolean = false
 visibility.daughters.hidden : boolean = false
 visibility.color            : string  = "cyan"
 
+# # List of object inside the experimental_hall:
+# internal_item.labels : string[1] = "dummy0"
+
+# # Dummy volumes:
+# internal_item.model.dummy0     : string = "source_submodule.model"
+# internal_item.placement.dummy0 : string = "0 0 0 (mm)"
+
+# # List of object inside the experimental_hall:
+# internal_item.labels : string[4] = "dummy0" "dummy1" "dummy2" "dummy3"
+
+# # Dummy volumes:
+# internal_item.model.dummy0     : string = "source_yneg_vertical_beam.model"
+# internal_item.placement.dummy0 : string = "0 -2685 0 (mm)"
+# internal_item.model.dummy1     : string = "source_ypos_vertical_beam.model"
+# internal_item.placement.dummy1 : string = "0 +2685 0 (mm)"
+# internal_item.model.dummy2     : string = "source_zneg_horizontal_beam.model"
+# internal_item.placement.dummy2 : string = "0 0 -1735 (mm)"
+# internal_item.model.dummy3     : string = "source_zpos_horizontal_beam.model"
+# internal_item.placement.dummy3 : string = "0 0 +1735 (mm)"
+
 # List of object inside the experimental_hall:
-internal_item.labels : string[7] = \
-  "module_0" \
-  "bottom_shield" \
-  "top_shield"  \
-  "back_shield"  \
-  "front_shield"  \
-  "left_shield"  \
-  "right_shield"
+#@description The list of daughter volumes
+#@variant_only shield:shield/if_no_shield|true
+internal_item.labels : string[1] = "module_0"
+
+# #@variant_only shield:shield/if_shield|false
+# internal_item.labels : string[7] = \
+#   "module_0" \
+#   "bottom_shield" \
+#   "top_shield"  \
+#   "back_shield"  \
+#   "front_shield"  \
+#   "left_shield"  \
+#   "right_shield"
 
 # Module #0 (demonstrator):
 internal_item.model.module_0          : string = "module_basic.model"
@@ -82,9 +107,9 @@ mapping.daughter_id.top_shield    : string = "[external_shield:side=5]"
 
 material.ref : string = "vacuum"
 
-world.x      : real as length = 11000. mm
-world.y      : real as length = 11000. mm
-world.z      : real as length = 11000. mm
+world.x      : real as length = 11000.0 mm
+world.y      : real as length = 11000.0 mm
+world.z      : real as length = 11000.0 mm
 
 ####################################
 # Setup hosted in the world volume #
@@ -106,4 +131,4 @@ visibility.color            : string = "grey"
 mapping.daughter_id.setup : string = "[hall:hall=0]"
 
 
-# end of setup.geom
+# end of @falaise:config/snemo/demonstrator/geometry/4.0/models/setup.geom

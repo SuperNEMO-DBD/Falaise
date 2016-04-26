@@ -1,5 +1,5 @@
 # -*- mode: conf-unix; -*-
-# pmt_5inch.geom
+# @falaise:config/snemo/demonstrator/geometry/4.0/models/tracker_module/pmt_5inch.geom
 
 #################################################
 ### PMT HAMAMATSU R6594 (5")                  ###
@@ -100,4 +100,4 @@ visibility.daughters.hidden : boolean = true
 # internal_item.filled.model.dynodes     : string  = "PMT_HAMAMATSU_R6594.dynodes"
 
 
-# end of pmt_5inch.geom
+# end of @falaise:config/snemo/demonstrator/geometry/4.0/models/tracker_module/pmt_5inch.geom

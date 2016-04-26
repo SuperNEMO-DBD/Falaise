@@ -1,5 +1,5 @@
 # -*- mode: conf-unix; -*-
-# xwall_module.geom
+# @falaise:config/snemo/demonstrator/geometry/4.0/models/tracker_module/xwall_module.geom
 
 ########################
 # In tracking gas part #
@@ -457,4 +457,4 @@ material.ref              : string = "tracking_gas"
 visibility.hidden_envelop : boolean = false
 
 
-# end of xwall_module.geom
+# end of @falaise:config/snemo/demonstrator/geometry/4.0/models/tracker_module/xwall_module.geom

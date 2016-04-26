@@ -1,14 +1,20 @@
-# geom_models.lis
+# -*- mode: conf-unix; -*-
+# @falaise:config/snemo/demonstrator/geometry/4.0/models/geom_models.lis
 # List of geometry models definition files for the SuperNEMO Demonstrator
-#
 
 # Source frame layout:
 @falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/source_calibration.geom
+@falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/basic/source_pads.geom
+@falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/basic/source_strips.geom
+@falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/source_blocks.geom
+@falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/source_layer.geom
 @falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/source_frame_horizontal_beams.geom
 @falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/source_frame_vertical_beams.geom
-@falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/source_strips.geom
 @falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/source_foil_support.geom
 @falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/source_module.geom
+
+# #@falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/source_pads.geom
+# #@falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/source_strips.geom
 
 # Tracker layout:
 @falaise:config/snemo/demonstrator/geometry/4.0/models/tracker_modules/pmt_5inch.geom
@@ -41,4 +47,4 @@
 @falaise:config/snemo/demonstrator/geometry/4.0/models/setup.geom
 
 
-# end of geom_models.lis
+# end of @falaise:config/snemo/demonstrator/geometry/4.0/models/geom_models.lis
