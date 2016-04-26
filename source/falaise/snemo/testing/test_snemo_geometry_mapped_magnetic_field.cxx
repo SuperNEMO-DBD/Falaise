@@ -62,6 +62,7 @@ int main (int argc_, char ** argv_)
     std::string map_filename;
     bool draw = false;
     bool trace = false;
+    double yslice = datatools::invalid_real();
 
     int iarg = 1;
     while (iarg < argc_) {
@@ -74,6 +75,8 @@ int main (int argc_, char ** argv_)
             draw = true;
           } else if (option == "-T" || option == "--trace") {
             trace = true;
+          } else if (option == "-Y" || option == "--y-slice") {
+            yslice = 0.0;
           } else {
             std::clog << datatools::io::warning << "ignoring option '"
                       << option << "'!" << std::endl;
@@ -117,32 +120,54 @@ int main (int argc_, char ** argv_)
       double dx = 0.125 * CLHEP::m;
       double dy = 0.25 * CLHEP::m;
       double dz = 0.15 * CLHEP::m;
+      double bmax=0.0;
+      double bzmax=0.0;
       for (double x = -1.0 * CLHEP::m; x <= +1.0 * CLHEP::m; x += dx) {
         for (double y = -3.0 * CLHEP::m; y <= +3.0 * CLHEP::m; y += dy) {
           for (double z = -2.0 * CLHEP::m; z <= +2.0 * CLHEP::m; z += dz) {
             position.set(x, y, z);
             if (mmf.compute_magnetic_field(position, time, B)
                 == snemo::geometry::mapped_magnetic_field::STATUS_SUCCESS) {
-              tmp_file.out() << position.x() / CLHEP::m << ' '
-                             << position.y() / CLHEP::m << ' '
-                             << position.z() / CLHEP::m << ' '
-                             << bscale * B.x() / (CLHEP::gauss) << ' '
-                             << bscale * B.y() / (CLHEP::gauss) << ' '
-                             << bscale * B.z() / (CLHEP::gauss) << ' '
-                             << std::endl;
+              bool save_it = true;
+              if (datatools::is_valid(yslice)) {
+                if ( std::abs(position.y() - yslice) > 0.25 * dy) {
+                  save_it = false;
+                }
+              }
+              if (save_it) {
+                tmp_file.out() << position.x() / CLHEP::m << ' '
+                               << position.y() / CLHEP::m << ' '
+                               << position.z() / CLHEP::m << ' '
+                               << bscale * B.x() / (CLHEP::gauss) << ' '
+                               << bscale * B.y() / (CLHEP::gauss) << ' '
+                               << bscale * B.z() / (CLHEP::gauss) << ' '
+                               << std::endl;
+              }
+              if (B.mag() > bmax) {
+                bmax = B.mag();
+              }
+              if (std::abs(B.z()) > bzmax) {
+                bzmax = B.z();
+              }
             }
           }
         }
       }
+      std::clog << "B(max)  is : " << bmax / (CLHEP::gauss) << " G" << std::endl;
+      std::clog << "Bz(max) is : " << bzmax / (CLHEP::gauss) << " G" << std::endl;
     }
 
     {
-      // From Steve's Python test script:
+      // from Steve's Python test script:
       // At  1.6231 -1.3692 -0.337
       //     B=[-1662.2485000000004, 11250.897124999996, -9231.159109999995]
+      // Somewhere in the middle of the tracking chamber:
       double x = -0.337  * CLHEP::m;
       double y =  1.6231 * CLHEP::m;
       double z = -1.3692 * CLHEP::m;
+      // double x =  0.25  * CLHEP::m;
+      // double y =  1.5 * CLHEP::m;
+      // double z =  1.0 * CLHEP::m;
       geomtools::vector_3d position(x, y, z);
       geomtools::vector_3d B;
       mmf.compute_magnetic_field(position, 0.0, B);
@@ -155,7 +180,9 @@ int main (int argc_, char ** argv_)
                 << B.y() / b_unit << ", "
                 << B.z() / b_unit << ", "
                 << B.x() / b_unit << "]"
+                << " mG"
                 << std::endl;
+      std::clog << "|B| = " << B.mag() / b_unit << " mG" << std::endl;
     }
 
     mmf.reset();
@@ -176,6 +203,18 @@ int main (int argc_, char ** argv_)
       {
         std::ostringstream plot_cmd;
         plot_cmd << "splot '" << tmp_file.get_filename() << "' u 1:2:3:4:5:6 notitle 'Mapped magnetic field' with vectors";
+        g1.cmd (plot_cmd.str());
+        g1.showonscreen(); // window output
+        geomtools::gnuplot_drawer::wait_for_key();
+        usleep(200);
+      }
+
+      {
+        g1.set_xlabel("x (m)").set_ylabel("z (m)");
+        g1.cmd("set xrange [-0.75:+0.75]");
+        g1.cmd("set yrange [-2:+2]");
+        std::ostringstream plot_cmd;
+        plot_cmd << "plot '" << tmp_file.get_filename() << "' u 1:3:4:6 notitle 'Mapped magnetic field' with vectors";
         g1.cmd (plot_cmd.str());
         g1.showonscreen(); // window output
         geomtools::gnuplot_drawer::wait_for_key();
