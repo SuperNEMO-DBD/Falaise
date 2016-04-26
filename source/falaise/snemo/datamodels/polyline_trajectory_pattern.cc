@@ -13,7 +13,7 @@ namespace snemo {
     // static
     const std::string & polyline_trajectory_pattern::pattern_id()
     {
-      static const std::string _id(polyline_trajectory_pattern::pattern_id());
+      static const std::string _id("polyline");
       return _id;
     }
 
