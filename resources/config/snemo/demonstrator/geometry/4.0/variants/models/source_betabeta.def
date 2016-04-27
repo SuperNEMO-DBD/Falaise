@@ -164,7 +164,7 @@ variants                  : string[1] = "if_basic"
 variants.if_basic.model       : string = "source_betabeta.basic.VM"
 variants.if_basic.description : string = "Set of parameters for basic beta-beta source layout"
 
-#@description "Basic" layout is associated to the "is_basic" model
+#@description "Basic" layout is associated to the "if_basic" model
 string.enumerated_0.variant : string = "if_basic"
 
 
