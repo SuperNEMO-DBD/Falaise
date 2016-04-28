@@ -38,10 +38,10 @@
 // - Boost:
 #include <boost/scoped_ptr.hpp>
 // - Bayeux/dpp:
-#include <dpp/base_module.h>
+#include <bayeux/dpp/base_module.h>
 
 // This project:
-#include <snemo/datamodels/calibrated_data.h>
+#include <falaise/snemo/datamodels/calibrated_data.h>
 
 namespace geomtools {
   class manager;
