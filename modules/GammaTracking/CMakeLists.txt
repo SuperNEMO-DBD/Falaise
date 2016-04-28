@@ -7,9 +7,6 @@ project(FalaiseGammaTrackingPlugin VERSION "2.1.0")
 
 # Ensure our code can see the Falaise headers
 #include_directories(${Falaise_INCLUDE_DIRS})
-include_directories(${FALAISE_BUILDPRODUCT_DIR}/include)
-include_directories(${FALAISE_BUILDPRODUCT_DIR}/include/falaise)
-include_directories(${Bayeux_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source)
 
@@ -31,7 +28,7 @@ list(APPEND GammaTracking_SOURCES
 # Build a dynamic library from our sources
 add_library(GammaTracking SHARED ${GammaTracking_HEADERS} ${GammaTracking_SOURCES})
 
-target_link_libraries(GammaTracking ${GSL_LIBRARIES} ${Bayeux_LIBRARIES})
+target_link_libraries(GammaTracking ${Bayeux_LIBRARIES})
 
 # Apple linker requires dynamic lookup of symbols, so we
 # add link flags on this platform
