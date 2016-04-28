@@ -39,12 +39,9 @@ endif()
 # Include directories for all subdirectories
 #
 include_directories(
-  ${Boost_INCLUDE_DIRS}
-  ${Bayeux_INCLUDE_DIRS}
-  ${FALAISE_BUILDPRODUCT_DIR}/include
-  ${FALAISE_BUILDPRODUCT_DIR}/include/falaise
   ${PROJECT_BINARY_DIR}/include
   ${PROJECT_SOURCE_DIR}/include
+  ${ROOT_INCLUDE_DIRS}
   )
 
 #-----------------------------------------------------------------------

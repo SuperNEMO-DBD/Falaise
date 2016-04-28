@@ -211,9 +211,10 @@ add_library(Falaise_EventBrowser SHARED
   )
 
 target_link_libraries(Falaise_EventBrowser
+  Falaise
   ${Boost_LIBRARIES}
   ${ROOT_LIBRARIES}
-  Falaise)
+  )
 
 if(APPLE)
   set_target_properties(Falaise_EventBrowser
