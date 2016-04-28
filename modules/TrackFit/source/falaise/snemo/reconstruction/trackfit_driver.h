@@ -42,7 +42,7 @@
 #include <boost/scoped_ptr.hpp>
 
 // Falaise:
-#include <snemo/processing/base_tracker_fitter.h>
+#include <falaise/snemo/processing/base_tracker_fitter.h>
 
 // This project:
 #include <TrackFit/i_drift_time_calibration.h>
