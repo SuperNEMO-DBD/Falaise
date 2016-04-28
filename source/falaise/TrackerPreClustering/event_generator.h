@@ -49,14 +49,11 @@
 #pragma clang diagnostic pop
 #endif
 
-
-
-
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 
 // This project:
-#include <TrackerPreClustering/gg_hit.h>
+#include "falaise/TrackerPreClustering/gg_hit.h"
 
 namespace TrackerPreClustering {
   /// \brief Generator of mock events (collections of Geiger hits)

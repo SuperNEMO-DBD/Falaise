@@ -24,10 +24,6 @@
 # Configure application
 # - Bit hacky for now
 find_package(Boost 1.55 REQUIRED program_options)
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-include_directories(BEFORE ${Bayeux_INCLUDE_DIRS})
-include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
 
 #-----------------------------------------------------------------------
 # Declare sources
@@ -54,8 +50,11 @@ set(flreconstruct_SOURCES
 # Compile/Link App
 #
 add_executable(flreconstruct ${flreconstruct_SOURCES})
-set_target_properties(flreconstruct PROPERTIES COMPILE_DEFINITIONS ENABLE_BINRELOC)
-
+target_include_directories(flreconstruct PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
+  )
+target_compile_definitions(flreconstruct PRIVATE ENABLE_BINRELOC)
 target_link_libraries(flreconstruct
   Falaise
   ${Bayeux_LIBRARIES}

@@ -256,7 +256,6 @@ mark_as_advanced(FALAISE_WITH_DEVELOPER_TOOLS)
 # - GSL
 # - ROOT
 # - Geant4
-
 find_package(Bayeux 2.1.0 REQUIRED)
 if(NOT Bayeux_MCTOOLS_GEANT4_FOUND)
   message(FATAL_ERROR "Bayeux found, but it does not supply the MCTools/Geant4 module")

@@ -24,13 +24,7 @@
 # Configure application
 # - Bit hacky for now
 find_package(Boost 1.55 REQUIRED program_options filesystem system)
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-
 find_package(Geant4 REQUIRED)
-
-include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(BEFORE ${Bayeux_INCLUDE_DIRS})
-include_directories(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
 
 #-----------------------------------------------------------------------
 # Build command line app
@@ -55,8 +49,11 @@ set(FLSIMULATE_SOURCES
 
 # - Compile/Link
 add_executable(flsimulate ${FLSIMULATE_SOURCES})
-set_target_properties(flsimulate PROPERTIES COMPILE_DEFINITIONS ENABLE_BINRELOC)
-
+target_include_directories(flsimulate PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
+  )
+target_compile_definitions(flsimulate PRIVATE ENABLE_BINRELOC)
 target_link_libraries(flsimulate
   Falaise
   ${Bayeux_MCTOOLS_GEANT4_LIBRARY}

@@ -1,15 +1,15 @@
 /// \file falaise/snemo/processing/base_gamma_builder.cc
 
 // Ourselves:
-#include <snemo/processing/base_gamma_builder.h>
+#include "falaise/snemo/processing/base_gamma_builder.h"
 
 // Third party:
 // - GSL:
 #include <gsl/gsl_cdf.h>
 // - Bayeux/datatools:
-#include <datatools/properties.h>
+#include <bayeux/datatools/properties.h>
 // - Bayeux/geomtools:
-#include <geomtools/manager.h>
+#include <bayeux/geomtools/manager.h>
 
 // This project:
 #include <falaise/snemo/datamodels/particle_track_data.h>

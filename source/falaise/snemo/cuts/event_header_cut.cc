@@ -1,7 +1,7 @@
 // falaise/snemo/cuts/event_header_cut.cc
 
 // Ourselves:
-#include <falaise/snemo/cuts/event_header_cut.h>
+#include "falaise/snemo/cuts/event_header_cut.h"
 
 // Standard library:
 #include <stdexcept>
@@ -10,11 +10,11 @@
 
 // Third party:
 // - Bayeux/datatools:
-#include <datatools/properties.h>
-#include <datatools/things.h>
+#include <bayeux/datatools/properties.h>
+#include <bayeux/datatools/things.h>
 
 // This project :
-#include <falaise/snemo/datamodels/event_header.h>
+#include "falaise/snemo/datamodels/event_header.h"
 
 namespace snemo {
 

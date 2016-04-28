@@ -1,7 +1,7 @@
 // interface.cc
 
 // Ourselves:
-#include <TrackerPreClustering/interface.h>
+#include "falaise/TrackerPreClustering/interface.h"
 
 // Standard library:
 #include <limits>

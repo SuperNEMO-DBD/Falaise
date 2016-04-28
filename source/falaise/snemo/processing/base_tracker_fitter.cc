@@ -1,7 +1,7 @@
 /// \file falaise/snemo/processing/base_tracker_fitter.cc
 
 // Ourselves:
-#include <snemo/processing/base_tracker_fitter.h>
+#include "falaise/snemo/processing/base_tracker_fitter.h"
 
 // Standard library:
 #include <sstream>
@@ -10,17 +10,17 @@
 
 // Third party:
 // - Bayeux/datatools:
-#include <datatools/properties.h>
+#include <bayeux/datatools/properties.h>
 // - Bayeux/geomtools:
-#include <geomtools/manager.h>
+#include <bayeux/geomtools/manager.h>
 
 // This project:
-#include <snemo/geometry/locator_plugin.h>
-#include <snemo/geometry/gg_locator.h>
-#include <snemo/datamodels/tracker_clustering_data.h>
-#include <snemo/datamodels/tracker_trajectory_data.h>
-#include <snemo/datamodels/helix_trajectory_pattern.h>
-#include <snemo/datamodels/line_trajectory_pattern.h>
+#include <falaise/snemo/geometry/locator_plugin.h>
+#include <falaise/snemo/geometry/gg_locator.h>
+#include <falaise/snemo/datamodels/tracker_clustering_data.h>
+#include <falaise/snemo/datamodels/tracker_trajectory_data.h>
+#include <falaise/snemo/datamodels/helix_trajectory_pattern.h>
+#include <falaise/snemo/datamodels/line_trajectory_pattern.h>
 
 namespace snemo {
 

@@ -24,9 +24,9 @@
 #-----------------------------------------------------------------------
 # Core configuration
 #
-include_directories(${FALAISE_BUILDPRODUCT_DIR}/include)
-include_directories(${FALAISE_BUILDPRODUCT_DIR}/include/falaise)
-include_directories(${Bayeux_INCLUDE_DIRS})
+#include_directories(${FALAISE_BUILDPRODUCT_DIR}/include)
+#include_directories(${FALAISE_BUILDPRODUCT_DIR}/include/falaise)
+#include_directories(${Bayeux_INCLUDE_DIRS})
 
 #-----------------------------------------------------------------------
 # Library

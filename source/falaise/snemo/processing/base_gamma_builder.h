@@ -34,11 +34,11 @@
 // Third party:
 // - Boost:
 // - Bayeux/datatools:
-#include <datatools/logger.h>
-#include <datatools/object_configuration_description.h>
+#include <bayeux/datatools/logger.h>
+#include <bayeux/datatools/object_configuration_description.h>
 
 // Falaise:
-#include <snemo/datamodels/calibrated_data.h>
+#include <falaise/snemo/datamodels/calibrated_data.h>
 
 // Forward declaration :
 namespace datatools {

@@ -2,7 +2,7 @@
 /// \file falaise/TrackerPreClustering/event_generator.cc
 
 // Ourselves:
-#include <TrackerPreClustering/event_generator.h>
+#include "falaise/TrackerPreClustering/event_generator.h"
 
 // Standard library:
 #include <algorithm>
@@ -24,8 +24,8 @@
 // - CLHEP:
 #include <CLHEP/Units/SystemOfUnits.h>
 // - Bayeux/datatools:
-#include <datatools/logger.h>
-#include <datatools/exception.h>
+#include <bayeux/datatools/logger.h>
+#include <bayeux/datatools/exception.h>
 
 namespace TrackerPreClustering {
 

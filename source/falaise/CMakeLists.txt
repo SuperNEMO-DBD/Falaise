@@ -66,7 +66,11 @@ endforeach()
 #
 add_library(Falaise SHARED ${FalaiseLibrary_HEADERS} ${FalaiseLibrary_SOURCES})
 target_compile_features(Falaise PUBLIC ${FALAISE_COMPILE_FEATURES})
-target_link_libraries(Falaise PUBLIC ${Bayeux_LIBRARIES})
+target_include_directories(Falaise PUBLIC
+  $<BUILD_INTERFACE:${FALAISE_BUILDPRODUCT_DIR}/include>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDE_DIR}>
+  )
+target_link_libraries(Falaise PUBLIC Bayeux)
 
 # - Rpath it
 set_target_properties(Falaise PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)

@@ -42,7 +42,7 @@
 // - Boost:
 #include <boost/cstdint.hpp>
 // - Bayeux/datatools:
-#include <datatools/logger.h>
+#include <bayeux/datatools/logger.h>
 
 namespace TrackerPreClustering {
 
@@ -137,7 +137,7 @@ namespace TrackerPreClustering {
 
 } // end of namespace TrackerPreClustering
 
-#include <TrackerPreClustering/interface.tpp>
+#include "falaise/TrackerPreClustering/interface.tpp"
 
 #endif // FALAISE_TRACKERPRECLUSTERING_INTERFACE_H
 

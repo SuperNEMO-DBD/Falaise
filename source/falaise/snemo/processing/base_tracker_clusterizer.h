@@ -34,16 +34,16 @@
 // - Boost:
 #include <boost/cstdint.hpp>
 // - Bayeux/datatools:
-#include <datatools/logger.h>
-#include <datatools/object_configuration_description.h>
+#include <bayeux/datatools/logger.h>
+#include <bayeux/datatools/object_configuration_description.h>
 // - Bayeux/geomtools:
-#include <geomtools/id_selector.h>
+#include <bayeux/geomtools/id_selector.h>
 
 // Falaise:
-#include <snemo/datamodels/calibrated_data.h>
+#include "falaise/snemo/datamodels/calibrated_data.h"
 
 // Falaise module:
-#include <TrackerPreClustering/pre_clusterizer.h>
+#include "falaise/TrackerPreClustering/pre_clusterizer.h"
 
 // Forward declaration :
 namespace datatools {
