@@ -1,7 +1,7 @@
 // \file falaise/snemo/reconstruction/charged_particle_tracking_module.cc
 
 // Ourselves:
-#include <snemo/reconstruction/charged_particle_tracking_module.h>
+#include <falaise/snemo/reconstruction/charged_particle_tracking_module.h>
 
 // Standard library:
 #include <stdexcept>
@@ -9,10 +9,10 @@
 
 // Third party:
 // - Bayeux/datatools:
-#include <datatools/service_manager.h>
+#include <bayeux/datatools/service_manager.h>
 // - Bayeux/geomtools:
-#include <geomtools/geometry_service.h>
-#include <geomtools/manager.h>
+#include <bayeux/geomtools/geometry_service.h>
+#include <bayeux/geomtools/manager.h>
 
 // This project (Falaise):
 #include <falaise/snemo/processing/services.h>
