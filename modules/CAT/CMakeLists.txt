@@ -5,13 +5,11 @@ cmake_minimum_required(VERSION 3.3)
 project(FalaiseCATPlugin VERSION "2.1.0")
 
 # Modules use Falaise, so we need to locate this or fail
-# find_package(Falaise REQUIRED)
+#find_package(Falaise REQUIRED)
 
 # Ensure our code can see the Falaise headers
 #include_directories(${Falaise_INCLUDE_DIRS})
-include_directories(${FALAISE_BUILDPRODUCT_DIR}/include)
-include_directories(${FALAISE_BUILDPRODUCT_DIR}/include/falaise)
-include_directories(${Bayeux_INCLUDE_DIRS})
+include_directories(${ROOT_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source/falaise)
@@ -46,7 +44,6 @@ list(APPEND FalaiseCATPlugin_SOURCES
 
 # Build a dynamic library from our sources
 add_library(Falaise_CAT SHARED ${FalaiseCATPlugin_HEADERS} ${FalaiseCATPlugin_SOURCES})
-
 target_link_libraries(Falaise_CAT Falaise)
 
 # Apple linker requires dynamic lookup of symbols, so we

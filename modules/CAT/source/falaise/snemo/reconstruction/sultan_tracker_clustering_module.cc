@@ -9,10 +9,10 @@
 
 // Third party:
 // - Bayeux/datatools:
-#include <datatools/service_manager.h>
+#include <bayeux/datatools/service_manager.h>
 // - Bayeux/geomtools:
-#include <geomtools/geometry_service.h>
-#include <geomtools/manager.h>
+#include <bayeux/geomtools/geometry_service.h>
+#include <bayeux/geomtools/manager.h>
 
 // This project:
 #include <falaise/snemo/datamodels/data_model.h>
@@ -21,7 +21,7 @@
 #include <falaise/snemo/processing/services.h>
 
 // This plugin:
-#include <snemo/reconstruction/sultan_driver.h>
+#include <falaise/snemo/reconstruction/sultan_driver.h>
 
 namespace snemo {
 
