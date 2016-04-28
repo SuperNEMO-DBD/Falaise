@@ -65,6 +65,13 @@ namespace snemo {
 				uint32_t clocktick_1600ns;
 			};
 			
+			enum trigger_mode{
+					INVALID = 0,
+					CARACO  = 1,
+					APE     = 2,
+					DAVE    = 3					
+				};
+
 			struct coincidence_event_record : public coincidence_base_record
 			{
 				coincidence_event_record();
@@ -73,14 +80,17 @@ namespace snemo {
 				uint32_t clocktick_1600ns;
 				std::bitset<trigger_info::NZONES> zoning_word[mapping::NUMBER_OF_SIDES];
 				std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> tracker_finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
-				enum trigger_mode{
-					INVALID = 0,
-					CARACO  = 1,
-					APE     = 2,
-					DAVE    = 3					
-				};
-				trigger_mode trigger_mode;
-
+				coincidence_trigger_algorithm_new_strategy::trigger_mode trigger_mode;
+			};
+			
+			struct L2_coincidence_decision
+			{
+				L2_coincidence_decision();
+				void reset();
+				const void display() const;
+				bool L2_coincidence_decision_bool;
+				uint32_t L2_clocktick_decision;
+				coincidence_trigger_algorithm_new_strategy::trigger_mode trigger_mode;				
 			};
 			
 			/// Previous event structure who pass the caraco trigger, store trigger informations (total = 173 [bits]). Useful for searching delayed alpha pattern.
@@ -95,7 +105,6 @@ namespace snemo {
 				std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> tracker_finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
 			};
 
-			static const uint32_t SHIFT_COMPUTING_CLOCKTICK_1600NS = 1;
 			static const uint32_t SIZE_OF_RESERVED_COINCIDENCE_CALO_RECORDS = 5;
 
 			/// Default constructor
@@ -146,7 +155,10 @@ namespace snemo {
 			
 			/// Preparing coincidence calo records structure
 			void _preparing_calo_coincidence(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_);
-			
+
+			/// Update a coinc calo record 1600 from a calo summary record 25 ns
+			void _update_coinc_calo_record(const calo_trigger_algorithm::calo_summary_record & a_calo_summary_record_25ns, coincidence_trigger_algorithm_new_strategy::coincidence_calo_record & a_coinc_calo_record_1600ns);			
+				
 			/// Compute clocktick 1600ns for calo records
 			void _compute_clocktick_1600ns(const uint32_t clocktick_25ns_, uint32_t & clocktick_1600ns_);
 			
@@ -175,12 +187,15 @@ namespace snemo {
       // Configuration :
       bool _initialized_; //!< Initialization flag
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
-			unsigned int _calorimeter_gate_size_; //!< Size of calorimeter gate for extension of calo records during X CT 1600ns
+			unsigned int _coincidence_calorimeter_gate_size_; //!< Size of calorimeter gate for extension of calo records during X CT 1600ns
 			std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record> _coincidence_calo_records_; //!< Vector of coincidence calo tracker record and delayed coincidence record
 			std::vector<std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record, tracker_trigger_algorithm_test_new_strategy::tracker_record> > _pair_records_;
-			previous_event_record _previous_event_record_; //!< Previous prompt event record
+			
+			// Circular buffer for PER : (size of 5 or 10 ????)
+			previous_event_record _previous_event_record_; //!< Previous prompt event record 
 			bool _caraco_decision_; //!< Decision for caraco trigger algorihtm
 			bool _delayed_coincidence_decision_; //!< Decision for delayed (APE or DAVE) trigger algorithm
+			
 			
 		};
 			

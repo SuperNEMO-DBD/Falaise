@@ -2,6 +2,7 @@
 set(FalaiseDigitizationPlugin_VALIDATION
   trigger_algorithm_efficiency_validation.cxx
   trigger_algorithm_efficiency_analysis.cxx
+  trigger_algorithm_test_fake_ctw.cxx
   )
 
 # Use C++11

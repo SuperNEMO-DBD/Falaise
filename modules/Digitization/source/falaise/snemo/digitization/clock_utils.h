@@ -37,8 +37,13 @@ namespace snemo {
 			static const int32_t CALO_CB_SHIFT_CLOCKTICK_NUMBER = 7;  //!< Number of clocktick which shift the internal clocktick in a caloCB
 
 			// To define with Thierry ? : 
-			static const int32_t TRACKER_FEB_SHIFT_CLOCKTICK_NUMBER = 1; //!< Number of clocktick which shift the internal clocktick in a trackerFEB
-			static const int32_t TRACKER_CB_SHIFT_CLOCKTICK_NUMBER = 0;  //!< Number of clocktick which shift the internal clocktick in a trackerCB
+			static const int32_t TRACKER_FEB_SHIFT_CLOCKTICK_NUMBER = 1; //!< Number of clocktick 800 ns which shift the internal clocktick in a trackerFEB
+			static const int32_t TRACKER_CB_SHIFT_CLOCKTICK_NUMBER = 0;  //!< Number of clocktick 800 ns which shift the internal clocktick in a trackerCB
+
+			static const int32_t TRACKER_FEB_TO_CB_SHIFT_CLOCKTICK_NUMBER = 1; //!< Number of clocktick 800 ns to take into account the transit between FEB and CB
+			static const int32_t TRACKER_CB_TO_TB_SHIFT_CLOCKTICK_NUMBER = 1; //!< Number of clocktick 800 ns to take into account the transit between CB and TB
+
+			static const uint32_t TRIGGER_COMPUTING_SHIFT_CLOCKTICK_1600NS = 1; //!< Shift to take into account the time of computing and when it is published (CT+1)
 
 			/// Default constructor
 			clock_utils();

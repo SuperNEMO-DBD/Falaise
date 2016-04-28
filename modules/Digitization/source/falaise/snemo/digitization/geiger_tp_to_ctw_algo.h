@@ -26,9 +26,6 @@ namespace snemo {
     public : 
       /// Shift for board index because there is 10FEB/1CB/10FEB in one crate
       static const unsigned int BOARD_SHIFT_INDEX = -1;
-
-			/// Clocktick shift between feb and CB
-			static const unsigned int CLOCKTICK_SHIFT_FEB_TO_CB = 1;
 			
       /// Default constructor
       geiger_tp_to_ctw_algo();

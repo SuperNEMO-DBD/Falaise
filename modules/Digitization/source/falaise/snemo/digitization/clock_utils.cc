@@ -28,6 +28,10 @@ namespace snemo {
     const int32_t clock_utils::TRACKER_FEB_SHIFT_CLOCKTICK_NUMBER;
     const int32_t clock_utils::TRACKER_CB_SHIFT_CLOCKTICK_NUMBER;
 
+    const int32_t clock_utils::TRACKER_FEB_TO_CB_SHIFT_CLOCKTICK_NUMBER;
+    const int32_t clock_utils::TRACKER_CB_TO_TB_SHIFT_CLOCKTICK_NUMBER;
+
+
     clock_utils::clock_utils()
     {
       _initialized_ = false;

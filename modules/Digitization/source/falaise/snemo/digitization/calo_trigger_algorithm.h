@@ -71,6 +71,7 @@ namespace snemo {
 				void reset();
 				void reset_summary_boolean_only();
 				const void display() const;
+				const bool is_empty() const;
 				bool single_side_coinc;
 				bool total_multiplicity_threshold;
 				bool calo_finale_decision;

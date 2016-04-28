@@ -4,6 +4,7 @@
 
 // Ourselves:
 #include <snemo/digitization/geiger_tp_to_ctw_algo.h>
+#include <snemo/digitization/clock_utils.h>
 
 namespace snemo {
   
@@ -11,7 +12,6 @@ namespace snemo {
 
 
     const unsigned int geiger_tp_to_ctw_algo::BOARD_SHIFT_INDEX;
-    const unsigned int geiger_tp_to_ctw_algo::CLOCKTICK_SHIFT_FEB_TO_CB;
     
     geiger_tp_to_ctw_algo::geiger_tp_to_ctw_algo()
     {
@@ -63,7 +63,7 @@ namespace snemo {
 
       a_geiger_ctw_.set_header(my_geiger_tp_.get_hit_id(),
 			       temporary_feb_id,
-			       my_geiger_tp_.get_clocktick_800ns() + CLOCKTICK_SHIFT_FEB_TO_CB);
+			       my_geiger_tp_.get_clocktick_800ns() + clock_utils::TRACKER_FEB_TO_CB_SHIFT_CLOCKTICK_NUMBER);
       unsigned int block_index = my_geiger_tp_.get_geom_id().get(mapping::BOARD_INDEX);
       if (block_index >  mapping::CONTROL_BOARD_ID) block_index -= 1;
       std::bitset<5> hardware_status = 0x0;

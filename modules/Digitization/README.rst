@@ -36,7 +36,7 @@ UML diagram of the process :
       \                  |       \      |  Geiger signal   |                               | |    Geiger TP     | |                             |----------------|              |                   /
        \                 |        \     |  Geiger signal   |                               | |    Geiger TP     | |                             | |------------| |              |                  /
         \   |********************| \    |  Geiger signal   |                               | |    Geiger TP     | |                             | | Geiger CTW | |              |                 /
-         \->| SD_to_GG_sinal_algo|  \   |  Geiger signal   |   |***********************|   | |    Geiger TP     | |   |*********************|   | | Geiger CTW | |   |***************************|
+         \->|SD_to_GG_signal_algo|  \   |  Geiger signal   |   |***********************|   | |    Geiger TP     | |   |*********************|   | | Geiger CTW | |   |***************************|
             |********************|   \->|  Geiger signal   |-->|  signal_to_GG_TP_algo |-->| |    Geiger TP     | |-->|  GG_TP_to_calo_CTW  |-->| | Geiger CTW | |-->| Tracker_trigger_algorithm |
                                         |  Geiger signal   |   |***********************|   | |    Geiger TP     | |   |*********************|   | | Geiger CTW | |   |***************************|
                                         |  Geiger signal   |                               | |    Geiger TP     | |                             | | Geiger CTW | |

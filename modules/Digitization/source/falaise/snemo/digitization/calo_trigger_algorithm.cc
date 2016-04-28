@@ -97,6 +97,18 @@ namespace snemo {
       std::clog << std::endl;
       return;
     }
+    
+    const bool calo_trigger_algorithm::calo_summary_record::is_empty() const
+    {
+      if (zoning_word[0].any() || zoning_word[1].any() 
+	  || total_multiplicity_side_0.any() || total_multiplicity_side_1.any() || total_multiplicity_gveto.any()
+	  || LTO_side_0 || LTO_side_1 || LTO_gveto || xt_info_bitset.any())
+	{
+	  return false;
+	}
+
+      else return true;
+    }
 
     calo_trigger_algorithm::calo_trigger_algorithm()
     {
@@ -614,7 +626,8 @@ namespace snemo {
 	  _build_calo_record_summary_structure(my_calo_summary_record);
 	  _compute_calo_finale_decision(my_calo_summary_record);
 	  if (_calo_level_1_finale_decision_.calo_finale_decision) _calo_finale_decision_ = true;
-	  calo_records_.push_back(_calo_level_1_finale_decision_);
+	  
+	  if(!_calo_level_1_finale_decision_.is_empty()) calo_records_.push_back(_calo_level_1_finale_decision_);
 	  _calo_record_per_clocktick_.reset();
 	} // end of iclocktick
 

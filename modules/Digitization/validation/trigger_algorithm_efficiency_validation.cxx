@@ -300,7 +300,7 @@ int main( int  argc_ , char **argv_  )
     int  calo_threshold = 1;
     bool inhibit_both_side_coinc = false;
     bool inhibit_single_side_coinc = false;    
-    int  calorimeter_gate_size = 4;
+    int  coincidence_calorimeter_gate_size = 4; // Don't forget to modify at 10 CT 1600 for new trigger analysis
     bool activate_coincidence = true;
     
     trigger_config.store("calo.circular_buffer_depth", calo_circular_buffer_depth);
@@ -312,7 +312,7 @@ int main( int  argc_ , char **argv_  )
     trigger_config.store("tracker.mem3_file", mem3);
     trigger_config.store("tracker.mem4_file", mem4);
     trigger_config.store("tracker.mem5_file", mem5);
-    trigger_config.store("coincidence.calorimeter_gate_size", calorimeter_gate_size);
+    trigger_config.store("coincidence.calorimeter_gate_size", coincidence_calorimeter_gate_size);
     trigger_config.store("activate_coincidence", activate_coincidence);
 
     // Creation of trigger display manager :
@@ -372,8 +372,6 @@ int main( int  argc_ , char **argv_  )
 
 		// Processing Geiger signal :
 		sd_2_geiger_signal.process(SD, signal_data);
-
-
 		
 		if (debug) signal_data.tree_dump(std::clog, "*** Signal Data ***", "INFO : ");
 		
