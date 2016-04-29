@@ -430,6 +430,7 @@ int main( int  argc_ , char **argv_  )
 		// Creation of outputs collection structures for calo and tracker
 		std::vector<snemo::digitization::calo_trigger_algorithm::calo_summary_record> calo_collection_records;
 		std::vector<snemo::digitization::tracker_trigger_algorithm_test_new_strategy::tracker_record>   tracker_collection_records;
+		std::vector<snemo::digitization::coincidence_trigger_algorithm_new_strategy::coincidence_event_record> coincidence_collection_records;
 		
 		// Reseting trigger display
 		my_trigger_display.reset_matrix_pattern();
@@ -441,6 +442,7 @@ int main( int  argc_ , char **argv_  )
 		// Finale structures :
 		calo_collection_records = my_trigger_algo.get_calo_records_vector();
 		tracker_collection_records = my_trigger_algo.get_tracker_records_vector();
+		coincidence_collection_records = my_trigger_algo.get_coincidence_records_vector();
 
 		if (debug) my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
 	        if (debug) my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
@@ -451,6 +453,7 @@ int main( int  argc_ , char **argv_  )
 		if (debug) std::clog << "********* Size of Finale structures for one event *********" << std::endl;
 		if (debug) std::clog << "Calo collection size    : " << calo_collection_records.size() << std::endl;
 		if (debug) std::clog << "Tracker collection size : " << tracker_collection_records.size() << std::endl;
+		if (debug) std::clog << "Coincidence collection size : " << coincidence_collection_records.size() << std::endl;
 		
 	      } // end of if has "calo" || "xcalo" || "gveto" || "gg" step hits
 	    

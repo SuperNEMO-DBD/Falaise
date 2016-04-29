@@ -106,6 +106,7 @@ namespace snemo {
 			};
 
 			static const uint32_t SIZE_OF_RESERVED_COINCIDENCE_CALO_RECORDS = 5;
+			static const uint32_t SIZE_OF_L2_COINCIDENCE_DECISION_GATE = 5;
 
 			/// Default constructor
 			coincidence_trigger_algorithm_new_strategy();
@@ -175,6 +176,7 @@ namespace snemo {
 
 			/// Alpha delayed Pattern Event (APE) process for delayed
 			void _process_delayed_coincidence(const std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record, tracker_trigger_algorithm_test_new_strategy::tracker_record> a_pair_for_a_clocktick_,
+																				const coincidence_trigger_algorithm_new_strategy::previous_event_record & a_previous_event_record_,
 																				coincidence_trigger_algorithm_new_strategy::coincidence_event_record & a_delayed_record_);
 			
 			/// Process calo records and tracker records
@@ -192,11 +194,10 @@ namespace snemo {
 			std::vector<std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record, tracker_trigger_algorithm_test_new_strategy::tracker_record> > _pair_records_;
 			
 			// Circular buffer for PER : (size of 5 or 10 ????)
-			previous_event_record _previous_event_record_; //!< Previous prompt event record 
+			std::vector<coincidence_trigger_algorithm_new_strategy::previous_event_record> _previous_event_records_; //!< Previous prompt event record 
 			bool _caraco_decision_; //!< Decision for caraco trigger algorihtm
 			bool _delayed_coincidence_decision_; //!< Decision for delayed (APE or DAVE) trigger algorithm
-			
-			
+			std::vector<coincidence_trigger_algorithm_new_strategy::L2_coincidence_decision> _L2_coincidence_decison_records_; //!< Vector of L2 decision for an event (it is possible to trig several times for the same "SD" event
 		};
 			
 	} // end of namespace digitization

@@ -175,7 +175,7 @@ int main( int  argc_ , char **argv_  )
     int  calo_threshold = 1;
     bool inhibit_both_side_coinc = false;
     bool inhibit_single_side_coinc = false;    
-    int  coincidence_calorimeter_gate_size = 10; // Number of CT 1600 coincidence gate for calorimeter
+    int  coincidence_calorimeter_gate_size = 8; // Number of CT 1600 coincidence gate for calorimeter
     bool activate_coincidence = true;
     
     trigger_config.store("calo.circular_buffer_depth", calo_circular_buffer_depth);
