@@ -436,7 +436,7 @@ namespace snemo {
     {
       DT_THROW_IF(!is_calo_1600ns(), std::logic_error, "Boolean calo 1600ns is not activated, it can't display ! ");
 
-      coincidence_trigger_algorithm_new_strategy::coincidence_calo_record a_coinc_calo_record;
+      coincidence_trigger_algorithm::coincidence_calo_record a_coinc_calo_record;
       for (int i = 0; i < a_trigger_algo_._coinc_algo_._coincidence_calo_records_.size(); i++)
     	{
     	  if (clocktick_1600ns_ == a_trigger_algo_._coinc_algo_._coincidence_calo_records_[i].clocktick_1600ns) a_coinc_calo_record = a_trigger_algo_._coinc_algo_._coincidence_calo_records_[i];
@@ -502,8 +502,8 @@ namespace snemo {
     {
       DT_THROW_IF(!is_tracker_1600ns(), std::logic_error, "Boolean tracker 1600ns is not activated, it can't display ! ");
 
-      tracker_trigger_algorithm_test_new_strategy::tracker_record a_tracker_record;
-      tracker_trigger_algorithm_test_new_strategy::geiger_matrix  a_geiger_matrix;
+      tracker_trigger_algorithm::tracker_record a_tracker_record;
+      tracker_trigger_algorithm::geiger_matrix  a_geiger_matrix;
       for (int i = 0; i < a_trigger_algo_._tracker_records_.size(); i++)
     	{
     	  if (clocktick_1600ns_ == a_trigger_algo_._tracker_records_[i].clocktick_1600ns
@@ -635,13 +635,13 @@ namespace snemo {
     {
       DT_THROW_IF(!is_coinc_1600ns(), std::logic_error, "Boolean coinc 1600ns is not activated, it can't display ! ");
 
-      coincidence_trigger_algorithm_new_strategy::coincidence_event_record a_coincidence_record;
+      coincidence_trigger_algorithm::coincidence_event_record a_coincidence_record;
       for (int i = 0; i < a_trigger_algo_._coincidence_records_.size(); i++)
     	{
 	  if (clocktick_1600ns_ == a_trigger_algo_._coincidence_records_[i].clocktick_1600ns) a_coincidence_record = a_trigger_algo_._coincidence_records_[i];
 	}      
 
-      tracker_trigger_algorithm_test_new_strategy::geiger_matrix  a_geiger_matrix;
+      tracker_trigger_algorithm::geiger_matrix  a_geiger_matrix;
       for (int i = 0; i < a_trigger_algo_._tracker_records_.size(); i++)
     	{
     	  if (clocktick_1600ns_ == a_coincidence_record.clocktick_1600ns
@@ -748,10 +748,10 @@ namespace snemo {
       if (vector_size == 0) {}
       else{
 
-	std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_event_record>::const_iterator it_coinc = a_trigger_algo_._coincidence_records_.begin();
+	std::vector<coincidence_trigger_algorithm::coincidence_event_record>::const_iterator it_coinc = a_trigger_algo_._coincidence_records_.begin();
 	for (it_coinc; it_coinc != a_trigger_algo_._coincidence_records_.end(); it_coinc++)
 	  {
-	    coincidence_trigger_algorithm_new_strategy::coincidence_event_record a_coinc_record = *it_coinc;
+	    coincidence_trigger_algorithm::coincidence_event_record a_coinc_record = *it_coinc;
 	    uint32_t coinc_clocktick = a_coinc_record.clocktick_1600ns;
 	    display_coincidence_trigger_1600ns(a_trigger_algo_, coinc_clocktick);
 	  }

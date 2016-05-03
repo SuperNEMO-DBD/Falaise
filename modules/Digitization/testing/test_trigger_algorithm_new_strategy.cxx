@@ -337,7 +337,7 @@ int main( int  argc_ , char **argv_  )
 
 		// Creation of outputs collection structures for calo and tracker
 		std::vector<snemo::digitization::calo_trigger_algorithm::calo_summary_record> calo_collection_records;
-		std::vector<snemo::digitization::tracker_trigger_algorithm_test_new_strategy::tracker_record>   tracker_collection_records;
+		std::vector<snemo::digitization::tracker_trigger_algorithm::tracker_record>   tracker_collection_records;
 		
 		// Reseting trigger display
 		my_trigger_display.reset_matrix_pattern();

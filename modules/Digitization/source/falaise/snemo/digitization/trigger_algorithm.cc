@@ -111,7 +111,7 @@ namespace snemo {
       _delayed_finale_trigger_decision_ = false;
     }
     
-    const std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record>trigger_algorithm::get_tracker_records_vector() const
+    const std::vector<tracker_trigger_algorithm::tracker_record>trigger_algorithm::get_tracker_records_vector() const
     {
       return _tracker_records_;
     }    
@@ -121,12 +121,12 @@ namespace snemo {
       return _calo_records_;
     }	
 
-    const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record> trigger_algorithm::get_coincidence_calo_records_vector() const
+    const std::vector<coincidence_trigger_algorithm::coincidence_calo_record> trigger_algorithm::get_coincidence_calo_records_vector() const
     {
       return _coinc_algo_.get_coincidence_calo_records_vector();
     }
 
-    const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_event_record> trigger_algorithm::get_coincidence_records_vector() const
+    const std::vector<coincidence_trigger_algorithm::coincidence_event_record> trigger_algorithm::get_coincidence_records_vector() const
     {
       return _coincidence_records_;
     }

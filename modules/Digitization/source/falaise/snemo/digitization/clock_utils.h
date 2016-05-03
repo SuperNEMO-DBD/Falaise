@@ -45,6 +45,8 @@ namespace snemo {
 
 			static const uint32_t TRIGGER_COMPUTING_SHIFT_CLOCKTICK_1600NS = 1; //!< Shift to take into account the time of computing and when it is published (CT+1)
 
+			static const uint32_t PREVIOUS_EVENT_RECORD_LIVING_NUMBER_OF_CLOCKTICK = 625; //!< Number of CT 1600 a previous event record "live" 625 * 1600 = 1 ms
+			
 			/// Default constructor
 			clock_utils();
 

@@ -13,10 +13,6 @@ namespace snemo {
     {
       _initialized_      = false;
       _mem_type_         = MEM_UNDEFINED;
-      _mem_size_type_    = MEM_SIZE_UNDEFINED;
-      _mem_algo_type_    = MEM_ALGO_UNDEFINED;
-      _min_multiplicity_ = -1;
-      _max_gap_          = -1;
       return;
     }   
 
@@ -28,7 +24,7 @@ namespace snemo {
     
     void tracker_trigger_mem_maker::initialize()
     {
-      DT_THROW_IF(_mem_type_ == MEM_UNDEFINED || _mem_size_type_ == MEM_SIZE_UNDEFINED || _mem_algo_type_ == MEM_ALGO_UNDEFINED, std::logic_error, "Configuration is not (fully) set, object can't be initialized ! ");
+      DT_THROW_IF(_mem_type_ == MEM_UNDEFINED, std::logic_error, "Configuration is not (fully) set, object can't be initialized ! ");
       _build();
       _initialized_ = true;
       return;
@@ -43,32 +39,12 @@ namespace snemo {
     {
       _initialized_   = false;
       _mem_type_      = MEM_UNDEFINED;
-      _mem_size_type_ = MEM_SIZE_UNDEFINED;
-      _mem_algo_type_ = MEM_ALGO_UNDEFINED;
       return;
     }    
  
-    void tracker_trigger_mem_maker::configure(const mem_type & memory_type_, 
-					      const mem_size_type & memory_size_type_, 
-					      const mem_build_algo_type & memory_algo_type_)
+    void tracker_trigger_mem_maker::configure(const mem_type & memory_type_)
     {
       _mem_type_      = memory_type_;
-      _mem_size_type_ = memory_size_type_;
-      _mem_algo_type_ = memory_algo_type_;
-      return;
-    }
-
-    void tracker_trigger_mem_maker::set_min_multiplicity(const unsigned int & min_multiplicity_)
-    {
-      DT_THROW_IF(_mem_algo_type_ != MEM_LVL0_LVL1_ALGO_MIN_MULTIPLICITY, std::logic_error, "Memory algo type value is not good '" << _mem_algo_type_ << "' ! ");
-      _min_multiplicity_ = min_multiplicity_;
-      return;
-    }
-			
-    void tracker_trigger_mem_maker::set_max_gap(const unsigned int & max_gap_)
-    { 
-      DT_THROW_IF(_mem_algo_type_ != MEM_LVL0_LVL1_ALGO_MAX_GAP, std::logic_error, "Memory algo type value is not good '" << _mem_algo_type_ << "' ! ");
-      _max_gap_ = max_gap_;
       return;
     }
 
@@ -80,12 +56,24 @@ namespace snemo {
 	  DT_THROW(std::logic_error, "Undefined memory type ! ");
 	  break;
 
-	case MEM_LVL0_LVL1 :
-	  _build_lvl0_lvl1_memory();
+	case MEM1 :
+	  _build_mem1();
 	  break;
 
-	case MEM_LVL1_LVL2 :
-	  _build_lvl1_lvl2_memory();
+	case MEM2 :
+	  _build_mem2();
+	  break;
+
+	case MEM3 :
+	  _build_mem3();
+	  break;
+
+	case MEM4 :
+	  _build_mem4();
+	  break;
+
+	case MEM5 :
+	  _build_mem5();
 	  break;
 
 	default :
@@ -96,308 +84,337 @@ namespace snemo {
       return;
     }
 
-    void tracker_trigger_mem_maker::_build_lvl0_lvl1_memory()
+    void tracker_trigger_mem_maker::_build_mem1()
     {
-      switch (_mem_size_type_)
-	{
-	case MEM_SIZE_UNDEFINED :
-	  DT_THROW(std::logic_error, "Undefined memory size type ! ");
-	  break;
-	  
-	case MEM_SIZE_5X1 : 
-	  _build_lvl0_lvl1_5X1_memory();
-	  break;
-	  
-	case MEM_SIZE_6X1 :
-	  _build_lvl0_lvl1_6X1_memory();
-	  break;
-      
-	default :
-	  DT_THROW(std::logic_error, "Memory size '" << _mem_size_type_ << "' is not supported, enter a good value ! ");
-	  break;
-	};
+      if (_mem1_.get() == 0) _mem1_.reset(new mem1_type);
+
+      std::size_t vfull_layer_min  = 0;
+      std::size_t vfull_layer_max  = 8;
+      std::size_t vfull_mult_min   = 6;
+      std::size_t vfull_mult_max   = 9;
+      std::size_t vinner_layer_min = 0;
+      std::size_t vinner_layer_max = 5;
+      std::size_t vinner_mult_min  = 3;
+      std::size_t vinner_mult_max  = 6;
+      std::size_t vouter_layer_min = 4;
+      std::size_t vouter_layer_max = 8;
+      std::size_t vouter_mult_min  = 3;
+      std::size_t vouter_mult_max  = 5;
+
+      for (unsigned long addr = 0; addr < _mem1_->get_number_of_addresses(); addr++) {
+        mem1_type::address_type address = addr;
+
+        // Default NO_VTRACK pattern:
+        classification_type clsf = NO_VTRACK;
+
+        // Search for OUTER_VTRACK pattern:
+        {
+          std::size_t vouter_count = 0;
+          for (std::size_t ilayer = vouter_layer_min; ilayer <= vouter_layer_max; ilayer++) {
+            if (address.test(ilayer)) vouter_count++;
+          }
+          if (vouter_count >= vouter_mult_min && vouter_count <= vouter_mult_max) {
+            clsf = OUTER_VTRACK;
+          }
+        }
+
+        // Search for INNER_VTRACK pattern:
+        {
+          std::size_t vinner_count = 0;
+          for (std::size_t ilayer = vinner_layer_min; ilayer <= vinner_layer_max; ilayer++) {
+            if (address.test(ilayer)) vinner_count++;
+          }
+          if (vinner_count >= vinner_mult_min && vinner_count <= vinner_mult_max) {
+            clsf = INNER_VTRACK;
+          }
+        }
+
+        // Search for FULL_VTRACK pattern:
+        {
+          std::size_t vfull_count = 0;
+          for (std::size_t ilayer = vfull_layer_min; ilayer <= vfull_layer_max; ilayer++) {
+            if (address.test(ilayer)) vfull_count++;
+          }
+          if (vfull_count >= vfull_mult_min && vfull_count <= vfull_mult_max) {
+            clsf = FULL_VTRACK;
+          }
+        }
+        mem1_type::data_type data = clsf;
+        _mem1_->push(address, data);
+      }
+      //      _mem1_->memory_map_display();
       
       return;
     }
-
-    void tracker_trigger_mem_maker::_build_lvl0_lvl1_5X1_memory()
+    
+    void tracker_trigger_mem_maker::_build_mem2()
     {
-      switch (_mem_algo_type_)
-	{
-	case MEM_ALGO_UNDEFINED :
-	  DT_THROW(std::logic_error, "Undefined memory algorithm type ! ");
-	  break;
-	case MEM_LVL0_LVL1_ALGO_MIN_MULTIPLICITY : 
-	  _build_lvl0_lvl1_5X1_min_multiplicity_memory();
-	  break;
-	  
-	case MEM_LVL0_LVL1_ALGO_MAX_GAP :
-	  _build_lvl0_lvl1_5X1_max_gap_memory();
-	  break;
-	  
-	default :
-	  DT_THROW(std::logic_error, "Memory algo type '" << _mem_algo_type_ << "' is not supported, enter a good value ! ");
-	  break;
-	};
+      if (_mem2_.get() == 0) _mem2_.reset(new mem2_type);
+
+      std::size_t wide_row_min          = 0;
+      std::size_t wide_row_max          = 7;
+      std::size_t wide_mult_min         = 6;
+      std::size_t wide_mult_max         = 8;
+      std::size_t narrow_left_row_min   = 0;
+      std::size_t narrow_left_row_max   = 4;
+      std::size_t narrow_left_mult_min  = 3;
+      std::size_t narrow_left_mult_max  = 5;
+      std::size_t narrow_right_row_min  = 3;
+      std::size_t narrow_right_row_max  = 7;
+      std::size_t narrow_right_mult_min = 3;
+      std::size_t narrow_right_mult_max = 5;
+
+      for (unsigned long addr = 0; addr < _mem2_->get_number_of_addresses(); addr++) {
+        mem2_type::address_type address = addr;
+        // Default NO_TRACK pattern:
+        classification_type clsf = NO_HTRACK;
+        std::size_t full_count = 0;
+        for (int irow = 0; irow < 8; irow++) {
+          if (address.test(irow)) {
+            full_count++;
+          }
+        }
+        // Search for patterns:
+        std::string addr_str = address.to_string();
+        std::string left_str = addr_str;
+        std::reverse(left_str.begin(), left_str.end());
+        std::string right_str = addr_str;
+
+        // Left:
+        std::size_t lpos0 = left_str.find("1111");
+        std::size_t lpos1 = left_str.find("111");
+        std::size_t lpos2 = left_str.find("1101");
+        std::size_t lpos3 = left_str.find("1011");
+        bool left = false;
+        if (!left && lpos0 != left_str.npos) {
+          if (lpos0 <= 2) {
+            left = true;
+          }
+        }
+        if (!left && lpos1 != left_str.npos) {
+          if (lpos1 <= 2) {
+            left = true;
+          }
+        }
+        if (!left && lpos2 != left_str.npos) {
+          if (lpos2 <= 2) {
+            left = true;
+          }
+        }
+        if (!left && lpos3 != left_str.npos) {
+          if (lpos3 <= 2) {
+            left = true;
+          }
+        }
+
+        // Right:
+        std::size_t rpos0 = right_str.find("1111");
+        std::size_t rpos1 = right_str.find("111");
+        std::size_t rpos2 = right_str.find("1101");
+        std::size_t rpos3 = right_str.find("1011");
+        bool right = false;
+        if (!right && rpos0 != right_str.npos) {
+          if (rpos0 <= 1) { // Trick to favor left classification
+            right = true;
+          }
+        }
+        if (!right && rpos1 != right_str.npos) {
+          if (rpos1 <= 2) {
+            right = true;
+          }
+        }
+        if (!right && rpos2 != right_str.npos) {
+          if (rpos2 <= 1) {
+            right = true;
+          }
+        }
+        if (!right && rpos3 != right_str.npos) {
+          if (rpos3 <= 1) {
+            right = true;
+          }
+        }
+
+        char c12n2 = ' ';
+        if (c12n2 == ' ' && full_count >= 6) c12n2 = 'W';
+        if (c12n2 == ' ' && left && right) c12n2 = 'W';
+        if (c12n2 == ' ' && left && ! right) c12n2 = 'L';
+        if (c12n2 == ' ' && ! left && right) c12n2 = 'R';
+        if (c12n2 == ' ') c12n2 = 'V';
+
+        if (full_count < 6 && c12n2 == 'W') {
+          if (right_str.substr(0,2) == "00" && left_str.substr(0,2) != "00") c12n2 = 'L';
+          if (left_str.substr(0,2) == "00" && right_str.substr(0,2) != "00") c12n2 = 'R';
+          if (left_str.substr(0,2) == "00" && right_str.substr(0,2) == "00") c12n2 = 'L';
+        }
+
+        if (c12n2 == 'V') {
+          clsf = NO_HTRACK;
+        } else if (c12n2 == 'R') {
+          clsf = NARROW_RIGHT_HTRACK;
+        } else if (c12n2 == 'L') {
+          clsf = NARROW_LEFT_HTRACK;
+        } else if (c12n2 == 'W') {
+          clsf = WIDE_HTRACK;
+        }
+        mem2_type::data_type data = clsf;
+        _mem2_->push(address, data);
+      }
+ 
+      return;
+    }    
+
+    void tracker_trigger_mem_maker::_build_mem3()
+    {
+      if (_mem3_.get() == 0) _mem3_.reset(new mem3_type);
+
+      std::size_t szD_BIT_INNER = 0;
+      std::size_t szD_BIT_OUTER = 1;
+      std::size_t szC_BIT_INNER = 2;
+      std::size_t szC_BIT_OUTER = 3;
+      std::size_t szB_BIT_INNER = 4;
+      std::size_t szB_BIT_OUTER = 5;
+      std::size_t szA_BIT_INNER = 6;
+      std::size_t szA_BIT_OUTER = 7;
+  
+      std::size_t data_BIT_INNER = 0;
+      std::size_t data_BIT_OUTER = 1;
+
+      bool debug = false;
+
+      //                  O I O I O I O I
+      // bitset address : 7 6 5 4 3 2 1 0
+      //   Sliding Zone : A A B B C C D D
       
+      for (unsigned long addr = 0; addr < _mem3_->get_number_of_addresses(); addr++) 
+	{
+	  
+	  mem3_type::address_type address = addr; 
+
+	  // Default VVOID pattern:
+	  mem3_type::data_type data = NO_VTRACK;
+
+	  if (address.test(szB_BIT_INNER) || address.test(szC_BIT_INNER) || address.test(szD_BIT_INNER) || address.test(szA_BIT_INNER)) data.set(data_BIT_INNER);
+	  if (address.test(szB_BIT_OUTER) || address.test(szC_BIT_OUTER) || address.test(szD_BIT_OUTER) || address.test(szA_BIT_OUTER)) data.set(data_BIT_OUTER);
+
+	  if (address.to_string() == "10000001") {
+	    data.set(data_BIT_INNER);
+	    data.set(data_BIT_OUTER, 0);
+	  }
+
+	  if (address.to_string() == "01000010") {
+	    data.set(data_BIT_INNER);
+	    data.set(data_BIT_OUTER, 0);
+	  }
+	  _mem3_->push(address, data);
+        }   
       return;
     }
 
-    void tracker_trigger_mem_maker::_build_lvl0_lvl1_5X1_min_multiplicity_memory()
-    { 
-      DT_THROW_IF(_min_multiplicity_ < 0 || _min_multiplicity_ > 5, std::logic_error, "Minimum multiplicity value is not set or valid '" << _min_multiplicity_ << "' ! ");
-      if (_mem_A5D1_.get() == 0)
+    void tracker_trigger_mem_maker::_build_mem4()
+    {
+      if (_mem4_.get() == 0) _mem4_.reset(new mem4_type);
+
+      std::size_t ADDR_szD_BIT_LEFT   = 0;
+      std::size_t ADDR_szC_BIT_RIGHT  = 1;
+      std::size_t ADDR_szC_BIT_LEFT   = 2;
+      std::size_t ADDR_szB_BIT_RIGHT  = 3;
+      std::size_t ADDR_szB_BIT_LEFT   = 4;
+      std::size_t ADDR_szA_BIT_RIGHT  = 5;  
+
+      std::size_t DATA_BIT_RIGHT  = 0;
+      std::size_t DATA_BIT_MIDDLE = 1;
+      std::size_t DATA_BIT_LEFT   = 2;
+
+      //                   R L R L R L 
+      // bitset address :  5 4 3 2 1 0
+      //   Sliding Zone :  A B B C C D   
+      // A6 D3 memory   :
+      //                    L M R
+      //    bitset data :   2 1 0
+
+      for (unsigned long addr = 0; addr < _mem4_->get_number_of_addresses(); addr++) 
 	{
-	  _mem_A5D1_.reset(new memory<5,1>);	
+	  mem4_type::address_type address = addr;
+	  mem4_type::data_type data = 0x0;
+
+	  // Default NO_HTRACK pattern:   
+	  classification_type szA_clsf = NO_HTRACK;
+	  classification_type szB_clsf = NO_HTRACK;
+	  classification_type szC_clsf = NO_HTRACK;
+	  classification_type szD_clsf = NO_HTRACK;
+	  
+	  std::string addr_str = address.to_string();  
+
+	  if (address.test(ADDR_szA_BIT_RIGHT) || address.test(ADDR_szB_BIT_LEFT)) data.set(DATA_BIT_LEFT);
+	  if (address.test(ADDR_szB_BIT_RIGHT) || address.test(ADDR_szC_BIT_LEFT)) data.set(DATA_BIT_MIDDLE);
+	  if (address.test(ADDR_szC_BIT_RIGHT) || address.test(ADDR_szD_BIT_LEFT)) data.set(DATA_BIT_RIGHT);
+
+	  _mem4_->push(address, data);
+	  std::string data_str = data.to_string();
 	}
       
-      for (unsigned int i = 0; i < 32; i++)
-	{   
-	  std::bitset<5> my_address_bitset;
-	  std::bitset<1> my_data_bitset;
-	  my_address_bitset = i;
-	  if (my_address_bitset.count() < _min_multiplicity_)
+      return;
+    }
+
+    void tracker_trigger_mem_maker::_build_mem5()
+    {
+      if (_mem5_.get() == 0) _mem5_.reset(new mem5_type);
+
+      std::size_t szD_BIT_INNER = 0;
+      std::size_t szD_BIT_OUTER = 1;
+      std::size_t szC_BIT_INNER = 2;
+      std::size_t szC_BIT_OUTER = 3;
+      std::size_t szB_BIT_INNER = 4;
+      std::size_t szB_BIT_OUTER = 5;
+      std::size_t szA_BIT_INNER = 6;
+      std::size_t szA_BIT_OUTER = 7; 
+
+      std::size_t data_BIT_RIGHT  = 0;
+      std::size_t data_BIT_MIDDLE = 1;
+      std::size_t data_BIT_LEFT   = 2;
+
+      // This memory is build with the reverse logic, data is set to 111
+      // Vertical address:
+      //                   O I O I O I O I             L M  R
+      // vertical bitset : 7 6 5 4 3 2 1 0 ---> data : 2 1  0
+      //   Sliding Zone  : A A B B C C D D             A BC D
+
+      for (unsigned long addr = 0; addr < _mem5_->get_number_of_addresses(); addr++) 
+	{
+	  mem5_type::address_type address = addr;
+	  // Reverse logic, data is set to 111
+	  mem5_type::data_type data = 0x7;
+
+	  // We only see when data is not left, not middle or not right
+
+	  if (!(address.test(szA_BIT_INNER) ||
+		address.test(szA_BIT_OUTER)))
 	    {
-	      my_data_bitset = 0;
-	    }
-	  else
-	    {  
-	      my_data_bitset = 1;
+	      data.set(data_BIT_LEFT, false);
 	    }
 
-	  _mem_A5D1_->push(i, my_data_bitset);
-	}
-      return;
-    }
-
-    void tracker_trigger_mem_maker::_build_lvl0_lvl1_5X1_max_gap_memory()
-    {
-      DT_THROW_IF(_max_gap_ < 0 || _max_gap_ > 5, std::logic_error, "Max gap value is not set or valid '" << _max_gap_ << "' ! ");
-
-      if (_mem_A5D1_.get() == 0)
-	{
-	  _mem_A5D1_.reset(new memory<5,1>);	
-	}
-
-      for (unsigned int i = 0; i < 32; i++)
-	{   
-	  std::bitset<5> my_address_bitset;
-	  std::bitset<1> my_data_bitset;
-	  my_address_bitset = i;
-	  if (my_address_bitset.count() < 2)
+	  if (!(address.test(szD_BIT_INNER) ||
+		address.test(szD_BIT_OUTER)))
 	    {
-	      my_data_bitset = 0;
+	      data.set(data_BIT_RIGHT, false);
 	    }
-	  else
-	    {  
-	      std::vector<unsigned int> bit_activated_index;
-	      unsigned int bitset_min_gap = -1;
-	      for (unsigned int j = 0; j < 5; j++)
-		{
-		  if (my_address_bitset.test(j) == true)
-		    {
-		      bit_activated_index.push_back(j+1);
-		    }
-		}
-	    
-	      if (bit_activated_index.size() > 1)
-		{
-		  unsigned int size = bit_activated_index.size();
-		  for (int j = 0; j < bit_activated_index.size(); j++)
-		    {
-		      unsigned int activated_bit_index_max = bit_activated_index[j+1];
-		      unsigned int activated_bit_index_current = bit_activated_index[j];
-		      if (activated_bit_index_max != activated_bit_index_current)
-			{			  
-			  unsigned int gap_between_2_activated_bits = activated_bit_index_max - activated_bit_index_current - 1;	  
-			  if (gap_between_2_activated_bits < bitset_min_gap)
-			    {
-			      bitset_min_gap = gap_between_2_activated_bits;
-			    }    
-			}
-
-		      if (bitset_min_gap <= _max_gap_)
-			{
-			  my_data_bitset = 1;
-			}
-		    }
-		}
-	    }
-	    
-	  _mem_A5D1_->push(i, my_data_bitset);
-	}
-      return;
-    }
-
-    void tracker_trigger_mem_maker::_build_lvl0_lvl1_6X1_memory()
-    {
-      switch (_mem_algo_type_)
-	{
-	case MEM_ALGO_UNDEFINED :
-	  DT_THROW(std::logic_error, "Undefined memory algorithm type ! ");
-	  break;
-	case MEM_LVL0_LVL1_ALGO_MIN_MULTIPLICITY : 
-	  _build_lvl0_lvl1_6X1_min_multiplicity_memory();
-	  break;
 	  
-	case MEM_LVL0_LVL1_ALGO_MAX_GAP :
-	  _build_lvl0_lvl1_6X1_max_gap_memory();
-	  break;
-	  
-	default :
-	  DT_THROW(std::logic_error, "Memory algo type '" << _mem_algo_type_ << "' is not supported, enter a good value ! ");
-	  break;
-	};
-      
-      return;
-    }
-
-    void tracker_trigger_mem_maker::_build_lvl0_lvl1_6X1_min_multiplicity_memory()
-    { 
-      DT_THROW_IF(_min_multiplicity_ < 0 || _min_multiplicity_ > 6, std::logic_error, "Minimum multiplicity value is not set or valid '" << _min_multiplicity_ << "' ! ");
-      if (_mem_A6D1_.get() == 0)
-	{
-	  _mem_A6D1_.reset(new memory<6,1>);	
-	}
-      
-      for (unsigned int i = 0; i < 64; i++)
-	{   
-	  std::bitset<6> my_address_bitset;
-	  std::bitset<1> my_data_bitset;
-	  my_address_bitset = i;
-	  if (my_address_bitset.count() < _min_multiplicity_)
+	  if (!(address.test(szB_BIT_INNER) ||
+		address.test(szB_BIT_OUTER) ||
+		address.test(szC_BIT_INNER) ||
+		address.test(szC_BIT_OUTER)))
 	    {
-	      my_data_bitset = 0;
+	      data.set(data_BIT_MIDDLE,false);
 	    }
-	  else
-	    {  
-	      my_data_bitset = 1;
-	    }
-
-	  _mem_A6D1_->push(i, my_data_bitset);
+	  std::string data_str = data.to_string();
+	  _mem5_->push(address, data);
 	}
-      return;
+ 
       return;
     }
 
-    void tracker_trigger_mem_maker::_build_lvl0_lvl1_6X1_max_gap_memory()
-    {
-
-    DT_THROW_IF(_max_gap_ < 0 || _max_gap_ > 6, std::logic_error, "Max gap value is not set or valid '" << _max_gap_ << "' ! ");
-
-      if (_mem_A6D1_.get() == 0)
-	{
-	  _mem_A6D1_.reset(new memory<6,1>);	
-	}
-
-      for (unsigned int i = 0; i < 64; i++)
-	{   
-	  std::bitset<6> my_address_bitset;
-	  std::bitset<1> my_data_bitset;
-	  my_address_bitset = i;
-	  if (my_address_bitset.count() < 2)
-	    {
-	      my_data_bitset = 0;
-	    }
-	  else
-	    {  
-	      std::vector<unsigned int> bit_activated_index;
-	      unsigned int bitset_min_gap = -1;
-	      for (unsigned int j = 0; j < 6; j++)
-		{
-		  if (my_address_bitset.test(j) == true)
-		    {
-		      bit_activated_index.push_back(j+1);
-		    }
-		}
-	    
-	      if (bit_activated_index.size() > 1)
-		{
-		  unsigned int size = bit_activated_index.size();
-		  for (int j = 0; j < bit_activated_index.size(); j++)
-		    {
-		      unsigned int activated_bit_index_max = bit_activated_index[j+1];
-		      unsigned int activated_bit_index_current = bit_activated_index[j];
-		      if (activated_bit_index_max != activated_bit_index_current)
-			{			  
-			  unsigned int gap_between_2_activated_bits = activated_bit_index_max - activated_bit_index_current - 1;	  
-			  if (gap_between_2_activated_bits < bitset_min_gap)
-			    {
-			      bitset_min_gap = gap_between_2_activated_bits;
-			    }    
-			}
-
-		      if (bitset_min_gap <= _max_gap_)
-			{
-			  my_data_bitset = 1;
-			}
-		    }
-		}
-	    }
-	    
-	  _mem_A6D1_->push(i, my_data_bitset);
-	}
-      return;
-    }
-
-
-    void tracker_trigger_mem_maker::_build_lvl1_lvl2_memory()
-    {
-      switch (_mem_algo_type_)
-	{
-	case MEM_ALGO_UNDEFINED :
-	  DT_THROW(std::logic_error, "Undefined memory algorithm type ! ");
-	  break;
-	  
-	case MEM_LVL1_LVL2_ALGO : 
-	  _build_lvl1_lvl2_4X2_memory();
-	  break;
-      
-	default :
-	  DT_THROW(std::logic_error, "Memory algo type '" << _mem_algo_type_ << "' is not supported, enter a good value ! ");
-	  break;
-	};
-      
-      return;
-    }
-
-    void tracker_trigger_mem_maker::_build_lvl1_lvl2_4X2_memory()
-    {
-
-      static const std::string VOID        = "00";
-      static const std::string SHORT_TRACK = "11";
-      static const std::string LONG_TRACK  = "01";
-
-      if (_mem_A4D2_.get() == 0)
-	{
-	  _mem_A4D2_.reset(new memory<4,2>);	
-	}
-
-      for (unsigned int i = 0; i < 16; i++)
-	{   
-	  std::bitset<4> my_address_bitset;
-	  std::bitset<2> my_data_bitset;
-	  my_address_bitset = i;
-	  if (my_address_bitset.count() == 0)
-	    {
-	      my_data_bitset = std::bitset<2> (VOID);
-	    }
-	  else if (my_address_bitset.count() == 1)
-	    {  
-	      my_data_bitset = std::bitset<2> (SHORT_TRACK);
-	    }
-	  else
-	    {
-	      my_data_bitset = std::bitset<2> (LONG_TRACK);
-	    }
-	  _mem_A4D2_->push(i, my_data_bitset);
-	}
-      
-      return;
-    }
-
-    void tracker_trigger_mem_maker::store(const std::string & output_file_,
-					  const std::string & description_) const
+    void tracker_trigger_mem_maker::store_to_file(const std::string & output_file_,
+							       const std::string & description_) const
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Object is not initialized, store can't be done ! ");
       std::string description;
@@ -405,20 +422,16 @@ namespace snemo {
 	{
 	  description = description_;
 	}
-      if (_mem_A4D2_.get() != 0)
-	{
-      	  _mem_A4D2_->store_to_file(output_file_, description);
-	}
-     if (_mem_A5D1_.get() != 0)
-	{
-      	  _mem_A5D1_->store_to_file(output_file_, description);
-	}
-     if (_mem_A6D1_.get() != 0)
-	{
-      	  _mem_A6D1_->store_to_file(output_file_, description);
-	}
+
+      if (_mem1_.get() != 0) _mem1_->store_to_file(output_file_, description);
+      if (_mem2_.get() != 0) _mem2_->store_to_file(output_file_, description);
+      if (_mem3_.get() != 0) _mem3_->store_to_file(output_file_, description);
+      if (_mem4_.get() != 0) _mem4_->store_to_file(output_file_, description);
+      if (_mem5_.get() != 0) _mem5_->store_to_file(output_file_, description);
+
       return;
     }
+
 
   } // end of namespace digitization
 

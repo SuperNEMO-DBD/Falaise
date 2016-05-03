@@ -176,6 +176,7 @@ int main( int  argc_ , char **argv_  )
     bool inhibit_both_side_coinc = false;
     bool inhibit_single_side_coinc = false;    
     int  coincidence_calorimeter_gate_size = 8; // Number of CT 1600 coincidence gate for calorimeter
+    int previous_event_buffer_depth = 10; // Maximum number of PER record (with an internal counter of 1 ms)
     bool activate_coincidence = true;
     
     trigger_config.store("calo.circular_buffer_depth", calo_circular_buffer_depth);
@@ -188,6 +189,7 @@ int main( int  argc_ , char **argv_  )
     trigger_config.store("tracker.mem4_file", mem4);
     trigger_config.store("tracker.mem5_file", mem5);
     trigger_config.store("coincidence.calorimeter_gate_size", coincidence_calorimeter_gate_size);
+    trigger_config.store("coincidence.previous_event_buffer_depth", previous_event_buffer_depth);
     trigger_config.store("activate_coincidence", activate_coincidence);
 
     // Creation of trigger display manager :
@@ -368,7 +370,7 @@ int main( int  argc_ , char **argv_  )
 
     // Creation of outputs collection structures for calo and tracker
     std::vector<snemo::digitization::calo_trigger_algorithm::calo_summary_record> calo_collection_records;
-    std::vector<snemo::digitization::tracker_trigger_algorithm_test_new_strategy::tracker_record>   tracker_collection_records;
+    std::vector<snemo::digitization::tracker_trigger_algorithm::tracker_record>   tracker_collection_records;
     
     // Reseting trigger display
     my_trigger_display.reset_matrix_pattern();
@@ -384,7 +386,7 @@ int main( int  argc_ , char **argv_  )
     // if (debug) my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
     // if (debug) my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
 
-    std::vector<snemo::digitization::coincidence_trigger_algorithm_new_strategy::coincidence_calo_record> coincidence_collection_calo_records = my_trigger_algo.get_coincidence_calo_records_vector();
+    std::vector<snemo::digitization::coincidence_trigger_algorithm::coincidence_calo_record> coincidence_collection_calo_records = my_trigger_algo.get_coincidence_calo_records_vector();
 
     if (debug) std::clog << "Calo collection record size @ 25ns   = " << calo_collection_records.size() << std::endl;
     if (debug) std::clog << "Calo collection record size @ 1600ns = " << coincidence_collection_calo_records.size() << std::endl;

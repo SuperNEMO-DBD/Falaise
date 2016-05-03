@@ -301,6 +301,7 @@ int main( int  argc_ , char **argv_  )
     bool inhibit_both_side_coinc = false;
     bool inhibit_single_side_coinc = false;    
     int  coincidence_calorimeter_gate_size = 4; // Don't forget to modify at 10 CT 1600 for new trigger analysis
+    int previous_event_buffer_depth = 10; // Maximum number of PER record (with an internal counter of 1 ms)
     bool activate_coincidence = true;
     
     trigger_config.store("calo.circular_buffer_depth", calo_circular_buffer_depth);
@@ -313,6 +314,7 @@ int main( int  argc_ , char **argv_  )
     trigger_config.store("tracker.mem4_file", mem4);
     trigger_config.store("tracker.mem5_file", mem5);
     trigger_config.store("coincidence.calorimeter_gate_size", coincidence_calorimeter_gate_size);
+    trigger_config.store("coincidence.previous_event_buffer_depth", previous_event_buffer_depth);
     trigger_config.store("activate_coincidence", activate_coincidence);
 
     // Creation of trigger display manager :
@@ -429,8 +431,8 @@ int main( int  argc_ , char **argv_  )
 
 		// Creation of outputs collection structures for calo and tracker
 		std::vector<snemo::digitization::calo_trigger_algorithm::calo_summary_record> calo_collection_records;
-		std::vector<snemo::digitization::tracker_trigger_algorithm_test_new_strategy::tracker_record>   tracker_collection_records;
-		std::vector<snemo::digitization::coincidence_trigger_algorithm_new_strategy::coincidence_event_record> coincidence_collection_records;
+		std::vector<snemo::digitization::tracker_trigger_algorithm::tracker_record>   tracker_collection_records;
+		std::vector<snemo::digitization::coincidence_trigger_algorithm::coincidence_event_record> coincidence_collection_records;
 		
 		// Reseting trigger display
 		my_trigger_display.reset_matrix_pattern();
@@ -457,7 +459,7 @@ int main( int  argc_ , char **argv_  )
 		
 	      } // end of if has "calo" || "xcalo" || "gveto" || "gg" step hits
 	    
-	    std::vector<snemo::digitization::coincidence_trigger_algorithm_new_strategy::coincidence_calo_record> coincidence_collection_calo_records = my_trigger_algo.get_coincidence_calo_records_vector();
+	    std::vector<snemo::digitization::coincidence_trigger_algorithm::coincidence_calo_record> coincidence_collection_calo_records = my_trigger_algo.get_coincidence_calo_records_vector();
 
 	    raw_trigger_prompt_decision = my_trigger_algo.get_finale_decision();
 	    raw_trigger_delayed_decision = my_trigger_algo.get_delayed_finale_decision();
@@ -499,6 +501,7 @@ int main( int  argc_ , char **argv_  )
      
     std::clog << "The end." << std::endl;
   }
+
   catch (std::exception & error) {
     DT_LOG_FATAL(logging, error.what());
     error_code = EXIT_FAILURE;

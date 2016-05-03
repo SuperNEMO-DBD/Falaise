@@ -196,7 +196,6 @@ namespace snemo {
       std::clog << "Coincidence zoning word : " << std::endl;
       std::clog << "ZW [0] = " << zoning_word[0] << std::endl;
       std::clog << "ZW [1] = " << zoning_word[1] << std::endl;
-      std::clog << "Previous event record decision : [" << decision << "]" << std::endl;
       std::clog << std::endl;
       return;
     }
@@ -206,10 +205,11 @@ namespace snemo {
       _initialized_ = false;
       _electronic_mapping_ = 0;
       _coincidence_calorimeter_gate_size_ = 0;
+      _previous_event_circular_buffer_depth_ = 0;
       _coincidence_calo_records_.reserve(SIZE_OF_RESERVED_COINCIDENCE_CALO_RECORDS);
       _caraco_decision_ = false;
       _delayed_coincidence_decision_ = false;
-      _previous_event_records_.clear();
+      _previous_event_records_.reset();
       return;
     }
 
@@ -224,7 +224,7 @@ namespace snemo {
 
     void coincidence_trigger_algorithm_new_strategy::set_electronic_mapping(const electronic_mapping & my_electronic_mapping_)
     {
-      DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized, electronic mapping can't be set ! ");
+      DT_THROW_IF(is_initialized(), std::logic_error, "Coincidence trigger algorithm is already initialized, electronic mapping can't be set ! ");
       _electronic_mapping_ = & my_electronic_mapping_;
       return;
     }
@@ -236,9 +236,27 @@ namespace snemo {
 
     void coincidence_trigger_algorithm_new_strategy::set_calorimeter_gate_size(unsigned int calorimeter_gate_size_)
     {
-      DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized, calo circular buffer depth can't be set ! ");
+      DT_THROW_IF(is_initialized(), std::logic_error, "Coincidence trigger algorithm is already initialized, coincidence calorimeter gate size can't be set ! ");
       _coincidence_calorimeter_gate_size_ = calorimeter_gate_size_;
       return;
+    }
+
+    
+    bool coincidence_trigger_algorithm_new_strategy::has_previous_event_buffer_depth() const
+    {
+      return _previous_event_circular_buffer_depth_ != 0;
+    }
+
+    void coincidence_trigger_algorithm_new_strategy::set_previous_event_buffer_depth(unsigned int previous_event_circular_buffer_depth_)
+    {
+      DT_THROW_IF(is_initialized(), std::logic_error, "Coincidence trigger algorithm is already initialized, previous event buffer depth can't be set ! ");
+      _previous_event_circular_buffer_depth_ = previous_event_circular_buffer_depth_;
+      return;
+    }
+
+    const unsigned int coincidence_trigger_algorithm_new_strategy::get_previous_event_buffer_depth() const
+    {
+      return _previous_event_circular_buffer_depth_;
     }
 
     void coincidence_trigger_algorithm_new_strategy::initialize_simple()
@@ -258,6 +276,15 @@ namespace snemo {
 	  set_calorimeter_gate_size((unsigned int) calorimeter_gate_size);
 	}
       }
+
+      if (!has_previous_event_buffer_depth()) {
+	if (config_.has_key("previous_event_buffer_depth")) {
+	  int previous_event_buffer_depth = config_.fetch_integer("previous_event_buffer_depth");
+	  DT_THROW_IF(previous_event_buffer_depth <= 0, std::domain_error, "Invalid negative previous event buffer depth!");
+	  set_previous_event_buffer_depth((unsigned int) previous_event_buffer_depth);
+	}
+      }
+
       _initialized_ = true;
       return;
     }
@@ -283,7 +310,8 @@ namespace snemo {
       _caraco_decision_ = false;
       _delayed_coincidence_decision_ = false;
       _pair_records_.clear();
-      _previous_event_records_.clear();
+      _previous_event_records_.reset();
+      _L2_coincidence_decison_records_.clear();
       return;
     }
 
@@ -351,7 +379,7 @@ namespace snemo {
 			{
 			  for (int j = i+1; j < _coincidence_calo_records_.size(); j++)
 			    {
-			      if (_coincidence_calo_records_[j].clocktick_1600ns <= _coincidence_calo_records_[i].clocktick_1600ns + _coincidence_calorimeter_gate_size_) // check if it's <= or < 
+			      if (_coincidence_calo_records_[j].clocktick_1600ns <= _coincidence_calo_records_[i].clocktick_1600ns + _coincidence_calorimeter_gate_size_) 
 				{
 				  unsigned int clocktick_1600_before_modification = _coincidence_calo_records_[j].clocktick_1600ns;
 				  _coincidence_calo_records_[j] = _coincidence_calo_records_[i];
@@ -683,7 +711,7 @@ namespace snemo {
       unsigned int max_mult_gveto  = a_previous_event_record.total_multiplicity_gveto.to_ulong();
 
       a_previous_event_record.previous_clocktick_1600ns = a_coincidence_record_.clocktick_1600ns;
-      a_previous_event_record.counter_1600ns = 625;
+      a_previous_event_record.counter_1600ns = clock_utils::PREVIOUS_EVENT_RECORD_LIVING_NUMBER_OF_CLOCKTICK; // Equal to 625 CT 1600 because 625 * 1600 ns = 1 ms
 
       if (a_coincidence_record_.total_multiplicity_side_0.to_ulong() > max_mult_side_0) a_previous_event_record.total_multiplicity_side_0 = a_coincidence_record_.total_multiplicity_side_0;
       if (a_coincidence_record_.total_multiplicity_side_1.to_ulong() > max_mult_side_1) a_previous_event_record.total_multiplicity_side_1 = a_coincidence_record_.total_multiplicity_side_1;
@@ -714,7 +742,7 @@ namespace snemo {
 		}
 	    }
 	}
-      _previous_event_records_.push_back(a_previous_event_record);
+      _previous_event_records_->push_back(a_previous_event_record);
       
       return;
     }
@@ -958,11 +986,11 @@ namespace snemo {
 							      std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_event_record> & coincidence_records_)
     {
       reset_data();
+      _previous_event_records_.reset(new buffer_previous_event_record_type(_previous_event_circular_buffer_depth_));
       _preparing_calo_coincidence(calo_records_);
       _creating_pair_per_clocktick(_coincidence_calo_records_, tracker_records_);
      
       std::vector<std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record,tracker_trigger_algorithm_test_new_strategy::tracker_record> >::iterator it_pair = _pair_records_.begin();
-
       for (it_pair; it_pair != _pair_records_.end(); it_pair++)
 	{
 	  std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record, tracker_trigger_algorithm_test_new_strategy::tracker_record> a_pair = *it_pair;
@@ -970,56 +998,79 @@ namespace snemo {
 
 	  coincidence_event_record a_coincidence_record;
 	  _process_calo_tracker_coincidence(a_pair, a_coincidence_record);
-	  
+
 	  if (a_coincidence_record.decision)
-	    {
-	      //a_coincidence_record.display();
+	    {	  
+	      // Add the coincidence in the records :
+
 	      coincidence_records_.push_back(a_coincidence_record);
-	      
-	      // TODO : build only when the L2 decision CT arrived at the end of the L2 decision gate
-	      _build_previous_event_record(a_coincidence_record);
-	      // todo: 
+	      coincidence_trigger_algorithm_new_strategy::L2_coincidence_decision last_L2_decision = _L2_coincidence_decison_records_.front();
+	      // Search the last L2 decision (in CT)
 	      for (int i = 0; i < _L2_coincidence_decison_records_.size(); i++)
 		{
-		  
-		  
-		  
+		  coincidence_trigger_algorithm_new_strategy::L2_coincidence_decision a_L2_decision =_L2_coincidence_decison_records_[i];
+		  if (a_L2_decision.L2_clocktick_decision > last_L2_decision.L2_clocktick_decision) last_L2_decision = a_L2_decision;
 		}
-
+	      	      
+	      // For a CARACO L2 decision, create a PER at the end of the L2 decision
+	      if (last_L2_decision.L2_coincidence_decision_bool && pair_clocktick_1600ns == last_L2_decision.L2_clocktick_decision + SIZE_OF_L2_COINCIDENCE_DECISION_GATE - 1 && last_L2_decision.trigger_mode == CARACO)
+		{
+		  _build_previous_event_record(a_coincidence_record);		  
+		}
 	    }
-
        	  else
 	    {
-	      // TODO : loop on PER vector to compare each PER with the "new" event : 
-	      if (_previous_event_records_.size() != 0)
+	      if (_previous_event_records_->size() != 0)
 		{
-		  coincidence_trigger_algorithm_new_strategy::previous_event_record first_previous_event_record;
-		  first_previous_event_record = _previous_event_records_[0];
-		  first_previous_event_record.counter_1600ns = 625 - (a_pair.first.clocktick_1600ns - first_previous_event_record.previous_clocktick_1600ns);
-		  
-		  // 7/03 : TO CHECK. We have to be sure that the end of the prompt track will not be compared with the begining of this same track
-		  // Dead time for trigger process = 5 * 1600 microsecond (fix for the moment... To be check with Thierry )
-		  if (first_previous_event_record.counter_1600ns < 621) 
-		    {	      	  
-		      coincidence_event_record a_delayed_event_record;
-		      _process_delayed_coincidence(a_pair,
-						   first_previous_event_record,
-						   a_delayed_event_record); // Compare calo record & tracker record with previous event
-		      if (a_delayed_event_record.decision) 
+		  boost::circular_buffer<coincidence_trigger_algorithm_new_strategy::previous_event_record>::iterator per_it = _previous_event_records_->begin();
+
+		  for (per_it; per_it != _previous_event_records_->end(); per_it++)
+		    {
+		      coincidence_trigger_algorithm_new_strategy::previous_event_record a_previous_event_record = *per_it;
+		      if (pair_clocktick_1600ns < a_previous_event_record.previous_clocktick_1600ns){}
+		      else
 			{
-			  coincidence_records_.push_back(a_delayed_event_record);
+			  a_previous_event_record.counter_1600ns =  clock_utils::PREVIOUS_EVENT_RECORD_LIVING_NUMBER_OF_CLOCKTICK - (a_pair.first.clocktick_1600ns - a_previous_event_record.previous_clocktick_1600ns);
+		      
+			  if (a_previous_event_record.counter_1600ns > 0)
+			    {
+			  
+			      coincidence_event_record a_delayed_event_record;
+			      // Compare tracker record only with previous event
+			      _process_delayed_coincidence(a_pair,
+							   a_previous_event_record,
+							   a_delayed_event_record); 
+
+			      if (a_delayed_event_record.decision) 
+				{
+				  coincidence_records_.push_back(a_delayed_event_record);
+				}
+			    }
+
+			  *per_it = a_previous_event_record;
 			}
 		    }
 		}
-	    }
-
+	    } // end of else
 	} // end of it_pair
 
+      std::clog << "Size of L2 coinc records = " << _L2_coincidence_decison_records_.size() << std::endl;
       for (int i = 0; i < _L2_coincidence_decison_records_.size(); i++)
-	{
-	  _L2_coincidence_decison_records_[i].display();
-	}
+      	{
+      	  _L2_coincidence_decison_records_[i].display();
+      	}
+	  
+      std::clog << "Size of Previous event records = " << _previous_event_records_->size() << std::endl;
+      for (int i = 0; i < _previous_event_records_->size(); i++)
+      	{
+      	  _previous_event_records_->at(i).display();
+      	}
 
+      std::clog << "Size of Coincidence records = " << coincidence_records_.size() << std::endl;
+      for (int i = 0; i < coincidence_records_.size(); i++)
+      	{	
+      	  coincidence_records_[i].display();
+      	}
 
       return;
     }

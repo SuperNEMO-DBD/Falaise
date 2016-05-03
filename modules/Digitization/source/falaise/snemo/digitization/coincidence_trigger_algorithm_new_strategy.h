@@ -1,5 +1,6 @@
 // snemo/digitization/coincidence_trigger_algorithm_new_strategy.h
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
+// Author(s): Francois MAUGER <mauger@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
 #ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_COINCIDENCE_TRIGGER_ALGORITHM_NEW_STRATEGY_H
@@ -123,6 +124,15 @@ namespace snemo {
 			/// Set calorimeter gate size
 			void set_calorimeter_gate_size(unsigned int calorimeter_gate_size_);
 
+			/// Check if previous event circular buffer depth is set
+			bool has_previous_event_buffer_depth() const;
+
+			/// Set previous event circular buffer depth
+			void set_previous_event_buffer_depth(unsigned int circular_buffer_depth_);
+
+			/// Return previous event circular buffer depth value
+			const	unsigned int get_previous_event_buffer_depth() const;
+
 			/// Initializing
 			void initialize_simple();
 
@@ -186,15 +196,18 @@ namespace snemo {
 			
 		private :
 
+			typedef boost::circular_buffer<coincidence_trigger_algorithm_new_strategy::previous_event_record> buffer_previous_event_record_type;
+
       // Configuration :
       bool _initialized_; //!< Initialization flag
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
 			unsigned int _coincidence_calorimeter_gate_size_; //!< Size of calorimeter gate for extension of calo records during X CT 1600ns
+			unsigned int _previous_event_circular_buffer_depth_; //!< Depth for the previous events circular buffer (Pile of PERs)
 			std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record> _coincidence_calo_records_; //!< Vector of coincidence calo tracker record and delayed coincidence record
-			std::vector<std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record, tracker_trigger_algorithm_test_new_strategy::tracker_record> > _pair_records_;
+			std::vector<std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record, tracker_trigger_algorithm_test_new_strategy::tracker_record> > _pair_records_; //!< Pair of a coincidence calo record and a tracker record (at the same clocktick 1600 ns)
 			
 			// Circular buffer for PER : (size of 5 or 10 ????)
-			std::vector<coincidence_trigger_algorithm_new_strategy::previous_event_record> _previous_event_records_; //!< Previous prompt event record 
+			boost::scoped_ptr<buffer_previous_event_record_type> _previous_event_records_; //!< Previous prompt event record 
 			bool _caraco_decision_; //!< Decision for caraco trigger algorihtm
 			bool _delayed_coincidence_decision_; //!< Decision for delayed (APE or DAVE) trigger algorithm
 			std::vector<coincidence_trigger_algorithm_new_strategy::L2_coincidence_decision> _L2_coincidence_decison_records_; //!< Vector of L2 decision for an event (it is possible to trig several times for the same "SD" event
