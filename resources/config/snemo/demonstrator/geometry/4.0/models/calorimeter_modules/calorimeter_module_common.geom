@@ -82,7 +82,7 @@ stacked.label_2         : string  = "curtain"
 material.ref : string  = "tracking_gas"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string  = "grey"
 
 mapping.daughter_id.wrapping : string = "[calorimeter_wrapper]"
@@ -130,7 +130,7 @@ stacked.label_1         : string  = "internal_wrapping"
 material.ref : string  = "tracking_gas"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string  = "grey"
 
 
@@ -147,7 +147,7 @@ stacked.label_0         : string  = "internal_wrapping"
 material.ref : string  = "tracking_gas"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string  = "grey"
 
 
@@ -192,7 +192,7 @@ stacked.label_1         : string  = "internal_wrapping"
 material.ref  : string  = "tracking_gas"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string  = "grey"
 
 
@@ -209,7 +209,7 @@ stacked.label_0         : string  = "internal_wrapping"
 material.ref : string  = "tracking_gas"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string  = "grey"
 
 
@@ -237,7 +237,7 @@ surrounded.back_label  : string  = "back_wrapper"
 material.ref : string  = "tracking_gas"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string  = "grey"
 
 mapping.daughter_id.scin_block : string = "[calorimeter_block:part=1]"
@@ -284,7 +284,7 @@ stacked.label_1         : string  = "internal_wrapping"
 material.ref : string  = "tracking_gas"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string  = "grey"
 
 
@@ -301,7 +301,7 @@ stacked.label_0         : string  = "internal_wrapping"
 material.ref            : string  = "tracking_gas"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string  = "grey"
 
 
@@ -346,7 +346,7 @@ stacked.label_1         : string  = "internal_wrapping"
 material.ref : string  = "tracking_gas"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string  = "grey"
 
 
@@ -363,7 +363,7 @@ stacked.label_0         : string  = "internal_wrapping"
 material.ref : string  = "tracking_gas"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string  = "grey"
 
 

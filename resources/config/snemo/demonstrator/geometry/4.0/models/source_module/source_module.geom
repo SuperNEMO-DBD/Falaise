@@ -163,7 +163,7 @@ stacked.label_1 : string = "gas_gap"
 material.ref : string = "tracking_gas"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string  = "grey"
 
 
@@ -182,7 +182,7 @@ stacked.label_1 : string = "beam"
 material.ref : string = "tracking_gas"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string  = "grey"
 
 
@@ -236,7 +236,7 @@ surrounded.right_label  : string = "right_beam"
 material.ref : string = "lab_air"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string  = "grey"
 
 

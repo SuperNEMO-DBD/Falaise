@@ -2,8 +2,8 @@
 SuperNEMO virtual geometry setup
 ================================
 
-:Authors: François Mauger, Xavier Garrido
-:Date:    2016-04-26
+:Authors: François Mauger, Xavier Garrido, Yves Lemière
+:Date:    2016-05-03
 
 .. contents::
    :depth: 3

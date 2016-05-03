@@ -42,6 +42,7 @@
 
 # Demonstrator module:
 @falaise:config/snemo/demonstrator/geometry/4.0/models/module_0.geom
+@falaise:config/snemo/demonstrator/geometry/4.0/models/half_module_commissioning.geom
 
 # World and experimental hall:
 @falaise:config/snemo/demonstrator/geometry/4.0/models/setup.geom

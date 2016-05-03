@@ -75,7 +75,7 @@ stacked.label_10   : string  = "calo_gap"
 material.ref : string = "tracking_gas"
 
 visibility.hidden           : boolean = false
-visibility.hidden_envelop   : boolean = false
+visibility.hidden_envelope   : boolean = false
 visibility.daughters.hidden : boolean = false
 visibility.color            : string  = "grey"
 
@@ -164,7 +164,7 @@ stacked.label_10   : string  = "source_gap"
 material.ref                : string  = "tracking_gas"
 
 visibility.hidden           : boolean = false
-visibility.hidden_envelop   : boolean = false
+visibility.hidden_envelope  : boolean = false
 visibility.daughters.hidden : boolean = false
 visibility.color            : string  = "grey"
 

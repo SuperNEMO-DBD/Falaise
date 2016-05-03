@@ -35,7 +35,7 @@ mapping.daughter_id.frame_top        : string = "[gveto_row:wall=1]"
 
 visibility.hidden           : boolean = false
 visibility.color            : string  = "grey"
-visibility.hidden_envelop   : boolean = false
+visibility.hidden_envelope   : boolean = false
 visibility.daughters.hidden : boolean = false
 
 
@@ -72,7 +72,7 @@ mapping.daughter_id.frame_top        : string = "[gveto_row:wall=1]"
 
 visibility.hidden           : boolean = false
 visibility.color            : string  = "grey"
-visibility.hidden_envelop   : boolean = false
+visibility.hidden_envelope  : boolean = false
 visibility.daughters.hidden : boolean = false
 
 

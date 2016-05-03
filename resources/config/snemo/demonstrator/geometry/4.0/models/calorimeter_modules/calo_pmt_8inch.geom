@@ -79,13 +79,13 @@ material.filled.ref : string = "vacuum"
 visibility.hidden           : boolean = true
 
 #@description The visibility hidden flag for the envelope
-visibility.hidden_envelop   : boolean = false
+visibility.hidden_envelope  : boolean = true
 
 #@description The recommended color for the display
 visibility.color            : string  = "cyan"
 
 #@description The visibility hidden flag for the daughters volumes
-visibility.daughters.hidden : boolean = true
+visibility.daughters.hidden : boolean = false
 
 ###########################
 # Internal/daughter items #

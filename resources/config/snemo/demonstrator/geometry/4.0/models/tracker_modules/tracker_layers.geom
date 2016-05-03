@@ -41,7 +41,7 @@ replicated.label           : string = "cells"
 material.ref               : string = "tracking_gas"
 
 visibility.hidden           : boolean = false
-visibility.hidden_envelop   : boolean = true
+visibility.hidden_envelope   : boolean = true
 visibility.daughters.hidden : boolean = false
 visibility.color            : string = "cyan"
 
@@ -84,13 +84,13 @@ stacked.label_1          : string = "other_drift_cells"
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden           : boolean = false
-visibility.hidden_envelop   : boolean = true
-visibility.daughters.hidden : boolean = false
-visibility.color            : string = "cyan"
-
 # Daughters mapping informations:
 mapping.daughter_id.first_drift_cell : string = "[drift_cell:row=0]"
+
+visibility.hidden           : boolean = false
+visibility.hidden_envelope  : boolean = false
+visibility.daughters.hidden : boolean = false
+visibility.color            : string = "cyan"
 
 
 ####################################################################
@@ -133,7 +133,7 @@ replicated.label           : string = "cells"
 material.ref               : string = "tracking_gas"
 
 visibility.hidden           : boolean = false
-visibility.hidden_envelop   : boolean = true
+visibility.hidden_envelope   : boolean = true
 visibility.daughters.hidden : boolean = false
 visibility.color            : string = "cyan"
 
@@ -178,7 +178,7 @@ stacked.label_1          : string = "other_drift_cells"
 material.ref             : string = "tracking_gas"
 
 visibility.hidden           : boolean = false
-visibility.hidden_envelop   : boolean = false
+visibility.hidden_envelope  : boolean = false
 visibility.daughters.hidden : boolean = false
 visibility.color            : string = "cyan"
 

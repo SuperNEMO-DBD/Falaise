@@ -72,7 +72,7 @@ material.ref    : string = "lab_air"
 # Visibility properties:
 visibility.hidden           : boolean = false
 visibility.daughters.hidden : boolean = false
-visibility.envelop_hidden   : boolean = false
+visibility.hidden_envelope  : boolean = false
 visibility.color            : string  = "grey"
 
 # Mapping informations for daughter volumes:

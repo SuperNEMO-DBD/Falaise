@@ -2,7 +2,6 @@
 # @falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/source_layer.geom
 
 
-
 #################################################
 #  The assembly of all blocks of source strips  #
 #################################################

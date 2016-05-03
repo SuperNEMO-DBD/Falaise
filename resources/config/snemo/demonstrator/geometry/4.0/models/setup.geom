@@ -19,7 +19,7 @@ z : real as length = 10000.0 mm
 material.ref : string = "lab_air"
 
 visibility.hidden           : boolean = false
-visibility.envelop_hidden   : boolean = false
+visibility.hidden_envelope  : boolean = false
 visibility.daughters.hidden : boolean = false
 visibility.color            : string  = "cyan"
 
@@ -59,7 +59,10 @@ internal_item.labels : string[1] = "module_0"
 #   "right_shield"
 
 # Module #0 (demonstrator):
+#@variant_only demonstrator:layout/if_basic|true
 internal_item.model.module_0          : string = "module_basic.model"
+#@variant_only demonstrator:layout/if_half_commissioning|false
+internal_item.model.module_0          : string = "half_module_commissioning.model"
 internal_item.placement.module_0      : string = "0 0 0 (mm)"
 
 # Bottom_shield:
@@ -123,7 +126,7 @@ setup.phi    : real as angle  = 0.0 degree
 setup.theta  : real as angle  = 0.0 degree
 
 visibility.hidden           : boolean = false
-visibility.envelop_hidden   : boolean = false
+visibility.hidden_envelope  : boolean = false
 visibility.daughters.hidden : boolean = false
 visibility.color            : string = "grey"
 

@@ -6,8 +6,8 @@
 #################################################
 
 
-##########################################################################
-[name="PMT_HAMAMATSU_R6594.dynodes" type="geomtools::simple_shaped_model"]
+########################################################################################
+[name="tracker.PMT_HAMAMATSU_R6594.dynodes.model" type="geomtools::simple_shaped_model"]
 
 #@config Simplified 5" PMT dynodes
 
@@ -22,8 +22,8 @@ visibility.hidden : boolean = false
 visibility.color  : string  = "orange"
 
 
-#######################################################################
-[name="PMT_HAMAMATSU_R6594.base" type="geomtools::simple_shaped_model"]
+#####################################################################################
+[name="tracker.PMT_HAMAMATSU_R6594.base.model" type="geomtools::simple_shaped_model"]
 
 #@config Simplified 5" PMT base
 
@@ -37,8 +37,8 @@ visibility.hidden : boolean = false
 visibility.color  : string  = "orange"
 
 
-##################################################################
-[name="PMT_HAMAMATSU_R6594" type="geomtools::simple_shaped_model"]
+################################################################################
+[name="tracker.PMT_HAMAMATSU_R6594.model" type="geomtools::simple_shaped_model"]
 
 #@config The configuration parameters for the PMT glass bulb and its contents
 
@@ -78,7 +78,7 @@ material.filled.ref : string = "vacuum"
 visibility.hidden           : boolean = true
 
 #@description The visibility hidden flag for the envelope
-visibility.hidden_envelop   : boolean = false
+visibility.hidden_envelope  : boolean = true
 
 #@description The recommended color for the display
 visibility.color            : string  = "cyan"
@@ -97,7 +97,7 @@ visibility.daughters.hidden : boolean = true
 # internal_item.filled.placement.dynodes : string  = "0 0 -30 (mm)"
 
 # #@description The model of the "dynodes" daughter volume
-# internal_item.filled.model.dynodes     : string  = "PMT_HAMAMATSU_R6594.dynodes"
+# internal_item.filled.model.dynodes     : string  = "tracker.PMT_HAMAMATSU_R6594.dynodes.model"
 
 
 # end of @falaise:config/snemo/demonstrator/geometry/4.0/models/tracker_module/pmt_5inch.geom

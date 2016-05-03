@@ -17,7 +17,7 @@
 # material.ref : string = "snemo::water_with_borax"
 #
 # visibility.hidden           : boolean = false
-# visibility.envelop_hidden   : boolean = false
+# visibility.hidden_envelope  : boolean = false
 # visibility.daughters.hidden : boolean = false
 # visibility.color            : string  = "blue"
 
@@ -35,7 +35,7 @@ z : real as length =  20.0 cm
 material.ref : string = "basic::iron"
 
 visibility.hidden           : boolean = false
-visibility.envelop_hidden   : boolean = false
+visibility.hidden_envelope  : boolean = false
 visibility.daughters.hidden : boolean = false
 visibility.color            : string  = "black"
 
@@ -53,7 +53,7 @@ z : real as length =  20.0 cm
 material.ref : string = "basic::iron"
 
 visibility.hidden           : boolean = false
-visibility.envelop_hidden   : boolean = false
+visibility.hidden_envelope  : boolean = false
 visibility.daughters.hidden : boolean = false
 visibility.color            : string  = "black"
 
@@ -71,7 +71,7 @@ z : real as length =  20.0 cm
 material.ref : string = "basic::iron"
 
 visibility.hidden           : boolean = false
-visibility.envelop_hidden   : boolean = false
+visibility.hidden_envelope  : boolean = false
 visibility.daughters.hidden : boolean = false
 visibility.color            : string  = "black"
 

@@ -81,7 +81,7 @@ stacked.label_1         : string = "internal_wrapping"
 material.ref : string = "tracking_gas"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string = "grey"
 
 
@@ -98,7 +98,7 @@ stacked.label_0         : string = "internal_wrapping"
 material.ref : string = "tracking_gas"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string = "grey"
 
 
@@ -155,7 +155,7 @@ stacked.label_1         : string = "internal_wrapping"
 material.ref : string = "tracking_gas"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string = "grey"
 
 
@@ -172,7 +172,7 @@ stacked.label_0         : string = "internal_wrapping"
 material.ref : string = "tracking_gas"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string = "grey"
 
 
@@ -212,7 +212,7 @@ surrounded.back_label  : string = "back_wrapper"
 material.ref : string = "tracking_gas"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = false
+visibility.hidden_envelope : boolean = false
 visibility.color          : string = "grey"
 
 mapping.daughter_id.scin_block  : string = "[gveto_block]"
@@ -343,9 +343,6 @@ z          : real as length   = 325.0 mm
 
 material.ref : string = "lab_air"
 
-visibility.hidden : boolean = false
-visibility.color  : string = "grey"
-
 internal_item.labels  : string[5] = \
    "magnetic_shield" \
    "beam_support" \
@@ -363,10 +360,16 @@ internal_item.placement.light_guide     : string = "0 0 126 (mm)"
 internal_item.model.light_guide         : string = "gveto_light_guide_outer.model"
 
 internal_item.placement.pmt             : string = "0 0 29 (mm)"
-internal_item.model.pmt                 : string = "PMT_HAMAMATSU_R6594"
+internal_item.model.pmt                 : string = "tracker.PMT_HAMAMATSU_R6594.model"
 
 internal_item.placement.pmt_base        : string = "0 0 -75 (mm)"
-internal_item.model.pmt_base            : string = "PMT_HAMAMATSU_R6594.base"
+internal_item.model.pmt_base            : string = "tracker.PMT_HAMAMATSU_R6594.base.model"
+
+visibility.hidden               : boolean = false
+visibility.hidden_envelope       : boolean = true
+visibility.color                : string  = "grey"
+visibility.daughters.hidden     : boolean = false
+visibility.daughters.pmt.hidden : boolean = true
 
 
 ###########################################################

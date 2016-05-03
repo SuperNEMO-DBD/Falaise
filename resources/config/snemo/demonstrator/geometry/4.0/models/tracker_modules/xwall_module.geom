@@ -80,9 +80,9 @@ stacked.label_1         : string = "internal_wrapping"
 
 material.ref            : string = "tracking_gas"
 
-visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
-visibility.color          : string = "grey"
+visibility.hidden          : boolean = false
+visibility.hidden_envelope : boolean = true
+visibility.color           : string = "grey"
 
 
 ##############################################################################
@@ -98,7 +98,7 @@ stacked.label_0         : string = "internal_wrapping"
 material.ref            : string = "tracking_gas"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string = "grey"
 
 
@@ -143,7 +143,7 @@ stacked.label_1         : string = "internal_wrapping"
 material.ref            : string = "tracking_gas"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string = "grey"
 
 
@@ -160,7 +160,7 @@ stacked.label_0         : string = "internal_wrapping"
 material.ref            : string = "tracking_gas"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string = "grey"
 
 
@@ -205,7 +205,7 @@ r_hole            : real as length = 70.0 mm
 material.ref      : string = "basic::mylar"
 
 visibility.hidden : boolean = false
-visibility.hidden_envelop : boolean = false
+visibility.hidden_envelope : boolean = false
 visibility.color  : string = "green"
 
 
@@ -331,10 +331,6 @@ z                       : real as length = 325.0 mm
 
 material.ref            : string = "lab_air"
 
-visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = false
-visibility.color          : string = "grey"
-
 internal_item.labels  : string[6] = \
    "magnetic_shield" \
    "beam_side" \
@@ -356,10 +352,16 @@ internal_item.placement.light_guide     : string = "0 0 126.75 (mm)"
 internal_item.model.light_guide         : string = "xwall_light_guide_outer.model"
 
 internal_item.placement.pmt             : string = "0 0 29.75 (mm)"
-internal_item.model.pmt                 : string = "PMT_HAMAMATSU_R6594"
+internal_item.model.pmt                 : string = "tracker.PMT_HAMAMATSU_R6594.model"
 
 internal_item.placement.pmt_base        : string = "0 0 -74.25 (mm)"
-internal_item.model.pmt_base            : string = "PMT_HAMAMATSU_R6594.base"
+internal_item.model.pmt_base            : string = "tracker.PMT_HAMAMATSU_R6594.base.model"
+
+visibility.hidden               : boolean = false
+visibility.hidden_envelope      : boolean = true
+visibility.color                : string  = "grey"
+visibility.daughters.hidden     : boolean = false
+visibility.daughters.pmt.hidden : boolean = true
 
 
 ############################################################################
@@ -371,10 +373,6 @@ y                       : real as length = 212.0 mm
 z                       : real as length = 325.0 mm
 
 material.ref            : string = "lab_air"
-
-visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = false
-visibility.color          : string = "grey"
 
 internal_item.labels  : string[6] = \
    "magnetic_shield" \
@@ -397,10 +395,17 @@ internal_item.placement.light_guide     : string = "0 0 126.75 (mm)"
 internal_item.model.light_guide         : string = "xwall_light_guide_outer.model"
 
 internal_item.placement.pmt             : string = "0 0 29.75 (mm)"
-internal_item.model.pmt                 : string = "PMT_HAMAMATSU_R6594"
+internal_item.model.pmt                 : string = "tracker.PMT_HAMAMATSU_R6594.model"
 
 internal_item.placement.pmt_base        : string = "0 0 -74.25 (mm)"
-internal_item.model.pmt_base            : string = "PMT_HAMAMATSU_R6594.base"
+internal_item.model.pmt_base            : string = "tracker.PMT_HAMAMATSU_R6594.base.model"
+
+visibility.hidden               : boolean = false
+visibility.hidden_envelope      : boolean = true
+visibility.color                : string  = "grey"
+visibility.daughters.hidden     : boolean = false
+visibility.daughters.pmt.hidden : boolean = true
+# visibility.daughters.pmt.shown  : boolean = true
 
 
 #################################################################
@@ -442,7 +447,7 @@ rotated.model             : string = "xwall_module_left.model"
 
 material.ref              : string = "tracking_gas"
 
-visibility.hidden_envelop : boolean = false
+visibility.hidden_envelope : boolean = false
 
 
 ###############################################################################
@@ -454,7 +459,7 @@ rotated.model             : string = "xwall_module_right.model"
 
 material.ref              : string = "tracking_gas"
 
-visibility.hidden_envelop : boolean = false
+visibility.hidden_envelope : boolean = false
 
 
 # end of @falaise:config/snemo/demonstrator/geometry/4.0/models/tracker_module/xwall_module.geom

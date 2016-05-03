@@ -13,7 +13,7 @@ replicated.label            : string = "module"
 material.ref                : string = "tracking_gas"
 
 visibility.hidden           : boolean = false
-visibility.hidden_envelop   : boolean = true
+visibility.hidden_envelope   : boolean = true
 visibility.daughters.hidden : boolean = false
 visibility.color            : string = "grey"
 
@@ -32,7 +32,7 @@ replicated.label            : string = "module"
 material.ref                : string = "tracking_gas"
 
 visibility.hidden           : boolean = false
-visibility.hidden_envelop   : boolean = true
+visibility.hidden_envelope   : boolean = true
 visibility.daughters.hidden : boolean = false
 visibility.color            : string = "grey"
 
@@ -49,7 +49,7 @@ rotated.model             : string = "xwall_column_left.model"
 
 material.ref              : string = "tracking_gas"
 
-visibility.hidden_envelop : boolean = false
+visibility.hidden_envelope : boolean = false
 
 
 ############################################################################
@@ -61,7 +61,7 @@ rotated.model             : string = "xwall_column_right.model"
 
 material.ref              : string = "tracking_gas"
 
-visibility.hidden_envelop : boolean = false
+visibility.hidden_envelope : boolean = false
 
 
 ############################################################################
@@ -73,7 +73,7 @@ rotated.model             : string = "xwall_column_left.model"
 
 material.ref              : string = "tracking_gas"
 
-visibility.hidden_envelop : boolean = false
+visibility.hidden_envelope : boolean = false
 
 
 #############################################################################
@@ -85,7 +85,7 @@ rotated.model             : string = "xwall_column_right.model"
 
 material.ref              : string = "tracking_gas"
 
-visibility.hidden_envelop : boolean = false
+visibility.hidden_envelope : boolean = false
 
 
 #################################################################################
@@ -211,7 +211,7 @@ rotated.model             : string = "tracker_frame_corner.model"
 
 material.ref              : string = "lab_air"
 
-visibility.hidden_envelop : boolean = false
+visibility.hidden_envelope : boolean = false
 
 
 #####################################################################################
@@ -223,7 +223,7 @@ rotated.model             : string = "tracker_frame_corner.model"
 
 material.ref              : string = "lab_air"
 
-visibility.hidden_envelop : boolean = false
+visibility.hidden_envelope : boolean = false
 
 
 ###################################################################################
@@ -235,7 +235,7 @@ rotated.model             : string = "tracker_frame_corner.model"
 
 material.ref              : string = "lab_air"
 
-visibility.hidden_envelop : boolean = false
+visibility.hidden_envelope : boolean = false
 
 
 ######################################################################################
@@ -247,7 +247,7 @@ rotated.model             : string = "tracker_frame_corner.model"
 
 material.ref              : string = "lab_air"
 
-visibility.hidden_envelop : boolean = false
+visibility.hidden_envelope : boolean = false
 
 
 #############################################################################

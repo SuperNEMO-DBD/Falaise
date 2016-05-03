@@ -13,7 +13,7 @@ replicated.label           : string  = "module"
 material.ref : string  = "tracking_gas"
 
 visibility.hidden           : boolean = false
-visibility.hidden_envelop   : boolean = true
+visibility.hidden_envelope   : boolean = true
 visibility.daughters.hidden : boolean = false
 visibility.color            : string = "grey"
 
@@ -32,7 +32,7 @@ replicated.label           : string  = "module"
 material.ref : string  = "tracking_gas"
 
 visibility.hidden           : boolean = false
-visibility.hidden_envelop   : boolean = true
+visibility.hidden_envelope   : boolean = true
 visibility.daughters.hidden : boolean = false
 visibility.color            : string = "grey"
 
@@ -154,7 +154,7 @@ stacked.label_2   : string  = "inner"
 material.ref : string = "lab_air"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string  = "grey"
 
 
@@ -177,7 +177,7 @@ stacked.label_4   : string  = "right_ender_stock"
 material.ref : string = "lab_air"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string  = "grey"
 
 
@@ -191,7 +191,7 @@ rotated.model         : string  = "gveto_line.model"
 material.ref : string = "lab_air"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string  = "grey"
 
 
@@ -205,7 +205,7 @@ rotated.model         : string  = "gveto_line.model"
 material.ref : string = "lab_air"
 
 visibility.hidden         : boolean = false
-visibility.hidden_envelop : boolean = true
+visibility.hidden_envelope : boolean = true
 visibility.color          : string  = "grey"
 
 
@@ -336,7 +336,7 @@ rotated.model             : string  = "tracker_horizontal_beam_outer.model"
 
 material.ref : string = "lab_air"
 
-visibility.hidden_envelop : boolean = false
+visibility.hidden_envelope : boolean = false
 
 
 ############################################################################################
@@ -348,7 +348,7 @@ rotated.model             : string  = "tracker_horizontal_beam_outer.model"
 
 material.ref : string = "lab_air"
 
-visibility.hidden_envelop : boolean = false
+visibility.hidden_envelope : boolean = false
 
 
 ##############################################################################################
@@ -360,7 +360,7 @@ rotated.model             : string  = "tracker_horizontal_beam_outer.model"
 
 material.ref : string = "lab_air"
 
-visibility.hidden_envelop : boolean = false
+visibility.hidden_envelope : boolean = false
 
 
 ###########################################################################################
@@ -372,7 +372,7 @@ rotated.model             : string  = "tracker_horizontal_beam_outer.model"
 
 material.ref : string = "lab_air"
 
-visibility.hidden_envelop : boolean = false
+visibility.hidden_envelope : boolean = false
 
 
 ###############################################################################################
@@ -384,7 +384,7 @@ rotated.model             : string  = "tracker_horizontal_beam_inner.model"
 
 material.ref : string = "lab_air"
 
-visibility.hidden_envelop : boolean = false
+visibility.hidden_envelope : boolean = false
 
 
 ############################################################################################
@@ -393,7 +393,7 @@ visibility.hidden_envelop : boolean = false
 rotated.axis              : string  = "x"
 rotated.special_angle     : string  = "180"
 rotated.model             : string  = "tracker_horizontal_beam_inner.model"
-visibility.hidden_envelop : boolean = false
+visibility.hidden_envelope : boolean = false
 
 material.ref : string = "lab_air"
 
@@ -404,7 +404,7 @@ material.ref : string = "lab_air"
 rotated.axis              : string  = "z"
 rotated.special_angle     : string  = "180"
 rotated.model             : string  = "tracker_horizontal_beam_inner.model"
-visibility.hidden_envelop : boolean = false
+visibility.hidden_envelope : boolean = false
 
 material.ref : string = "lab_air"
 
@@ -415,7 +415,7 @@ material.ref : string = "lab_air"
 rotated.axis              : string  = "y"
 rotated.special_angle     : string  = "180"
 rotated.model             : string  = "tracker_horizontal_beam_inner.model"
-visibility.hidden_envelop : boolean = false
+visibility.hidden_envelope : boolean = false
 
 material.ref : string = "lab_air"
 

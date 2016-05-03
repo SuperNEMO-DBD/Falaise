@@ -82,11 +82,6 @@ z          : real as length = 500.0 mm
 
 material.ref : string = "lab_air"
 
-visibility.hidden           : boolean = false
-visibility.hidden_envelop   : boolean = true
-visibility.daughters.hidden : boolean = false
-visibility.color            : string  = "grey"
-
 internal_item.labels : string[19] = \
    "front_block" \
    "back_block"  \
@@ -176,6 +171,12 @@ internal_item.model.internal_support_plate        : string  = "calorimeter_modul
 
 mapping.daughter_id.back_block : string = "[calorimeter_block:part=0]"
 mapping.daughter_id.pmt        : string = "[calorimeter_pmt]"
+
+visibility.hidden               : boolean = false
+visibility.hidden_envelope      : boolean = true
+visibility.color                : string  = "grey"
+visibility.daughters.hidden     : boolean = false
+visibility.daughters.pmt.hidden : boolean = true
 
 
 #####################################################################################

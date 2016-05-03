@@ -15,7 +15,7 @@ replicated.label           : string = "modules"
 material.ref : string = "lab_air"
 
 visibility.hidden           : boolean = false
-visibility.envelop_hidden   : boolean = true
+visibility.hidden_envelope   : boolean = true
 visibility.daughters.hidden : boolean = false
 visibility.color            : string = "grey"
 
@@ -99,7 +99,7 @@ replicated.label           : string = "columns"
 material.ref : string = "lab_air"
 
 visibility.hidden           : boolean = false
-visibility.envelop_hidden   : boolean = true
+visibility.hidden_envelope   : boolean = true
 visibility.daughters.hidden : boolean = false
 visibility.color            : string = "grey"
 
@@ -120,7 +120,7 @@ replicated.label           : string = "columns"
 material.ref : string = "lab_air"
 
 visibility.hidden           : boolean = false
-visibility.envelop_hidden   : boolean = true
+visibility.hidden_envelope   : boolean = true
 visibility.daughters.hidden : boolean = false
 visibility.color            : string = "grey"
 

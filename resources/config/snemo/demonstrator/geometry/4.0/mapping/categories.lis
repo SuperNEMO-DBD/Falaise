@@ -49,6 +49,11 @@ inherits : string  = "module"
 
 
 ############################################
+[category="source_like_plate"    type="1199"]
+inherits : string  = "module"
+
+
+############################################
 [category="source_strip_path"   type="1101"]
 extends : string    = "source_submodule"
 by      : string[1] = "strip"
