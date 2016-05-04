@@ -13,7 +13,7 @@
  
 // Ourselves : 
 #include <snemo/digitization/trigger_info.h>
-#include <snemo/digitization/tracker_trigger_mem_maker_new_strategy.h>
+#include <snemo/digitization/tracker_trigger_mem_maker.h>
 
 namespace snemo {
   
@@ -61,7 +61,7 @@ namespace snemo {
 
       void compute_lr_proj();
       
-      void build_pattern(tracker_trigger_mem_maker_new_strategy::mem1_type & mem1_, tracker_trigger_mem_maker_new_strategy::mem2_type & mem2_);
+      void build_pattern(tracker_trigger_mem_maker::mem1_type & mem1_, tracker_trigger_mem_maker::mem2_type & mem2_);
 
       static void print_layout(std::ostream & out_);
 

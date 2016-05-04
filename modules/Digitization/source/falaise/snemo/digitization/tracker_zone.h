@@ -13,7 +13,7 @@
 
 // Ourselves : 
 #include <snemo/digitization/trigger_info.h>
-#include <snemo/digitization/tracker_trigger_mem_maker_new_strategy.h>
+#include <snemo/digitization/tracker_trigger_mem_maker.h>
 
 namespace snemo {
   

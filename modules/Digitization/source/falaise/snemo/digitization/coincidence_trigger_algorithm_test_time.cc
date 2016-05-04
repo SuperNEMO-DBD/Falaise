@@ -1,25 +1,25 @@
-// snemo/digitization/coincidence_trigger_algorithm_new_strategy.cc
+// snemo/digitization/coincidence_trigger_algorithm_test_time.cc
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
 // Ourselves:
-#include <snemo/digitization/coincidence_trigger_algorithm_new_strategy.h>
+#include <snemo/digitization/coincidence_trigger_algorithm_test_time.h>
 #include <snemo/digitization/clock_utils.h>
 
 namespace snemo {
   
   namespace digitization {
 
-    const uint32_t coincidence_trigger_algorithm_new_strategy::SIZE_OF_RESERVED_COINCIDENCE_CALO_RECORDS;
-    const uint32_t coincidence_trigger_algorithm_new_strategy::SIZE_OF_L2_COINCIDENCE_DECISION_GATE;
+    const uint32_t coincidence_trigger_algorithm_test_time::SIZE_OF_RESERVED_COINCIDENCE_CALO_RECORDS;
+    const uint32_t coincidence_trigger_algorithm_test_time::SIZE_OF_L2_COINCIDENCE_DECISION_GATE;
 
-    coincidence_trigger_algorithm_new_strategy::coincidence_base_record::coincidence_base_record()
+    coincidence_trigger_algorithm_test_time::coincidence_base_record::coincidence_base_record()
     {
       coincidence_base_record::reset();
-            return;
+      return;
     }
 
-    void coincidence_trigger_algorithm_new_strategy::coincidence_base_record::reset()
+    void coincidence_trigger_algorithm_test_time::coincidence_base_record::reset()
     {
       calo_zoning_word[0].reset();
       calo_zoning_word[1].reset();
@@ -36,7 +36,7 @@ namespace snemo {
       return;
     }
     
-    const void  coincidence_trigger_algorithm_new_strategy::coincidence_base_record::display() const
+    const void  coincidence_trigger_algorithm_test_time::coincidence_base_record::display() const
     {
       std::clog << "XTS|L|HG|L|L|H1|H0| ZONING S1| ZONING S0 " << std::endl; 
       std::clog << xt_info_bitset << ' ';
@@ -60,20 +60,20 @@ namespace snemo {
       return;
     }
     
-    coincidence_trigger_algorithm_new_strategy::coincidence_calo_record::coincidence_calo_record()
+    coincidence_trigger_algorithm_test_time::coincidence_calo_record::coincidence_calo_record()
     {
       coincidence_calo_record::reset();
       return;
     }
 
-    void coincidence_trigger_algorithm_new_strategy::coincidence_calo_record::reset()
+    void coincidence_trigger_algorithm_test_time::coincidence_calo_record::reset()
     {
       coincidence_base_record::reset();
       clocktick_1600ns = -1;
       return;
     }
     
-    const void coincidence_trigger_algorithm_new_strategy::coincidence_calo_record::display() const
+    const void coincidence_trigger_algorithm_test_time::coincidence_calo_record::display() const
     {
       std::clog << "************************************************************************************" << std::endl;
       std::clog << "*************************** Coincidence calo record ********************" << std::endl;
@@ -84,13 +84,13 @@ namespace snemo {
       return;
     }
 
-    coincidence_trigger_algorithm_new_strategy::coincidence_event_record::coincidence_event_record()
+    coincidence_trigger_algorithm_test_time::coincidence_event_record::coincidence_event_record()
     {
       coincidence_event_record::reset();
       return;
     }
 
-    void coincidence_trigger_algorithm_new_strategy::coincidence_event_record::reset()
+    void coincidence_trigger_algorithm_test_time::coincidence_event_record::reset()
     {
       coincidence_base_record::reset();
       clocktick_1600ns = -1;
@@ -107,7 +107,7 @@ namespace snemo {
       return;
     }
 
-    const void coincidence_trigger_algorithm_new_strategy::coincidence_event_record::display() const
+    const void coincidence_trigger_algorithm_test_time::coincidence_event_record::display() const
     {
       std::clog << "************************************************************************************" << std::endl;
       std::clog << "*************************** Coincidence event record ********************" << std::endl;
@@ -132,13 +132,13 @@ namespace snemo {
       return;
     }
 
-    coincidence_trigger_algorithm_new_strategy::L2_coincidence_decision::L2_coincidence_decision()
+    coincidence_trigger_algorithm_test_time::L2_coincidence_decision::L2_coincidence_decision()
     {
       L2_coincidence_decision::reset();
       return;
     }
     
-    void coincidence_trigger_algorithm_new_strategy::L2_coincidence_decision::reset()
+    void coincidence_trigger_algorithm_test_time::L2_coincidence_decision::reset()
     {
       L2_coincidence_decision_bool = false;
       L2_clocktick_decision = -1;
@@ -146,7 +146,7 @@ namespace snemo {
       return;
     }
 
-    const void coincidence_trigger_algorithm_new_strategy::L2_coincidence_decision::display() const
+    const void coincidence_trigger_algorithm_test_time::L2_coincidence_decision::display() const
     {
       std::clog << "L2 coincidence decision structure : " << std::endl;
       std::clog << "L2 decision   [" << L2_coincidence_decision_bool << "]" << std::endl;
@@ -155,13 +155,13 @@ namespace snemo {
       return;
     }
 
-    coincidence_trigger_algorithm_new_strategy::previous_event_record::previous_event_record()
+    coincidence_trigger_algorithm_test_time::previous_event_record::previous_event_record()
     {
       previous_event_record::reset();
       return;
     }
     
-    void coincidence_trigger_algorithm_new_strategy::previous_event_record::reset()
+    void coincidence_trigger_algorithm_test_time::previous_event_record::reset()
     {
       coincidence_base_record::reset();
       previous_clocktick_1600ns = -1;
@@ -176,7 +176,7 @@ namespace snemo {
       return;
     }
     
-    const void coincidence_trigger_algorithm_new_strategy::previous_event_record::display() const
+    const void coincidence_trigger_algorithm_test_time::previous_event_record::display() const
     {
       std::clog << "************************************************************************************" << std::endl;
       std::clog << "*************************** Previous event record ********************" << std::endl;
@@ -200,7 +200,7 @@ namespace snemo {
       return;
     }
 
-    coincidence_trigger_algorithm_new_strategy::coincidence_trigger_algorithm_new_strategy()
+    coincidence_trigger_algorithm_test_time::coincidence_trigger_algorithm_test_time()
     {
       _initialized_ = false;
       _electronic_mapping_ = 0;
@@ -213,7 +213,7 @@ namespace snemo {
       return;
     }
 
-    coincidence_trigger_algorithm_new_strategy::~coincidence_trigger_algorithm_new_strategy()
+    coincidence_trigger_algorithm_test_time::~coincidence_trigger_algorithm_test_time()
     {   
       if (is_initialized())
 	{
@@ -222,19 +222,19 @@ namespace snemo {
       return;
     }
 
-    void coincidence_trigger_algorithm_new_strategy::set_electronic_mapping(const electronic_mapping & my_electronic_mapping_)
+    void coincidence_trigger_algorithm_test_time::set_electronic_mapping(const electronic_mapping & my_electronic_mapping_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Coincidence trigger algorithm is already initialized, electronic mapping can't be set ! ");
       _electronic_mapping_ = & my_electronic_mapping_;
       return;
     }
 
-    bool coincidence_trigger_algorithm_new_strategy::has_calorimeter_gate_size() const
+    bool coincidence_trigger_algorithm_test_time::has_calorimeter_gate_size() const
     {
       return _coincidence_calorimeter_gate_size_ != 0;
     }
 
-    void coincidence_trigger_algorithm_new_strategy::set_calorimeter_gate_size(unsigned int calorimeter_gate_size_)
+    void coincidence_trigger_algorithm_test_time::set_calorimeter_gate_size(unsigned int calorimeter_gate_size_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Coincidence trigger algorithm is already initialized, coincidence calorimeter gate size can't be set ! ");
       _coincidence_calorimeter_gate_size_ = calorimeter_gate_size_;
@@ -242,31 +242,31 @@ namespace snemo {
     }
 
     
-    bool coincidence_trigger_algorithm_new_strategy::has_previous_event_buffer_depth() const
+    bool coincidence_trigger_algorithm_test_time::has_previous_event_buffer_depth() const
     {
       return _previous_event_circular_buffer_depth_ != 0;
     }
 
-    void coincidence_trigger_algorithm_new_strategy::set_previous_event_buffer_depth(unsigned int previous_event_circular_buffer_depth_)
+    void coincidence_trigger_algorithm_test_time::set_previous_event_buffer_depth(unsigned int previous_event_circular_buffer_depth_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Coincidence trigger algorithm is already initialized, previous event buffer depth can't be set ! ");
       _previous_event_circular_buffer_depth_ = previous_event_circular_buffer_depth_;
       return;
     }
 
-    const unsigned int coincidence_trigger_algorithm_new_strategy::get_previous_event_buffer_depth() const
+    const unsigned int coincidence_trigger_algorithm_test_time::get_previous_event_buffer_depth() const
     {
       return _previous_event_circular_buffer_depth_;
     }
 
-    void coincidence_trigger_algorithm_new_strategy::initialize_simple()
+    void coincidence_trigger_algorithm_test_time::initialize_simple()
     {
       datatools::properties dummy_config;
       initialize(dummy_config);
       return;
     }
 
-    void coincidence_trigger_algorithm_new_strategy::initialize(const datatools::properties & config_)
+    void coincidence_trigger_algorithm_test_time::initialize(const datatools::properties & config_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Coincidence trigger algorithm is already initialized ! ");
       if (! has_calorimeter_gate_size()) {
@@ -289,12 +289,12 @@ namespace snemo {
       return;
     }
 
-    bool coincidence_trigger_algorithm_new_strategy::is_initialized() const
+    bool coincidence_trigger_algorithm_test_time::is_initialized() const
     {
       return _initialized_;
     }
 
-    void coincidence_trigger_algorithm_new_strategy::reset()
+    void coincidence_trigger_algorithm_test_time::reset()
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Coincidence trigger algorithm is not initialized, it can't be reset ! ");
       _electronic_mapping_ = 0;
@@ -303,7 +303,7 @@ namespace snemo {
       return;
     }
     
-    void coincidence_trigger_algorithm_new_strategy::reset_data()
+    void coincidence_trigger_algorithm_test_time::reset_data()
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Coincidence trigger algorithm is not initialized, it can't be reset ! ");
       _coincidence_calo_records_.clear();
@@ -315,28 +315,28 @@ namespace snemo {
       return;
     }
 
-    const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record> coincidence_trigger_algorithm_new_strategy::get_coincidence_calo_records_vector() const
+    const std::vector<coincidence_trigger_algorithm_test_time::coincidence_calo_record> coincidence_trigger_algorithm_test_time::get_coincidence_calo_records_vector() const
     {
       return _coincidence_calo_records_;
     }
 
-    const bool coincidence_trigger_algorithm_new_strategy::get_caraco_decision() const
+    const bool coincidence_trigger_algorithm_test_time::get_caraco_decision() const
     {
       return _caraco_decision_;
     }
     
-    const bool coincidence_trigger_algorithm_new_strategy::get_delayed_coincidence_decision() const
+    const bool coincidence_trigger_algorithm_test_time::get_delayed_coincidence_decision() const
     {
       return _delayed_coincidence_decision_;
     }
 
-    void coincidence_trigger_algorithm_new_strategy::_preparing_calo_coincidence(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_)
+    void coincidence_trigger_algorithm_test_time::_preparing_calo_coincidence(const std::vector<calo_trigger_algorithm_test_time::calo_summary_record> & calo_records_)
     { 
-      std::vector<calo_trigger_algorithm::calo_summary_record>::const_iterator it = calo_records_.begin();
+      std::vector<calo_trigger_algorithm_test_time::calo_summary_record>::const_iterator it = calo_records_.begin();
       	  
       for (it; it != calo_records_.end(); it++)
 	{
-	  const calo_trigger_algorithm::calo_summary_record a_ctrec= *it;
+	  const calo_trigger_algorithm_test_time::calo_summary_record a_ctrec= *it;
 
 	  if (a_ctrec.calo_finale_decision == true)
 	    {
@@ -346,7 +346,7 @@ namespace snemo {
 	      if (_coincidence_calo_records_.size() == 0)
 		{
 		  // No coincidence calo records, creation of the first and the 10 following EMPTY 
-		  coincidence_trigger_algorithm_new_strategy::coincidence_calo_record first_coincidence_calo_record;
+		  coincidence_trigger_algorithm_test_time::coincidence_calo_record first_coincidence_calo_record;
 		  first_coincidence_calo_record.clocktick_1600ns = ctrec_clocktick_1600ns;
 		  _coincidence_calo_records_.push_back(first_coincidence_calo_record);
 		    
@@ -354,7 +354,7 @@ namespace snemo {
 		    {
 		      for (int iclocktick = first_coincidence_calo_record.clocktick_1600ns + 1; iclocktick < first_coincidence_calo_record.clocktick_1600ns + _coincidence_calorimeter_gate_size_; iclocktick ++)
 			{
-			  coincidence_trigger_algorithm_new_strategy::coincidence_calo_record on_gate_coincidence_calo_record;
+			  coincidence_trigger_algorithm_test_time::coincidence_calo_record on_gate_coincidence_calo_record;
 			  on_gate_coincidence_calo_record = first_coincidence_calo_record;
 			  on_gate_coincidence_calo_record.clocktick_1600ns = iclocktick;
 			  _coincidence_calo_records_.push_back(on_gate_coincidence_calo_record);		      
@@ -410,7 +410,7 @@ namespace snemo {
 			  
 			  if (no_same_clocktick == true)
 			    {
-			      coincidence_trigger_algorithm_new_strategy::coincidence_calo_record grow_back_coincidence_calo_record = _coincidence_calo_records_[index_max];
+			      coincidence_trigger_algorithm_test_time::coincidence_calo_record grow_back_coincidence_calo_record = _coincidence_calo_records_[index_max];
 			      grow_back_coincidence_calo_record.clocktick_1600ns = j;
 			      _coincidence_calo_records_.push_back(grow_back_coincidence_calo_record);
 			    }
@@ -422,12 +422,12 @@ namespace snemo {
 	      // If not, create the first and the 10 following empty then updated
 	      if (coinc_calo_record_find == false)
 		{
-		  coincidence_trigger_algorithm_new_strategy::coincidence_calo_record new_coincidence_calo_record;
+		  coincidence_trigger_algorithm_test_time::coincidence_calo_record new_coincidence_calo_record;
 		  new_coincidence_calo_record.clocktick_1600ns = ctrec_clocktick_1600ns;
 		  _coincidence_calo_records_.push_back(new_coincidence_calo_record);
 		  for (int iclocktick = new_coincidence_calo_record.clocktick_1600ns + 1; iclocktick < new_coincidence_calo_record.clocktick_1600ns + _coincidence_calorimeter_gate_size_; iclocktick ++)
 		    {
-		      coincidence_trigger_algorithm_new_strategy::coincidence_calo_record new_on_gate_coincidence_calo_record;
+		      coincidence_trigger_algorithm_test_time::coincidence_calo_record new_on_gate_coincidence_calo_record;
 		      new_on_gate_coincidence_calo_record = new_coincidence_calo_record;
 		      new_on_gate_coincidence_calo_record.clocktick_1600ns = iclocktick;
 		      _coincidence_calo_records_.push_back(new_on_gate_coincidence_calo_record);		      
@@ -436,17 +436,18 @@ namespace snemo {
 	    } // end of for it calo records
 	}
       
-      // std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record>::const_iterator it_coinc = _coincidence_calo_records_.begin();
+      // std::vector<coincidence_trigger_algorithm_test_time::coincidence_calo_record>::const_iterator it_coinc = _coincidence_calo_records_.begin();
       // for (it_coinc; it_coinc != _coincidence_calo_records_.end(); it_coinc++)
       // 	{
-      // 	  const coincidence_trigger_algorithm_new_strategy::coincidence_calo_record a_coinc_calo_record = *it_coinc;
+      // 	  const coincidence_trigger_algorithm_test_time::coincidence_calo_record a_coinc_calo_record = *it_coinc;
       // 	  a_coinc_calo_record.display();
       // 	}
       
       return;
     }
 
-    void coincidence_trigger_algorithm_new_strategy::_update_coinc_calo_record(const calo_trigger_algorithm::calo_summary_record & a_calo_summary_record_25ns_, coincidence_trigger_algorithm_new_strategy::coincidence_calo_record & a_coinc_calo_record_1600ns_)
+    void coincidence_trigger_algorithm_test_time::_update_coinc_calo_record(const calo_trigger_algorithm_test_time::calo_summary_record & a_calo_summary_record_25ns_, 
+									    coincidence_trigger_algorithm_test_time::coincidence_calo_record & a_coinc_calo_record_1600ns_)
     {
       // Update information but keep the clocktick of the 1600 structure
       
@@ -457,9 +458,9 @@ namespace snemo {
       bool lto_side_0 = a_coinc_calo_record_1600ns_.LTO_side_0;     
       bool lto_side_1 = a_coinc_calo_record_1600ns_.LTO_side_1;
       bool lto_gveto  = a_coinc_calo_record_1600ns_.LTO_gveto;
-      std::bitset<calo_trigger_algorithm::ZONING_PER_SIDE_BITSET_SIZE> zoning_word_side_0 = a_coinc_calo_record_1600ns_.calo_zoning_word[0];
-      std::bitset<calo_trigger_algorithm::ZONING_PER_SIDE_BITSET_SIZE> zoning_word_side_1 = a_coinc_calo_record_1600ns_.calo_zoning_word[1];
-      std::bitset<calo_trigger_algorithm::XT_INFO_BITSET_SIZE> xt_info = a_coinc_calo_record_1600ns_.xt_info_bitset ;
+      std::bitset<calo_trigger_algorithm_test_time::ZONING_PER_SIDE_BITSET_SIZE> zoning_word_side_0 = a_coinc_calo_record_1600ns_.calo_zoning_word[0];
+      std::bitset<calo_trigger_algorithm_test_time::ZONING_PER_SIDE_BITSET_SIZE> zoning_word_side_1 = a_coinc_calo_record_1600ns_.calo_zoning_word[1];
+      std::bitset<calo_trigger_algorithm_test_time::XT_INFO_BITSET_SIZE> xt_info = a_coinc_calo_record_1600ns_.xt_info_bitset ;
       bool single_side =  a_coinc_calo_record_1600ns_.single_side_coinc;
       bool total_multiplicity_threshold = a_coinc_calo_record_1600ns_.total_multiplicity_threshold;
       bool calo_decision = a_coinc_calo_record_1600ns_.decision;
@@ -472,7 +473,7 @@ namespace snemo {
 	  a_coinc_calo_record_1600ns_.calo_zoning_word[0] = a_calo_summary_record_25ns_.zoning_word[0];
 	  a_coinc_calo_record_1600ns_.calo_zoning_word[1] = a_calo_summary_record_25ns_.zoning_word[1];	
 
-	  for (int i = 0; i < calo_trigger_algorithm::ZONING_PER_SIDE_BITSET_SIZE; i++)
+	  for (int i = 0; i < calo_trigger_algorithm_test_time::ZONING_PER_SIDE_BITSET_SIZE; i++)
 	    {
 	      if (a_coinc_calo_record_1600ns_.calo_zoning_word[0].test(i) == true)
 		{
@@ -539,17 +540,17 @@ namespace snemo {
       return;
     }
     
-    void coincidence_trigger_algorithm_new_strategy::_compute_clocktick_1600ns(const uint32_t clocktick_25ns_, uint32_t & clocktick_1600ns_)
+    void coincidence_trigger_algorithm_test_time::_compute_clocktick_1600ns(const uint32_t clocktick_25ns_, uint32_t & clocktick_1600ns_)
     {
       clocktick_1600ns_ = (clocktick_25ns_ * clock_utils::MAIN_CLOCKTICK) / clock_utils::TRIGGER_CLOCKTICK;
       clocktick_1600ns_ = clocktick_1600ns_ + clock_utils::TRIGGER_COMPUTING_SHIFT_CLOCKTICK_1600NS;
       return;
     }
 
-    void coincidence_trigger_algorithm_new_strategy::_creating_pair_per_clocktick(const std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record> & coinc_calo_records_,
-										  const std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record> & tracker_records_)
+    void coincidence_trigger_algorithm_test_time::_creating_pair_per_clocktick(const std::vector<coincidence_trigger_algorithm_test_time::coincidence_calo_record> & coinc_calo_records_,
+									       const std::vector<tracker_trigger_algorithm_test_time::tracker_record> & tracker_records_)
     {
-      std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record,tracker_trigger_algorithm_test_new_strategy::tracker_record> pair_for_a_clocktick;
+      std::pair<coincidence_trigger_algorithm_test_time::coincidence_calo_record,tracker_trigger_algorithm_test_time::tracker_record> pair_for_a_clocktick;
       
       if (coinc_calo_records_.size() != 0 || tracker_records_.size() != 0)
 	{
@@ -560,14 +561,14 @@ namespace snemo {
 	      pair_for_a_clocktick.first = a_coinc_calo_record;
 	      _pair_records_.push_back(pair_for_a_clocktick);
 	    } 
-	  std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record>::const_iterator it_tracker = tracker_records_.begin();
+	  std::vector<tracker_trigger_algorithm_test_time::tracker_record>::const_iterator it_tracker = tracker_records_.begin();
 	  // Update of the pair if calo CT = tracker CT
 	  for (it_tracker; it_tracker != tracker_records_.end(); it_tracker++)
 	    {
-	      tracker_trigger_algorithm_test_new_strategy::tracker_record a_tracker_record = *it_tracker;
+	      tracker_trigger_algorithm_test_time::tracker_record a_tracker_record = *it_tracker;
 	      for (int i = 0; i < _pair_records_.size(); i++)
 		{
-		  std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record,tracker_trigger_algorithm_test_new_strategy::tracker_record> a_pair = _pair_records_[i]; 
+		  std::pair<coincidence_trigger_algorithm_test_time::coincidence_calo_record,tracker_trigger_algorithm_test_time::tracker_record> a_pair = _pair_records_[i]; 
 		  coincidence_calo_record a_coinc_calo_record = a_pair.first;
 		  if (a_tracker_record.clocktick_1600ns == a_coinc_calo_record.clocktick_1600ns)
 		    {
@@ -586,17 +587,17 @@ namespace snemo {
       // Create a new pair if there is only tracker for example :
       if (_pair_records_.size() != 0)
 	{
-	  std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record, tracker_trigger_algorithm_test_new_strategy::tracker_record> last_pair = _pair_records_.back();
+	  std::pair<coincidence_trigger_algorithm_test_time::coincidence_calo_record, tracker_trigger_algorithm_test_time::tracker_record> last_pair = _pair_records_.back();
 	  last_clocktick = last_pair.first.clocktick_1600ns;
 	}
       
-      std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record>::const_iterator it_tracker =  tracker_records_.begin();
+      std::vector<tracker_trigger_algorithm_test_time::tracker_record>::const_iterator it_tracker =  tracker_records_.begin();
       for (it_tracker; it_tracker != tracker_records_.end(); it_tracker++)
 	{
-	  tracker_trigger_algorithm_test_new_strategy::tracker_record a_tracker_record = *it_tracker;
+	  tracker_trigger_algorithm_test_time::tracker_record a_tracker_record = *it_tracker;
 	  if (last_clocktick == -1 || a_tracker_record.clocktick_1600ns > last_clocktick)
 	    {
-	      std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record,tracker_trigger_algorithm_test_new_strategy::tracker_record> a_new_pair;	 
+	      std::pair<coincidence_trigger_algorithm_test_time::coincidence_calo_record,tracker_trigger_algorithm_test_time::tracker_record> a_new_pair;	 
 	      a_new_pair.second = a_tracker_record;
 	      a_new_pair.first.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
 	      _pair_records_.push_back(a_new_pair);
@@ -605,12 +606,12 @@ namespace snemo {
       return;
     }
 
-    void coincidence_trigger_algorithm_new_strategy::_process_calo_tracker_coincidence(const std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record, tracker_trigger_algorithm_test_new_strategy::tracker_record> a_pair_for_a_clocktick_,
-										       coincidence_trigger_algorithm_new_strategy::coincidence_event_record & a_coincidence_record_)
+    void coincidence_trigger_algorithm_test_time::_process_calo_tracker_coincidence(const std::pair<coincidence_trigger_algorithm_test_time::coincidence_calo_record, tracker_trigger_algorithm_test_time::tracker_record> a_pair_for_a_clocktick_,
+										    coincidence_trigger_algorithm_test_time::coincidence_event_record & a_coincidence_record_)
 
     { 
-      coincidence_trigger_algorithm_new_strategy::coincidence_calo_record a_calo_record = a_pair_for_a_clocktick_.first;
-      tracker_trigger_algorithm_test_new_strategy::tracker_record a_tracker_record = a_pair_for_a_clocktick_.second;
+      coincidence_trigger_algorithm_test_time::coincidence_calo_record a_calo_record = a_pair_for_a_clocktick_.first;
+      tracker_trigger_algorithm_test_time::tracker_record a_tracker_record = a_pair_for_a_clocktick_.second;
       
       a_coincidence_record_.clocktick_1600ns = a_calo_record.clocktick_1600ns;
       
@@ -682,7 +683,7 @@ namespace snemo {
 	  bool decision_already_true_in_last_CTs = false;
 	  for (int i = 0; i < _L2_coincidence_decison_records_.size(); i++)
 	    {
-	      coincidence_trigger_algorithm_new_strategy::L2_coincidence_decision already_created_L2_coinc_decision = _L2_coincidence_decison_records_[i]; 
+	      coincidence_trigger_algorithm_test_time::L2_coincidence_decision already_created_L2_coinc_decision = _L2_coincidence_decison_records_[i]; 
 	      uint32_t clocktick_maximum_for_decision = already_created_L2_coinc_decision.L2_clocktick_decision + SIZE_OF_L2_COINCIDENCE_DECISION_GATE;
 	      if (a_coincidence_record_.clocktick_1600ns < clocktick_maximum_for_decision && already_created_L2_coinc_decision.L2_clocktick_decision < a_coincidence_record_.clocktick_1600ns)
 		{
@@ -692,7 +693,7 @@ namespace snemo {
 	  
 	  if (decision_already_true_in_last_CTs == false)
 	    {
-	      coincidence_trigger_algorithm_new_strategy::L2_coincidence_decision a_L2_coinc_decision;
+	      coincidence_trigger_algorithm_test_time::L2_coincidence_decision a_L2_coinc_decision;
 	      a_L2_coinc_decision.L2_coincidence_decision_bool = true;
 	      a_L2_coinc_decision.L2_clocktick_decision = a_coincidence_record_.clocktick_1600ns;
 	      a_L2_coinc_decision.trigger_mode = CARACO;
@@ -703,9 +704,9 @@ namespace snemo {
       return;
     }
 
-    void coincidence_trigger_algorithm_new_strategy::_build_previous_event_record(coincidence_trigger_algorithm_new_strategy::coincidence_event_record & a_coincidence_record_)    
+    void coincidence_trigger_algorithm_test_time::_build_previous_event_record(coincidence_trigger_algorithm_test_time::coincidence_event_record & a_coincidence_record_)    
     {
-      coincidence_trigger_algorithm_new_strategy::previous_event_record a_previous_event_record;
+      coincidence_trigger_algorithm_test_time::previous_event_record a_previous_event_record;
       unsigned int max_mult_side_0 = a_previous_event_record.total_multiplicity_side_0.to_ulong();
       unsigned int max_mult_side_1 = a_previous_event_record.total_multiplicity_side_1.to_ulong();
       unsigned int max_mult_gveto  = a_previous_event_record.total_multiplicity_gveto.to_ulong();
@@ -723,7 +724,7 @@ namespace snemo {
 
       if (a_coincidence_record_.LTO_gveto)  a_previous_event_record.LTO_gveto  = true;
 
-      for (int ibit = 0; ibit < calo_trigger_algorithm::XT_INFO_BITSET_SIZE; ibit ++)
+      for (int ibit = 0; ibit < calo_trigger_algorithm_test_time::XT_INFO_BITSET_SIZE; ibit ++)
 	{
 	  if (a_coincidence_record_.xt_info_bitset.test(ibit)) a_previous_event_record.xt_info_bitset.set(ibit);
 	}
@@ -747,14 +748,14 @@ namespace snemo {
       return;
     }
     
-    void coincidence_trigger_algorithm_new_strategy::_process_delayed_coincidence(const std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record, tracker_trigger_algorithm_test_new_strategy::tracker_record> a_pair_for_a_clocktick_,
-										  const coincidence_trigger_algorithm_new_strategy::previous_event_record & a_previous_event_record_,
-										  coincidence_trigger_algorithm_new_strategy::coincidence_event_record & a_delayed_record_)
+    void coincidence_trigger_algorithm_test_time::_process_delayed_coincidence(const std::pair<coincidence_trigger_algorithm_test_time::coincidence_calo_record, tracker_trigger_algorithm_test_time::tracker_record> a_pair_for_a_clocktick_,
+									       const coincidence_trigger_algorithm_test_time::previous_event_record & a_previous_event_record_,
+									       coincidence_trigger_algorithm_test_time::coincidence_event_record & a_delayed_record_)
     {
       if (a_previous_event_record_.counter_1600ns != 0) // counter != 0 ->   > 1ms (625 * 1600ns) 
       	{
-	  coincidence_trigger_algorithm_new_strategy::coincidence_calo_record a_calo_record = a_pair_for_a_clocktick_.first;
-	  tracker_trigger_algorithm_test_new_strategy::tracker_record a_tracker_record = a_pair_for_a_clocktick_.second;
+	  coincidence_trigger_algorithm_test_time::coincidence_calo_record a_calo_record = a_pair_for_a_clocktick_.first;
+	  tracker_trigger_algorithm_test_time::tracker_record a_tracker_record = a_pair_for_a_clocktick_.second;
 	  
 	  for (int iside = 0; iside < trigger_info::NSIDES; iside++)
 	    {
@@ -848,7 +849,7 @@ namespace snemo {
 	      bool decision_already_true_in_last_CTs = false;
 	      for (int i = 0; i < _L2_coincidence_decison_records_.size(); i++)
 		{
-		  coincidence_trigger_algorithm_new_strategy::L2_coincidence_decision already_created_L2_coinc_decision = _L2_coincidence_decison_records_[i]; 
+		  coincidence_trigger_algorithm_test_time::L2_coincidence_decision already_created_L2_coinc_decision = _L2_coincidence_decison_records_[i]; 
 		  uint32_t clocktick_maximum_for_decision = already_created_L2_coinc_decision.L2_clocktick_decision + SIZE_OF_L2_COINCIDENCE_DECISION_GATE;
 		  if (a_delayed_record_.clocktick_1600ns < clocktick_maximum_for_decision && already_created_L2_coinc_decision.L2_clocktick_decision < a_delayed_record_.clocktick_1600ns)
 		    {
@@ -858,7 +859,7 @@ namespace snemo {
 	  
 	      if (decision_already_true_in_last_CTs == false)
 		{
-		  coincidence_trigger_algorithm_new_strategy::L2_coincidence_decision a_L2_coinc_decision;
+		  coincidence_trigger_algorithm_test_time::L2_coincidence_decision a_L2_coinc_decision;
 		  a_L2_coinc_decision.L2_coincidence_decision_bool = true;
 		  a_L2_coinc_decision.L2_clocktick_decision = a_delayed_record_.clocktick_1600ns;
 		  a_L2_coinc_decision.trigger_mode = APE;
@@ -945,7 +946,7 @@ namespace snemo {
 		  bool decision_already_true_in_last_CTs = false;
 		  for (int i = 0; i < _L2_coincidence_decison_records_.size(); i++)
 		    {
-		      coincidence_trigger_algorithm_new_strategy::L2_coincidence_decision already_created_L2_coinc_decision = _L2_coincidence_decison_records_[i]; 
+		      coincidence_trigger_algorithm_test_time::L2_coincidence_decision already_created_L2_coinc_decision = _L2_coincidence_decison_records_[i]; 
 		      uint32_t clocktick_maximum_for_decision = already_created_L2_coinc_decision.L2_clocktick_decision + SIZE_OF_L2_COINCIDENCE_DECISION_GATE;
 		      if (a_delayed_record_.clocktick_1600ns < clocktick_maximum_for_decision && already_created_L2_coinc_decision.L2_clocktick_decision < a_delayed_record_.clocktick_1600ns)
 			{
@@ -955,7 +956,7 @@ namespace snemo {
 	  
 		  if (decision_already_true_in_last_CTs == false)
 		    {
-		      coincidence_trigger_algorithm_new_strategy::L2_coincidence_decision a_L2_coinc_decision;
+		      coincidence_trigger_algorithm_test_time::L2_coincidence_decision a_L2_coinc_decision;
 		      a_L2_coinc_decision.L2_coincidence_decision_bool = true;
 		      a_L2_coinc_decision.L2_clocktick_decision = a_delayed_record_.clocktick_1600ns;
 		      a_L2_coinc_decision.trigger_mode = DAVE;
@@ -970,9 +971,9 @@ namespace snemo {
       return;
     }
 
-    void coincidence_trigger_algorithm_new_strategy::process(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_,
-							     const std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record> & tracker_records_,
-							     std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_event_record> & coincidence_records_)
+    void coincidence_trigger_algorithm_test_time::process(const std::vector<calo_trigger_algorithm_test_time::calo_summary_record> & calo_records_,
+							  const std::vector<tracker_trigger_algorithm_test_time::tracker_record> & tracker_records_,
+							  std::vector<coincidence_trigger_algorithm_test_time::coincidence_event_record> & coincidence_records_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Coincidence trigger algorithm is not initialized, it can't process ! ");
       _process(calo_records_,
@@ -981,19 +982,19 @@ namespace snemo {
       return;
     }
 
-    void coincidence_trigger_algorithm_new_strategy::_process(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_,
-							      const std::vector<tracker_trigger_algorithm_test_new_strategy::tracker_record> & tracker_records_,
-							      std::vector<coincidence_trigger_algorithm_new_strategy::coincidence_event_record> & coincidence_records_)
+    void coincidence_trigger_algorithm_test_time::_process(const std::vector<calo_trigger_algorithm_test_time::calo_summary_record> & calo_records_,
+							   const std::vector<tracker_trigger_algorithm_test_time::tracker_record> & tracker_records_,
+							   std::vector<coincidence_trigger_algorithm_test_time::coincidence_event_record> & coincidence_records_)
     {
       reset_data();
       _previous_event_records_.reset(new buffer_previous_event_record_type(_previous_event_circular_buffer_depth_));
       _preparing_calo_coincidence(calo_records_);
       _creating_pair_per_clocktick(_coincidence_calo_records_, tracker_records_);
      
-      std::vector<std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record,tracker_trigger_algorithm_test_new_strategy::tracker_record> >::iterator it_pair = _pair_records_.begin();
+      std::vector<std::pair<coincidence_trigger_algorithm_test_time::coincidence_calo_record,tracker_trigger_algorithm_test_time::tracker_record> >::iterator it_pair = _pair_records_.begin();
       for (it_pair; it_pair != _pair_records_.end(); it_pair++)
 	{
-	  std::pair<coincidence_trigger_algorithm_new_strategy::coincidence_calo_record, tracker_trigger_algorithm_test_new_strategy::tracker_record> a_pair = *it_pair;
+	  std::pair<coincidence_trigger_algorithm_test_time::coincidence_calo_record, tracker_trigger_algorithm_test_time::tracker_record> a_pair = *it_pair;
 	  uint32_t pair_clocktick_1600ns = a_pair.first.clocktick_1600ns;
 
 	  coincidence_event_record a_coincidence_record;
@@ -1004,11 +1005,11 @@ namespace snemo {
 	      // Add the coincidence in the records :
 
 	      coincidence_records_.push_back(a_coincidence_record);
-	      coincidence_trigger_algorithm_new_strategy::L2_coincidence_decision last_L2_decision = _L2_coincidence_decison_records_.front();
+	      coincidence_trigger_algorithm_test_time::L2_coincidence_decision last_L2_decision = _L2_coincidence_decison_records_.front();
 	      // Search the last L2 decision (in CT)
 	      for (int i = 0; i < _L2_coincidence_decison_records_.size(); i++)
 		{
-		  coincidence_trigger_algorithm_new_strategy::L2_coincidence_decision a_L2_decision =_L2_coincidence_decison_records_[i];
+		  coincidence_trigger_algorithm_test_time::L2_coincidence_decision a_L2_decision =_L2_coincidence_decison_records_[i];
 		  if (a_L2_decision.L2_clocktick_decision > last_L2_decision.L2_clocktick_decision) last_L2_decision = a_L2_decision;
 		}
 	      	      
@@ -1022,11 +1023,11 @@ namespace snemo {
 	    {
 	      if (_previous_event_records_->size() != 0)
 		{
-		  boost::circular_buffer<coincidence_trigger_algorithm_new_strategy::previous_event_record>::iterator per_it = _previous_event_records_->begin();
+		  boost::circular_buffer<coincidence_trigger_algorithm_test_time::previous_event_record>::iterator per_it = _previous_event_records_->begin();
 
 		  for (per_it; per_it != _previous_event_records_->end(); per_it++)
 		    {
-		      coincidence_trigger_algorithm_new_strategy::previous_event_record a_previous_event_record = *per_it;
+		      coincidence_trigger_algorithm_test_time::previous_event_record a_previous_event_record = *per_it;
 		      if (pair_clocktick_1600ns < a_previous_event_record.previous_clocktick_1600ns){}
 		      else
 			{

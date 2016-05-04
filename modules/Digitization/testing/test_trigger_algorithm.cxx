@@ -1,4 +1,3 @@
-
 // test_trigger_algorithm.cxx
 // Standard libraries :
 #include <iostream>

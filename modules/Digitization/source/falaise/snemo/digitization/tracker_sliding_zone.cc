@@ -94,25 +94,25 @@ namespace snemo {
       return;
     }
 
-    void tracker_sliding_zone::build_pattern(tracker_trigger_mem_maker_new_strategy::mem1_type & mem1_, tracker_trigger_mem_maker_new_strategy::mem2_type & mem2_)
+    void tracker_sliding_zone::build_pattern(tracker_trigger_mem_maker::mem1_type & mem1_, tracker_trigger_mem_maker::mem2_type & mem2_)
     {
       // Pattern data : 
       // layer proj :[ 1 0 ]   |  row proj [ 1 0 ] for a sliding zone
       //               O I                   L R
       
       // Vertical/layer pattern:
-      tracker_trigger_mem_maker_new_strategy::mem1_type::address_type vaddress;
+      tracker_trigger_mem_maker::mem1_type::address_type vaddress;
       vaddress = addr_layer_proj;
 	
-      tracker_trigger_mem_maker_new_strategy::mem1_type::data_type vdata;
+      tracker_trigger_mem_maker::mem1_type::data_type vdata;
       mem1_.fetch(vaddress, vdata);
       data_IO_proj = vdata;
 
       // Horizontal/row pattern:
-      tracker_trigger_mem_maker_new_strategy::mem2_type::address_type haddress;
+      tracker_trigger_mem_maker::mem2_type::address_type haddress;
       haddress = addr_row_proj;
 
-      tracker_trigger_mem_maker_new_strategy::mem2_type::data_type hdata;
+      tracker_trigger_mem_maker::mem2_type::data_type hdata;
       mem2_.fetch(haddress, hdata);
       data_LR_proj = hdata;
 

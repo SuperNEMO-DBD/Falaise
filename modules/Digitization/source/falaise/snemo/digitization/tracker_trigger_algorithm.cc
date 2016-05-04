@@ -438,8 +438,8 @@ namespace snemo {
       return;
     }	
 
-    void tracker_trigger_algorithm::build_sliding_zones(tracker_trigger_mem_maker_new_strategy::mem1_type & mem1_,
-									  tracker_trigger_mem_maker_new_strategy::mem2_type & mem2_)
+    void tracker_trigger_algorithm::build_sliding_zones(tracker_trigger_mem_maker::mem1_type & mem1_,
+									  tracker_trigger_mem_maker::mem2_type & mem2_)
     {
       for (int iside = 0; iside < trigger_info::NSIDES; iside++) {
 	for (int iszone = 0; iszone < trigger_info::NSLZONES; iszone ++) {
@@ -486,7 +486,7 @@ namespace snemo {
     }    
     
     void tracker_trigger_algorithm::build_in_out_pattern(tracker_zone & zone_,
-									   tracker_trigger_mem_maker_new_strategy::mem3_type & mem3_)
+									   tracker_trigger_mem_maker::mem3_type & mem3_)
     {
       int side = zone_.side;
       int zone_id = zone_.zone_id;
@@ -513,8 +513,8 @@ namespace snemo {
     }
 		
     void tracker_trigger_algorithm::build_left_mid_right_pattern(tracker_zone & zone_,
-										   tracker_trigger_mem_maker_new_strategy::mem4_type & mem4_,
-										   tracker_trigger_mem_maker_new_strategy::mem5_type & mem5_)
+										   tracker_trigger_mem_maker::mem4_type & mem4_,
+										   tracker_trigger_mem_maker::mem5_type & mem5_)
     {
       int side = zone_.side;
       int zone_id = zone_.zone_id;

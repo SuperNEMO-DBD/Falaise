@@ -1055,24 +1055,6 @@ namespace snemo {
 	    } // end of else
 	} // end of it_pair
 
-      std::clog << "Size of L2 coinc records = " << _L2_coincidence_decison_records_.size() << std::endl;
-      for (int i = 0; i < _L2_coincidence_decison_records_.size(); i++)
-      	{
-      	  _L2_coincidence_decison_records_[i].display();
-      	}
-	  
-      std::clog << "Size of Previous event records = " << _previous_event_records_->size() << std::endl;
-      for (int i = 0; i < _previous_event_records_->size(); i++)
-      	{
-      	  _previous_event_records_->at(i).display();
-      	}
-
-      std::clog << "Size of Coincidence records = " << coincidence_records_.size() << std::endl;
-      for (int i = 0; i < coincidence_records_.size(); i++)
-      	{	
-      	  coincidence_records_[i].display();
-      	}
-
       return;
     }
     
