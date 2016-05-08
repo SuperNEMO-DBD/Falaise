@@ -306,13 +306,15 @@ By default, the string(s) you provide will be used as the library name,
 and it will be searched for as a file named `libNAME.{so,dylib}` under
 
 1. The current working directory,
-2. The paths in `LD_LIBRARY_PATH`,
+2. The paths in `{DY}LD_LIBRARY_PATH`,
 3. The system paths known to the dynamic linker.
 
-To override this behaviour you can also explicitly specify the directory
-to look in for the library. For example, we built the `MyModule` library
-in `/path/to/MyWorkSpace/MyModule-build`, so we can force `flreconstruct`
-to look there, and only there, by doing
+Note that as of Mac OSX El Capitan, `DYLD_LIBRARY_PATH` is ignored and
+cannot be used to set module lookup paths.
+You can also explicitly specify the directory to look in for the library to
+override the default lookup paths. For example, we built the `MyModule`
+library in `/path/to/MyWorkSpace/MyModule-build`, so we can force
+`flreconstruct` to look there, and only there, by doing
 
 ~~~~~~
 [name="flreconstruct.plugins" type=""]
@@ -550,3 +552,24 @@ This helps to make the module easier to use and less error prone.
 Remember that the modular structure of the pipeline means that tasks
 are broken down into smaller chunks, so you should consider refactoring
 complex modules into smaller orthogonal units.
+
+Next Steps
+==========
+The above examples have illustrated the basic structures needed to
+implement a module and load it into `flreconstruct`.
+
+Practical modules will access the event object passed to them, process it
+and then write information back into the event record. [Using the event
+data model in modules is covered in a dedicated tutorial](@ref workingwitheventrecords).
+
+Modules may also need access to global data such as run conditions.
+FLReconstruct uses the concept of "Services" to provide such data,
+and [a tutorial on using services in modules is provided](@ref usingservices).
+
+Modules should also always be documented so that users have a clear
+picture of the task performed by the module and its configurable
+parameters. [A tutorial on documenting modules using the builtin Falaise/Bayeux tools](@ref documentingflreconstructmodules) is available.
+
+Though modules for FLReconstruct may not be directly integrated in
+Falaise, for consistency and maintanability their code [must follow the Falaise coding conventions](@ref codingstandards).
+
