@@ -6,22 +6,21 @@ Installing Falaise from Source {#flinstallguide}
 Introduction {#flinstall_intro}
 ============
 This walkthrough is intended to get you up and running with Falaise
-as fast as possible. It therefore adopts a specific layout of where
-working copies of sources, builds of these sources and installs of the
-builds. You do not have to follow this layout, but we recommend it
-as a fast and convenient way to organise things. We welcome
-constructive comments, criticisms and suggestions for improvement, and
-these should be directed to the SuperNEMO Software Working Group.
-
+as fast as possible for both use and development of its programs and
+libraries. We welcome constructive comments, criticisms and suggestions
+for improvement of this guide, and these should be directed to the
+SuperNEMO Software Working Group.
 
 Preparing Your System for Installation {#flinstallguide_preparation}
 ======================================
-To install the Falaise stack, you first need the following:
+To install the Falaise stack, you first need the following minimal
+environment:
 
 * UNIX Operating System
-  * Linux (Ubuntu, SUSE, RedHat/CentOS/Scientific)
+  * Linux x86_64
+    * Ubuntu 14/15/16, SUSE 11/12, RedHat/CentOS/Scientific 6/7 are tested and supported
     * Other distributions should work provided they supply the software requirements listed below
-  * Mac OS X 10.8/9/10 (Mountain Lion/Mavericks/Yosemite)
+  * Mac OS X 10.9/10/11 (Mavericks/Yosemite/El Capitan)
     * Earlier versions should work, but are not tested
 * Several GB of free disk space:
   * At least 200MB for a source code check out
@@ -29,52 +28,62 @@ To install the Falaise stack, you first need the following:
 * Familiarity with the UNIX command line
 * Required Software
   * Subversion 1.6 or above
-  * CMake 2.8.11 or above
-  * Doxygen 1.8 or above
+  * Git 1.9 or above
   * C/C++ compiler supporting at least the C++03 standard
     * GCC 4.5 or above, and Clang 3.1 or above are recommended
-    * If available, you should use a C++11 compliant compiler
-      * GCC 4.7 or higher, Clang 3.3 or higher
-      * This is purely for the best forward compatibility, it is not a requirement.
     * On OS X systems, you should install Xcode from the App Store, and ensure the Command Line Tools are installed
 
 We recommend that the Required Software are installed via the relevant
-package manager (e.g. yum, apt on Linux, Homebrew or MacPorts on Mac OS X)
-for your system, unless the version requirement listed is not met.
+package manager on Linux (e.g. yum, apt). On OS X, Xcode will supply
+everything needed.
 
-In addition to the build tools listed above, Falaise uses several third party
-libraries to implement its functionality,
-specifically
+Installing Falaise Using the `CadfaelBrew` Package Manager {#flinstallguide_cadfaelbrew}
+==========================================================
+If you simply wish to use Falaise, we recommend installing it using the
+[`Cadfaelbrew`](https://github.com/SuperNEMO-DBD/cadfaelbrew) package
+manager. This provides the complete stack of packages required by Falaise
+and may be installed using the following commands:
 
+~~~~~
+$ cd $HOME
+$ git clone https://github.com/SuperNEMO-DBD/cadfaelbrew.git cadfaelbrew
+$ export PATH="$HOME/cadfaelbrew/bin:$PATH"
+$ brew cadfael-bootstrap
+$ brew install falaise
+~~~~~
+
+For further information, including troubleshooting the installation,
+please refer to the [`Cadfaelbrew` project page](https://github.com/SuperNEMO-DBD/cadfaelbrew).
+
+Installing Falaise from Source
+==============================
+In addition to the core system listed above, Falaise requires several
+third party libraries to implement its functionality, specifically
+
+- C++11 Compliant Compiler (GCC >=4.9, Clang >= 3.4, Intel >= 15)
+- [CMake](http://www.cmake.org) 3.3 or higher
+- Make, Ninja or Xcode buildtools
 - [Bayeux C++ Libraries]() 2.1.0 and higher.
 - [Boost C++ Libraries](http://www.boost.org) 1.55.0 and higher
 - [CAMP C++ Reflection Library](https://github.com/tegesoft/camp) 0.7.1 and higher
 - [CLHEP C++ HEP Library](http://proj-clhep.web.cern.ch/proj-clhep/) 2.1.3.1 and higher
 - [GNU Scientific Library](http://www.gnu.org/software/gsl/) 1.15 and higher
-- [ROOT C++ HEP Toolkit](http://root.cern.ch) 5.34.30 and higher
+- [ROOT C++ HEP Toolkit](http://root.cern.ch) 5.34.30 and higher (6 series currently unsupported)
 - [Geant4 C++ Toolkit for Detector Simulations](http://geant4.cern.ch) 9.6.4 and higher
 
-You can reuse existing installations of these libraries to build Falaise provided
-they meet the listed version requirements. For the easiest and most robust
-installation, we recommend using the [Linuxbrew](https://github.com/Linuxbrew/linuxbrew)
-based `Cadfael` package manager, which can be installed following the guide
-on its [dedicated project page](https://github.com/SuperNEMO-DBD/cadfaelbrew).
-
-We expect the Falaise stack to compile and run on most modern BSD or Linux
-based systems provided the listed Required Software is installed. Note
-however that this list is a work in progress, and sections below will
-highlight where problems may occur with missing software, and how to
-report and resolve these issues.
+You can reuse existing installations of these libraries to build Falaise
+provided they meet the listed version requirements. Alternatively, all
+are available through `CadfaelBrew` and can be installed following the
+[instructions given above](@ref flinstallguide_cadfaelbrew).
 
 
-Getting Falaise {#flinstallguide_getting}
-===============
-Falaise is developed using the Subversion repository hosted by
+Setting up a Working Copy of Falaise {#flinstallguide_getting}
+------------------------------------
+Falaise code is managed using the Subversion repository hosted by
 [LPC Caen](https://nemo.lpc-caen.in2p3.fr). Whilst you need a full account
-to commit to the repository, we will be using the provided read-only access.
-
-To work with the software, we recommend using the following layout of code
-in directories:
+to commit to the repository, we will be using the provided read-only
+access. To work with the software, we recommend using the following
+workspace directories:
 
 ~~~~~
 SuperNEMO/
@@ -84,20 +93,20 @@ SuperNEMO/
 ~~~~~
 
 where the `SuperNEMO` directory can be located where you wish, though it
-must be on a filesystem with the required free space.
+must be on a filesystem with the required free space. You do not have to
+follow this layout, but we recommend it as a fast and convenient way to
+organise things.
 
-Setting Up a Falaise Workspace {#flinstallguide_installation_workspace}
-------------------------------
 If you already have a workspace setup, then you can skip to the
 [following section](@ref flinstallguide_installation_checkout). Otherwise
 to create it, open a terminal, and choose a directory for your
 SuperNEMO workspace. For clarity in this guide, because absolute paths are
-needed in certain cases, we will use the dummy directory `/Users/ben`, but
-you should choose your own location. The first step is to create the
+needed in certain cases, we will use the dummy directory `/Users/snemo`,
+but you should choose your own location. The first step is to create the
 directory hierarchy:
 
 ~~~~~
-$ cd /Users/ben
+$ cd /Users/snemo
 $ mkdir -p SuperNEMO/{lpc-caen.svn,builds,installs}
 $ cd SuperNEMO
 $ ls
@@ -153,14 +162,14 @@ Password for 'visitor':
 Checked out revision 13809.
 ~~~~~
 
-The revision number you see will vary depending on the current state of development.
-If you now list the contents of the `lpc-caen.svn` directory
+The revision number you see will vary depending on the current state of
+development. If you now list the contents of the `lpc-caen.svn` directory
 it will be empty apart from a `.svn` directory. We now checkout the parts
 we need, specifically the `Falaise` project.
 
 ~~~~~
 $ pwd
-/Users/ben/SuperNEMO
+/Users/snemo/SuperNEMO
 $ cd lpc-caen.svn
 $ svn up --set-depth immediates Falaise
 A    Falaise
@@ -176,7 +185,7 @@ of `trunk` for the mainline of development, `branches` for feature
 implementation and bug fixes, and `tags` for releases.
 
 An `ls` of the above directories will show that, again, they are empty.
-However, if you use Subversion's list command, e.g.
+However, if you use Subversion's `ls` command, e.g.
 
 ~~~~~
 $ svn ls Falaise/trunk
@@ -203,16 +212,11 @@ with an optional additional `-STATUSN` flag to indicate development lines.
 Checking out Falaise {#flinstallguide_installation_checkout}
 --------------------
 With the workspace in place, we can checkout the required development
-lines of Cadfael and Falaise. The version of Falaise to which this
-documentation refers is @Falaise_VERSION@, and this requires Cadfael
-version @Cadfael_VERSION@. To check these tags out from scratch we do
+line of Falaise. The version of Falaise to which this
+documentation refers is @Falaise_VERSION@, and to check out the tag
+for this version we do
 
 ~~~~~
-$ svn up --set-depth infinity Cadfael/tags/Cadfael-@Cadfael_VERSION@
-A    Cadfael/tags/Cadfael-@Cadfael_VERSION@/License.txt
-...
-A    Cadfael/tags/Cadfael-@Cadfael_VERSION@/testing/ImportedTargets/CMakeLists.txt
-Updated to revision 14881.
 $ svn ls Falaise/tags
 ...
 $ svn up --set-depth infinity Falaise/tags/Falaise-@Falaise_VERSION@
@@ -222,20 +226,14 @@ The basic source code working copy is now in place. For more details on
 using Subversion, we recommend the [Subversion Red Bean Guide](http://svnbook.red-bean.com/).
 
 
-
-
-Building and Installing Falaise {#flinstallguide_buildinstall}
-===============================
+Configuring, Building and Installing Falaise {#flinstallguide_buildinstall}
+--------------------------------------------
 Falaise uses the [CMake](http://www.cmake.org) tool for driving the
 configure, build and install of its core library and applications.
-As with Cadfael, we create a separate build directory under `builds` first,
- and install into a directory under `installs`. No bootstrapping script is
-provided because here you will want more control over the build process.
-
 To start, go into your SuperNEMO workspace and create a build directory:
 
 ~~~~~
-$ cd /Users/ben/SuperNEMO
+$ cd /Users/snemo/SuperNEMO
 $ ls
 builds  installs  lpc-caen.svn
 $ cd builds
@@ -247,15 +245,13 @@ the naming of the directory is arbitrary, but it's useful to give them
 a name related to the build task.
 
 We now run cmake as follows to configure the build to install under our
-workspace area, and to use the libraries provided in our prior install
-of Cadfael:
+workspace area,
 
 ~~~~~
-$ cmake -DCMAKE_INSTALL_PREFIX=/Users/ben/SuperNEMO/installs/falaise-@Falaise_VERSION@ \
- -DCMAKE_PREFIX_PATH=/Users/ben/SuperNEMO/installs/Cadfael \
+$ cmake -DCMAKE_INSTALL_PREFIX=/Users/snemo/SuperNEMO/installs/falaise-@Falaise_VERSION@ \
  ../../lpc-caen.svn/Falaise/tags/Falaise-@Falaise_VERSION@
--- The C compiler identification is GNU 4.3.4
--- The CXX compiler identification is GNU 4.3.4
+-- The C compiler identification is GNU 4.9.3
+-- The CXX compiler identification is GNU 4.9.3
 -- Check for working C compiler: /usr/bin/cc
 -- Check for working C compiler: /usr/bin/cc -- works
 -- Detecting C compiler ABI info
@@ -277,24 +273,29 @@ Found Boost components:
    program_options
 -- Configuring done
 -- Generating done
--- Build files have been written to: /Users/ben/SuperNEMO/builds/falaise-@Falaise_VERSION@
+-- Build files have been written to: /Users/snemo/SuperNEMO/builds/falaise-@Falaise_VERSION@
 ~~~~~
 
-The `CMAKE_INSTALL_PREFIX` variable tells cmake where to install, and
-`CMAKE_PREFIX_PATH` where to look first for headers, libraries and
-applications. The exact output that follows will depend on the OS you
-are running on, the compiler detected and the exact CMake version (later
-versions are more verbose). The important thing to check is that you see
-the last three lines
+The `CMAKE_INSTALL_PREFIX` variable tells cmake where to install the
+products of the build. The exact output in this step will depend on the
+OS you are running on, the compiler detected and the exact CMake version
+(later versions are more verbose). The important thing to check is that
+you see the last three lines
 
 ~~~~~
 -- Configuring done
 -- Generating done
--- Build files have been written to: /Users/ben/SuperNEMO/builds/falaise-@Falaise_VERSION@
+-- Build files have been written to: /Users/snemo/SuperNEMO/builds/falaise-@Falaise_VERSION@
 ~~~~~
 
-which indicate a successful configuration. This process has generated
-a suitable makefile for building Falaise, so we now run make to build
+which indicate a successful configuration. If you see errors at this
+point, they are most likely due to a failure to locate a required
+external package. Generally these can be resolved by add the location
+of the missing package to the [`CMAKE_PREFIX_PATH` variable](https://cmake.org/cmake/help/v3.3/variable/CMAKE_PREFIX_PATH.html), either
+on the command line or by setting this in the environment.
+
+Once configuration has completed without error, a makefile for building
+Falaise will have been generated. We can now run `make` to build
 everything:
 
 ~~~~~
@@ -316,10 +317,12 @@ indicated by the last lines being:
 ~~~~~
 
 Development of Falaise enforces removal of compiler warnings as far as
-possible, so you should not see any on when building release versions
-on the tested platforms listed earlier.
-If you do see any warnings or errors, these should be reported to the
-Software Working Group. Warnings should not affect success of the build, but if you are in any doubt as to this, simply run make again without the `-j` argument and you should see output similar to:
+possible, so you should not see any when building release versions
+on the tested platforms listed earlier. If you do see any warnings or
+errors, these should be reported to the Software Working Group. Warnings
+should not affect success of the build, but if you are in any doubt as to
+this, simply run make again without the `-j` argument and you should see
+output similar to:
 
 ~~~~~
 $ make
@@ -350,7 +353,7 @@ installs/falaise-@Falaise_VERSION@
 |-- include
 |   |-- bayeux
 |   `-- falaise
-|-- lib64
+|-- lib{64}
 |   |-- cmake
 |   `-- Falaise
 `-- share
@@ -358,14 +361,16 @@ installs/falaise-@Falaise_VERSION@
     `-- Falaise-@Falaise_VERSION@
 ~~~~~
 
-Using Falaise {#flinstallguide_using}
-=============
+The `64` suffix to the library directory will only be present on Linux
+systems that enforce the `lib64` convention.
+
+Using an Install of Falaise {#flinstallguide_using}
+---------------------------
 With an install in place, you do not need any further setup to use
-the applications. The `flsimulate` and `flreconstruct` apps may be run
-directly from the command line, e.g.
+the applications. All programs ay be run directly from the command line, e.g.
 
 ~~~~~
-$ cd /Users/ben/SuperNEMO
+$ cd /Users/snemo/SuperNEMO
 $ ./installs/falaise-@Falaise_VERSION@/bin/flsimulate -h
 ...
 $
@@ -403,7 +408,7 @@ links to the detailed guides on using `flsimulate` and `flreconstruct`.
 
 
 Troubleshooting {#flinstallguide_trouble}
-===============
+---------------
 Whilst this walkthrough guide should cover most uses cases, we cannot
 guarantee that problems will not be encountered. If you do experience
 issues with any of the steps, please contact us, in the first instance
@@ -422,7 +427,7 @@ Development of Falaise falls into two main categories
 * Implementing features in the Falaise core
 * Implementing new plug-in modules for use in `flreconstruct`
 
-The first of these is generally, though not exclusively, requires a
+The first of these generally, though not exclusively, requires a
 developer account on the LPC Caen Trac system (one can also create and
 submit patches). Development of plugins does not require a developer
 account, though will do should your module become part of the core.
@@ -444,7 +449,7 @@ To checkout the trunk of Falaise, we use the same procedure as for
 checking out a release and just change the path slightly:
 
 ~~~~~
-$ cd /Users/ben/SuperNEMO
+$ cd /Users/snemo/SuperNEMO
 $ ls
 builds  installs  lpc-caen.svn
 $ cd lpc-caen.svn
@@ -458,13 +463,29 @@ $
 ~~~~~
 
 This trunk version can be built just as the tagged release versions.
-It can also be installed, but is recommended not to do this due to the
-rapid development cycle expected. All of the programs and libraries in
+In addition to the basic build, the unit and integration tests should
+always be built and run for the trunk build, and this can be done by
+running either
+
+~~~~~
+$ make test
+~~~~~
+
+or
+
+~~~~~
+$ ctest
+~~~~~
+
+in the build directory.
+
+Builds of the trunk can also be installed, but is recommended not to do
+this due to the rapid development cycle expected and the need to run tests. All of the programs and libraries in
 a build of Falaise are directly usable without installation, and are
 output to a directory named `BuildProducts` under the main build directory:
 
 ~~~~~
-$ cd /Users/ben/SuperNEMO/builds
+$ cd /Users/snemo/SuperNEMO/builds
 $ ls
 falaise-@Falaise_VERSION@  trunk
 $ cd trunk
@@ -484,16 +505,12 @@ BuildProducts/
 |   |-- flreconstruct
 |   |-- flsimulate
 |-- include
-|   |-- bayeux
 |   `-- falaise
 |-- lib64
 |   |-- Falaise
 |   |-- cmake
-|   |-- libBayeux.so
-|   |-- libBayeux_mctools_geant4.so
 |   `-- libFalaise.so
 `-- share
-    |-- Bayeux-1.0.0
     `-- Falaise-1.0.0
 ~~~~~
 
