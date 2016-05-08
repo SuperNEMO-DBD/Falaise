@@ -559,8 +559,7 @@ The above examples have illustrated the basic structures needed to
 implement a module and load it into `flreconstruct`.
 
 Practical modules will access the event object passed to them, process it
-and then write information back into the event record. [Using the event
-data model in modules is covered in a dedicated tutorial](@ref workingwitheventrecords).
+and then write information back into the event record. [Using the event data model in modules is covered in a dedicated tutorial](@ref workingwitheventrecords).
 
 Modules may also need access to global data such as run conditions.
 FLReconstruct uses the concept of "Services" to provide such data,
