@@ -188,9 +188,16 @@ extension:
 $ flreconstruct -i example.brio -p @falaise:pipeline/snemo.demonstrator/1.0.0 -o results.brio
 ~~~~~
 
-The resultant file may be subsequently passed through
-`flreconstruct` with a pipeline constructed from your own analysis
-modules. Please see the document on [FLReconstruct Pipeline Output](@ref flreconstructpipelineoutput)
+The resultant file may be examined directly to see what data has been
+written by simply passing it back to `flreconstruct`, e.g.
+
+~~~~~
+$ flreconstruct -i results.brio
+... output ...
+~~~~~
+
+It may also be further processed by `flreconstruct` using a pipeline
+constructed from your own analysis modules. Please see the document on [FLReconstruct Pipeline Output](@ref flreconstructpipelineoutput)
 for details of the data structures stored for each processed event.
 Further documents are available detailing [how to write your reconstruction/analysis modules](@ref writingflreconstructmodules), and
 [how to access event data from modules](@ref workingwitheventrecords).
