@@ -212,7 +212,9 @@ $ flreconstruct -i example.brio -p @falaise:pipeline/snemo.demonstrator/1.0.0 -o
 The resultant file contains a single flat `TTree` structure that may be
 browsed interactively. Note that currently this format only outputs
 simulated and calibrated data, with no further reconstruction results.
-Work is in progress to extend this format to supply all data structures.
+A separate [converter program is available](@ref usingflptd2root) for
+running full conversion, and will be gradully integrated into
+flreconstruct for direct conversion.
 
 
 Using Custom Pipelines {#usingflreconstruct_usingcustompipelines}

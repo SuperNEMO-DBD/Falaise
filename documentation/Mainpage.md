@@ -25,6 +25,7 @@ introductions to using and extending the core applications:
   - [Writing plugin modules](@ref writingflreconstructmodules) for `flreconstruct`.
   - [Working with Run/Event Data in plugin modules](@ref workingwitheventrecords).
   - [Using Services to access metadata](@ref usingservices).
+- [FLVisualize](@ref usingflvisualize) guide for viewing simulated and reconstructed data.
 
 Developing Falaise
 ==================
