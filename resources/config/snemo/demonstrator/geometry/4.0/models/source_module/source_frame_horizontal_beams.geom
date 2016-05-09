@@ -15,7 +15,7 @@ r                 : real as length =  6.0 mm
 
 material.ref      : string = "basic::iron"
 
-visibility.hidden : boolean = false
+
 visibility.color  : string  = "blue"
 
 
@@ -29,7 +29,7 @@ z                 : real as length = 20.0 mm
 
 material.ref      : string = "lab_air"
 
-visibility.hidden : boolean = false
+
 
 internal_item.labels        : string[1] = "rod"
 internal_item.placement.rod : string    = "0 0 0 (mm) / y 90.0 (deg)"
@@ -65,7 +65,7 @@ y                 : real as length = 5430.0 mm
 
 material.ref      : string = "lab_air"
 
-visibility.hidden : boolean = false
+
 
 
 ####################################################################################
@@ -78,8 +78,6 @@ z                 : real as length =   30.5 mm
 
 material.ref      : string = "lab_air"
 
-visibility.hidden : boolean = true
-
 
 ######################################################################################
 [name="source_horizontal_beam_main_plate.model" type="geomtools::simple_shaped_model"]
@@ -91,7 +89,6 @@ z                  : real as length =    9.5 mm
 
 material.ref       : string = "basic::iron"
 
-visibility.hidden  : boolean = false
 visibility.color   : string  = "blue"
 
 
@@ -112,7 +109,7 @@ stacked.label_2   : string = "plate"
 
 material.ref      : string = "lab_air"
 
-visibility.hidden : boolean = false
+
 visibility.color  : string = "grey"
 
 
@@ -133,7 +130,7 @@ stacked.label_2   : string = "rods"
 
 material.ref      : string = "lab_air"
 
-visibility.hidden : boolean = false
+
 visibility.color  : string = "grey"
 
 
@@ -147,7 +144,7 @@ z                  : real as length =   60.0 mm
 
 material.ref       : string = "basic::iron"
 
-visibility.hidden  : boolean = false
+
 visibility.color   : string  = "blue"
 
 
@@ -163,7 +160,7 @@ z            : real as length =   30.0 mm
 
 material.ref : string  = "basic::iron"
 
-visibility.hidden  : boolean = false
+
 visibility.color   : string  = "blue"
 
 
@@ -177,7 +174,7 @@ z            : real as length =   20.0 mm
 
 material.ref : string  = "RTV"
 
-visibility.hidden  : boolean = false
+
 visibility.color   : string  = "magenta"
 
 
@@ -192,7 +189,7 @@ z            : real as length =    5.0 mm
 
 material.ref : string  = "basic::iron"
 
-visibility.hidden  : boolean = false
+
 visibility.color   : string  = "blue"
 
 
@@ -206,7 +203,7 @@ z            : real as length =    5.0 mm
 
 material.ref : string  = "SBR"
 
-visibility.hidden  : boolean = false
+
 visibility.color   : string  = "orange"
 
 
@@ -221,7 +218,7 @@ z            : real as length = 30.0 mm
 
 material.ref : string  = "RTV"
 
-visibility.hidden  : boolean = false
+
 visibility.color   : string  = "magenta"
 
 
@@ -235,7 +232,7 @@ z            : real as length = 50.0 mm
 
 material.ref : string  = "basic::iron"
 
-visibility.hidden  : boolean = false
+
 visibility.color   : string  = "blue"
 
 
@@ -249,7 +246,7 @@ z            : real as length = 55.0 mm
 
 material.ref : string  = "SBR"
 
-visibility.hidden  : boolean = false
+
 visibility.color   : string  = "orange"
 
 
@@ -299,7 +296,7 @@ internal_item.model.g_left      : string = "source_horizontal_beam_tracker_inter
 internal_item.placement.g_right : string = "0 +2712.5 -2.5 (mm)"
 internal_item.model.g_right     : string = "source_horizontal_beam_tracker_interface_g.model"
 
-visibility.hidden  : boolean = false
+
 visibility.color   : string  = "grey"
 
 
@@ -349,7 +346,7 @@ internal_item.model.g_left      : string = "source_horizontal_beam_tracker_inter
 internal_item.placement.g_right : string = "0 +2712.5 +2.5 (mm)"
 internal_item.model.g_right     : string = "source_horizontal_beam_tracker_interface_g.model"
 
-visibility.hidden  : boolean = false
+
 visibility.color   : string  = "grey"
 
 
@@ -378,7 +375,7 @@ stacked.label_4   : string = "interface1"
 
 material.ref      : string = "lab_air"
 
-visibility.hidden : boolean = false
+
 
 
 ##########################################################################
@@ -405,8 +402,6 @@ stacked.model_4   : string = "source_zpos_horizontal_beam_tracker_interface.mode
 stacked.label_4   : string = "interface1"
 
 material.ref      : string = "lab_air"
-
-visibility.hidden : boolean = false
 
 
 # end of @falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/source_frame_horizontal_beams.geom

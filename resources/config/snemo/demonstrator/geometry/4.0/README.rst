@@ -101,6 +101,7 @@ Check the geometry:
           --load-dll Falaise \
           --datatools::variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/variance.conf" \
           --datatools::variant-qt-gui \
+	  --datatools::variant-store "myprofile.conf" \
           --manager-config "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf"
 
      where:
@@ -115,3 +116,25 @@ Check the geometry:
        * ``--datatools::variant-config`` loads the main configuration file for variant support.
        * ``--datatools::variant-qt-gui`` launched the GUI at start to select/change variant
 	 configuration parameters (only available if Bayeux was compiled with Qt GUI support).
+       * ``--datatools::variant-store`` store the selected variant profile in a file
+
+     ::
+      $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
+        bxgeomtools_inspector \
+          --datatools::logging "warning" \
+          --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-2.1.0/resources" \
+          --load-dll Falaise \
+          --datatools::variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/variance.conf" \
+ 	  --datatools::variant-load "myprofile.conf" \
+          --manager-config "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf"
+
+     ::
+      $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
+        bxgeomtools_inspector \
+          --datatools::logging "warning" \
+          --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-2.1.0/resources" \
+          --load-dll Falaise \
+          --datatools::variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/variance.conf" \
+          --datatools::variant-set "demonstrator:layout=HalfCommissioning" \
+          --datatools::variant-set "magnetic_field:active=0" \
+          --manager-config "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf"

@@ -33,10 +33,9 @@ mapping.daughter_id.frame_right      : string = "[xcalo_wall:wall=1]"
 mapping.daughter_id.frame_bottom     : string = "[gveto_row:wall=0]"
 mapping.daughter_id.frame_top        : string = "[gveto_row:wall=1]"
 
-visibility.hidden           : boolean = false
 visibility.color            : string  = "grey"
-visibility.hidden_envelope   : boolean = false
-visibility.daughters.hidden : boolean = false
+# visibility.hidden_envelope  : boolean = false
+# visibility.daughters.hidden : boolean = false
 
 
 ##############################################################################
@@ -70,10 +69,9 @@ mapping.daughter_id.frame_right      : string = "[xcalo_wall:wall=1]"
 mapping.daughter_id.frame_bottom     : string = "[gveto_row:wall=0]"
 mapping.daughter_id.frame_top        : string = "[gveto_row:wall=1]"
 
-visibility.hidden           : boolean = false
 visibility.color            : string  = "grey"
-visibility.hidden_envelope  : boolean = false
-visibility.daughters.hidden : boolean = false
+# visibility.hidden_envelope  : boolean = false
+# visibility.daughters.hidden : boolean = false
 
 
 # end of @falaise:config/snemo/demonstrator/geometry/4.0/models/tracker_module/tracker_submodules.geom

@@ -25,7 +25,6 @@ z                 : real as length = 1.0 um
 
 material.ref      : string = "basic::mylar"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "red"
 
 
@@ -58,7 +57,6 @@ z                 : real as length =   10.0 um
 
 material.ref      : string  = "basic::mylar"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "cyan"
 
 internal_item.labels         : string[1] = "spot"
@@ -101,7 +99,6 @@ y_hole            : real as length =   11.0 mm
 
 material.ref      : string  = "basic::polyethylene"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "blue"
 
 
@@ -144,7 +141,6 @@ z  : real as length = 2.0 mm
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "grey"
 
 
@@ -182,10 +178,9 @@ z                  : real    = 3350.0 mm
 
 material.ref       : string  = "tracking_gas"
 
-visibility.hidden  : boolean = false
 visibility.color   : string  = "grey"
 
-#@variant_devel
+# #@variant_devel
 
 # Four Bi207 calibration source carriers are set in the track only if
 # the "source_calibration:active/if_active/type/is_bi207" variant is active.

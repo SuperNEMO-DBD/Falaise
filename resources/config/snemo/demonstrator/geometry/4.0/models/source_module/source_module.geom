@@ -24,7 +24,6 @@ z                  : real as length = 3350.0 mm
 
 material.ref       : string  = "tracking_gas"
 
-visibility.hidden  : boolean = false
 visibility.color   : string  = "cyan"
 
 
@@ -81,7 +80,6 @@ stacked.label_14  : string = "source_gap_right"
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden          : boolean = false
 visibility.hidden_envelope : boolean = true
 visibility.color           : string  = "grey"
 
@@ -127,7 +125,6 @@ stacked.label_4 : string = "top_gas_gap"
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden          : boolean = false
 visibility.hidden_envelope : boolean = true
 visibility.color           : string  = "cyan"
 
@@ -144,7 +141,6 @@ z : real as length = 3410.0 mm
 
 material.ref : string  = "tracking_gas"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "cyan"
 
 
@@ -162,7 +158,6 @@ stacked.label_1 : string = "gas_gap"
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden         : boolean = false
 visibility.hidden_envelope : boolean = true
 visibility.color          : string  = "grey"
 
@@ -181,7 +176,6 @@ stacked.label_1 : string = "beam"
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden         : boolean = false
 visibility.hidden_envelope : boolean = true
 visibility.color          : string  = "grey"
 
@@ -235,7 +229,6 @@ surrounded.right_label  : string = "right_beam"
 
 material.ref : string = "lab_air"
 
-visibility.hidden         : boolean = false
 visibility.hidden_envelope : boolean = true
 visibility.color          : string  = "grey"
 

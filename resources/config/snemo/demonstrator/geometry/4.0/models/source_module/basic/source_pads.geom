@@ -17,7 +17,6 @@ z                  : real as length = 337.5 mm
 
 material.ref       : string  = "bb_source_material.basic"
 
-visibility.hidden  : boolean = false
 visibility.color   : string  = "magenta"
 
 
@@ -31,7 +30,6 @@ z                  : real as length = 337.5 mm
 
 material.ref       : string  = "bb_source_material.basic"
 
-visibility.hidden  : boolean = false
 visibility.color   : string  = "magenta"
 
 

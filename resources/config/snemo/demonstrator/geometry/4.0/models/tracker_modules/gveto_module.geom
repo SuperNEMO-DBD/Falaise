@@ -19,7 +19,6 @@ z                 : real as length   = 150.0 mm
 
 material.ref : string = "Dubna_PS_scintillator"
 
-visibility.hidden : boolean = false
 visibility.color  : string = "blue"
 
 # Sensitive detector category:
@@ -36,7 +35,6 @@ z                 : real as length   =   0.012 mm
 
 material.ref : string = "basic::mylar"
 
-visibility.hidden : boolean = false
 visibility.color  : string = "green"
 
 
@@ -50,7 +48,6 @@ z                 : real as length   = 150.0   mm
 
 material.ref : string = "basic::mylar"
 
-visibility.hidden : boolean = false
 visibility.color  : string = "green"
 
 
@@ -64,7 +61,6 @@ z                 : real as length   = 150.0 mm
 
 material.ref : string = "basic::ptfe"
 
-visibility.hidden : boolean = false
 visibility.color  : string = "green"
 
 
@@ -80,7 +76,6 @@ stacked.label_1         : string = "internal_wrapping"
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden         : boolean = false
 visibility.hidden_envelope : boolean = true
 visibility.color          : string = "grey"
 
@@ -97,7 +92,6 @@ stacked.label_0         : string = "internal_wrapping"
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden         : boolean = false
 visibility.hidden_envelope : boolean = true
 visibility.color          : string = "grey"
 
@@ -110,7 +104,6 @@ visibility.color          : string = "grey"
 # z                 : real as length   = 150.0 mm
 # length_unit       : string = "mm"
 # material.ref : string = "basic::ptfe"
-# visibility.hidden : boolean = false
 # visibility.color  : string = "green"
 
 
@@ -124,7 +117,6 @@ z                 : real as length   = 150.0 mm
 
 material.ref : string = "basic::ptfe"
 
-visibility.hidden : boolean = false
 visibility.color  : string = "green"
 
 
@@ -138,7 +130,6 @@ z                 : real as length   = 150.0   mm
 
 material.ref : string = "basic::mylar"
 
-visibility.hidden : boolean = false
 visibility.color  : string = "green"
 
 
@@ -154,7 +145,6 @@ stacked.label_1         : string = "internal_wrapping"
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden         : boolean = false
 visibility.hidden_envelope : boolean = true
 visibility.color          : string = "grey"
 
@@ -171,7 +161,6 @@ stacked.label_0         : string = "internal_wrapping"
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden         : boolean = false
 visibility.hidden_envelope : boolean = true
 visibility.color          : string = "grey"
 
@@ -184,7 +173,6 @@ visibility.color          : string = "grey"
 # z                 : real as length   = 150.0 mm
 # length_unit       : string = "mm"
 # material.ref : string = "basic::ptfe"
-# visibility.hidden : boolean = false
 # visibility.color  : string = "green"
 
 
@@ -211,7 +199,6 @@ surrounded.back_label  : string = "back_wrapper"
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden         : boolean = false
 visibility.hidden_envelope : boolean = false
 visibility.color          : string = "grey"
 
@@ -229,7 +216,6 @@ r_hole            : real as length    =  70.0   mm
 
 material.ref : string = "basic::mylar"
 
-visibility.hidden : boolean = false
 visibility.color  : string = "green"
 
 
@@ -242,7 +228,6 @@ z                 : real as length    =    3.0 mm
 
 material.ref : string = "basic::plexiglass"
 
-visibility.hidden : boolean = false
 visibility.color  : string = "blue"
 
 
@@ -256,7 +241,6 @@ z                 : real as length    =   0.988 mm
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden : boolean = false
 visibility.color  : string = "cyan"
 
 
@@ -281,7 +265,6 @@ stacked.label_3   : string = "front_chock"
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden : boolean = false
 visibility.color  : string = "cyan"
 
 
@@ -300,7 +283,6 @@ r_hole            : real as length   =  75.0 mm
 
 material.ref : string = "basic::iron"
 
-visibility.hidden : boolean = false
 visibility.color  : string = "red"
 
 
@@ -314,7 +296,6 @@ z            : real as length   =  250.0 mm
 
 material.ref : string = "snemo::mu_metal"
 
-visibility.hidden          : boolean = false
 visibility.color           : string = "magenta"
 
 
@@ -329,7 +310,6 @@ bottom            : boolean = true
 
 material.ref : string = "basic::plexiglass"
 
-visibility.hidden : boolean = false
 visibility.color  : string = "blue"
 
 
@@ -365,8 +345,7 @@ internal_item.model.pmt                 : string = "tracker.PMT_HAMAMATSU_R6594.
 internal_item.placement.pmt_base        : string = "0 0 -75 (mm)"
 internal_item.model.pmt_base            : string = "tracker.PMT_HAMAMATSU_R6594.base.model"
 
-visibility.hidden               : boolean = false
-visibility.hidden_envelope       : boolean = true
+visibility.hidden_envelope      : boolean = true
 visibility.color                : string  = "grey"
 visibility.daughters.hidden     : boolean = false
 visibility.daughters.pmt.hidden : boolean = true

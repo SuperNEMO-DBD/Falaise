@@ -190,7 +190,7 @@ stacked.label_2   : string = "front_film"
 
 material.ref      : string = "tracking_gas"
 
-visibility.hidden : boolean = false
+visibility.color  : string = "green"
 
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
@@ -235,7 +235,7 @@ stacked.label_2   : string = "front_film"
 
 material.ref      : string = "tracking_gas"
 
-visibility.hidden : boolean = false
+visibility.color  : string = "green"
 
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"

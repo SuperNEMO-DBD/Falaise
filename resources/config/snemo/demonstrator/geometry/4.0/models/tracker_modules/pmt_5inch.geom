@@ -18,7 +18,6 @@ z          : real as length = 80.0 mm
 
 material.ref      : string = "basic::copper"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "orange"
 
 
@@ -33,7 +32,6 @@ z          : real as length = 30.0 mm
 
 material.ref      : string = "basic::delrin"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "orange"
 
 
@@ -73,9 +71,6 @@ material.filled.ref : string = "vacuum"
 #########################
 # Visibility parameters #
 #########################
-
-#@description The visibility hidden flag for the display
-visibility.hidden           : boolean = true
 
 #@description The visibility hidden flag for the envelope
 visibility.hidden_envelope  : boolean = true

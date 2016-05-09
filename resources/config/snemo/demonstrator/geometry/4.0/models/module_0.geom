@@ -70,9 +70,8 @@ stacked.label_4   : string = "calorimeter_front_submodule"
 material.ref    : string = "lab_air"
 
 # Visibility properties:
-visibility.hidden           : boolean = false
-visibility.daughters.hidden : boolean = false
-visibility.hidden_envelope  : boolean = false
+# visibility.daughters.hidden : boolean = false
+# visibility.hidden_envelope  : boolean = false
 visibility.color            : string  = "grey"
 
 # Mapping informations for daughter volumes:

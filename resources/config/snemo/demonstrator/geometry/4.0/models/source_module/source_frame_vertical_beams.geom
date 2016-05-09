@@ -15,7 +15,6 @@ r                 : real as length =  6.0 mm
 
 material.ref      : string = "basic::copper"
 
-visibility.hidden : boolean = false
 visibility.color  : string = "red"
 
 
@@ -29,7 +28,7 @@ z                 : real as length = 20.0 mm
 
 material.ref      : string = "lab_air"
 
-visibility.hidden : boolean = false
+visibility.color  : string = "cyan"
 
 internal_item.labels        : string[1] = "rod"
 internal_item.placement.rod : string    = "0 0 0 (mm) / y 90.0 (deg)"
@@ -65,7 +64,7 @@ z                 : real as length = 3410.0 mm
 
 material.ref      : string = "lab_air"
 
-visibility.hidden : boolean = false
+visibility.color  : string = "grey"
 
 
 ##################################################################################
@@ -91,7 +90,6 @@ z                 : real as length = 3410.0 mm
 
 material.ref      : string = "basic::copper"
 
-visibility.hidden : boolean = false
 visibility.color  : string = "red"
 
 
@@ -112,7 +110,6 @@ stacked.label_2   : string = "plate"
 
 material.ref      : string = "lab_air"
 
-visibility.hidden : boolean = false
 visibility.color  : string = "grey"
 
 
@@ -133,7 +130,6 @@ stacked.label_2   : string = "rods"
 
 material.ref      : string = "lab_air"
 
-visibility.hidden : boolean = false
 visibility.color  : string = "grey"
 
 
@@ -147,7 +143,6 @@ z                 : real as length = 3410.0 mm
 
 material.ref      : string = "basic::copper"
 
-visibility.hidden : boolean = false
 visibility.color  : string = "red"
 
 
@@ -163,7 +158,6 @@ z            : real as length = 3410.0 mm
 
 material.ref : string = "basic::copper"
 
-visibility.hidden : boolean = false
 visibility.color  : string = "red"
 
 
@@ -179,7 +173,6 @@ z            : real as length = 3410.0 mm
 
 material.ref : string = "RTV"
 
-visibility.hidden : boolean = false
 visibility.color  : string = "magenta"
 
 
@@ -194,7 +187,6 @@ z            : real as length = 3410.0 mm
 
 material.ref : string = "basic::copper"
 
-visibility.hidden  : boolean = false
 visibility.color   : string = "red"
 
 
@@ -209,7 +201,6 @@ z            : real as length = 3410.0 mm
 
 material.ref : string = "SBR"
 
-visibility.hidden  : boolean = false
 visibility.color   : string = "orange"
 
 
@@ -233,6 +224,8 @@ stacked.label_3   : string = "interface_0"
 
 material.ref      : string = "lab_air"
 
+visibility.color   : string = "grey"
+
 
 ##########################################################################################
 [name="source_ypos_vertical_beam_tracker_interface.model" type="geomtools::stacked_model"]
@@ -253,6 +246,8 @@ stacked.model_3   : string = "source_vertical_beam_tracker_interface_d.model"
 stacked.label_3   : string = "interface_3"
 
 material.ref      : string = "lab_air"
+
+visibility.color   : string = "grey"
 
 
 ########################################################################
@@ -280,7 +275,7 @@ stacked.label_4   : string = "interface1"
 
 material.ref      : string = "lab_air"
 
-visibility.hidden : boolean = false
+visibility.color   : string = "grey"
 
 
 ########################################################################
@@ -308,7 +303,7 @@ stacked.label_4   : string = "interface1"
 
 material.ref      : string = "lab_air"
 
-visibility.hidden : boolean = false
+visibility.color   : string = "grey"
 
 
 # end of @falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/source_frame_vertical_beams.geom

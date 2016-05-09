@@ -17,7 +17,7 @@ z                 : real as length =   20.5 mm
 
 material.ref      : string  = "tracking_gas"
 
-visibility.hidden : boolean = false
+
 
 
 ############################################################################
@@ -30,7 +30,6 @@ z                 : real as length =    9.5 mm
 
 material.ref      : string  = "basic::delrin"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "green"
 
 
@@ -44,7 +43,6 @@ z                 : real as length =   12.0 mm
 
 material.ref      : string  = "basic::delrin"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "green"
 
 
@@ -58,7 +56,7 @@ z                 : real as length =   18.0 mm
 
 material.ref      : string  = "tracking_gas"
 
-visibility.hidden : boolean = false
+visibility.color  : string  = "cyan"
 
 
 # end of @falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/source_foil_support.geom

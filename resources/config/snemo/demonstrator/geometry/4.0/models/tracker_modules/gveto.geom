@@ -12,8 +12,7 @@ replicated.label           : string  = "module"
 
 material.ref : string  = "tracking_gas"
 
-visibility.hidden           : boolean = false
-visibility.hidden_envelope   : boolean = true
+visibility.hidden_envelope  : boolean = true
 visibility.daughters.hidden : boolean = false
 visibility.color            : string = "grey"
 
@@ -31,8 +30,7 @@ replicated.label           : string  = "module"
 
 material.ref : string  = "tracking_gas"
 
-visibility.hidden           : boolean = false
-visibility.hidden_envelope   : boolean = true
+visibility.hidden_envelope  : boolean = true
 visibility.daughters.hidden : boolean = false
 visibility.color            : string = "grey"
 
@@ -50,7 +48,6 @@ z          : real as length =   6.5 mm
 
 material.ref : string  = "basic::iron"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "red"
 
 
@@ -64,7 +61,6 @@ z          : real as length = 318.5 mm
 
 material.ref : string  = "lab_air"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "grey"
 
 
@@ -78,7 +74,6 @@ z          : real as length = 154.0 mm
 
 material.ref : string  = "tracking_gas"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "cyan"
 
 
@@ -107,7 +102,6 @@ z          : real as length =    6.5 mm
 
 material.ref : string  = "basic::iron"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "red"
 
 
@@ -121,7 +115,6 @@ z           : real as length = 318.5 mm
 
 material.ref      : string  = "lab_air"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "grey"
 
 
@@ -135,7 +128,6 @@ z          : real as length = 154.0 mm
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "cyan"
 
 
@@ -153,9 +145,8 @@ stacked.label_2   : string  = "inner"
 
 material.ref : string = "lab_air"
 
-visibility.hidden         : boolean = false
 visibility.hidden_envelope : boolean = true
-visibility.color          : string  = "grey"
+visibility.color           : string  = "grey"
 
 
 #########################################################
@@ -176,9 +167,8 @@ stacked.label_4   : string  = "right_ender_stock"
 
 material.ref : string = "lab_air"
 
-visibility.hidden         : boolean = false
 visibility.hidden_envelope : boolean = true
-visibility.color          : string  = "grey"
+visibility.color           : string  = "grey"
 
 
 ###################################################################
@@ -190,7 +180,6 @@ rotated.model         : string  = "gveto_line.model"
 
 material.ref : string = "lab_air"
 
-visibility.hidden         : boolean = false
 visibility.hidden_envelope : boolean = true
 visibility.color          : string  = "grey"
 
@@ -204,9 +193,8 @@ rotated.model         : string  = "gveto_line.model"
 
 material.ref : string = "lab_air"
 
-visibility.hidden         : boolean = false
 visibility.hidden_envelope : boolean = true
-visibility.color          : string  = "grey"
+visibility.color           : string  = "grey"
 
 
 #######################################################################################
@@ -219,7 +207,6 @@ z          : real as length =  318.5 mm
 
 material.ref : string = "basic::iron"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "red"
 
 
@@ -233,7 +220,6 @@ z          : real as length =    6.5 mm
 
 material.ref : string = "basic::iron"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "red"
 
 ########################################################################################
@@ -246,7 +232,6 @@ z          : real as length   =    6.5 mm
 
 material.ref : string = "basic::iron"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "red"
 
 ############################################################################################
@@ -259,7 +244,6 @@ z          : real as length =  154.0 mm
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "cyan"
 
 
@@ -273,7 +257,6 @@ z          : real as length =  154.0 mm
 
 material.ref : string  = "tracking_gas"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "cyan"
 
 
@@ -287,7 +270,6 @@ z          : real as length =  479.0 mm
 
 material.ref : string  = "lab_air"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "grey"
 
 internal_item.labels  : string[3] = "beam_side" "beam_outer" "gas"
@@ -312,7 +294,6 @@ z          : real as length =  479.0 mm
 
 material.ref : string  = "lab_air"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "grey"
 
 internal_item.labels  : string[3] = "beam_side" "beam_inner" "gas"
@@ -393,6 +374,7 @@ visibility.hidden_envelope : boolean = false
 rotated.axis              : string  = "x"
 rotated.special_angle     : string  = "180"
 rotated.model             : string  = "tracker_horizontal_beam_inner.model"
+
 visibility.hidden_envelope : boolean = false
 
 material.ref : string = "lab_air"
@@ -404,6 +386,7 @@ material.ref : string = "lab_air"
 rotated.axis              : string  = "z"
 rotated.special_angle     : string  = "180"
 rotated.model             : string  = "tracker_horizontal_beam_inner.model"
+
 visibility.hidden_envelope : boolean = false
 
 material.ref : string = "lab_air"
@@ -415,6 +398,7 @@ material.ref : string = "lab_air"
 rotated.axis              : string  = "y"
 rotated.special_angle     : string  = "180"
 rotated.model             : string  = "tracker_horizontal_beam_inner.model"
+
 visibility.hidden_envelope : boolean = false
 
 material.ref : string = "lab_air"

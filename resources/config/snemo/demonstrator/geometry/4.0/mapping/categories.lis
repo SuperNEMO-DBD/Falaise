@@ -270,4 +270,14 @@ extends : string    = "module"
 by      : string[2] = "side" "foil"
 
 
+######################################################
+[category="commissioning_source_plane"    type="1500"]
+inherits : string  = "module"
+
+
+#####################################################
+[category="commissioning_source_spot"    type="1510"]
+extends : string    = "commissioning_source_plane"
+by      : string[2] = "column" "row"
+
 # end of categories.lis

@@ -16,7 +16,6 @@ z                  : real    = 3350.0 mm
 
 material.ref       : string  = "tracking_gas"
 
-visibility.hidden  : boolean = false
 visibility.color   : string  = "grey"
 
 
@@ -101,7 +100,6 @@ stacked.label_14  : string = "source_gap_right"
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden          : boolean = false
 visibility.hidden_envelope : boolean = true
 visibility.color           : string  = "grey"
 

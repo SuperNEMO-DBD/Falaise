@@ -4,6 +4,9 @@
 
 ###################################################################
 #
+#                           ^ y
+#                           :
+#                           :
 #      :                 layers                   :
 #      :    #0  #1  #2  #3  #4  #5  #6  #7  #8    :
 #      +--+---+---+---+---+---+---+---+---+---+---+
@@ -14,7 +17,7 @@
 #  C   :  : : : : : : : : : : : : : : : : : : :   : R
 #  E   :  : : : : : : : : : : : : : : : : : : :   : I
 #      :  : : : : : : : : : : : : : : : : : : :   : M
-#  S   :  : : : : : : : : : : : : : : : : : : :   : E
+#  S   :  : : : : : : : : : : : : : : : : : : :   : E ----> x
 #  U   |  +---+---+---+---+---+---+---+---+---+   | T
 #  B   |  | o | o | o | o | o | o | o | o | o |   | E
 #  M   |  +---+---+---+---+---+---+---+---+---+   | R
@@ -74,8 +77,7 @@ stacked.label_10   : string  = "calo_gap"
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden           : boolean = false
-visibility.hidden_envelope   : boolean = false
+visibility.hidden_envelope  : boolean = true
 visibility.daughters.hidden : boolean = false
 visibility.color            : string  = "grey"
 
@@ -93,6 +95,9 @@ mapping.daughter_id.layer_8 : string = "[tracker_layer:layer=8]"
 
 ##################################################################
 #
+#                           ^ y
+#                           :
+#                           :
 #      :                  layers                   :
 #      :    #8  #7  #6  #5  #4  #3  #2  #1  #0     :
 #      +---+---+---+---+---+---+---+---+---+---+---+
@@ -103,7 +108,7 @@ mapping.daughter_id.layer_8 : string = "[tracker_layer:layer=8]"
 #  R   :   : : : : : : : : : : : : : : : : : : :   : C
 #  I   :   : : : : : : : : : : : : : : : : : : :   : E
 #  M   :   : : : : : : : : : : : : : : : : : : :   :
-#  E   :   : : : : : : : : : : : : : : : : : : :   : S
+#  E   :   : : : : : : : : : : : : : : : : : : :   : S ----> x
 #  T   |   +---+---+---+---+---+---+---+---+---+   | U
 #  E   |   | o | o | o | o | o | o | o | o | o |   | B
 #  R   |   +---+---+---+---+---+---+---+---+---+   | M
@@ -163,8 +168,7 @@ stacked.label_10   : string  = "source_gap"
 
 material.ref                : string  = "tracking_gas"
 
-visibility.hidden           : boolean = false
-visibility.hidden_envelope  : boolean = false
+visibility.hidden_envelope  : boolean = true
 visibility.daughters.hidden : boolean = false
 visibility.color            : string  = "grey"
 
@@ -187,12 +191,11 @@ mapping.daughter_id.layer_8 : string = "[tracker_layer:layer=8]"
 
 shape_type : string = "box"
 x : real as length =  405. mm
-y : real as length= 4998. mm
+y : real as length = 4998. mm
 z : real as length =   34. mm
 
 material.ref : string  = "tracking_gas"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "cyan"
 
 
@@ -212,7 +215,6 @@ stacked.label_2         : string  = "top_gas_gap"
 
 material.ref : string  = "tracking_gas"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "cyan"
 
 
@@ -232,7 +234,6 @@ stacked.label_2         : string  = "top_gas_gap"
 
 material.ref : string  = "tracking_gas"
 
-visibility.hidden : boolean = false
 visibility.color  : string  = "cyan"
 
 

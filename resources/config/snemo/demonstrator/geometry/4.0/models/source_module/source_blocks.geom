@@ -17,9 +17,7 @@ z                  : real as length = 3350.0 mm
 
 material.ref       : string  = "tracking_gas"
 
-visibility.hidden  : boolean = false
 visibility.color   : string  = "cyan"
-
 
 
 ###################################################################
@@ -48,7 +46,6 @@ stacked.label_4   : string = "strip_2"
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden          : boolean = false
 visibility.hidden_envelope : boolean = true
 visibility.color           : string  = "grey"
 
@@ -104,7 +101,6 @@ stacked.label_10 : string = "strip_8"
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden          : boolean = false
 visibility.hidden_envelope : boolean = true
 visibility.color           : string  = "grey"
 
@@ -163,7 +159,6 @@ stacked.label_10 : string = "strip_14"
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden          : boolean = false
 visibility.hidden_envelope : boolean = true
 visibility.color           : string  = "grey"
 
@@ -222,7 +217,6 @@ stacked.label_10 : string = "strip_20"
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden          : boolean = false
 visibility.hidden_envelope : boolean = true
 visibility.color           : string  = "grey"
 
@@ -281,7 +275,6 @@ stacked.label_10 : string = "strip_26"
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden          : boolean = false
 visibility.hidden_envelope : boolean = true
 visibility.color           : string  = "grey"
 
@@ -340,7 +333,6 @@ stacked.label_10 : string = "strip_32"
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden          : boolean = false
 visibility.hidden_envelope : boolean = true
 visibility.color           : string  = "grey"
 
@@ -378,7 +370,6 @@ stacked.label_4  : string = "strip_35"
 
 material.ref : string = "tracking_gas"
 
-visibility.hidden          : boolean = false
 visibility.hidden_envelope : boolean = true
 visibility.color           : string  = "grey"
 
