@@ -180,15 +180,14 @@ material.ref       : string  = "tracking_gas"
 
 visibility.color   : string  = "grey"
 
-# #@variant_devel
-
 # Four Bi207 calibration source carriers are set in the track only if
-# the "source_calibration:active/if_active/type/is_bi207" variant is active.
+# the "source_calibration:active/is_active" variant is active.
 
+#@variant_if source_calibration:active/is_active|false
 #@description The list of internal items
-#@variant_only source_calibration:active/if_active/type/is_bi207|false
 internal_item.labels : string[4] = "source_0" "source_1" "source_2" "source_3"
 
+# Describe the internal items :
 internal_item.model.source_0     : string  = "source_calibration_carrier.model"
 internal_item.placement.source_0 : string  = "0 0 -1275 (mm) / y +90 (degree) "
 
@@ -201,15 +200,13 @@ internal_item.placement.source_2 : string  = "0 0  +425 (mm) / y +90 (degree) "
 internal_item.model.source_3     : string  = "source_calibration_carrier.model"
 internal_item.placement.source_3 : string  = "0 0 +1275 (mm) / y +90 (degree) "
 
-# Mapping the source pads :
-#@variant_only source_calibration:active/if_active/type/is_bi207|false
+# Mapping the source calibration carriers :
 mapping.daughter_id.source_0 : string = "[source_calibration_carrier:position=0]"
-#@variant_only source_calibration:active/if_active/type/is_bi207|false
 mapping.daughter_id.source_1 : string = "[source_calibration_carrier:position=1]"
-#@variant_only source_calibration:active/if_active/type/is_bi207|false
 mapping.daughter_id.source_2 : string = "[source_calibration_carrier:position=2]"
-#@variant_only source_calibration:active/if_active/type/is_bi207|false
 mapping.daughter_id.source_3 : string = "[source_calibration_carrier:position=3]"
+
+#@variant_endif
 
 
 # end of @falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/source_calibration.geom

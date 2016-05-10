@@ -97,13 +97,13 @@ variants.if_se82.description  : string = "Set of parameters for Se82 beta-beta s
 variants.if_nd150.model       : string = "source_betabeta.basic.nd150.VM"
 variants.if_nd150.description : string = "Set of parameters for Nd150 beta-beta source layout"
 
-#@description "Ca48" layout is associated to the "is_ca48" variant
+#@description "Ca48" layout is associated to the "if_ca48" variant
 string.enumerated_0.variant : string = "if_ca48"
 
-#@description "Se82" layout is associated to the "is_se82" variant
+#@description "Se82" layout is associated to the "if_se82" variant
 string.enumerated_1.variant : string = "if_se82"
 
-#@description "Nd150" layout is associated to the "is_nd150" variant
+#@description "Nd150" layout is associated to the "if_nd150" variant
 string.enumerated_2.variant : string = "if_nd150"
 
 

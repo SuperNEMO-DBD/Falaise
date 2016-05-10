@@ -10,12 +10,12 @@
 #
 # magnetic_field.VM
 # +-- active : on_off_mag_field.PM
-#     +-- if_active (true)
+#     +-- is_active (true)
 #         +-- mag_field_desc.VM
 #            +-- type : mag_field_type.PM
-#                +-- is_mapped (MappedField)
+#                +-- if_mapped (MappedField)
 #                |   +-- mapped_mag_field.VM
-#                +-- is_uniform_vertical (UniformVerticalField)
+#                +-- if_uniform_vertical (UniformVerticalField)
 #                    +-- uniform_vertical_mag.VM
 #                        +-- magnitude : mag_field_magnitude.PM
 #                        +-- direction : mag_field_direction.PM
@@ -186,16 +186,16 @@ string.enumerated_1.value : string = "Mapped"
 string.default            : string = "UniformVertical"
 
 #@description The list of variants
-variants : string[2] = "is_uniform_vertical" "is_mapped"
+variants : string[2] = "if_uniform_vertical" "if_mapped"
 
-variants.is_uniform_vertical.model       : string = "magnetic_field.uniform_vertical.VM"
-variants.is_uniform_vertical.description : string = "Set of parameters for the uniform vertical magnetic field"
+variants.if_uniform_vertical.model       : string = "magnetic_field.uniform_vertical.VM"
+variants.if_uniform_vertical.description : string = "Set of parameters for the uniform vertical magnetic field"
 
-variants.is_mapped.model                 : string = "magnetic_field.mapped.VM"
-variants.is_mapped.description           : string = "Set of parameters for the mapped magnetic field"
+variants.if_mapped.model                 : string = "magnetic_field.mapped.VM"
+variants.if_mapped.description           : string = "Set of parameters for the mapped magnetic field"
 
-string.enumerated_0.variant : string = "is_uniform_vertical"
-string.enumerated_1.variant : string = "is_mapped"
+string.enumerated_0.variant : string = "if_uniform_vertical"
+string.enumerated_1.variant : string = "if_mapped"
 
 
 ##############################################
@@ -237,16 +237,16 @@ mutability          : string = "variable"
 boolean.default     : boolean = true
 
 #@description List of variants
-variants : string [1] = "if_active"
+variants : string [1] = "is_active"
 
-#@description The variant model associated to the "if_active" variant
-variants.if_active.model       : string = "magnetic_field.desc.VM"
+#@description The variant model associated to the "is_active" variant
+variants.is_active.model       : string = "magnetic_field.desc.VM"
 
-#@description The description of the "if_active" variant
-variants.if_active.description : string = "Set of parameters for activated magnetic field"
+#@description The description of the "is_active" variant
+variants.is_active.description : string = "Set of parameters for activated magnetic field"
 
 #@description Variant associated to the magnetic field activation
-boolean.true.variant : string = "if_active"
+boolean.true.variant : string = "is_active"
 
 
 #########################################

@@ -49,16 +49,16 @@ string.enumerated_0.value : string = "Bi207"
 string.default            : string = "Bi207"
 
 #@description The list of variants
-variants : string[1] = "is_bi207"
+variants : string[1] = "if_bi207"
 
 #@description The model associated to Bi207 calibration
-variants.is_bi207.model       : string = "source_calibration.bi207.basic.VM"
+variants.if_bi207.model       : string = "source_calibration.bi207.basic.VM"
 
 #@description The description of Bi207 calibration variant
-variants.is_bi207.description : string = "Set of parameters for the Bi207 source calibration"
+variants.if_bi207.description : string = "Set of parameters for the Bi207 source calibration"
 
 #@description The variant associated to the "Bi207" calibration type
-string.enumerated_0.variant   : string = "is_bi207"
+string.enumerated_0.variant   : string = "if_bi207"
 
 
 #########################################################
@@ -100,16 +100,16 @@ mutability          : string = "variable"
 boolean.default     : boolean = false
 
 #@description List of variants
-variants : string[1] = "if_active"
+variants : string[1] = "is_active"
 
-#@description The variant model associated to the "if_active" variant
-variants.if_active.model       : string = "source_calibration.description.VM"
+#@description The variant model associated to the "is_active" variant
+variants.is_active.model       : string = "source_calibration.description.VM"
 
-#@description The description of the "if_active" variant
-variants.if_active.description : string = "Set of parameters for source calibration"
+#@description The description of the "is_active" variant
+variants.is_active.description : string = "Set of parameters for source calibration"
 
 #@description Variant associated to the source calibration activation
-boolean.true.variant : string = "if_active"
+boolean.true.variant : string = "is_active"
 
 
 #############################################
