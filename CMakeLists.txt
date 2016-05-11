@@ -120,7 +120,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Intel")
   set(FALAISE_CXX_FLAGS "-w2")
 endif()
 
-# - Prepend Bayeux's flags to any preexisting ones, allowing user
+# - Prepend Falaise's flags to any preexisting ones, allowing user
 #   to supply additional ones or override if required
 set(CMAKE_CXX_FLAGS "${FALAISE_CXX_FLAGS} ${CMAKE_CXX_FLAGS}")
 
@@ -246,7 +246,6 @@ endif()
 #
 option(FALAISE_WITH_DEVELOPER_TOOLS "Build/install developer tools" ON)
 mark_as_advanced(FALAISE_WITH_DEVELOPER_TOOLS)
-
 
 #-----------------------------------------------------------------------
 # Bayeux is the main external dependency, and we know it will additionally

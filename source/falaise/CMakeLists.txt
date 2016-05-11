@@ -65,7 +65,7 @@ endforeach()
 # Build/Link Library
 #
 add_library(Falaise SHARED ${FalaiseLibrary_HEADERS} ${FalaiseLibrary_SOURCES})
-target_compile_features(Falaise PUBLIC ${FALAISE_COMPILE_FEATURES})
+target_compile_features(Falaise PUBLIC ${FALAISE_CXX_COMPILE_FEATURES})
 target_include_directories(Falaise PUBLIC
   $<BUILD_INTERFACE:${FALAISE_BUILDPRODUCT_DIR}/include>
   $<BUILD_INTERFACE:${FALAISE_BUILDPRODUCT_DIR}/include/falaise>
@@ -94,6 +94,9 @@ endif()
 add_library(FalaiseModule INTERFACE)
 target_include_directories(FalaiseModule INTERFACE
   $<TARGET_PROPERTY:Falaise,INTERFACE_INCLUDE_DIRECTORIES>
+  )
+target_compile_features(FalaiseModule INTERFACE
+  $<TARGET_PROPERTY:Falaise,INTERFACE_COMPILE_FEATURES>
   )
 target_link_libraries(FalaiseModule
   INTERFACE "$<$<PLATFORM_ID:Darwin>:-undefined dynamic_lookup>"
