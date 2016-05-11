@@ -1,3 +1,4 @@
+# -*- mode: conf-unix; -*-
 # List of multi-properties (datatools::multi_properties):
 
 #@description A list of DBD generators

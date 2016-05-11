@@ -2,7 +2,7 @@
 Primary event generation for simulation (common)
 ====================================================================
 
-:Authors: François Mauger
+:Authors: F. Mauger, Y. Lemière, G. Oliviéro
 :Date:    2016-05-11
 
 .. contents::
