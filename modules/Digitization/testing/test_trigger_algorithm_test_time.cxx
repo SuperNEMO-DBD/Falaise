@@ -234,7 +234,7 @@ int main( int  argc_ , char **argv_  )
     bool inhibit_single_side_coinc = false;    
     int  coincidence_calorimeter_gate_size = 4; // Don't forget to modify at 7 or 8 CT 1600 for new trigger analysis
     int previous_event_buffer_depth = 10; // Maximum number of PER record (with an internal counter of 1 ms)
-    bool activate_coincidence = true;
+    bool activate_any_coincidences = true;
     
     trigger_config.store("calo.circular_buffer_depth", calo_circular_buffer_depth);
     trigger_config.store("calo.total_multiplicity_threshold", calo_threshold);
@@ -247,7 +247,7 @@ int main( int  argc_ , char **argv_  )
     trigger_config.store("tracker.mem5_file", mem5);
     trigger_config.store("coincidence.calorimeter_gate_size", coincidence_calorimeter_gate_size);
     trigger_config.store("coincidence.previous_event_buffer_depth", previous_event_buffer_depth);
-    trigger_config.store("activate_coincidence", activate_coincidence);
+    trigger_config.store("activate_any_coincidences", activate_any_coincidences);
 
     // Creation of trigger display manager :
     snemo::digitization::trigger_display_manager my_trigger_display;
@@ -265,7 +265,7 @@ int main( int  argc_ , char **argv_  )
     // Creation and initialization of trigger algorithm :
     snemo::digitization::trigger_algorithm_test_time my_trigger_algo;
     my_trigger_algo.set_electronic_mapping(my_e_mapping);
-    //my_trigger_algo.set_trigger_display_manager(my_trigger_display);
+    my_trigger_algo.set_clock_manager(my_clock_manager);
     my_trigger_algo.initialize(trigger_config);
 
     // Internal counters
@@ -285,6 +285,12 @@ int main( int  argc_ , char **argv_  )
 	    double  clocktick_25_shift      = my_clock_manager.get_shift_25();
 	    int32_t clocktick_800_reference = my_clock_manager.get_clocktick_800_ref();
 	    double  clocktick_800_shift     = my_clock_manager.get_shift_800();
+
+	    // Creation of calo ctw data :
+	    snemo::digitization::calo_ctw_data my_calo_ctw_data;
+
+	    // Creation of geiger ctw data :
+	    snemo::digitization::geiger_ctw_data my_geiger_ctw_data;
 	    
 	    if (SD.has_step_hits("calo") || SD.has_step_hits("xcalo") || SD.has_step_hits("gveto") || SD.has_step_hits("gg"))
 	      {
@@ -299,12 +305,6 @@ int main( int  argc_ , char **argv_  )
 		
 		if (debug) signal_data.tree_dump(std::clog, "*** Signal Data ***", "INFO : ");
 		
-		// Creation of calo ctw data :
-		snemo::digitization::calo_ctw_data my_calo_ctw_data;
-
-		// Creation of geiger ctw data :
-		snemo::digitization::geiger_ctw_data my_geiger_ctw_data;
-
 		if (debug) my_clock_manager.tree_dump(std::clog, "Clock utils : ", "INFO : ");
 
 		snemo::digitization::calo_tp_data my_calo_tp_data;
@@ -342,45 +342,45 @@ int main( int  argc_ , char **argv_  )
 
 		  } // end of if has geiger signal
 
-		// Creation of outputs collection structures for calo and tracker
-		std::vector<snemo::digitization::calo_trigger_algorithm_test_time::calo_summary_record> calo_collection_records;
-		std::vector<snemo::digitization::tracker_trigger_algorithm_test_time::tracker_record>   tracker_collection_records;
-		std::vector<snemo::digitization::coincidence_trigger_algorithm_test_time::coincidence_event_record> coincidence_collection_records;
-		
-		// Reseting trigger display
-		my_trigger_display.reset_matrix_pattern();
-
-		// Trigger process
-		my_trigger_algo.process(my_calo_ctw_data,
-					my_geiger_ctw_data);	   
-		
-		// Finale structures :
-		calo_collection_records = my_trigger_algo.get_calo_records_vector();
-		tracker_collection_records = my_trigger_algo.get_tracker_records_vector();
-		coincidence_collection_records = my_trigger_algo.get_coincidence_records_vector();
-
-		// if (debug) my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
-	        // if (debug) my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
-		// if (debug) my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
-		// if (debug) my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
-
-		
-		if (debug) std::clog << "********* Size of Finale structures for one event *********" << std::endl;
-		if (debug) std::clog << "Calo collection size    : " << calo_collection_records.size() << std::endl;
-		if (debug) std::clog << "Tracker collection size : " << tracker_collection_records.size() << std::endl;
-		if (debug) std::clog << "Coincidence collection size : " << coincidence_collection_records.size() << std::endl;
-		
 	      } // end of if has "calo" || "xcalo" || "gveto" || "gg" step hits
-	    
-	    std::vector<snemo::digitization::coincidence_trigger_algorithm_test_time::coincidence_calo_record> coincidence_collection_calo_records = my_trigger_algo.get_coincidence_calo_records_vector();
 
+		// Creation of outputs collection structures for calo and tracker
+	    std::vector<snemo::digitization::calo_trigger_algorithm_test_time::calo_summary_record> calo_collection_records;
+	    std::vector<snemo::digitization::coincidence_trigger_algorithm_test_time::coincidence_calo_record> coincidence_collection_calo_records;
+	    std::vector<snemo::digitization::tracker_trigger_algorithm_test_time::tracker_record>   tracker_collection_records;
+	    std::vector<snemo::digitization::coincidence_trigger_algorithm_test_time::coincidence_event_record> coincidence_collection_records;
+		
+	    // Reseting trigger display
+	    my_trigger_display.reset_matrix_pattern();
+
+	    // Trigger process
+	    my_trigger_algo.process(my_calo_ctw_data,
+				    my_geiger_ctw_data);	   
+		
+	    // Finale structures :
+	    calo_collection_records = my_trigger_algo.get_calo_records_25ns_vector();
+	    coincidence_collection_calo_records =  my_trigger_algo.get_coincidence_calo_records_1600ns_vector();
+	    tracker_collection_records = my_trigger_algo.get_tracker_records_vector();
+	    coincidence_collection_records = my_trigger_algo.get_coincidence_records_vector();
+
+	    // if (debug) my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
+	    // if (debug) my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
+	    // if (debug) my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
+	    // if (debug) my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
+
+		
+	    if (debug) std::clog << "********* Size of Finale structures for one event *********" << std::endl;
+	    if (debug) std::clog << "Calo collection size    : " << calo_collection_records.size() << std::endl;
+	    if (debug) std::clog << "Tracker collection size : " << tracker_collection_records.size() << std::endl;
+	    if (debug) std::clog << "Coincidence collection size : " << coincidence_collection_records.size() << std::endl;
+	    
 	    bool raw_trigger_prompt_decision = my_trigger_algo.get_finale_decision();
 	    bool raw_trigger_delayed_decision = my_trigger_algo.get_delayed_finale_decision();
 
 	    if (debug) std::clog << "trigger_finale_decision         [" << raw_trigger_prompt_decision << "]" << std::endl;
 	    if (debug) std::clog << "delayed trigger_finale_decision [" << raw_trigger_delayed_decision << "]" << std::endl;
 
-	    my_trigger_algo.clear_records();
+	    my_trigger_algo.reset_data();
 	      
 	  } //end of if has bank label "SD"
 	

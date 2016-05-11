@@ -91,9 +91,9 @@ namespace snemo {
     const void calo_trigger_algorithm_test_time::calo_summary_record::display() const
     {
       calo_record::display();
-      std::clog << "Single Side coinc : "      << single_side_coinc << std::endl;
-      std::clog << "Threshold total mult : "   << total_multiplicity_threshold << std::endl;
-      std::clog << "Trigger final decision : " << calo_finale_decision  << std::endl;
+      std::clog << "Single Side coinc           : " << single_side_coinc << std::endl;
+      std::clog << "Threshold total mult        : " << total_multiplicity_threshold << std::endl;
+      std::clog << "Calo trigger final decision : " << calo_finale_decision  << std::endl;
       std::clog << std::endl;
       return;
     }

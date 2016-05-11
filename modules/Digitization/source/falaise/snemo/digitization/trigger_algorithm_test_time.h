@@ -16,6 +16,7 @@
 #include <snemo/digitization/tracker_trigger_algorithm_test_time.h>
 #include <snemo/digitization/coincidence_trigger_algorithm_test_time.h>
 #include <snemo/digitization/electronic_mapping.h>
+#include <snemo/digitization/clock_utils.h>
 #include <snemo/digitization/mapping.h>
 #include <snemo/digitization/trigger_display_manager.h>
 
@@ -66,7 +67,7 @@ namespace snemo {
 				void reset();
 				const void display() const;
 				bool L2_decision_bool;
-				uint32_t L2_clocktick_decision;
+				uint32_t L2_ct_decision; // CT @ 1600 ns
 				trigger_algorithm_test_time::L2_trigger_mode L2_trigger_mode;				
 			};
 
@@ -93,7 +94,7 @@ namespace snemo {
 				// Tracker information :
 				std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> tracker_finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
 
-				// Coincidence zoning or tracker zoning ?
+				// Coincidence zoning
 				std::bitset<trigger_info::NZONES> zoning_word[mapping::NUMBER_OF_SIDES];
 			};
 
@@ -106,8 +107,17 @@ namespace snemo {
       /// Destructor
       virtual ~trigger_algorithm_test_time();
 
+      /// Reset the object
+      void reset(); 
+
+			/// Reset internal datas
+			void reset_data();
+
       /// Set the electronic mapping object
       void set_electronic_mapping(const electronic_mapping & my_electronic_mapping_);
+			
+			/// Set the clock manager object
+			void set_clock_manager(const clock_utils & my_clock_manager_);
 
       /// Check if the coincidence config is activated 
 			bool is_activated_coincidence() const;
@@ -121,20 +131,14 @@ namespace snemo {
       /// Check if the algorithm is initialized 
       bool is_initialized() const;
 
-      /// Reset the object
-      void reset(); 
-	
-			/// Clear the record vectors
-			void clear_records();
+			/// Get the vector of calo summary record
+			const std::vector<calo_trigger_algorithm_test_time::calo_summary_record> get_calo_records_25ns_vector() const;
+
+			/// Get the vector of coincidence record
+			const std::vector<coincidence_trigger_algorithm_test_time::coincidence_calo_record> get_coincidence_calo_records_1600ns_vector() const;
 
 			/// Get the vector of tracker record
 			const std::vector<tracker_trigger_algorithm_test_time::tracker_record> get_tracker_records_vector() const;
-			
-			/// Get the vector of calo summary record
-			const std::vector<calo_trigger_algorithm_test_time::calo_summary_record> get_calo_records_vector() const;
-
-			/// Get the vector of coincidence record
-			const std::vector<coincidence_trigger_algorithm_test_time::coincidence_calo_record> get_coincidence_calo_records_vector() const;
 			
 			/// Get the vector of coincidence record
 			const std::vector<coincidence_trigger_algorithm_test_time::coincidence_event_record> get_coincidence_records_vector() const;
@@ -171,6 +175,8 @@ namespace snemo {
       // Configuration :
       bool _initialized_; //!< Initialization flag
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
+			const clock_utils * _clock_manager_; //!< Pointer to a clock manager useful for clockticks 
+			unsigned int _previous_event_circular_buffer_depth_; //!< Depth for the previous events circular buffer (Pile of PERs)
 			
 			// Trigger configuration :			
 			bool _activate_calorimeter_only_;
@@ -179,9 +185,7 @@ namespace snemo {
 			bool _activate_take_all_delayed_;
 			bool _activate_ape_dave_coincidence_;
 			bool _activate_ape_coincidence_only_;
-			bool _activate_coincidence_; //!< Boolean activating coincidence
-
-
+			bool _activate_any_coincidences_; //!< Boolean activating coincidence
 
 			// Trigger algorithms :
 		  tracker_trigger_algorithm_test_time      _tracker_algo_; //!< Tracker trigger algorithm @ 1600ns
@@ -189,16 +193,15 @@ namespace snemo {
 			coincidence_trigger_algorithm_test_time  _coinc_algo_; //!< Coincidence trigger algorithm for matching calo and tracker trigger
 			
 			// Data :
-			std::vector<calo_trigger_algorithm_test_time::calo_summary_record> _calo_records_; //!< Collection of calo summary record @ 25 ns
-			std::vector<coincidence_trigger_algorithm_test_time::coincidence_calo_record> _coincidence_calo_records_; //!< Collection of coincidence calo records @ 1600 ns
+			std::vector<calo_trigger_algorithm_test_time::calo_summary_record> _calo_records_25ns_; //!< Collection of calo summary record @ 25 ns
+			std::vector<coincidence_trigger_algorithm_test_time::coincidence_calo_record> _coincidence_calo_records_1600ns_; //!< Collection of coincidence calo records @ 1600 ns
 			std::vector<tracker_trigger_algorithm_test_time::tracker_record> _tracker_records_; //!< Collection of tracker record @ 1600 ns
 			std::vector<coincidence_trigger_algorithm_test_time::coincidence_event_record> _coincidence_records_; //!< Collection of coincidence record @ 1600 ns
 			boost::scoped_ptr<buffer_previous_event_record_type> _previous_event_records_; //!< Collection of previous event records @ 1600 ns
-			std::vector<trigger_algorithm_test_time::L1_calo_decision> _L1_calo_decision_records_; //!< Collection of L1 calorimeter decision
-			std::vector<trigger_algorithm_test_time::L1_tracker_decision> _L1_tracker_decision_records_; //!< Collection of L1 tracker decision
+			std::vector<trigger_algorithm_test_time::L1_calo_decision> _L1_calo_decision_records_; //!< Collection of L1 calorimeter decision @ 25 ns
+			std::vector<trigger_algorithm_test_time::L1_tracker_decision> _L1_tracker_decision_records_; //!< Collection of L1 tracker decision @ 1600 ns
 			std::vector<trigger_algorithm_test_time::L2_decision> _L2_decision_records_; //!< Collection of L2 decision (which launch the readout)
-			
-			
+						
 			bool _finale_trigger_decision_; //!< The finale decision for the trigger
 			bool _delayed_finale_trigger_decision_; //!< The finale decision for the trigger
 			

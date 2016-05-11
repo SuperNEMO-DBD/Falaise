@@ -80,6 +80,14 @@ namespace snemo {
       /// Get the clocktick 800ns shift
       const double get_shift_800();
 
+			/// Compute a clocktick 25ns into a clocktick 1600ns
+			void compute_clocktick_25ns_to_1600ns(const uint32_t clocktick_25ns_,
+																						uint32_t & clocktick_1600ns_) const ;
+			/// Compute a clocktick 800ns into a clocktick 1600ns
+			void compute_clocktick_800ns_to_1600ns(const uint32_t clocktick_800ns_,
+																						 uint32_t & clocktick_1600ns_) const ;
+
+			
       /// Display clockticks ref and shifts
       void tree_dump (std::ostream & out_ = std::clog,
 											const std::string & title_  = "",
@@ -88,7 +96,7 @@ namespace snemo {
 			
 			/// Compute clockticks reference
 			void compute_clockticks_ref(mygsl::rng & prng_);
-
+			
 		protected :
 			/// Clocktick shift uniform randomize for 25 and 800ns clockticks
 			void _randomize_shift(mygsl::rng & prng_);

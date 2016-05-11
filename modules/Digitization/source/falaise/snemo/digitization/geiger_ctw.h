@@ -110,7 +110,7 @@ namespace snemo {
       virtual void tree_dump(std::ostream      & a_out    = std::clog,
 														 const std::string & a_title  = "",
 														 const std::string & a_indent = "",
-														 bool a_inherit               = false) const;
+														 bool a_inherit               = false) const;     
 
     protected : 
 			

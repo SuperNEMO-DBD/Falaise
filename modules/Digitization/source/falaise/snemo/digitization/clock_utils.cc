@@ -97,7 +97,41 @@ namespace snemo {
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Clock utils is not initialized ! ");
       return _shift_800_;
+    }   
+    
+    void clock_utils::compute_clocktick_25ns_to_1600ns(const uint32_t clocktick_25ns_,
+						       uint32_t & clocktick_1600ns_) const
+    {
+      clocktick_1600ns_ = (clocktick_25ns_ * MAIN_CLOCKTICK) / TRIGGER_CLOCKTICK;
+      clocktick_1600ns_ = clocktick_1600ns_ + TRIGGER_COMPUTING_SHIFT_CLOCKTICK_1600NS;
+      return;
+    }  
+
+    void clock_utils::compute_clocktick_800ns_to_1600ns(const uint32_t clocktick_800ns_,
+							uint32_t & clocktick_1600ns_) const
+    {
+      clocktick_1600ns_ = (clocktick_800ns_ * TRACKER_CLOCKTICK) / TRIGGER_CLOCKTICK;
+      clocktick_1600ns_ = clocktick_1600ns_ + TRIGGER_COMPUTING_SHIFT_CLOCKTICK_1600NS;
+      return;
     }
+
+    void clock_utils::compute_clockticks_ref(mygsl::rng & prng_)
+    {
+      DT_THROW_IF(!is_initialized(), std::logic_error, "Clock utils is not initialized ! ");
+      _randomize_shift(prng_);
+      _clocktick_25_ref_ = _shift_1600_ / MAIN_CLOCKTICK;
+      _shift_25_ = fmod(_shift_1600_, MAIN_CLOCKTICK);      
+      _clocktick_800_ref_ = _shift_1600_ / TRACKER_CLOCKTICK;
+      _shift_800_ = fmod(_shift_1600_, TRACKER_CLOCKTICK);
+      return;
+    }
+    
+    void clock_utils::_randomize_shift(mygsl::rng & prng_)
+    {
+      DT_THROW_IF(!is_initialized(), std::logic_error, "Clock utils is not initialized ! ");
+      _shift_1600_ = prng_.flat(0.0, TRIGGER_CLOCKTICK);
+      return;
+    }		
     
     void clock_utils::tree_dump (std::ostream & out_,
 				 const std::string & title_,
@@ -124,25 +158,6 @@ namespace snemo {
 
       return;
     }
-			
-    void clock_utils::compute_clockticks_ref(mygsl::rng & prng_)
-    {
-      DT_THROW_IF(!is_initialized(), std::logic_error, "Clock utils is not initialized ! ");
-      _randomize_shift(prng_);
-      _clocktick_25_ref_ = _shift_1600_ / MAIN_CLOCKTICK;
-      _shift_25_ = fmod(_shift_1600_, MAIN_CLOCKTICK);      
-      _clocktick_800_ref_ = _shift_1600_ / TRACKER_CLOCKTICK;
-      _shift_800_ = fmod(_shift_1600_, TRACKER_CLOCKTICK);
-      return;
-    }
-    
-    void clock_utils::_randomize_shift(mygsl::rng & prng_)
-    {
-      DT_THROW_IF(!is_initialized(), std::logic_error, "Clock utils is not initialized ! ");
-      _shift_1600_ = prng_.flat(0.0, TRIGGER_CLOCKTICK);
-      return;
-    }		
-    
 	       
   } // end of namespace digitization
 
