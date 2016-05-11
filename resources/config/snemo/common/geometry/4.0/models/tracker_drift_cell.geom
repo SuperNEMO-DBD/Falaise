@@ -87,9 +87,9 @@ material.ref : string = "tracking_gas"
 # Visibility parameters #
 #########################
 
-visibility.hidden            : boolean = false
-visibility.hidden_envelope   : boolean = true
-visibility.daughters.hidden  : boolean = true
+# visibility.hidden            : boolean = false
+# visibility.hidden_envelope   : boolean = false
+# visibility.daughters.hidden  : boolean = false
 visibility.color             : string = "cyan"
 
 ######################
@@ -155,9 +155,9 @@ material.ref : string = "tracking_gas"
 # Visibility parameters #
 #########################
 
-visibility.hidden           : boolean = false
-visibility.hidden_envelope  : boolean = true
-visibility.daughters.hidden : boolean = true
+# visibility.hidden           : boolean = false
+# visibility.hidden_envelope  : boolean = false
+# visibility.daughters.hidden : boolean = false
 visibility.color            : string = "cyan"
 
 ######################
@@ -224,9 +224,10 @@ material.ref : string = "tracking_gas"
 # Visibility parameters #
 #########################
 
-visibility.hidden           : boolean = false
-visibility.hidden_envelope  : boolean = true
-visibility.daughters.hidden : boolean = false
+# visibility.hidden           : boolean = false
+# visibility.hidden_envelope  : boolean = false
+visibility.daughters.hidden : boolean = true
+visibility.daughters.core_cell.shown : boolean = true
 visibility.color            : string = "cyan"
 
 ######################
@@ -291,9 +292,10 @@ material.ref : string = "tracking_gas"
 # Visibility parameters #
 #########################
 
-visibility.hidden           : boolean = false
-visibility.hidden_envelope  : boolean = true
-visibility.daughters.hidden : boolean = false
+# visibility.hidden           : boolean = false
+# visibility.hidden_envelope  : boolean = false
+visibility.daughters.hidden : boolean = true
+visibility.daughters.core_cell.shown : boolean = true
 visibility.color            : string = "cyan"
 
 ######################
@@ -355,9 +357,10 @@ material.ref : string = "tracking_gas"
 # Visibility parameters #
 #########################
 
-visibility.hidden           : boolean = false
-visibility.hidden_envelope  : boolean = true
-visibility.daughters.hidden : boolean = false
+# visibility.hidden           : boolean = false
+# visibility.hidden_envelope  : boolean = false
+visibility.daughters.hidden : boolean = true
+visibility.daughters.core_cell.shown : boolean = true
 visibility.color            : string = "cyan"
 
 ######################
@@ -423,9 +426,10 @@ material.ref : string = "tracking_gas"
 # Visibility parameters #
 #########################
 
-visibility.hidden           : boolean = false
-visibility.hidden_envelope  : boolean = true
-visibility.daughters.hidden : boolean = false
+# visibility.hidden           : boolean = false
+# visibility.hidden_envelope  : boolean = false
+visibility.daughters.hidden : boolean = true
+visibility.daughters.core_cell.shown : boolean = true
 visibility.color            : string = "cyan"
 
 ######################

@@ -1,9 +1,11 @@
 # -*- mode: conf-unix; -*-
+# @falaise:config/snemo/demonstrator/simulation/vertexes/4.0/generators/scin_vg.lis
 # List of multi-properties (datatools::multi_properties):
 
 #@description A list of vertex generators
 #@key_label   "name"
 #@meta_label  "type"
+
 
 ################################################################################
 # Generate vertex on the bulk volume of the wrapper for the main calorimeter's #
@@ -17,7 +19,6 @@
 logging.priority : string = "warning"
 
 #@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
-#origin : string  = "category=calorimeter_wrapper module={*} side={1} column={0;1;2;4;19} row={0;1;2;12;13}"
 origin : string  = "category='calorimeter_wrapper' module={*} side={*} column={*} row={*}"
 
 #@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
@@ -41,6 +42,7 @@ origin : string  = "category='xcalo_wrapper' module={*} side={*} column={*} row=
 #@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
 mode   : string  = "bulk"
 
+
 #############################################################################
 # Generate vertex on the bulk volume of the wrapper for the X-calorimeter's #
 # scintillator blocks:                                                      #
@@ -57,10 +59,11 @@ origin : string  = "category='gveto_wrapper' module={*} side={*} wall={*} column
 #@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
 mode   : string  = "bulk"
 
-################################################################################
-# Generate vertex on the bulk volume of the wrapper for the main calorimeter's #
-# scintillator blocks:                                                         #
-################################################################################
+
+############################################################################
+# Generate vertex on the surface of the wrapper for the main calorimeter's #
+# scintillator blocks:                                                     #
+############################################################################
 [name="calo_wrapper_surface" type="genvtx::box_model_vg"]
 
 #@config Vertex generation from the surface of the main calorimeter wrapper
@@ -77,10 +80,11 @@ mode   : string  = "surface"
 #@description Surface mode box top face activation
 mode.surface.top  : boolean = 1
 
-################################################################################
-# Generate vertex on the bulk volume of the wrapper for the main calorimeter's #
-# scintillator blocks:                                                         #
-################################################################################
+
+############################################################################
+# Generate vertex on the surface of the wrapper for the main calorimeter's #
+# scintillator blocks:                                                     #
+############################################################################
 [name="xcalo_wrapper_surface" type="genvtx::box_model_vg"]
 
 #@config Vertex generation from the surface of the X-wall calorimeter wrapper
@@ -96,6 +100,7 @@ mode   : string  = "surface"
 
 #@description Surface mode box top face activation
 mode.surface.top  : boolean = 1
+
 
 ################################################################################
 # Generate vertex on the bulk volume of the wrapper for the main calorimeter's #
@@ -215,4 +220,4 @@ origin : string  = "category='calorimeter_block' module={*} side={*} column={*} 
 mode   : string  = "bulk"
 
 
-# End of list of multi-properties.
+# end of @falaise:config/snemo/demonstrator/simulation/vertexes/4.0/generators/scin_vg.lis

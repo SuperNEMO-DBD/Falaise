@@ -37,7 +37,6 @@ material.ref : string = "basic::copper"
 # Visibility parameters #
 #########################
 
-visibility.hidden : boolean = false
 visibility.color  : string = "red"
 
 
@@ -70,7 +69,6 @@ material.ref : string = "wire_metal"
 # Visibility parameters #
 #########################
 
-visibility.hidden         : boolean = true
 visibility.wired_cylinder : boolean = true
 visibility.color          : string = "blue"
 
@@ -107,8 +105,6 @@ material.ref : string = "basic::delrin"
 # Visibility parameters #
 #########################
 
-visibility.hidden         : boolean = false
-visibility.wired_cylinder : boolean = false
 visibility.color          : string = "orange"
 
 
@@ -144,8 +140,7 @@ material.ref : string = "basic::copper"
 # Visibility parameters #
 #########################
 
-visibility.hidden         : boolean = false
-visibility.wired_cylinder : boolean = false
+# visibility.wired_cylinder : boolean = false
 visibility.color          : string = "red"
 
 
@@ -181,7 +176,6 @@ material.ref : string = "basic::copper"
 # Visibility parameters #
 #########################
 
-visibility.hidden : boolean = false
 visibility.color  : string = "red"
 
 
@@ -269,10 +263,11 @@ material.ref : string = "tracking_gas"
 # Visibility parameters #
 #########################
 
-visibility.hidden           : boolean = false
-visibility.hidden_envelope  : boolean = true
+# visibility.hidden_envelope  : boolean = false
+visibility.color              : string = "cyan"
 visibility.daughters.hidden : boolean = true
-visibility.color            : string = "cyan"
+# visibility.daughters.top_ring.shown    : boolean = true
+# visibility.daughters.bottom_ring.shown : boolean = true
 
 #################################
 # Sensitive detector parameters #
