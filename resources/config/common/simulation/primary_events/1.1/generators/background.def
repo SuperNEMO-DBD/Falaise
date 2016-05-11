@@ -6,7 +6,7 @@
 #@meta_label  "type"
 
 
-##########################################
+####################################
 [name="Ac228" type="genbb::wdecay0"]
 #@config Ac-228 decay [background]
 decay_type      : string  = "background"
@@ -34,21 +34,21 @@ decay_type      : string  = "background"
 decay_isotope   : string  = "Tl208"
 
 
-##########################################
+####################################
 [name="Bi214" type="genbb::wdecay0"]
 #@config Bi-214 decay [background]
 decay_type      : string  = "background"
 decay_isotope   : string  = "Bi214"
 
 
-##########################################
+####################################
 [name="Bi212" type="genbb::wdecay0"]
 #@config Bi-212 decay [background]
 decay_type      : string  = "background"
 decay_isotope   : string  = "Bi212"
 
 
-##########################################
+####################################
 [name="Bi210" type="genbb::wdecay0"]
 #@config Bi-210 decay [background]
 decay_type      : string  = "background"
@@ -165,7 +165,6 @@ decay_isotope   : string  = "Po212"
 #@config Ra-226 decay [background]
 decay_type      : string  = "background"
 decay_isotope   : string  = "Ra226"
-
 
 
 # end of background.def
