@@ -105,13 +105,6 @@ decay_isotope   : string  = "Pa231"
 
 
 ####################################
-[name="Rn222" type="genbb::wdecay0"]
-#@config Rn-222 decay [background]
-decay_type      : string  = "background"
-decay_isotope   : string  = "Rn222"
-
-
-####################################
 [name="Eu152" type="genbb::wdecay0"]
 #@config Eu-152 decay [background]
 decay_type      : string  = "background"
