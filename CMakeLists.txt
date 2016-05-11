@@ -299,7 +299,7 @@ configure_file(${PROJECT_SOURCE_DIR}/cmake/FalaiseConfigVersion.cmake.in
 set(_fbfile cmake/FalaiseBayeux-system.cmake.in)
 configure_file(${_fbfile} ${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseBayeux.cmake @ONLY)
 
-export(TARGETS Falaise ${Falaise_ADDON_TARGETS} FILE ${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseTargets.cmake)
+export(TARGETS Falaise FalaiseModule ${Falaise_ADDON_TARGETS} FILE ${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION}/FalaiseTargets.cmake)
 
 # - Targets (install tree)
 install(EXPORT FalaiseTargets DESTINATION ${CMAKE_INSTALL_CMAKEDIR}/Falaise-${Falaise_VERSION})

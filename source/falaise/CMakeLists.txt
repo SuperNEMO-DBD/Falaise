@@ -68,7 +68,9 @@ add_library(Falaise SHARED ${FalaiseLibrary_HEADERS} ${FalaiseLibrary_SOURCES})
 target_compile_features(Falaise PUBLIC ${FALAISE_COMPILE_FEATURES})
 target_include_directories(Falaise PUBLIC
   $<BUILD_INTERFACE:${FALAISE_BUILDPRODUCT_DIR}/include>
+  $<BUILD_INTERFACE:${FALAISE_BUILDPRODUCT_DIR}/include/falaise>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDE_DIR}>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDE_DIR}/falaise>
   )
 target_link_libraries(Falaise PUBLIC Bayeux)
 
@@ -79,18 +81,27 @@ if(UNIX AND NOT APPLE)
   set_target_properties(Falaise
     PROPERTIES INSTALL_RPATH "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
     )
-elseif(APPLE)
-  # Temporary setting - needs testing
-  set_target_properties(Falaise
-    PROPERTIES
-      INSTALL_NAME_DIR "@rpath"
-      #LINK_FLAGS "-Wl,-rpath,@loader_path"
-    )
 endif()
+
+# Interface library that plugins can link to obtain usage requirements
+# without having to directly link to Falaise or its dependents. Current
+# policy is that modules should obtain needed symbols at runtime from
+# Falaise programs. Having an interface target simplifies usage for
+# clients as they just link to the FalaiseModule target. At present, this
+# is just an interface target, but can easily be updated later to a full
+# target or even an alias to Falaise itself without affecting how clients
+# should link to it.
+add_library(FalaiseModule INTERFACE)
+target_include_directories(FalaiseModule INTERFACE
+  $<TARGET_PROPERTY:Falaise,INTERFACE_INCLUDE_DIRECTORIES>
+  )
+target_link_libraries(FalaiseModule
+  INTERFACE "$<$<PLATFORM_ID:Darwin>:-undefined dynamic_lookup>"
+  )
 
 # - Install it
 # TODO : fixup rpaths as needed
-install(TARGETS Falaise
+install(TARGETS Falaise FalaiseModule
   EXPORT  FalaiseTargets
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -119,11 +130,10 @@ if(FALAISE_ENABLE_TESTING)
     get_filename_component(_testname "${_testsource}" NAME_WE)
     set(_testname "falaise-${_testname}")
     add_executable(${_testname} ${_testsource})
-    target_link_libraries(${_testname} Falaise)
-    # - On Apple, ensure dynamic_lookup of undefined symbols
-    if(APPLE)
-      set_target_properties(${_testname} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-    endif()
+    target_link_libraries(${_testname}
+      PUBLIC Falaise
+      PRIVATE "$<$<PLATFORM_ID:Darwin>:-undefined dynamic_lookup>"
+      )
     add_test(NAME ${_testname} COMMAND ${_testname})
     set_property(TEST ${_testname}
       APPEND PROPERTY ENVIRONMENT ${_falaise_TEST_ENVIRONMENT}
