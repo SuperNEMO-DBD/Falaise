@@ -10,7 +10,7 @@
 ###########################################################
 # Generate vertex from an arbitrary point in the geometry #
 ###########################################################
-[name="arbitrary_vertex" type="genvtx::spot_vertex_generator"]
+[name="commissioning.arbitrary_vertex" type="genvtx::spot_vertex_generator"]
 
 #@config Vertex generation from an arbitrary point in the geometry
 
@@ -25,7 +25,7 @@ spot.z : real as length = 0 mm
 #############################################
 # Generate vertex from a commissioning spot #
 #############################################
-[name="all_commissioning_spots" type="genvtx::cylinder_model_vg"]
+[name="commissioning.all_spots" type="genvtx::cylinder_model_vg"]
 
 #@config Vertex generation from from a commissioning spot
 
@@ -45,12 +45,12 @@ mode   : string  = "bulk"
 ######################################################
 # Generate vertex from one unique commissioning spot #
 ######################################################
-[name="single_commissioning_spot" type="genvtx::cylinder_model_vg"]
+[name="commissioning.single_spot" type="genvtx::cylinder_model_vg"]
 
 #@config Vertex generation from from a commissioning spot
 
 #@description Logging priority
-logging.priority  : string = "trace"
+logging.priority  : string = "fatal"
 
 #@description Geometry version requirement (not working with version lower than 4.0)
 geometry.setup_requirement : string = "snemo::demonstrator(>=4)"
@@ -64,10 +64,12 @@ origin.category : string = "commissioning_source_spot"
 origin.address.module : integer = 0
 
 #@description Commissioning source spot column number
-origin.address.column : integer = @variant(commissioning_source:column|0)
+origin.address.column : integer = \
+  @variant(vertexes.commissioning:type/if_single_slot/column|0)
 
 #@description Commissioning source spot row number
-origin.address.row    : integer = @variant(commissioning_source:row|0)
+origin.address.row    : integer = \
+  @variant(vertexes.commissioning:type/if_single_slot/row|0)
 
 #@description The mode used for vertex generator from the underlying cylinder model
 mode   : string  = "bulk"
