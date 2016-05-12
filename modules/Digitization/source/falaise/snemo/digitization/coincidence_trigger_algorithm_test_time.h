@@ -162,18 +162,8 @@ namespace snemo {
 									 const std::vector<tracker_trigger_algorithm_test_time::tracker_record> & tracker_records_,
 									 std::vector<coincidence_trigger_algorithm_test_time::coincidence_event_record> & coincidence_records_);
 			
-		protected :
-			
-			/// Preparing coincidence calo records structure
-			void _preparing_calo_coincidence(const std::vector<calo_trigger_algorithm_test_time::calo_summary_record> & calo_records_);
-
-			/// Update a coinc calo record 1600 from a calo summary record 25 ns
-			void _update_coinc_calo_record(const calo_trigger_algorithm_test_time::calo_summary_record & a_calo_summary_record_25ns, 
-																		 coincidence_trigger_algorithm_test_time::coincidence_calo_record & a_coinc_calo_record_1600ns);			
-				
-			/// Compute clocktick 1600ns for calo records
-			void _compute_clocktick_1600ns(const uint32_t clocktick_25ns_, uint32_t & clocktick_1600ns_);
-			
+		protected :	
+			 
 			/// Creating a per of calo record and tracker record for each clocktick
 			void _creating_pair_per_clocktick(const std::vector<coincidence_trigger_algorithm_test_time::coincidence_calo_record> & coinc_calo_records_,
 																				const std::vector<tracker_trigger_algorithm_test_time::tracker_record> & tracker_records_);

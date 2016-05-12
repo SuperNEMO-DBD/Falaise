@@ -149,6 +149,7 @@ namespace snemo {
     {
       _initialized_ = false;
       _electronic_mapping_ = 0;
+      _coincidence_calorimeter_gate_size_ = 0;
       _previous_event_circular_buffer_depth_ = 0;
       _activate_calorimeter_only_ = false;
       _activate_calo_tracker_time_coincidence_ = false;
@@ -184,6 +185,7 @@ namespace snemo {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Trigger algorithm is not initialized, it can't be reset ! ");
       _initialized_ = false;
       _electronic_mapping_ = 0;
+      _coincidence_calorimeter_gate_size_ = 0;
       _previous_event_circular_buffer_depth_ = 0;
       _activate_calorimeter_only_ = false;
       _activate_calo_tracker_time_coincidence_ = false;
@@ -226,7 +228,7 @@ namespace snemo {
     
     void trigger_algorithm_test_time::set_electronic_mapping(const electronic_mapping & my_electronic_mapping_)
     {
-      DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized, electronic mapping can't be set ! ");
+      DT_THROW_IF(is_initialized(), std::logic_error, "Trigger algorithm is already initialized, electronic mapping can't be set ! ");
       _electronic_mapping_ = & my_electronic_mapping_;
       _tracker_algo_.set_electronic_mapping(my_electronic_mapping_);
       _calo_algo_.set_electronic_mapping(my_electronic_mapping_);
@@ -236,10 +238,34 @@ namespace snemo {
 
     void trigger_algorithm_test_time::set_clock_manager(const clock_utils & my_clock_manager_)
     {
-      DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized, clock manager can't be set ! ");
+      DT_THROW_IF(is_initialized(), std::logic_error, "Trigger algorithm is already initialized, clock manager can't be set ! ");
       _clock_manager_ = & my_clock_manager_;
       return;
     }  
+
+    bool trigger_algorithm_test_time::has_calorimeter_gate_size() const
+    {
+      return _coincidence_calorimeter_gate_size_ != 0;
+    }
+
+    void trigger_algorithm_test_time::set_calorimeter_gate_size(unsigned int calorimeter_gate_size_)
+    {
+      DT_THROW_IF(is_initialized(), std::logic_error, "Trigger algorithm is already initialized, coincidence calorimeter gate size can't be set ! ");
+      _coincidence_calorimeter_gate_size_ = calorimeter_gate_size_;
+      return;
+    }
+    
+    bool trigger_algorithm_test_time::has_previous_event_buffer_depth() const
+    {
+      return _previous_event_circular_buffer_depth_ != 0;
+    }
+
+    void trigger_algorithm_test_time::set_previous_event_buffer_depth(unsigned int previous_event_circular_buffer_depth_)
+    {
+      DT_THROW_IF(is_initialized(), std::logic_error, "Trigger algorithm is already initialized, previous event buffer depth can't be set ! ");
+      _previous_event_circular_buffer_depth_ = previous_event_circular_buffer_depth_;
+      return;
+    }
 
     bool trigger_algorithm_test_time::is_activated_coincidence() const
     {
@@ -255,7 +281,7 @@ namespace snemo {
 
     void trigger_algorithm_test_time::initialize(const datatools::properties & config_)
     {
-      DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized ! ");
+      DT_THROW_IF(is_initialized(), std::logic_error, "Trigger algorithm is already initialized ! ");
       DT_THROW_IF(_electronic_mapping_ == 0, std::logic_error, "Missing electronic mapping ! " );
       DT_THROW_IF(_clock_manager_ == 0, std::logic_error, "Missing clock manager ! " );
 
@@ -271,13 +297,38 @@ namespace snemo {
       config_.export_and_rename_starting_with(coinc_config, "coincidence.", "");
       _coinc_algo_.initialize(coinc_config);
        
-      if (!is_activated_coincidence()) {
-	if(config_.has_key("activate_coincidence")) {
-	  bool activate_coincidence_config =  config_.fetch_boolean("activate_coincidence");
-	  _activate_any_coincidences_ = activate_coincidence_config;
+      if (!has_calorimeter_gate_size()) {
+	if (config_.has_key("coincidence_calorimeter_gate_size")) {
+	  int coincidence_calorimeter_gate_size = config_.fetch_integer("coincidence_calorimeter_gate_size");
+	  DT_THROW_IF(coincidence_calorimeter_gate_size <= 0, std::domain_error, "Invalid value of coincidence_calorimeter_gate_size !");
+	  set_calorimeter_gate_size((unsigned int) coincidence_calorimeter_gate_size);
 	}
       }
-      
+
+      if (!has_previous_event_buffer_depth()) {
+	if (config_.has_key("previous_event_buffer_depth")) {
+	  int previous_event_buffer_depth = config_.fetch_integer("previous_event_buffer_depth");
+	  DT_THROW_IF(previous_event_buffer_depth <= 0, std::domain_error, "Invalid negative previous event buffer depth!");
+	  set_previous_event_buffer_depth((unsigned int) previous_event_buffer_depth);
+	}
+      }
+
+      // Check config dependencies (calo only is not compatible with coincidence config for example
+
+      if (!is_activated_coincidence()) {
+	if(config_.has_key("activate_calorimeter_only")) {
+	  bool activate_calorimeter_only_config =  config_.fetch_boolean("activate_calorimeter_only");
+	  _activate_calorimeter_only_ = activate_calorimeter_only_config;
+	}
+      }
+
+      if (!is_activated_coincidence()) {
+	if(config_.has_key("activate_any_coincidences")) {
+	  bool activate_any_coincidences_config =  config_.fetch_boolean("activate_any_coincidences");
+	  _activate_any_coincidences_ = activate_any_coincidences_config;
+	}
+      }
+        
       _initialized_ = true;
       return;
     }
@@ -318,6 +369,210 @@ namespace snemo {
       return _delayed_finale_trigger_decision_;
     }
     
+    void  trigger_algorithm_test_time::_rescale_calo_records_at_1600ns(const std::vector<calo_trigger_algorithm_test_time::calo_summary_record> & calo_records_25_ns_,
+								       std::vector<coincidence_trigger_algorithm_test_time::coincidence_calo_record> & coincidence_calo_records_1600ns_)
+    {
+      std::vector<calo_trigger_algorithm_test_time::calo_summary_record>::const_iterator it = calo_records_25_ns_.begin();
+      for (it; it != calo_records_25_ns_.end(); it++)
+      	{
+      	  const calo_trigger_algorithm_test_time::calo_summary_record a_ctrec= *it;
+
+      	  if (a_ctrec.calo_finale_decision == true)
+      	    {
+      	      unsigned int ctrec_clocktick_1600ns = 0;
+      	      _clock_manager_->compute_clocktick_25ns_to_1600ns(a_ctrec.clocktick_25ns, ctrec_clocktick_1600ns);
+
+      	      if (coincidence_calo_records_1600ns_.size() == 0)
+      		{
+      		  // No coincidence calo records, creation of the first and the 10 following EMPTY 
+      		  coincidence_trigger_algorithm_test_time::coincidence_calo_record first_coincidence_calo_record;
+      		  first_coincidence_calo_record.clocktick_1600ns = ctrec_clocktick_1600ns;
+      		  coincidence_calo_records_1600ns_.push_back(first_coincidence_calo_record);
+		    
+      		  if (coincidence_calo_records_1600ns_.size() != 0)
+      		    {
+      		      for (int iclocktick = first_coincidence_calo_record.clocktick_1600ns + 1; iclocktick < first_coincidence_calo_record.clocktick_1600ns + _coincidence_calorimeter_gate_size_; iclocktick ++)
+      			{
+      			  coincidence_trigger_algorithm_test_time::coincidence_calo_record on_gate_coincidence_calo_record;
+      			  on_gate_coincidence_calo_record = first_coincidence_calo_record;
+      			  on_gate_coincidence_calo_record.clocktick_1600ns = iclocktick;
+      			  coincidence_calo_records_1600ns_.push_back(on_gate_coincidence_calo_record);		      
+      			}
+      		    }
+      		}
+	  
+      	      bool coinc_calo_record_find = false;
+
+      	      // Search if a coincidence calo record for clocktick ctrec 25 -> 1600 is already existing
+      	      for (int i = 0; i < coincidence_calo_records_1600ns_.size(); i++)
+      		{
+      		  if (ctrec_clocktick_1600ns == coincidence_calo_records_1600ns_[i].clocktick_1600ns)
+      		    {
+      		      // Updating existing coincidence calo record
+      		      coinc_calo_record_find = true;
+      		      _update_coinc_calo_record(a_ctrec, coincidence_calo_records_1600ns_[i]);
+
+      		      // Updating the following coincidence calo record
+      		      // Have to check if they are in the gate or outside
+      		      if (i != coincidence_calo_records_1600ns_.size() - 1)
+      			{
+      			  for (int j = i+1; j < coincidence_calo_records_1600ns_.size(); j++)
+      			    {
+      			      if (coincidence_calo_records_1600ns_[j].clocktick_1600ns <= coincidence_calo_records_1600ns_[i].clocktick_1600ns + _coincidence_calorimeter_gate_size_) 
+      				{
+      				  unsigned int clocktick_1600_before_modification = coincidence_calo_records_1600ns_[j].clocktick_1600ns;
+      				  coincidence_calo_records_1600ns_[j] = coincidence_calo_records_1600ns_[i];
+      				  coincidence_calo_records_1600ns_[j].clocktick_1600ns = clocktick_1600_before_modification;
+      				}
+      			    } // end of for j
+      			}
+
+      		      // Have to grow back the gate and create new coincidence calo record
+      		      unsigned int actual_index = i;
+      		      unsigned int moduled_index = i % _coincidence_calorimeter_gate_size_;
+      		      unsigned int index_min = std::floor(actual_index /  _coincidence_calorimeter_gate_size_) * _coincidence_calorimeter_gate_size_;
+      		      unsigned int index_max = index_min + _coincidence_calorimeter_gate_size_ - 1;
+      		      unsigned int clocktick_to_create = ctrec_clocktick_1600ns + _coincidence_calorimeter_gate_size_;	     
+      		      unsigned int clocktick_max_1600 = coincidence_calo_records_1600ns_[index_max].clocktick_1600ns;
+		      
+      		      for (int j = clocktick_max_1600 + 1; j <= clocktick_to_create; j++)
+      			{
+      			  bool no_same_clocktick = true;
+      			  for (int k = actual_index + 1 ; k < coincidence_calo_records_1600ns_.size(); k++)
+      			    {   
+      			      // Check if the CT i between max and wanted to create exist in the coinc calo record list :
+      			      if (j == coincidence_calo_records_1600ns_[k].clocktick_1600ns)
+      				{
+      				  no_same_clocktick = false;
+      				}
+      			    } // end of for k
+			  
+      			  if (no_same_clocktick == true)
+      			    {
+      			      coincidence_trigger_algorithm_test_time::coincidence_calo_record grow_back_coincidence_calo_record = coincidence_calo_records_1600ns_[index_max];
+      			      grow_back_coincidence_calo_record.clocktick_1600ns = j;
+      			      coincidence_calo_records_1600ns_.push_back(grow_back_coincidence_calo_record);
+      			    }
+      			} // end of for j
+		      		      
+      		    }
+      		} // end of for i 
+	      
+      	      // If not, create the first and the 10 following empty then updated
+      	      if (coinc_calo_record_find == false)
+      		{
+      		  coincidence_trigger_algorithm_test_time::coincidence_calo_record new_coincidence_calo_record;
+      		  new_coincidence_calo_record.clocktick_1600ns = ctrec_clocktick_1600ns;
+      		  coincidence_calo_records_1600ns_.push_back(new_coincidence_calo_record);
+      		  for (int iclocktick = new_coincidence_calo_record.clocktick_1600ns + 1; iclocktick < new_coincidence_calo_record.clocktick_1600ns + _coincidence_calorimeter_gate_size_; iclocktick ++)
+      		    {
+      		      coincidence_trigger_algorithm_test_time::coincidence_calo_record new_on_gate_coincidence_calo_record;
+      		      new_on_gate_coincidence_calo_record = new_coincidence_calo_record;
+      		      new_on_gate_coincidence_calo_record.clocktick_1600ns = iclocktick;
+      		      coincidence_calo_records_1600ns_.push_back(new_on_gate_coincidence_calo_record);		      
+      		    }
+      		} 
+      	    } // end of for it calo records
+       	}
+      
+      return;
+    }
+
+    void trigger_algorithm_test_time::_update_coinc_calo_record(const calo_trigger_algorithm_test_time::calo_summary_record & a_calo_summary_record_25ns_, 
+								coincidence_trigger_algorithm_test_time::coincidence_calo_record & a_coinc_calo_record_1600ns_)
+    {
+      // Update information but keep the clocktick of the 1600 structure
+      
+      // Initial values of coinc calo record 1600 ns : 
+      unsigned int multiplicity_side_0 = a_coinc_calo_record_1600ns_.total_multiplicity_side_0.to_ulong();
+      unsigned int multiplicity_side_1 = a_coinc_calo_record_1600ns_.total_multiplicity_side_1.to_ulong();
+      unsigned int multiplicity_gveto  = a_coinc_calo_record_1600ns_.total_multiplicity_gveto.to_ulong();
+      bool lto_side_0 = a_coinc_calo_record_1600ns_.LTO_side_0;     
+      bool lto_side_1 = a_coinc_calo_record_1600ns_.LTO_side_1;
+      bool lto_gveto  = a_coinc_calo_record_1600ns_.LTO_gveto;
+      std::bitset<calo_trigger_algorithm_test_time::ZONING_PER_SIDE_BITSET_SIZE> zoning_word_side_0 = a_coinc_calo_record_1600ns_.calo_zoning_word[0];
+      std::bitset<calo_trigger_algorithm_test_time::ZONING_PER_SIDE_BITSET_SIZE> zoning_word_side_1 = a_coinc_calo_record_1600ns_.calo_zoning_word[1];
+      std::bitset<calo_trigger_algorithm_test_time::XT_INFO_BITSET_SIZE> xt_info = a_coinc_calo_record_1600ns_.xt_info_bitset ;
+      bool single_side =  a_coinc_calo_record_1600ns_.single_side_coinc;
+      bool total_multiplicity_threshold = a_coinc_calo_record_1600ns_.total_multiplicity_threshold;
+      bool calo_decision = a_coinc_calo_record_1600ns_.decision;
+     
+      unsigned int clocktick_1600_from_25 = 0;
+      _clock_manager_->compute_clocktick_25ns_to_1600ns(a_calo_summary_record_25ns_.clocktick_25ns,
+							clocktick_1600_from_25);
+
+      if (clocktick_1600_from_25 <= a_coinc_calo_record_1600ns_.clocktick_1600ns + _coincidence_calorimeter_gate_size_)
+	{ 
+	  a_coinc_calo_record_1600ns_.calo_zoning_word[0] = a_calo_summary_record_25ns_.zoning_word[0];
+	  a_coinc_calo_record_1600ns_.calo_zoning_word[1] = a_calo_summary_record_25ns_.zoning_word[1];	
+
+	  for (int i = 0; i < calo_trigger_algorithm_test_time::ZONING_PER_SIDE_BITSET_SIZE; i++)
+	    {
+	      if (a_coinc_calo_record_1600ns_.calo_zoning_word[0].test(i) == true)
+		{
+		  zoning_word_side_0.set(i, true);
+		}
+	      if (a_coinc_calo_record_1600ns_.calo_zoning_word[1].test(i) == true)
+		{
+		  zoning_word_side_1.set(i, true);
+		}
+	    }
+	  a_coinc_calo_record_1600ns_.calo_zoning_word[0] = zoning_word_side_0;
+	  a_coinc_calo_record_1600ns_.calo_zoning_word[1] = zoning_word_side_1;
+
+	  int number_of_zone_touch_side_0 = a_coinc_calo_record_1600ns_.calo_zoning_word[0].count();
+	  int number_of_zone_touch_side_1 = a_coinc_calo_record_1600ns_.calo_zoning_word[1].count();
+	  
+	  if (multiplicity_side_0 < a_calo_summary_record_25ns_.total_multiplicity_side_0.to_ulong())
+	    {
+	      a_coinc_calo_record_1600ns_.total_multiplicity_side_0 = a_calo_summary_record_25ns_.total_multiplicity_side_0.to_ulong();
+	    }
+	  if (number_of_zone_touch_side_0 > multiplicity_side_0)
+	    {
+	      a_coinc_calo_record_1600ns_.total_multiplicity_side_0 = number_of_zone_touch_side_0;
+	    }
+	  
+	  if (multiplicity_side_1 < a_calo_summary_record_25ns_.total_multiplicity_side_1.to_ulong())
+	    {
+	      a_coinc_calo_record_1600ns_.total_multiplicity_side_1 = a_calo_summary_record_25ns_.total_multiplicity_side_1.to_ulong();
+	    }
+	  if (number_of_zone_touch_side_1 > multiplicity_side_1)
+	    {
+	      a_coinc_calo_record_1600ns_.total_multiplicity_side_1 = number_of_zone_touch_side_1;
+	    }
+
+	  if (multiplicity_gveto < a_calo_summary_record_25ns_.total_multiplicity_gveto.to_ulong())
+	    {
+	      a_coinc_calo_record_1600ns_.total_multiplicity_gveto = a_calo_summary_record_25ns_.total_multiplicity_gveto.to_ulong();
+	    }
+
+	  a_coinc_calo_record_1600ns_.LTO_side_0 = a_coinc_calo_record_1600ns_.LTO_side_0 + a_calo_summary_record_25ns_.LTO_side_0;
+	  a_coinc_calo_record_1600ns_.LTO_side_1 = a_coinc_calo_record_1600ns_.LTO_side_1 + a_calo_summary_record_25ns_.LTO_side_1;
+	  a_coinc_calo_record_1600ns_.LTO_gveto = a_coinc_calo_record_1600ns_.LTO_gveto + a_calo_summary_record_25ns_.LTO_gveto;
+		      
+	  if (a_coinc_calo_record_1600ns_.LTO_side_0 || lto_side_0) a_coinc_calo_record_1600ns_.LTO_side_0 = true;
+	  if (a_coinc_calo_record_1600ns_.LTO_side_1 || lto_side_1) a_coinc_calo_record_1600ns_.LTO_side_1 = true;
+	  if (a_coinc_calo_record_1600ns_.LTO_gveto  || lto_gveto) a_coinc_calo_record_1600ns_.LTO_gveto = true;
+
+	  a_coinc_calo_record_1600ns_.xt_info_bitset = a_calo_summary_record_25ns_.xt_info_bitset;
+	  a_coinc_calo_record_1600ns_.single_side_coinc = a_calo_summary_record_25ns_.single_side_coinc;
+	  
+	  if (!a_calo_summary_record_25ns_.single_side_coinc || !single_side)
+	    {
+	      a_coinc_calo_record_1600ns_.single_side_coinc = false;
+	    }
+	  else if (a_coinc_calo_record_1600ns_.calo_zoning_word[0].any() && a_coinc_calo_record_1600ns_.calo_zoning_word[1].any()) a_coinc_calo_record_1600ns_.single_side_coinc = false;
+	  else a_coinc_calo_record_1600ns_.single_side_coinc = true;
+
+	  a_coinc_calo_record_1600ns_.total_multiplicity_threshold =  a_calo_summary_record_25ns_.total_multiplicity_threshold;
+	  if (a_coinc_calo_record_1600ns_.total_multiplicity_threshold || total_multiplicity_threshold) a_coinc_calo_record_1600ns_.total_multiplicity_threshold = true;
+	  a_coinc_calo_record_1600ns_.decision = a_calo_summary_record_25ns_.calo_finale_decision;
+	  if (a_coinc_calo_record_1600ns_.decision || calo_decision)  a_coinc_calo_record_1600ns_.decision = true;
+	}
+      
+      return;
+    }
+	
     void trigger_algorithm_test_time::process(const calo_ctw_data & calo_ctw_data_,
     					      const geiger_ctw_data & geiger_ctw_data_)
     {
@@ -432,6 +687,7 @@ namespace snemo {
 	  _L1_calo_decision_records_[i].display(); 
 	}
       
+      // Configuration is calorimeter only (no coincidences at all) :
       // In this case of configuration L1 = L2
       if (_activate_calorimeter_only_ && !_activate_any_coincidences_)
 	{
@@ -450,9 +706,35 @@ namespace snemo {
 		}
 	    }
 	}
-      //else if (
       
+      // Any coincidences are activated and calo only is not activated, rescaling calorimeter at 1600 ns in any case
+      else if (_activate_any_coincidences_ && !_activate_calorimeter_only_)
+	{
+	  _rescale_calo_records_at_1600ns(_calo_records_25ns_,
+					  _coincidence_calo_records_1600ns_);
+	  
+	  
+	  // std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick;
+      	  // geiger_ctw_data_.get_list_of_geiger_ctw_per_clocktick(iclocktick_800, geiger_ctw_list_per_clocktick);
+
+
+
+
+
+
+
+
+	}
+
+      for (int i = 0; i < _L2_decision_records_.size(); i++)
+	{
+	  _L2_decision_records_[i].display(); 
+	}
       
+      for (int i = 0; i < _coincidence_calo_records_1600ns_.size(); i++)
+	{
+	  _coincidence_calo_records_1600ns_[i].display();
+	}
 
       
       

@@ -119,6 +119,18 @@ namespace snemo {
 			/// Set the clock manager object
 			void set_clock_manager(const clock_utils & my_clock_manager_);
 
+			/// Check if calorimeter gate size is set
+			bool has_calorimeter_gate_size() const;
+
+			/// Set calorimeter gate size
+			void set_calorimeter_gate_size(unsigned int calorimeter_gate_size_);
+
+			/// Check if previous event circular buffer depth is set
+			bool has_previous_event_buffer_depth() const;
+
+			/// Set previous event circular buffer depth
+			void set_previous_event_buffer_depth(unsigned int circular_buffer_depth_);
+
       /// Check if the coincidence config is activated 
 			bool is_activated_coincidence() const;
 
@@ -155,14 +167,23 @@ namespace snemo {
 
     protected :
 			
-			/// Process calo algorithm
-			void _process_calo_algo(const calo_ctw_data & calo_ctw_data_);
+			// /// Process calo algorithm
+			// void _process_calo_algo(const calo_ctw_data & calo_ctw_data_);
 			
-			/// Process tracker algorithm
-			void _process_tracker_algo(const geiger_ctw_data & geiger_ctw_data_);
+			// /// Process tracker algorithm
+			// void _process_tracker_algo(const geiger_ctw_data & geiger_ctw_data_);
 			
-			/// Process coincidence module algorithm			
-			void _process_coinc_algo();
+			// /// Process coincidence module algorithm			
+			// void _process_coinc_algo();
+			
+			
+			/// Rescaling calorimeter 25 ns at 1600 ns for coincidences with tracker
+			void _rescale_calo_records_at_1600ns(const std::vector<calo_trigger_algorithm_test_time::calo_summary_record> & calo_records_25_ns_,
+																					 std::vector<coincidence_trigger_algorithm_test_time::coincidence_calo_record> & coincidence_calo_records_1600ns_);
+
+			/// Update a coinc calo record 1600 from a calo summary record 25 ns
+			void _update_coinc_calo_record(const calo_trigger_algorithm_test_time::calo_summary_record & a_calo_summary_record_25ns, 
+																		 coincidence_trigger_algorithm_test_time::coincidence_calo_record & a_coinc_calo_record_1600ns);
 			
       /// Protected general process
       void _process(const calo_ctw_data & calo_ctw_data_,
@@ -176,6 +197,7 @@ namespace snemo {
       bool _initialized_; //!< Initialization flag
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
 			const clock_utils * _clock_manager_; //!< Pointer to a clock manager useful for clockticks 
+			unsigned int _coincidence_calorimeter_gate_size_; //!< Size of calorimeter gate for extension of calo records during X CT 1600ns
 			unsigned int _previous_event_circular_buffer_depth_; //!< Depth for the previous events circular buffer (Pile of PERs)
 			
 			// Trigger configuration :			
