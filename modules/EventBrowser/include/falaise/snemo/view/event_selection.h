@@ -42,6 +42,7 @@
 // Forward declaration
 class TGCompositeFrame;
 class TGNumberEntry;
+class TGTextEntry;
 class TGCheckButton;
 class TGComboBox;
 class TGRadioButton;
@@ -84,8 +85,20 @@ namespace snemo {
         /// Label for 'simulated data' cut logic
         static const std::string & sd_cut_label();
 
+        class base_widget
+        {
+        public:
+          base_widget(event_selection * selection_);
+          virtual ~base_widget();
+          virtual void initialize() = 0;
+          virtual void set_state(const bool enable_ = true) = 0;
+          virtual void build(TGCompositeFrame * frame_) = 0;
+        protected:
+          event_selection * _selection;
+        };
+
         /// Structure hosting GUI widgets
-        struct selection_widgets
+        struct selection_widgets //: public base_widget
         {
           TGRadioButton * tg_or_button;
           TGRadioButton * tg_and_button;
@@ -94,29 +107,47 @@ namespace snemo {
           TGTextButton  * tg_save;
           TGTextButton  * tg_reset;
           TGTextButton  * tg_update;
-          void initialize();
-          void set_state(const bool enable_ = true);
+          virtual void initialize();
+          virtual void set_state(const bool enable_ = true);
+          //virtual void build(TGCompositeFrame * frame_);
         };
 
         /// Structure hosting complex selection widgets
-        struct complex_selection_widgets
+        struct complex_selection_widgets //: public base_widget
         {
           TGCheckButton * tg_enable;
           TGComboBox    * tg_combo;
-          void initialize();
-          void set_state(const bool enable_ = true);
+          virtual void initialize();
+          virtual void set_state(const bool enable_ = true);
+          //virtual void build(TGCompositeFrame * frame_);
         };
 
         /// Structure hosting event header selection widgets
-        struct event_header_selection_widgets
+        class event_header_selection_widget : public base_widget
         {
-          TGCheckButton * tg_enable;
-          TGNumberEntry * tg_run_id_min;
-          TGNumberEntry * tg_run_id_max;
-          TGNumberEntry * tg_event_id_min;
-          TGNumberEntry * tg_event_id_max;
-          void initialize();
-          void set_state(const bool enable_ = true);
+        public:
+          event_header_selection_widget(event_selection * selection_);
+          virtual void initialize();
+          virtual void set_state(const bool enable_ = true);
+          virtual void build(TGCompositeFrame * frame_);
+        private:
+          TGCheckButton * _enable_;
+          TGNumberEntry * _run_id_min_;
+          TGNumberEntry * _run_id_max_;
+          TGNumberEntry * _event_id_min_;
+          TGNumberEntry * _event_id_max_;
+        };
+
+        struct simulated_data_selection_widget : public base_widget
+        {
+        public:
+          simulated_data_selection_widget(event_selection * selection_);
+          virtual void initialize();
+          virtual void set_state(const bool enable_ = true);
+          virtual void build(TGCompositeFrame * frame_);
+        private:
+          TGCheckButton * _enable_;
+          TGTextEntry * _hit_category_;
         };
 
       public:
@@ -178,9 +209,6 @@ namespace snemo {
         /// Build GUI buttons
         void _build_buttons_();
 
-        /// Build event header GUI buttons
-        void _build_event_header_data_buttons_();
-
         /// Build complex GUI buttons
         void _build_complex_selection_buttons_();
 
@@ -201,7 +229,8 @@ namespace snemo {
 
         selection_widgets              _selection_widgets_; //!< Selection widget
         complex_selection_widgets      _complex_widgets_;//!< Complex selection widget
-        event_header_selection_widgets _eh_widgets_;//!< Event headder selection widget
+        base_widget * _eh_widgets_;//!< Event header selection widget
+        base_widget * _sd_widgets_;//!< Simulated data selection widget
 
         cuts::cut_manager * _cut_manager_;//!< Cut manager pointer
 

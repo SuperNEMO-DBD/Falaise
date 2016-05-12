@@ -84,6 +84,16 @@ namespace snemo {
         return _label;
       }
 
+      event_selection::base_widget::base_widget(event_selection * selection_) : _selection(selection_)
+      {
+        return;
+      }
+
+      event_selection::base_widget::~base_widget()
+      {
+        return;
+      }
+
       void event_selection::selection_widgets::initialize()
       {
         if (tg_or_button)  tg_or_button->SetOn(false);
@@ -114,21 +124,143 @@ namespace snemo {
         return;
       }
 
-      void event_selection::event_header_selection_widgets::initialize()
+      event_selection::event_header_selection_widget::event_header_selection_widget(event_selection * selection_)
+        : event_selection::base_widget(selection_)
       {
-        if (tg_run_id_min)   tg_run_id_min->SetNumber  (datatools::event_id::INVALID_RUN_NUMBER);
-        if (tg_run_id_max)   tg_run_id_max->SetNumber  (datatools::event_id::INVALID_RUN_NUMBER);
-        if (tg_event_id_min) tg_event_id_min->SetNumber(datatools::event_id::INVALID_EVENT_NUMBER);
-        if (tg_event_id_max) tg_event_id_max->SetNumber(datatools::event_id::INVALID_EVENT_NUMBER);
+        return;
+      }
+
+      void event_selection::event_header_selection_widget::initialize()
+      {
+        if (_run_id_min_) _run_id_min_->SetNumber(datatools::event_id::INVALID_RUN_NUMBER);
+        if (_run_id_max_) _run_id_max_->SetNumber(datatools::event_id::INVALID_RUN_NUMBER);
+        if (_event_id_min_) _event_id_min_->SetNumber(datatools::event_id::INVALID_EVENT_NUMBER);
+        if (_event_id_max_) _event_id_max_->SetNumber(datatools::event_id::INVALID_EVENT_NUMBER);
         this->set_state(false);
       }
 
-      void event_selection::event_header_selection_widgets::set_state(const bool enable_)
+      void event_selection::event_header_selection_widget::set_state(const bool enable_)
       {
-        if (tg_run_id_min)   tg_run_id_min->SetState  (enable_);
-        if (tg_run_id_max)   tg_run_id_max->SetState  (enable_);
-        if (tg_event_id_min) tg_event_id_min->SetState(enable_);
-        if (tg_event_id_max) tg_event_id_max->SetState(enable_);
+        if (_run_id_min_) _run_id_min_->SetState(enable_);
+        if (_run_id_max_) _run_id_max_->SetState(enable_);
+        if (_event_id_min_) _event_id_min_->SetState(enable_);
+        if (_event_id_max_) _event_id_max_->SetState(enable_);
+        return;
+      }
+
+      void event_selection::event_header_selection_widget::build(TGCompositeFrame * frame_)
+      {
+        // Layout for positionning frame
+        TGLayoutHints * field_layout = new TGLayoutHints(kLHintsTop | kLHintsRight,
+                                                         2, 2, 20, 2);
+        TGLayoutHints * label_layout = new TGLayoutHints(kLHintsTop | kLHintsLeft,
+                                                         2, 2, 2, 2);
+        TGGroupFrame * gframe = new TGGroupFrame(frame_, "      Event header cut", kVerticalFrame);
+        gframe->SetTitlePos(TGGroupFrame::kLeft);
+        frame_->AddFrame(gframe,
+                         new TGLayoutHints(kLHintsTop | kLHintsLeft, 3, 3, 3, 3));
+        {
+          _enable_ = new TGCheckButton(gframe, "", ENABLE_EH_SELECTION);
+          _enable_->SetToolTipText("enable selection on event header bank");
+          _enable_->Connect("Clicked()", "snemo::visualization::view::event_selection",
+                            _selection, "process()");
+          gframe->AddFrame(_enable_,
+                           new TGLayoutHints(kLHintsTop | kLHintsLeft, 0, 0, -15, 0));
+        }
+
+        {
+          TGCompositeFrame * cframe = new TGCompositeFrame(gframe, 200, 1,
+                                                           kHorizontalFrame | kFixedWidth);
+          gframe->AddFrame(cframe);
+          cframe->AddFrame(new TGLabel(cframe, "Run ID (min - max):"), label_layout);
+          _run_id_max_ = new TGNumberEntry(cframe, datatools::event_id::INVALID_RUN_NUMBER,
+                                         10, -1, TGNumberFormat::kNESInteger);
+          _run_id_max_->Connect("ValueSet(Long_t)",
+                                "snemo::visualization::view::event_selection",
+                              _selection, "process()");
+          cframe->AddFrame(_run_id_max_, field_layout);
+          _run_id_min_ = new TGNumberEntry(cframe, datatools::event_id::INVALID_RUN_NUMBER,
+                                           10, -1, TGNumberFormat::kNESInteger);
+          _run_id_min_->Connect("ValueSet(Long_t)",
+                              "snemo::visualization::view::event_selection",
+                              _selection, "process()");
+          cframe->AddFrame(_run_id_min_, field_layout);
+        }
+        {
+          TGCompositeFrame * cframe = new TGCompositeFrame(gframe, 200, 1,
+                                                           kHorizontalFrame | kFixedWidth);
+          gframe->AddFrame(cframe);
+          cframe->AddFrame(new TGLabel(cframe, "Event ID (min - max):"), label_layout);
+          _event_id_max_ = new TGNumberEntry(cframe, datatools::event_id::INVALID_EVENT_NUMBER,
+                                             10, -1, TGNumberFormat::kNESInteger);
+          _event_id_max_->Connect("ValueSet(Long_t)",
+                                  "snemo::visualization::view::event_selection",
+                                  _selection, "process()");
+          cframe->AddFrame(_event_id_max_, field_layout);
+          _event_id_min_ = new TGNumberEntry(cframe, datatools::event_id::INVALID_RUN_NUMBER,
+                                             10, -1, TGNumberFormat::kNESInteger);
+          _event_id_min_->Connect("ValueSet(Long_t)",
+                                  "snemo::visualization::view::event_selection",
+                                  _selection, "process()");
+          cframe->AddFrame(_event_id_min_, field_layout);
+        }
+
+        // Initialize values
+        initialize();
+        return;
+      }
+
+      event_selection::simulated_data_selection_widget::simulated_data_selection_widget(event_selection * selection_)
+        : event_selection::base_widget(selection_)
+      {
+        return;
+      }
+
+      void event_selection::simulated_data_selection_widget::initialize()
+      {
+        if (_hit_category_) _hit_category_->Clear();
+        this->set_state(false);
+      }
+
+      void event_selection::simulated_data_selection_widget::set_state(const bool enable_)
+      {
+        if (_hit_category_) _hit_category_->SetState(enable_);
+        return;
+      }
+
+      void event_selection::simulated_data_selection_widget::build(TGCompositeFrame * frame_)
+      {
+        // Layout for positionning frame
+        // TGLayoutHints * field_layout = new TGLayoutHints(kLHintsTop | kLHintsRight,
+        //                                                  2, 2, 20, 2);
+        // TGLayoutHints * label_layout = new TGLayoutHints(kLHintsTop | kLHintsLeft,
+        //                                                  2, 2, 2, 2);
+        TGGroupFrame * gframe = new TGGroupFrame(frame_, "      Simulated data cut", kVerticalFrame);
+        gframe->SetTitlePos(TGGroupFrame::kLeft);
+        frame_->AddFrame(gframe, new TGLayoutHints(kLHintsTop | kLHintsLeft, 3, 3, 3, 3));
+        {
+          _enable_ = new TGCheckButton(gframe, "", ENABLE_SD_SELECTION);
+          _enable_->SetToolTipText("enable selection on simulated data bank");
+          _enable_->Connect("Clicked()", "snemo::visualization::view::event_selection",
+                            _selection, "process()");
+          gframe->AddFrame(_enable_, new TGLayoutHints(kLHintsTop | kLHintsLeft, 0, 0, -15, 0));
+        }
+
+        {
+          TGCompositeFrame * cframe = new TGCompositeFrame(gframe, 200, 1,
+                                                           kHorizontalFrame | kFixedWidth);
+          gframe->AddFrame(cframe);
+          cframe->AddFrame(new TGLabel(cframe, "Hit category name:"),
+                           new TGLayoutHints(kLHintsTop | kLHintsLeft, 2, 2, 2, 2));
+          _hit_category_ = new TGTextEntry(cframe, "", -1);
+          _hit_category_->Connect("ValueSet(Long_t)",
+                                  "snemo::visualization::view::event_selection",
+                                  _selection, "process()");
+          cframe->AddFrame(_hit_category_, new TGLayoutHints(kLHintsTop | kLHintsLeft, 2, 2, 0, 2));
+        }
+
+        // Initialize values
+        initialize();
         return;
       }
 
@@ -201,6 +333,7 @@ namespace snemo {
 
       void event_selection::process()
       {
+        DT_LOG_WARNING(datatools::logger::PRIO_WARNING, "Entering...");
         TGButton * button = static_cast<TGButton*>(gTQSender);
         const unsigned int id = button->WidgetId();
 
@@ -232,7 +365,8 @@ namespace snemo {
           this->_install_cut_manager_();
         } else if (id == RESET_SELECTION) {
           _complex_widgets_.initialize();
-          _eh_widgets_.initialize();
+          _eh_widgets_->initialize();
+          _sd_widgets_->initialize();
 
           _server_->clear_selection();
           _server_->fill_selection();
@@ -255,28 +389,32 @@ namespace snemo {
           }
           return;
         } else if (id == ENABLE_EH_SELECTION) {
-          if (_eh_widgets_.tg_enable->IsDown())
-            _eh_widgets_.set_state(true);
-          else _eh_widgets_.set_state(false);
+          DT_LOG_WARNING(datatools::logger::PRIO_WARNING, "Enable EH selection");
+          // if (_eh_widgets_.tg_enable->IsDown())
+          //   _eh_widgets_.set_state(true);
+          // else _eh_widgets_.set_state(false);
         } else if (id == ENABLE_COMPLEX_SELECTION) {
           if (_complex_widgets_.tg_enable->IsDown())
             _complex_widgets_.set_state(true);
           else _complex_widgets_.set_state(false);
         }
 
-        // Disable update button if none of the check box is enable
-        if (!_complex_widgets_.tg_enable->IsDown() &&
-            !_eh_widgets_.tg_enable->IsDown()) {
-          _selection_widgets_.tg_update->SetState(kButtonDisabled);
-          _server_->clear_selection();
-          _server_->fill_selection();
-          _status_->update(true);
-          _selection_enable_ = false;
-        } else {
+        // // Disable update button if none of the check box is enable
+        // if (!_complex_widgets_.tg_enable->IsDown() &&
+        //     !_eh_widgets_.tg_enable->IsDown()) {
+        //   DT_LOG_WARNING(datatools::logger::PRIO_WARNING, "coucou");
+        //   _selection_widgets_.tg_update->SetState(kButtonDisabled);
+        //   _server_->clear_selection();
+        //   _server_->fill_selection();
+        //   _status_->update(true);
+        //   _selection_enable_ = false;
+        // } else {
+        //   DT_LOG_WARNING(datatools::logger::PRIO_WARNING, "caca");
           // Change update button
-          _selection_widgets_.tg_update->SetState(kButtonUp);
-          _selection_widgets_.tg_update->SetTextColor(TColor::Number2Pixel(kRed));
-        }
+          // _selection_widgets_.tg_update->SetState(kButtonUp);
+          // _selection_widgets_.tg_update->SetTextColor(TColor::Number2Pixel(kRed));
+        // }
+        DT_LOG_WARNING(datatools::logger::PRIO_WARNING, "Exiting.");
         return;
       }
 
@@ -397,8 +535,12 @@ namespace snemo {
 
       void event_selection::_update_buttons_()
       {
-        if (! _server_->get_event().has(io::EH_LABEL))
-          _eh_widgets_.set_state(false);
+        if (! _server_->get_event().has(io::EH_LABEL)) {
+          _eh_widgets_->set_state(false);
+        }
+        if (! _server_->get_event().has(io::CD_LABEL)) {
+          _sd_widgets_->set_state(false);
+        }
         return;
       }
 
@@ -418,7 +560,7 @@ namespace snemo {
           _selection_widgets_.tg_load->SetToolTipText("save current selection into file");
           _selection_widgets_.tg_load->Connect("Clicked()",
                                                "snemo::visualization::view::event_selection",
-                                               this, "process_selection()");
+                                               this, "process()");
           button_group->AddFrame(_selection_widgets_.tg_load,
                                  new TGLayoutHints(kLHintsNoHints, 2, 2, 2, 2));
         }
@@ -428,7 +570,7 @@ namespace snemo {
           _selection_widgets_.tg_save->SetToolTipText("save current selection into file");
           _selection_widgets_.tg_save->Connect("Clicked()",
                                                "snemo::visualization::view::event_selection",
-                                               this, "process_selection()");
+                                               this, "process()");
           button_group->AddFrame(_selection_widgets_.tg_save,
                                  new TGLayoutHints(kLHintsNoHints, 2, 2, 2, 2));
         }
@@ -438,7 +580,7 @@ namespace snemo {
           _selection_widgets_.tg_reset->SetToolTipText("reset current selection");
           _selection_widgets_.tg_reset->Connect("Clicked()",
                                                 "snemo::visualization::view::event_selection",
-                                                this, "process_selection()");
+                                                this, "process()");
           button_group->AddFrame(_selection_widgets_.tg_reset,
                                  new TGLayoutHints(kLHintsNoHints, 2, 2, 2, 2));
         }
@@ -448,7 +590,7 @@ namespace snemo {
           _selection_widgets_.tg_update->SetToolTipText("update selection");
           _selection_widgets_.tg_update->Connect("Clicked()",
                                                  "snemo::visualization::view::event_selection",
-                                                 this, "process_selection()");
+                                                 this, "process()");
           button_group->AddFrame(_selection_widgets_.tg_update,
                                  new TGLayoutHints(kLHintsNoHints, 2, 2, 2, 2));
         }
@@ -464,92 +606,23 @@ namespace snemo {
           _selection_widgets_.tg_xor_button = new TGRadioButton(radio_group, "xor ", XOR_SELECTION);
           _selection_widgets_.tg_or_button->Connect("Clicked()",
                                                     "snemo::visualization::view::event_selection",
-                                                    this, "process_selection()");
+                                                    this, "process()");
           _selection_widgets_.tg_and_button->Connect("Clicked()",
                                                      "snemo::visualization::view::event_selection",
-                                                     this, "process_selection()");
+                                                     this, "process()");
           _selection_widgets_.tg_xor_button->Connect("Clicked()",
                                                      "snemo::visualization::view::event_selection",
-                                                     this, "process_selection()");
+                                                     this, "process()");
         }
 
         // Initialize values
         _selection_widgets_.initialize();
 
-        this->_build_event_header_data_buttons_();
+        _eh_widgets_ = new event_header_selection_widget(this);
+        _eh_widgets_->build(_main_);
+        _sd_widgets_ = new simulated_data_selection_widget(this);
+        _sd_widgets_->build(_main_);
         this->_build_complex_selection_buttons_();
-
-        return;
-      }
-
-      void event_selection::_build_event_header_data_buttons_()
-      {
-        // Layout for positionning frame
-        TGLayoutHints * field_layout = new TGLayoutHints(kLHintsTop | kLHintsRight,
-                                                         2, 2, 20, 2);
-        TGLayoutHints * label_layout = new TGLayoutHints(kLHintsTop | kLHintsLeft,
-                                                         2, 2, 2, 2);
-        TGGroupFrame * eh_group =
-          new TGGroupFrame(_main_, "      Event header cut", kVerticalFrame);
-        eh_group->SetTitlePos(TGGroupFrame::kLeft);
-        _main_->AddFrame(eh_group,
-                         new TGLayoutHints(kLHintsTop | kLHintsLeft, 3, 3, 3, 3));
-        {
-          _eh_widgets_.tg_enable = new TGCheckButton(eh_group, "", ENABLE_EH_SELECTION);
-          _eh_widgets_.tg_enable->Connect("Clicked()",
-                                          "snemo::visualization::view::event_selection",
-                                          this, "process_selection()");
-          eh_group->AddFrame(_eh_widgets_.tg_enable,
-                             new TGLayoutHints(kLHintsTop | kLHintsLeft, 0, 0, -15, 0));
-        }
-
-        {
-          TGCompositeFrame * cframe = new TGCompositeFrame(eh_group, 200, 1,
-                                                           kHorizontalFrame | kFixedWidth);
-          eh_group->AddFrame(cframe);
-          _eh_widgets_.tg_run_id_max = new TGNumberEntry(cframe,
-                                                         datatools::event_id::INVALID_RUN_NUMBER,
-                                                         10, -1,
-                                                         TGNumberFormat::kNESInteger);
-          _eh_widgets_.tg_run_id_max->Connect("ValueSet(Long_t)",
-                                              "snemo::visualization::view::event_selection",
-                                              this, "process_selection()");
-          cframe->AddFrame(new TGLabel(cframe, "Run ID (min - max):"), label_layout);
-          cframe->AddFrame(_eh_widgets_.tg_run_id_max, field_layout);
-          _eh_widgets_.tg_run_id_min = new TGNumberEntry(cframe,
-                                                         datatools::event_id::INVALID_RUN_NUMBER,
-                                                         10, -1,
-                                                         TGNumberFormat::kNESInteger);
-          _eh_widgets_.tg_run_id_min->Connect("ValueSet(Long_t)",
-                                              "snemo::visualization::view::event_selection",
-                                              this, "process_selection()");
-          cframe->AddFrame(_eh_widgets_.tg_run_id_min, field_layout);
-        }
-        {
-          TGCompositeFrame * cframe = new TGCompositeFrame(eh_group, 200, 1,
-                                                           kHorizontalFrame | kFixedWidth);
-          eh_group->AddFrame(cframe);
-          _eh_widgets_.tg_event_id_max = new TGNumberEntry(cframe,
-                                                           datatools::event_id::INVALID_EVENT_NUMBER,
-                                                           10, -1,
-                                                           TGNumberFormat::kNESInteger);
-          _eh_widgets_.tg_event_id_max->Connect("ValueSet(Long_t)",
-                                                "snemo::visualization::view::event_selection",
-                                                this, "process_selection()");
-          cframe->AddFrame(new TGLabel(cframe, "Event ID (min - max):"), label_layout);
-          cframe->AddFrame(_eh_widgets_.tg_event_id_max, field_layout);
-          _eh_widgets_.tg_event_id_min = new TGNumberEntry(cframe,
-                                                           datatools::event_id::INVALID_RUN_NUMBER,
-                                                           10, -1,
-                                                           TGNumberFormat::kNESInteger);
-          _eh_widgets_.tg_event_id_min->Connect("ValueSet(Long_t)",
-                                                "snemo::visualization::view::event_selection",
-                                                this, "process_selection()");
-          cframe->AddFrame(_eh_widgets_.tg_event_id_min, field_layout);
-        }
-
-        // Initialize values
-        _eh_widgets_.initialize();
 
         return;
       }
@@ -565,7 +638,7 @@ namespace snemo {
         _complex_widgets_.tg_enable = new TGCheckButton(complex_group, "", ENABLE_COMPLEX_SELECTION);
         _complex_widgets_.tg_enable->Connect("Clicked()",
                                              "snemo::visualization::view::event_selection",
-                                             this, "process_selection()");
+                                             this, "process()");
         complex_group->AddFrame(_complex_widgets_.tg_enable,
                                 new TGLayoutHints(kLHintsTop | kLHintsLeft, 0, 0, -15, 0));
 
@@ -577,7 +650,7 @@ namespace snemo {
         TGComboBox * combo = _complex_widgets_.tg_combo;
         combo->Connect("Selected(int)",
                        "snemo::visualization::view::event_selection",
-                       this, "process_selection()");
+                       this, "process()");
         combo->Resize(200, 20);
         cframe->AddFrame(_complex_widgets_.tg_combo,
                          new TGLayoutHints(kLHintsTop     | kLHintsLeft |
@@ -650,6 +723,10 @@ namespace snemo {
         if (this->_build_event_header_data_cuts_()) {
           cut_lists.push_back(event_selection::eh_cut_label());
         }
+        // // Simulated Data Cut
+        // if (this->_build_simulated_data_cuts_()) {
+        //   cut_lists.push_back(event_selection::sd_cut_label());
+        // }
 
         if (cut_lists.empty()) {
           DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
@@ -667,50 +744,51 @@ namespace snemo {
 
       bool event_selection::_build_event_header_data_cuts_()
       {
-        if (! _eh_widgets_.tg_enable->IsDown()) return false;
+        // if (! _eh_widgets_.tg_enable->IsDown()) return false;
 
-        cuts::cut_handle_dict_type & the_cuts = _cut_manager_->get_cuts();
-        cuts::cut_handle_dict_type::iterator found = the_cuts.find(event_selection::eh_cut_label());
-        if (found == the_cuts.end()) {
-          DT_LOG_ERROR(options_manager::get_instance().get_logging_priority(),
-                       "Cut '" << event_selection::eh_cut_label() << "' has not been registered !");
-          return false;
-        }
+        // cuts::cut_handle_dict_type & the_cuts = _cut_manager_->get_cuts();
+        // cuts::cut_handle_dict_type::iterator found = the_cuts.find(event_selection::eh_cut_label());
+        // if (found == the_cuts.end()) {
+        //   DT_LOG_ERROR(options_manager::get_instance().get_logging_priority(),
+        //                "Cut '" << event_selection::eh_cut_label() << "' has not been registered !");
+        //   return false;
+        // }
 
-        // Reset cut
-        if (found->second.is_initialized()) {
-          found->second.grab_cut().reset();
-          found->second.set_uninitialized();
-        }
+        // // Reset cut
+        // if (found->second.is_initialized()) {
+        //   found->second.grab_cut().reset();
+        //   found->second.set_uninitialized();
+        // }
 
-        bool has_cut_enabled = false;
-        datatools::properties & cuts_prop = found->second.grab_cut_config();
-        // Run number
-        const int run_number_selected_min = _eh_widgets_.tg_run_id_min->GetIntNumber();
-        const int run_number_selected_max = _eh_widgets_.tg_run_id_max->GetIntNumber();
-        if (run_number_selected_min != datatools::event_id::INVALID_RUN_NUMBER ||
-            run_number_selected_max != datatools::event_id::INVALID_RUN_NUMBER) {
-          cuts_prop.update_flag("mode.run_number");
-          if (run_number_selected_min != datatools::event_id::INVALID_RUN_NUMBER)
-            cuts_prop.update_integer("run_number.min", run_number_selected_min);
-          if (run_number_selected_max != datatools::event_id::INVALID_RUN_NUMBER)
-            cuts_prop.update_integer("run_number.max", run_number_selected_max);
-          has_cut_enabled = true;
-        }
-        // Event number
-        const int event_number_selected_min = _eh_widgets_.tg_event_id_min->GetIntNumber();
-        const int event_number_selected_max = _eh_widgets_.tg_event_id_max->GetIntNumber();
-        if (event_number_selected_min != datatools::event_id::INVALID_EVENT_NUMBER ||
-            event_number_selected_max != datatools::event_id::INVALID_EVENT_NUMBER) {
-          cuts_prop.update_flag("mode.event_number");
-          if (event_number_selected_min != datatools::event_id::INVALID_EVENT_NUMBER)
-            cuts_prop.update_integer("event_number.min", event_number_selected_min);
-          if (event_number_selected_max != datatools::event_id::INVALID_EVENT_NUMBER)
-            cuts_prop.update_integer("event_number.max", event_number_selected_max);
-          has_cut_enabled = true;
-        }
+        // bool has_cut_enabled = false;
+        // datatools::properties & cuts_prop = found->second.grab_cut_config();
+        // // Run number
+        // const int run_number_selected_min = _eh_widgets_.tg_run_id_min->GetIntNumber();
+        // const int run_number_selected_max = _eh_widgets_.tg_run_id_max->GetIntNumber();
+        // if (run_number_selected_min != datatools::event_id::INVALID_RUN_NUMBER ||
+        //     run_number_selected_max != datatools::event_id::INVALID_RUN_NUMBER) {
+        //   cuts_prop.update_flag("mode.run_number");
+        //   if (run_number_selected_min != datatools::event_id::INVALID_RUN_NUMBER)
+        //     cuts_prop.update_integer("run_number.min", run_number_selected_min);
+        //   if (run_number_selected_max != datatools::event_id::INVALID_RUN_NUMBER)
+        //     cuts_prop.update_integer("run_number.max", run_number_selected_max);
+        //   has_cut_enabled = true;
+        // }
+        // // Event number
+        // const int event_number_selected_min = _eh_widgets_.tg_event_id_min->GetIntNumber();
+        // const int event_number_selected_max = _eh_widgets_.tg_event_id_max->GetIntNumber();
+        // if (event_number_selected_min != datatools::event_id::INVALID_EVENT_NUMBER ||
+        //     event_number_selected_max != datatools::event_id::INVALID_EVENT_NUMBER) {
+        //   cuts_prop.update_flag("mode.event_number");
+        //   if (event_number_selected_min != datatools::event_id::INVALID_EVENT_NUMBER)
+        //     cuts_prop.update_integer("event_number.min", event_number_selected_min);
+        //   if (event_number_selected_max != datatools::event_id::INVALID_EVENT_NUMBER)
+        //     cuts_prop.update_integer("event_number.max", event_number_selected_max);
+        //   has_cut_enabled = true;
+        // }
 
-        return has_cut_enabled;
+        // return has_cut_enabled;
+        return true;
       }
 
       void event_selection::_install_cut_manager_()

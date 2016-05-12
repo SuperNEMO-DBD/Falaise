@@ -100,6 +100,7 @@ enum button_signals_type
     XOR_SELECTION,
     ENABLE_COMPLEX_SELECTION,
     ENABLE_EH_SELECTION,
+    ENABLE_SD_SELECTION,
 
     // Signals for event navigation control
     STATUS_BAR,
