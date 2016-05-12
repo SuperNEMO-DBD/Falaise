@@ -13,7 +13,7 @@ set(Falaise_DIR "${FALAISE_BUILDPRODUCT_DIR}/${CMAKE_INSTALL_CMAKEDIR}/Falaise-$
 # - List of plugins:
 set(_falaise_PLUGINS
   # things2root
-  # # Digitization
+  # Digitization
   CAT
   MockTrackerClusterizer
   TrackFit
@@ -22,6 +22,8 @@ set(_falaise_PLUGINS
   GammaClustering
   VisuToy
   EventBrowser
+  ParticleIdentification
+  ProcessReport
 )
 
 # - Process modules here:
