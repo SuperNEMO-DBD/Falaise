@@ -98,18 +98,21 @@ namespace snemo {
         };
 
         /// Structure hosting GUI widgets
-        struct selection_widgets //: public base_widget
+        struct selection_widget : public base_widget
         {
-          TGRadioButton * tg_or_button;
-          TGRadioButton * tg_and_button;
-          TGRadioButton * tg_xor_button;
-          TGTextButton  * tg_load;
-          TGTextButton  * tg_save;
-          TGTextButton  * tg_reset;
-          TGTextButton  * tg_update;
+        private:
+          TGRadioButton * _or_button_;
+          TGRadioButton * _and_button_;
+          TGRadioButton * _xor_button_;
+          TGTextButton  * _load_button_;
+          TGTextButton  * _save_button_;
+          TGTextButton  * _reset_button_;
+          TGTextButton  * _update_button_;
+        public:
+          selection_widget(event_selection * selection_);
           virtual void initialize();
           virtual void set_state(const bool enable_ = true);
-          //virtual void build(TGCompositeFrame * frame_);
+          virtual void build(TGCompositeFrame * frame_);
         };
 
         /// Structure hosting complex selection widgets
@@ -185,12 +188,6 @@ namespace snemo {
 
       private:
 
-        /// Private initialization
-        void _at_init_(TGCompositeFrame * main_);
-
-        /// Private construction
-        void _at_construct_();
-
         /// Install cut manager
         void _install_cut_manager_();
 
@@ -227,7 +224,7 @@ namespace snemo {
         event_browser    * _browser_;
         status_bar       * _status_;
 
-        selection_widgets              _selection_widgets_; //!< Selection widget
+        base_widget *              _selection_widgets_; //!< Selection widget
         complex_selection_widgets      _complex_widgets_;//!< Complex selection widget
         base_widget * _eh_widgets_;//!< Event header selection widget
         base_widget * _sd_widgets_;//!< Simulated data selection widget

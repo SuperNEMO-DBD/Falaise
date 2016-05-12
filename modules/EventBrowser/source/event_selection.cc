@@ -94,21 +94,79 @@ namespace snemo {
         return;
       }
 
-      void event_selection::selection_widgets::initialize()
+      event_selection::selection_widget::selection_widget(event_selection * selection_)
+        : event_selection::base_widget(selection_)
       {
-        if (tg_or_button)  tg_or_button->SetOn(false);
-        if (tg_and_button) tg_and_button->SetOn(true);
-        if (tg_xor_button) tg_xor_button->SetOn(false);
-        if (tg_save) tg_save->SetState(kButtonDisabled);
         return;
       }
 
-      void event_selection::selection_widgets::set_state(const bool enable_)
+      void event_selection::selection_widget::initialize()
+      {
+        if (_or_button_) _or_button_->SetOn(false);
+        if (_and_button_) _and_button_->SetOn(true);
+        if (_xor_button_) _xor_button_->SetOn(false);
+        if (_save_button_) _save_button_->SetState(kButtonDisabled);
+        return;
+      }
+
+      void event_selection::selection_widget::set_state(const bool enable_)
       {
         const EButtonState state = enable_ ? kButtonEngaged : kButtonDisabled;
-        if (tg_or_button)  tg_or_button->SetState (state);
-        if (tg_and_button) tg_and_button->SetState(state);
-        if (tg_xor_button) tg_xor_button->SetState(state);
+        if (_or_button_) _or_button_->SetState(state);
+        if (_and_button_) _and_button_->SetState(state);
+        if (_xor_button_) _xor_button_->SetState(state);
+        return;
+      }
+
+      void event_selection::selection_widget::build(TGCompositeFrame * frame_)
+      {
+        // Add buttons to save, reset and apply selection
+        TGVerticalFrame * vframe = new TGVerticalFrame(frame_);
+        frame_->AddFrame(vframe, new TGLayoutHints(kLHintsBottom | kLHintsRight, 10, 10, 10, 10));
+
+        TGHorizontalFrame * hframe = new TGHorizontalFrame(vframe);
+        vframe->AddFrame(hframe);
+
+        _load_button_ = new TGTextButton(hframe, "Load selection file", LOAD_SELECTION);
+        _load_button_->SetToolTipText("save current selection into file");
+        _load_button_->Connect("Clicked()", "snemo::visualization::view::event_selection",
+                               _selection, "process()");
+        hframe->AddFrame(_load_button_, new TGLayoutHints(kLHintsNoHints, 2, 2, 2, 2));
+
+        _save_button_ = new TGTextButton(hframe, "Save selection as...", SAVE_SELECTION);
+        _save_button_->SetToolTipText("save current selection into file");
+        _save_button_->Connect("Clicked()", "snemo::visualization::view::event_selection",
+                               _selection, "process()");
+        hframe->AddFrame(_save_button_, new TGLayoutHints(kLHintsNoHints, 2, 2, 2, 2));
+
+        _reset_button_ = new TGTextButton(hframe, "Reset selection", RESET_SELECTION);
+        _reset_button_->SetToolTipText("reset current selection");
+        _reset_button_->Connect("Clicked()", "snemo::visualization::view::event_selection",
+                                _selection, "process()");
+        hframe->AddFrame(_reset_button_, new TGLayoutHints(kLHintsNoHints, 2, 2, 2, 2));
+
+        _update_button_ = new TGTextButton(hframe, "Update selection", UPDATE_SELECTION);
+        _update_button_->SetToolTipText("update selection");
+        _update_button_->Connect("Clicked()", "snemo::visualization::view::event_selection",
+                                 _selection, "process()");
+        hframe->AddFrame(_update_button_, new TGLayoutHints(kLHintsNoHints, 2, 2, 2, 2));
+
+        TGHButtonGroup * bgroup = new TGHButtonGroup(frame_, "Event selection logic");
+        bgroup->SetTitlePos(TGGroupFrame::kLeft);
+        frame_->AddFrame(bgroup, new TGLayoutHints(kLHintsBottom | kLHintsLeft, 3, 3, 3, 3));
+
+        _or_button_  = new TGRadioButton(bgroup, "or ", OR_SELECTION);
+        _and_button_ = new TGRadioButton(bgroup, "and ", AND_SELECTION);
+        _xor_button_ = new TGRadioButton(bgroup, "xor ", XOR_SELECTION);
+        _or_button_->Connect("Clicked()", "snemo::visualization::view::event_selection",
+                             _selection, "process()");
+        _and_button_->Connect("Clicked()", "snemo::visualization::view::event_selection",
+                              _selection, "process()");
+        _xor_button_->Connect("Clicked()", "snemo::visualization::view::event_selection",
+                              _selection, "process()");
+
+        // Initialize values
+        initialize();
         return;
       }
 
@@ -159,14 +217,12 @@ namespace snemo {
         gframe->SetTitlePos(TGGroupFrame::kLeft);
         frame_->AddFrame(gframe,
                          new TGLayoutHints(kLHintsTop | kLHintsLeft, 3, 3, 3, 3));
-        {
-          _enable_ = new TGCheckButton(gframe, "", ENABLE_EH_SELECTION);
-          _enable_->SetToolTipText("enable selection on event header bank");
-          _enable_->Connect("Clicked()", "snemo::visualization::view::event_selection",
-                            _selection, "process()");
-          gframe->AddFrame(_enable_,
-                           new TGLayoutHints(kLHintsTop | kLHintsLeft, 0, 0, -15, 0));
-        }
+
+        _enable_ = new TGCheckButton(gframe, "", ENABLE_EH_SELECTION);
+        _enable_->SetToolTipText("enable selection on event header bank");
+        _enable_->Connect("Clicked()", "snemo::visualization::view::event_selection",
+                          _selection, "process()");
+        gframe->AddFrame(_enable_, new TGLayoutHints(kLHintsTop | kLHintsLeft, 0, 0, -15, 0));
 
         {
           TGCompositeFrame * cframe = new TGCompositeFrame(gframe, 200, 1,
@@ -313,7 +369,20 @@ namespace snemo {
       {
         DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
 
-        this->_at_init_(main_);
+        // Keep track of main frame in order to regenerate it for
+        // different detector setup
+        _main_ = main_;
+        _main_->SetCleanup(kDeepCleanup);
+
+        // Get pointer to browser for button connections
+        TGCompositeFrame * parent = (TGCompositeFrame *) _main_
+          ->GetParent()->GetParent()
+          ->GetParent()->GetParent()
+          ->GetParent()->GetParent();
+        _browser_ = dynamic_cast<event_browser *>(parent);
+        DT_THROW_IF(!_browser_, std::logic_error, "Event_browser can't be cast from frame!");
+
+        this->_build_buttons_();
         this->_install_cut_manager_();
 
         _initial_event_id_ = 0;
@@ -377,7 +446,7 @@ namespace snemo {
           _browser_->change_event(CURRENT_EVENT, _initial_event_id_);
           return;
         } else if (id == UPDATE_SELECTION) {
-          _selection_widgets_.tg_update->SetState(kButtonDisabled);
+          // _selection_widgets_.tg_update->SetState(kButtonDisabled);
 
           this->_build_cuts_();
 
@@ -508,31 +577,6 @@ namespace snemo {
         return;
       }
 
-      void event_selection::_at_init_(TGCompositeFrame * main_)
-      {
-        // Keep track of main frame in order to regenerate it for
-        // different detector setup
-        _main_ = main_;
-        _main_->SetCleanup(kDeepCleanup);
-
-        // Get pointer to browser for button connections
-        TGCompositeFrame * parent = (TGCompositeFrame *) _main_
-          ->GetParent()->GetParent()
-          ->GetParent()->GetParent()
-          ->GetParent()->GetParent();
-        _browser_ = dynamic_cast<event_browser *>(parent);
-        DT_THROW_IF(!_browser_, std::logic_error, "Event_browser can't be cast from frame!");
-
-        this->_at_construct_();
-        return;
-      }
-
-      void event_selection::_at_construct_()
-      {
-        this->_build_buttons_();
-        return;
-      }
-
       void event_selection::_update_buttons_()
       {
         if (! _server_->get_event().has(io::EH_LABEL)) {
@@ -546,78 +590,8 @@ namespace snemo {
 
       void event_selection::_build_buttons_()
       {
-        // Add buttons to save, reset and apply selection
-        TGVerticalFrame * process_selection_buttons = new TGVerticalFrame(_main_);
-        _main_->AddFrame(process_selection_buttons, new TGLayoutHints(kLHintsBottom |
-                                                                      kLHintsRight, 10, 10, 10, 10));
-
-        TGHorizontalFrame * button_group = new TGHorizontalFrame(process_selection_buttons);
-        process_selection_buttons->AddFrame(button_group);
-
-        {
-          _selection_widgets_.tg_load =
-            new TGTextButton(button_group, "Load selection file", LOAD_SELECTION);
-          _selection_widgets_.tg_load->SetToolTipText("save current selection into file");
-          _selection_widgets_.tg_load->Connect("Clicked()",
-                                               "snemo::visualization::view::event_selection",
-                                               this, "process()");
-          button_group->AddFrame(_selection_widgets_.tg_load,
-                                 new TGLayoutHints(kLHintsNoHints, 2, 2, 2, 2));
-        }
-        {
-          _selection_widgets_.tg_save =
-            new TGTextButton(button_group, "Save selection as...", SAVE_SELECTION);
-          _selection_widgets_.tg_save->SetToolTipText("save current selection into file");
-          _selection_widgets_.tg_save->Connect("Clicked()",
-                                               "snemo::visualization::view::event_selection",
-                                               this, "process()");
-          button_group->AddFrame(_selection_widgets_.tg_save,
-                                 new TGLayoutHints(kLHintsNoHints, 2, 2, 2, 2));
-        }
-        {
-          _selection_widgets_.tg_reset =
-            new TGTextButton(button_group, "Reset selection", RESET_SELECTION);
-          _selection_widgets_.tg_reset->SetToolTipText("reset current selection");
-          _selection_widgets_.tg_reset->Connect("Clicked()",
-                                                "snemo::visualization::view::event_selection",
-                                                this, "process()");
-          button_group->AddFrame(_selection_widgets_.tg_reset,
-                                 new TGLayoutHints(kLHintsNoHints, 2, 2, 2, 2));
-        }
-        {
-          _selection_widgets_.tg_update =
-            new TGTextButton(button_group, "Update selection", UPDATE_SELECTION);
-          _selection_widgets_.tg_update->SetToolTipText("update selection");
-          _selection_widgets_.tg_update->Connect("Clicked()",
-                                                 "snemo::visualization::view::event_selection",
-                                                 this, "process()");
-          button_group->AddFrame(_selection_widgets_.tg_update,
-                                 new TGLayoutHints(kLHintsNoHints, 2, 2, 2, 2));
-        }
-
-        {
-          TGHButtonGroup * radio_group = new TGHButtonGroup(_main_,  "Event selection logic");
-          radio_group->SetTitlePos(TGGroupFrame::kLeft);
-          _main_->AddFrame(radio_group,
-                           new TGLayoutHints(kLHintsBottom | kLHintsLeft, 3, 3, 3, 3));
-
-          _selection_widgets_.tg_or_button  = new TGRadioButton(radio_group, "or ", OR_SELECTION);
-          _selection_widgets_.tg_and_button = new TGRadioButton(radio_group, "and ", AND_SELECTION);
-          _selection_widgets_.tg_xor_button = new TGRadioButton(radio_group, "xor ", XOR_SELECTION);
-          _selection_widgets_.tg_or_button->Connect("Clicked()",
-                                                    "snemo::visualization::view::event_selection",
-                                                    this, "process()");
-          _selection_widgets_.tg_and_button->Connect("Clicked()",
-                                                     "snemo::visualization::view::event_selection",
-                                                     this, "process()");
-          _selection_widgets_.tg_xor_button->Connect("Clicked()",
-                                                     "snemo::visualization::view::event_selection",
-                                                     this, "process()");
-        }
-
-        // Initialize values
-        _selection_widgets_.initialize();
-
+        _selection_widgets_ = new selection_widget(this);
+        _selection_widgets_->build(_main_);
         _eh_widgets_ = new event_header_selection_widget(this);
         _eh_widgets_->build(_main_);
         _sd_widgets_ = new simulated_data_selection_widget(this);
@@ -664,15 +638,14 @@ namespace snemo {
         int cut_status = cuts::SELECTION_REJECTED;
         try {
           cuts::i_cut * ptr_cut = 0;
-          if (_selection_widgets_.tg_and_button->IsDown()) {
-            ptr_cut = &_cut_manager_->grab(event_selection::multi_and_cut_label());
-          } else if (_selection_widgets_.tg_or_button->IsDown()) {
-            ptr_cut = &_cut_manager_->grab(event_selection::multi_or_cut_label());
-          } else if (_selection_widgets_.tg_xor_button->IsDown()) {
-            ptr_cut = &_cut_manager_->grab(event_selection::multi_xor_cut_label());
-          } else {
-            DT_THROW_IF(true, std::logic_error, "None of the cut (AND, XOR, OR) have been registered !");
-          }
+          // if (_selection_widgets_.tg_and_button->IsDown()) {
+          //   ptr_cut = &_cut_manager_->grab(event_selection::multi_and_cut_label());
+          // } else if (_selection_widgets_.tg_or_button->IsDown()) {
+          //   ptr_cut = &_cut_manager_->grab(event_selection::multi_or_cut_label());
+          // } else if (_selection_widgets_.tg_xor_button->IsDown()) {
+          //   ptr_cut = &_cut_manager_->grab(event_selection::multi_xor_cut_label());
+          // }
+          DT_THROW_IF(ptr_cut == 0, std::logic_error, "None of the cut (AND, XOR, OR) have been registered !");
           cuts::i_cut & the_cut = *ptr_cut;
 
           const io::event_record & a_record = _server_->get_event();
