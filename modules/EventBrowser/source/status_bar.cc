@@ -179,7 +179,7 @@ namespace snemo {
           }
         }
 
-        if (disable_) _event_list_->SetEnabled(false);
+        _event_list_->SetEnabled(!disable_);
         _event_list_->Select(server.get_current_event_number());
         return;
       }
