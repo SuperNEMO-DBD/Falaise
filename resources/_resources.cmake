@@ -125,7 +125,8 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/variants/
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/geometry_service.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/README.rst
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/geom_models.lis
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/tracker_geom_models.lis
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/tracker_geom_models.lis
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/calorimeter_modules/calorimeter_module_5inch.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/calorimeter_modules/calorimeter_module_8inch.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/calorimeter_modules/images/fig_calorimeter_optical_module_0.fig
@@ -135,7 +136,7 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/ca
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/calorimeter_modules/calorimeter_module_common.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/calorimeter_modules/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/calorimeter_modules/calo_pmt_8inch.geom
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/half_module_commissioning.geom
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/half_module_commissioning_0.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/shielding/shielding.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/source_module/doc/ITEPfoils.xlsx
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/source_module/images/source_strips-ideal.fig
@@ -156,7 +157,7 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/so
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/source_module/source_layer.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/source_module/source_blocks.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/setup.geom
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/module_0.geom
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/basic_module_0.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/tracker_modules/tracker_volumes.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/tracker_modules/pmt_5inch.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/tracker_modules/xwall.geom
