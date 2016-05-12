@@ -183,8 +183,8 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_cont
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/processes/em.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/README.rst
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/step_hit_processors-no_visu_tracks.conf
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/step_hit_processors-only_visu_tracks.conf
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/hit_processing/step_hit_processors-no_visu_tracks.conf
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/hit_processing/step_hit_processors-only_visu_tracks.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/1.0/processes/particles.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/1.0/processes/em.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/1.0/manager.conf
