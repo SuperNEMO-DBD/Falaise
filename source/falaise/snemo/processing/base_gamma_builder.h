@@ -78,7 +78,7 @@ namespace snemo {
       /// Get logging priority
       datatools::logger::priority get_logging_priority() const;
 
-      /// Return the gama builder ID
+      /// Return the gamma builder ID
       const std::string & get_id() const;
 
       /// Return the main wall calorimeter locator
