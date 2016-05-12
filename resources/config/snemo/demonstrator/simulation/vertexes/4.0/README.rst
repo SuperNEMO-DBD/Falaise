@@ -24,7 +24,8 @@ Files
   * ``README.rst`` : This file.
   * ``manager.conf``  :  The main  configuration  file  of the  Bayeux
     ``genbb::manager`` object.
-  * ``generators/*_vg.lis`` : definitions of vertex generators.
+  * ``generators/`` : Directory for vertex generators definitions.
+  * ``variants/`` : Directory for variant definitions.
 
 Check the configuration
 =======================

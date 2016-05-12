@@ -1,5 +1,5 @@
 # -*- mode: conf-unix -*-
-# @falaise:config/snemo/demonstrator/simulation/vertexes/4.0/models/source_module/variants/models/commissioning_source.def
+# @falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/models/commissioning_source.def
 # Description of variants for the definition of the magnetic field (format: datatools::multi_properties)
 
 #@description The definitions for variant parameters related to the magnetic field
@@ -82,4 +82,4 @@ parameters.row.model          : string = "commissioning_source.row.PM"
 parameters.row.description    : string = "The commissioning source vertical position"
 
 
-# end of @falaise:config/snemo/demonstrator/simulation/vertexes/4.0/models/source_module/variants/models/commissioning_source.def
+# end of @falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/models/commissioning_source.def
