@@ -400,7 +400,7 @@ namespace snemo {
                 + setup_name + "/geometry/" + setup_version + "/manager.conf";
 
               DT_LOG_NOTICE(view::options_manager::get_instance().get_logging_priority(),
-                            "Use default SuperNEMO/demonstrator config i.e." << setup_name << " "
+                            "Use default SuperNEMO/demonstrator config i.e. " << setup_name << " "
                             << "version " << setup_version);
             }
           }
