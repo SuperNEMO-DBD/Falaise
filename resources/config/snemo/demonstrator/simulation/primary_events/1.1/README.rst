@@ -2,7 +2,7 @@
 Primary event generation for SuperNEMO simulation (demonstrator)
 ====================================================================
 
-:Authors: François Mauger
+:Authors: François Mauger, Yves Lemière, Guillaumr Oliviero
 :Date:    2016-05-11
 
 .. contents::
