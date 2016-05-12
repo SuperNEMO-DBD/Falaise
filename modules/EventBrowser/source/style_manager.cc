@@ -406,7 +406,7 @@ namespace snemo {
         if (options_manager::get_instance().get_logging_priority() >= datatools::logger::PRIO_DEBUG) {
           configuration.tree_dump(std::clog,
                                   "Style settings for the SuperNEMO event display program",
-                                  "DEBUG: ");
+                                  "[debug]: ");
         }
 
         // Browser settings:
