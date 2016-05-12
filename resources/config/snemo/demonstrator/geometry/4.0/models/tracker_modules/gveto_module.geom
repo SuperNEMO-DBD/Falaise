@@ -59,7 +59,7 @@ x                 : real as length   =   0.6 mm
 y                 : real as length   = 308.0 mm
 z                 : real as length   = 150.0 mm
 
-material.ref : string = "basic::ptfe"
+material.ref : string = "basic::PTFE"
 
 visibility.color  : string = "green"
 
@@ -103,7 +103,7 @@ visibility.color          : string = "grey"
 # y                 : real as length   = 308.0 mm
 # z                 : real as length   = 150.0 mm
 # length_unit       : string = "mm"
-# material.ref : string = "basic::ptfe"
+# material.ref : string = "basic::PTFE"
 # visibility.color  : string = "green"
 
 
@@ -115,7 +115,7 @@ x                 : real as length   = 290.0 mm
 y                 : real as length   =   0.6 mm
 z                 : real as length   = 150.0 mm
 
-material.ref : string = "basic::ptfe"
+material.ref : string = "basic::PTFE"
 
 visibility.color  : string = "green"
 
@@ -172,7 +172,7 @@ visibility.color          : string = "grey"
 # y                 : real as length   =   0.6 mm
 # z                 : real as length   = 150.0 mm
 # length_unit       : string = "mm"
-# material.ref : string = "basic::ptfe"
+# material.ref : string = "basic::PTFE"
 # visibility.color  : string = "green"
 
 

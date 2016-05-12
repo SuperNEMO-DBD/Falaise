@@ -111,7 +111,7 @@ x          : real as length   =   1.0 mm
 y          : real as length   = 256.0 mm
 z          : real as length   =  31.0 mm
 
-material.ref : string  = "basic::ptfe"
+material.ref : string  = "basic::PTFE"
 
 visibility.hidden : boolean = false
 visibility.color  : string  = "green"
@@ -173,7 +173,7 @@ x          : real as length   = 256.0 mm
 y          : real as length   =   1.0 mm
 z          : real as length   =  31.0 mm
 
-material.ref : string  = "basic::ptfe"
+material.ref : string  = "basic::PTFE"
 
 visibility.hidden : boolean = false
 visibility.color  : string  = "green"
@@ -265,7 +265,7 @@ x          : real as length   =   1.0 mm
 y          : real as length   = 236.0 mm
 z          : real as length   = 163.0 mm
 
-material.ref : string  = "basic::ptfe"
+material.ref : string  = "basic::PTFE"
 
 visibility.hidden : boolean = false
 visibility.color  : string  = "green"
@@ -327,7 +327,7 @@ x          : real as length   = 236.0 mm
 y          : real as length   =   1.0 mm
 z          : real as length   = 163.0 mm
 
-material.ref : string  = "basic::ptfe"
+material.ref : string  = "basic::PTFE"
 
 visibility.hidden : boolean = false
 visibility.color  : string  = "green"

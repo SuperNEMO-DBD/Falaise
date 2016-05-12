@@ -39,7 +39,8 @@ obsolete and must not be used anymore.
 
 It uses the common definition of materials 2.0 from Falaise.
 
-Files:
+Files
+========
 
  * ``README.rst`` : this file,
  * ``manager.conf``   :   the   main   configuration   file   of   the
@@ -75,7 +76,8 @@ Files:
    geometry variants.
 
 
-Check the geometry:
+Display the geometry
+=======================
 
   The  SuperNEMO  demonstrator virtual  geometry  relies  not only  on
   generic geometry  model classes implemented in  Bayeux/geomtools but
@@ -138,3 +140,26 @@ Check the geometry:
           --datatools::variant-set "demonstrator:layout=HalfCommissioning" \
           --datatools::variant-set "magnetic_field:active=0" \
           --manager-config "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf"
+
+
+Materials used in the geometry
+============================================
+
+a. Print the list of materials:
+
+   From Falaise ``resources`` directory (source or installation):
+
+.. raw:: sh
+
+   $ find ./config/snemo/demonstrator/geometry/4.0/models/ -name "*.geom" -exec grep "material.ref" \{\} \; | cut -d= -f2 | tr -d " \t\"" | sort | uniq
+   ...
+
+b. Search the file where a given material is used:
+
+   From Falaise ``resources`` directory (source or installation):
+
+.. raw:: sh
+
+
+   $ find ./config/snemo/demonstrator/geometry/4.0/models/ -name "*.geom" -exec grep -l "basic::PTFE" \{\} \;
+   ...

@@ -52,7 +52,7 @@ y      : real as length = 236.0 mm
 z      : real as length =   1.0 mm
 r_hole : real as length = 102.0 mm
 
-material.ref : string  = "basic::ptfe"
+material.ref : string  = "basic::PTFE"
 
 visibility.hidden : boolean = false
 visibility.color  : string  = "green"
