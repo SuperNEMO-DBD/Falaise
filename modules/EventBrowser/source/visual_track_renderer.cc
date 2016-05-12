@@ -127,7 +127,7 @@ namespace snemo {
               }
             }
 
-            if (!style_mgr.get_particle_visibility(particle_name)) continue;
+            if (! style_mgr.get_particle_visibility(particle_name)) continue;
 
             size_t line_color = style_mgr.get_particle_color(particle_name);
             size_t line_width = style_mgr.get_mc_line_width();
