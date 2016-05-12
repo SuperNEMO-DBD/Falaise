@@ -237,13 +237,19 @@ mutability          : string = "variable"
 boolean.default     : boolean = true
 
 #@description List of variants
-variants : string [1] = "is_active"
+variants : string [2] = "is_active" "is_inactive"
 
 #@description The variant model associated to the "is_active" variant
 variants.is_active.model       : string = "magnetic_field.description.VM"
 
 #@description The description of the "is_active" variant
 variants.is_active.description : string = "Set of parameters for activated magnetic field"
+
+#@description The variant model associated to the "is_inactive" variant
+variants.is_inactive.model       : string = "datatools::basic::is_off.VM"
+
+#@description The description of the "is_inactive" variant
+variants.is_inactive.description : string = "Inactive magnetic field"
 
 #@description Variant associated to the magnetic field activation
 boolean.true.variant : string = "is_active"
