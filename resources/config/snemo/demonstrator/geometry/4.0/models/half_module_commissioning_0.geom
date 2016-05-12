@@ -108,6 +108,8 @@ visibility.color   : string  = "blue"
 ########################################################################
 [name="half_module_commissioning.model" type="geomtools::stacked_model"]
 
+#@variant_section_only geometry:layout/if_half_commissioning|false
+
 #@config Simplified demonstrator module
 
 #@description Stacking axis

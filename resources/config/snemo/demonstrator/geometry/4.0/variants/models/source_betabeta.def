@@ -33,7 +33,7 @@ mutability         : string = "variable"
 variable.mode      : string = "interval"
 
 #@description The domain of supported values
-real.domain        : string = "[50 um, 500 um]"
+real.domain        : string = "[5 um, 500 um]"
 
 #@description The default value
 real.default       : real as length = 250 um

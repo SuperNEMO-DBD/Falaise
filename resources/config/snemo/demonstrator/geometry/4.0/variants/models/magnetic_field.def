@@ -198,8 +198,8 @@ string.enumerated_0.variant : string = "if_uniform_vertical"
 string.enumerated_1.variant : string = "if_mapped"
 
 
-##############################################
-[name="magnetic_field.desc.VM" type="variant"]
+#####################################################
+[name="magnetic_field.description.VM" type="variant"]
 
 #@config A variant model describing the active magnetic field
 
@@ -240,7 +240,7 @@ boolean.default     : boolean = true
 variants : string [1] = "is_active"
 
 #@description The variant model associated to the "is_active" variant
-variants.is_active.model       : string = "magnetic_field.desc.VM"
+variants.is_active.model       : string = "magnetic_field.description.VM"
 
 #@description The description of the "is_active" variant
 variants.is_active.description : string = "Set of parameters for activated magnetic field"

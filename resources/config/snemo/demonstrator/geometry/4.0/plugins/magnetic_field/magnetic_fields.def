@@ -17,11 +17,11 @@ magnetic_field.unit : string = "gauss"
 
 #@description Magnetic field magnitude (|Bz|)
 magnetic_field.magnitude : real = \
-  @variant(magnetic_field:active/if_active/type/is_uniform_vertical/magnitude|25.0 gauss)
+  @variant(geometry:layout/if_basic/magnetic_field/if_active/type/is_uniform_vertical/magnitude|25.0 gauss)
 
 #@description Magnetic field direction
 magnetic_field.axis : string = \
-  @variant(magnetic_field:active/if_active/type/is_uniform_vertical/direction|"+z")
+  @variant(geometry:layout/if_basic/magnetic_field/if_active/type/is_uniform_vertical/direction|"+z")
 
 
 ###############################################################

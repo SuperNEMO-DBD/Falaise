@@ -40,6 +40,8 @@
 ###########################################################
 [name="module_basic.model" type="geomtools::stacked_model"]
 
+#@variant_section_only geometry:layout/if_basic|true
+
 #@config Simplified demonstrator module
 
 # stacked.number_of_items : integer = 1

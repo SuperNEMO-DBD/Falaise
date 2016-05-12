@@ -180,10 +180,12 @@ material.ref       : string  = "tracking_gas"
 
 visibility.color   : string  = "grey"
 
-# Four Bi207 calibration source carriers are set in the track only if
-# the "source_calibration:active/is_active" variant is active.
+#@variant_if geometry:layout/if_basic/source_calibration/is_active|false
 
-#@variant_if source_calibration:active/is_active|false
+# Four Bi207 calibration source carriers are set in the track only if
+# the "geometry:layout/if_basic/source_calibration/is_active" variant
+# is active.
+
 #@description The list of internal items
 internal_item.labels : string[4] = "source_0" "source_1" "source_2" "source_3"
 

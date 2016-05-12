@@ -43,10 +43,10 @@ visibility.color            : string  = "cyan"
 
 # List of object inside the experimental_hall:
 #@description The list of daughter volumes
-#@variant_only shield:shield/if_no_shield|true
+#@variant_only geometry:shield/if_no_shield|true
 internal_item.labels : string[1] = "module_0"
 
-# #@variant_only shield:shield/if_shield|false
+# #@variant_only geometry:shield/if_shield|false
 # internal_item.labels : string[7] = \
 #   "module_0" \
 #   "bottom_shield" \
@@ -57,9 +57,9 @@ internal_item.labels : string[1] = "module_0"
 #   "right_shield"
 
 # Module #0 (demonstrator):
-#@variant_only demonstrator:layout/if_basic|true
+#@variant_only geometry:layout/if_basic|true
 internal_item.model.module_0          : string = "module_basic.model"
-#@variant_only demonstrator:layout/if_half_commissioning|false
+#@variant_only geometry:layout/if_half_commissioning|false
 internal_item.model.module_0          : string = "half_module_commissioning.model"
 internal_item.placement.module_0      : string = "0 0 0 (mm)"
 

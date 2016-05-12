@@ -137,7 +137,7 @@ Display the geometry
           --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-2.1.0/resources" \
           --load-dll Falaise \
           --datatools::variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/variance.conf" \
-          --datatools::variant-set "demonstrator:layout=HalfCommissioning" \
+          --datatools::variant-set "geometry:layout=HalfCommissioning" \
           --datatools::variant-set "magnetic_field:active=0" \
           --manager-config "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf"
 

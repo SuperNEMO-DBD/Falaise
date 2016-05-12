@@ -26,22 +26,26 @@ visibility.color   : string  = "cyan"
 stacked.axis            : string = "y"
 stacked.number_of_items : integer = 5
 
-#@variant_only source:layout/if_basic|true
+#@variant_if geometry:layout/if_basic/source_layout/if_basic|true
 stacked.model_0   : string = "source_external_strip.basic.model"
-stacked.label_0   : string = "strip_0"
+stacked.model_2   : string = "source_internal_strip.basic.model"
+stacked.model_4   : string = "source_internal_strip.basic.model"
+#@variant_endif
+
+# Future: advanced description of the source strips
+# #@variant_if geometry:layout/if_basic/source_layout/if_simple|true
+# stacked.model_0   : string = "source_external_strip.simple.model"
+# stacked.model_2   : string = "source_internal_strip.simple.model"
+# stacked.model_4   : string = "source_internal_strip.simple.model"
+# #@variant_endif
 
 stacked.model_1   : string = "source_strip_gap.model"
-stacked.label_1   : string = "strip_gap_0-1"
-
-#@variant_only source:layout/if_basic|true
-stacked.model_2   : string = "source_internal_strip.basic.model"
-stacked.label_2   : string = "strip_1"
-
 stacked.model_3   : string = "source_strip_gap.model"
-stacked.label_3   : string = "strip_gap_1-2"
 
-#@variant_only source:layout/if_basic|true
-stacked.model_4   : string = "source_internal_strip.basic.model"
+stacked.label_0   : string = "strip_0"
+stacked.label_1   : string = "strip_gap_0-1"
+stacked.label_2   : string = "strip_1"
+stacked.label_3   : string = "strip_gap_1-2"
 stacked.label_4   : string = "strip_2"
 
 material.ref : string = "tracking_gas"
@@ -60,43 +64,31 @@ mapping.daughter_id.strip_2 : string = "[source_strip_path:strip=2]"
 stacked.axis            : string = "y"
 stacked.number_of_items : integer = 11
 
-#@variant_only source:layout/if_basic|true
+#@variant_if geometry:layout/if_basic/source_layout/if_basic|true
 stacked.model_0  : string = "source_internal_strip.basic.model"
-stacked.label_0  : string = "strip_3"
+stacked.model_2  : string = "source_internal_strip.basic.model"
+stacked.model_4  : string = "source_internal_strip.basic.model"
+stacked.model_6  : string = "source_internal_strip.basic.model"
+stacked.model_8  : string = "source_internal_strip.basic.model"
+stacked.model_10 : string = "source_internal_strip.basic.model"
+#@variant_endif
 
 stacked.model_1  : string = "source_strip_gap.model"
-stacked.label_1  : string = "strip_gap_3-4"
-
-#@variant_only source:layout/if_basic|true
-stacked.model_2  : string = "source_internal_strip.basic.model"
-stacked.label_2  : string = "strip_4"
-
 stacked.model_3  : string = "source_strip_gap.model"
-stacked.label_3  : string = "strip_gap_4-5"
-
-#@variant_only source:layout/if_basic|true
-stacked.model_4  : string = "source_internal_strip.basic.model"
-stacked.label_4  : string = "strip_5"
-
 stacked.model_5  : string = "source_strip_gap.model"
-stacked.label_5  : string = "strip_gap_5-6"
-
-#@variant_only source:layout/if_basic|true
-stacked.model_6  : string = "source_internal_strip.basic.model"
-stacked.label_6  : string = "strip_6"
-
 stacked.model_7  : string = "source_strip_gap.model"
-stacked.label_7  : string = "strip_gap_6-7"
-
-#@variant_only source:layout/if_basic|true
-stacked.model_8  : string = "source_internal_strip.basic.model"
-stacked.label_8  : string = "strip_7"
-
 stacked.model_9  : string = "source_strip_gap.model"
-stacked.label_9  : string = "strip_gap_7-8"
 
-#@variant_only source:layout/if_basic|true
-stacked.model_10 : string = "source_internal_strip.basic.model"
+stacked.label_0  : string = "strip_3"
+stacked.label_1  : string = "strip_gap_3-4"
+stacked.label_2  : string = "strip_4"
+stacked.label_3  : string = "strip_gap_4-5"
+stacked.label_4  : string = "strip_5"
+stacked.label_5  : string = "strip_gap_5-6"
+stacked.label_6  : string = "strip_6"
+stacked.label_7  : string = "strip_gap_6-7"
+stacked.label_8  : string = "strip_7"
+stacked.label_9  : string = "strip_gap_7-8"
 stacked.label_10 : string = "strip_8"
 
 material.ref : string = "tracking_gas"
@@ -118,43 +110,31 @@ mapping.daughter_id.strip_8 : string = "[source_strip_path:strip=8]"
 stacked.axis            : string = "y"
 stacked.number_of_items : integer = 11
 
-#@variant_only source:layout/if_basic|true
+#@variant_if geometry:layout/if_basic/source_layout/if_basic|true
 stacked.model_0  : string = "source_internal_strip.basic.model"
-stacked.label_0  : string = "strip_9"
+stacked.model_2  : string = "source_internal_strip.basic.model"
+stacked.model_4  : string = "source_internal_strip.basic.model"
+stacked.model_6  : string = "source_internal_strip.basic.model"
+stacked.model_8  : string = "source_internal_strip.basic.model"
+stacked.model_10 : string = "source_internal_strip.basic.model"
+#@variant_endif
 
 stacked.model_1  : string = "source_strip_gap.model"
-stacked.label_1  : string = "strip_gap_9-10"
-
-#@variant_only source:layout/if_basic|true
-stacked.model_2  : string = "source_internal_strip.basic.model"
-stacked.label_2  : string = "strip_10"
-
 stacked.model_3  : string = "source_strip_gap.model"
-stacked.label_3  : string = "strip_gap_10-11"
-
-#@variant_only source:layout/if_basic|true
-stacked.model_4  : string = "source_internal_strip.basic.model"
-stacked.label_4  : string = "strip_11"
-
 stacked.model_5  : string = "source_strip_gap.model"
-stacked.label_5  : string = "strip_gap_11-12"
-
-#@variant_only source:layout/if_basic|true
-stacked.model_6  : string = "source_internal_strip.basic.model"
-stacked.label_6  : string = "strip_12"
-
 stacked.model_7  : string = "source_strip_gap.model"
-stacked.label_7  : string = "strip_gap_12-13"
-
-#@variant_only source:layout/if_basic|true
-stacked.model_8  : string = "source_internal_strip.basic.model"
-stacked.label_8  : string = "strip_13"
-
 stacked.model_9  : string = "source_strip_gap.model"
-stacked.label_9  : string = "strip_gap_13-14"
 
-#@variant_only source:layout/if_basic|true
-stacked.model_10 : string = "source_internal_strip.basic.model"
+stacked.label_0  : string = "strip_9"
+stacked.label_1  : string = "strip_gap_9-10"
+stacked.label_2  : string = "strip_10"
+stacked.label_3  : string = "strip_gap_10-11"
+stacked.label_4  : string = "strip_11"
+stacked.label_5  : string = "strip_gap_11-12"
+stacked.label_6  : string = "strip_12"
+stacked.label_7  : string = "strip_gap_12-13"
+stacked.label_8  : string = "strip_13"
+stacked.label_9  : string = "strip_gap_13-14"
 stacked.label_10 : string = "strip_14"
 
 material.ref : string = "tracking_gas"
@@ -176,43 +156,31 @@ mapping.daughter_id.strip_14 : string = "[source_strip_path:strip=14]"
 stacked.axis            : string = "y"
 stacked.number_of_items : integer = 11
 
-#@variant_only source:layout/if_basic|true
+#@variant_if geometry:layout/if_basic/source_layout/if_basic|true
 stacked.model_0  : string = "source_internal_strip.basic.model"
-stacked.label_0  : string = "strip_15"
+stacked.model_2  : string = "source_internal_strip.basic.model"
+stacked.model_4  : string = "source_internal_strip.basic.model"
+stacked.model_6  : string = "source_internal_strip.basic.model"
+stacked.model_8  : string = "source_internal_strip.basic.model"
+stacked.model_10 : string = "source_internal_strip.basic.model"
+#@variant_endif
 
 stacked.model_1  : string = "source_strip_gap.model"
-stacked.label_1  : string = "strip_gap_15-16"
-
-#@variant_only source:layout/if_basic|true
-stacked.model_2  : string = "source_internal_strip.basic.model"
-stacked.label_2  : string = "strip_16"
-
 stacked.model_3  : string = "source_strip_gap.model"
-stacked.label_3  : string = "strip_gap_16-17"
-
-#@variant_only source:layout/if_basic|true
-stacked.model_4  : string = "source_internal_strip.basic.model"
-stacked.label_4  : string = "strip_17"
-
 stacked.model_5  : string = "source_strip_gap.model"
-stacked.label_5  : string = "strip_gap_17-18"
-
-#@variant_only source:layout/if_basic|true
-stacked.model_6  : string = "source_internal_strip.basic.model"
-stacked.label_6  : string = "strip_18"
-
 stacked.model_7  : string = "source_strip_gap.model"
-stacked.label_7  : string = "strip_gap_18-19"
-
-#@variant_only source:layout/if_basic|true
-stacked.model_8  : string = "source_internal_strip.basic.model"
-stacked.label_8  : string = "strip_19"
-
 stacked.model_9  : string = "source_strip_gap.model"
-stacked.label_9  : string = "strip_gap_19-20"
 
-#@variant_only source:layout/if_basic|true
-stacked.model_10 : string = "source_internal_strip.basic.model"
+stacked.label_0  : string = "strip_15"
+stacked.label_1  : string = "strip_gap_15-16"
+stacked.label_2  : string = "strip_16"
+stacked.label_3  : string = "strip_gap_16-17"
+stacked.label_4  : string = "strip_17"
+stacked.label_5  : string = "strip_gap_17-18"
+stacked.label_6  : string = "strip_18"
+stacked.label_7  : string = "strip_gap_18-19"
+stacked.label_8  : string = "strip_19"
+stacked.label_9  : string = "strip_gap_19-20"
 stacked.label_10 : string = "strip_20"
 
 material.ref : string = "tracking_gas"
@@ -234,43 +202,31 @@ mapping.daughter_id.strip_20 : string = "[source_strip_path:strip=20]"
 stacked.axis            : string = "y"
 stacked.number_of_items : integer = 11
 
-#@variant_only source:layout/if_basic|true
+#@variant_if geometry:layout/if_basic/source_layout/if_basic|true
 stacked.model_0  : string = "source_internal_strip.basic.model"
-stacked.label_0  : string = "strip_21"
+stacked.model_2  : string = "source_internal_strip.basic.model"
+stacked.model_4  : string = "source_internal_strip.basic.model"
+stacked.model_6  : string = "source_internal_strip.basic.model"
+stacked.model_8  : string = "source_internal_strip.basic.model"
+stacked.model_10 : string = "source_internal_strip.basic.model"
+#@variant_endif
 
 stacked.model_1  : string = "source_strip_gap.model"
-stacked.label_1  : string = "strip_gap_21-22"
-
-#@variant_only source:layout/if_basic|true
-stacked.model_2  : string = "source_internal_strip.basic.model"
-stacked.label_2  : string = "strip_22"
-
-#@variant_only source:layout/if_basic|true
 stacked.model_3  : string = "source_strip_gap.model"
-stacked.label_3  : string = "strip_gap_22-23"
-
-stacked.model_4  : string = "source_internal_strip.basic.model"
-stacked.label_4  : string = "strip_23"
-
-#@variant_only source:layout/if_basic|true
 stacked.model_5  : string = "source_strip_gap.model"
-stacked.label_5  : string = "strip_gap_23-24"
-
-stacked.model_6  : string = "source_internal_strip.basic.model"
-stacked.label_6  : string = "strip_24"
-
-#@variant_only source:layout/if_basic|true
 stacked.model_7  : string = "source_strip_gap.model"
-stacked.label_7  : string = "strip_gap_24-25"
-
-stacked.model_8  : string = "source_internal_strip.basic.model"
-stacked.label_8  : string = "strip_25"
-
-#@variant_only source:layout/if_basic|true
 stacked.model_9  : string = "source_strip_gap.model"
-stacked.label_9  : string = "strip_gap_25-26"
 
-stacked.model_10 : string = "source_internal_strip.basic.model"
+stacked.label_0  : string = "strip_21"
+stacked.label_1  : string = "strip_gap_21-22"
+stacked.label_2  : string = "strip_22"
+stacked.label_3  : string = "strip_gap_22-23"
+stacked.label_4  : string = "strip_23"
+stacked.label_5  : string = "strip_gap_23-24"
+stacked.label_6  : string = "strip_24"
+stacked.label_7  : string = "strip_gap_24-25"
+stacked.label_8  : string = "strip_25"
+stacked.label_9  : string = "strip_gap_25-26"
 stacked.label_10 : string = "strip_26"
 
 material.ref : string = "tracking_gas"
@@ -292,43 +248,31 @@ mapping.daughter_id.strip_26 : string = "[source_strip_path:strip=26]"
 stacked.axis            : string = "y"
 stacked.number_of_items : integer = 11
 
-#@variant_only source:layout/if_basic|true
+#@variant_if geometry:layout/if_basic/source_layout/if_basic|true
 stacked.model_0  : string = "source_internal_strip.basic.model"
-stacked.label_0  : string = "strip_27"
+stacked.model_2  : string = "source_internal_strip.basic.model"
+stacked.model_4  : string = "source_internal_strip.basic.model"
+stacked.model_6  : string = "source_internal_strip.basic.model"
+stacked.model_8  : string = "source_internal_strip.basic.model"
+stacked.model_10 : string = "source_internal_strip.basic.model"
+#@variant_endif
 
 stacked.model_1  : string = "source_strip_gap.model"
-stacked.label_1  : string = "strip_gap_27-28"
-
-#@variant_only source:layout/if_basic|true
-stacked.model_2  : string = "source_internal_strip.basic.model"
-stacked.label_2  : string = "strip_28"
-
 stacked.model_3  : string = "source_strip_gap.model"
-stacked.label_3  : string = "strip_gap_28-29"
-
-#@variant_only source:layout/if_basic|true
-stacked.model_4  : string = "source_internal_strip.basic.model"
-stacked.label_4  : string = "strip_29"
-
 stacked.model_5  : string = "source_strip_gap.model"
-stacked.label_5  : string = "strip_gap_29-30"
-
-#@variant_only source:layout/if_basic|true
-stacked.model_6  : string = "source_internal_strip.basic.model"
-stacked.label_6  : string = "strip_30"
-
 stacked.model_7  : string = "source_strip_gap.model"
-stacked.label_7  : string = "strip_gap_30-31"
-
-#@variant_only source:layout/if_basic|true
-stacked.model_8  : string = "source_internal_strip.basic.model"
-stacked.label_8  : string = "strip_31"
-
 stacked.model_9  : string = "source_strip_gap.model"
-stacked.label_9  : string = "strip_gap_31-32"
 
-#@variant_only source:layout/if_basic|true
-stacked.model_10 : string = "source_internal_strip.basic.model"
+stacked.label_0  : string = "strip_27"
+stacked.label_1  : string = "strip_gap_27-28"
+stacked.label_2  : string = "strip_28"
+stacked.label_3  : string = "strip_gap_28-29"
+stacked.label_4  : string = "strip_29"
+stacked.label_5  : string = "strip_gap_29-30"
+stacked.label_6  : string = "strip_30"
+stacked.label_7  : string = "strip_gap_30-31"
+stacked.label_8  : string = "strip_31"
+stacked.label_9  : string = "strip_gap_31-32"
 stacked.label_10 : string = "strip_32"
 
 material.ref : string = "tracking_gas"
@@ -350,23 +294,20 @@ mapping.daughter_id.strip_32 : string = "[source_strip_path:strip=32]"
 stacked.axis            : string = "y"
 stacked.number_of_items : integer = 5
 
-#@variant_only source:layout/if_basic|true
-stacked.model_0  : string = "source_internal_strip.basic.model"
-stacked.label_0  : string = "strip_33"
+#@variant_if geometry:layout/if_basic/source_layout/if_basic|true
+stacked.model_0   : string = "source_internal_strip.basic.model"
+stacked.model_2   : string = "source_internal_strip.basic.model"
+stacked.model_4   : string = "source_external_strip.basic.model"
+#@variant_endif
 
-stacked.model_1  : string = "source_strip_gap.model"
-stacked.label_1  : string = "strip_gap_33-34"
+stacked.model_1   : string = "source_strip_gap.model"
+stacked.model_3   : string = "source_strip_gap.model"
 
-#@variant_only source:layout/if_basic|true
-stacked.model_2  : string = "source_internal_strip.basic.model"
-stacked.label_2  : string = "strip_34"
-
-stacked.model_3  : string = "source_strip_gap.model"
-stacked.label_3  : string = "strip_gap_34-35"
-
-#@variant_only source:layout/if_basic|true
-stacked.model_4  : string = "source_external_strip.basic.model"
-stacked.label_4  : string = "strip_35"
+stacked.label_0   : string = "strip_33"
+stacked.label_1   : string = "strip_gap_33-34"
+stacked.label_2   : string = "strip_34"
+stacked.label_3   : string = "strip_gap_34-35"
+stacked.label_4   : string = "strip_35"
 
 material.ref : string = "tracking_gas"
 
