@@ -54,10 +54,35 @@ namespace snemo {
 
     namespace view {
 
-      const std::string event_selection::MULTI_AND_CUT_LABEL = "_visu.and.cut";
-      const std::string event_selection::MULTI_OR_CUT_LABEL  = "_visu.or.cut";
-      const std::string event_selection::MULTI_XOR_CUT_LABEL = "_visu.xor.cut";
-      const std::string event_selection::EH_CUT_LABEL        = "_visu.eh.cut";
+      const std::string & event_selection::multi_and_cut_label()
+      {
+        static const std::string _label("_visu.and.cut");
+        return _label;
+      }
+
+      const std::string & event_selection::multi_or_cut_label()
+      {
+        static const std::string _label("_visu.or.cut");
+        return _label;
+      }
+
+      const std::string & event_selection::multi_xor_cut_label()
+      {
+        static const std::string _label("_visu.xor.cut");
+        return _label;
+      }
+
+      const std::string & event_selection::eh_cut_label()
+      {
+        static const std::string _label("_visu.eh.cut");
+        return _label;
+      }
+
+      const std::string & event_selection::sd_cut_label()
+      {
+        static const std::string _label("_visu.sd.cut");
+        return _label;
+      }
 
       void event_selection::selection_widgets::initialize()
       {
@@ -174,7 +199,7 @@ namespace snemo {
         return;
       }
 
-      void event_selection::process_selection()
+      void event_selection::process()
       {
         TGButton * button = static_cast<TGButton*>(gTQSender);
         const unsigned int id = button->WidgetId();
@@ -567,11 +592,11 @@ namespace snemo {
         try {
           cuts::i_cut * ptr_cut = 0;
           if (_selection_widgets_.tg_and_button->IsDown()) {
-            ptr_cut = &_cut_manager_->grab(event_selection::MULTI_AND_CUT_LABEL);
+            ptr_cut = &_cut_manager_->grab(event_selection::multi_and_cut_label());
           } else if (_selection_widgets_.tg_or_button->IsDown()) {
-            ptr_cut = &_cut_manager_->grab(event_selection::MULTI_OR_CUT_LABEL);
+            ptr_cut = &_cut_manager_->grab(event_selection::multi_or_cut_label());
           } else if (_selection_widgets_.tg_xor_button->IsDown()) {
-            ptr_cut = &_cut_manager_->grab(event_selection::MULTI_XOR_CUT_LABEL);
+            ptr_cut = &_cut_manager_->grab(event_selection::multi_xor_cut_label());
           } else {
             DT_THROW_IF(true, std::logic_error, "None of the cut (AND, XOR, OR) have been registered !");
           }
@@ -595,11 +620,11 @@ namespace snemo {
         cuts::cut_handle_dict_type & the_cuts = _cut_manager_->get_cuts();
         cuts::cut_handle_dict_type::iterator found;
         if (_selection_widgets_.tg_and_button->IsDown()) {
-          found = the_cuts.find(event_selection::MULTI_AND_CUT_LABEL);
+          found = the_cuts.find(event_selection::multi_and_cut_label());
         } else if (_selection_widgets_.tg_or_button->IsDown()) {
-          found = the_cuts.find(event_selection::MULTI_OR_CUT_LABEL);
+          found = the_cuts.find(event_selection::multi_or_cut_label());
         } else if (_selection_widgets_.tg_xor_button->IsDown()) {
-          found = the_cuts.find(event_selection::MULTI_XOR_CUT_LABEL);
+          found = the_cuts.find(event_selection::multi_xor_cut_label());
         } else {
           DT_THROW_IF(true, std::logic_error, "None of the cut (AND, XOR, OR) have been registered !");
         }
@@ -623,7 +648,7 @@ namespace snemo {
 
         // Event Header Cut
         if (this->_build_event_header_data_cuts_()) {
-          cut_lists.push_back(event_selection::EH_CUT_LABEL);
+          cut_lists.push_back(event_selection::eh_cut_label());
         }
 
         if (cut_lists.empty()) {
@@ -645,10 +670,10 @@ namespace snemo {
         if (! _eh_widgets_.tg_enable->IsDown()) return false;
 
         cuts::cut_handle_dict_type & the_cuts = _cut_manager_->get_cuts();
-        cuts::cut_handle_dict_type::iterator found = the_cuts.find(event_selection::EH_CUT_LABEL);
+        cuts::cut_handle_dict_type::iterator found = the_cuts.find(event_selection::eh_cut_label());
         if (found == the_cuts.end()) {
           DT_LOG_ERROR(options_manager::get_instance().get_logging_priority(),
-                       "Cut '" << EH_CUT_LABEL << "' has not been registered !");
+                       "Cut '" << event_selection::eh_cut_label() << "' has not been registered !");
           return false;
         }
 
@@ -743,25 +768,42 @@ namespace snemo {
         const std::string priority_str
           = datatools::logger::get_priority_label(options_manager::get_instance().get_logging_priority());
 
-        datatools::properties cuts_prop;
-        cuts_prop.store_string("logging.priority", priority_str);
+        // Cut logic
+        {
+          datatools::properties cuts_prop;
+          cuts_prop.store_string("logging.priority", priority_str);
 
-        // Install a 'multi_and_cut' and a 'multi_or_cut'
-        _cut_manager_->load_cut(event_selection::MULTI_AND_CUT_LABEL,
-                                "cuts::multi_and_cut",
-                                cuts_prop);
-        _cut_manager_->load_cut(event_selection::MULTI_OR_CUT_LABEL,
-                                "cuts::multi_or_cut",
-                                cuts_prop);
-        _cut_manager_->load_cut(event_selection::MULTI_XOR_CUT_LABEL,
-                                "cuts::multi_xor_cut",
-                                cuts_prop);
+          // Install a 'multi_and_cut' and a 'multi_or_cut'
+          _cut_manager_->load_cut(event_selection::multi_and_cut_label(),
+                                  "cuts::multi_and_cut",
+                                  cuts_prop);
+          _cut_manager_->load_cut(event_selection::multi_or_cut_label(),
+                                  "cuts::multi_or_cut",
+                                  cuts_prop);
+          _cut_manager_->load_cut(event_selection::multi_xor_cut_label(),
+                                  "cuts::multi_xor_cut",
+                                  cuts_prop);
+        }
 
         // Event header cut
-        cuts_prop.store_string("EH_label", io::EH_LABEL);
-        _cut_manager_->load_cut(event_selection::EH_CUT_LABEL,
-                                "snemo::cut::event_header_cut",
-                                cuts_prop);
+        {
+          datatools::properties cuts_prop;
+          cuts_prop.store_string("logging.priority", priority_str);
+          cuts_prop.store_string("EH_label", io::EH_LABEL);
+          _cut_manager_->load_cut(event_selection::eh_cut_label(),
+                                  "snemo::cut::event_header_cut",
+                                  cuts_prop);
+        }
+
+        // Simulated data cut
+        {
+          datatools::properties cuts_prop;
+          cuts_prop.store_string("logging.priority", priority_str);
+          cuts_prop.store_string("SD_label", io::SD_LABEL);
+          _cut_manager_->load_cut(event_selection::sd_cut_label(),
+                                  "snemo::cut::simulated_data_cut",
+                                  cuts_prop);
+        }
 
         return;
       }
