@@ -127,16 +127,14 @@ namespace snemo {
         //   _draw_manager_ = new bipo_draw_manager(_server_);
         //   break;
 
-        case detector::detector_manager::TEST_BENCH:
-        case detector::detector_manager::HPGE:
         case detector::detector_manager::UNDEFINED:
-          _draw_manager_ = new default_draw_manager(_server_);
-          break;
-
         default:
           DT_LOG_WARNING(options_manager::get_instance().get_logging_priority(),
                          "Detector setup '" << detector_mgr.get_setup_label_name()
                          << "' not yet supported by any drawing manager ! Use default one");
+          _draw_manager_ = new default_draw_manager(_server_);
+          break;
+
         }
 
         TGSplitFrame * main_frame = new TGSplitFrame(main_,
