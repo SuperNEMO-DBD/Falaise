@@ -366,7 +366,9 @@ namespace snemo {
         dx = boost::lexical_cast<double>(htokens[6]) * length_unit;
         dy = boost::lexical_cast<double>(htokens[7]) * length_unit;
         dz = boost::lexical_cast<double>(htokens[8]) * length_unit;
-        dump(std::cerr);
+        if (logging >= datatools::logger::PRIO_DEBUG) {
+          dump(std::clog);
+        }
       }
 
       DT_LOG_TRACE(logging, "Loading B  map...");
