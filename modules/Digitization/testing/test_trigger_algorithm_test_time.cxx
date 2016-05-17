@@ -370,9 +370,10 @@ int main( int  argc_ , char **argv_  )
 
 		
 	    if (debug) std::clog << "********* Size of Finale structures for one event *********" << std::endl;
-	    if (debug) std::clog << "Calo collection size    : " << calo_collection_records.size() << std::endl;
-	    if (debug) std::clog << "Tracker collection size : " << tracker_collection_records.size() << std::endl;
-	    if (debug) std::clog << "Coincidence collection size : " << coincidence_collection_records.size() << std::endl;
+	    if (debug) std::clog << "Calo collection size @ 25 ns : " << calo_collection_records.size() << std::endl;
+	    if (debug) std::clog << "Calo collection size @ 1600 ns : " << coincidence_collection_calo_records.size() << std::endl;
+	    if (debug) std::clog << "Tracker collection size @ 1600 ns : " << tracker_collection_records.size() << std::endl;
+	    if (debug) std::clog << "Coincidence collection size @ 1600 ns : "  << coincidence_collection_records.size() << std::endl;
 	    
 	    bool raw_trigger_prompt_decision = my_trigger_algo.get_finale_decision();
 	    bool raw_trigger_delayed_decision = my_trigger_algo.get_delayed_finale_decision();

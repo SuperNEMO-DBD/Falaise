@@ -24,7 +24,7 @@ namespace snemo {
     public : 
 
 			/// Shift to take account the "drift" PM time + wires travel time
-      static constexpr double DELAYED_PM_TIME = 130.6; // It has to be recalculated, approximative time for the moment
+      static const double DELAYED_PM_TIME = 130.6; // It has to be recalculated, approximative time for the moment
 
       /// Default constructor
       calo_signal();

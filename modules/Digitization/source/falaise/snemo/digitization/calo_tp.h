@@ -61,10 +61,10 @@ namespace snemo {
 			static const unsigned int HTM_SIZE  = 2;			
 
 			/// Value of the low threshold to set bits
-			static constexpr double LOW_THRESHOLD = 10.0; // (mV units problem maybe)
+			static const double LOW_THRESHOLD = 10.0; // (mV units problem maybe)
 
 			/// Value of the low threshold to set bits
-			static constexpr double HIGH_THRESHOLD = 20.0; // (mV units problem maybe)
+			static const double HIGH_THRESHOLD = 20.0; // (mV units problem maybe)
 
       /// Default constructor
       calo_tp();

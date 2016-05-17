@@ -573,6 +573,17 @@ namespace snemo {
       return;
     }
 	
+
+    void _creating_pair_for_a_clocktick(const coincidence_trigger_algorithm_test_time::coincidence_calo_record & a_coinc_calo_record_,
+					const tracker_trigger_algorithm_test_time::tracker_record & a_tracker_record_)
+    {
+      
+      
+
+      
+      
+    }
+
     void trigger_algorithm_test_time::process(const calo_ctw_data & calo_ctw_data_,
     					      const geiger_ctw_data & geiger_ctw_data_)
     {
@@ -585,46 +596,15 @@ namespace snemo {
     void trigger_algorithm_test_time::_process(const calo_ctw_data & calo_ctw_data_,
     					       const geiger_ctw_data & geiger_ctw_data_)
     {
-      uint32_t calorimeter_clocktick_min = calo_ctw_data_.get_clocktick_min();
-      uint32_t calorimeter_clocktick_max = calo_ctw_data_.get_clocktick_max();
-
-      uint32_t calorimeter_clocktick_min_1600ns = -1;
-      uint32_t calorimeter_clocktick_max_1600ns = -1;
-      _clock_manager_->compute_clocktick_25ns_to_1600ns(calorimeter_clocktick_min,
-							calorimeter_clocktick_min_1600ns);
-      _clock_manager_->compute_clocktick_25ns_to_1600ns(calorimeter_clocktick_max,
-							calorimeter_clocktick_max_1600ns);  
-      uint32_t tracker_clocktick_min_800ns = geiger_ctw_data_.get_clocktick_min();
-      uint32_t tracker_clocktick_max_800ns = geiger_ctw_data_.get_clocktick_max();
-      uint32_t tracker_clocktick_min_1600ns = -1;
-      uint32_t tracker_clocktick_max_1600ns = -1;
-      
-      _clock_manager_->compute_clocktick_800ns_to_1600ns(tracker_clocktick_min_800ns,
-							 tracker_clocktick_min_1600ns);
-      _clock_manager_->compute_clocktick_800ns_to_1600ns(tracker_clocktick_max_800ns,
-							 tracker_clocktick_max_1600ns);
-
-      uint32_t clocktick_min = calorimeter_clocktick_min_1600ns;
-      if (tracker_clocktick_min_1600ns < clocktick_min) clocktick_min = tracker_clocktick_min_1600ns;    
-      uint32_t clocktick_max = tracker_clocktick_max_1600ns;
-      if (calorimeter_clocktick_max_1600ns > clocktick_max) clocktick_max = calorimeter_clocktick_max_1600ns;
-
-      std::clog << "Calo CT min 1600 = " << calorimeter_clocktick_min_1600ns << std::endl;
-      std::clog << "Calo CT max 1600 = " << calorimeter_clocktick_max_1600ns << std::endl;
-      std::clog << "Tracker CT min 800 = " << tracker_clocktick_min_800ns << std::endl;
-      std::clog << "Tracker CT max 800 = " << tracker_clocktick_max_800ns << std::endl;
-      std::clog << "Tracker CT min 1600 = " << tracker_clocktick_min_1600ns << std::endl;
-      std::clog << "Tracker CT max 1600 = " << tracker_clocktick_max_1600ns << std::endl;
-      std::clog << "CT min 1600 = " << clocktick_min << std::endl;
-      std::clog << "CT max 1600 = " << clocktick_max << std::endl;
       
       snemo::digitization::geiger_ctw_data geiger_ctw_data_1600ns = geiger_ctw_data_;
+      
       for (int i = 0; i < geiger_ctw_data_1600ns.get_geiger_ctws().size(); i++)
 	{
 	  const geiger_ctw & a_gg_ctw = geiger_ctw_data_1600ns.get_geiger_ctws()[i].get();
 	  if (a_gg_ctw.get_clocktick_800ns() % 2 == 1)
 	    {
-	      geiger_ctw_data_1600ns.grab_geiger_ctws().erase(geiger_ctw_data_1600ns.get_geiger_ctws().begin() + i);
+	      geiger_ctw_data_1600ns.grab_geiger_ctws().erase(geiger_ctw_data_1600ns.grab_geiger_ctws().begin() + i);
 	    }
 	}
 
@@ -633,7 +613,7 @@ namespace snemo {
 	  const geiger_ctw & a_gg_ctw = geiger_ctw_data_1600ns.get_geiger_ctws()[i].get();
 	  if (a_gg_ctw.get_clocktick_800ns() % 2 == 1)
 	    {
-	      geiger_ctw_data_1600ns.grab_geiger_ctws().erase(geiger_ctw_data_1600ns.get_geiger_ctws().begin() + i);
+	      geiger_ctw_data_1600ns.grab_geiger_ctws().erase(geiger_ctw_data_1600ns.grab_geiger_ctws().begin() + i);
 	    }
 	}
 
@@ -645,6 +625,7 @@ namespace snemo {
 	  _clock_manager_->compute_clocktick_800ns_to_1600ns(a_gg_ctw.get_clocktick_800ns(),
 							     gg_ctw_clocktick_1600ns);
 	  a_gg_ctw.set_clocktick_800ns(gg_ctw_clocktick_1600ns);
+	  // a_gg_ctw.tree_dump(std::clog, "INFO : ", "My gg ctw "); 
 	}
      
       // Process the calorimeter algorithm at 25 ns to create calo record at 25 ns
@@ -654,7 +635,7 @@ namespace snemo {
       // // Fake calo record for test : 
       // calo_trigger_algorithm_test_time::calo_summary_record a_fake_calo_record_25ns;
       // std::bitset<10> fake_bitset (std::string("0010000000"));
-      // a_fake_calo_record_25ns.clocktick_25ns = 67;
+      // a_fake_calo_record_25ns.clocktick_25ns = 220;
       // a_fake_calo_record_25ns.zoning_word[0] = fake_bitset;
       // a_fake_calo_record_25ns.total_multiplicity_side_0 = 1;
       // a_fake_calo_record_25ns.single_side_coinc = true;
@@ -711,16 +692,46 @@ namespace snemo {
       else if (_activate_any_coincidences_ && !_activate_calorimeter_only_)
 	{
 	  _rescale_calo_records_at_1600ns(_calo_records_25ns_,
-					  _coincidence_calo_records_1600ns_);
+	  				  _coincidence_calo_records_1600ns_);
 	  
+	  // Calculate the ct 1600 minimum and ct 1600 maximum : 
+	  uint32_t calorimeter_ct_min_1600 = _coincidence_calo_records_1600ns_.front().clocktick_1600ns;
+	  uint32_t calorimeter_ct_max_1600 = _coincidence_calo_records_1600ns_.back().clocktick_1600ns;
+	  uint32_t tracker_ct_min_1600 = geiger_ctw_data_1600ns.get_clocktick_min();
+	  uint32_t tracker_ct_max_1600 = geiger_ctw_data_1600ns.get_clocktick_max();
 	  
-	  // std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick;
-      	  // geiger_ctw_data_.get_list_of_geiger_ctw_per_clocktick(iclocktick_800, geiger_ctw_list_per_clocktick);
+	  uint32_t clocktick_min = calorimeter_ct_min_1600;
+	  if (tracker_ct_min_1600 < clocktick_min) clocktick_min = tracker_ct_min_1600;    
+	  uint32_t clocktick_max = tracker_ct_max_1600;
+	  if (calorimeter_ct_max_1600 > clocktick_max) clocktick_max = calorimeter_ct_max_1600;
 
+	  std::clog << "Calo CT min 1600 = " << calorimeter_ct_min_1600 << std::endl;
+	  std::clog << "Calo CT max 1600 = " << calorimeter_ct_max_1600 << std::endl;
+	  std::clog << "Tracker CT min 1600 = " << tracker_ct_min_1600 << std::endl;
+	  std::clog << "Tracker CT max 1600 = " << tracker_ct_max_1600 << std::endl;
+	  std::clog << "CT min 1600 = " << clocktick_min << std::endl;
+	  std::clog << "CT max 1600 = " << clocktick_max << std::endl;
+	  
+	  for (int ict1600 = clocktick_min; ict1600 <= clocktick_max; ict1600++)
+	    {
+	      geiger_ctw_data::geiger_ctw_collection_type geiger_ctw_list_per_clocktick_1600;
+	      geiger_ctw_data_1600ns.get_list_of_geiger_ctw_per_clocktick(ict1600, geiger_ctw_list_per_clocktick_1600);
+	      
+	      tracker_trigger_algorithm_test_time::tracker_record a_tracker_record;
+	      a_tracker_record.clocktick_1600ns = ict1600;
+	      _tracker_algo_.process(geiger_ctw_list_per_clocktick_1600,
+				     a_tracker_record);
+	      if (!a_tracker_record.is_empty()) _tracker_records_.push_back(a_tracker_record);
+	      // a_tracker_record.display();
 
-
-
-
+	      tracker_trigger_algorithm_test_time::geiger_matrix a_geiger_matrix = _tracker_algo_.get_geiger_matrix_for_a_clocktick();
+	      a_geiger_matrix.clocktick_1600ns = ict1600;
+	      // a_geiger_matrix.display();
+	      if (!a_geiger_matrix.is_empty()) _geiger_matrix_records_.push_back(a_geiger_matrix);
+	      
+	      
+	      
+	    }
 
 
 
@@ -735,7 +746,18 @@ namespace snemo {
 	{
 	  _coincidence_calo_records_1600ns_[i].display();
 	}
-
+      
+      
+      std::clog << "********* Size of Finale structures for one event *********" << std::endl;
+      std::clog << "Calo collection size @ 25 ns            : " << _calo_records_25ns_.size() << std::endl;
+      std::clog << "Calo collection size @ 1600 ns          : " << _coincidence_calo_records_1600ns_.size() << std::endl;
+      std::clog << "Tracker collection size @ 1600 ns       : " << _tracker_records_.size() << std::endl;
+      std::clog << "Geiger matrix collection size @ 1600 ns : " << _geiger_matrix_records_.size() << std::endl;
+      std::clog << "Coincidence collection size @ 1600 ns   : " << _coincidence_records_.size() << std::endl;
+      //std::clog << "Previous event collection size          : " << _previous_event_records_->size() << std::endl;
+      std::clog << "L1 calo collection size @ 25 ns         : " << _L1_calo_decision_records_.size() << std::endl;
+      std::clog << "L1 tracker collection size @ 1600 ns    : " << _L1_tracker_decision_records_.size() << std::endl;
+      std::clog << "L2 decision collection size @ 1600 ns   : " << _L2_decision_records_.size() << std::endl;
       
       
       return;

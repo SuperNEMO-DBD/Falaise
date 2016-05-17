@@ -151,7 +151,7 @@ namespace snemo {
     {
       if (_mem2_.get() == 0) _mem2_.reset(new mem2_type);
 
-      std::size_t wide_row_min          = 0;
+      // std::size_t wide_row_min          = 0; // Unused variable
       std::size_t wide_row_max          = 7;
       std::size_t wide_mult_min         = 6;
       std::size_t wide_mult_max         = 8;

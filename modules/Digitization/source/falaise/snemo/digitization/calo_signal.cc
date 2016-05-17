@@ -17,7 +17,7 @@ namespace snemo {
     // Serial tag for datatools::serialization::i_serializable interface :
     // DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(calo_signal, "snemo::digitalization::calo_signal")
 
-    constexpr double calo_signal::DELAYED_PM_TIME;
+    const double calo_signal::DELAYED_PM_TIME;
 
     calo_signal::calo_signal()
     {

@@ -48,6 +48,7 @@ namespace snemo {
 				
 				tracker_record();
 				void reset();
+				const bool is_empty() const;
 				void display();
 				uint32_t clocktick_1600ns;
 				std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
@@ -61,7 +62,9 @@ namespace snemo {
 			struct geiger_matrix
 			{
 				geiger_matrix();
-				bool is_empty();
+				void reset();
+				const bool is_empty() const;
+				const void display() const;
 				uint32_t clocktick_1600ns;				
 				bool matrix[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS];
 			};
@@ -108,15 +111,15 @@ namespace snemo {
 			/// Convert the electronic ID of active geiger cells into geometric ID
 			void build_hit_cells_gids_from_ctw(const geiger_ctw & my_geiger_ctw_,
 																				 std::vector<geomtools::geom_id> & hit_cells_gids_) const;
-
-			/// Return the tracker decision
-			const	bool get_tracker_decision() const;
-
+			
 			/// Fill the geiger cells matrix
 			void fill_matrix(const std::vector<geomtools::geom_id> & hit_cells_gids_);
 
 			/// ASCII display for the geiger cells matrix
 			void display_matrix() const;
+			
+			/// Get the Geiger matrix for a CT 1600 ns
+			const tracker_trigger_algorithm_test_time::geiger_matrix get_geiger_matrix_for_a_clocktick() const;
 			
 			/// Reset the geiger cells matrix
 			void reset_matrix();
@@ -151,23 +154,24 @@ namespace snemo {
 			void build_near_source_pattern(tracker_zone & zone_);
 
 			/// Build tracker record for each clocktick
-			void build_tracker_record();
+			void build_tracker_record(tracker_trigger_algorithm_test_time::tracker_record & a_tracker_record_);
 
 			/// Print all tracker with zones boundaries
 			void print_zones(std::ostream & out_) const;
 			
 			/// General process
-      void process(const geiger_ctw_data & geiger_ctw_data_,
-									 std::vector<tracker_trigger_algorithm_test_time::tracker_record> & tracker_records_);
-
+      void process(const std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick_,
+									 tracker_trigger_algorithm_test_time::tracker_record & a_tracker_record_);
+			
 		protected :
 
 			/// Process for a clocktick
-			void _process_for_a_clocktick(const std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick_);
+			void _process_for_a_clocktick(const std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick_,
+																		tracker_trigger_algorithm_test_time::tracker_record & a_tracker_record_);
 
 			/// Protected general process
-			void _process(const geiger_ctw_data & geiger_ctw_data_,
-										std::vector<tracker_trigger_algorithm_test_time::tracker_record> & tracker_records_);
+			void _process(const std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick_,
+										tracker_trigger_algorithm_test_time::tracker_record & a_tracker_record_);
 
 		private :
 			
@@ -182,14 +186,10 @@ namespace snemo {
 			tracker_trigger_mem_maker::mem5_type _zone_vertical_for_horizontal_memory_;
 
 			// Data :
-			bool _geiger_matrix_[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS];
-			std::vector<geiger_matrix> _geiger_matrix_records_; //!< Vector of Geiger matrix for each clocktick
-
+			geiger_matrix _a_geiger_matrix_for_a_clocktick_;
 			tracker_zone _zones_[trigger_info::NSIDES][trigger_info::NZONES];
 			tracker_sliding_zone _sliding_zones_[trigger_info::NSIDES][trigger_info::NSLZONES];
 
-			tracker_record _tracker_record_finale_decision_; //!< Tracker record structure for a clocktick
-			bool _tracker_finale_decision_; //!< Finale tracker decision boolean
 		};
 
   } // end of namespace digitization

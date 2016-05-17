@@ -43,6 +43,18 @@ namespace snemo {
       finale_decision = false;
       return;
     }
+    const bool tracker_trigger_algorithm_test_time::tracker_record::is_empty() const
+    {
+      for (int i = 0; i < trigger_info::NSIDES; i++)
+	{
+	  for (int j = 0; j < trigger_info::NZONES; j++)
+	    {
+	      if (finale_data_per_zone[i][j].any()) return false;
+	    }
+	  if (zoning_word_pattern[i].any() || zoning_word_near_source[i].any() || single_side_coinc || finale_decision) return false;
+	}
+      return true;
+    }
 
     void tracker_trigger_algorithm_test_time::tracker_record::display()
     {
@@ -97,8 +109,94 @@ namespace snemo {
 	} // end of iside
       clocktick_1600ns = -1;
     }
+    
+    const void tracker_trigger_algorithm_test_time::geiger_matrix::display() const
+    {
+      std::clog << " CLOCKTICK 1600 ns = " << clocktick_1600ns << std::endl;
+      std::clog << "  |-Zone-0-|---Zone-1--|---Zone-2--|---Zone-3--|---Zone-4--|--Zone-5--|---Zone-6--|---Zone-7--|--Zone-8---|--Zone-9-|" << std::endl;
 
-    bool tracker_trigger_algorithm_test_time::geiger_matrix::is_empty()
+      for (int i = 0; i < trigger_info::NSIDES; i++)
+	{
+	  if (i == 0)
+	    {
+	      for (int j = trigger_info::NLAYERS - 1; j >= 0; j--) // Value GEIGER_LAYER_SIZE = 9
+		{
+		  std::clog << j << ' ';
+		  for (int k = 0; k < trigger_info::NROWS; k++)
+		    {
+		      if( k == 0 )        std::clog<<"|";
+		  
+		      if (matrix[i][j][k] ) std::clog << "*";
+		  
+		      if(!matrix[i][j][k])  std::clog << ".";	  
+
+		      if( k == 112)     std::clog<<"|";
+
+		    } // end of row loop
+		  std::clog<<std::endl;	
+
+		  if (j == 0)
+		    {
+		      std::clog << "  |_________________________________________________________________________________________________________________|" << std::endl;
+		    }
+
+		} // end of layer loop
+
+	    } // end of if == 0
+
+	  if (i == 1)
+	    {  
+	      for (int j = 0; j < trigger_info::NLAYERS; j++)
+		{
+		  std::clog << j << ' ' ;
+		  for (int k = 0; k < trigger_info::NROWS; k++)
+		    {
+		      if( k == 0 )        std::clog<<"|";
+		  
+		      if (matrix[i][j][k] ) std::clog << "*";
+		  
+		      if(!matrix[i][j][k])  std::clog << ".";	  
+
+		      if( k == 112)     std::clog<<"|";
+
+		    } // end of row loop
+		  std::clog<<std::endl;	    
+  
+		} // end of layer loop
+
+	    } // end of if i==1
+
+	} // end of side loop
+
+      std::clog << "  |-0-1-2-3-4-5-6-7-8-9-1-2-3-4-5-6-7-8-9-0-1-2-3-4-5-6-7-89-1-2-3-4-5-6-7-8-9-0-1-2-3-4-5-6-7-8-9-1-2-3-4-5-6-7-8-9| Board IDs " << std::endl;
+
+      std::clog << "  |-Zone-0-|---Zone-1--|---Zone-2--|---Zone-3--|---Zone-4--|--Zone-5--|---Zone-6--|---Zone-7--|--Zone-8---|--Zone-9-|" << std::endl;
+      std::clog << "  |                                     |                                    |                                      |" << std::endl;
+      std::clog << "  |---------------Crate-0---------------|--------------Crate-1---------------|---------------Crate-2----------------|" << std::endl;
+      std::clog << "  |                                     |                                    |                                      |" << std::endl;
+      std::clog << std::endl;
+
+      return;
+    }
+    
+    void tracker_trigger_algorithm_test_time::geiger_matrix::reset()
+    {
+      clocktick_1600ns = -1;
+      for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+	{
+	  for (int jlayer = 0; jlayer < trigger_info::NLAYERS; jlayer++)
+	    {
+	      for (int krow = 0; krow < trigger_info::NROWS; krow++)
+		{
+		  matrix[iside][jlayer][krow] = false;
+		} // end of krow
+	    } // end of jlayer
+	} // end of iside  
+            
+      return;
+    }
+    
+    const bool tracker_trigger_algorithm_test_time::geiger_matrix::is_empty() const
     {
       bool empty = true;
       for (int iside = 0; iside < trigger_info::NSIDES; iside++)
@@ -107,7 +205,7 @@ namespace snemo {
 	    {
 	      for (int krow = 0; krow < trigger_info::NROWS; krow++)
 		{	
-		  if(matrix[iside][jlayer][krow] == true) empty = false;
+		  if (matrix[iside][jlayer][krow] == true) empty = false;
 		} // end of krow
 	    } // end of jlayer
 	} // end of iside
@@ -118,13 +216,6 @@ namespace snemo {
     {
       _initialized_ = false;
       _electronic_mapping_ = 0;
-      bool * vbool = static_cast<bool* > (&_geiger_matrix_[0][0][0]);
-      static const size_t nmax = trigger_info::NSIDES * trigger_info::NLAYERS * trigger_info::NROWS;
-      for (int i = 0; i < nmax ; i ++)
-      	{ 
-      	  vbool[i] = false;
-      	}
-      _tracker_finale_decision_ = false;
       return;
     }
 
@@ -236,8 +327,7 @@ namespace snemo {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Tracker trigger algorithm is not initialized, it can't be reset ! ");
       _initialized_ = false;
       _electronic_mapping_ = 0;
-      reset_matrix();
-      _tracker_finale_decision_ = false;
+      _a_geiger_matrix_for_a_clocktick_.reset();
       return;
     }
 
@@ -301,11 +391,6 @@ namespace snemo {
       return;
     }
 
-    const bool tracker_trigger_algorithm_test_time::get_tracker_decision() const
-    {
-      return _tracker_finale_decision_;
-    }
-
     void tracker_trigger_algorithm_test_time::fill_matrix(const std::vector<geomtools::geom_id> & hit_cells_gids_)
     {
       for (int i = 0; i < hit_cells_gids_.size(); i++)
@@ -313,94 +398,15 @@ namespace snemo {
 	  int side  = hit_cells_gids_[i].get(mapping::SIDE_INDEX);
 	  int layer = hit_cells_gids_[i].get(mapping::LAYER_INDEX);
 	  int row   = hit_cells_gids_[i].get(mapping::ROW_INDEX);
-	  _geiger_matrix_[side][layer][row] = 1;
+	  _a_geiger_matrix_for_a_clocktick_.matrix[side][layer][row] = 1;
 	}    
       return;
     }
 
-    void tracker_trigger_algorithm_test_time::display_matrix() const
+    const tracker_trigger_algorithm_test_time::geiger_matrix tracker_trigger_algorithm_test_time::get_geiger_matrix_for_a_clocktick() const
     {
-      std::clog << "  |-Zone-0-|---Zone-1--|---Zone-2--|---Zone-3--|---Zone-4--|--Zone-5--|---Zone-6--|---Zone-7--|--Zone-8---|--Zone-9-|" << std::endl;
-
-      for (int i = 0; i < trigger_info::NSIDES; i++)
-	{
-	  if (i == 0)
-	    {
-	      for (int j = trigger_info::NLAYERS - 1; j >= 0; j--) // Value GEIGER_LAYER_SIZE = 9
-		{
-		  std::clog << j << ' ';
-		  for (int k = 0; k < trigger_info::NROWS; k++)
-		    {
-		      if( k == 0 )        std::clog<<"|";
-		  
-		      if (_geiger_matrix_[i][j][k] ) std::clog << "*";
-		  
-		      if(!_geiger_matrix_[i][j][k])  std::clog << ".";	  
-
-		      if( k == 112)     std::clog<<"|";
-
-		    } // end of row loop
-		  std::clog<<std::endl;	
-
-		  if (j == 0)
-		    {
-		      std::clog << "  |_________________________________________________________________________________________________________________|" << std::endl;
-		    }
-
-		} // end of layer loop
-
-	    } // end of if == 0
-
-	  if (i == 1)
-	    {  
-	      for (int j = 0; j < trigger_info::NLAYERS; j++)
-		{
-		  std::clog << j << ' ' ;
-		  for (int k = 0; k < trigger_info::NROWS; k++)
-		    {
-		      if( k == 0 )        std::clog<<"|";
-		  
-		      if (_geiger_matrix_[i][j][k] ) std::clog << "*";
-		  
-		      if(!_geiger_matrix_[i][j][k])  std::clog << ".";	  
-
-		      if( k == 112)     std::clog<<"|";
-
-		    } // end of row loop
-		  std::clog<<std::endl;	    
-  
-		} // end of layer loop
-
-	    } // end of if i==1
-
-	} // end of side loop
-
-      std::clog << "  |-0-1-2-3-4-5-6-7-8-9-1-2-3-4-5-6-7-8-9-0-1-2-3-4-5-6-7-89-1-2-3-4-5-6-7-8-9-0-1-2-3-4-5-6-7-8-9-1-2-3-4-5-6-7-8-9| Board IDs " << std::endl;
-
-      std::clog << "  |-Zone-0-|---Zone-1--|---Zone-2--|---Zone-3--|---Zone-4--|--Zone-5--|---Zone-6--|---Zone-7--|--Zone-8---|--Zone-9-|" << std::endl;
-      std::clog << "  |                                     |                                    |                                      |" << std::endl;
-      std::clog << "  |---------------Crate-0---------------|--------------Crate-1---------------|---------------Crate-2----------------|" << std::endl;
-      std::clog << "  |                                     |                                    |                                      |" << std::endl;
-      std::clog << std::endl;
-
-      return;
+      return _a_geiger_matrix_for_a_clocktick_;
     }
-
-    void tracker_trigger_algorithm_test_time::reset_matrix()
-    {
-      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
-	{
-	  for (int jlayer = 0; jlayer < mapping::GEIGER_LAYERS_SIZE; jlayer++)
-	    {
-	      for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
-		{
-		  _geiger_matrix_[iside][jlayer][krow] = 0;
-		} // end of krow
-	    } // end of jlayer
-	} // end of iside
-      return;
-    }
-    
     
     void tracker_trigger_algorithm_test_time::reset_zones_informations()
     {
@@ -415,7 +421,6 @@ namespace snemo {
 	      _zones_[iside][izone].reset();
 	    }
 	}
-      _tracker_record_finale_decision_.reset();
       return;
     }
 
@@ -430,7 +435,7 @@ namespace snemo {
 	{
 	  for (int irow = start_row; irow <= stop_row; irow++) 
 	    {
-	      _sliding_zones_[side_][szone_id_].cells[ilayer][irow - start_row] = _geiger_matrix_[side_][ilayer][irow];
+	      _sliding_zones_[side_][szone_id_].cells[ilayer][irow - start_row] = _a_geiger_matrix_for_a_clocktick_.matrix[side_][ilayer][irow];
 	    }
 	}
       _sliding_zones_[side_][szone_id_].compute_lr_proj();
@@ -463,7 +468,7 @@ namespace snemo {
 	{
 	  for (int irow = start_row; irow <= stop_row; irow++) 
 	    {
-	      _zones_[side_][zone_id_].cells[ilayer][irow - start_row] = _geiger_matrix_[side_][ilayer][irow];
+	      _zones_[side_][zone_id_].cells[ilayer][irow - start_row] =  _a_geiger_matrix_for_a_clocktick_.matrix[side_][ilayer][irow];
 	    }
 	}
 
@@ -604,19 +609,19 @@ namespace snemo {
       return;
     }
     
-    void tracker_trigger_algorithm_test_time::build_tracker_record()
+    void tracker_trigger_algorithm_test_time::build_tracker_record(tracker_trigger_algorithm_test_time::tracker_record & a_tracker_record_)
     {
       for (int iside = 0; iside < trigger_info::NSIDES; iside++) 
 	{
 	  for (int izone = 0; izone < trigger_info::NZONES; izone++) 
 	    {
-	      _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_INNER]   = _zones_[iside][izone].data_in_out_pattern[0];
-	      _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_OUTER]   = _zones_[iside][izone].data_in_out_pattern[1];
-	      _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_RIGHT]   = _zones_[iside][izone].data_left_mid_right_pattern[0];
-	      _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_MIDDLE]  = _zones_[iside][izone].data_left_mid_right_pattern[1];
-	      _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_LEFT]    = _zones_[iside][izone].data_left_mid_right_pattern[2];
-	      _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_NSZ_RIGHT] = _zones_[iside][izone].data_near_source[0];
-	      _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_NSZ_LEFT]  = _zones_[iside][izone].data_near_source[1];
+	      a_tracker_record_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_INNER]   = _zones_[iside][izone].data_in_out_pattern[0];
+	      a_tracker_record_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_OUTER]   = _zones_[iside][izone].data_in_out_pattern[1];
+	      a_tracker_record_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_RIGHT]   = _zones_[iside][izone].data_left_mid_right_pattern[0];
+	      a_tracker_record_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_MIDDLE]  = _zones_[iside][izone].data_left_mid_right_pattern[1];
+	      a_tracker_record_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_LEFT]    = _zones_[iside][izone].data_left_mid_right_pattern[2];
+	      a_tracker_record_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_NSZ_RIGHT] = _zones_[iside][izone].data_near_source[0];
+	      a_tracker_record_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_NSZ_LEFT]  = _zones_[iside][izone].data_near_source[1];
 	    }
 	}
       
@@ -631,14 +636,14 @@ namespace snemo {
 	      std::bitset<3> hpattern_for_a_zone = 0x0;
 	      std::bitset<2> near_source_for_a_zone = 0x0;
 	      	  
-	      hpattern_for_a_zone[0]    = _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_RIGHT];     // RIGHT
-	      hpattern_for_a_zone[1]    = _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_MIDDLE];    // MIDDLE
-	      hpattern_for_a_zone[2]    = _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_LEFT];      // LEFT
-	      near_source_for_a_zone[0] = _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_NSZ_RIGHT]; // NSZRIGHT
-	      near_source_for_a_zone[1] = _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_NSZ_LEFT ]; // NSZLEFT
+	      hpattern_for_a_zone[0]    = a_tracker_record_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_RIGHT];     // RIGHT
+	      hpattern_for_a_zone[1]    = a_tracker_record_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_MIDDLE];    // MIDDLE
+	      hpattern_for_a_zone[2]    = a_tracker_record_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_LEFT];      // LEFT
+	      near_source_for_a_zone[0] = a_tracker_record_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_NSZ_RIGHT]; // NSZRIGHT
+	      near_source_for_a_zone[1] = a_tracker_record_.finale_data_per_zone[iside][izone][tracker_record::FINALE_DATA_BIT_NSZ_LEFT ]; // NSZLEFT
 	      
-	      if (hpattern_for_a_zone.any()) _tracker_record_finale_decision_.zoning_word_pattern[iside].set(izone);
-	      if (near_source_for_a_zone.any()) _tracker_record_finale_decision_.zoning_word_near_source[iside].set(izone);
+	      if (hpattern_for_a_zone.any()) a_tracker_record_.zoning_word_pattern[iside].set(izone);
+	      if (near_source_for_a_zone.any()) a_tracker_record_.zoning_word_near_source[iside].set(izone);
 	    }
 	}
       
@@ -649,12 +654,12 @@ namespace snemo {
 	    {
 	      for (int i = 0; i < finale_pattern_per_zone.size(); i++)
 		{
-		  finale_pattern_per_zone[i] = _tracker_record_finale_decision_.finale_data_per_zone[iside][izone][i];
+		  finale_pattern_per_zone[i] = a_tracker_record_.finale_data_per_zone[iside][izone][i];
 		}
 	      
 	      if (finale_pattern_per_zone.any())
 		{
-		  _tracker_record_finale_decision_.finale_decision = true;
+		  a_tracker_record_.finale_decision = true;
 		} 
 	    }
 	}
@@ -691,9 +696,10 @@ namespace snemo {
       return;
     }
     
-    void tracker_trigger_algorithm_test_time::_process_for_a_clocktick(const std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick_)
+    void tracker_trigger_algorithm_test_time::_process_for_a_clocktick(const std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick_,
+								       tracker_trigger_algorithm_test_time::tracker_record & a_tracker_record_)
     {
-      reset_matrix();
+      _a_geiger_matrix_for_a_clocktick_.reset();
       reset_zones_informations();
       for (int isize = 0; isize < geiger_ctw_list_per_clocktick_.size(); isize++)
        	{
@@ -701,58 +707,41 @@ namespace snemo {
        	  build_hit_cells_gids_from_ctw(geiger_ctw_list_per_clocktick_[isize].get(), hit_cells_gids);
        	  fill_matrix(hit_cells_gids);   
 	} // end of isize
-      geiger_matrix a_geiger_matrix;
-      for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
-      	{
-      	  for (int jlayer = 0; jlayer < mapping::GEIGER_LAYERS_SIZE; jlayer++)
-      	    {
-      	      for (int krow = 0; krow < mapping::GEIGER_ROWS_SIZE; krow++)
-      		{
-      		  a_geiger_matrix.matrix[iside][jlayer][krow] = _geiger_matrix_[iside][jlayer][krow];
-      		} // end of krow
-      	    } // end of jlayer
-      	} // end of iside
-      a_geiger_matrix.clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2;
-      _geiger_matrix_records_.push_back(a_geiger_matrix);
-      _tracker_record_finale_decision_.clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2;
+      _a_geiger_matrix_for_a_clocktick_.clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns();
       
       build_sliding_zones(_sliding_zone_vertical_memory_, _sliding_zone_horizontal_memory_);  
       build_zones();      
-      build_tracker_record();      
+      build_tracker_record(a_tracker_record_);      
 
-      //_tracker_record_finale_decision_.display();
-      //display_matrix();
+      _a_geiger_matrix_for_a_clocktick_.display();
+      //a_tracker_record_.display();
       //print_zones(std::clog);
       return;
     }
     
-    void tracker_trigger_algorithm_test_time::_process(const geiger_ctw_data & geiger_ctw_data_,
-						       std::vector<tracker_trigger_algorithm_test_time::tracker_record> & tracker_records_)
+    void tracker_trigger_algorithm_test_time::_process(const std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick_,
+						       tracker_trigger_algorithm_test_time::tracker_record & a_tracker_record_)
     { 
-      _geiger_matrix_records_.clear();
-      _tracker_finale_decision_ = false;
-      // Just even clockticks are processing (to take in account CB to TB serdes limitation)
-      int32_t iclocktick_800 = geiger_ctw_data_.get_clocktick_min();
-      if (iclocktick_800 % 2 == 1) iclocktick_800 += 1;
-      for (iclocktick_800; iclocktick_800 <= geiger_ctw_data_.get_clocktick_max(); iclocktick_800 +=2)
-       	{
-       	  std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick;
-      	  geiger_ctw_data_.get_list_of_geiger_ctw_per_clocktick(iclocktick_800, geiger_ctw_list_per_clocktick);
-       	  if (geiger_ctw_list_per_clocktick.size() != 0)
-      	    {
-      	      _process_for_a_clocktick(geiger_ctw_list_per_clocktick);
-      	      if (_tracker_record_finale_decision_.finale_decision) _tracker_finale_decision_ = true;
-	      tracker_records_.push_back(_tracker_record_finale_decision_);
-      	    } // end of if ctw list != 0
-       	} // end of iclocktick
+      _process_for_a_clocktick(geiger_ctw_list_per_clocktick_,
+			       a_tracker_record_);
       return;
     }
 
-    void tracker_trigger_algorithm_test_time::process(const geiger_ctw_data & geiger_ctw_data_,
-						      std::vector<tracker_trigger_algorithm_test_time::tracker_record> & tracker_records_)
+    void tracker_trigger_algorithm_test_time::process(const std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick_,
+						      tracker_trigger_algorithm_test_time::tracker_record & a_tracker_record_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Tracker trigger algorithm is not initialized, it can't process ! ");
-      _process(geiger_ctw_data_, tracker_records_);
+      if (geiger_ctw_list_per_clocktick_.size() != 0)
+	{
+	  _process(geiger_ctw_list_per_clocktick_,
+		   a_tracker_record_);
+	}
+      else 
+	{
+	  _a_geiger_matrix_for_a_clocktick_.reset();
+	  reset_zones_informations();
+	}
+      
       return;
     }
 

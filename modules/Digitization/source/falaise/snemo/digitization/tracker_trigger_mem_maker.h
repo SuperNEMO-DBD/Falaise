@@ -46,7 +46,7 @@ namespace snemo {
 					MEM2 = 2,			
 					MEM3 = 3,
 					MEM4 = 4,
-					MEM5 = 5,
+					MEM5 = 5
 				};
 
       /// Default constructor
