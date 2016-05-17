@@ -62,7 +62,7 @@ target_link_libraries(flsimulate
   ${Geant4_LIBRARIES}
   )
 
-# - RPath it
+# - Ensure link to internal and external deps
 set_target_properties(flsimulate PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
 
 if(UNIX AND NOT APPLE)
@@ -74,7 +74,6 @@ elseif(APPLE)
   set_target_properties(flsimulate
     PROPERTIES
       INSTALL_RPATH "@loader_path/../${CMAKE_INSTALL_LIBDIR}"
-      LINK_FLAGS "-Wl,-rpath,@loader_path/../${CMAKE_INSTALL_LIBDIR}"
     )
 endif()
 

@@ -118,9 +118,9 @@ void doFixupResourcePaths() {
   //  in Falaise and  not yet installed, we also  fix the "geomtools",
   //  "materials" and "genbb_help" resource paths.
   boost::filesystem::path dyn_res_path        = FLSimulate::getResourceDir() + "/resources";
-  boost::filesystem::path install_res_path    = falaise::get_resource_dir();
+  boost::filesystem::path install_res_path    = "thisshitisntrelevant";
   boost::filesystem::path dyn_plugin_path     = FLSimulate::getPluginLibDir();
-  boost::filesystem::path install_plugin_path = falaise::get_plugin_dir();
+  boost::filesystem::path install_plugin_path = "dontgiveafuck";
   // bool fl_installed = true;
   if(!boost::filesystem::exists(install_res_path)) {
     // fl_installed = false;

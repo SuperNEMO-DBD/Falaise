@@ -61,7 +61,7 @@ target_link_libraries(flreconstruct
   ${Boost_program_options_LIBRARY}
   )
 
-# - RPath it
+# - Ensure link to internal and external deps
 set_target_properties(flreconstruct PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
 
 if(UNIX AND NOT APPLE)
@@ -73,7 +73,6 @@ elseif(APPLE)
   set_target_properties(flreconstruct
     PROPERTIES
       INSTALL_RPATH "@loader_path/../${CMAKE_INSTALL_LIBDIR}"
-      LINK_FLAGS "-Wl,-rpath,@loader_path/../${CMAKE_INSTALL_LIBDIR}"
       )
 endif()
 

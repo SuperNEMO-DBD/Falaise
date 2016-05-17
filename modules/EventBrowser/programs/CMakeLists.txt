@@ -13,7 +13,6 @@ elseif(APPLE)
   set_target_properties(${_app_name}
     PROPERTIES
     INSTALL_RPATH "@loader_path/../${CMAKE_INSTALL_LIBDIR}"
-    LINK_FLAGS "-Wl,-rpath,@loader_path/../${CMAKE_INSTALL_LIBDIR}"
     )
 endif()
 
