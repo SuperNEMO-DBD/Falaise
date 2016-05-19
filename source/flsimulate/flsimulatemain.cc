@@ -55,6 +55,7 @@ namespace bpo = boost::program_options;
 #include "falaise/version.h"
 #include "falaise/falaise.h"
 #include "falaise/exitcodes.h"
+#include "falaise/resource.h"
 #include "FLSimulateResources.h"
 
 //----------------------------------------------------------------------
@@ -70,7 +71,7 @@ void do_version(std::ostream& os, bool isVerbose) {
   os << "flsimulate " << falaise::version::get_version() << "\n";
   if (isVerbose) {
     os << "\n"
-        << "Copyright (C) 2013-2014 SuperNEMO Collaboration\n\n"
+        << "Copyright (C) 2013-2016 SuperNEMO Collaboration\n\n"
         << "flsimulate uses the following external libraries:\n"
         << "* Falaise : " << falaise::version::get_version() << "\n"
         << "* Bayeux  : " << bayeux::version::get_version() << "\n"
@@ -222,7 +223,6 @@ class FLConfigUserError : public std::exception {};
 void do_configure(int argc, char *argv[], FLSimulateArgs& params) {
   // - Default Config
   try {
-    FLSimulate::initResources();
     params.logLevel = datatools::logger::PRIO_ERROR;
     params.experimentID = "demonstrator"; // "tracker_commissioning";
     params.setupGeometryVersion = "3.0";   // "1.0";
@@ -354,7 +354,7 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
 //----------------------------------------------------------------------
 int main(int argc, char *argv[]) {
   // - Needed, but nasty
-  FALAISE_INIT();
+  falaise::initialize();
 
   // - Do the simulation.
   // Ideally, exceptions SHOULD NOT propagate out of this  - the error
@@ -362,6 +362,6 @@ int main(int argc, char *argv[]) {
   falaise::exit_code ret = do_flsimulate(argc, argv);
 
   // - Needed, but nasty
-  FALAISE_FINI();
+  falaise::terminate();
   return ret;
 }

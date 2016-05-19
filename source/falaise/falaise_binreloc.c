@@ -22,14 +22,13 @@
 #if defined(__APPLE__) && defined(__MACH__)
 #include <sys/param.h>
 #include <mach-o/dyld.h>
+#include <dlfcn.h>
 #endif
-#include "FLReconstructBinReloc.h"
+#include "falaise_binreloc.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
-
-
 
 /** @internal
  * Find the canonical filename of the executable. Returns the filename
@@ -236,6 +235,15 @@ _br_find_exe_for_symbol (const void *symbol, BrInitError *error)
 		*error = BR_INIT_ERROR_DISABLED;
 	return (char *) NULL;
 #else
+#if defined(__APPLE__) && defined(__MACH__)
+  Dl_info inf;
+  int dladdr_return = dladdr(symbol, &inf);
+  if (dladdr_return == 0) {
+    *error = BR_INIT_ERROR_INVALID_MAPS;
+    return (char*) NULL;
+  }
+  return strdup(inf.dli_fname);
+#else
 	#define SIZE PATH_MAX + 100
 	FILE *f;
 	size_t address_string_len;
@@ -342,6 +350,7 @@ _br_find_exe_for_symbol (const void *symbol, BrInitError *error)
 		return (char *) NULL;
 	else
 		return strdup (found);
+#endif
 #endif /* ENABLE_BINRELOC */
 }
 

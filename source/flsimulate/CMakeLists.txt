@@ -28,32 +28,16 @@ find_package(Geant4 REQUIRED)
 
 #-----------------------------------------------------------------------
 # Build command line app
-#
-# - Generate application configuration file
-configure_file(FLSimulateConfig.h.in FLSimulateConfig.h @ONLY)
-
-# - Generate binreloc header/source with mangled names, ensuring first
-# character(s) are a valid for a C identifier
-string(RANDOM LENGTH 18 MANGLE_BINRELOC_MAIN)
-set(MANGLE_BINRELOC "MB${MANGLE_BINRELOC_MAIN}")
-configure_file(FLSimulateBinReloc.h.in FLSimulateBinReloc.h @ONLY)
-
-set(FLSIMULATE_SOURCES
+# - Compile/Link
+add_executable(flsimulate
   flsimulatemain.cc
-  FLSimulateConfig.h
   FLSimulateResources.h
   FLSimulateResources.cc
-  FLSimulateBinReloc.h
-  FLSimulateBinReloc.c
   )
-
-# - Compile/Link
-add_executable(flsimulate ${FLSIMULATE_SOURCES})
 target_include_directories(flsimulate PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   )
-target_compile_definitions(flsimulate PRIVATE ENABLE_BINRELOC)
 target_link_libraries(flsimulate
   Falaise
   ${Bayeux_MCTOOLS_GEANT4_LIBRARY}

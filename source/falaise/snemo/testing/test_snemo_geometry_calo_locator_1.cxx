@@ -721,7 +721,7 @@ void test6 (geomtools::manager & a_mgr, bool draw_)
 
 int main (int argc_, char ** argv_)
 {
-  FALAISE_INIT_MAIN(argc_, argv_);
+  falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;
   try {
     clog << "Test program for class 'snemo::geometry::calo_locator' !" << endl;
@@ -927,6 +927,6 @@ int main (int argc_, char ** argv_)
     error_code = EXIT_FAILURE;
   }
 
-  FALAISE_FINI();
+  falaise::terminate();
   return (error_code);
 }

@@ -54,7 +54,7 @@
 
 int main (int argc_, char ** argv_)
 {
-  FALAISE_INIT_MAIN(argc_, argv_);
+  falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;
   try {
     std::clog << "Test program for class 'snemo::geometry::mapped_magnetic_field' !" << std::endl;
@@ -234,6 +234,6 @@ int main (int argc_, char ** argv_)
     std::cerr << "ERROR: " << "unexpected error!" << std::endl;
     error_code = EXIT_FAILURE;
   }
-  FALAISE_FINI();
+  falaise::terminate();
   return (error_code);
 }

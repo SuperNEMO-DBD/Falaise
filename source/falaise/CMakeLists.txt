@@ -28,7 +28,6 @@ set(FalaiseLibrary_HEADERS
   exitcodes.h
   falaise.h
   resource.h
-  plugin.h
   version.h.in
 )
 
@@ -37,13 +36,19 @@ set(FalaiseLibrary_HEADERS
 #
 configure_file(falaise.cc.in  falaise.cc @ONLY)
 configure_file(resource.cc.in resource.cc @ONLY)
-configure_file(plugin.cc.in   plugin.cc @ONLY)
+
+# - Generate binreloc header/source with mangled names, ensuring first
+# character(s) are a valid for a C identifier
+string(RANDOM LENGTH 18 MANGLE_BINRELOC_MAIN)
+set(MANGLE_BINRELOC "MB${MANGLE_BINRELOC_MAIN}")
+configure_file(falaise_binreloc.h.in falaise_binreloc.h @ONLY)
 
 set(FalaiseLibrary_SOURCES
   version.cc
   ${CMAKE_CURRENT_BINARY_DIR}/falaise.cc
   ${CMAKE_CURRENT_BINARY_DIR}/resource.cc
-  ${CMAKE_CURRENT_BINARY_DIR}/plugin.cc
+  ${CMAKE_CURRENT_BINARY_DIR}/falaise_binreloc.h
+  falaise_binreloc.c
   )
 
 set(FalaiseLibrary_TESTS)
@@ -66,9 +71,11 @@ endforeach()
 #
 add_library(Falaise SHARED ${FalaiseLibrary_HEADERS} ${FalaiseLibrary_SOURCES})
 target_compile_features(Falaise PUBLIC ${FALAISE_CXX_COMPILE_FEATURES})
+target_compile_definitions(Falaise PRIVATE ENABLE_BINRELOC)
 target_include_directories(Falaise PUBLIC
   $<BUILD_INTERFACE:${FALAISE_BUILDPRODUCT_DIR}/include>
   $<BUILD_INTERFACE:${FALAISE_BUILDPRODUCT_DIR}/include/falaise>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDE_DIR}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDE_DIR}/falaise>
   )

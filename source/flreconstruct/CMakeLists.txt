@@ -26,30 +26,9 @@
 find_package(Boost 1.55 REQUIRED program_options)
 
 #-----------------------------------------------------------------------
-# Declare sources
-#
-# - Generate application configuration file
-configure_file(FLReconstructConfig.h.in FLReconstructConfig.h @ONLY)
-
-# - Generate binreloc header/source with mangled names, ensuring first
-# character(s) are a valid for a C identifier
-string(RANDOM LENGTH 18 MANGLE_BINRELOC_MAIN)
-set(MANGLE_BINRELOC "MB${MANGLE_BINRELOC_MAIN}")
-configure_file(FLReconstructBinReloc.h.in FLReconstructBinReloc.h @ONLY)
-
-set(flreconstruct_SOURCES
-  flreconstructmain.cc
-  FLReconstructConfig.h
-  FLReconstructResources.h
-  FLReconstructResources.cc
-  FLReconstructBinReloc.h
-  FLReconstructBinReloc.c
-  )
-
-#-----------------------------------------------------------------------
 # Compile/Link App
 #
-add_executable(flreconstruct ${flreconstruct_SOURCES})
+add_executable(flreconstruct flreconstructmain.cc)
 target_include_directories(flreconstruct PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}

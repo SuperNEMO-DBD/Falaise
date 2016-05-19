@@ -27,18 +27,6 @@ class UnknownResourceException : public std::runtime_error {
   UnknownResourceException(const std::string& msg) : std::runtime_error(msg) {}
 };
 
-//! Initialize the application resources, throws runtime_error on fail
-void initResources();
-
-//! Return the path to the application directory
-std::string getApplicationDir();
-
-//! Return the path to the root of the resource directory
-std::string getResourceDir();
-
-//! Return the path to the root of the plugin/module DLL directory
-std::string getPluginLibDir();
-
 //! Return the control file for the given experiment and version id
 std::string getControlFile(const std::string& experiment,
                            const std::string& /*versionID*/ = "");

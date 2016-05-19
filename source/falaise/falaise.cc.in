@@ -55,67 +55,63 @@
 #include "falaise/falaise.h"
 #include "falaise/version.h"
 #include "falaise/resource.h"
-#include "falaise/plugin.h"
 
 
 namespace {
 
-  void falaise_initialize_impl()
+void falaise_initialize_impl()
+{
+  falaise::init_resources();
+
+  DT_THROW_IF(!datatools::kernel::is_instantiated(),
+              std::runtime_error,
+              "The Bayeux/datatools kernel is not instantiated !");
+  datatools::kernel & krnl = datatools::kernel::instance();
+
+  // Populate the library info register, basically dumb if we don't
+  // have it soe assume it exists and hpe for an exception if
+  // it doesn't
+  datatools::library_info & lib_info_reg = krnl.grab_library_info_register();
+  krnl.tree_dump();
+  // Bundled submodules:
   {
-    DT_THROW_IF(!datatools::kernel::is_instantiated(),
-                std::runtime_error,
-                "The Bayeux/datatools kernel is not instantiated !");
-    datatools::kernel & krnl = datatools::kernel::instance();
+    // Falaise itself:
+    DT_THROW_IF (lib_info_reg.has("falaise"),
+                 std::logic_error,
+                 "falaise is already registered !");
+    datatools::properties & falaise_lib_infos
+        = lib_info_reg.registration("falaise",
+                                    "Falaise provides the main computational environment for the simulation,"
+                                    "processing and analysis of data for the SuperNEMO double beta decay "
+                                    "search experiment.",
+                                    falaise::version::get_version()
+                                   );
 
-    // Populate the library info register:
-    if (krnl.has_library_info_register()) {
-      // Registration of the datatools component in the
-      // kernel's library info register:
-      datatools::library_info & lib_info_reg
-        = krnl.grab_library_info_register();
-      //lib_info_reg.tree_dump(std::cerr, "Bayeux -> Library info register: ", "DEVEL: ");
+      // Register the Falaise resource path in the datatools' kernel:
+      falaise_lib_infos.store_string(datatools::library_info::keys::install_resource_dir(),
+                                     falaise::get_resource_dir()
+                                    );
 
-      // Bundled submodules:
-      {
-        // Falaise itself:
-        DT_THROW_IF (lib_info_reg.has("falaise"),
-                     std::logic_error,
-                     "falaise is already registered !");
-        datatools::properties & falaise_lib_infos
-          = lib_info_reg.registration("falaise",
-                                      "Falaise provides the main computational environment for the simulation,"
-                                      "processing and analysis of data for the SuperNEMO double beta decay "
-                                      "search experiment.",
-                                      falaise::version::get_version()
-                                      );
+      // If the 'FALAISE_RESOURCE_DIR' environment variable is set, it will supersed
+      // the official registered resource path above through the 'datatools::fetch_path_with_env'
+      // function:
+      falaise_lib_infos.store_string(datatools::library_info::keys::env_resource_dir(),
+                                     "FALAISE_RESOURCE_DIR"
+                                    );
 
-        // Register the Falaise resource path in the datatools' kernel:
-        falaise_lib_infos.store_string(datatools::library_info::keys::install_resource_dir(),
-                                       falaise::get_resource_dir(false)
-                                       );
+      // Register the Falaise plugin path in the datatools' kernel:
+      falaise_lib_infos.store_string(datatools::library_info::keys::install_plugin_lib_dir(),
+                                     falaise::get_plugin_dir()
+                                    );
 
-        // If the 'FALAISE_RESOURCE_DIR' environment variable is set, it will supersed
-        // the official registered resource path above through the 'datatools::fetch_path_with_env'
-        // function:
-        falaise_lib_infos.store_string(datatools::library_info::keys::env_resource_dir(),
-                                       "FALAISE_RESOURCE_DIR"
-                                       );
-
-        // Register the Falaise plugin path in the datatools' kernel:
-        falaise_lib_infos.store_string(datatools::library_info::keys::install_plugin_lib_dir(),
-                                       falaise::get_plugin_dir(false)
-                                       );
-
-        // If the 'FALAISE_PLUGIN_LIB_DIR' environment variable is set, it will supersed
-        // the official registered plugin path above through the 'datatools::library_loader'
-        // function:
-        falaise_lib_infos.store_string(datatools::library_info::keys::env_plugin_lib_dir(),
-                                       "FALAISE_PLUGIN_LIB_DIR"
-                                       );
-      }
+      // If the 'FALAISE_PLUGIN_LIB_DIR' environment variable is set, it will supersed
+      // the official registered plugin path above through the 'datatools::library_loader'
+      // function:
+      falaise_lib_infos.store_string(datatools::library_info::keys::env_plugin_lib_dir(),
+                                     "FALAISE_PLUGIN_LIB_DIR"
+                                    );
     }
-    return;
-  }
+}
 
   void falaise_terminate_impl()
   {
@@ -138,11 +134,6 @@ namespace {
 }
 
 namespace falaise {
-
-  bool bayeux_embedded()
-  {
-    return false;
-  }
 
   void initialize(int argc_, char * argv_[])
   {

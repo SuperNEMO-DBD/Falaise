@@ -1,14 +1,24 @@
 //! \file    falaise/resource.h
-//! \brief   Utilities for accessing falaise resource files
+//! \brief   Utilities for accessing falaise resource/plugin files
 //! \details The falaise library makes use of several resource files
 //!          containing isotopic and radioactive decays data.
+//!          Falaise also implements a plugin architecture, with
+//!          several supplied as core functionality.
 //!
 //!          As these files are not compiled into the falaise library,
-//!          falaise provides a simple API to get a path to known
-//!          resource files.
+//!          a simple API is provided to return the root paths to core
+//!          resource and plugin directories.
+//!
+//!          These paths are calculated based on the location of the
+//!          Falaise library, allowing relocation of the Falaise
+//!          package after installation.
+//!
+//!          If your application uses resources from Falaise,
+//!          you must call the falaise::init_resources function
+//!          before trying to access resources.
 //
-// Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com>
-// Copyright (c) 2013 by The University of Warwick
+// Copyright (c) 2013-2016 by Ben Morgan <bmorgan.warwick@gmail.com>
+// Copyright (c) 2013-2016 by The University of Warwick
 //
 // This file is part of falaise.
 //
@@ -29,6 +39,7 @@
 #define FALAISE_RESOURCE_H
 // Standard Library
 #include <string>
+#include <stdexcept>
 
 // Third Party
 // - A
@@ -36,23 +47,34 @@
 // This Project
 
 namespace falaise {
+//! Exception class for bad resource initialization
+class ResourceInitializationException : public std::runtime_error {
+ public:
+  ResourceInitializationException(const std::string& msg) : std::runtime_error(msg) {}
+};
+
+//! Exception class for unknown resources
+class UnknownResourceException : public std::runtime_error {
+ public:
+  UnknownResourceException(const std::string& msg) : std::runtime_error(msg) {}
+};
+
+//! Initialize the library resource paths
+//! \throw ResourceInitializationException when library cannot self locate
+void init_resources();
 
 //! Return URL, i.e. a path, to the  base directory where resource files are installed
-//! \param overriden_env If set this flag trigger the search for the
-//!        environment variable FALAISE_RESOURCE_DIR as a directory path on the filesystem
-//!        as an alternative base directory for resources in place of the
-//!        standard installation path
-std::string get_resource_dir(bool overriden_env = false);
+std::string get_resource_dir();
 
 //! Return URL, i.e. a path, to named resource
-//! By default the encoded resource root, determined at compile time
-//! is used to search for the resource. This can be overriden by setting
-//! the FALAISE_RESOURCE_DIR environment variable to a path holding custom
-//! resources.
-//! \param rname name of resource, given as a path relative to
-//!        resource root.
-//! \param overriden_env flag to allow path overriding by the FALAISE_RESOURCE_DIR environment variable.
-std::string get_resource(const std::string& rname, bool overriden_env = false);
+std::string get_resource(const std::string& rname);
+
+//!//! Return URL, i.e. a path, to the  base directory where plugin DLL files are installed
+std::string get_plugin_dir();
+
+//! Return URL, i.e. a path, to named resource
+std::string get_plugin(const std::string& rname);
+
 } // namespace falaise
 
 #endif // FALAISE_RESOURCE_H

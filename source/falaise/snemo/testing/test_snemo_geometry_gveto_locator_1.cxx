@@ -689,7 +689,7 @@ void test6(geomtools::manager & a_mgr, bool draw_)
 
 int main(int argc_, char ** argv_)
 {
-  FALAISE_INIT_MAIN(argc_, argv_);
+  falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;
   try
     {
@@ -934,6 +934,6 @@ int main(int argc_, char ** argv_)
       cerr << "ERROR: " << "unexpected error!" << endl;
       error_code = EXIT_FAILURE;
     }
-  FALAISE_FINI();
+  falaise::terminate();
   return(error_code);
 }

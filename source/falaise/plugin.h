@@ -32,25 +32,5 @@
 // - A
 
 // This Project
-
-namespace falaise {
-
-//! Return URL, i.e. a path, to the  base directory where plugin DLL files are installed
-//! \param overriden_env If set this flag trigger the search for the
-//!        environment variable FALAISE_PLUGIN_LIB_DIR as a directory path on the filesystem
-//!        as an alternative base directory for resources in place of the
-//!        standard installation path
-std::string get_plugin_dir(bool overriden_env = false);
-
-//! Return URL, i.e. a path, to named resource
-//! By default the encoded resource root, determined at compile time
-//! is used to search for the resource. This can be overriden by setting
-//! the FALAISE_PLUGIN_LIB_DIR environment variable to a path holding custom
-//! resources.
-//! \param rname name of resource, given as a path relative to
-//!        resource root.
-//! \param overriden_env flag to allow path overriding by the FALAISE_PLUGIN_LIB_DIR environment variable.
-std::string get_plugin(const std::string& rname, bool overriden_env = false);
-} // namespace falaise
-
+#include <falaise/resource.h>
 #endif // FALAISE_PLUGIN_H

@@ -61,7 +61,7 @@
 #include "falaise/falaise.h"
 #include "falaise/version.h"
 #include "falaise/exitcodes.h"
-#include "FLReconstructResources.h"
+#include "falaise/resource.h"
 
 //----------------------------------------------------------------------
 // IMPLEMENTATION DETAILS
@@ -88,7 +88,7 @@ void do_version(std::ostream& os, bool isVerbose) {
   os << "flreconstruct " << falaise::version::get_version() << "\n";
   if (isVerbose) {
     os << "\n"
-        << "Copyright (C) 2013-2014 SuperNEMO Collaboration\n\n"
+        << "Copyright (C) 2013-2016 SuperNEMO Collaboration\n\n"
         << "flreconstruct uses the following external libraries:\n"
         << "* Falaise : " << falaise::version::get_version() << "\n"
         << "* Bayeux  : " << bayeux::version::get_version() << "\n"
@@ -114,7 +114,7 @@ void do_error(std::ostream& os, const char* err) {
 
 //! load all default plugins
 void do_load_plugins(datatools::library_loader& libLoader) {
-  std::string pluginPath = FLReconstruct::getPluginLibDir();
+  std::string pluginPath = falaise::get_plugin_dir();
   // explicitly list for now...
   libLoader.load("Falaise_CAT", pluginPath);
   libLoader.load("Falaise_ChargedParticleTracking", pluginPath);
@@ -386,7 +386,7 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
   if (!clArgs.outputFile.empty()) {
     DT_LOG_TRACE(clArgs.logLevel,"configuring output module");
     if (boost::algorithm::ends_with(clArgs.outputFile, ".root")) {
-      std::string pluginPath = FLReconstruct::getPluginLibDir();
+      std::string pluginPath = falaise::get_plugin_dir();
       libLoader.load("Things2Root", pluginPath);
       DT_LOG_TRACE(clArgs.logLevel, "using ROOT format for output");
       datatools::properties t2rConfig;
@@ -513,8 +513,7 @@ falaise::exit_code do_flreconstruct(int argc, char *argv[]) {
 //----------------------------------------------------------------------
 int main(int argc, char *argv[]) {
   // - Needed...
-  FALAISE_INIT();
-  FLReconstruct::initResources();
+  falaise::initialize(argc,argv);
 
   // - Do the reconstruction
   // Ideally, exceptions should not propagate out of this - the error
@@ -522,6 +521,6 @@ int main(int argc, char *argv[]) {
   falaise::exit_code ret = do_flreconstruct(argc, argv);
 
   // - Needed...
-  FALAISE_FINI();
+  falaise::terminate();
   return ret;
 }
