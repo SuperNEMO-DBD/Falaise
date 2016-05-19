@@ -25,6 +25,7 @@ set(FalaiseDigitizationPlugin_TESTS
   test_trigger_algorithm.cxx
   test_trigger_algorithm_test_fake_ctw.cxx
   test_trigger_algorithm_test_time.cxx
+  test_tracker_trigger_algorithm_load_from_file.cxx
 
   test_trigger_analysis_gen_histo.cxx
 

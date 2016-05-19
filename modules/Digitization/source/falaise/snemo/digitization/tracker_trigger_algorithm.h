@@ -62,6 +62,7 @@ namespace snemo {
 			{
 				geiger_matrix();
 				bool is_empty();
+				const void display_matrix_garrido() const;
 				uint32_t clocktick_1600ns;				
 				bool matrix[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS];
 			};

@@ -114,6 +114,55 @@ namespace snemo {
       return empty;
     }
 
+    const void tracker_trigger_algorithm::geiger_matrix::display_matrix_garrido() const
+    {
+      for (int i = 0; i < trigger_info::NSIDES; i++)
+	{
+	  if (i == 0)
+	    {
+	      for (int j = trigger_info::NLAYERS - 1; j >= 0; j--) // Value GEIGER_LAYER_SIZE = 9
+		{
+		  //std::clog << ' ';
+		  for (int k = 0; k < trigger_info::NROWS; k++)
+		    {
+		  
+		      if (matrix[i][j][k] ) std::clog << "1";
+		  
+		      if(!matrix[i][j][k])  std::clog << "0";	  
+
+		    } // end of row loop
+		  std::clog<<std::endl;	
+
+		} // end of layer loop
+
+	    } // end of if == 0
+
+	  if (i == 1)
+	    {  
+	      for (int j = 0; j < trigger_info::NLAYERS; j++)
+		{
+		  //std::clog << ' ' ;
+		  for (int k = 0; k < trigger_info::NROWS; k++)
+		    {
+		  
+		      if (matrix[i][j][k] ) std::clog << "1";
+		  
+		      if(!matrix[i][j][k])  std::clog << "0";	  
+
+
+		    } // end of row loop
+		  std::clog<<std::endl;	    
+  
+		} // end of layer loop
+
+	    } // end of if i==1
+
+	} // end of side loop
+      std::clog << std::endl;
+
+      return;
+    }
+
     tracker_trigger_algorithm::tracker_trigger_algorithm()
     {
       _initialized_ = false;
@@ -721,7 +770,7 @@ namespace snemo {
       build_tracker_record();      
 
       //_tracker_record_finale_decision_.display();
-      //display_matrix();
+      // display_matrix();
       //print_zones(std::clog);
       return;
     }
@@ -745,6 +794,12 @@ namespace snemo {
 	      tracker_records_.push_back(_tracker_record_finale_decision_);
       	    } // end of if ctw list != 0
        	} // end of iclocktick
+
+     if (_geiger_matrix_records_.size() != 0)
+	{
+	  _geiger_matrix_records_[2].display_matrix_garrido();
+	}
+
       return;
     }
 

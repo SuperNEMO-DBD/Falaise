@@ -167,16 +167,6 @@ namespace snemo {
 
     protected :
 			
-			// /// Process calo algorithm
-			// void _process_calo_algo(const calo_ctw_data & calo_ctw_data_);
-			
-			// /// Process tracker algorithm
-			// void _process_tracker_algo(const geiger_ctw_data & geiger_ctw_data_);
-			
-			// /// Process coincidence module algorithm			
-			// void _process_coinc_algo();
-			
-			
 			/// Rescaling calorimeter 25 ns at 1600 ns for coincidences with tracker
 			void _rescale_calo_records_at_1600ns(const std::vector<calo_trigger_algorithm_test_time::calo_summary_record> & calo_records_25_ns_,
 																					 std::vector<coincidence_trigger_algorithm_test_time::coincidence_calo_record> & coincidence_calo_records_1600ns_);
@@ -184,12 +174,6 @@ namespace snemo {
 			/// Update a coinc calo record 1600 from a calo summary record 25 ns
 			void _update_coinc_calo_record(const calo_trigger_algorithm_test_time::calo_summary_record & a_calo_summary_record_25ns, 
 																		 coincidence_trigger_algorithm_test_time::coincidence_calo_record & a_coinc_calo_record_1600ns);
-			
-			/// Creating a per of calo record and tracker record for each clocktick
-			void _creating_pair_for_a_clocktick(const coincidence_trigger_algorithm_test_time::coincidence_calo_record & a_coinc_calo_record_,
-																					const tracker_trigger_algorithm_test_time::tracker_record & a_tracker_record_);
-
-
 
       /// Protected general process
       void _process(const calo_ctw_data & calo_ctw_data_,
@@ -224,7 +208,8 @@ namespace snemo {
 			std::vector<calo_trigger_algorithm_test_time::calo_summary_record> _calo_records_25ns_; //!< Collection of calo summary record @ 25 ns
 			std::vector<coincidence_trigger_algorithm_test_time::coincidence_calo_record> _coincidence_calo_records_1600ns_; //!< Collection of coincidence calo records @ 1600 ns
 			std::vector<tracker_trigger_algorithm_test_time::tracker_record> _tracker_records_; //!< Collection of tracker record @ 1600 ns
-			std::vector<tracker_trigger_algorithm_test_time::geiger_matrix> _geiger_matrix_records_; //!< Collection of Geiger matrix @ 1600 ns
+			std::vector<tracker_trigger_algorithm_test_time::geiger_matrix> _geiger_matrix_records_; //!< Collection of Geiger matrix @ 1600 ns	
+			std::vector<std::pair<coincidence_trigger_algorithm_test_time::coincidence_calo_record, tracker_trigger_algorithm_test_time::tracker_record> > _pair_records_; //!< Pair of a coincidence calo record and a tracker record (at the same clocktick 1600 ns)
 			std::vector<coincidence_trigger_algorithm_test_time::coincidence_event_record> _coincidence_records_; //!< Collection of coincidence record @ 1600 ns
 			boost::scoped_ptr<buffer_previous_event_record_type> _previous_event_records_; //!< Collection of previous event records @ 1600 ns
 			std::vector<trigger_algorithm_test_time::L1_calo_decision> _L1_calo_decision_records_; //!< Collection of L1 calorimeter decision @ 25 ns

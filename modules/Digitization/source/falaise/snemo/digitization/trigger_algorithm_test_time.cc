@@ -161,6 +161,8 @@ namespace snemo {
       _calo_records_25ns_.clear();
       _coincidence_calo_records_1600ns_.clear();
       _tracker_records_.clear();
+      _geiger_matrix_records_.clear();
+      _pair_records_.clear();
       _coincidence_records_.clear();
       _previous_event_records_.reset();
       _L1_calo_decision_records_.clear();
@@ -200,6 +202,8 @@ namespace snemo {
       _calo_records_25ns_.clear();
       _coincidence_calo_records_1600ns_.clear();
       _tracker_records_.clear();
+      _geiger_matrix_records_.clear();
+      _pair_records_.clear();
       _coincidence_records_.clear();
       _previous_event_records_.reset();
       _L1_calo_decision_records_.clear();
@@ -216,6 +220,8 @@ namespace snemo {
       _calo_records_25ns_.clear();
       _coincidence_calo_records_1600ns_.clear();
       _tracker_records_.clear();
+      _geiger_matrix_records_.clear();
+      _pair_records_.clear();
       _coincidence_records_.clear();
       _previous_event_records_.reset();
       _L1_calo_decision_records_.clear();
@@ -573,17 +579,6 @@ namespace snemo {
       return;
     }
 	
-
-    void _creating_pair_for_a_clocktick(const coincidence_trigger_algorithm_test_time::coincidence_calo_record & a_coinc_calo_record_,
-					const tracker_trigger_algorithm_test_time::tracker_record & a_tracker_record_)
-    {
-      
-      
-
-      
-      
-    }
-
     void trigger_algorithm_test_time::process(const calo_ctw_data & calo_ctw_data_,
     					      const geiger_ctw_data & geiger_ctw_data_)
     {
@@ -695,6 +690,8 @@ namespace snemo {
 	  				  _coincidence_calo_records_1600ns_);
 	  
 	  // Calculate the ct 1600 minimum and ct 1600 maximum : 
+
+	  // Gestion d'erreur si GG CTW DATA vides : 
 	  uint32_t calorimeter_ct_min_1600 = _coincidence_calo_records_1600ns_.front().clocktick_1600ns;
 	  uint32_t calorimeter_ct_max_1600 = _coincidence_calo_records_1600ns_.back().clocktick_1600ns;
 	  uint32_t tracker_ct_min_1600 = geiger_ctw_data_1600ns.get_clocktick_min();
@@ -728,8 +725,22 @@ namespace snemo {
 	      a_geiger_matrix.clocktick_1600ns = ict1600;
 	      // a_geiger_matrix.display();
 	      if (!a_geiger_matrix.is_empty()) _geiger_matrix_records_.push_back(a_geiger_matrix);
+	     
+
+	      std::pair<coincidence_trigger_algorithm_test_time::coincidence_calo_record, tracker_trigger_algorithm_test_time::tracker_record> pair_for_a_clocktick;
+
+	      std::vector<coincidence_trigger_algorithm_test_time::coincidence_calo_record>::const_iterator it_calo = _coincidence_calo_records_1600ns_.begin();
+	      for (it_calo; it_calo != _coincidence_calo_records_1600ns_.end(); it_calo++)
+		{ 
+		  coincidence_trigger_algorithm_test_time::coincidence_calo_record a_coinc_calo_record = *it_calo;
+		  if (a_coinc_calo_record.clocktick_1600ns == ict1600)
+		    {
+		      pair_for_a_clocktick.first = a_coinc_calo_record;
+		    }
+		} 
+	      pair_for_a_clocktick.second = a_tracker_record;
 	      
-	      
+	      _pair_records_.push_back(pair_for_a_clocktick);
 	      
 	    }
 
@@ -753,40 +764,16 @@ namespace snemo {
       std::clog << "Calo collection size @ 1600 ns          : " << _coincidence_calo_records_1600ns_.size() << std::endl;
       std::clog << "Tracker collection size @ 1600 ns       : " << _tracker_records_.size() << std::endl;
       std::clog << "Geiger matrix collection size @ 1600 ns : " << _geiger_matrix_records_.size() << std::endl;
+      std::clog << "Pair records collection size @ 1600 ns  : " << _pair_records_.size() << std::endl;
       std::clog << "Coincidence collection size @ 1600 ns   : " << _coincidence_records_.size() << std::endl;
       //std::clog << "Previous event collection size          : " << _previous_event_records_->size() << std::endl;
       std::clog << "L1 calo collection size @ 25 ns         : " << _L1_calo_decision_records_.size() << std::endl;
       std::clog << "L1 tracker collection size @ 1600 ns    : " << _L1_tracker_decision_records_.size() << std::endl;
       std::clog << "L2 decision collection size @ 1600 ns   : " << _L2_decision_records_.size() << std::endl;
       
-      
       return;
     }
 
-    
-
-    // void trigger_algorithm_test_time::_process_calo_algo(const calo_ctw_data & calo_ctw_data_)
-    // {
-    //   _calo_algo_.process(calo_ctw_data_,
-    // 			  _calo_records_);
-    //   return;
-    // }
-
-    // void trigger_algorithm_test_time::_process_tracker_algo(const geiger_ctw_data & geiger_ctw_data_)
-    // {
-    //   _tracker_algo_.process(geiger_ctw_data_,
-    // 			     _tracker_records_);
-    //   return;
-    // }
-    
-    // void trigger_algorithm_test_time::_process_coinc_algo()
-    // {
-    //   _coinc_algo_.process(_calo_records_,
-    // 			   _tracker_records_,
-    // 			   _coincidence_records_);
-    //   return;
-    // }
-    
     // void trigger_algorithm_test_time::_process(const calo_ctw_data & calo_ctw_data_,
     // 					       const geiger_ctw_data & geiger_ctw_data_)
     // {

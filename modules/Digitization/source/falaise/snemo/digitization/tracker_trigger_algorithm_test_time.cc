@@ -713,7 +713,7 @@ namespace snemo {
       build_zones();      
       build_tracker_record(a_tracker_record_);      
 
-      _a_geiger_matrix_for_a_clocktick_.display();
+      //_a_geiger_matrix_for_a_clocktick_.display();
       //a_tracker_record_.display();
       //print_zones(std::clog);
       return;

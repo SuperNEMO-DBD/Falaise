@@ -605,32 +605,34 @@ namespace snemo {
       _gate_circular_buffer_.reset(new buffer_type(_circular_buffer_depth_));
       _calo_finale_decision_ = false;
       
-      for(int32_t iclocktick = calo_ctw_data_.get_clocktick_min(); iclocktick <= calo_ctw_data_.get_clocktick_max() + _circular_buffer_depth_ - 1 ; iclocktick++)
+      if (calo_ctw_data_.get_calo_ctws().size() != 0)
 	{
-	  std::vector<datatools::handle<calo_ctw> > ctw_list_per_clocktick;
-	  calo_ctw_data_.get_list_of_calo_ctw_per_clocktick(iclocktick, ctw_list_per_clocktick);
+	  for(int32_t iclocktick = calo_ctw_data_.get_clocktick_min(); iclocktick <= calo_ctw_data_.get_clocktick_max() + _circular_buffer_depth_ - 1 ; iclocktick++)
+	    {
+	      std::vector<datatools::handle<calo_ctw> > ctw_list_per_clocktick;
+	      calo_ctw_data_.get_list_of_calo_ctw_per_clocktick(iclocktick, ctw_list_per_clocktick);
 	  
-	  if (ctw_list_per_clocktick.size() == 0) _calo_record_per_clocktick_.clocktick_25ns = iclocktick;
-	  else
-	    {	  
-	      for (int isize = 0; isize < ctw_list_per_clocktick.size(); isize++)
-		{
-		  _build_calo_record_per_clocktick(ctw_list_per_clocktick[isize].get());
-		} // end of isize
-	    }
-	  _gate_circular_buffer_->push_back(_calo_record_per_clocktick_);
+	      if (ctw_list_per_clocktick.size() == 0) _calo_record_per_clocktick_.clocktick_25ns = iclocktick;
+	      else
+		{	  
+		  for (int isize = 0; isize < ctw_list_per_clocktick.size(); isize++)
+		    {
+		      _build_calo_record_per_clocktick(ctw_list_per_clocktick[isize].get());
+		    } // end of isize
+		}
+	      _gate_circular_buffer_->push_back(_calo_record_per_clocktick_);
 
-	  // Fill calo summary record for each clocktick (based on previous calo records) : 
-	  calo_summary_record my_calo_summary_record;
-	  my_calo_summary_record.clocktick_25ns = iclocktick;
-	  _build_calo_record_summary_structure(my_calo_summary_record);
-	  _compute_calo_finale_decision(my_calo_summary_record);
-	  if (_calo_level_1_finale_decision_.calo_finale_decision) _calo_finale_decision_ = true;
+	      // Fill calo summary record for each clocktick (based on previous calo records) : 
+	      calo_summary_record my_calo_summary_record;
+	      my_calo_summary_record.clocktick_25ns = iclocktick;
+	      _build_calo_record_summary_structure(my_calo_summary_record);
+	      _compute_calo_finale_decision(my_calo_summary_record);
+	      if (_calo_level_1_finale_decision_.calo_finale_decision) _calo_finale_decision_ = true;
 	  
-	  if(!_calo_level_1_finale_decision_.is_empty()) calo_records_.push_back(_calo_level_1_finale_decision_);
-	  _calo_record_per_clocktick_.reset();
-	} // end of iclocktick
-
+	      if(!_calo_level_1_finale_decision_.is_empty()) calo_records_.push_back(_calo_level_1_finale_decision_);
+	      _calo_record_per_clocktick_.reset();
+	    } // end of iclocktick
+	}
       return;
     }
 
