@@ -702,7 +702,7 @@ namespace snemo {
         int typeidx = distance (file_format.begin (), it)*2;
         bool overwr = false;
 
-        const std::string default_dir = falaise::get_resource_dir(true) +
+        const std::string default_dir = falaise::get_resource_dir() +
           "/modules/EventBrowser/styles";
         TGFileInfo file_info;
         file_info.fFileTypes   = save_as_types;

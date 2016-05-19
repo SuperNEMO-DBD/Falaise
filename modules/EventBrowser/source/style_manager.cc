@@ -381,7 +381,7 @@ namespace snemo {
                          "Nor setup label neither filename given");
             return;
           }
-          _filename_ = falaise::get_resource_dir(true) +
+          _filename_ = falaise::get_resource_dir() +
             "/modules/EventBrowser/styles/" + _setup_label_ + "_default.sty";
           // Replace double semi colon with underscore
           const size_t start_semi_colon = _filename_.find("::");

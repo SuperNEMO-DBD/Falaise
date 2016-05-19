@@ -474,7 +474,7 @@ namespace snemo {
         const unsigned int id = button->WidgetId();
 
         if (id == LOAD_SELECTION) {
-          const std::string dir = falaise::get_resource_dir(true);
+          const std::string dir = falaise::get_resource_dir();
           TString directory(dir.c_str());
           TGFileInfo file_info;
           const char * config_file_types [] = { "Config. file" , "*.conf",

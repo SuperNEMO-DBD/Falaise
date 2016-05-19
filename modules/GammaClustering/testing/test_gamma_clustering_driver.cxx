@@ -67,7 +67,7 @@ void generate_hits(snemo::datamodel::calibrated_data::calorimeter_hit_collection
 
 int main()
 {
-  FALAISE_INIT();
+  falaise::initialize();
   int error_code = EXIT_SUCCESS;
   try {
     std::clog << "Test program for the 'gamma_clustering_driver' class." << std::endl;
@@ -76,7 +76,7 @@ int main()
     namespace srt = snemo::reconstruction;
 
     // Need an effective geometry manager ot make use of locators
-    const std::string gmanager_config_file = falaise::get_resource_dir(true) +
+    const std::string gmanager_config_file = falaise::get_resource_dir() +
       "/config/snemo/demonstrator/geometry/3.0/manager.conf";
     // Load properties from the configuration file
     datatools::properties gmanager_config;
@@ -125,6 +125,6 @@ int main()
     std::cerr << "error: " << "unexpected error !" << std::endl;
     error_code = EXIT_FAILURE;
   }
-  FALAISE_FINI();
+  falaise::terminate();
   return error_code;
 }
