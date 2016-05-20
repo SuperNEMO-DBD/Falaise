@@ -92,7 +92,7 @@ std::string relativePathToPluginLibDir() {
 
 std::string getLibraryDir() {
   char* exePath(0);
-  exePath = br_find_lib_dir("");
+  exePath = br_find_exe_dir("");
   boost::filesystem::path sExePath(exePath);
   free(exePath);
   boost::filesystem::path cExePath = boost::filesystem::canonical(sExePath);
