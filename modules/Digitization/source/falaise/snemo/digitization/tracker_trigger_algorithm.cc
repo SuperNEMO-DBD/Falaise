@@ -327,7 +327,7 @@ namespace snemo {
 		  uint32_t ctw_type  = my_geiger_ctw_.get_geom_id().get_type();
 		  uint32_t ctw_rack  = my_geiger_ctw_.get_geom_id().get(mapping::RACK_INDEX);
 		  uint32_t ctw_crate = my_geiger_ctw_.get_geom_id().get(mapping::CRATE_INDEX);
-		  uint32_t board_id = get_board_id(my_bitset);
+		  uint32_t board_id  = get_board_id(my_bitset);
 		  uint32_t channel_id = j;
 		  geomtools::geom_id temporary_electronic_id;
 		  temporary_electronic_id.set_depth(mapping::CHANNEL_DEPTH);
@@ -375,7 +375,7 @@ namespace snemo {
 	{
 	  if (i == 0)
 	    {
-	      for (int j = trigger_info::NLAYERS - 1; j >= 0; j--) // Value GEIGER_LAYER_SIZE = 9
+	      for (int j = trigger_info::NLAYERS - 1; j >= 0; j--) // Value NLAYERS = 9
 		{
 		  std::clog << j << ' ';
 		  for (int k = 0; k < trigger_info::NROWS; k++)

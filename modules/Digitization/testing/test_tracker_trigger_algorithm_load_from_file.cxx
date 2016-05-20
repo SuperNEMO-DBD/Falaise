@@ -30,7 +30,7 @@
 
 int main( int  argc_ , char **argv_  )
 {
-  FALAISE_INIT();
+  falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
 
@@ -132,7 +132,7 @@ int main( int  argc_ , char **argv_  )
       data_filename = "${FALAISEBREW_DIGITIZATION_TESTING_DIR}/data/100_events_tracker_matrix_output.data";
     }
     datatools::fetch_path_with_env(data_filename);
-    std::clog << "data_filename  = " << data_filename << std::endl;
+    std::clog << "data_filename  = " << data_filename << std::endl << std::endl;;
 
     
     // Number of events :
@@ -183,13 +183,12 @@ int main( int  argc_ , char **argv_  )
 	  {
 	    for (int krow = 0; krow < snemo::digitization::trigger_info::NROWS; krow++)
 	      {
-		geiger_matrix[iside][jlayer][krow] == false;
+		geiger_matrix[iside][jlayer][krow] = false;
 	      } // end of krow
 	  } // end of jlayer
       } // end of iside
 
     int line_number = 0;
-
     int side = 0;
 
     std::ifstream fin(data_filename.c_str());
@@ -198,89 +197,259 @@ int main( int  argc_ , char **argv_  )
     std::string line;
     while (std::getline(fin, line))
       {
-	// Fill matrix :
-	int layer = 0;
-	if (line_number < 9) 
-	  {
-	    side = 0;
-	    layer = 8 - line_number;
-	  }
-	else
-	  {
-	    side = 1;
-	    layer = line_number - 9;
-	  }
-	
-	for (int i=0 ; i < line.length(); i++) 
-	  { 
-	    char my_value = line[i];
-	    if (my_value == '0') geiger_matrix[side][layer][i] = false;;
-	    if (my_value == '1') geiger_matrix[side][layer][i] = true;
-	    
-	   
-	  }
-	
-	if (line.empty())
-	  {
-	    for (int i = 0; i < snemo::digitization::trigger_info::NSIDES; i++)
+    	if (psd_count == 0)
+    	  {
+	    // Fill matrix :
+	    int layer = 0;
+	    if (line_number < 9) 
 	      {
-		if (i == 0)
+		side = 0;
+		layer = 8 - line_number;
+	      }
+	    else
+	      {
+		side = 1;
+		layer = line_number - 9;
+	      }
+	
+	    for (int i = 0 ; i < line.length(); i++) 
+	      { 
+		char my_value = line[i];
+		if (my_value == '0') geiger_matrix[side][layer][i] = false;
+		if (my_value == '1') geiger_matrix[side][layer][i] = true;
+	      }
+	
+	    if (line.empty())
+	      {
+		for (int i = 0; i < snemo::digitization::trigger_info::NSIDES; i++)
 		  {
-		    for (int j = snemo::digitization::trigger_info::NLAYERS - 1; j >= 0; j--) // Value GEIGER_LAYER_SIZE = 9
+		    if (i == 0)
 		      {
-			//std::clog << ' ';
-			for (int k = 0; k < snemo::digitization::trigger_info::NROWS; k++)
+			for (int j = snemo::digitization::trigger_info::NLAYERS - 1; j >= 0; j--) // Value GEIGER_LAYER_SIZE = 9
 			  {
-		  
-			    if (geiger_matrix[i][j][k] ) std::clog << "1";
-		  
-			    if(!geiger_matrix[i][j][k])  std::clog << "0";	  
+			    for (int k = 0; k < snemo::digitization::trigger_info::NROWS; k++)
+			      {
+				if (geiger_matrix[i][j][k] ) std::clog << "1";
+				if(!geiger_matrix[i][j][k])  std::clog << "0";	  
+			      } // end of row loop
+			    std::clog<<std::endl;	
 
-			  } // end of row loop
-			std::clog<<std::endl;	
+			  } // end of layer loop
 
-		      } // end of layer loop
+		      } // end of if == 0
 
-		  } // end of if == 0
-
-		if (i == 1)
-		  {  
-		    for (int j = 0; j < snemo::digitization::trigger_info::NLAYERS; j++)
-		      {
-			//std::clog << ' ' ;
-			for (int k = 0; k < snemo::digitization::trigger_info::NROWS; k++)
+		    if (i == 1)
+		      {  
+			for (int j = 0; j < snemo::digitization::trigger_info::NLAYERS; j++)
 			  {
-		  
-			    if (geiger_matrix[i][j][k] ) std::clog << "1";
-		  
-			    if(!geiger_matrix[i][j][k])  std::clog << "0";	  
-
-
-			  } // end of row loop
-			std::clog<<std::endl;	    
+			    for (int k = 0; k < snemo::digitization::trigger_info::NROWS; k++)
+			      {
+				if (geiger_matrix[i][j][k]) std::clog << "1";
+				if(!geiger_matrix[i][j][k])  std::clog << "0";	  
+			      } // end of row loop
+			    std::clog<<std::endl;	    
   
-		      } // end of layer loop
+			  } // end of layer loop
 
-		  } // end of if i==1
+		      } // end of if i==1
 
-	      } // end of side loop
-	    std::clog << std::endl;
+		  } // end of side loop
+		std::clog << std::endl;
+
+		// process here
+		snemo::digitization::geiger_ctw_data my_geiger_ctw_data;
+		snemo::digitization::geiger_ctw & my_geiger_ctw_0 = my_geiger_ctw_data.add();
+		snemo::digitization::geiger_ctw & my_geiger_ctw_1 = my_geiger_ctw_data.add();
+		snemo::digitization::geiger_ctw & my_geiger_ctw_2 = my_geiger_ctw_data.add();
+		uint32_t clocktick = 0; // Just one clocktick for geiger ctw
+		my_geiger_ctw_0.set_clocktick_800ns(clocktick);
+		my_geiger_ctw_1.set_clocktick_800ns(clocktick);
+		my_geiger_ctw_2.set_clocktick_800ns(clocktick);
 
 
+		for (int iblock = 0; iblock < 19; iblock++)
+		  {	    		
+		    std::bitset<snemo::digitization::geiger::tp::TP_SIZE> bitset_ctw_0;
+		    std::bitset<snemo::digitization::geiger::tp::TP_SIZE> bitset_ctw_1;
+		    std::bitset<snemo::digitization::geiger::tp::TP_SIZE> bitset_ctw_2;
+		    
+		    std::bitset<9> ctw0_side_0_row_0_bitset;
+		    std::bitset<9> ctw0_side_0_row_1_bitset;
+		    std::bitset<9> ctw0_side_1_row_0_bitset;
+		    std::bitset<9> ctw0_side_1_row_1_bitset;
 
-	    // process here
+		    std::bitset<9> ctw1_side_0_row_0_bitset;
+		    std::bitset<9> ctw1_side_0_row_1_bitset;
+		    std::bitset<9> ctw1_side_1_row_0_bitset;
+		    std::bitset<9> ctw1_side_1_row_1_bitset;
+
+		    std::bitset<9> ctw2_side_0_row_0_bitset;
+		    std::bitset<9> ctw2_side_0_row_1_bitset;
+		    std::bitset<9> ctw2_side_1_row_0_bitset;
+		    std::bitset<9> ctw2_side_1_row_1_bitset;
 
 
+		    for (int krow = 0; krow < snemo::digitization::trigger_info::NROWS; krow++)
+		      {
+			for (int jlayer = 0; jlayer < snemo::digitization::trigger_info::NLAYERS; jlayer++)
+			  {
+			    // CTW 0 :
+			    if (krow >= 0 && krow <= 37)
+			      {
+			    	if (geiger_matrix[0][jlayer][iblock * 2] == true)
+			    	  {
+			    	    ctw0_side_0_row_0_bitset.set(jlayer, true);
+			    	  }
+			    	if (geiger_matrix[0][jlayer][(iblock * 2) + 1] == true)
+			    	  {
+			    	    ctw0_side_0_row_1_bitset.set(jlayer, true);
+			    	  }
+			    	if (geiger_matrix[1][jlayer][iblock * 2] == true)
+			    	  {
+			    	    ctw0_side_1_row_0_bitset.set(jlayer, true);
+			    	  }
+			    	if (geiger_matrix[1][jlayer][(iblock * 2) + 1] == true)
+			    	  {
+			    	    ctw0_side_1_row_1_bitset.set(jlayer, true);
+			    	  }
+			      }
+
+			    // CTW 1 :
+			    if (krow >= 38 && krow <= 74)
+			      {
+				if (geiger_matrix[0][jlayer][38 + iblock * 2] == true)
+				  {
+				    ctw1_side_0_row_0_bitset.set(jlayer, true);
+				  }
+				if (geiger_matrix[0][jlayer][38 + (iblock * 2) + 1] == true)
+				  {
+				    ctw1_side_0_row_1_bitset.set(jlayer, true);
+				  }
+				if (geiger_matrix[1][jlayer][38 + iblock * 2] == true)
+				  {
+				    ctw1_side_1_row_0_bitset.set(jlayer, true);
+				  }
+				if (geiger_matrix[1][jlayer][38 + (iblock * 2) + 1] == true)
+				  {
+				    ctw1_side_1_row_1_bitset.set(jlayer, true);
+				  }
+			      }
+
+			    // CTW 2 :
+			    if (krow >= 75 && krow <= 112)
+			      {
+				if (geiger_matrix[0][jlayer][75 + iblock * 2] == true)
+				  {
+				    ctw2_side_0_row_0_bitset.set(jlayer, true);
+				  }
+				if (geiger_matrix[0][jlayer][75 + (iblock * 2) + 1] == true)
+				  {
+				    ctw2_side_0_row_1_bitset.set(jlayer, true);
+				  }
+				if (geiger_matrix[1][jlayer][75 + iblock * 2] == true)
+				  {
+				    ctw2_side_1_row_0_bitset.set(jlayer, true);
+				  }
+				if (geiger_matrix[1][jlayer][75 + (iblock * 2) + 1] == true)
+				  {
+				    ctw2_side_1_row_1_bitset.set(jlayer, true);
+				  }
+			      }
+
+			  }// end of jlayer
+		      } // end of krow
+		    
+		    for (int i = 0; i < 9; i++)
+		      {
+			if (ctw0_side_0_row_0_bitset.test(i) == true)
+			  {
+			    bitset_ctw_0.set(i, true);
+			  }
+			if (ctw0_side_0_row_1_bitset.test(i) == true)
+			  {
+			    bitset_ctw_0.set(i + 9, true);
+			  }
+			if (ctw0_side_1_row_0_bitset.test(i) == true)
+			  {
+			    bitset_ctw_0.set(i + 18, true);
+			  }
+			if (ctw0_side_1_row_1_bitset.test(i) == true)
+			  {
+			    bitset_ctw_0.set(i + 27, true);
+			  }
+
+			if (ctw1_side_0_row_0_bitset.test(i) == true)
+			  {
+			    bitset_ctw_1.set(i, true);
+			  }
+			if (ctw1_side_0_row_1_bitset.test(i) == true)
+			  {
+			    bitset_ctw_1.set(i + 9, true);
+			  }
+			if (ctw1_side_1_row_0_bitset.test(i) == true)
+			  {
+			    bitset_ctw_1.set(i + 18, true);
+			  }
+			if (ctw1_side_1_row_1_bitset.test(i) == true)
+			  {
+			    bitset_ctw_1.set(i + 27, true);
+			  }
+
+			if (ctw2_side_0_row_0_bitset.test(i) == true)
+			  {
+			    bitset_ctw_2.set(i, true);
+			  }
+			if (ctw2_side_0_row_1_bitset.test(i) == true)
+			  {
+			    bitset_ctw_2.set(i + 9, true);
+			  }
+			if (ctw2_side_1_row_0_bitset.test(i) == true)
+			  {
+			    bitset_ctw_2.set(i + 18, true);
+			  }
+			if (ctw2_side_1_row_1_bitset.test(i) == true)
+			  {
+			    bitset_ctw_2.set(i + 27, true);
+			  }
+		      }
+
+		    // std::clog << "iblock = " << iblock << std::endl;
+		    // std::clog << "CTW0:S0:R0 " << ctw0_side_0_row_0_bitset << std::endl;
+		    // std::clog << "CTW0:S0:R1 " << ctw0_side_0_row_1_bitset << std::endl;
+		    // std::clog << "CTW0:S1:R0 " << ctw0_side_1_row_0_bitset << std::endl;
+		    // std::clog << "CTW0:S1:R1 " << ctw0_side_1_row_1_bitset << std::endl;
+		    // std::clog << bitset_ctw_0 << std::endl;
+		
+		    my_geiger_ctw_0.set_55_bits_in_ctw_word(iblock, bitset_ctw_0);
+		    my_geiger_ctw_1.set_55_bits_in_ctw_word(iblock, bitset_ctw_1);
+		    my_geiger_ctw_2.set_55_bits_in_ctw_word(iblock, bitset_ctw_2);
 
 
-	    // reset line number and side number :
-	    side = 0;
-	    line_number = 0;
-	  }
+		    
+		  } // end of iblock
 
+		my_geiger_ctw_0.tree_dump(std::clog, "My GG CTW 0 : ", "INFO : ");
+		my_geiger_ctw_1.tree_dump(std::clog, "My GG CTW 1 : ", "INFO : ");
+		my_geiger_ctw_2.tree_dump(std::clog, "My GG CTW 2 : ", "INFO : ");
+		std::clog << "GG CTW DATA SIZE = " << my_geiger_ctw_data.get_geiger_ctws().size() << std::endl;
+
+		
+		// reset line number and side number :
+		side = 0;
+		line_number = 0;
+		psd_count++;
+	      } // end of line.empty()
+
+
+	    //std::clog << psd_count << std::endl;
+
+      
+	  } // end of if psd count == 0
+	    
 	//std::clog << side << ' ' << line_number << ' ' << layer << ' ' << line << std::endl;
 	if (!line.empty()) line_number++;
       }
+    
 
     std::clog << "The end." << std::endl;
  }
@@ -294,6 +463,6 @@ int main( int  argc_ , char **argv_  )
    error_code = EXIT_FAILURE;
  }
 
- FALAISE_FINI();
+ falaise::terminate();
  return error_code;
 }

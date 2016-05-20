@@ -87,11 +87,11 @@ namespace snemo {
 	{
 	  if (_gg_ctw_.test(i + block_index_ * my_bitset_.size()) == true)
 	    {
-	      my_bitset_.set(i, 1);
+	      my_bitset_.set(i, true);
 	    }
 	  else
 	    {
-	      my_bitset_.set(i, 0);
+	      my_bitset_.set(i, false);
 	    }	  
 	}     
       return;
@@ -104,11 +104,11 @@ namespace snemo {
 	{
 	  if (my_bitset_.test(i) == true)
 	    {
-	      _gg_ctw_.set(i + block_index_ * my_bitset_.size(),1);
+	      _gg_ctw_.set(i + block_index_ * my_bitset_.size(), true);
 	    }
 	  else 
 	    {
-	      _gg_ctw_.set(i + block_index_ * my_bitset_.size(),0);
+	      _gg_ctw_.set(i + block_index_ * my_bitset_.size(), false);
 	    }	  
 	}
       _store |= STORE_GG_CTW;
@@ -122,11 +122,11 @@ namespace snemo {
 	{
 	  if (_gg_ctw_.test(i + block_index_ * geiger::tp::FULL_SIZE) == true)
 	    {
-	      my_bitset_.set(i, 1);
+	      my_bitset_.set(i, true);
 	    }
 	  else
 	    {
-	      my_bitset_.set(i, 0);
+	      my_bitset_.set(i, false);
 	    }	  
 	}     
       return;
@@ -139,11 +139,11 @@ namespace snemo {
 	{
 	  if (my_bitset_.test(i) == true)
 	    {
-	      _gg_ctw_.set(i + block_index_ * my_bitset_.size(),1);
+	      _gg_ctw_.set(i + block_index_ * 100, true);
 	    }
 	  else 
 	    {
-	      _gg_ctw_.set(i + block_index_ * my_bitset_.size(),0);
+	      _gg_ctw_.set(i + block_index_ * 100, false);
 	    }	  
 	}
       _store |= STORE_GG_CTW;
@@ -158,7 +158,7 @@ namespace snemo {
 	    {
 	      if (gg_tp_hardware_status_.test(j) == true)
 		{
-		  _gg_ctw_.set(i + j, 1);
+		  _gg_ctw_.set(i + j, true);
 		}
 	    }
 	}
@@ -176,7 +176,7 @@ namespace snemo {
 	    {
 	      if (board_id_bitset.test(j) == true)
 		{
-		  _gg_ctw_.set(i + j, 1);
+		  _gg_ctw_.set(i + j, true);
 		}
 	    }
 	  board_id ++;
@@ -193,7 +193,7 @@ namespace snemo {
 	    {
 	      if (gg_tp_crate_id_.test(j) == true)
 		{
-		  _gg_ctw_.set(i + j, 1);
+		  _gg_ctw_.set(i + j, true);
 		}
 	    }
 	}
