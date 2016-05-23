@@ -16,7 +16,7 @@
 // This project :
 #include <snemo/digitization/calo_ctw.h>
 
-int main( int /* argc_ */, char ** /* argv_ */ )
+int main(int argc_, char ** argv_)
 {
   falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;

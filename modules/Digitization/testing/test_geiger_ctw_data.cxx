@@ -18,7 +18,7 @@
 // This project :
 #include <snemo/digitization/geiger_ctw_data.h>
 
-int main( int /* argc_ */, char ** /* argv_ */ )
+int main(int argc_, char ** argv_)
 {
   falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;
