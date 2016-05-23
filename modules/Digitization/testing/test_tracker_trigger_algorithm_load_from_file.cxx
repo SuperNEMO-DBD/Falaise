@@ -144,6 +144,7 @@ int main( int  argc_ , char **argv_  )
     snemo::digitization::electronic_mapping my_e_mapping;
     my_e_mapping.set_geo_manager(my_manager);
     my_e_mapping.set_module_number(snemo::digitization::mapping::DEMONSTRATOR_MODULE_NUMBER);
+    my_e_mapping.add_preconstructed_type(snemo::digitization::mapping::GEIGER_CATEGORY_TYPE);
     my_e_mapping.initialize();
 
    // Loading memory from external files :
@@ -171,6 +172,8 @@ int main( int  argc_ , char **argv_  )
     snemo::digitization::tracker_trigger_algorithm my_tracker_trigger_algo;
     my_tracker_trigger_algo.set_electronic_mapping(my_e_mapping);
     my_tracker_trigger_algo.initialize(tracker_config);
+
+    std::vector<snemo::digitization::tracker_trigger_algorithm::tracker_record> my_tracker_records;
 
     // Internal counters :
     int psd_count = 0; // Event counter   
@@ -261,12 +264,30 @@ int main( int  argc_ , char **argv_  )
 		snemo::digitization::geiger_ctw & my_geiger_ctw_0 = my_geiger_ctw_data.add();
 		snemo::digitization::geiger_ctw & my_geiger_ctw_1 = my_geiger_ctw_data.add();
 		snemo::digitization::geiger_ctw & my_geiger_ctw_2 = my_geiger_ctw_data.add();
-		uint32_t clocktick = 0; // Just one clocktick for geiger ctw
-		my_geiger_ctw_0.set_clocktick_800ns(clocktick);
-		my_geiger_ctw_1.set_clocktick_800ns(clocktick);
-		my_geiger_ctw_2.set_clocktick_800ns(clocktick);
+		// Take care of the CT 800, only even clocktick are processed
+		uint32_t clocktick_800ns = 4; // Just one clocktick for geiger ctw
+		int hit_id = 42;
+		geomtools::geom_id temporary_elec_id;
+		temporary_elec_id.set_type(snemo::digitization::mapping::TRACKER_CONTROL_BOARD_TYPE);
+		temporary_elec_id.set_depth(snemo::digitization::mapping::BOARD_DEPTH);
+		temporary_elec_id.set(snemo::digitization::mapping::RACK_INDEX, snemo::digitization::mapping::GEIGER_RACK_ID);
+		temporary_elec_id.set(snemo::digitization::mapping::CRATE_INDEX, 0);
+		temporary_elec_id.set(snemo::digitization::mapping::BOARD_INDEX, snemo::digitization::mapping::CONTROL_BOARD_ID);
+		
+		my_geiger_ctw_0.set_header(hit_id,
+					   temporary_elec_id,
+					   clocktick_800ns);
 
+		temporary_elec_id.set(snemo::digitization::mapping::CRATE_INDEX, 1);
+		my_geiger_ctw_1.set_header(hit_id,
+					   temporary_elec_id,
+					   clocktick_800ns);
 
+		temporary_elec_id.set(snemo::digitization::mapping::CRATE_INDEX, 2);
+		my_geiger_ctw_2.set_header(hit_id,
+					   temporary_elec_id,
+					   clocktick_800ns);
+		       
 		for (int iblock = 0; iblock < 19; iblock++)
 		  {	    		
 		    std::bitset<snemo::digitization::geiger::tp::TP_SIZE> bitset_ctw_0;
@@ -423,16 +444,23 @@ int main( int  argc_ , char **argv_  )
 		    my_geiger_ctw_0.set_55_bits_in_ctw_word(iblock, bitset_ctw_0);
 		    my_geiger_ctw_1.set_55_bits_in_ctw_word(iblock, bitset_ctw_1);
 		    my_geiger_ctw_2.set_55_bits_in_ctw_word(iblock, bitset_ctw_2);
-
-
 		    
 		  } // end of iblock
 
-		my_geiger_ctw_0.tree_dump(std::clog, "My GG CTW 0 : ", "INFO : ");
-		my_geiger_ctw_1.tree_dump(std::clog, "My GG CTW 1 : ", "INFO : ");
-		my_geiger_ctw_2.tree_dump(std::clog, "My GG CTW 2 : ", "INFO : ");
+		// my_geiger_ctw_0.tree_dump(std::clog, "My GG CTW 0 : ", "INFO : ");
+		// my_geiger_ctw_1.tree_dump(std::clog, "My GG CTW 1 : ", "INFO : ");
+		// my_geiger_ctw_2.tree_dump(std::clog, "My GG CTW 2 : ", "INFO : ");
 		std::clog << "GG CTW DATA SIZE = " << my_geiger_ctw_data.get_geiger_ctws().size() << std::endl;
 
+		// la row du milieu fais foirer le process : check ctw1_bitset (plus haut) et voir comment 
+		// sont disposées en réalité les bits quand la row seule est touchée (décalage a faire au niveau des rows surement
+		// krow ++ ?
+
+
+		my_tracker_trigger_algo.process(my_geiger_ctw_data,
+						my_tracker_records);
+		
+		std::clog << "Tracker records size = " << my_tracker_records.size() << std::endl;
 		
 		// reset line number and side number :
 		side = 0;

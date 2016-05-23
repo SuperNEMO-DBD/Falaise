@@ -90,7 +90,7 @@ namespace snemo {
       //DT_THROW_IF(!is_locked(), std::logic_error, " Geiger CTW collection is not locked ! ");
       for (int i = 0; i < _geiger_ctws_.size(); i++)
       	{
-      	  if(_geiger_ctws_[i].get().get_clocktick_800ns() == clocktick_800ns_)
+      	  if(_geiger_ctws_[i].get().get_clocktick_800ns() == clocktick_800ns_ && _geiger_ctws_[i].get().has_trigger_primitive_values())
       	    {
       	      ctws_.push_back(_geiger_ctws_[i]);
       	    }

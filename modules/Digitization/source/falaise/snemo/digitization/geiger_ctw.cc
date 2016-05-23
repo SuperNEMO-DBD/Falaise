@@ -199,6 +199,21 @@ namespace snemo {
 	}
       return;
     }
+    
+    const bool geiger_ctw::has_trigger_primitive_values() const
+    {
+      bool has_value = false;
+      for (int i = 0; i < 19; i++)
+	{
+	  for (int j = 0; j < 55; j++)
+	    {
+	      if (_gg_ctw_.test(i * 100 + j) == true) has_value = true;
+	    }
+	}
+      return has_value;
+    }
+    
+
 
     bool geiger_ctw::is_locked() const
     {

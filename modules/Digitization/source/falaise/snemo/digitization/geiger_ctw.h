@@ -77,6 +77,9 @@ namespace snemo {
 
 			/// Set hardware status for all geiger tp word in the ctw even if there are empty
 			void set_full_hardware_status(const std::bitset<geiger::tp::THWS_SIZE> & gg_tp_hardware_status_);
+			
+			/// Check if the geiger ctw has trigger primitive value in the 1900 bits
+			const bool has_trigger_primitive_values() const;
 
 		protected : 
 
