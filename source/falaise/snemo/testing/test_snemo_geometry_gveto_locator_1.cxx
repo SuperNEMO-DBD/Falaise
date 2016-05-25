@@ -864,6 +864,7 @@ int main(int argc_, char ** argv_)
           only_categories.push_back("source_pad");
           only_categories.push_back("source_strip");
           only_categories.push_back("tracker_submodule");
+          only_categories.push_back("tracker_volume");
           only_categories.push_back("drift_cell_core");
           only_categories.push_back("gveto_block");
           only_categories.push_back("gveto_wrapper");

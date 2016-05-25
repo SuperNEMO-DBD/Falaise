@@ -635,6 +635,10 @@ namespace snemo {
       _module_box_    = 0;
       _cell_box_      = 0;
 
+      for (size_t i = 0; i < utils::NSIDES; i++) {
+        _submodules_[i] = false;
+      }
+
       datatools::invalidate(_anode_wire_length_);
       datatools::invalidate(_anode_wire_diameter_);
       datatools::invalidate(_field_wire_length_);
@@ -722,8 +726,23 @@ namespace snemo {
       _module_box_ = dynamic_cast<const geomtools::box * >(a_shape);
       _module_world_placement_ = & _module_ginfo_->get_world_placement();
 
-      // pick up the first available cell :
-      const geomtools::geom_id cell_gid(_cell_type_, _module_number_, 0, 0, 0);
+      // Search for tracker submodules :
+      geomtools::geom_id side_gid;
+      side_gid.set_type(_tracker_volume_type_);
+      uint32_t ref_side = geomtools::geom_id::INVALID_ADDRESS;
+      for (size_t iside = 0; iside < utils::NSIDES; iside++) {
+        side_gid.set_address(_module_number_, iside);
+        if (_mapping_->validate_id(side_gid)) {
+          _submodules_[iside] = true;
+          ref_side = iside;
+        }
+      }
+      DT_THROW_IF(ref_side == geomtools::geom_id::INVALID_ADDRESS,
+                  std::logic_error,
+                  "Cannot extract information about any tracker submodules !");
+
+      // Pick up the first available cell :
+      const geomtools::geom_id cell_gid(_cell_type_, _module_number_, ref_side, 0, 0);
       DT_THROW_IF(! _mapping_->validate_id(cell_gid),
                   std::logic_error,
                   "Cannot extract information about a cell with ID = " << cell_gid << " !");
@@ -738,7 +757,9 @@ namespace snemo {
       std::vector<double> * vlx[utils::NSIDES];
       vlx[0] = &_back_cell_x_;
       vlx[1] = &_front_cell_x_;
+      // Loop on tracker sides:
       for (size_t side = 0; side < utils::NSIDES; side++) {
+        if (!_submodules_[side]) continue;
         size_t i_layer = 0;
         vlx[side]->reserve(10);
         while (true) {
@@ -759,7 +780,9 @@ namespace snemo {
       std::vector<double> * vcy[utils::NSIDES];
       vcy[0] = &_back_cell_y_;
       vcy[1] = &_front_cell_y_;
+      // Loop on tracker sides:
       for (size_t side = 0; side < utils::NSIDES; side++) {
+        if (!_submodules_[side]) continue;
         size_t i_cell = 0;
         vlx[side]->reserve(130);
         while (true) {

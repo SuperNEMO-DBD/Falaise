@@ -319,6 +319,9 @@ namespace snemo {
       int _layer_address_index_;
       int _row_address_index_;
 
+      // Submodules are present :
+      bool _submodules_[2];
+
     };
 
   }  // end of namespace geometry

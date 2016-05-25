@@ -648,7 +648,7 @@ namespace snemo {
         // Check the requested block part number if any
       }
 
-      // Search for calorimeter submodules :
+      // Search for tracker submodules :
       geomtools::geom_id side_gid;
       side_gid.set_type(_tracker_submodule_type_);
       uint32_t side = geomtools::geom_id::INVALID_ADDRESS;
@@ -662,7 +662,7 @@ namespace snemo {
       }
       DT_THROW_IF(side >= utils::NSIDES,
                   std::logic_error,
-                  "Cannot extract information about any calorimeter submodules !");
+                  "Cannot extract information about any tracker submodules !");
 
       // Pick up the first available block in a submodule at given side :
       geomtools::geom_id block_gid;
