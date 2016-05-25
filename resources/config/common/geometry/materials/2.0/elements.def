@@ -19,8 +19,8 @@ isotope.weights : real[1]   =   1.0
 [name="snemo::selenium-82::97percent" type="element"]
 #@config The 82 Selenium enriched element (97 %)
 z               : integer   = 34
-isotope.names   : string[1] = "Se-82" "Se-80" "Se-78"
-isotope.weights : real[1]   =  0.97    0.02    0.01
+isotope.names   : string[3] = "Se-82" "Se-80" "Se-78"
+isotope.weights : real[3]   =  0.97    0.02    0.01
 
 
 #########################################
