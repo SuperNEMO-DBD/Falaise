@@ -12,7 +12,7 @@ elseif(APPLE)
   # Temporary setting - needs testing
   set_target_properties(${_app_name}
     PROPERTIES
-    INSTALL_RPATH "@loader_path/../${CMAKE_INSTALL_LIBDIR}"
+    INSTALL_RPATH "@executable_path/../${CMAKE_INSTALL_LIBDIR};@executable_path/../${CMAKE_INSTALL_LIBDIR}/Falaise/modules"
     )
 endif()
 
