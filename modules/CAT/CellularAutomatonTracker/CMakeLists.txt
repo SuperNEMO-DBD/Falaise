@@ -18,43 +18,11 @@ endif()
 #----------------------------------------------------------------------------
 # Define the project
 #
-cmake_minimum_required(VERSION 2.8)
-project(CellularAutomatonTracker)
+cmake_minimum_required(VERSION 3.3)
+project(CellularAutomatonTracker VERSION 0.3.4)
 
-#----------------------------------------------------------------------------
-# Prepend this project's custom module path(s) to CMAKE_MODULE_PATH
-#
-file(TO_CMAKE_PATH "$ENV{CMAKE_MODULE_PATH}" __env_cmake_module_path)
-
-set(CMAKE_MODULE_PATH 
-  ${PROJECT_SOURCE_DIR}/cmake/Modules 
-  ${CMAKE_MODULE_PATH}
-  )
-
-if (DEFINED ADDITIONAL_CMAKE_MODULE_PATH AND NOT "x${ADDITIONAL_CMAKE_MODULE_PATH}" STREQUAL "x" )
-  message ( STATUS "${PROJECT_NAME}: Using additional CMAKE_MODULE_PATH : '${ADDITIONAL_CMAKE_MODULE_PATH}'" )
-  set(CMAKE_MODULE_PATH
-    ${ADDITIONAL_CMAKE_MODULE_PATH}
-    ${CMAKE_MODULE_PATH}
-    )
-endif ()
-
-#----------------------------------------------------------------------------
-# Set versioning for this project
-#
-include(ProjectVersion)
-set_project_version(${PROJECT_NAME} 0 3 4)
-
-#----------------------------------------------------------------------------
-# Include any modules providing top level functionality
-#
-# - Standard install locations
-include(ProjectInstallDirs)
-
-set ( _ld_library_path_env "LD_LIBRARY_PATH" )
-if ( CMAKE_SYSTEM_NAME MATCHES Darwin )
-  set ( _ld_library_path_env "DYLD_LIBRARY_PATH" )
-endif ( CMAKE_SYSTEM_NAME MATCHES Darwin )
+# Custom modules
+list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR})
 
 # - Packaging with CPack
 include(CellularAutomatonTrackerPackaging)
@@ -81,7 +49,7 @@ endif()
 # Minimal build means we do not build the CATutils DLL nor special debug/development/display material
 option ( CAT_MINIMAL_BUILD  "Minimal build " ON)
 message( STATUS "${PROJECT_NAME}: CAT_MINIMAL_BUILD=${CAT_MINIMAL_BUILD}." )
- 
+
 set ( CAT_WITH_DEVEL_UTILS      0 )
 set ( CAT_WITH_DEVEL_DISPLAY    0 )
 set ( CAT_WITH_DEVEL_HISTOGRAMS 0 )
@@ -90,7 +58,7 @@ if (NOT CAT_MINIMAL_BUILD)
   set ( CAT_WITH_DEVEL_DISPLAY    1 )
   set ( CAT_WITH_DEVEL_HISTOGRAMS 1 )
 endif ()
- 
+
 # Optional ROOT dependency:
 set (_cat_needs_root 0)
 if (CAT_WITH_DEVEL_DISPLAY OR CAT_WITH_DEVEL_HISTOGRAMS OR CAT_WITH_DEVEL_UTILS)
@@ -100,12 +68,12 @@ endif ()
 
 message ( STATUS "DEVEL: _cat_needs_root == ${_cat_needs_root}")
 if (_cat_needs_root EQUAL 1)
-  if ( NOT "$ENV{ROOT_ROOT_DIR}" STREQUAL "")  
+  if ( NOT "$ENV{ROOT_ROOT_DIR}" STREQUAL "")
     message ( STATUS "Environment ROOT_ROOT_DIR exists : '$ENV{ROOT_ROOT_DIR}' ")
     set ( ROOT_ROOT_DIR $ENV{ROOT_ROOT_DIR} )
   else ()
     message ( WARNING  "Environment ROOT_ROOT_DIR is not set !" )
-    if ( NOT "$ENV{ROOTSYS}" STREQUAL "")  
+    if ( NOT "$ENV{ROOTSYS}" STREQUAL "")
       message ( STATUS "Environment ROOTSYS exists : '$ENV{ROOTSYS}' ")
       set ( ROOT_ROOT_DIR $ENV{ROOTSYS} )
     else ()
@@ -118,18 +86,7 @@ endif ()
 # Always need CLHEP :
 find_package(CLHEP 2.1.0.1 REQUIRED)
 
-# Always need Boost :
-if ( NOT "$ENV{BOOST_ROOT}" STREQUAL "" )  
-  message ( STATUS "Environment BOOST_ROOT exists : '$ENV{BOOST_ROOT}' ")
-  set ( BOOST_ROOT $ENV{BOOST_ROOT} )
-else ()
-  message ( STATUS  "Environment BOOST_ROOT is not set" )
-endif ()
-if ( DEFINED BOOST_ROOT )  
-  message ( STATUS  "BOOST_ROOT='${BOOST_ROOT}'" )
-endif ()
-
-set ( _boost_requested_components math_c99 ) 
+set ( _boost_requested_components math_c99 )
 #filesystem serialization iostreams math_c99 math_tr1 system program_options python )
 set ( Boost_ADDITIONAL_VERSIONS 1.47 1.47.0 )
 set ( Boost_NO_SYSTEM_PATHS ON )
@@ -138,10 +95,18 @@ if (NOT Boost_MATH_C99_FOUND)
   message ( FATAL_ERROR "Cannot find the Boost/Math library !" )
 endif ()
 
+#-----------------------------------------------------------------------
+# CAT is shit tier quality, so disable shadowing warnings to avoid mental
+# breakdown
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-shadow")
+endif()
+
+
 #----------------------------------------------------------------------------
 # Use of ROOT means we should look up undefined symbols dynamically on Apple
 if(APPLE AND UNIX)
-  set(CMAKE_SHARED_LINKER_FLAGS 
+  set(CMAKE_SHARED_LINKER_FLAGS
     "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup"
     )
 endif()
@@ -182,24 +147,24 @@ if (_cat_needs_root EQUAL 1)
   list(APPEND CellularAutomatonTracker_THIRD_PARTY_INCLUDE_DIRS ${ROOT_LIBRARIES})
 endif ()
 
-export(TARGETS 
+export(TARGETS
   mybhep
   FILE ${PROJECT_BINARY_DIR}/CellularAutomatonTrackerLibraryDepends.cmake
   )
 
 if(CAT_WITH_DEVEL_UTILS)
-  export(TARGETS 
+  export(TARGETS
     CATUtils APPEND
     FILE ${PROJECT_BINARY_DIR}/CellularAutomatonTrackerLibraryDepends.cmake
     )
 endif ()
 
-export(TARGETS 
+export(TARGETS
   sultan APPEND
   FILE ${PROJECT_BINARY_DIR}/CellularAutomatonTrackerLibraryDepends.cmake
   )
 
-export(TARGETS 
+export(TARGETS
   CATAlgorithm APPEND
   FILE ${PROJECT_BINARY_DIR}/CellularAutomatonTrackerLibraryDepends.cmake
   )
@@ -265,7 +230,7 @@ configure_file(${PROJECT_SOURCE_DIR}/cmake/Templates/CellularAutomatonTrackerCon
 
 # Install the config files into the install tree
 install(FILES
-  ${PROJECT_BINARY_DIR}/InstallTreeFiles/CellularAutomatonTrackerConfig.cmake    
+  ${PROJECT_BINARY_DIR}/InstallTreeFiles/CellularAutomatonTrackerConfig.cmake
   ${PROJECT_BINARY_DIR}/InstallTreeFiles/CellularAutomatonTrackerConfigVersion.cmake
   DESTINATION ${CellularAutomatonTracker_CMAKE_DIR}
   COMPONENT Development
@@ -288,8 +253,8 @@ configure_file ( "${PROJECT_SOURCE_DIR}/cmake/Templates/cellularautomatontracker
 
 install ( FILES ${PROJECT_BINARY_DIR}/cmake/Templates/cellularautomatontracker-config
   DESTINATION ${CMAKE_INSTALL_BINDIR}
-  PERMISSIONS OWNER_READ OWNER_EXECUTE 
-  GROUP_READ GROUP_EXECUTE 
+  PERMISSIONS OWNER_READ OWNER_EXECUTE
+  GROUP_READ GROUP_EXECUTE
   WORLD_READ WORLD_EXECUTE
   )
 
