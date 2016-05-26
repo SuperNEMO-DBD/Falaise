@@ -60,11 +60,11 @@ namespace snemo {
 
       bool style_manager::use_opengl() const
       {
-        bool use_opengl = false;
+        bool can_use_opengl = false;
 #ifdef EVENTBROWSER_USE_OPENGL
-        use_opengl = true;
+        can_use_opengl = true;
 #endif
-        return use_opengl;
+        return can_use_opengl;
       }
 
       void style_manager::set_filename(const std::string & filename_)
