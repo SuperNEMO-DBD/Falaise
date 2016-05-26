@@ -35,10 +35,10 @@ namespace mybhep{
 
 
   // constructor
-  event::event(int number, const mybhep::Point3D& vertex) :
+  event::event(int number, const mybhep::Point3D& vertex_arg) :
     event_number_(number)
   {
-    vertex_ = new mybhep::Point3D(vertex);
+    vertex_ = new mybhep::Point3D(vertex_arg);
   }
 
   // constructor
@@ -57,9 +57,9 @@ namespace mybhep{
   }
 
   // set vertex
-  void event::set_vertex(double x, double y, double z)
+  void event::set_vertex(double x_arg, double y_arg, double z_arg)
   {
-    vertex_->set( x, y, z);
+    vertex_->set( x_arg, y_arg, z_arg);
   }
 
   // set vertex
@@ -69,25 +69,25 @@ namespace mybhep{
   }
 
 
-  void event::add_particle(ptype type, particle* p)
+  void event::add_particle(ptype type_arg, particle* p)
   {
-    Assert(type == TRUTH || type == DIGI, __FILE__,__LINE__,
+    Assert(type_arg == TRUTH || type_arg == DIGI, __FILE__,__LINE__,
            internal_logic("  unknown particle type!!!"));
 
-    if(type == TRUTH)
+    if(type_arg == TRUTH)
       true_particles_.push_back(p);
     else
       digi_particles_.push_back(p);
   }
 
-  bool event::filter(ptype type,
+  bool event::filter(ptype type_arg,
                      std::string property_name,
                      std::string property_value,
                      std::vector<particle*>& pft)
   {
     std::vector<particle*> prt;
 
-    if (type == TRUTH)
+    if (type_arg == TRUTH)
       prt = true_particles();
     else
       prt = digi_particles();
@@ -116,11 +116,11 @@ namespace mybhep{
     vertex_->set(small_neg,small_neg,small_neg);
   }
 
-  bool event::find_daugthers(particle* p,ptype type, std::vector<particle*>& dau)
+  bool event::find_daugthers(particle* p,ptype type_arg, std::vector<particle*>& dau)
   {
     std::vector<particle*> prt;
 
-    if (type == TRUTH)
+    if (type_arg == TRUTH)
       prt = true_particles();
     else
       prt = digi_particles();
@@ -143,7 +143,7 @@ namespace mybhep{
     return true;
   }
 
-  int event::find_tree(particle* p,ptype type, std::vector<particle*>& daut)
+  int event::find_tree(particle* p,ptype type_arg, std::vector<particle*>& daut)
   {
     int generation = 0;
     daut.clear();
@@ -151,7 +151,7 @@ namespace mybhep{
     std::vector<particle*> dau1;
     std::vector<particle*> dau;
 
-    bool test = find_daugthers(p,type,daut);
+    bool test = find_daugthers(p,type_arg,daut);
 
     if (test == false) return generation;
     dau = daut;
@@ -166,7 +166,7 @@ namespace mybhep{
             dau0.clear();
 
             // for each particle find descendats
-            bool test2 = find_daugthers(a_particle,type,dau0);
+            bool test2 = find_daugthers(a_particle,type_arg,dau0);
 
             // store all of them in dau1 which holds all
             // particles of a given generation
@@ -184,12 +184,12 @@ namespace mybhep{
     return generation;
   }
 
-  bool event::particle_existence(particle* pr, ptype type)
+  bool event::particle_existence(particle* pr, ptype type_arg)
   {
     bool found = false;
     std::vector<particle*> prt;
 
-    if (type == TRUTH)
+    if (type_arg == TRUTH)
       prt = true_particles();
     else
       prt = digi_particles();
@@ -206,16 +206,16 @@ namespace mybhep{
     return found;
   }
 
-  bool event::delete_particle(particle* pr, ptype type)
+  bool event::delete_particle(particle* pr, ptype type_arg)
   {
-    bool test = particle_existence(pr, type);
+    bool test = particle_existence(pr, type_arg);
     std::vector<particle*> daut;
     if (!test) return false;
 
     std::vector<particle*>::iterator ip;
 
     // find all daugthers tree
-    bool test2 = find_daugthers(pr,type, daut);
+    bool test2 = find_daugthers(pr,type_arg, daut);
     //    clog << "found "<< daut.size() << " daugthers" << endl;
 
     if (test2)
@@ -224,7 +224,7 @@ namespace mybhep{
           {
             particle* p= *ip;
             //      clog << "running through particle = " << p << endl;
-            delete_particle(p,type);
+            delete_particle(p,type_arg);
           }
       }
     else
@@ -234,10 +234,10 @@ namespace mybhep{
 
         const particle& cpm = pr->mother();
         if (cpm.has_mother())
-          erase_mother_memory(cpm,pr,type);
+          erase_mother_memory(cpm,pr,type_arg);
 
         //      clog << " erase event memory now" << endl;
-        erase_event_memory(pr,type);
+        erase_event_memory(pr,type_arg);
 
         //      clog << "is my pointer still alive? " << endl;
         //clog << "p = " <<pr << endl;
@@ -249,12 +249,12 @@ namespace mybhep{
     return true;
   }
 
-  void event::erase_event_memory(const particle* p, ptype type)
+  void event::erase_event_memory(const particle* p, ptype type_arg)
   {
 
     std::vector<particle*>::iterator ip;
 
-    if (type == TRUTH)
+    if (type_arg == TRUTH)
       {
         //      clog << "event before memory erase: particles now in event= "
         //           <<true_particles_.size()<<endl;;
@@ -292,10 +292,10 @@ namespace mybhep{
 
 
   void event::erase_mother_memory(const particle& cpm,const particle* p,
-                                  ptype type)
+                                  ptype type_arg)
   {
     std::vector<particle*> prt;
-    if (type == TRUTH)
+    if (type_arg == TRUTH)
       prt = true_particles();
     else
       prt = digi_particles();
