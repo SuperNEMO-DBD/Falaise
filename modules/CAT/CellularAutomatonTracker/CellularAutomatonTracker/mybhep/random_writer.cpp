@@ -36,9 +36,9 @@ namespace mybhep{
   }
 
   //! set path
-  void random_writer::set_path(std::string path)
+  void random_writer::set_path(std::string path_arg)
   {
-    path_ = path;
+    path_ = path_arg;
   }
   
   //! return path
