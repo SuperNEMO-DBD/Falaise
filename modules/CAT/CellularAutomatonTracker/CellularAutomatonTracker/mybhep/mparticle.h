@@ -100,15 +100,15 @@ namespace mybhep{
     particle*  mirror()  {return mirror_ ;}
 
     //! set view
-    void set_view(std::string view) {view_ = view;}
+    void set_view(std::string view_arg) {view_ = view_arg;}
     //! get view
     std::string view() const {return view_ ;}
     //! set number of matches in xz
-    void set_xz(size_t xz) {xz_ = xz;}
+    void set_xz(size_t xz_arg) {xz_ = xz_arg;}
     //! get number of matches in xz
     size_t xz() const {return xz_ ;}
     //! set number of matches in yz
-    void set_yz(size_t yz) {yz_ = yz;}
+    void set_yz(size_t yz_arg) {yz_ = yz_arg;}
     //! get number of matches in yz
     size_t yz() const {return yz_ ;}
     //! set quality
