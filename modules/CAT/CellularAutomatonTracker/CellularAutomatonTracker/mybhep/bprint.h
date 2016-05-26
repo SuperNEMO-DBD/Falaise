@@ -58,15 +58,15 @@ namespace mybhep{
     void set_print_level(prlevel& level) {level_ = level;}
 
     /// set the verbosity level
-    void set_print_level(std::string info){
-      if(info == "MUTE")  level_ = MUTE;
-      else if(info == "QUIET")  level_ = CONCISE;
-      else if(info == "NORMAL")  level_ = NORMAL;
-      else if(info == "WARNING")  level_ = WARNING;
-      else if(info == "DETAILED")  level_ = DETAILED;
-      else if(info == "VERBOSE")  level_ = VERBOSE;
-      else if(info == "VVERBOSE")  level_ = VVERBOSE;
-      else if(info == "DUMP")  level_ = DUMP;
+    void set_print_level(std::string info_repr){
+      if(info_repr == "MUTE")  level_ = MUTE;
+      else if(info_repr == "QUIET")  level_ = CONCISE;
+      else if(info_repr == "NORMAL")  level_ = NORMAL;
+      else if(info_repr == "WARNING")  level_ = WARNING;
+      else if(info_repr == "DETAILED")  level_ = DETAILED;
+      else if(info_repr == "VERBOSE")  level_ = VERBOSE;
+      else if(info_repr == "VVERBOSE")  level_ = VVERBOSE;
+      else if(info_repr == "DUMP")  level_ = DUMP;
       else
         level_ = NORMAL;
     }
@@ -79,7 +79,3 @@ namespace mybhep{
 }
 
 #endif
-
-
-
-
