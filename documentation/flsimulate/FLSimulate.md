@@ -35,7 +35,7 @@ of `--help` options, e.g.
 
 ~~~~~
 $ flsimulate --help
-flsimulate 1.0.0
+flsimulate 2.1.0
 Usage:
   flsimulate [options]
 Options
@@ -62,16 +62,16 @@ status of the application, including which libraries it uses:
 $ flsimulate --version
 flsimulate 1.0.0
 
-Copyright (C) 2013-2014 SuperNEMO Collaboration
+Copyright (C) 2013-2016 SuperNEMO Collaboration
 
 flsimulate uses the following external libraries:
-* Falaise : 1.0.0
-* Bayeux  : 1.0.0
-* Boost   : 105500
-* Geant4  : 10.x (eventually)
+* Falaise : 2.1.0
+* Bayeux  : 2.1.0
+* Boost   : 106000
+* Geant4  : 9.6.4
 ~~~~~
 
-Note that the exatc versions shown will depend on the current release
+Note that the exact versions shown will depend on the current release
 and what versions of packages are linked.
 
 At present, you can only run the simulation in batch mode. The Demonstrator
@@ -107,7 +107,8 @@ $ flsimulate --experiment=demonstrator -n 100 -e Se82.2nubb -x source_strips_bul
 $
 ~~~~~
 
-The resultant files can be examined with the `flreconstruct` application.
+The resultant files can be examined with the `flreconstruct` application, see the
+[dedicated guide](@ref usingflreconstruct) for further details.
 
 Available Experiments {#usingflsimulate_experiments}
 =====================

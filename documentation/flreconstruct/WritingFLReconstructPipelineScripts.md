@@ -45,6 +45,7 @@ dpp::output_module
 dpp::skip_module
 dpp::utils_module
 mctools::simulated_data_input_module
+snemo::processing::event_header_utils_module
 snemo::processing::mock_calorimeter_s2c_module
 snemo::processing::mock_tracker_s2c_module
 snemo::reconstruction::cat_tracker_clustering_module
