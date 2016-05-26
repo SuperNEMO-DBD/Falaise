@@ -23,8 +23,8 @@ environment:
   * Mac OS X 10.9/10/11 (Mavericks/Yosemite/El Capitan)
     * Earlier versions should work, but are not tested
 * Several GB of free disk space:
-  * At least 200MB for a source code check out
-  * At least 6.5GB for a first from scratch build
+  * At least 100MB for a source code check out
+  * An additional 500MB for a the build
 * Familiarity with the UNIX command line
 * Required Software
   * Subversion 1.6 or above
@@ -40,20 +40,20 @@ everything needed.
 Installing Falaise Using the `CadfaelBrew` Package Manager {#flinstallguide_cadfaelbrew}
 ==========================================================
 If you simply wish to use Falaise, we recommend installing it using the
-[`Cadfaelbrew`](https://github.com/SuperNEMO-DBD/cadfaelbrew) package
+[`Cadfaelbrew`](https://github.com/SuperNEMO-DBD/brew) package
 manager. This provides the complete stack of packages required by Falaise
 and may be installed using the following commands:
 
 ~~~~~
 $ cd $HOME
-$ git clone https://github.com/SuperNEMO-DBD/cadfaelbrew.git cadfaelbrew
+$ git clone https://github.com/SuperNEMO-DBD/brew.git cadfaelbrew
 $ export PATH="$HOME/cadfaelbrew/bin:$PATH"
 $ brew cadfael-bootstrap
 $ brew install falaise
 ~~~~~
 
 For further information, including troubleshooting the installation,
-please refer to the [`Cadfaelbrew` project page](https://github.com/SuperNEMO-DBD/cadfaelbrew).
+please refer to the [`Cadfaelbrew` project page](https://github.com/SuperNEMO-DBD/brew).
 
 Installing Falaise from Source
 ==============================
@@ -61,8 +61,8 @@ In addition to the core system listed above, Falaise requires several
 third party libraries to implement its functionality, specifically
 
 - C++11 Compliant Compiler (GCC >=4.9, Clang >= 3.4, Intel >= 15)
-- [CMake](http://www.cmake.org) 3.3 or higher
-- Make, Ninja or Xcode buildtools
+- [CMake](http://www.cmake.org) 3.3 or higher for configuration
+- Make, Ninja or Xcode to build and install
 - [Bayeux C++ Libraries]() 2.1.0 and higher.
 - [Boost C++ Libraries](http://www.boost.org) 1.55.0 and higher
 - [CAMP C++ Reflection Library](https://github.com/tegesoft/camp) 0.7.1 and higher
@@ -203,7 +203,8 @@ current tags of Falaise by doing
 $ svn ls Falaise/tags
 Falaise-1.0.0
 Falaise-2.0.0
-Falaise-2.1.0
+...
+Falaise-@Falaise_VERSION@
 ~~~~~
 
 Tags are always named using the standard `MAJOR.MINOR.PATCH` convention
@@ -319,23 +320,11 @@ indicated by the last lines being:
 Development of Falaise enforces removal of compiler warnings as far as
 possible, so you should not see any when building release versions
 on the tested platforms listed earlier. If you do see any warnings or
-errors, these should be reported to the Software Working Group. Warnings
-should not affect success of the build, but if you are in any doubt as to
-this, simply run make again without the `-j` argument and you should see
-output similar to:
-
-~~~~~
-$ make
-[ 89%] Built target Bayeux
-[ 94%] Built target Bayeux_mctools_geant4
-[ 94%] Built target bayeux_docs
-[ 97%] Built target Falaise
-[ 97%] Built target flsimulate
-[ 98%] Built target flreconstruct
-[ 99%] Built target falaise_io
-[100%] Built target testCommissioningIO
-[100%] Built target falaise_docs
-~~~~~
+errors, these should be reported to the Software Working Group. By default,
+the build is configured to treat warnings as errors, but this may be disabled
+by setting the CMake variable `FALAISE_COMPILER_ERROR_ON_WARNING` to `ON` via
+a command line argument to CMake (`-DFALAISE_COMPILER_ERROR_ON_WARNING=OFF`)
+or by toggling it in the CMake curses/GUI.
 
 After a successful build, you can install Falaise to the location you
 passed to `CMAKE_INSTALL_PREFIX` with
@@ -353,7 +342,7 @@ installs/falaise-@Falaise_VERSION@
 |-- include
 |   |-- bayeux
 |   `-- falaise
-|-- lib{64}
+|-- lib{64/<arch>}
 |   |-- cmake
 |   `-- Falaise
 `-- share
@@ -361,8 +350,10 @@ installs/falaise-@Falaise_VERSION@
     `-- Falaise-@Falaise_VERSION@
 ~~~~~
 
-The `64` suffix to the library directory will only be present on Linux
-systems that enforce the `lib64` convention.
+The `64` suffix to the library directory or the presence of an additional
+arch directory level will only be present on certain Linux systems.
+Falaise's default install layout tries to match the conventions of the target
+platform as far as possible.
 
 Using an Install of Falaise {#flinstallguide_using}
 ---------------------------
@@ -479,10 +470,11 @@ $ ctest
 
 in the build directory.
 
-Builds of the trunk can also be installed, but is recommended not to do
-this due to the rapid development cycle expected and the need to run tests. All of the programs and libraries in
-a build of Falaise are directly usable without installation, and are
-output to a directory named `BuildProducts` under the main build directory:
+Builds of the trunk can also be installed, but this is not recommended
+due to the rapid development cycle expected and the need to run tests.
+Rather, programs built from the trunk can and should be run directly from the
+build directory. To provide commonality with the install locations, Falaise's
+build products are output to a directory named `BuildProducts` under the main build directory:
 
 ~~~~~
 $ cd /Users/snemo/SuperNEMO/builds
@@ -506,7 +498,7 @@ BuildProducts/
 |   |-- flsimulate
 |-- include
 |   `-- falaise
-|-- lib64
+|-- lib{64/<arch>}
 |   |-- Falaise
 |   |-- cmake
 |   `-- libFalaise.so
