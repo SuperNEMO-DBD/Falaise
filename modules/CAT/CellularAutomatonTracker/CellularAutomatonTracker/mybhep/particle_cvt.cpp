@@ -38,10 +38,10 @@ namespace mybhep{
   using namespace std;
 
   // FIXME label consistency!
-  particle_cvt::particle_cvt( const particle& par, int index )
+  particle_cvt::particle_cvt( const particle& par, int index_arg )
     : ibconverter()
   {
-    set_index( index );
+    set_index( index_arg );
     set_name( "__particle__" );
     set_owner(false);
     particle_ = &par;
@@ -263,14 +263,14 @@ void  particle_cvt::restore( std::string def )
     converter_svc& csvc = mybhep_svc::instance().
       converter_service();
 
-    std::string name;
-    istr >> name ;
+    std::string name_par;
+    istr >> name_par ;
 
     int indx;
     istr >> indx ;
 
     set_index( indx );
-    set_name( name );
+    set_name( name_par );
 
     std::string particle_name;
 
@@ -282,8 +282,8 @@ void  particle_cvt::restore( std::string def )
     istr >> primary ;
 
     // type
-    int type;
-    istr >> type;
+    int type_par;
+    istr >> type_par;
 
     // FIXME! Commented out to avoid crashes, must figure out
     // why type wrong
@@ -291,8 +291,8 @@ void  particle_cvt::restore( std::string def )
 //         internal_logic("  unknown particle type!!!"));
 
     // state
-    int state;
-    istr >> state;
+    int state_par;
+    istr >> state_par;
 
     // FIXME! Commented out to avoid crashes, must figure out
     // why state wrong
@@ -303,14 +303,14 @@ void  particle_cvt::restore( std::string def )
 
     ptype pt;
 
-    if(type == 0) pt = TRUTH;
+    if(type_par == 0) pt = TRUTH;
     else pt =DIGI;
 
     pstate pst;
 
-    if(state == 0) pst = PROJ;
-    else if(state == 1) pst = MPROJ;
-    else if(state == 2) pst = TRK;
+    if(state_par == 0) pst = PROJ;
+    else if(state_par == 1) pst = MPROJ;
+    else if(state_par == 2) pst = TRK;
     else pst = PID;
 
     //create new particle
@@ -514,10 +514,10 @@ void  particle_cvt::restore( std::string def )
 
     for(size_t ipar =0; ipar < idaughters_.size(); ipar++)
       {
-        int index = idaughters_[ipar];
+        int index_par = idaughters_[ipar];
         try{
           particle_cvt& pcvt = *(dynamic_cast<particle_cvt*>
-                                 (&csvc.converter(index)));
+                                 (&csvc.converter(index_par)));
 
 
           particle& pp = pcvt.reference();
@@ -532,10 +532,10 @@ void  particle_cvt::restore( std::string def )
 
     for(size_t itrk =0; itrk < imirror_.size(); itrk++)
       {
-        int index = imirror_[itrk];
+        int index_par = imirror_[itrk];
         try{
           mparticle_cvt& tcvt = *(dynamic_cast<mparticle_cvt*>
-                              (&csvc.converter(index)));
+                              (&csvc.converter(index_par)));
 
           mparticle* tr = tcvt.create();
           nparticle_->add_mirror(tr);
@@ -549,10 +549,10 @@ void  particle_cvt::restore( std::string def )
 
     for(size_t itrk =0; itrk < tracks_.size(); itrk++)
       {
-        int index = tracks_[itrk];
+        int index_par = tracks_[itrk];
         try{
           track_cvt& tcvt = *(dynamic_cast<track_cvt*>
-                              (&csvc.converter(index)));
+                              (&csvc.converter(index_par)));
 
 
           track* tr = tcvt.create();
@@ -575,10 +575,10 @@ void  particle_cvt::restore( std::string def )
 
         for(I i=b.first; i !=b.second; ++i)
           {
-            int index = i->second;
+            int index_par = i->second;
             try{
               hit_cvt& tcvt = *(dynamic_cast<hit_cvt*>
-                                (&csvc.converter(index)));
+                                (&csvc.converter(index_par)));
 
 
               hit* tr = tcvt.create();
