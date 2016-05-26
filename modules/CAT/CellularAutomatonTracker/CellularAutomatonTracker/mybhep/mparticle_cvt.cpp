@@ -35,10 +35,10 @@ namespace mybhep{
   // using namespace std;
 
   // FIXME label consistency!
-  mparticle_cvt::mparticle_cvt( const mparticle& par, int index )
+  mparticle_cvt::mparticle_cvt( const mparticle& par, int index_arg )
     : ibconverter()
   {
-    set_index( index );
+    set_index( index_arg );
     set_name( "__mirror__" );
     set_owner(false);
     particle_ = &par;
@@ -106,24 +106,24 @@ namespace mybhep{
 // #endif
 
 
-    std::string name;
-    istr >> name ;
+    std::string name_par;
+    istr >> name_par ;
 
     int indx;
     istr >> indx ;
 
     set_index( indx );
-    set_name( name );
+    set_name( name_par );
 
     //create new particle
     nparticle_ = new mparticle();
     set_owner(true);
 
     // read view
-    std::string view;
+    std::string view_par;
 
-    istr >> view;
-    nparticle_->set_view(view);
+    istr >> view_par;
+    nparticle_->set_view(view_par);
 
     // read xz,yz,quality and set to mparticle
     size_t xz,yz;
