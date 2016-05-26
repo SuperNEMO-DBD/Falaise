@@ -156,9 +156,9 @@ namespace mybhep {
     void set_decay_vertex(const mybhep::Point3D& p);
 
     //! add a daughter to the particle
-    void add_daughter(const particle& p)
+    void add_daughter(const particle& p_arg)
     {
-      daughters_.push_back(&p);
+      daughters_.push_back(&p_arg);
     }
 
     //! add a track to the particle
@@ -300,18 +300,18 @@ namespace mybhep {
     }
 
     //! set description of particle type
-    void set_type(ptype type) {
-      ptype_ = type;
+    void set_type(ptype type_arg) {
+      ptype_ = type_arg;
     }
 
     //! set description of particle state
-    void set_state(pstate state) {
-      pstate_ = state;
+    void set_state(pstate state_arg) {
+      pstate_ = state_arg;
     }
 
     //! set description of particle mother
-    void set_mother(bool has_mother) {
-      has_mother_ = has_mother;
+    void set_mother(bool has_mother_arg) {
+      has_mother_ = has_mother_arg;
       if (!has_mother_) mother_ = NULL;
     }
     //! track length
