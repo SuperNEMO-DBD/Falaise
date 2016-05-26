@@ -60,9 +60,9 @@ namespace mybhep{
   public:
 
     //! set the hit space point
-    void set_point(const mybhep::Point3D&  x)
+    void set_point(const mybhep::Point3D&  x_arg)
     {
-      x_ = x;
+      x_ = x_arg;
     }
      //! set the hit data
     void add_data(std::string name,  std::string value)
