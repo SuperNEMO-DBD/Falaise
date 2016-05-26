@@ -41,6 +41,13 @@ list(APPEND FalaiseCATPlugin_SOURCES
 )
 
 ############################################################################################
+#-----------------------------------------------------------------------
+# CAT is shit tier quality, so disable shadowing warnings to avoid mental
+# breakdown
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-shadow")
+endif()
+
 
 # Build a dynamic library from our sources
 add_library(Falaise_CAT SHARED ${FalaiseCATPlugin_HEADERS} ${FalaiseCATPlugin_SOURCES})
