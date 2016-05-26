@@ -26,19 +26,19 @@
 namespace mybhep{
 
   // constructor
-  track::track(const particle& mother, material* mate,std::string view)
+  track::track(const particle& mother, material* mate_arg,std::string view_arg)
   {
     mother_ = &mother;
-    material_ = new material(*mate);
-    view_ = view;
+    material_ = new material(*mate_arg);
+    view_ = view_arg;
 
   }
   //! constructor
-  track::track(material* mate, std::string view)
+  track::track(material* mate_arg, std::string view_arg)
   {
     mother_ = NULL;
-    material_ = new material(*mate);
-    view_ = view;
+    material_ = new material(*mate_arg);
+    view_ = view_arg;
   }
 
   //! destructor
@@ -63,8 +63,8 @@ namespace mybhep{
     for(size_t i=0; i< r_.size(); i++){
 
       ray& r = *r_[i];
-      const mybhep::Point3D& x = r.x();
-      vx.push_back(&x);
+      const mybhep::Point3D& x_par = r.x();
+      vx.push_back(&x_par);
     }
     return vx;
   }
@@ -75,27 +75,27 @@ namespace mybhep{
     for(size_t i=0; i< r_.size(); i++){
 
       ray& r = *r_[i];
-      const mybhep::Vector3D& x = r.p3();
-      vx.push_back(&x);
+      const mybhep::Vector3D& x_par = r.p3();
+      vx.push_back(&x_par);
     }
     return vx;
   }
 
   double track::track_length() const
   {
-    double track_length ;
+    double track_length_par ;
 
     if(r_.size()>0){
       ray& r1 = *r_[0];
       ray& r2 = *r_[r_.size()-1];
       const mybhep::Point3D& first = r1.x();
       const mybhep::Point3D& last = r2.x();
-      track_length = last.distance(first);
+      track_length_par = last.distance(first);
     }
     else
-      track_length = 0;
+      track_length_par = 0;
 
-    return track_length;
+    return track_length_par;
   }
 
 
