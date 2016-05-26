@@ -33,17 +33,17 @@ namespace mybhep{
     //! retrieve the index of the object to be converter
     int  index() const		{ return index_; }
     //! set the index of the object to be converter
-    void set_index( int index )	{ index_ = index; }
+    void set_index( int index_arg )	{ index_ = index_arg; }
 
     //! retrieve the name of the object to be converter
     std::string  name() const		{ return name_; }
     //! set the name of the object to be converter
-    void set_name( std::string name )	{ name_ = name; }
+    void set_name( std::string name_arg )	{ name_ = name_arg; }
 
     //! retrieve the state of the object
     bool  owner() const		{ return owner_; }
     //! set the state of the object
-    void set_owner( bool owner )	{ owner_ = owner; }
+    void set_owner( bool owner_arg )	{ owner_ = owner_arg; }
 
     //! propagate interface (store)
     virtual std::string store() = 0;
