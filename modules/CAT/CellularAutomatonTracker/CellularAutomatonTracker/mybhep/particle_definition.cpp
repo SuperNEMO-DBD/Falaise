@@ -20,13 +20,13 @@
 
 namespace mybhep{
 
-  particle_definition::particle_definition(std::string name, int pdg,
-					   double mass, double charge, double lifetime)
+  particle_definition::particle_definition(std::string name_arg, int pdg_arg,
+					   double mass_arg, double charge_arg, double lifetime)
   {
-    name_ = name;
-    pdg_ = pdg;
-    mass_ = mass;
-    charge_ = charge;
+    name_ = name_arg;
+    pdg_ = pdg_arg;
+    mass_ = mass_arg;
+    charge_ = charge_arg;
     lifetime_ = lifetime;
   }
 
@@ -40,217 +40,217 @@ namespace mybhep{
 
   void particle_definition::geant3(int code)
   {
-    std::string name = "unknown";
+    std::string name_par = "unknown";
 
     if (code == 1)
-      name = "gamma";
+      name_par = "gamma";
     else if (code == 2)
-      name = "e+";
+      name_par = "e+";
     else if (code == 3)
-      name = "e-";
+      name_par = "e-";
     else if (code == 5)
-      name = "mu+";
+      name_par = "mu+";
     else if (code == 6)
-      name = "mu-";
+      name_par = "mu-";
     else if (code == 4)
-      name = "nu_mu";
+      name_par = "nu_mu";
     else if (code == 8)
-      name = "pi+";
+      name_par = "pi+";
     else if (code == 9)
-      name = "pi-";
+      name_par = "pi-";
     else if (code == 7)
-      name = "pi0";
+      name_par = "pi0";
     else if (code == 11)
-      name = "kaon+";
+      name_par = "kaon+";
     else if (code == 12)
-      name = "kaon-";
+      name_par = "kaon-";
     else if (code == 10)
-      name = "kaon0L";
+      name_par = "kaon0L";
     else if (code == 16)
-      name = "kaon0";
+      name_par = "kaon0";
     else if (code == 14)
-      name = "proton";
+      name_par = "proton";
     else if (code == 15)
-      name = "anti_proton";
+      name_par = "anti_proton";
     else if (code == 13)
-      name = "neutron";
+      name_par = "neutron";
     else if (code == 25)
-      name = "anti_neutron";
+      name_par = "anti_neutron";
     else if (code == 45)
-      name = "deuteron";
+      name_par = "deuteron";
     else if (code == 46)
-      name = "tritium";
+      name_par = "tritium";
     else if (code == 47)
-      name = "alpha";
+      name_par = "alpha";
 
-    set_particle_name(name);
+    set_particle_name(name_par);
 
   }
 
   void particle_definition::pdg(int code)
   {
-    std::string name = "unknown";
+    std::string name_par = "unknown";
 
     if (code == 22)
-      name = "gamma";
+      name_par = "gamma";
     else if (code == -11)
-      name = "e+";
+      name_par = "e+";
     else if (code == 11)
-      name = "e-";
+      name_par = "e-";
     else if (code == -13)
-      name = "mu+";
+      name_par = "mu+";
     else if (code == 13)
-      name = "mu-";
+      name_par = "mu-";
     else if (code == 14)
-      name = "nu_mu";
+      name_par = "nu_mu";
     else if (code == 211)
-      name = "pi+";
+      name_par = "pi+";
     else if (code == -211)
-      name = "pi-";
+      name_par = "pi-";
     else if (code == 111)
-      name = "pi0";
+      name_par = "pi0";
     else if (code == 321)
-      name = "kaon+";
+      name_par = "kaon+";
     else if (code == -321)
-      name = "kaon-";
+      name_par = "kaon-";
     else if (code == 130)
-      name = "kaon0L";
+      name_par = "kaon0L";
     else if (code == 311)
-      name = "kaon0";
+      name_par = "kaon0";
     else if (code == 2212)
-      name = "proton";
+      name_par = "proton";
     else if (code == -2212)
-      name = "anti_proton";
+      name_par = "anti_proton";
     else if (code == 2112)
-      name = "neutron";
+      name_par = "neutron";
     else if (code == -2112)
-      name = "anti_neutron";
+      name_par = "anti_neutron";
 
-    set_particle_name(name);
+    set_particle_name(name_par);
   }
 
-  particle_definition::particle_definition(std::string name)
+  particle_definition::particle_definition(std::string name_par)
   {
-    set_particle_name(name);
+    set_particle_name(name_par);
   }
 
-  void particle_definition::set_particle_name(std::string name)
+  void particle_definition::set_particle_name(std::string name_par)
   {
-    name_ = name;
+    name_ = name_par;
 
-    if(name == "gamma"){
+    if(name_par == "gamma"){
       pdg_ = 22;
       set_parameters(0,0,-1);
     }
-    else if (name == "e+"){
+    else if (name_par == "e+"){
       set_parameters(5.10998902E-04*GeV,1,-1);
       pdg_  = -11;
     }
-    else if (name == "e-"){
+    else if (name_par == "e-"){
       set_parameters(5.10998902E-04*GeV,-1,-1);
       pdg_  = 11;
     }
-    else if (name == "mu-"){
+    else if (name_par == "mu-"){
       set_parameters(1.05658357E-01*GeV,-1,2.197e-6*second);
       pdg_  = 13;
     }
-    else if (name == "mu+"){
+    else if (name_par == "mu+"){
       set_parameters(1.05658357E-01*GeV,1,2.197e-6*second);
       pdg_  = -13;
     }
-    else if (name == "tau+"){
+    else if (name_par == "tau+"){
       set_parameters(1.77699*GeV,1,291e-15*second);
       pdg_  = -15;
     }
-    else if (name == "tau-"){
+    else if (name_par == "tau-"){
       set_parameters(1.77699*GeV,-1,2.291e-15*second);
       pdg_  = 15;
     }
-    else if (name == "nu_e"){
+    else if (name_par == "nu_e"){
       set_parameters(0,0,-1);
       pdg_  = 12;
     }
-    else if (name == "anti_nu_e"){
+    else if (name_par == "anti_nu_e"){
       set_parameters(0,0,-1);
       pdg_  = -12;
     }
-    else if (name == "nu_mu"){
+    else if (name_par == "nu_mu"){
       set_parameters(0,0,-1);
       pdg_  = 14;
     }
-    else if (name == "anti_nu_mu"){
+    else if (name_par == "anti_nu_mu"){
       set_parameters(0,0,-1);
       pdg_  = -14;
     }
-    else if (name == "nu_tau"){
+    else if (name_par == "nu_tau"){
       set_parameters(0,0,-1);
       pdg_  = 16;
     }
-    else if (name == "anti_nu_tau"){
+    else if (name_par == "anti_nu_tau"){
       set_parameters(0,0,-1);
       pdg_  = -16;
     }
-    else if (name == "pi+"){
+    else if (name_par == "pi+"){
       set_parameters(1.3957018E-01*GeV,1,2.603e-8*second);
       pdg_  = 211;
     }
-    else if (name == "pi-"){
+    else if (name_par == "pi-"){
       set_parameters(1.3957018E-01*GeV,-1,2.603e-8*second);
       pdg_  = -211;
     }
-    else if (name == "pi0"){
+    else if (name_par == "pi0"){
       set_parameters(1.349766E-01*GeV,0,8.4e-17*second);
       pdg_  = 111;
     }
-    else if (name == "kaon+"){
+    else if (name_par == "kaon+"){
       set_parameters(4.93677E-01*GeV,1,1.2386e-8*second);
       pdg_  = 321;
     }
-    else if (name == "kaon-"){
+    else if (name_par == "kaon-"){
       set_parameters(4.93677E-01*GeV,-1,1.2386e-8*second);
       pdg_  = -321;
     }
-    else if (name == "kaon0L"){
+    else if (name_par == "kaon0L"){
       set_parameters(4.97672E-01*GeV,0,5.17e-8*second);
       pdg_  = 130;
     }
-    else if (name == "kaon0"){
+    else if (name_par == "kaon0"){
       set_parameters(4.97672E-01*GeV,0,0.89e-10*second);
       pdg_  = 310;
     }
-    else if (name == "proton"){
+    else if (name_par == "proton"){
       set_parameters(9.3827200E-01*GeV,1,-1);
       pdg_  = 2212;
     }
-    else if (name == "anti_proton"){
+    else if (name_par == "anti_proton"){
       set_parameters(9.3827200E-01*GeV,-1,-1);
       pdg_  = -2212;
     }
-    else if (name == "neutron"){
+    else if (name_par == "neutron"){
       set_parameters(9.3956533E-01*GeV,0,-1);
       pdg_  = 2112;
     }
-    else if (name == "anti_neutron"){
+    else if (name_par == "anti_neutron"){
       set_parameters(9.3956533E-01*GeV,0,-1);
       pdg_  = -2112;
     }
-    else if (name == "deuteron"){
+    else if (name_par == "deuteron"){
       set_parameters(1.875613*GeV,0,-1);
       pdg_  = 0;
     }
-    else if (name == "tritium"){
+    else if (name_par == "tritium"){
       set_parameters(2.80925*GeV,0,-1);
       pdg_  = 0;
     }
-    else if (name == "alpha"){
+    else if (name_par == "alpha"){
       set_parameters(3.727*GeV,0,-1);
       pdg_  = 0;
     }
-    else if (name == "unknown"){ // assume pion mass
+    else if (name_par == "unknown"){ // assume pion mass
       set_parameters(1.3957018E-01*GeV,-1,2.603e-8*second);
       pdg_  = 0;
     }
-    else if (name == "void"){
+    else if (name_par == "void"){
       set_parameters(0,0,0);
       pdg_  = 0;
     }
@@ -265,10 +265,10 @@ namespace mybhep{
   double particle_definition::mass() const {
     return mass_; }
 
-  void particle_definition::set_parameters(double mass, double charge, double lifetime)
+  void particle_definition::set_parameters(double mass_arg, double charge_arg, double lifetime)
   {
-    mass_ = mass;
-    charge_ = charge;
+    mass_ = mass_arg;
+    charge_ = charge_arg;
     lifetime_ = lifetime;
   }
 
@@ -277,37 +277,37 @@ namespace mybhep{
     charge_ = q;
   }
 
-  void particle_definition::set_name(std::string name)
+  void particle_definition::set_name(std::string name_arg)
   {
-    set_particle_name(name);
+    set_particle_name(name_arg);
   }
 
   int  particle_definition::geant3() const
   {
-    int geant3 = 0;
+    int geant3_par = 0;
 
-    if(name_ == "gamma") geant3 = 1;
-    if(name_ == "e+") geant3 = 2;
-    if(name_ == "e-") geant3 = 3;
-    if(name_ == "mu+") geant3 = 5;
-    if(name_ == "mu-") geant3 = 6;
-    if(name_ == "nu_mu") geant3 = 4;
-    if(name_ == "pi+") geant3 = 8;
-    if(name_ == "pi-") geant3 = 9;
-    if(name_ == "pi0") geant3 = 7;
-    if(name_ == "kaon+") geant3 = 11;
-    if(name_ == "kaon-") geant3 = 12;
-    if(name_ == "kaon0L") geant3 = 10;
-    if(name_ == "kaon0") geant3 = 16;
-    if(name_ == "proton") geant3 = 14;
-    if(name_ == "anti_proton") geant3 = 15;
-    if(name_ == "neutron") geant3 = 13;
-    if(name_ == "anti_neutron") geant3 = 25;
-    if(name_ == "deuteron") geant3 = 45;
-    if(name_ == "tritium") geant3 = 46;
-    if(name_ == "alpha") geant3 = 47;
+    if(name_ == "gamma") geant3_par = 1;
+    if(name_ == "e+") geant3_par = 2;
+    if(name_ == "e-") geant3_par = 3;
+    if(name_ == "mu+") geant3_par = 5;
+    if(name_ == "mu-") geant3_par = 6;
+    if(name_ == "nu_mu") geant3_par = 4;
+    if(name_ == "pi+") geant3_par = 8;
+    if(name_ == "pi-") geant3_par = 9;
+    if(name_ == "pi0") geant3_par = 7;
+    if(name_ == "kaon+") geant3_par = 11;
+    if(name_ == "kaon-") geant3_par = 12;
+    if(name_ == "kaon0L") geant3_par = 10;
+    if(name_ == "kaon0") geant3_par = 16;
+    if(name_ == "proton") geant3_par = 14;
+    if(name_ == "anti_proton") geant3_par = 15;
+    if(name_ == "neutron") geant3_par = 13;
+    if(name_ == "anti_neutron") geant3_par = 25;
+    if(name_ == "deuteron") geant3_par = 45;
+    if(name_ == "tritium") geant3_par = 46;
+    if(name_ == "alpha") geant3_par = 47;
 
-    return geant3;
+    return geant3_par;
   }
 
 
