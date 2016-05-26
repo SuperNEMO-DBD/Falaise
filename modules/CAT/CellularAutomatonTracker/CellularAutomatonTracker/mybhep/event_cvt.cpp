@@ -215,14 +215,14 @@ namespace mybhep{
     converter_svc& csvc = mybhep_svc::instance().
       converter_service();
 
-    std::string name;
-    istr >> name ;
+    std::string name_par;
+    istr >> name_par ;
 
     int indx;
     istr >> indx ;
 
     set_index( indx );
-    set_name( name );
+    set_name( name_par );
 
     //create new event
     nevent_ = new event(indx);
@@ -358,10 +358,10 @@ namespace mybhep{
 
     for(size_t ipar =0; ipar < particles_true_.size(); ipar++)
       {
-        int index = particles_true_[ipar];
+        int index_par = particles_true_[ipar];
         try{
           particle_cvt& pcvt = *(dynamic_cast<particle_cvt*>
-                                 (&csvc.converter(index)));
+                                 (&csvc.converter(index_par)));
 
 
           particle* pp = pcvt.create();
@@ -380,11 +380,11 @@ namespace mybhep{
 
     for(size_t ipar =0; ipar < particles_digi_.size(); ipar++)
       {
-        int index = particles_digi_[ipar];
+        int index_par = particles_digi_[ipar];
 
         try{
           particle_cvt& pcvt = *(dynamic_cast<particle_cvt*>
-                                 (&csvc.converter(index)));
+                                 (&csvc.converter(index_par)));
 
 
           particle* pp = pcvt.create();
@@ -403,10 +403,10 @@ namespace mybhep{
 
     for(size_t ipar =0; ipar < particles_spar_.size(); ipar++)
       {
-        int index = particles_spar_[ipar];
+        int index_par = particles_spar_[ipar];
         try{
           sparticle_cvt& pcvt = *(dynamic_cast<sparticle_cvt*>
-                                 (&csvc.converter(index)));
+                                 (&csvc.converter(index_par)));
 
 
           sparticle* pp = pcvt.create();
