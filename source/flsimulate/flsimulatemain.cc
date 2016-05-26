@@ -76,7 +76,7 @@ void do_version(std::ostream& os, bool isVerbose) {
         << "* Falaise : " << falaise::version::get_version() << "\n"
         << "* Bayeux  : " << bayeux::version::get_version() << "\n"
         << "* Boost   : " << BOOST_VERSION << "\n"
-        << "* Geant4  : " << "10.x (eventually)"
+        << "* Geant4  : " << "9.6.4" << "\n"
         << "\n\n";
   }
 }
