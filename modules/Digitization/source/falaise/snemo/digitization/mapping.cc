@@ -58,6 +58,7 @@ namespace snemo {
     const uint32_t mapping::THREE_WIRES_LONELY_ROW;
     const uint32_t mapping::THREE_WIRES_CRATE_1_LIMIT;
     const uint32_t mapping::THREE_WIRES_CRATE_2_BEGINNING;
+    const uint32_t mapping::THREE_WIRES_CRATE_2_LIMIT;
     const uint32_t mapping::GEIGER_LAYERS_SIZE;
     const uint32_t mapping::GEIGER_ROWS_SIZE;
 

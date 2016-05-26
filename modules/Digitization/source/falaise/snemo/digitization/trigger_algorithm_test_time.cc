@@ -739,10 +739,9 @@ namespace snemo {
 		    }
 		} 
 	      pair_for_a_clocktick.second = a_tracker_record;
-	      
 	      _pair_records_.push_back(pair_for_a_clocktick);
 	      
-	    }
+	    } // end of ict1600
 
 
 

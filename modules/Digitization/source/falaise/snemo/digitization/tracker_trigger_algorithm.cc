@@ -318,10 +318,8 @@ namespace snemo {
 	  // Take care here after definition change of Geiger CTW
 	  std::bitset<geiger::tp::FULL_SIZE> my_bitset;
 	  my_geiger_ctw_.get_100_bits_in_ctw_word(i, my_bitset);
-	  std::clog << "DEBUG : build_hit_cells_gids_from_ctw 0" << std::endl;
 	  std::bitset<geiger::tp::TP_SIZE> my_tp_bitset;
 	  my_geiger_ctw_.get_55_bits_in_ctw_word(i, my_tp_bitset);
-	  std::clog << "DEBUG : build_hit_cells_gids_from_ctw 1" << std::endl;
 
 	  for (int32_t j = geiger::tp::TP_BEGIN; j <= geiger::tp::TP_THREE_WIRES_END; j++)
 	    {
@@ -347,9 +345,6 @@ namespace snemo {
 		  }
 		  geomtools::geom_id & hit_cell_gid = hit_cells_gids_.back();
 		  _electronic_mapping_->convert_EID_to_GID(mapping::THREE_WIRES_TRACKER_MODE, temporary_electronic_id, hit_cell_gid);
-		  std::clog << "type = " << ctw_type << " rack = "<< ctw_rack << " crate = " << ctw_crate 
-			    << " board = " << board_id << " channel = " << channel_id << " elec id = " << temporary_electronic_id << std::endl;
-		  std::clog << "geom id cell = " << hit_cell_gid << std::endl;
 		}	 
 	    } // end of TP loop
 
@@ -365,7 +360,6 @@ namespace snemo {
 
     void tracker_trigger_algorithm::fill_matrix(const std::vector<geomtools::geom_id> & hit_cells_gids_)
     {
-      std::clog << "first hit cells gid = " << hit_cells_gids_[0] << std::endl;
       if (hit_cells_gids_.size() != 0)
 	{
 	  for (int i = 0; i < hit_cells_gids_.size(); i++)
@@ -758,14 +752,10 @@ namespace snemo {
       reset_zones_informations();
       for (int isize = 0; isize < geiger_ctw_list_per_clocktick_.size(); isize++)
        	{
-	  std::clog << "DEBUG : tta:_process_for_a_clocktick 0" << std::endl;
        	  std::vector<geomtools::geom_id> hit_cells_gids;
        	  build_hit_cells_gids_from_ctw(geiger_ctw_list_per_clocktick_[isize].get(),
 					hit_cells_gids);
-	  std::clog << "Hit cells gids vector size = " << hit_cells_gids.size() << std::endl;
-	  std::clog << "DEBUG : tta:_process_for_a_clocktick 0.1" << std::endl;
        	  fill_matrix(hit_cells_gids);   
-	  std::clog << "DEBUG : tta:_process_for_a_clocktick 0.2" << std::endl;
 	} // end of isize
       geiger_matrix a_geiger_matrix;
       for (int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
@@ -778,16 +768,12 @@ namespace snemo {
       		} // end of krow
       	    } // end of jlayer
       	} // end of iside
-      std::clog << "DEBUG : tta:_process_for_a_clocktick 1" << std::endl;
       a_geiger_matrix.clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2;
-      std::clog << "DEBUG : tta:_process_for_a_clocktick 2" << std::endl;
       _geiger_matrix_records_.push_back(a_geiger_matrix);
       _tracker_record_finale_decision_.clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2;
-      std::clog << "DEBUG : tta:_process_for_a_clocktick 3" << std::endl;
       build_sliding_zones(_sliding_zone_vertical_memory_, _sliding_zone_horizontal_memory_);  
       build_zones();      
       build_tracker_record();      
-      std::clog << "DEBUG : tta:_process_for_a_clocktick 4" << std::endl;
       //_tracker_record_finale_decision_.display();
       // display_matrix();
       //print_zones(std::clog);
@@ -802,32 +788,23 @@ namespace snemo {
       // Just even clockticks 800 ns are processing (to take in account CB to TB serdes limitation)
       int32_t iclocktick_800 = geiger_ctw_data_.get_clocktick_min();
       if (iclocktick_800 % 2 == 1) iclocktick_800 += 1;
-      std::clog << "DEBUG : tta:_process 0" << std::endl;
       for (iclocktick_800; iclocktick_800 <= geiger_ctw_data_.get_clocktick_max(); iclocktick_800 +=2)
        	{
        	  std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick;
 
-	  std::clog << "DEBUG : tta:_process 1" << std::endl;
       	  geiger_ctw_data_.get_list_of_geiger_ctw_per_clocktick(iclocktick_800, geiger_ctw_list_per_clocktick);
-	  std::clog << "size of the list = " << geiger_ctw_list_per_clocktick.size() << std::endl;
-	  std::clog << "DEBUG : tta:_process 1.1" << std::endl;
-       	  if (geiger_ctw_list_per_clocktick.size() != 0)
+	  if (geiger_ctw_list_per_clocktick.size() != 0)
       	    {
-	      std::clog << "DEBUG : tta:_process 2" << std::endl;
-      	      _process_for_a_clocktick(geiger_ctw_list_per_clocktick);
-	      std::clog << "DEBUG : tta:_process 3" << std::endl;
-      	      if (_tracker_record_finale_decision_.finale_decision) _tracker_finale_decision_ = true;
+	      _process_for_a_clocktick(geiger_ctw_list_per_clocktick);
+	      if (_tracker_record_finale_decision_.finale_decision) _tracker_finale_decision_ = true;
 	      tracker_records_.push_back(_tracker_record_finale_decision_);
-	      std::clog << "DEBUG : tta:_process 4" << std::endl;
-      	    } // end of if ctw list != 0
+	    } // end of if ctw list != 0
        	} // end of iclocktick
       
-      std::clog << "DEBUG : tta:_process 5" << std::endl;
-      
-     // if (_geiger_matrix_records_.size() != 0)
-     // 	{
-     // 	  _geiger_matrix_records_[2].display_matrix_garrido();
-     // 	}
+      // if (_geiger_matrix_records_.size() != 0)
+      // 	{
+      // 	  _geiger_matrix_records_[2].display_matrix_garrido();
+      // 	}
 
       return;
     }

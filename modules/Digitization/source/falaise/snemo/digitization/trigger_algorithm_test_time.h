@@ -174,6 +174,10 @@ namespace snemo {
 			/// Update a coinc calo record 1600 from a calo summary record 25 ns
 			void _update_coinc_calo_record(const calo_trigger_algorithm_test_time::calo_summary_record & a_calo_summary_record_25ns, 
 																		 coincidence_trigger_algorithm_test_time::coincidence_calo_record & a_coinc_calo_record_1600ns);
+			/// CAlo tRAcker COincidence (CARACO) process for spatial coincidence between calorimeter and tracker each 1600ns
+			void _process_calo_tracker_coincidence(const std::pair<coincidence_trigger_algorithm_test_time::coincidence_calo_record, tracker_trigger_algorithm_test_time::tracker_record> a_pair_for_a_clocktick_,
+																						 coincidence_trigger_algorithm_test_time::coincidence_event_record & a_coincidence_record_);
+			
 
       /// Protected general process
       void _process(const calo_ctw_data & calo_ctw_data_,

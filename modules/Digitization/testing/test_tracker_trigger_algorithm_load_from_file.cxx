@@ -100,7 +100,7 @@ int main( int  argc_ , char **argv_  )
       return 0;
     }
 
- try {
+  try {
     // boolean for debugging (display etc)
     bool debug = false;
 
@@ -147,7 +147,7 @@ int main( int  argc_ , char **argv_  )
     my_e_mapping.add_preconstructed_type(snemo::digitization::mapping::GEIGER_CATEGORY_TYPE);
     my_e_mapping.initialize();
 
-   // Loading memory from external files :
+    // Loading memory from external files :
     std::string mem1 = "${FALAISEBREW_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem1.conf";
     std::string mem2 = "${FALAISEBREW_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem2.conf";
     std::string mem3 = "${FALAISEBREW_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem3.conf";
@@ -265,7 +265,7 @@ int main( int  argc_ , char **argv_  )
 		snemo::digitization::geiger_ctw & my_geiger_ctw_1 = my_geiger_ctw_data.add();
 		snemo::digitization::geiger_ctw & my_geiger_ctw_2 = my_geiger_ctw_data.add();
 		// Take care of the CT 800, only even clocktick are processed
-		uint32_t clocktick_800ns = 4; // Just one clocktick for geiger ctw
+		uint32_t clocktick_800ns = 4; // Just one clocktick for geiger ctw example value : 4
 		int hit_id = 42;
 		geomtools::geom_id temporary_elec_id;
 		temporary_elec_id.set_type(snemo::digitization::mapping::TRACKER_CONTROL_BOARD_TYPE);
@@ -287,7 +287,7 @@ int main( int  argc_ , char **argv_  )
 		my_geiger_ctw_2.set_header(hit_id,
 					   temporary_elec_id,
 					   clocktick_800ns);
-		       
+		
 		for (int iblock = 0; iblock < 19; iblock++)
 		  {	    		
 		    std::bitset<snemo::digitization::geiger::tp::TP_SIZE> bitset_ctw_0;
@@ -309,76 +309,104 @@ int main( int  argc_ , char **argv_  )
 		    std::bitset<9> ctw2_side_1_row_0_bitset;
 		    std::bitset<9> ctw2_side_1_row_1_bitset;
 
-
-		    for (int krow = 0; krow < snemo::digitization::trigger_info::NROWS; krow++)
+       		    for (int jlayer = 0; jlayer < snemo::digitization::trigger_info::NLAYERS; jlayer++)
 		      {
-			for (int jlayer = 0; jlayer < snemo::digitization::trigger_info::NLAYERS; jlayer++)
+			// CTW 0 :
+			if (geiger_matrix[0][jlayer][iblock * 2] == true)
 			  {
-			    // CTW 0 :
-			    if (krow >= 0 && krow <= 37)
+			    ctw0_side_0_row_0_bitset.set(jlayer, true);
+			  }
+			if (geiger_matrix[0][jlayer][(iblock * 2) + 1] == true)
+			  {
+			    ctw0_side_0_row_1_bitset.set(jlayer, true);
+			  }
+			if (geiger_matrix[1][jlayer][iblock * 2] == true)
+			  {
+			    ctw0_side_1_row_0_bitset.set(jlayer, true);
+			  }
+			if (geiger_matrix[1][jlayer][(iblock * 2) + 1] == true)
+			  {
+			    ctw0_side_1_row_1_bitset.set(jlayer, true);
+			  }
+
+			// CTW 1 :
+			if (iblock < 9)
+			  {
+			    if (geiger_matrix[0][jlayer][38 + iblock * 2] == true)
 			      {
-			    	if (geiger_matrix[0][jlayer][iblock * 2] == true)
-			    	  {
-			    	    ctw0_side_0_row_0_bitset.set(jlayer, true);
-			    	  }
-			    	if (geiger_matrix[0][jlayer][(iblock * 2) + 1] == true)
-			    	  {
-			    	    ctw0_side_0_row_1_bitset.set(jlayer, true);
-			    	  }
-			    	if (geiger_matrix[1][jlayer][iblock * 2] == true)
-			    	  {
-			    	    ctw0_side_1_row_0_bitset.set(jlayer, true);
-			    	  }
-			    	if (geiger_matrix[1][jlayer][(iblock * 2) + 1] == true)
-			    	  {
-			    	    ctw0_side_1_row_1_bitset.set(jlayer, true);
-			    	  }
+				ctw1_side_0_row_0_bitset.set(jlayer, true);
+			      }
+			    if (geiger_matrix[0][jlayer][38 + (iblock * 2) + 1] == true)
+			      {
+				ctw1_side_0_row_1_bitset.set(jlayer, true);
+			      }
+			    if (geiger_matrix[1][jlayer][38 + iblock * 2] == true)
+			      {
+				ctw1_side_1_row_0_bitset.set(jlayer, true);
+			      }
+			    if (geiger_matrix[1][jlayer][38 + (iblock * 2) + 1] == true)
+			      {
+				ctw1_side_1_row_1_bitset.set(jlayer, true);
+			      }
+			  }
+			
+			else if (iblock == 9) 
+			  {
+			    if (geiger_matrix[0][jlayer][38 + iblock * 2] == true)
+			      {
+				ctw1_side_0_row_0_bitset.set(jlayer, true);
 			      }
 
-			    // CTW 1 :
-			    if (krow >= 38 && krow <= 74)
+			    ctw1_side_0_row_1_bitset.set(jlayer, false);
+			  
+			    if (geiger_matrix[1][jlayer][38 + iblock * 2] == true)
 			      {
-				if (geiger_matrix[0][jlayer][38 + iblock * 2] == true)
-				  {
-				    ctw1_side_0_row_0_bitset.set(jlayer, true);
-				  }
-				if (geiger_matrix[0][jlayer][38 + (iblock * 2) + 1] == true)
-				  {
-				    ctw1_side_0_row_1_bitset.set(jlayer, true);
-				  }
-				if (geiger_matrix[1][jlayer][38 + iblock * 2] == true)
-				  {
-				    ctw1_side_1_row_0_bitset.set(jlayer, true);
-				  }
-				if (geiger_matrix[1][jlayer][38 + (iblock * 2) + 1] == true)
-				  {
-				    ctw1_side_1_row_1_bitset.set(jlayer, true);
-				  }
+				ctw1_side_1_row_0_bitset.set(jlayer, true);
 			      }
+			    
+			    ctw1_side_1_row_1_bitset.set(jlayer, false);
+			  }
 
-			    // CTW 2 :
-			    if (krow >= 75 && krow <= 112)
+			else if (iblock > 9)
+			  {
+			    if (geiger_matrix[0][jlayer][38 + (iblock * 2) + 1] == true)
 			      {
-				if (geiger_matrix[0][jlayer][75 + iblock * 2] == true)
-				  {
-				    ctw2_side_0_row_0_bitset.set(jlayer, true);
-				  }
-				if (geiger_matrix[0][jlayer][75 + (iblock * 2) + 1] == true)
-				  {
-				    ctw2_side_0_row_1_bitset.set(jlayer, true);
-				  }
-				if (geiger_matrix[1][jlayer][75 + iblock * 2] == true)
-				  {
-				    ctw2_side_1_row_0_bitset.set(jlayer, true);
-				  }
-				if (geiger_matrix[1][jlayer][75 + (iblock * 2) + 1] == true)
-				  {
-				    ctw2_side_1_row_1_bitset.set(jlayer, true);
-				  }
+				ctw1_side_0_row_0_bitset.set(jlayer, true);
 			      }
-
-			  }// end of jlayer
-		      } // end of krow
+			    if (geiger_matrix[0][jlayer][38 + iblock * 2] == true)
+			      {
+				ctw1_side_0_row_1_bitset.set(jlayer, true);
+			      }
+			    if (geiger_matrix[1][jlayer][38 + (iblock * 2) + 1] == true)
+			      {
+				ctw1_side_1_row_0_bitset.set(jlayer, true);
+			      }
+			    if (geiger_matrix[1][jlayer][38 + iblock * 2] == true)
+			      {
+				ctw1_side_1_row_1_bitset.set(jlayer, true);
+			      }
+			  }
+			
+			// CTW 2 :
+        
+			if (geiger_matrix[0][jlayer][75 + iblock * 2] == true)
+			  {
+			    ctw2_side_0_row_0_bitset.set(jlayer, true);
+			  }
+			if (geiger_matrix[0][jlayer][75 + (iblock * 2) + 1] == true)
+			  {
+			    ctw2_side_0_row_1_bitset.set(jlayer, true);
+			  }
+			if (geiger_matrix[1][jlayer][75 + iblock * 2] == true)
+			  {
+			    ctw2_side_1_row_0_bitset.set(jlayer, true);
+			  }
+			if (geiger_matrix[1][jlayer][75 + (iblock * 2) + 1] == true)
+			  {
+			    ctw2_side_1_row_1_bitset.set(jlayer, true);
+			  }
+			
+		      }// end of jlayer
 		    
 		    for (int i = 0; i < 9; i++)
 		      {
@@ -433,13 +461,26 @@ int main( int  argc_ , char **argv_  )
 			    bitset_ctw_2.set(i + 27, true);
 			  }
 		      }
-
+		    // std::clog << "******************************************************"<< std::endl;
 		    // std::clog << "iblock = " << iblock << std::endl;
+		    // std::clog << "CTW0:S0:R0 " << ctw0_side_0_row_0_bitset << std::endl;
 		    // std::clog << "CTW0:S0:R0 " << ctw0_side_0_row_0_bitset << std::endl;
 		    // std::clog << "CTW0:S0:R1 " << ctw0_side_0_row_1_bitset << std::endl;
 		    // std::clog << "CTW0:S1:R0 " << ctw0_side_1_row_0_bitset << std::endl;
-		    // std::clog << "CTW0:S1:R1 " << ctw0_side_1_row_1_bitset << std::endl;
-		    // std::clog << bitset_ctw_0 << std::endl;
+		    // std::clog << bitset_ctw_0 << std::endl << std::endl;
+
+		    // std::clog << "CTW1:S1:R1 " << ctw1_side_1_row_1_bitset << std::endl;
+		    // std::clog << "CTW1:S0:R1 " << ctw1_side_0_row_1_bitset << std::endl;
+		    // std::clog << "CTW1:S1:R0 " << ctw1_side_1_row_0_bitset << std::endl;
+		    // std::clog << "CTW1:S1:R1 " << ctw1_side_1_row_1_bitset << std::endl;
+		    // std::clog << bitset_ctw_1 << std::endl << std::endl;
+
+		    // std::clog << "CTW2:S1:R1 " << ctw2_side_1_row_1_bitset << std::endl;
+		    // std::clog << "CTW2:S0:R1 " << ctw2_side_0_row_1_bitset << std::endl;
+		    // std::clog << "CTW2:S1:R0 " << ctw2_side_1_row_0_bitset << std::endl;
+		    // std::clog << "CTW2:S1:R1 " << ctw2_side_1_row_1_bitset << std::endl;
+		    // std::clog << bitset_ctw_2 << std::endl << std::endl;
+		    
 		
 		    my_geiger_ctw_0.set_55_bits_in_ctw_word(iblock, bitset_ctw_0);
 		    my_geiger_ctw_1.set_55_bits_in_ctw_word(iblock, bitset_ctw_1);
@@ -447,21 +488,17 @@ int main( int  argc_ , char **argv_  )
 		    
 		  } // end of iblock
 
-		// my_geiger_ctw_0.tree_dump(std::clog, "My GG CTW 0 : ", "INFO : ");
-		// my_geiger_ctw_1.tree_dump(std::clog, "My GG CTW 1 : ", "INFO : ");
-		// my_geiger_ctw_2.tree_dump(std::clog, "My GG CTW 2 : ", "INFO : ");
-		std::clog << "GG CTW DATA SIZE = " << my_geiger_ctw_data.get_geiger_ctws().size() << std::endl;
-
-		// la row du milieu fais foirer le process : check ctw1_bitset (plus haut) et voir comment 
-		// sont disposées en réalité les bits quand la row seule est touchée (décalage a faire au niveau des rows surement
-		// krow ++ ?
-
+		my_geiger_ctw_0.tree_dump(std::clog, "My GG CTW 0 : ", "INFO : ");
+		my_geiger_ctw_1.tree_dump(std::clog, "My GG CTW 1 : ", "INFO : ");
+		my_geiger_ctw_2.tree_dump(std::clog, "My GG CTW 2 : ", "INFO : ");
+		//std::clog << "GG CTW DATA SIZE = " << my_geiger_ctw_data.get_geiger_ctws().size() << std::endl;
 
 		my_tracker_trigger_algo.process(my_geiger_ctw_data,
 						my_tracker_records);
 		
 		std::clog << "Tracker records size = " << my_tracker_records.size() << std::endl;
-		
+		my_tracker_records[0].display();
+
 		// reset line number and side number :
 		side = 0;
 		line_number = 0;
@@ -470,27 +507,28 @@ int main( int  argc_ , char **argv_  )
 
 
 	    //std::clog << psd_count << std::endl;
-
       
 	  } // end of if psd count == 0
-	    
+
+	if (line.empty()) psd_count++;
+
 	//std::clog << side << ' ' << line_number << ' ' << layer << ' ' << line << std::endl;
 	if (!line.empty()) line_number++;
       }
     
 
     std::clog << "The end." << std::endl;
- }
- catch (std::exception & error) {
-   DT_LOG_FATAL(logging, error.what());
-   error_code = EXIT_FAILURE;
- }
+  }
+  catch (std::exception & error) {
+    DT_LOG_FATAL(logging, error.what());
+    error_code = EXIT_FAILURE;
+  }
 
- catch (...) {
-   DT_LOG_FATAL(logging, "Unexpected error!");
-   error_code = EXIT_FAILURE;
- }
+  catch (...) {
+    DT_LOG_FATAL(logging, "Unexpected error!");
+    error_code = EXIT_FAILURE;
+  }
 
- falaise::terminate();
- return error_code;
+  falaise::terminate();
+  return error_code;
 }
