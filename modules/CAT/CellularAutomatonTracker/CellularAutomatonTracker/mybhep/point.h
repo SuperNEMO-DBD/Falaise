@@ -42,62 +42,62 @@ namespace mybhep{
 
   public:
     //!Default constructor
-    point(std::string view="XYZ")
+    point(std::string view_arg="XYZ")
     {
       x_= small_neg; y_ =small_neg; z_ = small_neg;
-      view_ = to_upper(view);
+      view_ = to_upper(view_arg);
     }
     //!Default destructor
     virtual ~point(){};
     //! constructor
-    point(double x, double y, double z, std::string view="XYZ"):
-      x_(x),y_(y),z_(z),view_(to_upper(view)){}
+    point(double x_arg, double y_arg, double z_arg, std::string view_arg="XYZ"):
+      x_(x_arg),y_(y_arg),z_(z_arg),view_(to_upper(view_arg)){}
 
     //! set all coordinates
-    void coordinates(double x,double y, double z){
-      x_=x; y_=y; z_=z;
+    void coordinates(double x_arg,double y_arg, double z_arg){
+      x_=x_arg; y_=y_arg; z_=z_arg;
       view_ = "XYZ";
     }
     //! set all coordinates
-    void set(double x,double y, double z){
-      coordinates(x,y,z);
+    void set(double x_arg,double y_arg, double z_arg){
+      coordinates(x_arg,y_arg,z_arg);
     }
 
     //! set  coordinates in a view
-    void set(double xt,double z, std::string view){
-      coordinates(xt,z,view);
+    void set(double xt,double z_arg, std::string view_arg){
+      coordinates(xt,z_arg,view_arg);
     }
 
     //! set  coordinates in a view
-    void coordinates(double xt,double z, std::string view){
-      view_ = to_upper(view);
+    void coordinates(double xt,double z_arg, std::string view_arg){
+      view_ = to_upper(view_arg);
       Assert(view_ == "XZ" || view_ == "YZ",
 	     __FILE__,__LINE__,
 	     internal_logic("view must be XZ,or YZ"));
 
       if (view_ == "XZ")
 	{
-	  x_=xt; y_=small_neg; z_=z;
+	  x_=xt; y_=small_neg; z_=z_arg;
 	}
       else if (view_ == "YZ")
 	{
-	  x_=small_neg; y_=xt; z_=z;
+	  x_=small_neg; y_=xt; z_=z_arg;
 	}
     }
 
     //! set x
-    void set_x(double x){
-      x_ = x;
+    void set_x(double x_arg){
+      x_ = x_arg;
     }
 
     //! set y
-    void set_y(double y){
-      y_ = y;
+    void set_y(double y_arg){
+      y_ = y_arg;
     }
 
     //! set z
-    void set_z(double z){
-      z_ = z;
+    void set_z(double z_arg){
+      z_ = z_arg;
     }
 
 
