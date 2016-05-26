@@ -43,7 +43,7 @@ public:
     //! default constructor
     ray(std::string view ="XYZ");
     //! constructor from a point and a std::vector
-    ray(const point& x, const mybhep::Vector3D& p3, double edep=0);
+    ray(const point& x, const mybhep::Vector3D& p3, double edep_arg=0);
 
     //!  copy constructor
     ray(const ray &right);
@@ -70,7 +70,7 @@ public:
     //! sets the momentum
     void set_p(const mybhep::Vector3D& p);
     //! sets the energy deposited
-    void set_edep(double  edep) {edep_ = edep;}
+    void set_edep(double  edep_arg) {edep_ = edep_arg;}
     //! returns the energy deposited
     double edep() const { return edep_;}
     //! sets the momentum
