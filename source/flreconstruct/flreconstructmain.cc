@@ -80,7 +80,7 @@ struct FLReconstructArgs {
 enum FLDialogState {
   DIALOG_OK,
   DIALOG_QUERY,
-  DIALOG_ERROR,
+  DIALOG_ERROR
 };
 
 //! Handle printing of version information to given ostream
