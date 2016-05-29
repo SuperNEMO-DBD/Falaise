@@ -69,6 +69,13 @@ namespace snemo {
       return;
     }
 
+    void tracker_zone::print_projections(std::ostream & out_) const
+    {
+      out_ << "Zone projections: " << '\n';
+      out_ << "IO pattern : " << addr_in_out_pattern << "\n"; 
+      out_ << "LMR pattern : " << addr_left_mid_right_pattern << "\n";
+      return;
+    }
 
   } // end of namespace digitization
 

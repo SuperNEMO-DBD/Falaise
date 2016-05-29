@@ -494,7 +494,7 @@ namespace snemo {
     }	
 
     void tracker_trigger_algorithm::build_sliding_zones(tracker_trigger_mem_maker::mem1_type & mem1_,
-									  tracker_trigger_mem_maker::mem2_type & mem2_)
+							tracker_trigger_mem_maker::mem2_type & mem2_)
     {
       for (int iside = 0; iside < trigger_info::NSIDES; iside++) {
 	for (int iszone = 0; iszone < trigger_info::NSLZONES; iszone ++) {
@@ -541,7 +541,7 @@ namespace snemo {
     }    
     
     void tracker_trigger_algorithm::build_in_out_pattern(tracker_zone & zone_,
-									   tracker_trigger_mem_maker::mem3_type & mem3_)
+							 tracker_trigger_mem_maker::mem3_type & mem3_)
     {
       int side = zone_.side;
       int zone_id = zone_.zone_id;
@@ -549,7 +549,7 @@ namespace snemo {
       std::bitset<trigger_info::SLZONE_DATA_IO_PROJ> SZA_IO = _sliding_zones_[side][zone_id * 3].data_IO_proj;
       std::bitset<trigger_info::SLZONE_DATA_IO_PROJ> SZB_IO = _sliding_zones_[side][zone_id * 3 + 1].data_IO_proj;
       std::bitset<trigger_info::SLZONE_DATA_IO_PROJ> SZC_IO = _sliding_zones_[side][zone_id * 3 + 2].data_IO_proj;
-      std::bitset<trigger_info::SLZONE_DATA_IO_PROJ> SZD_IO = _sliding_zones_[side][zone_id * 3 + 2].data_IO_proj;
+      std::bitset<trigger_info::SLZONE_DATA_IO_PROJ> SZD_IO = _sliding_zones_[side][zone_id * 3 + 3].data_IO_proj;
       
       std::bitset<trigger_info::ZONE_ADDR_IO_PATTERN_SIZE> ZONE_ADDR_IO = 0x0;
 
@@ -568,8 +568,8 @@ namespace snemo {
     }
 		
     void tracker_trigger_algorithm::build_left_mid_right_pattern(tracker_zone & zone_,
-										   tracker_trigger_mem_maker::mem4_type & mem4_,
-										   tracker_trigger_mem_maker::mem5_type & mem5_)
+								 tracker_trigger_mem_maker::mem4_type & mem4_,
+								 tracker_trigger_mem_maker::mem5_type & mem5_)
     {
       int side = zone_.side;
       int zone_id = zone_.zone_id;
@@ -606,7 +606,7 @@ namespace snemo {
 	  std::bitset<trigger_info::SLZONE_DATA_IO_PROJ> SZA_IO = _sliding_zones_[side][zone_id * 3].data_IO_proj;
 	  std::bitset<trigger_info::SLZONE_DATA_IO_PROJ> SZB_IO = _sliding_zones_[side][zone_id * 3 + 1].data_IO_proj;
 	  std::bitset<trigger_info::SLZONE_DATA_IO_PROJ> SZC_IO = _sliding_zones_[side][zone_id * 3 + 2].data_IO_proj;
-	  std::bitset<trigger_info::SLZONE_DATA_IO_PROJ> SZD_IO = _sliding_zones_[side][zone_id * 3 + 2].data_IO_proj;
+	  std::bitset<trigger_info::SLZONE_DATA_IO_PROJ> SZD_IO = _sliding_zones_[side][zone_id * 3 + 3].data_IO_proj;
 	  
 	  std::bitset<trigger_info::ZONE_ADDR_LMR_WIO_PATTERN_SIZE> ZONE_ADDR_IO = 0x0;
 	  
@@ -746,6 +746,38 @@ namespace snemo {
       return;
     }
     
+    void tracker_trigger_algorithm::print_sliding_zones(std::ostream & out_) const
+    {
+      out_ << "Sliding zones: \n";
+      for (int iside = 0; iside < trigger_info::NSIDES; iside++) 
+	{
+	  for (int islzone = 0; islzone < trigger_info::NSLZONES; islzone++)
+	    {
+	      if (islzone == 0) {
+		out_ << "SLZ_A : \n";
+		_sliding_zones_[iside][islzone].print_projections(out_);
+	      }
+	      if (islzone % 3 == 1) {
+		out_ << "SLZ_B : \n";
+		_sliding_zones_[iside][islzone].print_projections(out_);
+	      }
+	      if (islzone % 3 == 2) {
+		out_ << "SLZ_C : \n";
+		_sliding_zones_[iside][islzone].print_projections(out_);
+	      }
+	      if (islzone % 3 == 0 && islzone > 0) {
+		out_ << "SLZ_D : \n";
+		_sliding_zones_[iside][islzone].print_projections(out_);
+		out_ << "\n";
+		out_ << "SLZ_A : \n";
+		_sliding_zones_[iside][islzone].print_projections(out_);
+		
+	      }
+	    } // end of islzone
+	} // end of iside
+      return;
+    }
+
     void tracker_trigger_algorithm::_process_for_a_clocktick(const std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick_)
     {
       reset_matrix();
@@ -771,9 +803,11 @@ namespace snemo {
       a_geiger_matrix.clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2;
       _geiger_matrix_records_.push_back(a_geiger_matrix);
       _tracker_record_finale_decision_.clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2;
-      build_sliding_zones(_sliding_zone_vertical_memory_, _sliding_zone_horizontal_memory_);  
+      build_sliding_zones(_sliding_zone_vertical_memory_, _sliding_zone_horizontal_memory_); 
       build_zones();      
-      build_tracker_record();      
+      build_tracker_record();
+      
+      if (geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2 == 2) print_sliding_zones(std::clog);
       //_tracker_record_finale_decision_.display();
       // display_matrix();
       //print_zones(std::clog);
@@ -791,7 +825,6 @@ namespace snemo {
       for (iclocktick_800; iclocktick_800 <= geiger_ctw_data_.get_clocktick_max(); iclocktick_800 +=2)
        	{
        	  std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick;
-
       	  geiger_ctw_data_.get_list_of_geiger_ctw_per_clocktick(iclocktick_800, geiger_ctw_list_per_clocktick);
 	  if (geiger_ctw_list_per_clocktick.size() != 0)
       	    {

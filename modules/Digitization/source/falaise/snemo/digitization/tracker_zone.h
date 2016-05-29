@@ -37,6 +37,8 @@ namespace snemo {
       static int width(int i_);
 		
       static void print_layout(std::ostream & out_);
+
+			void print_projections(std::ostream & out_) const;
 			
       bool cells[snemo::digitization::trigger_info::NLAYERS][snemo::digitization::trigger_info::ZONE_WIDTH];
 			int side;

@@ -178,6 +178,27 @@ namespace snemo {
       return;
     }
 
+    void tracker_sliding_zone::print_projections(std::ostream & out_) const
+    {
+      out_ << "Sliding zone (" << side << ',' << szone_id << ") \n";
+      // out_ << "PR : Addr : [" << addr_row_proj   << "]" << " Data : " << data_LR_proj << "\n";
+      // out_ << "PL : Addr : [" << addr_layer_proj << "]" << " Data : " << data_IO_proj << "\n";
+
+      for (int i =  snemo::digitization::trigger_info::SLZONE_ROW_PROJ; i >= 0; i--)
+	{
+	  if (i == snemo::digitization::trigger_info::SLZONE_ROW_PROJ) out_ << "PR \n";
+	  if (i != 4) out_ << addr_row_proj[i] << "\n";
+	  if (i == 4) out_ << addr_row_proj[i] << "  ===> " << data_LR_proj << "\n";	  
+	}
+      for (int i = snemo::digitization::trigger_info::SLZONE_LAYER_PROJ; i >= 0; i--)
+	{
+	  if (i == snemo::digitization::trigger_info::SLZONE_LAYER_PROJ) out_ << "PL : ";
+	  if (i != 0 && i != snemo::digitization::trigger_info::SLZONE_LAYER_PROJ - 1) out_ << addr_layer_proj[i];
+	  if (i == 0) out_ << " ==> " << data_IO_proj << "\n";
+	}
+      
+    }
+
 
   } // end of namespace digitization
 

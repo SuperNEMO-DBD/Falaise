@@ -157,6 +157,9 @@ namespace snemo {
 			/// Print all tracker with zones boundaries
 			void print_zones(std::ostream & out_) const;
 			
+			/// Print all tracker sliding zones projections
+			void print_sliding_zones(std::ostream & out_) const;
+
 			/// General process
       void process(const geiger_ctw_data & geiger_ctw_data_,
 									 std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_);

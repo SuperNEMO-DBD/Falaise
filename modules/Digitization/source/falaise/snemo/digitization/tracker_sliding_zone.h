@@ -48,8 +48,7 @@ namespace snemo {
 				DATA_LR_PROJ_BIT_LEFT = 1
       };
       
-      
-      tracker_sliding_zone();
+			tracker_sliding_zone();
 
       void reset();
 
@@ -67,6 +66,8 @@ namespace snemo {
 
       void print(std::ostream & out_) const;
 
+			void print_projections(std::ostream & out_) const;
+			
       int side;
       int szone_id;
       bool cells[snemo::digitization::trigger_info::NLAYERS][snemo::digitization::trigger_info::SLZONE_WIDTH];

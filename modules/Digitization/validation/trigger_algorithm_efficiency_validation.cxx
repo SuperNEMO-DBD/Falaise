@@ -463,9 +463,9 @@ int main( int  argc_ , char **argv_  )
 		uint32_t clocktick_test = 2;
 		if (is_display_test)
 		  {
-		    my_geiger_ctw_data.get_geiger_ctws()[6].get().tree_dump(std::clog, "GG CTW 0 : ", "INFO : ");
-		    my_geiger_ctw_data.get_geiger_ctws()[7].get().tree_dump(std::clog, "GG CTW 1 : ", "INFO : ");
-		    my_geiger_ctw_data.get_geiger_ctws()[8].get().tree_dump(std::clog, "GG CTW 2 : ", "INFO : ");
+		    my_geiger_ctw_data.get_geiger_ctws()[6].get().tree_dump(std::clog, "GG CTW X : ", "INFO : ");
+		    my_geiger_ctw_data.get_geiger_ctws()[7].get().tree_dump(std::clog, "GG CTW Y : ", "INFO : ");
+		    my_geiger_ctw_data.get_geiger_ctws()[8].get().tree_dump(std::clog, "GG CTW Z : ", "INFO : ");
 		  }
 		if (is_display_test) my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo, clocktick_test);
 
