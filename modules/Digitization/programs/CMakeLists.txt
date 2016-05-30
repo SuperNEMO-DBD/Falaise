@@ -6,6 +6,7 @@ set(FalaiseDigitizationPlugin_PROGRAMS
   fldigi_delayed_alpha_geiger_cells_hit.cxx
   fldigi_delayed_alpha_validation.cxx
   fldigi_spatial_distribution.cxx
+  fldigi_bismuth_0nu_analysis.cxx
   sd_physical_cuts.cxx
   )
 

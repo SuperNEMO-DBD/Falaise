@@ -22,8 +22,8 @@ namespace snemo {
     const unsigned int calo_tp::MAX_NUMBER_OF_CHANNELS;
     const unsigned int calo_tp::FULL_SIZE;
     const unsigned int calo_tp::HTM_SIZE;
-    const double       calo_tp::LOW_THRESHOLD;
-    const double       calo_tp::HIGH_THRESHOLD;
+    constexpr double       calo_tp::LOW_THRESHOLD;
+    constexpr double       calo_tp::HIGH_THRESHOLD;
     calo_tp::calo_tp()
     {
       _locked_ = false;
