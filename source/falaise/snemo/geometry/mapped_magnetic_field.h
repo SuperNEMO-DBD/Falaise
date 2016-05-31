@@ -97,8 +97,9 @@ namespace snemo {
 
     private:
 
-      mapping_mode_type _mapping_mode_; //!< Mapping mode
-      std::string _map_filename_; //!< Map filename
+      mapping_mode_type _mapping_mode_;           //!< Mapping mode
+      std::string       _map_filename_;           //!< Map filename
+      bool              _zero_field_outside_map_; //!< Force zero field outside the interpolated map
 
       struct _work_type;
       boost::scoped_ptr<_work_type> _work_; //!< PIMPL-ized working data

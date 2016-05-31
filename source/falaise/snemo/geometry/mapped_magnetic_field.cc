@@ -186,6 +186,7 @@ namespace snemo {
     void mapped_magnetic_field::_set_defaults()
     {
       _mapping_mode_ = MM_INVALID;
+      _zero_field_outside_map_ = true;
       return;
     }
 
@@ -251,6 +252,15 @@ namespace snemo {
         set_map_filename(mf_str);
       }
 
+      if (config_.has_key("zero_field_outside_map")) {
+        bool zfom = config_.fetch_boolean("zero_field_outside_map");
+        if (zfom) {
+          _zero_field_outside_map_ = true;
+        } else {
+          _zero_field_outside_map_ = false;
+        }
+      }
+
       // Private initialization:
       _work_.reset(new _work_type);
 
@@ -310,6 +320,12 @@ namespace snemo {
       int status = STATUS_ERROR;
       if (_mapping_mode_ == MM_IMPORT_CSV_MAP_0) {
         status = _work_->csv_map_0_data.compute(position_, magnetic_field_);
+        if (status != STATUS_SUCCESS) {
+          if (_zero_field_outside_map_) {
+            magnetic_field_.set(0.,0.,0.);
+            status = STATUS_SUCCESS;
+          }
+        }
       }
       DT_LOG_DEBUG(get_logging_priority(),
                    "Magnetic field values = "
