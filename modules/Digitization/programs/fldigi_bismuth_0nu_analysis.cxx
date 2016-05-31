@@ -166,7 +166,70 @@ int main(int  argc_ , char ** argv_)
 	if (ER.has(SD_bank_label) && ER.is_a<mctools::simulated_data>(SD_bank_label)) 
 	  {
 	    // Access to the "SD" bank with a stored `mctools::simulated_data' :
-	    const mctools::simulated_data & SD = ER.get<mctools::simulated_data>(SD_bank_label); 	   
+	    const mctools::simulated_data & SD = ER.get<mctools::simulated_data>(SD_bank_label);
+	    
+	    std::size_t number_of_main_wall_calorimeters = 0;
+	    std::size_t number_of_xwall_calorimeters = 0;
+	    std::map<geomtools::geom_id, double> gid_energy_calo_map;
+
+	    std::size_t number_of_geiger_cells = 0;
+	    
+	    if (SD.has_step_hits("calo") || SD.has_step_hits("xcalo"))
+	      {
+		std::size_t number_of_main_calo_hits = 0;
+		if (SD.has_step_hits("calo")) number_of_main_calo_hits = SD.get_number_of_step_hits("calo");
+		std::size_t number_of_xwall_calo_hits = 0;
+		if (SD.has_step_hits("xcalo")) number_of_xwall_calo_hits = SD.get_number_of_step_hits("xcalo");
+		const size_t number_of_calo_hits = number_of_main_calo_hits + number_of_xwall_calo_hits;
+
+		for (size_t ihit = 0; ihit < number_of_main_calo_hits; ihit++)
+		  {
+		    const mctools::base_step_hit & main_calo_hit = SD.get_step_hit("calo", ihit);
+		    const double signal_time    = main_calo_hit.get_time_stop();
+		    const double energy_deposit = main_calo_hit.get_energy_deposit();
+		    const geomtools::geom_id & main_calo_gid = main_calo_hit.get_geom_id();
+		
+		    bool main_calo_gid_already_existing = false;
+		    std::map<geomtools::geom_id, double>::iterator it_map = gid_energy_calo_map.find(main_calo_gid);
+		    double previous_energy = 0;
+		    if (it_map != gid_energy_calo_map.end())
+		      {
+			previous_energy = it_map->second;
+			double new_energy = previous_energy += energy_deposit;
+			it_map->second = new_energy;			
+		      }	
+		    else
+		      {
+			number_of_main_wall_calorimeters++;
+			gid_energy_calo_map.insert({main_calo_gid, energy_deposit});
+		      }
+		  } // end of ihit main calo
+		
+		for (size_t ihit = 0; ihit < number_of_xwall_calo_hits; ihit++)
+		  {
+		    const mctools::base_step_hit & xwall_calo_hit = SD.get_step_hit("xcalo", ihit);
+		    const double signal_time    = xwall_calo_hit.get_time_stop();
+		    const double energy_deposit = xwall_calo_hit.get_energy_deposit();
+		    const geomtools::geom_id & xwall_calo_gid = xwall_calo_hit.get_geom_id();
+		
+		    bool xwall_calo_gid_already_existing = false;
+		    std::map<geomtools::geom_id, double>::iterator it_map = gid_energy_calo_map.find(xwall_calo_gid);
+		    double previous_energy = 0;
+		    if (it_map != gid_energy_calo_map.end())
+		      {
+			previous_energy = it_map->second;
+			double new_energy = previous_energy += energy_deposit;
+			it_map->second = new_energy;			
+		      }	
+		    else
+		      {
+			number_of_xwall_calorimeters++;
+			gid_energy_calo_map.insert({xwall_calo_gid, energy_deposit});
+		      }
+		  } // end of ihit xwall calo
+		
+	      } // end of if has step hits "calo" || "xcalo"
+	   
 	    if (SD.has_step_hits("gg"))
 	      {
 		const size_t number_of_hits = SD.get_number_of_step_hits("gg");
@@ -200,7 +263,9 @@ int main(int  argc_ , char ** argv_)
 		  }
 
 		mctools::simulated_data::hit_handle_collection_type BSHC = flaged_sd.get_step_hits("gg");
-		if (is_verbose) std::clog << "BSCH step hits # = " << BSHC.size() << std::endl;	int count = 0;
+		if (is_verbose) std::clog << "BSCH step hits # = " << BSHC.size() << std::endl;	
+		number_of_geiger_cells = BSHC.size();
+		int count = 0;
 		for (mctools::simulated_data::hit_handle_collection_type::const_iterator i = BSHC.begin();
 		     i != BSHC.end();
 		     i++) 
@@ -220,12 +285,92 @@ int main(int  argc_ , char ** argv_)
 			count++;
 		      }
 		  } // end of for 
-	      } // end of if has step hits
+	      } // end of if has step hits "gg"
+
+	    const geomtools::vector_3d & vertex_position = SD.get_vertex();
+	    // Analysis : 
+	    if (is_verbose)
+	      {
+		std::clog << std::endl;
+		std::clog << "*****************************" << std::endl;
+		std::clog << "Event number = " << psd_count << std::endl;
+		std::clog << "Main calorimeters fired = "   << number_of_main_wall_calorimeters
+			  << " Xwall calorimeters fired  = " << number_of_xwall_calorimeters 
+			  << " Total fired = "      << number_of_main_wall_calorimeters + number_of_xwall_calorimeters << std::endl;
+		std::clog << "Number of GG cells fired = " << number_of_geiger_cells << std::endl;
+	    	    
+		std::map<geomtools::geom_id, double>::iterator it_map = gid_energy_calo_map.begin();
+		for (it_map; it_map != gid_energy_calo_map.end(); it_map++)
+		  {
+		    std::clog << "Key : " << it_map -> first << std::endl;
+		    std::clog << "Value : " << it_map -> second << std::endl;
+		  }
+		
+		std::clog << "vtx X = " << vertex_position.getX() << std::endl;
+		std::clog << "vtx Y = " << vertex_position.getY() << std::endl;
+		std::clog << "vtx Z = " << vertex_position.getZ() << std::endl;
+	      }
+	    
+	    if (gid_energy_calo_map.size() == 2 && ((vertex_position.getX() >= -0.09) && (vertex_position.getX() <= 0.09))) // only 2 pm hits
+	      {
+		// Check the sum in energy 
+		geomtools::geom_id gid_calo_1;
+		geomtools::geom_id gid_calo_2;
+		double energy_calo_1 = 0;
+		double energy_calo_2 = 0;
+		std::map<geomtools::geom_id, double>::iterator it_map = gid_energy_calo_map.begin();
+		std::size_t index = 0;
+		for (it_map; it_map != gid_energy_calo_map.end(); it_map++)
+		  {
+		    // Calo 1 :
+		    if (index == 0)
+		      {
+			gid_calo_1 = it_map -> first;
+			energy_calo_1 = it_map -> second;
+		      }
+		    else // Calo 2 :
+		      {
+			gid_calo_2 = it_map -> first;
+			energy_calo_2 = it_map -> second;
+		      }
+		    index++;
+		  }
+		
+		double total_energy = energy_calo_1 + energy_calo_2;
+		
+		// bool distance_between_calorimeters_fine = true;
+		
+		// // Check the distance between the 2 calorimeters 
+		// if ((gid_calo_1.get(3) == gid_calo_2.get(3) + 1 || gid_calo_1.get(3) == gid_calo_2.get(3) - 1)
+		//     && (gid_calo_1.get(4) == gid_calo_2.get(4) + 1 || gid_calo_1.get(4) == gid_calo_2.get(4) - 1))
+		//   {
+		//     distance_between_calorimeters_fine = false;
+		//   }
+		
+		
+		// Cut in energy E [2,8, 3,2] MeV && #GG cells >= 18 (2 tracks)
+		if (total_energy >= 2.8 && total_energy <= 3.2 && number_of_geiger_cells >= 18)
+		  {
+		    std::clog << "&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
+		    std::clog << "Event = " << psd_count << std::endl;
+		    std::clog << "vtx X = " << vertex_position.getX() << std::endl;
+		    std::clog << "GID C1 : " << gid_calo_1 << " GID C2 : " << gid_calo_2 << std::endl;
+		    std::clog << "Energy C1 : " << energy_calo_1 << " Energy C2 : " << energy_calo_2 << " Total energy = " << total_energy << std::endl;
+		  }
+		
+		
+
+	      }
+	    
+
+
+
+
 	    //vertex_distribution_TH1F->Fill(number_of_delayed_gg_cells_hit);
 	  } // end of ER
 	ER.clear();
 	psd_count++;
-	if (is_verbose) std::clog << "DEBUG : psd count " << psd_count << std::endl;
+	//std::clog << "DEBUG : psd count " << psd_count << std::endl;
       } // end of while reader
     
     // output_file->Write();

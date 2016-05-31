@@ -562,6 +562,8 @@ namespace snemo {
       if (SZA_IO.test(0)) ZONE_ADDR_IO.set(6, true);
       if (SZA_IO.test(1)) ZONE_ADDR_IO.set(7, true);
       
+      zone_.addr_in_out_pattern = ZONE_ADDR_IO;
+      
       mem3_.fetch(ZONE_ADDR_IO, zone_.data_in_out_pattern);
       
       return;
@@ -596,11 +598,12 @@ namespace snemo {
 	  ZONE_ADDR_LR_REDUCTED[i] = ZONE_ADDR_LR[i+1];
 	}
 
+      zone_.addr_left_mid_right_pattern = ZONE_ADDR_LR_REDUCTED;
+
       if (ZONE_ADDR_LR_REDUCTED != 0)
 	{	  	  
 	  mem4_.fetch(ZONE_ADDR_LR_REDUCTED, zone_.data_left_mid_right_pattern);
 	}
-
       else
 	{
 	  std::bitset<trigger_info::SLZONE_DATA_IO_PROJ> SZA_IO = _sliding_zones_[side][zone_id * 3].data_IO_proj;
@@ -618,7 +621,9 @@ namespace snemo {
 	  ZONE_ADDR_IO[5] = SZB_IO[1];
 	  ZONE_ADDR_IO[6] = SZA_IO[0];
 	  ZONE_ADDR_IO[7] = SZA_IO[1];
-	  	  
+
+	  zone_.addr_left_mid_right_with_in_out_pattern = ZONE_ADDR_IO;
+
 	  mem5_.fetch(ZONE_ADDR_IO, zone_.data_left_mid_right_pattern);
 	}
       return;
@@ -742,17 +747,35 @@ namespace snemo {
 	out_ << '\n';
       }
       out_ << '\n';
-
+         
       return;
     }
+    
+    void tracker_trigger_algorithm::print_zone_information(std::ostream & out_) const
+    {
+      for (int iside = 0; iside < trigger_info::NSIDES; iside++) 
+	{
+	  for (int izone = 0; izone < trigger_info::NZONES; izone++) {
+
+	    out_ << "SIDE : " << iside << " Zone ID : " << izone << "\n";
+	    _zones_[iside][izone].print_projections(out_);
+	    out_ << "\n";
+	  }
+	}   
+      return;
+    }
+    
     
     void tracker_trigger_algorithm::print_sliding_zones(std::ostream & out_) const
     {
       out_ << "Sliding zones: \n";
       for (int iside = 0; iside < trigger_info::NSIDES; iside++) 
 	{
+	  out_ << "*************************** \n";
+	  out_ << "Side = " << iside << "\n";
 	  for (int islzone = 0; islzone < trigger_info::NSLZONES; islzone++)
 	    {
+	      if (islzone == 0) out_ << "ZONE ID : 0 \n";
 	      if (islzone == 0) {
 		out_ << "SLZ_A : \n";
 		_sliding_zones_[iside][islzone].print_projections(out_);
@@ -769,9 +792,13 @@ namespace snemo {
 		out_ << "SLZ_D : \n";
 		_sliding_zones_[iside][islzone].print_projections(out_);
 		out_ << "\n";
-		out_ << "SLZ_A : \n";
-		_sliding_zones_[iside][islzone].print_projections(out_);
-		
+		if (_sliding_zones_[iside][islzone].szone_id / 3 == 10) {}
+		else
+		  {
+		    out_ << "ZONE ID : " << _sliding_zones_[iside][islzone].szone_id / 3 << "\n";
+		    out_ << "SLZ_A : \n";
+		    _sliding_zones_[iside][islzone].print_projections(out_);
+		  }
 	      }
 	    } // end of islzone
 	} // end of iside
@@ -807,10 +834,12 @@ namespace snemo {
       build_zones();      
       build_tracker_record();
       
+      print_zones(std::clog);
       if (geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2 == 2) print_sliding_zones(std::clog);
+      print_zones(std::clog);
+      print_zone_information(std::clog);
       //_tracker_record_finale_decision_.display();
       // display_matrix();
-      //print_zones(std::clog);
       return;
     }
     

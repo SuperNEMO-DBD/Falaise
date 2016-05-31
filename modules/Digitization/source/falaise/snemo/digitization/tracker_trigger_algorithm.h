@@ -157,6 +157,9 @@ namespace snemo {
 			/// Print all tracker with zones boundaries
 			void print_zones(std::ostream & out_) const;
 			
+			/// Print information for one zone (results of sliding zones projections and computing)
+			void print_zone_information(std::ostream & out_) const;
+
 			/// Print all tracker sliding zones projections
 			void print_sliding_zones(std::ostream & out_) const;
 

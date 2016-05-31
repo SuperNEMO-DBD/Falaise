@@ -1,6 +1,7 @@
 // test_tracker_trigger_algorithm_load_from_file.cxx
 // Standard libraries :
 #include <iostream>
+#include <cstdlib>
 
 // - Bayeux/datatools:
 #include <datatools/utils.h>
@@ -91,11 +92,11 @@ int main( int  argc_ , char **argv_  )
 		<< "-op [ --output path ]    set a path where all files are stored" << std::endl
 		<< "-n  [ --number ]         set the number of events" << std::endl
 		<< "Example : " << std::endl << std::endl
-		<< "$ BuildProducts/bin/falaisedigitizationplugin-test_tracker_trigger_algorithm_load_from_file --input ${FALAISEBREW_DIGITIZATION_TESTING_DIR}/data/100_events_tracker_matrix_output.data -op ${FALAISEBREW_DIGITIZATION_TESTING_DIR}/output_default" 
+		<< "$ BuildProducts/bin/falaisedigitizationplugin-test_tracker_trigger_algorithm_load_from_file --input ${FALAISE_DIGITIZATION_TESTING_DIR}/data/100_events_tracker_matrix_output.data -op ${FALAISE_DIGITIZATION_TESTING_DIR}/output_default" 
 		<< " --number 5" << std::endl << std::endl
 		<< "If no options are set, programs have default values :" << std::endl << std::endl
-		<< "input file           = ${FALAISEBREW_DIGITIZATION_TESTING_DIR}/data/100_events_tracker_matrix_output.data" << std::endl
-		<< "output path          = ${FALAISEBREW_DIGITIZATION_TESTING_DIR}/output_default/" << std::endl
+		<< "input file           = ${FALAISE_DIGITIZATION_TESTING_DIR}/data/100_events_tracker_matrix_output.data" << std::endl
+		<< "output path          = ${FALAISE_DIGITIZATION_TESTING_DIR}/output_default/" << std::endl
 		<< "number of events     = 10" << std::endl << std::endl;
       return 0;
     }
@@ -129,7 +130,7 @@ int main( int  argc_ , char **argv_  )
       datatools::fetch_path_with_env(input_filename);
       data_filename = input_filename;
     }else{
-      data_filename = "${FALAISEBREW_DIGITIZATION_TESTING_DIR}/data/100_events_tracker_matrix_output.data";
+      data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/100_events_tracker_matrix_output.data";
     }
     datatools::fetch_path_with_env(data_filename);
     std::clog << "data_filename  = " << data_filename << std::endl << std::endl;;
@@ -148,11 +149,11 @@ int main( int  argc_ , char **argv_  )
     my_e_mapping.initialize();
 
     // Loading memory from external files :
-    std::string mem1 = "${FALAISEBREW_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem1.conf";
-    std::string mem2 = "${FALAISEBREW_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem2.conf";
-    std::string mem3 = "${FALAISEBREW_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem3.conf";
-    std::string mem4 = "${FALAISEBREW_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem4.conf";
-    std::string mem5 = "${FALAISEBREW_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem5.conf";
+    std::string mem1 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem1.conf";
+    std::string mem2 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem2.conf";
+    std::string mem3 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem3.conf";
+    std::string mem4 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem4.conf";
+    std::string mem5 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem5.conf";
 
     datatools::fetch_path_with_env(mem1);
     datatools::fetch_path_with_env(mem2);
@@ -173,7 +174,6 @@ int main( int  argc_ , char **argv_  )
     my_tracker_trigger_algo.set_electronic_mapping(my_e_mapping);
     my_tracker_trigger_algo.initialize(tracker_config);
 
-    std::vector<snemo::digitization::tracker_trigger_algorithm::tracker_record> my_tracker_records;
 
     // Internal counters :
     int psd_count = 0; // Event counter   
@@ -200,320 +200,320 @@ int main( int  argc_ , char **argv_  )
     std::string line;
     while (std::getline(fin, line))
       {
-    	if (psd_count == 0)
-    	  {
-	    // Fill matrix :
-	    int layer = 0;
-	    if (line_number < 9) 
-	      {
-		side = 0;
-		layer = 8 - line_number;
-	      }
-	    else
-	      {
-		side = 1;
-		layer = line_number - 9;
-	      }
+    	// if (psd_count == 0)
+    	//   {
+	// Fill matrix :
+	int layer = 0;
+	if (line_number < 9) 
+	  {
+	    side = 0;
+	    layer = 8 - line_number;
+	  }
+	else
+	  {
+	    side = 1;
+	    layer = line_number - 9;
+	  }
 	
-	    for (int i = 0 ; i < line.length(); i++) 
-	      { 
-		char my_value = line[i];
-		if (my_value == '0') geiger_matrix[side][layer][i] = false;
-		if (my_value == '1') geiger_matrix[side][layer][i] = true;
-	      }
+	for (int i = 0 ; i < line.length(); i++) 
+	  { 
+	    char my_value = line[i];
+	    if (my_value == '0') geiger_matrix[side][layer][i] = false;
+	    if (my_value == '1') geiger_matrix[side][layer][i] = true;
+	  }
 	
-	    if (line.empty())
+	if (line.empty())
+	  {
+	    for (int i = 0; i < snemo::digitization::trigger_info::NSIDES; i++)
 	      {
-		for (int i = 0; i < snemo::digitization::trigger_info::NSIDES; i++)
+		if (i == 0)
 		  {
-		    if (i == 0)
+		    for (int j = snemo::digitization::trigger_info::NLAYERS - 1; j >= 0; j--) // Value GEIGER_LAYER_SIZE = 9
 		      {
-			for (int j = snemo::digitization::trigger_info::NLAYERS - 1; j >= 0; j--) // Value GEIGER_LAYER_SIZE = 9
+			for (int k = 0; k < snemo::digitization::trigger_info::NROWS; k++)
 			  {
-			    for (int k = 0; k < snemo::digitization::trigger_info::NROWS; k++)
-			      {
-				if (geiger_matrix[i][j][k] ) std::clog << "1";
-				if(!geiger_matrix[i][j][k])  std::clog << "0";	  
-			      } // end of row loop
-			    std::clog<<std::endl;	
+			    if (geiger_matrix[i][j][k] ) std::clog << "1";
+			    if(!geiger_matrix[i][j][k])  std::clog << "0";	  
+			  } // end of row loop
+			std::clog<<std::endl;	
 
-			  } // end of layer loop
+		      } // end of layer loop
 
-		      } // end of if == 0
+		  } // end of if == 0
 
-		    if (i == 1)
-		      {  
-			for (int j = 0; j < snemo::digitization::trigger_info::NLAYERS; j++)
+		if (i == 1)
+		  {  
+		    for (int j = 0; j < snemo::digitization::trigger_info::NLAYERS; j++)
+		      {
+			for (int k = 0; k < snemo::digitization::trigger_info::NROWS; k++)
 			  {
-			    for (int k = 0; k < snemo::digitization::trigger_info::NROWS; k++)
-			      {
-				if (geiger_matrix[i][j][k]) std::clog << "1";
-				if(!geiger_matrix[i][j][k])  std::clog << "0";	  
-			      } // end of row loop
-			    std::clog<<std::endl;	    
+			    if (geiger_matrix[i][j][k]) std::clog << "1";
+			    if(!geiger_matrix[i][j][k])  std::clog << "0";	  
+			  } // end of row loop
+			std::clog<<std::endl;	    
   
-			  } // end of layer loop
+		      } // end of layer loop
 
-		      } // end of if i==1
+		  } // end of if i==1
 
-		  } // end of side loop
-		std::clog << std::endl;
+	      } // end of side loop
+	    std::clog << std::endl;
 
-		// process here
-		snemo::digitization::geiger_ctw_data my_geiger_ctw_data;
-		snemo::digitization::geiger_ctw & my_geiger_ctw_0 = my_geiger_ctw_data.add();
-		snemo::digitization::geiger_ctw & my_geiger_ctw_1 = my_geiger_ctw_data.add();
-		snemo::digitization::geiger_ctw & my_geiger_ctw_2 = my_geiger_ctw_data.add();
-		// Take care of the CT 800, only even clocktick are processed
-		uint32_t clocktick_800ns = 4; // Just one clocktick for geiger ctw example value : 4
-		int hit_id = 42;
-		geomtools::geom_id temporary_elec_id;
-		temporary_elec_id.set_type(snemo::digitization::mapping::TRACKER_CONTROL_BOARD_TYPE);
-		temporary_elec_id.set_depth(snemo::digitization::mapping::BOARD_DEPTH);
-		temporary_elec_id.set(snemo::digitization::mapping::RACK_INDEX, snemo::digitization::mapping::GEIGER_RACK_ID);
-		temporary_elec_id.set(snemo::digitization::mapping::CRATE_INDEX, 0);
-		temporary_elec_id.set(snemo::digitization::mapping::BOARD_INDEX, snemo::digitization::mapping::CONTROL_BOARD_ID);
+	    // process here
+	    snemo::digitization::geiger_ctw_data my_geiger_ctw_data;
+	    snemo::digitization::geiger_ctw & my_geiger_ctw_0 = my_geiger_ctw_data.add();
+	    snemo::digitization::geiger_ctw & my_geiger_ctw_1 = my_geiger_ctw_data.add();
+	    snemo::digitization::geiger_ctw & my_geiger_ctw_2 = my_geiger_ctw_data.add();
+	    // Take care of the CT 800, only even clocktick are processed
+	    uint32_t clocktick_800ns = 4; // Just one clocktick for geiger ctw example value : 4
+	    int hit_id = 42;
+	    geomtools::geom_id temporary_elec_id;
+	    temporary_elec_id.set_type(snemo::digitization::mapping::TRACKER_CONTROL_BOARD_TYPE);
+	    temporary_elec_id.set_depth(snemo::digitization::mapping::BOARD_DEPTH);
+	    temporary_elec_id.set(snemo::digitization::mapping::RACK_INDEX, snemo::digitization::mapping::GEIGER_RACK_ID);
+	    temporary_elec_id.set(snemo::digitization::mapping::CRATE_INDEX, 0);
+	    temporary_elec_id.set(snemo::digitization::mapping::BOARD_INDEX, snemo::digitization::mapping::CONTROL_BOARD_ID);
 		
-		my_geiger_ctw_0.set_header(hit_id,
-					   temporary_elec_id,
-					   clocktick_800ns);
+	    my_geiger_ctw_0.set_header(hit_id,
+				       temporary_elec_id,
+				       clocktick_800ns);
 
-		temporary_elec_id.set(snemo::digitization::mapping::CRATE_INDEX, 1);
-		my_geiger_ctw_1.set_header(hit_id,
-					   temporary_elec_id,
-					   clocktick_800ns);
+	    temporary_elec_id.set(snemo::digitization::mapping::CRATE_INDEX, 1);
+	    my_geiger_ctw_1.set_header(hit_id,
+				       temporary_elec_id,
+				       clocktick_800ns);
 
-		temporary_elec_id.set(snemo::digitization::mapping::CRATE_INDEX, 2);
-		my_geiger_ctw_2.set_header(hit_id,
-					   temporary_elec_id,
-					   clocktick_800ns);
+	    temporary_elec_id.set(snemo::digitization::mapping::CRATE_INDEX, 2);
+	    my_geiger_ctw_2.set_header(hit_id,
+				       temporary_elec_id,
+				       clocktick_800ns);
 		
-		for (int iblock = 0; iblock < 19; iblock++)
-		  {	    		
-		    std::bitset<snemo::digitization::geiger::tp::TP_SIZE> bitset_ctw_0;
-		    std::bitset<snemo::digitization::geiger::tp::TP_SIZE> bitset_ctw_1;
-		    std::bitset<snemo::digitization::geiger::tp::TP_SIZE> bitset_ctw_2;
+	    for (int iblock = 0; iblock < 19; iblock++)
+	      {	    		
+		std::bitset<snemo::digitization::geiger::tp::TP_SIZE> bitset_ctw_0;
+		std::bitset<snemo::digitization::geiger::tp::TP_SIZE> bitset_ctw_1;
+		std::bitset<snemo::digitization::geiger::tp::TP_SIZE> bitset_ctw_2;
 		    
-		    std::bitset<9> ctw0_side_0_row_0_bitset;
-		    std::bitset<9> ctw0_side_0_row_1_bitset;
-		    std::bitset<9> ctw0_side_1_row_0_bitset;
-		    std::bitset<9> ctw0_side_1_row_1_bitset;
+		std::bitset<9> ctw0_side_0_row_0_bitset;
+		std::bitset<9> ctw0_side_0_row_1_bitset;
+		std::bitset<9> ctw0_side_1_row_0_bitset;
+		std::bitset<9> ctw0_side_1_row_1_bitset;
 
-		    std::bitset<9> ctw1_side_0_row_0_bitset;
-		    std::bitset<9> ctw1_side_0_row_1_bitset;
-		    std::bitset<9> ctw1_side_1_row_0_bitset;
-		    std::bitset<9> ctw1_side_1_row_1_bitset;
+		std::bitset<9> ctw1_side_0_row_0_bitset;
+		std::bitset<9> ctw1_side_0_row_1_bitset;
+		std::bitset<9> ctw1_side_1_row_0_bitset;
+		std::bitset<9> ctw1_side_1_row_1_bitset;
 
-		    std::bitset<9> ctw2_side_0_row_0_bitset;
-		    std::bitset<9> ctw2_side_0_row_1_bitset;
-		    std::bitset<9> ctw2_side_1_row_0_bitset;
-		    std::bitset<9> ctw2_side_1_row_1_bitset;
+		std::bitset<9> ctw2_side_0_row_0_bitset;
+		std::bitset<9> ctw2_side_0_row_1_bitset;
+		std::bitset<9> ctw2_side_1_row_0_bitset;
+		std::bitset<9> ctw2_side_1_row_1_bitset;
 
-       		    for (int jlayer = 0; jlayer < snemo::digitization::trigger_info::NLAYERS; jlayer++)
+		for (int jlayer = 0; jlayer < snemo::digitization::trigger_info::NLAYERS; jlayer++)
+		  {
+		    // CTW 0 :
+		    if (geiger_matrix[0][jlayer][iblock * 2] == true)
 		      {
-			// CTW 0 :
-			if (geiger_matrix[0][jlayer][iblock * 2] == true)
-			  {
-			    ctw0_side_0_row_0_bitset.set(jlayer, true);
-			  }
-			if (geiger_matrix[0][jlayer][(iblock * 2) + 1] == true)
-			  {
-			    ctw0_side_0_row_1_bitset.set(jlayer, true);
-			  }
-			if (geiger_matrix[1][jlayer][iblock * 2] == true)
-			  {
-			    ctw0_side_1_row_0_bitset.set(jlayer, true);
-			  }
-			if (geiger_matrix[1][jlayer][(iblock * 2) + 1] == true)
-			  {
-			    ctw0_side_1_row_1_bitset.set(jlayer, true);
-			  }
-
-			// CTW 1 :
-			if (iblock < 9)
-			  {
-			    if (geiger_matrix[0][jlayer][38 + iblock * 2] == true)
-			      {
-				ctw1_side_0_row_0_bitset.set(jlayer, true);
-			      }
-			    if (geiger_matrix[0][jlayer][38 + (iblock * 2) + 1] == true)
-			      {
-				ctw1_side_0_row_1_bitset.set(jlayer, true);
-			      }
-			    if (geiger_matrix[1][jlayer][38 + iblock * 2] == true)
-			      {
-				ctw1_side_1_row_0_bitset.set(jlayer, true);
-			      }
-			    if (geiger_matrix[1][jlayer][38 + (iblock * 2) + 1] == true)
-			      {
-				ctw1_side_1_row_1_bitset.set(jlayer, true);
-			      }
-			  }
-			
-			else if (iblock == 9) 
-			  {
-			    if (geiger_matrix[0][jlayer][38 + iblock * 2] == true)
-			      {
-				ctw1_side_0_row_0_bitset.set(jlayer, true);
-			      }
-
-			    ctw1_side_0_row_1_bitset.set(jlayer, false);
-			  
-			    if (geiger_matrix[1][jlayer][38 + iblock * 2] == true)
-			      {
-				ctw1_side_1_row_0_bitset.set(jlayer, true);
-			      }
-			    
-			    ctw1_side_1_row_1_bitset.set(jlayer, false);
-			  }
-
-			else if (iblock > 9)
-			  {
-			    if (geiger_matrix[0][jlayer][38 + (iblock * 2) + 1] == true)
-			      {
-				ctw1_side_0_row_0_bitset.set(jlayer, true);
-			      }
-			    if (geiger_matrix[0][jlayer][38 + iblock * 2] == true)
-			      {
-				ctw1_side_0_row_1_bitset.set(jlayer, true);
-			      }
-			    if (geiger_matrix[1][jlayer][38 + (iblock * 2) + 1] == true)
-			      {
-				ctw1_side_1_row_0_bitset.set(jlayer, true);
-			      }
-			    if (geiger_matrix[1][jlayer][38 + iblock * 2] == true)
-			      {
-				ctw1_side_1_row_1_bitset.set(jlayer, true);
-			      }
-			  }
-			
-			// CTW 2 :
-        
-			if (geiger_matrix[0][jlayer][75 + iblock * 2] == true)
-			  {
-			    ctw2_side_0_row_0_bitset.set(jlayer, true);
-			  }
-			if (geiger_matrix[0][jlayer][75 + (iblock * 2) + 1] == true)
-			  {
-			    ctw2_side_0_row_1_bitset.set(jlayer, true);
-			  }
-			if (geiger_matrix[1][jlayer][75 + iblock * 2] == true)
-			  {
-			    ctw2_side_1_row_0_bitset.set(jlayer, true);
-			  }
-			if (geiger_matrix[1][jlayer][75 + (iblock * 2) + 1] == true)
-			  {
-			    ctw2_side_1_row_1_bitset.set(jlayer, true);
-			  }
-			
-		      }// end of jlayer
-		    
-		    for (int i = 0; i < 9; i++)
+			ctw0_side_0_row_0_bitset.set(jlayer, true);
+		      }
+		    if (geiger_matrix[0][jlayer][(iblock * 2) + 1] == true)
 		      {
-			if (ctw0_side_0_row_0_bitset.test(i) == true)
-			  {
-			    bitset_ctw_0.set(i, true);
-			  }
-			if (ctw0_side_0_row_1_bitset.test(i) == true)
-			  {
-			    bitset_ctw_0.set(i + 9, true);
-			  }
-			if (ctw0_side_1_row_0_bitset.test(i) == true)
-			  {
-			    bitset_ctw_0.set(i + 18, true);
-			  }
-			if (ctw0_side_1_row_1_bitset.test(i) == true)
-			  {
-			    bitset_ctw_0.set(i + 27, true);
-			  }
+			ctw0_side_0_row_1_bitset.set(jlayer, true);
+		      }
+		    if (geiger_matrix[1][jlayer][iblock * 2] == true)
+		      {
+			ctw0_side_1_row_0_bitset.set(jlayer, true);
+		      }
+		    if (geiger_matrix[1][jlayer][(iblock * 2) + 1] == true)
+		      {
+			ctw0_side_1_row_1_bitset.set(jlayer, true);
+		      }
 
-			if (ctw1_side_0_row_0_bitset.test(i) == true)
+		    // CTW 1 :
+		    if (iblock < 9)
+		      {
+			if (geiger_matrix[0][jlayer][38 + iblock * 2] == true)
 			  {
-			    bitset_ctw_1.set(i, true);
+			    ctw1_side_0_row_0_bitset.set(jlayer, true);
 			  }
-			if (ctw1_side_0_row_1_bitset.test(i) == true)
+			if (geiger_matrix[0][jlayer][38 + (iblock * 2) + 1] == true)
 			  {
-			    bitset_ctw_1.set(i + 9, true);
+			    ctw1_side_0_row_1_bitset.set(jlayer, true);
 			  }
-			if (ctw1_side_1_row_0_bitset.test(i) == true)
+			if (geiger_matrix[1][jlayer][38 + iblock * 2] == true)
 			  {
-			    bitset_ctw_1.set(i + 18, true);
+			    ctw1_side_1_row_0_bitset.set(jlayer, true);
 			  }
-			if (ctw1_side_1_row_1_bitset.test(i) == true)
+			if (geiger_matrix[1][jlayer][38 + (iblock * 2) + 1] == true)
 			  {
-			    bitset_ctw_1.set(i + 27, true);
-			  }
-
-			if (ctw2_side_0_row_0_bitset.test(i) == true)
-			  {
-			    bitset_ctw_2.set(i, true);
-			  }
-			if (ctw2_side_0_row_1_bitset.test(i) == true)
-			  {
-			    bitset_ctw_2.set(i + 9, true);
-			  }
-			if (ctw2_side_1_row_0_bitset.test(i) == true)
-			  {
-			    bitset_ctw_2.set(i + 18, true);
-			  }
-			if (ctw2_side_1_row_1_bitset.test(i) == true)
-			  {
-			    bitset_ctw_2.set(i + 27, true);
+			    ctw1_side_1_row_1_bitset.set(jlayer, true);
 			  }
 		      }
-		    // std::clog << "******************************************************"<< std::endl;
-		    // std::clog << "iblock = " << iblock << std::endl;
-		    // std::clog << "CTW0:S0:R0 " << ctw0_side_0_row_0_bitset << std::endl;
-		    // std::clog << "CTW0:S0:R0 " << ctw0_side_0_row_0_bitset << std::endl;
-		    // std::clog << "CTW0:S0:R1 " << ctw0_side_0_row_1_bitset << std::endl;
-		    // std::clog << "CTW0:S1:R0 " << ctw0_side_1_row_0_bitset << std::endl;
-		    // std::clog << bitset_ctw_0 << std::endl << std::endl;
+			
+		    else if (iblock == 9) 
+		      {
+			if (geiger_matrix[0][jlayer][38 + iblock * 2] == true)
+			  {
+			    ctw1_side_0_row_0_bitset.set(jlayer, true);
+			  }
 
-		    // std::clog << "CTW1:S1:R1 " << ctw1_side_1_row_1_bitset << std::endl;
-		    // std::clog << "CTW1:S0:R1 " << ctw1_side_0_row_1_bitset << std::endl;
-		    // std::clog << "CTW1:S1:R0 " << ctw1_side_1_row_0_bitset << std::endl;
-		    // std::clog << "CTW1:S1:R1 " << ctw1_side_1_row_1_bitset << std::endl;
-		    // std::clog << bitset_ctw_1 << std::endl << std::endl;
+			ctw1_side_0_row_1_bitset.set(jlayer, false);
+			  
+			if (geiger_matrix[1][jlayer][38 + iblock * 2] == true)
+			  {
+			    ctw1_side_1_row_0_bitset.set(jlayer, true);
+			  }
+			    
+			ctw1_side_1_row_1_bitset.set(jlayer, false);
+		      }
 
-		    // std::clog << "CTW2:S1:R1 " << ctw2_side_1_row_1_bitset << std::endl;
-		    // std::clog << "CTW2:S0:R1 " << ctw2_side_0_row_1_bitset << std::endl;
-		    // std::clog << "CTW2:S1:R0 " << ctw2_side_1_row_0_bitset << std::endl;
-		    // std::clog << "CTW2:S1:R1 " << ctw2_side_1_row_1_bitset << std::endl;
-		    // std::clog << bitset_ctw_2 << std::endl << std::endl;
+		    else if (iblock > 9)
+		      {
+			if (geiger_matrix[0][jlayer][38 + (iblock * 2) + 1] == true)
+			  {
+			    ctw1_side_0_row_0_bitset.set(jlayer, true);
+			  }
+			if (geiger_matrix[0][jlayer][38 + iblock * 2] == true)
+			  {
+			    ctw1_side_0_row_1_bitset.set(jlayer, true);
+			  }
+			if (geiger_matrix[1][jlayer][38 + (iblock * 2) + 1] == true)
+			  {
+			    ctw1_side_1_row_0_bitset.set(jlayer, true);
+			  }
+			if (geiger_matrix[1][jlayer][38 + iblock * 2] == true)
+			  {
+			    ctw1_side_1_row_1_bitset.set(jlayer, true);
+			  }
+		      }
+			
+		    // CTW 2 :
+        
+		    if (geiger_matrix[0][jlayer][75 + iblock * 2] == true)
+		      {
+			ctw2_side_0_row_0_bitset.set(jlayer, true);
+		      }
+		    if (geiger_matrix[0][jlayer][75 + (iblock * 2) + 1] == true)
+		      {
+			ctw2_side_0_row_1_bitset.set(jlayer, true);
+		      }
+		    if (geiger_matrix[1][jlayer][75 + iblock * 2] == true)
+		      {
+			ctw2_side_1_row_0_bitset.set(jlayer, true);
+		      }
+		    if (geiger_matrix[1][jlayer][75 + (iblock * 2) + 1] == true)
+		      {
+			ctw2_side_1_row_1_bitset.set(jlayer, true);
+		      }
+			
+		  }// end of jlayer
+		    
+		for (int i = 0; i < 9; i++)
+		  {
+		    if (ctw0_side_0_row_0_bitset.test(i) == true)
+		      {
+			bitset_ctw_0.set(i, true);
+		      }
+		    if (ctw0_side_0_row_1_bitset.test(i) == true)
+		      {
+			bitset_ctw_0.set(i + 9, true);
+		      }
+		    if (ctw0_side_1_row_0_bitset.test(i) == true)
+		      {
+			bitset_ctw_0.set(i + 18, true);
+		      }
+		    if (ctw0_side_1_row_1_bitset.test(i) == true)
+		      {
+			bitset_ctw_0.set(i + 27, true);
+		      }
+
+		    if (ctw1_side_0_row_0_bitset.test(i) == true)
+		      {
+			bitset_ctw_1.set(i, true);
+		      }
+		    if (ctw1_side_0_row_1_bitset.test(i) == true)
+		      {
+			bitset_ctw_1.set(i + 9, true);
+		      }
+		    if (ctw1_side_1_row_0_bitset.test(i) == true)
+		      {
+			bitset_ctw_1.set(i + 18, true);
+		      }
+		    if (ctw1_side_1_row_1_bitset.test(i) == true)
+		      {
+			bitset_ctw_1.set(i + 27, true);
+		      }
+
+		    if (ctw2_side_0_row_0_bitset.test(i) == true)
+		      {
+			bitset_ctw_2.set(i, true);
+		      }
+		    if (ctw2_side_0_row_1_bitset.test(i) == true)
+		      {
+			bitset_ctw_2.set(i + 9, true);
+		      }
+		    if (ctw2_side_1_row_0_bitset.test(i) == true)
+		      {
+			bitset_ctw_2.set(i + 18, true);
+		      }
+		    if (ctw2_side_1_row_1_bitset.test(i) == true)
+		      {
+			bitset_ctw_2.set(i + 27, true);
+		      }
+		  }
+		// std::clog << "******************************************************"<< std::endl;
+		// std::clog << "iblock = " << iblock << std::endl;
+		// std::clog << "CTW0:S0:R0 " << ctw0_side_0_row_0_bitset << std::endl;
+		// std::clog << "CTW0:S0:R0 " << ctw0_side_0_row_0_bitset << std::endl;
+		// std::clog << "CTW0:S0:R1 " << ctw0_side_0_row_1_bitset << std::endl;
+		// std::clog << "CTW0:S1:R0 " << ctw0_side_1_row_0_bitset << std::endl;
+		// std::clog << bitset_ctw_0 << std::endl << std::endl;
+
+		// std::clog << "CTW1:S1:R1 " << ctw1_side_1_row_1_bitset << std::endl;
+		// std::clog << "CTW1:S0:R1 " << ctw1_side_0_row_1_bitset << std::endl;
+		// std::clog << "CTW1:S1:R0 " << ctw1_side_1_row_0_bitset << std::endl;
+		// std::clog << "CTW1:S1:R1 " << ctw1_side_1_row_1_bitset << std::endl;
+		// std::clog << bitset_ctw_1 << std::endl << std::endl;
+
+		// std::clog << "CTW2:S1:R1 " << ctw2_side_1_row_1_bitset << std::endl;
+		// std::clog << "CTW2:S0:R1 " << ctw2_side_0_row_1_bitset << std::endl;
+		// std::clog << "CTW2:S1:R0 " << ctw2_side_1_row_0_bitset << std::endl;
+		// std::clog << "CTW2:S1:R1 " << ctw2_side_1_row_1_bitset << std::endl;
+		// std::clog << bitset_ctw_2 << std::endl << std::endl;
 		    
 		
-		    my_geiger_ctw_0.set_55_bits_in_ctw_word(iblock, bitset_ctw_0);
-		    my_geiger_ctw_1.set_55_bits_in_ctw_word(iblock, bitset_ctw_1);
-		    my_geiger_ctw_2.set_55_bits_in_ctw_word(iblock, bitset_ctw_2);
+		my_geiger_ctw_0.set_55_bits_in_ctw_word(iblock, bitset_ctw_0);
+		my_geiger_ctw_1.set_55_bits_in_ctw_word(iblock, bitset_ctw_1);
+		my_geiger_ctw_2.set_55_bits_in_ctw_word(iblock, bitset_ctw_2);
 		    
-		  } // end of iblock
+	      } // end of iblock
 
-		my_geiger_ctw_0.tree_dump(std::clog, "My GG CTW 0 : ", "INFO : ");
-		my_geiger_ctw_1.tree_dump(std::clog, "My GG CTW 1 : ", "INFO : ");
-		my_geiger_ctw_2.tree_dump(std::clog, "My GG CTW 2 : ", "INFO : ");
-		//std::clog << "GG CTW DATA SIZE = " << my_geiger_ctw_data.get_geiger_ctws().size() << std::endl;
+	    my_geiger_ctw_0.tree_dump(std::clog, "My GG CTW 0 : ", "INFO : ");
+	    my_geiger_ctw_1.tree_dump(std::clog, "My GG CTW 1 : ", "INFO : ");
+	    my_geiger_ctw_2.tree_dump(std::clog, "My GG CTW 2 : ", "INFO : ");
+	    //std::clog << "GG CTW DATA SIZE = " << my_geiger_ctw_data.get_geiger_ctws().size() << std::endl;
 
-		my_tracker_trigger_algo.process(my_geiger_ctw_data,
-						my_tracker_records);
+	    std::vector<snemo::digitization::tracker_trigger_algorithm::tracker_record> my_tracker_records;
+	    my_tracker_trigger_algo.process(my_geiger_ctw_data,
+					    my_tracker_records);
 		
-		std::clog << "Tracker records size = " << my_tracker_records.size() << std::endl;
-		my_tracker_records[0].display();
+	    std::clog << "Tracker records size = " << my_tracker_records.size() << std::endl;
+	    my_tracker_records[0].display();
 
-		// reset line number and side number :
-		side = 0;
-		line_number = 0;
-		psd_count++;
-	      } // end of line.empty()
-
-
+	    std::cout << "Event # = " << psd_count << std::endl;
+	    std::cout << "next event ? [enter for yes]" << std::endl;
+	    std::cin.get();	  
+	    // reset line number and side number :
+	    side = 0;
+	    line_number = 0;
+	    psd_count++;
+	    
+	  } // end of line.empty()
 	    //std::clog << psd_count << std::endl;
-      
-	  } // end of if psd count == 0
+      	//} // end of if psd count == 0
 
-	if (line.empty()) psd_count++;
-
-	//std::clog << side << ' ' << line_number << ' ' << layer << ' ' << line << std::endl;
-	if (!line.empty()) line_number++;
+      //std::clog << side << ' ' << line_number << ' ' << layer << ' ' << line << std::endl;
+      if (!line.empty()) line_number++;
       }
     
 
