@@ -50,7 +50,7 @@ namespace TrackFit {
     DEBUG   = datatools::bit_mask::bit00,
     DEVEL   = datatools::bit_mask::bit01,
     WARNING = datatools::bit_mask::bit02,
-    TEST    = datatools::bit_mask::bit03,
+    TEST    = datatools::bit_mask::bit03
   };
 
   /// \brief Geiger hit wrapper

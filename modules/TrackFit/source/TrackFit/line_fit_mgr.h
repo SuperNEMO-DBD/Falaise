@@ -67,7 +67,7 @@ namespace TrackFit {
         PARAM_INDEX_Y0      =  1, /// Index of the Y0 free parameter
         PARAM_INDEX_PHI     =  2, /// Index of the PHI free parameter
         PARAM_INDEX_THETA   =  3, /// Index of the THETA free parameter
-        PARAM_INDEX_T0      =  4, /// Index of the T0 free parameter (if used)
+        PARAM_INDEX_T0      =  4  /// Index of the T0 free parameter (if used)
       };
 
     /// Constructor
