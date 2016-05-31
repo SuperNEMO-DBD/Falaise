@@ -11,14 +11,15 @@
 # magnetic_field.VM
 # +-- active : on_off_mag_field.PM
 #     +-- is_active (true)
-#         +-- mag_field_desc.VM
-#            +-- type : mag_field_type.PM
-#                +-- if_mapped (MappedField)
-#                |   +-- mapped_mag_field.VM
-#                +-- if_uniform_vertical (UniformVerticalField)
-#                    +-- uniform_vertical_mag.VM
-#                        +-- magnitude : mag_field_magnitude.PM
-#                        +-- direction : mag_field_direction.PM
+#     |   +-- mag_field_desc.VM
+#     |      +-- type : mag_field_type.PM
+#     |          +-- if_mapped (MappedField)
+#     |          |   +-- mapped_mag_field.VM
+#     |          +-- if_uniform_vertical (UniformVerticalField)
+#     |              +-- uniform_vertical_mag.VM
+#     |                  +-- magnitude : mag_field_magnitude.PM
+#     |                  +-- direction : mag_field_direction.PM
+#     +-- is_inactive (false)
 #
 
 
@@ -245,7 +246,7 @@ variants.is_active.model       : string = "magnetic_field.description.VM"
 #@description The description of the "is_active" variant
 variants.is_active.description : string = "Set of parameters for activated magnetic field"
 
-#@description The variant model associated to the "is_inactive" variant
+#@description The variant model associated to the "is_inactive" variant (empty variant)
 variants.is_inactive.model       : string = "datatools::basic::is_off.VM"
 
 #@description The description of the "is_inactive" variant
@@ -253,6 +254,9 @@ variants.is_inactive.description : string = "Inactive magnetic field"
 
 #@description Variant associated to the magnetic field activation
 boolean.true.variant : string = "is_active"
+
+#@description Variant associated to the inactivation of the magnetic field
+boolean.false.variant : string = "is_inactive"
 
 
 #########################################
