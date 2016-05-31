@@ -108,6 +108,95 @@ parameters.direction.model       : string = "magnetic_field.direction.PM"
 parameters.direction.description : string = "The direction of the magnetic field"
 
 
+######################################################################
+[name="magnetic_field.mapping_file.user.map_file.PM" type="parameter"]
+
+#@description The display name of this variant
+display_name        : string = "User defined magnetic field mapping file"
+
+#@description A short description of the variant
+terse_description   : string = "The user defined  mapping file of the magnetic field"
+
+#@description The type of the parameter
+type                : string = "string"
+
+#@description The path flag
+path                : boolean = true
+
+#@description The path I/Oflag
+path.io             : string = "input"
+
+#@description The mutability of the parameter
+mutability          : string = "variable"
+
+#@description The mutability mode of the parameter
+variable.mode       : string = "free"
+
+# #@description The default value
+# qtring.default        : string = ""
+
+
+###########################################################
+[name="magnetic_field.mapping_file.user.VM" type="variant"]
+
+#@config A variant model describing the parameters for the 'user' mapped magnetic field
+
+#@description The display name of this variant
+display_name       : string = "USer defined mapped magnetic field"
+
+#@description A short description of the variant
+terse_description  : string = "The configuration parameters for the 'user' mapped magnetic field"
+
+#@description The list of variant parameters
+parameters : string[1] = "map_file"
+
+parameters.map_file.model       : string = "magnetic_field.mapping_file.user.map_file.PM"
+parameters.map_file.description : string = "The mapping file of the 'user defined' mapped magnetic field"
+
+
+######################################################################
+[name="magnetic_field.mapping_file.map0.map_file.PM" type="parameter"]
+
+#@description The display name of this variant
+display_name        : string = "Magnetic field mapping file"
+
+#@description A short description of the variant
+terse_description   : string = "The mapping file of the magnetic field"
+
+#@description The type of the parameter
+type                : string = "string"
+
+#@description The path flag
+path                : boolean = true
+
+#@description The path I/Oflag
+path.io             : string = "input"
+
+#@description The mutability of the parameter
+mutability          : string = "fixed"
+
+#@description The fixed value
+string.fixed        : string = "@falaise:config/snemo/demonstrator/geometry/4.0/plugins/magnetic_field/data/csv_map_0/MapSmoothPlusDetail.csv"
+
+
+############################################################
+[name="magnetic_field.mapping_file.map0.VM" type="variant"]
+
+#@config A variant model describing the parameters for the 'map0' mapped magnetic field
+
+#@description The display name of this variant
+display_name       : string = "Map0 mapped magnetic field"
+
+#@description A short description of the variant
+terse_description  : string = "The configuration parameters for the 'map0' mapped magnetic field"
+
+#@description The list of variant parameters
+parameters : string[1] = "map_file"
+
+parameters.map_file.model       : string = "magnetic_field.mapping_file.map0.map_file.PM"
+parameters.map_file.description : string = "The mapping file of the 'map0' mapped magnetic field"
+
+
 ########################################################
 [name="magnetic_field.mapping_file.PM" type="parameter"]
 
@@ -132,10 +221,30 @@ variable.mode       : string = "enumeration"
 string.enumerated.size    : integer = 1
 
 # The list of supported values:
-string.enumerated_0.value : string = "@falaise:config/snemo/demonstrator/geometry/4.0/plugins/magnetic_field/data/csv_map_0/MapSmoothPlusDetail.csv"
+string.enumerated_0.value : string = "Map0"
+# string.enumerated_1.value : string = "User"
 
 #@description The default value
-string.default            : string = "@falaise:config/snemo/demonstrator/geometry/4.0/plugins/magnetic_field/data/csv_map_0/MapSmoothPlusDetail.csv"
+string.default            : string = "Map0"
+
+#@description The list of variants
+variants : string[1] = "if_map0" # "if_user"
+
+variants.if_map0.model       : string = "magnetic_field.mapping_file.map0.VM"
+variants.if_map0.description : string = "Set of parameters for the 'Map0' mapped magnetic field"
+
+# variants.if_user.model       : string = "magnetic_field.mapping_file.user.VM"
+# variants.if_user.description : string = "Set of parameters for the 'User' defined mapped magnetic field"
+
+string.enumerated_0.variant : string = "if_map0"
+# string.enumerated_1.variant : string = "if_user"
+
+
+# # The list of supported values:
+# string.enumerated_0.value : string = "@falaise:config/snemo/demonstrator/geometry/4.0/plugins/magnetic_field/data/csv_map_0/MapSmoothPlusDetail.csv"
+
+# #@description The default value
+# string.default            : string = "@falaise:config/snemo/demonstrator/geometry/4.0/plugins/magnetic_field/data/csv_map_0/MapSmoothPlusDetail.csv"
 
 
 ################################################
