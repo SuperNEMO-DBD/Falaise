@@ -833,11 +833,12 @@ namespace snemo {
       build_sliding_zones(_sliding_zone_vertical_memory_, _sliding_zone_horizontal_memory_); 
       build_zones();      
       build_tracker_record();
-      
-      print_zones(std::clog);
-      if (geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2 == 2) print_sliding_zones(std::clog);
-      print_zones(std::clog);
-      print_zone_information(std::clog);
+
+      // Display for Debug with Thierry & Garrido :
+      //print_zones(std::clog);
+      //if (geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2 == 2) print_sliding_zones(std::clog);
+      //print_zones(std::clog);
+      //print_zone_information(std::clog);
       //_tracker_record_finale_decision_.display();
       // display_matrix();
       return;
