@@ -16,6 +16,5 @@ layout/if_basic/source_layout/if_basic/thickness = 250 um
 
 [registry="simulation"]
 physics_mode = "Constructors"
-physics_mode/if_constructors/em_model = "livermore"
+physics_mode/if_constructors/em_model = "standard"
 production_cuts = true
-
