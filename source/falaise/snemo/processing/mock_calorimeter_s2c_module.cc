@@ -144,6 +144,12 @@ namespace snemo {
       if (setup_.has_key("hit_categories")) {
         setup_.fetch("hit_categories", _hit_categories_);
       }
+      // Default value:
+      if (_hit_categories_.empty()) {
+        _hit_categories_.push_back("calo");
+        _hit_categories_.push_back("xcalo");
+        _hit_categories_.push_back("gveto");
+      }
 
       // Initialize the calorimeter regime utility:
       for (std::vector<std::string>::const_iterator icategory = _hit_categories_.begin();
