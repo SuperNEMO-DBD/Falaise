@@ -194,7 +194,6 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_cont
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/processes/em.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/variants/registries/simulation.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/variants/models/simulation.def
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/variants/models/G4PhysisListFactory.lis
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/variants/variance.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/variants/profiles/default.profile
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/sensitive/tracker.conf
