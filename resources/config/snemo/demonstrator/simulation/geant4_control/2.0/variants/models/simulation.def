@@ -225,7 +225,7 @@ terse_description  : string = "The variant configuration parameters for the Gean
 parameters : string[2] = "physics_mode" "production_cuts"
 
 parameters.physics_mode.model          : string = "simulation.physics_mode.PM"
-parameters.physics_mode.description    : string = "The simulation Geant4 physics mode"
+parameters.physics_mode.description    : string = "The Geant4 simulation physics mode"
 
 parameters.production_cuts.model       : string = "simulation.production_cuts_activation.PM"
 parameters.production_cuts.description : string = "The activation flag of Geant4 production cuts"
