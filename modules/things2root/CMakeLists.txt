@@ -11,13 +11,5 @@ project(Things2Root)
 add_library(Things2Root SHARED Things2Root.h Things2Root.cpp)
 target_link_libraries(Things2Root FalaiseModule)
 
-# Apple linker requires dynamic lookup of symbols, so we
-# add link flags on this platform
-if(APPLE)
-  set_target_properties(Things2Root
-    PROPERTIES LINK_FLAGS "-undefined dynamic_lookup"
-    )
-endif()
-
 # Install it
 install(TARGETS Things2Root DESTINATION ${CMAKE_INSTALL_LIBDIR}/${Falaise_PLUGINLIBDIR})
