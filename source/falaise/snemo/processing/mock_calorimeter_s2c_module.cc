@@ -94,7 +94,7 @@ namespace snemo {
         }
       }
       if (_SD_label_.empty()) {
-        _SD_label_ = snemo::datamodel::data_info::SIMULATED_DATA_LABEL;
+        _SD_label_ = snemo::datamodel::data_info::default_simulated_data_label();
       }
 
       if (_CD_label_.empty()) {
@@ -103,7 +103,7 @@ namespace snemo {
         }
       }
       if (_CD_label_.empty()) {
-        _CD_label_ = snemo::datamodel::data_info::CALIBRATED_DATA_LABEL;
+        _CD_label_ = snemo::datamodel::data_info::default_calibrated_data_label();
       }
 
       if (_Geo_label_.empty()) {
