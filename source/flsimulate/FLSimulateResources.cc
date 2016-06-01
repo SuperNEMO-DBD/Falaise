@@ -1,4 +1,4 @@
-// FLSimulateResource.cc - Implementation of the FLSimulateResource
+// FLSimulateResources.cc - Implementation of the FLSimulateResources
 //
 // Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com>
 // Copyright (c) 2013 by The University of Warwick
@@ -35,43 +35,105 @@
 #include "falaise/falaise.h"
 
 namespace FLSimulate {
-//! Define defaults and type for lookup table of experiment control files
-struct ExperimentLookup {
-  typedef std::map<std::string, std::string> Table;
-};
+  //! Define defaults and type for lookup table of experiment control/configuration files
+  struct ExperimentLookup {
+    typedef std::map<std::string, std::string> Table;
+  };
 
-//! Construct lookup table
-ExperimentLookup::Table constructLookupTable() {
-  ExperimentLookup::Table a;
-  boost::assign::insert(a)
+  //! Construct lookup table
+  ExperimentLookup::Table constructLookupTable() {
+    ExperimentLookup::Table a;
+    boost::assign::insert(a)
       ("",
-       "config/snemo/demonstrator/simulation/geant4_control/1.0/manager.conf")
+       "config/snemo/demonstrator/simulation/geant4_control/2.0/manager.conf")
       ("default",
-       "config/snemo/demonstrator/simulation/geant4_control/1.0/manager.conf")
+       "config/snemo/demonstrator/simulation/geant4_control/2.0/manager.conf")
       ("demonstrator",
-       "config/snemo/demonstrator/simulation/geant4_control/1.0/manager.conf")
-      ("tracker_commissioning",
-       "config/snemo/tracker_commissioning/simulation/geant4_control/1.0/manager.conf")
+       "config/snemo/demonstrator/simulation/geant4_control/2.0/manager.conf")
       ("bipo3",
        "config/bipo3/simulation/geant4_control/1.0/manager.conf");
 
-  return a;
-}
-
-std::string getControlFile(const std::string& experiment,
-                           const std::string& /*versionID*/) {
-  static ExperimentLookup::Table a;
-  if (a.empty()) a = constructLookupTable();
-
-  std::string canonicalName(boost::to_lower_copy(experiment));
-  ExperimentLookup::Table::const_iterator p = a.find(canonicalName);
-  if (p == a.end()) {
-    throw UnknownResourceException("no control file for '"+experiment+"'");
+    return a;
   }
 
-  boost::filesystem::path basePath(falaise::get_resource_dir());
-  basePath /= (*p).second;
-  return basePath.string();
-}
+  //! Construct lookup table
+  ExperimentLookup::Table constructLookupVarianceConfigTable() {
+    ExperimentLookup::Table a;
+    boost::assign::insert(a)
+      ("",
+       "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/variance.conf")
+      ("default",
+       "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/variance.conf")
+      ("demonstrator",
+       "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/variance.conf")
+      ("bipo3",
+       "");
+    ;
+    return a;
+  }
+
+  //! Construct lookup table
+  ExperimentLookup::Table constructLookupVarianceDefaultProfileTable() {
+    ExperimentLookup::Table a;
+    boost::assign::insert(a)
+      ("",
+       "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/profiles/default.profile")
+      ("default",
+       "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/profiles/default.profile")
+      ("demonstrator",
+       "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/profiles/default.profile")
+      ("bipo3",
+       "");
+    ;
+    return a;
+  }
+
+  std::string getControlFile(const std::string& experiment,
+                             const std::string& /*versionID*/) {
+    static ExperimentLookup::Table a;
+    if (a.empty()) a = constructLookupTable();
+
+    std::string canonicalName(boost::to_lower_copy(experiment));
+    ExperimentLookup::Table::const_iterator p = a.find(canonicalName);
+    if (p == a.end()) {
+      throw UnknownResourceException("no control file for '"+experiment+"'");
+    }
+
+    boost::filesystem::path basePath(falaise::get_resource_dir());
+    basePath /= (*p).second;
+    return basePath.string();
+  }
+
+  std::string getVarianceConfigFile(const std::string& experiment,
+                                     const std::string& /*versionID*/) {
+    static ExperimentLookup::Table a;
+    if (a.empty()) a = constructLookupVarianceConfigTable();
+
+    std::string canonicalName(boost::to_lower_copy(experiment));
+    ExperimentLookup::Table::const_iterator p = a.find(canonicalName);
+    if (p == a.end()) {
+      throw UnknownResourceException("no variance file for '"+experiment+"'");
+    }
+
+    boost::filesystem::path basePath(falaise::get_resource_dir());
+    basePath /= (*p).second;
+    return basePath.string();
+  }
+
+  std::string getVarianceDefaultProfile(const std::string& experiment,
+                                        const std::string& /*versionID*/) {
+    static ExperimentLookup::Table a;
+    if (a.empty()) a = constructLookupVarianceDefaultProfileTable();
+
+    std::string canonicalName(boost::to_lower_copy(experiment));
+    ExperimentLookup::Table::const_iterator p = a.find(canonicalName);
+    if (p == a.end()) {
+      throw UnknownResourceException("no default variance profile for '"+experiment+"'");
+    }
+
+    boost::filesystem::path basePath(falaise::get_resource_dir());
+    basePath /= (*p).second;
+    return basePath.string();
+  }
 
 } // namespace FLSimulate

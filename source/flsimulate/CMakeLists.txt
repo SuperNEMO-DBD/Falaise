@@ -33,6 +33,8 @@ add_executable(flsimulate
   flsimulatemain.cc
   FLSimulateResources.h
   FLSimulateResources.cc
+  FLSimulateVariance.h
+  FLSimulateVariance.cc
   )
 target_include_directories(flsimulate PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}

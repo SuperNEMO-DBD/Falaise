@@ -9,26 +9,39 @@
 // This software is distributed WITHOUT ANY WARRANTY; without even the
 // implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 // See the License for more information.
-#ifndef FLSIMULATERESOURCES_HH
-#define FLSIMULATERESOURCES_HH
-// Standard Library
+
+#ifndef FLSIMULATERESOURCES_H
+#define FLSIMULATERESOURCES_H
+
+// Standard Library:
 #include <string>
 #include <stdexcept>
 
-// Third Party
-// - A
-
-// This Project
-
 namespace FLSimulate {
-//! Exception for unknown resources
-class UnknownResourceException : public std::runtime_error {
- public:
-  UnknownResourceException(const std::string& msg) : std::runtime_error(msg) {}
-};
+  //! Exception for unknown resources
+  class UnknownResourceException : public std::runtime_error {
+  public:
+    UnknownResourceException(const std::string& msg) : std::runtime_error(msg) {}
+  };
 
-//! Return the control file for the given experiment and version id
-std::string getControlFile(const std::string& experiment,
-                           const std::string& /*versionID*/ = "");
-}
-#endif // FLSIMULATERESOURCES_HH
+  //! Return the control file for the given experiment and version id
+  std::string getControlFile(const std::string& experiment,
+                             const std::string& /*versionID*/ = "");
+
+  //! Return the variance file for the given experiment and version id
+  std::string getVarianceConfigFile(const std::string& experiment,
+                              const std::string& /*versionID*/ = "");
+
+  //! Return the default variance profile file for the given experiment and version id
+  std::string getVarianceDefaultProfile(const std::string& experiment,
+                                        const std::string& /*versionID*/ = "");
+
+} // namespace FLSimulate
+
+#endif // FLSIMULATERESOURCES_H
+
+// Local Variables: --
+// mode: c++ --
+// c-file-style: "gnu" --
+// tab-width: 2 --
+// End: --
