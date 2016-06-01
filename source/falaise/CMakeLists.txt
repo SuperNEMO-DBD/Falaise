@@ -102,6 +102,10 @@ add_library(FalaiseModule INTERFACE)
 target_include_directories(FalaiseModule INTERFACE
   $<TARGET_PROPERTY:Falaise,INTERFACE_INCLUDE_DIRECTORIES>
   )
+target_include_directories(FalaiseModule SYSTEM INTERFACE
+  $<TARGET_PROPERTY:Falaise,INTERFACE_SYSTEM_INCLUDE_DIRECTORIES>
+  )
+
 target_compile_features(FalaiseModule INTERFACE
   $<TARGET_PROPERTY:Falaise,INTERFACE_COMPILE_FEATURES>
   )
