@@ -228,7 +228,7 @@ string.enumerated_0.value : string = "Map0"
 string.default            : string = "Map0"
 
 #@description The list of variants
-variants : string[1] = "if_map0" # "if_user"
+variants : string[1] = "if_map0" # "if_user"
 
 variants.if_map0.model       : string = "magnetic_field.mapping_file.map0.VM"
 variants.if_map0.description : string = "Set of parameters for the 'Map0' mapped magnetic field"
@@ -238,13 +238,6 @@ variants.if_map0.description : string = "Set of parameters for the 'Map0' mapped
 
 string.enumerated_0.variant : string = "if_map0"
 # string.enumerated_1.variant : string = "if_user"
-
-
-# # The list of supported values:
-# string.enumerated_0.value : string = "@falaise:config/snemo/demonstrator/geometry/4.0/plugins/magnetic_field/data/csv_map_0/MapSmoothPlusDetail.csv"
-
-# #@description The default value
-# string.default            : string = "@falaise:config/snemo/demonstrator/geometry/4.0/plugins/magnetic_field/data/csv_map_0/MapSmoothPlusDetail.csv"
 
 
 ################################################
