@@ -239,7 +239,7 @@ namespace FLSimulate {
       _repository_.unlock();
     }
     // Apply variant parameters:
-    for (int iset = 0; iset < settings.size(); iset++) {
+    for (size_t iset = 0; iset < settings.size(); iset++) {
       const std::string & variant_set = settings[iset];
       DT_LOG_TRACE(_logging_, "Applying variant setting from rule '" << variant_set << "'...");
       datatools::configuration::variant_parameter_set_type vps;
