@@ -122,7 +122,7 @@ terse_description  : string = "The parameters for physics constructors"
 parameters : string[1] = "em_model"
 
 parameters.em_model.model      : string = "simulation.physics_mode.constructors.em_model.PM"
-parameters.em_mode.description : string = "Electromagnetic processes Geant4 model"
+parameters.em_model.description : string = "Electromagnetic processes Geant4 model"
 
 
 ####################################################
