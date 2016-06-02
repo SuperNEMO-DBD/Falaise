@@ -660,7 +660,7 @@ namespace snemo {
           side = iside;
         }
       }
-      DT_THROW_IF(side >= utils::NSIDES,
+      DT_THROW_IF(side == geomtools::geom_id::INVALID_ADDRESS,
                   std::logic_error,
                   "Cannot extract information about any tracker submodules !");
 
@@ -716,7 +716,6 @@ namespace snemo {
         } else {
         DT_THROW_IF(true, std::logic_error, "Cannot extract the shape from block with ID = " << block_gid << " !");
       }
-
       std::vector<double> * vcx[utils::NSIDES][NWALLS_PER_SIDE];
       vcx[utils::SIDE_BACK][WALL_TOP]     = &_back_block_x_[WALL_TOP];
       vcx[utils::SIDE_BACK][WALL_BOTTOM]  = &_back_block_x_[WALL_BOTTOM];
@@ -728,6 +727,7 @@ namespace snemo {
       vcy[utils::SIDE_FRONT][WALL_TOP]    = &_front_block_y_[WALL_TOP];
       vcy[utils::SIDE_FRONT][WALL_BOTTOM] = &_front_block_y_[WALL_BOTTOM];
       for(unsigned int iside = 0; iside < utils::NSIDES; iside++) {
+        if (!_submodules_[iside]) continue;
         for(unsigned int wall = 0; wall < NWALLS_PER_SIDE; wall++) {
           size_t i_column = 0;
           vcx[iside][wall]->reserve(1);
@@ -867,8 +867,12 @@ namespace snemo {
       DT_THROW_IF(_module_number_ == geomtools::geom_id::INVALID_ADDRESS,
                   std::logic_error,
                   "Missing module number ! Use the 'set_module_number' method before !");
+      _hack_trace();
       _construct();
       _initialized_ = true;
+      if (datatools::logger::is_trace(get_logging_priority())) {
+        tree_dump(std::cerr, "Gamma-veto locator : ", "[trace] ");
+      }
       return;
     }
 
@@ -920,6 +924,8 @@ namespace snemo {
       if(_module_box_ != 0) {
         _module_box_->tree_dump(out_, "", indent + stag);
       }
+      out_ << indent << itag << "Back  submodule : " << _submodules_[utils::SIDE_BACK] << std::endl;
+      out_ << indent << itag << "Front submodule : " << _submodules_[utils::SIDE_FRONT] << std::endl;
       out_ << indent << itag << "Block shape : " << _block_shape_->get_shape_name() << std::endl;
       out_ << indent << itag << "Composite block shape = " << _composite_block_shape_ << std::endl;
       out_ << indent << itag << "Block box : " << std::endl;
@@ -1089,6 +1095,19 @@ namespace snemo {
       return true;
     }
 
+    void gveto_locator::_hack_trace()
+    {
+      char * ev = getenv("FLGEOMLOCATOR");
+      if (ev != 0) {
+        std::string evstr(ev);
+        if (evstr == "trace") {
+          set_logging_priority(datatools::logger::PRIO_TRACE);
+          DT_LOG_TRACE(get_logging_priority(), "Trace logging activated through env 'FLGEOMLOCATOR'...");
+        }
+      }
+      return;
+    }
+
     bool gveto_locator::find_block_geom_id(const geomtools::vector_3d & world_position_,
                                            geomtools::geom_id & gid_,
                                            double tolerance_) const
@@ -1100,7 +1119,7 @@ namespace snemo {
                                             geomtools::geom_id & gid_,
                                             double tolerance_)
     {
-      DT_LOG_TRACE(get_logging_priority(), "Entering...");
+      DT_LOG_TRACE_ENTERING(get_logging_priority());
 
       double tolerance = tolerance_;
       if (tolerance == GEOMTOOLS_PROPER_TOLERANCE) {
@@ -1127,59 +1146,97 @@ namespace snemo {
         DT_LOG_TRACE(get_logging_priority(), "z = " << z / CLHEP::mm);
         double first_block_y;
         double block_delta_y;
-        size_t ncolumns;
-        if(x < 0.0) {
-          side_number = utils::SIDE_BACK;
-        } else {
-          side_number = utils::SIDE_FRONT;
-        }
-        DT_LOG_TRACE(get_logging_priority(), "side_number = " << side_number);
-        if(z < 0.0) {
-          wall_number = WALL_BOTTOM;
-          DT_LOG_TRACE(get_logging_priority(), "wall_number = " << wall_number);
-          const double delta_z = std::abs(z -_block_z_[side_number][wall_number]) - 0.5 * get_block_thickness();
-          if(delta_z > tolerance) {
-            gid.invalidate();
-            return false;
-          }
+        size_t ncolumns = 0;
 
-          // 2012-06-13 XG: For config 2.0 the 16 gveto block
-          // are separated into two series of 8 blocks : between
-          // these series there is a gap arround y=0. To
-          // determine the column number then we have to take
-          // care of this gap by splitting the column range into
-          // two separate vectors. This of course does not
-          // change anything to config 1.0
-          ncolumns = _back_block_y_[wall_number].size() / 2;
-
-          if(y < 0.0) {
-            first_block_y = _back_block_y_[wall_number].front();
-            block_delta_y =(_back_block_y_[wall_number].at(ncolumns - 1) - _back_block_y_[wall_number].front()) /(ncolumns - 1);
-          } else {
-            first_block_y = _back_block_y_[wall_number].at(ncolumns);
-            block_delta_y =(_back_block_y_[wall_number].back() - _back_block_y_[wall_number].at(ncolumns)) /(ncolumns - 1);
-          }
-        } else {
-          wall_number = WALL_TOP;
-          DT_LOG_TRACE(get_logging_priority(), "wall_number = " << wall_number);
-          const double delta_z = std::abs(z -_block_z_[side_number][wall_number]) - 0.5 * get_block_thickness();
-          if(delta_z > tolerance) {
-            gid.invalidate();
-            return false;
-          }
-          ncolumns = _back_block_y_[wall_number].size() / 2;
-
-          if(y < 0.0) {
-            first_block_y = _front_block_y_[wall_number].front();
-            block_delta_y =(_front_block_y_[wall_number].at(ncolumns - 1) - _front_block_y_[wall_number].front()) /(ncolumns - 1);
-          } else {
-            first_block_y = _front_block_y_[wall_number].at(ncolumns);
-            block_delta_y =(_front_block_y_[wall_number].back() - _front_block_y_[wall_number].at(ncolumns)) /(ncolumns - 1);
+        // Find the side:
+        if (side_number == geomtools::geom_id::INVALID_ADDRESS && _submodules_[utils::SIDE_BACK]) {
+          double xmax0 = _back_block_x_[WALL_BOTTOM].front()  + 0.5 * get_block_width() + tolerance;
+          double xmax1 = _back_block_x_[WALL_TOP].front()     + 0.5 * get_block_width() + tolerance;
+          double xmax = std::max(xmax0, xmax1);
+          if (x <= xmax) {
+            side_number = utils::SIDE_BACK;
           }
         }
-
+        if (side_number == geomtools::geom_id::INVALID_ADDRESS && _submodules_[utils::SIDE_FRONT]) {
+          double xmin0 = _front_block_x_[WALL_BOTTOM].front() - 0.5 * get_block_width() - tolerance;
+          double xmin1 = _front_block_x_[WALL_TOP].front()    - 0.5 * get_block_width() - tolerance;
+          double xmin = std::min(xmin0, xmin1);
+          if (x >= xmin) {
+            side_number = utils::SIDE_FRONT;
+          }
+        }
         DT_LOG_TRACE(get_logging_priority(), "side_number = " << side_number);
-        DT_LOG_TRACE(get_logging_priority(), "ncolumns = " << ncolumns);
+        if (side_number == geomtools::geom_id::INVALID_ADDRESS) {
+          DT_LOG_TRACE(get_logging_priority(), "Not a G-veto!");
+          gid.invalidate();
+          DT_LOG_TRACE_EXITING(get_logging_priority());
+          return false;
+        }
+
+        // Find the wall:
+        // 2012-06-13 XG: For config 2.0 the 16 gveto block
+        // are separated into two series of 8 blocks : between
+        // these series there is a gap arround y=0. To
+        // determine the column number then we have to take
+        // care of this gap by splitting the column range into
+        // two separate vectors. This of course does not
+        // change anything to config 1.0
+        if (wall_number == geomtools::geom_id::INVALID_ADDRESS && z < 0.0) {
+          const double delta_z = std::abs(z -_block_z_[side_number][WALL_BOTTOM]) - 0.5 * get_block_thickness();
+          if(delta_z < tolerance) {
+            wall_number = WALL_BOTTOM;
+            DT_LOG_TRACE(get_logging_priority(), "WALL_BOTTOM: wall_number=" << wall_number);
+            const std::vector<double> * block_y_ptr = 0;
+            if (_submodules_[utils::SIDE_BACK] && side_number == utils::SIDE_BACK) {
+              block_y_ptr = &_back_block_y_[wall_number];
+            }
+            if (_submodules_[utils::SIDE_FRONT] && side_number == utils::SIDE_FRONT) {
+              block_y_ptr = &_front_block_y_[wall_number];
+            }
+            ncolumns = block_y_ptr->size() / 2;
+            DT_LOG_TRACE(get_logging_priority(), "WALL_BOTTOM: ncolumns=" << ncolumns);
+            if(y < 0.0) {
+              first_block_y = block_y_ptr->front();
+              block_delta_y =(block_y_ptr->at(ncolumns - 1) - block_y_ptr->front()) /(ncolumns - 1);
+            } else {
+              first_block_y = block_y_ptr->at(ncolumns);
+              block_delta_y =(block_y_ptr->back() - block_y_ptr->at(ncolumns)) /(ncolumns - 1);
+            }
+          }
+        }
+        if (wall_number == geomtools::geom_id::INVALID_ADDRESS && z > 0.0) {
+          const double delta_z = std::abs(z -_block_z_[side_number][WALL_TOP]) - 0.5 * get_block_thickness();
+          if(delta_z < tolerance) {
+            wall_number = WALL_TOP;
+            DT_LOG_TRACE(get_logging_priority(), "WALL_TOP:  wall_number=" << wall_number);
+            const std::vector<double> * block_y_ptr = 0;
+            if (_submodules_[utils::SIDE_BACK] && side_number == utils::SIDE_BACK) {
+              block_y_ptr = &_back_block_y_[wall_number];
+            }
+            if (_submodules_[utils::SIDE_FRONT] && side_number == utils::SIDE_FRONT) {
+              block_y_ptr = &_front_block_y_[wall_number];
+            }
+            ncolumns = block_y_ptr->size() / 2;
+            DT_LOG_TRACE(get_logging_priority(), "WALL_TOP:  ncolumns=" << ncolumns);
+            if(y < 0.0) {
+              first_block_y = _front_block_y_[wall_number].front();
+              block_delta_y =(_front_block_y_[wall_number].at(ncolumns - 1) - _front_block_y_[wall_number].front()) /(ncolumns - 1);
+            } else {
+              first_block_y = _front_block_y_[wall_number].at(ncolumns);
+              block_delta_y =(_front_block_y_[wall_number].back() - _front_block_y_[wall_number].at(ncolumns)) /(ncolumns - 1);
+            }
+          }
+        }
+        if (wall_number == geomtools::geom_id::INVALID_ADDRESS) {
+          DT_LOG_TRACE(get_logging_priority(), "Not a G-veto!");
+          gid.invalidate();
+          DT_LOG_TRACE_EXITING(get_logging_priority());
+          return false;
+        }
+
+        DT_LOG_TRACE(get_logging_priority(), "side_number   = " << side_number);
+        DT_LOG_TRACE(get_logging_priority(), "wall_number   = " << wall_number);
+        DT_LOG_TRACE(get_logging_priority(), "ncolumns      = " << ncolumns);
         DT_LOG_TRACE(get_logging_priority(), "first_block_y = " << first_block_y / CLHEP::mm);
         DT_LOG_TRACE(get_logging_priority(), "block_delta_y = " << block_delta_y / CLHEP::mm);
         DT_LOG_TRACE(get_logging_priority(), "x             = " << x / CLHEP::mm);
@@ -1201,7 +1258,9 @@ namespace snemo {
           const geomtools::geom_info * ginfo_ptr = _mapping_->get_geom_info_ptr(gid);
           if(ginfo_ptr == 0) {
             DT_LOG_TRACE(get_logging_priority(), "Unmapped gid = " << gid);
+            DT_LOG_TRACE(get_logging_priority(), "Not a G-veto!");
             gid.invalidate();
+            DT_LOG_TRACE_EXITING(get_logging_priority());
             return false;
           }
           DT_LOG_TRACE(get_logging_priority(), "Valid mapped gid = " << gid);
@@ -1211,11 +1270,14 @@ namespace snemo {
           double tolerance_2 = 1.e-7 * CLHEP::mm;
           if(_mapping_->check_inside(*ginfo_ptr, world_position, tolerance_2)) {
             DT_LOG_TRACE(get_logging_priority(), "INSIDE " << gid);
+            DT_LOG_TRACE_EXITING(get_logging_priority());
             return true;
           }
         }
+        DT_LOG_TRACE(get_logging_priority(), "Not a G-veto!");
         gid.invalidate();
       }
+      DT_LOG_TRACE_EXITING(get_logging_priority());
       return false;
     }
 

@@ -781,7 +781,7 @@ namespace snemo {
           side = iside;
         }
       }
-      DT_THROW_IF(side >= utils::NSIDES,
+      DT_THROW_IF(side == geomtools::geom_id::INVALID_ADDRESS,
                   std::logic_error,
                   "Cannot extract information about any calorimeter submodules !");
 
@@ -840,6 +840,7 @@ namespace snemo {
       vcy[utils::SIDE_BACK]  = &_back_block_y_;
       vcy[utils::SIDE_FRONT] = &_front_block_y_;
       for (size_t iside = 0; iside < utils::NSIDES; iside++) {
+        if (!_submodules_[iside]) continue;
         size_t i_column = 0;
         vcy[iside]->reserve(20);
         while (true) {
@@ -881,6 +882,7 @@ namespace snemo {
       vrz[utils::SIDE_BACK] = &_back_block_z_;
       vrz[utils::SIDE_FRONT] = &_front_block_z_;
       for (size_t iside = 0; iside < utils::NSIDES; iside++) {
+        if (!_submodules_[iside]) continue;
         size_t i_row = 0;
         vrz[iside]->reserve(13);
         while (true) {
@@ -1008,14 +1010,31 @@ namespace snemo {
       return;
     }
 
+    void calo_locator::_hack_trace()
+    {
+      char * ev = getenv("FLGEOMLOCATOR");
+      if (ev != 0) {
+        std::string evstr(ev);
+        if (evstr == "trace") {
+          set_logging_priority(datatools::logger::PRIO_TRACE);
+          DT_LOG_TRACE(get_logging_priority(), "Trace logging activated through env 'FLGEOMLOCATOR'...");
+        }
+      }
+      return;
+    }
+
     void calo_locator::initialize(const datatools::properties & config_)
     {
       base_locator::_basic_initialize(config_);
       DT_THROW_IF(_module_number_ == geomtools::geom_id::INVALID_ADDRESS,
                   std::logic_error,
                   "Missing module number ! Use the 'set_module_number' method before !");
+      _hack_trace();
       _construct();
       _initialized_ = true;
+      if (datatools::logger::is_trace(get_logging_priority())) {
+        tree_dump(std::cerr, "Main calo locator : ", "[trace] ");
+      }
       return;
     }
 
@@ -1056,8 +1075,9 @@ namespace snemo {
       out_ << indent << itag << "Calorimeter block type     = " << _block_type_ << std::endl;
       out_ << indent << itag << "Calorimeter wrapper type   = " << _wrapper_type_ << std::endl;
       out_ << indent << itag << "Block partitioned          = " << _block_partitioned_ << std::endl;
-      if (is_block_partitioned())
+      if (is_block_partitioned()) {
         out_ << indent << itag << "Block part                 = " << _block_part_ << std::endl;
+      }
       out_ << indent << itag << "Module ginfo @             = " << _module_ginfo_ << std::endl;
       out_ << indent << itag << "Module placement : " << std::endl;
       if (_module_world_placement_ != 0) {
@@ -1067,22 +1087,24 @@ namespace snemo {
       if (_module_box_ != 0) {
         _module_box_->tree_dump(out_, "", indent + stag);
       }
+      out_ << indent << itag << "Back  submodule : " << _submodules_[utils::SIDE_BACK] << std::endl;
+      out_ << indent << itag << "Front submodule : " << _submodules_[utils::SIDE_FRONT] << std::endl;
       out_ << indent << itag << "Block shape : " << _block_shape_->get_shape_name() << std::endl;
       out_ << indent << itag << "Composite block shape = " << _composite_block_shape_ << std::endl;
       out_ << indent << itag << "Block box : " << std::endl;
       if (_block_box_ != 0) {
         _block_box_->tree_dump(out_, "", indent + stag);
       }
-      out_ << indent << itag << "Back block X-pos  = " << _block_x_[0] / CLHEP::mm << " (mm) \n";
-      out_ << indent << itag << "Front block X-pos = " << _block_x_[1] / CLHEP::mm << " (mm) \n";
-      out_ << indent << itag << "Back block window X-pos  = " << _block_window_x_[0] / CLHEP::mm << " (mm) \n";
-      out_ << indent << itag << "Front block window X-pos = " << _block_window_x_[1] / CLHEP::mm << " (mm) \n";
-      out_ << indent << itag << "Back block Y-pos [" << _back_block_y_.size() << "] = ";
+      out_ << indent << itag << "Back  block X-pos = " << _block_x_[utils::SIDE_BACK] / CLHEP::mm << " (mm) \n";
+      out_ << indent << itag << "Front block X-pos = " << _block_x_[utils::SIDE_FRONT] / CLHEP::mm << " (mm) \n";
+      out_ << indent << itag << "Back  block window X-pos = " << _block_window_x_[utils::SIDE_BACK] / CLHEP::mm << " (mm) \n";
+      out_ << indent << itag << "Front block window X-pos = " << _block_window_x_[utils::SIDE_FRONT] / CLHEP::mm << " (mm) \n";
+      out_ << indent << itag << "Back  block Y-pos [" << _back_block_y_.size() << "] = ";
       for (size_t i = 0; i < _back_block_y_.size(); i++) {
         out_ << _back_block_y_[i] / CLHEP::mm << " ";
       }
       out_ << " (mm)" << std::endl;
-      out_ << indent << itag << "Back block Z-pos [" << _back_block_z_.size() << "] = ";
+      out_ << indent << itag << "Back  block Z-pos [" << _back_block_z_.size() << "] = ";
       for (size_t i = 0; i < _back_block_z_.size(); i++) {
         if ((i < 4) || (i > _back_block_z_.size() - 4)) {
           out_ << _back_block_z_[i] / CLHEP::mm << " ";
@@ -1110,9 +1132,9 @@ namespace snemo {
       out_ << indent << itag << "Block height    = " << _block_height_ / CLHEP::mm  << " (mm)" << std::endl;
       out_ << indent << itag << "Block thickness = " << _block_thickness_ / CLHEP::mm  << " (mm)" << std::endl;
       out_ << indent << itag << "Module address GID index = " << _module_address_index_ << std::endl;
-      out_ << indent << itag << "Side address GID index   = " << _side_address_index_ << std::endl;
+      out_ << indent << itag << "Side   address GID index = " << _side_address_index_ << std::endl;
       out_ << indent << itag << "Column address GID index = " << _column_address_index_ << std::endl;
-      out_ << indent << itag << "Row address GID index    = " << _row_address_index_ << std::endl;
+      out_ << indent << itag << "Row    address GID index = " << _row_address_index_ << std::endl;
       if (is_block_partitioned()) {
         out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
              << "Part address GID index   = " << _part_address_index_ << std::endl;
@@ -1235,7 +1257,7 @@ namespace snemo {
                                            geomtools::geom_id & gid_,
                                            double tolerance_)
     {
-      DT_LOG_TRACE(get_logging_priority(), "Entering...");
+      DT_LOG_TRACE_ENTERING(get_logging_priority());
 
       double tolerance = tolerance_;
       if (tolerance == GEOMTOOLS_PROPER_TOLERANCE) {
@@ -1253,6 +1275,7 @@ namespace snemo {
         gid.set_type(_block_type_);
         gid.set(_module_address_index_, _module_number_);
         if (is_block_partitioned()) {
+          DT_LOG_TRACE(get_logging_priority(), "Block part address = " << _block_part_);
           gid.set(_part_address_index_, _block_part_);
         }
         const double x = in_module_position_.x();
@@ -1264,42 +1287,47 @@ namespace snemo {
         double block_delta_y;
         double first_block_z;
         double block_delta_z;
-        size_t ncolumns;
-        size_t nrows;
-        if (x < 0.0) {
-          side_number = utils::SIDE_BACK;
-          const double delta_x = std::abs(x - _block_x_[side_number]) - 0.5 * get_block_thickness();
-          if (delta_x > tolerance) {
-            gid.invalidate();
-            return false;
-          }
+        size_t ncolumns = 0;
+        size_t nrows    = 0;
 
-          DT_LOG_TRACE(get_logging_priority(), "side_number = " << side_number);
-          ncolumns = _back_block_y_.size();
-          nrows = _back_block_z_.size();
-          first_block_y = _back_block_y_.front();
-          block_delta_y = (_back_block_y_.back() - _back_block_y_.front()) / (_back_block_y_.size() - 1);
-          first_block_z = _back_block_z_.front();
-          block_delta_z = (_back_block_z_.back() - _back_block_z_.front()) / (_back_block_z_.size() - 1);
-        } else {
-          side_number = utils::SIDE_FRONT;
-          const double delta_x = std::abs(x - _block_x_[side_number]) - 0.5 * get_block_thickness();
-          if (delta_x > tolerance) {
-            gid.invalidate();
-            return false;
+        // Find side:
+        if (side_number == geomtools::geom_id::INVALID_ADDRESS
+            && has_submodule(utils::SIDE_BACK)) {
+          side_number = utils::SIDE_BACK;
+          const double delta_x = std::abs(x - _block_x_[utils::SIDE_BACK]) - 0.5 * get_block_thickness();
+          if (delta_x < tolerance) {
+            side_number   = utils::SIDE_BACK;
+            ncolumns      = _back_block_y_.size();
+            nrows         = _back_block_z_.size();
+            first_block_y = _back_block_y_.front();
+            block_delta_y = (_back_block_y_.back() - _back_block_y_.front()) / (_back_block_y_.size() - 1);
+            first_block_z = _back_block_z_.front();
+            block_delta_z = (_back_block_z_.back() - _back_block_z_.front()) / (_back_block_z_.size() - 1);
           }
-          DT_LOG_TRACE(get_logging_priority(), "side_number = " << side_number);
-          ncolumns = _front_block_y_.size();
-          nrows = _front_block_z_.size();
-          first_block_y = _front_block_y_.front();
-          block_delta_y = (_front_block_y_.back() - _front_block_y_.front()) / (_front_block_y_.size() - 1);
-          first_block_z = _front_block_z_.front();
-          block_delta_z = (_front_block_z_.back() - _front_block_z_.front()) / (_front_block_z_.size() - 1);
+        }
+        if (side_number == geomtools::geom_id::INVALID_ADDRESS
+            && has_submodule(utils::SIDE_FRONT)) {
+          const double delta_x = std::abs(x - _block_x_[utils::SIDE_FRONT]) - 0.5 * get_block_thickness();
+          if (delta_x < tolerance) {
+            side_number   = utils::SIDE_FRONT;
+            ncolumns      = _front_block_y_.size();
+            nrows         = _front_block_z_.size();
+            first_block_y = _front_block_y_.front();
+            block_delta_y = (_front_block_y_.back() - _front_block_y_.front()) / (_front_block_y_.size() - 1);
+            first_block_z = _front_block_z_.front();
+            block_delta_z = (_front_block_z_.back() - _front_block_z_.front()) / (_front_block_z_.size() - 1);
+          }
+        }
+        if (side_number == geomtools::geom_id::INVALID_ADDRESS) {
+          DT_LOG_TRACE(get_logging_priority(), "Not a main calo!");
+          gid.invalidate();
+          DT_LOG_TRACE_EXITING(get_logging_priority());
+          return false;
         }
 
-        DT_LOG_TRACE(get_logging_priority(), "side_number = " << side_number);
-        DT_LOG_TRACE(get_logging_priority(), "ncolumns = " << ncolumns);
-        DT_LOG_TRACE(get_logging_priority(), "nrows    = " << nrows);
+        DT_LOG_TRACE(get_logging_priority(), "side_number   = " << side_number);
+        DT_LOG_TRACE(get_logging_priority(), "ncolumns      = " << ncolumns);
+        DT_LOG_TRACE(get_logging_priority(), "nrows         = " << nrows);
         DT_LOG_TRACE(get_logging_priority(), "first_block_y = " << first_block_y / CLHEP::mm);
         DT_LOG_TRACE(get_logging_priority(), "block_delta_y = " << block_delta_y / CLHEP::mm);
         DT_LOG_TRACE(get_logging_priority(), "x             = " << x / CLHEP::mm);
@@ -1326,8 +1354,10 @@ namespace snemo {
           const geomtools::geom_info * ginfo_ptr = _mapping_->get_geom_info_ptr(gid);
           if (ginfo_ptr == 0) {
             DT_LOG_TRACE(get_logging_priority(), "Unmapped gid = " << gid);
+            DT_LOG_TRACE(get_logging_priority(), "Not a main calo!");
             gid.invalidate();
-            return false;
+            DT_LOG_TRACE_EXITING(get_logging_priority());
+           return false;
           }
           DT_LOG_TRACE(get_logging_priority(), "Valid mapped gid = " << gid);
           // 2012-05-31 FM : we check if the 'world' position is in the volume:
@@ -1335,11 +1365,14 @@ namespace snemo {
           transform_module_to_world(in_module_position_, world_position);
           if (_mapping_->check_inside(*ginfo_ptr, world_position, tolerance)) {
             DT_LOG_TRACE(get_logging_priority(), "INSIDE " << gid);
+            DT_LOG_TRACE_EXITING(get_logging_priority());
             return true;
           }
         }
+        DT_LOG_TRACE(get_logging_priority(), "Not a main calo!");
         gid.invalidate();
       }
+      DT_LOG_TRACE_EXITING(get_logging_priority());
       return false;
     }
 

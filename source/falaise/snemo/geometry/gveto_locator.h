@@ -114,6 +114,9 @@ namespace snemo {
 
       void _set_defaults_();
 
+      /// Hack trace
+      void _hack_trace();
+
     public:
       /**! @return the number of the module (>=0).
        */

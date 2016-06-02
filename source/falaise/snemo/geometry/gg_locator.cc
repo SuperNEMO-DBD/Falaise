@@ -16,8 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  *
- *
- *
  */
 
 // Ourselves:
@@ -90,6 +88,7 @@ namespace snemo {
     double gg_locator::get_layer_x(uint32_t side_, uint32_t layer_) const
     {
       DT_THROW_IF(! is_initialized(), std::logic_error, "Locator is not initialized !");
+      DT_THROW_IF(side_ > 1, std::logic_error, "Invalid side number (" << side_ << "> 1)!");
       if (side_ == 0) {
         DT_THROW_IF(layer_ >= _back_cell_x_.size(),
                     std::logic_error,
@@ -610,6 +609,19 @@ namespace snemo {
         && (extract_module(gid_) == _module_number_);
     }
 
+    void gg_locator::_hack_trace()
+    {
+      char * ev = getenv("FLGEOMLOCATOR");
+      if (ev != 0) {
+        std::string evstr(ev);
+        if (evstr == "trace") {
+          set_logging_priority(datatools::logger::PRIO_TRACE);
+          DT_LOG_TRACE(get_logging_priority(), "Trace logging activated through env 'FLGEOMLOCATOR'...");
+        }
+      }
+      return;
+    }
+
     void gg_locator::_set_defaults()
     {
       _module_category_            = "module";
@@ -681,6 +693,7 @@ namespace snemo {
 
     void gg_locator::_construct()
     {
+      DT_LOG_TRACE_ENTERING(get_logging_priority());
       _mapping_ = & get_geo_manager().get_mapping();
       _id_manager_ = & get_geo_manager().get_id_mgr();
 
@@ -741,6 +754,10 @@ namespace snemo {
                   std::logic_error,
                   "Cannot extract information about any tracker submodules !");
 
+      for (size_t iside = 0; iside < utils::NSIDES; iside++) {
+        DT_LOG_TRACE(get_logging_priority(), "submodule[" << iside << "] = " << _submodules_[iside] );
+      }
+
       // Pick up the first available cell :
       const geomtools::geom_id cell_gid(_cell_type_, _module_number_, ref_side, 0, 0);
       DT_THROW_IF(! _mapping_->validate_id(cell_gid),
@@ -755,8 +772,8 @@ namespace snemo {
       _cell_box_ = dynamic_cast<const geomtools::box * >(&b_shape);
 
       std::vector<double> * vlx[utils::NSIDES];
-      vlx[0] = &_back_cell_x_;
-      vlx[1] = &_front_cell_x_;
+      vlx[utils::SIDE_BACK] = &_back_cell_x_;
+      vlx[utils::SIDE_FRONT] = &_front_cell_x_;
       // Loop on tracker sides:
       for (size_t side = 0; side < utils::NSIDES; side++) {
         if (!_submodules_[side]) continue;
@@ -895,6 +912,7 @@ namespace snemo {
                   "Category 'drift_cell_core' has no subaddress 'row' !");
       _row_address_index_ = module_ci.get_subaddress_index("row");
 
+      DT_LOG_TRACE_EXITING(get_logging_priority());
       return;
     }
 
@@ -922,9 +940,13 @@ namespace snemo {
       DT_THROW_IF(_module_number_ == geomtools::geom_id::INVALID_ADDRESS,
                   std::logic_error,
                   "Missing module number ! Use the 'set_module_number' method before !");
+      _hack_trace();
       _construct();
       _initialized_ = true;
-      return;
+      if (datatools::logger::is_trace(get_logging_priority())) {
+        tree_dump(std::cerr, "Geiger locator : ", "[trace] ");
+      }
+     return;
     }
 
     void gg_locator::dump(std::ostream & out_) const
@@ -971,6 +993,8 @@ namespace snemo {
       if (_module_box_ != 0) {
         _module_box_->tree_dump(out_, "", indent + stag);
       }
+      out_ << indent << itag << "Back  submodule : " << _submodules_[utils::SIDE_BACK] << std::endl;
+      out_ << indent << itag << "Front submodule : " << _submodules_[utils::SIDE_FRONT] << std::endl;
       out_ << indent << itag << "Cell box : " << std::endl;
       if (_cell_box_ != 0) {
         _cell_box_->tree_dump(out_, "", indent + stag);
@@ -1063,6 +1087,7 @@ namespace snemo {
                                 double tolerance_) const
     {
       DT_THROW_IF(! is_initialized(), std::logic_error, "Locator is not initialized !");
+      if (!_submodules_[side_]) return false;
       geomtools::vector_3d to_cell_pos = module_position_;
       to_cell_pos -= get_cell_position(side_, layer_, row_);
       // here one misses one transformation step (rotation) but it is ok :
@@ -1077,6 +1102,7 @@ namespace snemo {
                                                double tolerance_) const
     {
       DT_THROW_IF(! is_initialized(), std::logic_error, "Locator is not initialized !");
+      if (!_submodules_[side_]) return false;
       geomtools::vector_3d in_module_position;
       this->transform_world_to_module(world_position_, in_module_position);
       return is_in_cell(in_module_position, side_, layer_, row_, tolerance_);
@@ -1125,8 +1151,7 @@ namespace snemo {
                                         geomtools::geom_id & gid_,
                                         double tolerance_)
     {
-      DT_LOG_TRACE(get_logging_priority(), "Entering...");
-      // std::cerr << "DEVEL: " << "gg_locator::_find_cell_geom_id: " << "Entering..." << std::endl;
+      DT_LOG_TRACE_ENTERING(get_logging_priority());
       double tolerance = tolerance_;
       if (tolerance == GEOMTOOLS_PROPER_TOLERANCE) {
         tolerance = _cell_box_->get_tolerance();
@@ -1157,36 +1182,49 @@ namespace snemo {
         double cell_delta_y;
         size_t nlayers = 0;
         size_t nrows   = 0;
-        if (x < 0.0) {
-          // std::cerr << "DEVEL: " << "gg_locator::_find_cell_geom_id: " << "STEP 3a" << " x(" << x << ") < 0.0" << std::endl;
+
+        // Find the side:
+        if (side_number == geomtools::geom_id::INVALID_ADDRESS && _submodules_[utils::SIDE_BACK]) {
           nlayers = _back_cell_x_.size();
           nrows = _back_cell_y_.size();
-          // std::cerr << "DEVEL: " << "gg_locator::_find_cell_geom_id: " << "STEP 3a" << " nlayers=" << nlayers << std::endl;
-          // std::cerr << "DEVEL: " << "gg_locator::_find_cell_geom_id: " << "STEP 3a" << " nrows=" << nrows << std::endl;
+          DT_LOG_TRACE(get_logging_priority(), " nlayers=" << nlayers);
+          DT_LOG_TRACE(get_logging_priority(), " nrows=" << nrows);
           if (nlayers > 0 && nrows > 0) {
-            side_number = 0;
-            first_cell_x = _back_cell_x_.front();
-            cell_delta_x = (_back_cell_x_.back() - _back_cell_x_.front()) / (_back_cell_x_.size() - 1);
-            first_cell_y = _back_cell_y_.front();
-            cell_delta_y = (_back_cell_y_.back() - _back_cell_y_.front()) / (_back_cell_y_.size() - 1);
+            // double xmin = _back_cell_x_.back()  - 0.5 * get_cell_diameter();
+            double xmax = _back_cell_x_.front() + 0.5 * get_cell_diameter() + tolerance;
+            if (x <= xmax) {
+              DT_LOG_TRACE(get_logging_priority(), "SIDE_BACK");
+              side_number = 0;
+              first_cell_x = _back_cell_x_.front();
+              cell_delta_x = (_back_cell_x_.back() - _back_cell_x_.front()) / (_back_cell_x_.size() - 1);
+              first_cell_y = _back_cell_y_.front();
+              cell_delta_y = (_back_cell_y_.back() - _back_cell_y_.front()) / (_back_cell_y_.size() - 1);
+            }
           }
-        } else {
-          // std::cerr << "DEVEL: " << "gg_locator::_find_cell_geom_id: " << "STEP 3b" << " x(" << x << ") >= 0.0" << std::endl;
+        }
+        if (side_number == geomtools::geom_id::INVALID_ADDRESS && _submodules_[utils::SIDE_FRONT]) {
           nlayers = _front_cell_x_.size();
           nrows = _front_cell_y_.size();
-          // std::cerr << "DEVEL: " << "gg_locator::_find_cell_geom_id: " << "STEP 3b" << " nlayers=" << nlayers << std::endl;
-          // std::cerr << "DEVEL: " << "gg_locator::_find_cell_geom_id: " << "STEP 3b" << " nrows=" << nrows << std::endl;
+          DT_LOG_TRACE(get_logging_priority(), " nlayers=" << nlayers);
+          DT_LOG_TRACE(get_logging_priority(), " nrows=" << nrows);
           if (nlayers > 0 && nrows > 0) {
-            side_number = 1;
-            first_cell_x = _front_cell_x_.front();
-            cell_delta_x = (_front_cell_x_.back() - _front_cell_x_.front()) / (_front_cell_x_.size() - 1);
-            first_cell_y = _front_cell_y_.front();
-            cell_delta_y = (_front_cell_y_.back() - _front_cell_y_.front()) / (_front_cell_y_.size() - 1);
+            double xmin = _front_cell_x_.front() - 0.5 * get_cell_diameter() - tolerance;
+            // double xmax = _front_cell_x_.back()  + 0.5 * get_cell_diameter();
+            if (x >= xmin) {
+              DT_LOG_TRACE(get_logging_priority(), "SIDE_FRONT");
+              side_number = 1;
+              first_cell_x = _front_cell_x_.front();
+              cell_delta_x = (_front_cell_x_.back() - _front_cell_x_.front()) / (_front_cell_x_.size() - 1);
+              first_cell_y = _front_cell_y_.front();
+              cell_delta_y = (_front_cell_y_.back() - _front_cell_y_.front()) / (_front_cell_y_.size() - 1);
+            }
           }
         }
         if (side_number == geomtools::geom_id::INVALID_ADDRESS) {
-          // std::cerr << "DEVEL: " << "gg_locator::_find_cell_geom_id: " << "STEP 4" << " Not a valid side!" << std::endl;
+          DT_LOG_TRACE(get_logging_priority(), "Not a valid side!");
+          DT_LOG_TRACE(get_logging_priority(), "Not a GG!");
           gid.invalidate();
+          DT_LOG_TRACE_EXITING(get_logging_priority());
           return false;
         }
         gid.set(_side_index_, side_number);
@@ -1206,7 +1244,9 @@ namespace snemo {
           const geomtools::geom_info * ginfo_ptr = _mapping_->get_geom_info_ptr(gid);
           if (ginfo_ptr == 0) {
             DT_LOG_TRACE(get_logging_priority(), "Unmapped gid = " << gid);
+            DT_LOG_TRACE(get_logging_priority(), "Not a GG!");
             gid.invalidate();
+            DT_LOG_TRACE_EXITING(get_logging_priority());
             return false;
           }
           // 2012-05-31 FM : we check if the 'world' position is in the volume:
@@ -1214,14 +1254,16 @@ namespace snemo {
           transform_module_to_world(in_module_position_, world_position);
           if (_mapping_->check_inside(*ginfo_ptr, world_position, tolerance, true)) {
             DT_LOG_TRACE(get_logging_priority(), "Position inside gid = " << gid);
+            DT_LOG_TRACE_EXITING(get_logging_priority());
             return true;
           }
         }
         gid.invalidate();
       }
       // 2012-06-05 FM: add missing invalidate call
+      DT_LOG_TRACE(get_logging_priority(), "Not a GG!");
       gid.invalidate();
-      // std::cerr << "DEVEL: " << "gg_locator::_find_cell_geom_id: " << "End." << std::endl;
+      DT_LOG_TRACE_EXITING(get_logging_priority());
       return false;
     }
 
