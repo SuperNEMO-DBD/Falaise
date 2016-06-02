@@ -104,9 +104,16 @@ namespace snemo {
       }
 
       // Drivers :
-      DT_THROW_IF(! setup_.has_key("drivers"), std::logic_error, "Missing 'drivers' key !");
       std::vector<std::string> driver_names;
-      setup_.fetch("drivers", driver_names);
+      if (setup_.has_key("drivers")) {
+        setup_.fetch("drivers", driver_names);
+      } else {
+        // Add default set of drivers
+        driver_names.push_back(snemo::reconstruction::vertex_extrapolation_driver::get_id());
+        driver_names.push_back(snemo::reconstruction::charge_computation_driver::get_id());
+        driver_names.push_back(snemo::reconstruction::calorimeter_association_driver::get_id());
+        driver_names.push_back(snemo::reconstruction::alpha_finder_driver::get_id());
+      }
       for (std::vector<std::string>::const_iterator
              idriver = driver_names.begin();
            idriver != driver_names.end(); ++idriver) {
