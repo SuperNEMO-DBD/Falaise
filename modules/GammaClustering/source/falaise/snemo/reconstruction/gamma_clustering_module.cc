@@ -95,9 +95,14 @@ namespace snemo {
       }
 
       // Gamma clustering algorithm :
-      DT_THROW_IF(!setup_.has_key("driver"), std::logic_error, "Missing 'driver' algorithm");
-      const std::string algorithm_id = setup_.fetch_string("driver");
-      if (algorithm_id == "GC") {
+      std::string algorithm_id;
+      if (setup_.has_key("driver")) {
+        algorithm_id = setup_.fetch_string("driver");
+      } else {
+        // Provide default driver name
+        algorithm_id = snemo::reconstruction::gamma_clustering_driver::get_id();
+      }
+      if (algorithm_id == snemo::reconstruction::gamma_clustering_driver::get_id()) {
         _driver_.reset(new snemo::reconstruction::gamma_clustering_driver);
       } else {
         DT_THROW_IF(true, std::logic_error,

@@ -57,7 +57,7 @@ namespace snemo {
       typedef std::vector<cluster_type> cluster_collection_type;
 
       /// Dedicated algorithm id
-      static const std::string & gamma_clustering_id();
+      static const std::string & get_id();
 
       /// Constructor
       gamma_clustering_driver();

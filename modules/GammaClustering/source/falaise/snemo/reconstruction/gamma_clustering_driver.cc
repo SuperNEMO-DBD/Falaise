@@ -29,15 +29,15 @@ namespace snemo {
 
   namespace reconstruction {
 
-    const std::string & gamma_clustering_driver::gamma_clustering_id()
+    const std::string & gamma_clustering_driver::get_id()
     {
-      static const std::string _id("gamma_clustering");
+      static const std::string _id("GC");
       return _id;
     }
 
     // Constructor
     gamma_clustering_driver::gamma_clustering_driver() :
-      snemo::processing::base_gamma_builder(gamma_clustering_driver::gamma_clustering_id())
+      snemo::processing::base_gamma_builder(gamma_clustering_driver::get_id())
     {
       _set_defaults();
       return;
@@ -64,13 +64,13 @@ namespace snemo {
     }
 
     // Initialization :
-    void gamma_clustering_driver::initialize(const datatools::properties  & setup_)
+    void gamma_clustering_driver::initialize(const datatools::properties & setup_)
     {
       this->snemo::processing::base_gamma_builder::_initialize(setup_);
 
       // Extract the setup of the base gamma builder :
       datatools::properties gc_setup;
-      setup_.export_and_rename_starting_with(gc_setup, "GC.", "");
+      setup_.export_and_rename_starting_with(gc_setup, get_id() + ".", "");
 
       std::string key;
       if (gc_setup.has_key(key = "cluster_time_range")) {
