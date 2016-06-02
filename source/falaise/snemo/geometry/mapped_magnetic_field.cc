@@ -18,8 +18,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  *
- *
- *
  */
 
 // Ourselves:
@@ -187,6 +185,7 @@ namespace snemo {
     {
       _mapping_mode_ = MM_INVALID;
       _zero_field_outside_map_ = true;
+      _z_inverted_ = false;
       return;
     }
 
@@ -217,6 +216,28 @@ namespace snemo {
       DT_THROW_IF(is_initialized(), std::logic_error, "Cannot change the magnetic field value !");
       _mapping_mode_ = mm_;
       return;
+    }
+
+    void mapped_magnetic_field::set_zero_field_outside_map(bool f_)
+    {
+      _zero_field_outside_map_ = f_;
+      return;
+    }
+
+    bool mapped_magnetic_field::is_zero_field_outside_map() const
+    {
+      return _zero_field_outside_map_;
+    }
+
+    void mapped_magnetic_field::set_z_inverted(bool f_)
+    {
+      _z_inverted_ = f_;
+      return;
+    }
+
+    bool mapped_magnetic_field::is_z_inverted() const
+    {
+      return _z_inverted_;
     }
 
     void mapped_magnetic_field::initialize(const ::datatools::properties & config_,
@@ -254,11 +275,12 @@ namespace snemo {
 
       if (config_.has_key("zero_field_outside_map")) {
         bool zfom = config_.fetch_boolean("zero_field_outside_map");
-        if (zfom) {
-          _zero_field_outside_map_ = true;
-        } else {
-          _zero_field_outside_map_ = false;
-        }
+        set_zero_field_outside_map(zfom);
+      }
+
+      if (config_.has_key("z_inverted")) {
+        bool z_inverted = config_.fetch_boolean("z_inverted");
+        set_z_inverted(z_inverted);
       }
 
       // Private initialization:
@@ -276,7 +298,8 @@ namespace snemo {
 
     void mapped_magnetic_field::reset()
     {
-      DT_THROW_IF(! is_initialized(), std::logic_error, "Cannot reset the mapped magnetic field !");
+      DT_THROW_IF(! is_initialized(), std::logic_error,
+                  "Cannot reset the mapped magnetic field !");
       _set_initialized(false);
       // Private reset:
       if (_mapping_mode_ == MM_IMPORT_CSV_MAP_0) {
@@ -320,6 +343,10 @@ namespace snemo {
       int status = STATUS_ERROR;
       if (_mapping_mode_ == MM_IMPORT_CSV_MAP_0) {
         status = _work_->csv_map_0_data.compute(position_, magnetic_field_);
+        if (_z_inverted_) {
+          double Bz = -magnetic_field_.z();
+          magnetic_field_.setZ(Bz);
+        }
         if (status != STATUS_SUCCESS) {
           if (_zero_field_outside_map_) {
             magnetic_field_.set(0.,0.,0.);

@@ -90,6 +90,18 @@ namespace snemo {
       /// Set the mapping mode
       void set_mapping_mode(mapping_mode_type);
 
+      /// Set the flag to force a zero B-field outside the mapped domain
+      void set_zero_field_outside_map(bool);
+
+      /// Return the flag to force a zero B-field outside the mapped domain
+      bool is_zero_field_outside_map() const;
+
+      /// Set the Z component inversion flag
+      void set_z_inverted(bool);
+
+      /// Return the Z component inversion flag
+      bool is_z_inverted() const;
+
     protected:
 
       /// Set default attributes values
@@ -100,6 +112,7 @@ namespace snemo {
       mapping_mode_type _mapping_mode_;           //!< Mapping mode
       std::string       _map_filename_;           //!< Map filename
       bool              _zero_field_outside_map_; //!< Force zero field outside the interpolated map
+      bool              _z_inverted_;             //!< Invert the Z component of the field
 
       struct _work_type;
       boost::scoped_ptr<_work_type> _work_; //!< PIMPL-ized working data
