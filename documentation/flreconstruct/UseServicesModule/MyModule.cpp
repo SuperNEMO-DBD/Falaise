@@ -37,7 +37,7 @@ void MyModule::initialize(const datatools::properties& /*myConfig*/,
   if (flServices.has("geometry")) {
     // Service Manager can supply a geometry service, so get it and
     // then the corresponding manager
-    geomtools::geometry_service& geoService = flServices.get<geomtools::geometry_service>("geometry");
+    const geomtools::geometry_service& geoService = flServices.get<geomtools::geometry_service>("geometry");
     geoManager_ = &geoService.get_geom_manager();
 
     // Some output to demonstrate we have something
