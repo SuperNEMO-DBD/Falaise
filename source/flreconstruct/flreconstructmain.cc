@@ -367,7 +367,6 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
     }
   }
 
-  userLibConfig.tree_dump(std::cout);
   datatools::library_loader flLibLoader(userLibConfig);
 
   // Configure the modules themselves
