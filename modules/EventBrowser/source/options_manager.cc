@@ -158,7 +158,7 @@ namespace snemo {
            po::value<bool>(&_preload_)
            ->zero_tokens()
            ->default_value(false),
-           "enable the load in memory of Boost archive files (working only with pure 'sng4' output)")
+           "enable the load in memory of Boost archive files (working only with pure 'flsimulate' output)")
 
           ("input-files,i",
            po::value<std::vector<std::string> >(&_input_files_),
@@ -243,12 +243,12 @@ namespace snemo {
 
         // Fetch the opts/args :
         if (vm.count("help")) {
-          std::cout << "snemo_event_browser -- ";
+          std::cout << "flvisualize -- ";
           std::cout << "A generic SuperNEMO event browser program" << std::endl;
           std::cout << std::endl;
           std::cout << "Usage : " << std::endl;
           std::cout << std::endl;
-          std::cout << "  ${SNVISUALIZATION_BIN_DIR}/snemo_event_browser [OPTIONS] [ARGUMENTS] "
+          std::cout << "  flvisualize [OPTIONS] [ARGUMENTS] "
                     << std::endl;
           std::cout << std::endl;
           std::cout << general_opts << std::endl;
@@ -256,7 +256,7 @@ namespace snemo {
           std::cout << view_opts << std::endl;
           std::cout << std::endl;
           this->print_examples(std::cout,
-                               "snemo_event_browser",
+                               "flvisualize",
                                "Examples : ");
           std::cout << std::endl;
           return false;

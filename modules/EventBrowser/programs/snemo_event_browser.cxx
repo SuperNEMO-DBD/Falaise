@@ -46,7 +46,7 @@
 int main(int argc_, char **argv_)
 {
   falaise::initialize(argc_, argv_);
-  const std::string APPNAME_PREFIX = "snemo_event_browser: ";
+  const std::string APPNAME_PREFIX = "flvisualize: ";
 
   int error_code = EXIT_SUCCESS;
   try {

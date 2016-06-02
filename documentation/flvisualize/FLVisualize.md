@@ -7,8 +7,11 @@ Introduction to FLVisualize {#usingflvisualize_intro}
 ===========================
 FLVisualize is the main detector/event viewer GUI for Falaise, and
 can display both raw and reconstructed data for the BiPo3 and Demonstrator
-detectors. It can be run with or without data files, but note that on
-Mac OS X, it can only run without data files.
+detectors. It can be used to view
+
+- Raw detector geometries
+- Raw/Calibrated data from flsimulate
+- Reconstructed tracks and calorimetry
 
 Here we present a brief overview of running FLVisualize from the
 command line.
@@ -114,4 +117,13 @@ $ flvisualize -i example.brio
 Files may also be opened using the "File->Open file..." GUI menu item.
 
 TODO: Screenshots and additional guides
+
+Known Issues
+============
+Performance may be affected on slower systems or those without modern graphics
+cards due to the complexity of the geometry.
+
+OS X systems may also see some performance loss on startup and moving between events.
+
+Both issues are under investigation.
 
