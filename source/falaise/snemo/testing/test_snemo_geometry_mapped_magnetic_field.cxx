@@ -63,6 +63,7 @@ int main (int argc_, char ** argv_)
     bool draw = false;
     bool trace = false;
     double yslice = datatools::invalid_real();
+    bool z_inverted = false;
 
     int iarg = 1;
     while (iarg < argc_) {
@@ -77,6 +78,8 @@ int main (int argc_, char ** argv_)
             trace = true;
           } else if (option == "-Y" || option == "--y-slice") {
             yslice = 0.0;
+          } else if (option == "-Z" || option == "--z-inverted") {
+            z_inverted = true;
           } else {
             std::clog << datatools::io::warning << "ignoring option '"
                       << option << "'!" << std::endl;
@@ -103,8 +106,9 @@ int main (int argc_, char ** argv_)
     snemo::geometry::mapped_magnetic_field mmf;
     mmf.set_mapping_mode(snemo::geometry::mapped_magnetic_field::MM_IMPORT_CSV_MAP_0);
     mmf.set_map_filename(map_filename);
+    mmf.set_zero_field_outside_map(true);
+    mmf.set_z_inverted(z_inverted);
     if (trace) mmf.set_logging_priority(datatools::logger::PRIO_TRACE);
-    // else mmf.set_logging_priority(datatools::logger::PRIO_DEBUG);
     mmf.initialize_simple();
 
     datatools::temp_file tmp_file;
