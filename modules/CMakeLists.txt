@@ -21,8 +21,6 @@ set(_falaise_PLUGINS
   GammaClustering
   VisuToy
   EventBrowser
-  ParticleIdentification
-  ProcessReport
   things2root
 )
 
