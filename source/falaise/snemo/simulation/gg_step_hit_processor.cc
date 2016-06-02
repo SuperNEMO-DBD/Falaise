@@ -345,7 +345,9 @@ namespace snemo {
     void gg_step_hit_processor::process(const ::mctools::base_step_hit_processor::step_hit_ptr_collection_type & the_base_step_hits,
                                         ::mctools::simulated_data::hit_collection_type & the_plain_gg_hits)
     {
+      DT_LOG_TRACE_ENTERING(get_logging_priority());
       _process(the_base_step_hits, (mctools::simulated_data::hit_handle_collection_type *) 0, &the_plain_gg_hits);
+      DT_LOG_TRACE_EXITING(get_logging_priority());
       return;
     }
 
@@ -473,8 +475,9 @@ namespace snemo {
           // a bug ?
           DT_LOG_ERROR(get_logging_priority(),
                        "We skip this hit for one cannot locate it through the locator attached to the '"
-                       << _mapping_category_ << "' ! "
-                       << " This is probably due to another mapping category registered in the current '"
+                       << _mapping_category_ << "' !\n"
+                       << "\t- This may be due to a malformed geometry locator used to locate the hit.\n"
+                       << "\t- This may be due to another mapping category registered in the current '"
                        << _hit_category << "' hit category "
                        << "that may generate its own step hits ! Consider to write your own hit processor able "
                        << "to handle several mapping categories (using several suitable locators) !");
