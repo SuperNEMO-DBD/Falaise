@@ -1283,10 +1283,10 @@ namespace snemo {
         DT_LOG_TRACE(get_logging_priority(), "x = " << x / CLHEP::mm);
         DT_LOG_TRACE(get_logging_priority(), "y = " << y / CLHEP::mm);
         DT_LOG_TRACE(get_logging_priority(), "z = " << z / CLHEP::mm);
-        double first_block_y;
-        double block_delta_y;
-        double first_block_z;
-        double block_delta_z;
+        double first_block_y = 0.0;
+        double block_delta_y = 0.0;
+        double first_block_z = 0.0;
+        double block_delta_z = 0.0;
         size_t ncolumns = 0;
         size_t nrows    = 0;
 
