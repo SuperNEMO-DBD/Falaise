@@ -363,9 +363,9 @@ namespace snemo {
           cframe->AddFrame(new TGLabel(cframe, "Hit category name:"),
                            new TGLayoutHints(kLHintsTop | kLHintsLeft, 2, 2, 2, 2));
           _hit_category_ = new TGTextEntry(cframe, "", -1);
-          _hit_category_->Connect("ValueSet(Long_t)",
-                                  "snemo::visualization::view::event_selection",
-                                  _selection, "process()");
+          // _hit_category_->Connect("ValueSet(Long_t)",
+          //                         "snemo::visualization::view::event_selection",
+          //                         _selection, "process()");
           cframe->AddFrame(_hit_category_, new TGLayoutHints(kLHintsTop | kLHintsLeft, 2, 2, 0, 2));
         }
 
@@ -469,7 +469,6 @@ namespace snemo {
 
       void event_selection::process()
       {
-        DT_LOG_WARNING(datatools::logger::PRIO_WARNING, "Entering...");
         TGButton * button = static_cast<TGButton*>(gTQSender);
         const unsigned int id = button->WidgetId();
 
@@ -552,7 +551,6 @@ namespace snemo {
           // _selection_widgets_.tg_update->SetState(kButtonUp);
           // _selection_widgets_.tg_update->SetTextColor(TColor::Number2Pixel(kRed));
         // }
-        DT_LOG_WARNING(datatools::logger::PRIO_WARNING, "Exiting.");
         return;
       }
 
