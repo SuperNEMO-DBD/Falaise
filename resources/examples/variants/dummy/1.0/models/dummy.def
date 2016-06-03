@@ -1,0 +1,28 @@
+# -*- mode: conf-unix; -*-
+# @falaise:examples/variants/dummy/1.0/models/dummy.def
+# Format: datatools::multi_properties
+
+#@description The definitions for variant parameters related to the DBD source
+#@key_label   "name"
+#@meta_label  "type"
+
+
+################################
+[name="dummy.VM" type="variant"]
+
+#@config A dummy variant model
+
+#@description The display name of this variant
+display_name       : string = "Dummy"
+
+#@description A short description of the variant
+terse_description  : string = "A dummy set of configuration parameters"
+
+#@description The list of variant parameters associated to the source
+parameters : string[1] = "test"
+
+parameters.test.model       : string = "datatools::basic::off_on.PM"
+parameters.test.description : string = "Test switch"
+
+
+# end of @falaise:examples/variants/dummy/1.0/models/dummy.def
