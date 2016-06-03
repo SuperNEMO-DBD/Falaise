@@ -19,6 +19,7 @@
  *
  */
 
+// This project
 #include <falaise/snemo/view/event_display.h>
 #include <falaise/snemo/view/display_3d.h>
 #include <falaise/snemo/view/display_2d.h>
@@ -36,8 +37,8 @@
 
 #include <falaise/snemo/detector/detector_manager.h>
 
-#include <datatools/ioutils.h>
-
+// Third party:
+// ROOT:
 #include <TGFrame.h>
 #include <TGSplitFrame.h>
 #include <TGTab.h>
@@ -190,6 +191,9 @@ namespace snemo {
           _tab_is_uptodate_[TRACK_BROWSER_TAB] = false;
           _tab_is_uptodate_[OPTIONS_TAB]       = true;
           _tab_is_uptodate_[SELECTION_TAB]     = true;
+
+          // Selection off by default
+          _tabs_->SetEnabled(SELECTION_TAB, false);
 
           // 2D/3D display view
           if (options_manager::get_instance().is_2d_display_on_left()) {
