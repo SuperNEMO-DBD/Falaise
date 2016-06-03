@@ -19,10 +19,12 @@
  *
  */
 
+// Standard libraries
 #include <iostream>
 #include <fstream>
 #include <sstream>
 
+// This project:
 #include <falaise/snemo/event_browser_version.h>
 #include <falaise/snemo/view/event_browser.h>
 #include <falaise/snemo/view/event_browser_ctrl.h>
@@ -35,8 +37,11 @@
 
 #include <falaise/snemo/io/event_server.h>
 
+// Third party:
+// Boost:
 #include <boost/filesystem.hpp>
-
+// ROOT:
+#include <TROOT.h>
 #include <TGTab.h>
 #include <TGMsgBox.h>
 #include <TApplication.h>
@@ -65,41 +70,17 @@ namespace snemo {
         return _initialized_;
       }
 
-      std::string event_browser::get_version() const
-      {
-        std::string version = EventBrowser::version::get_version();
-        return version;
-      }
-
-      std::string event_browser::get_revision() const
-      {
-        const std::string svn_revision("$Revision: 9339 $");
-        std::istringstream iss(svn_revision);
-        std::string revision;
-        iss >> revision >> revision;
-        return revision;
-      }
-
-      std::string event_browser::get_date() const
-      {
-        const std::string svn_date("$Date: 2012-01-25 23:12:08 +0100 (mer. 25 janv. 2012) $");
-        std::istringstream iss(svn_date);
-        std::string date;
-        iss >> date >> date;
-        return date;
-      }
-
       void event_browser::welcome() const
       {
-        std::ostringstream line1, line2;
-        line1 << "  >>>>>>>> SuperNEMO Event Browser " << this->get_version()
-              << " (rev " << this->get_revision() <<  ")" << " <<<<<<<<";
-        line2 << "SNSW "  << this->get_date();
-
-        std::cout << std::endl << std::endl << line1.str() << std::endl << std::endl;
-        const size_t nspace = (line1.str().length() - line2.str().length()) / 2;
-        for (size_t ispace = 0; ispace < nspace; ispace++) std::cout << " ";
-        std::cout << line2.str() << std::endl << std::endl;
+        std::cout << std::endl;
+        std::cout << "\tSUPERNEMO EVENT BROWSER                          " << std::endl
+                  << "\tVersion " << EventBrowser::version::get_version()  << std::endl
+                  << "                                                   " << std::endl
+                  << "\tCopyright (C) 2010-2016                          " << std::endl
+                  << "\tSuperNEMO Collaboration                          " << std::endl
+                  << "                                                   " << std::endl
+                  << "\tCompiled with ROOT v" << gROOT->GetVersion()       << std::endl;
+        std::cout << std::endl;
         return;
       }
 

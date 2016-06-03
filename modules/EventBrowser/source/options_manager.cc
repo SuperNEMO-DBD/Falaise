@@ -19,15 +19,21 @@
  *
  */
 
+// Ourselves
 #include <falaise/snemo/view/options_manager.h>
 
-#include <datatools/exception.h>
-
-#include <boost/program_options.hpp>
-
+// Standard libraries
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
+
+// Third party
+// Boost:
+#include <boost/program_options.hpp>
+// Bayeux/datatools:
+#include <datatools/exception.h>
+// Falaise:
+#include <falaise/resource.h>
 
 namespace snemo {
 
@@ -144,21 +150,21 @@ namespace snemo {
 
           ("detector-config-file",
            po::value<std::string>(&_detector_config_file_),
-           "set the path to the detector config file\ndefault file is located at \'${SNGEOMETRY_DATA_DIR}/resources/setups/snemo/config_1.0/manager.conf\'")
+           "set the path to the detector configuration file")
 
           ("style-config-file",
            po::value<std::string>(&_style_config_file_),
-           "set the path to the style config file")
+           "set the path to the style configuration file")
 
           ("cut-config-file",
            po::value<std::string>(&_cut_config_file_),
-           "set the path to the cut config file")
+           "set the path to the cut configuration file")
 
           ("preload",
            po::value<bool>(&_preload_)
            ->zero_tokens()
            ->default_value(false),
-           "enable the load in memory of Boost archive files (working only with pure 'flsimulate' output)")
+           "enable the load in memory of Boost archive files (working only with pure 'bxg4_production' output)")
 
           ("input-files,i",
            po::value<std::vector<std::string> >(&_input_files_),
@@ -295,32 +301,24 @@ namespace snemo {
                                            const std::string & name_,
                                            const std::string & title_) const
       {
-        if (!title_.empty())
-          {
-            out_ << title_ << std::endl;
-          }
+        if (!title_.empty()) {
+          out_ << title_ << std::endl;
+        }
         out_ << std::endl;
         out_ << " 1) Using default configuration :" << std::endl;
         out_ << "    " << name_ << " \\" << std::endl;
-        out_ << "         --input-file ${SNCORE_DATA_DIR}/resources/setups/snemo/samples/snemo_SD_CD_0.txt.gz";
+        out_ << "         --input-file <simulation/reconstruction file>";
         out_ << std::endl;
         out_ << " 2) Auto reading mode:" << std::endl;
         out_ << "    " << name_ << " \\" << std::endl;
         out_ << "         --verbose \\" << std::endl;
         out_ << "         --auto-reading-delay 2 \\" << std::endl;
-        out_ << "         --input-file ${SNCORE_DATA_DIR}/resources/setups/snemo/samples/snemo_SD_0.txt.gz";
+        out_ << "         --input-file <simulation/reconstruction file>";
         out_ << std::endl;
-        out_ << " 3) Setting a special detector config file:" << std::endl;
+        out_ << " 3) Visualizing BiPo3 detector :" << std::endl;
         out_ << "    " << name_ << " \\" << std::endl;
-        out_ << "         --detector-config-file ${SNGEOMETRY_DATA_DIR}/resources/setups/bipo3/config_1.0/manager.conf \\" << std::endl;
-        out_ << "         --style-config-file    ${SNVISUALIZATION_DATA_DIR}/resources/styles/bipo3_default.sty \\" << std::endl;
-        out_ << "         --input-file ${SNCORE_DATA_DIR}/resources/setups/snemo/samples/snemo_SD_0.txt.gz";
-        out_ << std::endl;
-        out_ << " 4) Using default configuration (with preload of plain archived 'simulation_data' objects):" << std::endl;
-        out_ << "    " << name_ << " \\" << std::endl;
-        out_ << "         --verbose \\" << std::endl;
-        out_ << "         --preload \\" << std::endl;
-        out_ << "         --input-file plain_sng4_output.data.gz";
+        out_ << "         --detector-config-file " << falaise::get_resource_dir() << "/config/bipo3/geometry/2.0/manager.conf \\" << std::endl;
+        out_ << "         --style-config-file    " << falaise::get_resource_dir() << "/modules/EventBrowser/styles/bipo3_default.sty" << std::endl;
         out_ << std::endl;
         out_ << std::endl;
         out_ << " See README for other running examples" << std::endl;
