@@ -125,6 +125,64 @@ parameters.em_model.model      : string = "simulation.physics_mode.constructors.
 parameters.em_model.description : string = "Electromagnetic processes Geant4 model"
 
 
+######################################################
+[name="simulation.output_profile.PM" type="parameter"]
+
+#@config A variant parameter describing the Geant4 output profile
+
+#@description The display name of this variant
+display_name        : string = "Geant4 output profile"
+
+#@description A short description of the variant
+terse_description   : string = "The Geant4 output profile"
+
+#@description The type of the parameter
+type                : string = "string"
+
+#@description The mutability of the parameter
+mutability          : string = "variable"
+
+#@description The mutability mode of the parameter
+variable.mode       : string = "enumeration"
+
+#@description The number of supported values
+string.enumerated.size : integer = 5
+
+# The list of supported values:
+string.enumerated_0.value : string = "none"
+string.enumerated_1.value : string = "calo_details"
+string.enumerated_2.value : string = "tracker_details"
+string.enumerated_3.value : string = "source_details"
+string.enumerated_4.value : string = "all_details"
+
+#@description The default value
+string.default : string = "none"
+
+#@description The list of variants
+variants : string[5] = "if_none" "if_calo" "if_tracker" "if_source" "if_all"
+
+variants.if_none.model          : string = "datatools::basic::is_on.VM"
+variants.if_none.description    : string = "No output profile"
+
+variants.if_calo.model          : string = "datatools::basic::is_on.VM"
+variants.if_calo.description    : string = "Calorimeter details"
+
+variants.if_tracker.model       : string = "datatools::basic::is_on.VM"
+variants.if_tracker.description : string = "Tracker details"
+
+variants.if_source.model        : string = "datatools::basic::is_on.VM"
+variants.if_source.description  : string = "Source details"
+
+variants.if_all.model           : string = "datatools::basic::is_on.VM"
+variants.if_all.description     : string = "All details"
+
+string.enumerated_0.variant : string = "if_none"
+string.enumerated_1.variant : string = "if_calo"
+string.enumerated_2.variant : string = "if_tracker"
+string.enumerated_3.variant : string = "if_source"
+string.enumerated_4.variant : string = "if_all"
+
+
 ####################################################
 [name="simulation.physics_mode.PM" type="parameter"]
 
@@ -222,13 +280,16 @@ display_name       : string = "Geant4 simulation"
 terse_description  : string = "The variant configuration parameters for the Geant4 simulation"
 
 #@description The list of variant parameters
-parameters : string[2] = "physics_mode" "production_cuts"
+parameters : string[3] = "physics_mode" "production_cuts" "output_profile"
 
 parameters.physics_mode.model          : string = "simulation.physics_mode.PM"
 parameters.physics_mode.description    : string = "The Geant4 simulation physics mode"
 
 parameters.production_cuts.model       : string = "simulation.production_cuts_activation.PM"
 parameters.production_cuts.description : string = "The activation flag of Geant4 production cuts"
+
+parameters.output_profile.model       : string = "simulation.output_profile.PM"
+parameters.output_profile.description : string = "The output profile for Geant4"
 
 
 # end of @falaise:config/snemo/demonstrator/simulation/vertexes/2.0/models/simulation.def

@@ -100,7 +100,7 @@ mutability          : string = "variable"
 boolean.default     : boolean = false
 
 #@description List of variants
-variants : string[1] = "is_active"
+variants : string[2] = "is_active" "is_inactive"
 
 #@description The variant model associated to the "is_active" variant
 variants.is_active.model       : string = "source_calibration.description.VM"
@@ -108,8 +108,17 @@ variants.is_active.model       : string = "source_calibration.description.VM"
 #@description The description of the "is_active" variant
 variants.is_active.description : string = "Set of parameters for source calibration"
 
+#@description The variant model associated to the "is_inactive" variant
+variants.is_inactive.model       : string = "datatools::basic::is_off.VM"
+
+#@description The description of the "is_inactive" variant
+variants.is_inactive.description : string = "No source calibration"
+
 #@description Variant associated to the source calibration activation
 boolean.true.variant : string = "is_active"
+
+#@description Variant associated to the source calibration inactivation
+boolean.false.variant : string = "is_inactive"
 
 
 #############################################

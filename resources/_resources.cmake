@@ -1,4 +1,9 @@
 set(Falaise_RESOURCES
+${PROJECT_SOURCE_DIR}/resources/examples/variants/dummy/1.0/registries/dummy2.conf
+${PROJECT_SOURCE_DIR}/resources/examples/variants/dummy/1.0/registries/dummy.conf
+${PROJECT_SOURCE_DIR}/resources/examples/variants/dummy/1.0/README.rst
+${PROJECT_SOURCE_DIR}/resources/examples/variants/dummy/1.0/models/dummy.def
+${PROJECT_SOURCE_DIR}/resources/examples/variants/README.rst
 ${PROJECT_SOURCE_DIR}/resources/examples/geometry/ex01/ex01.cxx
 ${PROJECT_SOURCE_DIR}/resources/examples/geometry/ex01/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/README.rst

@@ -98,8 +98,8 @@ Display the geometry
 
       $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
         bxgeomtools_inspector \
-          --datatools::logging "warning" \
-          --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-2.1.0/resources" \
+          --datatools::logging="trace" \
+          --datatools::resource-path="falaise@$(pwd)/BuildProducts/share/Falaise-2.1.0/resources" \
           --load-dll Falaise \
           --datatools::variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/variance.conf" \
           --datatools::variant-qt-gui \
