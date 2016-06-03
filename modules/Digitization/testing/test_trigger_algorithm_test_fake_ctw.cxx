@@ -215,10 +215,6 @@ int main( int  argc_ , char **argv_  )
     int psd_count = 0;         // Event counter
     
     my_clock_manager.compute_clockticks_ref(random_generator);
-    int32_t clocktick_25_reference  = my_clock_manager.get_clocktick_25_ref();
-    double  clocktick_25_shift      = my_clock_manager.get_shift_25();
-    int32_t clocktick_800_reference = my_clock_manager.get_clocktick_800_ref();
-    double  clocktick_800_shift     = my_clock_manager.get_shift_800();
 
     if (debug) my_clock_manager.tree_dump(std::clog, "Clock utils : ", "INFO : ");
 

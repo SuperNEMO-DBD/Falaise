@@ -23,7 +23,7 @@ namespace snemo {
 
     // Registration instantiation macro
     DPP_MODULE_REGISTRATION_IMPLEMENT(fake_trigger_module,
-                                      "snemo::digitization::fake_trigger_module");
+                                      "snemo::digitization::fake_trigger_module")
     
     fake_trigger_module::fake_trigger_module(datatools::logger::priority logging_priority_)
       : dpp::base_module(logging_priority_)
@@ -161,6 +161,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::digitization::fake_trigger_module, ocd_)
 
 DOCD_CLASS_IMPLEMENT_LOAD_END() // Closing macro for implementation
 DOCD_CLASS_SYSTEM_REGISTRATION(snemo::digitization::fake_trigger_module,
-			       "snemo::digitization::fake_trigger_module");
+			       "snemo::digitization::fake_trigger_module")
 
 // end of falaise/snemo/digitization/fake_trigger_module.cc

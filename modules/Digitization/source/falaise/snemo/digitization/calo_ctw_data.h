@@ -97,7 +97,7 @@ namespace snemo {
       bool _locked_; //!< CTWs lock flag
       calo_ctw_collection_type _calo_ctws_; //!< Collection of calorimeters crate trigger
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

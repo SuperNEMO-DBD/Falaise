@@ -30,19 +30,19 @@ namespace snemo {
 
       void reset();
 
-      static int start_row(int i_);
+      static unsigned int start_row(unsigned int i_);
 
-      static int stop_row(int i_);
+      static unsigned int stop_row(unsigned int i_);
 
-      static int width(int i_);
+      static unsigned int width(unsigned int i_);
 		
       static void print_layout(std::ostream & out_);
 
 			void print_projections(std::ostream & out_) const;
 			
       bool cells[snemo::digitization::trigger_info::NLAYERS][snemo::digitization::trigger_info::ZONE_WIDTH];
-			int side;
-      int zone_id;
+			unsigned int side;
+      unsigned int zone_id;
 
       // Internal address computing with 4 sliding zone for a zone
 			std::bitset<snemo::digitization::trigger_info::ZONE_ADDR_IO_PATTERN_SIZE>      addr_in_out_pattern;

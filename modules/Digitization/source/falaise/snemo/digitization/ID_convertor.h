@@ -65,8 +65,6 @@ namespace snemo {
       void set_logging(datatools::logger::priority);
       datatools::logger::priority get_logging() const;
       geomtools::geom_id convert_GID_to_EID(const geomtools::geom_id & geom_id_) const;
-      geomtools::geom_id convert_EID_to_GID(const geomtools::geom_id & geom_id_) const;
-      void convert_EID_to_GID();
       void set_geo_manager(const geomtools::manager & mgr_);
       void set_module_number(int);
       

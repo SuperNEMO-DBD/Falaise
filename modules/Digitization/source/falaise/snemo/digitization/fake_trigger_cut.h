@@ -98,7 +98,7 @@ namespace snemo {
       boost::scoped_ptr<snemo::digitization::fake_trigger_algo> _algo_;
 
       // Macro to automate the registration of the cut :
-      CUT_REGISTRATION_INTERFACE(fake_trigger_cut);
+      CUT_REGISTRATION_INTERFACE(fake_trigger_cut)
     };
 
   } // end of namespace cut

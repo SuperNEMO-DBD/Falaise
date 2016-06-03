@@ -151,18 +151,7 @@ namespace snemo {
     {
       if (_mem2_.get() == 0) _mem2_.reset(new mem2_type);
 
-      // std::size_t wide_row_min          = 0; // Unused variable
-      std::size_t wide_row_max          = 7;
       std::size_t wide_mult_min         = 6;
-      std::size_t wide_mult_max         = 8;
-      std::size_t narrow_left_row_min   = 0;
-      std::size_t narrow_left_row_max   = 4;
-      std::size_t narrow_left_mult_min  = 3;
-      std::size_t narrow_left_mult_max  = 5;
-      std::size_t narrow_right_row_min  = 3;
-      std::size_t narrow_right_row_max  = 7;
-      std::size_t narrow_right_mult_min = 3;
-      std::size_t narrow_right_mult_max = 5;
 
       for (unsigned long addr = 0; addr < _mem2_->get_number_of_addresses(); addr++) {
         mem2_type::address_type address = addr;
@@ -235,13 +224,13 @@ namespace snemo {
         }
 
         char c12n2 = ' ';
-        if (c12n2 == ' ' && full_count >= 6) c12n2 = 'W';
+        if (c12n2 == ' ' && full_count >= wide_mult_min) c12n2 = 'W';
         if (c12n2 == ' ' && left && right) c12n2 = 'W';
         if (c12n2 == ' ' && left && ! right) c12n2 = 'L';
         if (c12n2 == ' ' && ! left && right) c12n2 = 'R';
         if (c12n2 == ' ') c12n2 = 'V';
 
-        if (full_count < 6 && c12n2 == 'W') {
+        if (full_count < wide_mult_min && c12n2 == 'W') {
           if (right_str.substr(0,2) == "00" && left_str.substr(0,2) != "00") c12n2 = 'L';
           if (left_str.substr(0,2) == "00" && right_str.substr(0,2) != "00") c12n2 = 'R';
           if (left_str.substr(0,2) == "00" && right_str.substr(0,2) == "00") c12n2 = 'L';
@@ -278,8 +267,6 @@ namespace snemo {
   
       std::size_t data_BIT_INNER = 0;
       std::size_t data_BIT_OUTER = 1;
-
-      bool debug = false;
 
       //                  O I O I O I O I
       // bitset address : 7 6 5 4 3 2 1 0
@@ -336,12 +323,6 @@ namespace snemo {
 	{
 	  mem4_type::address_type address = addr;
 	  mem4_type::data_type data = 0x0;
-
-	  // Default NO_HTRACK pattern:   
-	  classification_type szA_clsf = NO_HTRACK;
-	  classification_type szB_clsf = NO_HTRACK;
-	  classification_type szC_clsf = NO_HTRACK;
-	  classification_type szD_clsf = NO_HTRACK;
 	  
 	  std::string addr_str = address.to_string();  
 

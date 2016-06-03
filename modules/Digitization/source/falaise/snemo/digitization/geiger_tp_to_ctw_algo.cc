@@ -79,7 +79,7 @@ namespace snemo {
     
     void geiger_tp_to_ctw_algo::_process_for_a_ctw_for_a_clocktick(const std::vector<datatools::handle<geiger_tp> > & my_list_of_geiger_tp_,  geiger_ctw & a_geiger_ctw_) 
     {       
-      for(int i = 0; i < my_list_of_geiger_tp_.size(); i++)
+      for(unsigned int i = 0; i < my_list_of_geiger_tp_.size(); i++)
 	{
 	  const geiger_tp & my_geiger_tp = my_list_of_geiger_tp_[i].get();
 	  _fill_a_geiger_ctw(my_geiger_tp, a_geiger_ctw_);	  
@@ -92,7 +92,7 @@ namespace snemo {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Geiger tp to ctw algo is not initialized, it can't process ! ");
       for(int32_t i = geiger_tp_data_.get_clocktick_min(); i <= geiger_tp_data_.get_clocktick_max(); i++)
       	{
-      	  for(int j = 0 ; j <= mapping::NUMBER_OF_CRATES ; j++) 
+      	  for(unsigned int j = 0 ; j <= mapping::NUMBER_OF_CRATES ; j++) 
       	    { 
       	      std::vector<datatools::handle<geiger_tp> > geiger_tp_list_per_clocktick_per_crate;
       	      geiger_tp_data_.get_list_of_gg_tp_per_clocktick_per_crate(i, j, geiger_tp_list_per_clocktick_per_crate);

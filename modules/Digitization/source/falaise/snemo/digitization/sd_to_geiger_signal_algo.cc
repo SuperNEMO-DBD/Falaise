@@ -87,7 +87,7 @@ namespace snemo {
       return error_code;
     }
 
-    const double sd_to_geiger_signal_algo::_anode_drift_time_calculation(const double drift_distance_)
+    double sd_to_geiger_signal_algo::_anode_drift_time_calculation(const double drift_distance_) const
     {
       // 2,3 cm/us drift close to the anode
       // 1 cm/us drift far away the anode
@@ -165,9 +165,7 @@ namespace snemo {
 		    geomtools::vector_3d avalanche_impact_cell_pos;
 		    ginfo.get_world_placement().mother_to_child(avalanche_impact_world_pos,
 								avalanche_impact_cell_pos);
-		    // longitudinal position:
-		    const double longitudinal_position = avalanche_impact_cell_pos.z();
-
+		    
 		    // true drift distance:
 		    const double drift_distance =(avalanche_impact_world_pos - ionization_world_pos).mag();
 

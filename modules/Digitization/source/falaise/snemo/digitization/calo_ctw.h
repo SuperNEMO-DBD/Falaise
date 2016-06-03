@@ -67,7 +67,7 @@ namespace snemo {
 			int32_t get_clocktick_25ns() const;
 			
 			/// Set the timestamp of the calo crate trigger word 
-      void set_clocktick_25ns(int32_t value_);
+      void set_clocktick_25ns(int32_t clocktick_25ns_);
 
 			/// Reset the timestamp of the calo crate trigger word 
 			void reset_clocktick_25ns();
@@ -204,7 +204,7 @@ namespace snemo {
 			int32_t _clocktick_25ns_; //!< The timestamp of the trigger primitive in main clock units (40 MHz)
 			std::bitset<calo::ctw::FULL_BITSET_SIZE> _ctw_;    //!< The crate trigger word
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

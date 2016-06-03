@@ -52,11 +52,11 @@ namespace snemo {
 
       void reset();
 
-      static int start_row(int i_);
+      static unsigned int start_row(unsigned int i_);
 
-      static int stop_row(int i_);
+      static unsigned int stop_row(unsigned int i_);
  
-      static int width(int i_);
+      static unsigned int width(unsigned int i_);
 
       void compute_lr_proj();
       
@@ -68,8 +68,8 @@ namespace snemo {
 
 			void print_projections(std::ostream & out_) const;
 			
-      int side;
-      int szone_id;
+      unsigned int side;
+      unsigned int szone_id;
       bool cells[snemo::digitization::trigger_info::NLAYERS][snemo::digitization::trigger_info::SLZONE_WIDTH];
       
       std::bitset<snemo::digitization::trigger_info::SLZONE_LAYER_PROJ> addr_layer_proj;

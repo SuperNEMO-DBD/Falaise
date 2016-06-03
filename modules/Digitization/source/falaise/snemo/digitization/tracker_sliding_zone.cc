@@ -24,8 +24,8 @@ namespace snemo {
     {
       side = -1;
       szone_id = -1;
-      for (int ilayer = 0; ilayer < trigger_info::NLAYERS; ilayer++) {
-	for (int irow = 0; irow < snemo::digitization::trigger_info::SLZONE_WIDTH; irow++) {
+      for (unsigned int ilayer = 0; ilayer < trigger_info::NLAYERS; ilayer++) {
+	for (unsigned int irow = 0; irow < snemo::digitization::trigger_info::SLZONE_WIDTH; irow++) {
 	  cells[ilayer][irow] = false;
 	}
       }
@@ -37,39 +37,39 @@ namespace snemo {
       return;
     }      
 
-    int tracker_sliding_zone::stop_row(int i_) 
+    unsigned int tracker_sliding_zone::stop_row(unsigned int i_) 
     {
-      int sr = 4 + (i_ - 1) * 4;
+      unsigned int sr = 4 + (i_ - 1) * 4;
       if (i_ == 0) sr = 0;
       if (i_ == 1) sr = 4;
       if (i_ == 2) sr = 8;
       if (i_ > 16) sr--;
-      return std::min((int) trigger_info::NROWS - 1, sr);
+      return std::min((unsigned int) trigger_info::NROWS - 1, sr);
     }
 
-    int tracker_sliding_zone::start_row(int i_) 
+    unsigned int tracker_sliding_zone::start_row(unsigned int i_) 
     {
       return stop_row(i_) - width(i_) + 1;
     }
 
     // Width of sliding zone = 8 except for sliding zone close to the begining or end of tracker
-    int tracker_sliding_zone::width(int i_) 
+    unsigned int tracker_sliding_zone::width(unsigned int i_) 
     {
-      int nr = snemo::digitization::trigger_info::SLZONE_WIDTH;
+      unsigned int nr = snemo::digitization::trigger_info::SLZONE_WIDTH;
 
-      if (i_ == 0 || i_ == (int) trigger_info::NSLZONES - 1) nr = 1;
-      if (i_ == 1 || i_ == (int) trigger_info::NSLZONES - 2) nr = 5;
+      if (i_ == 0 || i_ == (unsigned int) trigger_info::NSLZONES - 1) nr = 1;
+      if (i_ == 1 || i_ == (unsigned int) trigger_info::NSLZONES - 2) nr = 5;
 
       return nr;
     }
 
     void tracker_sliding_zone::compute_lr_proj()
     {      
-      for (int ilayer = 0; ilayer < trigger_info::NLAYERS; ilayer++) 
+      for (unsigned int ilayer = 0; ilayer < trigger_info::NLAYERS; ilayer++) 
 	{
 	  addr_layer_proj.set(ilayer, false);
 
-	  for (int irow = 0; irow < width(szone_id); irow++)
+	  for (unsigned int irow = 0; irow < width(szone_id); irow++)
 	    {
 	      if (cells[ilayer][irow]) 
 		{
@@ -79,10 +79,10 @@ namespace snemo {
 	    }
 	}
 
-      for (int irow = 0; irow < width(szone_id); irow++) 
+      for (unsigned int irow = 0; irow < width(szone_id); irow++) 
 	{
 	  addr_row_proj.set(irow, false);
-	  for (int ilayer = 0; ilayer < trigger_info::NLAYERS; ilayer++) 
+	  for (unsigned int ilayer = 0; ilayer < trigger_info::NLAYERS; ilayer++) 
 	    {
 	      if (cells[ilayer][irow]) 
 		{
@@ -123,7 +123,7 @@ namespace snemo {
     {
       out_ << "Sliding zone layout: " << '\n';
       out_ << "#S-Zone   Rows    #\n";
-      for (int iszone = 0; iszone < trigger_info::NSLZONES; iszone++) {
+      for (unsigned int iszone = 0; iszone < trigger_info::NSLZONES; iszone++) {
 	out_ << iszone << " " << start_row(iszone) << "-" << stop_row(iszone)
 	     << ' ' << "#" << width(iszone) << '\n';
       }
@@ -136,38 +136,38 @@ namespace snemo {
       out_ << "Sliding zone (" << side << ',' << szone_id << ") : \n";
       if (side == 0) {
 	out_ << "    " << "  ";
-	for (int irow = 0; irow < width(szone_id); irow++) {
+	for (unsigned int irow = 0; irow < width(szone_id); irow++) {
 	  out_ << irow << ' ';
 	}
 	out_ << '\n';
-	for (int ilayer = trigger_info::NLAYERS - 1; ilayer >= 0; ilayer--) {
+	for (unsigned int ilayer = trigger_info::NLAYERS - 1; ilayer >= 0; ilayer--) {
 	  out_ << ilayer << " = " << "  ";
-	  for (int irow = 0; irow < width(szone_id); irow++) {
+	  for (unsigned int irow = 0; irow < width(szone_id); irow++) {
 	    out_ << (cells[ilayer][irow] ? 'o' : '.') << ' ';
 	  }
 	  out_ << ' ' << '[' << addr_layer_proj.test(ilayer) << ']' << '\n';
 	}
 	out_ << "    " << "[ ";
-	for (int irow = 0; irow < width(szone_id); irow++) {
+	for (unsigned int irow = 0; irow < width(szone_id); irow++) {
 	  out_ << addr_row_proj.test(irow) << ' ';
 	}
 	out_ << ']' << '\n';
       }
       if (side == 1) {
 	out_ << "    " << "[ ";
-	for (int irow = 0; irow < width(szone_id); irow++) {
+	for (unsigned int irow = 0; irow < width(szone_id); irow++) {
 	  out_ << addr_row_proj.test(irow) << ' ';
 	}
 	out_ << ']' << '\n';
-	for (int ilayer = 0; ilayer < trigger_info::NLAYERS; ilayer++) {
+	for (unsigned int ilayer = 0; ilayer < trigger_info::NLAYERS; ilayer++) {
 	  out_ << ilayer << " = " << "  ";
-	  for (int irow = 0; irow < width(szone_id); irow++) {
+	  for (unsigned int irow = 0; irow < width(szone_id); irow++) {
 	    out_ << (cells[ilayer][irow] ? 'o' : '.') << ' ';
 	  }
 	  out_ << ' ' << '[' << addr_layer_proj.test(ilayer) << ']' << '\n';
 	}
 	out_ << "    " << "  ";
-	for (int irow = 0; irow < width(szone_id); irow++) {
+	for (unsigned int irow = 0; irow < width(szone_id); irow++) {
 	  out_ << irow << ' ';
 	}
 	out_ << '\n';
@@ -189,13 +189,13 @@ namespace snemo {
       out_ << "PR : Addr : [" <<  addr_row_proj_string << "]  Data : [" << data_LR_proj << "] \n";
       out_ << "PL : Addr : [" << addr_layer_proj_string << "] Data : [" << data_IO_proj << "] \n";
 
-      // for (int i =  snemo::digitization::trigger_info::SLZONE_ROW_PROJ; i >= 0; i--)
+      // for (unsigned int i =  snemo::digitization::trigger_info::SLZONE_ROW_PROJ; i >= 0; i--)
       // 	{
       // 	  if (i == snemo::digitization::trigger_info::SLZONE_ROW_PROJ) out_ << "PR \n";
       // 	  if (i != 4) out_ << addr_row_proj[i] << "\n";
       // 	  if (i == 4) out_ << addr_row_proj[i] << "  ===> " << data_LR_proj << "\n";	  
       // 	}
-      // for (int i = snemo::digitization::trigger_info::SLZONE_LAYER_PROJ; i >= 0; i--)
+      // for (unsigned int i = snemo::digitization::trigger_info::SLZONE_LAYER_PROJ; i >= 0; i--)
       // 	{
       // 	  if (i == snemo::digitization::trigger_info::SLZONE_LAYER_PROJ) out_ << "PL : ";
       // 	  if (i != 0 && i != snemo::digitization::trigger_info::SLZONE_LAYER_PROJ - 1) out_ << addr_layer_proj[i];

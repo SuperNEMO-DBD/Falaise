@@ -75,10 +75,10 @@ namespace snemo {
 			const std::vector<coincidence_trigger_algorithm::coincidence_event_record> get_coincidence_records_vector() const;
  			
 			/// Get the finale trigger decision
-			const bool get_finale_decision() const;	
+			bool get_finale_decision() const;	
 
 			/// Get the finale trigger decision
-			const bool get_delayed_finale_decision() const;
+			bool get_delayed_finale_decision() const;
 					
       /// General process
       void process(const calo_ctw_data & calo_ctw_data_,

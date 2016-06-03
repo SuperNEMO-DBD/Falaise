@@ -56,7 +56,7 @@ namespace snemo {
     
     void calo_tp_to_ctw_algo::set_crate_number(unsigned int crate_number_)
     {
-      DT_THROW_IF(((crate_number_ < 0) || (crate_number_ >= mapping::NUMBER_OF_CRATES)), std::logic_error, "Crate number can't be set because crate number [" << _crate_number_ << "] is not valid ! ");
+      DT_THROW_IF(crate_number_ >= mapping::NUMBER_OF_CRATES, std::logic_error, "Crate number can't be set because crate number [" << _crate_number_ << "] is not valid ! ");
 
       _crate_number_ = crate_number_;
 
@@ -282,7 +282,7 @@ namespace snemo {
     {
     DT_THROW_IF(_mode_ != MODE_MAIN_WALL, std::logic_error, "Process for main wall can't process because crate number [" << _crate_number_ << "] is not valid ! ");
     DT_THROW_IF(!is_main_wall(), std::logic_error, "Process for main wall can't process because mode number is not valid ! ");
-    for(int i = 0; i < my_list_of_calo_tp_.size(); i++)
+    for (unsigned int i = 0; i < my_list_of_calo_tp_.size(); i++)
       {
 	const calo_tp & my_calo_tp = my_list_of_calo_tp_[i].get();
 	_fill_a_main_wall_ctw(my_calo_tp, a_calo_ctw_);	  
@@ -294,7 +294,7 @@ namespace snemo {
     {
     DT_THROW_IF(_mode_ != MODE_XWALL_GVETO, std::logic_error, "Process for main wall can't process because crate number [" << _crate_number_ << "] is not valid ! ");
     DT_THROW_IF(!is_xwall_gveto(), std::logic_error, "Process for main wall can't process because mode number is not valid ! ");
-    for(int i = 0; i < my_list_of_calo_tp_.size(); i++)
+    for(unsigned int i = 0; i < my_list_of_calo_tp_.size(); i++)
       {
 	const calo_tp & my_calo_tp = my_list_of_calo_tp_[i].get();
 	_fill_a_xwall_gveto_ctw(my_calo_tp, a_calo_ctw_);	  
@@ -302,12 +302,12 @@ namespace snemo {
     return;
   }  
 
-    void calo_tp_to_ctw_algo::process(const calo_tp_data & calo_tp_data_,  calo_ctw_data & calo_ctw_data_)
+    void calo_tp_to_ctw_algo::process(const calo_tp_data & calo_tp_data_, calo_ctw_data & calo_ctw_data_)
     { 
       DT_THROW_IF(!is_initialized(), std::logic_error, "Calo tp to ctw algo is not initialized, it can't process ! ");
       DT_THROW_IF(_mode_ == MODE_UNDEFINED, std::logic_error, "Mode type is not defined, check your crate number ! ");
 
-      for(int32_t i = calo_tp_data_.get_clocktick_min(); i <= calo_tp_data_.get_clocktick_max(); i++)
+      for (int32_t i = calo_tp_data_.get_clocktick_min(); i <= calo_tp_data_.get_clocktick_max(); i++)
 	{
 	  if (_mode_ == MODE_MAIN_WALL)
 	    {

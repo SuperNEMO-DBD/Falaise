@@ -91,7 +91,7 @@ namespace snemo {
       int32_t get_clocktick_25ns() const;
 
       /// Set the timestamp of the trigger primitive
-      void set_clocktick_25ns(const int32_t value_);
+      void set_clocktick_25ns(const int32_t clocktick_25_);
 			
 			/// Check if a clocktick is defined
 			bool has_clocktick_25ns() const;
@@ -167,7 +167,7 @@ namespace snemo {
       int32_t _clocktick_25ns_;    //!< The timestamp of the trigger primitive in main clock units (40 MHz)
       std::bitset<FULL_SIZE> _tp_; //!< The trigger primitive bitset
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

@@ -22,8 +22,8 @@ namespace snemo {
     const unsigned int calo_tp::MAX_NUMBER_OF_CHANNELS;
     const unsigned int calo_tp::FULL_SIZE;
     const unsigned int calo_tp::HTM_SIZE;
-    constexpr double       calo_tp::LOW_THRESHOLD;
-    constexpr double       calo_tp::HIGH_THRESHOLD;
+    constexpr double calo_tp::LOW_THRESHOLD;
+    constexpr double calo_tp::HIGH_THRESHOLD;
     calo_tp::calo_tp()
     {
       _locked_ = false;
@@ -86,7 +86,8 @@ namespace snemo {
 	{
 	  set_lto_bit(1);
 	}
-
+      set_xt_bit(xt_bit_);
+      set_spare_bit(spare_bit_);
       return;
     }
     
@@ -95,16 +96,16 @@ namespace snemo {
       return _clocktick_25ns_;
     }
 
-    void calo_tp::set_clocktick_25ns(const int32_t value_)
+    void calo_tp::set_clocktick_25ns(const int32_t clocktick_25_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Clocktick can't be set, calorimeter TP is locked !) ");
-      if(value_ <= clock_utils::INVALID_CLOCKTICK)
+      if(clocktick_25_ <= clock_utils::INVALID_CLOCKTICK)
 	{
 	  reset_clocktick_25ns();
 	}
       else
 	{
-	  _clocktick_25ns_ = value_;
+	  _clocktick_25ns_ = clocktick_25_;
 	  _store |= STORE_CLOCKTICK_25NS;
 	}
       return;

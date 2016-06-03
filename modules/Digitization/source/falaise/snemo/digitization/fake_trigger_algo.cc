@@ -63,8 +63,6 @@ namespace snemo {
 	  for (size_t ihit = 0; ihit < number_of_main_calo_hits; ihit++)
 	    {
 	      const mctools::base_step_hit & main_calo_hit = SD_.get_step_hit("calo", ihit);	
-	      const double signal_time    = main_calo_hit.get_time_stop();
-	      const double energy_deposit = main_calo_hit.get_energy_deposit();
 	      const geomtools::geom_id & calo_gid = main_calo_hit.get_geom_id();
 	      
 	      if (!set_of_gid.count(calo_gid))
@@ -90,8 +88,6 @@ namespace snemo {
 	  for (size_t ihit = 0; ihit < number_of_xwall_calo_hits; ihit++)
 	    {
 	      const mctools::base_step_hit & xcalo_hit = SD_.get_step_hit("xcalo", ihit);	
-	      const double signal_time    = xcalo_hit.get_time_stop();
-	      const double energy_deposit = xcalo_hit.get_energy_deposit();
 	      const geomtools::geom_id & xcalo_gid = xcalo_hit.get_geom_id();
 	      
 	      if (!set_of_gid.count(xcalo_gid))
@@ -117,8 +113,6 @@ namespace snemo {
 	  for (size_t ihit = 0; ihit < number_of_gveto_calo_hits; ihit++)
 	    {
 	      const mctools::base_step_hit & gveto_hit = SD_.get_step_hit("gveto", ihit);	
-	      const double signal_time    = gveto_hit.get_time_stop();
-	      const double energy_deposit = gveto_hit.get_energy_deposit();
 	      const geomtools::geom_id & gveto_gid = gveto_hit.get_geom_id();
 	      
 	      if (!set_of_gid.count(gveto_gid))

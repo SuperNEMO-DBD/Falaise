@@ -47,7 +47,7 @@ namespace snemo {
 			{
 				L1_calo_decision();
 				void reset();
-				const void display() const;
+				void display() const;
 				bool L1_calo_decision_bool;
 				uint32_t L1_calo_ct_decision; // CT @ 25 ns
 			};
@@ -56,7 +56,7 @@ namespace snemo {
 			{
 				L1_tracker_decision();
 				void reset();
-				const void display() const;
+				void display() const;
 				bool L1_tracker_decision_bool;
 				uint32_t L1_tracker_ct_decision; // CT @ 1600 ns
 			};
@@ -65,7 +65,7 @@ namespace snemo {
 			{
 				L2_decision();
 				void reset();
-				const void display() const;
+				void display() const;
 				bool L2_decision_bool;
 				uint32_t L2_ct_decision; // CT @ 1600 ns
 				trigger_algorithm_test_time::L2_trigger_mode L2_trigger_mode;				
@@ -76,9 +76,9 @@ namespace snemo {
 			{
 				previous_event_record();
 				void reset();
-				const void display() const;
+				void display() const;
 				// PER information :
-				uint32_t previous_clocktick_1600ns;
+				int32_t previous_clocktick_1600ns;
 				uint32_t counter_1600ns;
 				// Calorimeter information :
 				std::bitset<trigger_info::NZONES> calo_zoning_word[mapping::NUMBER_OF_SIDES];
@@ -156,10 +156,10 @@ namespace snemo {
 			const std::vector<coincidence_trigger_algorithm_test_time::coincidence_event_record> get_coincidence_records_vector() const;
  			
 			/// Get the finale trigger decision
-			const bool get_finale_decision() const;	
+			bool get_finale_decision() const;	
 
 			/// Get the finale trigger decision
-			const bool get_delayed_finale_decision() const;
+			bool get_delayed_finale_decision() const;
 					
       /// General process
       void process(const calo_ctw_data & calo_ctw_data_,

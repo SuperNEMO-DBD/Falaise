@@ -53,8 +53,8 @@ namespace snemo {
 			{
 				calo_record();
 				void reset();
-			  const void display() const;
-				uint32_t clocktick_25ns;
+				void display() const;
+				int32_t clocktick_25ns;
 				std::bitset<trigger_info::NZONES> zoning_word[trigger_info::NSIDES];
 				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_0;
 				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_1;
@@ -70,8 +70,8 @@ namespace snemo {
 				calo_summary_record();
 				void reset();
 				void reset_summary_boolean_only();
-				const void display() const;
-				const bool is_empty() const;
+				void display() const;
+				bool is_empty() const;
 				bool single_side_coinc;
 				bool total_multiplicity_threshold;
 				bool calo_finale_decision;
@@ -142,7 +142,7 @@ namespace snemo {
 			void set_circular_buffer_depth(unsigned int circular_buffer_depth_);
 
 			/// Return calo circular buffer depth value
-			const	unsigned int get_circular_buffer_depth() const;
+			unsigned int get_circular_buffer_depth() const;
 
 			/// Set the boolean for inhibited back to back coincidence
 			void inhibit_both_side_coinc();
@@ -184,10 +184,10 @@ namespace snemo {
 			void reset_calo_record_per_clocktick();
 
 			/// Get the level 1 finale decision bool
-			const bool get_calo_decision() const; 
+			bool get_calo_decision() const; 
 
 			/// Get the level 1 finale decision structure
-			const calo_trigger_algorithm::calo_summary_record get_calo_level_1_finale_decision_structure() const;  
+			const calo_trigger_algorithm::calo_summary_record get_calo_level_1_finale_decision_structure();  
 			
 			/// General process
       void process(const calo_ctw_data & calo_ctw_data_,

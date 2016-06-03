@@ -10,8 +10,8 @@ namespace snemo {
   
   namespace digitization {
 
-    const uint8_t trigger_display_manager::NUMBER_OF_HORIZONTAL_CHAR;
-    const uint8_t trigger_display_manager::NUMBER_OF_VERTICAL_CHAR;
+    const uint32_t trigger_display_manager::NUMBER_OF_HORIZONTAL_CHAR;
+    const uint32_t trigger_display_manager::NUMBER_OF_VERTICAL_CHAR;
     
     trigger_display_manager::trigger_display_manager()
     {
@@ -22,9 +22,9 @@ namespace snemo {
       _coinc_1600ns_     = false;
       _decision_trigger_ = false;
       
-      for (int i = 0; i < NUMBER_OF_HORIZONTAL_CHAR; i++)
+      for (unsigned int i = 0; i < NUMBER_OF_HORIZONTAL_CHAR; i++)
     	{
-    	  for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+    	  for (unsigned int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
     	    {
     	      _char_matrix_[i][j] = '.';
     	    }
@@ -107,42 +107,42 @@ namespace snemo {
       return;
     }
 
-    const bool trigger_display_manager::is_calo_25ns() const
+    bool trigger_display_manager::is_calo_25ns() const
     {
       return _calo_25ns_;
     }
 
-    const bool trigger_display_manager::is_calo_1600ns() const
+    bool trigger_display_manager::is_calo_1600ns() const
     {
       return _calo_1600ns_; 
     }
-
-    const bool trigger_display_manager::is_tracker_1600ns() const
+    
+    bool trigger_display_manager::is_tracker_1600ns() const
     {
       return _tracker_1600ns_;
     }
 
-    const bool trigger_display_manager::is_coinc_1600ns() const
+    bool trigger_display_manager::is_coinc_1600ns() const
     {
       return _coinc_1600ns_;
     }
 
-    const bool trigger_display_manager::is_decision_trigger() const
+    bool trigger_display_manager::is_decision_trigger() const
     {
       return _decision_trigger_;
     }
 
     void trigger_display_manager::fill_calo_trigger_matrix_25ns(std::bitset<10> zoning_word_[trigger_info::NSIDES])
     {      
-      for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+      for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
        	{  
-      	  for (int izone = 0; izone < trigger_info::NZONES; izone++)
+      	  for (unsigned int izone = 0; izone < trigger_info::NZONES; izone++)
       	    {
       	      if (izone == 0 || izone == 9) 
       		{
       		  if (zoning_word_[iside][izone] == true)
       		    {
-      		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+      		      for (uint32_t j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
       			{ 
       			  if      (iside == 0 && izone == 0 && j > 3 && j < 11) _char_matrix_[0][j] = '*';
       			  else if (iside == 1 && izone == 0 && j > 3 && j < 11) _char_matrix_[20][j] = '*';
@@ -152,7 +152,7 @@ namespace snemo {
       		    }
       		  else 
       		    {
-      		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+      		      for (uint32_t j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
       			{ 
       			  if      (iside == 0 && izone == 0 && j > 3 && j < 11) _char_matrix_[0][j] = ' ';
       			  else if (iside == 1 && izone == 0 && j > 3 && j < 11) _char_matrix_[20][j] = ' ';
@@ -166,7 +166,7 @@ namespace snemo {
       		{
       		  if (zoning_word_[iside][izone] == true)
       		    {
-      		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+      		      for (uint32_t j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
       			{ 
       			  if      (iside == 0 && j > 60 && j < 70) _char_matrix_[0][j] = '*';
       			  else if (iside == 1 && j > 60 && j < 70) _char_matrix_[20][j] = '*';
@@ -174,7 +174,7 @@ namespace snemo {
       		    }
       		  else
       		    {
-      		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+      		      for (uint32_t j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
       			{ 
       			  if      (iside == 0 && j > 60 && j < 70) _char_matrix_[0][j] = ' ';
       			  else if (iside == 1 && j > 60 && j < 70) _char_matrix_[20][j] = ' ';
@@ -186,7 +186,7 @@ namespace snemo {
       		{
       		  if (zoning_word_[iside][izone] == true) 
       		    {
-      		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+      		      for (uint32_t j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
       			{ 
       			  if      (iside == 0 && izone == 1 && j > 12 && j < 23) _char_matrix_[0][j]   = '*';
       			  else if (iside == 1 && izone == 1 && j > 12 && j < 23) _char_matrix_[20][j]  = '*';
@@ -206,7 +206,7 @@ namespace snemo {
       		    }
       		  else 
       		    {
-      		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+      		      for (uint32_t j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
       			{ 
       			  if      (iside == 0 && izone == 1 && j > 12 && j < 23) _char_matrix_[0][j]   = ' ';
       			  else if (iside == 1 && izone == 1 && j > 12 && j < 23) _char_matrix_[20][j]  = ' ';
@@ -232,15 +232,15 @@ namespace snemo {
     
     void trigger_display_manager::fill_calo_trigger_matrix_1600ns(std::bitset<10> zoning_word_[trigger_info::NSIDES])
     {
-      for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+      for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
        	{  
-     	  for (int izone = 0; izone < trigger_info::NZONES; izone++)
+     	  for (unsigned int izone = 0; izone < trigger_info::NZONES; izone++)
       	    {
       	      if (izone == 0 || izone == 9) 
       		{
       		  if (zoning_word_[iside][izone] == true)
     		    {
-    		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+    		      for (unsigned int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
     			{ 
     			  if      (iside == 0 && izone == 0 && j > 3 && j < 11) _char_matrix_[0][j] = '*';
     			  else if (iside == 1 && izone == 0 && j > 3 && j < 11) _char_matrix_[20][j] = '*';
@@ -250,7 +250,7 @@ namespace snemo {
     		    }
     		  else 
     		    {
-    		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+    		      for (unsigned int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
     			{ 
     			  if      (iside == 0 && izone == 0 && j > 3 && j < 11) _char_matrix_[0][j] = ' ';
     			  else if (iside == 1 && izone == 0 && j > 3 && j < 11) _char_matrix_[20][j] = ' ';
@@ -264,7 +264,7 @@ namespace snemo {
       		{
       		  if (zoning_word_[iside][izone] == true)
     		    {
-    		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+    		      for (unsigned int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
     			{ 
     			  if      (iside == 0 && j > 60 && j < 70) _char_matrix_[0][j] = '*';
     			  else if (iside == 1 && j > 60 && j < 70) _char_matrix_[20][j] = '*';
@@ -272,7 +272,7 @@ namespace snemo {
     		    }
     		  else
     		    {
-    		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+    		      for (unsigned int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
     			{ 
     			  if      (iside == 0 && j > 60 && j < 70) _char_matrix_[0][j] = ' ';
     			  else if (iside == 1 && j > 60 && j < 70) _char_matrix_[20][j] = ' ';
@@ -284,7 +284,7 @@ namespace snemo {
     		{
     		  if (zoning_word_[iside][izone] == true) 
     		    {
-    		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+    		      for (unsigned int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
     			{ 
     			  if      (iside == 0 && izone == 1 && j > 12 && j < 23) _char_matrix_[0][j]   = '*';
     			  else if (iside == 1 && izone == 1 && j > 12 && j < 23) _char_matrix_[20][j]  = '*';
@@ -305,7 +305,7 @@ namespace snemo {
     		    }
     		  else 
     		    {
-    		      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+    		      for (unsigned int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
     			{ 
     			  if      (iside == 0 && izone == 1 && j > 12 && j < 23) _char_matrix_[0][j]   = ' ';
     			  else if (iside == 1 && izone == 1 && j > 12 && j < 23) _char_matrix_[20][j]  = ' ';
@@ -334,12 +334,12 @@ namespace snemo {
     void trigger_display_manager::fill_tracker_trigger_matrix_1600ns(bool geiger_matrix_[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS])
     {
    
-      for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+      for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
       	{
-      	  int layer = 0;
-      	  for (int jlayer = trigger_info::NLAYERS - 1; jlayer >= 0; jlayer--) // Value GEIGER_LAYER_SIZE = 9
+      	  unsigned int layer = 0;
+      	  for (unsigned int jlayer = trigger_info::NLAYERS - 1; jlayer > 0; jlayer--) // Value GEIGER_LAYER_SIZE = 9
       	    {
-      	      for (int krow = 0; krow < trigger_info::NROWS; krow++)
+      	      for (unsigned int krow = 0; krow < trigger_info::NROWS; krow++)
       		{
       		  if (geiger_matrix_[iside][jlayer][krow] 
       		      && iside == 0)
@@ -366,12 +366,12 @@ namespace snemo {
       return;
     }
     
-    void trigger_display_manager::display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_25ns_)
+    void trigger_display_manager::display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_, int32_t clocktick_25ns_)
     {
       DT_THROW_IF(!is_calo_25ns(), std::logic_error, "Boolean calo 25ns is not activated, it can't display ! ");
       
       calo_trigger_algorithm::calo_summary_record a_calo_summary_record;
-      for (int i = 0; i < a_trigger_algo_._calo_records_.size(); i++)
+      for (unsigned int i = 0; i < a_trigger_algo_._calo_records_.size(); i++)
     	{
     	  if (clocktick_25ns_ == a_trigger_algo_._calo_records_[i].clocktick_25ns) a_calo_summary_record = a_trigger_algo_._calo_records_[i];
     	}
@@ -388,9 +388,9 @@ namespace snemo {
       std::clog << a_calo_summary_record.LTO_side_0 << ' ';
       std::clog << a_calo_summary_record.total_multiplicity_side_1 << ' ';
       std::clog << a_calo_summary_record.total_multiplicity_side_0 << ' ';
-      for (int iside = trigger_info::NSIDES-1; iside >= 0; iside--)
+      for (unsigned int iside = trigger_info::NSIDES-1; iside > 0; iside--)
       	{
-      	  for (int izone = trigger_info::NZONES-1; izone >= 0 ; izone--)
+      	  for (unsigned int izone = trigger_info::NZONES-1; izone > 0; izone--)
       	    {
       	      std::clog << a_calo_summary_record.zoning_word[iside][izone];
       	    }
@@ -404,7 +404,7 @@ namespace snemo {
       std::clog << std::endl;
       
       std::bitset<10> zoning_word[trigger_info::NSIDES] = 0x0;
-      for (int i = 0; i < trigger_info::NSIDES; i++)
+      for (unsigned int i = 0; i < trigger_info::NSIDES; i++)
     	{
     	  zoning_word[i] = a_calo_summary_record.zoning_word[i];
     	}
@@ -417,13 +417,13 @@ namespace snemo {
 
     void trigger_display_manager::display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_)
     {
-      int vector_size = a_trigger_algo_._calo_records_.size();
+      unsigned int vector_size = a_trigger_algo_._calo_records_.size();
       if (vector_size == 0) {}
       else{
-    	uint32_t clocktick_25ns_begin = a_trigger_algo_._calo_records_[0].clocktick_25ns;
-    	uint32_t clocktick_25ns_end = a_trigger_algo_._calo_records_[vector_size - 1].clocktick_25ns;
+    	int32_t clocktick_25ns_begin = a_trigger_algo_._calo_records_[0].clocktick_25ns;
+    	int32_t clocktick_25ns_end = a_trigger_algo_._calo_records_[vector_size - 1].clocktick_25ns;
       
-    	for (uint32_t iclocktick = clocktick_25ns_begin; iclocktick <= clocktick_25ns_end; iclocktick++)
+    	for (int32_t iclocktick = clocktick_25ns_begin; iclocktick <= clocktick_25ns_end; iclocktick++)
     	  {
     	    reset_calo_display();	  
     	    display_calo_trigger_25ns(a_trigger_algo_, iclocktick);
@@ -432,12 +432,12 @@ namespace snemo {
       return;	  
     }
 
-    void trigger_display_manager::display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_1600ns_)
+    void trigger_display_manager::display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int32_t clocktick_1600ns_)
     {
       DT_THROW_IF(!is_calo_1600ns(), std::logic_error, "Boolean calo 1600ns is not activated, it can't display ! ");
 
       coincidence_trigger_algorithm::coincidence_calo_record a_coinc_calo_record;
-      for (int i = 0; i < a_trigger_algo_._coinc_algo_._coincidence_calo_records_.size(); i++)
+      for (unsigned int i = 0; i < a_trigger_algo_._coinc_algo_._coincidence_calo_records_.size(); i++)
     	{
     	  if (clocktick_1600ns_ == a_trigger_algo_._coinc_algo_._coincidence_calo_records_[i].clocktick_1600ns) a_coinc_calo_record = a_trigger_algo_._coinc_algo_._coincidence_calo_records_[i];
     	}
@@ -454,9 +454,9 @@ namespace snemo {
       std::clog << a_coinc_calo_record.LTO_side_0 << ' ';
       std::clog << a_coinc_calo_record.total_multiplicity_side_1 << ' ';
       std::clog << a_coinc_calo_record.total_multiplicity_side_0 << ' ';
-      for (int iside = trigger_info::NSIDES-1; iside >= 0; iside--)
+      for (unsigned int iside = trigger_info::NSIDES-1; iside > 0; iside--)
       	{
-      	  for (int izone = trigger_info::NZONES-1; izone >= 0 ; izone--)
+      	  for (unsigned int izone = trigger_info::NZONES-1; izone > 0 ; izone--)
       	    {
       	      std::clog << a_coinc_calo_record.calo_zoning_word[iside][izone];
       	    }
@@ -470,7 +470,7 @@ namespace snemo {
       std::clog << std::endl;
 
       std::bitset<10> zoning_word[trigger_info::NSIDES];
-      for (int i = 0; i < trigger_info::NSIDES; i++)
+      for (unsigned int i = 0; i < trigger_info::NSIDES; i++)
     	{
     	  zoning_word[i] = a_coinc_calo_record.calo_zoning_word[i];
     	}
@@ -482,14 +482,14 @@ namespace snemo {
 
     void trigger_display_manager::display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_)
     {
-      int vector_size = a_trigger_algo_._coinc_algo_._coincidence_calo_records_.size();
+      unsigned int vector_size = a_trigger_algo_._coinc_algo_._coincidence_calo_records_.size();
       if (vector_size == 0) {}
       else{
 
-    	uint32_t clocktick_1600ns_begin = a_trigger_algo_._coinc_algo_._coincidence_calo_records_[0].clocktick_1600ns;
-    	uint32_t clocktick_1600ns_end = a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_size - 1].clocktick_1600ns;
+    	int32_t clocktick_1600ns_begin = a_trigger_algo_._coinc_algo_._coincidence_calo_records_[0].clocktick_1600ns;
+    	int32_t clocktick_1600ns_end = a_trigger_algo_._coinc_algo_._coincidence_calo_records_[vector_size - 1].clocktick_1600ns;
 
-    	for (uint32_t iclocktick = clocktick_1600ns_begin; iclocktick <= clocktick_1600ns_end; iclocktick++)
+    	for (int32_t iclocktick = clocktick_1600ns_begin; iclocktick <= clocktick_1600ns_end; iclocktick++)
     	  {	 
     	    display_calo_trigger_1600ns(a_trigger_algo_, iclocktick); 
     	    reset_calo_display();
@@ -498,13 +498,13 @@ namespace snemo {
       return;
     }
 			
-    void trigger_display_manager::display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_1600ns_)
+    void trigger_display_manager::display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int32_t clocktick_1600ns_)
     {
       DT_THROW_IF(!is_tracker_1600ns(), std::logic_error, "Boolean tracker 1600ns is not activated, it can't display ! ");
 
       tracker_trigger_algorithm::tracker_record a_tracker_record;
       tracker_trigger_algorithm::geiger_matrix  a_geiger_matrix;
-      for (int i = 0; i < a_trigger_algo_._tracker_records_.size(); i++)
+      for (unsigned int i = 0; i < a_trigger_algo_._tracker_records_.size(); i++)
     	{
     	  if (clocktick_1600ns_ == a_trigger_algo_._tracker_records_[i].clocktick_1600ns
     	      && clocktick_1600ns_ == a_trigger_algo_._tracker_algo_._geiger_matrix_records_[i].clocktick_1600ns)
@@ -521,30 +521,30 @@ namespace snemo {
     	//   std::clog << "******************** Display Tracker trigger info @ 1600 ns ********************" << std::endl;
     	//   std::clog << "******************** Clocktick 1600 ns = " << clocktick_1600ns_ << " ******************** " << std::endl << std::endl; 
 	//   std::clog << "Bitset : [NSZL NSZR L M R O I] " << std::endl;
-	//   for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+	//   for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
 	//     {
 	//       std::clog << "Side = " << iside << " | ";
-	//       for (int izone = 0; izone < trigger_info::NZONES; izone++)
+	//       for (unsigned int izone = 0; izone < trigger_info::NZONES; izone++)
 	// 	{
 	// 	  std::clog << "[" << a_tracker_record.finale_data_per_zone[iside][izone] << "] ";
 	// 	} // end of izone
 	//       std::clog << std::endl;
 	//     }
     
-	//   for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+	//   for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
 	//     {
 	//       std::clog << "ZW pattern     : S" << iside << " : [";
-	//       for (int ibit = 0; ibit < a_tracker_record.zoning_word_pattern[0].size(); ibit++)
+	//       for (unsigned int ibit = 0; ibit < a_tracker_record.zoning_word_pattern[0].size(); ibit++)
 	// 	{
 	// 	  std::clog << a_tracker_record.zoning_word_pattern[iside][ibit];
 	// 	}
 	//       std::clog << "] ";
 	//     }     
 	//   std::clog << std::endl;
-	//   for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+	//   for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
 	//     {
 	//       std::clog << "ZW near source : S" << iside << " : [";
-	//       for (int ibit = 0; ibit < a_tracker_record.zoning_word_near_source[0].size(); ibit++)
+	//       for (unsigned int ibit = 0; ibit < a_tracker_record.zoning_word_near_source[0].size(); ibit++)
 	// 	{
 	// 	  std::clog << a_tracker_record.zoning_word_near_source[iside][ibit];
 	// 	}
@@ -562,30 +562,30 @@ namespace snemo {
     	  std::clog << "******************** Display Tracker trigger info @ 1600 ns ********************" << std::endl;
     	  std::clog << "******************** Clocktick 1600 ns = " << clocktick_1600ns_ << " ******************** " << std::endl << std::endl; 
 	  std::clog << "Bitset : [NSZL NSZR L M R O I] " << std::endl;
-	  for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+	  for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
 	    {
 	      std::clog << "Side = " << iside << " | ";
-	      for (int izone = 0; izone < trigger_info::NZONES; izone++)
+	      for (unsigned int izone = 0; izone < trigger_info::NZONES; izone++)
 		{
 		  std::clog << "[" << a_tracker_record.finale_data_per_zone[iside][izone] << "] ";
 		} // end of izone
 	      std::clog << std::endl;
 	    }
     
-	  for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+	  for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
 	    {
 	      std::clog << "ZW pattern     : S" << iside << " : [";
-	      for (int ibit = 0; ibit < a_tracker_record.zoning_word_pattern[0].size(); ibit++)
+	      for (unsigned int ibit = 0; ibit < a_tracker_record.zoning_word_pattern[0].size(); ibit++)
 		{
 		  std::clog << a_tracker_record.zoning_word_pattern[iside][ibit];
 		}
 	      std::clog << "] ";
 	    }     
 	  std::clog << std::endl;
-	  for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+	  for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
 	    {
 	      std::clog << "ZW near source : S" << iside << " : [";
-	      for (int ibit = 0; ibit < a_tracker_record.zoning_word_near_source[0].size(); ibit++)
+	      for (unsigned int ibit = 0; ibit < a_tracker_record.zoning_word_near_source[0].size(); ibit++)
 		{
 		  std::clog << a_tracker_record.zoning_word_near_source[iside][ibit];
 		}
@@ -596,11 +596,11 @@ namespace snemo {
 	  std::clog << "Tracker level one decision : [" << a_tracker_record.finale_decision << "]" <<  std::endl << std::endl;
 
     	  bool geiger_matrix[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS];
-    	  for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+    	  for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
     	    {
-    	      for (int jlayer = trigger_info::NLAYERS - 1; jlayer >= 0; jlayer--)
+    	      for (unsigned int jlayer = trigger_info::NLAYERS - 1; jlayer > 0; jlayer--)
     		{
-    		  for (int krow = 0; krow < trigger_info::NROWS; krow++)
+    		  for (unsigned int krow = 0; krow < trigger_info::NROWS; krow++)
     		    {
     		      geiger_matrix[iside][jlayer][krow] = a_geiger_matrix.matrix[iside][jlayer][krow];
     		    } // end of krow
@@ -614,13 +614,13 @@ namespace snemo {
     
     void trigger_display_manager::display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_)
     {
-      int vector_size = a_trigger_algo_._tracker_records_.size();
+      unsigned int vector_size = a_trigger_algo_._tracker_records_.size();
       if (vector_size == 0) {}
       else{
-    	uint32_t clocktick_1600ns_begin = a_trigger_algo_._tracker_records_[0].clocktick_1600ns;
-    	uint32_t clocktick_1600ns_end = a_trigger_algo_._tracker_records_[vector_size - 1].clocktick_1600ns;
+    	int32_t clocktick_1600ns_begin = a_trigger_algo_._tracker_records_[0].clocktick_1600ns;
+    	int32_t clocktick_1600ns_end = a_trigger_algo_._tracker_records_[vector_size - 1].clocktick_1600ns;
 
-    	for (uint32_t iclocktick = clocktick_1600ns_begin; iclocktick <= clocktick_1600ns_end; iclocktick++)
+    	for (int32_t iclocktick = clocktick_1600ns_begin; iclocktick <= clocktick_1600ns_end; iclocktick++)
     	  {
     	    display_tracker_trigger_1600ns(a_trigger_algo_, iclocktick);
     	    reset_tracker_display();
@@ -631,18 +631,18 @@ namespace snemo {
     }
 
   			
-    void trigger_display_manager::display_coincidence_trigger_1600ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_1600ns_)
+    void trigger_display_manager::display_coincidence_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int32_t clocktick_1600ns_)
     {
       DT_THROW_IF(!is_coinc_1600ns(), std::logic_error, "Boolean coinc 1600ns is not activated, it can't display ! ");
 
       coincidence_trigger_algorithm::coincidence_event_record a_coincidence_record;
-      for (int i = 0; i < a_trigger_algo_._coincidence_records_.size(); i++)
+      for (unsigned int i = 0; i < a_trigger_algo_._coincidence_records_.size(); i++)
     	{
 	  if (clocktick_1600ns_ == a_trigger_algo_._coincidence_records_[i].clocktick_1600ns) a_coincidence_record = a_trigger_algo_._coincidence_records_[i];
 	}      
 
       tracker_trigger_algorithm::geiger_matrix  a_geiger_matrix;
-      for (int i = 0; i < a_trigger_algo_._tracker_records_.size(); i++)
+      for (unsigned int i = 0; i < a_trigger_algo_._tracker_records_.size(); i++)
     	{
     	  if (clocktick_1600ns_ == a_coincidence_record.clocktick_1600ns
     	      && clocktick_1600ns_ == a_trigger_algo_._tracker_algo_._geiger_matrix_records_[i].clocktick_1600ns)
@@ -663,9 +663,9 @@ namespace snemo {
       std::clog << a_coincidence_record.LTO_side_0 << ' ';
       std::clog << a_coincidence_record.total_multiplicity_side_1 << ' ';
       std::clog << a_coincidence_record.total_multiplicity_side_0 << ' ';
-      for (int iside = trigger_info::NSIDES-1; iside >= 0; iside--)
+      for (unsigned int iside = trigger_info::NSIDES-1; iside > 0; iside--)
       	{
-      	  for (int izone = trigger_info::NZONES-1; izone >= 0 ; izone--)
+      	  for (unsigned int izone = trigger_info::NZONES-1; izone > 0 ; izone--)
       	    {
       	      std::clog << a_coincidence_record.calo_zoning_word[iside][izone];
       	    }
@@ -678,10 +678,10 @@ namespace snemo {
       
       std::clog << std::endl;
       std::clog << "Bitset : [NSZL NSZR L M R O I] " << std::endl;
-      for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+      for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
       	{
       	  std::clog << "Side = " << iside << " | ";
-      	  for (int izone = 0; izone < trigger_info::NZONES; izone++)
+      	  for (unsigned int izone = 0; izone < trigger_info::NZONES; izone++)
       	    {
       	      std::clog << "[" << a_coincidence_record.tracker_finale_data_per_zone[iside][izone] << "] ";
       	    } // end of izone
@@ -718,17 +718,17 @@ namespace snemo {
       std::clog << "Coincidence event record decision  : [" << a_coincidence_record.decision << "]" <<  std::endl << std::endl;
       
       std::bitset<10> zoning_word[trigger_info::NSIDES];
-      for (int i = 0; i < trigger_info::NSIDES; i++)
+      for (unsigned int i = 0; i < trigger_info::NSIDES; i++)
     	{
     	  zoning_word[i] = a_coincidence_record.calo_zoning_word[i];
     	}
       
       bool geiger_matrix[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS];
-      for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+      for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
       	{
-      	  for (int jlayer = trigger_info::NLAYERS - 1; jlayer >= 0; jlayer--)
+      	  for (unsigned int jlayer = trigger_info::NLAYERS - 1; jlayer > 0; jlayer--)
       	    {
-      	      for (int krow = 0; krow < trigger_info::NROWS; krow++)
+      	      for (unsigned int krow = 0; krow < trigger_info::NROWS; krow++)
       		{
     		  geiger_matrix[iside][jlayer][krow] = a_geiger_matrix.matrix[iside][jlayer][krow];
     		} // end of krow
@@ -744,7 +744,7 @@ namespace snemo {
     
     void trigger_display_manager::display_coincidence_trigger_1600ns(trigger_algorithm & a_trigger_algo_)
     {
-      int vector_size = a_trigger_algo_._coincidence_records_.size();
+      unsigned int vector_size = a_trigger_algo_._coincidence_records_.size();
       if (vector_size == 0) {}
       else{
 
@@ -752,14 +752,14 @@ namespace snemo {
 	for (it_coinc; it_coinc != a_trigger_algo_._coincidence_records_.end(); it_coinc++)
 	  {
 	    coincidence_trigger_algorithm::coincidence_event_record a_coinc_record = *it_coinc;
-	    uint32_t coinc_clocktick = a_coinc_record.clocktick_1600ns;
+	    int32_t coinc_clocktick = a_coinc_record.clocktick_1600ns;
 	    display_coincidence_trigger_1600ns(a_trigger_algo_, coinc_clocktick);
 	  }
 	
-    	// uint32_t clocktick_1600ns_begin = a_trigger_algo_._coincidence_records_[0].clocktick_1600ns;
-    	// uint32_t clocktick_1600ns_end   = a_trigger_algo_._coincidence_records_[vector_size - 1].clocktick_1600ns;
+    	// int32_t clocktick_1600ns_begin = a_trigger_algo_._coincidence_records_[0].clocktick_1600ns;
+    	// int32_t clocktick_1600ns_end   = a_trigger_algo_._coincidence_records_[vector_size - 1].clocktick_1600ns;
 	
-    	// for (uint32_t iclocktick = clocktick_1600ns_begin; iclocktick <= clocktick_1600ns_end; iclocktick++)
+    	// for (int32_t iclocktick = clocktick_1600ns_begin; iclocktick <= clocktick_1600ns_end; iclocktick++)
     	//   {
     	//     display_coincidence_trigger_1600ns(a_trigger_algo_, iclocktick);
     	//   }
@@ -776,15 +776,15 @@ namespace snemo {
     
     void trigger_display_manager::fill_matrix_pattern()
     {
-      for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+      for (unsigned int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
     	{
     	  if (j == 0) _char_matrix_[10][j] = ' ';
     	  else _char_matrix_[10][j] = '_';
     	}
       
-      for (int i = 0; i < NUMBER_OF_VERTICAL_CHAR; i++)
+      for (unsigned int i = 0; i < NUMBER_OF_VERTICAL_CHAR; i++)
     	{
-    	  for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+    	  for (unsigned int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
     	    { 
     	      if (i == 0 || i == 20) 
     		{
@@ -802,9 +802,9 @@ namespace snemo {
     		}
     	    }
     	}
-      for (int i = 1; i < NUMBER_OF_VERTICAL_CHAR - 1; i++)
+      for (unsigned int i = 1; i < NUMBER_OF_VERTICAL_CHAR - 1; i++)
     	{
-    	  for (int j = 3; j < NUMBER_OF_HORIZONTAL_CHAR - 1; j++)
+    	  for (unsigned int j = 3; j < NUMBER_OF_HORIZONTAL_CHAR - 1; j++)
     	    {
     	      if (i == 10) {}
     	      else _char_matrix_[i][j] = '.';
@@ -821,9 +821,9 @@ namespace snemo {
     
     void trigger_display_manager::reset_calo_display()
     {
-      for (int i = 0; i < NUMBER_OF_VERTICAL_CHAR; i++)
+      for (unsigned int i = 0; i < NUMBER_OF_VERTICAL_CHAR; i++)
     	{
-    	  for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+    	  for (unsigned int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
     	    { 
     	      if (i == 0 || i == 20) 
     		{
@@ -846,9 +846,9 @@ namespace snemo {
     
     void trigger_display_manager::reset_tracker_display()
     {
-      for (int i = 1; i < NUMBER_OF_VERTICAL_CHAR - 1; i++)
+      for (unsigned int i = 1; i < NUMBER_OF_VERTICAL_CHAR - 1; i++)
     	{
-    	  for (int j = 3; j < NUMBER_OF_HORIZONTAL_CHAR - 1; j++)
+    	  for (unsigned int j = 3; j < NUMBER_OF_HORIZONTAL_CHAR - 1; j++)
     	    {
     	      if (i == 10) {}
     	      else _char_matrix_[i][j] = '.';
@@ -860,9 +860,9 @@ namespace snemo {
     void trigger_display_manager::display_matrix()
     {
       std::clog << "     Zone0      Zone1       Zone2       Zone3       Zone4      Zone5       Zone6       Zone7      Zone 8     Zone9 " << std::endl;
-      for (int i = 0; i < NUMBER_OF_VERTICAL_CHAR; i++)
+      for (unsigned int i = 0; i < NUMBER_OF_VERTICAL_CHAR; i++)
     	{
-    	  for (int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
+    	  for (unsigned int j = 0; j < NUMBER_OF_HORIZONTAL_CHAR; j++)
     	    {
     	      std::clog << _char_matrix_[i][j];
     	    }

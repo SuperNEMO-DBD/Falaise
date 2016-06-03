@@ -85,7 +85,7 @@ namespace snemo {
       boost::scoped_ptr<snemo::digitization::fake_trigger_algo> _algo_;
 
       // Macro to automate the registration of the module :
-      DPP_MODULE_REGISTRATION_INTERFACE(fake_trigger_module);
+      DPP_MODULE_REGISTRATION_INTERFACE(fake_trigger_module)
     };
   } // end of namespace digitization
 

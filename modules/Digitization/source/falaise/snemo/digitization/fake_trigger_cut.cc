@@ -22,7 +22,7 @@ namespace snemo {
   namespace digitization {
 
     // Registration instantiation macro :
-    CUT_REGISTRATION_IMPLEMENT(fake_trigger_cut, "snemo::digitization::fake_trigger_cut");
+    CUT_REGISTRATION_IMPLEMENT(fake_trigger_cut, "snemo::digitization::fake_trigger_cut")
 
     fake_trigger_cut::fake_trigger_cut(datatools::logger::priority logger_priority_)
       : cuts::i_cut(logger_priority_)

@@ -123,7 +123,7 @@ namespace snemo {
 				   const std::string & indent_,
 				   bool inherit_) const
     {
-      base_hit::tree_dump (out_, title_, indent_, true);
+      base_hit::tree_dump (out_, title_, indent_, inherit_ = true);
 
       out_ << indent_ << datatools::i_tree_dumpable::tag
            << "Avalanche anode time =  : " << _anode_avalanche_time_ / CLHEP::microsecond << " us " << std::endl;

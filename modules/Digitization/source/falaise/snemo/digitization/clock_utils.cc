@@ -16,20 +16,20 @@ namespace snemo {
   namespace digitization {
 
 
-    const int32_t clock_utils::NUMBER_OF_25_CLOCK_IN_800;
-    const int32_t clock_utils::MAIN_CLOCKTICK;
-    const int32_t clock_utils::TRACKER_CLOCKTICK;
-    const int32_t clock_utils::TRIGGER_CLOCKTICK;
+    const uint32_t clock_utils::NUMBER_OF_25_CLOCK_IN_800;
+    const uint32_t clock_utils::MAIN_CLOCKTICK;
+    const uint32_t clock_utils::TRACKER_CLOCKTICK;
+    const uint32_t clock_utils::TRIGGER_CLOCKTICK;
     const int32_t clock_utils::INVALID_CLOCKTICK;
-    const int32_t clock_utils::ACTIVATED_GEIGER_CELLS_NUMBER;
-    const int32_t clock_utils::CALO_FEB_SHIFT_CLOCKTICK_NUMBER;
-    const int32_t clock_utils::CALO_CB_SHIFT_CLOCKTICK_NUMBER;
+    const uint32_t clock_utils::ACTIVATED_GEIGER_CELLS_NUMBER;
+    const uint32_t clock_utils::CALO_FEB_SHIFT_CLOCKTICK_NUMBER;
+    const uint32_t clock_utils::CALO_CB_SHIFT_CLOCKTICK_NUMBER;
 
-    const int32_t clock_utils::TRACKER_FEB_SHIFT_CLOCKTICK_NUMBER;
-    const int32_t clock_utils::TRACKER_CB_SHIFT_CLOCKTICK_NUMBER;
+    const uint32_t clock_utils::TRACKER_FEB_SHIFT_CLOCKTICK_NUMBER;
+    const uint32_t clock_utils::TRACKER_CB_SHIFT_CLOCKTICK_NUMBER;
 
-    const int32_t clock_utils::TRACKER_FEB_TO_CB_SHIFT_CLOCKTICK_NUMBER;
-    const int32_t clock_utils::TRACKER_CB_TO_TB_SHIFT_CLOCKTICK_NUMBER;
+    const uint32_t clock_utils::TRACKER_FEB_TO_CB_SHIFT_CLOCKTICK_NUMBER;
+    const uint32_t clock_utils::TRACKER_CB_TO_TB_SHIFT_CLOCKTICK_NUMBER;
     const uint32_t clock_utils::TRIGGER_COMPUTING_SHIFT_CLOCKTICK_1600NS;
     const uint32_t clock_utils::PREVIOUS_EVENT_RECORD_LIVING_NUMBER_OF_CLOCKTICK;
 
@@ -55,7 +55,7 @@ namespace snemo {
       return;
     }
 
-    bool clock_utils::is_initialized()
+    bool clock_utils::is_initialized() const
     {
       return _initialized_;
     }
@@ -67,48 +67,50 @@ namespace snemo {
       return;
     }
     
-    const int32_t clock_utils::get_clocktick_ref()
+    int32_t clock_utils::get_clocktick_ref() const
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Clock utils is not initialized ! ");
       return _clocktick_ref_;
     }
-    const double clock_utils::get_shift_1600()
+    
+    double clock_utils::get_shift_1600() const
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Clock utils is not initialized ! ");
       return _shift_1600_;
     }
     
-    const int32_t clock_utils::get_clocktick_25_ref()
+    int32_t clock_utils::get_clocktick_25_ref() const
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Clock utils is not initialized ! ");
       return _clocktick_25_ref_;
     }
-    const int32_t clock_utils::get_clocktick_800_ref() 
+
+    int32_t clock_utils::get_clocktick_800_ref() const 
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Clock utils is not initialized ! ");
       return _clocktick_800_ref_;
     }
-    const double clock_utils::get_shift_25()
+    double clock_utils::get_shift_25() const
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Clock utils is not initialized ! ");
       return _shift_25_;
     }
-    const double clock_utils::get_shift_800()
+    double clock_utils::get_shift_800() const
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Clock utils is not initialized ! ");
       return _shift_800_;
-    }   
+    }
     
-    void clock_utils::compute_clocktick_25ns_to_1600ns(const uint32_t clocktick_25ns_,
-						       uint32_t & clocktick_1600ns_) const
+    void clock_utils::compute_clocktick_25ns_to_1600ns(const int32_t clocktick_25ns_,
+						       int32_t & clocktick_1600ns_) const
     {
       clocktick_1600ns_ = (clocktick_25ns_ * MAIN_CLOCKTICK) / TRIGGER_CLOCKTICK;
       clocktick_1600ns_ = clocktick_1600ns_ + TRIGGER_COMPUTING_SHIFT_CLOCKTICK_1600NS;
       return;
     }  
 
-    void clock_utils::compute_clocktick_800ns_to_1600ns(const uint32_t clocktick_800ns_,
-							uint32_t & clocktick_1600ns_) const
+    void clock_utils::compute_clocktick_800ns_to_1600ns(const int32_t clocktick_800ns_,
+							int32_t & clocktick_1600ns_) const
     {
       clocktick_1600ns_ = (clocktick_800ns_ * TRACKER_CLOCKTICK) / TRIGGER_CLOCKTICK;
       clocktick_1600ns_ = clocktick_1600ns_ + TRIGGER_COMPUTING_SHIFT_CLOCKTICK_1600NS;

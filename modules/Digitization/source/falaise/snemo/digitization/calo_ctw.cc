@@ -75,16 +75,16 @@ namespace snemo {
       return _clocktick_25ns_;
     }
 
-    void calo_ctw::set_clocktick_25ns(int32_t value_)
+    void calo_ctw::set_clocktick_25ns(int32_t clocktick_25ns_)
     {
       DT_THROW_IF(is_locked(), std::logic_error, "Clocktick can't be set, calorimeter crate TW is locked !) ");
-      if(value_ <= clock_utils::INVALID_CLOCKTICK)
+      if(clocktick_25ns_ <= clock_utils::INVALID_CLOCKTICK)
 	{
 	  reset_clocktick_25ns();
 	}
       else
 	{
-	  _clocktick_25ns_ = value_;
+	  _clocktick_25ns_ = clocktick_25ns_;
 	  _store |= STORE_CLOCKTICK_25NS;
 	}
       return;
@@ -318,7 +318,7 @@ namespace snemo {
     void calo_ctw::get_main_zoning_word(std::bitset<calo::ctw::MAIN_ZONING_BITSET_SIZE> & zoning_word_) const
     {
       zoning_word_ = 0x0;
-      for (int i = calo::ctw::W_ZW_BIT0; i <= calo::ctw::W_ZW_BIT9; i++)
+      for (unsigned int i = calo::ctw::W_ZW_BIT0; i <= calo::ctw::W_ZW_BIT9; i++)
 	{
 	  if(_ctw_.test(i) == true)
 	    {
@@ -333,7 +333,7 @@ namespace snemo {
       DT_THROW_IF(is_locked(), std::logic_error, "Zoning word can't be set, calorimeter crate TW is locked ! ");
       DT_THROW_IF(_layout_ == calo::ctw::LAYOUT_UNDEFINED || _layout_ == calo::ctw::LAYOUT_XWALL_GVETO, std::logic_error, "Layout value [" << _layout_ << "] is not valid ! ");
 
-      for (int i = 0; i < zoning_word_.size(); i++)
+      for (unsigned int i = 0; i < zoning_word_.size(); i++)
 	{
 	  if (zoning_word_.test(i) == true)
 	    {
@@ -351,7 +351,7 @@ namespace snemo {
     void calo_ctw::get_xwall_zoning_word(std::bitset<calo::ctw::XWALL_ZONING_BITSET_SIZE> & xwall_zoning_word_) const
     {
       xwall_zoning_word_ = 0x0;
-      for (int i = calo::ctw::X_ZW_BIT0; i <= calo::ctw::X_ZW_BIT3; i++)
+      for (unsigned int i = calo::ctw::X_ZW_BIT0; i <= calo::ctw::X_ZW_BIT3; i++)
 	{
 	  if(_ctw_.test(i) == true)
 	    {
@@ -366,7 +366,7 @@ namespace snemo {
       DT_THROW_IF(is_locked(), std::logic_error, "Zoning word can't be set, calorimeter crate TW is locked ! ");
       DT_THROW_IF(_layout_ == calo::ctw::LAYOUT_UNDEFINED || _layout_ == calo::ctw::LAYOUT_MAIN_WALL, std::logic_error, "Layout value [" << _layout_ << "] is not valid ! ");
 
-      for (int i = 0; i < xwall_zoning_word_.size(); i++)
+      for (unsigned int i = 0; i < xwall_zoning_word_.size(); i++)
 	{
 	  if (xwall_zoning_word_.test(i) == true)
 	    {
@@ -396,7 +396,7 @@ namespace snemo {
     {
       DT_THROW_IF(_layout_ == calo::ctw::LAYOUT_UNDEFINED || _layout_ == calo::ctw::LAYOUT_XWALL_GVETO, std::logic_error, "Layout value [" << _layout_ << "] is not valid ! ");
       unsigned int active_zone_counts = 0;
-      for (int i = calo::ctw::W_ZW_BIT0 ; i <= calo::ctw::W_ZW_BIT9 ; i++)
+      for (unsigned int i = calo::ctw::W_ZW_BIT0 ; i <= calo::ctw::W_ZW_BIT9 ; i++)
 	{
 	  if(_ctw_.test(i) == true)
 	    {
@@ -483,7 +483,7 @@ namespace snemo {
     void calo_ctw::get_control_word(std::bitset<calo::ctw::CONTROL_BITSET_SIZE> & control_word_) const
     {
       control_word_ = 0x0;
-      for (int i = calo::ctw::CONTROL_BIT0; i <= calo::ctw::CONTROL_BIT3; i++)
+      for (unsigned int i = calo::ctw::CONTROL_BIT0; i <= calo::ctw::CONTROL_BIT3; i++)
 	{
 	  if(_ctw_.test(i))
 	    {
@@ -496,7 +496,7 @@ namespace snemo {
     void calo_ctw::set_control_word(std::bitset<calo::ctw::CONTROL_BITSET_SIZE> & control_word_)
     {    
       DT_THROW_IF(is_locked(), std::logic_error, "Control word can't be set, calorimeter crate TW is locked ! ");
-      for (int i = 0; i < control_word_.size(); i++)
+      for (unsigned int i = 0; i < control_word_.size(); i++)
 	{
 	  if (control_word_.test(i) == true)
 	    {
@@ -514,7 +514,7 @@ namespace snemo {
     void calo_ctw::get_full_word(std::bitset<calo::ctw::FULL_BITSET_SIZE> & full_word_) const
     {
       full_word_ = 0x0;
-      for (int i = calo::ctw::BEGIN_BIT; i <= calo::ctw::END_BIT; i++)
+      for (unsigned int i = calo::ctw::BEGIN_BIT; i <= calo::ctw::END_BIT; i++)
 	{
 	  if(_ctw_.test(i))
 	    {
@@ -527,7 +527,7 @@ namespace snemo {
     void calo_ctw::set_full_word(std::bitset<calo::ctw::FULL_BITSET_SIZE> & full_word_)
     {    
       DT_THROW_IF(is_locked(), std::logic_error, "Full word can't be set, calorimeter crate TW is locked ! ");
-      for (int i = 0; i < full_word_.size(); i++)
+      for (unsigned int i = 0; i < full_word_.size(); i++)
 	{
 	  if (full_word_.test(i) == true)
 	    {

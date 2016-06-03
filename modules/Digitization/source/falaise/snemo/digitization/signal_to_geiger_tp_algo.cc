@@ -56,7 +56,7 @@ namespace snemo {
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "SD to geiger tp algorithm is already initialized ! ");
       _electronic_mapping_ = & my_electronic_mapping_;
-      for (int i = 0; i < geiger::tp::TP_SIZE; i++)
+      for (unsigned int i = 0; i < geiger::tp::TP_SIZE; i++)
 	{
 	  _activated_bits_[i] = 0;
 	}
@@ -78,7 +78,7 @@ namespace snemo {
       return;
     }
 
-    void signal_to_geiger_tp_algo::set_clocktick_reference(int32_t clocktick_ref_)
+    void signal_to_geiger_tp_algo::set_clocktick_reference(uint32_t clocktick_ref_)
     { 
       _clocktick_ref_ = clocktick_ref_;     
       return;
@@ -91,7 +91,7 @@ namespace snemo {
     }
 
     void signal_to_geiger_tp_algo::add_geiger_tp(const signal_to_tp_working_data & my_wd_data_,
-						 int32_t signal_clocktick_,
+						 uint32_t signal_clocktick_,
 						 int32_t hit_id_,
 						 geiger_tp_data & my_geiger_tp_data_)
     {
@@ -127,10 +127,10 @@ namespace snemo {
 							 working_data_collection_type & wd_collection_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "SD to geiger TP algorithm is not initialized ! ");
-      size_t number_of_hits = signal_data_.get_geiger_signals().size();      
+      std::size_t number_of_hits = signal_data_.get_geiger_signals().size();      
       double first_geiger_time_reference = signal_data_.get_geiger_signals()[0].get().get_anode_avalanche_time();
       
-      for (int i = 0; i < number_of_hits; i++)
+      for (std::size_t i = 0; i < number_of_hits; i++)
 	{
 	  if (signal_data_.get_geiger_signals()[i].get().get_anode_avalanche_time() < first_geiger_time_reference)
 	    {
@@ -138,7 +138,7 @@ namespace snemo {
 	    }
 	}
       
-      for (int i = 0; i < number_of_hits; i++)
+      for (std::size_t i = 0; i < number_of_hits; i++)
 	{	 	    
 	  const geiger_signal & a_geiger_signal    = signal_data_.get_geiger_signals()[i].get();
 	  const geomtools::geom_id & geom_id       = a_geiger_signal.get_geom_id();
@@ -148,7 +148,7 @@ namespace snemo {
 	  _electronic_mapping_->convert_GID_to_EID(mapping::THREE_WIRES_TRACKER_MODE, geom_id, electronic_id);
 
 	  double relative_time = a_geiger_signal.get_anode_avalanche_time() - first_geiger_time_reference ;
-	  int32_t a_geiger_signal_clocktick = std::floor(first_geiger_time_reference/800) +  _clocktick_ref_ + clock_utils::TRACKER_FEB_SHIFT_CLOCKTICK_NUMBER;
+	  uint32_t a_geiger_signal_clocktick = std::floor(first_geiger_time_reference/800) +  _clocktick_ref_ + clock_utils::TRACKER_FEB_SHIFT_CLOCKTICK_NUMBER;
 	  
 	  if (relative_time > 800)
 	    {
@@ -177,13 +177,13 @@ namespace snemo {
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "SD to geiger TP algorithm is not initialized ! ");
       int32_t geiger_tp_hit_id = 0;
-      for (int i = 0; i < wd_collection_.size(); i++)
+      for (unsigned int i = 0; i < wd_collection_.size(); i++)
 	{
-	  int32_t signal_clocktick  = wd_collection_[i].clocktick_800;	    
+	  uint32_t signal_clocktick  = wd_collection_[i].clocktick_800;	    
 	  int existing_index = -1;
 	  bool existing_eid  = false;
 	  
-	  for (int j = 0; j < clock_utils::ACTIVATED_GEIGER_CELLS_NUMBER; j++)
+	  for (unsigned int j = 0; j < clock_utils::ACTIVATED_GEIGER_CELLS_NUMBER; j++)
 	    { 
 	      bool existing_ct = false;
 	      std::vector<datatools::handle<geiger_tp> > my_list_of_gg_tp_per_eid;
@@ -198,7 +198,7 @@ namespace snemo {
 	      else
 		{
 		  existing_eid = true;
-		  int iterator_list = 0;
+		  unsigned int iterator_list = 0;
 		  while (existing_ct == false && iterator_list < my_list_of_gg_tp_per_eid.size())
 		    {
 		      if (signal_clocktick == my_list_of_gg_tp_per_eid[iterator_list].get().get_clocktick_800ns())

@@ -99,7 +99,7 @@ namespace snemo {
       bool _locked_; //!< CTWs lock flag
       geiger_ctw_collection_type _geiger_ctws_; //!< Collection of geigers crate trigger words
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

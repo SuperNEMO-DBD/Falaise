@@ -113,7 +113,7 @@ namespace snemo {
     {
       DT_THROW_IF(is_locked(), std::logic_error, "TP bitset can't be set, geiger TP is locked ! ");
 	    
-      for (int i = 0; i < geiger::tp::TP_SIZE; i++)
+      for (unsigned int i = 0; i < geiger::tp::TP_SIZE; i++)
 	{
 	  if (gg_tp_word_.test(i) == true)
 	    {
@@ -144,7 +144,7 @@ namespace snemo {
 
     void geiger_tp::get_hardware_status_bitset(std::bitset<geiger::tp::THWS_SIZE> & gg_hardware_status_) const
     {   
-	for (int i = 0; i < geiger::tp::THWS_SIZE; i++)
+	for (unsigned int i = 0; i < geiger::tp::THWS_SIZE; i++)
 	  {
 	    if (_gg_tp_.test(i + geiger::tp::THWS_BEGIN) == 1)
 	      {
@@ -167,7 +167,7 @@ namespace snemo {
       DT_THROW_IF(number_of_rows_ > mapping::NUMBER_OF_CONNECTED_ROWS, std::range_error, "Unsupported number of rows ["<< number_of_rows_ <<"] ! ");
       std::bitset<geiger::tp::TRM_WORD_SIZE> row_tp_bitset(number_of_rows_);
       
-      for (int i = 0; i < row_tp_bitset.size(); i++)
+      for (unsigned int i = 0; i < row_tp_bitset.size(); i++)
 	{
 	  _gg_tp_.set(i + geiger::tp::TRM_BIT0, row_tp_bitset[i]);
 	}
@@ -242,7 +242,7 @@ namespace snemo {
       DT_THROW_IF(board_id_ > mapping::NUMBER_OF_FEBS_BY_CRATE, std::range_error, "Unsupported board ID ["<< board_id_ <<"] ! ");
       std::bitset<geiger::tp::BOARD_ID_WORD_SIZE> board_id_bitset(board_id_);
       
-      for (int i = 0; i < board_id_bitset.size(); i++)
+      for (unsigned int i = 0; i < board_id_bitset.size(); i++)
 	{
 	  _gg_tp_.set(i + geiger::tp::BOARD_ID_BIT0, board_id_bitset[i]);
 	}
@@ -252,7 +252,7 @@ namespace snemo {
 
     void geiger_tp::get_crate_id(std::bitset<geiger::tp::CRATE_ID_WORD_SIZE> & crate_id_) const
     {
-      for (int i = geiger::tp::CRATE_ID_BIT0; i <= geiger::tp::CRATE_ID_BIT1; i++)
+      for (unsigned int i = geiger::tp::CRATE_ID_BIT0; i <= geiger::tp::CRATE_ID_BIT1; i++)
 	{
 	  if(_gg_tp_.test(i) == true)
 	    {
@@ -268,7 +268,7 @@ namespace snemo {
       DT_THROW_IF(crate_id_ > mapping::NUMBER_OF_CRATES, std::range_error, "Unsupported crate ID ["<< crate_id_ <<"] ! ");
       std::bitset<geiger::tp::CRATE_ID_WORD_SIZE> crate_id_bitset(crate_id_);
       
-      for (int i = 0; i < crate_id_bitset.size(); i++)
+      for (unsigned int i = 0; i < crate_id_bitset.size(); i++)
 	{
 	  _gg_tp_.set(i + geiger::tp::CRATE_ID_BIT0, crate_id_bitset[i]);
 	}
@@ -293,7 +293,7 @@ namespace snemo {
 					   boost::dynamic_bitset<> & my_bitset_word_) const
     {
       unsigned int word_size = BIT_END_ - BIT_BEGIN_;     
-      for (int i = 0; i < word_size; i++)
+      for (unsigned int i = 0; i < word_size; i++)
 	{
 	  if (_gg_tp_.test(i + BIT_BEGIN_) == 1)
 	    {
@@ -307,7 +307,7 @@ namespace snemo {
 						  unsigned int word_size_, 
 						  boost::dynamic_bitset<> & my_bitset_word_) const
     {
-      for (int i = 0; i < word_size_; i++)
+      for (unsigned int i = 0; i < word_size_; i++)
 	{
 	  if (_gg_tp_.test(i + BIT_BEGIN_) == 1)
 	    {

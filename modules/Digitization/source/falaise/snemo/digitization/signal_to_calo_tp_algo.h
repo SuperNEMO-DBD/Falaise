@@ -47,7 +47,7 @@ namespace snemo {
       void reset(); 
 			
 		  /// Set the clocktick reference for the algorithm
-			void set_clocktick_reference(int32_t clocktick_ref_);
+			void set_clocktick_reference(uint32_t clocktick_ref_);
 			
 		  /// Set the clocktick shift
 			void set_clocktick_shift(double clocktick_shift_);
@@ -72,7 +72,7 @@ namespace snemo {
       bool _active_xwall_; //!< X-wall activation flag
       bool _active_gveto_; //!< Gamma-veto activation flag
 
-			int32_t _clocktick_ref_;   //!< Clocktick reference of the algorithm
+			uint32_t _clocktick_ref_;   //!< Clocktick reference of the algorithm
 			double  _clocktick_shift_; //!< Clocktick shift between [0:25]
 			electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
     };

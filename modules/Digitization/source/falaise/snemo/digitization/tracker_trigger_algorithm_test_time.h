@@ -48,9 +48,9 @@ namespace snemo {
 				
 				tracker_record();
 				void reset();
-				const bool is_empty() const;
+				bool is_empty() const;
 				void display();
-				uint32_t clocktick_1600ns;
+				int32_t clocktick_1600ns;
 				std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
 				std::bitset<trigger_info::NZONES> zoning_word_pattern[trigger_info::NSIDES]; // not fill atm
 				std::bitset<trigger_info::NZONES> zoning_word_near_source[trigger_info::NSIDES]; // not fill atm
@@ -63,9 +63,9 @@ namespace snemo {
 			{
 				geiger_matrix();
 				void reset();
-				const bool is_empty() const;
-				const void display() const;
-				uint32_t clocktick_1600ns;				
+				bool is_empty() const;
+				void display() const;
+				int32_t clocktick_1600ns;				
 				bool matrix[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS];
 			};
 
@@ -128,7 +128,7 @@ namespace snemo {
 			void reset_zones_informations();
 
 			/// Build one sliding zone information for a clocktick
-			void build_sliding_zone(tracker_sliding_zone & szone_, int side_, int szone_id_);
+			void build_sliding_zone(tracker_sliding_zone & szone_, unsigned int side_, unsigned int szone_id_);
 
 			/// Build all sliding zones with memories mem1 and mem2 for projections
 			void build_sliding_zones(tracker_trigger_mem_maker::mem1_type & mem1_, 
@@ -136,7 +136,7 @@ namespace snemo {
 
 			
 			/// Build one zone information for a clocktick
-			void build_zone(tracker_zone & zone_, int side_, int zone_id_);
+			void build_zone(tracker_zone & zone_, unsigned int side_, unsigned int zone_id_);
 
 			/// Build all zones responses for a clocktick
 			void build_zones();    

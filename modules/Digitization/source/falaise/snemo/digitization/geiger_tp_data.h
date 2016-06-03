@@ -103,7 +103,7 @@ namespace snemo {
 			bool _locked_; //!< TPS lock flag
 			geiger_tp_collection_type _geiger_tps_; //!< Collection of geigers tracker primitive
 
-			DATATOOLS_SERIALIZATION_DECLARATION();
+			DATATOOLS_SERIALIZATION_DECLARATION()
 
 		};
 

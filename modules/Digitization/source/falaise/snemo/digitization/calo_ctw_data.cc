@@ -33,11 +33,11 @@ namespace snemo {
     {
       DT_THROW_IF(_calo_ctws_.size() == 0, std::logic_error, " Calorimeter CTW collection is empty ! ");
 
-      int index_with_min = 0;
+      unsigned int index_with_min = 0;
 
       int32_t clocktick_min = _calo_ctws_[0].get().get_clocktick_25ns();
       
-      for (int i = 1; i < _calo_ctws_.size(); i++)
+      for (unsigned int i = 1; i < _calo_ctws_.size(); i++)
 				{
 					if (_calo_ctws_[i].get().get_clocktick_25ns() < clocktick_min)
 						{
@@ -52,11 +52,11 @@ namespace snemo {
     {
       DT_THROW_IF(_calo_ctws_.size() == 0, std::logic_error, " Calorimeter CTW collection is empty ! ");
 
-      int index_with_max = 0;
+      unsigned int index_with_max = 0;
 
       int32_t clocktick_max = _calo_ctws_[0].get().get_clocktick_25ns();
       
-      for (int i = 1; i < _calo_ctws_.size(); i++)
+      for (unsigned int i = 1; i < _calo_ctws_.size(); i++)
 				{
 					if (_calo_ctws_[i].get().get_clocktick_25ns() > clocktick_max)
 						{
@@ -90,7 +90,7 @@ namespace snemo {
     {
       DT_THROW_IF(_calo_ctws_.size() == 0, std::logic_error, " Calorimeter CTW collection is empty ! ");
       // DT_THROW_IF(!is_locked(), std::logic_error, " Calorimeter CTW collection is not locked ! ");
-      for (int i = 0; i < _calo_ctws_.size(); i++)
+      for (unsigned int i = 0; i < _calo_ctws_.size(); i++)
       	{
       	  if(_calo_ctws_[i].get().get_clocktick_25ns() == clocktick_25ns_)
       	    {
@@ -180,11 +180,11 @@ namespace snemo {
     void calo_ctw_data::_check()
     {
       DT_THROW_IF(_calo_ctws_.size() == 0, std::logic_error, " Calorimeter CTW collection is empty ! ");
-      for (int i = 0; i < _calo_ctws_.size() - 1; i++)
+      for (unsigned int i = 0; i < _calo_ctws_.size() - 1; i++)
 				{
 					const calo_ctw & ctw_a = _calo_ctws_[i].get();
 
-					for (int j = i+1; j < _calo_ctws_.size(); j++)
+					for (unsigned int j = i+1; j < _calo_ctws_.size(); j++)
 						{
 							const calo_ctw & ctw_b = _calo_ctws_[j].get();
 

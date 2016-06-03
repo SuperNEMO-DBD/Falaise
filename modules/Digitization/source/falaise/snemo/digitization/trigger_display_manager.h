@@ -36,10 +36,10 @@ namespace snemo {
     public :
 			
 			/// Number of horizontal characters for display
-			static const uint8_t NUMBER_OF_HORIZONTAL_CHAR = 117;
+			static const uint32_t NUMBER_OF_HORIZONTAL_CHAR = 117;
 
 			/// Number of vertical characters for display
-			static const uint8_t NUMBER_OF_VERTICAL_CHAR = 21;
+			static const uint32_t NUMBER_OF_VERTICAL_CHAR = 21;
 			
       /// Default constructor
       trigger_display_manager();
@@ -60,19 +60,19 @@ namespace snemo {
       void reset();
 			
 			/// Check if the calorimeter 25ns config is activated 
-			const bool is_calo_25ns() const;
+			bool is_calo_25ns() const;
 
 			/// Check if the calorimeter 1600ns config is activated 
-			const bool is_calo_1600ns() const;
+			bool is_calo_1600ns() const;
 
 			/// Check if the tracker 1600ns config is activated 
-			const bool is_tracker_1600ns() const;
+			bool is_tracker_1600ns() const;
 
 			/// Check if the coincidence 1600ns config is activated 
-			const bool is_coinc_1600ns() const;
+			bool is_coinc_1600ns() const;
 
 			/// Check if the decision trigger config is activated 
-			const bool is_decision_trigger() const;
+			bool is_decision_trigger() const;
 
 			/// Fill calorimeter zones for 25ns
 			void fill_calo_trigger_matrix_25ns(std::bitset<10> zoning_word_[trigger_info::NSIDES]);
@@ -86,25 +86,25 @@ namespace snemo {
 			void fill_coincidence_trigger_matrix_1600ns(std::bitset<10> zoning_word_[trigger_info::NSIDES], bool geiger_matrix_[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS]);
 
 			/// Display calorimeter zones each 25ns for a given clocktick
-			void display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_25ns_);
+			void display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_, int32_t clocktick_25ns_);
 
 			/// Display calorimeter zones each 25ns for all available clocktick
 			void display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_); 
 
 			/// Display calorimeter zones each 1600 for a given clocktick
-			void display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_1600ns_);
+			void display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int32_t clocktick_1600ns_);
 
 			/// Display calorimeter zones each 1600ns for all available clocktick 
 			void display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_);
 			
 			/// Display tracker matrix each 1600 for a given clocktick
-			void display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_1600ns_);
+			void display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int32_t clocktick_1600ns_);
 
 			/// Display tracker matrix each 1600 for all available clocktick
 			void display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_);
 
 			/// Display calorimeter zones and tracker matrix each 1600 for a given clocktick
-			void display_coincidence_trigger_1600ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_1600ns_);
+			void display_coincidence_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int32_t clocktick_1600ns_);
 
 			/// Display calorimeter zones and tracker matrix each 1600 for all available clocktick
 			void display_coincidence_trigger_1600ns(trigger_algorithm & a_trigger_algo_);

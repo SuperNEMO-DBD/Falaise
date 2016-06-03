@@ -54,7 +54,7 @@ namespace snemo {
     protected: 
       
 			/// Return the drift time with simple approximation
-			const double _anode_drift_time_calculation(const double drift_distance);
+			double _anode_drift_time_calculation(const double drift_distance) const;
 			
       ///  Process to fill a signal data object from simulated data
       int _process(const mctools::simulated_data & sd_,

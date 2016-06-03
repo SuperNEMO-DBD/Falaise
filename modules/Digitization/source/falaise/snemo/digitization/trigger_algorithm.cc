@@ -131,12 +131,12 @@ namespace snemo {
       return _coincidence_records_;
     }
         
-    const bool trigger_algorithm::get_finale_decision() const
+    bool trigger_algorithm::get_finale_decision() const
     {
       return _finale_trigger_decision_;
     }   
 
-    const bool trigger_algorithm::get_delayed_finale_decision() const
+    bool trigger_algorithm::get_delayed_finale_decision() const
     {
       return _delayed_finale_trigger_decision_;
     }
@@ -180,21 +180,19 @@ namespace snemo {
 	{
 	  _process_calo_algo(calo_ctw_data_);
 	}
-      
       if (geiger_ctw_data_.has_geiger_ctw())
       	{
       	  _process_tracker_algo(geiger_ctw_data_);
       	}
-      
       if (is_activated_coincidence())
 	{
 	  _process_coinc_algo();
 	}    
             
-      bool calo_decision = false;
-      calo_decision = _calo_algo_.get_calo_decision();
-      bool tracker_decision = false;
-      tracker_decision = _tracker_algo_.get_tracker_decision();
+      // bool calo_decision = false;
+      // calo_decision = _calo_algo_.get_calo_decision();
+      // bool tracker_decision = false;
+      // tracker_decision = _tracker_algo_.get_tracker_decision();
       bool caraco_decision = false;
       caraco_decision = _coinc_algo_.get_caraco_decision();
       bool delayed_coincidence_decision = false;

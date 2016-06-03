@@ -100,12 +100,12 @@ namespace snemo {
       return _geiger_signals_;
     }
 		
-		const std::size_t signal_data::get_number_of_geiger_signals() const
+		std::size_t signal_data::get_number_of_geiger_signals() const
 		{
 			return _geiger_signals_.size();
 		}
 		
-		const std::size_t signal_data::get_number_of_prompt_geiger_signals(double time_limit_) const
+		std::size_t signal_data::get_number_of_prompt_geiger_signals(double time_limit_) const
 		{
 			std::size_t number_of_prompt_gg_signal = 0;
 			std::vector<datatools::handle<geiger_signal> >::const_iterator it_signal = _geiger_signals_.begin();
@@ -123,7 +123,7 @@ namespace snemo {
 			return number_of_prompt_gg_signal;
 		}
 		
-		const std::size_t signal_data::get_number_of_delayed_geiger_signals(double time_limit_) const
+		std::size_t signal_data::get_number_of_delayed_geiger_signals(double time_limit_) const
 		{
 			std::size_t number_of_delayed_gg_signal = 0;
 			std::vector<datatools::handle<geiger_signal> >::const_iterator it_signal = _geiger_signals_.begin();
@@ -150,12 +150,12 @@ namespace snemo {
       return _calo_signals_;
     }
 
-		const std::size_t signal_data::get_number_of_calo_signals() const
+		std::size_t signal_data::get_number_of_calo_signals() const
 		{
 			return _calo_signals_.size();
 		}
 		
-		const std::size_t signal_data::get_number_of_main_calo_signals() const
+		std::size_t signal_data::get_number_of_main_calo_signals() const
 		{
 			std::size_t number_of_main_calo_signal = 0;
 			std::vector<datatools::handle<calo_signal> >::const_iterator it_signal = _calo_signals_.begin();
@@ -174,7 +174,7 @@ namespace snemo {
 			return number_of_main_calo_signal;
 		}
 
-		const std::size_t signal_data::get_number_of_xcalo_signals() const
+		std::size_t signal_data::get_number_of_xcalo_signals() const
 		{
 			std::size_t number_of_xcalo_signal = 0;
 			std::vector<datatools::handle<calo_signal> >::const_iterator it_signal = _calo_signals_.begin();
@@ -194,7 +194,7 @@ namespace snemo {
 		}
 
 
-		const std::size_t signal_data::get_number_of_gveto_signals() const
+		std::size_t signal_data::get_number_of_gveto_signals() const
 		{
 			std::size_t number_of_gveto_signal = 0;
 			std::vector<datatools::handle<calo_signal> >::const_iterator it_signal = _calo_signals_.begin();
@@ -263,11 +263,11 @@ namespace snemo {
 
     void signal_data::_check()
     {
-      for (int i = 0; i < _geiger_signals_.size() - 1; i++)
+      for (unsigned int i = 0; i < _geiger_signals_.size() - 1; i++)
 				{
 					const geiger_signal & geiger_signal_a = _geiger_signals_[i].get();
 
-					for (int j = i+1; j < _geiger_signals_.size(); j++)
+					for (unsigned int j = i+1; j < _geiger_signals_.size(); j++)
 						{
 							const geiger_signal & geiger_signal_b = _geiger_signals_[j].get();
 
@@ -277,11 +277,11 @@ namespace snemo {
 						}
 				}
 
-      for (int i = 0; i < _calo_signals_.size() - 1; i++)
+      for (unsigned int i = 0; i < _calo_signals_.size() - 1; i++)
 				{
 					const calo_signal & calo_signal_a = _calo_signals_[i].get();
 
-					for (int j = i+1; j < _calo_signals_.size(); j++)
+					for (unsigned int j = i+1; j < _calo_signals_.size(); j++)
 						{
 							const calo_signal & calo_signal_b = _calo_signals_[j].get();
 

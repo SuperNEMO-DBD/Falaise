@@ -52,7 +52,7 @@ namespace snemo {
     void ID_convertor::initialize()
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Convertor is already initialized ! ");
-      DT_THROW_IF(_module_number_ < mapping::DEMONSTRATOR_MODULE_NUMBER, std::logic_error, "Missing module number ! ");
+      DT_THROW_IF(_module_number_ != mapping::DEMONSTRATOR_MODULE_NUMBER, std::logic_error, "Missing module number ! ");
       DT_THROW_IF(_geo_manager_ == 0, std::logic_error, "Missing geometry manager ! ");
   
       _gg_locator_.reset(new geometry::gg_locator);
@@ -203,7 +203,6 @@ namespace snemo {
 	{ // MCALO -- Side [0;1] Column [0;19] (Row[0;12] )type --> 1302
 	  rack_id = mapping::CALO_RACK_ID;
      
-	  unsigned int module_index_ = _calo_locator_-> extract_module(geom_id_);
 	  unsigned int column_index_ = _calo_locator_-> extract_column(geom_id_);
 	  unsigned int row_index_    = _calo_locator_-> extract_row(geom_id_);
 	  unsigned int side_index_   = _calo_locator_-> extract_side(geom_id_);
@@ -273,11 +272,6 @@ namespace snemo {
 	} // End of G-Veto Category type  
       electronic_id.set_address(rack_id,crate_id,board_id,channel_id);   
       return  electronic_id;
-    }
-
-
-    geomtools::geom_id ID_convertor::convert_EID_to_GID(const geomtools::geom_id & geom_id_) const{
-
     }
 
     void ID_convertor::tree_dump(std::ostream & out_,

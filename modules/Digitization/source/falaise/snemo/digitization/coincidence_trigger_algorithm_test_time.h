@@ -44,7 +44,7 @@ namespace snemo {
 			{
 				coincidence_base_record();
 				void reset();
-				const void display() const;			
+				void display() const;			
 				std::bitset<trigger_info::NZONES> calo_zoning_word[mapping::NUMBER_OF_SIDES];
 				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_0;
 				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_1;
@@ -62,8 +62,8 @@ namespace snemo {
 			{
 				coincidence_calo_record();
 				void reset();
-				const void display() const;
-				uint32_t clocktick_1600ns;
+				void display() const;
+				int32_t clocktick_1600ns;
 			};
 			
 			enum trigger_mode{
@@ -77,8 +77,8 @@ namespace snemo {
 			{
 				coincidence_event_record();
 				void reset();
-				const void display() const;
-				uint32_t clocktick_1600ns;
+				void display() const;
+				int32_t clocktick_1600ns;
 				std::bitset<trigger_info::NZONES> zoning_word[mapping::NUMBER_OF_SIDES];
 				std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> tracker_finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
 				coincidence_trigger_algorithm_test_time::trigger_mode trigger_mode;
@@ -88,9 +88,9 @@ namespace snemo {
 			{
 				L2_coincidence_decision();
 				void reset();
-				const void display() const;
+				void display() const;
 				bool L2_coincidence_decision_bool;
-				uint32_t L2_clocktick_decision;
+				int32_t L2_clocktick_decision;
 				coincidence_trigger_algorithm_test_time::trigger_mode trigger_mode;				
 			};
 			
@@ -99,8 +99,8 @@ namespace snemo {
 			{
 				previous_event_record();
 				void reset();
-				const void display() const;
-				uint32_t previous_clocktick_1600ns;
+				void display() const;
+				int32_t previous_clocktick_1600ns;
 				uint32_t counter_1600ns;
 				std::bitset<trigger_info::NZONES> zoning_word[mapping::NUMBER_OF_SIDES];
 				std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> tracker_finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
@@ -131,7 +131,7 @@ namespace snemo {
 			void set_previous_event_buffer_depth(unsigned int circular_buffer_depth_);
 
 			/// Return previous event circular buffer depth value
-			const	unsigned int get_previous_event_buffer_depth() const;
+			unsigned int get_previous_event_buffer_depth() const;
 
 			/// Initializing
 			void initialize_simple();
@@ -152,10 +152,10 @@ namespace snemo {
 			const std::vector<coincidence_trigger_algorithm_test_time::coincidence_calo_record> get_coincidence_calo_records_vector() const;
 
 			/// Get the finale caraco trigger decision
- 			const bool get_caraco_decision() const;
+			bool get_caraco_decision() const;
 			
 			/// Get the finale delayed (ape or dave) trigger decision
- 			const bool get_delayed_coincidence_decision() const;
+			bool get_delayed_coincidence_decision() const;
 
 			/// General process
 			void process(const std::vector<calo_trigger_algorithm_test_time::calo_summary_record> & calo_records_,

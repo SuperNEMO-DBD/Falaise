@@ -415,7 +415,6 @@ int main( int  argc_ , char **argv_  )
 		    calo_tp_2_ctw_1.process(my_calo_tp_data, my_calo_ctw_data);
 		    calo_tp_2_ctw_2.process(my_calo_tp_data, my_calo_ctw_data);
 		    if (debug) my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
-		    
 		  } // end of if has calo signal
 
 		snemo::digitization::geiger_tp_data my_geiger_tp_data;

@@ -43,7 +43,7 @@ namespace snemo {
 				const geiger_signal * signal_ref;
 				geomtools::geom_id    feb_id;
 				datatools::properties auxiliaries;
-				int32_t               clocktick_800;
+				uint32_t               clocktick_800;
 				double                shift_800;
 			}; 
 			
@@ -65,14 +65,14 @@ namespace snemo {
       void reset(); 
 			
       /// Set the clocktick reference for the algorithm
-      void set_clocktick_reference(int32_t clocktick_ref_);
+      void set_clocktick_reference(uint32_t clocktick_ref_);
 			
       /// Set the clocktick shift
       void set_clocktick_shift(double clocktick_shift_);
 
 			/// Add a geiger tp from a working data
 			void add_geiger_tp(const signal_to_tp_working_data & my_wd_data_,
-												 int32_t signal_clocktick_,
+												 uint32_t signal_clocktick_,
 												 int32_t hit_id_,
 												 geiger_tp_data & my_geiger_tp_data_);
 
@@ -105,7 +105,7 @@ namespace snemo {
       
 			// Configuration :
       bool    _initialized_;     //!< Initialization flag
-      int32_t _clocktick_ref_;   //!< Clocktick reference of the algorithm
+      uint32_t _clocktick_ref_;   //!< Clocktick reference of the algorithm
       double  _clocktick_shift_; //!< Clocktick shift between [0:800]
 			electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
 

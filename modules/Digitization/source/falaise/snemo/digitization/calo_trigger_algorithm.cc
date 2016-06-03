@@ -25,7 +25,7 @@ namespace snemo {
     void calo_trigger_algorithm::calo_record::reset()
     {
       clocktick_25ns = -1;
-      for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+      for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
 	{
 	  zoning_word[iside].reset();
 	  zoning_word[iside].reset();
@@ -40,7 +40,7 @@ namespace snemo {
       return;
     }
 
-    const void calo_trigger_algorithm::calo_record::display() const
+    void calo_trigger_algorithm::calo_record::display() const
     {      
       std::clog << "Calo Trigger info record : " << std::endl; 
       std::clog << "CT |XTS|L|HG|L|L|H1|H0| ZONING S1| ZONING S0 " << std::endl; 
@@ -53,9 +53,9 @@ namespace snemo {
       std::clog << total_multiplicity_side_1 << ' ';
       std::clog << total_multiplicity_side_0 << ' ';
 
-      for (int iside = trigger_info::NSIDES-1; iside >= 0; iside--)
+      for (unsigned int iside = trigger_info::NSIDES-1; iside > 0; iside--)
       	{
-      	  for (int izone = trigger_info::NZONES-1; izone >= 0 ; izone--)
+      	  for (unsigned int izone = trigger_info::NZONES-1; izone > 0 ; izone--)
       	    {
       	      std::clog << zoning_word[iside][izone];
       	    }
@@ -88,7 +88,7 @@ namespace snemo {
       return;
     }
 
-    const void calo_trigger_algorithm::calo_summary_record::display() const
+    void calo_trigger_algorithm::calo_summary_record::display() const
     {
       calo_record::display();
       std::clog << "Single Side coinc : "      << single_side_coinc << std::endl;
@@ -98,7 +98,7 @@ namespace snemo {
       return;
     }
     
-    const bool calo_trigger_algorithm::calo_summary_record::is_empty() const
+    bool calo_trigger_algorithm::calo_summary_record::is_empty() const
     {
       if (zoning_word[0].any() || zoning_word[1].any() 
 	  || total_multiplicity_side_0.any() || total_multiplicity_side_1.any() || total_multiplicity_gveto.any()
@@ -151,7 +151,7 @@ namespace snemo {
       return;
     }
 
-    const unsigned int calo_trigger_algorithm::get_circular_buffer_depth() const
+    unsigned int calo_trigger_algorithm::get_circular_buffer_depth() const
     {
       return _circular_buffer_depth_;
     }
@@ -262,14 +262,14 @@ namespace snemo {
     {
       _calo_record_per_clocktick_.reset();
       return;
-    }    
+    }     
 
-    const bool calo_trigger_algorithm::get_calo_decision() const
+    bool calo_trigger_algorithm::get_calo_decision() const
     {
       return _calo_finale_decision_;
     }
     
-    const calo_trigger_algorithm::calo_summary_record calo_trigger_algorithm::get_calo_level_1_finale_decision_structure() const
+    const calo_trigger_algorithm::calo_summary_record calo_trigger_algorithm::get_calo_level_1_finale_decision_structure()
     {
       return _calo_level_1_finale_decision_;
     }
@@ -278,7 +278,7 @@ namespace snemo {
     {
       _calo_record_per_clocktick_.display();
 
-      for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+      for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
       	{
       	  if (iside == 1)
       	    {
@@ -291,7 +291,7 @@ namespace snemo {
       	    }
 	  if (iside == 0) std::clog << "    Zone0                                                                                                   Zone9 " << std::endl;
       	  std::clog << " |";
-      	  for (int izone = 0; izone < trigger_info::NZONES; izone++)
+      	  for (unsigned int izone = 0; izone < trigger_info::NZONES; izone++)
       	    {
       	      if (izone == 0 || izone == 9) 
       		{
@@ -330,7 +330,7 @@ namespace snemo {
     {
       my_calo_summary_record_.display(); 
 
-      for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+      for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
       	{
       	  if (iside == 1)
       	    {
@@ -343,7 +343,7 @@ namespace snemo {
       	    }
 	  if (iside == 0) std::clog << "    Zone0                                                                                                   Zone9 " << std::endl;
       	  std::clog << " |";
-      	  for (int izone = 0; izone < trigger_info::NZONES; izone++)
+      	  for (unsigned int izone = 0; izone < trigger_info::NZONES; izone++)
       	    {
       	      if (izone == 0 || izone == 9) 
       		{
@@ -382,7 +382,7 @@ namespace snemo {
     void calo_trigger_algorithm::_build_calo_record_per_clocktick(const calo_ctw & my_calo_ctw_)
     {  
       uint32_t crate_index = my_calo_ctw_.get_geom_id().get(mapping::CRATE_INDEX);  
-      DT_THROW_IF(crate_index < mapping::MAIN_CALO_SIDE_0_CRATE || crate_index > mapping::XWALL_GVETO_CALO_CRATE, std::logic_error, "Crate index '"<< crate_index << "' is not defined, check your value ! ");
+      DT_THROW_IF(crate_index > mapping::XWALL_GVETO_CALO_CRATE, std::logic_error, "Crate index '"<< crate_index << "' is not defined, check your value ! ");
       _calo_record_per_clocktick_.clocktick_25ns = my_calo_ctw_.get_clocktick_25ns();      
       
       // Fill structure if crate is number 2
@@ -418,7 +418,7 @@ namespace snemo {
 	  std::bitset<calo::ctw::XWALL_ZONING_BITSET_SIZE> xwall_zoning_bitset;
 	  my_calo_ctw_.get_xwall_zoning_word(xwall_zoning_bitset);
 
-	  for (int izone = calo::ctw::ZONING_XWALL_BIT0; izone < (calo::ctw::ZONING_XWALL_BIT0 + mapping::NUMBER_OF_XWALL_CALO_TRIGGER_ZONES); izone++)
+	  for (unsigned int izone = calo::ctw::ZONING_XWALL_BIT0; izone < (calo::ctw::ZONING_XWALL_BIT0 + mapping::NUMBER_OF_XWALL_CALO_TRIGGER_ZONES); izone++)
 	    {
 	      switch (izone)
 		{
@@ -479,7 +479,7 @@ namespace snemo {
 	  std::bitset<calo::ctw::MAIN_ZONING_BITSET_SIZE> main_zoning_bitset;
 	  my_calo_ctw_.get_main_zoning_word(main_zoning_bitset);
 
-	  for (int izone = 0; izone < trigger_info::NZONES; izone++)
+	  for (unsigned int izone = 0; izone < trigger_info::NZONES; izone++)
 	    {
 	      if (main_zoning_bitset.test(izone) == true) _calo_record_per_clocktick_.zoning_word[crate_index].set(izone,true);
 	    }
@@ -519,9 +519,9 @@ namespace snemo {
 	  if (ctrec.LTO_gveto == true)  lto_sum_circ_buff_gveto  = true;
 	  
 	  // Zoning word : 
-	  for (int i = 0; i < trigger_info::NSIDES; i++)
+	  for (unsigned int i = 0; i < trigger_info::NSIDES; i++)
       	    {
-      	      for (int j = 0; j < ZONING_PER_SIDE_BITSET_SIZE; j++)
+      	      for (unsigned int j = 0; j < ZONING_PER_SIDE_BITSET_SIZE; j++)
       		{
       		  if (ctrec.zoning_word[i].test(j) == true) 
 		    {
@@ -613,7 +613,7 @@ namespace snemo {
 	  if (ctw_list_per_clocktick.size() == 0) _calo_record_per_clocktick_.clocktick_25ns = iclocktick;
 	  else
 	    {	  
-	      for (int isize = 0; isize < ctw_list_per_clocktick.size(); isize++)
+	      for (unsigned int isize = 0; isize < ctw_list_per_clocktick.size(); isize++)
 		{
 		  _build_calo_record_per_clocktick(ctw_list_per_clocktick[isize].get());
 		} // end of isize

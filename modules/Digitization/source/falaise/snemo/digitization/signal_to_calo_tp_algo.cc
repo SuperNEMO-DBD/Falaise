@@ -53,7 +53,7 @@ namespace snemo {
       return;
     }
 
-    void signal_to_calo_tp_algo::set_clocktick_reference(int32_t clocktick_ref_)
+    void signal_to_calo_tp_algo::set_clocktick_reference(uint32_t clocktick_ref_)
     { 
       _clocktick_ref_ = clocktick_ref_;     
       return;
@@ -78,9 +78,9 @@ namespace snemo {
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "SD to calo TP algorithm is not initialized ! ");
 
-      size_t number_of_hits = signal_data_.get_calo_signals().size();
+      std::size_t number_of_hits = signal_data_.get_calo_signals().size();
       double time_reference = signal_data_.get_calo_signals()[0].get().get_signal_time();
-      for (int i = 0; i < number_of_hits; i++)
+      for (std::size_t i = 0; i < number_of_hits; i++)
 	{
 	  if (signal_data_.get_calo_signals()[i].get().get_signal_time() < time_reference)
 	    {
@@ -88,7 +88,7 @@ namespace snemo {
 	    }
 	}
 
-      for (int i = 0; i < number_of_hits; i++)
+      for (std::size_t i = 0; i < number_of_hits; i++)
 	{	 	    
 	  const calo_signal & a_calo_signal  = signal_data_.get_calo_signals()[i].get();
 	  const geomtools::geom_id & geom_id = a_calo_signal.get_geom_id();
@@ -113,14 +113,14 @@ namespace snemo {
 	      unsigned int existing_index = 0;
 	  
 	      double relative_time            = a_calo_signal.get_signal_time() - time_reference ;
-	      int32_t a_calo_signal_clocktick = _clocktick_ref_ + clock_utils::CALO_FEB_SHIFT_CLOCKTICK_NUMBER;
+	      uint32_t a_calo_signal_clocktick = _clocktick_ref_ + clock_utils::CALO_FEB_SHIFT_CLOCKTICK_NUMBER;
 
 	      if (relative_time > 3)
 		{
-		  a_calo_signal_clocktick += static_cast<int32_t>(relative_time) / 3;
+		  a_calo_signal_clocktick += static_cast<uint32_t>(relative_time) / 3;
 		}
 
-	      for (int j = 0; j < my_calo_tp_data_.get_calo_tps().size(); j++)
+	      for (unsigned int j = 0; j < my_calo_tp_data_.get_calo_tps().size(); j++)
 		{
 		  if (my_calo_tp_data_.get_calo_tps()[j].get().get_geom_id() == electronic_id
 		      && my_calo_tp_data_.get_calo_tps()[j].get().get_clocktick_25ns() == a_calo_signal_clocktick )
