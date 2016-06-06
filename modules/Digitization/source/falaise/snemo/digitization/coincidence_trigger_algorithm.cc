@@ -765,7 +765,6 @@ namespace snemo {
 		  int mid   = 1;
 		  int left  = 2;
 
-		  
 		  delayed_hpattern_per_zone[right] = a_tracker_record.finale_data_per_zone[iside][izone][right+2]; // right + 2 -> bit position to change (bit enum in trigger_info.h)
 		  delayed_hpattern_per_zone[mid]   = a_tracker_record.finale_data_per_zone[iside][izone][mid+2];
 		  delayed_hpattern_per_zone[left]  = a_tracker_record.finale_data_per_zone[iside][izone][left+2];
@@ -773,7 +772,7 @@ namespace snemo {
 		  // APE trigger (Tracker previous / Tracker delayed coincidence)
 		  if (delayed_hpattern_per_zone.any())
 		    { 
-		      if (delayed_hpattern_per_zone.test(left) && izone == 0 &&(a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(left+2)
+		      if (delayed_hpattern_per_zone.test(left) && izone == 0 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(left+2)
 										|| a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(mid+2)
 										|| a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(left+2)
 										|| a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(mid+2)))
@@ -813,7 +812,7 @@ namespace snemo {
 			  _delayed_coincidence_decision_ = true;
 			} 
 		      
-		      if (delayed_hpattern_per_zone.test(right) && izone == 10 &&(a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(mid+2)
+		      if (delayed_hpattern_per_zone.test(right) && izone == 9 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(mid+2)
 										  || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(right+2)
 										  || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(mid+2)
 										  || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(right+2)))
@@ -880,6 +879,7 @@ namespace snemo {
 		      
 		      if (delayed_near_source_per_zone.any())
 			{
+			  // NSZ Left && zone = 0 :
 			  if (delayed_near_source_per_zone.test(near_source_left) && izone == 0 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_left+5)
 												    || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_right+5)
 												    || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_left+5)
@@ -892,7 +892,7 @@ namespace snemo {
 			      _delayed_coincidence_decision_ = true;
 			    }
 			    
-
+			  // NSZ Left && zone = [1:9] :
 			  if (delayed_near_source_per_zone.test(near_source_left) && izone - 1 > -1 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone-1].test(near_source_right+5)
 													|| a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_left+5)
 													|| a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_right+5)
@@ -907,12 +907,13 @@ namespace snemo {
 			      a_delayed_record_.decision = true;
 			      _delayed_coincidence_decision_ = true;
 			    }
-		      
 
-			  if (delayed_near_source_per_zone.test(near_source_right) && izone == 10 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_left+5)
-												      || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_right+5)
-												      || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_left+5)
-												      || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_right+5)))
+
+			  // NSZ Right && zone = 0 :
+			  if (delayed_near_source_per_zone.test(near_source_right) && izone == 9 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_left+5)
+												     || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_right+5)
+												     || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_left+5)
+												     || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_right+5)))
 			    {
 			      a_delayed_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
 			      a_delayed_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
@@ -920,13 +921,15 @@ namespace snemo {
 			      a_delayed_record_.decision = true;
 			      _delayed_coincidence_decision_ = true;
 			    }
-			  
+
+			  // NSZ Right && zone = [1:8] :
 			  if (delayed_near_source_per_zone.test(near_source_right) && izone + 1 < 10 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_left+5)
 													 || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_right+5)
 													 || a_previous_event_record_.tracker_finale_data_per_zone[0][izone+1].test(near_source_left+5)
 													 || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_left+5)
 													 || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_right+5)
 													 || a_previous_event_record_.tracker_finale_data_per_zone[1][izone+1].test(near_source_left+5)))
+			    
 			    {
 			      a_delayed_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
 			      a_delayed_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
@@ -934,6 +937,7 @@ namespace snemo {
 			      a_delayed_record_.decision = true;
 			      _delayed_coincidence_decision_ = true;
 			    }
+
 			} // enf of if delayed any
 		      
 		    } // end of izone
