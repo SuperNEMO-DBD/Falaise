@@ -18,7 +18,7 @@
 
 int main(int argc_, char **  argv_)
 {
-  FALAISE_INIT();
+  falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
   try {   
@@ -98,7 +98,7 @@ int main(int argc_, char **  argv_)
     
     std::clog << "Size of my list of calo tp for a clocktick = 20 and crate number = 0 : " << my_list_of_calo_tp_per_clocktick_per_crate.size() << " calo tp(s) in the list " << std::endl;
 
-    for (int i = 0; i < my_list_of_calo_tp_per_clocktick_per_crate.size(); i++)
+    for (unsigned int i = 0; i < my_list_of_calo_tp_per_clocktick_per_crate.size(); i++)
       {
 	my_list_of_calo_tp_per_clocktick_per_crate[i].get().tree_dump(std::clog, "My list of calo TP per clocktick per crate" , "INFO : ");
       }
@@ -117,7 +117,7 @@ int main(int argc_, char **  argv_)
     error_code = EXIT_FAILURE;
   }
 
-  FALAISE_FINI();
+  falaise::terminate();
   return error_code;
 }
 

@@ -26,6 +26,10 @@ namespace snemo {
   namespace geometry {
 
     // static
+    const unsigned int utils::NSIDES;
+    const unsigned int utils::NSUBMODULES;
+
+    // static
     const std::string & utils::side_back_label()
     {
       static const std::string _label("back");

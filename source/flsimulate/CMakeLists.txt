@@ -23,40 +23,23 @@
 #-----------------------------------------------------------------------
 # Configure application
 # - Bit hacky for now
-find_package(Boost REQUIRED program_options filesystem system)
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-
+find_package(Boost 1.55 REQUIRED program_options filesystem system)
 find_package(Geant4 REQUIRED)
-
-include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(BEFORE ${Bayeux_INCLUDE_DIRS})
-include_directories(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
 
 #-----------------------------------------------------------------------
 # Build command line app
-#
-# - Generate application configuration file
-configure_file(FLSimulateConfig.h.in FLSimulateConfig.h @ONLY)
-
-# - Generate binreloc header/source with mangled names, ensuring first
-# character(s) are a valid for a C identifier
-string(RANDOM LENGTH 18 MANGLE_BINRELOC_MAIN)
-set(MANGLE_BINRELOC "MB${MANGLE_BINRELOC_MAIN}")
-configure_file(FLSimulateBinReloc.h.in FLSimulateBinReloc.h @ONLY)
-
-set(FLSIMULATE_SOURCES
+# - Compile/Link
+add_executable(flsimulate
   flsimulatemain.cc
-  FLSimulateConfig.h
   FLSimulateResources.h
   FLSimulateResources.cc
-  FLSimulateBinReloc.h
-  FLSimulateBinReloc.c
+  FLSimulateVariance.h
+  FLSimulateVariance.cc
   )
-
-# - Compile/Link
-add_executable(flsimulate ${FLSIMULATE_SOURCES})
-set_target_properties(flsimulate PROPERTIES COMPILE_DEFINITIONS ENABLE_BINRELOC)
-
+target_include_directories(flsimulate PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
+  )
 target_link_libraries(flsimulate
   Falaise
   ${Bayeux_MCTOOLS_GEANT4_LIBRARY}
@@ -65,7 +48,7 @@ target_link_libraries(flsimulate
   ${Geant4_LIBRARIES}
   )
 
-# - RPath it
+# - Ensure link to internal and external deps
 set_target_properties(flsimulate PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
 
 if(UNIX AND NOT APPLE)
@@ -77,7 +60,6 @@ elseif(APPLE)
   set_target_properties(flsimulate
     PROPERTIES
       INSTALL_RPATH "@loader_path/../${CMAKE_INSTALL_LIBDIR}"
-      LINK_FLAGS "-Wl,-rpath,@loader_path/../${CMAKE_INSTALL_LIBDIR}"
     )
 endif()
 

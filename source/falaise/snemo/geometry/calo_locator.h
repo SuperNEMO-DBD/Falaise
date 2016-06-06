@@ -1,5 +1,5 @@
 /// \file falaise/snemo/geometry/calo_locator.h
-/* Author(s)     :     Francois Mauger <mauger@lpccaen.in2p3.fr>
+/* Author(s)     : Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date : 2011-05-05
  * Last modified : 2015-09-19
  *
@@ -327,6 +327,9 @@ namespace snemo {
     protected:
 
       void _construct();
+
+      /// Hack trace
+      void _hack_trace();
 
     private:
 

@@ -39,13 +39,12 @@ namespace snemo {
     const uint32_t mapping::NUMBER_OF_X_CALO_COLUMNS;
     const uint32_t mapping::NUMBER_OF_X_CALO_ROWS;
     const uint32_t mapping::NUMBER_OF_GVETO_COLUMNS;
-    const uint32_t mapping::NUMBER_OF_CALO_TRIGGER_ZONES;
     const uint32_t mapping::NUMBER_OF_XWALL_CALO_TRIGGER_ZONES;
     const uint32_t mapping::NUMBER_OF_GEIGER_ROWS;
-    const uint32_t mapping::NUMBER_OF_TRACKER_TRIGGER_ZONES;
     const uint32_t mapping::NUMBER_OF_TRACKER_TRIGGER_INTERZONES;
     const uint32_t mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES;
     const uint32_t mapping::NUMBER_OF_TRACKER_TRIGGER_SUBZONES_PER_SIDE;
+    const uint32_t mapping::NUMBER_OF_TRIGGER_ZONES;
     const uint32_t mapping::NUMBER_OF_CRATES;
     const uint32_t mapping::NUMBER_OF_FEBS_BY_CRATE;
     const uint32_t mapping::TRIGGER_CRATE_ID;
@@ -59,6 +58,7 @@ namespace snemo {
     const uint32_t mapping::THREE_WIRES_LONELY_ROW;
     const uint32_t mapping::THREE_WIRES_CRATE_1_LIMIT;
     const uint32_t mapping::THREE_WIRES_CRATE_2_BEGINNING;
+    const uint32_t mapping::THREE_WIRES_CRATE_2_LIMIT;
     const uint32_t mapping::GEIGER_LAYERS_SIZE;
     const uint32_t mapping::GEIGER_ROWS_SIZE;
 

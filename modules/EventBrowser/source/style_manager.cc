@@ -32,7 +32,9 @@
 #include <TSystem.h>
 #include <TEnv.h>
 // - boost:
+#define BOOST_SYSTEM_NO_DEPRECATED 1
 #include <boost/filesystem.hpp>
+#undef BOOST_SYSTEM_NO_DEPRECATED
 // - Bayeux/datatools:
 #include <bayeux/datatools/utils.h>
 #include <bayeux/datatools/multi_properties.h>
@@ -58,11 +60,11 @@ namespace snemo {
 
       bool style_manager::use_opengl() const
       {
-        bool use_opengl = false;
+        bool can_use_opengl = false;
 #ifdef EVENTBROWSER_USE_OPENGL
-        use_opengl = true;
+        can_use_opengl = true;
 #endif
-        return use_opengl;
+        return can_use_opengl;
       }
 
       void style_manager::set_filename(const std::string & filename_)
@@ -379,7 +381,7 @@ namespace snemo {
                          "Nor setup label neither filename given");
             return;
           }
-          _filename_ = falaise::get_resource_dir(true) +
+          _filename_ = falaise::get_resource_dir() +
             "/modules/EventBrowser/styles/" + _setup_label_ + "_default.sty";
           // Replace double semi colon with underscore
           const size_t start_semi_colon = _filename_.find("::");
@@ -404,7 +406,7 @@ namespace snemo {
         if (options_manager::get_instance().get_logging_priority() >= datatools::logger::PRIO_DEBUG) {
           configuration.tree_dump(std::clog,
                                   "Style settings for the SuperNEMO event display program",
-                                  "DEBUG: ");
+                                  "[debug]: ");
         }
 
         // Browser settings:

@@ -27,7 +27,7 @@ namespace snemo {
   namespace simulation {
 
     GENBB_PG_REGISTRATION_IMPLEMENT(cosmic_muon_generator,
-                                    "snemo::simulation::cosmic_muon_generator");
+                                    "snemo::simulation::cosmic_muon_generator")
 
     /* sea_level_toy_theta_density_function */
 

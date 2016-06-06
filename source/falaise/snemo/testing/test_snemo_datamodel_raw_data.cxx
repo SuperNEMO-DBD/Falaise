@@ -10,7 +10,14 @@
 // - Bayeux/datatools:
 #include <datatools/smart_ref.h>
 #include <datatools/clhep_units.h>
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wshadow"
+#endif
 #include <datatools/io_factory.h>
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
 // This project:
 #include <falaise/snemo/datamodels/raw_data.h>

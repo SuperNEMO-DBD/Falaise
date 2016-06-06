@@ -1,4 +1,4 @@
-/// \file snemo/reconstruction/charged_particle_tracking_module.h
+/// \file falaise/snemo/reconstruction/charged_particle_tracking_module.h
 /* Author(s)     : Mathieu Bongrand <bongrand@lal.in2p3.fr>
  *                 Xavier Garrido <garrido@lal.in2p3.fr>
  * Creation date : 2012-04-20
@@ -123,7 +123,7 @@ namespace snemo {
       boost::scoped_ptr<snemo::reconstruction::alpha_finder_driver> _AFD_;
 
       // Macro to automate the registration of the module :
-      DPP_MODULE_REGISTRATION_INTERFACE(charged_particle_tracking_module);
+      DPP_MODULE_REGISTRATION_INTERFACE(charged_particle_tracking_module)
 
     };
 
@@ -138,7 +138,7 @@ DOCD_CLASS_DECLARATION(snemo::reconstruction::charged_particle_tracking_module)
 
 #endif // FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_CHARGED_PARTICLE_TRACKING_MODULE_H
 
-// end of snemo/reconstruction/basic_particle_tracking_module.h
+// end of snemo/reconstruction/charged_particle_tracking_module.h
 /*
 ** Local Variables: --
 ** mode: c++ --

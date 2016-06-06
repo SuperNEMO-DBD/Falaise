@@ -14,25 +14,41 @@ namespace snemo {
   namespace simulation {
 
     MCTOOLS_STEP_HIT_PROCESSOR_REGISTRATION_IMPLEMENT(calorimeter_step_hit_processor,
-                                                      "snemo::simulation::calorimeter_step_hit_processor");
+                                                      "snemo::simulation::calorimeter_step_hit_processor")
 
     bool calorimeter_step_hit_processor::locate_calorimeter_block(const geomtools::vector_3d & position_,
                                                                   geomtools::geom_id & gid_) const
     {
-      if (_locator_plugin_->get_calo_locator().find_block_geom_id(position_, gid_)) {
-        DT_LOG_DEBUG(get_logging_priority(), "Find step within main wall calorimeter");
-        return true;
+      bool located = false;
+      if (!located) {
+        if (_locator_plugin_->get_calo_locator().find_block_geom_id(position_, gid_)) {
+          DT_LOG_TRACE(get_logging_priority(), "Found step with the main wall calorimeter locator.");
+          located = true;
+        }
       }
-      if (_locator_plugin_->get_xcalo_locator().find_block_geom_id(position_, gid_)) {
-        DT_LOG_DEBUG(get_logging_priority(), "Find step within X-wall calorimeter");
-        return true;
+      if (!located) {
+        if (_locator_plugin_->get_xcalo_locator().find_block_geom_id(position_, gid_)) {
+          DT_LOG_TRACE(get_logging_priority(), "Found step with the X-wall calorimeter locator.");
+          located = true;
+        }
       }
-      if (_locator_plugin_->get_gveto_locator().find_block_geom_id(position_, gid_)) {
-        DT_LOG_DEBUG(get_logging_priority(), "Find step within gamma veto calorimeter");
-        return true;
+      if (!located) {
+        if (_locator_plugin_->get_gveto_locator().find_block_geom_id(position_, gid_)) {
+          DT_LOG_TRACE(get_logging_priority(), "Found step with the gamma veto calorimeter locator.");
+          located = true;
+        }
       }
-      // Fallback locator from the parent class:
-      return this->mctools::calorimeter_step_hit_processor::locate_calorimeter_block(position_, gid_);
+      if (!located) {
+        // Fallback locator from the parent class:
+        if (this->mctools::calorimeter_step_hit_processor::locate_calorimeter_block(position_, gid_)) {
+          DT_LOG_TRACE(get_logging_priority(), "Found step with the fallback locator.");
+          located = true;
+        }
+      }
+      if (!located) {
+        DT_LOG_TRACE(get_logging_priority(), "Cannot locate step with any of the available locators!");
+      }
+      return located;
     }
 
     void calorimeter_step_hit_processor::initialize(const ::datatools::properties & config_,

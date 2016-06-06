@@ -171,12 +171,17 @@ namespace snemo {
       // 2015-01-08 XG: Implement a better energy calibration based on Poisson
       // statistics for the number of photons inside scintillator. This
       // technique should be more accurate for low energy deposit.
-      const double fwhm2sig = 2*sqrt(2*log(2.0));
-      const double nrj2photon = std::pow(fwhm2sig/_resolution_, 2);
-      const double mu = energy_ / CLHEP::MeV * nrj2photon;
-      const double spread_energy = ran_.poisson(mu) / nrj2photon;
+      // const double fwhm2sig = 2*sqrt(2*log(2.0));
+      // const double nrj2photon = std::pow(fwhm2sig/_resolution_, 2);
+      // const double mu = energy_ / CLHEP::MeV * nrj2photon;
+      // const double spread_energy = ran_.poisson(mu) / nrj2photon;
+      // return spread_energy;
 
-      return spread_energy;
+      // 2016-06-01 XG: Get back to gaussian fluctuation to avoid fixed number
+      // of photon-electron due to Poisson distribution
+      const double sigma_energy  = get_sigma_energy(energy_);
+      const double spread_energy = ran_.gaussian(energy_, sigma_energy);
+      return (spread_energy < 0.0 ? 0.0 : spread_energy);
     }
 
     double calorimeter_regime::get_sigma_energy(const double energy_) const
@@ -315,7 +320,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::calorimeter_regime,ocd_)
       .set_explicit_unit(true)
       .set_unit_label("fraction")
       .set_unit_symbol("%")
-      .set_explicit_unit(false)
       .set_default_value_real(snemo::processing::calorimeter_regime::default_energy_resolution(), "%")
       .add_example("Set the default value::                          \n"
                    "                                                 \n"

@@ -25,7 +25,7 @@ namespace bipo3 {
 
     // Registration instantiation macro :
     DPP_MODULE_REGISTRATION_IMPLEMENT(calorimeter_s2c_module,
-                                      "bipo3::processing::calorimeter_s2c_module");
+                                      "bipo3::processing::calorimeter_s2c_module")
 
     void calorimeter_s2c_module::compute_classification(const std::string & particle_name_,
                                                         std::string       & classification_)
@@ -119,7 +119,7 @@ namespace bipo3 {
                     ! service_manager_.is_a<geomtools::geometry_service>(geo_label),
                     std::logic_error,
                     "Module '" << get_name() << "' has no '" << geo_label << "' service !");
-        geomtools::geometry_service & Geo = service_manager_.get<geomtools::geometry_service>(geo_label);
+        const geomtools::geometry_service & Geo = service_manager_.get<geomtools::geometry_service>(geo_label);
         set_geom_manager(Geo.get_geom_manager());
       }
       DT_THROW_IF(_geom_manager_ == 0, std::logic_error, "Missing geometry manager !");

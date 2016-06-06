@@ -17,9 +17,9 @@
 #include <snemo/digitization/calo_tp.h>
 #include <snemo/digitization/mapping.h>
 
-int main( int /* argc_ */, char ** /* argv_ */ )
+int main(int argc_, char ** argv_)
 {
-  FALAISE_INIT();
+  falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
   try { 
@@ -72,7 +72,7 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     error_code = EXIT_FAILURE;
   }
 
-  FALAISE_FINI();
+  falaise::terminate();
   return error_code;
 }
 

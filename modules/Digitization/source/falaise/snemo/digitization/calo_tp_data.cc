@@ -28,17 +28,17 @@ namespace snemo {
       return;
     }
     
-    int calo_tp_data::get_clocktick_min_index() const
+    unsigned int calo_tp_data::get_clocktick_min_index() const
     {
 			if(_calo_tps_.size() == 0)
 				{
 					return 0;
 				}
-      int index_with_min = 0;
+      unsigned int index_with_min = 0;
 
-      int32_t clocktick_min = _calo_tps_[0].get().get_clocktick_25ns();
+      uint32_t clocktick_min = _calo_tps_[0].get().get_clocktick_25ns();
       
-      for (int i = 1; i < _calo_tps_.size(); i++)
+      for (unsigned int i = 1; i < _calo_tps_.size(); i++)
 				{
 					if (_calo_tps_[i].get().get_clocktick_25ns() < clocktick_min)
 						{
@@ -49,17 +49,17 @@ namespace snemo {
       return index_with_min;
     }
 			
-    int calo_tp_data::get_clocktick_max_index() const
+    unsigned int calo_tp_data::get_clocktick_max_index() const
     {
 			if(_calo_tps_.size() == 0)
 				{
 					return 0;
 				}
-      int index_with_max = 0;
+      unsigned int index_with_max = 0;
 
-      int32_t clocktick_max = _calo_tps_[0].get().get_clocktick_25ns();
+      uint32_t clocktick_max = _calo_tps_[0].get().get_clocktick_25ns();
       
-      for (int i = 1; i < _calo_tps_.size(); i++)
+      for (unsigned int i = 1; i < _calo_tps_.size(); i++)
 				{
 					if (_calo_tps_[i].get().get_clocktick_25ns() > clocktick_max)
 						{
@@ -70,7 +70,7 @@ namespace snemo {
       return index_with_max;
     }
 
-    int calo_tp_data::get_clocktick_min() const
+		int calo_tp_data::get_clocktick_min() const
     {
 			if(_calo_tps_.size() == 0)
 				{
@@ -79,7 +79,7 @@ namespace snemo {
       return _calo_tps_[get_clocktick_min_index()].get().get_clocktick_25ns();
     }
 
-    int calo_tp_data::get_clocktick_max() const
+		int calo_tp_data::get_clocktick_max() const
     {
 			if(_calo_tps_.size() == 0)
 				{
@@ -88,7 +88,7 @@ namespace snemo {
       return _calo_tps_[get_clocktick_max_index()].get().get_clocktick_25ns();
     }
 
-    int calo_tp_data::get_clocktick_range() const
+    unsigned int calo_tp_data::get_clocktick_range() const
     {
 			if(_calo_tps_.size() == 0)
 				{
@@ -97,13 +97,13 @@ namespace snemo {
       return get_clocktick_max() - get_clocktick_min();
     }
 			
-    void calo_tp_data::get_list_of_tp_per_clocktick(int32_t clocktick_25ns_, calo_tp_collection_type & my_list_of_tps_per_clocktick_) const
+    void calo_tp_data::get_list_of_tp_per_clocktick(uint32_t clocktick_25ns_, calo_tp_collection_type & my_list_of_tps_per_clocktick_) const
     {
 			if(_calo_tps_.size() == 0)
 				{
 					return;
 				}
-      for (int i = 0; i < _calo_tps_.size(); i++)
+      for (unsigned int i = 0; i < _calo_tps_.size(); i++)
       	{
       	  if(_calo_tps_[i].get().get_clocktick_25ns() == clocktick_25ns_)
       	    {
@@ -113,13 +113,13 @@ namespace snemo {
       return;
     }
 
-    void calo_tp_data::get_list_of_tp_per_clocktick_per_crate(int32_t clocktick_25ns_, unsigned int crate_number_, calo_tp_collection_type & my_list_of_tps_per_clocktick_per_crate_ ) const
+    void calo_tp_data::get_list_of_tp_per_clocktick_per_crate(uint32_t clocktick_25ns_, unsigned int crate_number_, calo_tp_collection_type & my_list_of_tps_per_clocktick_per_crate_ ) const
     {
 			if(_calo_tps_.size() == 0)
 				{
 					return;
 				}
-      for (int i = 0; i < _calo_tps_.size(); i++)
+      for (unsigned int i = 0; i < _calo_tps_.size(); i++)
 				{
 					if(_calo_tps_[i].get().get_clocktick_25ns() == clocktick_25ns_ && _calo_tps_[i].get().get_geom_id().get(mapping::CRATE_INDEX) == crate_number_)
 						{
@@ -207,11 +207,11 @@ namespace snemo {
 
     void calo_tp_data::_check()
     {
-      for (int i = 0; i < _calo_tps_.size() - 1; i++)
+      for (unsigned int i = 0; i < _calo_tps_.size() - 1; i++)
 				{
 					const calo_tp & tp_a = _calo_tps_[i].get();
 
-					for (int j = i+1; j < _calo_tps_.size(); j++)
+					for (unsigned int j = i+1; j < _calo_tps_.size(); j++)
 						{
 							const calo_tp & tp_b = _calo_tps_[j].get();
 

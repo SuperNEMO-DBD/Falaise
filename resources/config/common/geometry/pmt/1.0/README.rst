@@ -13,7 +13,7 @@ polycones are stored in special ASCII data files.
 Files:
 ======
 
- * ``hamamatsu_R6594/hamamatsu_R6594_shape.data`` :  8 inches  PMT for
-   SuperNEMO main walls,
- * ``hamamatsu_R5912MOD/hamamatsu_R5912MOD_shape.data`` : 5 inches PMT
-   (NEMO3) for BiPo3 and SuperNEMO gamma-vetos and X-walls.
+ * ``hamamatsu_R6594/hamamatsu_R6594_shape.data`` :  5 inches PMT
+   for BiPo3 and SuperNEMO main walls, gamma-vetos and X-walls,
+ * ``hamamatsu_R5912MOD/hamamatsu_R5912MOD_shape.data`` : 8 inches PMT for
+   SuperNEMO main walls.

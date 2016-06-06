@@ -76,8 +76,19 @@ namespace snemo {
                   "Invalid logging priority level for geometry manager !");
       set_logging_priority(lp);
 
-      if (setup_.has_key ("charge_from_source")) {
-        _charge_from_source_ = setup_.fetch_boolean ("charge_from_source");
+      if (setup_.has_key("charge_from_source")) {
+        _charge_from_source_ = setup_.fetch_boolean("charge_from_source");
+      }
+
+      if (setup_.has_key("magnetic_field_direction")) {
+        const std::string a_direction = setup_.fetch_string("magnetic_field_direction");
+        if (a_direction == "+z") {
+          _magnetic_field_direction_ = +1;
+        } else if (a_direction == "-z") {
+          _magnetic_field_direction_ = -1;
+        } else {
+          DT_THROW_IF(true, std::logic_error, "Value for 'magnetic_field_direction' must be either '+z' or '-z'!");
+        }
       }
 
       set_initialized (true);
@@ -96,6 +107,7 @@ namespace snemo {
       _initialized_        = false;
       _logging_priority_   = datatools::logger::PRIO_WARNING;
       _charge_from_source_ = true;
+      _magnetic_field_direction_ = +1;
       return;
     }
 
@@ -140,13 +152,14 @@ namespace snemo {
       const geomtools::vector_3d last_point  = ptr_helix->get_helix().get_last();
       const bool is_negative = std::fabs(first_point.x()) < std::fabs(last_point.x());
 
-      if (_charge_from_source_) {
-        if (is_negative) particle_.set_charge(snemo::datamodel::particle_track::negative);
-        else             particle_.set_charge(snemo::datamodel::particle_track::positive);
-      } else {
-        if (is_negative) particle_.set_charge(snemo::datamodel::particle_track::positive);
-        else             particle_.set_charge(snemo::datamodel::particle_track::negative);
+      int a_charge = (is_negative ? -1 : +1);
+      a_charge *= _magnetic_field_direction_;
+      if (!_charge_from_source_) {
+        a_charge *= -1;
       }
+
+      if (a_charge < 0) particle_.set_charge(snemo::datamodel::particle_track::negative);
+      else              particle_.set_charge(snemo::datamodel::particle_track::positive);
 
       DT_LOG_TRACE(get_logging_priority(), "Particle charge is " << (is_negative ? "negative" : "positive"));
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");
@@ -174,6 +187,23 @@ namespace snemo {
                        "                                       \n"
                        "  CCD.charge_from_source : boolean = 1 \n"
                        "                                       \n"
+                       )
+          ;
+      }
+      {
+        // Description of the 'CCD.magnetic_field_direction' configuration property :
+        datatools::configuration_property_description & cpd
+          = ocd_.add_property_info();
+        cpd.set_name_pattern("CCD.magnetic_field_direction")
+          .set_from("snemo::reconstruction::charge_computation_driver")
+          .set_terse_description("Set the magnetic field direction i.e. \"+z\" or \"-z\"")
+          .set_traits(datatools::TYPE_STRING)
+          .set_mandatory(false)
+          .set_default_value_string("+z")
+          .add_example("Set the default value::                          \n"
+                       "                                                 \n"
+                       "  CCD.magnetic_field_direction : string = \"+z\" \n"
+                       "                                                 \n"
                        )
           ;
       }

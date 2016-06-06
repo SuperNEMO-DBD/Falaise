@@ -32,11 +32,11 @@ namespace snemo {
     {
       //DT_THROW_IF(_geiger_tps_.size() == 0, std::logic_error, " Geiger TP collection is empty ! ");
 
-      int index_with_min = 0;
+      unsigned int index_with_min = 0;
 
       int32_t clocktick_min = _geiger_tps_[0].get().get_clocktick_800ns();
       
-      for (int i = 1; i < _geiger_tps_.size(); i++)
+      for (unsigned int i = 1; i < _geiger_tps_.size(); i++)
 	{
 	  if (_geiger_tps_[i].get().get_clocktick_800ns() < clocktick_min)
 	    {
@@ -51,11 +51,11 @@ namespace snemo {
     {
       //DT_THROW_IF(_geiger_tps_.size() == 0, std::logic_error, " Geiger TP collection is empty ! ");
 
-      int index_with_max = 0;
+      unsigned int index_with_max = 0;
 
       int32_t clocktick_max = _geiger_tps_[0].get().get_clocktick_800ns();
       
-      for (int i = 1; i < _geiger_tps_.size(); i++)
+      for (unsigned int i = 1; i < _geiger_tps_.size(); i++)
 	{
 	  if (_geiger_tps_[i].get().get_clocktick_800ns() > clocktick_max)
 	    {
@@ -86,7 +86,7 @@ namespace snemo {
 			
     void geiger_tp_data::get_list_of_gg_tp_per_clocktick(int32_t clocktick_800ns_, geiger_tp_collection_type & my_list_of_gg_tps_per_clocktick_) const
     {
-      for (int i = 0; i < _geiger_tps_.size(); i++)
+      for (unsigned int i = 0; i < _geiger_tps_.size(); i++)
       	{
       	  if(_geiger_tps_[i].get().get_clocktick_800ns() == clocktick_800ns_)
       	    {
@@ -98,7 +98,7 @@ namespace snemo {
 
     void geiger_tp_data::get_list_of_gg_tp_per_clocktick_per_crate(int32_t clocktick_800ns_, unsigned int crate_number_, geiger_tp_collection_type & my_list_of_gg_tps_per_clocktick_per_crate_) const
     {
-      for (int i = 0; i < _geiger_tps_.size(); i++)
+      for (unsigned int i = 0; i < _geiger_tps_.size(); i++)
 				{
 					if(_geiger_tps_[i].get().get_clocktick_800ns() == clocktick_800ns_ && _geiger_tps_[i].get().get_geom_id().get(mapping::CRATE_INDEX) == crate_number_)
 						{
@@ -115,7 +115,7 @@ namespace snemo {
       temporary_feb_id.set_depth(mapping::BOARD_DEPTH);
       electronic_id_.extract_to(temporary_feb_id);
 
-      for (int i = 0; i < _geiger_tps_.size(); i++)
+      for (unsigned int i = 0; i < _geiger_tps_.size(); i++)
 				{
 					if(_geiger_tps_[i].get().get_geom_id() == temporary_feb_id)
 						{
@@ -203,11 +203,11 @@ namespace snemo {
 
     void geiger_tp_data::_check()
     {
-      for (int i = 0; i < _geiger_tps_.size() - 1; i++)
+      for (unsigned int i = 0; i < _geiger_tps_.size() - 1; i++)
 				{
 					const geiger_tp & tp_a = _geiger_tps_[i].get();
 
-					for (int j = i+1; j < _geiger_tps_.size(); j++)
+					for (unsigned int j = i+1; j < _geiger_tps_.size(); j++)
 						{
 							const geiger_tp & tp_b = _geiger_tps_[j].get();
 

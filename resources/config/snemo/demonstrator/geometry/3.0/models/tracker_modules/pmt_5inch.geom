@@ -1,7 +1,8 @@
 # -*- mode: conf-unix; -*-
+# pmt_5inch.geom
 
 #################################################
-### PMT HAMAMATSU R6594                       ###
+### PMT HAMAMATSU R6594 (5")                  ###
 #################################################
 
 
@@ -9,11 +10,10 @@
 [name="PMT_HAMAMATSU_R6594.dynodes" type="geomtools::simple_shaped_model"]
 #@config Simplified PMT dynodes
 
-length_unit : string = "mm"
-shape_type  : string = "tube"
-outer_r     : real   = 15.0 mm
-inner_r     : real   = 14.5 mm
-z           : real   = 80 mm
+shape_type : string = "tube"
+outer_r    : real as length = 15.0 mm
+inner_r    : real as length = 14.5 mm
+z          : real as length = 80 mm
 
 material.ref      : string = "std::copper"
 
@@ -25,10 +25,9 @@ visibility.color  : string  = "orange"
 [name="PMT_HAMAMATSU_R6594.base" type="geomtools::simple_shaped_model"]
 #@config Simplified PMT base
 
-length_unit : string = "mm"
-shape_type  : string = "cylinder"
-r           : real   = 25.5 mm
-z           : real   = 30.0 mm
+shape_type : string = "cylinder"
+r          : real as length = 25.5 mm
+z          : real as length = 30.0 mm
 
 material.ref      : string = "std::delrin"
 
@@ -98,4 +97,5 @@ internal_item.filled.placement.dynodes : string  = "0 0 -30 (mm)"
 #@description The model of the "dynodes" daughter volume
 internal_item.filled.model.dynodes     : string  = "PMT_HAMAMATSU_R6594.dynodes"
 
-# end
+
+# end of pmt_5inch.geom

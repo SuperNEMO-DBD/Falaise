@@ -18,7 +18,22 @@
 
 // Third party:
 // - Bayeux/datatools:
+#if defined (__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-local-typedefs"
+#endif
+#if defined (__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused"
+#endif
 #include <datatools/handle.h>
+#if defined (__GNUC__)
+#pragma GCC diagnostic pop
+#endif
+#if defined (__clang__)
+#pragma clang diagnostic pop
+#endif
+
 // - Bayeux/geomtools:
 #include <geomtools/base_hit.h>
 
@@ -89,7 +104,7 @@ namespace snemo {
         double _time_;         //!< Time associated to the hit
         double _sigma_time_;   //!< Error on the time associated to the hit
 
-        DATATOOLS_SERIALIZATION_DECLARATION();
+        DATATOOLS_SERIALIZATION_DECLARATION()
 
       };
 

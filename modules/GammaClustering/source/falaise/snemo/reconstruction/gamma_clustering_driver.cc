@@ -29,15 +29,15 @@ namespace snemo {
 
   namespace reconstruction {
 
-    const std::string & gamma_clustering_driver::gamma_clustering_id()
+    const std::string & gamma_clustering_driver::get_id()
     {
-      static const std::string _id("gamma_clustering");
+      static const std::string _id("GC");
       return _id;
     }
 
     // Constructor
     gamma_clustering_driver::gamma_clustering_driver() :
-      snemo::processing::base_gamma_builder(gamma_clustering_driver::gamma_clustering_id())
+      snemo::processing::base_gamma_builder(gamma_clustering_driver::get_id())
     {
       _set_defaults();
       return;
@@ -64,13 +64,13 @@ namespace snemo {
     }
 
     // Initialization :
-    void gamma_clustering_driver::initialize(const datatools::properties  & setup_)
+    void gamma_clustering_driver::initialize(const datatools::properties & setup_)
     {
       this->snemo::processing::base_gamma_builder::_initialize(setup_);
 
       // Extract the setup of the base gamma builder :
       datatools::properties gc_setup;
-      setup_.export_and_rename_starting_with(gc_setup, "GC.", "");
+      setup_.export_and_rename_starting_with(gc_setup, get_id() + ".", "");
 
       std::string key;
       if (gc_setup.has_key(key = "cluster_time_range")) {
@@ -109,12 +109,10 @@ namespace snemo {
       return;
     }
 
-    int gamma_clustering_driver::_process_algo(snemo::datamodel::particle_track_data & ptd_)
+    int gamma_clustering_driver::_process_algo(const base_gamma_builder::hit_collection_type & calo_hits_,
+                                               snemo::datamodel::particle_track_data & ptd_)
     {
       DT_LOG_TRACE(get_logging_priority(), "Entering...");
-
-      const snemo::datamodel::calibrated_calorimeter_hit::collection_type & cch
-        = ptd_.get_non_associated_calorimeters();
 
       // Registered calorimeter hits (to be skipped)
       gid_list_type registered_calos;
@@ -122,7 +120,7 @@ namespace snemo {
       // Getting gamma clusters
       cluster_collection_type the_reconstructed_clusters;
       for (snemo::datamodel::calibrated_calorimeter_hit::collection_type::const_iterator
-             icalo = cch.begin(); icalo != cch.end(); ++icalo) {
+             icalo = calo_hits_.begin(); icalo != calo_hits_.end(); ++icalo) {
         const snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit = icalo->get();
 
         const geomtools::geom_id & a_gid = a_calo_hit.get_geom_id();
@@ -143,7 +141,7 @@ namespace snemo {
         a_cluster.insert(std::make_pair(a_calo_hit.get_time(), *icalo));
 
         // Get geometrical neighbours given the current geom id
-        _get_geometrical_neighbours(a_calo_hit, cch, a_cluster, registered_calos);
+        _get_geometrical_neighbours(a_calo_hit, calo_hits_, a_cluster, registered_calos);
 
         // Ensure all calorimeter hits within a cluster are in time
         _get_time_neighbours(a_cluster, the_reconstructed_clusters);
@@ -169,10 +167,6 @@ namespace snemo {
       // cluster_collection_type the_reconstructed_gammas = the_reconstructed_clusters;
 
       // Set new particles within 'particle track data' container
-      if (ptd_.has_non_associated_calorimeters()) {
-        DT_LOG_DEBUG(get_logging_priority(), "Removing non-associated calorimeters");
-        ptd_.reset_non_associated_calorimeters();
-      }
       for (size_t i = 0; i < the_reconstructed_gammas.size(); ++i) {
         DT_LOG_TRACE(get_logging_priority(), "Adding a new clustered gamma");
         snemo::datamodel::particle_track::handle_type hPT(new snemo::datamodel::particle_track);
@@ -202,14 +196,12 @@ namespace snemo {
           std::string label;
           if (calo_locator.is_calo_block_in_current_module(a_gid)) {
             calo_locator.get_block_position(a_gid, position);
-            double offset = 45.5 * CLHEP::mm;
+            const double offset = 45.5 * CLHEP::mm;
             if (calo_locator.extract_side(a_gid) == snemo::geometry::utils::SIDE_BACK) {
               position.setX(position.x()-offset);
-            }
-            else {
+            } else {
               position.setX(position.x()+offset);
             }
-
             label = snemo::datamodel::particle_track::vertex_on_main_calorimeter_label();
           } else if (xcalo_locator.is_calo_block_in_current_module(a_gid)) {
             xcalo_locator.get_block_position(a_gid, position);
@@ -288,9 +280,9 @@ namespace snemo {
 
       for (gid_list_type::const_iterator ineighbour = the_neighbours.begin();
            ineighbour != the_neighbours.end(); ++ineighbour) {
-        const geomtools::geom_id & a_gid = *ineighbour;
-        DT_LOG_TRACE(get_logging_priority(), "Neighbour geom_id " << a_gid);
-        if (std::find(registered_calos_.begin(), registered_calos_.end(), a_gid)
+        const geomtools::geom_id & aa_gid = *ineighbour;
+        DT_LOG_TRACE(get_logging_priority(), "Neighbour geom_id " << aa_gid);
+        if (std::find(registered_calos_.begin(), registered_calos_.end(), aa_gid)
             != registered_calos_.end()) {
           continue;
         }

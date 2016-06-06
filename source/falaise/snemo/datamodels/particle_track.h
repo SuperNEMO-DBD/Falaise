@@ -71,7 +71,7 @@ namespace snemo {
         VERTEX_ON_MAIN_CALORIMETER  = datatools::bit_mask::bit01,
         VERTEX_ON_X_CALORIMETER     = datatools::bit_mask::bit02,
         VERTEX_ON_GAMMA_VETO        = datatools::bit_mask::bit03,
-        VERTEX_ON_WIRE              = datatools::bit_mask::bit04,
+        VERTEX_ON_WIRE              = datatools::bit_mask::bit04
       };
 
       /// Key for the vertex type property
@@ -222,7 +222,7 @@ namespace snemo {
       vertex_collection_type                      _vertices_;                    //!< Collection of vertices
       calibrated_calorimeter_hit::collection_type _associated_calorimeter_hits_; //!< Collection of associated calorimeter hits
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

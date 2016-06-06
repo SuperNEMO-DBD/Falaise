@@ -11,7 +11,8 @@
 // - GSL:
 #include <gsl/gsl_cdf.h>
 // - Boost:
-#include <boost/fusion/iterator/next.hpp>
+#include <boost/next_prior.hpp>
+// #include <boost/fusion/iterator/next.hpp>
 // - Bayeux/datatools:
 #include <datatools/properties.h>
 
@@ -37,7 +38,7 @@ namespace gt {
     _min_chi2_         = gt_._min_chi2_;
 
     for (std::map<const list_type*,double>::const_iterator mit = gt_._chi2_.begin();
-	 mit != gt_._chi2_.end(); ++mit) {
+         mit != gt_._chi2_.end(); ++mit) {
       solution_type::iterator it = std::find(_serie_.begin(), _serie_.end(), *(mit->first));
       if (it != _serie_.end())
         _chi2_[&(*it)] = mit->second;

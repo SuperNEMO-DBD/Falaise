@@ -24,9 +24,11 @@
 
 // Third party:
 // - Boost
+#define BOOST_SYSTEM_NO_DEPRECATED 1
 #include <boost/filesystem.hpp>
+#undef BOOST_SYSTEM_NO_DEPRECATED
 // - Bayeux/datatools:
-#include <datatools/io_factory.h>
+#include <bayeux/datatools/io_factory.h>
 
 // This project:
 #include <falaise/snemo/io/data_model.h>

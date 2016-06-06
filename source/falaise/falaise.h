@@ -30,31 +30,11 @@
 // This project
 
 namespace falaise {
-
-  /// Check if Bayeux is embedded
-  bool bayeux_embedded();
-
-  /// Initialize special resources of the Falaise library
+  /// Initialize resources of the Falaise library
   void initialize(int argc_ = 0, char * argv_[] = 0);
 
-  /// Terminate special resources of the Falaise library
+  /// Terminate resources of the Falaise library
   void terminate();
-
 }
-
-/// Falaise initialization macro using main function arguments
-#define FALAISE_INIT_MAIN(Argc,Argv)            \
-  ::falaise::initialize( Argc , Argv );         \
-  /**/
-
-/// Falaise initialization macro
-#define FALAISE_INIT()                          \
-  ::falaise::initialize(0, 0);                  \
-  /**/
-
-/// Falaise termination macro
-#define FALAISE_FINI()                          \
-  ::falaise::terminate();                       \
-  /**/
 
 #endif // FALAISE_FALAISE_H

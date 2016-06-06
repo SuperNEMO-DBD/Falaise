@@ -71,12 +71,33 @@ namespace snemo {
 
       /// Return the mutable collection of geigers trigger primitive			
       geiger_signal_collection_type & grab_geiger_signals();
+			
+			/// Return the total number of geiger signals
+			std::size_t get_number_of_geiger_signals() const;
+			
+			/// Return the number of prompt (< time_limit_) geiger signals 
+			std::size_t get_number_of_prompt_geiger_signals(double time_limit_) const;
+
+			/// Return the number of delayed (> time_limit_) geiger signals 
+			std::size_t get_number_of_delayed_geiger_signals(double time_limit_) const;
 
       /// Return the const collection of geigers trigger primitive
       const calo_signal_collection_type & get_calo_signals() const;
 
       /// Return the mutable collection of geigers trigger primitive			
       calo_signal_collection_type & grab_calo_signals();
+
+			/// Return the total number of calo signals
+			std::size_t get_number_of_calo_signals() const;
+
+			/// Return the total number of main calo signals
+			std::size_t get_number_of_main_calo_signals() const;
+
+			/// Return the total number of xcalo signals
+			std::size_t get_number_of_xcalo_signals() const;
+
+			/// Return the total number of gveto signals
+			std::size_t get_number_of_gveto_signals() const;
 			
 			/// Check if signal data has geiger signals
 			bool has_geiger_signals();
@@ -103,7 +124,7 @@ namespace snemo {
       geiger_signal_collection_type _geiger_signals_; //!< Collection of geigers tracker primitive
       calo_signal_collection_type _calo_signals_; //!< Collection of calos tracker primitive
 
-      //DATATOOLS_SERIALIZATION_DECLARATION();
+      //DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

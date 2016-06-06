@@ -66,7 +66,7 @@ namespace snemo {
       uint32_t get_mode() const;
 
       /// Check mode FLAG
-      bool is_mode_flag () const;
+      bool is_mode_flag() const;
 
       /// Check mode HAS_ASSOCIATED_CALORIMETER_HITS
       bool is_mode_has_associated_calorimeter_hits() const;
@@ -117,7 +117,7 @@ namespace snemo {
       int _calorimeter_hits_range_max_; //!< Maximal number of associated calorimeter
 
       // Macro to automate the registration of the cut :
-      CUT_REGISTRATION_INTERFACE(particle_track_cut);
+      CUT_REGISTRATION_INTERFACE(particle_track_cut)
     };
 
   }  // end of namespace cut

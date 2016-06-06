@@ -1,0 +1,42 @@
+# -*- mode: conf-unix; -*-
+# @falaise:config/common/geometry/materials/2.0/elements.def
+# List of elements (format: datatools::multi_properties):
+
+#@description A standard list of elements
+#@key_label   "name"
+#@meta_label  "type"
+
+
+##########################################
+[name="snemo::selenium-82" type="element"]
+#@config The 82 Selenium enriched element (100 %)
+z               : integer   = 34
+isotope.names   : string[1] = "Se-82"
+isotope.weights : real[1]   =   1.0
+
+
+###########################################################
+[name="snemo::selenium-82::97percent" type="element"]
+#@config The 82 Selenium enriched element (97 %)
+z               : integer   = 34
+isotope.names   : string[3] = "Se-82" "Se-80" "Se-78"
+isotope.weights : real[3]   =  0.97    0.02    0.01
+
+
+#########################################
+[name="snemo::calcium-48" type="element"]
+#@config The 48 Calcium enriched element (100 %)
+z               : integer   = 20
+isotope.names   : string[1] = "Ca-48"
+isotope.weights : real[1]   =   1.0
+
+
+###################################################
+[name="snemo::neodymium-150::nemo3" type="element"]
+#@config The 150 Neodymium enriched element (NEMO3 composition, 91 %)
+z               : integer   = 60
+isotope.names   : string[7] = "Nd-150" "Nd-148" "Nd-146" "Nd-145" "Nd-144" "Nd-143" "Nd-142"
+isotope.weights : real[7]   =  0.9096   0.0219   0.0209   0.0092   0.0192   0.0081   0.0111
+
+
+# end of @falaise:config/common/geometry/materials/2.0/elements.def

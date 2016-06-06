@@ -3,8 +3,8 @@ Working With Events in FLReconstruct {#workingwitheventrecords}
 
 \tableofcontents
 
-Introduction {#introduction}
-============
+Introduction to event record {#workingwitheventrecords_introduction}
+====================================
 The C++ type used to represent events in `flreconstruct` is the
 @ref datatools::things class. Pipeline module classes inherit from
 @ref dpp::base_module and thus must implement the
@@ -33,7 +33,7 @@ custom pipeline module,
 3. Implementing custom objects for storage in `datatools::things`
 
 
-Reading Data from datatools::things Instances {#things_readingdata}
+Reading Data from datatools::things Instances {#workingwitheventrecords_things_readingdata}
 =============================================
 To work with events in the pipeline we first need to implement a pipeline
 module to do this. The basics of how to do this are covered in [a dedicated tutorial](@ref writingflreconstructmodules) and you should familiarize
@@ -252,4 +252,3 @@ into a shared library using the above CMake script and then use the following pi
 
 You should see that the `PostProcess` stage results in output containing
 the information written into the `ATMCounter` bank.
-

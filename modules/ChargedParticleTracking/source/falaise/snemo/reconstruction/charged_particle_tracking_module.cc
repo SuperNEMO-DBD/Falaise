@@ -1,7 +1,7 @@
 // \file falaise/snemo/reconstruction/charged_particle_tracking_module.cc
 
 // Ourselves:
-#include <snemo/reconstruction/charged_particle_tracking_module.h>
+#include <falaise/snemo/reconstruction/charged_particle_tracking_module.h>
 
 // Standard library:
 #include <stdexcept>
@@ -9,10 +9,10 @@
 
 // Third party:
 // - Bayeux/datatools:
-#include <datatools/service_manager.h>
+#include <bayeux/datatools/service_manager.h>
 // - Bayeux/geomtools:
-#include <geomtools/geometry_service.h>
-#include <geomtools/manager.h>
+#include <bayeux/geomtools/geometry_service.h>
+#include <bayeux/geomtools/manager.h>
 
 // This project (Falaise):
 #include <falaise/snemo/processing/services.h>
@@ -34,7 +34,7 @@ namespace snemo {
 
     // Registration instantiation macro
     DPP_MODULE_REGISTRATION_IMPLEMENT(charged_particle_tracking_module,
-                                      "snemo::reconstruction::charged_particle_tracking_module");
+                                      "snemo::reconstruction::charged_particle_tracking_module")
 
     const geomtools::manager & charged_particle_tracking_module::get_geometry_manager() const
     {
@@ -86,7 +86,7 @@ namespace snemo {
         _PTD_label_ = setup_.fetch_string("PTD_label");
       }
 
-      std::string geometry_label;
+      std::string geometry_label = snemo::processing::service_info::default_geometry_service_label();
       if (setup_.has_key("Geo_label")) {
         geometry_label = setup_.fetch_string("Geo_label");
       }
@@ -98,15 +98,22 @@ namespace snemo {
                     ! service_manager_.is_a<geomtools::geometry_service>(geometry_label),
                     std::logic_error,
                     "Module '" << get_name() << "' has no '" << geometry_label << "' service !");
-        geomtools::geometry_service & Geo
+        const geomtools::geometry_service & Geo
           = service_manager_.get<geomtools::geometry_service>(geometry_label);
         set_geometry_manager(Geo.get_geom_manager());
       }
 
       // Drivers :
-      DT_THROW_IF(! setup_.has_key("drivers"), std::logic_error, "Missing 'drivers' key !");
       std::vector<std::string> driver_names;
-      setup_.fetch("drivers", driver_names);
+      if (setup_.has_key("drivers")) {
+        setup_.fetch("drivers", driver_names);
+      } else {
+        // Add default set of drivers
+        driver_names.push_back(snemo::reconstruction::vertex_extrapolation_driver::get_id());
+        driver_names.push_back(snemo::reconstruction::charge_computation_driver::get_id());
+        driver_names.push_back(snemo::reconstruction::calorimeter_association_driver::get_id());
+        driver_names.push_back(snemo::reconstruction::alpha_finder_driver::get_id());
+      }
       for (std::vector<std::string>::const_iterator
              idriver = driver_names.begin();
            idriver != driver_names.end(); ++idriver) {
@@ -257,7 +264,7 @@ namespace snemo {
       DT_LOG_TRACE(get_logging_priority(), "Entering...");
 
       // Process trajectories using external resource:
-      if (!tracker_trajectory_data_.has_default_solution()) {
+      if (! tracker_trajectory_data_.has_default_solution()) {
         DT_LOG_DEBUG(get_logging_priority(),
                      "No default trajectory solution has been found");
         // Fill non associated calorimeter hits
@@ -311,21 +318,72 @@ namespace snemo {
                                                          snemo::datamodel::particle_track_data & particle_track_data_)
     {
       // Grab non associated calorimeters :
-      geomtools::base_hit::has_flag_predicate asso_pred(calorimeter_association_driver::associated_flag());
-      geomtools::base_hit::negates_predicate not_asso_pred(asso_pred);
-      // Wrapper predicates :
-      datatools::mother_to_daughter_predicate<geomtools::base_hit,
-                                              snemo::datamodel::calibrated_calorimeter_hit> pred_M2D(not_asso_pred);
-      datatools::handle_predicate<snemo::datamodel::calibrated_calorimeter_hit> pred_via_handle(pred_M2D);
-      const snemo::datamodel::calibrated_data::calorimeter_hit_collection_type & chits
-        = calibrated_data_.calibrated_calorimeter_hits();
-      snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::const_iterator ihit
-        = std::find_if(chits.begin(), chits.end(), pred_via_handle);
-      while (ihit != chits.end()) {
-        particle_track_data_.grab_non_associated_calorimeters().push_back(*ihit);
-        ihit = std::find_if(++ihit, chits.end(), pred_via_handle);
+      if (! particle_track_data_.has_non_associated_calorimeters()) {
+        geomtools::base_hit::has_flag_predicate asso_pred(calorimeter_utils::associated_flag());
+        geomtools::base_hit::negates_predicate not_asso_pred(asso_pred);
+        // Wrapper predicates :
+        datatools::mother_to_daughter_predicate<geomtools::base_hit,
+                                                snemo::datamodel::calibrated_calorimeter_hit> pred_M2D(not_asso_pred);
+        datatools::handle_predicate<snemo::datamodel::calibrated_calorimeter_hit> pred_via_handle(pred_M2D);
+        const snemo::datamodel::calibrated_data::calorimeter_hit_collection_type & chits
+          = calibrated_data_.calibrated_calorimeter_hits();
+        snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::const_iterator ihit
+          = std::find_if(chits.begin(), chits.end(), pred_via_handle);
+        while (ihit != chits.end()) {
+          particle_track_data_.grab_non_associated_calorimeters().push_back(*ihit);
+          ihit = std::find_if(++ihit, chits.end(), pred_via_handle);
+        }
       }
 
+      // 2015/12/02 XG: Also look if the non associated calorimeters are
+      // isolated i.e. without Geiger cells in front or not: tag them
+      // consequently
+      {
+        const snemo::datamodel::calibrated_data::tracker_hit_collection_type & thits
+          = calibrated_data_.calibrated_tracker_hits();
+        snemo::datamodel::calibrated_data::calorimeter_hit_collection_type & chits
+          = particle_track_data_.grab_non_associated_calorimeters();
+        for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::iterator
+               chit = chits.begin(); chit != chits.end(); ++chit) {
+          snemo::datamodel::calibrated_calorimeter_hit & a_calo_hit = chit->grab();
+          bool has_gg_in_front = false;
+
+          // Getting geometry mapping for parted block
+          const geomtools::mapping & the_mapping = get_geometry_manager().get_mapping();
+          std::vector<geomtools::geom_id> gids;
+          the_mapping.compute_matching_geom_id(a_calo_hit.get_geom_id(), gids);
+          for (size_t i = 0; i < gids.size(); ++i) {
+            const geomtools::geom_id & a_gid = gids.at(i);
+            const geomtools::geom_info * ginfo_ptr = the_mapping.get_geom_info_ptr(a_gid);
+            if (! ginfo_ptr) {
+              DT_LOG_WARNING(get_logging_priority(), "Unmapped geom id " << a_gid << "!");
+              continue;
+            }
+            // Loop over all calibrated geiger hits to find one close enough
+            for (snemo::datamodel::calibrated_data::tracker_hit_collection_type::const_iterator
+                   thit = thits.begin(); thit != thits.end(); ++thit) {
+              const snemo::datamodel::calibrated_tracker_hit & a_tracker_hit = thit->get();
+              if (! a_tracker_hit.has_xy()) continue;
+              DT_LOG_TRACE(get_logging_priority(), "Geiger cell has xy position");
+              const geomtools::vector_3d cell_pos(a_tracker_hit.get_x(),
+                                                  a_tracker_hit.get_y(),
+                                                  a_tracker_hit.get_z());
+              // Tolerance must be understood as 'skin' tolerance so must be
+              // multiplied by a factor of 2
+              const double tolerance = 100 * CLHEP::mm;
+              if (the_mapping.check_inside(*ginfo_ptr, cell_pos, tolerance, true)) {
+                DT_LOG_TRACE(get_logging_priority(), "Found Geiger cell in front of calorimeter block");
+                has_gg_in_front = true;
+                break;
+              }
+            } // end of tracker hits
+            if (has_gg_in_front) break;
+          } // end of calorimeter geom ids
+          if (! has_gg_in_front) {
+            calorimeter_utils::flag_as(a_calo_hit, calorimeter_utils::isolated_flag());
+          }
+        } // end of calorimeter hits
+      }
       return;
     }
 
@@ -422,7 +480,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::charged_particle_tracking
       .set_long_description("This is the name of the service to be used as the \n"
                             "geometry service.                                 \n"
                             "This property is only used if no geometry manager \n"
-                            "as been provided to the module.                   \n")
+                            "has been provided to the module.                  \n")
       .set_default_value_string(snemo::processing::service_info::default_geometry_service_label())
       .add_example("Use an alternative name for the geometry service:: \n"
                    "                                                   \n"

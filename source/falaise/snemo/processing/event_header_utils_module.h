@@ -33,7 +33,7 @@ namespace snemo {
       /// Processing mode
       enum mode_type {
         MODE_INVALID    = 0,
-        MODE_ADD_HEADER = 0x1,
+        MODE_ADD_HEADER = 0x1
       };
 
       /// Constructor
@@ -75,7 +75,7 @@ namespace snemo {
                                                   //!< starting with this prefix
 
       // Macro to automate the registration of the module :
-      DPP_MODULE_REGISTRATION_INTERFACE(event_header_utils_module);
+      DPP_MODULE_REGISTRATION_INTERFACE(event_header_utils_module)
 
     };
 

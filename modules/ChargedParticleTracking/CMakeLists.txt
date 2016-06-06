@@ -1,24 +1,20 @@
 # - Basic CMake setup
 # Check version meets ou requirements
 # Declare project, which will configure compiler for us
-cmake_minimum_required(VERSION 2.8)
-project(FalaiseChargedParticleTrackingPlugin)
+cmake_minimum_required(VERSION 3.3)
+project(FalaiseChargedParticleTrackingPlugin VERSION "2.1.0")
 
 # Modules use Falaise, so we need to locate this or fail
 # find_package(Falaise REQUIRED)
 
 # Ensure our code can see the Falaise headers
-#include_directories(${Falaise_INCLUDE_DIRS})
-include_directories(${Falaise_BUILDPRODUCT_DIR}/include)
-include_directories(${Falaise_BUILDPRODUCT_DIR}/include/falaise)
-include_directories(${Bayeux_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source)
+# include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../TrackFit/source)
 
 
 ############################################################################################
 # - ChargedParticleTracking modules:
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source/falaise)
 
 # - Headers:
 list(APPEND FalaiseChargedParticleTrackingPlugin_HEADERS
@@ -43,7 +39,11 @@ add_library(Falaise_ChargedParticleTracking SHARED
   ${FalaiseChargedParticleTrackingPlugin_HEADERS}
   ${FalaiseChargedParticleTrackingPlugin_SOURCES})
 
-target_link_libraries(Falaise_ChargedParticleTracking Falaise)
+target_link_libraries(Falaise_ChargedParticleTracking
+  Falaise
+  # Falaise_TrackFit
+  # TrackFit
+  )
 
 # Apple linker requires dynamic lookup of symbols, so we
 # add link flags on this platform

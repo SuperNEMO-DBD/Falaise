@@ -115,7 +115,7 @@ namespace snemo {
       const snemo::geometry::xcalo_locator * _xcalo_locator_; //!< X-wall locator
       const snemo::geometry::gveto_locator * _gveto_locator_; //!< gamma-veto locator
 
-      GEOMTOOLS_PLUGIN_REGISTRATION_INTERFACE(locator_plugin);
+      GEOMTOOLS_PLUGIN_REGISTRATION_INTERFACE(locator_plugin)
 
     };
 

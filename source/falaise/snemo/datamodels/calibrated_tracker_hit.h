@@ -247,7 +247,7 @@ namespace snemo {
       double   _delayed_time_;       //!< Delayed reference time
       double   _delayed_time_error_; //!< Delayed reference time error
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

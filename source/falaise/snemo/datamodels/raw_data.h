@@ -31,7 +31,7 @@ namespace snemo {
   namespace datamodel {
 
     /// \brief The data structure that hosts information about the raw event (trigger and hits)
-    class raw_data : DATATOOLS_SERIALIZABLE_CLASS,
+    class raw_data : public datatools::i_serializable,
                      public datatools::i_tree_dumpable
     {
 
@@ -89,7 +89,7 @@ namespace snemo {
       raw_tracker_hit_col     _raw_tracker_hits_;     //!< Collection of raw tracker hits
       datatools::properties   _auxiliaries_;          //!< Auxiliary properties
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

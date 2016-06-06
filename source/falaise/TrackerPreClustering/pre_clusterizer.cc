@@ -1,7 +1,7 @@
 /// \file falaise/TrackerPreClustering/pre_clusterizer.cc
 
 // Ourselves:
-#include <TrackerPreClustering/pre_clusterizer.h>
+#include "falaise/TrackerPreClustering/pre_clusterizer.h"
 
 // Standard library:
 #include <limits>
@@ -13,7 +13,7 @@
 // - CLHEP:
 #include <CLHEP/Units/SystemOfUnits.h>
 // - Bayeux/datatools:
-#include <datatools/exception.h>
+#include <bayeux/datatools/exception.h>
 
 namespace TrackerPreClustering {
 

@@ -169,10 +169,10 @@ int main (int argc_, char ** argv_)
     geomtools::placement working_ref;
     TrackFit::line_fit_mgr::compute_best_frame (hits, hits_ref, working_ref);
     {
-      TrackFit::drawing my_drawing;
-      geomtools::placement pl (0, 0, 0, 0, 0, 0);
+      TrackFit::drawing a_drawing;
+      geomtools::placement a_pl (0, 0, 0, 0, 0, 0);
       ftmp.out() << "# Hits in working reference frame" << std::endl;
-      my_drawing.draw (ftmp.out(), pl, hits_ref);
+      a_drawing.draw (ftmp.out(), a_pl, hits_ref);
       ftmp.out() << std::endl << std::endl;
     }
 

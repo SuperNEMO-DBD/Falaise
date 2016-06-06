@@ -20,6 +20,10 @@ geometry setups.
  * Setup label is : ``common::geometry::materials``
  * Setup version is : ``1.0``
 
+These definition of materials and aliases is obsolete and should not be
+used anymore.
+
+
 Files:
 ======
 
@@ -27,3 +31,6 @@ Files:
  * ``elements.def`` : list of elements,
  * ``materials.def`` : list of materials,
  * ``materials_aliases.def`` : list of material aliases.
+
+   * Fix: move ``PFTE`` to ``PTFE``
+   * Fix: make ``snemo::PTFE`` alias for ``std::ptfe``

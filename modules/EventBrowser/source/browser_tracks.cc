@@ -57,7 +57,7 @@
 #include <falaise/snemo/datamodels/helix_trajectory_pattern.h>
 #include <falaise/snemo/datamodels/line_trajectory_pattern.h>
 
-ClassImp(snemo::visualization::view::browser_tracks);
+ClassImp(snemo::visualization::view::browser_tracks)
 
 namespace snemo {
 
@@ -370,10 +370,11 @@ namespace snemo {
             std::ostringstream label;
             label.precision(3);
             label.setf(std::ios::fixed, std::ios::floatfield);
-            label << ip->get_particle_label() << " particle: "
-                  << "E = " << ip->get_kinetic_energy() / CLHEP::MeV << " MeV, "
-                  << "t = " << ip->get_time() / CLHEP::ns << " ns - "
-                  << "(px, py, pz) = " << ip->get_momentum() / CLHEP::MeV << " MeV, "
+            label << ip->get_particle_label() << " particle: E = ";
+            utils::root_utilities::get_prettified_energy(label, ip->get_kinetic_energy());
+            label << ", t = ";
+            utils::root_utilities::get_prettified_time(label, ip->get_time());
+            label << " - (px, py, pz) = " << ip->get_momentum() / CLHEP::MeV << " MeV, "
                   << "(x, y, z) = ";
             if (sd.has_vertex()) {
               label << sd.get_vertex() / CLHEP:: mm << " mm";
@@ -479,8 +480,8 @@ namespace snemo {
                   label_hit << "Step #" << a_step.get_hit_id() << " - "
                             << "particle " << a_step.get_particle_name();
                   if (a_step.get_energy_deposit() > 0.0) {
-                    label_hit << " / energy deposit = "
-                              << a_step.get_energy_deposit() / CLHEP::keV << " keV";
+                    label_hit << " / energy deposit = ";
+                    utils::root_utilities::get_prettified_energy(label_hit, a_step.get_energy_deposit());
                   }
                   TGListTreeItem * item_hit
                     = _tracks_list_box_->AddItem(item, label_hit.str().c_str());
@@ -576,9 +577,9 @@ namespace snemo {
                 label_hit.setf(std::ios::fixed, std::ios::floatfield);
                 label_hit << a_calo_name
                           << " hit #" << a_step.get_hit_id() << " - "
-                          << "Energy deposit = "
-                          << a_step.get_energy_deposit() / CLHEP::keV << " keV - "
-                          << "geom_id = " << a_step.get_geom_id();
+                          << "Energy deposit = ";
+                utils::root_utilities::get_prettified_energy(label_hit, a_step.get_energy_deposit());
+                label_hit << " - geom_id = " << a_step.get_geom_id();
 
                 TGListTreeItem * item_hit
                   = _tracks_list_box_->AddItem(item_mc_calorimeter,
@@ -731,11 +732,10 @@ namespace snemo {
             label_hit.setf(std::ios::fixed, std::ios::floatfield);
             if (a_hit.get_auxiliaries().has_key("category"))
               label_hit << a_hit.get_auxiliaries().fetch_string("category") << " ";
-            label_hit << "hit #" << a_hit.get_hit_id() << " - "
-                      << "E = " << a_hit.get_energy() / CLHEP::keV << " +/- "
-                      << a_hit.get_sigma_energy()     / CLHEP::keV << " keV - "
-                      << "t = " << a_hit.get_time()   / CLHEP::ns  << " +/- "
-                      << a_hit.get_sigma_time()       / CLHEP::ns  << " ns";
+            label_hit << "hit #" << a_hit.get_hit_id() << " - E = ";
+            utils::root_utilities::get_prettified_energy(label_hit, a_hit.get_energy(), a_hit.get_sigma_energy());
+            label_hit << " - t = ";
+            utils::root_utilities::get_prettified_time(label_hit, a_hit.get_time(), a_hit.get_sigma_time());
 
             TGListTreeItem * item_hit
               = _tracks_list_box_->AddItem(item_calorimeter,
@@ -851,13 +851,15 @@ namespace snemo {
         //        _tracks_list_box_->SetCheckBox(item_tracker_cluster);
         _tracks_list_box_->OpenItem(item_tracker_cluster);
 
-        std::ostringstream tip_text;
-        if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
-          tcd.tree_dump(tip_text);
-        } else {
-          tip_text << "Double click to expand tracker clustering data";
+        {
+          std::ostringstream tip_text;
+          if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
+            tcd.tree_dump(tip_text);
+          } else {
+            tip_text << "Double click to expand tracker clustering data";
+          }
+          item_tracker_cluster->SetTipText(tip_text.str().c_str());
         }
-        item_tracker_cluster->SetTipText(tip_text.str().c_str());
 
         snemo::datamodel::tracker_clustering_data::solution_col_type & cluster_solutions
           = tcd.grab_solutions();
@@ -887,12 +889,12 @@ namespace snemo {
           _tracks_list_box_->OpenItem(item_solution);
           item_solution->SetUserData((void*)(intptr_t)++icheck_id);
           item_solution->SetCheckBox(true);
-
-          // Set tooltip text
-          std::ostringstream tip_text;
-          a_solution.tree_dump(tip_text);
-          item_solution->SetTipText(tip_text.str().c_str());
-
+          {
+            // Set tooltip text
+            std::ostringstream tip_text;
+            a_solution.tree_dump(tip_text);
+            item_solution->SetTipText(tip_text.str().c_str());
+          }
           // Get solution auxiliaries:
           datatools::properties & a_auxiliaries = a_solution.grab_auxiliaries();
 
@@ -926,17 +928,17 @@ namespace snemo {
                                            label_cluster.str().c_str());
             item_cluster->SetUserData((void*)(intptr_t)++icheck_id);
             item_cluster->SetCheckBox(true);
-
-            // Set tooltip text
-            std::ostringstream tip_text;
-            a_cluster.tree_dump(tip_text);
-            item_cluster->SetTipText(tip_text.str().c_str());
-
+            {
+              // Set tooltip text
+              std::ostringstream tip_text;
+              a_cluster.tree_dump(tip_text);
+              item_cluster->SetTipText(tip_text.str().c_str());
+            }
             // Get cluster auxiliaries:
-            datatools::properties & a_auxiliaries = a_cluster.grab_auxiliaries();
+            datatools::properties & aa_auxiliaries = a_cluster.grab_auxiliaries();
 
-            if (a_auxiliaries.has_key(browser_tracks::CHECKED_FLAG))
-              item_cluster->CheckItem(a_auxiliaries.has_flag(browser_tracks::CHECKED_FLAG));
+            if (aa_auxiliaries.has_key(browser_tracks::CHECKED_FLAG))
+              item_cluster->CheckItem(aa_auxiliaries.has_flag(browser_tracks::CHECKED_FLAG));
 
             // Update base hit dictionnary:
             _base_hit_dictionnary_[icheck_id] = &(a_cluster);
@@ -944,8 +946,8 @@ namespace snemo {
             // If color is available, add a color box close to the
             // item (obsolete since xpm icon can be colorized):
             std::string hex_str;
-            if (a_auxiliaries.has_key(browser_tracks::COLOR_FLAG)) {
-              a_auxiliaries.fetch(browser_tracks::COLOR_FLAG, hex_str);
+            if (aa_auxiliaries.has_key(browser_tracks::COLOR_FLAG)) {
+              aa_auxiliaries.fetch(browser_tracks::COLOR_FLAG, hex_str);
               //const size_t color = TColor::GetColor(hex_str.c_str());
               //item_cluster->SetColor(color);
             }
@@ -1054,12 +1056,11 @@ namespace snemo {
             }
           }
 
-          const bool checked = true;
           TGListTreeItemStdPlus * item_solution = new TGListTreeItemStdPlus(label_solution.str().c_str(),
                                                                             this,
                                                                             _get_colored_icon_("ofolder"),
                                                                             _get_colored_icon_("folder"),
-                                                                            checked);
+                                                                            /*check=*/true);
           _tracks_list_box_->AddItem(item_tracker_trajectory, item_solution);
           // TGListTreeItem * item_solution
           //   = _tracks_list_box_->AddItem(item_tracker_trajectory,
@@ -1116,8 +1117,8 @@ namespace snemo {
             }
             if (properties.has_key("t0")) {
               const double t0 = properties.fetch_real("t0");
-              label_trajectory << std::setprecision(0) << std::fixed
-                               << ", t0 = " << t0 / CLHEP::ns << " ns";
+              label_trajectory << std::setprecision(0) << std::fixed << ", t0 = ";
+              utils::root_utilities::get_prettified_time(label_trajectory, t0);
             }
             if (properties.has_key("guess")) {
               label_trajectory << " (" << properties.fetch_string("guess") << " guess)";
@@ -1133,12 +1134,11 @@ namespace snemo {
                 snemo::datamodel::helix_trajectory_pattern::pattern_id()) {
               // First time instantiate it
               if (!item_helix_solution) {
-                const bool checked = true;
                 item_helix_solution = new TGListTreeItemStdPlus("Helix trajectories",
                                                                 this,
                                                                 _get_colored_icon_("ofolder"),
                                                                 _get_colored_icon_("folder"),
-                                                                checked);
+                                                                /*check=*/true);
                 _tracks_list_box_->AddItem(item_solution,
                                            item_helix_solution);
                 // _tracks_list_box_->OpenItem(item_helix_solution);
@@ -1238,15 +1238,15 @@ namespace snemo {
         item_particle_track_data->SetCheckBox(false);
         item_particle_track_data->SetUserData((void*)(intptr_t)++icheck_id);
         _tracks_list_box_->OpenItem(item_particle_track_data);
-
-        std::ostringstream tip_text;
-        if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
-          ptd.tree_dump(tip_text);
-        } else {
-          tip_text << "Double click to expand particle track data";
+        {
+          std::ostringstream tip_text;
+          if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
+            ptd.tree_dump(tip_text);
+          } else {
+            tip_text << "Double click to expand particle track data";
+          }
+          item_particle_track_data->SetTipText(tip_text.str().c_str());
         }
-        item_particle_track_data->SetTipText(tip_text.str().c_str());
-
         // Add unassociated calorimeter hits info
         if (ptd.has_non_associated_calorimeters()) {
           snemo::datamodel::calibrated_data::calorimeter_hit_collection_type & cc_collection
@@ -1263,11 +1263,10 @@ namespace snemo {
             label_hit << "Unassociated ";
             if (a_hit.get_auxiliaries().has_key("category"))
               label_hit << a_hit.get_auxiliaries().fetch_string("category") << " block ";
-            label_hit << "hit #" << a_hit.get_hit_id() << " - "
-                      << "E = " << a_hit.get_energy() / CLHEP::keV << " +/- "
-                      << a_hit.get_sigma_energy()     / CLHEP::keV << " keV - "
-                      << "t = " << a_hit.get_time()   / CLHEP::ns  << " +/- "
-                      << a_hit.get_sigma_time()       / CLHEP::ns  << " ns";
+            label_hit << "hit #" << a_hit.get_hit_id() << " - E = ";
+            utils::root_utilities::get_prettified_energy(label_hit, a_hit.get_energy(), a_hit.get_sigma_energy());
+            label_hit << " - t = ";
+            utils::root_utilities::get_prettified_time(label_hit, a_hit.get_time(), a_hit.get_sigma_time());
 
             TGListTreeItem * item_hit
               = _tracks_list_box_->AddItem(item_particle_track_data,
@@ -1277,14 +1276,16 @@ namespace snemo {
             item_hit->SetPictures(_get_colored_icon_("calorimeter", "", true),
                                   _get_colored_icon_("calorimeter"));
 
-            std::ostringstream tip_text;
-            if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
-              a_hit.tree_dump(tip_text);
-            } else {
-              tip_text << "Double click to highlight calorimeter hit "
-                       << "and to dump info on terminal";
+            {
+              std::ostringstream tip_text;
+              if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
+                a_hit.tree_dump(tip_text);
+              } else {
+                tip_text << "Double click to highlight calorimeter hit "
+                         << "and to dump info on terminal";
+              }
+              item_hit->SetTipText(tip_text.str().c_str());
             }
-            item_hit->SetTipText(tip_text.str().c_str());
           }
         }
 
@@ -1331,12 +1332,12 @@ namespace snemo {
           item_particle->SetUserData((void*)(intptr_t)-(++icheck_id));
           item_particle->SetCheckBox(true);
           item_particle->SetOpen(true);
-
-          // Set tooltip text
-          std::ostringstream tip_text;
-          a_particle.tree_dump(tip_text);
-          item_particle->SetTipText(tip_text.str().c_str());
-
+          {
+            // Set tooltip text
+            std::ostringstream tip_text;
+            a_particle.tree_dump(tip_text);
+            item_particle->SetTipText(tip_text.str().c_str());
+          }
           if (a_auxiliaries.has_key(browser_tracks::CHECKED_FLAG))
             item_particle->CheckItem(a_auxiliaries.has_flag(browser_tracks::CHECKED_FLAG));
 
@@ -1381,15 +1382,16 @@ namespace snemo {
               item_vertex->SetUserData((void*)(intptr_t)-(++icheck_id));
               // Update properties dictionnary:
               _properties_dictionnary_[-icheck_id] = &(a_vertex.grab_auxiliaries());
-
-              std::ostringstream tip_text;
-              if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
-                a_vertex.tree_dump(tip_text);
-              } else {
-                tip_text << "Double click to highlight vertex position "
-                         << "and to dump info on terminal";
+              {
+                std::ostringstream tip_text;
+                if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
+                  a_vertex.tree_dump(tip_text);
+                } else {
+                  tip_text << "Double click to highlight vertex position "
+                           << "and to dump info on terminal";
+                }
+                item_vertex->SetTipText(tip_text.str().c_str());
               }
-              item_vertex->SetTipText(tip_text.str().c_str());
             }// end of vertex list
           }// end of vertex check
 
@@ -1408,11 +1410,10 @@ namespace snemo {
               label_hit.setf(std::ios::fixed, std::ios::floatfield);
               if (a_hit.get_auxiliaries().has_key("category"))
                 label_hit << a_hit.get_auxiliaries().fetch_string("category") << " ";
-              label_hit << "hit #" << a_hit.get_hit_id() << " - "
-                        << "E = " << a_hit.get_energy() / CLHEP::keV << " +/- "
-                        << a_hit.get_sigma_energy()     / CLHEP::keV << " keV - "
-                        << "t = " << a_hit.get_time()   / CLHEP::ns  << " +/- "
-                        << a_hit.get_sigma_time()       / CLHEP::ns  << " ns";
+              label_hit << "hit #" << a_hit.get_hit_id() << " - E = ";
+              utils::root_utilities::get_prettified_energy(label_hit, a_hit.get_energy(), a_hit.get_sigma_energy());
+              label_hit << " - t = ";
+              utils::root_utilities::get_prettified_time(label_hit, a_hit.get_time(), a_hit.get_sigma_time());
 
               TGListTreeItem * item_hit
                 = _tracks_list_box_->AddItem(item_particle,
@@ -1531,18 +1532,18 @@ namespace snemo {
         if (found != _icons_.end()) return found->second;
 
         // Otherwise create new entry:
-        std::string * xpm = 0;
-        if (icon_type_ == "vertex")           xpm = (std::string *)&xpm_vertex;
-        else if (icon_type_ == "calorimeter") xpm = (std::string *)&xpm_calorimeter;
-        else if (icon_type_ == "geiger")      xpm = (std::string *)&xpm_geiger;
-        else if (icon_type_ == "cluster")     xpm = (std::string *)&xpm_cluster;
-        else if (icon_type_ == "helix")       xpm = (std::string *)&xpm_helix;
-        else if (icon_type_ == "line")        xpm = (std::string *)&xpm_line;
-        else if (icon_type_ == "step")        xpm = (std::string *)&xpm_step;
-        else if (icon_type_ == "track")       xpm = (std::string *)&xpm_track;
-        else if (icon_type_ == "flag")        xpm = (std::string *)&xpm_flag;
-        else if (icon_type_ == "folder")      xpm = (std::string *)&xpm_folder;
-        else if (icon_type_ == "ofolder")     xpm = (std::string *)&xpm_ofolder;
+        const char ** xpm = 0;
+        if (icon_type_ == "vertex")           xpm = xpm_vertex;
+        else if (icon_type_ == "calorimeter") xpm = xpm_calorimeter;
+        else if (icon_type_ == "geiger")      xpm = xpm_geiger;
+        else if (icon_type_ == "cluster")     xpm = xpm_cluster;
+        else if (icon_type_ == "helix")       xpm = xpm_helix;
+        else if (icon_type_ == "line")        xpm = xpm_line;
+        else if (icon_type_ == "step")        xpm = xpm_step;
+        else if (icon_type_ == "track")       xpm = xpm_track;
+        else if (icon_type_ == "flag")        xpm = xpm_flag;
+        else if (icon_type_ == "folder")      xpm = xpm_folder;
+        else if (icon_type_ == "ofolder")     xpm = xpm_ofolder;
         else return 0;
 
         // Change color:
@@ -1550,18 +1551,20 @@ namespace snemo {
           std::string color = "#303030";
           if (!hex_color_.empty()) color = hex_color_;
           if (reverse_color_) {
-            xpm[1] = ". c " + color;
+            const std::string bg = ". c " + color;
+            xpm[1] = bg.c_str();
             xpm[2] = "# c None";
           } else {
+            const std::string fg = "# c " + color;
             xpm[1] = ". c None";
-            xpm[2] = "# c " + color;
+            xpm[2] = fg.c_str();
           }
         }
 
         // Create a picture from the XPM data:
         TGPicturePool * picpool = gClient->GetResourcePool()->GetPicturePool();
         const TGPicture * iconpic = picpool->GetPicture(icon_name.c_str(),
-                                                        (char **)xpm);
+                                                        const_cast<char**>(xpm));
 
         // Add new picture to dictionnary:
         _icons_[icon_name] = iconpic;

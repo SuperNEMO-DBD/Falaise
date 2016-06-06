@@ -30,6 +30,9 @@ namespace snemo {
 		{
 		public :
 
+      typedef std::bitset<AddressSize> address_type;
+      typedef std::bitset<DataSize>    data_type;
+
 			/// Default constructor
 			memory();
 		
@@ -62,6 +65,9 @@ namespace snemo {
 			/// Reset
 			void reset();
   
+			/// Return the number of addresses
+      inline std::size_t get_number_of_addresses() const;
+
 		private :
 			
 			typedef std::map<std::bitset<AddressSize>, std::bitset<DataSize>, bitset_compare<AddressSize> > memory_dict_type;

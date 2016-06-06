@@ -195,12 +195,12 @@ namespace snemo {
         }
 
         const geomtools::vector_3d & sim_vertex = sim_data.get_vertex();
-
-        TPolyMarker3D* vertex_3d = base_renderer::make_polymarker(sim_vertex);
-        _objects_->Add(vertex_3d);
-        vertex_3d->SetMarkerColor(kViolet);
-        vertex_3d->SetMarkerStyle(kPlus);
-
+        {
+          TPolyMarker3D* vertex_3d = base_renderer::make_polymarker(sim_vertex);
+          _objects_->Add(vertex_3d);
+          vertex_3d->SetMarkerColor(kViolet);
+          vertex_3d->SetMarkerStyle(kPlus);
+        }
         // Highlight track from primary particles
         const mctools::simulated_data::primary_event_type & pevent = sim_data.get_primary_event();
         const genbb::primary_event::particles_col_type & particles = pevent.get_particles();

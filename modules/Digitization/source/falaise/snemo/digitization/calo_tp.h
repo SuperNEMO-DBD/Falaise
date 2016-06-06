@@ -58,13 +58,13 @@ namespace snemo {
 			static const unsigned int FULL_SIZE = 5;
 			
 			/// Size of htm bitset for calorimeter TP
-			static const unsigned int HTM_SIZE  = 2;
-			
-			/// Value of the low threshold to set bits
-			static const unsigned int LOW_THRESHOLD = 10; // (mV units problem maybe)
+			static const unsigned int HTM_SIZE  = 2;			
 
 			/// Value of the low threshold to set bits
-			static const unsigned int HIGH_THRESHOLD = 20; // (mV units problem maybe)
+			static constexpr double LOW_THRESHOLD = 10.0; // (mV units problem maybe)
+
+			/// Value of the low threshold to set bits
+			static constexpr double HIGH_THRESHOLD = 20.0; // (mV units problem maybe)
 
       /// Default constructor
       calo_tp();
@@ -91,7 +91,7 @@ namespace snemo {
       int32_t get_clocktick_25ns() const;
 
       /// Set the timestamp of the trigger primitive
-      void set_clocktick_25ns(const int32_t value_);
+      void set_clocktick_25ns(const int32_t clocktick_25_);
 			
 			/// Check if a clocktick is defined
 			bool has_clocktick_25ns() const;
@@ -167,7 +167,7 @@ namespace snemo {
       int32_t _clocktick_25ns_;    //!< The timestamp of the trigger primitive in main clock units (40 MHz)
       std::bitset<FULL_SIZE> _tp_; //!< The trigger primitive bitset
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

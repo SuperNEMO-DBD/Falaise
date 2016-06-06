@@ -6,7 +6,7 @@ Using Mock Calibration for Reconstruction {#usingmockcalibration}
 Introduction {#mockcalo_intro}
 ============
 
-As of Alpha 3, Falaise only provides a mocking model for digitization
+Falaise currently only provides a mocking model for digitization
 and calibration of data after the Geant4 part of the simulation has
 completed. This is due to the developing nature of the physical electronic
 system at the time of writing, and thus the digitization/calibration is

@@ -18,7 +18,7 @@ namespace snemo {
   namespace geometry {
 
     GEOMTOOLS_PLUGIN_REGISTRATION_IMPLEMENT(locator_plugin,
-                                            "snemo::geometry::locator_plugin");
+                                            "snemo::geometry::locator_plugin")
 
     bool locator_plugin::has_gg_locator() const
     {

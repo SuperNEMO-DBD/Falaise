@@ -32,7 +32,7 @@ namespace snemo {
 
     // Registration instantiation macro :
     DPP_MODULE_REGISTRATION_IMPLEMENT(gamma_clustering_module,
-                                      "snemo::reconstruction::gamma_clustering_module");
+                                      "snemo::reconstruction::gamma_clustering_module")
 
     const geomtools::manager & gamma_clustering_module::get_geometry_manager() const
     {
@@ -57,7 +57,7 @@ namespace snemo {
     void gamma_clustering_module::_set_defaults()
     {
       _geometry_manager_ = 0;
-      _PTD_label_ = snemo::datamodel::data_info::default_tracker_clustering_data_label();
+      _PTD_label_ = snemo::datamodel::data_info::default_particle_track_data_label();
       _driver_.reset();
       return;
     }
@@ -89,15 +89,20 @@ namespace snemo {
                      ! service_manager_.is_a<geomtools::geometry_service>(geo_label),
                      std::logic_error,
                      "Module '" << get_name() << "' has no '" << geo_label << "' service !");
-        geomtools::geometry_service & Geo
+        const geomtools::geometry_service & Geo
           = service_manager_.get<geomtools::geometry_service>(geo_label);
         set_geometry_manager(Geo.get_geom_manager());
       }
 
       // Gamma clustering algorithm :
-      DT_THROW_IF(!setup_.has_key("driver"), std::logic_error, "Missing 'driver' algorithm");
-      const std::string algorithm_id = setup_.fetch_string("driver");
-      if (algorithm_id == "GC") {
+      std::string algorithm_id;
+      if (setup_.has_key("driver")) {
+        algorithm_id = setup_.fetch_string("driver");
+      } else {
+        // Provide default driver name
+        algorithm_id = snemo::reconstruction::gamma_clustering_driver::get_id();
+      }
+      if (algorithm_id == snemo::reconstruction::gamma_clustering_driver::get_id()) {
         _driver_.reset(new snemo::reconstruction::gamma_clustering_driver);
       } else {
         DT_THROW_IF(true, std::logic_error,
@@ -165,7 +170,7 @@ namespace snemo {
       snemo::datamodel::particle_track_data & ptd = *ptr_particle_track_data;
 
       // process the fitter driver :
-      _driver_.get()->process(ptd);
+      _driver_.get()->process(ptd.get_non_associated_calorimeters(), ptd);
 
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");
       return;

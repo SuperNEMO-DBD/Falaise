@@ -120,15 +120,6 @@ namespace snemo {
         /// Add a tab to simultanously see the three 2D views
         void add_full_2d_view();
 
-        /// Get version number
-        std::string get_version() const;
-
-        /// Get SVN revision number
-        std::string get_revision() const;
-
-        /// Get date
-        std::string get_date() const;
-
         /// Print welcome message
         void welcome() const;
 

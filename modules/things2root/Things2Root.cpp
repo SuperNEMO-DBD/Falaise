@@ -26,7 +26,7 @@
 // The second is the string key used to access the module in pipeline
 // scripts. This must be globally unique.
 
-DPP_MODULE_REGISTRATION_IMPLEMENT(Things2Root,"Things2Root");
+DPP_MODULE_REGISTRATION_IMPLEMENT(Things2Root,"Things2Root")
 
 struct Things2Root::working_space {
   // calibrated tracker data

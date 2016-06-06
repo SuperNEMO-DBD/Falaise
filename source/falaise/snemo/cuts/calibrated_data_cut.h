@@ -131,7 +131,7 @@ namespace snemo {
       int         _tracker_hit_trait_bits_; //!< Tracker hit traits bits
       double      _tracker_hit_delay_time_; //!< Tracker hit delayed time
       // Macro to automate the registration of the cut :
-      CUT_REGISTRATION_INTERFACE(calibrated_data_cut);
+      CUT_REGISTRATION_INTERFACE(calibrated_data_cut)
 
     };
 

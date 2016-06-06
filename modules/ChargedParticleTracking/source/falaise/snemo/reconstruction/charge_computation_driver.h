@@ -104,6 +104,7 @@ namespace snemo {
       bool _initialized_;                             //<! Initialize flag
       datatools::logger::priority _logging_priority_; //<! Logging flag
       bool _charge_from_source_;                      //<! Convention flag for charge measurement
+      int _magnetic_field_direction_;                 //<! Magnetic field direction (+/-1)
 
     };
 

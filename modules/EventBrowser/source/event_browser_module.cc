@@ -31,7 +31,7 @@ namespace snemo {
 
       // Registration instantiation macro :
       DPP_MODULE_REGISTRATION_IMPLEMENT(event_browser_module,
-                                        "snemo::visualization::view::event_browser_module");
+                                        "snemo::visualization::view::event_browser_module")
 
       void event_browser_module::set_geometry_manager(const geomtools::manager & geometry_manager_)
       {
@@ -81,7 +81,7 @@ namespace snemo {
                       std::logic_error,
                       "Module '" << get_name() << "' has no '" << geo_label << "' service !");
           // Fetch a reference to the geometry service :
-          geomtools::geometry_service & Geo
+          const geomtools::geometry_service & Geo
             = service_manager_.get<geomtools::geometry_service>(geo_label);
           // Request for a reference to the geometry manager and installation
           // in the simulation manager :

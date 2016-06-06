@@ -90,7 +90,7 @@ namespace snemo {
       boost::scoped_ptr< ::snemo::reconstruction::gamma_clustering_driver> _driver_; //!< Handle to the embedded fitter algorithm with dynamic memory auto-deletion
 
       // Macro to automate the registration of the module :
-      DPP_MODULE_REGISTRATION_INTERFACE(gamma_clustering_module);
+      DPP_MODULE_REGISTRATION_INTERFACE(gamma_clustering_module)
     };
 
   } // end of namespace reconstruction

@@ -83,15 +83,15 @@ namespace snemo {
     void geiger_ctw::get_100_bits_in_ctw_word(unsigned int block_index_, std::bitset<geiger::tp::FULL_SIZE> & my_bitset_) const
     {
       DT_THROW_IF(block_index_ > mapping::NUMBER_OF_FEBS_BY_CRATE, std::logic_error, "Block index out of range (should be [0;19])  ! ");
-      for (int i = 0; i < my_bitset_.size(); i++)
+      for (unsigned int i = 0; i < my_bitset_.size(); i++)
 	{
 	  if (_gg_ctw_.test(i + block_index_ * my_bitset_.size()) == true)
 	    {
-	      my_bitset_.set(i, 1);
+	      my_bitset_.set(i, true);
 	    }
 	  else
 	    {
-	      my_bitset_.set(i, 0);
+	      my_bitset_.set(i, false);
 	    }	  
 	}     
       return;
@@ -100,15 +100,50 @@ namespace snemo {
     void geiger_ctw::set_100_bits_in_ctw_word(unsigned int block_index_, const std::bitset<geiger::tp::FULL_SIZE> & my_bitset_)
     {
       DT_THROW_IF(block_index_ > mapping::NUMBER_OF_FEBS_BY_CRATE, std::logic_error, "Block index out of range (should be [0;19])  ! ");
-      for (int i = 0; i < my_bitset_.size(); i++)
+      for (unsigned int i = 0; i < my_bitset_.size(); i++)
 	{
 	  if (my_bitset_.test(i) == true)
 	    {
-	      _gg_ctw_.set(i + block_index_ * my_bitset_.size(),1);
+	      _gg_ctw_.set(i + block_index_ * my_bitset_.size(), true);
 	    }
 	  else 
 	    {
-	      _gg_ctw_.set(i + block_index_ * my_bitset_.size(),0);
+	      _gg_ctw_.set(i + block_index_ * my_bitset_.size(), false);
+	    }	  
+	}
+      _store |= STORE_GG_CTW;
+      return;
+    }
+    
+    void geiger_ctw::get_55_bits_in_ctw_word(unsigned int block_index_, std::bitset<geiger::tp::TP_SIZE> & my_bitset_) const
+    {
+      DT_THROW_IF(block_index_ > mapping::NUMBER_OF_FEBS_BY_CRATE, std::logic_error, "Block index out of range (should be [0;19])  ! ");
+      for (unsigned int i = 0; i < my_bitset_.size(); i++)
+	{
+	  if (_gg_ctw_.test(i + block_index_ * geiger::tp::FULL_SIZE) == true)
+	    {
+	      my_bitset_.set(i, true);
+	    }
+	  else
+	    {
+	      my_bitset_.set(i, false);
+	    }	  
+	}     
+      return;
+    }
+
+    void geiger_ctw::set_55_bits_in_ctw_word(unsigned int block_index_, const std::bitset<geiger::tp::TP_SIZE> & my_bitset_)
+    {
+      DT_THROW_IF(block_index_ > mapping::NUMBER_OF_FEBS_BY_CRATE, std::logic_error, "Block index out of range (should be [0;19])  ! ");
+      for (unsigned int i = 0; i < my_bitset_.size(); i++)
+	{
+	  if (my_bitset_.test(i) == true)
+	    {
+	      _gg_ctw_.set(i + block_index_ * 100, true);
+	    }
+	  else 
+	    {
+	      _gg_ctw_.set(i + block_index_ * 100, false);
 	    }	  
 	}
       _store |= STORE_GG_CTW;
@@ -117,13 +152,13 @@ namespace snemo {
 
     void geiger_ctw::set_full_hardware_status(const std::bitset<geiger::tp::THWS_SIZE> & gg_tp_hardware_status_)
     {
-      for (int i = geiger::tp::THWS_BEGIN; i <= CTW_BITSET_FULL_SIZE; i += geiger::tp::FULL_SIZE)
+      for (unsigned int i = geiger::tp::THWS_BEGIN; i <= CTW_BITSET_FULL_SIZE; i += geiger::tp::FULL_SIZE)
 	{
-	  for (int j = 0; j < gg_tp_hardware_status_.size(); j ++)
+	  for (unsigned int j = 0; j < gg_tp_hardware_status_.size(); j ++)
 	    {
 	      if (gg_tp_hardware_status_.test(j) == true)
 		{
-		  _gg_ctw_.set(i + j, 1);
+		  _gg_ctw_.set(i + j, true);
 		}
 	    }
 	}
@@ -133,15 +168,15 @@ namespace snemo {
    void geiger_ctw::_set_full_board_id()
     {
       unsigned long board_id = 0;
-      for (int i = geiger::tp::BOARD_ID_BIT0; i <= CTW_BITSET_FULL_SIZE; i += geiger::tp::FULL_SIZE)
+      for (unsigned int i = geiger::tp::BOARD_ID_BIT0; i <= CTW_BITSET_FULL_SIZE; i += geiger::tp::FULL_SIZE)
 	{
 	  if (board_id == 10) board_id += 1;
 	  std::bitset<geiger::tp::BOARD_ID_WORD_SIZE> board_id_bitset(board_id);
-	  for (int j = 0; j < board_id_bitset.size(); j++)
+	  for (unsigned int j = 0; j < board_id_bitset.size(); j++)
 	    {
 	      if (board_id_bitset.test(j) == true)
 		{
-		  _gg_ctw_.set(i + j, 1);
+		  _gg_ctw_.set(i + j, true);
 		}
 	    }
 	  board_id ++;
@@ -152,18 +187,33 @@ namespace snemo {
 
     void geiger_ctw::set_full_crate_id(const std::bitset<geiger::tp::CRATE_ID_WORD_SIZE> & gg_tp_crate_id_)
     {
-      for (int i = geiger::tp::CRATE_ID_BIT0; i <= CTW_BITSET_FULL_SIZE; i += geiger::tp::FULL_SIZE)
+      for (unsigned int i = geiger::tp::CRATE_ID_BIT0; i <= CTW_BITSET_FULL_SIZE; i += geiger::tp::FULL_SIZE)
 	{
-	  for (int j = 0; j < gg_tp_crate_id_.size(); j ++)
+	  for (unsigned int j = 0; j < gg_tp_crate_id_.size(); j ++)
 	    {
 	      if (gg_tp_crate_id_.test(j) == true)
 		{
-		  _gg_ctw_.set(i + j, 1);
+		  _gg_ctw_.set(i + j, true);
 		}
 	    }
 	}
       return;
     }
+    
+    bool geiger_ctw::has_trigger_primitive_values() const
+    {
+      bool has_value = false;
+      for (int i = 0; i < 19; i++)
+	{
+	  for (int j = 0; j < 55; j++)
+	    {
+	      if (_gg_ctw_.test(i * 100 + j) == true) has_value = true;
+	    }
+	}
+      return has_value;
+    }
+    
+
 
     bool geiger_ctw::is_locked() const
     {
@@ -224,7 +274,7 @@ namespace snemo {
            << "CTW ("<< _gg_ctw_.size() << " bits) : " << std::endl;
 
       std::bitset<100> my_bitset;
-      for (int i = 0; i < mapping::NUMBER_OF_FEBS_BY_CRATE; i++)
+      for (unsigned int i = 0; i < mapping::NUMBER_OF_FEBS_BY_CRATE; i++)
 	 {
 	   get_100_bits_in_ctw_word(i, my_bitset);
 	   out_ << indent_ << datatools::i_tree_dumpable::inherit_tag (inherit_)

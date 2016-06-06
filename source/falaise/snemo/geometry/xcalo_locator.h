@@ -327,6 +327,9 @@ namespace snemo {
 
       void _construct();
 
+      /// Hack trace
+      void _hack_trace();
+
     private:
 
       bool _initialized_;

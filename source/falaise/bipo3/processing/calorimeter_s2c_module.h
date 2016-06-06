@@ -120,7 +120,7 @@ namespace bipo3 {
       bool   _alpha_quenching_;    //!< Flag to (dis)activate the alpha quenching
 
       // Macro to automate the registration of the module :
-      DPP_MODULE_REGISTRATION_INTERFACE(calorimeter_s2c_module);
+      DPP_MODULE_REGISTRATION_INTERFACE(calorimeter_s2c_module)
 
     };
 

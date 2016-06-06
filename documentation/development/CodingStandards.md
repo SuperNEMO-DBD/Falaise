@@ -14,6 +14,12 @@ This guide is still a work in progress. If in doubt, use what's in the
 file you're working on already. If you're starting from scratch,
 read the sections below!
 
+Basic Style Guide
+-----------------
+Falaise code should follow the [Google C++ Style Guide](http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml). The [C++ Coding Standards](http://www.gotw.ca/publications/c++cs.htm) textbook is also used to
+provide guidance on writing production quality code.
+
+
 Consistency
 -----------
 Whatever coding style you use, it **must be consistent** throughout the
@@ -36,21 +42,12 @@ than `c`.
 
 C++ Standard Compliance
 -----------------------
-Your code must be fully compliant with the C++03 standard. No C++0x/11/14
-constructs are permitted. The migration to C++11/14 is expected in
-Falaise 2.
+Your code must be fully compliant with the C++03 standard. No C++11/14
+constructs are permitted in core Falaise. The migration to C++11/14 is
+expected in Falaise 3. FLreconstruct modules outside of core Falaise
+are permitted to use C++11/14.
 
 Use modern compilers, such as GCC or Clang at their latest stable
 revisions. Compilers are continually improving, and there is no excuse
 not to be using recent versions.
-
-
-Further Reading
-===============
-If you are starting from scratch, a good set of style guidelines is
-provided by the [Google C++ Style Guide](http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml). The [C++ Coding Standards](http://www.gotw.ca/publications/c++cs.htm) textbook provides many tips on writing
-production quality code.
-
-
-
 

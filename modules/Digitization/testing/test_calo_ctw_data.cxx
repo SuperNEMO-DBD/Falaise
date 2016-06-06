@@ -16,9 +16,9 @@
 // This project :
 #include <snemo/digitization/calo_ctw_data.h>
 
-int main( int /* argc_ */, char ** /* argv_ */ )
+int main(int argc_, char ** argv_)
 {
-  FALAISE_INIT();
+  falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
   try {
@@ -32,9 +32,9 @@ int main( int /* argc_ */, char ** /* argv_ */ )
       my_calo_ctw.grab_auxiliaries().store("author", "guillaume");
       my_calo_ctw.grab_auxiliaries().store_flag("mock");
       my_calo_ctw.set_clocktick_25ns(20);
-      my_calo_ctw.set_htm_pc(1);
+      my_calo_ctw.set_htm_main_wall(1);
       std::bitset<10> zoning_word (std::string("0001110100"));
-      my_calo_ctw.set_zoning_word(zoning_word);
+      my_calo_ctw.set_main_zoning_word(zoning_word);
       my_calo_ctw.tree_dump(std::clog, "my_calo_CTW_data : ", "INFO : ");
       my_calo_ctw.lock();
     }  
@@ -45,9 +45,9 @@ int main( int /* argc_ */, char ** /* argv_ */ )
       my_calo_ctw.grab_auxiliaries().store("author", "guillaume");
       my_calo_ctw.grab_auxiliaries().store_flag("mock");
       my_calo_ctw.set_clocktick_25ns(35);
-      my_calo_ctw.set_htm_pc(7);
+      my_calo_ctw.set_htm_main_wall(7);
       std::bitset<10> zoning_word (std::string("1010101010"));
-      my_calo_ctw.set_zoning_word(zoning_word);
+      my_calo_ctw.set_main_zoning_word(zoning_word);
       my_calo_ctw.tree_dump(std::clog, "my_calo_CTW_data : ", "INFO : ");
       my_calo_ctw.lock();
     }  
@@ -58,22 +58,22 @@ int main( int /* argc_ */, char ** /* argv_ */ )
       my_calo_ctw.grab_auxiliaries().store("author", "guillaume");
       my_calo_ctw.grab_auxiliaries().store_flag("mock");
       my_calo_ctw.set_clocktick_25ns(20);
-      my_calo_ctw.set_htm_pc(2);
+      my_calo_ctw.set_htm_main_wall(2);
       std::bitset<10> zoning_word (std::string("0010000100"));
-      my_calo_ctw.set_zoning_word(zoning_word);
+      my_calo_ctw.set_main_zoning_word(zoning_word);
       my_calo_ctw.tree_dump(std::clog, "my_calo_CTW_data : ", "INFO : ");
       my_calo_ctw.lock();
     }  
     {
       snemo::digitization::calo_ctw & my_calo_ctw = my_calo_ctw_data.add();
       my_calo_ctw.grab_geom_id().set_type(42);
-      my_calo_ctw.grab_geom_id().set_address(3,2,10);
+      my_calo_ctw.grab_geom_id().set_address(3,1,10);
       my_calo_ctw.grab_auxiliaries().store("author", "guillaume");
       my_calo_ctw.grab_auxiliaries().store_flag("mock");
       my_calo_ctw.set_clocktick_25ns(35);
-      my_calo_ctw.set_htm_pc(12);
+      my_calo_ctw.set_htm_main_wall(12);
       std::bitset<10> zoning_word (std::string("1111110100"));
-      my_calo_ctw.set_zoning_word(zoning_word);
+      my_calo_ctw.set_main_zoning_word(zoning_word);
       my_calo_ctw.tree_dump(std::clog, "my_calo_CTW_data : ", "INFO : ");
       my_calo_ctw.lock();
     }  
@@ -110,6 +110,6 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     error_code = EXIT_FAILURE;
   }
 
-  FALAISE_FINI();
+  falaise::terminate();
   return error_code;
 }

@@ -81,6 +81,12 @@ Building using CMake, Make and Xcode {#developingfalaise_cmake}
   - Link to online guides
   - Handle specific gotchas
 
+Setting Custom Compiler Flags
+-----------------------------
+HINT: Use the `-v` flag to GNU/Clang compilers to help trace include path problems.
+This will print out a complete trace of how the compiler located headers, including
+info on any reordering of search paths.
+
 The C++ Architecture and API of Falaise {#developingfalaise_cpparchapi}
 =======================================
 - [C++](http://isocpp.org)

@@ -34,10 +34,10 @@
 
 // Third party:
 // - Bayeux/datatools:
-#include <datatools/logger.h>
+#include <bayeux/datatools/logger.h>
 
 // This project:
-#include <TrackerPreClustering/interface.h>
+#include "falaise/TrackerPreClustering/interface.h"
 
 namespace TrackerPreClustering {
 
@@ -159,7 +159,7 @@ namespace TrackerPreClustering {
 
 } // end of namespace TrackerPreClustering
 
-#include <TrackerPreClustering/pre_clusterizer.tpp>
+#include "falaise/TrackerPreClustering/pre_clusterizer.tpp"
 
 #endif // FALAISE_TRACKERPRECLUSTERING_PRE_CLUSTERIZER_H
 

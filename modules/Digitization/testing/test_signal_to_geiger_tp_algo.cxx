@@ -29,7 +29,7 @@
 
 int main( int  argc_ , char ** argv_ )
 {
-  FALAISE_INIT();
+  falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
   int iarg = 1;
@@ -94,10 +94,10 @@ int main( int  argc_ , char ** argv_ )
     snemo::digitization::clock_utils my_clock_manager;
     my_clock_manager.initialize();
     my_clock_manager.compute_clockticks_ref(random_generator);
-    int32_t clocktick_25_reference  = my_clock_manager.get_clocktick_25_ref();
-    double  clocktick_25_shift      = my_clock_manager.get_clocktick_25_shift();
-    int32_t clocktick_800_reference = my_clock_manager.get_clocktick_800_ref();
-    double  clocktick_800_shift     = my_clock_manager.get_clocktick_800_shift();
+    uint32_t clocktick_25_reference  = my_clock_manager.get_clocktick_25_ref();
+    double  clocktick_25_shift      = my_clock_manager.get_shift_25();
+    uint32_t clocktick_800_reference = my_clock_manager.get_clocktick_800_ref();
+    double  clocktick_800_shift     = my_clock_manager.get_shift_800();
 
     datatools::things ER;
 
@@ -155,6 +155,6 @@ int main( int  argc_ , char ** argv_ )
     error_code = EXIT_FAILURE;
   }
 
-  FALAISE_FINI();
+  falaise::terminate();
   return error_code;
 }

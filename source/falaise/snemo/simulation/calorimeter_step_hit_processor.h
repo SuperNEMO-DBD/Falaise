@@ -57,7 +57,7 @@ namespace snemo {
       const snemo::geometry::locator_plugin * _locator_plugin_; //!< SuperNEMO Locator plugin
 
       // Registration macro :
-      MCTOOLS_STEP_HIT_PROCESSOR_REGISTRATION_INTERFACE (calorimeter_step_hit_processor);
+      MCTOOLS_STEP_HIT_PROCESSOR_REGISTRATION_INTERFACE (calorimeter_step_hit_processor)
     };
 
   } // end of namespace simulation

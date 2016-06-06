@@ -3,8 +3,8 @@ Writing FLReconstruct Pipeline Scripts {#writingflreconstructpipelinescripts}
 
 \tableofcontents
 
-Introduction {#intro}
-============
+Introduction to FLReconstruct Pipeline Scripts {#wflrps_intro}
+================================================
 Though Falaise supplies a set of pipelines for standard reconstruction, it
 is also possible write your own custom pipeline scripts for use in `flreconstruct`. These are nothing more than text files marked up using the `datatools::multi_properties` syntax.
 Custom pipeline scripts can be run in `flreconstruct` by passing their path
@@ -27,7 +27,7 @@ writing a script to build a custom pipeline from the standard modules supplied
 with Falaise. The more advanced step of writing and
 using new modules is covered in the [Writing FLReconstruct Modules](@ref writingflreconstructmodules) section.
 
-Discovering Available Modules {#discoveringavailablemodules}
+Discovering Available Modules {#wflrps_discoveringavailablemodules}
 =============================
 A list of pipeline modules known to `flreconstruct` can be obtained using its
 `--help-module-list` argument, which will print the module names to stdout:
@@ -45,6 +45,7 @@ dpp::output_module
 dpp::skip_module
 dpp::utils_module
 mctools::simulated_data_input_module
+snemo::processing::event_header_utils_module
 snemo::processing::mock_calorimeter_s2c_module
 snemo::processing::mock_tracker_s2c_module
 snemo::reconstruction::cat_tracker_clustering_module
@@ -75,7 +76,7 @@ for your own pipeline. The following sections provide some simple examples
 of pipeline scripts.
 
 
-Implementing Pipeline Scripts {#implementing_pipeline_scripts}
+Implementing Pipeline Scripts {#wflrps_implementing_pipeline_scripts}
 =============================
 To demonstrate the basic syntax and structure of an `flreconstruct` pipeline
 script, the following sections build up functionality from single modules
@@ -106,7 +107,7 @@ $ flreconstruct -i example.brio -p trivial_pipeline.txt
 
 You should see the same output as the default case.
 
-Creating a Chained Pipeline {#chain_pipeline}
+Creating a Chained Pipeline {#wflrps_chain_pipeline}
 ---------------------------
 A pipeline with one module isn't very useful! In most cases we want to
 plug together a sequence of modules, each performing a well defined
@@ -129,7 +130,7 @@ $ flreconstruct -i example.brio -p single_chain_pipeline.txt
 
 You should see the same output as the default case.
 
-Multi-Module Pipeline {#multi_pipeline}
+Multi-Module Pipeline {#wflrps_multi_pipeline}
 ---------------------
 A full chain pipeline can chain together 1 < N < X number of modules.
 The previous example showed the basic construct of a chained pipeline
@@ -154,7 +155,7 @@ Try swapping the order of the modules to see what happens, and also try
 adding further dump modules to the pipeline to experiment with the
 sequence.
 
-Using Plugin Modules {#pluginmodules}
+Using Plugin Modules {#wflrps_pluginmodules}
 ====================
 Falaise supplies several modules as plugins, that is, functionality loaded
 into `flreconstruct` after it starts running.
@@ -164,5 +165,3 @@ Going Further {#further}
 You can also write your own modules in C++ and plug them into the pipeline
 to provide additional functionality. The proceedure for writing and
 using new modules is covered in several stages, beginning with a [simple example](@ref writingflreconstructmodules).
-
-

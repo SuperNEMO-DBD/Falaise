@@ -30,7 +30,7 @@ namespace snemo {
     class tracker_cluster;
 
     /// \brief A collection of tracker clusters , solution of a trajectory algorithm
-    class tracker_trajectory_solution : DATATOOLS_SERIALIZABLE_CLASS,
+    class tracker_trajectory_solution : public datatools::i_serializable,
                                         public datatools::i_tree_dumpable,
                                         public datatools::i_clear
     {
@@ -143,7 +143,7 @@ namespace snemo {
       cluster_col_type                _unfitted_clusters_;   //!< Collection of handles on unfitted clusters
       datatools::properties           _auxiliaries_;         //!< List of auxiliary properties
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

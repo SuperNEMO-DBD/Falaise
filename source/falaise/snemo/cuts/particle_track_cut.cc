@@ -20,7 +20,7 @@ namespace snemo {
   namespace cut {
 
     // Registration instantiation macro :
-    CUT_REGISTRATION_IMPLEMENT(particle_track_cut, "snemo::cut::particle_track_cut");
+    CUT_REGISTRATION_IMPLEMENT(particle_track_cut, "snemo::cut::particle_track_cut")
 
     void particle_track_cut::_set_defaults()
     {

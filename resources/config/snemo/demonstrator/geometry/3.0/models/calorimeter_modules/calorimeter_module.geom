@@ -22,6 +22,8 @@ shape_type        : string  = "box"
 x                 : real    = 259.0   # mm
 y                 : real    = 259.0   # mm
 z                 : real    =   0.020 # mm
+### FM+MB 2016-01-12: TO BE CHANGED in next release:
+### z             : real    =   25 um
 length_unit       : string  = "mm"
 material.ref      : string  = "std::nylon"
 visibility.hidden : boolean = 0
@@ -32,6 +34,8 @@ shape_type        : string  = "box"
 x                 : real    = 259.0 # mm
 y                 : real    = 259.0 # mm
 z                 : real    =   0.968 # mm
+### FM+MB 2016-01-12: TO BE CHANGED in next release:
+### z             : real    =   0.96XXX mm
 length_unit       : string  = "mm"
 material.ref      : string  = "tracking_gas"
 visibility.hidden : boolean = 0
@@ -67,8 +71,7 @@ visibility.hidden_envelop : boolean = 1
 visibility.color          : string  = "grey"
 
 mapping.daughter_id.wrapping : string = "[calorimeter_wrapper]"
-
-mapping.daughter_id.curtain : string = "[calorimeter_curtain]"
+mapping.daughter_id.curtain  : string = "[calorimeter_curtain]"
 
 #########################################################################################################
 [name="calorimeter_scin_block_front_wrapper_side_x_external.model" type="geomtools::simple_shaped_model"]
@@ -88,7 +91,7 @@ x                 : real   =   1.0   # mm
 y                 : real   = 256.0   # mm
 z                 : real   =  31.0   # mm
 length_unit       : string = "mm"
-material.ref      : string = "std::pfte"
+material.ref      : string = "std::ptfe"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
@@ -140,7 +143,7 @@ x                 : real   = 256.0   # mm
 y                 : real   =   1.0   # mm
 z                 : real   =  31.0   # mm
 length_unit       : string = "mm"
-material.ref      : string = "std::pfte"
+material.ref      : string = "std::ptfe"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
@@ -237,7 +240,7 @@ x                 : real   =   1.0   # mm
 y                 : real   = 240.0   # mm
 z                 : real   = 163.0   # mm
 length_unit       : string = "mm"
-material.ref      : string = "std::pfte"
+material.ref      : string = "std::ptfe"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
@@ -289,7 +292,7 @@ x                 : real   = 240.0   # mm
 y                 : real   =   1.0   # mm
 z                 : real   = 163.0   # mm
 length_unit       : string = "mm"
-material.ref      : string = "std::pfte"
+material.ref      : string = "std::ptfe"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
@@ -329,7 +332,7 @@ y                 : real    = 240.0   # mm
 z                 : real    =   1.0   # mm
 r_hole            : real    = 110.0   # mm
 length_unit       : string  = "mm"
-material.ref      : string  = "std::pfte"
+material.ref      : string  = "std::ptfe"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 

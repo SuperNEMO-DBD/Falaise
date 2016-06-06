@@ -574,10 +574,13 @@ namespace snemo {
             std::string str1 = found->GetText();
             std::string str2 = itext->GetText();
             std::ostringstream oss;
-            oss << "#splitline"
-                << "{" << str1 << "}"
-                << "{" << str2 << "}";
-
+            if (str1 != str2) {
+              oss << "#splitline"
+                  << "{" << str1 << "}"
+                  << "{" << str2 << "}";
+            } else {
+              oss << str1;
+            }
             // Something here is not clear for me
             itext = found;
             _text_objects_->Remove(itext);

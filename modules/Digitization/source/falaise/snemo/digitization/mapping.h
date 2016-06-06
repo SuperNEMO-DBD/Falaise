@@ -96,15 +96,16 @@ namespace snemo {
 			static const uint32_t NUMBER_OF_X_CALO_ROWS = 16;
 
 			static const uint32_t NUMBER_OF_GVETO_COLUMNS = 16;
-			static const uint32_t NUMBER_OF_CALO_TRIGGER_ZONES = 10;
 			static const uint32_t NUMBER_OF_XWALL_CALO_TRIGGER_ZONES = 4;
 
 			static const uint32_t NUMBER_OF_GEIGER_ROWS = 113;
-			static const uint32_t NUMBER_OF_TRACKER_TRIGGER_ZONES = 10;
+
 			static const uint32_t NUMBER_OF_TRACKER_TRIGGER_INTERZONES = 9;
 			static const uint32_t NUMBER_OF_TRACKER_TRIGGER_SUBZONES = 4;
 			static const uint32_t NUMBER_OF_TRACKER_TRIGGER_SUBZONES_PER_SIDE = 40;
 
+			static const uint32_t NUMBER_OF_TRIGGER_ZONES = 10;
+			
 			static const uint32_t NUMBER_OF_CRATES  = 3;
 			static const uint32_t NUMBER_OF_FEBS_BY_CRATE = 19;
 			static const uint32_t TRIGGER_CRATE_ID     = 2;
@@ -123,6 +124,7 @@ namespace snemo {
 			static const uint32_t THREE_WIRES_LONELY_ROW        = 56;
 			static const uint32_t THREE_WIRES_CRATE_1_LIMIT     = 74;
 			static const uint32_t THREE_WIRES_CRATE_2_BEGINNING = 75;
+			static const uint32_t THREE_WIRES_CRATE_2_LIMIT     = 112;
 
 			static const uint32_t GEIGER_LAYERS_SIZE = 9;
 			static const uint32_t GEIGER_ROWS_SIZE   = 113;

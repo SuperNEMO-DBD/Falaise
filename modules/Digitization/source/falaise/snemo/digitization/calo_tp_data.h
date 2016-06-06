@@ -40,10 +40,10 @@ namespace snemo {
 			typedef std::vector<calo_tp_handle_type> calo_tp_collection_type;
 			
 			/// Return the index of the calo TP with minimum clocktick
-			int get_clocktick_min_index() const;
+			unsigned int get_clocktick_min_index() const;
 			
 			/// Return the index of the calo TP with maximum clocktick
-			int get_clocktick_max_index() const;
+			unsigned int get_clocktick_max_index() const;
 			
 			/// Return the clocktick min for the calo TP with minimum clocktick (thanks to his index)
 			int get_clocktick_min() const;
@@ -52,13 +52,13 @@ namespace snemo {
 			int get_clocktick_max() const;
 			
 			/// Return the range between the clocktick min and the clocktick max
-			int get_clocktick_range() const;
+			unsigned int get_clocktick_range() const;
 			
 			/// Get a list of calo trigger primitive which are in the same clocktick
-			void get_list_of_tp_per_clocktick(int32_t clocktick_25ns_, calo_tp_collection_type & my_list_of_tps_per_clocktick_) const;
+			void get_list_of_tp_per_clocktick(uint32_t clocktick_25ns_, calo_tp_collection_type & my_list_of_tps_per_clocktick_) const;
 			
 			/// Get a list of calo trigger primitive which are in the same clocktick and in the same crate
-			void get_list_of_tp_per_clocktick_per_crate(int32_t clocktick_25ns_, unsigned int crate_number_, calo_tp_collection_type & my_list_of_tps_per_clocktick_per_crate_ ) const;
+			void get_list_of_tp_per_clocktick_per_crate(uint32_t clocktick_25ns_, unsigned int crate_number_, calo_tp_collection_type & my_list_of_tps_per_clocktick_per_crate_ ) const;
 
 			/// Check the lock status
       bool is_locked() const;
@@ -99,7 +99,7 @@ namespace snemo {
 			bool _locked_; //!< TPS lock flag
 			calo_tp_collection_type _calo_tps_; //!< Collection of calorimeters tracker primitive
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

@@ -3,8 +3,8 @@
 ############################################################################
 [name="source_calibration_spot.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "cylinder"
-r                  : real    =   1.0     # mm
-z                  : real    =   1.0e-6  # mm
+r                  : real    =   1.0    # mm
+z                  : real    =   1.0e-6 # mm
 length_unit        : string  = "mm"
 material.ref       : string  = ""
 visibility.hidden  : boolean = 0
@@ -14,9 +14,9 @@ visibility.color   : string  = "red"
 ############################################################################
 [name="source_calibration_film.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
-x                  : real    =   17.0     # mm
-y                  : real    =   11.0     # mm
-z                  : real    =   10.0e-6  # mm
+x                  : real    =   17.0    # mm
+y                  : real    =   11.0    # mm
+z                  : real    =   10.0e-6 # mm
 length_unit        : string  = "mm"
 material.ref       : string  = "std::mylar"
 visibility.hidden  : boolean = 0
@@ -29,11 +29,11 @@ internal_item.placement.spot : string    = "0 0 0 (mm)"
 
 #######################################################################################
 [name="source_calibration_carrier_frame.model" type="geomtools::plate_with_hole_model"]
-x                  : real    =   26.0  # mm
-y                  : real    =   16.0  # mm
-z                  : real    =    2.0  # mm
-x_hole             : real    =   17.0  # mm
-y_hole             : real    =   11.0  # mm
+x                  : real    =   26.0 # mm
+y                  : real    =   16.0 # mm
+z                  : real    =    2.0 # mm
+x_hole             : real    =   17.0 # mm
+y_hole             : real    =   11.0 # mm
 length_unit        : string  = "mm"
 material.ref       : string  = "std::polyethylene"
 visibility.hidden  : boolean = 0

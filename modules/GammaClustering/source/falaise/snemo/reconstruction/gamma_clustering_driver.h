@@ -57,7 +57,7 @@ namespace snemo {
       typedef std::vector<cluster_type> cluster_collection_type;
 
       /// Dedicated algorithm id
-      static const std::string & gamma_clustering_id();
+      static const std::string & get_id();
 
       /// Constructor
       gamma_clustering_driver();
@@ -80,7 +80,8 @@ namespace snemo {
       void _set_defaults ();
 
       /// Special method to process and generate particle track data
-      virtual int _process_algo(snemo::datamodel::particle_track_data & ptd_);
+      virtual int _process_algo(const base_gamma_builder::hit_collection_type & calo_hits_,
+                                snemo::datamodel::particle_track_data & ptd_);
 
       /// Get calorimeter neighbours given teh current calorimeter hit
       virtual void _get_geometrical_neighbours(const snemo::datamodel::calibrated_calorimeter_hit & hit_,

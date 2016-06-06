@@ -23,7 +23,7 @@ namespace snemo {
 
     // Registration :
     GEOMTOOLS_MODEL_REGISTRATION_IMPLEMENT(calo_tapered_scin_box_model,
-                                           "snemo::geometry::calo_tapered_scin_box_model");
+                                           "snemo::geometry::calo_tapered_scin_box_model")
 
     std::string calo_tapered_scin_box_model::get_model_id() const
     {
@@ -493,14 +493,14 @@ namespace snemo {
 
         // surface extrusion circle:
         {
-          const double z = mother_box.get_zmin();
+          const double mb_zmin = mother_box.get_zmin();
           const double c = mother_box.get_z() - h;
           const double rx = extrusion_sphere.get_r();
           const double rho = rx - c;
           const double r1 = std::sqrt(rx * rx - rho * rho);
 
           geomtools::placement c1_plcmt;
-          c1_plcmt.set(0., 0., z, 0. , 0., 0.);
+          c1_plcmt.set(0., 0., mb_zmin, 0. , 0., 0.);
           geomtools::placement world_item_placement;
           mother_world_placement.child_to_mother(c1_plcmt,
                                                  world_item_placement);
@@ -514,7 +514,7 @@ namespace snemo {
 
         // extrusion arcs:
         {
-          const double z = mother_box.get_zmin();
+          const double mb_zmin = mother_box.get_zmin();
           const double c = mother_box.get_z() - h;
           const double rx = extrusion_sphere.get_r();
           const double rho = rx - c;
@@ -523,10 +523,10 @@ namespace snemo {
           geomtools::polyline_3d arc2;
           const double theta0 = std::acos(rho / rx);
           const size_t nsamples = 20;
-          const double dt = 2 * theta0 / nsamples;
-          const double z0 = z + c - rx;
+          const double delta_theta = 2 * theta0 / nsamples;
+          const double z0 = mb_zmin + c - rx;
           for (size_t i = 0; i <= nsamples; i++) {
-            const double theta = -theta0 + i * dt;
+            const double theta = -theta0 + i * delta_theta;
             const double dz = rx * std::cos(theta);
             const double dt = rx * std::sin(theta);
             geomtools::vector_3d P1(dt, 0.0, z0 + dz);
@@ -541,13 +541,13 @@ namespace snemo {
         {
           const double c = mother_box.get_z() - h;
           const double c2 = 0.5 * c;
-          const double z = mother_box.get_zmin() + c - c2;
+          const double z_a = mother_box.get_zmin() + c - c2;
           const double rx = extrusion_sphere.get_r();
           const double rho = rx - c2;
           const double r1 = std::sqrt(rx *rx - rho * rho);
 
           geomtools::placement c1_plcmt;
-          c1_plcmt.set(0., 0., z, 0. , 0., 0.);
+          c1_plcmt.set(0., 0., z_a, 0. , 0., 0.);
           geomtools::placement world_item_placement;
           mother_world_placement.child_to_mother(c1_plcmt,
                                                  world_item_placement);
@@ -560,13 +560,13 @@ namespace snemo {
         {
           const double c = mother_box.get_z() - h;
           const double c2 = 0.25 * c;
-          const double z = mother_box.get_zmin() + c - c2;
+          const double z_a = mother_box.get_zmin() + c - c2;
           const double rx = extrusion_sphere.get_r();
           const double rho = rx - c2;
           const double r1 = std::sqrt(rx * rx - rho * rho);
 
           geomtools::placement c1_plcmt;
-          c1_plcmt.set(0., 0., z, 0. , 0., 0.);
+          c1_plcmt.set(0., 0., z_a, 0. , 0., 0.);
           geomtools::placement world_item_placement;
           mother_world_placement.child_to_mother(c1_plcmt,
                                                   world_item_placement);

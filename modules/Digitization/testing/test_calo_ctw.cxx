@@ -16,9 +16,9 @@
 // This project :
 #include <snemo/digitization/calo_ctw.h>
 
-int main( int /* argc_ */, char ** /* argv_ */ )
+int main(int argc_, char ** argv_)
 {
-  FALAISE_INIT();
+  falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
   try {
@@ -26,20 +26,17 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     
     snemo::digitization::calo_ctw my_calo_ctw;
     my_calo_ctw.grab_geom_id().set_type(422);
-    my_calo_ctw.grab_geom_id().set_address(3,0,10); // address of geom id : RACK_INDEX, CRATE_INDEX,BOARD_INDEX. 
+    my_calo_ctw.grab_geom_id().set_address(3,0,10); // address of geom id : RACK_INDEX, CRATE_INDEX, BOARD_INDEX. 
     my_calo_ctw.grab_auxiliaries().store("author", "guillaume");
     my_calo_ctw.grab_auxiliaries().store_flag("mock");
     my_calo_ctw.set_clocktick_25ns(20);
-    my_calo_ctw.set_htm_pc(5); // Argument is multiplicity per crate
+    my_calo_ctw.set_htm_main_wall(5); // Argument is multiplicity per crate
     std::bitset<10> zoning_word (std::string("0001110100"));
-    my_calo_ctw.set_zoning_word(zoning_word);
-    my_calo_ctw.set_lto_pc_bit(1);
+    my_calo_ctw.set_main_zoning_word(zoning_word);
+    my_calo_ctw.set_lto_main_wall_bit(1);
     my_calo_ctw.tree_dump(std::clog, "my_calo_CTW : ", "INFO : ");
     my_calo_ctw.lock();
-    
-    std::bitset<10> zoning_word_get;
-    my_calo_ctw.get_zoning_word(zoning_word);
-    std::clog << "Zoning word of this CTW : " << zoning_word << std::endl;
+   
 
     std::set<int> active_zones; // Active zones for this CTW.
     std::set<int>::iterator it;
@@ -64,6 +61,6 @@ int main( int /* argc_ */, char ** /* argv_ */ )
     error_code = EXIT_FAILURE;
   }
 
-  FALAISE_FINI();
+  falaise::terminate();
   return error_code;
 }

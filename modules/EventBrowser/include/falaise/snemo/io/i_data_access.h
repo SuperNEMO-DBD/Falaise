@@ -87,9 +87,6 @@ namespace snemo {
         virtual bool retrieve_event(event_record & event_,
                                     const size_t event_number_) = 0;
 
-      private:
-
-        bool _sequential_;
       };
 
     } // end of namespace io

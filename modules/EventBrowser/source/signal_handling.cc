@@ -23,6 +23,7 @@
 #include <falaise/snemo/view/signal_handling.h>
 
 // This project:
+#include <falaise/snemo/event_browser_version.h>
 #include <falaise/snemo/view/event_browser_signals.h>
 #include <falaise/snemo/view/event_browser.h>
 #include <falaise/snemo/view/options_manager.h>
@@ -273,7 +274,7 @@ namespace snemo {
           break;
         case LOAD_DETECTOR:
           {
-            const std::string dir = falaise::get_resource_dir(true);
+            const std::string dir = falaise::get_resource_dir();
             TString directory(dir.c_str());
             TGFileInfo file_info;
             const char * config_file_types [] = { "Geometry config files" , "*.conf" ,
@@ -295,7 +296,7 @@ namespace snemo {
           break;
         case LOAD_STYLE:
           {
-            const std::string dir = falaise::get_resource_dir(true) +
+            const std::string dir = falaise::get_resource_dir() +
               "/modules/EventBrowser/styles";
             TString directory(dir.c_str());
             TGFileInfo file_info;
@@ -351,11 +352,9 @@ namespace snemo {
             int retval;
             std::ostringstream info;
             info << "SuperNEMO Event Browser" << std::endl << std::endl
-                 << "Version " << _browser_->get_version()
-                 << " - rev " << _browser_->get_revision()
-                 << " from " << _browser_->get_date() << std::endl
+                 << "Version " << EventBrowser::version::get_version() << std::endl
                  << "Compiled with ROOT v" << gROOT->GetVersion() << std::endl
-                 << "Authors: SNSW collaboration" << std::endl << std::endl
+                 << "Authors: SuperNEMO collaboration" << std::endl << std::endl
                  << "Have fun browsing !" << std::endl << std::endl;
             new TGMsgBox (gClient->GetRoot(), gClient->GetRoot(),
                           "About", info.str().c_str(),

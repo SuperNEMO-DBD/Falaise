@@ -126,7 +126,7 @@ namespace snemo {
     //  [solution #5] delayed cluster Id = 1
     //
     //
-    class tracker_clustering_data : DATATOOLS_SERIALIZABLE_CLASS,
+    class tracker_clustering_data : public datatools::i_serializable,
                                     public datatools::i_tree_dumpable,
                                     public datatools::i_clear
     {
@@ -217,7 +217,7 @@ namespace snemo {
       tracker_clustering_solution::handle_type _default_solution_; //!< Handle to the default/best solution
       datatools::properties        _auxiliaries_;                  //!< Auxiliary properties
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

@@ -19,7 +19,7 @@ namespace snemo {
   namespace cut {
 
     // Registration instantiation macro :
-    CUT_REGISTRATION_IMPLEMENT(tracker_clustering_data_cut, "snemo::cut::tracker_clustering_data_cut");
+    CUT_REGISTRATION_IMPLEMENT(tracker_clustering_data_cut, "snemo::cut::tracker_clustering_data_cut")
 
     void tracker_clustering_data_cut::_set_defaults()
     {
@@ -264,10 +264,10 @@ namespace snemo {
       if (is_mode_range_cluster()) {
         DT_LOG_DEBUG(get_logging_priority(), "Running RANGE_CLUSTER mode...");
         // 2012-05-13 XG: Here we only take care of the default solution
-        bool check_has_cluster = true;
-        if (!TCD.has_default_solution()) check_has_cluster = false;
-        else check_has_cluster = ! TCD.get_default_solution().get_clusters().empty();
-        if (!check_has_cluster) {
+        bool check_has_cluster_2 = true;
+        if (!TCD.has_default_solution()) check_has_cluster_2 = false;
+        else check_has_cluster_2 = ! TCD.get_default_solution().get_clusters().empty();
+        if (!check_has_cluster_2) {
           DT_LOG_DEBUG(get_logging_priority(), "Tracker clustering data has no clusters");
           return cuts::SELECTION_INAPPLICABLE;
         }
@@ -304,10 +304,10 @@ namespace snemo {
       if (is_mode_range_unclustered_hits()) {
         DT_LOG_DEBUG(get_logging_priority(), "Running RANGE_UNCLUSTERED_HITS mode...");
         // 2012-05-13 XG: Here we only take care of the default solution
-        bool check_has_unclustered_hits = true;
-        if (!TCD.has_default_solution()) check_has_unclustered_hits = false;
-        else check_has_unclustered_hits = ! TCD.get_default_solution().get_unclustered_hits().empty();
-        if (!check_has_unclustered_hits) {
+        bool check_has_unclustered_hits_2 = true;
+        if (!TCD.has_default_solution()) check_has_unclustered_hits_2 = false;
+        else check_has_unclustered_hits_2 = ! TCD.get_default_solution().get_unclustered_hits().empty();
+        if (!check_has_unclustered_hits_2) {
           DT_LOG_DEBUG(get_logging_priority(), "Tracker clustering data has no unclustered hits");
           return cuts::SELECTION_INAPPLICABLE;
         }

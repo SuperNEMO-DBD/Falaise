@@ -1,14 +1,13 @@
 # - Basic CMake setup
 # Check version meets ou requirements
 # Declare project, which will configure compiler for us
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.3)
 project(AccessThingsModuleCustom)
 
-# Modules use Bayeux, so we need to locate this or fail
-find_package(Bayeux REQUIRED)
-
-# Ensure our code can see the Bayeux headers
-include_directories(${Bayeux_INCLUDE_DIRS})
+# Modules use FalaiseBayeux, so we need to locate this or fail
+# Locating Falaise will automatically locate all of its
+# dependencies such as Bayeux, ROOT and Boost.
+find_package(Falaise 2.1.0 REQUIRED)
 
 # Build a dynamic library from our sources
 add_library(AccessThingsModule SHARED
@@ -18,11 +17,8 @@ add_library(AccessThingsModule SHARED
   MyDataType.cpp
   )
 
-# Apple linker requires dynamic lookup of symbols, so we
-# add link flags on this platform
-if(APPLE)
-  set_target_properties(AccessThingsModule
-    PROPERTIES LINK_FLAGS "-undefined dynamic_lookup"
-    )
-endif()
+# Link it to the FalaiseModule library
+# This ensures the correct compiler flags, include paths
+# and linker flags are applied to our dynamic library.
+target_link_libraries(AccessThingsModule PUBLIC FalaiseModule)
 

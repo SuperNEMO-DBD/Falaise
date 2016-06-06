@@ -42,7 +42,7 @@
 #include <boost/scoped_ptr.hpp>
 
 // Falaise:
-#include <snemo/processing/base_tracker_fitter.h>
+#include <falaise/snemo/processing/base_tracker_fitter.h>
 
 // This project:
 #include <TrackFit/i_drift_time_calibration.h>
@@ -162,6 +162,8 @@ namespace snemo {
 
       /// Reset the clusterizer
       virtual void reset();
+
+    protected:
 
       /// Main clustering method
       virtual int _process_algo(const snemo::datamodel::tracker_clustering_data & clustering_,

@@ -98,7 +98,7 @@ namespace snemo {
 
 
         // Macro to automate the registration of the module :
-        DPP_MODULE_REGISTRATION_INTERFACE(event_browser_module);
+        DPP_MODULE_REGISTRATION_INTERFACE(event_browser_module)
 
       };
 

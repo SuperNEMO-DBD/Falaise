@@ -63,7 +63,7 @@ namespace snemo {
         MODE_FLAG               = datatools::bit_mask::bit00,
         MODE_HAS_HIT_CATEGORY   = datatools::bit_mask::bit01, // simulated_data::has_step_hits
         MODE_RANGE_HIT_CATEGORY = datatools::bit_mask::bit02, // simulated_data::get_number_of_step_hits
-        MODE_HAS_HIT_PROPERTY   = datatools::bit_mask::bit03, //
+        MODE_HAS_HIT_PROPERTY   = datatools::bit_mask::bit03  //
       };
 
       /// Set the SD bank key
@@ -131,7 +131,7 @@ namespace snemo {
       property_values_dict_type _hit_property_values_; //!< Values of the 'step_hit' property to look for
 
       // Macro to automate the registration of the cut :
-      CUT_REGISTRATION_INTERFACE(simulated_data_cut);
+      CUT_REGISTRATION_INTERFACE(simulated_data_cut)
     };
 
   } // end of namespace cut

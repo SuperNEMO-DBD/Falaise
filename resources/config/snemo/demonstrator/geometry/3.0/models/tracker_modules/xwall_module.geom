@@ -55,7 +55,7 @@ x                 : real   =   0.6 # mm
 y                 : real   = 208.5 # mm
 z                 : real   = 150.0 # mm
 length_unit       : string = "mm"
-material.ref      : string = "std::pfte"
+material.ref      : string = "std::ptfe"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 
@@ -95,7 +95,7 @@ x                 : real   = 200.0 # mm
 y                 : real   =   0.6 # mm
 z                 : real   = 150.0 # mm
 length_unit       : string = "mm"
-material.ref      : string = "std::pfte"
+material.ref      : string = "std::ptfe"
 visibility.hidden : boolean = 0
 visibility.color  : string  = "green"
 

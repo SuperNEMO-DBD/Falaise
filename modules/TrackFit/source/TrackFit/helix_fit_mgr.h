@@ -63,7 +63,7 @@ namespace TrackFit {
       PARAM_INDEX_Y0      =  1, /// Index of the Y0 free parameter
       PARAM_INDEX_Z0      =  2, /// Index of the Z0 free parameter
       PARAM_INDEX_R       =  3, /// Index of the R free parameter
-      PARAM_INDEX_STEP    =  4, /// Index of the STEP free parameter
+      PARAM_INDEX_STEP    =  4  /// Index of the STEP free parameter
     };
 
     /// Check if the quality is available

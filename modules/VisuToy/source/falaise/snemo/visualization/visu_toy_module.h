@@ -99,7 +99,7 @@ namespace snemo {
       int _usleep_safe_;     /// Time delay between the display of two events (usec)
 
       // Macro to automate the registration of the module :
-      DPP_MODULE_REGISTRATION_INTERFACE(visu_toy_module);
+      DPP_MODULE_REGISTRATION_INTERFACE(visu_toy_module)
 
     };
 

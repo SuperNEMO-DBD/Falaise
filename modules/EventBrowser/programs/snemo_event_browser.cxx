@@ -45,8 +45,8 @@
 
 int main(int argc_, char **argv_)
 {
-  FALAISE_INIT_MAIN(argc_, argv_);
-  const std::string APPNAME_PREFIX = "snemo_event_browser: ";
+  falaise::initialize(argc_, argv_);
+  const std::string APPNAME_PREFIX = "flvisualize: ";
 
   int error_code = EXIT_SUCCESS;
   try {
@@ -105,7 +105,7 @@ int main(int argc_, char **argv_)
     DT_LOG_FATAL(datatools::logger::PRIO_FATAL, "Unexpected error !");
     error_code = EXIT_FAILURE;
   }
-  FALAISE_FINI();
+  falaise::terminate();
   return error_code;
 }
 

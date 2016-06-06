@@ -1436,10 +1436,6 @@ namespace TrackFit {
       return false;
     }
 
-    double dist = -std::numeric_limits<double>::infinity();
-    gg_hits_col::const_iterator iter_hit_1 = hits_.end();
-    gg_hits_col::const_iterator iter_hit_2 = hits_.end();
-
     // 2012-10-08 FM :
     // GG hits map with infos :
     gg_hit_info_dict_type gg_hit_infos;
@@ -1454,6 +1450,9 @@ namespace TrackFit {
       }
     }
 
+    double dist = -std::numeric_limits<double>::infinity();
+    gg_hits_col::const_iterator iter_hit_1 = hits_.end();
+    gg_hits_col::const_iterator iter_hit_2 = hits_.end();
     for (gg_hits_col::const_iterator i = hits_.begin();
          i != hits_.end();
          ++i)  {
@@ -1550,13 +1549,13 @@ namespace TrackFit {
           dist_to_p2_ok = true;
         }
 
-        const double dist =(hi - p_med).mag();
+        const double a_dist =(hi - p_med).mag();
         // count hits from one side of the segment(labelled 'pos'):
         if (cross_prod.z() > 0.0) {
           count_pos++;
           if (dist_to_p1_ok && dist_to_p2_ok) {
-            if (dist < dist_far_pos) {
-              dist_far_pos = dist;
+            if (a_dist < dist_far_pos) {
+              dist_far_pos = a_dist;
               iter_hit_far_pos = i;
             }
           }
@@ -1565,16 +1564,16 @@ namespace TrackFit {
 
           count_neg++;
           if (dist_to_p1_ok && dist_to_p2_ok) {
-            if (dist < dist_far_neg) {
-              dist_far_neg = dist;
+            if (a_dist < dist_far_neg) {
+              dist_far_neg = a_dist;
               iter_hit_far_neg = i;
             }
           }
         } else {
           // gg hit is aligned within the same row
           if (dist_to_p1_ok && dist_to_p2_ok) {
-            if (dist < dist_far_aligned) {
-              dist_far_aligned = dist;
+            if (a_dist < dist_far_aligned) {
+              dist_far_aligned = a_dist;
               iter_hit_far_aligned = i;
             }
           }
@@ -2046,9 +2045,9 @@ namespace TrackFit {
         g1.cmd("set key on outside right top vertical");
         g1.cmd("set size ratio -1");
         g1.cmd("set grid");
-        std::ostringstream title_oss;
-        title_oss << "Guess '" << mode_label << "'(XY-view)";
-        g1.set_title(title_oss.str());
+        std::ostringstream a_title_oss;
+        a_title_oss << "Guess '" << mode_label << "'(XY-view)";
+        g1.set_title(a_title_oss.str());
         g1.set_xlabel("x(mm)").set_ylabel("y(mm)");
         std::ostringstream cmdoss;
         cmdoss << "plot ";
@@ -2063,9 +2062,9 @@ namespace TrackFit {
         g1.showonscreen(); // window output
         geomtools::gnuplot_drawer::wait_for_key();
       } else {
-        std::ostringstream title_oss;
-        title_oss << "Guess '" << mode_label << "'(XYZ-view)";
-        g1.set_title(title_oss.str());
+        std::ostringstream a_title_oss;
+        a_title_oss << "Guess '" << mode_label << "'(XYZ-view)";
+        g1.set_title(a_title_oss.str());
         g1.set_xlabel("x(mm)").set_ylabel("y(mm)").set_zlabel("z(mm)");
         g1.cmd("set key on outside right top vertical");
         g1.cmd("set view equal xyz");

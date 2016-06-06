@@ -20,7 +20,7 @@ namespace snemo {
 
     // Registration instantiation macro :
     DPP_MODULE_REGISTRATION_IMPLEMENT(event_header_utils_module,
-                                      "snemo::processing::event_header_utils_module");
+                                      "snemo::processing::event_header_utils_module")
 
 
     // Initialization :

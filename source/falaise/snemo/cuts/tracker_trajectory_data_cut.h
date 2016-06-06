@@ -126,7 +126,7 @@ namespace snemo {
       double      _pvalue_range_max_;   //!< Maximal value of p-value
 
       // Macro to automate the registration of the cut :
-      CUT_REGISTRATION_INTERFACE(tracker_trajectory_data_cut);
+      CUT_REGISTRATION_INTERFACE(tracker_trajectory_data_cut)
 
     };
 

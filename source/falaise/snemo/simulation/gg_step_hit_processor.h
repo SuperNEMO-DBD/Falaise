@@ -177,7 +177,7 @@ namespace snemo {
       datatools::computing_time _CT2_;
 
       // Registration macro :
-      MCTOOLS_STEP_HIT_PROCESSOR_REGISTRATION_INTERFACE (gg_step_hit_processor);
+      MCTOOLS_STEP_HIT_PROCESSOR_REGISTRATION_INTERFACE (gg_step_hit_processor)
     };
 
   } // end of namespace simulation

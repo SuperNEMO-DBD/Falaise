@@ -32,11 +32,11 @@ namespace snemo {
     {
       DT_THROW_IF(_geiger_ctws_.size() == 0, std::logic_error, " Geiger CTW collection is empty ! ");
 
-      int index_with_min = 0;
+      unsigned int index_with_min = 0;
 
       int32_t clocktick_min = _geiger_ctws_[0].get().get_clocktick_800ns();
       
-      for (int i = 1; i < _geiger_ctws_.size(); i++)
+      for (unsigned int i = 1; i < _geiger_ctws_.size(); i++)
 				{
 					if (_geiger_ctws_[i].get().get_clocktick_800ns() < clocktick_min)
 						{
@@ -51,11 +51,11 @@ namespace snemo {
     {
       DT_THROW_IF(_geiger_ctws_.size() == 0, std::logic_error, " Geiger CTW collection is empty ! ");
 
-      int index_with_max = 0;
+      unsigned int index_with_max = 0;
 
       int32_t clocktick_max = _geiger_ctws_[0].get().get_clocktick_800ns();
       
-      for (int i = 1; i < _geiger_ctws_.size(); i++)
+      for (unsigned int i = 1; i < _geiger_ctws_.size(); i++)
 				{
 					if (_geiger_ctws_[i].get().get_clocktick_800ns() > clocktick_max)
 						{
@@ -78,7 +78,6 @@ namespace snemo {
       return _geiger_ctws_[get_clocktick_max_index()].get().get_clocktick_800ns();
     }
 
-
     int geiger_ctw_data::get_clocktick_range() const
     {
       DT_THROW_IF(_geiger_ctws_.size() == 0, std::logic_error, " Geiger CTW collection is empty ! ");
@@ -89,9 +88,9 @@ namespace snemo {
     {
       DT_THROW_IF(_geiger_ctws_.size() == 0, std::logic_error, " Geiger CTW collection is empty ! ");
       //DT_THROW_IF(!is_locked(), std::logic_error, " Geiger CTW collection is not locked ! ");
-      for (int i = 0; i < _geiger_ctws_.size(); i++)
+      for (unsigned int i = 0; i < _geiger_ctws_.size(); i++)
       	{
-      	  if(_geiger_ctws_[i].get().get_clocktick_800ns() == clocktick_800ns_)
+      	  if(_geiger_ctws_[i].get().get_clocktick_800ns() == clocktick_800ns_ && _geiger_ctws_[i].get().has_trigger_primitive_values())
       	    {
       	      ctws_.push_back(_geiger_ctws_[i]);
       	    }
@@ -142,7 +141,18 @@ namespace snemo {
     {
       return _geiger_ctws_;
     }
+		
+		geiger_ctw_data::geiger_ctw_collection_type & geiger_ctw_data::grab_geiger_ctws()
+		{
+			return _geiger_ctws_;
+		}
 
+		bool geiger_ctw_data::has_geiger_ctw() const
+		{
+			if (_geiger_ctws_.empty() == true) return false;
+			else return true;
+		}
+		
     void geiger_ctw_data::reset()
     {
       if (is_locked())
@@ -172,11 +182,11 @@ namespace snemo {
     void geiger_ctw_data::_check()
     {
       DT_THROW_IF(_geiger_ctws_.size() == 0, std::logic_error, " Geiger CTW collection is empty ! ");
-      for (int i = 0; i < _geiger_ctws_.size() - 1; i++)
+      for (unsigned int i = 0; i < _geiger_ctws_.size() - 1; i++)
 				{
 					const geiger_ctw & ctw_a = _geiger_ctws_[i].get();
 
-					for (int j = i+1; j < _geiger_ctws_.size(); j++)
+					for (unsigned int j = i+1; j < _geiger_ctws_.size(); j++)
 						{
 							const geiger_ctw & ctw_b = _geiger_ctws_[j].get();
 

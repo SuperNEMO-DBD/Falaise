@@ -3,8 +3,8 @@ Writing FLReconstruct Modules {#writingflreconstructmodules}
 
 \tableofcontents
 
-Introduction {#introduction}
-============
+Introduction to the writing of FLReconstruct modules {#introduction}
+========================================================================
 
 If you have just started using Falaise or the FLReconstruct application,
 we strongly recommend that you familiarize yourself with the basic usage
@@ -121,9 +121,10 @@ Building a Loadable Shared Library {#minimalmodulebuilding}
 With the source code for `MyModule` in place we need to build a shared
 library from it that `flreconstruct` can load at runtime to make
 `MyModule` available for use in the pipeline. As `MyModule` uses components
-from Bayeux, the compilation needs to have the path to the Bayeux headers
-available. The simplest way to do this is to use CMake to build the
-shared library and make use of Bayeux's [find_package](http://www.cmake.org/cmake/help/v2.8.10/cmake.html#command:find_package) support.
+from Falaise, the compilation needs to use its headers,
+libraries and dependencies available. The simplest way to set this up
+is to use CMake to build the shared library and make use of Falaise's 
+[find_package](https://cmake.org/cmake/help/v3.3/command/find_package.html) support.
 
 To do this, we add a CMake script alongside the sources:
 
@@ -141,12 +142,10 @@ The implementation of `CMakeLists.txt` is very straightforward:
 \include flreconstruct/MyModule/CMakeLists.txt
 
 Comments begin with a `#`. The first two commands simply setup CMake and
-the compiler for us. The `find_package` command will locate Bayeux for us,
-with the `REQUIRED` argument ensuring CMake will fail it Bayeux cannot be
-found for any reason. The `include_directories` command uses a variable set
-by the preceeding `find_package` command to ensure the compiler can locate
-Bayeux's headers. Finally, the `add_library` and `set_target_properties`
-commands are used to build and link actual library.
+the compiler for us. The `find_package` command will locate Falaise for us,
+and we supply a version number and the `REQUIRED` argument to ensure CMake will 
+fail if a Falaise install with that version or newer cannot be found. 
+The `add_library` command creates the actual shared library.
 Breaking the arguments to `add_library` down one by one:
 
 1. `MyModule` : the name of the library, which will be used to create the
@@ -154,23 +153,17 @@ on disk name. For example, on Linux, this will output a library file `libMyModul
 2. `SHARED` : the type of the library, in this case a dynamic library.
 3. `MyModule.h MyModule.cpp` : all the sources need to build the library. The header is also listed so that it will show up in IDEs like Xcode.
 
-The use of `set_target_properties` is restricted to Apple platforms, and
-adds flags to pass to the linker when linking the `MyModule` library.
-This is needed because the Apple dynamic linker requires all symbols (the
-functions/classes in/used by the binary library) to be found at link time.
-The `MyModule` class uses symbols from the Bayeux library, so strictly
-speaking we should link `libMyModule` to `libBayeux`. However, as we will
-load `libMyModule` into `flreconstruct`, we can rely on the latter to
-provide these symbols for us (so called dynamic lookup). The extra link
-flags therefore tell the Apple linker to use this runtime lookup
-mechanism.
+Finally, the `target_link_libraries` command links the shared library to
+Falaise's `FalaiseModule` target. This ensures that compilation and
+linking of the `MyModule` target will have the correct compiler and
+linkjng setup. The PUBLIC keyword means that if any other library links
+to `MyModule`, it must also link to `FalaiseModule`.
 
 For more detailed documentation on CMake, please refer to the
-[online help](http://www.cmake.org/cmake/help/documentation.html).
+[online help](https://cmake.org/cmake/help/v3.3/).
 
 To build the library, we first create a so-called *build directory* so
-that we can
-isolate the binary files from the source code. This can be wherever you
+that we can isolate the binary files from the source code. This can be wherever you
 like, but it's usually most convenient to create this alongside the
 directory in which the sources reside. In this example we have the directory
 structure:
@@ -210,13 +203,12 @@ run `cmake` to configure the build of `MyModule`:
 
 ~~~~~~
 $ cd MyModule-build
-$ cmake -DBayeux_DIR=/where/BayeuxConfig/is ../MyModule
+$ cmake -DCMAKE_PREFIX_PATH=/where/Falaise/is ../MyModule
 ~~~~~~
 
-Here, the `Bayeux_DIR` argument should be the directory which holds the
-file `BayeuxConfig.cmake`. This file is installed by Bayeux, and will
-be located in the directory `<prefix>/lib/cmake/Bayeux-1.0.0`, where
-`<prefix>` is the root directory of your Falaise/Bayeux installation.
+Here, the `CMAKE_PREFIX_PATH` argument should be the directory under which Falaise
+was installed. If you installed Falaise using `brew` and are using `cmake` from `brew`
+then you will not need to set this.
 The argument `../MyModule` points CMake to the directory holding the
 `CMakeLists.txt` file for the project we want to build, in this case our
 custom module.
@@ -225,24 +217,30 @@ Running the command will produce output that is highly system dependent,
 but you should see something along the lines of
 
 ~~~~~~
-$ cmake -DBayeux_DIR=/where/BayeuxConfig/is ../MyModule
--- The C compiler identification is GNU 4.3.4
--- The CXX compiler identification is GNU 4.3.4
--- Check for working C compiler: /usr/bin/cc
--- Check for working C compiler: /usr/bin/cc -- works
+$ cmake -DCMAKE_PREFIX_PATH=/where/Falaise/is ../MyModule
+-- The C compiler identification is AppleClang 7.3.0.7030031
+-- The CXX compiler identification is AppleClang 7.3.0.7030031
+-- Check for working C compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc
+-- Check for working C compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -- works
 -- Detecting C compiler ABI info
 -- Detecting C compiler ABI info - done
--- Check for working CXX compiler: /usr/bin/c++
--- Check for working CXX compiler: /usr/bin/c++ -- works
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++
+-- Check for working CXX compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -- works
 -- Detecting CXX compiler ABI info
 -- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+...
 -- Configuring done
 -- Generating done
--- Build files have been written to: /path/to/MyWorkSpace/MyModule-build
+-- Build files have been written to: /..../MyModule-build
 $
 ~~~~~~
 
-The last three lines are common (apart from the path), and indicate a
+The exact output will depend on which compiler and platform you are using.
+However, the last three lines are common (apart from the path), and indicate a
 successful configuration. Listing the contents of the directory shows
 that CMake has generated a Makefile for us:
 
@@ -268,10 +266,11 @@ build directory:
 
 ~~~~~~
 $ ls
-CMakeCache.txt  CMakeFiles  cmake_install.cmake  libMyModule.so  Makefile
+CMakeCache.txt      CMakeFiles          Makefile            cmake_install.cmake libMyModule.dylib
 $
 ~~~~~~
 
+Note that the extension of the shared library is platform dependent (`dylib` for Mac, `so` on Linux).
 With the library built, we now need to make `flreconstruct` aware of
 it and to use it in the pipeline.
 
@@ -300,23 +299,30 @@ This script takes the same basic form as shown in the [tutorial on using flrecon
 
 The `plugins` key in the `flreconstruct.plugins` section is a list of
 strings naming the libraries to be loaded by `flreconstruct` at startup.
-If these libraries contain modules, they will be automatically loaded.
-By default, the string(s) you provide will be used as the library name,
-and it will be searched for as a file named `libNAME.{so,dylib}` under
+These are taken as the "basename" of the library, from which the full
+physical file to be loaded `lib<basename>.{so,dylib}` is constructed.
+By default, `flreconstruct` only searches for plugin libraries in its builtin
+location, so custom modules must supply the `.directory` attribute to tell
+it the path under which the library is located.
 
-1. The current working directory,
-2. The paths in `LD_LIBRARY_PATH`,
-3. The system paths known to the dynamic linker.
-
-To override this behaviour you can also explicitly specify the directory
-to look in for the library. For example, we built the `MyModule` library
-in `/path/to/MyWorkSpace/MyModule-build`, so we can force `flreconstruct`
-to look there, and only there, by doing
+In the above example, `MyModule.directory : string ='.'` tells `flreconstruct`
+to look in the current working directory, i.e. the directory from which it was run.
+This is convenient for testing a local build of a module, as we can run `flreconstruct`
+directly from the build directory of our module and it will locate the library immediately.
+You can also specify absolute paths, e.g.
 
 ~~~~~~
 [name="flreconstruct.plugins" type=""]
 plugins : string[1] = "MyModule"
 MyModule.directory : string = "/path/to/MyWorkSpace/MyModule-build"
+~~~~~~
+
+or paths containing environment variables which will be expanded automatically, e.g.
+
+~~~~~~
+[name="flreconstruct.plugins" type=""]
+plugins : string[1] = "MyModule"
+MyModule.directory : string = "${MYMODULE_PATH}"
 ~~~~~~
 
 With the loading of the custom module in place, we can use it in the
@@ -343,8 +349,8 @@ to their C++ typename. It makes it absolutely clear which module is
 to be constructed and minimizes potential name clashes.
 
 We can now run `flreconstruct` with `MyModulePipeline.conf` as the pipeline
-script. Because we're relying on the default lookup of the `MyModule`
-library, we first change to the directory in which this library resides,
+script. Because we've specified the location of the `MyModule`
+library as the working directory, we first change to the directory in which this library resides,
 namely our build directory. We also need to have a file to process, so
 we run `flsimulate` first to create a simple file of one event (NB in
 the following, we assume you have `flsimulate` and `flreconstruct` in your
@@ -353,22 +359,14 @@ the following, we assume you have `flsimulate` and `flreconstruct` in your
 ~~~~~~
 $ cd /path/to/MyWorkSpace/MyModule-build
 $ ls
-CMakeCache.txt  CMakeFiles  cmake_install.cmake  libMyModule.so  Makefile
+CMakeCache.txt  CMakeFiles  cmake_install.cmake  libMyModule.dylib  Makefile
 $ flsimulate -n1 -o MyModuleTest.brio
 ....
 $ ls
 CMakeCache.txt  cmake_install.cmake  Makefile
-CMakeFiles      libMyModule.so       MyModuleTest.brio
+CMakeFiles      libMyModule.dylib       MyModuleTest.brio
 $ flreconstruct -i MyModuleTest.brio -p ../MyModule/MyModulePipeline.conf
-[notice:void datatools::library_loader::init():410] Automatic loading of library  'MyModule'...
-...
-Reader configuration parameters:
-|-- Name : "files.mode"
-|   |-- Type  : string (scalar)
-|   `-- Value : "single"
-`-- Name : "files.single.filename"
-    |-- Type  : string (scalar)
-    `-- Value : "MyModuleTest.brio"
+[notice:void datatools::library_loader::init():449] Automatic loading of library  'MyModule'...
 MyModule::process called!
 $
 ~~~~~~
@@ -420,7 +418,7 @@ the main configuration is performed.
 
 The use of the `DT_THROW_IF` macro
 is used to enforce one-time initialization of the module so that we can't
-accidently and silently override the configuration. This locking
+accidentaly and silently override the configuration. This locking
 behaviour is not required, but is useful to prevent such accidental
 overwrites.
 
@@ -477,15 +475,7 @@ $ ls
 CMakeCache.txt  cmake_install.cmake  Makefile
 CMakeFiles      libMyModule.so       MyModuleTest.brio
 $ flreconstruct -i MyModuleTest.brio -p ../MyModule/MyModulePipeline.conf
-[notice:void datatools::library_loader::init():410] Automatic loading of library  'MyModule'...
-...
-Reader configuration parameters:
-|-- Name : "files.mode"
-|   |-- Type  : string (scalar)
-|   `-- Value : "single"
-`-- Name : "files.single.filename"
-    |-- Type  : string (scalar)
-    `-- Value : "MyModuleTest.brio"
+[notice:void datatools::library_loader::init():449] Automatic loading of library  'MyModule'...
 MyModule::process using fudgeFactor(1)
 $
 ~~~~~~
@@ -516,15 +506,7 @@ Having add the key, we can rerun with the updated pipeline script:
 
 ~~~~~~
 $ flreconstruct -i MyModuleTest.brio -p ../MyModule/MyModulePipeline.conf
-[notice:void datatools::library_loader::init():410] Automatic loading of library  'MyModule'...
-...
-Reader configuration parameters:
-|-- Name : "files.mode"
-|   |-- Type  : string (scalar)
-|   `-- Value : "single"
-`-- Name : "files.single.filename"
-    |-- Type  : string (scalar)
-    `-- Value : "MyModuleTest.brio"
+[notice:void datatools::library_loader::init():449] Automatic loading of library  'MyModule'...
 MyModule::process using fudgeFactor(3.14)
 $
 ~~~~~~
@@ -549,3 +531,23 @@ This helps to make the module easier to use and less error prone.
 Remember that the modular structure of the pipeline means that tasks
 are broken down into smaller chunks, so you should consider refactoring
 complex modules into smaller orthogonal units.
+
+Next Steps
+==========
+The above examples have illustrated the basic structures needed to
+implement a module and load it into `flreconstruct`.
+
+Practical modules will access the event object passed to them, process it
+and then write information back into the event record. [Using the event data model in modules is covered in a dedicated tutorial](@ref workingwitheventrecords).
+
+Modules may also need access to global data such as run conditions.
+FLReconstruct uses the concept of "Services" to provide such data,
+and [a tutorial on using services in modules is provided](@ref usingservices).
+
+Modules should also always be documented so that users have a clear
+picture of the task performed by the module and its configurable
+parameters. [A tutorial on documenting modules using the builtin Falaise/Bayeux tools](@ref documentingflreconstructmodules) is available.
+
+Though modules for FLReconstruct may not be directly integrated in
+Falaise, for consistency and maintanability their code [must follow the Falaise coding conventions](@ref codingstandards).
+

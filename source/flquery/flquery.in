@@ -83,13 +83,6 @@ EOF
     return
 }
 
-###  --skel-plugin [path]   Generate the skeleton directory of a Falaise plugin.
-function flskel_plugin()
-{
-    echo "error: ${APPNAME}: flskel_plugin: Not implemented yet !" >&2
-    return 1
-}
-
 function flhelp_browse_api()
 {
     browser=$(which xdg-open)

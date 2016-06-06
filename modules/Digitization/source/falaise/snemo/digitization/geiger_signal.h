@@ -85,7 +85,7 @@ namespace snemo {
 			double _plasma_top_time_; //!< Time of plasma on top cathode
       double _plasma_bottom_time_; //!< Time of plasma on bottom cathode
 
-			// DATATOOLS_SERIALIZATION_DECLARATION();
+			// DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

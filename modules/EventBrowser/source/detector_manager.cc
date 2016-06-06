@@ -393,14 +393,14 @@ namespace snemo {
               _geo_manager_config_file_ = geo_manager_config_file;
             } else {
               // Otherwise, use SuperNEMO/demonstrator config 3.0
-              const std::string resource_dir  = falaise::get_resource_dir(true);
+              const std::string resource_dir  = falaise::get_resource_dir();
               const std::string setup_name    = "snemo/demonstrator";
-              const std::string setup_version = "3.0";
+              const std::string setup_version = "4.0";
               _geo_manager_config_file_ = resource_dir + "/config/"
                 + setup_name + "/geometry/" + setup_version + "/manager.conf";
 
               DT_LOG_NOTICE(view::options_manager::get_instance().get_logging_priority(),
-                            "Use default SuperNEMO/demonstrator config i.e." << setup_name << " "
+                            "Use default SuperNEMO/demonstrator config i.e. " << setup_name << " "
                             << "version " << setup_version);
             }
           }
@@ -447,11 +447,9 @@ namespace snemo {
           const std::string gmanager_config_file = _geo_manager_config_file_;
 
           // Load properties from the configuration file
-          datatools::properties::read_config(gmanager_config_file,
-                                             gmanager_config);
+          datatools::properties::read_config(gmanager_config_file, gmanager_config);
 
-          // Prepare mapping configuration with a limited set of
-          // geo. categories
+          // Prepare mapping configuration with a limited set of geo. categories
           gmanager_config.update("build_mapping", true);
 
           // Remove the 'exclusion' property if any
@@ -501,11 +499,9 @@ namespace snemo {
         // Initialize geometry manager
         geomtools::manager & gmgr = this->grab_geometry_manager();
         gmgr.set_logging_priority(view::options_manager::get_instance().get_logging_priority());
-        if (!has_external_geometry_manager()) {
+        if (! has_external_geometry_manager()) {
           // Set the 'only' property
-          gmanager_config.update("mapping.only_categories", only_categories);
-
-          // Already done through geometry service
+          //gmanager_config.update("mapping.only_categories", only_categories);
           gmgr.initialize(gmanager_config);
         }
 
@@ -524,7 +520,7 @@ namespace snemo {
             view::style_manager::volume_properties dummy;
             volumes[a_category] = dummy;
             volumes[a_category]._visibility_ = VISIBLE;
-            volumes[a_category]._color_      = utils::root_utilities::get_random_color();
+            volumes[a_category]._color_ = utils::root_utilities::get_random_color();
           }
         }
 
@@ -566,8 +562,8 @@ namespace snemo {
             const geomtools::geom_info & ginfo = **iptr_ginfo;
             this->_set_volume_(ginfo);
 
-            // Save 'module' placement for later coordinates conversio
-            if (volume_category_name =="module") {
+            // Save 'module' placement for later coordinates conversion
+            if (volume_category_name == "module") {
               _module_placement_ = &(ginfo.get_world_placement());
             }
           } // end of geo_info

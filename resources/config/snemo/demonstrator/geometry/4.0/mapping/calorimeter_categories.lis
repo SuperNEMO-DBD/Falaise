@@ -1,0 +1,58 @@
+# -*- mode: conf-unix; -*-
+# calorimeter_categories.lis
+# List of geometry ID categories/types (format: datatools::multi_properties):
+
+#@description A sample list of geometry ID categories/types for calorimeter submodules
+#@key_label   "category"
+#@meta_label  "type"
+
+
+#########################
+# Calorimeter submodule #
+#########################
+
+###################################################
+[category="calorimeter_submodule"      type="1300"]
+extends : string    = "module"
+by      : string[1] = "side"
+
+
+###################################################
+[category="calorimeter_column"         type="1310"]
+extends : string    = "calorimeter_submodule"
+by      : string[1] = "column"
+
+
+###################################################
+[category="calorimeter_optical_module" type="1301"]
+extends : string    = "calorimeter_column"
+by      : string[1] = "row"
+
+
+###################################################
+[category="calorimeter_block"          type="1302"]
+extends : string    = "calorimeter_optical_module"
+by      : string[1] = "part"
+
+
+###################################################
+[category="calorimeter_wrapper"        type="1303"]
+inherits : string   = "calorimeter_optical_module"
+
+
+###################################################
+[category="calorimeter_pmt"            type="1304"]
+inherits : string   = "calorimeter_optical_module"
+
+
+###################################################
+[category="calorimeter_pmt_glass"      type="1305"]
+inherits : string   = "calorimeter_pmt"
+
+
+###################################################
+[category="calorimeter_curtain"        type="1306"]
+inherits : string   = "calorimeter_optical_module"
+
+
+# end of calorimeter_categories.lis

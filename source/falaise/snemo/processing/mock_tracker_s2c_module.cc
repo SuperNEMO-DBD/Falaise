@@ -29,7 +29,7 @@ namespace snemo {
 
     // Registration instantiation macro :
     DPP_MODULE_REGISTRATION_IMPLEMENT(mock_tracker_s2c_module,
-                                      "snemo::processing::mock_tracker_s2c_module");
+                                      "snemo::processing::mock_tracker_s2c_module")
 
     double mock_tracker_s2c_module::get_peripheral_drift_time_threshold() const
     {
@@ -130,7 +130,7 @@ namespace snemo {
                     ! service_manager_.is_a<geomtools::geometry_service>(_Geo_label_),
                     std::logic_error,
                     "Module '" << get_name() << "' has no '" << _Geo_label_ << "' service !");
-        geomtools::geometry_service & Geo = service_manager_.get<geomtools::geometry_service>(_Geo_label_);
+        const geomtools::geometry_service & Geo = service_manager_.get<geomtools::geometry_service>(_Geo_label_);
         set_geom_manager(Geo.get_geom_manager());
       }
       DT_THROW_IF(_geom_manager_ == 0, std::logic_error, "Missing geometry manager !");
@@ -664,8 +664,8 @@ namespace snemo {
           the_calibrated_tracker_hit.set_top_cathode_missing(true);
         } else {
           missing_cathodes = 0;
-          const double plasma_propagation_speed = _geiger_.get_cell_length() /(t1 + t2);
-          const double mean_z = 0.5 *_geiger_.get_cell_length() - t2 * plasma_propagation_speed;
+          const double plasma_propagation_speed_2 = _geiger_.get_cell_length() /(t1 + t2);
+          const double mean_z = 0.5 *_geiger_.get_cell_length() - t2 * plasma_propagation_speed_2;
           sigma_z = _geiger_.get_sigma_z(mean_z, missing_cathodes);
           z       = _geiger_.randomize_z(_get_random(), mean_z, sigma_z);
         }

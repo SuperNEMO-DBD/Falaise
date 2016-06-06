@@ -238,6 +238,6 @@ class Things2Root : public dpp::base_module {
 
   // Macro which automatically creates the interface needed
   // to enable the module to be loaded at runtime
-  DPP_MODULE_REGISTRATION_INTERFACE(Things2Root);
+  DPP_MODULE_REGISTRATION_INTERFACE(Things2Root)
 };
 #endif // THINGS2ROOT_H

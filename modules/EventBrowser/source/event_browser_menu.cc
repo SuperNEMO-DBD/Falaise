@@ -93,8 +93,8 @@ namespace snemo {
         return;
       }
 
-      void TGPopupMenuPlus::AddPopup(TGHotString *s, TGPopupMenu *popup, Int_t id,
-                                     TGMenuEntry *before, const TGPicture *p)
+      void TGPopupMenuPlus::AddPopupPlus(TGHotString *s, TGPopupMenu *popup, Int_t id,
+                                         TGMenuEntry *before, const TGPicture *p)
       {
         // Add a (cascading) popup menu to a popup menu. The hotstring is adopted
         // by the menu (actually by the TGMenuEntry) and deleted when possible.
@@ -140,13 +140,13 @@ namespace snemo {
           Resize(fMenuWidth, fMenuHeight);
       }
 
-      void TGPopupMenuPlus::AddPopup(const char * s, TGPopupMenu * popup, Int_t id,
-                                     TGMenuEntry * before, const TGPicture * p)
+      void TGPopupMenuPlus::AddPopupPlus(const char * s, TGPopupMenu * popup, Int_t id,
+                                         TGMenuEntry * before, const TGPicture * p)
       {
         // Add a (cascading) popup menu to a popup menu. The string s is not
         // adopted. If before is not 0, the entry will be added before it.
 
-        AddPopup(new TGHotString(s), popup, id, before, p);
+        AddPopupPlus(new TGHotString(s), popup, id, before, p);
       }
 
       void TGPopupMenuPlus::PlaceMenu(Int_t x, Int_t y, Bool_t stick_mode, Bool_t grab_pointer)
@@ -271,7 +271,7 @@ namespace snemo {
         menu_view->AddEntry("X3D view", VIEW_X3D);
         menu_view->AddEntry("Open GL view", VIEW_OGL);
         menu_view->AddSeparator();
-        menu_view->AddPopup("Save view as...", save_submenu);
+        menu_view->AddPopupPlus("Save view as...", save_submenu);
 
         // Option menu
         TGPopupMenuPlus * menu_options = new TGPopupMenuPlus(gClient->GetRoot());
@@ -287,9 +287,9 @@ namespace snemo {
         tracker_submenu->UpdateDictionnary(_popup_dict_);
         TGPopupMenuPlus * sim_hits_submenu = new TGPopupMenuPlus(gClient->GetRoot());
         sim_hits_submenu->AddEntry("Show calorimeter hits", SHOW_MC_CALORIMETER_HITS);
-        sim_hits_submenu->AddPopup("Show tracker hits", tracker_submenu, SHOW_MC_TRACKER_HITS);
+        sim_hits_submenu->AddPopupPlus("Show tracker hits", tracker_submenu, SHOW_MC_TRACKER_HITS);
         sim_hits_submenu->UpdateDictionnary(_popup_dict_);
-        menu_options->AddPopup("Show simu. hits", sim_hits_submenu, SHOW_MC_HITS);
+        menu_options->AddPopupPlus("Show simu. hits", sim_hits_submenu, SHOW_MC_HITS);
         menu_options->AddSeparator();
 
         menu_options->AddEntry("Show calib. hits", SHOW_CALIBRATED_HITS);
@@ -300,11 +300,11 @@ namespace snemo {
         cluster_submenu->AddEntry("Show tracker hit as box",    SHOW_TRACKER_CLUSTERED_BOX);
         cluster_submenu->AddEntry("Show tracker hit as circle", SHOW_TRACKER_CLUSTERED_CIRCLE);
         cluster_submenu->UpdateDictionnary(_popup_dict_);
-        menu_options->AddPopup("Show tracker clustered hits", cluster_submenu, SHOW_TRACKER_CLUSTERED_HITS);
+        menu_options->AddPopupPlus("Show tracker clustered hits", cluster_submenu, SHOW_TRACKER_CLUSTERED_HITS);
         TGPopupMenuPlus * trajectory_submenu = new TGPopupMenuPlus(gClient->GetRoot());
         trajectory_submenu->AddEntry("Show recalibrated tracker hits (only for delayed tracks)", SHOW_RECALIBRATED_TRACKER_HITS);
         trajectory_submenu->UpdateDictionnary(_popup_dict_);
-        menu_options->AddPopup("Show tracker trajectories", trajectory_submenu, SHOW_TRACKER_TRAJECTORIES);
+        menu_options->AddPopupPlus("Show tracker trajectories", trajectory_submenu, SHOW_TRACKER_TRAJECTORIES);
         menu_options->AddSeparator();
 
         menu_options->AddEntry("Show particle tracks", SHOW_PARTICLE_TRACKS);
@@ -315,7 +315,7 @@ namespace snemo {
         dump_submenu->AddEntry("Dump into terminal",     DUMP_INTO_TERMINAL);
         dump_submenu->AddEntry("Dump into a new window", DUMP_INTO_WINDOW);
         dump_submenu->UpdateDictionnary(_popup_dict_);
-        menu_options->AddPopup("Dump event info", dump_submenu, -DUMP_EVENT);
+        menu_options->AddPopupPlus("Dump event info", dump_submenu, -DUMP_EVENT);
         menu_options->UpdateDictionnary(_popup_dict_);
 
         // miscellaneous menu

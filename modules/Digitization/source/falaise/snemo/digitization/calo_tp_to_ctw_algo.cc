@@ -39,8 +39,8 @@ namespace snemo {
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Calo tp to ctw algo is already initialized ! ");
       DT_THROW_IF(_crate_number_ == -1, std::logic_error, "Crate number is not defined ! ");
-      if (_crate_number_ == 0 || _crate_number_ == 1) _set_mode (MODE_MAIN_WALL);
-      if (_crate_number_ == 2) _set_mode (MODE_XWALL_GVETO);
+      if (_crate_number_ == 0 || _crate_number_ == 1) _set_mode(MODE_MAIN_WALL);
+      if (_crate_number_ == 2) _set_mode(MODE_XWALL_GVETO);
       _initialized_ = true;
       return;
     }
@@ -54,9 +54,9 @@ namespace snemo {
       return;
     }
     
-    void calo_tp_to_ctw_algo::set_crate_number(int crate_number_)
+    void calo_tp_to_ctw_algo::set_crate_number(unsigned int crate_number_)
     {
-      DT_THROW_IF((_crate_number_ < 0 || _crate_number_ >= mapping::NUMBER_OF_CRATES), std::logic_error, "Crate number can't be set because crate number[" << _crate_number_ << "] is not valid ! ");
+      DT_THROW_IF(crate_number_ >= mapping::NUMBER_OF_CRATES, std::logic_error, "Crate number can't be set because crate number [" << _crate_number_ << "] is not valid ! ");
 
       _crate_number_ = crate_number_;
 
@@ -147,57 +147,62 @@ namespace snemo {
       return;
     }
     
-    void calo_tp_to_ctw_algo::set_ctw_clocktick(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_)
-    {
-      my_ctw_.set_clocktick_25ns(my_calo_tp_.get_clocktick_25ns());
-      return;
-    }
     void calo_tp_to_ctw_algo::set_ctw_zone_bit_htm(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_)
     {
       unsigned int activated_zone_id = 0;
 
       if (my_ctw_.is_main_wall()) // Mode == Main Wall
 	{
-	  if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) > 9)
+	  if (my_calo_tp_.is_htm())
 	    {
-	      activated_zone_id = (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX)  + BOARD_SHIFT_INDEX) / 2;
+	      if (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) > 9)
+		{
+		  activated_zone_id = (my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) + BOARD_SHIFT_INDEX) / 2;
+		}
+	      else
+		{
+		  activated_zone_id = my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) / 2;
+		}
+	      my_ctw_.set_zoning_bit(calo::ctw::W_ZW_BIT0 + activated_zone_id, true);
 	    }
-	  else
-	    {
-	      activated_zone_id = my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX) / 2;
-	    }
-
-	 my_ctw_.set_zoning_bit(calo::ctw::W_ZW_BIT0 + activated_zone_id, true);
 	}
 
       if (!my_ctw_.is_main_wall()) // Mode == XWall Gveto
 	{
-	  unsigned int board_id = my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX);
-	  if (board_id == 6 || board_id == 7)
+	  if (my_calo_tp_.is_htm())
 	    {
-	      activated_zone_id = 0;
-	    }	 
-	  if (board_id == 8 || board_id == 9)
-	    {
-	      activated_zone_id = 1;
-	    }
+	      unsigned int board_id = my_calo_tp_.get_geom_id().get(mapping::BOARD_INDEX);
+	      if (board_id == 4 || board_id == 5 || board_id == 15 || board_id == 16)
+		{
+		}
+	      else
+		{
+		  if (board_id == 6 || board_id == 7)
+		    {
+		      activated_zone_id = 0;
+		    }	 
+		  else if (board_id == 8 || board_id == 9)
+		    {
+		      activated_zone_id = 1;
+		    }
 	  	  
-	  if (board_id == 11 || board_id == 12)
-	    {
-	      activated_zone_id = 3;
-	    }
-	  	 
-	  if (board_id == 13 || board_id == 14)
-	    {
-	      activated_zone_id = 2;
-	    }
-
-	  my_ctw_.set_zoning_bit(calo::ctw::ZONING_XWALL_BIT0 + activated_zone_id, true);
-	}
-          
+		  else if (board_id == 11 || board_id == 12)
+		    {
+		      activated_zone_id = 3;
+		    }
+		  
+		  else if (board_id == 13 || board_id == 14)
+		    {
+		      activated_zone_id = 2;
+		    }
+		  my_ctw_.set_zoning_bit(calo::ctw::ZONING_XWALL_BIT0 + activated_zone_id, true);
+		} // end of else
+	    } // end of if is htm
+	} // end of if is main wall
+      
       return ;
-     }
-
+    }
+    
     void calo_tp_to_ctw_algo::set_ctw_lto(const calo_tp & my_calo_tp_, calo_ctw & my_ctw_)
     {    
       if (my_ctw_.is_main_wall()) // Mode == Main Wall
@@ -241,9 +246,11 @@ namespace snemo {
       my_calo_tp_.get_geom_id().extract_to(temporary_feb_id);
       temporary_feb_id.set(mapping::BOARD_INDEX, mapping::CONTROL_BOARD_ID);
 
+      int32_t clocktick_with_internal_shift = my_calo_tp_.get_clocktick_25ns() + clock_utils::CALO_CB_SHIFT_CLOCKTICK_NUMBER;
+      
       a_calo_ctw_.set_header(my_calo_tp_.get_hit_id(),
 			     temporary_feb_id,
-			     my_calo_tp_.get_clocktick_25ns());
+			     clocktick_with_internal_shift);
 
       set_ctw_htm(my_calo_tp_, a_calo_ctw_);
       set_ctw_zone_bit_htm(my_calo_tp_, a_calo_ctw_);
@@ -260,9 +267,11 @@ namespace snemo {
       my_calo_tp_.get_geom_id().extract_to(temporary_feb_id);
       temporary_feb_id.set(mapping::BOARD_INDEX, mapping::CONTROL_BOARD_ID);
 
+      int32_t clocktick_with_internal_shift = my_calo_tp_.get_clocktick_25ns() + clock_utils::CALO_CB_SHIFT_CLOCKTICK_NUMBER;
+
       a_calo_ctw_.set_header(my_calo_tp_.get_hit_id(),
 			     temporary_feb_id,
-			     my_calo_tp_.get_clocktick_25ns());
+			     clocktick_with_internal_shift);
       set_ctw_htm(my_calo_tp_, a_calo_ctw_);
       set_ctw_zone_bit_htm(my_calo_tp_, a_calo_ctw_);
       set_ctw_lto(my_calo_tp_, a_calo_ctw_);
@@ -273,7 +282,7 @@ namespace snemo {
     {
     DT_THROW_IF(_mode_ != MODE_MAIN_WALL, std::logic_error, "Process for main wall can't process because crate number [" << _crate_number_ << "] is not valid ! ");
     DT_THROW_IF(!is_main_wall(), std::logic_error, "Process for main wall can't process because mode number is not valid ! ");
-    for(int i = 0; i < my_list_of_calo_tp_.size(); i++)
+    for (unsigned int i = 0; i < my_list_of_calo_tp_.size(); i++)
       {
 	const calo_tp & my_calo_tp = my_list_of_calo_tp_[i].get();
 	_fill_a_main_wall_ctw(my_calo_tp, a_calo_ctw_);	  
@@ -285,7 +294,7 @@ namespace snemo {
     {
     DT_THROW_IF(_mode_ != MODE_XWALL_GVETO, std::logic_error, "Process for main wall can't process because crate number [" << _crate_number_ << "] is not valid ! ");
     DT_THROW_IF(!is_xwall_gveto(), std::logic_error, "Process for main wall can't process because mode number is not valid ! ");
-    for(int i = 0; i < my_list_of_calo_tp_.size(); i++)
+    for(unsigned int i = 0; i < my_list_of_calo_tp_.size(); i++)
       {
 	const calo_tp & my_calo_tp = my_list_of_calo_tp_[i].get();
 	_fill_a_xwall_gveto_ctw(my_calo_tp, a_calo_ctw_);	  
@@ -293,14 +302,12 @@ namespace snemo {
     return;
   }  
 
-    void calo_tp_to_ctw_algo::process(const calo_tp_data & calo_tp_data_,  calo_ctw_data & calo_ctw_data_)
+    void calo_tp_to_ctw_algo::process(const calo_tp_data & calo_tp_data_, calo_ctw_data & calo_ctw_data_)
     { 
       DT_THROW_IF(!is_initialized(), std::logic_error, "Calo tp to ctw algo is not initialized, it can't process ! ");
       DT_THROW_IF(_mode_ == MODE_UNDEFINED, std::logic_error, "Mode type is not defined, check your crate number ! ");
 
-      std::clog << "DEBUG : BEGINING OF CALO TP TO CTW PROCESS " << std::endl;
-      std::clog << "**************************************************************" << std::endl;
-      for(int32_t i = calo_tp_data_.get_clocktick_min(); i <= calo_tp_data_.get_clocktick_max(); i++)
+      for (int32_t i = calo_tp_data_.get_clocktick_min(); i <= calo_tp_data_.get_clocktick_max(); i++)
 	{
 	  if (_mode_ == MODE_MAIN_WALL)
 	    {
@@ -311,7 +318,7 @@ namespace snemo {
 		{
 		  calo_ctw & a_ctw_ = calo_ctw_data_.add();
 		  _process_for_a_ctw_for_a_clocktick_for_main_wall(tp_list_per_clocktick_per_crate, a_ctw_);
-		  a_ctw_.tree_dump(std::clog, "a_calo_ctw : ", "INFO : ");
+		  // a_ctw_.tree_dump(std::clog, "a_calo_ctw : ", "INFO : ");
 		}
 	    }
 	  
@@ -324,7 +331,7 @@ namespace snemo {
 		{
 		  calo_ctw & a_ctw_ = calo_ctw_data_.add();
 		  _process_for_a_ctw_for_a_clocktick_for_xwall_gveto(tp_list_per_clocktick_per_crate, a_ctw_);
-		  a_ctw_.tree_dump(std::clog, "a_calo_ctw : ", "INFO : ");
+		  // a_ctw_.tree_dump(std::clog, "a_calo_ctw : ", "INFO : ");
 		}
 	    }
 	}

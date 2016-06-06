@@ -3,8 +3,8 @@ Using The FLSimulate Application {#usingflsimulate}
 
 \tableofcontents
 
-Introduction {#intro}
-============
+Introduction to FLSimulate {#usingflsimulate_intro}
+==========================
 FLSimulate's task is to simulate the generation and passage of particles
 through the SuperNEMO detectors (BiPo3 and SuperNEMO), recording the
 detector response and writing this to an output file. Its simulation
@@ -17,15 +17,15 @@ line to generate an output file suitable for input to the
 
 At present, FLSimulate supports simulation of the SuperNEMO
 demonstrator module, tracker module for commissioning and the BiPo3
-detector. Note however that these interfaces are not complete yet.
+detector. Note however that these interfaces are still in development.
 
 Please contact the Software Working Group if you have any questions or
 feature requests.
 
-Using FLSimulate on the Command Line {#usingfls}
+Using FLSimulate on the Command Line {#usingflsimulate_commandline}
 ====================================
 FLSimulate is implemented as a simple command line application just
-like the familiar UNIX commands like `ls`. In the following, we will
+like familiar UNIX commands such as `ls`. In the following, we will
 write commands assuming that `flsimulate` is in your path. If is not,
 simply use the relative or absolute path to `flsimulate`.
 
@@ -35,7 +35,7 @@ of `--help` options, e.g.
 
 ~~~~~
 $ flsimulate --help
-flsimulate 1.0.0
+flsimulate 2.1.0
 Usage:
   flsimulate [options]
 Options
@@ -53,8 +53,6 @@ Options
                                         details)
   -o [ --output-file ] [file]           file in which to store simulation
                                         results
-
-$
 ~~~~~
 
 The `--version` option provides detailed information of the current
@@ -64,16 +62,17 @@ status of the application, including which libraries it uses:
 $ flsimulate --version
 flsimulate 1.0.0
 
-Copyright (C) 2013-2014 SuperNEMO Collaboration
+Copyright (C) 2013-2016 SuperNEMO Collaboration
 
 flsimulate uses the following external libraries:
-* Falaise : 1.0.0
-* Bayeux  : 1.0.0
-* Boost   : 105500
-* Geant4  : 10.x (eventually)
-
-$
+* Falaise : 2.1.0
+* Bayeux  : 2.1.0
+* Boost   : 106000
+* Geant4  : 9.6.4
 ~~~~~
+
+Note that the exact versions shown will depend on the current release
+and what versions of packages are linked.
 
 At present, you can only run the simulation in batch mode. The Demonstrator
 Module, Tracker Commissioning and BiPo3 experiments can be selected to
@@ -81,28 +80,37 @@ be simulated, the default being the Demonstrator Module. By default, 1
 event is generated, with vertices generated in the bulk of the source foil
 with particle energies/directions sampled from the zero neutrino double
 beta spectrum for Se82. You can modify the number of events and
-the output file, which can be in XML (for debugging purpose) or Brio format
-(for production).
+the output file, which can be in XML (for debugging purpose) or
+Bayeux's Brio binary format (for production).
 
 Note that at present the validity of the experiment and
 event/vertex generator combinations are not checked. You may therefore
 need to set all of these by hand to obtain a valid set for simulation.
 Preliminary lists of valid vertex and event generators for each
-experiment are [tabulated below](@ref fls_generator_table).
+experiment are [tabulated below](@ref usingflsimulate_generator_table).
 
-For example, to simulate 100 events in the Tracker Commissioning experiment
-and write them to a file named `example.brio` in the current working
-directory simply run
+For example, to simulate 100 Se82 0nBB events from the source foil
+in the Demonstrator and write them to a file named `example.brio` in the current working directory simply run
 
 ~~~~~
-$ flsimulate --experiment=tracker_commissioning -n 100 -o example.brio
+$ flsimulate --experiment=demonstrator -n 100 -e Se82.0nubb -x source_strips_bulk -o example.brio
 ... lots of logging ...
 $
 ~~~~~
 
-The resultant file can be examined with the `flreconstruct` application.
+Or to simulate 100 Se82 2nBB events from the source foil
+in the Demonstrator and write them to a file named `example2.brio` in the current working directory simply run
 
-Available Experiments {#fls_experiments}
+~~~~~
+$ flsimulate --experiment=demonstrator -n 100 -e Se82.2nubb -x source_strips_bulk -o example2.brio
+... lots of logging ...
+$
+~~~~~
+
+The resultant files can be examined with the `flreconstruct` application, see the
+[dedicated guide](@ref usingflreconstruct) for further details.
+
+Available Experiments {#usingflsimulate_experiments}
 =====================
 The currently available experiment names in `flsimulate` that can be passed
 to the `--experiment` argument are:
@@ -115,7 +123,7 @@ The above spellings must be used, but the interface is case insensitive.
 For example, "demo" would result in a failure, but any of "Demonstrator",
 "demonstrator", "DEMONSTRATOR" or "dEmOnStRaToR" would work.
 
-Available Vertex/Event Generators {#fls_generator_table}
+Available Vertex/Event Generators {#usingflsimulate_generator_table}
 =================================
 The architecture of `flsimulate` separates the specification of where
 events are generated (geometry) from the specification of how the events
@@ -123,8 +131,8 @@ are generated (physics). With several different experiments being modelled
 and many background, signal and calibration physics sources available,
 a wide range of vertex and event generators are available.
 
-Here we tabulate the vertex and event generators available for each experiment.
-The first column in each table gives the argument that
+Here we tabulate the vertex and event generators available for each
+experiment. The first column in each table gives the argument that
 should be supplied to the `--vertex-generator` ("Vertex Generator ID") and
 `--event-generator` ("Event Generator ID") options of `flsimulate`.
 The second column gives a brief description of the generator, with
@@ -231,7 +239,7 @@ Event Generators
 | gamma.50keV | Gamma with monokinetic energy @ 50 keV [miscellaneous] | yes | yes | yes |
 | muon.cosmic.sea_level.toy | Parameters for the "cosmic muon generator" mode [cosmic] | no | no | yes |
 
-Available output profiles {#fls_output_profiles}
+Available output profiles {#usingflsimulate_output_profiles}
 =========================
 
 By default FLSimulate produces collections of truth MC hits and stored them in the output
@@ -285,9 +293,7 @@ Be aware that using this feature  implies that the simulation will use
 additional CPU  and the output  file will use  a lot of  storage. This
 option should  thus be reserved  for dedicated studies,  debugging
 and visualization  purpose, not  for production  of large  datasets of
-simulated data.
-
-This feature is not used yet for the BiPo3 setup.
+simulated data. This feature is not used yet for the BiPo3 setup.
 
 The description of the output simulation data model is described
 in a [dedicated page on FLSimulate output](@ref flsimulateoutput).

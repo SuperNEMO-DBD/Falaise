@@ -126,7 +126,7 @@ namespace snemo {
       int         _unclustered_range_max_; //!< Maximal number of unclustered hits
 
       // Macro to automate the registration of the cut :
-      CUT_REGISTRATION_INTERFACE(tracker_clustering_data_cut);
+      CUT_REGISTRATION_INTERFACE(tracker_clustering_data_cut)
 
     };
 

@@ -158,20 +158,22 @@ namespace snemo {
                                   style_manager::get_instance().get_calibrated_data_color());
 
           if (options_manager::get_instance().get_option_flag(SHOW_CALIBRATED_INFO)) {
-            const double energy  = a_hit.get_energy()       / CLHEP::MeV;
-            const double sigma_e = a_hit.get_sigma_energy() / CLHEP::MeV;
-            const double time    = a_hit.get_time()         / CLHEP::ns;
-            const double sigma_t = a_hit.get_sigma_time()   / CLHEP::ns;
+            const double energy  = a_hit.get_energy();
+            const double sigma_e = a_hit.get_sigma_energy();
+            const double time    = a_hit.get_time();
+            const double sigma_t = a_hit.get_sigma_time();
 
             // Save z position inside text and then parse it
-            std::ostringstream text_to_parse;
-            text_to_parse.precision(2);
-            text_to_parse << std::fixed << "#splitline"
-                          << "{E = " << energy << " #pm " << sigma_e << " MeV}"
-                          << "{t  = " << time   << " #pm " << sigma_t << " ns}";
+            std::ostringstream oss;
+            oss.precision(2);
+            oss << std::fixed << "#splitline{E = ";
+            utils::root_utilities::get_prettified_energy(oss, energy, sigma_e, true);
+            oss << "}{t  = ";
+            utils::root_utilities::get_prettified_time(oss, time, sigma_t, true);
+            oss << "}";
             this->highlight_geom_id(a_hit.get_geom_id(),
                                     style_manager::get_instance().get_calibrated_data_color(),
-                                    text_to_parse.str());
+                                    oss.str());
           }
         }
         return;

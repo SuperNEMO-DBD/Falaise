@@ -29,7 +29,7 @@ namespace snemo {
   namespace datamodel {
 
     /// SuperNEMO Tracker trajectory data model
-    class tracker_trajectory_data : DATATOOLS_SERIALIZABLE_CLASS,
+    class tracker_trajectory_data : public datatools::i_serializable,
                                     public datatools::i_tree_dumpable,
                                     public datatools::i_clear
     {
@@ -81,9 +81,6 @@ namespace snemo {
       /// Reset the internals
       void reset();
 
-      /// Check if the object has a valid internal structure
-      bool is_valid() const;
-
       /// Return a mutable reference on the container of auxiliary properties
       const datatools::properties & get_auxiliaries() const;
 
@@ -105,7 +102,7 @@ namespace snemo {
       tracker_trajectory_solution::handle_type _default_solution_; //!< Handle to the default/best solution
       datatools::properties _auxiliaries_;                         //!< Auxiliary properties
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };  // end of class tracker_trajectory_data
 

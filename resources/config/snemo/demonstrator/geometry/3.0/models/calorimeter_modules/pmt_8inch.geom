@@ -97,6 +97,6 @@ internal_item.filled.placement.dynodes : string  = "0 0 -50 (mm)"
 #@description The model of the "dynodes" daughter volume
 internal_item.filled.model.dynodes     : string  = "PMT_HAMAMATSU_R5912.dynodes"
 
-mapping.daughter_id.filled.bulb : string = "[calorimeter_pmt_glass]"
+mapping.filled.daughter_id.bulb : string = "[calorimeter_pmt_glass]"
 
 # end

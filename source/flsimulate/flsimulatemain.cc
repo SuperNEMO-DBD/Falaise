@@ -33,11 +33,14 @@
 // along with Falaise.  If not, see <http://www.gnu.org/licenses/>.
 
 // Standard Library
+#include <string>
+#include <vector>
 
 // Third Party
 // - Boost
 #include "boost/filesystem.hpp"
 #include "boost/program_options.hpp"
+#include "boost/scoped_ptr.hpp"
 namespace bpo = boost::program_options;
 
 // - Bayeux
@@ -55,7 +58,9 @@ namespace bpo = boost::program_options;
 #include "falaise/version.h"
 #include "falaise/falaise.h"
 #include "falaise/exitcodes.h"
+#include "falaise/resource.h"
 #include "FLSimulateResources.h"
+#include "FLSimulateVariance.h"
 
 //----------------------------------------------------------------------
 // IMPLEMENTATION DETAILS
@@ -70,12 +75,12 @@ void do_version(std::ostream& os, bool isVerbose) {
   os << "flsimulate " << falaise::version::get_version() << "\n";
   if (isVerbose) {
     os << "\n"
-        << "Copyright (C) 2013-2014 SuperNEMO Collaboration\n\n"
+        << "Copyright (C) 2013-2016 SuperNEMO Collaboration\n\n"
         << "flsimulate uses the following external libraries:\n"
         << "* Falaise : " << falaise::version::get_version() << "\n"
         << "* Bayeux  : " << bayeux::version::get_version() << "\n"
         << "* Boost   : " << BOOST_VERSION << "\n"
-        << "* Geant4  : " << "10.x (eventually)"
+        << "* Geant4  : " << "9.6.4" << "\n"
         << "\n\n";
   }
 }
@@ -85,7 +90,7 @@ void do_help(const bpo::options_description& od) {
   do_version(std::cout, false);
   std::cout << "Usage:\n"
             << "  flsimulate [options]\n"
-            << "Options\n"
+    // << "Options\n"
             << od
             << "\n";
 }
@@ -94,9 +99,17 @@ void do_help(const bpo::options_description& od) {
 struct FLSimulateArgs {
   datatools::logger::priority     logLevel;                //!< Logging priority threshold
   unsigned int                    numberOfEvents;          //!< Number of events to be processed in the pipeline
+  unsigned int                    moduloEvents;            //!< Number of events progress modulo
   std::string                     experimentID;            //!< The label of the virtual experimental setup
   std::string                     setupGeometryVersion;    //!< The version number of the virtual geometry setup
   std::string                     setupSimulationVersion;  //!< The version number of the simulation engine setup
+  std::string                     varianceConfigFilename;  //!< Variance configuration file
+  std::string                     varianceProfileLoad;     //!< Variance profile load
+  std::vector<std::string>        varianceSettings;        //!< List of variance settings
+  std::string                     varianceProfileStore;    //!< Variance profile store
+#if DATATOOLS_WITH_QT_GUI == 1
+  bool                            varianceGui;             //!< Launch the variance GUI editor
+#endif // DATATOOLS_WITH_QT_GUI == 1
   mctools::g4::manager_parameters simulationManagerParams; /** Parameters for the Geant4 simulation manager
                                                             *  embedded in the simulation module
                                                             */
@@ -107,7 +120,7 @@ struct FLSimulateArgs {
 void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
   // Bind command line parser to exposed parameters
   namespace bpo = boost::program_options;
-  bpo::options_description optDesc;
+  bpo::options_description optDesc("Options");
   optDesc.add_options()
     ("help,h","print this help message")
     ("version","print version number")
@@ -117,6 +130,11 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
       ->default_value(1)
       ->value_name("[events]"),
      "number of events to simulate")
+    ("modulo,m",
+     bpo::value<uint32_t>(&params.simulationManagerParams.number_of_events_modulo)
+      ->default_value(0)
+      ->value_name("[period]"),
+     "progress modulo on number of events")
     ("experiment",
      bpo::value<std::string>(&params.experimentID)
      ->default_value("default")
@@ -124,31 +142,58 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
      "experiment to simulate")
     ("vertex-generator,x",
      bpo::value<std::string>(&params.simulationManagerParams.vg_name)
-      ->default_value("source_strips_bulk")
+      ->default_value("source_pads_bulk")
       ->value_name("[name]"),
-     "The name of the vertex generator"
+     "the name of the vertex generator"
      )
     ("event-generator,e",
      bpo::value<std::string>(&params.simulationManagerParams.eg_name)
       ->default_value("Se82.0nubb")
       ->value_name("[name]"),
-     "The name of the event generator"
+     "the name of the event generator"
      )
     ("output-profiles,p",
      bpo::value<std::string>(&params.simulationManagerParams.output_profiles_activation_rule)
       ->default_value("")
       ->value_name("[rule]"),
-     "The output profiles activation rule (setup the truth hits' level of details)"
+     "the output profiles activation rule (setup the truth hits' level of details)"
      )
     ("output-file,o",
      bpo::value<std::string>(&params.outputFile)->required()->value_name("[file]"),
      "file in which to store simulation results")
     ;
 
+  bpo::options_description optVariance("Variance support");
+  optVariance.add_options()
+    ("variant-load,L",
+     bpo::value<std::string>(&params.varianceProfileLoad)->value_name("[file]"),
+     "file from which to load a specific variant profile at startup")
+    ("variant-set,V",
+     bpo::value<std::vector<std::string> >(&params.varianceSettings)->value_name("[setting]"),
+     "setting rules for variant parameters applied at startup")
+#if DATATOOLS_WITH_QT_GUI == 1
+    ("variant-gui,G", "launch the variant GUI editor at startup")
+#endif // DATATOOLS_WITH_QT_GUI == 1
+    ("variant-store,S",
+     bpo::value<std::string>(&params.varianceProfileStore)->value_name("[file]"),
+     "file in which to store the effective current variant profile")
+    ;
+
+  bpo::options_description optPublic;
+  optPublic.add(optDesc).add(optVariance);
+
+  bpo::options_description optHidden;
+  optHidden.add_options()
+    ("trace", "trace logging")
+    ;
+
+  bpo::options_description optAll;
+  optAll.add(optPublic).add(optHidden);
+
   // - Parse...
   bpo::variables_map vMap;
   try {
-    bpo::store(bpo::parse_command_line(argc, argv, optDesc), vMap);
+    bpo::store(bpo::parse_command_line(argc, argv, optAll), vMap);
     bpo::notify(vMap);
   } catch (const bpo::required_option& e) {
     // We need to handle help/version even if required_option thrown
@@ -161,13 +206,55 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
     throw FLDialogOptionsError();
   }
 
+  // Handle verbose, which can't be bound yet
+  if (vMap.count("verbose")) {
+    params.logLevel = datatools::logger::PRIO_INFORMATION;
+    params.simulationManagerParams.logging = "information";
+  }
+
+  // Handle trace logging (for debugging)
+  if (vMap.count("trace")) {
+    params.logLevel = datatools::logger::PRIO_TRACE;
+    params.simulationManagerParams.logging = "trace";
+  }
+
   // Handle the experiment
+  std::string experiment_label = vMap["experiment"].as<std::string>();
   // TODO: in the future, we will use the datatools variant configuration API to build
   // a configuration menu of variant parameters...
   try {
-    params.simulationManagerParams.manager_config_filename = FLSimulate::getControlFile(vMap["experiment"].as<std::string>());
+    params.varianceConfigFilename = FLSimulate::getVarianceConfigFile(experiment_label);
+    if (params.varianceProfileLoad == "__default__") {
+      params.varianceProfileLoad = FLSimulate::getVarianceDefaultProfile(experiment_label);
+      if (params.logLevel == datatools::logger::PRIO_INFORMATION) {
+        std::clog << "[information]: " << "Loading default variant profile '"
+                  << params.varianceProfileLoad << "'..." << std::endl;
+      }
+    }
+    params.simulationManagerParams.manager_config_filename = FLSimulate::getControlFile(experiment_label);
   } catch (FLSimulate::UnknownResourceException& e) {
     std::cerr << "[FLSimulate::UnknownResourceException] "
+              << e.what()
+              << std::endl;
+    throw FLDialogOptionsError();
+  }
+
+  // Variance support:
+  try {
+    if (!params.varianceConfigFilename.empty()) {
+      FLSimulate::VarianceControl::instance().set_logging(params.logLevel);
+      FLSimulate::VarianceControl::instance().set_config(params.varianceConfigFilename);
+      FLSimulate::VarianceControl::instance().set_input_profile(params.varianceProfileLoad);
+      FLSimulate::VarianceControl::instance().set_output_profile(params.varianceProfileStore);
+      FLSimulate::VarianceControl::instance().set_settings(params.varianceSettings);
+#if DATATOOLS_WITH_QT_GUI == 1
+      params.varianceGui = vMap.count("variant-gui") > 0;
+      FLSimulate::VarianceControl::instance().set_gui(params.varianceGui);
+#endif // DATATOOLS_WITH_QT_GUI == 1
+      FLSimulate::VarianceControl::instance().start();
+    }
+  } catch (std::exception& e) {
+    std::cerr << "[FLSimulate::VarianceControl::VarianceException] "
               << e.what()
               << std::endl;
     throw FLDialogOptionsError();
@@ -190,19 +277,13 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
   // params.shpf_seed = 3;
   // params.mgr_seed  = 4;
 
-  // Handle verbose, which can't be bound yet
-  if (vMap.count("verbose")) {
-    params.logLevel = datatools::logger::PRIO_INFORMATION;
-    params.simulationManagerParams.logging = "information";
-  }
-
   if (params.logLevel == datatools::logger::PRIO_INFORMATION) {
     params.simulationManagerParams.tree_dump(std::clog, "", "[information]: ");
   }
 
   // Handle any non-bound options
   if (vMap.count("help")) {
-    do_help(optDesc);
+    do_help(optPublic);
     throw FLDialogHelpRequested();
   }
 
@@ -222,16 +303,15 @@ class FLConfigUserError : public std::exception {};
 void do_configure(int argc, char *argv[], FLSimulateArgs& params) {
   // - Default Config
   try {
-    FLSimulate::initResources();
     params.logLevel = datatools::logger::PRIO_ERROR;
-    params.experimentID = "demonstrator"; // "tracker_commissioning";
-    params.setupGeometryVersion = "3.0";   // "1.0";
-    params.setupSimulationVersion = "1.0";
+    params.experimentID = "demonstrator";
+    params.setupGeometryVersion = "4.0";
+    params.setupSimulationVersion = "2.0";
     params.simulationManagerParams.set_defaults();
     params.simulationManagerParams.logging = "error";
     params.simulationManagerParams.manager_config_filename = FLSimulate::getControlFile("default");
-    params.simulationManagerParams.vg_name = "source_strips_bulk"; // "experimental_hall_roof";
-    params.simulationManagerParams.eg_name = "Se82.0nubb";         // "muon.cosmic.sea_level.toy";
+    params.simulationManagerParams.vg_name = "source_pads_bulk";
+    params.simulationManagerParams.eg_name = "Se82.0nubb";
     params.simulationManagerParams.output_profiles_activation_rule = "";
   } catch (std::exception& e) {
     throw FLConfigDefaultError();
@@ -345,6 +425,8 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
     return falaise::EXIT_UNAVAILABLE;
   }
 
+  FLSimulate::VarianceControl::instance().stop();
+
   return falaise::EXIT_OK;
 }
 
@@ -354,10 +436,7 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
 //----------------------------------------------------------------------
 int main(int argc, char *argv[]) {
   // - Needed, but nasty
-  FALAISE_INIT();
-
-  // - Initialize the resource paths
-  FLSimulate::initResources();
+  falaise::initialize();
 
   // - Do the simulation.
   // Ideally, exceptions SHOULD NOT propagate out of this  - the error
@@ -365,6 +444,6 @@ int main(int argc, char *argv[]) {
   falaise::exit_code ret = do_flsimulate(argc, argv);
 
   // - Needed, but nasty
-  FALAISE_FINI();
+  falaise::terminate();
   return ret;
 }

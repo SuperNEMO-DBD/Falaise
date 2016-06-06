@@ -624,7 +624,7 @@ void test6 (geomtools::manager & a_mgr, bool draw_)
 
 int main (int argc_, char ** argv_)
 {
-  FALAISE_INIT_MAIN(argc_, argv_);
+  falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;
   try
     {
@@ -763,7 +763,7 @@ int main (int argc_, char ** argv_)
 
       if (manager_config_file.empty ())
         {
-          manager_config_file = "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf";
+          manager_config_file = "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf";
         }
       datatools::fetch_path_with_env (manager_config_file);
       clog << datatools::io::notice << "Manager config. file : '"
@@ -798,10 +798,15 @@ int main (int argc_, char ** argv_)
           only_categories.push_back ("source_pad");
           only_categories.push_back ("source_strip");
           only_categories.push_back ("tracker_submodule");
+          only_categories.push_back ("tracker_volume");
           only_categories.push_back ("drift_cell_core");
           only_categories.push_back ("xcalo_block");
+          only_categories.push_back ("xcalo_wrapper");
           only_categories.push_back ("gveto_block");
+          only_categories.push_back ("gveto_wrapper");
+          only_categories.push_back ("calorimeter_submodule");
           only_categories.push_back ("calorimeter_block");
+          only_categories.push_back ("calorimeter_wrapper");
 
           // set the 'only' property:
           manager_config.update ("mapping.only_categories", only_categories);
@@ -859,6 +864,6 @@ int main (int argc_, char ** argv_)
       cerr << "ERROR: " << "unexpected error!" << endl;
       error_code = EXIT_FAILURE;
     }
-  FALAISE_FINI();
+  falaise::terminate();
   return (error_code);
 }

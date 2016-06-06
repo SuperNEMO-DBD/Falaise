@@ -16,7 +16,9 @@ namespace snemo {
 
     // Serial tag for datatools::serialization::i_serializable interface :
     // DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(calo_signal, "snemo::digitalization::calo_signal")
-    
+
+    constexpr double calo_signal::DELAYED_PM_TIME;
+
     calo_signal::calo_signal()
     {
       _locked_ = false;
@@ -111,10 +113,13 @@ namespace snemo {
 				   bool inherit_) const
     {
       base_hit::tree_dump (out_, title_, indent_, true);
-
+      
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+           << "Signal time =  : " << _signal_time_  << " ns " << std::endl;
+      
       out_ << indent_ << datatools::i_tree_dumpable::tag
            << "Amplitude =  : " << _amplitude_  << " mV " << std::endl;
-
+      
       return;
     }
     

@@ -24,7 +24,7 @@ namespace snemo {
     public : 
 
 			/// Shift to take account the "drift" PM time + wires travel time
-      static const double DELAYED_PM_TIME = 130.6; // It has to be recalculated, approximative time for the moement
+      static constexpr double DELAYED_PM_TIME = 130.6; // It has to be recalculated, approximative time for the moment
 
       /// Default constructor
       calo_signal();
@@ -82,7 +82,7 @@ namespace snemo {
 
       bool _locked_; //!< Calorimeter signal lock flag
 			double _signal_time_; //!< Calorimeter signal time
-      double _amplitude_; //!< Amplitude 
+      double _amplitude_;   //!< Amplitude 
       
       // DATATOOLS_SERIALIZATION_DECLARATION();
       

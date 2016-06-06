@@ -2,22 +2,30 @@
 /// \file falaise/TrackerPreClustering/event_generator.cc
 
 // Ourselves:
-#include <TrackerPreClustering/event_generator.h>
+#include "falaise/TrackerPreClustering/event_generator.h"
 
 // Standard library:
 #include <algorithm>
 
 // Third party:
 // - Boost:
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-local-typedef"
+#endif
 #include <boost/random/uniform_int_distribution.hpp>
 #include <boost/random/uniform_int.hpp>
 #include <boost/random/uniform_real.hpp>
 #include <boost/random/variate_generator.hpp>
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+
 // - CLHEP:
 #include <CLHEP/Units/SystemOfUnits.h>
 // - Bayeux/datatools:
-#include <datatools/logger.h>
-#include <datatools/exception.h>
+#include <bayeux/datatools/logger.h>
+#include <bayeux/datatools/exception.h>
 
 namespace TrackerPreClustering {
 

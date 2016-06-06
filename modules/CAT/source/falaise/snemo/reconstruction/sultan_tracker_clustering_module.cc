@@ -9,10 +9,10 @@
 
 // Third party:
 // - Bayeux/datatools:
-#include <datatools/service_manager.h>
+#include <bayeux/datatools/service_manager.h>
 // - Bayeux/geomtools:
-#include <geomtools/geometry_service.h>
-#include <geomtools/manager.h>
+#include <bayeux/geomtools/geometry_service.h>
+#include <bayeux/geomtools/manager.h>
 
 // This project:
 #include <falaise/snemo/datamodels/data_model.h>
@@ -21,7 +21,7 @@
 #include <falaise/snemo/processing/services.h>
 
 // This plugin:
-#include <snemo/reconstruction/sultan_driver.h>
+#include <falaise/snemo/reconstruction/sultan_driver.h>
 
 namespace snemo {
 
@@ -29,7 +29,7 @@ namespace snemo {
 
     // Registration instantiation macro :
     DPP_MODULE_REGISTRATION_IMPLEMENT(sultan_tracker_clustering_module,
-                                      "snemo::reconstruction::sultan_tracker_clustering_module");
+                                      "snemo::reconstruction::sultan_tracker_clustering_module")
 
     void sultan_tracker_clustering_module::set_cd_label(const std::string & cdl_)
     {
@@ -127,7 +127,7 @@ namespace snemo {
                      ! service_manager_.is_a<geomtools::geometry_service>(geo_label),
                      std::logic_error,
                      "Module '" << get_name() << "' has no '" << geo_label << "' service !");
-        geomtools::geometry_service & Geo
+        const geomtools::geometry_service & Geo
           = service_manager_.get<geomtools::geometry_service>(geo_label);
         set_geometry_manager(Geo.get_geom_manager());
       }

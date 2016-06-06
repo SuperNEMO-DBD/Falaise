@@ -359,7 +359,6 @@ stacked.label_0   : string = "source_gap_left"
 stacked.model_1   : string = "source_strip_block_0.model"
 stacked.label_1   : string = "source_block_0"
 
-#stacked.model_2   : string = "source_calibration_track_active.model"
 stacked.model_2   : string = "source_calibration_track.model"
 stacked.label_2   : string = "calibration_0"
 
@@ -490,10 +489,10 @@ visibility.hidden          : boolean = 0
 visibility.hidden_envelop  : boolean = 1
 visibility.color           : string  = "grey"
 
+
 ##########################
 #  The source submodule  #
 ##########################
-
 
 ########################################################################
 [name="source_submodule.model" type="geomtools::surrounded_boxed_model"]

@@ -69,8 +69,17 @@ namespace snemo {
 			/// Set the corresponding 100 bitset from tp for a block index in the ctw bitset
 			void set_100_bits_in_ctw_word(unsigned int block_index_, const std::bitset<geiger::tp::FULL_SIZE> & my_bitset_);
 			
+			/// Get the corresponding 55 bitset from tp for a block index in the ctw bitset
+			void get_55_bits_in_ctw_word(unsigned int block_index_, std::bitset<geiger::tp::TP_SIZE> & my_bitset_) const;
+
+			/// Set the corresponding 55 bitset from tp for a block index in the ctw bitset
+			void set_55_bits_in_ctw_word(unsigned int block_index_, const std::bitset<geiger::tp::TP_SIZE> & my_bitset_);
+
 			/// Set hardware status for all geiger tp word in the ctw even if there are empty
 			void set_full_hardware_status(const std::bitset<geiger::tp::THWS_SIZE> & gg_tp_hardware_status_);
+			
+			/// Check if the geiger ctw has trigger primitive value in the 1900 bits
+			bool has_trigger_primitive_values() const;
 
 		protected : 
 
@@ -104,7 +113,7 @@ namespace snemo {
       virtual void tree_dump(std::ostream      & a_out    = std::clog,
 														 const std::string & a_title  = "",
 														 const std::string & a_indent = "",
-														 bool a_inherit               = false) const;
+														 bool a_inherit               = false) const;     
 
     protected : 
 			
@@ -117,7 +126,7 @@ namespace snemo {
       int32_t _clocktick_800ns_; //!< The timestamp of the trigger primitive in main clock units (40 MHz)
       std::bitset<CTW_BITSET_FULL_SIZE> _gg_ctw_; //!< The crate trigger word
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

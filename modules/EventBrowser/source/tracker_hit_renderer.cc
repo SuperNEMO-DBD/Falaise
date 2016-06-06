@@ -159,8 +159,7 @@ namespace snemo {
               DT_THROW_IF(true, std::logic_error, "Unsupported cell axis !");
             }
 
-            std::vector<geomtools::vector_3d> points;
-            points.reserve(n_point);
+            geomtools::polyline_type points;
             if (cell_axis == 'z') {
               TVector3 current_pos((a_step.get_position_start() - a_step.get_position_stop()).x(),
                                    (a_step.get_position_start() - a_step.get_position_stop()).y(),
@@ -189,38 +188,6 @@ namespace snemo {
             gg_drift->SetLineColor(color);
             gg_drift->SetLineWidth(line_width);
           }// end of "show geiger drift circle" condition
-
-          // if(options_manager::get_instance().show_geiger_box())
-          //   {
-          //     const geomtools::geom_id & drift_cell_gid = a_step.get_geom_id();
-          //     detector::detector_manager & detector_mgr
-          //       = detector::detector_manager::get_instance();
-          //     detector::i_root_volume * volume_hit =
-          //       dynamic_cast<detector::i_root_volume *>(detector_mgr.get_volume(drift_cell_gid));
-
-          //     if (!volume_hit)
-          //       {
-          //         if (verbose)
-          //           clog << datatools::utils::io::notice
-          //                << "snemo::visualisation::view::"
-          //                << "tracker_hit_renderer::push_simulated_hits: "
-          //                << "Geiger detector with hit not found ! "
-          //                << "check either sngeometry file or style file "
-          //                << "in case this detector part is disable" << endl;
-          //         continue;
-          //       }
-
-          //     if (verbose)
-          //       clog << datatools::utils::io::notice
-          //            << "snemo::visualisation::view::"
-          //            << "tracker_hit_renderer::push_simulated_hits: '"
-          //            << drift_cell_gid << "' has geiger hit" << endl;
-
-          //     volume_hit->highlight(/*kOrange*/);
-          //     _highlighted_id_.insert(drift_cell_gid);
-
-          //   } // end of "show geiger box" condition
-
         } // end of step collection
 
         return;
@@ -251,7 +218,7 @@ namespace snemo {
                it_hit = ct_collection.begin();
              it_hit != ct_collection.end(); ++it_hit) {
           const snemo::datamodel::calibrated_tracker_hit & a_hit = it_hit->get();
-          make_calibrated_geiger_hit(a_hit, _objects, false);
+          tracker_hit_renderer::_make_calibrated_geiger_hit(a_hit, false);
         }
         return;
       }
@@ -313,9 +280,9 @@ namespace snemo {
               datatools::properties & gg_properties = mutable_hit->grab_auxiliaries();
 
               // Store current color to be used by calibrated_tracker_hit renderer:
-              const long pixel = TColor::Number2Pixel(cluster_color);
-              const std::string hex_str = TColor::PixelAsHexString(pixel);
-              gg_properties.update(browser_tracks::COLOR_FLAG, hex_str);
+              const long ppixel = TColor::Number2Pixel(cluster_color);
+              const std::string hhex_str = TColor::PixelAsHexString(ppixel);
+              gg_properties.update(browser_tracks::COLOR_FLAG, hhex_str);
 
               const options_manager & options_mgr = options_manager::get_instance();
               if (options_mgr.get_option_flag(SHOW_TRACKER_CLUSTERED_BOX)) {
@@ -336,20 +303,8 @@ namespace snemo {
                 //gg_properties.update(browser_tracks::HIGHLIGHT_FLAG, false);
                 hit_3d->SetLineWidth(line_width);
               } else if (options_mgr.get_option_flag(SHOW_TRACKER_CLUSTERED_CIRCLE)) {
-                make_calibrated_geiger_hit(a_gg_hit, _objects, true);
+                tracker_hit_renderer::_make_calibrated_geiger_hit(a_gg_hit, true);
               }
-              // // Make gradient color
-              // const float H = 300 * (1 - distance(cluster_solutions.begin(), isolution)
-              //                        / (double)cluster_solutions.size());
-              // const float S = 1.0 * (1 - distance(clusters.begin(), icluster)
-              //                        / (double)clusters.size());
-              // const float V = 0.5;
-              // float R, G, B;
-              // TColor::HSV2RGB (H, S, V, R, G, B);
-              // clog << "(H,S,V)= " << H << "," << S << "," << V << endl;
-              // clog << "(R,G,B)= " << R << "," << G << "," << B << endl;
-              // unsigned int cluster_color = TColor::GetColor (R, G, B);
-
             } // end of gg hits
           } // end of cluster loop
         } // end of solution loop
@@ -395,26 +350,11 @@ namespace snemo {
               if (!traj_properties.has_flag("default")) continue;
             }
 
-            // Retrieve trajectory pattern:
+            // Retrieve trajectory visual rendering:
             const snemo::datamodel::base_trajectory_pattern & a_pattern = a_trajectory.get_pattern();
-
-            // Prepare ROOT polyline:
-            TPolyLine3D * track = 0;
-            if (a_pattern.get_pattern_id() == snemo::datamodel::helix_trajectory_pattern::pattern_id()) {
-              const snemo::datamodel::helix_trajectory_pattern & a_helix_pattern
-                = dynamic_cast<const snemo::datamodel::helix_trajectory_pattern &>(a_pattern);
-              const geomtools::helix_3d & a_helix = a_helix_pattern.get_helix();
-              track = base_renderer::make_helix_track(a_helix);
-            } else if (a_pattern.get_pattern_id() == snemo::datamodel::line_trajectory_pattern::pattern_id()) {
-              const snemo::datamodel::line_trajectory_pattern & a_line_pattern
-                = dynamic_cast<const snemo::datamodel::line_trajectory_pattern &>(a_pattern);
-              const geomtools::line_3d & a_line = a_line_pattern.get_segment();
-              track = base_renderer::make_line_track(a_line);
-            } else {
-              DT_LOG_WARNING(options_manager::get_instance().get_logging_priority(),
-                             "The pattern of the trajectory can not be determined!");
-              continue;
-            }
+            const geomtools::i_wires_3d_rendering & iw3dr
+              = dynamic_cast<const geomtools::i_wires_3d_rendering &>(a_pattern.get_shape());
+            TPolyLine3D * track = base_renderer::make_track(iw3dr);
             _objects->Add(track);
 
             // Determine trajectory color by getting cluster color:
@@ -423,22 +363,15 @@ namespace snemo {
               const snemo::datamodel::tracker_cluster & a_cluster = a_trajectory.get_cluster();
               const datatools::properties & prop = a_cluster.get_auxiliaries();
               if (prop.has_key(browser_tracks::COLOR_FLAG)) {
-                std::string hex_str;
-                prop.fetch(browser_tracks::COLOR_FLAG, hex_str);
+                const std::string hex_str = prop.fetch_string(browser_tracks::COLOR_FLAG);
                 trajectory_color = TColor::GetColor(hex_str.c_str());
               }
             }
             track->SetLineColor(trajectory_color);
 
-            // Retrieve a mutable reference to tracker_trajectory:
-            snemo::datamodel::tracker_trajectory * mutable_trajectory
-              = const_cast<snemo::datamodel::tracker_trajectory*>(&(a_trajectory));
-            datatools::properties & prop = mutable_trajectory->grab_auxiliaries();
-
             // Retrieve line width from properties if 'track' is highlighted:
             size_t line_width = 1;
-            if (prop.has_flag(browser_tracks::HIGHLIGHT_FLAG)) line_width = 3;
-            //prop.update(browser_tracks::HIGHLIGHT_FLAG, false);
+            if (traj_properties.has_flag(browser_tracks::HIGHLIGHT_FLAG)) line_width = 3;
             track->SetLineWidth(line_width);
 
             // For delayed tracks such as alpha track, show the recalibrated
@@ -474,7 +407,7 @@ namespace snemo {
                   a_gg_hit_copy.set_r(new_r);
                   a_gg_hit_copy.set_sigma_r(new_sigma_r);
                   a_gg_hit_copy.set_delayed(false);
-                  make_calibrated_geiger_hit(a_gg_hit_copy, _objects, true);
+                  tracker_hit_renderer::_make_calibrated_geiger_hit(a_gg_hit_copy, true);
                 }
               }
             }
@@ -485,9 +418,8 @@ namespace snemo {
         return;
       }
 
-      void tracker_hit_renderer::make_calibrated_geiger_hit(const snemo::datamodel::calibrated_tracker_hit & hit_,
-                                                            TObjArray * objects_,
-                                                            const bool show_cluster)
+      void tracker_hit_renderer::_make_calibrated_geiger_hit(const snemo::datamodel::calibrated_tracker_hit & hit_,
+                                                             const bool show_cluster)
       {
         // Compute the position of the anode impact in the drift cell coordinates reference frame:
         const detector::detector_manager & detector_mgr = detector::detector_manager::get_instance();
@@ -521,7 +453,7 @@ namespace snemo {
             color = TColor::GetColor(hex_str.c_str());
         }
         TPolyLine3D * gg_dz = new TPolyLine3D;
-        objects_->Add(gg_dz);
+        _objects->Add(gg_dz);
         gg_dz->SetLineColor(color);
         gg_dz->SetLineWidth(line_width);
 
@@ -543,7 +475,7 @@ namespace snemo {
 
         if (hit_.is_delayed()) {
           const double r = 22.0 / CLHEP::mm;//hit_.get_r();
-          std::vector<geomtools::vector_3d> points;
+          geomtools::polyline_type points;
           points.push_back(geomtools::vector_3d(x+r, y+r, z));
           points.push_back(geomtools::vector_3d(x+r, y-r, z));
           points.push_back(geomtools::vector_3d(x-r, y-r, z));
@@ -551,7 +483,7 @@ namespace snemo {
           points.push_back(geomtools::vector_3d(x+r, y+r, z));
 
           TPolyLine3D * gg_drift_square = base_renderer::make_polyline(points);
-          objects_->Add(gg_drift_square);
+          _objects->Add(gg_drift_square);
           gg_drift_square->SetLineColor(color);
           gg_drift_square->SetLineWidth(line_width);
 
@@ -569,10 +501,8 @@ namespace snemo {
           const double r = hit_.get_r();
           const double sigma_r = hit_.get_sigma_r();
 
-          std::vector<geomtools::vector_3d> rmins;
-          std::vector<geomtools::vector_3d> rmaxs;
-          rmins.reserve(n_point);
-          rmaxs.reserve(n_point);
+          geomtools::polyline_type rmins;
+          geomtools::polyline_type rmaxs;
           if (cell_axis == 'z') {
             TVector3 r_min(r - sigma_r, 0, z);
             TVector3 r_max(r + sigma_r, 0, z);
@@ -603,12 +533,12 @@ namespace snemo {
             }
           }
           TPolyLine3D * gg_drift_min = base_renderer::make_polyline(rmins);
-          objects_->Add(gg_drift_min);
+          _objects->Add(gg_drift_min);
           gg_drift_min->SetLineColor(color);
           gg_drift_min->SetLineWidth(line_width);
 
           TPolyLine3D * gg_drift_max = base_renderer::make_polyline(rmaxs);
-          objects_->Add(gg_drift_max);
+          _objects->Add(gg_drift_max);
           gg_drift_max->SetLineColor(color);
           gg_drift_max->SetLineWidth(line_width);
         }

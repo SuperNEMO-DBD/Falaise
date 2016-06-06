@@ -82,10 +82,10 @@ namespace snemo {
 
         // Hack AddPopup to allow the use of an id (the check, disable mechanism
         // uses this id to check, enable/disable, hide ... the entry).
-        virtual void AddPopup(TGHotString *s, TGPopupMenu *popup, Int_t id = -2,
-                              TGMenuEntry *before = 0, const TGPicture *p = 0);
-        virtual void AddPopup(const char *s, TGPopupMenu *popup, Int_t id = -2,
-                              TGMenuEntry *before = 0, const TGPicture *p = 0);
+        virtual void AddPopupPlus(TGHotString *s, TGPopupMenu *popup, Int_t id = -2,
+                                  TGMenuEntry *before = 0, const TGPicture *p = 0);
+        virtual void AddPopupPlus(const char *s, TGPopupMenu *popup, Int_t id = -2,
+                                  TGMenuEntry *before = 0, const TGPicture *p = 0);
 
         virtual void PlaceMenu(Int_t x, Int_t y, Bool_t stick_mode, Bool_t grab_pointer);
 
@@ -153,7 +153,6 @@ namespace snemo {
 
       private:
 
-        bool _initialized_;                                            //!< Initialization flag
         std::map<button_signals_type, TGPopupMenuPlus *> _popup_dict_; //!< Menu dictionnary
       };
 

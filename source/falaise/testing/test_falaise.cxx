@@ -13,7 +13,7 @@
 
 int main(int /* argc_ */, char ** /* argv_ */)
 {
-  FALAISE_INIT();
+  falaise::initialize();
   int error_code = EXIT_SUCCESS;
   try {
     std::clog << "Test program for the 'Falaise' library."
@@ -24,7 +24,7 @@ int main(int /* argc_ */, char ** /* argv_ */)
     std::clog << "Falaise resource dir : '"
               << falaise::get_resource_dir() << "'" << std::endl;
     std::clog << "Falaise resource file : '"
-              << falaise::get_resource("README.rst", true) << "'"
+              << falaise::get_resource("README.rst") << "'"
               << std::endl;
 
     std::clog << "The end." << std::endl;
@@ -37,6 +37,6 @@ int main(int /* argc_ */, char ** /* argv_ */)
     std::cerr << "error: " << "unexpected error !" << std::endl;
     error_code = EXIT_FAILURE;
   }
-  FALAISE_FINI();
+  falaise::terminate();
   return (error_code);
 }

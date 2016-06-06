@@ -37,7 +37,7 @@
 #include <falaise/snemo/view/event_browser_signals.h>
 
 class TGMainFrame;
-class Event_t;
+struct Event_t;
 
 namespace snemo {
 

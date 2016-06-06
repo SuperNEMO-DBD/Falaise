@@ -14,7 +14,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(testing_SOURCES utilities.cc)
 
-set(_trackfit_TEST_ENVIRONMENT "FALAISE_RESOURCE_DIR=${Falaise_DATAROOTDIR}/resources")
+set(_trackfit_TEST_ENVIRONMENT "FALAISE_RESOURCE_DIR=${FALAISE_DATAROOTDIR}/resources")
 
 if(FalaiseTrackFitPlugin_ENABLE_TESTING)
   foreach(_testsource ${FalaiseTrackFitPlugin_TESTS})

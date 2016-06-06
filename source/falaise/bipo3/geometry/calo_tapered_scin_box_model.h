@@ -1,5 +1,5 @@
 // -*- mode: c++ ; -*-
-/// \file falaise/snemo/geometry/calo_tapered_scin_box_model.h
+/// \file falaise/bipo3/geometry/calo_tapered_scin_box_model.h
 /* Author (s) :     Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2010-03-25
  * Last modified: 2015-02-10
@@ -130,7 +130,7 @@ namespace snemo {
       boost::scoped_ptr<wires_drawer> _drawer_;
 
       // registration interface :
-      GEOMTOOLS_MODEL_REGISTRATION_INTERFACE(calo_tapered_scin_box_model);
+      GEOMTOOLS_MODEL_REGISTRATION_INTERFACE(calo_tapered_scin_box_model)
     };
 
   } // end of namespace geometry

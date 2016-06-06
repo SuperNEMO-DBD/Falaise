@@ -47,7 +47,7 @@ namespace snemo {
 
         geomtools::line_3d _segment_; //!< The line/segment embedded model
 
-        DATATOOLS_SERIALIZATION_DECLARATION();
+        DATATOOLS_SERIALIZATION_DECLARATION()
 
       };
 

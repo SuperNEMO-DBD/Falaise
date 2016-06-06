@@ -28,7 +28,7 @@ namespace snemo {
 
   namespace datamodel {
 
-    class timestamp : DATATOOLS_SERIALIZABLE_CLASS
+    class timestamp : public datatools::i_serializable
     {
     public:
 
@@ -81,8 +81,7 @@ namespace snemo {
       int64_t seconds_;     //!< Number of seconds
       int64_t picoseconds_; //!< Number of picosecond
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
-
+      DATATOOLS_SERIALIZATION_DECLARATION()
     };
 
   } // end of namespace datamodel

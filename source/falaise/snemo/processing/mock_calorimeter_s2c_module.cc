@@ -30,7 +30,7 @@ namespace snemo {
 
     // Registration instantiation macro :
     DPP_MODULE_REGISTRATION_IMPLEMENT(mock_calorimeter_s2c_module,
-                                      "snemo::processing::mock_calorimeter_s2c_module");
+                                      "snemo::processing::mock_calorimeter_s2c_module")
 
     void mock_calorimeter_s2c_module::set_geom_manager(const geomtools::manager & gmgr_)
     {
@@ -41,7 +41,7 @@ namespace snemo {
 
       // Check setup label:
       const std::string & setup_label = _geom_manager_->get_setup_label();
-      DT_THROW_IF(!(setup_label == "snemo::demonstrator" || setup_label == "snemo::tracker_commissioning"),
+      DT_THROW_IF(setup_label != "snemo::demonstrator" && setup_label != "snemo::tracker_commissioning",
                   std::logic_error,
                   "Setup label '" << setup_label << "' is not supported !");
       return;
@@ -94,7 +94,7 @@ namespace snemo {
         }
       }
       if (_SD_label_.empty()) {
-        _SD_label_ = snemo::datamodel::data_info::SIMULATED_DATA_LABEL;
+        _SD_label_ = snemo::datamodel::data_info::default_simulated_data_label();
       }
 
       if (_CD_label_.empty()) {
@@ -103,7 +103,7 @@ namespace snemo {
         }
       }
       if (_CD_label_.empty()) {
-        _CD_label_ = snemo::datamodel::data_info::CALIBRATED_DATA_LABEL;
+        _CD_label_ = snemo::datamodel::data_info::default_calibrated_data_label();
       }
 
       if (_Geo_label_.empty()) {
@@ -121,7 +121,7 @@ namespace snemo {
                     ! service_manager_.is_a<geomtools::geometry_service>(_Geo_label_),
                     std::logic_error,
                     "Module '" << get_name() << "' has no '" << _Geo_label_ << "' service !");
-        geomtools::geometry_service & Geo = service_manager_.get<geomtools::geometry_service>(_Geo_label_);
+        const geomtools::geometry_service & Geo = service_manager_.get<geomtools::geometry_service>(_Geo_label_);
         set_geom_manager(Geo.get_geom_manager());
       }
       DT_THROW_IF(_geom_manager_ == 0, std::logic_error, "Missing geometry manager !");
@@ -143,6 +143,12 @@ namespace snemo {
       // Get the calorimeter categories:
       if (setup_.has_key("hit_categories")) {
         setup_.fetch("hit_categories", _hit_categories_);
+      }
+      // Default value:
+      if (_hit_categories_.empty()) {
+        _hit_categories_.push_back("calo");
+        _hit_categories_.push_back("xcalo");
+        _hit_categories_.push_back("gveto");
       }
 
       // Initialize the calorimeter regime utility:
@@ -176,7 +182,7 @@ namespace snemo {
       }
       if (!datatools::is_valid(_cluster_time_width_)) {
         _cluster_time_width_ = 100 * CLHEP::ns;
-      }
+       }
 
       // 2012-09-17 FM : support reference to the MC true hit ID
       if (setup_.has_flag("store_mc_hit_id")) {
@@ -285,8 +291,7 @@ namespace snemo {
       }
 
       // Main processing method :
-      _process(the_simulated_data,
-               the_calibrated_data.calibrated_calorimeter_hits());
+      _process(the_simulated_data, the_calibrated_data.calibrated_calorimeter_hits());
 
       return dpp::base_module::PROCESS_SUCCESS;
     }
@@ -298,8 +303,8 @@ namespace snemo {
     }
 
     //
-    // Here collect the 'calorileter' raw hits from the simulation data source
-    // and build the final list of 'calorimeter' hits.
+    // Here collect the 'calorimeter' raw hits from the simulation data source
+    // and build the final list of calibrated 'calorimeter' hits.
     //
     //
 
@@ -393,27 +398,22 @@ namespace snemo {
             // Grab auxiliaries :
             datatools::properties & cc_prop = some_calibrated_calorimeter_hit.grab_auxiliaries();
 
+            // 2012-07-26 FM : support reference to the MC true hit ID
+            if (_store_mc_hit_id_ && true_calo_hit_id > geomtools::base_hit::INVALID_HIT_ID) {
+              cc_prop.update(mctools::hit_utils::HIT_MC_HIT_ID_KEY, true_calo_hit_id);
+            }
+
             // Check time between clusters
             const double delta_time = step_hit_time_start - some_calibrated_calorimeter_hit.get_time();
             // cluster arriving too late : do not care of it
             if (delta_time > _cluster_time_width_) {
-              if (! cc_prop.has_key("pile_up")) {
-                cc_prop.store_flag("pile_up");
-              }
+              cc_prop.update_flag("pile_up");
               continue;
-            }
-
-            // 2012-07-26 FM : support reference to the MC true hit ID
-            if (_store_mc_hit_id_ && true_calo_hit_id > geomtools::base_hit::INVALID_HIT_ID) {
-              cc_prop.update(mctools::hit_utils::HIT_MC_HIT_ID_KEY,
-                             true_calo_hit_id);
             }
 
             // Cluster coming before : it becomes the new one
             if (delta_time < -_cluster_time_width_) {
-              if (! cc_prop.has_key("pile_up")) {
-                cc_prop.store_flag("pile_up");
-              }
+              cc_prop.update_flag("pile_up");
               some_calibrated_calorimeter_hit.set_time(step_hit_time_start);
               some_calibrated_calorimeter_hit.set_energy(step_hit_energy_deposit);
               continue;

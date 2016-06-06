@@ -25,7 +25,7 @@ namespace snemo {
   namespace datamodel {
 
     /// \brief The data structure that hosts information about the raw trigger informations
-    class raw_trigger_infos : DATATOOLS_SERIALIZABLE_CLASS,
+    class raw_trigger_infos : public datatools::i_serializable,
                               public datatools::i_tree_dumpable
     {
     public:
@@ -83,7 +83,7 @@ namespace snemo {
       std::bitset<NUMBER_OF_CALO_ZONES>  _CTZW_[NUMBER_OF_SIDES]; //!< Calorimeter trigger zoning words per side
       std::bitset<NUMBER_OF_LAYERS>      _TTP_[NUMBER_OF_SIDES][NUMBER_OF_ROWS]; //!< Tracker trigger primitives per side and per row
 
-      DATATOOLS_SERIALIZATION_DECLARATION();
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 

@@ -19,21 +19,16 @@
  *
  */
 
+// Standard libraries
 #include <algorithm>
 
+// This project
 #include <falaise/snemo/utils/root_utilities.h>
 #include <falaise/snemo/view/style_manager.h>
 #include <falaise/snemo/view/options_manager.h>
 
-#include <datatools/logger.h>
-
-#include <geomtools/box.h>
-#include <geomtools/cylinder.h>
-#include <geomtools/sphere.h>
-#include <geomtools/polycone.h>
-#include <geomtools/i_composite_shape_3d.h>
-#include <geomtools/gnuplot_draw.h>
-
+// Third party:
+// - ROOT
 #include <TGeoBBox.h>
 #include <TGeoTube.h>
 #include <TGeoSphere.h>
@@ -41,13 +36,22 @@
 #include <TGeoCompositeShape.h>
 #include <TGeoMatrix.h>
 #include <TPolyLine3D.h>
-
 #include <TROOT.h>
 #include <TColor.h>
 #include <TGFileDialog.h>
 #include <TCanvas.h>
 #include <TSystem.h>
 #include <TObjArray.h>
+// - Bayeux/datatools
+#include <datatools/logger.h>
+#include <datatools/units.h>
+// - Bayeux/geomtools
+#include <geomtools/box.h>
+#include <geomtools/cylinder.h>
+#include <geomtools/sphere.h>
+#include <geomtools/polycone.h>
+#include <geomtools/i_composite_shape_3d.h>
+#include <geomtools/gnuplot_draw.h>
 
 namespace snemo {
 
@@ -251,6 +255,50 @@ namespace snemo {
              << std::setw(3) << g << " "
              << std::setw(3) << b;
 
+        return;
+      }
+
+      void root_utilities::get_prettified_time(std::ostream & out_,
+                                               const double time_,
+                                               const double sigma_,
+                                               const bool latex_)
+      {
+        std::string unit_id = "ps";
+        if (time_ > 1e12*CLHEP::picosecond) unit_id = "s";
+        else if (time_ > 1e9*CLHEP::picosecond) unit_id = "ms";
+        else if (time_ > 1e6*CLHEP::picosecond) unit_id = "us";
+        else if (time_ > 1e3*CLHEP::picosecond) unit_id = "ns";
+        const double unit = datatools::units::get_time_unit_from(unit_id);
+        if (datatools::is_valid(sigma_)) {
+          out_ << time_/unit;
+          if (latex_) out_ << " #pm ";
+          else out_ << " +/- ";
+          out_ << sigma_/unit << " " << unit_id;
+        } else {
+          out_ << time_/unit << " " << unit_id;
+        }
+        return;
+      }
+
+      void root_utilities::get_prettified_energy(std::ostream & out_,
+                                                 const double energy_,
+                                                 const double sigma_,
+                                                 const bool latex_)
+      {
+        std::string unit_id = "meV";
+        if (energy_ > 1e9*CLHEP::eV) unit_id = "GeV";
+        else if (energy_ > 1e4*CLHEP::eV) unit_id = "MeV";
+        else if (energy_ > 1e3*CLHEP::eV) unit_id = "keV";
+        else if (energy_ > 1e0*CLHEP::eV) unit_id = "eV";
+        const double unit = datatools::units::get_energy_unit_from(unit_id);
+        if (datatools::is_valid(sigma_)) {
+          out_ << energy_/unit;
+          if (latex_) out_ << " #pm ";
+          else out_ << " +/- ";
+          out_ << sigma_/unit << " " << unit_id;
+        } else {
+          out_ << energy_/unit << " " << unit_id;
+        }
         return;
       }
 

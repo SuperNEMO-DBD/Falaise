@@ -37,6 +37,8 @@
 // Third party
 // - Boost :
 #include <boost/cstdint.hpp>
+// - Bayeux/datatools
+#include <datatools/logger.h>
 // - Bayeux/geomtools
 #include <geomtools/i_locator.h>
 
@@ -272,11 +274,14 @@ namespace snemo {
 
     protected:
 
-      /** Protected contruction method. */
+      /** Protected construction method. */
       void _construct();
 
       /// Set default values
       void _set_defaults();
+
+      /// Hack trace
+      void _hack_trace();
 
     private:
 
@@ -318,6 +323,9 @@ namespace snemo {
       int _side_address_index_;
       int _layer_address_index_;
       int _row_address_index_;
+
+      // Submodules are present :
+      bool _submodules_[2];
 
     };
 

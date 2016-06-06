@@ -115,23 +115,40 @@ set(FalaiseEventBrowserPlugin_DICT_HEADERS
   include/falaise/snemo/view/progress_bar.h
   )
 list_prepend(FalaiseEventBrowserPlugin_DICT_HEADERS "${PROJECT_SOURCE_DIR}/")
-#root_generate_dictionary("${FalaiseEventBrowserPlugin_DICT_HEADERS}"
-#  "${PROJECT_SOURCE_DIR}/include/falaise/snemo/view/event_browser_linkdef.h"
-#  "${PROJECT_BINARY_DIR}/event_browser_dict.cc"
-#  "${PROJECT_SOURCE_DIR}/include"
-#  )
-root_generate_dictionary(event_browser_dict
-  "${FalaiseEventBrowserPlugin_DICT_HEADERS}"
-  LINKDEF "${PROJECT_SOURCE_DIR}/include/falaise/snemo/view/event_browser_linkdef.h"
-  )
 
+
+set(_event_browser_root_dict "")
+# - Generate ROOT headers
+if(FALAISE_USE_LEGACY_ROOT)
+  root_generate_dictionary("${FalaiseEventBrowserPlugin_DICT_HEADERS}"
+    "${PROJECT_SOURCE_DIR}/include/falaise/snemo/view/event_browser_linkdef.h"
+    "${PROJECT_BINARY_DIR}/event_browser_dict.cc"
+    "${PROJECT_SOURCE_DIR}/include"
+    )
+  set(_event_browser_root_dict ${PROJECT_BINARY_DIR}/event_browser_dict.cc)
+else()
+  root_generate_dictionary(event_browser_dict
+    "${FalaiseEventBrowserPlugin_DICT_HEADERS}"
+    LINKDEF "${PROJECT_SOURCE_DIR}/include/falaise/snemo/view/event_browser_linkdef.h"
+    )
+  set(_event_browser_root_dict ${CMAKE_CURRENT_BINARY_DIR}/event_browser_dict.cxx)
+endif()
+
+# ROOT dictionaries will refine accessor keywords for reflection purposes
+# This is expected, but Clang will warn on ROOT5, so disable it.
+# Done as a compile flag because we cant edit the code directly.
+if(CMAKE_CXX_COMPILER_ID MATCHES "(Apple)+Clang")
+  set_property(SOURCE ${_event_browser_root_dict}
+    PROPERTY COMPILE_FLAGS "-Wno-keyword-macro"
+    )
+endif()
 
 
 #-----------------------------------------------------------------------
 # SOURCE FILES
 # Pretty basic!
 set(FalaiseEventBrowserPlugin_SOURCES
-  ${CMAKE_CURRENT_BINARY_DIR}/event_browser_dict.cxx
+  ${_event_browser_root_dict}
   i_volume.cc
   i_root_volume.cc
   box_volume.cc
@@ -194,9 +211,16 @@ add_library(Falaise_EventBrowser SHARED
   )
 
 target_link_libraries(Falaise_EventBrowser
+  Falaise
   ${Boost_LIBRARIES}
   ${ROOT_LIBRARIES}
-  Falaise)
+  )
+
+if(APPLE)
+  set_target_properties(Falaise_EventBrowser
+    PROPERTIES LINK_FLAGS "-undefined dynamic_lookup"
+    )
+endif()
 
 # Install it:
 install(TARGETS Falaise_EventBrowser DESTINATION ${CMAKE_INSTALL_LIBDIR}/Falaise/modules)

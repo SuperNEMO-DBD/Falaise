@@ -314,7 +314,7 @@ namespace snemo {
       if (missing_cathode_ == 0 ) return _sigma_z_;
       if (missing_cathode_ == 1 ) return _sigma_z_missing_cathode_;
       return 0.5 * _cell_length_;
-    };
+    }
 
     /** Value computed from I.Nasteva's plot in DocDB #843:
      *  see: <sncore source dir>/doc/geiger_regime/sn90cells_sigma_r.jpg
