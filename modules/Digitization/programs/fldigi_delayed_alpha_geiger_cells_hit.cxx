@@ -154,6 +154,9 @@ int main(int  argc_ , char ** argv_)
     reader.tree_dump (std::clog, "Simulated data reader module");
 
     static const int MAXIMUM_DELAYED_TIME = 8000; // in nanosecond, linked with the digi trigger and geiger drift
+    static const int LIMIT_SUP_PROMPT_TIME = 25; // in nanosecond,
+    static const int LIMIT_INF_DELAYED_TIME = 8000; // in nanosecond, linked with the digi trigger and geiger drift
+    static const int LIMIT_SUP_DELAYED_TIME = 1000000; // in nanosecond, linked with the digi trigger and geiger drift
 
     // Event record :
     datatools::things ER;
@@ -174,9 +177,15 @@ int main(int  argc_ , char ** argv_)
 
     TH1F * vertex_distribution_TH1F = new TH1F("Delayed alpha Geiger cells hit",
 					       "Delayed alpha GG cells hit",
-					       6, 0 , 5);
+					       15, 0 , 14);
+    TH1F * delayed_gg_inf_distribution_TH1F = new TH1F("Delayed alpha Geiger cells hit inf at 8 us",
+						       "Delayed alpha GG cells hit inf at 8 us",
+						       15, 0 , 14);
+    TH1F * delayed_gg_sup_distribution_TH1F = new TH1F("Delayed alpha Geiger cells hit sup at 1 ms",
+						       "Delayed alpha GG cells hit sup at 1 ms",
+						       15, 0 , 14);
 
-
+    
     while (!reader.is_terminated())
       {
 	reader.process(ER);
@@ -186,7 +195,9 @@ int main(int  argc_ , char ** argv_)
 	    // Access to the "SD" bank with a stored `mctools::simulated_data' :
 	    const mctools::simulated_data & SD = ER.get<mctools::simulated_data>(SD_bank_label); 
 
-	    int number_of_delayed_gg_cells_hit = 0;
+	    int number_of_delayed_gg_cells_hit = 0;   
+	    int number_of_delayed_gg_inf_8us = 0;
+	    int number_of_delayed_gg_sup_1ms = 0;
 	    if (SD.has_step_hits("gg"))
 	      {
 		const size_t number_of_hits = SD.get_number_of_step_hits("gg");
@@ -239,11 +250,17 @@ int main(int  argc_ , char ** argv_)
 			geomtools::vector_3d position_stop_vector  = BSH.get_position_stop();
 			geomtools::vector_3d momentum_start_vector = BSH.get_momentum_start();
 			if (time_start > MAXIMUM_DELAYED_TIME) number_of_delayed_gg_cells_hit++;
+			if (time_start > LIMIT_SUP_PROMPT_TIME && time_start < LIMIT_INF_DELAYED_TIME) number_of_delayed_gg_inf_8us++;
+			if (time_start > LIMIT_SUP_DELAYED_TIME) number_of_delayed_gg_sup_1ms++;
+
 			count++;
 		      }
 		  } // end of for 
 	      } // end of if has step hits
 	    vertex_distribution_TH1F->Fill(number_of_delayed_gg_cells_hit);
+	    delayed_gg_inf_distribution_TH1F->Fill(number_of_delayed_gg_inf_8us);
+	    delayed_gg_sup_distribution_TH1F->Fill(number_of_delayed_gg_sup_1ms);
+
 	  } // end of ER
 	ER.clear();
 	psd_count++;
