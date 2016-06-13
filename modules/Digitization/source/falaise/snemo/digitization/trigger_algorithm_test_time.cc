@@ -117,9 +117,9 @@ namespace snemo {
       std::clog << LTO_side_0 << ' ';
       std::clog << total_multiplicity_side_1 << ' ';
       std::clog << total_multiplicity_side_0 << ' ';
-      for (unsigned int iside = trigger_info::NSIDES-1; iside >= 0; iside--)
+      for (unsigned int iside = trigger_info::NSIDES-1; iside > 0; iside--)
       	{
-      	  for (unsigned int izone = trigger_info::NZONES-1; izone >= 0 ; izone--)
+      	  for (unsigned int izone = trigger_info::NZONES-1; izone > 0 ; izone--)
       	    {
       	      std::clog << calo_zoning_word[iside][izone];
       	    }
@@ -379,7 +379,7 @@ namespace snemo {
 								       std::vector<coincidence_trigger_algorithm_test_time::coincidence_calo_record> & coincidence_calo_records_1600ns_)
     {
       std::vector<calo_trigger_algorithm_test_time::calo_summary_record>::const_iterator it = calo_records_25_ns_.begin();
-      for (it; it != calo_records_25_ns_.end(); it++)
+      for (; it != calo_records_25_ns_.end(); it++)
       	{
       	  const calo_trigger_algorithm_test_time::calo_summary_record a_ctrec= *it;
 
@@ -397,7 +397,7 @@ namespace snemo {
 		    
       		  if (coincidence_calo_records_1600ns_.size() != 0)
       		    {
-      		      for (int iclocktick = first_coincidence_calo_record.clocktick_1600ns + 1; iclocktick < first_coincidence_calo_record.clocktick_1600ns + _coincidence_calorimeter_gate_size_; iclocktick ++)
+      		      for (unsigned int iclocktick = first_coincidence_calo_record.clocktick_1600ns + 1; iclocktick < first_coincidence_calo_record.clocktick_1600ns + _coincidence_calorimeter_gate_size_; iclocktick ++)
       			{
       			  coincidence_trigger_algorithm_test_time::coincidence_calo_record on_gate_coincidence_calo_record;
       			  on_gate_coincidence_calo_record = first_coincidence_calo_record;
@@ -730,7 +730,7 @@ namespace snemo {
 	      std::pair<coincidence_trigger_algorithm_test_time::coincidence_calo_record, tracker_trigger_algorithm_test_time::tracker_record> pair_for_a_clocktick;
 
 	      std::vector<coincidence_trigger_algorithm_test_time::coincidence_calo_record>::const_iterator it_calo = _coincidence_calo_records_1600ns_.begin();
-	      for (it_calo; it_calo != _coincidence_calo_records_1600ns_.end(); it_calo++)
+	      for (; it_calo != _coincidence_calo_records_1600ns_.end(); it_calo++)
 		{ 
 		  coincidence_trigger_algorithm_test_time::coincidence_calo_record a_coinc_calo_record = *it_calo;
 		  if (a_coinc_calo_record.clocktick_1600ns == ict1600)

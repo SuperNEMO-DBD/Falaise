@@ -366,7 +366,6 @@ int main( int  argc_ , char **argv_  )
 	    // if (debug) my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
 	    // if (debug) my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
 
-		
 	    if (debug) std::clog << "********* Size of Finale structures for one event *********" << std::endl;
 	    if (debug) std::clog << "Calo collection size @ 25 ns : " << calo_collection_records.size() << std::endl;
 	    if (debug) std::clog << "Calo collection size @ 1600 ns : " << coincidence_collection_calo_records.size() << std::endl;

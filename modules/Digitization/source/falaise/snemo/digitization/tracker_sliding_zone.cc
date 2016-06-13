@@ -140,7 +140,7 @@ namespace snemo {
 	  out_ << irow << ' ';
 	}
 	out_ << '\n';
-	for (unsigned int ilayer = trigger_info::NLAYERS - 1; ilayer >= 0; ilayer--) {
+	for (unsigned int ilayer = trigger_info::NLAYERS - 1; ilayer > 0; ilayer--) {
 	  out_ << ilayer << " = " << "  ";
 	  for (unsigned int irow = 0; irow < width(szone_id); irow++) {
 	    out_ << (cells[ilayer][irow] ? 'o' : '.') << ' ';
@@ -189,13 +189,13 @@ namespace snemo {
       out_ << "PR : Addr : [" <<  addr_row_proj_string << "]  Data : [" << data_LR_proj << "] \n";
       out_ << "PL : Addr : [" << addr_layer_proj_string << "] Data : [" << data_IO_proj << "] \n";
 
-      // for (unsigned int i =  snemo::digitization::trigger_info::SLZONE_ROW_PROJ; i >= 0; i--)
+      // for (unsigned int i =  snemo::digitization::trigger_info::SLZONE_ROW_PROJ; i > 0; i--)
       // 	{
       // 	  if (i == snemo::digitization::trigger_info::SLZONE_ROW_PROJ) out_ << "PR \n";
       // 	  if (i != 4) out_ << addr_row_proj[i] << "\n";
       // 	  if (i == 4) out_ << addr_row_proj[i] << "  ===> " << data_LR_proj << "\n";	  
       // 	}
-      // for (unsigned int i = snemo::digitization::trigger_info::SLZONE_LAYER_PROJ; i >= 0; i--)
+      // for (unsigned int i = snemo::digitization::trigger_info::SLZONE_LAYER_PROJ; i > 0; i--)
       // 	{
       // 	  if (i == snemo::digitization::trigger_info::SLZONE_LAYER_PROJ) out_ << "PL : ";
       // 	  if (i != 0 && i != snemo::digitization::trigger_info::SLZONE_LAYER_PROJ - 1) out_ << addr_layer_proj[i];

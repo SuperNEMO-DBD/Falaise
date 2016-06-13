@@ -153,7 +153,6 @@ int main(int  argc_ , char ** argv_)
     reader.initialize_standalone (reader_config);
     reader.tree_dump (std::clog, "Simulated data reader module");
 
-    static const int MAXIMUM_DELAYED_TIME = 8000; // in nanosecond, linked with the digi trigger and geiger drift
     static const int LIMIT_SUP_PROMPT_TIME = 25; // in nanosecond,
     static const int LIMIT_INF_DELAYED_TIME = 8000; // in nanosecond, linked with the digi trigger and geiger drift
     static const int LIMIT_SUP_DELAYED_TIME = 1000000; // in nanosecond, linked with the digi trigger and geiger drift
@@ -249,7 +248,7 @@ int main(int  argc_ , char ** argv_)
 			geomtools::vector_3d position_start_vector = BSH.get_position_start();
 			geomtools::vector_3d position_stop_vector  = BSH.get_position_stop();
 			geomtools::vector_3d momentum_start_vector = BSH.get_momentum_start();
-			if (time_start > MAXIMUM_DELAYED_TIME) number_of_delayed_gg_cells_hit++;
+			if (time_start > LIMIT_INF_DELAYED_TIME && time_start < LIMIT_SUP_DELAYED_TIME) number_of_delayed_gg_cells_hit++;
 			if (time_start > LIMIT_SUP_PROMPT_TIME && time_start < LIMIT_INF_DELAYED_TIME) number_of_delayed_gg_inf_8us++;
 			if (time_start > LIMIT_SUP_DELAYED_TIME) number_of_delayed_gg_sup_1ms++;
 

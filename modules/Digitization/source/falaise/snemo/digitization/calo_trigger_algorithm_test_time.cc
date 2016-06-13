@@ -53,9 +53,9 @@ namespace snemo {
       std::clog << total_multiplicity_side_1 << ' ';
       std::clog << total_multiplicity_side_0 << ' ';
 
-      for (unsigned int iside = trigger_info::NSIDES-1; iside >= 0; iside--)
+      for (unsigned int iside = trigger_info::NSIDES-1; iside > 0; iside--)
       	{
-      	  for (unsigned int izone = trigger_info::NZONES-1; izone >= 0 ; izone--)
+      	  for (unsigned int izone = trigger_info::NZONES-1; izone > 0 ; izone--)
       	    {
       	      std::clog << zoning_word[iside][izone];
       	    }

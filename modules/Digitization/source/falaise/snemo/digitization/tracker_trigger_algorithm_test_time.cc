@@ -120,7 +120,7 @@ namespace snemo {
 	{
 	  if (i == 0)
 	    {
-	      for (unsigned int j = trigger_info::NLAYERS - 1; j >= 0; j--) // Value GEIGER_LAYER_SIZE = 9
+	      for (unsigned int j = trigger_info::NLAYERS - 1; j > 0; j--) // Value GEIGER_LAYER_SIZE = 9
 		{
 		  std::clog << j << ' ';
 		  for (unsigned int k = 0; k < trigger_info::NROWS; k++)
@@ -669,7 +669,7 @@ namespace snemo {
     void tracker_trigger_algorithm_test_time::print_zones(std::ostream & out_) const
     {
       out_ << "Zones: \n";
-      for (unsigned int ilayer = trigger_info::NLAYERS - 1; ilayer >= 0; ilayer--) {
+      for (unsigned int ilayer = trigger_info::NLAYERS - 1; ilayer > 0; ilayer--) {
 	for (unsigned int izone = 0; izone < trigger_info::NZONES; izone++) {
 	  for (unsigned int irow = 0; irow < tracker_zone::width(izone); irow++) {
 	    out_ << (_zones_[0][izone].cells[ilayer][irow] ? 'o' : '.');
