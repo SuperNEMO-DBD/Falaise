@@ -384,7 +384,8 @@ int main( int  argc_ , char **argv_  )
 	
 	ER.clear();
 	psd_count++;
-	if (debug) std::clog << "DEBUG : psd count " << psd_count << std::endl;
+	std::clog << "DEBUG : psd count " << psd_count << std::endl;
+	//if (debug) std::clog << "DEBUG : psd count " << psd_count << std::endl;
 	DT_LOG_NOTICE(logging, "Simulated data #" << psd_count);
       } // end of reader is terminated
          

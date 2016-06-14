@@ -469,7 +469,7 @@ namespace snemo {
       		  coincidence_trigger_algorithm_test_time::coincidence_calo_record new_coincidence_calo_record;
       		  new_coincidence_calo_record.clocktick_1600ns = ctrec_clocktick_1600ns;
       		  coincidence_calo_records_1600ns_.push_back(new_coincidence_calo_record);
-      		  for (int iclocktick = new_coincidence_calo_record.clocktick_1600ns + 1; iclocktick < new_coincidence_calo_record.clocktick_1600ns + _coincidence_calorimeter_gate_size_; iclocktick ++)
+      		  for (unsigned int iclocktick = new_coincidence_calo_record.clocktick_1600ns + 1; iclocktick < new_coincidence_calo_record.clocktick_1600ns + _coincidence_calorimeter_gate_size_; iclocktick ++)
       		    {
       		      coincidence_trigger_algorithm_test_time::coincidence_calo_record new_on_gate_coincidence_calo_record;
       		      new_on_gate_coincidence_calo_record = new_coincidence_calo_record;
@@ -626,7 +626,7 @@ namespace snemo {
       // Process the calorimeter algorithm at 25 ns to create calo record at 25 ns
       _calo_algo_.process(calo_ctw_data_,
 			  _calo_records_25ns_);
-      
+
       // // Fake calo record for test : 
       // calo_trigger_algorithm_test_time::calo_summary_record a_fake_calo_record_25ns;
       // std::bitset<10> fake_bitset (std::string("0010000000"));
@@ -691,26 +691,44 @@ namespace snemo {
 	  
 	  // Calculate the ct 1600 minimum and ct 1600 maximum : 
 
-	  // Gestion d'erreur si GG CTW DATA vides : 
-	  int32_t calorimeter_ct_min_1600 = _coincidence_calo_records_1600ns_.front().clocktick_1600ns;
-	  int32_t calorimeter_ct_max_1600 = _coincidence_calo_records_1600ns_.back().clocktick_1600ns;
-	  int32_t tracker_ct_min_1600 = geiger_ctw_data_1600ns.get_clocktick_min();
-	  int32_t tracker_ct_max_1600 = geiger_ctw_data_1600ns.get_clocktick_max();
-	  
-	  int32_t clocktick_min = calorimeter_ct_min_1600;
-	  if (tracker_ct_min_1600 < clocktick_min) clocktick_min = tracker_ct_min_1600;    
-	  int32_t clocktick_max = tracker_ct_max_1600;
-	  if (calorimeter_ct_max_1600 > clocktick_max) clocktick_max = calorimeter_ct_max_1600;
+	  int32_t calorimeter_ct_min_1600 = clock_utils::INVALID_CLOCKTICK;
+	  int32_t calorimeter_ct_max_1600 = clock_utils::INVALID_CLOCKTICK;
+	  int32_t tracker_ct_min_1600     = clock_utils::INVALID_CLOCKTICK;
+	  int32_t tracker_ct_max_1600     = clock_utils::INVALID_CLOCKTICK;
 
-	  std::clog << "Calo CT min 1600 = " << calorimeter_ct_min_1600 << std::endl;
-	  std::clog << "Calo CT max 1600 = " << calorimeter_ct_max_1600 << std::endl;
+	  if (_coincidence_calo_records_1600ns_.size() != 0)
+	    {
+	      calorimeter_ct_min_1600 = _coincidence_calo_records_1600ns_.front().clocktick_1600ns;
+	      calorimeter_ct_max_1600 = _coincidence_calo_records_1600ns_.back().clocktick_1600ns;
+	    }
+	  
+	  if (geiger_ctw_data_1600ns.get_geiger_ctws().size() != 0)
+	    {
+	      tracker_ct_min_1600 = geiger_ctw_data_1600ns.get_clocktick_min();
+	      tracker_ct_max_1600 = geiger_ctw_data_1600ns.get_clocktick_max();	      
+	    }
+
+	  int32_t clocktick_min = clock_utils::INVALID_CLOCKTICK;
+	  if (calorimeter_ct_min_1600 != clock_utils::INVALID_CLOCKTICK) clocktick_min = calorimeter_ct_min_1600;
+	  else if (tracker_ct_min_1600 != clock_utils::INVALID_CLOCKTICK) clocktick_min = tracker_ct_min_1600;
+
+	  if ((tracker_ct_min_1600 != clock_utils::INVALID_CLOCKTICK && calorimeter_ct_min_1600 != clock_utils::INVALID_CLOCKTICK) && tracker_ct_min_1600 < clocktick_min) clocktick_min = tracker_ct_min_1600;
+    
+	  int32_t clocktick_max = clock_utils::INVALID_CLOCKTICK;
+	  if (tracker_ct_max_1600 != clock_utils::INVALID_CLOCKTICK) clocktick_max = tracker_ct_max_1600;
+	  else if (calorimeter_ct_max_1600 != clock_utils::INVALID_CLOCKTICK) clocktick_max = calorimeter_ct_max_1600;
+	  if ((tracker_ct_max_1600 != clock_utils::INVALID_CLOCKTICK && calorimeter_ct_max_1600 != clock_utils::INVALID_CLOCKTICK) && calorimeter_ct_max_1600 > clocktick_max) clocktick_max = calorimeter_ct_max_1600;
+
+	  std::clog << "Calo CT min 1600    = " << calorimeter_ct_min_1600 << std::endl;
+	  std::clog << "Calo CT max 1600    = " << calorimeter_ct_max_1600 << std::endl;
 	  std::clog << "Tracker CT min 1600 = " << tracker_ct_min_1600 << std::endl;
 	  std::clog << "Tracker CT max 1600 = " << tracker_ct_max_1600 << std::endl;
-	  std::clog << "CT min 1600 = " << clocktick_min << std::endl;
-	  std::clog << "CT max 1600 = " << clocktick_max << std::endl;
+	  std::clog << "CT min 1600         = " << clocktick_min << std::endl;
+	  std::clog << "CT max 1600         = " << clocktick_max << std::endl;
 	  
 	  for (int ict1600 = clocktick_min; ict1600 <= clocktick_max; ict1600++)
 	    {
+	      // Gestion d'erreur si GG CTW DATA vides : 
 	      geiger_ctw_data::geiger_ctw_collection_type geiger_ctw_list_per_clocktick_1600;
 	      geiger_ctw_data_1600ns.get_list_of_geiger_ctw_per_clocktick(ict1600, geiger_ctw_list_per_clocktick_1600);
 	      
@@ -749,12 +767,12 @@ namespace snemo {
 
       for (unsigned int i = 0; i < _L2_decision_records_.size(); i++)
 	{
-	  _L2_decision_records_[i].display(); 
+	  // _L2_decision_records_[i].display(); 
 	}
       
       for (unsigned int i = 0; i < _coincidence_calo_records_1600ns_.size(); i++)
 	{
-	  _coincidence_calo_records_1600ns_[i].display();
+	  // _coincidence_calo_records_1600ns_[i].display();
 	}
       
       
