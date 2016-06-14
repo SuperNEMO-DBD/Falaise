@@ -985,8 +985,8 @@ namespace snemo {
     }
 
     void coincidence_trigger_algorithm::_process(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_,
-							      const std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_,
-							      std::vector<coincidence_trigger_algorithm::coincidence_event_record> & coincidence_records_)
+						 const std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_,
+						 std::vector<coincidence_trigger_algorithm::coincidence_event_record> & coincidence_records_)
     {
       reset_data();
       _previous_event_records_.reset(new buffer_previous_event_record_type(_previous_event_circular_buffer_depth_));

@@ -728,39 +728,47 @@ namespace snemo {
 	  
 	  for (int ict1600 = clocktick_min; ict1600 <= clocktick_max; ict1600++)
 	    {
-	      // Gestion d'erreur si GG CTW DATA vides : 
-	      geiger_ctw_data::geiger_ctw_collection_type geiger_ctw_list_per_clocktick_1600;
-	      geiger_ctw_data_1600ns.get_list_of_geiger_ctw_per_clocktick(ict1600, geiger_ctw_list_per_clocktick_1600);
-	      
 	      tracker_trigger_algorithm_test_time::tracker_record a_tracker_record;
 	      a_tracker_record.clocktick_1600ns = ict1600;
-	      _tracker_algo_.process(geiger_ctw_list_per_clocktick_1600,
-				     a_tracker_record);
-	      if (!a_tracker_record.is_empty()) _tracker_records_.push_back(a_tracker_record);
-	      // a_tracker_record.display();
 
-	      tracker_trigger_algorithm_test_time::geiger_matrix a_geiger_matrix = _tracker_algo_.get_geiger_matrix_for_a_clocktick();
-	      a_geiger_matrix.clocktick_1600ns = ict1600;
-	      // a_geiger_matrix.display();
-	      if (!a_geiger_matrix.is_empty()) _geiger_matrix_records_.push_back(a_geiger_matrix);
-	     
+	      if (geiger_ctw_data_1600ns.get_geiger_ctws().size() != 0)
+		{
+		  geiger_ctw_data::geiger_ctw_collection_type geiger_ctw_list_per_clocktick_1600;
+		  geiger_ctw_data_1600ns.get_list_of_geiger_ctw_per_clocktick(ict1600, geiger_ctw_list_per_clocktick_1600);
+		  
+		  _tracker_algo_.process(geiger_ctw_list_per_clocktick_1600,
+					 a_tracker_record);
+		  if (!a_tracker_record.is_empty()) _tracker_records_.push_back(a_tracker_record);
+		  // a_tracker_record.display();
+		  
+		  tracker_trigger_algorithm_test_time::geiger_matrix a_geiger_matrix = _tracker_algo_.get_geiger_matrix_for_a_clocktick();
+		  a_geiger_matrix.clocktick_1600ns = ict1600;
+		  // a_geiger_matrix.display();
+		  if (!a_geiger_matrix.is_empty()) _geiger_matrix_records_.push_back(a_geiger_matrix);
+		}
 
 	      std::pair<coincidence_trigger_algorithm_test_time::coincidence_calo_record, tracker_trigger_algorithm_test_time::tracker_record> pair_for_a_clocktick;
 
+	      coincidence_trigger_algorithm_test_time::coincidence_calo_record a_coinc_calo_record_for_pair;
+	      a_coinc_calo_record_for_pair.clocktick_1600ns = ict1600;
 	      std::vector<coincidence_trigger_algorithm_test_time::coincidence_calo_record>::const_iterator it_calo = _coincidence_calo_records_1600ns_.begin();
 	      for (; it_calo != _coincidence_calo_records_1600ns_.end(); it_calo++)
 		{ 
 		  coincidence_trigger_algorithm_test_time::coincidence_calo_record a_coinc_calo_record = *it_calo;
 		  if (a_coinc_calo_record.clocktick_1600ns == ict1600)
 		    {
-		      pair_for_a_clocktick.first = a_coinc_calo_record;
+		      a_coinc_calo_record_for_pair = a_coinc_calo_record;
 		    }
 		} 
+	      pair_for_a_clocktick.first  = a_coinc_calo_record_for_pair;
 	      pair_for_a_clocktick.second = a_tracker_record;
 	      _pair_records_.push_back(pair_for_a_clocktick);
 	      
 	    } // end of ict1600
 
+	  // Process calo tracker coincidence for a clocktick in coinc_algo
+	  // The coincidence process can be process(pair_for_a_ct)
+	  // { CARACO(), APE(), DAVE() }
 
 
 	}
