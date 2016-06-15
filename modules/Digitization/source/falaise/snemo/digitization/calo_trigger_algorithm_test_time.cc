@@ -5,115 +5,16 @@
 // Ourselves:
 #include <snemo/digitization/calo_trigger_algorithm_test_time.h>
 #include <snemo/digitization/calo_ctw.h>
+#include <snemo/digitization/trigger_info.h>
+#include <snemo/digitization/mapping.h>
 
 namespace snemo {
   
   namespace digitization {
-     
-    const int32_t calo_trigger_algorithm_test_time::LEVEL_ONE_MULT_BITSET_SIZE;
-    const int32_t calo_trigger_algorithm_test_time::ZONING_PER_SIDE_BITSET_SIZE;
-    const int32_t calo_trigger_algorithm_test_time::ZONING_GVETO_BITSET_SIZE;
-    const int32_t calo_trigger_algorithm_test_time::XT_INFO_BITSET_SIZE;
-
-    
-    calo_trigger_algorithm_test_time::calo_record::calo_record()
-    {
-      calo_record::reset();
-      return;
-    }
-        
-    void calo_trigger_algorithm_test_time::calo_record::reset()
-    {
-      clocktick_25ns = -1;
-      for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
-	{
-	  zoning_word[iside].reset();
-	  zoning_word[iside].reset();
-	}
-      total_multiplicity_side_0.reset();
-      total_multiplicity_side_1.reset();
-      LTO_side_0 = false;
-      LTO_side_1 = false;
-      total_multiplicity_gveto.reset();
-      LTO_gveto = false;
-      xt_info_bitset.reset();
-      return;
-    }
-
-    void calo_trigger_algorithm_test_time::calo_record::display() const
-    {      
-      std::clog << "Calo Trigger info record : " << std::endl; 
-      std::clog << "CT |XTS|L|HG|L|L|H1|H0| ZONING S1| ZONING S0 " << std::endl; 
-      std::clog << clocktick_25ns << ' ';
-      std::clog << xt_info_bitset << ' ';
-      std::clog << LTO_gveto << ' ';
-      std::clog << total_multiplicity_gveto << ' ';
-      std::clog << LTO_side_1 << ' ';
-      std::clog << LTO_side_0 << ' ';
-      std::clog << total_multiplicity_side_1 << ' ';
-      std::clog << total_multiplicity_side_0 << ' ';
-
-      for (unsigned int iside = trigger_info::NSIDES-1; iside > 0; iside--)
-      	{
-      	  for (unsigned int izone = trigger_info::NZONES-1; izone > 0 ; izone--)
-      	    {
-      	      std::clog << zoning_word[iside][izone];
-      	    }
-      	  std::clog << ' ';
-      	}
-      std::clog << std::endl << std::endl;
-      return;
-    }
-    
-    calo_trigger_algorithm_test_time::calo_summary_record::calo_summary_record()
-    {
-      calo_summary_record::reset();
-      return; 
-    }
-
-    void calo_trigger_algorithm_test_time::calo_summary_record::reset()
-    {
-      calo_record::reset();
-      single_side_coinc = false;
-      total_multiplicity_threshold = false;
-      calo_finale_decision = false;
-      return;
-    }
-    
-    void calo_trigger_algorithm_test_time::calo_summary_record::reset_summary_boolean_only()
-    {
-      single_side_coinc = false;
-      total_multiplicity_threshold = false;
-      calo_finale_decision = false;
-      return;
-    }
-
-    void calo_trigger_algorithm_test_time::calo_summary_record::display() const
-    {
-      calo_record::display();
-      std::clog << "Single Side coinc           : " << single_side_coinc << std::endl;
-      std::clog << "Threshold total mult        : " << total_multiplicity_threshold << std::endl;
-      std::clog << "Calo trigger final decision : " << calo_finale_decision  << std::endl;
-      std::clog << std::endl;
-      return;
-    }
-    
-    bool calo_trigger_algorithm_test_time::calo_summary_record::is_empty() const
-    {
-      if (zoning_word[0].any() || zoning_word[1].any() 
-	  || total_multiplicity_side_0.any() || total_multiplicity_side_1.any() || total_multiplicity_gveto.any()
-	  || LTO_side_0 || LTO_side_1 || LTO_gveto || xt_info_bitset.any())
-	{
-	  return false;
-	}
-
-      else return true;
-    }
 
     calo_trigger_algorithm_test_time::calo_trigger_algorithm_test_time()
     {
       _initialized_ = false;
-      _electronic_mapping_ = 0;
       _circular_buffer_depth_ = 0;
       _activated_threshold_ = false;
       _total_multiplicity_threshold_.reset();
@@ -129,13 +30,6 @@ namespace snemo {
 	{
 	  reset();
 	}
-      return;
-    }
-
-    void calo_trigger_algorithm_test_time::set_electronic_mapping(const electronic_mapping & my_electronic_mapping_)
-    {
-      DT_THROW_IF(is_initialized(), std::logic_error, "Calo trigger algorithm is already initialized, electronic mapping can't be set ! ");
-      _electronic_mapping_ = & my_electronic_mapping_;
       return;
     }
  
@@ -246,7 +140,6 @@ namespace snemo {
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Calo trigger algorithm is not initialized, it can't be reset ! ");
       _initialized_ = false;
-      _electronic_mapping_ = 0;
       _activated_threshold_ = false;
       _inhibit_both_side_coinc_ = false;
       _inhibit_single_side_coinc_ = false;
@@ -269,7 +162,7 @@ namespace snemo {
       return _calo_finale_decision_;
     }
     
-    const calo_trigger_algorithm_test_time::calo_summary_record calo_trigger_algorithm_test_time::get_calo_level_1_finale_decision_structure() const
+    const trigger_structures::calo_summary_record calo_trigger_algorithm_test_time::get_calo_level_1_finale_decision_structure() const
     {
       return _calo_level_1_finale_decision_;
     }
@@ -326,7 +219,7 @@ namespace snemo {
       return;
     }
 
-    void calo_trigger_algorithm_test_time::_display_calo_summary(calo_summary_record & my_calo_summary_record_)
+    void calo_trigger_algorithm_test_time::_display_calo_summary(trigger_structures::calo_summary_record & my_calo_summary_record_)
     {
       my_calo_summary_record_.display(); 
 
@@ -492,7 +385,7 @@ namespace snemo {
       return;
     }    
     
-    void calo_trigger_algorithm_test_time::_build_calo_record_summary_structure(calo_summary_record & my_calo_summary_record_)
+    void calo_trigger_algorithm_test_time::_build_calo_record_summary_structure(trigger_structures::calo_summary_record & my_calo_summary_record_)
     {
       unsigned int multiplicity_sum_circ_buff_side_0 = 0;
       unsigned int multiplicity_sum_circ_buff_side_1 = 0;
@@ -500,13 +393,13 @@ namespace snemo {
       bool         lto_sum_circ_buff_side_0 = false;     
       bool         lto_sum_circ_buff_side_1 = false;
       bool         lto_sum_circ_buff_gveto = false;
-      std::bitset<ZONING_PER_SIDE_BITSET_SIZE> zoning_word_sum_side_0;
-      std::bitset<ZONING_PER_SIDE_BITSET_SIZE> zoning_word_sum_side_1;
-      std::bitset<XT_INFO_BITSET_SIZE> xt_info_sum;
+      std::bitset<trigger_info::CALO_ZONING_PER_SIDE_BITSET_SIZE> zoning_word_sum_side_0;
+      std::bitset<trigger_info::CALO_ZONING_PER_SIDE_BITSET_SIZE> zoning_word_sum_side_1;
+      std::bitset<trigger_info::CALO_XT_INFO_BITSET_SIZE> xt_info_sum;
 
-      for (boost::circular_buffer<calo_record>::iterator it =_gate_circular_buffer_->begin() ; it != _gate_circular_buffer_->end(); it++)
+      for (boost::circular_buffer<trigger_structures::calo_record>::iterator it =_gate_circular_buffer_->begin() ; it != _gate_circular_buffer_->end(); it++)
 	{
-	  calo_record & ctrec = *it;
+	  trigger_structures::calo_record & ctrec = *it;
 	  
 	  // Compute the sum of multiplicity for each side : 
 	  multiplicity_sum_circ_buff_side_0 += ctrec.total_multiplicity_side_0.to_ulong();
@@ -521,14 +414,14 @@ namespace snemo {
 	  // Zoning word : 
 	  for (unsigned int i = 0; i < trigger_info::NSIDES; i++)
       	    {
-      	      for (int j = 0; j < ZONING_PER_SIDE_BITSET_SIZE; j++)
+      	      for (int j = 0; j < trigger_info::CALO_ZONING_PER_SIDE_BITSET_SIZE; j++)
       		{
       		  if (ctrec.zoning_word[i].test(j) == true) 
 		    {
 		      if (i == 0) zoning_word_sum_side_0.set(j,true);
 		      if (i == 1) zoning_word_sum_side_1.set(j,true);
 		    }
-      		  if (j < XT_INFO_BITSET_SIZE && ctrec.xt_info_bitset.test(j) == true) 
+      		  if (j < trigger_info::CALO_XT_INFO_BITSET_SIZE && ctrec.xt_info_bitset.test(j) == true) 
 		    {
 		      xt_info_sum.set(j, true);
 		    }
@@ -570,7 +463,7 @@ namespace snemo {
       return;
     }
 
-    void calo_trigger_algorithm_test_time::_compute_calo_finale_decision(calo_summary_record & my_calo_summary_record_)
+    void calo_trigger_algorithm_test_time::_compute_calo_finale_decision(trigger_structures::calo_summary_record & my_calo_summary_record_)
     {
       if ((_activated_threshold_ && my_calo_summary_record_.total_multiplicity_threshold)
       	  && !(is_inhibited_single_side_coinc() && my_calo_summary_record_.single_side_coinc)
@@ -590,7 +483,7 @@ namespace snemo {
     }
 
     void calo_trigger_algorithm_test_time::process(const calo_ctw_data & calo_ctw_data_,
-						   std::vector<calo_trigger_algorithm_test_time::calo_summary_record> & calo_records_)
+						   std::vector<trigger_structures::calo_summary_record> & calo_records_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Calo trigger algorithm is not initialized, it can't process ! ");
       _process(calo_ctw_data_, calo_records_);
@@ -598,7 +491,7 @@ namespace snemo {
     }
 
     void calo_trigger_algorithm_test_time::_process(const calo_ctw_data & calo_ctw_data_,
-						    std::vector<calo_trigger_algorithm_test_time::calo_summary_record> & calo_records_)
+						    std::vector<trigger_structures::calo_summary_record> & calo_records_)
     { 
       _calo_record_per_clocktick_.reset();
       _calo_level_1_finale_decision_.reset();
@@ -623,7 +516,7 @@ namespace snemo {
 	      _gate_circular_buffer_->push_back(_calo_record_per_clocktick_);
 
 	      // Fill calo summary record for each clocktick (based on previous calo records) : 
-	      calo_summary_record my_calo_summary_record;
+	      trigger_structures::calo_summary_record my_calo_summary_record;
 	      my_calo_summary_record.clocktick_25ns = iclocktick;
 	      _build_calo_record_summary_structure(my_calo_summary_record);
 	      _compute_calo_finale_decision(my_calo_summary_record);

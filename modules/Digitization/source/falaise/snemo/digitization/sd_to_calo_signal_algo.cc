@@ -117,7 +117,7 @@ namespace snemo {
 		    bool calo_already_hit = false;
 		    
 		    std::set<geomtools::geom_id>::iterator it_set = set_of_hit_gid.begin();
-		    for (it_set; it_set != set_of_hit_gid.end(); it_set++)
+		    for (; it_set != set_of_hit_gid.end(); it_set++)
 		      {
 			geomtools::geom_id a_gid = *it_set;
 			if (calo_gid == a_gid) calo_already_hit = true;
@@ -183,7 +183,7 @@ namespace snemo {
 		    bool calo_already_hit = false;
 		    
 		    std::set<geomtools::geom_id>::iterator it_set = set_of_hit_gid.begin();
-		    for (it_set; it_set != set_of_hit_gid.end(); it_set++)
+		    for (; it_set != set_of_hit_gid.end(); it_set++)
 		      {
 			geomtools::geom_id a_gid = *it_set;
 			if (calo_gid == a_gid) calo_already_hit = true;
@@ -249,7 +249,7 @@ namespace snemo {
 		    bool calo_already_hit = false;
 		    
 		    std::set<geomtools::geom_id>::iterator it_set = set_of_hit_gid.begin();
-		    for (it_set; it_set != set_of_hit_gid.end(); it_set++)
+		    for (; it_set != set_of_hit_gid.end(); it_set++)
 		      {
 			geomtools::geom_id a_gid = *it_set;
 			if (calo_gid == a_gid) calo_already_hit = true;

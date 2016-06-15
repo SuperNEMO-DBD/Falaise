@@ -16,6 +16,7 @@
 #include <snemo/digitization/tracker_trigger_algorithm.h>
 #include <snemo/digitization/geiger_tp_constants.h>
 #include <snemo/digitization/memory.h>
+#include <snemo/digitization/clock_utils.h>
 
 namespace snemo {
   
@@ -29,7 +30,7 @@ namespace snemo {
 
     void tracker_trigger_algorithm::tracker_record::reset()
     {
-      clocktick_1600ns = -1;
+      clocktick_1600ns = clock_utils::INVALID_CLOCKTICK;
       for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++) 
 	{
 	  for (unsigned int izone = 0; izone < trigger_info::NZONES; izone++) 
@@ -95,7 +96,7 @@ namespace snemo {
 		} // end of krow
 	    } // end of jlayer
 	} // end of iside
-      clocktick_1600ns = -1;
+      clocktick_1600ns = clock_utils::INVALID_CLOCKTICK;
     }
 
     bool tracker_trigger_algorithm::geiger_matrix::is_empty()
@@ -851,7 +852,7 @@ namespace snemo {
       // Just even clockticks 800 ns are processing (to take in account CB to TB serdes limitation)
       int32_t iclocktick_800 = geiger_ctw_data_.get_clocktick_min();
       if (iclocktick_800 % 2 == 1) iclocktick_800 += 1;
-      for (iclocktick_800; iclocktick_800 <= geiger_ctw_data_.get_clocktick_max(); iclocktick_800 +=2)
+      for (; iclocktick_800 <= geiger_ctw_data_.get_clocktick_max(); iclocktick_800 +=2)
        	{
        	  std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick;
       	  geiger_ctw_data_.get_list_of_geiger_ctw_per_clocktick(iclocktick_800, geiger_ctw_list_per_clocktick);

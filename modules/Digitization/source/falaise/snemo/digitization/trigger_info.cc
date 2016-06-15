@@ -29,6 +29,8 @@ namespace snemo {
     const std::size_t trigger_info::DATA_LMR_PATTERN_SIZE;
     const std::size_t trigger_info::DATA_NSZ_PATTERN_SIZE;
     const std::size_t trigger_info::DATA_FULL_BITSET_SIZE;
+    const std::size_t trigger_info::CALO_ZONING_PER_SIDE_BITSET_SIZE;
+    const std::size_t trigger_info::CALO_XT_INFO_BITSET_SIZE;
     
   } // end of namespace digitization
 

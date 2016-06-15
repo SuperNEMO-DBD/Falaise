@@ -343,10 +343,10 @@ int main( int  argc_ , char **argv_  )
 	      } // end of if has "calo" || "xcalo" || "gveto" || "gg" step hits
 
 		// Creation of outputs collection structures for calo and tracker
-	    std::vector<snemo::digitization::calo_trigger_algorithm_test_time::calo_summary_record> calo_collection_records;
-	    std::vector<snemo::digitization::coincidence_trigger_algorithm_test_time::coincidence_calo_record> coincidence_collection_calo_records;
-	    std::vector<snemo::digitization::tracker_trigger_algorithm_test_time::tracker_record>   tracker_collection_records;
-	    std::vector<snemo::digitization::coincidence_trigger_algorithm_test_time::coincidence_event_record> coincidence_collection_records;
+	    std::vector<snemo::digitization::trigger_structures::calo_summary_record> calo_collection_records;
+	    std::vector<snemo::digitization::trigger_structures::coincidence_calo_record> coincidence_collection_calo_records;
+	    std::vector<snemo::digitization::trigger_structures::tracker_record>   tracker_collection_records;
+	    std::vector<snemo::digitization::trigger_structures::coincidence_event_record> coincidence_collection_records;
 		
 	    // Reseting trigger display
 	    my_trigger_display.reset_matrix_pattern();

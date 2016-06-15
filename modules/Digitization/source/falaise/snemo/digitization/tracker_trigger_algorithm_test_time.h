@@ -12,10 +12,10 @@
 // This project :
 #include <snemo/digitization/geiger_ctw_data.h>
 #include <snemo/digitization/electronic_mapping.h>
-#include <snemo/digitization/mapping.h>
 #include <snemo/digitization/tracker_trigger_mem_maker.h>
 #include <snemo/digitization/trigger_display_manager.h>
 #include <snemo/digitization/trigger_info.h>
+#include <snemo/digitization/trigger_structures.h>
 #include <snemo/digitization/tracker_zone.h>
 #include <snemo/digitization/tracker_sliding_zone.h>
 
@@ -33,41 +33,6 @@ namespace snemo {
 		public : 
 			/// Trigger display manager is a friend because it can access to members for display
 		 	friend class trigger_display_manager;
-
-			struct tracker_record
-			{
-				enum bit_index{
-					FINALE_DATA_BIT_INNER   = 0,
-					FINALE_DATA_BIT_OUTER   = 1,
-					FINALE_DATA_BIT_RIGHT   = 2,
-					FINALE_DATA_BIT_MIDDLE  = 3,
-					FINALE_DATA_BIT_LEFT    = 4,
-					FINALE_DATA_BIT_NSZ_RIGHT = 5,
-					FINALE_DATA_BIT_NSZ_LEFT  = 6
-				};
-				
-				tracker_record();
-				void reset();
-				bool is_empty() const;
-				void display();
-				int32_t clocktick_1600ns;
-				std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
-				std::bitset<trigger_info::NZONES> zoning_word_pattern[trigger_info::NSIDES]; // not fill atm
-				std::bitset<trigger_info::NZONES> zoning_word_near_source[trigger_info::NSIDES]; // not fill atm
-				// ajout de choses (cf calo record -> symétrie)
-				bool single_side_coinc; // not fill atm
-				bool finale_decision;
-			};
-
-			struct geiger_matrix
-			{
-				geiger_matrix();
-				void reset();
-				bool is_empty() const;
-				void display() const;
-				int32_t clocktick_1600ns;				
-				bool matrix[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS];
-			};
 
 			/// Default constructor
 			tracker_trigger_algorithm_test_time();
@@ -119,7 +84,7 @@ namespace snemo {
 			void display_matrix() const;
 			
 			/// Get the Geiger matrix for a CT 1600 ns
-			const tracker_trigger_algorithm_test_time::geiger_matrix get_geiger_matrix_for_a_clocktick() const;
+			const trigger_structures::geiger_matrix get_geiger_matrix_for_a_clocktick() const;
 			
 			/// Reset the geiger cells matrix
 			void reset_matrix();
@@ -154,24 +119,24 @@ namespace snemo {
 			void build_near_source_pattern(tracker_zone & zone_);
 
 			/// Build tracker record for each clocktick
-			void build_tracker_record(tracker_trigger_algorithm_test_time::tracker_record & a_tracker_record_);
+			void build_tracker_record(trigger_structures::tracker_record & a_tracker_record_);
 
 			/// Print all tracker with zones boundaries
 			void print_zones(std::ostream & out_) const;
 			
 			/// General process
       void process(const std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick_,
-									 tracker_trigger_algorithm_test_time::tracker_record & a_tracker_record_);
+									 trigger_structures::tracker_record & a_tracker_record_);
 			
 		protected :
 
 			/// Process for a clocktick
 			void _process_for_a_clocktick(const std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick_,
-																		tracker_trigger_algorithm_test_time::tracker_record & a_tracker_record_);
+																		trigger_structures::tracker_record & a_tracker_record_);
 
 			/// Protected general process
 			void _process(const std::vector<datatools::handle<geiger_ctw> > geiger_ctw_list_per_clocktick_,
-										tracker_trigger_algorithm_test_time::tracker_record & a_tracker_record_);
+										trigger_structures::tracker_record & a_tracker_record_);
 
 		private :
 			
@@ -186,7 +151,7 @@ namespace snemo {
 			tracker_trigger_mem_maker::mem5_type _zone_vertical_for_horizontal_memory_;
 
 			// Data :
-			geiger_matrix _a_geiger_matrix_for_a_clocktick_;
+			trigger_structures::geiger_matrix _a_geiger_matrix_for_a_clocktick_;
 			tracker_zone _zones_[trigger_info::NSIDES][trigger_info::NZONES];
 			tracker_sliding_zone _sliding_zones_[trigger_info::NSIDES][trigger_info::NSLZONES];
 

@@ -109,7 +109,7 @@ namespace snemo {
 		{
 			std::size_t number_of_prompt_gg_signal = 0;
 			std::vector<datatools::handle<geiger_signal> >::const_iterator it_signal = _geiger_signals_.begin();
-			for (it_signal; it_signal != _geiger_signals_.end(); it_signal++)
+			for (; it_signal != _geiger_signals_.end(); it_signal++)
 				{
 					geiger_signal_handle_type a_gg_signal_handle = *it_signal;
 					geiger_signal a_gg_signal = a_gg_signal_handle.get();
@@ -127,7 +127,7 @@ namespace snemo {
 		{
 			std::size_t number_of_delayed_gg_signal = 0;
 			std::vector<datatools::handle<geiger_signal> >::const_iterator it_signal = _geiger_signals_.begin();
-			for (it_signal; it_signal != _geiger_signals_.end(); it_signal++)
+			for (; it_signal != _geiger_signals_.end(); it_signal++)
 				{
 					geiger_signal_handle_type a_gg_signal_handle = *it_signal;
 					geiger_signal a_gg_signal = a_gg_signal_handle.get();
@@ -159,7 +159,7 @@ namespace snemo {
 		{
 			std::size_t number_of_main_calo_signal = 0;
 			std::vector<datatools::handle<calo_signal> >::const_iterator it_signal = _calo_signals_.begin();
-			for (it_signal; it_signal != _calo_signals_.end(); it_signal++)
+			for (; it_signal != _calo_signals_.end(); it_signal++)
 				{
 					calo_signal_handle_type a_calo_signal_handle = *it_signal;
 					calo_signal a_calo_signal = a_calo_signal_handle.get();
@@ -178,7 +178,7 @@ namespace snemo {
 		{
 			std::size_t number_of_xcalo_signal = 0;
 			std::vector<datatools::handle<calo_signal> >::const_iterator it_signal = _calo_signals_.begin();
-			for (it_signal; it_signal != _calo_signals_.end(); it_signal++)
+			for (; it_signal != _calo_signals_.end(); it_signal++)
 				{
 					calo_signal_handle_type a_calo_signal_handle = *it_signal;
 					calo_signal a_calo_signal = a_calo_signal_handle.get();
@@ -198,7 +198,7 @@ namespace snemo {
 		{
 			std::size_t number_of_gveto_signal = 0;
 			std::vector<datatools::handle<calo_signal> >::const_iterator it_signal = _calo_signals_.begin();
-			for (it_signal; it_signal != _calo_signals_.end(); it_signal++)
+			for (; it_signal != _calo_signals_.end(); it_signal++)
 				{
 					calo_signal_handle_type a_calo_signal_handle = *it_signal;
 					calo_signal a_calo_signal = a_calo_signal_handle.get();

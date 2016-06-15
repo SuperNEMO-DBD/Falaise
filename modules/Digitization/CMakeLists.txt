@@ -30,8 +30,9 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
   source/falaise/snemo/digitization/clock_utils.h
   source/falaise/snemo/digitization/ID_convertor.h
   source/falaise/snemo/digitization/mapping.h
-  source/falaise/snemo/digitization/trigger_display_manager.h
+  source/falaise/snemo/digitization/trigger_structures.h
   source/falaise/snemo/digitization/trigger_info.h
+  source/falaise/snemo/digitization/trigger_display_manager.h
   source/falaise/snemo/digitization/tracker_zone.h
   source/falaise/snemo/digitization/tracker_sliding_zone.h
 
@@ -122,8 +123,9 @@ list(APPEND FalaiseDigitizationPlugin_SOURCES
 
   source/falaise/snemo/digitization/tracker_sliding_zone.cc
   source/falaise/snemo/digitization/tracker_zone.cc
-  source/falaise/snemo/digitization/trigger_info.cc
   source/falaise/snemo/digitization/trigger_display_manager.cc
+  source/falaise/snemo/digitization/trigger_info.cc
+  source/falaise/snemo/digitization/trigger_structures.cc
   source/falaise/snemo/digitization/electronic_mapping.cc
   source/falaise/snemo/digitization/clock_utils.cc
   source/falaise/snemo/digitization/ID_convertor.cc

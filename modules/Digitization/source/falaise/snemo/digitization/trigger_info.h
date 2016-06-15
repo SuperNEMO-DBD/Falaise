@@ -41,6 +41,9 @@ namespace snemo {
       static const std::size_t DATA_LMR_PATTERN_SIZE = 3;
       static const std::size_t DATA_NSZ_PATTERN_SIZE = 2;
 			static const std::size_t DATA_FULL_BITSET_SIZE = 7;
+			
+			static const std::size_t CALO_ZONING_PER_SIDE_BITSET_SIZE = 10;
+			static const std::size_t CALO_XT_INFO_BITSET_SIZE = 3;
 
 		};
 	

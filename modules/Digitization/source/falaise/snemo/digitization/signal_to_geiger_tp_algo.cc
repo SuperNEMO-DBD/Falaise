@@ -74,7 +74,7 @@ namespace snemo {
       DT_THROW_IF(!is_initialized(), std::logic_error, "SD to geiger tp algorithm is not initialized, it can't be reset ! ");
       _initialized_ = false;
       _electronic_mapping_ = 0;
-      _clocktick_ref_ = -1;
+      _clocktick_ref_ = clock_utils::INVALID_CLOCKTICK;
       return;
     }
 

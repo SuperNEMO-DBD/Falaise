@@ -16,10 +16,8 @@
 // This project :
 #include <snemo/digitization/calo_ctw_data.h>
 #include <snemo/digitization/calo_ctw_constants.h>
-#include <snemo/digitization/electronic_mapping.h>
-#include <snemo/digitization/mapping.h>
 #include <snemo/digitization/trigger_display_manager.h>
-#include <snemo/digitization/trigger_info.h>
+#include <snemo/digitization/trigger_structures.h>
 
 namespace datatools {
   class properties;
@@ -36,46 +34,6 @@ namespace snemo {
 			
 			/// Trigger display manager is a friend because it can access to members for display
 			friend class trigger_display_manager;
-			
-			/// Level one zoning size of a bitset for a zone
-			static const int32_t LEVEL_ONE_MULT_BITSET_SIZE = 2;
-
-			/// Size of the zoning bitset for a side of the calorimeter
-			static const int32_t ZONING_PER_SIDE_BITSET_SIZE = 10;
-			
-			/// Size of the zoning bitset for gamma veto
-			static const int32_t ZONING_GVETO_BITSET_SIZE = 4;
-
-			/// Size of the information bitset containing XT bit and spare bits (up to 4)
-			static const int32_t XT_INFO_BITSET_SIZE = 3;
-
-			struct calo_record
-			{
-				calo_record();
-				void reset();
-			  void display() const;
-				int32_t clocktick_25ns;
-				std::bitset<trigger_info::NZONES> zoning_word[trigger_info::NSIDES];
-				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_0;
-				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_1;
-				bool LTO_side_0;
-				bool LTO_side_1;
-				std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_gveto;
-				bool LTO_gveto;
-				std::bitset<XT_INFO_BITSET_SIZE> xt_info_bitset;
-			};
-			
-			struct calo_summary_record : public calo_record
-			{
-				calo_summary_record();
-				void reset();
-				void reset_summary_boolean_only();
-				void display() const;
-				bool is_empty() const;
-				bool single_side_coinc;
-				bool total_multiplicity_threshold;
-				bool calo_finale_decision;
-			};
 			
 			enum side_id_index {
 				SIDE_0_INDEX = 0,
@@ -132,9 +90,6 @@ namespace snemo {
       /// Destructor
       virtual ~calo_trigger_algorithm_test_time();
 
-      /// Set the electronic mapping object
-      void set_electronic_mapping(const electronic_mapping & my_electronic_mapping_);
-
 			/// Check if circular buffer depth is set
 			bool has_circular_buffer_depth() const;
 
@@ -187,11 +142,11 @@ namespace snemo {
 			bool get_calo_decision() const; 
 
 			/// Get the level 1 finale decision structure
-			const calo_trigger_algorithm_test_time::calo_summary_record get_calo_level_1_finale_decision_structure() const;  
+			const trigger_structures::calo_summary_record get_calo_level_1_finale_decision_structure() const;  
 			
 			/// General process
       void process(const calo_ctw_data & calo_ctw_data_,
-									 std::vector<calo_trigger_algorithm_test_time::calo_summary_record> & calo_records_);
+									 std::vector<trigger_structures::calo_summary_record> & calo_records_);
 
 		protected :
 		 
@@ -199,28 +154,27 @@ namespace snemo {
 			void _build_calo_record_per_clocktick(const calo_ctw & my_calo_ctw_);
 
 			/// Build summary calo trigger structure
-			void _build_calo_record_summary_structure(calo_summary_record & my_calo_summary_record_);
+			void _build_calo_record_summary_structure(trigger_structures::calo_summary_record & my_calo_summary_record_);
 
 			/// Compute the trigger finale decision
-			void _compute_calo_finale_decision(calo_summary_record & my_calo_summary_record_);
+			void _compute_calo_finale_decision(trigger_structures::calo_summary_record & my_calo_summary_record_);
 
 			/// Protected general process
 			void _process(const calo_ctw_data & calo_ctw_data_,
-										std::vector<calo_trigger_algorithm_test_time::calo_summary_record> & calo_records_);
+										std::vector<trigger_structures::calo_summary_record> & calo_records_);
 
 			/// Display the level one calo trigger info (bitsets)
 			void _display_calo_info_for_a_clocktick();
 	
 			/// Display the level one calo trigger info and internal working data (bitsets)
-			void _display_calo_summary(calo_summary_record & my_calo_summary_record_);
+			void _display_calo_summary(trigger_structures::calo_summary_record & my_calo_summary_record_);
 
     private :
 
-			typedef boost::circular_buffer<calo_record> buffer_type;
+			typedef boost::circular_buffer<trigger_structures::calo_record> buffer_type;
 
       // Configuration :
       bool _initialized_; //!< Initialization flag
-      const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
 			bool _inhibit_both_side_coinc_;
 			bool _inhibit_single_side_coinc_;
 			std::bitset<calo::ctw::HTM_BITSET_SIZE> _total_multiplicity_threshold_;
@@ -229,11 +183,11 @@ namespace snemo {
 
       // Data :	 
 
-			calo_record _calo_record_per_clocktick_; //!< Trigger record structure for built for each clocktick
+			trigger_structures::calo_record _calo_record_per_clocktick_; //!< Trigger record structure for built for each clocktick
 
 			boost::scoped_ptr<buffer_type> _gate_circular_buffer_; //!< Scoped pointer to a circular buffer containing output data structure
  
-			calo_summary_record _calo_level_1_finale_decision_; //!< Structure representing the finale decision for level 1 calorimeter
+			trigger_structures::calo_summary_record _calo_level_1_finale_decision_; //!< Structure representing the finale decision for level 1 calorimeter
 			
 			bool _calo_finale_decision_; //!< Calo finale decision for an event
 			

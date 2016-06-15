@@ -5,6 +5,8 @@
 // Ourselves:
 #include <snemo/digitization/calo_trigger_algorithm.h>
 #include <snemo/digitization/calo_ctw.h>
+#include <snemo/digitization/clock_utils.h>
+
 
 namespace snemo {
   
@@ -24,7 +26,7 @@ namespace snemo {
         
     void calo_trigger_algorithm::calo_record::reset()
     {
-      clocktick_25ns = -1;
+      clocktick_25ns = clock_utils::INVALID_CLOCKTICK;
       for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
 	{
 	  zoning_word[iside].reset();

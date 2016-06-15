@@ -70,7 +70,7 @@ namespace snemo {
     void coincidence_trigger_algorithm::coincidence_calo_record::reset()
     {
       coincidence_base_record::reset();
-      clocktick_1600ns = -1;
+      clocktick_1600ns = clock_utils::INVALID_CLOCKTICK;
       return;
     }
     
@@ -94,7 +94,7 @@ namespace snemo {
     void coincidence_trigger_algorithm::coincidence_event_record::reset()
     {
       coincidence_base_record::reset();
-      clocktick_1600ns = -1;
+      clocktick_1600ns = clock_utils::INVALID_CLOCKTICK;
       trigger_mode = INVALID;
       zoning_word[0].reset();
       zoning_word[1].reset();
@@ -142,7 +142,7 @@ namespace snemo {
     void coincidence_trigger_algorithm::L2_coincidence_decision::reset()
     {
       L2_coincidence_decision_bool = false;
-      L2_clocktick_decision = -1;
+      L2_clocktick_decision = clock_utils::INVALID_CLOCKTICK;
       trigger_mode = INVALID;
       return;
     }
@@ -165,7 +165,7 @@ namespace snemo {
     void coincidence_trigger_algorithm::previous_event_record::reset()
     {
       coincidence_base_record::reset();
-      previous_clocktick_1600ns = -1;
+      previous_clocktick_1600ns = clock_utils::INVALID_CLOCKTICK;
       counter_1600ns = 0;
       for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++) 
 	{
@@ -582,7 +582,7 @@ namespace snemo {
 	    }
 	}
 
-      int32_t last_clocktick = -1;
+      int32_t last_clocktick = clock_utils::INVALID_CLOCKTICK;
       // Create a new pair if there is only tracker for example :
       if (_pair_records_.size() != 0)
 	{
@@ -594,7 +594,7 @@ namespace snemo {
       for (; it_tracker != tracker_records_.end(); it_tracker++)
 	{
 	  tracker_trigger_algorithm::tracker_record a_tracker_record = *it_tracker;
-	  if (last_clocktick == -1 || a_tracker_record.clocktick_1600ns > last_clocktick)
+	  if (last_clocktick == clock_utils::INVALID_CLOCKTICK || a_tracker_record.clocktick_1600ns > last_clocktick)
 	    {
 	      std::pair<coincidence_trigger_algorithm::coincidence_calo_record,tracker_trigger_algorithm::tracker_record> a_new_pair;	 
 	      a_new_pair.second = a_tracker_record;
