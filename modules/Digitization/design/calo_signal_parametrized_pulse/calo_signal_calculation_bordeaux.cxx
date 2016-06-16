@@ -93,9 +93,12 @@ void electron_1000keV()
   double gauss1_sigma    = 2.46067;
   
   // Second gaussian :
-  double gauss2_constant = -0.299236;
-  double gauss2_mean     = 82.5765;
-  double gauss2_sigma    = 4.3108;
+  // double gauss2_constant = -0.299236; // Value by Arnaud
+  // double gauss2_mean     = 82.5765; // Value by Arnaud
+  // double gauss2_sigma    = 4.3108; // Value by Arnaud
+  double gauss2_constant = -0.298;
+  double gauss2_mean     = 82.65;
+  double gauss2_sigma    = 4.310;
   
   // Exponential :
   double expo_constant    = 0.000271238;
@@ -103,7 +106,7 @@ void electron_1000keV()
   double expo_tau         = 10.0078;
 
   // The value x is in nanoseconds :
-  double x = -1;
+  double x = -1.0000;
   
   // The result value y=f(x)=.... is in volts
   double result = -1;
@@ -111,7 +114,7 @@ void electron_1000keV()
   std::ofstream fichier("calo_signal_electron_1000keV.out", std::ios::out | std::ios::trunc);  
   if(fichier)
     {
-      for (x = 0; x <= 200; x+=0.01)
+      for (x = 0.0000; x <= 200.0000; x+=0.01)
 	{
       
 	  if (x >= 0 && x <= borne_1)
@@ -195,6 +198,63 @@ void electron_1300keV()
   return;
 }
 
+void test_one_pulse()
+{
+  // Test one pulse electron : 
+  double borne_1 = 83.1804;
+  double borne_2 = 87.1804;
+
+  // First gaussian :  
+  double gauss1_constant = -0.071138;
+  double gauss1_mean     = 83.4289;
+  double gauss1_sigma    = 2.73186;
+  
+  // Second gaussian :
+  double gauss2_constant = -0.0997882;
+  double gauss2_mean     = 84.5289;
+  double gauss2_sigma    = 4.52886;
+  
+  // Exponential :
+  double expo_constant    = 0.000181862;
+  double expo_translation = 153.082;
+  double expo_tau         = 10.0671;
+
+  // The value x is in nanoseconds :
+  double x = -1;
+  
+  // The result value y=f(x)=.... is in volts
+  double result = -1;
+
+  std::ofstream fichier("calo_signal_test_one_pulse.out", std::ios::out | std::ios::trunc);  
+  if(fichier)
+    {
+      for (x = 0; x <= 200; x+=0.01)
+	{
+      
+	  if (x >= 0 && x <= borne_1)
+	    {
+	      result = (gauss1_constant) *  std::exp(-(std::pow((x-gauss1_mean),2))/(2 * gauss1_sigma * gauss1_sigma));
+	    }
+	  else if (x > borne_1 && x <= borne_2)
+	    {
+	      result = (gauss2_constant) * std::exp(-(std::pow((x-gauss2_mean),2))/(2 * gauss2_sigma * gauss2_sigma));
+	    }
+	  else if (x > borne_2)
+	    {
+	      result = - (expo_constant * std::exp((-(x - expo_translation))/ expo_tau));	      
+	    }
+ 
+	  fichier << x << " " << result << std::endl;
+
+	}
+      fichier.close();
+    }
+  
+  else  std::cerr << "Erreur à l'ouverture !" << std::endl;
+
+  return;
+
+}
 
 int main(int  argc_ , char ** argv_)
 {
@@ -207,5 +267,7 @@ int main(int  argc_ , char ** argv_)
   electron_700keV();
   electron_1000keV();
   electron_1300keV();
+  test_one_pulse();
+  
   return 0;
 }
