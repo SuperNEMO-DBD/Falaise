@@ -73,7 +73,7 @@ namespace CAT {
     planes_per_block.at(0) = 9;
     num_cells_per_plane    = 113;
     cell_size              = 44.0  * CLHEP::mm;
-    bfield                 = 0.0025;
+    bfield                 = 0.0025; // Tesla
     xsize                  = 2500. * CLHEP::mm; // this is y in SnWare coordinates
     ysize                  = 1350. * CLHEP::mm; // this is z in SnWare coordinates
     zsize                  = 450. * CLHEP::mm; // this is x in SnWare coordinates
@@ -379,7 +379,7 @@ namespace CAT {
           }
         mids[cell_id] = true;
       }
-  
+
     // Duplicate test for now :
     std::vector<bool> ids;
     ids.assign (cells.size (), false);
