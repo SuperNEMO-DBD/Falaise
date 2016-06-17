@@ -588,9 +588,6 @@ falaise::exit_code do_flreconstruct(int argc, char *argv[]) {
   }
 
   falaise::exit_code ret = do_pipeline(clArgs);
-
-  falaise::variance_service::instance().stop();
-
   return ret;
 }
 
