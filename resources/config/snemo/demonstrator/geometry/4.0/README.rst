@@ -101,7 +101,7 @@ Display the geometry
           --datatools::logging="trace" \
           --datatools::resource-path="falaise@$(pwd)/BuildProducts/share/Falaise-2.1.0/resources" \
           --load-dll Falaise \
-          --datatools::variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/variance.conf" \
+          --datatools::variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/repository.conf" \
           --datatools::variant-qt-gui \
 	  --datatools::variant-store "myprofile.conf" \
           --manager-config "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf"
@@ -126,7 +126,7 @@ Display the geometry
           --datatools::logging "warning" \
           --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-2.1.0/resources" \
           --load-dll Falaise \
-          --datatools::variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/variance.conf" \
+          --datatools::variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/repository.conf" \
  	  --datatools::variant-load "myprofile.conf" \
           --manager-config "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf"
 
@@ -136,7 +136,7 @@ Display the geometry
           --datatools::logging "warning" \
           --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-2.1.0/resources" \
           --load-dll Falaise \
-          --datatools::variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/variance.conf" \
+          --datatools::variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/repository.conf" \
           --datatools::variant-set "geometry:layout=HalfCommissioning" \
           --datatools::variant-set "magnetic_field:active=0" \
           --manager-config "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf"

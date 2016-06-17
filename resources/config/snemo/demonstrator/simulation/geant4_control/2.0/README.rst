@@ -52,7 +52,7 @@ Run from the Falaise build directory:
      --datatools::logging "warning" \
      --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-2.1.0/resources" \
      --load-dll Falaise \
-     --datatools::variant-config "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.0/variants/variance.conf" \
+     --datatools::variant-config "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.0/variants/repository.conf" \
      --datatools::variant-qt-gui \
      --datatools::variant-store "cfg1.conf" \
      --logging-priority "debug" \
@@ -82,7 +82,7 @@ Run from the Falaise build directory:
      --datatools::logging "warning" \
      --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-2.1.0/resources" \
      --load-dll Falaise \
-     --datatools::variant-config "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.0/variants/variance.conf" \
+     --datatools::variant-config "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.0/variants/repository.conf" \
      --datatools::variant-qt-gui \
      --datatools::variant-store "cfg1.conf" \
      --logging-priority "debug" \

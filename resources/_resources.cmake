@@ -128,7 +128,7 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/variants/
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/variants/models/source_betabeta.def
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/variants/models/demonstrator.def
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/variants/models/source_calibration.def
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/variants/variance.conf
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/variants/repository.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/geometry_service.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/README.rst
@@ -199,8 +199,8 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_cont
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/processes/em.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/variants/registries/simulation.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/variants/models/simulation.def
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/variants/variance.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/variants/profiles/default.profile
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/variants/repository.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/sensitive/tracker.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/sensitive/gveto.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.0/sensitive/xcalorimeter.conf
@@ -239,7 +239,7 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/1.
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/1.0/source_vg.lis
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.0/variants/registries/commissioning_source.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.0/variants/models/commissioning_source.def
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.0/variants/variance.conf
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.0/variants/repository.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.0/manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.0/generators/commissioning_vg.lis
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.0/generators/scin_vg.lis

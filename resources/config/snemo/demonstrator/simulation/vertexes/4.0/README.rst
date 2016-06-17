@@ -49,7 +49,7 @@ From  Falaise build  directory (this  is preliminary),  run:
      --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-2.1.0/resources" \
      --geometry-manager         "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf" \
      --vertex-generator-manager "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/manager.conf" \
-     --datatools::variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/variance.conf" \
+     --datatools::variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/repository.conf" \
      --datatools::variant-qt-gui \
      --list
 
@@ -69,10 +69,10 @@ Run from the Falaise build directory (preliminary):
      --vertex-generator-manager "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/manager.conf" \
      --shoot \
      --prng-seed 314159 \
-     --number-of-vertices 10000 \
-     --vertex-modulo 500 \
+     --number-of-vertices 1000 \
+     --vertex-modulo 100 \
      --output-file "vertices.txt" \
-     --datatools::variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/variance.conf" \
+     --datatools::variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/repository.conf" \
      --datatools::variant-qt-gui \
      --datatools::variant-store "profile.conf" \
      --vertex-generator "source_pads_bulk" \
@@ -88,7 +88,7 @@ Run from the Falaise build directory (preliminary):
      --load-dll Falaise \
      --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-2.1.0/resources" \
      --manager-config           "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf" \
-     --datatools::variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/variance.conf" \
+     --datatools::variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/repository.conf" \
      --datatools::variant-load "profile.conf"
    geomtools> ldd vtx vertices-visu-dd.data.gz
    geomtools> G --with-category source_submodule
@@ -114,7 +114,7 @@ Vertex generator from calibration source with basic layout:
      --prng-seed 314159 \
      --number-of-vertices 10000 \
      --vertex-modulo 500 \
-     --datatools::variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/variance.conf" \
+     --datatools::variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/repository.conf" \
      --datatools::variant-set "geometry:layout=Basic" \
      --datatools::variant-set "geometry:layout/if_basic/source_calibration=true" \
      --datatools::variant-qt-gui \
@@ -134,7 +134,7 @@ Vertex generator from calibration source with basic layout:
      --load-dll Falaise \
      --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-2.1.0/resources" \
      --manager-config           "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf" \
-     --datatools::variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/variance.conf" \
+     --datatools::variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/repository.conf" \
      --datatools::variant-load "calib_profile.rep"
    geomtools> ldd vtx calib_vertices-visu-dd.data.gz
    geomtools> G --with-category source_submodule
@@ -152,7 +152,7 @@ Vertex generator with half-commissioning layout:
      --logging "warning" \
      --load-dll Falaise \
      --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-2.1.0/resources" \
-     --datatools::variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/variance.conf" \
+     --datatools::variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/repository.conf" \
      --datatools::variant-set "geometry:layout=HalfCommissioning" \
      --datatools::variant-set "vertexes.commissioning:type=SingleSlot" \
      --datatools::variant-set "vertexes.commissioning:type/if_single_slot/column=48" \
@@ -186,7 +186,7 @@ Other available generator in half-commissioning layout:
      --load-dll Falaise \
      --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-2.1.0/resources" \
      --manager-config           "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf" \
-     --datatools::variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/variance.conf" \
+     --datatools::variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/repository.conf" \
      --datatools::variant-load "hc_profile.rep"
    geomtools> ldd vtx hc_vertices-visu-dd.data.gz
    geomtools> G --with-category commissioning_source_plane
