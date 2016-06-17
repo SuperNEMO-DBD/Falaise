@@ -80,9 +80,10 @@ namespace {
 struct FLReconstructArgs {
   // Application specific parameters:
   datatools::logger::priority logLevel; //!< Logging priority threshold
-  std::string inputFile;                //!< Input data file for the input module
-  std::string outputFile;               //!< Output data file for the output module
-  std::string pipelineScript;           //!< Main configuration file for the pipeline
+  unsigned int moduloEvents;            //!< Number of events progress modulo
+  std::string  inputFile;               //!< Input data file for the input module
+  std::string  outputFile;              //!< Output data file for the output module
+  std::string  pipelineScript;          //!< Main configuration file for the pipeline
   // Variants support:
   dtc::variant_service::config variants; //!< Variants configuration
 };
@@ -239,21 +240,33 @@ FLDialogState do_cldialog(int argc, char *argv[], FLReconstructArgs& args) {
   optDesc.add_options()
     ("help,h","print this help message")
     ("help-module-list","list available modules and exit")
-    ("help-module", bpo::value<std::string>()->value_name("[mod]"),
+    ("help-module", bpo::value<std::string>()
+     ->value_name("[mod]"),
      "print help for a single module and exit")
     ("help-pipeline-list","list available pipeline configurations and exit")
     ("version","print version number")
     ("verbose,v",
-     bpo::value<datatools::logger::priority>(&args.logLevel)->default_value(datatools::logger::PRIO_FATAL)->value_name("[level]"),
+     bpo::value<datatools::logger::priority>(&args.logLevel)
+     ->default_value(datatools::logger::PRIO_FATAL)
+     ->value_name("[level]"),
      "set verbosity level of logging")
+    ("modulo,m",
+     bpo::value<uint32_t>(&args.moduloEvents)
+     ->default_value(0)
+     ->value_name("[period]"),
+     "progress modulo on number of events")
     ("input-file,i",
-     bpo::value<std::string>(&args.inputFile)->required()->value_name("[file]"),
+     bpo::value<std::string>(&args.inputFile)
+     ->required()
+     ->value_name("[file]"),
      "file from which to read data")
     ("output-file,o",
-     bpo::value<std::string>(&args.outputFile)->value_name("[file]"),
+     bpo::value<std::string>(&args.outputFile)
+     ->value_name("[file]"),
      "file to which to write data")
     ("pipeline,p",
-     bpo::value<std::string>(&args.pipelineScript)->value_name("[file]"),
+     bpo::value<std::string>(&args.pipelineScript)
+     ->value_name("[file]"),
      "run pipeline script or resource")
     ;
   bpo::positional_options_description posOptDesc;
@@ -262,7 +275,7 @@ FLDialogState do_cldialog(int argc, char *argv[], FLReconstructArgs& args) {
   // Variant service options:
   bpo::options_description optVariants("Variants support");
   uint32_t variant_service_flags = 0;
-  variant_service_flags |= dtc::variant_service::NO_CONFIG_FILENAME;
+  // variant_service_flags |= dtc::variant_service::NO_CONFIG_FILENAME;
   variant_service_flags |= dtc::variant_service::NO_TUI;
   dtc::variant_service::init_options(optVariants,
                                      args.variants,
@@ -521,6 +534,7 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
   DT_LOG_TRACE(clArgs.logLevel,"begin event loop");
 
   datatools::things workItem;
+  std::size_t eventCounter = 0;
   while (true) {
     // Prepare and read work
     workItem.clear();
@@ -554,6 +568,12 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
         break;
       }
     }
+    if (clArgs.moduloEvents > 0) {
+      if (eventCounter % clArgs.moduloEvents == 0) {
+        DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Event #" << eventCounter);
+      }
+    }
+    eventCounter++;
   }
   DT_LOG_TRACE(clArgs.logLevel,"event loop completed");
 
