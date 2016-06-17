@@ -28,7 +28,11 @@ find_package(Boost 1.55 REQUIRED program_options)
 #-----------------------------------------------------------------------
 # Compile/Link App
 #
-add_executable(flreconstruct flreconstructmain.cc)
+add_executable(flreconstruct
+  flreconstructmain.cc
+  FLReconstructResources.h
+  FLReconstructResources.cc
+)
 target_include_directories(flreconstruct PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}

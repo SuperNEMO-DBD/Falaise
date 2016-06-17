@@ -18,6 +18,8 @@
 //
 // Copyright (c) 2013-2014 by Ben Morgan <bmorgan.warwick@gmail.com>
 // Copyright (c) 2013-2014 by The University of Warwick
+// Copyright (c) 2016 by François Mauger <mauger@lpccaen.in2p3.fr>
+// Copyright (c) 2016 by Université de Caen Normandie
 //
 // This file is part of Falaise.
 //
@@ -43,11 +45,13 @@
 #include "bayeux/datatools/exception.h"
 #include "bayeux/datatools/library_loader.h"
 #include "bayeux/datatools/service_manager.h"
+#include "bayeux/datatools/configuration/variant_service.h"
 #include "bayeux/dpp/module_manager.h"
 #include "bayeux/dpp/base_module.h"
 #include "bayeux/dpp/input_module.h"
 #include "bayeux/dpp/output_module.h"
 #include "bayeux/geomtools/manager.h"
+namespace dtc = datatools::configuration;
 
 // - Boost
 #include "boost/program_options.hpp"
@@ -62,6 +66,8 @@
 #include "falaise/version.h"
 #include "falaise/exitcodes.h"
 #include "falaise/resource.h"
+#include "falaise/variance_service.h"
+#include "FLReconstructResources.h"
 
 //----------------------------------------------------------------------
 // IMPLEMENTATION DETAILS
@@ -70,11 +76,15 @@ namespace {
   namespace bpo = boost::program_options;
 }
 
+//! Collect all needed configuration parameters in one data structure
 struct FLReconstructArgs {
-  datatools::logger::priority logLevel;
-  std::string inputFile;
-  std::string outputFile;
-  std::string pipelineScript;
+  // Application specific parameters:
+  datatools::logger::priority logLevel; //!< Logging priority threshold
+  std::string inputFile;                //!< Input data file for the input module
+  std::string outputFile;               //!< Output data file for the output module
+  std::string pipelineScript;           //!< Main configuration file for the pipeline
+  // Variants support:
+  dtc::variant_service::config variants; //!< Variants configuration
 };
 
 enum FLDialogState {
@@ -88,12 +98,12 @@ void do_version(std::ostream& os, bool isVerbose) {
   os << "flreconstruct " << falaise::version::get_version() << "\n";
   if (isVerbose) {
     os << "\n"
-        << "Copyright (C) 2013-2016 SuperNEMO Collaboration\n\n"
-        << "flreconstruct uses the following external libraries:\n"
-        << "* Falaise : " << falaise::version::get_version() << "\n"
-        << "* Bayeux  : " << bayeux::version::get_version() << "\n"
-        << "* Boost   : " << BOOST_VERSION << "\n"
-        << "\n\n";
+       << "Copyright (C) 2013-2016 SuperNEMO Collaboration\n\n"
+       << "flreconstruct uses the following external libraries:\n"
+       << "* Falaise : " << falaise::version::get_version() << "\n"
+       << "* Bayeux  : " << bayeux::version::get_version() << "\n"
+       << "* Boost   : " << BOOST_VERSION << "\n"
+       << "\n\n";
   }
 }
 
@@ -102,7 +112,6 @@ void do_help(std::ostream& os, const bpo::options_description& od) {
   do_version(os, false);
   os << "Usage:\n"
      << "  flreconstruct [options]\n"
-     << "Options\n"
      << od
      << "\n";
 }
@@ -166,7 +175,7 @@ void do_help_module(std::ostream& os, std::string module) {
   }
 
   const datatools::object_configuration_description& moduleDoc
-      = ocd_system_reg.get(module);
+    = ocd_system_reg.get(module);
   moduleDoc.print(os);
 }
 
@@ -194,65 +203,90 @@ void do_help_pipeline_list(std::ostream& os) {
 // TODO : refactor operator>> into datatools, though can't do this
 // for validator (bpo dependency not wanted)
 namespace datatools {
-std::istream& operator>>(std::istream& in, datatools::logger::priority& p) {
-  std::string s;
-  in >> s;
-  p = datatools::logger::get_priority(s);
-  return in;
-}
-
-//! validate logging argument
-void validate(boost::any& v,
-              std::vector<std::string> const& values,
-              datatools::logger::priority* /*target_type*/,
-              int) {
-  // Make sure no previous assignment to v was made
-  bpo::validators::check_first_occurrence(v);
-
-  // Extract first string from values, If there is more than one string
-  // it's an error and an exception will be thrown
-  std::string const& s = bpo::validators::get_single_string(values);
-  datatools::logger::priority p = datatools::logger::get_priority(s);
-  if(p != datatools::logger::PRIO_UNDEFINED) {
-    v = boost::any(p);
-  } else {
-    throw bpo::validation_error(bpo::validation_error::invalid_option_value);
+  std::istream& operator>>(std::istream& in, datatools::logger::priority& p) {
+    std::string s;
+    in >> s;
+    p = datatools::logger::get_priority(s);
+    return in;
   }
-}
+
+  //! validate logging argument
+  void validate(boost::any& v,
+                std::vector<std::string> const& values,
+                datatools::logger::priority* /*target_type*/,
+                int) {
+    // Make sure no previous assignment to v was made
+    bpo::validators::check_first_occurrence(v);
+
+    // Extract first string from values, If there is more than one string
+    // it's an error and an exception will be thrown
+    std::string const& s = bpo::validators::get_single_string(values);
+    datatools::logger::priority p = datatools::logger::get_priority(s);
+    if(p != datatools::logger::PRIO_UNDEFINED) {
+      v = boost::any(p);
+    } else {
+      throw bpo::validation_error(bpo::validation_error::invalid_option_value);
+    }
+  }
 }
 
 FLDialogState do_cldialog(int argc, char *argv[], FLReconstructArgs& args) {
   // Bind command line parser to exposed parameters
   namespace bpo = boost::program_options;
-  bpo::options_description optDesc;
+
+  // Application specific options:
+  bpo::options_description optDesc("Options");
   optDesc.add_options()
-      ("help,h","print this help message")
-      ("help-module-list","list available modules and exit")
-      ("help-module", bpo::value<std::string>()->value_name("[mod]"),
-       "print help for a single module and exit")
-      ("help-pipeline-list","list available pipeline configurations and exit")
-      ("version","print version number")
-      ("verbose,v",
-       bpo::value<datatools::logger::priority>(&args.logLevel)->default_value(datatools::logger::PRIO_FATAL)->value_name("[level]"),
-       "set verbosity level of logging")
-      ("input-file,i",
-       bpo::value<std::string>(&args.inputFile)->required()->value_name("[file]"),
-       "file from which to read data")
-      ("output-file,o",
-       bpo::value<std::string>(&args.outputFile)->value_name("[file]"),
-       "file to which to write data")
-      ("pipeline,p",
-       bpo::value<std::string>(&args.pipelineScript)->value_name("[file]"),
-       "run pipeline script or resource")
-      ;
+    ("help,h","print this help message")
+    ("help-module-list","list available modules and exit")
+    ("help-module", bpo::value<std::string>()->value_name("[mod]"),
+     "print help for a single module and exit")
+    ("help-pipeline-list","list available pipeline configurations and exit")
+    ("version","print version number")
+    ("verbose,v",
+     bpo::value<datatools::logger::priority>(&args.logLevel)->default_value(datatools::logger::PRIO_FATAL)->value_name("[level]"),
+     "set verbosity level of logging")
+    ("input-file,i",
+     bpo::value<std::string>(&args.inputFile)->required()->value_name("[file]"),
+     "file from which to read data")
+    ("output-file,o",
+     bpo::value<std::string>(&args.outputFile)->value_name("[file]"),
+     "file to which to write data")
+    ("pipeline,p",
+     bpo::value<std::string>(&args.pipelineScript)->value_name("[file]"),
+     "run pipeline script or resource")
+    ;
   bpo::positional_options_description posOptDesc;
   posOptDesc.add("input-file",-1);
+
+  // Variant service options:
+  bpo::options_description optVariants("Variants support");
+  uint32_t variant_service_flags = 0;
+  variant_service_flags |= dtc::variant_service::NO_CONFIG_FILENAME;
+  variant_service_flags |= dtc::variant_service::NO_TUI;
+  dtc::variant_service::init_options(optVariants,
+                                     args.variants,
+                                     variant_service_flags);
+
+  // Public options:
+  bpo::options_description optPublic;
+  optPublic.add(optDesc).add(optVariants);
+
+  // Hidden options:
+  bpo::options_description optHidden;
+  optHidden.add_options()
+    ("trace", "trace logging")
+    ;
+
+  // All options:
+  bpo::options_description optAll;
+  optAll.add(optPublic).add(optHidden);
 
   // - Store first, handling parse errors
   bpo::variables_map vMap;
   try {
     bpo::store(bpo::command_line_parser(argc,argv)
-               .options(optDesc)
+               .options(optAll)
                .positional(posOptDesc)
                .run(),
                vMap);
@@ -261,9 +295,14 @@ FLDialogState do_cldialog(int argc, char *argv[], FLReconstructArgs& args) {
     return DIALOG_ERROR;
   }
 
+  // Handle trace logging (for debugging)
+  if (vMap.count("trace")) {
+    args.logLevel = datatools::logger::PRIO_TRACE;
+  }
+
   // Handle messaging if requested
   if (vMap.count("help")) {
-    do_help(std::cout, optDesc);
+    do_help(std::cout, optPublic);
     return DIALOG_QUERY;
   }
 
@@ -292,6 +331,27 @@ FLDialogState do_cldialog(int argc, char *argv[], FLReconstructArgs& args) {
     bpo::notify(vMap);
   } catch (boost::program_options::error& e) {
     do_error(std::cerr, e.what());
+    return DIALOG_ERROR;
+  }
+
+  // Handle the experiment:
+  std::string experiment_label = "demonstrator";
+  try {
+    args.variants.config_filename = FLReconstruct::getVariantsConfigFile(experiment_label);
+    if (args.variants.profile_load == "__default__") {
+      args.variants.profile_load = FLReconstruct::getVariantsDefaultProfile(experiment_label);
+      if (datatools::logger::is_information(args.logLevel)) {
+        std::clog << "[information]: " << "Loading default variant profile '"
+                  << args.variants.profile_load << "'..." << std::endl;
+      }
+    }
+    if (args.pipelineScript == "__default__") {
+      args.pipelineScript = FLReconstruct::getPipelineDefaultControlFile(experiment_label);
+    }
+  } catch (FLReconstruct::UnknownResourceException& e) {
+    std::cerr << "[FLReconstruct::UnknownResourceException] "
+              << e.what()
+              << std::endl;
     return DIALOG_ERROR;
   }
 
@@ -328,6 +388,24 @@ void do_start_services(datatools::multi_properties& iData,
 
 //! Configure and run the pipeline
 falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
+
+  // Variants support:
+  dtc::variant_service vserv;
+  try {
+    if (clArgs.variants.is_active()) {
+      vserv.configure(clArgs.variants);
+      // Start and lock the variant service:
+      vserv.start();
+      // From this point, all other services and/or processing modules can benefit
+      // of the variant service during their configuration steps.
+    }
+  } catch (std::exception& e) {
+    std::cerr << "[datatools::configuration::variant_service::variant_exception] "
+              << e.what()
+              << std::endl;
+    return falaise::EXIT_UNAVAILABLE;
+  }
+
   // Need a service manager
   datatools::service_manager flrServices;
 
@@ -365,6 +443,7 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
       // upcoming instantiation of library loader will handle
       // any syntax errors in the properties
     }
+
   }
 
   datatools::library_loader flLibLoader(userLibConfig);
@@ -481,6 +560,11 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
   // - MUST delete the module manager BEFORE the library loader clears
   // in case the manager is holding resources created from a shared lib
   moduleManager_.reset();
+
+  if (vserv.is_started()) {
+    // Terminate the variant service:
+    vserv.stop();
+  }
   return falaise::EXIT_OK;
 }
 
@@ -493,17 +577,20 @@ falaise::exit_code do_flreconstruct(int argc, char *argv[]) {
   FLReconstructArgs clArgs;
   FLDialogState d = do_cldialog(argc, argv, clArgs);
   switch (d) {
-    case DIALOG_QUERY:
-      return falaise::EXIT_OK;
-      ;;
-    case DIALOG_ERROR:
-      return falaise::EXIT_USAGE;
-      ;;
-    default:
-      ;;
+  case DIALOG_QUERY:
+    return falaise::EXIT_OK;
+    ;;
+  case DIALOG_ERROR:
+    return falaise::EXIT_USAGE;
+    ;;
+  default:
+    ;;
   }
 
   falaise::exit_code ret = do_pipeline(clArgs);
+
+  falaise::variance_service::instance().stop();
+
   return ret;
 }
 
