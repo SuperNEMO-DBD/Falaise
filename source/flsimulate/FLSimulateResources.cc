@@ -57,15 +57,15 @@ namespace FLSimulate {
   }
 
   //! Construct lookup table
-  ExperimentLookup::Table constructLookupVarianceConfigTable() {
+  ExperimentLookup::Table constructLookupVariantsConfigTable() {
     ExperimentLookup::Table a;
     boost::assign::insert(a)
       ("",
-       "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/variance.conf")
+       "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/repository.conf")
       ("default",
-       "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/variance.conf")
+       "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/repository.conf")
       ("demonstrator",
-       "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/variance.conf")
+       "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/repository.conf")
       ("bipo3",
        "");
     ;
@@ -73,7 +73,7 @@ namespace FLSimulate {
   }
 
   //! Construct lookup table
-  ExperimentLookup::Table constructLookupVarianceDefaultProfileTable() {
+  ExperimentLookup::Table constructLookupVariantsDefaultProfileTable() {
     ExperimentLookup::Table a;
     boost::assign::insert(a)
       ("",
@@ -104,15 +104,15 @@ namespace FLSimulate {
     return basePath.string();
   }
 
-  std::string getVarianceConfigFile(const std::string& experiment,
+  std::string getVariantsConfigFile(const std::string& experiment,
                                      const std::string& /*versionID*/) {
     static ExperimentLookup::Table a;
-    if (a.empty()) a = constructLookupVarianceConfigTable();
+    if (a.empty()) a = constructLookupVariantsConfigTable();
 
     std::string canonicalName(boost::to_lower_copy(experiment));
     ExperimentLookup::Table::const_iterator p = a.find(canonicalName);
     if (p == a.end()) {
-      throw UnknownResourceException("no variance file for '"+experiment+"'");
+      throw UnknownResourceException("no variants file for '"+experiment+"'");
     }
 
     boost::filesystem::path basePath(falaise::get_resource_dir());
@@ -120,15 +120,15 @@ namespace FLSimulate {
     return basePath.string();
   }
 
-  std::string getVarianceDefaultProfile(const std::string& experiment,
+  std::string getVariantsDefaultProfile(const std::string& experiment,
                                         const std::string& /*versionID*/) {
     static ExperimentLookup::Table a;
-    if (a.empty()) a = constructLookupVarianceDefaultProfileTable();
+    if (a.empty()) a = constructLookupVariantsDefaultProfileTable();
 
     std::string canonicalName(boost::to_lower_copy(experiment));
     ExperimentLookup::Table::const_iterator p = a.find(canonicalName);
     if (p == a.end()) {
-      throw UnknownResourceException("no default variance profile for '"+experiment+"'");
+      throw UnknownResourceException("no default variants profile for '"+experiment+"'");
     }
 
     boost::filesystem::path basePath(falaise::get_resource_dir());

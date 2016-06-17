@@ -22,7 +22,7 @@ Usage
 
 Online help is available through:
 
-.. raw: sh
+.. raw:: sh
 
    flsimulate --help
 ..
@@ -39,7 +39,7 @@ setup.
    profile* file  and assign  specific values  to the  variant parameters
    addressed by this profile:
 
-.. raw: sh
+.. raw:: sh
 
    --variant-load "Path/To/A/Variant/Profile/Input/File"
 ..
@@ -82,7 +82,7 @@ setup.
    of values  assigned to  the variant parameters  in an  output *variant
    profile* file.
 
-.. raw: sh
+.. raw:: sh
 
    --variant-store "Path/To/A/Variant/Profile/Output/File"
 ..
@@ -91,19 +91,50 @@ setup.
    output file where to store the current set of variant parameters.
 
 
-Example:
+Examples:
 
-.. raw: sh
+1. Generate 100 Tl208 decays from the bulk of tracker field wires,
+   disabling the magnetic field:
+
+.. raw:: sh
 
    flsimulate \
-     --number 10 \
-     --experiment "Demonstrator" \
-     --event-generator "Tl208" \
+     --experiment       "Demonstrator" \
+     --variant-registry "dummy[+]=@falaise:examples/variants/dummy/1.0/registries/dummy.conf" \
+     --variant-registry "dummy2[+]=@falaise:examples/variants/dummy/1.0/registries/dummy.conf" \
+     --variant-logging  "trace" \
+     --variant-set      "geometry:layout=HalfCommissioning" \
+     --variant-gui      \
+     --variant-store    "this_profile.conf" \
+     --event-generator  "Tl208" \
      --vertex-generator "field_wire_bulk" \
-     --output-file "Tl208_10-field_wire_bulk_SD.brio" \
-     --variant-load "my_profile.conf" \
-     --variant-set "geometry:layout/if_basic/magnetic_field=false" \
-     --variant-gui \
-     --variant-store "new_profile.conf"
+     --number           100 \
+     --modulo           10 \
+     --output-profiles  "all_details" \
+     --output-file      "Tl208-field_wire_bulk_SD-100.brio"
+..
 
+..     --variant-registry "dummy[+]=@falaise:examples/variants/dummy/1.0/registries/dummy.conf" \
+..     --variant-registry "dummy2[+]=@falaise:examples/variants/dummy/1.0/registries/dummy.conf" \
+..     --variant-set      "geometry:layout=HalfCommissioning" \
+..     --variant-set "geometry:layout/if_half_commissioning/magnetic_field=false" \
+..     --variant-set "geometry:layout/if_basic/magnetic_field=false" \
+
+
+.. raw:: sh
+
+   flreconstruct \
+     --variant-load "this_profile.conf" \
+     --variant-gui  \
+     --pipeline "__default__" \
+     --input-file   "Tl208-field_wire_bulk_SD-100.brio" \
+     --output-file  "Tl208-field_wire_bulk_SD-100.rec.brio"
+
+
+   Browse the events:
+
+.. raw:: sh
+
+   flvisualize \
+     --input-files "Tl208-field_wire_bulk_SD-100.brio"
 ..

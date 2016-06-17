@@ -48,11 +48,13 @@ namespace bpo = boost::program_options;
 #include "bayeux/bayeux.h"
 #include "bayeux/datatools/multi_properties.h"
 #include "bayeux/datatools/things.h"
+#include "bayeux/datatools/configuration/variant_service.h"
 #include "bayeux/dpp/output_module.h"
 #include "bayeux/geomtools/manager.h"
 #include "bayeux/mctools/g4/simulation_module.h"
 #include "bayeux/mctools/g4/manager_parameters.h"
 #include "bayeux/mygsl/random_utils.h"
+namespace dtc = datatools::configuration;
 
 // This Project
 #include "falaise/version.h"
@@ -60,7 +62,6 @@ namespace bpo = boost::program_options;
 #include "falaise/exitcodes.h"
 #include "falaise/resource.h"
 #include "FLSimulateResources.h"
-#include "FLSimulateVariance.h"
 
 //----------------------------------------------------------------------
 // IMPLEMENTATION DETAILS
@@ -97,29 +98,28 @@ void do_help(const bpo::options_description& od) {
 
 //! Collect all needed configuration parameters in one data structure
 struct FLSimulateArgs {
+  // Application specific parameters:
   datatools::logger::priority     logLevel;                //!< Logging priority threshold
   unsigned int                    numberOfEvents;          //!< Number of events to be processed in the pipeline
   unsigned int                    moduloEvents;            //!< Number of events progress modulo
   std::string                     experimentID;            //!< The label of the virtual experimental setup
   std::string                     setupGeometryVersion;    //!< The version number of the virtual geometry setup
   std::string                     setupSimulationVersion;  //!< The version number of the simulation engine setup
-  std::string                     varianceConfigFilename;  //!< Variance configuration file
-  std::string                     varianceProfileLoad;     //!< Variance profile load
-  std::vector<std::string>        varianceSettings;        //!< List of variance settings
-  std::string                     varianceProfileStore;    //!< Variance profile store
-#if DATATOOLS_WITH_QT_GUI == 1
-  bool                            varianceGui;             //!< Launch the variance GUI editor
-#endif // DATATOOLS_WITH_QT_GUI == 1
   mctools::g4::manager_parameters simulationManagerParams; /** Parameters for the Geant4 simulation manager
                                                             *  embedded in the simulation module
                                                             */
   std::string                     outputFile;              //!< Output data file for the output module
+  // Variants support:
+  dtc::variant_service::config    variants;                //!< Variants configuration
 };
 
 //! Handle command line argument dialog
 void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
+
   // Bind command line parser to exposed parameters
   namespace bpo = boost::program_options;
+
+  // Application specific options:
   bpo::options_description optDesc("Options");
   optDesc.add_options()
     ("help,h","print this help message")
@@ -163,30 +163,26 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
      "file in which to store simulation results")
     ;
 
-  bpo::options_description optVariance("Variance support");
-  optVariance.add_options()
-    ("variant-load,L",
-     bpo::value<std::string>(&params.varianceProfileLoad)->value_name("[file]"),
-     "file from which to load a specific variant profile at startup")
-    ("variant-set,V",
-     bpo::value<std::vector<std::string> >(&params.varianceSettings)->value_name("[setting]"),
-     "setting rules for variant parameters applied at startup")
-#if DATATOOLS_WITH_QT_GUI == 1
-    ("variant-gui,G", "launch the variant GUI editor at startup")
-#endif // DATATOOLS_WITH_QT_GUI == 1
-    ("variant-store,S",
-     bpo::value<std::string>(&params.varianceProfileStore)->value_name("[file]"),
-     "file in which to store the effective current variant profile")
-    ;
+  // Variant service options:
+  bpo::options_description optVariants("Variants support");
+  uint32_t variant_service_flags = 0;
+  variant_service_flags |= dtc::variant_service::NO_CONFIG_FILENAME;
+  variant_service_flags |= dtc::variant_service::NO_TUI;
+  dtc::variant_service::init_options(optVariants,
+                                     params.variants,
+                                     variant_service_flags);
 
+  // Public options:
   bpo::options_description optPublic;
-  optPublic.add(optDesc).add(optVariance);
+  optPublic.add(optDesc).add(optVariants);
 
+  // Hidden options:
   bpo::options_description optHidden;
   optHidden.add_options()
-    ("trace", "trace logging")
+    ("trace", "activate trace logging")
     ;
 
+  // All options:
   bpo::options_description optAll;
   optAll.add(optPublic).add(optHidden);
 
@@ -220,41 +216,18 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
 
   // Handle the experiment
   std::string experiment_label = vMap["experiment"].as<std::string>();
-  // TODO: in the future, we will use the datatools variant configuration API to build
-  // a configuration menu of variant parameters...
   try {
-    params.varianceConfigFilename = FLSimulate::getVarianceConfigFile(experiment_label);
-    if (params.varianceProfileLoad == "__default__") {
-      params.varianceProfileLoad = FLSimulate::getVarianceDefaultProfile(experiment_label);
-      if (params.logLevel == datatools::logger::PRIO_INFORMATION) {
+    params.variants.config_filename = FLSimulate::getVariantsConfigFile(experiment_label);
+    if (params.variants.profile_load == "__default__") {
+      params.variants.profile_load = FLSimulate::getVariantsDefaultProfile(experiment_label);
+      if (datatools::logger::is_information(params.logLevel)) {
         std::clog << "[information]: " << "Loading default variant profile '"
-                  << params.varianceProfileLoad << "'..." << std::endl;
+                  << params.variants.profile_load << "'..." << std::endl;
       }
     }
     params.simulationManagerParams.manager_config_filename = FLSimulate::getControlFile(experiment_label);
   } catch (FLSimulate::UnknownResourceException& e) {
     std::cerr << "[FLSimulate::UnknownResourceException] "
-              << e.what()
-              << std::endl;
-    throw FLDialogOptionsError();
-  }
-
-  // Variance support:
-  try {
-    if (!params.varianceConfigFilename.empty()) {
-      FLSimulate::VarianceControl::instance().set_logging(params.logLevel);
-      FLSimulate::VarianceControl::instance().set_config(params.varianceConfigFilename);
-      FLSimulate::VarianceControl::instance().set_input_profile(params.varianceProfileLoad);
-      FLSimulate::VarianceControl::instance().set_output_profile(params.varianceProfileStore);
-      FLSimulate::VarianceControl::instance().set_settings(params.varianceSettings);
-#if DATATOOLS_WITH_QT_GUI == 1
-      params.varianceGui = vMap.count("variant-gui") > 0;
-      FLSimulate::VarianceControl::instance().set_gui(params.varianceGui);
-#endif // DATATOOLS_WITH_QT_GUI == 1
-      FLSimulate::VarianceControl::instance().start();
-    }
-  } catch (std::exception& e) {
-    std::cerr << "[FLSimulate::VarianceControl::VarianceException] "
               << e.what()
               << std::endl;
     throw FLDialogOptionsError();
@@ -345,6 +318,23 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
     return falaise::EXIT_USAGE;
   }
 
+  // Variants support:
+  dtc::variant_service vserv;
+  try {
+    if (flSimParameters.variants.is_active()) {
+      vserv.configure(flSimParameters.variants);
+      // Start and lock the variant service:
+      vserv.start();
+      // From this point, all other services and/or processing modules can benefit
+      // of the variant service during their configuration steps.
+    }
+  } catch (std::exception& e) {
+    std::cerr << "[datatools::configuration::variant_service::variant_exception] "
+              << e.what()
+              << std::endl;
+    throw FLDialogOptionsError();
+  }
+
   // - Run
   try {
 
@@ -419,13 +409,17 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
         break;
       }
     }
+
   } catch (std::exception& e) {
     std::cerr << "flsimulate : setup/run of simulation threw exception" << std::endl;
     std::cerr << e.what() << std::endl;
     return falaise::EXIT_UNAVAILABLE;
   }
 
-  FLSimulate::VarianceControl::instance().stop();
+  if (vserv.is_started()) {
+    // Terminate the variant service:
+    vserv.stop();
+  }
 
   return falaise::EXIT_OK;
 }
