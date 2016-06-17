@@ -85,6 +85,13 @@ namespace snemo {
       return utils::NSIDES;
     }
 
+    bool gg_locator::has_submodules(uint32_t side_) const
+    {
+      DT_THROW_IF(! is_initialized(), std::logic_error, "Locator is not initialized !");
+      DT_THROW_IF(side_ >= utils::NSIDES, std::logic_error, "Side number is invalid !");
+      return _submodules_[side_];
+    }
+
     double gg_locator::get_layer_x(uint32_t side_, uint32_t layer_) const
     {
       DT_THROW_IF(! is_initialized(), std::logic_error, "Locator is not initialized !");

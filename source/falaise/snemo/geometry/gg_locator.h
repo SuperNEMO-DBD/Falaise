@@ -139,6 +139,10 @@ namespace snemo {
        */
       size_t get_number_of_sides() const;
 
+      /**! @return true if the submodule at given side is present
+       */
+      bool has_submodules(uint32_t side_) const;
+
       /**! @return the number of drift cells layers in one side of the tracking chamber.
        */
       size_t get_number_of_layers(uint32_t side_) const;
