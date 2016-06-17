@@ -76,14 +76,15 @@ void do_version(std::ostream& os, bool isVerbose) {
   os << "flsimulate " << falaise::version::get_version() << "\n";
   if (isVerbose) {
     os << "\n"
-        << "Copyright (C) 2013-2016 SuperNEMO Collaboration\n\n"
-        << "flsimulate uses the following external libraries:\n"
-        << "* Falaise : " << falaise::version::get_version() << "\n"
-        << "* Bayeux  : " << bayeux::version::get_version() << "\n"
-        << "* Boost   : " << BOOST_VERSION << "\n"
-        << "* Geant4  : " << "9.6.4" << "\n"
-        << "\n\n";
+       << "Copyright (C) 2013-2016 SuperNEMO Collaboration\n\n"
+       << "flsimulate uses the following external libraries:\n"
+       << "* Falaise : " << falaise::version::get_version() << "\n"
+       << "* Bayeux  : " << bayeux::version::get_version() << "\n"
+       << "* Boost   : " << BOOST_VERSION << "\n"
+       << "* Geant4  : " << "9.6.4" << "\n"
+       << "\n\n";
   }
+  return;
 }
 
 //! Handle printing of help message to screen
@@ -94,6 +95,7 @@ void do_help(const bpo::options_description& od) {
     // << "Options\n"
             << od
             << "\n";
+  return;
 }
 
 //! Collect all needed configuration parameters in one data structure
@@ -127,13 +129,13 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
     ("verbose,v","increase verbosity of logging")
     ("number,n",
      bpo::value<uint32_t>(&params.numberOfEvents)
-      ->default_value(1)
-      ->value_name("[events]"),
+     ->default_value(1)
+     ->value_name("[events]"),
      "number of events to simulate")
     ("modulo,m",
      bpo::value<uint32_t>(&params.simulationManagerParams.number_of_events_modulo)
-      ->default_value(0)
-      ->value_name("[period]"),
+     ->default_value(0)
+     ->value_name("[period]"),
      "progress modulo on number of events")
     ("experiment",
      bpo::value<std::string>(&params.experimentID)
@@ -142,20 +144,20 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
      "experiment to simulate")
     ("vertex-generator,x",
      bpo::value<std::string>(&params.simulationManagerParams.vg_name)
-      ->default_value("source_pads_bulk")
-      ->value_name("[name]"),
+     ->default_value("source_pads_bulk")
+     ->value_name("[name]"),
      "the name of the vertex generator"
      )
     ("event-generator,e",
      bpo::value<std::string>(&params.simulationManagerParams.eg_name)
-      ->default_value("Se82.0nubb")
-      ->value_name("[name]"),
+     ->default_value("Se82.0nubb")
+     ->value_name("[name]"),
      "the name of the event generator"
      )
     ("output-profiles,p",
      bpo::value<std::string>(&params.simulationManagerParams.output_profiles_activation_rule)
-      ->default_value("")
-      ->value_name("[rule]"),
+     ->default_value("")
+     ->value_name("[rule]"),
      "the output profiles activation rule (setup the truth hits' level of details)"
      )
     ("output-file,o",
@@ -264,6 +266,7 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
     do_version(std::cout, true);
     throw FLDialogHelpRequested();
   }
+  return;
 }
 
 //----------------------------------------------------------------------
@@ -300,6 +303,7 @@ void do_configure(int argc, char *argv[], FLSimulateArgs& params) {
   } catch (FLDialogOptionsError& e) {
     throw FLConfigUserError();
   }
+  return;
 }
 
 //----------------------------------------------------------------------
@@ -346,20 +350,20 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
     /*
     // Fetch the list of supported output profiles:
     if (flSimProperties.get_section("manager").has_key("output_profiles")) {
-      datatools::properties flSimOutputProfilesProperties;
-      std::vector<std::string> supported_output_profiles;
-      flSimProperties.get_section("manager").fetch("output_profiles", supported_output_profiles);
-      std::clog << "Supported output profiles : " << std::endl << std::endl;
-      for (size_t i(0); i < supported_output_profiles.size(); i++) {
-        std::ostringstream sop_desc_key;
-        sop_desc_key << "output_profiles." << supported_output_profiles[i] << ".description";
-        std::string sop_desc = "Not documented";
-        if (flSimProperties.get_section("manager").has_key(sop_desc_key.str())) {
-          sop_desc = flSimProperties.get_section("manager").fetch_string(sop_desc_key.str());
-        }
-        std::clog << "  - " << supported_output_profiles[i] << " : " << sop_desc << std::endl;
-      }
-      std::clog << std::endl;
+    datatools::properties flSimOutputProfilesProperties;
+    std::vector<std::string> supported_output_profiles;
+    flSimProperties.get_section("manager").fetch("output_profiles", supported_output_profiles);
+    std::clog << "Supported output profiles : " << std::endl << std::endl;
+    for (size_t i(0); i < supported_output_profiles.size(); i++) {
+    std::ostringstream sop_desc_key;
+    sop_desc_key << "output_profiles." << supported_output_profiles[i] << ".description";
+    std::string sop_desc = "Not documented";
+    if (flSimProperties.get_section("manager").has_key(sop_desc_key.str())) {
+    sop_desc = flSimProperties.get_section("manager").fetch_string(sop_desc_key.str());
+    }
+    std::clog << "  - " << supported_output_profiles[i] << " : " << sop_desc << std::endl;
+    }
+    std::clog << std::endl;
     }
     */
 
