@@ -47,7 +47,6 @@ int main( int  argc_ , char **argv_  )
   bool is_input_file   = false;
   bool is_event_number = false;
   bool is_output_path  = false;
-  bool is_run_number   = false;
   bool is_display      = false;
   bool is_display_test = false;
   bool is_help         = false;
@@ -55,8 +54,7 @@ int main( int  argc_ , char **argv_  )
   std::string input_filename;
   std::string output_path;
   int arg_event_number  = -1;
-  int arg_run_number    = -1;
-
+  
   while (iarg < argc_) {
     std::string arg = argv_[iarg];
     if (arg == "-i" || arg == "--input") 
@@ -126,7 +124,6 @@ int main( int  argc_ , char **argv_  )
     random_generator.initialize(seed);
     
     std::string manager_config_file;
-    
     manager_config_file = "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf";
     datatools::fetch_path_with_env(manager_config_file);
     datatools::properties manager_config;
@@ -157,7 +154,7 @@ int main( int  argc_ , char **argv_  )
 
     // Number of events :
     int event_number = -1;
-    if (is_event_number)  event_number = arg_event_number;
+    if (is_event_number) event_number = arg_event_number;
     else                 event_number = 10;
 
     // Event reader :

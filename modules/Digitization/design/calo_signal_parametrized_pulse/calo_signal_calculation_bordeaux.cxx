@@ -93,12 +93,12 @@ void electron_1000keV()
   double gauss1_sigma    = 2.46067;
   
   // Second gaussian :
-  // double gauss2_constant = -0.299236; // Value by Arnaud
-  // double gauss2_mean     = 82.5765; // Value by Arnaud
-  // double gauss2_sigma    = 4.3108; // Value by Arnaud
-  double gauss2_constant = -0.298;
-  double gauss2_mean     = 82.65;
-  double gauss2_sigma    = 4.310;
+  double gauss2_constant = -0.299236; // Value by Arnaud
+  double gauss2_mean     = 82.5765; // Value by Arnaud
+  double gauss2_sigma    = 4.3108; // Value by Arnaud
+  // double gauss2_constant = -0.298;
+  // double gauss2_mean     = 82.65;
+  // double gauss2_sigma    = 4.310;
   
   // Exponential :
   double expo_constant    = 0.000271238;

@@ -1,19 +1,16 @@
-//fldigi_delayed_alpha_geiger_cells_hit.cxx
+// hc_rate_analysis.cxx
 // Standard libraries :
 #include <iostream>
-#include <fstream>
-
 // - Bayeux/datatools:
 #include <datatools/utils.h>
 #include <datatools/io_factory.h>
 #include <datatools/clhep_units.h>
-#include <datatools/properties.h>
-
-// - Bayeux/geomtools:
-#include <bayeux/geomtools/manager.h>
-
 // - Bayeux/mctools:
 #include <mctools/simulated_data.h>
+// - Bayeux/geomtools:
+#include <bayeux/geomtools/manager.h>
+#include <bayeux/geomtools/id_mgr.h>
+#include <bayeux/geomtools/id_selector.h>
 
 // - Bayeux/dpp:
 #include <dpp/input_module.h>
@@ -26,10 +23,8 @@
 // Root : 
 #include "TFile.h"
 #include "TTree.h"
-#include <TH1F.h>
-#include <TH2F.h>
 
-int main(int  argc_ , char ** argv_)
+int main( int  argc_ , char **argv_  )
 {
   falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;
@@ -38,19 +33,17 @@ int main(int  argc_ , char ** argv_)
   // Parsing arguments
   int iarg = 1;
   bool is_input_file   = false;
-  bool is_output_path  = false;
   bool is_event_number = false;
-  bool is_verbose      = false;
-  bool is_print        = false;
-  bool is_help         = false;
-
+  bool is_output_path  = false;
+  bool is_display      = false;
+  bool is_help         = false;  
+  
   std::string input_filename;
   std::string output_path;
   int arg_event_number  = -1;
 
   while (iarg < argc_) {
     std::string arg = argv_[iarg];
-
     if (arg == "-i" || arg == "--input") 
       {
 	is_input_file = true;
@@ -62,22 +55,17 @@ int main(int  argc_ , char ** argv_)
 	is_output_path = true;
 	output_path = argv_[++iarg];	
       }
-
+    
     else if (arg == "-n" || arg == "--number")
       {
-        is_event_number  = true;
-	arg_event_number = atoi(argv_[++iarg]);
+        is_event_number = true;
+	arg_event_number    = atoi(argv_[++iarg]);
       }
-    
-    else if (arg == "-v" || arg == "--verbosity")
+
+    else if (arg == "-d" || arg == "--display")
       {
-	is_verbose = true;
-      }
-    
-    else if (arg == "-p" || arg == "--print")
-      {
-	is_print = true;
-      }
+	is_display = true;
+      }  
 
     else if (arg =="-h" || arg == "--help")
       {
@@ -88,60 +76,57 @@ int main(int  argc_ , char ** argv_)
   }
 
   if (is_help) 
-    {
+    { 
       std::cerr << std::endl << "Usage :" << std::endl << std::endl
-		<< "$ BuildProducts/bin/fldigi_delayed_alpha_geiger_cells_hit [OPTIONS] [ARGUMENTS]" << std::endl << std::endl
+		<< "$ BuildProducts/bin/half_commissioning-hc_rate_analysis [OPTIONS] [ARGUMENTS]" << std::endl << std::endl
 		<< "Allowed options: " << std::endl
-		<< "-h  [ --help ]        produce help message" << std::endl
-		<< "-i  [ --input ]       set an input file" << std::endl
-		<< "-op [ --output_path ] set the output path for producted files" << std::endl
-		<< "-n  [ --number ]      set the number of events" << std::endl
-		<< "-v  [ --verbosity]    add verbosity level" << std::endl
-		<< "-p  [ --print ]       print files in PDF/PNG" << std::endl
-		<< "Example : " << std::endl << std::endl
-		<< "$ BuildProducts/bin/fldigi_delayed_alpha_geiger_cells_hit -n 1000 -i ${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio -op ${FALAISE_DIGITIZATION_TESTING_DIR}/output_default -v -p" << std::endl << std::endl;
-      return 0;
+		<< "-h  [ --help ]           produce help message" << std::endl
+		<< "-i  [ --input ]          set an input file" << std::endl
+		<< "-op [ --output path ]    set a path where all files are stored" << std::endl
+		<< "-d  [ --display ]        display things for debug" << std::endl
+		<< "-n  [ --number ]         set the number of events" << std::endl
+		<< "Example : " << std::endl << std::endl;
+	return 0;
     }
 
-  // Process
   try {
-    std::clog << "Little test program for analysis of alpha delayed number of geiger cells hit for some physical process and vertexes generator !" << std::endl;
+    // boolean for debugging (display etc)
+    bool debug = false;
 
-    // Manager.conf
+    if (is_display) debug = true;   
+
+    std::clog << "Program for half commissioning rate analysis" << std::endl;
+    
     std::string manager_config_file;
-    manager_config_file = "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf";
+    manager_config_file = "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf";
     datatools::fetch_path_with_env(manager_config_file);
     datatools::properties manager_config;
     datatools::properties::read_config (manager_config_file,
 					manager_config);
-    geomtools::manager my_manager;
+    geomtools::manager my_geom_manager;
     manager_config.update ("build_mapping", true);
     if (manager_config.has_key ("mapping.excluded_categories"))
       {
 	manager_config.erase ("mapping.excluded_categories");
       }
-    my_manager.initialize (manager_config);
+    my_geom_manager.initialize (manager_config);
 
     std::string pipeline_simulated_data_filename;
+    
     // Simulated Data "SD" bank label :
     std::string SD_bank_label = "SD";
     datatools::fetch_path_with_env(input_filename);
     if(is_input_file){
       pipeline_simulated_data_filename = input_filename;
     }else{
-      pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
-      input_filename = pipeline_simulated_data_filename;
+      pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Co60-100_row_0_column_0_SD.brio";
     }
     datatools::fetch_path_with_env(pipeline_simulated_data_filename);
 
     // Number of events :
     int event_number = -1;
-    if (is_event_number)  event_number = arg_event_number;
+    if (is_event_number) event_number = arg_event_number;
     else                 event_number = 10;
-    // Output path :
-    if (is_output_path) output_path = output_path;
-    else output_path = "${FALAISE_DIGITIZATION_TESTING_DIR}/output_default/";
-    datatools::fetch_path_with_env(output_path);
 
     // Event reader :
     dpp::input_module reader;
@@ -151,53 +136,63 @@ int main(int  argc_ , char ** argv_)
     reader_config.store ("files.mode", "single");
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
-    reader.tree_dump (std::clog, "Simulated data reader module");
+    if (debug) reader.tree_dump(std::clog, "Simulated data reader module");
 
-    static const int LIMIT_SUP_PROMPT_TIME = 25; // in nanosecond,
-    static const int LIMIT_INF_DELAYED_TIME = 8000; // in nanosecond, linked with the digi trigger and geiger drift
-    static const int LIMIT_SUP_DELAYED_TIME = 1000000; // in nanosecond, linked with the digi trigger and geiger drift
+    datatools::fetch_path_with_env(output_path);
+    if (is_output_path) output_path = output_path;
+    else output_path = "${FALAISE_DIGITIZATION_TESTING_DIR}/output_default/";
+    datatools::fetch_path_with_env(output_path);
+
+    // Name of SD output files
+    std::string HC_writer_1 = output_path + "HC_writer" + ".brio";
+
+    // Event writer : 
+    dpp::output_module writer_1;
+    datatools::properties writer_config_1;
+    writer_config_1.store ("logging.priority", "debug");
+    writer_config_1.store ("files.mode", "single");   
+    writer_config_1.store ("files.single.filename", HC_writer_1);
+    writer_1.initialize_standalone(writer_config_1); 
 
     // Event record :
     datatools::things ER;
-
-    std::string vtx_filename = input_filename;
+    
+    // Vertex in the filename :
+    std::string vtx_filename = pipeline_simulated_data_filename;
     std::size_t found = 0;
     found = vtx_filename.find_last_of("/");
-    vtx_filename.erase(0, found);
+    vtx_filename.erase(0, found+1);
     found = vtx_filename.find(".brio");
     vtx_filename.erase(found, vtx_filename.size());
+    
+    // Output ROOT file : 
+    std::string root_filename = output_path + "HC_" + vtx_filename + "_analysis.root";
+    datatools::fetch_path_with_env(root_filename);
+    TFile* root_file = new TFile(root_filename.c_str(), "RECREATE");
 
-    int psd_count = 0; // Event counter
-    std::string output_filename = output_path + vtx_filename + "_delayed_alpha_geiger_cells_hit.root";
+    TTree* hc_analysis_tree = new TTree("HC_analysis_tree", "Half Commissioning analysis tree");
+    
+    // Internal counters
+    int psd_count = 0;         // Event counter
 
+    geomtools::id_selector my_hc_id_selector(my_geom_manager.get_id_mgr());
+    std::string hc_half_zone_rules = "category='drift_cell_core' module={0} side={1} layer={1} row={*}";
+    my_hc_id_selector.initialize(hc_half_zone_rules);
 
-    TFile * output_file = new TFile(output_filename.c_str(), "RECREATE");
-    //TTree * output_tree = new TTree("DelayedAlphaCellsHit", "Delayed Alpha Geiger cells hit");
-
-    TH1F * vertex_distribution_TH1F = new TH1F("Delayed alpha Geiger cells hit",
-					       "Delayed alpha GG cells hit",
-					       15, 0 , 14);
-    TH1F * delayed_gg_inf_distribution_TH1F = new TH1F("Delayed alpha Geiger cells hit inf at 8 us",
-						       "Delayed alpha GG cells hit inf at 8 us",
-						       15, 0 , 14);
-    TH1F * delayed_gg_sup_distribution_TH1F = new TH1F("Delayed alpha Geiger cells hit sup at 1 ms",
-						       "Delayed alpha GG cells hit sup at 1 ms",
-						       15, 0 , 14);
-
+    if (is_display) my_hc_id_selector.dump(std::clog, "ID selector: ");
     
     while (!reader.is_terminated())
       {
+	if(is_display) std::clog <<  "********************************************************************************" << std::endl;
+	if(is_display) std::clog <<  "****************************** EVENT #" << psd_count << " **************************************" << std::endl;
+	
 	reader.process(ER);
 	// A plain `mctools::simulated_data' object is stored here :
 	if (ER.has(SD_bank_label) && ER.is_a<mctools::simulated_data>(SD_bank_label)) 
 	  {
 	    // Access to the "SD" bank with a stored `mctools::simulated_data' :
-	    const mctools::simulated_data & SD = ER.get<mctools::simulated_data>(SD_bank_label); 
-
-	    int number_of_delayed_gg_cells_hit = 0;   
-	    int number_of_delayed_gg_inf_8us = 0;
-	    int number_of_delayed_gg_sup_1ms = 0;
-
+	    const mctools::simulated_data & SD = ER.get<mctools::simulated_data>(SD_bank_label);
+	    
 	    if (SD.has_step_hits("gg"))
 	      {
 		const size_t number_of_hits = SD.get_number_of_step_hits("gg");
@@ -229,47 +224,50 @@ int main(int  argc_ , char ** argv_)
 			  } // end of if get_geom_id
 		      } // end of jhit
 		  } // end of ihit
-       
 		mctools::simulated_data::hit_handle_collection_type BSHC = flaged_sd.get_step_hits("gg");
-		if (is_verbose) std::clog << "BSCH step hits # = " << BSHC.size() << std::endl;
+		if (is_display) std::clog << "BSCH step hits # = " << BSHC.size() << std::endl;
 		int count = 0;
 		for (mctools::simulated_data::hit_handle_collection_type::const_iterator i = BSHC.begin();
 		     i != BSHC.end();
 		     i++) 
 		  {
 		    const mctools::base_step_hit & BSH = i->get();
-
+		    if (is_display) BSH.tree_dump(std::clog, "A Geiger Base Step Hit : ", "INFO : ");
 		    if (BSH.get_auxiliaries().has_flag("geiger_already_hit") || BSH.get_auxiliaries().has_flag("other_geiger_already_hit")) {}
 		    else
 		      {
 			// extract the corresponding geom ID:
 			const geomtools::geom_id & geiger_gid = BSH.get_geom_id();
 
+			if (my_hc_id_selector.match(geiger_gid))
+			  {
+			    if (is_display) std::clog << "ID=" << geiger_gid << " matches the selector rules !" << std::endl;
+			  }
+			else
+			  {
+			    if (is_display) std::clog << "ID=" << geiger_gid << " does not match the selector rules !" << std::endl;
+			  }
+			
+			std::clog << "geiger gid = " << geiger_gid << std::endl;
 			int hit_id = count;
 			double time_start = BSH.get_time_start();
 			geomtools::vector_3d position_start_vector = BSH.get_position_start();
 			geomtools::vector_3d position_stop_vector  = BSH.get_position_stop();
 			geomtools::vector_3d momentum_start_vector = BSH.get_momentum_start();
-			if (time_start > LIMIT_INF_DELAYED_TIME && time_start < LIMIT_SUP_DELAYED_TIME) number_of_delayed_gg_cells_hit++;
-			if (time_start > LIMIT_SUP_PROMPT_TIME && time_start < LIMIT_INF_DELAYED_TIME) number_of_delayed_gg_inf_8us++;
-			if (time_start > LIMIT_SUP_DELAYED_TIME) number_of_delayed_gg_sup_1ms++;
-
+			
 			count++;
+
 		      }
 		  } // end of for 
 	      } // end of if has step hits "gg"
-	    vertex_distribution_TH1F->Fill(number_of_delayed_gg_cells_hit);
-	    delayed_gg_inf_distribution_TH1F->Fill(number_of_delayed_gg_inf_8us);
-	    delayed_gg_sup_distribution_TH1F->Fill(number_of_delayed_gg_sup_1ms);
 
 	  } // end of ER
 	ER.clear();
 	psd_count++;
-	if (is_verbose) std::clog << "DEBUG : psd count " << psd_count << std::endl;
+	if (is_display) std::clog << "DEBUG : psd count " << psd_count << std::endl;
       } // end of while reader
     
-    output_file->Write();
-    output_file->Close();
+
     std::clog << "The end." << std::endl;
   } // end of try
 

@@ -163,3 +163,4 @@ endif()
  
 add_subdirectory(programs)
 add_subdirectory(validation)
+add_subdirectory(half_commissioning_analysis)
