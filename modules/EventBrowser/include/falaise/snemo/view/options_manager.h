@@ -33,14 +33,21 @@
 #ifndef FALAISE_SNEMO_VISUALIZATION_VIEW_OPTIONS_MANAGER_H
 #define FALAISE_SNEMO_VISUALIZATION_VIEW_OPTIONS_MANAGER_H 1
 
-#include <falaise/snemo/utils/singleton.h>
-#include <falaise/snemo/view/event_browser_signals.h>
-
-#include <datatools/logger.h>
-
+// Stahdard library:
 #include <vector>
 #include <string>
 #include <map>
+
+// Third party:
+// - Boost:
+#include <boost/program_options.hpp>
+// - Bayeux/datatools:
+#include <datatools/logger.h>
+#include <datatools/bit_mask.h>
+
+// This project:
+#include <falaise/snemo/utils/singleton.h>
+#include <falaise/snemo/view/event_browser_signals.h>
 
 namespace snemo {
 
@@ -64,9 +71,27 @@ namespace snemo {
 
         void set_default_options ();
 
+        void print_help (std::ostream      & out_,
+                         const std::string & name_,
+                         const std::string & title_) const;
+
         void print_examples (std::ostream      & out_,
                              const std::string & name_,
                              const std::string & title_) const;
+
+        enum browser_options_flags {
+          browser_opt_no_logging  = datatools::bit_mask::bit00,
+          browser_opt_no_dll_load = datatools::bit_mask::bit01,
+          browser_opt_no_detector_config = datatools::bit_mask::bit02
+        };
+
+        void define_browser_options(boost::program_options::options_description & browser_options_,
+                                    uint32_t flags_ = 0);
+
+        void define_view_options(boost::program_options::options_description & view_options_,
+                                 uint32_t flags_ = 0);
+
+        int apply_options(const boost::program_options::variables_map & vm_);
 
         bool parse_command_line (int argc_, char** argv_);
 
@@ -149,7 +174,6 @@ namespace snemo {
         options_manager& operator= (const options_manager&);
 
       };
-
 
     } // end of namespace view
 

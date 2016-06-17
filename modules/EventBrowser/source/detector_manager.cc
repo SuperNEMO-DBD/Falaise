@@ -620,8 +620,16 @@ namespace snemo {
           case SNEMO:
           case SNEMO_DEMONSTRATOR:
             only_categories_.push_back("hall");
+            // only_categories_.push_back("external_shield");
             only_categories_.push_back("module");
+            // only_categories_.push_back("source_submodule");
             only_categories_.push_back("source_strip");
+            only_categories_.push_back("source_pad");
+            // only_categories_.push_back("source_calibration_track");
+            // only_categories_.push_back("source_calibration_carrier");
+            only_categories_.push_back("source_calibration_spot");
+            only_categories_.push_back("source_like_plate");
+            only_categories_.push_back("commissioning_source_spot");
             only_categories_.push_back("drift_cell_core");
             only_categories_.push_back("xcalo_block");
             only_categories_.push_back("gveto_block");

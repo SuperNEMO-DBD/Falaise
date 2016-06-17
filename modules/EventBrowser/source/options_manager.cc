@@ -28,8 +28,6 @@
 #include <stdexcept>
 
 // Third party
-// Boost:
-#include <boost/program_options.hpp>
 // Bayeux/datatools:
 #include <datatools/exception.h>
 // Falaise:
@@ -52,14 +50,12 @@ namespace snemo {
         return;
       }
 
-      // ctor:
       options_manager::options_manager()
       {
         this->set_defaults();
         return;
       }
 
-      // dtor:
       options_manager::~options_manager()
       {
         reset();
@@ -119,6 +115,127 @@ namespace snemo {
         _options_dictionnary_[DUMP_INTO_TOOLTIP]             = true;
         _options_dictionnary_[DUMP_INTO_TERMINAL]            = false;
         _options_dictionnary_[DUMP_INTO_WINDOW]              = false;
+        return;
+      }
+
+      void options_manager::define_browser_options(boost::program_options::options_description & browser_options_,
+                                                   uint32_t flags_)
+      {
+        // Shortcut for Boost/program_options namespace :
+        // See: http://www.boost.org/doc/libs/1_46_1/doc/html/program_options.html
+        namespace po = boost::program_options;
+        po::options_description_easy_init easy_init = browser_options_.add_options();
+        bool parse_logging         = true;
+        bool parse_load_dll        = true;
+        bool parse_detector_config_file = true;
+        // Inhibition of the parsinf for specific options:
+        if (flags_ & browser_opt_no_logging) parse_logging = false;
+        if (flags_ & browser_opt_no_dll_load) parse_load_dll = false;
+        if (flags_ & browser_opt_no_detector_config) parse_detector_config_file = false;
+
+        if (parse_logging) {
+          easy_init("logging-priority,P",
+                    po::value<std::string>()
+                    ->default_value("notice"),
+                    "set the logging priority threshold");
+        }
+
+        easy_init("scale,s",
+                  po::value<double>(&_scaling_factor_),
+                  "scale factor for computer screen (height/width)");
+
+        easy_init("auto-reading-delay,a",
+                  po::value<unsigned int>(),
+                  "automatic event reading delay in seconds");
+
+        if (parse_detector_config_file) {
+          easy_init("detector-config-file",
+                    po::value<std::string>(&_detector_config_file_),
+                    "set the path to the detector configuration file");
+        }
+
+        easy_init("style-config-file",
+                  po::value<std::string>(&_style_config_file_),
+                  "set the path to the style configuration file");
+
+        easy_init("cut-config-file",
+                  po::value<std::string>(&_cut_config_file_),
+                  "set the path to the cut configuration file");
+
+        easy_init("preload",
+                  po::value<bool>(&_preload_)
+                  ->zero_tokens()
+                  ->default_value(false),
+                  "enable the load in memory of Boost archive files (working only with pure 'bxg4_production' output)");
+
+        easy_init("input-files,i",
+                  po::value<std::vector<std::string> >(&_input_files_),
+                  "set an input file(s)");
+
+        if (parse_load_dll) {
+          easy_init("load-dll,l",
+                    po::value<std::vector<std::string> >(&_libraries_),
+                    "set a DLL to be loaded.");
+        }
+
+        return;
+      }
+
+      void options_manager::define_view_options(boost::program_options::options_description & viewer_options_,
+                                                uint32_t /* flags_ */)
+      {
+        namespace po = boost::program_options;
+
+        viewer_options_.add_options()
+          ("2d-display",
+           po::value<std::string>()
+           ->default_value("left")
+           ->value_name("position"),
+           "set 2D display position")
+
+          ("full-2d-view",
+           po::value<bool>(&_options_dictionnary_[FULL_2D_VIEW])
+           ->zero_tokens(),
+           "add a new tab with top/front/side 2D view in one frame")
+
+          ("focus-on-roi",
+           po::value<bool>(&_options_dictionnary_[FOCUS_ROI])
+           ->zero_tokens(),
+           "focus views on the 'region-of-interest'")
+
+          ("show-simulated-vertex",
+           po::value<bool>(&_options_dictionnary_[SHOW_MC_VERTEX]),
+           "show simulated vertex")
+
+          ("show-simulated-tracks",
+           po::value<bool>(&_options_dictionnary_[SHOW_MC_TRACKS]),
+           "show simulated tracks")
+
+          ("show-simulated-hits",
+           po::value<bool>(&_options_dictionnary_[SHOW_MC_HITS]),
+           "show simulated hits")
+
+          ("show-calibrated-hits",
+           po::value<bool>(&_options_dictionnary_[SHOW_CALIBRATED_HITS]),
+           "show calibrated hits")
+
+          ("show-calibrated-info",
+           po::value<bool>(&_options_dictionnary_[SHOW_CALIBRATED_INFO]),
+           "show calibrated info")
+
+          ("show-tracker-clustered-hits",
+           po::value<bool>(&_options_dictionnary_[SHOW_TRACKER_CLUSTERED_HITS]),
+           "show tracker clustered hits")
+
+          ("show-tracker-trajectories",
+           po::value<bool>(&_options_dictionnary_[SHOW_TRACKER_TRAJECTORIES]),
+           "show tracker trajectories")
+
+          ("show-particle-tracks",
+           po::value<bool>(&_options_dictionnary_[SHOW_PARTICLE_TRACKS]),
+           "show particle tracks")
+
+          ; // end of 'view options' description
         return;
       }
 
@@ -291,10 +408,62 @@ namespace snemo {
           } else {
             DT_THROW_IF(true, std::logic_error, "2D display value must be 'left' or 'right'");
           }
-         }
+        }
 
         /*** end of opts/args parsing ***/
         return true;
+      }
+
+      int options_manager::apply_options(const boost::program_options::variables_map & vm_)
+      {
+
+        // Fetch the opts/args :
+        if (vm_.count("help")) {
+          // std::cout << "flvisualize -- ";
+          // std::cout << "A generic SuperNEMO event browser program" << std::endl;
+          // std::cout << std::endl;
+          // std::cout << "Usage : " << std::endl;
+          // std::cout << std::endl;
+          // std::cout << "  flvisualize [OPTIONS] [ARGUMENTS] "
+          //           << std::endl;
+          // std::cout << std::endl;
+          // std::cout << general_opts << std::endl;
+          // std::cout << std::endl;
+          // std::cout << view_opts << std::endl;
+          // std::cout << std::endl;
+          // this->print_examples(std::cout,
+          //                      "flvisualize",
+          //                      "Examples : ");
+          // std::cout << std::endl;
+          return -1;
+        }
+
+        if (vm_.count("auto-reading-delay")) {
+          _automatic_event_reading_ = true;
+          if (_automatic_event_reading_delay_ == 0)
+            _automatic_event_reading_delay_ = 1;
+        }
+
+        if (vm_.count("logging-priority")) {
+          const std::string logging_label = vm_["logging-priority"].as<std::string>();
+          _logging_priority_ = datatools::logger::get_priority(logging_label);
+          DT_THROW_IF(_logging_priority_ == datatools::logger::PRIO_UNDEFINED,
+                      std::logic_error,
+                      "Invalid logging priority label '" << logging_label << "' !");
+        }
+
+        if (vm_.count("2d-display")) {
+          const std::string position = vm_["2d-display"].as<std::string>();
+          if (position == "left") {
+            _2d_display_on_left_ = true;
+          } else if (position == "right") {
+            _2d_display_on_left_ = false;
+          } else {
+            DT_THROW_IF(true, std::logic_error, "2D display value must be 'left' or 'right'");
+          }
+        }
+
+        return 0;
       }
 
       void options_manager::print_examples(std::ostream      & out_,
