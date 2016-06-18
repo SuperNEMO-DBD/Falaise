@@ -66,7 +66,6 @@ namespace dtc = datatools::configuration;
 #include "falaise/version.h"
 #include "falaise/exitcodes.h"
 #include "falaise/resource.h"
-#include "falaise/variance_service.h"
 #include "FLReconstructResources.h"
 
 //----------------------------------------------------------------------
