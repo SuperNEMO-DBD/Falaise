@@ -203,8 +203,8 @@ void do_cldialog(int argc_, char *argv_[], FLVisualizeArgs& params_) {
   }
 
   // Handle logging, which can't be bound yet
-  if (vMap.count("logging")) {
-    std::string loggingLabel = vMap["logging"].as<std::string>();
+  if (vMap.count("logging-priority")) {
+    std::string loggingLabel = vMap["logging-priority"].as<std::string>();
     datatools::logger::priority prio = datatools::logger::get_priority(loggingLabel);
     if (prio != datatools::logger::PRIO_UNDEFINED) {
       params_.logLevel = prio;
