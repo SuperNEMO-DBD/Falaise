@@ -500,9 +500,10 @@ int main( int  argc_ , char **argv_  )
 	    std::clog << "Tracker records size = " << my_tracker_records.size() << std::endl;
 	    my_tracker_records[0].display();
 
-	    std::cout << "Event # = " << psd_count << std::endl;
-	    std::cout << "next event ? [enter for yes]" << std::endl;
-	    std::cin.get();	  
+	    std::clog << "Event # = " << psd_count << std::endl;
+	    // std::cout << "next event ? [enter for yes]" << std::endl;
+	    // std::cin.get();
+	    
 	    // reset line number and side number :
 	    side = 0;
 	    line_number = 0;

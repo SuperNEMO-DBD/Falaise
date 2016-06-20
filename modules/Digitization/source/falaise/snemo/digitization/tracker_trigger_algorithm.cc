@@ -835,11 +835,11 @@ namespace snemo {
       build_tracker_record();
 
       // Display for Debug with Thierry & Garrido :
-      //print_zones(std::clog);
-      //if (geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2 == 2) print_sliding_zones(std::clog);
-      //print_zones(std::clog);
-      //print_zone_information(std::clog);
-      //_tracker_record_finale_decision_.display();
+      // print_zones(std::clog);
+      // if (geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2 == 2) print_sliding_zones(std::clog);
+      // print_zones(std::clog);
+      // print_zone_information(std::clog);
+      // _tracker_record_finale_decision_.display();
       // display_matrix();
       return;
     }
