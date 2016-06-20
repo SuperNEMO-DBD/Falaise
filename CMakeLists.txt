@@ -38,7 +38,7 @@ endif()
 # CMake/project requirements and configuration
 #
 cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
-project(Falaise VERSION "2.1.0")
+project(Falaise VERSION "3.0.0")
 
 # - Load custom modules
 list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR}/cmake)
@@ -137,7 +137,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # - Allow choice of standard
 enum_option(FALAISE_CXX_STANDARD
-  VALUES "98" "11" "14"
+  VALUES "11" "14"
   TYPE   STRING
   DOC    "Choose C++ Standard to compile against"
   )
@@ -258,7 +258,7 @@ mark_as_advanced(FALAISE_WITH_DEVELOPER_TOOLS)
 # - GSL
 # - ROOT
 # - Geant4
-find_package(Bayeux 2.1.0 REQUIRED)
+find_package(Bayeux 3.0.0 REQUIRED)
 if(NOT Bayeux_MCTOOLS_GEANT4_FOUND)
   message(FATAL_ERROR "Bayeux found, but it does not supply the MCTools/Geant4 module")
 endif()

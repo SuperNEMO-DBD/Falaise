@@ -23,7 +23,7 @@
 #-----------------------------------------------------------------------
 # Configure application
 # - Bit hacky for now
-find_package(Boost 1.55 REQUIRED program_options filesystem system)
+find_package(Boost 1.60 REQUIRED program_options filesystem system)
 find_package(Geant4 REQUIRED)
 
 #-----------------------------------------------------------------------
