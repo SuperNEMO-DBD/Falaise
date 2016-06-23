@@ -369,7 +369,7 @@ int main( int  argc_ , char **argv_  )
 
 		    else if (iblock > 9)
 		      {
-			if (geiger_matrix[0][jlayer][38 + (iblock * 2) + 1] == true)
+			if (geiger_matrix[0][jlayer][38 + (iblock * 2) - 1] == true)
 			  {
 			    ctw1_side_0_row_0_bitset.set(jlayer, true);
 			  }
@@ -377,7 +377,7 @@ int main( int  argc_ , char **argv_  )
 			  {
 			    ctw1_side_0_row_1_bitset.set(jlayer, true);
 			  }
-			if (geiger_matrix[1][jlayer][38 + (iblock * 2) + 1] == true)
+			if (geiger_matrix[1][jlayer][38 + (iblock * 2) - 1] == true)
 			  {
 			    ctw1_side_1_row_0_bitset.set(jlayer, true);
 			  }
@@ -480,7 +480,6 @@ int main( int  argc_ , char **argv_  )
 		// std::clog << "CTW2:S1:R0 " << ctw2_side_1_row_0_bitset << std::endl;
 		// std::clog << "CTW2:S1:R1 " << ctw2_side_1_row_1_bitset << std::endl;
 		// std::clog << bitset_ctw_2 << std::endl << std::endl;
-		    
 		
 		my_geiger_ctw_0.set_55_bits_in_ctw_word(iblock, bitset_ctw_0);
 		my_geiger_ctw_1.set_55_bits_in_ctw_word(iblock, bitset_ctw_1);

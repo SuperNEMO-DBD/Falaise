@@ -23,7 +23,9 @@
 // Root : 
 #include "TFile.h"
 #include "TTree.h"
-
+#include "TH1F.h"
+#include "TH2F.h"
+#include "TH3F.h"
 
 int column_to_hc_half_zone(const int & column);
 
@@ -163,11 +165,9 @@ int main( int  argc_ , char **argv_  )
     
     // Check if a column count for 2 half zones :
     int process_size = 1;
-    bool event_for_two_zones = false;
     if ((column >= 3 && column <= 5) || column == 62 || (column >= 107 && column <= 109))
       {
 	process_size = 2;
-	event_for_two_zones = true;
       }
 
     for (int i = 0; i < process_size; i++)
@@ -184,30 +184,7 @@ int main( int  argc_ , char **argv_  )
 
 	// Event record :
 	datatools::things ER;
-    
-        // Output path :
-	datatools::fetch_path_with_env(output_path);
-	if (is_output_path) output_path = output_path;
-	else output_path = "${FALAISE_DIGITIZATION_TESTING_DIR}/output_default/";
-	datatools::fetch_path_with_env(output_path);
-
-	// Name of SD output files
-	std::string HC_writer_1 = output_path + "HC_writer" + ".brio";
-
-	// Event writer : 
-	dpp::output_module writer_1;
-	datatools::properties writer_config_1;
-	writer_config_1.store ("logging.priority", "debug");
-	writer_config_1.store ("files.mode", "single");   
-	writer_config_1.store ("files.single.filename", HC_writer_1);
-	writer_1.initialize_standalone(writer_config_1); 
-
-	// Output ROOT file : 
-	std::string root_filename = output_path + "HC_" + vtx_filename + "_analysis.root";
-	datatools::fetch_path_with_env(root_filename);
-	TFile* root_file = new TFile(root_filename.c_str(), "RECREATE");
-	TTree* hc_analysis_tree = new TTree("HC_analysis_tree", "Half Commissioning analysis tree");
-      
+     
 	// Internal counters
 	int psd_count = 0; // Event counter
 	
@@ -215,7 +192,9 @@ int main( int  argc_ , char **argv_  )
 
 	int hc_half_zone = column_to_hc_half_zone(column) + i;
 	std::string hc_main_calo_half_zone_rules  = " ";
-	std::string hc_xwall_calo_half_zone_rules = " ";
+	// Invalidate the rule for hc xwall (all zones except 0 and 19 :
+	std::string hc_xwall_calo_half_zone_rules = "category='xcalo_block' module={1} side={0} wall={*} column={*} row={*}";
+
 	std::string hc_geiger_half_zone_rules     = " ";
 	int geiger_hc_zone_inf_limit = 0;
 	int geiger_hc_zone_sup_limit = 0;
@@ -226,6 +205,7 @@ int main( int  argc_ , char **argv_  )
 	  {
 	    geiger_hc_zone_inf_limit = 0;
 	    geiger_hc_zone_sup_limit = 5;
+	    hc_xwall_calo_half_zone_rules = "category='xcalo_block' module={0} side={1} wall={0} column={*} row={*}";
 	  }
 	else if (hc_half_zone >= 1 && hc_half_zone <= 10)
 	  {	   
@@ -241,32 +221,83 @@ int main( int  argc_ , char **argv_  )
 	  {		    
 	    geiger_hc_zone_inf_limit = 107;
 	    geiger_hc_zone_sup_limit = 112;
+	    hc_xwall_calo_half_zone_rules = "category='xcalo_block' module={0} side={1} wall={1} column={*} row={*}";
 	  }
 
-	std::clog << "borne inf gg = " << geiger_hc_zone_inf_limit << " borne sup gg = " << geiger_hc_zone_sup_limit << std::endl;
-	hc_main_calo_half_zone_rules = "category='calorimeter_block' module={0} side={1} column={" + std::to_string(hc_half_zone) + "} row={*} part={*}";
-		
-	//hc_xwall_calo_half_zone_rules = "category='calorimeter_block' module={0} side={1} column={8} row={*} part={*}";
-	hc_geiger_half_zone_rules = "category='drift_cell_core' module={0} side={1} layer={*} row={"
+	// Id selector rules :
+	hc_main_calo_half_zone_rules  = "category='calorimeter_block' module={0} side={1} column={" + std::to_string(hc_half_zone) + "} row={*} part={*}";
+	hc_geiger_half_zone_rules     = "category='drift_cell_core' module={0} side={1} layer={*} row={"
 	  + std::to_string(geiger_hc_zone_inf_limit) + ";" 
 	  + std::to_string(geiger_hc_zone_inf_limit + 1) + ";" 
 	  + std::to_string(geiger_hc_zone_inf_limit + 2) + ";" 
 	  + std::to_string(geiger_hc_zone_inf_limit + 3) + ";" 
 	  + std::to_string(geiger_hc_zone_inf_limit + 4) + ";" 
 	  + std::to_string(geiger_hc_zone_sup_limit) + "}";
-	    
+
+	std::map<geomtools::geom_id, int> hit_rate_map;
+	
+	// Output path :
+	std::string output_path_dir ="";
+	datatools::fetch_path_with_env(output_path);
+	if (is_output_path) output_path_dir = output_path + "hc_half_zone_" + std::to_string(hc_half_zone) + "/";
+	else output_path = "${FALAISE_DIGITIZATION_TESTING_DIR}/output_default/";
+	datatools::fetch_path_with_env(output_path);
+	
+	std::clog << "OUTPUT PATH = " << output_path_dir << std::endl;	
+	
+	// Name of SD output files
+	std::string HC_writer_1 = output_path_dir + "HC_" + vtx_filename + "_match_rules" + ".brio";
+
+	// Event writer : 
+	dpp::output_module writer_1;
+	datatools::properties writer_config_1;
+	writer_config_1.store ("logging.priority", "debug");
+	writer_config_1.store ("files.mode", "single");   
+	writer_config_1.store ("files.single.filename", HC_writer_1);
+	writer_1.initialize_standalone(writer_config_1); 
+		
+	// Output ROOT file : 
+	std::string root_filename = output_path_dir + "HC_" + vtx_filename + "_analysis.root";
+	datatools::fetch_path_with_env(root_filename);
+	TFile* root_file = new TFile(root_filename.c_str(), "RECREATE");
+	TTree* hc_analysis_tree = new TTree("HC_analysis_tree", "Half Commissioning analysis tree");
+
+	TH1F * calo_half_zone_energy_spectrum_TH1F = new TH1F("Calo half zone energy spectrum TH1F",
+							      Form("Calo half zone energy spectrum row %i, col %i, zone %i;", row, column, hc_half_zone),
+							      100, 0, 3000);
+
+	TH2F * main_calo_half_zone_distribution_TH2F = new TH2F("Main calo half zone distribution TH2F",
+								Form("Main calo half zone distribution row %i, col %i, zone %i;", row, column, hc_half_zone),
+								20, 0, 20,
+								14, 0, 14);
+
+	TH2F * xwall_calo_half_zone_distribution_TH2F = new TH2F("Xwall calo half zone distribution TH2F",
+								 Form("Xwall calo half zone distribution row %i, col %i, zone %i;", row, column, hc_half_zone),
+								 5, 0, 5,
+								 17, 0, 17);
+	
+	TH2F * geiger_cells_half_zone_distribution_TH2F = new TH2F("GG cells half zone distribution",
+						
+								   Form("GG cells half zone distribution row %i, col %i, zone %i;", row, column, hc_half_zone),		   
+								   7, 0 , 7,
+								   10, 0, 10);
 	while (!reader.is_terminated())
 	  {
 	    if(is_display) std::clog <<  "********************************************************************************" << std::endl;
 	    if(is_display) std::clog <<  "****************************** EVENT #" << psd_count << " **************************************" << std::endl;
 	    reader.process(ER);
 	    
+	    bool write_event = false;
+	    std::set<geomtools::geom_id> set_of_already_hit_gid_for_an_event;
+
 	    // A plain `mctools::simulated_data' object is stored here :
 	    if (ER.has(SD_bank_label) && ER.is_a<mctools::simulated_data>(SD_bank_label)) 
 	      {
 		// Access to the "SD" bank with a stored `mctools::simulated_data' :
 		const mctools::simulated_data & SD = ER.get<mctools::simulated_data>(SD_bank_label);
 
+		std::map<geomtools::geom_id, double> calo_gid_energy_map;
+		
 		// If main calo hits :
 		if (SD.has_step_hits("calo"))
 		  {
@@ -288,12 +319,39 @@ int main( int  argc_ , char **argv_  )
 			const geomtools::geom_id & main_calo_gid = BSH.get_geom_id();
 			if (my_hc_main_calo_id_selector.match(main_calo_gid))
 			  {
+			    const bool is_in_set = set_of_already_hit_gid_for_an_event.find(main_calo_gid) != set_of_already_hit_gid_for_an_event.end();
+			    const bool is_in_map = hit_rate_map.find(main_calo_gid) != hit_rate_map.end();
+			    const bool is_in_energy_map = calo_gid_energy_map.find(main_calo_gid) != calo_gid_energy_map.end();
+
+			    int column = main_calo_gid.get(2);
+			    int row = main_calo_gid.get(3);
+			    double energy = BSH.get_energy_deposit();
+			    if (!is_in_set && !is_in_map)
+			      {
+				hit_rate_map.insert(std::pair<geomtools::geom_id, int>(main_calo_gid, 1) );
+				main_calo_half_zone_distribution_TH2F->Fill(column, row);
+			      }
+			    else if (!is_in_set && is_in_map)
+			      {
+				hit_rate_map.find(main_calo_gid)->second++;
+				main_calo_half_zone_distribution_TH2F->Fill(column, row);
+			      }
+
+			    if (!is_in_energy_map)
+			      {
+				calo_gid_energy_map.insert(std::pair<geomtools::geom_id, double>(main_calo_gid, energy) );
+			      }
+
+			    else
+			      {
+				calo_gid_energy_map.find(main_calo_gid)->second += energy;
+			      }
+
+			    write_event = true;
+			    set_of_already_hit_gid_for_an_event.insert(main_calo_gid);
+
 			    if (is_display) std::clog << "ID=" << main_calo_gid << " matches the selector rules !" << std::endl;
 			    if (is_display) BSH.tree_dump(std::clog, "A Main calo Base Step Hit : ", "INFO : ");
-			  }
-			else
-			  {
-			    if (is_display) std::clog << "ID=" << main_calo_gid << " does not match the selector rules !" << std::endl;
 			  }
 		      }
 
@@ -303,15 +361,81 @@ int main( int  argc_ , char **argv_  )
 		if (SD.has_step_hits("xcalo"))
 		  {
 		    const size_t number_of_xcalo_hits = SD.get_number_of_step_hits("xcalo");
+		    // Rules have to change depending on row / column input
+		    geomtools::id_selector my_hc_xwall_calo_id_selector(my_geom_manager.get_id_mgr());
+		    my_hc_xwall_calo_id_selector.initialize(hc_xwall_calo_half_zone_rules);
+		    if (is_display) my_hc_xwall_calo_id_selector.dump(std::clog, "Xwall calo ID selector: ");
+
+		    mctools::simulated_data::hit_handle_collection_type BSHC = SD.get_step_hits("xcalo");
 		
-		
+		    if (is_display) std::clog << "BSCH step hits # = " << BSHC.size() << std::endl;
+		    int count = 0;
+		    for (mctools::simulated_data::hit_handle_collection_type::const_iterator i = BSHC.begin();
+			 i != BSHC.end();
+			 i++) 
+		      {
+			const mctools::base_step_hit & BSH = i->get();
+			const geomtools::geom_id & xwall_calo_gid = BSH.get_geom_id();
+			if (my_hc_xwall_calo_id_selector.match(xwall_calo_gid))
+			  {
+			    const bool is_in_set = set_of_already_hit_gid_for_an_event.find(xwall_calo_gid) != set_of_already_hit_gid_for_an_event.end();
+			    const bool is_in_map = hit_rate_map.find(xwall_calo_gid) != hit_rate_map.end();
+			    const bool is_in_energy_map = calo_gid_energy_map.find(xwall_calo_gid) != calo_gid_energy_map.end();
+
+			    int wall = xwall_calo_gid.get(2);
+			    int column = xwall_calo_gid.get(3);
+			    int row = xwall_calo_gid.get(4);
+			    
+			    double energy = BSH.get_energy_deposit();
+			    
+			    if (wall == 1)
+			      {
+				column += 2;
+			      }
+			    
+			    if (!is_in_set && !is_in_map)
+			      {
+				hit_rate_map.insert(std::pair<geomtools::geom_id, int>(xwall_calo_gid, 1) );
+				xwall_calo_half_zone_distribution_TH2F->Fill(column, row);
+			      }
+			    else if (!is_in_set && is_in_map)
+			      {
+				hit_rate_map.find(xwall_calo_gid)->second++;
+				xwall_calo_half_zone_distribution_TH2F->Fill(column, row);
+			      }
+
+			    if (!is_in_energy_map)
+			      {
+				calo_gid_energy_map.insert(std::pair<geomtools::geom_id, double>(xwall_calo_gid, energy) );
+			      }
+
+			    else
+			      {
+				calo_gid_energy_map.find(xwall_calo_gid)->second += energy;
+			      }
+
+			    write_event = true;
+			    set_of_already_hit_gid_for_an_event.insert(xwall_calo_gid);
+
+			    if (is_display) std::clog << "ID=" << xwall_calo_gid << " matches the selector rules !" << std::endl;
+			    if (is_display) BSH.tree_dump(std::clog, "A Xwall calo Base Step Hit : ", "INFO : ");
+			  }
+		      }
+
 		  } // end of if has step hits xcalo
-	    
+		
+		std::map<geomtools::geom_id, double>::iterator it_energy;
+		for (it_energy = calo_gid_energy_map.begin(); it_energy != calo_gid_energy_map.end(); it_energy++)
+		  {
+		    double energy = it_energy -> second;
+		    energy *= 1000;
+		    calo_half_zone_energy_spectrum_TH1F->Fill(energy);
+		  }
+
 		// If Geiger hits :
 		if (SD.has_step_hits("gg"))
 		  {
 		    const size_t number_of_hits = SD.get_number_of_step_hits("gg");
-		    std::clog << "Has steps hits geiger : " << SD.has_step_hits("gg") << std::endl;
 		    // Rules have to change depending on row / column input
 		    geomtools::id_selector my_hc_geiger_id_selector(my_geom_manager.get_id_mgr());
 		    my_hc_geiger_id_selector.initialize(hc_geiger_half_zone_rules);
@@ -347,7 +471,6 @@ int main( int  argc_ , char **argv_  )
 		      } // end of ihit
 		    mctools::simulated_data::hit_handle_collection_type BSHC = flaged_sd.get_step_hits("gg");
 		    if (is_display) std::clog << "BSCH step hits # = " << BSHC.size() << std::endl;
-		    int count = 0;
 		    for (mctools::simulated_data::hit_handle_collection_type::const_iterator i = BSHC.begin();
 			 i != BSHC.end();
 			 i++) 
@@ -357,37 +480,60 @@ int main( int  argc_ , char **argv_  )
 			if (BSH.get_auxiliaries().has_flag("geiger_already_hit") || BSH.get_auxiliaries().has_flag("other_geiger_already_hit")) {}
 			else
 			  {
-			    // extract the corresponding geom ID:
 			    const geomtools::geom_id & geiger_gid = BSH.get_geom_id();
-
+			    
+			    int layer = geiger_gid.get(2);
+			    int row   = geiger_gid.get(3)- geiger_hc_zone_inf_limit;
+			    
 			    if (my_hc_geiger_id_selector.match(geiger_gid))
 			      {
 				if (is_display) std::clog << "ID=" << geiger_gid << " matches the selector rules !" << std::endl;
-			      }
-			    else
-			      {
-				if (is_display) std::clog << "ID=" << geiger_gid << " does not match the selector rules !" << std::endl;
-			      }
-			
-			    std::clog << "geiger gid = " << geiger_gid << std::endl;
-			    int hit_id = count;
-			    double time_start = BSH.get_time_start();
-			    geomtools::vector_3d position_start_vector = BSH.get_position_start();
-			    geomtools::vector_3d position_stop_vector  = BSH.get_position_stop();
-			    geomtools::vector_3d momentum_start_vector = BSH.get_momentum_start();
-			
-			    count++;
+				
+				const bool is_in_map = hit_rate_map.find(geiger_gid) != hit_rate_map.end();
 
+				if (!is_in_map) 
+				  {
+				    hit_rate_map.insert(std::pair<geomtools::geom_id, int>(geiger_gid, 1) );
+				    geiger_cells_half_zone_distribution_TH2F->Fill(row, layer);
+				  }
+				else 
+				  {
+				    hit_rate_map.find(geiger_gid)->second++;
+				    geiger_cells_half_zone_distribution_TH2F->Fill(row, layer);
+				  }
+				write_event = true;
+			      }
 			  }
 		      } // end of for 
 		  } // end of if has step hits "gg"
-
 	      } // end of ER
+
+	    if (write_event == true) writer_1.process(ER);
 	    ER.clear();
 	    psd_count++;
 	    if (is_display) std::clog << "DEBUG : psd count " << psd_count << std::endl;
 	  } // end of while reader
+		
+      	std::map<geomtools::geom_id, int>::iterator it;
 	
+	if (is_display)
+	  {
+	    for (it = hit_rate_map.begin(); it != hit_rate_map.end(); it++)
+	      {		
+		std::clog << "Elements in mymap:" << std::endl;
+		std::clog << "GID => " << it->first <<  " Nhits : " << it->second << std::endl;
+	      }
+	  }
+	
+	root_file->cd();
+	calo_half_zone_energy_spectrum_TH1F->GetXaxis()->SetTitle("Energy [keV]");
+	calo_half_zone_energy_spectrum_TH1F->Write();
+	geiger_cells_half_zone_distribution_TH2F->Write();
+	main_calo_half_zone_distribution_TH2F->Write();
+	xwall_calo_half_zone_distribution_TH2F->Write();
+	root_file->Write();
+	root_file->Close();
+
       } // end of for i = process size 
     
 
@@ -426,8 +572,12 @@ int column_to_hc_half_zone(const int & column)
     {
       hc_zone = (column + 4) / 6;
     }
+  else if (column >= 107 && column <= 109)
+    {
+      hc_zone = 18;
+    }
   
-  else if (column >= 107 && column <= 112)
+  else if (column >= 110 && column <= 112)
     {
       hc_zone = 19;
     }
