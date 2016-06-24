@@ -12,4 +12,4 @@ add_library(Things2Root SHARED Things2Root.h Things2Root.cpp)
 target_link_libraries(Things2Root FalaiseModule)
 
 # Install it
-install(TARGETS Things2Root DESTINATION ${CMAKE_INSTALL_LIBDIR}/${Falaise_PLUGINLIBDIR})
+install(TARGETS Things2Root DESTINATION ${CMAKE_INSTALL_LIBDIR}/${FALAISE_PLUGINLIBDIR})

@@ -60,18 +60,20 @@ add_library(Falaise_GammaTracking SHARED
   ${FalaiseGammaTrackingPlugin_HEADERS}
   ${FalaiseGammaTrackingPlugin_SOURCES})
 
-target_link_libraries(Falaise_GammaTracking GammaTracking Falaise)
+target_link_libraries(Falaise_GammaTracking GammaTracking FalaiseModule)
 
 # Apple linker requires dynamic lookup of symbols, so we
 # add link flags on this platform
 if(APPLE)
   set_target_properties(Falaise_GammaTracking
-    PROPERTIES LINK_FLAGS "-undefined dynamic_lookup"
+    PROPERTIES
+      LINK_FLAGS "-undefined dynamic_lookup"
+      INSTALL_RPATH "@loader_path"
     )
 endif()
 
 # Install it:
-install(TARGETS Falaise_GammaTracking DESTINATION ${CMAKE_INSTALL_LIBDIR}/Falaise/modules)
+install(TARGETS Falaise_GammaTracking DESTINATION ${CMAKE_INSTALL_LIBDIR}/${FALAISE_PLUGINLIBDIR})
 
 # Test support:
 option(FalaiseGammaTrackingPlugin_ENABLE_TESTING "Build unit testing system for FalaiseGammaTracking" ON)
