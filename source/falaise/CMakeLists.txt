@@ -52,6 +52,7 @@ set(FalaiseLibrary_SOURCES
   )
 
 set(FalaiseLibrary_TESTS)
+set(FalaiseLibrary_TESTS_CATCH)
 
 # - Declare headers, sources and test programs specific
 #   to various setups (snemo, bipo3...)
@@ -140,6 +141,29 @@ endif()
 # - We also output the executables to a dedicated directory
 set(_falaise_TEST_ENVIRONMENT "FALAISE_RESOURCE_DIR=${FALAISE_DATAROOTDIR}/resources")
 if(FALAISE_ENABLE_TESTING)
+  # - CATCH TESTS
+  foreach(_testsource ${FalaiseLibrary_TESTS_CATCH})
+    get_filename_component(_testname "${_testsource}" NAME_WE)
+    set(_testname "falaise-${_testname}")
+    add_executable(${_testname} ${_testsource})
+    target_link_libraries(${_testname}
+      PUBLIC Falaise FLCatch
+      PRIVATE "$<$<PLATFORM_ID:Darwin>:-undefined dynamic_lookup>"
+      )
+    add_test(NAME ${_testname} COMMAND ${_testname})
+    set_property(TEST ${_testname}
+      APPEND PROPERTY ENVIRONMENT ${_falaise_TEST_ENVIRONMENT}
+      )
+    # - For now, dump them into the testing output directory
+    set_target_properties(${_testname}
+      PROPERTIES
+      RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fltests
+      ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fltests
+      )
+  endforeach()
+
+
+  # - OLDSTYLE TESTS
   foreach(_testsource ${FalaiseLibrary_TESTS})
     get_filename_component(_testname "${_testsource}" NAME_WE)
     set(_testname "falaise-${_testname}")

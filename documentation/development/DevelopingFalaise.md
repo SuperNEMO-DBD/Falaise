@@ -26,6 +26,9 @@ Using Subversion for Version Control {#developingfalaise_subversion}
   - Tagging
   - Use of Git
 
+We recommend you consult the [main online Subversion Guide](http://svnbook.red-bean.com)
+on these topics.
+
 Commit Feature Based Changes  {#developingfalaise_logicalcommits}
 ----------------------------
 Commits work best when they contain changes related to one *feature*, e.g.
@@ -91,12 +94,13 @@ The C++ Architecture and API of Falaise {#developingfalaise_cpparchapi}
 =======================================
 - [C++](http://isocpp.org)
   - [Coding style and standards](@ref codingstandards)
-  - Standards, C++98, C++11
+  - Standards, C++11, C++14
   - Architecture of Falaise
   - Third Party Libraries
   - Multicore
 
 Unit and Integration Testing {#developingfalaise_testing}
 ============================
-  - Unit Testing
+Unit tests in Falaise are written using the [Catch framework](https://github.com/philsquared/Catch).
+A [dedicated page on unit testing in Falaise is provided](@ref fldevel_unittest).
 

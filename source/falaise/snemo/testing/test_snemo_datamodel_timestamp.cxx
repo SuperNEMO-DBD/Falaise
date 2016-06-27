@@ -1,101 +1,97 @@
 // test_timestamp.cxx
-
-// Standard library:
-#include <cstdlib>
-#include <iostream>
-#include <string>
-#include <exception>
-#include <limits>
-
-// Third party:
-// - Boost:
-#include <boost/cstdint.hpp>
-
-// This project:
+#include "catch.hpp"
 #include <falaise/snemo/datamodels/timestamp.h>
 
-int main(/* int argc_, char ** argv_ */)
-{
-  int error_code = EXIT_SUCCESS;
-  try {
-    std::clog << "Test program for class 'snemo::datamodel::timestamp'!" << std::endl;
+TEST_CASE("Timestamps are correctly constructed", "[falaise][datamodel]") {
+  // Default
+  snemo::datamodel::timestamp t1;
 
-    /*
-    bool debug = false;
+  REQUIRE( t1.get_seconds() == 0 );
+  REQUIRE( t1.get_picoseconds() == 0 );
+  REQUIRE( t1.is_valid() );
 
-    int iarg = 1;
-    while(iarg < argc_) {
-      std::string token = argv_[iarg];
-      if(token[0] == '-') {
-        std::string option = token;
-        if((option == "-d") ||(option == "--debug")) {
-          debug = true;
-        } else {
-          std::clog << "warning: ignoring option '" << option << "'!" << std::endl;
-        }
-      } else {
-        std::string argument = token;
-        {
-          std::clog << "warning: ignoring argument '" << argument << "'!" << std::endl;
-        }
-      }
-      iarg++;
-    }
-    */
-
-    std::clog << "Some checks:" << std::endl;
-    std::clog << "  size of time_t = " << sizeof(time_t) << std::endl;
-    std::clog << "  size of int64_t = " << sizeof(int64_t) << std::endl;
-    std::clog << "  min of int64_t = " << std::numeric_limits<int64_t>::min() << std::endl;
-    std::clog << "  max of int64_t = " << std::numeric_limits<int64_t>::max() << std::endl;
-    std::clog << "  eps of int64_t = " << std::numeric_limits<int64_t>::epsilon() << std::endl;
-
-    snemo::datamodel::timestamp ts1;
-    ts1.set_seconds(1268644034);
-    ts1.set_picoseconds(666);
-    std::clog << "ts1 = " << ts1 << std::endl;
-
-    snemo::datamodel::timestamp ts2;
-    ts2.set_seconds(1268644034);
-    ts2.set_picoseconds(346);
-    std::clog << "ts2 = " << ts2 << std::endl;
-
-    snemo::datamodel::timestamp ts3(ts1);
-    std::clog << "ts3 = " << ts3 << std::endl;
-
-    snemo::datamodel::timestamp ts4(ts2);
-    ts4.set_seconds(snemo::datamodel::timestamp::INVALID_SECONDS);
-    std::clog << "ts4 = " << ts4 << std::endl;
-
-    snemo::datamodel::timestamp ts5(ts2);
-    ts5.set_picoseconds(snemo::datamodel::timestamp::INVALID_PICOSECONDS);
-    std::clog << "ts5 = " << ts5 << std::endl;
-
-    snemo::datamodel::timestamp ts6;
-    std::clog << "ts6 = " << ts6 << std::endl;
-
-    snemo::datamodel::timestamp ts7(1268644034, 1204);
-    std::clog << "ts7 = " << ts7 << std::endl;
-
-    if(ts1 < ts2) {
-      std::clog << "Comparison result: ts1 < ts2" << std::endl;
-    } else {
-      std::clog << "Comparison result: ts1 >= ts2" << std::endl;
-    }
-
-    if(ts1 == ts3) {
-      std::clog << "Comparison result: ts1 == ts3" << std::endl;
-    }
-
-    std::clog << "The end." << std::endl;
-  }
-  catch(std::exception & x) {
-    std::cerr << "error: " << x.what() << std::endl;
-    error_code = EXIT_FAILURE;
-  }
-  catch(...) {
-    std::cerr << "error: " << "unexpected error!" << std::endl;
-    error_code = EXIT_FAILURE;
-  }
-  return(error_code);
+  // With times
+  snemo::datamodel::timestamp t2 {12345, 678910};
+  REQUIRE( t2.get_seconds() == 12345 );
+  REQUIRE( t2.get_picoseconds() == 678910 );
+  REQUIRE( t2.is_valid() );
 }
+
+TEST_CASE("Timestamps can be validated/invalidated", "[falaise][datamodel]") {
+  snemo::datamodel::timestamp t1;
+
+  REQUIRE( t1.is_valid() );
+
+  SECTION( "Invalidate changes validity" ) {
+    t1.invalidate();
+    REQUIRE_FALSE( t1.is_valid() );
+  }
+
+  SECTION( "Setting invalid seconds makes timestamp invalid" ) {
+    t1.set_seconds(snemo::datamodel::timestamp::INVALID_SECONDS);
+    REQUIRE_FALSE( t1.is_valid() );
+  }
+
+  SECTION( "Setting invalid picoseconds makes timestamp invalid" ) {
+    t1.set_picoseconds(snemo::datamodel::timestamp::INVALID_PICOSECONDS);
+    REQUIRE_FALSE( t1.is_valid() );
+  }
+
+  SECTION( "Timestamps can be reset to valid" ) {
+    t1.invalidate();
+    t1.set_seconds(1);
+    t1.set_picoseconds(1);
+    REQUIRE( t1.is_valid() );
+  }
+}
+
+TEST_CASE("Timestamps can be copied and compared", "[falaise][datamodel]") {
+  snemo::datamodel::timestamp t1 {12345, 678910};
+  snemo::datamodel::timestamp t1_copy(t1);
+
+  snemo::datamodel::timestamp t2_sec {12346, 678910};
+  snemo::datamodel::timestamp t2_pico {12345, 678911};
+
+  snemo::datamodel::timestamp tInvalid;
+  tInvalid.invalidate();
+
+  REQUIRE( t1 == t1_copy );
+  REQUIRE( t1 < t2_sec );
+  REQUIRE( t2_pico > t1 );
+
+  REQUIRE_THROWS( bool res = (t1 == tInvalid) );
+}
+
+TEST_CASE("Timestamps can be read from/written to strings", "[falaise][datamodel]") {
+  snemo::datamodel::timestamp tTest;
+  std::string sTest;
+
+  snemo::datamodel::timestamp t1 {12345, 678910};
+  std::string t1String {"[12345:678910]"};
+
+  snemo::datamodel::timestamp tInvalid;
+  tInvalid.invalidate();
+  std::string tStringInvalid {"[?:?]"};
+
+  std::string tStringValue {"[54321:987654321]"};
+  snemo::datamodel::timestamp tStringValueTime {54321,987654321};
+
+  SECTION( "Valid timestamp from std::string works" ) {
+    tTest.from_string(tStringValue);
+    REQUIRE( tTest == tStringValueTime );
+  }
+
+  SECTION( "Valid timestamp to std::string works" ) {
+    t1.to_string(sTest);
+    REQUIRE( sTest == t1String );
+  }
+
+  SECTION( "Invalid timestamp to/from std::string works" ) {
+    tTest.from_string(tStringInvalid);
+    REQUIRE_FALSE( tTest.is_valid() );
+    tTest.to_string(sTest);
+    REQUIRE( sTest == tStringInvalid);
+  }
+}
+
+

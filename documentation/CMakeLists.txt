@@ -70,6 +70,7 @@ set(FALAISE_MARKDOWN_DOCS
   flreconstruct/DocumentingFLReconstructModules.md
   flvisualize/FLVisualize.md
   development/DevelopingFalaise.md
+  development/UnitTestingWithCatch.md
   development/CodingStandards.md
   )
 

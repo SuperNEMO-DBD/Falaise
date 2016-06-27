@@ -151,6 +151,9 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/cuts/particle_track_cut.cc
   )
 
+list(APPEND FalaiseLibrary_TESTS_CATCH
+  snemo/testing/test_snemo_datamodel_timestamp.cxx
+  )
 list(APPEND FalaiseLibrary_TESTS
   snemo/testing/test_snemo_datamodel_event_header.cxx
   snemo/testing/test_snemo_datamodel_raw_trigger_infos.cxx
@@ -159,7 +162,6 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/testing/test_snemo_datamodel_raw_data.cxx
   snemo/testing/test_snemo_datamodel_calibrated_calorimeter_hit.cxx
   snemo/testing/test_snemo_datamodel_calibrated_tracker_hit.cxx
-  snemo/testing/test_snemo_datamodel_timestamp.cxx
   snemo/testing/test_snemo_datamodel_tracker_cluster.cxx
   snemo/testing/test_snemo_datamodel_tracker_clustering_data.cxx
   snemo/testing/test_snemo_datamodel_tracker_clustering_solution.cxx

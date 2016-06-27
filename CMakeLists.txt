@@ -266,6 +266,7 @@ endif()
 #-----------------------------------------------------------------------
 # Build the subdirectories as required
 #
+add_subdirectory(utilities)
 add_subdirectory(source)
 
 if(FALAISE_WITH_DOCS)
