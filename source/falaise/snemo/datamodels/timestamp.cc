@@ -6,7 +6,6 @@
 
 // Standard library:
 #include <limits>
-#include <time.h>
 
 namespace snemo {
 
@@ -15,164 +14,164 @@ namespace snemo {
     // serial tag for datatools::i_serializable interface :
     DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(timestamp, "snemo::datamodel::timestamp")
 
-    const int64_t timestamp::INVALID_SECONDS     = std::numeric_limits<int64_t>::min ();
-    const int64_t timestamp::INVALID_PICOSECONDS = std::numeric_limits<int64_t>::min ();
+    const int64_t timestamp::INVALID_SECONDS     = std::numeric_limits<int64_t>::min();
+    const int64_t timestamp::INVALID_PICOSECONDS = std::numeric_limits<int64_t>::min();
 
-    const char    timestamp::IO_FORMAT_OPEN      = '[';
-    const char    timestamp::IO_FORMAT_SEP       = ':';
-    const char    timestamp::IO_FORMAT_CLOSE     = ']';
-    const char    timestamp::IO_FORMAT_INVALID   = '?';
+    const char    timestamp::IO_FORMAT_OPEN    = '[';
+    const char    timestamp::IO_FORMAT_SEP     = ':';
+    const char    timestamp::IO_FORMAT_CLOSE   = ']';
+    const char    timestamp::IO_FORMAT_INVALID = '?';
 
-    bool timestamp::is_valid () const
+    bool timestamp::is_valid() const
     {
-      return std::isnormal (seconds_) &&  std::isnormal (picoseconds_);
+      return _seconds_ != INVALID_SECONDS && _picoseconds_ != INVALID_PICOSECONDS;
     }
 
-    void timestamp::invalidate ()
+    void timestamp::invalidate()
     {
-      seconds_ = INVALID_SECONDS;
-      picoseconds_ = INVALID_PICOSECONDS;
+      _seconds_ = INVALID_SECONDS;
+      _picoseconds_ = INVALID_PICOSECONDS;
       return;
     }
 
-    int timestamp::compare (const timestamp & a_ts) const
+    int timestamp::compare(const timestamp & ts_) const
     {
-      DT_THROW_IF (! is_valid (), std::logic_error, "Invalid timestamp (this) !");
-      DT_THROW_IF (! a_ts.is_valid (), std::logic_error, "Invalid timestamp (argument) !");
-      if (seconds_ < a_ts.seconds_) return -1;
-      if (seconds_ > a_ts.seconds_) return +1;
-      if (picoseconds_ < a_ts.picoseconds_) return -1;
-      if (picoseconds_ > a_ts.picoseconds_) return +1;
+      DT_THROW_IF(! is_valid(), std::logic_error, "Invalid timestamp (this) !");
+      DT_THROW_IF(! ts_.is_valid(), std::logic_error, "Invalid timestamp (argument) !");
+      if (_seconds_ < ts_._seconds_) return -1;
+      if (_seconds_ > ts_._seconds_) return +1;
+      if (_picoseconds_ < ts_._picoseconds_) return -1;
+      if (_picoseconds_ > ts_._picoseconds_) return +1;
       return 0;
     }
 
-    int64_t timestamp::get_seconds () const
+    int64_t timestamp::get_seconds() const
     {
-      return seconds_;
+      return _seconds_;
     }
 
-    void timestamp::set_seconds (int64_t new_value)
+    void timestamp::set_seconds(int64_t new_value_)
     {
-      seconds_ = new_value;
+      _seconds_ = new_value_;
       return;
     }
 
-    int64_t timestamp::get_picoseconds () const
+    int64_t timestamp::get_picoseconds() const
     {
-      return picoseconds_;
+      return _picoseconds_;
     }
 
     void
-    timestamp::set_picoseconds (int64_t new_value)
+    timestamp::set_picoseconds(int64_t new_value_)
     {
-      picoseconds_ = new_value;
+      _picoseconds_ = new_value_;
       return;
     }
 
     // ctor:
-    timestamp::timestamp ()
+    timestamp::timestamp()
     {
-      invalidate ();
+      invalidate();
       return;
     }
 
-    timestamp::timestamp (int64_t a_sec, int64_t a_picosec)
+    timestamp::timestamp(int64_t sec_, int64_t picosec_)
     {
-      set_seconds (a_sec);
-      set_picoseconds (a_picosec);
+      set_seconds(sec_);
+      set_picoseconds(picosec_);
       return;
     }
 
     // dtor:
-    timestamp::~timestamp ()
+    timestamp::~timestamp()
     {
       return;
     }
 
-    bool operator== (const timestamp & a_ts1, const timestamp & a_ts2)
+    bool operator==(const timestamp & ts1_, const timestamp & ts2_)
     {
-      return a_ts1.compare (a_ts2) == 0;
+      return ts1_.compare(ts2_) == 0;
     }
 
-    bool operator< (const timestamp & a_ts1, const timestamp & a_ts2)
+    bool operator<(const timestamp & ts1_, const timestamp & ts2_)
     {
-      return a_ts1.compare (a_ts2) == -1;
+      return ts1_.compare(ts2_) == -1;
     }
 
-    bool operator> (const timestamp & a_ts1, const timestamp & a_ts2)
+    bool operator>(const timestamp & ts1_, const timestamp & ts2_)
     {
-      return a_ts1.compare (a_ts2) == +1;
+      return ts1_.compare(ts2_) == +1;
     }
 
-    bool operator<= (const timestamp & a_ts1, const timestamp & a_ts2)
+    bool operator<=(const timestamp & ts1_, const timestamp & ts2_)
     {
-      return a_ts1.compare (a_ts2) <= 0;
+      return ts1_.compare(ts2_) <= 0;
     }
 
-    bool operator>= (const timestamp & a_ts1, const timestamp & a_ts2)
+    bool operator>=(const timestamp & ts1_, const timestamp & ts2_)
     {
-      return a_ts1.compare (a_ts2) >= 0;
+      return ts1_.compare(ts2_) >= 0;
     }
 
-    void timestamp::to_string (std::string & a_str) const
+    void timestamp::to_string(std::string & str_) const
     {
       std::ostringstream out;
       out << *this;
-      a_str = out.str ();
+      str_ = out.str();
       return;
     }
 
-    std::string timestamp::to_string () const
+    std::string timestamp::to_string() const
     {
       std::ostringstream out;
       out << *this;
-      return out.str ();
+      return out.str();
     }
 
-    void timestamp::from_string (const std::string & a_str)
+    void timestamp::from_string(const std::string & str_)
     {
       timestamp ts;
-      std::istringstream in (a_str);
+      std::istringstream in(str_);
       in >> ts;
-      DT_THROW_IF (! in, std::logic_error, "Format error !");
+      DT_THROW_IF(! in, std::logic_error, "Format error !");
       *this = ts;
       return;
     }
 
-    std::ostream & operator<< (std::ostream & a_out, const timestamp & a_ts)
+    std::ostream & operator<<(std::ostream & out_, const timestamp & ts_)
     {
-      a_out << timestamp::IO_FORMAT_OPEN;
-      if (a_ts.seconds_ != timestamp::INVALID_SECONDS) {
-        a_out << a_ts.seconds_;
+      out_ << timestamp::IO_FORMAT_OPEN;
+      if (ts_._seconds_ != timestamp::INVALID_SECONDS) {
+        out_ << ts_._seconds_;
       } else {
-        a_out << timestamp::IO_FORMAT_INVALID;
+        out_ << timestamp::IO_FORMAT_INVALID;
       }
-      a_out << timestamp::IO_FORMAT_SEP;
-      if (a_ts.picoseconds_ != timestamp::INVALID_PICOSECONDS) {
-        a_out << a_ts.picoseconds_;
+      out_ << timestamp::IO_FORMAT_SEP;
+      if (ts_._picoseconds_ != timestamp::INVALID_PICOSECONDS) {
+        out_ << ts_._picoseconds_;
       } else {
-        a_out << timestamp::IO_FORMAT_INVALID;
+        out_ << timestamp::IO_FORMAT_INVALID;
       }
-      a_out << timestamp::IO_FORMAT_CLOSE;
-      return a_out;
+      out_ << timestamp::IO_FORMAT_CLOSE;
+      return out_;
     }
 
-    std::istream & operator>> (std::istream & a_in, timestamp & a_ts)
+    std::istream & operator>>(std::istream & a_in, timestamp & ts_)
     {
       char c = 0;
       a_in >> c;
       if (! a_in) return a_in;
       if (c != timestamp::IO_FORMAT_OPEN) {
-        a_in.setstate (std::ios_base::failbit);
+        a_in.setstate(std::ios_base::failbit);
         return a_in;
       }
       int64_t s, ps;
       c = 0;
 
-      c = a_in.peek ();
+      c = a_in.peek();
       if (c == timestamp::IO_FORMAT_INVALID) {
         s = timestamp::INVALID_SECONDS;
-        a_in.get ();
+        a_in.get();
       } else {
         a_in >> s;
         if (! a_in) return a_in;
@@ -181,14 +180,14 @@ namespace snemo {
       c = 0;
       a_in >> c;
       if (c != timestamp::IO_FORMAT_SEP) {
-        a_in.setstate (std::ios_base::failbit);
+        a_in.setstate(std::ios_base::failbit);
         return a_in;
       }
 
-      c = a_in.peek ();
+      c = a_in.peek();
       if (c == timestamp::IO_FORMAT_INVALID) {
         ps = timestamp::INVALID_SECONDS;
-        a_in.get ();
+        a_in.get();
       } else {
         a_in >> ps;
         if (! a_in) return a_in;
@@ -197,11 +196,11 @@ namespace snemo {
       c = 0;
       a_in >> c;
       if (c != timestamp::IO_FORMAT_CLOSE) {
-        a_in.setstate (std::ios_base::failbit);
+        a_in.setstate(std::ios_base::failbit);
         return a_in;
       }
-      a_ts.set_seconds (s);
-      a_ts.set_picoseconds (ps);
+      ts_.set_seconds(s);
+      ts_.set_picoseconds(ps);
       return a_in;
     }
 

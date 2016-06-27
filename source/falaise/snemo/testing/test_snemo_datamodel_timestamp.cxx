@@ -6,9 +6,8 @@ TEST_CASE("Timestamps are correctly constructed", "[falaise][datamodel]") {
   // Default
   snemo::datamodel::timestamp t1;
 
-  REQUIRE( t1.get_seconds() == 0 );
-  REQUIRE( t1.get_picoseconds() == 0 );
-  REQUIRE( t1.is_valid() );
+  REQUIRE( t1.get_seconds() == snemo::datamodel::timestamp::INVALID_SECONDS );
+  REQUIRE( t1.get_picoseconds() == snemo::datamodel::timestamp::INVALID_PICOSECONDS );
 
   // With times
   snemo::datamodel::timestamp t2 {12345, 678910};
@@ -19,8 +18,7 @@ TEST_CASE("Timestamps are correctly constructed", "[falaise][datamodel]") {
 
 TEST_CASE("Timestamps can be validated/invalidated", "[falaise][datamodel]") {
   snemo::datamodel::timestamp t1;
-
-  REQUIRE( t1.is_valid() );
+  REQUIRE_FALSE( t1.is_valid() );
 
   SECTION( "Invalidate changes validity" ) {
     t1.invalidate();
@@ -93,5 +91,3 @@ TEST_CASE("Timestamps can be read from/written to strings", "[falaise][datamodel
     REQUIRE( sTest == tStringInvalid);
   }
 }
-
-

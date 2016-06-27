@@ -28,6 +28,7 @@ namespace snemo {
 
   namespace datamodel {
 
+    /// \brief A class to handle time stamp
     class timestamp : public datatools::i_serializable
     {
     public:
@@ -39,47 +40,57 @@ namespace snemo {
       static const char    IO_FORMAT_CLOSE;
       static const char    IO_FORMAT_INVALID;
 
-      int64_t get_seconds () const;
+      /// Return the number of seconds
+      int64_t get_seconds() const;
 
-      void set_seconds (int64_t);
+      /// Set the number of seconds
+      void set_seconds(int64_t);
 
-      int64_t get_picoseconds () const;
+      /// Return the number of picoseconds
+      int64_t get_picoseconds() const;
 
-      void set_picoseconds (int64_t);
+      /// Set the number of picoseconds
+      void set_picoseconds(int64_t);
 
       /// Constructor
-      timestamp ();
+      timestamp();
 
-      timestamp (int64_t a_sec, int64_t a_picosec);
+      /// Overloaded constructor
+      timestamp(int64_t sec_, int64_t picosec_);
 
       /// Destructor
-      virtual ~timestamp ();
+      virtual ~timestamp();
 
       /// Check if the timestamp object is valid
-      bool is_valid () const;
+      bool is_valid() const;
 
       /// Invalidate the timestamp object
-      void invalidate ();
+      void invalidate();
 
       /// Compare with another timestamp
-      int compare (const timestamp &) const;
+      int compare(const timestamp &) const;
 
-      friend bool operator== (const timestamp &, const timestamp &);
-      friend bool operator<  (const timestamp &, const timestamp &);
-      friend bool operator>  (const timestamp &, const timestamp &);
-      friend bool operator<= (const timestamp &, const timestamp &);
-      friend bool operator>= (const timestamp &, const timestamp &);
+      /// Format time stamp as string object and return it
+      std::string to_string() const;
 
-      std::string to_string () const;
-      void to_string (std::string & ) const;
+      /// Format time stamp as string object and return it as reference
+      void to_string(std::string & ) const;
+
+      /// Parse time from string object and set the timestamp object accordingly
       void from_string (const std::string &);
+
+      friend bool operator==(const timestamp &, const timestamp &);
+      friend bool operator<(const timestamp &, const timestamp &);
+      friend bool operator>(const timestamp &, const timestamp &);
+      friend bool operator<=(const timestamp &, const timestamp &);
+      friend bool operator>=(const timestamp &, const timestamp &);
       friend std::ostream & operator<< (std::ostream &, const timestamp &);
       friend std::istream & operator>> (std::istream &, timestamp &);
 
     private:
 
-      int64_t seconds_;     //!< Number of seconds
-      int64_t picoseconds_; //!< Number of picosecond
+      int64_t _seconds_;     //!< Number of seconds
+      int64_t _picoseconds_; //!< Number of picoseconds
 
       DATATOOLS_SERIALIZATION_DECLARATION()
     };
