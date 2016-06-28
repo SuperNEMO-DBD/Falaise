@@ -54,6 +54,7 @@ namespace bpo = boost::program_options;
 #include "bayeux/mctools/g4/simulation_module.h"
 #include "bayeux/mctools/g4/manager_parameters.h"
 #include "bayeux/mygsl/random_utils.h"
+#include "bayeux/mygsl/seed_manager.h"
 namespace dtc = datatools::configuration;
 
 // This Project
@@ -146,20 +147,22 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
      bpo::value<std::string>(&params.simulationManagerParams.vg_name)
      ->default_value("source_pads_bulk")
      ->value_name("[name]"),
-     "the name of the vertex generator"
-     )
+     "the name of the vertex generator")
     ("event-generator,e",
      bpo::value<std::string>(&params.simulationManagerParams.eg_name)
      ->default_value("Se82.0nubb")
      ->value_name("[name]"),
-     "the name of the event generator"
-     )
+     "the name of the event generator")
+    ("input-seeds,s",
+     bpo::value<std::string>(&params.simulationManagerParams.input_prng_seeds_file)
+     ->default_value("")
+     ->value_name("[file]"),
+     "file from which to load PRNGs' seeds")
     ("output-profiles,p",
      bpo::value<std::string>(&params.simulationManagerParams.output_profiles_activation_rule)
      ->default_value("")
      ->value_name("[rule]"),
-     "the output profiles activation rule (setup the truth hits' level of details)"
-     )
+     "the output profiles activation rule (setup the truth hits' level of details)")
     ("output-file,o",
      bpo::value<std::string>(&params.outputFile)->required()->value_name("[file]"),
      "file in which to store simulation results")
@@ -235,22 +238,6 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
     throw FLDialogOptionsError();
   }
 
-  // Explicitely  set   the  seeds   of  the   4  embedded   PRNGs  to
-  // 'mygsl::random_utils::SEED_INVALID'   (0)    for   an   automated
-  // randomization  of seeds  from the  current time  (and some  other
-  // possible entropy  sources).  This is not  recommended because the
-  // interface should  enforce the user  to explicitely set  the seeds
-  // for a  simulation run.  Note  that the 'XXX_seed'  parameters are
-  // initialized  with  the 'mygsl::random_utils::SEED_INVALID'  value
-  // (-1) which leads to an exception at PRNG startup.
-  params.simulationManagerParams.vg_seed   = mygsl::random_utils::SEED_TIME; // PRNG for the vertex generator
-  params.simulationManagerParams.eg_seed   = mygsl::random_utils::SEED_TIME; // PRNG for the primary event generator
-  params.simulationManagerParams.shpf_seed = mygsl::random_utils::SEED_TIME; // PRNG for the back end true hit processors
-  params.simulationManagerParams.mgr_seed  = mygsl::random_utils::SEED_TIME; // PRNG for the Geant4 engine itself
-  // params.vg_seed   = 1;
-  // params.eg_seed   = 2;
-  // params.shpf_seed = 3;
-  // params.mgr_seed  = 4;
 
   if (params.logLevel == datatools::logger::PRIO_INFORMATION) {
     params.simulationManagerParams.tree_dump(std::clog, "", "[information]: ");
@@ -288,12 +275,18 @@ void do_configure(int argc, char *argv[], FLSimulateArgs& params) {
     params.simulationManagerParams.manager_config_filename = FLSimulate::getControlFile("default");
     params.simulationManagerParams.vg_name = "source_pads_bulk";
     params.simulationManagerParams.eg_name = "Se82.0nubb";
+    params.simulationManagerParams.input_prng_seeds_file = "";
+    // Explicitely set the seeds of the 4 embedded PRNGs to
+    // 'mygsl::random_utils::SEED_INVALID' (-1). This leads to
+    // an exception at PRNG startup if nothing is done explicitely at configuration step:
+    params.simulationManagerParams.vg_seed   = mygsl::random_utils::SEED_INVALID; // PRNG for the vertex generator
+    params.simulationManagerParams.eg_seed   = mygsl::random_utils::SEED_INVALID; // PRNG for the primary event generator
+    params.simulationManagerParams.shpf_seed = mygsl::random_utils::SEED_INVALID; // PRNG for the back end true hit processors
+    params.simulationManagerParams.mgr_seed  = mygsl::random_utils::SEED_INVALID; // PRNG for the Geant4 engine itself
     params.simulationManagerParams.output_profiles_activation_rule = "";
   } catch (std::exception& e) {
     throw FLConfigDefaultError();
   }
-
-  // - Possible ".Falaise/flsimulate.rc" Config
 
   // - CL Dialog Config
   try {
@@ -308,7 +301,8 @@ void do_configure(int argc, char *argv[], FLSimulateArgs& params) {
 
 //----------------------------------------------------------------------
 //! Perform simulation using command line args as given
-falaise::exit_code do_flsimulate(int argc, char *argv[]) {
+falaise::exit_code do_flsimulate(int argc, char *argv[])
+{
   // - Configure
   FLSimulateArgs flSimParameters;
   try {
@@ -329,21 +323,34 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
       vserv.configure(flSimParameters.variants);
       // Start and lock the variant service:
       vserv.start();
-      // From this point, all other services and/or processing modules can benefit
-      // of the variant service during their configuration steps.
+      // From this point, all other services and/or processing modules can
+      // benefit of the variant service during their configuration steps.
     }
-  } catch (std::exception& e) {
-    std::cerr << "[datatools::configuration::variant_service::variant_exception] "
-              << e.what()
-              << std::endl;
-    throw FLDialogOptionsError();
+  } catch (std::exception & e) {
+    std::cerr << "flsimulate : Variant service threw exception" << std::endl;
+    std::cerr << e.what() << std::endl;
+    return falaise::EXIT_UNAVAILABLE;
   }
 
   // - Run
+  falaise::exit_code code = falaise::EXIT_OK;
   try {
 
+    if (flSimParameters.simulationManagerParams.input_prng_seeds_file.empty()) {
+      // If no input file is given with explicit PRNG seeding inside, the
+      // seeds are explicitely set to the 'mygsl::random_utils::SEED_AUTO'
+      // value for an automated randomization  of seeds  from a  possible source  of entropy.
+      // This mechanism works well for a single run. However, it is not recommended when one plans
+      // to launch several statistical independant runs. In such case on should enforce
+      // the user to explicitely set the seeds for each simulation run.
+      flSimParameters.simulationManagerParams.vg_seed   = mygsl::random_utils::SEED_AUTO; // PRNG for the vertex generator
+      flSimParameters.simulationManagerParams.eg_seed   = mygsl::random_utils::SEED_AUTO; // PRNG for the primary event generator
+      flSimParameters.simulationManagerParams.shpf_seed = mygsl::random_utils::SEED_AUTO; // PRNG for the back end true hit processors
+      flSimParameters.simulationManagerParams.mgr_seed  = mygsl::random_utils::SEED_AUTO; // PRNG for the Geant4 engine itself
+    }
+
     // Analyse the simulation manager configuration:
-    datatools::multi_properties flSimProperties("name","");
+    datatools::multi_properties flSimProperties("name", "");
     flSimProperties.read(flSimParameters.simulationManagerParams.manager_config_filename);
 
     // Output profiles:
@@ -401,23 +408,24 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
 
       status = flSimModule.process(workItem);
       if (status != dpp::base_module::PROCESS_OK) {
-        DT_LOG_ERROR(datatools::logger::PRIO_ERROR,
-                     "Simulation module failed");
-        break;
+        std::cerr << "flsimulate : Simulation module failed" << std::endl;
+        code = falaise::EXIT_UNAVAILABLE;
       }
 
       status = simOutput.process(workItem);
       if (status != dpp::base_module::PROCESS_OK) {
-        DT_LOG_ERROR(datatools::logger::PRIO_ERROR,
-                     "Output module failed");
+        std::cerr << "flsimulate : Output module failed" << std::endl;
+        code = falaise::EXIT_UNAVAILABLE;
+      }
+
+      if (code != falaise::EXIT_OK) {
         break;
       }
     }
-
   } catch (std::exception& e) {
-    std::cerr << "flsimulate : setup/run of simulation threw exception" << std::endl;
+    std::cerr << "flsimulate : Setup/run of simulation threw exception" << std::endl;
     std::cerr << e.what() << std::endl;
-    return falaise::EXIT_UNAVAILABLE;
+    code = falaise::EXIT_UNAVAILABLE;
   }
 
   if (vserv.is_started()) {
@@ -425,7 +433,7 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
     vserv.stop();
   }
 
-  return falaise::EXIT_OK;
+  return code;
 }
 
 
