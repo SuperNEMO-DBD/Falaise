@@ -31,7 +31,7 @@
 
 namespace falaise {
   /// Initialize resources of the Falaise library
-  void initialize(int argc_ = 0, char * argv_[] = 0);
+  void initialize(int argc_ = 0, char * argv_[] = 0, uint32_t flags_ = 0);
 
   /// Terminate resources of the Falaise library
   void terminate();
