@@ -387,7 +387,7 @@ falaise::exit_code do_flsimulate(int argc, char *argv[])
     flSimModule.set_name("G4SimulationModule");
     flSimModule.set_sd_label("SD");
     flSimModule.set_geometry_manager(geoManager);
-    flSimModule.set_simulation_manager_params(flSimParameters.simulationManagerParams);
+    flSimModule.set_geant4_parameters(flSimParameters.simulationManagerParams);
     flSimModule.initialize_simple();
 
     // Output module:
