@@ -629,14 +629,32 @@ namespace snemo {
 		  pair_for_a_clocktick.first  = a_coinc_calo_record_for_pair;
 		  pair_for_a_clocktick.second = a_tracker_record;
 		  _pair_records_.push_back(pair_for_a_clocktick);
-	      
-		} // end of ict1600
-	    } // end of if ct min 
+		  
+		  // Process calo tracker coincidence for a clocktick in coinc_algo
+		  // The coincidence process can be process(pair_for_a_ct)
+		  // { CARACO(), APE(), DAVE() }
+		  trigger_structures::coincidence_event_record a_coincidence_event_record;
+		  trigger_structures::L2_decision a_l2_decision;
 
-	  // Process calo tracker coincidence for a clocktick in coinc_algo
-	  // The coincidence process can be process(pair_for_a_ct)
-	  // { CARACO(), APE(), DAVE() }
-	  
+		  // Maybe check if a l2_decision already exist before coinc processing ?
+
+		  _coinc_algo_.process(pair_for_a_clocktick,
+				       a_coincidence_event_record,
+				       a_l2_decision);
+		  
+		  if (a_coincidence_event_record.clocktick_1600ns != clock_utils::INVALID_CLOCKTICK
+		      && a_coincidence_event_record.clocktick_1600ns == ict1600
+		      && a_coincidence_event_record.decision == true
+		      && a_coincidence_event_record.trigger_mode != trigger_structures::L2_trigger_mode::INVALID)
+		    {
+		      _coincidence_records_.push_back(a_coincidence_event_record);		      
+		    }
+
+		  // L2 decision to push back (not at each clocktick)
+
+		} // end of ict1600
+
+	    } // end of if ct min 
 
 	} // end of else if any_coinc
 
@@ -666,50 +684,7 @@ namespace snemo {
       return;
     }
 
-    // void trigger_algorithm_test_time::_process(const calo_ctw_data & calo_ctw_data_,
-    // 					       const geiger_ctw_data & geiger_ctw_data_)
-    // {
-    //   reset_data();
-    //   if (calo_ctw_data_.has_calo_ctw())
-    // 	{
-    // 	  _process_calo_algo(calo_ctw_data_);
-    // 	}
-      
-    //   if (geiger_ctw_data_.has_geiger_ctw())
-    //   	{
-    //   	  _process_tracker_algo(geiger_ctw_data_);
-    //   	}
-      
-    //   if (is_activated_coincidence())
-    // 	{
-    // 	  _process_coinc_algo();
-    // 	}    
-            
-    //   bool calo_decision = false;
-    //   calo_decision = _calo_algo_.get_calo_decision();
-    //   bool tracker_decision = false;
-    //   tracker_decision = _tracker_algo_.get_tracker_decision();
-    //   bool caraco_decision = false;
-    //   caraco_decision = _coinc_algo_.get_caraco_decision();
-    //   bool delayed_coincidence_decision = false;
-    //   delayed_coincidence_decision = _coinc_algo_.get_delayed_coincidence_decision();
-
-    //   // To improve depending of trigger configuration
-
-    //   if (_activate_any_coincidences_)
-    // 	{
-    // 	  if (caraco_decision == true) _finale_trigger_decision_ = true;
-    // 	  if (delayed_coincidence_decision == true) _delayed_finale_trigger_decision_ = true;
-    // 	}
  
-    //   else _finale_trigger_decision_ = false;
-      
-    //   //      if (coincidence_decision && _activate_any_coincidences_) _finale_trigger_decision_ = true;
-    //   //else if (!_activate_any_coincidences_ && calo_decision && tracker_decision) _finale_trigger_decision_ = true;
-
-    //   return;
-    // }
-
   } // end of namespace digitization
 
 } // end of namespace snemo

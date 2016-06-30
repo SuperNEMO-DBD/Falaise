@@ -27,79 +27,74 @@ namespace snemo {
   
   namespace digitization {
 		
-		class coincidence_trigger_algorithm_test_time
-		{
+    class coincidence_trigger_algorithm_test_time
+    {
 		
-		public :
+    public :
 						
-			/// Trigger display manager is a friend because it can access to members for display
-			friend class trigger_display_manager;
+      /// Trigger display manager is a friend because it can access to members for display
+      friend class trigger_display_manager;
 
-			static const uint32_t SIZE_OF_RESERVED_COINCIDENCE_CALO_RECORDS = 5;
-			static const uint32_t SIZE_OF_L2_COINCIDENCE_DECISION_GATE = 5;
+      static const uint32_t SIZE_OF_RESERVED_COINCIDENCE_CALO_RECORDS = 5;
+      static const uint32_t SIZE_OF_L2_COINCIDENCE_DECISION_GATE = 5;
 
-			/// Default constructor
-			coincidence_trigger_algorithm_test_time();
+      /// Default constructor
+      coincidence_trigger_algorithm_test_time();
 
-			/// Destructor
-			virtual ~coincidence_trigger_algorithm_test_time();
+      /// Destructor
+      virtual ~coincidence_trigger_algorithm_test_time();
 
-			/// Initializing
-			void initialize_simple();
+      /// Initializing
+      void initialize_simple();
 
-			/// Initializing
-			void initialize(const datatools::properties & config_);
+      /// Initializing
+      void initialize(const datatools::properties & config_);
 
-			/// Check if the algorithm is initialized 
-			bool is_initialized() const;
+      /// Check if the algorithm is initialized 
+      bool is_initialized() const;
 
-			/// Reset the object
-			void reset();
+      /// Reset the object
+      void reset();
 			
-			/// Reset internal datas
-			void reset_data();
+      /// Reset internal datas
+      void reset_data();
 
-			/// Get the finale caraco trigger decision
-			bool get_caraco_decision() const;
+      /// Get the finale caraco trigger decision
+      bool get_coincidence_decision() const;
 			
-			/// Get the finale delayed (ape or dave) trigger decision
-			bool get_delayed_coincidence_decision() const;
-
-			/// General process
-			void process(const std::pair<trigger_structures::coincidence_calo_record, trigger_structures::tracker_record> pair_for_a_clocktick_,
-									 trigger_structures::coincidence_event_record & a_coincidence_record_,
-									 trigger_structures::L2_decision & a_L2_decision_record_);
+      /// General process
+      void process(const std::pair<trigger_structures::coincidence_calo_record, trigger_structures::tracker_record> pair_for_a_clocktick_,
+		   trigger_structures::coincidence_event_record & a_coincidence_record_,
+		   trigger_structures::L2_decision & a_L2_decision_record_);
 			
-		protected :	
+    protected :	
 			 
-			/// CAlo tRAcker COincidence (CARACO) process for spatial coincidence between calorimeter and tracker each 1600ns
-			void _process_calo_tracker_coincidence(const std::pair<trigger_structures::coincidence_calo_record, trigger_structures::tracker_record> a_pair_for_a_clocktick_,
-																						 trigger_structures::coincidence_event_record & a_coincidence_record_);
+      /// CAlo tRAcker COincidence (CARACO) process for spatial coincidence between calorimeter and tracker each 1600ns
+      void _process_calo_tracker_coincidence(const std::pair<trigger_structures::coincidence_calo_record, trigger_structures::tracker_record> a_pair_for_a_clocktick_,
+					     trigger_structures::coincidence_event_record & a_coincidence_record_,
+					     trigger_structures::L2_decision & a_L2_decision_record_);
 			
-			/// Build the previous event record based on CARACO process for searching delayed alpha coincidences 
-			void _build_previous_event_record(trigger_structures::coincidence_event_record & a_coincidence_record_);
+      /// Build the previous event record based on CARACO process for searching delayed alpha coincidences 
+      void _build_previous_event_record(trigger_structures::coincidence_event_record & a_coincidence_record_);
 
-			/// Alpha delayed Pattern Event (APE) process for delayed
-			void _process_delayed_coincidence(const std::pair<trigger_structures::coincidence_calo_record, trigger_structures::tracker_record> a_pair_for_a_clocktick_,
-																				const trigger_structures::previous_event_record & a_previous_event_record_,
-																				trigger_structures::coincidence_event_record & a_delayed_record_);
+      /// Alpha delayed Pattern Event (APE) process for delayed
+      void _process_delayed_coincidence(const std::pair<trigger_structures::coincidence_calo_record, trigger_structures::tracker_record> a_pair_for_a_clocktick_,
+					const trigger_structures::previous_event_record & a_previous_event_record_,
+					trigger_structures::coincidence_event_record & a_delayed_record_);
 			
-			/// Process pair record for a clocktick			
-			void _process(const std::pair<trigger_structures::coincidence_calo_record, trigger_structures::tracker_record> pair_for_a_clocktick_,
-										trigger_structures::coincidence_event_record & a_coincidence_record_,
-										trigger_structures::L2_decision & a_L2_decision_record_);
+      /// Process pair record for a clocktick			
+      void _process(const std::pair<trigger_structures::coincidence_calo_record, trigger_structures::tracker_record> pair_for_a_clocktick_,
+		    trigger_structures::coincidence_event_record & a_coincidence_record_,
+		    trigger_structures::L2_decision & a_L2_decision_record_);
 			
-		private :
+    private :
 
       // Configuration :
       bool _initialized_; //!< Initialization flag
-
-			bool _caraco_decision_; //!< Decision for caraco trigger algorihtm
-			bool _delayed_coincidence_decision_; //!< Decision for delayed (APE or DAVE) trigger algorithm
-
-		};
+      trigger_structures::L2_trigger_mode _coincidence_decision_; // Coincidence decision for a clocktick
+    };
 			
-	} // end of namespace digitization
+  } // end of namespace digitization
 	
 } // end of namespace snemo
 

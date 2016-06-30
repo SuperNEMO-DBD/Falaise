@@ -11,15 +11,12 @@ namespace snemo {
   
   namespace digitization {
 
-    const uint32_t coincidence_trigger_algorithm_test_time::SIZE_OF_RESERVED_COINCIDENCE_CALO_RECORDS;
     const uint32_t coincidence_trigger_algorithm_test_time::SIZE_OF_L2_COINCIDENCE_DECISION_GATE;
-
 
     coincidence_trigger_algorithm_test_time::coincidence_trigger_algorithm_test_time()
     {
       _initialized_ = false;
-      _caraco_decision_ = false;
-      _delayed_coincidence_decision_ = false;
+      _coincidence_decision_ = trigger_structures::L2_trigger_mode::INVALID;
       return;
     }
 
@@ -56,121 +53,123 @@ namespace snemo {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Coincidence trigger algorithm is not initialized, it can't be reset ! ");
       reset_data();
       _initialized_ = false;
+      _coincidence_decision_ = trigger_structures::L2_trigger_mode::INVALID;
       return;
     }
     
     void coincidence_trigger_algorithm_test_time::reset_data()
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Coincidence trigger algorithm is not initialized, it can't be reset ! ");
-      _caraco_decision_ = false;
-      _delayed_coincidence_decision_ = false;
+      _coincidence_decision_ = trigger_structures::L2_trigger_mode::INVALID;
       return;
     }
 
-    bool coincidence_trigger_algorithm_test_time::get_caraco_decision() const
+    bool coincidence_trigger_algorithm_test_time::get_coincidence_decision() const
     {
-      return _caraco_decision_;
-    }
-    
-    bool coincidence_trigger_algorithm_test_time::get_delayed_coincidence_decision() const
-    {
-      return _delayed_coincidence_decision_;
+      return _coincidence_decision_;
     }
     
     void coincidence_trigger_algorithm_test_time::_process_calo_tracker_coincidence(const std::pair<trigger_structures::coincidence_calo_record, trigger_structures::tracker_record> a_pair_for_a_clocktick_,
-										   trigger_structures::coincidence_event_record & a_coincidence_record_)
+										    trigger_structures::coincidence_event_record & a_coincidence_record_,
+										    trigger_structures::L2_decision & a_L2_decision_record_)
 
     { 
-      // trigger_structures::coincidence_calo_record a_calo_record = a_pair_for_a_clocktick_.first;
-      // trigger_structures::tracker_record a_tracker_record = a_pair_for_a_clocktick_.second;
-      
-      // a_coincidence_record_.clocktick_1600ns = a_calo_record.clocktick_1600ns;
-      
-      // for (unsigned int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
-      // 	{
-      // 	  for (unsigned int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
-      // 	    {
-      // 	      std::bitset<3> hpattern_for_a_zone = 0x0;
+      trigger_structures::coincidence_calo_record a_calo_record = a_pair_for_a_clocktick_.first;
+      trigger_structures::tracker_record a_tracker_record = a_pair_for_a_clocktick_.second;
 
-      // 	      int right = 0;
-      // 	      int mid   = 1;
-      // 	      int left  = 2;
+      DT_THROW_IF(a_calo_record.clocktick_1600ns != a_tracker_record.clocktick_1600ns, std::logic_error, "Calo tracker coincidence can't process, clockticks of a calo record [" << a_calo_record.clocktick_1600ns << "] and a tracker record [" << a_tracker_record.clocktick_1600ns << "] are not the same ! ");
+
+      for (unsigned int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+      	{
+      	  for (unsigned int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
+      	    {
+      	      std::bitset<3> hpattern_for_a_zone = 0x0;
+
+      	      int right = 0;
+      	      int mid   = 1;
+      	      int left  = 2;
 			  
-      // 	      hpattern_for_a_zone[right] = a_tracker_record.finale_data_per_zone[iside][izone][right+2];
-      // 	      hpattern_for_a_zone[mid]   = a_tracker_record.finale_data_per_zone[iside][izone][mid+2];
-      // 	      hpattern_for_a_zone[left]  = a_tracker_record.finale_data_per_zone[iside][izone][left+2];
-      // 	      if (hpattern_for_a_zone.any())
-      // 		{
-      // 		  if (hpattern_for_a_zone.test(mid) && a_calo_record.calo_zoning_word[iside].test(izone) != 0)
-      // 		    {
-      // 		      a_coincidence_record_.zoning_word[iside].set(izone, true);
-      // 		      a_coincidence_record_.decision = true;
-      // 		      _caraco_decision_ = true;
-      // 		    }
+      	      hpattern_for_a_zone[right] = a_tracker_record.finale_data_per_zone[iside][izone][right+2];
+      	      hpattern_for_a_zone[mid]   = a_tracker_record.finale_data_per_zone[iside][izone][mid+2];
+      	      hpattern_for_a_zone[left]  = a_tracker_record.finale_data_per_zone[iside][izone][left+2];
+      	      if (hpattern_for_a_zone.any())
+      		{
+      		  if (hpattern_for_a_zone.test(mid) && a_calo_record.calo_zoning_word[iside].test(izone) != 0)
+      		    {
+      		      a_coincidence_record_.zoning_word[iside].set(izone, true);
+      		      a_coincidence_record_.decision = true;
+      		      a_coincidence_record_.trigger_mode = trigger_structures::L2_trigger_mode::CARACO;
+      		      _coincidence_decision_ = trigger_structures::L2_trigger_mode::CARACO;
+      		    }
 
-      // 		  if ((hpattern_for_a_zone.test(right) && a_calo_record.calo_zoning_word[iside].test(izone) != 0) ||
-      // 		      (izone+1 < 10 && hpattern_for_a_zone.test(right) && a_calo_record.calo_zoning_word[iside].test(izone+1) != 0))
-      // 		    {	  
-      // 		      a_coincidence_record_.zoning_word[iside].set(izone, true);
-      // 		      a_coincidence_record_.decision = true;
-      // 		      _caraco_decision_ = true;
-      // 		    }
+      		  if ((hpattern_for_a_zone.test(right) && a_calo_record.calo_zoning_word[iside].test(izone) != 0) ||
+      		      (izone+1 < 10 && hpattern_for_a_zone.test(right) && a_calo_record.calo_zoning_word[iside].test(izone+1) != 0))
+      		    {	  
+      		      a_coincidence_record_.zoning_word[iside].set(izone, true);
+      		      a_coincidence_record_.decision = true;
+      		      a_coincidence_record_.trigger_mode = trigger_structures::L2_trigger_mode::CARACO;
+      		      _coincidence_decision_ = trigger_structures::L2_trigger_mode::CARACO;
+      		    }
 			      
-      // 		  if ((hpattern_for_a_zone.test(left) && a_calo_record.calo_zoning_word[iside].test(izone) != 0) ||
-      // 		      (izone-1 > -1 && hpattern_for_a_zone.test(left) && a_calo_record.calo_zoning_word[iside].test(izone-1) != 0))
-      // 		    {		 
-      // 		      a_coincidence_record_.zoning_word[iside].set(izone, true);
-      // 		      a_coincidence_record_.decision = true;
-      // 		      _caraco_decision_ = true;
-      // 		    }			  
+      		  if ((hpattern_for_a_zone.test(left) && a_calo_record.calo_zoning_word[iside].test(izone) != 0) ||
+      		      (izone-1 > -1 && hpattern_for_a_zone.test(left) && a_calo_record.calo_zoning_word[iside].test(izone-1) != 0))
+      		    {		 
+      		      a_coincidence_record_.zoning_word[iside].set(izone, true);
+      		      a_coincidence_record_.decision = true;
+      		      a_coincidence_record_.trigger_mode = trigger_structures::L2_trigger_mode::CARACO;
+      		      _coincidence_decision_ = trigger_structures::L2_trigger_mode::CARACO;
+      		    }			  
     
-      // 		} // end of hpattern.any()
-      // 	    } // end of izone
-      // 	} // end of iside
+      		} // end of hpattern.any()
+      	    } // end of izone
+      	} // end of iside
       
-      // if (a_coincidence_record_.decision) 
-      // 	{
-      // 	  a_coincidence_record_.calo_zoning_word[0] = a_calo_record.calo_zoning_word[0];
-      // 	  a_coincidence_record_.calo_zoning_word[1] = a_calo_record.calo_zoning_word[1];
-      // 	  a_coincidence_record_.total_multiplicity_side_0 = a_calo_record.total_multiplicity_side_0;
-      // 	  a_coincidence_record_.total_multiplicity_side_1 = a_calo_record.total_multiplicity_side_1;
-      // 	  a_coincidence_record_.LTO_side_0 = a_calo_record.LTO_side_0;
-      // 	  a_coincidence_record_.LTO_side_1 = a_calo_record.LTO_side_1;
-      // 	  a_coincidence_record_.total_multiplicity_gveto = a_calo_record.total_multiplicity_gveto;
-      // 	  a_coincidence_record_.LTO_gveto = a_calo_record.LTO_gveto;
-      // 	  a_coincidence_record_.xt_info_bitset = a_calo_record.xt_info_bitset;
-      // 	  a_coincidence_record_.single_side_coinc = a_calo_record.single_side_coinc;
-      // 	  a_coincidence_record_.total_multiplicity_threshold = a_calo_record.total_multiplicity_threshold;
+      if (a_coincidence_record_.trigger_mode == trigger_structures::L2_trigger_mode::CARACO) 
+      	{
+	  a_coincidence_record_.clocktick_1600ns = a_calo_record.clocktick_1600ns;
+      	  a_coincidence_record_.calo_zoning_word[0] = a_calo_record.calo_zoning_word[0];
+      	  a_coincidence_record_.calo_zoning_word[1] = a_calo_record.calo_zoning_word[1];
+      	  a_coincidence_record_.total_multiplicity_side_0 = a_calo_record.total_multiplicity_side_0;
+      	  a_coincidence_record_.total_multiplicity_side_1 = a_calo_record.total_multiplicity_side_1;
+      	  a_coincidence_record_.LTO_side_0 = a_calo_record.LTO_side_0;
+      	  a_coincidence_record_.LTO_side_1 = a_calo_record.LTO_side_1;
+      	  a_coincidence_record_.total_multiplicity_gveto = a_calo_record.total_multiplicity_gveto;
+      	  a_coincidence_record_.LTO_gveto = a_calo_record.LTO_gveto;
+      	  a_coincidence_record_.xt_info_bitset = a_calo_record.xt_info_bitset;
+      	  a_coincidence_record_.single_side_coinc = a_calo_record.single_side_coinc;
+      	  a_coincidence_record_.total_multiplicity_threshold = a_calo_record.total_multiplicity_threshold;
 
-      // 	  for (unsigned int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
-      // 	    {
-      // 	      for (unsigned int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
-      // 		{
-      // 		  a_coincidence_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
-      // 		} // end of izone
-      // 	    } // end of iside
-      // 	  a_coincidence_record_.trigger_mode = CARACO;
+      	  for (unsigned int iside = 0; iside < mapping::NUMBER_OF_SIDES; iside++)
+      	    {
+      	      for (unsigned int izone = 0; izone < mapping::NUMBER_OF_TRIGGER_ZONES; izone++)
+      		{
+      		  a_coincidence_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
+      		} // end of izone
+	    } // end of iside
 	  
-      // 	  bool decision_already_true_in_last_CTs = false;
-      // 	  for (unsigned int i = 0; i < _L2_coincidence_decison_records_.size(); i++)
-      // 	    {
-      // 	      coincidence_trigger_algorithm_test_time::L2_coincidence_decision already_created_L2_coinc_decision = _L2_coincidence_decison_records_[i]; 
-      // 	      int32_t clocktick_maximum_for_decision = already_created_L2_coinc_decision.L2_clocktick_decision + SIZE_OF_L2_COINCIDENCE_DECISION_GATE;
-      // 	      if (a_coincidence_record_.clocktick_1600ns < clocktick_maximum_for_decision && already_created_L2_coinc_decision.L2_clocktick_decision < a_coincidence_record_.clocktick_1600ns)
-      // 		{
-      // 		  decision_already_true_in_last_CTs = true;
-      // 		}
-      // 	    } // end of icoinc
 	  
-      // 	  if (decision_already_true_in_last_CTs == false)
-      // 	    {
-      // 	      coincidence_trigger_algorithm_test_time::L2_coincidence_decision a_L2_coinc_decision;
-      // 	      a_L2_coinc_decision.L2_coincidence_decision_bool = true;
-      // 	      a_L2_coinc_decision.L2_clocktick_decision = a_coincidence_record_.clocktick_1600ns;
-      // 	      a_L2_coinc_decision.trigger_mode = CARACO;
-      // 	      _L2_coincidence_decison_records_.push_back(a_L2_coinc_decision);
-      // 	    }
-      // 	}
+	  // This algorithm doesn't have to know if there is a l2 or not. it is the trigger algorithm job (maybe introduce a boolean in l2 structure which can make possible the fill of the l2 structure (to see...)
+
+      	  // bool decision_already_true_in_last_CTs = false;
+      	  // for (unsigned int i = 0; i < _L2_coincidence_decison_records_.size(); i++)
+      	  //   {
+      	  //     coincidence_trigger_algorithm_test_time::L2_coincidence_decision already_created_L2_coinc_decision = _L2_coincidence_decison_records_[i]; 
+      	  //     int32_t clocktick_maximum_for_decision = already_created_L2_coinc_decision.L2_clocktick_decision + SIZE_OF_L2_COINCIDENCE_DECISION_GATE;
+      	  //     if (a_coincidence_record_.clocktick_1600ns < clocktick_maximum_for_decision && already_created_L2_coinc_decision.L2_clocktick_decision < a_coincidence_record_.clocktick_1600ns)
+      	  // 	{
+      	  // 	  decision_already_true_in_last_CTs = true;
+      	  // 	}
+      	  //   } // end of icoinc
+	  
+      	  // if (decision_already_true_in_last_CTs == false)
+      	  //   {
+      	  //     coincidence_trigger_algorithm_test_time::L2_coincidence_decision a_L2_coinc_decision;
+      	  //     a_L2_coinc_decision.L2_coincidence_decision_bool = true;
+      	  //     a_L2_coinc_decision.L2_clocktick_decision = a_coincidence_record_.clocktick_1600ns;
+      	  //     a_L2_coinc_decision.trigger_mode = CARACO;
+      	  //     _L2_coincidence_decison_records_.push_back(a_L2_coinc_decision);
+      	  //   }
+      	}
 
       return;
     }
@@ -456,8 +455,10 @@ namespace snemo {
 							   trigger_structures::coincidence_event_record & a_coincidence_record_,
 							   trigger_structures::L2_decision & a_L2_decision_record_)
     {
-      
-
+      reset_data();
+      _process_calo_tracker_coincidence(pair_for_a_clocktick_,
+					a_coincidence_record_,
+					a_L2_decision_record_);
       return;
     }
     
