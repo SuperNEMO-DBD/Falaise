@@ -337,7 +337,7 @@ namespace snemo {
       for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
       	{
       	  unsigned int layer = 0;
-      	  for (unsigned int jlayer = trigger_info::NLAYERS - 1; jlayer > 0; jlayer--) // Value GEIGER_LAYER_SIZE = 9
+      	  for (int jlayer = trigger_info::NLAYERS - 1; jlayer >= 0; jlayer--) // Value GEIGER_LAYER_SIZE = 9
       	    {
       	      for (unsigned int krow = 0; krow < trigger_info::NROWS; krow++)
       		{
@@ -388,9 +388,9 @@ namespace snemo {
       std::clog << a_calo_summary_record.LTO_side_0 << ' ';
       std::clog << a_calo_summary_record.total_multiplicity_side_1 << ' ';
       std::clog << a_calo_summary_record.total_multiplicity_side_0 << ' ';
-      for (unsigned int iside = trigger_info::NSIDES-1; iside > 0; iside--)
+      for (int iside = trigger_info::NSIDES-1; iside >= 0; iside--)
       	{
-      	  for (unsigned int izone = trigger_info::NZONES-1; izone > 0; izone--)
+      	  for (int izone = trigger_info::NZONES-1; izone >= 0; izone--)
       	    {
       	      std::clog << a_calo_summary_record.zoning_word[iside][izone];
       	    }
@@ -454,9 +454,9 @@ namespace snemo {
       std::clog << a_coinc_calo_record.LTO_side_0 << ' ';
       std::clog << a_coinc_calo_record.total_multiplicity_side_1 << ' ';
       std::clog << a_coinc_calo_record.total_multiplicity_side_0 << ' ';
-      for (unsigned int iside = trigger_info::NSIDES-1; iside > 0; iside--)
+      for (int iside = trigger_info::NSIDES-1; iside >= 0; iside--)
       	{
-      	  for (unsigned int izone = trigger_info::NZONES-1; izone > 0 ; izone--)
+      	  for (int izone = trigger_info::NZONES-1; izone >= 0 ; izone--)
       	    {
       	      std::clog << a_coinc_calo_record.calo_zoning_word[iside][izone];
       	    }
@@ -598,7 +598,7 @@ namespace snemo {
     	  bool geiger_matrix[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS];
     	  for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
     	    {
-    	      for (unsigned int jlayer = trigger_info::NLAYERS - 1; jlayer > 0; jlayer--)
+    	      for (int jlayer = trigger_info::NLAYERS - 1; jlayer >= 0; jlayer--)
     		{
     		  for (unsigned int krow = 0; krow < trigger_info::NROWS; krow++)
     		    {
@@ -614,19 +614,17 @@ namespace snemo {
     
     void trigger_display_manager::display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_)
     {
-      unsigned int vector_size = a_trigger_algo_._tracker_records_.size();
-      if (vector_size == 0) {}
+      if (a_trigger_algo_._tracker_records_.size() == 0) {}
       else{
-    	int32_t clocktick_1600ns_begin = a_trigger_algo_._tracker_records_[0].clocktick_1600ns;
-    	int32_t clocktick_1600ns_end = a_trigger_algo_._tracker_records_[vector_size - 1].clocktick_1600ns;
-
-    	for (int32_t iclocktick = clocktick_1600ns_begin; iclocktick <= clocktick_1600ns_end; iclocktick++)
-    	  {
-    	    display_tracker_trigger_1600ns(a_trigger_algo_, iclocktick);
-    	    reset_tracker_display();
-    	  }
+	auto it_tracker = a_trigger_algo_._tracker_records_.begin();
+	for (; it_tracker != a_trigger_algo_._tracker_records_.end(); it_tracker++)
+	  {
+	    tracker_trigger_algorithm::tracker_record a_tracker_record = *it_tracker;
+	    int32_t tracker_clocktick = a_tracker_record.clocktick_1600ns;
+	    display_tracker_trigger_1600ns(a_trigger_algo_, tracker_clocktick);
+	    reset_tracker_display();
+	  }
       }
-
       return;
     }
 
@@ -663,9 +661,9 @@ namespace snemo {
       std::clog << a_coincidence_record.LTO_side_0 << ' ';
       std::clog << a_coincidence_record.total_multiplicity_side_1 << ' ';
       std::clog << a_coincidence_record.total_multiplicity_side_0 << ' ';
-      for (unsigned int iside = trigger_info::NSIDES-1; iside > 0; iside--)
+      for (int iside = trigger_info::NSIDES-1; iside >= 0; iside--)
       	{
-      	  for (unsigned int izone = trigger_info::NZONES-1; izone > 0 ; izone--)
+      	  for (int izone = trigger_info::NZONES-1; izone >= 0 ; izone--)
       	    {
       	      std::clog << a_coincidence_record.calo_zoning_word[iside][izone];
       	    }
@@ -687,27 +685,6 @@ namespace snemo {
       	    } // end of izone
       	  std::clog << std::endl;
       	}
-
-      // To check if this information is propaged or no :
-      // for (int iside = 0; iside < trigger_info::NSIDES; iside++)
-      // 	{
-      // 	  std::clog << "ZW pattern     : S" << iside << " : [";
-      // 	  for (int ibit = 0; ibit < a_coincidence_record.zoning_word_pattern[0].size(); ibit++)
-      // 	    {
-      // 	      std::clog << a_coincidence_record.zoning_word_pattern[iside][ibit];
-      // 	    }
-      // 	  std::clog << "] ";
-      // 	}     
-      // std::clog << std::endl;
-      // for (int iside = 0; iside < trigger_info::NSIDES; iside++)
-      // 	{
-      // 	  std::clog << "ZW near source : S" << iside << " : [";
-      // 	  for (int ibit = 0; ibit < a_coincidence_record.zoning_word_near_source[0].size(); ibit++)
-      // 	    {
-      // 	      std::clog << a_coincidence_record.zoning_word_near_source[iside][ibit];
-      // 	    }
-      // 	  std::clog << "] ";
-      // 	}
       std::clog << std::endl;
       
       std::clog << "Coincidence Clocktick : [" << a_coincidence_record.clocktick_1600ns << "]" << std::endl;
@@ -726,7 +703,7 @@ namespace snemo {
       bool geiger_matrix[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS];
       for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
       	{
-      	  for (unsigned int jlayer = trigger_info::NLAYERS - 1; jlayer > 0; jlayer--)
+      	  for (int jlayer = trigger_info::NLAYERS - 1; jlayer >= 0; jlayer--)
       	    {
       	      for (unsigned int krow = 0; krow < trigger_info::NROWS; krow++)
       		{
@@ -744,25 +721,15 @@ namespace snemo {
     
     void trigger_display_manager::display_coincidence_trigger_1600ns(trigger_algorithm & a_trigger_algo_)
     {
-      unsigned int vector_size = a_trigger_algo_._coincidence_records_.size();
-      if (vector_size == 0) {}
+      if (a_trigger_algo_._coincidence_records_.size() == 0) {}
       else{
-
-	std::vector<coincidence_trigger_algorithm::coincidence_event_record>::const_iterator it_coinc = a_trigger_algo_._coincidence_records_.begin();
-	for (it_coinc; it_coinc != a_trigger_algo_._coincidence_records_.end(); it_coinc++)
+	auto it_coinc = a_trigger_algo_._coincidence_records_.begin();
+	for (; it_coinc != a_trigger_algo_._coincidence_records_.end(); it_coinc++)
 	  {
 	    coincidence_trigger_algorithm::coincidence_event_record a_coinc_record = *it_coinc;
 	    int32_t coinc_clocktick = a_coinc_record.clocktick_1600ns;
 	    display_coincidence_trigger_1600ns(a_trigger_algo_, coinc_clocktick);
 	  }
-	
-    	// int32_t clocktick_1600ns_begin = a_trigger_algo_._coincidence_records_[0].clocktick_1600ns;
-    	// int32_t clocktick_1600ns_end   = a_trigger_algo_._coincidence_records_[vector_size - 1].clocktick_1600ns;
-	
-    	// for (int32_t iclocktick = clocktick_1600ns_begin; iclocktick <= clocktick_1600ns_end; iclocktick++)
-    	//   {
-    	//     display_coincidence_trigger_1600ns(a_trigger_algo_, iclocktick);
-    	//   }
       }
       
       return;

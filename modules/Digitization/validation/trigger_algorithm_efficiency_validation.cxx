@@ -48,7 +48,6 @@ int main( int  argc_ , char **argv_  )
   bool is_event_number = false;
   bool is_output_path  = false;
   bool is_display      = false;
-  bool is_display_test = false;
   bool is_help         = false;
 
   std::string input_filename;
@@ -80,11 +79,6 @@ int main( int  argc_ , char **argv_  )
 	is_display = true;
       }    
 
-    else if (arg == "-dt" || arg == "--display-test")
-      {
-	is_display_test = true;
-      }
-    
     else if (arg =="-h" || arg == "--help")
       {
 	is_help = true;
@@ -354,9 +348,6 @@ int main( int  argc_ , char **argv_  )
 	total_number_of_prompt_gg_cells = 0;
 	total_number_of_delayed_gg_cells = 0;
 	
-	if(is_display_test) std::clog <<  "********************************************************************************" << std::endl;
-	if(is_display_test) std::clog <<  "****************************** EVENT #" << psd_count << " **************************************" << std::endl;
- 
 	reader.process(ER);
 	// A plain `mctools::simulated_data' object is stored here :
 	if (ER.has(SD_bank_label) && ER.is_a<mctools::simulated_data>(SD_bank_label)) 
@@ -456,15 +447,6 @@ int main( int  argc_ , char **argv_  )
 		if (debug) my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
 		if (debug) my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
 		
-		uint32_t clocktick_test = 2;
-		if (is_display_test)
-		  {
-		    my_geiger_ctw_data.get_geiger_ctws()[6].get().tree_dump(std::clog, "GG CTW X : ", "INFO : ");
-		    my_geiger_ctw_data.get_geiger_ctws()[7].get().tree_dump(std::clog, "GG CTW Y : ", "INFO : ");
-		    my_geiger_ctw_data.get_geiger_ctws()[8].get().tree_dump(std::clog, "GG CTW Z : ", "INFO : ");
-		  }
-		if (is_display_test) my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo, clocktick_test);
-
 		if (debug) std::clog << "********* Size of Finale structures for one event *********" << std::endl;
 		if (debug) std::clog << "Calo collection size    : " << calo_collection_records.size() << std::endl;
 		if (debug) std::clog << "Tracker collection size : " << tracker_collection_records.size() << std::endl;

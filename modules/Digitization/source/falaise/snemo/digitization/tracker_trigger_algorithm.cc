@@ -121,7 +121,7 @@ namespace snemo {
 	{
 	  if (i == 0)
 	    {
-	      for (unsigned int j = trigger_info::NLAYERS - 1; j > 0; j--) // Value GEIGER_LAYER_SIZE = 9
+	      for (int j = trigger_info::NLAYERS - 1; j >= 0; j--) // Value GEIGER_LAYER_SIZE = 9
 		{
 		  //std::clog << ' ';
 		  for (unsigned int k = 0; k < trigger_info::NROWS; k++)
@@ -382,7 +382,7 @@ namespace snemo {
 	{
 	  if (i == 0)
 	    {
-	      for (unsigned int j = trigger_info::NLAYERS - 1; j > 0; j--) // Value NLAYERS = 9
+	      for (int j = trigger_info::NLAYERS-1; j >= 0; j--) // Value NLAYERS = 9
 		{
 		  std::clog << j << ' ';
 		  for (unsigned int k = 0; k < trigger_info::NROWS; k++)
@@ -724,7 +724,7 @@ namespace snemo {
     void tracker_trigger_algorithm::print_zones(std::ostream & out_) const
     {
       out_ << "Zones: \n";
-      for (unsigned int ilayer = trigger_info::NLAYERS - 1; ilayer > 0; ilayer--) {
+      for (int ilayer = trigger_info::NLAYERS - 1; ilayer >= 0; ilayer--) {
 	for (unsigned int izone = 0; izone < trigger_info::NZONES; izone++) {
 	  for (unsigned int irow = 0; irow < tracker_zone::width(izone); irow++) {
 	    out_ << (_zones_[0][izone].cells[ilayer][irow] ? 'o' : '.');
@@ -835,12 +835,12 @@ namespace snemo {
       build_tracker_record();
 
       // Display for Debug with Thierry & Garrido :
-      print_zones(std::clog);
-      if (geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2 == 2) print_sliding_zones(std::clog);
-      print_zones(std::clog);
-      print_zone_information(std::clog);
-      _tracker_record_finale_decision_.display();
-      display_matrix();
+      // print_zones(std::clog);
+      // if (geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2 == 2) print_sliding_zones(std::clog);
+      // print_zones(std::clog);
+      // print_zone_information(std::clog);
+      // _tracker_record_finale_decision_.display();
+      // display_matrix();
       return;
     }
     
