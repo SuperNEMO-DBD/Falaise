@@ -16,6 +16,7 @@ namespace snemo {
       _initialized_ = false;
       _electronic_mapping_ = 0;
       _coincidence_calorimeter_gate_size_ = 0;
+      _L2_decision_coincidence_gate_size_ = 0;
       _previous_event_circular_buffer_depth_ = 0;
       _activate_calorimeter_only_ = false;
       _activate_calo_tracker_time_coincidence_ = false;
@@ -54,6 +55,7 @@ namespace snemo {
       _initialized_ = false;
       _electronic_mapping_ = 0;
       _coincidence_calorimeter_gate_size_ = 0;
+      _L2_decision_coincidence_gate_size_ = 0;
       _previous_event_circular_buffer_depth_ = 0;
       _activate_calorimeter_only_ = false;
       _activate_calo_tracker_time_coincidence_ = false;
@@ -89,7 +91,7 @@ namespace snemo {
       _geiger_matrix_records_.clear();
       _pair_records_.clear();
       _coincidence_records_.clear();
-      _previous_event_records_.reset();
+      _previous_event_records_->clear();
       _L1_calo_decision_records_.clear();
       _L1_tracker_decision_records_.clear();
       _L2_decision_records_.clear();
@@ -124,7 +126,19 @@ namespace snemo {
       _coincidence_calorimeter_gate_size_ = calorimeter_gate_size_;
       return;
     }
-    
+
+    bool trigger_algorithm_test_time::has_L2_decision_coincidence_gate_size() const
+    {
+      return _L2_decision_coincidence_gate_size_ != 0;
+    }
+
+    void trigger_algorithm_test_time::set_L2_decision_coincidence_gate_size(unsigned int L2_decision_coincidence_gate_size_)
+    {
+      DT_THROW_IF(is_initialized(), std::logic_error, "Trigger algorithm is already initialized, coincidence calorimeter gate size can't be set ! ");
+      _L2_decision_coincidence_gate_size_ = L2_decision_coincidence_gate_size_;
+      return;
+    }
+
     bool trigger_algorithm_test_time::has_previous_event_buffer_depth() const
     {
       return _previous_event_circular_buffer_depth_ != 0;
@@ -175,6 +189,14 @@ namespace snemo {
 	}
       }
 
+      if (!has_L2_decision_coincidence_gate_size()) {
+	if (config_.has_key("L2_decision_coincidence_gate_size")) {
+	  int L2_decision_coincidence_gate_size = config_.fetch_integer("L2_decision_coincidence_gate_size");
+	  DT_THROW_IF(L2_decision_coincidence_gate_size <= 0, std::domain_error, "Invalid value of L2_decision_coincidence_gate_size !");
+	  set_L2_decision_coincidence_gate_size((unsigned int) L2_decision_coincidence_gate_size);
+	}
+      }
+    
       if (!has_previous_event_buffer_depth()) {
 	if (config_.has_key("previous_event_buffer_depth")) {
 	  int previous_event_buffer_depth = config_.fetch_integer("previous_event_buffer_depth");
@@ -442,6 +464,122 @@ namespace snemo {
       
       return;
     }
+
+    void trigger_algorithm_test_time::_build_previous_event_record()
+    {
+      // A PER is created or updated only if a coincidence between tracker and calorimeter is ok (so CALO_TRACKER_TIME_COINC or CARACO)
+      
+      trigger_structures::L2_decision the_L2_decision = _L2_decision_records_.back();
+      int32_t L2_decision_clocktick = the_L2_decision.L2_ct_decision;
+
+      if (the_L2_decision.L2_trigger_mode == trigger_structures::L2_trigger_mode::CARACO 
+      	  || the_L2_decision.L2_trigger_mode == trigger_structures::L2_trigger_mode::CALO_TRACKER_TIME_COINC)
+	{
+	  // Construct the PER on the coincidence records pushed back (to have the maximum of calo / tracker information (concatenate)) : 
+	  trigger_structures::previous_event_record a_previous_event_record;
+	  for (int i = 0; i < _coincidence_records_.size(); i++)
+	    {
+	      trigger_structures::coincidence_event_record a_coincidence_record = _coincidence_records_[i];
+	      // Check if the coincidence record is in the L2 gate and with the good trigger mode to construct the PER :
+	      if (a_coincidence_record.clocktick_1600ns >= L2_decision_clocktick
+		  && a_coincidence_record.clocktick_1600ns < (L2_decision_clocktick + _L2_decision_coincidence_gate_size_)
+		  && (a_coincidence_record.trigger_mode == trigger_structures::L2_trigger_mode::CARACO || 
+		      a_coincidence_record.trigger_mode == trigger_structures::L2_trigger_mode::CALO_TRACKER_TIME_COINC))
+		{
+		  // Update the PER with all information from coincidence records in the gate
+		  a_previous_event_record.previous_clocktick_1600ns = a_coincidence_record.clocktick_1600ns;
+		  a_previous_event_record.counter_1600ns = clock_utils::PREVIOUS_EVENT_RECORD_LIVING_NUMBER_OF_CLOCKTICK;
+		  a_previous_event_record.trigger_mode = the_L2_decision.L2_trigger_mode;
+		  for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
+		    {
+		      for (int ibit = 0; ibit < trigger_info::CALO_ZONING_PER_SIDE_BITSET_SIZE; ibit++)
+			{
+			  if (a_previous_event_record.calo_zoning_word[iside].test(ibit) || a_coincidence_record.calo_zoning_word[iside].test(ibit))
+			    {
+			      a_previous_event_record.calo_zoning_word[iside].set(ibit);
+			    }
+			} // end of ibit
+		    } // end of iside
+		  
+		  // Initial values in the PER :
+		  unsigned int multiplicity_side_0 = a_previous_event_record.total_multiplicity_side_0.to_ulong();
+		  unsigned int multiplicity_side_1 = a_previous_event_record.total_multiplicity_side_1.to_ulong();
+		  unsigned int multiplicity_gveto  = a_previous_event_record.total_multiplicity_gveto.to_ulong();
+		  bool lto_side_0 = a_previous_event_record.LTO_side_0;     
+		  bool lto_side_1 = a_previous_event_record.LTO_side_1;
+		  bool lto_gveto  = a_previous_event_record.LTO_gveto;
+		  unsigned int number_of_zone_touch_side_0 = a_previous_event_record.calo_zoning_word[0].count();
+		  unsigned int number_of_zone_touch_side_1 = a_previous_event_record.calo_zoning_word[1].count();   
+		  bool single_side = a_previous_event_record.single_side_coinc;
+		  bool total_multiplicity_threshold = a_previous_event_record.total_multiplicity_threshold;
+		  bool decision = a_previous_event_record.decision;
+		  a_previous_event_record.xt_info_bitset = a_coincidence_record.xt_info_bitset;
+		  
+		  if (multiplicity_side_0 < a_coincidence_record.total_multiplicity_side_0.to_ulong()) 
+		    {
+		      a_previous_event_record.total_multiplicity_side_0 = a_coincidence_record.total_multiplicity_side_0.to_ulong();
+		    }
+		  
+		  if (number_of_zone_touch_side_0 > multiplicity_side_0)
+		    {
+		     a_previous_event_record.total_multiplicity_side_0 = number_of_zone_touch_side_0;
+		    }
+	  
+		  if (multiplicity_side_1 < a_coincidence_record.total_multiplicity_side_1.to_ulong())
+		    {
+		      a_previous_event_record.total_multiplicity_side_1 = a_coincidence_record.total_multiplicity_side_1.to_ulong();
+		    }
+
+		  if (number_of_zone_touch_side_1 > multiplicity_side_1)
+		    {
+		      a_previous_event_record.total_multiplicity_side_1 = number_of_zone_touch_side_1;
+		    }
+
+		  if (multiplicity_gveto < a_coincidence_record.total_multiplicity_gveto.to_ulong())
+		    {
+		      a_previous_event_record.total_multiplicity_gveto = a_coincidence_record.total_multiplicity_gveto.to_ulong();
+		    }
+		  if (lto_side_0 || a_coincidence_record.LTO_side_0) a_previous_event_record.LTO_side_0 = true;
+		  if (lto_side_1 || a_coincidence_record.LTO_side_1) a_previous_event_record.LTO_side_1 = true;
+		  if (lto_gveto || a_coincidence_record.LTO_gveto) a_previous_event_record.LTO_gveto = true;
+		  if (single_side || a_coincidence_record.single_side_coinc) a_previous_event_record.single_side_coinc = true;
+		  else if (!single_side || !a_coincidence_record.single_side_coinc) a_previous_event_record.single_side_coinc = false;
+		  if (total_multiplicity_threshold || a_coincidence_record.total_multiplicity_threshold) a_previous_event_record.total_multiplicity_threshold = true;
+		  if (decision || a_coincidence_record.decision) a_previous_event_record.decision = true;
+		  
+		  for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
+		    {
+		      for (unsigned int izone = 0; izone < trigger_info::NZONES; izone++)
+			{
+			  for (int ibit = 0; ibit < trigger_info::DATA_FULL_BITSET_SIZE; ibit++)
+			    {
+			      if (a_previous_event_record.tracker_finale_data_per_zone[iside][izone].test(ibit) || a_coincidence_record.tracker_finale_data_per_zone[iside][izone].test(ibit))
+				{
+				  a_previous_event_record.tracker_finale_data_per_zone[iside][izone].set(ibit);
+				}
+			    } // end of ibit
+			  if (a_coincidence_record.coincidence_zoning_word[iside].test(izone) || a_previous_event_record.coincidence_zoning_word[iside].test(izone))
+			    {
+			      a_previous_event_record.coincidence_zoning_word[iside].set(izone);
+			    }
+			  if (a_coincidence_record.tracker_zoning_word_pattern[iside].test(izone) || a_previous_event_record.tracker_zoning_word_pattern[iside].test(izone))
+			    {
+			      a_previous_event_record.tracker_zoning_word_pattern[iside].set(izone);
+			    }
+			  if (a_coincidence_record.tracker_zoning_word_near_source[iside].test(izone) || a_previous_event_record.tracker_zoning_word_near_source[iside].test(izone))
+			    {
+			      a_previous_event_record.tracker_zoning_word_near_source[iside].set(izone);
+			    }
+
+			} // end of izone
+		    } // end of iside
+		}	
+	    } // end of for coinc record size
+	  _previous_event_records_->push_back(a_previous_event_record);
+	} // end of if trigger mode
+      
+      return;
+    }
 	
     void trigger_algorithm_test_time::process(const calo_ctw_data & calo_ctw_data_,
     					      const geiger_ctw_data & geiger_ctw_data_)
@@ -508,7 +646,7 @@ namespace snemo {
       for (unsigned int i = 0; i < _calo_records_25ns_.size(); i++)
 	{
 	  trigger_structures::calo_summary_record a_calo_record_25ns = _calo_records_25ns_[i];
-	  a_calo_record_25ns.display();
+	  //a_calo_record_25ns.display();
 
 	  int32_t calo_record_ct_25ns = a_calo_record_25ns.clocktick_25ns;
 	  
@@ -524,7 +662,7 @@ namespace snemo {
       
       for (unsigned int i = 0; i < _L1_calo_decision_records_.size(); i++)
 	{
-	  _L1_calo_decision_records_[i].display(); 
+	  //_L1_calo_decision_records_[i].display(); 
 	}
       
       // Configuration is calorimeter only (no coincidences at all) :
@@ -634,13 +772,22 @@ namespace snemo {
 		  // The coincidence process can be process(pair_for_a_ct)
 		  // { CARACO(), APE(), DAVE() }
 		  trigger_structures::coincidence_event_record a_coincidence_event_record;
-		  trigger_structures::L2_decision a_l2_decision;
+		  trigger_structures::L2_decision a_L2_decision;
 
-		  // Maybe check if a l2_decision already exist before coinc processing ?
-
+		  bool L2_decision_already_created = false;
+		  // Maybe check if a L2_decision already exist before coinc processing ?
+		  
+		  if (!_L2_decision_records_.empty() 
+		      && _L2_decision_records_.back().L2_ct_decision > (static_cast<int>(ict1600 - _L2_decision_coincidence_gate_size_)) // 5 * 1600 -> size of coincidence gate
+		      && _L2_decision_records_.back().L2_ct_decision < ict1600
+		      && _L2_decision_records_.back().L2_decision_bool)
+		    {
+		      L2_decision_already_created = true;
+		    }
+		  
 		  _coinc_algo_.process(pair_for_a_clocktick,
 				       a_coincidence_event_record,
-				       a_l2_decision);
+				       a_L2_decision);
 		  
 		  if (a_coincidence_event_record.clocktick_1600ns != clock_utils::INVALID_CLOCKTICK
 		      && a_coincidence_event_record.clocktick_1600ns == ict1600
@@ -650,8 +797,25 @@ namespace snemo {
 		      _coincidence_records_.push_back(a_coincidence_event_record);		      
 		    }
 
-		  // L2 decision to push back (not at each clocktick)
+		  // L2 decision to push back (not at each clocktick). Only if there is no other L2 decision in the 
+		  // L2 decision gate [CTi-5; CTi]
+		  if (a_L2_decision.L2_decision_bool == true 
+		      && a_L2_decision.L2_ct_decision != clock_utils::INVALID_CLOCKTICK
+		      && a_L2_decision.L2_trigger_mode != trigger_structures::L2_trigger_mode::INVALID
+		      && L2_decision_already_created == false)
+		    {
+		      _L2_decision_records_.push_back(a_L2_decision);
+		    }
 
+		  // Build a PER only at the end of the L2 decision gate :
+		  if (!_L2_decision_records_.empty())
+		    {
+		      if (ict1600 == (_L2_decision_records_.back().L2_ct_decision + _L2_decision_coincidence_gate_size_))
+			{
+			  _build_previous_event_record();
+			}
+		    }
+		  
 		} // end of ict1600
 
 	    } // end of if ct min 
@@ -660,14 +824,19 @@ namespace snemo {
 
       for (unsigned int i = 0; i < _L2_decision_records_.size(); i++)
 	{
-	  // _L2_decision_records_[i].display(); 
+	  //_L2_decision_records_[i].display(); 
 	}
       
-      for (unsigned int i = 0; i < _coincidence_calo_records_1600ns_.size(); i++)
+      for (unsigned int i = 0; i < _coincidence_records_.size(); i++)
 	{
-	  // _coincidence_calo_records_1600ns_[i].display();
-	}
-      
+	  //_coincidence_records_[i].display();
+	}  
+
+      boost::circular_buffer<trigger_structures::previous_event_record>::iterator it_circ = _previous_event_records_->begin();
+      for (; it_circ != _previous_event_records_->end(); it_circ++)
+	{
+	  //it_circ -> display();
+	}      
       
       std::clog << "********* Size of Finale structures for one event *********" << std::endl;
       std::clog << "Calo collection size @ 25 ns            : " << _calo_records_25ns_.size() << std::endl;

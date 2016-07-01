@@ -230,7 +230,8 @@ int main( int  argc_ , char **argv_  )
     int  calo_threshold = 1;
     bool inhibit_both_side_coinc = false;
     bool inhibit_single_side_coinc = false;    
-    int  coincidence_calorimeter_gate_size = 7; // Don't forget to modify at 7 or 8 CT 1600 for new trigger analysis
+    int coincidence_calorimeter_gate_size = 7; // Don't forget to modify at 7 or 8 CT 1600 for new trigger analysis
+    int L2_decision_coincidence_gate_size = 5; // Gate for calorimeter / tracker coincidence (5 x 1600 ns) 
     int previous_event_buffer_depth = 10; // Maximum number of PER record (with an internal counter of 1 ms)
     bool activate_any_coincidences = true;
     
@@ -244,6 +245,7 @@ int main( int  argc_ , char **argv_  )
     trigger_config.store("tracker.mem4_file", mem4);
     trigger_config.store("tracker.mem5_file", mem5);
     trigger_config.store("coincidence_calorimeter_gate_size", coincidence_calorimeter_gate_size);
+    trigger_config.store("L2_decision_coincidence_gate_size", L2_decision_coincidence_gate_size);
     trigger_config.store("previous_event_buffer_depth", previous_event_buffer_depth);
     trigger_config.store("activate_any_coincidences", activate_any_coincidences);
 
@@ -360,11 +362,16 @@ int main( int  argc_ , char **argv_  )
 	    coincidence_collection_calo_records =  my_trigger_algo.get_coincidence_calo_records_1600ns_vector();
 	    tracker_collection_records = my_trigger_algo.get_tracker_records_vector();
 	    coincidence_collection_records = my_trigger_algo.get_coincidence_records_vector();
-
+	    
 	    // if (debug) my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
 	    // if (debug) my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
 	    // if (debug) my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
 	    // if (debug) my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
+
+	    // for (int i = 0; i < coincidence_collection_records.size(); i++)
+	    //   {
+	    // 	coincidence_collection_records[i].display();
+	    //   }
 
 	    if (debug) std::clog << "********* Size of Finale structures for one event *********" << std::endl;
 	    if (debug) std::clog << "Calo collection size @ 25 ns : " << calo_collection_records.size() << std::endl;

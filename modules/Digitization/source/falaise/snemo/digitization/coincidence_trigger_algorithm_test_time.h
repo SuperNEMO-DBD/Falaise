@@ -73,9 +73,6 @@ namespace snemo {
       void _process_calo_tracker_coincidence(const std::pair<trigger_structures::coincidence_calo_record, trigger_structures::tracker_record> a_pair_for_a_clocktick_,
 					     trigger_structures::coincidence_event_record & a_coincidence_record_,
 					     trigger_structures::L2_decision & a_L2_decision_record_);
-			
-      /// Build the previous event record based on CARACO process for searching delayed alpha coincidences 
-      void _build_previous_event_record(trigger_structures::coincidence_event_record & a_coincidence_record_);
 
       /// Alpha delayed Pattern Event (APE) process for delayed
       void _process_delayed_coincidence(const std::pair<trigger_structures::coincidence_calo_record, trigger_structures::tracker_record> a_pair_for_a_clocktick_,

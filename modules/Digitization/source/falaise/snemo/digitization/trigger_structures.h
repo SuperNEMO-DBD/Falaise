@@ -137,7 +137,12 @@ namespace snemo {
 	void reset();
 	void display() const;
 	int32_t clocktick_1600ns;
-	std::bitset<trigger_info::NZONES> zoning_word[trigger_info::NSIDES];
+	// Coincidence zoning word :
+	std::bitset<trigger_info::NZONES> coincidence_zoning_word[trigger_info::NSIDES];
+	// Traker pattern zoning word :
+	std::bitset<trigger_info::NZONES> tracker_zoning_word_pattern[trigger_info::NSIDES];
+	// Tracker near source zoning word :
+	std::bitset<trigger_info::NZONES> tracker_zoning_word_near_source[trigger_info::NSIDES];
 	std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> tracker_finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
 	trigger_structures::L2_trigger_mode trigger_mode;
       };
@@ -149,11 +154,13 @@ namespace snemo {
 	void display() const;
 	int32_t previous_clocktick_1600ns;
 	uint32_t counter_1600ns;
+	// Coincidence zoning word :
+	std::bitset<trigger_info::NZONES> coincidence_zoning_word[trigger_info::NSIDES];
+	// Traker pattern zoning word :
+	std::bitset<trigger_info::NZONES> tracker_zoning_word_pattern[trigger_info::NSIDES];
+	// Tracker near source zoning word :
+	std::bitset<trigger_info::NZONES> tracker_zoning_word_near_source[trigger_info::NSIDES];
 	std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> tracker_finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
-	// Pattern coincidence zoning word
-	std::bitset<trigger_info::NZONES> patt_zoning_word[trigger_info::NSIDES];
-	// Near source coincidence zoning word
-	std::bitset<trigger_info::NZONES> nsz_zoning_word[trigger_info::NSIDES];
 	trigger_structures::L2_trigger_mode trigger_mode;
       };
 
@@ -165,7 +172,7 @@ namespace snemo {
 	void reset();
 	void display() const;
 	bool L1_calo_decision_bool;
-	uint32_t L1_calo_ct_decision; // CT @ 25 ns
+	int32_t L1_calo_ct_decision; // CT @ 25 ns
       };
 
       struct L1_tracker_decision
@@ -174,7 +181,7 @@ namespace snemo {
 	void reset();
 	void display() const;
 	bool L1_tracker_decision_bool;
-	uint32_t L1_tracker_ct_decision; // CT @ 1600 ns
+	int32_t L1_tracker_ct_decision; // CT @ 1600 ns
       };
 			
       struct L2_decision
@@ -183,8 +190,8 @@ namespace snemo {
 	void reset();
 	void display() const;
 	bool L2_decision_bool;
-	uint32_t L2_ct_decision; // CT @ 1600 ns
-	trigger_structures::L2_trigger_mode L2_trigger_mode;				
+	int32_t L2_ct_decision; // CT @ 1600 ns
+	trigger_structures::L2_trigger_mode L2_trigger_mode;
       };
 
     };

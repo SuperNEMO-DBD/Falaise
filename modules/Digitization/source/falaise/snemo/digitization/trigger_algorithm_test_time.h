@@ -56,9 +56,15 @@ namespace snemo {
 			/// Check if calorimeter gate size is set
 			bool has_calorimeter_gate_size() const;
 
-			/// Set calorimeter gate size
+			/// Set the calorimeter gate size
 			void set_calorimeter_gate_size(unsigned int calorimeter_gate_size_);
 
+			/// Check if the L2 decision coincidence gate size is set
+			bool has_L2_decision_coincidence_gate_size() const;
+			
+			/// Set the L2 decision coincidence gate size
+			void set_L2_decision_coincidence_gate_size(unsigned int L2_decision_coincidence_gate_size_);
+			
 			/// Check if previous event circular buffer depth is set
 			bool has_previous_event_buffer_depth() const;
 
@@ -112,6 +118,8 @@ namespace snemo {
 			void _process_calo_tracker_coincidence(const std::pair<trigger_structures::coincidence_calo_record, trigger_structures::tracker_record> a_pair_for_a_clocktick_,
 																						 trigger_structures::coincidence_event_record & a_coincidence_record_);
 			
+			// Build a previous event record useful for delayed coincidences
+			void _build_previous_event_record();
 
       /// Protected general process
       void _process(const calo_ctw_data & calo_ctw_data_,
@@ -126,6 +134,7 @@ namespace snemo {
       const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID
 			const clock_utils * _clock_manager_; //!< Pointer to a clock manager useful for clockticks 
 			unsigned int _coincidence_calorimeter_gate_size_; //!< Size of calorimeter gate for extension of calo records during X CT 1600ns
+			unsigned int _L2_decision_coincidence_gate_size_; //!< Size of the L2 decision coincidence gate (typically 5 x 1600 ns)
 			unsigned int _previous_event_circular_buffer_depth_; //!< Depth for the previous events circular buffer (Pile of PERs)
 			
 			// Trigger configuration :			
