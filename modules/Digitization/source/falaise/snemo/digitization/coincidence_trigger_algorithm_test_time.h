@@ -14,6 +14,7 @@
 // Third part : 
 // Boost :
 #include <boost/scoped_ptr.hpp>
+#include <boost/circular_buffer.hpp>
 
 // This project :
 #include <snemo/digitization/trigger_structures.h>
@@ -65,7 +66,8 @@ namespace snemo {
       /// General process
       void process(const std::pair<trigger_structures::coincidence_calo_record, trigger_structures::tracker_record> pair_for_a_clocktick_,
 		   trigger_structures::coincidence_event_record & a_coincidence_record_,
-		   trigger_structures::L2_decision & a_L2_decision_record_);
+		   trigger_structures::L2_decision & a_L2_decision_record_,
+		   const boost::scoped_ptr<boost::circular_buffer<trigger_structures::previous_event_record> > & previous_event_records_);
 			
     protected :	
 			 
@@ -76,13 +78,15 @@ namespace snemo {
 
       /// Alpha delayed Pattern Event (APE) process for delayed
       void _process_delayed_coincidence(const std::pair<trigger_structures::coincidence_calo_record, trigger_structures::tracker_record> a_pair_for_a_clocktick_,
-					const trigger_structures::previous_event_record & a_previous_event_record_,
-					trigger_structures::coincidence_event_record & a_delayed_record_);
+					trigger_structures::coincidence_event_record & a_delayed_coincidence_record_,
+					trigger_structures::L2_decision & a_L2_decision_record_,
+					const trigger_structures::previous_event_record & a_previous_event_record_);
 			
       /// Process pair record for a clocktick			
       void _process(const std::pair<trigger_structures::coincidence_calo_record, trigger_structures::tracker_record> pair_for_a_clocktick_,
 		    trigger_structures::coincidence_event_record & a_coincidence_record_,
-		    trigger_structures::L2_decision & a_L2_decision_record_);
+		    trigger_structures::L2_decision & a_L2_decision_record_,
+		    const boost::scoped_ptr<boost::circular_buffer<trigger_structures::previous_event_record> > & previous_event_records_);
 			
     private :
 

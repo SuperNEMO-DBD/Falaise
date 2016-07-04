@@ -370,6 +370,18 @@ namespace snemo {
       return;
     }
 
+    bool trigger_structures::coincidence_calo_record::is_empty() const
+    {
+      if (calo_zoning_word[0].any() || calo_zoning_word[1].any() 
+	  || total_multiplicity_side_0.any() || total_multiplicity_side_1.any() || total_multiplicity_gveto.any()
+	  || LTO_side_0 || LTO_side_1 || LTO_gveto || xt_info_bitset.any() || total_multiplicity_threshold || decision)
+	{
+	  return false;
+	}
+
+      else return true;
+    }
+
     trigger_structures::coincidence_event_record::coincidence_event_record()
     {
       coincidence_event_record::reset();
@@ -445,6 +457,28 @@ namespace snemo {
       std::clog << "Coincidence trigger mode : [" << trigger_mode << "]" << std::endl;
       std::clog << "Coincidence event record decision : [" << decision << "]" << std::endl;
       return;
+    }  
+
+    bool trigger_structures::coincidence_event_record::is_empty() const
+    {
+      if (calo_zoning_word[0].any() || calo_zoning_word[1].any() 
+	  || total_multiplicity_side_0.any() || total_multiplicity_side_1.any() || total_multiplicity_gveto.any()
+	  || LTO_side_0 || LTO_side_1 || LTO_gveto || xt_info_bitset.any() || total_multiplicity_threshold || decision)
+	{
+	  return false;
+	}
+      else return true;
+
+      for (unsigned int i = 0; i < trigger_info::NSIDES; i++)
+	{
+	  for (unsigned int j = 0; j < trigger_info::NZONES; j++)
+	    {
+	      if (tracker_finale_data_per_zone[i][j].any()) return false;
+	    }
+	  if (coincidence_zoning_word[i].any() || tracker_zoning_word_pattern[i].any() || tracker_zoning_word_near_source[i].any() || single_side_coinc || trigger_mode != INVALID) return false;
+	}
+
+      return true;
     }
 
     trigger_structures::L2_decision::L2_decision()

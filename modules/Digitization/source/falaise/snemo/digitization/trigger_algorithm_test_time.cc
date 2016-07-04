@@ -721,15 +721,17 @@ namespace snemo {
 	  else if (calorimeter_ct_max_1600 != clock_utils::INVALID_CLOCKTICK) clocktick_max = calorimeter_ct_max_1600;
 	  if ((tracker_ct_max_1600 != clock_utils::INVALID_CLOCKTICK && calorimeter_ct_max_1600 != clock_utils::INVALID_CLOCKTICK) && calorimeter_ct_max_1600 > clocktick_max) clocktick_max = calorimeter_ct_max_1600;
 
-	  std::clog << "Calo CT min 1600    = " << calorimeter_ct_min_1600 << std::endl;
-	  std::clog << "Calo CT max 1600    = " << calorimeter_ct_max_1600 << std::endl;
-	  std::clog << "Tracker CT min 1600 = " << tracker_ct_min_1600 << std::endl;
-	  std::clog << "Tracker CT max 1600 = " << tracker_ct_max_1600 << std::endl;
-	  std::clog << "CT min 1600         = " << clocktick_min << std::endl;
-	  std::clog << "CT max 1600         = " << clocktick_max << std::endl;
+	  // std::clog << "Calo CT min 1600    = " << calorimeter_ct_min_1600 << std::endl;
+	  // std::clog << "Calo CT max 1600    = " << calorimeter_ct_max_1600 << std::endl;
+	  // std::clog << "Tracker CT min 1600 = " << tracker_ct_min_1600 << std::endl;
+	  // std::clog << "Tracker CT max 1600 = " << tracker_ct_max_1600 << std::endl;
+	  // std::clog << "CT min 1600         = " << clocktick_min << std::endl;
+	  // std::clog << "CT max 1600         = " << clocktick_max << std::endl;
 	  
 	  if (clocktick_min != clock_utils::INVALID_CLOCKTICK && clocktick_max != clock_utils::INVALID_CLOCKTICK)
 	    {
+	      // Maybe time optimisation to do here, is it mandatory to go for each clocktick ?
+	      // Maybe prepare tracker record outside this loop but it breaks the time implementation (close to the electronics)
 	      for (int ict1600 = clocktick_min; ict1600 <= clocktick_max; ict1600++)
 		{
 		  trigger_structures::tracker_record a_tracker_record;
@@ -743,15 +745,11 @@ namespace snemo {
 		      _tracker_algo_.process(geiger_ctw_list_per_clocktick_1600,
 					     a_tracker_record);
 		      if (!a_tracker_record.is_empty()) _tracker_records_.push_back(a_tracker_record);
-		      // a_tracker_record.display();
 		  
 		      trigger_structures::geiger_matrix a_geiger_matrix = _tracker_algo_.get_geiger_matrix_for_a_clocktick();
 		      a_geiger_matrix.clocktick_1600ns = ict1600;
-		      // a_geiger_matrix.display();
 		      if (!a_geiger_matrix.is_empty()) _geiger_matrix_records_.push_back(a_geiger_matrix);
 		    }
-
-		  std::pair<trigger_structures::coincidence_calo_record, trigger_structures::tracker_record> pair_for_a_clocktick;
 
 		  trigger_structures::coincidence_calo_record a_coinc_calo_record_for_pair;
 		  a_coinc_calo_record_for_pair.clocktick_1600ns = ict1600;
@@ -764,57 +762,71 @@ namespace snemo {
 			  a_coinc_calo_record_for_pair = a_coinc_calo_record;
 			}
 		    } 
-		  pair_for_a_clocktick.first  = a_coinc_calo_record_for_pair;
-		  pair_for_a_clocktick.second = a_tracker_record;
-		  _pair_records_.push_back(pair_for_a_clocktick);
-		  
-		  // Process calo tracker coincidence for a clocktick in coinc_algo
-		  // The coincidence process can be process(pair_for_a_ct)
-		  // { CARACO(), APE(), DAVE() }
-		  trigger_structures::coincidence_event_record a_coincidence_event_record;
-		  trigger_structures::L2_decision a_L2_decision;
 
-		  bool L2_decision_already_created = false;
-		  // Maybe check if a L2_decision already exist before coinc processing ?
-		  
-		  if (!_L2_decision_records_.empty() 
-		      && _L2_decision_records_.back().L2_ct_decision > (static_cast<int>(ict1600 - _L2_decision_coincidence_gate_size_)) // 5 * 1600 -> size of coincidence gate
-		      && _L2_decision_records_.back().L2_ct_decision < ict1600
-		      && _L2_decision_records_.back().L2_decision_bool)
+		  if (!a_coinc_calo_record_for_pair.is_empty() || !a_tracker_record.is_empty())
 		    {
-		      L2_decision_already_created = true;
-		    }
-		  
-		  _coinc_algo_.process(pair_for_a_clocktick,
-				       a_coincidence_event_record,
-				       a_L2_decision);
-		  
-		  if (a_coincidence_event_record.clocktick_1600ns != clock_utils::INVALID_CLOCKTICK
-		      && a_coincidence_event_record.clocktick_1600ns == ict1600
-		      && a_coincidence_event_record.decision == true
-		      && a_coincidence_event_record.trigger_mode != trigger_structures::L2_trigger_mode::INVALID)
-		    {
-		      _coincidence_records_.push_back(a_coincidence_event_record);		      
-		    }
+		      std::pair<trigger_structures::coincidence_calo_record, trigger_structures::tracker_record> pair_for_a_clocktick;
+		      pair_for_a_clocktick.first  = a_coinc_calo_record_for_pair;
+		      pair_for_a_clocktick.second = a_tracker_record;
+		      _pair_records_.push_back(pair_for_a_clocktick);
+		      
+		      // Process calo tracker coincidence for a clocktick in coinc_algo
+		      // The coincidence process can be process(pair_for_a_ct)
+		      // { CARACO(), APE(), DAVE() }
+		      trigger_structures::coincidence_event_record a_coincidence_event_record;
+		      trigger_structures::L2_decision a_L2_decision;
 
-		  // L2 decision to push back (not at each clocktick). Only if there is no other L2 decision in the 
-		  // L2 decision gate [CTi-5; CTi]
-		  if (a_L2_decision.L2_decision_bool == true 
-		      && a_L2_decision.L2_ct_decision != clock_utils::INVALID_CLOCKTICK
-		      && a_L2_decision.L2_trigger_mode != trigger_structures::L2_trigger_mode::INVALID
-		      && L2_decision_already_created == false)
-		    {
-		      _L2_decision_records_.push_back(a_L2_decision);
-		    }
-
-		  // Build a PER only at the end of the L2 decision gate :
-		  if (!_L2_decision_records_.empty())
-		    {
-		      if (ict1600 == (_L2_decision_records_.back().L2_ct_decision + _L2_decision_coincidence_gate_size_))
+		      bool L2_decision_already_created = false;
+		      // Maybe check if a L2_decision already exist before coinc processing ?
+		  
+		      if (!_L2_decision_records_.empty() 
+			  && _L2_decision_records_.back().L2_ct_decision > (static_cast<int>(ict1600 - _L2_decision_coincidence_gate_size_))
+			  && _L2_decision_records_.back().L2_ct_decision < ict1600
+			  && _L2_decision_records_.back().L2_decision_bool)
 			{
-			  _build_previous_event_record();
+			  L2_decision_already_created = true;
 			}
-		    }
+		  
+		      // Maybe check if a L2_decision already exist before coinc processing ?
+		      auto it_circ = _previous_event_records_->begin();
+		      for (; it_circ != _previous_event_records_->end();it_circ++)
+			{
+			  it_circ->counter_1600ns = clock_utils::PREVIOUS_EVENT_RECORD_LIVING_NUMBER_OF_CLOCKTICK - ict1600 + it_circ->previous_clocktick_1600ns;
+			}
+
+		      // CARACO or APE or DAVE in coinc algo :
+		      _coinc_algo_.process(pair_for_a_clocktick,
+					   a_coincidence_event_record,
+					   a_L2_decision,
+					   _previous_event_records_);
+		  
+		      if (a_coincidence_event_record.clocktick_1600ns != clock_utils::INVALID_CLOCKTICK
+			  && a_coincidence_event_record.clocktick_1600ns == ict1600
+			  && a_coincidence_event_record.decision == true
+			  && a_coincidence_event_record.trigger_mode != trigger_structures::L2_trigger_mode::INVALID)
+			{
+			  _coincidence_records_.push_back(a_coincidence_event_record);		      
+			}
+
+		      // L2 decision to push back (not at each clocktick). Only if there is no other L2 decision in the 
+		      // L2 decision gate [CTi-5; CTi]
+		      if (a_L2_decision.L2_decision_bool == true 
+			  && a_L2_decision.L2_ct_decision != clock_utils::INVALID_CLOCKTICK
+			  && a_L2_decision.L2_trigger_mode != trigger_structures::L2_trigger_mode::INVALID
+			  && L2_decision_already_created == false)
+			{
+			  _L2_decision_records_.push_back(a_L2_decision);
+			}
+
+		      // Build a PER only at the end of the L2 decision gate :
+		      if (!_L2_decision_records_.empty())
+			{
+			  if (ict1600 == (_L2_decision_records_.back().L2_ct_decision + _L2_decision_coincidence_gate_size_))
+			    {
+			      _build_previous_event_record();
+			    }
+			}
+		    } // end of if calo is empty || tracker is empty
 		  
 		} // end of ict1600
 
@@ -822,33 +834,39 @@ namespace snemo {
 
 	} // end of else if any_coinc
 
-      for (unsigned int i = 0; i < _L2_decision_records_.size(); i++)
-	{
-	  //_L2_decision_records_[i].display(); 
-	}
+      // for (unsigned int i = 0; i < _L2_decision_records_.size(); i++)
+      // 	{
+      // 	  //_L2_decision_records_[i].display(); 
+      // 	}
       
-      for (unsigned int i = 0; i < _coincidence_records_.size(); i++)
-	{
-	  //_coincidence_records_[i].display();
-	}  
+      // for (unsigned int i = 0; i < _coincidence_records_.size(); i++)
+      // 	{
+      // 	  //_coincidence_records_[i].display();
+      // 	}  
 
-      boost::circular_buffer<trigger_structures::previous_event_record>::iterator it_circ = _previous_event_records_->begin();
-      for (; it_circ != _previous_event_records_->end(); it_circ++)
-	{
-	  //it_circ -> display();
-	}      
+      // for (unsigned int i = 0; i < _tracker_records_.size(); i++)
+      // 	{
+      // 	  // _tracker_records_[i].display();
+      // 	  // _geiger_matrix_records_[i].display();
+      // 	}
+
+      // boost::circular_buffer<trigger_structures::previous_event_record>::iterator it_circ = _previous_event_records_->begin();
+      // for (; it_circ != _previous_event_records_->end(); it_circ++)
+      // 	{
+      // 	  //it_circ -> display();
+      // 	}   
       
-      std::clog << "********* Size of Finale structures for one event *********" << std::endl;
-      std::clog << "Calo collection size @ 25 ns            : " << _calo_records_25ns_.size() << std::endl;
-      std::clog << "Calo collection size @ 1600 ns          : " << _coincidence_calo_records_1600ns_.size() << std::endl;
-      std::clog << "Tracker collection size @ 1600 ns       : " << _tracker_records_.size() << std::endl;
-      std::clog << "Geiger matrix collection size @ 1600 ns : " << _geiger_matrix_records_.size() << std::endl;
-      std::clog << "Pair records collection size @ 1600 ns  : " << _pair_records_.size() << std::endl;
-      std::clog << "Coincidence collection size @ 1600 ns   : " << _coincidence_records_.size() << std::endl;
-      std::clog << "Previous event collection size          : " << _previous_event_records_->size() << std::endl;
-      std::clog << "L1 calo collection size @ 25 ns         : " << _L1_calo_decision_records_.size() << std::endl;
-      std::clog << "L1 tracker collection size @ 1600 ns    : " << _L1_tracker_decision_records_.size() << std::endl;
-      std::clog << "L2 decision collection size @ 1600 ns   : " << _L2_decision_records_.size() << std::endl;
+      // std::clog << "********* Size of Finale structures for one event *********" << std::endl;
+      // std::clog << "Calo collection size @ 25 ns            : " << _calo_records_25ns_.size() << std::endl;
+      // std::clog << "Calo collection size @ 1600 ns          : " << _coincidence_calo_records_1600ns_.size() << std::endl;
+      // std::clog << "Tracker collection size @ 1600 ns       : " << _tracker_records_.size() << std::endl;
+      // std::clog << "Geiger matrix collection size @ 1600 ns : " << _geiger_matrix_records_.size() << std::endl;
+      // std::clog << "Pair records collection size @ 1600 ns  : " << _pair_records_.size() << std::endl;
+      // std::clog << "Coincidence collection size @ 1600 ns   : " << _coincidence_records_.size() << std::endl;
+      // std::clog << "Previous event collection size          : " << _previous_event_records_->size() << std::endl;
+      // std::clog << "L1 calo collection size @ 25 ns         : " << _L1_calo_decision_records_.size() << std::endl;
+      // std::clog << "L1 tracker collection size @ 1600 ns    : " << _L1_tracker_decision_records_.size() << std::endl;
+      // std::clog << "L2 decision collection size @ 1600 ns   : " << _L2_decision_records_.size() << std::endl;
       
       return;
     }

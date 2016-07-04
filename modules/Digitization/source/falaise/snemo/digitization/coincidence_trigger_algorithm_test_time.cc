@@ -124,7 +124,7 @@ namespace snemo {
       	    } // end of izone
       	} // end of iside
       
-      if (a_coincidence_record_.trigger_mode == trigger_structures::L2_trigger_mode::CARACO) 
+      if (a_coincidence_record_.decision = true && _coincidence_decision_ == trigger_structures::L2_trigger_mode::CARACO) 
       	{
 	  a_coincidence_record_.clocktick_1600ns = a_calo_record.clocktick_1600ns;
       	  a_coincidence_record_.calo_zoning_word[0] = a_calo_record.calo_zoning_word[0];
@@ -145,8 +145,12 @@ namespace snemo {
       		{
       		  a_coincidence_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
       		} // end of izone
+
+	      a_coincidence_record_.tracker_zoning_word_pattern[iside] = a_tracker_record.zoning_word_pattern[iside];
+	      a_coincidence_record_.tracker_zoning_word_near_source[iside] = a_tracker_record.zoning_word_near_source[iside];
+
 	    } // end of iside
-	  
+
 	  a_L2_decision_record_.L2_decision_bool = true;
 	  a_L2_decision_record_.L2_ct_decision = a_calo_record.clocktick_1600ns;
 	  a_L2_decision_record_.L2_trigger_mode = trigger_structures::L2_trigger_mode::CARACO;
@@ -156,246 +160,244 @@ namespace snemo {
     }
     
     void coincidence_trigger_algorithm_test_time::_process_delayed_coincidence(const std::pair<trigger_structures::coincidence_calo_record, trigger_structures::tracker_record> a_pair_for_a_clocktick_,
-									       const trigger_structures::previous_event_record & a_previous_event_record_,
-									       trigger_structures::coincidence_event_record & a_delayed_record_)
+									       trigger_structures::coincidence_event_record & a_delayed_coincidence_record_,
+									       trigger_structures::L2_decision & a_L2_decision_record_,
+									       const trigger_structures::previous_event_record & a_previous_event_record_)
     {
-      // if (a_previous_event_record_.counter_1600ns != 0) // counter != 0 ->   > 1ms (625 * 1600ns) 
-      // 	{
-      // 	  tracker_trigger_algorithm_test_time::tracker_record a_tracker_record = a_pair_for_a_clocktick_.second;
+      trigger_structures::tracker_record a_tracker_record = a_pair_for_a_clocktick_.second;
 	  
-      // 	  for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
-      // 	    {
-      // 	      for (unsigned int izone = 0; izone < trigger_info::NZONES; izone++)
-      // 		{
-      // 		  std::bitset<3> delayed_hpattern_per_zone = 0x0;
+      for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
+	{
+	  for (unsigned int izone = 0; izone < trigger_info::NZONES; izone++)
+	    {
+	      std::bitset<3> delayed_hpattern_per_zone = 0x0;
 		  
-      // 		  int right = 0;
-      // 		  int mid   = 1;
-      // 		  int left  = 2;
-
-		  
-      // 		  delayed_hpattern_per_zone[right] = a_tracker_record.finale_data_per_zone[iside][izone][right+2]; // right + 2 -> bit position to change (bit enum in trigger_info.h)
-      // 		  delayed_hpattern_per_zone[mid]   = a_tracker_record.finale_data_per_zone[iside][izone][mid+2];
-      // 		  delayed_hpattern_per_zone[left]  = a_tracker_record.finale_data_per_zone[iside][izone][left+2];
+	      int right = 0;
+	      int mid   = 1;
+	      int left  = 2;
+	      
+	      delayed_hpattern_per_zone[right] = a_tracker_record.finale_data_per_zone[iside][izone][right+2];
+	      delayed_hpattern_per_zone[mid]   = a_tracker_record.finale_data_per_zone[iside][izone][mid+2];
+	      delayed_hpattern_per_zone[left]  = a_tracker_record.finale_data_per_zone[iside][izone][left+2];
 		   
-      // 		  // APE trigger (Tracker previous / Tracker delayed coincidence)
-      // 		  if (delayed_hpattern_per_zone.any())
-      // 		    { 
-      // 		      if (delayed_hpattern_per_zone.test(left) && izone == 0 &&(a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(left+2)
-      // 										|| a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(mid+2)
-      // 										|| a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(left+2)
-      // 										|| a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(mid+2)))
-      // 			{
-      // 			  a_delayed_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
-      // 			  a_delayed_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
-      // 			  a_delayed_record_.trigger_mode = APE;
-      // 			  a_delayed_record_.decision = true;
-      // 			  _delayed_coincidence_decision_ = true;
-      // 			}
+	      // APE trigger (Tracker previous / Tracker delayed coincidence)
+	      if (delayed_hpattern_per_zone.any())
+		{ 
+		  if (delayed_hpattern_per_zone.test(left) && izone == 0 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(left+2)
+									     || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(mid+2)
+									     || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(left+2)
+									     || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(mid+2)))
+		    {
+		      a_delayed_coincidence_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
+		      a_delayed_coincidence_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
+		      a_delayed_coincidence_record_.trigger_mode = trigger_structures::L2_trigger_mode::APE;
+		      a_delayed_coincidence_record_.decision = true;
+		      _coincidence_decision_ = trigger_structures::L2_trigger_mode::APE;
+		    }
 
-      // 		      if (delayed_hpattern_per_zone.test(left) && izone-1 > -1 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone-1].test(right+2)
-      // 										   || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(left+2)
-      // 										   || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(mid+2)
-      // 										   || a_previous_event_record_.tracker_finale_data_per_zone[1][izone-1].test(right+2)
-      // 										   || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(left+2)
-      // 										   || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(mid+2)))
-      // 			{
-      // 			  a_delayed_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
-      // 			  a_delayed_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
-      // 			  a_delayed_record_.trigger_mode = APE;
-      // 			  a_delayed_record_.decision = true;
-      // 			  _delayed_coincidence_decision_ = true;
-      // 			}    
+		  if (delayed_hpattern_per_zone.test(left) && izone-1 > -1 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone-1].test(right+2)
+									       || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(left+2)
+									       || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(mid+2)
+									       || a_previous_event_record_.tracker_finale_data_per_zone[1][izone-1].test(right+2)
+									       || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(left+2)
+									       || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(mid+2)))
+		    {
+		      a_delayed_coincidence_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
+		      a_delayed_coincidence_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
+		      a_delayed_coincidence_record_.trigger_mode = trigger_structures::L2_trigger_mode::APE;
+		      a_delayed_coincidence_record_.decision = true;
+		      _coincidence_decision_ = trigger_structures::L2_trigger_mode::APE;
+		    }    
 		      
-      // 		      if (delayed_hpattern_per_zone.test(mid) && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(left+2)
-      // 								  || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(mid+2)
-      // 								  || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(right+2)
-      // 								  || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(left+2)
-      // 								  || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(mid+2)
-      // 								  || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(right+2)))
-      // 			{
-      // 			  a_delayed_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
-      // 			  a_delayed_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
-      // 			  a_delayed_record_.trigger_mode = APE;
-      // 			  a_delayed_record_.decision = true;
-      // 			  _delayed_coincidence_decision_ = true;
-      // 			} 
+		  if (delayed_hpattern_per_zone.test(mid) && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(left+2)
+							      || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(mid+2)
+							      || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(right+2)
+							      || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(left+2)
+							      || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(mid+2)
+							      || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(right+2)))
+		    {
+		      a_delayed_coincidence_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
+		      a_delayed_coincidence_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
+		      a_delayed_coincidence_record_.trigger_mode = trigger_structures::L2_trigger_mode::APE;
+		      a_delayed_coincidence_record_.decision = true;
+		      _coincidence_decision_ = trigger_structures::L2_trigger_mode::APE;
+		    } 
 		      
-      // 		      if (delayed_hpattern_per_zone.test(right) && izone == 10 &&(a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(mid+2)
-      // 										  || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(right+2)
-      // 										  || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(mid+2)
-      // 										  || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(right+2)))
-      // 			{
-      // 			  a_delayed_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
-      // 			  a_delayed_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
-      // 			  a_delayed_record_.trigger_mode = APE;
-      // 			  a_delayed_record_.decision = true;
-      // 			  _delayed_coincidence_decision_ = true;
-      // 			}
+		  if (delayed_hpattern_per_zone.test(right) && izone == 10 &&(a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(mid+2)
+									      || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(right+2)
+									      || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(mid+2)
+									      || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(right+2)))
+		    {
+		      a_delayed_coincidence_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
+		      a_delayed_coincidence_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
+		      a_delayed_coincidence_record_.trigger_mode = trigger_structures::L2_trigger_mode::APE;
+		      a_delayed_coincidence_record_.decision = true;
+		      _coincidence_decision_ = trigger_structures::L2_trigger_mode::APE;
+		    }
 
-      // 		      if (delayed_hpattern_per_zone.test(right) && izone + 1 < 10 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(mid+2)
-      // 										      || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(right+2)
-      // 										      || a_previous_event_record_.tracker_finale_data_per_zone[0][izone+1].test(left+2)
-      // 										      || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(mid+2)
-      // 										      || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(right+2)
-      // 										      || a_previous_event_record_.tracker_finale_data_per_zone[1][izone+1].test(left+2)))
-      // 			{
-      // 			  a_delayed_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
-      // 			  a_delayed_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
-      // 			  a_delayed_record_.trigger_mode = APE;
-      // 			  a_delayed_record_.decision = true;
-      // 			  _delayed_coincidence_decision_ = true;
-      // 			}
-      // 		    }
-      // 		} // end of izone
-      // 	    } // end of iside
+		  if (delayed_hpattern_per_zone.test(right) && izone + 1 < 10 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(mid+2)
+										  || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(right+2)
+										  || a_previous_event_record_.tracker_finale_data_per_zone[0][izone+1].test(left+2)
+										  || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(mid+2)
+										  || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(right+2)
+										  || a_previous_event_record_.tracker_finale_data_per_zone[1][izone+1].test(left+2)))
+		    {
+		      a_delayed_coincidence_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
+		      a_delayed_coincidence_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
+		      a_delayed_coincidence_record_.trigger_mode = trigger_structures::L2_trigger_mode::APE;
+		      a_delayed_coincidence_record_.decision = true;
+		      _coincidence_decision_ = trigger_structures::L2_trigger_mode::APE;
+		    }
+		}
+	    } // end of izone
+	} // end of iside
 	  
-      // 	  if (a_delayed_record_.decision)
-      // 	    {
-      // 	      bool decision_already_true_in_last_CTs = false;
-      // 	      for (unsigned int i = 0; i < _L2_coincidence_decison_records_.size(); i++)
-      // 		{
-      // 		  coincidence_trigger_algorithm_test_time::L2_coincidence_decision already_created_L2_coinc_decision = _L2_coincidence_decison_records_[i]; 
-      // 		  int32_t clocktick_maximum_for_decision = already_created_L2_coinc_decision.L2_clocktick_decision + SIZE_OF_L2_COINCIDENCE_DECISION_GATE;
-      // 		  if (a_delayed_record_.clocktick_1600ns < clocktick_maximum_for_decision && already_created_L2_coinc_decision.L2_clocktick_decision < a_delayed_record_.clocktick_1600ns)
-      // 		    {
-      // 		      decision_already_true_in_last_CTs = true;
-      // 		    }
-      // 		} // end of icoinc
+      if (a_delayed_coincidence_record_.decision && _coincidence_decision_ == trigger_structures::L2_trigger_mode::APE)
+	{
+	  for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+	    {
+	      a_delayed_coincidence_record_.tracker_zoning_word_pattern[iside] = a_tracker_record.zoning_word_pattern[iside];
+	      a_delayed_coincidence_record_.tracker_zoning_word_near_source[iside] = a_tracker_record.zoning_word_near_source[iside];
+	    }
+	  a_delayed_coincidence_record_.single_side_coinc = a_tracker_record.single_side_coinc;
+	  a_L2_decision_record_.L2_decision_bool = true;
+	  a_L2_decision_record_.L2_ct_decision = a_tracker_record.clocktick_1600ns;
+	  a_L2_decision_record_.L2_trigger_mode = trigger_structures::L2_trigger_mode::APE;
+	}
 	  
-      // 	      if (decision_already_true_in_last_CTs == false)
-      // 		{
-      // 		  coincidence_trigger_algorithm_test_time::L2_coincidence_decision a_L2_coinc_decision;
-      // 		  a_L2_coinc_decision.L2_coincidence_decision_bool = true;
-      // 		  a_L2_coinc_decision.L2_clocktick_decision = a_delayed_record_.clocktick_1600ns;
-      // 		  a_L2_coinc_decision.trigger_mode = APE;
-      // 		  _L2_coincidence_decison_records_.push_back(a_L2_coinc_decision);
-      // 		}
-      // 	    }
-	  
-      // 	  // Delayed Alpha Veto Event (DAVE) trigger
-      // 	  else
-      // 	    {	  
-      // 	      for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
-      // 		{
-      // 		  for (unsigned int izone = 0; izone < trigger_info::NZONES; izone++)
-      // 		    {
-      // 		      std::bitset<2> delayed_near_source_per_zone = 0x0;
-      // 		      int near_source_right = 0;
-      // 		      int near_source_left  = 1;
-      // 		      delayed_near_source_per_zone[near_source_right] = a_tracker_record.finale_data_per_zone[iside][izone][near_source_right + 5];
-      // 		      delayed_near_source_per_zone[near_source_left]  = a_tracker_record.finale_data_per_zone[iside][izone][near_source_left + 5];
+      // Delayed Alpha Veto Event (DAVE) trigger
+      else
+	{	  
+	  for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
+	    {
+	      for (unsigned int izone = 0; izone < trigger_info::NZONES; izone++)
+		{
+		  std::bitset<2> delayed_near_source_per_zone = 0x0;
+		  int near_source_right = 0;
+		  int near_source_left  = 1;
+		  delayed_near_source_per_zone[near_source_right] = a_tracker_record.finale_data_per_zone[iside][izone][near_source_right + 5];
+		  delayed_near_source_per_zone[near_source_left]  = a_tracker_record.finale_data_per_zone[iside][izone][near_source_left + 5];
 		      
-      // 		      if (delayed_near_source_per_zone.any())
-      // 			{
-      // 			  if (delayed_near_source_per_zone.test(near_source_left) && izone == 0 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_left+5)
-      // 												    || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_right+5)
-      // 												    || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_left+5)
-      // 												    || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_right+5)))
-      // 			    {
-      // 			      a_delayed_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
-      // 			      a_delayed_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
-      // 			      a_delayed_record_.trigger_mode = DAVE;
-      // 			      a_delayed_record_.decision = true;
-      // 			      _delayed_coincidence_decision_ = true;
-      // 			    }
+		  if (delayed_near_source_per_zone.any())
+		    {
+		      if (delayed_near_source_per_zone.test(near_source_left) && izone == 0 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_left+5)
+												|| a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_right+5)
+												|| a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_left+5)
+												|| a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_right+5)))
+			{
+			  a_delayed_coincidence_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
+			  a_delayed_coincidence_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
+			  a_delayed_coincidence_record_.trigger_mode = trigger_structures::L2_trigger_mode::DAVE;
+			  a_delayed_coincidence_record_.decision = true;
+			  _coincidence_decision_ = trigger_structures::L2_trigger_mode::DAVE;
+			}
 			    
 
-      // 			  if (delayed_near_source_per_zone.test(near_source_left) && izone - 1 > -1 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone-1].test(near_source_right+5)
-      // 													|| a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_left+5)
-      // 													|| a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_right+5)
-      // 													|| a_previous_event_record_.tracker_finale_data_per_zone[1][izone-1].test(near_source_right+5)
-      // 													|| a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_left+5)
-      // 													|| a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_right+5)))
+		      if (delayed_near_source_per_zone.test(near_source_left) && izone - 1 > -1 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone-1].test(near_source_right+5)
+												    || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_left+5)
+												    || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_right+5)
+												    || a_previous_event_record_.tracker_finale_data_per_zone[1][izone-1].test(near_source_right+5)
+												    || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_left+5)
+												    || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_right+5)))
 			    
-      // 			    {
-      // 			      a_delayed_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
-      // 			      a_delayed_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
-      // 			      a_delayed_record_.trigger_mode = DAVE;
-      // 			      a_delayed_record_.decision = true;
-      // 			      _delayed_coincidence_decision_ = true;
-      // 			    }
+			{
+			  a_delayed_coincidence_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
+			  a_delayed_coincidence_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
+			  a_delayed_coincidence_record_.trigger_mode = trigger_structures::L2_trigger_mode::DAVE;
+			  a_delayed_coincidence_record_.decision = true;
+			  _coincidence_decision_ = trigger_structures::L2_trigger_mode::DAVE;
+			}
 		      
 
-      // 			  if (delayed_near_source_per_zone.test(near_source_right) && izone == 10 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_left+5)
-      // 												      || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_right+5)
-      // 												      || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_left+5)
-      // 												      || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_right+5)))
-      // 			    {
-      // 			      a_delayed_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
-      // 			      a_delayed_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
-      // 			      a_delayed_record_.trigger_mode = DAVE;
-      // 			      a_delayed_record_.decision = true;
-      // 			      _delayed_coincidence_decision_ = true;
-      // 			    }
+		      if (delayed_near_source_per_zone.test(near_source_right) && izone == 10 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_left+5)
+												  || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_right+5)
+												  || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_left+5)
+												  || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_right+5)))
+			{
+			  a_delayed_coincidence_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
+			  a_delayed_coincidence_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
+			  a_delayed_coincidence_record_.trigger_mode = trigger_structures::L2_trigger_mode::DAVE;
+			  a_delayed_coincidence_record_.decision = true;
+			  _coincidence_decision_ = trigger_structures::L2_trigger_mode::DAVE;
+			}
 			  
-      // 			  if (delayed_near_source_per_zone.test(near_source_right) && izone + 1 < 10 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_left+5)
-      // 													 || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_right+5)
-      // 													 || a_previous_event_record_.tracker_finale_data_per_zone[0][izone+1].test(near_source_left+5)
-      // 													 || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_left+5)
-      // 													 || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_right+5)
-      // 													 || a_previous_event_record_.tracker_finale_data_per_zone[1][izone+1].test(near_source_left+5)))
-      // 			    {
-      // 			      a_delayed_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
-      // 			      a_delayed_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
-      // 			      a_delayed_record_.trigger_mode = DAVE;
-      // 			      a_delayed_record_.decision = true;
-      // 			      _delayed_coincidence_decision_ = true;
-      // 			    }
-      // 			} // enf of if delayed any
+		      if (delayed_near_source_per_zone.test(near_source_right) && izone + 1 < 10 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_left+5)
+												     || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_right+5)
+												     || a_previous_event_record_.tracker_finale_data_per_zone[0][izone+1].test(near_source_left+5)
+												     || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_left+5)
+												     || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_right+5)
+												     || a_previous_event_record_.tracker_finale_data_per_zone[1][izone+1].test(near_source_left+5)))
+			{
+			  a_delayed_coincidence_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
+			  a_delayed_coincidence_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
+			  a_delayed_coincidence_record_.trigger_mode = trigger_structures::L2_trigger_mode::DAVE;
+			  a_delayed_coincidence_record_.decision = true;
+			  _coincidence_decision_ = trigger_structures::L2_trigger_mode::DAVE;
+			}
+		    } // enf of if delayed any
 		      
-      // 		    } // end of izone
-      // 		} // end of iside
+		} // end of izone
+	    } // end of iside
 	  
-      // 	      if (a_delayed_record_.decision)
-      // 		{
-      // 		  bool decision_already_true_in_last_CTs = false;
-      // 		  for (unsigned int i = 0; i < _L2_coincidence_decison_records_.size(); i++)
-      // 		    {
-      // 		      coincidence_trigger_algorithm_test_time::L2_coincidence_decision already_created_L2_coinc_decision = _L2_coincidence_decison_records_[i]; 
-      // 		      int32_t clocktick_maximum_for_decision = already_created_L2_coinc_decision.L2_clocktick_decision + SIZE_OF_L2_COINCIDENCE_DECISION_GATE;
-      // 		      if (a_delayed_record_.clocktick_1600ns < clocktick_maximum_for_decision && already_created_L2_coinc_decision.L2_clocktick_decision < a_delayed_record_.clocktick_1600ns)
-      // 			{
-      // 			  decision_already_true_in_last_CTs = true;
-      // 			}
-      // 		    } // end of icoinc
-	  
-      // 		  if (decision_already_true_in_last_CTs == false)
-      // 		    {
-      // 		      coincidence_trigger_algorithm_test_time::L2_coincidence_decision a_L2_coinc_decision;
-      // 		      a_L2_coinc_decision.L2_coincidence_decision_bool = true;
-      // 		      a_L2_coinc_decision.L2_clocktick_decision = a_delayed_record_.clocktick_1600ns;
-      // 		      a_L2_coinc_decision.trigger_mode = DAVE;
-      // 		      _L2_coincidence_decison_records_.push_back(a_L2_coinc_decision);
-      // 		    }
-      // 		}
+	  if (a_delayed_coincidence_record_.decision && _coincidence_decision_ == trigger_structures::L2_trigger_mode::DAVE)
+	    {
+	      for (int iside = 0; iside < trigger_info::NSIDES; iside++)
+		{
+		  a_delayed_coincidence_record_.tracker_zoning_word_near_source[iside] = a_tracker_record.zoning_word_near_source[iside];
+		}
+	      a_delayed_coincidence_record_.single_side_coinc = a_tracker_record.single_side_coinc;
+	      a_L2_decision_record_.L2_decision_bool = true;
+	      a_L2_decision_record_.L2_ct_decision = a_tracker_record.clocktick_1600ns;
+	      a_L2_decision_record_.L2_trigger_mode = trigger_structures::L2_trigger_mode::DAVE;
+	    }
 	    
-      // 	    } //end of else
-	  
-      // 	} // end of if counter != 0
-  
+	}//end of else
+	    
       return;
     }
 
     void coincidence_trigger_algorithm_test_time::process(const std::pair<trigger_structures::coincidence_calo_record, trigger_structures::tracker_record> pair_for_a_clocktick_,
 							  trigger_structures::coincidence_event_record & a_coincidence_record_,
-							  trigger_structures::L2_decision & a_L2_decision_record_)
+							  trigger_structures::L2_decision & a_L2_decision_record_,
+							  const boost::scoped_ptr<boost::circular_buffer<trigger_structures::previous_event_record> > & previous_event_records_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Coincidence trigger algorithm is not initialized, it can't process ! ");
       _process(pair_for_a_clocktick_,
 	       a_coincidence_record_,
-	       a_L2_decision_record_);
+	       a_L2_decision_record_,
+	       previous_event_records_);
       return;
     }
 
     void coincidence_trigger_algorithm_test_time::_process(const std::pair<trigger_structures::coincidence_calo_record, trigger_structures::tracker_record> pair_for_a_clocktick_,
 							   trigger_structures::coincidence_event_record & a_coincidence_record_,
-							   trigger_structures::L2_decision & a_L2_decision_record_)
+							   trigger_structures::L2_decision & a_L2_decision_record_,
+							   const boost::scoped_ptr<boost::circular_buffer<trigger_structures::previous_event_record> > & previous_event_records_)
     {
       reset_data();
+      // Process CARACO :
       _process_calo_tracker_coincidence(pair_for_a_clocktick_,
 					a_coincidence_record_,
 					a_L2_decision_record_);
+      
+      // If no CARACO, search for an APE or DAVE delayed coincidence :
+      if (previous_event_records_->size() != 0)
+	{
+	  auto it_circ = previous_event_records_->begin();
+	  for (; it_circ != previous_event_records_->end(); it_circ++)
+	    {
+	      const trigger_structures::previous_event_record a_previous_event_record = *it_circ;
+	      if (a_previous_event_record.counter_1600ns <= clock_utils::PREVIOUS_EVENT_RECORD_LIVING_NUMBER_OF_CLOCKTICK
+		  && a_previous_event_record.counter_1600ns > 0)
+		{
+		  _process_delayed_coincidence(pair_for_a_clocktick_,
+					       a_coincidence_record_,
+					       a_L2_decision_record_,
+					       a_previous_event_record);
+		} // end of if counter
+	    } // end of for it_circ
+	} // end of if size != 0
+      
       return;
     }
     
