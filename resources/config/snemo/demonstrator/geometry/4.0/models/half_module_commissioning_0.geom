@@ -2,6 +2,16 @@
 # @falaise:config/snemo/demonstrator/geometry/4.0/models/half_module_commissioning.geom
 
 
+#############################################################################
+[name="commissioning_source_gap.model" type="geomtools::simple_shaped_model"]
+shape_type       : string = "box"
+#x                : real as length = @variant(geometry:layout/if_half_commissioning/gap|0.25 mm)
+x                : real as length =  200.0 mm
+y                : real as length = 6000.0 mm
+z                : real as length = 4000.0 mm
+material.ref     : string = "lab_air"
+visibility.color : string = "blue"
+
 ##############################################################################
 [name="commissioning_source_spot.model" type="geomtools::simple_shaped_model"]
 shape_type       : string = "cylinder"
@@ -26,7 +36,7 @@ visibility.color      : string = "grey"
 #@description The label used to name the volumes
 grid.daughter_label : string = "spot"
 
-x                  : real as length =    1.0 mm
+x                  : real as length =    0.5 mm
 y                  : real as length = 6000.0 mm
 z                  : real as length = 4000.0 mm
 
@@ -116,19 +126,21 @@ visibility.color   : string  = "blue"
 stacked.axis            : string = "x"
 
 #@description Number of stacking volumes
-stacked.number_of_items : integer = 4
+stacked.number_of_items : integer = 5
 
 # Stacked models:
 stacked.model_0   : string = "commissioning_source_plane.model"
-stacked.model_1   : string = "half_module_closing_plate.model"
-stacked.model_2   : string = "tracker_front_submodule.model"
-stacked.model_3   : string = "calorimeter_front_submodule.model"
+stacked.model_1   : string = "commissioning_source_gap.model"
+stacked.model_2   : string = "half_module_closing_plate.model"
+stacked.model_3   : string = "tracker_front_submodule.model"
+stacked.model_4   : string = "calorimeter_front_submodule.model"
 
 # Labels associated to each stacked model:
 stacked.label_0   : string = "commissioning_source_plane"
-stacked.label_1   : string = "closing_plate"
-stacked.label_2   : string = "tracker_front_submodule"
-stacked.label_3   : string = "calorimeter_front_submodule"
+stacked.label_1   : string = "commissioning_source_gap"
+stacked.label_2   : string = "closing_plate"
+stacked.label_3   : string = "tracker_front_submodule"
+stacked.label_4   : string = "calorimeter_front_submodule"
 
 # Surrounding material:
 material.ref    : string = "lab_air"

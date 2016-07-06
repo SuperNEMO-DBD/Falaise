@@ -99,7 +99,7 @@ Display the geometry
       $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
         bxgeomtools_inspector \
           --datatools::logging="trace" \
-          --datatools::resource-path="falaise@$(pwd)/BuildProducts/share/Falaise-2.1.0/resources" \
+          --datatools::resource-path="falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
           --load-dll Falaise \
           --datatools::variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/repository.conf" \
           --datatools::variant-qt-gui \
@@ -124,7 +124,7 @@ Display the geometry
       $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
         bxgeomtools_inspector \
           --datatools::logging "warning" \
-          --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-2.1.0/resources" \
+          --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
           --load-dll Falaise \
           --datatools::variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/repository.conf" \
  	  --datatools::variant-load "myprofile.conf" \
@@ -134,7 +134,7 @@ Display the geometry
       $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
         bxgeomtools_inspector \
           --datatools::logging "warning" \
-          --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-2.1.0/resources" \
+          --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
           --load-dll Falaise \
           --datatools::variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/repository.conf" \
           --datatools::variant-set "geometry:layout=HalfCommissioning" \

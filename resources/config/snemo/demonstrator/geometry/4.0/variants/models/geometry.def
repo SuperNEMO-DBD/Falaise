@@ -30,6 +30,39 @@ parameters.source_calibration.model       : string = "source_calibration.off_on.
 parameters.source_calibration.description : string = "The activation flag of the source calibration system"
 
 
+#########################################################################
+[name="demonstrator.geometry.half_commissioning.gap.PM" type="parameter"]
+
+#@config A parameter model describing a distance
+
+#@description The display name of this variant
+display_name        : string = "Distance"
+
+#@description A short description of the variant
+terse_description   : string = "A distance"
+
+#@description The type of the parameter
+type                : string = "real"
+
+#@description The unit label
+real.unit_label     : string = "length"
+
+#@description The preferred unit
+real.preferred_unit : string = "mm"
+
+#@description The mutability of the parameter
+mutability          : string = "variable"
+
+#@description The mutability mode of the parameter
+variable.mode       : string = "interval"
+
+#@description The domain of supported values
+real.domain         : string = "[0.25 mm, 1 m]"
+
+#@description The default value
+real.default        : real as length = 0.25 mm
+
+
 ###################################################################
 [name="demonstrator.geometry.half_commissioning.VM" type="variant"]
 
@@ -41,8 +74,14 @@ display_name       : string = "Half module commissioning layout"
 #@description A short description of the variant
 terse_description  : string = "The configuration parameters for the demonstrator half module commissioning layout"
 
+#@description The list of variant parameters associated to the source
+parameters : string[1] = "gap"
 
-################################################
+parameters.gap.model       : string = "demonstrator.geometry.half_commissioning.gap.PM"
+parameters.gap.description : string = "The calibration source distance to closing plate"
+
+
+#########################################################
 [name="demonstrator.geometry.layout.PM" type="parameter"]
 
 #@config A parameter model describing the layout of the demonstrator module
