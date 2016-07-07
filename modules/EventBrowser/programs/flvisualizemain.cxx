@@ -216,11 +216,10 @@ void do_cldialog(int argc_, char *argv_[], FLVisualizeArgs& params_) {
 
   // Library loader :
   datatools::library_loader my_library_loader;
-  for (std::vector<std::string>::const_iterator ilib = options_mgr.get_libraries().begin();
-       ilib != options_mgr.get_libraries().end(); ++ilib) {
-    DT_LOG_NOTICE(params_.logLevel, "Loading DLL '" << *ilib << "'.");
-    DT_THROW_IF(my_library_loader.load(*ilib) != EXIT_SUCCESS,
-                std::logic_error, "Cannot load DLL '" << *ilib << "' !");
+  for (auto & ilib : params_.libraries) {
+    DT_LOG_NOTICE(params_.logLevel, "Loading DLL '" << ilib << "'.");
+    DT_THROW_IF(my_library_loader.load(ilib) != EXIT_SUCCESS,
+                std::logic_error, "Cannot load DLL '" << ilib << "' !");
   }
 
   options_mgr.set_logging_priority(params_.logLevel);
