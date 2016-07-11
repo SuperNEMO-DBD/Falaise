@@ -46,7 +46,7 @@ if  [ $? -ne 0 ]; then
     exit 1
 fi
 
-echo "error: Dump 'SD' bank head..." >&2
+echo "notice: Dump 'SD' bank head..." >&2
 ls -l test.xml
 echo "--------------------------------------------------------" >&2
 grep -B 4 -A 10 SD test.xml >&2
@@ -63,7 +63,7 @@ fi
 
 ls -l test-reco.xml
 
-echo "error: Dump 'ATMCounter' bank head..." >&2
+echo "notice: Dump 'ATMCounter' bank head..." >&2
 ls -l test-reco.xml
 echo "--------------------------------------------------------" >&2
 grep -B 4 -A 21 ATMCounter test-reco.xml >&2
@@ -71,4 +71,10 @@ echo "--------------------------------------------------------" >&2
 echo "" >&2
 
 cd ${opwd}
+
+rm -fr ${build_dir}
+rm test.xml
+rm test-reco.xml
+rm libAccessThingsModule.so
+
 exit 0

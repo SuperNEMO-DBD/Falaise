@@ -19,23 +19,10 @@
 // (text, portable binary, xml) supported by the
 // Boost/Serialization-based Bayeux/Falaise I/O system:
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(MyDataType)
-
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-local-typedef"
-#endif
-#ifdef __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#pragma GCC diagnostic ignored "-Wshadow"
-#endif
-#include <boost/serialization/export.hpp>
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#endif
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
+// 2016-07-11 FM: it seems that if I remove this macro above, the system
+// still works as long as the 'bayeux/datatools/archives_instantiation.h'
+// is included. AFAIR, it was not the case with former versions of the
+// Boost/library.
 
 // Boost/Serialization class registration implementation:
 BOOST_CLASS_EXPORT_IMPLEMENT(MyDataType)

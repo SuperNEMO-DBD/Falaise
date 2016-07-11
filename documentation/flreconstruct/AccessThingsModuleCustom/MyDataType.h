@@ -34,7 +34,22 @@ class MyDataType : public datatools::i_serializable {
 };
 
 // Boost/Serialization class registration declaration:
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-local-typedef"
+#endif
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#pragma GCC diagnostic ignored "-Wshadow"
+#endif
 #include <boost/serialization/export.hpp>
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 BOOST_CLASS_EXPORT_KEY2(MyDataType, "MyDataType")
 
 #endif // MYDATATYPE_HH
