@@ -34,6 +34,7 @@ class MyDataType : public datatools::i_serializable {
 };
 
 // Boost/Serialization class registration declaration:
+// Note: maybe the pragmas could be removed...
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-local-typedef"
