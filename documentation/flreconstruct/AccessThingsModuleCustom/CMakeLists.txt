@@ -15,10 +15,11 @@ add_library(AccessThingsModule SHARED
   AccessThingsModule.cpp
   MyDataType.h
   MyDataType.cpp
+  MyDataType-serial.ipp
+  SerializationSupport.cpp
   )
 
 # Link it to the FalaiseModule library
 # This ensures the correct compiler flags, include paths
 # and linker flags are applied to our dynamic library.
 target_link_libraries(AccessThingsModule PUBLIC FalaiseModule)
-

@@ -33,5 +33,8 @@ class MyDataType : public datatools::i_serializable {
   int mdtCounter_;  //!< Stored counter
 };
 
-#endif // MYDATATYPE_HH
+// Boost/Serialization class registration declaration:
+#include <boost/serialization/export.hpp>
+BOOST_CLASS_EXPORT_KEY2(MyDataType, "MyDataType")
 
+#endif // MYDATATYPE_HH
