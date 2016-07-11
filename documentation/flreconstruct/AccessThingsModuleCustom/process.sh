@@ -51,7 +51,7 @@ ls -l test.xml
 echo "--------------------------------------------------------" >&2
 grep -B 4 -A 10 SD test.xml >&2
 echo "--------------------------------------------------------" >&2
-echo "" &2
+echo "" >&2
 
 flreconstruct -i test.xml -p ${source_dir}/AccessThingsPipeline.conf -o test-reco.xml
 if  [ $? -ne 0 ]; then
@@ -68,7 +68,7 @@ ls -l test-reco.xml
 echo "--------------------------------------------------------" >&2
 grep -B 4 -A 21 ATMCounter test-reco.xml >&2
 echo "--------------------------------------------------------" >&2
-echo "" &2
+echo "" >&2
 
 cd ${opwd}
 exit 0
