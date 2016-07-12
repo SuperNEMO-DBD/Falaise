@@ -15,6 +15,7 @@ add_library(AccessThingsModule SHARED
   AccessThingsModule.cpp
   MyDataType.h
   MyDataType.cpp
+  MyDataTypeSerialization.cpp
   )
 
 # Link it to the FalaiseModule library

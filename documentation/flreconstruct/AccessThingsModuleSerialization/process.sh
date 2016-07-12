@@ -35,9 +35,6 @@ if  [ $? -ne 0 ]; then
     cd ${opwd}
     exit 1
 fi
-cp -f ${build_dir}/libAccessThingsModule.so ${source_dir}/
-
-cd ${opwd}
 
 flsimulate -n 1 --experiment demonstrator -x source_pads_bulk -e Se82.0nubb -o test.xml
 if  [ $? -ne 0 ]; then
@@ -73,8 +70,5 @@ echo "" >&2
 cd ${opwd}
 
 rm -fr ${build_dir}
-rm test.xml
-rm test-reco.xml
-rm libAccessThingsModule.so
 
 exit 0
