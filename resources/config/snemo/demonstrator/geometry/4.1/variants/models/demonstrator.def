@@ -1,0 +1,96 @@
+# -*- mode: conf-unix; -*-
+# @falaise:config/snemo/demonstrator/geometry/4.1/models/source_module/variants/models/demonstrator.def (format: datatools::multi_properties)
+
+#@description The definitions for variant parameters related to the DBD source
+#@key_label   "name"
+#@meta_label  "type"
+
+
+##########################################################
+[name="demonstrator.basic.VM"              type="variant"]
+
+#@config A variant model describing the set of parameters associated to the SN demonstrator module basic layout
+
+#@description The display name of this variant
+display_name       : string = "Basic layout"
+
+#@description A short description of the variant
+terse_description  : string = "The configuration parameters for the demonstrator module basic layout"
+
+
+##########################################################
+[name="demonstrator.half_commissioning.VM" type="variant"]
+
+#@config A variant model describing the set of parameters associated to the SN demonstrator half module commissioning layout
+
+#@description The display name of this variant
+display_name       : string = "Half module commissioning layout"
+
+#@description A short description of the variant
+terse_description  : string = "The configuration parameters for the demonstrator half module commissioning layout"
+
+
+################################################
+[name="demonstrator.layout.PM" type="parameter"]
+
+#@config A parameter model describing the layout of the demonstrator module
+
+#@description The display name of this variant
+display_name       : string = "Demonstrator layout"
+
+#@description A short description of the variant
+terse_description  : string = "The demonstrator layout"
+
+#@description The type of the parameter
+type               : string = "string"
+
+#@description The mutability of the parameter
+mutability         : string = "variable"
+
+#@description The mutability mode of the parameter
+variable.mode      : string = "enumeration"
+
+#@description The number of supported values
+string.enumerated.size    : integer = 2
+
+# The list of supported values:
+string.enumerated_0.value : string = "Basic"
+string.enumerated_1.value : string = "HalfCommissioning"
+
+#@description The default value
+string.default            : string = "Basic"
+
+#@description List of variants
+variants                  : string[2] = "if_basic" "if_half_commissioning"
+
+#@description Variant model associated to the layout
+variants.if_basic.model       : string = "demonstrator.basic.VM"
+variants.if_basic.description : string = "Set of parameters for basic demonstrator layout"
+
+variants.if_half_commissioning.model       : string = "demonstrator.half_commissioning.VM"
+variants.if_half_commissioning.description : string = "Set of parameters for demonstrator half module commissioning layout"
+
+#@description "Basic" layout is associated to the "if_basic" model
+string.enumerated_0.variant : string = "if_basic"
+string.enumerated_1.variant : string = "if_half_commissioning"
+
+
+#######################################
+[name="demonstrator.VM" type="variant"]
+
+#@config A variant model describing the set of parameters associated to the SN demonstrator module
+
+#@description The display name of this variant
+display_name       : string = "Demonstrator"
+
+#@description A short description of the variant
+terse_description  : string = "The configuration parameters for the demonstrator geometry"
+
+#@description The list of variant parameters associated to the source
+parameters : string[1] = "layout"
+
+parameters.layout.model       : string = "demonstrator.layout.PM"
+parameters.layout.description : string = "The layout of the demonstrator module"
+
+
+# end of @falaise:config/snemo/demonstrator/geometry/4.1/models/source_module/variants/models/demonstrator.def

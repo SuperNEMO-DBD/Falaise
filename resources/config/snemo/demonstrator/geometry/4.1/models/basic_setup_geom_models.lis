@@ -1,0 +1,13 @@
+# -*- mode: conf-unix; -*-
+# @falaise:config/snemo/demonstrator/geometry/4.1/models/basic_setup_geom_models.lis
+# List of geometry models definition files for the SuperNEMO Demonstrator
+
+
+# Demonstrator module:
+@falaise:config/snemo/demonstrator/geometry/4.1/models/basic_module_0.geom
+
+# World and experimental hall:
+@falaise:config/snemo/demonstrator/geometry/4.1/models/setup.geom
+
+
+# end of @falaise:config/snemo/demonstrator/geometry/4.1/models/basic_setup_geom_models.lis

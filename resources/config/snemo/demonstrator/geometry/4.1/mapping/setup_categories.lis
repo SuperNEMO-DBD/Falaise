@@ -1,0 +1,42 @@
+# -*- mode: conf-unix; -*-
+# setup_categories.lis
+# List of geometry ID categories/types (format: datatools::multi_properties):
+
+#@description A sample list of geometry ID categories/types
+#@key_label   "category"
+#@meta_label  "type"
+
+
+###############
+# Top volumes #
+###############
+
+###########################
+[category="world" type="0"]
+addresses : string[1] = "world"
+
+
+#############################
+[category="hall"  type="100"]
+addresses : string[1] = "hall"
+
+
+###################
+# External shield #
+###################
+
+#######################################
+[category="external_shield" type="200"]
+addresses : string[1] = "side"
+
+
+##########
+# Module #
+##########
+
+###############################
+[category="module" type="1000"]
+addresses : string[1] = "module"
+
+
+# end of setup_categories.lis
