@@ -202,9 +202,9 @@ visibility.color           : string  = "grey"
 [name="tracker_feedthroughs_pins.model" type="geomtools::simple_shaped_model"]
 
 shape_type : string = "box"
-x          : real as length = 70.0 mm
-y          : real as length = 40.0 mm
-z          : real as length =  2.0 mm
+x          : real as length = 50.0 mm
+y          : real as length = 30.0 mm
+z          : real as length =  0.64 mm
 
 material.ref : string  = "snemo::beryllium-copper"
 
