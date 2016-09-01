@@ -1746,8 +1746,9 @@ namespace SULTAN {
 
     if (level >= mybhep::VERBOSE)
       {
-        for(std::vector<topology::sequence>::const_iterator is=sequences.begin(); is!=sequences.end(); ++is)
+        for(std::vector<topology::sequence>::const_iterator is=sequences.begin(); is!=sequences.end(); ++is) {
           m.message("SULTAN::sultan::sequentiate_cluster_with_experimental_vector_4: sequence [", is - sequences.begin(), "] has ", is->nodes_.size(), " nodes", mybhep::VERBOSE); fflush(stdout);
+        }
       }
 
     sequences_.insert(sequences_.end(),sequences.begin(),sequences.end());;

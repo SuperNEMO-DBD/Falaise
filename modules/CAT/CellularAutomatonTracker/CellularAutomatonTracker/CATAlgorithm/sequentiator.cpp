@@ -3059,8 +3059,9 @@ namespace CAT {
       {
         std::clog << " " << (int)inode->c().id();fflush(stdout);
 
-        if( inode->free() )
+        if( inode->free() ) {
           std::clog << "* ";fflush(stdout);
+        }
 
         topology::experimental_vector v(inode->c().ep(),inode->ep());
 
@@ -3082,8 +3083,9 @@ namespace CAT {
 		}
 		std::clog << "[" << inode->cc_[iccc].iteration() << " "
 			  << inode->cc()[iccc].tangents().size() << "]";fflush(stdout);
-		if( ! ilink->begun() )
+		if( ! ilink->begun() ) {
 		  std::clog << "[n]";fflush(stdout);
+                }
 	      }else{
 		std::clog << inode->ccc()[iccc].ca().id() << "<->" << inode->ccc()[iccc].cc().id();fflush(stdout);
 		if( ilink->free() ){
@@ -3091,8 +3093,9 @@ namespace CAT {
 		}
 		std::clog << "[" << inode->ccc_[iccc].iteration() << " "
 			  << inode->ccc()[iccc].joints().size() << "]";fflush(stdout);
-		if( ! ilink->begun() )
+		if( ! ilink->begun() ) {
 		  std::clog << "[n]";fflush(stdout);
+                }
 	      }
 	    }
 

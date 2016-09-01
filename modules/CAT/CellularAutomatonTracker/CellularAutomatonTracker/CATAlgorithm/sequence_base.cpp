@@ -1117,9 +1117,10 @@ namespace CAT {
                 itlink->set_begun( true);
               }
             if( i == lfn && (size_t)(itlink - newsequence.nodes_[i].links_.begin()) > link ){
-              if( print_level() >= mybhep::VVERBOSE )
+              if( print_level() >= mybhep::VVERBOSE ) {
                 std::clog << " removing from node " << newsequence.nodes_[i].c().id()  << "  link " << itlink - newsequence.nodes_[i].links_.begin() << " id " << itlink->id() << " larger than link " << link << " from copied sequence " << std::endl;
-                newsequence.nodes_[i].remove_link(itlink - newsequence.nodes_[i].links_.begin());
+              }
+              newsequence.nodes_[i].remove_link(itlink - newsequence.nodes_[i].links_.begin());
             }
             ++itlink;
             continue;
@@ -1452,8 +1453,9 @@ namespace CAT {
           get_chi2_change_for_changing_end_of_sequence(pa, pb, &chi2_change_A, &chi2_change_alpha);
           if( print_level() >= mybhep::VVERBOSE ){
             std::clog << " connecting cell " << cb.id() << " to " << cc.id() << " changes chi2 of cell A, i.e. : " << nodes_[s-2].c().id() << " by " << chi2_change_A << std::endl; fflush(stdout);
-            if( s >= 4 )
+            if( s >= 4 ) {
               std::clog << " connecting cell " << cb.id() << " to " << cc.id() << " changes chi2 of cell alpha, i.e." << nodes_[s-3].c().id() << " by " << chi2_change_alpha  << std::endl; fflush(stdout);
+            }
           }
         }
 
@@ -1656,8 +1658,9 @@ namespace CAT {
 
       size_t index;
       if( !nodes()[inode].has_triplet(link,nodes_[inode-1].c(),&index) ){
-        if( print_level() >= mybhep::NORMAL )
+        if( print_level() >= mybhep::NORMAL ) {
           std::clog << " problem: looking for triplet from cell index " << inode << " id " << nodes()[inode].c().id()  << " to cell id " << link.id() << " but it's not there " << std::endl; fflush(stdout);
+        }
         return 0;
       }
 
