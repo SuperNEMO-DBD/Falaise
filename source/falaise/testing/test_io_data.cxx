@@ -77,17 +77,28 @@ void test_1(const io_data_config & config_)
 {
   std::clog << "\ntest_1: Entering...\n";
 
-  if (config_.in.empty()) {
+  std::string indata = config_.in;
+  if (indata.empty()) {
+    indata = "${FALAISE_TESTING_DIR}/samples/flsim1.xml";
+  }
+
+  if (indata.empty()) {
     DT_THROW(std::logic_error, "Missing input file!");
   }
 
-  if (config_.out.empty()) {
+  std::string outdata = config_.out;
+  if (outdata.empty()) {
+    outdata = "out.xml";
+  }
+
+  if (outdata.empty()) {
     DT_THROW(std::logic_error, "Missing output file!");
   }
 
   dpp::input_module in_mod;
+  in_mod.set_name("In");
   in_mod.set_logging_priority(datatools::logger::PRIO_TRACE);
-  in_mod.set_single_input_file(config_.in);
+  in_mod.set_single_input_file(indata);
   in_mod.set_clear_record(true);
   const datatools::multi_properties& in_metadata_store = in_mod.get_metadata_store();
   in_mod.initialize_simple();
@@ -96,10 +107,12 @@ void test_1(const io_data_config & config_)
   std::clog << "test_1: Number of metadata = " << in_mod.get_source().get_number_of_metadata() << "\n";
 
   dpp::output_module out_mod;
-  out_mod.set_single_output_file(config_.out);
+  out_mod.set_name("Out");
+  out_mod.set_single_output_file(outdata);
   datatools::multi_properties & out_metadata_store = out_mod.grab_metadata_store();
 
   dpp::dump_module dump_mod;
+  dump_mod.set_name("Dump");
   dump_mod.initialize_simple();
 
   // Copy metadata from the input module:
