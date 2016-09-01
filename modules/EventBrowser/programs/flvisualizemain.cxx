@@ -116,7 +116,7 @@ void do_cldialog(int argc_, char *argv_[], FLVisualizeArgs& params_) {
   namespace bpo = boost::program_options;
   namespace sv = snemo::visualization;
 
-  // // Variant service options:
+  // Variant service options:
   // FLVisualizeArgs appParams;
   params_.logLevel = datatools::logger::PRIO_WARNING;
 
