@@ -3,7 +3,7 @@ Falaise/trunk installation report on (X)ubuntu 14.04 LTS (64bits)
 =======================================================================
 
 :Author: François Mauger, LPC Caen <mauger@lpccaen.in2p3.fr>
-:Date:   2016-03-11
+:Date:   2016-05-29
 
 In  this  document  we  propose  an  installation  procedure  for  the
 Falaise/trunk (pre 2.1)  library on top of Bayeux/trunk  (pre 2.1) and
@@ -153,8 +153,8 @@ Configure Falaise:
 
 .. code:: sh
 
-   $ mkdir -p ${SW_WORK_DIR}/Falaise/Binary/Falaise-trunk/Build-gcc-ninja-Linux-x86_64
-   $ cd ${SW_WORK_DIR}/Falaise/Binary/Falaise-trunk/Build-gcc-ninja-Linux-x86_64
+   $ mkdir -p ${SW_WORK_DIR}/Falaise/Binary/Falaise-trunk/Build-gcc-cxx11-ninja-Linux-x86_64
+   $ cd ${SW_WORK_DIR}/Falaise/Binary/Falaise-trunk/Build-gcc-cxx11-ninja-Linux-x86_64
 ..
 
   3. Configure Bayeux with CMake:
@@ -163,17 +163,16 @@ Configure Falaise:
 
    $ CADFAEL_PREFIX_DIR=$(clhep-config --prefix | tr -d '\"')
    $ echo ${CADFAEL_PREFIX_DIR}
-   /data3/sw/Cadfaelbrew/supernemo/cxx11/Cadfael.git
+   /data3/sw/CadfaelBrew
 ..
 
 .. code:: sh
 
    $ cmake \
     -DCMAKE_BUILD_TYPE:STRING=Release \
-    -DCMAKE_INSTALL_PREFIX:PATH="${SW_WORK_DIR}/Falaise/Binary/Falaise-trunk/Install-gcc-Linux-x86_64" \
+    -DCMAKE_INSTALL_PREFIX:PATH="${SW_WORK_DIR}/Falaise/Binary/Falaise-trunk/Install-gcc-cxx11-Linux-x86_64" \
     -DCMAKE_FIND_ROOT_PATH:PATH="$(bxquery --prefix);${CADFAEL_PREFIX_DIR}" \
-    -DFALAISE_CXX_STANDARD="98" \
-    -DFALAISE_COMPILER_ERROR_ON_WARNING=OFF \
+    -DFALAISE_COMPILER_ERROR_ON_WARNING=ON \
     -DFALAISE_ENABLE_TESTING=ON \
     -DFALAISE_WITH_DOCS=ON \
     -DFALAISE_WITH_DEVELOPER_TOOLS=ON \
@@ -186,7 +185,7 @@ Build (using 4 processors to go faster):
 
 .. code:: sh
 
-  $ ninja -j4
+  $ time ninja -j4
   ...
 ..
 
