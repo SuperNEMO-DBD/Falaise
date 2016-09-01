@@ -49,6 +49,7 @@
 #include "bayeux/dpp/module_manager.h"
 #include "bayeux/dpp/base_module.h"
 #include "bayeux/dpp/input_module.h"
+#include "bayeux/dpp/i_data_source.h"
 #include "bayeux/dpp/output_module.h"
 #include "bayeux/geomtools/manager.h"
 namespace dtc = datatools::configuration;
@@ -351,6 +352,7 @@ FLDialogState do_cldialog(int argc, char *argv[], FLReconstructArgs& args) {
   try {
     args.variants.config_filename = FLReconstruct::getVariantsConfigFile(experiment_label);
     if (args.variants.profile_load == "__default__") {
+      // 2016-08-26 FM: Not supported yet!!!
       args.variants.profile_load = FLReconstruct::getVariantsDefaultProfile(experiment_label);
       if (datatools::logger::is_information(args.logLevel)) {
         std::clog << "[information]: " << "Loading default variant profile '"
@@ -495,8 +497,12 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
   // Input module...
   boost::scoped_ptr<dpp::input_module> recInput(new dpp::input_module);
   DT_LOG_TRACE(clArgs.logLevel,"configuring input module");
+  recInput->set_logging_priority(clArgs.logLevel);
   recInput->set_single_input_file(clArgs.inputFile);
   recInput->initialize_simple();
+
+  DT_LOG_FATAL(clArgs.logLevel, "Number of entries  = " << recInput->get_source().get_number_of_entries());
+  DT_LOG_FATAL(clArgs.logLevel, "Number of metadata = " << recInput->get_source().get_number_of_metadata());
   // mData = recInput->get_metadata_store();
 
   // - Pipeline
