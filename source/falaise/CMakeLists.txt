@@ -131,6 +131,7 @@ install(DIRECTORY ${FALAISE_BUILDPRODUCT_DIR}/include/
 if(FALAISE_ENABLE_TESTING)
   list(APPEND FalaiseLibrary_TESTS
     testing/test_falaise.cxx
+    testing/test_io_data.cxx
     )
 endif()
 
