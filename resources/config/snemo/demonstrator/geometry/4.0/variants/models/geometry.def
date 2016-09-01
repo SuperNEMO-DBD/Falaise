@@ -127,6 +127,39 @@ string.enumerated_0.variant : string = "if_basic"
 string.enumerated_1.variant : string = "if_half_commissioning"
 
 
+################################################################################
+[name="demonstrator.geometry.calo_tightness_film_thickness.PM" type="parameter"]
+
+#@config A parameter model describing a distance
+
+#@description The display name of this variant
+display_name        : string = "Thickness"
+
+#@description A short description of the variant
+terse_description   : string = "A thickness"
+
+#@description The type of the parameter
+type                : string = "real"
+
+#@description The unit label
+real.unit_label     : string = "length"
+
+#@description The preferred unit
+real.preferred_unit : string = "um"
+
+#@description The mutability of the parameter
+mutability          : string = "variable"
+
+#@description The mutability mode of the parameter
+variable.mode       : string = "interval"
+
+#@description The domain of supported values
+real.domain         : string = "[0.0 um, 100 um]"
+
+#@description The default value
+real.default        : real as length = 25 um
+
+
 ###################################
 [name="geometry.VM" type="variant"]
 
@@ -139,10 +172,13 @@ display_name       : string = "Geometry"
 terse_description  : string = "The configuration parameters for the demonstrator geometry"
 
 #@description The list of variant parameters associated to the source
-parameters : string[1] = "layout"
+parameters : string[2] = "layout" "calo_film_thickness"
 
 parameters.layout.model       : string = "demonstrator.geometry.layout.PM"
 parameters.layout.description : string = "The geometry layout of the demonstrator module"
+
+parameters.calo_film_thickness.model       : string = "demonstrator.geometry.calo_tightness_film_thickness.PM"
+parameters.calo_film_thickness.description : string = "The thickness of the calorimeter tightness film"
 
 
 # end of @falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/variants/models/geometry.def

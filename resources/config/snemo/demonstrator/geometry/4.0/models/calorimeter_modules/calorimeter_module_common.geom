@@ -81,9 +81,9 @@ stacked.label_2         : string  = "curtain"
 
 material.ref : string  = "tracking_gas"
 
-visibility.hidden         : boolean = false
+visibility.hidden          : boolean = false
 visibility.hidden_envelope : boolean = true
-visibility.color          : string  = "grey"
+visibility.color           : string  = "grey"
 
 mapping.daughter_id.wrapping : string = "[calorimeter_wrapper]"
 mapping.daughter_id.curtain  : string = "[calorimeter_curtain]"

@@ -27,6 +27,8 @@ spot.z : real as length = 0 mm
 #############################################
 [name="commissioning.all_spots" type="genvtx::cylinder_model_vg"]
 
+#@variant_section_only vertexes.commissioning:type/if_all_spots|true
+
 #@config Vertex generation from from a commissioning spot
 
 #@description Logging priority
@@ -47,6 +49,8 @@ mode   : string  = "bulk"
 ######################################################
 [name="commissioning.single_spot" type="genvtx::cylinder_model_vg"]
 
+#@variant_section_only vertexes.commissioning:type/if_single_spot|false
+
 #@config Vertex generation from from a commissioning spot
 
 #@description Logging priority
@@ -65,11 +69,11 @@ origin.address.module : integer = 0
 
 #@description Commissioning source spot column number
 origin.address.column : integer = \
-  @variant(vertexes.commissioning:type/if_single_slot/column|0)
+  @variant(vertexes.commissioning:type/if_single_spot/column|0)
 
 #@description Commissioning source spot row number
 origin.address.row    : integer = \
-  @variant(vertexes.commissioning:type/if_single_slot/row|0)
+  @variant(vertexes.commissioning:type/if_single_spot/row|0)
 
 #@description The mode used for vertex generator from the underlying cylinder model
 mode   : string  = "bulk"

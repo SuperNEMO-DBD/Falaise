@@ -8,7 +8,7 @@
 
 
 ####################################################################
-[name="commissioning_source.single_slot.column.PM" type="parameter"]
+[name="commissioning_source.single_spot.column.PM" type="parameter"]
 
 #@config A parameter model describing the horizontal position of the commissioning source
 
@@ -35,7 +35,7 @@ integer.default        : integer = 0
 
 
 #################################################################
-[name="commissioning_source.single_slot.row.PM" type="parameter"]
+[name="commissioning_source.single_spot.row.PM" type="parameter"]
 
 #@config A parameter model describing the vertical position of the commissioning source
 
@@ -62,36 +62,36 @@ integer.default        : integer = 0
 
 
 ###########################################################
-[name="commissioning_source.single_slot.VM" type="variant"]
+[name="commissioning_source.single_spot.VM" type="variant"]
 
 #@config A variant model describing the parameters for the commissioning source
 
 #@description The display name of this variant
-display_name       : string = "Commissioning source single slot vertex generator"
+display_name       : string = "Commissioning source single spot vertex generator"
 
 #@description A short description of the variant
-terse_description  : string = "The configuration parameters for the commissioning source single slot vertex generator"
+terse_description  : string = "The configuration parameters for the commissioning source single spot vertex generator"
 
 #@description The list of variant parameters
 parameters : string[2] = "column" "row"
 
-parameters.column.model       : string = "commissioning_source.single_slot.column.PM"
+parameters.column.model       : string = "commissioning_source.single_spot.column.PM"
 parameters.column.description : string = "The commissioning source horizontal position"
 
-parameters.row.model          : string = "commissioning_source.single_slot.row.PM"
+parameters.row.model          : string = "commissioning_source.single_spot.row.PM"
 parameters.row.description    : string = "The commissioning source vertical position"
 
 
 #########################################################
-[name="commissioning_source.all_slots.VM" type="variant"]
+[name="commissioning_source.all_spots.VM" type="variant"]
 
 #@config A variant model describing the parameters for the commissioning source
 
 #@description The display name of this variant
-display_name       : string = "Commissioning source single slot vertex generator"
+display_name       : string = "Commissioning source single spot vertex generator"
 
 #@description A short description of the variant
-terse_description  : string = "The configuration parameters for the commissioning source single slot vertex generator"
+terse_description  : string = "The configuration parameters for the commissioning source single spot vertex generator"
 
 
 ######################################################
@@ -118,28 +118,28 @@ variable.mode      : string = "enumeration"
 string.enumerated.size    : integer = 2
 
 # The list of supported values:
-string.enumerated_0.value : string = "SingleSlot"
-string.enumerated_1.value : string = "AllSlots"
+string.enumerated_0.value : string = "SingleSpot"
+string.enumerated_1.value : string = "AllSpots"
 
 #@description The default value
-string.default : string = "AllSlots"
+string.default : string = "AllSpots"
 
 #@description List of variants
-variants : string[2] = "if_single_slot" "if_all_slots"
+variants : string[2] = "if_single_spot" "if_all_spots"
 
-#@description Variant model associated to the "is_single_slot" variant
-variants.if_single_slot.model        : string = "commissioning_source.single_slot.VM"
-variants.if_single_slot.description  : string = "Set of parameters for the 'single slot' vertex generator"
+#@description Variant model associated to the "is_single_spot" variant
+variants.if_single_spot.model        : string = "commissioning_source.single_spot.VM"
+variants.if_single_spot.description  : string = "Set of parameters for the 'single spot' vertex generator"
 
-#@description Variant model associated to the "if_all_slots" variant
-variants.if_all_slots.model          : string = "commissioning_source.all_slots.VM"
-variants.if_all_slots.description    : string = "Set of parameters for the 'all slots' vertex generator"
+#@description Variant model associated to the "if_all_spots" variant
+variants.if_all_spots.model          : string = "commissioning_source.all_spots.VM"
+variants.if_all_spots.description    : string = "Set of parameters for the 'all spots' vertex generator"
 
-#@description "SingleSlot" layout is associated to the "if_single_slot" variant
-string.enumerated_0.variant : string = "if_single_slot"
+#@description "SingleSpot" layout is associated to the "if_single_spot" variant
+string.enumerated_0.variant : string = "if_single_spot"
 
-#@description "AllSlots" layout is associated to the "if_all_slots" variant
-string.enumerated_1.variant : string = "if_all_slots"
+#@description "AllSpots" layout is associated to the "if_all_spots" variant
+string.enumerated_1.variant : string = "if_all_spots"
 
 
 ###############################################

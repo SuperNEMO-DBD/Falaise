@@ -133,28 +133,28 @@ internal_item.model.back_block_wrapping_top        : string  = "calorimeter_scin
 internal_item.placement.back_block_wrapping_bottom : string  = "0 -121 136.5 (mm)"
 internal_item.model.back_block_wrapping_bottom     : string  = "calorimeter_scin_block_back_wrapper_side_y_bottom.model"
 
-internal_item.placement.support_plate_left         : string  = "-124.0 0 -17 (mm)"
+internal_item.placement.support_plate_left         : string  = "-123.0 0 3 (mm)"
 internal_item.model.support_plate_left             : string  = "calorimeter_module_vertical_shielding_plate.model"
 
-internal_item.placement.support_plate_right        : string  = "+124.0 0 -17 (mm)"
+internal_item.placement.support_plate_right        : string  = "+123.0 0 3 (mm)"
 internal_item.model.support_plate_right            : string  = "calorimeter_module_vertical_shielding_plate.model"
 
-internal_item.placement.support_plate_top          : string  = "0 -124.0 -17 (mm)"
+internal_item.placement.support_plate_top          : string  = "0 -123.0 3 (mm)"
 internal_item.model.support_plate_top              : string  = "calorimeter_module_horizontal_shielding_plate.model"
 
-internal_item.placement.support_plate_bottom       : string  = "0 +124.0 -17 (mm)"
+internal_item.placement.support_plate_bottom       : string  = "0 +123.0 3 (mm)"
 internal_item.model.support_plate_bottom           : string  = "calorimeter_module_horizontal_shielding_plate.model"
 
-internal_item.placement.spacer_plate_left         : string  = "-128.0 0 0 (mm)"
+internal_item.placement.spacer_plate_left         : string  = "-128.0 0 3 (mm)"
 internal_item.model.spacer_plate_left             : string  = "calorimeter_module_spacer_plate.model"
 
-internal_item.placement.spacer_plate_right        : string  = "+128.0 0 0 (mm)"
+internal_item.placement.spacer_plate_right        : string  = "+128.0 0 3 (mm)"
 internal_item.model.spacer_plate_right            : string  = "calorimeter_module_spacer_plate.model"
 
-internal_item.placement.spacer_plate_top          : string  = "0 -128.0 0 (mm) / z 90 (degree)"
+internal_item.placement.spacer_plate_top          : string  = "0 -128.0 3 (mm) / z 90 (degree)"
 internal_item.model.spacer_plate_top              : string  = "calorimeter_module_spacer_plate.model"
 
-internal_item.placement.spacer_plate_bottom       : string  = "0 +128.0 0 (mm) / z 90 (degree)"
+internal_item.placement.spacer_plate_bottom       : string  = "0 +128.0 3 (mm) / z 90 (degree)"
 internal_item.model.spacer_plate_bottom           : string  = "calorimeter_module_spacer_plate.model"
 
 # internal_item.placement.closing_back_plate        : string  = "0 0 -247 (mm)"

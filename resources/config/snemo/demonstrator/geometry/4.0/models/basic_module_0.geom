@@ -5,6 +5,7 @@
 # Badic module geometry #
 #########################
 
+
 ################################################################
 # The SuperNEMO demonstrator module is built from an assembly
 # of 5 submodules:
@@ -44,14 +45,10 @@
 
 #@config Simplified demonstrator module
 
-# stacked.number_of_items : integer = 1
-# stacked.model_0   : string = "source_submodule.model"
-# stacked.label_0   : string = "source_submodule"
-
 #@description Stacking axis
 stacked.axis            : string = "x"
 
-#@description Number of stacking volumes
+#@description Number of stacked volumes
 stacked.number_of_items : integer = 5
 
 # Stacked models:

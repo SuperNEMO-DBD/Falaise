@@ -11,10 +11,10 @@
 # Miscellaneous #
 #################
 
-######################################
-[category="gas_seal_foil" type="1400"]
-extends : string    = "module"
-by      : string[2] = "side" "foil"
+# ######################################
+# [category="gas_seal_foil" type="1400"]
+# extends : string    = "module"
+# by      : string[2] = "side" "foil"
 
 
 # end of misc_categories.lis
