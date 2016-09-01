@@ -11,6 +11,7 @@
 #include <gsl/gsl_cdf.h>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_deriv.h>
+#include <gsl/gsl_version.h>
 // - Bayeux/datatools:
 #include <datatools/ioutils.h>
 #include <datatools/utils.h>
@@ -798,7 +799,14 @@ namespace TrackFit {
 
     if (_fit_status_ <= GSL_SUCCESS && under_r_crit_limit) {
       DT_LOG_DEBUG(get_logging_priority(), "Calling gsl_multifit_covar...");
+#if GSL_MAJOR_VERSION > 1
+      gsl_matrix* J = gsl_matrix_alloc(_fit_npoints_, _fit_npars_);
+      gsl_multifit_fdfsolver_jac(_fit_mf_fdf_solver_, J);
+      gsl_multifit_covar(J, 0.0, _fit_covar_);
+      gsl_matrix_free(J);
+#else
       gsl_multifit_covar(_fit_mf_fdf_solver_->J, 0.0, _fit_covar_);
+#endif
 
       _solution_.ok = true;
       _solution_.start_time = _t0_;
