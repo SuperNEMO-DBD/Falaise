@@ -140,7 +140,10 @@ endif()
 #
 # - NB assumes each test .cxx file generates a single executable
 # - We also output the executables to a dedicated directory
-set(_falaise_TEST_ENVIRONMENT "FALAISE_RESOURCE_DIR=${FALAISE_DATAROOTDIR}/resources")
+set(_falaise_TEST_ENVIRONMENT
+      "FALAISE_RESOURCE_DIR=${FALAISE_DATAROOTDIR}/resources"
+      "FALAISE_TESTING_DIR=${CMAKE_CURRENT_SOURCE_DIR}/testing"
+      )
 if(FALAISE_ENABLE_TESTING)
   # - CATCH TESTS
   foreach(_testsource ${FalaiseLibrary_TESTS_CATCH})
