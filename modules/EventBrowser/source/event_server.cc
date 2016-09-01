@@ -19,18 +19,18 @@
  *
  */
 
+// This project:
 #include <falaise/snemo/io/event_server.h>
 #include <falaise/snemo/io/boost_access.h>
 #include <falaise/snemo/io/brio_access.h>
 
 #include <falaise/snemo/view/options_manager.h>
 
-#include <dpp/simple_data_sink.h>
-#include <dpp/simple_brio_data_sink.h>
-
-#include <brio/utils.h>
-
-#include <datatools/io_factory.h>
+// Bayeux/dpp
+#include <dpp/input_module.h>
+#include <dpp/output_module.h>
+// Bayeux/datatools
+#include <datatools/multi_properties.h>
 
 namespace snemo {
 
@@ -198,8 +198,13 @@ namespace snemo {
 
       bool event_server::store_event(const std::string & filename_) const
       {
-        dpp::i_data_sink * sink = 0;
+        // 2016-08-24 XG : Use (in|out)put module to make sure the metadata
+        // store is correctly passed and saved
+        dpp::input_module im;
+        im.set_single_input_file(_data_access_->get_current_filename());
+        im.initialize_simple();
 
+        // Get path to storage location
         std::string sink_label = filename_;
         if (sink_label.empty()) {
           std::string directory = "$PWD";
@@ -209,39 +214,23 @@ namespace snemo {
           sink_label = oss.str();
         }
 
-        int mode_guess;
-        if (brio::store_info::guess_mode_from_filename(sink_label, mode_guess)
-            == brio::store_info::SUCCESS) {
-          sink = new dpp::simple_brio_data_sink(sink_label);
-        } else if (datatools::io_factory::guess_mode_from_filename(sink_label, mode_guess)
-                   == datatools::SUCCESS) {
-          sink = new dpp::simple_data_sink(sink_label);
-        } else {
+        dpp::output_module om;
+        om.set_single_output_file(sink_label);
+        // Copy metadata store from input to ouput
+        datatools::multi_properties & omdata = om.grab_metadata_store();
+        omdata = im.get_metadata_store();
+        om.initialize_simple();
+
+        event_record & a_mutable_event = const_cast<event_record&>(get_event());
+        const dpp::base_module::process_status a_status = om.process(a_mutable_event);
+        if (a_status != dpp::base_module::PROCESS_OK) {
           DT_LOG_ERROR(view::options_manager::get_instance().get_logging_priority(),
-                       "Cannot guess mode for output data file '" << sink_label << "'!");
+                       "Cannot store the event record ! An error occured during serialization !");
           return false;
         }
-
-        if (! sink->is_open()) sink->open();
-
-        // Store action:
-        if (sink != 0) {
-          if (! sink->store_next_record(this->get_event())) {
-            DT_LOG_ERROR(view::options_manager::get_instance().get_logging_priority(),
-                         "Cannot store the event record ! This is a bug !");
-            return false;
-          }
-        } else {
-          DT_LOG_ERROR(view::options_manager::get_instance().get_logging_priority(),
-                       "No available data sink ! This is a bug !");
-        }
-
         DT_LOG_NOTICE(view::options_manager::get_instance().get_logging_priority(),
                       "Event #" << get_current_event_number() << " "
                       << "saved in " << sink_label << " file");
-        if (sink->is_open()) sink->close();
-        delete sink;
-
         return true;
       }
 
