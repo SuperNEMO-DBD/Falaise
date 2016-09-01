@@ -238,9 +238,15 @@ void do_cldialog(int argc_, char *argv_[], FLVisualizeArgs& params_) {
   // Handle the experiment:
   std::string experiment_label = "demonstrator";
   try {
-
-    // Nothing special for now...
-
+    params_.variants.config_filename = FLVisualize::getVariantsConfigFile(experiment_label);
+    if (params_.variants.profile_load == "__default__") {
+      // 2016-08-26 FM: Not supported yet!!!
+      params_.variants.profile_load = FLVisualize::getVariantsDefaultProfile(experiment_label);
+      if (datatools::logger::is_information(params_.logLevel)) {
+        std::clog << "[information]: " << "Loading default variant profile '"
+                  << params_.variants.profile_load << "'..." << std::endl;
+      }
+    }
   } catch (FLVisualize::UnknownResourceException& e) {
     std::cerr << "[FLVisualize::UnknownResourceException] "
               << e.what()
@@ -307,8 +313,9 @@ falaise::exit_code do_flvisualize(int argc_, char *argv_[]) {
       vserv.start();
       // From this point, all other services and/or processing modules can benefit
       // of the variant service during their configuration steps.
+      // flVisParameters.variants.print(std::cerr, "flvisualize: variant service configuration:", "DEVEL: ");
     }
-  } catch (std::exception& e) {
+  } catch (std::exception & e) {
     std::cerr << "[datatools::configuration::variant_service::variant_exception] "
               << e.what()
               << std::endl;
@@ -353,7 +360,7 @@ falaise::exit_code do_flvisualize(int argc_, char *argv_[]) {
     my_application->Run(true);
     DT_LOG_NOTICE(flVisParameters.logLevel, "Browser stopped.");
 
-  } catch (std::exception& e) {
+  } catch (std::exception & e) {
     std::cerr << "flsimulate : setup/run of simulation threw exception" << std::endl;
     std::cerr << e.what() << std::endl;
     return falaise::EXIT_UNAVAILABLE;
