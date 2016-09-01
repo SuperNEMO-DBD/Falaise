@@ -315,7 +315,7 @@ namespace snemo {
             _reader_->load(sim_data);
             record_found = true;
           } else if (_reader_->record_tag_is(datatools::properties::SERIAL_TAG)) {
-            DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "Metadata found !");
+            DT_LOG_DEBUG(view::options_manager::get_instance().get_logging_priority(), "Metadata found !");
             datatools::properties metadata;
             _reader_->load(metadata);
             record_found = false;
