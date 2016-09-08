@@ -854,7 +854,7 @@ namespace TrackFit {
 
   double helix_fit_mgr::residual_function(double x_, void * params_)
   {
-    datatools::logger::priority local_priority = datatools::logger::PRIO_WARNING;
+    datatools::logger::priority local_priority = datatools::logger::PRIO_ERROR;
     DT_LOG_TRACE(local_priority, "Entering...");
     const helix_fit_residual_function_param * param_ptr =
       static_cast<const helix_fit_residual_function_param *>(params_);
@@ -997,8 +997,8 @@ namespace TrackFit {
     const double eps_step = 1.e-8;
 
     if (std::abs(step) > eps_step) {
-      const double dkmax =(zi - z0 - 0.5 * step * theta_i / M_PI) / step;
-      const int kmax =(int) floor(dkmax);
+      const double dkmax = (zi - z0 - 0.5 * step * theta_i / M_PI) / step;
+      const int kmax = (int)floor(dkmax);
       const int kminus = kmax;
       const int kplus = kmax + 1;
       DT_LOG_TRACE(local_priority, "dkmax  = " << dkmax);
@@ -1015,16 +1015,18 @@ namespace TrackFit {
         std::swap(zLminus, zLplus);
       }
       if (zi < zLminus - 0.001) {
-        DT_LOG_FATAL(local_priority, "zi == " << zi);
-        DT_LOG_FATAL(local_priority, "|-- zi > zLminus == " << zLminus << "(KMINUS == " << kminus << ")");
-        DT_LOG_FATAL(local_priority, "`-- zi < zLplus  == " << zLplus  << "(KPLUS  == " << kplus  << ")");
-        DT_THROW_IF (true, std::logic_error, "****** STOP minus *******");
+        DT_LOG_WARNING(local_priority, "zi == " << zi);
+        DT_LOG_WARNING(local_priority, "|-- zi > zLminus == " << zLminus << "(KMINUS == " << kminus << ")");
+        DT_LOG_WARNING(local_priority, "`-- zi < zLplus  == " << zLplus  << "(KPLUS  == " << kplus  << ")");
+        return datatools::invalid_real();
+        //DT_THROW_IF (true, std::logic_error, "****** STOP minus *******");
       }
       if (zi > zLplus + 0.001) {
-        DT_LOG_FATAL(local_priority, "zi == " << zi);
-        DT_LOG_FATAL(local_priority, "|-- zi > zLminus == " << zLminus << "(KMINUS == " << kminus << ")");
-        DT_LOG_FATAL(local_priority, "`-- zi < zLplus  == " << zLplus  << "(KPLUS  == " << kplus  << ")");
-        DT_THROW_IF (true, std::logic_error, "****** STOP plus *******");
+        DT_LOG_WARNING(local_priority, "zi == " << zi);
+        DT_LOG_WARNING(local_priority, "|-- zi > zLminus == " << zLminus << "(KMINUS == " << kminus << ")");
+        DT_LOG_WARNING(local_priority, "`-- zi < zLplus  == " << zLplus  << "(KPLUS  == " << kplus  << ")");
+        return datatools::invalid_real();
+        // DT_THROW_IF (true, std::logic_error, "****** STOP plus *******");
       }
       const double beta_i_plus  = zLplus - zi;
       const double beta_i_minus = zLminus - zi;
@@ -1047,7 +1049,7 @@ namespace TrackFit {
     DT_LOG_TRACE(local_priority, "beta_i   = " << beta_i);
     DT_LOG_TRACE(local_priority, "sigma_zi = " << sigma_zi);
 
-    double Ri;
+    double Ri = datatools::invalid_real();
     if (residual_type == helix_fit_residual_function_param::RESIDUAL_ALPHA) {
       Ri  = alpha_i / sigma_ri;
     } else if ( residual_type == helix_fit_residual_function_param::RESIDUAL_BETA) {
