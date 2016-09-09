@@ -55,7 +55,7 @@ mutability          : string = "variable"
 variable.mode       : string = "interval"
 
 #@description The domain of supported values
-integer.domain         : string = "[0;2]"
+integer.domain         : string = "[0;4]"
 
 #@description The default value
 integer.default        : integer = 0
