@@ -47,13 +47,13 @@ grid.plane : string = "yz"
 grid.y.number_of_items : integer = 113
 
 #@description The number of rows along the Z axis
-grid.z.number_of_items : integer =   3
+grid.z.number_of_items : integer =   5
 
 #@description The step length along the Y axis
 grid.y.step : real as length = 44 mm
 
 #@description The step length along the Z axis
-grid.z.step : real as length = 80 cm
+grid.z.step : real as length = 70 cm
 
 #@description The name of the geometry model to be placed on the grid
 grid.model : string = "rotated_commissioning_source_spot.model"
