@@ -5,8 +5,7 @@
 #############################################################################
 [name="commissioning_source_gap.model" type="geomtools::simple_shaped_model"]
 shape_type       : string = "box"
-#x                : real as length = @variant(geometry:layout/if_half_commissioning/gap|0.25 mm)
-x                : real as length =  200.0 mm
+x                : real as length = @variant(geometry:layout/if_half_commissioning/gap|0.25 mm)
 y                : real as length = 6000.0 mm
 z                : real as length = 4000.0 mm
 material.ref     : string = "lab_air"
