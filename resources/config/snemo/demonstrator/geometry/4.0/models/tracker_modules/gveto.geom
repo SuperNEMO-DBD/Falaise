@@ -196,6 +196,67 @@ material.ref : string = "lab_air"
 visibility.hidden_envelope : boolean = true
 visibility.color           : string  = "grey"
 
+### TO BE MODIFY : PRELIMINARY FEEDTHROUGHS MODEL :
+
+####################################################################################
+[name="tracker_feedthroughs_pins.model" type="geomtools::simple_shaped_model"]
+
+shape_type : string = "box"
+x          : real as length = 50.0 mm
+y          : real as length = 30.0 mm
+z          : real as length =  0.64 mm
+
+material.ref : string  = "snemo::beryllium-copper"
+
+visibility.color  : string  = "blue"
+
+
+#####################################################################################
+[name="tracker_feedthroughs_pins_top.model" type="geomtools::replicated_model"]
+
+replicated.axis            : string  = "y"
+replicated.number_of_items : integer = 56
+replicated.model           : string  = "tracker_feedthroughs_pins.model"
+replicated.label           : string  = "pins_top"
+
+#@description The replicated step
+replicated.step         : real as length = 85.0 mm
+
+#@description Height of the mother box
+y                       : real as length = 5008.0 mm
+
+material.ref : string  = "tracking_gas"
+
+visibility.hidden_envelope  : boolean = false
+visibility.daughters.hidden : boolean = false
+visibility.color            : string = "grey"
+
+# Mapping informations for daughter volumes:
+mapping.daughter_id.pins_top  : string  = "[gveto_tracker_feedthrough_pins:element+0]"
+
+
+#####################################################################################
+[name="tracker_feedthroughs_pins_bottom.model" type="geomtools::replicated_model"]
+
+replicated.axis            : string  = "y"
+replicated.number_of_items : integer = 29
+replicated.model           : string  = "tracker_feedthroughs_pins.model"
+replicated.label           : string  = "pins_bottom"
+
+#@description The replicated step
+replicated.step         : real as length = 170.0 mm
+
+#@description Height of the mother box
+y                       : real as length = 5008.0 mm
+
+material.ref : string  = "tracking_gas"
+
+visibility.hidden_envelope  : boolean = false
+visibility.daughters.hidden : boolean = false
+visibility.color            : string = "grey"
+
+# Mapping informations for daughter volumes:
+mapping.daughter_id.pins_bottom  : string  = "[gveto_tracker_feedthrough_pins:element+0]"
 
 #######################################################################################
 [name="tracker_horizontal_beam_side_plate.model" type="geomtools::simple_shaped_model"]
@@ -211,7 +272,6 @@ visibility.color  : string  = "red"
 
 
 ########################################################################################
-
 [name="tracker_horizontal_beam_outer_plate.model" type="geomtools::simple_shaped_model"]
 shape_type : string = "box"
 x          : real as length =   84.5 mm
@@ -221,6 +281,7 @@ z          : real as length =    6.5 mm
 material.ref : string = "basic::iron"
 
 visibility.color  : string  = "red"
+
 
 ########################################################################################
 [name="tracker_horizontal_beam_inner_plate.model" type="geomtools::simple_shaped_model"]
@@ -233,6 +294,7 @@ z          : real as length   =    6.5 mm
 material.ref : string = "basic::iron"
 
 visibility.color  : string  = "red"
+
 
 ############################################################################################
 [name="tracker_horizontal_beam_outer_gas_stock.model" type="geomtools::simple_shaped_model"]
@@ -283,9 +345,8 @@ internal_item.model.beam_outer     : string  = "tracker_horizontal_beam_inner_pl
 internal_item.placement.gas        : string  = "0 0 162.5 (mm)"
 internal_item.model.gas            : string  = "tracker_horizontal_beam_inner_gas_stock.model"
 
-
 ##################################################################################
-[name="tracker_horizontal_beam_outer.model" type="geomtools::simple_shaped_model"]
+[name="tracker_horizontal_beam_outer_bottom.model" type="geomtools::simple_shaped_model"]
 
 shape_type : string = "box"
 x          : real as length =   84.5 mm
@@ -296,16 +357,45 @@ material.ref : string  = "lab_air"
 
 visibility.color  : string  = "grey"
 
-internal_item.labels  : string[3] = "beam_side" "beam_inner" "gas"
+internal_item.labels  : string[4] = "beam_side" "feedthroughs_pins" "beam_inner" "gas"
 
-internal_item.placement.beam_side  : string  = "39.0 0 -80.25 (mm)"
-internal_item.model.beam_side      : string  = "tracker_horizontal_beam_side_plate.model"
+internal_item.placement.beam_side         : string  = "39.0 0 -80.25 (mm)"
+internal_item.model.beam_side             : string  = "tracker_horizontal_beam_side_plate.model"
 
-internal_item.placement.beam_inner : string  = "0 0 82.25 (mm)"
-internal_item.model.beam_inner     : string  = "tracker_horizontal_beam_outer_plate.model"
+internal_item.placement.feedthroughs_pins : string  = "0 0 78 (mm)"
+internal_item.model.feedthroughs_pins     : string  = "tracker_feedthroughs_pins_bottom.model"
 
-internal_item.placement.gas        : string  = "0 0 162.5 (mm)"
-internal_item.model.gas            : string  = "tracker_horizontal_beam_outer_gas_stock.model"
+internal_item.placement.beam_inner        : string  = "0 0 82.25 (mm)"
+internal_item.model.beam_inner            : string  = "tracker_horizontal_beam_outer_plate.model"
+
+internal_item.placement.gas               : string  = "0 0 162.5 (mm)"
+internal_item.model.gas                   : string  = "tracker_horizontal_beam_outer_gas_stock.model"
+
+######################################################################################
+[name="tracker_horizontal_beam_outer_top.model" type="geomtools::simple_shaped_model"]
+
+shape_type : string = "box"
+x          : real as length =   84.5 mm
+y          : real as length = 5008.0 mm
+z          : real as length =  479.0 mm
+
+material.ref : string  = "lab_air"
+
+visibility.color  : string  = "grey"
+
+internal_item.labels  : string[4] = "beam_side" "feedthroughs_pins" "beam_inner" "gas"
+
+internal_item.placement.beam_side         : string  = "39.0 0 -80.25 (mm)"
+internal_item.model.beam_side             : string  = "tracker_horizontal_beam_side_plate.model"
+
+internal_item.placement.feedthroughs_pins : string  = "0 0 78 (mm)"
+internal_item.model.feedthroughs_pins     : string  = "tracker_feedthroughs_pins_top.model"
+
+internal_item.placement.beam_inner        : string  = "0 0 82.25 (mm)"
+internal_item.model.beam_inner            : string  = "tracker_horizontal_beam_outer_plate.model"
+
+internal_item.placement.gas               : string  = "0 0 162.5 (mm)"
+internal_item.model.gas                   : string  = "tracker_horizontal_beam_outer_gas_stock.model"
 
 
 ###############################################################################################
@@ -313,7 +403,7 @@ internal_item.model.gas            : string  = "tracker_horizontal_beam_outer_ga
 
 rotated.axis              : string  = "x"
 rotated.special_angle     : string  = "0"
-rotated.model             : string  = "tracker_horizontal_beam_outer.model"
+rotated.model             : string  = "tracker_horizontal_beam_outer_bottom.model"
 
 material.ref : string = "lab_air"
 
@@ -325,7 +415,7 @@ visibility.hidden_envelope : boolean = false
 
 rotated.axis              : string  = "x"
 rotated.special_angle     : string  = "180"
-rotated.model             : string  = "tracker_horizontal_beam_outer.model"
+rotated.model             : string  = "tracker_horizontal_beam_outer_top.model"
 
 material.ref : string = "lab_air"
 
@@ -337,7 +427,7 @@ visibility.hidden_envelope : boolean = false
 
 rotated.axis              : string  = "z"
 rotated.special_angle     : string  = "180"
-rotated.model             : string  = "tracker_horizontal_beam_outer.model"
+rotated.model             : string  = "tracker_horizontal_beam_outer_bottom.model"
 
 material.ref : string = "lab_air"
 
@@ -349,7 +439,7 @@ visibility.hidden_envelope : boolean = false
 
 rotated.axis              : string  = "y"
 rotated.special_angle     : string  = "180"
-rotated.model             : string  = "tracker_horizontal_beam_outer.model"
+rotated.model             : string  = "tracker_horizontal_beam_outer_top.model"
 
 material.ref : string = "lab_air"
 
@@ -463,4 +553,4 @@ stacked.label_2   : string  = "inner"
 material.ref : string = "lab_air"
 
 
-# end of @falaise:config/snemo/demonstrator/geometry/4.0/models/tracker_module/gveto.geom
+# end of @falaise:config/snemo/demonstrator/geometry/4.1/models/tracker_module/gveto.geom

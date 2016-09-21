@@ -126,4 +126,9 @@ inherits : string   = "gveto_optical_module"
 inherits : string   = "gveto_optical_module"
 
 
+#######################################################
+[category="gveto_tracker_feedthrough_pins" type="1260"]
+extends : string    = "gveto_row"
+by      : string[1] = "element"
+
 # end of tracker_categories.lis
