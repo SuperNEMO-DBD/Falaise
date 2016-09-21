@@ -252,14 +252,19 @@ composition.number_of_atoms : integer[2] =     12        10
 
 
 ################################################
+# See for example:
+#   http://www.ngk-alloys.com/NGK_Berylco_Catalogue_Fr.pdf
+#   http://www.alloywire.com/french/beryllium_copper_CB_101.html
+# This allow is not standard CW101.
+# We should justify the composition.
 [name="snemo::beryllium-copper" type="material"]
-#@config Beryllium copper material 
+#@config Beryllium copper material
 density          : real   = 8.36
 density.unit     : string = "g/cm3"
 state            : string = "solid"
 composition.mode            : string    = "fraction_mass"
 composition.names           : string[2] = "Beryllium" "Copper"
-composition.fraction_mass   : real[2]   =  0.02       0.98 
+composition.fraction_mass   : real[2]   =  0.02       0.98
 
 
 # #######################################################
