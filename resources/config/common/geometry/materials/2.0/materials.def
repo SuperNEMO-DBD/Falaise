@@ -255,7 +255,7 @@ composition.number_of_atoms : integer[2] =     12        10
 # See for example:
 #   http://www.ngk-alloys.com/NGK_Berylco_Catalogue_Fr.pdf
 #   http://www.alloywire.com/french/beryllium_copper_CB_101.html
-# This allow is not standard CW101.
+# This allow is not standard CW 101 but is rather similar.
 # We should justify the composition.
 [name="snemo::beryllium-copper" type="material"]
 #@config Beryllium copper material
