@@ -201,6 +201,7 @@ visibility.color           : string  = "grey"
 ####################################################################################
 [name="tracker_feedthroughs_pins.model" type="geomtools::simple_shaped_model"]
 
+# build a 8 g mass-equivalent plate made of beryllium(2%)-copper
 shape_type : string = "box"
 x          : real as length = 50.0 mm
 y          : real as length = 30.0 mm
@@ -345,7 +346,8 @@ internal_item.model.beam_outer     : string  = "tracker_horizontal_beam_inner_pl
 internal_item.placement.gas        : string  = "0 0 162.5 (mm)"
 internal_item.model.gas            : string  = "tracker_horizontal_beam_inner_gas_stock.model"
 
-##################################################################################
+
+#########################################################################################
 [name="tracker_horizontal_beam_outer_bottom.model" type="geomtools::simple_shaped_model"]
 
 shape_type : string = "box"
@@ -370,6 +372,7 @@ internal_item.model.beam_inner            : string  = "tracker_horizontal_beam_o
 
 internal_item.placement.gas               : string  = "0 0 162.5 (mm)"
 internal_item.model.gas                   : string  = "tracker_horizontal_beam_outer_gas_stock.model"
+
 
 ######################################################################################
 [name="tracker_horizontal_beam_outer_top.model" type="geomtools::simple_shaped_model"]
