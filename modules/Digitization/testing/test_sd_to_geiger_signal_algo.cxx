@@ -36,9 +36,6 @@ int main( int  argc_ , char **  argv_  )
     iarg++;
   }
 
-
-
-
   try {
     std::clog << "Test program for class 'snemo::digitization::sd_to_geiger_signal_algo' !" << std::endl;
     std::string manager_config_file;
@@ -65,7 +62,6 @@ manager_config_file = "@falaise:config/snemo/demonstrator/geometry/3.0/manager.c
     }else{
       pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
     }
-
 
     dpp::input_module reader;
     datatools::properties reader_config;
