@@ -1,6 +1,6 @@
 // trigger_algorithm_efficiency_validation.cxx
 // Standard libraries :
-#include <iostream>
+#include <iostream> 
 
 // - Bayeux/datatools:
 #include <datatools/utils.h>
