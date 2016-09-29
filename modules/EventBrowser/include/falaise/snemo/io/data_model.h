@@ -61,7 +61,7 @@ namespace snemo {
       // tracker clustering stuff
       const std::string TCD_LABEL = snemo::datamodel::data_info::default_tracker_clustering_data_label();
 
-      // tracker clustering stuff
+      // tracker trajectory stuff
       const std::string TTD_LABEL = snemo::datamodel::data_info::default_tracker_trajectory_data_label();
 
       // particle track stuff
