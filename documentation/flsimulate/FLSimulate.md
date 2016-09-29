@@ -44,7 +44,7 @@ Options
   -v [ --verbose ]                      increase verbosity of logging
   -n [ --number ] [events] (=1)         number of events to simulate
   --experiment [name] (=default)        experiment to simulate
-  -x [ --vertex-generator ] [name] (=source_strips_bulk)
+  -x [ --vertex-generator ] [name] (=source_pads_bulk)
                                         The name of the vertex generator
   -e [ --event-generator ] [name] (=Se82.0nubb)
                                         The name of the event generator
@@ -93,7 +93,7 @@ For example, to simulate 100 Se82 0nBB events from the source foil
 in the Demonstrator and write them to a file named `example.brio` in the current working directory simply run
 
 ~~~~~
-$ flsimulate --experiment=demonstrator -n 100 -e Se82.0nubb -x source_strips_bulk -o example.brio
+$ flsimulate --experiment=demonstrator -n 100 -e Se82.0nubb -x source_pads_bulk -o example.brio
 ... lots of logging ...
 $
 ~~~~~
@@ -102,7 +102,7 @@ Or to simulate 100 Se82 2nBB events from the source foil
 in the Demonstrator and write them to a file named `example2.brio` in the current working directory simply run
 
 ~~~~~
-$ flsimulate --experiment=demonstrator -n 100 -e Se82.2nubb -x source_strips_bulk -o example2.brio
+$ flsimulate --experiment=demonstrator -n 100 -e Se82.2nubb -x source_pads_bulk -o example2.brio
 ... lots of logging ...
 $
 ~~~~~
@@ -165,12 +165,12 @@ Vertex Generators
 | scintillator_bulk | Generate vertex in the bulk of the scintillator block | yes | no | no |
 | scintillator_side_surfaces | Generate vertex on the side surfaces of the scintillator block | yes | no | no |
 | source_bulk | Generate vertex in the bulk volume of the source foil | yes | no | no |
-| source_strips_bulk | Vertex generation from the bulk volume of the source strips | no | yes | no |
-| source_strips_external_bulk | Vertex generation from the bulk volume of the outer source strips | no | yes | no |
-| source_strips_external_surface | Vertex generation from the surface of the outer source strips | no | yes | no |
-| source_strips_internal_bulk | Vertex generation from the bulk volume of the inner source strips | no | yes | no |
-| source_strips_internal_surface | Vertex generation from the surface of the inner source strips | no | yes | no |
-| source_strips_surface | Vertex generation from the surface of the source strips | no | yes | no |
+| source_pads_bulk | Vertex generation from the bulk volume of the source pads | no | yes | no |
+| source_pads_external_bulk | Vertex generation from the bulk volume of the outer source pads | no | yes | no |
+| source_pads_external_surface | Vertex generation from the surface of the outer source pads | no | yes | no |
+| source_pads_internal_bulk | Vertex generation from the bulk volume of the inner source pads | no | yes | no |
+| source_pads_internal_surface | Vertex generation from the surface of the inner source pads | no | yes | no |
+| source_pads_surface | Vertex generation from the surface of the source pads | no | yes | no |
 | source_surface_all | Generate vertex on the surface of the source foil | yes | no | no |
 | source_surface_back | Generate vertex on the back surface of the source foil | yes | no | no |
 | source_surface_front | Generate vertex on the front surface of the source foil | yes | no | no |
