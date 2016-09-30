@@ -19,6 +19,9 @@
 
 // Falaise:
 #include <falaise/falaise.h>
+#include <falaise/snemo/geometry/calo_locator.h>
+#include <falaise/snemo/geometry/gveto_locator.h>
+#include <falaise/snemo/geometry/gg_locator.h>
 
 // Third part : 
 // GSL:
@@ -180,7 +183,7 @@ int main( int  argc_ , char **argv_  )
 						      collection_of_gveto_gid);
 
     std::vector<calo_spurious_hit> collection_of_calo_spurious_hits;
-    generate_pool_of_calo_spurious_hit(&random_generator,
+    /*generate_pool_of_calo_spurious_hit(&random_generator,
 				       collection_of_main_wall_gid,
 				       collection_of_calo_spurious_hits);
     generate_pool_of_calo_spurious_hit(&random_generator,
@@ -188,7 +191,7 @@ int main( int  argc_ , char **argv_  )
 				       collection_of_calo_spurious_hits);
     generate_pool_of_calo_spurious_hit(&random_generator,
 				       collection_of_gveto_gid,
-				       collection_of_calo_spurious_hits);
+				       collection_of_calo_spurious_hits);*/
     
     std::clog << "Main wall GID vector : " << collection_of_main_wall_gid.size() << std::endl;
     std::clog << "Xwall GID vector : " << collection_of_xwall_gid.size() << std::endl;
@@ -227,12 +230,51 @@ int main( int  argc_ , char **argv_  )
     my_manager.get_mapping().compute_matching_geom_id(geiger_gid_pattern,
 						      collection_of_geiger_gid);
 
+
+    snemo::geometry::calo_locator CL;
+    CL.set_geo_manager(my_manager);
+    CL.set_module_number(module_number);
+    CL.initialize();
+
+    snemo::geometry::gveto_locator GVL;
+    GVL.set_geo_manager(my_manager);
+    GVL.set_module_number(module_number);
+    GVL.initialize();
+
+    snemo::geometry::gg_locator GGL;
+    GGL.set_geo_manager(my_manager);
+    GGL.set_module_number(module_number);
+    GGL.initialize();
+
+
+    //    my_manager.get_mapping().get_geom_id(position, my_category, my_gid); //, 50 * CLHEP::mm);
+    geomtools::geom_id my_gid;
+    int my_type = 1302;
+    int gveto_type = 1252;
+    int geiger_type = 1204;
+    geomtools::vector_3d position_0(301.932 * CLHEP::mm,-1167.53 * CLHEP::mm,-257.44 * CLHEP::mm);
+    GGL.find_geom_id(position_0, geiger_type, my_gid);
+    std::clog << "Position_0 = " << position_0 << std::endl;
+    std::clog << "GID = " << my_gid << std::endl;
+
+    geomtools::vector_3d position_1(301.918 * CLHEP::mm,-1684.68 * CLHEP::mm,-256.294 * CLHEP::mm);
+    GGL.find_geom_id(position_1, geiger_type, my_gid);
+    std::clog << "Position_1 = " << position_1 << std::endl;
+    std::clog << "GID = " << my_gid << std::endl;
+
+    geomtools::vector_3d position_2(-349.666 * CLHEP::mm,-2880.49 * CLHEP::mm, 954.167 * CLHEP::mm);
+    GGL.find_geom_id(position_2, geiger_type, my_gid);
+    std::clog << "Position_2 = " << position_2 << std::endl;
+    std::clog << "GID = " << my_gid << std::endl;
+
+
+    
     std::clog << "Geiger GID vector : " << collection_of_geiger_gid.size() << std::endl;
 
     std::vector<geiger_spurious_hit> collection_of_geiger_spurious_hits;
-    generate_pool_of_geiger_spurious_hit(&random_generator,
+    /*generate_pool_of_geiger_spurious_hit(&random_generator,
 					 collection_of_geiger_gid,
-					 collection_of_geiger_spurious_hits); 
+					 collection_of_geiger_spurious_hits); */
     
     std::clog << "Number of calo spurious hits : " << collection_of_calo_spurious_hits.size() << std::endl;
     std::clog << "Number of geiger spurious hits : " << collection_of_geiger_spurious_hits.size() << std::endl;
