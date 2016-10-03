@@ -1,0 +1,137 @@
+// snemo/digitization/calo_feb_data.h
+// Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
+
+#ifndef CALO_FEB_DATA_H
+#define CALO_FEB_DATA_H
+
+// Standard library :
+#include<string>
+#include "stdint.h"
+#include <bitset>
+
+// - Bayeux/datatools :
+#include <bayeux/datatools/handle.h>
+#include <bayeux/datatools/utils.h>
+
+// - Bayeux/geomtools:
+#include <geomtools/manager.h>
+#include <bayeux/geomtools/base_hit.h>
+
+
+// This project :
+#include <snemo/digitization/electronic_mapping.h>
+
+
+
+namespace snemo {
+	namespace digitization {
+
+
+		class calo_feb_data : public geomtools::base_hit{
+			
+			
+			
+		public:
+
+
+			enum treshold_bit_index {
+				LOW_TRESHOLD      = 0,
+				HIGH_TRESHOLD     = 1
+			};
+		
+
+
+
+			
+			calo_feb_data();
+			
+			void initialize();
+			bool is_initialized() const;
+			void reset();
+			
+
+			void set_baseline_per_channel(double value_, int channel_);
+			void set_charge_per_channel(double value_, int channel_);
+			void set_max_per_channel(double value_, int channel_);
+			void set_time_max_per_channel(uint16_t value_, int channel_);
+			void set_falling_per_channel(double value_, int channel_);
+			void set_rising_per_channel(double value_, int channel_);
+
+
+
+			
+			void set_header(int32_t id_,
+											const geomtools::geom_id & electronic_id_,
+											uint64_t data_time_
+											);
+			
+			/// Set the data with valid values
+			void set_metadata(double *baseline_array_,
+												double *charge_array_,
+												double *max_array_,
+												uint16_t *time_max_array_,
+												double *falling_array,
+												double *rising_array
+												);			
+			
+			
+			/// Smart print
+      virtual void tree_dump(std::ostream      & a_out    = std::clog,
+														 const std::string & a_title  = "",
+														 const std::string & a_indent = "",
+														 bool a_inherit               = false) const;
+
+			
+		public : 
+			
+			static const unsigned int DATA_DESC_SIZE  = 1;
+			static const unsigned int NB_OF_CHANNEL   = 2;
+			static const unsigned int NB_OF_TRESHOLD  = 2;
+			static const unsigned int MAX_NB_OF_SAMPLE= 1024; // YL : to check
+			
+		private:
+
+
+			bool _initialized_;
+			uint64_t _data_timestamp;
+
+			//HEADER
+			//base_hit + _data_timestamp + threshold_status + _data_description_
+			
+			std::bitset<DATA_DESC_SIZE> _data_description_; //!< The calo data description
+			                                                      // LSB to  MSB
+			
+			std::bitset<NB_OF_TRESHOLD> _treshold_status_[NB_OF_CHANNEL];
+
+
+
+			
+			//METADATA
+			// 
+			double _baseline[NB_OF_CHANNEL];
+			double _charge[NB_OF_CHANNEL];
+			double _max_peak_amplitude[NB_OF_CHANNEL];
+			uint16_t _time_max_peak_amplitude[NB_OF_CHANNEL];
+			double _falling_time[NB_OF_CHANNEL];
+			double _rising_time[NB_OF_CHANNEL];
+
+			
+	
+
+
+
+		};
+
+
+} // end of namespace digitization
+
+} // end of namespace snemo
+#endif /* CALO_FEB_DATA_H */
+
+/* 
+** Local Variables: --
+** mode: c++ --
+** c-file-style: "gnu" --
+** tab-width: 2 --
+** End: --
+*/

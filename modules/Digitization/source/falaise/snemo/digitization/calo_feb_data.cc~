@@ -1,0 +1,135 @@
+// snemo/digitization/calo_feb_data.cc
+// Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
+
+
+
+#include <iostream>
+#include "calo_feb_data.h"
+
+using namespace std;
+
+namespace snemo {
+  namespace digitization {
+
+    calo_feb_data::calo_feb_data(){  // D-fault C-tor
+      reset();
+      
+
+    }
+
+    bool calo_feb_data::is_initialized() const {
+      return _initialized_;
+
+    }
+    void calo_feb_data::initialize()  {
+      _initialized_ = true;
+    }
+
+    
+    void calo_feb_data::reset()  {
+      _data_description_.reset();
+      geomtools::base_hit::reset();
+      for(unsigned int i=0;i<NB_OF_CHANNEL;i++){
+	_baseline[i]                = datatools::invalid_real();
+	_charge[i]                  = datatools::invalid_real();
+	_max_peak_amplitude[i]      = datatools::invalid_real();
+	_time_max_peak_amplitude[i] = datatools::invalid_real(); // YL : to check, should be an integer uint16_t
+	_falling_time[i]            = datatools::invalid_real();
+	_rising_time[i]             = datatools::invalid_real();
+      }
+      _initialized_ = false;
+    }
+
+    // YL : need to control metadata validity
+    void calo_feb_data::set_baseline_per_channel(double value_, int channel_){
+      _baseline[channel_] = value_;
+    }
+    void calo_feb_data::set_charge_per_channel(double value_, int channel_){
+      _charge[channel_] = value_;
+    }
+    void calo_feb_data::set_max_per_channel(double value_, int channel_){
+      _max_peak_amplitude[channel_] = value_;
+    }
+    void calo_feb_data::set_time_max_per_channel(uint16_t value_, int channel_){
+      _time_max_peak_amplitude[channel_] = value_;
+    }
+    void calo_feb_data::set_falling_per_channel(double value_, int channel_){
+      _falling_time[channel_] = value_;
+    }
+    void calo_feb_data::set_rising_per_channel(double value_, int channel_){
+      _rising_time[channel_] = value_;
+    }
+    
+    
+    void calo_feb_data::set_metadata(double *baseline_array_,
+				     double *charge_array_,
+				     double *max_array_,
+				     uint16_t *time_max_array_,
+				     double *falling_array_,
+				     double *rising_array_
+				     )
+    {
+      for(unsigned int i=0;i<NB_OF_CHANNEL;i++){
+	set_baseline_per_channel(baseline_array_[i],i);
+	set_charge_per_channel(charge_array_[i],i);
+	set_max_per_channel(max_array_[i],i);
+	set_time_max_per_channel(time_max_array_[i],i);
+	set_falling_per_channel(falling_array_[i],i);
+	set_rising_per_channel(rising_array_[i],i);
+      }
+    }
+
+
+    
+    void calo_feb_data::set_header(int32_t id_, const geomtools::geom_id & feb_id_, uint64_t data_time_){
+      set_hit_id(id_); 
+      set_geom_id(feb_id_);
+      _data_timestamp = data_time_;
+    }
+    
+
+
+
+    
+    
+
+
+    void calo_feb_data::tree_dump (std::ostream & out_,
+				      const std::string & title_,
+				      const std::string & indent_,
+				      bool inherit_) const
+    {
+      base_hit::tree_dump (out_, title_, indent_, true);
+      
+      // out_ << indent_ << datatools::i_tree_dumpable::tag
+      //      << "Anodic time  : "<< std::endl;
+      // if(has_anodic_t0())out_ << indent_<<"|   "<< datatools::i_tree_dumpable::tag
+      // 	   <<"t0 = "  << anodic_t0 << std::endl;
+      // if(has_anodic_t1())out_ << indent_<<"|   " << datatools::i_tree_dumpable::tag<<"t1 = "  << anodic_t1 << std::endl;
+      // if(has_anodic_t2())out_ << indent_<<"|   " << datatools::i_tree_dumpable::tag<<"t2 = "  << anodic_t2 << std::endl;
+      // if(has_anodic_t3())out_ << indent_<<"|   " << datatools::i_tree_dumpable::tag<<"t3 = "  << anodic_t3 << std::endl;
+      // if(has_anodic_t4())out_ << indent_<<"|   " <<datatools::i_tree_dumpable::inherit_tag (inherit_)
+      // 	   <<"t4 = "  << anodic_t4 << std::endl;
+      
+
+	
+      // out_ << indent_ << datatools::i_tree_dumpable::inherit_tag (inherit_)
+      //      << "Cathodic time  : " <<  std::endl;
+      // if(has_cathodic_t5())out_ << indent_<<"    " <<datatools::i_tree_dumpable::tag<<"t5 = "  << cathodic_t5 << std::endl;
+      // if(has_cathodic_t6())out_ << indent_<<"    " <<datatools::i_tree_dumpable::inherit_tag (inherit_)<<"t6 = "  << cathodic_t6 << std::endl;
+
+
+      return;
+    }
+
+
+
+
+
+
+
+
+
+    
+  }// end of namespace digitization
+} // end of namespace snemo
