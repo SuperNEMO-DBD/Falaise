@@ -35,7 +35,7 @@ list(APPEND TrackFit_SOURCES
 # Build a dynamic library from our sources
 add_library(TrackFit SHARED ${TrackFit_HEADERS} ${TrackFit_SOURCES})
 
-target_link_libraries(TrackFit ${Bayeux_LIBRARIES})
+target_link_libraries(TrackFit Bayeux::Bayeux)
 
 # Apple linker requires dynamic lookup of symbols, so we
 # add link flags on this platform

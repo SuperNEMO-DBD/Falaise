@@ -80,7 +80,7 @@ target_include_directories(Falaise PUBLIC
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/falaise>
   )
-target_link_libraries(Falaise PUBLIC Bayeux)
+target_link_libraries(Falaise PUBLIC Bayeux::Bayeux)
 
 # - Rpath it
 set_target_properties(Falaise PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)

@@ -40,8 +40,8 @@ target_include_directories(flreconstruct PRIVATE
 target_compile_definitions(flreconstruct PRIVATE ENABLE_BINRELOC)
 target_link_libraries(flreconstruct
   Falaise
-  ${Bayeux_LIBRARIES}
-  ${Boost_program_options_LIBRARY}
+  Bayeux::Bayeux
+  Boost::program_options
   )
 
 # - Ensure link to internal and external deps

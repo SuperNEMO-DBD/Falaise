@@ -85,10 +85,7 @@ option(FALAISE_WITH_DOCS "Build documentation for Falaise" ON)
 # - GSL
 # - ROOT
 # - Geant4
-find_package(Bayeux 3.0.0 REQUIRED)
-if(NOT Bayeux_MCTOOLS_GEANT4_FOUND)
-  message(FATAL_ERROR "Bayeux found, but it does not supply the MCTools/Geant4 module")
-endif()
+find_package(Bayeux 3.0.0 REQUIRED geant4)
 
 #-----------------------------------------------------------------------
 # Build the subdirectories as required

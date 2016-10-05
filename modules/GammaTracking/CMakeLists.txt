@@ -28,7 +28,7 @@ list(APPEND GammaTracking_SOURCES
 # Build a dynamic library from our sources
 add_library(GammaTracking SHARED ${GammaTracking_HEADERS} ${GammaTracking_SOURCES})
 
-target_link_libraries(GammaTracking ${Bayeux_LIBRARIES})
+target_link_libraries(GammaTracking Bayeux::Bayeux)
 
 # Apple linker requires dynamic lookup of symbols, so we
 # add link flags on this platform
