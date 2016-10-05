@@ -91,6 +91,7 @@ namespace snemo {
 		}
 	    }
 	}
+      
       return;
     }
 
@@ -103,7 +104,7 @@ namespace snemo {
       // Vertical/layer pattern:
       tracker_trigger_mem_maker::mem1_type::address_type vaddress;
       vaddress = addr_layer_proj;
-	
+      
       tracker_trigger_mem_maker::mem1_type::data_type vdata;
       mem1_.fetch(vaddress, vdata);
       data_IO_proj = vdata;
@@ -115,7 +116,6 @@ namespace snemo {
       tracker_trigger_mem_maker::mem2_type::data_type hdata;
       mem2_.fetch(haddress, hdata);
       data_LR_proj = hdata;
-
       return;
     }
 

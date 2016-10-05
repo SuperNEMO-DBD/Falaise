@@ -98,7 +98,6 @@ namespace snemo {
       _finale_trigger_decision_ = false;
       _delayed_finale_trigger_decision_ = false;
       return;
-
     }  
     
     void trigger_algorithm::clear_records()
@@ -110,16 +109,27 @@ namespace snemo {
       _finale_trigger_decision_ = false;
       _delayed_finale_trigger_decision_ = false;
     }
+
+    void trigger_algorithm::set_tmp_file(std::string & path_, std::string & prefix_, bool & remove_at_destroy_)
+    {
+      _tracker_algo_.set_tmp_file(path_, prefix_, remove_at_destroy_);
+      return;
+    }
     
+    datatools::temp_file & trigger_algorithm::grab_tracker_tmp_file()
+    {
+      return _tracker_algo_.grab_tmp_file();
+    }
+        
     const std::vector<tracker_trigger_algorithm::tracker_record>trigger_algorithm::get_tracker_records_vector() const
     {
       return _tracker_records_;
-    }    
+    }
     
     const std::vector<calo_trigger_algorithm::calo_summary_record> trigger_algorithm::get_calo_records_vector() const  
     {
       return _calo_records_;
-    }	
+    }
 
     const std::vector<coincidence_trigger_algorithm::coincidence_calo_record> trigger_algorithm::get_coincidence_calo_records_vector() const
     {
@@ -134,7 +144,7 @@ namespace snemo {
     bool trigger_algorithm::get_finale_decision() const
     {
       return _finale_trigger_decision_;
-    }   
+    }
 
     bool trigger_algorithm::get_delayed_finale_decision() const
     {
@@ -148,7 +158,7 @@ namespace snemo {
       _process(calo_ctw_data_,
 	       geiger_ctw_data_);
       return;
-    }   
+    }
 
     void trigger_algorithm::_process_calo_algo(const calo_ctw_data & calo_ctw_data_)
     {

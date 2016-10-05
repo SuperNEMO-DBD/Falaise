@@ -5,9 +5,13 @@
 #ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_TRACKER_TRIGGER_ALGORITHM_H
 #define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_TRACKER_TRIGGER_ALGORITHM_H
 
+// - Bayeux/datatools :
+#include <datatools/temporary_files.h>
+
 // Standard library :
 #include <string>
 #include <bitset>
+#include <iostream>
 
 // This project :
 #include <snemo/digitization/geiger_ctw_data.h>
@@ -48,7 +52,7 @@ namespace snemo {
 				
 				tracker_record();
 				void reset();
-				void display();
+				void display(std::ostream & out_ = std::clog);
 				int32_t clocktick_1600ns;
 				std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
 				std::bitset<trigger_info::NZONES> zoning_word_pattern[trigger_info::NSIDES]; // not fill atm
@@ -62,7 +66,7 @@ namespace snemo {
 			{
 				geiger_matrix();
 				bool is_empty();
-				void display_matrix_garrido() const;
+				void display_matrix_garrido(datatools::temp_file & tmp_file_) const;
 				int32_t clocktick_1600ns;				
 				bool matrix[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS];
 			};
@@ -103,6 +107,15 @@ namespace snemo {
       /// Reset the object
       void reset(); 
 
+			/// Set a temporary file for display
+			void set_tmp_file(std::string & path_, std::string & prefix_, bool & remove_at_destroy_);
+			
+			/// Return the temporary file non const
+			datatools::temp_file & grab_tmp_file();
+
+			/// Check if a temporary file is set
+			bool is_temporary_file() const;
+
 			/// Return the board id from the bitset of 100 bits
 			uint32_t get_board_id(const std::bitset<geiger::tp::FULL_SIZE> & my_bitset_) const;
 			
@@ -112,6 +125,9 @@ namespace snemo {
 
 			/// Return the tracker decision
 			bool get_tracker_decision() const;
+			
+			/// Display in an extern temporary file
+			void display_in_file(std::string & display_mode_);
 
 			/// Fill the geiger cells matrix
 			void fill_matrix(const std::vector<geomtools::geom_id> & hit_cells_gids_);
@@ -181,7 +197,11 @@ namespace snemo {
       // Configuration : 
       bool _initialized_; //!< Initialization
 			const electronic_mapping * _electronic_mapping_; //!< Convert geometric ID into electronic ID flag
-
+			
+			// Display into a file :
+			bool _is_temporary_file_;
+			datatools::temp_file _display_tmp_file_;
+			
 			tracker_trigger_mem_maker::mem1_type _sliding_zone_vertical_memory_;
 			tracker_trigger_mem_maker::mem2_type _sliding_zone_horizontal_memory_;
 			tracker_trigger_mem_maker::mem3_type _zone_vertical_memory_;

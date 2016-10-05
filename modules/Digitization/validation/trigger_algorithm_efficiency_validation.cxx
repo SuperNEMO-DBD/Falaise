@@ -336,6 +336,12 @@ int main( int  argc_ , char **argv_  )
     // Internal counters
     int psd_count = 0;         // Event counter
     
+    // Open an output
+    bool tmp_file_delete = false;
+    std::string path = "${FALAISE_DIGITIZATION_TESTING_DIR}/output_default";
+    std::string prefix = "temp_";
+    my_trigger_algo.set_tmp_file(path, prefix, tmp_file_delete);
+
     while (!reader.is_terminated())
       {
 	event_id = psd_count;
@@ -433,6 +439,7 @@ int main( int  argc_ , char **argv_  )
 		// Reseting trigger display
 		my_trigger_display.reset_matrix_pattern();
 
+		my_trigger_algo.grab_tracker_tmp_file().out() << "Event = " << psd_count << std::endl;
 		// Trigger process
 		my_trigger_algo.process(my_calo_ctw_data,
 					my_geiger_ctw_data);	   

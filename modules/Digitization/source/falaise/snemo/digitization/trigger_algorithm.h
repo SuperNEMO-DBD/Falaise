@@ -61,6 +61,12 @@ namespace snemo {
 	
 			/// Clear the record vectors
 			void clear_records();
+			
+			/// Set a temporary file for tracker algorithm
+			void set_tmp_file(std::string & path_, std::string & prefix_, bool & remove_at_destroy_);
+
+			/// Grab the tracker temporary file mutable
+			datatools::temp_file & grab_tracker_tmp_file();
 
 			/// Get the vector of tracker record
 			const std::vector<tracker_trigger_algorithm::tracker_record> get_tracker_records_vector() const;

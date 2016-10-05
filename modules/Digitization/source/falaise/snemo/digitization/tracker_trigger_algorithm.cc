@@ -45,42 +45,40 @@ namespace snemo {
       return;
     }
 
-    void tracker_trigger_algorithm::tracker_record::display()
+    void tracker_trigger_algorithm::tracker_record::display(std::ostream & out_)
     {
-      std::clog << "Tracker Trigger info record : " << std::endl; 
-      std::clog << "Clocktick 1600    : " << clocktick_1600ns << std::endl;;  
-
+      // out_ << "CT1600=" << clocktick_1600ns << std::endl;
       for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
 	{
-	  std::clog << "Side = " << iside << " | ";
+	  out_ << "Side = " << iside << ' ';
 	  for (unsigned int izone = 0; izone < trigger_info::NZONES; izone++)
 	    {
-	      std::clog << "[" << finale_data_per_zone[iside][izone] << "] ";
+	      out_ << "[" << finale_data_per_zone[iside][izone] << "] ";
 	    } // end of izone
-	  std::clog << std::endl;
+	  out_ << std::endl;
 	}
       
       for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
 	{
-	  std::clog << "ZW pattern     : S" << iside << " : [";
+	  out_ << "ZW_pattern_S" << iside << " [";
 	  for (unsigned int ibit = 0; ibit < zoning_word_pattern[0].size(); ibit++)
 	    {
-	      std::clog << zoning_word_pattern[iside][ibit];
+	      out_ << zoning_word_pattern[iside][ibit];
 	    }
-	  std::clog << "] ";
+	  out_ << "] ";
 	}     
-      std::clog << std::endl;
+      out_ << std::endl;
       for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
 	{
-	  std::clog << "ZW near source : S" << iside << " : [";
+	  out_ << "ZW_NSZ_S" << iside << " [";
 	  for (unsigned int ibit = 0; ibit < zoning_word_near_source[0].size(); ibit++)
 	    {
-	      std::clog << zoning_word_near_source[iside][ibit];
+	      out_ << zoning_word_near_source[iside][ibit];
 	    }
-	  std::clog << "] ";
+	  out_ << "] ";
 	}
-      std::clog << std::endl;
-      std::clog << "Level one tracker decision : [" << finale_decision << "]" <<  std::endl << std::endl;
+      out_ << std::endl;
+      out_ << "L1_tracker [" << finale_decision << "]" <<  std::endl;
       return;
     }
 
@@ -115,7 +113,7 @@ namespace snemo {
       return empty;
     }
 
-    void tracker_trigger_algorithm::geiger_matrix::display_matrix_garrido() const
+    void tracker_trigger_algorithm::geiger_matrix::display_matrix_garrido(datatools::temp_file & tmp_file_) const
     {
       for (unsigned int i = 0; i < trigger_info::NSIDES; i++)
 	{
@@ -123,16 +121,15 @@ namespace snemo {
 	    {
 	      for (int j = trigger_info::NLAYERS - 1; j >= 0; j--) // Value GEIGER_LAYER_SIZE = 9
 		{
-		  //std::clog << ' ';
+		  //tmp_file_.out() << ' ';
 		  for (unsigned int k = 0; k < trigger_info::NROWS; k++)
 		    {
+		      if (matrix[i][j][k] ) tmp_file_.out() << "1";
 		  
-		      if (matrix[i][j][k] ) std::clog << "1";
-		  
-		      if(!matrix[i][j][k])  std::clog << "0";	  
+		      if(!matrix[i][j][k])  tmp_file_.out() << "0";	  
 
 		    } // end of row loop
-		  std::clog<<std::endl;	
+		  tmp_file_.out() << std::endl;	
 
 		} // end of layer loop
 
@@ -142,24 +139,23 @@ namespace snemo {
 	    {  
 	      for (unsigned int j = 0; j < trigger_info::NLAYERS; j++)
 		{
-		  //std::clog << ' ' ;
+		  //tmp_file_.out() << ' ' ;
 		  for (unsigned int k = 0; k < trigger_info::NROWS; k++)
 		    {
 		  
-		      if (matrix[i][j][k] ) std::clog << "1";
+		      if (matrix[i][j][k] ) tmp_file_.out() << "1";
 		  
-		      if(!matrix[i][j][k])  std::clog << "0";	  
-
-
+		      if(!matrix[i][j][k])  tmp_file_.out() << "0";	  
+		      
 		    } // end of row loop
-		  std::clog<<std::endl;	    
+		  tmp_file_.out() << std::endl;	    
   
 		} // end of layer loop
 
 	    } // end of if i==1
 
 	} // end of side loop
-      std::clog << std::endl;
+      //      tmp_file_.out() << std::endl;
 
       return;
     }
@@ -168,6 +164,7 @@ namespace snemo {
     {
       _initialized_ = false;
       _electronic_mapping_ = 0;
+      _is_temporary_file_ = false;
       bool * vbool = static_cast<bool* > (&_geiger_matrix_[0][0][0]);
       static const size_t nmax = trigger_info::NSIDES * trigger_info::NLAYERS * trigger_info::NROWS;
       for (unsigned int i = 0; i < nmax ; i ++)
@@ -286,9 +283,29 @@ namespace snemo {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Tracker trigger algorithm is not initialized, it can't be reset ! ");
       _initialized_ = false;
       _electronic_mapping_ = 0;
+      _is_temporary_file_ = false;
       reset_matrix();
       _tracker_finale_decision_ = false;
       return;
+    }
+
+    bool tracker_trigger_algorithm::is_temporary_file() const
+    {
+      return _is_temporary_file_;
+    }
+    
+    void tracker_trigger_algorithm::set_tmp_file(std::string & path_, std::string & prefix_, bool & remove_at_destroy_)
+    {
+      _display_tmp_file_.set_remove_at_destroy(remove_at_destroy_);
+      _display_tmp_file_.create(path_, prefix_);
+      _is_temporary_file_ = true;
+      return;
+    }
+
+    datatools::temp_file & tracker_trigger_algorithm::grab_tmp_file()
+    {
+      DT_THROW_IF(!is_temporary_file(), std::logic_error, "Temporary file is not set !");
+      return _display_tmp_file_;
     }
 
     uint32_t tracker_trigger_algorithm::get_board_id(const std::bitset<geiger::tp::FULL_SIZE> & my_bitset_) const
@@ -359,6 +376,63 @@ namespace snemo {
       return _tracker_finale_decision_;
     }
 
+    void tracker_trigger_algorithm::display_in_file(std::string & display_mode_)
+    {
+      // Basic information display (tracker trigger response 182 bits)
+      if (display_mode_ == "basic")
+	{
+
+	}
+      
+
+      // Debug information display (Projection / SLZ / Z / trigger response)
+      if (display_mode_ == "debug")
+	{
+	  for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
+	    {
+	      for (unsigned int izone = 0; izone < trigger_info::NZONES; izone++)
+		{
+		  _display_tmp_file_.out() << "******************" << std::endl;
+		  _display_tmp_file_.out() << "Zone (" << iside << "," << izone << ")" << std::endl;
+		  for (unsigned int islz = 0 + izone * 3; islz < 4 + izone * 3; islz++)
+		    {
+		      std::string slz_abcd = "";
+		      if (islz % 3 == 0) slz_abcd = "SLZ_A";
+		      else if (islz % 3 == 1) slz_abcd = "SLZ_B";
+		      else if (islz % 3 == 2) slz_abcd = "SLZ_C";
+		      else if (islz % 3 == 3) slz_abcd = "SLZ_D";
+		  
+		      _display_tmp_file_.out() << slz_abcd << std::endl;
+		      _display_tmp_file_.out() << "PR : " << _sliding_zones_[iside][islz].addr_row_proj << ' ' << _sliding_zones_[iside][islz].data_LR_proj << std::endl;
+		      for (int i = _sliding_zones_[iside][islz].addr_row_proj.size() - 1; i >=0 ; i--)
+			{
+			  _display_tmp_file_.out() << _sliding_zones_[iside][islz].addr_row_proj[i];
+			}
+		      _display_tmp_file_.out() << std::endl;
+
+		      _display_tmp_file_.out() << _sliding_zones_[iside][islz].addr_row_proj[0]
+					       << _sliding_zones_[iside][islz].addr_row_proj[1]
+					       << _sliding_zones_[iside][islz].addr_row_proj[2]
+					       << _sliding_zones_[iside][islz].addr_row_proj[3] << std::endl;
+		  
+		      _display_tmp_file_.out() << "PL : " <<  _sliding_zones_[iside][islz].addr_layer_proj << ' ' << _sliding_zones_[iside][islz].data_IO_proj << std::endl;
+		  
+		    }
+		  _display_tmp_file_.out() << "Vertical" << std::endl;
+		  _display_tmp_file_.out() << _zones_[iside][izone].addr_in_out_pattern << ' ' << _zones_[iside][izone].data_in_out_pattern << std::endl;
+		  _display_tmp_file_.out() << "Horizontal" << std::endl;
+		  _display_tmp_file_.out() << _zones_[iside][izone].addr_left_mid_right_pattern << ' ' << _zones_[iside][izone].data_left_mid_right_pattern << std::endl;
+		  _display_tmp_file_.out() << "Near source" << std::endl;
+		  _display_tmp_file_.out() << _zones_[iside][izone].data_near_source << std::endl;
+		  _display_tmp_file_.out() << "Final bitset" << std::endl;
+		  _display_tmp_file_.out() << _tracker_record_finale_decision_.finale_data_per_zone[iside][izone]  << std::endl;
+		}
+	    }
+	}
+      
+      return;
+    }
+    
     void tracker_trigger_algorithm::fill_matrix(const std::vector<geomtools::geom_id> & hit_cells_gids_)
     {
       if (hit_cells_gids_.size() != 0)
@@ -501,7 +575,7 @@ namespace snemo {
 	for (unsigned int iszone = 0; iszone < trigger_info::NSLZONES; iszone ++) {
 	  build_sliding_zone(_sliding_zones_[iside][iszone], iside, iszone);
 	  _sliding_zones_[iside][iszone].build_pattern(mem1_, mem2_);
-	  //_sliding_zones_[iside][iszone].print(std::clog);
+	  // _sliding_zones_[iside][iszone].print_projections(std::clog);
 	}
       }
       return;
@@ -629,7 +703,7 @@ namespace snemo {
 	}
       return;
     }
-
+    
     void tracker_trigger_algorithm::build_near_source_pattern(tracker_zone & zone_)
     {     
       unsigned int zone_id = zone_.zone_id;
@@ -809,6 +883,7 @@ namespace snemo {
     {
       reset_matrix();
       reset_zones_informations();
+      unsigned int clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2;
       for (unsigned int isize = 0; isize < geiger_ctw_list_per_clocktick_.size(); isize++)
        	{
        	  std::vector<geomtools::geom_id> hit_cells_gids;
@@ -827,20 +902,23 @@ namespace snemo {
       		} // end of krow
       	    } // end of jlayer
       	} // end of iside
-      a_geiger_matrix.clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2;
+      a_geiger_matrix.clocktick_1600ns = clocktick_1600ns;
       _geiger_matrix_records_.push_back(a_geiger_matrix);
-      _tracker_record_finale_decision_.clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2;
+      _tracker_record_finale_decision_.clocktick_1600ns = clocktick_1600ns;
       build_sliding_zones(_sliding_zone_vertical_memory_, _sliding_zone_horizontal_memory_); 
       build_zones();      
       build_tracker_record();
 
-      // Display for Debug with Thierry & Garrido :
-      // print_zones(std::clog);
-      // if (geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2 == 2) print_sliding_zones(std::clog);
-      // print_zones(std::clog);
-      // print_zone_information(std::clog);
-      // _tracker_record_finale_decision_.display();
-      // display_matrix();
+      // Print in file for a fixed CT (ex
+      if (_is_temporary_file_)
+	{
+	  //std::string display_mode="basic"; // display mode in file can be : basic (trigger information) or debug (all informations / projection /SLZ...)
+	  _display_tmp_file_.out() << "CT1600=" << clocktick_1600ns << std::endl;
+	  a_geiger_matrix.display_matrix_garrido(_display_tmp_file_);
+	  // display_in_file(display_mode);
+	  _tracker_record_finale_decision_.display(_display_tmp_file_.out());
+	}
+      
       return;
     }
     

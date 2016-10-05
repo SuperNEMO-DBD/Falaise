@@ -7,6 +7,7 @@
 #include <datatools/utils.h>
 #include <datatools/io_factory.h>
 #include <datatools/clhep_units.h>
+#include <datatools/temporary_files.h>
 // - Bayeux/mctools:
 #include <mctools/simulated_data.h>
 // - Bayeux/dpp:
@@ -133,9 +134,16 @@ int main( int  argc_ , char **argv_  )
       data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/100_events_tracker_matrix_output.data";
     }
     datatools::fetch_path_with_env(data_filename);
-    std::clog << "data_filename  = " << data_filename << std::endl << std::endl;;
-
+    std::clog << "data_filename  = " << data_filename << std::endl << std::endl;
     
+    
+    if (!is_output_path){
+      output_path = "${FALAISE_DIGITIZATION_TESTING_DIR}/output_default/";
+      datatools::fetch_path_with_env(data_filename);
+    }
+    std::string output_file = output_path + "Tracker_matrix_response_from_loaded_file.log";
+    std::clog << "Output file = " << output_file << std::endl;    
+
     // Number of events :
     int event_number = -1;
     if (is_event_number)  event_number = arg_event_number;
@@ -172,9 +180,13 @@ int main( int  argc_ , char **argv_  )
     // Creation and initialization of trigger algorithm :
     snemo::digitization::tracker_trigger_algorithm my_tracker_trigger_algo;
     my_tracker_trigger_algo.set_electronic_mapping(my_e_mapping);
+    // Open an output
+    bool tmp_file_delete = false;
+    std::string path = "${FALAISE_DIGITIZATION_TESTING_DIR}/output_default";
+    std::string prefix = "temp_";
+    my_tracker_trigger_algo.set_tmp_file(path, prefix, tmp_file_delete);
     my_tracker_trigger_algo.initialize(tracker_config);
-
-
+    
     // Internal counters :
     int psd_count = 0; // Event counter   
 
@@ -196,7 +208,7 @@ int main( int  argc_ , char **argv_  )
 
     std::ifstream fin(data_filename.c_str());
     DT_THROW_IF(!fin, std::runtime_error, "Cannot open file '" << data_filename << "'!");
-
+    
     std::string line;
     while (std::getline(fin, line))
       {
@@ -493,15 +505,15 @@ int main( int  argc_ , char **argv_  )
 	    //std::clog << "GG CTW DATA SIZE = " << my_geiger_ctw_data.get_geiger_ctws().size() << std::endl;
 
 	    std::vector<snemo::digitization::tracker_trigger_algorithm::tracker_record> my_tracker_records;
+	    my_tracker_trigger_algo.grab_tmp_file().out() << "Event = " << psd_count << std::endl;
 	    my_tracker_trigger_algo.process(my_geiger_ctw_data,
 					    my_tracker_records);
-		
+	    
 	    std::clog << "Tracker records size = " << my_tracker_records.size() << std::endl;
 	    my_tracker_records[0].display();
 
-	    std::clog << "Event # = " << psd_count << std::endl;
 	    std::cout << "next event ? [enter for yes]" << std::endl;
-	     std::cin.get();
+	    std::cin.get();
 	    
 	    // reset line number and side number :
 	    side = 0;
@@ -512,8 +524,8 @@ int main( int  argc_ , char **argv_  )
 	    //std::clog << psd_count << std::endl;
       	//} // end of if psd count == 0
 
-      //std::clog << side << ' ' << line_number << ' ' << layer << ' ' << line << std::endl;
-      if (!line.empty()) line_number++;
+	//std::clog << side << ' ' << line_number << ' ' << layer << ' ' << line << std::endl;
+	if (!line.empty()) line_number++;
       }
     
 
