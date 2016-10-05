@@ -83,18 +83,17 @@ Prerequisite Software
 -  **UNIX Operating System**:
 
    -  Linux
-   -  Mac OS X 10.7 (Lion) or higher
+   -  Mac OS X 10.10 (Yosemite) or higher
 
 We expect Falaise to work on most modern BSD based Unices or Linux
 distributions derived from Fedora(RedHat) or Debian provided the
 software listed below is installed. However, we can only fully support
 and test the following at present:
 
--  SUSE Enterprise Linux 11SP2
--  Ubuntu 12.04LTS: http://www.ubuntu.com
--  Scientific Linux 5/6: http://www.scientificlinux.org
--  Mac OS X 10.7
--  Mac OS X 10.8
+-  SUSE Enterprise Linux 11SP4
+-  Ubuntu 14.04LTS, 16.04LTS: http://www.ubuntu.com
+-  CentOS/RHEL/SL 5/6: http://www.centos.org
+-  Mac OS X 10.10, 10.11, 10.12
 
 If you have problems on systems other than these, please contact us,
 though support will be on a best effort basis.
@@ -102,8 +101,8 @@ though support will be on a best effort basis.
 -  **Core Software Required**:
 
    -  Subversion (only for development)
-   -  CMake 2.8.0 or higher: http://www.cmake.org
-   -  C/C++ compiler supporting at least C++03 standard
+   -  CMake 3.3 or higher: http://www.cmake.org
+   -  C/C++ compiler supporting at least C++11 standard
       (GNU/Clang/Intel)
 
 - **Optional Software** (Required for documentation development)
@@ -112,8 +111,8 @@ though support will be on a best effort basis.
    -  Pandoc (for man page generation)
 
 On Linux, you should install these through the package manager for your
-distribution. Some older Linux systems (SL/CentOS, especially on
-clusters) may not provide CMake 2.8. If this is the case, then you
+distribution. Some older Linux systems (CentOS, especially on
+clusters) may not provide CMake 3.3. If this is the case, then you
 should download the latest Linux *binary .sh* file from:
 
 -  http://www.cmake.org/cmake/resources/software.html
@@ -132,14 +131,15 @@ clicking on the Downloads tab, and then installing Command Line Tools.
 
 -  **Core Libraries Required**
 
-   -  Boost 1.53.0 or higher: http://www.boost.org
+   -  Bayeux 2.1 or higher
+   -  Boost 1.61.0 or higher: http://www.boost.org
        - with serialization, filesystem, system... libraries.
    -  Camp 0.7.1 : https://github.com/tegesoft/camp
-   -  GSL 1.15 or higher: http://www.gnu.org/s/gsl
+   -  GSL 1.16 or higher: http://www.gnu.org/s/gsl
    -  CLHEP 2.1.3.2 or higher: http://proj-clhep.web.cern.ch
-   -  Geant4 9.6.0 or higher: http://geant4.cern.ch
+   -  Geant4 9.6.4 or higher: http://geant4.cern.ch
        - with GDML support enabled
-   -  ROOT 5.34.0 or higher: http://root.cern.ch
+   -  ROOT 5.34.34 or higher: http://root.cern.ch
 
 For ease of use, LPC Caen provides the Cadfael SDK which bundles these
 libraries for easy use by Bayeux and clients of Bayeux. You can use this

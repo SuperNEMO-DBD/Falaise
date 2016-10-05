@@ -5,7 +5,7 @@ set(FalaiseGammaClusteringPlugin_TESTS
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-set(_cpt_TEST_ENVIRONMENT "FALAISE_RESOURCE_DIR=${FALAISE_DATAROOTDIR}/resources")
+#set(_cpt_TEST_ENVIRONMENT "FALAISE_RESOURCE_DIR=${FALAISE_DATAROOTDIR}/resources")
 
 if(FalaiseGammaClusteringPlugin_ENABLE_TESTING)
   foreach(_testsource ${FalaiseGammaClusteringPlugin_TESTS})

@@ -38,9 +38,6 @@ if(APPLE)
     )
 endif()
 
-# Install it:
-install(TARGETS GammaTracking DESTINATION ${CMAKE_INSTALL_LIBDIR}/${FALAISE_PLUGINLIBDIR})
-
 ############################################################################################
 # - GammaTracking modules:
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source/falaise)
@@ -72,8 +69,8 @@ if(APPLE)
     )
 endif()
 
-# Install it:
-install(TARGETS Falaise_GammaTracking DESTINATION ${CMAKE_INSTALL_LIBDIR}/${FALAISE_PLUGINLIBDIR})
+# Install Targets
+install(TARGETS GammaTracking Falaise_GammaTracking DESTINATION ${CMAKE_INSTALL_PLUGINDIR})
 
 # Test support:
 option(FalaiseGammaTrackingPlugin_ENABLE_TESTING "Build unit testing system for FalaiseGammaTracking" ON)

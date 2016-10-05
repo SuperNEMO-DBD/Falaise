@@ -62,7 +62,7 @@ if(APPLE)
 endif()
 
 # Install it:
-install(TARGETS Falaise_CAT DESTINATION ${CMAKE_INSTALL_LIBDIR}/${FALAISE_PLUGINLIBDIR})
+install(TARGETS Falaise_CAT DESTINATION ${CMAKE_INSTALL_PLUGINDIR})
 
 # Test support:
 option(FalaiseCATPlugin_ENABLE_TESTING "Build unit testing system for FalaiseCATPlugin" ON)

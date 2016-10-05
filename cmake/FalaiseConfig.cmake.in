@@ -1,8 +1,6 @@
 # - Config file for the Falaise package
 # It defines the following variables
 #  Falaise_INCLUDE_DIRS - include directories for Falaise
-#  Falaise_DEFINITIONS  - compile definitions needed to use Falaise
-#  Falaise_LIBRARIES    - libraries to link against
 #
 #  Falaise_DOXYGEN_HTML_DIR - path to directory holding Doxygen docs
 #                            for Falaise. Empty if docs were not built
@@ -25,53 +23,40 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #----------------------------------------------------------------------
 
-#-----------------------------------------------------------------------
-# Locate ourselves, since all our config files should have been installed
-# alongside us...
-#
-get_filename_component(__falaise_config_dir "${CMAKE_CURRENT_LIST_FILE}" PATH)
+# - Core API version
+set(Falaise_VERSION "@Falaise_VERSION@")
+# - Development Tag
+set(Falaise_VERSION_REVISION "@Falaise_VERSION_REVISION@")
 
 #-----------------------------------------------------------------------
-# Use expansion variable to locate include dire from where we are
-get_filename_component(Falaise_INCLUDE_DIR "${__falaise_config_dir}/@FALAISE_CMAKEDIR_TO_INCLUDEDIR@" ABSOLUTE CACHE)
-mark_as_advanced(Falaise_INCLUDE_DIR)
-
-set(Falaise_INCLUDE_DIRS "${Falaise_INCLUDE_DIR}" "${Falaise_INCLUDE_DIR}/falaise")
-
-set(Falaise_DEFINITIONS)
+# Start of CMake Generated
+@PACKAGE_INIT@
+# END OF CMAKE GENERATED
 
 #-----------------------------------------------------------------------
 # Handle paths/targets for third party deps here...
 # Our main dependency is Bayeux, and this will supply the main third
-# party deps.
-# However, we may have used a builtin or system install of Bayeux,
-# so abstract this to a separate file
-#
-include(${__falaise_config_dir}/FalaiseBayeux.cmake)
-
-#-----------------------------------------------------------------------
-# Append third party include directories to Falaise's so exposed
-# headers are visible
-#
-list(APPEND Falaise_INCLUDE_DIRS
-  ${Bayeux_INCLUDE_DIRS}
-  )
+# party deps for Falaise as well
+find_package(Bayeux @Bayeux_VERSION@ EXACT REQUIRED)
 
 #-----------------------------------------------------------------------
 # Include the file listing all the imported targets.
 # This is installed in the same location as us...
 #
 if(NOT Falaise_TARGETS_LOADED)
-  include("${__falaise_config_dir}/FalaiseTargets.cmake")
+  include("${CMAKE_CURRENT_LIST_DIR}/FalaiseTargets.cmake")
   set(Falaise_TARGETS_LOADED 1)
 endif()
 
-# - Falaise itself
-set(Falaise_LIBRARY Falaise CACHE FILE "Falaise library (imported)")
-set(Falaise_LIBRARIES ${Falaise_LIBRARY})
-mark_as_advanced(Falaise_LIBRARY)
+#-----------------------------------------------------------------------
+# Setup paths that clients may need
+#
+set_and_check(Falaise_RESOURCE_DIR "@PACKAGE_CMAKE_INSTALL_DATAROOTDIR@/@FALAISE_RESOURCE_DIR@")
+
 
 #-----------------------------------------------------------------------
-# Documentation - loaded optionally from its own file
+# Documentation - loaded optionally as it's only present if docs were
+# built
 #
-include("${__falaise_config_dir}/FalaiseDocs.cmake" OPTIONAL)
+include("${CMAKE_CURRENT_LIST_DIR}/FalaiseDocs.cmake" OPTIONAL)
+

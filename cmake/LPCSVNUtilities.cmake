@@ -1,4 +1,6 @@
-# - CMake utilities for querying a Subversion working copy
+#.rst:
+# LPCSVNUtilities
+# ---------------
 #
 # Nothing more than a simple wrapper around CMake's FindSubversion
 #

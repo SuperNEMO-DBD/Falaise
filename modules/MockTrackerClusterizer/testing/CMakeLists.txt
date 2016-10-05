@@ -9,7 +9,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(testing_SOURCES utilities.cc)
 
-set(_mtc_TEST_ENVIRONMENT "FALAISE_RESOURCE_DIR=${FALAISE_DATAROOTDIR}/resources")
+#set(_mtc_TEST_ENVIRONMENT "FALAISE_RESOURCE_DIR=${Falaise_RESOURCE_DIR}")
 
 if(FalaiseMockTrackerClusterizerPlugin_ENABLE_TESTING)
   foreach(_testsource ${FalaiseMockTrackerClusteringPlugin_TESTS})

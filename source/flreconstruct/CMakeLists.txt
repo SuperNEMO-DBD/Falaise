@@ -61,6 +61,7 @@ endif()
 
 # - Install it
 install(TARGETS flreconstruct
+  EXPORT FalaiseTargets
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   )
 

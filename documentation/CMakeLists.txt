@@ -22,11 +22,26 @@
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
+# Configure documentation generation, if required
+#
+set(FALAISE_DOCEXPORT_DIR "${PROJECT_BINARY_DIR}/documentation")
+find_package(Doxygen 1.8 REQUIRED)
+
+# - For man pages, pandoc for now
+#find_package(Pandoc 1.10 REQUIRED)
+#find_package(<something to compress man?>)
+find_program(Pandoc_EXECUTABLE pandoc
+  DOC "path to pandoc executable"
+  )
+set(Pandoc_FOUND ${Pandoc_EXECUTABLE})
+
+
+#-----------------------------------------------------------------------
 # Core Doxygen Configuration
 #
 set(FALAISE_DOXYFILE_IN  falaise_doxygen.conf.in)
 set(FALAISE_DOXYFILE_OUT ${PROJECT_BINARY_DIR}/documentation/falaise_doxygen.conf)
-set(FALAISE_DOXYGEN_OUTPUT_DIR  ${FALAISE_DATAROOTDIR}/Documentation/API)
+set(FALAISE_DOXYGEN_OUTPUT_DIR  ${FALAISE_BUILD_DATAROOTDIR}/${FALAISE_DOCUMENTATION_DIR}/API)
 set(FALAISE_DOXYGEN_OUTPUT_FILE ${FALAISE_DOXYGEN_OUTPUT_DIR}/html/index.html)
 set(FALAISE_DOXYGEN_OUTPUT_IMAGE_DIR ${FALAISE_DOXYGEN_OUTPUT_DIR}/html/images)
 
@@ -41,7 +56,7 @@ endif()
 # Bayeux tag files
 # If we're using an internal Bayeux, use relative paths, otherwise
 # absolute
-if(NOT FALAISE_USE_SYSTEM_BAYEUX AND Bayeux_DOXYGEN_HTML_DIR)
+if(Bayeux_DOXYGEN_HTML_DIR)
   file(RELATIVE_PATH Bayeux_DOXYGEN_HTML_DIR ${FALAISE_DOXYGEN_OUTPUT_DIR}/html ${Bayeux_DOXYGEN_HTML_DIR})
   file(RELATIVE_PATH Bayeux_DOXYGEN_TAGFILE ${PROJECT_BINARY_DIR} ${Bayeux_DOXYGEN_TAGFILE})
 endif()
@@ -98,3 +113,4 @@ add_custom_command(
   )
 
 add_custom_target(falaise_docs ALL DEPENDS ${FALAISE_DOXYGEN_OUTPUT_FILE})
+

@@ -45,10 +45,6 @@ if(APPLE)
     )
 endif()
 
-# Install it:
-install(TARGETS TrackFit DESTINATION ${CMAKE_INSTALL_LIBDIR}/${FALAISE_PLUGINLIBDIR})
-
-
 ############################################################################################
 # - TrackFit modules:
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source/falaise)
@@ -80,8 +76,9 @@ if(APPLE)
     )
 endif()
 
-# Install it:
-install(TARGETS Falaise_TrackFit DESTINATION ${CMAKE_INSTALL_LIBDIR}/${FALAISE_PLUGINLIBDIR})
+# Install Targets
+install(TARGETS TrackFit Falaise_TrackFit DESTINATION ${CMAKE_INSTALL_PLUGINDIR})
+
 
 # Test support:
 option(FalaiseTrackFitPlugin_ENABLE_TESTING "Build unit testing system for FalaiseTrackFitPlugin" ON)

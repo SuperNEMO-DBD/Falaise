@@ -64,6 +64,7 @@ endif()
 # - Install
 # TODO : fixup rpaths as needed
 install(TARGETS flsimulate
+  EXPORT FalaiseTargets
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   )
 

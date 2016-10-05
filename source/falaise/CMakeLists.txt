@@ -63,7 +63,7 @@ include(TrackerPreClustering.cmake)
 # - Publish headers
 foreach(_hdrin ${FalaiseLibrary_HEADERS})
   string(REGEX REPLACE "\\.in$" "" _hdrout "${_hdrin}")
-  configure_file(${_hdrin} ${FALAISE_BUILDPRODUCT_DIR}/include/falaise/${_hdrout} @ONLY)
+  configure_file(${_hdrin} ${PROJECT_BUILD_INCLUDEDIR}/falaise/${_hdrout} @ONLY)
 endforeach()
 
 
@@ -74,8 +74,8 @@ add_library(Falaise SHARED ${FalaiseLibrary_HEADERS} ${FalaiseLibrary_SOURCES})
 target_compile_features(Falaise PUBLIC ${FALAISE_CXX_COMPILE_FEATURES})
 target_compile_definitions(Falaise PRIVATE ENABLE_BINRELOC)
 target_include_directories(Falaise PUBLIC
-  $<BUILD_INTERFACE:${FALAISE_BUILDPRODUCT_DIR}/include>
-  $<BUILD_INTERFACE:${FALAISE_BUILDPRODUCT_DIR}/include/falaise>
+  $<BUILD_INTERFACE:${FALAISE_BUILD_INCLUDEDIR}>
+  $<BUILD_INTERFACE:${PROJECT_BUILD_INCLUDEDIR}/falaise>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/falaise>
@@ -124,7 +124,7 @@ install(TARGETS Falaise FalaiseModule
   )
 
 # - Install public headers (preliminary)
-install(DIRECTORY ${FALAISE_BUILDPRODUCT_DIR}/include/
+install(DIRECTORY ${FALAISE_BUILD_INCLUDEDIR}/
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
   )
 
@@ -141,7 +141,7 @@ endif()
 # - NB assumes each test .cxx file generates a single executable
 # - We also output the executables to a dedicated directory
 set(_falaise_TEST_ENVIRONMENT
-      "FALAISE_RESOURCE_DIR=${FALAISE_DATAROOTDIR}/resources"
+  "FALAISE_RESOURCE_DIR=${FALAISE_BUILD_DATAROOTDIR}/${FALAISE_RESOURCE_DIR}"
       "FALAISE_TESTING_DIR=${CMAKE_CURRENT_SOURCE_DIR}/testing"
       )
 if(FALAISE_ENABLE_TESTING)

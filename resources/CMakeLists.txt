@@ -13,7 +13,7 @@ add_custom_target(falaise_resources
 include(_resources.cmake)
 foreach(_rfin ${Falaise_RESOURCES})
   string(REGEX REPLACE "\\.in$" "" _rfout "${_rfin}")
-  string(REGEX REPLACE "^${PROJECT_SOURCE_DIR}/resources" "${FALAISE_DATAROOTDIR}/resources" _rfout "${_rfout}")
+  string(REGEX REPLACE "^${PROJECT_SOURCE_DIR}/resources" "${FALAISE_BUILD_DATAROOTDIR}/${FALAISE_RESOURCE_DIR}" _rfout "${_rfout}")
   get_filename_component (_rfin_ext ${_rfin} EXT)
   # message(STATUS "Resource file extension is '${_rfin_ext}'")
   if (_rfin_ext STREQUAL ".in")

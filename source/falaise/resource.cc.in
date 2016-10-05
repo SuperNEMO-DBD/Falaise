@@ -87,7 +87,7 @@ std::string relativePathToResourceDir() {
 }
   //! Return relative path from application directory to root of plugin/module DLL dir
 std::string relativePathToPluginLibDir() {
-  return "@FALAISE_LIBDIR_TO_PLUGINLIBDIR@";
+  return "@FALAISE_LIBDIR_TO_PLUGINDIR@";
 }
 
 std::string getLibraryDir() {
