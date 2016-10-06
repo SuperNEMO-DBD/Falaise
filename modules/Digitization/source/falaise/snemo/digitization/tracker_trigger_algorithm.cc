@@ -565,6 +565,12 @@ namespace snemo {
 	for (unsigned int iszone = 0; iszone < trigger_info::NSLZONES; iszone ++) {
 	  build_sliding_zone(_sliding_zones_[iside][iszone], iside, iszone);
 	  _sliding_zones_[iside][iszone].build_pattern(mem1_, mem2_);
+	  /*	  if (iszone > 26)
+	    {
+	      _sliding_zones_[0][iszone].print_layout(std::clog);
+	      _sliding_zones_[0][iszone].print(std::clog);
+	      _sliding_zones_[0][iszone].print_projections(std::clog);
+	      } */
 	}
       }
       return;
@@ -716,6 +722,11 @@ namespace snemo {
 			}
 		      else
 			{
+			  if ((zone_id == 0 || zone_id == 5 || zone_id == 9) && irow == zone_middle)
+			    {
+			      zone_.data_near_source.set(tracker_zone::DATA_NEAR_SOURCE_BIT_LEFT, true);
+			      zone_.data_near_source.set(tracker_zone::DATA_NEAR_SOURCE_BIT_RIGHT, true);
+			    }
 			  if (irow < zone_middle) zone_.data_near_source.set(tracker_zone::DATA_NEAR_SOURCE_BIT_LEFT, true);
 			  else zone_.data_near_source.set(tracker_zone::DATA_NEAR_SOURCE_BIT_RIGHT, true);
 			}
@@ -901,7 +912,7 @@ namespace snemo {
       // Print in file for a fixed CT (ex
       if (_is_temporary_file_)
 	{
-	  // std::string display_mode="debug"; // display mode in file can be : basic (trigger information) or debug (all informations / projection /SLZ...)
+	  std::string display_mode="debug"; // display mode in file can be : basic (trigger information) or debug (all informations / projection /SLZ...)
 	  _display_tmp_file_.out() << "CT1600 " << clocktick_1600ns << std::endl;
 	  a_geiger_matrix.display_matrix_garrido(_display_tmp_file_);
 	  // display_in_file(display_mode);
