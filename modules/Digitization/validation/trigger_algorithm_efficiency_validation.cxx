@@ -1,6 +1,6 @@
 // trigger_algorithm_efficiency_validation.cxx
 // Standard libraries :
-#include <iostream> 
+#include <iostream>
 
 // - Bayeux/datatools:
 #include <datatools/utils.h>
@@ -439,7 +439,7 @@ int main( int  argc_ , char **argv_  )
 		// Reseting trigger display
 		my_trigger_display.reset_matrix_pattern();
 
-		my_trigger_algo.grab_tracker_tmp_file().out() << "Event = " << psd_count << std::endl;
+		my_trigger_algo.grab_tracker_tmp_file().out() << "Event " << psd_count << std::endl;
 		// Trigger process
 		my_trigger_algo.process(my_calo_ctw_data,
 					my_geiger_ctw_data);	   

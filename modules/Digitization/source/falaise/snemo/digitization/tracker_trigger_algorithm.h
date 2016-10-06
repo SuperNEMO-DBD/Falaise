@@ -201,6 +201,7 @@ namespace snemo {
 			// Display into a file :
 			bool _is_temporary_file_;
 			datatools::temp_file _display_tmp_file_;
+			unsigned int event_number;
 			
 			tracker_trigger_mem_maker::mem1_type _sliding_zone_vertical_memory_;
 			tracker_trigger_mem_maker::mem2_type _sliding_zone_horizontal_memory_;
