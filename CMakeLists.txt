@@ -109,7 +109,7 @@ write_basic_package_version_file(
   COMPATIBILITY SameMajorVersion
   )
 
-# - Config file is also the same as we use sam e layout
+# - Config file is also the same in build/install trees as we use same layout
 configure_package_config_file(
   ${PROJECT_SOURCE_DIR}/cmake/FalaiseConfig.cmake.in
   ${FALAISE_BUILD_CMAKEDIR}/${FALAISE_TAG}/FalaiseConfig.cmake
@@ -128,7 +128,10 @@ export(EXPORT FalaiseTargets
   )
 
 # - Targets (install tree)
-install(EXPORT FalaiseTargets DESTINATION ${CMAKE_INSTALL_CMAKEDIR}/${FALAISE_TAG})
+install(EXPORT FalaiseTargets
+  NAMESPACE Falaise::
+  DESTINATION ${CMAKE_INSTALL_CMAKEDIR}/${FALAISE_TAG}
+  )
 
 # - Installation of, well, install tree files
 install(
