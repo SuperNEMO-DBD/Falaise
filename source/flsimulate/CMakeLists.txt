@@ -40,8 +40,8 @@ target_include_directories(flsimulate PRIVATE
   )
 target_link_libraries(flsimulate
   Falaise
-  ${Bayeux_MCTOOLS_GEANT4_LIBRARY}
-  ${Bayeux_LIBRARIES}
+  Bayeux::Bayeux
+  Bayeux::Bayeux_mctools_geant4
   ${Boost_LIBRARIES}
   ${Geant4_LIBRARIES}
   )
