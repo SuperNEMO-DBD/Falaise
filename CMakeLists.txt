@@ -149,7 +149,6 @@ add_subdirectory(modules)
 
 #-----------------------------------------------------------------------
 # - Install published resources and documentation
-install(DIRECTORY ${PROJECT_BUILDDATAROOT_DIR}
-  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}
+install(DIRECTORY ${PROJECT_BUILD_DATAROOTDIR}
+  DESTINATION .
   )
-
