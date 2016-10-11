@@ -1,4 +1,4 @@
-/// \file falaise/snemo/digitization/the_serializable.ipp
+// \file falaise/snemo/digitization/the_serializable.ipp
 
 #ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_THE_SERIALIZABLE_IPP
 #define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_THE_SERIALIZABLE_IPP
