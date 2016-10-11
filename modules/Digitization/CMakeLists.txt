@@ -38,6 +38,7 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
 
   source/falaise/snemo/digitization/calo_signal.h
   source/falaise/snemo/digitization/calo_feb.h
+  source/falaise/snemo/digitization/calo_feb_data.h
   source/falaise/snemo/digitization/calo_tp.h
   source/falaise/snemo/digitization/calo_tp_data.h
   source/falaise/snemo/digitization/calo_ctw.h
@@ -50,6 +51,7 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
 
   source/falaise/snemo/digitization/geiger_signal.h
   source/falaise/snemo/digitization/geiger_tp.h 
+  source/falaise/snemo/digitization/tracker_feb_data.h 
   source/falaise/snemo/digitization/geiger_tp_data.h 
   source/falaise/snemo/digitization/geiger_ctw.h
   source/falaise/snemo/digitization/geiger_ctw_data.h
@@ -112,6 +114,7 @@ list(APPEND FalaiseDigitizationPlugin_SOURCES
   source/falaise/snemo/digitization/calo_tp_data.cc
   source/falaise/snemo/digitization/calo_tp.cc
   source/falaise/snemo/digitization/calo_feb.cc
+  source/falaise/snemo/digitization/calo_feb_data.cc
   source/falaise/snemo/digitization/calo_signal.cc
 
   source/falaise/snemo/digitization/geiger_tp_to_ctw_algo.cc
@@ -119,6 +122,7 @@ list(APPEND FalaiseDigitizationPlugin_SOURCES
   source/falaise/snemo/digitization/geiger_ctw.cc
   source/falaise/snemo/digitization/geiger_tp_data.cc
   source/falaise/snemo/digitization/geiger_tp.cc 
+  source/falaise/snemo/digitization/tracker_feb_data.cc 
   source/falaise/snemo/digitization/geiger_signal.cc
 
   source/falaise/snemo/digitization/tracker_sliding_zone.cc
