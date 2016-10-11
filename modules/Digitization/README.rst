@@ -1,34 +1,39 @@
 ======================================
 Falaise Digitization plugin
 ======================================
-:Authors: F.Mauger   <mauger@lpccaen.in2p3.fr>, G.Oliviéro <goliviero@lpccaen.in2p3.fr>, Y.Lemière  <lemiere@lpccaen.in2p3.fr>
+:Authors: G.Oliviéro <goliviero@lpccaen.in2p3.fr>,
+	  Y.Lemière <lemiere@lpccaen.in2p3.fr>,
+	  F.Mauger <mauger@lpccaen.in2p3.fr>,
 :Date:    05/2015
 
 
-This plugin for Falaise implements the trigger digitization for the SuperNEMO experiment.
+This Falaise plugin implements  the digitization algorithms applied to
+the simulated data of the SuperNEMO experiment.
 
 Goals of the plugin :
 ---------------------
-- Modelized with an high fidelity the electronic response and all the process from Simulated Data to the trigger board.
-- Design the trigger cleverness to make a decision if there are some interesting events or nothing.
-- Design the strategy for data readout. (not implemented yet)
+- Modelization  with  high  fidelity  of the  electronic  response  on
+  simulated   data,  including   signal  waveform   modeling,  trigger
+  functionnalites, and data readout processing.
+- Design  the trigger  functionalities and  strategies to  improve the
+  selection of events of interest.
 
 UML diagram of the process :
 -----------------------------------------
 
 ::
-                    
+
                                                                                                  Calo_TP_data
                                                                                            |----------------------|                                Calo_CTW_data
                                         |------------------|                               | |------------------| |                             |----------------|
-                                        |   Calo signal    |                               | |     Calo TP      | |                             | |------------| |      
+                                        |   Calo signal    |                               | |     Calo TP      | |                             | |------------| |
                                         |   Calo signal    |   |***********************|   | |     Calo TP      | |   |*********************|   | |  Calo CTW  | |   |***************************|
           |***********************|  /->|   Calo signal    |-->| signal_to_calo_TP_algo|-->| |     Calo TP      | |-->| calo_TP_to_calo_CTW |-->| |  Calo CTW  | |-->|   Calo_trigger_algorithm  |
        /->| SD_to_calo_signal_algo| /   |   Calo signal    |   |***********************|   | |     Calo TP      | |   |*********************|   | |------------| |   |***************************|
-      /   |***********************|/    |   Calo signal    |                               | |     Calo TP      | |                             |----------------|              |                 \ 
+      /   |***********************|/    |   Calo signal    |                               | |     Calo TP      | |                             |----------------|              |                 \
      /                 |          /     |------------------|                               | |------------------| |                                                             |                  \
-    /                  v         /                                                         |----------------------|                                     |*******************************|           \         
-   |-----|          |-------------|                                                                                                                     |  Coincidence_trigger_algorithm|------      \   
+    /                  v         /                                                         |----------------------|                                     |*******************************|           \
+   |-----|          |-------------|                                                                                                                     |  Coincidence_trigger_algorithm|------      \
    | SD  |          | Signal Data |                                                                                                                     |*******************************|      |  |******************|
    |-----|          |-------------|                                                        |----------------------|                                                             |               --| Trigger_decision |
     \                    ^     \        |------------------|                               | |------------------| |                                                             |                 |******************|
@@ -48,10 +53,14 @@ UML diagram of the process :
                                                                                                 Geiger_TP_data
 
 SD : Simulated Data
-GG : Geiger		         
+SSD : Simulated Signal Data
+SDD : Simulated Digitized Data
+GG : Geiger
 TP : Trigger Primitive
 CTW : Crate Trigger Word
 
 
-To run the examples, you have to export the environment variable $FALAISE_DIGITIZATION_TESTING_DIR and give the path to the testing directory of the Digitization module. 
-(ex : export FALAISE_DIGITIZATION_TESTING_DIR=~/data/Falaise/Falaise-trunk/modules/Digitization/testing)
+To  run the  examples, you  have  to export  the environment  variable
+$FALAISE_DIGITIZATION_TESTING_DIR  and give  the path  to the  testing
+directory    of   the    Digitization    module.     (ex   :    export
+FALAISE_DIGITIZATION_TESTING_DIR=~/data/Falaise/Falaise-trunk/modules/Digitization/testing)

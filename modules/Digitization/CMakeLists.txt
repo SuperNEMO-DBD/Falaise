@@ -24,7 +24,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source/falaise)
 
 # - Headers:
 
-list(APPEND FalaiseDigitizationPlugin_HEADERS 
+list(APPEND FalaiseDigitizationPlugin_HEADERS
 
   source/falaise/snemo/digitization/electronic_mapping.h
   source/falaise/snemo/digitization/clock_utils.h
@@ -50,9 +50,11 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
   source/falaise/snemo/digitization/calo_ctw_data.ipp
 
   source/falaise/snemo/digitization/geiger_signal.h
-  source/falaise/snemo/digitization/geiger_tp.h 
-  source/falaise/snemo/digitization/tracker_feb_data.h 
-  source/falaise/snemo/digitization/geiger_tp_data.h 
+  source/falaise/snemo/digitization/geiger_tp.h
+  source/falaise/snemo/digitization/geiger_tp_data.h
+  source/falaise/snemo/digitization/geiger_tp.h
+  source/falaise/snemo/digitization/tracker_feb_data.h
+  source/falaise/snemo/digitization/geiger_tp_data.h
   source/falaise/snemo/digitization/geiger_ctw.h
   source/falaise/snemo/digitization/geiger_ctw_data.h
   source/falaise/snemo/digitization/geiger_tp_to_ctw_algo.h
@@ -80,15 +82,16 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
   source/falaise/snemo/digitization/memory.h
   source/falaise/snemo/digitization/memory-inl.h
   source/falaise/snemo/digitization/tracker_trigger_mem_maker.h
-  
+
   source/falaise/snemo/digitization/fake_trigger_module.h
   source/falaise/snemo/digitization/fake_trigger_cut.h
+
   source/falaise/snemo/digitization/the_serializable.ipp
   source/falaise/snemo/digitization/the_serializable.h
   )
 
 # - Sources:
-list(APPEND FalaiseDigitizationPlugin_SOURCES 
+list(APPEND FalaiseDigitizationPlugin_SOURCES
   source/falaise/snemo/digitization/tracker_trigger_mem_maker.cc
   source/falaise/snemo/digitization/trigger_algorithm.cc
   source/falaise/snemo/digitization/trigger_algorithm_test_time.cc
@@ -121,8 +124,8 @@ list(APPEND FalaiseDigitizationPlugin_SOURCES
   source/falaise/snemo/digitization/geiger_ctw_data.cc
   source/falaise/snemo/digitization/geiger_ctw.cc
   source/falaise/snemo/digitization/geiger_tp_data.cc
-  source/falaise/snemo/digitization/geiger_tp.cc 
-  source/falaise/snemo/digitization/tracker_feb_data.cc 
+  source/falaise/snemo/digitization/geiger_tp.cc
+  source/falaise/snemo/digitization/tracker_feb_data.cc
   source/falaise/snemo/digitization/geiger_signal.cc
 
   source/falaise/snemo/digitization/tracker_sliding_zone.cc
@@ -134,7 +137,9 @@ list(APPEND FalaiseDigitizationPlugin_SOURCES
   source/falaise/snemo/digitization/clock_utils.cc
   source/falaise/snemo/digitization/ID_convertor.cc
   source/falaise/snemo/digitization/mapping.cc
+
   source/falaise/snemo/digitization/the_serializable.cc
+
   )
 
 ############################################################################################
@@ -164,7 +169,7 @@ if(FalaiseDigitizationPlugin_ENABLE_TESTING)
   enable_testing()
   add_subdirectory(testing)
 endif()
- 
+
 add_subdirectory(programs)
 add_subdirectory(validation)
 add_subdirectory(half_commissioning_analysis)
