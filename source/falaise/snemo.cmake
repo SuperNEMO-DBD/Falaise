@@ -7,6 +7,15 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/event_header.h
   snemo/datamodels/event_header.ipp
 
+  snemo/datamodels/sim_trigger_digi_data.h
+  snemo/datamodels/sim_trigger_digi_data.ipp
+  snemo/datamodels/sim_tracker_digi_hit.h
+  snemo/datamodels/sim_tracker_digi_hit.ipp
+  snemo/datamodels/sim_calo_digi_hit.h
+  snemo/datamodels/sim_calo_digi_hit.ipp
+  snemo/datamodels/sim_digi_data.h
+  snemo/datamodels/sim_digi_data.ipp
+
   snemo/datamodels/raw_trigger_infos.h
   snemo/datamodels/raw_trigger_infos.ipp
   snemo/datamodels/raw_calorimeter_hit.h
@@ -118,6 +127,11 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/datamodels/the_serializable.cc
   snemo/datamodels/gg_track_utils.cc
 
+  snemo/datamodels/sim_trigger_digi_data.cc
+  snemo/datamodels/sim_tracker_digi_hit.cc
+  snemo/datamodels/sim_calo_digi_hit.cc
+  snemo/datamodels/sim_digi_data.cc
+
   snemo/geometry/calo_locator.cc
   snemo/geometry/xcalo_locator.cc
   snemo/geometry/gg_locator.cc
@@ -177,4 +191,7 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/testing/test_snemo_geometry_mapped_magnetic_field.cxx
   #snemo/testing/test_snemo_simulation_pmt_signal_generator.cxx
   snemo/testing/test_snemo_cut_particle_track_cut.cxx
+  snemo/testing/test_snemo_datamodel_sim_calo_digi_hit.cxx
+  snemo/testing/test_snemo_datamodel_sim_tracker_digi_hit.cxx
+  snemo/testing/test_snemo_datamodel_sim_digi_data.cxx
   )

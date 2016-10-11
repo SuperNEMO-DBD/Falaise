@@ -50,6 +50,18 @@ namespace snemo {
       /// default string label/name for the 'simulated data'
       static const std::string & default_simulated_data_label();
 
+      /// \deprecated Default string label/name for the 'simulated signal data'
+      static const std::string SIMULATED_SIGNAL_DATA_LABEL;
+
+      /// default string label/name for the 'simulated signal data'
+      static const std::string & default_simulated_signal_data_label();
+
+      /// \deprecated Default string label/name for the 'simulated digitized data'
+      static const std::string SIMULATED_DIGITIZED_DATA_LABEL;
+
+      /// default string label/name for the 'simulated digitized data'
+      static const std::string & default_simulated_digitized_data_label();
+
       /// \deprecated Default string label/name for the 'raw data'
       static const std::string RAW_DATA_LABEL;
 

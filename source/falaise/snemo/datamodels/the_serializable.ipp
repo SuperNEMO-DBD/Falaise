@@ -32,4 +32,10 @@
 #include <falaise/snemo/datamodels/particle_track.ipp>
 #include <falaise/snemo/datamodels/particle_track_data.ipp>
 
+//#include <snemo/datamodels/sim_signal_data.ipp>
+#include <snemo/datamodels/sim_trigger_digi_data.ipp>
+#include <snemo/datamodels/sim_calo_digi_hit.ipp>
+#include <snemo/datamodels/sim_tracker_digi_hit.ipp>
+#include <snemo/datamodels/sim_digi_data.ipp>
+
 #endif // FALAISE_SNEMO_DATAMODEL_THE_SERIALIZABLE_IPP

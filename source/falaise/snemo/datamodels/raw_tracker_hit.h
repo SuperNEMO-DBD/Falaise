@@ -209,7 +209,7 @@ namespace snemo {
       uint16_t _anode_t3_;             //!< Anode differential signal time t3
       uint16_t _anode_t4_;             //!< Anode differential signal time t4
       uint16_t _cathode_t5_;           //!< Cathode signal time t5
-      uint16_t _cathode_t6_;           //!< Cathode signal time t6 (only in NEMO-3 mode)
+      uint16_t _cathode_t6_;           //!< Cathode signal time t6 (only in 3-wire mode which is the default)
 
       DATATOOLS_SERIALIZATION_DECLARATION()
 

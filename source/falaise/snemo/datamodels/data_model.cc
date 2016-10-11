@@ -34,6 +34,22 @@ namespace snemo {
       return lbl;
     }
 
+    const std::string data_info::SIMULATED_SIGNAL_DATA_LABEL = "SSD";
+
+    const std::string & data_info::default_simulated_signal_data_label()
+    {
+      static std::string lbl("SSD");
+      return lbl;
+    }
+
+    const std::string data_info::SIMULATED_DIGITIZED_DATA_LABEL = "SDD";
+
+    const std::string & data_info::default_simulated_digitized_data_label()
+    {
+      static std::string lbl("SDD");
+      return lbl;
+    }
+
     const std::string data_info::RAW_DATA_LABEL = "RD";
 
     const std::string & data_info::default_raw_data_label()

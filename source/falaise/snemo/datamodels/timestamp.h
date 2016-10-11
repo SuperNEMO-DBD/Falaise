@@ -22,7 +22,7 @@
 #include <boost/cstdint.hpp>
 #include <boost/serialization/access.hpp>
 // - Bayeux/datatools :
-#include <datatools/i_serializable.h>
+#include <bayeux/datatools/i_serializable.h>
 
 namespace snemo {
 
@@ -77,15 +77,15 @@ namespace snemo {
       void to_string(std::string & ) const;
 
       /// Parse time from string object and set the timestamp object accordingly
-      void from_string (const std::string &);
+      void from_string(const std::string &);
 
       friend bool operator==(const timestamp &, const timestamp &);
       friend bool operator<(const timestamp &, const timestamp &);
       friend bool operator>(const timestamp &, const timestamp &);
       friend bool operator<=(const timestamp &, const timestamp &);
       friend bool operator>=(const timestamp &, const timestamp &);
-      friend std::ostream & operator<< (std::ostream &, const timestamp &);
-      friend std::istream & operator>> (std::istream &, timestamp &);
+      friend std::ostream & operator<<(std::ostream &, const timestamp &);
+      friend std::istream & operator>>(std::istream &, timestamp &);
 
     private:
 
@@ -93,6 +93,7 @@ namespace snemo {
       int64_t _picoseconds_; //!< Number of picoseconds
 
       DATATOOLS_SERIALIZATION_DECLARATION()
+
     };
 
   } // end of namespace datamodel
