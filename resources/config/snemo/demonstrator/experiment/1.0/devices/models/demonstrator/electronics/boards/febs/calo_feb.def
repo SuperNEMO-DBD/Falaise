@@ -1,0 +1,172 @@
+# -*- mode: conf-unix -*-
+# List of multi-properties (datatools::multi_properties)
+
+#@description Definitions of device models related to calorimeter frontend boards
+#@key_label  "name"
+#@meta_label "type"
+
+
+###################################################################################
+[name="calo_feb_samlong@device" type="vire::device::base_integrated_circuit_model"]
+
+#@config Parameters describing the SAMLONG ship
+
+#@parameter Logging priority threshold
+logging.priority : string = "fatal"
+
+#@description Type of device
+type      : string  = "chip_asic"
+
+#########
+# Ports #
+#########
+
+#@description List of ports
+ports.labels : string[1] = "Input"
+
+# Port model and instantiation policy associated to the input signal ports:
+ports.model.Input    : string = "generic_analog_input_channel"
+ports.instance.Input : string = "vire::device::regular_1d_instance=[nslots=2;first_slot=(1:0);step=(1)]"
+
+########################
+# Auxiliary properties #
+########################
+
+#@description Manufacturer the board
+aux.manufacturer : string = "LAL Orsay"
+
+#@description Model of the board
+aux.model        : string = "SAMLONG"
+
+# #@description Version of the board
+# aux.version      : string = "2.0"
+
+
+###################################################################################
+[name="calo_feb_fe_fpga@device" type="vire::device::base_integrated_circuit_model"]
+
+#@config Parameters describing the SAMLONG ship
+
+#@parameter Logging priority threshold
+logging.priority : string = "fatal"
+
+#@description Type of device
+type      : string  = "chip_pld"
+
+########################
+# Auxiliary properties #
+########################
+
+#@description Manufacturer the board
+aux.manufacturer : string = "Altera"
+
+#@description Model of the board
+aux.model        : string = "Cyclone III"
+
+# #@description Version of the board
+# aux.version      : string = ""
+
+
+#####################################################################################
+[name="calo_feb_ctrl_fpga@device" type="vire::device::base_integrated_circuit_model"]
+
+#@config Parameters describing the calorimeter FEB control FPGA
+
+#@parameter Logging priority threshold
+logging.priority : string = "fatal"
+
+#@description Type of device
+type      : string  = "chip_pld"
+
+########################
+# Auxiliary properties #
+########################
+
+#@description Manufacturer the board
+aux.manufacturer : string = "Altera"
+
+#@description Model of the board
+aux.model        : string = "Cyclone III"
+
+# #@description Version of the board
+# aux.version      : string = ""
+
+
+#########################################################################
+[name="calo_feb_input_channel@port" type="vire::device::base_port_model"]
+
+#@config Parameters describing the signal input port of the calorimeter FEB
+
+#@parameter Logging priority threshold
+logging.priority : string = "fatal"
+
+#@description Type of I/O
+io_type      : string  = "in"
+
+#@description Format of the port
+format : string  = "lemo-coaxial-00"
+
+
+###########################################################################
+[name="calo_feb@device" type="vire::device::base_electronics_module_model"]
+
+#@config Parameters describing the calorimeter frontend board
+
+#@parameter Logging priority threshold
+logging.priority : string = "fatal"
+
+#@description Format of the board
+format : string = "VME-6U-extended"
+
+#@description Slot width of the board
+slot_width : integer = 1
+
+####################
+# Embedded devices #
+####################
+
+#@description List of embedded chips
+embedded_devices.labels : string[3] = "SAMLONG" "FrontendFPGA" "ControlFPGA"
+
+# Device model and instantiation policy associated to the embedded ASICs:
+embedded_devices.model.SAMLONG    : string = "calo_feb_samlong"
+embedded_devices.instance.SAMLONG : string = "vire::device::regular_1d_instance=[nslots=8;first_slot=(1:0);step=(1)]"
+
+# Device model and instantiation policy associated to the embedded frontend FPGAs:
+embedded_devices.model.FrontendFPGA    : string = "calo_feb_fe_fpga"
+embedded_devices.instance.FrontendFPGA : string = "vire::device::regular_1d_instance=[nslots=4;first_slot=(1:0);step=(1)]"
+
+# Device model and instantiation policy associated to the embedded control FPGA:
+embedded_devices.model.ControlFPGA    : string = "calo_feb_ctrl_fpga"
+
+#########
+# Ports #
+#########
+
+#@description List of ports
+ports.labels : string[2] = "Input" "Ethernet"
+
+# Port model and instantiation policy associated to the input signal ports:
+ports.model.Input       : string = "calo_feb_input_channel"
+ports.instance.Input    : string = "vire::device::regular_1d_instance=[nslots=16;first_slot=(1:0);step=(1)]"
+
+# Port model and instantiation policy associated to the ethernet plug:
+ports.model.Ethernet    : string = "ethernet_plug"
+ports.instance.Ethernet : string = "vire::device::single_instance=[slot=(0)]"
+
+
+########################
+# Auxiliary properties #
+########################
+
+#@description Manufacturer of the board
+aux.manufacturer : string = "LAL Orsay"
+
+#@description Model of the board
+aux.model        : string = "16-channel WaveCatcher Board"
+
+# #@description Version of the board
+# aux.version      : string = "1.0"
+
+
+# end

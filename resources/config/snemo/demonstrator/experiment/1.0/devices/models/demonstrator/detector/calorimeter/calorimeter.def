@@ -1,0 +1,81 @@
+# -*- mode: conf-unix -*-
+# List of multi-properties (datatools::multi_properties)
+
+#@description Definitions of device models related to calorimeter detection module
+#@key_label  "name"
+#@meta_label "type"
+
+
+############################################################################
+[name="calorimeter_main_wall@device" type="vire::device::base_device_model"]
+
+#@config Parameters describing the SuperNEMO calorimeter main wall
+
+#@parameter Logging priority threshold
+logging.priority : string = "fatal"
+
+#@description Type of the model
+type      : string  = "generic"
+
+#@parameter Virtual device
+virtual : boolean = true
+
+####################
+# Embedded devices #
+####################
+
+#@description The list of embedded devices
+embedded_devices.labels      : string[1] = "OM"
+
+#@description The device model associated to the optical modules
+embedded_devices.model.OM    : string = "optical_module"
+
+#@description The instantiation rule of the optical modules
+embedded_devices.instance.OM : string = \
+  "vire::device::regular_2d_instance=[nslots0=20;nslots1=13;first_slot=(2:0,0);step0=(1,0);step1=(0,1)]"
+
+########################
+# Auxiliary properties #
+########################
+
+#@description Manufacturer
+aux.manufacturer : string = "SuperNEMO Collaboration"
+
+
+##################################################################
+[name="calorimeter@device" type="vire::device::base_device_model"]
+
+#@config Parameters describing the SuperNEMO calorimeter
+
+#@parameter Logging priority threshold
+logging.priority : string = "fatal"
+
+#@description Type of the model
+type      : string  = "generic"
+
+#@parameter Virtual device
+virtual : boolean = true
+
+####################
+# Embedded devices #
+####################
+
+#@description The list of embedded devices
+embedded_devices.labels : string[1] = "MainWall"
+
+#@description The device model associated to the calorimeter walls
+embedded_devices.model.MainWall    : string = "calorimeter_main_wall"
+
+#@description The instanciation policy of the calorimeter walls
+embedded_devices.instance.MainWall : string = \
+  "vire::device::regular_1d_instance=[nslots=2;first_slot=(1:0);step=(1)]"
+
+########################
+# Auxiliary properties #
+########################
+
+#@description Manufacturer
+aux.manufacturer : string = "SuperNEMO Collaboration detector calorimeter"
+
+
+# end of calorimeter.def

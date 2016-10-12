@@ -1,0 +1,20 @@
+# List of device models related to the description of the electronics:
+
+@falaise:config/snemo/demonstrator/experiment/1.0/models/demonstrator/electronics/boards/control_board.def
+@falaise:config/snemo/demonstrator/experiment/1.0/models/demonstrator/electronics/boards/trigger_board.def
+@falaise:config/snemo/demonstrator/experiment/1.0/models/demonstrator/electronics/boards/febs/common.def
+@falaise:config/snemo/demonstrator/experiment/1.0/models/demonstrator/electronics/boards/febs/calo_feb.def
+@falaise:config/snemo/demonstrator/experiment/1.0/models/demonstrator/electronics/boards/febs/tracker_feb.def
+@falaise:config/snemo/demonstrator/experiment/1.0/models/demonstrator/electronics/crates/calo_crate_0.def
+@falaise:config/snemo/demonstrator/experiment/1.0/models/demonstrator/electronics/crates/calo_crate_1.def
+@falaise:config/snemo/demonstrator/experiment/1.0/models/demonstrator/electronics/crates/calo_crate_2.def
+@falaise:config/snemo/demonstrator/experiment/1.0/models/demonstrator/electronics/crates/tracker_crate.def
+@falaise:config/snemo/demonstrator/experiment/1.0/models/demonstrator/electronics/racks/rack0.def
+@falaise:config/snemo/demonstrator/experiment/1.0/models/demonstrator/electronics/racks/rack1.def
+@falaise:config/snemo/demonstrator/experiment/1.0/models/demonstrator/electronics/racks/rack2.def
+@falaise:config/snemo/demonstrator/experiment/1.0/models/demonstrator/electronics/racks/rack3.def
+@falaise:config/snemo/demonstrator/experiment/1.0/models/demonstrator/electronics/racks/rack4.def
+@falaise:config/snemo/demonstrator/experiment/1.0/models/demonstrator/electronics/racks/rack5.def
+@falaise:config/snemo/demonstrator/experiment/1.0/models/demonstrator/electronics/electronics.def
+
+# end

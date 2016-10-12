@@ -1,0 +1,33 @@
+# -*- mode: conf-unix -*-
+# List of multi-properties (datatools::multi_properties)
+
+#@description Definitions of device model(s) for rack 4
+#@key_label  "name"
+#@meta_label "type"
+
+
+######################################################################
+[name="rack4@device" type="vire::device::base_electronics_rack_model"]
+
+#@config Parameters describing the rack
+
+#@parameter Logging priority threshold
+logging.priority : string = "fatal"
+
+###################
+# Embedded crates #
+###################
+
+#@description Maximum number of crates
+max_number_of_crates : integer = 3
+
+#@description List of embedded crates
+crates.slot_0.model  : string = "calo_crate_0"
+crates.slot_0.label  : string = "CaloCrate_0"
+crates.slot_1.model  : string = "calo_crate_1"
+crates.slot_1.label  : string = "CaloCrate_1"
+crates.slot_2.model  : string = "calo_crate_2"
+crates.slot_2.label  : string = "CaloCrate_2"
+
+
+# end

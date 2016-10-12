@@ -1,0 +1,73 @@
+# -*- mode: conf-unix -*-
+# List of multi-properties (datatools::multi_properties)
+
+#@description Definitions of the SuperNEMO Demonstrator electronics
+#@key_label  "name"
+#@meta_label "type"
+
+
+##################################################################
+[name="electronics@device" type="vire::device::base_device_model"]
+
+#@config Parameters describing the SuperNEMO Demonstrator electronics
+
+#@parameter Logging priority threshold
+logging.priority : string = "fatal"
+
+#@description Unique identifier of the device model
+model_key : integer = 0
+
+#@description Type of device
+type      : string  = "generic"
+
+####################
+# Embedded devices #
+####################
+
+#@description The list of embedded devices
+embedded_devices.labels : string[6] = \
+  "Rack0" \
+  "Rack1" \
+  "Rack2" \
+  "Rack3" \
+  "Rack4" \
+  "Rack5"
+
+#@description The device model associated to the Rack0
+embedded_devices.model.Rack0 : string = "rack0"
+### embedded_devices.instance.Rack0 : string = "vire::device::single_instance=[slot=(0)]"
+
+#@description The device model associated to the Rack1
+embedded_devices.model.Rack1 : string = "rack1"
+### embedded_devices.instance.Rack1 : string = "vire::device::single_instance=[slot=(0)]"
+
+#@description The device model associated to the Rack2
+embedded_devices.model.Rack2 : string = "rack2"
+### embedded_devices.instance.Rack2 : string = "vire::device::single_instance=[slot=(0)]"
+
+#@description The device model associated to the Rack3
+embedded_devices.model.Rack3 : string = "rack3"
+### embedded_devices.instance.Rack3 : string = "vire::device::single_instance=[slot=(0)]"
+
+#@description The device model associated to the Rack4
+embedded_devices.model.Rack4 : string = "rack4"
+### embedded_devices.instance.Rack4 : string = "vire::device::single_instance=[slot=(0)]"
+
+#@description The device model associated to the Rack5
+embedded_devices.model.Rack5 : string = "rack5"
+### embedded_devices.instance.Rack5 : string = "vire::device::single_instance=[slot=(0)]"
+
+########################
+# Auxiliary properties #
+########################
+
+#@description Manufacturer the electronics
+aux.manufacturer : string = "SuperNEMO Collaboration"
+
+#@description Model of the electronics
+aux.model        : string = "SuperNEMO Demonstrator electronics"
+
+#@description Version of the electronics setup
+aux.version      : string = "1.0"
+
+# end of electronics.def

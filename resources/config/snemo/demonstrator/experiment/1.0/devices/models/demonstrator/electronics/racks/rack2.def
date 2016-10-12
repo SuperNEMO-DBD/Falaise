@@ -1,0 +1,21 @@
+# -*- mode: conf-unix -*-
+# List of multi-properties (datatools::multi_properties)
+
+#@description Definitions of device model(s) for rack 2
+#@key_label  "name"
+#@meta_label "type"
+
+
+######################################################################
+[name="rack2@device" type="vire::device::base_electronics_rack_model"]
+
+#@config Parameters describing the rack
+
+#@parameter Logging priority threshold
+logging.priority : string = "fatal"
+
+#@description Type of device
+type      : string  = "rack"
+
+
+# end

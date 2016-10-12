@@ -1,0 +1,52 @@
+# -*- mode: conf-unix -*-
+# demonstrator_module.def
+# List of multi-properties (datatools::multi_properties)
+
+#@description Definitions of the top-level SuperNEMO Demonstrator module
+#@key_label  "name"
+#@meta_label "type"
+
+
+##########################################################################
+[name="demonstrator_module@device" type="vire::device::base_device_model"]
+
+#@config Parameters describing the SuperNEMO demonstrator module setup
+
+#@parameter Logging priority threshold
+logging.priority : string = "fatal"
+
+#@description Unique identifier of the device model
+model_key : integer = 0
+
+#@description Type of device
+type      : string  = "generic"
+
+####################
+# Embedded devices #
+####################
+
+#@description The list of embedded devices
+embedded_devices.labels : string[2] = "Detector" "Electronics"
+
+#@description The device model associated to the demonstrator module
+embedded_devices.model.Detector    : string = "detector"
+
+#@description The device model associated to the tracker rack
+embedded_devices.model.Electronics : string = "electronics"
+
+
+########################
+# Auxiliary properties #
+########################
+
+#@description Manufacturer the experimental setup
+aux.manufacturer : string = "SuperNEMO Collaboration"
+
+#@description Model of the experimental setup
+aux.model        : string = "SuperNEMO Demonstrator experiment"
+
+#@description Version of the experimental setup
+aux.version      : string = "1.0"
+
+
+# end of demonstrator_module.def

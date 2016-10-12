@@ -1,0 +1,39 @@
+# -*- mode: conf-unix -*-
+# List of multi-properties (datatools::multi_properties)
+
+#@description Definitions of device/port models related to frontend boards
+#@key_label  "name"
+#@meta_label "type"
+
+
+###############################################################################
+[name="generic_analog_input_channel@port" type="vire::device::base_port_model"]
+
+#@config Parameters describing an analog signal input port
+
+#@parameter Logging priority threshold
+logging.priority : string = "fatal"
+
+#@description Type of I/O
+io_type      : string  = "in"
+
+#@description Format of the port
+format : string  = "analog"
+
+
+################################################################
+[name="ethernet_plug@port" type="vire::device::base_port_model"]
+
+#@config Parameters describing an Ethernet RJ45 lpug
+
+#@parameter Logging priority threshold
+logging.priority : string = "fatal"
+
+#@description Type of I/O
+io_type      : string  = "inout"
+
+#@description Format of the port
+format : string  = "Ethernet-RJ45"
+
+
+# end
