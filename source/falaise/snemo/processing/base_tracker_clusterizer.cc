@@ -71,7 +71,7 @@ namespace snemo {
       datatools::logger::priority lp = datatools::logger::extract_logging_configuration(btc_setup);
       DT_THROW_IF(lp == datatools::logger::PRIO_UNDEFINED,
                   std::logic_error,
-                  "Invalid logging priority level for geometry manager !");
+                  "Invalid logging priority level !");
       set_logging_priority(lp);
 
       // Initialization stuff:
@@ -243,7 +243,7 @@ namespace snemo {
         indent = indent_;
       }
       if ( ! title_.empty() ) {
-        out_ << indent << title_ << std::endl;
+        out_ << indent_ << title_ << std::endl;
       }
 
       out_ << indent << datatools::i_tree_dumpable::tag
