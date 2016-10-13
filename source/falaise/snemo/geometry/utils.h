@@ -1,5 +1,5 @@
 /// \file falaise/snemo/geometry/utils.h
-/* Author (s) :     Francois Mauger <mauger@lpccaen.in2p3.fr>
+/* Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2010-02-20
  * Last modified: 2014-01-29
  *
@@ -102,10 +102,8 @@ namespace snemo {
 
 #endif // FALAISE_SNEMO_GEOMETRY_UTILS_H
 
-/*
-** Local Variables: --
-** mode: c++ --
-** c-file-style: "gnu" --
-** tab-width: 2 --
-** End: --
-*/
+// Local Variables: --
+// mode: c++ --
+// c-file-style: "gnu" --
+// tab-width: 2 --
+// End: --
