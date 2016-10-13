@@ -6,10 +6,10 @@
 #@meta_label "type"
 
 
-##############################################################################
-[name="calo_crate_2@device" type="vire::device::base_electronics_crate_model"]
+#################################################################################
+[name="main_calo_crate@device" type="vire::device::base_electronics_crate_model"]
 
-#@config Parameters describing the Xcalo/Gveto Calorimeter Frontend Electronics Crate #2
+#@config Parameters describing the Main Calorimeter Frontend Electronics Crate
 
 #@parameter Logging priority threshold
 logging.priority : string = "fatal"
@@ -21,7 +21,15 @@ logging.priority : string = "fatal"
 #@description Maximum number of modules
 max_number_of_modules : integer = 21
 
-#@description List of modules/boards
+#@description List of embedded boards
+modules.slot_0.model  : string = "calo_feb"
+modules.slot_0.label  : string = "FEB_0"
+modules.slot_1.model  : string = "calo_feb"
+modules.slot_1.label  : string = "FEB_1"
+modules.slot_2.model  : string = "calo_feb"
+modules.slot_2.label  : string = "FEB_2"
+modules.slot_3.model  : string = "calo_feb"
+modules.slot_3.label  : string = "FEB_3"
 modules.slot_4.model  : string = "calo_feb"
 modules.slot_4.label  : string = "FEB_4"
 modules.slot_5.model  : string = "calo_feb"
@@ -34,8 +42,10 @@ modules.slot_8.model  : string = "calo_feb"
 modules.slot_8.label  : string = "FEB_8"
 modules.slot_9.model  : string = "calo_feb"
 modules.slot_9.label  : string = "FEB_9"
+
 modules.slot_10.model : string = "ctrl_board"
 modules.slot_10.label : string = "ControlBoard"
+
 modules.slot_11.model : string = "calo_feb"
 modules.slot_11.label : string = "FEB_11"
 modules.slot_12.model : string = "calo_feb"
@@ -48,7 +58,13 @@ modules.slot_15.model : string = "calo_feb"
 modules.slot_15.label : string = "FEB_15"
 modules.slot_16.model : string = "calo_feb"
 modules.slot_16.label : string = "FEB_16"
-modules.slot_20.model : string = "trigger_board"
-modules.slot_20.label : string = "TriggerBoard"
+modules.slot_17.model : string = "calo_feb"
+modules.slot_17.label : string = "FEB_17"
+modules.slot_18.model : string = "calo_feb"
+modules.slot_18.label : string = "FEB_18"
+modules.slot_19.model : string = "calo_feb"
+modules.slot_19.label : string = "FEB_19"
+modules.slot_20.model : string = "calo_feb"
+modules.slot_20.label : string = "FEB_20"
 
-# end
+# end of main_calo_crate.def

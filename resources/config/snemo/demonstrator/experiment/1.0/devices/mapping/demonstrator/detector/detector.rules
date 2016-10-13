@@ -1,0 +1,73 @@
+# -*- mode: conf-unix -*-
+# List of multi-properties (datatools::multi_properties)
+
+#@description Definitions of device models related to the demonstrator module
+#@key_label  "model"
+#@meta_label "policy"
+
+#####################################
+[model="detector" policy="supersede"]
+
+#@description The mapping directives for the "Calorimeter" device
+# Note: This has the effect to build the [1100:0] device identifier.
+mapping.device.Calorimeter : string = "[calorimeter.dc]"
+
+#@description The mapping directives for the "Tracker" device
+# Note: This has the effect to build the [1200:0] device identifier.
+mapping.device.Tracker     : string = "[tracker.dc]"
+
+# #@description The mapping directives for the "Coil" device
+# # Note: This has the effect to build the [1300:0] device identifier.
+# mapping.device.Coil        : string = "[coil.dc]"
+
+# #@description The mapping directives for the "SourceFrame" device
+# # Note: This has the effect to build the [1400:0] device identifier.
+# mapping.device.SourceFrame : string = "[source_frame.dc]"
+
+# #@description The mapping directives for the "Shielding" device
+# # Note: This has the effect to build the [1500:0] device identifier.
+# mapping.device.Shielding        : string = "[shielding.dc]"
+
+
+########################################
+[model="calorimeter" policy="supersede"]
+
+#@description The mapping directives for the "Calorimeter" wall devices
+mapping.device.MainWall : string = "[calorimeter_main_wall.dc:side+0]"
+
+
+###########################################
+[model="calo_main_wall" policy="supersede"]
+
+#@description The mapping directives for the calorimeter optical modules
+mapping.device.OM : string = "[calorimeter_om.dc:column+0,row+0]"
+
+
+####################################
+[model="tracker" policy="supersede"]
+
+#@description The mapping directives for the tracker submodules
+mapping.device.Submodule : string = "[tracker_submodule.dc:side+0]"
+
+
+##############################################
+[model="tracker_submodule" policy="supersede"]
+
+#@description The mapping directives for the tracker drift cells
+mapping.device.Cell      : string = "[tracker_cell.dc:layer+0,row+0]"
+
+#@description The mapping directives for the tracker X-walls
+mapping.device.XWall     : string = "[tracker_xwall.dc:wall+0]"
+
+#@description The mapping directives for the tracker gamma veto
+mapping.device.GammaVeto : string = "[tracker_gveto_om.dc:wall+0,column+0]"
+
+
+##################################
+[model="xwall" policy="supersede"]
+
+#@description The mapping directives for the tracker X-wall optical modules
+mapping.device.OM : string = "[tracker_xwall_om.dc:column+0,row+0]"
+
+
+# end of detector.rules

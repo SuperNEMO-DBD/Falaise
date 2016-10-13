@@ -14,8 +14,20 @@
 #@parameter Logging priority threshold
 logging.priority : string = "fatal"
 
-#@description Type of device
-type      : string  = "rack"
+###################
+# Embedded crates #
+###################
+
+#@description Maximum number of crates
+max_number_of_crates : integer = 3
+
+#@description List of embedded crates
+crates.slot_0.model  : string = "main_calo_crate"
+crates.slot_0.label  : string = "CaloCrate_0"
+crates.slot_1.model  : string = "main_calo_crate"
+crates.slot_1.label  : string = "CaloCrate_1"
+crates.slot_2.model  : string = "xg_calo_crate"
+crates.slot_2.label  : string = "CaloCrate_2"
 
 
-# end
+# end of rack3.def

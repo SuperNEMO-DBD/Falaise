@@ -6,7 +6,6 @@
 #@meta_label "type"
 
 
-
 ###############################################################################
 [name="tracker_crate@device" type="vire::device::base_electronics_crate_model"]
 
@@ -39,8 +38,10 @@ modules.slot_8.model  : string = "tracker_feb"
 modules.slot_8.label  : string = "FEB_8"
 modules.slot_9.model  : string = "tracker_feb"
 modules.slot_9.label  : string = "FEB_9"
+
 modules.slot_10.model : string = "ctrl_board"
 modules.slot_10.label : string = "ControlBoard"
+
 modules.slot_11.model : string = "tracker_feb"
 modules.slot_11.label : string = "FEB_11"
 modules.slot_12.model : string = "tracker_feb"
@@ -60,4 +61,5 @@ modules.slot_18.label : string = "FEB_18"
 modules.slot_19.model : string = "tracker_feb"
 modules.slot_19.label : string = "FEB_19"
 
-# end
+
+# end of tracker_crate.def

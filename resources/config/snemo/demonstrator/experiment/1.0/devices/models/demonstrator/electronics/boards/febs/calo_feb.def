@@ -154,7 +154,6 @@ ports.instance.Input    : string = "vire::device::regular_1d_instance=[nslots=16
 ports.model.Ethernet    : string = "ethernet_plug"
 ports.instance.Ethernet : string = "vire::device::single_instance=[slot=(0)]"
 
-
 ########################
 # Auxiliary properties #
 ########################
@@ -169,4 +168,4 @@ aux.model        : string = "16-channel WaveCatcher Board"
 # aux.version      : string = "1.0"
 
 
-# end
+# end of calo_feb.def

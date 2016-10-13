@@ -1,0 +1,99 @@
+# -*- mode: conf-unix -*-
+# List of multi-properties (datatools::multi_properties)
+
+#@description Definitions of device models related to tracker detection module
+#@key_label  "name"
+#@meta_label "type"
+
+
+##########################################################################
+[name="drift_cell_hv_input_pin@port" type="vire::device::base_port_model"]
+
+#@config Parameters describing the HV input port of the SuperNEMO tracker drift cell
+
+#@parameter Logging priority threshold
+logging.priority : string = "fatal"
+
+#@description Type of I/O
+io_type      : string  = "in"
+
+# #@description Format of the port
+# format : string  = "XXX"
+
+
+###########################################################################
+[name="drift_cell_sig_anode_pin@port" type="vire::device::base_port_model"]
+
+#@config Parameters describing the anodic signal output port of the SuperNEMO tracker drift cell
+
+#@parameter Logging priority threshold
+logging.priority : string = "fatal"
+
+#@description Type of I/O
+io_type      : string  = "out"
+
+# #@description Format of the port
+# format : string  = "XXX"
+
+
+#############################################################################
+[name="drift_cell_sig_cathode_pin@port" type="vire::device::base_port_model"]
+
+#@config Parameters describing the cathodic signal output port of the SuperNEMO tracker drift cell
+
+#@parameter Logging priority threshold
+logging.priority : string = "fatal"
+
+#@description Type of I/O
+io_type      : string  = "out"
+
+# #@description Format of the port
+# format : string  = "XXX"
+
+
+#################################################################
+[name="drift_cell@device" type="vire::device::base_device_model"]
+
+#@config Parameters describing the SuperNEMO tracker drift cell
+#
+#    +--------------------+
+#    |                    |
+#    |                    o<- High voltage (HV) input
+#    |  Drift             o-> Anode signal output
+#    |      cell          o-> Cathode signal output 0 (bottom)
+#    |                    o-> Cathode signal output 1 (top)
+#    |                    |
+#    +--------------------+
+#
+
+#@parameter Logging priority threshold
+logging.priority : string = "fatal"
+
+#########
+# Ports #
+#########
+
+#@description List of ports
+ports.labels : string[3] = "HVInput" "SignalAnode" "SignalCathode"
+
+# Port model associated to the input high voltage ports:
+ports.model.HVInput          : string = "drift_cell_hv_input_pin"
+
+# Port model associated to the output signal ports:
+ports.model.SignalAnode      : string = "drift_cell_sig_anode_pin"
+
+# Port model associated to the output signal cathode:
+ports.model.SignalCathode    : string = "drift_cell_sig_cathode_pin"
+
+#@description The instantiation rule of the tracker submodules
+ports.instance.SignalCathode : string = "vire::device::regular_1d_instance=[nslots=2;first_slot=(1:0);step=(1)]"
+
+########################
+# Auxiliary properties #
+########################
+
+#@description Manufacturer
+aux.manufacturer : string = "SuperNEMO Collaboration"
+
+
+# end

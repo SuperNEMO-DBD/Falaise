@@ -48,6 +48,16 @@ aux.model        : string = "Cyclone III"
 #@description Version of the board
 aux.version      : string = ""
 
+####################
+# Embedded devices #
+####################
+
+#@description List of embedded chips
+embedded_devices.labels : string[1] = "firmware"
+
+# Device model associated to the embedded control FPGA:
+embedded_devices.model.firmware    : string = "tb_firmware"
+
 
 ################################################################################
 [name="trigger_board@device" type="vire::device::base_electronics_module_model"]

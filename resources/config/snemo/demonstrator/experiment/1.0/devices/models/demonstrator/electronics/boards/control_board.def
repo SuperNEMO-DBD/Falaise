@@ -5,6 +5,7 @@
 #@key_label  "name"
 #@meta_label "type"
 
+
 #############################################################################
 [name="cb_fe_fpga@device" type="vire::device::base_integrated_circuit_model"]
 

@@ -1,0 +1,19 @@
+# -*- mode: conf-unix -*-
+# List of multi-properties (datatools::multi_properties)
+
+#@description Definitions of mapping rules for the experimental setup
+#@key_label  "model"
+#@meta_label "policy"
+
+
+##################################
+[model="setup" policy="supersede"]
+
+#@config The mapping rule of the setup positionned in the top level volume
+
+#@description The mapping directives for the "Demonstrator" device
+# Note: This has the effect to build the [100:0] device identifier.
+mapping.device.Demonstrator : string = "[module.dc:module=0]"
+
+
+# end of experiment.rules

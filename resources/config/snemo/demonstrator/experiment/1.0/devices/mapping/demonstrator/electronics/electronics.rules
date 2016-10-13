@@ -1,0 +1,115 @@
+# -*- mode: conf-unix -*-
+# List of multi-properties (datatools::multi_properties)
+
+#@description Definitions of mapping rules related to frontend electronics
+#@key_label  "model"
+#@meta_label "policy"
+
+
+########################################
+[model="electronics" policy="supersede"]
+
+#@description The mapping directives for the "Rack3" device
+mapping.device.Rack3 : string = "[rack.dc:rack=3]"
+
+#@description The mapping directives for the "Rack5" device
+mapping.device.Rack5 : string = "[rack.dc:rack=5]"
+
+
+##################################
+[model="rack3" policy="supersede"]
+
+#@description The mapping directives for the "CaloCrate_0" daughter volume
+mapping.device.CaloCrate_0 : string = "[crate.dc:crate=0]"
+
+#@description The mapping directives for the "CaloCrate_1" daughter volume
+mapping.device.CaloCrate_1 : string = "[crate.dc:crate=1]"
+
+#@description The mapping directives for the "CaloCrate_2" daughter volume
+mapping.device.CaloCrate_2 : string = "[crate.dc:crate=2]"
+
+
+############################################
+[model="main_calo_crate" policy="supersede"]
+
+mapping.device.FEB_0        : string = "[calo_feb.dc:board=0]"
+mapping.device.FEB_1        : string = "[calo_feb.dc:board=1]"
+mapping.device.FEB_2        : string = "[calo_feb.dc:board=2]"
+mapping.device.FEB_3        : string = "[calo_feb.dc:board=3]"
+mapping.device.FEB_4        : string = "[calo_feb.dc:board=4]"
+mapping.device.FEB_5        : string = "[calo_feb.dc:board=5]"
+mapping.device.FEB_6        : string = "[calo_feb.dc:board=6]"
+mapping.device.FEB_7        : string = "[calo_feb.dc:board=7]"
+mapping.device.FEB_8        : string = "[calo_feb.dc:board=8]"
+mapping.device.FEB_9        : string = "[calo_feb.dc:board=9]"
+mapping.device.ControlBoard : string = "[crate_ctrl_board.dc]"
+mapping.device.FEB_11       : string = "[calo_feb.dc:board=11]"
+mapping.device.FEB_12       : string = "[calo_feb.dc:board=12]"
+mapping.device.FEB_13       : string = "[calo_feb.dc:board=13]"
+mapping.device.FEB_14       : string = "[calo_feb.dc:board=14]"
+mapping.device.FEB_15       : string = "[calo_feb.dc:board=15]"
+mapping.device.FEB_16       : string = "[calo_feb.dc:board=16]"
+mapping.device.FEB_17       : string = "[calo_feb.dc:board=17]"
+mapping.device.FEB_18       : string = "[calo_feb.dc:board=18]"
+mapping.device.FEB_19       : string = "[calo_feb.dc:board=19]"
+mapping.device.FEB_20       : string = "[calo_feb.dc:board=20]"
+
+
+##########################################
+[model="xg_calo_crate" policy="supersede"]
+
+mapping.device.FEB_4        : string = "[calo_feb.dc:board=4]"
+mapping.device.FEB_5        : string = "[calo_feb.dc:board=5]"
+mapping.device.FEB_6        : string = "[calo_feb.dc:board=6]"
+mapping.device.FEB_7        : string = "[calo_feb.dc:board=7]"
+mapping.device.FEB_8        : string = "[calo_feb.dc:board=8]"
+mapping.device.FEB_9        : string = "[calo_feb.dc:board=9]"
+mapping.device.ControlBoard : string = "[crate_ctrl_board.dc]"
+mapping.device.FEB_11       : string = "[calo_feb.dc:board=11]"
+mapping.device.FEB_12       : string = "[calo_feb.dc:board=12]"
+mapping.device.FEB_13       : string = "[calo_feb.dc:board=13]"
+mapping.device.FEB_14       : string = "[calo_feb.dc:board=14]"
+mapping.device.FEB_15       : string = "[calo_feb.dc:board=15]"
+mapping.device.FEB_16       : string = "[calo_feb.dc:board=16]"
+mapping.device.TriggerBoard : string = "[trigger_board.dc]"
+
+
+##################################
+[model="rack5" policy="supersede"]
+
+#@description The mapping directives for the "TrackerCrate_0" daughter volume
+mapping.device.TrackerCrate_0 : string = "[crate.dc:crate=0]"
+
+#@description The mapping directives for the "TrackerCrate_1" daughter volume
+mapping.device.TrackerCrate_1 : string = "[crate.dc:crate=1]"
+
+#@description The mapping directives for the "TrackerCrate_2" daughter volume
+mapping.device.TrackerCrate_2 : string = "[crate.dc:crate=2]"
+
+
+##########################################
+[model="tracker_crate" policy="supersede"]
+
+mapping.device.FEB_0        : string = "[tracker_feb.dc:board=0]"
+mapping.device.FEB_1        : string = "[tracker_feb.dc:board=1]"
+mapping.device.FEB_2        : string = "[tracker_feb.dc:board=2]"
+mapping.device.FEB_3        : string = "[tracker_feb.dc:board=3]"
+mapping.device.FEB_4        : string = "[tracker_feb.dc:board=4]"
+mapping.device.FEB_5        : string = "[tracker_feb.dc:board=5]"
+mapping.device.FEB_6        : string = "[tracker_feb.dc:board=6]"
+mapping.device.FEB_7        : string = "[tracker_feb.dc:board=7]"
+mapping.device.FEB_8        : string = "[tracker_feb.dc:board=8]"
+mapping.device.FEB_9        : string = "[tracker_feb.dc:board=9]"
+mapping.device.ControlBoard : string = "[crate_ctrl_board.dc]"
+mapping.device.FEB_11       : string = "[tracker_feb.dc:board=11]"
+mapping.device.FEB_12       : string = "[tracker_feb.dc:board=12]"
+mapping.device.FEB_13       : string = "[tracker_feb.dc:board=13]"
+mapping.device.FEB_14       : string = "[tracker_feb.dc:board=14]"
+mapping.device.FEB_15       : string = "[tracker_feb.dc:board=15]"
+mapping.device.FEB_16       : string = "[tracker_feb.dc:board=16]"
+mapping.device.FEB_17       : string = "[tracker_feb.dc:board=17]"
+mapping.device.FEB_18       : string = "[tracker_feb.dc:board=18]"
+mapping.device.FEB_19       : string = "[tracker_feb.dc:board=19]"
+
+
+# end of electronics.rules
