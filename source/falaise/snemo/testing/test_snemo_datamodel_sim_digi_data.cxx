@@ -109,16 +109,13 @@ void test2()
     eh.set_generation(snemo::datamodel::event_header::GENERATION_SIMULATED);
 
     // Add simulated data bank:
-    mctools::simulated_data & sd =
-      event_record.add<mctools::simulated_data>("SD");
+    event_record.add<mctools::simulated_data>("SD");
 
     // Add simulated signal data bank:
-    mctools::signal::signal_data & ssd =
-      event_record.add<mctools::signal::signal_data>("SSD");
+    event_record.add<mctools::signal::signal_data>("SSD");
 
     // Add simulated digitized data bank:
-    snemo::datamodel::sim_digi_data & sdd =
-      event_record.add<snemo::datamodel::sim_digi_data>("SDD");
+    event_record.add<snemo::datamodel::sim_digi_data>("SDD");
 
     event_record.tree_dump(std::clog, "Event record: ");
 
