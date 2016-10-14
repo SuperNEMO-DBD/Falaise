@@ -93,8 +93,9 @@ int main(int argc_, char ** argv_)
       rising[j]      = 6.022+2*j;
     }
     
-
-    my_calo_feb_data.set_header(42,calo_feb_id, calo_date);
+    
+    
+    my_calo_feb_data.set_header(42,1,2,3,4, calo_date);
     
     my_calo_feb_data.set_data(waveform);
     

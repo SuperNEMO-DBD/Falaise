@@ -28,7 +28,7 @@
 namespace snemo {
 	namespace digitization {
 
-
+		
 		class calo_feb_data : public geomtools::base_hit{
 			
 		private:
@@ -133,9 +133,15 @@ namespace snemo {
 			static const unsigned int MAX_BOARD_INDEX     = 20;
 			static const unsigned int MAX_SAMLONG_INDEX   = 15;
 
+
+			static const unsigned int NB_OF_WORD          = 15;
 			
 		private:
 
+
+			std::vector<uint8_t>  _feb_words_collection;
+			
+			
 
 			bool _initialized_;
 			uint64_t _data_timestamp;

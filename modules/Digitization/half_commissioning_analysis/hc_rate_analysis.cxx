@@ -301,7 +301,7 @@ int main( int  argc_ , char **argv_  )
 		// If main calo hits :
 		if (SD.has_step_hits("calo"))
 		  {
-		    const size_t number_of_main_calo_hits = SD.get_number_of_step_hits("calo");
+		    //const size_t number_of_main_calo_hits = SD.get_number_of_step_hits("calo");
 		    // Rules have to change depending on row / column input
 		    geomtools::id_selector my_hc_main_calo_id_selector(my_geom_manager.get_id_mgr());
 		    my_hc_main_calo_id_selector.initialize(hc_main_calo_half_zone_rules);
@@ -360,7 +360,7 @@ int main( int  argc_ , char **argv_  )
 		// If xcalo hits :
 		if (SD.has_step_hits("xcalo"))
 		  {
-		    const size_t number_of_xcalo_hits = SD.get_number_of_step_hits("xcalo");
+		    //const size_t number_of_xcalo_hits = SD.get_number_of_step_hits("xcalo");
 		    // Rules have to change depending on row / column input
 		    geomtools::id_selector my_hc_xwall_calo_id_selector(my_geom_manager.get_id_mgr());
 		    my_hc_xwall_calo_id_selector.initialize(hc_xwall_calo_half_zone_rules);

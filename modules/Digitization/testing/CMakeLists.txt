@@ -34,6 +34,8 @@ set(FalaiseDigitizationPlugin_TESTS
   test_ID_convertor.cxx
   test_bimap.cxx
   test_memory.cxx
+
+  test_feb_data.cxx
   )
 
 # Use C++11

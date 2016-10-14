@@ -11,6 +11,9 @@ using namespace std;
 namespace snemo {
   namespace digitization {
 
+
+
+    
     calo_feb_data::calo_feb_data(){  // D-fault C-tor
       reset();
       
@@ -29,7 +32,13 @@ namespace snemo {
 	}
 	
       DT_THROW_IF(!are_args_ok, std::logic_error, "calo feb has waveform BUT nb of sample and/or first_sample are null ! ");
-	    
+
+      int total_nb_of_words =  NB_OF_WORD + nb_sample_;
+      _feb_words_collection.reserve(total_nb_of_words);
+      
+
+      
+      
       _data_description_.set(WAVEFORM_STATUS) = has_waveform_;
       _number_of_sample = nb_sample_;
       _first_waveform_sample = first_sample_;
@@ -223,7 +232,7 @@ namespace snemo {
 				   bool inherit_) const
     {
       //      base_hit::tree_dump (out_, title_, indent_, true);
-      
+      out_ <<title_   << inherit_<< std::endl;
       out_ << indent_ << datatools::i_tree_dumpable::tag
 	   <<"METADATA"<<  std::endl;
       for(unsigned int i = 0; i < NB_OF_CHANNEL;i++){
