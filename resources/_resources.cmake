@@ -160,7 +160,6 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/so
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/source_module/source_foil_support.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/source_module/simple/source_pads.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/source_module/simple/source_strips.geom
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/source_module/source_layer.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/source_module/source_blocks.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/source_geom_models.lis
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/models/half_module_commissioning_0.geom
