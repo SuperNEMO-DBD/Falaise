@@ -44,7 +44,13 @@ namespace snemo {
     
     void calo_feb_data::reset()  {
       _data_description_.reset();
-      geomtools::base_hit::reset();
+      //YL to tuned
+      _rack_id     = 100;
+      _crate_id    = 100;
+      _board_id    = 100;
+      _samlong_id  = 100;
+      
+      
       for(unsigned int i=0;i<NB_OF_CHANNEL;i++){
 	_baseline[i]                = datatools::invalid_real();
 	_charge[i]                  = datatools::invalid_real();
@@ -56,15 +62,23 @@ namespace snemo {
 	_treshold_status_[i].set(LOW_TRESHOLD , false);
 	_treshold_status_[i].set(HIGH_TRESHOLD, false);
       }
-
-
       
       _initialized_ = false;
     }
 
 
 
-    
+    void calo_feb_data::set_address(uint16_t rack_, uint16_t crate_, uint16_t board_, uint16_t samlong_){
+
+      DT_THROW_IF( ( rack_ > MAX_RACK_INDEX ) || (crate_ > MAX_CRATE_INDEX) || (board_ > MAX_SAMLONG_INDEX) ,
+		   std::logic_error,
+		   "Incorrect electronic address ! Chek rack, crate, board, samlong.... ");
+      _rack_id    = rack_;
+      _crate_id   = crate_;
+      _board_id   = board_;
+      _samlong_id = samlong_;
+
+    }
 
     // DETECTED TRESHOLD : true if signal cross treshold
     // [1 bit] LT + [1 bit] HT 
@@ -85,6 +99,10 @@ namespace snemo {
     // BASELINE : Mean value of the first 16 samples of the waveform
     // [13 bits]MSB + [3 bits]LSB 
     void calo_feb_data::set_baseline_per_channel(double value_, int channel_){
+      DT_THROW_IF( ( value_ > MAX_SAMPLE_VALUE ),
+		   std::logic_error,
+		   "Mean channel baseline should not be too high! (should be lower than '"<<MAX_SAMPLE_VALUE<<"' ");
+
       _baseline[channel_] = value_;
     }
 
@@ -98,6 +116,11 @@ namespace snemo {
     // baseline substracted 
     // signed value [13 bits]MSB + decimals [3 bits]LSB 
     void calo_feb_data::set_max_per_channel(double value_, int channel_){
+      DT_THROW_IF( ( value_ > MAX_SAMPLE_VALUE ),
+		   std::logic_error,
+		   "Max sample value should not be too high! (should be lower than '"<<MAX_SAMPLE_VALUE<<"' ");
+      
+      
       _max_peak_amplitude[channel_] = value_;
     }
 
@@ -106,18 +129,30 @@ namespace snemo {
     // [10 bits]
     // In case of overflow, return first overflowed sample
     void calo_feb_data::set_time_max_per_channel(uint16_t value_, int channel_){
+      DT_THROW_IF( ( value_ > MAX_NB_OF_SAMPLE ),
+		   std::logic_error,
+		   "Max position should not be greater than max number of sample : '"<<MAX_SAMPLE_VALUE<<"' ");
+      
       _time_max_peak_amplitude[channel_] = value_;
     }
 
     // FALLING TIME : time of the threshold crossing point
     // sample nb [10 bits] + time interpolation [9 bits]
     void calo_feb_data::set_falling_per_channel(double value_, int channel_){
+      DT_THROW_IF( ( value_ > MAX_NB_OF_SAMPLE ),
+		   std::logic_error,
+		   "Falling time not be greater than max number of sample : '"<<MAX_SAMPLE_VALUE<<"' ");
+      
       _falling_time[channel_] = value_;
     }
-
+    
     // RISING TIME : time of the threshold crossing point
     // sample nb [10 bits] + time interpolation [9 bits]
     void calo_feb_data::set_rising_per_channel(double value_, int channel_){
+       DT_THROW_IF( ( value_ > MAX_NB_OF_SAMPLE ),
+		   std::logic_error,
+		   "Rising time not be greater than max number of sample : '"<<MAX_SAMPLE_VALUE<<"' ");
+       
       _rising_time[channel_] = value_;
     }
     
@@ -159,15 +194,24 @@ namespace snemo {
     
 
     
-    void calo_feb_data::set_header(int32_t id_, const geomtools::geom_id & feb_id_, uint64_t data_time_){
-      //DT_THROW_IF((data_time_<0), std::logic_error, "Negative timestamp for calo data ! (should be positive) ");
-      set_hit_id(id_); 
-      set_geom_id(feb_id_);
-      _data_timestamp = data_time_;
-    }
+    // void calo_feb_data::set_header(int32_t id_, const geomtools::geom_id & feb_id_, uint64_t data_time_){
+    //   //DT_THROW_IF((data_time_<0), std::logic_error, "Negative timestamp for calo data ! (should be positive) ");
+    //   set_hit_id(id_); 
+    //   set_geom_id(feb_id_);
+    //   _data_timestamp = data_time_;
+    // }
     
 
-
+    void calo_feb_data::set_header(int32_t id_, uint16_t rack_, uint16_t crate_, uint16_t board_, uint16_t samlong_, uint64_t data_time_){
+      //DT_THROW_IF((data_time_<0), std::logic_error, "Negative timestamp for calo data ! (should be positive) ");
+      set_hit_id(id_); 
+      set_address(rack_,crate_,board_,samlong_);
+      // set_rack_id(rack_);
+      // set_crate_id(crate_);
+      // set_board_id(board_);
+      // set_samlong_id(samlong_);
+      _data_timestamp = data_time_;
+    }
 
     
     
@@ -178,7 +222,7 @@ namespace snemo {
 				   const std::string & indent_,
 				   bool inherit_) const
     {
-      base_hit::tree_dump (out_, title_, indent_, true);
+      //      base_hit::tree_dump (out_, title_, indent_, true);
       
       out_ << indent_ << datatools::i_tree_dumpable::tag
 	   <<"METADATA"<<  std::endl;

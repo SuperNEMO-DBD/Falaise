@@ -27,7 +27,7 @@
 #include "TH2F.h"
 #include "TH3F.h"
 
-int column_to_hc_half_zone(const int & column);
+int column_to_hc_half_zone(const int & column_);
 
 
 int main( int  argc_ , char **argv_  )
@@ -260,7 +260,7 @@ int main( int  argc_ , char **argv_  )
 	std::string root_filename = output_path_dir + "HC_" + vtx_filename + "_analysis.root";
 	datatools::fetch_path_with_env(root_filename);
 	TFile* root_file = new TFile(root_filename.c_str(), "RECREATE");
-	TTree* hc_analysis_tree = new TTree("HC_analysis_tree", "Half Commissioning analysis tree");
+	//TTree* hc_analysis_tree = new TTree("HC_analysis_tree", "Half Commissioning analysis tree");
 
 	TH1F * calo_half_zone_energy_spectrum_TH1F = new TH1F("Calo half zone energy spectrum TH1F",
 							      Form("Calo half zone energy spectrum row %i, col %i, zone %i;", row, column, hc_half_zone),
@@ -309,12 +309,12 @@ int main( int  argc_ , char **argv_  )
 
 		    mctools::simulated_data::hit_handle_collection_type BSHC = SD.get_step_hits("calo");
 		    if (is_display) std::clog << "BSCH step hits # = " << BSHC.size() << std::endl;
-		    int count = 0;
-		    for (mctools::simulated_data::hit_handle_collection_type::const_iterator i = BSHC.begin();
-			 i != BSHC.end();
-			 i++) 
+		    //int count = 0;
+		    for (mctools::simulated_data::hit_handle_collection_type::const_iterator the_it = BSHC.begin();
+			 the_it != BSHC.end();
+			 the_it++) 
 		      {
-			const mctools::base_step_hit & BSH = i->get();
+			const mctools::base_step_hit & BSH = the_it->get();
 			// extract the corresponding geom ID:
 			const geomtools::geom_id & main_calo_gid = BSH.get_geom_id();
 			if (my_hc_main_calo_id_selector.match(main_calo_gid))
@@ -369,12 +369,12 @@ int main( int  argc_ , char **argv_  )
 		    mctools::simulated_data::hit_handle_collection_type BSHC = SD.get_step_hits("xcalo");
 		
 		    if (is_display) std::clog << "BSCH step hits # = " << BSHC.size() << std::endl;
-		    int count = 0;
-		    for (mctools::simulated_data::hit_handle_collection_type::const_iterator i = BSHC.begin();
-			 i != BSHC.end();
-			 i++) 
+		    //int count = 0;
+		    for (mctools::simulated_data::hit_handle_collection_type::const_iterator my_it = BSHC.begin();
+			 my_it != BSHC.end();
+			 my_it++) 
 		      {
-			const mctools::base_step_hit & BSH = i->get();
+			const mctools::base_step_hit & BSH = my_it->get();
 			const geomtools::geom_id & xwall_calo_gid = BSH.get_geom_id();
 			if (my_hc_xwall_calo_id_selector.match(xwall_calo_gid))
 			  {
@@ -471,11 +471,12 @@ int main( int  argc_ , char **argv_  )
 		      } // end of ihit
 		    mctools::simulated_data::hit_handle_collection_type BSHC = flaged_sd.get_step_hits("gg");
 		    if (is_display) std::clog << "BSCH step hits # = " << BSHC.size() << std::endl;
-		    for (mctools::simulated_data::hit_handle_collection_type::const_iterator i = BSHC.begin();
-			 i != BSHC.end();
-			 i++) 
+		    //for (mctools::simulated_data::hit_handle_collection_type::const_iterator i = BSHC.begin();
+		    for (mctools::simulated_data::hit_handle_collection_type::const_iterator it = BSHC.begin();
+			 it != BSHC.end();
+			 it++) 
 		      {
-			const mctools::base_step_hit & BSH = i->get();
+			const mctools::base_step_hit & BSH = it->get();
 			if (is_display) BSH.tree_dump(std::clog, "A Geiger Base Step Hit : ", "INFO : ");
 			if (BSH.get_auxiliaries().has_flag("geiger_already_hit") || BSH.get_auxiliaries().has_flag("other_geiger_already_hit")) {}
 			else

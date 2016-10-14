@@ -21,7 +21,7 @@
 
 
 // This project :
-#include <snemo/digitization/electronic_mapping.h>
+///////#include <snemo/digitization/electronic_mapping.h>
 
 
 
@@ -31,7 +31,9 @@ namespace snemo {
 
 		class calo_feb_data : public geomtools::base_hit{
 			
-			
+		private:
+
+			void set_address(uint16_t rack_, uint16_t crate_, uint16_t board_, uint16_t samlong_);
 			
 		public:
 
@@ -40,16 +42,11 @@ namespace snemo {
 				WAVEFORM_STATUS      = 0
 			};
 		
-
-			
 			enum treshold_bit_index {
 				LOW_TRESHOLD      = 0,
 				HIGH_TRESHOLD     = 1
 			};
 		
-
-
-
 			
 			calo_feb_data();
 			
@@ -90,10 +87,17 @@ namespace snemo {
 
 			
 			
+			// void set_header(int32_t id_,
+			// 								const geomtools::geom_id & electronic_id_,
+			// 								uint64_t data_time_
+			// 								);
+
 			void set_header(int32_t id_,
-											const geomtools::geom_id & electronic_id_,
+											uint16_t rack_, uint16_t crate_, uint16_t board_, uint16_t samlong_,
 											uint64_t data_time_
 											);
+			
+			
 			
 			/// Set the metadata with valid values for both channels
 			void set_metadata(double *baseline_array_,
@@ -117,10 +121,18 @@ namespace snemo {
 			
 		public : 
 			
-			static const unsigned int DATA_DESC_SIZE  = 1;
-			static const unsigned int NB_OF_CHANNEL   = 2;
-			static const unsigned int NB_OF_TRESHOLD  = 2;
-			static const unsigned int MAX_NB_OF_SAMPLE= 1024;
+			static const unsigned int DATA_DESC_SIZE      = 1;
+			static const unsigned int NB_OF_CHANNEL       = 2;
+			static const unsigned int NB_OF_TRESHOLD      = 2;
+			static const unsigned int MAX_NB_OF_SAMPLE    = 1024;
+
+			static const unsigned int MAX_SAMPLE_VALUE    = 4096;//2^12
+			
+			static const unsigned int MAX_RACK_INDEX      = 5;
+			static const unsigned int MAX_CRATE_INDEX     = 2;
+			static const unsigned int MAX_BOARD_INDEX     = 20;
+			static const unsigned int MAX_SAMLONG_INDEX   = 15;
+
 			
 		private:
 
@@ -129,13 +141,16 @@ namespace snemo {
 			uint64_t _data_timestamp;
 
 			//HEADER
-			//base_hit + _data_timestamp + threshold_status + _data_description_
+			//id_ + _data_timestamp + _threshold_status_ + _data_description_ + address(_rack_id, _crate_id,_board_id,_samlong_id)
 			
 			std::bitset<DATA_DESC_SIZE> _data_description_; //!< The calo data description
 			                                                      // LSB to  MSB
-			
 			std::bitset<NB_OF_TRESHOLD> _treshold_status_[NB_OF_CHANNEL];
 
+			uint16_t _rack_id;
+			uint16_t _crate_id;
+			uint16_t _board_id;
+			uint16_t _samlong_id;
 
 
 			

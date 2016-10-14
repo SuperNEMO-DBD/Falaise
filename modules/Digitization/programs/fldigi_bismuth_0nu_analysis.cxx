@@ -185,7 +185,7 @@ int main(int  argc_ , char ** argv_)
 		for (size_t ihit = 0; ihit < number_of_main_calo_hits; ihit++)
 		  {
 		    const mctools::base_step_hit & main_calo_hit = SD.get_step_hit("calo", ihit);
-		    const double signal_time    = main_calo_hit.get_time_stop();
+		    //const double signal_time    = main_calo_hit.get_time_stop();
 		    const double energy_deposit = main_calo_hit.get_energy_deposit();
 		    const geomtools::geom_id & main_calo_gid = main_calo_hit.get_geom_id();
 		
@@ -208,7 +208,7 @@ int main(int  argc_ , char ** argv_)
 		for (size_t ihit = 0; ihit < number_of_xwall_calo_hits; ihit++)
 		  {
 		    const mctools::base_step_hit & xwall_calo_hit = SD.get_step_hit("xcalo", ihit);
-		    const double signal_time    = xwall_calo_hit.get_time_stop();
+		    //const double signal_time    = xwall_calo_hit.get_time_stop();
 		    const double energy_deposit = xwall_calo_hit.get_energy_deposit();
 		    const geomtools::geom_id & xwall_calo_gid = xwall_calo_hit.get_geom_id();
 		
