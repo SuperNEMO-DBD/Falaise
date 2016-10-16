@@ -120,6 +120,7 @@ void test2()
     event_record.tree_dump(std::clog, "Event record: ");
 
     {
+      std::clog << "Serialization..." << std::endl;
       datatools::data_writer writer("test_snemo_datamodel_sim_digi_data2.xml",
                                     datatools::using_multi_archives);
       writer.store(event_record);
@@ -130,6 +131,7 @@ void test2()
   {
     datatools::things event_record;
     {
+      std::clog << "Deserialization..." << std::endl;
       datatools::data_reader reader("test_snemo_datamodel_sim_digi_data2.xml",
                                     datatools::using_multi_archives);
       reader.load(event_record);
