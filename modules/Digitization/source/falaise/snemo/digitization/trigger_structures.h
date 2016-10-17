@@ -85,7 +85,7 @@ namespace snemo {
 	void reset();
 	bool is_empty() const;
 	void display();
-	int32_t clocktick_1600ns;
+	uint32_t clocktick_1600ns;
 	std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
 	std::bitset<trigger_info::NZONES> zoning_word_pattern[trigger_info::NSIDES];
 	std::bitset<trigger_info::NZONES> zoning_word_near_source[trigger_info::NSIDES];

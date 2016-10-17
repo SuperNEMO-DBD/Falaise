@@ -310,7 +310,7 @@ namespace snemo {
 	  // -- Fill xwall zone corresponding of xwall zoning word :     
 	  std::bitset<calo::ctw::XWALL_ZONING_BITSET_SIZE> xwall_zoning_bitset;
 	  my_calo_ctw_.get_xwall_zoning_word(xwall_zoning_bitset);
-
+	  
 	  for (unsigned int izone = calo::ctw::ZONING_XWALL_BIT0; izone < (calo::ctw::ZONING_XWALL_BIT0 + mapping::NUMBER_OF_XWALL_CALO_TRIGGER_ZONES); izone++)
 	    {
 	      switch (izone)
@@ -414,7 +414,7 @@ namespace snemo {
 	  // Zoning word : 
 	  for (unsigned int i = 0; i < trigger_info::NSIDES; i++)
       	    {
-      	      for (int j = 0; j < trigger_info::CALO_ZONING_PER_SIDE_BITSET_SIZE; j++)
+      	      for (unsigned int j = 0; j < trigger_info::CALO_ZONING_PER_SIDE_BITSET_SIZE; j++)
       		{
       		  if (ctrec.zoning_word[i].test(j) == true) 
 		    {
@@ -500,7 +500,7 @@ namespace snemo {
       
       if (calo_ctw_data_.get_calo_ctws().size() != 0)
 	{
-	  for (int32_t iclocktick = calo_ctw_data_.get_clocktick_min(); iclocktick <= calo_ctw_data_.get_clocktick_max() + _circular_buffer_depth_ - 1 ; iclocktick++)
+	  for (uint32_t iclocktick = calo_ctw_data_.get_clocktick_min(); iclocktick <= calo_ctw_data_.get_clocktick_max() + _circular_buffer_depth_ - 1 ; iclocktick++)
 	    {
 	      std::vector<datatools::handle<calo_ctw> > ctw_list_per_clocktick;
 	      calo_ctw_data_.get_list_of_calo_ctw_per_clocktick(iclocktick, ctw_list_per_clocktick);
