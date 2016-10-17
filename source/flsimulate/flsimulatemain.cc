@@ -428,10 +428,8 @@ falaise::exit_code do_flsimulate(int argc, char *argv[])
     code = falaise::EXIT_UNAVAILABLE;
   }
 
-  if (vserv.is_started()) {
-    // Terminate the variant service:
-    vserv.stop();
-  }
+  // Terminate the variant service:
+  vserv.stop();
 
   return code;
 }
