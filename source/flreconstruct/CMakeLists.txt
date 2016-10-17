@@ -68,4 +68,4 @@ install(TARGETS flreconstruct
 #-----------------------------------------------------------------------
 # Build Tests
 #
-add_subdirectory(CommissioningIO)
+#add_subdirectory(CommissioningIO)

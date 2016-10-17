@@ -39,6 +39,20 @@ namespace FLReconstruct {
   //! Define defaults and type for lookup table of experiment control/configuration files
   struct ExperimentLookup {
     typedef std::map<std::string, std::string> Table;
+
+    /// Return resource path in table for given experiment
+    /// Returns empty string if not found
+    static std::string findPathInTable(const Table& in, const std::string& exe) {
+      std::string canonicalName(boost::to_lower_copy(exe));
+      auto iter = in.find(canonicalName);
+      if (iter == in.end()) {
+        return std::string {};
+      }
+
+      boost::filesystem::path basePath(falaise::get_resource_dir());
+      basePath /= (*iter).second;
+      return basePath.string();
+    }
   };
 
   //! Construct lookup table
@@ -94,15 +108,13 @@ namespace FLReconstruct {
     static ExperimentLookup::Table a;
     if (a.empty()) a = constructLookupPipelineTable();
 
-    std::string canonicalName(boost::to_lower_copy(experiment));
-    ExperimentLookup::Table::const_iterator p = a.find(canonicalName);
-    if (p == a.end()) {
+    std::string path = ExperimentLookup::findPathInTable(a, experiment);
+
+    if (path.empty()) {
       throw UnknownResourceException("no control file for '"+experiment+"'");
     }
 
-    boost::filesystem::path basePath(falaise::get_resource_dir());
-    basePath /= (*p).second;
-    return basePath.string();
+    return path;
   }
 
   std::string getVariantsConfigFile(const std::string& experiment,
@@ -110,15 +122,13 @@ namespace FLReconstruct {
     static ExperimentLookup::Table a;
     if (a.empty()) a = constructLookupVariantsConfigTable();
 
-    std::string canonicalName(boost::to_lower_copy(experiment));
-    ExperimentLookup::Table::const_iterator p = a.find(canonicalName);
-    if (p == a.end()) {
+    std::string path = ExperimentLookup::findPathInTable(a, experiment);
+
+    if (path.empty()) {
       throw UnknownResourceException("no variants file for '"+experiment+"'");
     }
 
-    boost::filesystem::path basePath(falaise::get_resource_dir());
-    basePath /= (*p).second;
-    return basePath.string();
+    return path;
   }
 
   std::string getVariantsDefaultProfile(const std::string& experiment,
@@ -126,15 +136,13 @@ namespace FLReconstruct {
     static ExperimentLookup::Table a;
     if (a.empty()) a = constructLookupVariantsDefaultProfileTable();
 
-    std::string canonicalName(boost::to_lower_copy(experiment));
-    ExperimentLookup::Table::const_iterator p = a.find(canonicalName);
-    if (p == a.end()) {
+    std::string path = ExperimentLookup::findPathInTable(a, experiment);
+
+    if (path.empty()) {
       throw UnknownResourceException("no default variants profile for '"+experiment+"'");
     }
 
-    boost::filesystem::path basePath(falaise::get_resource_dir());
-    basePath /= (*p).second;
-    return basePath.string();
+    return path;
   }
 
 } // namespace FLReconstruct

@@ -56,7 +56,6 @@ namespace dtc = datatools::configuration;
 
 // - Boost
 #include "boost/program_options.hpp"
-#include "boost/scoped_ptr.hpp"
 #include "boost/version.hpp"
 #include "boost/foreach.hpp"
 #include "boost/filesystem.hpp"
@@ -68,6 +67,22 @@ namespace dtc = datatools::configuration;
 #include "falaise/exitcodes.h"
 #include "falaise/resource.h"
 #include "FLReconstructResources.h"
+
+//----------------------------------------------------------------------
+// WORKAROUND
+// Don't have make_unique in C++11
+// From https://herbsutter.com/gotw/_102/
+// This won't conflict with std:: version once we use C++14 consistently
+namespace falaise {
+template<typename T, typename ...Args>
+std::unique_ptr<T> make_unique( Args&& ...args )
+{
+    return std::unique_ptr<T>( new T( std::forward<Args>(args)... ) );
+}
+};
+
+
+
 
 //----------------------------------------------------------------------
 // IMPLEMENTATION DETAILS
@@ -88,7 +103,7 @@ struct FLReconstructArgs {
   dtc::variant_service::config variants; //!< Variants configuration
 };
 
-enum FLDialogState {
+enum class FLDialogState {
   DIALOG_OK,
   DIALOG_QUERY,
   DIALOG_ERROR
@@ -139,12 +154,11 @@ void do_load_plugins(datatools::library_loader& libLoader) {
 void do_module_list(std::ostream& os) {
   datatools::library_loader libLoader;
   do_load_plugins(libLoader);
-  typedef std::vector<std::string> ModuleInfo;
-  ModuleInfo mods;
+  std::vector<std::string> mods;
   // Builtin
   DATATOOLS_FACTORY_GET_SYSTEM_REGISTER(dpp::base_module).list_of_factories(mods);
-  BOOST_FOREACH(ModuleInfo::value_type entry, mods) {
-    os << entry << std::endl;
+  for(const auto& name : mods) {
+    os << name << std::endl;
   }
 }
 
@@ -166,8 +180,7 @@ void do_help_module(std::ostream& os, std::string module) {
   }
 
   // Is it in OCD?
-  const datatools::detail::ocd::ocd_registration& ocd_system_reg
-    = datatools::detail::ocd::ocd_registration::get_system_registration();
+  auto& ocd_system_reg = datatools::detail::ocd::ocd_registration::get_system_registration();
   if (!ocd_system_reg.has_id(module)) {
     os << "[error] Module '" << module
        << "' is not documented"
@@ -175,8 +188,7 @@ void do_help_module(std::ostream& os, std::string module) {
     return;
   }
 
-  const datatools::object_configuration_description& moduleDoc
-    = ocd_system_reg.get(module);
+  auto& moduleDoc = ocd_system_reg.get(module);
   moduleDoc.print(os);
 }
 
@@ -188,15 +200,18 @@ void do_help_pipeline_list(std::ostream& os) {
 
   os << shortResourceRoot << std::endl;
   std::string indent;
-  for (boost::filesystem::recursive_directory_iterator end, dir(fullResourceRoot); dir != end; ++dir) {
-    boost::filesystem::path currentResource = (*dir).path();
+
+  boost::filesystem::recursive_directory_iterator dir {fullResourceRoot};
+  boost::filesystem::recursive_directory_iterator end {};
+
+  while (dir != end) {
     os << " "
        << indent.assign(dir.level()*2, ' ')
        << "+-"
-       << currentResource.filename()
+       << (*dir).path().filename()
        << std::endl;
+    ++dir;
   }
-
 }
 
 // - Validation of verbosity command line arguments. must exist inside
@@ -221,7 +236,7 @@ namespace datatools {
 
     // Extract first string from values, If there is more than one string
     // it's an error and an exception will be thrown
-    std::string const& s = bpo::validators::get_single_string(values);
+    auto s = bpo::validators::get_single_string(values);
     datatools::logger::priority p = datatools::logger::get_priority(s);
     if(p != datatools::logger::PRIO_UNDEFINED) {
       v = boost::any(p);
@@ -305,7 +320,7 @@ FLDialogState do_cldialog(int argc, char *argv[], FLReconstructArgs& args) {
                vMap);
   } catch (boost::program_options::error& e) {
     do_error(std::cerr, e.what());
-    return DIALOG_ERROR;
+    return FLDialogState::DIALOG_ERROR;
   }
 
   // Handle trace logging (for debugging)
@@ -316,27 +331,27 @@ FLDialogState do_cldialog(int argc, char *argv[], FLReconstructArgs& args) {
   // Handle messaging if requested
   if (vMap.count("help")) {
     do_help(std::cout, optPublic);
-    return DIALOG_QUERY;
+    return FLDialogState::DIALOG_QUERY;
   }
 
   if (vMap.count("help-module-list")) {
     do_module_list(std::cout);
-    return DIALOG_QUERY;
+    return FLDialogState::DIALOG_QUERY;
   }
 
   if (vMap.count("help-module")) {
     do_help_module(std::cout, vMap["help-module"].as<std::string>());
-    return DIALOG_QUERY;
+    return FLDialogState::DIALOG_QUERY;
   }
 
   if(vMap.count("help-pipeline-list")) {
     do_help_pipeline_list(std::cout);
-    return DIALOG_QUERY;
+    return FLDialogState::DIALOG_QUERY;
   }
 
   if (vMap.count("version")) {
     do_version(std::cout, true);
-    return DIALOG_QUERY;
+    return FLDialogState::DIALOG_QUERY;
   }
 
   // Notify, handling validation errors
@@ -344,7 +359,7 @@ FLDialogState do_cldialog(int argc, char *argv[], FLReconstructArgs& args) {
     bpo::notify(vMap);
   } catch (boost::program_options::error& e) {
     do_error(std::cerr, e.what());
-    return DIALOG_ERROR;
+    return FLDialogState::DIALOG_ERROR;
   }
 
   // Handle the experiment:
@@ -366,20 +381,20 @@ FLDialogState do_cldialog(int argc, char *argv[], FLReconstructArgs& args) {
     std::cerr << "[FLReconstruct::UnknownResourceException] "
               << e.what()
               << std::endl;
-    return DIALOG_ERROR;
+    return FLDialogState::DIALOG_ERROR;
   }
 
-  return DIALOG_OK;
+  return FLDialogState::DIALOG_OK;
 }
 
 //! Extract metadata from input file
 datatools::multi_properties do_get_metadata(const std::string& file) {
   // Metadata is currently available as soon as the input module is
   // initialized.
-  boost::scoped_ptr<dpp::input_module> recInput(new dpp::input_module);
+  std::unique_ptr<dpp::input_module> recInput(new dpp::input_module);
   recInput->set_single_input_file(file);
   // Input metadata management:
-  const datatools::multi_properties& iMetadataStore = recInput->get_metadata_store();
+  auto& iMetadataStore = recInput->get_metadata_store();
   recInput->initialize_simple();
   return iMetadataStore;
 }
@@ -427,8 +442,7 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
   // Dual strategy here
   //  - If they supplied a script, use that, otherwise default to
   //  a single dump module.
-  DT_LOG_TRACE(clArgs.logLevel,"configuring module_manager");
-  boost::scoped_ptr<dpp::module_manager> moduleManager_(new dpp::module_manager);
+  auto moduleManager_ = falaise::make_unique<dpp::module_manager>();
   moduleManager_->set_service_manager(flrServices);
 
   // - Configure the library loader for custom modules
@@ -476,11 +490,9 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
   // Load a Things2Root module in the manager before initialization
   datatools::library_loader libLoader;
   if (!clArgs.outputFile.empty()) {
-    DT_LOG_TRACE(clArgs.logLevel,"configuring output module");
     if (boost::algorithm::ends_with(clArgs.outputFile, ".root")) {
       std::string pluginPath = falaise::get_plugin_dir();
       libLoader.load("Things2Root", pluginPath);
-      DT_LOG_TRACE(clArgs.logLevel, "using ROOT format for output");
       datatools::properties t2rConfig;
       t2rConfig.store("output_file", clArgs.outputFile);
       moduleManager_->load_module("t2rRecOutput", "Things2Root", t2rConfig);
@@ -491,19 +503,17 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
   moduleManager_->initialize_simple();
 
   // Metadata and services - has to be done before we grab the pipeline
+  // because we need the metadata from the input file to configure
+  // (for example) the geometry_service
+  // This needs reordering
   datatools::multi_properties mData = do_get_metadata(clArgs.inputFile);
   do_start_services(mData, flrServices);
 
   // Input module...
-  boost::scoped_ptr<dpp::input_module> recInput(new dpp::input_module);
-  DT_LOG_TRACE(clArgs.logLevel,"configuring input module");
+  auto recInput = falaise::make_unique<dpp::input_module>();
   recInput->set_logging_priority(clArgs.logLevel);
   recInput->set_single_input_file(clArgs.inputFile);
   recInput->initialize_simple();
-
-  DT_LOG_FATAL(clArgs.logLevel, "Number of entries  = " << recInput->get_source().get_number_of_entries());
-  DT_LOG_FATAL(clArgs.logLevel, "Number of metadata = " << recInput->get_source().get_number_of_metadata());
-  // mData = recInput->get_metadata_store();
 
   // - Pipeline
   dpp::base_module* pipeline_;
@@ -516,7 +526,7 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
 
   // Output module... only if added in the module manager
   dpp::base_module * recOutput = 0;
-  boost::scoped_ptr<dpp::output_module> flRecOutput;
+  std::unique_ptr<dpp::output_module> flRecOutput;
   if (moduleManager_->has("t2rRecOutput")) {
     // We instantiate and fetch the t2r module from the manager
     recOutput = &moduleManager_->grab("t2rRecOutput");
@@ -526,18 +536,14 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
     flRecOutput->set_name("FLReconstructOutput");
     flRecOutput->set_single_output_file(clArgs.outputFile);
     // Metadata management:
-    // Fetch the metadata to be stored through the output module
-    datatools::multi_properties & metadataStore = flRecOutput->grab_metadata_store();
     // Copy metadata from the input module
-    metadataStore = mData;
+    (flRecOutput->grab_metadata_store()) = mData;
     // TO DO: add more sections in metadata (from userConfig) ...
     flRecOutput->initialize_simple();
     recOutput = flRecOutput.get();
   }
 
   // - Now the actual event loop
-  DT_LOG_TRACE(clArgs.logLevel,"begin event loop");
-
   datatools::things workItem;
   std::size_t eventCounter = 0;
   while (true) {
@@ -550,7 +556,7 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
     }
 
     // Feed through pipeline
-    dpp::base_module::process_status pStatus = pipeline_->process(workItem);
+    auto pStatus = pipeline_->process(workItem);
     DT_THROW_IF(pStatus == dpp::base_module::PROCESS_INVALID, std::logic_error,
                 "Bug!!! Module '" << pipeline_->get_name() << "' did not return a valid processing status!");
 
@@ -580,16 +586,14 @@ falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
     }
     eventCounter++;
   }
-  DT_LOG_TRACE(clArgs.logLevel,"event loop completed");
 
   // - MUST delete the module manager BEFORE the library loader clears
   // in case the manager is holding resources created from a shared lib
   moduleManager_.reset();
 
-  if (vserv.is_started()) {
-    // Terminate the variant service:
-    vserv.stop();
-  }
+  // Terminate the variant service:
+  vserv.stop();
+
   return falaise::EXIT_OK;
 }
 
@@ -602,14 +606,14 @@ falaise::exit_code do_flreconstruct(int argc, char *argv[]) {
   FLReconstructArgs clArgs;
   FLDialogState d = do_cldialog(argc, argv, clArgs);
   switch (d) {
-  case DIALOG_QUERY:
-    return falaise::EXIT_OK;
-    ;;
-  case DIALOG_ERROR:
-    return falaise::EXIT_USAGE;
-    ;;
-  default:
-    ;;
+    case FLDialogState::DIALOG_QUERY:
+      return falaise::EXIT_OK;
+      ;;
+    case FLDialogState::DIALOG_ERROR:
+      return falaise::EXIT_USAGE;
+      ;;
+    default:
+      ;;
   }
 
   falaise::exit_code ret = do_pipeline(clArgs);
