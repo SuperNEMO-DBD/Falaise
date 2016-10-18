@@ -41,7 +41,6 @@ int main(int  argc_ , char ** argv_)
   bool is_output_path  = false;
   bool is_event_number = false;
   bool is_verbose      = false;
-  bool is_print        = false;
   bool is_help         = false;
 
   std::string input_filename;
@@ -74,11 +73,6 @@ int main(int  argc_ , char ** argv_)
 	is_verbose = true;
       }
     
-    else if (arg == "-p" || arg == "--print")
-      {
-	is_print = true;
-      }
-
     else if (arg =="-h" || arg == "--help")
       {
 	is_help = true;
@@ -153,7 +147,6 @@ int main(int  argc_ , char ** argv_)
     reader.initialize_standalone (reader_config);
     reader.tree_dump (std::clog, "Simulated data reader module");    
 
-    static const int MAXIMUM_DELAYED_TIME = 8000; // in nanosecond, linked with the digi trigger and geiger drift    
     // Event record :
     datatools::things ER;
     int psd_count = 0; // Event counter
@@ -180,7 +173,6 @@ int main(int  argc_ , char ** argv_)
 		if (SD.has_step_hits("calo")) number_of_main_calo_hits = SD.get_number_of_step_hits("calo");
 		std::size_t number_of_xwall_calo_hits = 0;
 		if (SD.has_step_hits("xcalo")) number_of_xwall_calo_hits = SD.get_number_of_step_hits("xcalo");
-		const size_t number_of_calo_hits = number_of_main_calo_hits + number_of_xwall_calo_hits;
 
 		for (size_t ihit = 0; ihit < number_of_main_calo_hits; ihit++)
 		  {
@@ -189,7 +181,6 @@ int main(int  argc_ , char ** argv_)
 		    const double energy_deposit = main_calo_hit.get_energy_deposit();
 		    const geomtools::geom_id & main_calo_gid = main_calo_hit.get_geom_id();
 		
-		    bool main_calo_gid_already_existing = false;
 		    std::map<geomtools::geom_id, double>::iterator it_map = gid_energy_calo_map.find(main_calo_gid);
 		    double previous_energy = 0;
 		    if (it_map != gid_energy_calo_map.end())
@@ -212,7 +203,6 @@ int main(int  argc_ , char ** argv_)
 		    const double energy_deposit = xwall_calo_hit.get_energy_deposit();
 		    const geomtools::geom_id & xwall_calo_gid = xwall_calo_hit.get_geom_id();
 		
-		    bool xwall_calo_gid_already_existing = false;
 		    std::map<geomtools::geom_id, double>::iterator it_map = gid_energy_calo_map.find(xwall_calo_gid);
 		    double previous_energy = 0;
 		    if (it_map != gid_energy_calo_map.end())
@@ -275,10 +265,8 @@ int main(int  argc_ , char ** argv_)
 		    else
 		      {	
 			// extract the corresponding geom ID:
-			const geomtools::geom_id & geiger_gid = BSH.get_geom_id();
+			//const geomtools::geom_id & geiger_gid = BSH.get_geom_id();
 
-			int hit_id = count;
-			double time_start = BSH.get_time_start();
 			geomtools::vector_3d position_start_vector = BSH.get_position_start();
 			geomtools::vector_3d position_stop_vector  = BSH.get_position_stop();
 			geomtools::vector_3d momentum_start_vector = BSH.get_momentum_start();	
@@ -300,7 +288,7 @@ int main(int  argc_ , char ** argv_)
 		std::clog << "Number of GG cells fired = " << number_of_geiger_cells << std::endl;
 	    	    
 		std::map<geomtools::geom_id, double>::iterator it_map = gid_energy_calo_map.begin();
-		for (it_map; it_map != gid_energy_calo_map.end(); it_map++)
+		for (; it_map != gid_energy_calo_map.end(); it_map++)
 		  {
 		    std::clog << "Key : " << it_map -> first << std::endl;
 		    std::clog << "Value : " << it_map -> second << std::endl;
@@ -320,7 +308,7 @@ int main(int  argc_ , char ** argv_)
 		double energy_calo_2 = 0;
 		std::map<geomtools::geom_id, double>::iterator it_map = gid_energy_calo_map.begin();
 		std::size_t index = 0;
-		for (it_map; it_map != gid_energy_calo_map.end(); it_map++)
+		for (; it_map != gid_energy_calo_map.end(); it_map++)
 		  {
 		    // Calo 1 :
 		    if (index == 0)

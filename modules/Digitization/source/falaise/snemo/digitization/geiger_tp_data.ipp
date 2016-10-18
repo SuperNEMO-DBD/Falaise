@@ -29,7 +29,6 @@ namespace snemo {
       // Inherit from the 'datatools::i_serializable' base class:
       ar_ & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
 
-		 	ar_ & boost::serialization::make_nvp("locked_tps", _locked_);
 		 	ar_ & boost::serialization::make_nvp("geiger_tps", _geiger_tps_);
 		
       return;

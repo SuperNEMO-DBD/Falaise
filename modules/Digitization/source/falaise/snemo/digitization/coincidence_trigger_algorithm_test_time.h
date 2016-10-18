@@ -49,7 +49,7 @@ namespace snemo {
       void initialize_simple();
 
       /// Initializing
-      void initialize(const datatools::properties & config_);
+      void initialize(const datatools::properties & /*config_*/);
 
       /// Check if the algorithm is initialized 
       bool is_initialized() const;

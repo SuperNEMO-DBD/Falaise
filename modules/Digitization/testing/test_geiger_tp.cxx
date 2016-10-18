@@ -33,7 +33,6 @@ int main(int argc_, char ** argv_)
     my_geiger_tp.set_tracker_row_mode(6);
     my_geiger_tp.set_board_id(12);
     my_geiger_tp.set_crate_id(2);
-    my_geiger_tp.lock();
     my_geiger_tp.tree_dump(std::clog, "my_geiger_tp : ", "INFO : ");
     std::clog << "The end." << std::endl;
   }

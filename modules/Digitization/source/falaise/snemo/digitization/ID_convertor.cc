@@ -273,12 +273,12 @@ namespace snemo {
       electronic_id.set_address(rack_id,crate_id,board_id,channel_id);   
       return  electronic_id;
     }
-
+    /*
     void ID_convertor::tree_dump(std::ostream & out_,
 				 const std::string & title_ ,
 				 const std::string & indent_  ,
 				 bool inherit_){
-    }
+				 }*/
 
   }// end of namespace digitization
 

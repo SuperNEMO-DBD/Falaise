@@ -52,15 +52,6 @@ namespace snemo {
       /// Set the time plasma on bottom cathode 
 			void set_plasma_bottom_time_(const double & plasma_bottom_time_);
 
-      /// Check the lock status
-      bool is_locked() const;
-
-      /// Lock 
-      void lock();
-
-      /// Unlock
-      void unlock();
-
       /// Check if the internal data of geiger signal is valid
       bool is_valid() const;
 
@@ -73,14 +64,8 @@ namespace snemo {
 														 const std::string & a_indent = "",
 														 bool a_inherit               = false) const;
 
-    protected : 
-
-      /// Check if a geiger signal is available
-      void _check();
-
     private : 
 
-      bool _locked_; //!< Geiger signal lock flag
 			double _anode_avalanche_time_; //!< Time of the anode avalanche
 			double _plasma_top_time_; //!< Time of plasma on top cathode
       double _plasma_bottom_time_; //!< Time of plasma on bottom cathode

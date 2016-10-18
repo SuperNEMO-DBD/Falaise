@@ -45,15 +45,12 @@ int main( int  argc_ , char **argv_  )
   int iarg = 1;
   bool is_input_file   = false;
   bool is_event_number = false;
-  bool is_output_path  = false;
-  bool is_run_number   = false;
+  // bool is_output_path  = false;
   bool is_help         = false;
 
   std::string input_filename;
-  std::string output_path;
+  // std::string output_path;
   int arg_event_number  = -1;
-  int arg_run_number    = -1;
-;
 
   while (iarg < argc_) {
     std::string arg = argv_[iarg];

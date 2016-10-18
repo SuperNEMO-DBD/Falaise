@@ -7,7 +7,7 @@
 
 // Standard Library :
 #include <math.h>
-#include <limits.h>
+#include <limits>
 
 // - Bayeux/datatools:
 #include <datatools/clhep_units.h>
@@ -18,8 +18,6 @@
 
 // - Boost:
 #include <boost/cstdint.hpp>
-
-#define MAX_LIMIT_UINT32_T std::numeric_limits<uint32_t>::max()
 
 namespace snemo {
 	
@@ -33,7 +31,7 @@ namespace snemo {
 			static const uint32_t MAIN_CLOCKTICK = 25;                //!< Main clocktick, 40 MHz => 25ns.
 			static const uint32_t TRACKER_CLOCKTICK = 800;            //!< Clocktick for tracker, 800ns.
 			static const uint32_t TRIGGER_CLOCKTICK = 1600;           //!< Clocktick for trigger, 1600ns.
-			static const uint32_t INVALID_CLOCKTICK = MAX_LIMIT_UINT32_T;              //!< Invalid value for clocktick
+			static const uint32_t INVALID_CLOCKTICK = std::numeric_limits<uint32_t>::max(); //!< Invalid value for clocktick
 			static const uint32_t ACTIVATED_GEIGER_CELLS_NUMBER = 10; //!< Number of clocktick 800 where a geiger cell is activated
 
 			static const uint32_t CALO_FEB_SHIFT_CLOCKTICK_NUMBER = 6; //!< Number of clocktick which shift the internal clocktick in a caloFEB
@@ -84,11 +82,11 @@ namespace snemo {
 			double get_shift_800() const;
 
 			/// Compute a clocktick 25ns into a clocktick 1600ns
-			void compute_clocktick_25ns_to_1600ns(const int32_t clocktick_25ns_,
-																						int32_t & clocktick_1600ns_) const ;
+			void compute_clocktick_25ns_to_1600ns(const uint32_t clocktick_25ns_,
+																						uint32_t & clocktick_1600ns_) const ;
 			/// Compute a clocktick 800ns into a clocktick 1600ns
-			void compute_clocktick_800ns_to_1600ns(const int32_t clocktick_800ns_,
-																						 int32_t & clocktick_1600ns_) const ;
+			void compute_clocktick_800ns_to_1600ns(const uint32_t clocktick_800ns_,
+																						 uint32_t & clocktick_1600ns_) const ;
 
       /// Display clockticks ref and shifts
       void tree_dump (std::ostream & out_ = std::clog,

@@ -55,7 +55,7 @@ namespace snemo {
 			/// Set the header with valid values
 			void set_header(int32_t hit_id_,
 											const geomtools::geom_id & electronic_id_,	 
-											int32_t clocktick_25ns_);
+											uint32_t clocktick_25ns_);
 
 			/// Check if the ctw is main wall
 			bool is_main_wall() const;
@@ -64,10 +64,10 @@ namespace snemo {
 			calo::ctw::layout get_layout() const;
 
 		  /// Return the timestamp of the calo crate trigger word 
-			int32_t get_clocktick_25ns() const;
+			uint32_t get_clocktick_25ns() const;
 			
 			/// Set the timestamp of the calo crate trigger word 
-      void set_clocktick_25ns(int32_t clocktick_25ns_);
+      void set_clocktick_25ns(uint32_t clocktick_25ns_);
 
 			/// Reset the timestamp of the calo crate trigger word 
 			void reset_clocktick_25ns();
@@ -168,15 +168,6 @@ namespace snemo {
 			/// Set the complete ctw word
 			void set_full_word(std::bitset<calo::ctw::FULL_BITSET_SIZE> & control_word_);
 			
-			/// Check the lock status
-      bool is_locked() const;
-
-      /// Lock 
-			void lock();
-
-			/// Unlock
-			void unlock();
-
 			/// Reset the calorimeter crate TW bitset
 			void reset_tw_bitset();
 
@@ -192,16 +183,10 @@ namespace snemo {
 														 const std::string & a_indent = "",
 														 bool a_inherit               = false) const;
 
-		protected : 
-			
-			/// Check if a calo crate TW is available
-			void _check();
-
     private : 
 
-			bool _locked_;            //!< CTW lock flag
 			calo::ctw::layout _layout_;
-			int32_t _clocktick_25ns_; //!< The timestamp of the trigger primitive in main clock units (40 MHz)
+			uint32_t _clocktick_25ns_; //!< The timestamp of the trigger primitive in main clock units (40 MHz)
 			std::bitset<calo::ctw::FULL_BITSET_SIZE> _ctw_;    //!< The crate trigger word
 
       DATATOOLS_SERIALIZATION_DECLARATION()

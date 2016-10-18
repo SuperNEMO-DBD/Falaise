@@ -198,9 +198,7 @@ int main( int  argc_ , char **argv_  )
 	std::string hc_geiger_half_zone_rules     = " ";
 	int geiger_hc_zone_inf_limit = 0;
 	int geiger_hc_zone_sup_limit = 0;
-	int main_calo_column = 0;
 
-	main_calo_column = hc_half_zone;
 	if (hc_half_zone == 0)
 	  {
 	    geiger_hc_zone_inf_limit = 0;
@@ -323,18 +321,18 @@ int main( int  argc_ , char **argv_  )
 			    const bool is_in_map = hit_rate_map.find(main_calo_gid) != hit_rate_map.end();
 			    const bool is_in_energy_map = calo_gid_energy_map.find(main_calo_gid) != calo_gid_energy_map.end();
 
-			    int column = main_calo_gid.get(2);
-			    int row = main_calo_gid.get(3);
+			    int main_calo_gid_column = main_calo_gid.get(2);
+			    int main_calo_gid_row = main_calo_gid.get(3);
 			    double energy = BSH.get_energy_deposit();
 			    if (!is_in_set && !is_in_map)
 			      {
 				hit_rate_map.insert(std::pair<geomtools::geom_id, int>(main_calo_gid, 1) );
-				main_calo_half_zone_distribution_TH2F->Fill(column, row);
+				main_calo_half_zone_distribution_TH2F->Fill(main_calo_gid_column, main_calo_gid_row);
 			      }
 			    else if (!is_in_set && is_in_map)
 			      {
 				hit_rate_map.find(main_calo_gid)->second++;
-				main_calo_half_zone_distribution_TH2F->Fill(column, row);
+				main_calo_half_zone_distribution_TH2F->Fill(main_calo_gid_column, main_calo_gid_row);
 			      }
 
 			    if (!is_in_energy_map)
@@ -383,8 +381,8 @@ int main( int  argc_ , char **argv_  )
 			    const bool is_in_energy_map = calo_gid_energy_map.find(xwall_calo_gid) != calo_gid_energy_map.end();
 
 			    int wall = xwall_calo_gid.get(2);
-			    int column = xwall_calo_gid.get(3);
-			    int row = xwall_calo_gid.get(4);
+			    int xwall_gid_column = xwall_calo_gid.get(3);
+			    int xwall_gid_row = xwall_calo_gid.get(4);
 			    
 			    double energy = BSH.get_energy_deposit();
 			    
@@ -396,12 +394,12 @@ int main( int  argc_ , char **argv_  )
 			    if (!is_in_set && !is_in_map)
 			      {
 				hit_rate_map.insert(std::pair<geomtools::geom_id, int>(xwall_calo_gid, 1) );
-				xwall_calo_half_zone_distribution_TH2F->Fill(column, row);
+				xwall_calo_half_zone_distribution_TH2F->Fill(xwall_gid_column, xwall_gid_row);
 			      }
 			    else if (!is_in_set && is_in_map)
 			      {
 				hit_rate_map.find(xwall_calo_gid)->second++;
-				xwall_calo_half_zone_distribution_TH2F->Fill(column, row);
+				xwall_calo_half_zone_distribution_TH2F->Fill(xwall_gid_column, xwall_gid_row);
 			      }
 
 			    if (!is_in_energy_map)
@@ -483,8 +481,8 @@ int main( int  argc_ , char **argv_  )
 			  {
 			    const geomtools::geom_id & geiger_gid = BSH.get_geom_id();
 			    
-			    int layer = geiger_gid.get(2);
-			    int row   = geiger_gid.get(3)- geiger_hc_zone_inf_limit;
+			    int geiger_gid_layer = geiger_gid.get(2);
+			    int geiger_gid_row   = geiger_gid.get(3)- geiger_hc_zone_inf_limit;
 			    
 			    if (my_hc_geiger_id_selector.match(geiger_gid))
 			      {
@@ -495,12 +493,12 @@ int main( int  argc_ , char **argv_  )
 				if (!is_in_map) 
 				  {
 				    hit_rate_map.insert(std::pair<geomtools::geom_id, int>(geiger_gid, 1) );
-				    geiger_cells_half_zone_distribution_TH2F->Fill(row, layer);
+				    geiger_cells_half_zone_distribution_TH2F->Fill(geiger_gid_row, geiger_gid_layer);
 				  }
 				else 
 				  {
 				    hit_rate_map.find(geiger_gid)->second++;
-				    geiger_cells_half_zone_distribution_TH2F->Fill(row, layer);
+				    geiger_cells_half_zone_distribution_TH2F->Fill(geiger_gid_row, geiger_gid_layer);
 				  }
 				write_event = true;
 			      }
@@ -556,29 +554,29 @@ int main( int  argc_ , char **argv_  )
 }
 
 
-int column_to_hc_half_zone(const int & column)
+int column_to_hc_half_zone(const int & column_)
 {
   int hc_zone = -1;
-  if (column >= 0 && column <= 5)
+  if (column_ >= 0 && column_ <= 5)
     {
       hc_zone = 0;
     }
   
-  else if (column >= 6 && column <= 62)
+  else if (column_ >= 6 && column_ <= 62)
     {
-      hc_zone = (column + 3) / 6;
+      hc_zone = (column_ + 3) / 6;
     }
   
-  else if (column >= 63 && column <= 106)
+  else if (column_ >= 63 && column_ <= 106)
     {
-      hc_zone = (column + 4) / 6;
+      hc_zone = (column_ + 4) / 6;
     }
-  else if (column >= 107 && column <= 109)
+  else if (column_ >= 107 && column_ <= 109)
     {
       hc_zone = 18;
     }
   
-  else if (column >= 110 && column <= 112)
+  else if (column_ >= 110 && column_ <= 112)
     {
       hc_zone = 19;
     }

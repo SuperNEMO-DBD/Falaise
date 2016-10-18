@@ -45,13 +45,11 @@ int main(int  argc_ , char ** argv_)
   bool is_input_file   = false;
   bool is_event_number = false;
   bool is_output_file  = false;
-  bool is_run_number   = false;
   bool is_help         = false;
 
   std::string input_filename;
   std::string output_filename;
   int arg_event_number  = -1;
-  int arg_run_number    = -1;
 
   while (iarg < argc_) {
     std::string arg = argv_[iarg];
@@ -65,12 +63,6 @@ int main(int  argc_ , char ** argv_)
       {
 	is_output_file = true;
 	output_filename = argv_[++iarg];	
-      }
-    
-    else if (arg == "-rn" || arg == "--run-number")
-      {
-	is_run_number = true;
-	arg_run_number = atoi(argv_[++iarg]);	
       }
 
     else if (arg == "-n" || arg == "--number")
@@ -198,7 +190,7 @@ int main(int  argc_ , char ** argv_)
 	    const mctools::simulated_data & SD = ER.get<mctools::simulated_data>(SD_bank_label);
 
 
-	    //if(debug) SD.tree_dump(std::clog, "Simulated Data : ", "INFO : ");
+	    if(debug) SD.tree_dump(std::clog, "Simulated Data : ", "INFO : ");
 	    
 	    if (SD.has_step_hits("gg"))
 	      {

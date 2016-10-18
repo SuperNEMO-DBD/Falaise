@@ -20,7 +20,7 @@ namespace snemo {
     const uint32_t clock_utils::MAIN_CLOCKTICK;
     const uint32_t clock_utils::TRACKER_CLOCKTICK;
     const uint32_t clock_utils::TRIGGER_CLOCKTICK;
-    const int32_t clock_utils::INVALID_CLOCKTICK;
+    const uint32_t clock_utils::INVALID_CLOCKTICK;
     const uint32_t clock_utils::ACTIVATED_GEIGER_CELLS_NUMBER;
     const uint32_t clock_utils::CALO_FEB_SHIFT_CLOCKTICK_NUMBER;
     const uint32_t clock_utils::CALO_CB_SHIFT_CLOCKTICK_NUMBER;
@@ -101,16 +101,16 @@ namespace snemo {
       return _shift_800_;
     }
     
-    void clock_utils::compute_clocktick_25ns_to_1600ns(const int32_t clocktick_25ns_,
-						       int32_t & clocktick_1600ns_) const
+    void clock_utils::compute_clocktick_25ns_to_1600ns(const uint32_t clocktick_25ns_,
+						       uint32_t & clocktick_1600ns_) const
     {
       clocktick_1600ns_ = (clocktick_25ns_ * MAIN_CLOCKTICK) / TRIGGER_CLOCKTICK;
       clocktick_1600ns_ = clocktick_1600ns_ + TRIGGER_COMPUTING_SHIFT_CLOCKTICK_1600NS;
       return;
     }  
 
-    void clock_utils::compute_clocktick_800ns_to_1600ns(const int32_t clocktick_800ns_,
-							int32_t & clocktick_1600ns_) const
+    void clock_utils::compute_clocktick_800ns_to_1600ns(const uint32_t clocktick_800ns_,
+							uint32_t & clocktick_1600ns_) const
     {
       clocktick_1600ns_ = (clocktick_800ns_ * TRACKER_CLOCKTICK) / TRIGGER_CLOCKTICK;
       clocktick_1600ns_ = clocktick_1600ns_ + TRIGGER_COMPUTING_SHIFT_CLOCKTICK_1600NS;
@@ -138,7 +138,7 @@ namespace snemo {
     void clock_utils::tree_dump (std::ostream & out_,
 				 const std::string & title_,
 				 const std::string & indent_,
-				 bool inherit_) const
+				 bool /*inherit_*/) const
     { 
 
       out_ << indent_ << title_ << std::endl;

@@ -71,13 +71,14 @@ int main( int  argc_ , char ** argv_ )
       }
     my_manager.initialize (manager_config);
 
-    // std::string pipeline_simulated_data_filename;
+    std::string pipeline_simulated_data_filename="";
     // std::string SD_bank_label = "SD";
 
 
-   // if(is_input_file){
-   //    pipeline_simulated_data_filename = input_filename;
-   //  }else{
+    if(is_input_file){
+      pipeline_simulated_data_filename = input_filename;
+    }
+    //else{
    //    pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
    //  }
 
@@ -94,8 +95,6 @@ int main( int  argc_ , char ** argv_ )
     snemo::digitization::clock_utils my_clock_manager;
     my_clock_manager.initialize();
     my_clock_manager.compute_clockticks_ref(random_generator);
-    uint32_t clocktick_25_reference  = my_clock_manager.get_clocktick_25_ref();
-    double  clocktick_25_shift      = my_clock_manager.get_shift_25();
     uint32_t clocktick_800_reference = my_clock_manager.get_clocktick_800_ref();
     double  clocktick_800_shift     = my_clock_manager.get_shift_800();
 

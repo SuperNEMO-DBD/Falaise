@@ -86,25 +86,25 @@ namespace snemo {
 			void fill_coincidence_trigger_matrix_1600ns(std::bitset<10> zoning_word_[trigger_info::NSIDES], bool geiger_matrix_[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS]);
 
 			/// Display calorimeter zones each 25ns for a given clocktick
-			void display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_, int32_t clocktick_25ns_);
+			void display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_25ns_);
 
 			/// Display calorimeter zones each 25ns for all available clocktick
 			void display_calo_trigger_25ns(trigger_algorithm & a_trigger_algo_); 
 
 			/// Display calorimeter zones each 1600 for a given clocktick
-			void display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int32_t clocktick_1600ns_);
+			void display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_1600ns_);
 
 			/// Display calorimeter zones each 1600ns for all available clocktick 
 			void display_calo_trigger_1600ns(trigger_algorithm & a_trigger_algo_);
 			
 			/// Display tracker matrix each 1600 for a given clocktick
-			void display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int32_t clocktick_1600ns_);
+			void display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_1600ns_);
 
 			/// Display tracker matrix each 1600 for all available clocktick
 			void display_tracker_trigger_1600ns(trigger_algorithm & a_trigger_algo_);
 
 			/// Display calorimeter zones and tracker matrix each 1600 for a given clocktick
-			void display_coincidence_trigger_1600ns(trigger_algorithm & a_trigger_algo_, int32_t clocktick_1600ns_);
+			void display_coincidence_trigger_1600ns(trigger_algorithm & a_trigger_algo_, uint32_t clocktick_1600ns_);
 
 			/// Display calorimeter zones and tracker matrix each 1600 for all available clocktick
 			void display_coincidence_trigger_1600ns(trigger_algorithm & a_trigger_algo_);

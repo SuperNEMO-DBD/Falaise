@@ -41,37 +41,28 @@ namespace snemo {
 			typedef std::vector<geiger_tp_handle_type> geiger_tp_collection_type;
 			
 			/// Return the index of the geiger TP with minimum clocktick
-			int get_clocktick_min_index() const;
+			unsigned int get_clocktick_min_index() const;
 			
 			/// Return the index of the geiger TP with maximum clocktick
-			int get_clocktick_max_index() const;
+			unsigned int get_clocktick_max_index() const;
 			
 			/// Return the clocktick min for the geiger TP with minimum clocktick (thanks to his index)
-			int get_clocktick_min() const;
+			uint32_t get_clocktick_min() const;
 
 			/// Return the clocktick max for the geiger TP with maximum clocktick (thanks to his index)
-			int get_clocktick_max() const;
+			uint32_t get_clocktick_max() const;
 			
 			/// Return the range between the clocktick min and the clocktick max
-			int get_clocktick_range() const;
+			uint32_t get_clocktick_range() const;
 			
 			/// Get a list of geiger trigger primitive which are in the same clocktick
-			void get_list_of_gg_tp_per_clocktick(int32_t clocktick_800ns_, geiger_tp_collection_type & my_list_of_gg_tps_per_clocktick_) const;
+			void get_list_of_gg_tp_per_clocktick(uint32_t clocktick_800ns_, geiger_tp_collection_type & my_list_of_gg_tps_per_clocktick_) const;
 			
 			/// Get a list of geiger trigger primitive which are in the same clocktick and in the same crate
-			void get_list_of_gg_tp_per_clocktick_per_crate(int32_t clocktick_800ns_, unsigned int crate_number_, geiger_tp_collection_type & my_list_of_gg_tps_per_clocktick_per_crate_ ) const;
+			void get_list_of_gg_tp_per_clocktick_per_crate(uint32_t clocktick_800ns_, unsigned int crate_number_, geiger_tp_collection_type & my_list_of_gg_tps_per_clocktick_per_crate_ ) const;
 
 			/// Get a list of geiger trigger primitive which are in the same electronic ID
 			void get_list_of_gg_tp_per_eid(const geomtools::geom_id & electronic_id_, geiger_tp_collection_type & my_list_of_gg_tps_per_eid_) const;
-
-			/// Check the lock status
-			bool is_locked() const;
-
-			/// Lock 
-			void lock();
-
-			/// Unlock
-			void unlock();
 
 			/// Reset the list of tps
 			void reset_tps();
@@ -100,7 +91,6 @@ namespace snemo {
 			
 		private : 
 
-			bool _locked_; //!< TPS lock flag
 			geiger_tp_collection_type _geiger_tps_; //!< Collection of geigers tracker primitive
 
 			DATATOOLS_SERIALIZATION_DECLARATION()

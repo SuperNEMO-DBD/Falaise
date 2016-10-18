@@ -32,7 +32,7 @@ int main( int  argc_ , char **argv_  )
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
 
 
- int iarg = 1;
+  int iarg = 1;
   bool is_input_file = false;
   std::string input_filename;
   while (iarg < argc_) {
@@ -118,9 +118,6 @@ int main( int  argc_ , char **argv_  )
 	    my_clock_manager.compute_clockticks_ref(random_generator);
 	    uint32_t clocktick_25_reference  = my_clock_manager.get_clocktick_25_ref();
 	    double  clocktick_25_shift      = my_clock_manager.get_shift_25();
-	    uint32_t clocktick_800_reference = my_clock_manager.get_clocktick_800_ref();
-	    double  clocktick_800_shift     = my_clock_manager.get_shift_800();
-
 	 
 	    snemo::digitization::signal_data signal_data;
 	    std::vector<snemo::digitization::calo_trigger_algorithm::calo_summary_record> calo_collection_records;

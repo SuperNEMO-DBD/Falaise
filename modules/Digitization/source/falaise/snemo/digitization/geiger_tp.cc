@@ -21,7 +21,6 @@ namespace snemo {
 
     geiger_tp::geiger_tp()
     {
-      _locked_ = false;
       _clocktick_800ns_ = clock_utils::INVALID_CLOCKTICK;
       _gg_tp_ = 0x0;
       return;
@@ -40,7 +39,6 @@ namespace snemo {
 			       bool trigger_side_, 
 			       unsigned int number_of_rows_)
     {    
-      DT_THROW_IF(is_locked(), std::logic_error, "Geiger TP is locked !) ");
       DT_THROW_IF((electronic_id_.get(mapping::BOARD_INDEX) == 10), std::logic_error, "FEB ID 10 is dedicated to control board ! ");
       set_hit_id(hit_id_);
       set_geom_id(electronic_id_);
@@ -57,20 +55,18 @@ namespace snemo {
 
     void geiger_tp::set_data(std::bitset<geiger::tp::TP_SIZE> & gg_tp_word_)
     {
-      DT_THROW_IF(is_locked(), std::logic_error, "Geiger TP is locked !) ");
       set_gg_tp_bitset(gg_tp_word_);
       return;
     }
 			     
-    int32_t geiger_tp::get_clocktick_800ns() const
+    uint32_t geiger_tp::get_clocktick_800ns() const
     {
       return _clocktick_800ns_;
     }
 
-    void geiger_tp::set_clocktick_800ns(int32_t value_)
+    void geiger_tp::set_clocktick_800ns(uint32_t value_)
     {
-      DT_THROW_IF(is_locked(), std::logic_error, "Clocktick can't be set, geiger TP is locked !) ");
-      if(value_ <= clock_utils::INVALID_CLOCKTICK)
+      if(value_ == clock_utils::INVALID_CLOCKTICK)
 	{
 	  reset_clocktick_800ns();
 	}
@@ -84,7 +80,6 @@ namespace snemo {
 
     void geiger_tp::reset_clocktick_800ns()
     {
-      DT_THROW_IF(is_locked(), std::logic_error, "Clocktick can't be reset, geiger TP is locked !) ");
       _clocktick_800ns_ = clock_utils::INVALID_CLOCKTICK;
       _store &= ~STORE_CLOCKTICK_800NS;
       return;
@@ -97,7 +92,6 @@ namespace snemo {
       
     void geiger_tp::reset_gg_bitset()
     {
-      DT_THROW_IF(is_locked(), std::logic_error, "Geiger bitset can't be reset, geiger TP is locked ! ");
       _gg_tp_ = 0x0;
       _store &= ~STORE_GG_TP;
       return;
@@ -111,8 +105,6 @@ namespace snemo {
     
     void geiger_tp::set_gg_tp_bitset(std::bitset<geiger::tp::TP_SIZE> & gg_tp_word_)
     {
-      DT_THROW_IF(is_locked(), std::logic_error, "TP bitset can't be set, geiger TP is locked ! ");
-	    
       for (unsigned int i = 0; i < geiger::tp::TP_SIZE; i++)
 	{
 	  if (gg_tp_word_.test(i) == true)
@@ -130,7 +122,6 @@ namespace snemo {
 
     void geiger_tp::set_gg_tp_active_bit(const int & bit_index_)
     {
-      DT_THROW_IF(is_locked(), std::logic_error, "Tp active bit can't be set, geiger TP is locked ! ");
       _gg_tp_.set(bit_index_, 1);
       
       return;
@@ -163,7 +154,6 @@ namespace snemo {
 
     void geiger_tp::set_tracker_row_mode(unsigned int number_of_rows_)
     {
-      DT_THROW_IF(is_locked(), std::logic_error, "Tracker row mode (TRM) can't be set, geiger TP is locked ! ");  
       DT_THROW_IF(number_of_rows_ > mapping::NUMBER_OF_CONNECTED_ROWS, std::range_error, "Unsupported number of rows ["<< number_of_rows_ <<"] ! ");
       std::bitset<geiger::tp::TRM_WORD_SIZE> row_tp_bitset(number_of_rows_);
       
@@ -182,8 +172,6 @@ namespace snemo {
 
     void geiger_tp::set_tracker_side_mode(bool trigger_side_)
     {
-      DT_THROW_IF(is_locked(), std::logic_error, "Tracker side mode (TSM) can't be set, geiger TP is locked ! ");  
- 
       if (trigger_side_ == true)
 	{
 	  _gg_tp_.set(geiger::tp::TSM_BIT, 1);
@@ -203,7 +191,6 @@ namespace snemo {
     
     void geiger_tp::set_tracker_trigger_mode(bool trigger_mode_)
     {
-      DT_THROW_IF(is_locked(), std::logic_error, "Tracker trigger mode (TTM) can't be set, geiger TP is locked ! ");  
       if (trigger_mode_ == true)
 	{
 	  _gg_tp_.set(geiger::tp::TTM_BIT, 1);
@@ -238,7 +225,6 @@ namespace snemo {
 
     void geiger_tp::set_board_id(unsigned long board_id_)
     {
-      DT_THROW_IF(is_locked(), std::logic_error, "Board ID can't be set, geiger TP is locked ! ");  
       DT_THROW_IF(board_id_ > mapping::NUMBER_OF_FEBS_BY_CRATE, std::range_error, "Unsupported board ID ["<< board_id_ <<"] ! ");
       std::bitset<geiger::tp::BOARD_ID_WORD_SIZE> board_id_bitset(board_id_);
       
@@ -264,7 +250,6 @@ namespace snemo {
 
     void geiger_tp::set_crate_id(unsigned long crate_id_)
     {
-      DT_THROW_IF(is_locked(), std::logic_error, "Crate ID can't be set, geiger TP is locked ! ");  
       DT_THROW_IF(crate_id_ > mapping::NUMBER_OF_CRATES, std::range_error, "Unsupported crate ID ["<< crate_id_ <<"] ! ");
       std::bitset<geiger::tp::CRATE_ID_WORD_SIZE> crate_id_bitset(crate_id_);
       
@@ -317,37 +302,13 @@ namespace snemo {
       return;
     }
 
-    bool geiger_tp::is_locked() const
-    {
-      return _locked_;
-    }
-
-    void geiger_tp::lock()
-    {
-      DT_THROW_IF(is_locked(), std::logic_error, "Geiger TP is already locked ! ");
-      _check();
-      _locked_ = true;
-      return;
-    }
-    
-    void geiger_tp::unlock()
-    {
-      DT_THROW_IF(!is_locked(), std::logic_error, "Geiger TP is already unlocked ! ");
-      _locked_ = false;
-      return;
-    } 
-
     bool geiger_tp::is_valid() const
     {
-      return _clocktick_800ns_ >= 0;
+      return _clocktick_800ns_ !=  clock_utils::INVALID_CLOCKTICK;
     }
 
     void geiger_tp::reset()
     {
-      if(is_locked())
-	{
-	  unlock();
-	}
       reset_gg_bitset();
       reset_clocktick_800ns();
       geomtools::base_hit::reset();
@@ -369,12 +330,6 @@ namespace snemo {
       return;
     }
     
-    void geiger_tp::_check()
-    {
-      DT_THROW_IF(!is_valid(), std::logic_error, "Clocktick is not valid ! ");
-    }
-
-
   } // end of namespace digitization
 
 } // end of namespace snemo

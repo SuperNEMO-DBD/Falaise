@@ -53,7 +53,7 @@ namespace snemo {
 				tracker_record();
 				void reset();
 				void display(std::ostream & out_ = std::clog);
-				int32_t clocktick_1600ns;
+				uint32_t clocktick_1600ns;
 				std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
 				std::bitset<trigger_info::NZONES> zoning_word_pattern[trigger_info::NSIDES]; // not fill atm
 				std::bitset<trigger_info::NZONES> zoning_word_near_source[trigger_info::NSIDES]; // not fill atm
@@ -67,7 +67,7 @@ namespace snemo {
 				geiger_matrix();
 				bool is_empty();
 				void display_matrix_garrido(datatools::temp_file & tmp_file_) const;
-				int32_t clocktick_1600ns;				
+				uint32_t clocktick_1600ns;				
 				bool matrix[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS];
 			};
 

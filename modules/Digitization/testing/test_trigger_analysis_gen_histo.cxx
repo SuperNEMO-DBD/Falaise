@@ -200,25 +200,23 @@ int main(int  argc_ , char ** argv_)
       {
 	reader.process(ER);
 
-	size_t number_of_step_hits = -1;
-
 	// A plain `mctools::simulated_data' object is stored here :
 	if (ER.has(SD_bank_label) && ER.is_a<mctools::simulated_data>(SD_bank_label)) 
 	  {	   
 	    // Access to the "SD" bank with a stored `mctools::simulated_data' :
 	    const mctools::simulated_data & SD = ER.get<mctools::simulated_data>(SD_bank_label);
 	    //SD.tree_dump(std::clog, "my_SD", "SD :");
+	    size_t number_of_step_hits = SD.get_number_of_step_hits("gg");
 	    if(SD.has_step_hits("gg"))
 	      {
-		size_t number_of_step_hits = SD.get_number_of_step_hits("gg");
-		for (int i = 0; i < number_of_step_hits; i++)
+		for (unsigned int i = 0; i < number_of_step_hits; i++)
 		  {
 		    const mctools::base_step_hit & base_step_hit = SD.get_step_hit("gg", i);
 	
 		    geomtools::vector_3d anode_position_start (0,0,0);
 		    const geomtools::vector_3d & anode_position_stop = base_step_hit.get_position_stop();
 		    
-		    double x = anode_position_stop.getX();
+		    // double x = anode_position_stop.getX();
 		    double y = anode_position_stop.getY();
 		    double z = anode_position_stop.getZ();
 

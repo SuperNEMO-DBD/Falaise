@@ -21,7 +21,6 @@ namespace snemo {
 
     signal_data::signal_data()
     {
-      _locked_ = false;
       return;
     }
 
@@ -31,36 +30,14 @@ namespace snemo {
       return;
     } 		       
 
-    bool signal_data::is_locked() const
-    {
-      return _locked_;
-    }
-    
-    void signal_data::lock()
-    {
-      DT_THROW_IF(is_locked(), std::logic_error, " Geiger signal collection is already locked ! ");
-      _check();
-      _locked_ = true;
-      return;
-    }
-    
-    void signal_data::unlock()
-    { 
-      DT_THROW_IF(!is_locked(), std::logic_error, " Geiger signal collection is already unlocked ! ");
-      _locked_ = false;
-      return;
-    }
-
     void signal_data::reset_geiger_signals()
     {
-      DT_THROW_IF(is_locked(), std::logic_error, " Operation prohibited, object is locked ! ");
       _geiger_signals_.clear();
       return ;
     }
 
     void signal_data::reset_calo_signals()
     {
-      DT_THROW_IF(is_locked(), std::logic_error, " Operation prohibited, object is locked ! ");
       _calo_signals_.clear();
       return ;
     }
@@ -68,7 +45,6 @@ namespace snemo {
 		
 		geiger_signal & signal_data::add_geiger_signal()
     {
-      DT_THROW_IF(is_locked(), std::logic_error, " Operation prohibited, object is locked ! ");
       {
 				geiger_signal_handle_type dummy;
 				_geiger_signals_.push_back(dummy);
@@ -80,7 +56,6 @@ namespace snemo {
 
     calo_signal & signal_data::add_calo_signal()
     {
-      DT_THROW_IF(is_locked(), std::logic_error, " Operation prohibited, object is locked ! ");
       {
 				calo_signal_handle_type dummy;
 				_calo_signals_.push_back(dummy);
@@ -233,10 +208,6 @@ namespace snemo {
 
     void signal_data::reset()
     {
-      if (is_locked())
-				{
-					unlock();
-				}
       reset_geiger_signals();
       reset_calo_signals();
       return;
@@ -247,9 +218,6 @@ namespace snemo {
 																 bool inherit_) const
     {
       out_ << indent_ << title_ << std::endl;
-
-      out_ << indent_ << datatools::i_tree_dumpable::tag
-           << "Is locked signals  : " << _locked_ << std::endl;
 
       out_ << indent_ << datatools::i_tree_dumpable::inherit_tag (inherit_)
 					 << "Geiger signals : " << _geiger_signals_.size() << std::endl;

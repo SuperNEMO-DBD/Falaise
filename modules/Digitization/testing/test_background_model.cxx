@@ -249,8 +249,8 @@ int main( int  argc_ , char **argv_  )
 
     //    my_manager.get_mapping().get_geom_id(position, my_category, my_gid); //, 50 * CLHEP::mm);
     geomtools::geom_id my_gid;
-    int my_type = 1302;
-    int gveto_type = 1252;
+    // int my_type = 1302;
+    // int gveto_type = 1252;
     int geiger_type = 1204;
     geomtools::vector_3d position_0(301.932 * CLHEP::mm,-1167.53 * CLHEP::mm,-257.44 * CLHEP::mm);
     GGL.find_geom_id(position_0, geiger_type, my_gid);
@@ -344,8 +344,6 @@ void generate_pool_of_calo_spurious_hit(mygsl::rng * rdm_gen_,
 	distrib = "poisson";
       }
 	
-      if (number_of_calo_hit < 0) number_of_calo_hit = 0;
-	
       double yield_threshold = 0.15; // Calorimeter signal E 15-100% yield
       for (unsigned int j = 0; j < number_of_calo_hit; j++)
 	{
@@ -388,8 +386,6 @@ void generate_pool_of_geiger_spurious_hit(mygsl::rng * rdm_gen_,
 	number_of_geiger_hit = rdm_gen_->poisson(mean_number);
 	distrib = "poisson";
       }
-	
-      if (number_of_geiger_hit < 0) number_of_geiger_hit = 0;
 	
       // Introduce dead time : the geiger cell can not trigger again during a given time (1ms tipycally) 
 

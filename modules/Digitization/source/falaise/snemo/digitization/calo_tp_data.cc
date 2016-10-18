@@ -18,7 +18,6 @@ namespace snemo {
 
     calo_tp_data::calo_tp_data()
     {
-      _locked_ = false;
       return;
     }
 
@@ -70,7 +69,7 @@ namespace snemo {
       return index_with_max;
     }
 
-		int calo_tp_data::get_clocktick_min() const
+		uint32_t calo_tp_data::get_clocktick_min() const
     {
 			if(_calo_tps_.size() == 0)
 				{
@@ -79,7 +78,7 @@ namespace snemo {
       return _calo_tps_[get_clocktick_min_index()].get().get_clocktick_25ns();
     }
 
-		int calo_tp_data::get_clocktick_max() const
+		uint32_t calo_tp_data::get_clocktick_max() const
     {
 			if(_calo_tps_.size() == 0)
 				{
@@ -88,7 +87,7 @@ namespace snemo {
       return _calo_tps_[get_clocktick_max_index()].get().get_clocktick_25ns();
     }
 
-    unsigned int calo_tp_data::get_clocktick_range() const
+		uint32_t calo_tp_data::get_clocktick_range() const
     {
 			if(_calo_tps_.size() == 0)
 				{
@@ -129,36 +128,14 @@ namespace snemo {
       return;
     }
 
-    bool calo_tp_data::is_locked() const
-    {
-      return _locked_;
-    }
-    
-    void calo_tp_data::lock()
-    {
-      DT_THROW_IF(is_locked(), std::logic_error, " Calorimeter TP collection is already locked ! ");
-      _check();
-      _locked_ = true;
-      return;
-    }
-    
-    void calo_tp_data::unlock()
-    { 
-      DT_THROW_IF(!is_locked(), std::logic_error, " Calorimeter TP collection is already unlocked ! ");
-      _locked_ = false;
-      return;
-    }
-
     void calo_tp_data::reset_tps()
     {
-      DT_THROW_IF(is_locked(), std::logic_error, " Operation prohibited, object is locked ! ");
       _calo_tps_.clear();
       return ;
     }
 		
     calo_tp & calo_tp_data::add()
     {
-      DT_THROW_IF(is_locked(), std::logic_error, " Operation prohibited, object is locked ! ");
       {
 				calo_tp_handle_type dummy;
 				_calo_tps_.push_back(dummy);
@@ -180,10 +157,6 @@ namespace snemo {
 
     void calo_tp_data::reset()
     {
-      if (is_locked())
-				{
-					unlock();
-				}
       reset_tps();
       return;
     }
@@ -196,9 +169,6 @@ namespace snemo {
 			
 			out_ << indent_ << title_ << std::endl;
 			
-      out_ << indent_ << datatools::i_tree_dumpable::tag
-           << "Is locked TP(s)  : " << _locked_ << std::endl;
-
       out_ << indent_ << datatools::i_tree_dumpable::inherit_tag (inherit_)
 					 << "Calorimeter TP(s) : " << _calo_tps_.size() << std::endl;
       

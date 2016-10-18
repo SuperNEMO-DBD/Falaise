@@ -39,8 +39,6 @@ int main( int  argc_ , char **argv_ )
       gg_tp.tree_dump(std::clog, "GG_TP 1 : ", "INFO : ");
     }
 
-    my_geiger_tp_data.lock();
-
     snemo::digitization::geiger_ctw_data my_geiger_ctw_data;
     snemo::digitization::geiger_tp_to_ctw_algo algo;
 

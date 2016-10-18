@@ -90,7 +90,7 @@ namespace snemo {
     void geiger_tp_to_ctw_algo::process(const geiger_tp_data & geiger_tp_data_,  geiger_ctw_data & geiger_ctw_data_)
     { 
       DT_THROW_IF(!is_initialized(), std::logic_error, "Geiger tp to ctw algo is not initialized, it can't process ! ");
-      for(int32_t i = geiger_tp_data_.get_clocktick_min(); i <= geiger_tp_data_.get_clocktick_max(); i++)
+      for(uint32_t i = geiger_tp_data_.get_clocktick_min(); i <= geiger_tp_data_.get_clocktick_max(); i++)
       	{
       	  for(unsigned int j = 0 ; j <= mapping::NUMBER_OF_CRATES ; j++) 
       	    { 

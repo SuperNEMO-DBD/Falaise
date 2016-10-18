@@ -63,7 +63,7 @@ namespace snemo {
 				coincidence_calo_record();
 				void reset();
 				void display() const;
-				int32_t clocktick_1600ns;
+				uint32_t clocktick_1600ns;
 			};
 			
 			enum trigger_mode{
@@ -78,7 +78,7 @@ namespace snemo {
 				coincidence_event_record();
 				void reset();
 				void display() const;
-				int32_t clocktick_1600ns;
+				uint32_t clocktick_1600ns;
 				std::bitset<trigger_info::NZONES> zoning_word[mapping::NUMBER_OF_SIDES];
 				std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> tracker_finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
 				coincidence_trigger_algorithm::trigger_mode trigger_mode;
@@ -90,7 +90,7 @@ namespace snemo {
 				void reset();
 				void display() const;
 				bool L2_coincidence_decision_bool;
-				int32_t L2_clocktick_decision;
+				uint32_t L2_clocktick_decision;
 				coincidence_trigger_algorithm::trigger_mode trigger_mode;				
 			};
 			
@@ -100,7 +100,7 @@ namespace snemo {
 				previous_event_record();
 				void reset();
 				void display() const;
-				int32_t previous_clocktick_1600ns;
+				uint32_t previous_clocktick_1600ns;
 				uint32_t counter_1600ns;
 				std::bitset<trigger_info::NZONES> zoning_word[mapping::NUMBER_OF_SIDES];
 				std::bitset<trigger_info::DATA_FULL_BITSET_SIZE> tracker_finale_data_per_zone[trigger_info::NSIDES][trigger_info::NZONES];
@@ -171,7 +171,7 @@ namespace snemo {
 			void _update_coinc_calo_record(const calo_trigger_algorithm::calo_summary_record & a_calo_summary_record_25ns, coincidence_trigger_algorithm::coincidence_calo_record & a_coinc_calo_record_1600ns);			
 				
 			/// Compute clocktick 1600ns for calo records
-			void _compute_clocktick_1600ns(const int32_t clocktick_25ns_, int32_t & clocktick_1600ns_);
+			void _compute_clocktick_1600ns(const uint32_t clocktick_25ns_, uint32_t & clocktick_1600ns_);
 			
 			/// Creating a per of calo record and tracker record for each clocktick
 			void _creating_pair_per_clocktick(const std::vector<coincidence_trigger_algorithm::coincidence_calo_record> & coinc_calo_records_,

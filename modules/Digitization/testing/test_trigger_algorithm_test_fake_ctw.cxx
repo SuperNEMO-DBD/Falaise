@@ -45,39 +45,14 @@ int main( int  argc_ , char **argv_  )
 
   // Parsing arguments
   int iarg = 1;
-  bool is_input_file   = false;
-  bool is_event_number = false;
-  bool is_output_path  = false;
-  bool is_run_number   = false;
   bool is_display      = false;
   bool is_help         = false;
 
-  std::string input_filename;
   std::string output_path;
-  int arg_event_number  = -1;
-  int arg_run_number    = -1;
-
+  
   while (iarg < argc_) {
     std::string arg = argv_[iarg];
-    if (arg == "-i" || arg == "--input") 
-      {
-	is_input_file = true;
-	input_filename = argv_[++iarg];
-      } 
-
-    else if (arg == "-op" || arg == "--output-path")
-      {
-	is_output_path = true;
-	output_path = argv_[++iarg];	
-      }
-    
-    else if (arg == "-n" || arg == "--number")
-      {
-        is_event_number = true;
-	arg_event_number    = atoi(argv_[++iarg]);
-      }
-
-    else if (arg == "-d" || arg == "--display")
+    if (arg == "-d" || arg == "--display")
       {
 	is_display = true;
       }
@@ -96,14 +71,12 @@ int main( int  argc_ , char **argv_  )
 		<< "$ BuildProducts/bin/falaisedigitizationplugin-trigger_algorithm_efficiency_validation [OPTIONS] [ARGUMENTS]" << std::endl << std::endl
 		<< "Allowed options: " << std::endl
 		<< "-h  [ --help ]           produce help message" << std::endl
-		<< "-i  [ --input ]          set an input file" << std::endl
 		<< "-op [ --output path ]    set a path where all files are stored" << std::endl
 		<< "-n  [ --number ]         set the number of events" << std::endl
 		<< "Example : " << std::endl << std::endl
 		<< "$ BuildProducts/bin/falaisedigitizationplugin-trigger_algorithm_efficiency_validation --input ${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio -op ${FALAISE_DIGITIZATION_TESTING_DIR}/output_default" 
 		<< " --number 5" << std::endl << std::endl
 		<< "If no options are set, programs have default values :" << std::endl << std::endl
-		<< "input file           = ${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio" << std::endl
 		<< "output path          = ${FALAISE_DIGITIZATION_TESTING_DIR}/output_default/" << std::endl
 		<< "number of events     = 10" << std::endl << std::endl;
       return 0;
@@ -141,11 +114,6 @@ int main( int  argc_ , char **argv_  )
     // Trigger Decision Data "TDD" bank label :
     std::string TDD_bank_label = "TDD";
     
-    // Number of events :
-    int event_number = -1;
-    if (is_event_number)  event_number = arg_event_number;
-    else                 event_number = 10;
-  
     // Electronic mapping :
     snemo::digitization::electronic_mapping my_e_mapping;
     my_e_mapping.set_geo_manager(my_manager);
@@ -156,7 +124,7 @@ int main( int  argc_ , char **argv_  )
     snemo::digitization::clock_utils my_clock_manager;
     my_clock_manager.initialize();		
  
-   // Loading memory from external files
+    // Loading memory from external files
     std::string mem1 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem1.conf";
     std::string mem2 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem2.conf";
     std::string mem3 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem3.conf";
@@ -211,9 +179,6 @@ int main( int  argc_ , char **argv_  )
     //my_trigger_algo.set_trigger_display_manager(my_trigger_display);
     my_trigger_algo.initialize(trigger_config);
 
-    // Internal counters
-    int psd_count = 0;         // Event counter
-    
     my_clock_manager.compute_clockticks_ref(random_generator);
 
     if (debug) my_clock_manager.tree_dump(std::clog, "Clock utils : ", "INFO : ");

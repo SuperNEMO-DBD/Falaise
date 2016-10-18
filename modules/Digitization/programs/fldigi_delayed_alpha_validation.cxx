@@ -41,7 +41,6 @@ int main(int  argc_ , char ** argv_)
   bool is_output_path  = false;
   bool is_event_number = false;
   bool is_verbose      = false;
-  bool is_print        = false;
   bool is_help         = false;
 
   std::string input_filename;
@@ -72,11 +71,6 @@ int main(int  argc_ , char ** argv_)
     else if (arg == "-v" || arg == "--verbosity")
       {
 	is_verbose = true;
-      }
-    
-    else if (arg == "-p" || arg == "--print")
-      {
-	is_print = true;
       }
 
     else if (arg =="-h" || arg == "--help")
@@ -278,11 +272,10 @@ int main(int  argc_ , char ** argv_)
 		    else
 		      {
 			// extract the corresponding geom ID:
-			const geomtools::geom_id & geiger_gid = BSH.get_geom_id();
+			// const geomtools::geom_id & geiger_gid = BSH.get_geom_id();
 
 			//if (is_verbose) BSH.tree_dump(std::clog, "A Geiger Base Step Hit : ", "INFO : ");
 
-			int hit_id = count;
 			double time_start = BSH.get_time_start();
 			geomtools::vector_3d position_start_vector = BSH.get_position_start();
 			geomtools::vector_3d position_stop_vector  = BSH.get_position_stop();
@@ -293,7 +286,7 @@ int main(int  argc_ , char ** argv_)
 			count++;
 		      }
 		  }
-		//if (is_verbose) std::clog << "GG Cells #" << number_of_gg_cells << " Delayed GG Cells #" << number_of_delayed_gg_cells << " Not Delayed GG Cells #" << number_of_not_delayed_gg_cells << std::endl;	
+		if (is_verbose) std::clog << "GG Cells #" << number_of_gg_cells << " Delayed GG Cells #" << number_of_delayed_gg_cells << " Not Delayed GG Cells #" << number_of_not_delayed_gg_cells << std::endl;	
 	      }
 
 	    if (number_of_delayed_gg_cells == 0)

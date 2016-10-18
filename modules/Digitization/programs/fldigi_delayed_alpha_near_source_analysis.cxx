@@ -38,7 +38,6 @@ int main(int  argc_ , char ** argv_)
 
     TTree * input_gg_cells_tree = (TTree *)input_file->Get("GGCellsTree");
     TTree * input_delayed_cells_tree = (TTree *)input_file->Get("DelayedCellsTree");
-    TTree * output_tree = new TTree("TrackerTreeAnalysis", "Alpha track analysis");
 
     Int_t event_id    = 0;
     std::vector<Int_t> * vect_number_of_gg_cells = 0;
@@ -82,9 +81,6 @@ int main(int  argc_ , char ** argv_)
     // Begining of the analysis
     std::clog << "Number of Entries in TTree = " <<  input_delayed_cells_tree->GetEntries() << std::endl; 
     Int_t n_entry = input_delayed_cells_tree->GetEntries();
-    
-    
-    const int geiger_threshold = 2; // number of geiger cells threshold     
 
     bool debug = false;
     
@@ -97,9 +93,9 @@ int main(int  argc_ , char ** argv_)
 	for (size_t j = 0; j < vector_size; j++)
 	  {
 	    int delayed_time_shift = vect_delayed_time_shift->at(j);
-	    int number_of_gg_cells = vect_number_of_gg_cells->at(j);
+	    // int number_of_gg_cells = vect_number_of_gg_cells->at(j);
 	    int number_of_delayed_gg_cells = vect_number_of_delayed_gg_cells->at(j);
-	    int number_of_not_delayed_gg_cells = vect_number_of_not_delayed_gg_cells->at(j);
+	    // int number_of_not_delayed_gg_cells = vect_number_of_not_delayed_gg_cells->at(j);
 	    histo_delayed_geiger_cells_delayed_time->Fill(delayed_time_shift, number_of_delayed_gg_cells);
 	    // std::clog << "Delayed time shift              = " << delayed_time_shift << std::endl;
 	    // std::clog << "Number of gg cells             = " << number_of_gg_cells << std::endl;
@@ -109,7 +105,6 @@ int main(int  argc_ , char ** argv_)
       }
     histo_delayed_geiger_cells_delayed_time->Write();
 
-    //output_tree->Fill();
     output_file->Write();
     output_file->Close();
    

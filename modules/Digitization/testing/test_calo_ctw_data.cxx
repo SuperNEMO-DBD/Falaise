@@ -36,7 +36,6 @@ int main(int argc_, char ** argv_)
       std::bitset<10> zoning_word (std::string("0001110100"));
       my_calo_ctw.set_main_zoning_word(zoning_word);
       my_calo_ctw.tree_dump(std::clog, "my_calo_CTW_data : ", "INFO : ");
-      my_calo_ctw.lock();
     }  
     {
       snemo::digitization::calo_ctw & my_calo_ctw = my_calo_ctw_data.add();
@@ -49,7 +48,6 @@ int main(int argc_, char ** argv_)
       std::bitset<10> zoning_word (std::string("1010101010"));
       my_calo_ctw.set_main_zoning_word(zoning_word);
       my_calo_ctw.tree_dump(std::clog, "my_calo_CTW_data : ", "INFO : ");
-      my_calo_ctw.lock();
     }  
     {
       snemo::digitization::calo_ctw & my_calo_ctw = my_calo_ctw_data.add();
@@ -62,7 +60,6 @@ int main(int argc_, char ** argv_)
       std::bitset<10> zoning_word (std::string("0010000100"));
       my_calo_ctw.set_main_zoning_word(zoning_word);
       my_calo_ctw.tree_dump(std::clog, "my_calo_CTW_data : ", "INFO : ");
-      my_calo_ctw.lock();
     }  
     {
       snemo::digitization::calo_ctw & my_calo_ctw = my_calo_ctw_data.add();
@@ -75,9 +72,7 @@ int main(int argc_, char ** argv_)
       std::bitset<10> zoning_word (std::string("1111110100"));
       my_calo_ctw.set_main_zoning_word(zoning_word);
       my_calo_ctw.tree_dump(std::clog, "my_calo_CTW_data : ", "INFO : ");
-      my_calo_ctw.lock();
     }  
-    my_calo_ctw_data.lock();
 
     std::clog << "Clocktick min = " << my_calo_ctw_data.get_clocktick_min() << std::endl;
     std::clog << "Clocktick max = " << my_calo_ctw_data.get_clocktick_max() << std::endl;
@@ -91,7 +86,7 @@ int main(int argc_, char ** argv_)
 
     std::clog << "Size of my list of calo CTW for a clocktick = 20  : " << my_list_of_ctw_per_clocktick.size() << " calo CTW(s) in the list " << std::endl;
 
-    for (int i = 0; i < my_list_of_ctw_per_clocktick.size(); i++)
+    for (unsigned int i = 0; i < my_list_of_ctw_per_clocktick.size(); i++)
       {
 	my_list_of_ctw_per_clocktick[i].get().tree_dump(std::clog, "My CTW(s) in the list with a clocktick = 20 : ", "INFO : ");
       }

@@ -38,14 +38,10 @@ int main(int  argc_ , char ** argv_)
   int iarg = 1;
   bool is_input_file   = false;
   bool is_event_number = false;
-  bool is_output_path  = false;
-  bool is_run_number   = false;
   bool is_help         = false;
 
   std::string input_filename;
-  std::string output_path;
   int arg_event_number  = -1;
-  int arg_run_number    = -1;
 
   while (iarg < argc_) {
     std::string arg = argv_[iarg];
@@ -53,18 +49,6 @@ int main(int  argc_ , char ** argv_)
       {
 	is_input_file  = true;
 	input_filename = argv_[++iarg];
-      }
-
-    else if (arg == "-op" || arg == "--output-path")
-      {
-	is_output_path = true;
-	output_path = argv_[++iarg];	
-      }
-    
-    else if (arg == "-rn" || arg == "--run-number")
-      {
-	is_run_number = true;
-	arg_run_number = atoi(argv_[++iarg]);	
       }
 
     else if (arg == "-n" || arg == "--number")

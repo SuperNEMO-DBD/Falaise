@@ -246,7 +246,7 @@ namespace snemo {
       my_calo_tp_.get_geom_id().extract_to(temporary_feb_id);
       temporary_feb_id.set(mapping::BOARD_INDEX, mapping::CONTROL_BOARD_ID);
 
-      int32_t clocktick_with_internal_shift = my_calo_tp_.get_clocktick_25ns() + clock_utils::CALO_CB_SHIFT_CLOCKTICK_NUMBER;
+      uint32_t clocktick_with_internal_shift = my_calo_tp_.get_clocktick_25ns() + clock_utils::CALO_CB_SHIFT_CLOCKTICK_NUMBER;
       
       a_calo_ctw_.set_header(my_calo_tp_.get_hit_id(),
 			     temporary_feb_id,
@@ -267,7 +267,7 @@ namespace snemo {
       my_calo_tp_.get_geom_id().extract_to(temporary_feb_id);
       temporary_feb_id.set(mapping::BOARD_INDEX, mapping::CONTROL_BOARD_ID);
 
-      int32_t clocktick_with_internal_shift = my_calo_tp_.get_clocktick_25ns() + clock_utils::CALO_CB_SHIFT_CLOCKTICK_NUMBER;
+      uint32_t clocktick_with_internal_shift = my_calo_tp_.get_clocktick_25ns() + clock_utils::CALO_CB_SHIFT_CLOCKTICK_NUMBER;
 
       a_calo_ctw_.set_header(my_calo_tp_.get_hit_id(),
 			     temporary_feb_id,
@@ -307,7 +307,7 @@ namespace snemo {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Calo tp to ctw algo is not initialized, it can't process ! ");
       DT_THROW_IF(_mode_ == MODE_UNDEFINED, std::logic_error, "Mode type is not defined, check your crate number ! ");
 
-      for (int32_t i = calo_tp_data_.get_clocktick_min(); i <= calo_tp_data_.get_clocktick_max(); i++)
+      for (uint32_t i = calo_tp_data_.get_clocktick_min(); i <= calo_tp_data_.get_clocktick_max(); i++)
 	{
 	  if (_mode_ == MODE_MAIN_WALL)
 	    {

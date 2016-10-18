@@ -63,7 +63,6 @@ int main(int argc_, char ** argv_)
       my_geiger_ctw.set_clocktick_800ns(35);
       my_geiger_ctw.tree_dump(std::clog, "my_geiger_CTW_data : ", "INFO : ");
     }  
-    my_geiger_ctw_data.lock();
 
     std::clog << "Clocktick min = " << my_geiger_ctw_data.get_clocktick_min() << std::endl;
     std::clog << "Clocktick max = " << my_geiger_ctw_data.get_clocktick_max() << std::endl;
@@ -77,7 +76,7 @@ int main(int argc_, char ** argv_)
 
     std::clog << "Size of my list of geiger CTW for a clocktick = 20  : " << my_list_of_gg_ctw_per_clocktick.size() << " geiger CTW(s) in the list " << std::endl;
 
-    for (int i = 0; i < my_list_of_gg_ctw_per_clocktick.size(); i++)
+    for (unsigned int i = 0; i < my_list_of_gg_ctw_per_clocktick.size(); i++)
       {
 	my_list_of_gg_ctw_per_clocktick[i].get().tree_dump(std::clog, "My CTW(s) in the list with a clocktick = 20 : ", "INFO : ");
       }

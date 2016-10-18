@@ -47,7 +47,6 @@ namespace snemo {
 
     void tracker_trigger_algorithm::tracker_record::display(std::ostream & out_)
     {
-      // out_ << "CT1600=" << clocktick_1600ns << std::endl;
       for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
 	{
 	  out_ << "Side" << iside << ' ';
@@ -883,7 +882,7 @@ namespace snemo {
     {
       reset_matrix();
       reset_zones_informations();
-      unsigned int clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2;
+      uint32_t clocktick_1600ns = geiger_ctw_list_per_clocktick_[0].get().get_clocktick_800ns() / 2;
       for (unsigned int isize = 0; isize < geiger_ctw_list_per_clocktick_.size(); isize++)
        	{
        	  std::vector<geomtools::geom_id> hit_cells_gids;
@@ -928,7 +927,7 @@ namespace snemo {
       _geiger_matrix_records_.clear();
       _tracker_finale_decision_ = false;
       // Just even clockticks 800 ns are processing (to take in account CB to TB serdes limitation)
-      int32_t iclocktick_800 = geiger_ctw_data_.get_clocktick_min();
+      uint32_t iclocktick_800 = geiger_ctw_data_.get_clocktick_min();
       if (iclocktick_800 % 2 == 1) iclocktick_800 += 1;
       for (; iclocktick_800 <= geiger_ctw_data_.get_clocktick_max(); iclocktick_800 +=2)
        	{

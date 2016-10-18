@@ -149,7 +149,7 @@ namespace snemo {
 	  out_ << irow << ' ';
 	}
 	out_ << '\n';
-	for (unsigned int ilayer = trigger_info::NLAYERS - 1; ilayer < -1; ilayer--) {
+	for (unsigned int ilayer = trigger_info::NLAYERS - 1; ilayer <= 0; ilayer--) {
 	  out_ << ilayer << " = " << "  ";
 	  for (unsigned int irow = 0; irow < width(szone_id); irow++) {
 	    out_ << (cells[ilayer][irow] ? 'o' : '.') << ' ';

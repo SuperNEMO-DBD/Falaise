@@ -49,9 +49,9 @@ namespace snemo {
       std::clog << total_multiplicity_side_1 << ' ';
       std::clog << total_multiplicity_side_0 << ' ';
 
-      for (int iside = trigger_info::NSIDES-1; iside >= 0; iside--)
+      for (unsigned int iside = trigger_info::NSIDES-1; iside != (unsigned)0 - 1; iside--)
       	{
-      	  for (int izone = trigger_info::NZONES-1; izone >= 0 ; izone--)
+      	  for (unsigned int izone = trigger_info::NZONES-1; izone != (unsigned)0 - 1 ; izone--)
       	    {
       	      std::clog << zoning_word[iside][izone];
       	    }
@@ -206,7 +206,7 @@ namespace snemo {
 	{
 	  if (i == 0)
 	    {
-	      for (int j = trigger_info::NLAYERS - 1; j >= 0; j--) // Value NLAYERS = 9
+	      for (unsigned int j = trigger_info::NLAYERS - 1; j != (unsigned) 0 - 1; j--) // Value NLAYERS = 9
 		{
 		  std::clog << j << ' ';
 		  for (unsigned int k = 0; k < trigger_info::NROWS; k++)
@@ -332,9 +332,9 @@ namespace snemo {
       std::clog << LTO_side_0 << ' ';
       std::clog << total_multiplicity_side_1 << ' ';
       std::clog << total_multiplicity_side_0 << ' ';
-      for (int iside = trigger_info::NSIDES-1; iside >= 0; iside--)
+      for (unsigned int iside = trigger_info::NSIDES-1; iside != (unsigned)0-1; iside--)
       	{
-      	  for (int izone = trigger_info::NZONES-1; izone >= 0 ; izone--)
+      	  for (unsigned int izone = trigger_info::NZONES-1; izone != (unsigned)0-1 ; izone--)
       	    {
       	      std::clog << calo_zoning_word[iside][izone];
       	    }

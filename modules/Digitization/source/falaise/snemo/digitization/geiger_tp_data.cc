@@ -18,8 +18,7 @@ namespace snemo {
 
     geiger_tp_data::geiger_tp_data()
     {
-      _locked_ = false;
-      return;
+			return;
     }
 
     geiger_tp_data::~geiger_tp_data()
@@ -28,13 +27,13 @@ namespace snemo {
       return;
     }
     
-    int geiger_tp_data::get_clocktick_min_index() const
+    unsigned int geiger_tp_data::get_clocktick_min_index() const
     {
       //DT_THROW_IF(_geiger_tps_.size() == 0, std::logic_error, " Geiger TP collection is empty ! ");
 
       unsigned int index_with_min = 0;
 
-      int32_t clocktick_min = _geiger_tps_[0].get().get_clocktick_800ns();
+      uint32_t clocktick_min = _geiger_tps_[0].get().get_clocktick_800ns();
       
       for (unsigned int i = 1; i < _geiger_tps_.size(); i++)
 	{
@@ -47,13 +46,13 @@ namespace snemo {
       return index_with_min;
     }
 			
-    int geiger_tp_data::get_clocktick_max_index() const
+    unsigned int geiger_tp_data::get_clocktick_max_index() const
     {
       //DT_THROW_IF(_geiger_tps_.size() == 0, std::logic_error, " Geiger TP collection is empty ! ");
 
       unsigned int index_with_max = 0;
 
-      int32_t clocktick_max = _geiger_tps_[0].get().get_clocktick_800ns();
+      uint32_t clocktick_max = _geiger_tps_[0].get().get_clocktick_800ns();
       
       for (unsigned int i = 1; i < _geiger_tps_.size(); i++)
 	{
@@ -66,25 +65,25 @@ namespace snemo {
       return index_with_max;
     }
 
-    int geiger_tp_data::get_clocktick_min() const
+    uint32_t geiger_tp_data::get_clocktick_min() const
     {
       //DT_THROW_IF(_geiger_tps_.size() == 0, std::logic_error, " Geiger TP collection is empty ! ");
       return _geiger_tps_[get_clocktick_min_index()].get().get_clocktick_800ns();
     }
 
-    int geiger_tp_data::get_clocktick_max() const
+    uint32_t geiger_tp_data::get_clocktick_max() const
     {
 			// DT_THROW_IF(_geiger_tps_.size() == 0, std::logic_error, " Geiger TP collection is empty ! ");
       return _geiger_tps_[get_clocktick_max_index()].get().get_clocktick_800ns();
     }
 
-    int geiger_tp_data::get_clocktick_range() const
+		uint32_t geiger_tp_data::get_clocktick_range() const
     {
       //DT_THROW_IF(_geiger_tps_.size() == 0, std::logic_error, " Geiger TP collection is empty ! ");
       return get_clocktick_max() - get_clocktick_min();
     }
 			
-    void geiger_tp_data::get_list_of_gg_tp_per_clocktick(int32_t clocktick_800ns_, geiger_tp_collection_type & my_list_of_gg_tps_per_clocktick_) const
+    void geiger_tp_data::get_list_of_gg_tp_per_clocktick(uint32_t clocktick_800ns_, geiger_tp_collection_type & my_list_of_gg_tps_per_clocktick_) const
     {
       for (unsigned int i = 0; i < _geiger_tps_.size(); i++)
       	{
@@ -96,7 +95,7 @@ namespace snemo {
       return;
     }
 
-    void geiger_tp_data::get_list_of_gg_tp_per_clocktick_per_crate(int32_t clocktick_800ns_, unsigned int crate_number_, geiger_tp_collection_type & my_list_of_gg_tps_per_clocktick_per_crate_) const
+    void geiger_tp_data::get_list_of_gg_tp_per_clocktick_per_crate(uint32_t clocktick_800ns_, unsigned int crate_number_, geiger_tp_collection_type & my_list_of_gg_tps_per_clocktick_per_crate_) const
     {
       for (unsigned int i = 0; i < _geiger_tps_.size(); i++)
 				{
@@ -126,36 +125,14 @@ namespace snemo {
 			return;
 		}
 
-    bool geiger_tp_data::is_locked() const
-    {
-      return _locked_;
-    }
-    
-    void geiger_tp_data::lock()
-    {
-      DT_THROW_IF(is_locked(), std::logic_error, " Geiger TP collection is already locked ! ");
-      _check();
-      _locked_ = true;
-      return;
-    }
-    
-    void geiger_tp_data::unlock()
-    { 
-      DT_THROW_IF(!is_locked(), std::logic_error, " Geiger TP collection is already unlocked ! ");
-      _locked_ = false;
-      return;
-    }
-
     void geiger_tp_data::reset_tps()
     {
-      DT_THROW_IF(is_locked(), std::logic_error, " Operation prohibited, object is locked ! ");
       _geiger_tps_.clear();
       return ;
     }
 		
     geiger_tp & geiger_tp_data::add()
     {
-      DT_THROW_IF(is_locked(), std::logic_error, " Operation prohibited, object is locked ! ");
       {
 				geiger_tp_handle_type dummy;
 				_geiger_tps_.push_back(dummy);
@@ -177,10 +154,6 @@ namespace snemo {
 
     void geiger_tp_data::reset()
     {
-      if (is_locked())
-				{
-					unlock();
-				}
       reset_tps();
       return;
     }
@@ -191,9 +164,6 @@ namespace snemo {
 				  bool inherit_) const
     {
       out_ << indent_ << title_ << std::endl;
-
-      out_ << indent_ << datatools::i_tree_dumpable::tag
-           << "Is locked TPs  : " << _locked_ << std::endl;
 
       out_ << indent_ << datatools::i_tree_dumpable::inherit_tag (inherit_)
 	   << "Geiger TPs : " << _geiger_tps_.size() << std::endl;

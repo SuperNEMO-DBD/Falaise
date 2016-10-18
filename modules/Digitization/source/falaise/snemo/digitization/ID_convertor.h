@@ -67,11 +67,11 @@ namespace snemo {
       geomtools::geom_id convert_GID_to_EID(const geomtools::geom_id & geom_id_) const;
       void set_geo_manager(const geomtools::manager & mgr_);
       void set_module_number(int);
-      
+      /*
       void tree_dump(std::ostream & out_,
 										 const std::string & title_ ,
 										 const std::string & indent_,
-										 bool inherit_);
+										 bool inherit_);*/
     };
 
 

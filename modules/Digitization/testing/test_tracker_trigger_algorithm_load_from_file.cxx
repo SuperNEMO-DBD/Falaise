@@ -40,13 +40,11 @@ int main( int  argc_ , char **argv_  )
   int iarg = 1;
   bool is_input_file   = false;
   bool is_output_path  = false;
-  bool is_event_number = false;
   bool is_display      = false;
   bool is_help         = false;
 
   std::string input_filename;
   std::string output_path;
-  int arg_event_number  = -1;
 
   while (iarg < argc_) {
     std::string arg = argv_[iarg];
@@ -60,12 +58,6 @@ int main( int  argc_ , char **argv_  )
       {
 	is_output_path = true;
 	output_path = argv_[++iarg];
-      }
-
-    else if (arg == "-n" || arg == "--number")
-      {
-        is_event_number = true;
-	arg_event_number    = atoi(argv_[++iarg]);
       }
 
     else if (arg == "-d" || arg == "--display")
@@ -107,6 +99,7 @@ int main( int  argc_ , char **argv_  )
     bool debug = false;
 
     if (is_display) debug = true;
+    if (debug) std::clog << "Debug mode" << std::endl;
     std::clog << "Test tracker trigger algorithm from a loading file !" << std::endl;
     std::string manager_config_file;
 
@@ -143,11 +136,6 @@ int main( int  argc_ , char **argv_  )
     }
     std::string output_file = output_path + "Tracker_matrix_response_from_loaded_file.log";
     std::clog << "Output file = " << output_file << std::endl;
-
-    // Number of events :
-    int event_number = -1;
-    if (is_event_number)  event_number = arg_event_number;
-    else                 event_number = 1;
 
     // Electronic mapping :
     snemo::digitization::electronic_mapping my_e_mapping;
@@ -192,11 +180,11 @@ int main( int  argc_ , char **argv_  )
 
     bool geiger_matrix[snemo::digitization::trigger_info::NSIDES][snemo::digitization::trigger_info::NLAYERS][snemo::digitization::trigger_info::NROWS];
 
-    for (int iside = 0; iside < snemo::digitization::trigger_info::NSIDES; iside++)
+    for (unsigned int iside = 0; iside < snemo::digitization::trigger_info::NSIDES; iside++)
       {
-	for (int jlayer = 0; jlayer < snemo::digitization::trigger_info::NLAYERS; jlayer++)
+	for (unsigned int jlayer = 0; jlayer < snemo::digitization::trigger_info::NLAYERS; jlayer++)
 	  {
-	    for (int krow = 0; krow < snemo::digitization::trigger_info::NROWS; krow++)
+	    for (unsigned int krow = 0; krow < snemo::digitization::trigger_info::NROWS; krow++)
 	      {
 		geiger_matrix[iside][jlayer][krow] = false;
 	      } // end of krow
@@ -227,7 +215,7 @@ int main( int  argc_ , char **argv_  )
 	    layer = line_number - 9;
 	  }
 
-	for (int i = 0 ; i < line.length(); i++)
+	for (unsigned int i = 0 ; i < line.length(); i++)
 	  {
 	    char my_value = line[i];
 	    if (my_value == '0') geiger_matrix[side][layer][i] = false;
@@ -236,13 +224,13 @@ int main( int  argc_ , char **argv_  )
 
 	if (line.empty())
 	  {
-	    for (int i = 0; i < snemo::digitization::trigger_info::NSIDES; i++)
+	    for (unsigned int i = 0; i < snemo::digitization::trigger_info::NSIDES; i++)
 	      {
 		if (i == 0)
 		  {
-		    for (int j = snemo::digitization::trigger_info::NLAYERS - 1; j >= 0; j--) // Value GEIGER_LAYER_SIZE = 9
+		    for (unsigned int j = snemo::digitization::trigger_info::NLAYERS - 1; j != (unsigned)0-1; j--) // Value GEIGER_LAYER_SIZE = 9
 		      {
-			for (int k = 0; k < snemo::digitization::trigger_info::NROWS; k++)
+			for (unsigned int k = 0; k < snemo::digitization::trigger_info::NROWS; k++)
 			  {
 			    if (geiger_matrix[i][j][k] ) std::clog << "1";
 			    if(!geiger_matrix[i][j][k])  std::clog << "0";
@@ -255,9 +243,9 @@ int main( int  argc_ , char **argv_  )
 
 		if (i == 1)
 		  {
-		    for (int j = 0; j < snemo::digitization::trigger_info::NLAYERS; j++)
+		    for (unsigned int j = 0; j < snemo::digitization::trigger_info::NLAYERS; j++)
 		      {
-			for (int k = 0; k < snemo::digitization::trigger_info::NROWS; k++)
+			for (unsigned int k = 0; k < snemo::digitization::trigger_info::NROWS; k++)
 			  {
 			    if (geiger_matrix[i][j][k]) std::clog << "1";
 			    if(!geiger_matrix[i][j][k])  std::clog << "0";
@@ -300,7 +288,7 @@ int main( int  argc_ , char **argv_  )
 				       temporary_elec_id,
 				       clocktick_800ns);
 
-	    for (int iblock = 0; iblock < 19; iblock++)
+	    for (unsigned int iblock = 0; iblock < 19; iblock++)
 	      {
 		std::bitset<snemo::digitization::geiger::tp::TP_SIZE> bitset_ctw_0;
 		std::bitset<snemo::digitization::geiger::tp::TP_SIZE> bitset_ctw_1;
@@ -321,7 +309,7 @@ int main( int  argc_ , char **argv_  )
 		std::bitset<9> ctw2_side_1_row_0_bitset;
 		std::bitset<9> ctw2_side_1_row_1_bitset;
 
-		for (int jlayer = 0; jlayer < snemo::digitization::trigger_info::NLAYERS; jlayer++)
+		for (unsigned int jlayer = 0; jlayer < snemo::digitization::trigger_info::NLAYERS; jlayer++)
 		  {
 		    // CTW 0 :
 		    if (geiger_matrix[0][jlayer][iblock * 2] == true)
@@ -420,7 +408,7 @@ int main( int  argc_ , char **argv_  )
 
 		  }// end of jlayer
 
-		for (int i = 0; i < 9; i++)
+		for (unsigned int i = 0; i < 9; i++)
 		  {
 		    if (ctw0_side_0_row_0_bitset.test(i) == true)
 		      {

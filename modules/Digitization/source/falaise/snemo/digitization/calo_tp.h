@@ -75,7 +75,7 @@ namespace snemo {
 			/// Set the header with valid values
 			void set_header(int32_t hit_id_,
 											const geomtools::geom_id & electronic_id_,
-											int32_t clocktick_25ns_);
+											uint32_t clocktick_25ns_);
 
 			/// Set the data with valid values
 			void set_data(const double amplitude,
@@ -88,10 +88,10 @@ namespace snemo {
 											 const bool spare_bit);
   
       /// Return the timestamp of the trigger primitive
-      int32_t get_clocktick_25ns() const;
+      uint32_t get_clocktick_25ns() const;
 
       /// Set the timestamp of the trigger primitive
-      void set_clocktick_25ns(const int32_t clocktick_25_);
+      void set_clocktick_25ns(const uint32_t clocktick_25_);
 			
 			/// Check if a clocktick is defined
 			bool has_clocktick_25ns() const;
@@ -135,15 +135,6 @@ namespace snemo {
 			/// Check if the spare bit is set
 			bool is_spare() const;
 
-			/// Check the lock status
-      bool is_locked() const;
-
-      /// Lock 
-			void lock();
-
-			/// Unlock
-			void unlock();
-
       /// Check if the internal data of the TP is valid
       bool is_valid() const;
 
@@ -156,15 +147,9 @@ namespace snemo {
 														 const std::string & a_indent = "",
 														 bool a_inherit               = false) const;
 
-		protected : 
-
-			/// Check if a calo TP is available
-			void _check();
-
     private : 
 
-			bool _locked_;               //!< TP lock flag
-      int32_t _clocktick_25ns_;    //!< The timestamp of the trigger primitive in main clock units (40 MHz)
+      uint32_t _clocktick_25ns_;    //!< The timestamp of the trigger primitive in main clock units (40 MHz)
       std::bitset<FULL_SIZE> _tp_; //!< The trigger primitive bitset
 
       DATATOOLS_SERIALIZATION_DECLARATION()

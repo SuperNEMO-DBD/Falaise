@@ -271,7 +271,7 @@ namespace snemo {
 
       	  if (a_ctrec.calo_finale_decision == true)
       	    {
-	      int ctrec_clocktick_1600ns = 0;
+	      uint32_t ctrec_clocktick_1600ns = 0;
       	      _clock_manager_->compute_clocktick_25ns_to_1600ns(a_ctrec.clocktick_25ns, ctrec_clocktick_1600ns);
 
       	      if (coincidence_calo_records_1600ns_.size() == 0)
@@ -312,7 +312,7 @@ namespace snemo {
       			    {
       			      if (coincidence_calo_records_1600ns_[j].clocktick_1600ns <= coincidence_calo_records_1600ns_[i].clocktick_1600ns + _coincidence_calorimeter_gate_size_) 
       				{
-				  int clocktick_1600_before_modification = coincidence_calo_records_1600ns_[j].clocktick_1600ns;
+				  uint32_t clocktick_1600_before_modification = coincidence_calo_records_1600ns_[j].clocktick_1600ns;
       				  coincidence_calo_records_1600ns_[j] = coincidence_calo_records_1600ns_[i];
       				  coincidence_calo_records_1600ns_[j].clocktick_1600ns = clocktick_1600_before_modification;
       				}
@@ -323,10 +323,10 @@ namespace snemo {
       		      unsigned int actual_index = i;
 		      unsigned int index_min = std::floor(actual_index /  _coincidence_calorimeter_gate_size_) * _coincidence_calorimeter_gate_size_;
       		      unsigned int index_max = index_min + _coincidence_calorimeter_gate_size_ - 1;
-		      int clocktick_to_create = ctrec_clocktick_1600ns + _coincidence_calorimeter_gate_size_;	     
-		      int clocktick_max_1600 = coincidence_calo_records_1600ns_[index_max].clocktick_1600ns;
+		      uint32_t clocktick_to_create = ctrec_clocktick_1600ns + _coincidence_calorimeter_gate_size_;	     
+		      uint32_t clocktick_max_1600 = coincidence_calo_records_1600ns_[index_max].clocktick_1600ns;
 		      
-      		      for (int j = clocktick_max_1600 + 1; j <= clocktick_to_create; j++)
+      		      for (unsigned int j = clocktick_max_1600 + 1; j <= clocktick_to_create; j++)
       			{
       			  bool no_same_clocktick = true;
       			  for (unsigned int k = actual_index + 1 ; k < coincidence_calo_records_1600ns_.size(); k++)
@@ -388,7 +388,7 @@ namespace snemo {
       bool total_multiplicity_threshold = a_coinc_calo_record_1600ns_.total_multiplicity_threshold;
       bool calo_decision = a_coinc_calo_record_1600ns_.decision;
      
-      int clocktick_1600_from_25 = 0;
+      unsigned int clocktick_1600_from_25 = 0;
       _clock_manager_->compute_clocktick_25ns_to_1600ns(a_calo_summary_record_25ns_.clocktick_25ns,
 							clocktick_1600_from_25);
 
@@ -470,7 +470,7 @@ namespace snemo {
       // A PER is created or updated only if a coincidence between tracker and calorimeter is ok (so CALO_TRACKER_TIME_COINC or CARACO)
       
       trigger_structures::L2_decision the_L2_decision = _L2_decision_records_.back();
-      int32_t L2_decision_clocktick = the_L2_decision.L2_ct_decision;
+      uint32_t L2_decision_clocktick = the_L2_decision.L2_ct_decision;
 
       if (the_L2_decision.L2_trigger_mode == trigger_structures::L2_trigger_mode::CARACO 
       	  || the_L2_decision.L2_trigger_mode == trigger_structures::L2_trigger_mode::CALO_TRACKER_TIME_COINC)
@@ -618,7 +618,7 @@ namespace snemo {
       for (unsigned int i = 0; i < geiger_ctw_data_1600ns.get_geiger_ctws().size(); i++)
 	{
 	  geiger_ctw & a_gg_ctw = geiger_ctw_data_1600ns.grab_geiger_ctws()[i].grab();
-	  int32_t gg_ctw_clocktick_1600ns = clock_utils::INVALID_CLOCKTICK;
+	  uint32_t gg_ctw_clocktick_1600ns = clock_utils::INVALID_CLOCKTICK;
 	  _clock_manager_->compute_clocktick_800ns_to_1600ns(a_gg_ctw.get_clocktick_800ns(),
 							     gg_ctw_clocktick_1600ns);
 	  a_gg_ctw.set_clocktick_800ns(gg_ctw_clocktick_1600ns);
@@ -640,7 +640,7 @@ namespace snemo {
       // a_fake_calo_record_25ns.calo_finale_decision = true;
       // _calo_records_25ns_.push_back(a_fake_calo_record_25ns);
       
-      int32_t last_calo_ct_25ns = clock_utils::INVALID_CLOCKTICK;
+      uint32_t last_calo_ct_25ns = clock_utils::INVALID_CLOCKTICK;
 
       // Create calo L1 decision(s) :
       for (unsigned int i = 0; i < _calo_records_25ns_.size(); i++)
@@ -648,7 +648,7 @@ namespace snemo {
 	  trigger_structures::calo_summary_record a_calo_record_25ns = _calo_records_25ns_[i];
 	  //a_calo_record_25ns.display();
 
-	  int32_t calo_record_ct_25ns = a_calo_record_25ns.clocktick_25ns;
+	  uint32_t calo_record_ct_25ns = a_calo_record_25ns.clocktick_25ns;
 	  
 	  if ((last_calo_ct_25ns == clock_utils::INVALID_CLOCKTICK || calo_record_ct_25ns != last_calo_ct_25ns + 1) &&  a_calo_record_25ns.calo_finale_decision == true)
 	    {
@@ -693,10 +693,10 @@ namespace snemo {
 	  
 	  // Calculate the ct 1600 minimum and ct 1600 maximum : 
 
-	  int32_t calorimeter_ct_min_1600 = clock_utils::INVALID_CLOCKTICK;
-	  int32_t calorimeter_ct_max_1600 = clock_utils::INVALID_CLOCKTICK;
-	  int32_t tracker_ct_min_1600     = clock_utils::INVALID_CLOCKTICK;
-	  int32_t tracker_ct_max_1600     = clock_utils::INVALID_CLOCKTICK;
+	  uint32_t calorimeter_ct_min_1600 = clock_utils::INVALID_CLOCKTICK;
+	  uint32_t calorimeter_ct_max_1600 = clock_utils::INVALID_CLOCKTICK;
+	  uint32_t tracker_ct_min_1600     = clock_utils::INVALID_CLOCKTICK;
+	  uint32_t tracker_ct_max_1600     = clock_utils::INVALID_CLOCKTICK;
 
 	  if (_coincidence_calo_records_1600ns_.size() != 0)
 	    {
@@ -710,13 +710,13 @@ namespace snemo {
 	      tracker_ct_max_1600 = geiger_ctw_data_1600ns.get_clocktick_max();	      
 	    }
 
-	  int32_t clocktick_min = clock_utils::INVALID_CLOCKTICK;
+	  uint32_t clocktick_min = clock_utils::INVALID_CLOCKTICK;
 	  if (calorimeter_ct_min_1600 != clock_utils::INVALID_CLOCKTICK) clocktick_min = calorimeter_ct_min_1600;
 	  else if (tracker_ct_min_1600 != clock_utils::INVALID_CLOCKTICK) clocktick_min = tracker_ct_min_1600;
 
 	  if ((tracker_ct_min_1600 != clock_utils::INVALID_CLOCKTICK && calorimeter_ct_min_1600 != clock_utils::INVALID_CLOCKTICK) && tracker_ct_min_1600 < clocktick_min) clocktick_min = tracker_ct_min_1600;
     
-	  int32_t clocktick_max = clock_utils::INVALID_CLOCKTICK;
+	  uint32_t clocktick_max = clock_utils::INVALID_CLOCKTICK;
 	  if (tracker_ct_max_1600 != clock_utils::INVALID_CLOCKTICK) clocktick_max = tracker_ct_max_1600;
 	  else if (calorimeter_ct_max_1600 != clock_utils::INVALID_CLOCKTICK) clocktick_max = calorimeter_ct_max_1600;
 	  if ((tracker_ct_max_1600 != clock_utils::INVALID_CLOCKTICK && calorimeter_ct_max_1600 != clock_utils::INVALID_CLOCKTICK) && calorimeter_ct_max_1600 > clocktick_max) clocktick_max = calorimeter_ct_max_1600;
@@ -732,7 +732,7 @@ namespace snemo {
 	    {
 	      // Maybe time optimisation to do here, is it mandatory to go for each clocktick ?
 	      // Maybe prepare tracker record outside this loop but it breaks the time implementation (close to the electronics)
-	      for (int ict1600 = clocktick_min; ict1600 <= clocktick_max; ict1600++)
+	      for (uint32_t ict1600 = clocktick_min; ict1600 <= clocktick_max; ict1600++)
 		{
 		  trigger_structures::tracker_record a_tracker_record;
 		  a_tracker_record.clocktick_1600ns = ict1600;
@@ -780,7 +780,7 @@ namespace snemo {
 		      // Maybe check if a L2_decision already exist before coinc processing ?
 		  
 		      if (!_L2_decision_records_.empty() 
-			  && _L2_decision_records_.back().L2_ct_decision > (static_cast<int>(ict1600 - _L2_decision_coincidence_gate_size_))
+			  && _L2_decision_records_.back().L2_ct_decision > (ict1600 - _L2_decision_coincidence_gate_size_)
 			  && _L2_decision_records_.back().L2_ct_decision < ict1600
 			  && _L2_decision_records_.back().L2_decision_bool)
 			{

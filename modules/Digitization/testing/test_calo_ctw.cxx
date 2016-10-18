@@ -35,9 +35,7 @@ int main(int argc_, char ** argv_)
     my_calo_ctw.set_main_zoning_word(zoning_word);
     my_calo_ctw.set_lto_main_wall_bit(1);
     my_calo_ctw.tree_dump(std::clog, "my_calo_CTW : ", "INFO : ");
-    my_calo_ctw.lock();
-   
-
+    
     std::set<int> active_zones; // Active zones for this CTW.
     std::set<int>::iterator it;
     std::clog << "Number of active zones : " << my_calo_ctw.compute_active_zones(active_zones) << std::endl;

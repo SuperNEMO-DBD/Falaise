@@ -17,7 +17,7 @@ namespace snemo {
     coincidence_trigger_algorithm::coincidence_base_record::coincidence_base_record()
     {
       coincidence_base_record::reset();
-            return;
+      return;
     }
 
     void coincidence_trigger_algorithm::coincidence_base_record::reset()
@@ -341,7 +341,7 @@ namespace snemo {
 
 	  if (a_ctrec.calo_finale_decision == true)
 	    {
-	      int ctrec_clocktick_1600ns = 0;
+	      uint32_t ctrec_clocktick_1600ns = 0;
 	      _compute_clocktick_1600ns(a_ctrec.clocktick_25ns, ctrec_clocktick_1600ns);
 
 	      if (_coincidence_calo_records_.size() == 0)
@@ -353,7 +353,7 @@ namespace snemo {
 		    
 		  if (_coincidence_calo_records_.size() != 0)
 		    {
-		      for (int iclocktick = first_coincidence_calo_record.clocktick_1600ns + 1; iclocktick < first_coincidence_calo_record.clocktick_1600ns + _coincidence_calorimeter_gate_size_; iclocktick ++)
+		      for (unsigned int iclocktick = first_coincidence_calo_record.clocktick_1600ns + 1; iclocktick < first_coincidence_calo_record.clocktick_1600ns + _coincidence_calorimeter_gate_size_; iclocktick ++)
 			{
 			  coincidence_trigger_algorithm::coincidence_calo_record on_gate_coincidence_calo_record;
 			  on_gate_coincidence_calo_record = first_coincidence_calo_record;
@@ -382,7 +382,7 @@ namespace snemo {
 			    {
 			      if (_coincidence_calo_records_[j].clocktick_1600ns <= _coincidence_calo_records_[i].clocktick_1600ns + _coincidence_calorimeter_gate_size_) 
 				{
-				  int clocktick_1600_before_modification = _coincidence_calo_records_[j].clocktick_1600ns;
+				  uint32_t clocktick_1600_before_modification = _coincidence_calo_records_[j].clocktick_1600ns;
 				  _coincidence_calo_records_[j] = _coincidence_calo_records_[i];
 				  _coincidence_calo_records_[j].clocktick_1600ns = clocktick_1600_before_modification;
 				}
@@ -393,10 +393,10 @@ namespace snemo {
 		      unsigned int actual_index = i;
 		      unsigned int index_min = std::floor(actual_index /  _coincidence_calorimeter_gate_size_) * _coincidence_calorimeter_gate_size_;
 		      unsigned int index_max = index_min + _coincidence_calorimeter_gate_size_ - 1;
-		      int clocktick_to_create = ctrec_clocktick_1600ns + _coincidence_calorimeter_gate_size_;	     
-		      int clocktick_max_1600 = _coincidence_calo_records_[index_max].clocktick_1600ns;
+		      uint32_t clocktick_to_create = ctrec_clocktick_1600ns + _coincidence_calorimeter_gate_size_;	     
+		      uint32_t clocktick_max_1600 = _coincidence_calo_records_[index_max].clocktick_1600ns;
 		      
-		      for (int j = clocktick_max_1600 + 1; j <= clocktick_to_create; j++)
+		      for (unsigned int j = clocktick_max_1600 + 1; j <= clocktick_to_create; j++)
 			{
 			  bool no_same_clocktick = true;
 			  for (unsigned int k = actual_index + 1 ; k < _coincidence_calo_records_.size(); k++)
@@ -425,7 +425,7 @@ namespace snemo {
 		  coincidence_trigger_algorithm::coincidence_calo_record new_coincidence_calo_record;
 		  new_coincidence_calo_record.clocktick_1600ns = ctrec_clocktick_1600ns;
 		  _coincidence_calo_records_.push_back(new_coincidence_calo_record);
-		  for (int iclocktick = new_coincidence_calo_record.clocktick_1600ns + 1; iclocktick < new_coincidence_calo_record.clocktick_1600ns + _coincidence_calorimeter_gate_size_; iclocktick ++)
+		  for (uint32_t iclocktick = new_coincidence_calo_record.clocktick_1600ns + 1; iclocktick < new_coincidence_calo_record.clocktick_1600ns + _coincidence_calorimeter_gate_size_; iclocktick ++)
 		    {
 		      coincidence_trigger_algorithm::coincidence_calo_record new_on_gate_coincidence_calo_record;
 		      new_on_gate_coincidence_calo_record = new_coincidence_calo_record;
@@ -464,7 +464,7 @@ namespace snemo {
       bool total_multiplicity_threshold = a_coinc_calo_record_1600ns_.total_multiplicity_threshold;
       bool calo_decision = a_coinc_calo_record_1600ns_.decision;
      
-      int clocktick_1600_from_25 = 0;
+      uint32_t clocktick_1600_from_25 = 0;
       _compute_clocktick_1600ns(a_calo_summary_record_25ns_.clocktick_25ns, clocktick_1600_from_25);
 
       if (clocktick_1600_from_25 <= a_coinc_calo_record_1600ns_.clocktick_1600ns + _coincidence_calorimeter_gate_size_)
@@ -539,7 +539,7 @@ namespace snemo {
       return;
     }
     
-    void coincidence_trigger_algorithm::_compute_clocktick_1600ns(const int32_t clocktick_25ns_, int32_t & clocktick_1600ns_)
+    void coincidence_trigger_algorithm::_compute_clocktick_1600ns(const uint32_t clocktick_25ns_, uint32_t & clocktick_1600ns_)
     {
       clocktick_1600ns_ = (clocktick_25ns_ * clock_utils::MAIN_CLOCKTICK) / clock_utils::TRIGGER_CLOCKTICK;
       clocktick_1600ns_ = clocktick_1600ns_ + clock_utils::TRIGGER_COMPUTING_SHIFT_CLOCKTICK_1600NS;
@@ -547,7 +547,7 @@ namespace snemo {
     }
 
     void coincidence_trigger_algorithm::_creating_pair_per_clocktick(const std::vector<coincidence_trigger_algorithm::coincidence_calo_record> & coinc_calo_records_,
-										  const std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_)
+								     const std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_)
     {
       std::pair<coincidence_trigger_algorithm::coincidence_calo_record,tracker_trigger_algorithm::tracker_record> pair_for_a_clocktick;
       
@@ -582,7 +582,7 @@ namespace snemo {
 	    }
 	}
 
-      int32_t last_clocktick = clock_utils::INVALID_CLOCKTICK;
+      uint32_t last_clocktick = clock_utils::INVALID_CLOCKTICK;
       // Create a new pair if there is only tracker for example :
       if (_pair_records_.size() != 0)
 	{
@@ -606,7 +606,7 @@ namespace snemo {
     }
 
     void coincidence_trigger_algorithm::_process_calo_tracker_coincidence(const std::pair<coincidence_trigger_algorithm::coincidence_calo_record, tracker_trigger_algorithm::tracker_record> a_pair_for_a_clocktick_,
-										       coincidence_trigger_algorithm::coincidence_event_record & a_coincidence_record_)
+									  coincidence_trigger_algorithm::coincidence_event_record & a_coincidence_record_)
 
     { 
       coincidence_trigger_algorithm::coincidence_calo_record a_calo_record = a_pair_for_a_clocktick_.first;
@@ -645,7 +645,7 @@ namespace snemo {
 		    }
 			      
 		  if ((hpattern_for_a_zone.test(left) && a_calo_record.calo_zoning_word[iside].test(izone) != 0) ||
-		      (izone-1 > -1 && hpattern_for_a_zone.test(left) && a_calo_record.calo_zoning_word[iside].test(izone-1) != 0))
+		      (int(izone-1) > -1 && hpattern_for_a_zone.test(left) && a_calo_record.calo_zoning_word[iside].test(izone-1) != 0))
 		    {		 
 		      a_coincidence_record_.zoning_word[iside].set(izone, true);
 		      a_coincidence_record_.decision = true;
@@ -683,7 +683,7 @@ namespace snemo {
 	  for (unsigned int i = 0; i < _L2_coincidence_decison_records_.size(); i++)
 	    {
 	      coincidence_trigger_algorithm::L2_coincidence_decision already_created_L2_coinc_decision = _L2_coincidence_decison_records_[i]; 
-	      int32_t clocktick_maximum_for_decision = already_created_L2_coinc_decision.L2_clocktick_decision + SIZE_OF_L2_COINCIDENCE_DECISION_GATE;
+	      uint32_t clocktick_maximum_for_decision = already_created_L2_coinc_decision.L2_clocktick_decision + SIZE_OF_L2_COINCIDENCE_DECISION_GATE;
 	      if (a_coincidence_record_.clocktick_1600ns < clocktick_maximum_for_decision && already_created_L2_coinc_decision.L2_clocktick_decision < a_coincidence_record_.clocktick_1600ns)
 		{
 		  decision_already_true_in_last_CTs = true;
@@ -748,8 +748,8 @@ namespace snemo {
     }
     
     void coincidence_trigger_algorithm::_process_delayed_coincidence(const std::pair<coincidence_trigger_algorithm::coincidence_calo_record, tracker_trigger_algorithm::tracker_record> a_pair_for_a_clocktick_,
-										  const coincidence_trigger_algorithm::previous_event_record & a_previous_event_record_,
-										  coincidence_trigger_algorithm::coincidence_event_record & a_delayed_record_)
+								     const coincidence_trigger_algorithm::previous_event_record & a_previous_event_record_,
+								     coincidence_trigger_algorithm::coincidence_event_record & a_delayed_record_)
     {
       if (a_previous_event_record_.counter_1600ns != 0) // counter != 0 ->   > 1ms (625 * 1600ns) 
       	{
@@ -773,9 +773,9 @@ namespace snemo {
 		  if (delayed_hpattern_per_zone.any())
 		    { 
 		      if (delayed_hpattern_per_zone.test(left) && izone == 0 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(left+2)
-										|| a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(mid+2)
-										|| a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(left+2)
-										|| a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(mid+2)))
+										 || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(mid+2)
+										 || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(left+2)
+										 || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(mid+2)))
 			{
 			  a_delayed_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
 			  a_delayed_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
@@ -784,12 +784,12 @@ namespace snemo {
 			  _delayed_coincidence_decision_ = true;
 			}
 
-		      if (delayed_hpattern_per_zone.test(left) && izone-1 > -1 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone-1].test(right+2)
-										   || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(left+2)
-										   || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(mid+2)
-										   || a_previous_event_record_.tracker_finale_data_per_zone[1][izone-1].test(right+2)
-										   || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(left+2)
-										   || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(mid+2)))
+		      if (delayed_hpattern_per_zone.test(left) && int(izone-1) > -1 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone-1].test(right+2)
+											|| a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(left+2)
+											|| a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(mid+2)
+											|| a_previous_event_record_.tracker_finale_data_per_zone[1][izone-1].test(right+2)
+											|| a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(left+2)
+											|| a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(mid+2)))
 			{
 			  a_delayed_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
 			  a_delayed_record_.tracker_finale_data_per_zone[iside][izone] = a_tracker_record.finale_data_per_zone[iside][izone];
@@ -847,7 +847,7 @@ namespace snemo {
 	      for (unsigned int i = 0; i < _L2_coincidence_decison_records_.size(); i++)
 		{
 		  coincidence_trigger_algorithm::L2_coincidence_decision already_created_L2_coinc_decision = _L2_coincidence_decison_records_[i]; 
-		  int32_t clocktick_maximum_for_decision = already_created_L2_coinc_decision.L2_clocktick_decision + SIZE_OF_L2_COINCIDENCE_DECISION_GATE;
+		  uint32_t clocktick_maximum_for_decision = already_created_L2_coinc_decision.L2_clocktick_decision + SIZE_OF_L2_COINCIDENCE_DECISION_GATE;
 		  if (a_delayed_record_.clocktick_1600ns < clocktick_maximum_for_decision && already_created_L2_coinc_decision.L2_clocktick_decision < a_delayed_record_.clocktick_1600ns)
 		    {
 		      decision_already_true_in_last_CTs = true;
@@ -893,12 +893,12 @@ namespace snemo {
 			    }
 			    
 			  // NSZ Left && zone = [1:9] :
-			  if (delayed_near_source_per_zone.test(near_source_left) && izone - 1 > -1 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone-1].test(near_source_right+5)
-													|| a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_left+5)
-													|| a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_right+5)
-													|| a_previous_event_record_.tracker_finale_data_per_zone[1][izone-1].test(near_source_right+5)
-													|| a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_left+5)
-													|| a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_right+5)))
+			  if (delayed_near_source_per_zone.test(near_source_left) && int(izone-1) > -1 && (a_previous_event_record_.tracker_finale_data_per_zone[0][izone-1].test(near_source_right+5)
+													   || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_left+5)
+													   || a_previous_event_record_.tracker_finale_data_per_zone[0][izone].test(near_source_right+5)
+													   || a_previous_event_record_.tracker_finale_data_per_zone[1][izone-1].test(near_source_right+5)
+													   || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_left+5)
+													   || a_previous_event_record_.tracker_finale_data_per_zone[1][izone].test(near_source_right+5)))
 			    
 			    {
 			      a_delayed_record_.clocktick_1600ns = a_tracker_record.clocktick_1600ns;
@@ -949,7 +949,7 @@ namespace snemo {
 		  for (unsigned int i = 0; i < _L2_coincidence_decison_records_.size(); i++)
 		    {
 		      coincidence_trigger_algorithm::L2_coincidence_decision already_created_L2_coinc_decision = _L2_coincidence_decison_records_[i]; 
-		      int32_t clocktick_maximum_for_decision = already_created_L2_coinc_decision.L2_clocktick_decision + SIZE_OF_L2_COINCIDENCE_DECISION_GATE;
+		      uint32_t clocktick_maximum_for_decision = already_created_L2_coinc_decision.L2_clocktick_decision + SIZE_OF_L2_COINCIDENCE_DECISION_GATE;
 		      if (a_delayed_record_.clocktick_1600ns < clocktick_maximum_for_decision && already_created_L2_coinc_decision.L2_clocktick_decision < a_delayed_record_.clocktick_1600ns)
 			{
 			  decision_already_true_in_last_CTs = true;
@@ -974,8 +974,8 @@ namespace snemo {
     }
 
     void coincidence_trigger_algorithm::process(const std::vector<calo_trigger_algorithm::calo_summary_record> & calo_records_,
-							     const std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_,
-							     std::vector<coincidence_trigger_algorithm::coincidence_event_record> & coincidence_records_)
+						const std::vector<tracker_trigger_algorithm::tracker_record> & tracker_records_,
+						std::vector<coincidence_trigger_algorithm::coincidence_event_record> & coincidence_records_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Coincidence trigger algorithm is not initialized, it can't process ! ");
       _process(calo_records_,
@@ -997,7 +997,7 @@ namespace snemo {
       for (; it_pair != _pair_records_.end(); it_pair++)
 	{
 	  std::pair<coincidence_trigger_algorithm::coincidence_calo_record, tracker_trigger_algorithm::tracker_record> a_pair = *it_pair;
-	  int32_t pair_clocktick_1600ns = a_pair.first.clocktick_1600ns;
+	  uint32_t pair_clocktick_1600ns = a_pair.first.clocktick_1600ns;
 
 	  coincidence_event_record a_coincidence_record;
 	  _process_calo_tracker_coincidence(a_pair, a_coincidence_record);

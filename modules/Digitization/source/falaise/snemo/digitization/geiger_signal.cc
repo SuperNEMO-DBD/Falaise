@@ -20,7 +20,6 @@ namespace snemo {
     
     geiger_signal::geiger_signal()
     {
-      _locked_ = false;
       datatools::invalidate(_anode_avalanche_time_);
       datatools::invalidate(_plasma_top_time_);
       datatools::invalidate(_plasma_bottom_time_);
@@ -54,7 +53,6 @@ namespace snemo {
       
     void geiger_signal::set_anode_avalanche_time(const double & anode_avalanche_time_)
     {
-      DT_THROW_IF(is_locked(), std::logic_error, "Geiger signal is locked ! ");
       _anode_avalanche_time_ = anode_avalanche_time_;
       return;
     }
@@ -66,7 +64,6 @@ namespace snemo {
 
     void geiger_signal::set_plasma_top_time_(const double & plasma_top_time_)
     {
-      DT_THROW_IF(is_locked(), std::logic_error, "Geiger signal is locked ! ");
       _plasma_top_time_ = plasma_top_time_;
       return;
     }
@@ -78,30 +75,9 @@ namespace snemo {
     
     void geiger_signal::set_plasma_bottom_time_(const double & plasma_bottom_time_)
     {
-      DT_THROW_IF(is_locked(), std::logic_error, "Geiger signal is locked ! ");
       _plasma_bottom_time_ = plasma_bottom_time_;
       return;
     }
-
-    bool geiger_signal::is_locked() const
-    {
-      return _locked_;
-    }
-
-    void geiger_signal::lock()
-    {
-      DT_THROW_IF(is_locked(), std::logic_error, "Geiger signal is already locked ! ");
-      _check();
-      _locked_ = true;
-      return;
-    }
-    
-    void geiger_signal::unlock()
-    {
-      DT_THROW_IF(!is_locked(), std::logic_error, "Geiger signal is already unlocked ! ");
-      _locked_ = false;
-      return;
-    } 
 
     bool geiger_signal::is_valid() const
     {
@@ -110,10 +86,6 @@ namespace snemo {
 
     void geiger_signal::reset()
     {
-      if(is_locked())
-	{
-	  unlock();
-	}
       geomtools::base_hit::reset();
       return;
     }
@@ -131,12 +103,6 @@ namespace snemo {
       return;
     }
     
-    void geiger_signal::_check()
-    {
-      DT_THROW_IF(!is_valid(), std::logic_error, " is not valid ! ");
-    }
-
-
   } // end of namespace digitization
 
 } // end of namespace snemo

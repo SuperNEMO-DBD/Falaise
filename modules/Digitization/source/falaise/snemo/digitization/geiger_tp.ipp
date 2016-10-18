@@ -22,7 +22,7 @@ namespace snemo {
 
     template<class Archive>
     void geiger_tp::serialize (Archive            & ar,
-															 const unsigned int  version)
+															 const unsigned int  /*version_*/)
     {
       // inherit from the 'base_hit' mother class:
       ar & boost::serialization::make_nvp ("geomtools__base_hit",
@@ -32,8 +32,6 @@ namespace snemo {
       // knows about the field to be stored/loaded
       // from the archive.
 
-      ar & boost::serialization::make_nvp ("locked_gg_tp", _locked_);
- 
       if (_store & STORE_CLOCKTICK_800NS)
 				{
 					ar & boost::serialization::make_nvp ("clocktick_800ns", _clocktick_800ns_);

@@ -40,32 +40,23 @@ namespace snemo {
       typedef std::vector<geiger_ctw_handle_type> geiger_ctw_collection_type;
        
       /// Return the index of the geiger crate trigger word with minimum clocktick
-      int get_clocktick_min_index() const;
+      unsigned int get_clocktick_min_index() const;
 			
       /// Return the index of the geiger crate trigger word with maximum clocktick
-      int get_clocktick_max_index() const;
+      unsigned int get_clocktick_max_index() const;
  
       /// Return the clocktick min for the geiger crate trigger word with minimum clocktick (thanks to his index)
-      int get_clocktick_min() const;
+      uint32_t get_clocktick_min() const;
 
       /// Return the clocktick max for the geiger crate trigger word with maximum clocktick (thanks to his index)
-      int get_clocktick_max() const;
+			uint32_t get_clocktick_max() const;
 			
       /// Return the range between the clocktick min and the clocktick max
-      int get_clocktick_range() const;
+      uint32_t get_clocktick_range() const;
 					
       /// Do a list of geiger crate trigger word which are in the same clocktick
-      void get_list_of_geiger_ctw_per_clocktick(int32_t clocktick_25ns_, geiger_ctw_collection_type & ctws_) const;
+      void get_list_of_geiger_ctw_per_clocktick(uint32_t clocktick_25ns_, geiger_ctw_collection_type & ctws_) const;
 			
-      /// Check the lock status
-      bool is_locked() const;
-
-      /// Lock 
-      void lock();
-
-      /// Unlock
-      void unlock();
-
       /// Reset the list of ctws
       void reset_ctws();
 
@@ -96,7 +87,6 @@ namespace snemo {
 			
     private : 
 
-      bool _locked_; //!< CTWs lock flag
       geiger_ctw_collection_type _geiger_ctws_; //!< Collection of geigers crate trigger words
 
       DATATOOLS_SERIALIZATION_DECLARATION()

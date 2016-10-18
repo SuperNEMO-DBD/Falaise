@@ -18,7 +18,6 @@ namespace snemo {
 
     geiger_ctw_data::geiger_ctw_data()
     {
-      _locked_ = false;
       return;
     }
 
@@ -28,13 +27,13 @@ namespace snemo {
       return;
     }
     
-    int geiger_ctw_data::get_clocktick_min_index() const
+		unsigned int geiger_ctw_data::get_clocktick_min_index() const
     {
       DT_THROW_IF(_geiger_ctws_.size() == 0, std::logic_error, " Geiger CTW collection is empty ! ");
 
       unsigned int index_with_min = 0;
 
-      int32_t clocktick_min = _geiger_ctws_[0].get().get_clocktick_800ns();
+      uint32_t clocktick_min = _geiger_ctws_[0].get().get_clocktick_800ns();
       
       for (unsigned int i = 1; i < _geiger_ctws_.size(); i++)
 				{
@@ -47,13 +46,13 @@ namespace snemo {
       return index_with_min;
     }
 			
-    int geiger_ctw_data::get_clocktick_max_index() const
+    unsigned int geiger_ctw_data::get_clocktick_max_index() const
     {
       DT_THROW_IF(_geiger_ctws_.size() == 0, std::logic_error, " Geiger CTW collection is empty ! ");
 
       unsigned int index_with_max = 0;
 
-      int32_t clocktick_max = _geiger_ctws_[0].get().get_clocktick_800ns();
+      uint32_t clocktick_max = _geiger_ctws_[0].get().get_clocktick_800ns();
       
       for (unsigned int i = 1; i < _geiger_ctws_.size(); i++)
 				{
@@ -66,28 +65,27 @@ namespace snemo {
       return index_with_max;
     }
 
-    int geiger_ctw_data::get_clocktick_min() const
+		uint32_t geiger_ctw_data::get_clocktick_min() const
     {
       DT_THROW_IF(_geiger_ctws_.size() == 0, std::logic_error, " Geiger CTW collection is empty ! ");
       return _geiger_ctws_[get_clocktick_min_index()].get().get_clocktick_800ns();
     }
 
-    int geiger_ctw_data::get_clocktick_max() const
+		uint32_t geiger_ctw_data::get_clocktick_max() const
     {
       DT_THROW_IF(_geiger_ctws_.size() == 0, std::logic_error, " Geiger CTW collection is empty ! ");
       return _geiger_ctws_[get_clocktick_max_index()].get().get_clocktick_800ns();
     }
 
-    int geiger_ctw_data::get_clocktick_range() const
+    uint32_t geiger_ctw_data::get_clocktick_range() const
     {
       DT_THROW_IF(_geiger_ctws_.size() == 0, std::logic_error, " Geiger CTW collection is empty ! ");
       return get_clocktick_max() - get_clocktick_min();
     }
 			
-    void geiger_ctw_data::get_list_of_geiger_ctw_per_clocktick(int32_t clocktick_800ns_, geiger_ctw_collection_type & ctws_) const
+    void geiger_ctw_data::get_list_of_geiger_ctw_per_clocktick(uint32_t clocktick_800ns_, geiger_ctw_collection_type & ctws_) const
     {
       DT_THROW_IF(_geiger_ctws_.size() == 0, std::logic_error, " Geiger CTW collection is empty ! ");
-      //DT_THROW_IF(!is_locked(), std::logic_error, " Geiger CTW collection is not locked ! ");
       for (unsigned int i = 0; i < _geiger_ctws_.size(); i++)
       	{
       	  if(_geiger_ctws_[i].get().get_clocktick_800ns() == clocktick_800ns_ && _geiger_ctws_[i].get().has_trigger_primitive_values())
@@ -98,36 +96,14 @@ namespace snemo {
       return;
     }
 
-    bool geiger_ctw_data::is_locked() const
-    {
-      return _locked_;
-    }
-    
-    void geiger_ctw_data::lock()
-    {
-      DT_THROW_IF(is_locked(), std::logic_error, " Geiger CTW collection is already locked ! ");
-      _check();
-      _locked_ = true;
-      return;
-    }
-    
-    void geiger_ctw_data::unlock()
-    { 
-      DT_THROW_IF(!is_locked(), std::logic_error, " Geiger CTW collection is already unlocked ! ");
-      _locked_ = false;
-      return;
-    }
-
     void geiger_ctw_data::reset_ctws()
     {
-      DT_THROW_IF(is_locked(), std::logic_error, " Operation prohibited, object is locked ! ");
       _geiger_ctws_.clear();
       return ;
     }
 		
     geiger_ctw & geiger_ctw_data::add()
     {
-      DT_THROW_IF(is_locked(), std::logic_error, " Operation prohibited, object is locked ! ");
       {
 				geiger_ctw_handle_type dummy;
 				_geiger_ctws_.push_back(dummy);
@@ -155,10 +131,6 @@ namespace snemo {
 		
     void geiger_ctw_data::reset()
     {
-      if (is_locked())
-				{
-					unlock();
-				}
       reset_ctws();
       return;
     }
@@ -169,9 +141,6 @@ namespace snemo {
 																		 bool inherit_) const
     {
 			out_ << indent_ << title_ << std::endl;
-
-      out_ << indent_ << datatools::i_tree_dumpable::tag
-           << "Lock CTWs  : " << _locked_ << std::endl;
 
       out_ << indent_ << datatools::i_tree_dumpable::inherit_tag (inherit_)
 					 << "Geiger CTWs : " << _geiger_ctws_.size() << std::endl;

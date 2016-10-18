@@ -37,8 +37,7 @@ int main(int argc_, char ** argv_)
     my_calo_tp.set_xt_bit(1);
     my_calo_tp.set_lto_bit(1);
     my_calo_tp.tree_dump(std::clog, "my_calo_tp mock : ", "INFO : ");
-    my_calo_tp.lock();
-
+    
     std::clog << "Htm multiplicity is        " << my_calo_tp.get_htm() << std::endl;
     std::clog << "Htm bits  bit pos [1][0] : " << my_calo_tp.get_htm_bits() << std::endl;
     std::clog << "Lto bit   bit pos [2]    : " << my_calo_tp.is_lto() << std::endl;
@@ -55,7 +54,6 @@ int main(int argc_, char ** argv_)
     // 				  datatools::using_multi_archives);
 
     // Reseting
-    my_calo_tp.unlock();
     my_calo_tp.reset();
     my_calo_tp.tree_dump(std::clog, "my_calo_tp reseted : ", "INFO : ");
 

@@ -54,10 +54,10 @@ namespace snemo {
 			void set_data(std::bitset<geiger::tp::TP_SIZE> & gg_tp_word_);
 
 			/// Return the const timestamp of the geiger trigger primitive
-			int32_t get_clocktick_800ns() const;
+			uint32_t get_clocktick_800ns() const;
 
 			/// Set the timestamp of the geiger trigger primitive
-			void set_clocktick_800ns(int32_t value_);
+			void set_clocktick_800ns(uint32_t value_);
 
 			/// Reset the timestamp of the geiger trigger primitive
 			void reset_clocktick_800ns();
@@ -132,14 +132,6 @@ namespace snemo {
 																				 unsigned int word_size_, 
 																				 boost::dynamic_bitset<> & my_bitset_word_) const;
 			
-			/// Check the lock status
-			bool is_locked() const;
-
-			/// Lock 
-			void lock();
-
-			/// Unlock
-			void unlock();
 
 			/// Check if the internal data of the geiger TP is valid
 			bool is_valid() const;
@@ -155,17 +147,13 @@ namespace snemo {
 
 		protected : 
 
-			/// Check if a geiger TP is available
-			void _check();
-
 			/// Set the address id for a geiger tp 
 			void _set_address(const geomtools::geom_id & electronic_id_);
 
 
 		private : 
 
-			bool _locked_; //!< geiger TP lock flag
-			int32_t _clocktick_800ns_; //!< The timestamp of the geiger trigger primitive  
+			uint32_t _clocktick_800ns_; //!< The timestamp of the geiger trigger primitive  
 			std::bitset<geiger::tp::FULL_SIZE> _gg_tp_; //!< The geiger trigger primitive bitset
 
 			DATATOOLS_SERIALIZATION_DECLARATION()

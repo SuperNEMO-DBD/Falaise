@@ -84,9 +84,6 @@ namespace snemo {
       int error_code = EXIT_SUCCESS;
       datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
       try { 
-	// pickup the ID mapping from the geometry manager:
-	const geomtools::mapping & the_mapping = _geo_manager_->get_mapping();
-
 	int32_t calo_signal_hit_id = 0;
 	if (sd_.has_step_hits("calo"))
 	  {

@@ -223,7 +223,6 @@ int main(int  argc_ , char ** argv_)
 	    vertex_distribution_TH2F->Fill(y_vertex, x_vertex);
 	    vertex_distribution_TH1F->Fill(y_vertex);
 
-	    int number_of_gg_cells = 0;
 	    int number_of_delayed_gg_cells = 0;
 	    int number_of_not_delayed_gg_cells = 0;
 
@@ -261,7 +260,6 @@ int main(int  argc_ , char ** argv_)
 		
 		mctools::simulated_data::hit_handle_collection_type BSHC = flaged_sd.get_step_hits("gg");
 	        // if (verbosity) std::clog << "BSCH step hits # = " << BSHC.size() << std::endl;
-		number_of_gg_cells =  BSHC.size();
 		int count = 0;
 	       
 		for (mctools::simulated_data::hit_handle_collection_type::const_iterator i = BSHC.begin();
@@ -276,10 +274,10 @@ int main(int  argc_ , char ** argv_)
 			// extract the corresponding geom ID:
 			const geomtools::geom_id & geiger_gid = BSH.get_geom_id();
 			
-			const geomtools::vector_3d cell_position = BSH.get_position_stop();
+			/*const geomtools::vector_3d cell_position = BSH.get_position_stop();
 			double cell_position_x = cell_position.x();
 			double cell_position_y = cell_position.y();
-			double cell_position_z = cell_position.z();
+			double cell_position_z = cell_position.z();*/
 			 
 			if(verbosity) std::clog << "GID cell : " << geiger_gid << std::endl;
 			int side  = geiger_gid.get(1);
@@ -301,7 +299,6 @@ int main(int  argc_ , char ** argv_)
 			  }
 			
 			if(verbosity) std::clog << "X_HISTO = " << X_histo << " Y_HISTO = " << Y_histo << std::endl << std::endl;
-			int hit_id = count;
 			geiger_cells_distribution_TH2F->Fill(X_histo, Y_histo);
 			double time_start = BSH.get_time_start();
 

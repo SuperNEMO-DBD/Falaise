@@ -85,7 +85,6 @@ int main(int argc_, char **  argv_)
       ctp.set_lto_bit(1);
       ctp.tree_dump(std::clog, "CTP : ", "INFO : ");
     }
-    my_calo_tp_data.lock();
 
     std::clog << "Clocktick min = " << my_calo_tp_data.get_clocktick_min() << std::endl;
     std::clog << "Clocktick max = " << my_calo_tp_data.get_clocktick_max() << std::endl;

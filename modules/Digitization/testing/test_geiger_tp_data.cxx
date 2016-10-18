@@ -78,7 +78,6 @@ int main(int argc_, char ** argv_)
       gg_tp.set_clocktick_800ns(20);
       gg_tp.tree_dump(std::clog, "GG TP : ", "INFO : ");
     }
-    my_geiger_tp_data.lock();
 
     std::clog << "Clocktick min = " << my_geiger_tp_data.get_clocktick_min() << std::endl;
     std::clog << "Clocktick max = " << my_geiger_tp_data.get_clocktick_max() << std::endl;

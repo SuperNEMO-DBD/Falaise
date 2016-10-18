@@ -49,13 +49,13 @@ namespace snemo {
 			/// Preliminary initialization for ctw object
 			void set_header(int32_t hit_id_,
 											const geomtools::geom_id & electronic_id_,
-											int32_t clocktick_800ns_);
+											uint32_t clocktick_800ns_);
 
       /// Return the timestamp of the geiger crate trigger word 
-      int32_t get_clocktick_800ns() const;
+      uint32_t get_clocktick_800ns() const;
 			
       /// Set the timestamp of the geiger crate trigger word 
-      void set_clocktick_800ns(int32_t value_);
+      void set_clocktick_800ns(uint32_t value_);
 			
 			/// Check if the timestamp is set 
 			bool has_clocktick_800ns() const;
@@ -91,15 +91,6 @@ namespace snemo {
 			/// Set crate id for all geiger tp word in the ctw even if there are empty
 			void set_full_crate_id(const std::bitset<geiger::tp::CRATE_ID_WORD_SIZE> & gg_tp_crate_id_);
 	
-      /// Check the lock status
-      bool is_locked() const;
-
-      /// Lock 
-      void lock();
-
-      /// Unlock
-      void unlock();
-
       /// Reset the geiger crate TW bitset
       void reset_tw_bitset();
 
@@ -115,15 +106,9 @@ namespace snemo {
 														 const std::string & a_indent = "",
 														 bool a_inherit               = false) const;     
 
-    protected : 
-			
-      /// Check if a geiger crate TW is available
-      void _check();
-
     private : 
 
-      bool _locked_; //!< CTW lock flag
-      int32_t _clocktick_800ns_; //!< The timestamp of the trigger primitive in main clock units (40 MHz)
+      uint32_t _clocktick_800ns_; //!< The timestamp of the trigger primitive in main clock units (40 MHz)
       std::bitset<CTW_BITSET_FULL_SIZE> _gg_ctw_; //!< The crate trigger word
 
       DATATOOLS_SERIALIZATION_DECLARATION()

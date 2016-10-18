@@ -43,7 +43,7 @@ namespace snemo {
 				const geiger_signal * signal_ref;
 				geomtools::geom_id    feb_id;
 				datatools::properties auxiliaries;
-				uint32_t               clocktick_800;
+				uint32_t              clocktick_800;
 				double                shift_800;
 			}; 
 			

@@ -52,15 +52,6 @@ namespace snemo {
       // Set the energy
       void set_amplitude(const double & amplitude_);
 
-      /// Check the lock status
-      bool is_locked() const;
-
-      /// Lock 
-      void lock();
-
-      /// Unlock
-      void unlock();
-
       /// Check if the internal data of calo signal is valid
       bool is_valid() const;
 
@@ -72,15 +63,8 @@ namespace snemo {
 														 const std::string & a_title  = "",
 														 const std::string & a_indent = "",
 														 bool a_inherit               = false) const;
-
-    protected : 
-
-      /// Check if a calo signal is available
-      void _check();
-
-    private : 
-
-      bool _locked_; //!< Calorimeter signal lock flag
+    private :
+			
 			double _signal_time_; //!< Calorimeter signal time
       double _amplitude_;   //!< Amplitude 
       

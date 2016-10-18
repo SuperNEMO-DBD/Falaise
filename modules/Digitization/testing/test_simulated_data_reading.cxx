@@ -78,7 +78,7 @@ int main( int  argc_ , char **argv_  )
 	std::clog << "DEBUG : has step_hits " << SD.has_step_hits("gg") << std::endl; 
 	if( SD.has_step_hits("gg")){
 	  size_t number = SD.get_number_of_step_hits("gg");
-	  for (int i = 0; i < number; i++)
+	  for (unsigned int i = 0; i < number; i++)
 	    {
 	      const mctools::base_step_hit & gg_hit = SD.get_step_hit("gg", i);
 	      std::clog << "DEBUG : hit id = " << gg_hit.get_hit_id() << ": GID = " << gg_hit.get_geom_id() << std::endl;

@@ -174,7 +174,7 @@ namespace snemo {
 	void reset();
 	void display() const;
 	bool L1_calo_decision_bool;
-	int32_t L1_calo_ct_decision; // CT @ 25 ns
+	uint32_t L1_calo_ct_decision; // CT @ 25 ns
       };
 
       struct L1_tracker_decision
@@ -183,7 +183,7 @@ namespace snemo {
 	void reset();
 	void display() const;
 	bool L1_tracker_decision_bool;
-	int32_t L1_tracker_ct_decision; // CT @ 1600 ns
+	uint32_t L1_tracker_ct_decision; // CT @ 1600 ns
       };
 			
       struct L2_decision
@@ -192,7 +192,7 @@ namespace snemo {
 	void reset();
 	void display() const;
 	bool L2_decision_bool;
-	int32_t L2_ct_decision; // CT @ 1600 ns
+	uint32_t L2_ct_decision; // CT @ 1600 ns
 	trigger_structures::L2_trigger_mode L2_trigger_mode;
       };
 

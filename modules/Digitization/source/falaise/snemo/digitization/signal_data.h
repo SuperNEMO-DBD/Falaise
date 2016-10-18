@@ -45,15 +45,6 @@ namespace snemo {
       /// Collection of handles of calo trigger primitive
       typedef std::vector<calo_signal_handle_type> calo_signal_collection_type;	
 			
-      /// Check the lock status
-      bool is_locked() const;
-
-      /// Lock 
-      void lock();
-
-      /// Unlock
-      void unlock();
-
       /// Reset the list of geiger signals
       void reset_geiger_signals();
 
@@ -120,7 +111,6 @@ namespace snemo {
 			
     private : 
 
-      bool _locked_; //!< Geiger signals lock flag
       geiger_signal_collection_type _geiger_signals_; //!< Collection of geigers tracker primitive
       calo_signal_collection_type _calo_signals_; //!< Collection of calos tracker primitive
 

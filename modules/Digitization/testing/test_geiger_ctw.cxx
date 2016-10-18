@@ -30,10 +30,8 @@ int main(int argc_, char ** argv_)
     my_geiger_ctw.grab_auxiliaries().store("author", "guillaume");
     my_geiger_ctw.grab_auxiliaries().store_flag("mock");
     my_geiger_ctw.set_clocktick_800ns(20); 
-    unsigned long board_id = 14;
     std::bitset<100> test_gg_tp_word (std::string ("1111111111111111111111111111111111111111111111111111010110111111111111111111111111111111111111111111"));  
     my_geiger_ctw.tree_dump(std::clog, "my_geiger_CTW : ", "INFO : "); 
-    my_geiger_ctw.lock();
     std::clog << "The end." << std::endl;
   }
 

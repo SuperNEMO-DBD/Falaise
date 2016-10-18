@@ -22,13 +22,11 @@ namespace snemo {
 
     template<class Archive>
     void geiger_ctw::serialize (Archive            & ar,
-				const unsigned int  version)
+																const unsigned int  /*version*/)
     {
       // inherit from the 'base_hit' mother class:
       ar & boost::serialization::make_nvp ("geomtools__base_hit",
 					   boost::serialization::base_object<geomtools::base_hit>(*this));
-
-      ar & boost::serialization::make_nvp ("locked", _locked_);
 
       if (_store & STORE_CLOCKTICK_800NS)
 	{
