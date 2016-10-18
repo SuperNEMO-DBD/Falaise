@@ -61,7 +61,7 @@ namespace snemo {
 
       /// Initialization
       virtual void initialize(const datatools::properties  & setup_,
-                              datatools::service_manager   & service_manager_,
+															datatools::service_manager   & service_manager_,
                               dpp::module_handle_dict_type & module_dict_);
       /// Reset
       virtual void reset();

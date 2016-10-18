@@ -45,8 +45,9 @@ namespace snemo {
     }
     
     void fake_trigger_module::initialize(const datatools::properties  & setup_,
-					 datatools::service_manager   & service_manager_,
-					 dpp::module_handle_dict_type & module_dict_)
+					 datatools::service_manager   & /* service_manager_*/,
+					 dpp::module_handle_dict_type & /* module_dict_ */)
+					 
     {
       DT_THROW_IF(is_initialized(),
                   std::logic_error,

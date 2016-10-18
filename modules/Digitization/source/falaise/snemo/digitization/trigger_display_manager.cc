@@ -406,7 +406,7 @@ namespace snemo {
       std::bitset<10> zoning_word[trigger_info::NSIDES];
       for (unsigned int i = 0; i < trigger_info::NSIDES; i++)
     	{
-        zoning_word[i] = 0x0;
+	  zoning_word[i] = 0x0;
     	  zoning_word[i] = a_calo_summary_record.zoning_word[i];
     	}
       fill_calo_trigger_matrix_25ns(zoning_word);

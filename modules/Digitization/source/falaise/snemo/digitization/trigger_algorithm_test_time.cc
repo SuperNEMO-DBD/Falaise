@@ -397,7 +397,7 @@ namespace snemo {
 	  a_coinc_calo_record_1600ns_.calo_zoning_word[0] = a_calo_summary_record_25ns_.zoning_word[0];
 	  a_coinc_calo_record_1600ns_.calo_zoning_word[1] = a_calo_summary_record_25ns_.zoning_word[1];	
 
-	  for (int i = 0; i < trigger_info::CALO_ZONING_PER_SIDE_BITSET_SIZE; i++)
+	  for (unsigned int i = 0; i < trigger_info::CALO_ZONING_PER_SIDE_BITSET_SIZE; i++)
 	    {
 	      if (a_coinc_calo_record_1600ns_.calo_zoning_word[0].test(i) == true)
 		{
@@ -477,7 +477,7 @@ namespace snemo {
 	{
 	  // Construct the PER on the coincidence records pushed back (to have the maximum of calo / tracker information (concatenate)) : 
 	  trigger_structures::previous_event_record a_previous_event_record;
-	  for (int i = 0; i < _coincidence_records_.size(); i++)
+	  for (unsigned int i = 0; i < _coincidence_records_.size(); i++)
 	    {
 	      trigger_structures::coincidence_event_record a_coincidence_record = _coincidence_records_[i];
 	      // Check if the coincidence record is in the L2 gate and with the good trigger mode to construct the PER :
@@ -492,7 +492,7 @@ namespace snemo {
 		  a_previous_event_record.trigger_mode = the_L2_decision.L2_trigger_mode;
 		  for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
 		    {
-		      for (int ibit = 0; ibit < trigger_info::CALO_ZONING_PER_SIDE_BITSET_SIZE; ibit++)
+		      for (unsigned int ibit = 0; ibit < trigger_info::CALO_ZONING_PER_SIDE_BITSET_SIZE; ibit++)
 			{
 			  if (a_previous_event_record.calo_zoning_word[iside].test(ibit) || a_coincidence_record.calo_zoning_word[iside].test(ibit))
 			    {
@@ -551,7 +551,7 @@ namespace snemo {
 		    {
 		      for (unsigned int izone = 0; izone < trigger_info::NZONES; izone++)
 			{
-			  for (int ibit = 0; ibit < trigger_info::DATA_FULL_BITSET_SIZE; ibit++)
+			  for (unsigned int ibit = 0; ibit < trigger_info::DATA_FULL_BITSET_SIZE; ibit++)
 			    {
 			      if (a_previous_event_record.tracker_finale_data_per_zone[iside][izone].test(ibit) || a_coincidence_record.tracker_finale_data_per_zone[iside][izone].test(ibit))
 				{
@@ -614,7 +614,7 @@ namespace snemo {
 	    }
 	}
 
-      // Warning Clocktick of gg ctw is not at 800 ns but at 1600 ns (only even CT 800 are kept (1 off 2))
+      // Warning Clocktick of gg ctw is not at 800 ns but at 1600 ns (only even CT 800 are kept (1 of 2))
       for (unsigned int i = 0; i < geiger_ctw_data_1600ns.get_geiger_ctws().size(); i++)
 	{
 	  geiger_ctw & a_gg_ctw = geiger_ctw_data_1600ns.grab_geiger_ctws()[i].grab();
@@ -662,7 +662,7 @@ namespace snemo {
       
       for (unsigned int i = 0; i < _L1_calo_decision_records_.size(); i++)
 	{
-	  //_L1_calo_decision_records_[i].display(); 
+	  _L1_calo_decision_records_[i].display(); 
 	}
       
       // Configuration is calorimeter only (no coincidences at all) :
@@ -834,39 +834,39 @@ namespace snemo {
 
 	} // end of else if any_coinc
 
-      // for (unsigned int i = 0; i < _L2_decision_records_.size(); i++)
-      // 	{
-      // 	  //_L2_decision_records_[i].display(); 
-      // 	}
+      for (unsigned int i = 0; i < _L2_decision_records_.size(); i++)
+      	{
+      	  //_L2_decision_records_[i].display(); 
+      	}
       
-      // for (unsigned int i = 0; i < _coincidence_records_.size(); i++)
-      // 	{
-      // 	  //_coincidence_records_[i].display();
-      // 	}  
+      for (unsigned int i = 0; i < _coincidence_records_.size(); i++)
+      	{
+      	  //_coincidence_records_[i].display();
+      	}  
 
-      // for (unsigned int i = 0; i < _tracker_records_.size(); i++)
-      // 	{
-      // 	  // _tracker_records_[i].display();
-      // 	  // _geiger_matrix_records_[i].display();
-      // 	}
+      for (unsigned int i = 0; i < _tracker_records_.size(); i++)
+      	{
+      	  // _tracker_records_[i].display();
+      	  // _geiger_matrix_records_[i].display();
+      	}
 
-      // boost::circular_buffer<trigger_structures::previous_event_record>::iterator it_circ = _previous_event_records_->begin();
-      // for (; it_circ != _previous_event_records_->end(); it_circ++)
-      // 	{
-      // 	  //it_circ -> display();
-      // 	}   
+      boost::circular_buffer<trigger_structures::previous_event_record>::iterator it_circ = _previous_event_records_->begin();
+      for (; it_circ != _previous_event_records_->end(); it_circ++)
+      	{
+      	  //it_circ -> display();
+      	}   
       
-      // std::clog << "********* Size of Finale structures for one event *********" << std::endl;
-      // std::clog << "Calo collection size @ 25 ns            : " << _calo_records_25ns_.size() << std::endl;
-      // std::clog << "Calo collection size @ 1600 ns          : " << _coincidence_calo_records_1600ns_.size() << std::endl;
-      // std::clog << "Tracker collection size @ 1600 ns       : " << _tracker_records_.size() << std::endl;
-      // std::clog << "Geiger matrix collection size @ 1600 ns : " << _geiger_matrix_records_.size() << std::endl;
-      // std::clog << "Pair records collection size @ 1600 ns  : " << _pair_records_.size() << std::endl;
-      // std::clog << "Coincidence collection size @ 1600 ns   : " << _coincidence_records_.size() << std::endl;
-      // std::clog << "Previous event collection size          : " << _previous_event_records_->size() << std::endl;
-      // std::clog << "L1 calo collection size @ 25 ns         : " << _L1_calo_decision_records_.size() << std::endl;
-      // std::clog << "L1 tracker collection size @ 1600 ns    : " << _L1_tracker_decision_records_.size() << std::endl;
-      // std::clog << "L2 decision collection size @ 1600 ns   : " << _L2_decision_records_.size() << std::endl;
+      std::clog << "********* Size of Finale structures for one event *********" << std::endl;
+      std::clog << "Calo collection size @ 25 ns            : " << _calo_records_25ns_.size() << std::endl;
+      std::clog << "Calo collection size @ 1600 ns          : " << _coincidence_calo_records_1600ns_.size() << std::endl;
+      std::clog << "Tracker collection size @ 1600 ns       : " << _tracker_records_.size() << std::endl;
+      std::clog << "Geiger matrix collection size @ 1600 ns : " << _geiger_matrix_records_.size() << std::endl;
+      std::clog << "Pair records collection size @ 1600 ns  : " << _pair_records_.size() << std::endl;
+      std::clog << "Coincidence collection size @ 1600 ns   : " << _coincidence_records_.size() << std::endl;
+      std::clog << "Previous event collection size          : " << _previous_event_records_->size() << std::endl;
+      std::clog << "L1 calo collection size @ 25 ns         : " << _L1_calo_decision_records_.size() << std::endl;
+      std::clog << "L1 tracker collection size @ 1600 ns    : " << _L1_tracker_decision_records_.size() << std::endl;
+      std::clog << "L2 decision collection size @ 1600 ns   : " << _L2_decision_records_.size() << std::endl;
       
       return;
     }

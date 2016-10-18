@@ -93,7 +93,7 @@ namespace snemo {
 			void reset_zones_informations();
 
 			/// Build one sliding zone information for a clocktick
-			void build_sliding_zone(tracker_sliding_zone & szone_, unsigned int side_, unsigned int szone_id_);
+			void build_sliding_zone(unsigned int side_, unsigned int szone_id_);
 
 			/// Build all sliding zones with memories mem1 and mem2 for projections
 			void build_sliding_zones(tracker_trigger_mem_maker::mem1_type & mem1_, 
@@ -101,7 +101,7 @@ namespace snemo {
 
 			
 			/// Build one zone information for a clocktick
-			void build_zone(tracker_zone & zone_, unsigned int side_, unsigned int zone_id_);
+			void build_zone(unsigned int side_, unsigned int zone_id_);
 
 			/// Build all zones responses for a clocktick
 			void build_zones();    

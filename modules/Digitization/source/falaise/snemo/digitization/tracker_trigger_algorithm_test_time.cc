@@ -234,7 +234,7 @@ namespace snemo {
       return;
     }
 
-    void tracker_trigger_algorithm_test_time::build_sliding_zone(tracker_sliding_zone & szone_, unsigned int side_, unsigned int szone_id_)
+    void tracker_trigger_algorithm_test_time::build_sliding_zone(unsigned int side_, unsigned int szone_id_)
     {
       _sliding_zones_[side_][szone_id_].side = side_;
       _sliding_zones_[side_][szone_id_].szone_id = szone_id_;
@@ -258,7 +258,7 @@ namespace snemo {
     {
       for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++) {
 	for (unsigned int iszone = 0; iszone < trigger_info::NSLZONES; iszone ++) {
-	  build_sliding_zone(_sliding_zones_[iside][iszone], iside, iszone);
+	  build_sliding_zone(iside, iszone);
 	  _sliding_zones_[iside][iszone].build_pattern(mem1_, mem2_);
 	  //_sliding_zones_[iside][iszone].print(std::clog);
 	}
@@ -266,7 +266,7 @@ namespace snemo {
       return;
     }
 
-    void tracker_trigger_algorithm_test_time::build_zone(tracker_zone & zone_, unsigned int side_, unsigned int zone_id_)
+    void tracker_trigger_algorithm_test_time::build_zone(unsigned int side_, unsigned int zone_id_)
     {
       _zones_[side_][zone_id_].side = side_;
       _zones_[side_][zone_id_].zone_id = zone_id_;
@@ -291,7 +291,7 @@ namespace snemo {
 	{
 	  for (unsigned int izone = 0; izone < trigger_info::NZONES; izone++) 
 	    {
-	      build_zone(_zones_[iside][izone], iside, izone);
+	      build_zone(iside, izone);
 	      build_in_out_pattern(_zones_[iside][izone], _zone_vertical_memory_);
 	      build_left_mid_right_pattern(_zones_[iside][izone], _zone_horizontal_memory_, _zone_vertical_for_horizontal_memory_);
 	      build_near_source_pattern(_zones_[iside][izone]);

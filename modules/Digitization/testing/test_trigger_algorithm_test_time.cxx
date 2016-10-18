@@ -163,7 +163,7 @@ int main( int  argc_ , char **argv_  )
     reader_config.store ("files.mode", "single");
     reader_config.store ("files.single.filename", pipeline_simulated_data_filename);
     reader.initialize_standalone (reader_config);
-    if (debug) reader.tree_dump(std::clog, "Simulated data reader module");
+    // reader.tree_dump(std::clog, "Simulated data reader module");
 
     datatools::fetch_path_with_env(output_path);
     if (is_output_path) output_path = output_path;
@@ -211,7 +211,7 @@ int main( int  argc_ , char **argv_  )
     snemo::digitization::geiger_tp_to_ctw_algo geiger_tp_2_ctw;
     geiger_tp_2_ctw.initialize();
 
-   // Loading memory from external files
+    // Loading memory from external files
     std::string mem1 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem1.conf";
     std::string mem2 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem2.conf";
     std::string mem3 = "${FALAISE_DIGITIZATION_TESTING_DIR}/config/trigger/tracker/mem3.conf";
@@ -303,9 +303,9 @@ int main( int  argc_ , char **argv_  )
 		// Processing Geiger signal :
 		sd_2_geiger_signal.process(SD, signal_data);
 		
-		if (debug) signal_data.tree_dump(std::clog, "*** Signal Data ***", "INFO : ");
+		// signal_data.tree_dump(std::clog, "*** Signal Data ***", "INFO : ");
 		
-		if (debug) my_clock_manager.tree_dump(std::clog, "Clock utils : ", "INFO : ");
+		my_clock_manager.tree_dump(std::clog, "Clock utils : ", "INFO : ");
 
 		snemo::digitization::calo_tp_data my_calo_tp_data;
 		// Calo signal to calo TP :
@@ -317,13 +317,13 @@ int main( int  argc_ , char **argv_  )
 		    // Signal to calo TP process :
 		    signal_2_calo_tp.process(signal_data, my_calo_tp_data);
 		   
-		    if (debug) my_calo_tp_data.tree_dump(std::clog, "Calorimeter TP(s) data : ", "INFO : ");
+		    // my_calo_tp_data.tree_dump(std::clog, "Calorimeter TP(s) data : ", "INFO : ");
 		    
 		    // Calo TP to geiger CTW process :
 		    calo_tp_2_ctw_0.process(my_calo_tp_data, my_calo_ctw_data);
 		    calo_tp_2_ctw_1.process(my_calo_tp_data, my_calo_ctw_data);
 		    calo_tp_2_ctw_2.process(my_calo_tp_data, my_calo_ctw_data);
-		    if (debug) my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
+		    // my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
 		    
 		  } // end of if has calo signal
 
@@ -338,13 +338,13 @@ int main( int  argc_ , char **argv_  )
 
 		    // Geiger TP to geiger CTW process
 		    geiger_tp_2_ctw.process(my_geiger_tp_data, my_geiger_ctw_data);
-		    if (debug) my_geiger_ctw_data.tree_dump(std::clog, "Geiger CTW(s) data : ", "INFO : ");
+		    // my_geiger_ctw_data.tree_dump(std::clog, "Geiger CTW(s) data : ", "INFO : ");
 
 		  } // end of if has geiger signal
 
 	      } // end of if has "calo" || "xcalo" || "gveto" || "gg" step hits
-
-		// Creation of outputs collection structures for calo and tracker
+	    
+	    // Creation of outputs collection structures for calo and tracker
 	    std::vector<snemo::digitization::trigger_structures::calo_summary_record> calo_collection_records;
 	    std::vector<snemo::digitization::trigger_structures::coincidence_calo_record> coincidence_collection_calo_records;
 	    std::vector<snemo::digitization::trigger_structures::tracker_record>   tracker_collection_records;
@@ -363,27 +363,31 @@ int main( int  argc_ , char **argv_  )
 	    tracker_collection_records = my_trigger_algo.get_tracker_records_vector();
 	    coincidence_collection_records = my_trigger_algo.get_coincidence_records_vector();
 	    
-	    // if (debug) my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
-	    // if (debug) my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
-	    // if (debug) my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
-	    // if (debug) my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);
 
-	    // for (int i = 0; i < coincidence_collection_records.size(); i++)
-	    //   {
-	    // 	coincidence_collection_records[i].display();
-	    //   }
-
-	    if (debug) std::clog << "********* Size of Finale structures for one event *********" << std::endl;
-	    if (debug) std::clog << "Calo collection size @ 25 ns : " << calo_collection_records.size() << std::endl;
-	    if (debug) std::clog << "Calo collection size @ 1600 ns : " << coincidence_collection_calo_records.size() << std::endl;
-	    if (debug) std::clog << "Tracker collection size @ 1600 ns : " << tracker_collection_records.size() << std::endl;
-	    if (debug) std::clog << "Coincidence collection size @ 1600 ns : "  << coincidence_collection_records.size() << std::endl;
+	    // Display is in trigger_algorithm_test_time.cc (_process methods) :
+	    /*if (is_display) my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
+	    if (is_display) my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
+	    if (is_display) my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
+	    if (is_display) my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);*/
+	    
+	    /*
+	    for (int i = 0; i < coincidence_collection_records.size(); i++)
+	      {
+	    	coincidence_collection_records[i].display();
+	      }
+	    */
+	    /*
+	    std::clog << "********* Size of Finale structures for one event *********" << std::endl;
+	    std::clog << "Calo collection size @ 25 ns : " << calo_collection_records.size() << std::endl;
+	    std::clog << "Calo collection size @ 1600 ns : " << coincidence_collection_calo_records.size() << std::endl;
+	    std::clog << "Tracker collection size @ 1600 ns : " << tracker_collection_records.size() << std::endl;
+	    std::clog << "Coincidence collection size @ 1600 ns : "  << coincidence_collection_records.size() << std::endl;
 	    
 	    bool raw_trigger_prompt_decision = my_trigger_algo.get_finale_decision();
 	    bool raw_trigger_delayed_decision = my_trigger_algo.get_delayed_finale_decision();
 
-	    if (debug) std::clog << "trigger_finale_decision         [" << raw_trigger_prompt_decision << "]" << std::endl;
-	    if (debug) std::clog << "delayed trigger_finale_decision [" << raw_trigger_delayed_decision << "]" << std::endl;
+	    std::clog << "trigger_finale_decision         [" << raw_trigger_prompt_decision << "]" << std::endl;
+	    std::clog << "delayed trigger_finale_decision [" << raw_trigger_delayed_decision << "]" << std::endl;*/
 
 	    my_trigger_algo.reset_data();
 	      
@@ -391,7 +395,7 @@ int main( int  argc_ , char **argv_  )
 	
 	ER.clear();
 	psd_count++;
-	// std::clog << "DEBUG : psd count " << psd_count << std::endl;
+	std::clog << "DEBUG : psd count " << psd_count << std::endl;
 	//if (debug) std::clog << "DEBUG : psd count " << psd_count << std::endl;
 	DT_LOG_NOTICE(logging, "Simulated data #" << psd_count);
       } // end of reader is terminated

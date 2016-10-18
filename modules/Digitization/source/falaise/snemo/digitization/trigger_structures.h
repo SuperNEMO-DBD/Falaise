@@ -45,7 +45,7 @@ namespace snemo {
 	calo_record();
 	void reset();
 	void display() const;
-	int32_t clocktick_25ns;
+	uint32_t clocktick_25ns;
 	std::bitset<trigger_info::NZONES> zoning_word[trigger_info::NSIDES];
 	std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_0;
 	std::bitset<calo::ctw::HTM_BITSET_SIZE> total_multiplicity_side_1;
@@ -99,7 +99,7 @@ namespace snemo {
 	void reset();
 	bool is_empty() const;
 	void display() const;
-	int32_t clocktick_1600ns;				
+	uint32_t clocktick_1600ns;				
 	bool matrix[trigger_info::NSIDES][trigger_info::NLAYERS][trigger_info::NROWS];
       };
 
@@ -128,7 +128,7 @@ namespace snemo {
 	void reset();
 	void display() const;
 	bool is_empty() const;	
-	int32_t clocktick_1600ns;
+	uint32_t clocktick_1600ns;
       };
 
       struct coincidence_event_record : public coincidence_base_record
@@ -137,7 +137,7 @@ namespace snemo {
 	void reset();
 	void display() const;
 	bool is_empty() const;	
-	int32_t clocktick_1600ns;
+	uint32_t clocktick_1600ns;
 	// Coincidence zoning word :
 	std::bitset<trigger_info::NZONES> coincidence_zoning_word[trigger_info::NSIDES];
 	// Traker pattern zoning word :
@@ -154,7 +154,7 @@ namespace snemo {
 	void reset();
 	void display() const;
 	bool is_empty() const;	
-	int32_t previous_clocktick_1600ns;
+	uint32_t previous_clocktick_1600ns;
 	uint32_t counter_1600ns;
 	// Coincidence zoning word :
 	std::bitset<trigger_info::NZONES> coincidence_zoning_word[trigger_info::NSIDES];

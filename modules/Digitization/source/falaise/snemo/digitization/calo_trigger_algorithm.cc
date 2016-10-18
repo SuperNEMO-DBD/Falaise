@@ -607,7 +607,7 @@ namespace snemo {
       _gate_circular_buffer_.reset(new buffer_type(_circular_buffer_depth_));
       _calo_finale_decision_ = false;
       
-      for(int32_t iclocktick = calo_ctw_data_.get_clocktick_min(); iclocktick <= calo_ctw_data_.get_clocktick_max() + _circular_buffer_depth_ - 1 ; iclocktick++)
+      for(uint32_t iclocktick = calo_ctw_data_.get_clocktick_min(); iclocktick <= calo_ctw_data_.get_clocktick_max() + _circular_buffer_depth_ - 1 ; iclocktick++)
 	{
 	  std::vector<datatools::handle<calo_ctw> > ctw_list_per_clocktick;
 	  calo_ctw_data_.get_list_of_calo_ctw_per_clocktick(iclocktick, ctw_list_per_clocktick);
