@@ -18,7 +18,7 @@ display_name       : string = "Basic layout"
 terse_description  : string = "The configuration parameters for the demonstrator module basic layout"
 
 #@description The list of variant parameters associated to the source
-parameters : string[3] = "magnetic_field" "source_layout" "source_calibration"
+parameters : string[4] = "magnetic_field" "source_layout" "source_calibration" "shielding"
 
 parameters.magnetic_field.model           : string = "magnetic_field.on_off.PM"
 parameters.magnetic_field.description     : string = "The activation flag of the magnetic field"
@@ -28,6 +28,10 @@ parameters.source_layout.description      : string = "The layout of the source f
 
 parameters.source_calibration.model       : string = "source_calibration.off_on.PM"
 parameters.source_calibration.description : string = "The activation flag of the source calibration system"
+
+parameters.shielding.model                : string = "datatools::basic::on_off.PM"
+# "shielding.on_off.PM"
+parameters.shielding.description          : string = "The activation flag of the shielding"
 
 
 #########################################################################

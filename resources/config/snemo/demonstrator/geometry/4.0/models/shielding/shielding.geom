@@ -2,9 +2,9 @@
 # shielding.geom
 
 
-#################
-# Shield blocks #
-#################
+######################
+# Water Shield Walls #
+######################
 
 # ######################################################################
 # [name="water_shield_block.model" type="geomtools::simple_boxed_model"]
@@ -22,15 +22,19 @@
 # visibility.color            : string  = "blue"
 
 
+######################
+# Iron Shield Walls  #
+######################
+
 #########################################################################
 [name="bf_iron_shield_block.model" type="geomtools::simple_shaped_model"]
 
 #@config Back-Front shielding wall
 
 shape_type : string = "box"
-x : real as length = 600.0 cm
-y : real as length = 800.0 cm
-z : real as length =  20.0 cm
+x : real as length = 6460.0 mm
+y : real as length = 8870.0 mm
+z : real as length =  200.0 mm
 
 material.ref : string = "basic::iron"
 
@@ -46,9 +50,9 @@ visibility.color            : string  = "black"
 #@config Left-Right shielding wall
 
 shape_type : string = "box"
-x : real as length = 600.0 cm
-y : real as length = 600.0 cm
-z : real as length =  20.0 cm
+x : real as length = 3070.0 mm
+y : real as length = 6460.0 mm
+z : real as length =  200.0 mm
 
 material.ref : string = "basic::iron"
 
@@ -58,15 +62,33 @@ visibility.daughters.hidden : boolean = false
 visibility.color            : string  = "black"
 
 
-########################################################################
-[name="tb_iron_shield_block.model" type="geomtools::simple_boxed_model"]
+############################################################################
+[name="bottom_iron_shield_block.model" type="geomtools::simple_boxed_model"]
+
+#@config Bottom shielding wall
+
+shape_type : string = "box"
+x : real as length = 3070.0 mm
+y : real as length = 8470.0 mm
+z : real as length =  200.0 mm
+
+material.ref : string = "basic::iron"
+
+visibility.hidden           : boolean = false
+visibility.hidden_envelope  : boolean = false
+visibility.daughters.hidden : boolean = false
+visibility.color            : string  = "black"
+
+
+#########################################################################
+[name="top_iron_shield_block.model" type="geomtools::simple_boxed_model"]
 
 #@config Top-Bottom shielding wall
 
 shape_type : string = "box"
-x : real as length = 650.0 cm
-y : real as length = 800.0 cm
-z : real as length =  20.0 cm
+x : real as length = 3470.0 mm
+y : real as length = 8870.0 mm
+z : real as length =  200.0 mm
 
 material.ref : string = "basic::iron"
 

@@ -3,7 +3,7 @@ SuperNEMO virtual geometry setup
 ================================
 
 :Authors: François Mauger, Xavier Garrido, Yves Lemière, Guillaume Oliviero
-:Date:    2016-08-31
+:Date:    2016-10-19
 
 .. contents::
    :depth: 3
@@ -37,6 +37,12 @@ This  setup  uses  the  new  ``basic/1.0``  materials  resource  files
 published in Bayeux >= 2.1. The ``std::XXXX`` materials are considered
 obsolete and must not be used anymore.
 
+We also have added a simple model for the external shielding
+with pure iron walls surrounding the demonstrator module.
+
+A preliminary model of the ground (rock material is approximated with
+basic concrete) has been added too.
+
 It uses the common definition of materials 2.0 from Falaise.
 
 Files
@@ -49,7 +55,7 @@ Files
    building  of  *geometry  models* (ala  Geant4/GDML  logical  volume
    factories)
 
-   * ``categories.lis`` :  the description of all  geometry categories
+   * ``*_categories.lis`` :  the description of all  geometry categories
      associated to physical volumes of interest in the geometry setup;
      this  allows to  build a  dictionnary of  geometry IDs  to enable
      automated location of volumes  and navigation within the geometry
@@ -98,12 +104,11 @@ Display the geometry
 
       $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
         bxgeomtools_inspector \
-          --datatools::logging="trace" \
           --datatools::resource-path="falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
           --load-dll Falaise \
-          --datatools::variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/repository.conf" \
-          --datatools::variant-qt-gui \
-	  --datatools::variant-store "myprofile.conf" \
+          --variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/repository.conf" \
+          --variant-gui \
+	  --variant-store  "myprofile.conf" \
           --manager-config "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf"
 
      where:
@@ -115,10 +120,10 @@ Display the geometry
        * ``--manager-config
          "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf"``
          indicates the main configuration file of the geometry manager.
-       * ``--datatools::variant-config`` loads the main configuration file for variant support.
-       * ``--datatools::variant-qt-gui`` launched the GUI at start to select/change variant
+       * ``--variant-config`` loads the main configuration file for variant support.
+       * ``--variant-gui`` launched the GUI at start to select/change variant
 	 configuration parameters (only available if Bayeux was compiled with Qt GUI support).
-       * ``--datatools::variant-store`` store the selected variant profile in a file
+       * ``--variant-store`` store the selected variant profile in a file
 
      ::
       $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
@@ -126,8 +131,8 @@ Display the geometry
           --datatools::logging "warning" \
           --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
           --load-dll Falaise \
-          --datatools::variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/repository.conf" \
- 	  --datatools::variant-load "myprofile.conf" \
+          --variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/repository.conf" \
+ 	  --variant-load "myprofile.conf" \
           --manager-config "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf"
 
      ::
@@ -136,9 +141,9 @@ Display the geometry
           --datatools::logging "warning" \
           --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
           --load-dll Falaise \
-          --datatools::variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/repository.conf" \
-          --datatools::variant-set "geometry:layout=HalfCommissioning" \
-          --datatools::variant-set "magnetic_field:active=0" \
+          --variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/repository.conf" \
+          --variant-set "geometry:layout=HalfCommissioning" \
+          --variant-set "magnetic_field:active=0" \
           --manager-config "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf"
 
 
