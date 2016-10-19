@@ -37,6 +37,7 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
   source/falaise/snemo/digitization/tracker_sliding_zone.h
 
   source/falaise/snemo/digitization/calo_signal.h
+  source/falaise/snemo/digitization/calo_signal_simple_shape.h
   source/falaise/snemo/digitization/calo_feb_data.h
   source/falaise/snemo/digitization/calo_tp.h
   source/falaise/snemo/digitization/calo_tp_data.h
@@ -117,6 +118,7 @@ list(APPEND FalaiseDigitizationPlugin_SOURCES
   source/falaise/snemo/digitization/calo_tp.cc
   source/falaise/snemo/digitization/calo_feb_data.cc
   source/falaise/snemo/digitization/calo_signal.cc
+  source/falaise/snemo/digitization/calo_signal_simple_shape.cc
 
   source/falaise/snemo/digitization/geiger_tp_to_ctw_algo.cc
   source/falaise/snemo/digitization/geiger_ctw_data.cc
