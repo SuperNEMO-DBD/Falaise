@@ -127,10 +127,24 @@ if(FALAISE_USE_LEGACY_ROOT)
     )
   set(_event_browser_root_dict ${PROJECT_BINARY_DIR}/event_browser_dict.cc)
 else()
+  if(ROOT_VERSION VERSION_GREATER 5)
+    set(__EVENTBROWSER_MODULE_ARG MODULE Falaise_EventBrowser)
+    # Also have to haxor CMAKE_INSTALL_LIBDIR because we can't disable
+    # install of pcm/rootmap files...)
+    set(CMAKE_INSTALL_LIBDIR_OLD "${CMAKE_INSTALL_LIBDIR}")
+    set(CMAKE_INSTALL_LIBDIR "${CMAKE_INSTALL_LIBDIR_OLD}/Falaise/modules")
+  endif()
   root_generate_dictionary(event_browser_dict
     "${FalaiseEventBrowserPlugin_DICT_HEADERS}"
+    ${__EVENTBROWSER_MODULE_ARG}
     LINKDEF "${PROJECT_SOURCE_DIR}/include/falaise/snemo/view/event_browser_linkdef.h"
     )
+
+  if(ROOT_VERSION VERSION_GREATER 5)
+    # pop the true libinstalldir
+    set(CMAKE_INSTALL_LIBDIR "${CMAKE_INSTALL_LIBDIR_OLD}")
+  endif()
+
   set(_event_browser_root_dict ${CMAKE_CURRENT_BINARY_DIR}/event_browser_dict.cxx)
 endif()
 

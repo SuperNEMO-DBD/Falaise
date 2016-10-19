@@ -29,10 +29,15 @@ endif()
 set(ROOT_COMPONENTS Gui Geom GeomPainter Physics Graf3d)
 find_package(ROOT 5.34.00 QUIET COMPONENTS ${ROOT_COMPONENTS} NO_MODULE)
 find_package(ROOT 5.34.00 REQUIRED ${ROOT_COMPONENTS})
-if(NOT FALAISE_USE_LEGACY_ROOT)
-  include(RootNewMacros)
-  set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH_PREROOT})
+if(ROOT_VERSION VERSION_LESS 6)
+  if(NOT FALAISE_USE_LEGACY_ROOT)
+    include(RootNewMacros)
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH_PREROOT})
+  endif()
+else()
+  include(${ROOT_DIR}/modules/RootNewMacros.cmake)
 endif()
+
 
 #-----------------------------------------------------------------------
 # Include directories for all subdirectories
