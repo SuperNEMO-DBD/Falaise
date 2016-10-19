@@ -140,7 +140,7 @@ else()
     LINKDEF "${PROJECT_SOURCE_DIR}/include/falaise/snemo/view/event_browser_linkdef.h"
     )
 
-  if(ROOT_VERSION VERSION_GREATER 5)
+  if(ROOT_VERSION VERSION_GREATER 5.99)
     # pop the true libinstalldir
     set(CMAKE_INSTALL_LIBDIR "${CMAKE_INSTALL_LIBDIR_OLD}")
   endif()
