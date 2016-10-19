@@ -127,7 +127,7 @@ if(FALAISE_USE_LEGACY_ROOT)
     )
   set(_event_browser_root_dict ${PROJECT_BINARY_DIR}/event_browser_dict.cc)
 else()
-  if(ROOT_VERSION VERSION_GREATER 5)
+  if(ROOT_VERSION VERSION_GREATER 5.99)
     set(__EVENTBROWSER_MODULE_ARG MODULE Falaise_EventBrowser)
     # Also have to haxor CMAKE_INSTALL_LIBDIR because we can't disable
     # install of pcm/rootmap files...)
