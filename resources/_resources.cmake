@@ -253,7 +253,6 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/plugins/m
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/plugins/magnetic_field/magnetic_fields.def
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/plugins/magnetic_field/manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/plugins/mapping/plugins.conf
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/plugins/electronics/plugin.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/plugins/locators/plugin.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/1.0/step_hit_processors-only_visu_tracks.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/1.0/processes/em.conf
