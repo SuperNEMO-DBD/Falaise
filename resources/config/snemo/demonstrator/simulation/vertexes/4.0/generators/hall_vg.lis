@@ -5,16 +5,16 @@
 #@key_label   "name"
 #@meta_label  "type"
 
-# Generate vertex from the hall:
+##############################################################
 [name="experimental_hall_surface" type="genvtx::box_model_vg"]
 
-#@config Vertex generation from the surface of the experimental hall
+#@config Vertex generation from all surfaces of the experimental hall
 
 #@description Logging priority
 logging.priority  : string = "notice"
 
 #@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin : string  = "category='hall'"
+origin : string  = "category='hall' hall={0}"
 
 #@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
 mode   : string  = "surface"
@@ -37,18 +37,71 @@ mode.surface.left   : boolean = 1
 #@description Surface mode box right face activation
 mode.surface.right  : boolean = 1
 
-# Generate vertex from the hall:
-[name="experimental_hall_bulk" type="genvtx::box_model_vg"]
 
-#@config Vertex generation from the volume of the experimental hall
+###########################################################
+[name="experimental_hall_roof" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the top surface (roof) of the experimental hall
 
 #@description Logging priority
 logging.priority  : string = "notice"
 
 #@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin : string  = "category='hall'"
+origin : string  = "category='hall' hall={0}"
+
+#@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
+mode   : string  = "surface"
+
+#@description Surface mode box top face activation
+mode.surface.top    : boolean = 1
+
+
+###########################################################
+[name="experimental_hall_bulk" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the volume (air) of the experimental hall
+
+#@description Logging priority
+logging.priority  : string = "notice"
+
+#@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string  = "category='hall' hall={0}"
 
 #@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
 mode   : string  = "bulk"
+
+
+##################################################################
+[name="experimental_hall_ground_bulk" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the volume of the experimental hall's ground
+
+#@description Logging priority
+logging.priority  : string = "notice"
+
+#@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string  = "category='ground' hall={0}"
+
+#@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
+mode   : string  = "bulk"
+
+
+###################################################################
+[name="experimental_hall_ground_floor" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the top surface (floor) of the experimental hall's ground
+
+#@description Logging priority
+logging.priority  : string = "notice"
+
+#@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string  = "category='ground' hall={0}"
+
+#@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
+mode   : string  = "surface"
+
+#@description Surface mode box top face activation
+mode.surface.top  : boolean = 1
+
 
 # End of list of multi-properties.

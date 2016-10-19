@@ -27,7 +27,7 @@ spot.z : real as length = 0 mm
 #############################################
 [name="commissioning.all_spots" type="genvtx::cylinder_model_vg"]
 
-#@variant_section_only vertexes.commissioning:type/if_all_spots|true
+### #@variant_section_only vertexes.commissioning:type/if_all_spots|true
 
 #@config Vertex generation from from a commissioning spot
 
@@ -49,7 +49,7 @@ mode   : string  = "bulk"
 ######################################################
 [name="commissioning.single_spot" type="genvtx::cylinder_model_vg"]
 
-#@variant_section_only vertexes.commissioning:type/if_single_spot|false
+### #@variant_section_only vertexes.commissioning:type/if_single_spot|false
 
 #@config Vertex generation from from a commissioning spot
 

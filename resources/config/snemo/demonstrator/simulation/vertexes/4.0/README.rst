@@ -3,7 +3,7 @@ Vertex generation for SuperNEMO demonstrator simulation
 ================================================================
 
 :Authors: François Mauger
-:Date:    2016-04-06
+:Date:    2016-10-19
 
 .. contents::
    :depth: 3
@@ -43,15 +43,15 @@ From  Falaise build  directory (this  is preliminary),  run:
 .. raw:: sh
 
    $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
-     bxgenvtx_production \
-     --logging "warning" \
-     --load-dll Falaise \
-     --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-2.1.0/resources" \
-     --geometry-manager         "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf" \
-     --vertex-generator-manager "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/manager.conf" \
-     --datatools::variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/repository.conf" \
-     --datatools::variant-qt-gui \
-     --list
+   bxgenvtx_production \
+	 --logging "fatal" \
+	 --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
+	 --load-dll Falaise \
+	 --geometry-manager         "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf" \
+	 --vertex-generator-manager "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/manager.conf" \
+	 --variant-config           "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/repository.conf" \
+	 --variant-gui \
+	 --list
 
 Generate 10000 vertexes from the surface of the experimental hall roof
 ----------------------------------------------------------------------
@@ -62,23 +62,115 @@ Run from the Falaise build directory (preliminary):
 
    $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
      bxgenvtx_production \
-     --logging "warning" \
+     --logging "fatal" \
+     --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
      --load-dll Falaise \
-     --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-2.1.0/resources" \
      --geometry-manager         "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf" \
      --vertex-generator-manager "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/manager.conf" \
      --shoot \
      --prng-seed 314159 \
-     --number-of-vertices 1000 \
+     --number-of-vertices 10000 \
      --vertex-modulo 100 \
      --output-file "vertices.txt" \
-     --datatools::variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/repository.conf" \
-     --datatools::variant-qt-gui \
-     --datatools::variant-store "profile.conf" \
-     --vertex-generator "source_pads_bulk" \
+     --variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/repository.conf" \
+     --variant-gui \
+     --variant-store "profile.conf" \
+     --vertex-generator "experimental_hall_roof" \
+     --visu \
      --visu-spot-zoom 2.0 \
      --visu-spot-color "magenta" \
      --visu-output-file "vertices-visu-dd.data.gz"
+..
+
+Generate 10000 vertexes from the internal surface of the shielding walls
+---------------------------------------------------------------------------------
+
+Run from the Falaise build directory (preliminary):
+
+.. raw:: sh
+
+   $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
+     bxgenvtx_production \
+     --logging "fatal" \
+     --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
+     --load-dll Falaise \
+     --geometry-manager         "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf" \
+     --vertex-generator-manager "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/manager.conf" \
+     --shoot \
+     --prng-seed 314159 \
+     --number-of-vertices 10000 \
+     --vertex-modulo 100 \
+     --output-file "vertices.txt" \
+     --variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/repository.conf" \
+     --variant-gui \
+     --variant-store "profile.conf" \
+     --vertex-generator "shielding_all_internal_surfaces" \
+     --visu \
+     --visu-spot-zoom 2.0 \
+     --visu-spot-color "magenta" \
+     --visu-output-file "vertices-visu-dd.data.gz"
+..
+
+
+Generate 10000 vertexes from the bulk of the shielding walls
+---------------------------------------------------------------------------------
+
+Run from the Falaise build directory (preliminary):
+
+.. raw:: sh
+
+   $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
+     bxgenvtx_production \
+     --logging "fatal" \
+     --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
+     --load-dll Falaise \
+     --geometry-manager         "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf" \
+     --vertex-generator-manager "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/manager.conf" \
+     --shoot \
+     --prng-seed 314159 \
+     --number-of-vertices 10000 \
+     --vertex-modulo 100 \
+     --output-file "vertices.txt" \
+     --variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/repository.conf" \
+     --variant-gui \
+     --variant-store "profile.conf" \
+     --vertex-generator "shielding_left_right_bulk" \
+     --visu \
+     --visu-spot-zoom 2.0 \
+     --visu-spot-color "magenta" \
+     --visu-output-file "vertices-visu-dd.data.gz"
+..
+
+
+Generate 10000 vertexes from the source pads bulk volume
+----------------------------------------------------------------------
+
+Run from the Falaise build directory (preliminary):
+
+.. raw:: sh
+
+   $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
+     bxgenvtx_production \
+     --logging "fatal" \
+     --load-dll Falaise \
+     --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
+     --geometry-manager         "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf" \
+     --vertex-generator-manager "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/manager.conf" \
+     --shoot \
+     --prng-seed 314159 \
+     --number-of-vertices 10000 \
+     --vertex-modulo 100 \
+     --output-file "vertices.txt" \
+     --variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/variants/repository.conf" \
+     --variant-gui \
+     --variant-store "profile.conf" \
+     --vertex-generator "source_pads_bulk" \
+     --visu \
+     --visu-object "[1100:0]" \
+     --visu-spot-zoom 2.0 \
+     --visu-spot-color "magenta" \
+     --visu-output-file "vertices-visu-dd.data.gz"
+..
 
 .. raw:: sh
 
@@ -97,7 +189,7 @@ Run from the Falaise build directory (preliminary):
    geomtools> display -yz [1100:0]
    ...
    geomtools> q
-
+..
 
 Vertex generator from calibration source with basic layout:
 
@@ -121,10 +213,12 @@ Vertex generator from calibration source with basic layout:
      --datatools::variant-store "calib_profile.rep" \
      --vertex-generator "source_calibration_all_spots" \
      --output-file "calib_vertices.txt" \
+     --visu \
      --visu-spot-zoom 2.0 \
      --visu-spot-size "0.05 mm" \
      --visu-spot-color "red" \
      --visu-output-file "calib_vertices-visu-dd.data.gz"
+..
 
 .. raw:: sh
 
@@ -141,6 +235,7 @@ Vertex generator from calibration source with basic layout:
    List of available GIDs :
    [1100:0] as 'source_submodule'
    geomtools> display -yz [1100:0]
+..
 
 
 Vertex generator with half-commissioning layout:
@@ -171,12 +266,15 @@ Vertex generator with half-commissioning layout:
      --visu-spot-size "0.05 mm" \
      --visu-spot-color "red" \
      --visu-output-file "hc_vertices-visu-dd.data.gz"
+..
+
 
 Other available generator in half-commissioning layout:
 
 .. raw:: sh
 
      --vertex-generator "commissioning.all_spots"
+..
 
 .. raw:: sh
 
@@ -193,3 +291,7 @@ Other available generator in half-commissioning layout:
    List of available GIDs :
    [1500:0] as 'source_submodule'
    geomtools> display -yz [1500:0]
+..
+
+
+.. END.
