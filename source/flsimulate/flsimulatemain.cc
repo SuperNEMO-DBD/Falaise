@@ -40,7 +40,6 @@
 // - Boost
 #include "boost/filesystem.hpp"
 #include "boost/program_options.hpp"
-#include "boost/scoped_ptr.hpp"
 namespace bpo = boost::program_options;
 
 // - Bayeux
@@ -85,7 +84,6 @@ void do_version(std::ostream& os, bool isVerbose) {
        << "* Geant4  : " << "9.6.4" << "\n"
        << "\n\n";
   }
-  return;
 }
 
 //! Handle printing of help message to screen
@@ -93,10 +91,8 @@ void do_help(const bpo::options_description& od) {
   do_version(std::cout, false);
   std::cout << "Usage:\n"
             << "  flsimulate [options]\n"
-    // << "Options\n"
             << od
             << "\n";
-  return;
 }
 
 //! Collect all needed configuration parameters in one data structure
@@ -181,15 +177,10 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
   bpo::options_description optPublic;
   optPublic.add(optDesc).add(optVariants);
 
-  // Hidden options:
-  bpo::options_description optHidden;
-  optHidden.add_options()
-    ("trace", "activate trace logging")
-    ;
 
   // All options:
   bpo::options_description optAll;
-  optAll.add(optPublic).add(optHidden);
+  optAll.add(optPublic);
 
   // - Parse...
   bpo::variables_map vMap;
@@ -213,11 +204,6 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
     params.simulationManagerParams.logging = "information";
   }
 
-  // Handle trace logging (for debugging)
-  if (vMap.count("trace")) {
-    params.logLevel = datatools::logger::PRIO_TRACE;
-    params.simulationManagerParams.logging = "trace";
-  }
 
   // Handle the experiment
   std::string experiment_label = vMap["experiment"].as<std::string>();
@@ -225,10 +211,6 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
     params.variants.config_filename = FLSimulate::getVariantsConfigFile(experiment_label);
     if (params.variants.profile_load == "__default__") {
       params.variants.profile_load = FLSimulate::getVariantsDefaultProfile(experiment_label);
-      if (datatools::logger::is_information(params.logLevel)) {
-        std::clog << "[information]: " << "Loading default variant profile '"
-                  << params.variants.profile_load << "'..." << std::endl;
-      }
     }
     params.simulationManagerParams.manager_config_filename = FLSimulate::getControlFile(experiment_label);
   } catch (FLSimulate::UnknownResourceException& e) {
@@ -253,7 +235,6 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
     do_version(std::cout, true);
     throw FLDialogHelpRequested();
   }
-  return;
 }
 
 //----------------------------------------------------------------------
@@ -296,7 +277,6 @@ void do_configure(int argc, char *argv[], FLSimulateArgs& params) {
   } catch (FLDialogOptionsError& e) {
     throw FLConfigUserError();
   }
-  return;
 }
 
 //----------------------------------------------------------------------
@@ -352,27 +332,6 @@ falaise::exit_code do_flsimulate(int argc, char *argv[])
     // Analyse the simulation manager configuration:
     datatools::multi_properties flSimProperties("name", "");
     flSimProperties.read(flSimParameters.simulationManagerParams.manager_config_filename);
-
-    // Output profiles:
-    /*
-    // Fetch the list of supported output profiles:
-    if (flSimProperties.get_section("manager").has_key("output_profiles")) {
-    datatools::properties flSimOutputProfilesProperties;
-    std::vector<std::string> supported_output_profiles;
-    flSimProperties.get_section("manager").fetch("output_profiles", supported_output_profiles);
-    std::clog << "Supported output profiles : " << std::endl << std::endl;
-    for (size_t i(0); i < supported_output_profiles.size(); i++) {
-    std::ostringstream sop_desc_key;
-    sop_desc_key << "output_profiles." << supported_output_profiles[i] << ".description";
-    std::string sop_desc = "Not documented";
-    if (flSimProperties.get_section("manager").has_key(sop_desc_key.str())) {
-    sop_desc = flSimProperties.get_section("manager").fetch_string(sop_desc_key.str());
-    }
-    std::clog << "  - " << supported_output_profiles[i] << " : " << sop_desc << std::endl;
-    }
-    std::clog << std::endl;
-    }
-    */
 
     // Have to setup geometry:
     // datatools::properties flSimGeoManagerProperties;
