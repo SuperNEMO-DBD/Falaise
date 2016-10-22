@@ -71,3 +71,14 @@ install(TARGETS flsimulate
 #-----------------------------------------------------------------------
 # Build Tests
 #
+if(FALAISE_ENABLE_TESTING)
+  add_executable(testPropertyReader testPropertyReader.cc)
+  set_target_properties(testPropertyReader
+    PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fltests
+    ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fltests
+    )
+  target_link_libraries(testPropertyReader FLCatch Bayeux::Bayeux)
+  add_test(NAME falaise-testPropertyReader COMMAND testPropertyReader)
+endif()
+
