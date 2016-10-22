@@ -51,11 +51,11 @@ typedef std::logic_error MissingKey;
 typedef boost::mpl::vector<int,
                            double,
                            bool,
-                           //std::string,
-                           std::vector<int> //,
-                           //std::vector<double>
-                           //std::vector<bool>
-                           //std::vector<std::string>
+                           std::string,
+                           std::vector<int>,
+                           std::vector<double>,
+                           std::vector<bool>, // Also allow conversion to bitset?
+                           std::vector<std::string>
                            //Path (to allow proper checking of "strings as
                            //paths"
                            //Quantity/Length/etc (to check reals with required unit,
@@ -78,8 +78,24 @@ bool visit_impl(const datatools::properties& p, const std::string& key, bool) {
   return p.is_boolean(key) && p.is_scalar(key);
 }
 
+bool visit_impl(const datatools::properties& p, const std::string& key, std::string) {
+  return p.is_string(key) && p.is_scalar(key);
+}
+
 bool visit_impl(const datatools::properties& p, const std::string& key, std::vector<int>) {
   return p.is_integer(key) && p.is_vector(key);
+}
+
+bool visit_impl(const datatools::properties& p, const std::string& key, std::vector<double>) {
+  return p.is_real(key) && p.is_vector(key);
+}
+
+bool visit_impl(const datatools::properties& p, const std::string& key, std::vector<bool>) {
+  return p.is_boolean(key) && p.is_vector(key);
+}
+
+bool visit_impl(const datatools::properties& p, const std::string& key, std::vector<std::string>) {
+  return p.is_string(key) && p.is_vector(key);
 }
 }
 
