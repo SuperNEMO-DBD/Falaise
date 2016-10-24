@@ -70,7 +70,23 @@ install(TARGETS flsimulate
 
 #-----------------------------------------------------------------------
 # Build Tests
-#
+add_executable(flsimulate_next
+  flsimulatemain_next.cc
+  FLSimulateResources.h
+  FLSimulateResources.cc
+  )
+target_include_directories(flsimulate_next PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
+  )
+target_link_libraries(flsimulate_next
+  Falaise
+  Bayeux::Bayeux
+  Bayeux::Bayeux_mctools_geant4
+  ${Boost_LIBRARIES}
+  ${Geant4_LIBRARIES}
+  )
+
 if(FALAISE_ENABLE_TESTING)
   add_executable(testPropertyReader testPropertyReader.cc)
   set_target_properties(testPropertyReader
