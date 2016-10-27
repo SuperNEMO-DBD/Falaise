@@ -8,6 +8,7 @@
 // Third party:
 // - Bayeux/mygsl:
 #include <mygsl/i_unary_function.h>
+#include <mygsl/tabulated_function.h>
 // - Bayeux/mctools :
 #include <mctools/signal/utils.h>
 // - Bayeux/datatools :
@@ -18,13 +19,9 @@ namespace snemo {
   
   namespace digitization {
 
-    class calo_signal_simple_shape : public mygsl::i_unary_function,
-				     public datatools::i_cloneable
-    {
+    class calo_signal_simple_shape : public mygsl::tabulated_function
+		{
     public : 
-
-      //! Check the validity
-      bool is_valid() const;
 
       //! Default constructor
       calo_signal_simple_shape();
@@ -41,21 +38,11 @@ namespace snemo {
 
       //! Check initialization status
       virtual bool is_initialized() const;
-
-      //! Set the polarity of the signal
-      void set_polarity(mctools::signal::polarity_type);
-
-      //! Return the polarity of the signal
-      mctools::signal::polarity_type get_polarity() const;
-
-      //! Reset the polarity of the signal
-      void reset_polarity();
-
-      //! Evaluation from parameters
-      double _eval(double x_) const;
-
+			
     protected:
 
+			/*  //! Evaluation from parameters
+					double _eval(double x_) const;*/
       
       //! Set default attributes
       void _set_defaults();
@@ -63,18 +50,11 @@ namespace snemo {
     private :
 
       // Configuration:
-      mctools::signal::polarity_type _polarity_ = mctools::signal::POLARITY_UNKNOWN; //!< Polarity of the signal
       double _t0_;         //!< Start time
       double _t1_;         //!< Stop time
       double _amplitude_;  //!< Amplitude of the signal
-      double _param_0_ = -0.004047;
-      double _param_1_ = 48.67;
-      double _param_2_ = 3.754;
-      double _param_3_ = -24.31;
-      double _param_4_ = 1048;
 
       // Working data:
-      
 
       //! Registration of the functor class
       MYGSL_UNARY_FUNCTOR_REGISTRATION_INTERFACE(calo_signal_simple_shape)

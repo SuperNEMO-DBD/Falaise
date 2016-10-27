@@ -52,15 +52,12 @@ namespace snemo {
 
     void geiger_ctw::set_clocktick_800ns(uint32_t value_)
     {
-      if(value_ <= clock_utils::INVALID_CLOCKTICK)
-	{
-	  reset_clocktick_800ns();
-	}
-      else
-	{
-	  _clocktick_800ns_ = value_;
-	  _store |= STORE_CLOCKTICK_800NS;
-	}
+      if(value_ == clock_utils::INVALID_CLOCKTICK) {
+	reset_clocktick_800ns();
+      } else {
+	_clocktick_800ns_ = value_;
+	_store |= STORE_CLOCKTICK_800NS;
+      }
       return;
     }
 
@@ -161,7 +158,7 @@ namespace snemo {
       return;
     }
 
-   void geiger_ctw::_set_full_board_id()
+    void geiger_ctw::_set_full_board_id()
     {
       unsigned long board_id = 0;
       for (unsigned int i = geiger::tp::BOARD_ID_BIT0; i <= CTW_BITSET_FULL_SIZE; i += geiger::tp::FULL_SIZE)
@@ -230,9 +227,9 @@ namespace snemo {
     }
 
     void geiger_ctw::tree_dump (std::ostream & out_,
-			      const std::string & title_,
-			      const std::string & indent_,
-			      bool inherit_) const
+				const std::string & title_,
+				const std::string & indent_,
+				bool inherit_) const
     {
       base_hit::tree_dump (out_, title_, indent_, true);
 
@@ -244,11 +241,11 @@ namespace snemo {
 
       std::bitset<100> my_bitset;
       for (unsigned int i = 0; i < mapping::NUMBER_OF_FEBS_BY_CRATE; i++)
-	 {
-	   get_100_bits_in_ctw_word(i, my_bitset);
-	   out_ << indent_ << datatools::i_tree_dumpable::inherit_tag (inherit_)
-		<< my_bitset << std::endl;
-	 }
+	{
+	  get_100_bits_in_ctw_word(i, my_bitset);
+	  out_ << indent_ << datatools::i_tree_dumpable::inherit_tag (inherit_)
+	       << my_bitset << std::endl;
+	}
 
       return;
     }

@@ -66,15 +66,12 @@ namespace snemo {
 
     void geiger_tp::set_clocktick_800ns(uint32_t value_)
     {
-      if(value_ == clock_utils::INVALID_CLOCKTICK)
-	{
-	  reset_clocktick_800ns();
-	}
-      else
-	{
-	  _clocktick_800ns_ = value_;
-	  _store |= STORE_CLOCKTICK_800NS;
-	}
+      if(value_ == clock_utils::INVALID_CLOCKTICK) {
+	reset_clocktick_800ns();
+      } else {
+	_clocktick_800ns_ = value_;
+	_store |= STORE_CLOCKTICK_800NS;
+      }
       return;
     }
 

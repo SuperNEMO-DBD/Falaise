@@ -317,13 +317,15 @@ int main( int  argc_ , char **argv_  )
 		    // Signal to calo TP process :
 		    signal_2_calo_tp.process(signal_data, my_calo_tp_data);
 		   
-		    // my_calo_tp_data.tree_dump(std::clog, "Calorimeter TP(s) data : ", "INFO : ");
+		    my_calo_tp_data.tree_dump(std::clog, "Calorimeter TP(s) data : ", "INFO : ");
+		    // my_calo_tp_data.get_calo_tps()[0].get().tree_dump(std::clog, "Calo TP data [0] : ", "INFO : ");
+		    // my_calo_tp_data.get_calo_tps()[1].get().tree_dump(std::clog, "Calo TP data [1] : ", "INFO : ");
 		    
 		    // Calo TP to geiger CTW process :
 		    calo_tp_2_ctw_0.process(my_calo_tp_data, my_calo_ctw_data);
 		    calo_tp_2_ctw_1.process(my_calo_tp_data, my_calo_ctw_data);
 		    calo_tp_2_ctw_2.process(my_calo_tp_data, my_calo_ctw_data);
-		    // my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
+		    //my_calo_ctw_data.tree_dump(std::clog, "Calorimeter CTW(s) data : ", "INFO : ");
 		    
 		  } // end of if has calo signal
 

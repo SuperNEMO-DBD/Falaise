@@ -309,6 +309,7 @@ namespace snemo {
 
       for (uint32_t i = calo_tp_data_.get_clocktick_min(); i <= calo_tp_data_.get_clocktick_max(); i++)
 	{
+	  //std::clog << "Actual CT = " << i << std::endl;
 	  if (_mode_ == MODE_MAIN_WALL)
 	    {
 	      std::vector<datatools::handle<calo_tp> > tp_list_per_clocktick_per_crate;

@@ -632,7 +632,7 @@ namespace snemo {
       // // Fake calo record for test : 
       // trigger_structures::calo_summary_record a_fake_calo_record_25ns;
       // std::bitset<10> fake_bitset (std::string("0010000000"));
-      // a_fake_calo_record_25ns.clocktick_25ns = 220;
+      // a_fake_calo_record_25ns.clocktick_25ns = 76;
       // a_fake_calo_record_25ns.zoning_word[0] = fake_bitset;
       // a_fake_calo_record_25ns.total_multiplicity_side_0 = 1;
       // a_fake_calo_record_25ns.single_side_coinc = true;
@@ -641,7 +641,11 @@ namespace snemo {
       // _calo_records_25ns_.push_back(a_fake_calo_record_25ns);
       
       uint32_t last_calo_ct_25ns = clock_utils::INVALID_CLOCKTICK;
-
+      
+      /******************************/
+      /* Problem in L1 calo decision because it has to take into account
+         the calorimeter gate of 4 x 25 ns to have an other L1 :*/
+           
       // Create calo L1 decision(s) :
       for (unsigned int i = 0; i < _calo_records_25ns_.size(); i++)
 	{
@@ -734,6 +738,7 @@ namespace snemo {
 	      // Maybe prepare tracker record outside this loop but it breaks the time implementation (close to the electronics)
 	      for (uint32_t ict1600 = clocktick_min; ict1600 <= clocktick_max; ict1600++)
 		{
+		  std::clog << "************* CT1600 : " << ict1600 << " ****************" <<std::endl;
 		  trigger_structures::tracker_record a_tracker_record;
 		  a_tracker_record.clocktick_1600ns = ict1600;
 
@@ -750,6 +755,34 @@ namespace snemo {
 		      a_geiger_matrix.clocktick_1600ns = ict1600;
 		      if (!a_geiger_matrix.is_empty()) _geiger_matrix_records_.push_back(a_geiger_matrix);
 		    }
+		  
+		  /******************************/
+		  /* Problem in L1 tracker decision */
+		    
+		  
+		  // // Create L1 tracker :     
+		  // uint32_t last_tracker_ct_1600ns = clock_utils::INVALID_CLOCKTICK;
+
+		  // // Create tracker L1 decision(s) :
+		  // for (unsigned int i = 0; i < _tracker_records_.size(); i++)
+		  //   {
+		  //     trigger_structures::tracker_record a_tracker_record_for_l1_decision = _tracker_records_[i];
+		  //     uint32_t tracker_record_ct_1600ns = a_tracker_record_for_l1_decision.clocktick_1600ns;
+	  
+		  //     if ((last_tracker_ct_1600ns == clock_utils::INVALID_CLOCKTICK || tracker_record_ct_1600ns != last_tracker_ct_1600ns + 1) &&  a_tracker_record_for_l1_decision.finale_decision == true)
+		  // 	{
+		  // 	  trigger_structures::L1_tracker_decision a_L1_tracker_decision_1600ns;
+		  // 	  a_L1_tracker_decision_1600ns.L1_tracker_decision_bool = true;
+		  // 	  a_L1_tracker_decision_1600ns.L1_tracker_ct_decision = tracker_record_ct_1600ns;
+		  // 	  _L1_tracker_decision_records_.push_back(a_L1_tracker_decision_1600ns);
+		  // 	}
+		  //     last_tracker_ct_1600ns = tracker_record_ct_1600ns;
+		  //   }
+      
+		  // for (unsigned int i = 0; i < _L1_tracker_decision_records_.size(); i++)
+		  //   {
+		  //     _L1_tracker_decision_records_[i].display(); 
+		  //   }
 
 		  trigger_structures::coincidence_calo_record a_coinc_calo_record_for_pair;
 		  a_coinc_calo_record_for_pair.clocktick_1600ns = ict1600;
@@ -780,14 +813,13 @@ namespace snemo {
 		      // Maybe check if a L2_decision already exist before coinc processing ?
 		  
 		      if (!_L2_decision_records_.empty() 
-			  && _L2_decision_records_.back().L2_ct_decision > (ict1600 - _L2_decision_coincidence_gate_size_)
+			  && (int)_L2_decision_records_.back().L2_ct_decision > (int)((ict1600 - _L2_decision_coincidence_gate_size_))
 			  && _L2_decision_records_.back().L2_ct_decision < ict1600
 			  && _L2_decision_records_.back().L2_decision_bool)
 			{
 			  L2_decision_already_created = true;
 			}
-		  
-		      // Maybe check if a L2_decision already exist before coinc processing ?
+
 		      auto it_circ = _previous_event_records_->begin();
 		      for (; it_circ != _previous_event_records_->end();it_circ++)
 			{
@@ -799,7 +831,7 @@ namespace snemo {
 					   a_coincidence_event_record,
 					   a_L2_decision,
 					   _previous_event_records_);
-		  
+
 		      if (a_coincidence_event_record.clocktick_1600ns != clock_utils::INVALID_CLOCKTICK
 			  && a_coincidence_event_record.clocktick_1600ns == ict1600
 			  && a_coincidence_event_record.decision == true

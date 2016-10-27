@@ -61,18 +61,23 @@ int main (int argc_, char ** argv_)
 void test_calo_signal_simple_model_1(bool draw_)
 {
   snemo::digitization::calo_signal_simple_shape csss1;
-  csss1.set_polarity(mctools::signal::POLARITY_NEGATIVE);
-  for (int i = 0; i < 100; i++)
-    {
-      double y = csss1(i);
-      std::clog << "x = " << i << " y = " << y << std::endl;
-    }
-
-
-
+  std::string input_datafile = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/calo_signal_shape_1300kev_mean_8000_signals.data";
+  datatools::fetch_path_with_env(input_datafile);
+  csss1.load_from_file(input_datafile);
+  double dx = 0.01;
+  std::clog << "Xmin = " << csss1.x_min() << " Xmax = " << csss1.x_max() << std::endl;
+  
   datatools::temp_file tmp_file;
   tmp_file.set_remove_at_destroy(true);
-  tmp_file.create("/tmp", "test_calo_signal_simple_model+_");
+  tmp_file.create("/tmp", "test_calo_signal_simple_model+_");  
+  
+  tmp_file.out() << "#" << csss1.interpolator_name() << std::endl;
+  for (double x = csss1.x_min (); x <= csss1.x_max() + 0.001 * dx; x += dx) {
+    if (csss1.is_valid(x)) {
+      tmp_file.out() << x << ' ' << csss1(x) << std::endl;
+    }
+  }
+  std::cout << std::endl << std::endl;
 
   if (draw_) {
 #if GEOMTOOLS_WITH_GNUPLOT_DISPLAY == 1
@@ -80,6 +85,17 @@ void test_calo_signal_simple_model_1(bool draw_)
     g1.cmd("set title 'Test mygsl::signal::calo_signal_simple_model' ");
     g1.cmd("set key out");
     g1.cmd("set grid");
+    {
+      std::ostringstream plot_cmd;
+      plot_cmd << "plot '" << tmp_file.get_filename() << "' "
+	       << " index 0"
+	       << " title 'Calo Signal simple shape 1' with lines lw 4";
+      g1.cmd(plot_cmd.str());
+      g1.showonscreen(); // window output
+      geomtools::gnuplot_drawer::wait_for_key();
+      usleep(200);
+    }
+
     // // g1.cmd("set xrange [0:100]");
     // {
     //   std::ostringstream cmd1;

@@ -92,17 +92,14 @@ namespace snemo {
       return _clocktick_25ns_;
     }
 
-    void calo_tp::set_clocktick_25ns(const uint32_t clocktick_25_)
+    void calo_tp::set_clocktick_25ns(const uint32_t clocktick_25ns_)
     {
-      if(clocktick_25_ <= clock_utils::INVALID_CLOCKTICK)
-	{
+      if(clocktick_25ns_ == clock_utils::INVALID_CLOCKTICK) {
 	  reset_clocktick_25ns();
-	}
-      else
-	{
-	  _clocktick_25ns_ = clocktick_25_;
-	  _store |= STORE_CLOCKTICK_25NS;
-	}
+	} else {
+	_clocktick_25ns_ = clocktick_25ns_;
+	_store |= STORE_CLOCKTICK_25NS;
+      }
       return;
     }
 

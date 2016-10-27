@@ -75,15 +75,12 @@ namespace snemo {
 
     void calo_ctw::set_clocktick_25ns(uint32_t clocktick_25ns_)
     {
-      if(clocktick_25ns_ <= clock_utils::INVALID_CLOCKTICK)
-	{
-	  reset_clocktick_25ns();
-	}
-      else
-	{
-	  _clocktick_25ns_ = clocktick_25ns_;
-	  _store |= STORE_CLOCKTICK_25NS;
-	}
+      if(clocktick_25ns_ == clock_utils::INVALID_CLOCKTICK) {
+	reset_clocktick_25ns();
+      } else {
+	_clocktick_25ns_ = clocktick_25ns_;
+	_store |= STORE_CLOCKTICK_25NS;
+      }
       return;
     }
 
