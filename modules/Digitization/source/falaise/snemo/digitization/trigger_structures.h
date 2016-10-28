@@ -153,7 +153,6 @@ namespace snemo {
 	previous_event_record();
 	void reset();
 	void display() const;
-	bool is_empty() const;	
 	uint32_t previous_clocktick_1600ns;
 	uint32_t counter_1600ns;
 	// Coincidence zoning word :

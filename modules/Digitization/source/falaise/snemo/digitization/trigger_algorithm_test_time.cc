@@ -739,6 +739,16 @@ namespace snemo {
 	      for (uint32_t ict1600 = clocktick_min; ict1600 <= clocktick_max; ict1600++)
 		{
 		  std::clog << "************* CT1600 : " << ict1600 << " ****************" <<std::endl;
+		  std::clog << "Size of PERs = " << _previous_event_records_->size() << " Empty : " << _previous_event_records_->empty() << std::endl;
+		  		  
+		  if (_previous_event_records_->empty() && _previous_event_records_->back().counter_1600ns != 0)
+		    {
+		      _previous_event_records_->back().counter_1600ns = 625 - ict1600 + _previous_event_records_->back().previous_clocktick_1600ns;
+		      std::clog << "CT PER = " << _previous_event_records_->back().previous_clocktick_1600ns << " counter = " <<
+			_previous_event_records_->back().counter_1600ns << std::endl;
+		    }
+		  
+		  
 		  trigger_structures::tracker_record a_tracker_record;
 		  a_tracker_record.clocktick_1600ns = ict1600;
 
@@ -856,6 +866,7 @@ namespace snemo {
 			  if (ict1600 == (_L2_decision_records_.back().L2_ct_decision + _L2_decision_coincidence_gate_size_))
 			    {
 			      _build_previous_event_record();
+			      std::clog << "Build PER CT : " << ict1600 << std::endl;
 			    }
 			}
 		    } // end of if calo is empty || tracker is empty
@@ -868,12 +879,12 @@ namespace snemo {
 
       for (unsigned int i = 0; i < _L2_decision_records_.size(); i++)
       	{
-      	  //_L2_decision_records_[i].display(); 
+      	  _L2_decision_records_[i].display(); 
       	}
       
       for (unsigned int i = 0; i < _coincidence_records_.size(); i++)
       	{
-      	  //_coincidence_records_[i].display();
+      	  _coincidence_records_[i].display();
       	}  
 
       for (unsigned int i = 0; i < _tracker_records_.size(); i++)
@@ -885,7 +896,7 @@ namespace snemo {
       boost::circular_buffer<trigger_structures::previous_event_record>::iterator it_circ = _previous_event_records_->begin();
       for (; it_circ != _previous_event_records_->end(); it_circ++)
       	{
-      	  //it_circ -> display();
+      	  it_circ -> display();
       	}   
       
       std::clog << "********* Size of Finale structures for one event *********" << std::endl;

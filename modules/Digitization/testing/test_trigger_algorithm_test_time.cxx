@@ -231,7 +231,7 @@ int main( int  argc_ , char **argv_  )
     bool inhibit_both_side_coinc = false;
     bool inhibit_single_side_coinc = false;    
     int coincidence_calorimeter_gate_size = 7; // Don't forget to modify at 7 or 8 CT 1600 for new trigger analysis
-    int L2_decision_coincidence_gate_size = 6; // Gate for calorimeter / tracker coincidence (5 x 1600 ns) 
+    int L2_decision_coincidence_gate_size = 5; // Gate for calorimeter / tracker coincidence (5 x 1600 ns) 
     int previous_event_buffer_depth = 10; // Maximum number of PER record (with an internal counter of 1 ms)
     bool activate_any_coincidences = true;
     
