@@ -197,7 +197,6 @@ namespace snemo {
 	    } // end of TP loop
 
 	} // end of max number of FEB loop
-
       return;
     }
 
@@ -209,7 +208,7 @@ namespace snemo {
 	  unsigned int layer = hit_cells_gids_[i].get(mapping::LAYER_INDEX);
 	  unsigned int row   = hit_cells_gids_[i].get(mapping::ROW_INDEX);
 	  _a_geiger_matrix_for_a_clocktick_.matrix[side][layer][row] = 1;
-	}    
+	}   
       return;
     }
 
@@ -407,6 +406,12 @@ namespace snemo {
 			}
 		      else 
 			{
+			  if ((zone_id == 0 || zone_id == 5 || zone_id == 9) && irow == zone_middle)
+			    {
+			      zone_.data_near_source.set(tracker_zone::DATA_NEAR_SOURCE_BIT_LEFT, true);
+			      zone_.data_near_source.set(tracker_zone::DATA_NEAR_SOURCE_BIT_RIGHT, true);
+			    }
+
 			  if (irow < zone_middle) zone_.data_near_source.set(tracker_zone::DATA_NEAR_SOURCE_BIT_LEFT, true);
 			  else zone_.data_near_source.set(tracker_zone::DATA_NEAR_SOURCE_BIT_RIGHT, true);
 			}
@@ -520,7 +525,7 @@ namespace snemo {
       
       build_sliding_zones(_sliding_zone_vertical_memory_, _sliding_zone_horizontal_memory_);  
       build_zones();      
-      build_tracker_record(a_tracker_record_);      
+      build_tracker_record(a_tracker_record_);     
 
       //_a_geiger_matrix_for_a_clocktick_.display();
       //a_tracker_record_.display();

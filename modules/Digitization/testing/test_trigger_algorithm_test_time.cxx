@@ -119,7 +119,7 @@ int main( int  argc_ , char **argv_  )
     
     std::string manager_config_file;
     
-    manager_config_file = "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf";
+    manager_config_file = "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf";
     datatools::fetch_path_with_env(manager_config_file);
     datatools::properties manager_config;
     datatools::properties::read_config (manager_config_file,
@@ -230,7 +230,7 @@ int main( int  argc_ , char **argv_  )
     int  calo_threshold = 1;
     bool inhibit_both_side_coinc = false;
     bool inhibit_single_side_coinc = false;    
-    int coincidence_calorimeter_gate_size = 7; // Don't forget to modify at 7 or 8 CT 1600 for new trigger analysis
+    int coincidence_calorimeter_gate_size = 5;
     int L2_decision_coincidence_gate_size = 5; // Gate for calorimeter / tracker coincidence (5 x 1600 ns) 
     int previous_event_buffer_depth = 10; // Maximum number of PER record (with an internal counter of 1 ms)
     bool activate_any_coincidences = true;

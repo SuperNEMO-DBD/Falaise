@@ -160,7 +160,6 @@ namespace snemo {
 			std::vector<trigger_structures::coincidence_event_record> _coincidence_records_; //!< Collection of coincidence record @ 1600 ns
 			boost::scoped_ptr<buffer_previous_event_record_type> _previous_event_records_; //!< Collection of previous event records @ 1600 ns
 			std::vector<trigger_structures::L1_calo_decision> _L1_calo_decision_records_; //!< Collection of L1 calorimeter decision @ 25 ns
-			std::vector<trigger_structures::L1_tracker_decision> _L1_tracker_decision_records_; //!< Collection of L1 tracker decision @ 1600 ns
 			std::vector<trigger_structures::L2_decision> _L2_decision_records_; //!< Collection of L2 decision (which launch the readout)
 						
 			bool _finale_trigger_decision_; //!< The finale decision for the trigger
