@@ -154,9 +154,9 @@ generators : string[2] = "source_pads_internal_surface" "source_pads_external_su
 # relative masses of internal/external strips:
 #
 #@variant_only source_betabeta:layout/if_basic|true
-generators.source_pads_external_bulk.absolute_weight : real  =  250.0 # 125 mm * 2
+generators.source_pads_external_surface.absolute_weight : real  =  250.0 # 125 mm * 2
 #@variant_only source_betabeta:layout/if_basic|true
-generators.source_pads_internal_bulk.absolute_weight : real  = 4607.0 # 135.5 mm * 34
+generators.source_pads_internal_surface.absolute_weight : real  = 4607.0 # 135.5 mm * 34
 
 # Maybe the following could work (to be checked) :
 #generators.source_pads_external_surface.activity : string  = "1.0 Bq/m2"
