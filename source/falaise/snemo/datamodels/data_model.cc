@@ -58,11 +58,11 @@ namespace snemo {
       return lbl;
     }
 
-    const std::string data_info::UNIFIED_DATA_LABEL = "UD";
+    const std::string data_info::UNIFIED_DIGITIZED_DATA_LABEL = "UDD";
 
-    const std::string & data_info::default_unified_data_label()
+    const std::string & data_info::default_unified_digitized_data_label()
     {
-      static std::string lbl("UD");
+      static std::string lbl("UDD");
       return lbl;
     }
 

@@ -68,11 +68,11 @@ namespace snemo {
       /// default string label/name for the 'raw data'
       static const std::string & default_raw_data_label();
 
-      /// \deprecated Default string label/name for the 'unified data'
-      static const std::string UNIFIED_DATA_LABEL;
+      /// \deprecated Default string label/name for the 'unified digitized data'
+      static const std::string UNIFIED_DIGITIZED_DATA_LABEL;
 
       /// default string label/name for the 'unified data'
-      static const std::string & default_unified_data_label();
+      static const std::string & default_unified_digitized_data_label();
 
       /// \deprecated Default string label/name for the 'calibrated data'
       static const std::string CALIBRATED_DATA_LABEL;
