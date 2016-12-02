@@ -1,5 +1,6 @@
 # - List of test programs:
 set(FalaiseDigitizationPlugin_TESTS
+  test_version.cxx
   test_calo_tp.cxx
   test_calo_tp_data.cxx
   test_calo_ctw.cxx

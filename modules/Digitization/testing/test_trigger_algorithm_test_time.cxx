@@ -305,7 +305,7 @@ int main( int  argc_ , char **argv_  )
 		
 		// signal_data.tree_dump(std::clog, "*** Signal Data ***", "INFO : ");
 		
-		my_clock_manager.tree_dump(std::clog, "Clock utils : ", "INFO : ");
+		// my_clock_manager.tree_dump(std::clog, "Clock utils : ", "INFO : ");
 
 		snemo::digitization::calo_tp_data my_calo_tp_data;
 		// Calo signal to calo TP :
@@ -317,7 +317,7 @@ int main( int  argc_ , char **argv_  )
 		    // Signal to calo TP process :
 		    signal_2_calo_tp.process(signal_data, my_calo_tp_data);
 		   
-		    my_calo_tp_data.tree_dump(std::clog, "Calorimeter TP(s) data : ", "INFO : ");
+		    // my_calo_tp_data.tree_dump(std::clog, "Calorimeter TP(s) data : ", "INFO : ");
 		    // my_calo_tp_data.get_calo_tps()[0].get().tree_dump(std::clog, "Calo TP data [0] : ", "INFO : ");
 		    // my_calo_tp_data.get_calo_tps()[1].get().tree_dump(std::clog, "Calo TP data [1] : ", "INFO : ");
 		    
@@ -397,7 +397,7 @@ int main( int  argc_ , char **argv_  )
 	
 	ER.clear();
 	psd_count++;
-	std::clog << "DEBUG : psd count " << psd_count << std::endl;
+	std::clog << "\r" <<  "DEBUG : psd count " << psd_count << std::flush;
 	if (debug) std::clog << "DEBUG : psd count " << psd_count << std::endl;
 	DT_LOG_NOTICE(logging, "Simulated data #" << psd_count);
       } // end of reader is terminated

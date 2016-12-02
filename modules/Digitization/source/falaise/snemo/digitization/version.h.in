@@ -1,0 +1,87 @@
+//! \file    snemo/digitization/version.h
+// Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
+// Author(s): François MAUGER <mauger@lpccaen.in2p3.fr>
+// Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
+
+#ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_VERSION_H
+#define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_VERSION_H
+
+// Standard Library:
+#include <string>
+
+//----------------------------------------------------------------------
+// - Compile Time API
+//! Major version number of falaise
+#define FALAISE_DIGITIZATION_VERSION_MAJOR @FalaiseDIGITIZATION_VERSION_MAJOR@
+
+//! Minor version number of falaise
+#define FALAISE_DIGITIZATION_VERSION_MINOR @FalaiseDIGITIZATION_VERSION_MINOR@
+
+//! Patch version number of falaise
+#define FALAISE_DIGITIZATION_VERSION_PATCH @FalaiseDIGITIZATION_VERSION_PATCH@
+
+//! Current revision/build number of falaise, 0 for a release
+#define FALAISE_DIGITIZATION_VERSION_REVISION @FalaiseDIGITIZATION_VERSION_REVISION@
+
+//! Encode falaise to ordered integer available at compile time
+#define FALAISE_DIGITIZATION_ENCODE_VERSION(major, minor, patch) (	\
+								  ((major) * 10000) \
+								  + ((minor) *   100) \
+								  + ((patch) *     1))
+
+//! Integer encoded falaise version available at compile time
+#define FALAISE_DIGITIZATION_VERSION FALAISE_DIGITIZATION_ENCODE_VERSION( \
+									 FALAISE_DIGITIZATION_VERSION_MAJOR, \
+									 FALAISE_DIGITIZATION_VERSION_MINOR, \
+									 FALAISE_DIGITIZATION_VERSION_PATCH)
+
+//! String encoded full version number, e.g. "1.2.3", available at compile time
+#define FALAISE_DIGITIZATION_LIB_VERSION "@FalaiseDIGITIZATION_VERSION_MAJOR@.@FalaiseDIGITIZATION_VERSION_MINOR@.@FalaiseDIGITIZATION_VERSION_PATCH@"
+
+//! Check current version >= (major, minor, patch) at compile time
+#define FALAISE_DIGITIZATION_IS_AT_LEAST(major,minor,patch) (		\
+							     FALAISE_DIGITIZATION_VERSION >= \
+							     FALAISE_DIGITIZATION_ENCODE_VERSION(major,minor,patch))
+
+//----------------------------------------------------------------------
+// Runtime API
+namespace snemo {
+
+  namespace digitization {
+
+    //! \brief Describe the falaise API version and features
+    struct version {
+
+      //! Return the major version number of falaise, e.g., 1 for '1.2.3'
+      static int get_major();
+
+      //! Return the minor version number of falaise, e.g., 2 for '1.2.3'
+      static int get_minor();
+
+      //! Return the patch version number of falaise, e.g., 3 for '1.2.3'
+      static int get_patch();
+
+      //! Return the revision/build number of falaise, e.g., 1234
+      static int get_revision();
+
+      //! Return the full version number of falaise as a string, e.g., '1.2.3'
+      static std::string get_version();
+
+      //! Return true if the current falaise version >= (major, minor, patch)
+      static bool is_at_least(int major, int minor, int patch);
+
+      //! Return true if the named feature is available in falaise
+      static bool has_feature(const std::string& feature);
+    };
+
+  } // end of namespace digitization
+
+} // end of namespace snemo
+
+#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_VERSION_H
+
+// Local Variables: --
+// mode: c++ --
+// c-file-style: "gnu" --
+// tab-width: 2 --
+// End: --

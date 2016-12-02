@@ -18,9 +18,6 @@
 // Third part : 
 // GSL:
 #include <bayeux/mygsl/rng.h>
-// Root : 
-#include "TFile.h"
-#include "TTree.h"
 
 // This project :
 #include <snemo/digitization/clock_utils.h>
@@ -173,17 +170,18 @@ int main( int  argc_ , char **argv_  )
     {
       snemo::digitization::calo_ctw & my_calo_ctw = my_calo_ctw_data.add();
       geomtools::geom_id my_ctw_gid(snemo::digitization::mapping::CALORIMETER_CONTROL_BOARD_TYPE, snemo::digitization::mapping::CALO_RACK_ID, 0, 10); // GID : [type]:[RACK],[CRATE],[BOARD]
-      my_calo_ctw.set_header(42,
+      my_calo_ctw.set_header(155,
 			     my_ctw_gid,
-			     75); // hit, gid, clocktick25ns
+			     200); // hit, gid, clocktick25ns
       my_calo_ctw.grab_auxiliaries().store("author", "guillaume");
       my_calo_ctw.grab_auxiliaries().store_flag("mock");
       my_calo_ctw.set_htm_main_wall(1);
-      int zone_touched = snemo::digitization::calo::ctw::W_ZW_BIT0 + 4;
+      int zone_touched = snemo::digitization::calo::ctw::W_ZW_BIT0 + 5;
       my_calo_ctw.set_zoning_bit(zone_touched, true);
       // my_calo_ctw.tree_dump(std::clog, "My_calo_CTW [0] : ", "INFO : ");
     }
 
+    // Creation of a prompt track during 10 CT 1600:
     for (unsigned int ict = 8; ict < 19; ict++)
       {
 	{
@@ -200,7 +198,7 @@ int main( int  argc_ , char **argv_  )
 	    {
 	      geiger_information.set(i, true);
 	    }
-	  unsigned int block_index = 0;
+	  unsigned int block_index = 6;
 	  my_geiger_ctw.set_55_bits_in_ctw_word(block_index, geiger_information);
 	  std::bitset<5> hardware_status (std::string("01111"));
 	  std::bitset<2> crate_id = 0x1;
@@ -209,7 +207,132 @@ int main( int  argc_ , char **argv_  )
 	  // my_geiger_ctw.tree_dump(std::clog, "My_geiger_CTW [0] : ", "INFO : ");
 	}  
       }
+
+    // Test creation of a second event calorimeter / tracker (to see the comportement of PERs)
+    // Add fake CTW calo and geiger :
+    {
+      snemo::digitization::calo_ctw & my_calo_ctw = my_calo_ctw_data.add();
+      geomtools::geom_id my_ctw_gid(snemo::digitization::mapping::CALORIMETER_CONTROL_BOARD_TYPE, snemo::digitization::mapping::CALO_RACK_ID, 0, 10); // GID : [type]:[RACK],[CRATE],[BOARD]
+      my_calo_ctw.set_header(155,
+			     my_ctw_gid,
+			     16000); // hit, gid, clocktick25ns
+      my_calo_ctw.grab_auxiliaries().store("author", "guillaume");
+      my_calo_ctw.grab_auxiliaries().store_flag("mock");
+      my_calo_ctw.set_htm_main_wall(1);
+      int zone_touched = snemo::digitization::calo::ctw::W_ZW_BIT0 + 7;
+      my_calo_ctw.set_zoning_bit(zone_touched, true);
+      // my_calo_ctw.tree_dump(std::clog, "My_calo_CTW [0] : ", "INFO : ");
+    }
+
+    {
+      for (unsigned int ict = 500; ict < 512; ict++)
+	{
+	  snemo::digitization::geiger_ctw & my_geiger_ctw = my_geiger_ctw_data.add();
+	  geomtools::geom_id my_ctw_gid(snemo::digitization::mapping::TRACKER_CONTROL_BOARD_TYPE, snemo::digitization::mapping::GEIGER_RACK_ID, 1, 10);
+	  my_geiger_ctw.set_header(ict+50,
+				   my_ctw_gid,
+				   ict); // hit, gid, clocktick800ns
+	  my_geiger_ctw.grab_auxiliaries().store("author", "guillaume");
+	  my_geiger_ctw.grab_auxiliaries().store_flag("mock");
+      
+	  std::bitset<55> geiger_information;
+	  for (unsigned int i = 0; i < 15; i++)
+	    {
+	      geiger_information.set(i, true);
+	    }
+	  unsigned int block_index = 18;
+	  my_geiger_ctw.set_55_bits_in_ctw_word(block_index, geiger_information);
+	  std::bitset<5> hardware_status (std::string("01111"));
+	  std::bitset<2> crate_id = 0x1;
+	  my_geiger_ctw.set_full_hardware_status(hardware_status);
+	  my_geiger_ctw.set_full_crate_id(crate_id);
+	  // my_geiger_ctw.tree_dump(std::clog, "My_geiger_CTW [0] : ", "INFO : ");
+	}
+    }
+
+    // An other delayed tracker event to see with which PER it will be compared:
+    {
+      // Creation of a delayed track during 3 CT 1600:
+      for (unsigned int ict = 900; ict < 906; ict++)
+	{
+	  snemo::digitization::geiger_ctw & my_geiger_ctw = my_geiger_ctw_data.add();
+	  geomtools::geom_id my_ctw_gid(snemo::digitization::mapping::TRACKER_CONTROL_BOARD_TYPE, snemo::digitization::mapping::GEIGER_RACK_ID, 1, 10);
+	  my_geiger_ctw.set_header(ict+50,
+				   my_ctw_gid,
+				   ict); // hit, gid, clocktick800ns
+	  my_geiger_ctw.grab_auxiliaries().store("author", "guillaume");
+	  my_geiger_ctw.grab_auxiliaries().store_flag("mock");
+      
+	  std::bitset<55> geiger_information;
+	  for (unsigned int i = 0; i < 4; i++)
+	    {
+	      geiger_information.set(i, true);
+	    }
+	  unsigned int block_index = 8;
+	  my_geiger_ctw.set_55_bits_in_ctw_word(block_index, geiger_information);
+	  std::bitset<5> hardware_status (std::string("01111"));
+	  std::bitset<2> crate_id = 0x1;
+	  my_geiger_ctw.set_full_hardware_status(hardware_status);
+	  my_geiger_ctw.set_full_crate_id(crate_id);
+	  // my_geiger_ctw.tree_dump(std::clog, "My_geiger_CTW [0] : ", "INFO : ");
+	}
+    }
     
+
+    // An other far delayed tracker event to see the fall of PER counters:
+    {
+      for (unsigned int ict = 1600; ict < 1605; ict++)
+	{
+	  snemo::digitization::geiger_ctw & my_geiger_ctw = my_geiger_ctw_data.add();
+	  geomtools::geom_id my_ctw_gid(snemo::digitization::mapping::TRACKER_CONTROL_BOARD_TYPE, snemo::digitization::mapping::GEIGER_RACK_ID, 1, 10);
+	  my_geiger_ctw.set_header(ict+50,
+				   my_ctw_gid,
+				   ict); // hit, gid, clocktick800ns
+	  my_geiger_ctw.grab_auxiliaries().store("author", "guillaume");
+	  my_geiger_ctw.grab_auxiliaries().store_flag("mock");
+      
+	  std::bitset<55> geiger_information;
+	  for (unsigned int i = 0; i < 4; i++)
+	    {
+	      geiger_information.set(i, true);
+	    }
+	  unsigned int block_index = 18;
+	  my_geiger_ctw.set_55_bits_in_ctw_word(block_index, geiger_information);
+	  std::bitset<5> hardware_status (std::string("01111"));
+	  std::bitset<2> crate_id = 0x1;
+	  my_geiger_ctw.set_full_hardware_status(hardware_status);
+	  my_geiger_ctw.set_full_crate_id(crate_id);
+	  // my_geiger_ctw.tree_dump(std::clog, "My_geiger_CTW [0] : ", "INFO : ");
+	}
+    }
+
+
+    // An other far far far delayed tracker event to see the fall of all PERs counters:
+    {
+      for (unsigned int ict = 4000; ict < 4005; ict++)
+	{
+	  snemo::digitization::geiger_ctw & my_geiger_ctw = my_geiger_ctw_data.add();
+	  geomtools::geom_id my_ctw_gid(snemo::digitization::mapping::TRACKER_CONTROL_BOARD_TYPE, snemo::digitization::mapping::GEIGER_RACK_ID, 1, 10);
+	  my_geiger_ctw.set_header(ict+50,
+				   my_ctw_gid,
+				   ict); // hit, gid, clocktick800ns
+	  my_geiger_ctw.grab_auxiliaries().store("author", "guillaume");
+	  my_geiger_ctw.grab_auxiliaries().store_flag("mock");
+      
+	  std::bitset<55> geiger_information;
+	  for (unsigned int i = 0; i < 6; i++)
+	    {
+	      geiger_information.set(i, true);
+	    }
+	  unsigned int block_index = 5;
+	  my_geiger_ctw.set_55_bits_in_ctw_word(block_index, geiger_information);
+	  std::bitset<5> hardware_status (std::string("01111"));
+	  std::bitset<2> crate_id = 0x1;
+	  my_geiger_ctw.set_full_hardware_status(hardware_status);
+	  my_geiger_ctw.set_full_crate_id(crate_id);
+	  // my_geiger_ctw.tree_dump(std::clog, "My_geiger_CTW [0] : ", "INFO : ");
+	}
+    }
 
     // Creation of outputs collection structures for calo and tracker
     std::vector<snemo::digitization::trigger_structures::calo_summary_record> calo_collection_records;

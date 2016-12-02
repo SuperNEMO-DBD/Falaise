@@ -4,6 +4,10 @@
 # Declare project, which will configure compiler for us
 cmake_minimum_required(VERSION 2.8)
 project(FalaiseDigitizationPlugin)
+set(FalaiseDIGITIZATION_VERSION_MAJOR 0)
+set(FalaiseDIGITIZATION_VERSION_MINOR 1)
+set(FalaiseDIGITIZATION_VERSION_PATCH 0)
+set(FalaiseDIGITIZATION_VERSION_REVISION 0)
 
 # - ROOT
 # find_package(ROOT 5.34.00 REQUIRED Gui Geom GeomPainter Physics)
@@ -13,6 +17,8 @@ find_package(ROOT 5.34.00 REQUIRED ${ROOT_COMPONENTS})
 
 # Ensure our code can see the Falaise headers
 #include_directories(${Falaise_INCLUDE_DIRS})
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/source)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/source/falaise)
 include_directories(${Falaise_BUILDPRODUCT_DIR}/include)
 include_directories(${Falaise_BUILDPRODUCT_DIR}/include/falaise)
 include_directories(${Bayeux_INCLUDE_DIRS})
@@ -22,10 +28,15 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source)
 # - Digitization modules:
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source/falaise)
 
+# - Prepare files from skelettons:
+configure_file(source/falaise/snemo/digitization/version.h.in
+  ${CMAKE_CURRENT_BINARY_DIR}/source/falaise/snemo/digitization/version.h
+  @ONLY)
+
 # - Headers:
 
 list(APPEND FalaiseDigitizationPlugin_HEADERS
-
+  ${CMAKE_CURRENT_BINARY_DIR}/source/falaise/snemo/digitization/version.h
   source/falaise/snemo/digitization/electronic_mapping.h
   source/falaise/snemo/digitization/clock_utils.h
   source/falaise/snemo/digitization/ID_convertor.h
@@ -37,6 +48,7 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
   source/falaise/snemo/digitization/tracker_sliding_zone.h
 
   source/falaise/snemo/digitization/calo_signal.h
+  source/falaise/snemo/digitization/calo_analog_signal.h
   source/falaise/snemo/digitization/calo_signal_simple_shape.h
   source/falaise/snemo/digitization/calo_feb_data.h
   source/falaise/snemo/digitization/calo_tp.h
@@ -92,6 +104,7 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
 
 # - Sources:
 list(APPEND FalaiseDigitizationPlugin_SOURCES
+  source/falaise/snemo/digitization/version.cc
   source/falaise/snemo/digitization/tracker_trigger_mem_maker.cc
   source/falaise/snemo/digitization/trigger_algorithm.cc
   source/falaise/snemo/digitization/trigger_algorithm_test_time.cc
@@ -118,6 +131,7 @@ list(APPEND FalaiseDigitizationPlugin_SOURCES
   source/falaise/snemo/digitization/calo_tp.cc
   source/falaise/snemo/digitization/calo_feb_data.cc
   source/falaise/snemo/digitization/calo_signal.cc
+  source/falaise/snemo/digitization/calo_analog_signal.cc
   source/falaise/snemo/digitization/calo_signal_simple_shape.cc
 
   source/falaise/snemo/digitization/geiger_tp_to_ctw_algo.cc

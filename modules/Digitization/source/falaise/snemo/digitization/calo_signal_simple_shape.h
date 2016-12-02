@@ -40,9 +40,6 @@ namespace snemo {
       virtual bool is_initialized() const;
 			
     protected:
-
-			/*  //! Evaluation from parameters
-					double _eval(double x_) const;*/
       
       //! Set default attributes
       void _set_defaults();
@@ -51,7 +48,6 @@ namespace snemo {
 
       // Configuration:
       double _t0_;         //!< Start time
-      double _t1_;         //!< Stop time
       double _amplitude_;  //!< Amplitude of the signal
 
       // Working data:

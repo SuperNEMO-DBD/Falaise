@@ -112,7 +112,7 @@ namespace snemo {
       		    }
 			      
       		  if ((hpattern_for_a_zone.test(left) && a_calo_record.calo_zoning_word[iside].test(izone) != 0) ||
-      		      ((int)(izone-1) >= -1 && hpattern_for_a_zone.test(left) && a_calo_record.calo_zoning_word[iside].test(izone-1) != 0))
+      		      ((int)(izone-1) > -1 && hpattern_for_a_zone.test(left) && a_calo_record.calo_zoning_word[iside].test(izone-1) != 0))
       		    {		 
       		      a_coincidence_record_.coincidence_zoning_word[iside].set(izone, true);
       		      a_coincidence_record_.decision = true;
@@ -379,25 +379,26 @@ namespace snemo {
       _process_calo_tracker_coincidence(pair_for_a_clocktick_,
 					a_coincidence_record_,
 					a_L2_decision_record_);
-      
-      // If no CARACO, search for an APE or DAVE delayed coincidence :
       if (previous_event_records_->size() != 0)
 	{
 	  auto it_circ = previous_event_records_->begin();
+	  unsigned int previous_event_counter = 0;
 	  for (; it_circ != previous_event_records_->end(); it_circ++)
-	    {
+	    {      
+	      // If no CARACO or already previous associated event, search for an APE or DAVE delayed coincidence in the PER:
 	      const trigger_structures::previous_event_record a_previous_event_record = *it_circ;
 	      if (a_previous_event_record.counter_1600ns <= clock_utils::PREVIOUS_EVENT_RECORD_LIVING_NUMBER_OF_CLOCKTICK
-		  && a_previous_event_record.counter_1600ns > 0)
+		  && a_previous_event_record.counter_1600ns > 0
+		  && !a_L2_decision_record_.L2_decision_bool)
 		{
 		  _process_delayed_coincidence(pair_for_a_clocktick_,
 					       a_coincidence_record_,
 					       a_L2_decision_record_,
 					       a_previous_event_record);
 		} // end of if counter
+	      previous_event_counter++;
 	    } // end of for it_circ
 	} // end of if size != 0
-      
       return;
     }
     

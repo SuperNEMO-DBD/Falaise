@@ -468,113 +468,112 @@ namespace snemo {
       
       trigger_structures::L2_decision the_L2_decision = _L2_decision_records_.back();
       uint32_t L2_decision_clocktick = the_L2_decision.L2_ct_decision;
+      DT_THROW_IF(the_L2_decision.L2_trigger_mode != trigger_structures::L2_trigger_mode::CARACO 
+		  && the_L2_decision.L2_trigger_mode != trigger_structures::L2_trigger_mode::CALO_TRACKER_TIME_COINC,
+		  std::logic_error, "Previous event record can't be build because L2 decision is not equal to CARACO or CALO_TRACKER_TIME_COINC !");
 
-      if (the_L2_decision.L2_trigger_mode == trigger_structures::L2_trigger_mode::CARACO 
-      	  || the_L2_decision.L2_trigger_mode == trigger_structures::L2_trigger_mode::CALO_TRACKER_TIME_COINC)
+      // Construct the PER on the coincidence records pushed back (to have the maximum of calo / tracker information (concatenate)) : 
+      trigger_structures::previous_event_record a_previous_event_record;
+      for (unsigned int i = 0; i < _coincidence_records_.size(); i++)
 	{
-	  // Construct the PER on the coincidence records pushed back (to have the maximum of calo / tracker information (concatenate)) : 
-	  trigger_structures::previous_event_record a_previous_event_record;
-	  for (unsigned int i = 0; i < _coincidence_records_.size(); i++)
+	  trigger_structures::coincidence_event_record a_coincidence_record = _coincidence_records_[i];
+	  // Check if the coincidence record is in the L2 gate and with the good trigger mode to construct the PER :
+	  if (a_coincidence_record.clocktick_1600ns >= L2_decision_clocktick
+	      && a_coincidence_record.clocktick_1600ns < (L2_decision_clocktick + _L2_decision_coincidence_gate_size_)
+	      && (a_coincidence_record.trigger_mode == trigger_structures::L2_trigger_mode::CARACO || 
+		  a_coincidence_record.trigger_mode == trigger_structures::L2_trigger_mode::CALO_TRACKER_TIME_COINC))
 	    {
-	      trigger_structures::coincidence_event_record a_coincidence_record = _coincidence_records_[i];
-	      // Check if the coincidence record is in the L2 gate and with the good trigger mode to construct the PER :
-	      if (a_coincidence_record.clocktick_1600ns >= L2_decision_clocktick
-		  && a_coincidence_record.clocktick_1600ns < (L2_decision_clocktick + _L2_decision_coincidence_gate_size_)
-		  && (a_coincidence_record.trigger_mode == trigger_structures::L2_trigger_mode::CARACO || 
-		      a_coincidence_record.trigger_mode == trigger_structures::L2_trigger_mode::CALO_TRACKER_TIME_COINC))
+	      // Update the PER with all information from coincidence records in the gate
+	      a_previous_event_record.previous_clocktick_1600ns = a_coincidence_record.clocktick_1600ns;
+	      a_previous_event_record.counter_1600ns = clock_utils::PREVIOUS_EVENT_RECORD_LIVING_NUMBER_OF_CLOCKTICK;
+	      a_previous_event_record.trigger_mode = the_L2_decision.L2_trigger_mode;
+	      for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
 		{
-		  // Update the PER with all information from coincidence records in the gate
-		  a_previous_event_record.previous_clocktick_1600ns = a_coincidence_record.clocktick_1600ns;
-		  a_previous_event_record.counter_1600ns = clock_utils::PREVIOUS_EVENT_RECORD_LIVING_NUMBER_OF_CLOCKTICK;
-		  a_previous_event_record.trigger_mode = the_L2_decision.L2_trigger_mode;
-		  for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
+		  for (unsigned int ibit = 0; ibit < trigger_info::CALO_ZONING_PER_SIDE_BITSET_SIZE; ibit++)
 		    {
-		      for (unsigned int ibit = 0; ibit < trigger_info::CALO_ZONING_PER_SIDE_BITSET_SIZE; ibit++)
+		      if (a_previous_event_record.calo_zoning_word[iside].test(ibit) || a_coincidence_record.calo_zoning_word[iside].test(ibit))
 			{
-			  if (a_previous_event_record.calo_zoning_word[iside].test(ibit) || a_coincidence_record.calo_zoning_word[iside].test(ibit))
-			    {
-			      a_previous_event_record.calo_zoning_word[iside].set(ibit);
-			    }
-			} // end of ibit
-		    } // end of iside
+			  a_previous_event_record.calo_zoning_word[iside].set(ibit);
+			}
+		    } // end of ibit
+		} // end of iside
 		  
 		  // Initial values in the PER :
-		  unsigned int multiplicity_side_0 = a_previous_event_record.total_multiplicity_side_0.to_ulong();
-		  unsigned int multiplicity_side_1 = a_previous_event_record.total_multiplicity_side_1.to_ulong();
-		  unsigned int multiplicity_gveto  = a_previous_event_record.total_multiplicity_gveto.to_ulong();
-		  bool lto_side_0 = a_previous_event_record.LTO_side_0;     
-		  bool lto_side_1 = a_previous_event_record.LTO_side_1;
-		  bool lto_gveto  = a_previous_event_record.LTO_gveto;
-		  unsigned int number_of_zone_touch_side_0 = a_previous_event_record.calo_zoning_word[0].count();
-		  unsigned int number_of_zone_touch_side_1 = a_previous_event_record.calo_zoning_word[1].count();   
-		  bool single_side = a_previous_event_record.single_side_coinc;
-		  bool total_multiplicity_threshold = a_previous_event_record.total_multiplicity_threshold;
-		  bool decision = a_previous_event_record.decision;
-		  a_previous_event_record.xt_info_bitset = a_coincidence_record.xt_info_bitset;
+	      unsigned int multiplicity_side_0 = a_previous_event_record.total_multiplicity_side_0.to_ulong();
+	      unsigned int multiplicity_side_1 = a_previous_event_record.total_multiplicity_side_1.to_ulong();
+	      unsigned int multiplicity_gveto  = a_previous_event_record.total_multiplicity_gveto.to_ulong();
+	      bool lto_side_0 = a_previous_event_record.LTO_side_0;     
+	      bool lto_side_1 = a_previous_event_record.LTO_side_1;
+	      bool lto_gveto  = a_previous_event_record.LTO_gveto;
+	      unsigned int number_of_zone_touch_side_0 = a_previous_event_record.calo_zoning_word[0].count();
+	      unsigned int number_of_zone_touch_side_1 = a_previous_event_record.calo_zoning_word[1].count();   
+	      bool single_side = a_previous_event_record.single_side_coinc;
+	      bool total_multiplicity_threshold = a_previous_event_record.total_multiplicity_threshold;
+	      bool decision = a_previous_event_record.decision;
+	      a_previous_event_record.xt_info_bitset = a_coincidence_record.xt_info_bitset;
 		  
-		  if (multiplicity_side_0 < a_coincidence_record.total_multiplicity_side_0.to_ulong()) 
-		    {
-		      a_previous_event_record.total_multiplicity_side_0 = a_coincidence_record.total_multiplicity_side_0.to_ulong();
-		    }
+	      if (multiplicity_side_0 < a_coincidence_record.total_multiplicity_side_0.to_ulong()) 
+		{
+		  a_previous_event_record.total_multiplicity_side_0 = a_coincidence_record.total_multiplicity_side_0.to_ulong();
+		}
 		  
-		  if (number_of_zone_touch_side_0 > multiplicity_side_0)
-		    {
-		     a_previous_event_record.total_multiplicity_side_0 = number_of_zone_touch_side_0;
-		    }
+	      if (number_of_zone_touch_side_0 > multiplicity_side_0)
+		{
+		  a_previous_event_record.total_multiplicity_side_0 = number_of_zone_touch_side_0;
+		}
 	  
-		  if (multiplicity_side_1 < a_coincidence_record.total_multiplicity_side_1.to_ulong())
-		    {
-		      a_previous_event_record.total_multiplicity_side_1 = a_coincidence_record.total_multiplicity_side_1.to_ulong();
-		    }
+	      if (multiplicity_side_1 < a_coincidence_record.total_multiplicity_side_1.to_ulong())
+		{
+		  a_previous_event_record.total_multiplicity_side_1 = a_coincidence_record.total_multiplicity_side_1.to_ulong();
+		}
 
-		  if (number_of_zone_touch_side_1 > multiplicity_side_1)
-		    {
-		      a_previous_event_record.total_multiplicity_side_1 = number_of_zone_touch_side_1;
-		    }
+	      if (number_of_zone_touch_side_1 > multiplicity_side_1)
+		{
+		  a_previous_event_record.total_multiplicity_side_1 = number_of_zone_touch_side_1;
+		}
 
-		  if (multiplicity_gveto < a_coincidence_record.total_multiplicity_gveto.to_ulong())
-		    {
-		      a_previous_event_record.total_multiplicity_gveto = a_coincidence_record.total_multiplicity_gveto.to_ulong();
-		    }
-		  if (lto_side_0 || a_coincidence_record.LTO_side_0) a_previous_event_record.LTO_side_0 = true;
-		  if (lto_side_1 || a_coincidence_record.LTO_side_1) a_previous_event_record.LTO_side_1 = true;
-		  if (lto_gveto || a_coincidence_record.LTO_gveto) a_previous_event_record.LTO_gveto = true;
-		  if (single_side || a_coincidence_record.single_side_coinc) a_previous_event_record.single_side_coinc = true;
-		  else if (!single_side || !a_coincidence_record.single_side_coinc) a_previous_event_record.single_side_coinc = false;
-		  if (total_multiplicity_threshold || a_coincidence_record.total_multiplicity_threshold) a_previous_event_record.total_multiplicity_threshold = true;
-		  if (decision || a_coincidence_record.decision) a_previous_event_record.decision = true;
+	      if (multiplicity_gveto < a_coincidence_record.total_multiplicity_gveto.to_ulong())
+		{
+		  a_previous_event_record.total_multiplicity_gveto = a_coincidence_record.total_multiplicity_gveto.to_ulong();
+		}
+	      if (lto_side_0 || a_coincidence_record.LTO_side_0) a_previous_event_record.LTO_side_0 = true;
+	      if (lto_side_1 || a_coincidence_record.LTO_side_1) a_previous_event_record.LTO_side_1 = true;
+	      if (lto_gveto || a_coincidence_record.LTO_gveto) a_previous_event_record.LTO_gveto = true;
+	      if (single_side || a_coincidence_record.single_side_coinc) a_previous_event_record.single_side_coinc = true;
+	      else if (!single_side || !a_coincidence_record.single_side_coinc) a_previous_event_record.single_side_coinc = false;
+	      if (total_multiplicity_threshold || a_coincidence_record.total_multiplicity_threshold) a_previous_event_record.total_multiplicity_threshold = true;
+	      if (decision || a_coincidence_record.decision) a_previous_event_record.decision = true;
 		  
-		  for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
+	      for (unsigned int iside = 0; iside < trigger_info::NSIDES; iside++)
+		{
+		  for (unsigned int izone = 0; izone < trigger_info::NZONES; izone++)
 		    {
-		      for (unsigned int izone = 0; izone < trigger_info::NZONES; izone++)
+		      for (unsigned int ibit = 0; ibit < trigger_info::DATA_FULL_BITSET_SIZE; ibit++)
 			{
-			  for (unsigned int ibit = 0; ibit < trigger_info::DATA_FULL_BITSET_SIZE; ibit++)
+			  if (a_previous_event_record.tracker_finale_data_per_zone[iside][izone].test(ibit) || a_coincidence_record.tracker_finale_data_per_zone[iside][izone].test(ibit))
 			    {
-			      if (a_previous_event_record.tracker_finale_data_per_zone[iside][izone].test(ibit) || a_coincidence_record.tracker_finale_data_per_zone[iside][izone].test(ibit))
-				{
-				  a_previous_event_record.tracker_finale_data_per_zone[iside][izone].set(ibit);
-				}
-			    } // end of ibit
-			  if (a_coincidence_record.coincidence_zoning_word[iside].test(izone) || a_previous_event_record.coincidence_zoning_word[iside].test(izone))
-			    {
-			      a_previous_event_record.coincidence_zoning_word[iside].set(izone);
+			      a_previous_event_record.tracker_finale_data_per_zone[iside][izone].set(ibit);
 			    }
-			  if (a_coincidence_record.tracker_zoning_word_pattern[iside].test(izone) || a_previous_event_record.tracker_zoning_word_pattern[iside].test(izone))
-			    {
-			      a_previous_event_record.tracker_zoning_word_pattern[iside].set(izone);
-			    }
-			  if (a_coincidence_record.tracker_zoning_word_near_source[iside].test(izone) || a_previous_event_record.tracker_zoning_word_near_source[iside].test(izone))
-			    {
-			      a_previous_event_record.tracker_zoning_word_near_source[iside].set(izone);
-			    }
+			} // end of ibit
+		      if (a_coincidence_record.coincidence_zoning_word[iside].test(izone) || a_previous_event_record.coincidence_zoning_word[iside].test(izone))
+			{
+			  a_previous_event_record.coincidence_zoning_word[iside].set(izone);
+			}
+		      if (a_coincidence_record.tracker_zoning_word_pattern[iside].test(izone) || a_previous_event_record.tracker_zoning_word_pattern[iside].test(izone))
+			{
+			  a_previous_event_record.tracker_zoning_word_pattern[iside].set(izone);
+			}
+		      if (a_coincidence_record.tracker_zoning_word_near_source[iside].test(izone) || a_previous_event_record.tracker_zoning_word_near_source[iside].test(izone))
+			{
+			  a_previous_event_record.tracker_zoning_word_near_source[iside].set(izone);
+			}
 
-			} // end of izone
-		    } // end of iside
-		}	
-	    } // end of for coinc record size
-	  _previous_event_records_->push_back(a_previous_event_record);
-	} // end of if trigger mode
-      
+		    } // end of izone
+		} // end of iside
+	    }	
+	} // end of for coinc record size
+      _previous_event_records_->push_back(a_previous_event_record);
+	  
       return;
     }
 	
@@ -627,17 +626,6 @@ namespace snemo {
       _calo_algo_.process(calo_ctw_data_,
 			  _calo_records_25ns_);
 
-      // // Fake calo record for test : 
-      // trigger_structures::calo_summary_record a_fake_calo_record_25ns;
-      // std::bitset<10> fake_bitset (std::string("0001110000"));
-      // a_fake_calo_record_25ns.clocktick_25ns = 20800;
-      // a_fake_calo_record_25ns.zoning_word[1] = fake_bitset;
-      // a_fake_calo_record_25ns.total_multiplicity_side_0 = 1;
-      // a_fake_calo_record_25ns.single_side_coinc = true;
-      // a_fake_calo_record_25ns.total_multiplicity_threshold = true;
-      // a_fake_calo_record_25ns.calo_finale_decision = true;
-      // _calo_records_25ns_.push_back(a_fake_calo_record_25ns);
-      
       uint32_t last_calo_ct_25ns = clock_utils::INVALID_CLOCKTICK;
       // Create calo L1 decision(s) :
       for (unsigned int i = 0; i < _calo_records_25ns_.size(); i++)
@@ -715,29 +703,71 @@ namespace snemo {
 	  else if (calorimeter_ct_max_1600 != clock_utils::INVALID_CLOCKTICK) clocktick_max = calorimeter_ct_max_1600;
 	  if ((tracker_ct_max_1600 != clock_utils::INVALID_CLOCKTICK && calorimeter_ct_max_1600 != clock_utils::INVALID_CLOCKTICK) && calorimeter_ct_max_1600 > clocktick_max) clocktick_max = calorimeter_ct_max_1600;
 
-	  std::clog << "Calo CT min 1600    = " << calorimeter_ct_min_1600 << std::endl;
-	  std::clog << "Calo CT max 1600    = " << calorimeter_ct_max_1600 << std::endl;
-	  std::clog << "Tracker CT min 1600 = " << tracker_ct_min_1600 << std::endl;
-	  std::clog << "Tracker CT max 1600 = " << tracker_ct_max_1600 << std::endl;
-	  std::clog << "CT min 1600         = " << clocktick_min << std::endl;
-	  std::clog << "CT max 1600         = " << clocktick_max << std::endl;
+	  // std::clog << "Calo CT min 1600    = " << calorimeter_ct_min_1600 << std::endl;
+	  // std::clog << "Calo CT max 1600    = " << calorimeter_ct_max_1600 << std::endl;
+	  // std::clog << "Tracker CT min 1600 = " << tracker_ct_min_1600 << std::endl;
+	  // std::clog << "Tracker CT max 1600 = " << tracker_ct_max_1600 << std::endl;
+	  // std::clog << "CT min 1600         = " << clocktick_min << std::endl;
+	  // std::clog << "CT max 1600         = " << clocktick_max << std::endl;
 	  
 	  if (clocktick_min != clock_utils::INVALID_CLOCKTICK && clocktick_max != clock_utils::INVALID_CLOCKTICK)
 	    {
 	      // Maybe time optimisation to do here, is it mandatory to go for each clocktick ?
 	      // Maybe prepare tracker record outside this loop but it breaks the time implementation (close to the electronics)
+	      
+	      std::pair <bool, unsigned int> per_to_delete;
+	      per_to_delete.first = false;
+	      per_to_delete.second = -1;
 	      for (uint32_t ict1600 = clocktick_min; ict1600 <= clocktick_max; ict1600++)
 		{
-		  std::clog << "************* CT1600 : " << ict1600 << " ****************" <<std::endl;
-		  std::clog << "Size of PERs = " << _previous_event_records_->size() << " Empty : " << _previous_event_records_->empty() << std::endl;
+		  //std::clog << "************* CT1600 : " << ict1600 << " ****************" <<std::endl;
 		  
-		  // Decrease PER counter if exist.
-		  if (!_previous_event_records_->empty() && _previous_event_records_->back().counter_1600ns != 0)
+		  // Decrease PERs counters if exist and delete if a counter is set to 0.
+		  if (!_previous_event_records_->empty())
 		    {
-		      _previous_event_records_->back().counter_1600ns = clock_utils::PREVIOUS_EVENT_RECORD_LIVING_NUMBER_OF_CLOCKTICK - ict1600 + _previous_event_records_->back().previous_clocktick_1600ns;
-		      std::clog << "CT PER = " << _previous_event_records_->back().previous_clocktick_1600ns << " counter = " <<
-			_previous_event_records_->back().counter_1600ns << std::endl;
+		      // _previous_event_records_->back().counter_1600ns = clock_utils::PREVIOUS_EVENT_RECORD_LIVING_NUMBER_OF_CLOCKTICK - ict1600 + _previous_event_records_->back().previous_clocktick_1600ns;
+		      // std::clog << "CT PER = " << _previous_event_records_->back().previous_clocktick_1600ns << " counter = " <<
+		      // 	_previous_event_records_->back().counter_1600ns << std::endl;
+
+		      auto it_circ = _previous_event_records_->begin();
+		      unsigned int pers_counter = 0;
+		      if (per_to_delete.first)
+			{
+			  if (_previous_event_records_->size() > 1) 
+			    {
+			      _previous_event_records_->erase(_previous_event_records_->begin() + per_to_delete.second);
+			    }
+			  else if (_previous_event_records_->size() == 1)
+			    {
+			      _previous_event_records_->clear(); 
+			    }
+			  per_to_delete.first = false;
+			  per_to_delete.second = -1;
+			}
+
+		      // Problem here : counter 1600 on it_circ gives a strange value 
+		      for (; it_circ != _previous_event_records_->end(); it_circ++)
+			{
+			  DT_THROW_IF(it_circ->counter_1600ns > clock_utils::PREVIOUS_EVENT_RECORD_LIVING_NUMBER_OF_CLOCKTICK, std::logic_error, "Previous Event Record counter out of bounds [0;clock_utils::PREVIOUS_EVENT_RECORD_LIVING_NUMBER_OF_CLOCKTICK (625)] !");			  
+			  if (it_circ->counter_1600ns <= clock_utils::PREVIOUS_EVENT_RECORD_LIVING_NUMBER_OF_CLOCKTICK)
+			    {
+			      int counter_result = clock_utils::PREVIOUS_EVENT_RECORD_LIVING_NUMBER_OF_CLOCKTICK - ict1600 + it_circ->previous_clocktick_1600ns;
+			      if (counter_result <= 0) counter_result = 0;
+			      it_circ->counter_1600ns = counter_result;
+			      // std::clog << "CT PER = " << it_circ->previous_clocktick_1600ns << " counter = " << it_circ->counter_1600ns << std::endl;
+			    }
+			  if (it_circ->counter_1600ns == 0)
+			    {
+			      // PER has to be erased in the circular buffer because the counter equal to 0.
+			      // Flag to remember this per has to be delete:
+			      per_to_delete.first = true;
+			      per_to_delete.second = pers_counter;
+			    }
+			}
+		      pers_counter++;
 		    }
+		  
+		  // std::clog << "Size of PERs = " << _previous_event_records_->size() << " Empty : " << _previous_event_records_->empty() << std::endl;
 		  		  
 		  trigger_structures::tracker_record a_tracker_record;
 		  a_tracker_record.clocktick_1600ns = ict1600;
@@ -822,11 +852,15 @@ namespace snemo {
 		  // Build a PER only at the end of the L2 decision gate :
 		  if (!_L2_decision_records_.empty())
 		    {
-		      std::clog << "L2 ct + L2 decision = " << _L2_decision_records_.back().L2_ct_decision + _L2_decision_coincidence_gate_size_ << " ict = " << ict1600 << std::endl;
-		      if (ict1600 == (_L2_decision_records_.back().L2_ct_decision + _L2_decision_coincidence_gate_size_))
+		      // std::clog << "L2 ct + L2 decision = " << _L2_decision_records_.back().L2_ct_decision + _L2_decision_coincidence_gate_size_ << " ict = " << ict1600 << std::endl;
+
+		      trigger_structures::L2_decision the_L2_decision = _L2_decision_records_.back();
+
+		      if (ict1600 == (_L2_decision_records_.back().L2_ct_decision + _L2_decision_coincidence_gate_size_)
+			  && (the_L2_decision.L2_trigger_mode == trigger_structures::L2_trigger_mode::CARACO 
+			      || the_L2_decision.L2_trigger_mode == trigger_structures::L2_trigger_mode::CALO_TRACKER_TIME_COINC))
 			{
 			  _build_previous_event_record();
-			  std::clog << "Build PER CT : " << ict1600 << std::endl;
 			}
 		    }
 
@@ -836,38 +870,45 @@ namespace snemo {
 
 	} // end of else if any_coinc
      
-      for (unsigned int i = 0; i < _tracker_records_.size(); i++)
-	{
-	  _tracker_records_[i].display();
-      	  _geiger_matrix_records_[i].display();
-      	}
 
-      for (unsigned int i = 0; i < _coincidence_records_.size(); i++)
-      	{
-      	  _coincidence_records_[i].display();
-      	}  
-      
-      for (unsigned int i = 0; i < _L2_decision_records_.size(); i++)
-	{
-	  _L2_decision_records_[i].display(); 
-	}
+      // for (unsigned int i = 0; i < _coincidence_calo_records_1600ns_.size(); i++)
+      // 	{
+      // 	  _coincidence_calo_records_1600ns_[i].display();
+      // 	}
 
-      boost::circular_buffer<trigger_structures::previous_event_record>::iterator it_circ = _previous_event_records_->begin();
-      for (; it_circ != _previous_event_records_->end(); it_circ++)
-      	{
-      	  it_circ -> display();
-      	}   
+      // for (unsigned int i = 0; i < _tracker_records_.size(); i++)
+      // 	{
+      // 	  _tracker_records_[i].display();
+      // 	  _geiger_matrix_records_[i].display();
+      // 	}
+
+      // for (unsigned int i = 0; i < _coincidence_records_.size(); i++)
+      // 	{
+      // 	  _coincidence_records_[i].display();
+      // 	}  
       
-      std::clog << "********* Size of Finale structures for one event *********" << std::endl;
-      std::clog << "Calo collection size @ 25 ns            : " << _calo_records_25ns_.size() << std::endl;
-      std::clog << "Calo collection size @ 1600 ns          : " << _coincidence_calo_records_1600ns_.size() << std::endl;
-      std::clog << "Tracker collection size @ 1600 ns       : " << _tracker_records_.size() << std::endl;
-      std::clog << "Geiger matrix collection size @ 1600 ns : " << _geiger_matrix_records_.size() << std::endl;
-      std::clog << "Pair records collection size @ 1600 ns  : " << _pair_records_.size() << std::endl;
-      std::clog << "Coincidence collection size @ 1600 ns   : " << _coincidence_records_.size() << std::endl;
-      std::clog << "Previous event collection size          : " << _previous_event_records_->size() << std::endl;
-      std::clog << "L1 calo collection size @ 25 ns         : " << _L1_calo_decision_records_.size() << std::endl;
-      std::clog << "L2 decision collection size @ 1600 ns   : " << _L2_decision_records_.size() << std::endl;
+      // for (unsigned int i = 0; i < _L2_decision_records_.size(); i++)
+      // 	{
+      // 	  _L2_decision_records_[i].display(); 
+      // 	}
+
+      // boost::circular_buffer<trigger_structures::previous_event_record>::iterator it_circ = _previous_event_records_->begin();
+      // for (; it_circ != _previous_event_records_->end(); it_circ++)
+      // 	{
+      // 	  it_circ -> display();
+      // 	}  
+      
+      
+      // std::clog << "********* Size of Finale structures for one event *********" << std::endl;
+      // std::clog << "Calo collection size @ 25 ns            : " << _calo_records_25ns_.size() << std::endl;
+      // std::clog << "Calo collection size @ 1600 ns          : " << _coincidence_calo_records_1600ns_.size() << std::endl;
+      // std::clog << "Tracker collection size @ 1600 ns       : " << _tracker_records_.size() << std::endl;
+      // std::clog << "Geiger matrix collection size @ 1600 ns : " << _geiger_matrix_records_.size() << std::endl;
+      // std::clog << "Pair records collection size @ 1600 ns  : " << _pair_records_.size() << std::endl;
+      // std::clog << "Coincidence collection size @ 1600 ns   : " << _coincidence_records_.size() << std::endl;
+      // std::clog << "Previous event collection size          : " << _previous_event_records_->size() << std::endl;
+      // std::clog << "L1 calo collection size @ 25 ns         : " << _L1_calo_decision_records_.size() << std::endl;
+      // std::clog << "L2 decision collection size @ 1600 ns   : " << _L2_decision_records_.size() << std::endl;
       
       return;
     }
