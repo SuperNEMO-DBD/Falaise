@@ -35,7 +35,6 @@ namespace snemo {
       _L1_calo_decision_records_.clear();
       _L2_decision_records_.clear();
       _finale_trigger_decision_ = false;
-      _delayed_finale_trigger_decision_ = false;
       return;
     }
 
@@ -76,7 +75,6 @@ namespace snemo {
       _L1_calo_decision_records_.clear();
       _L2_decision_records_.clear();
       _finale_trigger_decision_ = false;
-      _delayed_finale_trigger_decision_ = false;
       return;
     }  
     
@@ -93,7 +91,6 @@ namespace snemo {
       _L1_calo_decision_records_.clear();
       _L2_decision_records_.clear();
       _finale_trigger_decision_ = false;
-      _delayed_finale_trigger_decision_ = false; 
       return;
     }
     
@@ -253,11 +250,6 @@ namespace snemo {
       return _finale_trigger_decision_;
     }   
 
-    bool trigger_algorithm_test_time::get_delayed_finale_decision() const
-    {
-      return _delayed_finale_trigger_decision_;
-    }
-    
     void  trigger_algorithm_test_time::_rescale_calo_records_at_1600ns(const std::vector<trigger_structures::calo_summary_record> & calo_records_25_ns_,
 								       std::vector<trigger_structures::coincidence_calo_record> & coincidence_calo_records_1600ns_)
     {

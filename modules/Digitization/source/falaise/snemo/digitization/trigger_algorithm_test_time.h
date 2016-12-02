@@ -163,7 +163,6 @@ namespace snemo {
 			std::vector<trigger_structures::L2_decision> _L2_decision_records_; //!< Collection of L2 decision (which launch the readout)
 						
 			bool _finale_trigger_decision_; //!< The finale decision for the trigger
-			bool _delayed_finale_trigger_decision_; //!< The finale decision for the trigger
 			
     };
 

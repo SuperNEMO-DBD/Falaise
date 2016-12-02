@@ -96,6 +96,7 @@ list(APPEND FalaiseDigitizationPlugin_HEADERS
   source/falaise/snemo/digitization/tracker_trigger_mem_maker.h
 
   source/falaise/snemo/digitization/fake_trigger_module.h
+  source/falaise/snemo/digitization/digi_trigger_module.h
   source/falaise/snemo/digitization/fake_trigger_cut.h
 
   source/falaise/snemo/digitization/the_serializable.ipp
@@ -111,6 +112,7 @@ list(APPEND FalaiseDigitizationPlugin_SOURCES
   source/falaise/snemo/digitization/fake_trigger_cut.cc
   source/falaise/snemo/digitization/fake_trigger_module.cc
   source/falaise/snemo/digitization/fake_trigger_algo.cc
+  source/falaise/snemo/digitization/digi_trigger_module.cc
   source/falaise/snemo/digitization/tracker_trigger_algorithm.cc
   source/falaise/snemo/digitization/tracker_trigger_algorithm_test_time.cc
   source/falaise/snemo/digitization/calo_trigger_algorithm.cc

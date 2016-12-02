@@ -1,9 +1,9 @@
-/// \file falaise/snemo/digitization/fake_trigger_module.h
+/// \file falaise/snemo/digitization/digi_trigger_module.h
 /* Author(s)     : Guillaume Oliviero <goliviero@lpccaen.in2p3.fr>
  *                 Francois Mauger <mauger@lpccaen.in2p3.fr>
  *                 Yves Lemiere <lemiere@lpccaen.in2p3.fr>
- * Creation date : 2016-02-26
- * Last modified : 2016-02-26
+ * Creation date : 2016-12-02
+ * Last modified : 2016-12-02
  *
  * Copyright (C) 2012-2016 Guillaume Oliviero <goliviero@lpccaen.in2p3.fr>
  *
@@ -24,17 +24,16 @@
  *
  * Description:
  *
- * A module which goal is to process 'fake_trigger_algo' to cut SD files
+ * A module which goal is to process 'trigger_algorithm_test_time' to cut SD files
  * from a datatools::things coming from flsimulate
- * The physical selection for a fake trigger is configurable but the 
- * default configuration is 1 PMT hit and 3 Geiger cells hits.
+ * The physical selection for a digi trigger is configurable.
  *
  * History:
  *
  */
 
-#ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_FAKE_TRIGGER_MODULE_H
-#define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_FAKE_TRIGGER_MODULE_H
+#ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_DIGI_TRIGGER_MODULE_H
+#define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_DIGI_TRIGGER_MODULE_H
 
 // Third party :
 // - Bayeux/dpp:
@@ -46,22 +45,22 @@ namespace snemo {
   
   namespace digitization {
 
-    class fake_trigger_algo;
+    class trigger_algorithm_test_time;
     
-    /// \brief Fake trigger algorithm class to cut SD files.
-    class fake_trigger_module :  public dpp::base_module
+    /// \brief Digi trigger algorithm class to cut SD files.
+    class digi_trigger_module :  public dpp::base_module
     {
     public :
 
       /// Constructor
-      fake_trigger_module(datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
+      digi_trigger_module(datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
 
       /// Destructor
-      virtual ~fake_trigger_module();
+      virtual ~digi_trigger_module();
 
       /// Initialization
       virtual void initialize(const datatools::properties  & setup_,
-															datatools::service_manager   & service_manager_,
+			      datatools::service_manager   & service_manager_,
                               dpp::module_handle_dict_type & module_dict_);
       /// Reset
       virtual void reset();
@@ -81,11 +80,11 @@ namespace snemo {
       
       std::string _SD_label_; //!< The label of the simulated data bank
 
-      /// Fake Trigger Algo :
-      boost::scoped_ptr<snemo::digitization::fake_trigger_algo> _algo_;
+      /// Digi Trigger Algo :
+      boost::scoped_ptr<snemo::digitization::trigger_algorithm_test_time> _algo_;
 
       // Macro to automate the registration of the module :
-      DPP_MODULE_REGISTRATION_INTERFACE(fake_trigger_module)
+      DPP_MODULE_REGISTRATION_INTERFACE(digi_trigger_module)
     };
   } // end of namespace digitization
 
@@ -94,9 +93,9 @@ namespace snemo {
 #include <datatools/ocd_macros.h>
 
 // Declare the OCD interface of the module
-DOCD_CLASS_DECLARATION(snemo::digitization::fake_trigger_module)
+DOCD_CLASS_DECLARATION(snemo::digitization::digi_trigger_module)
 
-#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_FAKE_TRIGGER_MODULE_H
+#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_DIGI_TRIGGER_MODULE_H
 
 /* 
 ** Local Variables: --
