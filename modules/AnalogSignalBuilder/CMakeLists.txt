@@ -39,17 +39,16 @@ configure_file(source/falaise/snemo/asb/version.h.in
 list(APPEND FalaiseAnalogSignalBuilderPlugin_HEADERS
   ${CMAKE_CURRENT_BINARY_DIR}/source/falaise/snemo/asb/version.h
   source/falaise/snemo/asb/base_signal_generator_driver.h
-  # source/falaise/snemo/asb/the_serializable.ipp
-  # source/falaise/snemo/asb/the_serializable.h
+  source/falaise/snemo/asb/analog_signal_builder_module.h
+  #source/falaise/snemo/asb/calo_signal_generator_driver.h
   )
 
 # - Sources:
 list(APPEND FalaiseAnalogSignalBuilderPlugin_SOURCES
   source/falaise/snemo/asb/version.cc
   source/falaise/snemo/asb/base_signal_generator_driver.cc
-  # source/falaise/snemo/asb/the_serializable.cc
-  #source/falaise/snemo/asb/sim_signal_module.cc
-
+  source/falaise/snemo/asb/analog_signal_builder_module.cc
+  #source/falaise/snemo/asb/calo_signal_generator_driver.cc
   )
 
 ############################################################################################

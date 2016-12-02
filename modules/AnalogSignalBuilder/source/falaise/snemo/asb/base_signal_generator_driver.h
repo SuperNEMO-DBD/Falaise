@@ -27,6 +27,8 @@ namespace snemo {
     class base_signal_generator_driver
       : public datatools::i_tree_dumpable
     {
+    public:
+
       /// Constructor
       base_signal_generator_driver(const std::string & id_ = "");
 
