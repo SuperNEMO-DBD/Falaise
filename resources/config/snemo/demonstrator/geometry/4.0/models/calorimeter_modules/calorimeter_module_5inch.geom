@@ -171,6 +171,15 @@ internal_item.model.internal_support_plate        : string  = "calorimeter_modul
 
 mapping.daughter_id.back_block : string = "[calorimeter_block:part=0]"
 mapping.daughter_id.pmt        : string = "[calorimeter_pmt]"
+mapping.daughter_id.internal_support_plate : string = "[calorimeter_pmt_support_plate]"
+mapping.daughter_id.support_plate_left     : string = "[calorimeter_shieding_plate:side=0]"
+mapping.daughter_id.support_plate_right    : string = "[calorimeter_shieding_plate:side=1]"
+mapping.daughter_id.support_plate_bottom   : string = "[calorimeter_shieding_plate:side=2]"
+mapping.daughter_id.support_plate_top      : string = "[calorimeter_shieding_plate:side=3]"
+mapping.daughter_id.spacer_plate_left      : string = "[calorimeter_spacer:side=0]"
+mapping.daughter_id.spacer_plate_right     : string = "[calorimeter_spacer:side=1]"
+mapping.daughter_id.spacer_plate_bottom    : string = "[calorimeter_spacer:side=2]"
+mapping.daughter_id.spacer_plate_top       : string = "[calorimeter_spacer:side=3]"
 
 visibility.hidden               : boolean = false
 visibility.hidden_envelope      : boolean = true

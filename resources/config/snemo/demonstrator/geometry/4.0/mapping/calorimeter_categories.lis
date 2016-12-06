@@ -66,4 +66,20 @@ inherits : string   = "calorimeter_pmt"
 inherits : string   = "calorimeter_optical_module"
 
 
+###########################################
+[category="calorimeter_spacer" type="1307"]
+extends : string    = "calorimeter_optical_module"
+by      : string[1] = "side"
+
+
+###################################################
+[category="calorimeter_shieding_plate" type="1308"]
+extends : string    = "calorimeter_optical_module"
+by      : string[1] = "side"
+
+######################################################
+[category="calorimeter_pmt_support_plate" type="1309"]
+inherits : string   = "calorimeter_optical_module"
+
+
 # end of calorimeter_categories.lis
