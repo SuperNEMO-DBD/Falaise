@@ -2,167 +2,167 @@
 # List of multi-properties (datatools::multi_properties):
 
 #@description A list of background radioactive decays generators
-#@key_label   "name"
-#@meta_label  "type"
+#@key_label  "name"
+#@meta_label "type"
 
 
 ####################################
 [name="Ac228" type="genbb::wdecay0"]
-#@config Ac-228 decay [background]
+#@config Ac-228 decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "Ac228"
 
 
 ####################################
 [name="Th234" type="genbb::wdecay0"]
-#@config Th-234 decay [background]
+#@config Th-234 decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "Th234"
 
 
 ####################################
 [name="Tl207" type="genbb::wdecay0"]
-#@config Tl-207 decay [background]
+#@config Tl-207 decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "Tl207"
 
 
 ####################################
 [name="Tl208" type="genbb::wdecay0"]
-#@config Tl-208 decay [background]
+#@config Tl-208 decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "Tl208"
 
 
 ####################################
 [name="Bi214" type="genbb::wdecay0"]
-#@config Bi-214 decay [background]
+#@config Bi-214 decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "Bi214"
 
 
 ####################################
 [name="Bi212" type="genbb::wdecay0"]
-#@config Bi-212 decay [background]
+#@config Bi-212 decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "Bi212"
 
 
 ####################################
 [name="Bi210" type="genbb::wdecay0"]
-#@config Bi-210 decay [background]
+#@config Bi-210 decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "Bi210"
 
 
 ##########################################
 [name="Bi214_Po214" type="genbb::wdecay0"]
-#@config Bi-214/Po-214 decay [background]
+#@config Bi-214/Po-214 decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "Bi214+Po214"
 
 
 ##########################################
 [name="Bi212_Po212" type="genbb::wdecay0"]
-#@config Bi-212/Po-212 decay [background]
+#@config Bi-212/Po-212 decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "Bi212+Po212"
 
 
 #####################################
 [name="Pa234m" type="genbb::wdecay0"]
-#@config Pa-234m decay [background]
+#@config Pa-234m decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "Pa234m"
 
 
 ##################################
 [name="K40" type="genbb::wdecay0"]
-#@config K-40 decay [background]
+#@config K-40 decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "K40"
 
 
 ##################################
 [name="Y90" type="genbb::wdecay0"]
-#@config Y-90 decay [background]
+#@config Y-90 decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "Y90"
 
 
 ###################################
 [name="Sr90" type="genbb::wdecay0"]
-#@config Sr-90 decay [background]
+#@config Sr-90 decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "Sr90"
 
 
 ####################################
 [name="Pa231" type="genbb::wdecay0"]
-#@config Pa-231 decay [background]
+#@config Pa-231 decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "Pa231"
 
 
 ####################################
 [name="Eu152" type="genbb::wdecay0"]
-#@config Eu-152 decay [background]
+#@config Eu-152 decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "Eu152"
 
 
 ####################################
 [name="Eu154" type="genbb::wdecay0"]
-#@config Eu-154 decay [background]
+#@config Eu-154 decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "Eu154"
 
 
 ####################################
 [name="Pb210" type="genbb::wdecay0"]
-#@config Pb-210 decay [background]
+#@config Pb-210 decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "Pb210"
 
 
 ####################################
 [name="Pb211" type="genbb::wdecay0"]
-#@config Pb-211 decay [background]
+#@config Pb-211 decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "Pb211"
 
 
 ####################################
 [name="Pb212" type="genbb::wdecay0"]
-#@config Pb-212 decay [background]
+#@config Pb-212 decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "Pb212"
 
 
 ####################################
 [name="Pb214" type="genbb::wdecay0"]
-#@config Pb-214 decay [background]
+#@config Pb-214 decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "Pb214"
 
 
 ####################################
 [name="Po214" type="genbb::wdecay0"]
-#@config Po-214 decay [background]
+#@config Po-214 decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "Po214"
 
 
 ####################################
 [name="Po212" type="genbb::wdecay0"]
-#@config Po-212 decay [background]
+#@config Po-212 decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "Po212"
 
 
 ####################################
 [name="Ra226" type="genbb::wdecay0"]
-#@config Ra-226 decay [background]
+#@config Ra-226 decay;group=background
 decay_type      : string  = "background"
 decay_isotope   : string  = "Ra226"
 
