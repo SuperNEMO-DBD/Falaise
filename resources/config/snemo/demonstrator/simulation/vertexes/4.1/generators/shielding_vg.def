@@ -1,0 +1,221 @@
+# -*- mode: conf-unix; -*-
+# List of multi-properties (datatools::multi_properties):
+
+#@description A list of vertex generators
+#@key_label   "name"
+#@meta_label  "type"
+
+
+##########################################################
+# Generate vertex on the bulk of the bottom shielding:   #
+##########################################################
+[name="shielding_bottom_bulk" type="genvtx::box_model_vg"]
+
+#@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
+#@config Vertex generation from the bulk volume of the bottom shielding wall
+
+#@description Logging priority
+logging.priority : string = "notice"
+
+#@description The geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string  = "category='external_shield' side={4}"
+
+#@description The generator mode
+mode : string  = "bulk"
+
+
+#######################################################
+# Generate vertex on the bulk of the top shielding:   #
+#######################################################
+[name="shielding_top_bulk" type="genvtx::box_model_vg"]
+
+#@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
+#@config Vertex generation from the bulk volume of the top shielding wall
+
+#@description Logging priority
+logging.priority : string = "notice"
+
+#@description The geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string  = "category='external_shield' side={5}"
+
+#@description The generator mode
+mode : string  = "bulk"
+
+
+##############################################################
+# Generate vertex on the bulk of the left/right shielding:   #
+##############################################################
+[name="shielding_left_right_bulk" type="genvtx::box_model_vg"]
+
+#@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
+#@config Vertex generation from the bulk volume of the left/right shielding walls
+
+#@description Logging priority
+logging.priority : string = "notice"
+
+#@description The geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string  = "category='external_shield' side={2;3}"
+
+#@description The generator mode
+mode : string  = "bulk"
+
+
+##############################################################
+# Generate vertex on the bulk of the back/front shielding:   #
+##############################################################
+[name="shielding_back_front_bulk" type="genvtx::box_model_vg"]
+
+#@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
+#@config Vertex generation from the bulk volume of the back/front shielding walls
+
+#@description Logging priority
+logging.priority : string = "notice"
+
+#@description The geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string  = "category='external_shield' side={0;1}"
+
+#@description The generator mode
+mode : string  = "bulk"
+
+
+######################################################
+# Generate vertex from the bulk of the shielding:    #
+######################################################
+[name="shielding_all_bulk" type="genvtx::combined_vg"]
+
+#@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
+#@config Vertex generation from the bulk volume of all shielding walls
+
+#@description Logging priority
+logging.priority : string = "notice"
+
+generators : string[4] = \
+            "shielding_top_bulk" \
+            "shielding_bottom_bulk" \
+	    "shielding_left_right_bulk" \
+	    "shielding_back_front_bulk"
+
+generators.shielding_top_bulk.activity        : string = "1.0 Bq/kg"
+generators.shielding_bottom_bulk.activity     : string = "1.0 Bq/kg"
+generators.shielding_left_right_bulk.activity : string = "1.0 Bq/kg"
+generators.shielding_back_front_bulk.activity : string = "1.0 Bq/kg"
+
+
+######################################################################
+# Generate vertex on the internal surface of the bottom shielding:   #
+######################################################################
+[name="shielding_bottom_internal_surface" type="genvtx::box_model_vg"]
+
+#@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
+#@config Vertex generation from the internal surface of the bottom shielding wall
+
+#@description Logging priority
+logging.priority : string = "notice"
+
+#@description The geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string  = "category='external_shield' side={4}"
+
+#@description The generator mode
+mode : string  = "surface"
+
+#@description Surface mode box top face activation
+mode.surface.bottom : boolean = 1
+
+
+###################################################################
+# Generate vertex on the internal surface of the top shielding:   #
+###################################################################
+[name="shielding_top_internal_surface" type="genvtx::box_model_vg"]
+
+#@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
+#@config Vertex generation from the internal surface of the top shielding wall
+
+#@description Logging priority
+logging.priority : string = "notice"
+
+#@description The geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string  = "category='external_shield' side={5}"
+
+#@description The generator mode
+mode : string  = "surface"
+
+#@description Surface mode box top face activation
+mode.surface.bottom : boolean = 1
+
+
+##########################################################################
+# Generate vertex on the internal surface of the left/right shielding:   #
+##########################################################################
+[name="shielding_left_right_internal_surface" type="genvtx::box_model_vg"]
+
+#@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
+#@config Vertex generation from all internal surfaces of the left/right shielding walls
+
+#@description Logging priority
+logging.priority : string = "notice"
+
+#@description The geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string  = "category='external_shield' side={2;3}"
+
+#@description The generator mode
+mode : string  = "surface"
+
+#@description Surface mode box top face activation
+mode.surface.bottom : boolean = 1
+
+
+##########################################################################
+# Generate vertex on the internal surface of the left/right shielding:   #
+##########################################################################
+[name="shielding_back_front_internal_surface" type="genvtx::box_model_vg"]
+
+#@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
+#@config Vertex generation from all internal surfaces of the back/front shielding walls
+
+#@description Logging priority
+logging.priority : string = "notice"
+
+#@description The geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string  = "category='external_shield' side={0;1}"
+
+#@description The generator mode
+mode : string  = "surface"
+
+#@description Surface mode box top face activation
+mode.surface.top : boolean = 1
+
+
+###################################################################
+# Generate vertex on the internal surface of the shielding:       #
+###################################################################
+[name="shielding_all_internal_surfaces" type="genvtx::combined_vg"]
+
+#@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
+#@config Vertex generation from internal surfaces of the all shielding  walls
+
+#@description Logging priority
+logging.priority : string = "notice"
+
+generators : string[4] = \
+            "shielding_top_internal_surface" \
+            "shielding_bottom_internal_surface" \
+	    "shielding_left_right_internal_surface" \
+	    "shielding_back_front_internal_surface"
+
+generators.shielding_top_internal_surface.activity        : string = "1.0 Bq/m2"
+generators.shielding_bottom_internal_surface.activity     : string = "1.0 Bq/m2"
+generators.shielding_left_right_internal_surface.activity : string = "1.0 Bq/m2"
+generators.shielding_back_front_internal_surface.activity : string = "1.0 Bq/m2"
+
+
+# End of list of multi-properties.

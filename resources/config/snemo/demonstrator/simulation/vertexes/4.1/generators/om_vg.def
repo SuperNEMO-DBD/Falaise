@@ -1,5 +1,5 @@
 # -*- mode: conf-unix; -*-
-# @falaise:config/snemo/demonstrator/simulation/vertexes/4.0/generators/scin_vg.lis
+# @falaise:config/snemo/demonstrator/simulation/vertexes/4.1/generators/om_vg.def
 # List of multi-properties (datatools::multi_properties):
 
 #@description A list of vertex generators
@@ -13,15 +13,15 @@
 ################################################################################
 [name="calo_wrapper_bulk" type="genvtx::box_model_vg"]
 
-#@config Vertex generation from the bulk of the main calorimeter wrapper;group=Scintillator
+#@config Vertex generation from the bulk volume of the wrapper of all main calorimeter scintillator blocks
 
 #@description Logging priority
 logging.priority : string = "warning"
 
-#@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
+#@description The geometry origin of vertex in term of geometry category and addresses (geom ID)
 origin : string  = "category='calorimeter_wrapper' module={*} side={*} column={*} row={*}"
 
-#@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
+#@description The vertex generation mode
 mode   : string  = "bulk"
 
 
@@ -31,15 +31,15 @@ mode   : string  = "bulk"
 #############################################################################
 [name="xcalo_wrapper_bulk" type="genvtx::box_model_vg"]
 
-#@config Vertex generation from the bulk of the X-wall calorimeter wrapper;group=Scintillator
+#@config Vertex generation from the bulk volume of the wrapper of all X-wall calorimeter scintillator blocks
 
 #@description Logging priority
 logging.priority : string = "warning"
 
-#@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
+#@description The geometry origin of vertex in term of geometry category and addresses (geom ID)
 origin : string  = "category='xcalo_wrapper' module={*} side={*} column={*} row={*}"
 
-#@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
+#@description The vertex generation mode
 mode   : string  = "bulk"
 
 
@@ -49,14 +49,15 @@ mode   : string  = "bulk"
 #############################################################################
 [name="gveto_wrapper_bulk" type="genvtx::box_model_vg"]
 
-#@config Vertex generation from the bulk of the gamma veto wrapper;group=Scintillator
+#@config Vertex generation from the bulk volume of the wrapper of all gamma veto scintillator blocks
 
 #@description Logging priority
 logging.priority : string = "warning"
 
-#@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
+#@description The geometry origin of vertex in term of geometry category and addresses (geom ID)
 origin : string  = "category='gveto_wrapper' module={*} side={*} wall={*} column={*}"
-#@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
+
+#@description The vertex generation mode
 mode   : string  = "bulk"
 
 
@@ -66,15 +67,15 @@ mode   : string  = "bulk"
 ############################################################################
 [name="calo_wrapper_surface" type="genvtx::box_model_vg"]
 
-#@config Vertex generation from the surface of the main calorimeter wrapper;group=Scintillator
+#@config Vertex generation from the surface of the wrapper of all main calorimeter scintillator blocks
 
 #@description Logging priority
 logging.priority : string = "warning"
 
-#@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
+#@description The geometry origin of vertex in term of geometry category and addresses (geom ID)
 origin : string  = "category='calorimeter_wrapper' module={*} side={*} column={*} row={*}"
 
-#@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
+#@description The vertex generation mode
 mode   : string  = "surface"
 
 #@description Surface mode box top face activation
@@ -87,15 +88,15 @@ mode.surface.top  : boolean = 1
 ############################################################################
 [name="xcalo_wrapper_surface" type="genvtx::box_model_vg"]
 
-#@config Vertex generation from the surface of the X-wall calorimeter wrapper;group=Scintillator
+#@config Vertex generation from the surface of the wrapper of all X-wall calorimeter scintillator blocks
 
 #@description Logging priority
 logging.priority : string = "warning"
 
-#@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
+#@description The geometry origin of vertex in term of geometry category and addresses (geom ID)
 origin : string  = "category='xcalo_wrapper' module={*} side={*} column={*} row={*}"
 
-#@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
+#@description The vertex generation mode
 mode   : string  = "surface"
 
 #@description Surface mode box top face activation
@@ -108,15 +109,15 @@ mode.surface.top  : boolean = 1
 ################################################################################
 [name="gveto_wrapper_surface" type="genvtx::box_model_vg"]
 
-#@config Vertex generation from the surface of the gamma veto wrapper;group=Scintillator
+#@config Vertex generation from the surface of the wrapper of all gamma veto scintillator blocks
 
 #@description Logging priority
 logging.priority : string = "warning"
 
-#@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
+#@description The geometry origin of vertex in term of geometry category and addresses (geom ID)
 origin : string  = "category='gveto_wrapper' module={*} side={*} wall={*} column={*}"
 
-#@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
+#@description The vertex generation mode
 mode   : string  = "surface"
 
 #@description Surface mode box top face activation
@@ -129,7 +130,7 @@ mode.surface.top  : boolean = 1
 ################################################################################
 [name="calo_8inch_front_scin_bulk" type="genvtx::box_model_vg"]
 
-#@config Vertex generation from the bulk of the main calorimeter wrapper;group=Scintillator
+#@config Vertex generation from the bulk volume of the front part of all main calorimeter scintillator blocks with 8'' PMT
 
 #@description Logging priority
 logging.priority : string = "warning"
@@ -137,7 +138,7 @@ logging.priority : string = "warning"
 #@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
 origin : string  = "category='calorimeter_block' module={*} side={*} column={*} row={1;2;3;4;5;6;7;8;9;10;11} part={1}"
 
-#@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
+#@description The vertex generation mode
 mode   : string  = "bulk"
 
 
@@ -147,7 +148,7 @@ mode   : string  = "bulk"
 ################################################################################
 [name="calo_8inch_back_scin_bulk" type="genvtx::box_model_vg"]
 
-#@config Vertex generation from the bulk of the main calorimeter wrapper;group=Scintillator
+#@config Vertex generation from the bulk volume of the back part of all main calorimeter scintillator blocks with 8'' PMT
 
 #@description Logging priority
 logging.priority : string = "warning"
@@ -155,12 +156,11 @@ logging.priority : string = "warning"
 #@description Geometry version requirement (not working with version lower than 4.0)
 geometry.setup_requirement : string = "snemo::demonstrator(>=4)"
 
-#@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
+#@description The geometry origin of vertex in term of geometry category and addresses (geom ID)
 origin : string  = "category='calorimeter_block' module={*} side={*} column={*} row={1;2;3;4;5;6;7;8;9;10;11} part={0}"
 
-#@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
+#@description The vertex generation mode
 mode   : string  = "bulk"
-ometry.setup_requirement : string = "snemo"
 
 #@description Use bounding box method to shoot vertex in complicated form
 use_bounding_box : boolean = true
@@ -196,7 +196,7 @@ validation.validator_params.logging.priority : string = "warning"
 ################################################################################
 [name="calo_8inch_scin_bulk" type="genvtx::combined_model_vg"]
 
-#@config Vertex generation from the bulk of the main calorimeter 8 inch OMs scin wrapper;group=Scintillator
+#@config Vertex generation from the bulk volume of all main calorimeter scintillator blocks with 8'' PMT
 
 generators : string[2] = "calo_8inch_back_scin_bulk" "calo_8inch_front_scin_bulk"
 
@@ -210,7 +210,7 @@ generators.calo_8inch_front_scin_bulk.volume_activity : real as volume_activity 
 ################################################################################
 [name="calo_5inch_front_scin_bulk" type="genvtx::box_model_vg"]
 
-#@config Vertex generation from the bulk of the main calorimeter wrapper;group=Scintillator
+#@config Vertex generation from the bulk volume of the front part of all main calorimeter scintillator blocks with 5'' PMT
 
 #@description Logging priority
 logging.priority : string = "warning"
@@ -218,8 +218,70 @@ logging.priority : string = "warning"
 #@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
 origin : string  = "category='calorimeter_block' module={*} side={*} column={*} row={0;12} part={1}"
 
-#@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
+#@description The vertex generation mode
 mode   : string  = "bulk"
 
 
-# end of @falaise:config/snemo/demonstrator/simulation/vertexes/4.0/generators/scin_vg.lis
+################################################################################
+# Generate vertex on the bulk volume of the wrapper for the main calorimeter's #
+# scintillator blocks:                                                         #
+################################################################################
+[name="calo_5inch_back_scin_bulk" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the bulk volume of the back part of all main calorimeter scintillator blocks with 5'' PMT
+
+#@description Logging priority
+logging.priority : string = "warning"
+
+#@description Geometry version requirement (not working with version lower than 4.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=4)"
+
+#@description The geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string  = "category='calorimeter_block' module={*} side={*} column={*} row={0;12} part={0}"
+
+#@description The vertex generation mode
+mode   : string  = "bulk"
+
+#@description Use bounding box method to shoot vertex in complicated form
+use_bounding_box : boolean = true
+
+#@description Vertex validation support
+vertex_validation_support : boolean = true
+
+#@description Maximum number of tries for the rejection method
+validation.logging.priority : string = "warning"
+
+#@description Vertex validation activation
+validation.activation : boolean = true
+
+#@description Maximum number of tries for the rejection method
+validation.maximum_number_of_tries : integer = 1000
+
+#@description Vertex validation id
+validation.validator_id : string = "genvtx::in_materials_vertex_validator"
+
+#@description List of materials to be used
+validation.validator_params.materials.ref : string[1] = "ENVINET_PS_scintillator"
+
+#@description Logging level for validator
+validation.validator_params.max_depth : integer = 100
+
+#@description Logging level for validator
+validation.validator_params.logging.priority : string = "warning"
+
+
+################################################################################
+# Generate vertex on the bulk volume of the wrapper for the main calorimeter's #
+# scintillator blocks:                                                         #
+################################################################################
+[name="calo_5inch_scin_bulk" type="genvtx::combined_model_vg"]
+
+#@config Vertex generation from the bulk volume of all main calorimeter scintillator blocks with 5'' PMT
+
+generators : string[2] = "calo_5inch_back_scin_bulk" "calo_5inch_front_scin_bulk"
+
+generators.calo_5inch_back_scin_bulk.volume_activity  : real as volume_activity = 1 Bq/m3
+generators.calo_5inch_front_scin_bulk.volume_activity : real as volume_activity = 1 Bq/m3
+
+
+# end of @falaise:config/snemo/demonstrator/simulation/vertexes/4.1/generators/om_vg.def

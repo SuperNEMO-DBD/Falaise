@@ -1,0 +1,67 @@
+# -*- mode: conf-unix; -*-
+# @falaise:config/snemo/demonstrator/simulation/vertexes/4.1/generators/source_calibration_vg.def
+# List of multi-properties (datatools::multi_properties):
+
+#@description A list of vertex generators
+#@key_label   "name"
+#@meta_label  "type"
+
+
+##############################################################################
+# Generate vertex from the bulk of the source calibration spots (all tracks) #
+##############################################################################
+[name="source_calibration_all_spots" type="genvtx::cylinder_model_vg"]
+
+#@variant_section_only geometry:layout/if_basic/source_calibration/is_active|false
+
+#@config Vertex generation from the bulk volume of all source calibration spots
+
+#@description Logging priority
+logging.priority  : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 4.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=4)"
+
+#@description The geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string  = "category='source_calibration_spot' module={*} track={*} position={*}"
+
+#@description The generator mode
+mode   : string  = "bulk"
+
+
+########################################################################
+# Generate vertex from the bulk of one single source calibration spots #
+########################################################################
+[name="source_calibration_single_spot" type="genvtx::cylinder_model_vg"]
+
+#@variant_section_only geometry:layout/if_basic/source_calibration/is_active|false
+
+#@config Vertex generation from the bulk volume of all source calibration spots;variant=if_source_calibration_single_spot
+
+#@description Logging priority
+logging.priority  : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 4.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=4)"
+
+# The origin of vertex is described in term of geometry category and addresses (geom ID)
+
+#@description The origin geometry category
+origin.category : string = "source_calibration_spot"
+
+#@description SuperNEMO module number
+origin.address.module : integer = 0
+
+#@description Calibration source spot track number
+origin.address.track : integer = \
+  @variant(vertexes:generator/if_source_calibration_single_spot/track|0)
+
+#@description Calibration source spot position number
+origin.address.position    : integer = \
+  @variant(vertexes:generator/if_source_calibration_single_spot/position|0)
+
+#@description The generator mode
+mode   : string  = "bulk"
+
+
+# end of @falaise:config/snemo/demonstrator/simulation/vertexes/4.1/generators/source_calibration_vg.def

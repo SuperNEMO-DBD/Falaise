@@ -1,0 +1,24 @@
+# -*- mode: conf-unix; -*-
+# List of multi-properties (datatools::multi_properties):
+
+#@description A list of vertex generators
+#@key_label   "name"
+#@meta_label  "type"
+
+
+############################################################
+[name="versatile_spot" type="genvtx::spot_vertex_generator"]
+
+#@config Vertex generation from an arbitrary spot in the geometry
+
+#@description X coordinate of the vertex
+spot.x : real as length = @variant(vertexes:generator/if_versatile/x|0.0 mm)
+
+#@description Y coordinate of the vertex
+spot.y : real as length = @variant(vertexes:generator/if_versatile/y|0.0 mm)
+
+#@description Z coordinate of the vertex
+spot.z : real as length = @variant(vertexes:generator/if_versatile/z|0.0 mm)
+
+
+# End of list of multi-properties.

@@ -13,14 +13,16 @@
 
 #@config Vertex generation from the bulk of the bottom shielding wall
 
+#@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
 #@description Logging priority
 logging.priority : string = "notice"
 
 #@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin              : string  = "category='external_shield' side={4}"
+origin : string  = "category='external_shield' side={4}"
 
 #@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
-mode                : string  = "bulk"
+mode : string  = "bulk"
 
 
 ########################################################
@@ -30,14 +32,16 @@ mode                : string  = "bulk"
 
 #@config Vertex generation from the bulk of the top shielding wall
 
+#@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
 #@description Logging priority
 logging.priority : string = "notice"
 
 #@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin              : string  = "category='external_shield' side={5}"
+origin : string  = "category='external_shield' side={5}"
 
 #@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
-mode                : string  = "bulk"
+mode : string  = "bulk"
 
 
 ###############################################################
@@ -47,14 +51,16 @@ mode                : string  = "bulk"
 
 #@config Vertex generation from all internal surfaces of the left/right shielding walls
 
+#@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
 #@description Logging priority
 logging.priority : string = "notice"
 
 #@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin              : string  = "category='external_shield' side={2;3}"
+origin : string  = "category='external_shield' side={2;3}"
 
 #@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
-mode                : string  = "bulk"
+mode : string  = "bulk"
 
 
 ###############################################################
@@ -64,15 +70,16 @@ mode                : string  = "bulk"
 
 #@config Vertex generation from all internal surfaces of the back/front shielding walls
 
+#@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
 #@description Logging priority
 logging.priority : string = "notice"
 
 #@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin              : string  = "category='external_shield' side={0;1}"
+origin : string  = "category='external_shield' side={0;1}"
 
 #@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
-mode                : string  = "bulk"
-
+mode : string  = "bulk"
 
 
 ##########################################################
@@ -81,6 +88,8 @@ mode                : string  = "bulk"
 [name="shielding_all_bulk" type="genvtx::combined_vg"]
 
 #@config Vertex generation from the bulk of all shielding walls
+
+#@variant_section_only geometry:layout/if_basic/shielding/is_on|false
 
 #@description Logging priority
 logging.priority : string = "notice"
@@ -104,14 +113,16 @@ generators.shielding_back_front_bulk.activity : string = "1.0 Bq/kg"
 
 #@config Vertex generation from the internal surface of the bottom shielding wall
 
+#@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
 #@description Logging priority
 logging.priority : string = "notice"
 
 #@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin              : string  = "category='external_shield' side={4}"
+origin : string  = "category='external_shield' side={4}"
 
 #@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
-mode                : string  = "surface"
+mode : string  = "surface"
 
 #@description Surface mode box top face activation
 mode.surface.bottom : boolean = 1
@@ -124,14 +135,16 @@ mode.surface.bottom : boolean = 1
 
 #@config Vertex generation from the internal surface of the top shielding wall
 
+#@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
 #@description Logging priority
 logging.priority : string = "notice"
 
 #@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin              : string  = "category='external_shield' side={5}"
+origin : string  = "category='external_shield' side={5}"
 
 #@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
-mode                : string  = "surface"
+mode : string  = "surface"
 
 #@description Surface mode box top face activation
 mode.surface.bottom : boolean = 1
@@ -144,14 +157,16 @@ mode.surface.bottom : boolean = 1
 
 #@config Vertex generation from all internal surfaces of the left/right shielding walls
 
+#@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
 #@description Logging priority
 logging.priority : string = "notice"
 
 #@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin              : string  = "category='external_shield' side={2;3}"
+origin : string  = "category='external_shield' side={2;3}"
 
 #@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
-mode                : string  = "surface"
+mode : string  = "surface"
 
 #@description Surface mode box top face activation
 mode.surface.bottom : boolean = 1
@@ -164,14 +179,16 @@ mode.surface.bottom : boolean = 1
 
 #@config Vertex generation from all internal surfaces of the back/front shielding walls
 
+#@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
 #@description Logging priority
 logging.priority : string = "notice"
 
 #@description The rule that describes the geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin              : string  = "category='external_shield' side={0;1}"
+origin : string  = "category='external_shield' side={0;1}"
 
 #@description The mode used for vertex generator from the underlying box model associated to the target logical volume ("surface" or "bulk")
-mode                : string  = "surface"
+mode : string  = "surface"
 
 #@description Surface mode box top face activation
 mode.surface.bottom : boolean = 1
@@ -183,6 +200,9 @@ mode.surface.bottom : boolean = 1
 [name="shielding_all_internal_surfaces" type="genvtx::combined_vg"]
 
 #@config Vertex generation from internal surfaces of the all shielding  walls
+
+#@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
 #@description Logging priority
 logging.priority : string = "notice"
 
