@@ -5,10 +5,11 @@
 # Experimental hall #
 #####################
 
+
 ################################################################
 [name="hall_ground.model" type="geomtools::simple_shaped_model"]
 
-#@config A fake experimental hall
+#@config The experimental hall ground
 
 shape_type : string = "box"
 x : real as length = 10000.0 mm
@@ -21,7 +22,10 @@ material.ref : string = "basic::concrete"
 ######################################################################
 [name="experimental_hall.model" type="geomtools::simple_shaped_model"]
 
-#@config A fake experimental hall
+#@config The experimental hall
+
+# #@verbose_parsing
+# #@variant_devel
 
 shape_type : string = "box"
 x : real as length = 10000.0 mm
@@ -36,6 +40,8 @@ visibility.color            : string  = "cyan"
 
 # List of object inside the experimental_hall:
 #@description The list of daughter volumes
+
+#@variant_if geometry:layout/if_basic|true
 #@variant_only geometry:layout/if_basic/shielding/is_off|true
 internal_item.labels : string[2] = \
   "module_0" \
@@ -52,22 +58,31 @@ internal_item.labels : string[8] = \
   "left_shield"   \
   "right_shield"
 
+#@variant_endif geometry:layout/if_basic
+
+#@variant_if geometry:layout/if_half_commissioning|false
+internal_item.labels : string[2] = \
+  "module_0" \
+  "ground"
+#@variant_endif geometry:layout/if_half_commissioning
+
 # Ground:
-#@variant_only geometry:layout/if_basic|true
-internal_item.model.ground          : string = "hall_ground.model"
 
-#@placement of the ground
-internal_item.placement.ground      : string = "0 0 -3850 (mm)"
+#@description Model of the ground
+internal_item.model.ground     : string = "hall_ground.model"
 
-# Module #0 (demonstrator):
+#@description Placement of the ground
+internal_item.placement.ground : string = "0 0 -3850 (mm)"
+
+#@description Model of the module
 ################
 # Basic Layout #
 ########d#######
-##@variant_only geometry:layout/if_basic|true
+#@variant_only geometry:layout/if_basic|true
 #
 # Standard full demonstrator module:
 #
-internal_item.model.module_0          : string = "module_basic.model"
+internal_item.model.module_0 : string = "module_basic.model"
 
 #############################
 # Half Commissioning Layout #
@@ -76,14 +91,15 @@ internal_item.model.module_0          : string = "module_basic.model"
 #
 # Half-demonstrator module:
 #
-internal_item.model.module_0          : string = "half_module_commissioning.model"
+internal_item.model.module_0     : string = "half_module_commissioning.model"
 
-#@placement of the module
-internal_item.placement.module_0      : string = "0 0 0 (mm)"
+#@description Placement of the module
+internal_item.placement.module_0 : string = "0 0 0 (mm)"
 
 #############################
 # Conditional variant block #
 #############################
+#@variant_if geometry:layout/if_basic|true
 #@variant_if geometry:layout/if_basic/shielding/is_on|false
 #
 # Shielding around the module:
@@ -113,6 +129,7 @@ internal_item.model.right_shield      : string = "lr_iron_shield_block.model"
 internal_item.placement.right_shield  : string = "0 +4335 530 (mm) / x 270 (degree)"
 
 #@variant_endif geometry:layout/if_basic/shielding/is_on
+#@variant_endif geometry:layout/if_basic
 
 ##################################
 # Daughters mapping informations #
@@ -120,6 +137,7 @@ internal_item.placement.right_shield  : string = "0 +4335 530 (mm) / x 270 (degr
 mapping.daughter_id.module_0      : string = "[module:module=0]"
 mapping.daughter_id.ground        : string = "[ground]"
 
+#@variant_if geometry:layout/if_basic|true
 #@variant_if geometry:layout/if_basic/shielding/is_on|false
 mapping.daughter_id.back_shield   : string = "[external_shield:side=0]"
 mapping.daughter_id.front_shield  : string = "[external_shield:side=1]"
@@ -128,6 +146,7 @@ mapping.daughter_id.right_shield  : string = "[external_shield:side=3]"
 mapping.daughter_id.bottom_shield : string = "[external_shield:side=4]"
 mapping.daughter_id.top_shield    : string = "[external_shield:side=5]"
 #@variant_endif geometry:layout/if_basic/shielding/is_on
+#@variant_endif geometry:layout/if_basic
 
 
 ################
