@@ -195,9 +195,8 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/testing/test_snemo_geometry_retrieve_info.cxx
   snemo/testing/test_snemo_geometry_xcalo_locator_1.cxx
   snemo/testing/test_snemo_geometry_mapped_magnetic_field.cxx
-  snemo/testing/test_snemo_geometry_electronics_mapping.cxx
+  # snemo/testing/test_snemo_electronics_mapping.cxx
 
-  #snemo/testing/test_snemo_simulation_pmt_signal_generator.cxx
   snemo/testing/test_snemo_cut_particle_track_cut.cxx
   snemo/testing/test_snemo_datamodel_sim_calo_digi_hit.cxx
   snemo/testing/test_snemo_datamodel_sim_tracker_digi_hit.cxx
