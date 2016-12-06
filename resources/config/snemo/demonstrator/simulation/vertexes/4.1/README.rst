@@ -273,7 +273,6 @@ Use the *single spot* vertex generator:
      --variant-set "vertexes:generator=source_calibration_single_spot" \
      --variant-set "vertexes:generator/if_source_calibration_single_spot/track=3" \
      --variant-set "vertexes:generator/if_source_calibration_single_spot/position=1" \
-     --variant-gui \
      --variant-store "calib_profile.rep" \
      --geometry-manager         "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf" \
      --vertex-generator-manager "@falaise:config/snemo/demonstrator/simulation/vertexes/4.1/manager.conf" \
@@ -285,7 +284,8 @@ Use the *single spot* vertex generator:
      --visu-spot-zoom 2.0 \
      --visu-spot-size "0.05 mm" \
      --visu-spot-color "red" \
-     --visu-output-file "calib_vertices-visu-dd.data.gz"\
+     --visu-output-file "calib_vertices-visu-dd.data.gz" \
+     --visu-object "[1100:0]" \
      --output-file "calib_vertices.csv"
 ..
 

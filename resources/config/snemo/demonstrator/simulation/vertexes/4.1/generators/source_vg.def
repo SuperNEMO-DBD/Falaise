@@ -163,10 +163,10 @@ generators : string[2] = "source_pads_internal_surface" "source_pads_external_su
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-#@variant_only source_betabeta:layout/if_basic|true
+#@variant_if    geometry:layout/if_basic/source_layout/if_basic|true
 generators.source_pads_external_bulk.absolute_weight : real  =  250.0 # 125 mm * 2
-#@variant_only source_betabeta:layout/if_basic|true
 generators.source_pads_internal_bulk.absolute_weight : real  = 4607.0 # 135.5 mm * 34
+#@variant_endif geometry:layout/if_basic/source_layout/if_basic
 
 # Maybe the following could work (to be checked) :
 #generators.source_pads_external_surface.activity : string  = "1.0 Bq/m2"
