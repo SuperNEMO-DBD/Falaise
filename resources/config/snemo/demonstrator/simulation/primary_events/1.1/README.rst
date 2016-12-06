@@ -22,16 +22,21 @@ Files:
 ======
 
   * ``README.rst`` : this file,
-  * ``manager.conf`` : the   main  configuration file of   the
+  * ``manager.conf``   :   the   main  configuration   file   of   the
     Bayeux/genbb_help genbb/decay0 manager object,
-  * ``generators/`` : the directory where to store specific generator definition files.
+  * ``generators/`` : the directory  where to store specific generator
+    definition files.
+
+This         setup         uses         files         from         the
+``common/simulation/primary_events/1.1/`` resources directory.
 
 
 
 Browse and edit primary event generation variant parameters and options
 ===============================================================================
 
-1. First make sure the Bayeux software is installed and setup, particularly the variant support: ::
+1. First  make  sure  the  Bayeux software  is  installed  and  setup,
+   particularly the variant support: ::
 
 .. code:: sh
 
@@ -39,7 +44,8 @@ Browse and edit primary event generation variant parameters and options
    ...
 ..
 
-2. From the build directory, browse/edit the primary event generation variant:
+2. From the build directory,  browse/edit the primary event generation
+   variant:
 
 .. code:: sh
 
@@ -61,19 +67,22 @@ From  Falaise build  directory,  run:
    $ bxgenbb_inspector \
       --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
       --configuration "@falaise:config/snemo/demonstrator/simulation/primary_events/1.1/manager.conf" \
+      --variant-config "@falaise:config/common/simulation/primary_events/1.1/variants/repository.conf" \
+      --variant-load "myprofile.conf" \
       --action "list" \
       --list-print-mode "raw"
+   Ac228
    Am241
    Bi207
-   Bi212_Po212
    ...
    gamma.50keV
+   versatile_generator
 
 
 Generate 1000 primary events from the ``Bi214_Po214`` generator:
 ======================================================================
 
-From  Falaise build  directory,  run:
+From  Falaise build  directory,  run (without variant support):
 
 .. raw:: sh
 
@@ -127,4 +136,24 @@ Save the generated primary events in a Boost/archive output file:
       --title-prefix "Bi214_Po214" \
       --output-mode "plain" \
       --output-file "primary_events_Bi214_Po214-plain.xml"
+..
+
+Generate event using the variant support:
+
+.. raw:: sh
+
+   $ bxgenbb_inspector \
+      --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
+      --configuration "@falaise:config/snemo/demonstrator/simulation/primary_events/1.1/manager.conf" \
+      --variant-config "@falaise:config/common/simulation/primary_events/1.1/variants/repository.conf" \
+      --variant-load "myprofile.conf" \
+      --action "shoot"  \
+      --prng-seed 314159 \
+      --number-of-events 10 \
+      --modulo 100 \
+      --histo-def "@genbb_help:inspector/config/le_nuphy-1.0/inspector_histos_prompt.conf" \
+      --histo-def "@genbb_help:inspector/config/le_nuphy-1.0/inspector_histos_delayed.conf" \
+      --prompt \
+      --output-mode "plain" \
+      --output-file "primary_events-plain.xml"
 ..
