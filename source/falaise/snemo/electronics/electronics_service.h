@@ -56,6 +56,7 @@ namespace snemo {
     class electronics_service
       : public datatools::base_service
     {
+    public:
 
       /// Default constructor
       electronics_service();
@@ -113,7 +114,7 @@ namespace snemo {
       const manager *            _electronics_manager_ = nullptr; //!< Handle to the electronics manager
 
       // Registration :
-      DATATOOLS_SERVICE_REGISTRATION_INTERFACE(geometry_service);
+      DATATOOLS_SERVICE_REGISTRATION_INTERFACE(electronics_service);
 
     };
 
@@ -132,3 +133,4 @@ DOCD_CLASS_DECLARATION(snemo::electronics::electronics_service)
 // mode: c++ --
 // c-file-style: "gnu" --
 // tab-width: 2 --
+// End: --

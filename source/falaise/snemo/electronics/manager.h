@@ -56,6 +56,7 @@ namespace snemo {
     class manager
       : public datatools::i_tree_dumpable
     {
+    public:
 
       /// Default constructor
       manager();
@@ -125,3 +126,4 @@ DOCD_CLASS_DECLARATION(snemo::electronics::manager)
 // mode: c++ --
 // c-file-style: "gnu" --
 // tab-width: 2 --
+// End: --

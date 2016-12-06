@@ -1,9 +1,10 @@
 // snemo/electronics/electronics_service.cc
-// Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
-// Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
+// Author(s): François Mauger <mauger@lpccaen.in2p3.fr>
+// Author(s): Yves Lemiere <lemiere@lpccaen.in2p3.fr>
+// Author(s): Guillaume Oliviero <goliviero@lpccaen.in2p3.fr>
 
 // Ourselves :
-#include <snemo/electronics/mapping.h>
+#include <snemo/electronics/electronics_service.h>
 
 // Standard library :
 #include <string>
@@ -12,6 +13,7 @@
 // - Boost:
 #include <boost/scoped_ptr.hpp>
 // - Bayeux/datatools:
+#include <bayeux/datatools/exception.h>
 #include <bayeux/datatools/exception.h>
 // - Bayeux/geomtools:
 #include <bayeux/geomtools/geometry_service.h>
@@ -23,6 +25,10 @@
 namespace snemo {
 
   namespace electronics {
+
+    // Registration :
+    DATATOOLS_SERVICE_REGISTRATION_IMPLEMENT(electronics_service,
+                                             "snemo::electronics::electronics_service");
 
     electronics_service::electronics_service()
     {
@@ -61,7 +67,7 @@ namespace snemo {
       DT_THROW_IF(is_initialized(),
                   std::logic_error,
                   "Electronics service '" << get_name() << "' is already initialized ! ");
-      DT_THROW_IF(!geo_mgr_->is_initialized(),
+      DT_THROW_IF(!geo_mgr_.is_initialized(),
                   std::logic_error,
                   "Geometry manager is not initialized ! ");
       _geometry_manager_ = &geo_mgr_;
@@ -70,7 +76,7 @@ namespace snemo {
 
     const geomtools::manager & electronics_service::get_geometry_manager() const
     {
-      DT_THROW_IF(_geometry_manager_ = nullptr, std::logic_error,
+      DT_THROW_IF(_geometry_manager_ == nullptr, std::logic_error,
                   "Geometry manager is not set!");
       return *_geometry_manager_;
     }
@@ -82,7 +88,7 @@ namespace snemo {
 
     const manager & electronics_service::get_electronics_manager() const
     {
-      DT_THROW_IF(_electronics_manager_ = nullptr, std::logic_error,
+      DT_THROW_IF(_electronics_manager_ == nullptr, std::logic_error,
                   "Electronics manager is not set!");
       return *_electronics_manager_;
     }
@@ -99,15 +105,16 @@ namespace snemo {
                   std::logic_error,
                   "Electronics service '" << get_name() << "' is already initialized ! ");
 
-      base_service::common_initialize(a_config);
+      base_service::common_initialize(config_);
 
       if (!has_geometry_manager()) {
-        if (_Geo_label.empty()) {
+        if (_Geo_label_.empty()) {
           if (config_.has_key("Geo_label")) {
-            set_geo_label(config_.fetch_key("Geo_label"));
+            set_geo_label(config_.fetch_string("Geo_label"));
           }
         }
-        const geomtools::geometry_service & geoserv = datatools::get(service_dict_, _Geo_label_);
+        const geomtools::geometry_service & geoserv
+          = datatools::get<geomtools::geometry_service>(service_dict_, _Geo_label_);
         set_geometry_manager(geoserv.get_geom_manager());
       }
 
