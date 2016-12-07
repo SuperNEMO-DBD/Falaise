@@ -104,7 +104,7 @@ namespace snemo {
       /// General process
       void process(const calo_ctw_data & calo_ctw_data_,
 									 const geiger_ctw_data & geiger_ctw_data_);
-
+			
     protected :
 			
 			/// Rescaling calorimeter 25 ns at 1600 ns for coincidences with tracker
@@ -122,7 +122,7 @@ namespace snemo {
 			void _build_previous_event_record();
 
       /// Protected general process
-      void _process(const calo_ctw_data & calo_ctw_data_,
+			void _process(const calo_ctw_data & calo_ctw_data_,
 										const geiger_ctw_data & geiger_ctw_data_);
 
     private :

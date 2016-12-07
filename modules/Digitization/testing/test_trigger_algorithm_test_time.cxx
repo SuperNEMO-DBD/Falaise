@@ -136,8 +136,6 @@ int main( int  argc_ , char **argv_  )
     
     // Simulated Data "SD" bank label :
     std::string SD_bank_label = "SD";
-    // Trigger Decision Data "TDD" bank label :
-    std::string TDD_bank_label = "TDD";
     
     datatools::fetch_path_with_env(input_filename);
     if(is_input_file){
