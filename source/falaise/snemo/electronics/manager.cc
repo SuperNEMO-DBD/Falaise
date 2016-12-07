@@ -91,7 +91,7 @@ namespace snemo {
       return;
     }
 
-    void manager::_init_cabling_(const datatools::properties & cabling_config_)
+    void manager::_init_cabling_(const datatools::properties & /*cabling_config_*/)
     {
       // TO BE DONE...
       DT_THROW_IF(!has_geometry_manager(), std::logic_error,
@@ -126,7 +126,7 @@ namespace snemo {
     }
 
     void manager::tree_dump(std::ostream & a_out ,
-                            const std::string & a_title,
+                            const std::string & /*a_title*/,
                             const std::string & a_indent,
                             bool a_inherit) const
     {

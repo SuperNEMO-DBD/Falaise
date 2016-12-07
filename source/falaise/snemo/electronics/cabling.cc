@@ -107,7 +107,7 @@ namespace snemo {
       return _geo_manager_ != nullptr;
     }
 
-    void cabling::set_module_number(int module_number_)
+    void cabling::set_module_number(unsigned int module_number_)
     {
       _module_number_ = module_number_;
       return;
@@ -150,18 +150,18 @@ namespace snemo {
     }
 
     void cabling::convert_GID_to_EID(const geomtools::geom_id & geom_id_,
-                                                 geomtools::geom_id & electronic_id_) const
+				     geomtools::geom_id & electronic_id_) const
     {
       const_cast<cabling *>(this)->_convert_GID_to_EID(geom_id_,
-                                                                   electronic_id_);
+						       electronic_id_);
       return;
     }
 
     void cabling::convert_EID_to_GID(const geomtools::geom_id & electronic_id_,
-                                                 geomtools::geom_id & geom_id_) const
+				     geomtools::geom_id & geom_id_) const
     {
       const_cast<cabling *> (this) -> _convert_EID_to_GID(electronic_id_,
-                                                                      geom_id_);
+							  geom_id_);
       return;
     }
 
@@ -212,10 +212,10 @@ namespace snemo {
       for (std::set<int32_t>::iterator it = _pre_constructed_types_.begin();
            it != _pre_constructed_types_.end();
            it++) {
-        if (*it == _gg_cat_info_->get_type()) _init_geiger();
-        else if (*it == _mcalo_cat_info_->get_type()) _init_mcalo();
-        else if (*it == _xcalo_cat_info_->get_type()) _init_xcalo();
-        else if (*it == _gveto_cat_info_->get_type()) _init_gveto();
+        if (*it == (int32_t)_gg_cat_info_->get_type()) _init_geiger();
+        else if (*it == (int32_t)_mcalo_cat_info_->get_type()) _init_mcalo();
+        else if (*it == (int32_t)_xcalo_cat_info_->get_type()) _init_xcalo();
+        else if (*it == (int32_t)_gveto_cat_info_->get_type()) _init_gveto();
       }
       return;
     }
@@ -304,8 +304,8 @@ namespace snemo {
       return;
     }
 
-    void cabling::_convert_EID_to_GID(const geomtools::geom_id & elec_id_,
-                                                  geomtools::geom_id & geom_id_)
+    void cabling::_convert_EID_to_GID(const geomtools::geom_id & /* elec_id_*/,
+				      geomtools::geom_id & geom_id_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Electronic cabling is not initialized ! ");
       // DT_THROW_IF(elec_id_.get_type() != cabling::FEB_CATEGORY_TYPE, std::logic_error, "elect_id incorrect type ! ");
@@ -314,55 +314,55 @@ namespace snemo {
 
 
       /*
-      ID_bimap::right_const_iterator right_iter ;
+	ID_bimap::right_const_iterator right_iter ;
 
-      switch (elec_id_.get(cabling::RACK_INDEX)) {
-      case cabling::GEIGER_RACK_ID :
+	switch (elec_id_.get(cabling::RACK_INDEX)) {
+	case cabling::GEIGER_RACK_ID :
         right_iter = _geiger_id_bimap_.right.find(elec_id_);
         if (right_iter != _geiger_id_bimap_.right.end() ) {
-          geom_id_ = right_iter->second;
+	geom_id_ = right_iter->second;
         }
         break;
 
-      case cabling::CALO_RACK_ID :
+	case cabling::CALO_RACK_ID :
         right_iter = _mcalo_id_bimap_.right.find(elec_id_);
         if (right_iter != _mcalo_id_bimap_.right.end() ) {
-          geom_id_ = right_iter->second;
+	geom_id_ = right_iter->second;
         } else {
         }
         break;
 
-      default :
+	default :
         break;
-      }
+	}
       */
 
       return;
     }
 
     void cabling::_convert_GID_to_EID(const geomtools::geom_id & geom_id_,
-                                                  geomtools::geom_id & electronic_id_)
+				      geomtools::geom_id & electronic_id_)
     {
       DT_THROW_IF(!is_initialized(), std::logic_error, "Electronic cabling is not initialized ! ");
       electronic_id_.reset();
       ID_bimap::left_const_iterator left_iter ;
       if (_gg_cat_info_ != nullptr && geom_id_.get_type() == _gg_cat_info_->get_type()) {
-        ID_bimap::left_const_iterator left_iter = _geiger_id_bimap_.left.find(geom_id_);
+        left_iter = _geiger_id_bimap_.left.find(geom_id_);
         if (left_iter != _geiger_id_bimap_.left.end() )  {
           electronic_id_ = left_iter->second;
         }
       } else if (_mcalo_cat_info_ != nullptr && geom_id_.get_type() == _mcalo_cat_info_->get_type()) {
-        ID_bimap::left_const_iterator left_iter = _mcalo_id_bimap_.left.find(geom_id_);
+        left_iter = _mcalo_id_bimap_.left.find(geom_id_);
         if (left_iter != _mcalo_id_bimap_.left.end() )  {
           electronic_id_ = left_iter->second;
         }
       } else if (_xcalo_cat_info_ != nullptr && geom_id_.get_type() == _xcalo_cat_info_->get_type()) {
-        ID_bimap::left_const_iterator left_iter = _xcalo_id_bimap_.left.find(geom_id_);
+        left_iter = _xcalo_id_bimap_.left.find(geom_id_);
         if (left_iter != _xcalo_id_bimap_.left.end() )  {
           electronic_id_ = left_iter->second;
         }
       } else if (_gveto_cat_info_ != nullptr && geom_id_.get_type() == _gveto_cat_info_->get_type()) {
-        ID_bimap::left_const_iterator left_iter = _gveto_id_bimap_.left.find(geom_id_);
+        left_iter = _gveto_id_bimap_.left.find(geom_id_);
         if (left_iter != _gveto_id_bimap_.left.end() )  {
           electronic_id_ = left_iter->second;
         }

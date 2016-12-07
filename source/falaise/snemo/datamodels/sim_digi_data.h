@@ -20,10 +20,12 @@
 // - Bayeux/datatools:
 #include <bayeux/datatools/i_serializable.h>
 #include <bayeux/datatools/i_tree_dump.h>
+#include <datatools/handle.h>
 #include <bayeux/datatools/properties.h>
 
 // This project:
 #include <falaise/snemo/datamodels/sim_trigger_digi_data.h>
+#include <falaise/snemo/datamodels/sim_readout_digi_data.h>
 #include <falaise/snemo/datamodels/sim_calo_digi_hit.h>
 #include <falaise/snemo/datamodels/sim_tracker_digi_hit.h>
 
@@ -32,7 +34,7 @@ namespace snemo {
   namespace datamodel {
 
     /// \brief The data structure that hosts information about the digitized information
-    /// (trigger and hits) associated to a simulated event.
+    /// (trigger, readout and hits) associated to a simulated event.
     class sim_digi_data :
       public datatools::i_serializable,
       public datatools::i_tree_dumpable
@@ -41,11 +43,20 @@ namespace snemo {
     public:
 
       /// The collection of calorimeter digi hits
-      typedef std::vector<sim_calo_digi_hit>    calo_digi_hit_col;
+      typedef std::vector<sim_calo_digi_hit> calo_digi_hit_collection_type;
 
       /// The collection of tracker digi hits
-      typedef std::vector<sim_tracker_digi_hit> tracker_digi_hit_col;
+      typedef std::vector<sim_tracker_digi_hit> tracker_digi_hit_collection_type;
 
+			/// A simulated digitiez event is a pair of a simulated trigger digitized data and a simulated readout digitized data
+			typedef std::pair<sim_trigger_digi_data, sim_readout_digi_data> sim_digi_event_type;
+
+			/// Handle to a simulated digitize event
+			typedef datatools::handle<sim_digi_event_type> sim_digi_event_handle_type;
+			
+			/// Collection of handles on trigger event
+			typedef std::vector<sim_digi_event_handle_type> sim_digi_event_collection_type;
+			
       /// Constructor
       sim_digi_data();
 
@@ -58,23 +69,23 @@ namespace snemo {
       /// Reset
       void reset();
 
-      /// Return the const trigger data structure
-      const sim_trigger_digi_data & get_trigger_digi_data() const;
+      /// Return the const collection of trigger digi events
+      const sim_digi_event_collection_type & get_digi_events() const;
 
-      /// Return the mutable trigger data structure
-      sim_trigger_digi_data & grab_trigger_digi_data();
+      /// Return the mutable collection of trigger digi events
+			sim_digi_event_collection_type & grab_digi_events();
 
       /// Return the const collection of calorimeter digi hits
-      const calo_digi_hit_col & get_calo_digi_hits() const;
+      const calo_digi_hit_collection_type & get_calo_digi_hits() const;
 
       /// Return the mutable collection of calorimeter digi hits
-      calo_digi_hit_col & grab_calo_digi_hits();
+      calo_digi_hit_collection_type & grab_calo_digi_hits();
 
       /// Return the const collection of tracker digi hits
-      const tracker_digi_hit_col & get_tracker_digi_hits() const;
+      const tracker_digi_hit_collection_type & get_tracker_digi_hits() const;
 
       /// Return the mutable collection of tracker digi hits
-      tracker_digi_hit_col & grab_tracker_digi_hits();
+      tracker_digi_hit_collection_type & grab_tracker_digi_hits();
 
       /// Return the const container of auxiliary properties
       const datatools::properties & get_auxiliaries() const;
@@ -91,9 +102,10 @@ namespace snemo {
     private:
 
       datatools::properties   _auxiliaries_;       //!< Auxiliary properties
-      sim_trigger_digi_data   _trigger_digi_data_; //!< Trigger data
-      calo_digi_hit_col       _calo_digi_hits_;    //!< Simulated calorimeter digitized hits
-      tracker_digi_hit_col    _tracker_digi_hits_; //!< Simulated tracker digitized hits
+			
+			sim_digi_event_collection_type   _digi_events_;       //!< Simulated digitized events (pair of trigger + readout data)
+      calo_digi_hit_collection_type    _calo_digi_hits_;    //!< Simulated calorimeter digitized hits
+      tracker_digi_hit_collection_type _tracker_digi_hits_; //!< Simulated tracker digitized hits
 
       DATATOOLS_SERIALIZATION_DECLARATION()
 

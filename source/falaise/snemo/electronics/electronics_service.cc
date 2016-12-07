@@ -28,7 +28,7 @@ namespace snemo {
 
     // Registration :
     DATATOOLS_SERVICE_REGISTRATION_IMPLEMENT(electronics_service,
-                                             "snemo::electronics::electronics_service");
+                                             "snemo::electronics::electronics_service")
 
     electronics_service::electronics_service()
     {

@@ -66,7 +66,7 @@ namespace snemo {
       bool has_geo_manager() const;
 
       /// Set the module number
-      void set_module_number(int module_number_);
+      void set_module_number(unsigned int module_number_);
 
       /// Check if the module number is set
       bool has_module_number() const;
@@ -131,7 +131,7 @@ namespace snemo {
       // Configuration parameters:
       datatools::logger::priority _logging_ = datatools::logger::PRIO_FATAL;
       std::set<int32_t> _supported_geom_types_;
-      int _module_number_; //!< Module number (demonstrator module number for the moment)
+      unsigned int _module_number_; //!< Module number (demonstrator module number for the moment)
 
       // Working internal data/resources:
       std::set<int32_t> _pre_constructed_types_; //!< Set of pre constructed types ("geiger", "mcalo", "xcalo", "gveto" are supported)

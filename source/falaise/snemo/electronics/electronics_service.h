@@ -114,7 +114,7 @@ namespace snemo {
       const manager *            _electronics_manager_ = nullptr; //!< Handle to the electronics manager
 
       // Registration :
-      DATATOOLS_SERVICE_REGISTRATION_INTERFACE(electronics_service);
+      DATATOOLS_SERVICE_REGISTRATION_INTERFACE(electronics_service)
 
     };
 

@@ -17,6 +17,7 @@
 
 // This project:
 #include <falaise/snemo/datamodels/sim_trigger_digi_data.ipp>
+#include <falaise/snemo/datamodels/sim_readout_digi_data.ipp>
 #include <falaise/snemo/datamodels/sim_calo_digi_hit.ipp>
 #include <falaise/snemo/datamodels/sim_tracker_digi_hit.ipp>
 
@@ -29,7 +30,7 @@ namespace snemo {
     {
       ar & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
       ar & boost::serialization::make_nvp("auxiliaries", _auxiliaries_);
-      ar & boost::serialization::make_nvp("trigger_data", _trigger_digi_data_);
+      ar & boost::serialization::make_nvp("digi_events", _digi_events_);
       ar & boost::serialization::make_nvp("calo_digi_hits", _calo_digi_hits_);
       ar & boost::serialization::make_nvp("tracker_digi_hits", _tracker_digi_hits_);
       return;

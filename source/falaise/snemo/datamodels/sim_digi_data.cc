@@ -28,39 +28,39 @@ namespace snemo {
 
     void sim_digi_data::reset()
     {
-      _trigger_digi_data_.reset();
+      _digi_events_.clear();
       _calo_digi_hits_.clear();
       _tracker_digi_hits_.clear();
       _auxiliaries_.clear();
       return;
     }
 
-    const sim_trigger_digi_data & sim_digi_data::get_trigger_digi_data() const
+    const sim_digi_data::sim_digi_event_collection_type & sim_digi_data::get_digi_events() const
     {
-      return _trigger_digi_data_;
+      return _digi_events_;
     }
 
-    sim_trigger_digi_data & sim_digi_data::grab_trigger_digi_data()
+    sim_digi_data::sim_digi_event_collection_type & sim_digi_data::grab_digi_events()
     {
-      return _trigger_digi_data_;
+      return _digi_events_;
     }
 
-    const sim_digi_data::calo_digi_hit_col & sim_digi_data::get_calo_digi_hits() const
-    {
-      return _calo_digi_hits_;
-    }
-
-    sim_digi_data::calo_digi_hit_col & sim_digi_data::grab_calo_digi_hits()
+    const sim_digi_data::calo_digi_hit_collection_type & sim_digi_data::get_calo_digi_hits() const
     {
       return _calo_digi_hits_;
     }
 
-    const sim_digi_data::tracker_digi_hit_col & sim_digi_data::get_tracker_digi_hits() const
+    sim_digi_data::calo_digi_hit_collection_type & sim_digi_data::grab_calo_digi_hits()
+    {
+      return _calo_digi_hits_;
+    }
+
+    const sim_digi_data::tracker_digi_hit_collection_type & sim_digi_data::get_tracker_digi_hits() const
     {
       return _tracker_digi_hits_;
     }
 
-    sim_digi_data::tracker_digi_hit_col & sim_digi_data::grab_tracker_digi_hits()
+    sim_digi_data::tracker_digi_hit_collection_type & sim_digi_data::grab_tracker_digi_hits()
     {
       return _tracker_digi_hits_;
     }
@@ -100,16 +100,12 @@ namespace snemo {
         }
       }
 
-      // Trigger digitized data:
+      // Digitized events:
       {
         out_ << indent_ << datatools::i_tree_dumpable::tag
-             << "Trigger digitized data : " << std::endl;
-        {
-          std::ostringstream indent_oss;
-          indent_oss << indent_;
-          indent_oss << datatools::i_tree_dumpable::skip_tag;
-          _trigger_digi_data_.tree_dump(out_, "", indent_oss.str());
-        }
+             << "Digitized events : " << std::endl;
+        out_ << _digi_events_.size();
+        out_ << std::endl;
       }
 
       // Calorimeter digitized hits:

@@ -9,6 +9,8 @@ list(APPEND FalaiseLibrary_HEADERS
 
   snemo/datamodels/sim_trigger_digi_data.h
   snemo/datamodels/sim_trigger_digi_data.ipp
+  snemo/datamodels/sim_readout_digi_data.h
+  snemo/datamodels/sim_readout_digi_data.ipp
   snemo/datamodels/sim_tracker_digi_hit.h
   snemo/datamodels/sim_tracker_digi_hit.ipp
   snemo/datamodels/sim_calo_digi_hit.h
@@ -74,6 +76,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/geometry/locator_plugin.h
   snemo/geometry/mapped_magnetic_field.h
 
+  snemo/electronics/constants.h
   snemo/electronics/cabling.h
   snemo/electronics/manager.h
   snemo/electronics/electronics_service.h
@@ -131,6 +134,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/datamodels/gg_track_utils.cc
 
   snemo/datamodels/sim_trigger_digi_data.cc
+  snemo/datamodels/sim_readout_digi_data.cc
   snemo/datamodels/sim_tracker_digi_hit.cc
   snemo/datamodels/sim_calo_digi_hit.cc
   snemo/datamodels/sim_digi_data.cc
@@ -143,6 +147,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/geometry/utils.cc
   snemo/geometry/mapped_magnetic_field.cc
 
+  snemo/electronics/constants.cc  
   snemo/electronics/cabling.cc
   snemo/electronics/manager.cc
   snemo/electronics/electronics_service.cc
