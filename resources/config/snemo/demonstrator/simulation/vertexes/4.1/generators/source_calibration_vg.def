@@ -12,8 +12,6 @@
 ##############################################################################
 [name="source_calibration_all_spots" type="genvtx::cylinder_model_vg"]
 
-### #@variant_section_only vertexes:generator/if_source_calibration_all_spots|false
-
 #@config Vertex generation from the bulk volume of all source calibration spots
 
 #@description Logging priority
