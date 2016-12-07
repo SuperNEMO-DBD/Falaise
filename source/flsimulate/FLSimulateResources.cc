@@ -23,6 +23,7 @@
 #include <boost/assert.hpp>
 #include <boost/assign.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/replace.hpp>
 
 // - Bayeux
 #include "bayeux/datatools/exception.h"
@@ -45,11 +46,11 @@ namespace FLSimulate {
     ExperimentLookup::Table a;
     boost::assign::insert(a)
       ("",
-       "config/snemo/demonstrator/simulation/geant4_control/2.0/manager.conf")
+       "config/snemo/demonstrator/simulation/geant4_control/%v/manager.conf")
       ("default",
-       "config/snemo/demonstrator/simulation/geant4_control/2.0/manager.conf")
+       "config/snemo/demonstrator/simulation/geant4_control/%v/manager.conf")
       ("demonstrator",
-       "config/snemo/demonstrator/simulation/geant4_control/2.0/manager.conf")
+       "config/snemo/demonstrator/simulation/geant4_control/%v/manager.conf")
       ("bipo3",
        "config/bipo3/simulation/geant4_control/1.0/manager.conf");
 
@@ -61,11 +62,11 @@ namespace FLSimulate {
     ExperimentLookup::Table a;
     boost::assign::insert(a)
       ("",
-       "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/repository.conf")
+       "config/snemo/demonstrator/simulation/geant4_control/%v/variants/repository.conf")
       ("default",
-       "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/repository.conf")
+       "config/snemo/demonstrator/simulation/geant4_control/%v/variants/repository.conf")
       ("demonstrator",
-       "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/repository.conf")
+       "config/snemo/demonstrator/simulation/geant4_control/%v/variants/repository.conf")
       ("bipo3",
        "");
     ;
@@ -77,19 +78,31 @@ namespace FLSimulate {
     ExperimentLookup::Table a;
     boost::assign::insert(a)
       ("",
-       "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/profiles/default.profile")
+       "config/snemo/demonstrator/simulation/geant4_control/%v/variants/profiles/default.profile")
       ("default",
-       "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/profiles/default.profile")
+       "config/snemo/demonstrator/simulation/geant4_control/%v/variants/profiles/default.profile")
       ("demonstrator",
-       "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/profiles/default.profile")
+       "config/snemo/demonstrator/simulation/geant4_control/%v/variants/profiles/default.profile")
       ("bipo3",
        "");
     ;
     return a;
   }
 
+  std::string version_token()
+  {
+    return std::string("/%v/");
+  }
+
+  std::string slashed_token(const std::string & token_)
+  {
+    std::ostringstream out;
+    out << '/' << token_ << '/';
+    return out.str();
+  }
+
   std::string getControlFile(const std::string& experiment,
-                             const std::string& /*versionID*/) {
+                             const std::string& versionID) {
     static ExperimentLookup::Table a;
     if (a.empty()) a = constructLookupTable();
 
@@ -101,11 +114,13 @@ namespace FLSimulate {
 
     boost::filesystem::path basePath(falaise::get_resource_dir());
     basePath /= (*p).second;
-    return basePath.string();
+    std::string control_file = basePath.string();
+    boost::replace_all(control_file, version_token(), slashed_token(versionID));
+    return control_file;
   }
 
   std::string getVariantsConfigFile(const std::string& experiment,
-                                     const std::string& /*versionID*/) {
+                                     const std::string& versionID) {
     static ExperimentLookup::Table a;
     if (a.empty()) a = constructLookupVariantsConfigTable();
 
@@ -117,11 +132,13 @@ namespace FLSimulate {
 
     boost::filesystem::path basePath(falaise::get_resource_dir());
     basePath /= (*p).second;
-    return basePath.string();
+    std::string variants_config_file = basePath.string();
+    boost::replace_all(variants_config_file, version_token(), slashed_token(versionID));
+    return variants_config_file;
   }
 
   std::string getVariantsDefaultProfile(const std::string& experiment,
-                                        const std::string& /*versionID*/) {
+                                        const std::string& versionID) {
     static ExperimentLookup::Table a;
     if (a.empty()) a = constructLookupVariantsDefaultProfileTable();
 
@@ -133,7 +150,9 @@ namespace FLSimulate {
 
     boost::filesystem::path basePath(falaise::get_resource_dir());
     basePath /= (*p).second;
-    return basePath.string();
+    std::string  variants_default_profile = basePath.string();
+    boost::replace_all(variants_default_profile,  version_token(), slashed_token(versionID));
+    return variants_default_profile;
   }
 
 } // namespace FLSimulate

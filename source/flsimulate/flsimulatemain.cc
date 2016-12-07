@@ -167,8 +167,24 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
   // Variant service options:
   bpo::options_description optVariants("Variants support");
   uint32_t variant_service_flags = 0;
+  // The main configuration file for variant repository is forced by Falaise,
+  // so users cannot set it (from command line). This way we are stuck with
+  // a *blessed* variant configuration.
   variant_service_flags |= dtc::variant_service::NO_CONFIG_FILENAME;
+  variant_service_flags |= dtc::variant_service::NO_REGISTRY_RULES;
+  variant_service_flags |= dtc::variant_service::NO_REGISTRY_DEPENDENCIES;
+  // variant_service_flags |= dtc::variant_service::NO_SETTINGS;
+  // variant_service_flags |= dtc::variant_service::NO_GUI;
+  // Note: TUI user interface is not implemented yet in Bayeux. Users cannot
+  // run this interface.
   variant_service_flags |= dtc::variant_service::NO_TUI;
+  // variant_service_flags |= dtc::variant_service::NO_PROFILE_STORE;
+  // Other features of the variant service command line interface are activated:
+  //  - load a variant profile (--variant-load="my_flsimulate_profiles/my_default_tweaking")
+  //  - assign a given value to specific variant parameters (--variant-set="registry:the/param/path=value")
+  //  - run the GUI editor (--variant-gui)
+  //  - store the final variant profile after edition of the repository (--variant-store="my_flsimulate_profiles/my_effective_tweaking_sed_for_this_run")
+  // Now we publish the variant service relatedccommand line switches:
   dtc::variant_service::init_options(optVariants,
                                      params.variants,
                                      variant_service_flags);
@@ -219,7 +235,6 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
               << std::endl;
     throw FLDialogOptionsError();
   }
-
 
   if (params.logLevel == datatools::logger::PRIO_INFORMATION) {
     params.simulationManagerParams.tree_dump(std::clog, "", "[information]: ");

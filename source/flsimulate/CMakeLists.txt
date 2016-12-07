@@ -87,6 +87,29 @@ target_link_libraries(flsimulate_next
   ${Geant4_LIBRARIES}
   )
 
+# - Ensure link to internal and external deps
+set_target_properties(flsimulate_next PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
+
+if(UNIX AND NOT APPLE)
+  set_target_properties(flsimulate_next
+    PROPERTIES INSTALL_RPATH "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
+    )
+elseif(APPLE)
+  # Temporary setting - needs testing
+  set_target_properties(flsimulate_next
+    PROPERTIES
+      INSTALL_RPATH "@loader_path/../${CMAKE_INSTALL_LIBDIR}"
+    )
+endif()
+
+# - Install
+# TODO : fixup rpaths as needed
+install(TARGETS flsimulate_next
+  EXPORT FalaiseTargets
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  )
+
+#-----------------------------------------------------------------------
 if(FALAISE_ENABLE_TESTING)
   add_executable(testPropertyReader testPropertyReader.cc)
   set_target_properties(testPropertyReader
@@ -97,4 +120,3 @@ if(FALAISE_ENABLE_TESTING)
   target_link_libraries(testPropertyReader FLCatch Bayeux::Bayeux)
   add_test(NAME falaise-testPropertyReader COMMAND testPropertyReader)
 endif()
-

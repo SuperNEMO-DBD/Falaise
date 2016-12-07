@@ -76,8 +76,6 @@ class FLConfigUserError : public std::runtime_error {using std::runtime_error::r
 class FLDialogHelpRequested : public std::exception {};
 class FLDialogOptionsError : public std::exception {};
 
-
-
 //----------------------------------------------------------------------
 //! Handle printing of version information to given ostream
 void do_version(std::ostream& os, bool isVerbose) {
@@ -112,16 +110,19 @@ void do_help_scripting(std::ostream& os) {
      << "datatools::multi_properties script. The allowed sections and parameters are:\n"
      << std::endl
      << "[section=\"SimulationSubsystem\" description=\"\"]\n"
-     << "experimentID : string = \"demonstrator\"        # Name of detector to simulate\n"
-     << "numberOfEvents : integer = 1                    # Number of events to simulate\n"
-     << "vertexGenerator : string = \"source_pads_bulk\" # Name of vertex point generator\n"
-     << "eventGenerator : string = \"Se82.2nubb\"        # Name of event generator\n"
+     << "experimentID : string = \"demonstrator\"        # Name of detector to simulate (default=\"demonstrator\")\n"
+     << "simulationVersion : string = \"2.1\"            # Version of the simulation setup (default=\"2.1\")\n"
+     << "numberOfEvents : integer = 1                  # Number of events to simulate\n"
+     // << "vertexGenerator : string = \"source_pads_bulk\" # Name of vertex point generator\n"
+     // << "eventGenerator : string = \"Se82.2nubb\"        # Name of event generator\n"
      << "rngSeedFile : string as path = \"seeds.conf\"   # Path to file containing random number seeds\n"
      << "outputProfile : string = \"\"                   # Output profile (hits collections to output)\n"
      << std::endl
      << "[section=\"VariantSubsystem\" description=\"\"]\n"
-     << "profile : string as path = \"vprofile.conf\"         # Input variant profile configuration file\n"
+     << "profile : string as path = \"vprofile.conf\"       # Input variant profile configuration file.\n"
+     << "                                                 # (this is the recommended path). \n"
      << "settings : string[N] = \"setting1\" ... \"settingN\" # Individual variant settings\n"
+     << "                                                 # (should be reserved to experts). \n"
      << std::endl
      << "All sections and parameters are optional, and flsimulate will supply sensible\n"
      << "default values when only some are set.\n"
@@ -133,16 +134,14 @@ struct FLSimulateArgs {
   // Application specific parameters:
   datatools::logger::priority     logLevel;                //!< Logging priority threshold
   unsigned int                    numberOfEvents;          //!< Number of events to be processed in the pipeline
-  unsigned int                    moduloEvents;            //!< Number of events progress modulo
   std::string                     experimentID;            //!< The label of the virtual experimental setup
-  std::string                     setupGeometryVersion;    //!< The version number of the virtual geometry setup
   std::string                     setupSimulationVersion;  //!< The version number of the simulation engine setup
   mctools::g4::manager_parameters simulationManagerParams; /** Parameters for the Geant4 simulation manager
                                                             *  embedded in the simulation module
                                                             */
   std::string                     outputFile;              //!< Output data file for the output module
   // Variants support:
-  dtc::variant_service::config    variantSubsystemParams;                //!< Variants configuration
+  dtc::variant_service::config    variantSubsystemParams;  //!< Variants configuration
 
 
   //! Construct and return the default configuration object
@@ -152,16 +151,14 @@ struct FLSimulateArgs {
     FLSimulateArgs params;
     params.logLevel = datatools::logger::PRIO_ERROR;
     params.numberOfEvents = 1;
-    params.moduloEvents = 0;
     params.experimentID = "default";
-    params.setupGeometryVersion = "4.0";
-    params.setupSimulationVersion = "2.0";
+    params.setupSimulationVersion = "2.1";
     // Simulation
     params.simulationManagerParams.set_defaults();
     params.simulationManagerParams.logging = "error";
-    params.simulationManagerParams.manager_config_filename = FLSimulate::getControlFile(params.experimentID);
-    params.simulationManagerParams.vg_name = "source_pads_bulk";
-    params.simulationManagerParams.eg_name = "Se82.0nubb";
+    params.simulationManagerParams.manager_config_filename = FLSimulate::getControlFile(params.experimentID, params.setupSimulationVersion);
+    // params.simulationManagerParams.vg_name = "@variant(vertexes:generator)";       // source_pads_bulk";
+    // params.simulationManagerParams.eg_name = "@variant(primary_events:generator)"; // "Se82.0nubb";
     params.simulationManagerParams.input_prng_seeds_file = "";
     // Seeding is auto (from system) unless explicit file supplied
     params.simulationManagerParams.vg_seed   = mygsl::random_utils::SEED_AUTO; // PRNG for the vertex generator
@@ -170,12 +167,12 @@ struct FLSimulateArgs {
     params.simulationManagerParams.mgr_seed  = mygsl::random_utils::SEED_AUTO; // PRNG for the Geant4 engine itself
     params.simulationManagerParams.output_profiles_activation_rule = "";
     // Variants
-    params.variantSubsystemParams.config_filename = FLSimulate::getVariantsConfigFile(params.experimentID);
+    params.variantSubsystemParams.config_filename = FLSimulate::getVariantsConfigFile(params.experimentID, params.setupSimulationVersion);
     // Profile loading as below doesn't appear to work... what is the __default__ thing used above?
     // NB, also fails in flsimulate if "__default__" is supplied, so looks like
     // error in variants or the formatting of the default profile.
-    //params.variantSubsystemParams.profile_load = FLSimulate::getVariantsDefaultProfile(params.experimentID);
-
+    // 2016-12-07 FM: True, the provided file uses an obsolete formatting... to be fixed
+    //params.variantSubsystemParams.profile_load = FLSimulate::getVariantsDefaultProfile(params.experimentID, params.setupSimulationVersion);
     return params;
   }
 };
@@ -274,27 +271,47 @@ void do_configure(int argc, char *argv[], FLSimulateArgs& params) {
        datatools::properties simSubsystem = flSimConfig.get_section("SimulationSubsystem");
        // Bind properties in this section to the relevant ones in params
        params.experimentID = falaise::Properties::getValueOrDefault<std::string>(simSubsystem,"experimentID",params.experimentID);
+       params.setupSimulationVersion = falaise::Properties::getValueOrDefault<std::string>(simSubsystem,"simulationVersion", params.setupSimulationVersion);
        // Here we need to validate the config files for the experiment input
+       std::cerr << "DEVEL: experimentID = " << params.experimentID << std::endl;
+       std::cerr << "DEVEL: setupSimulationVersion = " << params.setupSimulationVersion << std::endl;
        try {
-         params.simulationManagerParams.manager_config_filename = FLSimulate::getControlFile(params.experimentID);
-         params.variantSubsystemParams.config_filename = FLSimulate::getVariantsConfigFile(params.experimentID);
+         params.simulationManagerParams.manager_config_filename = FLSimulate::getControlFile(params.experimentID, params.setupSimulationVersion);
+         params.variantSubsystemParams.config_filename = FLSimulate::getVariantsConfigFile(params.experimentID, params.setupSimulationVersion);
+         std::cerr << "DEVEL: manager_config_filename = " << params.simulationManagerParams.manager_config_filename << std::endl;
+         std::cerr << "DEVEL: variant config_filename = " << params.variantSubsystemParams.config_filename << std::endl;
        }
        catch (FLSimulate::UnknownResourceException& e) {
          throw FLConfigUserError {e.what()};
        }
 
        params.numberOfEvents = falaise::Properties::getValueOrDefault<int>(simSubsystem,"numberOfEvents",params.numberOfEvents);
-       params.moduloEvents = falaise::Properties::getValueOrDefault<int>(simSubsystem,"moduloEvents", params.moduloEvents);
-       params.simulationManagerParams.vg_name = falaise::Properties::getValueOrDefault<std::string>(simSubsystem,"vertexGenerator", params.simulationManagerParams.vg_name);
-       params.simulationManagerParams.eg_name = falaise::Properties::getValueOrDefault<std::string>(simSubsystem,"eventGenerator",params.simulationManagerParams.eg_name);
-       params.simulationManagerParams.input_prng_seeds_file = falaise::Properties::getValueOrDefault<std::string>(simSubsystem,"rngSeedFile",params.simulationManagerParams.input_prng_seeds_file);
-       params.simulationManagerParams.output_profiles_activation_rule = falaise::Properties::getValueOrDefault<std::string>(simSubsystem,"outputProfile",params.simulationManagerParams.output_profiles_activation_rule);
+       params.simulationManagerParams.number_of_events_modulo =
+         falaise::Properties::getValueOrDefault<int>(simSubsystem,
+                                                     "moduloEvents",
+                                                     params.simulationManagerParams.number_of_events_modulo);
+       // params.simulationManagerParams.vg_name = falaise::Properties::getValueOrDefault<std::string>(simSubsystem,"vertexGenerator", params.simulationManagerParams.vg_name);
+       // params.simulationManagerParams.eg_name = falaise::Properties::getValueOrDefault<std::string>(simSubsystem,"eventGenerator",params.simulationManagerParams.eg_name);
+       params.simulationManagerParams.input_prng_seeds_file =
+         falaise::Properties::getValueOrDefault<std::string>(simSubsystem,
+                                                             "rngSeedFile",
+                                                             params.simulationManagerParams.input_prng_seeds_file);
+       params.simulationManagerParams.output_profiles_activation_rule =
+         falaise::Properties::getValueOrDefault<std::string>(simSubsystem,
+                                                             "outputProfile",
+                                                             params.simulationManagerParams.output_profiles_activation_rule);
+       std::cerr << "DEVEL: numberOfEvents = " << params.numberOfEvents << std::endl;
+       std::cerr << "DEVEL: moduloEvents = " << params.simulationManagerParams.number_of_events_modulo /*params.moduloEvents*/ << std::endl;
+       std::cerr << "DEVEL: input_prng_seeds_file = " << params.simulationManagerParams.input_prng_seeds_file << std::endl;
+       std::cerr << "DEVEL: output_profiles_activation_rule = " << params.simulationManagerParams.output_profiles_activation_rule << std::endl;
     }
     if(flSimConfig.has_section("VariantSubsystem")) {
       datatools::properties variantSubsystem = flSimConfig.get_section("VariantSubsystem");
       // Bind properties to relevant ones on params
       params.variantSubsystemParams.profile_load = falaise::Properties::getValueOrDefault<std::string>(variantSubsystem,"profile",params.variantSubsystemParams.profile_load);
+      std::cerr << "DEVEL: variant profile_load = " << params.variantSubsystemParams.profile_load << std::endl;
       params.variantSubsystemParams.settings = falaise::Properties::getValueOrDefault<std::vector<std::string> >(variantSubsystem,"settings",params.variantSubsystemParams.settings);
+      std::cerr << "DEVEL: settings # = " << params.variantSubsystemParams.settings.size() << std::endl;
     }
   }
 }

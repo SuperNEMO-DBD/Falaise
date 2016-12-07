@@ -2,11 +2,17 @@
 Falaise Simulation Application
 ==============================
 
+:Author: F.Mauger
+:Date: 2016-12-07
+
 What's Here
 ===========
 
 The main application for the simulation of the SuperNEMO detector.
 Any other code that is specific to the simulation - e.g. digitization.
+
+TODO (2016-12-07, FM): replace the former ``flsimulatemain`` program by the new
+``flsimulatemain_next``.
 
 Status
 ======
@@ -22,119 +28,51 @@ Usage
 
 Online help is available through:
 
-.. raw:: sh
+.. code:: sh
 
-   flsimulate --help
+   $ flsimulate --help
 ..
 
 Variant support
 ===============
 
 FLsimulate automatically  configures a  *variance service*  adapted to
-the experimental setup selected  with the ``--experiment`` option. For
-now  only the  ``Demonstrator`` experiment  has its  specific variance
-setup.
+the experimental  setup. For now only  the ``demonstrator`` experiment
+is supported and has its specific variance configuration.
 
-1. The  ``--variant-load``  option  enables  to load  an  input  *variant
-   profile* file  and assign  specific values  to the  variant parameters
-   addressed by this profile:
+The variant  service allows  to select various  *tweakable* parameters
+like:
 
-.. raw:: sh
+- some geometry options (magnetic field, calibration sources...)
+- the vertex generator (which may depends on some geometry options)
+- the   primary   event  generator   (which   may   depends  on   some
+  geometry/vertexes options)
+- some parameters  specific to the simulation  itself (output profile,
+  physics list...)
 
-   --variant-load "Path/To/A/Variant/Profile/Input/File"
+The  variant service  loads a  *variant  profile* file  which must  be
+prepared     by    the     user    through     a    dedicated     tool
+(``bxvariant_inspector``).   This file  will  be  reused in  following
+steps  of the  reconstruction/analysis  chain.  It  must be  preserved
+carefully.
+
+Scripting FLsimulate
+====================
+
+FLsimulate needs  to be  provided a human  readable script  that setup
+specific parameters for the simulation run. This configuration scripts
+uses the ``datatools::multi_properties`` format.
+
+Online help about the format of the script is available through:
+
+.. code:: sh
+
+   $ flsimulate_next --help-scripting
 ..
 
-   where:  ``Path/To/A/Variant/Profile/Input/File``   locates  a  file
-   which contains a set of preset variant parameters.
 
-2. The ``--variant-set``  options enable to assign  specific values to
-   variant parameters as  defined in one of the  variant registries of
-   the application's  variant repository. Several such  options can be
-   used, each one being related to a single parameter. The syntax is:
+Examples
+========
 
-.. raw: sh
-
-   --variant-set "Registry:Path/To/The/Variant/Parameter=Value"
-..
-
-   where :
-
-    * ``Registry`` is the  name of an active  variant registry. Supported
-      registries are currently :
-
-       * ``geometry``  :  special  variant   parameters  related  to  the
-         geometry layout.
-       * ``commissioning_source``   :   special    setup   for   external
-         calibration source in the commissioning layout.
-       * ``simulation`` : special  variant   parameters  related  to  the
-         Geant4 based simulation run.
-
-    * The  ``Path/To/The/Variant/Parameter`` path  identifies a  specific
-      variant parameter defined in the target ``Registry``.
-    * The ``Value`` token is a textual  representation of the value to be
-      assigned to the target parameter.
-
-3. The ``--variant-gui``  option lauches  a variance Qt-based  GUI editor
-   (this  feature  is  only  available  if  Bayeux  was  built  with  the
-   ``BAYEUX_WITH_QT_GUI`` option).
-
-4. The ``--variant-store`` option enables  to store the current selection
-   of values  assigned to  the variant parameters  in an  output *variant
-   profile* file.
-
-.. raw:: sh
-
-   --variant-store "Path/To/A/Variant/Profile/Output/File"
-..
-
-   where:   ``Path/To/A/Variant/Profile/Output/File``  identifies   an
-   output file where to store the current set of variant parameters.
-
-
-Examples:
-
-1. Generate 100 Tl208 decays from the bulk of tracker field wires,
-   disabling the magnetic field:
-
-.. raw:: sh
-
-   flsimulate \
-     --experiment       "Demonstrator" \
-     --variant-registry "dummy[+]=@falaise:examples/variants/dummy/1.0/registries/dummy.conf" \
-     --variant-registry "dummy2[+]=@falaise:examples/variants/dummy/1.0/registries/dummy.conf" \
-     --variant-logging  "trace" \
-     --variant-set      "geometry:layout=HalfCommissioning" \
-     --variant-gui      \
-     --variant-store    "this_profile.conf" \
-     --event-generator  "Tl208" \
-     --vertex-generator "field_wire_bulk" \
-     --number           100 \
-     --modulo           10 \
-     --output-profiles  "all_details" \
-     --output-file      "Tl208-field_wire_bulk_SD-100.brio"
-..
-
-..     --variant-registry "dummy[+]=@falaise:examples/variants/dummy/1.0/registries/dummy.conf" \
-..     --variant-registry "dummy2[+]=@falaise:examples/variants/dummy/1.0/registries/dummy.conf" \
-..     --variant-set      "geometry:layout=HalfCommissioning" \
-..     --variant-set "geometry:layout/if_half_commissioning/magnetic_field=false" \
-..     --variant-set "geometry:layout/if_basic/magnetic_field=false" \
-
-
-.. raw:: sh
-
-   flreconstruct \
-     --variant-load "this_profile.conf" \
-     --variant-gui  \
-     --pipeline "__default__" \
-     --input-file   "Tl208-field_wire_bulk_SD-100.brio" \
-     --output-file  "Tl208-field_wire_bulk_SD-100.rec.brio"
-
-
-   Browse the events:
-
-.. raw:: sh
-
-   flvisualize \
-     --input-files "Tl208-field_wire_bulk_SD-100.brio"
-..
+The  ``{Falaise-source-dir}/resources/examples/flsimulate/ex01/`` directory contains
+a documented sample setup from which users can derive their own simulation setup.
