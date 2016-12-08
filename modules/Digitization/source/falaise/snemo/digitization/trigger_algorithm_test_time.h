@@ -94,12 +94,15 @@ namespace snemo {
 			
 			/// Get the vector of coincidence record
 			const std::vector<trigger_structures::coincidence_event_record> get_coincidence_records_vector() const;
- 			
-			/// Get the finale trigger decision
-			bool get_finale_decision() const;	
+
+			/// Get the vector of L1 calo decision record
+			const std::vector<trigger_structures::L1_calo_decision> get_L1_calo_decision_records_vector() const;
+
+			/// Get the vector of L2 decision record
+			const std::vector<trigger_structures::L2_decision> get_L2_decision_records_vector() const;
 
 			/// Get the finale trigger decision
-			bool get_delayed_finale_decision() const;
+			bool get_finale_decision() const;	
 					
       /// General process
       void process(const calo_ctw_data & calo_ctw_data_,

@@ -244,6 +244,16 @@ namespace snemo {
     {
       return _coincidence_records_;
     }
+
+    const std::vector<trigger_structures::L1_calo_decision> trigger_algorithm_test_time::get_L1_calo_decision_records_vector() const
+    {
+      return _L1_calo_decision_records_;
+    }
+
+    const std::vector<trigger_structures::L2_decision> trigger_algorithm_test_time::get_L2_decision_records_vector() const
+    {
+      return _L2_decision_records_;
+    }
         
     bool trigger_algorithm_test_time::get_finale_decision() const
     {

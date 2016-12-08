@@ -21,6 +21,8 @@
 // Root : 
 #include "TFile.h"
 #include "TTree.h"
+#include "TH1F.h"
+#include "TH2F.h"
 
 // This project :
 #include <snemo/digitization/clock_utils.h>
@@ -266,6 +268,41 @@ int main( int  argc_ , char **argv_  )
     my_trigger_algo.set_clock_manager(my_clock_manager);
     my_trigger_algo.initialize(trigger_config);
 
+    // Root file output :
+    std::string root_output_filename = output_path + "test_trigger_algorithm_time_output.root";
+    datatools::fetch_path_with_env(root_output_filename);
+    TFile* root_output_file = new TFile(root_output_filename.c_str(), "RECREATE");
+
+    std::string string_buffer = "number_of_L2_decision_TH1F";
+    TH1F * number_of_L2_decision_TH1F = new TH1F(string_buffer.c_str(),
+    					    Form("Number of L2 decision"),
+    					    10, 0, 10);
+
+    string_buffer = "CARACO_decision_TH1F";
+    TH1F * CARACO_decision_TH1F = new TH1F(string_buffer.c_str(),
+    					   Form("CARACO decision"),
+    					   2, 0, 2);
+
+    string_buffer = "CARACO_CT_decision_1600ns_TH1F";
+    TH1F * CARACO_CT_decision_1600ns_TH1F = new TH1F(string_buffer.c_str(),
+    						     Form("CARACO CT decision 1600"),
+    						     10, 0, 10);
+
+    string_buffer = "delayed_decision_TH1F";
+    TH1F * delayed_decision_TH1F = new TH1F(string_buffer.c_str(),
+    					    Form("delayed decision"),
+    					    2, 0, 2);
+
+    string_buffer = "delayed_CT_decision_1600ns_TH1F";
+    TH1F * delayed_CT_decision_1600ns_TH1F = new TH1F(string_buffer.c_str(),
+    						      Form("delayed CT decision 1600"),
+    						      650, 0, 650);
+
+    string_buffer = "delayed_L2_trigger_mode_TH1F";
+    TH1F * delayed_L2_trigger_mode_TH1F = new TH1F(string_buffer.c_str(),
+    						      Form("delayed delayed_L2_trigger_mode_TH1F"),
+    						      10, 0, 10);
+
     // Internal counters
     int psd_count = 0;         // Event counter
     
@@ -349,7 +386,9 @@ int main( int  argc_ , char **argv_  )
 	    std::vector<snemo::digitization::trigger_structures::coincidence_calo_record> coincidence_collection_calo_records;
 	    std::vector<snemo::digitization::trigger_structures::tracker_record>   tracker_collection_records;
 	    std::vector<snemo::digitization::trigger_structures::coincidence_event_record> coincidence_collection_records;
-		
+
+	    std::vector<snemo::digitization::trigger_structures::L2_decision> L2_decision_record;
+	      
 	    // Reseting trigger display
 	    my_trigger_display.reset_matrix_pattern();
 
@@ -362,33 +401,52 @@ int main( int  argc_ , char **argv_  )
 	    coincidence_collection_calo_records =  my_trigger_algo.get_coincidence_calo_records_1600ns_vector();
 	    tracker_collection_records = my_trigger_algo.get_tracker_records_vector();
 	    coincidence_collection_records = my_trigger_algo.get_coincidence_records_vector();
+	    L2_decision_record = my_trigger_algo.get_L2_decision_records_vector();
 	    
-
-	    // Display is in trigger_algorithm_test_time.cc (_process methods) :
-	    /*if (is_display) my_trigger_display.display_calo_trigger_25ns(my_trigger_algo);
-	    if (is_display) my_trigger_display.display_calo_trigger_1600ns(my_trigger_algo);
-	    if (is_display) my_trigger_display.display_tracker_trigger_1600ns(my_trigger_algo);
-	    if (is_display) my_trigger_display.display_coincidence_trigger_1600ns(my_trigger_algo);*/
+	    uint16_t number_of_L2_decision = L2_decision_record.size();
+	    bool caraco_decision = false;
+	    uint32_t caraco_clocktick_1600ns = snemo::digitization::clock_utils::INVALID_CLOCKTICK;
+	    bool delayed_decision = false;
+	    uint32_t delayed_clocktick_1600ns = snemo::digitization::clock_utils::INVALID_CLOCKTICK;
+	    bool already_delayed_trig = false;
+	    snemo::digitization::trigger_structures::L2_trigger_mode delayed_trigger_mode = snemo::digitization::trigger_structures::L2_trigger_mode::INVALID;
 	    
-	    /*
-	    for (int i = 0; i < coincidence_collection_records.size(); i++)
+	    if (number_of_L2_decision != 0)
 	      {
-	    	coincidence_collection_records[i].display();
+		for (unsigned int isize = 0; isize < number_of_L2_decision; isize++)
+		  {
+		    if (L2_decision_record[isize].L2_decision_bool && L2_decision_record[isize].L2_trigger_mode == snemo::digitization::trigger_structures::L2_trigger_mode::CARACO)
+		      {
+			caraco_decision         = L2_decision_record[isize].L2_decision_bool;
+			caraco_clocktick_1600ns = L2_decision_record[isize].L2_ct_decision;
+		      }
+		    else if (L2_decision_record[isize].L2_decision_bool &&  (L2_decision_record[isize].L2_trigger_mode == snemo::digitization::trigger_structures::L2_trigger_mode::APE
+									     || L2_decision_record[isize].L2_trigger_mode == snemo::digitization::trigger_structures::L2_trigger_mode::DAVE) && already_delayed_trig == false)
+		      {
+			delayed_decision         = L2_decision_record[isize].L2_decision_bool;
+			delayed_clocktick_1600ns = L2_decision_record[isize].L2_ct_decision;
+			delayed_trigger_mode     = L2_decision_record[isize].L2_trigger_mode;
+			already_delayed_trig     = true;
+		      }
+		  }
 	      }
-	    */
-	    /*
-	    std::clog << "********* Size of Finale structures for one event *********" << std::endl;
-	    std::clog << "Calo collection size @ 25 ns : " << calo_collection_records.size() << std::endl;
-	    std::clog << "Calo collection size @ 1600 ns : " << coincidence_collection_calo_records.size() << std::endl;
-	    std::clog << "Tracker collection size @ 1600 ns : " << tracker_collection_records.size() << std::endl;
-	    std::clog << "Coincidence collection size @ 1600 ns : "  << coincidence_collection_records.size() << std::endl;
+
+	    // if (number_of_L2_decision == 4) std::cin.get();
+	    number_of_L2_decision_TH1F->Fill(number_of_L2_decision);
+	    CARACO_decision_TH1F->Fill(caraco_decision);
+	    if (caraco_clocktick_1600ns != snemo::digitization::clock_utils::INVALID_CLOCKTICK) CARACO_CT_decision_1600ns_TH1F->Fill(caraco_clocktick_1600ns);
+	    delayed_decision_TH1F->Fill(delayed_decision);
+	    if (delayed_decision && delayed_clocktick_1600ns != snemo::digitization::clock_utils::INVALID_CLOCKTICK) delayed_CT_decision_1600ns_TH1F->Fill(delayed_clocktick_1600ns);
+	    if (delayed_decision && delayed_trigger_mode != snemo::digitization::trigger_structures::L2_trigger_mode::INVALID) delayed_L2_trigger_mode_TH1F->Fill(delayed_trigger_mode);
+
+	    // std::clog << "Number of L2 decision : " << number_of_L2_decision << std::endl;
+	    // std::clog << "CARACO decision :       " << caraco_decision << std::endl;
+	    // std::clog << "CARACO CT1600ns :       " << caraco_clocktick_1600ns << std::endl;
+	    // std::clog << "Delayed decision :      " << delayed_decision << std::endl;
+	    // std::clog << "Delayed CT1600ns :      " << delayed_clocktick_1600ns << std::endl;
+	    // std::clog << "Delayed trigger mode :  " << delayed_trigger_mode << std::endl;
 	    
-	    bool raw_trigger_prompt_decision = my_trigger_algo.get_finale_decision();
-	    bool raw_trigger_delayed_decision = my_trigger_algo.get_delayed_finale_decision();
-
-	    std::clog << "trigger_finale_decision         [" << raw_trigger_prompt_decision << "]" << std::endl;
-	    std::clog << "delayed trigger_finale_decision [" << raw_trigger_delayed_decision << "]" << std::endl;*/
-
+	    
 	    my_trigger_algo.reset_data();
 	      
 	  } //end of if has bank label "SD"
@@ -400,6 +458,9 @@ int main( int  argc_ , char **argv_  )
 	DT_LOG_NOTICE(logging, "Simulated data #" << psd_count);
       } // end of reader is terminated
          
+    root_output_file->Write();
+    root_output_file->Close();
+
     std::clog << "The end." << std::endl;
   }
 
