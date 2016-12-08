@@ -38,12 +38,6 @@ namespace snemo {
       /// Destructor
       virtual ~sim_trigger_digi_data();
 
-      /// Check validity
-      bool is_valid() const;
-
-			/// Invalidate the internal data of sim trigger digi
-			void invalidate();
-
       /// Reset
       void reset();
 
@@ -58,8 +52,8 @@ namespace snemo {
 			// L1 datas :
 			bool _L1_decision_25ns_; //!< Calo L1 decision 25ns 
 			uint32_t _L1_decision_clocktick_25ns_; //!< Calo L1 clocktick decision 25ns
-			std::bitset<snemo::electronics::constants::NZONES> _calo_zoning_word_S0_25ns_;      //!< Calo Zoning Word Side 0
-			std::bitset<snemo::electronics::constants::NZONES> _calo_zoning_word_S1_25ns_;      //!< Calo Zoning Word Side 1
+			std::bitset<snemo::electronics::constants::NZONES> _calo_zoning_word_S0_25ns_;     //!< Calo Zoning Word Side 0
+			std::bitset<snemo::electronics::constants::NZONES> _calo_zoning_word_S1_25ns_;     //!< Calo Zoning Word Side 1
 			std::bitset<snemo::electronics::constants::HTM_BITSET_SIZE> _calo_HTM_S0_25ns_;    //!< Calorimeter High Threshold Multiplicity Side 0
 			std::bitset<snemo::electronics::constants::HTM_BITSET_SIZE> _calo_HTM_S1_25ns_;    //!< Calorimeter High Threshold Multiplicity Side 1
 			std::bitset<snemo::electronics::constants::HTM_BITSET_SIZE> _calo_HTM_gveto_25ns_; //!< Calorimeter High Threshold Multiplicity Gamma veto

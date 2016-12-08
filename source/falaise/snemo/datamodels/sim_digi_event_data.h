@@ -3,15 +3,15 @@
  * Creation date: 2016-10-11
  * Last modified: 2016-10-11
  *
- * Description: The SuperNEMO simulated digitized data model
+ * Description: The SuperNEMO simulated digitized event data
+ * which contains a simulated trigger digi data and a simulated
+ * readout digi data.
  */
 
-#ifndef FALAISE_SNEMO_DATAMODELS_SIM_DIGI_DATA_H
-#define FALAISE_SNEMO_DATAMODELS_SIM_DIGI_DATA_H
+#ifndef FALAISE_SNEMO_DATAMODELS_SIM_DIGI_EVENT_DATA_H
+#define FALAISE_SNEMO_DATAMODELS_SIM_DIGI_EVENT_DATA_H
 
 // Standard library:
-#include <string>
-#include <vector>
 #include <iostream>
 
 // Third party:
@@ -20,11 +20,11 @@
 // - Bayeux/datatools:
 #include <bayeux/datatools/i_serializable.h>
 #include <bayeux/datatools/i_tree_dump.h>
-#include <datatools/handle.h>
 #include <bayeux/datatools/properties.h>
 
 // This project:
-#include <falaise/snemo/datamodels/sim_digi_event_data.h>
+#include <falaise/snemo/datamodels/sim_trigger_digi_data.h>
+#include <falaise/snemo/datamodels/sim_readout_digi_data.h>
 
 namespace snemo {
 
@@ -32,24 +32,18 @@ namespace snemo {
 
     /// \brief The data structure that hosts information about the digitized information
     /// (trigger, readout and hits) associated to a simulated event.
-    class sim_digi_data :
+    class sim_digi_event_data :
       public datatools::i_serializable,
       public datatools::i_tree_dumpable
     {
 
     public:
 
-			/// Handle to a simulated digitize event
-			typedef datatools::handle<sim_digi_event_data> sim_digi_event_handle_type;
-			
-			/// Collection of handles on trigger event
-			typedef std::vector<sim_digi_event_handle_type> sim_digi_event_collection_type;
-			
       /// Constructor
-      sim_digi_data();
+      sim_digi_event_data();
 
       /// Destructor
-      virtual ~sim_digi_data();
+      virtual ~sim_digi_event_data();
 
       /// Check validity
       bool is_valid() const;
@@ -58,10 +52,16 @@ namespace snemo {
       void reset();
 
       /// Return the const collection of trigger digi events
-      const sim_digi_event_collection_type & get_digi_events() const;
-
+      const sim_trigger_digi_data & get_trigger_data() const;
+      
       /// Return the mutable collection of trigger digi events
-			sim_digi_event_collection_type & grab_digi_events();
+      sim_trigger_digi_data & grab_trigger_data();
+
+      /// Return the const collection of calorimeter digi hits
+      const sim_readout_digi_data & get_readout_data() const;
+
+      /// Return the mutable collection of calorimeter digi hits
+      sim_readout_digi_data & grab_readout_data();
 
       /// Return the const container of auxiliary properties
       const datatools::properties & get_auxiliaries() const;
@@ -76,11 +76,13 @@ namespace snemo {
                              bool a_inherit               = false) const;
 
     private:
-
-      datatools::properties   _auxiliaries_;       //!< Auxiliary properties
+      
+      datatools::properties   _auxiliaries_; //!< Auxiliary properties
 			
-			sim_digi_event_collection_type _digi_events_;       //!< Simulated digitized events (trigger + readout datas)
-
+      // Datas :
+      sim_trigger_digi_data _trigger_digi_data_; //!< Trigger digitized data structure
+      sim_readout_digi_data _readout_digi_data_; //!< Readout digitized data structure
+      
       DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
@@ -90,10 +92,10 @@ namespace snemo {
 } // end of namespace snemo
 
 #include <boost/serialization/export.hpp>
-BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::sim_digi_data,
-                        "snemo::datamodel::sim_digi_data")
+BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::sim_digi_event_data,
+                        "snemo::datamodel::sim_digi_event_data")
 
-#endif // FALAISE_SNEMO_DATAMODELS_SIM_DIGI_DATA_H
+#endif // FALAISE_SNEMO_DATAMODELS_SIM_DIGI_EVENT_DATA_H
 
 // Local Variables: --
 // mode: c++ --

@@ -13,6 +13,7 @@ namespace snemo {
 
     sim_digi_data::sim_digi_data()
     {
+      _digi_events_.clear();
       return;
     }
 
@@ -29,8 +30,6 @@ namespace snemo {
     void sim_digi_data::reset()
     {
       _digi_events_.clear();
-      _calo_digi_hits_.clear();
-      _tracker_digi_hits_.clear();
       _auxiliaries_.clear();
       return;
     }
@@ -43,26 +42,6 @@ namespace snemo {
     sim_digi_data::sim_digi_event_collection_type & sim_digi_data::grab_digi_events()
     {
       return _digi_events_;
-    }
-
-    const sim_digi_data::calo_digi_hit_collection_type & sim_digi_data::get_calo_digi_hits() const
-    {
-      return _calo_digi_hits_;
-    }
-
-    sim_digi_data::calo_digi_hit_collection_type & sim_digi_data::grab_calo_digi_hits()
-    {
-      return _calo_digi_hits_;
-    }
-
-    const sim_digi_data::tracker_digi_hit_collection_type & sim_digi_data::get_tracker_digi_hits() const
-    {
-      return _tracker_digi_hits_;
-    }
-
-    sim_digi_data::tracker_digi_hit_collection_type & sim_digi_data::grab_tracker_digi_hits()
-    {
-      return _tracker_digi_hits_;
     }
 
     const datatools::properties & sim_digi_data::get_auxiliaries() const
@@ -105,22 +84,6 @@ namespace snemo {
         out_ << indent_ << datatools::i_tree_dumpable::tag
              << "Digitized events : " << std::endl;
         out_ << _digi_events_.size();
-        out_ << std::endl;
-      }
-
-      // Calorimeter digitized hits:
-      {
-        out_ << indent_ << datatools::i_tree_dumpable::tag
-             << "Calorimeter digitized hits : ";
-        out_ << _calo_digi_hits_.size();
-        out_ << std::endl;
-      }
-
-      // Tracker digitized hits:
-      {
-        out_ << indent_ << datatools::i_tree_dumpable::tag
-             << "Tracker digitized hits : ";
-        out_ << _tracker_digi_hits_.size();
         out_ << std::endl;
       }
 
