@@ -62,9 +62,9 @@ void test1()
     for (std::size_t icalohit = 0; icalohit < 3; icalohit++) {
       {
         snemo::datamodel::sim_calo_digi_hit dummy;
-        sdd.grab_calo_digi_hits().push_back(dummy);
+	sdd.grab_digi_events().back().grab().grab_readout_data().grab_calo_digi_hits().push_back(dummy);
       }
-      snemo::datamodel::sim_calo_digi_hit & calo_hit = sdd.grab_calo_digi_hits().back();
+      snemo::datamodel::sim_calo_digi_hit & calo_hit = sdd.grab_digi_events().back().grab().grab_readout_data().grab_calo_digi_hits().back();
       calo_hit.set_hit_id(icalohit);
       calo_hit.grab_geom_id().set_type(1234);
       calo_hit.grab_geom_id().set_address(1, 3, 8 - icalohit, 3 + icalohit);
