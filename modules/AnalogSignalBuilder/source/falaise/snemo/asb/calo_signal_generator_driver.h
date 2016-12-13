@@ -49,7 +49,7 @@ namespace snemo {
 
       /// Return the driver mode
       mode_type get_mode() const;
-
+			
     protected :
 
       /// Initialize the algorithm through configuration properties
@@ -57,23 +57,28 @@ namespace snemo {
 
       /// Reset the algorithm
       virtual void _reset();
+			
+			/// Convert the calo energy hit into amplitude
+			double _convert_energy_to_amplitude(const double energy_);
 
       /// Run the algorithm
-      virtual void _process(const mctools::simulated_data & sim_data_,
-                            mctools::signal::signal_data & sim_signal_data_);
+			void _process(const mctools::simulated_data & sim_data_,
+										mctools::signal::signal_data & sim_signal_data_);
 
     private:
 
+			/// Run the triangle mode process
       void _process_triangle_mode_(const mctools::simulated_data & sim_data_,
                                   mctools::signal::signal_data & sim_signal_data_);
 
     private:
 
-      mode_type _mode_ = MODE_INVALID;
-
-      struct pimpl_type;
-      std::unique_ptr<pimpl_type> _pimpl_;
-
+      mode_type _mode_ = MODE_INVALID; //!< Mode type for calo signals
+			
+      struct pimpl_type; //!< Private implementation structure
+      std::unique_ptr<pimpl_type> _pimpl_; //!< Pointer to a private implementation structure
+			
+			
     };
 
   } // end of namespace asb

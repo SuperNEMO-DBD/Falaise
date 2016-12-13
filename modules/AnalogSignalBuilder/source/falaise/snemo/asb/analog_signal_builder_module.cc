@@ -257,7 +257,7 @@ namespace snemo {
     }
 
     void analog_signal_builder_module::_init_drivers_(const datatools::properties & config_,
-                                                     datatools::service_manager  & service_manager_)
+						      datatools::service_manager  & /*service_manager_ */)
     {
       // List of signal generator drivers:
       std::set<std::string> driver_names;

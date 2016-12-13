@@ -1,6 +1,7 @@
 # - List of test programs:
 set(FalaiseAnalogSignalBuilderPlugin_TESTS
   test_version.cxx
+  test_calo_signal_generator_driver.cxx
  )
 
 # # - Use C++11
