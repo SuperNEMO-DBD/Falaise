@@ -1,0 +1,10 @@
+
+
+pedestal:
+
+adc unit: 610.352 uV (2.5 V / 2^12)
+int32_t  -> x 1/16 adc unit
+
+
+rising time cell: int 0..1023 cell
+rising time offset: int x 1/256 cell
