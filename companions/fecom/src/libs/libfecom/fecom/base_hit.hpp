@@ -41,6 +41,7 @@ namespace fecom {
 
   public:
 
+    int          hit_id;
     hitmode_type hitmode;
     uint16_t     slot_index; ///< Board logical slot (0..19)
 

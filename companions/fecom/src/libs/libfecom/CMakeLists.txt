@@ -17,6 +17,8 @@ set(FeCom_HEADERS
   fecom/calo_pedestal_calib.hpp
   fecom/calo_calibration.hpp
   fecom/run_header.hpp
+  fecom/calo_hit_parser.hpp
+  fecom/calo_hit_reader.hpp
   )
 
 set(FeCom_PRIVATE_HEADERS
@@ -31,6 +33,8 @@ set(FeCom_SOURCES
   fecom/calo_pedestal_calib.cpp
   fecom/calo_calibration.cpp
   fecom/run_header.cpp
+  fecom/calo_hit_parser.cpp
+  fecom/calo_hit_reader.cpp
   )
 
 set(FeCom_TESTS
@@ -39,13 +43,14 @@ set(FeCom_TESTS
   testing/test-libfecom-base_hit.cxx
   testing/test-libfecom-calo_hit.cxx
   testing/test-libfecom-calo_pedestal_calib.cxx
+  testing/test-libfecom-calo_calibration.cxx
+  testing/test-libfecom-run_header.cxx
+  testing/test-libfecom-calo_hit_reader.cxx
   )
 
 find_package(Bayeux 3.0.0
   REQUIRED
   )
-# message( STATUS "FeCom: Bayeux found at '${Bayeux}'")
-# message( STATUS "FeCom: Bayeux version = '${Bayeux}'")
 
 find_package(Boost 1.60.0
   REQUIRED
@@ -108,7 +113,7 @@ endif()
 if(FECOM_ENABLE_TESTING)
   foreach(_testsource ${FeCom_TESTS})
     set(_fecom_TEST_ENVIRONMENT
-      "FECOM_RESOURCE_FILES_DIR=${PROJECT_SOURCE_DIR}/resources"
+      "FECOM_RESOURCE_DIR=${PROJECT_SOURCE_DIR}/resources"
       )
     get_filename_component(_testname "${_testsource}" NAME_WE)
     set(_testname "fecom-${_testname}")

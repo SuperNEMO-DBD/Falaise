@@ -56,4 +56,11 @@ namespace fecom {
     return compare(*this, id_) == 0;
   }
 
+  // friend
+  std::ostream & operator<<(std::ostream & out_, const calo_channel_id & id_)
+  {
+    out_ << '[' << id_.board_id << "." <<  id_.slot_id << ']';
+    return out_;
+  }
+
 } // namespace fecom

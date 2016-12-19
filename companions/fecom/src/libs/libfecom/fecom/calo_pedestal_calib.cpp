@@ -36,19 +36,19 @@ namespace fecom {
     channel = calo_constants::INVALID_BOARD_CHANNEL;
     offset_size = 0;
     for (size_t i = 0; i < calo_constants::MAX_NUMBER_OF_SAMPLES; i++) {
-      offset[i] = 0xFFFF;
+      offset[i] = 0xFFFFFFFF;
     }
     return;
   }
 
-  uint16_t calo_pedestal_calib::get_offset(const uint16_t cell_) const
+  int32_t calo_pedestal_calib::get_offset(const uint16_t cell_) const
   {
     DT_THROW_IF(cell_ >= offset_size, std::range_error,
                 "Invalid cell index [" << cell_ << " >= " << offset_size << "]!");
     return offset[cell_];
   }
 
-  void calo_pedestal_calib::set_offset(const uint16_t cell_, const uint16_t adc_)
+  void calo_pedestal_calib::set_offset(const uint16_t cell_, const int32_t adc_)
   {
     DT_THROW_IF(cell_ >= offset_size, std::range_error,
                 "Invalid cell index [" << cell_ << " >= " << offset_size << "]!");

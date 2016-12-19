@@ -9,6 +9,10 @@
 #include <string>
 #include <map>
 
+// Third party:
+// #include <bayeux/datatools/i_tree_dump.h>
+#include <bayeux/datatools/logger.h>
+
 // This project:
 #include <fecom/calo_constants.hpp>
 #include <fecom/calo_utils.hpp>
@@ -45,6 +49,11 @@ namespace fecom {
       calo_pedestal_header header;
     };
 
+    void tree_dump(std::ostream & out_,
+                   const std::string & title_ = "",
+                   const std::string & indent_ = "",
+                   bool inherit_ = false) const;
+
   private:
 
     //! Main parsing method
@@ -63,8 +72,8 @@ namespace fecom {
 
   public:
 
+    datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
     std::map<calo_channel_id, calo_pedestal_calib> calo_pedestals;
-
 
   };
 

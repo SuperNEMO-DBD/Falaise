@@ -14,10 +14,13 @@
 // Third party:
 // - Boost:
 #include <boost/utility.hpp>
+// - Bayeux:
+#include <bayeux/datatools/logger.h>
 
 // This project:
-#include <fecom/raw_event.hpp>
 #include <fecom/run_header.hpp>
+#include <fecom/calo_hit.hpp>
+#include <fecom/calo_hit_parser.hpp>
 
 namespace fecom {
 
@@ -27,8 +30,7 @@ namespace fecom {
   {
   public:
 
-    static const std::size_t HEADER_NBLINES = 4;
-
+    static const std::size_t HEADER_NBLINES = 7;
 
     //! Default constructor
     calo_hit_reader();
@@ -39,11 +41,11 @@ namespace fecom {
     //! Return the input file name
     const std::string & get_input_filename() const;
 
-    //! Chek if a next event is available
-    bool has_next_event() const;
+    //! Chek if a next hit is available
+    bool has_next_hit() const;
 
-    //! Load the next event
-    void load_next_event(calo_hit & hit_);
+    //! Load the next hit
+    void load_next_hit(calo_hit & hit_);
 
     //! Load the run header
     void load_run_header(run_header & header_);
@@ -58,22 +60,22 @@ namespace fecom {
     void reset();
 
     //! Return the logging level
-    int get_logging() const;
+    datatools::logger::priority get_logging() const;
 
     //! Set the logging level
-    void set_logging(int);
+    void set_logging(const datatools::logger::priority);
 
-  protected:
+  private:
 
-    void _init_input_file();
+    void _init_input_file_();
 
-    void _reset_input_file();
+    void _reset_input_file_();
 
-    void _init_header();
+    void _init_header_();
 
-    void _reset_header();
+    void _reset_header_();
 
-    void _decode_header(const std::string & hline_, const int index_);
+    void _decode_header_(const std::string & hline_, const int index_);
 
   private:
 
@@ -82,11 +84,12 @@ namespace fecom {
 
     // Management:
     bool _initialized_ = false;
-    int  _logging_ = 0;
+    datatools::logger::priority _logging_ = datatools::logger::PRIO_FATAL;
 
     // Working:
     std::unique_ptr<std::ifstream> _fin_;    //!< Handle to the input file stream
     std::unique_ptr<run_header>    _header_; //!< Handle to the input file header
+    calo_hit_parser                _hit_parser_; //!< Hit parser
 
   };
 

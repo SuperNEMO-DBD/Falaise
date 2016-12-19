@@ -33,6 +33,12 @@ namespace fecom {
 
   public:
 
+    std::string software_version;
+    double      unix_time;
+    std::string date;
+    std::string time;
+    std::string data_type;
+
   };
 
 } // namespace fecom

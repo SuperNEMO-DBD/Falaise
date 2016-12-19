@@ -3,6 +3,10 @@
 // Ourselves:
 #include <fecom/run_header.hpp>
 
+// Third party:
+// - Bayeux:
+#include <bayeux/datatools/utils.h>
+
 // This project:
 #include <fecom/utils.hpp>
 
@@ -21,6 +25,11 @@ namespace fecom {
 
   bool run_header::is_valid() const
   {
+    if (software_version.empty()) return false;
+    if (!datatools::is_valid(unix_time)) return false;
+    if (date.empty()) return false;
+    if (time.empty()) return false;
+    if (data_type.empty()) return false;
     return true;
   }
 
@@ -44,8 +53,23 @@ namespace fecom {
       out_ << indent_ << title_ << std::endl;
     }
 
+    out_ << indent_ << io::tag()
+         << "Software version : '" << software_version << "'" << std::endl;
+
+    out_ << indent_ << io::tag()
+         << "Unix time : [" << unix_time << "]" << std::endl;
+
+    out_ << indent_ << io::tag()
+         << "Date : [" << date << "]" << std::endl;
+
+    out_ << indent_ << io::tag()
+         << "Time : [" << time << "]" << std::endl;
+
+    out_ << indent_ << io::tag()
+         << "Data type : '" << data_type << "'" << std::endl;
+
     out_ << indent_ << io::inherit_last_tag(inherit_)
-         << "Validity    : " << std::boolalpha << is_valid() << std::endl;
+         << "Validity  : " << std::boolalpha << is_valid() << std::endl;
 
     return;
   }

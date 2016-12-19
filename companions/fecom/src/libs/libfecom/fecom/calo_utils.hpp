@@ -5,6 +5,9 @@
 #ifndef FECOM_CALO_UTILS_HPP
 #define FECOM_CALO_UTILS_HPP
 
+// Standard library:
+#include <iostream>
+
 namespace fecom {
 
   /// \brief Calorimeter calibration manager
@@ -22,6 +25,8 @@ namespace fecom {
 
     int board_id;
     int slot_id;
+
+    friend std::ostream & operator<<(std::ostream &, const calo_channel_id &);
 
   };
 

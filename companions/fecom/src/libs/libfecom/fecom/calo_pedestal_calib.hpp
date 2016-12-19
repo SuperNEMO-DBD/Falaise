@@ -36,10 +36,10 @@ namespace fecom {
                            bool inherit_ = false) const;
 
     /// Return the offset associated to a cell
-    uint16_t get_offset(const uint16_t cell_) const;
+    int32_t get_offset(const uint16_t cell_) const;
 
     /// Set the offset associated to a cell in unit of 1/16 ADC unit
-    void set_offset(const uint16_t cell_, const uint16_t);
+    void set_offset(const uint16_t cell_, const int32_t);
 
     /// Return the offset associated to a cell
     double foffset(const uint16_t cell_) const;
@@ -56,7 +56,7 @@ namespace fecom {
     uint16_t slot_index;  ///< Board index
     uint8_t  channel;     ///< Channel (0..15)
     uint16_t offset_size; ///< Number of raw samples (64..1024 % 16)
-    int16_t  offset[calo_constants::MAX_NUMBER_OF_SAMPLES]; ///< Offset per cell
+    int32_t  offset[calo_constants::MAX_NUMBER_OF_SAMPLES]; ///< Offset per cell
 
   };
 
