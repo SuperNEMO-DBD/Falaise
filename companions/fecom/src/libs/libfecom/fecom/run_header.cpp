@@ -3,9 +3,14 @@
 // Ourselves:
 #include <fecom/run_header.hpp>
 
+// Standard library:
+#include <iostream>
+#include <iomanip>
+
 // Third party:
 // - Bayeux:
 #include <bayeux/datatools/utils.h>
+#include <bayeux/datatools/clhep_units.h>
 
 // This project:
 #include <fecom/utils.hpp>
@@ -57,7 +62,7 @@ namespace fecom {
          << "Software version : '" << software_version << "'" << std::endl;
 
     out_ << indent_ << io::tag()
-         << "Unix time : [" << unix_time << "]" << std::endl;
+         << "Unix time : [" << std::setprecision(15) << unix_time / CLHEP::second << " s]" << std::endl;
 
     out_ << indent_ << io::tag()
          << "Date : [" << date << "]" << std::endl;

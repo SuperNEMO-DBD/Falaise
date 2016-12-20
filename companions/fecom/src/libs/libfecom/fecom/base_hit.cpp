@@ -53,6 +53,9 @@ namespace fecom {
     }
 
     out_ << indent_ << io::tag()
+         << "Hit ID     : [" << hit_id << "]" << std::endl;
+
+    out_ << indent_ << io::tag()
          << "Hit mode   : '" << hitmode_to_label(hitmode) << "'" << std::endl;
 
     out_ << indent_ << io::inherit_last_tag(inherit_)

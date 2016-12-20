@@ -59,7 +59,10 @@ namespace fecom {
   void calo_hit_reader::load_next_hit(calo_hit & hit_)
   {
     DT_THROW_IF(!_initialized_, std::logic_error, "Reader is not initialized!");
-    _hit_parser_.parse(*_fin_, hit_);
+    bool success = _hit_parser_.parse(*_fin_, hit_);
+    if (!success) {
+      DT_THROW(std::logic_error, "Parsing failed!");
+    }
     *_fin_ >> std::ws;
     return;
   }
