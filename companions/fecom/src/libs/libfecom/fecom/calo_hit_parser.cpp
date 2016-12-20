@@ -95,10 +95,10 @@ namespace fecom {
       DT_LOG_DEBUG(logging, "header_line = '" << header_line << "'");
       std::string::const_iterator str_iter = header_line.begin();
       std::string::const_iterator end_iter = header_line.end();
-      uint32_t slotid = 0xFFFFFFFF;
+      uint32_t slotid    = 0xFFFFFFFF;
       uint32_t channelid = 16;
-      uint32_t eventid = 0xFFFFFFFF;
-      uint32_t rawtdc = 0xFFFFFFFF; // 64bits ? to be checked
+      uint32_t eventid   = 0xFFFFFFFF;
+      uint64_t rawtdc    = 0xFFFFFFFFFFFFFFFF; // 64bits ? to be checked
       uint32_t trigcount;
       uint32_t timecount;
       int32_t  rawbaseline;
@@ -110,8 +110,6 @@ namespace fecom {
       uint32_t fallingcell = 1024;
       uint32_t fallingoffset;
       uint32_t fcr = 1024;
-      boost::fusion::vector<char, char, char, char, std::vector<char> > slotwork;
-      boost::fusion::vector<char, char, std::vector<char> > channelwork;
       res = qi::phrase_parse(str_iter,
                              end_iter,
                              //  Begin grammar
@@ -119,7 +117,7 @@ namespace fecom {
                               qi::lit("Slot")          >> qi::uint_[boost::phoenix::ref(slotid) = boost::spirit::qi::_1]
                               >> qi::lit("Ch")            >> qi::uint_[boost::phoenix::ref(channelid) = boost::spirit::qi::_1]
                               >> qi::lit("EvtID")         >> qi::uint_[boost::phoenix::ref(eventid) = boost::spirit::qi::_1]
-                              >> qi::lit("RawTDC")        >> qi::uint_[boost::phoenix::ref(rawtdc) = boost::spirit::qi::_1]
+                              >> qi::lit("RawTDC")        >> qi::ulong_[boost::phoenix::ref(rawtdc) = boost::spirit::qi::_1]
                               >> qi::lit("TrigCount")     >> qi::uint_[boost::phoenix::ref(trigcount) = boost::spirit::qi::_1]
                               >> qi::lit("Timecount")     >> qi::uint_[boost::phoenix::ref(timecount) = boost::spirit::qi::_1]
                               >> qi::lit("RawBaseline")   >> qi::int_[boost::phoenix::ref(rawbaseline) = boost::spirit::qi::_1]

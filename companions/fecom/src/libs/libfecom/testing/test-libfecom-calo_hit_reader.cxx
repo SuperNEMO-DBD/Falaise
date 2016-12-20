@@ -20,10 +20,12 @@ int main(int argc_, char ** argv_)
     header.tree_dump(std::clog, "Run header:");
 
     fecom::calo_hit chit;
+    std::size_t hit_counter = 0;
     while(creader.has_next_hit()) {
       chit.reset();
       creader.load_next_hit(chit);
       chit.tree_dump(std::clog, "Calo hit:");
+      if (hit_counter++ > 3) break;
     }
 
     creader.reset();
