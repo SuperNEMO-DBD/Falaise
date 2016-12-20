@@ -89,42 +89,34 @@ namespace fecom {
 
     if (index_ == 1) {
       std::string header_line = header_line_;
+      // We use a trick because of nasty syntax from the DAQ ascii output:
       boost::replace_all(header_line, "Slot", "Slot ");
       boost::replace_all(header_line, " Ch", " Ch ");
-      // XXX
-      // header_line = "Slot 0 Ch 0 EvtID 250 RawTDC 2378697594 TrigCount 3 Timecount 19886 RawBaseline 2 RawPeak -1529 RawCharge -4051 Overflow 0 "; //RisingCell 923 RisingOffset 219 "; //FallingCell 908 FallingOffset 242 FCR 656
       DT_LOG_DEBUG(logging, "header_line = '" << header_line << "'");
       std::string::const_iterator str_iter = header_line.begin();
       std::string::const_iterator end_iter = header_line.end();
-      // std::string slotidrepr;
-      // std::string channelidrepr;
       uint32_t slotid = 0xFFFFFFFF;
       uint32_t channelid = 16;
       uint32_t eventid = 0xFFFFFFFF;
-      uint32_t rawtdc = 0; // 64bits
+      uint32_t rawtdc = 0xFFFFFFFF; // 64bits ? to be checked
       uint32_t trigcount;
       uint32_t timecount;
       int32_t  rawbaseline;
       int32_t  rawpeak;
       int32_t  rawcharge;
       uint32_t overflow;
-      uint32_t risingcell;
+      uint32_t risingcell = 1024;
       uint32_t risingoffset;
-      uint32_t fallingcell;
+      uint32_t fallingcell = 1024;
       uint32_t fallingoffset;
-      uint32_t fcr;
+      uint32_t fcr = 1024;
       boost::fusion::vector<char, char, char, char, std::vector<char> > slotwork;
       boost::fusion::vector<char, char, std::vector<char> > channelwork;
       res = qi::phrase_parse(str_iter,
                              end_iter,
                              //  Begin grammar
                              (
-                              // qi::lexeme[qi::lit("Slot") >> qi::uint_[boost::phoenix::ref(eventid) = boost::spirit::qi::_1]]
-                              // >> qi::lit("Ch") >> qi::uint_[boost::phoenix::ref(channelid) = boost::spirit::qi::_1]
-                              // >> qi::lexeme[qi::lit("Ch") >> +qi::digit][boost::phoenix::ref(channelidrepr) = boost::spirit::qi::_1]
-                              // (qi::lexeme[qi::char_('S') >> qi::char_('l') >> qi::char_('o') >> qi::char_('t') >> +qi::digit])[boost::phoenix::ref(slotwork) = boost::spirit::qi::_1]
-                              // >> (qi::lexeme[qi::char_('C') >> qi::char_('h') >> +qi::digit])[boost::phoenix::ref(channelwork) = boost::spirit::qi::_1]
-                                 qi::lit("Slot")          >> qi::uint_[boost::phoenix::ref(slotid) = boost::spirit::qi::_1]
+                              qi::lit("Slot")          >> qi::uint_[boost::phoenix::ref(slotid) = boost::spirit::qi::_1]
                               >> qi::lit("Ch")            >> qi::uint_[boost::phoenix::ref(channelid) = boost::spirit::qi::_1]
                               >> qi::lit("EvtID")         >> qi::uint_[boost::phoenix::ref(eventid) = boost::spirit::qi::_1]
                               >> qi::lit("RawTDC")        >> qi::uint_[boost::phoenix::ref(rawtdc) = boost::spirit::qi::_1]
@@ -145,22 +137,6 @@ namespace fecom {
       DT_THROW_IF(!res || str_iter != end_iter,
                   std::logic_error,
                   "Cannot parse file header line #" << index_ << "; failed at '" << *str_iter << "'!");
-      // DT_LOG_DEBUG(logging, "slotidrepr = " << slotidrepr);
-      // DT_LOG_DEBUG(logging, "channelidrepr = " << channelidrepr);
-      // {
-      //   std::vector<char> sw = boost::fusion::at_c<4>(slotwork); //slotidrepr.substr(4);
-      //   std::vector<char> cw = boost::fusion::at_c<2>(channelwork); //channelidrepr.substr(4);
-      //   std::string s;
-      //   std::string c;
-      //   for (auto x : sw) s.push_back(x);
-      //   for (auto x : cw) c.push_back(x);
-      //   // std::copy(sw.begin(), sw.end(), s);
-      //   // std::copy(cw.begin(), cw.end(), c);
-      //   DT_LOG_DEBUG(logging, "s = " << s);
-      //   DT_LOG_DEBUG(logging, "c = " << c);
-      //   slotid = boost::lexical_cast<uint32_t>(s);
-      //   channelid = boost::lexical_cast<uint32_t>(c);
-      // }
       DT_LOG_DEBUG(logging, "slotid        = " << slotid);
       DT_LOG_DEBUG(logging, "channelid     = " << channelid);
       DT_LOG_DEBUG(logging, "eventid       = " << eventid);
@@ -182,12 +158,13 @@ namespace fecom {
       hit_.raw_tdc = rawtdc;
       hit_.low_threshold_trig_count = trigcount;
       hit_.low_threshold_time_count = timecount;
-      // hit_.waveform_data_size = 1024;
       hit_.fcr = fcr;
       hit_.raw_baseline = rawbaseline;
       hit_.raw_peak = rawpeak;
       hit_.raw_charge = rawcharge;
       hit_.raw_charge_overflow = (overflow == 0 ? false: true);
+      // Waveform size is not saved in the header !!!
+      // hit_.waveform_data_size = 1024;
     }
 
     DT_LOG_TRACE_EXITING(logging);
