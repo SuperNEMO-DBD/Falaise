@@ -44,6 +44,21 @@ namespace snemo {
       return _magfield_;
     }
 
+    void cat_driver::set_magfield_direction(double dir_)
+    {
+      if (dir_ >= 0.0) {
+        _magfield_dir_ = +1.0;
+      } else{
+        _magfield_dir_ = -1.0;
+      }
+      return;
+    }
+
+    double cat_driver::get_magfield_direction() const
+    {
+      return _magfield_dir_;
+    }
+
     cat_driver::cat_driver() :
       ::snemo::processing::base_tracker_clusterizer(cat_driver::CAT_ID)
     {
@@ -81,6 +96,22 @@ namespace snemo {
       }
       if (!datatools::is_valid(_magfield_)) {
         set_magfield(0.0025 * CLHEP::tesla);
+      }
+
+      if (datatools::is_valid(_magfield_)) {
+        if (setup_.has_key("CAT.magnetic_field_direction")) {
+          std::string zdir = setup_.fetch_string("CAT.magnetic_field_direction");
+          double dir = +1.0;
+          if (zdir == "+z" || zdir == "+Z") {
+            dir = +1.0;
+          } else if (zdir == "-z" || zdir == "-Z") {
+            dir = -1.0;
+          } else {
+            DT_THROW(std::logic_error,
+                     "Invalid magnetic field direction label '" << zdir << "' !");
+          }
+          set_magfield_direction(dir);
+        }
       }
 
       // Verbosity level
@@ -191,12 +222,22 @@ namespace snemo {
       _CAT_setup_.num_blocks = 1;
       _CAT_setup_.planes_per_block.clear();
       _CAT_setup_.planes_per_block.push_back(_CAT_setup_.num_blocks);
-      _CAT_setup_.planes_per_block.at(0) = get_gg_locator().get_number_of_layers(0);
-      _CAT_setup_.num_cells_per_plane    = get_gg_locator().get_number_of_rows(0);
+      uint32_t first_active_side = 2;
+      if (get_gg_locator().has_submodules(0)) {
+        first_active_side = 0;
+      } else if (get_gg_locator().has_submodules(1)) {
+        first_active_side = 1;
+      }
+      DT_THROW_IF(first_active_side > 1,
+                  std::logic_error,
+                  "No tracker submodules is defined.");
+      _CAT_setup_.planes_per_block.at(0) = get_gg_locator().get_number_of_layers(first_active_side);
+      _CAT_setup_.num_cells_per_plane    = get_gg_locator().get_number_of_rows(first_active_side);
       _CAT_setup_.cell_size              = get_gg_locator().get_cell_diameter();
 
       // Hard-coded values of bfield and chamber size
       _CAT_setup_.bfield = _magfield_ / CLHEP::tesla;
+      _CAT_setup_.bfield *= _magfield_dir_;
       _CAT_setup_.xsize  = 2500. * CLHEP::mm; // this is y in SnWare coordinates
       _CAT_setup_.ysize  = 1350. * CLHEP::mm; // this is z in SnWare coordinates
       _CAT_setup_.zsize  =  450. * CLHEP::mm; // this is x in SnWare coordinates
@@ -223,6 +264,7 @@ namespace snemo {
       _CAT_setup_.reset();
       _sigma_z_factor_ = 1.0;
       datatools::invalidate(_magfield_);
+      _magfield_dir_ = +1.0;
       _process_calo_hits_ = true;
       _store_result_as_properties_ = true;
       _calo_locator_  = 0;
