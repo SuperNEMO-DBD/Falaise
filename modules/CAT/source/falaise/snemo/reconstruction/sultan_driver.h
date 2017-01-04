@@ -66,6 +66,12 @@ namespace snemo {
       /// Return the mag field
       double get_magfield() const;
 
+      /// Set the mag field direction
+      void set_magfield_direction(double);
+
+      /// Return the mag field
+      double get_magfield_direction() const;
+
       /// Default constructor
       sultan_driver();
 
@@ -100,6 +106,7 @@ namespace snemo {
       SULTAN::sultan       _SULTAN_sultan_;      /// SULTAN algorithm
       double               _sigma_z_factor_;     /// Factor for longitudinal error
       double               _magfield_;           /// Enforced magnetic field
+      double               _magfield_dir_;      ///< Enforced magnetic field (direction along the Z axis +1/-1)
       bool                 _process_calo_hits_;  /// Flag to process associated calorimeter hits
 
       /// Calorimeter locators

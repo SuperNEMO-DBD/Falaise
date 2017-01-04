@@ -44,6 +44,21 @@ namespace snemo {
       return _magfield_;
     }
 
+    void sultan_driver::set_magfield_direction(double dir_)
+    {
+      if (dir_ >= 0.0) {
+        _magfield_dir_ = +1.0;
+      } else{
+        _magfield_dir_ = -1.0;
+      }
+      return;
+    }
+
+    double sultan_driver::get_magfield_direction() const
+    {
+      return _magfield_dir_;
+    }
+
     sultan_driver::sultan_driver() :
       ::snemo::processing::base_tracker_clusterizer(sultan_driver::SULTAN_ID)
     {
@@ -79,6 +94,25 @@ namespace snemo {
             magfield *= default_magfield_unit;
           }
           set_magfield(magfield);
+        }
+      }
+      if (!datatools::is_valid(_magfield_)) {
+        set_magfield(0.0025 * CLHEP::tesla);
+      }
+
+      if (datatools::is_valid(_magfield_)) {
+        if (setup_.has_key("SULTAN.magnetic_field_direction")) {
+          std::string zdir = setup_.fetch_string("SULTAN.magnetic_field_direction");
+          double dir = +1.0;
+          if (zdir == "+z" || zdir == "+Z") {
+            dir = +1.0;
+          } else if (zdir == "-z" || zdir == "-Z") {
+            dir = -1.0;
+          } else {
+            DT_THROW(std::logic_error,
+                     "Invalid magnetic field direction label '" << zdir << "' !");
+          }
+          set_magfield_direction(dir);
         }
       }
 
@@ -259,6 +293,7 @@ namespace snemo {
 
       // Hard-coded values of bfield and chamber size
       _SULTAN_setup_.bfield = _magfield_ / CLHEP::tesla;
+      _SULTAN_setup_.bfield *= _magfield_dir_;
       _SULTAN_setup_.xsize  = 0.5 * nrows * cell_diameter;
       _SULTAN_setup_.ysize  = 0.5 * nlayers * cell_diameter;
       _SULTAN_setup_.zsize  = 0.5 * get_gg_locator().get_cell_length();
@@ -285,6 +320,7 @@ namespace snemo {
       _SULTAN_setup_.reset();
       _sigma_z_factor_ = 1.0;
       datatools::invalidate(_magfield_);
+      _magfield_dir_ = +1.0;
       _process_calo_hits_ = true;
       _calo_locator_  = 0;
       _xcalo_locator_ = 0;
