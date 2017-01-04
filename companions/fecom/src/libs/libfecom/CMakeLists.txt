@@ -45,7 +45,7 @@ set(FeCom_TESTS
   testing/test-libfecom-calo_pedestal_calib.cxx
   testing/test-libfecom-calo_calibration.cxx
   testing/test-libfecom-run_header.cxx
-  testing/test-libfecom-calo_hit_reader.cxx
+  # testing/test-libfecom-calo_hit_reader.cxx
   )
 
 find_package(Bayeux 3.0.0
