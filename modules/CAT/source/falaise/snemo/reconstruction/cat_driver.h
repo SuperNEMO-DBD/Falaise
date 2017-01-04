@@ -66,6 +66,12 @@ namespace snemo {
       /// Return the mag field
       double get_magfield() const;
 
+      /// Set the mag field direction
+      void set_magfield_direction(double);
+
+      /// Return the mag field
+      double get_magfield_direction() const;
+
       /// Default constructor
       cat_driver();
 
@@ -93,15 +99,16 @@ namespace snemo {
 
     private:
 
-      CAT::setup_data   _CAT_setup_;         /// Configuration data
-      CAT::input_data   _CAT_input_;         /// Input data
-      CAT::output_data  _CAT_output_;        /// Output data
-      CAT::clusterizer  _CAT_clusterizer_;   /// CAT clusterizer
-      CAT::sequentiator _CAT_sequentiator_;  /// CAT sequentiator
-      double            _sigma_z_factor_;    /// Factor for longitudinal error
-      double            _magfield_;          /// Enforced magnetic field
-      bool              _process_calo_hits_; /// Flag to process associated calorimeter hits
-      bool     _store_result_as_properties_; /// Flag to store CAT result as data properties
+      CAT::setup_data   _CAT_setup_;         ///< Configuration data
+      CAT::input_data   _CAT_input_;         ///< Input data
+      CAT::output_data  _CAT_output_;        ///< Output data
+      CAT::clusterizer  _CAT_clusterizer_;   ///< CAT clusterizer
+      CAT::sequentiator _CAT_sequentiator_;  ///< CAT sequentiator
+      double            _sigma_z_factor_;    ///< Factor for longitudinal error
+      double            _magfield_;          ///< Enforced magnetic field (Bz magnitude)
+      double            _magfield_dir_;      ///< Enforced magnetic field (direction along the Z axis +1/-1)
+      bool              _process_calo_hits_; ///< Flag to process associated calorimeter hits
+      bool     _store_result_as_properties_; ///< Flag to store CAT result as data properties
 
       /// Calorimeter locators
       const snemo::geometry::calo_locator  * _calo_locator_;
