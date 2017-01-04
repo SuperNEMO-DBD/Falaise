@@ -21,10 +21,10 @@ io_type      : string  = "in"
 format : string  = "analog"
 
 
-################################################################
-[name="ethernet_plug@port" type="vire::device::base_port_model"]
+##################################################################
+[name="ethernet_socket@port" type="vire::device::base_port_model"]
 
-#@config Parameters describing an Ethernet RJ45 lpug
+#@config Parameters describing an Ethernet RJ45 plug
 
 #@parameter Logging priority threshold
 logging.priority : string = "fatal"
@@ -34,6 +34,21 @@ io_type      : string  = "inout"
 
 #@description Format of the port
 format : string  = "Ethernet-RJ45"
+
+
+#####################################################################
+[name="ethernet_interface@port" type="vire::device::base_port_model"]
+
+#@config Parameters describing an Ethernet RJ45 plug
+
+#@parameter Logging priority threshold
+logging.priority : string = "fatal"
+
+#@description Type of I/O
+io_type      : string  = "inout"
+
+# #@description Format of the port
+# format : string  = ""
 
 
 # end

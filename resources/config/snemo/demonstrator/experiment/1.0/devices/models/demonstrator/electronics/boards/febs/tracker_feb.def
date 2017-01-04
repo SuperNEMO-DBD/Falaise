@@ -118,7 +118,7 @@ ports.model.Input    : string = "tracker_feb_input_channel"
 ports.instance.Input : string = "vire::device::regular_1d_instance=[nslots=108;first_slot=(1:0);step=(1)]"
 
 # Port model and instantiation policy associated to the ethernet plug:
-ports.model.Ethernet    : string = "ethernet_plug"
+ports.model.Ethernet    : string = "ethernet_socket"
 ports.instance.Ethernet : string = "vire::device::single_instance=[slot=(0)]"
 
 ########################
