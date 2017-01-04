@@ -219,10 +219,11 @@ Configure Falaise
     -DFALAISE_ENABLE_TESTING=ON \
     -DFALAISE_WITH_DOCS=ON \
     -DFALAISE_WITH_DEVELOPER_TOOLS=ON \
-    -DBoost_DIR:PATH="${CADFAELBREW_PREFIX_DIR}/lib/cmake" \
     -GNinja \
     ${FL_DEV_SOURCE_DIR}
 ..
+
+.. -DBoost_DIR:PATH="${CADFAELBREW_PREFIX_DIR}/lib/cmake" \
 
 Build
 -----------------
@@ -301,7 +302,7 @@ Executable are in:
 ..
 
 These  directories  and  files  will be  copied  in  the  installation
-directoryy (but ``fltests``).
+directory (but ``fltests``).
 
 ..
     .. raw:: latex
