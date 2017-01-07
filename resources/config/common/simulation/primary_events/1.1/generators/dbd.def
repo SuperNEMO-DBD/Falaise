@@ -6,7 +6,7 @@
 #@meta_label "type"
 
 
-##########################################################################
+#########################################
 [name="Ca48.0nubb" type="genbb::wdecay0"]
 #@config Neutrinoless double beta decay of Ca-48, 0nubb(mn);group=DBD
 decay_type      : string  = "DBD"
@@ -15,7 +15,7 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 1 # 0nubb(mn)
 
 
-##########################################################################
+######################################################
 [name="Ca48.0nubb_rhc_lambda_0" type="genbb::wdecay0"]
 #@config Neutrinoless double beta decay of Ca-48, 0nubb(rhc-lambda) 0+ -> 0+ {2n};group=DBD
 decay_type      : string  = "DBD"
@@ -24,7 +24,7 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 2 # 0nubb(rhc-lambda) 0+ -> 0+ {2n}"
 
 
-##########################################################################
+########################################################
 [name="Ca48.0nubb_rhc_lambda_0_2" type="genbb::wdecay0"]
 #@config Neutrinoless double beta decay of Ca-48, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*};group=DBD
 decay_type      : string  = "DBD"
@@ -33,7 +33,7 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 3 # 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*}"
 
 
-##########################################################################
+#########################################
 [name="Ca48.2nubb" type="genbb::wdecay0"]
 #@config Two neutrino double beta decay of Ca-48, 2nubb;group=DBD
 decay_type      : string  = "DBD"
@@ -42,7 +42,7 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 4 # 2nubb
 
 
-##########################################################################
+###########################################
 [name="Ca48.0nubbM1" type="genbb::wdecay0"]
 #@config Neutrinoless double beta decay of Ca-48, 0nubbM1;group=DBD
 decay_type      : string  = "DBD"
@@ -51,7 +51,7 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 5 # 0nubbM1
 
 
-##########################################################################
+###########################################
 [name="Ca48.0nubbM2" type="genbb::wdecay0"]
 #@config Neutrinoless double beta decay of Ca-48, 0nubbM2;group=DBD
 decay_type      : string  = "DBD"
@@ -60,7 +60,7 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 6 # 0nubbM2
 
 
-##########################################################################
+#########################################
 [name="Se82.0nubb" type="genbb::wdecay0"]
 #@config Neutrinoless double beta decay of Se-82, 0nubb(mn)[group=DBD
 decay_type      : string  = "DBD"
@@ -69,7 +69,7 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 1 # 0nubb(mn)
 
 
-##########################################################################
+######################################################
 [name="Se82.0nubb_rhc_lambda_0" type="genbb::wdecay0"]
 #@config Neutrinoless double beta decay of Se-82, 0nubb(rhc-lambda) 0+ -> 0+ {2n};group=DBD
 decay_type      : string  = "DBD"
@@ -78,7 +78,7 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 2 # 0nubb(rhc-lambda) 0+ -> 0+ {2n}"
 
 
-##########################################################################
+########################################################
 [name="Se82.0nubb_rhc_lambda_0_2" type="genbb::wdecay0"]
 #@config Neutrinoless double beta decay of Se-82, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*};group=DBD
 decay_type      : string  = "DBD"
@@ -87,7 +87,7 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 3 # 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*}"
 
 
-##########################################################################
+#########################################
 [name="Se82.2nubb" type="genbb::wdecay0"]
 #@config Two neutrino double beta decay of Se-82, 2nubb;group=DBD
 decay_type      : string  = "DBD"
@@ -96,7 +96,7 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 4 # 2nubb
 
 
-##########################################################################
+###########################################
 [name="Se82.0nubbM1" type="genbb::wdecay0"]
 #@config Neutrinoless double beta decay of Se-82, 0nubbM1;group=DBD
 decay_type      : string  = "DBD"
@@ -105,7 +105,7 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 5 # 0nubbM1
 
 
-##########################################################################
+###########################################
 [name="Se82.0nubbM2" type="genbb::wdecay0"]
 #@config Neutrinoless double beta decay of Se-82, 0nubbM2;group=DBD
 decay_type      : string  = "DBD"
@@ -114,7 +114,7 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 6 # 0nubbM2
 
 
-##########################################################################
+##########################################
 [name="Mo100.0nubb" type="genbb::wdecay0"]
 #@config Neutrinoless double beta decay of Mo-100, 0nubb(mn);group=DBD
 decay_type      : string  = "DBD"
@@ -123,7 +123,7 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 1 # 0nubb(mn)
 
 
-##########################################################################
+#######################################################
 [name="Mo100.0nubb_rhc_lambda_0" type="genbb::wdecay0"]
 #@config Neutrinoless double beta decay of Mo-100, 0nubb(rhc-lambda) 0+ -> 0+ {2n};group=DBD
 decay_type      : string  = "DBD"
@@ -132,7 +132,7 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 2 # 0nubb(rhc-lambda) 0+ -> 0+ {2n}"
 
 
-##########################################################################
+#########################################################
 [name="Mo100.0nubb_rhc_lambda_0_2" type="genbb::wdecay0"]
 #@config Neutrinoless double beta decay of Mo-100, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*};group=DBD
 decay_type      : string  = "DBD"
@@ -141,7 +141,7 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 3 # 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*}"
 
 
-##########################################################################
+##########################################
 [name="Mo100.2nubb" type="genbb::wdecay0"]
 #@config Two neutrino double beta decay of Mo-100, 2nubb;group=DBD
 decay_type      : string  = "DBD"
@@ -150,7 +150,7 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 4 # 2nubb
 
 
-##########################################################################
+############################################
 [name="Mo100.0nubbM1" type="genbb::wdecay0"]
 #@config Neutrinoless double beta decay of Mo-100, 0nubbM1;group=DBD
 decay_type      : string  = "DBD"
@@ -159,7 +159,7 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 5 # 0nubbM1
 
 
-##########################################################################
+############################################
 [name="Mo100.0nubbM2" type="genbb::wdecay0"]
 #@config Neutrinoless double beta decay of Mo-100, 0nubbM2;group=DBD
 decay_type      : string  = "DBD"
@@ -168,7 +168,7 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 6 # 0nubbM2
 
 
-##########################################################################
+##########################################
 [name="Nd150.0nubb" type="genbb::wdecay0"]
 #@config Neutrinoless double beta decay of Nd-150, 0nubb(mn);group=DBD
 decay_type      : string  = "DBD"
@@ -177,7 +177,7 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 1 # 0nubb(mn)
 
 
-##########################################################################
+#######################################################
 [name="Nd150.0nubb_rhc_lambda_0" type="genbb::wdecay0"]
 #@config Neutrinoless double beta decay of Nd-150, 0nubb(rhc-lambda) 0+ -> 0+ {2n};group=DBD
 decay_type      : string  = "DBD"
@@ -186,7 +186,7 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 2 # 0nubb(rhc-lambda) 0+ -> 0+ {2n}"
 
 
-##########################################################################
+#########################################################
 [name="Nd150.0nubb_rhc_lambda_0_2" type="genbb::wdecay0"]
 #@config Neutrinoless double beta decay of Nd-150, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*};group=DBD
 decay_type      : string  = "DBD"
@@ -195,7 +195,7 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 3 # 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*}"
 
 
-##########################################################################
+##########################################
 [name="Nd150.2nubb" type="genbb::wdecay0"]
 #@config Two neutrino double beta decay of Nd-150, 2nubb;group=DBD
 decay_type      : string  = "DBD"
@@ -204,7 +204,7 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 4 # 2nubb
 
 
-##########################################################################
+############################################
 [name="Nd150.0nubbM1" type="genbb::wdecay0"]
 #@config Neutrinoless double beta decay of Nd-150, 0nubbM1;group=DBD
 decay_type      : string  = "DBD"
@@ -213,12 +213,13 @@ decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 5 # 0nubbM1
 
 
-##########################################################################
+############################################
 [name="Nd150.0nubbM2" type="genbb::wdecay0"]
 #@config Neutrinoless double beta decay of Nd-150, 0nubbM2;group=DBD
 decay_type      : string  = "DBD"
 decay_isotope   : string  = "Nd150"
 decay_dbd_level : integer = 0
 decay_dbd_mode  : integer = 6 # 0nubbM2
+
 
 # end of dbd.def
