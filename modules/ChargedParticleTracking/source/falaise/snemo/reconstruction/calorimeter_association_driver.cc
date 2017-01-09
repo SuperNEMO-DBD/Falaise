@@ -341,21 +341,34 @@ namespace snemo {
         if (calo_collection.empty()) continue;
         DT_LOG_TRACE(get_logging_priority(), "Number of associated calorimeter = " << calo_collection.size());
 
-        for (calo_collection_type::const_iterator i = calo_collection.begin();
-             i != calo_collection.end(); ++i) {
-          const snemo::datamodel::calibrated_calorimeter_hit & a_calo = i->second.get();
-          const geomtools::geom_id & a_gid = a_calo.get_geom_id();
-          // Check association and belonging to neighbours
-          if (std::find(list_of_neighbours.begin(), list_of_neighbours.end(), a_gid) != list_of_neighbours.end() &&
-              calorimeter_utils::has_flag(a_calo, calorimeter_utils::associated_flag())) {
-            continue;
-          }
-          particle_.grab_associated_calorimeter_hits().push_back(i->second);
-          // Add a private property
-          calorimeter_utils::flag_as(a_calo, calorimeter_utils::associated_flag());
-          // Set the geom_id of the corresponding vertex to the calorimeter hit geom_id
-          a_vertex.set_geom_id(a_gid);
-        } // end of calorimeter collection
+        // Keep only closest calorimeter i.e. the one with the smallest distance
+        // within calo_collection type
+        for (auto & icalo : calo_collection) {
+          icalo.second.grab().grab_auxiliaries().clean(calorimeter_utils::associated_flag());
+        }
+        const snemo::datamodel::calibrated_calorimeter_hit & a_calo = calo_collection.begin()->second.get();
+        const geomtools::geom_id & a_gid = a_calo.get_geom_id();
+        particle_.grab_associated_calorimeter_hits().push_back(calo_collection.begin()->second);
+        // Add a private property
+        calorimeter_utils::flag_as(a_calo, calorimeter_utils::associated_flag());
+        // Set the geom_id of the corresponding vertex to the calorimeter hit geom_id
+        a_vertex.set_geom_id(a_gid);
+
+        // for (calo_collection_type::const_iterator i = calo_collection.begin();
+        //      i != calo_collection.end(); ++i) {
+        //   const snemo::datamodel::calibrated_calorimeter_hit & a_calo = i->second.get();
+        //   const geomtools::geom_id & a_gid = a_calo.get_geom_id();
+        //   // Check association and belonging to neighbours
+        //   if (std::find(list_of_neighbours.begin(), list_of_neighbours.end(), a_gid) != list_of_neighbours.end() &&
+        //       calorimeter_utils::has_flag(a_calo, calorimeter_utils::associated_flag())) {
+        //     continue;
+        //   }
+        //   particle_.grab_associated_calorimeter_hits().push_back(i->second);
+        //   // Add a private property
+        //   calorimeter_utils::flag_as(a_calo, calorimeter_utils::associated_flag());
+        //   // Set the geom_id of the corresponding vertex to the calorimeter hit geom_id
+        //   a_vertex.set_geom_id(a_gid);
+        // } // end of calorimeter collection
       }// end of vertices
 
       DT_LOG_TRACE(get_logging_priority(), "Exiting.");
