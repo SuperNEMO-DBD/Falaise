@@ -3,7 +3,7 @@ Vertex generation for SuperNEMO demonstrator simulation
 ================================================================
 
 :Authors: François Mauger
-:Date:    2016-11-18
+:Date:    2017-01-07
 
 .. contents::
    :depth: 3
@@ -14,7 +14,9 @@ Presentation
 ============
 
 This directory  contains the files  needed to describe  several vertex
-  generators as input for SuperNEMO demonstrator simulation.
+generators as input for  SuperNEMO demonstrator simulation. This setup
+depends on the SuperNEMO  demonstrator's geometry layout (``4.0``) and
+its variants.
 
  * Version is : ``4.1``
 
@@ -23,30 +25,48 @@ Files
 
   * ``README.rst`` : This file.
   * ``manager.conf``  :  The main  configuration  file  of the  Bayeux
-    ``genbb::manager`` object.
+    ``genvtx::manager`` object.
   * ``generators/`` : Directory for vertex generators definitions.
   * ``variants/`` : Directory for variant definitions.
+  * ``_tools/`` : Utilities for mainteners.
 
 Check the configuration
 =======================
 
 First make sure the Bayeux and Falaise software is installed and setup: ::
 
-  $ which bxgenvtx_production
-  ...
-
-Browse and edit primary event generation variant parameters and options
-===============================================================================
-
-1. First make sure the Bayeux software is installed and setup, particularly the variant support: ::
-
 .. code:: sh
 
    $ which bxvariant_inspector
    ...
+   $ which bxgenvtx_production
+   ...
 ..
 
-2. From the build directory, browse/edit the primary event generation variant:
+Browse and edit primary event generation variant parameters and options
+===============================================================================
+
+1. From the build directory, generate documentation about variants:
+
+.. code:: sh
+
+   $ bxvariant_inspector \
+          --datatools::resource-path="falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
+          --variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.1/variants/repository.conf" \
+	  --action doc > flvertexes.rst
+   $ rst2html flvertexes.rst > flvertexes.html
+   $ xdg-open flvertexes.html &
+   $ rst2pdf flvertexes.rst
+   $ xdg-open flvertexes.pdf &
+..
+or:
+
+.. code:: sh
+
+   $ pandoc -t latex flvertexes.rst -o flvertexes.pdf
+..
+
+3. From the build directory, browse/edit the primary event generation variant:
 
 .. code:: sh
 
@@ -54,6 +74,16 @@ Browse and edit primary event generation variant parameters and options
           --datatools::resource-path="falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
           --variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.1/variants/repository.conf" \
           --variant-gui \
+	  --variant-store "myprofile.conf"
+..
+
+4. From the build directory, generate a variant profile:
+
+.. code:: sh
+
+   $ bxvariant_inspector \
+          --datatools::resource-path="falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
+          --variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.1/variants/repository.conf" \
 	  --variant-store "myprofile.conf"
 ..
 

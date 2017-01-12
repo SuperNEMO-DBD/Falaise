@@ -12,8 +12,9 @@
 
 #@config A variant parameter describing the primary vertex generator
 
-# logging.priority : string = "trace"
+#@description Logging priority threshold
 logging.priority : string = "fatal"
+#logging.priority : string = "trace"
 
 #@description The display name of this variant
 display_name        : string = "Primary vertex generator"
@@ -34,17 +35,20 @@ variable.mode       : string = "enumeration"
 string.enumerated.csv_file : string as path = \
   "@falaise:config/snemo/demonstrator/simulation/vertexes/4.1/variants/models/vertexes_generators.csv"
 
-#@description The CSV file supported field separator
-string.enumerated.csv_file.separator : string = ":"
+# #@description The CSV file supported field separator
+# string.enumerated.csv_file.separator : string = ":"
 
-#@description The CSV file supported field sub-separators
-string.enumerated.csv_file.subseparator : string = ";"
+# #@description The CSV file supported field sub-separators
+# string.enumerated.csv_file.subseparator : string = ";"
 
 #@description The default value
-string.default : string = "source_pads_bulk"
+string.default : string = "free_spot"
 
 #@description The list of variants
-variants : string[3] = "if_half_commissioning_single_spot" "if_free_spot" "if_source_calibration_single_spot"
+variants : string[3] = \
+  "if_half_commissioning_single_spot" \
+  "if_free_spot" \
+  "if_source_calibration_single_spot"
 
 #@description The model of the variant
 variants.if_half_commissioning_single_spot.model       : string = "half_commissioning.single_spot.VM"

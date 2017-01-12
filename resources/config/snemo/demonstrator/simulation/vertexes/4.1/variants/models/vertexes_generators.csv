@@ -3,10 +3,10 @@ anode_wire_surface : Vertex generation from the surface of all anode wires : Tra
 field_wire_bulk : Vertex generation from the bulk volume of all field wires : Tracker : 
 field_wire_surface : Vertex generation from the surface of all field wires : Tracker : 
 feedthrough_pins_bulk_all_spots : Vertex generation from the bulk volume of all tracker feedthrough pins : Tracker : 
-feedthrough_pins_bulk_side_0_top : Vertex generation from the bulk volume of the tracker feedthrough pins on side 0, top : Tracker : 
-feedthrough_pins_bulk_side_0_bottom : Vertex generation from the bulk volume of the tracker feedthrough pins on side 0, bottom : Tracker : 
-feedthrough_pins_bulk_side_1_top : Vertex generation from the bulk volume of the tracker feedthrough pins on side 1, top : Tracker : 
-feedthrough_pins_bulk_side_1_bottom : Vertex generation from the bulk volume of the tracker feedthrough pins on side 1, bottom : Tracker : 
+feedthrough_pins_bulk_side_0_top : Vertex generation from the bulk volume of the tracker feedthrough pins on side 0, top : Tracker0 : 
+feedthrough_pins_bulk_side_0_bottom : Vertex generation from the bulk volume of the tracker feedthrough pins on side 0, bottom : Tracker0 : 
+feedthrough_pins_bulk_side_1_top : Vertex generation from the bulk volume of the tracker feedthrough pins on side 1, top : Tracker1 : 
+feedthrough_pins_bulk_side_1_bottom : Vertex generation from the bulk volume of the tracker feedthrough pins on side 1, bottom : Tracker1 : 
 calo_wrapper_bulk : Vertex generation from the bulk volume of the wrapper of all main calorimeter scintillator blocks : OpticalModule : 
 xcalo_wrapper_bulk : Vertex generation from the bulk volume of the wrapper of all X-wall calorimeter scintillator blocks : OpticalModule : 
 gveto_wrapper_bulk : Vertex generation from the bulk volume of the wrapper of all gamma veto scintillator blocks : OpticalModule : 
