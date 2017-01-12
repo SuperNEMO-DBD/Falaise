@@ -15,7 +15,13 @@ Presentation
 This directory  contains the files  needed to run Geant4 simulation
 for the SuperNEMO demonstrator simulation.
 
- * Version is : ``2.1``
+* Version is : ``2.1``
+
+This setup depends on:
+
+* the SuperNEMO demonstrator's geometry layout (``4.0``) and its variants.
+* the SuperNEMO vertex generation (``4.1``) and its variants.
+* the SuperNEMO primary event generation (``1.2``) and its variants.
 
 Files
 =====
@@ -37,14 +43,53 @@ Check the configuration
 
 First make sure the Bayeux and Falaise softwares are installed and setup: ::
 
-  $ which bxg4_production
-  ...
+.. code:: sh
+
+   $ which bxvariant_inspector
+   ...
+   $ which bxg4_production
+   ...
+..
+
+Browse and edit primary event generation variant parameters and options
+===============================================================================
+
+1. From the build directory, generate documentation about variants:
+
+.. code:: sh
+
+   $ bxvariant_inspector \
+          --datatools::resource-path="falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
+          --variant-config "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf" \
+	  --action doc > flg4ctrl.rst
+   $ rst2html flg4ctrl.rst > flg4ctrl.html
+   $ xdg-open flg4ctrl.html &
+   $ rst2pdf flg4ctrl.rst
+   $ xdg-open flg4ctrl.pdf &
+..
+or:
+
+.. code:: sh
+
+   $ pandoc -t latex flg4ctrl.rst -o flg4ctrl.pdf
+..
+
+2. From the build directory, browse/edit the primary event generation variant and generate a variant profile::
+
+.. code:: sh
+
+   $ bxvariant_inspector \
+	  --datatools::resource-path="falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
+	  --variant-config "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf" \
+          --variant-gui \
+	  --variant-store "myprofile.conf"
+..
 
 Run Geant4
 ----------------------------------------------------------------------
 
 Run from  the Falaise build directory.  Here we **don't** use  the variant
-support but manually set vertex  and particle generators associated to
+support but manually set vertex and particle generators associated to
 the default geometry:
 
 .. raw:: sh
@@ -72,7 +117,6 @@ the default geometry:
      --output-data-bank "SD" \
      --output-data-file "cfg1-Tl208-source.xml"
 ..
-
 
 Run from the Falaise build directory. Here we  **do** use  the variant
 support to set the vertex  and particle generators associated to some
@@ -134,3 +178,6 @@ Run in interactive mode:
      --g4-visu \
      --g4-macro "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/visu/visu_0.mac"
 ..
+
+
+.. end
