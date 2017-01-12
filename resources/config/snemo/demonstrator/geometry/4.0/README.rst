@@ -113,6 +113,13 @@ Browse and edit geometry variant parameters and options
    $ xdg-open flgeometry.pdf &
 ..
 
+   or:
+.. code:: sh
+
+   $ pandoc -w html flgeometry.rst > flgeometry.html
+   $ pandoc -w latex flgeometry.rst -o flgeometry.pdf
+..
+
 2. From the build directory, browse/edit the geometry variant:
 
 .. code:: sh
@@ -124,21 +131,8 @@ Browse and edit geometry variant parameters and options
 	  --variant-store "myprofile.conf"
 ..
 
-   This allows you to prepare a  variant profile before to *inject* it
+   This allows you to prepare a variant profile before to *inject* it
    in some app of your choice.
-
-   To obtain a printable documentation about the demonstrator geometry
-   variant registry:
-
-.. code:: sh
-
-   $ bxvariant_inspector \
-	  --datatools::resource-path="falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
-	  --variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/repository.conf" \
-	  > flgeom_variant_doc.rst
-   $ pandoc -w html flgeom_variant_doc.rst > flgeom_variant_doc.html
-   $ xdg-open flgeom_variant_doc.html &
-..
 
 
 Display the geometry
@@ -248,7 +242,7 @@ as designed by the LAPP group.   With this layout, you can change both
 the thickness  of the source  pads and the associated  material. These
 variant are defined in:
 
-``@falaise:config/snemo/demonstrator/geometry/4.0/models/source_module/variants/models/source_betabeta.def``
+``@falaise:config/snemo/demonstrator/geometry/4.0/variants/models/source_betabeta.def``
 
 - ``thickness`` ranges from 5 to 500 um (default is ``250 um``).
 - ``material`` is chosen from the following set:
