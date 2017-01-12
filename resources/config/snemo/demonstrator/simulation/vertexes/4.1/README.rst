@@ -66,7 +66,7 @@ or:
    $ pandoc -t latex flvertexes.rst -o flvertexes.pdf
 ..
 
-3. From the build directory, browse/edit the primary event generation variant:
+2. From the build directory, browse/edit the primary event generation variant:
 
 .. code:: sh
 
@@ -77,7 +77,7 @@ or:
 	  --variant-store "myprofile.conf"
 ..
 
-4. From the build directory, generate a variant profile:
+3. From the build directory, generate a variant profile:
 
 .. code:: sh
 
