@@ -1,0 +1,26 @@
+# -*- mode: conf-unix; -*-
+# List of multi-properties (datatools::multi_properties):
+
+#@description A list of particle generators
+#@key_label  "name"
+#@meta_label "type"
+
+
+####################################################################
+[name="versatile_generator" type="genbb::single_particle_generator"]
+#@config Electron with monokinetic energy;group=miscellaneous;variant=if_versatile
+
+#@description Generated particle ("electron", "positron", "gamma", "alpha"):
+particle_name : string = @variant(primary_event:generator/if_versatile/particle|"gamma")
+
+#@description Mode ("energy_range", "gaussian_energy", "monokinetic", "spectrum"):
+mode          : string = "monokinetic"
+
+#@description Emission direction of the emitted particle (in 4xPi)
+emission_direction : string = "randomized"
+
+#@description The kinetic energy of the generated particle
+energy        : real   = @variant(primary_event:generator/if_versatile/energy|1000.0 keV)
+
+
+# end of versatile.def
