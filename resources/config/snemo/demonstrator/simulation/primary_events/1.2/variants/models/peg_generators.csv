@@ -1,27 +1,27 @@
-Ca48.0nubb : Neutrinoless double beta decay of Ca-48, 0nubb(mn) : DBD : 
-Ca48.0nubb_rhc_lambda_0 : Neutrinoless double beta decay of Ca-48, 0nubb(rhc-lambda) 0+ -> 0+ {2n} : DBD : 
-Ca48.0nubb_rhc_lambda_0_2 : Neutrinoless double beta decay of Ca-48, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*} : DBD : 
-Ca48.2nubb : Two neutrino double beta decay of Ca-48, 2nubb : DBD : 
-Ca48.0nubbM1 : Neutrinoless double beta decay of Ca-48, 0nubbM1 : DBD : 
-Ca48.0nubbM2 : Neutrinoless double beta decay of Ca-48, 0nubbM2 : DBD : 
-Se82.0nubb : Neutrinoless double beta decay of Se-82, 0nubb(mn)[group=DBD : DBD : 
-Se82.0nubb_rhc_lambda_0 : Neutrinoless double beta decay of Se-82, 0nubb(rhc-lambda) 0+ -> 0+ {2n} : DBD : 
-Se82.0nubb_rhc_lambda_0_2 : Neutrinoless double beta decay of Se-82, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*} : DBD : 
-Se82.2nubb : Two neutrino double beta decay of Se-82, 2nubb : DBD : 
-Se82.0nubbM1 : Neutrinoless double beta decay of Se-82, 0nubbM1 : DBD : 
-Se82.0nubbM2 : Neutrinoless double beta decay of Se-82, 0nubbM2 : DBD : 
-Mo100.0nubb : Neutrinoless double beta decay of Mo-100, 0nubb(mn) : DBD : 
-Mo100.0nubb_rhc_lambda_0 : Neutrinoless double beta decay of Mo-100, 0nubb(rhc-lambda) 0+ -> 0+ {2n} : DBD : 
-Mo100.0nubb_rhc_lambda_0_2 : Neutrinoless double beta decay of Mo-100, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*} : DBD : 
-Mo100.2nubb : Two neutrino double beta decay of Mo-100, 2nubb : DBD : 
-Mo100.0nubbM1 : Neutrinoless double beta decay of Mo-100, 0nubbM1 : DBD : 
-Mo100.0nubbM2 : Neutrinoless double beta decay of Mo-100, 0nubbM2 : DBD : 
-Nd150.0nubb : Neutrinoless double beta decay of Nd-150, 0nubb(mn) : DBD : 
-Nd150.0nubb_rhc_lambda_0 : Neutrinoless double beta decay of Nd-150, 0nubb(rhc-lambda) 0+ -> 0+ {2n} : DBD : 
-Nd150.0nubb_rhc_lambda_0_2 : Neutrinoless double beta decay of Nd-150, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*} : DBD : 
-Nd150.2nubb : Two neutrino double beta decay of Nd-150, 2nubb : DBD : 
-Nd150.0nubbM1 : Neutrinoless double beta decay of Nd-150, 0nubbM1 : DBD : 
-Nd150.0nubbM2 : Neutrinoless double beta decay of Nd-150, 0nubbM2 : DBD : 
+Ca48.0nubb : Neutrinoless double beta decay of Ca-48, 0nubb(mn) : DBD/Ca48 : 
+Ca48.0nubb_rhc_lambda_0 : Neutrinoless double beta decay of Ca-48, 0nubb(rhc-lambda) 0+ -> 0+ {2n} : DBD/Ca48 : 
+Ca48.0nubb_rhc_lambda_0_2 : Neutrinoless double beta decay of Ca-48, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*} : DBD/Ca48 : 
+Ca48.2nubb : Two neutrino double beta decay of Ca-48, 2nubb : DBD/Ca48 : 
+Ca48.0nubbM1 : Neutrinoless double beta decay of Ca-48, 0nubbM1 : DBD/Ca48 : 
+Ca48.0nubbM2 : Neutrinoless double beta decay of Ca-48, 0nubbM2 : DBD/Ca48 : 
+Se82.0nubb : Neutrinoless double beta decay of Se-82, 0nubb(mn) : DBD/Se82 : 
+Se82.0nubb_rhc_lambda_0 : Neutrinoless double beta decay of Se-82, 0nubb(rhc-lambda) 0+ -> 0+ {2n} : DBD/Se82 : 
+Se82.0nubb_rhc_lambda_0_2 : Neutrinoless double beta decay of Se-82, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*} : DBD/Se82 : 
+Se82.2nubb : Two neutrino double beta decay of Se-82, 2nubb : DBD/Se82 : 
+Se82.0nubbM1 : Neutrinoless double beta decay of Se-82, 0nubbM1 : DBD/Se82 : 
+Se82.0nubbM2 : Neutrinoless double beta decay of Se-82, 0nubbM2 : DBD/Se82 : 
+Mo100.0nubb : Neutrinoless double beta decay of Mo-100, 0nubb(mn) : DBD/Mo100 : 
+Mo100.0nubb_rhc_lambda_0 : Neutrinoless double beta decay of Mo-100, 0nubb(rhc-lambda) 0+ -> 0+ {2n} : DBD/Mo100 : 
+Mo100.0nubb_rhc_lambda_0_2 : Neutrinoless double beta decay of Mo-100, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*} : DBD/Mo100 : 
+Mo100.2nubb : Two neutrino double beta decay of Mo-100, 2nubb : DBD/Mo100 : 
+Mo100.0nubbM1 : Neutrinoless double beta decay of Mo-100, 0nubbM1 : DBD/Mo100 : 
+Mo100.0nubbM2 : Neutrinoless double beta decay of Mo-100, 0nubbM2 : DBD/Mo100 : 
+Nd150.0nubb : Neutrinoless double beta decay of Nd-150, 0nubb(mn) : DBD/Nd150 : 
+Nd150.0nubb_rhc_lambda_0 : Neutrinoless double beta decay of Nd-150, 0nubb(rhc-lambda) 0+ -> 0+ {2n} : DBD/Nd150 : 
+Nd150.0nubb_rhc_lambda_0_2 : Neutrinoless double beta decay of Nd-150, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*} : DBD/Nd150 : 
+Nd150.2nubb : Two neutrino double beta decay of Nd-150, 2nubb : DBD/Nd150 : 
+Nd150.0nubbM1 : Neutrinoless double beta decay of Nd-150, 0nubbM1 : DBD/Nd150 : 
+Nd150.0nubbM2 : Neutrinoless double beta decay of Nd-150, 0nubbM2 : DBD/Nd150 : 
 Ac228 : Ac-228 decay : Background : 
 Th234 : Th-234 decay : Background : 
 Tl207 : Tl-207 decay : Background : 

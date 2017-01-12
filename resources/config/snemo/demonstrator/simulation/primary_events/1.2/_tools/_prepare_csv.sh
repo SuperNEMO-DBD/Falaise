@@ -30,7 +30,7 @@ cd ${opwd}
 common_pe_dir=${resources_dir}/config/common/simulation/primary_events/1.1/
 this_pe_dir=${opwd}
 
-bxextract_table_of_objects -i ${common_pe_dir}/generators/dbd.def --group "DBD" -G \
+bxextract_table_of_objects -i ${common_pe_dir}/generators/dbd.def \
 			   >> ${csv_target}
 
 bxextract_table_of_objects -i ${common_pe_dir}/generators/background.def --group "Background" -G \
