@@ -2,6 +2,11 @@ set(Falaise_RESOURCES
 ${PROJECT_SOURCE_DIR}/resources/README.rst
 ${PROJECT_SOURCE_DIR}/resources/pipeline/snemo.demonstrator/1.0.0
 ${PROJECT_SOURCE_DIR}/resources/pipeline/snemo.demonstrator/1.0.0.visual
+${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/vprofile.conf
+${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/README.rst
+${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/flsimulate.conf
+${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/services.conf
+${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/seeds.conf
 ${PROJECT_SOURCE_DIR}/resources/examples/geometry/ex01/README.rst
 ${PROJECT_SOURCE_DIR}/resources/examples/geometry/ex01/ex01.cxx
 ${PROJECT_SOURCE_DIR}/resources/examples/variants/README.rst
@@ -273,6 +278,7 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_cont
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.1/variants/profiles/default.profile
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.1/variants/registries/simulation.conf
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.1/services.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.1/sensitive/calorimeter.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.1/sensitive/gveto.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.1/sensitive/xcalorimeter.conf
@@ -339,6 +345,7 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.1/generators/tracker_vg.def
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.1/generators/source_calibration_vg.def
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.1/generators/hall_vg.def
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.1/flvertexes.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.1/variants/models/free_spot_vertex.def
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.1/variants/models/vertexes_generators.csv
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.1/variants/models/source_calibration.def
@@ -351,6 +358,14 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.0/manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.1/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.1/manager.conf
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.2/README.rst
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.2/generators/misc.def
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.2/generators/versatile.def
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.2/variants/models/peg_generators.csv
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.2/variants/models/peg.def
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.2/variants/repository.conf
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.2/variants/registries/primary_events.conf
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.2/manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/experiment/1.0/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/experiment/1.0/devices/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/experiment/1.0/devices/models/demonstrator/detector/detector.def
