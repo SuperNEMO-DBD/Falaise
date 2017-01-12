@@ -18,8 +18,8 @@ event generators as input for SuperNEMO simulation.
   * Setup label is : ``snemo::demonstrator::simulation::primary_events``
   * Version is : ``1.2``
 
-Files:
-======
+Files
+=====
 
   * ``README.rst`` : this file,
   * ``manager.conf`` : the   main  configuration file of the
@@ -31,7 +31,7 @@ Files:
 Check the configuration
 =======================
 
-First make sure the Bayeux and Falaise software is installed and setup: ::
+First make sure the Bayeux and Falaise software is installed and setup:
 
 .. code:: sh
 
@@ -80,7 +80,18 @@ or:
 List the names of the available particle generators
 ========================================================
 
-From  Falaise build  directory,  run:
+Without variants, from Falaise build directory, run:
+
+.. raw:: sh
+
+   $ bxgenbb_inspector \
+      --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
+      --configuration "@falaise:config/snemo/demonstrator/simulation/primary_events/1.2/manager.conf" \
+      --action "list" \
+      --list-print-mode "raw"
+..
+
+Using variants (there is no difference here):
 
 .. raw:: sh
 
@@ -91,18 +102,17 @@ From  Falaise build  directory,  run:
       --configuration "@falaise:config/snemo/demonstrator/simulation/primary_events/1.2/manager.conf" \
       --action "list" \
       --list-print-mode "raw"
+..
 
+Generate 1000 primary events from the ``Bi214_Po214`` generator without variant
+==================================================================================
 
-Generate 1000 primary events from the ``Bi214_Po214`` generator
-======================================================================
-
-From  Falaise build  directory,  run:
+From Falaise build directory, run:
 
 .. raw:: sh
 
    $ bxgenbb_inspector \
       --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
-      --variant-config "@falaise:config/snemo/demonstrator/simulation/primary_events/1.2/variants/repository.conf" \
       --configuration "@falaise:config/snemo/demonstrator/simulation/primary_events/1.2/manager.conf" \
       --action "shoot"  \
       --generator "Bi214_Po214" \
@@ -116,12 +126,48 @@ From  Falaise build  directory,  run:
       --prompt-time-limit 1 \
       --title-prefix "Bi214_Po214" \
       --output-file "histos_Bi214_Po214.root"
+..
 
-Then use Root to browse the generated histograms: ::
+Then use Root to browse the generated histograms:
 
 .. raw:: sh
 
    $ root histos_Bi214_Po214.root
+   ...
+   root [0]
+   Attaching file histos_Bi214_Po214.root as _file0...
+   root [1]  TBrowser b; // Here you may browse the histograms
+   root [2] .q
+..
+
+Generate 1000 primary events from the ``gamma.1MeV`` generator from the variant setup
+=======================================================================================
+
+From Falaise build directory, run:
+
+.. raw:: sh
+
+   $ bxgenbb_inspector \
+      --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
+      --variant-config "@falaise:config/snemo/demonstrator/simulation/primary_events/1.2/variants/repository.conf" \
+      --variant-set "primary_events:generator=gamma.1MeV" \
+      --variant-gui \
+      --configuration "@falaise:config/snemo/demonstrator/simulation/primary_events/1.2/manager.conf" \
+      --action "shoot"  \
+      --prng-seed 314159 \
+      --number-of-events 1000 \
+      --modulo 100 \
+      --histo-def "@genbb_help:inspector/config/le_nuphy-1.0/inspector_histos_prompt.conf" \
+      --prompt \
+      --title-prefix "gamma_1MeV" \
+      --output-file "histos_gamma_1MeV.root"
+..
+
+Then use Root to browse the generated histograms:
+
+.. raw:: sh
+
+   $ root histos_gamma_1MeV.root
    ...
    root [0]
    Attaching file histos_Bi214_Po214.root as _file0...

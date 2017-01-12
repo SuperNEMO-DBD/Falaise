@@ -124,14 +124,14 @@ string.enumerated.csv_file : string as path = \
 string.enumerated.csv_file.separators : string = ":"
 
 #@description The default value
-string.default : string = "Se82.0nubb"
-# string.default : string = "electron.1MeV"
+string.default : string = "electron.1MeV"
+# string.default : string = "Se82.0nubb"
 
 #@description The list of variants
 variants : string[1] = "if_versatile"
 
 #@description The model of the variant
-variants.if_versatile.model       : string = "peg.generator.vspg.VM"
+variants.if_versatile.model : string = "peg.generator.vspg.VM"
 
 #@description The description of the variant
 variants.if_versatile.description : string = "Set of parameters for the versatile primary event generator"

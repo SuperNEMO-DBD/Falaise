@@ -42,7 +42,7 @@ bxextract_table_of_objects -i ${common_pe_dir}/generators/calibration.def --grou
 bxextract_table_of_objects -i ${this_pe_dir}/generators/misc.def --group "Miscellaneous" -G \
 			   >> ${csv_target}
 
-bxextract_table_of_objects -i ${this_pe_dir}/generators/versatile.def --group "Miscellaneous" -G \
+bxextract_table_of_objects -i ${this_pe_dir}/generators/versatile.def --group "User" -G \
 			   >> ${csv_target}
 
 echo >&2 "INFO: File '${csv_target}' has been generated!"

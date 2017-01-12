@@ -8,7 +8,7 @@
 
 ####################################################################
 [name="versatile_generator" type="genbb::single_particle_generator"]
-#@config Electron with monokinetic energy;group=miscellaneous;variant=if_versatile
+#@config Electron with monokinetic energy;group=user;variant=if_versatile
 
 #@description Generated particle ("electron", "positron", "gamma", "alpha"):
 particle_name : string = @variant(primary_event:generator/if_versatile/particle|"gamma")
