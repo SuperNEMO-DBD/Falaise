@@ -55,7 +55,9 @@ string.enumerated.size    : integer = 2
 
 # The list of supported values:
 string.enumerated_0.value : string = "Basic"
+string.enumerated_0.documentation : string = "Basic layout of the SuperNEMO demonstrator module"
 string.enumerated_1.value : string = "HalfCommissioning"
+string.enumerated_1.documentation : string = "Half-commissioning layout of the SuperNEMO demonstrator module"
 
 #@description The default value
 string.default            : string = "Basic"

@@ -35,8 +35,8 @@ choose between uniform  vertical B-field of mapped  field (using Steve
 Snow's work).
 
 This  setup  uses  the  new  ``basic/1.0``  materials  resource  files
-published in Bayeux >= 2.1. The ``std::XXXX`` materials are considered
-obsolete and must not be used anymore.
+published  in Bayeux  >= 2.1.  The materials  named ``std::XXXX``  are
+considered obsolete and must not be used anymore.
 
 We also have added a simple model for the external shielding with pure
 iron walls surrounding the demonstrator module.
@@ -56,11 +56,11 @@ Files
    building  of  *geometry  models* (ala  Geant4/GDML  logical  volume
    factories)
 
-   * ``*_categories.lis`` :  the description of all  geometry categories
-     associated to physical volumes of interest in the geometry setup;
-     this  allows to  build a  dictionnary of  geometry IDs  to enable
-     automated location of volumes  and navigation within the geometry
-     model
+   * ``XXX_categories.lis``   :  the   description  of   all  geometry
+     categories  associated to  physical  volumes of  interest in  the
+     geometry setup; this allows to build a dictionary of geometry IDs
+     to enable automated location of volumes and navigation within the
+     geometry model
 
  * ``models/`` :  the directory that  contains files dedicated  to the
    building  of  *geometry  models* (ala  Geant4/GDML  logical  volume
@@ -82,17 +82,35 @@ Files
  * ``variants/``  : the  directory  that contains  files that  describe
    geometry variants.
 
+Check the configuration
+=======================
 
-Browse and edit geometry variant parameters and options
-=====================================================================
-
-1. First  make  sure  the  Bayeux software  is  installed  and  setup,
-   particularly the variant support: ::
+First make sure the Bayeux and Falaise software is installed and setup: ::
 
 .. code:: sh
 
    $ which bxvariant_inspector
    ...
+   $ which bxgeomtools_inspector
+   ...
+..
+
+
+Browse and edit geometry variant parameters and options
+=====================================================================
+
+1. From the build directory, generate documentation about variants:
+
+.. code:: sh
+
+   $ bxvariant_inspector \
+          --datatools::resource-path="falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
+          --variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/repository.conf" \
+	  --action doc > flgeometry.rst
+   $ rst2html flgeometry.rst > flgeometry.html
+   $ xdg-open flgeometry.html &
+   $ rst2pdf flgeometry.rst
+   $ xdg-open flgeometry.pdf &
 ..
 
 2. From the build directory, browse/edit the geometry variant:

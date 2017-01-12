@@ -34,7 +34,7 @@
 display_name        : string = "Magnetic field direction"
 
 #@description A short description of the variant
-terse_description   : string = "The direction of the magnetic field"
+terse_description   : string = "The direction of the uniform vertical magnetic field"
 
 #@description The type of the parameter
 type                : string = "string"
@@ -56,7 +56,7 @@ string.enumerated_1.value : string = "+z"
 string.default : string = "+z"
 
 
-#####################################################
+######################################################################
 [name="magnetic_field.uniform_vertical.magnitude.PM" type="parameter"]
 
 #@config A parameter model describing the amplitude of the magnetic field
@@ -65,7 +65,7 @@ string.default : string = "+z"
 display_name        : string = "Magnetic field magnitude"
 
 #@description A short description of the variant
-terse_description   : string = "The magnitude of the magnetic field"
+terse_description   : string = "The magnitude of the uniform vertical magnetic field"
 
 #@description The type of the parameter
 type                : string = "real"
@@ -119,7 +119,7 @@ parameters.direction.description : string = "The direction of the magnetic field
 display_name        : string = "Mapped magnetic field Z inversion"
 
 #@description A short description of the variant
-terse_description   : string = "The mapped magnetic field Z inversion"
+terse_description   : string = "The Z inversion of the mapped magnetic field"
 
 #@description The type of the parameter
 type                : string = "boolean"
@@ -129,6 +129,18 @@ mutability          : string = "variable"
 
 #@description The default value
 boolean.default     : boolean = false
+
+#@description Documentation about the false value
+boolean.false.documentation : string = "The mapped magnetic field points to the Z>0 axis"
+
+#@description Documentation about the true value
+boolean.true.documentation  : string = "The mapped magnetic field points to the Z<0 axis"
+
+#@description Variant associated to the magnetic field activation
+boolean.true.variant  : string = "is_active"
+
+#@description Variant associated to the inactivation of the magnetic field
+boolean.false.variant : string = "is_inactive"
 
 #@description List of variants
 variants : string [2] = "is_active" "is_inactive"
@@ -145,12 +157,6 @@ variants.is_inactive.model       : string = "datatools::basic::is_off.VM"
 #@description The description of the "is_inactive" variant
 variants.is_inactive.description : string = "Normal Z component"
 
-#@description Variant associated to the magnetic field activation
-boolean.true.variant  : string = "is_active"
-
-#@description Variant associated to the inactivation of the magnetic field
-boolean.false.variant : string = "is_inactive"
-
 
 ####################################################################
 [name="magnetic_field.mapped.map.user.map_file.PM" type="parameter"]
@@ -159,7 +165,7 @@ boolean.false.variant : string = "is_inactive"
 display_name        : string = "User defined magnetic field mapping file"
 
 #@description A short description of the variant
-terse_description   : string = "The user defined  mapping file of the magnetic field"
+terse_description   : string = "The user defined mapping file of the mapped magnetic field"
 
 #@description The type of the parameter
 type                : string = "string"
@@ -219,7 +225,7 @@ terse_description  : string = "The configuration parameters for the 'map0' mappe
 display_name        : string = "Magnetic field mapping file"
 
 #@description A short description of the variant
-terse_description   : string = "The mapping file of the magnetic field"
+terse_description   : string = "The mapping file of the mapped magnetic field"
 
 #@description The type of the parameter
 type                : string = "string"
@@ -234,8 +240,13 @@ variable.mode       : string = "enumeration"
 string.enumerated.size    : integer = 2
 
 # The list of supported values:
-string.enumerated_0.value : string = "Map0"
-string.enumerated_1.value : string = "User"
+string.enumerated_0.value : string         = "Map0"
+string.enumerated_0.documentation : string = "Registered mapped magnetic field #0"
+string.enumerated_0.variant : string       = "if_map0"
+
+string.enumerated_1.value : string         = "User"
+string.enumerated_1.documentation : string = "User defined mapped magnetic field"
+string.enumerated_1.variant : string       = "if_user"
 
 #@description The default value
 string.default            : string = "Map0"
@@ -248,9 +259,6 @@ variants.if_map0.description : string = "'Map0' mapped magnetic field"
 
 variants.if_user.model       : string = "magnetic_field.mapped.map.user.VM"
 variants.if_user.description : string = "Set of parameters for the 'User' defined mapped magnetic field"
-
-string.enumerated_0.variant : string = "if_map0"
-string.enumerated_1.variant : string = "if_user"
 
 
 ################################################
@@ -283,7 +291,7 @@ parameters.z_inverted.description : string = "The Z inversion of the mapped magn
 display_name              : string = "Type of magnetic field"
 
 #@description A short description of the parameter
-terse_description         : string = "The type of magnetic field"
+terse_description         : string = "The type of the magnetic field"
 
 #@description The type of the parameter
 type                      : string = "string"
@@ -298,8 +306,13 @@ variable.mode             : string = "enumeration"
 string.enumerated.size    : integer = 2
 
 # The list of supported values:
-string.enumerated_0.value : string = "UniformVertical"
-string.enumerated_1.value : string = "Mapped"
+string.enumerated_0.value : string         = "UniformVertical"
+string.enumerated_0.documentation : string = "Magnetic field is uniform vertical"
+string.enumerated_0.variant : string       = "if_uniform_vertical"
+
+string.enumerated_1.value : string         = "Mapped"
+string.enumerated_1.documentation : string = "Magnetic field is mapped"
+string.enumerated_1.variant : string       = "if_mapped"
 
 #@description The default value
 string.default            : string = "UniformVertical"
@@ -312,9 +325,6 @@ variants.if_uniform_vertical.description : string = "Set of parameters for the u
 
 variants.if_mapped.model                 : string = "magnetic_field.mapped.VM"
 variants.if_mapped.description           : string = "Set of parameters for the mapped magnetic field"
-
-string.enumerated_0.variant : string = "if_uniform_vertical"
-string.enumerated_1.variant : string = "if_mapped"
 
 
 #####################################################
@@ -355,6 +365,18 @@ mutability          : string = "variable"
 #@description The default value
 boolean.default     : boolean = true
 
+#@description Variant associated to the magnetic field activation
+boolean.true.variant : string = "is_active"
+
+#@description Documentation about the 'true' value
+boolean.true.documentation : string = "Apply a magnetic field"
+
+#@description Variant associated to the inactivation of the magnetic field
+boolean.false.variant : string = "is_inactive"
+
+#@description Documentation about the 'false' value
+boolean.false.documentation : string = "No magnetic field"
+
 #@description List of variants
 variants : string [2] = "is_active" "is_inactive"
 
@@ -369,12 +391,6 @@ variants.is_inactive.model       : string = "datatools::basic::is_off.VM"
 
 #@description The description of the "is_inactive" variant
 variants.is_inactive.description : string = "Inactive magnetic field"
-
-#@description Variant associated to the magnetic field activation
-boolean.true.variant : string = "is_active"
-
-#@description Variant associated to the inactivation of the magnetic field
-boolean.false.variant : string = "is_inactive"
 
 
 #########################################

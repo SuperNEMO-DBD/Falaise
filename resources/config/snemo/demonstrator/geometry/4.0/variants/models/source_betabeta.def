@@ -118,7 +118,7 @@ display_name       : string = "DBD source basic layout"
 #@description A short description of the variant
 terse_description  : string = "The configuration parameters for the DBD source basic layout"
 
-#@description The list of variant parameters associated to the betabeta source
+#@description The ordered list of variant parameters associated to the betabeta source
 parameters : string[2] = "thickness" "material"
 
 parameters.thickness.model       : string = "source_betabeta.foil_thickness.PM"
