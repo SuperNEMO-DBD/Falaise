@@ -3,7 +3,7 @@ Geant4 simulation for SuperNEMO demonstrator
 ================================================================
 
 :Authors: François Mauger
-:Date:    2016-12-07
+:Date:    2017-01-14
 
 .. contents::
    :depth: 3
@@ -41,7 +41,7 @@ Files
 Check the configuration
 =======================
 
-First make sure the Bayeux and Falaise softwares are installed and setup: ::
+First make sure the Bayeux and Falaise softwares are installed and setup:
 
 .. code:: sh
 
