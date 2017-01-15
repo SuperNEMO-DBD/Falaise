@@ -185,6 +185,46 @@ composition.names           : string[4] = "snemo::neodymium-150::nemo3" "Oxygen"
 composition.fraction_mass   : real[4]   =  0.79274                       0.15632  0.04362  0.00732
 
 
+############################################################
+# From NEMO3 simulation program:
+# Composite Mo100
+# Composite foils Mo-100 + 8% PVA
+# Composite Mo-100 + 8% PVA , batch 1
+#    enrichment factor 100% , 3% of oxygen in powder
+############################################################
+[name="snemo::mo100::nemo3" type="material"]
+#@config of Molybdenum bb source material using nemo-3 parameters
+density          : real   = 3.0
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[4] = "snemo::molybdenum-100" \
+			      		  "Oxygen" "Carbon" "Hydrogen"
+composition.fraction_mass   : real[4]   =  0.8924  0.05666  0.04362  0.00732
+
+############################################################
+# From NEMO3 simulation program:
+# Composite Mo100
+# Composite foils Mo-100 + 8% PVA
+#      DATA AMO_COMP/99.9075,97.9054,15.9994,12.0107,1.00794/,
+#     +ZMO_COMP/42.,42.,8.,6.,1./,
+#     +DMO_COMP/3./
+# Composite Mo-100 + 8% PVA , batch 1
+#    enrichment factor ~0.9514 , 3% of oxygen in powder
+#
+#     +WMO_47/0.84903,0.04337,0.05666,0.04362,0.00732/
+############################################################
+[name="snemo::mo100::nemo3::batch1" type="material"]
+#@config of Molybdenum bb source material using nemo-3 parameters
+density          : real   = 3.0
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[4] = "snemo::molybdenum-100::95percent" \
+			      		  "Oxygen" "Carbon" "Hydrogen"
+composition.fraction_mass   : real[4]   =  0.8924  0.05666  0.04362  0.00732
+
+
 ###################################
 [name="snemo::BPE" type="material"]
 #@config Borated PolyEthylene
