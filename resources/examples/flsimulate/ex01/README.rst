@@ -3,17 +3,19 @@ FLsimulate example ex01
 ============================
 
 :Author: F.Mauger
-:Date: 2016-12-07
+:Date: 2017-01-15
 
 TODO: flsimulate_next temporary stands for the flsimulate program.
 
 This example shows how to setup FLsimulate to produce simulation data.
 
-The simulation  setup uses  version 2.1, as  published in  the Falaise
+The simulation  setup uses version 2.1, as  published in  the Falaise
 resource directory.
 
 Setup
 =====
+
+See the ``vprofile.conf`` variant configuration profile below:
 
 * Geometry setup: basic without magnetic field
 * Primary events: \ :sup:`208`\ Tl decays
@@ -22,6 +24,8 @@ Setup
 
 Simulation run
 ==============
+
+See the ``flsimulate.conf`` main configuration script:
 
 * 100 generated events
 
@@ -44,12 +48,12 @@ Configuration files
    --load-dll "Falaise@$(flquery --libdir)" \
    --datatools::resource-path="falaise@$(flquery --resourcedir)" \
    --variant-config \
-     "@falaise:config/snemo/demonstrator/simulation/geant4_control/
-         2.1/variants/repository.conf" \
+     "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf" \
    --variant-gui \
    --variant-store "vprofile.conf"
 ..
 
+* ``services.conf`` : main configuration file for the service manager (geometry...)
 * ``seeds.conf`` : the random generator seed file as generated from:
 
 .. code:: sh
@@ -75,8 +79,7 @@ Visualization of output events:
 
    $ flvisualize \
    --variant-config \
-     "@falaise:config/snemo/demonstrator/simulation/geant4_control/
-        2.1/variants/repository.conf" \
+     "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf" \
    --variant-load "vprofile.conf" \
    --input-file "flSD.brio"
 ..
