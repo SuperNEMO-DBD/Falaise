@@ -25,6 +25,12 @@ material : string = "snemo::ca48::nemo3"
 material : string = "snemo::nd150::nemo3"
 
 
+#########################################
+[name="snemo::mo100::basic" type="alias"]
+#@config The material alias for the betabeta Mo100 source material (basic layout)
+material : string = "snemo::mo100::nemo3"
+
+
 ##############################################
 [name="bb_source_material.basic" type="alias"]
 
@@ -32,12 +38,15 @@ material : string = "snemo::nd150::nemo3"
 
 #@config The alias for the betabeta source material (basic layout)
 
+#@variant_only geometry:layout/if_basic/source_layout/if_basic/material/if_ca48|false
+material : string = "snemo::ca48::basic"
+
 #@description The name of the referenced material
 #@variant_only geometry:layout/if_basic/source_layout/if_basic/material/if_se82|true
 material : string = "snemo::se82::basic"
 
-#@variant_only geometry:layout/if_basic/source_layout/if_basic/material/if_ca48|false
-material : string = "snemo::ca48::basic"
+#@variant_only geometry:layout/if_basic/source_layout/if_basic/material/if_mo100|false
+material : string = "snemo::mo100::basic"
 
 #@variant_only geometry:layout/if_basic/source_layout/if_basic/material/if_nd150|false
 material : string = "snemo::nd150::basic"
