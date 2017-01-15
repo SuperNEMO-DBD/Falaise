@@ -7,6 +7,22 @@
 #@meta_label  "type"
 
 
+#############################################
+[name="snemo::molybdenum-100" type="element"]
+#@config The 100 Molybdenum enriched element (100 %)
+z               : integer   = 42
+isotope.names   : string[1] = "Mo-100"
+isotope.weights : real[1]   =   1.0
+
+
+########################################################
+[name="snemo::molybdenum-100::95percent" type="element"]
+#@config The 100 Molybdenum enriched element (95 %)
+z               : integer   = 42
+isotope.names   : string[2] = "Mo-100" "Mo-98 "
+isotope.weights : real[2]   =  0.95     0.05
+
+
 ##########################################
 [name="snemo::selenium-82" type="element"]
 #@config The 82 Selenium enriched element (100 %)
