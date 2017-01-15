@@ -48,6 +48,7 @@ namespace bpo = boost::program_options;
 #include "bayeux/datatools/multi_properties.h"
 #include "bayeux/datatools/things.h"
 #include "bayeux/datatools/configuration/variant_service.h"
+#include "bayeux/datatools/service_manager.h"
 #include "bayeux/dpp/output_module.h"
 #include "bayeux/geomtools/manager.h"
 #include "bayeux/mctools/g4/simulation_module.h"
@@ -63,6 +64,8 @@ namespace dtc = datatools::configuration;
 #include "falaise/resource.h"
 #include "FLSimulateResources.h"
 #include "PropertyReader.h"
+#include "falaise/snemo/processing/services.h"
+#include "falaise/snemo/datamodels/data_model.h"
 
 //----------------------------------------------------------------------
 // IMPLEMENTATION DETAILS
@@ -110,19 +113,22 @@ void do_help_scripting(std::ostream& os) {
      << "datatools::multi_properties script. The allowed sections and parameters are:\n"
      << std::endl
      << "[section=\"SimulationSubsystem\" description=\"\"]\n"
-     << "experimentID : string = \"demonstrator\"        # Name of detector to simulate (default=\"demonstrator\")\n"
-     << "simulationVersion : string = \"2.1\"            # Version of the simulation setup (default=\"2.1\")\n"
-     << "numberOfEvents : integer = 1                  # Number of events to simulate\n"
+     << "experimentID : string = \"demonstrator\"           # Name of detector to simulate (default=\"demonstrator\")\n"
+     << "simulationVersion : string = \"2.1\"               # Version of the simulation setup (default=\"2.1\")\n"
+     << "numberOfEvents : integer = 1                     # Number of events to simulate\n"
      // << "vertexGenerator : string = \"source_pads_bulk\" # Name of vertex point generator\n"
      // << "eventGenerator : string = \"Se82.2nubb\"        # Name of event generator\n"
-     << "rngSeedFile : string as path = \"seeds.conf\"   # Path to file containing random number seeds\n"
-     << "outputProfile : string = \"\"                   # Output profile (hits collections to output)\n"
+     << "rngSeedFile : string as path = \"seeds.conf\"      # Path to file containing random number seeds\n"
+     << "outputProfile : string = \"\"                      # Output profile (hits collections to output)\n"
      << std::endl
      << "[section=\"VariantSubsystem\" description=\"\"]\n"
      << "profile : string as path = \"vprofile.conf\"       # Input variant profile configuration file.\n"
      << "                                                 # (this is the recommended path). \n"
      << "settings : string[N] = \"setting1\" ... \"settingN\" # Individual variant settings\n"
      << "                                                 # (should be reserved to experts). \n"
+     << std::endl
+     << "[section=\"ServicesSubsystem\" description=\"\"]\n"
+     << "profile : string as path = \"services.conf\"       # Service manager profile configuration file.\n"
      << std::endl
      << "All sections and parameters are optional, and flsimulate will supply sensible\n"
      << "default values when only some are set.\n"
@@ -132,16 +138,18 @@ void do_help_scripting(std::ostream& os) {
 //! Collect all needed configuration parameters in one data structure
 struct FLSimulateArgs {
   // Application specific parameters:
-  datatools::logger::priority     logLevel;                //!< Logging priority threshold
-  unsigned int                    numberOfEvents;          //!< Number of events to be processed in the pipeline
-  std::string                     experimentID;            //!< The label of the virtual experimental setup
-  std::string                     setupSimulationVersion;  //!< The version number of the simulation engine setup
-  mctools::g4::manager_parameters simulationManagerParams; /** Parameters for the Geant4 simulation manager
-                                                            *  embedded in the simulation module
-                                                            */
-  std::string                     outputFile;              //!< Output data file for the output module
+  datatools::logger::priority     logLevel;                 //!< Logging priority threshold
+  unsigned int                    numberOfEvents;           //!< Number of events to be processed in the pipeline
+  std::string                     experimentID;             //!< The label of the virtual experimental setup
+  std::string                     setupSimulationVersion;   //!< The version number of the simulation engine setup
+  mctools::g4::manager_parameters simulationManagerParams;  /** Parameters for the Geant4 simulation manager
+                                                             *  embedded in the simulation module
+                                                             */
+  std::string                     outputFile;               //!< Output data file for the output module
   // Variants support:
-  dtc::variant_service::config    variantSubsystemParams;  //!< Variants configuration
+  dtc::variant_service::config    variantSubsystemParams;   //!< Variants configuration
+  // Service support:
+  std::string                     servicesSubsystemProfile; //!< The main configuration file for the service manager
 
 
   //! Construct and return the default configuration object
@@ -157,8 +165,6 @@ struct FLSimulateArgs {
     params.simulationManagerParams.set_defaults();
     params.simulationManagerParams.logging = "error";
     params.simulationManagerParams.manager_config_filename = FLSimulate::getControlFile(params.experimentID, params.setupSimulationVersion);
-    // params.simulationManagerParams.vg_name = "@variant(vertexes:generator)";       // source_pads_bulk";
-    // params.simulationManagerParams.eg_name = "@variant(primary_events:generator)"; // "Se82.0nubb";
     params.simulationManagerParams.input_prng_seeds_file = "";
     // Seeding is auto (from system) unless explicit file supplied
     params.simulationManagerParams.vg_seed   = mygsl::random_utils::SEED_AUTO; // PRNG for the vertex generator
@@ -168,6 +174,8 @@ struct FLSimulateArgs {
     params.simulationManagerParams.output_profiles_activation_rule = "";
     // Variants
     params.variantSubsystemParams.config_filename = FLSimulate::getVariantsConfigFile(params.experimentID, params.setupSimulationVersion);
+    // Services
+    params.servicesSubsystemProfile = FLSimulate::getServicesConfigFile(params.experimentID, params.setupSimulationVersion);
     // Profile loading as below doesn't appear to work... what is the __default__ thing used above?
     // NB, also fails in flsimulate if "__default__" is supplied, so looks like
     // error in variants or the formatting of the default profile.
@@ -263,25 +271,26 @@ void do_configure(int argc, char *argv[], FLSimulateArgs& params) {
   if(!args.configScript.empty()) {
     datatools::multi_properties flSimConfig("section", "description");
     flSimConfig.read(args.configScript);
-    //flSimConfig.tree_dump(std::cout);
+    // flSimConfig.tree_dump(std::cout, "", "DEVEL: ");
     // Now extract and bind values as needed
     // It's this that defines the schema... (note the awkwardness)
     // SimulationSubsystem
     if(flSimConfig.has_section("SimulationSubsystem")) {
        datatools::properties simSubsystem = flSimConfig.get_section("SimulationSubsystem");
        // Bind properties in this section to the relevant ones in params
-       params.experimentID = falaise::Properties::getValueOrDefault<std::string>(simSubsystem,"experimentID",params.experimentID);
-       params.setupSimulationVersion = falaise::Properties::getValueOrDefault<std::string>(simSubsystem,"simulationVersion", params.setupSimulationVersion);
+       params.experimentID
+         = falaise::Properties::getValueOrDefault<std::string>(simSubsystem,
+                                                               "experimentID",
+                                                               params.experimentID);
+       params.setupSimulationVersion
+         = falaise::Properties::getValueOrDefault<std::string>(simSubsystem,
+                                                               "simulationVersion",
+                                                               params.setupSimulationVersion);
        // Here we need to validate the config files for the experiment input
-       std::cerr << "DEVEL: experimentID = " << params.experimentID << std::endl;
-       std::cerr << "DEVEL: setupSimulationVersion = " << params.setupSimulationVersion << std::endl;
        try {
-         params.simulationManagerParams.manager_config_filename = FLSimulate::getControlFile(params.experimentID, params.setupSimulationVersion);
          params.variantSubsystemParams.config_filename = FLSimulate::getVariantsConfigFile(params.experimentID, params.setupSimulationVersion);
-         std::cerr << "DEVEL: manager_config_filename = " << params.simulationManagerParams.manager_config_filename << std::endl;
-         std::cerr << "DEVEL: variant config_filename = " << params.variantSubsystemParams.config_filename << std::endl;
-       }
-       catch (FLSimulate::UnknownResourceException& e) {
+         params.simulationManagerParams.manager_config_filename = FLSimulate::getControlFile(params.experimentID, params.setupSimulationVersion);
+       } catch (FLSimulate::UnknownResourceException& e) {
          throw FLConfigUserError {e.what()};
        }
 
@@ -300,18 +309,19 @@ void do_configure(int argc, char *argv[], FLSimulateArgs& params) {
          falaise::Properties::getValueOrDefault<std::string>(simSubsystem,
                                                              "outputProfile",
                                                              params.simulationManagerParams.output_profiles_activation_rule);
-       std::cerr << "DEVEL: numberOfEvents = " << params.numberOfEvents << std::endl;
-       std::cerr << "DEVEL: moduloEvents = " << params.simulationManagerParams.number_of_events_modulo /*params.moduloEvents*/ << std::endl;
-       std::cerr << "DEVEL: input_prng_seeds_file = " << params.simulationManagerParams.input_prng_seeds_file << std::endl;
-       std::cerr << "DEVEL: output_profiles_activation_rule = " << params.simulationManagerParams.output_profiles_activation_rule << std::endl;
     }
     if(flSimConfig.has_section("VariantSubsystem")) {
       datatools::properties variantSubsystem = flSimConfig.get_section("VariantSubsystem");
       // Bind properties to relevant ones on params
       params.variantSubsystemParams.profile_load = falaise::Properties::getValueOrDefault<std::string>(variantSubsystem,"profile",params.variantSubsystemParams.profile_load);
-      std::cerr << "DEVEL: variant profile_load = " << params.variantSubsystemParams.profile_load << std::endl;
       params.variantSubsystemParams.settings = falaise::Properties::getValueOrDefault<std::vector<std::string> >(variantSubsystem,"settings",params.variantSubsystemParams.settings);
-      std::cerr << "DEVEL: settings # = " << params.variantSubsystemParams.settings.size() << std::endl;
+    }
+    if(flSimConfig.has_section("ServicesSubsystem")) {
+       datatools::properties servicesSubsystem = flSimConfig.get_section("ServicesSubsystem");
+       params.servicesSubsystemProfile =
+         falaise::Properties::getValueOrDefault<std::string>(servicesSubsystem,
+                                                             "profile",
+                                                             params.servicesSubsystemProfile);
     }
   }
 }
@@ -330,12 +340,13 @@ falaise::exit_code do_flsimulate(int argc, char *argv[])
   } catch (FLConfigHelpHandled& e) {
     return falaise::EXIT_OK;
   } catch (FLConfigUserError& e) {
-    std::cerr << "user configuration error: " << e.what() << std::endl;
+    std::cerr << "User configuration error: " << e.what() << std::endl;
     return falaise::EXIT_USAGE;
   }
 
   // Variants support:
   dtc::variant_service vserv;
+  vserv.set_logging(datatools::logger::PRIO_TRACE);
   try {
     if (flSimParameters.variantSubsystemParams.is_active()) {
       vserv.configure(flSimParameters.variantSubsystemParams);
@@ -353,34 +364,32 @@ falaise::exit_code do_flsimulate(int argc, char *argv[])
   // - Run
   falaise::exit_code code = falaise::EXIT_OK;
   try {
-    // Analyse the simulation manager configuration:
-    datatools::multi_properties flSimProperties("name", "");
-    flSimProperties.read(flSimParameters.simulationManagerParams.manager_config_filename);
 
-    // Have to setup geometry (could this be made part of the simulation
-    // module?)
-    // datatools::properties flSimGeoManagerProperties;
-    std::string geoManagerFile = flSimProperties.get_section("geometry").fetch_path("manager.config");
-    geomtools::manager geoManager;
-    datatools::properties geoManagerProperties;
-    datatools::properties::read_config(geoManagerFile, geoManagerProperties);
-    geoManager.initialize(geoManagerProperties);
+    // Setup services:
+    datatools::service_manager services("SNServices", "SuperNEMO Services");
+    std::string services_config_file = flSimParameters.servicesSubsystemProfile;
+    datatools::fetch_path_with_env(services_config_file);
+    datatools::properties services_config;
+    services_config.read_configuration(services_config_file);
+    services.initialize(services_config);
 
     // Simulation module:
     mctools::g4::simulation_module flSimModule;
     flSimModule.set_name("G4SimulationModule");
-    flSimModule.set_sd_label("SD");
-    flSimModule.set_geometry_manager(geoManager);
+    std::string sd_label = snemo::datamodel::data_info::default_simulated_data_label();
+    std::string geo_label = snemo::processing::service_info::default_geometry_service_label();
+    flSimModule.set_sd_label(sd_label);
+    flSimModule.set_geo_label(geo_label);
     flSimModule.set_geant4_parameters(flSimParameters.simulationManagerParams);
-    flSimModule.initialize_simple();
+    flSimModule.initialize_simple_with_service(services);
 
-    // Output module:
+    // Simulation output module:
     dpp::output_module simOutput;
     simOutput.set_name("FLSimulateOutput");
     simOutput.set_single_output_file(flSimParameters.outputFile);
-    // Metadata management:
-    datatools::multi_properties & metadataStore = simOutput.grab_metadata_store();
-    metadataStore = flSimProperties;
+    // // Metadata management:
+    // datatools::multi_properties & metadataStore = simOutput.grab_metadata_store();
+    // metadataStore = flSimProperties;
     simOutput.initialize_simple();
 
     // Manual Event loop....
@@ -401,6 +410,8 @@ falaise::exit_code do_flsimulate(int argc, char *argv[])
         std::cerr << "flsimulate : Output module failed" << std::endl;
         code = falaise::EXIT_UNAVAILABLE;
       }
+
+      // Here we could install optional ASB+Digitization+terminal output modules
 
       if (code != falaise::EXIT_OK) {
         break;

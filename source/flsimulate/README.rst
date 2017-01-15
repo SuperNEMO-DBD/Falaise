@@ -3,7 +3,7 @@ Falaise Simulation Application
 ==============================
 
 :Author: F.Mauger
-:Date: 2016-12-07
+:Date: 2017-01-14
 
 What's Here
 ===========
@@ -38,7 +38,7 @@ Variant support
 
 FLsimulate automatically  configures a  *variance service*  adapted to
 the experimental  setup. For now only  the ``demonstrator`` experiment
-is supported and has its specific variance configuration.
+is supported and has its specific variant configuration.
 
 The variant  service allows  to select various  *tweakable* parameters
 like:
