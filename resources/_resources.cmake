@@ -274,6 +274,7 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_cont
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.1/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.1/processes/em.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.1/processes/particles.conf
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.1/variants/gdm.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.1/variants/models/simulation.def
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.1/variants/profiles/default.profile
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf
