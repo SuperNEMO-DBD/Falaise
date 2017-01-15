@@ -19,7 +19,7 @@ isotope.weights : real[1]   =   1.0
 [name="snemo::molybdenum-100::95percent" type="element"]
 #@config The 100 Molybdenum enriched element (95 %)
 z               : integer   = 42
-isotope.names   : string[2] = "Mo-100" "Mo-98 "
+isotope.names   : string[2] = "Mo-100" "Mo-98"
 isotope.weights : real[2]   =  0.95     0.05
 
 
