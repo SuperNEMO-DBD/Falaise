@@ -278,6 +278,7 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_cont
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.1/variants/models/simulation.def
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.1/variants/profiles/default.profile
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.1/variants/documentation/flsimulation-variant-doc.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.1/variants/registries/simulation.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.1/services.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.1/sensitive/calorimeter.conf
