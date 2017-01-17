@@ -338,7 +338,6 @@ void generate_pool_of_calo_spurious_hit(mygsl::rng * rdm_gen_,
         distrib = "poisson";
       }
 
-      if (number_of_calo_hit < 0) number_of_calo_hit = 0;
       double yield_threshold = 0.15; // Calorimeter signal E 15-100% yield
       for (unsigned int j = 0; j < number_of_calo_hit; j++)
         {
@@ -381,8 +380,6 @@ void generate_pool_of_geiger_spurious_hit(mygsl::rng * rdm_gen_,
         number_of_geiger_hit = rdm_gen_->poisson(mean_number);
         distrib = "poisson";
       }
-
-      if (number_of_geiger_hit < 0) number_of_geiger_hit = 0;
 
       // Introduce dead time : the geiger cell can not trigger again during a given time (1ms tipycally)
 
