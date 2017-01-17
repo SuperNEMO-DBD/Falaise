@@ -32,6 +32,8 @@ mode   : string  = "bulk"
 ######################################################
 [name="commissioning_single_spot" type="genvtx::cylinder_model_vg"]
 
+#@variant_section_only vertexes:generator/if_half_commissioning_single_spot|false
+
 #@config Vertex generation from from a commissioning spot;variant=if_half_commissioning_single_spot
 
 #@description Logging priority
