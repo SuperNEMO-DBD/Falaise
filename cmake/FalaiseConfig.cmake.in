@@ -34,6 +34,11 @@ set(Falaise_VERSION_REVISION "@Falaise_VERSION_REVISION@")
 # END OF CMAKE GENERATED
 
 #-----------------------------------------------------------------------
+# Setup paths that clients may need
+#
+set_and_check(Falaise_RESOURCE_DIR "@PACKAGE_CMAKE_INSTALL_DATAROOTDIR@/@FALAISE_RESOURCE_DIR@")
+
+#-----------------------------------------------------------------------
 # Handle paths/targets for third party deps here...
 # Our main dependency is Bayeux, and this will supply the main third
 # party deps for Falaise as well
@@ -47,12 +52,6 @@ if(NOT Falaise_TARGETS_LOADED)
   include("${CMAKE_CURRENT_LIST_DIR}/FalaiseTargets.cmake")
   set(Falaise_TARGETS_LOADED 1)
 endif()
-
-#-----------------------------------------------------------------------
-# Setup paths that clients may need
-#
-set_and_check(Falaise_RESOURCE_DIR "@PACKAGE_CMAKE_INSTALL_DATAROOTDIR@/@FALAISE_RESOURCE_DIR@")
-
 
 #-----------------------------------------------------------------------
 # Documentation - loaded optionally as it's only present if docs were
