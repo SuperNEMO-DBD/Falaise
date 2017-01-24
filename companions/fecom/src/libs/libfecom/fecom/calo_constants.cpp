@@ -36,7 +36,7 @@ namespace fecom {
     return 2.56e9 * CLHEP::hertz;
   }
 
-  double calo_constants::time_sample_duration(int clock_)
+  double calo_constants::time_sample_duration(int /* clock_*/)
   {
     double clock = 1. / default_sampling_frequency();
     return clock;

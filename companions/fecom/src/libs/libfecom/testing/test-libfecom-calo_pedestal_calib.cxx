@@ -6,7 +6,7 @@
 // This project:
 #include <fecom/calo_pedestal_calib.hpp>
 
-int main(int argc_, char ** argv_)
+int main(int /*argc_*/, char ** /*argv_*/)
 {
   try {
     fecom::calo_pedestal_calib ped;

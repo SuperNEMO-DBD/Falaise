@@ -1,10 +1,10 @@
-//! \file fecom/calo_hit_reader.hpp
+//! \file fecom/hit_reader.hpp
 //! \brief Wavecatcher readout raw event reader
 //
 // Copyright (c) 2016 by François Mauger <mauger@lpccaen.in2p3.fr>
 
-#ifndef FECOM_CALO_HIT_READER_HPP
-#define FECOM_CALO_HIT_READER_HPP
+#ifndef FECOM_HIT_READER_HPP
+#define FECOM_HIT_READER_HPP
 
 // Standard library:
 #include <string>
@@ -19,13 +19,13 @@
 
 // This project:
 #include <fecom/run_header.hpp>
-#include <fecom/calo_hit.hpp>
+#include <fecom/tracker_hit_parser.hpp>
 #include <fecom/calo_hit_parser.hpp>
 
 namespace fecom {
 
-  //! \brief Commissioning calo hit file reader
-  class calo_hit_reader
+  //! \brief Commissioning tracker hit file reader
+  class hit_reader
     : private boost::noncopyable
   {
   public:
@@ -33,7 +33,7 @@ namespace fecom {
     static const std::size_t HEADER_NBLINES = 7;
 
     //! Default constructor
-    calo_hit_reader();
+    hit_reader();
 
     //! Set the input file name
     void set_input_filename(const std::string & input_filename_);
@@ -45,7 +45,7 @@ namespace fecom {
     bool has_next_hit() const;
 
     //! Load the next hit
-    void load_next_hit(calo_hit & hit_);
+    void load_next_hit();
 
     //! Load the run header
     void load_run_header(run_header & header_);
@@ -89,13 +89,14 @@ namespace fecom {
     // Working:
     std::unique_ptr<std::ifstream> _fin_;        //!< Handle to the input file stream
     std::unique_ptr<run_header>    _header_;     //!< Handle to the input file header
-    calo_hit_parser                _hit_parser_; //!< Hit parser
+    calo_hit_parser                _calo_hit_parser_; //!< Hit parser
+    tracker_hit_parser             _tracker_hit_parser_; //!< Hit parser
 
   };
 
 } // namespace fecom
 
-#endif // FECOM_CALO_HIT_READER_HPP
+#endif // FECOM_HIT_READER_HPP
 
 // Local Variables: --
 // Mode: c++ --

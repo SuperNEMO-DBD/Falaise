@@ -7,7 +7,7 @@
 // This project:
 #include <fecom/run_header.hpp>
 
-int main(int argc_, char ** argv_)
+int main(int /*argc_*/, char ** /*argv_*/)
 {
   try {
     fecom::run_header rh;

@@ -6,7 +6,7 @@
 // This project:
 #include <fecom/calo_constants.hpp>
 
-int main(int argc_, char ** argv_)
+int main(int /*argc_*/, char ** /*argv_*/)
 {
   std::clog << "ADC dynamics    : " << fecom::calo_constants::adc_dynamics() / CLHEP::volt << " [V]" << std::endl;
   std::clog << "ADC unit        : " << fecom::calo_constants::adc_unit() / (1e-3 * CLHEP::volt) << " [mV]" << std::endl;

@@ -4,20 +4,28 @@
 #include <stdexcept>
 
 // This project:
-#include <fecom/calo_hit.hpp>
+#include <fecom/tracker_hit.hpp>
 
 int main(int /*argc_*/, char ** /*argv_*/)
 {
   try {
-    fecom::calo_hit hit;
+    fecom::tracker_hit hit;
+    hit.hit_id = 42;
+    hit.hitmode = fecom::base_hit::SIG_TRACKER;
     hit.slot_index = 4;
     hit.channel = 1;
-    hit.waveform_data_size = 16;
-    for (std::size_t icell = 0; icell < hit.waveform_data_size; icell++) {
-      hit.set_raw_sample(icell, 23);
-    }
-    hit.tree_dump(std::clog, "Calo hit:");
-    hit.print_waveform(std::cout);
+    hit.event_id = 155;
+    hit.set_anodic_times(50,
+			 61,
+			 82,
+			 150,
+			 189);
+
+    hit.set_cathodic_times(1352,
+			   1801);
+
+
+    hit.tree_dump(std::clog, "Tracker hit:");
 
   } catch (std::exception & error) {
     std::cerr << "error: " << error.what() << std::endl;

@@ -13,7 +13,7 @@ int main(int /*argc_*/, char ** /*argv_*/)
 
     fecom::calo_hit_reader creader;
     creader.set_logging(datatools::logger::PRIO_TRACE);
-    creader.set_input_filename("${FECOM_RESOURCES_DIR}/data/samples/run_0/calo_hits_1.dat");
+    creader.set_input_filename("${FECOM_RESOURCES_DIR}/data/samples/52fake_run/calo_fake_tracker_hits_1.dat");
     creader.initialize();
     fecom::run_header header;
     creader.load_run_header(header);
