@@ -53,17 +53,17 @@ namespace fecom {
     return;
   }
 
-  void hit_reader::load_next_hit()
+  void hit_reader::load_next_hit(calo_hit & a_calo_hit_,
+				 tracker_hit & a_tracker_hit_)
   {
     DT_THROW_IF(!_initialized_, std::logic_error, "Reader is not initialized!");
 
-    // TO DO :
-    // load next hit and use the tracker or calo parser (maybe do a hit_parser which do both at the same time
-
-    // bool success = _hit_parser_.parse(*_fin_, hit_);
-    // if (!success) {
-    //   DT_THROW(std::logic_error, "Parsing failed!");
-    // }
+    bool success = _hit_parser_.parse(*_fin_,
+				      a_calo_hit_,
+				      a_tracker_hit_);
+    if (!success) {
+      DT_THROW(std::logic_error, "Parsing failed!");
+    }
     // *_fin_ >> std::ws;
 
     return;
@@ -77,8 +77,7 @@ namespace fecom {
   void hit_reader::set_logging(datatools::logger::priority logging_)
   {
     _logging_ = logging_;
-    _calo_hit_parser_.logging = _logging_;
-    _tracker_hit_parser_.logging = _logging_;
+    _hit_parser_.logging = _logging_;
     return;
   }
 

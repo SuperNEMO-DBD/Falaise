@@ -41,9 +41,10 @@ namespace fecom {
 
   public:
 
-    int          hit_id;
-    hitmode_type hitmode;
+    int          hit_id;     ///< The hit ID
+    hitmode_type hitmode;    ///< The hitmode (CALO or TRACKER ftm)
     uint16_t     slot_index; ///< Board logical slot (0..19)
+		uint32_t     trigger_id; ///< Hit trigger ID
 
   };
 

@@ -23,6 +23,7 @@ set(FeCom_HEADERS
   fecom/tracker_hit_parser.hpp
   fecom/calo_hit_reader.hpp
   fecom/hit_reader.hpp
+  fecom/hit_parser.hpp
   )
 
 set(FeCom_PRIVATE_HEADERS
@@ -43,6 +44,7 @@ set(FeCom_SOURCES
   fecom/tracker_hit_parser.cpp
   fecom/calo_hit_reader.cpp
   fecom/hit_reader.cpp
+  fecom/hit_parser.cpp
   )
 
 set(FeCom_TESTS

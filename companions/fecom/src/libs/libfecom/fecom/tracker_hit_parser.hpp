@@ -26,7 +26,7 @@ namespace fecom {
   public:
 
     //! Number of header lines
-    static const std::size_t NB_HEADER_LINES = 2;
+    static const std::size_t NB_TRACKER_HEADER_LINES = 1;
 
     //! Constructor
     tracker_hit_parser();

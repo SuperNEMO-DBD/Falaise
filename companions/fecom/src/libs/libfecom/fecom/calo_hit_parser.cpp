@@ -17,7 +17,7 @@
 namespace fecom {
 
   // static
-  const std::size_t calo_hit_parser::NB_HEADER_LINES;
+  const std::size_t calo_hit_parser::NB_CALO_HEADER_LINES;
 
   calo_hit_parser::calo_hit_parser()
   {
@@ -30,10 +30,10 @@ namespace fecom {
     bool success = false;
     try {
       // Header:
-      for (std::size_t ih = 0; ih < NB_HEADER_LINES; ih++) {
+      for (std::size_t ih = 0; ih < NB_CALO_HEADER_LINES; ih++) {
         std::string hline;
         std::getline(in_, hline);
-        DT_LOG_DEBUG(logging, "Parsing header line '" << hline << "'");
+        DT_LOG_DEBUG(logging, "Calo hit parsing header line number " << ih << " : '" << hline << "'");
         _parse_header_(hline, ih, hit_);
         in_ >> std::ws;
       }
@@ -59,35 +59,43 @@ namespace fecom {
     DT_LOG_TRACE_ENTERING(logging);
     namespace qi = boost::spirit::qi;
     bool res = false;
+    std::clog << "INFO : INDEX = " << index_ << " header line = " << header_line_ << std::endl;
+
+    // Already done in hit_parser::parse()
+
+    // if (index_ == 0) {
+    //   std::string::const_iterator str_iter = header_line_.begin();
+    //   std::string::const_iterator end_iter = header_line_.end();
+    //   uint32_t hit_id;
+    //   std::string hit_type;
+    //   uint32_t trigger_id;
+    //   res = qi::phrase_parse(str_iter,
+    //                          end_iter,
+    //                          //  Begin grammar
+    //                          (
+    //                           qi::lit("===HIT") >> qi::uint_
+    //                           >> "==="
+    //                           >> (+~qi::char_("="))
+    //                           >> "==="
+    // 			      >> qi::lit("TRIGGER_ID")
+    // 			      >> qi::uint_
+    // 			      >> "==="
+    //                          ),
+    //                          //  End grammar
+    //                          qi::space,
+    //                          hit_id, hit_type, trigger_id);
+    //   std::clog << "INFO : HIT ID = " << hit_id << std::endl;
+    //   DT_THROW_IF(!res || str_iter != end_iter,
+    //               std::logic_error,
+    //               "Cannot parse file header line #" << index_);
+    //   DT_LOG_DEBUG(logging, "hit_id = " << hit_id);
+    //   DT_LOG_DEBUG(logging, "hit_type = " << hit_type);
+    //   DT_THROW_IF(hit_type != "CALO_HIT", std::logic_error, "Invalid hit type label '" << hit_type << "'!");
+    //   hit_.hit_id = hit_id;
+    //   hit_.hitmode = base_hit::SIG_CALORIMETER;
+    // }
 
     if (index_ == 0) {
-      std::string::const_iterator str_iter = header_line_.begin();
-      std::string::const_iterator end_iter = header_line_.end();
-      uint32_t hit_id;
-      std::string hit_type;
-      res = qi::phrase_parse(str_iter,
-                             end_iter,
-                             //  Begin grammar
-                             (
-                              qi::lit("===HIT") >> qi::uint_
-                              >> "==="
-                              >> (+~qi::char_("="))
-                              >> "==="
-                             ),
-                             //  End grammar
-                             qi::space,
-                             hit_id, hit_type);
-      DT_THROW_IF(!res || str_iter != end_iter,
-                  std::logic_error,
-                  "Cannot parse file header line #" << index_);
-      DT_LOG_DEBUG(logging, "hit_id = " << hit_id);
-      DT_LOG_DEBUG(logging, "hit_type = " << hit_type);
-      DT_THROW_IF(hit_type != "CALO_HIT", std::logic_error, "Invalid hit type label '" << hit_type << "'!");
-      hit_.hit_id = hit_id;
-      hit_.hitmode = base_hit::SIG_CALORIMETER;
-    }
-
-    if (index_ == 1) {
       std::string header_line = header_line_;
       // We use a trick because of nasty syntax from the DAQ ascii output:
       boost::replace_all(header_line, "Slot", "Slot ");

@@ -19,8 +19,7 @@
 
 // This project:
 #include <fecom/run_header.hpp>
-#include <fecom/tracker_hit_parser.hpp>
-#include <fecom/calo_hit_parser.hpp>
+#include <fecom/hit_parser.hpp>
 
 namespace fecom {
 
@@ -45,7 +44,8 @@ namespace fecom {
     bool has_next_hit() const;
 
     //! Load the next hit
-    void load_next_hit();
+    void load_next_hit(calo_hit & a_calo_hit_,
+		       tracker_hit & a_tracker_hit_);
 
     //! Load the run header
     void load_run_header(run_header & header_);
@@ -89,8 +89,7 @@ namespace fecom {
     // Working:
     std::unique_ptr<std::ifstream> _fin_;        //!< Handle to the input file stream
     std::unique_ptr<run_header>    _header_;     //!< Handle to the input file header
-    calo_hit_parser                _calo_hit_parser_; //!< Hit parser
-    tracker_hit_parser             _tracker_hit_parser_; //!< Hit parser
+    hit_parser                     _hit_parser_; //!< Hit parser
 
   };
 

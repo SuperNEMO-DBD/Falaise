@@ -25,7 +25,7 @@ namespace fecom {
   public:
 
     //! Number of header lines
-    static const std::size_t NB_HEADER_LINES = 2;
+    static const std::size_t NB_CALO_HEADER_LINES = 1;
 
     //! Constructor
     calo_hit_parser();

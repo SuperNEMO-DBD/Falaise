@@ -20,6 +20,8 @@ namespace fecom {
     : hitmode(SIG_INVALID)
     , slot_index(0xFFFF)
   {
+    hit_id = 0xFFFF;
+    trigger_id = 0xFFFFFFFF;
   }
 
   base_hit::base_hit(const hitmode_type hm_)
@@ -38,6 +40,8 @@ namespace fecom {
 
   void base_hit::reset()
   {
+    hit_id = 0xFFFF;
+    trigger_id = 0xFFFFFFFF;
     hitmode = SIG_INVALID;
     slot_index = 0xFFFF;
     return;
@@ -57,6 +61,9 @@ namespace fecom {
 
     out_ << indent_ << io::tag()
          << "Hit mode   : '" << hitmode_to_label(hitmode) << "'" << std::endl;
+
+    out_ << indent_ << io::tag()
+         << "Trigger ID     : " << trigger_id << std::endl;
 
     out_ << indent_ << io::inherit_last_tag(inherit_)
          << "Slot index : " << slot_index << std::endl;
