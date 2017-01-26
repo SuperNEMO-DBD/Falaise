@@ -235,7 +235,7 @@ namespace snemo {
           = &(data_record_.grab<snemo::datamodel::particle_track_data>(_PTD_label_));
       }
       snemo::datamodel::particle_track_data & the_particle_track_data = *ptr_particle_track_data;
-      if (the_particle_track_data.has_particles()) {
+      if (the_particle_track_data.has_particles() || the_particle_track_data.has_non_associated_calorimeters()) {
         DT_THROW_IF(abort_at_former_output, std::logic_error,
                     "Already has processed particle track data !");
         if (! preserve_former_output) {
