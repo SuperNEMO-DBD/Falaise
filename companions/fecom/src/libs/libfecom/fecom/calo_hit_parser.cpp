@@ -63,38 +63,6 @@ namespace fecom {
 
     // Already done in hit_parser::parse()
 
-    // if (index_ == 0) {
-    //   std::string::const_iterator str_iter = header_line_.begin();
-    //   std::string::const_iterator end_iter = header_line_.end();
-    //   uint32_t hit_id;
-    //   std::string hit_type;
-    //   uint32_t trigger_id;
-    //   res = qi::phrase_parse(str_iter,
-    //                          end_iter,
-    //                          //  Begin grammar
-    //                          (
-    //                           qi::lit("===HIT") >> qi::uint_
-    //                           >> "==="
-    //                           >> (+~qi::char_("="))
-    //                           >> "==="
-    // 			      >> qi::lit("TRIGGER_ID")
-    // 			      >> qi::uint_
-    // 			      >> "==="
-    //                          ),
-    //                          //  End grammar
-    //                          qi::space,
-    //                          hit_id, hit_type, trigger_id);
-    //   std::clog << "INFO : HIT ID = " << hit_id << std::endl;
-    //   DT_THROW_IF(!res || str_iter != end_iter,
-    //               std::logic_error,
-    //               "Cannot parse file header line #" << index_);
-    //   DT_LOG_DEBUG(logging, "hit_id = " << hit_id);
-    //   DT_LOG_DEBUG(logging, "hit_type = " << hit_type);
-    //   DT_THROW_IF(hit_type != "CALO_HIT", std::logic_error, "Invalid hit type label '" << hit_type << "'!");
-    //   hit_.hit_id = hit_id;
-    //   hit_.hitmode = base_hit::SIG_CALORIMETER;
-    // }
-
     if (index_ == 0) {
       std::string header_line = header_line_;
       // We use a trick because of nasty syntax from the DAQ ascii output:
@@ -187,7 +155,7 @@ namespace fecom {
     std::string::const_iterator str_iter = data_line_.begin();
     std::string::const_iterator end_iter = data_line_.end();
     std::vector<int> raw_waveform_data;
-    std::size_t waveform_data_size = 0; // unknown from the header !!! so we let Spirit guess it...
+    //     std::size_t waveform_data_size = 0; // unknown from the header !!! so we let Spirit guess it...
     bool res = false;
     res = qi::phrase_parse(str_iter,
                            end_iter,

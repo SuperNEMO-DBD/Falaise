@@ -9,7 +9,6 @@
 namespace fecom {
 
   tracker_hit::tracker_hit()
-    : base_hit(SIG_TRACKER)
   {
     _reset_();
   }
@@ -20,24 +19,19 @@ namespace fecom {
 
   bool tracker_hit::is_valid() const
   {
-    if (! this->base_hit::is_valid()) return false;
-    if (channel >= tracker_constants::INVALID_BOARD_CHANNEL) return false;
+    if (cell_id >= tracker_constants::NUMBER_OF_CELLS_PER_BOARD) return false;
     return true;
   }
 
   void tracker_hit::reset()
   {
-    this->base_hit::reset();
     _reset_();
-    hitmode = SIG_TRACKER;
     return;
   }
 
-
   void tracker_hit::_reset_()
   {
-    channel = tracker_constants::INVALID_BOARD_CHANNEL;
-    event_id = 0;
+    cell_id = tracker_constants::NUMBER_OF_CELLS_PER_BOARD;
     reset_anodic_t0();
     reset_anodic_t1();
     reset_anodic_t2();
@@ -255,13 +249,21 @@ namespace fecom {
 			      const std::string & indent_,
 			      bool inherit_) const
   {
-    this->base_hit::tree_dump(out_, title_, indent_, true);
+    if (!title_.empty()) {
+      out_ << indent_ << title_ << std::endl;
+    }
 
     out_ << indent_ << io::tag()
-         << "Channel                   : " << (int) channel << std::endl;
+         << "Cell ID                   : " << (int) cell_id << std::endl;
 
     out_ << indent_ << io::tag()
-         << "Event ID                  : " << (int) event_id << std::endl;
+         << "Anodic channel ID         : " << (int) anodic_channel << std::endl;
+
+    out_ << indent_ << io::tag()
+         << "Bottom cathode channel ID : " << (int) bottom_cathode_channel << std::endl;
+
+    out_ << indent_ << io::tag()
+         << "Top cathode channel ID    : " << (int) top_cathode_channel << std::endl;
 
     out_ << indent_ << io::tag()
          << "Anodic time 0             : " << (int) anodic_t0 << std::endl;

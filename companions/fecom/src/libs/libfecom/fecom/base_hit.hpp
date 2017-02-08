@@ -9,18 +9,29 @@
 #include <string>
 #include <iostream>
 
+// - Bayeux:
+// - Bayeux/datatools:
+#include <bayeux/datatools/utils.h>
+#include <bayeux/datatools/i_serializable.h>
+
 // This project:
 #include <fecom/utils.hpp>
 
 namespace fecom {
 
   struct base_hit
+		: public datatools::i_serializable
   {
     enum hitmode_type {
       SIG_INVALID     = 0,
       SIG_CALORIMETER = 1,
       SIG_TRACKER     = 2
     };
+
+		struct compare
+		{
+			bool operator()(const base_hit & a, const base_hit & b);
+		};
 
     base_hit();
 
@@ -39,6 +50,7 @@ namespace fecom {
 
     static std::string hitmode_to_label(const hitmode_type);
 
+
   public:
 
     int          hit_id;     ///< The hit ID
@@ -46,6 +58,7 @@ namespace fecom {
     uint16_t     slot_index; ///< Board logical slot (0..19)
 		uint32_t     trigger_id; ///< Hit trigger ID
 
+		DATATOOLS_SERIALIZATION_DECLARATION()
   };
 
 } // namespace fecom

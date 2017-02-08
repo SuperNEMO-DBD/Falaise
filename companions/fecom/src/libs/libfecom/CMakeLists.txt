@@ -11,19 +11,27 @@ set(FeCom_HEADERS
   ${CMAKE_CURRENT_BINARY_DIR}/fecom/version.hpp
   fecom/utils.hpp
   fecom/base_hit.hpp
+  fecom/base_hit.ipp
   fecom/calo_constants.hpp
   fecom/tracker_constants.hpp
   fecom/calo_utils.hpp
   fecom/calo_hit.hpp
+  fecom/calo_hit.ipp
   fecom/tracker_hit.hpp
+  fecom/tracker_channel_hit.hpp
+  fecom/tracker_channel_hit.ipp
+  fecom/commissioning_event.hpp
+  fecom/commissioning_event.ipp
+  fecom/channel_mapping.hpp
   fecom/calo_pedestal_calib.hpp
   fecom/calo_calibration.hpp
   fecom/run_header.hpp
   fecom/calo_hit_parser.hpp
-  fecom/tracker_hit_parser.hpp
+  fecom/tracker_channel_hit_parser.hpp
   fecom/calo_hit_reader.hpp
   fecom/hit_reader.hpp
   fecom/hit_parser.hpp
+  fecom/the_serializable.hpp
   )
 
 set(FeCom_PRIVATE_HEADERS
@@ -37,18 +45,23 @@ set(FeCom_SOURCES
   fecom/calo_utils.cpp
   fecom/calo_hit.cpp
   fecom/tracker_hit.cpp
+  fecom/tracker_channel_hit.cpp
+  fecom/commissioning_event.cpp
+  fecom/channel_mapping.cpp
   fecom/calo_pedestal_calib.cpp
   fecom/calo_calibration.cpp
   fecom/run_header.cpp
   fecom/calo_hit_parser.cpp
-  fecom/tracker_hit_parser.cpp
+  fecom/tracker_channel_hit_parser.cpp
   fecom/calo_hit_reader.cpp
   fecom/hit_reader.cpp
   fecom/hit_parser.cpp
+  fecom/the_serializable.cpp
   )
 
 set(FeCom_TESTS
   testing/test-libfecom-version.cxx
+  testing/test-libfecom-the_serializable.cxx
   testing/test-libfecom-calo_constants.cxx
   testing/test-libfecom-base_hit.cxx
   testing/test-libfecom-calo_hit.cxx
@@ -58,6 +71,7 @@ set(FeCom_TESTS
   testing/test-libfecom-run_header.cxx
   testing/test-libfecom-calo_hit_reader.cxx
   testing/test-libfecom-fake_hit_reader.cxx
+  testing/test-libfecom-fake_hit_reader_2.cxx
   )
 
 find_package(Bayeux 3.0.0

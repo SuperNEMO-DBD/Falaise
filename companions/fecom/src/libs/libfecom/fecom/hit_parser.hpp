@@ -15,7 +15,7 @@
 #include <bayeux/datatools/logger.h>
 
 // This project:
-#include <fecom/tracker_hit_parser.hpp>
+#include <fecom/tracker_channel_hit_parser.hpp>
 #include <fecom/calo_hit_parser.hpp>
 
 namespace fecom {
@@ -33,22 +33,22 @@ namespace fecom {
 
     //! Parse
     bool parse(std::istream & in_,
-	       calo_hit & a_calo_hit_,
-	       tracker_hit & a_tracker_hit_);
+							 calo_hit & a_calo_hit_,
+							 tracker_channel_hit & a_tracker_channel_hit_);
 
   private:
 
     void _parse_hit_header_(const std::string & header_line_,
-			    const int index);
+														const int index);
 
   public:
 
     // Management:
-    datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
+    datatools::logger::priority logging = datatools::logger::PRIO_DEBUG;
 
     // Config :
     calo_hit_parser    _calo_hit_parser_;    //!< Calo hit parser
-    tracker_hit_parser _tracker_hit_parser_; //!< Tracker hit parser
+    tracker_channel_hit_parser _tracker_channel_hit_parser_; //!< Tracker hit parser
 
     // Working :
     uint32_t               _hit_id_;        //!< Actual hit ID

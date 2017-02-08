@@ -27,7 +27,7 @@ namespace fecom {
 
   bool hit_parser::parse(std::istream & in_,
 			 calo_hit     & a_calo_hit_,
-			 tracker_hit  & a_tracker_hit_)
+			 tracker_channel_hit  & a_tracker_channel_hit_)
   {
     DT_LOG_TRACE_ENTERING(logging);
     bool success = false;
@@ -47,13 +47,15 @@ namespace fecom {
       // Calo or tracker parser
       if (_hit_mode_type_ == base_hit::SIG_CALORIMETER){
 	a_calo_hit_.hit_id = _hit_id_;
+	a_calo_hit_.hitmode = base_hit::SIG_CALORIMETER;
 	a_calo_hit_.trigger_id = _trigger_id_;
 	_calo_hit_parser_.parse(in_, a_calo_hit_);
       }
       else if (_hit_mode_type_ == base_hit::SIG_TRACKER){
-	a_tracker_hit_.hit_id = _hit_id_;
-	a_tracker_hit_.trigger_id = _trigger_id_;
-	_tracker_hit_parser_.parse(in_, a_tracker_hit_);
+	a_tracker_channel_hit_.hit_id = _hit_id_;
+	a_tracker_channel_hit_.hitmode = base_hit::SIG_TRACKER;
+	a_tracker_channel_hit_.trigger_id = _trigger_id_;
+	_tracker_channel_hit_parser_.parse(in_, a_tracker_channel_hit_);
 
       }
       else DT_THROW(std::logic_error, "Unknow hit type, check your file !");
@@ -83,7 +85,8 @@ namespace fecom {
                              end_iter,
                              //  Begin grammar
                              (
-                              qi::lit("===HIT") >> qi::uint_
+                              qi::lit("===HIT")
+			      >> qi::uint_
                               >> "==="
                               >> (+~qi::char_("="))
                               >> "==="

@@ -17,12 +17,15 @@ namespace fecom {
 
   struct tracker_constants
   {
-    static const uint16_t NUMBER_OF_CHANNEL_PER_FEAST = 18;
+		// Page 27 SNDER :
+    static const uint16_t NUMBER_OF_CHANNEL_PER_FEAST = 54;
     static const uint16_t NUMBER_OF_FEAST_PER_BOARD = 2;
     static constexpr uint16_t NUMBER_OF_CHANNEL_PER_BOARD
     = NUMBER_OF_CHANNEL_PER_FEAST
       * NUMBER_OF_FEAST_PER_BOARD;
-    static const uint16_t INVALID_BOARD_CHANNEL = NUMBER_OF_CHANNEL_PER_BOARD;
+		static const uint16_t NUMBER_OF_CELLS_PER_BOARD = 36;
+		static const uint16_t INVALID_FEAST_INDEX = NUMBER_OF_FEAST_PER_BOARD;
+    static const uint16_t INVALID_CHANNEL_INDEX = NUMBER_OF_CHANNEL_PER_BOARD;
     static const uint64_t INVALID_TIME = 0xFFFFFFFF;
   };
 

@@ -10,14 +10,16 @@
 #include <string>
 #include <iostream>
 
+// - Bayeux:
+#include <bayeux/datatools/utils.h>
+
 // This project:
-#include <fecom/base_hit.hpp>
 #include <fecom/tracker_constants.hpp>
+#include <fecom/utils.hpp>
 
 namespace fecom {
 
   struct tracker_hit
-    : public base_hit
   {
 
     tracker_hit();
@@ -119,14 +121,14 @@ namespace fecom {
 
     /// Set all anodic times
     void set_anodic_times(const uint64_t t0_,
-			  const uint64_t t1_,
-			  const uint64_t t2_,
-			  const uint64_t t3_,
-			  const uint64_t t4_);
+													const uint64_t t1_,
+													const uint64_t t2_,
+													const uint64_t t3_,
+													const uint64_t t4_);
 
     /// Set all cathodic times
     void set_cathodic_times(const uint64_t t5_,
-			    const uint64_t t6_);
+														const uint64_t t6_);
 
     /// Reset all times (anodic and cathodic)
     void reset_times();
@@ -137,8 +139,15 @@ namespace fecom {
 
   public:
 
-    uint8_t  channel;     ///< Channel (0..15)
-    uint8_t  event_id;    ///< Debug counter (0..255)
+		// To check if it necessary (hit id in base hit can be sufficient)
+
+		// SNDER p.27-28 for channel / cell association
+		// int Cell number = feast_number * 18 + channel / 3; (ex feast 1 channel 25 : 18 + 8 : cell #26
+
+    uint16_t cell_id;     ///< Cell ID on the board (0..36)
+    uint16_t anodic_channel;         ///< Anodic channel id
+    uint16_t bottom_cathode_channel; ///< Bottom cathode channel id
+    uint16_t top_cathode_channel;    ///< Top cathode channel id
 
     // DATA
     // 7 geiger timing
@@ -150,8 +159,6 @@ namespace fecom {
     uint64_t cathodic_t5; ///< Cathodic time 5
     uint64_t cathodic_t6; ///< Cathodic time 6
 
-
-    friend class tracker_hit_parser;
   };
 
 } // namespace fecom

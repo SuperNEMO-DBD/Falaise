@@ -159,7 +159,7 @@ namespace fecom {
       calib.slot_index = (uint16_t) id.board_id;
       calib.channel = (uint8_t) id.slot_id;
       calib.offset_size = (uint16_t) offsets.size();
-      for (std::size_t ioffset = parsing_data_.header.start_cell;
+      for (int16_t ioffset = parsing_data_.header.start_cell;
            ioffset <= parsing_data_.header.stop_cell;
            ioffset++) {
         calib.set_offset(ioffset, (int32_t) offsets.at(ioffset));

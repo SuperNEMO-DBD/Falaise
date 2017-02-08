@@ -8,6 +8,8 @@
 
 namespace fecom {
 
+  DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(calo_hit, "fecom::calo_hit")
+
   calo_hit::calo_hit()
     : base_hit(SIG_CALORIMETER)
   {
@@ -29,14 +31,14 @@ namespace fecom {
   {
     this->base_hit::reset();
     _reset_();
-    hitmode = SIG_CALORIMETER;
+    hitmode = SIG_INVALID;
     return;
   }
 
   void calo_hit::_reset_raw_waveform_data_()
   {
     for (size_t i = 0; i < calo_constants::MAX_NUMBER_OF_SAMPLES; i++) {
-      raw_waveform_data[i] = 0xFFFF;
+      raw_waveform_data[i] = 0xFFF;
     }
     return;
   }
@@ -139,7 +141,7 @@ namespace fecom {
     return;
   }
 
-  void calo_hit::print_waveform(std::ostream & out_, const uint32_t flags_) const
+  void calo_hit::print_waveform(std::ostream & out_, const uint32_t /*flags_*/) const
   {
     for (std::size_t i = 0; i < waveform_data_size; i++) {
       out_ << i << ' ' << raw_waveform_data[i] << '\n';

@@ -9,6 +9,10 @@
 #include <string>
 #include <iostream>
 
+// - Bayeux:
+// - Bayeux/datatools:
+#include <bayeux/datatools/utils.h>
+
 // This project:
 #include <fecom/base_hit.hpp>
 #include <fecom/calo_constants.hpp>
@@ -65,6 +69,8 @@ namespace fecom {
     bool     raw_charge_overflow;       ///< Raw charge overflow flag
     uint32_t raw_cfd_rising_edge_time;  ///< Raw CFD rising edge time
     uint32_t raw_cfd_falling_edge_time; ///< Raw CFD falling edge time
+
+		DATATOOLS_SERIALIZATION_DECLARATION()
 
     friend class calo_hit_parser;
   };

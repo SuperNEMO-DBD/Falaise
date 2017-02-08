@@ -45,7 +45,7 @@ namespace fecom {
 
     //! Load the next hit
     void load_next_hit(calo_hit & a_calo_hit_,
-		       tracker_hit & a_tracker_hit_);
+											 tracker_channel_hit & a_tracker_channel_hit_);
 
     //! Load the run header
     void load_run_header(run_header & header_);

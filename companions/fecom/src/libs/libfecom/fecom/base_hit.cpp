@@ -5,6 +5,8 @@
 
 namespace fecom {
 
+  DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(base_hit, "fecom::base_hit")
+
   // static
   std::string base_hit::hitmode_to_label(const hitmode_type hm_)
   {
@@ -35,7 +37,7 @@ namespace fecom {
 
   bool base_hit::is_valid() const
   {
-    return hitmode != SIG_INVALID && slot_index < 16;
+    return hitmode != SIG_INVALID && slot_index < 20;
   }
 
   void base_hit::reset()
@@ -70,5 +72,21 @@ namespace fecom {
 
     return;
   }
+
+  bool base_hit::compare::operator()(const base_hit & a, const base_hit & b)
+  {
+    if (a.hit_id < b.hit_id) {
+      return true;
+    }
+    else if ((a.hit_id == b.hit_id)){
+      DT_THROW(std::logic_error, "Two hits have the same hit_id, hit_a = '" << a.hit_id << "' , hit_b = '" << b.hit_id << "' !");
+     return true;
+    }
+
+    else {
+      return false;
+    }
+  }
+
 
 } // namespace fecom

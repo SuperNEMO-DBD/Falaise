@@ -54,13 +54,13 @@ namespace fecom {
   }
 
   void hit_reader::load_next_hit(calo_hit & a_calo_hit_,
-				 tracker_hit & a_tracker_hit_)
+				 tracker_channel_hit & a_tracker_channel_hit_)
   {
     DT_THROW_IF(!_initialized_, std::logic_error, "Reader is not initialized!");
 
     bool success = _hit_parser_.parse(*_fin_,
 				      a_calo_hit_,
-				      a_tracker_hit_);
+				      a_tracker_channel_hit_);
     if (!success) {
       DT_THROW(std::logic_error, "Parsing failed!");
     }

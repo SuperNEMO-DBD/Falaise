@@ -61,7 +61,7 @@ namespace fecom {
     return get_offset(cell_) * calo_constants::adc_offset_unit();
   }
 
-  void calo_pedestal_calib::print_offsets(std::ostream & out_, const uint32_t flags_) const
+  void calo_pedestal_calib::print_offsets(std::ostream & out_, const uint32_t /* flags_*/) const
   {
     for (std::size_t i = 0; i < offset_size; i++) {
       out_ << i << ' ' << offset[i] << '\n';
