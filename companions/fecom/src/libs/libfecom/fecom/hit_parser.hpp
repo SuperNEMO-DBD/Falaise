@@ -44,7 +44,7 @@ namespace fecom {
   public:
 
     // Management:
-    datatools::logger::priority logging = datatools::logger::PRIO_DEBUG;
+    datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
 
     // Config :
     calo_hit_parser    _calo_hit_parser_;    //!< Calo hit parser

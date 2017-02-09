@@ -22,6 +22,8 @@ set(FeCom_HEADERS
   fecom/tracker_channel_hit.ipp
   fecom/commissioning_event.hpp
   fecom/commissioning_event.ipp
+  fecom/commissioning_event_data.hpp
+  fecom/commissioning_event_data.ipp
   fecom/channel_mapping.hpp
   fecom/calo_pedestal_calib.hpp
   fecom/calo_calibration.hpp
@@ -47,6 +49,7 @@ set(FeCom_SOURCES
   fecom/tracker_hit.cpp
   fecom/tracker_channel_hit.cpp
   fecom/commissioning_event.cpp
+  fecom/commissioning_event_data.cpp
   fecom/channel_mapping.cpp
   fecom/calo_pedestal_calib.cpp
   fecom/calo_calibration.cpp
@@ -65,6 +68,7 @@ set(FeCom_TESTS
   testing/test-libfecom-calo_constants.cxx
   testing/test-libfecom-base_hit.cxx
   testing/test-libfecom-calo_hit.cxx
+  testing/test-libfecom-tracker_channel_hit.cxx
   testing/test-libfecom-tracker_hit.cxx
   testing/test-libfecom-calo_pedestal_calib.cxx
   testing/test-libfecom-calo_calibration.cxx

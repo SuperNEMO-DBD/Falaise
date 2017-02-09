@@ -42,10 +42,11 @@
 
 // - Bayeux:
 // - Bayeux/datatools:
-#include <datatools/datatools_config.h>
 #include <datatools/logger.h>
-#include <datatools/exception.h>
 #include <datatools/io_factory.h>
+
+// - Bayeux/brio:
+#include <brio/writer.h>
 
 // This project:
 #include <fecom/commissioning_event.hpp>
@@ -94,7 +95,7 @@ int main (int argc_, char ** argv_)
   return EXIT_SUCCESS;
 }
 
-/// Serialize a single ``commissioning_event`` instance in a XML file
+/// Serialize a single ``commissioning_event`` instance in a txt file
 void ex_com_event_1(datatools::logger::priority logging)
 {
   DT_LOG_DEBUG(logging, "ENTERING EX_COM_EVENT_1");
@@ -142,34 +143,37 @@ void ex_com_event_1(datatools::logger::priority logging)
       CE.add_tracker_channel_hit(tchit);
     }
 
-
   // Print it :
   DT_LOG_NOTICE(logging, "Commissioning event : ");
   CE.tree_dump(std::clog, "My commissioning event before serialization");
 
-  std::string output_filename = "${FECOM_RESOURCES_DIR}/output_test/commissioning_event.xml";
+  std::string output_filename = "${FECOM_RESOURCES_DIR}/output_test/commissioning_event.data";
   datatools::fetch_path_with_env(output_filename);
 
-  // Store the hit in a Boost/archive file (XML format):
+  // Store the hit in a Boost/archive file (txt / XML format):
   DT_LOG_DEBUG(logging, "Serialize the commissioning event...");
   datatools::data_writer serializer(output_filename,
                                     datatools::using_multiple_archives);
+
+  brio::writer my_writer("${FECOM_RESOURCES_DIR}/output_test/commissioning_event.brio", logging);
+  my_writer.store(CE);
+
   serializer.store(CE);
-  DT_LOG_INFORMATION(logging, "The hit has been stored in the ``commissioning_event.xml`` file.");
+  DT_LOG_INFORMATION(logging, "The hit has been stored in the ``commissioning_event.data`` file.");
 
 
   DT_LOG_DEBUG(logging, "EXITING EX_COM_EVENT_1");
   return;
 }
 
-/// Deserialize a single ``commissioning_event`` instance in a XML file
+/// Deserialize a single ``commissioning_event`` instance in a txt file
 void ex_com_event_2(datatools::logger::priority logging)
 {
   DT_LOG_DEBUG(logging, "ENTERING EX_COM_EVENT_2");
-  std::string input_filename = "${FECOM_RESOURCES_DIR}/output_test/commissioning_event.xml";
+  std::string input_filename = "${FECOM_RESOURCES_DIR}/output_test/commissioning_event.data";
   datatools::fetch_path_with_env(input_filename);
 
-  // Store the hit in a Boost/archive file (XML format):
+  // Store the hit in a Boost/archive file (txt / XML format):
   DT_LOG_DEBUG(logging, "Serialize the commissioning event...");
   datatools::data_reader deserializer(input_filename,
 				      datatools::using_multiple_archives);
@@ -180,9 +184,33 @@ void ex_com_event_2(datatools::logger::priority logging)
   fecom::commissioning_event CE;
 
   deserializer.load(CE);
-  DT_LOG_INFORMATION(logging, "The commissioning event has been loaded from the ``commissioning_event.xml`` file.");
+  DT_LOG_INFORMATION(logging, "The commissioning event has been loaded from the ``commissioning_event.data`` file.");
 
   CE.tree_dump(std::clog, "My commissioning event after deserialization");
+
+  std::size_t calo_counter = 0;
+  for (auto it_calo = CE.get_calo_hit_collection().begin();
+       it_calo != CE.get_calo_hit_collection().end();
+       it_calo++)
+    {
+      fecom::calo_hit a_calo_hit = * it_calo;
+      a_calo_hit.tree_dump(std::clog, "Read from commissioning event calo #" + std::to_string(calo_counter));
+      calo_counter++;
+      std::clog << "calo counter = " << calo_counter << std::endl;
+    }
+
+  std::size_t tracker_counter = 0;
+  for (auto it_tracker = CE.get_tracker_channel_hit_collection().begin();
+       it_tracker != CE.get_tracker_channel_hit_collection().end();
+       it_tracker++)
+    {
+      fecom::tracker_channel_hit a_tracker_channel_hit = * it_tracker;
+      a_tracker_channel_hit.tree_dump(std::clog, "Read from commissioning event tracker #" + std::to_string(tracker_counter));
+      tracker_counter++;
+      std::clog << "tracker counter = " << tracker_counter << std::endl;
+    }
+
+
 
   DT_LOG_DEBUG(logging, "EXITING EX_COM_EVENT_2");
   return;

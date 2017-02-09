@@ -48,7 +48,7 @@ namespace fecom {
   public:
 
     // Management:
-    datatools::logger::priority logging = datatools::logger::PRIO_DEBUG;
+    datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
 
   };
 

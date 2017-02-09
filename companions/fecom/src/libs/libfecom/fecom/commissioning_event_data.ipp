@@ -1,5 +1,5 @@
 // Ourselves:
-#include <fecom/commissioning_event.hpp>
+#include <fecom/commissioning_event_data.hpp>
 
 // Third party:
 // - Boost:
@@ -21,12 +21,10 @@
 namespace fecom {
 
   template<class Archive>
-  void commissioning_event::serialize(Archive & ar, const unsigned int /*version*/)
+  void commissioning_event_data::serialize(Archive & ar, const unsigned int /*version*/)
   {
     ar & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
-    ar & boost::serialization::make_nvp("trigger_id",  _trigger_id_);
-    ar & boost::serialization::make_nvp("calo_hit_collection", _calo_hit_collection_);
-    ar & boost::serialization::make_nvp("tracker_channel_hit_collection", _tracker_channel_hit_collection_);
+    ar & boost::serialization::make_nvp("_commissioning_event_collection_",  _commissioning_event_collection_);
     return;
   }
 

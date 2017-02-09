@@ -85,6 +85,7 @@ namespace fecom {
 
     out_ << indent_ << io::inherit_last_tag(inherit_)
          << "Tracker channel hit collection size : " << _tracker_channel_hit_collection_.size() << std::endl;
+
     out_ << indent_ << io::inherit_last_tag(inherit_)
          << "Tracker hit collection size : " << _tracker_hit_collection_.size() << std::endl;
 
