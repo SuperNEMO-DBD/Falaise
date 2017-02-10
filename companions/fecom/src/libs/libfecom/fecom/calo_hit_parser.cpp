@@ -59,7 +59,6 @@ namespace fecom {
     DT_LOG_TRACE_ENTERING(logging);
     namespace qi = boost::spirit::qi;
     bool res = false;
-    std::clog << "INFO : INDEX = " << index_ << " header line = " << header_line_ << std::endl;
 
     // Already done in hit_parser::parse()
 

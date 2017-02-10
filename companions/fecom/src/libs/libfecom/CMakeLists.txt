@@ -76,6 +76,7 @@ set(FeCom_TESTS
   testing/test-libfecom-calo_hit_reader.cxx
   testing/test-libfecom-fake_hit_reader.cxx
   testing/test-libfecom-fake_hit_reader_2.cxx
+  testing/test-libfecom-event_builder.cxx
   )
 
 find_package(Bayeux 3.0.0

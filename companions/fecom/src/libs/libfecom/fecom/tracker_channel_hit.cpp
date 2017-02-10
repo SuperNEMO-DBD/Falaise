@@ -46,6 +46,7 @@ namespace fecom {
     channel_type = INVALID_CHANNEL;
     timestamp_type = "INVALID";
     reset_timestamp();
+    associated = false;
     return;
   }
 
@@ -82,6 +83,9 @@ namespace fecom {
 
     out_ << indent_ << io::inherit_last_tag(inherit_)
          << "Validity                  : " << std::boolalpha << is_valid() << std::endl;
+
+    out_ << indent_ << io::inherit_last_tag(inherit_)
+         << "Already associated        : " << std::boolalpha << associated << std::endl;
 
     return;
   }

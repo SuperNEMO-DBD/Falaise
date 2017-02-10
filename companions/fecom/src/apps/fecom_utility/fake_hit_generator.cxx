@@ -12,21 +12,21 @@
 
 void generate_fake_calo_hit(std::mt19937_64 & rng_,
 			    std::ofstream & out_,
-			    uint16_t hit_id_);
+			    uint64_t hit_id_);
 
 void generate_fake_tracker_hit(std::mt19937_64 & rng_,
 			       std::ofstream & out_,
-			       uint16_t hit_id_);
+			       uint64_t hit_id_);
 
 int main(int /*argc_*/, char ** /*argv_*/)
 {
   try {
 
-    std::string output_file = "${FECOM_RESOURCES_DIR}/output_test/test_generate_fake_hit.dat";
+    std::string output_file = "${FECOM_RESOURCES_DIR}/output_test/test_generate_fake_hit_large.dat";
     datatools::fetch_path_with_env(output_file);
 
     std::ofstream file(output_file,
-		       std::ios::out | std::ios::trunc);  // Open in write access with file delete
+		       std::ios::out | std::ios::trunc); // Open in write access with file delete
     if(file)
       {
 	// Run header :
@@ -41,9 +41,13 @@ int main(int /*argc_*/, char ** /*argv_*/)
 	unsigned int seed = 314157;
 	std::mt19937_64 rng;
 	rng.seed(seed);
-	uint16_t hit_id = 0;
+	uint64_t hit_id = 0;
 
-	for (std::size_t icalo = 0; icalo < 150; icalo++)
+	const std::size_t NUMBER_OF_CALO_HITS = 150000;
+	const std::size_t NUMBER_OF_TRACKER_HITS = 1500000;
+
+
+	for (std::size_t icalo = 0; icalo < NUMBER_OF_CALO_HITS; icalo++)
 	  {
 	    generate_fake_calo_hit(rng,
 				   file,
@@ -51,7 +55,7 @@ int main(int /*argc_*/, char ** /*argv_*/)
 	    hit_id++;
 	  }
 
-	for (std::size_t itrack = 0; itrack < 1000; itrack++)
+	for (std::size_t itrack = 0; itrack < NUMBER_OF_TRACKER_HITS; itrack++)
 	  {
 	    generate_fake_tracker_hit(rng,
 				      file,
@@ -74,13 +78,14 @@ int main(int /*argc_*/, char ** /*argv_*/)
 
 void generate_fake_calo_hit(std::mt19937_64 & rng_,
 			    std::ofstream & out_,
-			    uint16_t hit_id_)
+			    uint64_t hit_id_)
 {
+  const uint32_t NUMBER_OF_TRIGGER_ID = 100000;
   std::uniform_int_distribution<int> unif_int(0, 1000000);
   // Hit id : external counter
-  uint16_t hit_id = hit_id_;
+  uint64_t hit_id = hit_id_;
   // Trigger id : [0:99]
-  uint16_t trigger_id = unif_int(rng_) % 100;
+  uint32_t trigger_id = unif_int(rng_) % NUMBER_OF_TRIGGER_ID;
   // Slot id : [0:19]
   uint16_t slot_id = unif_int(rng_) % 20;
   // Channel id : [0:15]
@@ -99,13 +104,14 @@ void generate_fake_calo_hit(std::mt19937_64 & rng_,
 
 void generate_fake_tracker_hit(std::mt19937_64 & rng_,
 			       std::ofstream & out_,
-			       uint16_t hit_id_)
+			       uint64_t hit_id_)
 {
+  const uint32_t NUMBER_OF_TRIGGER_ID = 100000;
   std::uniform_int_distribution<int> unif_int(0, 1000000);
   // Hit id : external counter
-  uint16_t hit_id = hit_id_;
+  uint64_t hit_id = hit_id_;
   // Trigger id : [0:99]
-  uint16_t trigger_id = unif_int(rng_) % 100;
+  uint32_t trigger_id = unif_int(rng_) % NUMBER_OF_TRIGGER_ID;
   // Slot id : [0:19]
   uint16_t slot_id = unif_int(rng_) % 20;
   // Feast id : [0:1]
@@ -117,7 +123,7 @@ void generate_fake_tracker_hit(std::mt19937_64 & rng_,
   // Timestamp type : t0-t6
   std::string timestamp_type = "INVALID";
   // Timestamp value : [0:1000000]
-  uint32_t timestamp_value = unif_int(rng_);
+  uint64_t timestamp_value = unif_int(rng_);
 
   uint16_t anodic_or_cathodic_choose = unif_int(rng_) % 7;
 

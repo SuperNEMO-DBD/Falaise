@@ -24,7 +24,7 @@ namespace fecom {
   void commissioning_event_data::serialize(Archive & ar, const unsigned int /*version*/)
   {
     ar & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
-    ar & boost::serialization::make_nvp("_commissioning_event_collection_",  _commissioning_event_collection_);
+    ar & boost::serialization::make_nvp("commissioning_event_collection",  _commissioning_event_collection_);
     return;
   }
 

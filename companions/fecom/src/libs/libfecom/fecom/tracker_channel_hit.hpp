@@ -53,6 +53,9 @@ namespace fecom {
 
   public:
 
+		// Management :
+		bool associated = false;
+
     // Config :
     uint16_t feast_id; ///< FEAST (0..1)
     uint16_t channel;  ///< Channel (0..15)

@@ -18,6 +18,7 @@
 #include <fecom/calo_hit.hpp>
 #include <fecom/tracker_hit.hpp>
 #include <fecom/tracker_channel_hit.hpp>
+#include <fecom/channel_mapping.hpp>
 
 namespace fecom {
 
@@ -52,6 +53,10 @@ namespace fecom {
 
 		bool is_valid() const;
 
+		void set_channel_mapping(const fecom::channel_mapping & mapping_);
+
+		const fecom::channel_mapping & get_channel_mapping() const;
+
 		void add_calo_hit(fecom::calo_hit & a_calo_hit_);
 
 		void add_tracker_channel_hit(fecom::tracker_channel_hit & a_tracker_channel_hit_);
@@ -64,6 +69,8 @@ namespace fecom {
 
 		const commissioning_event::tracker_channel_hit_collection & get_tracker_channel_hit_collection() const;
 
+    void build_tracker_hit_from_channels();
+
     virtual void reset();
 
     virtual void tree_dump(std::ostream & out_,
@@ -71,17 +78,16 @@ namespace fecom {
                            const std::string & indent_ = "",
                            bool inherit_ = false) const;
 
-
-  protected :
-
-    void _build_tracker_hit_from_channels(/*mapping * an_electronic_mapping_*/);
-
   private:
 
     void _reset_();
 
-    uint32_t _trigger_id_; ///< Hit trigger ID
+		// Configuration
+		const fecom::channel_mapping * _my_channel_mapping_ = nullptr;
 
+
+		// Datas :
+    uint32_t _trigger_id_; ///< Hit trigger ID
     calo_hit_collection _calo_hit_collection_; ///< Calo hit collection for a trigger id
 		tracker_channel_hit_collection _tracker_channel_hit_collection_; ///< Tracker hit collection for a trigger id
     tracker_hit_collection _tracker_hit_collection_; ///< Tracker hit collection for a trigger id

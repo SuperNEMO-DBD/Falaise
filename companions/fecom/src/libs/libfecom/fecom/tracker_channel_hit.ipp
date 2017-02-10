@@ -30,6 +30,7 @@ namespace fecom {
     ar & boost::serialization::make_nvp("channel_type", channel_type);
     ar & boost::serialization::make_nvp("timestamp_type", timestamp_type);
     ar & boost::serialization::make_nvp("timestamp_value", timestamp_value);
+    ar & boost::serialization::make_nvp("associated", associated);
     return;
   }
 

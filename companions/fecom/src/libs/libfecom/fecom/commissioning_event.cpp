@@ -21,6 +21,17 @@ namespace fecom {
     return _trigger_id_ != 0xFFFFFFFF;
   }
 
+  void commissioning_event::set_channel_mapping(const fecom::channel_mapping & mapping_)
+  {
+    _my_channel_mapping_ = & mapping_;
+    return;
+  }
+
+  const fecom::channel_mapping & commissioning_event::get_channel_mapping() const
+  {
+    return * _my_channel_mapping_;
+  }
+
   void commissioning_event::add_calo_hit(fecom::calo_hit & a_calo_hit_)
   {
     _calo_hit_collection_.insert(a_calo_hit_);
@@ -54,6 +65,36 @@ namespace fecom {
     return _tracker_channel_hit_collection_;
   }
 
+  void commissioning_event::build_tracker_hit_from_channels()
+  {
+    std::clog << "Number of tracker channel in the event : " << _tracker_channel_hit_collection_.size() << std::endl;
+
+    for (auto ichan = _tracker_channel_hit_collection_.begin();
+	 ichan != _tracker_channel_hit_collection_.end();
+	 ichan++)
+      {
+	if (ichan -> associated) {
+	  // Channel already associated to a tracker hit.
+	  // Skip it and go to the next it
+	  break;
+	}
+	else {
+	  // Create a new tracker hit and search his associated channels
+	  fecom::tracker_hit a_tracker_hit;
+
+	  /*
+	  uint16_t feast_id = ichan -> feast_id;
+	  uint16_t channel  = ichan -> channel; */
+	  // ichan
+
+	}
+      }
+
+
+
+    return;
+  }
+
   void commissioning_event::reset()
   {
     _reset_();
@@ -62,6 +103,7 @@ namespace fecom {
 
   void commissioning_event::_reset_()
   {
+    _my_channel_mapping_ = nullptr;
     _trigger_id_ = 0xFFFFFFFF;
     _calo_hit_collection_.clear();
     _tracker_channel_hit_collection_.clear();

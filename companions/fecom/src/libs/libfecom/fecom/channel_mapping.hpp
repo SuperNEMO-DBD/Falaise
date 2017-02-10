@@ -24,8 +24,8 @@ namespace fecom {
 
     /// Get associated channels for a given channel (same for the two FEAST)
     void get_associated_channels(const uint16_t channel_id_,
-				 uint16_t & associated_channel_1_,
-				 uint16_t & associated_channel_2_);
+																 uint16_t & associated_channel_1_,
+																 uint16_t & associated_channel_2_);
 
     /// Check if the channel is anodic
     bool is_anodic_channel(const uint16_t channel_id_);
@@ -43,8 +43,7 @@ namespace fecom {
                            const std::string & indent_ = "",
                            bool inherit_ = false) const;
 
-
-  private:
+	private :
 
     void _reset_();
 
