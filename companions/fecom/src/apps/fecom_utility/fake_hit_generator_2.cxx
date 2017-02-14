@@ -10,6 +10,13 @@
 // - Bayeux/datatools:
 #include <datatools/io_factory.h>
 
+void generate_header(std::ofstream & out_);
+
+void generate_fake_event(std::ofstream & out_,
+			 std::mt19937_64 & rng_,
+			 uint64_t & hit_id_,
+			 uint64_t & trigger_id_);
+
 void generate_fake_calo_hit(std::mt19937_64 & rng_,
 			    std::ofstream & out_,
 			    uint64_t hit_id_);
@@ -18,50 +25,90 @@ void generate_fake_tracker_hit(std::mt19937_64 & rng_,
 			       std::ofstream & out_,
 			       uint64_t hit_id_);
 
-int main(int /*argc_*/, char ** /*argv_*/)
+struct tracker_hit
 {
+  uint16_t cell_id; // channel mapping associate cell to channel (anodic and cathodic)
+
+  // Anodic timestamp :
+  uint16_t timestamp_t0;
+  uint16_t timestamp_t1;
+  uint16_t timestamp_t2;
+  uint16_t timestamp_t3;
+  uint16_t timestamp_t4;
+  // Cathodic timestamp :
+  uint16_t timestamp_t5;
+  uint16_t timestamp_t6;
+};
+
+
+struct event
+{
+  uint32_t event_ID;
+
+
+
+};
+
+int main(int argc_, char ** argv_)
+{
+    // Parsing arguments
+  int iarg = 1;
+  uint64_t NUMBER_OF_GENERATED_EVENTS = 10;
+
+  while (iarg < argc_) {
+    std::string arg = argv_[iarg];
+
+    if (arg == "-n" || arg == "--event-number")
+      {
+	NUMBER_OF_GENERATED_EVENTS = atoi(argv_[++iarg]);
+      }
+  }
+
   try {
 
-    std::string output_file = "${FECOM_RESOURCES_DIR}/output_test/test_generate_fake_hit_10_events.dat";
+    std::string output_file = "${FECOM_RESOURCES_DIR}/output_test/test_new_fake_hit_generator.dat";
     datatools::fetch_path_with_env(output_file);
 
     std::ofstream file(output_file,
 		       std::ios::out | std::ios::trunc); // Open in write access with file delete
     if(file)
       {
-	// Run header :
-	file << "=== DATA FILE SAVED WITH SN CRATE SOFTWARE VERSION: V1.2  == DATE OF RUN: UnixTime = 1481892599.431 date = 2016.12.16 time = 13h.49m.59s.431ms  ===" << std::endl;
-	file << "=== OTHER INFORMATIONS ===" << std::endl;
-	file << "=== DATA TYPE : RAW ===" << std::endl;
-	file << "=== DATA STRUCTURE INFO ===" << std::endl;
-	file << "===HIT number(int)  === (hit_type : 'CALO_HIT' or 'TRACKER_HIT' ===" << std::endl;
-	file << "=== SlotIndex (int) Ch (int) EvtID (int) RawTDC (unsigned long long) LT_TrigCount(int) LT_TimeCount(int) RawBaseline (signed short *16) RawPeak (signed shor *8) PeakCell (unsigned short) RawCharge (int ) ChargeOverflow(int) RisingEdgeCell (int) RisingTimeOffset(int * 256) FallingEdgeCell(int) FallingEdgeOffset (int *256) FCR (uint) ===" << std::endl;
-	file << "=== DataSamples[array of int16] ===" << std::endl;
-
-	unsigned int seed = 314157;
-	std::mt19937_64 rng;
+	generate_header(file);
+	unsigned int seed = 314159;
+      	std::mt19937_64 rng;
 	rng.seed(seed);
-	uint64_t hit_id = 0;
 
-	const std::size_t NUMBER_OF_CALO_HITS = 15;
-	const std::size_t NUMBER_OF_TRACKER_HITS = 300;
+	uint64_t HIT_ID = 0;
 
-
-	for (std::size_t icalo = 0; icalo < NUMBER_OF_CALO_HITS; icalo++)
+	for (uint64_t TRIGGER_ID = 0; TRIGGER_ID < NUMBER_OF_GENERATED_EVENTS; TRIGGER_ID++)
 	  {
-	    generate_fake_calo_hit(rng,
-				   file,
-				   hit_id);
-	    hit_id++;
+	    generate_fake_event(file,
+				rng,
+				HIT_ID,
+				TRIGGER_ID);
 	  }
 
-	for (std::size_t itrack = 0; itrack < NUMBER_OF_TRACKER_HITS; itrack++)
-	  {
-	    generate_fake_tracker_hit(rng,
-				      file,
-				      hit_id);
-	    hit_id++;
-	  }
+
+
+	// uint64_t hit_id = 0;
+
+
+
+	// for (std::size_t icalo = 0; icalo < NUMBER_OF_CALO_HITS; icalo++)
+	//   {
+	//     generate_fake_calo_hit(rng,
+	// 			   file,
+	// 			   hit_id);
+	//     hit_id++;
+	//   }
+
+	// for (std::size_t itrack = 0; itrack < NUMBER_OF_TRACKER_HITS; itrack++)
+	//   {
+	//     generate_fake_tracker_hit(rng,
+	// 			      file,
+	// 			      hit_id);
+	//     hit_id++;
+	//   }
 
 	file.close();
       }
@@ -75,6 +122,37 @@ int main(int /*argc_*/, char ** /*argv_*/)
   return EXIT_SUCCESS;
 }
 
+void generate_header(std::ofstream & out_)
+{
+  // Run header :
+  out_ << "=== DATA OUT_ SAVED WITH SN CRATE SOFTWARE VERSION: V1.2  == DATE OF RUN: UnixTime = 1481892599.431 date = 2016.12.16 time = 13h.49m.59s.431ms  ===" << std::endl;
+  out_ << "=== OTHER INFORMATIONS ===" << std::endl;
+  out_ << "=== DATA TYPE : RAW ===" << std::endl;
+  out_ << "=== DATA STRUCTURE INFO ===" << std::endl;
+  out_ << "===HIT number(int)  === (hit_type : 'CALO_HIT' or 'TRACKER_HIT' ===" << std::endl;
+  out_ << "=== SlotIndex (int) Ch (int) EvtID (int) RawTDC (unsigned long long) LT_TrigCount(int) LT_TimeCount(int) RawBaseline (signed short *16) RawPeak (signed shor *8) PeakCell (unsigned short) RawCharge (int ) ChargeOverflow(int) RisingEdgeCell (int) RisingTimeOffset(int * 256) FallingEdgeCell(int) FallingEdgeOffset (int *256) FCR (uint) ===" << std::endl;
+  out_ << "=== DataSamples[array of int16] ===" << std::endl;
+}
+
+
+void generate_fake_event(std::ofstream & out_,
+			 std::mt19937_64 & rng_,
+			 uint64_t & /*hit_id_*/,
+			 uint64_t & /*trigger_id_*/)
+{
+
+  std::poisson_distribution<int> calo_distrib(1);
+  std::normal_distribution<double> tracker_distribution(10, 3);
+
+  const std::size_t NUMBER_OF_CALO_HITS = calo_distrib(rng_);
+  const std::size_t NUMBER_OF_TRACKER_HITS = tracker_distribution(rng_);
+
+  std::clog << "Calo number = " << NUMBER_OF_CALO_HITS << " Tracker number = " << NUMBER_OF_TRACKER_HITS << std::endl;
+
+  out_ << "o" << std::endl;
+
+  return;
+}
 
 void generate_fake_calo_hit(std::mt19937_64 & rng_,
 			    std::ofstream & out_,

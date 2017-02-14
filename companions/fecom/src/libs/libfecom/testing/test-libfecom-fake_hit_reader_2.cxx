@@ -31,8 +31,8 @@ int main(int /*argc_*/, char ** /*argv_*/)
   try {
     fecom::hit_reader reader;
     reader.set_logging(datatools::logger::PRIO_WARNING);
-    // reader.set_input_filename("${FECOM_RESOURCES_DIR}/data/samples/fake_run/calo_fake_tracker_hits_2.dat");
-    reader.set_input_filename("${FECOM_RESOURCES_DIR}/output_test/test_generate_fake_hit_large.dat");
+    reader.set_input_filename("${FECOM_RESOURCES_DIR}/data/samples/fake_run/calo_fake_tracker_hits_2.dat");
+    // reader.set_input_filename("${FECOM_RESOURCES_DIR}/output_test/test_generate_fake_hit_10_events.dat");
     reader.initialize();
     fecom::run_header header;
     reader.load_run_header(header);
@@ -115,7 +115,8 @@ int main(int /*argc_*/, char ** /*argv_*/)
     reader.reset();
 
 
-    std::string output_filename = "${FECOM_RESOURCES_DIR}/output_test/commissioning_event_large.data.bz2";
+    std::string output_filename("${FECOM_RESOURCES_DIR}/data/samples/fake_run/calo_fake_tracker_hits_2.data.bz2");
+    // std::string output_filename = "${FECOM_RESOURCES_DIR}/output_test/commissioning_event_10_events.data.bz2";
     datatools::fetch_path_with_env(output_filename);
     {
       DT_LOG_DEBUG(logging, "Serialization output file :" + output_filename);
@@ -137,7 +138,7 @@ int main(int /*argc_*/, char ** /*argv_*/)
       DT_LOG_DEBUG(logging, "Deserialize the commissioning event data...");
 
       datatools::data_reader deserializer(output_filename,
-					datatools::using_multiple_archives);
+					  datatools::using_multiple_archives);
 
       deserializer.load(deserialize_commissioning_event_collection);
       DT_LOG_DEBUG(logging, "The commissioning event data has been loaded");

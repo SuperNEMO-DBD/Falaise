@@ -19,8 +19,39 @@ namespace fecom {
 
   bool tracker_hit::is_valid() const
   {
-    if (cell_id >= tracker_constants::NUMBER_OF_CELLS_PER_BOARD) return false;
+    if (_cell_id_ >= tracker_constants::NUMBER_OF_CELLS_PER_BOARD) return false;
     return true;
+  }
+
+  void tracker_hit::add_tracker_channel(const fecom::tracker_channel_hit & a_tracker_channel_)
+  {
+    // if (!has_cell_id()) {
+    //   // First channel added
+    //   //_my_channel_mapping -> build_cell_id(a_tracker_channel_.feast_id,
+    //   //				   a_tracker_channel_.channel,
+    //   //					   _cell_id_);
+
+    if (a_tracker_channel_.timestamp_type == "t0") set_anodic_t0(a_tracker_channel_.timestamp_value);
+    else if (a_tracker_channel_.timestamp_type == "t1") set_anodic_t1(a_tracker_channel_.timestamp_value);
+    else if (a_tracker_channel_.timestamp_type == "t2") set_anodic_t2(a_tracker_channel_.timestamp_value);
+    else if (a_tracker_channel_.timestamp_type == "t3") set_anodic_t3(a_tracker_channel_.timestamp_value);
+    else if (a_tracker_channel_.timestamp_type == "t4") set_anodic_t4(a_tracker_channel_.timestamp_value);
+    else if (a_tracker_channel_.timestamp_type == "t5") set_cathodic_t5(a_tracker_channel_.timestamp_value);
+    else if (a_tracker_channel_.timestamp_type == "t6") set_cathodic_t6(a_tracker_channel_.timestamp_value);
+      //  }
+
+    // else {
+    //   // Not the first channel added
+    //   if (a_tracker_channel_.timestamp_type == "t0") set_anodic_t0(a_tracker_channel_.timestamp_value);
+    //   else if (a_tracker_channel_.timestamp_type == "t1") set_anodic_t1(a_tracker_channel_.timestamp_value);
+    //   else if (a_tracker_channel_.timestamp_type == "t2") set_anodic_t2(a_tracker_channel_.timestamp_value);
+    //   else if (a_tracker_channel_.timestamp_type == "t3") set_anodic_t3(a_tracker_channel_.timestamp_value);
+    //   else if (a_tracker_channel_.timestamp_type == "t4") set_anodic_t4(a_tracker_channel_.timestamp_value);
+    //   else if (a_tracker_channel_.timestamp_type == "t5") set_cathodic_t5(a_tracker_channel_.timestamp_value);
+    //   else if (a_tracker_channel_.timestamp_type == "t6") set_cathodic_t6(a_tracker_channel_.timestamp_value);
+    // }
+
+    return;
   }
 
   void tracker_hit::reset()
@@ -31,7 +62,7 @@ namespace fecom {
 
   void tracker_hit::_reset_()
   {
-    cell_id = tracker_constants::NUMBER_OF_CELLS_PER_BOARD;
+    _cell_id_ = tracker_constants::NUMBER_OF_CELLS_PER_BOARD;
     reset_anodic_t0();
     reset_anodic_t1();
     reset_anodic_t2();
@@ -40,6 +71,13 @@ namespace fecom {
     reset_cathodic_t5();
     reset_cathodic_t6();
     return;
+  }
+
+  bool tracker_hit::has_cell_id() const
+  {
+    bool valid = false;
+    if (_cell_id_ < tracker_constants::NUMBER_OF_CELLS_PER_BOARD) valid = true;
+    return valid;
   }
 
   bool tracker_hit::has_anodic_t0() const
@@ -254,16 +292,18 @@ namespace fecom {
     }
 
     out_ << indent_ << io::tag()
-         << "Cell ID                   : " << (int) cell_id << std::endl;
+         << "Cell ID                   : " << (int) _cell_id_ << std::endl;
 
-    out_ << indent_ << io::tag()
-         << "Anodic channel ID         : " << (int) anodic_channel << std::endl;
+    /*
+      out_ << indent_ << io::tag()
+      << "Anodic channel ID         : " << (int) anodic_channel << std::endl;
 
-    out_ << indent_ << io::tag()
-         << "Bottom cathode channel ID : " << (int) bottom_cathode_channel << std::endl;
+      out_ << indent_ << io::tag()
+      << "Bottom cathode channel ID : " << (int) bottom_cathode_channel << std::endl;
 
-    out_ << indent_ << io::tag()
-         << "Top cathode channel ID    : " << (int) top_cathode_channel << std::endl;
+      out_ << indent_ << io::tag()
+      << "Top cathode channel ID    : " << (int) top_cathode_channel << std::endl;
+    */
 
     out_ << indent_ << io::tag()
          << "Anodic time 0             : " << (int) anodic_t0 << std::endl;

@@ -45,7 +45,7 @@ namespace fecom {
 
     typedef std::set<fecom::calo_hit, fecom::base_hit::compare> calo_hit_collection;
     typedef std::set<fecom::tracker_channel_hit, fecom::base_hit::compare> tracker_channel_hit_collection;
-    typedef std::set<fecom::tracker_hit, fecom::base_hit::compare> tracker_hit_collection;
+    typedef std::vector<fecom::tracker_hit> tracker_hit_collection;
 
     commissioning_event();
 
@@ -69,6 +69,8 @@ namespace fecom {
 
 		const commissioning_event::tracker_channel_hit_collection & get_tracker_channel_hit_collection() const;
 
+		const commissioning_event::tracker_hit_collection & get_tracker_hit_collection() const;
+
     void build_tracker_hit_from_channels();
 
     virtual void reset();
@@ -88,9 +90,11 @@ namespace fecom {
 
 		// Datas :
     uint32_t _trigger_id_; ///< Hit trigger ID
-    calo_hit_collection _calo_hit_collection_; ///< Calo hit collection for a trigger id
+		calo_hit_collection _calo_hit_collection_; ///< Calo hit collection for a trigger id
 		tracker_channel_hit_collection _tracker_channel_hit_collection_; ///< Tracker hit collection for a trigger id
-    tracker_hit_collection _tracker_hit_collection_; ///< Tracker hit collection for a trigger id
+
+		tracker_hit_collection _tracker_hit_collection_; ///< Tracker hit collection for a trigger id
+
 
 		DATATOOLS_SERIALIZATION_DECLARATION()
   };

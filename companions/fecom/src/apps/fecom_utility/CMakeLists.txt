@@ -9,4 +9,7 @@ include_directories(${PROJECT_SOURCE_DIR}/src/libs/libfecom)
 add_executable(fecom_fake_hit_generator fake_hit_generator.cxx)
 target_link_libraries(fecom_fake_hit_generator fecom)
 
+add_executable(fecom_fake_hit_generator_2 fake_hit_generator_2.cxx)
+target_link_libraries(fecom_fake_hit_generator_2 fecom)
+
 # - end of CMakeLists.txt

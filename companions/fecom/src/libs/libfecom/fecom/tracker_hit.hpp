@@ -15,6 +15,7 @@
 
 // This project:
 #include <fecom/tracker_constants.hpp>
+#include <fecom/tracker_channel_hit.hpp>
 #include <fecom/utils.hpp>
 
 namespace fecom {
@@ -28,12 +29,17 @@ namespace fecom {
 
     bool is_valid() const;
 
+		void add_tracker_channel(const fecom::tracker_channel_hit & a_tracker_channel_);
+
     virtual void reset();
 
     virtual void tree_dump(std::ostream & out_,
                            const std::string & title_ = "",
                            const std::string & indent_ = "",
                            bool inherit_ = false) const;
+
+		/// Check if tracker hit has cell id
+		bool has_cell_id() const;
 
     /// Check if has anodic time 0
     bool has_anodic_t0() const;
@@ -139,15 +145,17 @@ namespace fecom {
 
   public:
 
-		// To check if it necessary (hit id in base hit can be sufficient)
-
 		// SNDER p.27-28 for channel / cell association
 		// int Cell number = feast_number * 18 + channel / 3; (ex feast 1 channel 25 : 18 + 8 : cell #26
 
-    uint16_t cell_id;     ///< Cell ID on the board (0..36)
+    uint16_t _cell_id_;     ///< Cell ID on the board (0..36)
+
+		/* Not relevant information (ftm) because it's FEAST + CHANNEL_ID
+
     uint16_t anodic_channel;         ///< Anodic channel id
     uint16_t bottom_cathode_channel; ///< Bottom cathode channel id
     uint16_t top_cathode_channel;    ///< Top cathode channel id
+		*/
 
     // DATA
     // 7 geiger timing

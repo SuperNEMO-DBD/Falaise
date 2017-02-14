@@ -24,6 +24,53 @@ namespace fecom {
     : public base_hit
   {
 
+		struct find_by_channel {
+			find_by_channel(const uint16_t & feast_id_,
+											const uint16_t & channel_id_) : feast_id(feast_id_),
+																											channel_id(channel_id_) {}
+
+			bool operator()(const tracker_channel_hit & tracker_channel_hit_) {
+				uint16_t input_feast_id = tracker_channel_hit_.feast_id;
+				uint16_t input_channel_id = tracker_channel_hit_.channel;
+				// std::clog << "DEBUG : TRACKER_CHANNEL_HIT::FIND_BY_CHANNEL : input_feast = " << input_feast_id
+				//				<< "input_channel = " << input_channel_id << std::endl;
+				bool finded = false;
+				if (feast_id == input_feast_id && channel_id == input_channel_id) finded = true;
+				else finded = false;
+				return finded;
+			}
+
+			uint16_t feast_id;
+			uint16_t channel_id;
+		};
+
+		struct find_by_timestamp {
+			find_by_timestamp(const uint16_t & feast_id_,
+												const uint16_t & channel_id_,
+												const std::string & timestamp_type_) : feast_id(feast_id_),
+																															 channel_id(channel_id_),
+																															 timestamp_type(timestamp_type_) {}
+
+			bool operator()(const tracker_channel_hit & tracker_channel_hit_) {
+				uint16_t input_feast_id = tracker_channel_hit_.feast_id;
+				uint16_t input_channel_id = tracker_channel_hit_.channel;
+				std::string input_timestamp_type = tracker_channel_hit_.timestamp_type;
+				// std::clog << "DEBUG : TRACKER_CHANNEL_HIT::FIND_BY_TIMESTAMP : input_feast = " << input_feast_id
+				//				<< " input_channel = " << input_channel_id
+				//				<< " input timestamp type = " << input_timestamp_type << std::endl;
+				bool finded = false;
+				if (feast_id == input_feast_id
+						&& channel_id == input_channel_id
+						&& timestamp_type == input_timestamp_type) finded = true;
+				else finded = false;
+				return finded;
+			}
+
+			uint16_t feast_id;
+			uint16_t channel_id;
+			std::string timestamp_type;
+		};
+
     enum channelmode_type {
       INVALID_CHANNEL  = 0,
       ANODIC_CHANNEL   = 1,
@@ -54,7 +101,7 @@ namespace fecom {
   public:
 
 		// Management :
-		bool associated = false;
+		mutable bool associated = false;
 
     // Config :
     uint16_t feast_id; ///< FEAST (0..1)
