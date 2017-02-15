@@ -20,35 +20,99 @@ namespace fecom {
 
   public :
 
-		struct channel_triolet
+		struct tracker_board_channel_id
 		{
 
-			// int compare (const channel_trioletgeom_id & id1_, const geom_id & id2_)
+			enum channel_type {
+				INVALID_CHANNEL  = 0,
+				ANODIC_CHANNEL   = 1,
+				BOTTOM_CATHODIC_CHANNEL = 2,
+				TOP_CATHODIC_CHANNEL = 3
+			};
 
-			uint16_t feast_1;
-			uint16_t channel_1;
-			uint16_t feast_2;
-			uint16_t channel_2;
-			uint16_t feast_3;
-			uint16_t channel_3;
+			// struct find_by_channel {
+			// 	find_by_channel(const uint16_t & feast_id_,
+			// 									const uint16_t & channel_id_) : feast_id(feast_id_),
+			// 																									channel_id(channel_id_) {}
+
+			// 	bool operator()(const tracker_board_channel_id & tracker_board_channel_id_) {
+			// 		uint16_t input_feast_id = tracker_board_channel_id_.feast_id;
+			// 		uint16_t input_channel_id = tracker_board_channel_id_.channel_id;
+			// 		// std::clog << "DEBUG : TRACKER_CHANNEL_HIT::FIND_BY_CHANNEL : input_feast = " << input_feast_id
+			// 		//				<< "input_channel = " << input_channel_id << std::endl;
+			// 		bool finded = false;
+			// 		if (feast_id == input_feast_id && channel_id == input_channel_id) finded = true;
+			// 		else finded = false;
+			// 		return finded;
+			// 	}
+
+			// 	uint16_t feast_id;
+			// 	uint16_t channel_id;
+			// };
+
+			static int compare(const tracker_board_channel_id & tbc1_, const tracker_board_channel_id & tbc2_)
+			{
+				if (tbc1_.feast_id < tbc2_.feast_id) return -1;
+				else if (tbc1_.feast_id > tbc2_.feast_id) return 1;
+				else if (tbc1_.channel_id < tbc2_.channel_id) return -1;
+				else if (tbc1_.channel_id > tbc2_.channel_id) return 1;
+				else return 0;
+			}
+
+			bool operator<(const tracker_board_channel_id & tbc_) const
+			{
+				return tracker_board_channel_id::compare (*this, tbc_) < 0;
+			}
+
+			bool operator>(const tracker_board_channel_id & tbc_) const
+			{
+				return tracker_board_channel_id::compare (*this, tbc_) > 0;
+			}
+
+			bool operator==(const tracker_board_channel_id & tbc_) const
+			{
+				return tracker_board_channel_id::compare (*this, tbc_) == 0;
+			}
+
+			channel_type channel_type;
+			uint16_t feast_id;
+			uint16_t channel_id;
+		};
+
+		struct channel_triplet
+		{
+			tracker_board_channel_id anodic_channel;
+			tracker_board_channel_id bottom_cathode_channel;
+			tracker_board_channel_id top_cathode_channel;
 		};
 
     channel_mapping();
 
     virtual ~channel_mapping();
 
-		void cell_to_channel_builder();
+		bool is_initialized() const;
 
-    /// Get associated channels for a given channel (same for the two FEAST)
-		void get_associated_channels(const uint16_t feast_id_,
-																 const uint16_t channel_id_,
+		void initialize();
+
+		void get_associated_channels(const uint16_t input_feast_,
+																 const uint16_t input_channel_,
 																 uint16_t & associated_feast_1_,
 																 uint16_t & associated_channel_1_,
 																 uint16_t & associated_feast_2_,
 																 uint16_t & associated_channel_2_) const;
 
+    /// Get associated channels for a given channel (same for the two FEAST)
+		void get_associated_channels_with_types(const uint16_t input_feast_,
+																						const uint16_t input_channel_,
+																						uint16_t & associated_anodic_feast_,
+																						uint16_t & associated_anodic_channel_,
+																						uint16_t & associated_bottom_cathodic_feast_,
+																						uint16_t & associated_bottom_cathodic_channel_,
+																						uint16_t & associated_top_cathodic_feast_,
+																						uint16_t & associated_top_cathodic_channel_) const;
+
     /// Check if the channel is anodic
-    bool is_anodic_channel(const uint16_t feast_id_,
+		bool is_anodic_channel(const uint16_t feast_id_,
 													 const uint16_t channel_id_) const;
 
     /// Check if the channel is bottom cathodic
@@ -66,13 +130,23 @@ namespace fecom {
                            const std::string & indent_ = "",
                            bool inherit_ = false) const;
 
+	protected :
+
+		void _build_channel_triplet_collection();
+
+		void _cell_to_channel_mapping();
+
+
 	private :
 
     void _reset_();
 
 	public :
 
-		std::map<uint16_t, fecom::channel_mapping::channel_triolet> _cell_channel_mapping_;
+		bool initialized;
+
+		std::vector<fecom::channel_mapping::channel_triplet> _channel_triplet_collection_;
+		std::map<uint16_t, uint16_t> _cell_channel_mapping_;
 
   };
 

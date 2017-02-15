@@ -85,8 +85,7 @@ namespace fecom {
     void _reset_();
 
 		// Configuration
-		const fecom::channel_mapping * _my_channel_mapping_ = nullptr;
-
+		const fecom::channel_mapping * _my_channel_mapping_;
 
 		// Datas :
     uint32_t _trigger_id_; ///< Hit trigger ID

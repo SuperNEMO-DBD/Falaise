@@ -42,13 +42,19 @@ int main(int /*argc_*/, char ** /*argv_*/)
 
     std::clog << "Size of deserialized commissioning event data = [" << deserialize_commissioning_event_collection.get_commissioning_event_collection().size() << "]" << std::endl;
 
+    fecom::channel_mapping my_channel_mapping;
+    my_channel_mapping.initialize();
+
     std::size_t event_counter = 0;
-    for (auto it_event =  deserialize_commissioning_event_collection.grab_commissioning_event_collection().begin();
+    for (std::set<fecom::commissioning_event>::iterator it_event = deserialize_commissioning_event_collection.grab_commissioning_event_collection().begin();
     	 it_event !=  deserialize_commissioning_event_collection.grab_commissioning_event_collection().end();
     	 it_event++)
       {
 	std::clog << "DEBUG : TEST EVENT BUILDER : EVENT #" << event_counter << std::endl;
 	std::clog << "Size of tracker channel hit in the event : " << it_event->get_tracker_channel_hit_collection().size() << std::endl;
+
+	const_cast<fecom::commissioning_event&>(*it_event).set_channel_mapping(my_channel_mapping);
+
 	// std::size_t tchit_counter = 0;
 	// for (auto it_tchit = it_event->get_tracker_channel_hit_collection().begin(); it_tchit != it_event->get_tracker_channel_hit_collection().end(); it_tchit++)
 	//   {
@@ -69,19 +75,25 @@ int main(int /*argc_*/, char ** /*argv_*/)
 	event_counter++;
       }
 
-    fecom::channel_mapping my_channel_mapping;
-    my_channel_mapping.cell_to_channel_builder();
+    // std::size_t cell_counter = 0;
+    // for (auto it_vector = my_channel_mapping._channel_triplet_collection_.begin();
+    // 	 it_vector != my_channel_mapping._channel_triplet_collection_.end();
+    // 	 it_vector++)
+    //   {
+    // 	std::clog << "Cell #" << cell_counter << " Anodic       F" << it_vector->anodic_channel.feast_id << " Ch " << it_vector->anodic_channel.channel_id << std::endl;
+    // 	std::clog << "Cell #" << cell_counter << " Cathodic Bot F" << it_vector->bottom_cathode_channel.feast_id << " Ch " << it_vector->bottom_cathode_channel.channel_id << std::endl;
+    // 	std::clog << "Cell #" << cell_counter << " Cathodic Top F" << it_vector->top_cathode_channel.feast_id << " Ch " << it_vector->top_cathode_channel.channel_id << std::endl;
+    // 	std::clog << "********************************************************" << std::endl;
+    // 	cell_counter++;
+    //   }
 
-    for (auto it_map = my_channel_mapping._cell_channel_mapping_.begin();
-	 it_map != my_channel_mapping._cell_channel_mapping_.end();
-	 it_map++)
-      {
-	std::clog << "Cell #" << it_map->first << " Anodic       F" << it_map->second.feast_1 << " Ch " << it_map->second.channel_1 << std::endl;
-	std::clog << "Cell #" << it_map->first << " Cathodic Bot F" << it_map->second.feast_2 << " Ch " << it_map->second.channel_2 << std::endl;
-	std::clog << "Cell #" << it_map->first << " Cathodic Top F" << it_map->second.feast_3 << " Ch " << it_map->second.channel_3 << std::endl;
-	std::clog << "********************************************************" << std::endl;
-      }
-
+    // my_channel_mapping.cell_to_channel_mapping();
+    // for (auto it_map = my_channel_mapping._cell_channel_mapping_.begin();
+    // 	 it_map != my_channel_mapping._cell_channel_mapping_.end();
+    // 	 it_map++)
+    //   {
+    // 	std::clog << "Channel #" << it_map->first << " <-> Cell #" << it_map->second << std::endl;
+    //   }
 
 
     DT_LOG_DEBUG(logging, "Exiting test-libfecom-event_builder.cxx...");

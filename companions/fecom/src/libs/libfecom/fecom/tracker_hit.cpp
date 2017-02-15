@@ -31,6 +31,12 @@ namespace fecom {
     //   //				   a_tracker_channel_.channel,
     //   //					   _cell_id_);
 
+
+    // Do the check to see if the channel is well mapped or not
+    // const uint16_t feast_id = a_tracker_channel_.feast_id;
+    // const uint16_t channel  = a_tracker_channel_.channel;
+    // const std::string timestamp = a_tracker_channel_.timestamp_type;
+
     if (a_tracker_channel_.timestamp_type == "t0") set_anodic_t0(a_tracker_channel_.timestamp_value);
     else if (a_tracker_channel_.timestamp_type == "t1") set_anodic_t1(a_tracker_channel_.timestamp_value);
     else if (a_tracker_channel_.timestamp_type == "t2") set_anodic_t2(a_tracker_channel_.timestamp_value);
