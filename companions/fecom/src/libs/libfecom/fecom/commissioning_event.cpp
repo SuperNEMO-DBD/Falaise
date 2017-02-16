@@ -72,7 +72,7 @@ namespace fecom {
 
   void commissioning_event::build_tracker_hit_from_channels()
   {
-    bool verbose = true;
+    bool verbose = false;
 
     if (verbose) std::clog << "Number of tracker channel in the event : " << _tracker_channel_hit_collection_.size() << std::endl;
 
@@ -83,13 +83,16 @@ namespace fecom {
 	if (ichan -> associated) {
 	  // Channel already associated to a tracker hit.
 	  // Skip it and go to the next channel hit
-	  if (verbose)  std::clog << "DEBUG : COMMISSIONING_EVENT.CPP : CHANNEL ALREADY ASSOCIATED" << std::endl;
 	} else {
 	  // Create a new tracker hit and search his associated channels
 	  fecom::tracker_hit a_tracker_hit;
-
 	  const uint16_t feast_id = ichan -> feast_id;
 	  const uint16_t channel  = ichan -> channel;
+	  uint16_t cell_id = -1;
+	  _my_channel_mapping_-> get_cell_number_for_a_channel(feast_id,
+							       channel,
+							       cell_id);
+	  a_tracker_hit.set_cell_id(cell_id);
 	  const fecom::tracker_channel_hit::channelmode_type channel_type = ichan -> channel_type;
 	  std::string channel_type_str = "INVALID";
 	  if (channel_type == fecom::tracker_channel_hit::ANODIC_CHANNEL) channel_type_str = "Anodic";

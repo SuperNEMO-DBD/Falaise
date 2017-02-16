@@ -19,13 +19,19 @@
 namespace fecom {
 
   template<class Archive>
-  void tracker_hit::serialize(Archive & ar, const unsigned int version)
+  void tracker_hit::serialize(Archive & ar,
+			      const unsigned int /* version */)
   {
     ar & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
-    // example :
-    // ar & boost::serialization::make_nvp("hit_id",  hit_id);
+    ar & boost::serialization::make_nvp("cell_id", _cell_id_);
+    ar & boost::serialization::make_nvp("anodic_t0", anodic_t0);
+    ar & boost::serialization::make_nvp("anodic_t1", anodic_t1);
+    ar & boost::serialization::make_nvp("anodic_t2", anodic_t2);
+    ar & boost::serialization::make_nvp("anodic_t3", anodic_t3);
+    ar & boost::serialization::make_nvp("anodic_t4", anodic_t4);
+    ar & boost::serialization::make_nvp("cathodic_t5", cathodic_t5);
+    ar & boost::serialization::make_nvp("cathodic_t6", cathodic_t6);
 
-    // TO COMPLETE
     return;
   }
 

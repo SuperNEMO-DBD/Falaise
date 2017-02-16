@@ -12,6 +12,7 @@
 
 // - Bayeux:
 #include <bayeux/datatools/utils.h>
+#include <bayeux/datatools/i_serializable.h>
 
 // This project:
 #include <fecom/tracker_constants.hpp>
@@ -21,6 +22,7 @@
 namespace fecom {
 
   struct tracker_hit
+		: public datatools::i_serializable
   {
 
     tracker_hit();
@@ -38,8 +40,16 @@ namespace fecom {
                            const std::string & indent_ = "",
                            bool inherit_ = false) const;
 
+
+
 		/// Check if tracker hit has cell id
 		bool has_cell_id() const;
+
+    /// Set cell ID
+    void set_cell_id(const uint64_t value_);
+
+    /// Get cell ID
+    uint16_t get_cell_id() const;
 
     /// Check if has anodic time 0
     bool has_anodic_t0() const;
@@ -145,10 +155,8 @@ namespace fecom {
 
   public:
 
-		// SNDER p.27-28 for channel / cell association
-		// int Cell number = feast_number * 18 + channel / 3; (ex feast 1 channel 25 : 18 + 8 : cell #26
-
-    uint16_t _cell_id_;     ///< Cell ID on the board (0..36)
+		// SNDER p.30-31 for channel / cell association
+    uint16_t _cell_id_; ///< Cell ID on the board [0-35]
 
 		/* Not relevant information (ftm) because it's FEAST + CHANNEL_ID
 
@@ -166,6 +174,8 @@ namespace fecom {
     uint64_t anodic_t4;   ///< Anodic time 4
     uint64_t cathodic_t5; ///< Cathodic time 5
     uint64_t cathodic_t6; ///< Cathodic time 6
+
+		DATATOOLS_SERIALIZATION_DECLARATION()
 
   };
 

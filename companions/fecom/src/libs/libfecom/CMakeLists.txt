@@ -18,6 +18,7 @@ set(FeCom_HEADERS
   fecom/calo_hit.hpp
   fecom/calo_hit.ipp
   fecom/tracker_hit.hpp
+  fecom/tracker_hit.ipp
   fecom/tracker_channel_hit.hpp
   fecom/tracker_channel_hit.ipp
   fecom/commissioning_event.hpp
@@ -25,6 +26,7 @@ set(FeCom_HEADERS
   fecom/commissioning_event_data.hpp
   fecom/commissioning_event_data.ipp
   fecom/channel_mapping.hpp
+  fecom/channel_mapping_with_geom.hpp
   fecom/calo_pedestal_calib.hpp
   fecom/calo_calibration.hpp
   fecom/run_header.hpp
@@ -51,6 +53,7 @@ set(FeCom_SOURCES
   fecom/commissioning_event.cpp
   fecom/commissioning_event_data.cpp
   fecom/channel_mapping.cpp
+  fecom/channel_mapping_with_geom.cpp
   fecom/calo_pedestal_calib.cpp
   fecom/calo_calibration.cpp
   fecom/run_header.cpp
@@ -66,6 +69,7 @@ set(FeCom_TESTS
   testing/test-libfecom-version.cxx
   testing/test-libfecom-the_serializable.cxx
   testing/test-libfecom-calo_constants.cxx
+  testing/test-libfecom-channel_mapping.cxx
   testing/test-libfecom-base_hit.cxx
   testing/test-libfecom-calo_hit.cxx
   testing/test-libfecom-tracker_channel_hit.cxx
@@ -77,6 +81,7 @@ set(FeCom_TESTS
   testing/test-libfecom-fake_hit_reader.cxx
   testing/test-libfecom-fake_hit_reader_2.cxx
   testing/test-libfecom-event_builder.cxx
+  testing/test-libfecom-histogram_builder.cxx
   )
 
 find_package(Bayeux 3.0.0

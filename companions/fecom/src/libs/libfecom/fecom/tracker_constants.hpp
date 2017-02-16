@@ -27,6 +27,19 @@ namespace fecom {
 		static const uint16_t INVALID_FEAST_INDEX = NUMBER_OF_FEAST_PER_BOARD;
     static const uint16_t INVALID_CHANNEL_INDEX = NUMBER_OF_CHANNEL_PER_BOARD;
     static const uint64_t INVALID_TIME = 0xFFFFFFFF;
+
+		static const uint64_t GEOMETRIC_CELL_TYPE = 1000;
+		static const uint64_t LAYER_INDEX = 0;
+		static const uint64_t ROW_INDEX = 1;
+		static const uint64_t PORT_INDEX = 2;
+
+		static const uint64_t ANODIC_PORT = 2;
+		static const uint64_t BOT_CATHODE_PORT = 0;
+		static const uint64_t TOP_CATHODE_PORT = 1;
+
+		static const uint64_t ELECTRONIC_CELL_TYPE = 666;
+		static const uint64_t FEAST_INDEX = 0;
+		static const uint64_t CHANNEL_INDEX = 1;
   };
 
 } // namespace fecom

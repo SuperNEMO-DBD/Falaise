@@ -8,6 +8,8 @@
 
 namespace fecom {
 
+  DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(tracker_hit, "fecom::tracker_hit")
+
   tracker_hit::tracker_hit()
   {
     _reset_();
@@ -84,6 +86,20 @@ namespace fecom {
     bool valid = false;
     if (_cell_id_ < tracker_constants::NUMBER_OF_CELLS_PER_BOARD) valid = true;
     return valid;
+  }
+
+  void tracker_hit::set_cell_id(const uint64_t value_)
+  {
+    DT_THROW_IF(value_ >= tracker_constants::NUMBER_OF_CELLS_PER_BOARD,
+		std::logic_error,
+		"Cell ID value '" + std::to_string(value_) + "'is not correct, check your value of cell ID (must be between 0 and 35");
+    _cell_id_ = value_;
+    return;
+  }
+
+  uint16_t tracker_hit::get_cell_id() const
+  {
+    return _cell_id_;
   }
 
   bool tracker_hit::has_anodic_t0() const

@@ -94,6 +94,10 @@ namespace fecom {
 
 		void initialize();
 
+
+		void build_mapping_from_file(const std::string & filename_);
+
+
 		void get_associated_channels(const uint16_t input_feast_,
 																 const uint16_t input_channel_,
 																 uint16_t & associated_feast_1_,
@@ -110,6 +114,10 @@ namespace fecom {
 																						uint16_t & associated_bottom_cathodic_channel_,
 																						uint16_t & associated_top_cathodic_feast_,
 																						uint16_t & associated_top_cathodic_channel_) const;
+
+		void get_cell_number_for_a_channel(const uint16_t input_feast_,
+																			 const uint16_t input_channel_,
+																			 uint16_t & cell_number_) const;
 
     /// Check if the channel is anodic
 		bool is_anodic_channel(const uint16_t feast_id_,

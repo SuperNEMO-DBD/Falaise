@@ -1,4 +1,5 @@
 // fecom/channel_mapping.cpp
+#include <fstream>
 
 // Ourselves:
 #include <fecom/channel_mapping.hpp>
@@ -40,9 +41,83 @@ namespace fecom {
   void channel_mapping::initialize()
   {
     DT_THROW_IF(is_initialized(), std::logic_error, "Channel mapping is already initialized !");
-    _build_channel_triplet_collection();
+    //  _build_channel_triplet_collection();
     _cell_to_channel_mapping();
     initialized = true;
+    return;
+  }
+
+  void channel_mapping::build_mapping_from_file(const std::string & filename_)
+  {
+    std::ifstream file_stream(filename_.c_str(), std::ifstream::in);
+    if (file_stream)
+      {
+	std::string line = "";
+	std::size_t line_counter = 0;
+	while (std::getline(file_stream, line))
+	  {
+	    if (line_counter != 0) // ignore the header
+	      {
+		std::stringstream ss(line);
+
+		channel_triplet a_channel_triplet;
+		a_channel_triplet.anodic_channel.channel_type = tracker_board_channel_id::ANODIC_CHANNEL;
+		a_channel_triplet.bottom_cathode_channel.channel_type = tracker_board_channel_id::BOTTOM_CATHODIC_CHANNEL;
+		a_channel_triplet.top_cathode_channel.channel_type = tracker_board_channel_id::TOP_CATHODIC_CHANNEL;
+
+		uint16_t cell_number = -1;
+		uint16_t anode_number = -1;
+		uint16_t bot_cathode_number = -1;
+		uint16_t top_cathode_number = -1;
+
+		ss >> cell_number >> anode_number >> bot_cathode_number >> top_cathode_number;
+
+		int check_feast_anode = anode_number - 54;
+		int check_feast_bot_cath = bot_cathode_number - 54;
+		int check_feast_top_cath = top_cathode_number - 54;
+
+		if (check_feast_anode >= 0)
+		  {
+		    a_channel_triplet.anodic_channel.feast_id = 1;
+		    a_channel_triplet.anodic_channel.channel_id = check_feast_anode;
+		  }
+		else
+		  {
+		    a_channel_triplet.anodic_channel.feast_id = 0;
+		    a_channel_triplet.anodic_channel.channel_id = anode_number;
+		  }
+		if (check_feast_bot_cath >= 0)
+		  {
+		    a_channel_triplet.bottom_cathode_channel.feast_id = 1;
+		    a_channel_triplet.bottom_cathode_channel.channel_id = check_feast_bot_cath;
+		  }
+		else
+		  {
+		    a_channel_triplet.bottom_cathode_channel.feast_id = 0;
+		    a_channel_triplet.bottom_cathode_channel.channel_id = bot_cathode_number;
+		  }
+
+		if (check_feast_top_cath >= 0)
+		  {
+		    a_channel_triplet.top_cathode_channel.feast_id = 1;
+		    a_channel_triplet.top_cathode_channel.channel_id = check_feast_top_cath;
+		  }
+		else
+		  {
+		    a_channel_triplet.top_cathode_channel.feast_id = 0;
+		    a_channel_triplet.top_cathode_channel.channel_id = top_cathode_number;
+		  }
+
+		_channel_triplet_collection_.push_back(a_channel_triplet);
+
+	      }
+	    line_counter++;
+	  }
+
+	file_stream.close();
+      }
+    else  DT_THROW(std::runtime_error, "Cannot open input file '" << filename_ << "'");
+
     return;
   }
 
@@ -71,6 +146,9 @@ namespace fecom {
 
   void channel_mapping::_build_channel_triplet_collection()
   {
+    // Build with a logic. For commissioning the mapping will be build from a csv file and
+    // this method will not be used.
+
     for (uint16_t icell = 0; icell < tracker_constants::NUMBER_OF_CELLS_PER_BOARD; icell++)
       {
 	channel_triplet a_channel_triplet;
@@ -213,6 +291,18 @@ namespace fecom {
 
     return;
   }
+
+  void channel_mapping::get_cell_number_for_a_channel(const uint16_t input_feast_,
+						      const uint16_t input_channel_,
+						      uint16_t & cell_number_) const
+  {
+    uint16_t feast_channel = 54 * input_feast_ + input_channel_;
+    auto it_map = _cell_channel_mapping_.find(feast_channel);
+    if (it_map != _cell_channel_mapping_.end()) cell_number_ = it_map->second;
+    else DT_THROW(std::logic_error, "The input channel Feast #" + std::to_string(input_feast_) + " Channel #" + std::to_string(input_channel_) + " is not valid !");
+    return;
+  }
+
 
   bool channel_mapping::is_anodic_channel(const uint16_t input_feast_,
 					  const uint16_t input_channel_) const

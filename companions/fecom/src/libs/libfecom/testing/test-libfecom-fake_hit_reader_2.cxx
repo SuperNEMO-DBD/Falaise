@@ -42,7 +42,6 @@ int main(int /*argc_*/, char ** /*argv_*/)
     fecom::tracker_channel_hit tchit;
     fecom::commissioning_event_data commissioning_event_collection;
 
-    std::clog << "Before while " << std::endl;
 
     std::size_t hit_counter = 0;
     while(reader.has_next_hit()) {
@@ -114,6 +113,29 @@ int main(int /*argc_*/, char ** /*argv_*/)
 
     reader.reset();
 
+    // Build all tracker hit after the build of all commissioning event :
+    std::string input_mapping_file("${FECOM_RESOURCES_DIR}/config/mapping_tracker.csv");
+    datatools::fetch_path_with_env(input_mapping_file);
+
+    fecom::channel_mapping my_channel_mapping;
+    my_channel_mapping.build_mapping_from_file(input_mapping_file);
+    my_channel_mapping.initialize();
+
+    for (std::set<fecom::commissioning_event>::iterator it_event = commissioning_event_collection.grab_commissioning_event_collection().begin();
+    	 it_event != commissioning_event_collection.grab_commissioning_event_collection().end();
+    	 it_event++)
+      {
+	const_cast<fecom::commissioning_event&>(*it_event).set_channel_mapping(my_channel_mapping);
+	const_cast<fecom::commissioning_event&>(*it_event).build_tracker_hit_from_channels();
+
+	std::clog << "Size of tracker hit in the event : " << it_event->get_tracker_hit_collection().size() << std::endl;
+	std::size_t thit_counter = 0;
+	for (auto it_thit = it_event->get_tracker_hit_collection().begin(); it_thit != it_event->get_tracker_hit_collection().end(); it_thit++)
+	  {
+	    it_thit -> tree_dump(std::clog, "Tracker hit #" + std::to_string(thit_counter));
+	    thit_counter++;
+	  }
+      }
 
     std::string output_filename("${FECOM_RESOURCES_DIR}/data/samples/fake_run/calo_fake_tracker_hits_2.data.bz2");
     // std::string output_filename = "${FECOM_RESOURCES_DIR}/output_test/commissioning_event_10_events.data.bz2";
@@ -122,77 +144,11 @@ int main(int /*argc_*/, char ** /*argv_*/)
       DT_LOG_DEBUG(logging, "Serialization output file :" + output_filename);
       DT_LOG_DEBUG(logging, "Serialize the commissioning event data...");
       datatools::data_writer serializer(output_filename,
-				      datatools::using_multiple_archives);
+					datatools::using_multiple_archives);
       serializer.store(commissioning_event_collection);
       DT_LOG_DEBUG(logging, "The commissioning event data has been stored in the '" + output_filename + "' file");
     }
 
-    // DT_LOG_DEBUG(logging, "Serialize the commissioning event data in a brio file...");
-    // std::string output_brio_filename = "${FECOM_RESOURCES_DIR}/output_test/commissioning_event.brio";
-    // brio::writer my_writer(output_brio_filename, logging);
-    // my_writer.store(commissioning_event_collection);
-    // my_writer.close();
-
-    fecom::commissioning_event_data deserialize_commissioning_event_collection;
-    {
-      DT_LOG_DEBUG(logging, "Deserialize the commissioning event data...");
-
-      datatools::data_reader deserializer(output_filename,
-					  datatools::using_multiple_archives);
-
-      deserializer.load(deserialize_commissioning_event_collection);
-      DT_LOG_DEBUG(logging, "The commissioning event data has been loaded");
-    }
-
-    std::clog << "Size of deserialized commissioning event data = [" << deserialize_commissioning_event_collection.get_commissioning_event_collection().size() << "]" << std::endl;
-
-    // DT_LOG_DEBUG(logging, "Deserialize the commissioning event data from a brio file...");
-
-    // fecom::commissioning_event_data deserialize_brio_commissioning_event_collection;
-    // brio::reader my_brio_reader(output_brio_filename, logging);
-
-    // my_brio_reader.load(deserialize_brio_commissioning_event_collection);
-    // DT_LOG_DEBUG(logging, "The commissioning event data has been loaded from a brio file");
-
-    // std::clog << "Size of deserialized commissioning event data from brio file = [" << deserialize_brio_commissioning_event_collection.get_commissioning_event_collection().size() << "]" << std::endl;
-
-    /*
-      std::size_t event_counter = 0;
-      for (auto it_event =  deserialize_brio_commissioning_event_collection.get_commissioning_event_collection().begin();
-      it_event !=  deserialize_brio_commissioning_event_collection.get_commissioning_event_collection().end();
-      it_event++)
-      {
-      std::clog << "****** Event #" << event_counter << " *******" <<std::endl;
-      fecom::commissioning_event a_commissioning_event = * it_event;
-
-      std::clog << "Calo size : " << a_commissioning_event.get_calo_hit_collection().size()
-      << " tracker size : " <<  a_commissioning_event.get_tracker_channel_hit_collection().size() << std::endl;
-
-      std::size_t calo_counter = 0;
-      for (auto it_calo = a_commissioning_event.get_calo_hit_collection().begin();
-      it_calo != a_commissioning_event.get_calo_hit_collection().end();
-      it_calo++)
-      {
-      fecom::calo_hit a_calo_hit = * it_calo;
-      // a_calo_hit.tree_dump(std::clog, "Read from commissioning event calo #" + std::to_string(calo_counter));
-      calo_counter++;
-      std::clog << "calo counter = " << calo_counter << std::endl;
-      }
-
-      std::size_t tracker_counter = 0;
-      for (auto it_tracker = a_commissioning_event.get_tracker_channel_hit_collection().begin();
-      it_tracker != a_commissioning_event.get_tracker_channel_hit_collection().end();
-      it_tracker++)
-      {
-      fecom::tracker_channel_hit a_tracker_channel_hit = * it_tracker;
-      //	    a_tracker_channel_hit.tree_dump(std::clog, "Read from commissioning event tracker #" + std::to_string(tracker_counter));
-      tracker_counter++;
-      std::clog << "tracker counter = " << tracker_counter << std::endl;
-      }
-
-      event_counter++;
-      } // end of it_event
-    */
     DT_LOG_DEBUG(logging, "Exiting test-libfecom-fake_hit_reader_2.cxx...");
 
   } catch (std::exception & error) {
@@ -202,23 +158,72 @@ int main(int /*argc_*/, char ** /*argv_*/)
   return EXIT_SUCCESS;
 }
 
+// DT_LOG_DEBUG(logging, "Serialize the commissioning event data in a brio file...");
+// std::string output_brio_filename = "${FECOM_RESOURCES_DIR}/output_test/commissioning_event.brio";
+// brio::writer my_writer(output_brio_filename, logging);
+// my_writer.store(commissioning_event_collection);
+// my_writer.close();
 
+
+// Deserializer example :
 /*
-  uint16_t associated_channel_1 = -1;
-  uint16_t associated_channel_2 = -1;
+  fecom::commissioning_event_data deserialize_commissioning_event_collection;
+  {
+  DT_LOG_DEBUG(logging, "Deserialize the commissioning event data...");
 
-  fecom::channel_mapping my_channel_mapping;
+  datatools::data_reader deserializer(output_filename,
+  datatools::using_multiple_archives);
 
-  for (std::size_t ichannel = 0;
-  ichannel < fecom::tracker_constants::NUMBER_OF_CHANNEL_PER_FEAST;
-  ichannel++) {
-  my_channel_mapping.get_associated_channels(ichannel,
-  associated_channel_1,
-  associated_channel_2);
-
-  // std::clog << "*** Input channel        = " << ichannel << std::endl;
-  // std::clog << "*** Associated channel 1 = " << associated_channel_1 << std::endl;
-  // std::clog << "*** Associated channel 2 = " << associated_channel_2 << std::endl;
-  // std::clog << "***************************" << std::endl;
+  deserializer.load(deserialize_commissioning_event_collection);
+  DT_LOG_DEBUG(logging, "The commissioning event data has been loaded");
   }
+
+  std::clog << "Size of deserialized commissioning event data = [" << deserialize_commissioning_event_collection.get_commissioning_event_collection().size() << "]" << std::endl;
+
+  DT_LOG_DEBUG(logging, "Deserialize the commissioning event data from a brio file...");
+
+  fecom::commissioning_event_data deserialize_brio_commissioning_event_collection;
+  brio::reader my_brio_reader(output_brio_filename, logging);
+
+  my_brio_reader.load(deserialize_brio_commissioning_event_collection);
+  DT_LOG_DEBUG(logging, "The commissioning event data has been loaded from a brio file");
+
+  std::clog << "Size of deserialized commissioning event data from brio file = [" << deserialize_brio_commissioning_event_collection.get_commissioning_event_collection().size() << "]" << std::endl;
+
+
+  std::size_t event_counter = 0;
+  for (auto it_event =  deserialize_brio_commissioning_event_collection.get_commissioning_event_collection().begin();
+  it_event !=  deserialize_brio_commissioning_event_collection.get_commissioning_event_collection().end();
+  it_event++)
+  {
+  std::clog << "****** Event #" << event_counter << " *******" <<std::endl;
+  fecom::commissioning_event a_commissioning_event = * it_event;
+
+  std::clog << "Calo size : " << a_commissioning_event.get_calo_hit_collection().size()
+  << " tracker size : " <<  a_commissioning_event.get_tracker_channel_hit_collection().size() << std::endl;
+
+  std::size_t calo_counter = 0;
+  for (auto it_calo = a_commissioning_event.get_calo_hit_collection().begin();
+  it_calo != a_commissioning_event.get_calo_hit_collection().end();
+  it_calo++)
+  {
+  fecom::calo_hit a_calo_hit = * it_calo;
+  // a_calo_hit.tree_dump(std::clog, "Read from commissioning event calo #" + std::to_string(calo_counter));
+  calo_counter++;
+  std::clog << "calo counter = " << calo_counter << std::endl;
+  }
+
+  std::size_t tracker_counter = 0;
+  for (auto it_tracker = a_commissioning_event.get_tracker_channel_hit_collection().begin();
+  it_tracker != a_commissioning_event.get_tracker_channel_hit_collection().end();
+  it_tracker++)
+  {
+  fecom::tracker_channel_hit a_tracker_channel_hit = * it_tracker;
+  //	    a_tracker_channel_hit.tree_dump(std::clog, "Read from commissioning event tracker #" + std::to_string(tracker_counter));
+  tracker_counter++;
+  std::clog << "tracker counter = " << tracker_counter << std::endl;
+  }
+
+  event_counter++;
+  } // end of it_event
 */

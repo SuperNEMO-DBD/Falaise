@@ -14,6 +14,7 @@
 #include <fecom/base_hit.ipp>
 #include <fecom/calo_hit.ipp>
 #include <fecom/tracker_channel_hit.ipp>
+#include <fecom/tracker_hit.ipp>
 #include <fecom/commissioning_event.ipp>
 #include <fecom/commissioning_event_data.ipp>
 
@@ -22,6 +23,7 @@
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(fecom::base_hit)
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(fecom::calo_hit)
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(fecom::tracker_channel_hit)
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(fecom::tracker_hit)
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(fecom::commissioning_event)
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(fecom::commissioning_event_data)
 

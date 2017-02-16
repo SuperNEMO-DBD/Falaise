@@ -7,6 +7,7 @@
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/string.hpp>
 #include <boost/serialization/set.hpp>
+#include <boost/serialization/vector.hpp>
 // Support for XML 'key-value' based archives:
 #include <boost/serialization/nvp.hpp>
 // - Bayeux/datatools:
@@ -21,11 +22,13 @@
 namespace fecom {
 
   template<class Archive>
-  void commissioning_event::serialize(Archive & ar, const unsigned int /*version*/)
+  void commissioning_event::serialize(Archive & ar,
+				      const unsigned int /* version */)
   {
     ar & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
     ar & boost::serialization::make_nvp("trigger_id",  _trigger_id_);
     ar & boost::serialization::make_nvp("calo_hit_collection", _calo_hit_collection_);
+    ar & boost::serialization::make_nvp("tracker_hit_collection", _tracker_hit_collection_);
     ar & boost::serialization::make_nvp("tracker_channel_hit_collection", _tracker_channel_hit_collection_);
     return;
   }
