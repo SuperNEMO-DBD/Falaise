@@ -24,14 +24,36 @@ namespace fecom {
     : public base_hit
   {
 
+		// /// Predicate that checks if the hit has some specific geometry ID
+    // struct has_geom_id_predicate
+    // {
+    // public:
+
+    //   /// Constructor
+    //   explicit has_geom_id_predicate (const geomtools::geom_id & a_gid)
+    //   {
+    //     gid_ = a_gid;
+    //     return;
+    //   }
+
+    //   /// Functor interface
+    //   bool operator () (const base_hit & a_hit) const
+    //   {
+    //     return (a_hit.has_geom_id () && a_hit.get_geom_id () == gid_);
+    //   }
+
+    //   geomtools::geom_id gid_; /// The geometry ID to be checked
+
+    // };
+
 		struct find_by_channel {
 			find_by_channel(const uint16_t & feast_id_,
 											const uint16_t & channel_id_) : feast_id(feast_id_),
 																											channel_id(channel_id_) {}
 
 			bool operator()(const tracker_channel_hit & tracker_channel_hit_) {
-				uint16_t input_feast_id = tracker_channel_hit_.feast_id;
-				uint16_t input_channel_id = tracker_channel_hit_.channel;
+				uint16_t input_feast_id = tracker_channel_hit_.electronic_id.get(tracker_constants::FEAST_INDEX);
+				uint16_t input_channel_id = tracker_channel_hit_.electronic_id.get(tracker_constants::CHANNEL_INDEX);
 				// std::clog << "DEBUG : TRACKER_CHANNEL_HIT::FIND_BY_CHANNEL : input_feast = " << input_feast_id
 				//				<< "input_channel = " << input_channel_id << std::endl;
 				bool finded = false;
@@ -52,8 +74,8 @@ namespace fecom {
 																															 timestamp_type(timestamp_type_) {}
 
 			bool operator()(const tracker_channel_hit & tracker_channel_hit_) {
-				uint16_t input_feast_id = tracker_channel_hit_.feast_id;
-				uint16_t input_channel_id = tracker_channel_hit_.channel;
+				uint16_t input_feast_id = tracker_channel_hit_.electronic_id.get(tracker_constants::FEAST_INDEX);
+				uint16_t input_channel_id = tracker_channel_hit_.electronic_id.get(tracker_constants::CHANNEL_INDEX);
 				std::string input_timestamp_type = tracker_channel_hit_.timestamp_type;
 				// std::clog << "DEBUG : TRACKER_CHANNEL_HIT::FIND_BY_TIMESTAMP : input_feast = " << input_feast_id
 				//				<< " input_channel = " << input_channel_id
@@ -70,12 +92,6 @@ namespace fecom {
 			uint16_t channel_id;
 			std::string timestamp_type;
 		};
-
-    enum channelmode_type {
-      INVALID_CHANNEL  = 0,
-      ANODIC_CHANNEL   = 1,
-      CATHODIC_CHANNEL = 2
-    };
 
     tracker_channel_hit();
 
@@ -104,10 +120,15 @@ namespace fecom {
 		mutable bool associated = false;
 
     // Config :
-    uint16_t feast_id; ///< FEAST (0..1)
-    uint16_t channel;  ///< Channel (0..15)
+
+		// In the electronic ID : (type, address)
+
+    // uint16_t feast_id; ///< FEAST (0..1)
+		// uint16_t channel;  ///< Channel (0..15)
+    // channelmode_type channel_type; ///< Channel type (anodic || cathodic)
+
     uint16_t event_id; ///< Debug counter (0..255)
-    channelmode_type channel_type; ///< Channel type (anodic || cathodic)
+
     std::string timestamp_type;    ///< Type of the timestamp (t0..t6)
 
     // Data :

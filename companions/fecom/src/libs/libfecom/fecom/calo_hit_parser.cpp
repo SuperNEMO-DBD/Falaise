@@ -125,8 +125,9 @@ namespace fecom {
       DT_LOG_DEBUG(logging, "fallingcell   = " << fallingcell);
       DT_LOG_DEBUG(logging, "fallingoffset = " << fallingoffset);
       DT_LOG_DEBUG(logging, "fcr           = " << fcr);
-      hit_.slot_index = slotid;
-      hit_.channel = channelid;
+      hit_.electronic_id.set_type(calo_constants::CALO_CHANNEL_TYPE);
+      hit_.electronic_id.set(calo_constants::BOARD_INDEX, slotid);
+      hit_.electronic_id.set(calo_constants::CHANNEL_INDEX ,channelid);
       hit_.event_id = eventid;
       hit_.raw_tdc = rawtdc;
       hit_.low_threshold_trig_count = trigcount;

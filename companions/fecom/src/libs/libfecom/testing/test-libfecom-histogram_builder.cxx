@@ -26,7 +26,7 @@ int main(int /*argc_*/, char ** /*argv_*/)
   try {
     DT_LOG_DEBUG(logging, "Entering test-libfecom-event_builder.cxx...");
 
-    std::string input_filename("${FECOM_RESOURCES_DIR}/data/samples/fake_run/calo_fake_tracker_hits_2.data.bz2");
+    std::string input_filename("${FECOM_RESOURCES_DIR}/data/samples/fake_run/calo_fake_tracker_hits_1.data.bz2");
     // std::string input_filename = "${FECOM_RESOURCES_DIR}/output_test/commissioning_event_10_events.data.bz2";
     datatools::fetch_path_with_env(input_filename);
 
@@ -56,12 +56,8 @@ int main(int /*argc_*/, char ** /*argv_*/)
     datatools::fetch_path_with_env(string_buffer);
     TFile* root_file = new TFile(string_buffer.c_str(), "RECREATE");
 
-    const std::size_t CALO_MAX_NUMBER_OF_CHANNELS = 13;
-    const std::size_t TRACKER_MAX_NUMBER_OF_CHANNELS = 36;
-    // const std::size_t TRACKER_NUMBER_OF_TIMES = 7;
-
     TH1F * hit_calo_channel_TH1F[CALO_MAX_NUMBER_OF_CHANNELS];
-    for (unsigned int icalo_channel = 0; icalo_channel < CALO_MAX_NUMBER_OF_CHANNELS; icalo_channel++) {
+    for (unsigned int icalo_channel = 0; icalo_channel < fecom::calo_constants::CALO_MAX_NUMBER_OF_CHANNELS; icalo_channel++) {
       string_buffer = "hit_calo_channel_" + std::to_string(icalo_channel);
 
       hit_calo_channel_TH1F[icalo_channel] = new TH1F(string_buffer.c_str(),
@@ -69,13 +65,32 @@ int main(int /*argc_*/, char ** /*argv_*/)
     						      5, 0, 5);
     }
 
-    TH1F * hit_tracker_channel_TH1F[TRACKER_MAX_NUMBER_OF_CHANNELS];
-    for (unsigned int itracker_channel = 0; itracker_channel < TRACKER_MAX_NUMBER_OF_CHANNELS; itracker_channel++) {
-      string_buffer = "hit_tracker_channel_" + std::to_string(itracker_channel);
-      hit_tracker_channel_TH1F[itracker_channel] = new TH1F(string_buffer.c_str(),
-    							    Form("Hit tracker GG cell %i", itracker_channel),
-    							    5, 0, 5);
-    }
+    TH1F * hit_tracker_channel_TH1F[fecom::tracker_constants::NUMBER_OF_LAYERS][fecom::tracker_constants::NUMBER_OF_ROWS_PER_BOARD];
+    for (unsigned int ilayer = 0; ilayer < fecom::tracker_constants::NUMBER_OF_LAYERS; ilayer++)
+      {
+	for (unsigned int irow = 0; irow < fecom::tracker_constants::NUMBER_OF_ROWS_PER_BOARD; irow++)
+	  {
+	    string_buffer = "hit_tracker_layer_" + std::to_string(ilayer) + "_row_" + std::to_string(irow);
+	    hit_tracker_channel_TH1F[ilayer][irow] = new TH1F(string_buffer.c_str(),
+							      Form("Hit tracker GG cell layer %i, row %i", ilayer, irow),
+							      5, 0, 5);
+	  }
+      }
+
+    TH1F * hit_tracker_time_rate_TH1F[fecom::tracker_constants::NUMBER_OF_LAYERS][fecom::tracker_constants::NUMBER_OF_ROWS_PER_BOARD][fecom::tracker_constants::NUMBER_OF_TIMES];
+    for (unsigned int ilayer = 0; ilayer < fecom::tracker_constants::NUMBER_OF_LAYERS; ilayer++)
+      {
+	for (unsigned int irow = 0; irow < fecom::tracker_constants::NUMBER_OF_ROWS_PER_BOARD; irow++)
+	  {
+	    for (unsigned int itime = 0; itime < fecom::tracker_constants::NUMBER_OF_TIMES; itime++)
+	      {
+		string_buffer = "hit_tracker_layer_" + std::to_string(ilayer) + "_row_" + std::to_string(irow) + "_timestamp_t" + std::to_string(itime);
+		hit_tracker_time_rate_TH1F[ilayer][irow][itime] = new TH1F(string_buffer.c_str(),
+									   Form("Hit tracker GG cell timestamp rate layer %i, row %i, timestamp %i", ilayer, irow, itime),
+									   5, 0, 5);
+	      }
+	  }
+      }
 
 
     std::size_t event_counter = 0;
@@ -92,9 +107,8 @@ int main(int /*argc_*/, char ** /*argv_*/)
 	     it_chit++)
 	  {
 	    // it_chit -> tree_dump(std::clog, "Calo hit #" + std::to_string(chit_counter));
-	    uint8_t hit_channel = it_chit -> channel;
+	    uint8_t hit_channel = it_chit -> electronic_id.get(fecom::calo_constants::CHANNEL_INDEX);
 	    hit_calo_channel_TH1F[hit_channel]->Fill(1);
-
 
 	    chit_counter++;
 	  }
@@ -104,9 +118,19 @@ int main(int /*argc_*/, char ** /*argv_*/)
 	     it_thit != it_event->get_tracker_hit_collection().end();
 	     it_thit++)
 	  {
-	    // it_thit -> tree_dump(std::clog, "Tracker hit #" + std::to_string(thit_counter));
-	    uint8_t hit_channel = it_thit -> _cell_id_;
-	    hit_tracker_channel_TH1F[hit_channel]->Fill(1);
+	    it_thit -> tree_dump(std::clog, "Tracker hit #" + std::to_string(thit_counter));
+	    uint16_t layer = it_thit -> cell_geometric_id.get(fecom::tracker_constants::LAYER_INDEX);
+	    uint16_t row =  it_thit -> cell_geometric_id.get(fecom::tracker_constants::ROW_INDEX);
+	    hit_tracker_channel_TH1F[layer][row]->Fill(1);
+
+	    if (it_thit -> has_anodic_t0()) hit_tracker_time_rate_TH1F[layer][row][0]->Fill(1);
+	    if (it_thit -> has_anodic_t1()) hit_tracker_time_rate_TH1F[layer][row][1]->Fill(1);
+	    if (it_thit -> has_anodic_t2()) hit_tracker_time_rate_TH1F[layer][row][2]->Fill(1);
+	    if (it_thit -> has_anodic_t3()) hit_tracker_time_rate_TH1F[layer][row][3]->Fill(1);
+	    if (it_thit -> has_anodic_t4()) hit_tracker_time_rate_TH1F[layer][row][4]->Fill(1);
+	    if (it_thit -> has_cathodic_t5()) hit_tracker_time_rate_TH1F[layer][row][5]->Fill(1);
+	    if (it_thit -> has_cathodic_t6()) hit_tracker_time_rate_TH1F[layer][row][6]->Fill(1);
+
 
 	    thit_counter++;
 	  }

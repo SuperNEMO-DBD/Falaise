@@ -16,7 +16,6 @@ int main(int /*argc_*/, char ** /*argv_*/)
     fecom::base_hit hit_2;
     hit.hitmode = fecom::base_hit::SIG_TRACKER;
     hit.hit_id = 49;
-    hit.slot_index = 3;
     hit.tree_dump(std::clog, "Base hit 2:");
 
 

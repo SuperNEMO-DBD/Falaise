@@ -23,9 +23,11 @@ namespace fecom {
   bool tracker_channel_hit::is_valid() const
   {
     if (! this->base_hit::is_valid()) return false;
-    if (channel >= tracker_constants::INVALID_CHANNEL_INDEX
-	|| feast_id == tracker_constants::INVALID_FEAST_INDEX
-	|| channel_type == INVALID_CHANNEL
+    if (!(electronic_id.get_type() == tracker_constants::ANODIC_CHANNEL_TYPE
+	  || electronic_id.get_type() == tracker_constants::CATHODIC_CHANNEL_TYPE)
+	|| electronic_id.get(tracker_constants::BOARD_INDEX) >= tracker_constants::INVALID_BOARD
+	|| electronic_id.get(tracker_constants::FEAST_INDEX) >= tracker_constants::INVALID_FEAST
+	|| electronic_id.get(tracker_constants::CHANNEL_INDEX) >=  tracker_constants::INVALID_CHANNEL
 	|| timestamp_type == "INVALID") return false;
     return true;
   }
@@ -40,10 +42,7 @@ namespace fecom {
 
   void tracker_channel_hit::_reset_()
   {
-    feast_id = tracker_constants::INVALID_FEAST_INDEX;
-    channel = tracker_constants::INVALID_CHANNEL_INDEX;
     event_id = 0xFFFF;
-    channel_type = INVALID_CHANNEL;
     timestamp_type = "INVALID";
     reset_timestamp();
     associated = false;
@@ -64,16 +63,7 @@ namespace fecom {
     this->base_hit::tree_dump(out_, title_, indent_, true);
 
     out_ << indent_ << io::tag()
-         << "Feast                     : " << (int) feast_id << std::endl;
-
-    out_ << indent_ << io::tag()
-         << "Channel                   : " << (int) channel << std::endl;
-
-    out_ << indent_ << io::tag()
          << "Event ID                  : " << (int) event_id << std::endl;
-
-    out_ << indent_ << io::tag()
-         << "Channel type              : " << (int) channel_type << std::endl;
 
     out_ << indent_ << io::tag()
          << "Timestamp type            : " << (std::string) timestamp_type << std::endl;

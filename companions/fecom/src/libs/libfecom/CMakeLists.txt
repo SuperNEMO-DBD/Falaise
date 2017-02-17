@@ -26,7 +26,6 @@ set(FeCom_HEADERS
   fecom/commissioning_event_data.hpp
   fecom/commissioning_event_data.ipp
   fecom/channel_mapping.hpp
-  fecom/channel_mapping_with_geom.hpp
   fecom/calo_pedestal_calib.hpp
   fecom/calo_calibration.hpp
   fecom/run_header.hpp
@@ -53,7 +52,6 @@ set(FeCom_SOURCES
   fecom/commissioning_event.cpp
   fecom/commissioning_event_data.cpp
   fecom/channel_mapping.cpp
-  fecom/channel_mapping_with_geom.cpp
   fecom/calo_pedestal_calib.cpp
   fecom/calo_calibration.cpp
   fecom/run_header.cpp
@@ -79,7 +77,6 @@ set(FeCom_TESTS
   testing/test-libfecom-run_header.cxx
   testing/test-libfecom-calo_hit_reader.cxx
   testing/test-libfecom-fake_hit_reader.cxx
-  testing/test-libfecom-fake_hit_reader_2.cxx
   testing/test-libfecom-event_builder.cxx
   testing/test-libfecom-histogram_builder.cxx
   )

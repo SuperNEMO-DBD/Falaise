@@ -43,13 +43,7 @@ namespace fecom {
 
 
 		/// Check if tracker hit has cell id
-		bool has_cell_id() const;
-
-    /// Set cell ID
-    void set_cell_id(const uint64_t value_);
-
-    /// Get cell ID
-    uint16_t get_cell_id() const;
+		bool has_geom_id() const;
 
     /// Check if has anodic time 0
     bool has_anodic_t0() const;
@@ -156,7 +150,7 @@ namespace fecom {
   public:
 
 		// SNDER p.30-31 for channel / cell association
-    uint16_t _cell_id_; ///< Cell ID on the board [0-35]
+		geomtools::geom_id cell_geometric_id; ///< Cell ID [Type:layer,row]
 
 		/* Not relevant information (ftm) because it's FEAST + CHANNEL_ID
 

@@ -13,6 +13,8 @@
 // - Bayeux/datatools:
 #include <bayeux/datatools/utils.h>
 #include <bayeux/datatools/i_serializable.h>
+// - Bayeux/geomtools:
+#include <bayeux/geomtools/geom_id.h>
 
 // This project:
 #include <fecom/utils.hpp>
@@ -39,6 +41,8 @@ namespace fecom {
 
     virtual ~base_hit();
 
+		bool has_geom_id() const;
+
     bool is_valid() const;
 
     virtual void reset();
@@ -50,12 +54,12 @@ namespace fecom {
 
     static std::string hitmode_to_label(const hitmode_type);
 
-
   public:
 
     int          hit_id;     ///< The hit ID
     hitmode_type hitmode;    ///< The hitmode (CALO or TRACKER ftm)
-    uint16_t     slot_index; ///< Board logical slot (0..19)
+		geomtools::geom_id electronic_id; ///< The electronic channel ID
+    // uint16_t     slot_index; ///< Board logical slot (0..19)
 		uint32_t     trigger_id; ///< Hit trigger ID
 
 		DATATOOLS_SERIALIZATION_DECLARATION()

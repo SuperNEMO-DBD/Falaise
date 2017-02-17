@@ -27,8 +27,7 @@ namespace fecom {
 
   void channel_mapping::_reset_()
   {
-    _channel_triplet_collection_.clear();
-    _cell_channel_mapping_.clear();
+    gg_bimap.clear();
     initialized = false;
     return;
   }
@@ -41,8 +40,6 @@ namespace fecom {
   void channel_mapping::initialize()
   {
     DT_THROW_IF(is_initialized(), std::logic_error, "Channel mapping is already initialized !");
-    //  _build_channel_triplet_collection();
-    _cell_to_channel_mapping();
     initialized = true;
     return;
   }
@@ -60,55 +57,80 @@ namespace fecom {
 	      {
 		std::stringstream ss(line);
 
-		channel_triplet a_channel_triplet;
-		a_channel_triplet.anodic_channel.channel_type = tracker_board_channel_id::ANODIC_CHANNEL;
-		a_channel_triplet.bottom_cathode_channel.channel_type = tracker_board_channel_id::BOTTOM_CATHODIC_CHANNEL;
-		a_channel_triplet.top_cathode_channel.channel_type = tracker_board_channel_id::TOP_CATHODIC_CHANNEL;
-
-		uint16_t cell_number = -1;
+		uint16_t board_number = -1;
+		uint16_t layer_number = -1;
+		uint16_t row_number = -1;
 		uint16_t anode_number = -1;
 		uint16_t bot_cathode_number = -1;
 		uint16_t top_cathode_number = -1;
 
-		ss >> cell_number >> anode_number >> bot_cathode_number >> top_cathode_number;
+		ss >> board_number >> layer_number >> row_number >> anode_number >> bot_cathode_number >> top_cathode_number;
 
-		int check_feast_anode = anode_number - 54;
-		int check_feast_bot_cath = bot_cathode_number - 54;
-		int check_feast_top_cath = top_cathode_number - 54;
+		uint16_t feast_anode = -1;
+		uint16_t feast_bot_cathode = -1;
+		uint16_t feast_top_cathode = -1;
 
-		if (check_feast_anode >= 0)
-		  {
-		    a_channel_triplet.anodic_channel.feast_id = 1;
-		    a_channel_triplet.anodic_channel.channel_id = check_feast_anode;
-		  }
-		else
-		  {
-		    a_channel_triplet.anodic_channel.feast_id = 0;
-		    a_channel_triplet.anodic_channel.channel_id = anode_number;
-		  }
-		if (check_feast_bot_cath >= 0)
-		  {
-		    a_channel_triplet.bottom_cathode_channel.feast_id = 1;
-		    a_channel_triplet.bottom_cathode_channel.channel_id = check_feast_bot_cath;
-		  }
-		else
-		  {
-		    a_channel_triplet.bottom_cathode_channel.feast_id = 0;
-		    a_channel_triplet.bottom_cathode_channel.channel_id = bot_cathode_number;
-		  }
+		uint16_t channel_anode = -1;
+		uint16_t channel_bot_cathode = -1;
+		uint16_t channel_top_cathode = -1;
 
-		if (check_feast_top_cath >= 0)
-		  {
-		    a_channel_triplet.top_cathode_channel.feast_id = 1;
-		    a_channel_triplet.top_cathode_channel.channel_id = check_feast_top_cath;
-		  }
-		else
-		  {
-		    a_channel_triplet.top_cathode_channel.feast_id = 0;
-		    a_channel_triplet.top_cathode_channel.channel_id = top_cathode_number;
-		  }
+		if (anode_number - 54 >= 0) {
+		  feast_anode = 1;
+		  channel_anode = anode_number - 54;
+		} else {
+		  feast_anode = 0;
+		  channel_anode = anode_number;
+		}
+		if (bot_cathode_number - 54 >= 0) {
+		  feast_bot_cathode = 1;
+		  channel_bot_cathode = bot_cathode_number - 54;
+		} else {
+		  feast_bot_cathode = 0;
+		  channel_bot_cathode = bot_cathode_number;
+		}
+		if (top_cathode_number - 54 >= 0) {
+		  feast_top_cathode = 1;
+		  channel_top_cathode = top_cathode_number - 54;
+		} else {
+		  feast_top_cathode = 0;
+		  channel_top_cathode = top_cathode_number;
+		}
 
-		_channel_triplet_collection_.push_back(a_channel_triplet);
+		// Geometric ID
+		geomtools::geom_id cell_id_anodic(tracker_constants::GEOMETRIC_CELL_TYPE,
+						  layer_number,
+						  row_number,
+						  tracker_constants::ANODIC_PORT);
+
+		geomtools::geom_id cell_id_bot_cathode(tracker_constants::GEOMETRIC_CELL_TYPE,
+						       layer_number,
+						       row_number,
+						       tracker_constants::BOT_CATHODE_PORT);
+
+		geomtools::geom_id cell_id_top_cathode(tracker_constants::GEOMETRIC_CELL_TYPE,
+						       layer_number,
+						       row_number,
+						       tracker_constants::TOP_CATHODE_PORT);
+
+		// Electronic ID
+		geomtools::geom_id anode_channel_id(tracker_constants::ANODIC_CHANNEL_TYPE,
+						    board_number,
+						    feast_anode,
+						    channel_anode);
+
+		geomtools::geom_id bottom_cathode_channel_id(tracker_constants::CATHODIC_CHANNEL_TYPE,
+							     board_number,
+							     feast_bot_cathode,
+							     channel_bot_cathode);
+
+		geomtools::geom_id top_cathode_channel_id(tracker_constants::CATHODIC_CHANNEL_TYPE,
+							  board_number,
+							  feast_top_cathode,
+							  channel_top_cathode);
+
+		gg_bimap.insert(ID_doublet(cell_id_anodic, anode_channel_id));
+		gg_bimap.insert(ID_doublet(cell_id_bot_cathode, bottom_cathode_channel_id));
+		gg_bimap.insert(ID_doublet(cell_id_top_cathode, top_cathode_channel_id));
 
 	      }
 	    line_counter++;
@@ -121,241 +143,132 @@ namespace fecom {
     return;
   }
 
-  void channel_mapping::_cell_to_channel_mapping()
+  void channel_mapping::get_cell_layer_row_for_a_channel(const geomtools::geom_id & electronic_id_,
+							 uint16_t & layer_number_,
+							 uint16_t & row_number_) const
   {
-    DT_THROW_IF(_channel_triplet_collection_.size() == 0,
-		std::logic_error,
-		"Channel triplet collection is empty, check your mapping !");
-
-    std::size_t cell_counter = 0;
-    for (auto it_vector =_channel_triplet_collection_.begin();
-	 it_vector != _channel_triplet_collection_.end();
-	 it_vector++)
-      {
-	uint16_t feast_channel_anodic = it_vector->anodic_channel.feast_id * 54 + it_vector->anodic_channel.channel_id;
-	uint16_t feast_channel_bottom_cathode = it_vector->bottom_cathode_channel.feast_id * 54 + it_vector->bottom_cathode_channel.channel_id;
-	uint16_t feast_channel_top_cathode = it_vector->top_cathode_channel.feast_id * 54 + it_vector->top_cathode_channel.channel_id;
-
-	_cell_channel_mapping_.insert(std::pair<uint16_t, uint16_t> (feast_channel_anodic, cell_counter));
-	_cell_channel_mapping_.insert(std::pair<uint16_t, uint16_t> (feast_channel_bottom_cathode, cell_counter));
-	_cell_channel_mapping_.insert(std::pair<uint16_t, uint16_t> (feast_channel_top_cathode, cell_counter));
-
-	cell_counter++;
-      }
+    auto it_map = gg_bimap.right.find(electronic_id_);
+    if (it_map != gg_bimap.right.end()) {
+      geomtools::geom_id associated_geom_id = it_map -> second;
+      std::clog << associated_geom_id << std::endl;
+      layer_number_ = associated_geom_id.get(tracker_constants::LAYER_INDEX);
+      row_number_ = associated_geom_id.get(tracker_constants::ROW_INDEX);
+    }
+    else DT_THROW(std::logic_error, "The input channel with EID : " << electronic_id_ << " is not in the bimap GID <-> EID !");
+    return;
   }
 
-  void channel_mapping::_build_channel_triplet_collection()
+  void channel_mapping::get_electronics_id_for_a_cell_layer_row(const uint16_t & layer_number_,
+								const uint16_t & row_number_,
+								geomtools::geom_id & electronic_anodic_id_,
+								geomtools::geom_id & electronic_bot_cathodic_id_,
+								geomtools::geom_id & electronic_top_cathodic_id_) const
   {
-    // Build with a logic. For commissioning the mapping will be build from a csv file and
-    // this method will not be used.
+    geomtools::geom_id geometric_anodic_cell_id(tracker_constants::GEOMETRIC_CELL_TYPE,
+						layer_number_,
+						row_number_,
+						tracker_constants::ANODIC_PORT);
 
-    for (uint16_t icell = 0; icell < tracker_constants::NUMBER_OF_CELLS_PER_BOARD; icell++)
-      {
-	channel_triplet a_channel_triplet;
-	a_channel_triplet.anodic_channel.channel_type = tracker_board_channel_id::ANODIC_CHANNEL;
-	a_channel_triplet.bottom_cathode_channel.channel_type = tracker_board_channel_id::BOTTOM_CATHODIC_CHANNEL;
-	a_channel_triplet.top_cathode_channel.channel_type = tracker_board_channel_id::TOP_CATHODIC_CHANNEL;
+    get_electronic_id_from_geometric_id(geometric_anodic_cell_id,
+					electronic_anodic_id_);
 
-	if (icell < 9)
-	  {
-	    a_channel_triplet.anodic_channel.feast_id = 0;
-	    a_channel_triplet.bottom_cathode_channel.feast_id = 0;
-	    a_channel_triplet.top_cathode_channel.feast_id = 0;
+    geomtools::geom_id geometric_bot_cathodic_cell_id(tracker_constants::GEOMETRIC_CELL_TYPE,
+						      layer_number_,
+						      row_number_,
+						      tracker_constants::BOT_CATHODE_PORT);
 
-	    if (icell % 2 == 0) a_channel_triplet.anodic_channel.channel_id = icell * 3;
-	    else a_channel_triplet.anodic_channel.channel_id = icell * 3 + 1;
-	    a_channel_triplet.bottom_cathode_channel.channel_id = icell * 2 + 1;
-	    a_channel_triplet.top_cathode_channel.channel_id = icell * 6 + 2;
-	  }
-	else if (icell >= 9 && icell < 18)
-	  {
-	    a_channel_triplet.anodic_channel.feast_id = 0;
-	    a_channel_triplet.bottom_cathode_channel.feast_id = 0;
-	    a_channel_triplet.top_cathode_channel.feast_id = 1;
+    get_electronic_id_from_geometric_id(geometric_bot_cathodic_cell_id,
+					electronic_bot_cathodic_id_);
 
-	    if (icell % 2 == 0) a_channel_triplet.anodic_channel.channel_id = icell * 3;
-	    else a_channel_triplet.anodic_channel.channel_id = icell * 3 + 1;
-	    a_channel_triplet.bottom_cathode_channel.channel_id = icell * 2 + 1;
-	    a_channel_triplet.top_cathode_channel.channel_id = (icell - 9) * 6 + 2;
-	  }
-	else if (icell >= 18 && icell < 27)
-	  {
-	    a_channel_triplet.anodic_channel.feast_id = 1;
-	    a_channel_triplet.bottom_cathode_channel.feast_id = 1;
-	    a_channel_triplet.top_cathode_channel.feast_id = 0;
+    geomtools::geom_id geometric_top_cathodic_cell_id(tracker_constants::GEOMETRIC_CELL_TYPE,
+						      layer_number_,
+						      row_number_,
+						      tracker_constants::TOP_CATHODE_PORT);
 
-	    if (icell % 2 == 0) a_channel_triplet.anodic_channel.channel_id = (icell - 18) * 3;
-	    else a_channel_triplet.anodic_channel.channel_id = (icell - 18) * 3 + 1;
-	    a_channel_triplet.bottom_cathode_channel.channel_id = (icell - 18) * 2 + 1;
-	    a_channel_triplet.top_cathode_channel.channel_id = icell * 2 + 1;
-	  }
-	else if (icell >= 27 && icell < tracker_constants::NUMBER_OF_CELLS_PER_BOARD)
-	  {
-	    a_channel_triplet.anodic_channel.feast_id = 1;
-	    a_channel_triplet.bottom_cathode_channel.feast_id = 1;
-	    a_channel_triplet.top_cathode_channel.feast_id = 1;
-
-	    if (icell % 2 == 0) a_channel_triplet.anodic_channel.channel_id = (icell - 18) * 3;
-	    else a_channel_triplet.anodic_channel.channel_id = (icell - 18) * 3 + 1;
-	    a_channel_triplet.bottom_cathode_channel.channel_id = (icell - 18) * 2 + 1;
-	    a_channel_triplet.top_cathode_channel.channel_id = (icell - 9) * 2 + 1;
-	  }
-
-	_channel_triplet_collection_.push_back(a_channel_triplet);
-
-      }
+    get_electronic_id_from_geometric_id(geometric_top_cathodic_cell_id,
+					electronic_top_cathodic_id_);
 
     return;
   }
 
-  void channel_mapping::get_associated_channels(const uint16_t input_feast_,
-						const uint16_t input_channel_,
-						uint16_t & associated_feast_1_,
-						uint16_t & associated_channel_1_,
-						uint16_t & associated_feast_2_,
-						uint16_t & associated_channel_2_) const
+  void channel_mapping::get_electronic_id_from_geometric_id(const geomtools::geom_id & geometric_id_,
+							    geomtools::geom_id & electronic_id_) const
   {
-    DT_THROW_IF(!is_initialized(), std::logic_error, "Channel mapping is not initizalied !");
-    uint16_t input_feast_channel = 54 * input_feast_ + input_channel_;
-    auto it_map = _cell_channel_mapping_.find(input_feast_channel);
-    uint16_t cell_number = 0;
-    if (it_map != _cell_channel_mapping_.end()) cell_number = it_map->second;
 
-    channel_triplet a_channel_triplet;
-    a_channel_triplet = _channel_triplet_collection_.at(cell_number);
+    auto it_map = gg_bimap.left.find(geometric_id_);
 
-    // Input : anodic
-    if (is_anodic_channel(input_feast_, input_channel_))
-      {
-	associated_feast_1_   = a_channel_triplet.bottom_cathode_channel.feast_id;
-	associated_channel_1_ = a_channel_triplet.bottom_cathode_channel.channel_id;
+    if (it_map != gg_bimap.left.end()) {
+      electronic_id_ = it_map -> second;
+    }
 
-	associated_feast_2_   = a_channel_triplet.top_cathode_channel.feast_id;
-	associated_channel_2_ = a_channel_triplet.top_cathode_channel.channel_id;
-      }
-
-    // Input : bottom cathode
-    if (is_bottom_cathodic_channel(input_feast_, input_channel_))
-      {
-	associated_feast_1_ = a_channel_triplet.anodic_channel.feast_id;
-	associated_channel_1_ = a_channel_triplet.anodic_channel.channel_id;
-
-	associated_feast_2_   = a_channel_triplet.top_cathode_channel.feast_id;
-	associated_channel_2_ = a_channel_triplet.top_cathode_channel.channel_id;
-      }
-
-    // Input : top cathode
-    if (is_top_cathodic_channel(input_feast_, input_channel_))
-      {
-	associated_feast_1_   = a_channel_triplet.anodic_channel.feast_id;
-	associated_channel_1_ = a_channel_triplet.anodic_channel.channel_id;
-
-	associated_feast_2_   = a_channel_triplet.bottom_cathode_channel.feast_id;
-	associated_channel_2_ = a_channel_triplet.bottom_cathode_channel.channel_id;
-      }
+    else DT_THROW(std::logic_error, "Input geometric id is not find in the bimap " << geometric_id_ << " !");
+    return;
   }
 
-  void channel_mapping::get_associated_channels_with_types(const uint16_t input_feast_,
-							   const uint16_t input_channel_,
-							   uint16_t & associated_anodic_feast_,
-							   uint16_t & associated_anodic_channel_,
-							   uint16_t & associated_bottom_cathodic_feast_,
-							   uint16_t & associated_bottom_cathodic_channel_,
-							   uint16_t & associated_top_cathodic_feast_,
-							   uint16_t & associated_top_cathodic_channel_) const
+  void channel_mapping::get_geometric_id_from_electronic_id(const geomtools::geom_id & electronic_id_,
+							    geomtools::geom_id & geometric_id_) const
   {
-    DT_THROW_IF(!is_initialized(), std::logic_error, "Channel mapping is not initizalied !");
-    DT_THROW_IF(input_feast_ >= tracker_constants::NUMBER_OF_FEAST_PER_BOARD,
-		std::logic_error,
-		"Feast ID '" + std::to_string(input_feast_) + "' is not valid ! ");
-    DT_THROW_IF(input_channel_ >= tracker_constants::NUMBER_OF_CHANNEL_PER_FEAST,
-		std::logic_error,
-		"Channel ID '" + std::to_string(input_channel_) + "' is not valid ! ");
 
-    uint16_t input_feast_channel = 54 * input_feast_ + input_channel_;
-    auto it_map = _cell_channel_mapping_.find(input_feast_channel);
-    uint16_t cell_number = 0;
-    if (it_map != _cell_channel_mapping_.end()) cell_number = it_map->second;
+    auto it_map = gg_bimap.right.find(electronic_id_);
 
-    channel_triplet a_channel_triplet;
-    a_channel_triplet = _channel_triplet_collection_.at(cell_number);
+    if (it_map != gg_bimap.right.end()) {
+      geometric_id_ = it_map -> second;
+    }
 
-    associated_anodic_feast_ = a_channel_triplet.anodic_channel.feast_id;
-    associated_anodic_channel_ = a_channel_triplet.anodic_channel.channel_id;
+    else DT_THROW(std::logic_error, "Input electronic id is not find in the bimap " << electronic_id_ << " !");
+    return;
+  }
 
-    associated_bottom_cathodic_feast_ = a_channel_triplet.bottom_cathode_channel.feast_id;
-    associated_bottom_cathodic_channel_ = a_channel_triplet.bottom_cathode_channel.channel_id;
+  void channel_mapping::get_associated_electronics_id(const geomtools::geom_id & input_electronic_id_,
+						      geomtools::geom_id & electronic_anodic_id_,
+						      geomtools::geom_id & electronic_bot_cathodic_id_,
+						      geomtools::geom_id & electronic_top_cathodic_id_) const
+  {
+    geomtools::geom_id geometric_cell_id;
+    get_geometric_id_from_electronic_id(input_electronic_id_,
+					geometric_cell_id);
+    uint32_t layer = geometric_cell_id.get(tracker_constants::LAYER_INDEX);
+    uint32_t row = geometric_cell_id.get(tracker_constants::ROW_INDEX);
 
-    associated_top_cathodic_feast_ = a_channel_triplet.top_cathode_channel.feast_id;
-    associated_top_cathodic_channel_ = a_channel_triplet.top_cathode_channel.channel_id;
+    get_electronics_id_for_a_cell_layer_row(layer,
+					    row,
+					    electronic_anodic_id_,
+					    electronic_bot_cathodic_id_,
+					    electronic_top_cathodic_id_);
 
     return;
   }
 
-  void channel_mapping::get_cell_number_for_a_channel(const uint16_t input_feast_,
-						      const uint16_t input_channel_,
-						      uint16_t & cell_number_) const
-  {
-    uint16_t feast_channel = 54 * input_feast_ + input_channel_;
-    auto it_map = _cell_channel_mapping_.find(feast_channel);
-    if (it_map != _cell_channel_mapping_.end()) cell_number_ = it_map->second;
-    else DT_THROW(std::logic_error, "The input channel Feast #" + std::to_string(input_feast_) + " Channel #" + std::to_string(input_channel_) + " is not valid !");
-    return;
-  }
-
-
-  bool channel_mapping::is_anodic_channel(const uint16_t input_feast_,
-					  const uint16_t input_channel_) const
+  bool channel_mapping::is_anodic_channel(const geomtools::geom_id & input_electronic_id_) const
   {
     DT_THROW_IF(!is_initialized(), std::logic_error, "Channel mapping is not initizalied !");
-    uint16_t input_feast_channel = 54 * input_feast_ + input_channel_;
-    auto it_map = _cell_channel_mapping_.find(input_feast_channel);
-    uint16_t cell_number = 0;
-    if (it_map != _cell_channel_mapping_.end()) cell_number = it_map->second;
 
-    channel_triplet a_channel_triplet;
-    a_channel_triplet = _channel_triplet_collection_.at(cell_number);
+    return input_electronic_id_.get_type() == tracker_constants::ANODIC_CHANNEL_TYPE;
 
-    if (input_feast_ == a_channel_triplet.anodic_channel.feast_id
-	&& input_channel_ == a_channel_triplet.anodic_channel.channel_id) return true;
-
-    else return false;
   }
 
-  bool channel_mapping::is_bottom_cathodic_channel(const uint16_t input_feast_,
-						   const uint16_t input_channel_) const
+  bool channel_mapping::is_bottom_cathodic_channel(const geomtools::geom_id & input_electronic_id_) const
   {
     DT_THROW_IF(!is_initialized(), std::logic_error, "Channel mapping is not initizalied !");
-    uint16_t input_feast_channel = 54 * input_feast_ + input_channel_;
-    auto it_map = _cell_channel_mapping_.find(input_feast_channel);
-    uint16_t cell_number = 0;
-    if (it_map != _cell_channel_mapping_.end()) cell_number = it_map->second;
+    geomtools::geom_id associated_geometric_id;
 
-    channel_triplet a_channel_triplet;
-    a_channel_triplet = _channel_triplet_collection_.at(cell_number);
-
-    if (input_feast_ == a_channel_triplet.bottom_cathode_channel.feast_id
-	&& input_channel_ == a_channel_triplet.bottom_cathode_channel.channel_id) return true;
-
-    else return false;
+    get_geometric_id_from_electronic_id(input_electronic_id_,
+					associated_geometric_id);
+    bool is_bot_cathodic = false;
+    if (associated_geometric_id.get(tracker_constants::PORT_INDEX) == tracker_constants::BOT_CATHODE_PORT) is_bot_cathodic = true;
+    return is_bot_cathodic;
   }
 
-  bool channel_mapping::is_top_cathodic_channel(const uint16_t input_feast_,
-						const uint16_t input_channel_) const
+  bool channel_mapping::is_top_cathodic_channel(const geomtools::geom_id & input_electronic_id_) const
   {
     DT_THROW_IF(!is_initialized(), std::logic_error, "Channel mapping is not initizalied !");
-    uint16_t input_feast_channel = 54 * input_feast_ + input_channel_;
-    auto it_map = _cell_channel_mapping_.find(input_feast_channel);
-    uint16_t cell_number = 0;
-    if (it_map != _cell_channel_mapping_.end()) cell_number = it_map->second;
+    geomtools::geom_id associated_geometric_id;
 
-    channel_triplet a_channel_triplet;
-    a_channel_triplet = _channel_triplet_collection_.at(cell_number);
-
-    if (input_feast_ == a_channel_triplet.top_cathode_channel.feast_id
-	&& input_channel_ == a_channel_triplet.top_cathode_channel.channel_id) return true;
-
-    else return false;
+    get_geometric_id_from_electronic_id(input_electronic_id_,
+					associated_geometric_id);
+    bool is_top_cathodic = false;
+    if (associated_geometric_id.get(tracker_constants::PORT_INDEX) == tracker_constants::TOP_CATHODE_PORT) is_top_cathodic = true;
+    return is_top_cathodic;
   }
 
   void channel_mapping::tree_dump(std::ostream & out_,
@@ -369,12 +282,6 @@ namespace fecom {
 
     out_ << indent_ << io::tag()
 	 << "Initialized : " << is_initialized() << std::endl;
-
-    out_ << indent_ << io::tag()
-	 << "Channel triplet collection size : " << _channel_triplet_collection_.size() << std::endl;
-
-    out_ << indent_ << io::tag()
-	 << "Channel <-> cell mapping size : " << _cell_channel_mapping_.size() << std::endl;
 
     return;
   }

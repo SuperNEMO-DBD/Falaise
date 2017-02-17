@@ -1,5 +1,7 @@
 // This project:
 #include <fecom/base_hit.hpp>
+// To see if it's necessary :
+// #include <geomtools/geom_id.ipp>
 
 // Third party:
 // - Boost:
@@ -25,7 +27,7 @@ namespace fecom {
     ar & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
     ar & boost::serialization::make_nvp("hit_id",  hit_id);
     ar & boost::serialization::make_nvp("hitmode", hitmode);
-    ar & boost::serialization::make_nvp("slot_index", slot_index);
+    ar & boost::serialization::make_nvp("electronic_id", electronic_id);
     ar & boost::serialization::make_nvp("trigger_id", trigger_id);
     return;
   }

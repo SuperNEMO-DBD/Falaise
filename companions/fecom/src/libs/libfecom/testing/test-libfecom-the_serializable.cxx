@@ -108,11 +108,9 @@ void ex_com_event_1(datatools::logger::priority logging)
 
   // Create a fake calo hit and some fake tracker channel hit to fill the commissioning event
   fecom::calo_hit chit;
-  chit.hit_id = 42;
+  geomtools::geom_id electronic_id(fecom::calo_constants::CALO_CHANNEL_TYPE, 0, 11); // EID [Type:board.channel]
   chit.hitmode = fecom::base_hit::SIG_CALORIMETER;
-  chit.slot_index = 0;
   chit.trigger_id = trigger_id;
-  chit.channel = 11;
   chit.waveform_data_size = 16;
   for (std::size_t icell = 0; icell < chit.waveform_data_size; icell++) {
     chit.set_raw_sample(icell, 23);
@@ -128,12 +126,17 @@ void ex_com_event_1(datatools::logger::priority logging)
       fecom::tracker_channel_hit tchit;
       tchit.hit_id = itchann;
       tchit.hitmode = fecom::base_hit::SIG_TRACKER;
-      tchit.slot_index = 1;
       tchit.trigger_id = trigger_id;
-      tchit.feast_id = 0;
-      tchit.channel = 1;
-      if (itchann < 5) tchit.channel_type = fecom::tracker_channel_hit::ANODIC_CHANNEL;
-      else tchit.channel_type = fecom::tracker_channel_hit::CATHODIC_CHANNEL;
+      if (itchann < 5)
+	{
+	  geomtools::geom_id tracker_electronic_id(fecom::tracker_constants::ANODIC_CHANNEL_TYPE, 0, 0, itchann);
+	  tchit.electronic_id = tracker_electronic_id;
+	}
+      else
+	{
+	  geomtools::geom_id tracker_electronic_id(fecom::tracker_constants::CATHODIC_CHANNEL_TYPE, 0, 0, itchann);
+	  tchit.electronic_id = tracker_electronic_id;
+	}
       std::string timestamp_type = "t" + std::to_string(itchann);
       tchit.timestamp_type = timestamp_type;
       tchit.timestamp_value = 42 * itchann;

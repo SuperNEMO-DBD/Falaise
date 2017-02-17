@@ -47,4 +47,8 @@ namespace fecom {
     return time_sample_duration() / 256;
   }
 
+  const uint64_t calo_constants::CALO_CHANNEL_TYPE;
+  const uint64_t calo_constants::BOARD_INDEX;
+  const uint64_t calo_constants::CHANNEL_INDEX;
+
 } // namespace fecom

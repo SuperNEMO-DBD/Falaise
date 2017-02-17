@@ -107,65 +107,23 @@ namespace fecom {
     DT_LOG_DEBUG(logging, "channel_type    = " << channel_type);
     DT_LOG_DEBUG(logging, "timestamp_type  = " << timestamp_type);
     DT_LOG_DEBUG(logging, "timestamp_value = " << timestamp_value);
-    hit_.slot_index = slot_id;
-    hit_.feast_id = feast_id;
-    hit_.channel = channel_id;
+
     if (channel_type == "Anodic") {
-      hit_.channel_type = fecom::tracker_channel_hit::ANODIC_CHANNEL;
+	hit_.electronic_id.set_type(tracker_constants::ANODIC_CHANNEL_TYPE);
     }
     else if (channel_type == "Cathodic") {
-      hit_.channel_type = fecom::tracker_channel_hit::CATHODIC_CHANNEL;
+      hit_.electronic_id.set_type(tracker_constants::CATHODIC_CHANNEL_TYPE);
     }
+
+    hit_.electronic_id.set(tracker_constants::BOARD_INDEX, slot_id);
+    hit_.electronic_id.set(tracker_constants::FEAST_INDEX, feast_id);
+    hit_.electronic_id.set(tracker_constants::CHANNEL_INDEX, channel_id);
+
     hit_.timestamp_type = timestamp_type;
     hit_.timestamp_value = timestamp_value;
 
     DT_LOG_TRACE_EXITING(logging);
     return;
   }
-
-
-  // void tracker_channel_hit_parser::_parse_header_(const std::string & header_line_,
-  // 						  const int index_,
-  // 						  tracker_channel_hit & hit_)
-  // {
-  //   DT_LOG_TRACE_ENTERING(logging);
-  //   namespace qi = boost::spirit::qi;
-  //   bool res = false;
-
-  //   if (index_ == 0) {
-  //     std::string header_line = header_line_;
-  //     // We use a trick because of nasty syntax from the DAQ ascii output:
-  //     boost::replace_all(header_line, "Slot", "Slot ");
-  //     boost::replace_all(header_line, " Ch", " Ch ");
-  //     DT_LOG_DEBUG(logging, "header_line = '" << header_line << "'");
-  //     std::string::const_iterator str_iter = header_line.begin();
-  //     std::string::const_iterator end_iter = header_line.end();
-  //     uint32_t slotid    = 0xFFFFFFFF;
-  //     uint32_t channelid = 16;
-  //     uint32_t eventid   = 0xFFFFFFFF;
-  //     res = qi::phrase_parse(str_iter,
-  //                            end_iter,
-  //                            //  Begin grammar
-  //                            (
-  //                             qi::lit("Slot")          >> qi::uint_[boost::phoenix::ref(slotid) = boost::spirit::qi::_1]
-  //                             >> qi::lit("Ch")            >> qi::uint_[boost::phoenix::ref(channelid) = boost::spirit::qi::_1]
-  //                             >> qi::lit("EvtID")         >> qi::uint_[boost::phoenix::ref(eventid) = boost::spirit::qi::_1]
-  // 			      ),
-  //                            //  End grammar
-  //                            qi::space);
-  //     DT_THROW_IF(!res || str_iter != end_iter,
-  //                 std::logic_error,
-  //                 "Cannot parse file header line #" << index_ << "; failed at '" << *str_iter << "'!");
-  //     DT_LOG_DEBUG(logging, "slotid        = " << slotid);
-  //     DT_LOG_DEBUG(logging, "channelid     = " << channelid);
-  //     DT_LOG_DEBUG(logging, "eventid       = " << eventid);
-  //     hit_.slot_index = slotid;
-  //     hit_.channel = channelid;
-  //     hit_.event_id = eventid;
-  //   }
-
-  //   DT_LOG_TRACE_EXITING(logging);
-  //   return;
-  // }
 
 } // namespace fecom

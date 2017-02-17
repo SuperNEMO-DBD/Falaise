@@ -86,72 +86,61 @@ namespace fecom {
 	} else {
 	  // Create a new tracker hit and search his associated channels
 	  fecom::tracker_hit a_tracker_hit;
-	  const uint16_t feast_id = ichan -> feast_id;
-	  const uint16_t channel  = ichan -> channel;
-	  uint16_t cell_id = -1;
-	  _my_channel_mapping_-> get_cell_number_for_a_channel(feast_id,
-							       channel,
-							       cell_id);
-	  a_tracker_hit.set_cell_id(cell_id);
-	  const fecom::tracker_channel_hit::channelmode_type channel_type = ichan -> channel_type;
-	  std::string channel_type_str = "INVALID";
-	  if (channel_type == fecom::tracker_channel_hit::ANODIC_CHANNEL) channel_type_str = "Anodic";
-	  else if (channel_type == fecom::tracker_channel_hit::CATHODIC_CHANNEL) channel_type_str = "Cathodic";
+	  geomtools::geom_id electronic_channel_id = ichan -> electronic_id;
+	  const uint16_t channel_type = electronic_channel_id.get_type();
+	  // const uint16_t board_id = electronic_channel_id.get(tracker_constants::BOARD_INDEX);
+	  // const uint16_t feast_id = electronic_channel_id.get(tracker_constants::FEAST_INDEX);
+	  // const uint16_t channel  = electronic_channel_id.get(tracker_constants::CHANNEL_INDEX);
+	  geomtools::geom_id associated_geometric_id;
+	  _my_channel_mapping_-> get_geometric_id_from_electronic_id(electronic_channel_id,
+								     associated_geometric_id);
+
+	  geomtools::geom_id cell_geometric_id(tracker_constants::GEOMETRIC_CELL_TYPE,
+					       associated_geometric_id.get(tracker_constants::LAYER_INDEX),
+					       associated_geometric_id.get(tracker_constants::ROW_INDEX));
+	  a_tracker_hit.cell_geometric_id = cell_geometric_id;
+	  geomtools::geom_id anodic_id;
+	  geomtools::geom_id bot_cathodic_id;
+	  geomtools::geom_id top_cathodic_id;
+
+	  _my_channel_mapping_-> get_associated_electronics_id(electronic_channel_id,
+							       anodic_id,
+							       bot_cathodic_id,
+							       top_cathodic_id);
 
 	  const std::string timestamp = ichan -> timestamp_type;
-
-
-	  // Only seems valid because it is impossible to distinguish top cathode and bottom cathode (due to input data file of Jihanne)
-	  bool seems_valid = false;
-	  if (channel_type == fecom::tracker_channel_hit::ANODIC_CHANNEL
-	      && _my_channel_mapping_-> is_anodic_channel(feast_id, channel)) seems_valid = true;
-
-	  else if (channel_type == fecom::tracker_channel_hit::CATHODIC_CHANNEL
-		   && (_my_channel_mapping_-> is_bottom_cathodic_channel(feast_id, channel)
-		       || _my_channel_mapping_-> is_top_cathodic_channel(feast_id, channel))) seems_valid = true;
-
-	  // Check if the input channel is coherent with the mapping, if not Fatal Error
-	  DT_THROW_IF(!seems_valid,
+	  DT_THROW_IF(!(channel_type == tracker_constants::ANODIC_CHANNEL_TYPE || channel_type == tracker_constants::CATHODIC_CHANNEL_TYPE),
 		      std::logic_error,
-		      "The input tracker channel : Feast #" + std::to_string(feast_id) + " Channel #" + std::to_string(channel) + " Channel type '" + channel_type_str + "' is not coherent with the mapping ! Check if the mapping (in the csv file) is correct !");
+		      "The input tracker channel : " << electronic_channel_id << "' is not coherent with the mapping ! Check if the mapping (in the csv file) is correct !");
 
 	  // Search all channels in the tracker channel hit collection
-	  uint16_t associated_anodic_feast = -1;
-	  uint16_t associated_anodic_channel = -1;
-	  uint16_t associated_bottom_cathodic_feast = -1;
-	  uint16_t associated_bottom_cathodic_channel = -1;
-	  uint16_t associated_top_cathodic_feast = -1;
-	  uint16_t associated_top_cathodic_channel = -1;
-
-	  _my_channel_mapping_ -> get_associated_channels_with_types(feast_id,
-								     channel,
-								     associated_anodic_feast,
-								     associated_anodic_channel,
-								     associated_bottom_cathodic_feast,
-								     associated_bottom_cathodic_channel,
-								     associated_top_cathodic_feast,
-								     associated_top_cathodic_channel);
+	  uint16_t associated_anodic_feast = anodic_id.get(tracker_constants::FEAST_INDEX);
+	  uint16_t associated_anodic_channel = anodic_id.get(tracker_constants::CHANNEL_INDEX);
+	  uint16_t associated_bottom_cathodic_feast = bot_cathodic_id.get(tracker_constants::FEAST_INDEX);
+	  uint16_t associated_bottom_cathodic_channel = bot_cathodic_id.get(tracker_constants::CHANNEL_INDEX);
+	  uint16_t associated_top_cathodic_feast = top_cathodic_id.get(tracker_constants::FEAST_INDEX);
+	  uint16_t associated_top_cathodic_channel = top_cathodic_id.get(tracker_constants::CHANNEL_INDEX);
 
 	  // For the anodic channel, search the 5 timestamps :
 	  for (std::size_t itime = 0; itime < 5; itime++)
 	    {
 	      std::string search_timestamp = "t"+ std::to_string(itime);
 	      auto it_set = std::find_if(_tracker_channel_hit_collection_.begin(),
-					 _tracker_channel_hit_collection_.end(),
+	  				 _tracker_channel_hit_collection_.end(),
 					 fecom::tracker_channel_hit::find_by_timestamp(associated_anodic_feast,
-										       associated_anodic_channel,
-										       search_timestamp));
+	  									       associated_anodic_channel,
+	  									       search_timestamp));
 	      if (it_set != _tracker_channel_hit_collection_.end() && !it_set -> associated) {
-		it_set -> associated = true;
-		a_tracker_hit.add_tracker_channel(*it_set);
+	  	it_set -> associated = true;
+	  	a_tracker_hit.add_tracker_channel(*it_set);
 	      }
 	    }
 
 	  // For the bottom cathodic channel, search the only timestamp :
 	  auto it_set_bot_cat = std::find_if(_tracker_channel_hit_collection_.begin(),
-					     _tracker_channel_hit_collection_.end(),
-					     fecom::tracker_channel_hit::find_by_channel(associated_bottom_cathodic_feast,
-											 associated_bottom_cathodic_channel));
+	  				     _tracker_channel_hit_collection_.end(),
+	  				     fecom::tracker_channel_hit::find_by_channel(associated_bottom_cathodic_feast,
+	  										 associated_bottom_cathodic_channel));
 
 	  if (it_set_bot_cat != _tracker_channel_hit_collection_.end() && !it_set_bot_cat -> associated) {
 	    it_set_bot_cat -> associated = true;
@@ -160,9 +149,9 @@ namespace fecom {
 
 	  // For the top cathodic channel, search the only timestamp :
 	  auto it_set_top_cat = std::find_if(_tracker_channel_hit_collection_.begin(),
-					     _tracker_channel_hit_collection_.end(),
-					     fecom::tracker_channel_hit::find_by_channel(associated_top_cathodic_feast,
-											 associated_top_cathodic_channel));
+	  				     _tracker_channel_hit_collection_.end(),
+	  				     fecom::tracker_channel_hit::find_by_channel(associated_top_cathodic_feast,
+	  										 associated_top_cathodic_channel));
 
 	  if (it_set_top_cat != _tracker_channel_hit_collection_.end() && !it_set_top_cat -> associated) {
 	    it_set_top_cat -> associated = true;

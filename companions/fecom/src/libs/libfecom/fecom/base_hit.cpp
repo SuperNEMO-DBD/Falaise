@@ -3,6 +3,9 @@
 // Ourselves:
 #include <fecom/base_hit.hpp>
 
+// This project:
+#include <fecom/tracker_constants.hpp>
+
 namespace fecom {
 
   DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(base_hit, "fecom::base_hit")
@@ -20,10 +23,11 @@ namespace fecom {
 
   base_hit::base_hit()
     : hitmode(SIG_INVALID)
-    , slot_index(0xFFFF)
+      // , slot_index(0xFFFF)
   {
     hit_id = 0xFFFF;
     trigger_id = 0xFFFFFFFF;
+    electronic_id.invalidate();
   }
 
   base_hit::base_hit(const hitmode_type hm_)
@@ -37,7 +41,12 @@ namespace fecom {
 
   bool base_hit::is_valid() const
   {
-    return hitmode != SIG_INVALID && slot_index < 20;
+    return hitmode != SIG_INVALID && has_geom_id() && electronic_id.get(tracker_constants::BOARD_INDEX) < 20;
+  }
+
+  bool base_hit::has_geom_id() const
+  {
+    return electronic_id.is_valid();
   }
 
   void base_hit::reset()
@@ -45,14 +54,13 @@ namespace fecom {
     hit_id = 0xFFFF;
     trigger_id = 0xFFFFFFFF;
     hitmode = SIG_INVALID;
-    slot_index = 0xFFFF;
     return;
   }
 
   void base_hit::tree_dump(std::ostream & out_,
                            const std::string & title_,
                            const std::string & indent_,
-                           bool inherit_) const
+                           bool /* inherit_ */) const
   {
     if (!title_.empty()) {
       out_ << indent_ << title_ << std::endl;
@@ -65,10 +73,10 @@ namespace fecom {
          << "Hit mode   : '" << hitmode_to_label(hitmode) << "'" << std::endl;
 
     out_ << indent_ << io::tag()
-         << "Trigger ID     : " << trigger_id << std::endl;
+         << "Electronic ID   : '" << electronic_id << "'" << std::endl;
 
-    out_ << indent_ << io::inherit_last_tag(inherit_)
-         << "Slot index : " << slot_index << std::endl;
+    out_ << indent_ << io::tag()
+         << "Trigger ID     : " << trigger_id << std::endl;
 
     return;
   }

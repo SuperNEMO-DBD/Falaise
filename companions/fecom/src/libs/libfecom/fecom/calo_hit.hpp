@@ -50,7 +50,7 @@ namespace fecom {
 
   public:
 
-    uint8_t  channel;                   ///< Channel (0..15)
+    // uint8_t  channel;                   ///< Channel (0..15)
     uint8_t  event_id;                  ///< Debug counter (0..255)
     uint64_t raw_tdc;                   /** Raw timestamp (dynamic 40 bits)
                                          *  Unit: clock period (default: 160 MHz)

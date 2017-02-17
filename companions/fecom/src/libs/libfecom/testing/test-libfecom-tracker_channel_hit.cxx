@@ -13,13 +13,11 @@ int main(int /*argc_*/, char ** /*argv_*/)
 
     tchit.hit_id = 42;
     tchit.hitmode = fecom::base_hit::SIG_TRACKER;
-    tchit.slot_index = 8;
+    geomtools::geom_id electronic_id(fecom::tracker_constants::ANODIC_CHANNEL_TYPE, 0, 0, 12); // EID [Type:board.feast.channel]
+    tchit.electronic_id = electronic_id;
     tchit.trigger_id = 12;
-    tchit.feast_id = 0;
-    tchit.channel = 12;
-    tchit.channel_type = fecom::tracker_channel_hit::ANODIC_CHANNEL;
     tchit.timestamp_type = "t0";
-    tchit.timestamp_value = 42857;
+    tchit.timestamp_value = 1205;
 
     if (tchit.is_valid()) tchit.tree_dump(std::clog, "Valid tracker channel hit:");
     else std::clog << "Tracker channel hit is not valid ! " << std::endl;

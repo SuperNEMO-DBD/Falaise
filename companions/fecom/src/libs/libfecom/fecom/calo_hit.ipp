@@ -18,7 +18,6 @@ namespace fecom {
 			   const unsigned int /*version*/)
   {
     ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_hit);
-    ar & boost::serialization::make_nvp("channel", channel);
     ar & boost::serialization::make_nvp("event_id", event_id);
     ar & boost::serialization::make_nvp("raw_tdc", raw_tdc);
     ar & boost::serialization::make_nvp("low_threshold", low_threshold);

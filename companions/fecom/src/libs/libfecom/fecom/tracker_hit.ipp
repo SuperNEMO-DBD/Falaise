@@ -23,7 +23,7 @@ namespace fecom {
 			      const unsigned int /* version */)
   {
     ar & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
-    ar & boost::serialization::make_nvp("cell_id", _cell_id_);
+    ar & boost::serialization::make_nvp("cell_geometric_id", cell_geometric_id);
     ar & boost::serialization::make_nvp("anodic_t0", anodic_t0);
     ar & boost::serialization::make_nvp("anodic_t1", anodic_t1);
     ar & boost::serialization::make_nvp("anodic_t2", anodic_t2);

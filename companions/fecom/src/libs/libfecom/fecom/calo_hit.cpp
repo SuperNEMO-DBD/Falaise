@@ -23,7 +23,7 @@ namespace fecom {
   bool calo_hit::is_valid() const
   {
     if (! this->base_hit::is_valid()) return false;
-    if (channel >= calo_constants::INVALID_BOARD_CHANNEL) return false;
+    if (electronic_id.get(calo_constants::CHANNEL_INDEX) >= calo_constants::INVALID_BOARD_CHANNEL) return false;
     return (fcr < calo_constants::MAX_NUMBER_OF_SAMPLES) && (raw_tdc < 0xFFFFFFFF);
   }
 
@@ -45,7 +45,6 @@ namespace fecom {
 
   void calo_hit::_reset_()
   {
-    channel = calo_constants::INVALID_BOARD_CHANNEL;
     raw_tdc = 0xFFFFFFFF;
     event_id = 0;
     low_threshold = false;
@@ -86,9 +85,6 @@ namespace fecom {
                            bool inherit_) const
   {
     this->base_hit::tree_dump(out_, title_, indent_, true);
-
-    out_ << indent_ << io::tag()
-         << "Channel                   : " << (int) channel << std::endl;
 
     out_ << indent_ << io::tag()
          << "Raw TDC                   : " << raw_tdc << std::endl;
