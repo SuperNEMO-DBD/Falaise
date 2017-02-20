@@ -9,6 +9,11 @@
 namespace fecom {
 
   // statics:
+  double tracker_constants::geiger_cell_Leff()
+  {
+    return 2920 * CLHEP::mm;
+  }
+
   const uint16_t tracker_constants::NUMBER_OF_CHANNEL_PER_FEAST;
   const uint16_t tracker_constants::NUMBER_OF_FEAST_PER_BOARD;
   constexpr uint16_t tracker_constants::NUMBER_OF_CHANNEL_PER_BOARD;
@@ -38,7 +43,7 @@ namespace fecom {
   // const uint64_t tracker_constants::BOT_CATHODIC_CHANNEL_TYPE;
   // const uint64_t tracker_constants::TOP_CATHODIC_CHANNEL_TYPE;
 
-  const uint64_t tracker_constants::BOARD_INDEX;
+  const uint64_t tracker_constants::SLOT_INDEX;
   const uint64_t tracker_constants::FEAST_INDEX;
   const uint64_t tracker_constants::CHANNEL_INDEX;
 

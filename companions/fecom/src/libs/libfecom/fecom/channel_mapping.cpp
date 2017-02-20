@@ -7,6 +7,7 @@
 // This project:
 #include <fecom/tracker_channel_hit.hpp>
 #include <fecom/tracker_constants.hpp>
+#include <fecom/calo_constants.hpp>
 
 namespace fecom {
 
@@ -27,7 +28,7 @@ namespace fecom {
 
   void channel_mapping::_reset_()
   {
-    gg_bimap.clear();
+    tracker_bimap.clear();
     initialized = false;
     return;
   }
@@ -44,7 +45,48 @@ namespace fecom {
     return;
   }
 
-  void channel_mapping::build_mapping_from_file(const std::string & filename_)
+  void channel_mapping::build_calo_mapping_from_file(const std::string & filename_)
+  {
+    std::ifstream file_stream(filename_.c_str(), std::ifstream::in);
+    if (file_stream)
+      {
+	std::string line = "";
+	std::size_t line_counter = 0;
+	while (std::getline(file_stream, line))
+	  {
+	    if (line_counter != 0) // ignore the header
+	      {	std::stringstream ss(line);
+
+		uint16_t slot_number = -1;
+		uint16_t channel_number = -1;
+		uint16_t column_number = -1;
+		uint16_t row_number = -1;
+
+		ss >> slot_number >> channel_number >> column_number >> row_number;
+
+		// Electronic ID
+		geomtools::geom_id electronic_id(calo_constants::CALO_CHANNEL_TYPE,
+						 slot_number,
+						 channel_number);
+
+		// Geometric ID
+		geomtools::geom_id geometric_id(calo_constants::GEOMETRIC_CALO_TYPE,
+						column_number,
+						row_number);
+
+		calo_bimap.insert(ID_doublet(geometric_id, electronic_id));
+	      }
+	    line_counter++;
+	  }
+
+	file_stream.close();
+      }
+    else  DT_THROW(std::runtime_error, "Cannot open input file '" << filename_ << "'");
+
+    return;
+  }
+
+  void channel_mapping::build_tracker_mapping_from_file(const std::string & filename_)
   {
     std::ifstream file_stream(filename_.c_str(), std::ifstream::in);
     if (file_stream)
@@ -57,14 +99,14 @@ namespace fecom {
 	      {
 		std::stringstream ss(line);
 
-		uint16_t board_number = -1;
+		uint16_t slot_number = -1;
 		uint16_t layer_number = -1;
 		uint16_t row_number = -1;
 		uint16_t anode_number = -1;
 		uint16_t bot_cathode_number = -1;
 		uint16_t top_cathode_number = -1;
 
-		ss >> board_number >> layer_number >> row_number >> anode_number >> bot_cathode_number >> top_cathode_number;
+		ss >> slot_number >> layer_number >> row_number >> anode_number >> bot_cathode_number >> top_cathode_number;
 
 		uint16_t feast_anode = -1;
 		uint16_t feast_bot_cathode = -1;
@@ -114,23 +156,23 @@ namespace fecom {
 
 		// Electronic ID
 		geomtools::geom_id anode_channel_id(tracker_constants::ANODIC_CHANNEL_TYPE,
-						    board_number,
+						    slot_number,
 						    feast_anode,
 						    channel_anode);
 
 		geomtools::geom_id bottom_cathode_channel_id(tracker_constants::CATHODIC_CHANNEL_TYPE,
-							     board_number,
+							     slot_number,
 							     feast_bot_cathode,
 							     channel_bot_cathode);
 
 		geomtools::geom_id top_cathode_channel_id(tracker_constants::CATHODIC_CHANNEL_TYPE,
-							  board_number,
+							  slot_number,
 							  feast_top_cathode,
 							  channel_top_cathode);
 
-		gg_bimap.insert(ID_doublet(cell_id_anodic, anode_channel_id));
-		gg_bimap.insert(ID_doublet(cell_id_bot_cathode, bottom_cathode_channel_id));
-		gg_bimap.insert(ID_doublet(cell_id_top_cathode, top_cathode_channel_id));
+		tracker_bimap.insert(ID_doublet(cell_id_anodic, anode_channel_id));
+		tracker_bimap.insert(ID_doublet(cell_id_bot_cathode, bottom_cathode_channel_id));
+		tracker_bimap.insert(ID_doublet(cell_id_top_cathode, top_cathode_channel_id));
 
 	      }
 	    line_counter++;
@@ -147,8 +189,8 @@ namespace fecom {
 							 uint16_t & layer_number_,
 							 uint16_t & row_number_) const
   {
-    auto it_map = gg_bimap.right.find(electronic_id_);
-    if (it_map != gg_bimap.right.end()) {
+    auto it_map = tracker_bimap.right.find(electronic_id_);
+    if (it_map != tracker_bimap.right.end()) {
       geomtools::geom_id associated_geom_id = it_map -> second;
       std::clog << associated_geom_id << std::endl;
       layer_number_ = associated_geom_id.get(tracker_constants::LAYER_INDEX);
@@ -194,28 +236,53 @@ namespace fecom {
   void channel_mapping::get_electronic_id_from_geometric_id(const geomtools::geom_id & geometric_id_,
 							    geomtools::geom_id & electronic_id_) const
   {
+    if (geometric_id_.get_type() == tracker_constants::GEOMETRIC_CELL_TYPE)
+      {
+    	auto it_map = tracker_bimap.left.find(geometric_id_);
+	if (it_map != tracker_bimap.left.end()) {
+	  electronic_id_ = it_map -> second;
+	}
+	else DT_THROW(std::logic_error, "Input tracker geometric id is not find in the bimap " << geometric_id_ << " !");
+      }
+    else if (geometric_id_.get_type() == calo_constants::GEOMETRIC_CALO_TYPE)
+      {
+	auto it_map = calo_bimap.left.find(geometric_id_);
+	if (it_map != calo_bimap.left.end()) {
+	  electronic_id_ = it_map -> second;
+	}
+	else DT_THROW(std::logic_error, "Input calo geometric id is not find in the bimap " << geometric_id_ << " !");
+      }
+    else DT_THROW(std::logic_error, "Input geometric id type is not valid '" << geometric_id_.get_type() << " !");
 
-    auto it_map = gg_bimap.left.find(geometric_id_);
-
-    if (it_map != gg_bimap.left.end()) {
-      electronic_id_ = it_map -> second;
-    }
-
-    else DT_THROW(std::logic_error, "Input geometric id is not find in the bimap " << geometric_id_ << " !");
     return;
   }
 
   void channel_mapping::get_geometric_id_from_electronic_id(const geomtools::geom_id & electronic_id_,
 							    geomtools::geom_id & geometric_id_) const
   {
+    if (electronic_id_.get_type() == tracker_constants::ANODIC_CHANNEL_TYPE
+	|| electronic_id_.get_type() == tracker_constants::CATHODIC_CHANNEL_TYPE)
+      {
+	auto it_map = tracker_bimap.right.find(electronic_id_);
 
-    auto it_map = gg_bimap.right.find(electronic_id_);
+	if (it_map != tracker_bimap.right.end()) {
+	  geometric_id_ = it_map -> second;
+	}
 
-    if (it_map != gg_bimap.right.end()) {
-      geometric_id_ = it_map -> second;
-    }
+	else DT_THROW(std::logic_error, "Input electronic tracker id is not find in the bimap " << electronic_id_ << " !");
+      }
+    else if (electronic_id_.get_type() == calo_constants::CALO_CHANNEL_TYPE)
+      {
+	auto it_map = calo_bimap.right.find(electronic_id_);
 
-    else DT_THROW(std::logic_error, "Input electronic id is not find in the bimap " << electronic_id_ << " !");
+	if (it_map != calo_bimap.right.end()) {
+	  geometric_id_ = it_map -> second;
+	}
+
+	else DT_THROW(std::logic_error, "Input electronic calo id is not find in the bimap " << electronic_id_ << " !");
+      }
+    else DT_THROW(std::logic_error, "Input electronic id type is not valid '" << electronic_id_.get_type() << " !");
+
     return;
   }
 

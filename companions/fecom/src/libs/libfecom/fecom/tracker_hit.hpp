@@ -31,7 +31,11 @@ namespace fecom {
 
     bool is_valid() const;
 
-		void add_tracker_channel(const fecom::tracker_channel_hit & a_tracker_channel_);
+		void add_anodic_tracker_channel(const fecom::tracker_channel_hit & a_tracker_channel_);
+
+		void add_bot_cathodic_tracker_channel(const fecom::tracker_channel_hit & a_tracker_channel_);
+
+		void add_top_cathodic_tracker_channel(const fecom::tracker_channel_hit & a_tracker_channel_);
 
     virtual void reset();
 
@@ -106,28 +110,28 @@ namespace fecom {
     void reset_anodic_t4();
 
     /// Check if has cathodic time 5
-    bool has_cathodic_t5() const;
+    bool has_bot_cathodic_time() const;
 
     /// Set cathodic time 5
-    void set_cathodic_t5(const uint64_t value_);
+    void set_bot_cathodic_time(const uint64_t value_);
 
     /// Get cathodic time 5
-    uint64_t get_cathodic_t5() const;
+    uint64_t get_bot_cathodic_time() const;
 
     /// Reset anodic time 5
-    void reset_cathodic_t5();
+    void reset_bot_cathodic_time();
 
     /// Check if has cathodic time 6
-    bool has_cathodic_t6() const;
+    bool has_top_cathodic_time() const;
 
     /// Set cathodic time 6
-    void set_cathodic_t6(const uint64_t value_);
+    void set_top_cathodic_time(const uint64_t value_);
 
     /// Get cathodic time 6
-    uint64_t get_cathodic_t6() const;
+    uint64_t get_top_cathodic_time() const;
 
     /// Reset anodic time 6
-    void reset_cathodic_t6();
+    void reset_top_cathodic_time();
 
     /// Set all anodic times
     void set_anodic_times(const uint64_t t0_,
@@ -137,8 +141,8 @@ namespace fecom {
 													const uint64_t t4_);
 
     /// Set all cathodic times
-    void set_cathodic_times(const uint64_t t5_,
-														const uint64_t t6_);
+    void set_cathodic_times(const uint64_t bot_time_,
+														const uint64_t top_time_);
 
     /// Reset all times (anodic and cathodic)
     void reset_times();
@@ -152,13 +156,6 @@ namespace fecom {
 		// SNDER p.30-31 for channel / cell association
 		geomtools::geom_id cell_geometric_id; ///< Cell ID [Type:layer,row]
 
-		/* Not relevant information (ftm) because it's FEAST + CHANNEL_ID
-
-    uint16_t anodic_channel;         ///< Anodic channel id
-    uint16_t bottom_cathode_channel; ///< Bottom cathode channel id
-    uint16_t top_cathode_channel;    ///< Top cathode channel id
-		*/
-
     // DATA
     // 7 geiger timing
     uint64_t anodic_t0;   ///< Anodic time 0
@@ -166,8 +163,8 @@ namespace fecom {
     uint64_t anodic_t2;   ///< Anodic time 2
     uint64_t anodic_t3;   ///< Anodic time 3
     uint64_t anodic_t4;   ///< Anodic time 4
-    uint64_t cathodic_t5; ///< Cathodic time 5
-    uint64_t cathodic_t6; ///< Cathodic time 6
+    uint64_t bot_cathodic_time; ///< Bottom cathodic time
+    uint64_t top_cathodic_time; ///< Top cathodic time
 
 		DATATOOLS_SERIALIZATION_DECLARATION()
 

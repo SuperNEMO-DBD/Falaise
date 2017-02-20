@@ -15,6 +15,5 @@ int main(int /*argc_*/, char ** /*argv_*/)
   std::clog << "Sample duration : " << fecom::calo_constants::time_sample_duration() / CLHEP::nanosecond << " [ns]" << std::endl;
   std::clog << "Time offset un. : " << fecom::calo_constants::time_offset_unit() / CLHEP::picosecond << " [ps]" << std::endl;
 
-
   return EXIT_SUCCESS;
 }

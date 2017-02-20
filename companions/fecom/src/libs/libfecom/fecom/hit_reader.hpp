@@ -29,7 +29,7 @@ namespace fecom {
   {
   public:
 
-    static const std::size_t HEADER_NBLINES = 7;
+    static const std::size_t HEADER_NBLINES = 9;
 
     //! Default constructor
     hit_reader();

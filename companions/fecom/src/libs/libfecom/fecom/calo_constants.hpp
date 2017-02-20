@@ -33,11 +33,15 @@ namespace fecom {
     static double time_sample_duration(int clock_ = 0);
     static double time_offset_unit();
 
-		static const uint64_t NUMBERS_OF_CALO_PER_COLUMN = 13;
+		static const uint16_t NUMBERS_OF_CALO_PER_COLUMN = 13;
 
-		static const uint64_t CALO_CHANNEL_TYPE = 444;
-		static const uint64_t BOARD_INDEX = 0;
-		static const uint64_t CHANNEL_INDEX = 1;
+		static const uint64_t GEOMETRIC_CALO_TYPE = 3000;
+		static const uint16_t COLUMN_INDEX = 0;
+		static const uint16_t ROW_INDEX = 1;
+
+		static const uint64_t CALO_CHANNEL_TYPE = 4000;
+		static const uint16_t SLOT_INDEX = 0;
+		static const uint16_t CHANNEL_INDEX = 1;
 
   };
 

@@ -31,7 +31,7 @@ int main(int /*argc_*/, char ** /*argv_*/)
   try {
     fecom::hit_reader reader;
     reader.set_logging(datatools::logger::PRIO_WARNING);
-    reader.set_input_filename("${FECOM_RESOURCES_DIR}/data/samples/fake_run/calo_fake_tracker_hits_1.dat");
+    reader.set_input_filename("${FECOM_RESOURCES_DIR}/data/samples/run_1/Run_SN_Crate_Test_Tracker_And_Calo_Data_2_17_2017_Ascii.dat");
     // reader.set_input_filename("${FECOM_RESOURCES_DIR}/output_test/test_generate_fake_hit_10_events.dat");
     reader.initialize();
     fecom::run_header header;
@@ -52,12 +52,12 @@ int main(int /*argc_*/, char ** /*argv_*/)
 
       std::string valid = "none";
       if (chit.is_valid()) {
-	chit.tree_dump(std::clog, "Calo hit is valid :");
+	// chit.tree_dump(std::clog, "Calo hit is valid :");
 	valid = "calo";
       }
 
       if (tchit.is_valid()) {
-	tchit.tree_dump(std::clog, "Tracker channel hit is valid :");
+	// tchit.tree_dump(std::clog, "Tracker channel hit is valid :");
 	valid = "tracker";
       }
 
@@ -114,12 +114,20 @@ int main(int /*argc_*/, char ** /*argv_*/)
     reader.reset();
 
     // Build all tracker hit after the build of all commissioning event :
-    std::string input_mapping_file("${FECOM_RESOURCES_DIR}/config/mapping_tracker.csv");
-    datatools::fetch_path_with_env(input_mapping_file);
+    std::string input_tracker_mapping_file("${FECOM_RESOURCES_DIR}/data/samples/run_1/mapping_tracker.csv");
+    datatools::fetch_path_with_env(input_tracker_mapping_file);
 
     fecom::channel_mapping my_channel_mapping;
-    my_channel_mapping.build_mapping_from_file(input_mapping_file);
+    my_channel_mapping.build_tracker_mapping_from_file(input_tracker_mapping_file);
     my_channel_mapping.initialize();
+
+    // for (auto it_bimap = my_channel_mapping.tracker_bimap.right.begin();
+    // 	 it_bimap != my_channel_mapping.tracker_bimap.right.end();
+    // 	 it_bimap++)
+    //   {
+    // 	std::clog << "EID FEB : " << it_bimap->first << " <-> GID Cell : " << it_bimap->second << std::endl;
+    //   }
+
 
     for (std::set<fecom::commissioning_event>::iterator it_event = commissioning_event_collection.grab_commissioning_event_collection().begin();
     	 it_event != commissioning_event_collection.grab_commissioning_event_collection().end();
@@ -127,17 +135,16 @@ int main(int /*argc_*/, char ** /*argv_*/)
       {
 	const_cast<fecom::commissioning_event&>(*it_event).set_channel_mapping(my_channel_mapping);
 	const_cast<fecom::commissioning_event&>(*it_event).build_tracker_hit_from_channels();
-
-	std::clog << "Size of tracker hit in the event : " << it_event->get_tracker_hit_collection().size() << std::endl;
+	// std::clog << "Size of tracker hit in the event : " << it_event->get_tracker_hit_collection().size() << std::endl;
 	std::size_t thit_counter = 0;
 	for (auto it_thit = it_event->get_tracker_hit_collection().begin(); it_thit != it_event->get_tracker_hit_collection().end(); it_thit++)
 	  {
-	    it_thit -> tree_dump(std::clog, "Tracker hit #" + std::to_string(thit_counter));
+	    // it_thit -> tree_dump(std::clog, "Tracker hit #" + std::to_string(thit_counter));
 	    thit_counter++;
 	  }
       }
 
-    std::string output_filename("${FECOM_RESOURCES_DIR}/data/samples/fake_run/calo_fake_tracker_hits_1.data.bz2");
+    std::string output_filename("${FECOM_RESOURCES_DIR}/data/samples/run_1/Run_SN_Crate_Test_Tracker_And_Calo_Data_2_17_2017_Ascii.data.bz2");
     // std::string output_filename = "${FECOM_RESOURCES_DIR}/output_test/commissioning_event_10_events.data.bz2";
     datatools::fetch_path_with_env(output_filename);
     {

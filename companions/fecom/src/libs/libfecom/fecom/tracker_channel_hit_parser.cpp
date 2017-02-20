@@ -85,15 +85,15 @@ namespace fecom {
     			    qi::lit("Slot")     >> qi::uint_[boost::phoenix::ref(slot_id) = boost::spirit::qi::_1]
     			    >> qi::lit("Feast") >> qi::uint_[boost::phoenix::ref(feast_id) = boost::spirit::qi::_1]
     			    >> qi::lit("Ch")    >> qi::uint_[boost::phoenix::ref(channel_id) = boost::spirit::qi::_1]
-			    >> (qi::string("Anodic") |
-				qi::string("Cathodic"))[boost::phoenix::ref(channel_type) = boost::spirit::qi::_1]
-			    >> (qi::string("t0") |
-				qi::string("t1") |
-				qi::string("t2") |
-				qi::string("t3") |
-				qi::string("t4") |
-				qi::string("t5") |
-				qi::string("t6"))[boost::phoenix::ref(timestamp_type) = boost::spirit::qi::_1]
+			    >> (qi::string("AN") |
+				qi::string("CT"))[boost::phoenix::ref(channel_type) = boost::spirit::qi::_1]
+			    >> (qi::string("R0") |
+				qi::string("R1") |
+				qi::string("R2") |
+				qi::string("R3") |
+				qi::string("R4") |
+				qi::string("R5") |
+				qi::string("R6"))[boost::phoenix::ref(timestamp_type) = boost::spirit::qi::_1]
 			    >> qi::uint_[boost::phoenix::ref(timestamp_value) = boost::spirit::qi::_1]
     			    ),
     			   //  End grammar
@@ -108,14 +108,14 @@ namespace fecom {
     DT_LOG_DEBUG(logging, "timestamp_type  = " << timestamp_type);
     DT_LOG_DEBUG(logging, "timestamp_value = " << timestamp_value);
 
-    if (channel_type == "Anodic") {
-	hit_.electronic_id.set_type(tracker_constants::ANODIC_CHANNEL_TYPE);
+    if (channel_type == "AN") {
+      hit_.electronic_id.set_type(tracker_constants::ANODIC_CHANNEL_TYPE);
     }
-    else if (channel_type == "Cathodic") {
+    else if (channel_type == "CT") {
       hit_.electronic_id.set_type(tracker_constants::CATHODIC_CHANNEL_TYPE);
     }
 
-    hit_.electronic_id.set(tracker_constants::BOARD_INDEX, slot_id);
+    hit_.electronic_id.set(tracker_constants::SLOT_INDEX, slot_id);
     hit_.electronic_id.set(tracker_constants::FEAST_INDEX, feast_id);
     hit_.electronic_id.set(tracker_constants::CHANNEL_INDEX, channel_id);
 

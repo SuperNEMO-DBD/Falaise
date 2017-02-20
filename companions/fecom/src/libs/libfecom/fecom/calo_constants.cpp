@@ -46,9 +46,13 @@ namespace fecom {
   {
     return time_sample_duration() / 256;
   }
+  const uint16_t calo_constants::NUMBERS_OF_CALO_PER_COLUMN;
+  const uint64_t calo_constants::GEOMETRIC_CALO_TYPE;
+  const uint16_t calo_constants::COLUMN_INDEX;
+  const uint16_t calo_constants::ROW_INDEX;
 
   const uint64_t calo_constants::CALO_CHANNEL_TYPE;
-  const uint64_t calo_constants::BOARD_INDEX;
-  const uint64_t calo_constants::CHANNEL_INDEX;
+  const uint16_t calo_constants::SLOT_INDEX;
+  const uint16_t calo_constants::CHANNEL_INDEX;
 
 } // namespace fecom

@@ -25,7 +25,7 @@ namespace fecom {
     if (! this->base_hit::is_valid()) return false;
     if (!(electronic_id.get_type() == tracker_constants::ANODIC_CHANNEL_TYPE
 	  || electronic_id.get_type() == tracker_constants::CATHODIC_CHANNEL_TYPE)
-	|| electronic_id.get(tracker_constants::BOARD_INDEX) >= tracker_constants::INVALID_BOARD
+	|| electronic_id.get(tracker_constants::SLOT_INDEX) >= tracker_constants::INVALID_BOARD
 	|| electronic_id.get(tracker_constants::FEAST_INDEX) >= tracker_constants::INVALID_FEAST
 	|| electronic_id.get(tracker_constants::CHANNEL_INDEX) >=  tracker_constants::INVALID_CHANNEL
 	|| timestamp_type == "INVALID") return false;

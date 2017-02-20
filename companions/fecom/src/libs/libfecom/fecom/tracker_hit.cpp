@@ -21,22 +21,49 @@ namespace fecom {
 
   bool tracker_hit::is_valid() const
   {
-    if (has_geom_id()) return false;
+    if (!has_geom_id()) return false;
     return true;
   }
 
-  void tracker_hit::add_tracker_channel(const fecom::tracker_channel_hit & a_tracker_channel_)
+  void tracker_hit::add_anodic_tracker_channel(const fecom::tracker_channel_hit & a_tracker_channel_)
   {
-    if (a_tracker_channel_.timestamp_type == "t0") set_anodic_t0(a_tracker_channel_.timestamp_value);
-    else if (a_tracker_channel_.timestamp_type == "t1") set_anodic_t1(a_tracker_channel_.timestamp_value);
-    else if (a_tracker_channel_.timestamp_type == "t2") set_anodic_t2(a_tracker_channel_.timestamp_value);
-    else if (a_tracker_channel_.timestamp_type == "t3") set_anodic_t3(a_tracker_channel_.timestamp_value);
-    else if (a_tracker_channel_.timestamp_type == "t4") set_anodic_t4(a_tracker_channel_.timestamp_value);
-    else if (a_tracker_channel_.timestamp_type == "t5") set_cathodic_t5(a_tracker_channel_.timestamp_value);
-    else if (a_tracker_channel_.timestamp_type == "t6") set_cathodic_t6(a_tracker_channel_.timestamp_value);
+    DT_THROW_IF(a_tracker_channel_.electronic_id.get_type() != tracker_constants::ANODIC_CHANNEL_TYPE,
+		std::logic_error,
+		"Invalid type of tracker channel !");
+
+    if (a_tracker_channel_.timestamp_type == "R0") set_anodic_t0(a_tracker_channel_.timestamp_value);
+    else if (a_tracker_channel_.timestamp_type == "R1") set_anodic_t1(a_tracker_channel_.timestamp_value);
+    else if (a_tracker_channel_.timestamp_type == "R2") set_anodic_t2(a_tracker_channel_.timestamp_value);
+    else if (a_tracker_channel_.timestamp_type == "R3") set_anodic_t3(a_tracker_channel_.timestamp_value);
+    else if (a_tracker_channel_.timestamp_type == "R4") set_anodic_t4(a_tracker_channel_.timestamp_value);
 
     return;
   }
+
+  void tracker_hit::add_bot_cathodic_tracker_channel(const fecom::tracker_channel_hit & a_tracker_channel_)
+  {
+    DT_THROW_IF(a_tracker_channel_.electronic_id.get_type() != tracker_constants::CATHODIC_CHANNEL_TYPE,
+		std::logic_error,
+		"Invalid type of tracker channel !");
+    // Dont know yet the name of the register in Jihanne data :
+    // if (a_tracker_channel_.timestamp_type == "R5")
+    set_bot_cathodic_time(a_tracker_channel_.timestamp_value);
+
+    return;
+  }
+
+  void tracker_hit::add_top_cathodic_tracker_channel(const fecom::tracker_channel_hit & a_tracker_channel_)
+  {
+    DT_THROW_IF(a_tracker_channel_.electronic_id.get_type() != tracker_constants::CATHODIC_CHANNEL_TYPE,
+		std::logic_error,
+		"Invalid type of tracker channel !");
+    // Dont know yet the name of the register in Jihanne data :
+    // if (a_tracker_channel_.timestamp_type == "R6")
+    set_top_cathodic_time(a_tracker_channel_.timestamp_value);
+
+    return;
+  }
+
 
   void tracker_hit::reset()
   {
@@ -52,8 +79,8 @@ namespace fecom {
     reset_anodic_t2();
     reset_anodic_t3();
     reset_anodic_t4();
-    reset_cathodic_t5();
-    reset_cathodic_t6();
+    reset_bot_cathodic_time();
+    reset_top_cathodic_time();
     return;
   }
 
@@ -182,51 +209,51 @@ namespace fecom {
     return;
   }
 
-  bool tracker_hit::has_cathodic_t5() const
+  bool tracker_hit::has_bot_cathodic_time() const
   {
     bool valid = false;
-    if (cathodic_t5 != tracker_constants::INVALID_TIME) valid = true;
+    if (bot_cathodic_time != tracker_constants::INVALID_TIME) valid = true;
     return valid;
   }
 
-  uint64_t tracker_hit::get_cathodic_t5() const
+  uint64_t tracker_hit::get_bot_cathodic_time() const
   {
-    return cathodic_t5;
+    return bot_cathodic_time;
   }
 
-  void tracker_hit::set_cathodic_t5(const uint64_t value_)
+  void tracker_hit::set_bot_cathodic_time(const uint64_t value_)
   {
-    cathodic_t5 = value_;
+    bot_cathodic_time = value_;
     return;
   }
 
-  void tracker_hit::reset_cathodic_t5()
+  void tracker_hit::reset_bot_cathodic_time()
   {
-    cathodic_t5 = tracker_constants::INVALID_TIME;
+    bot_cathodic_time = tracker_constants::INVALID_TIME;
     return;
   }
 
-  bool tracker_hit::has_cathodic_t6() const
+  bool tracker_hit::has_top_cathodic_time() const
   {
     bool valid = false;
-    if (cathodic_t6 != tracker_constants::INVALID_TIME) valid = true;
+    if (top_cathodic_time != tracker_constants::INVALID_TIME) valid = true;
     return valid;
   }
 
-  uint64_t tracker_hit::get_cathodic_t6() const
+  uint64_t tracker_hit::get_top_cathodic_time() const
   {
-    return cathodic_t6;
+    return top_cathodic_time;
   }
 
-  void tracker_hit::set_cathodic_t6(const uint64_t value_)
+  void tracker_hit::set_top_cathodic_time(const uint64_t value_)
   {
-    cathodic_t6 = value_;
+    top_cathodic_time = value_;
     return;
   }
 
-  void tracker_hit::reset_cathodic_t6()
+  void tracker_hit::reset_top_cathodic_time()
   {
-    cathodic_t6 = tracker_constants::INVALID_TIME;
+    top_cathodic_time = tracker_constants::INVALID_TIME;
     return;
   }
 
@@ -244,11 +271,11 @@ namespace fecom {
     return;
   }
 
-  void tracker_hit::set_cathodic_times(const uint64_t t5_,
-				       const uint64_t t6_)
+  void tracker_hit::set_cathodic_times(const uint64_t bot_time_,
+				       const uint64_t top_time_)
   {
-    set_cathodic_t5(t5_);
-    set_cathodic_t6(t6_);
+    set_bot_cathodic_time(bot_time_);
+    set_top_cathodic_time(top_time_);
     return;
   }
 
@@ -259,8 +286,8 @@ namespace fecom {
     reset_anodic_t2();
     reset_anodic_t3();
     reset_anodic_t4();
-    reset_cathodic_t5();
-    reset_cathodic_t6();
+    reset_bot_cathodic_time();
+    reset_top_cathodic_time();
     return;
   }
 
@@ -292,10 +319,10 @@ namespace fecom {
          << "Anodic time 4             : " << (int) anodic_t4 << std::endl;
 
     out_ << indent_ << io::tag()
-         << "Cathodic time 5           : " << (int) cathodic_t5 << std::endl;
+         << "Bottom cathodic time      : " << (int) bot_cathodic_time << std::endl;
 
     out_ << indent_ << io::tag()
-         << "Cathodic time 6           : " << (int) cathodic_t6 << std::endl;
+         << "Top cathodic time         : " << (int) top_cathodic_time << std::endl;
 
     out_ << indent_ << io::inherit_last_tag(inherit_)
          << "Validity                  : " << std::boolalpha << is_valid() << std::endl;

@@ -17,6 +17,9 @@ namespace fecom {
 
   struct tracker_constants
   {
+		// tracker_drift_cell.geom -> z : real as length = 2920.0 mm
+		static double geiger_cell_Leff();
+
 		// Page 27 SNDER :
     static const uint16_t NUMBER_OF_CHANNEL_PER_FEAST = 54;
     static const uint16_t NUMBER_OF_FEAST_PER_BOARD = 2;
@@ -43,13 +46,10 @@ namespace fecom {
 		static const uint64_t BOT_CATHODE_PORT = 0;
 		static const uint64_t TOP_CATHODE_PORT = 1;
 
-		static const uint64_t ANODIC_CHANNEL_TYPE = 666;
-		static const uint64_t CATHODIC_CHANNEL_TYPE = 667;
+		static const uint64_t ANODIC_CHANNEL_TYPE = 2001;
+		static const uint64_t CATHODIC_CHANNEL_TYPE = 2002;
 
-		// static const uint64_t BOT_CATHODIC_CHANNEL_TYPE = 6670;
-		// static const uint64_t TOP_CATHODIC_CHANNEL_TYPE = 6671;
-
-		static const uint64_t BOARD_INDEX = 0;
+		static const uint64_t SLOT_INDEX = 0;
 		static const uint64_t FEAST_INDEX = 1;
 		static const uint64_t CHANNEL_INDEX = 2;
   };

@@ -31,8 +31,8 @@ int main(int /*argc_*/, char ** /*argv_*/)
     // std::string input_filename = "${FECOM_RESOURCES_DIR}/output_test/commissioning_event_10_events.data.bz2";
     datatools::fetch_path_with_env(input_filename);
 
-    std::string input_mapping_file("${FECOM_RESOURCES_DIR}/config/mapping_tracker.csv");
-    datatools::fetch_path_with_env(input_mapping_file);
+    std::string input_tracker_mapping_file("${FECOM_RESOURCES_DIR}/config/mapping_tracker.csv");
+    datatools::fetch_path_with_env(input_tracker_mapping_file);
 
     fecom::commissioning_event_data deserialize_commissioning_event_collection;
     {
@@ -47,7 +47,7 @@ int main(int /*argc_*/, char ** /*argv_*/)
     std::clog << "Size of deserialized commissioning event data = [" << deserialize_commissioning_event_collection.get_commissioning_event_collection().size() << "]" << std::endl;
 
     fecom::channel_mapping my_channel_mapping;
-    my_channel_mapping.build_mapping_from_file(input_mapping_file);
+    my_channel_mapping.build_tracker_mapping_from_file(input_tracker_mapping_file);
     my_channel_mapping.initialize();
 
     std::size_t event_counter = 0;

@@ -36,7 +36,9 @@ namespace fecom {
 
     void initialize();
 
-    void build_mapping_from_file(const std::string & filename_);
+    void build_calo_mapping_from_file(const std::string & filename_);
+
+    void build_tracker_mapping_from_file(const std::string & filename_);
 
 		void get_cell_layer_row_for_a_channel(const geomtools::geom_id & electronic_id_,
 																					uint16_t & layer_number_,
@@ -84,7 +86,8 @@ namespace fecom {
 
     bool initialized;
 
-    ID_bimap gg_bimap;
+    ID_bimap tracker_bimap;
+		ID_bimap calo_bimap;
 
   };
 

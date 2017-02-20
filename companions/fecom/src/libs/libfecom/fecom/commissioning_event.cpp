@@ -88,7 +88,7 @@ namespace fecom {
 	  fecom::tracker_hit a_tracker_hit;
 	  geomtools::geom_id electronic_channel_id = ichan -> electronic_id;
 	  const uint16_t channel_type = electronic_channel_id.get_type();
-	  // const uint16_t board_id = electronic_channel_id.get(tracker_constants::BOARD_INDEX);
+	  // const uint16_t board_id = electronic_channel_id.get(tracker_constants::SLOT_INDEX);
 	  // const uint16_t feast_id = electronic_channel_id.get(tracker_constants::FEAST_INDEX);
 	  // const uint16_t channel  = electronic_channel_id.get(tracker_constants::CHANNEL_INDEX);
 	  geomtools::geom_id associated_geometric_id;
@@ -124,7 +124,7 @@ namespace fecom {
 	  // For the anodic channel, search the 5 timestamps :
 	  for (std::size_t itime = 0; itime < 5; itime++)
 	    {
-	      std::string search_timestamp = "t"+ std::to_string(itime);
+	      std::string search_timestamp = "R"+ std::to_string(itime);
 	      auto it_set = std::find_if(_tracker_channel_hit_collection_.begin(),
 	  				 _tracker_channel_hit_collection_.end(),
 					 fecom::tracker_channel_hit::find_by_timestamp(associated_anodic_feast,
@@ -132,7 +132,7 @@ namespace fecom {
 	  									       search_timestamp));
 	      if (it_set != _tracker_channel_hit_collection_.end() && !it_set -> associated) {
 	  	it_set -> associated = true;
-	  	a_tracker_hit.add_tracker_channel(*it_set);
+	  	a_tracker_hit.add_anodic_tracker_channel(*it_set);
 	      }
 	    }
 
@@ -144,7 +144,7 @@ namespace fecom {
 
 	  if (it_set_bot_cat != _tracker_channel_hit_collection_.end() && !it_set_bot_cat -> associated) {
 	    it_set_bot_cat -> associated = true;
-	    a_tracker_hit.add_tracker_channel(*it_set_bot_cat);
+	    a_tracker_hit.add_bot_cathodic_tracker_channel(*it_set_bot_cat);
 	  }
 
 	  // For the top cathodic channel, search the only timestamp :
@@ -155,7 +155,7 @@ namespace fecom {
 
 	  if (it_set_top_cat != _tracker_channel_hit_collection_.end() && !it_set_top_cat -> associated) {
 	    it_set_top_cat -> associated = true;
-	    a_tracker_hit.add_tracker_channel(*it_set_top_cat);
+	    a_tracker_hit.add_top_cathodic_tracker_channel(*it_set_top_cat);
 	  }
 
 	  // Add the tracker hit to the collection :

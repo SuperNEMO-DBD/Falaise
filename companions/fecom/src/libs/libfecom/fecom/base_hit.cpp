@@ -41,7 +41,7 @@ namespace fecom {
 
   bool base_hit::is_valid() const
   {
-    return hitmode != SIG_INVALID && has_geom_id() && electronic_id.get(tracker_constants::BOARD_INDEX) < 20;
+    return hitmode != SIG_INVALID && has_geom_id() && electronic_id.get(tracker_constants::SLOT_INDEX) < 20;
   }
 
   bool base_hit::has_geom_id() const

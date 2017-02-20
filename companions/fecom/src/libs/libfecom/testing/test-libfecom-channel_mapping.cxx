@@ -19,20 +19,32 @@ int main(int /*argc_*/, char ** /*argv_*/)
   try {
     DT_LOG_DEBUG(logging, "Entering test-libfecom-channel_mapping.cxx...");
 
-    std::string input_mapping_file("${FECOM_RESOURCES_DIR}/config/mapping_tracker.csv");
-    datatools::fetch_path_with_env(input_mapping_file);
+    std::string input_tracker_mapping_file("${FECOM_RESOURCES_DIR}/config/mapping_tracker.csv");
+    datatools::fetch_path_with_env(input_tracker_mapping_file);
+
+    std::string input_calo_mapping_file("${FECOM_RESOURCES_DIR}/config/mapping_calo.csv");
+    datatools::fetch_path_with_env(input_calo_mapping_file);
 
 
     fecom::channel_mapping my_channel_mapping;
-    my_channel_mapping.build_mapping_from_file(input_mapping_file);
+    my_channel_mapping.build_tracker_mapping_from_file(input_tracker_mapping_file);
+    my_channel_mapping.build_calo_mapping_from_file(input_calo_mapping_file);
     my_channel_mapping.initialize();
 
-    for (auto it_bimap = my_channel_mapping.gg_bimap.right.begin();
-    	 it_bimap != my_channel_mapping.gg_bimap.right.end();
+    for (auto it_bimap = my_channel_mapping.tracker_bimap.right.begin();
+    	 it_bimap != my_channel_mapping.tracker_bimap.right.end();
     	 it_bimap++)
       {
     	std::clog << "EID FEB : " << it_bimap->first << " <-> GID Cell : " << it_bimap->second << std::endl;
       }
+
+    for (auto it_bimap = my_channel_mapping.calo_bimap.right.begin();
+    	 it_bimap != my_channel_mapping.calo_bimap.right.end();
+    	 it_bimap++)
+      {
+    	std::clog << "EID FEB : " << it_bimap->first << " <-> GID Calo OM : " << it_bimap->second << std::endl;
+      }
+
 
     // for (std::size_t ichan = 0; ichan < 5; ichan++)
     //   {

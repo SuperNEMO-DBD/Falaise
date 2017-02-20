@@ -29,8 +29,8 @@ namespace fecom {
     ar & boost::serialization::make_nvp("anodic_t2", anodic_t2);
     ar & boost::serialization::make_nvp("anodic_t3", anodic_t3);
     ar & boost::serialization::make_nvp("anodic_t4", anodic_t4);
-    ar & boost::serialization::make_nvp("cathodic_t5", cathodic_t5);
-    ar & boost::serialization::make_nvp("cathodic_t6", cathodic_t6);
+    ar & boost::serialization::make_nvp("bot_cathodic_time", bot_cathodic_time);
+    ar & boost::serialization::make_nvp("top_cathodic_time", top_cathodic_time);
 
     return;
   }
