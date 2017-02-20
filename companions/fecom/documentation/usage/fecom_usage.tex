@@ -1,0 +1,135 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{a4wide}
+\usepackage{verbatim}
+\usepackage[T1]{fontenc}
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
+\usepackage{color}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{epic}
+\usepackage{eepic}
+\usepackage{eepicemu}
+\usepackage{array}
+\usepackage{moreverb}
+\usepackage{fancyvrb}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumerate}
+\usepackage{todonotes}
+\usepackage{hyperref}
+\usepackage{diagbox}
+\usepackage{rotating}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{indentfirst}
+\usepackage[titletoc,title]{appendix}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\thepath}{.}
+\newcommand{\imgpath}{\thepath/img}
+\newcommand{\pdfteximgpath}{\thepath/pdftex}
+\newcommand{\pdftextimgpath}{\thepath/pdftex_t}
+
+\newcommand{\pn}{\par\noindent}
+\newcommand{\tab}{\ \ }
+\newcommand{\tvs}{\vskip 5pt}
+\newcommand{\vs}{\vskip 10pt}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand{\bm}{\boldmath}
+\newcommand{\um}{\unboldmath}
+\newcommand{\REFNEEDED}{{\color{red}{[Reference needed]}}}
+
+\newenvironment{Question}{\vskip 5pt\noindent\textbf{Question :}\par}{\vskip 5pt}
+
+\date{\small{\today}}
+
+\definecolor{IDMaroon}{rgb}{0.5,0.00,0.00}
+\definecolor{RegPurple}{rgb}{0.50,0.00,0.50}
+\definecolor{BitBlue}{rgb}{0.00,0.00,1.00}
+
+\newcommand{\defID}[1]{\texttt{\textcolor{IDMaroon}{\textbf{#1}}}}
+\newcommand{\defIDAlt}[1]{\texttt{\textcolor{IDMaroon}{\textbf{#1}}}}
+\newcommand{\defLabelID}[2]{\texttt{\textcolor{IDMaroon}{\textbf{#1=#2}}}}
+\newcommand{\defLabelIDAlt}[2]{\texttt{\textcolor{IDMaroon}{\textbf{#1=#2}}}}
+
+\newcommand{\defBitmask}[1]{\texttt{\textcolor{BitBlue}{\textbf{0x#1}}}}
+\newcommand{\defLabelBitmask}[2]{\texttt{\textcolor{BitBlue}{\textbf{#1=0x#2}}}}
+\newcommand{\defBitset}[1]{\texttt{\textcolor{BitBlue}{\textbf{0x#1}}}}
+\newcommand{\defLabelBitset}[2]{\texttt{\textcolor{BitBlue}{\textbf{#1=0x#2}}}}
+\newcommand{\defBitsetName}[1]{\texttt{\textcolor{BitBlue}{\textbf{#1}}}}
+
+\newcommand{\defReg}[1]{\texttt{\textcolor{RegPurple}{\textbf{#1}}}}
+\newcommand{\defLabelReg}[2]{\texttt{\textcolor{RegPurple}{\textbf{#1=0x#2}}}}
+
+\newcommand{\note}[1]{\todo[inline] {\textbf{note}: #1 }}
+\newcommand{\warning}[1]{\todo[inline] {\textbf{warning}: #1 }}
+
+\newcommand{\BBZN}{$\beta\beta{}0\nu$}
+\newcommand{\BBZNM}{$\beta\beta{}0\nu\chi$}
+\newcommand{\BB}{$\beta\beta$}
+\newcommand{\BBDN}{$\beta\beta{}2\nu$}
+\newcommand{\CA}{$^{48}$Ca}
+\newcommand{\SE}{$^{82}$Se}
+\newcommand{\ND}{$^{150}$Nd}
+\newcommand{\TL}{$^{208}$Tl}
+\newcommand{\BIQ}{$^{214}$Bi}
+\newcommand{\BID}{$^{212}$Bi}
+\newcommand{\POQ}{$^{214}$Po}
+\newcommand{\POD}{$^{212}$Po}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\hrule
+\begin{center}
+{\Large
+SuperNEMO Collaboration \\
+SuperNEMO Demonstrator Front-end Commissioning, fecom library usage\\
+Version 0.1 (draft)\\
+}
+\vskip 13pt
+\includegraphics[width=6cm]{\imgpath/snemo_snail_1.pdf}
+\end{center}
+\hrule
+\vskip 25pt
+\normalsize
+\thispagestyle{empty}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{abstract}
+This document aims to describe the usage of the Front-end Commissioning (fecom) library
+for the SuperNEMO experiment.
+\end{abstract}
+\vfill
+\par\noindent \textbf{Source (LaTeX) : }\\
+\texttt{https://nemo.lpc-caen.in2p3.fr/svn/??}
+\par\noindent \textbf{Reference :} NemoDocDB-doc-???-v?
+\pagebreak
+\par\noindent \textbf{Versions :}
+\begin{itemize}
+\item NemoDocDB-doc-??
+\end{itemize}
+
+\pagebreak
+
+\tableofcontents \label{toc}
+
+\pagebreak
+
+\newpage
+
+\section{Introduction}
+
+\section{Fecom library}
+
+\subsection{} 
+
+
+
+\end{document}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

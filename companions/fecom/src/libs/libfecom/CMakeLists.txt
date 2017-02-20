@@ -70,6 +70,7 @@ set(FeCom_TESTS
   testing/test-libfecom-channel_mapping.cxx
   testing/test-libfecom-base_hit.cxx
   testing/test-libfecom-calo_hit.cxx
+  testing/test-libfecom-hit_reader.cxx
   testing/test-libfecom-tracker_channel_hit.cxx
   testing/test-libfecom-tracker_hit.cxx
   testing/test-libfecom-calo_pedestal_calib.cxx

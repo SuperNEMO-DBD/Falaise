@@ -18,6 +18,7 @@
 // Root :
 #include "TFile.h"
 #include "TH1F.h"
+#include "TH2F.h"
 
 
 int main(int /*argc_*/, char ** /*argv_*/)
@@ -56,42 +57,58 @@ int main(int /*argc_*/, char ** /*argv_*/)
     datatools::fetch_path_with_env(string_buffer);
     TFile* root_file = new TFile(string_buffer.c_str(), "RECREATE");
 
-    TH1F * hit_calo_channel_TH1F[CALO_MAX_NUMBER_OF_CHANNELS];
-    for (unsigned int icalo_channel = 0; icalo_channel < fecom::calo_constants::CALO_MAX_NUMBER_OF_CHANNELS; icalo_channel++) {
-      string_buffer = "hit_calo_channel_" + std::to_string(icalo_channel);
+    TH1F * raw_charge_calo_channel_TH1F[fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN];
+    TH1F * raw_peak_calo_channel_TH1F[fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN];
+    for (unsigned int icalo_channel = 0; icalo_channel < fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN; icalo_channel++) {
+      string_buffer = "raw_charge_calo_channel_" + std::to_string(icalo_channel);
+      raw_charge_calo_channel_TH1F[icalo_channel] = new TH1F(string_buffer.c_str(),
+    							     Form("Raw charge calorimeter %i", icalo_channel),
+    							     3000, 0, 30000);
 
-      hit_calo_channel_TH1F[icalo_channel] = new TH1F(string_buffer.c_str(),
-    						      Form("Hit calorimeter %i", icalo_channel),
-    						      5, 0, 5);
+      string_buffer = "raw_peak_calo_channel_" + std::to_string(icalo_channel);
+      raw_peak_calo_channel_TH1F[icalo_channel] = new TH1F(string_buffer.c_str(),
+							   Form("Raw peak calorimeter %i", icalo_channel),
+							   1000, 0, 10000);
     }
 
-    TH1F * hit_tracker_channel_TH1F[fecom::tracker_constants::NUMBER_OF_LAYERS][fecom::tracker_constants::NUMBER_OF_ROWS_PER_BOARD];
-    for (unsigned int ilayer = 0; ilayer < fecom::tracker_constants::NUMBER_OF_LAYERS; ilayer++)
-      {
-	for (unsigned int irow = 0; irow < fecom::tracker_constants::NUMBER_OF_ROWS_PER_BOARD; irow++)
-	  {
-	    string_buffer = "hit_tracker_layer_" + std::to_string(ilayer) + "_row_" + std::to_string(irow);
-	    hit_tracker_channel_TH1F[ilayer][irow] = new TH1F(string_buffer.c_str(),
-							      Form("Hit tracker GG cell layer %i, row %i", ilayer, irow),
-							      5, 0, 5);
-	  }
-      }
+    string_buffer = "hit_calo_rate_TH2F";
+    TH2F * hit_calo_rate_TH2F = new TH2F(string_buffer.c_str(),
+					 Form("Hit Calo rate"),
+					 20, 0, 20,
+					 14, 0, 14);
 
-    TH1F * hit_tracker_time_rate_TH1F[fecom::tracker_constants::NUMBER_OF_LAYERS][fecom::tracker_constants::NUMBER_OF_ROWS_PER_BOARD][fecom::tracker_constants::NUMBER_OF_TIMES];
-    for (unsigned int ilayer = 0; ilayer < fecom::tracker_constants::NUMBER_OF_LAYERS; ilayer++)
-      {
-	for (unsigned int irow = 0; irow < fecom::tracker_constants::NUMBER_OF_ROWS_PER_BOARD; irow++)
-	  {
-	    for (unsigned int itime = 0; itime < fecom::tracker_constants::NUMBER_OF_TIMES; itime++)
-	      {
-		string_buffer = "hit_tracker_layer_" + std::to_string(ilayer) + "_row_" + std::to_string(irow) + "_timestamp_t" + std::to_string(itime);
-		hit_tracker_time_rate_TH1F[ilayer][irow][itime] = new TH1F(string_buffer.c_str(),
-									   Form("Hit tracker GG cell timestamp rate layer %i, row %i, timestamp %i", ilayer, irow, itime),
-									   5, 0, 5);
-	      }
-	  }
-      }
+    // TH1F * hit_tracker_channel_TH1F[fecom::tracker_constants::NUMBER_OF_LAYERS][fecom::tracker_constants::NUMBER_OF_ROWS_PER_BOARD];
+    // for (unsigned int ilayer = 0; ilayer < fecom::tracker_constants::NUMBER_OF_LAYERS; ilayer++)
+    //   {
+    // 	for (unsigned int irow = 0; irow < fecom::tracker_constants::NUMBER_OF_ROWS_PER_BOARD; irow++)
+    // 	  {
+    // 	    string_buffer = "hit_tracker_layer_" + std::to_string(ilayer) + "_row_" + std::to_string(irow);
+    // 	    hit_tracker_channel_TH1F[ilayer][irow] = new TH1F(string_buffer.c_str(),
+    // 							      Form("Hit tracker GG cell layer %i, row %i", ilayer, irow),
+    // 							      5, 0, 5);
+    // 	  }
+    //   }
 
+    // TH1F * hit_tracker_time_rate_TH1F[fecom::tracker_constants::NUMBER_OF_LAYERS][fecom::tracker_constants::NUMBER_OF_ROWS_PER_BOARD][fecom::tracker_constants::NUMBER_OF_TIMES];
+    // for (unsigned int ilayer = 0; ilayer < fecom::tracker_constants::NUMBER_OF_LAYERS; ilayer++)
+    //   {
+    // 	for (unsigned int irow = 0; irow < fecom::tracker_constants::NUMBER_OF_ROWS_PER_BOARD; irow++)
+    // 	  {
+    // 	    for (unsigned int itime = 0; itime < fecom::tracker_constants::NUMBER_OF_TIMES; itime++)
+    // 	      {
+    // 		string_buffer = "hit_tracker_layer_" + std::to_string(ilayer) + "_row_" + std::to_string(irow) + "_timestamp_t" + std::to_string(itime);
+    // 		hit_tracker_time_rate_TH1F[ilayer][irow][itime] = new TH1F(string_buffer.c_str(),
+    // 									   Form("Hit tracker GG cell timestamp rate layer %i, row %i, timestamp %i", ilayer, irow, itime),
+    // 									   5, 0, 5);
+    // 	      }
+    // 	  }
+    //   }
+
+    string_buffer = "hit_tracker_rate_TH2F";
+    TH2F * hit_tracker_rate_TH2F = new TH2F(string_buffer.c_str(),
+					    Form("Hit tracker GG cell rate"),
+					    5, 0, 5,
+					    10, 0, 10);
 
     std::size_t event_counter = 0;
     for (std::set<fecom::commissioning_event>::iterator it_event = deserialize_commissioning_event_collection.grab_commissioning_event_collection().begin();
@@ -107,11 +124,20 @@ int main(int /*argc_*/, char ** /*argv_*/)
 	     it_chit++)
 	  {
 	    // it_chit -> tree_dump(std::clog, "Calo hit #" + std::to_string(chit_counter));
-	    uint8_t hit_channel = it_chit -> electronic_id.get(fecom::calo_constants::CHANNEL_INDEX);
-	    hit_calo_channel_TH1F[hit_channel]->Fill(1);
+	    uint16_t board = it_chit -> electronic_id.get(fecom::calo_constants::BOARD_INDEX);
+	    uint16_t channel = it_chit -> electronic_id.get(fecom::calo_constants::CHANNEL_INDEX);
+	    int16_t raw_peak = it_chit -> raw_peak * -1;
+	    int32_t raw_charge =  it_chit -> raw_charge * -1;
+
+	    raw_charge_calo_channel_TH1F[channel] -> Fill(raw_charge);
+	    raw_peak_calo_channel_TH1F[channel] -> Fill(raw_peak);
+
+	    // hit_calo_channel_TH1F[channel]->Fill(1);
+	    hit_calo_rate_TH2F->Fill(board, channel);
 
 	    chit_counter++;
 	  }
+
        	std::clog << "Size of tracker hit in the event : " << it_event->get_tracker_hit_collection().size() << std::endl;
 	std::size_t thit_counter = 0;
 	for (auto it_thit = it_event->get_tracker_hit_collection().begin();
@@ -121,15 +147,17 @@ int main(int /*argc_*/, char ** /*argv_*/)
 	    it_thit -> tree_dump(std::clog, "Tracker hit #" + std::to_string(thit_counter));
 	    uint16_t layer = it_thit -> cell_geometric_id.get(fecom::tracker_constants::LAYER_INDEX);
 	    uint16_t row =  it_thit -> cell_geometric_id.get(fecom::tracker_constants::ROW_INDEX);
-	    hit_tracker_channel_TH1F[layer][row]->Fill(1);
+	    // hit_tracker_channel_TH1F[layer][row]->Fill(1);
 
-	    if (it_thit -> has_anodic_t0()) hit_tracker_time_rate_TH1F[layer][row][0]->Fill(1);
-	    if (it_thit -> has_anodic_t1()) hit_tracker_time_rate_TH1F[layer][row][1]->Fill(1);
-	    if (it_thit -> has_anodic_t2()) hit_tracker_time_rate_TH1F[layer][row][2]->Fill(1);
-	    if (it_thit -> has_anodic_t3()) hit_tracker_time_rate_TH1F[layer][row][3]->Fill(1);
-	    if (it_thit -> has_anodic_t4()) hit_tracker_time_rate_TH1F[layer][row][4]->Fill(1);
-	    if (it_thit -> has_cathodic_t5()) hit_tracker_time_rate_TH1F[layer][row][5]->Fill(1);
-	    if (it_thit -> has_cathodic_t6()) hit_tracker_time_rate_TH1F[layer][row][6]->Fill(1);
+	    hit_tracker_rate_TH2F->Fill(layer, row);
+
+	    // if (it_thit -> has_anodic_t0()) hit_tracker_time_rate_TH1F[layer][row][0]->Fill(1);
+	    // if (it_thit -> has_anodic_t1()) hit_tracker_time_rate_TH1F[layer][row][1]->Fill(1);
+	    // if (it_thit -> has_anodic_t2()) hit_tracker_time_rate_TH1F[layer][row][2]->Fill(1);
+	    // if (it_thit -> has_anodic_t3()) hit_tracker_time_rate_TH1F[layer][row][3]->Fill(1);
+	    // if (it_thit -> has_anodic_t4()) hit_tracker_time_rate_TH1F[layer][row][4]->Fill(1);
+	    // if (it_thit -> has_cathodic_t5()) hit_tracker_time_rate_TH1F[layer][row][5]->Fill(1);
+	    // if (it_thit -> has_cathodic_t6()) hit_tracker_time_rate_TH1F[layer][row][6]->Fill(1);
 
 
 	    thit_counter++;

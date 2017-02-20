@@ -21,7 +21,7 @@ namespace fecom {
   const uint64_t tracker_constants::NUMBER_OF_LAYERS;
   const uint64_t tracker_constants::NUMBER_OF_ROWS_PER_BOARD;
   const uint64_t tracker_constants::TOTAL_NUMBER_OF_ROWS;
-  const uint64_t tracker_constants::TRACKER_NUMBER_OF_TIMES;
+  const uint64_t tracker_constants::NUMBER_OF_TIMES;
 
   const uint64_t tracker_constants::GEOMETRIC_CELL_TYPE;
   const uint64_t tracker_constants::LAYER_INDEX;
