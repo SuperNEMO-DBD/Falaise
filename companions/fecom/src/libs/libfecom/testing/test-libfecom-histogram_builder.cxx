@@ -44,10 +44,10 @@ int main(int /*argc_*/, char ** /*argv_*/)
     std::clog << "Size of deserialized commissioning event data = [" << deserialize_commissioning_event_collection.get_commissioning_event_collection().size() << "]" << std::endl;
 
 
-    std::string input_tracker_mapping_file("${FECOM_RESOURCES_DIR}/config/mapping_tracker.csv");
+    std::string input_tracker_mapping_file("${FECOM_RESOURCES_DIR}/data/samples/run_1/mapping_tracker.csv");
     datatools::fetch_path_with_env(input_tracker_mapping_file);
 
-    std::string input_calo_mapping_file("${FECOM_RESOURCES_DIR}/config/mapping_calo.csv");
+    std::string input_calo_mapping_file("${FECOM_RESOURCES_DIR}/data/samples/run_1/mapping_calo.csv");
     datatools::fetch_path_with_env(input_calo_mapping_file);
 
 
@@ -76,7 +76,6 @@ int main(int /*argc_*/, char ** /*argv_*/)
     TH1F * raw_charge_baseline_calo_channel_TH1F[fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN];
     TH1F * raw_baseline_calo_channel_TH1F[fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN];
 
-
     for (unsigned int icalo_channel = 0; icalo_channel < fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN; icalo_channel++) {
       string_buffer = "raw_charge_trig_calo_channel_" + std::to_string(icalo_channel);
       raw_charge_trig_calo_channel_TH1F[icalo_channel] = new TH1F(string_buffer.c_str(),
@@ -93,6 +92,7 @@ int main(int /*argc_*/, char ** /*argv_*/)
 								      Form("Raw charge baseline calorimeter %i", icalo_channel),
 								      100, 0, 2000);
 
+      // To see with Jihanne : what is RawBaseline ?
       string_buffer = "raw_baseline_calo_channel_" + std::to_string(icalo_channel);
       raw_baseline_calo_channel_TH1F[icalo_channel] = new TH1F(string_buffer.c_str(),
 							       Form("Raw baseline calorimeter %i", icalo_channel),

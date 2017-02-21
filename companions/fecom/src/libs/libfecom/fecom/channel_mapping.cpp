@@ -242,7 +242,7 @@ namespace fecom {
 	if (it_map != tracker_bimap.left.end()) {
 	  electronic_id_ = it_map -> second;
 	}
-	else DT_THROW(std::logic_error, "Input tracker geometric id is not find in the bimap " << geometric_id_ << " !");
+	else DT_THROW(std::logic_error, "Input geometric tracker id is not find in the bimap " << geometric_id_ << " !");
       }
     else if (geometric_id_.get_type() == calo_constants::GEOMETRIC_CALO_TYPE)
       {
@@ -250,7 +250,7 @@ namespace fecom {
 	if (it_map != calo_bimap.left.end()) {
 	  electronic_id_ = it_map -> second;
 	}
-	else DT_THROW(std::logic_error, "Input calo geometric id is not find in the bimap " << geometric_id_ << " !");
+	else DT_THROW(std::logic_error, "Input geometric calo id is not find in the bimap " << geometric_id_ << " !");
       }
     else DT_THROW(std::logic_error, "Input geometric id type is not valid '" << geometric_id_.get_type() << " !");
 

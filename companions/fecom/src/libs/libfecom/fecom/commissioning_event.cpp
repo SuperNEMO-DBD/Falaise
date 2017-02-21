@@ -92,6 +92,7 @@ namespace fecom {
 	  // const uint16_t feast_id = electronic_channel_id.get(tracker_constants::FEAST_INDEX);
 	  // const uint16_t channel  = electronic_channel_id.get(tracker_constants::CHANNEL_INDEX);
 	  geomtools::geom_id associated_geometric_id;
+
 	  _my_channel_mapping_-> get_geometric_id_from_electronic_id(electronic_channel_id,
 								     associated_geometric_id);
 

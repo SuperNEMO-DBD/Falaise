@@ -45,7 +45,9 @@ int main(int /*argc_*/, char ** /*argv_*/)
 
     std::size_t hit_counter = 0;
     while(reader.has_next_hit()) {
+
       // std::clog << "Hit counter = " << hit_counter << std::endl;
+
       chit.reset();
       tchit.reset();
       reader.load_next_hit(chit, tchit);
@@ -111,14 +113,18 @@ int main(int /*argc_*/, char ** /*argv_*/)
       hit_counter++;
     } // end of while reader
 
+    DT_LOG_DEBUG(logging, "End of reader file...");
     reader.reset();
 
     // Build all tracker hit after the build of all commissioning event :
     std::string input_tracker_mapping_file("${FECOM_RESOURCES_DIR}/data/samples/run_1/mapping_tracker.csv");
     datatools::fetch_path_with_env(input_tracker_mapping_file);
+    std::string input_calo_mapping_file("${FECOM_RESOURCES_DIR}/data/samples/run_1/mapping_calo.csv");
+    datatools::fetch_path_with_env(input_calo_mapping_file);
 
     fecom::channel_mapping my_channel_mapping;
     my_channel_mapping.build_tracker_mapping_from_file(input_tracker_mapping_file);
+    my_channel_mapping.build_calo_mapping_from_file(input_calo_mapping_file);
     my_channel_mapping.initialize();
 
     // for (auto it_bimap = my_channel_mapping.tracker_bimap.right.begin();
@@ -128,6 +134,7 @@ int main(int /*argc_*/, char ** /*argv_*/)
     // 	std::clog << "EID FEB : " << it_bimap->first << " <-> GID Cell : " << it_bimap->second << std::endl;
     //   }
 
+    DT_LOG_DEBUG(logging, "Begin the building of tracker hits...");
 
     for (std::set<fecom::commissioning_event>::iterator it_event = commissioning_event_collection.grab_commissioning_event_collection().begin();
     	 it_event != commissioning_event_collection.grab_commissioning_event_collection().end();
