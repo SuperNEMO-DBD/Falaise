@@ -6,6 +6,7 @@
 // Third party:
 // - Boost:
 #include <boost/spirit/include/qi.hpp>
+#include <boost/spirit/include/qi_real.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/phoenix/phoenix.hpp>
 // #include <boost/fusion/include/at_c.hpp>
@@ -65,8 +66,8 @@ namespace fecom {
     if (index_ == 0) {
       std::string header_line = header_line_;
       // We use a trick because of nasty syntax from the DAQ ascii output:
-      boost::replace_all(header_line, "Slot", "Slot ");
-      boost::replace_all(header_line, " Ch", " Ch ");
+      // boost::replace_all(header_line, "Slot", "Slot ");
+      // boost::replace_all(header_line, " Ch", " Ch ");
       DT_LOG_DEBUG(logging, "header_line = '" << header_line << "'");
       std::string::const_iterator str_iter = header_line.begin();
       std::string::const_iterator end_iter = header_line.end();
@@ -74,16 +75,22 @@ namespace fecom {
       uint32_t channelid = 16;
       uint32_t eventid   = 0xFFFFFFFF;
       uint64_t rawtdc    = 0xFFFFFFFFFFFFFFFF; // 64bits ? to be checked
+      double   tdc_ns; // 64bits ? to be checked
       uint32_t trigcount;
       uint32_t timecount;
       int32_t  rawbaseline;
+      double   baseline_volt;
       int32_t  rawpeak;
+      double   peak_volt;
       int32_t  rawcharge;
+      double   charge_picocoulomb;
       uint32_t overflow;
       uint32_t risingcell = 1024;
       uint32_t risingoffset;
+      double   rising_ns;
       uint32_t fallingcell = 1024;
       uint32_t fallingoffset;
+      double   falling_ns;
       uint32_t fcr = 1024;
       res = qi::phrase_parse(str_iter,
                              end_iter,
@@ -93,16 +100,22 @@ namespace fecom {
                               >> qi::lit("Ch")            >> qi::uint_[boost::phoenix::ref(channelid) = boost::spirit::qi::_1]
                               >> qi::lit("EvtID")         >> qi::uint_[boost::phoenix::ref(eventid) = boost::spirit::qi::_1]
                               >> qi::lit("RawTDC")        >> qi::ulong_[boost::phoenix::ref(rawtdc) = boost::spirit::qi::_1]
+                              >> qi::lit("TDC")           >> qi::double_[boost::phoenix::ref(tdc_ns) = boost::spirit::qi::_1]
                               >> qi::lit("TrigCount")     >> qi::uint_[boost::phoenix::ref(trigcount) = boost::spirit::qi::_1]
                               >> qi::lit("Timecount")     >> qi::uint_[boost::phoenix::ref(timecount) = boost::spirit::qi::_1]
                               >> qi::lit("RawBaseline")   >> qi::int_[boost::phoenix::ref(rawbaseline) = boost::spirit::qi::_1]
+                              >> qi::lit("Baseline")      >> qi::double_[boost::phoenix::ref(baseline_volt) = boost::spirit::qi::_1]
                               >> qi::lit("RawPeak")       >> qi::int_[boost::phoenix::ref(rawpeak) = boost::spirit::qi::_1]
+                              >> qi::lit("Peak")          >> qi::double_[boost::phoenix::ref(peak_volt) = boost::spirit::qi::_1]
                               >> qi::lit("RawCharge")     >> qi::int_[boost::phoenix::ref(rawcharge) = boost::spirit::qi::_1]
+                              >> qi::lit("Charge")        >> qi::double_[boost::phoenix::ref(charge_picocoulomb) = boost::spirit::qi::_1]
                               >> qi::lit("Overflow")      >> qi::uint_[boost::phoenix::ref(overflow) = boost::spirit::qi::_1]
                               >> qi::lit("RisingCell")    >> qi::uint_[boost::phoenix::ref(risingcell) = boost::spirit::qi::_1]
                               >> qi::lit("RisingOffset")  >> qi::uint_[boost::phoenix::ref(risingoffset) = boost::spirit::qi::_1]
+                              >> qi::lit("RisingTime")    >> qi::double_[boost::phoenix::ref(rising_ns) = boost::spirit::qi::_1]
                               >> qi::lit("FallingCell")   >> qi::uint_[boost::phoenix::ref(fallingcell) = boost::spirit::qi::_1]
                               >> qi::lit("FallingOffset") >> qi::uint_[boost::phoenix::ref(fallingoffset) = boost::spirit::qi::_1]
+                              >> qi::lit("FallingTime")   >> qi::double_[boost::phoenix::ref(falling_ns) = boost::spirit::qi::_1]
                               >> qi::lit("FCR")           >> qi::uint_[boost::phoenix::ref(fcr) = boost::spirit::qi::_1]
                              ),
                              //  End grammar
@@ -114,29 +127,46 @@ namespace fecom {
       DT_LOG_DEBUG(logging, "channelid     = " << channelid);
       DT_LOG_DEBUG(logging, "eventid       = " << eventid);
       DT_LOG_DEBUG(logging, "rawtdc        = " << rawtdc);
+      DT_LOG_DEBUG(logging, "tdc (ns)      = " << tdc_ns);
       DT_LOG_DEBUG(logging, "trigcount     = " << trigcount);
       DT_LOG_DEBUG(logging, "timecount     = " << timecount);
       DT_LOG_DEBUG(logging, "rawbaseline   = " << rawbaseline);
+      DT_LOG_DEBUG(logging, "baseline (V)  = " << baseline_volt);
       DT_LOG_DEBUG(logging, "rawpeak       = " << rawpeak);
+      DT_LOG_DEBUG(logging, "peak (V)      = " << peak_volt);
       DT_LOG_DEBUG(logging, "rawcharge     = " << rawcharge);
+      DT_LOG_DEBUG(logging, "charge (pC)   = " << charge_picocoulomb);
       DT_LOG_DEBUG(logging, "overflow      = " << overflow);
       DT_LOG_DEBUG(logging, "risingcell    = " << risingcell);
       DT_LOG_DEBUG(logging, "risingoffset  = " << risingoffset);
+      DT_LOG_DEBUG(logging, "risingtime(ns)= " << rising_ns);
       DT_LOG_DEBUG(logging, "fallingcell   = " << fallingcell);
       DT_LOG_DEBUG(logging, "fallingoffset = " << fallingoffset);
+      DT_LOG_DEBUG(logging, "fallingtime(ns= " << falling_ns);
       DT_LOG_DEBUG(logging, "fcr           = " << fcr);
+
       hit_.electronic_id.set_type(calo_constants::CALO_CHANNEL_TYPE);
       hit_.electronic_id.set(calo_constants::SLOT_INDEX, slotid);
       hit_.electronic_id.set(calo_constants::CHANNEL_INDEX ,channelid);
       hit_.event_id = eventid;
       hit_.raw_tdc = rawtdc;
+      hit_.tdc_ns = tdc_ns;
       hit_.low_threshold_trig_count = trigcount;
       hit_.low_threshold_time_count = timecount;
       hit_.fcr = fcr;
       hit_.raw_baseline = rawbaseline;
+      hit_.baseline_volt = baseline_volt;
       hit_.raw_peak = rawpeak;
+      hit_.peak_volt = peak_volt;
       hit_.raw_charge = rawcharge;
+      hit_.charge_picocoulomb = charge_picocoulomb;
       hit_.raw_charge_overflow = (overflow == 0 ? false: true);
+      hit_.rising_cell = risingcell;
+      hit_.rising_offset = risingoffset;
+      hit_.rising_time_ns = rising_ns;
+      hit_.falling_cell = fallingcell;
+      hit_.falling_offset = fallingoffset;
+      hit_.falling_time_ns = falling_ns;
       // Waveform size is not saved in the header !!!
       // hit_.waveform_data_size = 1024;
     }

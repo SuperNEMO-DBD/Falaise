@@ -24,28 +24,6 @@ namespace fecom {
     : public base_hit
   {
 
-		// /// Predicate that checks if the hit has some specific geometry ID
-    // struct has_geom_id_predicate
-    // {
-    // public:
-
-    //   /// Constructor
-    //   explicit has_geom_id_predicate (const geomtools::geom_id & a_gid)
-    //   {
-    //     gid_ = a_gid;
-    //     return;
-    //   }
-
-    //   /// Functor interface
-    //   bool operator () (const base_hit & a_hit) const
-    //   {
-    //     return (a_hit.has_geom_id () && a_hit.get_geom_id () == gid_);
-    //   }
-
-    //   geomtools::geom_id gid_; /// The geometry ID to be checked
-
-    // };
-
 		struct find_by_channel {
 			find_by_channel(const uint16_t & feast_id_,
 											const uint16_t & channel_id_) : feast_id(feast_id_),
@@ -54,8 +32,6 @@ namespace fecom {
 			bool operator()(const tracker_channel_hit & tracker_channel_hit_) {
 				uint16_t input_feast_id = tracker_channel_hit_.electronic_id.get(tracker_constants::FEAST_INDEX);
 				uint16_t input_channel_id = tracker_channel_hit_.electronic_id.get(tracker_constants::CHANNEL_INDEX);
-				// std::clog << "DEBUG : TRACKER_CHANNEL_HIT::FIND_BY_CHANNEL : input_feast = " << input_feast_id
-				//				<< "input_channel = " << input_channel_id << std::endl;
 				bool finded = false;
 				if (feast_id == input_feast_id && channel_id == input_channel_id) finded = true;
 				else finded = false;
@@ -77,9 +53,6 @@ namespace fecom {
 				uint16_t input_feast_id = tracker_channel_hit_.electronic_id.get(tracker_constants::FEAST_INDEX);
 				uint16_t input_channel_id = tracker_channel_hit_.electronic_id.get(tracker_constants::CHANNEL_INDEX);
 				std::string input_timestamp_type = tracker_channel_hit_.timestamp_type;
-				// std::clog << "DEBUG : TRACKER_CHANNEL_HIT::FIND_BY_TIMESTAMP : input_feast = " << input_feast_id
-				//				<< " input_channel = " << input_channel_id
-				//				<< " input timestamp type = " << input_timestamp_type << std::endl;
 				bool finded = false;
 				if (feast_id == input_feast_id
 						&& channel_id == input_channel_id
@@ -133,6 +106,7 @@ namespace fecom {
 
     // Data :
     uint64_t timestamp_value;      ///< Value of the timestamp
+    double timestamp_time_ns;      ///< Value of the timestamp in ns
 
 		DATATOOLS_SERIALIZATION_DECLARATION()
 

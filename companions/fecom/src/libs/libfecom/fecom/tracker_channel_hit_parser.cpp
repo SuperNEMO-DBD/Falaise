@@ -63,9 +63,9 @@ namespace fecom {
     bool res = false;
 
     // We use a trick because of nasty syntax from the DAQ ascii output:
-    boost::replace_all(data_line, "Slot", "Slot ");
-    boost::replace_all(data_line, " Feast", " Feast ");
-    boost::replace_all(data_line, " Ch", " Ch ");
+    // boost::replace_all(data_line, "Slot", "Slot ");
+    // boost::replace_all(data_line, " Feast", " Feast ");
+    // boost::replace_all(data_line, " Ch", " Ch ");
 
     DT_LOG_DEBUG(logging, "data_line before parsing  = " << data_line);
 
@@ -77,7 +77,8 @@ namespace fecom {
     // uint16_t eventid   = 0xFFFF;
     std::string channel_type ="INVALID";
     std::string timestamp_type = "INVALID";
-    uint32_t timestamp_value  = 0xFFFFFFFF;
+    uint64_t timestamp_value  = 0xFFFFFFFF;
+    double timestamp_ns  = 0;
     res = qi::phrase_parse(str_iter,
     			   end_iter,
     			   //  Begin grammar
@@ -95,6 +96,7 @@ namespace fecom {
 				qi::string("R5") |
 				qi::string("R6"))[boost::phoenix::ref(timestamp_type) = boost::spirit::qi::_1]
 			    >> qi::uint_[boost::phoenix::ref(timestamp_value) = boost::spirit::qi::_1]
+			    >> qi::double_[boost::phoenix::ref(timestamp_ns) = boost::spirit::qi::_1]
     			    ),
     			   //  End grammar
     			   qi::space);
@@ -107,6 +109,7 @@ namespace fecom {
     DT_LOG_DEBUG(logging, "channel_type    = " << channel_type);
     DT_LOG_DEBUG(logging, "timestamp_type  = " << timestamp_type);
     DT_LOG_DEBUG(logging, "timestamp_value = " << timestamp_value);
+    DT_LOG_DEBUG(logging, "timestamp_ns    = " << timestamp_ns);
 
     if (channel_type == "AN") {
       hit_.electronic_id.set_type(tracker_constants::ANODIC_CHANNEL_TYPE);
@@ -121,6 +124,7 @@ namespace fecom {
 
     hit_.timestamp_type = timestamp_type;
     hit_.timestamp_value = timestamp_value;
+    hit_.timestamp_time_ns = timestamp_ns;
 
     DT_LOG_TRACE_EXITING(logging);
     return;

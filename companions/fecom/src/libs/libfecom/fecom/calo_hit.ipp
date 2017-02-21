@@ -20,6 +20,7 @@ namespace fecom {
     ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_hit);
     ar & boost::serialization::make_nvp("event_id", event_id);
     ar & boost::serialization::make_nvp("raw_tdc", raw_tdc);
+    ar & boost::serialization::make_nvp("tdc_ns", tdc_ns);
     ar & boost::serialization::make_nvp("low_threshold", low_threshold);
     ar & boost::serialization::make_nvp("high_threshold", high_threshold);
     ar & boost::serialization::make_nvp("low_threshold_trig_count", low_threshold_trig_count);
@@ -28,12 +29,19 @@ namespace fecom {
     ar & boost::serialization::make_nvp("fcr", fcr);
     ar & boost::serialization::make_nvp("raw_waveform_data", raw_waveform_data);
     ar & boost::serialization::make_nvp("raw_baseline", raw_baseline);
+    ar & boost::serialization::make_nvp("baseline_volt", baseline_volt);
     ar & boost::serialization::make_nvp("raw_peak", raw_peak);
-    ar & boost::serialization::make_nvp("raw_peak_cell", raw_peak_cell);
+    ar & boost::serialization::make_nvp("peak_volt", peak_volt);
     ar & boost::serialization::make_nvp("raw_charge", raw_charge);
+    ar & boost::serialization::make_nvp("charge_picocoulomb", charge_picocoulomb);
     ar & boost::serialization::make_nvp("raw_charge_overflow", raw_charge_overflow);
-    ar & boost::serialization::make_nvp("raw_cfd_rising_edge_time", raw_cfd_rising_edge_time);
-    ar & boost::serialization::make_nvp("raw_cfd_falling_edge_time", raw_cfd_falling_edge_time);
+    ar & boost::serialization::make_nvp("rising_cell", rising_cell);
+    ar & boost::serialization::make_nvp("rising_offset", rising_offset);
+    ar & boost::serialization::make_nvp("rising_time_ns", rising_time_ns);
+    ar & boost::serialization::make_nvp("falling_cell", falling_cell);
+    ar & boost::serialization::make_nvp("falling_offset", falling_offset);
+    ar & boost::serialization::make_nvp("falling_time_ns", falling_time_ns);
+
     return;
   }
 

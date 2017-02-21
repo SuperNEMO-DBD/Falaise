@@ -55,6 +55,7 @@ namespace fecom {
     uint64_t raw_tdc;                   /** Raw timestamp (dynamic 40 bits)
                                          *  Unit: clock period (default: 160 MHz)
                                          */
+		double   tdc_ns;
     bool     low_threshold;             ///< Low threshold flag
     bool     high_threshold;            ///< High threshold flag
     uint32_t low_threshold_trig_count;  ///< (16 bits)
@@ -63,12 +64,18 @@ namespace fecom {
     uint16_t fcr;                       ///< First cell read (index of the first sample) (0..1023)
     int16_t  raw_waveform_data[calo_constants::MAX_NUMBER_OF_SAMPLES]; ///< Raw samples
     int16_t  raw_baseline;              ///<
+		double   baseline_volt;
     int16_t  raw_peak;                  ///< ADC amplitude of the peak
-    uint16_t raw_peak_cell;             ///< Position of the peak (0..1023)
+		double   peak_volt;
     int32_t  raw_charge;                ///< Raw integrated charge
+		double   charge_picocoulomb;
     bool     raw_charge_overflow;       ///< Raw charge overflow flag
-    uint32_t raw_cfd_rising_edge_time;  ///< Raw CFD rising edge time
-    uint32_t raw_cfd_falling_edge_time; ///< Raw CFD falling edge time
+		uint32_t rising_cell;
+		uint32_t rising_offset;
+		double   rising_time_ns;
+		uint32_t falling_cell;
+		uint32_t falling_offset;
+		double   falling_time_ns;
 
 		DATATOOLS_SERIALIZATION_DECLARATION()
 

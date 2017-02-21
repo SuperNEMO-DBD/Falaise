@@ -46,6 +46,7 @@ namespace fecom {
   void calo_hit::_reset_()
   {
     raw_tdc = 0xFFFFFFFF;
+    tdc_ns = 0;
     event_id = 0;
     low_threshold = false;
     high_threshold = false;
@@ -56,12 +57,18 @@ namespace fecom {
     _reset_raw_waveform_data_();
     raw_baseline = 0;
     raw_peak = calo_constants::INVALID_SAMPLE;
-    raw_peak_cell = 0;
+    peak_volt = 0;
     raw_baseline = 0;
+    baseline_volt = 0;
     raw_charge = 0;
+    charge_picocoulomb = 0;
     raw_charge_overflow = false;
-    raw_cfd_rising_edge_time = 0;
-    raw_cfd_falling_edge_time = 0;
+    rising_cell = calo_constants::INVALID_SAMPLE;
+    rising_offset = 0;
+    rising_time_ns = 0;
+    falling_cell = calo_constants::INVALID_SAMPLE;
+    falling_offset = 0;
+    falling_time_ns = 0;
     return;
   }
 
@@ -90,6 +97,9 @@ namespace fecom {
          << "Raw TDC                   : " << raw_tdc << std::endl;
 
     out_ << indent_ << io::tag()
+         << "TDC (in ns)               : " << tdc_ns << std::endl;
+
+    out_ << indent_ << io::tag()
          << "Event ID                  : " << (int) event_id << std::endl;
 
     out_ << indent_ << io::tag()
@@ -114,22 +124,40 @@ namespace fecom {
          << "Raw baseline              : " << raw_baseline << std::endl;
 
     out_ << indent_ << io::tag()
+         << "Baseline (in V)           : " << baseline_volt << std::endl;
+
+    out_ << indent_ << io::tag()
          << "Raw peak                  : " << raw_peak << std::endl;
 
     out_ << indent_ << io::tag()
-         << "Raw peak cell             : " << raw_peak_cell << std::endl;
+         << "Peak (in V)               : " << peak_volt << std::endl;
 
     out_ << indent_ << io::tag()
          << "Raw charge                : " << raw_charge << std::endl;
 
     out_ << indent_ << io::tag()
+         << "Charge (in pC)            : " << charge_picocoulomb << std::endl;
+
+    out_ << indent_ << io::tag()
          << "Raw charge overflow       : " << std::boolalpha << raw_charge_overflow << std::endl;
 
     out_ << indent_ << io::tag()
-         << "Raw CFD rising edge time  : " << raw_cfd_rising_edge_time << std::endl;
+         << "Rising cell               : " << rising_cell << std::endl;
 
     out_ << indent_ << io::tag()
-         << "Raw CFD falling edge time : " << raw_cfd_falling_edge_time << std::endl;
+         << "Rising offset             : " << rising_offset << std::endl;
+
+    out_ << indent_ << io::tag()
+         << "Rising time (in ns)       : " << rising_time_ns << std::endl;
+
+    out_ << indent_ << io::tag()
+         << "Falling cell              : " << falling_cell << std::endl;
+
+    out_ << indent_ << io::tag()
+         << "Falling offset            : " << falling_offset << std::endl;
+
+    out_ << indent_ << io::tag()
+         << "Falling time (in ns)      : " << falling_time_ns << std::endl;
 
     out_ << indent_ << io::inherit_last_tag(inherit_)
          << "Validity                  : " << std::boolalpha << is_valid() << std::endl;

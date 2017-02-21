@@ -31,7 +31,7 @@ int main(int /*argc_*/, char ** /*argv_*/)
   try {
     fecom::hit_reader reader;
     reader.set_logging(datatools::logger::PRIO_WARNING);
-    reader.set_input_filename("${FECOM_RESOURCES_DIR}/data/samples/run_1/Run_SN_Crate_Test_Tracker_And_Calo_Data_2_17_2017_Ascii.dat");
+    reader.set_input_filename("${FECOM_RESOURCES_DIR}/data/samples/run_2/Run_SN_Crate_Test_Calo_And_Tracker_Data_2_21_2017_Ascii.dat");
     // reader.set_input_filename("${FECOM_RESOURCES_DIR}/output_test/test_generate_fake_hit_10_events.dat");
     reader.initialize();
     fecom::run_header header;
@@ -117,9 +117,9 @@ int main(int /*argc_*/, char ** /*argv_*/)
     reader.reset();
 
     // Build all tracker hit after the build of all commissioning event :
-    std::string input_tracker_mapping_file("${FECOM_RESOURCES_DIR}/data/samples/run_1/mapping_tracker.csv");
+    std::string input_tracker_mapping_file("${FECOM_RESOURCES_DIR}/data/samples/run_2/mapping_tracker.csv");
     datatools::fetch_path_with_env(input_tracker_mapping_file);
-    std::string input_calo_mapping_file("${FECOM_RESOURCES_DIR}/data/samples/run_1/mapping_calo.csv");
+    std::string input_calo_mapping_file("${FECOM_RESOURCES_DIR}/data/samples/run_2/mapping_calo.csv");
     datatools::fetch_path_with_env(input_calo_mapping_file);
 
     fecom::channel_mapping my_channel_mapping;
@@ -151,7 +151,7 @@ int main(int /*argc_*/, char ** /*argv_*/)
 	  }
       }
 
-    std::string output_filename("${FECOM_RESOURCES_DIR}/data/samples/run_1/Run_SN_Crate_Test_Tracker_And_Calo_Data_2_17_2017_Ascii.data.bz2");
+    std::string output_filename("${FECOM_RESOURCES_DIR}/data/samples/run_2/Run_SN_Crate_Test_Calo_And_Tracker_Data_2_21_2017_Ascii.data.bz2");
     // std::string output_filename = "${FECOM_RESOURCES_DIR}/output_test/commissioning_event_10_events.data.bz2";
     datatools::fetch_path_with_env(output_filename);
     {

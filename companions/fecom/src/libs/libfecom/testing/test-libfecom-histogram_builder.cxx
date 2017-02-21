@@ -27,7 +27,7 @@ int main(int /*argc_*/, char ** /*argv_*/)
   try {
     DT_LOG_DEBUG(logging, "Entering test-libfecom-event_builder.cxx...");
 
-    std::string input_filename("${FECOM_RESOURCES_DIR}/data/samples/run_1/Run_SN_Crate_Test_Tracker_And_Calo_Data_2_17_2017_Ascii.data.bz2");
+    std::string input_filename("${FECOM_RESOURCES_DIR}/data/samples/run_2/Run_SN_Crate_Test_Calo_And_Tracker_Data_2_21_2017_Ascii.data.bz2");
     // std::string input_filename("${FECOM_RESOURCES_DIR}/data/samples/fake_run/calo_fake_tracker_hits_1.data.bz2");
     // std::string input_filename = "${FECOM_RESOURCES_DIR}/output_test/commissioning_event_10_events.data.bz2";
     datatools::fetch_path_with_env(input_filename);    // Deserialization of data :
@@ -44,10 +44,10 @@ int main(int /*argc_*/, char ** /*argv_*/)
     std::clog << "Size of deserialized commissioning event data = [" << deserialize_commissioning_event_collection.get_commissioning_event_collection().size() << "]" << std::endl;
 
 
-    std::string input_tracker_mapping_file("${FECOM_RESOURCES_DIR}/data/samples/run_1/mapping_tracker.csv");
+    std::string input_tracker_mapping_file("${FECOM_RESOURCES_DIR}/data/samples/run_2/mapping_tracker.csv");
     datatools::fetch_path_with_env(input_tracker_mapping_file);
 
-    std::string input_calo_mapping_file("${FECOM_RESOURCES_DIR}/data/samples/run_1/mapping_calo.csv");
+    std::string input_calo_mapping_file("${FECOM_RESOURCES_DIR}/data/samples/run_2/mapping_calo.csv");
     datatools::fetch_path_with_env(input_calo_mapping_file);
 
 
@@ -56,7 +56,6 @@ int main(int /*argc_*/, char ** /*argv_*/)
     my_channel_mapping.build_tracker_mapping_from_file(input_tracker_mapping_file);
     my_channel_mapping.build_calo_mapping_from_file(input_calo_mapping_file);
     my_channel_mapping.initialize();
-
 
     std::string string_buffer = "${FECOM_RESOURCES_DIR}/output_test/test_histograms_main.root";
     datatools::fetch_path_with_env(string_buffer);

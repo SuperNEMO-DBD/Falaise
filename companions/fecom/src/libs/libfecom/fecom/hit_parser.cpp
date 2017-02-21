@@ -85,14 +85,14 @@ namespace fecom {
                              end_iter,
                              //  Begin grammar
                              (
-                              qi::lit("===HIT")
+                              qi::lit("= HIT")
 			      >> qi::uint_
-                              >> "==="
+                              >> "="
                               >> (+~qi::char_("="))
-                              >> "==="
-			      >> qi::lit("TRIGGER_ID")
+                              >> "="
+			      >> qi::lit("TRIG_ID")
 			      >> qi::uint_
-			      >> "==="
+			      >> "="
 			      ),
                              //  End grammar
                              qi::space,
@@ -103,10 +103,10 @@ namespace fecom {
       DT_LOG_DEBUG(logging, "_hit_id_ = " << _hit_id_);
       DT_LOG_DEBUG(logging, "hit_type = " << hit_type);
       DT_LOG_DEBUG(logging, "_trigger_id_ = " << _trigger_id_);
-      DT_THROW_IF(hit_type != "CALO_HIT" && hit_type != "TRACKER_HIT", std::logic_error, "Invalid hit type label '" << hit_type << "'!");
+      DT_THROW_IF(hit_type != "CALO" && hit_type != "TRACKER", std::logic_error, "Invalid hit type label '" << hit_type << "'!");
 
-      if (hit_type == "CALO_HIT") _hit_mode_type_ = base_hit::SIG_CALORIMETER;
-      else if (hit_type == "TRACKER_HIT") _hit_mode_type_ = base_hit::SIG_TRACKER;
+      if (hit_type == "CALO") _hit_mode_type_ = base_hit::SIG_CALORIMETER;
+      else if (hit_type == "TRACKER") _hit_mode_type_ = base_hit::SIG_TRACKER;
     }
 
 

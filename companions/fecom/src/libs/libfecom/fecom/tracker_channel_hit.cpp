@@ -44,6 +44,7 @@ namespace fecom {
   {
     event_id = 0xFFFF;
     timestamp_type = "INVALID";
+    timestamp_time_ns = 0;
     reset_timestamp();
     associated = false;
     return;
@@ -52,6 +53,7 @@ namespace fecom {
   void tracker_channel_hit::reset_timestamp()
   {
     timestamp_value = tracker_constants::INVALID_TIME;
+    timestamp_time_ns = 0;
     return;
   }
 
@@ -70,6 +72,9 @@ namespace fecom {
 
     out_ << indent_ << io::tag()
          << "Timestamp value           : " << (int) timestamp_value << std::endl;
+
+    out_ << indent_ << io::tag()
+         << "Timestamp time (in ns     : " << timestamp_time_ns << std::endl;
 
     out_ << indent_ << io::inherit_last_tag(inherit_)
          << "Validity                  : " << std::boolalpha << is_valid() << std::endl;
