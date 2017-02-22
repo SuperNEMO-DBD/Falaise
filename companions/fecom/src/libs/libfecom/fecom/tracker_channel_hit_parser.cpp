@@ -87,7 +87,7 @@ namespace fecom {
     			    >> qi::lit("Feast") >> qi::uint_[boost::phoenix::ref(feast_id) = boost::spirit::qi::_1]
     			    >> qi::lit("Ch")    >> qi::uint_[boost::phoenix::ref(channel_id) = boost::spirit::qi::_1]
 			    >> (qi::string("AN") |
-				qi::string("CT"))[boost::phoenix::ref(channel_type) = boost::spirit::qi::_1]
+				qi::string("CA"))[boost::phoenix::ref(channel_type) = boost::spirit::qi::_1]
 			    >> (qi::string("R0") |
 				qi::string("R1") |
 				qi::string("R2") |
@@ -114,7 +114,7 @@ namespace fecom {
     if (channel_type == "AN") {
       hit_.electronic_id.set_type(tracker_constants::ANODIC_CHANNEL_TYPE);
     }
-    else if (channel_type == "CT") {
+    else if (channel_type == "CA") {
       hit_.electronic_id.set_type(tracker_constants::CATHODIC_CHANNEL_TYPE);
     }
 

@@ -179,6 +179,7 @@ namespace fecom {
   {
     _my_channel_mapping_ = nullptr;
     _trigger_id_ = 0xFFFFFFFF;
+    _last_time_in_ns_added_ = -1;
     _calo_hit_collection_.clear();
     _tracker_channel_hit_collection_.clear();
     _tracker_hit_collection_.clear();
@@ -196,6 +197,9 @@ namespace fecom {
 
     out_ << indent_ << io::tag()
 	 << "Trigger ID : " << _trigger_id_ << std::endl;
+
+    out_ << indent_ << io::tag()
+	 << "Last time added in ns    : " << _last_time_in_ns_added_ << std::endl;
 
     out_ << indent_ << io::inherit_last_tag(inherit_)
 	 << "Calo hit collection size : " << _calo_hit_collection_.size() << std::endl;

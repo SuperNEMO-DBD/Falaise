@@ -44,21 +44,22 @@ histos to do :
 
 * Calorimeter (trigger):
 
-2D Hit distribution
-Rate 1 graph 13 OMs courbe (1 colonne) Ncoups vs time
-Distribution en charge totale
-Distribution en charge trig
-Distribution peak total
-Distribution peak trig
+OK : 2D Hit distribution
+OK : Rate 1 graph 13 OMs courbe (1 colonne) Ncoups vs time
+OK : Distribution en charge totale / calo
+OK : Distribution en charge trig / calo
+OK : Distribution peak total / calo
+OK : Distribution peak trig / calo
 Baseline ?
-Distribution charge all calos
-Distrib charge if 2 calos
-Delta time if 2 calos
+OK : Distribution charge all calos
+OK : Distrib charge if 2 calos
+OK : Delta time if 2 calos
 
 * Tracker :
 
-Rate missing top cathode
-Rate missing bot cathode
+OK : Rate missing top cathode
+OK : Rate missing bot cathode
+
 2D : Zreco / geiger
 
 * Calorimeter + tracker :

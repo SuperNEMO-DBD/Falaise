@@ -80,6 +80,11 @@ namespace fecom {
                            const std::string & indent_ = "",
                            bool inherit_ = false) const;
 
+	public :
+
+		// Management :
+		mutable uint64_t _last_time_in_ns_added_; //!< Last time in ns added in the commissioning event (calo or tracker channel)
+
   private:
 
     void _reset_();
@@ -91,7 +96,6 @@ namespace fecom {
     uint32_t _trigger_id_; ///< Hit trigger ID
 		calo_hit_collection _calo_hit_collection_; ///< Calo hit collection for a trigger id
 		tracker_channel_hit_collection _tracker_channel_hit_collection_; ///< Tracker hit collection for a trigger id
-
 		tracker_hit_collection _tracker_hit_collection_; ///< Tracker hit collection for a trigger id
 
 
