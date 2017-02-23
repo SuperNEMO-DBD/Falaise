@@ -129,84 +129,77 @@ int main(int argc_, char ** argv_)
 
     /************************************** HISTOS DECLARATION ****************************************************************/
 
+    /************* Calo root file histos : *************/
     std::string string_buffer = "";
-    TH1F * raw_charge_trig_calo_channel_TH1F[fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN];
-    TH1F * raw_peak_calo_channel_TH1F[fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN];
+    TH1F * calo_raw_charge_trig_row_TH1F[fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN];
+    TH1F * calo_raw_peak_trig_row_TH1F[fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN];
+    TH1F * calo_raw_charge_no_trig_row_TH1F[fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN];
+    TH1F * calo_raw_baseline_no_trig_row_TH1F[fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN];
+    TH1F * calo_time_distribution_row_TH1F[fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN];
 
-    TH1F * raw_charge_baseline_calo_channel_TH1F[fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN];
-    TH1F * raw_baseline_calo_channel_TH1F[fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN];
-    TH1F * calo_time_distribution_TH1F[fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN];
+    for (unsigned int icalo = 0; icalo < fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN; icalo++) {
+      string_buffer = "calo_raw_charge_trig_distribution_row_" + std::to_string(icalo);
+      calo_raw_charge_trig_row_TH1F[icalo] = new TH1F(string_buffer.c_str(),
+						      Form("Calorimeter raw charge if trigger row %i", icalo),
+						      1000, 0, 40000);
 
-    for (unsigned int icalo_channel = 0; icalo_channel < fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN; icalo_channel++) {
-      string_buffer = "raw_charge_trig_calo_channel_" + std::to_string(icalo_channel);
-      raw_charge_trig_calo_channel_TH1F[icalo_channel] = new TH1F(string_buffer.c_str(),
-								  Form("Raw charge triggered calorimeter %i", icalo_channel),
-								  1000, 0, 40000);
+      string_buffer = "calo_raw_peak_trig_distribution_row_" + std::to_string(icalo);
+      calo_raw_peak_trig_row_TH1F[icalo] = new TH1F(string_buffer.c_str(),
+						    Form("Calorimeter raw peak if trigger row %i", icalo),
+						    1000, 0, 10000);
 
-      string_buffer = "raw_peak_calo_channel_" + std::to_string(icalo_channel);
-      raw_peak_calo_channel_TH1F[icalo_channel] = new TH1F(string_buffer.c_str(),
-							   Form("Raw peak calorimeter %i", icalo_channel),
-							   1000, 0, 10000);
-
-      string_buffer = "raw_charge_baseline_calo_channel_" + std::to_string(icalo_channel);
-      raw_charge_baseline_calo_channel_TH1F[icalo_channel] = new TH1F(string_buffer.c_str(),
-								      Form("Raw charge baseline calorimeter %i", icalo_channel),
-								      100, 0, 2000);
+      string_buffer = "calo_raw_charge_no_trig_distribution_row_" + std::to_string(icalo);
+      calo_raw_charge_no_trig_row_TH1F[icalo] = new TH1F(string_buffer.c_str(),
+							    Form("Calorimeter raw charge if no trigger row %i", icalo),
+							    100, 0, 2000);
 
       // To see with Jihanne : what is RawBaseline ?
-      string_buffer = "raw_baseline_calo_channel_" + std::to_string(icalo_channel);
-      raw_baseline_calo_channel_TH1F[icalo_channel] = new TH1F(string_buffer.c_str(),
-							       Form("Raw baseline calorimeter %i", icalo_channel),
-							       50, 0, 100);
+      string_buffer = "calo_raw_baseline_no_trig_distribution_row_" + std::to_string(icalo);
+      calo_raw_baseline_no_trig_row_TH1F[icalo] = new TH1F(string_buffer.c_str(),
+							   Form("Calorimeter raw baseline if no trigger row %i", icalo),
+							   50, 0, 100);
 
-      string_buffer = "calo_time_distribution_" + std::to_string(icalo_channel);
-      calo_time_distribution_TH1F[icalo_channel] = new TH1F(string_buffer.c_str(),
-							    Form("Calo time distribution (N / seconds) calo %i", icalo_channel),
-							    50, 0, 50);
+      string_buffer = "calo_time_distribution_row_" + std::to_string(icalo);
+      calo_time_distribution_row_TH1F[icalo] = new TH1F(string_buffer.c_str(),
+							Form("Calo time distribution (N / seconds) row %i", icalo),
+							50, 0, 50);
     }
 
-    string_buffer = "calo_raw_total_charge_TH1F";
+    /************* Main root file histos : *************/
+    string_buffer = "calo_raw_total_charge_distribution_TH1F";
     TH1F * calo_raw_total_charge_TH1F = new TH1F(string_buffer.c_str(),
 						 Form("Distribution total raw charge calo"),
 						 1000, 0, 100000);
 
-    string_buffer = "calo_raw_charge_trig_TH1F";
+    string_buffer = "calo_raw_charge_trig_distribution_TH1F";
     TH1F * calo_raw_charge_trig_TH1F = new TH1F(string_buffer.c_str(),
 						Form("Distribution triger raw charge calo (>HT)"),
 						1000, 0, 100000);
 
-    string_buffer = "calo_raw_charge_two_calos_TH1F";
+    string_buffer = "calo_raw_charge_distribution_two_calos_TH1F";
     TH1F * calo_raw_charge_two_calos_TH1F = new TH1F(string_buffer.c_str(),
 						     Form("Distribution raw charge if 2 calos (>HT)"),
 						     1000, 0, 100000);
 
-    string_buffer = "calo_delta_time_two_calos_TH1F";
+    string_buffer = "calo_delta_time_distribution_two_calos_TH1F";
     TH1F * calo_delta_time_two_calos_TH1F = new TH1F(string_buffer.c_str(),
 						     Form("Distribution delta time if 2 calos (>HT)"),
 						     100, 0, 10);
 
-    string_buffer = "calo_raw_total_peak_TH1F";
+    string_buffer = "calo_raw_total_peak_distribution_TH1F";
     TH1F * calo_raw_total_peak_TH1F = new TH1F(string_buffer.c_str(),
 					       Form("Distribution total raw peak calo"),
 					       1000, 0, 30000);
 
-    string_buffer = "calo_raw_peak_two_calos_TH1F";
+    string_buffer = "calo_raw_peak_two_calos_distribution_TH1F";
     TH1F * calo_raw_peak_two_calos_TH1F = new TH1F(string_buffer.c_str(),
 						   Form("Distribution raw peak if 2 calos (>HT)"),
 						   1000, 0, 30000);
 
-    string_buffer = "calo_raw_peak_trig_TH1F";
+    string_buffer = "calo_raw_peak_trig_distribution_TH1F";
     TH1F * calo_raw_peak_trig_TH1F = new TH1F(string_buffer.c_str(),
 					      Form("Distribution triger raw peak calo"),
 					      1000, 0, 30000);
-
-
-
-    // string_buffer = "hit_calo_count_TH2F";
-    // TH2F * hit_calo_count_TH2F = new TH2F(string_buffer.c_str(),
-    // 					  Form("Hit Calo distribution count"),
-    // 					  20, 0, 20,
-    // 					  14, 0, 14);
 
     string_buffer = "hit_calo_trigger_count_TH2F";
     TH2F * hit_calo_trigger_count_TH2F = new TH2F(string_buffer.c_str(),
@@ -215,7 +208,7 @@ int main(int argc_, char ** argv_)
 						  14, 0, 14);
 
 
-    string_buffer = "number_of_calos_TH1F";
+    string_buffer = "number_of_calos_distribution_TH1F";
     TH1F * number_of_calos_TH1F = new TH1F(string_buffer.c_str(),
 					   Form("Distribution of calo (> HT) per event"),
 					   13, 0, 13);
@@ -233,23 +226,23 @@ int main(int argc_, char ** argv_)
     	  }
       }
 
-    string_buffer = "number_of_tracker_TH1F";
+    string_buffer = "number_of_tracker_distribution_TH1F";
     TH1F * number_of_tracker_TH1F = new TH1F(string_buffer.c_str(),
 					     Form("Distribution of tracker cell hit per event"),
 					     36, 0, 36);
 
-    string_buffer = "number_of_tracker_1_calo_TH1F";
+    string_buffer = "number_of_tracker_1_calo_distribution_TH1F";
     TH1F * number_of_tracker_1_calo_TH1F = new TH1F(string_buffer.c_str(),
 						    Form("Distribution of tracker cell hit per event if 1 calo trigger"),
 						    36, 0, 36);
 
-    string_buffer = "number_of_tracker_2_calos_TH1F";
+    string_buffer = "number_of_tracker_2_calos_distribution_TH1F";
     TH1F * number_of_tracker_2_calos_TH1F = new TH1F(string_buffer.c_str(),
 						     Form("Distribution of tracker cell hit per event if 2 calos trigger"),
 						     36, 0, 36);
 
 
-    string_buffer = "number_of_tracker_3p_calos_TH1F";
+    string_buffer = "number_of_tracker_3p_calos_distribution_TH1F";
     TH1F * number_of_tracker_3p_calos_TH1F = new TH1F(string_buffer.c_str(),
 						      Form("Distribution of tracker cell hit per event if 3+ calos trigger"),
 						      36, 0, 36);
@@ -295,8 +288,8 @@ int main(int argc_, char ** argv_)
 							5, 0, 5,
 							10, 0, 10);
 
-    string_buffer = "tracker_longitudinal_position_mean_all_cells_TH1F";
-    TH1F * tracker_longitudinal_position_mean_all_cells_TH1F = new TH1F(string_buffer.c_str(),
+    string_buffer = "tracker_longitudinal_position_distribution_all_cells_TH1F";
+    TH1F * tracker_longitudinal_position_distribution_all_cells_TH1F = new TH1F(string_buffer.c_str(),
 									Form("Hit tracker Zrec longitudinal mean all cells"),
 									300, -1500, 1500);
     /*************************************************************************************************************************/
@@ -311,14 +304,13 @@ int main(int argc_, char ** argv_)
 	  fecom::commissioning_event deserialized_com_event;
 	  deserializer.load(deserialized_com_event);
 
-	  DT_LOG_NOTICE(logging, "Deserialized com event #" << event_counter);
+	  DT_LOG_DEBUG(logging, "Deserialized com event #" << event_counter);
 	  // deserialized_com_event.tree_dump(std::clog, "Deserialized commissioning event ");
 
-	  if (is_display) std::clog << "DEBUG : TEST HISTOGRAM BUILDER : TRIGGER_ID #" << deserialized_com_event.get_trigger_id() << std::endl;
+	  DT_LOG_DEBUG(logging, "Main histogram builder : Trigger ID #" << deserialized_com_event.get_trigger_id());
+	  DT_LOG_DEBUG(logging, "Size of calo hit in the event : " << deserialized_com_event.get_calo_hit_collection().size());
 
-	  if (is_display) std::clog << "Size of calo hit in the event : " << deserialized_com_event.get_calo_hit_collection().size() << std::endl;
 	  std::size_t chit_counter = 0;
-
 	  std::size_t calo_triggered = 0;
 
 	  uint64_t total_charge = 0;
@@ -358,12 +350,13 @@ int main(int argc_, char ** argv_)
 		  total_peak_if_trig += raw_peak;
 
 		  // Fill calo trigger histo
-		  hit_calo_trigger_count_TH2F->Fill(column, row);
-		  raw_charge_trig_calo_channel_TH1F[row]->Fill(raw_charge);
-		  raw_peak_calo_channel_TH1F[row]->Fill(raw_peak);
+		  calo_raw_charge_trig_row_TH1F[row]->Fill(raw_charge);
+		  calo_raw_peak_trig_row_TH1F[row]->Fill(raw_peak);
 
 		  double calo_time_in_ns = it_chit -> tdc_ns * 1e-9;
-		  calo_time_distribution_TH1F[row]->Fill(calo_time_in_ns);
+		  calo_time_distribution_row_TH1F[row]->Fill(calo_time_in_ns);
+
+		  hit_calo_trigger_count_TH2F->Fill(column, row);
 
 		  if (calo_triggered == 0) time_calo_1 = calo_time_in_ns;
 		  else if (calo_triggered == 1) time_calo_2 = calo_time_in_ns;
@@ -373,14 +366,14 @@ int main(int argc_, char ** argv_)
 	      else
 		{
 		  // Fill calo baseline histos
-		  raw_baseline_calo_channel_TH1F[row]->Fill(raw_baseline);
-		  raw_charge_baseline_calo_channel_TH1F[row]->Fill(raw_charge);
+		  calo_raw_charge_no_trig_row_TH1F[row]->Fill(raw_charge);
+		  calo_raw_baseline_no_trig_row_TH1F[row]->Fill(raw_baseline);
 		}
 	      chit_counter++;
 	    }
 	  number_of_calos_TH1F->Fill(calo_triggered);
 
-	  if (is_display) std::clog << "Size of tracker hit in the event : " << deserialized_com_event.get_tracker_hit_collection().size() << std::endl;
+	  DT_LOG_DEBUG(logging, "Size of tracker hit in the event : " << deserialized_com_event.get_tracker_hit_collection().size());
 	  std::size_t thit_counter = 0;
 
 	  std::size_t tracker_triggered = 0;
@@ -435,10 +428,10 @@ int main(int argc_, char ** argv_)
 		  // See Jihanne for cathodic register in datas. R5 / R6
 		  double z_rec = (fecom::tracker_constants::geiger_cell_Leff() / (CLHEP::mm * 2)) * (int(bot_cathode_time - top_cathode_time)) / (bot_cathode_time + top_cathode_time);
 		  // double z_rec = -1;
-		  tracker_longitudinal_position_mean_all_cells_TH1F->Fill(z_rec);
+		  tracker_longitudinal_position_distribution_all_cells_TH1F->Fill(z_rec);
 
-		 if (is_display) std::clog << "DEBUG : Time top cathode = " << top_cathode_time << " Time bot cathode = " <<  bot_cathode_time<< std::endl;
-		 if (is_display) std::clog << "DEBUG : Z_REC = " << z_rec << std::endl;
+		  DT_LOG_DEBUG(logging, "Time top cathode = " << top_cathode_time << " Time bot cathode = " <<  bot_cathode_time);
+		  DT_LOG_DEBUG(logging, "Z_Reco = " << z_rec << " mm");
 		}
 
 	      double anodic_t0_ns = -1;
@@ -491,7 +484,7 @@ int main(int argc_, char ** argv_)
 	  else {}
 
 	  if (is_display) {
-	    std::clog << "Display tracker event :" << std::endl;
+	    std::clog << "Display tracker event #" << deserialized_com_event.get_trigger_id() << std::endl;
 	    std::clog << "L |[CALO]" << std::endl;
 	    std::clog << "- |      " << std::endl;
 	    for (unsigned int ilayer = fecom::tracker_constants::NUMBER_OF_LAYERS - 1; ilayer != (unsigned) 0-1; ilayer--) {
@@ -513,7 +506,6 @@ int main(int argc_, char ** argv_)
 
     // Fill main ROOT file :
     main_root_file->cd();
-    // hit_calo_count_TH2F->Write();
     number_of_calos_TH1F->Write();
     number_of_tracker_TH1F->Write();
     number_of_tracker_1_calo_TH1F->Write();
@@ -532,24 +524,23 @@ int main(int argc_, char ** argv_)
     hit_tracker_count_if_1_calos_TH2F->Write();
     hit_tracker_count_if_2_calos_TH2F->Write();
     hit_tracker_count_if_3p_calos_TH2F->Write();
-    tracker_longitudinal_position_mean_all_cells_TH1F->Write();
+    tracker_longitudinal_position_distribution_all_cells_TH1F->Write();
     tracker_bot_cathode_efficiency_TH2F->Scale(100./event_counter);
     tracker_bot_cathode_efficiency_TH2F->Write();
     tracker_top_cathode_efficiency_TH2F->Scale(100./event_counter);
     tracker_top_cathode_efficiency_TH2F->Write();
 
-
     main_root_file->Close();
 
     // Fill calo ROOT file :
     calo_root_file->cd();
-    for (unsigned int icalo_channel = 0; icalo_channel < fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN; icalo_channel++)
+    for (unsigned int icalo = 0; icalo < fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN; icalo++)
       {
-	raw_charge_trig_calo_channel_TH1F[icalo_channel]->Write();
-	raw_peak_calo_channel_TH1F[icalo_channel]->Write();
-	raw_charge_baseline_calo_channel_TH1F[icalo_channel]->Write();
-	raw_baseline_calo_channel_TH1F[icalo_channel]->Write();
-	calo_time_distribution_TH1F[icalo_channel]->Write();
+	calo_raw_charge_trig_row_TH1F[icalo]->Write();
+	calo_raw_peak_trig_row_TH1F[icalo]->Write();
+	calo_raw_charge_no_trig_row_TH1F[icalo]->Write();
+	calo_raw_baseline_no_trig_row_TH1F[icalo]->Write();
+	calo_time_distribution_row_TH1F[icalo]->Write();
       }
     calo_root_file->Close();
 
@@ -565,9 +556,11 @@ int main(int argc_, char ** argv_)
     tracker_root_file->Close();
 
     DT_LOG_INFORMATION(logging, "Exiting main_histogram_builder.cxx...");
+    DT_LOG_INFORMATION(logging, "EXIT_STATUS : SUCCESS");
 
   } catch (std::exception & error) {
     std::cerr << "error: " << error.what() << std::endl;
+    DT_LOG_FATAL(logging, "EXIT_STATUS : FAILURE");
     return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;

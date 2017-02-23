@@ -60,7 +60,7 @@ OK : Delta time if 2 calos
 OK : Rate missing top cathode
 OK : Rate missing bot cathode
 
-2D : Zreco / geiger
+Seems OK :  2D : Zreco / geiger
 
 * Calorimeter + tracker :
 Ncoups assoc track / calo

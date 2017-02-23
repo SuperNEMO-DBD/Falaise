@@ -265,9 +265,11 @@ int main(int argc_, char ** argv_)
     reader.reset();
 
     DT_LOG_INFORMATION(logging, "Exiting main_decoder_serializer.cxx...");
+    DT_LOG_INFORMATION(logging, "EXIT_STATUS : SUCCESS");
 
   } catch (std::exception & error) {
     std::cerr << "error: " << error.what() << std::endl;
+    DT_LOG_FATAL(logging, "EXIT_STATUS : FAILURE");
     return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;
