@@ -45,5 +45,8 @@ file(RELATIVE_PATH WCTOOLS_CMAKEDIR_TO_INCLUDEDIR "${CMAKE_INSTALL_FULL_CMAKEDIR
 message(STATUS "Adding directory 'src'...")
 add_subdirectory(src)
 
+message(STATUS "Adding directory 'programs'...")
+add_subdirectory(programs)
+
 message(STATUS "The end.")
 # -

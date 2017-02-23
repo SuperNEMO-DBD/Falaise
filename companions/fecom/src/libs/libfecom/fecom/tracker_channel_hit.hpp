@@ -100,8 +100,6 @@ namespace fecom {
 		// uint16_t channel;  ///< Channel (0..15)
     // channelmode_type channel_type; ///< Channel type (anodic || cathodic)
 
-    uint16_t event_id; ///< Debug counter (0..255)
-
     std::string timestamp_type;    ///< Type of the timestamp (t0..t6)
 
     // Data :

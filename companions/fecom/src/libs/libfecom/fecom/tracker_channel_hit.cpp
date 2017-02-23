@@ -42,7 +42,6 @@ namespace fecom {
 
   void tracker_channel_hit::_reset_()
   {
-    event_id = 0xFFFF;
     timestamp_type = "INVALID";
     timestamp_time_ns = 0;
     reset_timestamp();
@@ -63,9 +62,6 @@ namespace fecom {
 			      bool inherit_) const
   {
     this->base_hit::tree_dump(out_, title_, indent_, true);
-
-    out_ << indent_ << io::tag()
-         << "Event ID                  : " << (int) event_id << std::endl;
 
     out_ << indent_ << io::tag()
          << "Timestamp type            : " << (std::string) timestamp_type << std::endl;

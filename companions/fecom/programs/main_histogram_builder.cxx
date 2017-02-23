@@ -1,4 +1,3 @@
-// Standard library:
 #include <cstdlib>
 #include <string>
 #include <iostream>
@@ -21,24 +20,116 @@
 #include "TH2F.h"
 
 
-int main(int /*argc_*/, char ** /*argv_*/)
+int main(int argc_, char ** argv_)
 {
-  datatools::logger::priority logging = datatools::logger::PRIO_DEBUG;
+  // Parsing arguments
+  int iarg = 1;
+  std::string input_filename = "";
+  std::string output_path = "";
+  bool is_display      = false;
+  bool is_help         = false;
+
+  while (iarg < argc_) {
+    std::string arg = argv_[iarg];
+
+    if (arg == "-i" || arg == "--input") {
+      input_filename = argv_[++iarg];
+    }
+    else if (arg == "-op" || arg == "--output-path") {
+      output_path = argv_[++iarg];
+    }
+
+    else if (arg == "-d" || arg == "--display") {
+      is_display = true;
+    }
+
+    else if (arg =="-h" || arg == "--help") {
+      is_help = true;
+    }
+
+    else {
+      std::cerr << "Unrecognised argument" << std::endl;
+      is_help = true;
+    }
+
+    iarg++;
+  }
+
+  if (is_help)
+    {
+      std::cerr << std::endl << "Usage :" << std::endl << std::endl
+		<< "$ BuildProducts/fecom_programs/fecom_main_decoder_serializer [OPTIONS] [ARGUMENTS]" << std::endl << std::endl
+		<< "Allowed options: " << std::endl
+		<< "-h    [ --help ]           produce help message" << std::endl
+		<< "-i    [ --input ]          set an input file" << std::endl
+		<< "-op   [ --output path ]    set a path where all files are store" << std::endl
+		<< "-d    [ --display ]        display things for debug" << std::endl << std::endl;
+      return 0;
+    }
+
+  datatools::logger::priority logging;
+  if (is_display) logging = datatools::logger::PRIO_DEBUG;
+  else logging = datatools::logger::PRIO_INFORMATION;
+
   try {
-    DT_LOG_DEBUG(logging, "Entering test-libfecom-event_builder.cxx...");
+    DT_LOG_INFORMATION(logging, "Entering main_histogram_builder.cxx...");
 
-    std::string string_buffer = "${FECOM_RESOURCES_DIR}/output_test/test_histograms_main.root";
-    datatools::fetch_path_with_env(string_buffer);
-    TFile * main_root_file = new TFile(string_buffer.c_str(), "RECREATE");
+    // Set the input serialized file available after run  main_decoder_serializer.cxx :
+    if (input_filename.empty()) input_filename = "${FECOM_RESOURCES_DIR}/data/samples/fake_run/calo_fake_tracker_hits_1_serialized.data.bz2";
+    datatools::fetch_path_with_env(input_filename);
+    std::string input_file_basename = input_filename;
+    std::size_t found = 0;
+    found = input_file_basename.find_last_of("/");
+    input_file_basename.erase(0, found+1);
+    found = input_file_basename.find("_serialized.data.bz2");
+    input_file_basename.erase(found, input_file_basename.size());
+    std::string input_path = input_filename;
+    found = input_path.find_last_of("/");
+    input_path.erase(found+1, input_path.size());
 
-    string_buffer = "${FECOM_RESOURCES_DIR}/output_test/test_histograms_calo.root";
-    datatools::fetch_path_with_env(string_buffer);
-    TFile * calo_root_file = new TFile(string_buffer.c_str(), "RECREATE");
+    DT_LOG_INFORMATION(logging, "Input filename      : " + input_filename);
+    DT_LOG_INFORMATION(logging, "Input path          : " + input_path);
+    DT_LOG_INFORMATION(logging, "Input file basename : " + input_file_basename);
 
-    string_buffer = "${FECOM_RESOURCES_DIR}/output_test/test_histograms_tracker.root";
-    datatools::fetch_path_with_env(string_buffer);
-    TFile * tracker_root_file = new TFile(string_buffer.c_str(), "RECREATE");
+    DT_LOG_INFORMATION(logging, "Deserialization input file :" + input_filename);
+    datatools::data_reader deserializer(input_filename,
+					datatools::using_multiple_archives);
 
+    std::string input_tracker_mapping_file = input_path + "mapping_tracker.csv";
+    datatools::fetch_path_with_env(input_tracker_mapping_file);
+
+    std::string input_calo_mapping_file = input_path + "mapping_calo.csv";
+    datatools::fetch_path_with_env(input_calo_mapping_file);
+
+    fecom::channel_mapping my_channel_mapping;
+    my_channel_mapping.build_tracker_mapping_from_file(input_tracker_mapping_file);
+    my_channel_mapping.build_calo_mapping_from_file(input_calo_mapping_file);
+    my_channel_mapping.initialize();
+
+    // Default output path in input path :
+    if (output_path.empty())
+      {
+	output_path = input_path;
+	DT_LOG_WARNING(logging, "The output path is empty, did you forget it in the option ? Default directory for output :" + output_path);
+      }
+    datatools::fetch_path_with_env(output_path);
+    DT_LOG_INFORMATION(logging, "Output path : " + output_path);
+
+    std::string output_root_filename = output_path + input_file_basename + "_main_histograms.root";
+    DT_LOG_INFORMATION(logging, "Output main root filename :" + output_root_filename);
+    TFile * main_root_file = new TFile(output_root_filename.c_str(), "RECREATE");
+
+    output_root_filename = output_path + input_file_basename + "_calo_histograms.root";
+    DT_LOG_INFORMATION(logging, "Output calo root filename :" + output_root_filename);
+    TFile * calo_root_file = new TFile(output_root_filename.c_str(), "RECREATE");
+
+    output_root_filename = output_path + input_file_basename + "_tracker_histograms.root";
+    DT_LOG_INFORMATION(logging, "Output tracker root filename :" + output_root_filename);
+    TFile * tracker_root_file = new TFile(output_root_filename.c_str(), "RECREATE");
+
+    /************************************** HISTOS DECLARATION ****************************************************************/
+
+    std::string string_buffer = "";
     TH1F * raw_charge_trig_calo_channel_TH1F[fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN];
     TH1F * raw_peak_calo_channel_TH1F[fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN];
 
@@ -186,54 +277,31 @@ int main(int /*argc_*/, char ** /*argv_*/)
     TH2F * hit_tracker_count_if_0_calos_TH2F = new TH2F(string_buffer.c_str(),
 							Form("Hit tracker GG cell count if 0 calos"),
 							5, 0, 5,
-							10, 0, 10);
+						       10, 0, 10);
 
     string_buffer = "hit_tracker_count_if_1_calos_TH2F";
     TH2F * hit_tracker_count_if_1_calos_TH2F = new TH2F(string_buffer.c_str(),
-							Form("Hit tracker GG cell count if 1 calos"),
-							5, 0, 5,
-							10, 0, 10);
+						       Form("Hit tracker GG cell count if 1 calos"),
+						       5, 0, 5,
+						       10, 0, 10);
     string_buffer = "hit_tracker_count_if_2_calos_TH2F";
     TH2F * hit_tracker_count_if_2_calos_TH2F = new TH2F(string_buffer.c_str(),
-							Form("Hit tracker GG cell count if 2 calos"),
-							5, 0, 5,
-							10, 0, 10);
+						       Form("Hit tracker GG cell count if 2 calos"),
+						       5, 0, 5,
+						       10, 0, 10);
     string_buffer = "hit_tracker_count_if_3p_calos_TH2F";
     TH2F * hit_tracker_count_if_3p_calos_TH2F = new TH2F(string_buffer.c_str(),
-							 Form("Hit tracker GG cell count if 3+ calos"),
-							 5, 0, 5,
-							 10, 0, 10);
+							Form("Hit tracker GG cell count if 3+ calos"),
+							5, 0, 5,
+							10, 0, 10);
 
     string_buffer = "tracker_longitudinal_position_mean_all_cells_TH1F";
     TH1F * tracker_longitudinal_position_mean_all_cells_TH1F = new TH1F(string_buffer.c_str(),
 									Form("Hit tracker Zrec longitudinal mean all cells"),
 									300, -1500, 1500);
-
-    std::string input_filename("${FECOM_RESOURCES_DIR}/data/samples/run_2/Run_SN_Crate_Test_Calo_And_Tracker_Data_2_21_2017_Ascii.data.bz2");
-    // std::string input_filename("${FECOM_RESOURCES_DIR}/data/samples/fake_run/calo_fake_tracker_hits_1.data.bz2");
-    // std::string input_filename = "${FECOM_RESOURCES_DIR}/output_test/commissioning_event_10_events.data.bz2";
-    datatools::fetch_path_with_env(input_filename);    // Deserialization of data :
-
-    DT_LOG_DEBUG(logging, "Deserialize the commissioning events file...");
-    datatools::data_reader deserializer(input_filename,
-					datatools::using_multiple_archives);
-
-
-    std::string input_tracker_mapping_file("${FECOM_RESOURCES_DIR}/data/samples/run_2/mapping_tracker.csv");
-    datatools::fetch_path_with_env(input_tracker_mapping_file);
-
-    std::string input_calo_mapping_file("${FECOM_RESOURCES_DIR}/data/samples/run_2/mapping_calo.csv");
-    datatools::fetch_path_with_env(input_calo_mapping_file);
-
-
-    // See if mapping is really useful ?
-    fecom::channel_mapping my_channel_mapping;
-    my_channel_mapping.build_tracker_mapping_from_file(input_tracker_mapping_file);
-    my_channel_mapping.build_calo_mapping_from_file(input_calo_mapping_file);
-    my_channel_mapping.initialize();
+    /*************************************************************************************************************************/
 
     std::size_t event_counter = 0;
-
     const double CLOCK_FREQUENCY = 80e6;
     const double CLOCK_TIME = 1 / CLOCK_FREQUENCY;
 
@@ -246,9 +314,9 @@ int main(int /*argc_*/, char ** /*argv_*/)
 	  DT_LOG_NOTICE(logging, "Deserialized com event #" << event_counter);
 	  // deserialized_com_event.tree_dump(std::clog, "Deserialized commissioning event ");
 
-	  std::clog << "DEBUG : TEST HISTOGRAM BUILDER : TRIGGER_ID #" << deserialized_com_event.get_trigger_id() << std::endl;
+	  if (is_display) std::clog << "DEBUG : TEST HISTOGRAM BUILDER : TRIGGER_ID #" << deserialized_com_event.get_trigger_id() << std::endl;
 
-	  std::clog << "Size of calo hit in the event : " << deserialized_com_event.get_calo_hit_collection().size() << std::endl;
+	  if (is_display) std::clog << "Size of calo hit in the event : " << deserialized_com_event.get_calo_hit_collection().size() << std::endl;
 	  std::size_t chit_counter = 0;
 
 	  std::size_t calo_triggered = 0;
@@ -312,7 +380,7 @@ int main(int /*argc_*/, char ** /*argv_*/)
 	    }
 	  number_of_calos_TH1F->Fill(calo_triggered);
 
-	  std::clog << "Size of tracker hit in the event : " << deserialized_com_event.get_tracker_hit_collection().size() << std::endl;
+	  if (is_display) std::clog << "Size of tracker hit in the event : " << deserialized_com_event.get_tracker_hit_collection().size() << std::endl;
 	  std::size_t thit_counter = 0;
 
 	  std::size_t tracker_triggered = 0;
@@ -369,8 +437,8 @@ int main(int /*argc_*/, char ** /*argv_*/)
 		  // double z_rec = -1;
 		  tracker_longitudinal_position_mean_all_cells_TH1F->Fill(z_rec);
 
-		  std::clog << "DEBUG : Time top cathode = " << top_cathode_time << " Time bot cathode = " <<  bot_cathode_time<< std::endl;
-		  std::clog << "DEBUG : Z_REC = " << z_rec << std::endl;
+		 if (is_display) std::clog << "DEBUG : Time top cathode = " << top_cathode_time << " Time bot cathode = " <<  bot_cathode_time<< std::endl;
+		 if (is_display) std::clog << "DEBUG : Z_REC = " << z_rec << std::endl;
 		}
 
 	      double anodic_t0_ns = -1;
@@ -422,18 +490,20 @@ int main(int /*argc_*/, char ** /*argv_*/)
 	    }
 	  else {}
 
-	  std::clog << "L |[CALO]" << std::endl;
-	  std::clog << "- |      " << std::endl;
-	  for (unsigned int ilayer = fecom::tracker_constants::NUMBER_OF_LAYERS - 1; ilayer != (unsigned) 0-1; ilayer--) {
-	    for (std::size_t irow = 0; irow < fecom::tracker_constants::NUMBER_OF_ROWS_PER_BOARD; irow++) {
-	      if (irow == 0) std::clog << ilayer << " | " << display_matrix[irow][ilayer];
-	      else std::clog << display_matrix[irow][ilayer];
+	  if (is_display) {
+	    std::clog << "Display tracker event :" << std::endl;
+	    std::clog << "L |[CALO]" << std::endl;
+	    std::clog << "- |      " << std::endl;
+	    for (unsigned int ilayer = fecom::tracker_constants::NUMBER_OF_LAYERS - 1; ilayer != (unsigned) 0-1; ilayer--) {
+	      for (std::size_t irow = 0; irow < fecom::tracker_constants::NUMBER_OF_ROWS_PER_BOARD; irow++) {
+		if (irow == 0) std::clog << ilayer << " | " << display_matrix[irow][ilayer];
+		else std::clog << display_matrix[irow][ilayer];
+	      }
+	      std::clog << std::endl;
 	    }
-	    std::clog << std::endl;
+	    std::clog << "------- tracker plate" << std::endl;
+	    std::clog << "    0123 row" << std::endl;
 	  }
-	  std::clog << "------- tracker plate" << std::endl;
-	  std::clog << "    0123 row" << std::endl;
-
 	  event_counter++;
 
 	} // end of if record tag is com event
@@ -494,7 +564,7 @@ int main(int /*argc_*/, char ** /*argv_*/)
       }
     tracker_root_file->Close();
 
-    DT_LOG_DEBUG(logging, "Exiting test-libfecom-histogram_builder.cxx...");
+    DT_LOG_INFORMATION(logging, "Exiting main_histogram_builder.cxx...");
 
   } catch (std::exception & error) {
     std::cerr << "error: " << error.what() << std::endl;
