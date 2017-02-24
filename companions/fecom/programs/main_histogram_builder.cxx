@@ -19,6 +19,12 @@
 #include "TH1F.h"
 #include "TH2F.h"
 
+void get_associated_calorimeter_for_a_zrec(double z_rec,
+					   std::vector<std::size_t> & associated_calos);
+
+void get_calo_position(std::size_t calo_number,
+		       double & z_begin,
+		       double & z_end);
 
 int main(int argc_, char ** argv_)
 {
@@ -253,6 +259,11 @@ int main(int argc_, char ** argv_)
 						   5, 0, 5,
 						   10, 0, 10);
 
+    string_buffer = "tracker_layer_distribution_TH1F";
+    TH1F * tracker_layer_distribution_TH1F = new TH1F(string_buffer.c_str(),
+						      Form("Tracker hit layers distribution"),
+						      11, 0, 11);
+
     string_buffer = "tracker_bot_cathode_efficiency_TH2F";
     TH2F * tracker_bot_cathode_efficiency_TH2F = new TH2F(string_buffer.c_str(),
 							  Form("Bottom cathode efficiency (in %%) "),
@@ -385,6 +396,10 @@ int main(int argc_, char ** argv_)
 	    }
 	  }
 
+	  std::bitset<fecom::tracker_constants::NUMBER_OF_LAYERS> tracker_layers_hit (0x0);
+
+	  std::vector<double> cells_last_layer_z_reco;
+
 	  for (auto it_thit = deserialized_com_event.get_tracker_hit_collection().begin();
 	       it_thit != deserialized_com_event.get_tracker_hit_collection().end();
 	       it_thit++)
@@ -394,6 +409,8 @@ int main(int argc_, char ** argv_)
 	      uint16_t row =  it_thit -> cell_geometric_id.get(fecom::tracker_constants::ROW_INDEX);
 	      // hit_tracker_channel_TH1F[layer][row]->Fill(1);
 	      display_matrix[row][layer] = '*';
+
+	      tracker_layers_hit.set(layer, true);
 
 	      hit_tracker_count_total_TH2F->Fill(row, layer);
 
@@ -431,7 +448,12 @@ int main(int argc_, char ** argv_)
 		  tracker_longitudinal_position_distribution_all_cells_TH1F->Fill(z_rec);
 
 		  DT_LOG_DEBUG(logging, "Time top cathode = " << top_cathode_time << " Time bot cathode = " <<  bot_cathode_time);
-		  DT_LOG_DEBUG(logging, "Z_Reco = " << z_rec << " mm");
+		  DT_LOG_DEBUG(logging, "Z_Reconstructed = " << z_rec << " mm");
+
+		  if (layer == fecom::tracker_constants::NUMBER_OF_LAYERS - 1)
+		    {
+		      cells_last_layer_z_reco.push_back(z_rec);
+		    }
 		}
 
 	      double anodic_t0_ns = -1;
@@ -458,6 +480,40 @@ int main(int argc_, char ** argv_)
 	      tracker_triggered++;
 	      thit_counter++;
 	    } // end of it_hit
+
+	  // If full track :
+	  if (tracker_layers_hit.count() == fecom::tracker_constants::NUMBER_OF_LAYERS)
+	    {
+	      DT_LOG_DEBUG(logging, "Vector size of last layer Z :" << cells_last_layer_z_reco.size());
+
+	      for (auto it_z_vector = cells_last_layer_z_reco.begin();
+		   it_z_vector != cells_last_layer_z_reco.end();
+		   it_z_vector++)
+		{
+		  std::vector<std::size_t> associated_calo_vector;
+
+		  get_associated_calorimeter_for_a_zrec(*it_z_vector,
+							associated_calo_vector);
+
+		  double first_calo_z_begin = 999999;
+		  double first_calo_z_end = 999999;
+		  get_calo_position(associated_calo_vector[0],
+				    first_calo_z_begin,
+				    first_calo_z_end);
+		  DT_LOG_DEBUG(logging, "Calo #" << associated_calo_vector[0] << " Zbegin = " << first_calo_z_begin << " Zend = " << first_calo_z_end);
+
+		  if (associated_calo_vector.size() == 2)
+		    {
+
+
+		    }
+
+		}
+
+	    }
+
+
+	  tracker_layer_distribution_TH1F->Fill(tracker_layers_hit.count());
 
 	  number_of_tracker_TH1F->Fill(tracker_triggered);
 
@@ -520,6 +576,7 @@ int main(int argc_, char ** argv_)
     calo_raw_peak_two_calos_TH1F->Write();
     calo_delta_time_two_calos_TH1F->Write();
     hit_tracker_count_total_TH2F->Write();
+    tracker_layer_distribution_TH1F->Write();
     hit_tracker_count_if_0_calos_TH2F->Write();
     hit_tracker_count_if_1_calos_TH2F->Write();
     hit_tracker_count_if_2_calos_TH2F->Write();
@@ -564,4 +621,67 @@ int main(int argc_, char ** argv_)
     return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;
+}
+
+
+void get_associated_calorimeter_for_a_zrec(double z_rec,
+					   std::vector<std::size_t> & associated_calos)
+{
+  // Z_rec in mm
+  const double om_size = 259; // mm
+
+  double om_fraction_incertitude_association = 0.15; // ex : 0.15 * 259 = +- 38.85 mm for calorimeter association
+
+  double calo_position_shifted = (z_rec + (om_size / 2)) / om_size;
+  double decimal_fraction =  std::abs(calo_position_shifted) - std::floor(std::abs(calo_position_shifted));
+
+  std::size_t first_associated_calo = 6 + std::floor(calo_position_shifted);
+
+  associated_calos.push_back(first_associated_calo);
+
+  if (z_rec >= 0)
+    {
+      if (decimal_fraction > 1 - om_fraction_incertitude_association)
+	{
+	  // Incertitude on calorimeter, add the next one (+1) in the potential associate calo
+	  std::size_t second_associated_calos = first_associated_calo + 1;
+	  associated_calos.push_back(second_associated_calos);
+	}
+      else if (decimal_fraction < om_fraction_incertitude_association)
+	{
+	  // Incertitude on calorimeter, add the previous one (-1) in the potential associate calo
+	  std::size_t second_associated_calos = first_associated_calo - 1;
+	  associated_calos.push_back(second_associated_calos);
+	}
+    }
+  else
+    {
+      if (decimal_fraction > 1 - om_fraction_incertitude_association)
+	{
+	  // Incertitude on calorimeter, add the previous one (-1) in the potential associate calo
+	  std::size_t second_associated_calos = first_associated_calo - 1;
+	  associated_calos.push_back(second_associated_calos);
+	}
+      else if (decimal_fraction < om_fraction_incertitude_association)
+	{
+	  // Incertitude on calorimeter, add the next one (+1) in the potential associate calo
+	  std::size_t second_associated_calos = first_associated_calo + 1;
+	  associated_calos.push_back(second_associated_calos);
+	}
+    }
+
+  return;
+}
+
+void get_calo_position(std::size_t calo_number,
+		       double & z_begin,
+		       double & z_end)
+{
+  const double om_size = 259; // mm
+  const double z_min = -((om_size / 2) + (om_size * 6));
+
+  z_begin = z_min + om_size * calo_number;
+  z_end = z_min + om_size * (calo_number + 1);
+
+  return;
 }
