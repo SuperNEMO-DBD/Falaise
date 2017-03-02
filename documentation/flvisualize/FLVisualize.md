@@ -27,69 +27,101 @@ You can get help on the options that can be passed to `flvisualize`
 by running it with the `-h` or `--help` options, e.g.
 
 ~~~~~
-snemo_event_browser -- A generic SuperNEMO event browser program
+flvisualize (3.0.0) : the SuperNEMO event display application
 
-Usage :
+Usage:
+  flvisualize [options]
 
-  ${SNVISUALIZATION_BIN_DIR}/snemo_event_browser [OPTIONS] [ARGUMENTS]
-
-Allowed options:
+General options:
   -h [ --help ]                         produce help message
-  -P [ --logging-priority ] arg (=notice)
+  --version                             print version number
+  -P [ --logging-priority ] level (=notice)
                                         set the logging priority threshold
-  -s [ --scale ] arg                    scale factor for computer screen
+  -l [ --load-dll ] library             set a DLL to be loaded.
+
+Browser options:
+  -s [ --scale ] value                  scale factor for computer screen
                                         (height/width)
-  -a [ --auto-reading-delay ] arg       automatic event reading delay in
+  -a [ --auto-reading-delay ] value     automatic event reading delay in
                                         seconds
-  --detector-config-file arg            set the path to the detector config
+  --detector-config-file file           set the path to the detector
+                                        configuration file
+  --style-config-file file              set the path to the style configuration
                                         file
-                                        default file is located at
-                                        '${SNGEOMETRY_DATA_DIR}/resources/setup
-                                        s/snemo/config_1.0/manager.conf'
-  --style-config-file arg               set the path to the style config file
-  --cut-config-file arg                 set the path to the cut config file
+  --cut-config-file file                set the path to the cut configuration
+                                        file
   --preload                             enable the load in memory of Boost
                                         archive files (working only with pure
-                                        'sng4' output)
-  -i [ --input-files ] arg              set an input file(s)
-  -l [ --load-dll ] arg                 set a DLL to be loaded.
+                                        'bxg4_production' output)
+  -i [ --input-files ] file             set an input file(s)
 
+View options:
+  --2d-display position (=left)         set 2D display position
+  --full-2d-view                        add a new tab with top/front/side 2D
+                                        view in one frame
+  --focus-on-roi                        focus views on the 'region-of-interest'
+  --show-simulated-vertex flag          show simulated vertex
+  --show-simulated-tracks flag          show simulated tracks
+  --show-simulated-hits flag            show simulated hits
+  --show-calibrated-hits flag           show calibrated hits
+  --show-calibrated-info flag           show calibrated info
+  --show-tracker-clustered-hits flag    show tracker clustered hits
+  --show-tracker-trajectories flag      show tracker trajectories
+  --show-particle-tracks flag           show particle tracks
 
-View options (arg is either true or false):
-  --2d-display arg (=left)          set 2D display position
-  --full-2d-view                    add a new tab with top/front/side 2D view
-                                    in one frame
-  --focus-on-roi                    focus views on the 'region-of-interest'
-  --show-simulated-vertex arg       show simulated vertex
-  --show-simulated-tracks arg       show simulated tracks
-  --show-simulated-hits arg         show simulated hits
-  --show-calibrated-hits arg        show calibrated hits
-  --show-calibrated-info arg        show calibrated info
-  --show-tracker-clustered-hits arg show tracker clustered hits
-  --show-tracker-trajectories arg   show tracker trajectories
-  --show-particle-tracks arg        show particle tracks
+Variants support:
+  --variant-config [file]               file from which to load the main
+                                        configuration of the variant repository
+  --variant-registry [rule]             rules for additional variant registries
+  --variant-registry-dependencies [rule]
+                                        dependencies for additional variant
+                                        registries
+  --variant-load [file]                 file from which to load a specific
+                                        variant profile at startup
+  --variant-load-no-unknown             do not ignore unknown registry sections
+                                        at variant profile loading
+  --variant-set [setting]               setting rules for variant parameters
+                                        applied at startup
+  --variant-gui                         launch the variant GUI editor at
+                                        startup
+  --variant-store [file]                file in which to store the effective
+                                        current variant profile
+  --variant-reporting [file]            file in which to print the variant
+                                        usage report
 
+Kernel options:
+  --datatools::logging level (=fatal)   Set the datatools kernel's logging
+                                        priority threshold.
+                                        Example :
+                                          --datatools::logging="trace"
+  --datatools::resource-path rule       Register a resource path mounted
+                                        through an identifier (library or
+                                        module name).
+                                        Example : Register the "path1/subdir1"
+                                        path as the root directory of the "foo"
+                                        library and the "path2/subdir2" path as
+                                        the root directory of the "bar"
+                                        software module:
+                                          --datatools::resource-path="foo@path1
+                                        /subdir1"
+                                          --datatools::resource-path="bar@path2
+                                        /subdir2"
 
-Examples :
+Examples:
 
  1) Using default configuration :
-    snemo_event_browser \
-         --input-file ${SNCORE_DATA_DIR}/resources/setups/snemo/samples/snemo_SD_CD_0.txt.gz
+    flvisualize \
+      --input-file <simulation/reconstruction file>
  2) Auto reading mode:
-    snemo_event_browser \
-         --verbose \
-         --auto-reading-delay 2 \
-         --input-file ${SNCORE_DATA_DIR}/resources/setups/snemo/samples/snemo_SD_0.txt.gz
- 3) Setting a special detector config file:
-    snemo_event_browser \
-         --detector-config-file ${SNGEOMETRY_DATA_DIR}/resources/setups/bipo3/config_1.0/manager.conf \
-         --style-config-file    ${SNVISUALIZATION_DATA_DIR}/resources/styles/bipo3_default.sty \
-         --input-file ${SNCORE_DATA_DIR}/resources/setups/snemo/samples/snemo_SD_0.txt.gz
- 4) Using default configuration (with preload of plain archived 'simulation_data' objects):
-    snemo_event_browser \
-         --verbose \
-         --preload \
-         --input-file plain_sng4_output.data.gz
+    flvisualize \
+      --verbose \
+      --auto-reading-delay 2 \
+      --input-file <simulation/reconstruction file>
+ 3) Visualizing BiPo3 detector :
+    flvisualize \
+      --detector-config-file $(flquery --resourcedir)/config/bipo3/geometry/2.0/manager.conf \
+      --style-config-file $(flquery --resourcedir)/modules/EventBrowser/styles/bipo3_default.sty
+
 
  See README for other running examples
 
@@ -123,7 +155,6 @@ Known Issues
 Performance may be affected on slower systems or those without modern graphics
 cards due to the complexity of the geometry.
 
-OS X systems may also see some performance loss on startup and moving between events.
+macOS systems may also see some performance loss on startup and moving between events.
 
 Both issues are under investigation.
-
