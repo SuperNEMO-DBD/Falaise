@@ -41,7 +41,7 @@ namespace fecom {
       // Data:
       std::string raw_waveform_data_line;
       std::getline(in_, raw_waveform_data_line);
-      DT_LOG_DEBUG(logging, "Parsing raw waveform data line '" << raw_waveform_data_line << "'");
+      // DT_LOG_DEBUG(logging, "Parsing raw waveform data line '" << raw_waveform_data_line << "'");
       _parse_samples_(raw_waveform_data_line, hit_);
       in_ >> std::ws;
       success = true;
@@ -73,6 +73,8 @@ namespace fecom {
       std::string::const_iterator end_iter = header_line.end();
       uint32_t slotid    = 0xFFFFFFFF;
       uint32_t channelid = 16;
+      uint      lto_flag  = 0;
+      uint      ht_flag   = 0;
       uint32_t eventid   = 0xFFFFFFFF;
       uint64_t rawtdc    = 0xFFFFFFFFFFFFFFFF; // 64bits ? to be checked
       double   tdc_ns; // 64bits ? to be checked
@@ -96,8 +98,10 @@ namespace fecom {
                              end_iter,
                              //  Begin grammar
                              (
-                              qi::lit("Slot")          >> qi::uint_[boost::phoenix::ref(slotid) = boost::spirit::qi::_1]
+			      qi::lit("Slot")             >> qi::uint_[boost::phoenix::ref(slotid) = boost::spirit::qi::_1]
                               >> qi::lit("Ch")            >> qi::uint_[boost::phoenix::ref(channelid) = boost::spirit::qi::_1]
+			      >> qi::lit("LTO")           >> qi::uint_[boost::phoenix::ref(lto_flag) = boost::spirit::qi::_1]
+			      >> qi::lit("HT")            >> qi::uint_[boost::phoenix::ref(ht_flag) = boost::spirit::qi::_1]
                               >> qi::lit("EvtID")         >> qi::uint_[boost::phoenix::ref(eventid) = boost::spirit::qi::_1]
                               >> qi::lit("RawTDC")        >> qi::ulong_[boost::phoenix::ref(rawtdc) = boost::spirit::qi::_1]
                               >> qi::lit("TDC")           >> qi::double_[boost::phoenix::ref(tdc_ns) = boost::spirit::qi::_1]
@@ -125,6 +129,8 @@ namespace fecom {
                   "Cannot parse file header line #" << index_ << "; failed at '" << *str_iter << "'!");
       DT_LOG_DEBUG(logging, "slotid        = " << slotid);
       DT_LOG_DEBUG(logging, "channelid     = " << channelid);
+      DT_LOG_DEBUG(logging, "lto_flag      = " << lto_flag);
+      DT_LOG_DEBUG(logging, "ht_flag       = " << ht_flag);
       DT_LOG_DEBUG(logging, "eventid       = " << eventid);
       DT_LOG_DEBUG(logging, "rawtdc        = " << rawtdc);
       DT_LOG_DEBUG(logging, "tdc (ns)      = " << tdc_ns);
@@ -148,6 +154,10 @@ namespace fecom {
       hit_.electronic_id.set_type(calo_constants::CALO_CHANNEL_TYPE);
       hit_.electronic_id.set(calo_constants::SLOT_INDEX, slotid);
       hit_.electronic_id.set(calo_constants::CHANNEL_INDEX ,channelid);
+      if (lto_flag != 0) hit_.low_threshold = true;
+      else hit_.low_threshold = false;
+      if (ht_flag != 0) hit_.high_threshold = true;
+      else hit_.high_threshold = false;
       hit_.event_id = eventid;
       hit_.raw_tdc = rawtdc;
       hit_.tdc_ns = tdc_ns;

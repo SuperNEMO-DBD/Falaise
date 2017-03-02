@@ -108,7 +108,7 @@ int main(int argc_, char ** argv_)
 
     // Input file (from Jihanne) hits reader :
     fecom::hit_reader reader;
-    reader.set_logging(datatools::logger::PRIO_INFORMATION);
+    reader.set_logging(datatools::logger::PRIO_FATAL);
     reader.set_input_filename(input_filename);
     reader.initialize();
     fecom::run_header header;
@@ -130,7 +130,7 @@ int main(int argc_, char ** argv_)
     my_channel_mapping.build_calo_mapping_from_file(input_calo_mapping_file);
     my_channel_mapping.initialize();
 
-    const double SERIALIZATION_GATE_SIZE_IN_NS = 1000000; // = 1ms for the moment (tunable !)
+    const double SERIALIZATION_GATE_SIZE_IN_NS = 100; // = 1ms for the moment (tunable !)
 
     std::size_t hit_counter = 0;
     std::size_t event_serialized = 0;
@@ -152,6 +152,35 @@ int main(int argc_, char ** argv_)
 
       uint32_t actual_hit_trigger_id = 0xFFFFFF;
 
+      // See hit timestamp and check the last timestamp for each commissioning event in the set
+      for (auto it_com_set = open_commissioning_events.begin();
+	   it_com_set != open_commissioning_events.end();
+	   it_com_set++)
+	{
+	  if (open_commissioning_events.size() == 0) break;
+	  else if (it_com_set != open_commissioning_events.end())
+	    {
+	      if (actual_time_in_ns > it_com_set->_last_time_in_ns_added_ + SERIALIZATION_GATE_SIZE_IN_NS)
+		{
+		  DT_LOG_DEBUG(logging, "Begin the Serialization for a commissioning event...");
+
+		  if (it_com_set->get_tracker_hit_collection().size() != 0)
+		    {
+		      DT_LOG_DEBUG(logging, "Begin the building of tracker hits...");
+
+		      const_cast<fecom::commissioning_event&>(*it_com_set).set_channel_mapping(my_channel_mapping);
+		      const_cast<fecom::commissioning_event&>(*it_com_set).build_tracker_hit_from_channels();
+		    }
+		  serializer.store(*it_com_set);
+		  DT_LOG_DEBUG(logging, "The commissioning event has been stored in the '" + output_filename + "' file");
+
+		  // After serialization remove it from the set
+		  open_commissioning_events.erase(it_com_set);
+		  event_serialized++;
+		}
+	    }
+	}
+
       if (chit.is_valid()) {
 	// chit.tree_dump(std::clog, "Calo hit is valid :");
 	valid = "calo";
@@ -165,32 +194,6 @@ int main(int argc_, char ** argv_)
 	actual_hit_trigger_id = tchit.trigger_id;
 	actual_time_in_ns = tchit.timestamp_time_ns;
       }
-
-      // See hit timestamp and check the last timestamp for each commissioning event in the set
-      for (auto it_com_set = open_commissioning_events.begin();
-	   it_com_set != open_commissioning_events.end();
-	   it_com_set++)
-	{
-	  if (open_commissioning_events.size() == 0) break;
-	  else if (it_com_set != open_commissioning_events.end())
-	    {
-	      if (actual_time_in_ns > it_com_set->_last_time_in_ns_added_ + SERIALIZATION_GATE_SIZE_IN_NS)
-		{
-		  DT_LOG_DEBUG(logging, "Begin the Serialization for a commissioning event...");
-		  DT_LOG_DEBUG(logging, "Begin the building of tracker hits...");
-
-		  const_cast<fecom::commissioning_event&>(*it_com_set).set_channel_mapping(my_channel_mapping);
-		  const_cast<fecom::commissioning_event&>(*it_com_set).build_tracker_hit_from_channels();
-
-		  serializer.store(*it_com_set);
-		  DT_LOG_DEBUG(logging, "The commissioning event has been stored in the '" + output_filename + "' file");
-
-		  // After serialization remove it from the set
-		  open_commissioning_events.erase(it_com_set);
-		  event_serialized++;
-		}
-	    }
-	}
 
       // Do the job if the hit is calo
       if (valid == "calo") {
@@ -238,6 +241,7 @@ int main(int argc_, char ** argv_)
 
       else DT_THROW(std::logic_error, "Nor calo and tracker hit are valid ! ");
 
+
       hit_counter++;
     } // end of while reader
 
@@ -250,11 +254,14 @@ int main(int argc_, char ** argv_)
 	if (it_com_set != open_commissioning_events.end() && open_commissioning_events.size() != 0)
 	  {
 	    DT_LOG_DEBUG(logging, "Begin the Serialization for a commissioning event...");
-	    DT_LOG_DEBUG(logging, "Begin the building of tracker hits...");
 
-	    const_cast<fecom::commissioning_event&>(*it_com_set).set_channel_mapping(my_channel_mapping);
-	    const_cast<fecom::commissioning_event&>(*it_com_set).build_tracker_hit_from_channels();
-	    serializer.store(*it_com_set);
+	    if (it_com_set->get_tracker_hit_collection().size() != 0)
+	      {
+		DT_LOG_DEBUG(logging, "Begin the building of tracker hits...");
+		const_cast<fecom::commissioning_event&>(*it_com_set).set_channel_mapping(my_channel_mapping);
+		const_cast<fecom::commissioning_event&>(*it_com_set).build_tracker_hit_from_channels();
+		serializer.store(*it_com_set);
+	      }
 	    event_serialized++;
 	  }
       }

@@ -24,7 +24,8 @@ namespace fecom {
   {
     if (! this->base_hit::is_valid()) return false;
     if (electronic_id.get(calo_constants::CHANNEL_INDEX) >= calo_constants::INVALID_BOARD_CHANNEL) return false;
-    return (fcr < calo_constants::MAX_NUMBER_OF_SAMPLES) && (raw_tdc < 0xFFFFFFFF);
+    else return true;
+      // return (fcr < calo_constants::MAX_NUMBER_OF_SAMPLES) && (raw_tdc < 0xFFFFFFFF);
   }
 
   void calo_hit::reset()

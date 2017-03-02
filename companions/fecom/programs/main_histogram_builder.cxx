@@ -156,8 +156,8 @@ int main(int argc_, char ** argv_)
 
       string_buffer = "calo_raw_charge_no_trig_distribution_row_" + std::to_string(icalo);
       calo_raw_charge_no_trig_row_TH1F[icalo] = new TH1F(string_buffer.c_str(),
-							    Form("Calorimeter raw charge if no trigger row %i", icalo),
-							    100, 0, 2000);
+							 Form("Calorimeter raw charge if no trigger row %i", icalo),
+							 100, 0, 2000);
 
       // To see with Jihanne : what is RawBaseline ?
       string_buffer = "calo_raw_baseline_no_trig_distribution_row_" + std::to_string(icalo);
@@ -168,7 +168,7 @@ int main(int argc_, char ** argv_)
       string_buffer = "calo_time_distribution_row_" + std::to_string(icalo);
       calo_time_distribution_row_TH1F[icalo] = new TH1F(string_buffer.c_str(),
 							Form("Calo time distribution (N / seconds) row %i", icalo),
-							50, 0, 50);
+							100, 0, 1000);
     }
 
     /************* Main root file histos : *************/
@@ -281,28 +281,28 @@ int main(int argc_, char ** argv_)
     TH2F * hit_tracker_count_if_0_calos_TH2F = new TH2F(string_buffer.c_str(),
 							Form("Hit tracker GG cell count if 0 calos"),
 							5, 0, 5,
-						       10, 0, 10);
+							10, 0, 10);
 
     string_buffer = "hit_tracker_count_if_1_calos_TH2F";
     TH2F * hit_tracker_count_if_1_calos_TH2F = new TH2F(string_buffer.c_str(),
-						       Form("Hit tracker GG cell count if 1 calos"),
-						       5, 0, 5,
-						       10, 0, 10);
-    string_buffer = "hit_tracker_count_if_2_calos_TH2F";
-    TH2F * hit_tracker_count_if_2_calos_TH2F = new TH2F(string_buffer.c_str(),
-						       Form("Hit tracker GG cell count if 2 calos"),
-						       5, 0, 5,
-						       10, 0, 10);
-    string_buffer = "hit_tracker_count_if_3p_calos_TH2F";
-    TH2F * hit_tracker_count_if_3p_calos_TH2F = new TH2F(string_buffer.c_str(),
-							Form("Hit tracker GG cell count if 3+ calos"),
+							Form("Hit tracker GG cell count if 1 calos"),
 							5, 0, 5,
 							10, 0, 10);
+    string_buffer = "hit_tracker_count_if_2_calos_TH2F";
+    TH2F * hit_tracker_count_if_2_calos_TH2F = new TH2F(string_buffer.c_str(),
+							Form("Hit tracker GG cell count if 2 calos"),
+							5, 0, 5,
+							10, 0, 10);
+    string_buffer = "hit_tracker_count_if_3p_calos_TH2F";
+    TH2F * hit_tracker_count_if_3p_calos_TH2F = new TH2F(string_buffer.c_str(),
+							 Form("Hit tracker GG cell count if 3+ calos"),
+							 5, 0, 5,
+							 10, 0, 10);
 
     string_buffer = "tracker_longitudinal_position_distribution_all_cells_TH1F";
     TH1F * tracker_longitudinal_position_distribution_all_cells_TH1F = new TH1F(string_buffer.c_str(),
-									Form("Hit tracker Zrec longitudinal mean all cells"),
-									300, -1500, 1500);
+										Form("Hit tracker Zrec longitudinal mean all cells"),
+										300, -1500, 1500);
     /*************************************************************************************************************************/
 
     std::size_t event_counter = 0;
