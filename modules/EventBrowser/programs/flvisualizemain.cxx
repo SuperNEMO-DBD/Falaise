@@ -1,9 +1,9 @@
 // flvisualize.cxx
 // Author(s)     : Xavier Garrido <garrido@lal.in2p3.fr>
 // Creation date : 2010-07-03
-// Last modified : 2016-06-17
+// Last modified : 2017-03-02
 //
-// Copyright (C) 2011-2016 Xavier Garrido <garrido@lal.in2p3.fr>
+// Copyright (C) 2011-2017 Xavier Garrido <garrido@lal.in2p3.fr>
 //
 //
 // \b Description:
@@ -29,9 +29,7 @@
 
 // Third party:
 // - Boost
-// #include "boost/filesystem.hpp"
-#include "boost/program_options.hpp"
-// #include "boost/scoped_ptr.hpp"
+#include <boost/program_options.hpp>
 namespace bpo = boost::program_options;
 // - ROOT:
 #include <TApplication.h>
@@ -40,9 +38,10 @@ namespace bpo = boost::program_options;
 // - Bayeux/datatools:
 #include <bayeux/version.h>
 #include <bayeux/bayeux.h>
-#include <datatools/ioutils.h>
-#include <datatools/library_loader.h>
-#include <datatools/configuration/variant_service.h>
+#include <bayeux/datatools/kernel.h>
+#include <bayeux/datatools/ioutils.h>
+#include <bayeux/datatools/library_loader.h>
+#include <bayeux/datatools/configuration/variant_service.h>
 namespace dtc = datatools::configuration;
 
 // This project:
@@ -60,7 +59,8 @@ class FLDialogHelpRequested : public std::exception {};
 class FLDialogOptionsError : public std::exception {};
 
 //! Handle printing of version information to given ostream
-void do_version(std::ostream& os, bool isVerbose) {
+void do_version(std::ostream& os, bool isVerbose)
+{
   os << "flvisualize " << falaise::version::get_version() << "\n";
   if (isVerbose) {
     os << "\n"
@@ -74,11 +74,11 @@ void do_version(std::ostream& os, bool isVerbose) {
   }
   return;
 }
-
 //! Handle printing of help message to screen
-void do_help(const bpo::options_description& od) {
+void do_help(const bpo::options_description& od)
+{
   namespace sv = snemo::visualization;
-  do_version(std::cout, false);
+  std::cout << "flvisualize (" << falaise::version::get_version() << ") : the SuperNEMO event display application\n\n";
   std::cout << "Usage:\n"
             << "  flvisualize [options]\n"
             << od
@@ -86,6 +86,21 @@ void do_help(const bpo::options_description& od) {
   std::cout << "Examples:\n";
   sv::view::options_manager::get_instance().print_examples(std::cout, "flvisualize", "");
   return;
+}
+
+//! Initialization flags for kernel setup
+uint32_t app_kernel_init_flags()
+{
+  uint32_t kernel_init_flags = 0;
+  kernel_init_flags |= datatools::kernel::init_no_help;
+  kernel_init_flags |= datatools::kernel::init_no_splash;
+  kernel_init_flags |= datatools::kernel::init_no_inhibit_libinfo;
+  kernel_init_flags |= datatools::kernel::init_no_libinfo_logging;
+  kernel_init_flags |= datatools::kernel::init_no_variant;
+  kernel_init_flags |= datatools::kernel::init_no_inhibit_variant;
+  kernel_init_flags |= datatools::kernel::init_no_locale_category;
+  kernel_init_flags |= datatools::kernel::init_no_inhibit_qt_gui;
+  return kernel_init_flags;
 }
 
 //! Collect all needed configuration parameters in one data structure
@@ -156,15 +171,27 @@ void do_cldialog(int argc_, char *argv_[], FLVisualizeArgs& params_) {
   // Variant service options:
   bpo::options_description optVariants("Variants support");
   uint32_t variant_service_flags = 0;
+  variant_service_flags |= dtc::variant_service::NO_LABEL;
+  variant_service_flags |= dtc::variant_service::NO_LOGGING;
   // variant_service_flags |= dtc::variant_service::NO_CONFIG_FILENAME;
   variant_service_flags |= dtc::variant_service::NO_TUI;
   dtc::variant_service::init_options(optVariants,
                                      params_.variants,
                                      variant_service_flags);
 
+  // Bayeux/datatools kernel options:
+  bpo::options_description optKernel("Kernel options");
+  datatools::kernel::param_type paramsKernel;
+  datatools::kernel::build_opt_desc(optKernel, paramsKernel, app_kernel_init_flags());
+
   // All options:
-  bpo::options_description optAll;
-  optAll.add(optGeneral).add(optBrowser).add(optView).add(optVariants);
+  bpo::options_description optPublic;
+  optPublic
+    .add(optGeneral)
+    .add(optBrowser)
+    .add(optView)
+    .add(optVariants)
+    .add(optKernel);
 
   // Describe command line arguments :
   bpo::positional_options_description args;
@@ -174,7 +201,7 @@ void do_cldialog(int argc_, char *argv_[], FLVisualizeArgs& params_) {
   bpo::variables_map vMap;
   try {
     bpo::parsed_options parsed = bpo::command_line_parser(argc_,argv_)
-      .options(optAll)
+      .options(optPublic)
       // .allow_unregistered()
       .positional(args)
       .run();
@@ -193,7 +220,7 @@ void do_cldialog(int argc_, char *argv_[], FLVisualizeArgs& params_) {
 
   // Handle any non-bound options
   if (vMap.count("help")) {
-    do_help(optAll);
+    do_help(optPublic);
     throw FLDialogHelpRequested();
   }
 
@@ -374,20 +401,17 @@ falaise::exit_code do_flvisualize(int argc_, char *argv_[]) {
   return falaise::EXIT_OK;
 }
 
-
 //----------------------------------------------------------------------
 // MAIN PROGRAM
 //----------------------------------------------------------------------
 int main(int argc_, char *argv_[]) {
-  // - Needed, but nasty
-  falaise::initialize();
+  falaise::initialize(argc_, argv_, app_kernel_init_flags());
 
   // - Do the simulation.
   // Ideally, exceptions SHOULD NOT propagate out of this  - the error
   // code should be enough.
   falaise::exit_code ret = do_flvisualize(argc_, argv_);
 
-  // - Needed, but nasty
   falaise::terminate();
   return ret;
 }
