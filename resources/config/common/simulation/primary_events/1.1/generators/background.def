@@ -146,18 +146,20 @@ decay_type      : string  = "background"
 decay_isotope   : string  = "Pb214"
 
 
-####################################
-[name="Po214" type="genbb::wdecay0"]
-#@config Po-214 decay;group=background
-decay_type      : string  = "background"
-decay_isotope   : string  = "Po214"
+# ####################################
+# Bug: 2017-02-22 FM: Not supported by genbbsub
+# [name="Po214" type="genbb::wdecay0"]
+# #@config Po-214 decay;group=background
+# decay_type      : string  = "background"
+# decay_isotope   : string  = "Po214"
 
 
-####################################
-[name="Po212" type="genbb::wdecay0"]
-#@config Po-212 decay;group=background
-decay_type      : string  = "background"
-decay_isotope   : string  = "Po212"
+# ####################################
+# Bug: 2017-02-22 FM: Not supported by genbbsub
+# [name="Po212" type="genbb::wdecay0"]
+# #@config Po-212 decay;group=background
+# decay_type      : string  = "background"
+# decay_isotope   : string  = "Po212"
 
 
 ####################################
