@@ -92,12 +92,11 @@ find_package(Bayeux 3.0.0 REQUIRED geant4)
 #
 add_subdirectory(utilities)
 add_subdirectory(source)
+add_subdirectory(resources)
 
 if(FALAISE_WITH_DOCS)
   add_subdirectory(documentation)
 endif()
-
-add_subdirectory(resources)
 
 #-----------------------------------------------------------------------
 # - CMake Support files
