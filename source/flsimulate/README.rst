@@ -3,16 +3,13 @@ Falaise Simulation Application
 ==============================
 
 :Author: F.Mauger
-:Date: 2017-01-14
+:Date: 2017-03-03
 
 What's Here
 ===========
 
 The main application for the simulation of the SuperNEMO detector.
 Any other code that is specific to the simulation - e.g. digitization.
-
-TODO (2016-12-07, FM): replace the former ``flsimulatemain`` program by the new
-``flsimulatemain_next``.
 
 Status
 ======
@@ -54,7 +51,10 @@ The  variant service  loads a  *variant  profile* file  which must  be
 prepared     by    the     user    through     a    dedicated     tool
 (``bxvariant_inspector``).   This file  will  be  reused in  following
 steps  of the  reconstruction/analysis  chain.  It  must be  preserved
-carefully.
+carefully. It is  also possible to provide the *variant  profile* as a
+list  of variant  parameter setting  rules in  the main  configuration
+script (see below).
+
 
 Scripting FLsimulate
 ====================

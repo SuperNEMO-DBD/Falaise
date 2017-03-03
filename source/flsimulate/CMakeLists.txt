@@ -29,6 +29,47 @@ find_package(Geant4 REQUIRED)
 #-----------------------------------------------------------------------
 # Build command line app
 # - Compile/Link
+add_executable(flsimulate_legacy
+  flsimulatemain_legacy.cc
+  FLSimulateResources.h
+  FLSimulateResources.cc
+  )
+target_include_directories(flsimulate_legacy PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
+  )
+target_link_libraries(flsimulate_legacy
+  Falaise
+  Bayeux::Bayeux
+  Bayeux::Bayeux_mctools_geant4
+  ${Boost_LIBRARIES}
+  ${Geant4_LIBRARIES}
+  )
+
+# - Ensure link to internal and external deps
+set_target_properties(flsimulate_legacy PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
+
+if(UNIX AND NOT APPLE)
+  set_target_properties(flsimulate_legacy
+    PROPERTIES INSTALL_RPATH "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
+    )
+elseif(APPLE)
+  # Temporary setting - needs testing
+  set_target_properties(flsimulate_legacy
+    PROPERTIES
+      INSTALL_RPATH "@loader_path/../${CMAKE_INSTALL_LIBDIR}"
+    )
+endif()
+
+# - Install
+# TODO : fixup rpaths as needed
+install(TARGETS flsimulate_legacy
+  EXPORT FalaiseTargets
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  )
+
+#-----------------------------------------------------------------------
+# Build Tests
 add_executable(flsimulate
   flsimulatemain.cc
   FLSimulateResources.h
@@ -69,47 +110,6 @@ install(TARGETS flsimulate
   )
 
 #-----------------------------------------------------------------------
-# Build Tests
-add_executable(flsimulate_next
-  flsimulatemain_next.cc
-  FLSimulateResources.h
-  FLSimulateResources.cc
-  )
-target_include_directories(flsimulate_next PRIVATE
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_BINARY_DIR}
-  )
-target_link_libraries(flsimulate_next
-  Falaise
-  Bayeux::Bayeux
-  Bayeux::Bayeux_mctools_geant4
-  ${Boost_LIBRARIES}
-  ${Geant4_LIBRARIES}
-  )
-
-# - Ensure link to internal and external deps
-set_target_properties(flsimulate_next PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
-
-if(UNIX AND NOT APPLE)
-  set_target_properties(flsimulate_next
-    PROPERTIES INSTALL_RPATH "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
-    )
-elseif(APPLE)
-  # Temporary setting - needs testing
-  set_target_properties(flsimulate_next
-    PROPERTIES
-      INSTALL_RPATH "@loader_path/../${CMAKE_INSTALL_LIBDIR}"
-    )
-endif()
-
-# - Install
-# TODO : fixup rpaths as needed
-install(TARGETS flsimulate_next
-  EXPORT FalaiseTargets
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-  )
-
-#-----------------------------------------------------------------------
 if(FALAISE_ENABLE_TESTING)
   add_executable(testPropertyReader testPropertyReader.cc)
   set_target_properties(testPropertyReader
@@ -120,3 +120,5 @@ if(FALAISE_ENABLE_TESTING)
   target_link_libraries(testPropertyReader FLCatch Bayeux::Bayeux)
   add_test(NAME falaise-testPropertyReader COMMAND testPropertyReader)
 endif()
+
+# - end

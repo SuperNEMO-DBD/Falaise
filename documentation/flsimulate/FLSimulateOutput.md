@@ -6,19 +6,19 @@ FLSimulate Output {#flsimulateoutput}
 Introduction to the FLSimulate Output {#flsimulateoutput_introduction}
 =====================================
 
-The current official simulation application defines
-an output data model to represent the detector response
-(SuperNEMO demonstrator module, BiPo3...).
-Each *simulated* event record is implemented through the generic
-`datatools::things` container object that handle a dedicated data
-bank which is conventionaly named `SD` (**S** imulated **D** ata).
+The  current official  simulation application  defines an  output data
+model  to  represent  the detector  response  (SuperNEMO  demonstrator
+module...).  Each *simulated* event  record is implemented through the
+generic `datatools::things`  container object that handle  a dedicated
+data bank which is conventionaly  named `SD` (for **S** imulated **D**
+ata).
 
-In the future, the simulation application will also support
-the creation of the *digitization data* `DD` bank
-(**D** igitization **D** ata).
+In  the  future, the  simulation  application  will also  support  the
+creation of  the *digitization  data* `SDD` bank  (**S**imulated **D**
+igitization **D** ata).
 
-Here we describe the contents of the data model produced by the SuperNEMO
-Monte-Carlo program.
+Here  we describe  the  contents of  the data  model  produced by  the
+SuperNEMO Monte-Carlo program.
 
 ~~~~~
 +----------------------------------+
@@ -56,7 +56,10 @@ kinds of information:
    *geometry  type*   is  conventionaly  associated  to   a  *geometry
    category* which  is an  unique human readable  string (the  list of
    *geometry types  and categories* supported by  a given experimental
-   setup is defined in a special configuration file).
+   setup  is defined  in  dedicated configuration  files for  geometry
+   modelling through the Bayeux/geomtools library).
+
+**To Do** update the table below !
 
    The  table  below presents  some  official  geometry categories  of
    interest in the SuperNEMO demonstrator geometry:
@@ -77,7 +80,7 @@ kinds of information:
    integer identifiers that informs about the effective positioning of
    the  volume in  the geometry  hierarchy :  module (only  0 for  the
    demonstrator),  side number  (italian/french), source  strip number
-   (from 0 to 35), main clorimeter  column (from 0 to 19), Geiger cell
+   (from 0 to 35), main calorimeter  column (from 0 to 19), Geiger cell
    layer (from 0 to 8)...
 
 It is thus possible to extract these informations from any GID object.
@@ -97,9 +100,9 @@ Example with GID with value [1200:0.1] :
 
    A: The GID will respond `1` (this is the French *tracker submodule* number in the geometry convention of the experiment).
 
-The  GID object  is  thus the  unique repository  where  to store  the
+The  GID object  is  thus the  unique record  where  to store  the
 geometrical   identification  and   localization  of   a  volume   and
-particularly for Monte-Carlo truth hits.
+particularly for Monte Carlo truth hits.
 
 
 The  figure  below  illustrates  the  identification  of  the  volumes
@@ -111,18 +114,24 @@ module:
 \includegraphics{fls_demonstrator_geom_ids_0}
 @endlatexonly
 
-From this example, we can determine the geometry identifiers (GIDs) associated to these volumes, thanks
-to the *mapping* and *locator* mechanisms implemented in the geometry modelling manager:
- - The two electrons are emitted from a source strip (green segment on the right). This source strip
-   volume belongs to the `"source_strip"` geometry category (type 1102). It is the last one
-   placed in the source frame. Its geometry identifier is [1102:0.35] with module number 0 and source strip number 35.
- - The first truth track (bottom) traverses the drift volumes of 11 Geiger cells (blue squares)
-   of which the geometry category is `"drift_cell_core"` (type 1204). All the hit cells
-   are in the Italian side of the demonstrator module. The corresponding
-   GIDS are:
-    - [1204:0.0.0.110] is associated to the cell close to the vertex represented by a small square in the source foil; the GID address
-      consists in module number O, side number 0 (Italian side), layer number 0 (near the source frame)
-      and row number 110 (one of the last 9-cells rows on the Tunnel side),
+From this  example, we can  determine the geometry  identifiers (GIDs)
+associated to  these volumes,  thanks to  the *mapping*  and *locator*
+mechanisms implemented in the geometry modelling manager:
+ - The two electrons are emitted from a source strip (green segment on
+   the   right).   This   source   strip   volume   belongs   to   the
+   `"source_strip"` geometry category (type 1102).  It is the last one
+   placed in the source frame.  Its geometry identifier is [1102:0.35]
+   with module number 0 and source strip number 35.
+ - The first  truth track (bottom)  traverses the drift volumes  of 11
+   Geiger  cells (blue  squares)  of which  the  geometry category  is
+   `"drift_cell_core"`  (type 1204).  All  the hit  cells  are in  the
+   Italian  side of  the demonstrator  module. The  corresponding GIDS
+   are:
+    - [1204:0.0.0.110] is associated  to the cell close  to the vertex
+      represented  by a  small  square  in the  source  foil; the  GID
+      address  consists in  module number  O, side  number 0  (Italian
+      side), layer number 0 (near the source frame) and row number 110
+      (one of the last 9-cells rows on the Tunnel side),
     - [1204:0.0.1.110],
     - [1204:0.0.2.110],
     - [1204:0.0.3.110],
@@ -132,115 +141,163 @@ to the *mapping* and *locator* mechanisms implemented in the geometry modelling 
     - [1204:0.0.6.111],
     - [1204:0.0.7.111],
     - [1204:0.0.8.111],
-    - [1204:0.0.8.112] is associated to the cell at the top left corner of the Italian tracker submodule (in the "C1" C-shape).
+    - [1204:0.0.8.112]  is associated  to  the cell  at  the top  left
+      corner of the Italian tracker submodule (in the "C1" C-shape).
 
-   Then the first track terminates in the front part of a scintillator block (category `"calorimeter_block"`) of the
-   Italian main wall (left purple rectangle). Its GID is [1302:0.0.19.11.1] which means:
+   Then the first track terminates in the front part of a scintillator
+   block  (category `"calorimeter_block"`)  of the  Italian main  wall
+   (left purple rectangle). Its GID is [1302:0.0.19.11.1] which means:
     - module number 0 (demonstrator module),
     - side number 0 (Italian),
-    - column number 19 (the last column in the calorimeter main wall on the Tunnel side on the Y axis),
+    - column number 19  (the last column in the  calorimeter main wall
+      on the Tunnel side on the Y axis),
     - row number 11 (not visible here on this X-Y projection),
-    - part number 1 (because these scintillator blocks are modeled in two parts, the back
-      part which is an extruded
-      scintillator block on the photomultiplier side (part number is 0)
-      and the front block which is a simple scintillator block on the tracker
-      side (part number is 1)).
- - The second truth track (top) traverses the drift volumes of 2 Geiger cells (blue squares) of which the GIDs are:
+    - part number 1 (because these  scintillator blocks are modeled in
+      two parts, the back part which is an extruded scintillator block
+      on the  photomultiplier side  (part number is  0) and  the front
+      block which is  a simple scintillator block on  the tracker side
+      (part number is 1)).
+ - The  second truth  track (top)  traverses  the drift  volumes of  2
+   Geiger cells (blue squares) of which the GIDs are:
     - [1204:0.0.0.111] nearest the vertex,
     - [1204:0.0.0.112] nearest the X-calo scintillator block.
 
-   The track terminates in a scintillator block (category `"xcalo_block"`)
-   at the Tunnel side of the Italian main wall (top purple rectangle).
-   Its GID is [1232:0.0.1.0.8] which means:
+   The   track   terminates   in  a   scintillator   block   (category
+   `"xcalo_block"`) at the  Tunnel side of the Italian  main wall (top
+   purple rectangle).  Its GID is [1232:0.0.1.0.8] which means:
     - module number 0 (demonstrator module),
     - side number 0 (Italian),
     - wall number 1 (Tunnel side on the Y axis),
-    - column number 0 (the first column near the source frame on the X axis),
+    - column number 0 (the first column near the source frame on the X
+      axis),
     - row number 8 (not visible here on this X-Y projection).
 
 The mctools::base_step_hit class {#flsimulateoutput_mctoolsbasestephitclass}
 ================================
 
-The Bayeux/mctools Geant4 plugin used by the FLSimulate application is designed to generate
-collections of *truth step hits* through the Geant4 simulation engine. The output data model
-contains objects that represents such truth hits. It uses the `mctools::base_step_hit` class.
-The  `mctools::base_step_hit` class inherits the `geomtools::base_hit` class.
+The Bayeux/mctools Geant4 plugin used by the FLSimulate application is
+designed  to generate  collections of  *truth step  hits* through  the
+Geant4 simulation engine. The output  data model contains objects that
+represents  such  truth  hits. It  uses  the  `mctools::base_step_hit`
+class.     The    `mctools::base_step_hit`    class    inherits    the
+`geomtools::base_hit` class.
 
 Each object of the `mctools::base_step_hit` class contains:
- - the unique identifier of the truth hit, with respect to the collection it belongs to
-   (an integer, inherited from the `geomtools::base_hit` mother class),
- - the geometry identifier (GID) of the volume where the hit was generated, if available (a `geomtools::geom_id` instance,
-   inherited from the `geomtools::base_hit` mother class),
- - a collection of optional auxiliary properties (a `datatools::properties` instance,
-   inherited from the `geomtools::base_hit` mother class),
- - the start position of the step hit (a `geomtools::vector_3d` instance),
- - the stop position of the step hit (a `geomtools::vector_3d` instance),
+ - the  unique  identifier of  the  truth  hit,  with respect  to  the
+   collection  it   belongs  to   (an  integer,  inherited   from  the
+   `geomtools::base_hit` mother class),
+ - the  geometry identifier  (GID) of  the  volume where  the hit  was
+   generated, if available (a  `geomtools::geom_id` instance, which is
+   an attribute of the `geomtools::base_hit` mother class),
+ - a    collection    of     optional    auxiliary    properties    (a
+   `datatools::properties`     instance,      attribute     of     the
+   `geomtools::base_hit` mother class),
+ - the  start  position  of  the step  hit  (a  `geomtools::vector_3d`
+   instance),
+ - the  stop  position  of  the  step  hit  (a  `geomtools::vector_3d`
+   instance),
  - the start time of the step hit (a real value in unit of time),
  - the stop time of the step hit (a real value in unit of time),
- - the start momentum of the step hit (a real value in unit of energy),
+ - the  start momentum  of  the step  hit  (a real  value  in unit  of
+   energy),
  - the stop momentum of the step hit (a real value in unit of energy),
- - the energy deposit along the track segment (a real value in unit of energy),
+ - the energy deposit along the track segment (a real value in unit of
+   energy),
  - the particle name (a character string provided by Geant4).
 
-The recording of these basic attributes is optional. Users are free to parametrized only a subset
-of truth step's attributes to be stored in the output data model. This is configured while combining
-the sensitive detector associated to some volumes and the step hit processor attached to the
-sensitive detector. Note also that the meaning and the need of these attributes
-may change depending of the nature of the sensitive detector.
+The recording of these basic attributes is optional. Users are free to
+parametrized only a subset of truth  step's attributes to be stored in
+the  output  data  model.  This  is  configured  while  combining  the
+sensitive  detector  associated  to  some volumes  and  the  step  hit
+processor  attached to  the  sensitive detector.  Note  also that  the
+meaning and the  need of these attributes may change  depending of the
+nature of the sensitive detector.
 
-Note that the collection of auxiliary properties can be used to store, on user request,
-additional informations like:
- - the identifier of the corresponding G4 truth hit (a positive integer value provided by Geant4),
- - the name of step processor that produced the truth hit (a character string),
- - the identifier of the G4 track (a positive integer value provided by Geant4),
- - the identifier of the parent G4 track (a positive integer value provided by Geant4),
- - the kinetic energy of the particle at the beginning of the step  (a real value in unit of energy),
- - the kinetic energy of the particle at the end of the step  (a real value in unit of energy),
- - the *primary particle* flag (a boolean value set to `1` for a primary particle, equivalent to parent track identifier set to `0`),
- - the name of the G4 creator process (a character string provided by Geant4),
- - the name of the G4 creator category (a character string provided by Geant4),
- - the *delta-ray from alpha* flag (a boolean value set to `1` for a low-energy secondary electron generated along the track of an
-   an alpha particle, typically used to compute the quenching factor in some material),
- - the *entering volume* flag (a boolean value set to `1` for a particle entering a volume by Geant4),
- - the *leaving volume* flag (a boolean value set to `1` for a particle leaving a volume by Geant4),
+Note that the collection of auxiliary properties can be used to store,
+on user request, additional informations like:
+ - the  identifier  of the  corresponding  G4  truth hit  (a  positive
+   integer value provided by Geant4),
+ - the name of step processor that produced the truth hit (a character
+   string),
+ - the identifier of  the G4 track (a positive  integer value provided
+   by Geant4),
+ - the identifier  of the  parent G4 track  (a positive  integer value
+   provided by Geant4),
+ - the kinetic energy of the particle  at the beginning of the step (a
+   real value in unit of energy),
+ - the kinetic energy of  the particle at the end of  the step (a real
+   value in unit of energy),
+ - the  *primary particle*  flag (a  boolean value  set to  `1` for  a
+   primary  particle, equivalent  to  parent track  identifier set  to
+   `0`),
+ - the name of the G4 creator  process (a character string provided by
+   Geant4),
+ - the name of the G4 creator category (a character string provided by
+   Geant4),
+ - the *delta-ray from  alpha* flag (a boolean value set  to `1` for a
+   low-energy secondary  electron generated along  the track of  an an
+   alpha particle, typically  used to compute the  quenching factor in
+   some material),
+ - the  *entering volume*  flag  (a boolean  value set  to  `1` for  a
+   particle entering a volume by Geant4),
+ - the  *leaving volume*  flag  (a  boolean value  set  to  `1` for  a
+   particle leaving a volume by Geant4),
  - the name of the G4 volume (a character string provided by Geant4),
- - the copy number of the G4 volume (a positive integer value provided by Geant4).
+ - the copy number of the G4 volume (a positive integer value provided
+   by Geant4).
 
-Given a collection of such truth hits, it is expected that users will be able to apply some
-arbitrary digitization algorithm.
+Given a collection of such truth  hits, it is expected that users will
+be able to apply some arbitrary digitization algorithm.
 
 The mctools::simulated_data class {#flsimulateoutput_mctoolssimulateddata}
 =================================
 
-The `SD` bank created by the simulation within each event record contains
-a `mctools::simulated_data` object.
+The  `SD` bank  created by  the  simulation within  each event  record
+contains a `mctools::simulated_data` object.
 
 Each `mctools::simulated_data` object contains:
  - the primary vertex (a `geomtools::vector_3d` instance),
- - the primary generated event (particle types and kinematics, a `genbb::primary_event` instance),
- - a collection of optional auxiliary properties (a `datatools::properties` instance),
- - a dictionary of collections of shared handles to `mctools::base_step_hit` objects. This dictionary
-   owns several collection of truth hits (eventually managed through *shared handles*, see [here](@ref flreconstructpipelineoutput_thesharedhandleconcept)), depending on the parametrization  of the simulation output profiles.
-   For the SuperNEMO demonstrator, we use the following collections of truth hits:
-   - `"calo"` : calorimeter truth hits collected from the scintillator blocks in the main walls.
+ - the  primary  generated event  (particle  types  and kinematics,  a
+   `genbb::primary_event` instance),
+ - a    collection    of     optional    auxiliary    properties    (a
+   `datatools::properties` instance),
+ - a    dictionary   of    collections    of    shared   handles    to
+   `mctools::base_step_hit`  objects.  This  dictionary  owns  several
+   collection  of  truth  hits  (eventually  managed  through  *shared
+   handles*,                      see                      [here](@ref
+   flreconstructpipelineoutput_thesharedhandleconcept)),  depending on
+   the  parametrization of  the simulation  output profiles.   For the
+   SuperNEMO  demonstrator  using  the  `Basic`  layout,  we  use  the
+   following collections of truth hits:
+   - `"calo"` : calorimeter truth hits collected from the scintillator
+     blocks in the main walls.
 
-     These hits are built from G4 raw truth hits by the `calorimeter.hit_processor` step hit backend processor.
-   - `"xcalo"` : calorimeter truth hits collected from the scintillator blocks in the X-walls.
+     These   hits  are   built  from   G4  raw   truth  hits   by  the
+     `calorimeter.hit_processor` step hit backend processor.
+   - `"xcalo"`   :  calorimeter   truth   hits   collected  from   the
+     scintillator blocks in the X-walls.
 
-     These hits are built from G4 raw truth hits by the `xcalorimeter.hit_processor` step hit backend processor.
-   - "`gveto"` : calorimeter truth hits collected from the gamma veto scintillator blocks
+     These   hits  are   built  from   G4  raw   truth  hits   by  the
+     `xcalorimeter.hit_processor` step hit backend processor.
+   - "`gveto"` : calorimeter truth hits  collected from the gamma veto
+     scintillator blocks
 
-     These hits are built from G4 raw truth hits by the `gveto.hit_processor` step hit backend processor.
-   - `"gg"` : Geiger hits collected from the tracker cell drift region (considering the Geiger regime).
+     These   hits  are   built  from   G4  raw   truth  hits   by  the
+     `gveto.hit_processor` step hit backend processor.
+   - `"gg"` : Geiger hits collected from the tracker cell drift region
+     (considering the Geiger regime).
 
-     These hits are built from G4 raw truth hits by the `gg.hit_processor` step hit backend processor.
-   - `"__visu.track"` : raw truth step hits collected from various part of the detector including not onmy the sensitive
-     detectors (scintillator blocks, Geiger cells) but also some non-sensitive volumes of the geometry (source foil strips...).
+     These   hits  are   built  from   G4  raw   truth  hits   by  the
+     `gg.hit_processor` step hit backend processor.
+   - `"__visu.track"`  : raw  truth step  hits collected  from various
+     part of the  detector including not onmy  the sensitive detectors
+     (scintillator blocks,  Geiger cells) but also  some non-sensitive
+     volumes of the geometry (source foil strips...).
 
-     These hits are built from G4 raw truth hits by many step hit backend
-     processors of the `mctools::push_all_step_hit_processor`  class. They are only
-     generated for specific  output profiles
-     and not produced by default.
+     These hits  are built from  G4 raw truth  hits by many  *step hit
+     backend processors* of the `mctools::push_all_step_hit_processor`
+     class. They are  only generated for specific  output profiles and
+     not produced by default.
 
 Each `genbb::primary_event` object contains:
  - the time of the decay (a real value in unit of time),
@@ -262,21 +319,27 @@ Each `genbb::primary_particle` object contains:
 The truth calorimeter hits {#flsimulateoutput_truthcalorimeterhits}
 ==========================
 
-The `"calo"` , `"xcalo"` and `"gveto"` collections of truth hits are generated by their respective backend step
-processors of the type `snemo::simulation::calorimeter_step_hit_processor`.
+The `"calo"` ,  `"xcalo"` and `"gveto"` collections of  truth hits are
+generated  by their  respective backend  step processors  of the  type
+`snemo::simulation::calorimeter_step_hit_processor`.
 
-The principle of this algorithm is to collect all raw step hits
-generated by Geant4 in a given scintillator block (sensitive volume)
-and to build an unique resulting truth hit that sums up the total energy deposit
-along all these raw steps. The final *calorimeter hit* records the following attributes
-in the output `mctools::base_step_hit` object (see [this section](@ref flsimulateoutput_mctoolsbasestephitclass)):
+The  principle of  this  algorithm is  to collect  all  raw step  hits
+generated by Geant4  in a given scintillator  block (sensitive volume)
+and to  build an  unique resulting  truth hit that  sums up  the total
+energy deposit along all these  raw steps. The final *calorimeter hit*
+records     the     following     attributes     in     the     output
+`mctools::base_step_hit`     object    (see     [this    section](@ref
+flsimulateoutput_mctoolsbasestephitclass)):
  - the unique identifier of the hit in the collection,
- - the GID locating the scintillator block where the raw hits were produced (type is `1302` for main wall blocks, `1232` for X-calorimeter blocks  and `1252` for gamma veto blocks),
- - a collection of optional auxiliary properties (a `datatools::properties` instance).
- - the first position of the corner of the bounding box that
+ - the GID  locating the  scintillator block where  the raw  hits were
+   produced  (type  is  `1302`  for   main  wall  blocks,  `1232`  for
+   X-calorimeter blocks and `1252` for gamma veto blocks),
+ - a    collection    of     optional    auxiliary    properties    (a
+   `datatools::properties` instance).
+ - the first position of the corner of the bounding box that wraps all
+   the raw hits (a `geomtools::vector_3d` instance),
+ - the second position of the opposite corner of the bounding box that
    wraps all the raw hits (a `geomtools::vector_3d` instance),
- - the second position of the opposite corner of the bounding
-   box that wraps all the raw hits (a `geomtools::vector_3d` instance),
  - the first and last timestamp associated to the total energy deposit
    in the block (two real values in unit of time),
  - the total energy deposit (a real value in unit of energy).
@@ -295,22 +358,26 @@ The truth tracker hits {#flsimulateoutput_truthtrackerhits}
 The  `"gg"` collection  of  truth  hits is  generated  by a  dedicated
  backend `snemo::simulation::gg_step_hit_processor` processor.
 
-The principle of this algorithm is to analyze all raw step hits
-generated by Geant4 in the fiducial drift region of a given Geiger cell
- (sensitive volume)
-and to randomize the creation of ion/electron first ionization pairs
-along the truth track. The created truth pair that is located at the nearest
-position to the anode wire is considered as the one that triggers the cell, others
-truth pairs are simply ignored.
-The final *tracker hit* records the following attributes
-in the output `mctools::base_step_hit` object (see [this section](@ref flsimulateoutput_mctoolsbasestephitclass)):
+The  principle of  this  algorithm is  to analyze  all  raw step  hits
+generated by  Geant4 in the  fiducial drift  region of a  given Geiger
+cell (sensitive volume) and to  randomize the creation of ion/electron
+first ionization pairs  along the truth track. The  created truth pair
+that  is  located  at  the  nearest position  to  the  anode  wire  is
+considered as the  one that triggers the cell, others  truth pairs are
+simply  ignored.   The  final  *tracker  hit*  records  the  following
+attributes   in  the   output  `mctools::base_step_hit`   object  (see
+[this section](@ref flsimulateoutput_mctoolsbasestephitclass)):
  - the unique identifier of the hit in the collection,
- - the GID locating the Geiger cell where the raw tracker truth hits were produced (geometry type is `1204`),
- - a collection of optional auxiliary properties (`datatools::properties`), for example
-   the position of the *minimal approach position* (MAP) and drift distance of the truth track
-   with respect to the anode wire,
- - the position of the creation of the truth  ion/electron pair (`geomtools::vector_3d`),
- - the position of the impact of the Geiger avalanche on the anode wire (`geomtools::vector_3d`),
+ - the GID locating  the Geiger cell where the raw  tracker truth hits
+   were produced (geometry type is `1204`),
+ - a     collection      of     optional      auxiliary     properties
+   (`datatools::properties`), for example the position of the *minimal
+   approach position* (MAP) and drift distance of the truth track with
+   respect to the anode wire,
+ - the  position  of  the  creation of  the  truth  ion/electron  pair
+   (`geomtools::vector_3d`),
+ - the position  of the impact  of the  Geiger avalanche on  the anode
+   wire (`geomtools::vector_3d`),
  - the time of creation of the truth ion/electron pair.
 
 The  figure below  illustrates  how  a tracker  hit  is  built by  the
@@ -336,13 +403,15 @@ charged particles' trajectories.
 An example of simulated event in the SuperNEMO demonstrator {#flsimulateoutput_exampleofsimulatedeventinthesupernemodemonstrator}
 ===========================================================
 
-The figure below show a simulated neutrinoless double beta decay of Se-82 from the source foil in the SuperNEMO demonstrator.
-The display of truth tracks, calorimeter hits and tracker hits is activated.
+The figure  below show a  simulated neutrinoless double beta  decay of
+Se-82 from the source foil in the SuperNEMO demonstrator.  The display
+of truth tracks, calorimeter hits and tracker hits is activated.
 
 ![An example of a simulated neutrinoless double beta decay of Se-82 from the source foil in the SuperNEMO demonstrator.](@ref images/fls_demonstrator_sd_0.jpg)
 
-The lines below shows the structure of the corresponding output `mctools::simulated_data` object which is stored in the `SD` bank of the
-event record.
+The  lines  below shows  the  structure  of the  corresponding  output
+`mctools::simulated_data` object which  is stored in the  `SD` bank of
+the event record.
 
 ~~~~~~~
 Simulated data :
@@ -386,18 +455,29 @@ Simulated data :
 `-- Vertex : (-0.0348284,-391.675,-377.86) mm
 ~~~~~~~
 
-We can check that the vertex position, the nature and initial kinematics of generated particles are stored in the data structure:
- - vertex position along the X axis is -0.0348284 mm which clearly shows that it lies in the bulk volume of one of the source
-   foil strips (167 micrometers in this geometry setup used for the simulation),
- - the primary event contains the two electrons emitted by the neutrinoless double beta decay of Se-82 (we check that their energy sum match the Q value of the decay: 2995 keV).
+We  can  check  that  the  vertex position,  the  nature  and  initial
+kinematics of generated particles are stored in the data structure:
+ - vertex position  along the  X axis is  -0.0348284 mm  which clearly
+   shows that  it lies in  the bulk volume of  one of the  source foil
+   strips  (167  micrometers  in  this geometry  setup  used  for  the
+   simulation),
+ - the  primary  event  contains  the two  electrons  emitted  by  the
+   neutrinoless double beta decay of Se-82 (we check that their energy
+   sum match the Q value of the decay: 2995 keV).
 
 The name of the event generator (`Se82.0nubb`) is also recorded.
 
-The bank contains three collections of truth hits created by the backend processors of the Bayeux/mctools Geant4 driver used in FLSimulate:
- - The `__visu.tracks` collection contains 325 truth Geant4 raw step hits collected from all volumes of interest as defined by the step hit processors
-   that have been activated by the output profile chosen by the user,
+The  bank contains  three collections  of  truth hits  created by  the
+backend  processors  of  the  Bayeux/mctools  Geant4  driver  used  in
+FLSimulate:
+ - The `__visu.tracks`  collection contains 325 truth  Geant4 raw step
+   hits collected from all volumes of  interest as defined by the step
+   hit  processors that  have  been activated  by  the output  profile
+   chosen by the user,
  - The 'calo' collection contains 2 truth calorimeter-like hits,
  - The 'gg' collection contains 26 truth Geiger-like hits.
 
-This result has been obtained by activating the `"all_details"` output profile. This illustrates that the `__visu.tracks` collection may typically
-store one order of magnitude more raw truth hits than the one collected in other collection of hits.
+This result has been obtained by activating the `"all_details"` output
+profile.  This illustrates  that  the  `__visu.tracks` collection  may
+typically store  one order of magnitude  more raw truth hits  than the
+one collected in other collection of hits.

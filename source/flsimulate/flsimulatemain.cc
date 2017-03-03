@@ -1,4 +1,4 @@
-//! \file    flsimulatemain_next.cc
+//! \file    flsimulatemain.cc
 //! \brief   Main program for flsimulate command line application
 //! \details Configure, setup and run the Geant4 based simulation
 //!          of the SuperNEMO experiment. Configuration is performed
@@ -85,7 +85,7 @@ void do_version(std::ostream& os, bool isVerbose) {
   os << "flsimulate " << falaise::version::get_version() << "\n";
   if (isVerbose) {
     os << "\n"
-       << "Copyright (C) 2013-2016 SuperNEMO Collaboration\n\n"
+       << "Copyright (C) 2013-2017 SuperNEMO Collaboration\n\n"
        << "flsimulate uses the following external libraries:\n"
        << "* Falaise : " << falaise::version::get_version() << "\n"
        << "* Bayeux  : " << bayeux::version::get_version() << "\n"
@@ -97,7 +97,8 @@ void do_version(std::ostream& os, bool isVerbose) {
 
 //! Handle printing of help message to screen
 void do_help(const bpo::options_description& od) {
-  do_version(std::cout, false);
+  std::cout << "flsimulate (" << falaise::version::get_version() << ") : SuperNEMO simulation program\n";
+  // do_version(std::cout, false);
   std::cout << "Usage:\n"
             << "  flsimulate [options]\n"
             << od
@@ -206,12 +207,12 @@ void do_cldialog(int argc, char *argv[], FLSimulateCommandLine& params) {
     ("help-scripting","print help on input script format and schema")
     ("version","print version number")
     ("config,c",
-     bpo::value<std::string>(&params.configScript)->value_name("[file]"),
+     bpo::value<std::string>(&params.configScript)->value_name("file"),
      "configuration script for simulation")
     // Output *could* go into script, but as the configuration options are
     // pretty limited at present, keep it simple
     ("output-file,o",
-     bpo::value<std::string>(&params.outputFile)->required()->value_name("[file]"),
+     bpo::value<std::string>(&params.outputFile)->required()->value_name("file"),
      "file in which to store simulation results")
     ;
 

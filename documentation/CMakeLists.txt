@@ -114,3 +114,6 @@ add_custom_command(
 
 add_custom_target(falaise_docs ALL DEPENDS ${FALAISE_DOXYGEN_OUTPUT_FILE})
 
+configure_file("flsimulate/FlSimulateVariantsDoc.html"
+  ${FALAISE_DOXYGEN_OUTPUT_DIR}/html
+  COPYONLY)
