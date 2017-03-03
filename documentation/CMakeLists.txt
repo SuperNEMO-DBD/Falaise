@@ -61,11 +61,62 @@ if(Bayeux_DOXYGEN_HTML_DIR)
   file(RELATIVE_PATH Bayeux_DOXYGEN_TAGFILE ${PROJECT_BINARY_DIR} ${Bayeux_DOXYGEN_TAGFILE})
 endif()
 
+# execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${FALAISE_DOXYGEN_OUTPUT_DIR}
+#   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+#   )
+
+# execute_process(COMMAND rst2pdf
+#   ${CMAKE_CURRENT_BINARY_DIR}/FLSimulateVariantsDoc.rst
+#   --output ${CMAKE_CURRENT_BINARY_DIR}/FLSimulateVariantsDoc.pdf
+#   RESULT_VARIABLE _errcode
+#   WORKING_DIRECTORY ${PROJECT_BUILD_PREFIX}
+#   ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/_rst2html.err
+#   )
+# message(STATUS "****** _errcode = [${_errcode}] ")
+
+# #--title="FLSimulate variant  p arameters description (version 2.1)"
+
+# execute_process(COMMAND rst2html
+#   --no-generator
+#   --no-source-link
+#   --toc-entry-backlinks
+#   --toc-top-backlinks
+#   --field-name-limit=0
+#   --stylesheet=tabs.css
+#   --link-stylesheet
+#   ${CMAKE_CURRENT_BINARY_DIR}/FLSimulateVariantsDoc.rst
+#   RESULT_VARIABLE _errcode
+#   WORKING_DIRECTORY ${PROJECT_BUILD_PREFIX}
+#   OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/FLSimulateVariantsDoc.html
+#   ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/_rst2html.err
+#   )
+# message(STATUS "****** _errcode = [${_errcode}] ")
+
+# configure_file(${CMAKE_CURRENT_BINARY_DIR}/FLSimulateVariantsDoc.html
+#   ${FALAISE_DOXYGEN_OUTPUT_DIR}/html
+#   COPYONLY)
+
+# configure_file(${CMAKE_CURRENT_BINARY_DIR}/FLSimulateVariantsDoc.pdf
+#   ${FALAISE_DOXYGEN_OUTPUT_DIR}/html
+#   COPYONLY)
+
 #-----------------------------------------------------------------------
 # Individual Documents
 #
 set(Cadfael_VERSION "1.1.0")
 configure_file(InstallationGuide.md.in InstallationGuide.md @ONLY)
+
+# execute_process(COMMAND bxvariant_inspector
+#   --datatools::resource-path=falaise@${PROJECT_SOURCE_DIR}/resources
+#   --variant-config=@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf
+#   --action doc
+#   RESULT_VARIABLE _errcode
+#   WORKING_DIRECTORY ${PROJECT_BUILD_PREFIX}
+#   OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/FLSimulateVariantsDoc.rst
+#   ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/_bxvariant_inspector.err
+#   )
+# message(STATUS "****** _errcode = [${_errcode}]")
+# ${CMAKE_CURRENT_BINARY_DIR}/FLSimulateVariantsDoc.rst
 
 set(FALAISE_MARKDOWN_DOCS
   Mainpage.md
@@ -114,6 +165,8 @@ add_custom_command(
 
 add_custom_target(falaise_docs ALL DEPENDS ${FALAISE_DOXYGEN_OUTPUT_FILE})
 
-configure_file("flsimulate/FlSimulateVariantsDoc.html"
+configure_file("flsimulate/FLSimulateVariantsDoc-2.1.pdf"
   ${FALAISE_DOXYGEN_OUTPUT_DIR}/html
   COPYONLY)
+
+# - end
