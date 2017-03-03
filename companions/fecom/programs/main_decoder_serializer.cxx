@@ -78,19 +78,19 @@ int main(int argc_, char ** argv_)
     // Set the input file from Jihanne :
     if (input_filename.empty()) input_filename = "${FECOM_RESOURCES_DIR}/data/samples/fake_run/calo_fake_tracker_hits_1.dat";
     datatools::fetch_path_with_env(input_filename);
-    std::string input_file_basename = input_filename;
-    std::size_t found = 0;
-    found = input_file_basename.find_last_of("/");
-    input_file_basename.erase(0, found+1);
-    found = input_file_basename.find(".dat");
-    input_file_basename.erase(found, input_file_basename.size());
+    // std::string input_file_basename = input_filename;
+    // std::size_t found = 0;
+    // found = input_file_basename.find_last_of("/");
+    // input_file_basename.erase(0, found+1);
+    // found = input_file_basename.find(".dat");
+    // input_file_basename.erase(found, input_file_basename.size());
     std::string input_path = input_filename;
-    found = input_path.find_last_of("/");
+    std::size_t found = input_path.find_last_of("/");
     input_path.erase(found+1, input_path.size());
 
     DT_LOG_INFORMATION(logging, "Input filename      : " + input_filename);
     DT_LOG_INFORMATION(logging, "Input path          : " + input_path);
-    DT_LOG_INFORMATION(logging, "Input file basename : " + input_file_basename);
+    // DT_LOG_INFORMATION(logging, "Input file basename : " + input_file_basename);
 
     // Default output path in input path :
     if (output_path.empty())
@@ -101,7 +101,7 @@ int main(int argc_, char ** argv_)
     datatools::fetch_path_with_env(output_path);
     DT_LOG_INFORMATION(logging, "Output path : " + output_path);
 
-    std::string output_filename = output_path + input_file_basename + "_serialized.data.bz2";
+    std::string output_filename = output_path + "output_serialized.data.bz2";
     DT_LOG_INFORMATION(logging, "Serialization output file :" + output_filename);
     datatools::data_writer serializer(output_filename,
 				      datatools::using_multiple_archives);
@@ -260,8 +260,8 @@ int main(int argc_, char ** argv_)
 		DT_LOG_DEBUG(logging, "Begin the building of tracker hits...");
 		const_cast<fecom::commissioning_event&>(*it_com_set).set_channel_mapping(my_channel_mapping);
 		const_cast<fecom::commissioning_event&>(*it_com_set).build_tracker_hit_from_channels();
-		serializer.store(*it_com_set);
 	      }
+	    serializer.store(*it_com_set);
 	    event_serialized++;
 	  }
       }

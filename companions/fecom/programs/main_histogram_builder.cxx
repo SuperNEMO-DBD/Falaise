@@ -355,7 +355,7 @@ int main(int argc_, char ** argv_)
 	      total_charge += raw_charge;
 	      total_peak += raw_peak;
 
-	      if (it_chit -> low_threshold_trig_count >= 1)
+	      if (it_chit -> high_threshold)
 		{
 		  total_charge_if_trig += raw_charge;
 		  total_peak_if_trig += raw_peak;
