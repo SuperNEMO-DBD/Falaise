@@ -14,14 +14,19 @@ namespace fecom {
   /// \brief Run header
   struct run_header
   {
-    run_header();
+		/// Default constructor
+		run_header();
 
+		/// Destructor
     virtual ~run_header();
 
+		/// Check if the run header is valid
     bool is_valid() const;
 
+		/// Reset
     void reset();
 
+		/// Smart print
     virtual void tree_dump(std::ostream & out_,
                            const std::string & title_ = "",
                            const std::string & indent_ = "",
@@ -33,11 +38,11 @@ namespace fecom {
 
   public:
 
-    std::string software_version;
-    double      unix_time;
-    std::string date;
-    std::string time;
-    std::string data_type;
+    std::string software_version; ///< The parsed software version
+    double      unix_time;        ///< The parsed unix time
+    std::string date;             ///< The parsed date
+    std::string time;             ///< The parsed time
+    std::string data_type;        ///< The parsed data type
 
   };
 

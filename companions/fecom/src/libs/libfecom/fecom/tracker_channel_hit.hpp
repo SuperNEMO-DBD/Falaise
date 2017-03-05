@@ -20,10 +20,11 @@
 
 namespace fecom {
 
+	//! \brief Commissioning tracker channel hit parser
   struct tracker_channel_hit
     : public base_hit
   {
-
+		/// Predicate to find a tracker channel hit by channel
 		struct find_by_channel {
 			find_by_channel(const uint16_t & feast_id_,
 											const uint16_t & channel_id_) : feast_id(feast_id_),
@@ -42,6 +43,7 @@ namespace fecom {
 			uint16_t channel_id;
 		};
 
+		/// Predicate to find a tracker channel hit by timestamp
 		struct find_by_timestamp {
 			find_by_timestamp(const uint16_t & feast_id_,
 												const uint16_t & channel_id_,
@@ -66,21 +68,26 @@ namespace fecom {
 			std::string timestamp_type;
 		};
 
+		/// Default constructor
     tracker_channel_hit();
 
+		/// Destructor
     virtual ~tracker_channel_hit();
 
+		/// Check if the tracker
     bool is_valid() const;
 
+		/// Reset
     virtual void reset();
 
+		/// Smart print
     virtual void tree_dump(std::ostream & out_,
                            const std::string & title_ = "",
                            const std::string & indent_ = "",
                            bool inherit_ = false) const;
 
 
-    /// Reset all times (anodic and cathodic)
+    /// Reset all timestamp (anodic and cathodic)
     void reset_timestamp();
 
   private:
@@ -90,15 +97,9 @@ namespace fecom {
   public:
 
 		// Management :
-		mutable bool associated = false;
+		mutable bool associated = false; ///< Flag to know if the tracker channel is already asociate in a tracker_hit
 
     // Config :
-
-		// In the electronic ID : (type, address)
-
-    // uint16_t feast_id; ///< FEAST (0..1)
-		// uint16_t channel;  ///< Channel (0..15)
-    // channelmode_type channel_type; ///< Channel type (anodic || cathodic)
 
     std::string timestamp_type;    ///< Type of the timestamp (t0..t6)
 

@@ -29,8 +29,10 @@ namespace fecom {
     /// Default constructor
     calo_calibration();
 
+		/// Load pedestals from a file
     void load_pedestals(const uint16_t board_id_, const std::string & filename_);
 
+		/// Clear pedestals
     void clear_pedestals();
 
     /// Internal header data
@@ -49,6 +51,7 @@ namespace fecom {
       calo_pedestal_header header;
     };
 
+		/// Smart print
     void tree_dump(std::ostream & out_,
                    const std::string & title_ = "",
                    const std::string & indent_ = "",
@@ -72,8 +75,10 @@ namespace fecom {
 
   public:
 
-    datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
-    std::map<calo_channel_id, calo_pedestal_calib> calo_pedestals;
+		// Management :
+    datatools::logger::priority logging = datatools::logger::PRIO_FATAL; ///< Logger
+
+    std::map<calo_channel_id, calo_pedestal_calib> calo_pedestals; /// Map between channel and pedestal calibration
 
   };
 

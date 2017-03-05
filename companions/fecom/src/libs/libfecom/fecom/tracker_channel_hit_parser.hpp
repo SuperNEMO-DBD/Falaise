@@ -37,7 +37,6 @@ namespace fecom {
 							 tracker_channel_hit & hit_);
 
   private:
-
     // void _parse_header_(const std::string & header_line_,
     //                     const int index_,
     //                     tracker_channel_hit & hit_);

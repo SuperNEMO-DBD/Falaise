@@ -21,24 +21,32 @@
 
 namespace fecom {
 
+	//! \brief commissioning tracker hit, inherit from base
   struct tracker_hit
 		: public datatools::i_serializable
   {
-
+		/// Default constructor
     tracker_hit();
 
+		/// Destructor
     virtual ~tracker_hit();
 
+		/// Check if the tracker hit is valid
     bool is_valid() const;
 
+		/// Add an anodic tracker channel hit
 		void add_anodic_tracker_channel(const fecom::tracker_channel_hit & a_tracker_channel_);
 
+		/// Add a bottom cathodic tracker channel hit
 		void add_bot_cathodic_tracker_channel(const fecom::tracker_channel_hit & a_tracker_channel_);
 
+		/// Add a top cathodic tracker channel hit
 		void add_top_cathodic_tracker_channel(const fecom::tracker_channel_hit & a_tracker_channel_);
 
+		/// Reset
     virtual void reset();
 
+		/// Smart print
     virtual void tree_dump(std::ostream & out_,
                            const std::string & title_ = "",
                            const std::string & indent_ = "",
@@ -46,7 +54,7 @@ namespace fecom {
 
 
 
-		/// Check if tracker hit has cell id
+		/// Check if tracker hit has geom id
 		bool has_geom_id() const;
 
     /// Check if has anodic time 0
@@ -149,7 +157,7 @@ namespace fecom {
 
   private:
 
-    void _reset_();
+		void _reset_();
 
   public:
 

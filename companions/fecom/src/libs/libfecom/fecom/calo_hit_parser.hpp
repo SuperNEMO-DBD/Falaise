@@ -35,10 +35,12 @@ namespace fecom {
 
   private:
 
+		/// Header parsing
     void _parse_header_(const std::string & header_line_,
                         const int index_,
                         calo_hit & hit_);
 
+		/// Samples parsing
     void _parse_samples_(const std::string & data_line_,
                          calo_hit & hit_);
 
