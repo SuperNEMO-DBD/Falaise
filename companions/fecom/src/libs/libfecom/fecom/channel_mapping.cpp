@@ -306,6 +306,21 @@ namespace fecom {
     return;
   }
 
+  bool channel_mapping::is_calo_channel_in_map(const geomtools::geom_id & input_electronic_id_) const
+  {
+    DT_THROW_IF(!is_initialized(), std::logic_error, "Channel mapping is not initizalied !");
+    bool validity = false;
+
+    if (input_electronic_id_.get_type() == calo_constants::CALO_CHANNEL_TYPE)
+      {
+	auto it_map = calo_bimap.right.find(input_electronic_id_);
+	if (it_map != calo_bimap.right.end()) {
+	  validity = true;
+	}
+      }
+    return validity;
+  }
+
   bool channel_mapping::is_anodic_channel(const geomtools::geom_id & input_electronic_id_) const
   {
     DT_THROW_IF(!is_initialized(), std::logic_error, "Channel mapping is not initizalied !");

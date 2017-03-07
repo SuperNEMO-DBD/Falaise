@@ -107,6 +107,9 @@ int main(int argc_, char ** argv_)
     std::string input_calo_mapping_file = input_path + "mapping_calo.csv";
     datatools::fetch_path_with_env(input_calo_mapping_file);
 
+    DT_LOG_INFORMATION(logging, "Mapping tracker file :" + input_tracker_mapping_file);
+    DT_LOG_INFORMATION(logging, "Mapping calo file :" + input_calo_mapping_file);
+
     fecom::channel_mapping my_channel_mapping;
     my_channel_mapping.build_tracker_mapping_from_file(input_tracker_mapping_file);
     my_channel_mapping.build_calo_mapping_from_file(input_calo_mapping_file);
@@ -280,6 +283,7 @@ int main(int argc_, char ** argv_)
     string_buffer = "hit_tracker_count_if_0_calos_TH2F";
     TH2F * hit_tracker_count_if_0_calos_TH2F = new TH2F(string_buffer.c_str(),
 							Form("Hit tracker GG cell count if 0 calos"),
+
 							5, 0, 5,
 							10, 0, 10);
 
@@ -337,50 +341,52 @@ int main(int argc_, char ** argv_)
 	    {
 	      // it_chit -> tree_dump(std::clog, "Calo hit #" + std::to_string(chit_counter));
 	      geomtools::geom_id electronic_id = it_chit -> electronic_id;
-	      geomtools::geom_id geometric_id;
-
-	      my_channel_mapping.get_geometric_id_from_electronic_id(electronic_id,
-								     geometric_id);
-
-	      uint16_t column = geometric_id.get(fecom::calo_constants::COLUMN_INDEX);
-	      uint16_t row = geometric_id.get(fecom::calo_constants::ROW_INDEX);
-	      int32_t raw_charge =  it_chit -> raw_charge;
-	      if (raw_charge < 0) raw_charge *= -1;
-	      int16_t raw_peak = it_chit -> raw_peak;
-	      if (raw_peak < 0) raw_peak *= -1;
-	      int16_t raw_baseline = it_chit -> raw_baseline;
-	      if (raw_baseline < 0) raw_baseline *= -1;
-
-	      // hit_calo_count_TH2F->Fill(column, row);
-	      total_charge += raw_charge;
-	      total_peak += raw_peak;
-
-	      if (it_chit -> high_threshold)
+	      if (my_channel_mapping.is_calo_channel_in_map(electronic_id))
 		{
-		  total_charge_if_trig += raw_charge;
-		  total_peak_if_trig += raw_peak;
+		  geomtools::geom_id geometric_id;
+		  my_channel_mapping.get_geometric_id_from_electronic_id(electronic_id,
+									 geometric_id);
 
-		  // Fill calo trigger histo
-		  calo_raw_charge_trig_row_TH1F[row]->Fill(raw_charge);
-		  calo_raw_peak_trig_row_TH1F[row]->Fill(raw_peak);
+		  uint16_t column = geometric_id.get(fecom::calo_constants::COLUMN_INDEX);
+		  uint16_t row = geometric_id.get(fecom::calo_constants::ROW_INDEX);
+		  int32_t raw_charge =  it_chit -> raw_charge;
+		  if (raw_charge < 0) raw_charge *= -1;
+		  int16_t raw_peak = it_chit -> raw_peak;
+		  if (raw_peak < 0) raw_peak *= -1;
+		  int16_t raw_baseline = it_chit -> raw_baseline;
+		  if (raw_baseline < 0) raw_baseline *= -1;
 
-		  double calo_time_in_ns = it_chit -> tdc_ns * 1e-9;
-		  calo_time_distribution_row_TH1F[row]->Fill(calo_time_in_ns);
+		  // hit_calo_count_TH2F->Fill(column, row);
+		  total_charge += raw_charge;
+		  total_peak += raw_peak;
 
-		  hit_calo_trigger_count_TH2F->Fill(column, row);
+		  if (it_chit -> high_threshold)
+		    {
+		      total_charge_if_trig += raw_charge;
+		      total_peak_if_trig += raw_peak;
 
-		  if (calo_triggered == 0) time_calo_1 = calo_time_in_ns;
-		  else if (calo_triggered == 1) time_calo_2 = calo_time_in_ns;
+		      // Fill calo trigger histo
+		      calo_raw_charge_trig_row_TH1F[row]->Fill(raw_charge);
+		      calo_raw_peak_trig_row_TH1F[row]->Fill(raw_peak);
 
-		  calo_triggered++;
+		      double calo_time_in_ns = it_chit -> tdc_ns * 1e-9;
+		      calo_time_distribution_row_TH1F[row]->Fill(calo_time_in_ns);
+
+		      hit_calo_trigger_count_TH2F->Fill(column, row);
+
+		      if (calo_triggered == 0) time_calo_1 = calo_time_in_ns;
+		      else if (calo_triggered == 1) time_calo_2 = calo_time_in_ns;
+
+		      calo_triggered++;
+		    }
+		  else
+		    {
+		      // Fill calo baseline histos
+		      calo_raw_charge_no_trig_row_TH1F[row]->Fill(raw_charge);
+		      calo_raw_baseline_no_trig_row_TH1F[row]->Fill(raw_baseline);
+		    }
+		  chit_counter++;
 		}
-	      else
-		{
-		  // Fill calo baseline histos
-		  calo_raw_charge_no_trig_row_TH1F[row]->Fill(raw_charge);
-		  calo_raw_baseline_no_trig_row_TH1F[row]->Fill(raw_baseline);
-		}
-	      chit_counter++;
 	    }
 	  number_of_calos_TH1F->Fill(calo_triggered);
 

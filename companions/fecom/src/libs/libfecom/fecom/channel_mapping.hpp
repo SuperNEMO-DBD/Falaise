@@ -77,6 +77,9 @@ namespace fecom {
 																			 geomtools::geom_id & electronic_bot_cathodic_id_,
 																			 geomtools::geom_id & electronic_top_cathodic_id_) const;
 
+		/// Check if the calo channel is in the bimap
+		bool is_calo_channel_in_map(const geomtools::geom_id & input_electronic_id_) const;
+
     /// Check if the channel is anodic
     bool is_anodic_channel(const geomtools::geom_id & input_electronic_id_) const;
 
