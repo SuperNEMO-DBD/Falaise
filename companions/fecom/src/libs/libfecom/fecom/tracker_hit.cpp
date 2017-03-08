@@ -21,7 +21,14 @@ namespace fecom {
 
   bool tracker_hit::is_valid() const
   {
-    if (!has_geom_id()) return false;
+    if (!has_geom_id()
+	|| (!has_anodic_t0()
+	    && !has_anodic_t1()
+	    && !has_anodic_t2()
+	    && !has_anodic_t3()
+	    && !has_anodic_t4()
+	    && !has_bot_cathodic_time()
+	    && !has_top_cathodic_time())) return false;
     return true;
   }
 
@@ -302,25 +309,25 @@ namespace fecom {
          << "Cell geometric ID         : " << (geomtools::geom_id) cell_geometric_id << std::endl;
 
     out_ << indent_ << io::tag()
-         << "Anodic time 0             : " << (int) anodic_t0 << std::endl;
+         << "Anodic time 0             : " << anodic_t0 << std::endl;
 
     out_ << indent_ << io::tag()
-         << "Anodic time 1             : " << (int) anodic_t1 << std::endl;
+         << "Anodic time 1             : " << anodic_t1 << std::endl;
 
     out_ << indent_ << io::tag()
-         << "Anodic time 2             : " << (int) anodic_t2 << std::endl;
+         << "Anodic time 2             : " << anodic_t2 << std::endl;
 
     out_ << indent_ << io::tag()
-         << "Anodic time 3             : " << (int) anodic_t3 << std::endl;
+         << "Anodic time 3             : " << anodic_t3 << std::endl;
 
     out_ << indent_ << io::tag()
-         << "Anodic time 4             : " << (int) anodic_t4 << std::endl;
+         << "Anodic time 4             : " << anodic_t4 << std::endl;
 
     out_ << indent_ << io::tag()
-         << "Bottom cathodic time      : " << (int) bot_cathodic_time << std::endl;
+         << "Bottom cathodic time      : " << bot_cathodic_time << std::endl;
 
     out_ << indent_ << io::tag()
-         << "Top cathodic time         : " << (int) top_cathodic_time << std::endl;
+         << "Top cathodic time         : " << top_cathodic_time << std::endl;
 
     out_ << indent_ << io::inherit_last_tag(inherit_)
          << "Validity                  : " << std::boolalpha << is_valid() << std::endl;

@@ -73,7 +73,6 @@ namespace fecom {
   void commissioning_event::build_tracker_hit_from_channels()
   {
     bool verbose = false;
-
     if (verbose) std::clog << "Number of tracker channel in the event : " << _tracker_channel_hit_collection_.size() << std::endl;
 
     for (std::set<fecom::tracker_channel_hit>::iterator ichan = _tracker_channel_hit_collection_.begin();
@@ -160,7 +159,7 @@ namespace fecom {
 	  }
 
 	  // Add the tracker hit to the collection :
-	  _tracker_hit_collection_.push_back(a_tracker_hit);
+	  if (a_tracker_hit.is_valid())	  _tracker_hit_collection_.push_back(a_tracker_hit);
 
 	} // end of not already associated
 
@@ -179,7 +178,7 @@ namespace fecom {
   {
     _my_channel_mapping_ = nullptr;
     _trigger_id_ = 0xFFFFFFFF;
-    _last_time_in_ns_added_ = -1;
+    _last_time_in_ns_added_ = 0;
     _calo_hit_collection_.clear();
     _tracker_channel_hit_collection_.clear();
     _tracker_hit_collection_.clear();

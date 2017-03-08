@@ -30,7 +30,7 @@ namespace fecom {
 		static const uint16_t INVALID_BOARD = 20;
 		static const uint16_t INVALID_FEAST = NUMBER_OF_FEAST_PER_BOARD;
     static const uint16_t INVALID_CHANNEL = NUMBER_OF_CHANNEL_PER_BOARD;
-    static const uint64_t INVALID_TIME = 0xFFFFFFFF;
+    static const uint64_t INVALID_TIME = 0xFFFFFFFFFFFFFFFF;
 
 		static const uint64_t NUMBER_OF_LAYERS = 9;
 		static const uint64_t NUMBER_OF_ROWS_PER_BOARD = 4;
