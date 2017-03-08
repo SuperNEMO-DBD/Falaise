@@ -130,17 +130,18 @@ int main(int argc_, char ** argv_)
     my_channel_mapping.build_calo_mapping_from_file(input_calo_mapping_file);
     my_channel_mapping.initialize();
 
-    const double SERIALIZATION_GATE_SIZE_IN_NS = 100; // = 1ms for the moment (tunable !)
+    const double SERIALIZATION_GATE_SIZE_IN_NS = 1000000; // = 1ms for the moment (tunable !)
 
     std::size_t hit_counter = 0;
     std::size_t event_serialized = 0;
-    std::set<fecom::commissioning_event, fecom::commissioning_event::compare> open_commissioning_events;
+    std::vector<fecom::commissioning_event> open_commissioning_events;
     fecom::calo_hit chit;
     fecom::tracker_channel_hit tchit;
 
 
     DT_LOG_INFORMATION(logging, "Do the job...");
     DT_LOG_INFORMATION(logging, "...");
+
     while(reader.has_next_hit()) {
       DT_LOG_DEBUG(logging, "Hit counter = " << hit_counter);
       chit.reset();
@@ -148,52 +149,45 @@ int main(int argc_, char ** argv_)
       reader.load_next_hit(chit, tchit);
 
       std::string valid = "none";
-      double actual_time_in_ns = -1;
-
+      double actual_time_in_ns = 0;
       uint32_t actual_hit_trigger_id = 0xFFFFFF;
-
-      // See hit timestamp and check the last timestamp for each commissioning event in the set
-      for (auto it_com_set = open_commissioning_events.begin();
-	   it_com_set != open_commissioning_events.end();
-	   it_com_set++)
-	{
-	  if (open_commissioning_events.size() == 0) break;
-	  else if (it_com_set != open_commissioning_events.end())
-	    {
-	      if (actual_time_in_ns > it_com_set->_last_time_in_ns_added_ + SERIALIZATION_GATE_SIZE_IN_NS)
-		{
-		  DT_LOG_DEBUG(logging, "Begin the Serialization for a commissioning event...");
-
-		  if (it_com_set->get_tracker_hit_collection().size() != 0)
-		    {
-		      DT_LOG_DEBUG(logging, "Begin the building of tracker hits...");
-
-		      const_cast<fecom::commissioning_event&>(*it_com_set).set_channel_mapping(my_channel_mapping);
-		      const_cast<fecom::commissioning_event&>(*it_com_set).build_tracker_hit_from_channels();
-		    }
-		  serializer.store(*it_com_set);
-		  DT_LOG_DEBUG(logging, "The commissioning event has been stored in the '" + output_filename + "' file");
-
-		  // After serialization remove it from the set
-		  open_commissioning_events.erase(it_com_set);
-		  event_serialized++;
-		}
-	    }
-	}
 
       if (chit.is_valid()) {
 	// chit.tree_dump(std::clog, "Calo hit is valid :");
 	valid = "calo";
 	actual_hit_trigger_id = chit.trigger_id;
-	actual_time_in_ns = chit.tdc_ns;
+	if (chit.tdc_ns != 0) actual_time_in_ns = chit.tdc_ns;
       }
 
       if (tchit.is_valid()) {
 	// tchit.tree_dump(std::clog, "Tracker channel hit is valid :");
 	valid = "tracker";
 	actual_hit_trigger_id = tchit.trigger_id;
-	actual_time_in_ns = tchit.timestamp_time_ns;
+	if (tchit.timestamp_time_ns != 0) actual_time_in_ns = tchit.timestamp_time_ns;
       }
+
+      for (auto it_com_set = open_commissioning_events.begin();
+	   it_com_set != open_commissioning_events.end();)
+	{
+	  // it_com_set->tree_dump(std::clog, "BEGIN LOOP COM EVENT : ");
+	  if (actual_time_in_ns > it_com_set -> _last_time_in_ns_added_ + SERIALIZATION_GATE_SIZE_IN_NS)
+	    {
+	      DT_LOG_DEBUG(logging, "Begin the Serialization for a commissioning event...");
+
+	      if (it_com_set->get_tracker_channel_hit_collection().size() != 0)
+		{
+		  DT_LOG_DEBUG(logging, "Begin the building of tracker hits...");
+		  const_cast<fecom::commissioning_event&>(*it_com_set).set_channel_mapping(my_channel_mapping);
+		  const_cast<fecom::commissioning_event&>(*it_com_set).build_tracker_hit_from_channels();
+		}
+	      serializer.store(*it_com_set);
+	      DT_LOG_DEBUG(logging, "The commissioning event has been stored in the '" + output_filename + "' file");
+	      // After serialization remove it from the set
+	      open_commissioning_events.erase(it_com_set);
+	      event_serialized++;
+	    }
+	  else it_com_set++;
+	} // end of for
 
       // Do the job if the hit is calo
       if (valid == "calo") {
@@ -203,7 +197,8 @@ int main(int argc_, char ** argv_)
        	if (it_set != open_commissioning_events.end()) {
 	  // Trigger ID already exist, add the calo hit to the existing commissioning event
 	  const_cast<fecom::commissioning_event&>(*it_set).add_calo_hit(chit);
-	  if (it_set->_last_time_in_ns_added_ <= actual_time_in_ns) it_set -> _last_time_in_ns_added_ = actual_time_in_ns;
+	  if (actual_time_in_ns > it_set -> _last_time_in_ns_added_) it_set -> _last_time_in_ns_added_ = actual_time_in_ns;
+
 	}
 
 	else {
@@ -212,7 +207,7 @@ int main(int argc_, char ** argv_)
 	  a_new_comm_event.set_trigger_id(actual_hit_trigger_id);
 	  a_new_comm_event.add_calo_hit(chit);
 	  a_new_comm_event._last_time_in_ns_added_ = actual_time_in_ns;
-	  open_commissioning_events.insert(a_new_comm_event);
+	  open_commissioning_events.push_back(a_new_comm_event);
 	}
       } // end of if calo
 
@@ -223,24 +218,34 @@ int main(int argc_, char ** argv_)
 				   fecom::commissioning_event::find_by_trigger_id(actual_hit_trigger_id));
 
 	if (it_set != open_commissioning_events.end()) {
-	  // Trigger ID already exist, add the tracker channel hit to the existing commissioning event
-	  const_cast<fecom::commissioning_event&>(*it_set).add_tracker_channel_hit(tchit);
-	  if (it_set->_last_time_in_ns_added_ <= actual_time_in_ns) it_set -> _last_time_in_ns_added_ = actual_time_in_ns;
+	  // Trigger ID already exist, add the tracker channel hit to the existing commissioning event if the timestamp is not zero
+	  if (tchit.timestamp_value != 0 && tchit.timestamp_time_ns != 0)
+	    {
+	      const_cast<fecom::commissioning_event&>(*it_set).add_tracker_channel_hit(tchit);
+	      if (actual_time_in_ns > it_set->_last_time_in_ns_added_) it_set -> _last_time_in_ns_added_ = actual_time_in_ns;
+	    }
 	}
 
 	else {
-	  // Trigger ID not exist, create a new commissioning event, add the calo hit then add it to the open comm set
-	  fecom::commissioning_event a_new_comm_event;
-	  a_new_comm_event.set_trigger_id(actual_hit_trigger_id);
-	  a_new_comm_event.add_tracker_channel_hit(tchit);
-	  a_new_comm_event._last_time_in_ns_added_ = actual_time_in_ns;
-
-	  open_commissioning_events.insert(a_new_comm_event);
+	  if (tchit.timestamp_value != 0 && tchit.timestamp_time_ns != 0)
+	    {
+	      // Trigger ID not exist, create a new commissioning event, add the calo hit then add it to the open comm set
+	      fecom::commissioning_event a_new_comm_event;
+	      a_new_comm_event.set_trigger_id(actual_hit_trigger_id);
+	      a_new_comm_event.add_tracker_channel_hit(tchit);
+	      a_new_comm_event._last_time_in_ns_added_ = actual_time_in_ns;
+	      open_commissioning_events.push_back(a_new_comm_event);
+	    }
 	}
       } // end of else if tracker
 
-      else DT_THROW(std::logic_error, "Nor calo and tracker hit are valid ! ");
-
+      else
+	{
+	  // std::clog << "DEBUG : Print hits before throw : " << std::endl;
+	  // chit.tree_dump(std::clog, "Calo hit is not valid and throwed :");
+	  // tchit.tree_dump(std::clog, "Tracker channel hit is not valid and throwed :");
+	  DT_THROW(std::logic_error, "Nor calo and tracker hit are valid ! ");
+	}
 
       hit_counter++;
     } // end of while reader
@@ -255,7 +260,7 @@ int main(int argc_, char ** argv_)
 	  {
 	    DT_LOG_DEBUG(logging, "Begin the Serialization for a commissioning event...");
 
-	    if (it_com_set->get_tracker_hit_collection().size() != 0)
+	    if (it_com_set->get_tracker_channel_hit_collection().size() != 0)
 	      {
 		DT_LOG_DEBUG(logging, "Begin the building of tracker hits...");
 		const_cast<fecom::commissioning_event&>(*it_com_set).set_channel_mapping(my_channel_mapping);

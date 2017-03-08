@@ -34,6 +34,7 @@ int main(int argc_, char ** argv_)
   std::string output_path = "";
   bool is_display      = false;
   bool is_help         = false;
+  bool is_debug        = false;
 
   while (iarg < argc_) {
     std::string arg = argv_[iarg];
@@ -45,8 +46,12 @@ int main(int argc_, char ** argv_)
       output_path = argv_[++iarg];
     }
 
-    else if (arg == "-d" || arg == "--display") {
+    else if (arg == "-D" || arg == "--display") {
       is_display = true;
+    }
+
+    else if (arg == "-d" || arg == "--debug") {
+      is_debug = true;
     }
 
     else if (arg =="-h" || arg == "--help") {
@@ -69,12 +74,13 @@ int main(int argc_, char ** argv_)
 		<< "-h    [ --help ]           produce help message" << std::endl
 		<< "-i    [ --input ]          set an input file" << std::endl
 		<< "-op   [ --output path ]    set a path where all files are store" << std::endl
-		<< "-d    [ --display ]        display things for debug" << std::endl << std::endl;
+		<< "-D    [ --display ]        display tracks" << std::endl
+		<< "-d    [ --debug ]          display things for debug" << std::endl << std::endl;
       return 0;
     }
 
   datatools::logger::priority logging;
-  if (is_display) logging = datatools::logger::PRIO_DEBUG;
+  if (is_debug) logging = datatools::logger::PRIO_DEBUG;
   else logging = datatools::logger::PRIO_INFORMATION;
 
   try {
@@ -403,18 +409,19 @@ int main(int argc_, char ** argv_)
 	  }
 
 	  std::bitset<fecom::tracker_constants::NUMBER_OF_LAYERS> tracker_layers_hit (0x0);
-
 	  std::vector<double> cells_last_layer_z_reco;
+
 
 	  for (auto it_thit = deserialized_com_event.get_tracker_hit_collection().begin();
 	       it_thit != deserialized_com_event.get_tracker_hit_collection().end();
 	       it_thit++)
 	    {
-	      // it_thit -> tree_dump(std::clog, "Tracker hit #" + std::to_string(thit_counter));
+	      // if (is_display) std::clog << "Display tracker event #" << deserialized_com_event.get_trigger_id() << std::endl;
+	      // if (is_display)  it_thit -> tree_dump(std::clog, "Tracker hit #" + std::to_string(thit_counter));
 	      uint16_t layer = it_thit -> cell_geometric_id.get(fecom::tracker_constants::LAYER_INDEX);
 	      uint16_t row =  it_thit -> cell_geometric_id.get(fecom::tracker_constants::ROW_INDEX);
 	      // hit_tracker_channel_TH1F[layer][row]->Fill(1);
-	      display_matrix[row][layer] = '*';
+	      display_matrix[row-4][layer] = '*';
 
 	      tracker_layers_hit.set(layer, true);
 
@@ -445,8 +452,19 @@ int main(int argc_, char ** argv_)
 		  // Top cathode position : + Leff / 2
 		  // Bot cathode position : - Leff / 2
 
-		  double bot_cathode_time = (it_thit -> get_bot_cathodic_time() - it_thit -> anodic_t0);
-		  double top_cathode_time = (it_thit -> get_top_cathodic_time() - it_thit -> anodic_t0);
+		  double bot_cathode_time = 0;
+		  double top_cathode_time = 0;
+
+		  if (it_thit -> has_anodic_t0())
+		    {
+		      bot_cathode_time = (it_thit -> get_bot_cathodic_time() - it_thit -> anodic_t0);
+		      top_cathode_time = (it_thit -> get_top_cathodic_time() - it_thit -> anodic_t0);
+		    }
+		  else
+		    {
+		      bot_cathode_time = (it_thit -> get_bot_cathodic_time());
+		      top_cathode_time = (it_thit -> get_top_cathodic_time());
+		    }
 
 		  // See Jihanne for cathodic register in datas. R5 / R6
 		  double z_rec = (fecom::tracker_constants::geiger_cell_Leff() / (CLHEP::mm * 2)) * (int(bot_cathode_time - top_cathode_time)) / (bot_cathode_time + top_cathode_time);
@@ -462,7 +480,7 @@ int main(int argc_, char ** argv_)
 		    }
 		}
 
-	      double anodic_t0_ns = -1;
+	      // double anodic_t0_ns = -1;
 	      // double anodic_t1_ns = -1;
 	      // double anodic_t2_ns = -1;
 	      // double anodic_t3_ns = -1;
@@ -470,7 +488,7 @@ int main(int argc_, char ** argv_)
 	      // double bot_cathodic_time = -1;
 	      // double top_cathodic_time  = -1;
 
-	      if (it_thit -> has_anodic_t0()) anodic_t0_ns = it_thit -> anodic_t0 * CLOCK_TIME;
+	      // if (it_thit -> has_anodic_t0()) anodic_t0_ns = it_thit -> anodic_t0 * CLOCK_TIME;
 	      // if (it_thit -> has_anodic_t1()) anodic_t1_ns = it_thit->anodic_t1 * CLOCK_TIME;
 	      // if (it_thit -> has_anodic_t2()) anodic_t2_ns = it_thit->anodic_t2 * CLOCK_TIME;
 	      // if (it_thit -> has_anodic_t3()) anodic_t3_ns = it_thit->anodic_t3 * CLOCK_TIME;
@@ -481,16 +499,19 @@ int main(int argc_, char ** argv_)
 	      if (it_thit -> has_bot_cathodic_time()) tracker_bot_cathode_efficiency_TH2F->Fill(row, layer);
 	      if (it_thit -> has_top_cathodic_time()) tracker_top_cathode_efficiency_TH2F->Fill(row, layer);
 
-	      tracker_time_distribution_TH1F[layer][row]->Fill(anodic_t0_ns);
+	      // tracker_time_distribution_TH1F[layer][row]->Fill(anodic_t0_ns);
 
 	      tracker_triggered++;
 	      thit_counter++;
 	    } // end of it_hit
 
+	  if (is_display && tracker_triggered > 2) std::clog << "Display tracker event #" << deserialized_com_event.get_trigger_id() << std::endl;
+	  if (is_display && tracker_triggered > 2) std::clog << "Hit collection size : " << deserialized_com_event.get_tracker_hit_collection().size() << std::endl;
+
 	  // If full track :
 	  if (tracker_layers_hit.count() == fecom::tracker_constants::NUMBER_OF_LAYERS)
 	    {
-	      DT_LOG_DEBUG(logging, "Vector size of last layer Z :" << cells_last_layer_z_reco.size());
+	      DT_LOG_FATAL(logging, "Vector size of last layer Z :" << cells_last_layer_z_reco.size());
 
 	      for (auto it_z_vector = cells_last_layer_z_reco.begin();
 		   it_z_vector != cells_last_layer_z_reco.end();
@@ -514,9 +535,9 @@ int main(int argc_, char ** argv_)
 
 		    }
 
-		}
+		} // end of it z vector
 
-	    }
+	    } // end of full track
 
 
 	  tracker_layer_distribution_TH1F->Fill(tracker_layers_hit.count());
@@ -545,8 +566,9 @@ int main(int argc_, char ** argv_)
 	    }
 	  else {}
 
-	  if (is_display) {
+	  if (is_display && tracker_triggered > 2) {
 	    std::clog << "Display tracker event #" << deserialized_com_event.get_trigger_id() << std::endl;
+	    std::clog << "Tracker triggered : " << tracker_triggered << " tracker layers : " << tracker_layers_hit << std::endl;
 	    std::clog << "L |[CALO]" << std::endl;
 	    std::clog << "- |      " << std::endl;
 	    for (unsigned int ilayer = fecom::tracker_constants::NUMBER_OF_LAYERS - 1; ilayer != (unsigned) 0-1; ilayer--) {
