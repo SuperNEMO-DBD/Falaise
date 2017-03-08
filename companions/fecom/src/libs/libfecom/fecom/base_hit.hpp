@@ -66,10 +66,10 @@ namespace fecom {
 
   public:
 
-    int          hit_id;     ///< The hit ID
+    uint64_t     hit_id;     ///< The hit ID
     hitmode_type hitmode;    ///< The hitmode (CALO or TRACKER ftm)
 		geomtools::geom_id electronic_id; ///< The electronic channel ID
-		uint32_t     trigger_id; ///< Hit trigger ID
+		uint64_t     trigger_id; ///< Hit trigger ID
 
 		DATATOOLS_SERIALIZATION_DECLARATION()
   };

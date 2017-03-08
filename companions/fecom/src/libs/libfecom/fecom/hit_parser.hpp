@@ -51,9 +51,9 @@ namespace fecom {
     tracker_channel_hit_parser _tracker_channel_hit_parser_; //!< Tracker hit parser
 
     // Working :
-    uint32_t               _hit_id_;        //!< Actual hit ID
+    uint64_t               _hit_id_;        //!< Actual hit ID
     base_hit::hitmode_type _hit_mode_type_; //!< Actual hit mode
-    uint32_t               _trigger_id_;    //!< Actual trigger ID
+    uint64_t               _trigger_id_;    //!< Actual trigger ID
 
   };
 

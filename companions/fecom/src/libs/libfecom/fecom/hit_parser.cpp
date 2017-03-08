@@ -86,12 +86,12 @@ namespace fecom {
                              //  Begin grammar
                              (
                               qi::lit("= HIT")
-			      >> qi::uint_
+			      >> qi::ulong_long
                               >> "="
                               >> (+~qi::char_("="))
                               >> "="
 			      >> qi::lit("TRIG_ID")
-			      >> qi::uint_
+			      >> qi::ulong_long
 			      >> "="
 			      ),
                              //  End grammar

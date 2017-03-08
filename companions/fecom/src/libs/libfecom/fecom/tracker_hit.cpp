@@ -46,7 +46,7 @@ namespace fecom {
 		std::logic_error,
 		"Invalid type of tracker channel !");
     // Dont know yet the name of the register in Jihanne data :
-    if (a_tracker_channel_.timestamp_type == "R5") set_bot_cathodic_time(a_tracker_channel_.timestamp_value);
+    if (a_tracker_channel_.timestamp_type == "R0") set_bot_cathodic_time(a_tracker_channel_.timestamp_value);
 
     return;
   }
@@ -57,7 +57,7 @@ namespace fecom {
 		std::logic_error,
 		"Invalid type of tracker channel !");
     // Dont know yet the name of the register in Jihanne data :
-    if (a_tracker_channel_.timestamp_type == "R6")  set_top_cathodic_time(a_tracker_channel_.timestamp_value);
+    if (a_tracker_channel_.timestamp_type == "R1")  set_top_cathodic_time(a_tracker_channel_.timestamp_value);
 
     return;
   }

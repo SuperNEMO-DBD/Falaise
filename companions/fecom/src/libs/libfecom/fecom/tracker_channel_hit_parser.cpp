@@ -95,7 +95,7 @@ namespace fecom {
 				qi::string("R4") |
 				qi::string("R5") |
 				qi::string("R6"))[boost::phoenix::ref(timestamp_type) = boost::spirit::qi::_1]
-			    >> qi::uint_[boost::phoenix::ref(timestamp_value) = boost::spirit::qi::_1]
+			    >> qi::ulong_long[boost::phoenix::ref(timestamp_value) = boost::spirit::qi::_1]
 			    >> qi::double_[boost::phoenix::ref(timestamp_ns) = boost::spirit::qi::_1]
     			    ),
     			   //  End grammar
