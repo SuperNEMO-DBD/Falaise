@@ -166,7 +166,7 @@ add_custom_command(
 add_custom_target(falaise_docs ALL DEPENDS ${FALAISE_DOXYGEN_OUTPUT_FILE})
 
 configure_file("flsimulate/FLSimulateVariantsDoc-2.1.pdf"
-  ${FALAISE_DOXYGEN_OUTPUT_DIR}/html
+  ${FALAISE_DOXYGEN_OUTPUT_DIR}/html/FLSimulateVariantsDoc-2.1.pdf
   COPYONLY)
 
 # - end
