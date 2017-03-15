@@ -11,9 +11,9 @@
 ###########################################################
 [name="shielding_bottom_bulk" type="genvtx::box_model_vg"]
 
-#@config Vertex generation from the bulk of the bottom shielding wall
-
 #@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
+#@config Vertex generation from the bulk of the bottom shielding wall
 
 #@description Logging priority
 logging.priority : string = "notice"
@@ -30,9 +30,9 @@ mode : string  = "bulk"
 ########################################################
 [name="shielding_top_bulk" type="genvtx::box_model_vg"]
 
-#@config Vertex generation from the bulk of the top shielding wall
-
 #@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
+#@config Vertex generation from the bulk of the top shielding wall
 
 #@description Logging priority
 logging.priority : string = "notice"
@@ -49,9 +49,9 @@ mode : string  = "bulk"
 ###############################################################
 [name="shielding_left_right_bulk" type="genvtx::box_model_vg"]
 
-#@config Vertex generation from all internal surfaces of the left/right shielding walls
-
 #@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
+#@config Vertex generation from all internal surfaces of the left/right shielding walls
 
 #@description Logging priority
 logging.priority : string = "notice"
@@ -68,9 +68,9 @@ mode : string  = "bulk"
 ###############################################################
 [name="shielding_back_front_bulk" type="genvtx::box_model_vg"]
 
-#@config Vertex generation from all internal surfaces of the back/front shielding walls
-
 #@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
+#@config Vertex generation from all internal surfaces of the back/front shielding walls
 
 #@description Logging priority
 logging.priority : string = "notice"
@@ -87,9 +87,9 @@ mode : string  = "bulk"
 ##########################################################
 [name="shielding_all_bulk" type="genvtx::combined_vg"]
 
-#@config Vertex generation from the bulk of all shielding walls
-
 #@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
+#@config Vertex generation from the bulk of all shielding walls
 
 #@description Logging priority
 logging.priority : string = "notice"
@@ -111,9 +111,9 @@ generators.shielding_back_front_bulk.activity : string = "1.0 Bq/kg"
 #######################################################################
 [name="shielding_bottom_internal_surface" type="genvtx::box_model_vg"]
 
-#@config Vertex generation from the internal surface of the bottom shielding wall
-
 #@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
+#@config Vertex generation from the internal surface of the bottom shielding wall
 
 #@description Logging priority
 logging.priority : string = "notice"
@@ -133,9 +133,9 @@ mode.surface.bottom : boolean = 1
 ####################################################################
 [name="shielding_top_internal_surface" type="genvtx::box_model_vg"]
 
-#@config Vertex generation from the internal surface of the top shielding wall
-
 #@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
+#@config Vertex generation from the internal surface of the top shielding wall
 
 #@description Logging priority
 logging.priority : string = "notice"
@@ -155,9 +155,9 @@ mode.surface.bottom : boolean = 1
 ###########################################################################
 [name="shielding_left_right_internal_surface" type="genvtx::box_model_vg"]
 
-#@config Vertex generation from all internal surfaces of the left/right shielding walls
-
 #@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
+#@config Vertex generation from all internal surfaces of the left/right shielding walls
 
 #@description Logging priority
 logging.priority : string = "notice"
@@ -177,9 +177,9 @@ mode.surface.bottom : boolean = 1
 ###########################################################################
 [name="shielding_back_front_internal_surface" type="genvtx::box_model_vg"]
 
-#@config Vertex generation from all internal surfaces of the back/front shielding walls
-
 #@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
+#@config Vertex generation from all internal surfaces of the back/front shielding walls
 
 #@description Logging priority
 logging.priority : string = "notice"
@@ -199,9 +199,9 @@ mode.surface.bottom : boolean = 1
 ####################################################################
 [name="shielding_all_internal_surfaces" type="genvtx::combined_vg"]
 
-#@config Vertex generation from internal surfaces of the all shielding  walls
-
 #@variant_section_only geometry:layout/if_basic/shielding/is_on|false
+
+#@config Vertex generation from internal surfaces of the all shielding  walls
 
 #@description Logging priority
 logging.priority : string = "notice"
