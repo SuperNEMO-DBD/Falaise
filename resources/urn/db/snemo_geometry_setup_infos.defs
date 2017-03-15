@@ -1,0 +1,28 @@
+# -*- mode: conf-unix; -*-
+
+#@description Definition list of URNs associated to SuperNEMO geometry setups
+#@key_label  "urn"
+#@meta_label "category"
+
+
+#############################################################################
+[urn="urn:snemo:demonstrator:geometry:4.0:variants" category="configuration"]
+
+#@config URN info parameters for SuperNEMO geometry variants setup version 4.0
+
+description : string = "SuperNEMO geometry variants setup (version 4.0)"
+
+
+####################################################################
+[urn="urn:snemo:demonstrator:geometry:4.0" category="configuration"]
+
+#@config URN info parameters for SuperNEMO geometry setup version 4.0
+
+description : string = "SuperNEMO geometry setup (version 4.0)"
+
+topics : string[1] = "variants"
+
+topic.variants.components : string[1] = "urn:snemo:demonstrator:geometry:4.0:variants"
+
+
+# end

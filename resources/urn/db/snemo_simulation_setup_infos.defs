@@ -1,0 +1,64 @@
+# -*- mode: conf-unix; -*-
+
+#@description Definition list of URNs associated to SuperNEMO simulation setups
+#@key_label  "urn"
+#@meta_label "category"
+
+
+###############################################################################
+[urn="urn:snemo:demonstrator:simulation:vertexes:4.1" category="configuration"]
+
+#@config URN info parameters for SuperNEMO simulation vertex generation setup version 4.1
+
+description : string = "SuperNEMO simulation vertex generation setup (version 4.1)"
+
+topics : string[1] = "geometry"
+
+topic.geometry.components : string[1] = "urn:snemo:demonstrator:geometry:4.0"
+
+
+#############################################################################
+[urn="urn:snemo:demonstrator:simulation:decays:1.2" category="configuration"]
+
+#@config URN info parameters for SuperNEMO simulation decay generation setup version 1.2
+
+description : string = "SuperNEMO simulation vertex generation setup (version 1.2)"
+
+
+###############################################################################
+[urn="urn:snemo:demonstrator:simulation:2.1:variants" category="configuration"]
+
+#@config URN info parameters for SuperNEMO simulation variants setup version 2.1
+
+description : string = "SuperNEMO simulation variants setup (version 2.1)"
+
+
+###############################################################################
+[urn="urn:snemo:demonstrator:simulation:2.1:services" category="configuration"]
+
+#@config URN info parameters for SuperNEMO simulation services setup version 2.1
+
+description : string = "SuperNEMO simulation services setup (version 2.1)"
+
+topics : string[1] = "geometry"
+
+topic.geometry.component : string = "urn:snemo:demonstrator:geometry:4.0"
+
+
+######################################################################
+[urn="urn:snemo:demonstrator:simulation:2.1" category="configuration"]
+
+#@config URN info parameters for SuperNEMO simulation setup version 2.1
+
+description : string = "SuperNEMO simulation setup (version 2.1)"
+
+topics : string[5] = "geometry" "vertexes" "decays" "variants" "services"
+
+topic.geometry.component : string = "urn:snemo:demonstrator:geometry:4.0"
+topic.vertexes.component : string = "urn:snemo:demonstrator:simulation:vertexes:4.1"
+topic.decays.component   : string = "urn:snemo:demonstrator:simulation:decays:1.2"
+topic.variants.component : string = "urn:snemo:demonstrator:simulation:2.1:variants"
+topic.services.component : string = "urn:snemo:demonstrator:simulation:2.1:services"
+
+
+# end
