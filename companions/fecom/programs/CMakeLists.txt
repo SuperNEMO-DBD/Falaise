@@ -7,7 +7,6 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${PROJECT_BINARY_DIR}/src/libs/libfecom)
 include_directories(${PROJECT_SOURCE_DIR}/src/libs/libfecom)
 
-
 set(FeCom_PROGRAMS
   main_decoder_serializer.cxx
   main_histogram_builder.cxx
@@ -27,9 +26,6 @@ message( STATUS "FeCom: Boost version = '${Boost_VERSION}'")
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 
 option(FECOM_ENABLE_PROGRAMS "Build unit testing system for libfecom" ON)
-# if(FECOM_ENABLE_PROGRAMS)
-#   enable_programs()
-# endif()
 
 if(FECOM_ENABLE_PROGRAMS)
   foreach(_programsource ${FeCom_PROGRAMS})
@@ -45,10 +41,10 @@ if(FECOM_ENABLE_PROGRAMS)
     if(APPLE)
       set_target_properties(${_programname} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
     endif()
-    add_test(NAME ${_programname} COMMAND ${_programname})
-    set_property(TEST ${_programname}
-      APPEND PROPERTY ENVIRONMENT ${_fecom_PROGRAM_ENVIRONMENT}
-      )
+    # add_test(NAME ${_programname} COMMAND ${_programname})
+    # set_property(TEST ${_programname}
+    #   APPEND PROPERTY ENVIRONMENT ${_fecom_PROGRAM_ENVIRONMENT}
+    #   )
     # - For now, dump them into the programs output directory
     set_target_properties(${_programname}
       PROPERTIES

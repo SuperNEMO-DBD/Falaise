@@ -63,6 +63,12 @@ set(FeCom_SOURCES
   fecom/the_serializable.cpp
   )
 
+# Some of the tests are inhibited because the RAW format
+# has been fixed during the Half-Commissioning runs in Modane
+# by Jihane and Guillaume.
+# We should update the sample files.
+# A sample Run_SN_Crate_Test_Calo_And_Tracker_Data_2_21_2017_Ascii.data.bz2
+# is also missing.
 set(FeCom_TESTS
   testing/test-libfecom-version.cxx
   testing/test-libfecom-the_serializable.cxx
@@ -70,16 +76,16 @@ set(FeCom_TESTS
   testing/test-libfecom-channel_mapping.cxx
   testing/test-libfecom-base_hit.cxx
   testing/test-libfecom-calo_hit.cxx
-  testing/test-libfecom-hit_reader.cxx
+  # testing/test-libfecom-hit_reader.cxx ### sample file has format bugs
   testing/test-libfecom-tracker_channel_hit.cxx
   testing/test-libfecom-tracker_hit.cxx
   testing/test-libfecom-calo_pedestal_calib.cxx
   testing/test-libfecom-calo_calibration.cxx
   testing/test-libfecom-run_header.cxx
-  testing/test-libfecom-calo_hit_reader.cxx
-  testing/test-libfecom-fake_hit_reader.cxx
+  # testing/test-libfecom-calo_hit_reader.cxx ### sample file has format bugs
+  # testing/test-libfecom-fake_hit_reader.cxx ### sample file has format bugs
   testing/test-libfecom-event_builder.cxx
-  testing/test-libfecom-histogram_builder.cxx
+  # testing/test-libfecom-histogram_builder.cxx
   )
 
 find_package(Bayeux 3.0.0
