@@ -116,7 +116,7 @@ support of variant configuration parameters (`VariantSubsystem` section):
 
 The    list    of    user     choices    is    described    in    this
 [document](FLSimulateVariantsDoc-2.1.pdf) (for  SuperNEMO Demonstrator
-simulation  setup version  2.1 for  Falaise 3.0.0).  It describes  all
+simulation  setup version  2.1 and  Falaise 3.0.0).  It describes  all
 available   simulation   variant   parameters   and   their   possible
 dependencies in this simulation context.
 
