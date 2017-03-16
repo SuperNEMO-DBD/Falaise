@@ -3,7 +3,7 @@ Falaise Simulation Application
 ==============================
 
 :Author: F.Mauger
-:Date: 2017-03-03
+:Date: 2017-03-16
 
 What's Here
 ===========
@@ -67,7 +67,7 @@ Online help about the format of the script is available through:
 
 .. code:: sh
 
-   $ flsimulate_next --help-scripting
+   $ flsimulate --help-scripting
 ..
 
 
@@ -76,3 +76,9 @@ Examples
 
 The  ``{Falaise-source-dir}/resources/examples/flsimulate/ex01/`` directory contains
 a documented sample setup from which users can derive their own simulation setup.
+
+
+Note
+====
+
+An old and obsolete version of FLsimulate is also available: ``flsimulate_legacy``.

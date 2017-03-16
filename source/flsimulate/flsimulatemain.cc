@@ -2,7 +2,8 @@
 //! \brief   Main program for flsimulate command line application
 //! \details Configure, setup and run the Geant4 based simulation
 //!          of the SuperNEMO experiment. Configuration is performed
-//!          in two steps, a default and then user command line input.
+//!          in three steps, a default, then user command line input, then
+//!          a configuration script.
 //!          Error handling is through exceptions, except at the top
 //!          level where standard error codes are used.
 //! \todo    Improve error handling, with more logical exceptions.
@@ -14,8 +15,11 @@
 //!          failed"), plus any further detail needed for them to report
 //!          the issue. This is also why we try to stop exceptions
 //!          propgating into main() so that these reports can be generated.
+//
 // Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com>
 // Copyright (c) 2013 by The University of Warwick
+// Copyright (c) 2017 by François Mauger <mauger@lpccaen.in2p3.fr>
+// Copyright (c) 2017 by Université de Caen Normandie
 //
 // This file is part of Falaise.
 //
@@ -34,416 +38,309 @@
 
 // Standard Library
 #include <string>
-#include <vector>
+// #include <vector>
 
 // Third Party
 // - Boost
 #include "boost/filesystem.hpp"
-#include "boost/program_options.hpp"
-namespace bpo = boost::program_options;
+#include "boost/date_time/posix_time/posix_time.hpp"
 
 // - Bayeux
-#include "bayeux/version.h"
 #include "bayeux/bayeux.h"
+#include "bayeux/version.h"
 #include "bayeux/datatools/multi_properties.h"
 #include "bayeux/datatools/things.h"
+#include "bayeux/datatools/urn.h"
+#include "bayeux/datatools/kernel.h"
 #include "bayeux/datatools/configuration/variant_service.h"
 #include "bayeux/datatools/service_manager.h"
+#include "bayeux/datatools/urn_to_path_resolver_service.h"
+#include "bayeux/datatools/urn_db_service.h"
+#include "bayeux/datatools/urn_query_service.h"
 #include "bayeux/dpp/output_module.h"
 #include "bayeux/geomtools/manager.h"
 #include "bayeux/mctools/g4/simulation_module.h"
 #include "bayeux/mctools/g4/manager_parameters.h"
 #include "bayeux/mygsl/random_utils.h"
 #include "bayeux/mygsl/seed_manager.h"
-namespace dtc = datatools::configuration;
 
 // This Project
-#include "falaise/version.h"
 #include "falaise/falaise.h"
+#include "falaise/version.h"
 #include "falaise/exitcodes.h"
 #include "falaise/resource.h"
-#include "FLSimulateResources.h"
-#include "PropertyReader.h"
 #include "falaise/snemo/processing/services.h"
 #include "falaise/snemo/datamodels/data_model.h"
 
-//----------------------------------------------------------------------
-// IMPLEMENTATION DETAILS
-//----------------------------------------------------------------------
-//! Exceptions:
-//! Exceptions for configuration
-class FLConfigDefaultError : public std::exception {};
-class FLConfigHelpHandled : public std::exception {};
-class FLConfigUserError : public std::runtime_error {using std::runtime_error::runtime_error;};
-//! Exceptions for dialog
-class FLDialogHelpRequested : public std::exception {};
-class FLDialogOptionsError : public std::exception {};
+#include "FLSimulateArgs.h"
+// #include "FLSimulateCommandLine.h"
+#include "FLSimulateResources.h"
+#include "FLSimulateErrors.h"
 
-//----------------------------------------------------------------------
-//! Handle printing of version information to given ostream
-void do_version(std::ostream& os, bool isVerbose) {
-  os << "flsimulate " << falaise::version::get_version() << "\n";
-  if (isVerbose) {
-    os << "\n"
-       << "Copyright (C) 2013-2017 SuperNEMO Collaboration\n\n"
-       << "flsimulate uses the following external libraries:\n"
-       << "* Falaise : " << falaise::version::get_version() << "\n"
-       << "* Bayeux  : " << bayeux::version::get_version() << "\n"
-       << "* Boost   : " << BOOST_VERSION << "\n"
-       << "* Geant4  : " << "9.6.4" << "\n"
-       << "\n\n";
-  }
-}
+namespace FLSimulate {
 
-//! Handle printing of help message to screen
-void do_help(const bpo::options_description& od) {
-  std::cout << "flsimulate (" << falaise::version::get_version() << ") : SuperNEMO simulation program\n";
-  // do_version(std::cout, false);
-  std::cout << "Usage:\n"
-            << "  flsimulate [options]\n"
-            << od
-            << "\n";
-}
+  //! Perform simulation using command line args as given
+  falaise::exit_code do_flsimulate(int argc, char *argv[]);
 
-//! Command line help on script schema
-void do_help_scripting(std::ostream& os) {
-  // Eventually, this will autoformat
-  os << "Scripting flsimulate\n"
-     << "--------------------\n\n"
-     << "The following subsystems of flsimulate may be configured using an input\n"
-     << "datatools::multi_properties script. The allowed sections and parameters are:\n"
-     << std::endl
-     << "[section=\"SimulationSubsystem\" description=\"\"]\n"
-     << "experimentID : string = \"demonstrator\"           # Name of detector to simulate (default=\"demonstrator\")\n"
-     << "simulationVersion : string = \"2.1\"               # Version of the simulation setup (default=\"2.1\")\n"
-     << "numberOfEvents : integer = 1                     # Number of events to simulate\n"
-     // << "vertexGenerator : string = \"source_pads_bulk\" # Name of vertex point generator\n"
-     // << "eventGenerator : string = \"Se82.2nubb\"        # Name of event generator\n"
-     << "rngSeedFile : string as path = \"seeds.conf\"      # Path to file containing random number seeds\n"
-     << "outputProfile : string = \"\"                      # Output profile (hits collections to output)\n"
-     << std::endl
-     << "[section=\"VariantSubsystem\" description=\"\"]\n"
-     << "profile : string as path = \"vprofile.conf\"       # Input variant profile configuration file.\n"
-     << "                                                 # (this is the recommended path). \n"
-     << "settings : string[N] = \"setting1\" ... \"settingN\" # Individual variant settings\n"
-     << "                                                 # (should be reserved to experts). \n"
-     << std::endl
-     << "[section=\"ServicesSubsystem\" description=\"\"]\n"
-     << "profile : string as path = \"services.conf\"       # Service manager profile configuration file.\n"
-     << std::endl
-     << "All sections and parameters are optional, and flsimulate will supply sensible\n"
-     << "default values when only some are set.\n"
-     << std::endl;
-}
+  //! Populate the metadata container with various informations classified in several categories
+  falaise::exit_code do_metadata(const FLSimulateArgs &, datatools::multi_properties &);
 
-//! Collect all needed configuration parameters in one data structure
-struct FLSimulateArgs {
-  // Application specific parameters:
-  datatools::logger::priority     logLevel;                 //!< Logging priority threshold
-  unsigned int                    numberOfEvents;           //!< Number of events to be processed in the pipeline
-  std::string                     experimentID;             //!< The label of the virtual experimental setup
-  std::string                     setupSimulationVersion;   //!< The version number of the simulation engine setup
-  mctools::g4::manager_parameters simulationManagerParams;  /** Parameters for the Geant4 simulation manager
-                                                             *  embedded in the simulation module
-                                                             */
-  std::string                     outputFile;               //!< Output data file for the output module
-  // Variants support:
-  dtc::variant_service::config    variantSubsystemParams;   //!< Variants configuration
-  // Service support:
-  std::string                     servicesSubsystemProfile; //!< The main configuration file for the service manager
-
-
-  //! Construct and return the default configuration object
-  // Equally, could be supplied in a .application file, though note
-  // how some parameters are derived (i.e. there's a postprocessing step)
-  static FLSimulateArgs makeDefault() {
-    FLSimulateArgs params;
-    params.logLevel = datatools::logger::PRIO_ERROR;
-    params.numberOfEvents = 1;
-    params.experimentID = "default";
-    params.setupSimulationVersion = "2.1";
-    // Simulation
-    params.simulationManagerParams.set_defaults();
-    params.simulationManagerParams.logging = "error";
-    params.simulationManagerParams.manager_config_filename = FLSimulate::getControlFile(params.experimentID, params.setupSimulationVersion);
-    params.simulationManagerParams.input_prng_seeds_file = "";
-    // Seeding is auto (from system) unless explicit file supplied
-    params.simulationManagerParams.vg_seed   = mygsl::random_utils::SEED_AUTO; // PRNG for the vertex generator
-    params.simulationManagerParams.eg_seed   = mygsl::random_utils::SEED_AUTO; // PRNG for the primary event generator
-    params.simulationManagerParams.shpf_seed = mygsl::random_utils::SEED_AUTO; // PRNG for the back end true hit processors
-    params.simulationManagerParams.mgr_seed  = mygsl::random_utils::SEED_AUTO; // PRNG for the Geant4 engine itself
-    params.simulationManagerParams.output_profiles_activation_rule = "";
-    // Variants
-    params.variantSubsystemParams.config_filename = FLSimulate::getVariantsConfigFile(params.experimentID, params.setupSimulationVersion);
-    // Services
-    params.servicesSubsystemProfile = FLSimulate::getServicesConfigFile(params.experimentID, params.setupSimulationVersion);
-    // Profile loading as below doesn't appear to work... what is the __default__ thing used above?
-    // NB, also fails in flsimulate if "__default__" is supplied, so looks like
-    // error in variants or the formatting of the default profile.
-    // 2016-12-07 FM: True, the provided file uses an obsolete formatting... to be fixed
-    //params.variantSubsystemParams.profile_load = FLSimulate::getVariantsDefaultProfile(params.experimentID, params.setupSimulationVersion);
-    return params;
-  }
-};
-
-struct FLSimulateCommandLine {
-  // The parameters we can receive from the command line
-  // Help and so on are not marked because these are handled by the UI.
-  std::string configScript; //!< Path to configuration script
-  std::string outputFile;   //!< Path for the output module
-};
-
-
-//! Handle command line argument dialog
-void do_cldialog(int argc, char *argv[], FLSimulateCommandLine& params) {
-
-  // Bind command line parser to exposed parameters
-  namespace bpo = boost::program_options;
-
-  // Application specific options:
-  bpo::options_description optDesc("Options");
-  optDesc.add_options()
-    ("help,h","print this help message")
-    ("help-scripting","print help on input script format and schema")
-    ("version","print version number")
-    ("config,c",
-     bpo::value<std::string>(&params.configScript)->value_name("file"),
-     "configuration script for simulation")
-    // Output *could* go into script, but as the configuration options are
-    // pretty limited at present, keep it simple
-    ("output-file,o",
-     bpo::value<std::string>(&params.outputFile)->required()->value_name("file"),
-     "file in which to store simulation results")
-    ;
-
-  // - Parse...
-  bpo::variables_map vMap;
-  try {
-    bpo::store(bpo::parse_command_line(argc, argv, optDesc), vMap);
-    bpo::notify(vMap);
-  } catch (const bpo::required_option& e) {
-    // We need to handle help/version even if required_option thrown
-    if (!vMap.count("help") && !vMap.count("version") && !vMap.count("help-scripting")) {
-      std::cerr << "[OptionsException] " << e.what() << std::endl;
-      throw FLDialogOptionsError();
-    }
-  } catch (const std::exception& e) {
-    std::cerr << "[OptionsException] " << e.what() << std::endl;
-    throw FLDialogOptionsError();
-  }
-
-  // Handle any non-bound options
-  if (vMap.count("help")) {
-    do_help(optDesc);
-    throw FLDialogHelpRequested();
-  }
-
-  if (vMap.count("version")) {
-    do_version(std::cout, true);
-    throw FLDialogHelpRequested();
-  }
-
-  if (vMap.count("help-scripting")) {
-    do_help_scripting(std::cout);
-    throw FLDialogHelpRequested();
-  }
-}
-
-//----------------------------------------------------------------------
-
-//! Parse command line arguments to configure the simulation parameters
-void do_configure(int argc, char *argv[], FLSimulateArgs& params) {
-  // - Default Config
-  params = FLSimulateArgs::makeDefault();
-
-  // - CL Dialog Config
-  FLSimulateCommandLine args;
-  try {
-    do_cldialog(argc, argv, args);
-  } catch (FLDialogHelpRequested& e) {
-    throw FLConfigHelpHandled();
-  } catch (FLDialogOptionsError& e) {
-    throw FLConfigUserError {"bad command line input"};
-  }
-
-  // Feed input from command line to params
-  params.outputFile = args.outputFile;
-  // If a script was supplied, use that to override params
-  if(!args.configScript.empty()) {
-    datatools::multi_properties flSimConfig("section", "description");
-    flSimConfig.read(args.configScript);
-    // flSimConfig.tree_dump(std::cout, "", "DEVEL: ");
-    // Now extract and bind values as needed
-    // It's this that defines the schema... (note the awkwardness)
-    // SimulationSubsystem
-    if(flSimConfig.has_section("SimulationSubsystem")) {
-       datatools::properties simSubsystem = flSimConfig.get_section("SimulationSubsystem");
-       // Bind properties in this section to the relevant ones in params
-       params.experimentID
-         = falaise::Properties::getValueOrDefault<std::string>(simSubsystem,
-                                                               "experimentID",
-                                                               params.experimentID);
-       params.setupSimulationVersion
-         = falaise::Properties::getValueOrDefault<std::string>(simSubsystem,
-                                                               "simulationVersion",
-                                                               params.setupSimulationVersion);
-       // Here we need to validate the config files for the experiment input
-       try {
-         params.variantSubsystemParams.config_filename = FLSimulate::getVariantsConfigFile(params.experimentID, params.setupSimulationVersion);
-         params.simulationManagerParams.manager_config_filename = FLSimulate::getControlFile(params.experimentID, params.setupSimulationVersion);
-       } catch (FLSimulate::UnknownResourceException& e) {
-         throw FLConfigUserError {e.what()};
-       }
-
-       params.numberOfEvents = falaise::Properties::getValueOrDefault<int>(simSubsystem,"numberOfEvents",params.numberOfEvents);
-       params.simulationManagerParams.number_of_events_modulo =
-         falaise::Properties::getValueOrDefault<int>(simSubsystem,
-                                                     "moduloEvents",
-                                                     params.simulationManagerParams.number_of_events_modulo);
-       // params.simulationManagerParams.vg_name = falaise::Properties::getValueOrDefault<std::string>(simSubsystem,"vertexGenerator", params.simulationManagerParams.vg_name);
-       // params.simulationManagerParams.eg_name = falaise::Properties::getValueOrDefault<std::string>(simSubsystem,"eventGenerator",params.simulationManagerParams.eg_name);
-       params.simulationManagerParams.input_prng_seeds_file =
-         falaise::Properties::getValueOrDefault<std::string>(simSubsystem,
-                                                             "rngSeedFile",
-                                                             params.simulationManagerParams.input_prng_seeds_file);
-       params.simulationManagerParams.output_profiles_activation_rule =
-         falaise::Properties::getValueOrDefault<std::string>(simSubsystem,
-                                                             "outputProfile",
-                                                             params.simulationManagerParams.output_profiles_activation_rule);
-    }
-    if(flSimConfig.has_section("VariantSubsystem")) {
-      datatools::properties variantSubsystem = flSimConfig.get_section("VariantSubsystem");
-      // Bind properties to relevant ones on params
-      params.variantSubsystemParams.profile_load = falaise::Properties::getValueOrDefault<std::string>(variantSubsystem,"profile",params.variantSubsystemParams.profile_load);
-      params.variantSubsystemParams.settings = falaise::Properties::getValueOrDefault<std::vector<std::string> >(variantSubsystem,"settings",params.variantSubsystemParams.settings);
-    }
-    if(flSimConfig.has_section("ServicesSubsystem")) {
-       datatools::properties servicesSubsystem = flSimConfig.get_section("ServicesSubsystem");
-       params.servicesSubsystemProfile =
-         falaise::Properties::getValueOrDefault<std::string>(servicesSubsystem,
-                                                             "profile",
-                                                             params.servicesSubsystemProfile);
-    }
-  }
-}
-
-//----------------------------------------------------------------------
-//! Perform simulation using command line args as given
-falaise::exit_code do_flsimulate(int argc, char *argv[])
-{
-  // - Configure
-  FLSimulateArgs flSimParameters;
-  try {
-    do_configure(argc, argv, flSimParameters);
-  } catch (FLConfigDefaultError& e) {
-    std::cerr << "Unable to configure core of flsimulate" << std::endl;
-    return falaise::EXIT_UNAVAILABLE;
-  } catch (FLConfigHelpHandled& e) {
-    return falaise::EXIT_OK;
-  } catch (FLConfigUserError& e) {
-    std::cerr << "User configuration error: " << e.what() << std::endl;
-    return falaise::EXIT_USAGE;
-  }
-
-  // Variants support:
-  dtc::variant_service vserv;
-  vserv.set_logging(datatools::logger::PRIO_TRACE);
-  try {
-    if (flSimParameters.variantSubsystemParams.is_active()) {
-      vserv.configure(flSimParameters.variantSubsystemParams);
-      // Start and lock the variant service:
-      vserv.start();
-      // From this point, all other services and/or processing modules can
-      // benefit of the variant service during their configuration steps.
-    }
-  } catch (std::exception & e) {
-    std::cerr << "flsimulate : Variant service threw exception" << std::endl;
-    std::cerr << e.what() << std::endl;
-    return falaise::EXIT_UNAVAILABLE;
-  }
-
-  // - Run
-  falaise::exit_code code = falaise::EXIT_OK;
-  try {
-
-    // Setup services:
-    datatools::service_manager services("SNServices", "SuperNEMO Services");
-    std::string services_config_file = flSimParameters.servicesSubsystemProfile;
-    datatools::fetch_path_with_env(services_config_file);
-    datatools::properties services_config;
-    services_config.read_configuration(services_config_file);
-    services.initialize(services_config);
-
-    // Simulation module:
-    mctools::g4::simulation_module flSimModule;
-    flSimModule.set_name("G4SimulationModule");
-    std::string sd_label = snemo::datamodel::data_info::default_simulated_data_label();
-    std::string geo_label = snemo::processing::service_info::default_geometry_service_label();
-    flSimModule.set_sd_label(sd_label);
-    flSimModule.set_geo_label(geo_label);
-    flSimModule.set_geant4_parameters(flSimParameters.simulationManagerParams);
-    flSimModule.initialize_simple_with_service(services);
-
-    // Simulation output module:
-    dpp::output_module simOutput;
-    simOutput.set_name("FLSimulateOutput");
-    simOutput.set_single_output_file(flSimParameters.outputFile);
-    // // Metadata management:
-    // datatools::multi_properties & metadataStore = simOutput.grab_metadata_store();
-    // metadataStore = flSimProperties;
-    simOutput.initialize_simple();
-
-    // Manual Event loop....
-    datatools::things workItem;
-    dpp::base_module::process_status status;
-
-    for (unsigned int i(0); i < flSimParameters.numberOfEvents; ++i) {
-      workItem.clear();
-
-      status = flSimModule.process(workItem);
-      if (status != dpp::base_module::PROCESS_OK) {
-        std::cerr << "flsimulate : Simulation module failed" << std::endl;
-        code = falaise::EXIT_UNAVAILABLE;
-      }
-
-      status = simOutput.process(workItem);
-      if (status != dpp::base_module::PROCESS_OK) {
-        std::cerr << "flsimulate : Output module failed" << std::endl;
-        code = falaise::EXIT_UNAVAILABLE;
-      }
-
-      // Here we could install optional ASB+Digitization+terminal output modules
-
-      if (code != falaise::EXIT_OK) {
-        break;
-      }
-    }
-  } catch (std::exception& e) {
-    std::cerr << "flsimulate : Setup/run of simulation threw exception" << std::endl;
-    std::cerr << e.what() << std::endl;
-    code = falaise::EXIT_UNAVAILABLE;
-  }
-
-  // Terminate the variant service:
-  vserv.stop();
-
-  return code;
-}
+} // end of namespace FLSimulate
 
 
 //----------------------------------------------------------------------
 // MAIN PROGRAM
 //----------------------------------------------------------------------
 int main(int argc, char *argv[]) {
-  // - Needed, but nasty
   falaise::initialize();
 
   // - Do the simulation.
   // Ideally, exceptions SHOULD NOT propagate out of this  - the error
   // code should be enough.
-  falaise::exit_code ret = do_flsimulate(argc, argv);
+  falaise::exit_code ret = FLSimulate::do_flsimulate(argc, argv);
 
-  // - Needed, but nasty
   falaise::terminate();
   return ret;
 }
+
+
+namespace FLSimulate {
+
+  //----------------------------------------------------------------------
+  falaise::exit_code do_metadata(const FLSimulateArgs & flSimParameters,
+                                 datatools::multi_properties & flSimMetadata)
+  {
+    falaise::exit_code code = falaise::EXIT_OK;
+
+    // System section:
+    datatools::properties & system_props
+      = flSimMetadata.add_section("System", "flsimulate::subsystem");
+    system_props.set_description("System informations");
+
+    system_props.store_string("bayeux.version", bayeux::version::get_version(),
+                              "Bayeux version at generation");
+
+    system_props.store_string("falaise.version", falaise::version::get_version(),
+                              "Falaise version at generation");
+
+    system_props.store_string("application", "flsimulate",
+                              "The simulation application used to generate Monte Carlo data");
+
+    system_props.store_string("application.version", falaise::version::get_version(),
+                              "The version of the simulation application");
+
+    system_props.store_string("userProfile", flSimParameters.userProfile,
+                              "User profile");
+
+    boost::posix_time::ptime start_run_timestamp = boost::posix_time::second_clock::universal_time();
+    system_props.store_string("timestamp",
+                              boost::posix_time::to_iso_string(start_run_timestamp),
+                              "application start timestamp");
+
+    // Simulation section:
+    datatools::properties & simulation_props
+      = flSimMetadata.add_section("SimulationSubsystem", "flsimulate::subsystem");
+    simulation_props.set_description("Simulation setup parameters");
+
+    if (!flSimParameters.experimentID.empty()) {
+      simulation_props.store_string("experimentID", flSimParameters.experimentID,
+                                    "Simulation setup experiment identifier");
+    }
+
+    if (!flSimParameters.simulationSetupVersion.empty()) {
+      simulation_props.store_string("simulationVersion", flSimParameters.simulationSetupVersion,
+                                    "Simulation setup version");
+    }
+
+    if (!flSimParameters.simulationSetupUrn.empty()) {
+      simulation_props.store_string("simulationUrn", flSimParameters.simulationSetupUrn,
+                                    "Simulation setup configuration URN");
+    }
+
+    if (!flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
+      simulation_props.store_path("simulationManagerConfig",
+                                  flSimParameters.simulationManagerParams.manager_config_filename,
+                                  "Simulation manager configuration file");
+    }
+
+    simulation_props.store_integer("numberOfEvents",
+                                   flSimParameters.numberOfEvents,
+                                   "Number of simulated events");
+
+    simulation_props.store_boolean("embeddedMetadata",
+                                   flSimParameters.embeddedMetadata,
+                                   "Metadata embedding flag");
+
+    // Variants section:
+    datatools::properties & variants_props
+      = flSimMetadata.add_section("VariantSubsystem", "flsimulate::subsystem");
+    variants_props.set_description("Variant setup");
+
+    if (!flSimParameters.variantConfigUrn.empty()) {
+      variants_props.store_string("configUrn", flSimParameters.variantConfigUrn,
+                                  "Variants setup configuration URN");
+    }
+
+    if (!flSimParameters.variantSubsystemParams.config_filename.empty()) {
+      variants_props.store_path("config", flSimParameters.variantSubsystemParams.config_filename,
+                                "Variants setup configuration path");
+    }
+
+    if (!flSimParameters.variantProfileUrn.empty()) {
+      variants_props.store_string("profileUrn", flSimParameters.variantProfileUrn,
+                                  "Variants profile URN");
+    }
+
+    if (!flSimParameters.variantSubsystemParams.profile_load.empty()) {
+      variants_props.store_path("profile", flSimParameters.variantSubsystemParams.profile_load,
+                                "Variants profile path");
+    }
+
+    if (flSimParameters.variantSubsystemParams.settings.size()) {
+      variants_props.store("settings", flSimParameters.variantSubsystemParams.settings,
+                           "Variants settings");
+    }
+
+    // Services section:
+    datatools::properties & services_props
+      = flSimMetadata.add_section("ServicesSubsystem", "flsimulate::subsystem");
+    services_props.set_description("Services configuration");
+
+    if (!flSimParameters.servicesSubsystemConfigUrn.empty()) {
+      services_props.store_string("configUrn", flSimParameters.servicesSubsystemConfigUrn,
+                                  "Services setup configuration URN");
+    }
+
+    if (!flSimParameters.servicesSubsystemConfig.empty()) {
+      services_props.store_path("config", flSimParameters.servicesSubsystemConfig,
+                                "Services setup configuration path");
+    }
+
+    return code;
+  }
+
+  //----------------------------------------------------------------------
+  falaise::exit_code do_flsimulate(int argc, char *argv[])
+  {
+    // - Configure:
+    FLSimulateArgs flSimParameters;
+    try {
+      do_configure(argc, argv, flSimParameters);
+    } catch (FLConfigDefaultError& e) {
+      std::cerr << "Unable to configure core of flsimulate" << std::endl;
+      return falaise::EXIT_UNAVAILABLE;
+    } catch (FLConfigHelpHandled& e) {
+      return falaise::EXIT_OK;
+    } catch (FLConfigUserError& e) {
+      std::cerr << "User configuration error: " << e.what() << std::endl;
+      return falaise::EXIT_USAGE;
+    }
+
+    // - Variants support:
+    datatools::configuration::variant_service vserv;
+    vserv.set_logging(datatools::logger::PRIO_TRACE);
+    try {
+      if (flSimParameters.variantSubsystemParams.is_active()) {
+        vserv.configure(flSimParameters.variantSubsystemParams);
+        // Start and lock the variant service:
+        vserv.start();
+        // From this point, all other services and/or processing modules can
+        // benefit of the variant service during their configuration steps.
+      }
+    } catch (std::exception & e) {
+      std::cerr << "flsimulate : Variant service threw exception" << std::endl;
+      std::cerr << e.what() << std::endl;
+      return falaise::EXIT_UNAVAILABLE;
+    }
+
+    // - Run:
+    falaise::exit_code code = falaise::EXIT_OK;
+    try {
+
+      // Setup services:
+      datatools::service_manager services("flSimulationServices", "SuperNEMO Simulation Services");
+      std::string services_config_file = flSimParameters.servicesSubsystemConfig;
+      datatools::fetch_path_with_env(services_config_file);
+      datatools::properties services_config;
+      services_config.read_configuration(services_config_file);
+      services.initialize(services_config);
+
+      // Simulation module:
+      mctools::g4::simulation_module flSimModule;
+      flSimModule.set_name("G4SimulationModule");
+      std::string sd_label = snemo::datamodel::data_info::default_simulated_data_label();
+      std::string geo_label = snemo::processing::service_info::default_geometry_service_label();
+      flSimModule.set_sd_label(sd_label);
+      flSimModule.set_geo_label(geo_label);
+      flSimModule.set_geant4_parameters(flSimParameters.simulationManagerParams);
+      flSimModule.initialize_simple_with_service(services);
+
+      // Metadata management:
+      datatools::multi_properties flSimMetadata("section",
+                                                "description",
+                                                "Metadata associated to a flsimulate run");
+      do_metadata(flSimParameters, flSimMetadata);
+
+      // Print:
+      if (datatools::logger::is_debug(flSimParameters.logLevel)) {
+        flSimMetadata.tree_dump(std::cerr, "Simulation metadata: ", "[debug] ");
+      }
+
+      if (!flSimParameters.outputMetadataFile.empty()) {
+        std::string fMetadata = flSimParameters.outputMetadataFile;
+        datatools::fetch_path_with_env(fMetadata);
+        flSimMetadata.write(fMetadata);
+      }
+
+      // Simulation output module:
+      dpp::output_module simOutput;
+      simOutput.set_name("FLSimulateOutput");
+      simOutput.set_single_output_file(flSimParameters.outputFile);
+      // Metadata management:
+      if (flSimParameters.embeddedMetadata) {
+        // Push the metadata in the metadata store:
+        datatools::multi_properties & metadataStore = simOutput.grab_metadata_store();
+        metadataStore = flSimMetadata;
+      }
+      simOutput.initialize_simple();
+
+      // Manual Event loop....
+      datatools::things workItem;
+      dpp::base_module::process_status status;
+
+      for (unsigned int i(0); i < flSimParameters.numberOfEvents; ++i) {
+        workItem.clear();
+
+        status = flSimModule.process(workItem);
+        if (status != dpp::base_module::PROCESS_OK) {
+          std::cerr << "flsimulate : Simulation module failed" << std::endl;
+          code = falaise::EXIT_UNAVAILABLE;
+        }
+
+        status = simOutput.process(workItem);
+        if (status != dpp::base_module::PROCESS_OK) {
+          std::cerr << "flsimulate : Output module failed" << std::endl;
+          code = falaise::EXIT_UNAVAILABLE;
+        }
+
+        // Here we will process optional ASB+Digitization+terminal output modules
+
+        if (code != falaise::EXIT_OK) {
+          break;
+        }
+      }
+    } catch (std::exception & e) {
+      std::cerr << "flsimulate : Setup/run of simulation threw exception" << std::endl;
+      std::cerr << e.what() << std::endl;
+      code = falaise::EXIT_UNAVAILABLE;
+    }
+
+    // Terminate the variant service:
+    if (vserv.is_started()) {
+      vserv.stop();
+    }
+
+    return code;
+  }
+
+} // end of namespace FLSimulate

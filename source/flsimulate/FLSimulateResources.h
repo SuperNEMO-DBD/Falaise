@@ -32,13 +32,13 @@ namespace FLSimulate {
   std::string getVariantsConfigFile(const std::string& experiment,
                                     const std::string& /*versionID*/ = "");
 
-  //! Return the default variants profile file for the given experiment and version id
-  std::string getVariantsDefaultProfile(const std::string& experiment,
-                                        const std::string& /*versionID*/ = "");
+  // //! Return the default variants profile file for the given experiment and version id
+  // std::string getVariantsDefaultProfile(const std::string& experiment,
+  //                                       const std::string& /*versionID*/ = "");
 
-  //! Return the service configuration file for the given experiment and version id
-  std::string getServicesConfigFile(const std::string& experiment,
-                                    const std::string& /*versionID*/ = "");
+  // //! Return the service configuration file for the given experiment and version id
+  // std::string getServicesConfigFile(const std::string& experiment,
+  //                                   const std::string& /*versionID*/ = "");
 
 } // namespace FLSimulate
 

@@ -74,6 +74,12 @@ add_executable(flsimulate
   flsimulatemain.cc
   FLSimulateResources.h
   FLSimulateResources.cc
+  FLSimulateArgs.h
+  FLSimulateArgs.cc
+  FLSimulateCommandLine.h
+  FLSimulateCommandLine.cc
+  FLSimulateErrors.h
+  FLSimulateErrors.cc
   )
 target_include_directories(flsimulate PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -108,17 +114,5 @@ install(TARGETS flsimulate
   EXPORT FalaiseTargets
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   )
-
-#-----------------------------------------------------------------------
-if(FALAISE_ENABLE_TESTING)
-  add_executable(testPropertyReader testPropertyReader.cc)
-  set_target_properties(testPropertyReader
-    PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fltests
-    ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fltests
-    )
-  target_link_libraries(testPropertyReader FLCatch Bayeux::Bayeux)
-  add_test(NAME falaise-testPropertyReader COMMAND testPropertyReader)
-endif()
 
 # - end

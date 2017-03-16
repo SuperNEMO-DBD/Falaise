@@ -1,5 +1,5 @@
-//! \file    flsimulatemain.cc
-//! \brief   Main program for flsimulate command line application
+//! \file    flsimulatemain_legacy.cc
+//! \brief   Main program for flsimulate command line application (legacy version)
 //! \details Configure, setup and run the Geant4 based simulation
 //!          of the SuperNEMO experiment. Configuration is performed
 //!          in two steps, a default and then user command line input.
@@ -71,13 +71,18 @@ namespace dtc = datatools::configuration;
 class FLDialogHelpRequested : public std::exception {};
 class FLDialogOptionsError : public std::exception {};
 
+std::string app_name()
+{
+  return "flsimulate_legacy";
+}
+
 //! Handle printing of version information to given ostream
 void do_version(std::ostream& os, bool isVerbose) {
-  os << "flsimulate " << falaise::version::get_version() << "\n";
+  os << app_name() << " " << falaise::version::get_version() << "\n";
   if (isVerbose) {
     os << "\n"
-       << "Copyright (C) 2013-2016 SuperNEMO Collaboration\n\n"
-       << "flsimulate uses the following external libraries:\n"
+       << "Copyright (C) 2013-2017 SuperNEMO Collaboration\n\n"
+       << app_name() << "  uses the following external libraries:\n"
        << "* Falaise : " << falaise::version::get_version() << "\n"
        << "* Bayeux  : " << bayeux::version::get_version() << "\n"
        << "* Boost   : " << BOOST_VERSION << "\n"
@@ -90,7 +95,7 @@ void do_version(std::ostream& os, bool isVerbose) {
 void do_help(const bpo::options_description& od) {
   do_version(std::cout, false);
   std::cout << "Usage:\n"
-            << "  flsimulate [options]\n"
+            << "  " << app_name() << " [options]\n"
             << od
             << "\n";
 }
@@ -102,8 +107,8 @@ struct FLSimulateArgs {
   unsigned int                    numberOfEvents;          //!< Number of events to be processed in the pipeline
   unsigned int                    moduloEvents;            //!< Number of events progress modulo
   std::string                     experimentID;            //!< The label of the virtual experimental setup
-  std::string                     setupGeometryVersion;    //!< The version number of the virtual geometry setup
   std::string                     setupSimulationVersion;  //!< The version number of the simulation engine setup
+  std::string                     setupGeometryVersion;    //!< The version number of the virtual geometry setup
   mctools::g4::manager_parameters simulationManagerParams; /** Parameters for the Geant4 simulation manager
                                                             *  embedded in the simulation module
                                                             */
@@ -127,40 +132,46 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
     ("number,n",
      bpo::value<uint32_t>(&params.numberOfEvents)
      ->default_value(1)
-     ->value_name("[events]"),
+     ->value_name("events"),
      "number of events to simulate")
     ("modulo,m",
      bpo::value<uint32_t>(&params.simulationManagerParams.number_of_events_modulo)
      ->default_value(0)
-     ->value_name("[period]"),
+     ->value_name("period"),
      "progress modulo on number of events")
-    ("experiment",
-     bpo::value<std::string>(&params.experimentID)
-     ->default_value("default")
-     ->value_name("[name]"),
-     "experiment to simulate")
+    // Pickup an arbitrary experiment/version is fragile... we force experimentID="demonstrator" and setupSimulationVersion="2.0"!
+    // ("experiment",
+    //  bpo::value<std::string>(&params.experimentID)
+    //  ->default_value("demonstrator")
+    //  ->value_name("name"),
+    //  "experiment to simulate")
+    // ("simulation-version",
+    //  bpo::value<std::string>(&params.setupSimulationVersion)
+    //  ->default_value("2.0")
+    //  ->value_name("version"),
+    //  "simulation setup version")
     ("vertex-generator,x",
      bpo::value<std::string>(&params.simulationManagerParams.vg_name)
      ->default_value("source_pads_bulk")
-     ->value_name("[name]"),
+     ->value_name("name"),
      "the name of the vertex generator")
     ("event-generator,e",
      bpo::value<std::string>(&params.simulationManagerParams.eg_name)
      ->default_value("Se82.0nubb")
-     ->value_name("[name]"),
+     ->value_name("name"),
      "the name of the event generator")
     ("input-seeds,s",
      bpo::value<std::string>(&params.simulationManagerParams.input_prng_seeds_file)
      ->default_value("")
-     ->value_name("[file]"),
+     ->value_name("file"),
      "file from which to load PRNGs' seeds")
     ("output-profiles,p",
      bpo::value<std::string>(&params.simulationManagerParams.output_profiles_activation_rule)
      ->default_value("")
-     ->value_name("[rule]"),
+     ->value_name("rule"),
      "the output profiles activation rule (setup the truth hits' level of details)")
     ("output-file,o",
-     bpo::value<std::string>(&params.outputFile)->required()->value_name("[file]"),
+     bpo::value<std::string>(&params.outputFile)->required()->value_name("file"),
      "file in which to store simulation results")
     ;
 
@@ -170,15 +181,18 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
   // The main configuration file for variant repository is forced by Falaise,
   // so users cannot set it (from command line). This way we are stuck with
   // a *blessed* variant configuration.
+  variant_service_flags |= dtc::variant_service::NO_LABEL;
   variant_service_flags |= dtc::variant_service::NO_CONFIG_FILENAME;
   variant_service_flags |= dtc::variant_service::NO_REGISTRY_RULES;
   variant_service_flags |= dtc::variant_service::NO_REGISTRY_DEPENDENCIES;
-  // variant_service_flags |= dtc::variant_service::NO_SETTINGS;
-  // variant_service_flags |= dtc::variant_service::NO_GUI;
+  variant_service_flags |= dtc::variant_service::PROFILE_LOAD_DONT_IGNORE_UNKNOWN;
+  variant_service_flags |= dtc::variant_service::NO_SETTINGS;
+  variant_service_flags |= dtc::variant_service::NO_GUI;
   // Note: TUI user interface is not implemented yet in Bayeux. Users cannot
   // run this interface.
   variant_service_flags |= dtc::variant_service::NO_TUI;
-  // variant_service_flags |= dtc::variant_service::NO_PROFILE_STORE;
+  variant_service_flags |= dtc::variant_service::NO_PROFILE_STORE;
+  variant_service_flags |= dtc::variant_service::NO_REPORTING;
   // Other features of the variant service command line interface are activated:
   //  - load a variant profile (--variant-load="my_flsimulate_profiles/my_default_tweaking")
   //  - assign a given value to specific variant parameters (--variant-set="registry:the/param/path=value")
@@ -192,7 +206,6 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
   // Public options:
   bpo::options_description optPublic;
   optPublic.add(optDesc).add(optVariants);
-
 
   // All options:
   bpo::options_description optAll;
@@ -220,15 +233,12 @@ void do_cldialog(int argc, char *argv[], FLSimulateArgs& params) {
     params.simulationManagerParams.logging = "information";
   }
 
-
   // Handle the experiment
-  std::string experiment_label = vMap["experiment"].as<std::string>();
   try {
-    params.variants.config_filename = FLSimulate::getVariantsConfigFile(experiment_label);
-    if (params.variants.profile_load == "__default__") {
-      params.variants.profile_load = FLSimulate::getVariantsDefaultProfile(experiment_label);
-    }
-    params.simulationManagerParams.manager_config_filename = FLSimulate::getControlFile(experiment_label);
+    params.variants.config_filename
+      = FLSimulate::getVariantsConfigFile(params.experimentID, params.setupSimulationVersion);
+    params.simulationManagerParams.manager_config_filename
+      = FLSimulate::getControlFile(params.experimentID, params.setupSimulationVersion);
   } catch (FLSimulate::UnknownResourceException& e) {
     std::cerr << "[FLSimulate::UnknownResourceException] "
               << e.what()
@@ -263,9 +273,9 @@ void do_configure(int argc, char *argv[], FLSimulateArgs& params) {
   // - Default Config
   try {
     params.logLevel = datatools::logger::PRIO_ERROR;
-    params.experimentID = "demonstrator";
-    params.setupGeometryVersion = "4.0";
+    params.experimentID           = "demonstrator";
     params.setupSimulationVersion = "2.0";
+    params.setupGeometryVersion   = "4.0";
     params.simulationManagerParams.set_defaults();
     params.simulationManagerParams.logging = "error";
     params.simulationManagerParams.manager_config_filename = FLSimulate::getControlFile("default");
@@ -274,7 +284,8 @@ void do_configure(int argc, char *argv[], FLSimulateArgs& params) {
     params.simulationManagerParams.input_prng_seeds_file = "";
     // Explicitely set the seeds of the 4 embedded PRNGs to
     // 'mygsl::random_utils::SEED_INVALID' (-1). This leads to
-    // an exception at PRNG startup if nothing is done explicitely at configuration step:
+    // an exception at PRNG startup if nothing is done explicitely
+    // at configuration step:
     params.simulationManagerParams.vg_seed   = mygsl::random_utils::SEED_INVALID; // PRNG for the vertex generator
     params.simulationManagerParams.eg_seed   = mygsl::random_utils::SEED_INVALID; // PRNG for the primary event generator
     params.simulationManagerParams.shpf_seed = mygsl::random_utils::SEED_INVALID; // PRNG for the back end true hit processors
@@ -303,7 +314,7 @@ falaise::exit_code do_flsimulate(int argc, char *argv[])
   try {
     do_configure(argc, argv, flSimParameters);
   } catch (FLConfigDefaultError& e) {
-    std::cerr << "Unable to configure core of flsimulate" << std::endl;
+    std::cerr << "Unable to configure core of " << app_name() << std::endl;
     return falaise::EXIT_UNAVAILABLE;
   } catch (FLConfigHelpHandled& e) {
     return falaise::EXIT_OK;
@@ -322,7 +333,7 @@ falaise::exit_code do_flsimulate(int argc, char *argv[])
       // benefit of the variant service during their configuration steps.
     }
   } catch (std::exception & e) {
-    std::cerr << "flsimulate : Variant service threw exception" << std::endl;
+    std::cerr << app_name() << " : Variant service threw exception" << std::endl;
     std::cerr << e.what() << std::endl;
     return falaise::EXIT_UNAVAILABLE;
   }
@@ -382,13 +393,13 @@ falaise::exit_code do_flsimulate(int argc, char *argv[])
 
       status = flSimModule.process(workItem);
       if (status != dpp::base_module::PROCESS_OK) {
-        std::cerr << "flsimulate : Simulation module failed" << std::endl;
+        std::cerr << app_name() << " : Simulation module failed" << std::endl;
         code = falaise::EXIT_UNAVAILABLE;
       }
 
       status = simOutput.process(workItem);
       if (status != dpp::base_module::PROCESS_OK) {
-        std::cerr << "flsimulate : Output module failed" << std::endl;
+        std::cerr << app_name() << " : Output module failed" << std::endl;
         code = falaise::EXIT_UNAVAILABLE;
       }
 
@@ -397,13 +408,15 @@ falaise::exit_code do_flsimulate(int argc, char *argv[])
       }
     }
   } catch (std::exception& e) {
-    std::cerr << "flsimulate : Setup/run of simulation threw exception" << std::endl;
+    std::cerr << app_name() << " : Setup/run of simulation threw exception" << std::endl;
     std::cerr << e.what() << std::endl;
     code = falaise::EXIT_UNAVAILABLE;
   }
 
   // Terminate the variant service:
-  vserv.stop();
+  if (vserv.is_started()) {
+    vserv.stop();
+  }
 
   return code;
 }
