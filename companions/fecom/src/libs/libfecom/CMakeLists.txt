@@ -153,7 +153,7 @@ endif()
 if(FECOM_ENABLE_TESTING)
   foreach(_testsource ${FeCom_TESTS})
     set(_fecom_TEST_ENVIRONMENT
-      "FECOM_RESOURCE_DIR=${PROJECT_SOURCE_DIR}/resources"
+      "FECOM_RESOURCES_DIR=${PROJECT_SOURCE_DIR}/resources"
       )
     get_filename_component(_testname "${_testsource}" NAME_WE)
     set(_testname "fecom-${_testname}")
