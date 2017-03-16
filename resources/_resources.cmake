@@ -1,11 +1,19 @@
 set(Falaise_RESOURCES
 ${PROJECT_SOURCE_DIR}/resources/README.rst
+${PROJECT_SOURCE_DIR}/resources/urn/db/snemo_simulation_setup_infos.defs
+${PROJECT_SOURCE_DIR}/resources/urn/db/snemo_setup_db.conf
+${PROJECT_SOURCE_DIR}/resources/urn/db/snemo_geometry_setup_infos.defs
+${PROJECT_SOURCE_DIR}/resources/urn/resolvers/snemo_resource_path_resolver.conf
+${PROJECT_SOURCE_DIR}/resources/urn/resolvers/snemo_simulation_resource_map.conf
+${PROJECT_SOURCE_DIR}/resources/urn/resolvers/snemo_geometry_resource_map.conf
 ${PROJECT_SOURCE_DIR}/resources/pipeline/snemo.demonstrator/1.0.0
 ${PROJECT_SOURCE_DIR}/resources/pipeline/snemo.demonstrator/1.0.0.visual
+${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/legacy/ex01/vprofile.conf
+${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/legacy/ex01/README.rst
+${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/legacy/ex01/seeds.conf
 ${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/vprofile.conf
 ${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/README.rst
 ${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/flsimulate.conf
-${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/services.conf
 ${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/seeds.conf
 ${PROJECT_SOURCE_DIR}/resources/examples/geometry/ex01/README.rst
 ${PROJECT_SOURCE_DIR}/resources/examples/geometry/ex01/ex01.cxx
@@ -262,7 +270,6 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/plugins/m
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/plugins/magnetic_field/magnetic_fields.def
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/plugins/magnetic_field/manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/plugins/mapping/plugins.conf
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/plugins/electronics/plugin.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/plugins/locators/plugin.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/1.0/step_hit_processors-only_visu_tracks.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/1.0/processes/em.conf
@@ -318,8 +325,8 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/3.
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.0/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.0/generators/hall_vg.lis
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.0/generators/source_calibration_vg.lis
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.0/generators/misc_vg.def
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.0/generators/scin_vg.lis
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.0/generators/misc_vg.lis
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.0/generators/source_vg.lis
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.0/generators/shield_vg.lis
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.0/generators/tracker_vg.lis
@@ -347,7 +354,6 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.1/generators/tracker_vg.def
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.1/generators/source_calibration_vg.def
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.1/generators/hall_vg.def
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.1/flvertexes.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.1/variants/models/free_spot_vertex.def
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.1/variants/models/vertexes_generators.csv
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.1/variants/models/source_calibration.def
