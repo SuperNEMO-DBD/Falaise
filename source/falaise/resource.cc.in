@@ -60,11 +60,12 @@
 #include <falaise/version.h>
 
 namespace {
-//! Convert BrInitError code to a string describing the error
-//! \todo add errno to returned string
-std::string BRErrorAsString(const BrInitError& err) {
-  std::string errMsg;
-  switch (err) {
+
+  //! Convert BrInitError code to a string describing the error
+  //! \todo add errno to returned string
+  std::string BRErrorAsString(const BrInitError& err) {
+    std::string errMsg;
+    switch (err) {
     case BR_INIT_ERROR_NOMEM:
       errMsg = "Unable to open /proc/self/maps";
     case BR_INIT_ERROR_OPEN_MAPS:
@@ -77,91 +78,93 @@ std::string BRErrorAsString(const BrInitError& err) {
       errMsg = "Binary relocation disabled";
     default:
       BOOST_ASSERT_MSG(1,"Invalid BrInitError");
+    }
+    return errMsg;
   }
-  return errMsg;
-}
 
-//! Return relative path from application directory to root of resource dir
-std::string relativePathToResourceDir() {
-  return "@FALAISE_LIBDIR_TO_RESOURCEDIR@";
-}
+  //! Return relative path from application directory to root of resource dir
+  std::string relativePathToResourceDir() {
+    return "@FALAISE_LIBDIR_TO_RESOURCEDIR@";
+  }
   //! Return relative path from application directory to root of plugin/module DLL dir
-std::string relativePathToPluginLibDir() {
-  return "@FALAISE_LIBDIR_TO_PLUGINDIR@";
-}
+  std::string relativePathToPluginLibDir() {
+    return "@FALAISE_LIBDIR_TO_PLUGINDIR@";
+  }
 
-std::string getLibraryDir() {
-  char* exePath(0);
-  exePath = br_find_exe_dir("");
-  boost::filesystem::path sExePath(exePath);
-  free(exePath);
-  boost::filesystem::path cExePath = boost::filesystem::canonical(sExePath);
-  return cExePath.string();
-}
+  std::string getLibraryDir() {
+    char* exePath(0);
+    exePath = br_find_exe_dir("");
+    boost::filesystem::path sExePath(exePath);
+    free(exePath);
+    boost::filesystem::path cExePath = boost::filesystem::canonical(sExePath);
+    return cExePath.string();
+  }
+
 } // namespace
 
 
 namespace falaise {
-void init_resources() {
-  BrInitError err;
-  int initSuccessful = br_init_lib(&err);
-  DT_THROW_IF(initSuccessful != 1,
-              falaise::ResourceInitializationException,
-              "resource initialization failed : "
-              << err
-              << " ("
-              << BRErrorAsString(err)
-              << ")");
-}
 
-std::string get_resource_dir() {
-  boost::filesystem::path tmpPath(getLibraryDir());
-  tmpPath /= relativePathToResourceDir();
-  boost::filesystem::path absPath = boost::filesystem::canonical(tmpPath);
-  return absPath.string();
-}
+  void init_resources() {
+    BrInitError err;
+    int initSuccessful = br_init_lib(&err);
+    DT_THROW_IF(initSuccessful != 1,
+                falaise::ResourceInitializationException,
+                "resource initialization failed : "
+                << err
+                << " ("
+                << BRErrorAsString(err)
+                << ")");
+  }
 
-std::string get_resource(const std::string& rname) {
-  boost::filesystem::path rnamePath(rname);
-  DT_THROW_IF(rnamePath.is_absolute(),
-              std::logic_error,
-              "resource name cannot be absolute");
+  std::string get_resource_dir() {
+    boost::filesystem::path tmpPath(getLibraryDir());
+    tmpPath /= relativePathToResourceDir();
+    boost::filesystem::path absPath = boost::filesystem::canonical(tmpPath);
+    return absPath.string();
+  }
 
-  boost::filesystem::path expectedResource = get_resource_dir() / rnamePath;
+  std::string get_resource(const std::string& rname) {
+    boost::filesystem::path rnamePath(rname);
+    DT_THROW_IF(rnamePath.is_absolute(),
+                std::logic_error,
+                "resource name cannot be absolute");
 
-  DT_THROW_IF(!boost::filesystem::exists(expectedResource),
-              std::runtime_error,
-              "Requested resource '"
-              << rname
-              << "' does not exists at resolved path '"
-              << expectedResource << "'");
-  // TODO: Check readability?
-  return expectedResource.string();
-}
+    boost::filesystem::path expectedResource = get_resource_dir() / rnamePath;
 
-std::string get_plugin_dir() {
-  boost::filesystem::path tmpPath(getLibraryDir());
-  tmpPath /= relativePathToPluginLibDir();
-  boost::filesystem::path absPath = boost::filesystem::canonical(tmpPath);
-  return absPath.string();
-}
+    DT_THROW_IF(!boost::filesystem::exists(expectedResource),
+                std::runtime_error,
+                "Requested resource '"
+                << rname
+                << "' does not exists at resolved path '"
+                << expectedResource << "'");
+    // TODO: Check readability?
+    return expectedResource.string();
+  }
 
-std::string get_plugin(const std::string& rname) {
-  boost::filesystem::path rnamePath(rname);
-  DT_THROW_IF(rnamePath.is_absolute(),
-              std::logic_error,
-              "plugin path cannot be absolute");
+  std::string get_plugin_dir() {
+    boost::filesystem::path tmpPath(getLibraryDir());
+    tmpPath /= relativePathToPluginLibDir();
+    boost::filesystem::path absPath = boost::filesystem::canonical(tmpPath);
+    return absPath.string();
+  }
 
-  boost::filesystem::path expectedResource = get_plugin_dir() / rnamePath;
+  std::string get_plugin(const std::string& rname) {
+    boost::filesystem::path rnamePath(rname);
+    DT_THROW_IF(rnamePath.is_absolute(),
+                std::logic_error,
+                "plugin path cannot be absolute");
 
-  DT_THROW_IF(!boost::filesystem::exists(expectedResource),
-              std::runtime_error,
-              "Requested plugin '"
-              << rname
-              << "' does not exists at resolved path '"
-              << expectedResource << "'");
-  // TODO: Check readability?
-  return expectedResource.string();
-}
+    boost::filesystem::path expectedResource = get_plugin_dir() / rnamePath;
+
+    DT_THROW_IF(!boost::filesystem::exists(expectedResource),
+                std::runtime_error,
+                "Requested plugin '"
+                << rname
+                << "' does not exists at resolved path '"
+                << expectedResource << "'");
+    // TODO: Check readability?
+    return expectedResource.string();
+  }
 
 } // namespace falaise

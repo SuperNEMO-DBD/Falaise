@@ -2,8 +2,8 @@
 //
 // Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com>
 // Copyright (c) 2013 by The University of Warwick
-// Copyright (c) 2013 by Francois Mauger <mauger@lpccaen.in2p3.fr>
-// Copyright (c) 2013 by Université de Caen
+// Copyright (c) 2013-2017 by Francois Mauger <mauger@lpccaen.in2p3.fr>
+// Copyright (c) 2013-2017 by Université de Caen Normandie
 //
 // This file is part of Falaise.
 //
@@ -18,7 +18,10 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Falaise.  If not, see <http://www.gnu.org/licenses/>.
+// along with Falaise. If not, see <http://www.gnu.org/licenses/>.
+
+// Ourselves
+#include "falaise/falaise.h"
 
 // Standard library
 #include <iostream>
@@ -49,85 +52,53 @@
 #pragma clang diagnostic pop
 #endif
 
-#include <bayeux/datatools/library_info.h>
+// #include <bayeux/datatools/library_info.h>
+// #include <bayeux/datatools/urn_to_path_resolver_service.h>
+// #include <bayeux/datatools/urn_db_service.h>
 
-// Ourselves
-#include "falaise/falaise.h"
-#include "falaise/version.h"
+// This project;
+#include "falaise/detail/falaise_sys.h"
 #include "falaise/resource.h"
-
 
 namespace {
 
-void falaise_initialize_impl()
-{
-  falaise::init_resources();
+  static bool _flinit = false;
 
-  DT_THROW_IF(!datatools::kernel::is_instantiated(),
-              std::runtime_error,
-              "The Bayeux/datatools kernel is not instantiated !");
-  datatools::kernel & krnl = datatools::kernel::instance();
-
-  // Populate the library info register, basically dumb if we don't
-  // have it so assume it exists and hope for an exception if
-  // it doesn't
-  datatools::library_info & lib_info_reg = krnl.grab_library_info_register();
-
-  // Bundled submodules:
+  void falaise_initialize_impl()
   {
-    // Falaise itself:
-    DT_THROW_IF (lib_info_reg.has("falaise"),
-                 std::logic_error,
-                 "falaise is already registered !");
-    datatools::properties & falaise_lib_infos
-        = lib_info_reg.registration("falaise",
-                                    "Falaise provides the main computational environment for the simulation,"
-                                    "processing and analysis of data for the SuperNEMO double beta decay "
-                                    "search experiment.",
-                                    falaise::version::get_version()
-                                   );
+    ::datatools::logger::priority logging = ::falaise::detail::falaise_sys::process_logging_env();
+    DT_LOG_TRACE_ENTERING(logging);
+    falaise::init_resources();
 
-      // Register the Falaise resource path in the datatools' kernel:
-      falaise_lib_infos.store_string(datatools::library_info::keys::install_resource_dir(),
-                                     falaise::get_resource_dir()
-                                    );
 
-      // If the 'FALAISE_RESOURCE_DIR' environment variable is set, it will supersed
-      // the official registered resource path above through the 'datatools::fetch_path_with_env'
-      // function:
-      falaise_lib_infos.store_string(datatools::library_info::keys::env_resource_dir(),
-                                     "FALAISE_RESOURCE_DIR"
-                                    );
+    DT_THROW_IF(!datatools::kernel::is_instantiated(),
+                std::runtime_error,
+                "The Bayeux/datatools' kernel is not instantiated !");
+    datatools::kernel & krnl = datatools::kernel::instance();
 
-      // Register the Falaise plugin path in the datatools' kernel:
-      falaise_lib_infos.store_string(datatools::library_info::keys::install_plugin_lib_dir(),
-                                     falaise::get_plugin_dir()
-                                    );
-
-      // If the 'FALAISE_PLUGIN_LIB_DIR' environment variable is set, it will supersed
-      // the official registered plugin path above through the 'datatools::library_loader'
-      // function:
-      falaise_lib_infos.store_string(datatools::library_info::keys::env_plugin_lib_dir(),
-                                     "FALAISE_PLUGIN_LIB_DIR"
-                                    );
-    }
-}
+    // Populate the library info register, basically dumb if we don't
+    // have it so assume it exists and hope for an exception if
+    // it doesn't
+    datatools::library_info & lib_info_reg = krnl.grab_library_info_register();
+    DT_LOG_TRACE(logging, "Instantiating Falaise system singleton...");
+    ::falaise::detail::falaise_sys & flSys = ::falaise::detail::falaise_sys::instantiate();
+    DT_LOG_TRACE(logging, "Initializing Falaise system singleton with specific internals...");
+    flSys.initialize();
+    DT_LOG_TRACE_EXITING(logging);
+    return;
+  }
 
   void falaise_terminate_impl()
   {
-    if (datatools::kernel::is_instantiated()) {
-      datatools::kernel & krnl = datatools::kernel::instance();
-      if (krnl.has_library_info_register()) {
-        // Access to the datatools kernel library info register:
-        datatools::library_info & lib_info_reg = krnl.grab_library_info_register();
-
-        // Unregistration of all registered submodules from the kernel's
-        // library info register:
-        if (lib_info_reg.has("falaise")) {
-          lib_info_reg.unregistration("falaise");
-        }
-      }
+    ::datatools::logger::priority logging = ::falaise::detail::falaise_sys::process_logging_env();
+    DT_LOG_TRACE_ENTERING(logging);
+    if (::falaise::detail::falaise_sys::is_instantiated()) {
+      DT_LOG_TRACE(logging, "Shutdown Falaise system singleton specific internals...");
+      ::falaise::detail::falaise_sys & flSys = ::falaise::detail::falaise_sys::instance();
+      flSys.shutdown();
+      DT_LOG_TRACE(logging, "Falaise system singleton have been terminated.");
     }
+    DT_LOG_TRACE_EXITING(logging);
     return;
   }
 
@@ -137,34 +108,31 @@ namespace falaise {
 
   void initialize(int argc_, char * argv_[], uint32_t flags_)
   {
-    static bool _init = false;
-    if (! _init) {
+    if (! ::_flinit) {
       // Wrap Bayeux initialization because we need resources from various Bayeux's modules:
       ::bayeux::initialize(argc_,argv_,flags_);
-
       // Initialization code from Falaise itself:
       falaise_initialize_impl();
-      _init = true;
+      ::_flinit = true;
     } else {
-      DT_THROW_IF(true, std::logic_error,
-                  "Attempt to initialize the already initialized Falaise library!");
+      DT_THROW(std::logic_error,
+               "Attempt to initialize the already initialized Falaise library!");
     }
     return;
   }
 
   void terminate()
   {
-    static bool _fini = false;
-    if (! _fini) {
+    if (::_flinit) {
       // Termination code for Falaise:
       falaise_terminate_impl();
 
       // Wrap Bayeux termination:
       ::bayeux::terminate();
-      _fini = true;
+      ::_flinit = false;
     } else {
-      DT_THROW_IF(true, std::logic_error,
-                  "Attempt to terminate the already terminated Falaise library!");
+      DT_THROW(std::logic_error,
+               "Attempt to terminate the already terminated Falaise library!");
     }
     return;
   }

@@ -29,6 +29,8 @@ set(FalaiseLibrary_HEADERS
   falaise.h
   resource.h
   version.h.in
+  property_reader.h
+  detail/falaise_sys.h
 )
 
 #-----------------------------------------------------------------------
@@ -49,13 +51,16 @@ set(FalaiseLibrary_SOURCES
   ${CMAKE_CURRENT_BINARY_DIR}/resource.cc
   ${CMAKE_CURRENT_BINARY_DIR}/falaise_binreloc.h
   falaise_binreloc.c
-  )
+  property_reader.cc
+  detail/falaise_sys.cc
+ )
 
 set(FalaiseLibrary_TESTS)
 set(FalaiseLibrary_TESTS_CATCH)
 
 # - Declare headers, sources and test programs specific
 #   to various setups (snemo, bipo3...)
+include(common.cmake)
 include(snemo.cmake)
 include(bipo3.cmake)
 include(TrackerPreClustering.cmake)
@@ -133,6 +138,9 @@ if(FALAISE_ENABLE_TESTING)
     testing/test_falaise.cxx
     testing/test_io_data.cxx
     )
+  list(APPEND FalaiseLibrary_TESTS_CATCH
+    testing/test_property_reader.cxx
+    )
 endif()
 
 #-----------------------------------------------------------------------
@@ -142,8 +150,8 @@ endif()
 # - We also output the executables to a dedicated directory
 set(_falaise_TEST_ENVIRONMENT
   "FALAISE_RESOURCE_DIR=${FALAISE_BUILD_DATAROOTDIR}/${FALAISE_RESOURCE_DIR}"
-      "FALAISE_TESTING_DIR=${CMAKE_CURRENT_SOURCE_DIR}/testing"
-      )
+  "FALAISE_TESTING_DIR=${CMAKE_CURRENT_SOURCE_DIR}/testing"
+  )
 if(FALAISE_ENABLE_TESTING)
   # - CATCH TESTS
   foreach(_testsource ${FalaiseLibrary_TESTS_CATCH})
