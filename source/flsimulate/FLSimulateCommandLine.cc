@@ -136,7 +136,7 @@ namespace FLSimulate {
       ("output-metadata-file,m",
        bpo::value<std::string>(&clArgs.outputMetadataFile)->required()->value_name("file"),
        "file in which to store metadata")
-      ("embedded-metadata,M",
+      ("embedded-metadata,E",
        bpo::value<bool>(&clArgs.embeddedMetadata)->value_name("flag")->default_value(false),
        "flag to (de)activate recording of metadata in the simulation results output file")
       ("output-file,o",
