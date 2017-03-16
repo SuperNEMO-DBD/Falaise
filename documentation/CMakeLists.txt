@@ -169,4 +169,8 @@ configure_file("flsimulate/FLSimulateVariantsDoc-2.1.pdf"
   ${FALAISE_DOXYGEN_OUTPUT_DIR}/html/FLSimulateVariantsDoc-2.1.pdf
   COPYONLY)
 
+configure_file("flsimulate/FLSimulate-3.0.0.conf"
+  ${FALAISE_DOXYGEN_OUTPUT_DIR}/html/FLSimulate-3.0.0.conf
+  COPYONLY)
+
 # - end

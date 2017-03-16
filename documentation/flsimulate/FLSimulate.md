@@ -105,7 +105,7 @@ the simulation (`SimulationSubsystem` section):
 - the number of events,
 - the input file for the  seeding of random number generators.
 A    sample    configuration    script    is    provided    in    this
-[document](FLSimulate.conf) (for Falaise 3.0.0).
+[document](FLSimulate-3.0.0.conf) (for Falaise 3.0.0).
 
 A larger set of physics parameters can be tweaked through
 support of variant configuration parameters (`VariantSubsystem` section):
@@ -211,7 +211,7 @@ a variant profile file in place of it:
 profile : string as path = "variants.profile"
 ~~~~~
 
-The `variants.profile` explicitely publishes all variant parameters:
+where the `variants.profile` explicitely publishes all variant parameters:
 ~~~~~
 @format=datatools::configuration::variant
 #@format.version=1.0
@@ -267,11 +267,11 @@ The currently only available experiment in `flsimulate` is:
 
 - `demonstrator`
 
-As of version 4.0 of the geometry and its associated variant system, it include
+As of version 4.0 of the geometry and its associated variant system, it includes
 two flavours of the general layout of the detector:
 - `Basic` : realistic model of the full detector
-- `HalfCommissioning̀ : realistic model of the detector with only one calorimeter wall assemblied with
-   one tracker submodule (end 2016-begin 2017 context).
+- `HalfCommissioning` : realistic model of the detector with only one calorimeter wall assemblied with
+   one tracker submodule and no source frame  (*French* side, end 2016-begin 2017 context).
 
 Each of these layouts publish additional options.
 
@@ -331,8 +331,8 @@ For the `Demonstrator/Basic` configuration/layout, these are:
 
 The  activation   of  some   additional  output   is  done   with  the
 \@simulation:output_profile variant  parameter. It  may be  limited by
-geometry options (for example the `source_details` is not available with the
-`HalfCommissioning̀ geometry layout.
+geometry options, for example the `source_details` is not available with the
+`HalfCommissioning` geometry layout.
 
 Be aware that using this feature  implies that the simulation will use
 additional CPU  and the output  file will use  a lot of  storage. This
@@ -348,5 +348,5 @@ Example {#usingflsimulate_example}
 =======
 
 Falaise  provides  an  example  of FLSimulate  configuration.   It  is
-published   from    the   installation   resource    directory   under
-``examples/flsimulate/ex01/``.
+published   from    the   installation   resource    directory   in
+`examples/flsimulate/ex01/`.
