@@ -1,0 +1,60 @@
+# -*- mode: conf-unix; -*-
+
+#@description Definition list of URNs associated to SuperNEMO experimental detectors
+#@key_label  "urn"
+#@meta_label "category"
+
+
+#########################################################
+[urn="urn:snemo:demonstrator:setup:1.0" category="setup"]
+
+#@config URN info parameters for SuperNEMO demonstrator detector setup version 1.0
+
+description : string = "SuperNEMO demonstrator detector setup 1.0"
+
+topics : string[3] = "experiment" "services" "variants" # "geometry"
+
+topic.experiment.component : string = "urn:snemo:demonstrator"
+topic.services.component   : string = "urn:snemo:demonstrator:setup:1.0:services"
+topic.variants.component   : string = "urn:snemo:demonstrator:setup:1.0:variants"
+# topic.geometry.component   : string = "urn:snemo:demonstrator:geometry:4.0"
+
+
+####################################################################
+[urn="urn:snemo:demonstrator:setup:1.0:services" category="service"]
+
+#@config URN info parameters for services in SuperNEMO demonstrator detector setup version 1.0
+
+description : string = "Services in SuperNEMO demonstrator detector setup 1.0"
+
+topics : string[2] = "__parent__" "geometry"
+
+topic.__parent__.component : string = "urn:snemo:demonstrator:setup:1.0"
+topic.geometry.component   : string = "urn:snemo:demonstrator:geometry:4.0"
+
+
+####################################################################
+[urn="urn:snemo:demonstrator:setup:1.0:variants" category="variant"]
+
+#@config URN info parameters for variants in SuperNEMO demonstrator detector setup version 1.0
+
+description : string = "Variants in SuperNEMO demonstrator detector setup 1.0"
+
+topics : string[1] = "__parent__"
+
+topic.__parent__.component : string = "urn:snemo:demonstrator:setup:1.0"
+
+
+#####################################################
+[urn="urn:bipo3:detector:setup:1.0" category="setup"]
+
+#@config URN info parameters for BiPo3 detector setup version 1.0
+
+description : string = "BiPo3 detector setup 1.0"
+
+topics : string[1] = "experiment"
+
+topic.experiment.component : string = "urn:bipo3:detector"
+
+
+# end

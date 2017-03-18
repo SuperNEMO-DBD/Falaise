@@ -5,24 +5,41 @@
 #@meta_label "category"
 
 
-#############################################################################
-[urn="urn:snemo:demonstrator:geometry:4.0:variants" category="configuration"]
+#######################################################################
+[urn="urn:snemo:demonstrator:geometry:4.0:variants" category="variant"]
 
-#@config URN info parameters for SuperNEMO geometry variants setup version 4.0
+#@config URN info parameters for SuperNEMO demonstrator geometry variants setup version 4.0
 
-description : string = "SuperNEMO geometry variants setup (version 4.0)"
+description : string = "SuperNEMO demonstrator geometry variants setup (version 4.0)"
+
+topics : string[1] = "host"
+
+topic.host.component : string = "urn:snemo:demonstrator:geometry:4.0"
+
+
+# #######################################################################
+# [urn="urn:snemo:demonstrator:geometry:4.0:services" category="service"]
+#
+# #@config URN info parameters for SuperNEMO demonstrator geometry service setup version 4.0
+#
+# description : string = "SuperNEMO demonstrator geometry service setup (version 4.0)"
+#
+# topics : string[1] = "host"
+#
+# topic.host.component : string = "urn:snemo:demonstrator:geometry:4.0"
 
 
 ####################################################################
 [urn="urn:snemo:demonstrator:geometry:4.0" category="configuration"]
 
-#@config URN info parameters for SuperNEMO geometry setup version 4.0
+#@config URN info parameters for SuperNEMO demonstrator geometry setup version 4.0
 
-description : string = "SuperNEMO geometry setup (version 4.0)"
+description : string = "SuperNEMO demonstrator geometry setup (version 4.0)"
 
-topics : string[1] = "variants"
+topics : string[2] = "experiment" "variants"
 
-topic.variants.components : string[1] = "urn:snemo:demonstrator:geometry:4.0:variants"
+topic.experiment.component : string = "urn:snemo:demonstrator"
+topic.variants.component   : string = "urn:snemo:demonstrator:geometry:4.0:variants"
 
 
 # end

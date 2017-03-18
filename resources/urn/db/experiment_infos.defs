@@ -1,0 +1,21 @@
+# -*- mode: conf-unix; -*-
+
+#@description Definition list of URNs associated to SuperNEMO experimental detectors
+#@key_label  "urn"
+#@meta_label "category"
+
+
+####################################################
+[urn="urn:snemo:demonstrator" category="experiment"]
+
+#@config URN info parameters for SuperNEMO demonstrator detector
+
+description : string = "SuperNEMO demonstrator detector"
+
+
+################################################
+[urn="urn:bipo3:detector" category="experiment"]
+
+#@config URN info parameters for BiPo3 detector
+
+description : string = "BiPo3 detector"
