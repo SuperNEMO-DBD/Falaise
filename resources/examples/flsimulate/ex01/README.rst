@@ -111,10 +111,10 @@ Generate simulated data:
 	  --output-file "flSD.brio"
 ..
 
-Here,  some metadata  are generated  and stored  in the  ``flSD.meta``
-companion  file.    The  ``--embedded-metadata``  requests   that  the
-metadata are  also stored  within the output  file which  contains the
-generated Monte Carlo events (``SD`` bank).
+Here,  some   output  metadata  are   generated  and  stored   in  the
+``flSD.meta``  companion file.   The ``--embedded-metadata``  requests
+that  the  metadata are  also  stored  within  the output  file  which
+contains the generated Monte Carlo events (``SD`` bank).
 
 Event display
 =============
