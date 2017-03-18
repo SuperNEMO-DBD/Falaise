@@ -1,0 +1,107 @@
+# List of sections of configuration properties (datatools::multi_properties)
+
+#@description Metadata associated to a flsimulate run
+#@key_label "name"
+#@meta_label "type"
+
+[name="System" type="flsimulate::subsystem"]
+
+#@config System informations
+
+
+
+#@description The simulation application used to produce Monte Carlo data
+application : string = "flsimulate"
+
+
+
+#@description The version of the simulation application
+application.version : string = "3.0.0"
+
+
+
+#@description Bayeux version
+bayeux.version : string = "3.0.0"
+
+
+
+#@description Metadata embedding flag
+embeddedMetadata : boolean = 1
+
+
+
+#@description Falaise version
+falaise.version : string = "3.0.0"
+
+
+
+#@description Run start timestamp
+timestamp : string = "20170318T171559"
+
+
+
+#@description User profile
+userProfile : string = "normal"
+
+
+[name="SimulationSubsystem" type="flsimulate::subsystem"]
+
+#@config Simulation setup parameters
+
+
+
+#@description Experimental setup URN
+experimentalSetupUrn : string = "urn:snemo:demonstrator:setup:1.0"
+
+
+
+#@description Number of simulated events
+numberOfEvents : integer = 10
+
+
+
+#@description Simulation manager configuration file
+simulationManagerConfig : string as path  = "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/manager.conf"
+
+
+
+#@description Simulation setup URN
+simulationSetupUrn : string = "urn:snemo:demonstrator:simulation:2.1"
+
+
+[name="VariantSubsystem" type="flsimulate::subsystem"]
+
+#@config Variant setup
+
+
+
+#@description Variants setup configuration path
+config : string as path  = "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf"
+
+
+
+#@description Variants setup configuration URN
+configUrn : string = "urn:snemo:demonstrator:simulation:2.1:variants"
+
+
+
+#@description Variants profile path
+profile : string as path  = "vprofile.conf"
+
+
+[name="ServicesSubsystem" type="flsimulate::subsystem"]
+
+#@config Services configuration
+
+
+
+#@description Services setup configuration path
+config : string as path  = "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/services.conf"
+
+
+
+#@description Services setup configuration URN
+configUrn : string = "urn:snemo:demonstrator:simulation:2.1:services"
+
+
+# End of list of sections of configuration properties (datatools::multi_properties)

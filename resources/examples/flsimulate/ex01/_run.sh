@@ -8,12 +8,12 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-work_dir="$(pwd)/_work.d/"
+work_dir="$(pwd)/_work.d"
 mkdir ${work_dir}
 cp flsimulate.conf seeds.conf vprofile.conf ${work_dir}/
 cd ${work_dir}/
 
-echo >&2 "[info] Running fsimulate..."
+echo >&2 "[info] Running flsimulate..."
 flsimulate \
     --verbosity "debug" \
     --config "flsimulate.conf" \
@@ -28,9 +28,10 @@ fi
 
 echo >&2 "[info] Running flvisualize..."
 flvisualize \
-	  --variant-config "urn:snemo:demonstrator:simulation:2.1:variants" \
-	  --variant-load "vprofile.conf" \
-	  --input-file "flSD.brio"
+    --detector-config-file "$(flquery --resourcedir)/config/snemo/demonstrator/geometry/4.0/manager.conf" \
+    --variant-config "$(flquery --resourcedir)/config/snemo/demonstrator/geometry/4.0/variants/repository.conf" \
+    --variant-load "vprofile.conf" \
+    --input-file "flSD.brio"
 
 cd ${opwd}
 echo >&2 "[info] The end."

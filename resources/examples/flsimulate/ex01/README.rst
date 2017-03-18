@@ -1,30 +1,46 @@
-============================
+=======================
 FLsimulate example ex01
-============================
+=======================
 
 :Author: F.Mauger
-:Date: 2017-03-16
+:Date: 2017-03-18
 
        This example  shows how  to setup  and use  FLSimulate (Falaise
-       3.0)  to produce  simulation  data  for SuperNEMo  demonstrator
+       3.0)  to produce  simulation  data  for SuperNEMO  demonstrator
        experiment.
 
-In  the following,  we  use  the Geant4  based  simulation setup  uses
-version 2.1 as published in the Falaise 3.0.0 resource directory.
+In the following, we use simulation  setup version 2.1 as published in
+the  Falaise   3.0.0  resource  directory  and   registered  with  URN
+``urn:snemo:demonstrator:simulation:2.1``.
 
-This setup implies:
+Users  should specify  the simulation  setup  to be  used through  its
+official tag, represented by an  URN registered in a database internal
+to Falaise.
 
-* Geometry version 4.0 (URN: "urn:snemo:demonstrator:geometry:4.0")
-* Vertex generation version 4.1 (URN: "urn:snemo:demonstrator:simulation:vertexes:4.1")
-* Event generation version 1.2 (URN: "urn:snemo:demonstrator:simulation:decays:1.2")
-* Geant4 simulation setup (URN:   "urn:snemo:demonstrator:simulation:2.1"), with:
 
-    * Variants setup (URN: "urn:snemo:demonstrator:simulation:2.1:variants")
-    * Services setup (URN: "urn:snemo:demonstrator:simulation:2.1:services")
+The simulation setup tagged ``urn:snemo:demonstrator:simulation:2.1`` implies:
+
+* Experimental setup 1.0 (URN: ``urn:snemo:demonstrator:setup:1.0``), with:
+
+  * Geometry version 4.0 (URN: ``urn:snemo:demonstrator:geometry:4.0``)
+
+* Vertex generation version 4.1 (URN: ``urn:snemo:demonstrator:simulation:vertexes:4.1``)
+* Event generation version 1.2 (URN: ``urn:snemo:demonstrator:simulation:decays:1.2``)
+* Geant4 simulation setup (URN:   ``urn:snemo:demonstrator:simulation:2.1``), with:
+
+    * Variants setup (URN: ``urn:snemo:demonstrator:simulation:2.1:variants``)
+    * Services setup (URN: ``urn:snemo:demonstrator:simulation:2.1:services``)
+
+These  tags are  automatically resolved,  if needed,  to configuration
+file paths by a dedicated embedded *URN query service*.
 
 
 Setup
 =====
+
+Some  variant  parameters are  tweaked  through  an embedded  *variant
+service*.  A variant  *profile* must be provided by the  user to apply
+configuration values different from the default ones.
 
 See the ``vprofile.conf`` variant configuration profile below:
 
@@ -40,19 +56,24 @@ Simulation run
 
 See the ``flsimulate.conf`` main configuration script:
 
-* 100 generated events
+* 10 generated events
 
 Configuration files
 ===================
 
-* ``flsimulate.conf`` : main configuration file adapted from the output of:
+The configuration of the simulation  run consists in the following set
+of files:
+
+* ``flsimulate.conf``  : main  configuration script  adapted from  the
+  output of:
 
 .. code:: sh
 
    $ flsimulate --help-scripting
 ..
 
-* ``vprofile.conf`` : variant profile as generated through:
+* ``vprofile.conf`` : variant profile as generated through the variant
+  inspector/editor application:
 
 .. code:: sh
 
@@ -66,7 +87,9 @@ Configuration files
 	  --variant-store "vprofile.conf"
 ..
 
-* ``seeds.conf`` : the random generator seed file as generated from:
+* ``seeds.conf`` : this files contains  the seeds needed by the pseudo
+  random  generators  used by  the  simulation  engine. This  file  is
+  generated from:
 
 .. code:: sh
 
@@ -75,7 +98,7 @@ Configuration files
 
 
 Run the simulation
-=====================
+==================
 
 Generate simulated data:
 
@@ -84,16 +107,25 @@ Generate simulated data:
    $ flsimulate \
 	  --config "flsimulate.conf" \
 	  --output-metadata-file "flSD.meta" \
+	  --embedded-metadata=1 \
 	  --output-file "flSD.brio"
 ..
 
+Here,  some metadata  are generated  and stored  in the  ``flSD.meta``
+companion  file.    The  ``--embedded-metadata``  requests   that  the
+metadata are  also stored  within the output  file which  contains the
+generated Monte Carlo events (``SD`` bank).
+
+Event display
+=============
 
 Visualization of output Monte Carlo events:
 
 .. code:: sh
 
    $ flvisualize \
-	  --variant-config "urn:snemo:demonstrator:simulation:2.1:variants" \
+	  --detector-config-file "$(flquery --resourcedir)/config/snemo/demonstrator/geometry/4.0/manager.conf" \
+	  --variant-config "$(flquery --resourcedir)/config/snemo/demonstrator/geometry/4.0/variants/repository.conf" \
 	  --variant-load "vprofile.conf" \
 	  --input-file "flSD.brio"
 ..
