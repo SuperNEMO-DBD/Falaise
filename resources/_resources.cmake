@@ -1,8 +1,11 @@
 set(Falaise_RESOURCES
 ${PROJECT_SOURCE_DIR}/resources/README.rst
+${PROJECT_SOURCE_DIR}/resources/urn/db/experimental_setup_infos.defs
+${PROJECT_SOURCE_DIR}/resources/urn/db/experiment_infos.defs
 ${PROJECT_SOURCE_DIR}/resources/urn/db/snemo_simulation_setup_infos.defs
 ${PROJECT_SOURCE_DIR}/resources/urn/db/snemo_setup_db.conf
 ${PROJECT_SOURCE_DIR}/resources/urn/db/snemo_geometry_setup_infos.defs
+${PROJECT_SOURCE_DIR}/resources/urn/resolvers/snemo_setup_resource_map.conf
 ${PROJECT_SOURCE_DIR}/resources/urn/resolvers/snemo_resource_path_resolver.conf
 ${PROJECT_SOURCE_DIR}/resources/urn/resolvers/snemo_simulation_resource_map.conf
 ${PROJECT_SOURCE_DIR}/resources/urn/resolvers/snemo_geometry_resource_map.conf
@@ -14,7 +17,15 @@ ${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/legacy/ex01/seeds.conf
 ${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/vprofile.conf
 ${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/README.rst
 ${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/flsimulate.conf
+${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/samples/output/flSD.brio
+${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/samples/output/flSD.meta
 ${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/seeds.conf
+${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/vprofile.conf
+${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/README.rst
+${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/flreconstruct.conf
+${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/samples/input/vprofile.conf
+${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/samples/input/flSD.brio
+${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/samples/input/flSD.meta
 ${PROJECT_SOURCE_DIR}/resources/examples/geometry/ex01/README.rst
 ${PROJECT_SOURCE_DIR}/resources/examples/geometry/ex01/ex01.cxx
 ${PROJECT_SOURCE_DIR}/resources/examples/variants/README.rst
@@ -116,6 +127,9 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/official-1.0.0.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/1.0/mock_calorimeter_s2c.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/official_with_visu-1.0.0.conf
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/setup/1.0/README.rst
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/setup/1.0/variants/repository.conf
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/setup/1.0/services.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/models/module_0.geom
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/3.0/models/setup.geom
