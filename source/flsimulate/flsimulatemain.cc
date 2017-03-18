@@ -38,7 +38,6 @@
 
 // Standard Library
 #include <string>
-// #include <vector>
 
 // Third Party
 // - Boost
@@ -118,13 +117,13 @@ namespace FLSimulate {
     system_props.set_description("System informations");
 
     system_props.store_string("bayeux.version", bayeux::version::get_version(),
-                              "Bayeux version at generation");
+                              "Bayeux version");
 
     system_props.store_string("falaise.version", falaise::version::get_version(),
-                              "Falaise version at generation");
+                              "Falaise version");
 
     system_props.store_string("application", "flsimulate",
-                              "The simulation application used to generate Monte Carlo data");
+                              "The simulation application used to produce Monte Carlo data");
 
     system_props.store_string("application.version", falaise::version::get_version(),
                               "The version of the simulation application");
@@ -132,29 +131,28 @@ namespace FLSimulate {
     system_props.store_string("userProfile", flSimParameters.userProfile,
                               "User profile");
 
+    system_props.store_boolean("embeddedMetadata",
+                               flSimParameters.embeddedMetadata,
+                               "Metadata embedding flag");
+
     boost::posix_time::ptime start_run_timestamp = boost::posix_time::second_clock::universal_time();
     system_props.store_string("timestamp",
                               boost::posix_time::to_iso_string(start_run_timestamp),
-                              "application start timestamp");
+                              "Run start timestamp");
 
     // Simulation section:
     datatools::properties & simulation_props
       = flSimMetadata.add_section("SimulationSubsystem", "flsimulate::subsystem");
     simulation_props.set_description("Simulation setup parameters");
 
-    if (!flSimParameters.experimentID.empty()) {
-      simulation_props.store_string("experimentID", flSimParameters.experimentID,
-                                    "Simulation setup experiment identifier");
-    }
-
-    if (!flSimParameters.simulationSetupVersion.empty()) {
-      simulation_props.store_string("simulationVersion", flSimParameters.simulationSetupVersion,
-                                    "Simulation setup version");
+    if (!flSimParameters.experimentalSetupUrn.empty()) {
+      simulation_props.store_string("experimentalSetupUrn", flSimParameters.experimentalSetupUrn,
+                                    "Experimental setup URN");
     }
 
     if (!flSimParameters.simulationSetupUrn.empty()) {
-      simulation_props.store_string("simulationUrn", flSimParameters.simulationSetupUrn,
-                                    "Simulation setup configuration URN");
+      simulation_props.store_string("simulationSetupUrn", flSimParameters.simulationSetupUrn,
+                                    "Simulation setup URN");
     }
 
     if (!flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
@@ -166,10 +164,6 @@ namespace FLSimulate {
     simulation_props.store_integer("numberOfEvents",
                                    flSimParameters.numberOfEvents,
                                    "Number of simulated events");
-
-    simulation_props.store_boolean("embeddedMetadata",
-                                   flSimParameters.embeddedMetadata,
-                                   "Metadata embedding flag");
 
     // Variants section:
     datatools::properties & variants_props
@@ -238,7 +232,10 @@ namespace FLSimulate {
 
     // - Variants support:
     datatools::configuration::variant_service vserv;
-    vserv.set_logging(datatools::logger::PRIO_TRACE);
+    datatools::logger::priority variantLogging = datatools::logger::PRIO_FATAL;
+    if (!flSimParameters.variantSubsystemParams.logging.empty()) {
+      vserv.set_logging(datatools::logger::get_priority(flSimParameters.variantSubsystemParams.logging));
+    }
     try {
       if (flSimParameters.variantSubsystemParams.is_active()) {
         vserv.configure(flSimParameters.variantSubsystemParams);
@@ -275,13 +272,11 @@ namespace FLSimulate {
       flSimModule.set_geant4_parameters(flSimParameters.simulationManagerParams);
       flSimModule.initialize_simple_with_service(services);
 
-      // Metadata management:
-      datatools::multi_properties flSimMetadata("section",
-                                                "description",
+      // Output metadata management:
+      datatools::multi_properties flSimMetadata("name",
+                                                "type",
                                                 "Metadata associated to a flsimulate run");
       do_metadata(flSimParameters, flSimMetadata);
-
-      // Print:
       if (datatools::logger::is_debug(flSimParameters.logLevel)) {
         flSimMetadata.tree_dump(std::cerr, "Simulation metadata: ", "[debug] ");
       }

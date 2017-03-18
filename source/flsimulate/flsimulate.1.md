@@ -1,6 +1,6 @@
 % FLSIMULATE(1) Falaise Tools Documentation
-% Ben Morgan
-% September 2013
+% Ben Morgan, François Mauger
+% March 2017
 
 # NAME
 
@@ -19,29 +19,8 @@ This program runs a Geant4 based simulation of a SuperNEMO detector
 
 Run a Geant4 simulation of a SuperNEMO detector
 
-**-e, --event-generator**=NAME
-:    Use NAME as the generator for primary particle(s).
-
 **-h, --help**
 :    Print short help information to stdout.
-
-**-n, --number**=N
-:    Simulate N events. Default is 1.
-
-**-o, --output-file**=FILE
-:    Write events and simulation metadata to file FILE. Mandatory.
-
-**-p, --output-profiles**=RULE
-:    Set the rule for generating detailed additional truth MC hits.
-
-**-v, --verbose**
-:    Increase verbosity of logging.
-
-**--version**
-:    Print version details including those of used libraries.
-
-**-x, --vertex-generator**=NAME
-:    Use NAME as the generator for event starting locations.
 
 # SEE ALSO
 
@@ -49,4 +28,4 @@ Run a Geant4 simulation of a SuperNEMO detector
 
 # COPYRIGHT
 
-Copyright (C) 2013 SuperNEMO Collaboration
+Copyright (C) 2013-2017 SuperNEMO Collaboration

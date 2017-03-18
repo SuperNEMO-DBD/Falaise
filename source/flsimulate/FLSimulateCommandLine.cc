@@ -68,8 +68,6 @@ namespace FLSimulate {
        << "[section=\"SimulationSubsystem\" description=\"\"]\n"
        << "simulationUrn : string = \"urn:snemo:demonstrator:simulation:2.1\" \n"
        << "                                                 # URN of simulation setup\n"
-       << "# experimentID : string = \"demonstrator\"           # Name of detector to simulate (default=\"demonstrator\")\n"
-       << "# simulationVersion : string = \"2.1\"               # Version of the simulation setup (default=\"2.1\")\n"
        << "numberOfEvents : integer = 1                     # Number of events to simulate\n"
        << "rngSeedFile : string as path = \"seeds.conf\"      # Path to file containing random number seeds\n"
        << "outputProfile : string = \"\"                      # Output profile (hits collections to output)\n"
@@ -81,7 +79,8 @@ namespace FLSimulate {
        << "                                                 # (should be reserved to experts). \n"
        << std::endl
        << "[section=\"ServicesSubsystem\" description=\"\"]\n"
-       << "profile : string as path = \"services.conf\"       # Service manager profile configuration file.\n"
+       << "configUrn : string as path= \"services.conf\"       # Service manager profile configuration file.\n"
+       << "config    : string as path = \"services.conf\"       # Service manager profile configuration file.\n"
        << std::endl
        << "All sections and parameters are optional, and flsimulate will supply sensible\n"
        << "default values when only some are set.\n"
@@ -127,27 +126,37 @@ namespace FLSimulate {
     bpo::options_description optDesc("Options");
     optDesc.add_options()
       ("help,h","print this help message")
+
       ("help-scripting","print help on input script format and schema")
+
       ("help-setup","print help on simulation setup")
+
       ("version","print version number")
-      ("config,c",
-       bpo::value<std::string>(&clArgs.configScript)->value_name("file"),
-       "configuration script for simulation")
-      ("output-metadata-file,m",
-       bpo::value<std::string>(&clArgs.outputMetadataFile)->required()->value_name("file"),
-       "file in which to store metadata")
-      ("embedded-metadata,E",
-       bpo::value<bool>(&clArgs.embeddedMetadata)->value_name("flag")->default_value(false),
-       "flag to (de)activate recording of metadata in the simulation results output file")
-      ("output-file,o",
-       bpo::value<std::string>(&clArgs.outputFile)->required()->value_name("file"),
-       "file in which to store simulation results")
-      ("user-profile,u",
-       bpo::value<std::string>(&clArgs.userProfile)->value_name("name")->default_value("normal"),
-       "set the user profile (\"expert\", \"normal\", \"production\")")
+
       ("verbosity,V",
        bpo::value<std::string>(&verbosityLabel)->value_name("level"),
        "set the verbosity level")
+
+      ("user-profile,u",
+       bpo::value<std::string>(&clArgs.userProfile)->value_name("name")->default_value("normal"),
+       "set the user profile (\"expert\", \"normal\", \"production\")")
+
+      ("config,c",
+       bpo::value<std::string>(&clArgs.configScript)->value_name("file"),
+       "configuration script for simulation")
+
+      ("output-metadata-file,m",
+       bpo::value<std::string>(&clArgs.outputMetadataFile)->value_name("file"),
+       "file in which to store metadata")
+
+      ("embedded-metadata,E",
+       bpo::value<bool>(&clArgs.embeddedMetadata)->value_name("flag")->default_value(false),
+       "flag to (de)activate recording of metadata in the simulation results output file")
+
+      ("output-file,o",
+       bpo::value<std::string>(&clArgs.outputFile)->required()->value_name("file"),
+       "file in which to store simulation results")
+
       ;
 
     // - Parse...

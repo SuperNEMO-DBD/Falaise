@@ -29,37 +29,38 @@ namespace FLSimulate {
   //! Collect all needed configuration parameters in one data structure
   struct FLSimulateArgs
   {
-    // Application specific parameters:
-    datatools::logger::priority     logLevel;                 //!< Logging priority threshold
-    std::string                     userProfile;              //!< User profile
 
-    // Identification of the simulation setup:
-    std::string                     experimentID;             //!< The label of the virtual experimental setup \deprecated
-    std::string                     simulationSetupVersion;   //!< The version number of the simulation engine setup \deprecated
-    std::string                     simulationSetupUrn;       //!< The URN of the simulation engine setup
+    // Application specific parameters:
+    datatools::logger::priority logLevel;             //!< Logging priority threshold
+    std::string                 userProfile;          //!< User profile
+    std::string                 simulationSetupUrn;   //!< The URN of the simulation engine setup
+    std::string                 experimentalSetupUrn; //!< The URN of the experimental setup (possibly extracted from the simulation setup)
 
     // Simulation manager internal parameters:
-    mctools::g4::manager_parameters simulationManagerParams;  //!< Parameters for the Geant4 simulation manager
+    mctools::g4::manager_parameters simulationManagerParams; //!< Parameters for the Geant4 simulation manager
 
     // Variants support:
-    std::string                                       variantConfigUrn;       //!< Variants configuration URN
-    std::string                                       variantProfileUrn;      //!< Variants profile URN
-    datatools::configuration::variant_service::config variantSubsystemParams; //!< Variants configuration parameters
+    std::string                  variantConfigUrn;       //!< Variants configuration URN
+    std::string                  variantProfileUrn;      //!< Variants profile URN
+     datatools::configuration::variant_service::config variantSubsystemParams; //!< Variants configuration parameters
 
-    // Service support:
-    std::string                     servicesSubsystemConfigUrn; //!< Services configuration URN
-    std::string                     servicesSubsystemConfig;    //!< The main configuration file for the service manager
+    // Services support:
+    std::string servicesSubsystemConfigUrn; //!< Services configuration URN
+    std::string servicesSubsystemConfig;    //!< The main configuration file for the service manager
 
     // Simulation control:
-    unsigned int                    numberOfEvents;           //!< Number of events to be processed in the pipeline
-    std::string                     outputMetadataFile;       //!< Output metadata file
-    bool                            embeddedMetadata;         //!< Flag to embed metadata in the output data file
-    std::string                     outputFile;               //!< Output data file for the output module
+    unsigned int numberOfEvents;     //!< Number of events to be processed in the pipeline
+    std::string  outputMetadataFile; //!< Output metadata file
+    bool         embeddedMetadata;   //!< Flag to embed metadata in the output data file
+    std::string  outputFile;         //!< Output data file for the output module
 
     //! Construct and return the default configuration object
     // Equally, could be supplied in a .application file, though note
     // how some parameters are derived (i.e. there's a postprocessing step)
     static FLSimulateArgs makeDefault();
+
+    // Print:
+    void print(std::ostream &) const;
 
   };
 
