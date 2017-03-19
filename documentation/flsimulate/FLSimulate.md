@@ -69,7 +69,7 @@ Options:
   -h [ --help ]                        print this help message
   --help-scripting                     print help on input script format and
                                        schema
-  --help-setup                         print help on simulation setup
+  --help-simulation-setup              print help on simulation setup
   --version                            print version number
   -V [ --verbosity ] level             set the verbosity level
   -u [ --user-profile ] name (=normal) set the user profile ("expert",
@@ -169,16 +169,23 @@ the  current   working  directory,  you  must   create  the  following
 #@key_label  "section"
 #@meta_label "description"
 
+[name="flsimulate" type="flsimulate::section"]
+
+#@description Number of events to simulate
+numberOfEvents : integer = 10
+
+#@description Progression rate on simulated events
+moduloEvents : integer = 2
+
+#@description Activate simulation
+doSimulation : boolean = true
+
 [name="SimulationSubsystem" type="flsimulate::section"]
 #@config Simulation setup
 #@description URN (tag/identifier) of the simulation setup
 simulationUrn : string = "urn:snemo:demonstrator:simulation:2.1"
-#@description Number of events to simulate (default=1)
-numberOfEvents    : integer = 100
-#@description Progression rate on simulated events
-moduloEvents      : integer =  10
 #@description Random seeds file
-rngSeedFile       : string as path = "seeds.conf"
+rngSeedFile   : string as path = "seeds.conf"
 
 [name="VariantSubsystem" type="flsimulate::section"]
 #@config Variant setup
