@@ -100,8 +100,8 @@ namespace FLSimulate {
       std::vector<std::string> flsim_urn_infos;
       if (dtkUrnQuery.find_urn_info(flsim_urn_infos,
                                     falaise::detail::falaise_sys::fl_setup_db_name(),
-                                    "(urn:snemo:demonstrator:simulation:)([^:]*)",
-                                    "configuration"
+                                    "(urn:)([^:]*)(:)([^:]*)(:simulation:)([^:]*)",
+                                    "simsetup"
                                     )) {
         std::clog << "List of supported simulation setups:" << std::endl;
         for (size_t i = 0; i < flsim_urn_infos.size(); i++) {
