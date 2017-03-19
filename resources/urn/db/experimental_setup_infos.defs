@@ -12,12 +12,11 @@
 
 description : string = "SuperNEMO demonstrator detector setup 1.0"
 
-topics : string[3] = "experiment" "services" "variants" # "geometry"
+topics : string[3] = "experiment" "services" "variants"
 
 topic.experiment.component : string = "urn:snemo:demonstrator"
 topic.services.component   : string = "urn:snemo:demonstrator:setup:1.0:services"
 topic.variants.component   : string = "urn:snemo:demonstrator:setup:1.0:variants"
-# topic.geometry.component   : string = "urn:snemo:demonstrator:geometry:4.0"
 
 
 ####################################################################
