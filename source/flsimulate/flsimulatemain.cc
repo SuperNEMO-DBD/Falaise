@@ -145,17 +145,14 @@ namespace FLSimulate {
       = flSimMetadata.add_section("SimulationSubsystem", "flsimulate::subsystem");
     simulation_props.set_description("Simulation setup parameters");
 
-    if (!flSimParameters.experimentalSetupUrn.empty()) {
-      simulation_props.store_string("experimentalSetupUrn", flSimParameters.experimentalSetupUrn,
-                                    "Experimental setup URN");
-    }
-
     if (!flSimParameters.simulationSetupUrn.empty()) {
       simulation_props.store_string("simulationSetupUrn", flSimParameters.simulationSetupUrn,
                                     "Simulation setup URN");
-    }
-
-    if (!flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
+      if (!flSimParameters.experimentalSetupUrn.empty()) {
+        simulation_props.store_string("experimentalSetupUrn", flSimParameters.experimentalSetupUrn,
+                                      "Experimental setup URN");
+      }
+    } else if (!flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
       simulation_props.store_path("simulationManagerConfig",
                                   flSimParameters.simulationManagerParams.manager_config_filename,
                                   "Simulation manager configuration file");
@@ -173,9 +170,7 @@ namespace FLSimulate {
     if (!flSimParameters.variantConfigUrn.empty()) {
       variants_props.store_string("configUrn", flSimParameters.variantConfigUrn,
                                   "Variants setup configuration URN");
-    }
-
-    if (!flSimParameters.variantSubsystemParams.config_filename.empty()) {
+    } else if (!flSimParameters.variantSubsystemParams.config_filename.empty()) {
       variants_props.store_path("config", flSimParameters.variantSubsystemParams.config_filename,
                                 "Variants setup configuration path");
     }
@@ -183,9 +178,7 @@ namespace FLSimulate {
     if (!flSimParameters.variantProfileUrn.empty()) {
       variants_props.store_string("profileUrn", flSimParameters.variantProfileUrn,
                                   "Variants profile URN");
-    }
-
-    if (!flSimParameters.variantSubsystemParams.profile_load.empty()) {
+    } else if (!flSimParameters.variantSubsystemParams.profile_load.empty()) {
       variants_props.store_path("profile", flSimParameters.variantSubsystemParams.profile_load,
                                 "Variants profile path");
     }
@@ -203,9 +196,7 @@ namespace FLSimulate {
     if (!flSimParameters.servicesSubsystemConfigUrn.empty()) {
       services_props.store_string("configUrn", flSimParameters.servicesSubsystemConfigUrn,
                                   "Services setup configuration URN");
-    }
-
-    if (!flSimParameters.servicesSubsystemConfig.empty()) {
+    } else if (!flSimParameters.servicesSubsystemConfig.empty()) {
       services_props.store_path("config", flSimParameters.servicesSubsystemConfig,
                                 "Services setup configuration path");
     }
