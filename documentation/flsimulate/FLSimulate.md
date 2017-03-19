@@ -103,7 +103,7 @@ flsimulate uses the following external libraries:
 Note that the exact versions shown  will depend on the current release
 and what versions of packages are linked.
 
-flsimulate  basically   runs  the  simulation  in   batch  mode.   The
+FLSimulate  basically   runs  the  simulation  in   batch  mode.   The
 simulation  setup  must be  explicitely  selected.   This implies  the
 SuperNEMO  demonstrator  module  experimental setup  is  automatically
 selected  to  be simulated,  the  default  geometry layout  being  the
@@ -149,7 +149,7 @@ $ bxvariant_inspector \
 
 Here the program  generates a variant profile file at  exit. This file
 stores a given set of variant options and thus can be used as input of
-the flsimulate program (see below).
+the `flsimulate` program (see below).
 
 To learn more about the format of the simulation configuration script,
 use:
@@ -332,7 +332,7 @@ are available.
 
 From  Falaise  3.0  (simulation  setup version  2.1),  the  choice  of
 geometry options  and vertex  and event generators  is done  through a
-Bayeux/datatools   variant   service   embedded  in   the   flsimulate
+Bayeux/datatools   variant   service   embedded  in   the `flsimulate`
 application.  A profile of variant  parameters must be created to suit
 the user's needs (see sections above).
 
