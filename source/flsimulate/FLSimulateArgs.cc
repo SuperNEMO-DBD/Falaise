@@ -26,14 +26,16 @@ namespace FLSimulate {
     FLSimulateArgs params;
 
     // Application specific parameters:
-    params.logLevel = datatools::logger::PRIO_ERROR;
-    params.userProfile = "normal";
-
-    // Identification of the simulation setup:
-    params.simulationSetupUrn   = "urn:snemo:demonstrator:simulation:2.1";
+    params.logLevel       = datatools::logger::PRIO_ERROR;
+    params.userProfile    = "normal";
+    params.numberOfEvents = 1;
+    params.doSimulation   = true;
+    params.doDigitization = false;
     // Identification of the experimental setup:
     params.experimentalSetupUrn = "";
 
+    // Identification of the simulation setup:
+    params.simulationSetupUrn   = "urn:snemo:demonstrator:simulation:2.1";
     // Simulation manager internal parameters:
     params.simulationManagerParams.set_defaults();
     params.simulationManagerParams.interactive = false;
@@ -56,8 +58,7 @@ namespace FLSimulate {
     params.servicesSubsystemConfigUrn = "";
     params.servicesSubsystemConfig = "";
 
-    // Simulation control and I/O:
-    params.numberOfEvents     = 1;
+    // I/O control:
     params.outputMetadataFile = "";
     params.embeddedMetadata   = false;
     params.outputFile         = "";
@@ -99,12 +100,42 @@ namespace FLSimulate {
       std::string configScript = args.configScript;
       datatools::fetch_path_with_env(configScript);
       flSimConfig.read(configScript);
+      DT_LOG_DEBUG(flSimParameters.logLevel, "Simulation Configuration:");
       if (datatools::logger::is_debug(flSimParameters.logLevel)) {
-        flSimConfig.tree_dump(std::cerr, "Simulation Configuration:", "[debug] ");
+        flSimConfig.tree_dump(std::cerr, "", "[debug] ");
       }
 
       // Now extract and bind values as needed
       // Caution: some parameters are only available for specific user profile
+
+      // Basic system:
+      if(flSimConfig.has_section("flsimulate")) {
+        datatools::properties baseSystem = flSimConfig.get_section("flsimulate");
+        // Bind properties in this section to the relevant ones in params:
+
+        // Number of simulated events:
+        flSimParameters.numberOfEvents = falaise::properties::getValueOrDefault<int>(baseSystem,
+                                                                                     "numberOfEvents",
+                                                                                     flSimParameters.numberOfEvents);
+
+
+        // Printing rate for events:
+        flSimParameters.simulationManagerParams.number_of_events_modulo =
+          falaise::properties::getValueOrDefault<int>(baseSystem,
+                                                      "moduloEvents",
+                                                      flSimParameters.simulationManagerParams.number_of_events_modulo);
+
+        // Do simulation:
+        flSimParameters.doSimulation = falaise::properties::getValueOrDefault<bool>(baseSystem,
+                                                                                       "doSimulation",
+                                                                                       flSimParameters.doSimulation);
+
+        // Do digitization:
+        flSimParameters.doDigitization = falaise::properties::getValueOrDefault<bool>(baseSystem,
+                                                                                         "doDigitization",
+                                                                                         flSimParameters.doDigitization);
+
+      }
 
       // Simulation subsystem:
       if(flSimConfig.has_section("SimulationSubsystem")) {
@@ -117,6 +148,9 @@ namespace FLSimulate {
                                                                 "simulationSetupUrn",
                                                                 flSimParameters.simulationSetupUrn);
 
+        DT_LOG_DEBUG(flSimParameters.logLevel,
+                     "flSimParameters.simulationSetupUrn=" << flSimParameters.simulationSetupUrn);
+
         // Simulation manager main configuration file:
         if (flSimParameters.userProfile == "production" && simSubsystem.has_key("simulationConfig")) {
           DT_THROW(FLConfigUserError,
@@ -127,18 +161,6 @@ namespace FLSimulate {
           = falaise::properties::getValueOrDefault<std::string>(simSubsystem,
                                                                 "simulationConfig",
                                                                 flSimParameters.simulationManagerParams.manager_config_filename);
-
-        // Number of simulated events:
-        flSimParameters.numberOfEvents = falaise::properties::getValueOrDefault<int>(simSubsystem,
-                                                                                     "numberOfEvents",
-                                                                                     flSimParameters.numberOfEvents);
-
-
-        // Printing rate for events:
-        flSimParameters.simulationManagerParams.number_of_events_modulo =
-          falaise::properties::getValueOrDefault<int>(simSubsystem,
-                                                      "moduloEvents",
-                                                      flSimParameters.simulationManagerParams.number_of_events_modulo);
 
         // File for loading internal PRNG's seeds:
         if (flSimParameters.userProfile != "expert" && !simSubsystem.has_key("rngSeedFile")) {
@@ -173,18 +195,13 @@ namespace FLSimulate {
           falaise::properties::getValueOrDefault<int>(simSubsystem,
                                                       "rngStateModuloEvents",
                                                       flSimParameters.simulationManagerParams.prng_states_save_modulo);
+      }
 
-        // 2017-03-19, FM: this is now managed through the variant system:
-        // // Simulation output profile:
-        // if (flSimParameters.userProfile == "production" && simSubsystem.has_key("outputProfile")) {
-        //   DT_THROW(FLConfigUserError,
-        //            "User profile '" << flSimParameters.userProfile << "' "
-        //            << "does not allow to use the '" << "outputProfile" << "' simulation configuration parameter!");
-        // }
-        // flSimParameters.simulationManagerParams.output_profiles_activation_rule =
-        //   falaise::properties::getValueOrDefault<std::string>(simSubsystem,
-        //                                                       "outputProfile",
-        //                                                       flSimParameters.simulationManagerParams.output_profiles_activation_rule);
+      // Digitization subsystem:
+      if(flSimConfig.has_section("DigitizationSubsystem")) {
+        datatools::properties digiSubsystem = flSimConfig.get_section("DigitizationSubsystem");
+        // Bind properties in this section to the relevant ones in params:
+
       }
 
       // Variants subsystem:
@@ -300,7 +317,7 @@ namespace FLSimulate {
     if (!flSimParameters.simulationSetupUrn.empty()) {
       // Check URN registration from the system URN query service:
       {
-        DT_THROW_IF(!dtkUrnQuery.check_urn_info(flSimParameters.simulationSetupUrn, "setup"),
+        DT_THROW_IF(!dtkUrnQuery.check_urn_info(flSimParameters.simulationSetupUrn, "simsetup"),
                     std::logic_error,
                     "Cannot query simulation setup URN='" << flSimParameters.simulationSetupUrn << "'!");
       }
@@ -434,15 +451,18 @@ namespace FLSimulate {
     out_ << "FLSimulate setup parameters: " << std::endl;
     out_ << tag << "logLevel                   = " << datatools::logger::get_priority_label(this->logLevel) << std::endl;
     out_ << tag << "userProfile                = " << userProfile << std::endl;
+    out_ << tag << "numberOfEvents             = " << numberOfEvents << std::endl;
+    out_ << tag << "doSimulation               = " << std::boolalpha << doSimulation << std::endl;
+    out_ << tag << "doDigitization             = " << std::boolalpha << doDigitization << std::endl;
+    out_ << tag << "experimentalSetupUrn       = " << experimentalSetupUrn << std::endl;
     out_ << tag << "simulationSetupUrn         = " << simulationSetupUrn << std::endl;
     out_ << tag << "simulationSetupConfig      = " << simulationManagerParams.manager_config_filename << std::endl;
-    out_ << tag << "experimentalSetupUrn       = " << experimentalSetupUrn << std::endl;
+    out_ << tag << "digitizationSetupUrn       = " << digitizationSetupUrn << std::endl;
     out_ << tag << "variantConfigUrn           = " << variantConfigUrn << std::endl;
     out_ << tag << "variantProfileUrn          = " << variantProfileUrn << std::endl;
     out_ << tag << "variantSubsystemParams     = " << variantSubsystemParams.config_filename << std::endl;
     out_ << tag << "servicesSubsystemConfigUrn = " << servicesSubsystemConfigUrn << std::endl;
     out_ << tag << "servicesSubsystemConfig    = " << servicesSubsystemConfig << std::endl;
-    out_ << tag << "numberOfEvents             = " << numberOfEvents << std::endl;
     out_ << tag << "outputMetadataFile         = " << outputMetadataFile << std::endl;
     out_ << tag << "embeddedMetadata           = " << std::boolalpha << embeddedMetadata << std::endl;
     out_ << last_tag << "outputFile                 = " << outputFile << std::endl;

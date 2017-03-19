@@ -33,23 +33,29 @@ namespace FLSimulate {
     // Application specific parameters:
     datatools::logger::priority logLevel;             //!< Logging priority threshold
     std::string                 userProfile;          //!< User profile
-    std::string                 simulationSetupUrn;   //!< The URN of the simulation engine setup
+    unsigned int                numberOfEvents;       //!< Number of events to be processed in the pipeline
+
+    bool                        doSimulation;         //!< Simulation flag
+    bool                        doDigitization;       //!< Digitization flag
     std::string                 experimentalSetupUrn; //!< The URN of the experimental setup (possibly extracted from the simulation setup)
 
-    // Simulation manager internal parameters:
+    // Simulation module setup:
+    std::string                     simulationSetupUrn;      //!< The URN of the simulation engine setup
     mctools::g4::manager_parameters simulationManagerParams; //!< Parameters for the Geant4 simulation manager
 
+    // Digitization module setup:
+    std::string                 digitizationSetupUrn; //!< The URN of the digitization module setup
+
     // Variants support:
-    std::string                  variantConfigUrn;       //!< Variants configuration URN
-    std::string                  variantProfileUrn;      //!< Variants profile URN
-     datatools::configuration::variant_service::config variantSubsystemParams; //!< Variants configuration parameters
+    std::string                 variantConfigUrn;     //!< Variants configuration URN
+    std::string                 variantProfileUrn;    //!< Variants profile URN
+    datatools::configuration::variant_service::config variantSubsystemParams; //!< Variants configuration parameters
 
     // Services support:
     std::string servicesSubsystemConfigUrn; //!< Services configuration URN
     std::string servicesSubsystemConfig;    //!< The main configuration file for the service manager
 
     // Simulation control:
-    unsigned int numberOfEvents;     //!< Number of events to be processed in the pipeline
     std::string  outputMetadataFile; //!< Output metadata file
     bool         embeddedMetadata;   //!< Flag to embed metadata in the output data file
     std::string  outputFile;         //!< Output data file for the output module

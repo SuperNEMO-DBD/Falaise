@@ -113,8 +113,8 @@ namespace FLSimulate {
 
     // System section:
     datatools::properties & system_props
-      = flSimMetadata.add_section("System", "flsimulate::subsystem");
-    system_props.set_description("System informations");
+      = flSimMetadata.add_section("flsimulate", "flsimulate::subsystem");
+    system_props.set_description("flsimulate basic system informations");
 
     system_props.store_string("bayeux.version", bayeux::version::get_version(),
                               "Bayeux version");
@@ -130,6 +130,23 @@ namespace FLSimulate {
 
     system_props.store_string("userProfile", flSimParameters.userProfile,
                               "User profile");
+
+    system_props.store_integer("numberOfEvents",
+                               flSimParameters.numberOfEvents,
+                               "Number of simulated events");
+
+    system_props.store_boolean("doSimulation",
+                               flSimParameters.doSimulation,
+                               "Activate simulation");
+
+    system_props.store_boolean("doDigitization",
+                               flSimParameters.doDigitization,
+                               "Activate digitization");
+
+    if (!flSimParameters.experimentalSetupUrn.empty()) {
+      system_props.store_string("experimentalSetupUrn", flSimParameters.experimentalSetupUrn,
+                                "Experimental setup URN");
+    }
 
     system_props.store_boolean("embeddedMetadata",
                                flSimParameters.embeddedMetadata,
@@ -148,19 +165,11 @@ namespace FLSimulate {
     if (!flSimParameters.simulationSetupUrn.empty()) {
       simulation_props.store_string("simulationSetupUrn", flSimParameters.simulationSetupUrn,
                                     "Simulation setup URN");
-      if (!flSimParameters.experimentalSetupUrn.empty()) {
-        simulation_props.store_string("experimentalSetupUrn", flSimParameters.experimentalSetupUrn,
-                                      "Experimental setup URN");
-      }
     } else if (!flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
       simulation_props.store_path("simulationManagerConfig",
                                   flSimParameters.simulationManagerParams.manager_config_filename,
                                   "Simulation manager configuration file");
     }
-
-    simulation_props.store_integer("numberOfEvents",
-                                   flSimParameters.numberOfEvents,
-                                   "Number of simulated events");
 
     // Variants section:
     datatools::properties & variants_props
@@ -262,6 +271,11 @@ namespace FLSimulate {
       flSimModule.set_geo_label(geo_label);
       flSimModule.set_geant4_parameters(flSimParameters.simulationManagerParams);
       flSimModule.initialize_simple_with_service(services);
+
+      // Digitization module:
+      if (flSimParameters.doDigitization) {
+        DT_THROW(std::logic_error, "Digitization is not supported yet!");
+      }
 
       // Output metadata management:
       datatools::multi_properties flSimMetadata("name",
