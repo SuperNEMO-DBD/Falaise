@@ -5,8 +5,8 @@
 #@meta_label "category"
 
 
-#########################################################
-[urn="urn:snemo:demonstrator:setup:1.0" category="setup"]
+############################################################
+[urn="urn:snemo:demonstrator:setup:1.0" category="expsetup"]
 
 #@config URN info parameters for SuperNEMO demonstrator detector setup version 1.0
 
@@ -44,8 +44,8 @@ topics : string[1] = "__parent__"
 topic.__parent__.component : string = "urn:snemo:demonstrator:setup:1.0"
 
 
-#####################################################
-[urn="urn:bipo3:detector:setup:1.0" category="setup"]
+########################################################
+[urn="urn:bipo3:detector:setup:1.0" category="expsetup"]
 
 #@config URN info parameters for BiPo3 detector setup version 1.0
 

@@ -25,7 +25,7 @@ topic.geometry.component : string = "urn:snemo:demonstrator:geometry:4.0"
 description : string = "SuperNEMO simulation vertex generation setup (version 1.2)"
 
 
-###############################################################################
+#########################################################################
 [urn="urn:snemo:demonstrator:simulation:2.1:variants" category="variant"]
 
 #@config URN info parameters for SuperNEMO simulation variants setup version 2.1
@@ -37,7 +37,7 @@ topics : string[1] = "__parent__"
 topic.__parent__.component : string = "urn:snemo:demonstrator:simulation:2.1"
 
 
-###############################################################################
+#########################################################################
 [urn="urn:snemo:demonstrator:simulation:2.1:services" category="service"]
 
 #@config URN info parameters for SuperNEMO simulation services setup version 2.1
@@ -50,8 +50,8 @@ topic.__parent__.component     : string = "urn:snemo:demonstrator:simulation:2.1
 topic.geometry.component : string = "urn:snemo:demonstrator:geometry:4.0"
 
 
-##############################################################
-[urn="urn:snemo:demonstrator:simulation:2.1" category="setup"]
+#################################################################
+[urn="urn:snemo:demonstrator:simulation:2.1" category="simsetup"]
 
 #@config URN info parameters for SuperNEMO simulation setup version 2.1
 
