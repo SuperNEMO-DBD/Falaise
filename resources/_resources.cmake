@@ -1,5 +1,6 @@
 set(Falaise_RESOURCES
 ${PROJECT_SOURCE_DIR}/resources/README.rst
+${PROJECT_SOURCE_DIR}/resources/urn/db/README.rst
 ${PROJECT_SOURCE_DIR}/resources/urn/db/experimental_setup_infos.defs
 ${PROJECT_SOURCE_DIR}/resources/urn/db/experiment_infos.defs
 ${PROJECT_SOURCE_DIR}/resources/urn/db/snemo_simulation_setup_infos.defs
