@@ -16,9 +16,17 @@ Here  we present  a  brief  overview of  running  FLSimulate from  the
 command line  to generate  an output  file suitable  for input  to the
 [FLReconstruct](@ref usingflreconstruct) application.
 
+The FLSimulate simulation setup is built on top of an *experimental setup*.
+The experimental setup is characterized by a geometry model and possibly
+other dedicated services (electronics...).
+
+When initialized, the simulation setup thus implies :
+- the instantiation of some dedicated services (geometry, electronics...)
+- the instantiation of a variants service
 
 At  present,  FLSimulate only  supports  simulation  of the  SuperNEMO
 demonstrator module,  with several  geometry and  simulation variants.
+
 The user is free to choose among several options:
 - geometry layout of the detector: `Basic` (full detector) or `HalfCommissioning`
 - activation of the magnetic field of not
@@ -50,7 +58,7 @@ by running it with the `-h` of `--help` options, e.g.
 
 ~~~~~
 $ flsimulate --help
-lsimulate (3.0.0) : SuperNEMO simulation program
+flsimulate (3.0.0) : SuperNEMO simulation program
 Usage:
   flsimulate [options]
 Options:
@@ -59,17 +67,16 @@ Options:
                                        schema
   --help-setup                         print help on simulation setup
   --version                            print version number
+  -V [ --verbosity ] level             set the verbosity level
+  -u [ --user-profile ] name (=normal) set the user profile ("expert",
+                                       "normal", "production")
   -c [ --config ] file                 configuration script for simulation
   -m [ --output-metadata-file ] file   file in which to store metadata
-  -M [ --embedded-metadata ] flag (=0) flag to (de)activate recording of
+  -E [ --embedded-metadata ] flag (=0) flag to (de)activate recording of
                                        metadata in the simulation results
                                        output file
   -o [ --output-file ] file            file in which to store simulation
                                        results
-  -u [ --user-profile ] name (=normal) set the user profile ("expert",
-                                       "normal", "production")
-  -V [ --verbosity ] level             set the verbosity level
-
 ~~~~~
 
 The `--version` option provides detailed information of the current
@@ -101,8 +108,8 @@ the center of the detector.
 
 You must provide a configuration script to set the basic parameters of
 the simulation (`SimulationSubsystem` section):
-- the simulation version,
-- the number of events,
+- the simulation setup identifier (tag using the URN scheme),
+- the number of events to be generated,
 - the input file for the  seeding of random number generators.
 A    sample    configuration    script    is    provided    in    this
 [document](FLSimulate-3.0.0.conf) (for Falaise 3.0.0).
@@ -156,9 +163,9 @@ the  current   working  directory,  you  must   create  the  following
 #@key_label  "section"
 #@meta_label "description"
 
-[section="SimulationSubsystem" description=""]
+[name="SimulationSubsystem" type="flsimulate::section"]
 #@config Simulation setup
-#@description  URN of the simulation setup
+#@description URN (tag/identifier) of the simulation setup
 simulationUrn : string = "urn:snemo:demonstrator:simulation:2.1"
 #@description Number of events to simulate (default=1)
 numberOfEvents    : integer = 100
@@ -167,7 +174,7 @@ moduloEvents      : integer =  10
 #@description Random seeds file
 rngSeedFile       : string as path = "seeds.conf"
 
-[section="VariantSubsystem" description=""]
+[name="VariantSubsystem" type="flsimulate::section"]
 #@config Variant setup
 #@description List of variant settings
 settings : string[4] = \
@@ -176,6 +183,9 @@ settings : string[4] = \
   "@primary_events:generator=Se82.0nubb" \
   "@simulation:output_profile=none"
 
+[name="ServicesSubsystem" type="flsimulate::section"]
+#@config Services setup
+# this section is empty
 ~~~~~
 
 where the `seeds.conf` file is:
@@ -196,8 +206,7 @@ embedded in the Bayeux/Geant4 simulation engine:
   of the final collection of truth hits (see below).
 It is very important to make sure that all simulation runs use different sets of seeds in order
 to ensure statistical independancy of generated simulation data samples. The `bxg4_seeds` program
-helps to generated such lists of independant seed sets.
-
+helps to generated such lists of independant seed sets in the context of a massive Monte Carlo production.
 
 Note the *VariantSubsystem* here uses an explicit list of *settings*
 for some variant parameters. It is possible (and recommended) to use
@@ -211,7 +220,7 @@ a variant profile file in place of it:
 profile : string as path = "variants.profile"
 ~~~~~
 
-where the `variants.profile` explicitely publishes all variant parameters:
+where the `variants.profile` explicitely publishes all variant parameters that have been chosen by the user:
 ~~~~~
 @format=datatools::configuration::variant
 #@format.version=1.0
@@ -256,6 +265,10 @@ $ flsimulate -c simu.conf -m example.meta -o example.brio
 ... lots of logging ...
 ~~~~~
 
+Here the ``example.brio`` file contains the Monte Carlo generated events and the ``example.meta`` is a companion file which
+contains metadata associated to the simulation run. These metadata can be reused in the context of the data reconstruction.
+It is also possible to embed the metadata in the output data file.
+
 The  resultant   files  can  be  examined   with  the  `flreconstruct`
 application,  see the  [dedicated guide](@ref  usingflreconstruct) for
 further details.
@@ -263,15 +276,18 @@ further details.
 Available Experiments {#usingflsimulate_experiments}
 =====================
 
-The currently only available experiment in `flsimulate` is:
+The currently only available experiment in `flsimulate` is the SuperNEMO Demonstrator (tag=`"urn:snemo:demonstrator"`).
 
-- `demonstrator`
+Only one experimental setup is available (tag=`"urn:snemo:demonstrator:setup:1.0"`). It consists in the description of
+the SuperNEMO demonstrator detector through a geometry model identified with the `"urn:snemo:demonstrator:geometry:4.0"` tag.
+In the future, additional experimental setups will be implemented, including not only the geometry model but also
+the description of the electronics (at least the part of it needed for the offline software).
 
-As of version 4.0 of the geometry and its associated variant system, it includes
+As of version 4.0 of the geometry model and its associated variant system, the experimental setup includes
 two flavours of the general layout of the detector:
-- `Basic` : realistic model of the full detector
+- `Basic` : realistic model of the full demonstrator detector (*French* and *Italian* sides, source frame, external shielding)
 - `HalfCommissioning` : realistic model of the detector with only one calorimeter wall assemblied with
-   one tracker submodule and no source frame  (*French* side, end 2016-begin 2017 context).
+   one tracker submodule and no source frame  (only *French* side, end 2016-begin 2017 context).
 
 Each of these layouts publish additional options.
 
@@ -286,7 +302,7 @@ layouts  being modelled  and many  background, signal  and calibration
 physics sources available, a wide range of vertex and event generators
 are available.
 
-From  Falaise 3.0  (simulation version  2.1), the  choice of  geometry
+From  Falaise 3.0  (simulation setup version  2.1), the  choice of  geometry
 options  and   vertex  and   event  generators   is  done   through  a
 Bayeux/datatools   variant   service   embedded  in   the   flsimulate
 application.  A profile of variant  parameters must be created to suit
@@ -297,6 +313,35 @@ unknown  generator for  the  experimental setup  being simulated.   In
 principle,  the variant  system  does check  that  the combination  of
 vertex  and  event  generator  are sensible.   Other  invalid  options
 (geometry...)  should also be reported.
+
+Summary of available configurations
+===================================
+
+List of available experiments:
+- SuperNEMO demonstrator:
+  - Description: The SuperNEMO demonstrator experiment (all phases: half-commissioning, full demonstrator)
+  - Tag : `"urn:snemo:demonstrator"`
+
+List of available experimental setups:
+- Experimental setup version 1.0:
+  - Description: The model of the SuperNEMO demonstrator experimental setup
+  - Tag : `"urn:snemo:demonstrator:setup:1.0"`
+  - Experiment: `"urn:snemo:demonstrator"`
+  - Variant system: `"urn:snemo:demonstrator:setup:1.0:variants"`
+  - Services system: `"urn:snemo:demonstrator:setup:1.0:services"`
+    - Geometry service:
+      - Geometry model version: `"urn:snemo:demonstrator:geometry:4.0"`
+
+List of available simulation setups:
+- Simulation setup version  2.1 :
+  - Description: The simulation setup for the SuperNEMO demonstrator detector
+  - Tag : `"urn:snemo:demonstrator:simulation:2.1"`
+  - Experimental setup: `"urn:snemo:demonstrator:setup:1.0"`
+  - Vertex generation system: `"urn:snemo:demonstrator:simulation:vertexes:4.1"`
+  - Primary events generation system : `"urn:snemo:demonstrator:simulation:decays:1.2"`
+  - Variant system: `"urn:snemo:demonstrator:simulation:2.1:variants"`
+  - Services system: `"urn:snemo:demonstrator:simulation:2.1:services"`
+
 
 
 Available output profiles {#usingflsimulate_output_profiles}
