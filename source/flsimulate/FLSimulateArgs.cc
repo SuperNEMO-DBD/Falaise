@@ -286,16 +286,19 @@ namespace FLSimulate {
         }
 
       } else {
-        // Default simulation setup:
-        if (flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
-          flSimParameters.simulationSetupUrn = "urn:snemo:demonstrator:simulation:2.1";
-          DT_LOG_WARNING(flSimParameters.logLevel, "Use default simulation setup '" << flSimParameters.simulationSetupUrn << "'.");
-        }
+        DT_THROW(std::logic_error, "Missing simulation setup configuration file!");
+
+        //   // Default simulation setup:
+        //   if (flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
+        //     flSimParameters.simulationSetupUrn = "urn:snemo:demonstrator:simulation:2.1";
+        //     DT_LOG_WARNING(flSimParameters.logLevel, "Use default simulation setup '" << flSimParameters.simulationSetupUrn << "'.");
+        //   }
+
       }
     }
 
     if (!flSimParameters.simulationSetupUrn.empty()) {
-       // Check URN registration from the system URN query service:
+      // Check URN registration from the system URN query service:
       {
         DT_THROW_IF(!dtkUrnQuery.check_urn_info(flSimParameters.simulationSetupUrn, "setup"),
                     std::logic_error,
