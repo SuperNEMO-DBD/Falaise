@@ -25,13 +25,65 @@
 # - Bit hacky for now
 find_package(Boost 1.60 REQUIRED program_options)
 
+# #-----------------------------------------------------------------------
+# # Compile/Link App
+# #
+# add_executable(flreconstruct_legacy
+#   legacy/flreconstructmain_legacy.cc
+#   FLReconstructResources.h
+#   FLReconstructResources.cc
+# )
+# target_include_directories(flreconstruct_legacy PRIVATE
+#   ${CMAKE_CURRENT_SOURCE_DIR}
+#   ${CMAKE_CURRENT_BINARY_DIR}
+#   )
+# target_compile_definitions(flreconstruct_legacy PRIVATE ENABLE_BINRELOC)
+# target_link_libraries(flreconstruct_legacy
+#   Falaise
+#   Bayeux::Bayeux
+#   Boost::program_options
+#   )
+
+# # - Ensure link to internal and external deps
+# set_target_properties(flreconstruct_legacy PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
+
+# if(UNIX AND NOT APPLE)
+#   set_target_properties(flreconstruct_legacy
+#     PROPERTIES INSTALL_RPATH "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
+#     )
+# elseif(APPLE)
+#   # Temporary setting - needs testing
+#   set_target_properties(flreconstruct_legacy
+#     PROPERTIES
+#       INSTALL_RPATH "@loader_path/../${CMAKE_INSTALL_LIBDIR}"
+#       )
+# endif()
+
+# # - Install it
+# install(TARGETS flreconstruct_legacy
+#   EXPORT FalaiseTargets
+#   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+#   )
+
 #-----------------------------------------------------------------------
 # Compile/Link App
 #
 add_executable(flreconstruct
   flreconstructmain.cc
+  FLReconstructPipeline.h
+  FLReconstructPipeline.cc
+  FLReconstructImpl.h
+  FLReconstructImpl.cc
   FLReconstructResources.h
   FLReconstructResources.cc
+  FLReconstructParams.h
+  FLReconstructParams.cc
+  FLReconstructCommandLine.h
+  FLReconstructCommandLine.cc
+  FLReconstructErrors.h
+  FLReconstructErrors.cc
+  FLReconstructUtils.h
+  FLReconstructUtils.cc
 )
 target_include_directories(flreconstruct PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -79,4 +131,3 @@ if(FALAISE_ENABLE_TESTING)
   target_link_libraries(testFhiclProperties FLCatch Bayeux::Bayeux Boost::boost)
   add_test(NAME falaise-testFhiclProperties COMMAND testFhiclProperties)
 endif()
-

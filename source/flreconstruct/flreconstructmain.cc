@@ -4,7 +4,7 @@
 //!          reconstruction of SuperNEMO data.
 //!
 //!          We need to:
-//!          - Construct an input and output module (fixed)
+//!          - Construct an input and output module
 //!          - Input should select itself based on input file type
 //!          - Output is a trashcan (devnull) - Null output_module
 //!            should handle this
@@ -15,11 +15,10 @@
 //!          Need to write our own version of dpp_driver to make
 //!          interface usable.
 //
-//
 // Copyright (c) 2013-2014 by Ben Morgan <bmorgan.warwick@gmail.com>
 // Copyright (c) 2013-2014 by The University of Warwick
-// Copyright (c) 2016 by François Mauger <mauger@lpccaen.in2p3.fr>
-// Copyright (c) 2016 by Université de Caen Normandie
+// Copyright (c) 2016-2017 by François Mauger <mauger@lpccaen.in2p3.fr>
+// Copyright (c) 2016-2017 by Université de Caen Normandie
 //
 // This file is part of Falaise.
 //
@@ -37,602 +36,83 @@
 // along with Falaise.  If not, see <http://www.gnu.org/licenses/>.
 
 // Standard Library
+#include <memory>
 
 // Third Party
 // - Bayeux
-#include "bayeux/version.h"
 #include "bayeux/datatools/logger.h"
 #include "bayeux/datatools/exception.h"
-#include "bayeux/datatools/library_loader.h"
-#include "bayeux/datatools/service_manager.h"
-#include "bayeux/datatools/configuration/variant_service.h"
-#include "bayeux/dpp/module_manager.h"
-#include "bayeux/dpp/base_module.h"
-#include "bayeux/dpp/input_module.h"
-#include "bayeux/dpp/i_data_source.h"
-#include "bayeux/dpp/output_module.h"
-#include "bayeux/geomtools/manager.h"
-namespace dtc = datatools::configuration;
 
 // - Boost
 #include "boost/program_options.hpp"
-#include "boost/version.hpp"
-#include "boost/foreach.hpp"
-#include "boost/filesystem.hpp"
-#include "boost/algorithm/string/predicate.hpp"
+// #include "boost/version.hpp"
+// #include "boost/foreach.hpp"
+// #include "boost/filesystem.hpp"
+// #include "boost/algorithm/string/predicate.hpp"
 
 // This Project
 #include "falaise/falaise.h"
-#include "falaise/version.h"
 #include "falaise/exitcodes.h"
-#include "falaise/resource.h"
-#include "FLReconstructResources.h"
+// #include "FLReconstructResources.h"
+// #include "FLReconstructCommandLine.h"
+// #include "FLReconstructUtils.h"
 
-//----------------------------------------------------------------------
-// WORKAROUND
-// Don't have make_unique in C++11
-// From https://herbsutter.com/gotw/_102/
-// This won't conflict with std:: version once we use C++14 consistently
-namespace falaise {
-template<typename T, typename ...Args>
-std::unique_ptr<T> make_unique( Args&& ...args )
-{
-    return std::unique_ptr<T>( new T( std::forward<Args>(args)... ) );
-}
-}
+#include "FLReconstructParams.h"
+#include "FLReconstructImpl.h"
+#include "FLReconstructPipeline.h"
+#include "FLReconstructErrors.h"
 
+namespace FLReconstruct {
 
+  //! Perform reconstruction using command line args as given
+  falaise::exit_code do_flreconstruct(int argc, char *argv[]);
 
-
-//----------------------------------------------------------------------
-// IMPLEMENTATION DETAILS
-//----------------------------------------------------------------------
-namespace {
-  namespace bpo = boost::program_options;
-}
-
-//! Collect all needed configuration parameters in one data structure
-struct FLReconstructArgs {
-  // Application specific parameters:
-  datatools::logger::priority logLevel; //!< Logging priority threshold
-  unsigned int moduloEvents;            //!< Number of events progress modulo
-  std::string  inputFile;               //!< Input data file for the input module
-  std::string  outputFile;              //!< Output data file for the output module
-  std::string  pipelineScript;          //!< Main configuration file for the pipeline
-  // Variants support:
-  dtc::variant_service::config variants; //!< Variants configuration
-};
-
-enum class FLDialogState {
-  DIALOG_OK,
-  DIALOG_QUERY,
-  DIALOG_ERROR
-};
-
-//! Handle printing of version information to given ostream
-void do_version(std::ostream& os, bool isVerbose) {
-  os << "flreconstruct " << falaise::version::get_version() << "\n";
-  if (isVerbose) {
-    os << "\n"
-       << "Copyright (C) 2013-2016 SuperNEMO Collaboration\n\n"
-       << "flreconstruct uses the following external libraries:\n"
-       << "* Falaise : " << falaise::version::get_version() << "\n"
-       << "* Bayeux  : " << bayeux::version::get_version() << "\n"
-       << "* Boost   : " << BOOST_VERSION << "\n"
-       << "\n\n";
-  }
-}
-
-//! Handle printing of help message to given ostream
-void do_help(std::ostream& os, const bpo::options_description& od) {
-  do_version(os, false);
-  os << "Usage:\n"
-     << "  flreconstruct [options]\n"
-     << od
-     << "\n";
-}
-
-void do_error(std::ostream& os, const char* err) {
-  os << "flreconstruct : " << err << "\n";
-  os << "Try `flreconstruct --help` for more information\n";
-}
-
-//! load all default plugins
-void do_load_plugins(datatools::library_loader& libLoader) {
-  std::string pluginPath = falaise::get_plugin_dir();
-  // explicitly list for now...
-  libLoader.load("Falaise_CAT", pluginPath);
-  libLoader.load("Falaise_ChargedParticleTracking", pluginPath);
-  libLoader.load("Falaise_MockTrackerClusterizer", pluginPath);
-  libLoader.load("TrackFit", pluginPath);
-  libLoader.load("Falaise_TrackFit", pluginPath);
-  libLoader.load("Falaise_VisuToy", pluginPath);
-  libLoader.load("Things2Root", pluginPath);
-}
-
-//! Print list of known module names, one per line, to given stream
-void do_module_list(std::ostream& os) {
-  datatools::library_loader libLoader;
-  do_load_plugins(libLoader);
-  std::vector<std::string> mods;
-  // Builtin
-  DATATOOLS_FACTORY_GET_SYSTEM_REGISTER(dpp::base_module).list_of_factories(mods);
-  for(const auto& name : mods) {
-    os << name << std::endl;
-  }
-}
-
-//! Print OCD help for supplied module name to given ostream
-void do_help_module(std::ostream& os, std::string module) {
-  datatools::library_loader libLoader;
-  do_load_plugins(libLoader);
-  // Is module valid?
-  typedef std::vector<std::string> ModuleInfo;
-  ModuleInfo mods;
-  DATATOOLS_FACTORY_GET_SYSTEM_REGISTER(dpp::base_module).list_of_factories(mods);
-  std::set<std::string> moduleSet(mods.begin(), mods.end());
-  if (moduleSet.find(module) == moduleSet.end()) {
-    os << "[error] Argument '" << module
-       << "' is not a flreconstruct module\n"
-       << "Use '--help-module-list' to see all modules"
-       << std::endl;
-    return;
-  }
-
-  // Is it in OCD?
-  auto& ocd_system_reg = datatools::detail::ocd::ocd_registration::get_system_registration();
-  if (!ocd_system_reg.has_id(module)) {
-    os << "[error] Module '" << module
-       << "' is not documented"
-       << std::endl;
-    return;
-  }
-
-  auto& moduleDoc = ocd_system_reg.get(module);
-  moduleDoc.print(os);
-}
-
-//! Print list of standard pipeline configurations to supplied ostream
-void do_help_pipeline_list(std::ostream& os) {
-  std::string shortResourceRoot("@falaise:pipeline");
-  std::string fullResourceRoot(shortResourceRoot);
-  datatools::fetch_path_with_env(fullResourceRoot);
-
-  os << shortResourceRoot << std::endl;
-  std::string indent;
-
-  boost::filesystem::recursive_directory_iterator dir {fullResourceRoot};
-  boost::filesystem::recursive_directory_iterator end {};
-
-  while (dir != end) {
-    os << " "
-       << indent.assign(dir.level()*2, ' ')
-       << "+-"
-       << (*dir).path().filename()
-       << std::endl;
-    ++dir;
-  }
-}
-
-// - Validation of verbosity command line arguments. must exist inside
-// the datatools namespace.
-// TODO : refactor operator>> into datatools, though can't do this
-// for validator (bpo dependency not wanted)
-namespace datatools {
-  std::istream& operator>>(std::istream& in, datatools::logger::priority& p) {
-    std::string s;
-    in >> s;
-    p = datatools::logger::get_priority(s);
-    return in;
-  }
-
-  //! validate logging argument
-  void validate(boost::any& v,
-                std::vector<std::string> const& values,
-                datatools::logger::priority* /*target_type*/,
-                int) {
-    // Make sure no previous assignment to v was made
-    bpo::validators::check_first_occurrence(v);
-
-    // Extract first string from values, If there is more than one string
-    // it's an error and an exception will be thrown
-    auto s = bpo::validators::get_single_string(values);
-    datatools::logger::priority p = datatools::logger::get_priority(s);
-    if(p != datatools::logger::PRIO_UNDEFINED) {
-      v = boost::any(p);
-    } else {
-      throw bpo::validation_error(bpo::validation_error::invalid_option_value);
-    }
-  }
-}
-
-FLDialogState do_cldialog(int argc, char *argv[], FLReconstructArgs& args) {
-  // Bind command line parser to exposed parameters
-  namespace bpo = boost::program_options;
-
-  // Application specific options:
-  bpo::options_description optDesc("Options");
-  optDesc.add_options()
-    ("help,h","print this help message")
-    ("help-module-list","list available modules and exit")
-    ("help-module", bpo::value<std::string>()
-     ->value_name("[mod]"),
-     "print help for a single module and exit")
-    ("help-pipeline-list","list available pipeline configurations and exit")
-    ("version","print version number")
-    ("verbose,v",
-     bpo::value<datatools::logger::priority>(&args.logLevel)
-     ->default_value(datatools::logger::PRIO_FATAL)
-     ->value_name("[level]"),
-     "set verbosity level of logging")
-    ("modulo,m",
-     bpo::value<uint32_t>(&args.moduloEvents)
-     ->default_value(0)
-     ->value_name("[period]"),
-     "progress modulo on number of events")
-    ("input-file,i",
-     bpo::value<std::string>(&args.inputFile)
-     ->required()
-     ->value_name("[file]"),
-     "file from which to read data")
-    ("output-file,o",
-     bpo::value<std::string>(&args.outputFile)
-     ->value_name("[file]"),
-     "file to which to write data")
-    ("pipeline,p",
-     bpo::value<std::string>(&args.pipelineScript)
-     ->value_name("[file]"),
-     "run pipeline script or resource")
-    ;
-  bpo::positional_options_description posOptDesc;
-  posOptDesc.add("input-file",-1);
-
-  // Variant service options:
-  bpo::options_description optVariants("Variants support");
-  uint32_t variant_service_flags = 0;
-  // variant_service_flags |= dtc::variant_service::NO_CONFIG_FILENAME;
-  variant_service_flags |= dtc::variant_service::NO_TUI;
-  dtc::variant_service::init_options(optVariants,
-                                     args.variants,
-                                     variant_service_flags);
-
-  // Public options:
-  bpo::options_description optPublic;
-  optPublic.add(optDesc).add(optVariants);
-
-  // Hidden options:
-  bpo::options_description optHidden;
-  optHidden.add_options()
-    ("trace", "trace logging")
-    ;
-
-  // All options:
-  bpo::options_description optAll;
-  optAll.add(optPublic).add(optHidden);
-
-  // - Store first, handling parse errors
-  bpo::variables_map vMap;
-  try {
-    bpo::store(bpo::command_line_parser(argc,argv)
-               .options(optAll)
-               .positional(posOptDesc)
-               .run(),
-               vMap);
-  } catch (boost::program_options::error& e) {
-    do_error(std::cerr, e.what());
-    return FLDialogState::DIALOG_ERROR;
-  }
-
-  // Handle trace logging (for debugging)
-  if (vMap.count("trace")) {
-    args.logLevel = datatools::logger::PRIO_TRACE;
-  }
-
-  // Handle messaging if requested
-  if (vMap.count("help")) {
-    do_help(std::cout, optPublic);
-    return FLDialogState::DIALOG_QUERY;
-  }
-
-  if (vMap.count("help-module-list")) {
-    do_module_list(std::cout);
-    return FLDialogState::DIALOG_QUERY;
-  }
-
-  if (vMap.count("help-module")) {
-    do_help_module(std::cout, vMap["help-module"].as<std::string>());
-    return FLDialogState::DIALOG_QUERY;
-  }
-
-  if(vMap.count("help-pipeline-list")) {
-    do_help_pipeline_list(std::cout);
-    return FLDialogState::DIALOG_QUERY;
-  }
-
-  if (vMap.count("version")) {
-    do_version(std::cout, true);
-    return FLDialogState::DIALOG_QUERY;
-  }
-
-  // Notify, handling validation errors
-  try {
-    bpo::notify(vMap);
-  } catch (boost::program_options::error& e) {
-    do_error(std::cerr, e.what());
-    return FLDialogState::DIALOG_ERROR;
-  }
-
-  // Handle the experiment:
-  std::string experiment_label = "demonstrator";
-  try {
-    args.variants.config_filename = FLReconstruct::getVariantsConfigFile(experiment_label);
-    if (args.variants.profile_load == "__default__") {
-      // 2016-08-26 FM: Not supported yet!!!
-      args.variants.profile_load = FLReconstruct::getVariantsDefaultProfile(experiment_label);
-      if (datatools::logger::is_information(args.logLevel)) {
-        std::clog << "[information]: " << "Loading default variant profile '"
-                  << args.variants.profile_load << "'..." << std::endl;
-      }
-    }
-    if (args.pipelineScript == "__default__") {
-      args.pipelineScript = FLReconstruct::getPipelineDefaultControlFile(experiment_label);
-    }
-  } catch (FLReconstruct::UnknownResourceException& e) {
-    std::cerr << "[FLReconstruct::UnknownResourceException] "
-              << e.what()
-              << std::endl;
-    return FLDialogState::DIALOG_ERROR;
-  }
-
-  return FLDialogState::DIALOG_OK;
-}
-
-//! Extract metadata from input file
-datatools::multi_properties do_get_metadata(const std::string& file) {
-  // Metadata is currently available as soon as the input module is
-  // initialized.
-  std::unique_ptr<dpp::input_module> recInput(new dpp::input_module);
-  recInput->set_single_input_file(file);
-  // Input metadata management:
-  auto& iMetadataStore = recInput->get_metadata_store();
-  recInput->initialize_simple();
-  return iMetadataStore;
-}
-
-//! Hack services to start using input metadata
-void do_start_services(datatools::multi_properties& iData,
-                       datatools::service_manager& services) {
-
-  datatools::multi_properties serviceConfig("name","type");
-
-  // Geometry
-  datatools::properties& gs = serviceConfig.add_section("geometry", "geomtools::geometry_service");
-  gs.store("manager.configuration_file", iData.get_section("geometry").fetch_path("manager.config"));
-
-  // Init
-  services.load(serviceConfig);
-  services.initialize();
-}
-
-
-//! Configure and run the pipeline
-falaise::exit_code do_pipeline(const FLReconstructArgs& clArgs) {
-
-  // Variants support:
-  dtc::variant_service vserv;
-  try {
-    if (clArgs.variants.is_active()) {
-      vserv.configure(clArgs.variants);
-      // Start and lock the variant service:
-      vserv.start();
-      // From this point, all other services and/or processing modules can benefit
-      // of the variant service during their configuration steps.
-    }
-  } catch (std::exception& e) {
-    std::cerr << "[datatools::configuration::variant_service::variant_exception] "
-              << e.what()
-              << std::endl;
-    return falaise::EXIT_UNAVAILABLE;
-  }
-
-  // Need a service manager
-  datatools::service_manager flrServices;
-
-  // - Start up the module manager
-  // Dual strategy here
-  //  - If they supplied a script, use that, otherwise default to
-  //  a single dump module.
-  auto moduleManager_ = falaise::make_unique<dpp::module_manager>();
-  moduleManager_->set_service_manager(flrServices);
-
-  // - Configure the library loader for custom modules
-  datatools::multi_properties userLibConfig("name", "filename");
-  if(!clArgs.pipelineScript.empty()) {
-    datatools::multi_properties userConfig("name", "type");
-    std::string pipelineScript = clArgs.pipelineScript;
-    datatools::fetch_path_with_env(pipelineScript);
-    userConfig.read(pipelineScript);
-    try {
-      datatools::properties userFLPlugins = userConfig.get_section("flreconstruct.plugins");
-      std::vector<std::string> pList;
-      userFLPlugins.fetch("plugins", pList);
-
-      BOOST_FOREACH(std::string plugin, pList) {
-        datatools::properties& pSection = userLibConfig.add_section(plugin,"");
-        userFLPlugins.export_and_rename_starting_with(pSection,plugin+".","");
-        pSection.store_flag("autoload");
-        // - Default, search plugin DLL in the falaise plugin install directory:
-        if (!pSection.has_key("directory")) {
-          pSection.store_string("directory", "@falaise.plugins:");
-        }
-      }
-    } catch(std::logic_error& e) {
-      // do nothing for now because we can't distinguish errors, and
-      // upcoming instantiation of library loader will handle
-      // any syntax errors in the properties
-    }
-
-  }
-
-  datatools::library_loader flLibLoader(userLibConfig);
-
-  // Configure the modules themselves
-  if (!clArgs.pipelineScript.empty()) {
-    moduleManager_->load_modules(clArgs.pipelineScript);
-  } else {
-    // Hand configure a dumb dump module
-    datatools::properties dumbConfig;
-    dumbConfig.store("title", "flreconstruct::default");
-    dumbConfig.store("output", "cout");
-    moduleManager_->load_module("pipeline", "dpp::dump_module", dumbConfig);
-  }
-
-  // Load a Things2Root module in the manager before initialization
-  datatools::library_loader libLoader;
-  if (!clArgs.outputFile.empty()) {
-    if (boost::algorithm::ends_with(clArgs.outputFile, ".root")) {
-      std::string pluginPath = falaise::get_plugin_dir();
-      libLoader.load("Things2Root", pluginPath);
-      datatools::properties t2rConfig;
-      t2rConfig.store("output_file", clArgs.outputFile);
-      moduleManager_->load_module("t2rRecOutput", "Things2Root", t2rConfig);
-    }
-  }
-
-  // Plain initialization
-  moduleManager_->initialize_simple();
-
-  // Metadata and services - has to be done before we grab the pipeline
-  // because we need the metadata from the input file to configure
-  // (for example) the geometry_service
-  // This needs reordering
-  datatools::multi_properties mData = do_get_metadata(clArgs.inputFile);
-  do_start_services(mData, flrServices);
-
-  // Input module...
-  auto recInput = falaise::make_unique<dpp::input_module>();
-  recInput->set_logging_priority(clArgs.logLevel);
-  recInput->set_single_input_file(clArgs.inputFile);
-  recInput->initialize_simple();
-
-  // - Pipeline
-  dpp::base_module* pipeline_;
-  try {
-    pipeline_ = &(moduleManager_->grab("pipeline"));
-  } catch (std::exception& e) {
-    DT_LOG_FATAL(clArgs.logLevel, "Failed to initialize pipeline : " << e.what());
-    return falaise::EXIT_UNAVAILABLE;
-  }
-
-  // Output module... only if added in the module manager
-  dpp::base_module * recOutput = 0;
-  std::unique_ptr<dpp::output_module> flRecOutput;
-  if (moduleManager_->has("t2rRecOutput")) {
-    // We instantiate and fetch the t2r module from the manager
-    recOutput = &moduleManager_->grab("t2rRecOutput");
-  } else if (!clArgs.outputFile.empty()) {
-    // We try to setup an output module
-    flRecOutput.reset(new dpp::output_module);
-    flRecOutput->set_name("FLReconstructOutput");
-    flRecOutput->set_single_output_file(clArgs.outputFile);
-    // Metadata management:
-    // Copy metadata from the input module
-    (flRecOutput->grab_metadata_store()) = mData;
-    // TO DO: add more sections in metadata (from userConfig) ...
-    flRecOutput->initialize_simple();
-    recOutput = flRecOutput.get();
-  }
-
-  // - Now the actual event loop
-  datatools::things workItem;
-  std::size_t eventCounter = 0;
-  while (true) {
-    // Prepare and read work
-    workItem.clear();
-    if(recInput->is_terminated()) break;
-    if(recInput->process(workItem) != dpp::base_module::PROCESS_OK) {
-      DT_LOG_FATAL(clArgs.logLevel,"Failed to read data record from input source");
-      break;
-    }
-
-    // Feed through pipeline
-    auto pStatus = pipeline_->process(workItem);
-    DT_THROW_IF(pStatus == dpp::base_module::PROCESS_INVALID, std::logic_error,
-                "Bug!!! Module '" << pipeline_->get_name() << "' did not return a valid processing status!");
-
-    // FATAL, ERROR and ERROR_STOP status triggers the abortion of the processing loop.
-    // This is a very conservative approach, but it is compatible with the default behaviour of the
-    // bxdpp_processing executable.
-    if(pStatus == dpp::base_module::PROCESS_FATAL) break;
-    if(pStatus == dpp::base_module::PROCESS_ERROR) break;
-    if(pStatus == dpp::base_module::PROCESS_ERROR_STOP) break;
-
-    // STOP means the current event should not be processed anymore nor saved
-    // but the loop can continue with other items
-    if(pStatus == dpp::base_module::PROCESS_STOP) continue;
-
-    // Write item
-    if(recOutput) {
-      pStatus = recOutput->process(workItem);
-      if(pStatus != dpp::base_module::PROCESS_OK) {
-        DT_LOG_FATAL(clArgs.logLevel,"Failed to write data record to output sink");
-        break;
-      }
-    }
-    if (clArgs.moduloEvents > 0) {
-      if (eventCounter % clArgs.moduloEvents == 0) {
-        DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Event #" << eventCounter);
-      }
-    }
-    eventCounter++;
-  }
-
-  // - MUST delete the module manager BEFORE the library loader clears
-  // in case the manager is holding resources created from a shared lib
-  moduleManager_.reset();
-
-  // Terminate the variant service:
-  vserv.stop();
-
-  return falaise::EXIT_OK;
-}
-
-//----------------------------------------------------------------------
-//! Run reconstruction using command line args as given
-falaise::exit_code do_flreconstruct(int argc, char *argv[]) {
-  // - Configure
-  // Command line args first because we don't have a strategy for
-  // what to do without these
-  FLReconstructArgs clArgs;
-  FLDialogState d = do_cldialog(argc, argv, clArgs);
-  switch (d) {
-    case FLDialogState::DIALOG_QUERY:
-      return falaise::EXIT_OK;
-      ;;
-    case FLDialogState::DIALOG_ERROR:
-      return falaise::EXIT_USAGE;
-      ;;
-    default:
-      ;;
-  }
-
-  falaise::exit_code ret = do_pipeline(clArgs);
-  return ret;
-}
+} // end of namespace FLReconstruct
 
 //----------------------------------------------------------------------
 // MAIN PROGRAM
 //----------------------------------------------------------------------
 int main(int argc, char *argv[]) {
-  // - Needed...
-  falaise::initialize(argc,argv);
+  falaise::initialize();
 
   // - Do the reconstruction
-  // Ideally, exceptions should not propagate out of this - the error
+  // Ideally, exceptions SHOULD NOT propagate out of this - the error
   // code should be enough, but might want a catch all...
-  falaise::exit_code ret = do_flreconstruct(argc, argv);
+  falaise::exit_code ret = FLReconstruct::do_flreconstruct(argc, argv);
 
-  // - Needed...
   falaise::terminate();
   return ret;
 }
+
+namespace FLReconstruct {
+
+  //! Perform reconstruction using command line args as given
+  falaise::exit_code do_flreconstruct(int argc, char *argv[])
+  {
+    // - Configure
+    FLReconstructParams flRecParameters;
+    try {
+      DT_LOG_DEBUG(datatools::logger::PRIO_ALWAYS, "Configuring the flreconstruct pipeline...");
+      do_configure(argc, argv, flRecParameters);
+      DT_LOG_DEBUG(flRecParameters.logLevel, "flreconstruct pipeline is configured.");
+    } catch (FLConfigDefaultError& e) {
+      std::cerr << "Unable to configure core of flreconstruct" << std::endl;
+      return falaise::EXIT_UNAVAILABLE;
+    } catch (FLConfigHelpHandled& e) {
+      return falaise::EXIT_OK;
+    } catch (FLConfigUserError& e) {
+      std::cerr << "User configuration error: " << e.what() << std::endl;
+      return falaise::EXIT_USAGE;
+    }
+
+    // - Run
+    falaise::exit_code code = falaise::EXIT_OK;
+
+    DT_LOG_DEBUG(flRecParameters.logLevel, "Running the pipeline...");
+    code = do_pipeline(flRecParameters);
+    DT_LOG_DEBUG(flRecParameters.logLevel, "Pipeline is done with code=" << code);
+
+    return code;
+  }
+
+} // end of namespace FLReconstruct
