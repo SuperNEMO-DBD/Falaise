@@ -36,7 +36,7 @@ falaise.version : string = "3.0.0"
 
 
 #@description Run start timestamp
-timestamp : string = "20170318T171559"
+timestamp : string = "20170319T070817"
 
 
 
@@ -60,11 +60,6 @@ numberOfEvents : integer = 10
 
 
 
-#@description Simulation manager configuration file
-simulationManagerConfig : string as path  = "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/manager.conf"
-
-
-
 #@description Simulation setup URN
 simulationSetupUrn : string = "urn:snemo:demonstrator:simulation:2.1"
 
@@ -72,11 +67,6 @@ simulationSetupUrn : string = "urn:snemo:demonstrator:simulation:2.1"
 [name="VariantSubsystem" type="flsimulate::subsystem"]
 
 #@config Variant setup
-
-
-
-#@description Variants setup configuration path
-config : string as path  = "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf"
 
 
 
@@ -92,11 +82,6 @@ profile : string as path  = "vprofile.conf"
 [name="ServicesSubsystem" type="flsimulate::subsystem"]
 
 #@config Services configuration
-
-
-
-#@description Services setup configuration path
-config : string as path  = "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/services.conf"
 
 
 
