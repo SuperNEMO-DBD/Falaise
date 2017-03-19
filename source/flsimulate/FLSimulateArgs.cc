@@ -174,16 +174,17 @@ namespace FLSimulate {
                                                       "rngStateModuloEvents",
                                                       flSimParameters.simulationManagerParams.prng_states_save_modulo);
 
-        // Simulation output profile:
-        if (flSimParameters.userProfile == "production" && simSubsystem.has_key("outputProfile")) {
-          DT_THROW(FLConfigUserError,
-                   "User profile '" << flSimParameters.userProfile << "' "
-                   << "does not allow to use the '" << "outputProfile" << "' simulation configuration parameter!");
-        }
-        flSimParameters.simulationManagerParams.output_profiles_activation_rule =
-          falaise::properties::getValueOrDefault<std::string>(simSubsystem,
-                                                              "outputProfile",
-                                                              flSimParameters.simulationManagerParams.output_profiles_activation_rule);
+        // 2017-03-19, FM: this is now managed through the variant system:
+        // // Simulation output profile:
+        // if (flSimParameters.userProfile == "production" && simSubsystem.has_key("outputProfile")) {
+        //   DT_THROW(FLConfigUserError,
+        //            "User profile '" << flSimParameters.userProfile << "' "
+        //            << "does not allow to use the '" << "outputProfile" << "' simulation configuration parameter!");
+        // }
+        // flSimParameters.simulationManagerParams.output_profiles_activation_rule =
+        //   falaise::properties::getValueOrDefault<std::string>(simSubsystem,
+        //                                                       "outputProfile",
+        //                                                       flSimParameters.simulationManagerParams.output_profiles_activation_rule);
       }
 
       // Variants subsystem:
@@ -269,25 +270,32 @@ namespace FLSimulate {
     const datatools::urn_query_service & dtkUrnQuery = dtk.get_urn_query();
 
     if (flSimParameters.simulationSetupUrn.empty()) {
-      // Only for 'expert' of 'normal' user profiles.
 
       // Check for hardcoded path to the main simulation setup configuration file:
-      DT_THROW_IF(flSimParameters.simulationManagerParams.manager_config_filename.empty(),
-                  std::logic_error,
-                  "Missing simulation setup configuration file!");
+      if (! flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
+        // Only for 'expert' of 'normal' user profiles.
 
-      // Variants configuration:
-      if (flSimParameters.variantSubsystemParams.config_filename.empty()) {
-        DT_LOG_WARNING(flSimParameters.logLevel, "No variants configuration file is provided!");
+        // Variants configuration:
+        if (flSimParameters.variantSubsystemParams.config_filename.empty()) {
+          DT_LOG_WARNING(flSimParameters.logLevel, "No variants configuration file is provided!");
+        }
+
+        // Services configuration:
+        if (flSimParameters.servicesSubsystemConfig.empty()) {
+          DT_LOG_WARNING(flSimParameters.logLevel, "No services configuration file is provided!");
+        }
+
+      } else {
+        // Default simulation setup:
+        if (flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
+          flSimParameters.simulationSetupUrn = "urn:snemo:demonstrator:simulation:2.1";
+          DT_LOG_WARNING(flSimParameters.logLevel, "Use default simulation setup '" << flSimParameters.simulationSetupUrn << "'.");
+        }
       }
+    }
 
-      // Services configuration:
-      if (flSimParameters.servicesSubsystemConfig.empty()) {
-        DT_LOG_WARNING(flSimParameters.logLevel, "No services configuration file is provided!");
-      }
-
-    } else {
-      // Check URN registration from the system URN query service:
+    if (!flSimParameters.simulationSetupUrn.empty()) {
+       // Check URN registration from the system URN query service:
       {
         DT_THROW_IF(!dtkUrnQuery.check_urn_info(flSimParameters.simulationSetupUrn, "setup"),
                     std::logic_error,
