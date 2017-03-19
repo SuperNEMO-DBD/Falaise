@@ -4,9 +4,9 @@
 #@key_label "name"
 #@meta_label "type"
 
-[name="System" type="flsimulate::subsystem"]
+[name="flsimulate" type="flsimulate::subsystem"]
 
-#@config System informations
+#@config flsimulate basic system informations
 
 
 
@@ -25,8 +25,23 @@ bayeux.version : string = "3.0.0"
 
 
 
+#@description Activate digitization
+doDigitization : boolean = 0
+
+
+
+#@description Activate simulation
+doSimulation : boolean = 1
+
+
+
 #@description Metadata embedding flag
 embeddedMetadata : boolean = 1
+
+
+
+#@description Experimental setup URN
+experimentalSetupUrn : string = "urn:snemo:demonstrator:setup:1.0"
 
 
 
@@ -35,8 +50,13 @@ falaise.version : string = "3.0.0"
 
 
 
+#@description Number of simulated events
+numberOfEvents : integer = 10
+
+
+
 #@description Run start timestamp
-timestamp : string = "20170319T070817"
+timestamp : string = "20170319T215811"
 
 
 
@@ -47,16 +67,6 @@ userProfile : string = "normal"
 [name="SimulationSubsystem" type="flsimulate::subsystem"]
 
 #@config Simulation setup parameters
-
-
-
-#@description Experimental setup URN
-experimentalSetupUrn : string = "urn:snemo:demonstrator:setup:1.0"
-
-
-
-#@description Number of simulated events
-numberOfEvents : integer = 10
 
 
 

@@ -15,7 +15,7 @@ cd ${work_dir}/
 
 echo >&2 "[info] Running flsimulate..."
 flsimulate \
-    --verbosity "debug" \
+    --verbosity "trace" \
     --config "flsimulate.conf" \
     --output-metadata-file "flSD.meta" \
     --embedded-metadata=1 \
