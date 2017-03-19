@@ -49,7 +49,7 @@ namespace FLSimulate {
   void do_help_scripting(std::ostream& os);
 
   //! Command line help on simulation setup
-  void do_help_setup(std::ostream& os);
+  void do_help_simulation_setup(std::ostream& os);
 
   //! Handle command line argument dialog
   void do_cldialog(int argc, char *argv[], FLSimulateCommandLine & clArgs);

@@ -88,7 +88,7 @@ namespace FLSimulate {
     return;
   }
 
-  void do_help_setup(std::ostream& os)
+  void do_help_simulation_setup(std::ostream& os)
   {
     datatools::logger::priority logging = falaise::detail::falaise_sys::const_instance().get_logging();
     datatools::kernel & dtk = ::datatools::kernel::instance();
@@ -129,7 +129,7 @@ namespace FLSimulate {
 
       ("help-scripting","print help on input script format and schema")
 
-      ("help-setup","print help on simulation setup")
+      ("help-simulation-setup","print help on simulation setup")
 
       ("version","print version number")
 
@@ -169,7 +169,7 @@ namespace FLSimulate {
       if (!vMap.count("help") &&
           !vMap.count("version") &&
           !vMap.count("help-scripting") &&
-          !vMap.count("help-setup")) {
+          !vMap.count("help-simulation-setup")) {
         std::cerr << "[OptionsException] " << e.what() << std::endl;
         throw FLDialogOptionsError();
       }
@@ -194,8 +194,8 @@ namespace FLSimulate {
       throw FLDialogHelpRequested();
     }
 
-    if (vMap.count("help-setup")) {
-      do_help_setup(std::cout);
+    if (vMap.count("help-simulation-setup")) {
+      do_help_simulation_setup(std::cout);
       throw FLDialogHelpRequested();
     }
 
