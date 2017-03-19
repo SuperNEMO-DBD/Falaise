@@ -52,6 +52,17 @@ Configuration files
    ..
 
 
+
+Input files
+===========
+
+* ``samples/input/flSD.brio`` : input data file generated from the flsimulate example ``ex01``.
+* ``samples/input/flSD.meta`` : input metadata companion file (flsimulate example ``ex01``).
+* ``samples/input/flSD-vprofile.conf`` : variant profile used in flsimulate example ``ex01`` from which
+  is extracted the above ``vprofile.conf`` file.
+
+
+
 Run the reconstruction
 ======================
 
