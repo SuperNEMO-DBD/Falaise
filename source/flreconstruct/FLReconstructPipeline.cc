@@ -198,6 +198,8 @@ namespace FLReconstruct {
           break;
         }
 
+        // Check pre-conditions on event model (requiredInputBanks) ?
+
         // Feed through pipeline
         dpp::base_module::process_status pStatus = pipeline->process(workItem);
         DT_THROW_IF(pStatus == dpp::base_module::PROCESS_INVALID, std::logic_error,
@@ -213,6 +215,8 @@ namespace FLReconstruct {
         // STOP means the current event should not be processed anymore nor saved
         // but the loop can continue with other items
         if(pStatus == dpp::base_module::PROCESS_STOP) continue;
+
+        // Check post-conditions on event model (expectedOutputBanks) ?
 
         // Write item
         if(recOutputHandle) {
