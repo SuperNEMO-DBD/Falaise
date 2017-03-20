@@ -103,7 +103,7 @@ namespace FLReconstruct {
     } catch (std::exception & e) {
       throw FLConfigUserError {"bad command line input"};
     }
-    DT_LOG_DEBUG(datatools::logger::PRIO_ALWAYS, "Configuring...");
+    DT_LOG_DEBUG(clArgs.logLevel, "Configuring...");
 
     // Import parameters from the command line:
     flRecParameters.logLevel           = clArgs.logLevel;
