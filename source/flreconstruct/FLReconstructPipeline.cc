@@ -108,7 +108,7 @@ namespace FLReconstruct {
         datatools::properties dumbConfig;
         dumbConfig.store("title", "flreconstruct::default");
         dumbConfig.store("output", "cout");
-        moduleManager->load_module("pipeline", "dpp::dump_module", dumbConfig);
+        moduleManager->load_module(flRecParameters.reconstructionSetupModule, "dpp::dump_module", dumbConfig);
       }
 
       datatools::library_loader altLibLoader;
@@ -149,9 +149,9 @@ namespace FLReconstruct {
       }
 
       // - Pipeline
-      dpp::base_module* pipeline;
+      dpp::base_module* pipeline = nullptr;
       try {
-        pipeline = &(moduleManager->grab("pipeline"));
+        pipeline = &(moduleManager->grab(flRecParameters.reconstructionSetupModule));
       } catch (std::exception& e) {
         DT_LOG_FATAL(flRecParameters.logLevel, "Failed to initialize pipeline : " << e.what());
         return falaise::EXIT_UNAVAILABLE;

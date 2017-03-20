@@ -30,11 +30,12 @@ namespace FLReconstruct {
   struct FLReconstructParams {
 
     // Application specific parameters:
-    datatools::logger::priority logLevel;     //!< Logging priority threshold
-    std::string                 userProfile;  //!< User profile
-    unsigned int                moduloEvents; //!< Number of events progress modulo
+    datatools::logger::priority logLevel;       //!< Logging priority threshold
+    std::string                 userProfile;    //!< User profile
+    unsigned int                numberOfEvents; //!< Number of events to be processed in the pipeline
+    unsigned int                moduloEvents;   //!< Number of events progress modulo
 
-    // Required setup and versioning:
+    // Required experimental setup and versioning:
     std::string  experimentalSetupUrn;        //!< The URN of the experimental setup
 
     // Variants support:
@@ -48,7 +49,6 @@ namespace FLReconstruct {
     std::string  servicesSubsystemConfig;    //!< The main configuration file for the service manager
 
     // Reconstruction control:
-    unsigned int numberOfEvents;          //!< Number of events to be processed in the pipeline
     std::string  inputMetadataFile;       //!< Input metadata file
     std::string  inputFile;               //!< Input data file for the input module
     std::string  outputMetadataFile;      //!< Output metadata file
@@ -59,13 +59,19 @@ namespace FLReconstruct {
     std::string dataType;                 //!< The type of data ("Real", "MC")
     std::string dataSubtype;              //!< Additional data subtype/flavour ("Blinded", "Calibration", "Commissioning")
     // For strict checking of the input/output data models:
-    std::vector<std::string>  requiredInputBanks;    //!< Required input data banks ("SD", "UDD"...)
-    std::vector<std::string>  expectedOutputBanks;   //!< Expected output data banks ("SSD", "SDD", "EH", "UDD", "CD", "TCD", "TTD", "PTD", "PID"...)
+    std::vector<std::string>  requiredInputBanks;  //!< Required input data banks ("SD", "UDD"...)
+    std::vector<std::string>  expectedOutputBanks; //!< Expected output data banks ("SSD", "SDD", "EH", "UDD", "CD", "TCD", "TTD", "PTD", "PID"...)
 
     // Working data:
 
     // Plugin dedicated service:
     datatools::multi_properties  userLibConfig; //!< Main configuration file for plugins loader
+
+    // Required reconstruction setup and versioning:
+    std::string reconstructionSetupUrn;  //!< The URN of the reconstruction setup
+    std::string reconstructionSetupConfig;     //!< The reconstruction setup main configuration file
+    std::string reconstructionSetupModule;     //!< The reconstruction module
+
     // Metadata container:
     datatools::multi_properties inputMetadata; //!< Metadata imported from the input
 

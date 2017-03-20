@@ -92,7 +92,7 @@ namespace FLReconstruct {
     // - Configure
     FLReconstructParams flRecParameters;
     try {
-      DT_LOG_DEBUG(datatools::logger::PRIO_ALWAYS, "Configuring the flreconstruct pipeline...");
+      // DT_LOG_DEBUG(datatools::logger::PRIO_ALWAYS, "Configuring the flreconstruct pipeline...");
       do_configure(argc, argv, flRecParameters);
       DT_LOG_DEBUG(flRecParameters.logLevel, "flreconstruct pipeline is configured.");
     } catch (FLConfigDefaultError& e) {
