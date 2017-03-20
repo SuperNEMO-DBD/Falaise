@@ -26,6 +26,7 @@ ${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/seeds.conf
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/vprofile.conf
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/README.rst
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/flreconstruct.conf
+${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/flreconstruct_inline.conf
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/samples/output/flRec.meta
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/samples/output/flRec.brio
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/samples/input/flSD.brio
