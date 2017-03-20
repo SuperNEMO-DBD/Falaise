@@ -1,0 +1,454 @@
+
+#@description Sample SuperNEMO Demonstrator Reconstruction modules
+#@key_label  "name"
+#@meta_label "type"
+
+
+#####################################################################
+# Must define "pipeline" as this is the module flreconstruct will use
+# Define the main chain of modules in the pipeline:
+# 1. Mock digitize and mock calibrate
+# 2. CAT clusterization of tracker hits
+# 3. TrackFit-ting tracker cluster hits
+# 4. Reconstruct charged particle tracks
+[name="pipeline" type="dpp::chain_module"]
+#@config The main pipeline
+
+#@description The list of processing modules chained along the pipeline
+modules : string[4] = "MockCalibration"        \
+                      "CATTrackerClusterizer"  \
+                      "TrackFit"               \
+                      "ChargedParticleTracker"
+
+
+##########################################################
+# Here is the first in the pipeline, itself a chain module
+[name="MockCalibration" type="dpp::chain_module"]
+#@config A chain of processing modules that performs the mock calibration
+
+#@description The list of processing modules chained along the pipeline
+modules : string[2] = "CalibrateTracker" "CalibrateCalorimeters"
+
+
+###########################################################
+# Here is the first part of the mock calibration processing
+[name="CalibrateTracker" type="snemo::processing::mock_tracker_s2c_module"]
+#@config A mock tracker calibration module
+
+# #@description The label of the 'Simulated Data' bank
+# SD_label : string  = "SD"
+
+# #@description The label of the 'Calibrated Data' bank
+# CD_label : string  = "CD"
+
+# #@description The name of the geometry service
+# Geo_label : string = "geometry"
+
+# #@description The category of hits to be processed as Geiger hits
+# hit_category  : string  = "gg"
+
+# #@description Type of the pseudo-random numbers generator setup (GSL PRNG)
+# random.id  : string  = "mt19937"
+
+#@description Seed for the pseudo-random numbers generator (GSL PRNG)
+random.seed  : integer = 12345
+
+#@description Store the hit ID of the truth MC Geiger hit from which the calibrated hit that has been built
+store_mc_hit_id : boolean = 1
+
+# #@description Store the hit ID of the truth track and parent track from which the calibrated hit that has been built
+# store_mc_truth_track_ids : boolean = 0
+
+# #@description Drift cell effective/active diameter
+# cell_diameter : real as length  = 44.0 mm
+
+# #@description Drift cell effective/active length
+# cell_length   : real as length  = 2900.0 mm
+
+# #@description Error on anode drift time
+# sigma_anode_time : real as time = 12.5 ns
+
+# #@description Error on cathode drift time
+# sigma_cathode_time : real as time = 100 ns
+
+# #@description Maximum drift time
+# tcut : real as time = 10.0 us
+
+# #@description Anode efficiency
+# base_anode_efficiency   : real = 1.0
+
+# #@description Cathode efficiency
+# base_cathode_efficiency : real = 1.0
+
+# #@description Plasma longitudinal speed
+# plasma_longitudinal_speed : real as speed = 5.0 cm/us
+
+# #@description Error on plasma longitudinal speed
+# sigma_plasma_longitudinal_speed : real as speed = 0.5 cm/us
+
+# #@description Error on reconstructed longitudinal position (from a plot by Irina)
+# sigma_z                 : real as length = 1.0 cm
+
+# #@description Error on reconstructed longitudinal position when one cathode signal is missing
+# sigma_z_missing_cathode : real as length = 5.0 cm
+
+# #@description Error parametrization on reconstructed horizontal position (parameters of a fit of data by Irina)
+# sigma_r_a  : real as length = 0.425 mm
+
+# #@description Error parametrization on reconstructed horizontal position (parameters of a fit of data by Irina)
+# sigma_r_b  : real = 0.0083
+
+# #@description Error parametrization on reconstructed horizontal position (parameters of a fit of data by Irina)
+# sigma_r_r0 : real as length = 12.25 mm
+
+# #@description Drift time threshold to consider the hit as 'peripheral'
+# peripheral_drift_time_threshold : real as time = 4.0 microsecond
+
+# #@description Drift time threshold to consider the hit as 'delayed'
+# delayed_drift_time_threshold    : real as time = 10.0 microsecond
+
+
+############################################################
+# Here is the second part of the mock calibration processing
+[name="CalibrateCalorimeters" type="snemo::processing::mock_calorimeter_s2c_module"]
+#@config A mock calorimeter calibration module
+
+# #@description The label of the 'Simulated Data' bank
+# SD_label  : string  = "SD"
+
+# #@description The label of the 'Calibrated Data' bank
+# CD_label  : string  = "CD"
+
+#@description The name of the geometry service
+Geo_label : string = "geometry"
+
+# #@description The cluster time width (trigger time window)
+# cluster_time_width : real as time = 100 ns
+
+# #@description Type of the pseudo-random numbers generator setup (GSL PRNG)
+# random.id : string  = "mt19937"
+
+#@description Seed for the pseudo-random numbers generator (GSL PRNG)
+random.seed : integer = 12345
+
+#@description Store the hit ID of the true MC calorimeter hit from which the calibrated hit that has been built
+store_mc_hit_id : boolean = 1
+
+# #@description Take into account alpha quenching
+# alpha_quenching    : boolean = 1
+
+#@description The names of the calorimeter-like hit categories to be processed
+hit_categories     : string[3]  = "calo" "xcalo" "gveto"
+
+#@description calo optical lines resolutions (FWHM @ 1 MeV)
+calo.energy.resolution      : real as fraction = 8  %
+
+#@description xcalo optical lines resolutions (FWHM @ 1 MeV)
+xcalo.energy.resolution     : real as fraction = 12 %
+
+#@description gveto optical lines resolutions (FWHM @ 1 MeV)
+gveto.energy.resolution     : real as fraction = 15 %
+
+#@description calo optical lines alpha quenching parameters
+calo.alpha_quenching_parameters  : real[3] = 77.4 0.639 2.34
+
+#@description xcalo optical lines alpha quenching parameters
+xcalo.alpha_quenching_parameters : real[3] = 77.4 0.639 2.34
+
+#@description gveto optical lines alpha quenching parameters
+gveto.alpha_quenching_parameters : real[3] = 77.4 0.639 2.34
+
+#@description calo optical lines trigger low thresholds
+calo.energy.low_threshold   : real as energy =  50 keV
+
+#@description xcalo optical lines trigger low thresholds
+xcalo.energy.low_threshold  : real as energy =  50 keV
+
+#@description gveto optical lines trigger low thresholds
+gveto.energy.low_threshold  : real as energy =  50 keV
+
+#@description calo optical lines trigger high thresholds
+calo.energy.high_threshold  : real as energy = 150 keV
+
+#@description xcalo optical lines trigger high thresholds
+xcalo.energy.high_threshold : real as energy = 150 keV
+
+#@description gveto optical lines trigger high thresholds
+gveto.energy.high_threshold : real as energy = 150 keV
+
+#@description calo time resolution parameters
+calo.scintillator_relaxation_time  : real as time = 6.0 ns
+
+#@description xcalo time resolution parameters
+xcalo.scintillator_relaxation_time : real as time = 6.0 ns
+
+#@description gveto time resolution parameters
+gveto.scintillator_relaxation_time : real as time = 6.0 ns
+
+
+###############################################################################
+# Here is the second module in the pipeline: the CAT tracker clustering module
+# Only main properties have been set : see the
+# Falaise/modules/CAT documentation for more details
+[name="CATTrackerClusterizer" type="snemo::reconstruction::cat_tracker_clustering_module"]
+#@config Parameters for the Cellular Automaton Tracking algorithm (CAT)
+
+##################
+# The CAT module #
+##################
+
+# #@description Set the logging priority threshold of the module
+# logging.priority : string = "fatal"
+
+#@description The name of the 'geometry' service
+Geo_label  : string  = "geometry"
+
+# #@description The name of the 'calibrated data' bank used as input
+# CD_label  : string  = "CD"
+
+# #@description The name of the 'tracker clustering data' bank used as output
+# TCD_label  : string  = "TCD"
+
+################################
+# The base tracker clusterizer #
+################################
+
+# #@description Set the logging priority threshold of the module
+# TC.logging.priority : string = "fatal"
+
+# #@description The name of the SuperNEMO geometry locator plugin
+# TC.locator_plugin_name : string = "locators_driver"
+
+# #@description The minimum time to consider a Geiger hit as delayed
+# TPC.delayed_hit_cluster_time : real = 10 us
+
+#@description Pre-clusterizer processing of prompt hits
+TPC.processing_prompt_hits : boolean = 1
+
+#@description Pre-clusterizer processing of delayed hit
+TPC.processing_delayed_hits : boolean = 0
+
+#@description Pre-clusterizer processing separately both sides of the tracking chamber
+TPC.split_chamber : boolean = 0
+
+##################
+# The CAT driver #
+##################
+
+#@description Force the CAT algorithm to consider a 25 gauss magnetic field (temporary trick)
+CAT.magnetic_field        : real    = 25 gauss
+
+# #@description To be described
+# CAT.level                 : string  = "normal"
+
+# #@description To be described
+# CAT.max_time              : real    = 5000.0 ms
+
+# #@description To be described
+# CAT.small_radius          : real    = 1.0 mm
+
+# #@description To be described
+# CAT.probmin               : real    = 0.0
+
+# #@description To be described
+# CAT.nofflayers            : integer = 1
+
+# #@description To be described
+# CAT.first_event           : integer = -1
+
+# #@description To be described
+# CAT.ratio                 : real    = 10000.0
+
+# #@description To be described
+# CAT.sigma_z_factor        : real = 1.0
+
+
+####################################################################
+# Here is the third in the pipeline: the TrackFit module
+# Only main properties have been set : see the
+# Falaise/modules/TrackFit documentation for more details
+[name="TrackFit" type="snemo::reconstruction::trackfit_tracker_fitting_module"]
+#@config Parameters for the TrackFit algorithm
+
+#######################
+# The TrackFit module #
+#######################
+
+# #@description Set the logging priority threshold
+# logging.priority : string = "fatal"
+
+#@description The label of the Geometry service
+Geo_label : string  = "geometry"
+
+# #@description The label of the input 'Tracker Clustering Data' bank
+# TCD_label : string  = "TCD"
+
+# #@description The label of the output 'Tracker Trajectory Data' bank
+# TTD_label : string  = "TTD"
+
+###########################
+# The base tracker fitter #
+###########################
+
+#@description The maximum number of fits to be saved (0 means all will be kept)
+maximum_number_of_fits : integer = 0
+
+# #@description Set the name of the Geiger cell locator geometry plugin name
+# locator_plugin_name : string = "locators_driver"
+
+#######################
+# The TrackFit driver #
+#######################
+
+#@description Use drift time (re)calibration (values: "default", "snemo")
+drift_time_calibration_label : string = "snemo"
+
+#@description Fit models ("helix", "line" or both)
+fitting_models : string[1] = "line" # only line when no magnetic field
+
+### fitting_models : string[2] = "helix" "line"
+
+############################################
+# Parameters to compute the line fit guess #
+############################################
+
+#@description 'Line' fit only guess ("BB", "BT", "TB", "TT")
+line.only_guess  : string[4] = "BB" "BT" "TB" "TT"
+
+# #@description Set logging priority threshold for line guess driver
+# line.guess.logging.priority : string = "fatal"
+
+# #@description Use max radius (cell size) to construct initial guess point (1) or use the effective drift Geiger distance of the hit (0)
+# line.guess.use_max_radius    : boolean = 0
+
+# #@description Apply a factor (>0) to the max radius (devel mode)
+# line.guess.max_radius_factor : real = 1.0
+
+# #@description Use guess trust (1) or keep all of the guess fits (0) and select later
+# line.guess.use_guess_trust   : boolean = 0
+
+# #@description Mode for trusting a fit guess ("counter", "barycenter")
+# line.guess.guess_trust_mode  : string = "counter"
+
+#@description Fit the delayed Geiger cluster
+line.guess.fit_delayed_clusters : boolean = 1
+
+######################################
+# Parameters to perform the line fit #
+######################################
+
+# #@description Print the status of the fit stepper at each step (devel only)
+# line.fit.step_print_status : boolean = 0
+
+# #@description Plot the 2D view of the fitted data at each step (devel only)
+# line.fit.step_draw         : boolean = 0
+
+# #@description Track fit adds start time as an additionnal parameter to the fit (needs a calibration driver)
+# line.fit.fit_start_time    : boolean = 0
+
+# #@description Track fit recomputes the drift distance from drift time (needs a calibration driver)
+# line.fit.using_drift_time  : boolean = 0
+
+############################################
+# Parameters to compute the helix fit guess #
+############################################
+
+#@description 'Helix' fit only guess ("BBB", "BBT", "BTB", "BTT", "TBB", "TBT", "TTB", "TTT")
+helix.only_guess : string[8] = "BBB" "BBT" "BTB" "BTT" "TBB" "TBT" "TTB" "TTT"
+
+# #@description Set logging priority threshold for line guess driver
+# helix.guess.logging.priority : string = "fatal"
+
+# #@description Use max radius (cell size) to construct initial guess point (1) or use the effective drift Geiger distance of the hit (0)
+# helix.guess.use_max_radius    : boolean = 0
+
+# #@description Apply a factor (>0) to the max radius (devel mode)
+# helix.guess.max_radius_factor : real = 1.0
+
+# #@description Use guess trust (1) or keep all of the guess fits (0) and select later
+# helix.guess.use_guess_trust   : boolean = 0
+
+# #@description Mode for trusting a fit guess ("counter", "barycenter")
+# helix.guess.guess_trust_mode  : string = "counter"
+
+# #@description Fit the delayed geiger cluster (by default, false since this mode is devoted to line fit)
+# helix.guess.fit_delayed_clusters : boolean = 0
+
+#######################################
+# Parameters to perform the helix fit #
+#######################################
+
+# #@description Print the status of the fit stepper at each step (devel only)
+# helix.fit.step_print_status : boolean = 0
+
+# #@description Plot the 2D view of the fitted data at each step (devel only)
+# helix.fit.step_draw         : boolean = 0
+
+# #@description Track fit recomputes the drift distance from drift time (needs a calibration driver)
+# helix.fit.using_drift_time  : boolean = 0
+
+# #@description Allow a fitted track to begin not tangential to the first hit
+# helix.fit.using_first       : boolean = 0
+
+# #@description Allow a fitted track to end not tangential to the last hit
+# helix.fit.using_last        : boolean = 0
+
+
+#################################################################################
+# Here is the fourth module in the pipeline: the charged particle tracking module
+[name="ChargedParticleTracker" type="snemo::reconstruction::charged_particle_tracking_module"]
+#@config Parameters for the Charged Particle Tracking module
+
+# #@description Set the logging priority threshold for the module
+# logging.priority : string = "warning"
+
+#@description The label of the Geometry service
+Geo_label : string  = "geometry"
+
+# #@description The name of the 'calibrated data' bank used as input
+# CD_label  : string  = "CD"
+
+# #@description The name of the 'tracker trajectory data' bank used as input
+# TTD_label  : string  = "TTD"
+
+# #@description The name of the 'particle track data' bank used as output
+# PTD_label  : string  = "PTD"
+
+#@description List of drivers to be used (see description below)
+drivers : string[3] = "VED" "CCD" "CAD"
+
+####################################################################
+# Vertex Extrapolation Driver :
+# used to find vertices of the tracker trajectory
+# either on the source foil or the calorimeter walls
+
+# #@description Vertex Extrapolation Driver logging priority
+# VED.logging.priority : string = "warning"
+
+# #@description Use linear extrapolation (not implemented yet)
+# VED.use_linear_extrapolation : boolean = 0
+
+####################################################################
+# Charge Computation Driver :
+# used to determine the track electric charge given
+# the particle coming from the source foil
+
+# #@description Charge Computation Driver logging priority
+# CCD.logging.priority : string = "warning"
+
+# #@description Charge sign convention
+# CCD.charge_from_source : boolean = 1
+
+####################################################################
+# Calorimeter Association Driver :
+# used to associate particle track to calibrated
+# calorimeter hits (given a tolerance)
+
+# #@description Calorimeter Association Driver logging priority
+# CAD.logging.priority : string = "warning"
+
+# #@description Maximum matching distance for track/calo association
+# CAD.matching_tolerance : real as length = 100 mm
+
+# #@description Use a simpler approach by looking for Geiger cells in front of calo (not implemented yet)
+# CAD.use_last_geiger_cell : boolean = 0
