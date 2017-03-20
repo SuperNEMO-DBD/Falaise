@@ -12,18 +12,18 @@
 
 description : string = "SuperNEMO reconstruction setup (version 1.0)"
 
-topics : string[2] = "expsetup" "pipeline"
+topics : string[2] = "experiment" "pipeline"
 
-topic.expsetup.component : string = "urn:snemo:demonstrator:setup:1.0"
-topic.pipeline.component : string = "urn:snemo:demonstrator:reconstruction:1.0:pipeline"
+topic.experiment.component : string = "urn:snemo:demonstrator"
+topic.pipeline.component   : string = "urn:snemo:demonstrator:reconstruction:pipeline:1.0.0"
 
 
 ###################################################################################
-[urn="urn:snemo:demonstrator:reconstruction:1.0:pipeline" category="configuration"]
+[urn="urn:snemo:demonstrator:reconstruction:pipeline:1.0.0" category="configuration"]
 
 #@config URN info parameters for processing pipeline of SuperNEMO reconstruction version 1.0
 
-description : string = "SuperNEMO reconstruction pipeline (version 1.0)"
+description : string = "SuperNEMO reconstruction pipeline modules (version 1.0)"
 
 
 # end
