@@ -109,7 +109,7 @@ namespace FLSimulate {
       // Caution: some parameters are only available for specific user profile
 
       // Basic system:
-      if(flSimConfig.has_section("flsimulate")) {
+      if(flSimConfig.has_key_with_meta("flsimulate", "flsimulate::section")) {
         datatools::properties baseSystem = flSimConfig.get_section("flsimulate");
         // Bind properties in this section to the relevant ones in params:
 
@@ -138,8 +138,8 @@ namespace FLSimulate {
       }
 
       // Simulation subsystem:
-      if(flSimConfig.has_section("SimulationSubsystem")) {
-        datatools::properties simSubsystem = flSimConfig.get_section("SimulationSubsystem");
+      if(flSimConfig.has_key_with_meta("flsimulate.simulation", "flsimulate::section")) {
+        datatools::properties simSubsystem = flSimConfig.get_section("flsimulate.simulation");
         // Bind properties in this section to the relevant ones in params:
 
         // Simulation setup URN:
@@ -198,15 +198,15 @@ namespace FLSimulate {
       }
 
       // Digitization subsystem:
-      if(flSimConfig.has_section("DigitizationSubsystem")) {
-        datatools::properties digiSubsystem = flSimConfig.get_section("DigitizationSubsystem");
+      if(flSimConfig.has_key_with_meta("flsimulate.digitization", "flsimulate::section")) {
+        datatools::properties digiSubsystem = flSimConfig.get_section("flsimulate.digitization");
         // Bind properties in this section to the relevant ones in params:
 
       }
 
       // Variants subsystem:
-      if (flSimConfig.has_section("VariantSubsystem")) {
-        datatools::properties variantSubsystem = flSimConfig.get_section("VariantSubsystem");
+      if (flSimConfig.has_key_with_meta("flsimulate.variantService", "flsimulate::section")) {
+        datatools::properties variantSubsystem = flSimConfig.get_section("flsimulate.variantService");
         // Bind properties to relevant ones on params
 
         // Variant configuration URN:
@@ -252,8 +252,8 @@ namespace FLSimulate {
       }
 
       // Services subsystem:
-      if (flSimConfig.has_section("ServicesSubsystem")) {
-        datatools::properties servicesSubsystem = flSimConfig.get_section("ServicesSubsystem");
+      if (flSimConfig.has_key_with_meta("flsimulate.services", "flsimulate::section")) {
+        datatools::properties servicesSubsystem = flSimConfig.get_section("flsimulate.services");
 
         // Services manager configuration URN:
         flSimParameters.servicesSubsystemConfigUrn =

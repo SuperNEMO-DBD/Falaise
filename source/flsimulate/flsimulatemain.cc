@@ -113,7 +113,7 @@ namespace FLSimulate {
 
     // System section:
     datatools::properties & system_props
-      = flSimMetadata.add_section("flsimulate", "flsimulate::subsystem");
+      = flSimMetadata.add_section("flsimulate", "flsimulate::section");
     system_props.set_description("flsimulate basic system informations");
 
     system_props.store_string("bayeux.version", bayeux::version::get_version(),
@@ -157,23 +157,35 @@ namespace FLSimulate {
                               boost::posix_time::to_iso_string(start_run_timestamp),
                               "Run start timestamp");
 
-    // Simulation section:
-    datatools::properties & simulation_props
-      = flSimMetadata.add_section("SimulationSubsystem", "flsimulate::subsystem");
-    simulation_props.set_description("Simulation setup parameters");
+    if (flSimParameters.doSimulation) {
+      // Simulation section:
+      datatools::properties & simulation_props
+        = flSimMetadata.add_section("flsimulate.simulation", "flsimulate::section");
+      simulation_props.set_description("Simulation setup parameters");
 
-    if (!flSimParameters.simulationSetupUrn.empty()) {
-      simulation_props.store_string("simulationSetupUrn", flSimParameters.simulationSetupUrn,
-                                    "Simulation setup URN");
-    } else if (!flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
-      simulation_props.store_path("simulationManagerConfig",
-                                  flSimParameters.simulationManagerParams.manager_config_filename,
-                                  "Simulation manager configuration file");
+      if (!flSimParameters.simulationSetupUrn.empty()) {
+        simulation_props.store_string("simulationSetupUrn", flSimParameters.simulationSetupUrn,
+                                      "Simulation setup URN");
+      } else if (!flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
+        simulation_props.store_path("simulationManagerConfig",
+                                    flSimParameters.simulationManagerParams.manager_config_filename,
+                                    "Simulation manager configuration file");
+      }
+    }
+
+    if (flSimParameters.doDigitization) {
+      // Digitization section:
+      datatools::properties & digitization_props
+        = flSimMetadata.add_section("flsimulate.digitization", "flsimulate::section");
+      digitization_props.set_description("Digitization setup parameters");
+
+      // Not implemented yet.
+
     }
 
     // Variants section:
     datatools::properties & variants_props
-      = flSimMetadata.add_section("VariantSubsystem", "flsimulate::subsystem");
+      = flSimMetadata.add_section("flsimulate.variantService", "flsimulate::section");
     variants_props.set_description("Variant setup");
 
     if (!flSimParameters.variantConfigUrn.empty()) {
@@ -199,7 +211,7 @@ namespace FLSimulate {
 
     // Services section:
     datatools::properties & services_props
-      = flSimMetadata.add_section("ServicesSubsystem", "flsimulate::subsystem");
+      = flSimMetadata.add_section("flsimulate.services", "flsimulate::section");
     services_props.set_description("Services configuration");
 
     if (!flSimParameters.servicesSubsystemConfigUrn.empty()) {
