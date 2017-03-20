@@ -1,6 +1,7 @@
 set(Falaise_RESOURCES
 ${PROJECT_SOURCE_DIR}/resources/README.rst
 ${PROJECT_SOURCE_DIR}/resources/urn/db/README.rst
+${PROJECT_SOURCE_DIR}/resources/urn/db/snemo_reconstruction_setup_infos.defs
 ${PROJECT_SOURCE_DIR}/resources/urn/db/experimental_setup_infos.defs
 ${PROJECT_SOURCE_DIR}/resources/urn/db/experiment_infos.defs
 ${PROJECT_SOURCE_DIR}/resources/urn/db/snemo_simulation_setup_infos.defs
@@ -10,6 +11,7 @@ ${PROJECT_SOURCE_DIR}/resources/urn/resolvers/snemo_setup_resource_map.conf
 ${PROJECT_SOURCE_DIR}/resources/urn/resolvers/snemo_resource_path_resolver.conf
 ${PROJECT_SOURCE_DIR}/resources/urn/resolvers/snemo_simulation_resource_map.conf
 ${PROJECT_SOURCE_DIR}/resources/urn/resolvers/snemo_geometry_resource_map.conf
+${PROJECT_SOURCE_DIR}/resources/urn/resolvers/snemo_reconstruction_resource_map.conf
 ${PROJECT_SOURCE_DIR}/resources/pipeline/snemo.demonstrator/1.0.0
 ${PROJECT_SOURCE_DIR}/resources/pipeline/snemo.demonstrator/1.0.0.visual
 ${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/legacy/ex01/vprofile.conf
@@ -22,6 +24,7 @@ ${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/samples/output/flSD.bri
 ${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/samples/output/flSD.meta
 ${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/seeds.conf
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/vprofile.conf
+${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/modules.conf
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/README.rst
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/flreconstruct.conf
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/samples/output/flRec.meta
@@ -130,6 +133,7 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/official-1.0.0.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/1.0/mock_calorimeter_s2c.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/official_with_visu-1.0.0.conf
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/pipeline/1.0.0/modules.defs
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/setup/1.0/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/setup/1.0/variants/repository.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/setup/1.0/services.conf
