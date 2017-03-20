@@ -15,6 +15,9 @@
 #include "bayeux/datatools/library_loader.h"
 #include "bayeux/dpp/base_module.h"
 #include "bayeux/datatools/detail/ocd_utils.h"
+#include "bayeux/datatools/kernel.h"
+#include "bayeux/datatools/exception.h"
+#include "bayeux/datatools/urn_query_service.h"
 
 // This project
 #include "falaise/version.h"
@@ -116,19 +119,27 @@ namespace FLReconstruct {
 
   //! Print list of standard pipeline configurations to supplied ostream
   void do_help_pipeline_list(std::ostream& os) {
-    std::string shortResourceRoot("@falaise:pipeline");
-    std::string fullResourceRoot(shortResourceRoot);
-    datatools::fetch_path_with_env(fullResourceRoot);
-    os << shortResourceRoot << std::endl;
-    std::string indent;
-    for (boost::filesystem::recursive_directory_iterator end, dir(fullResourceRoot);
-         dir != end; ++dir) {
-      boost::filesystem::path currentResource = (*dir).path();
-      os << " "
-         << indent.assign(dir.level()*2, ' ')
-         << "+-"
-         << currentResource.filename()
-         << std::endl;
+    datatools::logger::priority logging = falaise::detail::falaise_sys::const_instance().get_logging();
+    datatools::kernel & dtk = ::datatools::kernel::instance();
+    if (dtk.has_urn_query()) {
+      const datatools::urn_query_service & dtkUrnQuery = dtk.get_urn_query();
+      if (datatools::logger::is_debug(logging)) {
+        dtkUrnQuery.tree_dump(std::cerr, "Bayeux/datatools's kernel URN query service:", "[debug] ");
+      }
+      std::vector<std::string> flsim_urn_infos;
+      if (dtkUrnQuery.find_urn_info(flsim_urn_infos,
+                                    falaise::detail::falaise_sys::fl_setup_db_name(),
+                                    "(urn:)([^:]*)(:)([^:]*)(:reconstruction:pipeline:)([^:]*)",
+                                    "recsetup"
+                                    )) {
+        std::clog << "List of supported reconstruction pipeline:" << std::endl;
+        for (size_t i = 0; i < flsim_urn_infos.size(); i++) {
+          const datatools::urn_info & ui = dtkUrnQuery.get_urn_info(flsim_urn_infos[i]);
+          os << ui.get_urn() << " : " << ui.get_description() << std::endl;
+        }
+      } else {
+        DT_LOG_WARNING(logging, "Could not find any reconstruction setup from the global URN query service.");
+      }
     }
   }
 
