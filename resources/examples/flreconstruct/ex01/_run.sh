@@ -11,13 +11,16 @@ fi
 samples_dir="$(pwd)/samples"
 work_dir="$(pwd)/_work.d"
 mkdir ${work_dir}
-cp flreconstruct.conf vprofile.conf ${work_dir}/
+cp flreconstruct.conf flreconstruct_inline.conf vprofile.conf ${work_dir}/
 cd ${work_dir}/
+
+flscript="flreconstruct.conf"
+# flscript="flreconstruct_inline.conf"
 
 echo >&2 "[info] Running flreconstruct..."
 flreconstruct \
     --verbosity "trace" \
-    --pipeline "flreconstruct.conf" \
+    --pipeline "${flscript}" \
     --input-metadata-file "${samples_dir}/input/flSD.meta" \
     --input-file "${samples_dir}/input/flSD.brio" \
     --output-metadata-file "flRec.meta" \
