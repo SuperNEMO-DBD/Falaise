@@ -600,7 +600,7 @@ namespace FLReconstruct {
         flRecParameters.modulesConfig.tree_dump(std::cerr, "Pipeline configuration: ", "[debug] ");
       }
     } else {
-      DT_LOG_NOTICE(flRecParameters.logLevel, "No reconstruction setup configuration (URN/path) is set.");
+      DT_LOG_NOTICE(flRecParameters.logLevel, "No reconstruction pipeline configuration (URN/path) is set.");
     }
 
     if (flRecParameters.experimentalSetupUrn.empty()) {
