@@ -127,13 +127,13 @@ namespace FLSimulate {
 
         // Do simulation:
         flSimParameters.doSimulation = falaise::properties::getValueOrDefault<bool>(baseSystem,
-                                                                                       "doSimulation",
-                                                                                       flSimParameters.doSimulation);
+                                                                                    "doSimulation",
+                                                                                    flSimParameters.doSimulation);
 
         // Do digitization:
         flSimParameters.doDigitization = falaise::properties::getValueOrDefault<bool>(baseSystem,
-                                                                                         "doDigitization",
-                                                                                         flSimParameters.doDigitization);
+                                                                                      "doDigitization",
+                                                                                      flSimParameters.doDigitization);
 
       }
 
