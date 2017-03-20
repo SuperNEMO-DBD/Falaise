@@ -32,6 +32,8 @@ ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/samples/output/flRec
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/samples/input/flSD.brio
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/samples/input/flSD.meta
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/samples/input/flSD-vprofile.conf
+${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/flreconstruct-metadata.log
+${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/flreconstruct_simple.conf
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/pipeline_modules.defs
 ${PROJECT_SOURCE_DIR}/resources/examples/geometry/ex01/README.rst
 ${PROJECT_SOURCE_DIR}/resources/examples/geometry/ex01/ex01.cxx
