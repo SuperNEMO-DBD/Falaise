@@ -37,19 +37,40 @@ if(FECOM_ENABLE_PROGRAMS)
     target_link_libraries(${_programname} fecom
       # ${FeCom_OTHER_LIBS}
       )
-    # - On Apple, ensure dynamic_lookup of undefined symbols
-    if(APPLE)
-      set_target_properties(${_programname} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+
+    # - Ensure link to internal and external deps
+    set_target_properties(${_programname} PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
+
+    if(UNIX AND NOT APPLE)
+      set_target_properties(${_programname}
+	PROPERTIES INSTALL_RPATH "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
+	)
+    elseif(APPLE)
+      # Temporary setting - needs testing
+      set_target_properties(${_programname}
+	PROPERTIES
+	INSTALL_RPATH "@loader_path/../${CMAKE_INSTALL_LIBDIR}"
+	)
     endif()
+    # # - On Apple, ensure dynamic_lookup of undefined symbols
+    # if(APPLE)
+    #   set_target_properties(${_programname} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+    # endif()
     # add_test(NAME ${_programname} COMMAND ${_programname})
     # set_property(TEST ${_programname}
     #   APPEND PROPERTY ENVIRONMENT ${_fecom_PROGRAM_ENVIRONMENT}
     #   )
     # - For now, dump them into the programs output directory
-    set_target_properties(${_programname}
-      PROPERTIES
-      RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/fecom_programs
-      ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/fecom_programs
+    # set_target_properties(${_programname}
+    #   PROPERTIES
+    #   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    #   # RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/fecom_programs
+    #   # ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/fecom_programs
+    #   )
+    # TODO : fixup rpaths as needed
+    install(TARGETS ${_programname}
+      # EXPORT FalaiseTargets
+      RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
       )
   endforeach()
 endif()
