@@ -55,22 +55,22 @@ namespace FLReconstruct {
     bool         embeddedMetadata;        //!< Flag to embed metadata in the output data file
     std::string  outputFile;              //!< Output data file for the output module
 
-    // Description of the data to be processed by the FLReconstruct script:
-    std::string dataType;                 //!< The type of data ("Real", "MC")
-    std::string dataSubtype;              //!< Additional data subtype/flavour ("Blinded", "Calibration", "Commissioning")
-    // For strict checking of the input/output data models:
-    std::vector<std::string>  requiredInputBanks;  //!< Required input data banks ("SD", "UDD"...)
-    std::vector<std::string>  expectedOutputBanks; //!< Expected output data banks ("SSD", "SDD", "EH", "UDD", "CD", "TCD", "TTD", "PTD", "PID"...)
+    // // Description of the data to be processed by the FLReconstruct script:
+    // std::string dataType;                 //!< The type of data ("Real", "MC")
+    // std::string dataSubtype;              //!< Additional data subtype/flavour ("Blinded", "Calibration", "Commissioning")
+    // // For strict checking of the input/output data models:
+    // std::vector<std::string>  requiredInputBanks;  //!< Required input data banks ("SD", "UDD"...)
+    // std::vector<std::string>  expectedOutputBanks; //!< Expected output data banks ("SSD", "SDD", "EH", "UDD", "CD", "TCD", "TTD", "PTD", "PID"...)
 
     // Working data:
 
     // Plugin dedicated service:
     datatools::multi_properties  userLibConfig; //!< Main configuration file for plugins loader
 
-    // Required reconstruction setup and versioning:
-    std::string reconstructionSetupUrn;  //!< The URN of the reconstruction setup
-    std::string reconstructionSetupConfig;     //!< The reconstruction setup main configuration file
-    std::string reconstructionSetupModule;     //!< The reconstruction module
+    // Required reconstruction pipeline and versioning:
+    std::string reconstructionPipelineUrn;  //!< The URN of the reconstruction pipeline
+    std::string reconstructionPipelineConfig;     //!< The reconstruction pipeline main definition file
+    std::string reconstructionPipelineModule;     //!< The reconstruction module
 
     // Metadata container:
     datatools::multi_properties inputMetadata; //!< Metadata imported from the input

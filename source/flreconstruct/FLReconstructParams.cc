@@ -18,9 +18,9 @@ namespace FLReconstruct {
     params.experimentalSetupUrn = "";  // "urn:snemo:demonstrator:setup:1.0";
 
     // Reconstruction setup:
-    params.reconstructionSetupUrn = "";  // "urn:snemo:demonstrator:reconstruction:1.0";
-    params.reconstructionSetupConfig = "";
-    params.reconstructionSetupModule = "pipeline";
+    params.reconstructionPipelineUrn = "";  // "urn:snemo:demonstrator:reconstruction:pipeline:1.0.0";
+    params.reconstructionPipelineConfig = "";
+    params.reconstructionPipelineModule = "pipeline";
 
     // Variants support:
     params.variantConfigUrn  = "";
@@ -41,11 +41,11 @@ namespace FLReconstruct {
     params.inputMetadata.set_key_label("name");
     params.inputMetadata.set_meta_label("type");
 
-    // Additional informations:
-    params.dataType              = "";
-    params.dataSubtype           = "";
-    params.requiredInputBanks.clear();
-    params.expectedOutputBanks.clear();
+    // // Additional informations:
+    // params.dataType              = "";
+    // params.dataSubtype           = "";
+    // params.requiredInputBanks.clear();
+    // params.expectedOutputBanks.clear();
 
     // Additional services:
 
@@ -72,9 +72,9 @@ namespace FLReconstruct {
     out_ << tag << "numberOfEvents             = " << numberOfEvents << std::endl;
     out_ << tag << "moduloEvents               = " << moduloEvents << std::endl;
     out_ << tag << "experimentalSetupUrn       = " << experimentalSetupUrn << std::endl;
-    out_ << tag << "reconstructionSetupUrn     = " << reconstructionSetupUrn << std::endl;
-    out_ << tag << "reconstructionSetupConfig  = " << reconstructionSetupConfig << std::endl;
-    out_ << tag << "reconstructionSetupModule  = " << reconstructionSetupModule << std::endl;
+    out_ << tag << "reconstructionPipelineUrn    = " << reconstructionPipelineUrn << std::endl;
+    out_ << tag << "reconstructionPipelineConfig = " << reconstructionPipelineConfig << std::endl;
+    out_ << tag << "reconstructionPipelineModule = " << reconstructionPipelineModule << std::endl;
     out_ << tag << "variantConfigUrn           = " << variantConfigUrn << std::endl;
     out_ << tag << "variantProfileUrn          = " << variantProfileUrn << std::endl;
     out_ << tag << "variantSubsystemParams     = " << variantSubsystemParams.config_filename << std::endl;
@@ -84,12 +84,12 @@ namespace FLReconstruct {
     out_ << tag << "inputFile                  = " << inputFile << std::endl;
     out_ << tag << "outputMetadataFile         = " << outputMetadataFile << std::endl;
     out_ << tag << "embeddedMetadata           = " << std::boolalpha << embeddedMetadata << std::endl;
-    out_ << tag
-         << "outputFile                 = " << outputFile << std::endl;
-    out_ << tag
-         << "dataType                   = " << dataType << std::endl;
     out_ << last_tag
-         << "dataSubtype                = " << dataSubtype << std::endl;
+         << "outputFile                 = " << outputFile << std::endl;
+    // out_ << tag
+    //      << "dataType                   = " << dataType << std::endl;
+    // out_ << last_tag
+    //      << "dataSubtype                = " << dataSubtype << std::endl;
     return;
   }
 

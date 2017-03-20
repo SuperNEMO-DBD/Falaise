@@ -159,23 +159,23 @@ namespace FLReconstruct {
                                                     "moduloEvents",
                                                     flRecParameters.moduloEvents);
 
-      // Unused for now:
-      flRecParameters.dataType
-        = falaise::properties::getValueOrDefault<std::string>(basicSystem,
-                                                              "dataType",
-                                                              flRecParameters.dataType);
-      flRecParameters.dataSubtype
-        = falaise::properties::getValueOrDefault<std::string>(basicSystem,
-                                                              "dataSubtype",
-                                                              flRecParameters.dataSubtype);
-      flRecParameters.requiredInputBanks
-        = falaise::properties::getValueOrDefault<std::vector<std::string> >(basicSystem,
-                                                                            "requiredInputBanks",
-                                                                            flRecParameters.requiredInputBanks);
-      flRecParameters.expectedOutputBanks
-        = falaise::properties::getValueOrDefault<std::vector<std::string> >(basicSystem,
-                                                                            "expectedOutputBanks",
-                                                                            flRecParameters.expectedOutputBanks);
+      // // Unused for now:
+      // flRecParameters.dataType
+      //   = falaise::properties::getValueOrDefault<std::string>(basicSystem,
+      //                                                         "dataType",
+      //                                                         flRecParameters.dataType);
+      // flRecParameters.dataSubtype
+      //   = falaise::properties::getValueOrDefault<std::string>(basicSystem,
+      //                                                         "dataSubtype",
+      //                                                         flRecParameters.dataSubtype);
+      // flRecParameters.requiredInputBanks
+      //   = falaise::properties::getValueOrDefault<std::vector<std::string> >(basicSystem,
+      //                                                                       "requiredInputBanks",
+      //                                                                       flRecParameters.requiredInputBanks);
+      // flRecParameters.expectedOutputBanks
+      //   = falaise::properties::getValueOrDefault<std::vector<std::string> >(basicSystem,
+      //                                                                       "expectedOutputBanks",
+      //                                                                       flRecParameters.expectedOutputBanks);
     }
 
     // Fetch variant service configuration:
@@ -282,21 +282,24 @@ namespace FLReconstruct {
 
       datatools::properties pipelineSubsystem = flRecConfig.get_section("flreconstruct.pipeline");
       flRecConfig.remove("flreconstruct.pipeline");
+      if (datatools::logger::is_debug(flRecParameters.logLevel)) {
+        pipelineSubsystem.tree_dump(std::cerr, "Pipeline subsystem: ", "[debug] ");
+      }
 
-      flRecParameters.reconstructionSetupUrn =
+      flRecParameters.reconstructionPipelineUrn =
         falaise::properties::getValueOrDefault<std::string>(pipelineSubsystem,
                                                             "configUrn",
-                                                            flRecParameters.reconstructionSetupUrn);
+                                                            flRecParameters.reconstructionPipelineUrn);
 
-      flRecParameters.reconstructionSetupConfig =
+      flRecParameters.reconstructionPipelineConfig =
         falaise::properties::getValueOrDefault<std::string>(pipelineSubsystem,
                                                             "config",
-                                                            flRecParameters.reconstructionSetupConfig);
+                                                            flRecParameters.reconstructionPipelineConfig);
 
-      flRecParameters.reconstructionSetupModule =
+      flRecParameters.reconstructionPipelineModule =
         falaise::properties::getValueOrDefault<std::string>(pipelineSubsystem,
                                                             "module",
-                                                            flRecParameters.reconstructionSetupModule);
+                                                            flRecParameters.reconstructionPipelineModule);
 
     }
 
@@ -560,6 +563,46 @@ namespace FLReconstruct {
     // Process input metadata:
     do_postprocess_input_metadata(flRecParameters);
 
+    if (!flRecParameters.reconstructionPipelineUrn.empty()) {
+      // Check URN registration from the system URN query service:
+      {
+        DT_THROW_IF(!dtkUrnQuery.check_urn_info(flRecParameters.reconstructionPipelineUrn, "configuration"),
+                    std::logic_error,
+                    "Cannot query reconstruction setup URN='" << flRecParameters.reconstructionPipelineUrn << "'!");
+      }
+      const datatools::urn_info & recSetupUrnInfo = dtkUrnQuery.get_urn_info(flRecParameters.reconstructionPipelineUrn);
+      // Reconstruction:
+      {
+        // Resolve reconstruction config file path:
+        std::string conf_rec_category = "configuration";
+        std::string conf_rec_mime;
+        std::string conf_rec_path;
+        DT_THROW_IF(!dtkUrnQuery.resolve_urn_to_path(flRecParameters.reconstructionPipelineUrn,
+                                                     conf_rec_category,
+                                                     conf_rec_mime,
+                                                     conf_rec_path),
+                    std::logic_error,
+                    "Cannot resolve URN='" << flRecParameters.reconstructionPipelineUrn << "'!");
+        flRecParameters.reconstructionPipelineConfig = conf_rec_path;
+      }
+    }
+
+    if (!flRecParameters.reconstructionPipelineConfig.empty()) {
+      if (!flRecParameters.modulesConfig.empty()) {
+        DT_THROW(std::logic_error,
+                 "Pipeline module configuration file '" << flRecParameters.reconstructionPipelineConfig << "' conflicts with pipeline inline configuration provided by the script!");
+
+      }
+      std::string pipeline_config_filename = flRecParameters.reconstructionPipelineConfig;
+      datatools::fetch_path_with_env(pipeline_config_filename);
+      flRecParameters.modulesConfig.read(pipeline_config_filename);
+      if (datatools::logger::is_debug(flRecParameters.logLevel)) {
+        flRecParameters.modulesConfig.tree_dump(std::cerr, "Pipeline configuration: ", "[debug] ");
+      }
+    } else {
+      DT_LOG_NOTICE(flRecParameters.logLevel, "No reconstruction setup configuration (URN/path) is set.");
+    }
+
     if (flRecParameters.experimentalSetupUrn.empty()) {
       // If experimental setup URN is not set..
       DT_LOG_NOTICE(flRecParameters.logLevel, "No experimental setup identifier (URN) is set.");
@@ -753,24 +796,24 @@ namespace FLReconstruct {
 
     // Reconstruction section:
     datatools::properties & reconstruction_props
-      = flRecMetadata.add_section("flreconstruct.reconstruction", "flreconstruct::section");
+      = flRecMetadata.add_section("flreconstruct.pipeline", "flreconstruct::section");
     reconstruction_props.set_description("Reconstruction setup parameters");
 
-    if (!flRecParameters.reconstructionSetupUrn.empty()) {
-      reconstruction_props.store_string("reconstructionSetupUrn",
-                                        flRecParameters.reconstructionSetupUrn,
+    if (!flRecParameters.reconstructionPipelineUrn.empty()) {
+      reconstruction_props.store_string("reconstructionPipelineUrn",
+                                        flRecParameters.reconstructionPipelineUrn,
                                         "Reconstruction setup URN");
     }
 
-    if (!flRecParameters.reconstructionSetupConfig.empty()) {
-      reconstruction_props.store_string("reconstructionSetupConfig",
-                                        flRecParameters.reconstructionSetupUrn,
+    if (!flRecParameters.reconstructionPipelineConfig.empty()) {
+      reconstruction_props.store_string("reconstructionPipelineConfig",
+                                        flRecParameters.reconstructionPipelineUrn,
                                         "Reconstruction setup main configuration file");
     }
 
-    if (!flRecParameters.reconstructionSetupModule.empty()) {
-      reconstruction_props.store_string("reconstructionSetupModule",
-                                        flRecParameters.reconstructionSetupUrn,
+    if (!flRecParameters.reconstructionPipelineModule.empty()) {
+      reconstruction_props.store_string("reconstructionPipelineModule",
+                                        flRecParameters.reconstructionPipelineUrn,
                                         "Reconstruction pipeline top module");
     }
 
