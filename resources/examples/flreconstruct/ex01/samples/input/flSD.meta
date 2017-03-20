@@ -4,9 +4,9 @@
 #@key_label "name"
 #@meta_label "type"
 
-[name="System" type="flsimulate::subsystem"]
+[name="flsimulate" type="flsimulate::section"]
 
-#@config System informations
+#@config flsimulate basic system informations
 
 
 
@@ -25,28 +25,18 @@ bayeux.version : string = "3.0.0"
 
 
 
+#@description Activate digitization
+doDigitization : boolean = 0
+
+
+
+#@description Activate simulation
+doSimulation : boolean = 1
+
+
+
 #@description Metadata embedding flag
 embeddedMetadata : boolean = 1
-
-
-
-#@description Falaise version
-falaise.version : string = "3.0.0"
-
-
-
-#@description Run start timestamp
-timestamp : string = "20170319T070817"
-
-
-
-#@description User profile
-userProfile : string = "normal"
-
-
-[name="SimulationSubsystem" type="flsimulate::subsystem"]
-
-#@config Simulation setup parameters
 
 
 
@@ -55,8 +45,28 @@ experimentalSetupUrn : string = "urn:snemo:demonstrator:setup:1.0"
 
 
 
+#@description Falaise version
+falaise.version : string = "3.0.0"
+
+
+
 #@description Number of simulated events
 numberOfEvents : integer = 10
+
+
+
+#@description Run start timestamp
+timestamp : string = "20170320T001706"
+
+
+
+#@description User profile
+userProfile : string = "normal"
+
+
+[name="flsimulate.simulation" type="flsimulate::section"]
+
+#@config Simulation setup parameters
 
 
 
@@ -64,7 +74,7 @@ numberOfEvents : integer = 10
 simulationSetupUrn : string = "urn:snemo:demonstrator:simulation:2.1"
 
 
-[name="VariantSubsystem" type="flsimulate::subsystem"]
+[name="flsimulate.variantService" type="flsimulate::section"]
 
 #@config Variant setup
 
@@ -79,7 +89,7 @@ configUrn : string = "urn:snemo:demonstrator:simulation:2.1:variants"
 profile : string as path  = "vprofile.conf"
 
 
-[name="ServicesSubsystem" type="flsimulate::subsystem"]
+[name="flsimulate.services" type="flsimulate::section"]
 
 #@config Services configuration
 
