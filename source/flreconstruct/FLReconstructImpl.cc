@@ -566,7 +566,7 @@ namespace FLReconstruct {
     if (!flRecParameters.reconstructionPipelineUrn.empty()) {
       // Check URN registration from the system URN query service:
       {
-        DT_THROW_IF(!dtkUrnQuery.check_urn_info(flRecParameters.reconstructionPipelineUrn, "configuration"),
+        DT_THROW_IF(!dtkUrnQuery.check_urn_info(flRecParameters.reconstructionPipelineUrn, "recsetup"),
                     std::logic_error,
                     "Cannot query reconstruction setup URN='" << flRecParameters.reconstructionPipelineUrn << "'!");
       }
