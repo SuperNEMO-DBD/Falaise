@@ -180,14 +180,14 @@ moduloEvents : integer = 2
 #@description Activate simulation
 doSimulation : boolean = true
 
-[name="SimulationSubsystem" type="flsimulate::section"]
+[name="flsimulate.simulation" type="flsimulate::section"]
 #@config Simulation setup
 #@description URN (tag/identifier) of the simulation setup
 simulationUrn : string = "urn:snemo:demonstrator:simulation:2.1"
 #@description Random seeds file
 rngSeedFile   : string as path = "seeds.conf"
 
-[name="VariantSubsystem" type="flsimulate::section"]
+[name="flsimulate.variantService" type="flsimulate::section"]
 #@config Variant setup
 #@description List of variant settings
 settings : string[4] = \
@@ -196,7 +196,7 @@ settings : string[4] = \
   "@primary_events:generator=Se82.0nubb" \
   "@simulation:output_profile=none"
 
-[name="ServicesSubsystem" type="flsimulate::section"]
+[name="flsimulate.services" type="flsimulate::section"]
 #@config Services setup
 # this section is empty
 ~~~~~
@@ -225,13 +225,13 @@ generated simulation  data samples. The `bxg4_seeds`  program helps to
 generated such  lists of  independant seed  sets in  the context  of a
 massive Monte Carlo production.
 
-Note the *VariantSubsystem*  here uses an explicit  list of *settings*
+Note the *flsimulate.variantService*  here uses an explicit  list of *settings*
 for some variant parameters. It is possible (and recommended) to use a
 variant profile file in place of it:
 
 ~~~~~
 ...
-[section="VariantSubsystem" description=""]
+[section="flsimulate.variantService" description=""]
 #@config Variant setup
 #@description Variant profile
 profile : string as path = "variants.profile"
