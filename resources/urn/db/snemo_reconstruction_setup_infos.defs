@@ -1,0 +1,29 @@
+# -*- mode: conf-unix; -*-
+
+#@description Definition list of URNs associated to SuperNEMO reconstruction setups
+#@key_label  "urn"
+#@meta_label "category"
+
+
+#####################################################################
+[urn="urn:snemo:demonstrator:reconstruction:1.0" category="recsetup"]
+
+#@config URN info parameters for SuperNEMO reconstruction setup version 1.0
+
+description : string = "SuperNEMO reconstruction setup (version 1.0)"
+
+topics : string[2] = "expsetup" "pipeline"
+
+topic.expsetup.component : string = "urn:snemo:demonstrator:setup:1.0"
+topic.pipeline.component : string = "urn:snemo:demonstrator:reconstruction:1.0:pipeline"
+
+
+###################################################################################
+[urn="urn:snemo:demonstrator:reconstruction:1.0:pipeline" category="configuration"]
+
+#@config URN info parameters for processing pipeline of SuperNEMO reconstruction version 1.0
+
+description : string = "SuperNEMO reconstruction pipeline (version 1.0)"
+
+
+# end

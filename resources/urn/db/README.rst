@@ -12,6 +12,7 @@ Supported categories of various published tags:
   to an experiment (example: BiPo, SuperNEMO demonstrator)
 * ``expsetup`` : identifier/tag associated to an experimental setup
 * ``simsetup`` : identifier/tag associated to a simulation setup
+* ``recsetup`` : identifier/tag associated to a reconstruction setup
 * ``variant`` : identifier/tag associated to the configuration of a variant service
 * ``service`` : identifier/tag associated to the configuration of a services management
-* ``configuration`` : identifier/tag associated to the configuration of some generic system or service (geometry...)
+* ``configuration`` : identifier/tag associated to the configuration of some generic system or service (geometry, reconstruction modules...)
