@@ -24,7 +24,6 @@ ${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/samples/output/flSD.bri
 ${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/samples/output/flSD.meta
 ${PROJECT_SOURCE_DIR}/resources/examples/flsimulate/ex01/seeds.conf
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/vprofile.conf
-${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/modules.conf
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/README.rst
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/flreconstruct.conf
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/samples/output/flRec.meta
@@ -32,6 +31,7 @@ ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/samples/output/flRec
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/samples/input/flSD.brio
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/samples/input/flSD.meta
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/samples/input/flSD-vprofile.conf
+${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/pipeline_modules.defs
 ${PROJECT_SOURCE_DIR}/resources/examples/geometry/ex01/README.rst
 ${PROJECT_SOURCE_DIR}/resources/examples/geometry/ex01/ex01.cxx
 ${PROJECT_SOURCE_DIR}/resources/examples/variants/README.rst
