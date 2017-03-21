@@ -57,40 +57,45 @@ void test1()
 {
   std::clog << "\ntest1: running...\n";
   double gigahertz = 1.e9 * CLHEP::hertz;
-  {
-    snemo::datamodel::sim_digi_data sdd;
-    for (std::size_t icalohit = 0; icalohit < 3; icalohit++) {
-      {
-        snemo::datamodel::sim_calo_digi_hit dummy;
-	sdd.grab_digi_events().back().grab().grab_readout_data().grab_calo_digi_hits().push_back(dummy);
-      }
-      snemo::datamodel::sim_calo_digi_hit & calo_hit = sdd.grab_digi_events().back().grab().grab_readout_data().grab_calo_digi_hits().back();
-      calo_hit.set_hit_id(icalohit);
-      calo_hit.grab_geom_id().set_type(1234);
-      calo_hit.grab_geom_id().set_address(1, 3, 8 - icalohit, 3 + icalohit);
-      calo_hit.set_sampling_frequency(1.0 * gigahertz);
-      calo_hit.set_number_of_samples(128, 0);
-    }
-    sdd.tree_dump(std::clog, "Simulated Digitized Data: ");
 
-    {
-      datatools::data_writer writer("test_snemo_datamodel_sim_digi_data.xml",
-                                    datatools::using_multi_archives);
-      writer.store(sdd);
-    }
+  // Create and set some dummy data
+  snemo::datamodel::sim_digi_data sddWrite;
+  // Calling back() on empty vector is *undefined behaviour*
+  // so must put one event into sim_digi_data instance before
+  // the loop can proceed
+  auto& eventCollection = sddWrite.grab_digi_events();
+  // Unreadable, but just a push back of a new handle-to-data.
+  // Note that sim_digi_data provides a "handle_type" typedef, but not the
+  // underlying type. We could derive that from the "handle_type",
+  // but that would almost double the number of characters...
+  eventCollection.push_back(snemo::datamodel::sim_digi_data::sim_digi_event_handle_type{new snemo::datamodel::sim_digi_event_data});
 
+  for (std::size_t icalohit = 0; icalohit < 3; icalohit++) {
+    snemo::datamodel::sim_calo_digi_hit dummy;
+    // That's way, way too many leveks of nesting...
+    sddWrite.grab_digi_events().back().grab().grab_readout_data().grab_calo_digi_hits().push_back(dummy);
+
+    // .... ...
+    snemo::datamodel::sim_calo_digi_hit & calo_hit = sddWrite.grab_digi_events().back().grab().grab_readout_data().grab_calo_digi_hits().back();
+    calo_hit.set_hit_id(icalohit);
+    calo_hit.grab_geom_id().set_type(1234);
+    calo_hit.grab_geom_id().set_address(1, 3, 8 - icalohit, 3 + icalohit);
+    calo_hit.set_sampling_frequency(1.0 * gigahertz);
+    calo_hit.set_number_of_samples(128, 0);
   }
 
-  {
-    snemo::datamodel::sim_digi_data sdd;
-    {
-      datatools::data_reader reader("test_snemo_datamodel_sim_digi_data.xml",
-                                    datatools::using_multi_archives);
-      reader.load(sdd);
-    }
-    sdd.tree_dump(std::clog, "Loaded Simulated Digitized Data: ");
-  }
-  return;
+  // Write the data to bare xml file
+  sddWrite.tree_dump(std::clog, "Simulated Digitized Data: ");
+  datatools::data_writer writer("test_snemo_datamodel_sim_digi_data.xml",
+                                datatools::using_multi_archives);
+  writer.store(sddWrite);
+
+  // Create and read back data
+  snemo::datamodel::sim_digi_data sddReadback;
+  datatools::data_reader reader("test_snemo_datamodel_sim_digi_data.xml",
+                                datatools::using_multi_archives);
+  reader.load(sddReadback);
+  sddReadback.tree_dump(std::clog, "Loaded Simulated Digitized Data: ");
 }
 
 void test2()
