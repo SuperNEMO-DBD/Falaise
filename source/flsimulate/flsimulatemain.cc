@@ -244,7 +244,6 @@ namespace FLSimulate {
 
     // - Variants support:
     datatools::configuration::variant_service vserv;
-    datatools::logger::priority variantLogging = datatools::logger::PRIO_FATAL;
     if (!flSimParameters.variantSubsystemParams.logging.empty()) {
       vserv.set_logging(datatools::logger::get_priority(flSimParameters.variantSubsystemParams.logging));
     }

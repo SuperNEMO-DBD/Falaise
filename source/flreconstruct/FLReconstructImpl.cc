@@ -31,16 +31,7 @@
 
 namespace FLReconstruct {
 
-  metadata_collector::metadata_collector(const uint32_t flags_)
-    : _dataflags_(flags_)
-  {
-    _init_();
-    return;
-  }
-
-  void metadata_collector::_init_()
-  {
-    return;
+  metadata_collector::metadata_collector(const uint32_t /*flags*/) {
   }
 
   //! Extract metadata from input file
@@ -565,26 +556,22 @@ namespace FLReconstruct {
 
     if (!flRecParameters.reconstructionPipelineUrn.empty()) {
       // Check URN registration from the system URN query service:
-      {
-        DT_THROW_IF(!dtkUrnQuery.check_urn_info(flRecParameters.reconstructionPipelineUrn, "recsetup"),
-                    std::logic_error,
-                    "Cannot query reconstruction setup URN='" << flRecParameters.reconstructionPipelineUrn << "'!");
-      }
-      const datatools::urn_info & recSetupUrnInfo = dtkUrnQuery.get_urn_info(flRecParameters.reconstructionPipelineUrn);
-      // Reconstruction:
-      {
-        // Resolve reconstruction config file path:
-        std::string conf_rec_category = "configuration";
-        std::string conf_rec_mime;
-        std::string conf_rec_path;
-        DT_THROW_IF(!dtkUrnQuery.resolve_urn_to_path(flRecParameters.reconstructionPipelineUrn,
-                                                     conf_rec_category,
-                                                     conf_rec_mime,
-                                                     conf_rec_path),
-                    std::logic_error,
-                    "Cannot resolve URN='" << flRecParameters.reconstructionPipelineUrn << "'!");
-        flRecParameters.reconstructionPipelineConfig = conf_rec_path;
-      }
+      DT_THROW_IF(!dtkUrnQuery.check_urn_info(flRecParameters.reconstructionPipelineUrn, "recsetup"),
+                  std::logic_error,
+                  "Cannot query reconstruction setup URN='" << flRecParameters.reconstructionPipelineUrn << "'!");
+
+
+      // Resolve reconstruction config file path:
+      std::string conf_rec_category = "configuration";
+      std::string conf_rec_mime;
+      std::string conf_rec_path;
+      DT_THROW_IF(!dtkUrnQuery.resolve_urn_to_path(flRecParameters.reconstructionPipelineUrn,
+                                                   conf_rec_category,
+                                                   conf_rec_mime,
+                                                   conf_rec_path),
+                  std::logic_error,
+                  "Cannot resolve URN='" << flRecParameters.reconstructionPipelineUrn << "'!");
+      flRecParameters.reconstructionPipelineConfig = conf_rec_path;
     }
 
     if (!flRecParameters.reconstructionPipelineConfig.empty()) {

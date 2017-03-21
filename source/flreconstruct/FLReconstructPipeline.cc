@@ -36,7 +36,6 @@ namespace FLReconstruct {
 
     // Variants support:
     datatools::configuration::variant_service variantService;
-    datatools::logger::priority variantLogging = datatools::logger::PRIO_FATAL;
     if (!flRecParameters.variantSubsystemParams.logging.empty()) {
       variantService.set_logging(datatools::logger::get_priority(flRecParameters.variantSubsystemParams.logging));
     }
