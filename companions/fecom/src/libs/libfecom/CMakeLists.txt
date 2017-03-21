@@ -2,8 +2,6 @@
 
 configure_file(fecom/version.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/fecom/version.hpp @ONLY)
 
-add_definitions(-std=c++11)
-
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
@@ -97,8 +95,6 @@ find_package(Boost 1.60.0
   date_time
   )
 
-message( STATUS "FeCom: Boost found at '${Boost_INCLUDE_DIRS}'")
-message( STATUS "FeCom: Boost version = '${Boost_VERSION}'")
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 
 add_library(fecom SHARED
@@ -137,14 +133,6 @@ install( FILES
   WORLD_READ WORLD_EXECUTE
   )
 
-# install( FILES
-#   ${PROJECT_SOURCE_DIR}/LICENSE.txt
-#   DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/${FECOM_TAG}
-#   PERMISSIONS OWNER_READ OWNER_WRITE
-#   GROUP_READ
-#   WORLD_READ
-#   )
-
 option(FECOM_ENABLE_TESTING "Build unit testing system for libfecom" ON)
 if(FECOM_ENABLE_TESTING)
   enable_testing()
@@ -180,4 +168,3 @@ if(FECOM_ENABLE_TESTING)
   endforeach()
 endif()
 
-# - end of CMakeLists.txt

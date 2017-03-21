@@ -21,6 +21,11 @@ set(WcTools_VERSION_PATCH 0)
 set(WcTools_VERSION
   "${WcTools_VERSION_MAJOR}.${WcTools_VERSION_MINOR}.${WcTools_VERSION_PATCH}")
 
+# C++ Standard
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 #-----------------------------------------------------------------------
 # - Standard UNIX Tool install paths, including relative paths for use
 # by applications requiring resources
@@ -42,9 +47,5 @@ set(WCTOOLS_TAG "WcTools-${WcTools_VERSION}")
 file(RELATIVE_PATH WCTOOLS_BINDIR_TO_RESOURCEDIR "${CMAKE_INSTALL_FULL_BINDIR}" "${CMAKE_INSTALL_FULL_DATAROOTDIR}/${WCTOOLS_TAG}")
 file(RELATIVE_PATH WCTOOLS_CMAKEDIR_TO_INCLUDEDIR "${CMAKE_INSTALL_FULL_CMAKEDIR}/${WCTOOLS_TAG}"  "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
 
-message(STATUS "Adding directory 'src'...")
 add_subdirectory(src)
 
-message(STATUS "The end.")
-
-# - end

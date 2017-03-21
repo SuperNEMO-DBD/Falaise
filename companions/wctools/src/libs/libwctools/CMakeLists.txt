@@ -2,8 +2,6 @@
 
 configure_file(wctools/version.h.in ${CMAKE_CURRENT_BINARY_DIR}/wctools/version.h @ONLY)
 
-add_definitions(-std=c++11)
-
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
@@ -27,14 +25,6 @@ set(WcTools_TESTS
   testing/test-libwctools-raw_reader.cxx
   )
 
-# find_package(Boost 1.60.0
-#   REQUIRED
-#   #date_time
-#   )
-
-# message( STATUS "Boost found at '${Boost_INCLUDE_DIRS}'")
-# message( STATUS "Boost version = '${Boost_VERSION}'")
-# include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 
 add_library(wctools SHARED
   ${WcTools_HEADERS}
@@ -72,14 +62,6 @@ install( FILES
   WORLD_READ WORLD_EXECUTE
   )
 
-# install( FILES
-#   ${PROJECT_SOURCE_DIR}/LICENSE.txt
-#   DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/${WCTOOLS_TAG}
-#   PERMISSIONS OWNER_READ OWNER_WRITE
-#   GROUP_READ
-#   WORLD_READ
-#   )
-
 option(WCTOOLS_ENABLE_TESTING "Build unit testing system for libwctools" ON)
 if(WCTOOLS_ENABLE_TESTING)
   enable_testing()
@@ -95,9 +77,7 @@ if(WCTOOLS_ENABLE_TESTING)
     add_executable(${_testname}
       ${_testsource}
       )
-    target_link_libraries(${_testname} wctools
-      # ${WcTools_OTHER_LIBS}
-      )
+    target_link_libraries(${_testname} wctools)
     # - On Apple, ensure dynamic_lookup of undefined symbols
     if(APPLE)
       set_target_properties(${_testname} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
