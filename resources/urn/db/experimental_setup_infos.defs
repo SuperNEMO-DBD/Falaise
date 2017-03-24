@@ -8,9 +8,9 @@
 ############################################################
 [urn="urn:snemo:demonstrator:setup:1.0" category="expsetup"]
 
-#@config URN info parameters for SuperNEMO demonstrator detector setup version 1.0
+#@config URN registration of the SuperNEMO demonstrator detector setup (version 1.0)
 
-description : string = "SuperNEMO demonstrator detector setup 1.0"
+description : string = "SuperNEMO demonstrator detector setup (version 1.0)"
 
 topics : string[3] = "experiment" "services" "variants"
 
@@ -22,9 +22,9 @@ topic.variants.component   : string = "urn:snemo:demonstrator:setup:1.0:variants
 ####################################################################
 [urn="urn:snemo:demonstrator:setup:1.0:services" category="service"]
 
-#@config URN info parameters for services in SuperNEMO demonstrator detector setup version 1.0
+#@config URN registration of services setup for the SuperNEMO demonstrator detector setup (version 1.0)
 
-description : string = "Services in SuperNEMO demonstrator detector setup 1.0"
+description : string = "Services setup for the SuperNEMO demonstrator detector setup (version 1.0)"
 
 topics : string[2] = "__parent__" "geometry"
 
@@ -35,9 +35,9 @@ topic.geometry.component   : string = "urn:snemo:demonstrator:geometry:4.0"
 ####################################################################
 [urn="urn:snemo:demonstrator:setup:1.0:variants" category="variant"]
 
-#@config URN info parameters for variants in SuperNEMO demonstrator detector setup version 1.0
+#@config URN registration of variants setup for the SuperNEMO demonstrator detector setup (version 1.0)
 
-description : string = "Variants in SuperNEMO demonstrator detector setup 1.0"
+description : string = "Variants setup for the SuperNEMO demonstrator detector setup (version 1.0)"
 
 topics : string[1] = "__parent__"
 
@@ -47,9 +47,9 @@ topic.__parent__.component : string = "urn:snemo:demonstrator:setup:1.0"
 ########################################################
 [urn="urn:bipo3:detector:setup:1.0" category="expsetup"]
 
-#@config URN info parameters for BiPo3 detector setup version 1.0
+#@config URN registration of the BiPo3 detector setup (version 1.0)
 
-description : string = "BiPo3 detector setup 1.0"
+description : string = "BiPo3 detector setup (version 1.0)"
 
 topics : string[1] = "experiment"
 

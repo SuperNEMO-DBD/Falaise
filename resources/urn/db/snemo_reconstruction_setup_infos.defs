@@ -8,9 +8,9 @@
 ################################################################################
 [urn="urn:snemo:demonstrator:reconstruction:pipeline:1.0.0" category="recsetup"]
 
-#@config Processing pipeline modules of SuperNEMO reconstruction version 1.0.0
+#@config URN registration of the processing pipeline modules for the SuperNEMO reconstruction (version 1.0.0)
 
-description : string = "SuperNEMO reconstruction pipeline modules (version 1.0.0)"
+description : string = "Processing pipeline modules for the SuperNEMO reconstruction (version 1.0.0)"
 
 topics : string[1] = "experiment"
 

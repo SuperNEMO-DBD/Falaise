@@ -8,19 +8,32 @@
 #######################################################################
 [urn="urn:snemo:demonstrator:geometry:4.0:variants" category="variant"]
 
-#@config URN info parameters for SuperNEMO demonstrator geometry variants setup version 4.0
+#@config URN registration of SuperNEMO demonstrator geometry variants setup (version 4.0)
 
 description : string = "SuperNEMO demonstrator geometry variants setup (version 4.0)"
 
-topics : string[1] = "host"
+topics : string[2] = "host" "__default__"
 
-topic.host.component : string = "urn:snemo:demonstrator:geometry:4.0"
+topic.host.component        : string = "urn:snemo:demonstrator:geometry:4.0"
+topic.__default__.component : string = "urn:snemo:demonstrator:geometry:4.0:variants:profiles:default"
+
+
+###########################################################################################
+[urn="urn:snemo:demonstrator:geometry:4.0:variants:profiles:default" category="varprofile"]
+
+#@config URN registration of default variant profile for the SuperNEMO demonstrator geometry (version 4.0)
+
+description : string = "Default variant profile for the SuperNEMO demonstrator geometry (version 4.0)"
+
+topics : string[1] = "__parent__"
+
+topic.__parent__.component : string = "urn:snemo:demonstrator:geometry:4.0:variants"
 
 
 # #######################################################################
 # [urn="urn:snemo:demonstrator:geometry:4.0:services" category="service"]
 #
-# #@config URN info parameters for SuperNEMO demonstrator geometry service setup version 4.0
+# #@config URN registration of SuperNEMO demonstrator geometry service setup (version 4.0)
 #
 # description : string = "SuperNEMO demonstrator geometry service setup (version 4.0)"
 #
@@ -32,7 +45,7 @@ topic.host.component : string = "urn:snemo:demonstrator:geometry:4.0"
 ####################################################################
 [urn="urn:snemo:demonstrator:geometry:4.0" category="configuration"]
 
-#@config URN info parameters for SuperNEMO demonstrator geometry setup version 4.0
+#@config URN registration of SuperNEMO demonstrator geometry setup (version 4.0)
 
 description : string = "SuperNEMO demonstrator geometry setup (version 4.0)"
 
