@@ -41,13 +41,14 @@ Files
 Check the configuration
 =======================
 
-First make sure the Bayeux and Falaise softwares are installed and setup:
+First make sure the Bayeux and Falaise softwares are installed and setup
+from a (Cadfael)brew shell:
 
 .. code:: sh
 
-   $ which bxvariant_inspector
+   brewsh> which bxvariant_inspector
    ...
-   $ which bxg4_production
+   brewsh> which bxg4_production
    ...
 ..
 
@@ -58,27 +59,27 @@ Browse and edit primary event generation variant parameters and options
 
 .. code:: sh
 
-   $ bxvariant_inspector \
+   brewsh> bxvariant_inspector \
           --datatools::resource-path="falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
           --variant-config "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf" \
 	  --action doc > flg4ctrl.rst
-   $ rst2html flg4ctrl.rst > flg4ctrl.html
-   $ xdg-open flg4ctrl.html &
-   $ rst2pdf flg4ctrl.rst
-   $ xdg-open flg4ctrl.pdf &
+   brewsh> flg4ctrl.rst > flg4ctrl.html
+   brewsh> xdg-open flg4ctrl.html &
+   brewsh> rst2pdf flg4ctrl.rst
+   brewsh> xdg-open flg4ctrl.pdf &
 ..
 or:
 
 .. code:: sh
 
-   $ pandoc -t latex flg4ctrl.rst -o flg4ctrl.pdf
+   brewsh> pandoc -t latex flg4ctrl.rst -o flg4ctrl.pdf
 ..
 
 2. From the build directory, browse/edit the primary event generation variant and generate a variant profile::
 
 .. code:: sh
 
-   $ bxvariant_inspector \
+   brewsh> bxvariant_inspector \
 	  --datatools::resource-path="falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
 	  --variant-config "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf" \
           --variant-gui \
@@ -94,7 +95,7 @@ the default geometry:
 
 .. raw:: sh
 
-   $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
+   brewsh> LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
      bxg4_production \
      --datatools::logging "warning" \
      --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
@@ -124,7 +125,7 @@ variant geometry layout:
 
 .. raw:: sh
 
-   $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
+   brewsh> LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
      bxg4_production \
      --datatools::logging "warning" \
      --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
@@ -152,7 +153,7 @@ Run in interactive mode:
 
 .. raw:: sh
 
-   $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
+   brewsh> LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
      bxg4_production \
      --datatools::logging "warning" \
      --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
