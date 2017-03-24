@@ -23,9 +23,10 @@ namespace FLReconstruct {
     params.reconstructionPipelineModule = "pipeline";
 
     // Variants support:
-    params.variantConfigUrn  = "";
+    params.variantConfigUrn = "";
     params.variantProfileUrn = "";
-    params.variantSubsystemParams.config_filename  = "";
+    params.variantSubsystemParams.config_filename = "";
+    params.variantSubsystemParams.profile_load = "";
 
     // Service support:
     params.servicesSubsystemConfigUrn = "";
